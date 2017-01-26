@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,8 +29,9 @@
  	require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
 	require_once(__CA_APP_DIR__."/helpers/contributeHelpers.php");
 	require_once(__CA_LIB_DIR__."/ca/Utils/DataMigrationUtils.php");
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  
- 	class ContributeController extends ActionController {
+ 	class ContributeController extends BasePawtucketController {
  		# -------------------------------------------------------
  		/**
  		 * Instance for record being contributed
@@ -51,7 +52,10 @@
             if ($this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
-            
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	print "You do not have access to view this page.";
+            	die;
+            }
  			caSetPageCSSClasses(array("contribute"));
  		}
  		# -------------------------------------------------------
@@ -76,6 +80,24 @@
  			// Format to wrap field-level error messages in
  			$vs_error_format = caGetOption('errorFormat', $va_form_info, '<div class="error">^ERRORS</div>');
  			
+ 			// Move errors for fields not in form to "general" errors list
+ 			if (is_array($va_response_data['errors']) && is_array($va_tags)) {
+ 				$va_tag_list = [];
+ 				foreach($va_tags as $vs_tag){ 
+ 					$va_tag_info = caParseTagOptions($vs_tag);
+ 					$va_tag_list[$va_tag_info['tag']] = true;
+ 				}
+ 				
+ 				if(!is_array($va_response_data['errors']['_general_'])) { $va_response_data['errors']['_general_'] = []; }
+ 				foreach($va_response_data['errors'] as $vs_field => $va_errors_for_field) {
+ 					if (!isset($va_tag_list[$vs_field])) { 
+ 						foreach($va_errors_for_field as $vn_i => $vs_error_for_field) {
+ 							$va_errors_for_field[$vn_i] = "<strong>{$vs_field}</strong>: {$vs_error_for_field}";
+ 						}
+ 						$va_response_data['errors']['_general_'] = array_merge($va_response_data['errors']['_general_'], $va_errors_for_field);
+ 					}	
+ 				}
+ 			}
  			$this->view->setVar('errors', is_array($va_response_data['errors']['_general_']) ? join("; ", $va_response_data['errors']['_general_']) : "");
  			
  			foreach($va_tags as $vs_tag) {
@@ -379,8 +401,6 @@
           		}	
           	}
           	
-          	//print_R($va_content_tree); die;
-          	
           	// Set type and idno (from config or tree) and insert
           	// 		Configured values are always used in preference
           	
@@ -468,7 +488,7 @@
           					$va_rel_config = caGetOption('ca_places', $va_related_form_item_config, array());
           					foreach($va_content_by_table as $vn_index => $va_rel) {
           						foreach(array('idno', 'access', 'status') as $vs_f) { $va_rel[$vs_f] = $va_rel_config[$vs_f]; }
-								if ($vn_rel_id = DataMigrationUtils::getPlaceID($va_rel['preferred_labels']['name'], caGetOption('parent_id', $va_rel_config, null), $va_rel['_type'], $g_ui_locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+								if ($vn_rel_id = DataMigrationUtils::getPlaceID($va_rel['preferred_labels']['name'], caGetOption('parent_id', $va_rel_config, null), $va_rel['_type'], $g_ui_locale_id, null, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
 									if (!($vs_rel_type = trim($va_rel['_relationship_type']))) { break; }
 								
 									$t_subject->addRelationship($vs_table, $vn_rel_id, $vs_rel_type);
@@ -572,12 +592,12 @@
  		private function _checkForm($ps_form) {
  			if (!($va_form_info = caGetInfoForContributeFormType($ps_form))) {
  				// invalid form type (shouldn't happen unless misconfigured)
- 				die("Invalid contribute form type");
+ 				throw new ApplicationException("Invalid contribute form type");
  			}
  			
  			if (!($this->pt_subject = $this->request->datamodel->getInstanceByTableName($va_form_info['table']))) {
  				// invalid form table (shouldn't happen unless misconfigured)
- 				die("Invalid contribute table setting");
+ 				throw new ApplicationException("Invalid contribute table setting");
  			}
  			
  			// Does form require login?

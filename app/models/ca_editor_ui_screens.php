@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2014 Whirl-i-Gig
+ * Copyright 2008-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -35,6 +35,7 @@
    */
 
 require_once(__CA_LIB_DIR__.'/ca/BundlableLabelableBaseModelWithAttributes.php');
+require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
 require_once(__CA_MODELS_DIR__.'/ca_editor_uis.php');
 require_once(__CA_MODELS_DIR__.'/ca_editor_ui_bundle_placements.php');
 require_once(__CA_MODELS_DIR__.'/ca_editor_ui_screen_type_restrictions.php');
@@ -192,6 +193,14 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 			
 		)
 	);
+	
+	# ------------------------------------------------------
+	# Group-based access control
+	# ------------------------------------------------------
+	protected $USERS_RELATIONSHIP_TABLE = 'ca_editor_ui_screens_x_users';
+	protected $USER_GROUPS_RELATIONSHIP_TABLE = 'ca_editor_ui_screens_x_user_groups';
+	protected $USER_ROLES_RELATIONSHIP_TABLE = 'ca_editor_ui_screens_x_roles';
+	
 	# ------------------------------------------------------
 	# Labeling
 	# ------------------------------------------------------
@@ -214,6 +223,10 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 	# ------------------------------------------------------
 	protected function initLabelDefinitions($pa_options=null) {
 		parent::initLabelDefinitions($pa_options);
+		
+		$this->BUNDLES['ca_users'] = array('type' => 'special', 'repeating' => true, 'label' => _t('User access'));
+		$this->BUNDLES['ca_user_groups'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Group access'));
+		$this->BUNDLES['ca_user_roles'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Role access'));
 		
 		$this->BUNDLES['ca_editor_ui_bundle_placements'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Screen content'));
 		$this->BUNDLES['ca_editor_ui_screen_type_restrictions'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Type restrictions'));
@@ -393,9 +406,14 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 	public function getAvailableBundles($pm_table_name_or_num=null, $pa_options=null) {
 		$pb_dont_cache = caGetOption('dontCache', $pa_options, false);
 		if (!$pm_table_name_or_num) { $pm_table_name_or_num = $this->getTableNum(); }
+		$vs_cache_key = md5($pm_table_name_or_num . serialize($pa_options));
+
+		if(MemoryCache::contains($vs_cache_key, 'UiScreensAvailableBundles')) {
+			return MemoryCache::fetch($vs_cache_key, 'UiScreensAvailableBundles');
+		}
 		
 		if (!is_numeric($pm_table_name_or_num)) { $pm_table_name_or_num = $this->_DATAMODEL->getTableNum($pm_table_name_or_num); }
-		if (!($t_instance = $this->_DATAMODEL->getInstanceByTableNum($pm_table_name_or_num, false))) { return null; }
+		if (!($t_instance = $this->getAppDatamodel()->getInstanceByTableNum($pm_table_name_or_num, false))) { return null; }
 		$vs_table = $t_instance->tableName();
 
 		// if cache is disabled, make sure bundle definitions are up-to-date for this instance. they are usually cached.
@@ -509,133 +527,220 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 					}
 					break;
 				case 'related_table':
-					if (!($t_rel = $this->_DATAMODEL->getInstanceByTableName($vs_bundle, true))) { continue; }
-					$va_path = array_keys($this->_DATAMODEL->getPath($t_instance->tableName(), $vs_bundle));
-					$va_additional_settings = array(
-						'restrict_to_relationship_types' => array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_SELECT,
-							'useRelationshipTypeList' => $va_path[1],
-							'width' => "275px", 'height' => "75px",
-							'takesLocale' => false,
-							'default' => '',
-							'label' => _t('Restrict to relationship types'),
-							'description' => _t('Restricts display to items related using the specified relationship type(s). Leave all unselected for no restriction.')
-						),
-						'restrict_to_types' => array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_SELECT,
-							'useList' => $t_rel->getTypeListCode(),
-							'width' => "275px", 'height' => "75px",
-							'takesLocale' => false,
-							'default' => '',
-							'label' => _t('Restrict to types'),
-							'description' => _t('Restricts display to items of the specified type(s). Leave all unselected for no restriction.')
-						),
-						'dont_include_subtypes_in_type_restriction' => array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_CHECKBOXES,
-							'width' => "10", 'height' => "1",
-							'takesLocale' => false,
-							'default' => '0',
-							'label' => _t('Do not include sub-types in type restriction'),
-							'description' => _t('Normally restricting to type(s) automatically includes all sub-(child) types. If this option is checked then the lookup results will include items with the selected type(s) <b>only</b>.')
-						),
-						'list_format' => array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_SELECT,
-							'options' => array(
-								_t('bubbles (draggable)') => 'bubbles',
-								_t('list (not draggable)') => 'list'
+					if(preg_match("/^([a-z_]+)_(related_list|table)$/", $vs_bundle, $va_matches)) {
+						$vs_table = $va_matches[1];
+						$t_rel = $this->_DATAMODEL->getInstanceByTableName($vs_table, true);
+						$va_path = array_keys($this->_DATAMODEL->getPath($t_instance->tableName(), $vs_table));
+						if(!is_array($va_path)) { continue 2; }
+
+						$va_additional_settings = array(
+							'restrict_to_relationship_types' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_SELECT,
+								'useRelationshipTypeList' => $va_path[1],
+								'width' => "275px", 'height' => "75px",
+								'takesLocale' => false,
+								'default' => '',
+								'label' => _t('Restrict to relationship types'),
+								'description' => _t('Restricts display to items related using the specified relationship type(s). Leave all unselected for no restriction.')
 							),
-							'default' => 'bubbles',
-							'width' => "200px", 'height' => 1,
-							'label' => _t('Format of relationship list'),
-							'description' => _t('.')
-						),
-						'sort' => array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_SELECT,
-							'width' => "200px", 'height' => "1",
-							'takesLocale' => false,
-							'default' => '1',
-							'label' => _t('Sort using'),
-							'showSortableBundlesFor' => $t_rel->tableName(),
-							'description' => _t('Method used to sort related items.')
-						),
-						'sortDirection' => array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_SELECT,
-							'width' => "200px", 'height' => "1",
-							'takesLocale' => false,
-							'default' => 'ASC',
-							'options' => array(
-								_t('Ascending') => 'ASC',
-								_t('Descending') => 'DESC'
+							'restrict_to_types' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_SELECT,
+								'useList' => $t_rel->getTypeListCode(),
+								'width' => "275px", 'height' => "75px",
+								'takesLocale' => false,
+								'default' => '',
+								'label' => _t('Restrict to types'),
+								'description' => _t('Restricts display to items of the specified type(s). Leave all unselected for no restriction.')
 							),
-							'label' => _t('Sort direction'),
-							'description' => _t('Direction of sort, when not in a user-specified order.')
-						),
-						'colorFirstItem' => array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_COLORPICKER,
-							'width' => "10", 'height' => "1",
-							'takesLocale' => false,
-							'default' => '',
-							'label' => _t('First item color'),
-							'description' => _t('If set first item in list will use this color.')
-						),
-						'colorLastItem' => array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_COLORPICKER,
-							'width' => "10", 'height' => "1",
-							'takesLocale' => false,
-							'default' => '',
-							'label' => _t('Last item color'),
-							'description' => _t('If set last item in list will use this color.')
-						),
-						'dontShowDeleteButton' => array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_CHECKBOXES,
-							'width' => "10", 'height' => "1",
-							'takesLocale' => false,
-							'default' => '0',
-							'label' => _t('Do not show delete button'),
-							'description' => _t('If checked the delete relationship control will not be provided.')
-						),
-						'display_template' => array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_FIELD,
-							'default' => '^'.$t_rel->tableName().'.preferred_labels',
-							'width' => "275px", 'height' => 4,
-							'label' => _t('Relationship display template'),
-							'description' => _t('Layout for relationship when displayed in list (can include HTML). Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^my_element_code</i>.')
-						),
-						'documentation_url' => array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_FIELD,
-							'default' => '',
-							'width' => "275px", 'height' => 1,
-							'label' => _t('Documentation URL'),
-							'description' => _t('URL pointing to documentation for this relationship bundle. Leave blank if no documentation URL exists.')
-						),
-						'minRelationshipsPerRow' => array(
-							'formatType' => FT_NUMBER,
-							'displayType' => DT_FIELD,
-							'width' => 5, 'height' => 1,
-							'default' => '',
-							'label' => _t('Minimum number of relationships of this kind to be associated with an item. '),
-							'description' => _t('If set to 0 a delete button will allow a cataloguer to clear all relationships.  If set to 1 or more, it will not be possible to delete all relationships once the minimum is established. Note that this is only a user interface limitations rather than constraints on the underlying data model.')
-						),
-						'maxRelationshipsPerRow' => array(
-							'formatType' => FT_NUMBER,
-							'displayType' => DT_FIELD,
-							'width' => 5, 'height' => 1,
-							'default' => '',
-							'label' => _t('Maximum number of relationships of this kind that can be associated with an item'),
-							'description' => _t('The extent of repeatability for the relationship will match the number entered here. Note that this is only a user interface limitations rather than constraints on the underlying data model.')
-						)
-					);
+							'restrict_to_search' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_FIELD,
+								'default' => '',
+								'width' => "275px", 'height' => 1,
+								'label' => _t('Restrict to search expression'),
+								'description' => _t('Restricts display to items matching the given search expression. Leave empty for no restriction.')
+							),
+							'dontShowDeleteButton' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_CHECKBOXES,
+								'width' => "10", 'height' => "1",
+								'takesLocale' => false,
+								'default' => '0',
+								'label' => _t('Do not show delete button'),
+								'description' => _t('If checked the delete relationship control will not be provided.')
+							),
+							'display_template' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_FIELD,
+								'default' => '^' . $t_rel->tableName() . '.preferred_labels',
+								'width' => "275px", 'height' => 4,
+								'label' => _t('Relationship display template'),
+								'description' => _t('Layout for relationship when displayed in list (can include HTML). Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^my_element_code</i>.')
+							),
+						);
+						break;
+					} else {
+						if (!($t_rel = $this->_DATAMODEL->getInstanceByTableName($vs_bundle, true))) { continue; }
+						$va_path = array_keys($this->_DATAMODEL->getPath($t_instance->tableName(), $vs_bundle));
+						$va_additional_settings = array(
+							'restrict_to_relationship_types' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_SELECT,
+								'useRelationshipTypeList' => $va_path[1],
+								'width' => "275px", 'height' => "75px",
+								'takesLocale' => false,
+								'default' => '',
+								'label' => _t('Restrict to relationship types'),
+								'description' => _t('Restricts display to items related using the specified relationship type(s). Leave all unselected for no restriction.')
+							),
+							'restrict_to_types' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_SELECT,
+								'useList' => $t_rel->getTypeListCode(),
+								'width' => "275px", 'height' => "75px",
+								'takesLocale' => false,
+								'default' => '',
+								'label' => _t('Restrict to types'),
+								'description' => _t('Restricts display to items of the specified type(s). Leave all unselected for no restriction.')
+							),
+							'restrict_to_search' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_FIELD,
+								'default' => '',
+								'width' => "275px", 'height' => 1,
+								'label' => _t('Restrict to search expression'),
+								'description' => _t('Restricts display to items matching the given search expression. Leave empty for no restriction.')
+							),
+							'dont_include_subtypes_in_type_restriction' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_CHECKBOXES,
+								'width' => "10", 'height' => "1",
+								'takesLocale' => false,
+								'default' => '0',
+								'label' => _t('Do not include sub-types in type restriction'),
+								'description' => _t('Normally restricting to type(s) automatically includes all sub-(child) types. If this option is checked then the lookup results will include items with the selected type(s) <b>only</b>.')
+							),
+							'list_format' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_SELECT,
+								'options' => array(
+									_t('bubbles (draggable)') => 'bubbles',
+									_t('list (not draggable)') => 'list'
+								),
+								'default' => 'bubbles',
+								'width' => "200px", 'height' => 1,
+								'label' => _t('Format of relationship list'),
+								'description' => _t('.')
+							),
+							'sort' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_SELECT,
+								'width' => "200px", 'height' => "1",
+								'takesLocale' => false,
+								'default' => '',
+								'label' => _t('Sort using'),
+								'showSortableBundlesFor' => $t_rel->tableName(),
+								'description' => _t('Method used to sort related items.')
+							),
+							'sortDirection' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_SELECT,
+								'width' => "200px", 'height' => "1",
+								'takesLocale' => false,
+								'default' => 'ASC',
+								'options' => array(
+									_t('Ascending') => 'ASC',
+									_t('Descending') => 'DESC'
+								),
+								'label' => _t('Sort direction'),
+								'description' => _t('Direction of sort, when not in a user-specified order.')
+							),
+							'colorFirstItem' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_COLORPICKER,
+								'width' => "10", 'height' => "1",
+								'takesLocale' => false,
+								'default' => '',
+								'label' => _t('First item color'),
+								'description' => _t('If set first item in list will use this color.')
+							),
+							'colorItem' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_COLORPICKER,
+								'width' => "10", 'height' => "1",
+								'takesLocale' => false,
+								'default' => '',
+								'label' => _t('Item color'),
+								'description' => _t('If set item that are not first or last in list will use this color.')
+							),
+							'colorLastItem' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_COLORPICKER,
+								'width' => "10", 'height' => "1",
+								'takesLocale' => false,
+								'default' => '',
+								'label' => _t('Last item color'),
+								'description' => _t('If set last item in list will use this color.')
+							),
+							'dontShowDeleteButton' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_CHECKBOXES,
+								'width' => "10", 'height' => "1",
+								'takesLocale' => false,
+								'default' => '0',
+								'label' => _t('Do not show delete button'),
+								'description' => _t('If checked the delete relationship control will not be provided.')
+							),
+							'display_template' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_FIELD,
+								'default' => '^' . $t_rel->tableName() . '.preferred_labels',
+								'width' => "275px", 'height' => 4,
+								'label' => _t('Relationship display template'),
+								'description' => _t('Layout for relationship when displayed in list (can include HTML). Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^my_element_code</i>.')
+							),
+							'documentation_url' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_FIELD,
+								'default' => '',
+								'width' => "275px", 'height' => 1,
+								'label' => _t('Documentation URL'),
+								'description' => _t('URL pointing to documentation for this relationship bundle. Leave blank if no documentation URL exists.')
+							),
+							'minRelationshipsPerRow' => array(
+								'formatType' => FT_NUMBER,
+								'displayType' => DT_FIELD,
+								'width' => 5, 'height' => 1,
+								'default' => '',
+								'label' => _t('Minimum number of relationships of this kind to be associated with an item. '),
+								'description' => _t('If set to 0 a delete button will allow a cataloguer to clear all relationships.  If set to 1 or more, it will not be possible to delete all relationships once the minimum is established. Note that this is only a user interface limitations rather than constraints on the underlying data model.')
+							),
+							'maxRelationshipsPerRow' => array(
+								'formatType' => FT_NUMBER,
+								'displayType' => DT_FIELD,
+								'width' => 5, 'height' => 1,
+								'default' => '',
+								'label' => _t('Maximum number of relationships of this kind that can be associated with an item'),
+								'description' => _t('The extent of repeatability for the relationship will match the number entered here. Note that this is only a user interface limitations rather than constraints on the underlying data model.')
+							),
+							'showCurrentOnly' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_CHECKBOXES,
+								'width' => "10", 'height' => "1",
+								'takesLocale' => false,
+								'default' => '0',
+								'label' => _t('Show current only?'),
+								'description' => _t('If checked only the most recently dated relationship displayed.')
+							)
+						);
+					}
+
+					if($vs_bundle == 'ca_sets') {
+						unset($va_additional_settings['restrict_to_relationship_types']);
+						unset($va_additional_settings['restrict_to_search']);
+					}
 					
 					if ($vs_bundle == 'ca_list_items') {
 						$va_additional_settings['restrict_to_lists'] = array(
@@ -649,6 +754,18 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 							'description' => _t('Restricts display to items from the specified list(s). Leave all unselected for no restriction.')
 						);
 					}
+
+					if ($vs_bundle == 'ca_object_lots') {
+						$va_additional_settings['display_template'] = array(
+							'formatType' => FT_TEXT,
+							'displayType' => DT_FIELD,
+							'default' => '^ca_object_lots.preferred_labels (^ca_object_lots.idno_stub)',
+							'width' => "275px", 'height' => 4,
+							'label' => _t('Relationship display template'),
+							'description' => _t('Layout for relationship when displayed in list (can include HTML). Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^my_element_code</i>.')
+						);
+					}
+
 					if (in_array($vs_bundle, array('ca_places', 'ca_list_items', 'ca_storage_locations'))) {
 						$va_additional_settings['useHierarchicalBrowser'] = array(
 							'formatType' => FT_TEXT,
@@ -669,78 +786,6 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 							'label' => _t('Height of hierarchical browser'),
 							'description' => _t('Height of hierarchical browser.')
 						
-						);
-					}
-					
-					if (($vs_bundle == 'ca_movements') && ($t_instance->tableName() == 'ca_objects')) {
-						$va_additional_settings['showCurrentOnly'] = array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_CHECKBOXES,
-							'width' => "10", 'height' => "1",
-							'takesLocale' => false,
-							'default' => '1',
-							'label' => _t('Show current only?'),
-							'description' => _t('If checked only current movements are displayed.')
-						);
-					}
-					
-					if (($vs_bundle == 'ca_objects') && ($t_instance->tableName() == 'ca_movements')) {
-						$va_additional_settings['showCurrentOnly'] = array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_CHECKBOXES,
-							'width' => "10", 'height' => "1",
-							'takesLocale' => false,
-							'default' => '1',
-							'label' => _t('Show current only?'),
-							'description' => _t('If checked only current objects are displayed.')
-						);
-					}
-					
-					if (($vs_bundle == 'ca_movements') && ($t_instance->tableName() == 'ca_storage_locations')) {
-						$va_additional_settings['showCurrentOnly'] = array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_CHECKBOXES,
-							'width' => "10", 'height' => "1",
-							'takesLocale' => false,
-							'default' => '1',
-							'label' => _t('Show current only?'),
-							'description' => _t('If checked only current movements are displayed.')
-						);
-					}
-					
-					if (($vs_bundle == 'ca_storage_locations') && ($t_instance->tableName() == 'ca_movements')) {
-						$va_additional_settings['showCurrentOnly'] = array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_CHECKBOXES,
-							'width' => "10", 'height' => "1",
-							'takesLocale' => false,
-							'default' => '1',
-							'label' => _t('Show current only?'),
-							'description' => _t('If checked only current objects are displayed.')
-						);
-					}
-					
-					if (($vs_bundle == 'ca_storage_locations') && ($t_instance->tableName() == 'ca_objects')) {
-						$va_additional_settings['showCurrentOnly'] = array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_CHECKBOXES,
-							'width' => "10", 'height' => "1",
-							'takesLocale' => false,
-							'default' => '1',
-							'label' => _t('Show current only?'),
-							'description' => _t('If checked only current storage locations are displayed.')
-						);
-					}
-					
-					if (($vs_bundle == 'ca_objects') && ($t_instance->tableName() == 'ca_storage_locations')) {
-						$va_additional_settings['showCurrentOnly'] = array(
-							'formatType' => FT_TEXT,
-							'displayType' => DT_CHECKBOXES,
-							'width' => "10", 'height' => "1",
-							'takesLocale' => false,
-							'default' => '1',
-							'label' => _t('Show current only?'),
-							'description' => _t('If checked only current objects are displayed.')
 						);
 					}
 					
@@ -788,6 +833,25 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 				case 'special':
 					if (in_array($vs_bundle, array('hierarchy_location', 'hierarchy_navigation'))) {
 						$va_additional_settings = array(
+							// no 'classic' expand/collapse for these bundles
+							'expand_collapse_value' => false,
+							'expand_collapse_no_value' => false,
+							// the concept 'value' doesn't really make sense in this context, so we just add one option
+							'expand_collapse' => array(
+								'formatType' => FT_TEXT,
+								'displayType' => DT_SELECT,
+								'options' => array(
+									_t("Don't force (default)") => 'dont_force', // current default mode
+									_t('Collapse') => 'collapse',
+									_t('Expand') => 'expand',
+
+								),
+								'takesLocale' => false,
+								'default' => 'bubbles',
+								'width' => "200px", 'height' => 1,
+								'label' => _t('Always Expand/collapse'),
+								'description' => _t('Controls the expand/collapse behavior')
+							),
 							'open_hierarchy' => array(
 								'formatType' => FT_NUMBER,
 								'displayType' => DT_CHECKBOXES,
@@ -817,20 +881,96 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 						);
 					} else {
 						switch($vs_bundle) {
-							case 'ca_commerce_order_history':
+							case 'authority_references_list':
 								$va_additional_settings = array(
-									'orderType' => array(
+									'maxReferencesToDisplay' => array(
 										'formatType' => FT_TEXT,
-										'displayType' => DT_SELECT,
-										'takesLocale' => false,
-										'default' => '',
-										'options' => array(
-											_t('Sales order') => 'O',
-											_t('Loan') => 'L'
-										),
-										'label' => _t('Type of order'),
-										'description' => _t('Determines which type of order is displayed.')
-									)		
+										'displayType' => DT_FIELD,
+										'default' => 100,
+										'width' => "50px", 'height' => 1,
+										'label' => _t('Maximum number of references to display'),
+										'description' => _t('Maximum number of references to display per item.')
+									),
+									'ca_objects_displayTemplate' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_FIELD,
+										'default' => '<l>^ca_objects.preferred_labels.name</l> (^ca_objects.idno)',
+										'width' => "275px", 'height' => 4,
+										'label' => _t('Object display template'),
+										'description' => _t('Layout for referencing objects. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_objects.idno</i>.')
+									),
+									'ca_object_lots_displayTemplate' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_FIELD,
+										'default' => '<l>^ca_object_lots.preferred_labels.name</l> (^ca_object_lots.idno_stub)',
+										'width' => "275px", 'height' => 4,
+										'label' => _t('Lot display template'),
+										'description' => _t('Layout for referencing lots. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_object_lots.idno_stub</i>.')
+									),
+									'ca_entities_displayTemplate' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_FIELD,
+										'default' => '<l>^ca_entities.preferred_labels.displayname</l> (^ca_entities.idno)',
+										'width' => "275px", 'height' => 4,
+										'label' => _t('Entity display template'),
+										'description' => _t('Layout for referencing entities. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_entities.idno</i>.')
+									),
+									'ca_places_displayTemplate' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_FIELD,
+										'default' => '<l>^ca_places.preferred_labels.name</l> (^ca_places.idno)',
+										'width' => "275px", 'height' => 4,
+										'label' => _t('Place display template'),
+										'description' => _t('Layout for referencing places. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_places.idno</i>.')
+									),
+									'ca_occurrences_displayTemplate' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_FIELD,
+										'default' => '<l>^ca_occurrences.preferred_labels.name</l> (^ca_occurrences.idno)',
+										'width' => "275px", 'height' => 4,
+										'label' => _t('Occurrence display template'),
+										'description' => _t('Layout for referencing occurrences. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_occurrences.idno</i>.')
+									),
+									'ca_collections_displayTemplate' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_FIELD,
+										'default' => '<l>^ca_collections.preferred_labels.name</l> (^ca_collections.idno)',
+										'width' => "275px", 'height' => 4,
+										'label' => _t('Collection display template'),
+										'description' => _t('Layout for referencing collections. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_collections.idno</i>.')
+									),
+									'ca_loans_displayTemplate' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_FIELD,
+										'default' => '<l>^ca_loans.preferred_labels.name</l> (^ca_loans.idno)',
+										'width' => "275px", 'height' => 4,
+										'label' => _t('Loan display template'),
+										'description' => _t('Layout for referencing loans. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_loans.idno</i>.')
+									),
+									'ca_movements_displayTemplate' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_FIELD,
+										'default' => '<l>^ca_movements.preferred_labels.name</l> (^ca_movements.idno)',
+										'width' => "275px", 'height' => 4,
+										'label' => _t('Movement display template'),
+										'description' => _t('Layout for referencing movements. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_movements.idno</i>.')
+									),
+									'ca_object_representations_displayTemplate' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_FIELD,
+										'default' => '<l>^ca_object_representations.preferred_labels.name</l> (^ca_object_representations.idno)',
+										'width' => "275px", 'height' => 4,
+										'label' => _t('Object representation display template'),
+										'description' => _t('Layout for referencing object representations. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_object_representations.idno</i>.')
+									),
+									'ca_list_items_displayTemplate' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_FIELD,
+										'default' => '<l>^ca_list_items.preferred_labels.name</l> (^ca_list_items.idno)',
+										'width' => "275px", 'height' => 4,
+										'label' => _t('List item display template'),
+										'description' => _t('Layout for referencing list items. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_list_items.idno</i>.')
+									)
 								);
 								break;
 							case 'ca_object_representation_chooser':
@@ -859,6 +999,11 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 									)
 								);
 								break;
+							case 'circulation_status':
+								$va_additional_settings = array(
+									// @todo: maybe add settings!?
+								);
+								break;
 							case 'ca_objects_location':
 								$va_additional_settings = array(
 									'locationTrackingMode' => array(
@@ -871,38 +1016,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'default' => 'ca_movements',
 										'width' => "275px", 'height' => 1,
 										'label' => _t('Track location using'),
-										'description' => _t('')
-									),
-									'ca_movements_dateElement' => array(
-										'formatType' => FT_TEXT,
-										'displayType' => DT_SELECT,
-										'table' => 'ca_movements',
-										'showMetadataElementsWithDataType' => 2,
-										'takesLocale' => false,
-										'default' => '',
-										'width' => "275px", 'height' => "75px",
-										'label' => _t('Movement date'),
-										'description' => _t('')
-									),
-									'ca_movements_relationshipType' => array(
-										'formatType' => FT_TEXT,
-										'displayType' => DT_SELECT,
-										'useRelationshipTypeList' => 'ca_movements_x_objects',
-										'takesLocale' => false,
-										'default' => '',
-										'width' => "275px", 'height' => "75px",
-										'label' => _t('Limit movement tracking to relationship types'),
-										'description' => _t('')
-									),
-									'ca_storage_locations_relationshipType' => array(
-										'formatType' => FT_TEXT,
-										'displayType' => DT_SELECT,
-										'useRelationshipTypeList' => 'ca_objects_x_storage_locations',
-										'takesLocale' => false,
-										'default' => '',
-										'width' => "275px", 'height' => "75px",
-										'label' => _t('Limit storage location tracking to relationship types'),
-										'description' => _t('')
+										'description' => ''
 									),
 									'displayTemplate' => array(
 										'formatType' => FT_TEXT,
@@ -954,12 +1068,103 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'takesLocale' => false,
 										'default' => '1',
 										'label' => _t('Use hierarchy browser for storage locations?'),
-										'description' => _t('If checked a hierarchical browser will be used to select stroage location items instead of an auto-complete lookup.')
+										'description' => _t('If checked a hierarchical browser will be used to select storage location items rather than an auto-complete lookup.')
 									)
 								);
 								break;
 							case 'ca_objects_history':
+								$va_to_hide_when_using_defaults = array(
+									'ca_object_lots_showTypes', 'ca_occurrences_showTypes', 'ca_loans_showTypes', 'ca_movements_showTypes',
+									'ca_storage_locations_showRelationshipTypes', 'ca_storage_locations_color', 'ca_storage_locations_displayTemplate',
+									'showDeaccessionInformation', 'deaccession_color', 'deaccession_displayTemplate'
+								);
 								$va_additional_settings = array(
+									'useAppConfDefaults' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_CHECKBOXES,
+										'width' => "10", 'height' => "1",
+										'takesLocale' => false,
+										'default' => '1',
+										'label' => _t('Use defaults from application configuration (app.conf)?'),
+										'description' => _t('If checked all settings are taken from the main application configuration file (app.conf).')
+									),
+									'locationTrackingMode' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_SELECT,
+										'options' => array(
+											_t('movements') => 'ca_movements',
+											_t('storage location relationships') => 'ca_storage_locations'
+										),
+										'default' => 'ca_movements',
+										'width' => "275px", 'height' => 1,
+										'label' => _t('Track location using'),
+										'description' => ''
+									),
+									// no 'classic' expand/collapse for this bundle
+									'expand_collapse_value' => false,
+									'expand_collapse_no_value' => false,
+									// the concept 'value' doesn't really make sense in this context, so we just add one option
+									'expand_collapse' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_SELECT,
+										'options' => array(
+											_t("Don't force (default)") => 'dont_force', // current default mode
+											_t('Collapse') => 'collapse',
+											_t('Expand') => 'expand',
+										),
+										'takesLocale' => false,
+										'default' => 'bubbles',
+										'width' => "200px", 'height' => 1,
+										'label' => _t('Always Expand/collapse'),
+										'description' => _t('Controls the expand/collapse behavior')
+									),
+									'hide_add_to_loan_controls' => array(
+										'formatType' => FT_NUMBER,
+										'displayType' => DT_CHECKBOXES,
+										'width' => "10", 'height' => "1",
+										'takesLocale' => false,
+										'default' => '0',
+										'label' => _t('Hide "Add to loan" controls'),
+										'description' => _t('Check this option if you want to to hide the "Add to loan" controls in this bundle placement.')
+									),
+									'hide_update_location_controls' => array(
+										'formatType' => FT_NUMBER,
+										'displayType' => DT_CHECKBOXES,
+										'width' => "10", 'height' => "1",
+										'takesLocale' => false,
+										'default' => '0',
+										'label' => _t('Hide "Update Location" controls'),
+										'description' => _t('Check this option if you want to to hide the "Update Location" controls in this bundle placement.')
+									),
+									'hide_add_to_occurrence_controls' => array(
+										'formatType' => FT_NUMBER,
+										'displayType' => DT_CHECKBOXES,
+										'width' => "10", 'height' => "1",
+										'takesLocale' => false,
+										'default' => '0',
+										'label' => _t('Hide "Add to" occurrence controls'),
+										'description' => _t('Check this option if you want to to hide the "Add to" occurrence controls in this bundle placement.'),
+										'hideOnSelect' => ['add_to_occurrence_types']
+									),
+									'add_to_occurrence_types' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_SELECT,
+										'useList' => 'occurrence_types',
+										'takesLocale' => false,
+										'default' => '',
+										'width' => "275px", 'height' => "75px",
+										'label' => _t('Show "Add to" occurrence controls for'),
+										'description' => ''
+									),
+									'useHierarchicalBrowser' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_CHECKBOXES,
+										'width' => "10", 'height' => "1",
+										'takesLocale' => false,
+										'default' => '1',
+										'label' => _t('Use hierarchy browser for storage locations?'),
+										'description' => _t('If checked a hierarchical browser will be used to select storage location items rather than an auto-complete lookup.')
+									),
 									'ca_object_lots_showTypes' => array(
 										'formatType' => FT_TEXT,
 										'displayType' => DT_SELECT,
@@ -968,7 +1173,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'default' => '',
 										'width' => "275px", 'height' => "75px",
 										'label' => _t('Show lots'),
-										'description' => _t('')
+										'description' => ''
 									)
 								);
 								
@@ -983,7 +1188,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'default' => '',
 										'width' => "275px", 'height' => "75px",
 										'label' => _t('Lot (%1) date', $va_type['name_singular']),
-										'description' => _t('')
+										'description' => ''
 									);
 									$va_additional_settings["ca_object_lots_{$va_type['idno']}_color"] = array(
 										'formatType' => FT_TEXT,
@@ -1001,8 +1206,10 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'width' => "275px", 'height' => 4,
 										'label' => _t('Lot (%1) display template', $va_type['name_singular']),
 										'description' => _t('Layout for lot when displayed in history list (can include HTML). The template is evaluated relative to the lot. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_object_lots.idno_stub</i>.')
-
 									);
+									$va_to_hide_when_using_defaults[] = "ca_object_lots_{$va_type['idno']}_dateElement";
+									$va_to_hide_when_using_defaults[] = "ca_object_lots_{$va_type['idno']}_color";
+									$va_to_hide_when_using_defaults[] = "ca_object_lots_{$va_type['idno']}_displayTemplate";
 								}
 								
 								$va_additional_settings['ca_occurrences_showTypes'] = array(
@@ -1013,7 +1220,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 									'default' => '',
 									'width' => "275px", 'height' => "75px",
 									'label' => _t('Show occurrences'),
-									'description' => _t('')
+									'description' => ''
 								);
 								$va_types = caGetTypeList("ca_occurrences");
 								foreach($va_types as $vn_type_id => $va_type) {
@@ -1026,7 +1233,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'default' => '',
 										'width' => "275px", 'height' => "75px",
 										'label' => _t('%1 date', $va_type['name_singular']),
-										'description' => _t('')
+										'description' => ''
 									);
 									$va_additional_settings["ca_occurrences_{$va_type['idno']}_color"] = array(
 										'formatType' => FT_TEXT,
@@ -1044,8 +1251,11 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'width' => "275px", 'height' => 4,
 										'label' => _t('%1 display template', $va_type['name_singular']),
 										'description' => _t('Layout for %1 when displayed in history list (can include HTML). The template is evaluated relative to the %1. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_occurrences.idno</i>.', $va_type['name_singular'])
-
 									);
+									
+									$va_to_hide_when_using_defaults[] = "ca_occurrences_{$va_type['idno']}_dateElement";
+									$va_to_hide_when_using_defaults[] = "ca_occurrences_{$va_type['idno']}_color";
+									$va_to_hide_when_using_defaults[] = "ca_occurrences_{$va_type['idno']}_displayTemplate";
 								}
 								
 								$va_additional_settings['ca_movements_showTypes'] = array(
@@ -1056,7 +1266,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 									'default' => '',
 									'width' => "275px", 'height' => "75px",
 									'label' => _t('Show movements'),
-									'description' => _t('')
+									'description' => ''
 								);
 								$va_types = caGetTypeList("ca_movements");
 								foreach($va_types as $vn_type_id => $va_type) {
@@ -1069,7 +1279,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'default' => '',
 										'width' => "275px", 'height' => "75px",
 										'label' => _t('%1 date', $va_type['name_singular']),
-										'description' => _t('')
+										'description' => ''
 									);
 									$va_additional_settings["ca_movements_{$va_type['idno']}_color"] = array(
 										'formatType' => FT_TEXT,
@@ -1087,8 +1297,11 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'width' => "275px", 'height' => 4,
 										'label' => _t('%1 display template', $va_type['name_singular']),
 										'description' => _t('Layout for %1 when displayed in history list (can include HTML). The template is evaluated relative to the %1. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_movements.idno</i>.', $va_type['name_singular'])
-
 									);
+									
+									$va_to_hide_when_using_defaults[] = "ca_movements_{$va_type['idno']}_dateElement";
+									$va_to_hide_when_using_defaults[] = "ca_movements_{$va_type['idno']}_color";
+									$va_to_hide_when_using_defaults[] = "ca_movements_{$va_type['idno']}_displayTemplate";
 								}
 								
 								$va_additional_settings['ca_loans_showTypes'] = array(
@@ -1099,7 +1312,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 									'default' => '',
 									'width' => "275px", 'height' => "75px",
 									'label' => _t('Show loans'),
-									'description' => _t('')
+									'description' => ''
 								);
 								$va_types = caGetTypeList("ca_loans");
 							
@@ -1113,7 +1326,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'default' => '',
 										'width' => "275px", 'height' => "75px",
 										'label' => _t('%1 date', $va_type['name_singular']),
-										'description' => _t('')
+										'description' => ''
 									);
 									$va_additional_settings["ca_loans_{$va_type['idno']}_color"] = array(
 										'formatType' => FT_TEXT,
@@ -1131,8 +1344,11 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'width' => "275px", 'height' => 4,
 										'label' => _t('%1 display template', $va_type['name_singular']),
 										'description' => _t('Layout for %1 when displayed in history list (can include HTML). The template is evaluated relative to the %1. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_loans.idno</i>.', $va_type['name_singular'])
-
 									);
+									
+									$va_to_hide_when_using_defaults[] = "ca_loans_{$va_type['idno']}_dateElement";
+									$va_to_hide_when_using_defaults[] = "ca_loans_{$va_type['idno']}_color";
+									$va_to_hide_when_using_defaults[] = "ca_loans_{$va_type['idno']}_displayTemplate";
 								}
 									
 								$va_additional_settings += array(
@@ -1154,6 +1370,18 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'width' => "275px", 'height' => "75px",
 										'label' => _t('Color for storage location'),
 										'description' => _t('Color to use as highlight storage location.')
+									),
+									'ca_storage_locations_elements' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_SELECT,
+										'default' => '',
+										'takesLocale' => false,
+										'table' => 'ca_objects_x_storage_locations',
+										'showMetadataElementsWithDataType' => "*",
+										'includeIntrinsics' => ['effective_date'],
+										'width' => "275px", 'height' => 4,
+										'label' => _t('Interstitial storage location elements to set'),
+										'description' => _t('')
 									),
 									'ca_storage_locations_displayTemplate' => array(
 										'formatType' => FT_TEXT,
@@ -1190,6 +1418,69 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'description' => _t('Layout for deaccession information when displayed in history list (can include HTML). The template is evaluated relative to the object. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_objects.deaccession_notes</i>.')
 									)
 								);
+								
+								$va_additional_settings['useAppConfDefaults']['hideOnSelect'] = $va_to_hide_when_using_defaults;
+								break;
+							case 'ca_storage_locations_contents':
+								$va_additional_settings = array(
+									'list_format' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_SELECT,
+										'options' => array(
+											_t('bubbles') => 'bubbles',
+											_t('list') => 'list'
+										),
+										'default' => 'bubbles',
+										'width' => "200px", 'height' => 1,
+										'label' => _t('Format of contents list'),
+										'description' => _t('.')
+									),
+									'locationTrackingMode' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_SELECT,
+										'options' => array(
+											_t('movements') => 'ca_movements',
+											_t('object-location relationships') => 'ca_storage_locations'
+										),
+										'default' => 'ca_movements',
+										'width' => "275px", 'height' => 1,
+										'label' => _t('Track location using'),
+										'description' => ''
+									),							
+									'colorItem' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_COLORPICKER,
+										'width' => "10", 'height' => "1",
+										'takesLocale' => false,
+										'default' => '#ffffff',
+										'label' => _t('Object color'),
+										'description' => _t('If set object in list will use this color.')
+									),
+									'displayTemplate' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_FIELD,
+										'default' => '',
+										'width' => "275px", 'height' => 4,
+										'label' => _t('Display template'),
+										'description' => _t('Layout for each object in the storage location (can include HTML). The template is evaluated relative to each object-movement or object-location relationship. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_objects.idno</i>.')
+									)
+								);
+								break;
+							case 'ca_set_items':
+								require_once(__CA_MODELS_DIR__."/ca_sets.php");
+								$t_set = new ca_sets();
+								
+								$va_additional_settings = array();
+								foreach($t_set->getFieldInfo('table_num', 'BOUNDS_CHOICE_LIST') as $vs_table_display_name => $vn_table_num) {
+									$va_additional_settings[$this->_DATAMODEL->getTableName($vn_table_num).'_display_template'] = array(
+											'formatType' => FT_TEXT,
+											'displayType' => DT_FIELD,
+											'default' => '',
+											'width' => "275px", 'height' => 4,
+											'label' => _t('Display template (%1)', $vs_table_display_name),
+											'description' => _t('Layout for %1 set item information when used in a display list. For example: <i>^ca_objects.deaccession_notes</i>.', $vs_table_display_name)
+									);
+								}
 								break;
 						}
 						$va_additional_settings['documentation_url'] = array(
@@ -1208,8 +1499,18 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 			}
 			
 			$t_placement->setSettingDefinitionsForPlacement($va_additional_settings);
-			
-			$vs_display = "<div id='uiEditorBundle_{$vs_table}_{$vs_bundle_proc}'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_instance->getProperty('NAME_SINGULAR'))."</span> ".($vs_label = $t_instance->getDisplayLabel($vs_table.'.'.$vs_bundle_proc))."</div>";
+			$vs_label = $t_instance->getDisplayLabel($t_instance->tableName().'.'.$vs_bundle_proc) ?: $va_info['label'];
+			$vs_display = "<div id='uiEditorBundle_{$vs_table}_{$vs_bundle_proc}'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_instance->getProperty('NAME_SINGULAR'))."</span> ".($vs_label)."</div>";
+
+			$va_additional_settings['bundleTypeRestrictions'] = [
+				'formatType' => FT_TEXT,
+				'displayType' => DT_SELECT,
+				'default' => '',
+				'showTypesForTable' => $vs_table,
+				'width' => "275px", 'height' => 4,
+				'label' => _t('Display bundle for types'),
+				'description' => _t('Restrict which types this bundle is displayed for. If no types are selected the bundle will be displayed for <strong>all</strong> types.')	
+			];
 
 			$va_available_bundles[$vs_display][$vs_bundle] = array(
 				'bundle' => $vs_bundle,
@@ -1234,6 +1535,9 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 				$va_sorted_bundles[$vs_real_key] = $va_info;
 			}
 		}
+
+		MemoryCache::save($vs_cache_key, $va_sorted_bundles, 'UiScreensAvailableBundles');
+
 		return $va_sorted_bundles;
 	}
 	# ----------------------------------------
@@ -1460,7 +1764,6 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 		$va_placements_in_screen = array();
 		foreach($va_placements as $vn_placement_id => $va_placement) {
 			$vs_bundle_proc = preg_replace('!^ca_attribute_!', '', $va_placement['bundle_name']);
-			
 			$vs_label = ($vs_label = ($t_instance->getDisplayLabel($t_instance->tableName().'.'.$vs_bundle_proc))) ? $vs_label : $va_placement['bundle_name'];
 			if(is_array($va_placement['settings']['label'])){
 				$va_tmp = caExtractValuesByUserLocale(array($va_placement['settings']['label']));
@@ -1645,6 +1948,15 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 
 		if($t_instance instanceof BaseRelationshipModel) { // interstitial
 			$o_view->setVar('type_restrictions', $t_instance->getRelationshipTypesAsHTMLSelect($t_instance->getLeftTableName(),null,null,array('name' => 'type_restrictions[]', 'multiple' => 1, 'size' => 5), array('values' => $va_restriction_type_ids)));
+		} elseif($t_instance instanceof ca_representation_annotations) { // config based
+			$o_annotation_type_conf = Configuration::load(Configuration::load()->get('annotation_type_config'));
+			$va_annotation_type_select_list = array();
+			foreach($o_annotation_type_conf->get('types') as $vs_type_code => $va_type_info) {
+				if(!isset($va_type_info['typeID'])) { continue; }
+				$va_annotation_type_select_list[$vs_type_code] = $va_type_info['typeID'];
+			}
+
+			$o_view->setVar('type_restrictions', caHTMLSelect('type_restrictions[]', $va_annotation_type_select_list, array('multiple' => 1, 'size' => 5), array('value' => 0, 'values' => $va_restriction_type_ids)));
 		} else { // list-based
 			$o_view->setVar('type_restrictions', $t_instance->getTypeListAsHTMLFormElement('type_restrictions[]', array('multiple' => 1, 'height' => 5), array('value' => 0, 'values' => $va_restriction_type_ids)));
 		}

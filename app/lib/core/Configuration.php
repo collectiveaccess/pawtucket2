@@ -247,7 +247,7 @@ class Configuration {
 			$vn_tok_count = sizeof($va_token_tmp);
 			for($vn_i = 0; $vn_i < $vn_tok_count; $vn_i++) {
 				if (strlen($va_token_tmp[$vn_i])) {
-					$va_tokens[] = &$va_token_tmp[$vn_i];
+					$va_tokens[] =& $va_token_tmp[$vn_i];
 				}
 			}
 			while (sizeof($va_tokens)) {
@@ -291,8 +291,18 @@ class Configuration {
 								if(!is_array($this->ops_config_settings["assoc"][$vs_key]) || !$vb_merge_mode) {
 									$this->ops_config_settings["assoc"][$vs_key] = array();
 								}
-								$va_assoc_pointer_stack[] = &$this->ops_config_settings["assoc"][$vs_key];
+								$va_assoc_pointer_stack[] =& $this->ops_config_settings["assoc"][$vs_key];
 								$vn_state = 40;
+								break;
+							case '"':
+								if($vn_in_quote) {
+									$vn_in_quote = 0;
+									$vn_state = -1;
+								} else {
+									$vs_scalar_value = '';
+									$vn_in_quote = 1;
+									$vn_state = 20;
+								}
 								break;
 							default:
 								// strip leading exclaimation in scalar to allow scalars to start with [ or {
@@ -303,9 +313,11 @@ class Configuration {
 									$vs_scalar_value .= $vs_token;
 									$vn_state = 20;
 
-									if (sizeof($va_tokens) == 0) {
-										$this->ops_config_settings["scalars"][$vs_key] = $this->_trimScalar($vs_scalar_value);
-										$vn_state = -1;
+									if(!$vn_in_quote) {
+										if (sizeof($va_tokens) == 0) {
+											$this->ops_config_settings["scalars"][$vs_key] = $this->_trimScalar($vs_scalar_value);
+											$vn_state = -1;
+										}
 									}
 								}
 								break;
@@ -314,11 +326,22 @@ class Configuration {
 					# ------------------------------------
 					# handle scalar values
 					case 20:
-						if ((preg_match("/[\r\n]/", $vs_token))) {
+						// end quote? -> accept scalar
+						if((trim($vs_token) == '"') && $vn_in_quote) {
+							if($vn_in_quote) {
+								$vn_in_quote = 0;
+								$vn_state = -1;
+
+								$this->ops_config_settings["scalars"][$vs_key] = $this->_trimScalar($vs_scalar_value);
+								break;
+							}
+						}
+
+						if (preg_match("/[\r\n]/", $vs_token) && !$vn_in_quote) {
 							$this->ops_config_settings["scalars"][$vs_key] = $this->_trimScalar($vs_scalar_value);
 							$vn_state = -1;
 						} else {
-							if (sizeof($va_tokens) == 0) {
+							if ((sizeof($va_tokens) == 0) && !$vn_in_quote) {
 								$vs_scalar_value .= $vs_token;
 
 								# accept scalar
@@ -326,8 +349,9 @@ class Configuration {
 
 								# initialize
 								$vn_state = -1;
-							} else {
+							} else { # keep going to next line
 								$vs_scalar_value .= $vs_token;
+								$vn_state = 20;
 							}
 						}
 						break;
@@ -400,22 +424,25 @@ class Configuration {
 					# handle associative array values
 					# get associative key
 					case 40:
-						if ($this->opb_debug) { print "CONFIG DEBUG: STATE=40\n"; }
 						switch($vs_token) {
 							# -------------------
 							case '"':
-								if (!$vn_in_quote) {
-									$vn_in_quote = 1;
+								if ($vb_escape_set) {
+									$vs_assoc_key .= '"';
 								} else {
-									$vn_in_quote = 0;
+									if (!$vn_in_quote) {
+										$vn_in_quote = 1;
+									} else {
+										$vn_in_quote = 0;
+									}
 								}
+								$vb_escape_set = false;
 								break;
 							# -------------------
 							case '=':
-								if ($vn_in_quote) {
+								if ($vn_in_quote || $vb_escape_set) {
 									$vs_assoc_key .= "=";
 								} else {
-									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=40; Got associative key '$vs_assoc_key'\n"; }
 									if (($vs_assoc_key = trim($this->_interpolateScalar($vs_assoc_key))) == '') {
 										$this->ops_error = "Associative key must not be empty";
 										fclose($r_file);
@@ -426,13 +453,13 @@ class Configuration {
 
 									$vn_state = 50;
 								}
+								$vb_escape_set = false;
 								break;
 							# -------------------
 							case ',':
-								if ($vn_in_quote) {
+								if ($vn_in_quote || $vb_escape_set) {
 									$vs_assoc_key .= ",";
 								} else {
-									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=40; Got associative comma\n"; }
 									if ($vs_assoc_key) {
 										$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][] = trim($vs_assoc_key);
 									}
@@ -444,10 +471,9 @@ class Configuration {
 								break;
 							# -------------------
 							case '}':
-								if ($vn_in_quote) {
+								if ($vn_in_quote || $vb_escape_set) {
 									$vs_scalar_value .= "}";
 								} else {
-									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=40; Got close }; KEY IS '$vs_assoc_key'\n"; }
 									if (sizeof($va_assoc_pointer_stack) > 1) {
 										if ($vs_assoc_key) {
 											$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][] = trim($vs_assoc_key);
@@ -467,10 +493,18 @@ class Configuration {
 								$vb_escape_set = false;
 								break;
 							# -------------------
+							case '\\':
+								if ($vb_escape_set) {
+									$vs_assoc_key .= $vs_token;
+								} else {
+									$vb_escape_set = true;
+								}
+								break;
 							default:
 								if (preg_match("/^#/", trim($vs_token))) {
 									// comment
 								} else {
+									$vb_escape_set = false;
 									$vs_assoc_key .= $vs_token;
 								}
 								break;
@@ -513,12 +547,12 @@ class Configuration {
 							# open nested associative value
 							case '{':
 								if (!$vn_in_quote && !$vb_escape_set) {
-									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=50; Got open {; KEY IS '$vs_assoc_key'\n"; }
-
-									if (!is_array($va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key]) || !$vb_merge_mode) {
-										$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key] = array();
+									$i = sizeof($va_assoc_pointer_stack) - 1;
+									if (!is_array($va_assoc_pointer_stack[$i][$vs_assoc_key]) || !$vb_merge_mode) {
+										$va_assoc_pointer_stack[$i][$vs_assoc_key] = array();
 									}
-									$va_assoc_pointer_stack[] =& $va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key];
+									$va_assoc_pointer_stack[] =& $va_assoc_pointer_stack[$i][$vs_assoc_key];
+									
 									$vn_state = 40;
 									$vs_key = $vs_assoc_key = $vs_scalar_value = "";
 									$vn_in_quote = 0;
@@ -532,7 +566,6 @@ class Configuration {
 								if ($vn_in_quote || $vb_escape_set) {
 									$vs_scalar_value .= "}";
 								} else {
-									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=50; Got close }; KEY IS '$vs_assoc_key'\n"; }
 									if (sizeof($va_assoc_pointer_stack) > 1) {
 										if ($vs_assoc_key) {
 											$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key] = $this->_trimScalar($this->_interpolateScalar($vs_scalar_value));
@@ -554,15 +587,14 @@ class Configuration {
 							# -------------------
 							# open list
 							case '[':
-								if ($this->opb_debug) { print "CONFIG DEBUG: STATE=50; Got open [; KEY IS '$vs_assoc_key'\n"; }
-
 								if ($vn_in_quote || $vb_escape_set) {
 									$vs_scalar_value .= $vs_token;
 								} else {
+									$i = sizeof($va_assoc_pointer_stack) - 1;
 									if(!is_array($va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key]) || !$vb_merge_mode) {
-										$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key] = array();
+										$va_assoc_pointer_stack[$i][$vs_assoc_key] = array();
 									}
-									$va_assoc_pointer_stack[] =& $va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key];
+									$va_assoc_pointer_stack[] =& $va_assoc_pointer_stack[$i][$vs_assoc_key];
 									$vn_state = 60;
 									$vn_in_quote = 0;
 								}
@@ -603,7 +635,6 @@ class Configuration {
 								break;
 							# -------------------
 							case ',':
-								if ($this->opb_debug) { print "CONFIG DEBUG: STATE=60; Got list-in-associative list comma; KEY IS '$vs_assoc_key'\n"; }
 								if ($vn_in_quote || $vb_escape_set) {
 									$vs_scalar_value .= ",";
 								} else {
@@ -619,7 +650,6 @@ class Configuration {
 								if ($vn_in_quote || $vb_escape_set) {
 									$vs_scalar_value .= "]";
 								} else {
-									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=60; Got ]; KEY IS '$vs_assoc_key'\n"; }
 									# accept list
 									if (strlen($vs_item = trim($this->_interpolateScalar($this->_trimScalar($vs_scalar_value)))) > 0) {
 										$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][] = $vs_item;
@@ -637,8 +667,6 @@ class Configuration {
 								break;
 							# -------------------
 							default:
-								if ($this->opb_debug) { print "CONFIG DEBUG: STATE=60; Got scalar '$vs_token'; KEY IS '$vs_assoc_key'\n"; }
-
 								$vs_scalar_value .= $vs_token;
 								$vb_escape_set = false;
 								break;
@@ -655,12 +683,16 @@ class Configuration {
 
 				}
 			}
-			if (($vn_state == 10) || ($vn_state == 20)) {
+			if ((($vn_state == 10) || ($vn_state == 20)) && !$vn_in_quote) {
 				$this->ops_config_settings["scalars"][$vs_key] = "";
 				$vn_state = -1;
 			}
 
-			if ($vn_in_quote) {
+			if(in_array($vn_state, [10,20]) && $vn_in_quote) {
+				$vs_scalar_value .= "\n";
+			}
+
+			if ($vn_in_quote && !in_array($vn_state, [10,20])) {
 				switch($vn_state) {
 					case 30:
 						$this->ops_error = "Missing trailing quote in list '$vs_key'<br/><strong>Last ".sizeof($va_token_history)." tokens were: </strong>".$this->_formatTokenHistory($va_token_history, array('outputAsHTML' => true));
@@ -692,7 +724,6 @@ class Configuration {
 				$this->ops_config_settings["scalars"][$vs_key] = $this->_interpolateScalar($vs_val);
 			}
 		}
-
 		fclose($r_file);
 
 		return true;
@@ -729,10 +760,10 @@ class Configuration {
 		$this->ops_error = "";
 
 		$vs_tmp = $this->getScalar($ps_key);
-		if (!$vs_tmp) {
+		if (!strlen($vs_tmp)) {
 			$vs_tmp = $this->getList($ps_key);
 		}
-		if (!$vs_tmp) {
+		if (!is_array($vs_tmp) && !strlen($vs_tmp)) {
 			$vs_tmp = $this->getAssoc($ps_key);
 		}
 		Configuration::$s_get_cache[$this->ops_md5_path][$ps_key] = $vs_tmp;
@@ -900,9 +931,14 @@ class Configuration {
 
 		// attempt translation if text is enclosed in _( and ) ... for example _t(translate me)
 		// assumes translation function _t() is present; if not loaded will not attempt translation
-		if (preg_match("/_\(([^\"\)]+)\)/", $ps_text, $va_matches)) {
+		if (preg_match("/_\(([^\"]+)\)/", $ps_text, $va_matches)) {
 			if(function_exists('_t')) {
-				return _t($va_matches[1]);
+				$vs_trans_text = $ps_text;
+				array_shift($va_matches);
+				foreach($va_matches as $vs_match) {
+					$vs_trans_text = str_replace("_({$vs_match})", _t($vs_match), $vs_trans_text);
+				}
+				return $vs_trans_text;
 			}
 		}
 		return $ps_text;

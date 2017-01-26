@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -39,7 +39,12 @@
 			parent::__construct($po_request, $po_response, $pa_view_paths);
  			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-            } 			
+            } 
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	print "You do not have access to view this page.";
+            	die;
+            }			
+            
  			caSetPageCSSClasses(array("multisearch"));
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search").": ".$this->request->getParameter('search', pString));
  		}
@@ -79,4 +84,3 @@
  		}
  		# -------------------------------------------------------
 	}
- ?>

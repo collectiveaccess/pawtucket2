@@ -144,6 +144,7 @@ define("__CA_DEFAULT_LOCALE__", "en_US");
 
 define("__CA_USE_CLEAN_URLS__", 0);
 
+
 # *** 
 # __   __          _                _                  
 # \ \ / /__  _   _( )_ __ ___    __| | ___  _ __   ___ 
@@ -162,6 +163,13 @@ define("__CA_USE_CLEAN_URLS__", 0);
 #
 # Most of the time you won't need to change anything below
 # --------------------------------------------------------------------------------------------
+
+
+#
+# __CA_GOOGLE_MAPS_KEY__ = GoogleMaps key to use for mapping (optional)
+#
+define("__CA_GOOGLE_MAPS_KEY__", "");
+
 
 #
 # __CA_QUEUE_ENABLED__ = enable background processing using the task queue
@@ -215,22 +223,12 @@ define("__CA_URL_ROOT__", str_replace($_SERVER['DOCUMENT_ROOT'], '', __CA_BASE_D
 define("__CA_SITE_HOSTNAME__", $_SERVER['HTTP_HOST']);
 
 
-#
-# If you use PayPal for e-commerce payments then you can set your account information 
-# below by uncommenting the __CA_PAYPAL* lines and assigning them appropriate values
-#
-#define("__CA_PAYPAL_API_USERNAME__", "your_paypal_api_username");
-#define("__CA_PAYPAL_API_PASSWORD__", "your_paypal_api_password");
-#define("__CA_PAYPAL_API_SIGNATURE__", "your_paypal_api_signature");
-#define("__CA_PAYPAL_API_ENVIRONMENT__", "sandbox");		// "sandbox" for testing or "live" for production use
-
-
 # --------------------------------------------------------------------------------------------
 # IT IS VERY UNLIKELY THAT YOU WILL NEED TO CHANGE ANYTHING UNDER THIS LINE
 # --------------------------------------------------------------------------------------------
 
-# Only MySQL databases are currently supported so leave this set to 'mysql'!
-define("__CA_DB_TYPE__", 'mysql');
+# mysql = old mysql drive, mysqli = "new" driver, pdo_mysql = PDO driver_version; mysqli is recommended
+define("__CA_DB_TYPE__", 'mysqli');
 
 # Path to CollectiveAccess 'app' directory 
 define("__CA_APP_DIR__", __CA_BASE_DIR__."/app");
@@ -317,6 +315,9 @@ define('__CA_MEMCACHED_PORT__', 11211);
 define('__CA_REDIS_HOST__', 'localhost');
 define('__CA_REDIS_PORT__', 6379);
 # --------------------------------------------------------------------------------------------
+
+# let libraries know what application we're in
+define("__CA_APP_TYPE__", "PAWTUCKET");	
 
 # include version number
 require_once(__CA_APP_DIR__.'/version.php');

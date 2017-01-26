@@ -120,7 +120,7 @@ div.browseFacetItem a {
 	font-style:italic;
 	font-size:13px;
 }
-.filterMenureults {
+.filterMenuResults {
 	max-height:300px;
 }
 .browseMenuBrowseSearch .form-control {
@@ -255,7 +255,7 @@ a.caAdvancedSearchFormReset, a.caAdvancedSearchFormSubmit {
 .results a .fa.fa-suitcase {
 	color:#000;
 }
-.filterMenureults {
+.filterMenuResults {
 	margin-left:0px;
 }
 .objects.browse.results .btn.btn-default.btn-sm {

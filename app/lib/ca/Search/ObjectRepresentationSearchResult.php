@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011 Whirl-i-Gig
+ * Copyright 2011-2015 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -56,11 +56,10 @@ class ObjectRepresentationSearchResult extends BaseSearchResult {
  	 *
  	 * @param RequestHTTP $po_request
  	 * @param array $pa_options
- 	 * @param array $pa_additional_display_options
  	 * @return string HTML output
  	 */
- 	public function getRepresentationViewerHTMLBundle($po_request, $pa_options=null, $pa_additional_display_options=null) {
- 		return caRepresentationViewerHTMLBundle($this, $po_request, $pa_options, $pa_additional_display_options);
+ 	public function getRepresentationViewerHTMLBundle($po_request, $pt_subject, $pa_options=null) {
+ 		return array_shift(caRepresentationViewerHTMLBundles($po_request, caMakeSearchResult($this->tableName(), [$this->getPrimaryKey()]), $pt_subject, $pa_options));
  	}
  	# ------------------------------------------------------
  	/**
@@ -68,11 +67,10 @@ class ObjectRepresentationSearchResult extends BaseSearchResult {
  	 *
  	 * @param RequestHTTP $po_request
  	 * @param array $pa_options
- 	 * @param array $pa_additional_display_options
  	 * @return string HTML output
  	 */
- 	public function getRepresentationViewerHTMLBundles($po_request, $pa_options=null) {
- 		return caRepresentationViewerHTMLBundleForSearchResult($this, $po_request, $pa_options);
+ 	public function getRepresentationViewerHTMLBundles($po_request, $pt_subject, $pa_options=null) {
+ 		return caRepresentationViewerHTMLBundles($po_request, $this, $pt_subject, $pa_options);
  	}
  	# ------------------------------------------------------
  	# Multifiles
@@ -164,6 +162,28 @@ class ObjectRepresentationSearchResult extends BaseSearchResult {
  		}
  		return 0;
  	}
+ 	
+	# ------------------------------------------------------------------
+	/**
+	 * Checks if currently loaded representation is of specified media class. Valid media classes are 'image', 'audio', 'video' and 'document'
+	 * 
+	 * @param string The media class to check for
+	 * @return True if representation is of specified class, false if not
+	 */
+	public function representationIsOfClass($ps_class) {
+ 		if (!($vs_mimetypes_regex = caGetMimetypesForClass($ps_class, array('returnAsRegex' => true)))) { return array(); }
+		
+		return (preg_match("!{$vs_mimetypes_regex}!", $this->get('ca_object_representations.mimetype'))) ? true  : false;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 * Checks if currently loaded representation has specified MIME type
+	 * 
+	 * @param string The MIME type to check for
+	 * @return bool True if representation has MIME type, false if not
+	 */
+	public function representationIsWithMimetype($ps_mimetype) {
+		return ($this->get('ca_object_representations.mimetype') == $ps_mimetype) ? true : false;
+	}
 	# -------------------------------------
 }
-?>

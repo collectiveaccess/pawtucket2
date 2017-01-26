@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2014 Whirl-i-Gig
+ * Copyright 2013-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,8 +26,9 @@
  * ----------------------------------------------------------------------
  */
  	require_once(__CA_APP_DIR__."/helpers/listingHelpers.php");
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  	
- 	class ListingController extends ActionController {
+ 	class ListingController extends BasePawtucketController {
  		# -------------------------------------------------------
  		/**
  		 *
@@ -39,22 +40,20 @@
  		 */
  		private $opo_result_context = null;
  		
- 		/**
- 		 *
- 		 */
- 		private $opa_access_values = null;
- 		
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
 				$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
- 			$this->opa_access_values = caGetUserAccessValues($po_request);
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	print "You do not have access to view this page.";
+            	die;
+            }
+ 			
  			caSetPageCSSClasses(array("listing"));
  		}
  		# -------------------------------------------------------
- 		
  		/**
  		 *
  		 */ 
@@ -66,7 +65,7 @@
  			
  			if (!($va_listing_info = caGetInfoForListingType($ps_function))) {
  				// invalid listing type – throw error
- 				die("Invalid listing type");
+ 				throw new ApplicationException("Invalid listing type");
  			}
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".$va_listing_info["displayName"]);
  			
@@ -82,11 +81,11 @@
  			$this->opo_result_context->setAsLastFind();
  			
  			if (!($t_instance = $o_dm->getInstanceByTableName($vs_table, true))) {
- 				die("Invalid table");
+ 				throw new ApplicationException("Invalid table");
  			}
  			
  			if(!($o_browse = caGetBrowseInstance($vs_table))) {
- 				die("Invalid listing");
+ 				throw new ApplicationException("Invalid listing");
  			}
  			
  			// Set browse facet group
@@ -102,10 +101,18 @@
  			} else {
  				$va_types = caMakeTypeIDList($vs_table, $va_types, array('dontIncludeSubtypesInTypeRestriction' => true));
  			}
- 			
- 			$o_browse->addCriteria("_search", array($vs_search));
  			$o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => true));
+ 			
+ 			$va_relationship_types = caGetOption('restrictToRelationshipTypes', $va_listing_info, array(), array('castTo' => 'array'));
+ 		
+ 			$o_browse->addCriteria("_search", array($vs_search));
+ 			
+ 			foreach($va_relationship_types as $vs_x => $va_rel_types) {
+ 				if (!is_array($va_rel_types)) { continue; }
+ 				$o_browse->addCriteria("_reltypes", "{$vs_x}:".join(",", $va_rel_types));
+ 			}
  			$o_browse->execute(array('checkAccess' => $this->opa_access_values));
+			
 			//
 			// Facets for search 
 			//

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -27,8 +27,9 @@
  */
  	require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
  	require_once(__CA_LIB_DIR__.'/ca/ResultContext.php');
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  
- 	abstract class BaseMultiSearchController extends ActionController {
+ 	abstract class BaseMultiSearchController extends BasePawtucketController {
  		# -------------------------------------------------------
  		/**
  		 * 
@@ -44,11 +45,6 @@
  		 * List of searches to execute
  		 */
  		protected $opa_search_blocks = array();
- 		
- 		/**
- 		 *
- 		 */
- 		protected $opa_access_values = array();
  		
  		/**
  		 * Search configuation file
@@ -75,8 +71,6 @@
  			foreach(array_keys($va_tables) as $vs_table) {
  				$this->opa_result_contexts["_multisearch_{$vs_table}"] = new ResultContext($po_request, $vs_table, $this->ops_find_type);
  			}
- 			
- 			$this->opa_access_values = caGetUserAccessValues($po_request);
  		}
  		# -------------------------------------------------------
  		/**
@@ -94,8 +88,10 @@
  			$o_first_result_context = array_shift(array_values($this->opa_result_contexts));
  			
  			$vs_search = $o_first_result_context->getSearchExpression();
+ 			$vs_search_display = $o_first_result_context->getSearchExpressionForDisplay();
  			
  			$this->view->setVar('search', $vs_search);
+ 			$this->view->setVar('searchForDisplay', $vs_search_display);
  			$this->view->setVar("config", $this->config);
  			$this->view->setVar('blocks', $this->opa_search_blocks);
  			$this->view->setVar('blockNames', array_keys($this->opa_search_blocks));
@@ -131,4 +127,3 @@
  		abstract public static function getReturnToResultsUrl($po_request);
  		# -------------------------------------------------------
  	}
- ?>

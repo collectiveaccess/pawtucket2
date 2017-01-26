@@ -1,12 +1,12 @@
-/*! jCarousel - v0.3.0 - 2013-11-22
-* http://sorgalla.com/jcarousel
-* Copyright (c) 2013 Jan Sorgalla; Licensed MIT */
+/*! jCarousel - v0.3.3 - 2015-02-28
+* http://sorgalla.com/jcarousel/
+* Copyright (c) 2006-2015 Jan Sorgalla; Licensed MIT */
 (function($) {
     'use strict';
 
     var jCarousel = $.jCarousel = {};
 
-    jCarousel.version = '0.3.0';
+    jCarousel.version = '0.3.3';
 
     var rRelativeTarget = /^([+\-]=)?(.+)$/;
 
@@ -265,11 +265,11 @@
         // Protected, don't access directly
         _list:         null,
         _items:        null,
-        _target:       null,
-        _first:        null,
-        _last:         null,
-        _visible:      null,
-        _fullyvisible: null,
+        _target:       $(),
+        _first:        $(),
+        _last:         $(),
+        _visible:      $(),
+        _fullyvisible: $(),
         _init: function() {
             var self = this;
 
@@ -330,7 +330,7 @@
             this._list  = null;
             this._items = null;
 
-            var item = this._target && this.index(this._target) >= 0 ?
+            var item = this.index(this._target) >= 0 ?
                            this._target :
                            this.closest();
 
@@ -434,11 +434,12 @@
             }
 
             var wrap = this.options('wrap'),
-                end = this.items().length - 1;
+                end = this.items().length - 1,
+                check = this.options('center') ? this._target : this._last;
 
-            return end >= 0 &&
+            return end >= 0 && !this.underflow &&
                 ((wrap && wrap !== 'first') ||
-                    (this.index(this._last) < end) ||
+                    (this.index(check) < end) ||
                     (this.tail && !this.inTail)) ? true : false;
         },
         hasPrev: function() {
@@ -448,7 +449,7 @@
 
             var wrap = this.options('wrap');
 
-            return this.items().length > 0 &&
+            return this.items().length > 0 && !this.underflow &&
                 ((wrap && wrap !== 'last') ||
                     (this.index(this._first) > 0) ||
                     (this.tail && this.inTail)) ? true : false;
@@ -484,7 +485,9 @@
                     index,
                     start,
                     curr,
+                    curr2,
                     isVisible,
+                    isVisible2,
                     props,
                     i;
 
@@ -554,21 +557,22 @@
                         if (start <= 0 && ((this.underflow && wrap === 'circular') || wrap === 'both' || wrap === 'first')) {
                             this._scroll(end, animate, callback);
                         } else {
-                            if (this.circular && index < 0) {
+                            if (this.circular && index <= 0) {
+
                                 i    = index;
                                 curr = this.items().get(0);
 
-                                while (i++ < 0) {
+                                while (i++ < 2) {
                                     curr = this.items().eq(-1);
                                     isVisible = this._visible.index(curr) >= 0;
-
-                                    if (isVisible) {
+									
+									if (isVisible) {
                                         curr.after(curr.clone(true).attr('data-jcarousel-clone', true));
                                     }
-
+                                    
                                     this.list().prepend(curr);
-
-                                    // Force items reload
+									
+									// Force items reload
                                     this._items = null;
 
                                     var dim = this.dimension(curr);
@@ -579,7 +583,7 @@
 
                                 }
 
-                                this._scroll(curr, animate, callback);
+                                this._scroll(2, animate, callback);
                             } else {
                                 this._scroll(Math.max(index, 0), animate, callback);
                             }
@@ -636,7 +640,11 @@
                 css = {};
 
             if (transitions) {
-                var backup = list.css(['transitionDuration', 'transitionTimingFunction', 'transitionProperty']),
+                var backup = {
+                        transitionDuration: list.css('transitionDuration'),
+                        transitionTimingFunction: list.css('transitionTimingFunction'),
+                        transitionProperty: list.css('transitionProperty')
+                    },
                     oldComplete = complete;
 
                 complete = function() {
@@ -975,11 +983,11 @@
         _update: function(update) {
             var self = this,
                 current = {
-                    target:       this._target || $(),
-                    first:        this._first || $(),
-                    last:         this._last || $(),
-                    visible:      this._visible || $(),
-                    fullyvisible: this._fullyvisible || $()
+                    target:       this._target,
+                    first:        this._first,
+                    last:         this._last,
+                    visible:      this._visible,
+                    fullyvisible: this._fullyvisible
                 },
                 back = this.index(update.first || current.first) < this.index(current.first),
                 key,
@@ -1167,6 +1175,7 @@
             event:  'click',
             method: 'scroll'
         },
+        _carouselItems: null,
         _pages: {},
         _items: {},
         _currentPage: null,
@@ -1194,6 +1203,8 @@
                 .off('jcarousel:destroy', this.onDestroy)
                 .off('jcarousel:reloadend', this.onReload)
                 .off('jcarousel:scrollend', this.onScroll);
+
+            this._carouselItems = null;
         },
         _reload: function() {
             var perPage = this.options('perPage');
@@ -1210,7 +1221,7 @@
                 this._pages = this._calculatePages();
             } else {
                 var pp    = parseInt(perPage, 10) || 0,
-                    items = this.carousel().jcarousel('items'),
+                    items = this._getCarouselItems(),
                     page  = 1,
                     i     = 0,
                     curr;
@@ -1239,7 +1250,8 @@
             var self     = this,
                 carousel = this.carousel().data('jcarousel'),
                 element  = this._element,
-                item     = this.options('item');
+                item     = this.options('item'),
+                numCarouselItems = this._getCarouselItems().length;
 
             $.each(this._pages, function(page, carouselItems) {
                 var currItem = self._items[page] = $(item.call(self, page, carouselItems));
@@ -1254,11 +1266,11 @@
 
                         if (parseFloat(page) > parseFloat(self._currentPage)) {
                             if (newIndex < currentIndex) {
-                                target = '+=' + (carousel.items().length - currentIndex + newIndex);
+                                target = '+=' + (numCarouselItems - currentIndex + newIndex);
                             }
                         } else {
                             if (newIndex > currentIndex) {
-                                target = '-=' + (currentIndex + (carousel.items().length - newIndex));
+                                target = '-=' + (currentIndex + (numCarouselItems - newIndex));
                             }
                         }
                     }
@@ -1298,19 +1310,24 @@
         items: function() {
             return this._items;
         },
+        reloadCarouselItems: function() {
+            this._carouselItems = null;
+            return this;
+        },
         _clear: function() {
             this._element.empty();
             this._currentPage = null;
         },
         _calculatePages: function() {
             var carousel = this.carousel().data('jcarousel'),
-                items    = carousel.items(),
+                items    = this._getCarouselItems(),
                 clip     = carousel.clipping(),
                 wh       = 0,
                 idx      = 0,
                 page     = 1,
                 pages    = {},
-                curr;
+                curr,
+                dim;
 
             while (true) {
                 curr = items.eq(idx++);
@@ -1319,21 +1336,30 @@
                     break;
                 }
 
+                dim = carousel.dimension(curr);
+
+                if ((wh + dim) > clip) {
+                    page++;
+                    wh = 0;
+                }
+
+                wh += dim;
+
                 if (!pages[page]) {
                     pages[page] = curr;
                 } else {
                     pages[page] = pages[page].add(curr);
                 }
-
-                wh += carousel.dimension(curr);
-
-                if (wh >= clip) {
-                    page++;
-                    wh = 0;
-                }
             }
 
             return pages;
+        },
+        _getCarouselItems: function() {
+            if (!this._carouselItems) {
+                this._carouselItems = this.carousel().jcarousel('items');
+            }
+
+            return this._carouselItems;
         }
     });
 }(jQuery));

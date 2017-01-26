@@ -25,7 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
@@ -57,7 +56,7 @@
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
 	
-	$va_lightbox_display_name = caGetSetDisplayName();
+	$va_lightbox_display_name = caGetLightboxDisplayName();
 	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
 	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 	
@@ -138,6 +137,12 @@ if (!$vb_ajax) {	// !ajax
 				</ul>
 			</div><!-- end btn-group -->
 <?php
+			if(is_array($va_facets) && sizeof($va_facets)){
+?>
+
+			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
+<?php
+			}
 			print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_display_name)."</button></a>";
 ?>
 		</H1>
@@ -150,7 +155,12 @@ if (!$vb_ajax) {	// !ajax
 				if ($va_criterion['facet_name'] != '_search') {
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
-					print ' '.$va_criterion['value'];
+					if(strpos($va_criterion['value'], "preferred_label") && strpos($va_criterion['value'], " OR ")){
+						print " "._t(" Related items");
+					}else{
+						print ' '.$va_criterion['value'];
+					}
+					$vs_search = $va_criterion['value'];
 				}
 				$i++;
 				if($i < sizeof($va_criteria)){
@@ -175,6 +185,22 @@ if (!$vb_ajax) {	// !ajax
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
+		if($vb_is_search && !$qr_res->numHits() && $vs_search){
+			# --- try to display did you mean results if available
+			$o_search = caGetSearchInstance($vs_table);
+			if (sizeof($va_suggestions = $o_search->suggest($vs_search, array('request' => $this->request)))) {
+				$va_suggest_links = array();
+				foreach($va_suggestions as $vs_suggestion){
+					$va_suggest_links[] = caNavLink($this->request, $vs_suggestion, '', '*', '*', '*', array('search' => $vs_suggestion, 'sort' => $vs_current_sort, 'view' => $vs_current_view));
+				}
+				
+				if (sizeof($va_suggest_links) > 1) {
+					print "<div class='col-sm-12'>"._t("Did you mean one of these: %1?", join(', ', $va_suggest_links))."</div>";
+				} else {
+					print "<div class='col-sm-12'>"._t("Did you mean %1?", join(', ', $va_suggest_links))."</div>";
+				}
+			}
+		}
 } // !ajax
 
 print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
@@ -200,6 +226,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		</div>
 <?php
+		print "<div class='bAdvancedLink'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Search', 'Advanced', 'objects')."\"); return false;' >"._t("Advanced Search")."<span class='glyphicon glyphicon-search'></span></a></div>";
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->
@@ -227,7 +254,6 @@ if (!$vb_ajax) {	// !ajax
 			return false;
 		});
 	});
-
 </script>
 <?php
 			print $this->render('Browse/browse_panel_subview_html.php');

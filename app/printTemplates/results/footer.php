@@ -36,23 +36,37 @@
 	$vo_result 				= $this->getVar('result');
 	$vn_num_items			= (int)$vo_result->numHits();
 	
-	//if($this->request->config->get('report_footer_enabled')) {
-?>
-<div id='footer'>
-<?php
-	if($this->request->config->get('report_show_search_term')) {
-		print "<span class='footerText'>".$this->getVar('criteria_summary')."</span>";
-	}
+	 	$t_item = $this->getVar('t_subject');
 	
-	if($this->request->config->get('report_show_number_results')) {
-		print "<span class='footerText'>".(($vn_num_items == 1) ? _t('%1 item', $vn_num_items) : _t('%1 items', $vn_num_items))."</span>";
-	}
-	
-	if($this->request->config->get('report_show_timestamp')) {
-		print "<span class='footerText'>".caGetLocalizedDate(null, array('dateFormat' => 'delimited'))."</span>";
-	}
+	if($this->request->config->get('summary_header_enabled')) {
+		$vs_footer = "<div class='pagingText' id='pagingText'> </div>";
+		switch($this->getVar('PDFRenderer')) {
+			case 'wkhtmltopdf':
 ?>
-</div>
+<!--BEGIN FOOTER-->
+<!DOCTYPE html>
+<html>
+<head>
+	<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+</head>
+<body   style='margin:0;padding-top:0.1in;'>
+	<div id='footer'>
 <?php
-	//}
+	print $vs_footer;
 ?>
+	</div>
+</body>
+</html>
+<!--END FOOTER--><?php
+				break;
+			default:
+?>
+	<div id='footer'>
+<?php
+	
+		print $vs_footer;
+?>
+	</div><?php
+				break;
+		}
+	}

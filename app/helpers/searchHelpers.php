@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2013 Whirl-i-Gig
+ * Copyright 2011-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -30,11 +30,10 @@
  * ----------------------------------------------------------------------
  */
 
- /**
-   *
-   */
-   
-require_once(__CA_MODELS_DIR__.'/ca_lists.php');
+	/**
+	 *
+	 */
+	require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 
 
 	# ---------------------------------------
@@ -47,6 +46,12 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		$o_dm = Datamodel::load();
 		
 		$vs_table = (is_numeric($pm_table_name_or_num)) ? $o_dm->getTableName((int)$pm_table_name_or_num) : $pm_table_name_or_num;
+		
+		if (!($t_instance = $o_dm->getInstanceByTableName($vs_table, true))) { return null; }
+		if ($t_instance->isRelationship()) { 
+			require_once(__CA_LIB_DIR__.'/ca/Search/InterstitialSearch.php');
+			return new InterstitialSearch($vs_table);
+		}
 		
 		switch($vs_table) {
 			case 'ca_objects':
@@ -97,6 +102,10 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 				require_once(__CA_LIB_DIR__.'/ca/Search/RepresentationAnnotationSearch.php');
 				return new RepresentationAnnotationSearch();
 				break;
+			case 'ca_user_representation_annotations':
+				require_once(__CA_LIB_DIR__.'/ca/Search/UserRepresentationAnnotationSearch.php');
+				return new UserRepresentationAnnotationSearch();
+				break;
 			case 'ca_item_comments':
 				require_once(__CA_LIB_DIR__.'/ca/Search/ItemCommentSearch.php');
 				return new ItemCommentSearch();
@@ -142,6 +151,27 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 				break;
 		}
 	}
+	 # ------------------------------------------------------------------------------------------------
+	/**
+	 *
+	 */
+	function caSearchLink($po_request, $ps_content, $ps_classname, $ps_table, $ps_search, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
+		if (!($vs_url = caSearchUrl($po_request, $ps_table, $ps_search, false, $pa_other_params, $pa_options))) {
+			return "<strong>Error: no url for search</strong>";
+		}
+		
+		$vs_tag = "<a href='".$vs_url."'";
+		
+		if ($ps_classname) { $vs_tag .= " class='$ps_classname'"; }
+		if (is_array($pa_attributes)) {
+			$vs_tag .= _caHTMLMakeAttributeString($pa_attributes);
+		}
+		
+		$vs_tag .= '>'.$ps_content.'</a>';
+		
+		return $vs_tag;
+	}
+	 
 	# ---------------------------------------
 	/**
 	 * 
@@ -172,12 +202,6 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 				$vs_controller = ($vb_return_advanced) ? 'SearchObjectLotsAdvanced' : 'SearchObjectLots';
 				$vs_action = 'Index';
 				break;
-			case 'ca_object_events':
-			case 45:
-                $vs_module = 'find';
-				$vs_controller = ($vb_return_advanced) ? 'SearchObjectEventsAdvanced' : 'SearchObjectEvents';
-				$vs_action = 'Index';
-                break;
 			case 'ca_entities':
 			case 20:
 				$vs_module = 'find';
@@ -224,6 +248,12 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			case 82:
 				$vs_module = 'find';
 				$vs_controller = ($vb_return_advanced) ? 'SearchRepresentationAnnotationsAdvanced' : 'SearchRepresentationAnnotations';
+				$vs_action = 'Index';
+				break;
+			case 'ca_user_representation_annotations':
+			case 219:
+				$vs_module = 'find';
+				$vs_controller = ($vb_return_advanced) ? 'SearchUserRepresentationAnnotationsAdvanced' : 'SearchUserRepresentationAnnotations';
 				$vs_action = 'Index';
 				break;
 			case 'ca_relationship_types':
@@ -293,8 +323,8 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 */
 	function caSearchGetTablesForAccessPoints($pa_access_points) {
 		$o_config = Configuration::load();
-		$o_search_config = Configuration::load($o_config->get("search_config"));
-		$o_search_indexing_config = Configuration::load($o_search_config->get("search_indexing_config"));	
+		$o_search_config = Configuration::load(__CA_CONF_DIR__.'/search.conf');
+		$o_search_indexing_config = Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');	
 			
 		$va_tables = $o_search_indexing_config->getAssocKeys();
 		
@@ -405,6 +435,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		
 			if (is_array($va_types) && sizeof($va_types)) { $o_search->setTypeRestrictions($va_types, $va_block_info); }
 			$va_options['restrictSearchToFields'] = caGetOption('restrictSearchToFields', $va_block_info, null);
+			$va_options['excludeFieldsFromSearch'] = caGetOption('excludeFieldsFromSearch', $va_block_info, null);
 			
 			if (caGetOption('dontShowChildren', $va_block_info, false)) {
 				$o_search->addResultFilter('ca_objects.parent_id', 'is', 'null');	
@@ -557,7 +588,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 * @return Configuration 
 	 */
 	function caGetSearchConfig() {
-		return Configuration::load(__CA_THEME_DIR__.'/conf/search.conf');
+		return Configuration::load(__CA_CONF_DIR__.'/search.conf');
 	}
 	# ---------------------------------------
 	/**
@@ -566,7 +597,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 * @return Configuration 
 	 */
 	function caGetSearchIndexingConfig() {
-		return Configuration::load(__CA_APP_DIR__.'/conf/search_indexing.conf');
+		return Configuration::load(__CA_CONF_DIR__.'/search_indexing.conf');
 	}
 	# ---------------------------------------
 	/**
@@ -608,7 +639,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 */
 	function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) {
 		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
-		$va_form_contents = explode(';', caGetOption('_formElements', $pa_form_values, ''));
+		$va_form_contents = explode('|', caGetOption('_formElements', $pa_form_values, ''));
 		
 		$va_for_display = array();
 	 	$va_default_values = $va_values = $va_booleans = array();
@@ -632,6 +663,10 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 						$pa_form_values[$vs_dotless_element] = array($pa_form_values[$vs_dotless_element]);
 					}
 					if (is_array($pa_form_values[$vs_dotless_element])) {
+						// are there relationship types?
+						if (is_array($pa_form_values[$vs_dotless_element.':relationshipTypes'])) {
+							$vs_element .= "/".join(";", $pa_form_values[$vs_dotless_element.':relationshipTypes']);
+						}
 						foreach($pa_form_values[$vs_dotless_element] as $vn_j => $vs_element_value) {
 							if(!strlen(trim($vs_element_value))) { continue; }
 							$va_default_values[$vs_element][] = trim($vs_element_value);
@@ -694,7 +729,75 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			}
 			$vs_query_string = trim($vs_query_string). ')';
 		}
+		
 		return $vs_query_string;
+	}
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caGetDisplayStringForHTMLFormInput($po_result_context, $pa_options=null) {
+		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
+		$va_form_contents = explode('|', caGetOption('_formElements', $pa_form_values, ''));
+
+		$o_dm = Datamodel::load();
+		
+	 	$va_display_string = array();
+	 	
+	 	foreach($va_form_contents as $vn_i => $vs_element) {
+			$vs_dotless_element = str_replace('.', '_', $vs_element);
+			
+			if (
+				(!is_array($pa_form_values[$vs_dotless_element]) && !strlen($pa_form_values[$vs_dotless_element])) 
+				|| 
+				(is_array($pa_form_values[$vs_dotless_element]) && !sizeof(array_filter($pa_form_values[$vs_dotless_element])))
+			) { continue; }
+	
+			if(!is_array($pa_form_values[$vs_dotless_element])) { $pa_form_values[$vs_dotless_element] = array($pa_form_values[$vs_dotless_element]); }
+			if(!($vs_label = trim($pa_form_values[$vs_dotless_element.'_label']))) { $vs_label = "???"; }
+		
+			$va_fld = explode(".", $vs_element);
+			$t_table = $o_dm->getInstanceByTableName($va_fld[0], true);
+		
+		// TODO: need universal way to convert item_ids in attributes and intrinsics to display text
+			if ($t_table && ($t_table->hasField($va_fld[1]))) {
+				switch($va_fld[1]) {
+					case 'type_id':
+						$va_values = array($t_table->getTypeName($pa_form_values[$vs_dotless_element][0]));
+						break;
+					default:
+						$va_values = $pa_form_values[$vs_dotless_element];
+						break;
+				}
+			} else {
+				$va_tmp = explode('.', $vs_element);
+				$vs_possible_element_with_rel = array_pop($va_tmp);
+				$va_tmp2 = explode("/", $vs_possible_element_with_rel);
+				$vs_possible_element = array_shift($va_tmp2);
+				
+				// TODO: display relationship types when defined?
+				//$vs_relationship_type_ids = array_shift($va_tmp2);
+				
+				switch(ca_metadata_elements::getElementDatatype($vs_possible_element)) {
+					case 3:
+						$va_values = array();
+						foreach($pa_form_values[$vs_dotless_element] as $vn_i => $vm_value) {
+							$va_values[$vn_i] = caGetListItemByIDForDisplay($vm_value);
+						}
+						break;
+					default:
+						$va_values = $pa_form_values[$vs_dotless_element];
+						break;
+				}
+			}
+			
+			$va_display_string[] = "{$vs_label}: ".join("; ", $va_values);
+		}
+		
+		$po_result_context->setParameter("pawtucketAdvancedSearchFormDisplayString_{$pa_form_values['_advancedFormName']}", $va_display_string);
+		$po_result_context->saveContext();
+	
+		return join("; ", $va_display_string);
 	}
 	# ---------------------------------------
 	/**
@@ -782,7 +885,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 					if (!($va_field_info = $t_instance->getFieldInfo($vs_field))) {
 						// is it an attribute?
 						if (in_array($vs_field, $va_element_codes)) {
-							$t_element = $t_instance->_getElementInstance($vs_field);
+							$t_element = ca_metadata_elements::getInstance($vs_field);
 							if(!$t_element) { continue; }
 							if (in_array($t_element->get('datatype'), array(15, 16))) { continue; } 		// skip file and media attributes - never searchable
 							if (!$t_element->getSetting('canBeUsedInSearchForm')) { continue; }
@@ -909,3 +1012,270 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 		
 		return $va_sorted_bundles;
 	}
+	# ---------------------------------------
+	/**
+	 * @param Zend_Search_Lucene_Index_Term $po_term
+	 * @return Zend_Search_Lucene_Index_Term
+	 */
+	function caRewriteElasticSearchTermFieldSpec($po_term) {
+		if(strlen($po_term->field) > 0) {
+			// rewrite ca_objects.dates.dates_value as ca_objects/dates/dates/value, which is
+			// how we index in ElasticSsearch (they don't allow periods in field names)
+			$vs_new_field = str_replace('.', '\/', str_replace('/', '|', $po_term->field));
+
+			// rewrite ca_objects/dates/dates_value as ca_objects/dates_value, because that's
+			// how the SearchIndexer indexes -- we don't care about the container the field is in
+			$va_tmp = explode('\\/', $vs_new_field);
+			if(sizeof($va_tmp) == 3) {
+				unset($va_tmp[1]);
+				$vs_new_field = join('\\/', $va_tmp);
+			}
+		} else {
+			$vs_new_field = $po_term->field;
+		}
+
+		return new Zend_Search_Lucene_Index_Term($po_term->text, $vs_new_field);
+	}
+	# ---------------------------------------
+	/**
+	 * ElasticSearch won't accept dates where day or month is zero, so we have to
+	 * rewrite certain dates, especially when dealing with "open-ended" date ranges,
+	 * e.g. "before 1998", "after 2012"
+	 *
+	 * @param string $ps_date
+	 * @param bool $pb_is_start
+	 * @return string
+	 */
+	function caRewriteDateForElasticSearch($ps_date, $pb_is_start=true) {
+		// substitute start and end of universe values with ElasticSearch's builtin boundaries
+		$ps_date = str_replace(TEP_START_OF_UNIVERSE,"-292275054",$ps_date);
+		$ps_date = str_replace(TEP_END_OF_UNIVERSE,"9999",$ps_date);
+
+		if(preg_match("/(\d+)\-(\d+)\-(\d+)T(\d+)\:(\d+)\:(\d+)Z/", $ps_date, $va_date_parts)) {
+			// fix large (positive) years
+			if(intval($va_date_parts[1]) > 9999) { $va_date_parts[1] = "9999"; }
+			// fix month-less dates
+			if(intval($va_date_parts[2]) < 1) { $va_date_parts[2]  = ($pb_is_start ?  "01" : "12"); }
+			// fix messed up months
+			if(intval($va_date_parts[2]) > 12) { $va_date_parts[2] = "12"; }
+			// fix day-less dates
+			if(intval($va_date_parts[3]) < 1) { $va_date_parts[3]  = ($pb_is_start ?  "01" : "31"); }
+			// fix messed up days
+			$vn_days_in_month = cal_days_in_month(CAL_GREGORIAN, intval($va_date_parts[2]), intval($va_date_parts[1]));
+			if(intval($va_date_parts[3]) > $vn_days_in_month) { $va_date_parts[3] = (string) $vn_days_in_month; }
+
+			// fix hours
+			if(intval($va_date_parts[4]) > 23) { $va_date_parts[4] = "23"; }
+			if(intval($va_date_parts[4]) < 0) { $va_date_parts[4]  = ($pb_is_start ?  "00" : "23"); }
+			// minutes and seconds
+			if(intval($va_date_parts[5]) > 59) { $va_date_parts[5] = "59"; }
+			if(intval($va_date_parts[5]) < 0) { $va_date_parts[5]  = ($pb_is_start ?  "00" : "59"); }
+			if(intval($va_date_parts[6]) > 59) { $va_date_parts[6] = "59"; }
+			if(intval($va_date_parts[6]) < 0) { $va_date_parts[6]  = ($pb_is_start ?  "00" : "59"); }
+
+			return "{$va_date_parts[1]}-{$va_date_parts[2]}-{$va_date_parts[3]}T{$va_date_parts[4]}:{$va_date_parts[5]}:{$va_date_parts[6]}Z";
+		} else {
+			return '';
+		}
+	}
+	# ---------------------------------------
+	/**
+	 * @param Db $po_db
+	 * @param int $pn_table_num
+	 * @param int $pn_row_id
+	 * @return array
+	 */
+	function caGetChangeLogForElasticSearch($po_db, $pn_table_num, $pn_row_id) {
+		$qr_res = $po_db->query("
+				SELECT ccl.log_id, ccl.log_datetime, ccl.changetype, u.user_name
+				FROM ca_change_log ccl
+				LEFT JOIN ca_users AS u ON ccl.user_id = u.user_id
+				WHERE
+					(ccl.logged_table_num = ?) AND (ccl.logged_row_id = ?)
+					AND
+					(ccl.changetype <> 'D')
+			", $pn_table_num, $pn_row_id);
+
+		$va_return = array();
+		while($qr_res->nextRow()) {
+			$vs_change_date = caGetISODates(date("c", $qr_res->get('log_datetime')))['start'];
+			if ($qr_res->get('changetype') == 'I') {
+				$va_return["created"][] = $vs_change_date;
+
+				if($vs_user = $qr_res->get('user_name')) {
+					$vs_user = str_replace('.', '/', $vs_user);
+					$va_return["created/{$vs_user}"][] = $vs_change_date;
+				}
+			} else {
+				$va_return["modified"][] = $vs_change_date;
+
+				if($vs_user = $qr_res->get('user_name')) {
+					$vs_user = str_replace('.', '/', $vs_user);
+					$va_return["modified/{$vs_user}"][] = $vs_change_date;
+				}
+			}
+		}
+
+		return $va_return;
+	}
+	# ---------------------------------------
+	/**
+	 * get available sort fields for given table
+	 *
+	 * @param string $ps_table
+	 * @param null|int $pn_type_id
+	 * @param array $pa_options
+	 * @return array
+	 */
+	function caGetAvailableSortFields($ps_table, $pn_type_id = null, $pa_options=null) {
+		require_once(__CA_MODELS_DIR__ . '/ca_user_sorts.php');
+
+		if(is_numeric($ps_table)) {
+			$ps_table = Datamodel::load()->getTableName($ps_table);
+		}
+
+		switch($ps_table) {
+			case 'ca_list_items':
+				$va_base_fields = array(
+					'_natural' => _t('relevance'),
+					'ca_list_item_labels.name_singular' => _t('name'),
+					'ca_list_items.idno_sort' => _t('idno')
+				);
+				break;
+			case 'ca_relationship_types':
+				$va_base_fields = array(
+					'ca_relationship_type_labels.typename' => _t('type name')
+				);
+				break;
+			case 'ca_collections':
+				$va_base_fields = array(
+					'_natural' => _t('relevance'),
+					'ca_collection_labels.name_sort' => _t('name'),
+					'ca_collections.type_id' => _t('type'),
+					'ca_collections.idno_sort' => _t('idno')
+				);
+				break;
+			case 'ca_loans':
+				$va_base_fields = array(
+					'_natural' => _t('relevance'),
+					'ca_loan_labels.name_sort' => _t('short description'),
+					'ca_loans.type_id' => _t('type'),
+					'ca_loans.idno_sort' => _t('idno')
+				);
+				break;
+			case 'ca_movements':
+				$va_base_fields = array(
+					'_natural' => _t('relevance'),
+					'ca_movement_labels.name' => _t('short description'),
+					'ca_movements.type_id;ca_movement_labels.name' => _t('type'),
+					'ca_movements.idno_sort' => _t('idno')
+				);
+				break;
+			case 'ca_entities':
+				$va_base_fields = array(
+					'_natural' => _t('relevance'),
+					'ca_entity_labels.name_sort' => _t('display name'),
+					'ca_entity_labels.surname;ca_entity_labels.forename' => _t('surname, forename'),
+					'ca_entity_labels.forename' => _t('forename'),
+					'ca_entities.type_id;ca_entity_labels.surname;ca_entity_labels.forename' => _t('type'),
+					'ca_entities.idno_sort' => _t('idno')
+				);
+				break;
+			case 'ca_object_lots':
+				$va_base_fields = array(
+					'_natural' => _t('relevance'),
+					'ca_object_lot_labels.name_sort' => _t('name'),
+					'ca_object_lots.type_id' => _t('type'),
+					'ca_object_lots.idno_stub_sort' => _t('idno')
+				);
+				break;
+			case 'ca_object_representations':
+				$va_base_fields = array(
+					'_natural' => _t('relevance'),
+					'ca_object_representation_labels.name_sort' => _t('name'),
+					'ca_object_representations.type_id' => _t('type'),
+					'ca_object_representations.idno_sort' => _t('idno')
+				);
+				break;
+			case 'ca_objects':
+				$va_base_fields = array(
+					'_natural' => _t('relevance'),
+					'ca_object_labels.name_sort' => _t('title'),
+					'ca_objects.type_id' => _t('type'),
+					'ca_objects.idno_sort' => _t('idno')
+				);
+				break;
+			case 'ca_occurrences':
+				$va_base_fields = array(
+					'_natural' => _t('relevance'),
+					'ca_occurrence_labels.name_sort' => _t('name'),
+					'ca_occurrences.type_id' => _t('type'),
+					'ca_occurrences.idno_sort' => _t('idno')
+				);
+				break;
+			case 'ca_places':
+				$va_base_fields = array(
+					'_natural' => _t('relevance'),
+					'ca_place_labels.name_sort' => _t('name'),
+					'ca_places.type_id' => _t('type'),
+					'ca_places.idno_sort' => _t('idno')
+				);
+				break;
+			case 'ca_storage_locations':
+				$va_base_fields = array(
+					'_natural' => _t('relevance'),
+					'ca_storage_locations_labels.name_sort' => _t('name'),
+					'ca_storage_locations.type_id' => _t('type'),
+					'ca_storage_locations.idno_sort' => _t('idno')
+				);
+				break;
+			case 'ca_tours':
+				$va_base_fields = array(
+					'_natural' => _t('relevance'),
+					'ca_tour_labels.name' => _t('name')
+				);
+				break;
+			case 'ca_tour_stops':
+				$va_base_fields = array(
+					'_natural' => _t('relevance'),
+					'ca_tour_stop_labels.name' => _t('name')
+				);
+				break;
+			case 'ca_item_comments':
+				$va_base_fields = array(
+					'ca_item_comments.created_on' => _t('date'),
+					'ca_item_comments.user_id' => _t('user')
+				);
+				break;
+			case 'ca_item_tags':
+				$va_base_fields = array(
+					'ca_items_x_tags.created_on' => _t('date'),
+					'ca_items_x_tags.user_id' => _t('user')
+				);
+				break;
+			default:
+				$va_base_fields = array();
+				break;
+		}
+
+		if($ps_table) {
+			// add user sorts
+			if(caGetOption('includeUserSorts', $pa_options, true)) {
+				/** @var RequestHTTP $po_request */
+				if(!($po_request = caGetOption('request', $pa_options)) || ($po_request->getUser()->canDoAction('can_use_user_sorts'))) {
+					$va_base_fields = array_merge($va_base_fields, ca_user_sorts::getAvailableSortsForTable($ps_table));
+				}
+			}
+
+			// add sortable elements
+			require_once(__CA_MODELS_DIR__ . '/ca_metadata_elements.php');
+			$va_sortable_elements = ca_metadata_elements::getSortableElements($ps_table, $pn_type_id);
+			foreach($va_sortable_elements as $vn_element_id => $va_sortable_element) {
+				$va_base_fields[$ps_table.'.'.$va_sortable_element['element_code']] = $va_sortable_element['display_label'];
+			}
+		}
+		natcasesort($va_base_fields);
+		
+		return $va_base_fields;
+	}
+	# ---------------------------------------

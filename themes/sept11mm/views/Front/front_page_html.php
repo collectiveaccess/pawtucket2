@@ -29,37 +29,140 @@
  *
  * ----------------------------------------------------------------------
  */
+		$o_config = caGetGalleryConfig();
+		$va_access_values = caGetUserAccessValues($this->request);
+ 		$t_list = new ca_lists();
+ 		$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type')); 	
+ 		$vn_on_view_set_id = $this->getVar("featured_set_id");
+ 		$vn_most_recent_set_id = "";
+ 		$o_front_config = caGetfrontConfig();
+ 		# --- most recent set
+ 		if($vs_set_code_most_recent = $o_front_config->get("front_page_set_code2")){
+			$t_set = new ca_sets();
+			$t_set->load(array('set_code' => $vs_set_code_most_recent));
+			if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+				$vn_most_recent_set_id = $t_set->get("set_id");
+			}
+		}
 ?>
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-12">
-				<H1>Highlights From The Collection</H1>
-			</div>
-		</div>
-	</div>
-<?php
-		print $this->render("Front/featured_set_slideshow_html.php");
-?>
-<div class="container">
-	<div class="row">
-		<div class="col-sm-4">
-			<H2>Lorem ipsum</H2>
-<?php
-		print $this->render("Front/gallery_set_links_html.php");
-?>
-		</div> <!--end col-sm-4-->
-		<div class="col-sm-8 frontIntroText">
-			<H2>Lorem ipsum</H2>
-			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed eget sem ac elit hendrerit fringilla. Cras gravida purus ante, et luctus leo luctus sed. Sed molestie facilisis est in consectetur. Nunc hendrerit, ex vitae convallis bibendum, felis nulla blandit justo, a malesuada risus justo at arcu. Duis condimentum convallis augue a efficitur. Aliquam erat volutpat. Aenean ut feugiat sem. Proin eget eros scelerisque, imperdiet erat ac, mattis velit. Duis justo ante, placerat vitae commodo vitae, ullamcorper nec magna. Nunc aliquam justo vitae justo pharetra, sed dapibus odio tristique.
-			</p>
-			<p>
-				In eu orci vehicula, fringilla turpis at, iaculis dui. Fusce volutpat sed augue eget convallis. Praesent accumsan lacus ac magna laoreet convallis. Nullam ut turpis mauris. Nullam pharetra quis ipsum at fermentum. Donec sagittis finibus mi eget volutpat. Vestibulum ante lorem, elementum nec sagittis et, efficitur at lacus. Ut vehicula pharetra mi ultricies tincidunt. Nunc luctus tempus felis a tincidunt. Donec eu feugiat velit.
-			</p>
-			<p>
-				Integer suscipit arcu sed ipsum porta, ac maximus tortor tempus. Nullam rhoncus augue vitae ex facilisis, ut elementum leo malesuada. Nulla eu cursus mauris, at finibus orci. Nunc scelerisque augue felis, sit amet lobortis enim accumsan commodo. Integer dictum venenatis est, nec interdum elit consequat eget. Integer tellus ex, condimentum nec sem vitae, imperdiet faucibus purus. Donec blandit dictum iaculis. Sed eu egestas mauris. Curabitur vitae purus at dolor bibendum tincidunt. Vivamus maximus justo et tellus pellentesque, a interdum magna vehicula. Vestibulum cursus ullamcorper vestibulum. Etiam bibendum sapien nec vestibulum rutrum.  In eu orci vehicula, fringilla turpis at, iaculis dui. 
-			</p>
-		</div><!--end col-sm-8-->
 	
-	</div><!-- end row -->
-</div> <!--end container-->
+		<div class="row">
+			<div class="col-sm-3"><div class="hpBox bgDarkBlue">
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'spacer.png')."<div class='hpSetTitle' style='visibility: hidden;'>A</div><H2>"._t("Inside the Collection")."</H2>", "", "", "Gallery", "Index"); ?>
+			</div></div>
+<?php
+			# --- loop through all the features
+ 		if($vn_gallery_set_type_id){
+			$t_set = new ca_sets();
+			$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id)));
+			$va_set_ids = array_keys($va_sets); 
+			shuffle($va_set_ids); 
+			# --- add the on view set to the beginning if it's set
+			if($vn_on_view_set_id){
+				unset($va_set_ids[array_search($vn_on_view_set_id, $va_set_ids)]);
+				array_unshift($va_set_ids, $vn_on_view_set_id);
+			}
+			if($vn_most_recent_set_id){
+				unset($va_set_ids[array_search($vn_most_recent_set_id, $va_set_ids)]);
+				$vn_limit = 9;
+			}else{
+				$vn_limit = 10;
+			}
+			$va_set_ids = array_slice($va_set_ids,0,$vn_limit,true);
+			if($vn_most_recent_set_id){
+				$va_set_ids[] = $vn_most_recent_set_id;
+			}
+			$va_randomized = array(); 
+			foreach ($va_set_ids as $vn_set_id) { 
+				$va_randomized[$vn_set_id] = $va_sets[$vn_set_id]; 
+			}
+			if(sizeof($va_randomized)){
+				# --- get first items from set
+				#$va_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("checkAccess" => $va_access_values, "version" => "iconlarge"));
+				$vn_c = 1;
+				$va_boxes = array();
+				$i = 1;
+				foreach($va_randomized as $vn_set_id => $va_set){
+					$t_set->load($vn_set_id);
+					$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("checkAccess" => $va_access_values, "thumbnailVersion" => "iconlarge", "limit" => 3)));
+					$vs_image = "";
+					print '<div class="col-sm-3"><div class="hpBox">';
+#					$va_first_item = array_shift($va_set_items);
+#					if(is_array($va_first_item) && sizeof($va_first_item)){
+#						$vs_image = $va_first_item["representation_tag"];
+#					}
+#					print caNavLink($this->request, $vs_image, "", "", "Gallery", $vn_set_id);
+					print '<div class="jcarousel-wrapper"><div class="jcarousel box'.$vn_c.'"><ul>';
+					foreach($va_set_items as $va_set_item_info){
+						if($va_set_item_info["representation_tag"]){
+							print "<li>".caNavLink($this->request, $va_set_item_info["representation_tag"], "", "", "Gallery", $vn_set_id)."</li>";
+						}
+					}
+					print "</ul></div></div>";
+					print "<div class='hpSetTitle ".(($i == 1) ? "onView" : "")."'>".caNavLink($this->request, $va_set["name"]."  &raquo;", "", "", "Gallery", $vn_set_id)."</div>\n";
+					$va_boxes[] = "box".$vn_c;
+					$vn_c++;
+					print "</div></div>";
+					$i++;
+				}
+				if($vn_limit > $vn_c){
+					$vn_limit = $vn_c;
+				}
+			}
+		}
+
+?>			
+			<div class="col-sm-3"><div class="hpBox bgDarkBlue">
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'spacer.png'), "", "", "Browse", "objects"); ?>
+				<div class='hpSetTitle' style='visibility: hidden;'>A</div>
+				<?php print caNavLink($this->request, _t("View All")." &raquo;", "hpMore", "", "Browse", "objects"); ?>
+			</div></div>
+		</div>
+		<script type='text/javascript'>
+			jQuery(document).ready(function() {
+				/*
+					Set width of li to width of container and do it on page resize
+				*/
+				
+				$('.front .jcarousel-wrapper li').width($('.hpBox').width());
+				$( window ).resize(function() {
+					$('.front .jcarousel-wrapper li').width($('.hpBox').width());
+				});
+				/*Carousel initialization*/
+				/*$('.jcarousel').on('jcarousel:animate', function (event, carousel) {
+					$(carousel._element.context).find('li').css({'opacity':0.3}).fadeTo(1500, 1);
+					
+				})*/
+				$('.jcarousel').jcarousel({
+					wrap: 'circular',
+					animation: 500/*{
+						duration: 0 
+					}*/
+				})
+				.jcarouselAutoscroll({
+					target: '+=1',
+					autostart: false,
+					interval: 1000
+				});
+				/*setInterval(function() { 
+					var minNumber = 1;
+					var maxNumber = <?php print $vn_limit; ?>;
+					var randomNumber = Math.floor(Math.random()*(maxNumber-minNumber+1)+minNumber);
+					
+					$('.box'+randomNumber).jcarousel('scroll', '+=1');
+				}, 2400);*/
+				var count = 1;
+				function animateBox() {
+
+     				if (count > <?php print $vn_limit; ?>) {
+                		count = 0;
+            		}
+
+            		$('.box'+count).jcarousel('scroll', '+=1');
+
+   					count ++;
+
+        		}
+				setInterval(animateBox, 3000);
+			});
+		</script>

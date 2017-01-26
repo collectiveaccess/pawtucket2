@@ -39,7 +39,7 @@
 		<br/><?php print caNavLink($this->request, _t('Browse all %1 &nbsp;<span class="glyphicon glyphicon-arrow-right"></span>', $vs_target), 'browseMenuBrowseAll btn btn-default btn-sm', '', 'Browse', $vs_target, ''); ?>
 	</div>
 	
-	<div class="filterMenureults col-sm-10">
+	<div class="filterMenuResults col-sm-10">
 		<div class='browseMenuFacet'> </div>	
 	</div>	
 	<div class="browsedivider">&nbsp;</div>

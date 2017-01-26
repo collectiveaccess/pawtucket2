@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,24 +25,65 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	require_once(__CA_LIB_DIR__.'/ca/ApplicationPluginManager.php');
  	require_once(__CA_MODELS_DIR__."/ca_bundle_displays.php");
  	require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
+ 	require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
- 	require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
- 	
- 	class FindController extends ActionController {
+ 	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
+ 	require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
+	
+ 	class FindController extends BasePawtucketController {
+ 		# -------------------------------------------------------
+        /**
+         * @var Configuration
+         */
+ 		 protected $opo_config;
+ 		 
+        /**
+         * @var 
+         */
+ 		 protected $ops_view_prefix=null;
+ 		 
+ 		 /**
+ 		  * 
+ 		  */
+ 		  protected $opo_app_plugin_manager;
+ 		 
  		# -------------------------------------------------------
  		/**
  		 *
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
- 			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 			// Make application plugin manager available to superclasses
+ 			$this->opo_app_plugin_manager = new ApplicationPluginManager();
  			
+ 			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 		}
+ 		# ------------------------------------------------------------------
+ 		/**
+ 		 * 
+ 		 */
+ 		protected function setTableSpecificViewVars() {
  			// merge displays with drop-in print templates
-			$va_export_options = caGetAvailablePrintTemplates('results', array('table' => $this->ops_tablename)); 
+			$va_export_options = (bool)$this->request->config->get('disable_pdf_output') ? array() : caGetAvailablePrintTemplates('results', array('table' => $this->ops_tablename)); 
+			
+			// add Excel/PowerPoint export options configured in app.conf
+			$va_export_config = (bool)$this->request->config->get('disable_export_output') ? array() : $this->request->config->getAssoc('export_formats');
+	
+			if(is_array($va_export_config) && is_array($va_export_config[$this->ops_tablename])) {
+				foreach($va_export_config[$this->ops_tablename] as $vs_export_code => $va_export_option) {
+					$va_export_options[] = array(
+						'name' => $va_export_option['name'],
+						'code' => $vs_export_code,
+						'type' => $va_export_option['type']
+					);
+				}
+			}
+			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
 			$this->view->setVar('export_formats', $va_export_options);
-			//$this->view->setVar('current_export_format', $this->opo_result_context->getParameter('last_export_type'));
 			
 			$va_options = array();
 			foreach($va_export_options as $vn_i => $va_format_info) {
@@ -55,7 +96,46 @@
  			}
  			ksort($va_options);
  			
+ 			// Set comparison list view vars
+ 			$this->view->setVar('comparison_list', $va_comparison_list = caGetComparisonList($this->request, $this->ops_tablename));
+ 			
 			$this->view->setVar('export_format_select', caHTMLSelect('export_format', $va_options, array('class' => 'searchToolsSelect'), array('value' => $this->view->getVar('current_export_format'), 'width' => '150px')));
+ 		}
+ 		# ------------------------------------------------------------------
+ 		/**
+ 		 * 
+ 		 */
+ 		protected function getFacet($po_browse) {
+ 			//
+			// Return facet content
+			//	
+			$this->view->setVar('browse', $po_browse);
+			
+			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
+			$vs_facet = $this->request->getParameter('facet', pString);
+			$vn_s = $vb_is_nav ? $this->request->getParameter('s', pInteger) : 0;	// start menu-based browse menu facet data at page boundary; all others get the full facet
+			$this->view->setVar('start', $vn_s);
+			$this->view->setVar('limit', $vn_limit = ($vb_is_nav ? 500 : null));	// break facet into pages for menu-based browse menu
+			$this->view->setVar('facet_name', $vs_facet);
+			$this->view->setVar('key', $po_browse->getBrowseID());
+			$this->view->setVar('facet_info', $va_facet_info = $po_browse->getInfoForFacet($vs_facet));
+			
+			# --- pull in different views based on format for facet - alphabetical, list, hierarchy
+			switch($va_facet_info["group_mode"]){
+				case "alphabetical":
+				case "list":
+				default:
+					$this->view->setVar('facet_content', $po_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values, 'start' => $vn_s, 'limit' => $vn_limit)));
+					if($vb_is_nav && $vn_limit){
+						$this->view->setVar('facet_size', sizeof($po_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values))));					
+					}
+					$this->render($this->ops_view_prefix."/list_facet_html.php");
+					break;
+				case "hierarchical":
+					$this->render($this->ops_view_prefix."/hierarchy_facet_html.php");
+					break;
+			}
+			return;
  		}
  		# ------------------------------------------------------------------
  		/**
@@ -73,7 +153,7 @@
  			}else{
 				if (!($va_browse_info = caGetInfoForBrowseType($ps_browse_type))) {
 					// invalid browse type – throw error
-					die("Invalid browse type");
+					throw new ApplicationException("Invalid browse type");
 				} 			
 			} 			
  			$this->view->setVar("facet_name", $ps_facet_name);
@@ -139,32 +219,57 @@
 						if(!$vn_id) {
 							$va_hier_ids = $o_browse->getHierarchyIDsForFacet($ps_facet_name, array('checkAccess' => $va_access_values));
 							$t_item = $this->request->datamodel->getInstanceByTableName($va_facet_info['table']);
-							$t_item->load($vn_id);
-							$vn_id = $vn_root = $t_item->getHierarchyRootID();
-							$va_hierarchy_list = $t_item->getHierarchyList(true);
-							
-							$vn_last_id = null;
-							$vn_c = 0;
-							foreach($va_hierarchy_list as $vn_i => $va_item) {
-								if (!in_array($vn_i, $va_hier_ids)) { continue; }	// only show hierarchies that have items in browse result
-								if ($vn_start <= $vn_c) {
-									$va_item['item_id'] = $va_item[$t_item->primaryKey()];
-									if (!isset($va_facet[$va_item['item_id']]) && ($vn_root == $va_item['item_id'])) { continue; }
-									$va_item['name'] = $va_item['label'];
-									unset($va_item['parent_id']);
-									unset($va_item['label']);
-									if(!$va_item["name"]){
-										$va_item["name"] = $va_item["list_code"];
+							if($t_item->getHierarchyType() == __CA_HIER_TYPE_ADHOC_MONO__){
+								# --- there are no roots in adhoc hierarchies
+								# --- get all the top level records available in the facet
+								$o_db = new Db();
+								$qr_top_level = $o_db->query("SELECT ".$t_item->primaryKey()." FROM ".$va_facet_info['table']." WHERE parent_id IS NULL");
+								if($qr_top_level->numRows()){
+									$va_parent_ids = array();
+									while($qr_top_level->nextRow()){
+										$va_parent_ids[] = $qr_top_level->get($t_item->primaryKey());
 									}
-									$va_json_data[$va_item['item_id']] = $va_item;
-									$vn_last_id = $va_item['item_id'];
+									$r_top_level = caMakeSearchResult($va_facet_info['table'], $va_parent_ids);
+									$va_item = array();
+									if($r_top_level->numHits()){
+										while($r_top_level->nextHit()){
+											if (!in_array($r_top_level->get($t_item->primaryKey()), $va_hier_ids)) { continue; }
+											$va_item["name"] = $r_top_level->get($va_facet_info['table'].".preferred_labels");
+											$va_item["item_id"] = $r_top_level->get($t_item->primaryKey());
+											$va_item["parent_id"] = null;
+											$va_item["children"] = sizeof($t_item->getHierarchyChildren($va_item["item_id"], array("idsOnly")));
+											$va_json_data[$va_item["item_id"]] = $va_item;
+										}
+									}
 								}
-								$vn_c++;
-								if (!is_null($vn_max_items_per_page) && ($vn_c >= ($vn_max_items_per_page + $vn_start))) { break; }
-							}
-							if (sizeof($va_json_data) == 2) {	// if only one hierarchy root (root +  _primaryKey in array) then don't bother showing it
-								$vn_id = $vn_last_id;
-								unset($va_json_data[$vn_last_id]);
+							}else{
+								$vn_id = $vn_root = $t_item->getHierarchyRootID();
+								$t_item->load($vn_id);
+								$va_hierarchy_list = $t_item->getHierarchyList(true);
+							
+								$vn_last_id = null;
+								$vn_c = 0;
+								foreach($va_hierarchy_list as $vn_i => $va_item) {
+									if (!in_array($vn_i, $va_hier_ids)) { continue; }	// only show hierarchies that have items in browse result
+									if ($vn_start <= $vn_c) {
+										$va_item['item_id'] = $va_item[$t_item->primaryKey()];
+										if (!isset($va_facet[$va_item['item_id']]) && ($vn_root == $va_item['item_id'])) { continue; }
+										$va_item['name'] = $va_item['label'];
+										unset($va_item['parent_id']);
+										unset($va_item['label']);
+										if(!$va_item["name"]){
+											$va_item["name"] = $va_item["list_code"];
+										}
+										$va_json_data[$va_item['item_id']] = $va_item;
+										$vn_last_id = $va_item['item_id'];
+									}
+									$vn_c++;
+									if (!is_null($vn_max_items_per_page) && ($vn_c >= ($vn_max_items_per_page + $vn_start))) { break; }
+								}
+								if (sizeof($va_json_data) == 2) {	// if only one hierarchy root (root +  _primaryKey in array) then don't bother showing it
+									$vn_id = $vn_last_id;
+									unset($va_json_data[$vn_last_id]);
+								}
 							}
 						}
 						if ($vn_id) {
@@ -198,16 +303,13 @@
  			$this->view->setVar('facet_list', $va_level_data);
  			
  			switch($this->request->getParameter('returnAs', pString)){
- 				# ------------------------------------------------
  				case "json":
  					return $this->render('Browse/facet_hierarchy_level_json.php');
  					break;
- 				# ------------------------------------------------
  				case "html":
  				default:
  					return $this->render('Browse/facet_hierarchy_level_html.php');
  					break;
- 				# ------------------------------------------------
  			}
  		}
  		# ------------------------------------------------------------------
@@ -224,7 +326,7 @@
  			$ps_browse_type = $this->request->getParameter('browseType', pString);
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_browse_type))) {
  				// invalid browse type – throw error
- 				die("Invalid browse type");
+ 				throw new ApplicationException("Invalid browse type");
  			} 			
  			$this->view->setVar("browse_type", $ps_browse_type);
  			$vs_class = $va_browse_info['table'];
@@ -241,10 +343,8 @@
  					$t_element = new ca_metadata_elements();
  					if ($t_element->load(array('element_code' => $va_facet_info['element_code']))) {
  						if ($t_element->get('datatype') == 3) { // 3=list
-							if (!$pn_id) {
- 								$t_list = new ca_lists();
-								$pn_id = $t_list->getRootListItemID($t_element->get('list_id'));
-							}
+ 							$t_list = new ca_lists($t_element->get('list_id'));
+							if (!$pn_id) { $pn_id = $t_list->getRootListItemID($t_element->get('list_id')); }
 							$t_item = new ca_list_items($pn_id);
 							
 							if ($t_item->getPrimaryKey()) {
@@ -260,7 +360,9 @@
 										'additionalTableSelectFields' => array($vs_display_fld, 'locale_id'),
 										'additionalTableWheres' => array('('.$vs_label_table_name.'.is_preferred = 1 OR '.$vs_label_table_name.'.is_preferred IS NULL)')
 										)));
-								array_shift($va_ancestors);
+								$va_root = array_shift($va_ancestors);
+								$va_root['NODE']['name_singular'] = $va_root['NODE']['name_plural'] = $t_list->get('ca_lists.preferred_labels.name');
+								array_unshift($va_ancestors, $va_root);
 							}
  						}
  					}
@@ -301,7 +403,7 @@
 										'additionalTableWheres' => array('('.$vs_label_table_name.'.is_preferred = 1 OR '.$vs_label_table_name.'.is_preferred IS NULL)')
 										)));
 					}
-					if ($vn_hierarchies_in_use <= 1) {
+					if (($vn_hierarchies_in_use <= 1) && ($t_item->getHierarchyType() != __CA_HIER_TYPE_ADHOC_MONO__)) {
 						array_shift($va_ancestors);
 					}
 					break;
@@ -312,13 +414,11 @@
  			switch($this->request->getParameter('returnAs', pString)){
  				case "json":
  					return $this->render('Browse/facet_hierarchy_ancestors_json.php');
- 				break;
- 				# ------------------------------------------------
+ 					break;
  				case "html":
  				default:
  					return $this->render('Browse/facet_hierarchy_ancestors_html.php');
- 				break;
- 				# ------------------------------------------------
+ 					break;
  			}
  		}
  		# -------------------------------------------------------
@@ -332,75 +432,8 @@
 				$this->opo_result_context->setParameter('last_export_type', $ps_output_type);
 				$this->opo_result_context->saveContext();
 			}
-			
-			$this->view->setVar('criteria_summary', $ps_criteria_summary);
-			
-			if (substr($ps_template, 0, 5) === '_pdf_') {
-				$va_template_info = caGetPrintTemplateDetails('results', substr($ps_template, 5));
-			} elseif (substr($ps_template, 0, 9) === '_display_') {
-				$vn_display_id = substr($ps_template, 9);
-				$t_display = new ca_bundle_displays($vn_display_id);
 				
-				if ($vn_display_id && ($t_display->haveAccessToDisplay($this->request->getUserID(), __CA_BUNDLE_DISPLAY_READ_ACCESS__))) {
-					$this->view->setVar('display', $t_display);
-					
-					$va_placements = $t_display->getPlacements(array('settingsOnly' => true));
-					foreach($va_placements as $vn_placement_id => $va_display_item) {
-						$va_settings = caUnserializeForDatabase($va_display_item['settings']);
-					
-						// get column header text
-						$vs_header = $va_display_item['display'];
-						if (isset($va_settings['label']) && is_array($va_settings['label'])) {
-							$va_tmp = caExtractValuesByUserLocale(array($va_settings['label']));
-							if ($vs_tmp = array_shift($va_tmp)) { $vs_header = $vs_tmp; }
-						}
-					
-						$va_display_list[$vn_placement_id] = array(
-							'placement_id' => $vn_placement_id,
-							'bundle_name' => $va_display_item['bundle_name'],
-							'display' => $vs_header,
-							'settings' => $va_settings
-						);
-					}
-					$this->view->setVar('display_list', $va_display_list);
-				} else {
-					$this->postError(3100, _t("Invalid format %1", $ps_template),"FindController->_genExport()");
-					return;
-				}
-				$va_template_info = caGetPrintTemplateDetails('results', 'display');
-			} else {
-				$this->postError(3100, _t("Invalid format %1", $ps_template),"FindController->_genExport()");
-				return;
-			}
-			
-			//
-			// PDF output
-			//
-			if (!is_array($va_template_info)) {
-				$this->postError(3110, _t("Could not find view for PDF"),"FindController->_genExport()");
-				return;
-			}
-			
-			try {
-				$this->view->setVar('base_path', $vs_base_path = pathinfo($va_template_info['path'], PATHINFO_DIRNAME));
-				$this->view->addViewPath(array($vs_base_path, "{$vs_base_path}/local"));
-			
-				set_time_limit(600);
-				$vs_content = $this->render($va_template_info['path']);
-				$o_dompdf = new DOMPDF();
-				$o_dompdf->load_html($vs_content);
-				$o_dompdf->set_paper(caGetOption('pageSize', $va_template_info, 'letter'), caGetOption('pageOrientation', $va_template_info, 'portrait'));
-				$o_dompdf->set_base_path(caGetPrintTemplateDirectoryPath('results'));
-				$o_dompdf->render();
-				$o_dompdf->stream(caGetOption('filename', $va_template_info, 'export_results.pdf'));
-
-				$vb_printed_properly = true;
-			} catch (Exception $e) {
-				$vb_printed_properly = false;
-				$this->postError(3100, _t("Could not generate PDF"),"FindController->_genExport()");
-			}
-				
-			return;
+			caExportResult($this->request, $po_result, $ps_template, $ps_output_filename, ['criteriaSummary' => $ps_criteria_summary]);
 		}
 		# ------------------------------------------------------------------
  		/**
@@ -410,8 +443,37 @@
  		 *
  		 * @return string Summary of current search expression or browse criteria ready for display
  		 */
- 		public function getCriteriaForDisplay() {
+ 		public function getCriteriaForDisplay($po_browse=null) {
  			return $this->opo_result_context ? $this->opo_result_context->getSearchExpression() : '';		// just give back the search expression verbatim; works ok for simple searches	
  		}
- 		# ------------------------------------------------------------------
+ 		# -------------------------------------------------------
+        /**
+         * Return text for map item info bubble
+         */
+ 		public function ajaxGetMapItem() {
+            if($this->opb_is_login_redirect) { return; }
+            
+            $pa_ids = explode(";",$this->request->getParameter('id', pString)); 
+            $ps_view = $this->request->getParameter('view', pString);
+            $ps_browse = $this->request->getParameter('browse', pString);
+            if (!($va_browse_info = caGetInfoForBrowseType($ps_browse))) {
+ 				// invalid browse type – throw error
+ 				throw new ApplicationException("Invalid browse type");
+ 			}
+ 			
+ 			$this->view->setVar('view', $ps_view = caCheckLightboxView(array('request' => $this->request, 'default' => 'map')));
+			$this->view->setVar('views', $va_views = $this->opo_config->getAssoc("views"));
+			if (!is_array($va_view_info = $va_browse_info['views'][$ps_view])) {
+				throw new ApplicationException("Invalid view");
+			}
+            
+			$vs_content_template = $va_view_info['display']['icon'].$va_view_info['display']['title_template'].$va_view_info['display']['description_template'];
+			
+			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, $va_browse_info['table'], $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br style='clear:both;'/>")));
+			
+			$this->view->setVar('table', $va_browse_info['table']);
+			$this->view->setVar('ids', $pa_ids);
+         	$this->render("Browse/ajax_map_item_html.php");   
+        }
+ 		# -------------------------------------------------------
  	}
