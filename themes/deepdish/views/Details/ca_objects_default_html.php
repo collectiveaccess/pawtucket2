@@ -44,14 +44,14 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
-				{{{representationViewer}}}
+
 				
-				
-				<div id="detailAnnotations"></div>
-				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
+				<?php #print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 				
 <?php
+				if ($va_embed = $t_object->get('ca_objects.embed_code')) {
+					print "<div class='unit videoContainer'><h6>Watch</h6>".$va_embed."</div>";
+				}
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
 						
@@ -72,9 +72,13 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
+				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>  
 				<HR>
-				{{{<ifcount min="1" code="ca_objects.nonpreferred_labels"><div class='unit'><H6>subtitle</H6><unit delimiter="<br/>">^ca_objects.nonpreferred_labels</unit></div></ifcount>}}}
+<?php
+				if (($va_alt_title = $t_object->get('ca_objects.nonpreferred_labels', array('delimiter' => ', '))) != "[BLANK]") {
+					print "<div class='unit'><h6>subtitle</h6>".$va_alt_title."</div>";
+				}
+?>				
 				{{{<ifdef code="ca_objects.idno"><div class='unit'><H6>Identifer</H6>^ca_objects.idno</unit></ifdef>}}} 
 <?php
 				if ($va_series = $t_object->get('ca_objects.related.preferred_labels', array('restrictToTypes' => array('series'), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
@@ -86,7 +90,7 @@
 				if ($va_date = $t_object->get('ca_objects.productionDate', array('delimiter' => ', '))) {
 					print "<div class='unit'><h6>Production Year</h6>".$va_date."</div>";
 				}
-				if (($va_project = $t_object->get('ca_objects.project', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))) != "-") {
+				if (($va_project = $t_object->get('ca_objects.project', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))) != '-') {
 					print "<div class='unit'><h6>Project</h6>".$va_project."</div>";
 				}
 				if ($va_collection = $t_object->get('ca_collections.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
@@ -101,7 +105,7 @@
 				if ($va_location = $t_object->get('ca_objects.location', array('delimiter' => ', '))) {
 					print "<div class='unit trimText'><h6>Location</h6>".$va_location."</div>";
 				}
-				if (($va_language = $t_object->get('ca_objects.pbcoreLanguage', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))) != " ") {
+				if (($va_language = $t_object->get('ca_objects.pbcoreLanguage', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))) != "") {
 					print "<div class='unit'><h6>Language</h6>".$va_language."</div>";
 				}
 				if ($va_subtitles = $t_object->get('ca_objects.subtitles', array('delimiter' => ', '))) {
@@ -109,7 +113,18 @@
 				}	
 				if ($va_keywords = $t_object->get('ca_objects.keywords', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))) {
 					print "<div class='unit'><h6>Keywords</h6>".$va_keywords."</div>";
-				}																															
+				}
+				if ($t_object->get('ca_objects.forSale', array('convertCodesToDisplayText' => true)) == "yes") {
+					print "<div class='unit'><h6>For Sale</h6>";
+					if ($va_ind = $t_object->get('ca_objects.individualPrice')) {
+						print "<div><b>Individual Price: </b>".$va_ind."</div>";
+					}
+					if ($va_inst = $t_object->get('ca_objects.institutionalPrice')) {
+						print "<div><b>Institutional Price: </b>".$va_inst."</div>";
+					}					
+					print "</div>";
+				}
+																															
 ?>				
 				
 								
