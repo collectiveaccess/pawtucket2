@@ -54,6 +54,9 @@
 					if ($va_description = $t_item->get('ca_occurrences.productionDescription.prodesc_text')) {
 						$vs_col_1 .= "<div class='unit'><span class='label'>Description </span>".$va_description."</div>";
 					}
+					if ($vs_idno = $t_item->get('ca_occurrences.idno')) {
+						$vs_col_1 .= "<div class='unit'><span class='label'>Identifier </span>".$vs_idno."</div>";
+					}
 					if($vs_col_1){
 ?>
 				<div class='col-sm-6 col-md-6 col-lg-6'>

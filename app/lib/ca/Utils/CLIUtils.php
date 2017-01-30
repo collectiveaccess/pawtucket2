@@ -49,14 +49,14 @@
 		 */
 		public static function install($po_opts=null, $pb_installing = true) {
 			require_once(__CA_BASE_DIR__ . '/install/inc/Installer.php');
-			require_once(__CA_BASE_DIR__ . '/install/inc/Updater.php');
 
 			define('__CollectiveAccess_Installer__', 1);
 
-			if ($pb_installing && !$po_opts->getOption('profile-name')) {
+			if (!$po_opts->getOption('profile-name')) {
 				CLIUtils::addError(_t("Missing required parameter: profile-name"));
 				return false;
 			}
+
 			if ($pb_installing && !$po_opts->getOption('admin-email')) {
 				CLIUtils::addError(_t("Missing required parameter: admin-email"));
 				return false;
@@ -64,25 +64,14 @@
 			$vs_profile_directory = $po_opts->getOption('profile-directory');
 			$vs_profile_directory = $vs_profile_directory ? $vs_profile_directory : __CA_BASE_DIR__ . '/install/profiles/xml';
 			$t_total = new Timer();
-			// If we are installing, then use Installer, otherwise use Updater
-			$vo_installer = null;
-			if($pb_installing){
-				$vo_installer = new Installer(
-					$vs_profile_directory,
-					$po_opts->getOption('profile-name'),
-					$po_opts->getOption('admin-email'),
-					$po_opts->getOption('overwrite'),
-					$po_opts->getOption('debug')
-				);
-			} else {
-				$vo_installer = new Updater(
-					$vs_profile_directory,
-					$po_opts->getOption('profile-name'),
-					null, // If you are updating you don't want to generate an admin user
-					false, // If you are updating you never want to overwrite
-					$po_opts->getOption('debug')
-				);
-			}
+
+			$vo_installer = new Installer(
+				$vs_profile_directory,
+				$po_opts->getOption('profile-name'),
+				$po_opts->getOption('admin-email'),
+				$po_opts->getOption('overwrite'),
+				$po_opts->getOption('debug')
+			);
 
 			$vb_quiet = $po_opts->getOption('quiet');
 
@@ -134,7 +123,7 @@
 			$vo_installer->processGroups();
 
 			if (!$vb_quiet) { CLIUtils::addMessage(_t("Processing user logins")); }
-			$va_login_info = $vo_installer->processLogins();
+			$va_login_info = $vo_installer->processLogins($pb_installing);
 
 			if (!$vb_quiet) { CLIUtils::addMessage(_t("Processing user interfaces")); }
 			$vo_installer->processUserInterfaces();
@@ -224,13 +213,12 @@
 		public static function installShortHelp() {
 			return _t("Performs a fresh installation of CollectiveAccess using the configured values in setup.php.");
 		}
-
 		# -------------------------------------------------------
 		/**
 		 *
 		 */
 		public static function update_installation_profileUtilityClass() {
-			return _t('Configuration - Experimental');
+			return _t('Configuration');
 		}
 		# -------------------------------------------------------
 		public static function update_installation_profileParamList() {
@@ -241,7 +229,6 @@
 		}
 		# -------------------------------------------------------
 		public static function update_installation_profile($po_opts=null) {
-			require_once(__CA_BASE_DIR__ . '/install/inc/Updater.php');
 			self::install($po_opts, false);
 			return true;
 		}
@@ -250,7 +237,7 @@
 		 *
 		 */
 		public static function update_installation_profileHelp() {
-			return _t("EXPERIMENTAL - Updates the installation profile to match a supplied profile name.") ."\n".
+			return _t("Updates the configuration to match a supplied profile name.") ."\n".
 			"\t" . _t("This function only creates new values and is useful if you want to append changes from one profile onto another.")."\n".
 			"\t" . _t("Your new profile must exist in a directory that contains the profile.xsd schema and must validate against that schema in order for the update to apply successfully.");
 		}
@@ -259,10 +246,8 @@
 		 *
 		 */
 		public static function update_installation_profileShortHelp() {
-			return _t("EXPERIMENTAL - Updates the installation profile to match a supplied profile name.");
+			return _t("Updates the installation profile to match a supplied profile name. Backup your database before you use this!");
 		}
-
-		# -------------------------------------------------------
 		/**
 		 * Rebuild search indices
 		 */
@@ -364,7 +349,7 @@
 				}
 				print CLIProgressBar::finish();
 			}
-			return trie;
+			return true;
 		}
 		# -------------------------------------------------------
 		/**
@@ -594,7 +579,12 @@
 				return false;
 			}
 
-			$vs_profile = ConfigurationExporter::exportConfigurationAsXML($po_opts->getOption("name"), $po_opts->getOption("description"), $po_opts->getOption("base"), $po_opts->getOption("infoURL"));
+			$vn_timestamp = null;
+			if($po_opts->getOption("timestamp")) {
+				$vn_timestamp = intval($po_opts->getOption("timestamp"));
+			}
+
+			$vs_profile = ConfigurationExporter::exportConfigurationAsXML($po_opts->getOption("name"), $po_opts->getOption("description"), $po_opts->getOption("base"), $po_opts->getOption("infoURL"), $vn_timestamp);
 
 			if ($vs_output) {
 				file_put_contents($vs_output, $vs_profile);
@@ -613,7 +603,8 @@
 				"name|n=s" => _t('Name of the profile, used for "profileName" element.'),
 				"infoURL|u-s" => _t('URL pointing to more information about the profile. (Optional)'),
 				"description|d-s" => _t('Description of the profile, used for "profileDescription" element. (Optional)'),
-				"output|o-s" => _t('File to output profile to. If omitted profile is printed to standard output. (Optional)')
+				"output|o-s" => _t('File to output profile to. If omitted profile is printed to standard output. (Optional)'),
+				"timestamp|t-s" => _t('Limit output to configuration changes made after this UNIX timestamp. (Optional)'),
 			);
 		}
 		# -------------------------------------------------------
@@ -771,7 +762,6 @@
 					$vs_original_filename = $va_media_info['ORIGINAL_FILENAME'];
 
 					print CLIProgressBar::next(1, _t("Re-processing %1", ($vs_original_filename ? $vs_original_filename." (".$qr_reps->get('representation_id').")" : $qr_reps->get('representation_id'))));
-
 					$vs_mimetype = $qr_reps->getMediaInfo('media', 'original', 'MIMETYPE');
 					if(sizeof($pa_mimetypes)) {
 						$vb_mimetype_match = false;
@@ -1158,6 +1148,9 @@
 				CLIUtils::addError(_t("Could not import '%1': %2", $vs_file_path, join("; ", $va_errors)));
 				return false;
 			} else {
+				if(is_array($va_errors) && (sizeof($va_errors)>0)) {
+					CLIUtils::textWithColor(_t("There were warnings when adding mapping from file '%1': %2", $vs_file_path, join("; ", $va_errors)), 'yellow');
+				}
 
 				CLIUtils::addMessage(_t("Created mapping %1 from %2", CLIUtils::textWithColor($t_importer->get('importer_code'), 'yellow'), $vs_file_path), array('color' => 'none'));
 				return true;
@@ -1222,6 +1215,7 @@
 			$vb_no_ncurses = (bool)$po_opts->getOption('disable-ncurses');
 			$vb_direct = (bool)$po_opts->getOption('direct');
 			$vb_no_search_indexing = (bool)$po_opts->getOption('no-search-indexing');
+			$vb_use_temp_directory_for_logs_as_fallback = (bool)$po_opts->getOption('log-to-tmp-directory-as-fallback'); 
 
 			$vs_format = $po_opts->getOption('format');
 			$vs_log_dir = $po_opts->getOption('log');
@@ -1231,7 +1225,7 @@
 				define("__CA_DONT_DO_SEARCH_INDEXING__", true);
 			}
 
-			if (!ca_data_importers::importDataFromSource($vs_data_source, $vs_mapping, array('noTransaction' => $vb_direct, 'format' => $vs_format, 'showCLIProgressBar' => true, 'useNcurses' => !$vb_no_ncurses && caCLIUseNcurses(), 'logDirectory' => $vs_log_dir, 'logLevel' => $vn_log_level))) {
+			if (!ca_data_importers::importDataFromSource($vs_data_source, $vs_mapping, array('noTransaction' => $vb_direct, 'format' => $vs_format, 'showCLIProgressBar' => true, 'useNcurses' => !$vb_no_ncurses && caCLIUseNcurses(), 'logDirectory' => $vs_log_dir, 'logLevel' => $vn_log_level, 'logToTempDirectoryIfLogDirectoryIsNotWritable' => $vb_use_temp_directory_for_logs_as_fallback))) {
 				CLIUtils::addError(_t("Could not import source %1: %2", $vs_data_source, join("; ", ca_data_importers::getErrorList())));
 				return false;
 			} else {
@@ -1281,10 +1275,10 @@
 				"format|f-s" => _t('The format of the data to import. (Ex. XLSX, tab, CSV, mysql, OAI, Filemaker XML, ExcelXML, MARC). If omitted an attempt will be made to automatically identify the data format.'),
 				"log|l-s" => _t('Path to directory in which to log import details. If not set no logs will be recorded.'),
 				"log-level|d-s" => _t('Logging threshold. Possible values are, in ascending order of important: DEBUG, INFO, NOTICE, WARN, ERR, CRIT, ALERT. Default is INFO.'),
-				"disable-ncurses" => _t('If set the ncurses terminal library will not be used to display import progress.'),
 				"dryrun" => _t('If set import is performed without data actually being saved to the database. This is useful for previewing an import for errors.'),
 				"direct" => _t('If set import is performed without a transaction. This allows viewing of imported data during the import, which may be useful during debugging/development. It may also lead to data corruption and should only be used for testing.'),
-				"no-search-indexing" => _t('If set indexing of changes made during import is not done. This may significantly reduce import time, but will neccessitate a reindex of the entire database after the import.')
+				"no-search-indexing" => _t('If set indexing of changes made during import is not done. This may significantly reduce import time, but will neccessitate a reindex of the entire database after the import.'),
+				"log-to-tmp-directory-as-fallback" => _t('Use the system temporary directory for the import log if the application logging directory is not writable. Default report an error if the application log directory is not writeable.')
 			);
 		}
 		# -------------------------------------------------------
@@ -1655,49 +1649,42 @@
 			return _t("Loads the AAT from a Getty-provided XML file.");
 		}
 		# -------------------------------------------------------
-
 		/**
 		 *
 		 */
-		public static function sync_data($po_opts=null) {
-			require_once(__CA_LIB_DIR__.'/ca/Sync/DataSynchronizer.php');
-			$o_sync = new DataSynchronizer();
-			$o_sync->sync();
-			//if (!($vs_file_path = $po_opts->getOption('file'))) {
-			//	CLIUtils::addError(_t("You must specify a file"));
-			//	return false;
-			//}
+		public static function replicate_data($po_opts=null) {
+			require_once(__CA_LIB_DIR__.'/ca/Sync/Replicator.php');
 
+			$o_replicator = new Replicator();
+			$o_replicator->replicate();
 		}
 		# -------------------------------------------------------
 		/**
 		 *
 		 */
-		public static function sync_dataParamList() {
-			return array(
-				//"file|f=s" => _t('Path to AAT XML file.')
-			);
+		public static function replicate_dataParamList() {
+			return array();
 		}
 		# -------------------------------------------------------
 		/**
 		 *
 		 */
-		public static function sync_dataUtilityClass() {
+		public static function replicate_dataUtilityClass() {
 			return _t('Import/Export');
 		}
 		# -------------------------------------------------------
 		/**
 		 *
 		 */
-		public static function sync_dataShortHelp() {
-			return _t("Synchronize data between two CollectiveAccess systems.");
+		public static function replicate_dataShortHelp() {
+			return _t("Replicate data from one CollectiveAccess system to another.");
 		}
 		# -------------------------------------------------------
 		/**
 		 *
 		 */
-		public static function sync_dataHelp() {
-			return _t("Synchronizes data in one CollectiveAccess instance based upon data in another instance, subject to configuration in synchronization.conf.");
+		public static function replicate_dataHelp() {
+			return _t("Replicates data in one CollectiveAccess instance based upon data in another instance, subject to configuration in replication.conf.");
 		}
 		# -------------------------------------------------------
 		/**
@@ -3264,6 +3251,649 @@
 		 */
 		public static function precache_contentHelp() {
 			return _t('Pre-loads content cache by loading each cached page url. Pre-caching may take a while depending upon the quantity of content configured for caching.');
+		}
+		# -------------------------------------------------------
+		/**
+		 * Load metadata dictionary
+		 */
+		public static function load_chenhall_nomenclature($po_opts=null) {
+
+			require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel.php');
+			require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel/IOFactory.php');
+			require_once(__CA_MODELS_DIR__.'/ca_lists.php');
+			require_once(__CA_MODELS_DIR__.'/ca_locales.php');
+
+			$t_list = new ca_lists();
+			$o_db = $t_list->getDb();
+			
+			$vn_locale_id = ca_locales::getDefaultCataloguingLocaleID();
+
+			if (!($ps_source = (string)$po_opts->getOption('file'))) {
+				CLIUtils::addError(_t("You must specify a file"));
+				return false;
+			}
+			if (!file_exists($ps_source) || !is_readable($ps_source)) {
+				CLIUtils::addError(_t("You must specify a valid file"));
+				return false;
+			}
+			
+			if (!($ps_list_code = (string)$po_opts->getOption('list'))) {
+				CLIUtils::addError(_t("You must specify a list"));
+				return false;
+			}
+
+			try {
+				$o_file = PHPExcel_IOFactory::load($ps_source);
+			} catch (Exception $e) {
+				CLIUtils::addError(_t("You must specify a valid Excel .xls or .xlsx file: %1", $e->getMessage()));
+				return false;
+			}
+			
+			print CLIProgressBar::start($o_file->getActiveSheet()->getHighestRow(), _t('Loading non-preferred terms'));
+			// Get non-preferred terms
+			$o_file->setActiveSheetIndex(1);
+			$o_sheet = $o_file->getActiveSheet();
+			$o_rows = $o_sheet->getRowIterator();
+			
+			$o_rows->next();
+				
+			$va_non_preferred_terms = [];
+			while ($o_rows->valid() && ($o_row = $o_rows->current())) {
+				$o_cells = $o_row->getCellIterator();
+				$o_cells->setIterateOnlyExistingCells(false);
+
+				$vn_c = 0;
+				$va_data = array();
+
+				foreach ($o_cells as $o_cell) {
+					$va_data[$vn_c] = trim((string)$o_cell->getValue());
+					$vn_c++;
+
+					if ($vn_c > 3) { break; }
+				}
+				
+				$va_non_preferred_terms[$va_data[1]][] = $va_data[0];
+				
+				$o_rows->next();
+				CLIProgressBar::next();
+			}
+			CLIProgressBar::finish();
+			
+
+			// get list
+			
+			print CLIProgressBar::start(1, _t('Creating list'));
+			
+			if (!($t_list = ca_lists::find(['list_code' => $ps_list_code], ['returnAs' => 'firstModelInstance']))) {
+				$t_list = new ca_lists();
+				$t_list->setMode(ACCESS_WRITE);
+				$t_list->set('list_code', $ps_list_code);
+				$t_list->set('is_system_list', 1);
+				$t_list->set('is_hierarchical', 1);
+				$t_list->set('use_as_vocabulary', 1);
+				$t_list->insert();
+				
+				if ($t_list->numErrors()) {
+					CLIUtils::addError(_t("Could not create list %1: %2", $ps_list_code, join("; ", $t_list->getErrors())));
+					return false;
+				}
+				
+				$t_list->addLabel(['name' => 'Chenhall Nomenclature'], $vn_locale_id, null, true);
+				if ($t_list->numErrors()) {
+					CLIUtils::addError(_t("Could not label list %1: %2", $ps_list_code, join("; ", $t_list->getErrors())));
+					return false;
+				}
+				
+			} elseif ($t_list->numItemsInList($ps_list_code) > 0) {
+				CLIUtils::addError(_t("List %1 is not empty. The Chenhall Nomenclature may only be imported into an empty list.", $ps_list_code));
+				return false;
+			}
+			CLIProgressBar::finish();
+
+			// Get preferred terms
+			
+			$o_file->setActiveSheetIndex(0);
+			$o_sheet = $o_file->getActiveSheet();
+			$o_rows = $o_sheet->getRowIterator();
+			$vn_add_count = 0;
+
+			print CLIProgressBar::start($o_file->getActiveSheet()->getHighestRow(), _t('Loading preferred terms'));
+			
+			$o_rows->next(); // skip first line
+			
+			$va_parents = [];
+			
+			while ($o_rows->valid() && ($o_row = $o_rows->current())) {
+				$o_cells = $o_row->getCellIterator();
+				$o_cells->setIterateOnlyExistingCells(false);
+
+				$vn_c = 0;
+				$va_data = array();
+
+				foreach ($o_cells as $o_cell) {
+					$vm_val = $o_cell->getValue();
+					if ($vm_val instanceof PHPExcel_RichText) {
+						$vs_val = '';
+						foreach($vm_val->getRichTextElements() as $vn_x => $o_item) {
+							$o_font = $o_item->getFont();
+							$vs_text = $o_item->getText();
+							if ($o_font && $o_font->getBold()) {
+								$vs_val .= "<strong>{$vs_text}</strong>";
+							} elseif($o_font && $o_font->getItalic()) {
+								$vs_val .= "<em>{$vs_text}</em>";
+							} else {
+								$vs_val .= $vs_text;
+							}
+						}
+					} else {
+						$vs_val = trim((string)$vm_val);
+					}
+					$va_data[$vn_c] = nl2br(preg_replace("![\n\r]{1}!", "\n\n", $vs_val));
+					$vn_c++;
+
+					if ($vn_c > 6) { break; }
+				}
+				$o_rows->next();
+
+				
+				$va_acc = [];
+				foreach($va_data as $vn_col => $vs_term) {
+					if(!$vs_term) { continue; }
+					if($vn_col > 5) { break; }
+					$va_acc[] = $vs_term;
+				}
+				$vs_term = array_pop($va_acc);
+				$vs_key = md5(join("|", $va_acc));
+				if (!($vn_parent_id = $va_parents[$vs_key])) {
+					$vn_parent_id = $t_list->getRootListItemID();
+				}
+				
+				if (!($t_item = $t_list->addItem($vs_term, true, false, $vn_parent_id, null, $vs_term, '', 0, 1))) {
+					CLIUtils::addError(_t("Could not add term %1: %2", $vs_term, join("; ", $t_list->getErrors())));
+					continue;
+				}
+				if (!$t_item->addLabel(['name_singular' => $vs_term, 'name_plural' => $vs_term, 'description' => $va_data[6]], $vn_locale_id, null, true)) {
+					CLIUtils::addError(_t("Could not add term label %1: %2", $vs_term, join("; ", $t_list->getErrors())));
+					continue;
+				}
+				print CLIProgressBar::next(1, _t('Added preferred term %1', $vs_term));
+				$va_parents[md5(join("|", array_merge($va_acc, [$vs_term])))] = $t_item->getPrimaryKey();
+				
+				if(is_array($va_non_preferred_terms[$vs_term])) {
+					foreach($va_non_preferred_terms[$vs_term] as $vs_non_preferred_term) {
+						if (!($t_item->addLabel(['name_singular' => $vs_non_preferred_term, 'name_plural' => $vs_non_preferred_term, 'description' => ''], $vn_locale_id, null, false))) {
+							CLIUtils::addError(_t("Could not add non-preferred term %1 to %2: %3", $vs_non_preferred_term, $vs_term, join("; ", $t_list->getErrors())));
+							continue;
+						}
+					}
+				}
+			}
+
+			CLIProgressBar::finish();
+
+			CLIUtils::addMessage(_t('Added %1 terms', $vn_add_count), array('color' => 'bold_green'));
+			return true;
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function load_chenhall_nomenclatureParamList() {
+			return array(
+				"file|f=s" => _t('Excel XLSX-format AASLH Chenhall Nomenclature file to load.'),
+				"list|l=s" => _t('Code for list to load Chenhall Nomenclature into. If list with code does not exist it will be created.')
+			);
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function load_chenhall_nomenclatureUtilityClass() {
+			return _t('Import/Export');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function load_chenhall_nomenclatureShortHelp() {
+			return _t('Load AASLH Chenhall Nomenclature from an Excel file');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function load_chenhall_nomenclatureHelp() {
+			return _t('Loads Chenhall Nomenclature from Excel XLSX format file into the specified list. You can obtain a copy of the Nomenclature from the American Association of State and Local History (AASLH).');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function generate_missing_guids($po_opts=null) {
+			$o_dm = Datamodel::load();
+			$o_db = new Db();
+
+			foreach($o_dm->getTableNames() as $vs_table) {
+				$t_instance = $o_dm->getInstance($vs_table);
+				if(
+					($t_instance instanceof BundlableLabelableBaseModelWithAttributes) ||
+					($t_instance instanceof BaseLabel) ||
+					($t_instance instanceof ca_attribute_values) ||
+					($t_instance instanceof ca_users) ||
+					($t_instance instanceof ca_attributes) ||
+					($t_instance->getProperty('LOG_CHANGES_TO_SELF') && method_exists($t_instance, 'getGUIDByPrimaryKey'))
+				) {
+					$qr_results = $o_db->query("SELECT ". $t_instance->primaryKey() . " FROM ". $t_instance->tableName());
+					if($qr_results && ($qr_results->numRows() > 0)) {
+						print CLIProgressBar::start($qr_results->numRows(), _t('Generating/verifying GUIDs for table %1', $t_instance->tableName()));
+						while($qr_results->nextRow()) {
+							print CLIProgressBar::next();
+							$t_instance->getGUIDByPrimaryKey($qr_results->get($t_instance->primaryKey()));
+						}
+						print CLIProgressBar::finish();
+					}
+				}
+			}
+
+			return true;
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function generate_missing_guidsParamList() {
+			return array(
+
+			);
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function generate_missing_guidsUtilityClass() {
+			return _t('Maintenance');
+		}
+
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function generate_missing_guidsShortHelp() {
+			return _t('Generate missing guids');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function generate_missing_guidsHelp() {
+			return _t('Generates guids for all records that don\'t have one yet. This can be useful if you plan on using the data synchronization/replication feature in the future. For more info see here: http://docs.collectiveaccess.org/wiki/Replication');
+		}
+		# -------------------------------------------------------
+		/**
+		 * @param Zend_Console_Getopt $po_opts
+		 * @return bool
+		 */
+		public static function remove_duplicate_records($po_opts=null) {
+			$va_tables = null;
+			if ($vs_tables = (string)$po_opts->getOption('tables')) {
+				$va_tables = preg_split("![;,]+!", $vs_tables);
+			} else {
+				CLIUtils::addError(_t("The -t|--tables parameter is mandatory."));
+				return false;
+			}
+
+			$vb_delete_opt = (bool)$po_opts->getOption('delete');
+
+			foreach ($va_tables as $vs_t) {
+				if (class_exists($vs_t) && method_exists($vs_t, 'listPotentialDupes')) {
+					$va_dupes = $vs_t::listPotentialDupes();
+					if (sizeof($va_dupes)) {
+						CLIUtils::addMessage(_t('Table %1 has %2 records that have potential duplicates.', $vs_t, sizeof($va_dupes)), array('color' => 'red'));
+
+
+						$t_instance = Datamodel::load()->getInstance($vs_t);
+
+						foreach ($va_dupes as $vs_sha2 => $va_keys) {
+							CLIUtils::addMessage("\t" . _t('%1 records have the checksum %2', sizeof($va_keys), $vs_sha2));
+							foreach ($va_keys as $vn_key) {
+								$t_instance->load($vn_key);
+								CLIUtils::addMessage("\t\t" . $t_instance->primaryKey() . ': ' . $t_instance->getPrimaryKey() . ' (' . $t_instance->getLabelForDisplay() . ')');
+							}
+
+							if ($vb_delete_opt) {
+								$vn_entity_id = $vs_t::mergeRecords($va_keys);
+								if ($vn_entity_id) {
+									CLIUtils::addMessage("\t" . _t("Successfully consolidated them under id %1", $vn_entity_id), array('color' => 'green'));
+								} else {
+									CLIUtils::addMessage("\t" . _t("It seems like there was an error while deduplicating those records"), array('color' => 'bold_red'));
+								}
+							}
+
+						}
+					} else {
+						CLIUtils::addMessage(_t('Table %1 does not seem to have any duplicates!', $vs_t), array('color' => 'bold_green'));
+					}
+				}
+			}
+
+			return true;
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function remove_duplicate_recordsParamList() {
+			return array(
+				"tables|t-s" => _t('Specific tables to deduplicate, separated by commas or semicolons. Mandatory.'),
+				"delete|d" => _t('Delete duplicate records. Default is false.')
+			);
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function remove_duplicate_recordsUtilityClass() {
+			return _t('Maintenance');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function remove_duplicate_recordsShortHelp() {
+			return _t('Show and, optionally, remove duplicate records');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function remove_duplicate_recordsHelp() {
+			return _t('Lists and optionally removed duplicate records. For more info on how the algorithm works see here: http://docs.collectiveaccess.org/wiki/Deduplication');
+		}
+		# -------------------------------------------------------
+		/**
+		 * @param Zend_Console_Getopt|null $po_opts
+		 * @return bool
+		 */
+		public static function push_config_changes($po_opts=null) {
+			require_once(__CA_LIB_DIR__.'/ca/ConfigurationExporter.php');
+
+			if (!($vs_targets = $po_opts->getOption('targets'))) {
+				CLIUtils::addError(_t("Missing required parameter: targets. Try checking the help for this subcommand."));
+				return false;
+			}
+
+			if (!($vs_user = $po_opts->getOption('username'))) {
+				CLIUtils::addError(_t("Missing required parameter: username. Try checking the help for this subcommand."));
+				return false;
+			}
+
+			if (!($vs_password = (string)$po_opts->getOption('password'))) {
+				$vs_password = CLIUtils::_getPassword(_t('Password: '), true);
+				print "\n\n";
+			}
+
+			$vn_timestamp = intval($po_opts->getOption('timestamp'));
+			if (!($vs_log_dir = $po_opts->getOption('log'))) {
+				$vs_log_dir = Configuration::load()->get('batch_metadata_import_log_directory');
+			}
+
+			$vn_log_level = CLIUtils::getLogLevel($po_opts);
+
+			$o_log = (is_writable($vs_log_dir)) ? new KLogger($vs_log_dir, $vn_log_level) : null;
+
+			if ($o_log) { $o_log->logDebug(_t("[push-config-changes] Start preparing to push config changes")); }
+
+			$vn_timestamp = intval($vn_timestamp);
+
+			$va_targets = preg_split('/[;|]/u', $vs_targets);
+
+			$o_vars = new ApplicationVars();
+			$va_timestamps = $o_vars->getVar('push-config-changes-timestamps');
+
+			foreach($va_targets as $vs_target) {
+				$vs_target = trim($vs_target);
+
+				CLIUtils::addMessage(_t("Processing target %1", $vs_target));
+				if ($o_log) { $o_log->logDebug(_t("[push-config-changes] Processing target %1", $vs_target)); }
+
+				if(!isURL($vs_target)) {
+					CLIUtils::addError(_t("The target '%1' doesn't seem to be in URL format", $vs_target));
+					if ($o_log) { $o_log->logError(_t("[push-config-changes] The target '%1' doesn't seem to be in URL format", $vs_target)); }
+					return false;
+				}
+
+				$vs_target = "{$vs_target}/service.php/model/updateConfig";
+
+				if(isset($va_timestamps[$vs_target])) {
+					$vn_target_timestamp = intval($va_timestamps[$vs_target]);
+				} else {
+					$vn_target_timestamp = $vn_timestamp ?: 0;
+				}
+
+				if ($o_log) { $o_log->logDebug(_t("[push-config-changes] Service endpoint is '%1'. Timestamp for diff config is %2", $vs_target, $vn_target_timestamp)); }
+
+				$vs_config = ConfigurationExporter::exportConfigurationAsXML('', '', '', '', $vn_target_timestamp, true);
+				$va_timestamps[$vs_target] = time();
+				CLIUtils::addMessage(_t("Finished partial configuration export for target %1", $vs_target));
+
+				if ($o_log) { $o_log->logDebug(_t("[push-config-changes] Configuration fragment for target '%1' is \n %2", $vs_target, $vs_config)); }
+
+				$vo_handle = curl_init($vs_target);
+				curl_setopt($vo_handle, CURLOPT_CUSTOMREQUEST, 'PUT');
+				curl_setopt($vo_handle, CURLOPT_RETURNTRANSFER, true);
+				curl_setopt($vo_handle, CURLOPT_TIMEOUT, 600);
+				curl_setopt($vo_handle, CURLOPT_CONNECTTIMEOUT, 30);
+				curl_setopt($vo_handle, CURLOPT_SSL_VERIFYHOST, 0);
+				curl_setopt($vo_handle, CURLOPT_SSL_VERIFYPEER, 0);
+				curl_setopt($vo_handle, CURLOPT_FOLLOWLOCATION, true);
+				curl_setopt($vo_handle, CURLOPT_HTTPHEADER, ['Content-Type: application/x-www-form-urlencoded']);
+
+				// basic auth
+				curl_setopt($vo_handle, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+				curl_setopt($vo_handle, CURLOPT_USERPWD, $vs_user.':'.$vs_password);
+
+				// add config as request body
+				curl_setopt($vo_handle, CURLOPT_POSTFIELDS, $vs_config);
+
+				$vs_exec = curl_exec($vo_handle);
+				$vn_code = curl_getinfo($vo_handle, CURLINFO_HTTP_CODE);
+				curl_close($vo_handle);
+
+				if($vn_code != 200) {
+					CLIUtils::addError(_t("Pushing to target '%1' seems to have failed. HTTP response code was %2.", $vs_target, $vn_code));
+					if ($o_log) { $o_log->logError(_t("[push-config-changes] Pushing to target '%1' seems to have failed. HTTP response code was %2. Enable debug logging mode to get more info below.", $vs_target, $vn_code)); }
+				}
+
+				if ($o_log) { $o_log->logDebug(_t("[push-config-changes] Target '%1' responded with 200 OK", $vs_target)); }
+
+				$va_response = @json_decode($vs_exec, true);
+
+				if ($o_log) { $o_log->logDebug(_t("[push-config-changes] Decoded response from target '%1' is '%2'", $vs_target, print_r($va_response, true))); }
+
+				if(!isset($va_response['ok']) || !$va_response['ok']) {
+					if(is_array($va_errors = $va_response['errors'])) {
+						CLIUtils::addError(_t("Pushing to target '%1' seems to have failed. Response was not marked as okay. Errors were: %2", $vs_target, join(',', $va_errors)));
+					} else {
+						CLIUtils::addError(_t("Pushing to target '%1' seems to have failed. Response was not marked as okay. Raw response was: %2", $vs_target, $vs_exec));
+					}
+				}
+
+				if ($o_log) { $o_log->logDebug(_t("[push-config-changes] Finished processing target '%1'", $vs_target)); }
+			}
+
+			$o_vars->setVar('push-config-changes-timestamps', $va_timestamps);
+			$o_vars->save();
+			if ($o_log) { $o_log->logDebug(_t("[push-config-changes] Saved sync timestamps are: %1", print_r($va_timestamps, true))); }
+
+			CLIUtils::addMessage(_t("All done"));
+			if ($o_log) { $o_log->logDebug(_t("[push-config-changes] Finished ...")); }
+		}
+
+		public static function push_config_changesParamList() {
+			return [
+				"targets|t=s" => _t('Comma- or semicolon separated list of target systems to push changes to. We assume the same service account exists on all of these systems'),
+				"username|u=s" => _t('User name to use to log into the targets. We assume the same credentials can be used to log into all target systems.'),
+				"password|p=s" => _t('Password to use to log into the targets. We assume the same credentials can be used to log into all target systems.'),
+				"timestamp|s=s" => _t('Timestamp to use to filter the configuration changes that should be exported/pushed. Optional. The timestamp is only used for the very first push to that system. After that the master system will store the last push timestamp and use that instead. This parameter is a fixed offset/"starting point" of sorts.'),
+				"log|l-s" => _t('Path to directory in which to log import details. If not set no logs will be recorded.'),
+				"log-level|d-s" => _t('Logging threshold. Possible values are, in ascending order of important: DEBUG, INFO, NOTICE, WARN, ERR, CRIT, ALERT. Default is INFO.'),
+
+				// @todo some params that control excluding/including specific stuff?
+			];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function push_config_changesUtilityClass() {
+			return _t('Configuration');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function push_config_changesShortHelp() {
+			return _t('Pushes configuration changes from this system out to other systems.');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function push_config_changesHelp() {
+			return _t('Pushes configuration changes from this system out to other systems.');
+		}
+		# -------------------------------------------------------
+		/**
+		 * @param Zend_Console_Getopt|null $po_opts
+		 * @return bool
+		 */
+		public static function generate_new_system_guid($po_opts=null) {
+			// generate system GUID -- used to identify systems in data sync protocol
+			$o_vars = new ApplicationVars();
+			$o_vars->setVar('system_guid', $vs_guid = caGenerateGUID());
+			$o_vars->save();
+
+			CLIUtils::addMessage(_t('New system GUID is %1', $vs_guid));
+		}
+
+		public static function generate_new_system_guidParamList() {
+			return [];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function generate_new_system_guidUtilityClass() {
+			return _t('Maintenance');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function generate_new_system_guidShortHelp() {
+			return _t('Generates a new system GUID for this setup. Useful if you\'re using the sync/replication feature.');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function generate_new_system_guidHelp() {
+			return _t('This utility generates a new system GUID for the current system. This can be useful is you used a copy of another system to set it up and are now trying to sync/replicate data between the two. You may have to reset the system GUID for one of them in that case.');
+		}
+		# -------------------------------------------------------
+		/**
+		 * @param Zend_Console_Getopt|null $po_opts
+		 * @return bool
+		 */
+		public static function check_url_reference_integrity($po_opts=null) {
+			require_once(__CA_LIB_DIR__.'/ca/Attributes/Values/UrlAttributeValue.php');
+
+			$o_request = new RequestHTTP(null, [
+				'no_headers' => true,
+				'simulateWith' => [
+					'REQUEST_METHOD' => 'GET',
+					'SCRIPT_NAME' => 'index.php'
+				]
+			]);
+
+			UrlAttributeValue::checkIntegrityForAllElements([
+				'request' => $o_request,
+				'notifyUsers' => $po_opts->getOption('users'),
+				'notifyGroups' => $po_opts->getOption('groups')
+			]);
+		}
+		# -------------------------------------------------------
+		public static function check_url_reference_integrityParamList() {
+			return [
+				"users|u=s" => _t('User names to notify if there are errors. Multiple entries are delimited by comma or semicolon. Invalid or non-existing user named will be ignored. [Optional]'),
+				"groups|g=s" => _t('Groups to notify if there are errors. They\'re identified by group code. Multiple entries are delimited by comma or semicolon. Invalid or non-existing groups will be ignored. [Optional]'),
+			];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function check_url_reference_integrityUtilityClass() {
+			return _t('Maintenance');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function check_url_reference_integrityShortHelp() {
+			return _t('Checks integrity for all URL references in the database.');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function check_url_reference_integrityHelp() {
+			return _t('This utility checks the integrity for all URL attribute references in the database. It does so by trying to hit each URL and reading a few bytes. It does not download the whole file.');
+		}
+		# -------------------------------------------------------
+		/**
+		 * @param Zend_Console_Getopt|null $po_opts
+		 * @return bool
+		 */
+		public static function scan_site_page_templates($po_opts=null) {
+			require_once(__CA_LIB_DIR__."/ca/SitePageTemplateManager.php");
+			
+			CLIUtils::addMessage(_t("Scanning templates for tags"));
+			$va_results = SitePageTemplateManager::scan();
+			
+			CLIUtils::addMessage(_t("Added %1 templates; updated %2 templates", $va_results['insert'],$va_results['update']));
+			
+			if (is_array($va_results['errors']) && sizeof($va_results['errors'])) {
+				CLIUtils::addError(_t("Templates with errors: %1", join(", ", array_keys($va_results['errors']))));
+			}
+		}
+		# -------------------------------------------------------
+		public static function scan_site_page_templatesParamList() {
+			return [
+				"log|l-s" => _t('Path to directory in which to log import details. If not set no logs will be recorded.'),
+				"log-level|d-s" => _t('Logging threshold. Possible values are, in ascending order of important: DEBUG, INFO, NOTICE, WARN, ERR, CRIT, ALERT. Default is INFO.')
+			];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function scan_site_page_templatesUtilityClass() {
+			return _t('Content management');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function scan_site_page_templatesShortHelp() {
+			return _t('Scan site page templates for tags.');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function scan_site_page_templatesHelp() {
+			return _t('Scan site page template for tags to build the content management editing user interface.');
 		}
 		# -------------------------------------------------------
 	}

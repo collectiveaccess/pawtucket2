@@ -54,7 +54,7 @@
 						foreach ($va_object_ids as $vn_object_id => $what_is) {
 							$t_museum_object = new ca_objects($vn_object_id);
 							print "<div class='featuredHome'>";
-							print caNavLink($this->request, $t_museum_object->get('ca_object_representations.media.widepreview'), '', '', 'Museum', 'Index');
+							print caNavLink($this->request, $t_museum_object->get('ca_object_representations.media.megawidepreview'), '', '', 'Museum', 'Index');
 							print caNavLink($this->request, "<div class='caption'>Museum</div>", '', '', 'Museum', 'Index');
 							print "</div>";
 							if (strlen($t_museum_object->get('ca_objects.description')) > 200) {
@@ -79,7 +79,7 @@
 						foreach ($va_object_ids as $vn_object_id => $what_is) {
 							$t_archives_object = new ca_objects($vn_object_id);
 							print "<div class='featuredHome'>";
-							print caNavLink($this->request, $t_archives_object->get('ca_object_representations.media.widepreview'), '', '', 'Archives', 'Index');
+							print caNavLink($this->request, $t_archives_object->get('ca_object_representations.media.megawidepreview'), '', '', 'Archives', 'Index');
 							print caNavLink($this->request, "<div class='caption'>Archives</div>", '', '', 'Archives', 'Index');
 							print "</div>";
 							if (strlen($t_archives_object->get('ca_objects.description')) > 200) {
@@ -104,7 +104,7 @@
 						foreach ($va_object_ids as $vn_object_id => $what_is) {
 							$t_library_object = new ca_objects($vn_object_id);
 							print "<div class='featuredHome'>";
-							print caNavLink($this->request, $t_library_object->get('ca_object_representations.media.widepreview'), '', '', 'Library', 'Index');
+							print caNavLink($this->request, $t_library_object->get('ca_object_representations.media.megawidepreview'), '', '', 'Library', 'Index');
 							print caNavLink($this->request, "<div class='caption'>Library</div>", '', '', 'Library', 'Index');
 							print "</div>";
 							if (strlen($t_library_object->get('ca_objects.description')) > 200) {
@@ -129,7 +129,7 @@
 						foreach ($va_object_ids as $vn_object_id => $what_is) {
 							$t_testimony_object = new ca_objects($vn_object_id);
 							print "<div class='featuredHome'>";
-							print caNavLink($this->request, $t_testimony_object->get('ca_object_representations.media.widepreview'), '', '', 'Testimony', 'Index');
+							print caNavLink($this->request, $t_testimony_object->get('ca_object_representations.media.megawidepreview'), '', '', 'Testimony', 'Index');
 							print caNavLink($this->request, "<div class='caption'>Testimony</div>", '', '', 'Testimony', 'Index');
 							print "</div>";
 							if (strlen($t_testimony_object->get('ca_objects.description')) > 200) {

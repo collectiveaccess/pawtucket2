@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2015 Whirl-i-Gig
+ * Copyright 2007-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -40,6 +40,7 @@ require_once(__CA_LIB_DIR__.'/core/Parsers/ZipFile.php');
 require_once(__CA_LIB_DIR__.'/core/Logging/Eventlog.php');
 require_once(__CA_LIB_DIR__.'/core/Utils/Encoding.php');
 require_once(__CA_LIB_DIR__.'/core/Zend/Measure/Length.php');
+require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
 
 # ----------------------------------------------------------------------
 # String localization functions (getText)
@@ -475,7 +476,11 @@ function caFileIsIncludable($ps_file) {
 		// strip quotes from path if present since they'll cause file_exists() to fail
 		$ps_path = preg_replace("!^\"!", "", $ps_path);
 		$ps_path = preg_replace("!\"$!", "", $ps_path);
-		if (!$ps_path || (preg_match("/[^\/A-Za-z0-9\.:\ _\(\)\\\-]+/", $ps_path)) || !@file_exists($ps_path)) { return false; }	// hide basedir warnings
+		if (!$ps_path || (preg_match("/[^\/A-Za-z0-9\.:\ _\(\)\\\-]+/", $ps_path))) { return false; }
+
+		if(!ini_get('open_basedir') && !@is_readable($ps_path)) { // open_basedir and is_readable() have some weird interactions
+			return false;
+		}
 
 		return true;
 	}
@@ -571,12 +576,22 @@ function caFileIsIncludable($ps_file) {
 		}
 	}
 	# ----------------------------------------
+	/**
+	 *
+	 */
+	function caEscapeSearchForURL($ps_search) {
+		return rawurlencode(str_replace('/', '&#47;', $ps_search)); // encode slashes as html entities to avoid Apache considering it a directory separator
+	}
+	# ----------------------------------------
 	function caSanitizeStringForJsonEncode($ps_text) {
 		// Remove invalid UTF-8
 		mb_substitute_character(0xFFFD);
 		$ps_text = mb_convert_encoding($ps_text, 'UTF-8', 'UTF-8');
+
+		return strip_tags($ps_text);
+
 		// @see http://php.net/manual/en/regexp.reference.unicode.php
-		return preg_replace("/[^\p{Ll}\p{Lm}\p{Lo}\p{Lt}\p{Lu}\p{N}\p{P}\p{Zp}\p{Zs}\p{S}]|➔/", '', strip_tags($ps_text));
+		//return preg_replace("/[^\p{Ll}\p{Lm}\p{Lo}\p{Lt}\p{Lu}\p{N}\p{P}\p{Zp}\p{Zs}\p{S}]|➔/", '', strip_tags($ps_text));
 	}
 	# ----------------------------------------
 	/**
@@ -707,6 +722,22 @@ function caFileIsIncludable($ps_file) {
 			// proc_close in order to avoid a deadlock
 			$pn_return_val = proc_close($r_proc);
 			return true;
+		}
+	}
+	# ----------------------------------------
+	/**
+	 * Check if mod_rewrite web server module is available 
+	 *
+	 * @return bool
+	 */
+	$g_mod_write_is_available = null;
+	function caModRewriteIsAvailable() {
+		global $g_mod_write_is_available;
+		if (is_bool($g_mod_write_is_available)) { return $g_mod_write_is_available; }
+		if (function_exists('apache_get_modules')) {
+			return $g_mod_write_is_available = (bool)in_array('mod_rewrite', apache_get_modules());
+		} else {
+			return $g_mod_write_is_available = (bool)((getenv('HTTP_MOD_REWRITE') == 'On') ? true : false);
 		}
 	}
 	# ----------------------------------------
@@ -912,10 +943,10 @@ function caFileIsIncludable($ps_file) {
 		} else {
 			$sep = caGetDecimalSeparator($locale);
 			// replace unicode fractions with decimal equivalents
-			foreach(array(
-				'½' => $sep.'5', '⅓' => $sep.'333',
-				'⅔' => $sep.'667', '¼' => $sep.'25',
-				'¾'	=> $sep.'75') as $vs_glyph => $vs_val
+			foreach([
+				'½' => $sep.'5', '⅓' => $sep.'333', '¼' => $sep.'25', '⅛' => $sep.'125',
+				'⅔' => $sep.'667', 
+				'¾'	=> $sep.'75', '⅜' => $sep.'375', '⅝' => $sep.'625', '⅞' => $sep.'875'] as $vs_glyph => $vs_val
 			) {
 				$ps_fractional_expression = preg_replace('![ ]*'.$vs_glyph.'!u', $vs_val, $ps_fractional_expression);	
 			}
@@ -1089,14 +1120,18 @@ function caFileIsIncludable($ps_file) {
 	 *		type = either 'pixels' or 'relative'
 	 *
 	 * @param string $ps_dimension
+	 * @param array $pa_options Options include:
+	 *		returnAsString = return normalized dimension expression as string rather than an array of values. [Default is false]
+	 *		default = dimension expression to use if $ps_dimension is empty. [Default is null]
 	 * @return array An array describing the parsed value or null if no value was passed
 	*/
-	function caParseElementDimension($ps_dimension) {
-		$ps_dimension = trim($ps_dimension);
+	function caParseElementDimension($ps_dimension, $pa_options=null) {
+		if (!($ps_dimension = trim($ps_dimension))) { $ps_dimension = caGetOption('default', $pa_options, null); }
 		if (!$ps_dimension) { return null; }
 		
+		$va_val = null;
 		if (preg_match('!^([\d]+)[ ]*px$!', $ps_dimension, $va_matches)) {
-			return array(
+			$va_val = array(
 				'dimension' => (int)$va_matches[1],
 				'expression' => $ps_dimension,
 				'type' => 'pixels'
@@ -1104,18 +1139,22 @@ function caFileIsIncludable($ps_file) {
 		}
 		
 		if (preg_match('!^([\d\.]+)[ ]*%$!', $ps_dimension, $va_matches)) {
-			return array(
+			$va_val = array(
 				'dimension' => (int)$va_matches[1],
 				'expression' => $ps_dimension,
 				'type' => 'relative'
 			);
 		}
 		
-		return array(
-			'dimension' => (int)$ps_dimension,
-			'expression' => "{$ps_dimension} px",
-			'type' => 'pixels'
-		);
+		if(!$va_val && $ps_dimension) {
+			$va_val = array(
+				'dimension' => (int)$ps_dimension,
+				'expression' => "{$ps_dimension}px",
+				'type' => 'pixels'
+			);
+		}
+		if (!$va_val) { return null; }
+		return caGetOption('returnAsString', $pa_options, false) ? $va_val['expression'] : $va_val;
 	}
 	# ---------------------------------------
 	/**
@@ -1211,6 +1250,25 @@ function caFileIsIncludable($ps_file) {
 	 */
 	function caStripLeadingPunctuation($ps_string) {
 		return preg_replace('!^[^A-Za-z0-9]+!u', '', trim($ps_string));
+	}
+	# ---------------------------------------
+	/**
+	 * Remove all HTML tags and their contents 
+	 *
+	 * @param string $ps_string The string to process
+	 * @return string $ps_string with HTML tags and associated content removed
+	 */
+	function caStripTagsAndContent($ps_string) {
+		$o_doc = str_get_dom($ps_string);	
+		foreach($o_doc("*") as $o_node) {
+			if ($o_node->tag != '~text~') {
+				$o_node->delete();
+			}
+		}
+		$vs_proc_string = $o_doc->html();
+		$vs_proc_string = str_replace("<~root~>", "", $vs_proc_string);
+		$vs_proc_string = str_replace("</~root~>", "", $vs_proc_string);
+		return trim($vs_proc_string);
 	}
 	# ---------------------------------------
 	/**
@@ -1496,6 +1554,17 @@ function caFileIsIncludable($ps_file) {
 			return isset($va_date['start']) ? $va_date['start'] : null;
 		}
 		return null;
+	}
+	# ---------------------------------------
+	/**
+	  * Determine if date expression can be parsed 
+	  *
+	  * @param string $ps_date_expression A date/time expression as described in http://docs.collectiveaccess.org/wiki/Date_and_Time_Formats
+	  * @return bool True if expression can be parsed
+	  */
+	function caIsValidDate($ps_date_expression) {
+		$o_tep = new TimeExpressionParser();
+		return $o_tep->parse($ps_date_expression);
 	}
 	# ---------------------------------------
 	/**
@@ -1881,11 +1950,12 @@ function caFileIsIncludable($ps_file) {
 		if (is_array($pm_option)) { 
 			$vm_val = null;
 			foreach($pm_option as $ps_option) {
-				if (isset($pa_options[$ps_option]) && !is_null($pa_options[$ps_option]) && ($vm_val = $pa_options[$ps_option])) {
+				if (isset($pa_options[$ps_option]) && !is_null($pa_options[$ps_option])) {
+					$vm_val = $pa_options[$ps_option];
 					break;
 				}
 			}
-			if (!$vm_val) { $vm_val = $pm_default; }
+			if (is_null($vm_val)) { $vm_val = $pm_default; }
 		} else {
 			$vm_val = (isset($pa_options[$pm_option]) && !is_null($pa_options[$pm_option])) ? $pa_options[$pm_option] : $pm_default;
 		}
@@ -2389,6 +2459,59 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
+	 * Get symbol for currency if available. "USD" will return "$", for example, while
+	 * "CAD" will return "CAD"
+	 *
+	 * @param $ps_value string Currency specifier (Ex. USD, EUR, CAD)
+	 *
+	 * @return string Symbol (Ex. $, £, ¥) or currency specifier if no symbol is available
+	 */
+	function caGetCurrencySymbol($ps_value) {
+		$o_config = Configuration::load();
+		$vs_dollars_are_this = strtolower($o_config->get('default_dollar_currency'));
+		switch(strtolower($ps_value)) {
+			case $vs_dollars_are_this:
+				return '$';
+			case 'eur':
+				return '€';
+			case 'gbp':
+				return '£';
+			case 'jpy':
+				return '¥';
+		}
+		return $ps_value;
+	}
+	# ----------------------------------------
+	/**
+	 * Parse currency value and return array with value and currency type.
+	 *
+	 * @param string $ps_value
+	 * @return array 
+	 */
+	function caParseCurrencyValue($ps_value) {
+		// it's either "<something><decimal>" ($1000) or "<decimal><something>" (1000 EUR) or just "<decimal>" with an implicit <something>
+		
+		// either
+		if (preg_match("!^([^\d]+)([\d\.\,]+)$!", trim($ps_value), $va_matches)) {
+			$vs_decimal_value = $va_matches[2];
+			$vs_currency_specifier = trim($va_matches[1]);
+		// or 1
+		} else if (preg_match("!^([\d\.\,]+)([^\d]+)$!", trim($ps_value), $va_matches)) {
+			$vs_decimal_value = $va_matches[1];
+			$vs_currency_specifier = trim($va_matches[2]);
+		// or 2
+		} else if (preg_match("!(^[\d\,\.]+$)!", trim($ps_value), $va_matches)) {
+			$vs_decimal_value = $va_matches[1];
+			$vs_currency_specifier = null;
+		}
+		
+		if ($vs_currency_specifier || ($vs_decimal_value > 0)) {
+			return ['currency' => $vs_currency_specifier, 'value' => $vs_decimal_value];
+		}
+		return null;
+ 	}
+	# ----------------------------------------
+	/**
 	 * 
 	 *
 	 * @return array 
@@ -2476,7 +2599,7 @@ function caFileIsIncludable($ps_file) {
 		$size = array('B','KiB','MiB','GiB','TiB');
 		$factor = floor((strlen($bytes) - 1) / 3);
 
-		return sprintf("%,{$decimals}f", $bytes/pow(1024, $factor)).@$size[$factor];
+		return sprintf("%.{$decimals}f", $bytes/pow(1024, $factor)).@$size[$factor];
 	}
 	# ----------------------------------------
 	/**
@@ -2859,6 +2982,75 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
+	 * Parses and normalizes length exprssions in the form <dimension1> <delimiter> <dimension2> <delimiter> <dimension3> ... (Ex. 4" x 5")
+	 * into an array of normalized dimension string. When no units are specified default units are specified (Ex. 4x6 is returned as ["4 in", "6 in"]).
+	 * When units are specified for some, but not all, quantities then the first specified unit in the expression in applied to all unit-less quantities 
+	 * (Ex. 4x6cm is returned as ["4 cm", "6 cm"] no matter what default units are set to). When units are specified that are always used for the quantity they
+	 * apply to (Ex. 4 x 6cm x 8" is returned as ["4 cm", "6 cm", "8 in"])
+	 *
+	 * @param string $ps_expression Expression to parse
+	 * @param null|array $pa_options Options include:
+	 *		delimiter = Delimiter string between dimensions. Delimiter will be processed case-insensitively. [Default is 'x']
+	 *		units = Units to use as default for quantities that lack a specification. [Default is inches]
+	 *		returnExtractedMeasurements = return an array of arrays, each of which includes the numeric quantity, units and display string as separate values. [Default is false]
+	 * @return array An array of parsed and normalized length dimensions, parseable by caParseLengthDimension() or Zend_Measure
+	 */
+	function caParseLengthExpression($ps_expression, $pa_options=null) {
+		$va_extracted_measurements = [];
+		$vs_specified_units = $vs_extracted_units = null;
+		
+		$ps_units = caGetOption('units', $pa_options, 'in');
+		$pb_return_extracted_measurements = caGetOption('returnExtractedMeasurements', $pa_options, false);
+		
+		if ($ps_delimiter = caGetOption('delimiter', $pa_options, 'x')) {
+			$va_measurements = explode(strtolower($ps_delimiter), strtolower($ps_expression));
+		} else {
+			$ps_delimiter = '';
+			$va_measurements = array($pm_value);
+		}
+		
+		foreach($va_measurements as $vn_i => $vs_measurement) {
+			$vs_measurement = trim(preg_replace("![ ]+!", " ", $vs_measurement));
+			
+			$vs_extracted_units = $vs_measurement_units = null;
+			try {
+				if (!($vo_parsed_measurement = caParseLengthDimension($vs_measurement))) {
+					throw new Exception("Missing or invalid dimensions");
+				} else {
+					$vs_measurement = trim($vo_parsed_measurement->toString());
+					$vs_extracted_units = caGetLengthUnitType($vo_parsed_measurement->getType(), ['short' => true]);
+					if (!$vs_specified_units) { $vs_specified_units = $vs_extracted_units; }
+				}
+			} catch(Exception $e) {
+				if (preg_match("!^([\d\.]+)!", $vs_measurement, $va_matches)) {
+					$vs_measurement = $va_matches[0]." {$ps_units}";
+				} else {
+					continue;
+				}
+			}
+			$va_extracted_measurements[] = ['quantity' => preg_replace("![^\d\.]+!", "", $vs_measurement), 'string' => $vs_measurement, 'units' => $vs_extracted_units];
+		}
+		if ($pb_return_extracted_measurements) { return $va_extracted_measurements; }
+		
+		$vn_set_count = 0;
+		
+		$va_return = [];
+		foreach($va_extracted_measurements as $vn_i => $va_measurement) {
+			
+			if ($va_measurement['units']) {
+				$vs_measurement = $va_measurement['quantity']." ".$va_measurement['units'];
+			} elseif ($vs_specified_units) {
+				$vs_measurement = $va_measurement['quantity']." {$vs_specified_units}";
+			} else {
+				$vs_measurement = $va_measurement['quantity']." {$ps_units}";
+			}
+			$va_return[] = $vs_measurement;
+		}
+		
+		return $va_return;
+	}
+	# ----------------------------------------
+	/**
 	 * Generate a GUID 
 	 */
 	function caGenerateGUID(){
@@ -3056,12 +3248,15 @@ function caFileIsIncludable($ps_file) {
 	 * @return string
 	 */
 	function caLengthToFractions($pn_inches_as_float, $pn_denom, $pb_reduce = true) {
+		$o_config = Configuration::load();
+		
+		$pn_inches_as_float = (float)preg_replace("![^\d\.]+!", "", $pn_inches_as_float);	// remove commas and such; also remove "-" as dimensions can't be negative
 		$num = round($pn_inches_as_float * $pn_denom);
 		$int = (int)($num / $pn_denom);
 		$num %= $pn_denom;
 
 		if (!$num) {
-			return "$int in";
+			return "{$int} in";
 		}
 
 		if ($pb_reduce) {
@@ -3083,7 +3278,36 @@ function caFileIsIncludable($ps_file) {
 			if ($num < 0) {
 				$num *= -1;
 			}
-			return "$int $num/$pn_denom in";
+			
+			if ($o_config->get('use_unicode_fractions_for_measurements')) {
+				if (($num === 1) && ($pn_denom == 4)) {
+					$frac = "¼";
+				} elseif (($num === 1) && ($pn_denom == 2)) {
+					$frac = "½";
+				} elseif (($num === 1) && ($pn_denom == 3)) {
+					$frac = "⅓";
+				} elseif (($num === 1) && ($pn_denom == 4)) {
+					$frac = "¼";
+				} elseif (($num === 1) && ($pn_denom == 8)) {
+					$frac = "⅛";
+				} elseif (($num === 2) && ($pn_denom == 3)) {
+					$frac = "⅔";
+				} elseif (($num === 3) && ($pn_denom == 4)) {
+					$frac = "¾";
+				} elseif (($num === 3) && ($pn_denom == 8)) {
+					$frac = "⅜";
+				} elseif (($num === 5) && ($pn_denom == 8)) {
+					$frac = "⅝";
+				} elseif (($num === 7) && ($pn_denom == 8)) {
+					$frac = "⅞";
+				} else {
+					$frac = "{$num}/{$pn_denom}";
+				}
+			} else {
+				$frac = "{$num}/{$pn_denom}";
+			}
+			
+			return "$int $frac in";
 		}
 
 		return "$num/$pn_denom in";
@@ -3133,5 +3357,141 @@ function caFileIsIncludable($ps_file) {
 			}
 		}
 		return $vs_display_value;
+	}
+	# ----------------------------------------
+	/**
+	 * Get list of (enabled) primary tables as table_num => table_name mappings
+	 * @return array
+	 */
+	function caGetPrimaryTables() {
+		$o_conf = Configuration::load();
+		$va_ret = [];
+		foreach([
+			'ca_objects' => 57,
+			'ca_object_lots' => 51,
+			'ca_entities' => 20,
+			'ca_places' => 72,
+			'ca_occurrences' => 67,
+			'ca_collections' => 13,
+			'ca_storage_locations' => 89,
+			'ca_object_representations' => 56,
+			'ca_loans' => 133,
+			'ca_movements' => 137,
+			'ca_list_items' => 33,
+			'ca_tours' => 153,
+			'ca_tour_stops' => 155
+		] as $vs_table_name => $vn_table_num) {
+			if(!$o_conf->get($vs_table_name.'_disable')) {
+				$va_ret[$vn_table_num] = $vs_table_name;
+			}
+		}
+		return $va_ret;
+	}
+	# ----------------------------------------
+	/**
+	 * Get CA primary tables (objects, entities, etc.) for HTML select, i.e. as Display Name => Table Num mapping
+	 * @return array
+	 */
+	function caGetPrimaryTablesForHTMLSelect() {
+		$va_tables = caGetPrimaryTables();
+		$o_dm = Datamodel::load();
+		$va_ret = [];
+		foreach($va_tables as $vn_table_num => $vs_table) {
+			$va_ret[$o_dm->getInstance($vn_table_num, true)->getProperty('NAME_PLURAL')] = $vn_table_num;
+		}
+		return $va_ret;
+	}
+	# ----------------------------------------
+	/**
+	 * 
+	 * @return array
+	 */
+	function caNormalizeValueArray($pa_values, $pa_options=null) {
+		$va_values_proc = [];
+		
+		$o_purifier = null;
+		if($pb_purify = caGetOption('purify', $pa_options, false)) {
+			if (!(($o_purifier = caGetOption('purifier', $pa_options, null)) instanceof HTMLPurifier)) {
+				$o_purifier = new HTMLPurifier();	
+			}	
+		}
+		
+		foreach($pa_values as $vs_key => $vm_val) {
+			if (is_array($vm_val)) {
+				if(isset($vm_val[0]) && !is_array($vm_val[0]) && caIsValidSqlOperator($vm_val[0], ['nullable' => true, 'isList' => true])) {
+					$vm_val = [$vm_val];
+				}
+				foreach($vm_val as $vs_key2 => $vm_list_vals) {
+					if (is_array($vm_list_vals) && !is_array($vm_list_vals[0]) && caIsValidSqlOperator($vm_list_vals[0], ['nullable' => true, 'isList' => true])) {
+						$vm_list_vals = [$vm_list_vals];
+					}
+					if (!is_array($vm_list_vals)) { $vm_list_vals = [$vm_list_vals]; }
+					
+					foreach($vm_list_vals as $vm_list_val) {
+						
+						if(!is_array($vm_list_val)) { $vm_list_val = ['=', $vm_list_val]; }
+						if (caIsValidSqlOperator($vm_list_val[0], ['nullable' => true, 'isList' => true])) {
+							if (is_array($vm_list_val[1]) && $o_purifier) { 
+								$va_vals_proc = [];
+								foreach($vm_list_val[1] as $vm_sublist_val) {
+									$va_vals_proc[] = !is_null($vm_sublist_val) ? $o_purifier->purify($vm_sublist_val) : $vm_sublist_val;
+								}
+							
+								if (!is_numeric($vs_key2)) { 
+									$va_values_proc[$vs_key][$vs_key2][] = [$vm_list_val[0], $va_vals_proc];
+								} else {
+									$va_values_proc[$vs_key][] = [$vm_list_val[0], $va_vals_proc];
+								}
+							} else {
+								if (!is_numeric($vs_key2)) { 
+									$va_values_proc[$vs_key][$vs_key2][] = [$vm_list_val[0], $o_purifier && !is_null($vm_list_val[1]) ? $o_purifier->purify($vm_list_val[1]) : $vm_list_val[1]];
+								} else {
+									$va_values_proc[$vs_key][] = [$vm_list_val[0], $o_purifier && !is_null($vm_list_val[1]) ? $o_purifier->purify($vm_list_val[1]) : $vm_list_val[1]];
+								}
+							}
+						} else {
+							$va_values_proc[$vs_key][$vs_key2][] = caNormalizeValueArray($vm_list_val, $pa_options);
+						}
+					}
+				}
+			} else {
+				$va_values_proc[$vs_key][] = ['=', $o_purifier && !is_null($vm_val) ? $o_purifier->purify($vm_val) : $vm_val];
+			}
+		}
+		return $va_values_proc;
+	}
+	# ----------------------------------------
+	/**
+	 * 
+	 * @return bool
+	 */
+	function caIsValidSqlOperator($ps_op, $pa_options=null) {
+		$ps_type = caGetOption('type', $pa_options, null, ['forceLowercase' => true]);
+		$pb_nullable = caGetOption('nullable', $pa_options, false);
+		$pb_is_list = caGetOption('isList', $pa_options, false);
+		
+		switch(strtolower($ps_op)) {
+			case '>':
+			case '<':
+			case '>=':
+			case '<=':
+				return (!$ps_type || ($ps_type == 'numeric')) ? true : false;
+				break;
+			case '=':
+			case '<>':
+			case '!=':
+				return true;
+				break;
+			case 'like':
+				return (!$ps_type || ($ps_type == 'string')) ? true : false;
+				break;
+			case 'is':
+				return ($pb_nullable) ? true : false;
+				break;
+			case 'in':
+				return ($pb_is_list) ? true : false;
+				break;
+		}
+		return false;
 	}
 	# ----------------------------------------

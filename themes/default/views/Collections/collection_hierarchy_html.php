@@ -9,12 +9,12 @@
 	$va_collection_type_icons = $this->getVar("collection_type_icons");
 	$vb_has_children = false;
 	$vb_has_grandchildren = false;
-	if($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))){
+	if($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.idno_sort'))){
 		$vb_has_children = true;
 		$qr_collection_children = caMakeSearchResult("ca_collections", $va_collection_children);
 		if($qr_collection_children->numHits()){
 			while($qr_collection_children->nextHit()){
-				if($qr_collection_children->get("ca_collections.children.collection_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values))){
+				if($qr_collection_children->get("ca_collections.children.collection_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.idno_sort'))){
 					$vb_has_grandchildren = true;
 				}
 			}
@@ -47,13 +47,6 @@
 							# --- link open in panel or to detail
 							$va_grand_children_type_ids = $qr_collection_children->get("ca_collections.children.type_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values));
 							$vb_link_sublist = false;
-							#if($va_grand_children_type_ids){
-							#	foreach($va_grand_children_type_ids as $vn_grand_child_type_id){
-							#		if(!in_array($vn_grand_child_type_id, $va_exclude_collection_type_ids)){
-							#			$vb_link_sublist = true;
-							#		}
-							#	}
-							#}
 							if(sizeof($va_grand_children_type_ids)){
 								$vb_link_sublist = true;
 							}
