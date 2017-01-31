@@ -11,10 +11,12 @@ a {
 }
 h1, h2, h3, h4, h5, h6{
 	font-family: Georgia, 'Times New Roman', Serif;
-	color: #00539F;
+	color: #515151;
 }
 
-
+h1 {
+	font-size: 28px;
+}
 /* header styles */
 .navbar-brand{
 	width: 100%;
@@ -86,6 +88,10 @@ h1, h2, h3, h4, h5, h6{
 	margin: 0 12%;
 	font-family: 'Trebuchet MS', Verdana, Arial, Helvetica, sans-serif;
 }
+.frontSlide img {
+	margin: 0 auto;
+	display: block;
+}
 /* Browse mega-menu */
 .filterMenuFacetList li.active{
 	background-color: #c6e4ff; 
@@ -112,6 +118,9 @@ h1, h2, h3, h4, h5, h6{
 .purchaseLink a{
 	font-weight: bold;
 }
+#moreChildren{
+	display: none;
+}
 /* multisearch Customizations */
 .collectionMultisearchResult{
 	width: 320px !important;
@@ -119,6 +128,15 @@ h1, h2, h3, h4, h5, h6{
 }
 .resultBlock{
 	overflow-y: visible !important;
+}
+.multisearch .multisearchResult{
+	height: 175px;
+}
+.multisearch .blockResults, .multisearch .blockResultScroller{
+	height: 200px;
+}
+.multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious{
+	height: 180px;
 }
 /* Set link color in Search/Browse containers */
 .multisearch h3 a, .multisearchFullResults a, .multisearchSort ul li a, .multisearch .multisearchResult a, .multisearch .entitiesResult a, .bResultItem .bResultItemText a, .bResultItemExpandedInfo a, .bREsultItemContent .bResultItemText a{
@@ -131,4 +149,17 @@ h1, h2, h3, h4, h5, h6{
 /* But set lightbox link color back to gray */
 .bResultItemExpandedInfo a{
 	color: #515151;
+}
+/* Lightbox item details */
+.lbItemContainer{
+	min-width: 0;
+}
+.lbItem a{
+	color: #00539F;
+}
+.lbExpandedInfo a{
+	color: #666;
+}
+.lbExpandedInfo a:hover, .lbSetExpandedInfo a:hover{
+	text-decoration: none;
 }

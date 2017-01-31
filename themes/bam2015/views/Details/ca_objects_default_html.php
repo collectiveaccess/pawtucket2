@@ -19,9 +19,10 @@
 		$vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon");
 		
 		$t_rep = $this->getVar("t_representation");
-		if($va_rep_type == 'audio/mpeg'){
-			$vs_detail_link = caDetailLink($this->request, "<div class='detailOverlayItemImgPlaceholder'>".$vs_type_placeholder."</div>", "", "ca_objects", $t_object->get("ca_objects.object_id"));
-		}else{
+		#if($va_rep_type == 'audio/mpeg'){
+		#	$vs_detail_link = caDetailLink($this->request, "<div class='detailOverlayItemImgPlaceholder'>".$vs_type_placeholder."</div>", "", "ca_objects", $t_object->get("ca_objects.object_id"));
+		#}else{
+		if($t_rep){
 			$va_opts = array('display' => 'related_object_overlay', 'object_id' => $t_object->get('object_id'), 'representation_id' => $t_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => caGetUserAccessValues($this->request));
 			if($t_rep && (!in_array($va_rep_type, array('video/mp4', 'video/x-flv', 'video/mpeg', 'audio/x-realaudio', 'video/quicktime', 'video/x-ms-asf', 'video/x-ms-wmv', 'application/x-shockwave-flash', 'video/x-matroska')))){
 				$vs_detail_link = caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
@@ -29,7 +30,10 @@
 				# --- don't make video a link
 				$vs_detail_link = $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts);
 			}
+		}else{
+			$vs_detail_link = caDetailLink($this->request, "<div class='detailOverlayItemImgPlaceholder'>".$vs_type_placeholder."</div>", "", "ca_objects", $t_object->get("ca_objects.object_id"));
 		}
+		#}
 ?>
 		<div class="container">
 			<div class="row">
