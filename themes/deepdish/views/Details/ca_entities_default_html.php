@@ -22,6 +22,7 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
+					{{{<ifdef code="ca_entities.shortBio"><H6>Biography</H6>^ca_entities.shortBio<br/></ifdef>}}}
 					{{{<ifdef code="ca_entities.longBio"><H6>Biography</H6>^ca_entities.longBio<br/></ifdef>}}}
 					
 				</div><!-- end col -->

@@ -1,12 +1,17 @@
 @import url("//fonts.googleapis.com/css?family=Lato:300,400,700,900");
 @import url("//fonts.googleapis.com/css?family=Merriweather:400,400italic,700,700italic");
 
+html {
+    position: relative;
+    min-height: 100%;
+}
 body {
 	font-family:"Lato";
 	line-height: 28px;
 	font-size:14px;
 	color: #515151;
 	font-weight:400;
+	margin-bottom:70px; 
 }
 a, a:hover, a:active {
 	color: #fe5000;
@@ -87,6 +92,23 @@ h6 {
 		font-size: 18px;
 	}
 }
+
+/* footer */
+
+#footer {
+	position:absolute;
+	height:70px;
+	padding-left:15px;
+	padding-right:15px;
+	bottom:0px;
+	width:100%;
+	margin-bottom:0px;
+	line-height:1.4em;
+	padding-top:10px;
+}
+#footer div {
+	margin-bottom:5px;
+}
 .front H1 {
 	color:#000;
 	padding:0px;
@@ -94,6 +116,14 @@ h6 {
 	font-weight:700;
 	font-size:36px;
 	text-transform:uppercase;
+}
+.wfLogo {
+	text-align:right;
+}
+.wfLogo img {
+	width:80px;
+	height:auto;
+	padding:0px 5px 5px 5px;
 }
 
 /* Browse Panel */

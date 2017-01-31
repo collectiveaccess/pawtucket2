@@ -43,7 +43,7 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+			<div class='col-sm-6 col-md-6 col-lg-6'>
 
 				
 				<?php #print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
@@ -70,7 +70,7 @@
 ?>
 			</div><!-- end col -->
 			
-			<div class='col-sm-6 col-md-6 col-lg-5'>
+			<div class='col-sm-6 col-md-6 col-lg-6'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>  
 				<HR>
@@ -123,6 +123,9 @@
 						print "<div><b>Institutional Price: </b>".$va_inst."</div>";
 					}					
 					print "</div>";
+				}
+				if ($vs_kanopy_link = $t_object->get('ca_objects.kanopy_link')) {
+					print "<div class='unit' style='margin-top:20px;'><a href='".$vs_kanopy_link."' target='_blank'>".caGetThemeGraphic($this->request, 'kanopy.jpg', array('width' => '200px'))."</a></div>";
 				}
 																															
 ?>				
