@@ -16,18 +16,36 @@
 		if ($vs_type = $t_item->get('ca_occurrences.type_id', array('convertCodesToDisplayText' => true))) {
 			print "<h6 class='leader'>".$vs_type."</h6>";
 		}
-		print "<h1>";
-		print "<i>".$t_item->get('ca_occurrences.preferred_labels')."</i>";
-		if ($vs_ref_two = $t_item->get('ca_occurrences.nonpreferred_labels')) {
-			print ", <i>".$vs_ref_two."</i>";
+		print "<h1>".$t_item->get('ca_occurrences.preferred_labels')."</h1>";
+		
+		if ($va_authors = $t_item->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('author'), 'returnAsArray' => true))) {
+			print "<div class='unit'>";
+			foreach ($va_authors as $va_key => $va_author) {
+				$t_author = new ca_entities($va_author);
+				print caNavLink($this->request, $t_author->get('ca_entities.preferred_labels'), '', 'Search', 'references', 'search/ca_entities.entity_id:'.$va_author)."<br/>";
+			}
+			print "</div>";
 		}
-		if ($vs_author = $t_item->getWithTemplate('<ifcount code="ca_entities.preferred_labels" min="1" restrictToRelationshipTypes="author" relativeTo="ca_entities">, <unit restrictToRelationshipTypes="author" relativeTo="ca_entities" delimiter=", ">^ca_entities.preferred_labels</unit><ifcount>')) {
-			print $vs_author;
+		if ($va_publishers = $t_item->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('publisher'), 'returnAsArray' => true))) {
+			print "<div class='unit'>";
+			foreach ($va_publishers as $va_key => $va_publisher) {
+				$t_publisher = new ca_entities($va_publisher);
+				print caNavLink($this->request, $t_publisher->get('ca_entities.preferred_labels'), '', 'Search', 'references', 'search/ca_entities.entity_id:'.$va_publisher)."<br/>";
+			}
+			print "</div>";
 		}
-		if ($va_date = $t_item->get('ca_occurrences.display_date')) {
-			print ", ".$va_date;
-		}		
-		print "</h1>";
+		if ($va_institutions = $t_item->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('institution'), 'returnAsArray' => true))) {
+			print "<div class='unit'>";
+			foreach ($va_institutions as $va_key => $va_institution) {
+				$t_institution = new ca_entities($va_institution);
+				print caNavLink($this->request, $t_institution->get('ca_entities.preferred_labels'), '', 'Search', 'references', 'search/ca_entities.entity_id:'.$va_institution)."<br/>";
+			}
+			print "</div>";
+		}
+		if ($va_date = $t_item->get('ca_occurrences.occurrence_dates')) {
+			print "<div class='unit'>".caNavLink($this->request, $va_date, '', 'Search', 'references', 'search/ca_occurrences.occurrence_dates:"'.$va_date.'"')."</div>";
+		}						
+		
 		if ($vs_remarks = $t_item->get('ca_occurrences.occurrence_notes')) {
 			print "<div class='drawer' style='padding-top:0px;'>".$vs_remarks."</div>";
 		}		

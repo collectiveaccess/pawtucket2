@@ -141,9 +141,15 @@
 		if ($va_catalog_id = $t_object->get('ca_objects.catalog_number')) {
 			print "<div class='unit'>Catalog ID - ".$va_catalog_id."</div>";
 		}
+		if ($va_institutional_id = $t_object->get('ca_objects.institutional_id')) {
+			print "<div class='unit'>Institutional ID - ".$va_institutional_id."</div>";
+		}		
 		if ($va_copyright = $t_parent->get('ca_objects.copyright')) {
 			print "<div class='unit'>Copyright - ".$va_copyright."</div>";
-		}		
+		}	
+		if ($va_photo_credit = $t_object->get('ca_objects.photography_credit_line')) {
+			print "<div class='unit'>Photography Credit Line - ".$va_photo_credit."</div>";
+		}	
 		if ($va_keywords = $t_object->get('ca_list_items.item_id', array('returnAsArray' => true))) {
 			$va_keyword_links = array();
 			foreach ($va_keywords as $va_key => $va_keyword_id) {
@@ -214,14 +220,17 @@
 		foreach ($va_provenance as $va_key => $va_relation_id) {
 			$t_prov = new ca_collections($va_relation_id['collection_id']);
 			$t_prov_rel = new ca_objects_x_collections($va_relation_id['relation_id']);
-			if ($t_prov->get('ca_collections.public_private') == 403) {
+			if ($t_prov->get('ca_collections.public_private', array('convertCodesToDisplayText' => true)) == 'private') {
 				$vs_provenance.= "<div>";
 				$vs_provenance.= $t_prov->get('ca_collections.preferred_labels');
 				if ($vs_display_date = $t_prov_rel->get('ca_objects_x_collections.display_date')) {
 					$vs_provenance.= ", ".$vs_display_date;
 				}
+				if ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line')) {
+					$vs_provenance.= ", ".$vs_remark;
+				}				
 				$vs_provenance.= "</div>";
-			} else { //if ($t_prov->get('access') != 0 )
+			} elseif ($t_prov->get('access') != 0 ){
 				$va_provenance_id = $t_prov->get('ca_collections.collection_id');
 				$vs_provenance.= "<div>".caNavLink($this->request, $t_prov->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_provenance_id);
 								
@@ -247,6 +256,9 @@
 					}	
 					if (sizeof($vs_buf) > 0){
 						$vs_provenance.= ", ".join(', ', $vs_buf);
+					}
+					if ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line')) {
+						$vs_provenance.= ", ".$vs_remark;
 					}
 				}
 				if ($t_prov_rel->get('ca_objects_x_collections.uncertain') == $vs_list_value) {
@@ -283,7 +295,7 @@
 <?php
 		if ($vs_reference = $t_object->getWithTemplate('<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels">, ^ca_occurrences.nonpreferred_labels</ifdef></l><ifcount code="ca_entities.preferred_labels" min="1">, <unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=", ">^ca_entities.preferred_labels</unit></ifcount><ifdef code="ca_occurrences.display_date">, ^ca_occurrences.display_date</ifdef></unit>')) {
 			print "<div class='drawer'>";
-			print "<h6><a href='#' onclick='$(\"#referenceDiv\").toggle(400);return false;'>Reference <i class='fa fa-chevron-down'></i></a></h6>";
+			print "<h6><a href='#' onclick='$(\"#referenceDiv\").toggle(400);return false;'>References <i class='fa fa-chevron-down'></i></a></h6>";
 			print "<div id='referenceDiv'>".$vs_reference."</div>";
 			print "</div>";
 		}

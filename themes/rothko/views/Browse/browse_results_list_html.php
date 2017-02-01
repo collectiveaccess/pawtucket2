@@ -136,15 +136,12 @@
 						$vs_rep_detail_link 	= "<div class='text-center bResultListItemImg'>".caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id)."</div>";	
 						$vn_parent_id = $qr_res->get("ca_objects.parent_id");
 						$t_parent = new ca_objects($vn_parent_id);
-						$vs_catno = "";
-						if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
-							$vs_catno = "<div class='catno'>cat. ".$vs_catalog_number."</div>";
-						}				
+						#$vs_catno = "";
+						#if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
+						#	$vs_catno = "<div class='catno'>cat. ".$vs_catalog_number."</div>";
+						#}				
 						if ($vs_date = $qr_res->get('ca_objects.creation_date')) {
 							$vs_info.= "<p>".$vs_date."</p>";
-						}
-						if ($vs_medium = $qr_res->get('ca_objects.medium.medium_list', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
-							$vs_info.= "<p>".$vs_medium."</p>";
 						}
 						if ($va_collection = $t_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {
 							$vs_info.= "<p>".$va_collection."</p>";
@@ -152,28 +149,22 @@
 						$vs_compare_link = !$vs_type_placeholder ? "<a href='#' class='compare_link' data-id='{$vn_id}'><i class='fa fa-clone' aria-hidden='true'></i></a>" : '';
 				
 					} elseif ($vs_table === 'ca_occurrences') {
+						$vs_result_text = "";
 						$vs_type = $qr_res->get('ca_occurrences.type_id', array('convertCodesToDisplayText' => true));
 						if ($vs_type == 'Exhibition') {
-							if ($vs_venue = $qr_res->getWithTemplate(', <unit relativeTo="ca_entities" restrictToRelationshipTypes="venue">^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit>')) {
-								$vs_info.= $vs_venue;
+							if ($vs_museum = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue')))) {
+								$vs_result_text.=", ".$vs_museum;
 							}
-							if ($vs_exh_date = $qr_res->get('ca_occurrences.display_date')) {
-								$vs_info.= ', '.$vs_exh_date;
+							if ($vs_ex_date = $qr_res->get('ca_occurrences.occurrence_dates')) {
+								$vs_result_text.=", ".$vs_ex_date;
 							}
-						} else {
-							if ($vs_author = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', ', 'checkAccess' => $va_access_values))) {
-								$vs_info.= ', '.$vs_author;
-							}
-							if ($vs_exh_date = $qr_res->get('ca_occurrences.display_date')) {
-								$vs_info.= ', '.$vs_exh_date;
-							}					
-						}
+							$vs_result_text_link = caDetailLink($this->request, $vs_result_text, '', $vs_table, $vn_id);
+						} 
 					} elseif ($vs_table === 'ca_collections') {
 						if ($vs_location) {
 							$vs_info.= $vs_location;
 						}
 					}
-					$vs_info_link 	= caDetailLink($this->request, $vs_info, '', $vs_table, $vn_id);
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 				
 					
@@ -184,9 +175,7 @@
 				<div class='bResultListItemContent'>{$vs_rep_detail_link}
 					<div class='bResultListItemText'>
 						{$vs_catno}
-						{$vs_label_detail_link}
-						
-						{$vs_info_link}
+						{$vs_label_detail_link}{$vs_result_text_link}
 						{$vs_compare_link}
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->

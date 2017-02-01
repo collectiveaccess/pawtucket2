@@ -268,7 +268,7 @@ if (!$vb_ajax) {	// !ajax
 			<div class="row">
 				<div class="col-sm-9">
 <?php
-				if($vb_showLetterBar){
+				if(($vb_showLetterBar) && (($vs_current_sort == "Title") | ($vs_current_sort == "Name"))){
 					print "<div id='bLetterBar'>";
 					foreach(array_keys($va_letter_bar) as $vs_l){
 						if(trim($vs_l)){

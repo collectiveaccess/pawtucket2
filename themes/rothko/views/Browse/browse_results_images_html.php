@@ -129,16 +129,13 @@
 						}
 						$vn_parent_id = $qr_res->get("ca_objects.parent_id");
 						$t_parent = new ca_objects($vn_parent_id);
-						$vs_catno = "";
-						if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
-							$vs_catno = "<div class='catno'>cat. ".$vs_catalog_number."</div>";
-						}
+						#$vs_catno = "";
+						#if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
+						#	$vs_catno = "<div class='catno'>cat. ".$vs_catalog_number."</div>";
+						#}
 						$vs_info = null;
 						if ($vs_date = $qr_res->get('ca_objects.creation_date')) {
 							$vs_info.= "<p>".$vs_date."</p>";
-						}
-						if ($vs_medium = $qr_res->get('ca_objects.medium.medium_list', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
-							$vs_info.= "<p>".$vs_medium."</p>";
 						}
 						if ($va_collection = $t_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {
 							$vs_info.= "<p>".$va_collection."</p>";

@@ -78,25 +78,17 @@
 			$vn_id = $qr_results->get('ca_occurrences.occurrence_id');
 			$vs_result_text = "";
 			if ($vs_type == "Exhibition") {
-				$vs_result_text.= ( strlen($qr_results->get('ca_occurrences.preferred_labels.name')) > 40 ? substr($qr_results->get('ca_occurrences.preferred_labels.name'), 0, 37)."... " : $qr_results->get('ca_occurrences.preferred_labels.name'));
+				$vs_result_text.= "<i>".( strlen($qr_results->get('ca_occurrences.preferred_labels.name')) > 40 ? substr($qr_results->get('ca_occurrences.preferred_labels.name'), 0, 37)."... " : $qr_results->get('ca_occurrences.preferred_labels.name'))."</i>";
 				if ($vs_museum = $qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue')))) {
-					$vs_result_text.= "<p>".$vs_museum."</p>";
+					$vs_result_text.= ", ".$vs_museum;
 				}
-				if ($vs_ex_date = $qr_results->get('ca_occurrences.display_date')) {
-					$vs_result_text.= "<p>".$vs_ex_date."</p>";
+				if ($vs_ex_date = $qr_results->get('ca_occurrences.occurrence_dates')) {
+					$vs_result_text.= ", ".$vs_ex_date;
 				}
 			} else {
-				$vs_title_text = $qr_results->get('ca_occurrences.preferred_labels.name');
-				if ($vs_nonpreferred = $qr_results->get('ca_occurrences.nonpreferred_labels')) {
-					$vs_title_text.= ", ".$vs_nonpreferred;
-				}				
-				$vs_result_text.= ( strlen($vs_title_text) > 75 ? strip_tags(substr($vs_title_text, 0, 72))."... " : $vs_title_text.", ");			
-				if ($vs_author = $qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))) {
-					$vs_result_text.= $vs_author;
-				}
-				if ($vs_pub_date = $qr_results->get('ca_occurrences.display_date')) {
-					$vs_result_text.= ", ".$vs_pub_date;
-				}
+				$vs_title_text = $qr_results->get('ca_occurrences.preferred_labels.name');				
+				$vs_result_text.= ( strlen($vs_title_text) > 105 ? strip_tags(substr($vs_title_text, 0, 103))."... " : $vs_title_text);			
+
 			}		
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true; }
 				print "<div class='{{{block}}}Result authorityResult'>".caNavLink($this->request, $vs_result_text, '', '', 'Detail', 'occurrences/'.$vn_id)."</div>";

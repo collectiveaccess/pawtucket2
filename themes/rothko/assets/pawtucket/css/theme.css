@@ -680,13 +680,13 @@ a .fa.clearFacet {
     float: left;
     position: absolute;
     top: 215px;
-    left: -30px;
+    left: -15px;
 }
 .detail #detailRepNavNext {
     float: right;
     position: absolute;
     top: 215px;
-    right: -30px; 
+    right: -15px; 
 }
 .detail #detailRepNav {
 	font-size:20px;

@@ -57,7 +57,9 @@
 						Credits
 					</div>
 					<div class="footerlink">
-						Note to User
+<?php					
+						print caNavLink($this->request, 'Note to User', '', '', 'About', 'notes');
+?>						
 					</div>	
 					<div class="footerlink">
 						Press

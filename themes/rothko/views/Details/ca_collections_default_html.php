@@ -22,6 +22,23 @@
 <?php
 		print "<h6 class='leader'>Provenance</h6>";
 		print "<h1>".$t_item->get('ca_collections.preferred_labels')."</h1>";
+		
+		if ($va_places = $t_item->get('ca_places.hierarchy.preferred_labels', array('returnWithStructure' => true))) {
+			$va_place_list = array_reverse(array_pop($va_places));
+			array_pop($va_place_list);
+			$va_place_output = array();
+			foreach ($va_place_list as $va_key => $va_place_ids) {
+				foreach ($va_place_ids as $va_key => $va_place_id_t) {
+					foreach ($va_place_id_t as $va_key => $va_place_name) {
+						$va_place_output[] = caNavLink($this->request, $va_place_name, '', 'Search', 'provenance', 'search/ca_places.preferred_labels:"'.$va_place_name.'"');
+					}
+				}
+			}
+		}
+		if (sizeof($va_place_output) > 0) {
+			print "<div class='unit'>".join(', ', $va_place_output)."</div>";
+		}		
+		
 		if ($vs_remarks = $t_item->get('ca_collections.collection_notes')) {
 			print "<div class='drawer' style='border-bottom:0px; padding-top:0px;'>";
 			#print "<h6><a href='#' onclick='$(\"#remarksDiv\").toggle(400);return false;'>Remarks <i class='fa fa-chevron-down'></i></a></h6>";
