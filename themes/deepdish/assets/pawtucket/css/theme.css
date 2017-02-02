@@ -128,6 +128,9 @@ h6 {
 
 /* Browse Panel */
 
+.filterMenuResults {
+	padding-top:0px;
+}
 div.browseFacetItem {
 	line-height: 1.4em;
 }
@@ -137,8 +140,8 @@ div.browseFacetItem {
     padding-bottom: 0px;
 }
 .filterMenuResults div div.row {
-    overflow: auto;
-    max-height: 350px;
+    overflow: hidden;
+    max-height: none;
 }
 .filterMenuFacetList li a {
     color: #333;
