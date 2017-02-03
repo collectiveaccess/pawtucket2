@@ -96,7 +96,7 @@
 				if ($va_collection = $t_object->get('ca_collections.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
 					print "<div class='unit'><h6>Collection</h6>".$va_collection."</div>";
 				}
-				if ($va_runtime = $t_object->get('ca_objects.runtime', array('delimiter' => ', '))) {
+				if ($va_runtime = $t_object->get('ca_objects.runtime', array('delimiter' => ', ', 'omitSeconds' => true))) {
 					print "<div class='unit'><h6>Runtime</h6>".$va_runtime."</div>";
 				}
 				if ($va_description = $t_object->get('ca_objects.description', array('delimiter' => ', '))) {

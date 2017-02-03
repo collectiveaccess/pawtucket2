@@ -164,6 +164,30 @@ div.browseFacetItem {
     text-transform: uppercase;
     font-weight: 800;
 }
+.mainfacet {
+    background-color: #f7f7f7;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.browseTargetLabel {
+    color: #333;
+}
+.browseHeadernav a {
+    color: #333;
+    font-family: proximanovabold;
+    font-size: 14px;
+    padding-right: 5px;
+    margin-right: 5px;
+    padding-left: 5px;
+    margin-left: 5px;
+    border-bottom: 2px solid #f7f7f7;
+}
+.browseHeadernav.active a {
+    border-bottom: 2px solid #333;
+}
+.browseHeadernav a:hover {
+	text-decoration:none;
+}
 
 /* Detail */
 
