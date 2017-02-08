@@ -92,6 +92,9 @@
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
+			
+			# --- row id passed when click back button on detail page - used to load results to and jump to last viewed item
+			$this->view->setVar('row_id', $pn_row_id = $this->request->getParameter('row_id', pInteger));
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
  			
@@ -108,7 +111,6 @@
  			$this->view->setVar('name', $va_browse_info['displayName']);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
- 			$ps_view = $this->request->getParameter('view', pString);
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
  				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
@@ -116,11 +118,18 @@
 				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = array();
 			}
 			
-			$va_view_info = $va_views[$ps_view];
-			
+			if (!($ps_view = $this->request->getParameter("view", pString))) {
+ 				$ps_view = $this->opo_result_context->getCurrentView();
+ 			}
  			if(!in_array($ps_view, array_keys($va_views))) {
  				$ps_view = array_shift(array_keys($va_views));
  			}
+ 			# --- only set the current view if it's not an export format
+ 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx"))){
+ 				$this->opo_result_context->setCurrentView($ps_view);
+ 			}
+ 			
+ 			$va_view_info = $va_views[$ps_view];
  			
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
 
@@ -288,18 +297,29 @@
 			if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
 				$va_letters = array();
 				while($qr_res->nextHit()) {
-					$va_letters[caRemoveAccents(mb_strtolower(mb_substr($qr_res->get($vs_letter_bar_field), 0, 1)))]++;
+					$va_letters[caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($vs_letter_bar_field), "0")), 0, 1)))]++;
 				}
+				ksort($va_letters, SORT_STRING);
 				$this->view->setVar('letterBar', $va_letters);
 				$qr_res->seek(0);
 			}
 			$this->view->setVar('showLetterBar', (bool)$vs_letter_bar_field);
+			if($this->request->getParameter('l', pString)){
+				$ps_l = trim(mb_strtolower($this->request->getParameter('l', pString)));
+				if($ps_l == "all"){
+					$ps_l = "";
+				}
+			}else{
+ 				$ps_l = $this->opo_result_context->getLetterBarPage();
+ 			}
+ 			$this->opo_result_context->setLetterBarPage($ps_l);
 			
-						
-			if ($vs_letter_bar_field && ($vs_l = mb_strtolower($this->request->getParameter('l', pString)))) {
+			$this->view->setVar('letter', $ps_l);			
+			
+			if ($vs_letter_bar_field && ($ps_l)) {
 				$va_filtered_ids = array();
 				while($qr_res->nextHit()) {
-					if (caRemoveAccents(mb_strtolower(mb_substr($qr_res->get($vs_letter_bar_field), 0, 1))) == $vs_l) {
+					if (caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($vs_letter_bar_field), "0")), 0, 1))) == $ps_l) {
 						$va_filtered_ids[] = $qr_res->getPrimaryKey();
 					}
 				}
@@ -307,8 +327,6 @@
 					$qr_res = caMakeSearchResult($vs_class, $va_filtered_ids);
 				}
 			}
-			$this->view->setVar('letter', $vs_l);
-			
 			
 			$this->view->setVar('result', $qr_res);
 				
@@ -317,13 +335,12 @@
  					$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
  				}
  			}
- 			$this->opo_result_context->getItemsPerPage($pn_hits_per_block);
+ 			$this->opo_result_context->setItemsPerPage($pn_hits_per_block);
 			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);
 
 			$this->view->setVar('start', $vn_start = $this->request->getParameter('s', pInteger));
 			
-
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
@@ -362,7 +379,6 @@
  					$this->render($this->ops_view_prefix."/browse_results_timelineData_json.php");
  					break;
  				default:
- 					$this->opo_result_context->setCurrentView($ps_view);
  					$this->render($this->ops_view_prefix."/browse_results_html.php");
  					break;
  			}

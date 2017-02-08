@@ -76,20 +76,11 @@
 ?>
 </head>
 <body>
-	<nav class="navbar navbar-default yamm" role="navigation">
+	<nav class="navbar navbar-default" role="navigation">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
-<?php
-	if ($vb_has_user_links) {
-?>
-				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
-					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
-				</button>
-<?php
-	}
-?>
+
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
 					<span class="sr-only">Toggle navigation</span>
 					<span class="icon-bar"></span>
@@ -120,6 +111,14 @@
 					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "commentary")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Commentary"), "", "", "About", "commentary"); ?></li>
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced"))? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/artworks"); ?></li>
 				
+					<!--<li class="dropdown compare_menu_item" style='display: none;' >
+					  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Compare <span class="caret"></span></a>
+					  <ul class="dropdown-menu">
+						
+					  </ul>
+					</li> -->
+					
+					
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

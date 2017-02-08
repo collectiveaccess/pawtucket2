@@ -20,9 +20,7 @@
 <div class="row">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 <?php
-		if (($vs_type = $t_item->get('ca_collections.type_id', array('convertCodesToDisplayText' => true))) == 'Collection') {
-			print "<h6 class='leader'>Provenance</h6>";
-		}
+		print "<h6 class='leader'>Provenance</h6>";
 		print "<h1>".$t_item->get('ca_collections.preferred_labels')."</h1>";
 		if ($vs_remarks = $t_item->get('ca_collections.collection_notes')) {
 			print "<div class='drawer' style='border-bottom:0px; padding-top:0px;'>";
@@ -44,7 +42,7 @@
 	</div><!-- end col --></div><!-- end row -->
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'artworks', array('search' => 'ca_collections.collection_id:^ca_collections.collection_id', 'detailNav' => 1, 'collection_id' => '^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => 'collection', 'id' => '^ca_collections.collection_id', 'detailNav' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 				jQuery('#browseResultsContainer').jscroll({
 					autoTrigger: true,
 					loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

@@ -27,12 +27,7 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-		<div id="footer">
-			<div>
-				Copyright © 2016 Deep Dish TV.
-			</div>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>
-		</div><!-- end footer -->
+
 <?php
 	//
 	// Output HTML for debug bar
@@ -42,6 +37,14 @@
 	}
 ?>
 	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+	<div id="footer" class="row">
+		<div class="col-sm-8">
+			<div>Copyright © 2016 Deep Dish TV.</div>
+			<div>This project is made possible with funds from the New York State Council on the Arts in Partnership with Wave Farm: Media Arts Assistance Fund, a regrant from the NYSCA Electronic Media and Film program, with the support of Governor Andrew Cuomo and the New York State Legislature.</div>
+			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>
+		</div>
+		<div class='col-sm-4 wfLogo'><?php print caGetThemeGraphic($this->request, 'WF_logo.jpg'); ?></div>
+	</div><!-- end footer -->	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">

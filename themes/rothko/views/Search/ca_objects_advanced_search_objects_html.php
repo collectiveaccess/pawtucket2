@@ -18,13 +18,13 @@
 		</div>		
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to artwork titles only.">Artwork Title</span>
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object titles only.">Object Title</span>
 				{{{ca_objects.preferred_labels.name%width=220px}}}
 			</div>
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-6">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="The year, or range of years if a precise date is unknown, when a work was made.">Creation Date</span>
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="The year, or range of years if a precise date is unknown, when a work was made.">Date</span>
 				{{{ca_objects.creation_date%width=210px&height=1}}}
 			</div>
 			<div class="advancedSearchField col-sm-6">

@@ -98,6 +98,8 @@
  			
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
+ 			# --- row id passed when click back button on detail page - used to load results to and jump to last viewed item
+			$this->view->setVar('row_id', $pn_row_id = $this->request->getParameter('row_id', pInteger));
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $ps_function);
  			
@@ -144,9 +146,18 @@
 			} else {
 				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = array();
 			}
-			if(!in_array($ps_view, array_keys($va_views))) {
-				$ps_view = array_shift(array_keys($va_views));
-			}
+			
+			if (!$ps_view) {
+ 				$ps_view = $this->opo_result_context->getCurrentView();
+ 			}
+ 			if(!in_array($ps_view, array_keys($va_views))) {
+ 				$ps_view = array_shift(array_keys($va_views));
+ 			}
+ 			# --- only set the current view if it's not an export format
+ 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx"))){
+ 				$this->opo_result_context->setCurrentView($ps_view);
+ 			}
+			
 			$va_view_info = $va_views[$ps_view];
 
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
@@ -394,7 +405,6 @@
  					$this->render("Browse/browse_results_timelineData_json.php");
  					break;
  				default:
- 					$this->opo_result_context->setCurrentView($ps_view);
  					$this->render("Browse/browse_results_html.php");
  					break;
  			}

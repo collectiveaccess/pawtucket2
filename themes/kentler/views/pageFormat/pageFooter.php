@@ -54,6 +54,7 @@
 								<li><a href="https://www.instagram.com/kentlerdrawing" target="_blank"><i class="fa fa-instagram"></i></a></li>
 								<li><a href="mailto:info@kentlergallery.org"><i class="fa fa-envelope"></i></a></li>
 							</ul>
+							<div class='terms'><a href="/news/index.php/terms-of-use">Terms of Use</a></div>
 						</h5>
 					</div>
 				</div><!-- end row -->

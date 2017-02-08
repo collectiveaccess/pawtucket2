@@ -45,6 +45,7 @@
 		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
 
 		foreach ($va_browse_types as $vs_browse_id => $va_browse_type) {
+			if($vs_browse_id == 'works_in_collection') { continue; }
 			print "<div class='browseTarget'>".caNavLink($this->request, $va_browse_type['displayName'], ($vs_browse_type == $vs_browse_id ? 'activeBrowse' : ''), '', 'Browse', $vs_browse_id)."</div>";
 			if ($vs_browse_type == $vs_browse_id) {
 				if(is_array($va_facets) && sizeof($va_facets)) {
@@ -53,15 +54,22 @@
 				foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 					if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-						print "<H5>".$va_facet_info['label_singular']."</H5>"; 
-		?>
+						print '<div class="dropdown">';
+						print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>".$va_facet_info['label_singular']."</H5><ul class='facetGroup panel dropdown-menu dropdown-menu-right' id='facetGroup{$vs_facet_name}'>"; 
+						print "<div class='filterLeader'>Filter by ".$va_facet_info['label_plural']."</div>";
+						print "<div class='filterDesc'>".$va_facet_info['description']."<hr/></div>";
+						print "<li><div class='container'><div class='row hierarchicalList'>"; 
+?>
+						
 							<script type="text/javascript">
 								jQuery(document).ready(function() {
 									jQuery("#bHierarchyList_<?php print $vs_facet_name; ?>").load("<?php print caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'linkTo' => 'morePanel')); ?>");
 								});
 							</script>
 							<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-		<?php
+<?php
+						print "</div><!-- end row --></div><!-- end container --></li></ul><!-- end facetGroup -->";
+						print "</div><!-- end dropdown -->";
 					} else {				
 						if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 						print '<div class="dropdown">';
@@ -76,7 +84,7 @@
 								$vn_facet_size = sizeof($va_facet_info['content']);
 								$vn_c = 0;
 								foreach($va_facet_info['content'] as $va_item) {
-									print "<div class='col-sm-4'>".caNavLink($this->request, ucfirst($va_item['label']), '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+									print "<div class='col-sm-4 facetItem'>".caNavLink($this->request, $va_item['label'], '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 									$vn_c++;
 									if ($vn_c == 3) {
 										print "<div style='clear:both;width:100%;margin-bottom:10px;'></div>";
@@ -122,7 +130,7 @@
 				jQuery(window).scroll(function () {
 					var scrollTop = $(window).scrollTop();
 					// check the visible top of the browser
-					if (offset.top<scrollTop && ((offset.top + jQuery('#pageArea').height() - jQuery('#bRefine').height()) > scrollTop)) {
+					if (offset.top<scrollTop && ((offset.top + jQuery('#pageArea').height() - jQuery('#bRefine').height() + 155) > scrollTop)) {
 						jQuery('#bRefine').addClass('fixed');
 						jQuery('#bRefine').width(panelWidth);
 					} else {
@@ -134,4 +142,3 @@
 	</script>
 <?php	
 	#}
-?>

@@ -110,6 +110,7 @@ p {
 	border:0px;
 	padding-top:15px;
 	margin:0px;
+	z-index:10000;
 }
 #footer p {
 	font-weight:400;
@@ -189,6 +190,9 @@ p {
 	box-shadow:none;
 	background-color:#f5f5f5;
 	border:0px;
+	margin:0px;
+	min-height:0;
+	position:relative;
 }
 .bResultItem:hover {
 	margin:0px;
@@ -213,9 +217,10 @@ p {
 	margin:0px;
 }
 .bResultItem img {
-    height: auto;
+	height: auto;
     width: auto;
     max-height: 180px;
+    max-width: 100%;
 }
 .bResultItemCol {
     height: 340px;
@@ -261,6 +266,9 @@ p {
 
 /* Browse */
 
+#pageArea.browse.results {
+	margin-bottom:50px;
+}
 #bRefine {
 	background-color:#fff;
 	border-right:1px solid #ccc;
@@ -335,6 +343,11 @@ p {
 .bResultListItem .bResultListItemText a:hover {
 	text-decoration:none;
 }
+.bResultListItem .bResultListItemText a.compare_link {
+	position: relative;
+    padding: 5px;
+    top: 5px;
+}
 .bResultListItem {
 	box-shadow:none;
 	background-color:#f5f5f5;
@@ -400,6 +413,9 @@ a .fa.clearFacet {
     margin-left:5px;
     margin-right:5px;	
 }
+.btn-default.refine {
+	text-transform:none;
+}
 .browse .btn-default.clear,  .search.results .btn-default.clear{
 	text-transform:none;
 	margin-left:0px;
@@ -441,6 +457,16 @@ a .fa.clearFacet {
 .bResultListItemImg .bResultItemImgPlaceholder {
 	padding: 30px 20px;
 }
+.viewAll {
+	float:right;
+	margin-right:25px;
+	border-bottom:1px solid #464646;
+}
+.viewAll a, .viewAll a:hover {
+	text-decoration:none;
+	color:#333;
+}
+
 /* Filter panel */
 
 .filterLeader {
@@ -463,8 +489,8 @@ a .fa.clearFacet {
 	overflow:hidden
 }
 .facetGroup.panel .container {
-	overflow-y:scroll;
-	max-height:320px;
+	overflow-y:auto;
+	/*max-height:320px;*/
 }
 #bRefine .open .dropdown-toggle.btn-default, #bRefine .dropdown-toggle.btn-default {
 	background-color:transparent;
@@ -476,9 +502,45 @@ a .fa.clearFacet {
 	font-weight:800;
 	border-bottom:1px solid #333;
 }
-#bRefine .facetGroup li div {
+#bRefine .facetGroup li .facetItem {
     margin-bottom: 12px;
 }
+#bRefine .row, #bRefine .container {
+	margin-bottom:0px;
+}
+#bRefine .row {
+	max-height:250px;
+	overflow-y:auto;
+	margin-bottom:10px;
+}
+#bRefine  #bHierarchyList_place_facet {
+	width:100%;
+	padding-left: 15px;
+}
+#bRefine li .hierarchicalList .facetItem {
+	margin-bottom: 22px;
+}
+#facetGroupplace_facet h1 {
+	display:none;
+}
+#bAncestorList {
+	font-weight:bold;
+	clear:both;
+}
+.bScrollListHierarchy {
+	clear:left;
+}
+#bAncestorList {
+	position:absolute;
+	height:20px;
+	background-color:#fff;
+	width:100%;
+	top: 40px;
+}
+.facetItem .glyphicon-chevron-down {
+	font-size:10px;
+}
+
 
 /* Detail */
 
@@ -629,6 +691,10 @@ a .fa.clearFacet {
 .detail #detailRepNav {
 	font-size:20px;
 }
+.auctionDetails {
+	margin-left:10px;
+	font-size:12px;
+}
 
 /* Advanced Search */
 
@@ -705,4 +771,70 @@ div.advancedSearchField {
 	color:#fff;
 	text-decoration:none;
 	font-weight:200;
+}
+
+/* Mirador */
+
+h3.window-manifest-title {
+	text-transform:none;
+	font-weight:normal;
+	font-size:13px;
+	color:#eee;
+}
+.manifest-info {
+	background-color:#000;
+}
+#comparison_viewer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    margin-top: -30px;
+}
+.mirador-osd-annotation-controls {
+	display:none;
+}
+.mirador-osd-annotation-controls {
+	display:none;
+}
+.compareDrawer {
+	display:none;
+	background-color:#eaeaea;
+	width:30%;
+	position:fixed;
+	bottom:0px;
+	right:0px;
+	z-index:1000;
+	padding-top:5px;
+}
+.compareDrawer ul {
+	padding-left:25px;
+}
+.compareDrawer a:hover {
+	text-decoration:none;
+}
+.compareDrawer .items {
+	display:none;
+	clear:both;
+	font-size:13px;
+}
+.compareDrawer .items p {
+	clear:both;
+}
+.listTitle {
+	font-size:14px;
+}
+.compareDrawer p {
+	margin-bottom:5px;
+	float:left;
+}
+.openItems {
+	float:right;
+	padding-top:5px;
+	padding-right:20px;
+}
+.compare_link {
+	position:absolute;
+	bottom:5px;
+	right:5px;
 }
