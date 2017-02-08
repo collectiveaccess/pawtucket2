@@ -128,7 +128,7 @@
  			//
  			if($vb_is_advanced) { 
  				$this->opo_result_context->setSearchExpression(
- 					caGetQueryStringForHTMLFormInput($this->opo_result_context, array('matchOnStem' => $o_search_config->get('matchOnStem')))
+ 					$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, array('matchOnStem' => $o_search_config->get('matchOnStem')))
  				); 
  				if ($vs_search_expression_for_display = caGetDisplayStringForHTMLFormInput($this->opo_result_context)) {
  					$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
