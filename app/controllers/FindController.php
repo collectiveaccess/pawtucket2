@@ -147,7 +147,8 @@
  			$ps_facet_name = $this->request->getParameter('facet', pString);
  			$ps_cache_key = $this->request->getParameter('key', pString);
  			$ps_browse_type = $this->request->getParameter('browseType', pString);
- 			
+ 			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
+			
  			if($ps_browse_type == "caLightbox"){
  				$va_browse_info['table'] = 'ca_objects';
  			}else{
@@ -318,7 +319,8 @@
  		 * Returned data is JSON format
  		 */
  		public function getFacetHierarchyAncestorList() {
- 			$pn_id = $this->request->getParameter('id', pInteger);
+ 			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
+			$pn_id = $this->request->getParameter('id', pInteger);
  			$va_access_values = caGetUserAccessValues($this->request);
  			$ps_facet_name = $this->request->getParameter('facet', pString);
  			$this->view->setVar("facet_name", $ps_facet_name);
