@@ -107,9 +107,6 @@
 		<div class="col-sm-12">
 			<div class="leader ltGrayBg"><!-- turqBg -->
 				<H1><?php print _t("Events"); ?></H1>
-				<p>
-					Etiam pharetra, elit ac fermentum accumsan, ex lectus lacinia nisi, consequat auctor nulla urna ac enim. Vivamus feugiat massa sem, sed fringilla magna cursus sed. Cras laoreet est vitae arcu finibus, id volutpat elit vehicula.
-				</p>
 			</div>
 		</div>
 	</div>
@@ -118,7 +115,7 @@
 			<ul class="nav nav-pills">
 <?php
 			if(sizeof($va_years) > 1){		
-				#arsort($va_years);
+				arsort($va_years);
 				foreach($va_years as $vs_year){
 					print "<li class='yearBar yearBar".$vs_year."'><a href='#' onClick='$(\".yearBar\").removeClass(\"active\"); $(this).parent().addClass(\"active\"); $(\".yearTab\").hide(); $(\"#yearTab".$vs_year."\").show(); return false;'>".$vs_year."</a></li>";
 				}
@@ -154,7 +151,7 @@
 				}
 				print "<div class='col-sm-6 exhibitionListing'>";
 				if(is_array($va_reps) && $va_reps[$qr_list->get("ca_occurrences.occurrence_id")]["tags"]["medium"]){
-					print "<div class='row'><div class='col-sm-4'>".$va_reps[$qr_list->get("ca_occurrences.occurrence_id")]["tags"]["medium"]."</div><div class='col-sm-8'>";
+					print "<div class='row'><div class='col-sm-4'>".caDetailLink($this->request, $va_reps[$qr_list->get("ca_occurrences.occurrence_id")]["tags"]["medium"], '', 'ca_occurrences', $qr_list->get("ca_occurrences.occurrence_id"))."</div><div class='col-sm-8'>";
 				}else{
 					print "<div class='row'><div class='col-sm-12'>";
 				}

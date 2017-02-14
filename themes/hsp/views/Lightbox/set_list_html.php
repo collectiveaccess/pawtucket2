@@ -61,7 +61,9 @@
 			</ul>
 		</div><!-- end btn-group -->
 	</h1>
-	
+	<p>Digital images, archival prints, and permission to reproduce, publish, exhibit, or distribute these materials are available, for a fee, through our Rights and Reproductions department.</p>
+	<p>Use Lightboxes to save and organize images and records for reproduction requests. Any item in the HSP Digital Library can be added to a Lightbox by clicking the suitcase icon in a search result or item page. Your Lightboxes can be managed, shared and edited on this page.</p>
+	<p>To submit an inquiry regarding the purchase of images, submit a request at <a href="http://ticket.hsp.org/" target="_blank">http://ticket.hsp.org</a>, containing the Record Numbers for the items you would like to request. More information can be found on the <a href="http://hsp.org/collections/library-services/rights-and-reproductions" target="_blank">Rights &amp; Reproductions</a> page.</p>
 	<div id="lbSetListErrors" style="display: none;" class='alert alert-danger'></div>
 	
 	<div class="row">

@@ -1756,6 +1756,9 @@ a.readmore-js-toggle{
 }
 .trimText {margin-top:5px;}
 
+.caAudioPlayer{
+	padding-top:26px;
+}
 /* --------------------------------- */
 /* browse b */
 /* --------------------------------- */
@@ -1818,8 +1821,20 @@ a.readmore-js-toggle{
 	font-size:18px;
 	padding-bottom:5px;
 }
+#bLetterBar a{
+	padding:3px;
+	text-transform:uppercase;
+	font-size:12px;
+}
+#bLetterBar a:hover, #bLetterBar a.selectedLetter{
+	font-weight:bold;
+	background-color:#EDEDED;
+	text-decoration:none;
+}
 #browseResultsContainer{
 	margin-top:20px;
+	height:100%;
+	position:relative;
 }
 .bResultItemCol{
 	height:290px;
@@ -2154,6 +2169,7 @@ a.readmore-js-toggle{
 	width: 100%;
 	height:500px;
 }
+
 
 /* --------------------------------- */
 /* multi-search */

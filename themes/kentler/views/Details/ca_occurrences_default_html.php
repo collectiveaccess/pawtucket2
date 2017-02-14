@@ -59,7 +59,7 @@
 					$va_art_installations = array();
 					$va_promos = array();
 					foreach($va_reps as $va_rep){
-						$va_tmp = array("image" => $va_rep["tags"]["large"], "label" => $va_rep["label"], "image_link" => "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $t_item->getPrimaryKey(), 'representation_id' => $va_rep["representation_id"], 'overlay' => 1))."\"); return false;' >".$va_rep["tags"]["large"]."</a>");
+						$va_tmp = array("image" => $va_rep["tags"]["large"], "label" => $va_rep["label"], "image_link" => "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'exhibitions', 'id' => $t_item->getPrimaryKey(), 'representation_id' => $va_rep["representation_id"], 'overlay' => 1))."\"); return false;' >".$va_rep["tags"]["large"]."</a>");
 						
 						if($va_rep["type_id"] == $vn_promo_type_id){
 							$va_promos[] = $va_tmp;

@@ -121,7 +121,7 @@
         /**
          *
          */
- 		function index($va_options = null) {
+ 		function index($pa_options = null) {
  			if($this->opb_is_login_redirect) { return; }
 
 			
@@ -152,13 +152,13 @@
 
             MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name));
  			
- 			$this->render(caGetOption("view", $va_options, "Lightbox/set_list_html.php"));
+ 			$this->render(caGetOption("view", $pa_options, "Lightbox/set_list_html.php"));
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function setDetail($va_options = null) {
+ 		function setDetail($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
             $this->request->setParameter('callback', null);
             unset($_REQUEST['callback']);
@@ -396,14 +396,14 @@
  				case 'xlsx':
  				case 'pptx':
  				case 'pdf':
- 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_label = $t_set->get('ca_sets.preferred_labels'), $vs_label);
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $vs_label = $t_set->get('ca_sets.preferred_labels.name')), ['t_subject' => $t_set]), $vs_label);
  					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
  					$this->render("Lightbox/set_detail_timelineData_json.php");
  					break;
  				default:
- 					$this->render(caGetOption("view", $va_options, "Lightbox/set_detail_html.php"));
+ 					$this->render(caGetOption("view", $pa_options, "Lightbox/set_detail_html.php"));
  					break;
  			}
  		}
@@ -411,7 +411,7 @@
         /**
          *
          */
- 		function setForm($va_options = null) {
+ 		function setForm($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
 			// set_id is passed, so we're editing a set
@@ -427,20 +427,20 @@
 				$t_set = new ca_sets();
 			}
  			$this->view->setVar("set", $t_set);
- 			$this->render(caGetOption("view", $va_options, "Lightbox/form_set_info_html.php"));
+ 			$this->render(caGetOption("view", $pa_options, "Lightbox/form_set_info_html.php"));
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function ajaxSaveSetInfo($va_options = null) {
+ 		function ajaxSaveSetInfo($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
             if (!$this->request->isAjax()) { $this->response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index')); return; }
  			
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
  			
- 			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
+ 			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
  			// set_id is passed through form, otherwise we're saving a new set
  			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_EDIT_READ_ACCESS__) : new ca_sets();
  			
@@ -508,7 +508,7 @@
 					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
 					
 					$this->view->setVar("message", _t('Saved %1', $vs_display_name));
-					$vs_set_list_item_function = (string) caGetOption("set_list_item_function", $va_options, "caLightboxSetListItem");
+					$vs_set_list_item_function = (string) caGetOption("set_list_item_function", $pa_options, "caLightboxSetListItem");
 					$this->view->setVar('block', $vs_set_list_item_function($this->request, $t_set, $this->opa_access_values, array('write_access' => $vb_is_insert ? true : $this->view->getVar('write_access'))));
 				}
 			}else{
@@ -523,7 +523,7 @@
         /**
          *
          */
- 		function setAccess($va_options = null) {
+ 		function setAccess($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
             if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
             	throw new ApplicationException(_t("You do not have access to this lightbox"));
@@ -532,7 +532,7 @@
  			$this->view->setVar("users", $t_set->getSetUsers());
  			$this->view->setVar("user_groups", $t_set->getSetGroups());
  			
- 			$this->render(caGetOption("view", $va_options, "Lightbox/set_access_html.php"));
+ 			$this->render(caGetOption("view", $pa_options, "Lightbox/set_access_html.php"));
  		}
  		# ------------------------------------------------------
         /**
@@ -657,12 +657,12 @@
         /**
          *
          */
- 		function shareSetForm($va_options = null) {
+ 		function shareSetForm($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 			if(!$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
  				throw new ApplicationException(_t("You do not have access to this lightbox"));
  			}
-			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
+			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
 			$this->view->setVar("display_name", $vs_display_name);
  			$this->render("Lightbox/form_share_set_html.php");
  		}
@@ -670,14 +670,14 @@
         /**
          *
          */
- 		function saveShareSet($va_options = null) {
+ 		function saveShareSet($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			if(!$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
  				throw new ApplicationException(_t("You do not have access to this lightbox"));
  			}
- 			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
- 			$vs_display_name_plural = caGetOption("display_name_plural", $va_options, $this->ops_lightbox_display_name_plural);
+ 			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
+ 			$vs_display_name_plural = caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural);
  			$this->view->setVar("display_name", $vs_display_name);
  			$this->view->setVar("display_name_plural", $vs_display_name_plural);
  			$ps_user = $this->purifier->purify($this->request->getParameter('user', pString));
@@ -828,25 +828,25 @@
         /**
          *
          */
- 		function userGroupForm($va_options = null) {
+ 		function userGroupForm($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			$t_user_group = new ca_user_groups();
  			$this->view->setVar("user_group",$t_user_group);
-			$this->view->setVar("user_group_heading", caGetOption("user_group_heading", $va_options, _t("User Group")));
+			$this->view->setVar("user_group_heading", caGetOption("user_group_heading", $pa_options, _t("User Group")));
  			$this->render("Lightbox/form_user_group_html.php");
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function saveUserGroup($va_options = null) {
+ 		function saveUserGroup($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
  			
- 			$vs_user_group_terminology = caGetOption("user_group_terminology", $va_options, _t("user group"));
+ 			$vs_user_group_terminology = caGetOption("user_group_terminology", $pa_options, _t("user group"));
  			
  			$t_user_group = new ca_user_groups();
  			if($pn_group_id = $this->request->getParameter('group_id', pInteger)){
@@ -1119,15 +1119,15 @@
         /**
          *
          */
- 		public function ajaxAddItem($va_options = null) {
+ 		public function ajaxAddItem($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
  			
- 			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
+ 			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
  			$this->view->setVar("display_name", $vs_display_name);
- 			$vs_display_name_plural = caGetOption("display_name_plural", $va_options, $this->ops_lightbox_display_name_plural);
+ 			$vs_display_name_plural = caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural);
             $this->view->setVar("display_name_plural", $vs_display_name_plural);
             
  			// set_id is passed through form, otherwise we're saving a new set, and adding the item to it
@@ -1245,11 +1245,11 @@
         /**
          *
          */
- 		public function addItemForm($va_options = array()){
+ 		public function addItemForm($pa_options = array()){
             if($this->opb_is_login_redirect) { return; }
 
-            $this->view->setVar("display_name", caGetOption("display_name", $va_options, $this->ops_lightbox_display_name));
-            $this->view->setVar("display_name_plural", caGetOption("display_name_plural", $va_options, $this->ops_lightbox_display_name_plural));
+            $this->view->setVar("display_name", caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name));
+            $this->view->setVar("display_name_plural", caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural));
             $this->view->setvar("set", new ca_Sets());
  			$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
  			$this->view->setvar("object_ids", $this->request->getParameter('object_ids', pString));
@@ -1289,15 +1289,15 @@
 		/**
 		 *
 		 */
-		public function present($va_options = null) {
+		public function present($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 			if(!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
 				$this->Index();
 				return;
 			}
-			$this->view->setVar("controller", caGetOption("controller", $va_options, "Lightbox"));
-            $this->view->setVar("display_name", caGetOption("display_name", $va_options, $this->ops_lightbox_display_name));
-            $this->view->setVar("display_name_plural", caGetOption("display_name_plural", $va_options, $this->ops_lightbox_display_name_plural));
+			$this->view->setVar("controller", caGetOption("controller", $pa_options, "Lightbox"));
+            $this->view->setVar("display_name", caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name));
+            $this->view->setVar("display_name_plural", caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural));
 			
 			AssetLoadManager::register("reveal.js");
 			$o_app = AppController::getInstance();
