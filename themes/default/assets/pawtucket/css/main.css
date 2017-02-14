@@ -1628,6 +1628,9 @@ a.browseRemoveFacet img {
 .detail .detailTool a{
 	text-decoration:none;
 }
+.jcarousel-wrapper, .jcarousel {
+	width:100% !important;
+}
 #detailComments{
 	display:none;
 	border-top: 1px solid #dddddd;
