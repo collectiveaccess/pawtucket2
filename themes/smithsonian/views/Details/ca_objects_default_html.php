@@ -60,7 +60,7 @@
 			}							
 ?>
 
-				{{{<unit><ifdef code="ca_objects.color"><div><span class='metaTitle'>Color: </span><span class='meta'><unit delimiter='; '>^ca_objects.color</unit></span></div></ifdef></unit>}}}
+				{{{<ifdef code="ca_objects.color"><div><span class='metaTitle'>Color: </span><span class='meta'>^ca_objects.color</span></div></ifdef>}}}
 
 					
 			</div><!-- end col -->
@@ -99,7 +99,7 @@
 	}
 ?>
 			
-			{{{<ifcount code="ca_occurrences.description" min="1"><span class='metaTitle'>Description</span><span class='meta'><unit>^ca_occurrences.description</unit></span></ifcount>}}}
+			<div>{{{<ifcount code="ca_occurrences.description" min="1"><span class='metaTitle'>Description</span><span class='meta'><unit>^ca_occurrences.description</unit></span></ifcount>}}}</div>
 			{{{<ifdef relativeTo="ca_occurrences" code="ca_occurrences.locationText" ><span class='metaTitle'>Location</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.locationText</unit></span></ifdef>}}}
 			{{{<ifdef relativeTo="ca_occurrences" code="ca_occurrences.legacyLocation" ><span class='metaTitle'>Location</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.legacyLocation</unit></span></ifdef>}}}
 <?php
@@ -175,7 +175,7 @@
 
 			if (($vs_mission_crit = $t_object->get('ca_occurrences.mission.missionCritical', array('convertCodesToDisplayText' => true))) == "Yes") {
 				print "<div><span class='metaTitle'>Mission critical</span><span class='meta'><div>Mission Critical: {$vs_mission_crit}</div>";
-				print "<div>Year: ".$t_object->get('ca_occurrences.mission.missionYear')." (".$t_object->get('ca_occurrences.mission.mission_dates_types').")</div>";
+				print "<div>Year: ".$t_object->get('ca_occurrences.mission.missionYear')." (".$t_object->get('ca_occurrences.mission.mission_dates_types', array('convertCodesToDisplayText' => true)).")</div>";
 				print "</span></div>";
 			}
 			
