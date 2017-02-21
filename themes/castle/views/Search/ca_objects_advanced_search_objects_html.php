@@ -18,18 +18,28 @@
 		</div>		
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Object Titles only.">Title</span>
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object names only.">Object Name</span>
 				{{{ca_objects.preferred_labels.name%width=220px}}}
 			</div>
 		</div>
 		<div class='row'>
+			<div class="advancedSearchField col-sm-12">
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to artists, manufacturers and photographers.">Artists, Manufacturers, and Photographers</span>
+				{{{ca_entities.preferred_labels.name%restrictToRelationshipTypes=artist;manufacturer;photographer&width=220px}}}
+			</div>
+		</div>		
+		<div class='row'>
+			<div class="advancedSearchField col-sm-6">
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by materials.">Material</span>
+				{{{ca_objects.material%width=200px&height=1}}}
+			</div>	
+			<div class="advancedSearchField col-sm-6">
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by technique.">Technique</span>
+				{{{ca_objects.technique%width=200px&height=1}}}
+			</div>				
 			<div class="advancedSearchField col-sm-6">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search object descriptions.">Description</span>
 				{{{ca_objects.description%width=200px&height=1}}}
-			</div>
-			<div class="advancedSearchField col-sm-6">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object types.">Type</span>
-				{{{ca_objects.type_id%height=1}}}
 			</div>
 		</div>
 		<div class='row'>

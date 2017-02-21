@@ -100,7 +100,7 @@
 				if ($va_date = $t_object->get('ca_objects.date', array('delimiter' => ', '))) {
 					print "<div class='unit'><h6>Date</h6>".$va_date."</div>";
 				}	
-				if ($va_dimensions = $t_object->getWithTemplate('<ifcount min="1" code="ca_objects.dimensions"><unit><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"> ^ca_objects.dimensions.dimensions_notes</ifdef></unit></ifcount>')) {
+				if ($va_dimensions = $t_object->getWithTemplate('<ifcount min="1" code="ca_objects.dimensions.display_dimensions"><unit><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"><br/>^ca_objects.dimensions.dimensions_notes</ifdef></unit></ifcount>')) {
 					print "<div class='unit'><h6>Dimensions</h6>".$va_dimensions."</div>";
 				}	
 				if (($va_material = $t_object->get('ca_objects.material', array('convertCodesToDisplayText' => true, 'delimiter' => ', ')))) {
@@ -109,6 +109,18 @@
 				if ($va_artist = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist', 'photographer'), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
 					print "<div class='unit'><h6>Artist/Photographer</h6>".$va_artist."</div>";
 				}
+				if ($va_manufacturer = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('manufacturer'), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+					print "<div class='unit'><h6>Manufacturer</h6>".$va_manufacturer."</div>";
+				}
+				if ($va_brand_name = $t_object->get('ca_objects.brand_name')) {
+					print "<div class='unit'><h6>Brand Name</h6>".$va_brand_name."</div>";
+				}
+				if ($va_serial_number = $t_object->get('ca_objects.serial_number')) {
+					print "<div class='unit'><h6>Serial Number</h6>".$va_serial_number."</div>";
+				}
+				if ($va_patent_number = $t_object->get('ca_objects.patent_number')) {
+					print "<div class='unit'><h6>Patent Number</h6>".$va_patent_number."</div>";
+				}																
 				if ($va_title = $t_object->get('ca_objects.title')) {
 					print "<div class='unit'><h6>Artwork Title</h6>".$va_title."</div>";
 				}					
