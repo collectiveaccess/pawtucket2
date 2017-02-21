@@ -98,11 +98,23 @@
  			
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
+ 			# --- row id passed when click back button on detail page - used to load results to and jump to last viewed item
+			$this->view->setVar('row_id', $pn_row_id = $this->request->getParameter('row_id', pInteger));
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $ps_function);
  			
-			$vs_search_expression = $this->opo_result_context->getSearchExpression();
-			$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
+ 			if($vs_named_search=caGetNamedSearch($vs_search_expression = $this->opo_result_context->getSearchExpression(), $this->request->getParameter('values', pString))) {
+ 		
+ 				$vs_search_expression_for_display = caGetNamedSearchForDisplay($vs_search_expression, $this->request->getParameter('values', pString));
+ 				$this->opo_result_context->setSearchExpression($vs_named_search);
+ 				$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
+ 				$vs_search_expression = $vs_named_search;
+ 				//print "got $vs_search_expression_for_display<br>\n";
+ 			} else {
+				$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
+			}
+		//	$vs_search_expression = $this->opo_result_context->getSearchExpression();
+		//	$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
 			
 			// Allow plugins to rewrite search prior to execution
  			$qr_res = null;
@@ -126,7 +138,7 @@
  			//
  			if($vb_is_advanced) { 
  				$this->opo_result_context->setSearchExpression(
- 					caGetQueryStringForHTMLFormInput($this->opo_result_context, array('matchOnStem' => $o_search_config->get('matchOnStem')))
+ 					$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, array('matchOnStem' => $o_search_config->get('matchOnStem')))
  				); 
  				if ($vs_search_expression_for_display = caGetDisplayStringForHTMLFormInput($this->opo_result_context)) {
  					$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
@@ -144,9 +156,18 @@
 			} else {
 				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = array();
 			}
-			if(!in_array($ps_view, array_keys($va_views))) {
-				$ps_view = array_shift(array_keys($va_views));
-			}
+			
+			if (!$ps_view) {
+ 				$ps_view = $this->opo_result_context->getCurrentView();
+ 			}
+ 			if(!in_array($ps_view, array_keys($va_views))) {
+ 				$ps_view = array_shift(array_keys($va_views));
+ 			}
+ 			# --- only set the current view if it's not an export format
+ 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx"))){
+ 				$this->opo_result_context->setCurrentView($ps_view);
+ 			}
+			
 			$va_view_info = $va_views[$ps_view];
 
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
@@ -210,10 +231,10 @@
 					default:
 						$this->view->setVar('facet_content', !$vb_search_was_replaced ? $o_browse->getFacetContent($vs_facet, array("checkAccess" => $this->opa_access_values)) : []);
 						$this->render("Browse/list_facet_html.php");
-					break;
+						break;
 					case "hierarchical":
 						$this->render("Browse/hierarchy_facet_html.php");
-					break;
+						break;
 				}
 				return;
 			}
@@ -394,7 +415,6 @@
  					$this->render("Browse/browse_results_timelineData_json.php");
  					break;
  				default:
- 					$this->opo_result_context->setCurrentView($ps_view);
  					$this->render("Browse/browse_results_html.php");
  					break;
  			}

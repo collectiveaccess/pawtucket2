@@ -56,7 +56,6 @@
  		 * (eg. ObjectSearch for objects, EntitySearch for entities) and pass it to BaseSearchController->Search() 
  		 */ 
  		public function Index($pa_options=null) {
- 		
  			return parent::Index($pa_options);
  		}
  		# -------------------------------------------------------

@@ -411,3 +411,59 @@ ul.dropdown-menu a{
     hyphens: none;
     word-wrap: normal;
 }
+
+/* TIME LINE */
+.tl-slide-content{
+	padding-right:0px !important;
+}
+#bTimelineContainer .tl-slidenav-icon, #bTimelineContainer .tl-slidenav-icon a{
+	font-family:tl-icons !important;
+}
+.tl-text h2.tl-headline {
+    font-size: 14px !important;
+    line-height: 1.1em !important;
+}
+.tl-timeline p {
+    font-size: 12px !important;
+}
+.lbSet h5{
+	height:1.2em;
+}
+
+/* lightbox presentation */
+.reveal H1{
+	font-family: 'Rokkitt', serif !important;
+	font-style: normal;
+	font-weight: 400;
+	color:#fff;
+}
+.reveal H2, .reveal H3, .reveal H4, .reveal a{
+	font-family: 'Lato', sans-serif !important;
+	font-style: normal;
+	font-weight: 400;
+	color:#FFF;
+}
+.reveal H1{
+	font-size:16px;
+	text-shadow:none;
+	margin:0px;
+	padding-bottom:5px;
+}
+.reveal H2{
+	font-size:16px;
+	text-transform:none;
+	margin:0px;
+}
+.reveal H3{
+	font-size:12px;
+	text-transform:none;
+	margin:0px;
+	padding-bottom:5px;
+}
+.reveal a{
+	color:#FFFFFF !important;
+	text-decoration:underline !important;
+}
+.reveal a img{
+	border:0px;
+}

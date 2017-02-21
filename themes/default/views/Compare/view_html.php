@@ -66,7 +66,7 @@
 		];
 	 }
 ?>
-<div style="width: 100%; height: 600px" id="comparison_viewer">
+<div style="width: 100%; height: 400px" id="comparison_viewer">
 
 </div>
 
@@ -78,6 +78,7 @@
 		windowObjects: <?php print json_encode($va_windows); ?>,
 		buildPath: '<?php print __CA_URL_ROOT__."/assets/mirador/"; ?>'
 	});
+	$("#comparison_viewer").height($(window).height() - $("nav").height() + "px");
 </script>
 <?php
 	} else {
