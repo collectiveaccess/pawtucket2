@@ -422,6 +422,13 @@
 			}
  			
  			//
+ 			// Set row_id for use within the view
+ 			//
+ 			$this->view->setVar('id', $ps_id);
+ 			$this->view->setVar($t_subject->primaryKey(), $ps_id);
+ 			
+ 			
+ 			//
  			// share link
  			//
  			$this->view->setVar('shareEnabled', (bool)$va_options['enableShare']);
