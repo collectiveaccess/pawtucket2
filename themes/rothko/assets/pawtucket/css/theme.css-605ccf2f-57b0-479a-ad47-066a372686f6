@@ -102,7 +102,7 @@ p {
 #footer {
 	position:absolute;
 	bottom:0px;
-	height:60px;
+	height:50px;
 	width:100%;
 	padding-right:15px;
 	padding-left:15px;
@@ -362,41 +362,6 @@ p {
 	margin:0px;
 	padding:10px;
 	height:auto;
-}
-#bRefine .facetGroup li .facetItem {
-	padding-left:20px; 
-}
-#bRefine .facetGroup li .facetItem[facet_item_selected="1"] {
-	padding-left:20px;
-}
-[facet_item_selected="1"]::before {
-	font-family: FontAwesome;
-	content: "\f067"; 
-	padding-right:6px;
-	position:absolute;
-	left:7px;
-	top:4px;
-}
-.facetApply {
-	clear:both;
-	right:15px;
-	display:block;
-	text-align: center;
-    margin-top: 20px;
-
-}
-a.facetApply {
-    background-color: #ddd;
-    color: #333;
-    font-size: 13px;
-    border-radius: 3px;
-    width:50px;
-    padding-top:4px;
-    padding-bottom:4px;
-    margin-left: auto;
-    margin-right: auto; 
-    position:absolute;
-    bottom:10px;
 }
 .bResultListItem .bResultListItemImg {
 	margin-right:10px;
