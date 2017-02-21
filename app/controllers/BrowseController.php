@@ -183,7 +183,7 @@
 			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 			
 			if ($vs_facet = $this->request->getParameter('facet', pString)) {
-				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
+				$o_browse->addCriteria($vs_facet, explode('|', $this->request->getParameter('id', pString)));
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
 					if (is_array($va_base_criteria)) {

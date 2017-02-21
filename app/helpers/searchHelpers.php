@@ -522,6 +522,7 @@
 			$vs_html = $o_view->render($va_block_info['view']);
 			
 			$va_ret[$vs_block] = array(
+				'table' => $va_block_info['table'],
 				'count' => $vn_count,
 				'html' => $vs_html,
 				'displayName' => $va_block_info['displayName'],
