@@ -30,7 +30,7 @@
 			foreach ($va_place_list as $va_key => $va_place_ids) {
 				foreach ($va_place_ids as $va_key => $va_place_id_t) {
 					foreach ($va_place_id_t as $va_key => $va_place_name) {
-						$va_place_output[] = caNavLink($this->request, $va_place_name, '', 'Search', 'provenance', 'search/ca_places.preferred_labels:"'.$va_place_name.'"');
+						$va_place_output[] = caNavLink($this->request, $va_place_name, '', 'Search', 'provenance', 'search/location', ["values" => [$va_place_name]]);
 					}
 				}
 			}

@@ -153,15 +153,15 @@
 					$t_parent = new ca_objects($vn_parent_id);
 					$vs_catno = "";
 					if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
-						$vs_catno = "<div class='catno'>cat. ".$vs_catalog_number."</div>";
+						$vs_catno = "<div class='catno'>".$vs_catalog_number."</div>";
 					}
-					$vs_info = null;
-					if ($vs_date = $qr_res->get('ca_objects.creation_date')) {
-						$vs_info.= "<p>".$vs_date."</p>";
-					}
-					if ($vs_medium = $qr_res->get('ca_objects.medium.medium_list', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
-						$vs_info.= "<p>".caGetListItemByIDForDisplay($vs_medium)."</p>";
-					}
+					#$vs_info = null;
+					#if ($vs_date = $qr_res->get('ca_objects.creation_date')) {
+					#	$vs_info.= "<p>".$vs_date."</p>";
+					#}
+					#if ($vs_medium = $qr_res->get('ca_objects.medium.medium_list', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
+					#	$vs_info.= "<p>".caGetListItemByIDForDisplay($vs_medium)."</p>";
+					#}
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 					$vs_compare_link = !$vs_type_placeholder ? "<a href='#' class='compare_link' data-id='{$vn_id}'><i class='fa fa-clone' aria-hidden='true'></i></a>" : '';

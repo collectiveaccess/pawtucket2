@@ -101,14 +101,18 @@ if($this->request->getParameter("detailNav", pInteger)){
 ?>			
 			</div><!-- end bViewButtons -->		
 			<div class="viewAll">
-<?php 	
+<?php 
+				$vs_value = explode('.',$va_criteria['value']);
+				$vs_search_value = $vs_value[0];
 				$vs_string = null;
-				if ($vn_view_collection_id = $this->request->getParameter("collection_id", pInteger)) {
-					$vs_string = 'ca_collections.collection_id:'.$vn_view_collection_id;
-				} elseif ($vn_view_occurrence_id = $this->request->getParameter("occurrence_id", pInteger)) {
-					$vs_string = 'ca_occurrences.occurrence_id:'.$vn_view_occurrence_id;
-				}			
-				print caNavLink($this->request, 'View all', '', 'Search', 'artworks', array('search' => $vs_string)); 
+				if ($va_criteria[0]['facet_name'] == 'collection') {
+					//$vs_string = 'ca_collections.collection_id:'.$this->request->getParameter('id', pInteger);
+					print caNavLink($this->request, 'View all', '', '', 'Browse', 'works_in_collection/facet/collection/id/'.$this->request->getParameter('id', pInteger)); 
+				} else if (($va_criteria['facet_name'] == '_search') && ($vs_search_value == 'ca_occurrences')) {
+					//$vs_string = 'ca_occurrences.occurrence_id:'.$this->request->getParameter('id', pInteger);
+					print caNavLink($this->request, 'View all', '', '', 'Browse', 'works_in_exhibition/facet/exhibition/id/'.$this->request->getParameter('id', pInteger)); 
+				}	
+				
 ?>		
 			</div>		
 			<div class="btn-group sortResults">
@@ -259,7 +263,7 @@ if (!$vb_ajax) {	// !ajax
 				print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 			}
 			if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
-				print "<span><button type='button' class='btn btn-default clear'>".caNavLink($this->request, _t("Clear all")." <i class='fa fa-close'></i>", '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</button> or modify your results by choosing another filter term</span>";
+				print "<span>".caNavLink($this->request, "<button type='button' class='btn btn-default clear'>"._t("Clear all")." <i class='fa fa-close'></i></button>", '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))." or modify your results by choosing another filter term</span>";
 			}
 			
 ?>		

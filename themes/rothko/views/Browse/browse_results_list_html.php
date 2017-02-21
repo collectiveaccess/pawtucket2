@@ -137,9 +137,9 @@
 						$vn_parent_id = $qr_res->get("ca_objects.parent_id");
 						$t_parent = new ca_objects($vn_parent_id);
 						#$vs_catno = "";
-						#if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
-						#	$vs_catno = "<div class='catno'>cat. ".$vs_catalog_number."</div>";
-						#}				
+						if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
+							$vs_catno = "<div class='catno'>".$vs_catalog_number."</div>";
+						}				
 						if ($vs_date = $qr_res->get('ca_objects.creation_date')) {
 							$vs_info.= "<p>".$vs_date."</p>";
 						}
@@ -175,7 +175,9 @@
 				<div class='bResultListItemContent'>{$vs_rep_detail_link}
 					<div class='bResultListItemText'>
 						{$vs_catno}
-						{$vs_label_detail_link}{$vs_result_text_link}
+						{$vs_label_detail_link}
+						{$vs_info}
+						{$vs_result_text_link}
 						{$vs_compare_link}
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->

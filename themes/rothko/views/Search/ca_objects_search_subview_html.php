@@ -71,11 +71,11 @@
 				$vn_id 					= $qr_results->get("ca_objects.object_id");
 				$vn_parent_id = $qr_results->get("ca_objects.parent_id");
 				$t_parent = new ca_objects($vn_parent_id);
+				if ($vs_catno = $qr_results->get('ca_objects.catalog_number')) {
+					$vs_catno = "<p>".$vs_catno."</p>";
+				}
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_results->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id);
-				#$vs_catno = "";
-				#if ($vs_catalog_number = $qr_results->get('ca_objects.catalog_number')) {
-				#	$vs_catno = "<div class='catno'>cat. ".$vs_catalog_number."</div>";
-				#}				
+				
 				$vs_link_text = "";
 				if ($va_date = $qr_results->get('ca_objects.display_date')) {
 					$vs_link_text.= "<p>".$va_date."</p>";

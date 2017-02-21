@@ -49,32 +49,25 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-sm-5 col-md-7 col-lg-8">
-					<p >© 2016 National Gallery of Art, Washington</p>
+					<p><a href='http://www.nga.gov'>© 2016 National Gallery of Art, Washington</a></p>
 				</div>
-				<div class="col-sm-7 col-md-5 col-lg-4">
+				<div class="col-sm-7 col-md-5 col-lg-4" style="text-align:right;">
 
 					<div class="footerlink">
-						Credits
-					</div>
+<?php					
+						print caNavLink($this->request, 'About the Project', '', '', 'About', 'project');
+?>
+					</div> | 
 					<div class="footerlink">
 <?php					
-						print caNavLink($this->request, 'Note to User', '', '', 'About', 'notes');
+						print caNavLink($this->request, 'Guide to the Catalog', '', '', 'About', 'notes');
 ?>						
-					</div>	
+					</div> | 
 					<div class="footerlink">
-						Press
-					</div>
-					<div class="footerlink">
-						Contact
-					</div>
-					<div style="clear:both; height:1px;"><!-- empty --></div>
-					<div class="footerlink">
-						Notices
-					</div>
-					<div class="footerlink">
-						<a href='http://www.nga.gov'>http://www.nga.gov</a>
-					</div>																																		
-		
+<?php					
+						print caNavLink($this->request, 'Contact', '', '', 'About', 'contact');
+?>
+					</div>																																	
 				</div>
 			</div>
 		</div>
