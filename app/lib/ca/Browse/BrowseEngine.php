@@ -735,7 +735,9 @@
 					break;
 				# -----------------------------------------------------
 				default:
-					if (in_array($ps_facet_name, ['_search', '_reltypes'])) { return $pn_row_id; }
+					if (in_array($ps_facet_name, ['_search', '_reltypes'])) { 
+						return $pn_row_id; 
+					}
 					return 'Invalid type';
 					break;
 				# -----------------------------------------------------
@@ -968,6 +970,7 @@
 		 *		showDeleted = if set to true, related items that have been deleted are returned. Default is false.
 		 *		limitToModifiedOn = if set returned results will be limited to rows modified within the specified date range. The value should be a date/time expression parse-able by TimeExpressionParser
 		 *		user_id = If set item level access control is performed relative to specified user_id, otherwise defaults to logged in user
+		 *		expandResultsHierarchically = expand result set items that are hierarchy roots to include their entire hierarchy. [Default is false]
 		 *
 		 * @return bool True on success, null if the browse could not be executed (Eg. no settings), false no error
 		 */
@@ -1981,6 +1984,20 @@
 					}
 					
 					if (sizeof($va_res)) {
+						if (caGetOption('expandResultsHierarchically', $pa_options, false) && ($vs_hier_id_fld = $this->opo_datamodel->getTableProperty($this->ops_browse_table_name, 'HIERARCHY_ID_FLD'))) { 
+							$qr_expand =  $this->opo_db->query("
+								SELECT ".$this->ops_browse_table_name.".".$t_item->primaryKey()." 
+								FROM ".$this->ops_browse_table_name."
+								WHERE
+									{$vs_hier_id_fld} IN (?)
+							",[array_keys($va_res)]);
+							
+							if(is_array($va_expanded_res = $qr_expand->getAllFieldValues($t_item->primaryKey())) && sizeof($va_expanded_res)) {
+								$va_res = array_flip($va_expanded_res);
+							}
+						}
+						
+						
 						$vs_filter_join_sql = $vs_filter_where_sql = '';
 						$va_wheres = array();
 						$va_joins = array();
