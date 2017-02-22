@@ -49,7 +49,7 @@
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
-			<small class="pull-right">
+			<small class="pull-right sortValues">
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>

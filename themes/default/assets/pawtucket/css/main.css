@@ -22,7 +22,7 @@ a, a:active, a:focus {
 }
 
 H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
-	font-family: DIN17SBOP-Regular;
+	font-family: lato;
 	font-weight: normal;
 	font-style: normal;
 }
@@ -60,7 +60,7 @@ H6, h6{
 	color:#454545;
 	text-transform:uppercase;
 	padding-bottom:0px;
-	margin:10px 0px 0px 0px;
+	margin:10px 0px 5px 0px;
 }
 .caption {
 	font-size:11px; 
@@ -230,7 +230,7 @@ h1 i {
     background-color: #f5f5f5;
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
-	font-family: DIN17SBOP-Regular;
+	font-family: lato;
 	/*font-size:11px;*/
 	color:#000;
 }
@@ -303,6 +303,8 @@ h1 i {
 		  box-shadow: none;
 	-webkit-transition: none;
 		  transition: none;
+	background-color:transparent;
+	font-family:Lato;
 }
 .navbar .form-control:focus {
 	border: 0px;
@@ -316,9 +318,13 @@ h1 i {
     outline: 0 none;
 }
 .navbar .formOutline{
-	border:1px solid #ccc;
-	border-radius: 10px;
+	border: 1px solid #cccccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 	position:relative;
+	border-radius: 3px;
 }
 .navbar-form .form-group {
 	width:140px;
@@ -420,6 +426,9 @@ h1 i {
 
 .nav-pills > li > a, .nav-pills > li > a:hover {
 	border-radius:0;
+}
+.front .nav-pills.nav-stacked {
+	margin-bottom:15px;
 }
 
 /* ----------------------------------------- */
@@ -639,7 +648,7 @@ div.browseMenuBrowseAll {
 @media (min-width: 768px) {
 	div.browseMenuBrowseAll {
 		position: absolute;
-		bottom: 3px;
+		bottom: 1px;
 		right: 18px;
 		margin-top:0px;
 	}
@@ -1334,8 +1343,6 @@ a.browseRemoveFacet img {
 .front .jcarousel-wrapper{
 	margin-bottom:20px;
 	margin-top:-20px;
-	margin-right:-15px;
-	margin-left:-15px;
 }
 .front .jcarousel-control-prev {
     left: 0px !important;
@@ -1549,7 +1556,13 @@ a.browseRemoveFacet img {
 	width:100%;
 	height:auto;
 }
-
+.detail .unit {
+	margin-bottom:12px;
+}
+.detail .unit img {
+	width:100%;
+	height:auto;
+}
 #detailRepresentationThumbnails{
 	padding-top:0px;
 }	
@@ -1921,6 +1934,12 @@ a.readmore-js-toggle{
     position: relative;
     z-index: 1000;
 }
+.bResultItemExpandedInfo a .fa, .bResultListItemExpandedInfo a .fa {
+	font-size:14px;
+}
+.bResultItemExpandedInfo hr, .bResultListItemExpandedInfo hr {
+	margin-bottom:10px;
+}
 #bRefine {
 	background-color: #f5f5f5;
 	/*width: 275px;*/
@@ -1935,7 +1954,7 @@ a.readmore-js-toggle{
 	margin:0px;
 }
 #bRefine H5 {
-	margin-bottom:3px;
+	margin-bottom:8px;
 	margin-top:20px;
 	text-transform:uppercase;
 	padding:0px;
@@ -2138,21 +2157,22 @@ a.readmore-js-toggle{
 	z-index:1000;
 	position:relative;
 	margin:0px -20px -20px -20px; /*had commented this out*/
-	padding:0px 20px 20px 20px; /*had commented this out*/
+	padding:0px 10px 10px 10px; /*had commented this out*/
 }
 
 .bResultItemExpandedInfo HR{
 	margin-top:15px;
-	margin-bottom:5px;
-	}
+	margin-bottom:10px;
+}
 
 .browse .btn, .sets .btn {
-	background-color:#fafafa;
-	border:1px solid #efefef;
+	background-color:#19bed1;
 	font-size:10px;
-	color:#666;
+	color:#fff;
 	margin-left:5px;
 	margin-right:5px;
+	letter-spacing:1px;
+	font-size:13px;
 }
 
 .browse .btn a, .browse .btn .glyphicon, .sets .btn a, .sets .btn .glyphicon{color:#8c8c8c;}	
@@ -2345,6 +2365,47 @@ a.readmore-js-toggle{
 }
 .multisearch .authorityResult:hover{
 	background-color:#ebebeb;
+}
+.allLink {
+	display:none;
+	text-align:center;
+	margin-bottom:25px;
+}
+.allLink a{
+	background-color:#f5f5f5;
+	border-radius:4px;
+	padding:7px;
+	color:#333;
+	text-transform:uppercase;
+	font-size:13px;
+	letter-spacing:1px;
+}
+@media (max-width:500px) {
+	.jumpLinks, .sortValues {
+		display:none;
+	}
+	.multisearch .authoritySet {
+		width:100%;
+		max-width:470px;
+		float:none;
+		margin-right:0px;
+		height:auto;
+	}
+	.authorityBlock .scrollButtonPrevious,
+	.authorityBlock .scrollButtonNext{
+		display:none;
+	}
+	.multisearch .authorityBlock .blockResultsScroller {
+		width:100% !important;
+		height:auto;
+	}
+	.multisearch .authorityBlock {
+		height:auto;
+		max-height:170px;
+	}
+	.allLink {
+		display:block;
+	}
 }
 /* ---------------------------- */
 /* Collections/Finding Aid */
@@ -2921,7 +2982,7 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	background-color: #000;
 	color: #fff;
 	height: 245px;
-	font-family: DIN17SBOP-Regular;
+	font-family: lato;
 	padding: 15px 10px 20px 15px;
 	font-size: 24px;
 	margin-right:15px;
@@ -2998,7 +3059,7 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	margin-top:20px;
 }
 .collHeader a{
-	font-family: DIN17SBOP-Regular;
+	font-family: lato;
 	color: #414151;
 	font-size: 16px;
 }

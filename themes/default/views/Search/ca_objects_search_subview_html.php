@@ -45,11 +45,10 @@
 	}
 	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
 
-
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
-			<small class="pull-right">
+			<small class="pull-right sortValues">
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
@@ -109,6 +108,10 @@
 					</div><!-- end blockResultsScroller -->
 				</div>
 			</div><!-- end blockResults -->
+		
+			<div class='allLink'><?php print caNavLink($this->request, 'all '.$va_block_info['displayName'].' results', '', '', 'Search', '{{{block}}}', array('search' => $vs_search));?></div>
+
+
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery('#{{{block}}}Results').hscroll({

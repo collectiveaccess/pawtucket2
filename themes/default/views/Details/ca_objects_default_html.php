@@ -31,7 +31,8 @@
 	$va_tags = 				$this->getVar("tags_array");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
-
+	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$vn_id =				$t_object->get('ca_objects.object_id');
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -54,7 +55,7 @@
 				
 <?php
 				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled) {
+				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						
 					print '<div id="detailTools">';
 					if ($vn_comments_enabled) {
@@ -66,9 +67,14 @@
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
+					if ($vn_pdf_enabled) {
+						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caNavLink($this->request, 'Download as PDF', 'faDownload', 'Detail', 'objects', $vn_id.'/view/pdf/export_format/_pdf_ca_objects_summary')."</div>";
+					}
 					print '</div><!-- end detailTools -->';
 				}				
+
 ?>
+
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
@@ -83,12 +89,14 @@
 				{{{<ifdef code="ca_objects.containerID"><H6>Box/series:</H6>^ca_objects.containerID<br/></ifdef>}}}				
 				
 				{{{<ifdef code="ca_objects.description">
-					<span class="trimText">^ca_objects.description</span>
+					<div class='unit'><h6>Description</h6>
+						<span class="trimText">^ca_objects.description</span>
+					</div>
 				</ifdef>}}}
 				
 				
 				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H6>Date:</H6>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}
-				
+			
 				<hr></hr>
 					<div class="row">
 						<div class="col-sm-6">		
@@ -110,6 +118,7 @@
 							{{{map}}}
 						</div>
 					</div><!-- end row -->
+						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
