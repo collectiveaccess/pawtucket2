@@ -32,18 +32,53 @@
  * ----------------------------------------------------------------------
  */
  
-	if($this->request->config->get('summary_header_enabled')) {
-?>
-<div id='header'>
+ if($this->request->config->get('summary_header_enabled')) {
+	
+	switch($this->getVar('PDFRenderer')) {
+		case 'wkhtmltopdf':
+?><!--BEGIN HEADER--><!DOCTYPE html><html>
+	<head>
+		<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+		<script>
+			function dynvar() {
+				var vars = {};
+				var x = document.location.search.substring(1).split('&');
+	
+				for (var i in x) {
+					var z = x[i].split('=',2);
+	
+					if (!vars[z[0]]) {
+						vars[z[0]] = unescape(z[1]);
+					}
+				}
+	
+				document.getElementById('pagingText').innerHTML =  'Page ' + vars.page + ' of ' + vars.topage;
+			}
+		
+		</script>
+	</head>
+	<body style='margin:0;padding-bottom:0.1in;'><div id='header' >
+<?php
+		if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
+			print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
+		}
+?>	
+	</div>
+	<br style="clear: both;"/>
+</body>
+</html><!--END HEADER-->
+<?php
+			break;
+		default:
+?><div id='header'>
 <?php
 	if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
 		print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
 	}
-	if($this->request->config->get('summary_page_numbers')) {
-		print "<div class='pagingText'>"._t('Page')." </div>";
-	}
+	print "<div class='pagingText'>"._t('Page')." </div>";
 ?>
 </div>
 <?php
+			break;
 	}
-?>
+}
