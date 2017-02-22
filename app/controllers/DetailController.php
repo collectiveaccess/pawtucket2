@@ -433,7 +433,10 @@
  			if (!$this->viewExists($vs_path = "Details/{$vs_table}_{$vs_type}_html.php")) {
  				$vs_path = "Details/{$vs_table}_default_html.php";		// If no type specific view use the default
  			}
- 			
+ 			//
+ 			// pdf link
+ 			//
+ 			$this->view->setVar('pdfEnabled', (bool)$va_options['enablePDF']);
 			switch($ps_view = $this->request->getParameter('view', pString)) {
  				case 'pdf':
  					caExportItemAsPDF($this->request, $t_subject, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_options, null), ['t_subject' => $t_subject]), ['checkAccess' => $this->opa_access_values]);
