@@ -1555,6 +1555,8 @@ a.browseRemoveFacet img {
 .detail .repViewerCont img{
 	width:100%;
 	height:auto;
+	max-height: 500px;
+    object-fit: contain;
 }
 .detail .unit {
 	margin-bottom:12px;
