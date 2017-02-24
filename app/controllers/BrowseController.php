@@ -356,15 +356,9 @@
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
-<<<<<<< HEAD
 				if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
 				$qr_res->seek($vn_key_start);
 				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
-=======
-				if (($vn_key_start = $vn_start - 5000) < 0) { $vn_key_start = 0; }
-				$qr_res->seek($vn_key_start);
-				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(5000));
->>>>>>> 6fc3bdc171efd64231aad5f0041384ab4d2d4eb2
 				$qr_res->seek($vn_start);
 			}
 				
