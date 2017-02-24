@@ -396,7 +396,7 @@
  				case 'xlsx':
  				case 'pptx':
  				case 'pdf':
- 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_label = $t_set->get('ca_sets.preferred_labels'), $vs_label);
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $vs_label = $t_set->get('ca_sets.preferred_labels.name')), ['t_subject' => $t_set]), $vs_label);
  					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
@@ -1185,7 +1185,7 @@
 			}
 			if($t_set){
 				$pn_item_id = null;
-				$pn_object_id = $this->request->getParameter('object_id', pInteger);
+				$pn_object_id = $this->request->getParameter('id', pInteger);
 				if($pn_object_id){
 					if(!$t_set->isInSet("ca_objects", $pn_object_id, $t_set->get("set_id"))){
 						if ($pn_item_id = $t_set->addItem($pn_object_id, array(), $this->request->getUserID())) {
@@ -1211,11 +1211,13 @@
 						$this->render("Form/reload_html.php");
 					}				
 				}else{
-					if(($pb_saveLastResults = $this->request->getParameter('saveLastResults', pString)) || ($ps_object_ids = $this->request->getParameter('object_ids', pString))){
+					if(($pb_saveLastResults = $this->request->getParameter('saveLastResults', pString)) || ($ps_object_ids = $this->request->getParameter('object_ids', pString)) || ($pn_object_id = $this->request->getParameter('object_id', pInteger))){
 						if($pb_saveLastResults){
 							// get object ids from last result
 							$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
 							$va_object_ids = $o_context->getResultList();
+						} elseif($pn_object_id) {
+							$va_object_ids = [$pn_object_id];
 						}else{
 							$va_object_ids = explode(";", $ps_object_ids);
 						}
@@ -1252,7 +1254,11 @@
  			$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
  			$this->view->setvar("object_ids", $this->request->getParameter('object_ids', pString));
  			$this->view->setvar("saveLastResults", $this->request->getParameter('saveLastResults', pInteger));
- 			if($this->request->getParameter('object_id', pInteger) || $this->request->getParameter('saveLastResults', pInteger) || sizeof(explode(";", $this->request->getParameter('object_ids', pString)))){
+ 			if(($pn_object_id = $this->request->getParameter('object_id', pInteger)) || ($pn_save_last_results = $this->request->getParameter('saveLastResults', pInteger)) || ($pa_object_ids = sizeof(explode(";", $this->request->getParameter('object_ids', pString))))){
+ 				$this->view->setVar('object_id', $pn_object_id);
+ 				$this->view->setVar('object_ids', $pa_object_ids);
+ 				$this->view->setVar('saveLastResults', $pn_save_last_results);
+ 				
  				$this->render("Lightbox/form_add_set_item_html.php");
  			}else{
  				$this->view->setVar('message', _t("Object ID is not defined"));

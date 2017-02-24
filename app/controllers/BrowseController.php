@@ -85,17 +85,23 @@
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Browse %1", $va_browse_info["displayName"]));
  			$this->view->setVar("browse_type", $ps_function);
  			$vs_class = $this->ops_tablename = $va_browse_info['table'];
+ 			
+ 			// Now that table name is known we can set standard view vars
+ 			parent::setTableSpecificViewVars();
+ 			
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
 			
-			ini_set("display_errors", "On");
 			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable")) {
 				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable"));
 			} else {
 				ExternalCache::save("{$vs_class}totalRecordsAvailable", $vn_count = ca_objects::find(['deleted' => 0, 'access' => $this->opa_access_values], ['returnAs' => 'count']));
 				$this->view->setVar('totalRecordsAvailable', $vn_count);
 			}
+			
+			# --- row id passed when click back button on detail page - used to load results to and jump to last viewed item
+			$this->view->setVar('row_id', $pn_row_id = $this->request->getParameter('row_id', pInteger));
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
  			
@@ -112,7 +118,6 @@
  			$this->view->setVar('name', $va_browse_info['displayName']);
  			$this->view->setVar('options', caGetOption('options', $va_browse_info, array(), array('castTo' => 'array')));
  			
- 			$ps_view = $this->request->getParameter('view', pString);
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
  				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
@@ -120,11 +125,18 @@
 				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = array();
 			}
 			
-			$va_view_info = $va_views[$ps_view];
-			
+			if (!($ps_view = $this->request->getParameter("view", pString))) {
+ 				$ps_view = $this->opo_result_context->getCurrentView();
+ 			}
  			if(!in_array($ps_view, array_keys($va_views))) {
  				$ps_view = array_shift(array_keys($va_views));
  			}
+ 			# --- only set the current view if it's not an export format
+ 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx"))){
+ 				$this->opo_result_context->setCurrentView($ps_view);
+ 			}
+ 			
+ 			$va_view_info = $va_views[$ps_view];
  			
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
 
@@ -178,7 +190,7 @@
 			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 			
 			if ($vs_facet = $this->request->getParameter('facet', pString)) {
-				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
+				$o_browse->addCriteria($vs_facet, explode('|', $this->request->getParameter('id', pString)));
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
 					if (is_array($va_base_criteria)) {
@@ -240,7 +252,10 @@
 				unset($va_criteria['_search']);
 			} 
 
-			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'showAllForNoCriteriaBrowse' => true));
+
+ 			$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
+ 			
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically));
 			
 			//
 			// Facets
@@ -282,23 +297,41 @@
 			// Results
 			//
 			
-			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort], 'sort_direction' => $ps_sort_direction));
-			
-			if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
-				$va_letters = array();
-				while($qr_res->nextHit()) {
-					$va_letters[caRemoveAccents(mb_strtolower(mb_substr($qr_res->get($vs_letter_bar_field), 0, 1)))]++;
+			$vs_sort_fld = $va_sort_by[$ps_sort];
+			if ($ps_view == 'timelineData') {
+				$vs_sort_fld = $va_browse_info['views']['timeline']['data'];
+				$ps_sort_direction = 'asc';
+			}
+			$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
+			$va_show_letter_bar_sorts = caGetOption('showLetterBarSorts', $va_browse_info, null);
+			if(is_array($va_show_letter_bar_sorts) && in_array($vs_sort_fld, $va_show_letter_bar_sorts)){
+				if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
+					$va_letters = array();
+					while($qr_res->nextHit()) {
+						$va_letters[caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($vs_letter_bar_field), "0")), 0, 1)))]++;
+					}
+					ksort($va_letters, SORT_STRING);
+					$this->view->setVar('letterBar', $va_letters);
+					$qr_res->seek(0);
 				}
-				$this->view->setVar('letterBar', $va_letters);
-				$qr_res->seek(0);
 			}
 			$this->view->setVar('showLetterBar', (bool)$vs_letter_bar_field);
+			if($this->request->getParameter('l', pString)){
+				$ps_l = trim(mb_strtolower($this->request->getParameter('l', pString)));
+				if($ps_l == "all"){
+					$ps_l = "";
+				}
+			}else{
+ 				$ps_l = $this->opo_result_context->getLetterBarPage();
+ 			}
+ 			$this->opo_result_context->setLetterBarPage($ps_l);
 			
-						
-			if ($vs_letter_bar_field && ($vs_l = mb_strtolower($this->request->getParameter('l', pString)))) {
+			$this->view->setVar('letter', $ps_l);			
+			
+			if ($vs_letter_bar_field && ($ps_l)) {
 				$va_filtered_ids = array();
 				while($qr_res->nextHit()) {
-					if (caRemoveAccents(mb_strtolower(mb_substr($qr_res->get($vs_letter_bar_field), 0, 1))) == $vs_l) {
+					if (caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($vs_letter_bar_field), "0")), 0, 1))) == $ps_l) {
 						$va_filtered_ids[] = $qr_res->getPrimaryKey();
 					}
 				}
@@ -306,8 +339,6 @@
 					$qr_res = caMakeSearchResult($vs_class, $va_filtered_ids);
 				}
 			}
-			$this->view->setVar('letter', $vs_l);
-			
 			
 			$this->view->setVar('result', $qr_res);
 				
@@ -316,19 +347,24 @@
  					$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
  				}
  			}
- 			$this->opo_result_context->getItemsPerPage($pn_hits_per_block);
+ 			$this->opo_result_context->setItemsPerPage($pn_hits_per_block);
 			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);
 
 			$this->view->setVar('start', $vn_start = $this->request->getParameter('s', pInteger));
 			
-
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
+<<<<<<< HEAD
 				if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
 				$qr_res->seek($vn_key_start);
 				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+=======
+				if (($vn_key_start = $vn_start - 5000) < 0) { $vn_key_start = 0; }
+				$qr_res->seek($vn_key_start);
+				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(5000));
+>>>>>>> 6fc3bdc171efd64231aad5f0041384ab4d2d4eb2
 				$qr_res->seek($vn_start);
 			}
 				
@@ -354,14 +390,13 @@
  				case 'xlsx':
  				case 'pptx':
  				case 'pdf':
- 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $this->getCriteriaForDisplay($o_browse));
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $ps_search_expression)), $this->getCriteriaForDisplay($o_browse));
  					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
  					$this->render($this->ops_view_prefix."/browse_results_timelineData_json.php");
  					break;
  				default:
- 					$this->opo_result_context->setCurrentView($ps_view);
  					$this->render($this->ops_view_prefix."/browse_results_html.php");
  					break;
  			}

@@ -31,7 +31,6 @@
  * ----------------------------------------------------------------------
  */
 
-putenv("COLLECTIVEACCESS_HOME=/web/nysoc"); 
 	if (!_caUtilsLoadSetupPHP()) {
 		die("Could not find your CollectiveAccess setup.php file! Please set the COLLECTIVEACCESS_HOME environment variable to the location of your CollectiveAccess installation, or run this command from a sub-directory of your CollectiveAccess installation.\n");
 	}

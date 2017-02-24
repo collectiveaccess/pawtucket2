@@ -66,7 +66,7 @@ a {
 .navbar {
 	top: 69px;
     left: 15%;
-    width: calc(85% - 95px);
+    width: calc(85% - 96px);
     position: fixed;
     border: 0px;
     box-shadow: none;
@@ -94,6 +94,21 @@ a {
 }
 #head .logo_container .logo_positioner .logo img {
 	width:80px;
+}
+#head .main_menu ul#menu-main-menu li.aboutMenu ul {
+	right:20px;
+	width:360px;
+}
+.navTitle li, ul.navTitle{
+	list-style-type:none;
+	text-transform:uppercase;
+	margin-left:0px;
+	font-family:'Lusitana', serif;
+	font-size:15px;
+	padding-left:0px;
+}
+.navTitle li {
+	padding-top:17px;
 }
 
 /* Browse Panel */
@@ -135,10 +150,14 @@ div.browseFacetItem a {
     font-size: 14px;
     padding-top: 4px;	
 }
+div.browseMenuBrowseAll {
+	display:none;
+}	
 #browse-menu.dropdown-menu {
 	border-top:0px;
 	margin-top:-1px;
 	border:0px;
+	box-shadow:0px 12px 18px rgba(0, 0, 0, 0.35);
 }
 #pageArea {
 	margin-top:70px;
@@ -248,6 +267,7 @@ div.browseFacetItem:hover {
 }
 #bRefine.fixed {
 	top:155px;
+	padding-bottom:165px;
 }
 #bRefine H3 {
 	color: #000;
@@ -319,6 +339,7 @@ div.browseFacetItem:hover {
 #browseResultsContainer.collectionsBrowse {
 	margin-top:-10px;
 }
+
 .results h5 {
     color: #7f4539;
     font-weight: bold;
@@ -360,6 +381,24 @@ div.browseFacetItem:hover {
 .mapInfo {
 	color: #7f4539;
 	padding:10px 15px;
+	margin-bottom:20px;
+}
+.institutionUnit {
+	margin-bottom:12px;
+	line-height:1.5em;
+	font-size:12px;
+}
+.results .institutionUnit a .fa {
+	color: #7f4539 !important;
+}
+.institutionUnit a {
+	text-decoration:none;
+}
+.institutionMore {
+	display:none;
+}
+.institutionUnit a.institutionLink {
+	text-decoration:underline;
 }
 
 /* Advanced Search */
@@ -393,6 +432,9 @@ div.browseFacetItem:hover {
 .advancedSearch hr {
 	margin-top:5px;
 	margin-bottom:10px;
+}
+.advancedSearch select {
+	max-width:100%;
 }
 
 /* Detail */
@@ -497,9 +539,26 @@ div.caMediaOverlayControls {
     font-weight:bold;
 }
 .listTitle a{
-	font-style:italic;
+	/*font-style:italic;*/
 	font-weight:bold;
 	color:#222;
+}
+.noLetter {
+	display:none;
+}
+.single-lists p.noSeparator {
+	margin:0px;
+	display:none;
+}
+#filterByNameContainer input {
+	padding:5px;
+	margin-bottom:30px;
+	margin-top:-5px;
+	width:250px;
+	font-size:12px;
+}
+#filterByNameContainer a:-webkit-any-link {
+	text-decoration:none;
 }
 
 @media (min-width: 1025px) {

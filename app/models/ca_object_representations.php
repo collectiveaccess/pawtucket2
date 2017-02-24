@@ -538,6 +538,17 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		return true;
 	}
 	# ------------------------------------------------------
+	/** 
+	 * Check if representation media is a binary stream accepted by the BinaryFile plugin. No format-specific
+	 * metadata is available for binary files limiting display choices. Use this method to determine if such metadata can be expected to 
+	 * be available.
+	 *
+	 * @return bool
+	 */
+	public function mediaIsBinary() {
+		return ($this->getMediaInfo('media', 'INPUT', 'MIMETYPE') == 'application/octet-stream') ? true : false;
+	}
+	# ------------------------------------------------------
 	/**
 	 * The media field is mandatory for representations
 	 * @return array
@@ -1768,7 +1779,8 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  	 * @return string HTML output
  	 */
  	public function getRepresentationViewerHTMLBundle($po_request, $pa_options=null, $pa_additional_display_options=null) {
- 		return caRepresentationViewerHTMLBundle($this, $po_request, $pa_options, $pa_additional_display_options);
+ 		$va_object_ids = $this->get('ca_objects.object_id', ['returnAsArray' => true]);
+ 		return array_shift(caRepresentationViewerHTMLBundles($po_request, caMakeSearchResult($this->tableName(), [$this->getPrimaryKey()]), new ca_objects($va_object_ids[0]), array_merge(['noToolBar' => true], $pa_options)));
  	}
  	# ------------------------------------------------------
 	/** 
@@ -1861,7 +1873,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	}
 	# ------------------------------------------------------
 	/** 
-	 * Check it a file already exists in the database as a representation
+	 * Check if a file already exists in the database as a representation
 	 *
 	 * @param string $ps_filepath The full path to the file
 	 * @return mixed ca_object_representations instance representing the first representation that contains the file, if representation exists with this file, false if the file does not yet exist

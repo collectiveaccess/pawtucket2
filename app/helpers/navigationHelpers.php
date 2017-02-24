@@ -161,7 +161,7 @@
 					if (is_array($vs_value)) { // is the value is array we need to serialize is... just treat it as a list of values which *should* be what it is.
 						$vs_value = join(";", $vs_value);
 					}
-					$vs_url .= '/'.$vs_name."/".(caGetOption('dontURLEncodeParameters', $pa_options, false) ? $vs_value : urlencode($vs_value));
+					$vs_url .= '/'.$vs_name."/".(caGetOption('dontURLEncodeParameters', $pa_options, false) ? $vs_value : urlencode(str_replace("/", "&#47;", $vs_value)));
 				
 					$vn_i++;
 				}
@@ -1107,7 +1107,7 @@
 		} else {
 			if (!is_array($pa_additional_parameters)) { $pa_additional_parameters = array(); }
 			$pa_additional_parameters = array_merge(array($vs_pk => $pn_id), $pa_additional_parameters);
-			return caNavUrl($po_request, $vs_module, $vs_controller, $vs_action, $pa_additional_parameters);
+			return caNavUrl($po_request, $vs_module, $vs_controller, $vs_action, $pa_additional_parameters, $pa_options);
 		}
 	}
 	# ------------------------------------------------------------------------------------------------

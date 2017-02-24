@@ -33,8 +33,8 @@
 		$vn_collection_root = $t_item->get('ca_collections.collection_id');
 	}
 	foreach ($va_title as $va_collection_key => $va_collection_names) {
-		foreach ($va_collection_names as $va_key => $va_collection_name) {
-			foreach ($va_collection_name as $vn_collection_id => $va_name) {
+		foreach ($va_collection_names as $vn_collection_id => $va_collection_name) {
+			foreach ($va_collection_name as $vn_key => $va_name) {
 				if(!$vn_collection_root){
 					$vn_collection_root = $vn_collection_id; 
 				}
@@ -100,7 +100,7 @@
 			if ($vs_extent = $t_item->get('ca_collections.extentDACS')) {
 				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
 			}
-			if ($vs_container = $t_item->get('ca_collections.container')) {
+			if ($vs_container = $t_item->get('ca_collections.archival_container')) {
 				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
 			}
 			if ($vs_scope_content = $t_item->get('ca_collections.scopecontent')) {
@@ -149,7 +149,7 @@
 			if ($vs_extent = $t_item->get('ca_collections.extentDACS')) {
 				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
 			}
-			if ($vs_container = $t_item->get('ca_collections.container')) {
+			if ($vs_container = $t_item->get('ca_collections.archival_container')) {
 				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
 			}
 			if ($vs_scope_content = $t_item->get('ca_collections.scopecontent')) {
@@ -187,7 +187,7 @@
 			if ($vs_extent = $t_item->get('ca_collections.extentDACS')) {
 				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
 			}
-			if ($vs_container = $t_item->get('ca_collections.container')) {
+			if ($vs_container = $t_item->get('ca_collections.archival_container')) {
 				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
 			}
 			if ($vs_scope_content = $t_item->get('ca_collections.scopecontent')) {
@@ -214,7 +214,7 @@
 			if ($vs_extent = $t_item->get('ca_collections.extentDACS')) {
 				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Extent: </span>".$vs_extent."</div>";
 			}
-			if ($vs_container = $t_item->get('ca_collections.container')) {
+			if ($vs_container = $t_item->get('ca_collections.archival_container')) {
 				$vs_buf.= "<div class='unit'><span class='collectionLabel'>Container: </span>".$vs_container."</div>";
 			}
 			if ($vs_idno = $t_item->get('ca_collections.idno')) {
@@ -239,7 +239,7 @@
 					<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 					<script>
 						$(document).ready(function(){
-							$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
+							$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'), 'subcollection_id' => $this->request->getParameter('subcollection_id', pInteger), 'expandAll' => $this->request->getParameter('expandAll', pInteger))); ?>"); 
 						})
 					</script>
 <?php				
@@ -284,7 +284,7 @@
 				</div><!-- end col -->
 				<div class='col-sm-4 col-md-4 col-lg-4'>
 <?php
-					print "<div class='faDownload'>".caNavLink($this->request, '<i class="glyphicon glyphicon-download-alt"></i> Download Finding Aid', '', 'Detail', 'collections', $vn_collection_root.'/view/pdf/export_format/_pdf_ca_collections_summary')."</div>";
+					print "<div class='faDownload'>".((file_exists(__CA_BASE_DIR__.'/nysoclib_cityreaders_finding_aids.pdf')) ? "<a href='/nysoclib_cityreaders_finding_aids.pdf'><i class='glyphicon glyphicon-download-alt'></i> Download Finding Aid</a>" : caNavLink($this->request, '<i class="glyphicon glyphicon-download-alt"></i> Download Finding Aid', '', 'Detail', 'collections', $vn_collection_root.'/view/pdf/export_format/_pdf_ca_collections_summary'))."</div>";
 ?>					
 				</div>
 			</div><!-- end row -->
@@ -300,8 +300,14 @@
 							<li id="contTabLink"><a href="#contTab"><?php print $vs_collection_type; ?> Browser</a></li>
 <?php
 						}
+						$o_search = caGetSearchInstance("ca_objects");
+						$qr_res = $o_search->search("ca_collections.collection_id:".$t_item->get("collection_id"), array("sort" => "ca_object_labels.name", "sort_direction" => "desc", "checkAccess" => $va_access_values));
+						$vn_rel_object_count = $qr_res->numHits();
+						if($vn_rel_object_count){
+							print '<li><a href="#relObjectsTab">Digitized Items</a></li>';
+						}
+							
 ?>
-						{{{<ifcount code="ca_objects" min="1"><li><a href="#relObjectsTab"><?php print $vs_collection_type; ?> Items</a></li></ifcount>}}}
 					</ul>
 					<div id="ovTab">
 						<div class='container'>
@@ -322,16 +328,17 @@
 							<div class='row'>
 								<div class='col-sm-12 col-md-12 col-lg-12'>
 									<div id='collectionLoad' class='col-xs-12 col-sm-8 col-md-8 col-lg-8'>
-										<i class='fa fa-arrow-left'></i> Click a <?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> container to the left to see its contents.
+										<span class='collectionLoadDefault'><i class='fa fa-arrow-left'></i> Click a <?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> container to the left to see its contents.</span>
 									</div>
 								</div><!-- end col -->
 							</div><!-- end row -->
 						</div><!-- end container -->						
 					</div><!-- end contTab -->
 <?php				
-			}									
+			}	
+			if($vn_rel_object_count){								
 ?>				
-			{{{<ifcount code="ca_objects" min="1">
+
 				<div id="relObjectsTab">
 					<div class='container'>
 						<div class="row">
@@ -343,10 +350,10 @@
 				</div><!-- end relObjectsTab -->	
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
-						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'docs', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'docs', array('search' => 'collection_id:'.$t_item->get('collection_id')), array('dontURLEncodeParameters' => true)); ?>", function() {
 							jQuery('#browseResultsContainer').jscroll({
 								autoTrigger: true,
-								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+								loadingHtml: '<?php print addslashes(caBusyIndicatorIcon($this->request).' '._t('Loading...')); ?>',
 								padding: 20,
 								nextSelector: 'a.jscroll-next'
 							});
@@ -355,7 +362,9 @@
 			
 					});
 				</script>
-			</ifcount>}}}				
+<?php
+			}
+?>				
 				</div><!-- end Finding Table -->								
 				</div><!-- end col -->
 			</div><!-- end row -->
