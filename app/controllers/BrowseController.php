@@ -88,6 +88,14 @@
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
+			
+			ini_set("display_errors", "On");
+			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable")) {
+				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable"));
+			} else {
+				ExternalCache::save("{$vs_class}totalRecordsAvailable", $vn_count = ca_objects::find(['deleted' => 0, 'access' => $this->opa_access_values], ['returnAs' => 'count']));
+				$this->view->setVar('totalRecordsAvailable', $vn_count);
+			}
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
  			
@@ -318,9 +326,9 @@
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
-				if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
+				if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
 				$qr_res->seek($vn_key_start);
-				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(500));
+				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 				$qr_res->seek($vn_start);
 			}
 				
