@@ -32,10 +32,9 @@
  	require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
 	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel.php');
 	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel/IOFactory.php');
-	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPPowerPoint/Autoloader.php');
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
 	
-	\PhpOffice\PhpPowerpoint\Autoloader::register();
+	\PhpOffice\PhpPresentation\Autoloader::register();
  	
  	class FindController extends BasePawtucketController {
  		# -------------------------------------------------------
@@ -637,7 +636,7 @@
 					exit;
 					break;
 				case 'pptx':
-					$ppt = new PhpOffice\PhpPowerpoint\PhpPowerpoint();
+					$ppt = new PhpOffice\PhpPresentation\PhpPresentation();
 
 					$vn_slide = 0;
 					while($po_result->nextHit()) {
@@ -676,14 +675,14 @@
 							} elseif ($vs_display_text = html_entity_decode(strip_tags(br2nl($po_result->getWithTemplate($va_settings['template']))))) {
 								switch($vs_align = caGetOption('align', $va_settings, 'center')) {
 									case 'center':
-										$vs_align = \PhpOffice\PhpPowerpoint\Style\Alignment::HORIZONTAL_CENTER;
+										$vs_align = \PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_CENTER;
 										break;
 									case 'left':
-										$vs_align = \PhpOffice\PhpPowerpoint\Style\Alignment::HORIZONTAL_LEFT;
+										$vs_align = \PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_LEFT;
 										break;
 									case 'right':
 									default:
-										$vs_align = \PhpOffice\PhpPowerpoint\Style\Alignment::HORIZONTAL_RIGHT;
+										$vs_align = \PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_RIGHT;
 										break;
 								}
 				
@@ -696,7 +695,7 @@
 								$textRun = $shape->createTextRun($vs_display_text);
 								$textRun->getFont()->setBold((bool)caGetOption('bold', $va_settings, false))
 												   ->setSize(caConvertMeasurementToPoints(caGetOption('size', $va_settings, '36px'), array('dpi' => 96)))
-												   ->setColor( new \PhpOffice\PhpPowerpoint\Style\Color( caGetOption('color', $va_settings, 'cccccc') ) );
+												   ->setColor( new \PhpOffice\PhpPresentation\Style\Color( caGetOption('color', $va_settings, 'cccccc') ) );
 							}
 
 						}
@@ -708,9 +707,8 @@
 					header('Content-type: application/vnd.openxmlformats-officedocument.presentationml.presentation');
 					header('Content-Disposition:inline;filename=Export.pptx ');
 					
-					$o_writer = \PhpOffice\PhpPowerpoint\IOFactory::createWriter($ppt, 'PowerPoint2007');
+					$o_writer = \PhpOffice\PhpPresentation\IOFactory::createWriter($ppt, 'PowerPoint2007');
 					$o_writer->save('php://output');
-					exit;
 					break;
 				case 'pdf':
 					//
