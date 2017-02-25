@@ -1103,6 +1103,15 @@
 													return null;
 													break;
 											}
+											
+											if (!is_array($va_restrict_to_types = $va_facet_info['restrict_to_types'])) { $va_restrict_to_types = array(); }
+											if(!is_array($va_restrict_to_types = $this->_convertTypeCodesToIDs($va_restrict_to_types, array('instance' => $t_rel_item)))) { $va_restrict_to_types = []; }
+											$va_restrict_to_types = array_filter($va_restrict_to_types, "strlen");
+						
+											if (!is_array($va_exclude_types = $va_facet_info['exclude_types'])) { $va_exclude_types = array(); }
+											if (!is_array($va_exclude_types = $this->_convertTypeCodesToIDs($va_exclude_types, array('instance' => $t_rel_item)))) { $va_exclude_types = []; }
+											$va_exclude_types = array_filter($va_exclude_types, "strlen");
+
 
 											$vs_cur_table = array_shift($va_path);
 
@@ -1123,22 +1132,20 @@
 												$va_wheres[] = "(".$t_item_rel->tableName().".type_id NOT IN (".join(',', $va_exclude_relationship_types)."))";
 											}
 
-											if (!(bool)$vn_state) {	// no option
-												$va_wheres[] = "(".$t_rel_item->tableName().".".$t_rel_item->primaryKey()." IS NULL)";
-												if ($t_rel_item->hasField('deleted')) {
-													$va_wheres[] = "((".$t_rel_item->tableName().".deleted = 0) OR (".$t_rel_item->tableName().".deleted IS NULL))";
-												}
-												if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_item->hasField('access')) {
-													$va_wheres[] = "((".$t_rel_item->tableName().".access NOT IN (".join(',', $pa_options['checkAccess']).")) OR ((".$t_rel_item->tableName().".".$t_rel_item->primaryKey()." IS NULL) AND (".$t_rel_item->tableName().".access IS NULL)))";
-												}
-											} else {							// yes option
-												$va_wheres[] = "(".$t_rel_item->tableName().".".$t_rel_item->primaryKey()." IS NOT NULL)";
-												if ($t_rel_item->hasField('deleted')) {
-													$va_wheres[] = "(".$t_rel_item->tableName().".deleted = 0)";
-												}
-												if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_item->hasField('access')) {
-													$va_wheres[] = "(".$t_rel_item->tableName().".access IN (".join(',', $pa_options['checkAccess'])."))";
-												}
+															// yes option
+											$va_wheres[] = "(".$t_rel_item->tableName().".".$t_rel_item->primaryKey()." IS NOT NULL)";
+											if ($t_rel_item->hasField('deleted')) {
+												$va_wheres[] = "(".$t_rel_item->tableName().".deleted = 0)";
+											}
+											if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_item->hasField('access')) {
+												$va_wheres[] = "(".$t_rel_item->tableName().".access IN (".join(',', $pa_options['checkAccess'])."))";
+											}
+
+											if ((sizeof($va_restrict_to_types) > 0) && is_object($t_rel_item)) {
+												$va_wheres[] = "(".$t_rel_item->tableName().".type_id IN (".join(',', $va_restrict_to_types)."))";
+											}
+											if ((sizeof($va_exclude_types) > 0) && is_object($t_rel_item)) {
+												$va_wheres[] = "((".$t_rel_item->tableName().".type_id NOT IN (".join(',', $va_exclude_types).")) OR (".$t_rel_item->tableName().".type_id IS NULL))";
 											}
 										}
 
@@ -1156,17 +1163,7 @@
 											$vs_where_sql = ' WHERE '.join(' AND ', $va_wheres);
 										}
 
-										if ($vn_i == 0) {
-											$vs_sql = "
-												SELECT ".$this->ops_browse_table_name.'.'.$t_item->primaryKey()."
-												FROM ".$this->ops_browse_table_name."
-												{$vs_relative_to_join}
-												{$vs_join_sql}
-												{$vs_where_sql}
-											";
-
-											$qr_res = $this->opo_db->query($vs_sql);
-										} else {
+										if ($vn_state) {
 											$vs_sql = "
 												SELECT ".$this->ops_browse_table_name.'.'.$t_item->primaryKey()."
 												FROM ".$this->ops_browse_table_name."
@@ -1175,10 +1172,25 @@
 												{$vs_where_sql}";
 
 											$qr_res = $this->opo_db->query($vs_sql);
+										} else {
+											$this->_createTempTable("_browseTmp");
+											$vs_sql = "
+												INSERT IGNORE INTO _browseTmp
+												SELECT ".$this->ops_browse_table_name.'.'.$t_item->primaryKey()."
+												FROM ".$this->ops_browse_table_name."
+												{$vs_relative_to_join}
+												{$vs_join_sql}
+												{$vs_where_sql}";
+
+											$this->opo_db->query($vs_sql);
+											
+											$qr_res = $this->opo_db->query("SELECT t.".$t_item->primaryKey()." FROM ".$this->ops_browse_table_name." t LEFT JOIN _browseTmp AS b ON ".$t_item->primaryKey()." = b.row_id WHERE b.row_id IS NULL");
+											
+											$this->_dropTempTable("_browseTmp");
 										}
 										
 										$va_acc[$vn_i] = $qr_res->getAllFieldValues($this->ops_browse_table_name.'.'.$t_item->primaryKey());
-
+										$vn_i++;
 									break;
 								# -----------------------------------------------------
 								case 'label':
@@ -2658,6 +2670,7 @@
 							}
 						}
 					} else {
+					
 						$vs_rel_table_name = $va_facet_info['table'];
 						if (!is_array($va_restrict_to_relationship_types = $va_facet_info['restrict_to_relationship_types'])) { $va_restrict_to_relationship_types = array(); }
 						$va_restrict_to_relationship_types = $this->_getRelationshipTypeIDs($va_restrict_to_relationship_types, $va_facet_info['relationship_table']);
@@ -2684,6 +2697,14 @@
 								return null;
 								break;
 						}
+						
+						if (!is_array($va_restrict_to_types = $va_facet_info['restrict_to_types'])) { $va_restrict_to_types = array(); }
+						if(!is_array($va_restrict_to_types = $this->_convertTypeCodesToIDs($va_restrict_to_types, array('instance' => $t_rel_item)))) { $va_restrict_to_types = []; }
+						$va_restrict_to_types = array_filter($va_restrict_to_types, "strlen");
+						
+						if (!is_array($va_exclude_types = $va_facet_info['exclude_types'])) { $va_exclude_types = array(); }
+						if (!is_array($va_exclude_types = $this->_convertTypeCodesToIDs($va_exclude_types, array('instance' => $t_rel_item)))) { $va_exclude_types = []; }
+						$va_exclude_types = array_filter($va_exclude_types, "strlen");
 
 						$vs_cur_table = array_shift($va_path);
 						$va_joins_init = array();
@@ -2702,12 +2723,13 @@
 
 
 							if (!(bool)$va_state_info['id']) {	// no option
-								$va_wheres[] = "(".$t_rel_item->tableName().".".$t_rel_item->primaryKey()." IS NULL)";
+								$vn_num_wheres = sizeof($va_wheres);
+								
 								if ($t_rel_item->hasField('deleted')) {
 									$va_wheres[] = "((".$t_rel_item->tableName().".deleted = 0) OR (".$t_rel_item->tableName().".deleted IS NULL))";
 								}
 								if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_item->hasField('access')) {
-									$va_wheres[] = "((".$t_rel_item->tableName().".access NOT IN (".join(',', $pa_options['checkAccess']).")) OR (".$t_rel_item->tableName().".access IS NULL))";
+									$va_wheres[] = "((".$t_rel_item->tableName().".access IN (".join(',', $pa_options['checkAccess']).")) OR (".$t_rel_item->tableName().".access IS NULL))";
 								}
 
 								if ((sizeof($va_restrict_to_relationship_types) > 0) && is_object($t_item_rel)) {
@@ -2716,7 +2738,18 @@
 								if ((sizeof($va_exclude_relationship_types) > 0) && is_object($t_item_rel)) {
 									$va_wheres[] = "(".$t_item_rel->tableName().".type_id IN (".join(',', $va_exclude_relationship_types)."))";
 								}
+								
+								if (sizeof($va_restrict_to_types)) {
+									$va_wheres[] = "((".$t_rel_item->tableName().".type_id NOT IN (".join(',', $va_restrict_to_types).")) OR (".$t_rel_item->tableName().".type_id IS NULL))";
+								}
+								
+								if (sizeof($va_exclude_types)) {
+									$va_wheres[] = "(".$t_rel_item->tableName().".type_id IN (".join(',', $va_exclude_types).")) ";
+								}
 
+								if (sizeof($va_wheres) == $vn_num_wheres) {
+									$va_wheres[] = "(".$t_rel_item->tableName().".".$t_rel_item->primaryKey()." IS NULL)";
+								}
 							} else {							// yes option
 								$va_wheres[] = "(".$t_rel_item->tableName().".".$t_rel_item->primaryKey()." IS NOT NULL)";
 								if ($t_rel_item->hasField('deleted')) {
@@ -2731,6 +2764,14 @@
 								}
 								if ((sizeof($va_exclude_relationship_types) > 0) && is_object($t_item_rel)) {
 									$va_wheres[] = "(".$t_item_rel->tableName().".type_id NOT IN (".join(',', $va_exclude_relationship_types)."))";
+								}
+								
+								if (sizeof($va_restrict_to_types)) {
+									$va_wheres[] = "(".$t_rel_item->tableName().".type_id IN (".join(',', $va_restrict_to_types)."))";
+								}
+								
+								if (sizeof($va_exclude_types)) {
+									$va_wheres[] = "((".$t_rel_item->tableName().".type_id NOT IN (".join(',', $va_exclude_types).")) OR (".$t_rel_item->tableName().".type_id IS NULL))";
 								}
 							}
 
