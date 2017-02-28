@@ -55,9 +55,11 @@
 <?php
 							$va_rep_id = $t_object->get('ca_object_representations.representation_id', array('checkAccess' => $va_access_values));
 							#print "<a href='#' onclick='caMediaPanel.showPanel(\"/index.php/Detail/GetRepresentationInfo/object_id/".$va_objects[0]."/representation_id/".$va_rep_id."/overlay/1\"); return false;'>".$va_entity_rep."</a>";
-							print $va_entity_rep;
-							$vs_creator = $t_object->get("ca_entities.preferred_labels", array('restrictToRelationshipTypes' => array('creator'), 'checkAccess' => $va_access_values));
-							print "<br/><small>".$t_object->get("type_id", array("convertCodesToDisplayText" => true)).", &copy; ".(($vs_creator) ? $vs_creator : "BAM")."</small>";
+							print caDetailLink($this->request, $va_entity_rep, '', 'ca_objects', $t_object->get("object_id"));
+							$vs_photographer = $t_object->get("ca_entities.preferred_labels", array('restrictToRelationshipTypes' => array('photographer'), 'checkAccess' => $va_access_values));
+							if($vs_photographer){
+								print "<br/><small>Photographer: ".$vs_photographer."</small>";
+							}
 ?>
 						</div><!-- end entityRep -->				
 					</div><!-- end col -->			

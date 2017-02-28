@@ -9,17 +9,18 @@
 			<div class='leader'>About</div>
 			<h2>The BAM Hamm Archives</h2>
 			<p style="margin-top:15px;">The BAM Hamm Archives tell the story of the 150+ year history of BAM, and also of the communities – civic and artistic – that helped build the institution. Watch the video below to learn more about how the archives are assembled, both the digital archives represented on this website and our physical archives headquartered in Brooklyn, New York. Or schedule a time to visit us.</p>
+		
 		</div>
 	</div>
 </div>
-<div class="row">
-	<hr class="divide">	
+<div class="row">	
 	<div class="col-xs-12 text-center">
-		<div style='max-width:700px; height:400px; margin: 25px auto;background-color:#000;text-align:center;'><i class="fa fa-play" style='color:#fff;font-size:40px;margin-top:180px;'></i></div>
+		<hr class="divide">
 	</div>
 </div>
 <div class="row">
 	<div class="col-xs-12 col-sm-5 col-sm-offset-1 col-md-5 col-md-offset-1 col-lg-5 col-lg-offset-1">	
+		
 		<p class='staticTitle'>BAM, BROOKLYN, AND THE ARTS</p>
 		<p>
 			The BAM Hamm Archives tell the story of the 150+ year history of BAM, and also of the communities—civic and artistic—that helped build the institution. 
@@ -37,12 +38,13 @@
 		</p>
 	</div>
 	<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4 col-sm-offset-1 col-md-offset-1 col-lg-offset-1">
-		<p class='staticTitle'>CONTACT THE ARCHIVES</p>
+		<div class="staticImg"><?php print caGetThemeGraphic($this->request, 'ArchivesHero-Option2.jpg'); ?></div>
+		<br/><p class='staticTitle'>CONTACT THE ARCHIVES</p>
 		<address>BAM Hamm Archives<br/>
 		1000 Dean Street, #317<br/>
 		Brooklyn, NY 11237<br/><br/>
 		<p class='linkInfo'><i class="icon icon-map-marker"></i> <a href="https://goo.gl/maps/XXT8KQPdGuQ2" target='_blank'>Google Maps</a></p>
-		<p class='linkInfo'><i class="icon fa fa-phone"></i> 718.724.8152</p>			
+		<p class='linkInfo'><i class="icon fa fa-phone"></i> 718.724.8150</p>			
 		<p class='linkInfo'><i class="icon icon-envelope"></i> <a href="mailto:bamarchive@bam.org">bamarchive@bam.org</a></p>
 		</address>
 	</div>
