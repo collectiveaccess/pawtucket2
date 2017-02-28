@@ -3600,7 +3600,7 @@ define("__CA_BUNDLE_DISPLAY_TEMPLATE_TAG_REGEX__", "/\^(ca_[A-Za-z]+[A-Za-z0-9_\
 		$ps_context 						= caGetOption('context', $pa_options, $po_request->getParameter('context', pString));
 		$ps_display_annotations	 			= caGetOption('displayAnnotations', $pa_options, false);
  		$ps_annotation_display_template 	= caGetOption('displayAnnotationTemplate', $pa_options, caGetOption('displayAnnotationTemplate', $va_detail_config['options'], '^ca_representation_annotations.preferred_labels.name'));
-		$pb_hide_overlay_controls			= (bool)caGetOption('hideOverlayControls.', $pa_options, false);
+		$pb_hide_overlay_controls			= (bool)caGetOption('hideOverlayControls', $pa_options, false);
 		
 		$vs_caption = $vs_tool_bar = '';
 				
