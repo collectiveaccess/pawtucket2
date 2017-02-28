@@ -13,7 +13,7 @@ body {
 	color:#454545;
 	margin-bottom:80px; 
 }
-a {
+a, a:hover {
 	color:#19bed1;
 }
 a, a:active, a:focus {
@@ -577,6 +577,7 @@ a.browseRemoveFacet img {
 }
 .browseHeadernav.active a{
 	color:#fff;
+	text-decoration:none;
 }
 .browseHeadernav.active .caret {
 	border-top: #fff 4px solid;
@@ -668,7 +669,7 @@ div.browseMenuBrowseSearch input {
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
     color: #555555;
     display: block;
-    font-size: 13px;
+    font-size: 12px;
     height: 24px;
     line-height: 1.42857;
     padding: 6px 12px;
@@ -1486,7 +1487,7 @@ a.browseRemoveFacet img {
 }
 .detail H6 a{
 	color:#19bed1;
-	font-size:9px;
+	/*font-size:9px;*/
 	padding:2px 0px 0px 10px;
 	text-decoration:none;
 }
@@ -1788,6 +1789,9 @@ a.readmore-js-toggle{
 }
 .results a.active .glyphicon {
 	color:#454545;
+}
+a.browseRemoveFacet .glyphicon {
+	color:#FFF !important;	
 }
 .results H1 {
 	margin:0px 0px 10px 0px;
@@ -2191,7 +2195,9 @@ a.readmore-js-toggle{
 	width: 100%;
 	height:500px;
 }
-
+.tl-headline a{
+	color:#000 !important;
+}
 
 /* --------------------------------- */
 /* multi-search */
@@ -2435,6 +2441,10 @@ a.readmore-js-toggle{
 #collectionLoad div a, #collectionLoad div .nonLinkedCollection{
 	font-size:14px;
 }
+#collectionLoad img{
+	width:auto;
+	height:auto;
+}
 #collectionLoad .label a{
 	font-size: 19px;
 }
@@ -2489,10 +2499,11 @@ a.readmore-js-toggle{
 .gallery {
 	font-size:12px;
 }
-.gallery H4 {
+.gallery H4, .gallery H4 a {
 	padding-top:5px;
 	text-transform:uppercase;
 	color:#000;
+	font-size: 18px !important;
 }
 .gallery H5 {
 	text-transform:uppercase;

@@ -48,7 +48,7 @@
 					
 					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
 					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_collections" delimiter="<br/>"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
+					{{{<unit relativeTo="ca_entities_x_collections" delimiter="<br/>"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit></unit>}}}
 
 					
 					{{{<ifcount code="ca_entities.related" min="1" max="1"><H6>Related person</H6></ifcount>}}}
