@@ -245,7 +245,10 @@
 				unset($va_criteria['_search']);
 			} 
 
-			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'showAllForNoCriteriaBrowse' => true));
+
+ 			$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
+ 			
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically));
 			
 			//
 			// Facets
@@ -293,15 +296,17 @@
 				$ps_sort_direction = 'asc';
 			}
 			$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
-			
-			if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
-				$va_letters = array();
-				while($qr_res->nextHit()) {
-					$va_letters[caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($vs_letter_bar_field), "0")), 0, 1)))]++;
+			$va_show_letter_bar_sorts = caGetOption('showLetterBarSorts', $va_browse_info, null);
+			if(is_array($va_show_letter_bar_sorts) && in_array($vs_sort_fld, $va_show_letter_bar_sorts)){
+				if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
+					$va_letters = array();
+					while($qr_res->nextHit()) {
+						$va_letters[caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($vs_letter_bar_field), "0")), 0, 1)))]++;
+					}
+					ksort($va_letters, SORT_STRING);
+					$this->view->setVar('letterBar', $va_letters);
+					$qr_res->seek(0);
 				}
-				ksort($va_letters, SORT_STRING);
-				$this->view->setVar('letterBar', $va_letters);
-				$qr_res->seek(0);
 			}
 			$this->view->setVar('showLetterBar', (bool)$vs_letter_bar_field);
 			if($this->request->getParameter('l', pString)){
