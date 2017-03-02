@@ -32,14 +32,8 @@
 <?php
 			print caGetThemeGraphic($this->request, 'footer-logo-full.png', array('class' => 'footer-logo'));
 ?>		
-			<span class="footer-copyright">Copyright: The Craigdarroch Castle Historical Museum Society. All Rights Reserved © <script>document.write(new Date().getFullYear())</script>.</span>
-			<div class='footer-logos'>
-<?php
-			print caGetThemeGraphic($this->request, 'logo-icc.png', array('class' => 'footer-logo-icc'));
-			print caGetThemeGraphic($this->request, 'logo-trip-advisor.png', array('class' => 'footer-logo-advisor'));
-			print caGetThemeGraphic($this->request, 'logo-attractions-victoria.png', array('class' => 'footer-logo-attractions'));
-?>			
-			</div>
+			<span class="footer-copyright"><span><?php print caGetThemeGraphic($this->request, 'logo-attractions-victoria.png', array('class' => 'footer-logo-attractions'));?></span>Copyright: The Craigdarroch Castle Historical Museum Society. All Rights Reserved © <script>document.write(new Date().getFullYear())</script>.<span><?php print caGetThemeGraphic($this->request, 'logo-trip-advisor.png', array('class' => 'footer-logo-advisor'));?></span></span>
+
 		</div><!-- end footer -->
 <?php
 	//

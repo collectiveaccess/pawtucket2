@@ -14,14 +14,14 @@ body {
 }
 h1 {
     font-size: 28px;
-    color: #404040;
+    color: #636466;
     font-weight: 600;
     text-transform: uppercase;
     font-family: Montserrat;
 }
 h3, .multisearch h3 {
     font-size: 16px;
-    color: #404040;
+    color: #636466;
     text-transform: uppercase;
     font-family: Montserrat;
 }
@@ -31,11 +31,11 @@ multisearch h3 a {
 h4, .detail h4 {
 	font-family: Montserrat;
 	font-size:22px;
-	color: #404040;
+	color: #636466;
 }
 h6 {
 	font-size: 14px;
-    color: #404040;
+    color: #636466;
     font-weight: bold;
     text-transform: uppercase;	
     font-family: Montserrat;
@@ -46,7 +46,7 @@ h6 {
     font-size: 12px;
     line-height: 100%;
     color: #fff;
-    background-color: #7790bf;
+    background-color: #d5a00f;
     font-family: Montserrat;
     vertical-align: middle;
     text-align: center;
@@ -54,10 +54,13 @@ h6 {
     cursor: pointer;
     letter-spacing: 1px; 
     border:0px;
-    border-radius: 3px;
+    border-radius: 20px;
 }
 .btn-default a, .btn-default:hover a{
 	color:#fff;
+}
+.control-label {
+	font-family: Montserrat;
 }
 a {
     color: #819cd1;
@@ -71,7 +74,8 @@ p, div {
 	font-family:Lora;
 }
 .navbar {
-	background-image: url("../graphics/lt-blue_stained_glass.jpg");
+	/*background-image: url("../graphics/lt-blue_stained_glass.jpg");*/
+	background-color: #30302f;
 	margin-bottom:40px;
 }
 .navbar-brand {
@@ -134,11 +138,12 @@ p, div {
 	height:385px;
 	width:100%;
 	margin:0px;
-	background-image: url('../graphics/blue_stained_glass.jpg');
+	/*background-image: url('../graphics/blue_stained_glass.jpg');*/
 	color:white;
 	text-align:center;
 	font-family:lora;
 	font-size:14px;
+	background-color: #333332;
 }
 .footer-logo {
     display: block;
@@ -157,12 +162,14 @@ p, div {
 }
 .footer-logo-advisor {
     text-align: center;
+    padding-left:20px;
 }
 .footer-logo-icc {
     float: left;
 }
 .footer-logo-attractions {
-    float: right;
+    float: none;
+    padding-right:20px;
 }
 /* Login Reg */
 
@@ -479,7 +486,7 @@ a.browseRemoveFacet img {
 }
 .front h1 {
 	font-size: 26px;
-    color: #404040;
+    color: #636466;
     font-weight: bold;
     text-transform: uppercase;
     padding:0px;
@@ -533,6 +540,24 @@ a.browseRemoveFacet img {
 .multisearchResult p {
 	margin-bottom:4px;
 }
+.multisearch .multisearchResult.objectsResult {
+	background-color: #f5f5f5;
+	box-shadow:none;
+	width:220px;
+	height:225px;
+}
+.multisearch #objectsResults .blockResultsScroller {
+	height: 225px;
+}
+.multisearch #objectsBlock .blockResults {
+	height: 225px;
+}
+.multisearchImgPlaceholder {
+	padding-top:45px;
+	padding-bottom:50px;
+	background-color:#fff;
+	border:0px;
+}
 
 /* Advanced Search */
 
@@ -583,4 +608,13 @@ div.advancedSearchField {
 }
 .attributeListItem {
 	width:100%;
+}
+
+/*Gallery*/
+
+.gallery {
+	font-size:12px;
+}
+small.uppercase {
+	font-family:Montserrat;
 }
