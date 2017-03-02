@@ -1485,6 +1485,8 @@ a.browseRemoveFacet img {
 .detail .repViewerCont img{
 	width:100%;
 	height:auto;
+	max-height: 500px;
+    object-fit: contain;
 }
 
 #detailRepresentationThumbnails{
@@ -2570,10 +2572,24 @@ div.caMediaOverlayControls {
 	bottom:0px;
 	left:0px;
 	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
-	opacity:.5;
-	
+	opacity:.5;	
 }
-div.caMediaOverlayControls:hover {
+
+div.caMediaOverlayControlsMinimal {
+	background-color: #000;
+	color:#FFF;
+	font-size: 11px;
+	text-align:center;
+	position:absolute;
+	padding: 5px;
+	width: 32px;
+	bottom:0px;
+	right:0px;
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+	opacity:.8;	
+}
+
+div.caMediaOverlayControls:hover, div.caMediaOverlayControlsMinimal:hover {
 	opacity:1.0;
 	background-color:rgba(0,0,0,0.5);
 }
