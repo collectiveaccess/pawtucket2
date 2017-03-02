@@ -60,7 +60,7 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php 
-				if ($va_uniform = $t_object->get('ca_objects.240_Uniform')) {
+				if ($va_uniform = $t_object->get('ca_objects.CCSSUSA_Uniform')) {
 					print "<h4>".$va_uniform."</h4>";
 				} else {
 					print "<h4>".$t_object->get('ca_objects.preferred_labels')."</h4>";
@@ -85,9 +85,6 @@
 				}
 				if ($vs_title = $t_object->get('ca_objects.preferred_labels')) {
 					print "<div class='unit'><h6>Title Page</h6>".$vs_title."</div>";
-				}
-				if ($vs_remainder = $t_object->get('ca_objects.subtitle')) {
-					print "<div class='unit'><h6>Remainder of Title</h6>".$vs_remainder."</div>";
 				}				
 				if ($vs_subtitle = $t_object->get('ca_objects.subtitle')) {
 					print "<div class='unit'>".$vs_subtitle."</div>";
