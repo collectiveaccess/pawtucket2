@@ -110,6 +110,7 @@
 			$this->view->setVar('browse', $po_browse);
 			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
+			$this->view->setVar('isNav', $vb_is_nav);
 			$vs_facet = $this->request->getParameter('facet', pString);
 			$vn_s = $vb_is_nav ? $this->request->getParameter('s', pInteger) : 0;	// start menu-based browse menu facet data at page boundary; all others get the full facet
 			$this->view->setVar('start', $vn_s);

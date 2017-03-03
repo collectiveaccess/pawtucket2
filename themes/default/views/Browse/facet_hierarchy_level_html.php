@@ -65,6 +65,7 @@
 		print join($va_links, "\n");
 	}
 	if ($vb_is_nav) { print "</div>\n"; }
+	if($vs_link_to == "morePanel"){
 ?>
 <script type="text/javascript">
 	jQuery(document).ready(function() {
@@ -79,3 +80,6 @@
 		});
 	});
 </script>
+<?php
+	}
+?>
