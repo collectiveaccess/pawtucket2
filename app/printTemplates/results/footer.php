@@ -38,35 +38,49 @@
 	
 	 	$t_item = $this->getVar('t_subject');
 	
-	if($this->request->config->get('summary_header_enabled')) {
-		$vs_footer = "<div class='pagingText' id='pagingText'> </div>";
+	if($this->request->config->get('summary_footer_enabled')) {
+		$vs_footer = "<div class='pagingText' id='pagingText'>"._t('Page')." <span class='page'></span> "._t('of')." <span class='topage'></span></div>";
+		
 		switch($this->getVar('PDFRenderer')) {
 			case 'wkhtmltopdf':
 ?>
-<!--BEGIN FOOTER-->
-<!DOCTYPE html>
-<html>
-<head>
-	<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
-</head>
-<body   style='margin:0;padding-top:0.1in;'>
-	<div id='footer'>
+				<!--BEGIN FOOTER-->
+				<!DOCTYPE html>
+				<html>
+				<head>
+					<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+					<script>
+						function subst() {
+						  var vars={};
+						  var x=document.location.search.substring(1).split('&');
+						  for(var i in x) {var z=x[i].split('=',2);vars[z[0]] = unescape(z[1]);}
+						  var x=['frompage','topage','page','webpage','section','subsection','subsubsection'];
+						  for(var i in x) {
+							var y = document.getElementsByClassName(x[i]);
+							for(var j=0; j<y.length; ++j) y[j].textContent = vars[x[i]];
+						  }
+						}
+					</script>
+					<meta charset="utf-8" />
+				</head>
+				<body onLoad="subst()">
+					<div id='footer'>
+				<?php
+					print "<div class='pagingText' id='pagingText'>"._t('Page')." <span class='page'></span> "._t('of')." <span class='topage'></span></div>";
+				?>
+					</div>
+				</body>
+				</html>
+				<!--END FOOTER-->
 <?php
-	print $vs_footer;
-?>
-	</div>
-</body>
-</html>
-<!--END FOOTER--><?php
-				break;
+			break;
+			# -----------------------------------
 			default:
 ?>
-	<div id='footer'>
+				<div id='footerdompdf'>
+					<div class='pagingText' id='pagingText'><?php print _t('Page'); ?> </div>
+				</div>
 <?php
-	
-		print $vs_footer;
-?>
-	</div><?php
-				break;
+			break;
 		}
 	}

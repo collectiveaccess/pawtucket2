@@ -31,10 +31,10 @@
  * @pageSize letter
  * @pageOrientation portrait
  * @tables ca_objects
- * @marginTop 0.5in
+ * @marginTop 0.75in
  * @marginLeft 0.5in
  * @marginRight 0.5in
- * @marginBottom 0.5in
+ * @marginBottom 0.75in
  *
  * ----------------------------------------------------------------------
  */

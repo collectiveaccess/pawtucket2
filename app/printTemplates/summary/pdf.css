@@ -1,18 +1,24 @@
-/* Stylesheet used by DOMPDF to format PDF summary output */
+/* universal header/footer styles */
+#header { height: 45px; position:relative; }
+img.headerImg {height:45px; width:auto; position:absolute; left:0px; top:20px;}
+.pagingText { position: absolute; top: 30px; right: 30px; font: "helvetica"; font-size: 11px; text-align: right;  margin: 0px 0px 10px 25px;}
+#footer .pagingText{ top:20px; }
+.footerText { position:relative; font-size: 11px;  top:13px; padding-right:40px;  }  
+body{ font: "helvetica, sans-serif"; border:1px solid #fff;}
 
-@page { margin: 55px 95px; }
-#header { position: fixed; left: 0px; top: -10px; right: 0px; height: 30px;  text-align: left; vertical-align: top; margin: 5px 5px 10px 0px; padding: 0px 5px 2px 0px; }
-#header img {width:150px;height:31px;}
-#footer { position: fixed; left: 0px; bottom: -50px; right: 0px; height: 20px; text-align: center; vertical-align: bottom; margin: 0px 5px 10px 5px; padding: 3px 5px 2px 10px; }
-#header .pagingText:after { content: counter(page, decimal); }
-#body { z-index: 30000; }
+/* dompdf */
+@page { margin: 65px 56px 35px 56px; }
 
-.pagingText { position: absolute; top: 10px; right: 10px; font: "DIN-Regular"; font-size: 12px; text-align: right;  margin: -5px 0px 10px 25px; }
+#headerdompdf { position: fixed; left: 0px; top: -75px; right: 0px; height: 55px;  text-align: left; vertical-align: top; margin: 0px 5px 10px 0px; padding: 0px 5px 2px 0px; }
+#footerdompdf { position: fixed; left: 0px; bottom: -0px; right: 0px; height: 0px; text-align: center; vertical-align: bottom; }
+#footerdompdf .pagingText:after { content: counter(page, decimal); }
+#footerdompdf .pagingText { position: absolute; top: 0px; right: 30px; font: "helvetica"; font-size: 11px; text-align: right; margin: 0px;}
+#footerdompdf .footerText { position:relative; font-size: 11px; padding-right:40px;  } 
 
-.title { font: "DIN-Regular"; font-size: 18px; width:100%; margin-top:10px; text-align: center; font-weight: bold;}
+/* summary styles */
+.title { font: "helvetica, sans-serif"; font-size: 18px; width:100%; margin-top:10px; text-align: center; font-weight: bold;}
 .representationList { width: 100%; margin-top:10px; text-align: center; }
 .unit {font-size:12px;margin-bottom:12px;}
 h6 {font-size:12px; font-weight:bold;text-transform:uppercase; margin:0px 0px 5px 0px; padding:0px;}
 .tombstone { margin-top:20px;}
-.thumbnail { font: "arial, helvetica, sans-serif"; font-size: 11px; border: 1px solid #999; width: 200px; height: 160px; float: left; text-align: center; margin-left: 10px; padding: 5px; overflow: none;}	
 .clear { clear: both; }
