@@ -96,9 +96,13 @@
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
 ?>
 				<br/>
-<?php 
-				print "<div><span class='title'>".caNavLink($this->request, (strlen($qr_results->get('ca_objects.preferred_labels.name')) > 110 ? substr($qr_results->get('ca_objects.preferred_labels.name'), 0, 107)."... " : $qr_results->get('ca_objects.preferred_labels.name')), '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'))."</span> "; ?>
-<?php 
+<?php
+				$vs_uniform = null; 
+				if ($vs_uniform = $qr_results->get('ca_objects.CCSSUSA_Uniform')) {
+					print "<div><span class='title'>".caNavLink($this->request, (strlen($vs_uniform) > 110 ? substr($vs_uniform, 0, 107)."... " : $vs_uniform), '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'))."</span> "; 				
+				} else {
+					print "<div><span class='title'>".caNavLink($this->request, (strlen($qr_results->get('ca_objects.preferred_labels.name')) > 110 ? substr($qr_results->get('ca_objects.preferred_labels.name'), 0, 107)."... " : $qr_results->get('ca_objects.preferred_labels.name')), '', '', 'Detail', 'objects/'.$qr_results->get('ca_objects.object_id'))."</span> "; 
+				}
 				print "<br/>".$qr_results->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true, 'restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '));
 				if ($qr_results->get('ca_objects.display_date', array('delimiter' => ', '))) {
 				print " ".$qr_results->get('ca_objects.display_date', array('delimiter' => ', '));
