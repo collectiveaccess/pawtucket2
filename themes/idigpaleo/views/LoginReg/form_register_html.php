@@ -10,7 +10,9 @@
 <script type="text/javascript">
 	// initialize CA Utils
 	caUI.initUtils();
-
+	var gCaptchaRender = function(){
+                grecaptcha.render('regCaptcha', {'sitekey': '6LehfxcUAAAAAD53UFZnHWAIPOTU8lE6klMsKnMq'});
+        };
 </script>
 	<form id="RegForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
 	<div class="row">
@@ -80,6 +82,14 @@
 			<label for='password2' class='col-sm-4 control-label'><?php print _t('Re-Type password'); ?></label>
 			<div class="col-sm-7"><input type="password" name="password2" size="40" class="form-control" /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
+<?php
+		if($va_errors["recaptcha"]){
+			print "<div class='alert alert-danger'>".$va_errors["recaptcha"]."</div>";
+		}
+?>
+		<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+                        <div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
+                </div>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
 				<button type="submit" class="btn btn-default">Register</button>
@@ -88,6 +98,7 @@
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 		<input type="hidden" name="security" value="<?php print $vn_sum; ?>">
 	</form>
+	<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
 <?php
 	if($this->request->isAjax()){
 ?>
