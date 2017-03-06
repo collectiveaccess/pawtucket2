@@ -87,6 +87,19 @@
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.taxonomy_specimen.scientific_name"), '', $vs_table, $vn_id);
+				
+				$formation_place	= $qr_res->get("{$vs_table}.lithostratigraphy.formation");
+				if($formation_place){
+					$vs_formation_detail 	= (strlen($formation_place) >= 15) ? "<small>Fossil Deposit: </small>".substr($formation_place, 0, 15)."..." : "<small>Fossil Deposit: </small>".$formation_place;
+				};
+				#Locality not currently necessary for the Browse view
+				#Leaving this here in case anyone wants to add it in at a future point
+				#$vs_locality_detail	= (strlen($qr_res->get("{$vs_table}.locality_specimen.locality")) >= 20) ? substr($qr_res->get("{$vs_table}.locality_specimen.locality"), 0, 20)."..." : $qr_res->get("{$vs_table}.locality_specimen.locality");
+				
+				$common_name_place	= $qr_res->get("{$vs_table}.taxonomy_specimen.vernacular_name");
+				if ($common_name_place){
+					$vs_common_detail	= (strlen($common_name_place) >= 15) ? "<small>Common Name: </small>".substr($common_name_place, 0, 15)."...<br/>" : "<small>Common Name: </small>".$common_name_place."<br/>";
+				};
 				$vs_thumbnail = "";
 				if ($vs_table == 'ca_objects') {
 					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'medium', array("checkAccess" => $va_access_values)))){
@@ -112,7 +125,7 @@
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}<br/>{$vs_common_detail}{$vs_formation_detail}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
@@ -125,6 +138,7 @@
 				$vn_c++;
 			}
 			
+			print "<div style='clear:both;'></div>";
 			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 		}
 ?>

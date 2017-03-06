@@ -31,8 +31,6 @@
  	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
- 	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
- 	require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
 	
  	class FindController extends BasePawtucketController {
@@ -435,7 +433,7 @@
 				$this->opo_result_context->setParameter('last_export_type', $ps_output_type);
 				$this->opo_result_context->saveContext();
 			}
-				
+		
 			caExportResult($this->request, $po_result, $ps_template, $ps_output_filename, ['criteriaSummary' => $ps_criteria_summary]);
 		}
 		# ------------------------------------------------------------------
