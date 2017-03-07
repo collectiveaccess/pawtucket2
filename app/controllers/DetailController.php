@@ -422,11 +422,20 @@
 			}
  			
  			//
+ 			// Set row_id for use within the view
+ 			//
+ 			$this->view->setVar('id', $ps_id);
+ 			$this->view->setVar($t_subject->primaryKey(), $ps_id);
+ 			
+ 			
+ 			//
  			// share link
  			//
  			$this->view->setVar('shareEnabled', (bool)$va_options['enableShare']);
  			
- 			$this->view->setVar("shareLink", "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'ShareForm', array("tablename" => $t_subject->tableName(), "item_id" => $t_subject->getPrimaryKey()))."\"); return false;'>Share</a>");
+			$va_options['shareLabel'] ? $ps_label = $va_options['shareLabel'] : $ps_label = 'Share';
+	
+ 			$this->view->setVar("shareLink", "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'ShareForm', array("tablename" => $t_subject->tableName(), "item_id" => $t_subject->getPrimaryKey()))."\"); return false;'>".$ps_label."</a>");
 
  			// find view
  			//		first look for type-specific view
@@ -667,7 +676,10 @@
 				$this->postError(1100, _t('Cannot download media'), 'DetailController->DownloadMedia');
 				return;
 			}
-			if (!($vn_object_id = $this->request->getParameter('object_id', pInteger))) { $vn_object_id = $this->request->getParameter('id', pInteger); }
+			
+			if (!($vn_object_id = $this->request->getParameter('object_id', pInteger))) {
+				$vn_object_id = $this->request->getParameter('id', pInteger);
+			}
 			$t_object = new ca_objects($vn_object_id);
 			if (!$t_object->isLoaded()) {
 				throw new ApplicationException(_t('Cannot download media'));
@@ -825,6 +837,23 @@
 					$this->render('Details/form_comments_html.php');
 				}
 			}else{
+				# --- if there is already a rank set from this user/IP don't let another
+				$t_item_comment = new ca_item_comments();
+				$vs_dup_rank_message = "";
+				$vb_dup_rank = false;
+				if($this->request->getUserID() && $t_item_comment->load(array("row_id" => $vn_item_id, "user_id" => $this->request->getUserID()))){
+					if($t_item_comment->get("comment_id")){
+						$pn_rank = null;
+						$vb_dup_rank = true;
+					}
+				}
+				if($t_item_comment->load(array("row_id" => $vn_item_id, "ip_addr" => $_SERVER['REMOTE_ADDR']))){
+					$pn_rank = null;
+					$vb_dup_rank = true;
+				}
+				if($vb_dup_rank){
+					$vs_dup_rank_message = " "._t("You can only rate an item once.");
+				}
  				if(!(($pn_rank > 0) && ($pn_rank <= 5))){
  					$pn_rank = null;
  				}
@@ -861,30 +890,30 @@
 					}
  					if($this->request->config->get("dont_moderate_comments")){
  						if($vn_inline_form){
-							$this->notification->addNotification(_t("Thank you for contributing."), __NOTIFICATION_TYPE_INFO__);
+							$this->notification->addNotification(_t("Thank you for contributing.").$vs_dup_rank_message, __NOTIFICATION_TYPE_INFO__);
  							$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
 							return;
 						}else{
-							$this->view->setVar("message", _t("Thank you for contributing."));
+							$this->view->setVar("message", _t("Thank you for contributing.").$vs_dup_rank_message);
  							$this->render("Form/reload_html.php");
 						}
  					}else{
  						if($vn_inline_form){
-							$this->notification->addNotification(_t("Thank you for contributing.  Your comments will be posted on this page after review by site staff."), __NOTIFICATION_TYPE_INFO__);
+							$this->notification->addNotification(_t("Thank you for contributing.  Your comments will be posted on this page after review by site staff.").$vs_dup_rank_message, __NOTIFICATION_TYPE_INFO__);
  							$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
 							return;
 						}else{
-							$this->view->setVar("message", _t("Thank you for contributing.  Your comments will be posted on this page after review by site staff."));
+							$this->view->setVar("message", _t("Thank you for contributing.  Your comments will be posted on this page after review by site staff.").$vs_dup_rank_message);
  							$this->render("Form/reload_html.php");
 						}
  					}
  				}else{
  					if($vn_inline_form){
-						$this->notification->addNotification(_t("Thank you for your contribution."), __NOTIFICATION_TYPE_INFO__);
+						$this->notification->addNotification(_t("Thank you for your contribution.").$vs_dup_rank_message, __NOTIFICATION_TYPE_INFO__);
  						$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
 						return;
 					}else{
-						$this->view->setVar("message", _t("Thank you for your contribution."));
+						$this->view->setVar("message", _t("Thank you for your contribution.").$vs_dup_rank_message);
  						$this->render("Form/reload_html.php");
 					}
  				}
