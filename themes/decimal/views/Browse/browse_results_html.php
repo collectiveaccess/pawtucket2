@@ -183,6 +183,7 @@ if (!$vb_ajax) {	// !ajax
 			$t_collection = new ca_collections($vn_collection_id);
 			if ($vs_description = $t_collection->get('ca_collections.description')) {
 			print "<div class='collectionDescription'>";
+			print "<h1>".$t_collection->get('ca_collections.preferred_labels')."</h1>";
 			print $vs_description;
 			print "</div>";
 			}

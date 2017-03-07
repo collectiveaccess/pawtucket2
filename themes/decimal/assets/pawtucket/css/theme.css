@@ -33,6 +33,10 @@ h6 {
 a {
 	color: #428BCA;
 }
+.btn-default {
+	font-size:12px;
+	margin-left:5px;
+}
 .navbar {
 	background-color: rgba(0, 0, 0, 0.6);
 	box-shadow:none;

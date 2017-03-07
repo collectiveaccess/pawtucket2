@@ -78,7 +78,7 @@
 
 			print "<h2>Curated Collections</h2>";
 			$o_collection_search = new CollectionSearch();
-			$qr_collections = $o_collection_search->search("ca_collections.display_homepage:'yes'", array("checkAccess" => $va_access_values));
+			$qr_collections = ca_collections::find(['display_homepage' => 'yes', 'access' => 1], ['returnAs' => 'searchResult']); //$o_collection_search->search("ca_collections.display_homepage:yes", array("checkAccess" => $va_access_values));
 			$vn_i = 0;
 			while ($qr_collections->nextHit()) {
 				print "<div>".caNavLink($this->request, $qr_collections->get('ca_collections.preferred_labels'), 'platformLink', '', 'Browse', 'objects/facet/collection_facet/id/'.$qr_collections->get('ca_collections.collection_id'))."</div>";

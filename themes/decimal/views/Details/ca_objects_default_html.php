@@ -218,15 +218,21 @@
 								print "</div>";
 							}
 							$vs_citation = "";
-							$vs_citation.= $t_object->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('creator','rightsHolder','contributor'), 'delimiter' => ', ')).". ";
-							$vs_citation.= " (".$t_object->get('ca_objects.issued', array('delimiter' => ', '))."). ";
+							if ($vs_creator = $t_object->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('creator','rightsHolder','contributor'), 'delimiter' => ', '))) {
+								$vs_citation.= $vs_creator.". ";
+							}
+							if ($vs_date = $t_object->get('ca_objects.issued', array('delimiter' => ', '))) {
+								$vs_citation.= " (".$vs_date."). ";
+							}
 							$vs_citation.= ' "'.$t_object->get('ca_objects.preferred_labels').'". ';	
 							if ($vs_publisher = $t_object->get('ca_entities', array('checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('publisher'), 'delimiter' => ', '))) {
 								$vs_citation.= $vs_publisher.". ";
 							}
-							$vs_citation.= "Fabric of Digital Life. ";	
-							$vs_citation.= caNavUrl($this->request, 'Detail', 'objects', $vn_object_id, array(), array('absolute' => 1));
-							print "<div class='unit' style='margin:12px 0px;'>".$vs_citation."</div>";
+							$vs_citation.= "Fabric of Digital Life. ";
+							$vn_object_id = $t_object->get('ca_objects.object_id');	
+							$record_link = caNavUrl($this->request, 'Detail', 'objects', $vn_object_id, array(), array('absolute' => 1));
+							$vs_citation.= "<a href='".$record_link."'>".$record_link."</a>";
+							print "<div class='unit' style='margin:12px 0px;'><h6>How to cite this entry</h6>".$vs_citation."</div>";
 ?>								
 
 
