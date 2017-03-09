@@ -49,7 +49,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 			}else{
 				$vb_collapse_link = false;
 			}
-			if(!sizeof($va_child_ids) && !$vn_rel_object_count){
+			if(!sizeof($va_child_ids)){
 				$vb_collapse_link = false;
 			}
 			if($vn_level == 1){

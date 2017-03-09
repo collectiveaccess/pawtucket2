@@ -9,7 +9,9 @@
 			<div class='detailHead'>
 				<div class='leader'>Finding Aids</div>
 				<h2>Archival and Manuscript Collections</h2> 
-				<p style='margin-top:15px;'>The BAM Hamm Archives contains the collections listed below. Most of the collections are digitized, and can be searched online. Some, for instance the BAM Board Files and Harvey Lichtenstein President’s Records, can be searched only physically, on site.</p>
+				<p style='margin-top:15px;'>
+					Collections are listed below. Some are digitized and can be searched online. Others, such as the BAM Board Files and Harvey Lichtenstein President's Records, exist only in original form and require an on-site visit.
+				</p>
 			</div>
 		</div>
 	</div>

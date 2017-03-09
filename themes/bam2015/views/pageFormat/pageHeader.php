@@ -140,7 +140,7 @@
 					print "<ul class='dropdown-menu'>\n<li>".caNavLink($this->request, 'People & Organizations', 'first', '', 'Browse', 'entities')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Productions & Events', '', '', 'Browse', 'occurrences')."</li>\n"; 
 					print "<li>".caNavLink($this->request, 'Programming History', 'last', '', 'ProgramHistory', 'Index')."</li>\n"; 
-					print "<li>".caNavLink($this->request, 'Archival Collections', '', '', 'FindingAid', 'Collection/Index')."</li>\n";
+					print "<li>".caNavLink($this->request, 'Archival Collections', '', '', 'Collections', 'Index')."</li>\n";
 					print "</ul></li>";
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>For Researchers <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>"; 

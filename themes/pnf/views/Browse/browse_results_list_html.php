@@ -93,7 +93,7 @@
 				if ($vs_uniform = $qr_res->get('ca_objects.CCSSUSA_Uniform')) {
 					$vs_label_detail_link 	= caDetailLink($this->request, $vs_uniform, '', $vs_table, $vn_id);
 				} else {
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					$vs_label_detail_link 	= caDetailLink($this->request, '[Short title]', '', $vs_table, $vn_id);
 				}
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
