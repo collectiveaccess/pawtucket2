@@ -36,10 +36,15 @@
 		<div class='leader lastLeader'>&nbsp;</div>
 		<div class='toStart'><i class='fa fa-arrow-left'></i> Choose a season to start navigating BAM Programming History</div>
 		<div class="introText">
-			<p>Founded in 1861, BAM has a long history of varied programming. Originally intended as a venue for music, early programming of classical music and opera was extensive and impressive. Programming soon expanded to include theater, with popular performances of Shakespearian and other plays, and audiences were treated to the most famous actors of the day. </p>
-			<p>The Academy also served a civic function as a prominent lecture hall, hosting important politicians, writers, explorers, and activists. Throughout the early 20th century, programming continued to be robust, with concerts and recitals by important artists.</p>
-			<p>In 1967, bookings of modern dance and cutting-edge theater revitalized the institution, and by 1983, this programming became codified as The Next Wave Festival, which grew into a celebrated showcase for contemporary experimental performance.</p>
-			<p>Throughout its history, BAM has also served a community function, for instance hosting fundraising events during the Civil War for the Brooklyn Sanitary Fair, a precursor to the Red Cross. The community focus continues to the present, epitomized by the vibrant and spirited annual DanceAfrica festival.</p>
+			<p>
+				Founded in 1861, BAM has a long history of rich and varied programming. Originally intended as a venue for music, the early representation of classical music and opera was extensive. Programs soon expanded to include theater, with popular performances of Shakespeare and other playwrights. Audiences were treated to the most famous actors of the day. 
+			</p>
+			<p>
+				The Academy also served a civic function as a prominent lecture hall, hosting important elected officials, writers, explorers, and activists. It has served a community function, such as hosting fundraising events during the Civil War for the Brooklyn Sanitary Fair, a precursor to the Red Cross. 
+			</p>
+			<p>
+				During the early 20th century, events continued to be robust, with concerts and recitals by important artists. Beginning in 1967, performances of dance and cutting-edge theater revitalized the institution, which had undergone a mid-century downturn. In 1983, the Next Wave Festival was founded, which grew into a celebrated showcase for contemporary performance from around the world. The community focus continues as an important part of BAM's mission.
+			</p>
 		</div>	
 	</div>
 </div><!-- end row -->
