@@ -433,7 +433,9 @@
  			//
  			$this->view->setVar('shareEnabled', (bool)$va_options['enableShare']);
  			
- 			$this->view->setVar("shareLink", "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'ShareForm', array("tablename" => $t_subject->tableName(), "item_id" => $t_subject->getPrimaryKey()))."\"); return false;'>Share</a>");
+			$va_options['shareLabel'] ? $ps_label = $va_options['shareLabel'] : $ps_label = 'Share';
+	
+ 			$this->view->setVar("shareLink", "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'ShareForm', array("tablename" => $t_subject->tableName(), "item_id" => $t_subject->getPrimaryKey()))."\"); return false;'>".$ps_label."</a>");
 
  			// find view
  			//		first look for type-specific view
@@ -674,7 +676,10 @@
 				$this->postError(1100, _t('Cannot download media'), 'DetailController->DownloadMedia');
 				return;
 			}
-			if (!($vn_object_id = $this->request->getParameter('object_id', pInteger))) { $vn_object_id = $this->request->getParameter('id', pInteger); }
+			
+			if (!($vn_object_id = $this->request->getParameter('object_id', pInteger))) {
+				$vn_object_id = $this->request->getParameter('id', pInteger);
+			}
 			$t_object = new ca_objects($vn_object_id);
 			if (!$t_object->isLoaded()) {
 				throw new ApplicationException(_t('Cannot download media'));

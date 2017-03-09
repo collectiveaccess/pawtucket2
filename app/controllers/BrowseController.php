@@ -93,6 +93,13 @@
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
 			
+			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable")) {
+				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable"));
+			} else {
+				ExternalCache::save("{$vs_class}totalRecordsAvailable", $vn_count = ca_objects::find(['deleted' => 0, 'access' => $this->opa_access_values], ['returnAs' => 'count']));
+				$this->view->setVar('totalRecordsAvailable', $vn_count);
+			}
+			
 			# --- row id passed when click back button on detail page - used to load results to and jump to last viewed item
 			$this->view->setVar('row_id', $pn_row_id = $this->request->getParameter('row_id', pInteger));
  			
@@ -349,9 +356,9 @@
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
-				if (($vn_key_start = $vn_start - 5000) < 0) { $vn_key_start = 0; }
+				if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
 				$qr_res->seek($vn_key_start);
-				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(5000));
+				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 				$qr_res->seek($vn_start);
 			}
 				

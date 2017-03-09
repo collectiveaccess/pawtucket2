@@ -383,6 +383,7 @@
 			$qr_res->seek($vn_key_start);
 			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(5000));
 			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(5000)); $o_block_result_context->saveContext();}
+
 			$qr_res->seek($vn_start);
 			
 			$this->opo_result_context->saveContext();
