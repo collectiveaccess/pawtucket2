@@ -31,8 +31,6 @@
  	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
- 	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
- 	require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
 	
  	class FindController extends BasePawtucketController {
@@ -112,6 +110,7 @@
 			$this->view->setVar('browse', $po_browse);
 			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
+			$this->view->setVar('isNav', $vb_is_nav);
 			$vs_facet = $this->request->getParameter('facet', pString);
 			$vn_s = $vb_is_nav ? $this->request->getParameter('s', pInteger) : 0;	// start menu-based browse menu facet data at page boundary; all others get the full facet
 			$this->view->setVar('start', $vn_s);
@@ -147,7 +146,8 @@
  			$ps_facet_name = $this->request->getParameter('facet', pString);
  			$ps_cache_key = $this->request->getParameter('key', pString);
  			$ps_browse_type = $this->request->getParameter('browseType', pString);
- 			
+ 			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
+			
  			if($ps_browse_type == "caLightbox"){
  				$va_browse_info['table'] = 'ca_objects';
  			}else{
@@ -318,7 +318,8 @@
  		 * Returned data is JSON format
  		 */
  		public function getFacetHierarchyAncestorList() {
- 			$pn_id = $this->request->getParameter('id', pInteger);
+ 			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
+			$pn_id = $this->request->getParameter('id', pInteger);
  			$va_access_values = caGetUserAccessValues($this->request);
  			$ps_facet_name = $this->request->getParameter('facet', pString);
  			$this->view->setVar("facet_name", $ps_facet_name);
@@ -432,7 +433,7 @@
 				$this->opo_result_context->setParameter('last_export_type', $ps_output_type);
 				$this->opo_result_context->saveContext();
 			}
-				
+		
 			caExportResult($this->request, $po_result, $ps_template, $ps_output_filename, ['criteriaSummary' => $ps_criteria_summary]);
 		}
 		# ------------------------------------------------------------------

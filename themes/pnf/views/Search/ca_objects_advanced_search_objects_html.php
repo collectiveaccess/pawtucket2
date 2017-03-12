@@ -73,7 +73,7 @@
 		</div>
 		<div class="col-sm-6 field">
 			<?php print _t("Holding Institution"); ?> <br/>
-			{{{ca_collections.collection_id%restrictToTypes=institutional_collection%width=200px&height=1&select=1&sort=ca_collections.preferred_labels.name}}}
+			{{{ca_collections.collection_id%width=200px&height=1&select=1&sort=ca_collections.preferred_labels.name}}}
 		</div>			
 	
 					

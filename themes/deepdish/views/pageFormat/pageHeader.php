@@ -136,8 +136,10 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
+					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "Index")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+					<?php #print $this->render("pageFormat/browseMenu.php"); ?>	
+					<li <?php print ($this->request->getAction() == "browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "About", "browse"); ?></li>
+					
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
