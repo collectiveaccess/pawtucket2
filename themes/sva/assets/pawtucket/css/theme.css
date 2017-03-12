@@ -406,6 +406,7 @@ div.advancedSearchField {
 	font-weight: normal;
 	border: 0;
 	font-size: .9em;
+	text-align:left;
 }
 .findingaid td { 
 
@@ -446,4 +447,49 @@ ol#table_of_contents li.level-2 {
 ol#table_of_contents a {
 	border-bottom: 1px solid black;
 }
+
+.breadcrumb > li + li:before {
+    padding: 0 5px;
+    font-size: 150%;
+    color: #ccc;
+    content: "\2192";
+    vertical-align: -1px;
+}
+.breadcrumb > .active {
+    color: #999999;
+}
+.hierarchyLevel a {
+	border-bottom:1px solid #000 !important;
+}
+.hierarchyLevel {
+	margin-bottom:10px;
+}
+.findingaid th {
+    letter-spacing: 2px;
+    font-weight: normal;
+    border: 0;
+    font-size: .8em;
+}
+.table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
+    padding: 8px;
+    line-height: 1.428571429;
+    vertical-align: top;
+    border-top: 1px solid #dddddd;
+}
+.table thead > tr > th {
+    vertical-align: bottom;
+    border-bottom: 1px solid #dddddd;
+}
+.findingaid thead > tr > th {
+    border: 0;
+    padding-left: 8px;
+    text-align: left;
+}
+.toc-series{
+    font-size: 16px;
+    font-weight: bold;
+    border-bottom: 0px;
+    text-decoration: none;
+}
+
 

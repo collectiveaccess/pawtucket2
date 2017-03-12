@@ -92,15 +92,6 @@
 
 			</ul>
 
-			<div id="banner">
-				<h1>Milton Glaser <span>Design Study Center and Archives</span></h1>
-				<ul class="nav nav-pills">
-					<li><a href="/">About the Archives</a></li>
-					<li class="active"><a href="http://svaca.sva.edu/ca_new/">Collections</a></li>
-					<li><a href="#">About SVA</a></li>
-					<li><a href="http://containerlist.glaserarchives.org">Containerlist Blog</a></li>
-				</ul>
-			</div>
 
         </div>
 
