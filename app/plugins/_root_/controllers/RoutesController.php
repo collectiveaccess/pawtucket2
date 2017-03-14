@@ -189,27 +189,30 @@
  									break(2);
  								}
  							}
- 							foreach(array_shift($va_georefs) as $vn_i => $va_coord) {
- 								//$vs_coord_proc = preg_replace("![\[\]]+!", "", $va_coord['georeference']);
- 								if(preg_match('!\[([^\]]+)\]!', $va_coord['georeference'], $va_matches)) {
- 									$vs_coord_proc = $va_matches[1];
- 								} else {
- 									$vs_coord_proc = preg_replace("![\[\]]+!", "", $va_coord['georeference']);
- 								}
- 								$va_points = explode(';', $vs_coord_proc);
- 								$va_parsed_points = array();
- 								foreach($va_points as $vs_point) {
- 									$va_parsed_points[] = explode(',', $vs_point);
- 								}
- 								
- 								$vs_text = $qr_stops->getWithTemplate('<div class="travelerMapListArtistPopupImage">^ca_entities.agentMedia</div> <strong>^ca_entities.preferred_labels.name</strong><br/>^ca_tour_stops.preferred_labels.name</br>^ca_tour_stops.tourStopDateSet.tourStopDateDisplayDate<br/>^ca_tour_stops.tour_stop_description<br/><br/><ifdef code="ca_list_items.preferred_labels"><em>Source: ^ca_list_items.preferred_labels</em></ifdef>');
- 								
- 								if (sizeof($va_points) > 1) {
- 									$va_coord_list[] = array('type' => 'polygon', 'text' => $vs_text, 'coordinates' => $va_parsed_points, 'start' => $vn_start, 'end' => $vn_end);
- 								} else {
- 									$va_coord_list[] = array('type' => 'point', 'text' => $vs_text, 'coordinates' => $va_parsed_points[0], 'start' => $vn_start, 'end' => $vn_end);
- 								}
- 							}
+ 							
+ 							if (is_array($va_georefs) && (is_array($va_georef_list = array_shift($va_georefs)))) {
+								foreach($va_georef_list as $vn_i => $va_coord) {
+									//$vs_coord_proc = preg_replace("![\[\]]+!", "", $va_coord['georeference']);
+									if(preg_match('!\[([^\]]+)\]!', $va_coord['georeference'], $va_matches)) {
+										$vs_coord_proc = $va_matches[1];
+									} else {
+										$vs_coord_proc = preg_replace("![\[\]]+!", "", $va_coord['georeference']);
+									}
+									$va_points = explode(';', $vs_coord_proc);
+									$va_parsed_points = array();
+									foreach($va_points as $vs_point) {
+										$va_parsed_points[] = explode(',', $vs_point);
+									}
+								
+									$vs_text = $qr_stops->getWithTemplate('<div class="travelerMapListArtistPopupImage">^ca_entities.agentMedia</div> <strong>^ca_entities.preferred_labels.name</strong><br/>^ca_tour_stops.preferred_labels.name</br>^ca_tour_stops.tourStopDateSet.tourStopDateDisplayDate<br/>^ca_tour_stops.tour_stop_description<br/><br/><ifdef code="ca_list_items.preferred_labels"><em>Source: ^ca_list_items.preferred_labels</em></ifdef>');
+								
+									if (sizeof($va_points) > 1) {
+										$va_coord_list[] = array('type' => 'polygon', 'text' => $vs_text, 'coordinates' => $va_parsed_points, 'start' => $vn_start, 'end' => $vn_end);
+									} else {
+										$va_coord_list[] = array('type' => 'point', 'text' => $vs_text, 'coordinates' => $va_parsed_points[0], 'start' => $vn_start, 'end' => $vn_end);
+									}
+								}
+							}
  						}
  					}
  					
@@ -245,7 +248,8 @@
  					if (is_array($va_stop_ids = $qr_res->get('ca_tour_stops.stop_id', array('returnAsArray' => true))) && sizeof($va_stop_ids)) {
  						$qr_stops = caMakeSearchResult('ca_tour_stops', $va_stop_ids);
  						while($qr_stops->nextHit()) {
- 							$va_georefs = $qr_stops->get('ca_places.georeference', array('returnAsArray' => true));
+ 							$va_georefs = $qr_stops->get('ca_places.georeference', array('returnWithStructure' => true,'returnAsArray' => true));
+ 							
  							$va_dates = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('returnWithStructure' => true, 'returnAsArray' => true, 'rawDate' => true));
  							$vn_start = $vn_end = null;
  							foreach(array_shift($va_dates) as $va_date_by_id) {
@@ -255,22 +259,29 @@
  									break(2);
  								}
  							}
- 							foreach($va_georefs as $vn_i => $va_coord) {
- 								$vs_coord_proc = preg_replace("![\[\]]+!", "", $va_coord['georeference']);
- 								$va_points = explode(';', $vs_coord_proc);
- 								$va_parsed_points = array();
- 								foreach($va_points as $vs_point) {
- 									$va_parsed_points[] = explode(',', $vs_point);
- 								}
- 								
- 								$vs_text = $qr_stops->getWithTemplate('<div class="travelerMapListArtistPopupImage">^ca_object_representations.media.icon</div> <strong>^ca_objects.preferred_labels.name</strong><br/>^ca_tour_stops.preferred_labels.name</br>^ca_tour_stops.tourStopDateSet.tourStopDateDisplayDate<br/>^ca_tour_stops.tour_stop_description<br/><br/><ifdef code="ca_list_items.preferred_labels"><em>Source: ^ca_list_items.preferred_labels</em></ifdef>');
- 								
- 								if (sizeof($va_points) > 1) {
- 									$va_coord_list[] = array('type' => 'polygon', 'text' => $vs_text, 'coordinates' => $va_parsed_points, 'start' => $vn_start, 'end' => $vn_end);
- 								} else {
- 									$va_coord_list[] = array('type' => 'point', 'text' => $vs_text, 'coordinates' => $va_parsed_points[0], 'start' => $vn_start, 'end' => $vn_end);
- 								}
- 							}
+ 							
+ 							if (is_array($va_georefs) && (is_array($va_georef_list = array_shift($va_georefs)))) {
+								foreach($va_georef_list as $vn_i => $va_coord) {
+									if(preg_match('!\[([^\]]+)\]!', $va_coord['georeference'], $va_matches)) {
+										$vs_coord_proc = $va_matches[1];
+									} else {
+										$vs_coord_proc = preg_replace("![\[\]]+!", "", $va_coord['georeference']);
+									}
+									$va_points = explode(';', $vs_coord_proc);
+									$va_parsed_points = array();
+									foreach($va_points as $vs_point) {
+										$va_parsed_points[] = explode(',', $vs_point);
+									}
+								
+									$vs_text = $qr_stops->getWithTemplate('<div class="travelerMapListArtistPopupImage">^ca_object_representations.media.icon</div> <strong>^ca_objects.preferred_labels.name</strong><br/>^ca_tour_stops.preferred_labels.name</br>^ca_tour_stops.tourStopDateSet.tourStopDateDisplayDate<br/>^ca_tour_stops.tour_stop_description<br/><br/><ifdef code="ca_list_items.preferred_labels"><em>Source: ^ca_list_items.preferred_labels</em></ifdef>');
+								
+									if (sizeof($va_points) > 1) {
+										$va_coord_list[] = array('type' => 'polygon', 'text' => $vs_text, 'coordinates' => $va_parsed_points, 'start' => $vn_start, 'end' => $vn_end);
+									} else {
+										$va_coord_list[] = array('type' => 'point', 'text' => $vs_text, 'coordinates' => $va_parsed_points[0], 'start' => $vn_start, 'end' => $vn_end);
+									}
+								}
+							}
  						}
  					}
  					
