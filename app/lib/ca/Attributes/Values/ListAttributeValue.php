@@ -113,7 +113,8 @@ $_ca_attribute_settings['ListAttributeValue'] = array(		// global
 			_t('Type-ahead lookup') => 'lookup',
 			_t('Horizontal hierarchy browser') => 'horiz_hierbrowser',
 			_t('Horizontal hierarchy browser with search') => 'horiz_hierbrowser_with_search',
-			_t('Vertical hierarchy browser') => 'vert_hierbrowser',
+			_t('Vertical hierarchy browser (upward)') => 'vert_hierbrowser',
+			_t('Vertical hierarchy browser (downward)') => 'vert_hierbrowser_down',
 		)
 	),
 	'auto_shrink' => array(
@@ -214,16 +215,18 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 	}
 	# ------------------------------------------------------------------
 	/**
-	 * When returning text will return plural value of list item unless useSingular option is set to true, in which case singular version of list item label will be used.
+	 * Get string value of list item attribute value for display. When returning text will return plural value of list item unless 
+	 * useSingular option is set to true, in which case singular version of list item label will be used.
 	 *
-	 * @param array Optional array of options. Support options are:
+	 * @param array Optional array of options. Supported options include:
 	 * 			list_id = if set then the numeric item_id value is translated into label text in the current locale. If not set then the numeric item_id is returned.
 	 *			useSingular = If list_id is set then by default the returned text is the plural label. Setting this option to true will force use of the singular label. [Default is false]
 	 *			showHierarchy = If true then hierarchical parents of list item will be returned and hierarchical options described below will be used to control the output [Default is false]
 	 *			returnIdno = If true list item idno is returned rather than preferred label [Default is false]
 	 *			idsOnly = Return numeric item_id only [Default is false]
 	 *			alwaysReturnItemID = Synonym for idsOnly [Default is false]
-	 *			output = what value for the list to return. Valid values are text [display text], idno [identifier; same as returnIdno option], value [numeric item_id; same as idsOnly option]. [Default is value]
+	 *			output = List item value return. Valid values are text [display text], idno [identifier; same as returnIdno option], value [numeric item_id; same as idsOnly option]. [Default is "value"]
+	 *			transaction = transaction to get list item information in the context of [Default is false]
 	 *
 	 *			HIERARCHICAL OPTIONS:
 	 *				direction - For hierarchy specifications (eg. ca_objects.hierarchy) this determines the order in which the hierarchy is returned. ASC will return the hierarchy root first while DESC will return it with the lowest node first. Default is ASC.
@@ -232,6 +235,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 	 * 				hierarchicalDelimiter - Text to place between items in a hierarchy for a hierarchical specification (eg. ca_objects.hierarchy) when returning as a string
 	 *				removeFirstItems - If set to a non-zero value, the specified number of items at the top of the hierarchy will be omitted. For example, if set to 2, the root and first child of the hierarchy will be omitted. Default is zero (don't delete anything).
 	 *				transaction = the transaction to execute database actions within. [Default is null]
+	 *
 	 * @return string The value
 	 */
 	public function getDisplayValue($pa_options=null) {
@@ -277,7 +281,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 			// do we need to get the hierarchy?
 			if ($pa_options['showHierarchy']) {
 				$t_item->load((int)$this->opn_item_id);
-				return $t_item->get('ca_list_items.hierarchy.'.$vs_get_spec, array_merge(array('removeFirstItems' => 1, 'delimiter' => ' ➔ ', $pa_options)));
+				return $t_item->get('ca_list_items.hierarchy.'.$vs_get_spec, array_merge(array('delimiter' => ' ➔ ', $pa_options)));
 			}
 
 			return $t_list->getItemFromListForDisplayByItemID($vn_list_id, $this->opn_item_id, (isset($pa_options['useSingular']) && $pa_options['useSingular']) ? false : true);
@@ -434,9 +438,13 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 				foreach($t_list->getItemsForList($pa_element_info['list_id']) as $va_items_by_locale) {
 					foreach ($va_items_by_locale as $vn_locale_id => $va_item) {
 						$vs_hide_js = '';
-						if(is_array($pa_element_info['settings']['hideIfSelected_'.$va_item['idno']])) {
+
+						if(isset($pa_element_info['settings']['hideIfSelected_'.$va_item['idno']])) {
+							$va_hideif_for_idno = $pa_element_info['settings']['hideIfSelected_'.$va_item['idno']];
+							if(!is_array($va_hideif_for_idno)) { $va_hideif_for_idno = array($va_hideif_for_idno); }
+
 							// @todo maybe only generate JS for bundles on current screen? could figure that out from request
-							foreach($pa_element_info['settings']['hideIfSelected_'.$va_item['idno']] as $vs_key) {
+							foreach($va_hideif_for_idno as $vs_key) {
 								$va_tmp = self::resolveHideIfSelectedKey($vs_key);
 								if(!is_array($va_tmp)) { continue; }
 
@@ -462,7 +470,8 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 							case 'select':
 							case null:
 								$vs_select = "jQuery('#{fieldNamePrefix}" . $pa_element_info['element_id'] . "_{n}')";
-								$vs_selector_for_val = "jQuery(this).find(':selected').val()";
+								//$vs_selector_for_val = "jQuery(this).find(':selected').val()";
+								$vs_selector_for_val = "{$vs_select}.val()";
 								$vs_condition = $vs_selector_for_val . " === '" . $va_item['item_id'] . "'";
 								break;
 							default:
@@ -540,27 +549,36 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 			}
 
 			$t_list = new ca_lists();
-			foreach($t_list->getItemsForList($pa_element_info['list_id']) as $va_items_by_locale) {
-				foreach($va_items_by_locale as $vn_locale_id => $va_item) {
-					$va_element_settings['hideIfSelected_'.$va_item['idno']] = array(
-						'formatType' => FT_TEXT,
-						'displayType' => DT_SELECT,
-						'options' => $va_options_for_settings,
-						'takesLocale' => false,
-						'default' => '',
-						'width' => "400px", 'height' => 10,
-						'label' => _t('Hide bundles if "%1" is selected', $va_item['name_singular']),
-						'description' => _t('Select bundles from the list below')
-					);
+			$va_list = $t_list->getItemsForList($pa_element_info['list_id']);
+			
+			// Only allow dependent visibility on lists with 250 or less items; if we don't impose a limit
+			// then large vocabularies will cause things to hang by generating thousands of setting elements
+			if (sizeof($va_list) <= 250) {
+				foreach($t_list->getItemsForList($pa_element_info['list_id']) as $va_items_by_locale) {
+					foreach($va_items_by_locale as $vn_locale_id => $va_item) {
+						$va_element_settings['hideIfSelected_'.$va_item['idno']] = array(
+							'formatType' => FT_TEXT,
+							'displayType' => DT_SELECT,
+							'options' => $va_options_for_settings,
+							'takesLocale' => false,
+							'default' => '',
+							'width' => "400px", 'height' => 10,
+							'label' => _t('Hide bundles if "%1" is selected', $va_item['name_singular']),
+							'description' => _t('Select bundles from the list below')
+						);
+					}
 				}
 			}
 		} elseif(defined('__CollectiveAccess_Installer__') && Configuration::load()->get('enable_dependent_field_visibility')) {
 			// when installing, UIs, screens and placements are not yet available when we process elementSets, so
 			// we just add the hideIfSelected_* as available settings (without actual settings) so that the validation doesn't fail
 			$t_list = new ca_lists();
-			foreach($t_list->getItemsForList($pa_element_info['list_id']) as $va_items_by_locale) {
-				foreach($va_items_by_locale as $vn_locale_id => $va_item) {
-					$va_element_settings['hideIfSelected_'.$va_item['idno']] = true;
+			$va_list_items = $t_list->getItemsForList($pa_element_info['list_id']);
+			if(is_array($va_list_items) && sizeof($va_list_items)) {
+				foreach($va_list_items as $va_items_by_locale) {
+					foreach($va_items_by_locale as $vn_locale_id => $va_item) {
+						$va_element_settings['hideIfSelected_'.$va_item['idno']] = true;
+					}
 				}
 			}
 		}

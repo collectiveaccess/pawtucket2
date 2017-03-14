@@ -73,7 +73,7 @@
 
 			$vn_items_in_line++;
 			$vn_left += 220;
-			if ($vn_items_in_line >= 3) {
+			if ($vn_items_in_line >= 4) {
 				$vn_items_in_line = 0;
 				$vn_left = 0;
 				$vn_top += 240;
@@ -81,10 +81,11 @@
 				print "<br class=\"clear\"/>\n";
 			}
 			
-			if ($vn_lines_on_page >= 2) { 
+			if ($vn_lines_on_page >= 3) { 
 				$vn_lines_on_page = 0;
 				$vn_left = $vn_top = 0;
 				print "<div class=\"pageBreak\">&nbsp;</div>\n";
+				print "<br class=\"clear\"/>\n";
 			}
 		}
 ?>

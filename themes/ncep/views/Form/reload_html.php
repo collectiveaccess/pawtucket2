@@ -4,7 +4,11 @@
 ?>
 	<div id="caFormOverlay"><div class='alert alert-info'>
 <?php
-		print $vs_message;
+		if($vs_message == "Thank you for registering!  Your account will be activated after review."){
+			print $vs_message." Please allow up to 48 hours for review or contact us with questions.";
+		}else{
+			print $vs_message;
+		}
 ?>
 	</div><!-- end alert --></div><!-- end caFormOverlay -->
 <?php
@@ -25,7 +29,7 @@ $(document).ready(function() {
 					window.location.href += "/contributed/1";
 					window.location.reload();
 				 });
-			}, 1500);
+			}, 3000);
 <?php
 		}else{
 ?>

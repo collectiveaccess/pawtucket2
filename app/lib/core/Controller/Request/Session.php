@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2000-2015 Whirl-i-Gig
+ * Copyright 2000-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -53,7 +53,13 @@ class Session {
 	 * In-memory session var storage
 	 * @var array
 	 */
-	private $opa_session_vars = array();
+	private $opa_session_vars = [];
+	
+	/**
+	 *
+	 *
+	 */
+	private $opa_changed_vars = [];
 	
 	# ----------------------------------------
 	# --- Constructor
@@ -84,7 +90,7 @@ class Session {
 			// try to get session ID from cookie. if that doesn't work, generate a new one
 			if (!($vs_session_id = $this->getSessionID())) {
 				$vs_cookiepath = ((__CA_URL_ROOT__== '') ? '/' : __CA_URL_ROOT__);
-				if (!caIsRunFromCLI()) { setcookie($this->name, $_COOKIE[$this->name] = $vs_session_id = $this->generateGUIDV4(), $this->lifetime ? time() + $this->lifetime : null, $vs_cookiepath); }
+				if (!caIsRunFromCLI()) { setcookie($this->name, $_COOKIE[$this->name] = $vs_session_id = caGenerateGUID(), $this->lifetime ? time() + $this->lifetime : null, $vs_cookiepath); }
 		 	}
 
 			// initialize in-memory session var storage, either restored from external cache or newly initialized
@@ -95,6 +101,7 @@ class Session {
 				if($this->getSessionID()) {
 					ExternalCache::delete($this->getSessionID(), 'SessionVars');
 				}
+				$this->opa_changed_vars['session_end_timestamp'] = true;
 				$this->opa_session_vars['session_end_timestamp'] = time() + $this->lifetime;
 			}
 
@@ -104,7 +111,7 @@ class Session {
 				||
 				(is_numeric($this->opa_session_vars['session_end_timestamp']) && (time() > $this->opa_session_vars['session_end_timestamp']))
 			) {
-				$this->opa_session_vars = array();
+				$this->opa_session_vars = $this->opa_changed_vars['session_end_timestamp'] = array();
 				ExternalCache::delete($this->getSessionID(), 'SessionVars');
 			}
 		}
@@ -115,31 +122,8 @@ class Session {
 	 */
 	public function __destruct() {
 		if($this->getSessionID() && is_array($this->opa_session_vars) && (sizeof($this->opa_session_vars) > 0)) {
-			if(isset($this->opa_session_vars['session_end_timestamp'])) {
-				$vn_session_lifetime = abs(((int) $this->opa_session_vars['session_end_timestamp']) - time());
-			} else {
-				$vn_session_lifetime = 24 * 60 * 60;
-			}
-			ExternalCache::save($this->getSessionID(), $this->opa_session_vars, 'SessionVars', $vn_session_lifetime);
+			$this->save();	
 		}
-	}
-	# ----------------------------------------
-	/**
-	 * Generate a GUID 
-	 */
-	private function generateGUIDV4(){
-		if (function_exists("openssl_random_pseudo_bytes")) {
-			$vs_data = openssl_random_pseudo_bytes(16);
-		} else {
-			$vs_data = '';
-			for($i=0; $i < 16; $i++) {
-				$vs_data .= chr(mt_rand(0, 255));
-			}
-		}
-		$vs_data[6] = chr(ord($vs_data[6]) & 0x0f | 0x40); // set version to 0100
-		$vs_data[8] = chr(ord($vs_data[8]) & 0x3f | 0x80); // set bits 6-7 to 10
-
-		return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($vs_data), 4));
 	}
 	# ----------------------------------------
 	/**
@@ -248,6 +232,7 @@ class Session {
 					$vm_val = $pm_val;
 				}
 			}
+			$this->opa_changed_vars[$ps_key] = true;
 			$this->opa_session_vars[$ps_key] = $vm_val;
 			return true;
 		}
@@ -259,6 +244,7 @@ class Session {
 	 * @param string $ps_key
 	 */
 	public function delete($ps_key) {
+		$this->opa_changed_vars[$ps_key] = true;
 		unset($this->opa_session_vars[$ps_key]);
 	}
 	# ----------------------------------------
@@ -276,6 +262,25 @@ class Session {
 	 */
 	public function getVarKeys() {
 		return is_array($this->opa_session_vars) ? array_keys($this->opa_session_vars) : array();
+	}
+	# ----------------------------------------
+	/**
+	 * Save changes to session variables to persistent storage
+	 */
+	public function save() {
+		if(isset($this->opa_session_vars['session_end_timestamp'])) {
+			$vn_session_lifetime = abs(((int) $this->opa_session_vars['session_end_timestamp']) - time());
+		} else {
+			$vn_session_lifetime = 24 * 60 * 60;
+		}
+		
+		// Get old vars
+		$va_current_values = ExternalCache::fetch($this->getSessionID(), 'SessionVars');
+		foreach(array_keys($this->opa_changed_vars) as $vs_key) {
+			$va_current_values[$vs_key] = $this->opa_session_vars[$vs_key];
+		}
+		
+		ExternalCache::save($this->getSessionID(), $va_current_values, 'SessionVars', $vn_session_lifetime);
 	}
 	# ----------------------------------------
 	/**

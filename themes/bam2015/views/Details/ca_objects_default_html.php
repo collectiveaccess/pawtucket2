@@ -19,12 +19,21 @@
 		$vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon");
 		
 		$t_rep = $this->getVar("t_representation");
-		if($t_rep && (!in_array($va_rep_type, array('audio/mpeg')))){
+		#if($va_rep_type == 'audio/mpeg'){
+		#	$vs_detail_link = caDetailLink($this->request, "<div class='detailOverlayItemImgPlaceholder'>".$vs_type_placeholder."</div>", "", "ca_objects", $t_object->get("ca_objects.object_id"));
+		#}else{
+		if($t_rep){
 			$va_opts = array('display' => 'related_object_overlay', 'object_id' => $t_object->get('object_id'), 'representation_id' => $t_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => caGetUserAccessValues($this->request));
-			$vs_detail_link = caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+			if($t_rep && (!in_array($va_rep_type, array('video/mp4', 'video/x-flv', 'video/mpeg', 'audio/x-realaudio', 'video/quicktime', 'video/x-ms-asf', 'video/x-ms-wmv', 'application/x-shockwave-flash', 'video/x-matroska')))){
+				$vs_detail_link = caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+			}else{
+				# --- don't make video a link
+				$vs_detail_link = $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts);
+			}
 		}else{
 			$vs_detail_link = caDetailLink($this->request, "<div class='detailOverlayItemImgPlaceholder'>".$vs_type_placeholder."</div>", "", "ca_objects", $t_object->get("ca_objects.object_id"));
 		}
+		#}
 ?>
 		<div class="container">
 			<div class="row">
@@ -195,12 +204,13 @@
 				#if ($va_source_description = $t_object->get('ca_objects.sourceDescription')) {
 				#	$vs_buf "<div class='unit'><span class='label'>Description: </span>".$va_source_description."</div>";
 				#}
-				if ($va_rights_statement = $t_object->get('ca_objects.rightsStatement.rightsStatement_text', array('delimiter' => '<br/>'))) {
-					$vs_buf_second.= "<div class='unit'><span class='label'>Rights Statement </span>".$va_rights_statement."</div>";
-				}
-				if ($va_ordering_info = $t_object->get('ca_objects.orderingInfo')) {
-					$vs_buf.= "<div class='unit'><span class='label'>Ordering Info </span>".$va_ordering_info."</div>";
-				}	
+				#if ($va_rights_statement = $t_object->get('ca_objects.rightsStatement.rightsStatement_text', array('delimiter' => '<br/>'))) {
+				#	$vs_buf_second.= "<div class='unit'><span class='label'>Rights Statement </span>".$va_rights_statement."</div>";
+				#}
+				$vs_buf_second.= "<div class='unit'><span class='label'>Rights Statement </span>Many of the digital objects on this site are protected by copyright or other legal rights.  Those objects may not be reproduced, published or distributed without the express permission of the rights holder.  <a href='mailto:bamarchive@bam.org'>Contact the BAM Hamm Archives</a> for further information.</div>"; 
+				#if ($va_ordering_info = $t_object->get('ca_objects.orderingInfo')) {
+				#	$vs_buf.= "<div class='unit'><span class='label'>Ordering Info </span>".$va_ordering_info."</div>";
+				#}	
 				if ($va_rights_holder = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('rights_holder'), 'returnAsLink' => true, 'delimiter' => ', '))) {
 					$vs_buf_second.= "<div class='unit'><span class='label'>Rights Holder </span>".$va_rights_holder."</div>";
 				}					

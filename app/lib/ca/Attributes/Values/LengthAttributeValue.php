@@ -156,7 +156,14 @@
 			try {
 				$vo_measurement = new Zend_Measure_Length((float)$pa_value_array['value_decimal1'], 'METER', $g_ui_locale);
 
-				switch($g_ui_units_pref) {
+				$o_config = Configuration::load();
+				if ($o_config->get('force_use_of_fractions_for_measurements')) {
+					$vs_units = 'fractions';
+				} else {
+					$vs_units = $g_ui_units_pref;
+				}
+
+				switch($vs_units) {
 					case 'metric':
 						$this->ops_text_value = $vo_measurement->convertTo(Zend_Measure_Length::METER, 4);
 						break;
@@ -174,6 +181,10 @@
 				$this->ops_text_value = $pa_value_array['value_longtext1'];
 			}
 
+			// Trim off trailing zeros in quantity
+ 			$this->ops_text_value = preg_replace("!\.([1-9]*)[0]+([A-Za-z ]+)$!", ".$1$2", $this->ops_text_value);
+ 			$this->ops_text_value = preg_replace("!\.([A-Za-z ]+)$!", "$1", $this->ops_text_value);
+ 			
  			$this->opn_decimal_value = $pa_value_array['value_decimal1'];
  		}
  		# ------------------------------------------------------------------

@@ -86,6 +86,9 @@
 				if(!$vs_first_letter){
 					$vs_first_letter = mb_strtoupper(mb_substr($va_item["label"], 0, 1));
 				}
+				if(is_numeric($vs_first_letter)){
+					$vs_first_letter = "Numeral";
+				}
 				if(!in_array($vs_first_letter, $va_letter_bar)){
 					$va_letter_bar[$vs_first_letter] = $vs_first_letter;
 					$vs_facet_list .= "<div id='facetList".$vs_first_letter."'><strong>".$vs_first_letter."</strong></div>";
@@ -95,6 +98,7 @@
 			$vn_c++;
 		}
 		print "<H1 id='bScrollListLabel'>";		
+		print "<a href='#' class='pull-right' id='bMorePanelClose' onclick='jQuery(\"#bMorePanel\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
 		if($vs_facet_name == "term_facet"){
 			print caNavLink($this->request, _t("Keyword Definitions")." <i class='fa fa-angle-double-right'></i>", "keywordDef", "", "About", "keywords");
 		}

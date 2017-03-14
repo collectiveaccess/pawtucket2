@@ -62,7 +62,7 @@
 
 	$qr_comments 					= $this->getVar("comments");
 	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
-
+	$vs_description_attribute 		= $this->getVar("description_attribute");
 
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -265,12 +265,11 @@ if (!$vb_ajax) {	// !ajax
 								$vn_representation_id = null;
 								if ($vs_tag = $va_representations[$vn_object_id]['tags'][$vs_media_version]) {
 									$vn_representation_id = $va_representations[$vn_object_id]['representation_id'];
-									$vs_representation = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;'><div class='lbItemImg'>{$vs_tag}</div></a>";
-									//$vs_representation = caDetailLink($this->request, "<div class='lbItemImg'>{$vs_tag}</div>", '', 'ca_objects', $vn_object_id);
+									
+									$vs_representation = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => caGetDetailForType('ca_objects', null, array('request' => $this->request)), 'id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;'><div class='lbItemImg'>{$vs_tag}</div></a>";
 								} else {
 									if (!isset($va_placeholders[$vs_type_idno])) { $va_placeholders[$vs_type_idno] = caGetPlaceholder($vs_type_idno, 'placeholder_media_icon'); }
 									$vs_representation = "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div>";
-									//$vs_representation = caDetailLink($this->request, "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div>", '', 'ca_objects', $vn_object_id);
 								}
 								$this->setVar('representation', $vs_representation);
 								$this->setVar('representation_id', $vn_representation_id);
@@ -312,7 +311,7 @@ if (!$vb_ajax) {    // !ajax
             if (!$vb_write_access) {
                 print "<div class='warning'>" . _t("You may not edit this set, you have read only access.") . "</div>";
             }
-            if ($vs_description = $t_set->get("description")) {
+            if ($vs_description = $t_set->get($vs_description_attribute)) {
                 print "<span id='lbSetDescription".$t_set->get("set_id")."'>{$vs_description}</span><hr/>";
             }
 ?>

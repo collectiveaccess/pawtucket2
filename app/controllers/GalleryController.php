@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -28,25 +28,24 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets.php");
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  	
- 	class GalleryController extends ActionController {
- 		# -------------------------------------------------------
- 		/**
- 		 *
- 		 *
- 		 */
- 		
+ 	class GalleryController extends BasePawtucketController {
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 			
  			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+            }
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	print "You do not have access to view this page.";
+            	die;
             }
             
  			$this->config = caGetGalleryConfig();
  			$this->opo_datamodel = Datamodel::load();
- 			$va_access_values = caGetUserAccessValues($this->request);
- 		 	$this->opa_access_values = $va_access_values;
+ 			
  		 	# --- what is the section called - title of page
  			if(!$vs_section_name = $this->config->get('gallery_section_name')){
  				$vs_section_name = _t("Featured Galleries");
@@ -63,7 +62,6 @@
  			AssetLoadManager::register("carousel");
  		}
  		# -------------------------------------------------------
- 		
  		/**
  		 *
  		 */ 
@@ -97,6 +95,12 @@
  				$this->view->setVar("set_id", $ps_set_id);
  				$t_set->load($ps_set_id);
  				$this->view->setVar("set", $t_set);
+ 				
+ 				$o_context = new ResultContext($this->request, 'ca_objects', 'gallery');
+ 				$o_context->setAsLastFind();
+ 				$o_context->setResultList(array_keys($t_set->getItemRowIDs()));
+ 				$o_context->saveContext();
+ 				 				
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
  				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
@@ -128,7 +132,33 @@
  			
  			$this->render("Gallery/set_info_html.php");
  		}
- 		# -------------------------------------------------------
+		# -------------------------------------------------------
+		public function getSetInfoAsJSON() {
+			$ps_mode = $this->getRequest()->getParameter('mode', pString);
+			if(!$ps_mode) { $ps_mode = 'timeline'; }
+
+			$pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
+			$t_set = new ca_sets($pn_set_id);
+			$this->getView()->setVar('set', $t_set);
+
+			$this->getView()->setVar('views', $this->config->get('views'));
+
+			$o_res = caMakeSearchResult(
+				$t_set->get('table_num'),
+				array_keys($t_set->getItemRowIDs()),
+				['checkAccess' => caGetUserAccessValues($this->getRequest())]
+			);
+
+			$this->getView()->setVar('result', $o_res);
+
+			switch($ps_mode) {
+				case 'timeline':
+				default:
+					$this->getView()->setVar('view', 'timeline');
+					$this->render('Gallery/set_detail_timeline_json.php');
+			}
+		}
+		# -------------------------------------------------------
  		public function getSetItemRep(){
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
@@ -142,7 +172,7 @@
  			$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
  			$this->view->setVar("rep_object", $t_rep);
  			$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
- 			$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"]));
+ 			$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"], ['context' => 'gallery']));
  			$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
  			$this->view->setVar("object_id", $va_set_items[$pn_item_id]["row_id"]);
  			$pn_previous_id = 0;
@@ -200,5 +230,18 @@
  			$this->render("Gallery/set_item_info_html.php");
  		}
  		# -------------------------------------------------------
+		/** 
+		 * Generate the URL for the "back to results" link
+		 * as an array of path components.
+		 */
+ 		public static function getReturnToResultsUrl($po_request) {
+ 			$va_ret = array(
+ 				'module_path' => '',
+ 				'controller' => 'Gallery',
+ 				'action' => 'Index',
+ 				'params' => array()
+ 			);
+			return $va_ret;
+ 		}
+ 		# -------------------------------------------------------
 	}
- ?>

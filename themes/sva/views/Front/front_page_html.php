@@ -43,49 +43,27 @@
 		}
 	}	
 ?>
-<div class="container">
+
 	<div class="row">
-		<div class="col-sm-8">
-		<h2>Selected exhibitions</h2>
-<?php		
-			if ($featured_set_items_as_search_result) {
-				while ($featured_set_items_as_search_result->nextHit()) {
-					$va_occurrence_id = $featured_set_items_as_search_result->get('ca_occurrences.occurrence_id');
-					$va_related_objects = $featured_set_items_as_search_result->get('ca_objects.object_id', array('returnAsArray' => true));
-					$vn_object_id = $va_related_objects[0];
-					$t_object = new ca_objects($vn_object_id);
-					$va_reps = $t_object->getPrimaryRepresentation(array('widepreview'), null, array('return_with_access' => $va_access_values));
-					if ($va_opening_dates = $featured_set_items_as_search_result->get('ca_occurrences.exhibition_dates', array('returnAsArray' => true))) {
-						#205
-						foreach ($va_opening_dates as $va_opening_key => $va_opening) {
-							if ($va_opening['ex_dates_type'] == 205) {
-								$va_opening_date = $va_opening['ex_dates_value'];
-							}
-						}
-					}
-					if ($va_closing_dates = $featured_set_items_as_search_result->get('ca_occurrences.exhibition_dates', array('returnAsArray' => true))) {
-						#207
-						foreach ($va_closing_dates as $va_closing_key => $va_closing) {
-							if ($va_closing['ex_dates_type'] == 207) {
-								$va_closing_date = $va_closing['ex_dates_value'];
-							}
-						}
-					}
-					print "<div class='exGrid'>";
-					print "<div class='splashImage'>".$va_reps['tags']['widepreview']."</div>";
-					print "<div>".caNavLink($this->request, $featured_set_items_as_search_result->get('ca_occurrences.preferred_labels'), '', '', 'Detail', 'occurrences/'.$va_occurrence_id)."</div>";
-					print "<div>".$va_opening_date." - ".$va_closing_date."</div>";
-					print "</div>";
-				}
-			}
-			print "<div class='fullListing'>".caNavLink($this->request, "Full Listing >>", '', '', 'Browse', 'occurrences')."</div>";
-?>
-		</div><!--end col-sm-8-->
-		<div class="col-sm-4">
-			<h2>&nbsp;</h2>
-			<div>The digital archive contains a selection (though not all) of all the materials on exhibitions held at the School of Visual Arts, documented at the SVA Archives.</div>
-			<div>You can also browse our digital archive by <a href='#'>object</a> types, related <a href='#'>people</a>, academic <a href='#'>departments</a>, and exhibition <a href='#'>locations.</a></div>
-			<div>More information about the SVA Archives can be found <a href='#'>here</a></div>
-		</div> <!--end col-sm-4-->	
-	</div><!-- end row -->
-</div> <!--end container-->
+			<div class="col-md-10">
+				<h2>Search digital collections</h2>
+			</div>
+			<div class="col-md-10">
+				<p>The digital archive contains a selection (though not all) of all the materials on exhibitions held at the School of Visual Arts, documented at the SVA Archives. You can also browse our digital archive by <a href='#'>object</a> types, related <a href='#'>people</a>, academic <a href='#'>departments</a>, and exhibition <a href='#'>locations.</a> More information about the SVA Archives can be found <a href='#'>here</a>.</p>
+			</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-10">
+		
+				<form class="main-search" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+					<div class="formOutline">
+						<div class="form-group">
+							<input type="text" class="form-control" placeholder="Search" name="search">
+							<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+						</div>
+					</div>
+				</form>		
+		</div>
+	</div>
+
+		

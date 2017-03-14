@@ -26,6 +26,7 @@
 				$va_component_info = array();
 				$va_component_info["name"] = $q_components->get("ca_objects.preferred_labels.name");
 				$va_component_info["type"] = $q_components->get("ca_objects.type_id", array("convertCodesToDisplayText" => true));
+				$va_component_info["type_id"] = $q_components->get("ca_objects.type_id");
 				$va_component_info["author"] = $q_components->get("ca_entities.preferred_labels.displayname", array("delimiter" => ", ", "restrictToRelationshipTypes" => array("author"), "checkAccess" => $va_access_values));
 				$va_component_info["translator"] = $q_components->get("ca_entities.preferred_labels.displayname", array("delimiter" => ", ", "restrictToRelationshipTypes" => array("translator"), "checkAccess" => $va_access_values));
 				$va_component_info["adapter"] = $q_components->get("ca_entities.preferred_labels.displayname", array("delimiter" => ", ", "restrictToRelationshipTypes" => array("adapter"), "checkAccess" => $va_access_values));
@@ -56,13 +57,16 @@
 						if($va_component_info["rep_id"]){
 							$t_representation->load($va_component_info["rep_id"]);
 							$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-							$vs_download_version = $va_download_display_info['display_version'];
+							$vs_download_version = $va_download_display_info['download_version'];
 							$va_component_info["download"] = caNavLink($this->request, "<i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $t_representation->getPrimaryKey(), "object_id" => $q_components->get("ca_objects.object_id"), "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
-							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $q_components->get("ca_objects.object_id"), 'representation_id' => $t_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
+							
+							if (!$t_representation->mediaIsBinary()) {
+								$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $q_components->get("ca_objects.object_id"), 'identifier' => 'representation:'.$t_representation->getPrimaryKey(), 'context' => 'objects'))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
+							}
 						}elseif(is_array($va_component_info["rep_ids"]) && sizeof($va_component_info["rep_ids"])){
 							#download the all reps for the component
 							$va_component_info["download"] = caNavLink($this->request, "<i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $q_components->get("ca_objects.object_id"), "download" => 1, "exclude_ancestors" => 1), array("title" => _t("Download %1 files", sizeof($va_component_info["rep_ids"]))));
-							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $q_components->get("ca_objects.object_id"), 'representation_id' => $va_component_info["rep_ids"][0], 'overlay' => 1))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
+							$va_component_info["preview"] = "<a href='#' class='btn-default btn-orange btn-icon' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $q_components->get("ca_objects.object_id"), 'identifier' => 'representation:'.$va_component_info["rep_ids"][0], 'context' => 'objects'))."\"); return false;' title='"._t("Preview")."'><i class='fa fa-search-plus'></i></span></a>";
 						}
 					}else{
 						# --- if not logged in provide a login link instead
@@ -91,6 +95,10 @@
 					# --------------------------------------
 					case $va_component_types["resource"]:
 						if($vs_ncep_theme = $q_components->get("ca_objects.ncep_theme", array("convertCodesToDisplayText" => true))){
+							if(strpos($vs_ncep_theme, ";")){
+								$va_theme_tmp = explode(";", $vs_ncep_theme);
+								$vs_ncep_theme = $va_theme_tmp[0];
+							}
 							$va_components[strtolower($vs_ncep_theme)][] = $va_component_info;
 						}
 					break;
@@ -99,6 +107,65 @@
 						$va_components["teach"][] = $va_component_info;
 					break;
 					# --------------------------------------					
+				}
+			}
+			# --- sort componentes
+			if(is_array($va_components) && sizeof($va_components)){
+				$vn_resource_type_id = $t_list->getItemIDFromList("object_types", "Resource");
+				$vn_presentation_type_id = $t_list->getItemIDFromList("object_types", "Presentation");
+				$vn_evaltool_type_id = $t_list->getItemIDFromList("object_types", "EvaluationTool");
+				$vn_solutions_type_id = $t_list->getItemIDFromList("object_types", "Solutions");
+				$vn_notes_type_id = $t_list->getItemIDFromList("object_types", "TeachingNotes");
+				foreach($va_components as $vs_tab => $va_component_group){
+					if(in_array($vs_tab, array("learn", "practice", "explore"))){
+						# --- stick the resources at the end
+						$va_tmp = array();
+						$va_tmp_resources = array();
+						foreach($va_component_group as $va_comp_info){
+							if($va_comp_info["type_id"] == $vn_resource_type_id){
+								$va_tmp_resources[] = $va_comp_info;
+							}else{
+								$va_tmp[] = $va_comp_info;
+							}
+						}
+						$va_components[$vs_tab] = array_merge($va_tmp, $va_tmp_resources);
+					}else{
+						#For TEACH: Presentations, Teaching notes, EvaluationTools, Solutions, resources OERs
+						$va_tmp = array();
+						$va_tmp_resources = array();
+						$va_tmp_presentations = array();
+						$va_tmp_evaltools = array();
+						$va_tmp_solutions = array();
+						$va_tmp_notes = array();
+						foreach($va_component_group as $va_comp_info){
+							switch($va_comp_info["type_id"]){
+								case $vn_resource_type_id:
+									$va_tmp_resources[] = $va_comp_info;
+								break;
+								# ------------------------
+								case $vn_presentation_type_id:
+									$va_tmp_presentations[] = $va_comp_info;
+								break;
+								# ------------------------
+								case $vn_evaltool_type_id:
+									$va_tmp_evaltools[] = $va_comp_info;
+								break;
+								# ------------------------
+								case $vn_solutions_type_id:
+									$va_tmp_solutions[] = $va_comp_info;
+								break;
+								# ------------------------
+								case $vn_notes_type_id:
+									$va_tmp_notes[] = $va_comp_info;
+								break;
+								# ------------------------
+								default:
+									$va_tmp[] = $va_comp_info;
+								break;
+							}
+						}
+						$va_components[$vs_tab] = array_merge($va_tmp_presentations, $va_tmp_notes, $va_tmp_evaltools, $va_tmp_solutions, $va_tmp_resources, $va_tmp);
+					}
 				}
 			}
 		}
@@ -199,9 +266,15 @@
 					<p><b>Components:</b> <?php print sizeof($va_component_ids); ?></p>
 <?php
 					if($vb_files){
-						print "<p class='componentButtonCol'>".caNavLink($this->request, "Download All".(($vb_files_require_login) ? "*" : "")."&nbsp; <i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $t_object->get("ca_objects.object_id"), "download" => 1), array("title" => _t("Download All")));
-						if($vb_files_require_login){
+						print "<p class='componentButtonCol'>";
+						if(!$this->request->isLoggedIn() && $vb_files_require_login){
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "About", "DownloadAll", array("object_id" => $t_object->get("ca_objects.object_id")))."\"); return false;' title='"._t("Download All")."' class='btn-default btn-orange btn-icon'>Download All".(($vb_files_require_login) ? "*" : "")."&nbsp; <i class='fa fa-download'></i></a>";
 							print "<br/><small>* Login to access educator-only files</small>";
+						}else{
+							print caNavLink($this->request, "Download All".(($vb_files_require_login) ? "*" : "")."&nbsp; <i class='fa fa-download'></i>", 'btn-default btn-orange btn-icon', 'Detail', 'DownloadMedia', '', array("object_id" => $t_object->get("ca_objects.object_id"), "download" => 1), array("title" => _t("Download All")));
+							if($vb_files_require_login){
+								print "<br/><small>* Login as educator to access educator-only files</small>";
+							}
 						}
 						print "</p>";
 					}
@@ -407,7 +480,7 @@
 	</div>
 </div>
 <script type="text/javascript">
-	jQuery(document).ready(function() {
+/*	jQuery(document).ready(function() {
 		jQuery('.componentSection').hide();
 		jQuery('.sectionHR').hide();
 <?php
@@ -423,6 +496,7 @@
 ?>
 		jQuery('.<?php print $vs_first_section; ?>').addClass('highlightTab');
 	});
+	*/
 	function clickTab(tabname){
 		$('.componentSection').hide();
 		$('.sectionHR').hide();

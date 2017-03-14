@@ -156,12 +156,11 @@
 					</li>
 					<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Education <span class='caret'></span></a>
 						<ul class='dropdown-menu'> 
-							<li><a href="/news/index.php/school-programs">School Programs</a></li>
-							<li><a href="/news/index.php/after-school-programs">After School Programs</a></li>
-							<li><a href="/news/index.php/drawing-together">Drawing Together</a></li>
-							<li><a href="/news/index.php/residency-programs">Residency Programs</a></li>
-							<li><a href="/news/index.php/partner-with">Partner with K.I.D.S. Art Education</a><li>
-							<li><a href="http://kidsarteducation.blogspot.com/">K.I.D.S. Ed Blog</a></li>
+							<li><a href="/news/index.php/about-kids">About K.I.D.S. Art Education</a></li>
+							<li><a href="/news/index.php/youth-programs">Youth Programs</a></li>
+							<li><a href="/news/index.php/family-programs">Family Programs</a></li>
+							<li><a href="/news/index.php/adult-programs">Adult Programs</a></li>
+							<li><a href="http://kidsarteducation.blogspot.com/" target="_blank">K.I.D.S. Art Education Blog</a></li>
 						</ul>					
 					</li>
 					<li><li class='dropdown' style='position:relative;'><?php print caNavLink($this->request, _t("Events"), "", "", "Listing", "events"); ?></li>
@@ -184,9 +183,8 @@
 						<ul class='dropdown-menu'> 
 							<li><a href="/news/index.php/donate">Donate</a></li>
 							<li><a href="/news/index.php/volunteer">Volunteer</a></li>
-							<li><a href="/news/index.php/internships">Internships</a></li>
-							<li><a href="/news/index.php/fundraisers">Fundraisers</a></li>
 							<li><a href="/news/index.php/supporters">Supporters</a></li> 
+							<li><a href="/news/index.php/benefit">Benefit</a></li>
 						</ul>					
 					</li>					
 					<?php #print $this->render("pageFormat/browseMenu.php"); ?>	
