@@ -1119,9 +1119,9 @@
 					$vs_mail_message_text = $o_view->render("mailTemplates/share_email_text.tpl");
 				}
 				if($ps_tablename == "ca_objects"){
-					$vs_mail_message_html = $o_view->render("/mailTemplates/share_object_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/share_object_email_html.tpl");
 				}else{
-					$vs_mail_message_html = $o_view->render("/mailTemplates/share_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/share_email_html.tpl");
 				}
 				
 				$va_media = null;
