@@ -77,9 +77,19 @@
 					if($qr_set_items->get("ca_collections")){
 						print "<H3>".$qr_set_items->getWithTemplate('<unit relativeTo="ca_collections"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></unit>')."</H3>";
 					}
-					if($qr_set_items->get("ca_objects.date.dates_value")){
-						print "<H3>".$qr_set_items->getWithTemplate("<unit>^ca_objects.date.dates_value, ^ca_objects.date.dc_dates_types</unit>", array("delimiter" => "; "))."</H3>";
+					$va_dates = array();
+				$va_date_values = $qr_set_items->get("ca_objects.date.dates_value", array("returnAsArray" => true));
+				$va_date_types = $qr_set_items->get("ca_objects.date.dc_dates_types", array("returnAsArray" => true, "convertCodesToDisplayText" => true));
+				foreach($va_date_types as $vn_i => $vs_type){
+					if($va_date_values[$vn_i]){
+						$va_dates[] = $va_date_values[$vn_i].", ".$vs_type;
 					}
+				}
+				if(is_array($va_dates) && sizeof($va_dates)){
+					print "<H3>";
+					print join("<br/>", $va_dates);
+					print "</H3>";
+				}
 ?>
 					<h3><?php print $qr_set_items->get("ca_objects.idno"); ?></h3>
 				</section>

@@ -166,7 +166,7 @@
 				$vn_c++;
 			}
 			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => (int)$this->request->getParameter("openResultsInOverlay", pInteger)));
+			print "<div style='clear:both;'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => (int)$this->request->getParameter("openResultsInOverlay", pInteger)));
 		}
 ?>
 <script type="text/javascript">
