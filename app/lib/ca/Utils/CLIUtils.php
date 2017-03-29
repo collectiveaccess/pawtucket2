@@ -3254,6 +3254,97 @@
 		}
 		# -------------------------------------------------------
 		/**
+		 *
+		 */
+		public static function precache_browse_facets($po_opts=null) {
+			require_once(__CA_LIB_DIR__."/core/Db.php");
+			
+			$o_config = Configuration::load();
+			$o_dm = Datamodel::load();
+			if(!(bool)$o_config->get('do_browse_precaching')) { 
+				//CLIUtils::addError(_t("Content caching is not enabled"));
+				//return;
+			}
+			$o_browse_config = Configuration::load(__CA_CONF_DIR__."/browse.conf");
+			
+			$o_request = new RequestHTTP(null, [
+				'no_headers' => true,
+				'simulateWith' => [
+					'REQUEST_METHOD' => 'GET',
+					'SCRIPT_NAME' => 'index.php'
+				]
+			]);
+			
+			$vs_site_protocol = $o_config->get('site_protocol');
+			if (!($vs_site_hostname = $o_config->get('site_hostname'))) {
+				$vs_site_hostname = "localhost";
+			}
+			
+			$va_access_values = $o_config->getList('public_access_settings');
+			
+			$va_keys = $o_browse_config->getAssocKeys();
+			foreach($va_keys as $vs_key) {
+				if (!$o_dm->tableExists($vs_key)) { continue; }
+				
+				if (!($o_browse = caGetBrowseInstance($vs_key))) { continue; }
+				
+				$va_browse_info = $o_browse_config->getAssoc($vs_key);
+				foreach($va_browse_info['facets'] as $vs_facet => $va_facet_info) {
+					if (!caGetOption('precache', $va_facet_info, false)) { continue; }
+					
+					CLIUtils::addMessage(_t("Preloading facet content from %1::%2", $vs_key, $vs_facet), array('color' => 'bold_blue'));
+					$va_facet_content = $o_browse->getFacetContent($vs_facet);
+					
+					foreach($va_facet_content as $va_item) {
+						CLIUtils::addMessage(_t("Preloading facet results from %1::%2::%3", $vs_key, $vs_facet, $va_item['label']), array('color' => 'bold_blue'));
+						$o_browse->addCriteria('_search', ['*']);
+						$o_browse->addCriteria($vs_facet, [$va_item['id']]);
+					
+						$o_browse->execute(array('checkAccess' => $va_access_values, 'showAllForNoCriteriaBrowse' => true));
+						$qr_res = $o_browse->getResults();
+						print "key = ".($vs_key = $o_browse->getBrowseID())."\n";
+						print "FOUND ".$qr_res->numHits()."\n";
+						$o_browse->removeAllCriteria();
+					}
+				}
+				
+			}
+			
+			return true;
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function precache_browse_facetsParamList() {
+			return array(
+				
+			);
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function precache_browse_facetsUtilityClass() {
+			return _t('Maintenance');
+		}
+
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function precache_browse_facetsShortHelp() {
+			return _t('Pre-generate content cache.');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function precache_browse_facetsHelp() {
+			return _t('Pre-loads content cache by loading each cached page url. Pre-caching may take a while depending upon the quantity of content configured for caching.');
+		}
+		# -------------------------------------------------------
+		/**
 		 * Load metadata dictionary
 		 */
 		public static function load_chenhall_nomenclature($po_opts=null) {

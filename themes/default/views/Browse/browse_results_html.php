@@ -50,6 +50,8 @@
 	$t_instance			= $this->getVar('t_instance');
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
+
+	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
 	
 	
 	$va_options			= $this->getVar('options');
@@ -92,13 +94,13 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		<H1>
 <?php
-			print _t('%1 %2 %3', $qr_res->numHits(), ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));	
+			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 ?>		
 			<div class="btn-group">
 				<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 				<ul class="dropdown-menu" role="menu">
 <?php
-					if($qr_res->numHits() && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
+					if($vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
 						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
 						print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
 						print "<li class='divider'></li>";
@@ -196,7 +198,7 @@ if (!$vb_ajax) {	// !ajax
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
-		if($vb_is_search && !$qr_res->numHits() && $vs_search){
+		if($vb_is_search && !$vn_result_size && $vs_search){
 			# --- try to display did you mean results if available
 			$o_search = caGetSearchInstance($vs_table);
 			if (sizeof($va_suggestions = $o_search->suggest($vs_search, array('request' => $this->request)))) {

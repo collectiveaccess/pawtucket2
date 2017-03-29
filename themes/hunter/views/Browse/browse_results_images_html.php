@@ -106,7 +106,7 @@
 					}
 					$vs_info = null;
 					if ($qr_res->get('ca_objects.date.dates_value')) {
-						$vs_date = "<p>".$qr_res->get('ca_objects.date.dates_value')."</p>";
+						$vs_date = "<p>".$qr_res->get('ca_objects.date.dates_value', array('delimiter' => '; '))."</p>";
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 				} else {

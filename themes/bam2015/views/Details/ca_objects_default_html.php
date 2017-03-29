@@ -204,12 +204,13 @@
 				#if ($va_source_description = $t_object->get('ca_objects.sourceDescription')) {
 				#	$vs_buf "<div class='unit'><span class='label'>Description: </span>".$va_source_description."</div>";
 				#}
-				if ($va_rights_statement = $t_object->get('ca_objects.rightsStatement.rightsStatement_text', array('delimiter' => '<br/>'))) {
-					$vs_buf_second.= "<div class='unit'><span class='label'>Rights Statement </span>".$va_rights_statement."</div>";
-				}
-				if ($va_ordering_info = $t_object->get('ca_objects.orderingInfo')) {
-					$vs_buf.= "<div class='unit'><span class='label'>Ordering Info </span>".$va_ordering_info."</div>";
-				}	
+				#if ($va_rights_statement = $t_object->get('ca_objects.rightsStatement.rightsStatement_text', array('delimiter' => '<br/>'))) {
+				#	$vs_buf_second.= "<div class='unit'><span class='label'>Rights Statement </span>".$va_rights_statement."</div>";
+				#}
+				$vs_buf_second.= "<div class='unit'><span class='label'>Rights Statement </span>Many of the digital objects on this site are protected by copyright or other legal rights.  Those objects may not be reproduced, published or distributed without the express permission of the rights holder.  <a href='mailto:bamarchive@bam.org'>Contact the BAM Hamm Archives</a> for further information.</div>"; 
+				#if ($va_ordering_info = $t_object->get('ca_objects.orderingInfo')) {
+				#	$vs_buf.= "<div class='unit'><span class='label'>Ordering Info </span>".$va_ordering_info."</div>";
+				#}	
 				if ($va_rights_holder = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('rights_holder'), 'returnAsLink' => true, 'delimiter' => ', '))) {
 					$vs_buf_second.= "<div class='unit'><span class='label'>Rights Holder </span>".$va_rights_holder."</div>";
 				}					
