@@ -73,17 +73,17 @@ a {
 	border:0px;
 	border-radius:0px;
 	border: 2px solid #444;
-	color:#fff;
+	color:#444;
 }
 .navbar .form-control {
 	background-color:transparent;
-	color:#fff !important;
+	color:#444 !important;
 }
 .navbar .form-control input {
-	color:#fff;
+	color:#444;
 }
 .navbar::placeholder {
-	color:#fff !important;
+	color:#444 !important;
 }
 .navbar .btn-search{
 	background-color:transparent;
