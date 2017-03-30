@@ -869,7 +869,7 @@ a.browseRemoveFacet img {
 	margin-bottom:10px;
 }
 .detail .meta {
-	width:60%;
+	width:70%;
 	display:inline-block;
 	margin-bottom:0px;
 	min-height: 40px; 
@@ -1033,7 +1033,11 @@ a.browseRemoveFacet img {
 	height:265px;
 	padding-top:120px;
 }
-
+a.readmore-js-toggle {
+	text-align:center;
+	margin-bottom:15px;
+	padding-top:0px;
+}
 
 /* --------------------------------- */
 /* browse b */
