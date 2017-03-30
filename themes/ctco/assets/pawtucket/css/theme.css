@@ -25,6 +25,11 @@ h2 {
     font-weight: bold;
     letter-spacing: 1px;
 }
+h6 {
+	padding-bottom:3px;
+	color:#444;
+	font-weight:bold;
+}
 img {
 	width:100%;
 	height:auto;
@@ -283,6 +288,14 @@ div.browseMenuBrowseAll {
 }
 .filterMenuResults div div.row {
 	max-height:445px;
+}
+.bResultItem .bResultItemText small, .bResultItem .bResultItemText small a {
+	text-transform:uppercase;
+	color:#999;
+	font-weight:bold;
+}
+.bResultItem .bResultItemText {
+	font-size:13px;
 }
 
 /* Advanced Search */

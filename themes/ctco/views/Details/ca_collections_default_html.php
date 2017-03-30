@@ -11,6 +11,7 @@
 		$vb_show_hierarchy_viewer = false;	
 	}
 ?>
+<div class="container">
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
@@ -47,9 +48,76 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_collections.notes"><H6>About</H6>^ca_collections.notes<br/></ifdef>}}}
-					{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
 <?php
+				if ($vs_repository = $t_item->getWithTemplate('<unit>^ca_collections.repository.repositoryline1<ifdef code="ca_collections.repository.repositoryline1,ca_collections.repository.repositoryline1">, </ifdef>^ca_collections.repository.repositoryline2</unit>')) {
+					print "<div class='unit'><h6>Repository</h6>".$vs_repository."</div>";
+				}
+				if ($va_date = $t_item->getWithTemplate('<ifcount min="1" code="ca_collections.date.date_value"><unit delimiter="<br/>"><ifdef code="ca_collections.date.date_value">^ca_collections.date.date_value (^ca_collections.date.date_types)</ifdef></unit></ifcount>')) {
+					print "<div class='unit'><h6>Date</H6>".$va_date."</div>";
+				}				
+				if ($va_extent = $t_item->get('ca_collections.extentDACS')) {
+					print "<div class='unit'><h6>Extent</H6>".$va_extent."</div>";
+				}		
+				if ($va_adminbiohist = $t_item->get('ca_collections.adminbiohist')) {
+					print "<div class='unit'><h6>Administrative/Biographical History Element</H6>".$va_adminbiohist."</div>";
+				}
+				if ($va_scopecontent = $t_item->get('ca_collections.scopecontent')) {
+					print "<div class='unit'><h6>Scope and Content</H6>".$va_scopecontent."</div>";
+				}
+				if ($va_arrangement = $t_item->get('ca_collections.arrangement')) {
+					print "<div class='unit'><h6>System of Arrangement</H6>".$va_arrangement."</div>";
+				}
+				if ($va_accessrestrict = $t_item->get('ca_collections.accessrestrict')) {
+					print "<div class='unit'><h6>Conditions Governing Access</H6>".$va_accessrestrict."</div>";
+				}
+				if ($va_physaccessrestrict = $t_item->get('ca_collections.physaccessrestrict')) {
+					print "<div class='unit'><h6>Physical Access</H6>".$va_physaccessrestrict."</div>";
+				}
+				if ($va_techaccessrestrict = $t_item->get('ca_collections.techaccessrestrict')) {
+					print "<div class='unit'><h6>Technical Access</H6>".$va_techaccessrestrict."</div>";
+				}
+				if ($va_langmaterial = $t_item->get('ca_collections.langmaterial')) {
+					print "<div class='unit'><h6>Languages and Scripts on the Material</H6>".$va_langmaterial."</div>";
+				}	
+				if ($va_otherfindingaid = $t_item->get('ca_collections.otherfindingaid')) {
+					print "<div class='unit'><h6>Other Finding Aids</H6>".$va_otherfindingaid."</div>";
+				}
+				if ($va_custodhist = $t_item->get('ca_collections.custodhist')) {
+					print "<div class='unit'><h6>Custodial History</H6>".$va_custodhist."</div>";
+				}	
+				if ($va_acqinfo = $t_item->get('ca_collections.acqinfo')) {
+					print "<div class='unit'><h6>Immediate Source of Acquisition</H6>".$va_acqinfo."</div>";
+				}
+				if ($va_appraisal = $t_item->get('ca_collections.appraisal')) {
+					print "<div class='unit'><h6>Appraisal, Destruction, and Scheduling Information</H6>".$va_appraisal."</div>";
+				}		
+				if ($va_accruals = $t_item->get('ca_collections.accruals')) {
+					print "<div class='unit'><h6>Accruals</H6>".$va_accruals."</div>";
+				}
+				if ($va_originalsloc = $t_item->get('ca_collections.originalsloc')) {
+					print "<div class='unit'><h6>Existence and Location of Originals</H6>".$va_originalsloc."</div>";
+				}
+				if ($va_altformavail = $t_item->get('ca_collections.altformavail')) {
+					print "<div class='unit'><h6>Existence and Location of Copies</H6>".$va_altformavail."</div>";
+				}
+				if ($va_relation = $t_item->get('ca_collections.relation')) {
+					print "<div class='unit'><h6>Related Archival Materials</H6>".$va_relation."</div>";
+				}
+				if ($va_publication = $t_item->get('ca_collections.publication_note')) {
+					print "<div class='unit'><h6>Publication Note</H6>".$va_publication."</div>";
+				}
+				if ($va_general = $t_item->get('ca_collections.general_notes', array('delimiter' => '<br/>'))) {
+					print "<div class='unit'><h6>General Notes</H6>".$va_general."</div>";
+				}
+				if ($va_conservation = $t_item->get('ca_collections.conservation_notes', array('delimiter' => '<br/>'))) {
+					print "<div class='unit'><h6>Conservation Notes</H6>".$va_conservation."</div>";
+				}
+				if ($va_processInfo = $t_item->get('ca_collections.processInfo')) {
+					print "<div class='unit'><h6>Processing Information</H6>".$va_processInfo."</div>";
+				}	
+				if ($va_preferCite = $t_item->get('ca_collections.preferCite')) {
+					print "<div class='unit'><h6>Preferred Citation</H6>".$va_preferCite."</div>";
+				}																																																																															
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
 						
@@ -69,24 +137,41 @@
 					
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_collections.related" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-					{{{<ifcount code="ca_collections.related" min="2"><H6>Related collections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.related.preferred_labels.name</l></unit>}}}
-					
+
 					{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
 					{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>}}}
 					
 					{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences" min="2"><H6>Related occurrences</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
+					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l> (^relationship_typename)</unit>}}}
 					
 					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}					
+					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}					
+<?php
+					if ($va_aat = $t_item->get('ca_collections.aat', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Getty Art and Architecture Thesaurus</H6>".$va_aat."</div>";
+					}
+					if ($va_ulan = $t_item->get('ca_collections.ulan', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Getty Union List of Artist Names</H6>".$va_ulan."</div>";
+					}
+					if ($va_tgn = $t_item->get('ca_collections.tgn', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Getty Thesaurus of Geographic Names</H6>".$va_tgn."</div>"; 
+					}
+					if ($va_lcsh = $t_item->get('ca_collections.lcsh_terms', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Library of Congress Subject Headings</H6>".$va_lcsh."</div>"; 
+					}	
+					if ($va_lc_names = $t_item->get('ca_collections.lc_names', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Library of Congress Name Authority File</H6>".$va_lc_names."</div>"; 
+					}
+					if ($va_tgm = $t_item->get('ca_collections.tgm', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Library of Congress Thesaurus of Graphic Materials</H6>".$va_tgm."</div>"; 
+					}																											
+?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
@@ -115,3 +200,4 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
+</div><!-- end container -->
