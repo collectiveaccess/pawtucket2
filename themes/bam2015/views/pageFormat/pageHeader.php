@@ -57,7 +57,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<meta name="Description" content="The BAM Hamm Archives is a rich resource documenting more than 150 years of BAM history.  The digital archive is generously funded by the Leon Levy Foundation" />
 	<script type="text/javascript">window.caBasePath = '<?php print $this->request->getBaseUrlPath(); ?>';</script>
-
+	<link rel="icon" href="<?php print caGetThemeGraphicUrl($this->request, 'favicon.ico'); ?>">
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
@@ -145,7 +145,7 @@
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>For Researchers <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>"; 
 					print "<li>".caNavLink($this->request, 'Advanced Search', 'first', '', 'Search', 'advanced/objects')."</li>\n";
-					print "<li>".caNavLink($this->request, 'Archival Services', 'last', '', 'About', 'ArchivalServices')."</li>\n";					
+					#print "<li>".caNavLink($this->request, 'Archival Services', 'last', '', 'About', 'ArchivalServices')."</li>\n";					
 					print "<li>".caNavLink($this->request, 'About BAM Hamm Archives', 'last', '', 'About', 'Index')."</li>\n";			
 					print "</ul></li>";
 
