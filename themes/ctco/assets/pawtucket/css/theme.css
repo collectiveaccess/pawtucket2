@@ -29,6 +29,7 @@ h6 {
 	padding-bottom:3px;
 	color:#444;
 	font-weight:bold;
+	font-size:13px;
 }
 img {
 	width:100%;
@@ -365,4 +366,35 @@ div.advancedSearchField {
 }
 .gallery .galleryItem {
 	box-shadow:none;
+}
+
+/* Detail */
+
+#collectionLoad img {
+	width:auto;
+	height:auto;
+}
+.collectionsContainer .label, #collectionLoad .label, #collectionLoad .label a,
+.collectionsContainer a .fa, .collectionsContainer .fa, #collectionLoad a .fa, #collectionLoad .fa {
+	color:#444;
+}
+.detail a {
+	color:#444; 
+}
+.collectionsContainer a.openCollection.active {
+	background-color:#aaa;
+}
+.detail H6 a {
+	color:#444;
+	font-size:13px;
+}
+.singleImage {
+	background-color: #FFFFFF;
+    -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    line-height: 1em;
+    padding: 10px;
+}
+.singleImage img {
+	margin-bottom:10px;
 }

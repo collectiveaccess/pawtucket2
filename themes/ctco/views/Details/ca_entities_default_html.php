@@ -65,7 +65,7 @@
 					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}				
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_objects" min="1" max="1"><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
+					{{{<ifcount code="ca_objects" min="1" max="1"><unit relativeTo="ca_objects" delimiter=" "><div class='singleImage'><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></div></ifcount>}}}
 <?php			
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
