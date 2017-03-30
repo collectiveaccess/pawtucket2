@@ -3147,13 +3147,16 @@
 							$va_suppress_values = caGetOption('exclude_values', $va_facet_info, null);
 						}
 
+						
 						switch($vn_element_type) {
 							case __CA_ATTRIBUTE_VALUE_LIST__:
+								if(!is_array($va_restrict_to_types = $this->_convertTypeCodesToIDs($va_facet_info['restrict_to_types'], array('instance' => new ca_list_items(), 'dontExpandHierarchically' => true)))) { $va_restrict_to_types = array(); }
+
 								$va_values = $qr_res->getAllFieldValues('value_longtext1');
 								$qr_res->seek(0);
 
 								$t_list_item = new ca_list_items();
-								$va_list_item_cache = $t_list_item->getFieldValuesForIDs($va_values, array('idno', 'item_value', 'parent_id', 'access'));
+								$va_list_item_cache = $t_list_item->getFieldValuesForIDs($va_values, array('type_id', 'idno', 'item_value', 'parent_id', 'access'));
 								$va_list_child_count_cache = array();
 								if (is_array($va_list_item_cache)) {
 									foreach($va_list_item_cache as $vn_id => $va_item) {
@@ -3173,6 +3176,8 @@
 									if (is_array($va_suppress_values) && (in_array($vn_val, $va_suppress_values))) { continue; }
 									if (is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && !in_array($va_list_item_cache[$vn_val]['access'], $pa_options['checkAccess'])) { continue; }
 
+									if (sizeof($va_restrict_to_types) && !in_array($va_list_item_cache[$vn_val]['type_id'], $va_restrict_to_types)) { continue; } 
+									
 									if ($va_criteria[$vn_val]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 									$vn_child_count = isset($va_list_child_count_cache[$vn_val]) ? $va_list_child_count_cache[$vn_val] : 0;
 									$va_facet_list[$vn_val] = array(
