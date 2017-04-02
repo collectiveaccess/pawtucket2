@@ -56,10 +56,11 @@ class ObjectRepresentationSearchResult extends BaseSearchResult {
  	 *
  	 * @param RequestHTTP $po_request
  	 * @param array $pa_options
+ 	 * @param array $pa_additional_display_options
  	 * @return string HTML output
  	 */
- 	public function getRepresentationViewerHTMLBundle($po_request, $pt_subject, $pa_options=null) {
- 		return array_shift(caRepresentationViewerHTMLBundles($po_request, caMakeSearchResult($this->tableName(), [$this->getPrimaryKey()]), $pt_subject, $pa_options));
+ 	public function getRepresentationViewerHTMLBundle($po_request, $pa_options=null, $pa_additional_display_options=null) {
+ 		return caRepresentationViewerHTMLBundle($this, $po_request, $pa_options, $pa_additional_display_options);
  	}
  	# ------------------------------------------------------
  	/**
@@ -67,10 +68,11 @@ class ObjectRepresentationSearchResult extends BaseSearchResult {
  	 *
  	 * @param RequestHTTP $po_request
  	 * @param array $pa_options
+ 	 * @param array $pa_additional_display_options
  	 * @return string HTML output
  	 */
- 	public function getRepresentationViewerHTMLBundles($po_request, $pt_subject, $pa_options=null) {
- 		return caRepresentationViewerHTMLBundles($po_request, $this, $pt_subject, $pa_options);
+ 	public function getRepresentationViewerHTMLBundles($po_request, $pa_options=null) {
+ 		return caRepresentationViewerHTMLBundleForSearchResult($this, $po_request, $pa_options);
  	}
  	# ------------------------------------------------------
  	# Multifiles

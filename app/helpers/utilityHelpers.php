@@ -946,7 +946,7 @@ function caFileIsIncludable($ps_file) {
 			foreach([
 				'½' => $sep.'5', '⅓' => $sep.'333', '¼' => $sep.'25', '⅛' => $sep.'125',
 				'⅔' => $sep.'667', 
-				'¾'	=> $sep.'75', '⅜' => $sep.'375', '⅝' => $sep.'625', '⅞' => $sep.'875'] as $vs_glyph => $vs_val
+				'¾'	=> $sep.'75', '⅜' => $sep.'375', '⅝' => $sep.'625', '⅞' => $sep.'875', '⅒' => $sep.'1'] as $vs_glyph => $vs_val
 			) {
 				$ps_fractional_expression = preg_replace('![ ]*'.$vs_glyph.'!u', $vs_val, $ps_fractional_expression);	
 			}
@@ -3300,6 +3300,8 @@ function caFileIsIncludable($ps_file) {
 					$frac = "⅝";
 				} elseif (($num === 7) && ($pn_denom == 8)) {
 					$frac = "⅞";
+				} elseif (($num === 1) && ($pn_denom == 10)) {
+					$frac = "⅒";
 				} else {
 					$frac = "{$num}/{$pn_denom}";
 				}
@@ -3335,17 +3337,12 @@ function caFileIsIncludable($ps_file) {
 		$vs_display_value = trim(preg_replace('![^\p{L}0-9 ]+!u', ' ', $ps_text));
 		
 		// Move articles to end of string
-		$va_definite_articles = $o_locale_settings ? $o_locale_settings->get('definiteArticles') : array();
-		$va_indefinite_articles = $o_locale_settings ? $o_locale_settings->get('indefiniteArticles') : array();
+		$va_articles = caGetArticlesForLocale($ps_locale);
 		
-		foreach(array($va_definite_articles, $va_indefinite_articles) as $va_articles) {
-			if (is_array($va_articles)) {
-				foreach($va_articles as $vs_article) {
-					if (preg_match('!^('.$vs_article.')[ ]+!i', $vs_display_value, $va_matches)) {
-						$vs_display_value = trim(str_replace($va_matches[1], '', $vs_display_value).($pb_omit_article ? '' : ', '.$va_matches[1]));
-						break(2);
-					}
-				}
+		foreach($va_articles as $vs_article) {
+			if (preg_match('!^('.$vs_article.')[ ]+!i', $vs_display_value, $va_matches)) {
+				$vs_display_value = trim(str_replace($va_matches[1], '', $vs_display_value).($pb_omit_article ? '' : ', '.$va_matches[1]));
+				break;
 			}
 		}
 		
