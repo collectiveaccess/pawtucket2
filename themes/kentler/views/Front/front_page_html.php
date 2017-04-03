@@ -29,6 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	$o_config = $this->getVar("config");
 	$va_access_values = $this->getVar("access_values");
 	if ($this->request->session->getVar('visited') != 'has_visited') {		
 ?>	
@@ -92,7 +93,7 @@
 				print $va_featured_artist_images[$vn_featured_artist_id];
 ?>
 				<div class='contentCaptionOver'>
-					<?php print caDetailLink($this->request, '<div class="openSansBold">FEATURED FLATFILE ARTIST</div><div class="openSansReg">'.$va_featured_artist_info[$vn_featured_artist_id]["name"].'</div>', '', 'ca_entities', $vn_featured_artist_id); ?>
+					<?php print caDetailLink($this->request, '<div class="openSansBold">FEATURED FLATFILES ARTIST</div><div class="openSansReg">'.$va_featured_artist_info[$vn_featured_artist_id]["name"].'</div>', '', 'ca_entities', $vn_featured_artist_id); ?>
 				</div>
 <?php
 			}else{
@@ -106,6 +107,33 @@
 ?>
 			</div>
 		</div><!--end col-sm-3-->
+<?php
+		$t_features_set = new ca_sets();
+		$t_features_set->load(array("set_code" => $o_config->get("front_page_set_code_box_2")));
+		if($t_features_set->get("ca_sets.preferred_labels.name")){
+?>
+		<div class="col-sm-3">
+			<div class='contentBox'>
+				<?php print $t_features_set->get("ca_sets.set_image", array("version" => "original"));?>
+				<div class='contentCaptionOver'>
+					<a href="<?php print ($t_features_set->get("ca_sets.set_link")) ? $t_features_set->get("ca_sets.set_link") : "#"; ?>">
+						<div class="openSansBold"><?php print $t_features_set->get("ca_sets.preferred_labels.name"); ?></div>
+<?php
+						if($t_features_set->get("ca_sets.description")){
+?>
+						<div class="openSansReg">
+							<?php print $t_features_set->get("ca_sets.description"); ?>
+						</div>
+<?php
+						}
+?>
+					</a>
+				</div>
+			</div>		
+		</div> <!--end col-sm-3-->
+<?php
+		}else{
+?>
 		<div class="col-sm-3">
 			<div class='contentBox'>
 				<?php print caGetThemeGraphic($this->request, 'events.jpg');?>
@@ -118,7 +146,34 @@
 					</a>
 				</div>
 			</div>		
-		</div> <!--end col-sm-3-->	
+		</div> <!--end col-sm-3-->
+<?php
+	}
+		$t_features_set->load(array("set_code" => $o_config->get("front_page_set_code_box_3")));
+		if($t_features_set->get("ca_sets.preferred_labels.name")){
+?>	
+		<div class="col-sm-3">
+			<div class='contentBox'>
+				<?php print $t_features_set->get("ca_sets.set_image", array("version" => "original"));?>
+				<div class='contentCaptionOver'>
+					<a href="<?php print ($t_features_set->get("ca_sets.set_link")) ? $t_features_set->get("ca_sets.set_link") : "#"; ?>">
+						<div class="openSansBold"><?php print $t_features_set->get("ca_sets.preferred_labels.name"); ?></div>
+<?php
+						if($t_features_set->get("ca_sets.description")){
+?>
+						<div class="openSansReg">
+							<?php print $t_features_set->get("ca_sets.description"); ?>
+						</div>
+<?php
+						}
+?>
+					</a>
+				</div>
+			</div>		
+		</div> <!--end col-sm-3-->
+<?php		
+		}else{
+?>	
 		<div class="col-sm-3">
 			<div class='contentBox'>
 				<?php print caGetThemeGraphic($this->request, 'exhibition.jpg');?>
@@ -130,6 +185,33 @@
 				</div>
 			</div>		
 		</div> <!--end col-sm-3-->
+<?php
+		}
+		$t_features_set->load(array("set_code" => $o_config->get("front_page_set_code_box_4")));
+		if($t_features_set->get("ca_sets.preferred_labels.name")){
+?>	
+		<div class="col-sm-3">
+			<div class='contentBox'>
+				<?php print $t_features_set->get("ca_sets.set_image", array("version" => "original"));?>
+				<div class='contentCaptionOver'>
+					<a href="<?php print ($t_features_set->get("ca_sets.set_link")) ? $t_features_set->get("ca_sets.set_link") : "#"; ?>">
+						<div class="openSansBold"><?php print $t_features_set->get("ca_sets.preferred_labels.name"); ?></div>
+<?php
+						if($t_features_set->get("ca_sets.description")){
+?>
+						<div class="openSansReg">
+							<?php print $t_features_set->get("ca_sets.description"); ?>
+						</div>
+<?php
+						}
+?>
+					</a>
+				</div>
+			</div>		
+		</div> <!--end col-sm-3-->
+<?php		
+		}else{
+?>
 		<div class="col-sm-3">
 			<div class='contentBox'>
 				<?php print caGetThemeGraphic($this->request, 'donate.jpg');?>
@@ -140,6 +222,9 @@
 					</div>
 				</div>
 			</div>		
-		</div> <!--end col-sm-3-->					
+		</div> <!--end col-sm-3-->	
+<?php
+		}
+?>				
 	</div><!-- end row -->
 </div> <!--end container-->

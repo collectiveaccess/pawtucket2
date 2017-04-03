@@ -83,7 +83,7 @@ $t_object = new ca_objects();
 		  $('#hpSectionText').html('<b>Learn</b><br/>Relevant, in-depth background resources that synthesize<br/>key issues and perspectives on a conservation topic.');
 		});
 		$('.exploreSlice').mouseenter(function(e) {  
-		  $('#hpSectionText').html('<b>Explore</b><br/>Real world case studies and scenarios that foster interdisciplinary,<br/>problem-based learning.');
+		  $('#hpSectionText').html('<b>Explore</b><br/>Real world case studies and scenarios that foster<br/>interdisciplinary, problem-based learning.');
 		});
 		$('.practiceSlice').mouseenter(function(e) {  
 		  $('#hpSectionText').html('<b>Practice</b><br/>Practical exercises in biodiversity conservation that apply<br/>fundamental concepts and develop critical skills.');
@@ -106,7 +106,7 @@ $t_object = new ca_objects();
 			</H2>
 		</div>
 		<div class="col-sm-4">
-			<H2><a href="http://visitor.r20.constantcontact.com/manage/optin?v=001D3J3cQufeW5yfs_ZOekOv19XNQ6s8D-UXCuUuFaJ45UPep-qp4-nmPPja3MMJ24FidjcE-3LDto6ZPwbwdA303S6T7XJVZuiUYG0VRjDpsk%3D" class="btn-default btn-blue" target="_blank">Sign up for updates<?php print caGetThemeGraphic($this->request, 'envelope.jpg'); ?></a></H2>
+			<H2><a href="http://visitor.r20.constantcontact.com/d.jsp?llr=mdydwalab&p=oi&m=1111345979500&sit=65dlzjkhb&f=c199c64e-c4d5-450c-be77-8fe0135b563b" class="btn-default btn-blue" target="_blank">Sign up for updates<?php print caGetThemeGraphic($this->request, 'envelope.jpg'); ?></a></H2>
 		</div>
 	</div>
 	<div class="row">
@@ -167,7 +167,7 @@ $t_object = new ca_objects();
 			}
 ?>
 						</ul>
-						<?php print caNavLink($this->request, "Explore all module sets <i class='fa fa-arrow-circle-right'></i>", "", "", "Gallery", "Index"); ?>
+						<?php print caNavLink($this->request, "Explore all Network Picks <i class='fa fa-arrow-circle-right'></i>", "", "", "Gallery", "Index"); ?>
 					</div>
 				</div>
 			</div>

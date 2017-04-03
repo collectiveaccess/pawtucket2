@@ -83,4 +83,47 @@ function caLightboxSetListItemBAM($po_request, $t_set, $va_check_access = array(
         return $vs_set_display;
 	}
 	
+function printLevelSummary($po_request, $va_collection_ids, $vn_level) {
+	$va_access_values = caGetUserAccessValues($po_request);
+	$vs_output = "";
+	$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
+	
+	if($qr_collections->numHits()){
+		while($qr_collections->nextHit()) {
+			$vs_icon = "";
+			# --- related objects?
+			$va_object_ids = $qr_collections->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values));
+			$vn_rel_object_count = sizeof($va_object_ids);
+			$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.idno_sort"));
+			$vs_output .= "<div class='collHeader unit' style='margin-left:".(40*($vn_level - 1))."px;'>";
+			$vs_output .= $qr_collections->get("ca_collections.preferred_labels");
+			
+			if($vn_rel_object_count){
+				$vs_output .= " <small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+			}
+			$vs_desc = "";
+			if($vs_desc_template && ($vs_desc = $qr_collections->getWithTemplate("^ca_collections.scopeContent"))){
+				$vs_output .= "<p>".$vs_desc."</p>";
+			}
+			# --- objects
+			if(sizeof($va_object_ids)){
+				$qr_objects = caMakeSearchResult("ca_objects", $va_object_ids);
+				while($qr_objects->nextHit()){
+					$vs_output .= "<div style='font-weight:normal; margin-left:20px;'>".$qr_objects->get("ca_objects.preferred_labels.name");
+					if ($vs_source_date = str_replace(" - ", "&mdash;", $qr_objects->get('ca_objects.sourceDate'))) {
+						$vs_output .= ", ".$vs_source_date;
+					}
+					$vs_output .= "</div>";
+				}
+			}
+			$vs_output .= "</div>";
+			if(sizeof($va_child_ids)) {
+				$vs_output .=  printLevelSummary($po_request, $va_child_ids, $vn_level + 1);
+			}
+		}
+	}
+	return $vs_output;
+}
+
+	
 	?>

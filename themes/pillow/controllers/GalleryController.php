@@ -61,6 +61,7 @@
  			AssetLoadManager::register("panel");
  			AssetLoadManager::register("mediaViewer");
  			AssetLoadManager::register("carousel");
+ 			AssetLoadManager::register("readmore");
  		}
  		# -------------------------------------------------------
  		
@@ -68,6 +69,7 @@
  		 *
  		 */ 
  		public function __call($ps_function, $pa_args) {
+ 		
  			$ps_function = strtolower($ps_function);
  			# --- which type of set is configured for display in gallery section
  			$t_list = new ca_lists();
@@ -76,7 +78,8 @@
  			if($ps_function == "index"){
  				if($vn_gallery_set_type_id){
 					$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id)));
-					$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
+					#$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
+					$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $this->opa_access_values));
 					
 					$o_front_config = caGetFrontConfig();
 					$vs_front_page_set = $o_front_config->get('front_page_set_code');
@@ -114,6 +117,7 @@
  		 *
  		 */ 
  		public function getSetInfo() {
+
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set->load($pn_set_id);
@@ -122,12 +126,14 @@
  			$this->view->setVar("label", $t_set->getLabelForDisplay());
  			$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  			$this->view->setVar("num_items", $t_set->getItemCount(array("checkAccess" => $this->opa_access_values)));
- 			$this->view->setVar("set_item", array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values)))));
+ 			#$this->view->setVar("set_item", array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values)))));
+ 			$this->view->setVar("set_item", array_shift(array_shift($t_set->getPrimaryItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values)))));
  			
  			$this->render("Gallery/set_info_html.php");
  		}
  		# -------------------------------------------------------
  		public function getSetItemRep(){
+
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set->load($pn_set_id);
@@ -159,6 +165,7 @@
  		}
  		# -------------------------------------------------------
  		public function getSetItemInfo(){
+
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);

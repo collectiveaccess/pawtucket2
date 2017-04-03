@@ -29,6 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
+		$o_datamodel = Datamodel::load();
 		$t_set = new ca_sets();
 		$va_access_values = $this->getVar("access_values");
 		if($vn_set_id = $this->request->getParameter("featured_set_id", pInteger)){
@@ -36,7 +37,7 @@
 			# Enforce access control on set
 			if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
 				$va_set_item_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1))) ? $va_tmp : array());
-				$q_set_items = caMakeSearchResult('ca_objects', $va_featured_ids);
+				#$q_set_items = caMakeSearchResult('ca_objects', $va_featured_ids);
 			}
 
 		}else{
@@ -44,17 +45,27 @@
 			$vn_set_id = $this->getVar("featured_set_id");
 			if($vn_set_id){
 				$va_set_item_ids = $this->getVar('featured_set_item_ids');
-				$q_set_items = $this->getVar('featured_set_items_as_search_result');
+				#$q_set_items = $this->getVar('featured_set_items_as_search_result');
 			}
 		}
 		if (!$t_set) { $t_set = new ca_sets(); }
 		$o_gallery_config = caGetGalleryConfig();
 		$t_list = new ca_lists();
  		$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_gallery_config->get('gallery_set_type'));
- 		$va_featured_sets = array("");
+ 		$va_featured_sets = array();
 		if($vn_gallery_set_type_id){
 			$va_featured_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id)));
 		}
+		if (!$vn_set_id && is_array($va_featured_sets) && sizeof($va_featured_sets)) {
+			# --- no set_id passed and nothing configured as default so grab the first one
+			$va_set_ids = array_keys($va_featured_sets);
+			$vn_set_id = $va_set_ids[0];
+			$t_set->load($vn_set_id);
+			if($t_set->get("set_id")){
+				$va_set_item_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1))) ? $va_tmp : array());
+			}
+		}
+		
 		$t_list = new ca_lists();
  		$vn_template_over = $t_list->getItemIDFromList('hp_template', 'title_over_white'); 			
  				
@@ -68,12 +79,12 @@
 						print caGetThemeGraphic($this->request, 'homelogo.png');
 ?>					
 					</div>
-					<div class="col-sm-6 col-md-6 col-lg-6 rightSide">			
-						<h1>Welcome to the BAM Leon Levy Digital Archive</h1>
-						<p>Please search the archive above or watch this informative video which outlines the basic structure and functionality of the archive.</p>
+					<div class="col-xs-10 col-sm-6 col-md-6 col-lg-6 rightSide">			
+						<h1>Welcome to the Leon Levy BAM Digital Archive</h1>
+						<p>Please search and browse the archive above.</p>
 						<p>Looking for tickets to an upcoming event at BAM?  <a href='http://www.bam.org'>Click here</a>, you're close but in the wrong place.</p>
 					</div>	
-					<div class="col-sm-2 col-md-2 col-lg-2">
+					<div class="col-xs-2 col-sm-2 col-md-2 col-lg-2">
 						<div class="close">
 <?php
 							print "<a href='#' onclick='$(\"#homePanel\").fadeOut(400);'>".caGetThemeGraphic($this->request, 'homex.png')."</a>";
@@ -102,7 +113,7 @@
 <?php
 						foreach($va_featured_sets as $vn_set_id => $va_set){
 							if ($vn_i == 0) {$vs_link_class = "first";} else { $vs_link_class = null;}
-							print "<li>".caNavLink($this->request, $va_set["name"], $vs_link_class, "", "Front", "Index", array("featured_set_id" => $vn_set_id))."</li>\n";
+							print "<li>".caNavLink($this->request, $va_set["name"], $vs_link_class, "", "Front", "Index", array("featured_set_id" => $va_set["set_id"]))."</li>\n";
 							$vn_i++;
 						}
 						$vs_set_list .= "</ul>\n";
@@ -116,8 +127,6 @@
 		</div><!-- end container -->
 		<div class="hero">
 <?php
-			#$va_hero = array_pop(caExtractValuesByUserLocale($t_set->getItems(array("limit" => 1, "thumbnailVersion" => "page"))));
-			#print $va_hero["representation_tag"];
 			print $t_set->get("hero_image", array("version" => "original"));
 ?>	
 		</div>
@@ -173,6 +182,49 @@
 		</div><!-- end container -->		
 <?php
 	}
+	if($t_set->get("relProductionSetCode")){
+		# --- this is the set code of a set containing occurrences.  We use it to feature productions and object on the home page at the same time
+		$t_occ_set = new ca_sets(array("set_code" => $t_set->get("relProductionSetCode")));
+		# --- check access/ valid set
+		if($t_occ_set->get("set_id") && ((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_occ_set->get("access"), $va_access_values)))){
+			# --- make sure this is a set of occurrences and it actually has records in it
+			$vs_set_type = $o_datamodel->getTableName($t_occ_set->get("table_num"));
+			$va_occ_set_item_ids = array_keys(is_array($va_tmp = $t_occ_set->getItemRowIDs(array('checkAccess' => $va_access_values))) ? $va_tmp : array());
+			if(($vs_set_type = "ca_occurrences") && (is_array($va_occ_set_item_ids) && sizeof($va_occ_set_item_ids))){
+?>
+				<div class="container">
+					<div class="row">
+						<div class="col-xs-12">
+							<H3>Related Productions & Events</H3>
+						</div>
+					</div>
+					<div class="row">
+			
+						<div id="browseOccResultsContainer" style="overflow-y:visible;">
+							<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+						</div><!-- end browseOccResultsContainer -->
+					</div><!-- end row -->
+				</div><!-- end container -->
+				<script type="text/javascript">
+					jQuery(document).ready(function() {
+						jQuery("#browseOccResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'occurrences', array('view' => 'occHP', 'direction' => 'asc', 'sort' => 'Date', 'search' => 'ca_sets.set_id:'.$t_occ_set->get('set_id')), array('dontURLEncodeParameters' => true)); ?>", function() {
+							jQuery('#browseOccResultsContainer').jscroll({
+								autoTrigger: true,
+								loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+								padding: 20,
+								nextSelector: "a.jscroll-next",
+								debug: true
+							});
+						});
+				
+				
+					});
+				</script>
+<?php
+			}	
+		}
+	}	
+		
 	if(is_array($va_set_item_ids) && sizeof($va_set_item_ids)){
 ?>
 		<div class="container">
@@ -183,7 +235,7 @@
 			</div>
 			<div class="row">
 			
-				<div id="browseResultsContainer">
+				<div id="browseResultsContainer" style="overflow-y:visible;">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->
@@ -195,7 +247,8 @@
 						autoTrigger: true,
 						loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
 						padding: 20,
-						nextSelector: "a.jscroll-next"
+						nextSelector: "a.jscroll-next",
+						debug: true
 					});
 				});
 				

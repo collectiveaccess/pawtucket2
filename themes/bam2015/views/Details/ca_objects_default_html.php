@@ -6,29 +6,43 @@
 	$pn_digi_photo_object_type_id = $t_list->getItemIDFromList("object_types", "born_digital_photograph");
 	$va_access_values = caGetUserAccessValues($this->request);
 	
-	$va_rep = $t_object->getPrimaryRepresentation(array('large'), null, array('return_with_access' => $va_access_values));
-	$va_rep_width = $va_rep['info']['large']['WIDTH'];
-	$va_rep_height = $va_rep['info']['large']['HEIGHT'];
+	$va_rep = $t_object->getPrimaryRepresentation(array('bamlarge'), null, array('return_with_access' => $va_access_values));
+	$va_rep_width = $va_rep['info']['bamlarge']['WIDTH'];
+	$va_rep_height = $va_rep['info']['bamlarge']['HEIGHT'];
 	$va_rep_type = $va_rep['mimetype'];
+	$t_list_item = new ca_list_items();
+	$t_list_item->load($t_object->get("type_id"));
+	$vs_typecode = $t_list_item->get("idno");
 	
 	if($this->request->isAjax()){
 		$o_icons_conf = caGetIconsConfig();
-		$t_list_item = new ca_list_items();
-		$t_list_item->load($t_object->get("type_id"));
-		$vs_typecode = $t_list_item->get("idno");
 		$vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon");
 		
 		$t_rep = $this->getVar("t_representation");
-		$va_opts = array('display' => 'realted_object_overlay', 'object_id' => $t_object->get('object_id'), 'representation_id' => $t_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => caGetUserAccessValues($this->request));
+		#if($va_rep_type == 'audio/mpeg'){
+		#	$vs_detail_link = caDetailLink($this->request, "<div class='detailOverlayItemImgPlaceholder'>".$vs_type_placeholder."</div>", "", "ca_objects", $t_object->get("ca_objects.object_id"));
+		#}else{
+		if($t_rep){
+			$va_opts = array('display' => 'related_object_overlay', 'object_id' => $t_object->get('object_id'), 'representation_id' => $t_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => caGetUserAccessValues($this->request));
+			if($t_rep && (!in_array($va_rep_type, array('video/mp4', 'video/x-flv', 'video/mpeg', 'audio/x-realaudio', 'video/quicktime', 'video/x-ms-asf', 'video/x-ms-wmv', 'application/x-shockwave-flash', 'video/x-matroska')))){
+				$vs_detail_link = caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+			}else{
+				# --- don't make video a link
+				$vs_detail_link = $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts);
+			}
+		}else{
+			$vs_detail_link = caDetailLink($this->request, "<div class='detailOverlayItemImgPlaceholder'>".$vs_type_placeholder."</div>", "", "ca_objects", $t_object->get("ca_objects.object_id"));
+		}
+		#}
 ?>
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-12 detailOverlayClose">
+				<div class="col-xs-12 detailOverlayClose">
 					<div class="pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="icon-cross"></span></div>
 				</div>
 			</div><!-- end row -->
 			<div class="row">
-				<div class="col-sm-2 detailOverlayNav text-right">
+				<div class="col-xs-2 detailOverlayNav text-right">
 <?php
 					if($this->getVar("previousID")){
 ?>
@@ -37,14 +51,14 @@
 					}
 ?>
 				</div>
-				<div class="col-sm-8 detailOverlayImg text-center">
+				<div class="col-xs-8 detailOverlayImg text-center">
 <?php
-				if($va_rep_width > $va_rep_height){
+				if(($va_rep_width > $va_rep_height) || !$t_rep){
 ?>
 					<span>
 						<span class="detailOverlayImgOverlayContainer">
 <?php	
-							print caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+							print $vs_detail_link;
 ?>
 						
 							<div class='detailOverlayImgCaption'>
@@ -69,13 +83,20 @@
 					<div class="row">
 						<div class="col-sm-8 text-right">
 <?php	
-							print caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+							print $vs_detail_link;
 ?>						
 						</div>
 						<div class="col-sm-4 text-left detailOverlayImgCaptionVert">
 							<div class='detailOverlayImgCaption'>
 <?php
-										print caDetailLink($this->request, "<span class='typeLabel'>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</span> ".$t_object->get('ca_objects.preferred_labels'), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+										$vs_type = "";
+										if($vs_typecode == "promotional"){
+											$vs_type = $t_object->get("ca_objects.promotionalSubtypes", array('convertCodesToDisplayText' => true));
+										}
+										if(!$vs_type){
+											$vs_type = $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
+										}
+										print caDetailLink($this->request, "<span class='typeLabel'>".$vs_type."</span> ".$t_object->get('ca_objects.preferred_labels'), "", "ca_objects", $t_object->get("ca_objects.object_id"));
 ?>							
 									<div class="text-right">
 <?php
@@ -90,7 +111,7 @@
 				}
 ?>
 				</div>
-				<div class="col-sm-2 detailOverlayNav text-left">
+				<div class="col-xs-2 detailOverlayNav text-left">
 <?php
 					if($this->getVar("nextID")){
 ?>
@@ -108,19 +129,28 @@
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 	</div><!-- end detailTop -->
+</div>
+<div class="row">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-		<div class="container"><div class="row"">
-			<div class='col-sm-1 col-md-1 col-lg-1'>	
+		<div class="row">
+			<div class='col-sm-1 navLeftRight'>
 				<div class="detailNavBgLeft">
 					{{{previousLink}}}{{{resultsLink}}}
 				</div><!-- end detailNavBgLeft -->
 			</div><!-- end col -->		
-			<div class='col-sm-10 col-md-10 col-lg-10'>
+			<div class='col-xs-12 col-sm-10'>
 				<div class="detailHead">
 <?php
 				$vn_show_label_as_title = false;
 				$vs_page_title = "";
-				print "<div class='leader'>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</div>";
+				$vs_type = "";
+				if($vs_typecode == "promotional"){
+					$vs_type = $t_object->get("ca_objects.promotionalSubtypes", array('convertCodesToDisplayText' => true));
+				}
+				if(!$vs_type){
+					$vs_type = $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
+				}
+				print "<div class='leader'>".$vs_type."</div>";
 				if(($pn_photo_object_type_id == $t_object->get('ca_objects.type_id')) | ($pn_digi_photo_object_type_id == $t_object->get('ca_objects.type_id'))){
 					if ($va_production_title = $t_object->get('ca_occurrences.preferred_labels', array('restrictToTypes' => array('production'), 'delimiter' => ', ', 'checkAccess' => $va_access_values))) {
 						$vs_page_title = "<h2>".$va_production_title."</h2>";
@@ -136,7 +166,7 @@
 				}
 				if($vn_show_label_as_title){
 					print $vs_page_title;					
-					if ($va_source_date = $t_object->get('ca_objects.sourceDate')) {
+					if ($va_source_date = str_replace(" - ", "&mdash;", $t_object->get('ca_objects.sourceDate'))) {
 						print "<h3>".$va_source_date."</h3>";
 					}
 				}else{
@@ -151,7 +181,7 @@
 					}
 				}
 				if(!$vn_show_label_as_title){
-					if ($va_source_date = $t_object->get('ca_objects.sourceDate')) {
+					if ($va_source_date = str_replace(" - ", "&mdash;", $t_object->get('ca_objects.sourceDate'))) {
 						$vs_buf.= "<div class='unit'><span class='label'>Date</span>".$va_source_date."</div>";
 					}
 				}
@@ -174,12 +204,13 @@
 				#if ($va_source_description = $t_object->get('ca_objects.sourceDescription')) {
 				#	$vs_buf "<div class='unit'><span class='label'>Description: </span>".$va_source_description."</div>";
 				#}
-				if ($va_rights_statement = $t_object->get('ca_objects.rightsStatement.rightsStatement_text', array('delimiter' => '<br/>'))) {
-					$vs_buf_second.= "<div class='unit'><span class='label'>Rights Statement </span>".$va_rights_statement."</div>";
-				}
-				if ($va_ordering_info = $t_object->get('ca_objects.orderingInfo')) {
-					$vs_buf.= "<div class='unit'><span class='label'>Ordering Info </span>".$va_ordering_info."</div>";
-				}	
+				#if ($va_rights_statement = $t_object->get('ca_objects.rightsStatement.rightsStatement_text', array('delimiter' => '<br/>'))) {
+				#	$vs_buf_second.= "<div class='unit'><span class='label'>Rights Statement </span>".$va_rights_statement."</div>";
+				#}
+				$vs_buf_second.= "<div class='unit'><span class='label'>Rights Statement </span>Many of the digital objects on this site are protected by copyright or other legal rights.  Those objects may not be reproduced, published or distributed without the express permission of the rights holder.  <a href='mailto:bamarchive@bam.org'>Contact the BAM Hamm Archives</a> for further information.</div>"; 
+				#if ($va_ordering_info = $t_object->get('ca_objects.orderingInfo')) {
+				#	$vs_buf.= "<div class='unit'><span class='label'>Ordering Info </span>".$va_ordering_info."</div>";
+				#}	
 				if ($va_rights_holder = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('rights_holder'), 'returnAsLink' => true, 'delimiter' => ', '))) {
 					$vs_buf_second.= "<div class='unit'><span class='label'>Rights Holder </span>".$va_rights_holder."</div>";
 				}					
@@ -193,7 +224,7 @@
 				
 				</div><!-- end detailHead -->
 			</div><!-- end col -->
-			<div class='col-sm-1 col-md-1 col-lg-1'>	
+			<div class='col-sm-1 navLeftRight'>	
 				<div class="detailNavBgRight">
 					{{{nextLink}}}
 				</div><!-- end detailNavBgLeft -->
@@ -210,7 +241,7 @@
 ?>			
 		<div class="row" style='margin-bottom:30px;'>
 			<div class='col-sm-12 col-md-8 col-md-offset-2'>
-				<div class="landscapeRepContainer">
+				<div class="landscapeRepContainer" style="max-width:<?php print $va_rep_width; ?>px;">
 				<?php print $this->getVar("representationViewer");?>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>			
@@ -242,7 +273,7 @@
 ?>				
 		<div class="row" style='margin-bottom:30px;'>
 			<div class='col-sm-6 col-md-5 col-md-offset-1'>
-				<div class="portraitRepContainer">
+				<div class="portraitRepContainer" style="max-width:<?php print $va_rep_width; ?>px;">
 <?php
 					print $this->getVar("representationViewer");
 				
@@ -271,7 +302,7 @@
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div>
 				</div>-->
 			</div><!-- end col -->		
-		</div><!-- end row --></div><!-- end container -->
+		</div><!-- end row -->
 	</div><!-- end col -->
 </div><!-- end row -->
 

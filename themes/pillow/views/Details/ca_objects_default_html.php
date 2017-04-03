@@ -25,9 +25,11 @@
  *
  * ----------------------------------------------------------------------
  */
- 
 	$t_object = 			$this->getVar("item");
+	$t_representation = 	$this->getVar("t_representation");
 	$va_comments = 			$this->getVar("comments");
+	$va_options = 			$this->getVar("config_options");
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -41,17 +43,51 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
-				{{{representationViewer}}}
+<?php
+				switch($t_object->get("ca_objects.rights.image_rights")){
+					case "788": #own/manage download
+						$vs_display_type = "detail";
+						if ($t_representation) {
+							$vs_download_link = "<a href='".$t_representation->getMediaUrl("ca_object_representations.media", "large")."' class='downloadLink'><i class='fa fa-download'></i> Download Image</a>";
+						}
+					break;
+					# ------------------------------
+					case "789": #own/manage no download
+						$vs_display_type = "detail";
+						$vs_download_link = null;
+						
+					break;
+					# ------------------------------
+					case "790": #public domain
+						$vs_display_type = "detail";
+						if ($t_representation) {
+							$vs_download_link = "<a href='".$t_representation->getMediaUrl("ca_object_representations.media", "large")."' class='downloadLink'><i class='fa fa-download'></i> Download Large</a><br/><a href='".$t_representation->getMediaUrl("ca_object_representations.media", "small")."' class='downloadLink'><i class='fa fa-download'></i> Download Small</a>";						
+						}
+					break;
+					# ------------------------------					
+					case "791": #do not own
+						$vs_display_type = "detailSmall";
+						$vs_download_link = null;
+					break;
+					# ------------------------------										
+					default:
+						$vs_display_type = "detailSmall";
+						$vs_download_link = null;
+					break;
+					# ------------------------------
+				}
 				
-				
+				print caObjectDetailMedia($this->request, $t_object->getPrimaryKey(), $t_representation, $t_object, array_merge(array("display" => $vs_display_type, "showAnnotations" => true, "primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), "captionTemplate" => caGetOption('representationViewerCaptionTemplate', $va_options, false))));
+				print "<div class='imageTools'>";
+				if (($t_representation) && ($t_representation->getMediaInfo('media', 'original', 'MIMETYPE') != "application/pdf")) {
+					print $vs_download_link;
+				}
+				print caNavLink($this->request, "<i class='fa fa-envelope'></i> Contact", '', '', 'Contact', 'form');
+				print "</div>";
+?>
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-				<div id="detailTools">
-					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-				</div><!-- end detailTools -->
 			
 			</div><!-- end col -->
 			
@@ -139,9 +175,11 @@
 							print "<div class='unit'><h6>Duration</h6>".$vs_duration."</div>";
 						}
 					}
-					if ($vs_camera = $t_object->get('ca_objects.camera', array('convertCodesToDisplayText' => true))) {
-						print "<div class='unit'><h6>Camera</h6>".$vs_camera."</div>";
+
+					if (($va_camera = $t_object->get('ca_objects.camera', array('convertCodesToDisplayText' => true)))&&($va_camera != "-")) {
+						print "<div class='unit'><h6>Camera</h6>".$va_camera."</div>";
 					}
+						
 					if ($vs_tech_notes = $t_object->get('ca_objects.technical_notes')) {
 						print "<div class='unit'><h6>Technical Notes</h6>".$vs_tech_notes."</div>";
 					}																				
@@ -157,23 +195,27 @@
 
 <?php
 
-							if ($va_related_occurrences = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('production')))) {
+							if ($va_related_occurrences = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('production'), 'checkAccess' => $va_access_values))) {
 								print "<h6>Related productions</h6>".$va_related_occurrences;
 							}
-							if ($va_related_works = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('work')))) {
+							if ($va_related_works = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('work'), 'checkAccess' => $va_access_values))) {
 								print "<h6>Related works</h6>".$va_related_works;
 							}
-							if ($va_related_events = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('event')))) {
+							if ($va_related_events = $t_object->get('ca_occurrences.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToTypes' => array('event'), 'checkAccess' => $va_access_values))) {
 								print "<h6>Related events</h6>".$va_related_events;
 							}
-							if ($va_related_objects = $t_object->get('ca_objects.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
+							if ($va_related_objects = $t_object->get('ca_objects.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
 								print "<h6>Related Objects</h6>".$va_related_objects;
 							}							
-							if ($va_related_collections = $t_object->get('ca_collections.hierarchy.preferred_labels', array('delimiter' => '<br/> > ', 'returnAsLink' => true))) {
+							if ($va_related_collections = $t_object->get('ca_collections.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
 								print "<h6>Related collections</h6>".$va_related_collections;
 							}	
-							if ($va_related_storage = $t_object->get('ca_storage_locations.preferred_labels', array('delimiter' => '<br/>'))) {
-								print "<h6>Related Storage Locations</h6>".caNavLink($this->request, $va_related_storage, '', '', 'Search', 'objects', array('search' =>'ca_storage_locations:'.$va_related_storage));
+							if ($va_related_storage_locations = $t_object->get('ca_storage_locations.location_id', array('delimiter' => '<br/>', 'checkAccess' => $va_access_values, 'returnAsArray' => true))) {
+								print "<h6>Related Storage Locations</h6>";
+								foreach ($va_related_storage_locations as $va_key => $va_related_storage_location) {
+									$t_storage_location = new ca_storage_locations($va_related_storage_location);
+									print caNavLink($this->request, $t_storage_location->get('ca_storage_locations.preferred_labels'), '', '', 'Search', 'objects', array('search' =>'ca_storage_locations.location_id:'.$va_related_storage_location));
+								}
 							}
 							if (($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Book') && ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Periodical')) {							
 								if ($va_rights = $t_object->getWithTemplate('<unit><ifdef code="ca_objects.rights.rightsStatement"><b>Statement:</b> ^ca_objects.rights.rightsStatement</ifdef><ifdef code="ca_objects.rights.rightsHolder"><br/><b>Rights Holder:</b> ^ca_objects.rights.rightsHolder</ifdef><ifdef code="ca_objects.rights.rightsNotes"><br/><b>Rights Notes:</b> ^ca_objects.rights.rightsNotes</ifdef></unit>')) {
@@ -181,7 +223,7 @@
 								}	
 							}																
 
-							if ($va_terms = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true))) {
+							if ($va_terms = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 								print "<div class='unit'><h6>Related Terms</h6>";
 								foreach ($va_terms as $va_key => $va_term) {
 									print "<p>".caNavLink($this->request, $va_term, '', '', 'MultiSearch', 'Index', array('search' => 'ca_list_items.preferred_labels:"'.$va_term.'"'))."</p>";

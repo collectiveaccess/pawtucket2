@@ -6,16 +6,16 @@
 
 
 
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+		<div><div class="row">
+			<div class='col-sm-6 col-md-6 col-lg-6'>
 				{{{representationViewer}}}
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 
 			</div><!-- end col -->
 			
-			<div class='col-sm-6 col-md-6 col-lg-5'>
+			<div class='col-sm-6 col-md-6 col-lg-6'>
 				<H6><?php print $t_object->get('ca_occurrences.preferred_labels'); ?></H6>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
 				<HR>			
@@ -33,10 +33,10 @@
 				if ($va_storage = $t_object->get('ca_objects.location.location_description', array('delimiter' => ' > '))) {
 					print "<div class='unit'><span class='detailLabel'>Location</span><span class='detailInfo'>".$va_storage."</span></div>";
 				}
-				if ($va_type = $t_object->get('ca_objects.series', array('delimiter' => ' > ', 'convertCodesToDisplayText' => true))) {
-					print "<div class='unit'><span class='detailLabel'>Classification</span><span class='detailInfo'>".$va_type."</span></div>";
+				if ($va_type = $t_object->get('ca_objects.series', array('delimiter' => '<br/>', 'convertCodesToDisplayText' => true))) {
+					print "<div class='unit'><span class='detailLabel'>Type</span><span class='detailInfo'>".$va_type."</span></div>";
 				} else {
-					print "<div class='unit'><span class='detailLabel'>Classification</span><span class='detailInfo'>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</span></div>";
+					print "<div class='unit'><span class='detailLabel'>Type</span><span class='detailInfo'>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</span></div>";
 				}
 				if ($va_materials = $t_object->get('ca_objects.materials', array('delimiter' => ' > ', 'convertCodesToDisplayText' => true))) {
 					print "<div class='unit'><span class='detailLabel'>Materials</span><span class='detailInfo'>".$va_materials."</span></div>";

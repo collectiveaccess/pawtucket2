@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2015 Whirl-i-Gig
+ * Copyright 2013-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -27,16 +27,14 @@
  */
  
 	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  
- 	class ContactController extends ActionController {
+ 	class ContactController extends BasePawtucketController {
  		# -------------------------------------------------------
  		 
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-            }
             $this->config = caGetContactConfig();
  			if(!$this->config->get("contact_email") && !$this->config->get("contact_form_elements")){
  				$this->notification->addNotification(_t("Contact form is not configured properly"), __NOTIFICATION_TYPE_ERROR__);

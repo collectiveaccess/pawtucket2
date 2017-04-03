@@ -75,7 +75,8 @@
 	}
 ?>
 </head>
-<body>
+<body  >
+<!--oncontextmenu="return false"-->
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -97,7 +98,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'pillow_logo.gif'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'pillow_logo.jpg'), "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -135,7 +136,7 @@
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 				</form>
-				<ul class="nav navbar-nav navbar-right">
+				<ul class="nav navbar-nav navbar-right menuList">
 					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "Index")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Exhibits"), "", "", "Gallery", "Index"); ?></li>

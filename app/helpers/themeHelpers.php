@@ -202,12 +202,21 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific finding-aid section configuration
+	 *
+	 * @return Configuration
+	 */
+	function caGetCollectionsConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/collections.conf');
+	}
+	# ---------------------------------------
+	/**
 	 * Get theme-specific icon configuration
 	 *
 	 * @return Configuration
 	 */
 	function caGetIconsConfig() {
-		if(file_exists(__CA_THEME_DIR__.'/conf/front.conf')){
+		if(file_exists(__CA_THEME_DIR__.'/conf/icons.conf')){
 			return Configuration::load(__CA_THEME_DIR__.'/conf/icons.conf');
 		}else{
 			return Configuration::load(__CA_THEMES_DIR__.'/default/conf/icons.conf');
@@ -368,182 +377,6 @@
 		return caGetPrimaryRepresentationsForIDs($pa_ids, $pa_options);
 	}
 	# ---------------------------------------
-	/**
-	 * Returns the primary representation for display on the object detail page
-	 * subject to settings in media_display.conf
-	 *
-	 * NOTE: references classes in caObjectRepresentationThumbnails to select current thumbnail
-	 *
-	 * @param RequestHTTP $po_request
-	 * @param int $pn_object_id
-	 * @param ca_object_representation $pt_representation
-	 * @param ca_object $pt_object
-	 * @param array $pa_options Options include:
-	 *		primaryOnly - true/false, show only the primary rep, default false
-	 *		dontShowPlaceholder - true/false, default false
-	 *		currentRepClass = set to class name added to thumbnail reps link tag for current rep (default = active)	
-	 *		captionTemplate = formatted caption to display under media defined in detail.conf	
-	 * @return string HTML output
-	 */
-	function caObjectDetailMedia($po_request, $pn_object_id, $pt_representation, $pt_object, $pa_options=null) {
-		if(!is_array($pa_options)){ $pa_options = array(); }
-		
-		
-		$o_view = new View($po_request, array($po_request->getViewsDirectoryPath()));
-		
-		// Get detail config
-		$va_detail_config = caGetDetailTypeConfig('objects');
-		$vs_show_annotations = strtolower($va_detail_config['options']['displayAnnotations']);
-		
-		if (!in_array($vs_show_annotations, array('viewer', 'div', 'none'))) { $vs_show_annotations = 'none'; }
-		$o_view->setVar('detail_config', $o_detail_config);
-		$o_view->setVar('show_annotations', $vs_show_annotations);
-		
-		
-		// Set up basic vars	
-		$va_access_values = caGetUserAccessValues($po_request);
-		$vn_representation_id = $pt_representation ? $pt_representation->get("representation_id") : null;
-		
-		$o_view->setVar('object_id', $pn_object_id);
-		$o_view->setVar('representation_id', $vn_representation_id);
-		$o_view->setVar('active_representation_class', caGetOption('currentRepClass', $pa_options, 'active'));
-		
-		$vs_slides = $vs_placeholder = "";
-		
-		// Assemble id's for representations to display
-		$va_rep_ids = array();
-		if(caGetOption('primaryOnly', $pa_options, false)){
-			if($vn_representation_id){
-				$va_rep_ids[] = $vn_representation_id;
-			}elseif($vn_primary_rep_id = $pt_object->getPrimaryRepresentationID(array("checkAccess" => $va_access_values))){
-				$va_rep_ids[] = $vn_primary_rep_id;
-			}
-		}elseif(sizeof($va_rep_ids = $pt_object->getRepresentationIDs(array("checkAccess" => $va_access_values)))) {
-			# --- are there multiple reps?
-			if($vn_primary_id = array_search("1", $va_rep_ids)){
-				unset($va_rep_ids[$vn_primary_id]);
-				$va_rep_ids = array_merge(array($vn_primary_id), array_keys($va_rep_ids));
-			}else{
-				$va_rep_ids = array_keys($va_rep_ids);
-			}
-		}
-		
-		$o_view->setVar('representation_count', sizeof($va_rep_ids));
-		$o_view->setVar('representation_ids', $va_rep_ids);
-		
-		// Fetch representations for display
-		if(sizeof($va_rep_ids) > 0){
-			$qr_reps = caMakeSearchResult('ca_object_representations', $va_rep_ids);
-			$va_rep_tags = $qr_reps->getRepresentationViewerHTMLBundles($po_request, array('display' => 'detail', 'object_id' => $pn_object_id, 'containerID' => 'cont'));
-
-			$va_rep_info = array();
-			
-			$qr_reps->seek(0);
-			if (!($vs_template = $va_detail_config['options']['displayAnnotationTemplate'])) { $vs_template = '^ca_representation_annotations.preferred_labels.name'; }
- 			
-			while($qr_reps->nextHit()) {
-				$vn_rep_id = $qr_reps->get('representation_id');
-				$vs_tool_bar = caRepToolbar($po_request, $qr_reps, $pn_object_id);
-
-				$vs_caption = (isset($pa_options["captionTemplate"]) && $pa_options["captionTemplate"]) ? $qr_reps->getWithTemplate($pa_options["captionTemplate"]) : "";
-				
-				$vn_index = ($vn_rep_id != $vn_primary_id) ? $qr_reps->get('ca_objects_x_object_representations.rank') : 0; 
-				
-				$va_rep_info[$vn_index] = array("rep_id" => $vn_rep_id, "tag" => "<div class='repViewerContCont'><div id='cont{$vn_rep_id}' class='repViewerCont'>".$va_rep_tags[$vn_rep_id].$vs_tool_bar.$vs_caption."</div></div>");
-				
-				$va_annotation_list = array();
-				if ($vs_show_annotations === 'viewer') {		// when annotations are configured
-					$va_props = $qr_reps->getMediaInfo('media', 'original', 'PROPERTIES');
-					if (
-						is_array($va_annotations = $qr_reps->get('ca_representation_annotations.annotation_id', array('returnAsArray' => true))) 
-						&& 
-						sizeof($va_annotations)
-						&&
-						($qr_annotations = caMakeSearchResult('ca_representation_annotations', $va_annotations))
-					) {
-						while($qr_annotations->nextHit()) {
-							if (!preg_match('!^TimeBased!', $qr_annotations->getAnnotationType())) { continue; }
-							$va_annotation_list[] = "<a href='#' onclick='caUI.mediaPlayerManager.seek(\"caMediaDisplayContentMedia_{$vn_rep_id}\", ".((float)$qr_annotations->getPropertyValue('startTimecode', true) - (float)$va_props['timecode_offset'])."); return false;'>".$qr_annotations->getWithTemplate($vs_template)."</a>";
-						}
-					}
-				}
-				$va_rep_info[$vn_index]['annotationList'] = $va_annotation_list;
-			}
-
-			ksort($va_rep_info);
-			
-			$vn_count = 0;
-			
-			foreach($va_rep_info as $vn_order => $va_rep){
-				if(sizeof($va_rep_ids) > 1){ $vs_slides .= "<li id='slide{$va_rep['rep_id']}' class='{$va_rep['rep_id']}'>"; }
-				$vs_slides .= ($vn_count == 0) ? "<div id='slideContent{$va_rep['rep_id']}'>".$va_rep["tag"]."</div>" : "<div id='slideContent{$va_rep['rep_id']}'></div>";	// only load first one initially
-				
-				if (true && is_array($va_rep['annotationList'])) {
-					$vs_slides .= join("<br/>\n", $va_rep['annotationList']);
-				}
-				if(sizeof($va_rep_ids) > 1) { $vs_slides .= "</li>"; }
-				
-				$vn_count++;
-			}
-		} elseif(!caGetOption('dontShowPlaceholder', $pa_options, false)) {
-			if(!$po_request->config->get("disable_lightbox")){
-				$o_lightbox_config = caGetLightboxConfig();
-				
-				if(!($vs_lightbox_icon = $o_lightbox_config->get("addToLightboxIcon"))){
-					$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
-				}
-				$va_lightboxDisplayName = caGetLightboxDisplayName($o_lightbox_config);
-				$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
-				$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
-				$vs_tool_bar = "<div id='detailMediaToolbar'>";
-				if ($po_request->isLoggedIn()) {
-					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Lightbox', 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='"._t("Add item to %1", $vs_lightbox_displayname)."'>".$vs_lightbox_icon."</a>\n";
-				}else{
-					$vs_tool_bar .= " <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm')."\"); return false;' title='"._t("Login to add item to %1", $vs_lightbox_displayname)."'>".$vs_lightbox_icon."</a>\n";
-				}
-				$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
-			}
-		
-			$vs_placeholder = "<div class='detailMediaPlaceholder'>".caGetPlaceholder($pt_object->getTypeCode(), "placeholder_large_media_icon")."</div>".$vs_tool_bar;
-		}
-		
-		$o_view->setVar('placeholder', $vs_placeholder);
-		$o_view->setVar('slides', $vs_slides);
-			
-		return $o_view->render("bundles/detail_media_html.php");
-	}
-	# ---------------------------------------
-	/*
-	 * Toolbar for representation when displayed on detail pages and in gallery
-	 *
-	 * @param RequestHTTP $po_request
-	 * @param ca_object_representations $pt_representation  Representation instance
-	 * @param int $pn_object_id  object_id for ca_objects row representation is attached to 
-	 * @return string HTML output
-	 */
-	function caRepToolbar($po_request, $pt_representation, $pn_object_id){
-		$va_add_to_set_link_info = caGetAddToSetInfo($po_request);
-		$va_rep_display_info = caGetMediaDisplayInfo('detail', $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-		$va_rep_display_info['poster_frame_url'] = $pt_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
-
-		$vs_tool_bar = "<div class='detailMediaToolbar'>";
-		if(!$va_rep_display_info["no_overlay"]){
-			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pn_object_id, 'representation_id' => $pt_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
-		}
-		if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-			$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("object_id" => $pn_object_id))."\"); return false;' title='".$va_add_to_set_link_info['link_text']."'>".$va_add_to_set_link_info['icon']."</a>\n";
-		}
-		if(caObjectsDisplayDownloadLink($po_request, $pn_object_id)){
-			# -- get version to download configured in media_display.conf
-			$va_download_display_info = caGetMediaDisplayInfo('download', $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-			$vs_download_version = $va_download_display_info['display_version'];
-			$vs_tool_bar .= caNavLink($po_request, " <span class='glyphicon glyphicon-download-alt'></span>", 'dlButton', 'Detail', 'DownloadRepresentation', '', array('representation_id' => $pt_representation->getPrimaryKey(), "object_id" => $pn_object_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
-		}
-		$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
-		
-		return $vs_tool_bar;
-	}
-	# ---------------------------------------
 	/*
 	 *
 	 * @param RequestHTTP $po_request
@@ -613,9 +446,9 @@
 		}
 		
 		# --- make sure the primary rep shows up first
-		$va_primary_link = array($vn_primary_id => $va_links[$vn_primary_id]);
-		unset($va_links[$vn_primary_id]);
-		$va_links = $va_primary_link + $va_links;
+		//$va_primary_link = array($vn_primary_id => $va_links[$vn_primary_id]);
+		//unset($va_links[$vn_primary_id]);
+		//$va_links = $va_primary_link + $va_links;
 		
 		# --- formatting
 		$vs_formatted_thumbs = "";
@@ -967,7 +800,7 @@
 			$va_params[] = $pa_ids;
 		}
 
-		$vs_sql = "SELECT ca_object_representations.media, {$vs_table}.{$vs_pk}
+		$vs_sql = "SELECT DISTINCT ca_object_representations.media, {$vs_table}.{$vs_pk}
 			FROM {$vs_table}
 			INNER JOIN {$vs_linking_table} ON {$vs_linking_table}.{$vs_pk} = {$vs_table}.{$vs_pk}
 			INNER JOIN ca_objects ON ca_objects.object_id = {$vs_linking_table}.object_id
@@ -975,7 +808,6 @@
 			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
 			WHERE
 				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where} {$vs_id_sql}
-			GROUP BY {$vs_table}.{$vs_pk}
 		";
 
 		$o_db = $t_instance->getDb();
@@ -1190,9 +1022,21 @@
 					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormSubmit'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Submit'))."</a>");
 					$vb_submit_or_reset_set = true;
 					break;
+				case 'submittag':
+					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormSubmit'>");
+					$vb_submit_or_reset_set = true;
+					break;
 				case 'reset':
 					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormReset'>".((isset($va_opts['label']) && $va_opts['label']) ? $va_opts['label'] : _t('Reset'))."</a>");
 					$vb_submit_or_reset_set = true;
+					break;
+				case 'resettag':
+					$po_view->setVar($vs_tag, "<a href='#' class='caAdvancedSearchFormReset'>");
+					$vb_submit_or_reset_set = true;
+					break;
+				case '/resettag':
+				case '/submittag':
+					$po_view->setVar($vs_tag, "</a>");
 					break;
 				default:
 					if (preg_match("!^(.*):label$!", $vs_tag_proc, $va_matches)) {
@@ -1210,13 +1054,19 @@
 					} else {
 						$va_opts['asArrayElement'] = true;
 						if (isset($va_opts['restrictToTypes']) && $va_opts['restrictToTypes'] && !is_array($va_opts['restrictToTypes'])) { 
-							$va_opts['restrictToTypes'] = explode(";", $va_opts['restrictToTypes']);
+							$va_opts['restrictToTypes'] = preg_split("![,;]+!", $va_opts['restrictToTypes']);
 						}
 						
 						// Relationship type restrictions
 						if (isset($va_opts['restrictToRelationshipTypes']) && $va_opts['restrictToRelationshipTypes'] && !is_array($va_opts['restrictToRelationshipTypes'])) { 
-							$va_opts['restrictToRelationshipTypes'] = explode(";", $va_opts['restrictToRelationshipTypes']);
+							$va_opts['restrictToRelationshipTypes'] = preg_split("![,;]+!", $va_opts['restrictToRelationshipTypes']);
 						}
+						
+						// Exclude values
+						if (isset($va_opts['exclude']) && $va_opts['exclude'] && !is_array($va_opts['exclude'])) { 
+							$va_opts['exclude'] = preg_split("![,;]+!", $va_opts['exclude']);
+						}
+						
 						if ($vs_rel_types = join(";", caGetOption('restrictToRelationshipTypes', $va_opts, array()))) { $vs_rel_types = "/{$vs_rel_types}"; }
 			
 						if ($vs_tag_val = $pt_subject->htmlFormElementForSearch($po_request, $vs_tag_proc, $va_opts)) {
@@ -1291,5 +1141,44 @@
 			$ps_view = caGetOption('default', $pa_options, 'thumbnail');
 		}
 		return $ps_view;
+	}
+	# ---------------------------------------
+	/**
+	 * Generate link to change current locale.
+	 *
+	 * @param RequestHTTP $po_request The current request.
+	 * @param string $ps_locale ISO locale code (Ex. en_US) to change to.
+	 * @param string $ps_classname CSS class name(s) to include in <a> tag.
+	 * @param array $pa_attributes Optional attributes to include in <a> tag. [Default is null]
+	 * @param array $pa_options Options to be passed to caNavLink(). [Default is null]
+	 * @return string 
+	 *
+	 * @seealso caNavLink()
+	 */
+	function caChangeLocaleLink($po_request, $ps_locale, $ps_content, $ps_classname, $pa_attributes=null, $pa_options=null) {
+		$va_params = $po_request->getParameters(['GET', 'REQUEST', 'PATH']);
+		$va_params['lang'] = $ps_locale;
+		return caNavLink($po_request, $ps_content, $ps_classname, '*', '*', '*', $va_params, $pa_attributes, $pa_options);
+	}
+	# ---------------------------------------
+	/**
+	 * 
+	 *
+	 * 
+	 */
+	function caGetComparisonList($po_request, $ps_table, $pa_options=null) {
+		if (!is_array($va_comparison_list = $po_request->session->getVar("{$ps_table}_comparison_list"))) { $va_comparison_list = []; }
+		
+		// Get title template from config
+		$va_compare_config = $po_request->config->get('compare_images');
+		if (!is_array($va_compare_config = $va_compare_config[$ps_table])) { $va_compare_config = []; }
+		$va_display_list = caProcessTemplateForIDs(caGetOption('title_template', $va_compare_config, "^{$ps_table}.preferred_labels"), $ps_table, $va_comparison_list, ['returnAsArray' => true]);
+		
+		$va_list = [];
+		foreach($va_comparison_list as $vn_i => $vn_id) {
+			$va_list[$vn_id] = $va_display_list[$vn_i];
+		}
+		
+		return $va_list;
 	}
 	# ---------------------------------------

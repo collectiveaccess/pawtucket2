@@ -18,32 +18,35 @@
 					<H4>{{{^ca_occurrences.preferred_labels.name}}}</H4>
 				</div><!-- end col -->
 			</div><!-- end row --> 
-			<div class="row">			
+			<div class="row">			 
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_occurrences.notes"><H6>Description</H6>^ca_occurrences.description<br/></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.premiere"><H6>Premiere</H6>^ca_occurrences.premiere<br/></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.venue"><H6>Venue</H6>^ca_occurrences.venue<br/></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.productionDate"><H6>Dates</H6>^ca_occurrences.productionDate<br/></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.creationDate"><H6>Creation Date</H6>^ca_occurrences.creationDate<br/></ifdef>}}}
-				
+					{{{<ifcount min="1" delimiter="<br/>" code="ca_occurrences.event_date"><H6>Event Date</H6>^ca_occurrences.event_date</ifcount>}}}
+	
 					{{{<ifdef code="ca_occurrences.description"><H6>Description</H6>^ca_occurrences.description<br/></ifdef>}}}  
 	
 					{{{<ifdef code="ca_occurrences.perfTiming"><H6>Duration</H6>^ca_occurrences.perfTiming<br/></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.country_origin"><H6>Country of Origin</H6>^ca_occurrences.country_origin<br/></ifdef>}}}
+<?php
+					if (($va_country = $t_item->get('ca_occurrences.country_origin', array('convertCodesToDisplayText' => true)))&&($va_country != "-")) {
+						print "<div class='unit'><h6>Country of Origin</h6>".$va_country."</div>";
+					}
+?>					
 					
 					{{{<ifdef code="ca_occurrences.music"><H6>Music</H6>^ca_occurrences.music<br/></ifdef>}}}
 					{{{<ifcount code="ca_occurrences.related.preferred_labels" restrictToTypes="work" min="1"><h6>Works Performed</h6><unit relativeTo="ca_occurrences.related" restrictToTypes="work" delimiter=', '><l>^ca_occurrences.preferred_labels</l></unit></ifcount>}}}
 					{{{<ifcount code="ca_occurrences.related.preferred_labels" restrictToTypes="production" min="1"><h6>Related Productions</h6><unit relativeTo="ca_occurrences.related" restrictToTypes="production" delimiter='<br/>'><l>^ca_occurrences.preferred_labels</l><ifdef code="ca_occurrences.productionDate">, ^ca_occurrences.productionDate</ifdef></unit></ifcount>}}}
 					
 					{{{<ifcount code="ca_entities.preferred_labels" restrictToRelationshipTypes="company" min="1"><h6>Related Company</h6><unit restrictToRelationshipTypes="company" relativeTo="ca_entities" delimiter='<br/>'><l>^ca_entities.preferred_labels</l></unit></ifcount>}}}
-					{{{<ifcount code="ca_entities.preferred_labels" restrictToRelationshipTypes="dancer|musician|performer|speaker|participant" min="1"><h6>Related Performers</h6><unit relativeTo="ca_entities" restrictToRelationshipTypes="dancer|musician|performer|speaker|participant" delimiter='<br/>'><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
-					{{{<ifcount code="ca_entities.preferred_labels" excludeRelationshipTypes="company|dancer|musician|performer|principal_artist|writer|speaker|attendant|scholar|creator" min="1"><h6>Production Credits</h6><unit relativeTo="ca_entities" excludeRelationshipTypes="company|dancer|musician|performer|principal_artist|writer|speaker|attendant|scholar|creator" delimiter='<br/>'><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
+					{{{<ifcount code="ca_entities.preferred_labels" excludeRelationshipTypes="company" min="1"><h6>^ca_occurrences.type_id Credits</h6><unit relativeTo="ca_entities" delimiter='<br/>'><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
 					
-					<div id="detailTools">
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-						<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-					</div><!-- end detailTools -->
+					<!--{{{<ifcount code="ca_entities.preferred_labels" restrictToRelationshipTypes="dancer|musician|performer|speaker|participant" min="1"><h6>Related Performers</h6><unit relativeTo="ca_entities" restrictToRelationshipTypes="dancer|musician|performer|speaker|participant" delimiter='<br/>'><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
+					{{{<ifcount code="ca_entities.preferred_labels" excludeRelationshipTypes="company|dancer|musician|performer|principal_artist|writer|speaker|attendant|creator|participant" min="1"><h6>^ca_occurrences.type_id Credits</h6><unit relativeTo="ca_entities" excludeRelationshipTypes="company|dancer|musician|performer|principal_artist|writer|speaker|attendant|creator|participant" delimiter='<br/>'><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
+					-->
+
 					
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>

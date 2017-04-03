@@ -189,8 +189,20 @@ if (!$vb_ajax) {	// !ajax
 						$vs_page_control .= "<li>".caNavLink($this->request, "<i class='fa fa-angle-double-left'></i> "._t('Previous'), 'prevNav', '*', '*', '*', array('s' => $vn_start - $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view)).'</li> ';
 					}
 					$vn_num_pages = ceil($qr_res->numHits() / $vn_hits_per_block);
-					$vn_i = 1;
-					while ($vn_num_pages > 0) {
+
+					$vn_c_page = floor($vn_start / $vn_hits_per_block);
+
+					if ($vn_c_page > 5) {
+						$vn_i = $vn_c_page - 3;
+						$vn_end = $vn_c_page + 6;
+						}
+					else {
+						$vn_i = 1;
+						$vn_end = $vn_c_page + (9 - $vn_c_page);
+					}
+
+
+					while ($vn_num_pages > 0 && $vn_i < $vn_end) {
 						$vs_page_control .= "<li ".($vn_start==(($vn_hits_per_block*$vn_i)-$vn_hits_per_block) ? 'class="active"': "").">".caNavLink($this->request, $vn_i , 'nextNav', '*', '*', '*', array('s' => ($vn_hits_per_block*$vn_i)-$vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view))."</li>";
 						$vn_i++;
 						$vn_num_pages--;

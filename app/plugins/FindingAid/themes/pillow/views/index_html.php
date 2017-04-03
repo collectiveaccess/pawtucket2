@@ -5,15 +5,15 @@
 	$vs_intro_text = $this->getVar('intro_text');
 	$va_open_by_default = $this->getVar('open_by_default');
 	
-	$qr_top_level_collections = ca_collections::find(array('parent_id' => null), array('returnAs' => 'searchResult'));
+	$qr_top_level_collections = ca_collections::find(array('parent_id' => null), array('returnAs' => 'searchResult', 'sort' => 'ca_collections.preferred_labels', 'checkAccess' => caGetUserAccessValues($this->request)));
 	
 	if (!$va_open_by_default) {
 		$vs_hierarchy_style = "style='display:none;'";
 	}
 ?>
 <div class="col-sm-1"></div>
-<div class="col-sm-10">
-	<h1><?php print $vs_page_title; ?></h1>
+<div class="col-sm-10 staticPageArea">
+	<h4><?php print $vs_page_title; ?></h4>
 	<div class='findingIntro'><?php print $vs_intro_text; ?></div>
 	<div id='findingAidCont'>
 <?php	
@@ -22,13 +22,13 @@
 			$vn_top_level_collection_id = $qr_top_level_collections->get('ca_collections.collection_id');
 			//print $qr_top_level_collections->get('ca_collections.preferred_labels.name')."<br>\n";
 		
-			$va_hierarchy = $t_collection->hierarchyWithTemplate($ps_template, array('collection_id' => $vn_top_level_collection_id));
+			$va_hierarchy = $t_collection->hierarchyWithTemplate($ps_template, array('collection_id' => $vn_top_level_collection_id, 'sort' => 'ca_collections.preferred_labels'));
 			foreach($va_hierarchy as $vn_i => $va_hierarchy_item) {
 				print "<div class='collHeader' style='margin-left: ".($va_hierarchy_item['level'] * 35)."px'>";
 				if (($va_hierarchy_item['level']) == 0 && ($qr_top_level_collections->get('ca_collections.children.collection_id'))) {
 					print "<a href='#'><i class='fa fa-angle-double-down finding-aid down{$vn_top_level_collection_id}'></i></a>";
 				} elseif ($va_hierarchy_item['level'] == 0) {
-					print "<i class='fa fa-square-o finding-aid' {$va_opacity}></i>";
+					print "<span style='width:30px; display:inline-block;float:left;height:10px;'></span>";
 				} else {
 					$va_opacity = "style='opacity: .".(90 - ($va_hierarchy_item['level'] * 20))."' ";
 					print "<i class='fa fa-angle-right finding-aid' {$va_opacity}></i>";

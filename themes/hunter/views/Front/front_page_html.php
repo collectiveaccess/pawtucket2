@@ -39,7 +39,7 @@ $o_config = $this->getVar("config");
 		<div class="col-sm-12">
 			<H1>Digital Collection</H1>
 			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque eget sapien non lectus vehicula semper. Aenean nec quam non dolor euismod rhoncus consequat nec nulla. Ut ut augue urna. Praesent semper sed turpis eget elementum. Ut a massa nec tortor tincidunt pellentesque ac dapibus nunc.
+				Browse material from throughout the Centro Archive showcasing the history and culture of Puerto Ricans in the diaspora.
 			</p>
 		</div>
 	</div>
@@ -63,6 +63,7 @@ $o_config = $this->getVar("config");
 					$va_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("checkAccess" => $va_access_values, "version" => "iconlarge"));
 					print "<H2 class='rokkit-reg'>Featured Galleries</H2>\n";
 					$vn_c = 0;
+					print "<div class='frontBoxScroll'>";
 					foreach($va_sets as $vn_set_id => $va_set){
 						$vs_image = "";
 						print "<div class='row frontFeaturedRow'>";
@@ -75,6 +76,7 @@ $o_config = $this->getVar("config");
 						print "</div>";
 						if ($vn_c >= $vn_limit) { break; }
 					}
+					print "</div>";
 				}
 			}
 ?>
@@ -109,9 +111,11 @@ $o_config = $this->getVar("config");
 						if(is_array($va_featured_collection_ids) && sizeof($va_featured_collection_ids)){
 							$q_featured_collections = caMakeSearchResult('ca_collections', $va_featured_collection_ids);
 							print '<H2 class="rokkit-reg">Featured Collections</H2>';
+							print "<div class='frontBoxScroll'>";
 							while($q_featured_collections->nextHit()){
 								print "<div class='row frontFeaturedRow'><div class='col-sm-12'>".$q_featured_collections->getWithTemplate('<l>^ca_collections.preferred_labels.name</l>')."</div></div>";
 							}
+							print "</div>";
 						}
 					}
 				}
@@ -124,12 +128,12 @@ $o_config = $this->getVar("config");
 	<div class="row">
 		<div class="col-sm-12">
 			<br/><div class="frontBox">
-				<H2 class="rokkit-reg">Lorem Ipsum</H2>
+				<H2 class="rokkit-reg">About Centro Archive's Digital Collections</H2>
 				<p>
-					Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque tempor in nulla ut varius. Ut vitae massa id turpis ornare pharetra. Pellentesque at urna sit amet arcu congue gravida vitae non nunc. Cras non ullamcorper mi, nec tincidunt neque. Aliquam purus ligula, vehicula quis purus quis, ultrices rhoncus mi. Integer sed dapibus est. Phasellus sagittis blandit porttitor. Curabitur vestibulum volutpat risus. Cras aliquam ligula sem, ac scelerisque tellus varius non. Sed at tellus ultricies, luctus mi vel, pellentesque justo. Aliquam pulvinar auctor bibendum. Aliquam suscipit, libero quis blandit iaculis, enim quam ornare tortor, vitae posuere quam metus nec nibh. Nunc ut maximus ipsum. Integer risus nisl, sagittis vitae porttitor eget, auctor in urna. Interdum et malesuada fames ac ante ipsum primis in faucibus.
+					Welcome to the Centro Archives Digital Collections, a growing resource of material digitized from collections throughout the Archive's holdings. This site provides access to photographs, documents, artifacts, art, maps, oral histories, moving image and audio clips, and other material pertaining to the Puerto Rican diaspora. Highlights include material from the Pura Belpre Papers, Justo A. Marti Photograph Collection, and interviews from Centro's Oral History Project. The Gallery section contains curated content on a variety of topics and people.
 				</p>
 				<p>
-					Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum vitae nulla lacus. Fusce interdum, orci sit amet congue facilisis, massa purus tempus ipsum, nec imperdiet eros arcu tincidunt metus. Nulla non ante venenatis, varius ipsum a, aliquet tellus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Mauris mollis luctus ullamcorper. Suspendisse nunc lacus, auctor vitae blandit id, viverra quis ante.
+					We also invite you to register as user by clicking the person icon next to the search bar. By registering, you can help us improve access and understanding of items in our collections by contributing tags and comments. The collective additional information will help improve discovery for all users and create undiscovered connections between items. We also welcome the opportunity for you to share your memories and stories in the comments.
 				</p>
 			</div>
 		</div>

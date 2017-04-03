@@ -11,15 +11,15 @@
 		# --- is there description text for the series
 		if(($vs_parent_type == "series") && $vs_description){
 ?>
-			<div class='col-xs-4 leftPadding'>
+			<div class='col-xs-12 col-sm-6 leftPadding'>
 				<div class='leader'>
 					About the Program
 				</div>
-				<div class="phSeriesDescription">
+				<div class="phSeriesDescription phScrollHeight">
 					<?php print $vs_description; ?>
 				</div>
 			</div>
-			<div class='col-xs-8 leftPadding'>
+			<div class='col-xs-12 col-sm-6 leftPadding'>
 <?php
 		}else{
 ?>
@@ -31,7 +31,7 @@
 				<div class='leader lastLeader'>
 					Productions and Events (<?php print $q_children->numHits(); ?>)
 				</div>
-				<div class="phChildrenList">
+				<div class="phChildrenList phScrollHeight">
 <?php
 				# --- are there productions?
 				$q_productions = $this->getVar("children");
@@ -44,9 +44,9 @@
 							$va_date_raw = array_pop($va_dates_raw[$q_productions->get("ca_occurrences.occurrence_id")]);
 						}
 						if($va_productions[$va_date_raw['productionDate'][0]]){
-							$va_productions[$va_date_raw['productionDate'][0].$q_productions->get("ca_occurrences.occurrence_id")] = "<div class='bBAMResultListItem'><span class='pull-right icon-arrow-up-right'></span>".caDetailLink($this->request, $q_productions->get("ca_occurrences.preferred_labels").", ".$q_productions->get("ca_occurrences.productionDate"), '', 'ca_occurrences', $q_productions->get("ca_occurrences.occurrence_id"))."</div>";
+							$va_productions[$va_date_raw['productionDate'][0].$q_productions->get("ca_occurrences.occurrence_id")] = "<div class='bBAMResultListItem'><span class='pull-right icon-arrow-up-right'></span>".caDetailLink($this->request, $q_productions->get("ca_occurrences.preferred_labels")."<br/>".str_replace(" - ", "&mdash;", $q_productions->get("ca_occurrences.productionDate")), '', 'ca_occurrences', $q_productions->get("ca_occurrences.occurrence_id"))."</div>";
 						}else{
-							$va_productions[$va_date_raw['productionDate'][0]] = "<div class='bBAMResultListItem'><span class='pull-right icon-arrow-up-right'></span>".caDetailLink($this->request, $q_productions->get("ca_occurrences.preferred_labels").", ".$q_productions->get("ca_occurrences.productionDate"), '', 'ca_occurrences', $q_productions->get("ca_occurrences.occurrence_id"))."</div>";
+							$va_productions[$va_date_raw['productionDate'][0]] = "<div class='bBAMResultListItem'><span class='pull-right icon-arrow-up-right'></span>".caDetailLink($this->request, $q_productions->get("ca_occurrences.preferred_labels")."<br/>".str_replace(" - ", "&mdash;", $q_productions->get("ca_occurrences.productionDate")), '', 'ca_occurrences', $q_productions->get("ca_occurrences.occurrence_id"))."</div>";
 						}
 					}
 					ksort($va_productions);
@@ -60,3 +60,8 @@
 <?php
 	}
 ?>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		$(".phScrollHeight").height(($(window).height() - $(".phScrollHeight").offset().top) + "px");
+	});
+</script>

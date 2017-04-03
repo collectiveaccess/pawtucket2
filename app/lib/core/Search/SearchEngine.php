@@ -313,8 +313,8 @@ class SearchEngine extends SearchBase {
 			}
 			
 			if ($vs_sort && ($vs_sort !== '_natural')) {
-				$va_hits = $this->sortHits($va_hits, $t_table->tableName(), $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
-			} elseif (($vs_sort == '_natural') && ($vs_sort_direction == 'desc')) {
+				$va_hits = $this->sortHits($va_hits, $t_table->tableName(), $vs_sort, $vs_sort_direction);
+			} elseif ((($vs_sort == '_natural') || !$vs_sort) && ($vs_sort_direction == 'desc')) {
 				$va_hits = array_reverse($va_hits);
 			}
 			
@@ -517,8 +517,12 @@ class SearchEngine extends SearchBase {
 		$vs_fld = $po_term->getTerm()->field;
 		if (sizeof($va_access_points = $this->getAccessPoints($this->opn_tablenum))) {
 			// if field is access point then do rewrite
+			$va_fld_tmp = explode("/", mb_strtolower($vs_fld));
+			$vs_fld_lc = $va_fld_tmp[0];
+			$vs_rel_types = isset($va_fld_tmp[1]) ? $va_fld_tmp[1] : null;
+			
 			if (
-				isset($va_access_points[$vs_fld_lc = mb_strtolower($vs_fld)]) 
+				isset($va_access_points[$vs_fld_lc]) 
 				&&
 				($va_ap_info = $va_access_points[$vs_fld_lc])
 			) {
@@ -549,7 +553,7 @@ class SearchEngine extends SearchBase {
 					if(isset($va_ap_info['options']) && ($va_ap_info['options']['DONT_STEM'] || in_array('DONT_STEM', $va_ap_info['options']))) {
 						$vs_term .= '|';
 					}
-					$va_terms['terms'][] = new Zend_Search_Lucene_Index_Term($vs_term, $vs_field);
+					$va_terms['terms'][] = new Zend_Search_Lucene_Index_Term($vs_term, $vs_field.($vs_rel_types ? "/{$vs_rel_types}" : ''));
 					$va_terms['signs'][] = ($vs_bool == 'AND') ? true : null;
 					$va_terms['options'][] = is_array($va_ap_info['options']) ? $va_ap_info['options'] : array();
 				}
@@ -564,6 +568,20 @@ class SearchEngine extends SearchBase {
 				
 				if (sizeof($va_terms['signs']) > 0) { array_pop($va_terms['signs']); }
 				return $va_terms;
+			}
+		}
+		
+		// is it an idno?
+		if (is_array($va_idno_regexs = $this->opo_search_config->getList('idno_regexes'))) {
+			foreach($va_idno_regexs as $vs_idno_regex) {
+				if ((preg_match("!{$vs_idno_regex}!", (string)$po_term->getTerm()->text, $va_matches)) && ($t_instance = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true)) && ($vs_idno_fld = $t_instance->getProperty('ID_NUMBERING_ID_FIELD'))) {
+					$vs_table_name = $t_instance->tableName();
+					return array(
+						'terms' => array(new Zend_Search_Lucene_Index_Term((string)((sizeof($va_matches) > 1) ? $va_matches[1] : $va_matches[0]), "{$vs_table_name}.{$vs_idno_fld}")),
+						'signs' => array($pb_sign),
+						'options' => array()
+					);
+				}
 			}
 		}
 		

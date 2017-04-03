@@ -88,10 +88,10 @@
 	$vs_version = "small";
 	if(($vs_table == 'ca_occurrences') && ($this->request->getParameter("openResultsInOverlay", pInteger))){
 		# --- this is the iconic artist page occurrence results
-		$vs_version = 'icon';
-		#$vs_version = 'iconlarge';
+		#$vs_version = 'icon';
+		$vs_version = 'iconlarge';
 		# --- what is the entity_id?  is was extracted from the search term in browse_results_html.php and passed here
-		$vn_entity_id = $this->getVar("entity_id");
+		$vn_entity_id = $this->getVar("search_id");
 		$va_entity_roles_by_occurrence = array();
 		$va_entity_roles_by_occurrence = $this->getVar("entity_roles_by_occurrence");
 	}
@@ -106,6 +106,11 @@
 					$vn_c++;
 				}
 				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => $vs_version, 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images_1 = array();
+				# --- default to any related image if the configured relationship type is not available
+				if($vs_other_rel_type = caGetOption('selectMediaUsingRelationshipTypes2', $va_options, null)){
+					$va_images_1 = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => $vs_version, 'relationshipTypes' => $vs_other_rel_type, 'checkAccess' => $va_access_values));	
+				}
 				$va_images_2 = array();
 				# --- default to any related image if the configured relationship type is not available
 				if(caGetOption('selectMediaUsingRelationshipTypes', $va_options, null)){
@@ -136,7 +141,18 @@
 							$vs_link_text = mb_substr($vs_link_text, 0, $vn_chop_len)."...";
 						}
 						$va_role = array();
-						$va_role = $va_entity_roles_by_occurrence[$qr_res->get("ca_occurrences.occurrence_id")];						
+						if($va_entity_roles_by_occurrence[$qr_res->get("ca_occurrences.occurrence_id")]){
+							$va_role = $va_entity_roles_by_occurrence[$qr_res->get("ca_occurrences.occurrence_id")];
+						}
+						$va_related_occ_ids = $qr_res->get("ca_occurrences.related.occurrence_id", array("returnAsArray" => 1));
+						if(is_array($va_related_occ_ids) && sizeof($va_related_occ_ids)){
+							foreach($va_related_occ_ids as $vn_related_occ_id){
+								if($va_entity_roles_by_occurrence[$vn_related_occ_id]){
+									$va_role = array_merge($va_role, $va_entity_roles_by_occurrence[$vn_related_occ_id]);
+								}
+							}
+						}
+						$va_role = array_unique($va_role);				
 					}else{
 						# --- this is occurrence browse results
 						$vn_chop_len = 90;
@@ -187,9 +203,11 @@
 						$vs_add_to_set_link = "<div class='bBAMResultLB'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$vs_ligthbox_icon."</a></div>";
 					}				
 				} else {
-					if($va_images[$vn_id] || $va_images_2[$vn_id]){
+					if($va_images[$vn_id] || $va_images_2[$vn_id] || $va_images_1[$vn_id]){
 						if($va_images[$vn_id]){
 							$vs_thumbnail = $va_images[$vn_id];
+						}elseif($va_images_1[$vn_id]){
+							$vs_thumbnail = $va_images_1[$vn_id];
 						}else{
 							$vs_thumbnail = $va_images_2[$vn_id];
 						}
@@ -203,7 +221,7 @@
 				if(($this->request->getParameter("openResultsInOverlay", pInteger)) && ($vs_table == 'ca_occurrences')){
 					# different image result layout for productions on entity detail page
 					print "
-		<div class='col-xs-12 col-sm-2'>
+		<div class='col-xs-12 col-sm-3 col-md-2'>
 			<div class='bBAMResultItemOccCircle'>
 				<div class='bBAMResultItemImgContainerOccCircle'>{$vs_rep_detail_link}</div>
 				<div class='bBAMResultItemText'>
@@ -231,7 +249,7 @@
 				$vn_c++;
 			}
 			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => (int)$this->request->getParameter("openResultsInOverlay", pInteger)));
+			print "<div style='clear:both;'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => (int)$this->request->getParameter("openResultsInOverlay", pInteger), 'homePage' => (int)$this->request->getParameter("homePage", pInteger)));
 		}
 ?>
 <script type="text/javascript">
