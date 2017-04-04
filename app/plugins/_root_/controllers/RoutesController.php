@@ -307,11 +307,11 @@
  		 *
  		 */
  		function GetMapData() {
- 			$ps_entity_ids = $this->request->getParameter('ids', pString);	// if set return data for a specific entity rather than the list
+ 			//$ps_entity_ids = $this->request->getParameter('ids', pString);	// if set return data for a specific entity rather than the list
  			$pa_entity_ids = $ps_entity_ids ? explode(';', $ps_entity_ids) : array();
  			if (!is_array($va_entity_list = $this->request->session->getVar('itinera_entity_list'))) { $va_entity_list = array(); }
  			
- 			$ps_object_ids = $this->request->getParameter('object_ids', pString);	// if set return data for a specific object rather than the list
+ 			//$ps_object_ids = $this->request->getParameter('object_ids', pString);	// if set return data for a specific object rather than the list
  			$pa_object_ids = $ps_object_ids ? explode(';', $ps_object_ids) : array();
  			if (!is_array($va_object_list = $this->request->session->getVar('itinera_object_list'))) { $va_object_list = array(); }
  			

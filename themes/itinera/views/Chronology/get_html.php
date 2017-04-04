@@ -18,11 +18,11 @@ if($ps_mode != "remove"){
 			while($qr_stops->nextHit()) {
 				$va_tmp = array();
 				$va_tmp['name'] = $qr_stops->get('ca_tour_stops.preferred_labels');
-				$va_raw_dates = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('rawDate' => 1, 'returnAsArray' => 1));
-				if ($vn_count == 0) { $vs_first_date = caGetLocalizedHistoricDate($va_raw_dates[0]['start'], array('timeOmit' => true));}
-				$va_tmp['startDateRaw'] = $va_raw_dates[0]['start'];
-				$va_tmp['startDate'] = caGetLocalizedHistoricDate($va_raw_dates[0]['start'], array('timeOmit' => true));
-				$va_tmp['endDate'] = $vs_last_date = caGetLocalizedHistoricDate($va_raw_dates[0]['end'], array('timeOmit' => true));
+				$va_raw_dates = array_shift(array_shift($qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('rawDate' => 1, 'returnWithStructure' => 1))));
+				if ($vn_count == 0) { $vs_first_date = caGetLocalizedHistoricDate($va_raw_dates['tourStopDateIndexingDate']['start'], array('timeOmit' => true));}
+				$va_tmp['startDateRaw'] = $va_raw_dates['tourStopDateIndexingDate']['start'];
+				$va_tmp['startDate'] = caGetLocalizedHistoricDate($va_raw_dates['tourStopDateIndexingDate']['start'], array('timeOmit' => true));
+				$va_tmp['endDate'] = $vs_last_date = caGetLocalizedHistoricDate($va_raw_dates['tourStopDateIndexingDate']['end'], array('timeOmit' => true));
 				$va_tmp['displayDate'] = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateDisplayDate');
 				$va_tmp['description'] = $qr_stops->get('ca_tour_stops.tour_stop_description');
 				$va_tmp['source'] = $qr_stops->get('ca_list_items.preferred_labels', array('delimiter' => ', '));			
@@ -54,11 +54,11 @@ if($ps_mode != "remove"){
 			while($qr_stops->nextHit()) {
 				$va_tmp = array();
 				$va_tmp['name'] = $qr_stops->get('ca_tour_stops.preferred_labels');
-				$va_raw_dates = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('rawDate' => 1, 'returnAsArray' => 1));
-				if ($vn_count == 0) { $vs_first_date = caGetLocalizedHistoricDate($va_raw_dates[0]['start'], array('timeOmit' => true));}
-				$va_tmp['startDateRaw'] = $va_raw_dates[0]['start'];
-				$va_tmp['startDate'] = caGetLocalizedHistoricDate($va_raw_dates[0]['start'], array('timeOmit' => true));
-				$va_tmp['endDate'] = $vs_last_date = caGetLocalizedHistoricDate($va_raw_dates[0]['end'], array('timeOmit' => true));
+				$va_raw_dates = array_shift(array_shift($qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('rawDate' => 1, 'returnWithStructure' => 1))));
+				if ($vn_count == 0) { $vs_first_date = caGetLocalizedHistoricDate($va_raw_dates['tourStopDateIndexingDate']['start'], array('timeOmit' => true));}
+				$va_tmp['startDateRaw'] = $va_raw_dates['tourStopDateIndexingDate']['start'];
+				$va_tmp['startDate'] = caGetLocalizedHistoricDate($va_raw_dates['tourStopDateIndexingDate']['start'], array('timeOmit' => true));
+				$va_tmp['endDate'] = $vs_last_date = caGetLocalizedHistoricDate($va_raw_dates['tourStopDateIndexingDate']['end'], array('timeOmit' => true));
 				$va_tmp['displayDate'] = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateDisplayDate');
 				$va_tmp['description'] = $qr_stops->get('ca_tour_stops.tour_stop_description');
 				$va_tmp['source'] = $qr_stops->get('ca_list_items.preferred_labels', array('delimiter' => ', '));			

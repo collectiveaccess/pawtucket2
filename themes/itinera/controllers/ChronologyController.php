@@ -134,26 +134,26 @@
 				$va_stops = $t_entity->get('ca_tour_stops.stop_id', ['returnAsArray' => true]);
 				$qr_stops = caMakeSearchResult('ca_tour_stops', $va_stops, array('sort' => 'ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate'));
 				while($qr_stops->nextHit()) {
-					$va_raw_dates = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('rawDate' => 1, 'returnAsArray' => 1));
+					$va_raw_dates = array_shift(array_shift($qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('rawDate' => 1, 'returnWithStructure' => 1))));
 					$va_dates = array();
 					$vs_start = "";
-					if($vs_start = caGetLocalizedHistoricDate($va_raw_dates[0]['start'], array('timeOmit' => true))){
+					if($vs_start = caGetLocalizedHistoricDate($va_raw_dates['tourStopDateIndexingDate']['start'], array('timeOmit' => true))){
 						$va_dates[] = $vs_start;
-						if(!$vn_first_date || $vn_first_date > $va_raw_dates[0]['start']){
+						if(!$vn_first_date || $vn_first_date > $va_raw_dates['tourStopDateIndexingDate']['start']){
 							$vs_first_date = $vs_start;
-							$vn_first_date = $va_raw_dates[0]['start'];
-							$vs_first_year = floor($va_raw_dates[0]['start']);
+							$vn_first_date = $va_raw_dates['tourStopDateIndexingDate']['start'];
+							$vs_first_year = floor($va_raw_dates['tourStopDateIndexingDate']['start']);
 						}
 					}
 					$vs_end = "";
-					if($vs_end = caGetLocalizedHistoricDate($va_raw_dates[0]['end'], array('timeOmit' => true))){
+					if($vs_end = caGetLocalizedHistoricDate($va_raw_dates['tourStopDateIndexingDate']['end'], array('timeOmit' => true))){
 						if($vs_end != $vs_start){
 							$va_dates[] = $vs_end;
 						}
-						if(!$vn_end_date || $vn_end_date < $va_raw_dates[0]['end']){
+						if(!$vn_end_date || $vn_end_date < $va_raw_dates['tourStopDateIndexingDate']['end']){
 							$vs_end_date = $vs_end;
-							$vn_end_date = $va_raw_dates[0]['end'];
-							$vs_end_year = ceil($va_raw_dates[0]['end']);
+							$vn_end_date = $va_raw_dates['tourStopDateIndexingDate']['end'];
+							$vs_end_year = ceil($va_raw_dates['tourStopDateIndexingDate']['end']);
 						}
 					}
 					$vs_date = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateDisplayDate');
@@ -172,36 +172,36 @@
 				$va_stops = $t_object->get('ca_tour_stops.stop_id', ['returnAsArray' => true]);
 				$qr_stops = caMakeSearchResult('ca_tour_stops', $va_stops, array('sort' => 'ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate'));
 				while($qr_stops->nextHit()) {
-					$va_raw_dates = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('rawDate' => 1, 'returnAsArray' => 1));
+					$va_raw_dates = array_shift(array_shift($qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateIndexingDate', array('rawDate' => 1, 'returnWithStructure' => 1))));
 					$va_dates = array();
 					$vs_start = "";
-					if($vs_start = caGetLocalizedHistoricDate($va_raw_dates[0]['start'], array('timeOmit' => true))){
-						if($va_raw_dates[0]['start'] < 0){
+					if($vs_start = caGetLocalizedHistoricDate($va_raw_dates['tourStopDateIndexingDate']['start'], array('timeOmit' => true))){
+						if($va_raw_dates['tourStopDateIndexingDate']['start'] < 0){
 							# --- bc dates are problems - this is super hacky!
 							$vs_start = "January 1 101";
 						}
 						$va_dates[] = $vs_start;
-						if(!$vn_first_date || $vn_first_date > $va_raw_dates[0]['start']){
+						if(!$vn_first_date || $vn_first_date > $va_raw_dates['tourStopDateIndexingDate']['start']){
 							$vs_first_date = $vs_start;
-							if($va_raw_dates[0]['start'] < 0){
+							if($va_raw_dates['tourStopDateIndexingDate']['start'] < 0){
 								# --- bc dates are problems - this is super hacky!
 								$vn_first_date = 101.0101;
 							}else{
-								$vn_first_date = $va_raw_dates[0]['start'];
+								$vn_first_date = $va_raw_dates['tourStopDateIndexingDate']['start'];
 							}
-							$vs_first_year = floor($va_raw_dates[0]['start']);
+							$vs_first_year = floor($va_raw_dates['tourStopDateIndexingDate']['start']);
 							
 						}
 					}
 					$vs_end = "";
-					if($vs_end = caGetLocalizedHistoricDate($va_raw_dates[0]['end'], array('timeOmit' => true))){
+					if($vs_end = caGetLocalizedHistoricDate($va_raw_dates['tourStopDateIndexingDate']['end'], array('timeOmit' => true))){
 						if($vs_end != $vs_start){
 							$va_dates[] = $vs_end;
 						}
-						if(!$vn_end_date || $vn_end_date < $va_raw_dates[0]['end']){
+						if(!$vn_end_date || $vn_end_date < $va_raw_dates['tourStopDateIndexingDate']['end']){
 							$vs_end_date = $vs_end;
-							$vn_end_date = $va_raw_dates[0]['end'];
-							$vs_end_year = ceil($va_raw_dates[0]['end']);
+							$vn_end_date = $va_raw_dates['tourStopDateIndexingDate']['end'];
+							$vs_end_year = ceil($va_raw_dates['tourStopDateIndexingDate']['end']);
 						}
 					}
 					$vs_date = $qr_stops->get('ca_tour_stops.tourStopDateSet.tourStopDateDisplayDate');
