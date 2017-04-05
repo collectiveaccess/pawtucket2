@@ -232,9 +232,25 @@ div.travelerCardContent .travelerCardImageSource {
 	box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
 	border: 0px solid transparent;
 }
+/* change tooltips to just be a number over the circle */
+.leaflet-tooltip{
+	padding:0px !important;
+	background-color:transparent;
+	box-shadow:none;
+	border:0px;
+}
+.leaflet-tooltip-right::before, .leaflet-tooltip-left::before {
+    border-right-color: transparent;
+    border-left-color: transparent;
+}
+.leaflet-tooltip-right, .leaflet-tooltip-left{
+	margin-left:-4px;
+	font-weight:bold;
+}
+
 /* Route map artist list */
 .leaflet-popup-content {
-width:auto !important;
+	width:auto !important;
 }
 .travelerMapList {
 	background-color: #DEF0E7;

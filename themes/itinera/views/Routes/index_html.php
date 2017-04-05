@@ -96,6 +96,7 @@
 					var color = '#' + map_data_for_location['color'];
 					var fillOpacity = 0.5;
 					var radius = 7;
+					var fillcolor = '#' + map_data_for_location['color'];
 					if(map_data_for_location['stops'].length > 1){
 						if(map_data_for_location['travelers'].length == 1){
 							travelerTitle = map_data_for_location['travelers'].length + " Traveler";
@@ -106,7 +107,8 @@
 						stopContent = "<H3>" + map_data_for_location.name + " - " + map_data_for_location['stops'].length + " Events, " + travelerTitle + "</H3><div class='travelerMapMultipleItems' id='initialLoad" + count + "'>" + stopContent + "<br style='clear:both;'/><a href='#' onClick=\"jQuery('#initialLoad" + count + "').hide(); jQuery('#moreInfo" + count + "').show(); return false;\">See Location Timeline</a></div><div class='travelersMapMultipleItemsFull' id='moreInfo" + count + "'><ul class='timeline timeline-horizontal'>" + stopContentFull + "</ul></div>";
 						color = '#000000';
 						radius = 10;
-						fillOpacity = 0;
+						fillcolor = '#FFFFFF';
+						fillOpacity = 0.8;
 					}else{
 						stopContent = "<H3>" + map_data_for_location.name + "</H3><ul class='timeline timeline-horizontal timeline-horizontalSingle'>" + stopContent + "</ul>";
 					}
@@ -114,11 +116,11 @@
 				
 					var circle = L.circleMarker(map_data_for_location['coordinates'], {
 						color: color, weight: 2, radius: radius,
-						fillColor: color,
+						fillColor: fillcolor,
 						fillOpacity: fillOpacity
 					}).bindPopup(stopContent).addTo(map.locationMarkers[id]);
 					if(map_data_for_location['stops'].length > 1){
-						circle.bindTooltip(map_data_for_location['stops'].length + " events", {permanent: true});
+						circle.bindTooltip(map_data_for_location['stops'].length + "", {permanent: true, direction:'right'});
 					}
 				}				
 			});
