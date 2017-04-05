@@ -35,7 +35,6 @@
 						if ($va_essence_info['essenceTrackAspectRatio']) {$vs_track.= "<p>Aspect Ratio: ".$va_essence_info['essenceTrackAspectRatio']."</p>";}
 						if (($va_essence_info['essenceTrackDuration'])&&($va_essence_info['essenceTrackDuration'] != "0.0s")) {$vs_track.= "<p>Duration: ".$va_essence_info['essenceTrackDuration']."</p>";}
 						if ($va_essence_info['recorder_model']) {$vs_track.= "<p>Recorder Model: ".$va_essence_info['recorder_model']."</p>";}
-						if ($va_essence_info['technicalNotes']) {$vs_track.= "<p>Technical Notes: ".$va_essence_info['technicalNotes']."</p>";}
 					}
 				}
 				if ($vs_track != "") {
