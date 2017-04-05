@@ -57,6 +57,7 @@
 					<li><?php print caNavLink($this->request, _t("About BAM Hamm Archives"), "", "", "About", "Index"); ?></li>
 					<li><a href="http://www.bam.org">BAM.org</a></li>
 					<li><a href="http://www.bam.org/about/privacy-policy">Privacy Policy</a></li>
+					<li><?php print caNavLink($this->request, _t("Rights and Usage Statement"), "", "", "About", "RightsAndUsage"); ?></li>
 					<li><a href="http://www.leonlevyfoundation.org/" target="_blank">About the Leon Levy Foundation</a></li>
 				</ul>
 			</div><!-- end container -->

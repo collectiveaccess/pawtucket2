@@ -63,7 +63,7 @@
 				if ($va_uniform = $t_object->get('ca_objects.CCSSUSA_Uniform')) {
 					print "<h4>".$va_uniform."</h4>";
 				} else {
-					print "<h4>".$t_object->get('ca_objects.preferred_labels')."</h4>";
+					print "<h4>[Short title]</h4>";
 				}
 				#print "<H6>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</H6>"; 
 ?>
@@ -173,7 +173,7 @@
 					print "<div class='unit'><h6>Subjects</h6>".$vs_subjects."</div>";
 				}
 				if ($vs_themes = $t_object->get('ca_objects.650_themes', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Themes</h6>".$vs_themes."</div>";
+					print "<div class='unit'><h6>Subject/Genre/Themes</h6>".$vs_themes."</div>";
 				}
 				if ($vs_genre = $t_object->get('ca_objects.655_genre')) {
 					print "<div class='unit'><h6>Genre/Form data</h6>".$vs_genre."</div>";
