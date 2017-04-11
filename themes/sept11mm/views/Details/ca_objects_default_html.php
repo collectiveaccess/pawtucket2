@@ -206,7 +206,7 @@ if($vb_search_again){
 		$va_search2[] = "ca_objects.preferred_labels.name:'".$t_object->get("ca_objects.preferred_labels.name")."'";
 		$qr_res_more = ca_objects::find(['preferred_labels' => ['name' => trim($t_object->get("ca_objects.preferred_labels.name"))]], ['returnAs' => 'searchResult']);
 		$va_related_more = array();
-		if($qr_res_more->numHits()){
+		if($qr_res_more && $qr_res_more->numHits()){
 			while($qr_res_more->nextHit()){
 				if(($t_object->get("object_id") != $qr_res_more->get("object_id")) && in_array($qr_res_more->get("access"), $va_access_values)){
 					$va_related_more[] = $qr_res_more->get("object_id");
