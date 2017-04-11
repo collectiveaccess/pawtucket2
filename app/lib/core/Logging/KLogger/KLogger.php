@@ -171,8 +171,11 @@ class KLogger
             . '.txt';
 
         $this->_severityThreshold = $severity;
+        if (!is_writable($this->_logFilePath)) { 
+        	return false;
+        }
         if (!file_exists($logDirectory)) {
-            mkdir($logDirectory, self::$_defaultPermissions, true);
+            @mkdir($logDirectory, self::$_defaultPermissions, true);
         }
 
         if (file_exists($this->_logFilePath) && !is_writable($this->_logFilePath)) {
