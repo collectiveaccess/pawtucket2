@@ -395,7 +395,8 @@ if (typeof(PhpDebugBar) == 'undefined') {
         className: "phpdebugbar " + csscls('minimized'),
 
         options: {
-            bodyPaddingBottom: true
+            bodyMarginBottom: true,
+            bodyMarginBottomHeight: 0
         },
 
         initialize: function() {
@@ -405,6 +406,7 @@ if (typeof(PhpDebugBar) == 'undefined') {
             this.firstTabName = null;
             this.activePanelName = null;
             this.datesetTitleFormater = new DatasetTitleFormater(this);
+            this.options.bodyMarginBottomHeight = parseInt($('body').css('margin-bottom'));
             this.registerResizeHandler();
         },
 
@@ -792,7 +794,16 @@ if (typeof(PhpDebugBar) == 'undefined') {
             this.$el.addClass(csscls('closed'));
             this.recomputeBottomOffset();
         },
-
+        
+        /**
+         * Checks if the panel is closed
+         *
+         * @return {Boolean}
+         */
+        isClosed: function() {
+            return this.$el.hasClass(csscls('closed'));
+        },
+        
         /**
          * Restore the debug bar
          *
@@ -812,12 +823,17 @@ if (typeof(PhpDebugBar) == 'undefined') {
         },
 
         /**
-         * Recomputes the padding-bottom css property of the body so
+         * Recomputes the margin-bottom css property of the body so
          * that the debug bar never hides any content
          */
         recomputeBottomOffset: function() {
-            if (this.options.bodyPaddingBottom) {
-                $('body').css('padding-bottom', this.$el.height());
+            if (this.options.bodyMarginBottom) {
+                if (this.isClosed()) {
+                    return $('body').css('margin-bottom', this.options.bodyMarginBottomHeight || '');
+                }
+                
+                var offset = parseInt(this.$el.height()) + (this.options.bodyMarginBottomHeight || 0);
+                $('body').css('margin-bottom', offset);
             }
         },
 
@@ -1004,6 +1020,10 @@ if (typeof(PhpDebugBar) == 'undefined') {
          * @return {Bool}
          */
         handle: function(xhr) {
+             // Check if the debugbar header is available
+            if (xhr.getAllResponseHeaders().indexOf(this.headerName) === -1){
+                return true;
+            }
             if (!this.loadFromId(xhr)) {
                 return this.loadFromData(xhr);
             }

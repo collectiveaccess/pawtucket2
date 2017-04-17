@@ -106,6 +106,11 @@
 					$vn_c++;
 				}
 				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => $vs_version, 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images_1 = array();
+				# --- default to any related image if the configured relationship type is not available
+				if($vs_other_rel_type = caGetOption('selectMediaUsingRelationshipTypes2', $va_options, null)){
+					$va_images_1 = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => $vs_version, 'relationshipTypes' => $vs_other_rel_type, 'checkAccess' => $va_access_values));	
+				}
 				$va_images_2 = array();
 				# --- default to any related image if the configured relationship type is not available
 				if(caGetOption('selectMediaUsingRelationshipTypes', $va_options, null)){
@@ -198,9 +203,11 @@
 						$vs_add_to_set_link = "<div class='bBAMResultLB'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$vs_ligthbox_icon."</a></div>";
 					}				
 				} else {
-					if($va_images[$vn_id] || $va_images_2[$vn_id]){
+					if($va_images[$vn_id] || $va_images_2[$vn_id] || $va_images_1[$vn_id]){
 						if($va_images[$vn_id]){
 							$vs_thumbnail = $va_images[$vn_id];
+						}elseif($va_images_1[$vn_id]){
+							$vs_thumbnail = $va_images_1[$vn_id];
 						}else{
 							$vs_thumbnail = $va_images_2[$vn_id];
 						}
@@ -242,7 +249,7 @@
 				$vn_c++;
 			}
 			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => (int)$this->request->getParameter("openResultsInOverlay", pInteger), 'homePage' => (int)$this->request->getParameter("homePage", pInteger)));
+			print "<div style='clear:both;'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => (int)$this->request->getParameter("openResultsInOverlay", pInteger), 'homePage' => (int)$this->request->getParameter("homePage", pInteger)));
 		}
 ?>
 <script type="text/javascript">

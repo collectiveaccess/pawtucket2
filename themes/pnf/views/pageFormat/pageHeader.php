@@ -124,22 +124,30 @@ $( document ).ready(function() {
 		<div class="main_menu">
 			<div class="menu-main-menu-container">
 				<ul id="menu-main-menu" class="menu">
-					<li id="menu-item-453" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-453"><?php print caNavLink($this->request, 'Database', '', '', '', '');?></a></li>
-					<li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-208"><a href="#">Resources</a>
+					<li id="menu-item-453" class="menu-item menu-item-type-post_type  current-menu-item  menu-item-object-page menu-item-453"><?php print caNavLink($this->request, _t('Database'), '', '', '', '');?></a></li>
+					<li id="menu-item-450" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-450"><a href="/ornaments/"><?php print  _t('Ornaments');?></a></li>
+					<li id="menu-item-208" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-208"><a href="#"><?php print _t('Resources');?></a>
 						<ul class="sub-menu">
-							<li id="menu-item-410" class="menu-item menu-item-type-post_type menu-item-object-lists current-menu-item menu-item-410"><a href="/lists/about-these-lists/">About these resources</a></li>
-							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><a href="/lists/playwrights/">Playwrights, translators, and adaptors</a></li>
-							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><a href="/lists/printers/">Printers, publishers, booksellers, and bookstores</a></li>
-							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, 'Institutions', '', '', 'Search', 'collections/search/*');?></li>							
-							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/">US Catalogs of Spanish Drama/Comedias Sueltas Collections</a></li>
-							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-444"><a href="/comp-sources/">Comprehensive sources of comedias sueltas</a></li>
-							<li id="menu-item-443" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-443"><a href="/studies/">Studies related specifically to comedias sueltas</a></li>
+							<li id="menu-item-410" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-410"><a href="/lists/about-these-lists/"><?php print _t('About these resources');?></a></li>
+							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><a href="/lists/playwrights/"><?php print _t('Playwrights, translators, and adaptors');?></a></li>
+							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><a href="/lists/printers/"><?php print _t('Printers, publishers, booksellers, and bookstores');?></a></li>
+							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-444"><a href="/comp-sources/"><?php print caNavLink($this->request, _t('Comprehensive sources of comedias sueltas'), '', '', 'Listing', 'sources');?></a></li>
+							<li id="menu-item-443" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-443"><a href="/studies/"><?php print caNavLink($this->request, _t('Studies related specifically to comedias sueltas'), '', '', 'Listing', 'studies');?></a></li>
+							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/"><?php print _t('US Catalogs of Spanish Drama/Comedias Sueltas Collections');?></a></li>						
+							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, _t('Institutions'), '', '', 'Search', 'collections/search/*');?></li>													
 						</ul>
 					</li>
-					<li id="menu-item-206" class="menu-item menu-item-type-post_type_archive menu-item-object-essays menu-item-206"><a href="/essays/">Essays</a></li>
-					<li id="menu-item-207" class="menu-item menu-item-type-post_type_archive menu-item-object-news menu-item-207"><a href="/news/">Zarzuela</a></li>
-					<li id="menu-item-523" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-523"><a href="/about-2/">About</a></li>
-					<li id="menu-item-189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-189"><a href="/contact/">Contact</a></li>
+					<li id="menu-item-206" class="menu-item menu-item-type-post_type_archive menu-item-object-essays menu-item-206"><a href="/essays/"><?php print _t('Essays');?></a></li>
+					<li id="menu-item-207" class="menu-item menu-item-type-post_type_archive menu-item-object-news menu-item-207"><a href="/news/"><?php print _t('Zarzuela');?></a></li>
+					<li id="menu-item-523" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-523 aboutMenu"><a href="#"><?php print _t('About');?></a>
+						<ul class="sub-menu">
+							<li id="menu-item-441" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-441"><a href="/about-2/"><?php print _t('About this website');?></a></li> 
+							<li id="menu-item-442" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-442"><a href="/participating-institutions/"><?php print _t('Participating Institutions');?></a></li>
+							<li id="menu-item-445" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-445"><a href="/contributors-and-team/"><?php print _t('Contributors and team');?></a></li>
+							<li id="menu-item-445" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-445"><a href="/contact/"><?php print _t('Contact');?></a></li>					
+						</ul>
+					</li>	
+					<!--<li id="menu-item-189" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-189"><a href="/contact/">Contact</a></li>-->
 					<li class="divider divider-responsive"></li>
 				</ul>
 			</div>			
@@ -148,8 +156,8 @@ $( document ).ready(function() {
 		<div class="site_banner" style="background:url(/wp-content/uploads/Comedias-Sueltas_01.jpg) no-repeat center center fixed;"></div>
 		<div class="language_selector">	
 			<ul class="qtranxs_language_chooser" id="qtranslate-chooser">
-				<li class="lang-en <?php print ($g_ui_locale == 'en_US') ? 'active' : ''; ?>"><?php print caChangeLocaleLink($this->request, 'en_US', '<span>ENG</span>', 'qtranxs_text qtranxs_text_en', ['hreflang' => 'en', 'title' => 'English']); ?></li>
-				<li class="lang-es <?php print ($g_ui_locale == 'es_ES') ? 'active' : ''; ?>"><?php print caChangeLocaleLink($this->request, 'es_ES', '<span>ESP</span>', 'qtranxs_text qtranxs_text_es', ['hreflang' => 'es', 'title' => 'Español']); ?></li>
+				<li class="lang-en <?php print ($g_ui_locale == 'en_US') ? 'active' : ''; ?>"><?php print caChangeLocaleLink($this->request, 'en_US', '<span>English</span>', 'qtranxs_text qtranxs_text_en', ['hreflang' => 'en', 'title' => 'English']); ?></li>
+				<li class="lang-es <?php print ($g_ui_locale == 'es_ES') ? 'active' : ''; ?>"><?php print caChangeLocaleLink($this->request, 'es_ES', '<span>Espa&ntilde;ol</span>', 'qtranxs_text qtranxs_text_es', ['hreflang' => 'es', 'title' => 'Español']); ?></li>
 			</ul>
 			<div class="qtranxs_widget_end"></div>
 		</div>
@@ -214,11 +222,12 @@ $( document ).ready(function() {
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search">
+							<input type="text" class="form-control" placeholder="<?php print _t('Search Sueltas');?>" name="search">
 						</div>
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 				</form>
+				<ul class="navbar-left navTitle"><li><?php print _t('Search The Database');?></li></ul>
 				<ul class="nav navbar-nav navbar-right">
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>

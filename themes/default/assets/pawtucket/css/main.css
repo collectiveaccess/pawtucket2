@@ -1485,6 +1485,8 @@ a.browseRemoveFacet img {
 .detail .repViewerCont img{
 	width:100%;
 	height:auto;
+	max-height: 500px;
+    object-fit: contain;
 }
 
 #detailRepresentationThumbnails{
@@ -1690,6 +1692,9 @@ a.readmore-js-toggle{
 }
 .trimText {margin-top:5px;}
 
+.caAudioPlayer{
+	padding-top:26px;
+}
 /* --------------------------------- */
 /* browse b */
 /* --------------------------------- */
@@ -1752,8 +1757,20 @@ a.readmore-js-toggle{
 	font-size:18px;
 	padding-bottom:5px;
 }
+#bLetterBar a{
+	padding:3px;
+	text-transform:uppercase;
+	font-size:12px;
+}
+#bLetterBar a:hover, #bLetterBar a.selectedLetter{
+	font-weight:bold;
+	background-color:#EDEDED;
+	text-decoration:none;
+}
 #browseResultsContainer{
 	margin-top:20px;
+	height:100%;
+	position:relative;
 }
 .bResultItemCol{
 	height:290px;
@@ -2088,6 +2105,7 @@ a.readmore-js-toggle{
 	width: 100%;
 	height:500px;
 }
+
 
 /* --------------------------------- */
 /* multi-search */
@@ -2554,10 +2572,24 @@ div.caMediaOverlayControls {
 	bottom:0px;
 	left:0px;
 	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
-	opacity:.5;
-	
+	opacity:.5;	
 }
-div.caMediaOverlayControls:hover {
+
+div.caMediaOverlayControlsMinimal {
+	background-color: #000;
+	color:#FFF;
+	font-size: 11px;
+	text-align:center;
+	position:absolute;
+	padding: 5px;
+	width: 32px;
+	bottom:0px;
+	right:0px;
+	z-index: 32000;			/* needs to be on top of caMediaPanel, which has z-index=31000 */
+	opacity:.8;	
+}
+
+div.caMediaOverlayControls:hover, div.caMediaOverlayControlsMinimal:hover {
 	opacity:1.0;
 	background-color:rgba(0,0,0,0.5);
 }

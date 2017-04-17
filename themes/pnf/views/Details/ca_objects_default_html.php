@@ -59,8 +59,14 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
-				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
+<?php 
+				if ($va_uniform = $t_object->get('ca_objects.CCSSUSA_Uniform')) {
+					print "<h4>".$va_uniform."</h4>";
+				} else {
+					print "<h4>[Short title]</h4>";
+				}
+				#print "<H6>".$t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</H6>"; 
+?>
 				<HR>
 <?php
 				if ($vs_institution = $t_object->get('ca_objects.institution', array('convertCodesToDisplayText' => true))) {
@@ -78,34 +84,48 @@
 					print "</div>";
 				}
 				if ($vs_title = $t_object->get('ca_objects.preferred_labels')) {
-					print "<div class='unit'><h6>Title</h6>".$vs_title."</div>";
-				}
+					print "<div class='unit'><h6>Title Page</h6>".$vs_title."</div>";
+				}				
 				if ($vs_subtitle = $t_object->get('ca_objects.subtitle')) {
-					print "<div class='unit'><h6>Subtitle</h6>".$vs_subtitle."</div>";
+					print "<div class='unit'>".$vs_subtitle."</div>";
 				}
 				if ($vs_added = $t_object->get('ca_objects.245c')) {
-					print "<div class='unit'><h6>One Added Author, Translator or Responsible Person</h6>".$vs_added."</div>";
+					print "<div class='unit'>".$vs_added."</div>";
 				}
 				if ($vs_nonpreferred = $t_object->get('ca_objects.nonpreferred_labels')) {
-					print "<div class='unit'><h6>Variation on a Title</h6>".$vs_nonpreferred."</div>";
+					print "<div class='unit'><h6>Variant Title(s)</h6>".$vs_nonpreferred."</div>";
 				}
+				if ($vs_edition = $t_object->get('ca_objects.250_edition')) {
+					print "<div class='unit'><h6>Edition/printing</h6>".$vs_edition."</div>";
+				}				
 				if ($vs_caption_title = $t_object->get('ca_objects.caption_title')) {
 					print "<div class='unit'><h6>Caption Title</h6>".$vs_caption_title."</div>";
 				}
-				if ($vs_place = $t_object->get('ca_places.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Place</h6>".$vs_place."</div>";
+				if ($vs_place = $t_object->get('ca_objects.260a_place', array('delimiter' => ', '))) {
+					$vs_place = "<h6>Imprint</h6>".$vs_place;
 				}
 				if ($vs_printer = $t_object->get('ca_objects.publication_description')) {
-					print "<div class='unit'><h6>Printer, Publisher, Bookseller</h6>".$vs_printer."</div>";
+					$vs_place.= " ".$vs_printer;
 				}
 				if ($vs_date = $t_object->get('ca_objects.display_date', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
+					$vs_place.=  " ".$vs_date;
 				}
-				if ($vs_pagination = $t_object->get('ca_objects.pagination')) {
-					print "<div class='unit'><h6>Pagination</h6>".$vs_pagination."</div>";
+				print "<div class='unit'>".$vs_place."</div>";
+
+				if ($vs_series = $t_object->get('ca_objects.series')) {
+					print "<div class='unit'><h6>Series</h6>".$vs_series."</div>";
+				}		
+				if ($vs_lang = $t_object->get('ca_objects.041_lang')) {
+					print "<div class='unit'><h6>Language(s) of text</h6>".$vs_lang."</div>";
+				}	
+				if ($vs_lang_tran = $t_object->get('ca_objects.041_k')) {
+					print "<div class='unit'><h6>Language(s) of intermediate translation(s)</h6>".$vs_lang_tran."</div>";
 				}
-				if ($vs_ornaments = $t_object->get('ca_objects.ornaments')) {
-					print "<div class='unit'><h6>Illustration Ornaments</h6>".$vs_ornaments."</div>";
+				if ($vs_lang_or = $t_object->get('ca_objects.041_h')) {
+					print "<div class='unit'><h6>Language(s) of original</h6>".$vs_lang_or."</div>";
+				}													
+				if (($vs_pagination = $t_object->get('ca_objects.pagination')) | ($vs_format = $t_object->get('ca_objects.format')) | ($vs_ornaments = $t_object->get('ca_objects.ornaments'))) {
+					print "<div class='unit'><h6>Physical Description</h6>".$vs_pagination." ".$vs_ornaments." ".$vs_format."</div>";
 				}
 				if ($vs_ornaments = $t_object->get('ca_objects.ornaments')) {
 					print "<div class='unit'><h6>Illustration Ornaments</h6>".$vs_ornaments."</div>";
@@ -113,11 +133,11 @@
 				if ($vs_related_ornaments = $t_object->get('ca_objects.related.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Related Ornaments</h6>".$vs_related_ornaments."</div>";
 				}
-				if ($vs_format = $t_object->get('ca_objects.format')) {
-					print "<div class='unit'><h6>Format</h6>".$vs_format."</div>";
+				if ($vs_signatures = $t_object->get('ca_objects.500_signatures')) {
+					print "<div class='unit'><h6>Signatures</h6>".$vs_signatures."</div>";
 				}
 				if ($vs_notes = $t_object->get('ca_objects.500_notes')) {
-					print "<div class='unit'><h6>General Notes; Collation; Physical Description; Performance Date</h6>".$vs_notes."</div>";
+					print "<div class='unit'><h6>General Notes</h6>".$vs_notes."</div>";
 				}
 				if ($vs_citation = $t_object->get('ca_objects.510_citation_reference')) {
 					print "<div class='unit'><h6>Citation Reference</h6>".$vs_citation."</div>";
@@ -125,12 +145,18 @@
 				if ($vs_printers_number = $t_object->get('ca_objects.515_printers_number')) {
 					print "<div class='unit'><h6>Printer's Series Number</h6>".$vs_printers_number."</div>";
 				}
+				if ($vs_form = $t_object->get('ca_objects.530_forms')) {
+					print "<div class='unit'><h6>Additional physical form available</h6>".$vs_form."</div>";
+				}				
 				if ($vs_page_number = $t_object->get('ca_objects.page_number')) {
 					print "<div class='unit'><h6>Page Number On Page 1</h6>".$vs_page_number."</div>";
 				}	
 				if ($vs_language = $t_object->get('ca_objects.546_language')) {
 					print "<div class='unit'><h6>Language Note & Translation</h6>".$vs_language."</div>";
 				}
+				if ($vs_source_a = $t_object->get('ca_objects.541_acquisition')) {
+					print "<div class='unit'><h6>Source of acquisition</h6>".$vs_source_a."</div>";
+				}				
 				if ($vs_ownership = $t_object->get('ca_objects.561_ownership')) {
 					print "<div class='unit'><h6>Ownership</h6>".$vs_ownership."</div>";
 				}
@@ -147,8 +173,11 @@
 					print "<div class='unit'><h6>Subjects</h6>".$vs_subjects."</div>";
 				}
 				if ($vs_themes = $t_object->get('ca_objects.650_themes', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Themes</h6>".$vs_themes."</div>";
+					print "<div class='unit'><h6>Subject/Genre/Themes</h6>".$vs_themes."</div>";
 				}
+				if ($vs_genre = $t_object->get('ca_objects.655_genre')) {
+					print "<div class='unit'><h6>Genre/Form data</h6>".$vs_genre."</div>";
+				}				
 				if ($vs_ownership = $t_object->get('ca_objects.700_ownership')) {
 					print "<div class='unit'><h6>Ownership</h6>".$vs_ownership."</div>";
 				}
@@ -181,11 +210,12 @@
 							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
-
-							{{{<ifcount code="ca_collections" min="1"><H6>Locate This Copy</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
-							{{{<unit relativeTo="ca_collections" delimiter="<br/>"><br/>^ca_collections.description</unit>}}}			
-							
+			
+<?php
+							if ($va_institutions = $t_object->getWithTemplate('<ifcount min="1" code="ca_collections.preferred_labels" relativeTo="ca_collections"><unit delimiter="<br/>" relativeTo="ca_collections"><a href="^ca_collections.collection_website" target="_blank">^ca_collections.preferred_labels</a></unit>')) {
+								print "<H6>Locate This Copy</H6>".$va_institutions;
+							}
+?>							
 							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
 							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name_plural</unit>}}}

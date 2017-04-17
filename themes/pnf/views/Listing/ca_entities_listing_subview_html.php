@@ -43,8 +43,8 @@
 		
 		print "<h2>{$va_listing_info['displayName']}</h2>\n";
 		
-		print "<p>This list of playwrights, translators, and adaptors has been compiled from indexes in the ".caNavLink($this->request, 'printed catalogs of comedias sueltas', '', '', 'Listing', 'sources')." in the US and Toronto.</p>";
-		print "<p>The form of name most frequently appears as printed on the sueltas. In some cases, spelling and diacritics have been adapted according to modern practice. Birth and death dates are repeated in each instance. When known, the more commonly accepted form of a name is in italics.</p>";
+		print "<p>"._t('This list of playwrights, translators, and adaptors has been compiled from indexes in the')." ".caNavLink($this->request, 'printed catalogs of comedias sueltas', '', '', 'Listing', 'sources')._t(" in the US and Toronto.")."</p>";
+		print "<p>"._t('The form of name most frequently appears as printed on the sueltas. In some cases, spelling and diacritics have been adapted according to modern practice. Birth and death dates are repeated in each instance. When known, the more commonly accepted form of a name is in italics.')."</p>";
 		
 		while($qr_list->nextHit()) {
 			$vs_first_letter = ucfirst(substr($qr_list->get('ca_entities.preferred_labels.surname'), 0, 1));

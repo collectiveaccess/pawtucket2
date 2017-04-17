@@ -427,6 +427,11 @@ body {
   /* Margin bottom by footer height */
   margin-bottom: 210px;
 }
+@media (max-width: 450px) {
+	body {
+		margin-bottom:310px;
+	}
+}
 
 #footer {
 	background-color: #000000;
@@ -439,6 +444,11 @@ body {
   	/* Set the fixed height of the footer here */
   	height: 170px;
   	margin-bottom:0px;
+}
+@media (max-width: 450px) {
+	#footer {
+		height:270px;
+	}
 }
 .footerHeader {
 	color: #fff;
@@ -461,7 +471,15 @@ body {
 	#footer .copyright{
 		float:right;
 	}
+	#footer .copyright div{
+		text-align:center;
+	}
 }
+#footer .copyright img{
+	width:150px;
+	height:auto;
+}
+
 /* Homepage */
 
 #homePanel {
@@ -742,17 +760,32 @@ a.readmore-js-toggle {
 .detailOverlayImg span.detailOverlayImgOverlayContainer{
 	position:relative;
 }
+.detailOverlayImgOverlayContainer .video-js, .detailOverlayImgOverlayContainer .caAudioPlayer{
+	min-width:200px !important;
+}
+@media (min-width: 400px) {
+	.detailOverlayImgOverlayContainer .video-js, .detailOverlayImgOverlayContainer .caAudioPlayer{
+		min-width:500px !important;
+	}
+}
 .detailOverlayItemImgPlaceholder{
-	background-color: #dedede;
+	background-color: #FFFFFF;
     border: 0px;
-    color: #FFFFFF !important;
-    min-width:550px;
-    padding-top:100px;
-    padding-bottom:100px;
+    color: #dedede !important;
+    min-width:200px;
+    padding-top:30px;
+    padding-bottom:30px;
     text-align:center;
 }
 .detailOverlayItemImgPlaceholder span{
     font-size:100px !important;
+}
+@media (min-width: 600px) {
+	.detailOverlayItemImgPlaceholder{
+	    min-width:550px;
+    	padding-top:100px;
+    	padding-bottom:100px;
+	}
 }
 /*
 .detailOverlayImgOverlay{
@@ -930,6 +963,18 @@ a.faDownload:hover {
 	height:auto;
 	margin-bottom:25px;
 }
+#collectionHierarchy HR{
+	border-top:2px solid #dddddd !important;
+	margin-bottom:0px !important;
+	margin-top:0px !important;
+}
+#collectionLoad .label{
+	text-transform:none;
+}
+.collectionsContainer a.openCollection.active {
+    color: #fff;
+    background-color: #00cfb7;
+}
 .findingAidContainer {
 	float:left;
 	height:500px;
@@ -966,9 +1011,12 @@ a.faDownload:hover {
 #collectionLoad a .fa, #collectionLoad .fa, #collectionLoad a .icon-box, #collectionLoad .icon-box, #collectionLoad a .icon-folder, #collectionLoad .icon-folder{
 	color: #737373;
 }
-.findingAidContainer a.openCollection.active {
+.collectionsContainer a.openCollection.active {
 	color:#fff;
 	background-color: #00cfb7;
+}
+.collectionsContainer a.openCollection{
+	font-size:16px;
 }
 
 
@@ -1288,6 +1336,10 @@ p.linkInfo {
 	color: #00cfb7;
 	width:18px;
 	display:inline-block;
+}
+.staticImg img{
+	width:100%;
+	height:auto;
 }
 
 /* Ipad Styles */

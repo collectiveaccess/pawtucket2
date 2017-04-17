@@ -76,7 +76,8 @@
 			$vn_rc = parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list);
 
 			if($vn_primary_key && $vn_rc && caGetOption('hard', $pa_options, false)) {
-				$this->removeGUID($vn_primary_key);
+				// Don't remove GUID, otherwise wrong GUID will be sent to target
+				//$this->removeGUID($vn_primary_key);
 			}
 
 			return $vn_rc;
@@ -157,9 +158,12 @@
 			if ($vs_sort_field = $this->getProperty('LABEL_SORT_FIELD')) {
 				$vs_display_field = $this->getProperty('LABEL_DISPLAY_FIELD');
 				
-				$t_locale = new ca_locales();
-				$vs_display_value = caSortableValue($this->get($vs_display_field), array('locale' => $t_locale->localeIDToCode($this->get('locale_id'))));
-			
+				if (!($vs_locale = $this->getAppConfig()->get('use_locale_for_sortable_titles'))) {
+					$t_locale = new ca_locales();
+					$vs_locale = $t_locale->localeIDToCode($this->get('locale_id'));
+				}
+				$vs_display_value = caSortableValue($this->get($vs_display_field), array('locale' => $vs_locale));
+				
 				$this->set($vs_sort_field, $vs_display_value);
 			}
 		}
@@ -177,6 +181,20 @@
 		# -------------------------------------------------------
 		public function getAdditionalChecksumComponents() {
 			return [$this->getSubjectTableInstance()->getGUID()];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public function htmlFormElement($ps_field, $ps_format=null, $pa_options=null) {
+			if (($ps_field == $this->getDisplayField()) && (is_array($va_use_list = caGetOption('use_list', $pa_options, false))) && ($po_request = caGetOption('request', $pa_options, null))) {
+				$vn_list_id = array_shift($va_use_list);
+				$va_urls = caJSONLookupServiceUrl($po_request, 'ca_list_items', ['list' => caGetListCode($vn_list_id)]);
+				
+				$pa_options['height'] = 1;
+				$pa_options['lookup_url'] = $va_urls['search'];
+			}
+			return parent::htmlFormElement($ps_field, $ps_format, $pa_options);
 		}
 		# -------------------------------------------------------
 	}
