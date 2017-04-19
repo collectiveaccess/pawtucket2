@@ -89,14 +89,14 @@
 				<li><a href="https://membership.911memorial.org/user?destination=user">Log In</a></li>
 			</ul>
 			<ul class="nav navbar-nav navbar-right">
-				<li><a href="http://store.911memorial.org" title="Store">Store</a></li>
-				<li><a href="/media-center" title="Newsroom">Media Center</a></li>
-				<li><a href="/national-september-11-memorial-museum" title="About">About</a></li>
-				<li><a href="/interact" title="Interact">Interact</a></li>
-				<li><a href="/blog" title="Blog">Blog</a></li>
-				<li><a href="/events" title="">Calendar</a></li>
-				<li><a href="/dashboard" title="">Members</a></li>
-				<li><a href="/faq/general" title="">FAQ</a></li>
+				<li><a href="https://store.911memorial.org" title="Store">Store</a></li>
+				<li><a href="https://www.911memorial.org/media-center" title="Newsroom">Media Center</a></li>
+				<li><a href="https://www.911memorial.org/national-september-11-memorial-museum" title="About">About</a></li>
+				<li><a href="https://www.911memorial.org/interact" title="Interact">Interact</a></li>
+				<li><a href="https://www.911memorial.org/blog" title="Blog">Blog</a></li>
+				<li><a href="https://www.911memorial.org/events" title="">Calendar</a></li>
+				<li><a href="https://www.911memorial.org/dashboard" title="">Members</a></li>
+				<li><a href="https://www.911memorial.org/faq/general" title="">FAQ</a></li>
 				<li>
 					<div class="header-translate"><div id="google_translate_element"></div></div>
         <script type="text/javascript">
@@ -154,7 +154,7 @@
 				<div class="imgSide">
 					<div class="imgCol">
 						<div class="imgBox">
-							<a href="https://www.911memorial.org/911-memorial-museum-store-vesey"><?php print caGetThemeGraphic($this->request, 'model_0.jpg'); ?><h3>9/11 Memorial Museum Store at Vesey »</h3></a>
+							<a href="https://www.911memorial.org/education-programs"><?php print caGetThemeGraphic($this->request, 'visit3.jpg'); ?><h3>Education Programs »</h3></a>
 						</div>
 					</div>
 					<div class="imgCol">
@@ -174,7 +174,7 @@
 						<a href="https://www.911memorial.org/visit-museum-1">Tickets and Info<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/tours">Tours<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/groups-0">Groups<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/education-programs">Education Programs<span> »</span></a><br/>
+						<a href="https://www.911memorial.org/student-programs">Student Programs<span> »</span></a><br/>
 						<a href="https://membership.911memorial.org/">Museum Members<span> »</span></a>
 					</div>
 					<div>
@@ -192,7 +192,7 @@
 				<div class="imgSide">
 					<div class="imgCol">
 						<div class="imgBox">
-							<a href="https://www.911memorial.org/1993-wtc-bombing-victims"><?php print caGetThemeGraphic($this->request, '1993panel.jpg'); ?><h3>1993 WTC Bombing<br/>Victims »</h3></a>
+							<a href="https://www.911memorial.org/survivor-tree"><?php print caGetThemeGraphic($this->request, 'memorial3.jpg'); ?><h3>The Survivor Tree »</h3></a>
 						</div>
 					</div>
 					<div class="imgCol">
@@ -202,7 +202,7 @@
 					</div>
 					<div class="imgCol">
 						<div class="imgBox">
-							<a href="https://www.911memorial.org/memorial"><?php print caGetThemeGraphic($this->request, '8V7A3776_0.gif'); ?><h3>Visit the 9/11 Memorial »</h3></a>
+							<a href="https://www.911memorial.org/memorial"><?php print caGetThemeGraphic($this->request, 'memorial1.gif'); ?><h3>Visit the 9/11 Memorial »</h3></a>
 						</div>
 					</div>
 				</div>
@@ -247,7 +247,6 @@
 						<a href="https://www.911memorial.org/about-museum">About the Museum<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/exhibitions">Exhibitions<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/museum-space" title="The Museum Space">Museum Space<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/message-museum-director">Director's Message<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/museum-architects">The Architects<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/our-partnerships" title="Our Partnerships">Our Partners<span> »</span></a>
 					</div>
@@ -284,20 +283,21 @@
 					<div>
 						<h3>Teach</h3>
 						<a href="https://www.911memorial.org/education-programs">Education Programs<span> »</span></a><br/>
+						<a href="https://www.911memorial.org/plan-your-school-visit">Plan Your School Visit<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/youth-and-families">Youth and Families<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/lesson-plans">Lesson Plans<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/teaching-911">Teaching Guides<span> »</span></a><br/>
 						<div class='multiline'><a href="https://www.911memorial.org/talk-children-about-911">Talking to Children about 9/11<span> »</span></a></div>
-						<a href="https://www.911memorial.org/911-primary-sources">9/11 Primary Sources<span> »</span></a>
+						
 					</div>
 					<div>
 						<h3>Learn</h3>
+						<a href="https://www.911memorial.org/911-primary-sources">9/11 Primary Sources<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/faq-about-911">9/11 FAQ<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/interactive-911-timelines">Interactive Timelines<span> »</span></a><br/>
 						<div class='multiline'><a href="https://www.911memorial.org/world-trade-center-history">World Trade Center History<span> »</span></a></div>
 						<a href="https://www.911memorial.org/rescue-recovery">Rescue & Recovery<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/911-related-terror">9/11 Related Terror<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/webcasts-exploring-911">View Webcasts<span> »</span></a>
+						<a href="https://www.911memorial.org/911-related-terror">9/11 Related Terror<span> »</span></a>
 					</div>
 				</div>
 				<div style="clear:both;"></div>
@@ -316,7 +316,7 @@
 					</div>
 					<div class="imgCol">
 						<div class="imgBox">
-							<a href="https://www.911memorial.org/commemorate-911-0"><?php print caGetThemeGraphic($this->request, 'nightshot.jpg'); ?><h3>Commemorate 9/11 »</h3></a>
+							<a href="https://www.911memorial.org/OCOS"><?php print caGetThemeGraphic($this->request, 'liberty.jpg'); ?><h3>Our City. Our Story. »</h3></a>
 						</div>
 					</div>
 				</div>
@@ -332,8 +332,7 @@
 						<h3>Get Involved</h3>
 						<a href="https://www.911memorial.org/volunteer">Volunteer<span> »</span></a><br/>
 						<a href="https://www.911memorial.org/become-911-memorial-museum-member">Become a Member<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/ocos">Our City Our Story<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/commemorate-911-0">Commemorate 9/11<span> »</span></a>
+						<a href="https://www.911memorial.org/ocos">Our City Our Story<span> »</span></a>
 					</div>
 				</div>
 				<div style="clear:both;"></div>
@@ -393,7 +392,7 @@
 			</div>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 				
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'Objects'); ?>">
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'Objects', array('sort' => 'Relevance')); ?>">
 					<div class="formOutline">
 						<div class="form-group">
 							<input type="text" class="form-control" placeholder="Search" name="search">
@@ -403,8 +402,9 @@
 				</form>
 				<ul class="nav navbar-nav navbar-right">
 					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home")."<span>/</span>", "", "", "", ""); ?></li>
+					<li <?php print (($this->request->getController() == "Browse") || ($this->request->getController() == "Search")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse")."<span>/</span>", "", "", "Browse", "objects", array("sort" => "Title")); ?></li>
 <?php
-						print $this->render("pageFormat/browseMenu.php");
+						#print $this->render("pageFormat/browseMenu.php");
 						#print $this->render("pageFormat/advancedSearchMenu.php");
 ?>	
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features")."<span>/</span>", "", "", "Gallery", "Index"); ?></li>

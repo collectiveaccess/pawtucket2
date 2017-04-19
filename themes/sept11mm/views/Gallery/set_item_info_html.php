@@ -31,23 +31,25 @@
 ?>
 	{{{<ifdef code="ca_objects.public_description"><div class="unit unitExternalLinks"><b>Description</b><br/>^ca_objects.public_description</unit></ifdef>}}}
 <?php
-	if($va_sources = $t_object->get("ca_entities", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("donor"), "checkAccess" => caGetUserAccessValues($this->request)))){
-		if(is_array($va_sources) && sizeof($va_sources)){
-			print "<div class='unit'>";
-			print "<b>Source".((sizeof($va_sources) > 1) ? "s" : "").": </b>";
-			$va_source_display = array();
-			foreach($va_sources as $va_source){
-				$va_source_display[] = caNavLink($this->request, $va_source["displayname"], "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_source["entity_id"]));
-			}
-			print implode(", ", $va_source_display)."</div>";
-		}
-
-	}
 	$vs_credit_line = "";
 	if($t_object->get("ca_objects.credit_line")){
 		$vs_credit_line = $t_object->get("ca_objects.credit_line");
 	}elseif($t_object->get("ca_object_lots.credit_line")){
 		$vs_credit_line = $t_object->get("ca_object_lots.credit_line");
+	}
+	if(strpos(strtolower($vs_credit_line), "anonymous") === false){
+		if($va_sources = $t_object->get("ca_entities", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("donor"), "checkAccess" => caGetUserAccessValues($this->request)))){
+			if(is_array($va_sources) && sizeof($va_sources)){
+				print "<div class='unit'>";
+				print "<b>Source".((sizeof($va_sources) > 1) ? "s" : "").": </b>";
+				$va_source_display = array();
+				foreach($va_sources as $va_source){
+					$va_source_display[] = caNavLink($this->request, $va_source["displayname"], "", "", "Browse", "objects", array("facet" => "entity_facet", "id" => $va_source["entity_id"]));
+				}
+				print implode(", ", $va_source_display)."</div>";
+			}
+
+		}
 	}
 	if($vs_credit_line){
 		print "<div class='unit unitExternalLinks'><b>Credit Line:</b> <i>".$vs_credit_line."</i></div>";

@@ -42,6 +42,7 @@
 					if(is_array($va_dimensions_informations) && sizeof($va_dimensions_informations)){
 						$va_dimensions_formatted = array();
 						$va_dimensions_metric_formatted = array();
+						$vb_has_dia = false;
 						foreach($va_dimensions_informations as $va_dimensions_information){
 							$va_dimensions_pieces = array();
 							$va_dimensions_pieces_metric = array();
@@ -50,11 +51,17 @@
 									$va_dimensions_pieces[] = trim($va_dimensions_information[$vs_field]);
 									$vn_dimension = trim(str_replace("in", "", $va_dimensions_information[$vs_field]));
 									$va_dimensions_pieces_metric[] = ($vn_dimension * 2.54)." cm";
+									if($vs_field = "Dimensions_Diameter"){
+										$vb_has_dia = true;
+									}
 								}
 							}
 							if(sizeof($va_dimensions_pieces)){
 								$va_dimensions_formatted[] = ($va_dimensions_information["dimension_text"] ? trim($va_dimensions_information["dimension_text"]).": " : "").join(" X ", $va_dimensions_pieces);
 								$va_dimensions_metric_formatted[] = ($va_dimensions_information["dimension_text"] ? trim($va_dimensions_information["dimension_text"]).": " : "").join(" X ", $va_dimensions_pieces_metric);
+								if((sizeof($va_dimensions_pieces) > 1)){
+									$vb_has_dia = false;
+								}
 							}
 							# --- break to only show first dimension
 							break;
@@ -63,10 +70,18 @@
 				
 					if(sizeof($va_dimensions_formatted)){
 						print "<div class='unit'><b>Dimensions:</b> ".join("; ", $va_dimensions_formatted);
+						if($vb_has_dia){
+							print " diameter";
+						}
 						if(sizeof($va_dimensions_metric_formatted)){
 							print "<br/><b>Dimensions (Metric):</b> ".join("; ", $va_dimensions_metric_formatted);
+							if($vb_has_dia){
+								print " diameter";
+							}
 						}
 						print "</div>";
+					}else{
+						print "<div class='unit'><b>Dimensions:</b> <i>Unavailable</i></div>";
 					}		
 				$vn_source_id = null;
 				if($t_object->get("ca_objects.credit_line")){
