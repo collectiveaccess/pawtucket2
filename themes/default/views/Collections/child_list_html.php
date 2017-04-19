@@ -49,7 +49,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 			}else{
 				$vb_collapse_link = false;
 			}
-			if(!sizeof($va_child_ids) && !$vn_rel_object_count){
+			if(!sizeof($va_child_ids)){
 				$vb_collapse_link = false;
 			}
 			if($vn_level == 1){
@@ -84,11 +84,11 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 			}
 			$vs_output .= "</div>";
 			if(sizeof($va_child_ids)) {
-				if(($vn_level > 1) && $va_options["collapse_levels"]){
+				if($vb_collapse_link){
 					$vs_output .= "<div id='level".$qr_collections->get("ca_collections.collection_id")."' style='display:none;'>";
 				}
 				$vs_output .=  printLevel($po_request, $va_child_ids, $o_config, $vn_level + 1, $va_options);
-				if(($vn_level > 1) && $va_options["collapse_levels"]){
+				if($vb_collapse_link){
 					$vs_output .= "</div>";
 				}
 			}

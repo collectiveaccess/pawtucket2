@@ -144,6 +144,7 @@
 					$vs_occ_class = " occItem";
 					if($this->request->getParameter("openResultsInOverlay", pInteger)){
 						$vs_cols = 4;
+						$vs_occ_class .= " occItemDetail";
 					}else{
 						$vs_cols = 12;
 					}

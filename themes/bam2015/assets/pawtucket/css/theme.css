@@ -768,6 +768,10 @@ a.readmore-js-toggle {
 		min-width:500px !important;
 	}
 }
+.detailOverlayImg .detailMediaToolbar{
+	display:none;
+}
+
 .detailOverlayItemImgPlaceholder{
 	background-color: #FFFFFF;
     border: 0px;
