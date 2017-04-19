@@ -21,7 +21,11 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_entities.notes"><H6>About</H6>^ca_entities.notes<br/></ifdef>}}}
+					{{{<ifdef code="ca_entities.entity_date"><H6>Date</H6>^ca_entities.entity_date<br/></ifdef>}}}
+					{{{<ifdef code="ca_entities.active_dates"><H6>Active Date</H6>^ca_entities.active_dates<br/></ifdef>}}}
+					{{{<ifdef code="ca_entities.entity_note"><H6>Notes</H6>^ca_entities.entity_note<br/></ifdef>}}}
+					{{{<ifdef code="ca_entities.entity_roles"><H6>Roles</H6>^ca_entities.entity_roles%delimiter=,_<br/></ifdef>}}}
+					{{{<ifdef code="ca_entities.other_roles"><H6>Other Roles</H6>^ca_entities.other_roles<br/></ifdef>}}}
 					{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
 <?php
 				# Comment and Share Tools
