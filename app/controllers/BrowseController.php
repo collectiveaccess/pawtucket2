@@ -207,7 +207,7 @@
 			// Sorting
 			//
 			$vb_sort_changed = false;
- 			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
+ 			if (!($ps_sort = urldecode($this->request->getParameter("sort", pString)))) {
  				if (!($ps_sort = $this->opo_result_context->getCurrentSort())) {
  					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
  						$ps_sort = array_shift(array_keys($va_sorts));
