@@ -49,17 +49,20 @@
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
-			<small class="pull-right">
+			<small class="pull-right sortValues">
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, _t('View All'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span>
 <?php
 				}
 ?>
+				
+				<!-- | <span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
+				{{{sortDirectionControl}}}-->
 			</small>
-			<H3><?php print $va_block_info['displayName']."&nbsp;&nbsp;<span class='highlight'>".$qr_results->numHits()."</span>"; ?></H3>
-			<div id='browseResultsContainer'>
+			<H3><?php print caNavLink($this->request, $va_block_info['displayName']."&nbsp;&nbsp;<span class='highlight'>(".$qr_results->numHits().")</span>", '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></H3>
+			<div id='<?php print $vs_block; ?>BrowseResultsContainer' style='margin-top:5px;'>
 <?php
 		}
 		$vn_count = 0;
@@ -67,7 +70,7 @@
 		while($qr_results->nextHit()) {
 				$vn_id 					= $qr_results->get("ca_objects.object_id");
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_results->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id);
-				$vs_link_text = ($qr_results->get("ca_objects.preferred_labels")) ? $qr_results->get("ca_objects.preferred_labels") : $qr_results->get("ca_objects.idno");
+				$vs_link_text = ($qr_results->get("ca_objects.preferred_labels")) ? "<b>Title: </b>".$qr_results->get("ca_objects.preferred_labels") : $qr_results->get("ca_objects.idno");
 
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
@@ -75,14 +78,12 @@
 				$t_list_item->load($qr_results->get("type_id"));
 				$vs_typecode = $t_list_item->get("idno");
 				$vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon");
-				$vb_show_copyright_caption = false;
 				if(!($vs_thumbnail = $qr_results->getMediaTag('ca_object_representations.media', 'small', array("checkAccess" => $va_access_values)))){
 					if($vs_type_placeholder){
 						$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
 					}else{
 						$vs_thumbnail = $vs_default_placeholder_tag;
 					}
-					$vb_show_copyright_caption = true;
 				}
 				
 				if(!$this->request->getParameter("openResultsInOverlay", pInteger)){
@@ -90,21 +91,27 @@
 				}else{
 					$vs_rep_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_thumbnail."</a>";
 				}
-				$vs_add_to_set_link = "";
-				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-					$vs_add_to_set_link = "<div class='bBAMResultLB'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a></div>";
-				}				
+				$vs_add_to_set_link = "<div class='addTo'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array('object_id' => $vn_id))."\"); return false;' title='Add to lightbox'><i class='fa fa-suitcase'></i></a></div>";
 				
+				$vs_rep_id = $qr_results->get("ca_object_representations.representation_id");
+				$vs_obj_id = $qr_results->get("ca_objects.object_id");
+				$vs_download_link = "";
+				if ($vs_rep_id) {
+					$vs_download_link = caNavLink($this->request, '<i style="padding-left:10px;" class="fa fa-download"></i>', 'multiDl', '', 'Detail', 'DownloadRepresentation', array('representation_id' => $vs_rep_id, 'object_id' => $vs_obj_id, 'download' => 1, 'version' => 'original'));
+				}				
 				print "
-	<div class='col-xs-12 col-sm-3'>
-		<div class='bBAMResultItem'>
-			<div class='bSetsSelectMultiple bSetsSelectMultipleCheckbox'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-			<div class='bBAMResultItemImgContainer' ".($vb_show_copyright_caption ? "title='Copyright restricted, please contact archive'" : "")."><div class='bBAMResultItemImg' ><span style='position:relative;display:inline-block;'>{$vs_add_to_set_link}{$vs_rep_detail_link}</span></div></div>
-			<div class='bBAMResultItemText'>
-				<div class='bBAMIcon'>{$vs_type_placeholder}</div>
-				".caDetailLink($this->request, $vs_link_text, '', 'ca_objects', $vn_id)."
-			</div>
-		</div><!-- end bBAMResultItem -->
+	<div class='bResultItemCol col-xs-12 col-sm-3'>
+		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
+			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+				<div class='bResultItemText'>
+					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+				</div><!-- end bResultItemText -->
+			</div><!-- end bResultItemContent -->
+			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
+				<hr>
+				{$vs_expanded_info}{$vs_add_to_set_link}
+			</div><!-- bResultItemExpandedInfo -->
+		</div><!-- end bResultItem -->
 	</div><!-- end col -->";
 				
 
@@ -118,17 +125,38 @@
 					</div><!-- end browseResultsContainer -->
 <script type="text/javascript">
 	jQuery(document).ready(function() {
-		jQuery('#browseResultsContainer').jscroll({
+		jQuery('#<?php print $vs_block; ?>BrowseResultsContainer').jscroll({
 			autoTrigger: true,
 			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
 			padding: 60,
 			nextSelector: 'a.jscroll-next'
 		});
+//		jQuery('#<?php print $vs_block; ?>_sort').on('change', function () {
+//          var sort = $(this).val(); // get selected value
+//          if (sort) { 
+//			jQuery("#<?php print $vs_block; ?>BrowseResultsContainer").load("<?php print caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search' => $vs_search, 'key' => $this->getVar("cacheKey"))).'/'.$vs_block.'Sort/'; ?>" + sort);
+//         }
+//          return false;
+//      });
 	});
 
-</script><?php
-		}
+</script>
+<?php
+		}else{
+			# --- need to change sort direction to catch default setting for direction when sort order has changed
+			if($this->getVar("sortDirection") == "desc"){
+?>
+				<script type="text/javascript">
+					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet').addClass('glyphicon-sort-by-alphabet-alt');
+				</script>
+<?php
+			}else{
+?>
+				<script type="text/javascript">
+					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet-alt').addClass('glyphicon-sort-by-alphabet');
+				</script>
+<?php
+			}
 	}
-	
-	TooltipManager::add('#caObjectsFullResults', 'Click here for full results');
+}	
 ?>

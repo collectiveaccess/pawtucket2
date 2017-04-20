@@ -23,15 +23,38 @@
 		#	$vs_detail_link = caDetailLink($this->request, "<div class='detailOverlayItemImgPlaceholder'>".$vs_type_placeholder."</div>", "", "ca_objects", $t_object->get("ca_objects.object_id"));
 		#}else{
 		if($t_rep){
+			if(!is_array($va_media_display_info = caGetMediaDisplayInfo('related_object_overlay', $t_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
 			$va_opts = array('display' => 'related_object_overlay', 'object_id' => $t_object->get('object_id'), 'representation_id' => $t_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => caGetUserAccessValues($this->request));
+			
+			
+			
+			$vs_rep = caRepresentationViewer(
+						$this->request, 
+						$t_object, 
+						$t_object,
+						array_merge($va_opts, $va_media_display_info, 
+							array(
+								'display' => 'related_object_overlay',
+								'showAnnotations' => true, 
+								'primaryOnly' => true, 
+								'dontShowPlaceholder' => true, 
+								'captionTemplate' => false
+							)
+						)
+					);
+			
+			
+			
 			if($t_rep && (!in_array($va_rep_type, array('video/mp4', 'video/x-flv', 'video/mpeg', 'audio/x-realaudio', 'video/quicktime', 'video/x-ms-asf', 'video/x-ms-wmv', 'application/x-shockwave-flash', 'video/x-matroska')))){
-				$vs_detail_link = caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+				#$vs_detail_link = caDetailLink($this->request, $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts), "", "ca_objects", $t_object->get("ca_objects.object_id"));
+				$vs_detail_link = caDetailLink($this->request, $vs_rep, "", "ca_objects", $t_object->get("ca_objects.object_id"));
 			}else{
 				# --- don't make video a link
-				$vs_detail_link = $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts);
+				#$vs_detail_link = $t_rep->getRepresentationViewerHTMLBundle($this->request, $va_opts);
+				$vs_detail_link = $vs_rep;
 			}
 		}else{
-			$vs_detail_link = caDetailLink($this->request, "<div class='detailOverlayItemImgPlaceholder'>".$vs_type_placeholder."</div>", "", "ca_objects", $t_object->get("ca_objects.object_id"));
+			$vs_detail_link = caDetailLink($this->request, "<div class='detailOverlayItemImgPlaceholder' title='Copyright restricted, please contact archive'>".$vs_type_placeholder."</div>", "", "ca_objects", $t_object->get("ca_objects.object_id"));
 		}
 		#}
 ?>
@@ -237,6 +260,9 @@
 		</div><!-- end row -->
 		
 <?php			
+		if(!sizeof($va_rep)){
+			print "<p class='grayText'>Copyright restricted, please <a href='mailto:bamarchive@bam.org'>contact the archive</a> to view</p>";
+		}
 		if (($va_rep_width > $va_rep_height) && ($va_rep_type != 'audio/mpeg')) {
 ?>			
 		<div class="row" style='margin-bottom:30px;'>
