@@ -34,7 +34,7 @@ body {
 a, a:hover, a:active, a:focus {
 	color:#004b8d;
 }
-h2, h4, h6 {
+h1, h2, h4, h6 {
 	font-family: "Myriad Pro";
 	color:#494949;
 }
@@ -89,7 +89,7 @@ h6 {
 @media (min-width: 768px) {
 	.navbar-nav > li > a {
 		padding-top: 50px;
-		padding-bottom: 10px;
+		padding-bottom: 13px;
 	}
 	.navbar-form {
 		margin-top:42px;
@@ -210,6 +210,9 @@ h6 {
 	line-height:1.7em;
 	font-size:13px;
 }
+.detail a {
+	color:#004b8d;
+}
 .instLogo img{
 	width:100%;
 	height:auto;
@@ -221,6 +224,9 @@ h6 {
 	margin-bottom:20px;
 	height:56px;
 	padding-top:10px;
+}
+.detail .detailNavBgLeft, .detail .detailNavBgRight {
+	background-color:#f5f5f5;
 }	
 .detailSearch {
 	float:right;
@@ -245,7 +251,56 @@ h6 {
 .detailSearch .formOutline .btn-search {
 	padding-top:7px;
 }
-
+.objectBanner {
+	background-color:#f5f5f5;
+	color:#494949;
+	text-transform:uppercase;
+	font-size:18px;
+	line-height:18px;
+	border-radius:4px;
+	text-align:center;
+	margin-bottom:20px;
+}
+.detail .objectBanner a {
+	color: #494949;
+}
+.objectBanner .category {
+	display:inline-block;
+	padding:5px 15px;
+	width:35%;
+	border-right:2px solid #494949;
+}
+.objectBanner .institution {
+	display:inline-block;
+	padding:5px 15px;
+	width:65%
+}
+.objectBanner .institution .instLogo, .objectBanner .institution .instName {
+	display:inline-block;
+}
+.objectBanner .institution .instLogo {
+	padding-left:15px;
+}
+.detail .unit {
+	border-bottom: 1px solid #e6e6e6;
+	margin-bottom:12px;
+	padding-bottom:10px;
+}
+.detail .data {
+	width:30%;
+	display:inline-block;
+	text-transform:uppercase;
+	font-size:14px;
+	font-weight:bold;
+	vertical-align:top;
+}
+.detail .meta {
+	width:60%;
+	display:inline-block;
+}
+.detail hr {
+	color: #e6e6e6;
+}
 /* Browse */
 
 .resultCount {
@@ -263,17 +318,74 @@ h6 {
 	max-height:none;
 }
 .filterMenuFacetList li a {
-	font-size:13px;
+	font-size:14px;
+	text-transform:uppercase;
+	color:#494949;
+}
+.filterMenuFacetList li a:hover {
+	text-decoration:none;
 }
 div.browseFacetItem a {
-	font-size:13px;
+	font-size:14px;
 }
 .filterbylabel {
 	font-size:14px;
 	color:#494949;
 	text-transform:uppercase;
+	font-weight:bold;
+	padding-left:3px;
+}
+.filterMenuFacetList li.active {
+	background-color:#004b8d;
+	color:#fff;
+}
+.filterMenuFacetList li.active a {
+    color: #fff;
+}
+.filterMenuFacetList li {
+	padding-top:2px;
 }
 
+/* About */
 
+.sideMenu {
+	background-color:#f5f5f5;
+	padding-top:15px;
+	padding-left:15px;
+	height:350px;
+	line-height:2em;
+}
+.staticPage {
+	line-height:2em;
+}
 
+/* Search */
+
+.multisearch .multisearchResult {
+	padding:0px;
+	width:220px;
+	font-size:13px;
+}
+.multisearch .objResultText {
+	padding-left:10px;
+	padding-right:10px;
+	display:inline-block;
+}
+#objectsResults .objectsResult.multisearchResult {
+	height:195px;
+}
+.multisearch #objectsResults .blockResultsScroller {
+	height:220px;
+}
+.multisearch #objectsBlock .blockResults  {
+	height:220px;
+}
+.multisearchImgPlaceholder {
+	border:0px;
+	padding-top:55px;
+	padding-bottom:52px;
+}
+.multisearch .multisearchResult img {
+	margin-bottom:10px;
+}
 

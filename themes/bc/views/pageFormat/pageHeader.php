@@ -142,10 +142,10 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
-					<li ><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>				
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<li <?php print (($this->request->getController() == "About")&&($this->request->getController() == "map")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contributor Map"), "", "", "About", "map"); ?></li>
-					<li ><?php print caNavLink($this->request, _t("Browse"), "", "", "About", "browse"); ?></li>				
+					<li ><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>	  			
+					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "Index")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "map")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contributor Map"), "", "Institutions", "MemberMap", "Index"); ?></li>
+					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "browse")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "About", "browse"); ?></li>				
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

@@ -32,6 +32,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 
 ?>
+<div class="container">
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
@@ -43,52 +44,60 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+			<div class='col-sm-6 col-md-6 col-lg-6'>
 				{{{representationViewer}}}
 				
 				
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-				
-<?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled) {
-						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
-					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-					}
-					print '</div><!-- end detailTools -->';
-				}				
-?>
+
 			</div><!-- end col -->
 			
-			<div class='col-sm-6 col-md-6 col-lg-5'>
-				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
+			<div class='col-sm-6 col-md-6 col-lg-6'>
+				<div class='objectBanner'>
+<?php
+					if ($vs_category = $t_object->get('ca_objects.ns_category', array('convertCodesToDisplayText' => false))) {
+						print "<div class='category'>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_category, true), '', '', 'Browse', 'objects/facet/ca_facet/id/'.$vs_category)."</div>";
+					}
+					print "<div class='institution'>";
+					if ($va_institution = $t_object->getWithTemplate('<unit relativeTo="ca_entities" restrictToTypes="member_inst"><div class="instName">^ca_entities.preferred_labels </div><div class="instLogo">^ca_entities.inst_images</div></unit>')) {
+						$vs_inst_id = $t_object->get('ca_entities.entity_id', array('restrictToTypes' => array('member_inst')));
+						print caNavLink($this->request, $va_institution, '', '', 'Detail', 'entities/'.$vs_inst_id );
+					}		
+					print "</div>";		
+?>				
+					<div class="width:100%;clear:both;"></div>
+				</div>
+				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				<HR>
-				
-				{{{<ifdef code="ca_objects.measurementSet.measurements">^ca_objects.measurementSet.measurements (^ca_objects.measurementSet.measurementsType)</ifdef><ifdef code="ca_objects.measurementSet.measurements,ca_objects.measurementSet.measurements"> x </ifdef><ifdef code="ca_objects.measurementSet.measurements2">^ca_objects.measurementSet.measurements2 (^ca_objects.measurementSet.measurementsType2)</ifdef>}}}
-				
-				
-				{{{<ifdef code="ca_objects.idno"><H6>Identifer:</H6>^ca_objects.idno<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.containerID"><H6>Box/series:</H6>^ca_objects.containerID<br/></ifdef>}}}				
-				
-				{{{<ifdef code="ca_objects.description">
-					<span class="trimText">^ca_objects.description</span>
-				</ifdef>}}}
-				
-				
-				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H6>Date:</H6>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}
-				
-				<hr></hr>
+<?php
+					if ($vs_object_type = $t_object->get('ca_objects.ns_objectType', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><span class='data'>Object Type</span><span class='meta'>".$vs_object_type."</span></div>";
+					}
+					if ($vs_object_subtype = $t_object->get('ca_objects.ns_ns_objectSubType', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><span class='data'>Object Sub-Type</span><span class='meta'>".$vs_object_subtype."</span></div>";
+					}
+					if ($vs_date = $t_object->get('ca_objects.date', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><span class='data'>Date</span><span class='meta'>".$vs_date."</span></div>";
+					}	
+					if ($vs_desc = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><span class='data'>Description</span><span class='meta'>".$vs_desc."</span></div>";
+					}
+					if ($vs_history_use = $t_object->get('ca_objects.historyUse', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><span class='data'>History of Use</span><span class='meta'>".$vs_history_use."</span></div>";
+					}	
+					if ($vs_origin = $t_object->get('ca_objects.originPlace', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><span class='data'>Origin Place</span><span class='meta'>".$vs_origin."</span></div>";
+					}
+					if ($vs_mat = $t_object->get('ca_objects.materials', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><span class='data'>Materials</span><span class='meta'>".$vs_mat."</span></div>";
+					}
+					if ($vs_numb = $t_object->get('ca_objects.numberOfComponents', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><span class='data'>Number of Components</span><span class='meta'>".$vs_numb."</span></div>";
+					}																																	
+?>
 					<div class="row">
 						<div class="col-sm-6">		
 							{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
@@ -120,6 +129,7 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
+</div><!-- end container -->
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {

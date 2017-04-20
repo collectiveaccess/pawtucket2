@@ -6,6 +6,7 @@
 	
 	$vs_link = $t_item->get('ca_entities.external_link.url_entry');
 ?>
+<div class="container">
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
@@ -39,6 +40,8 @@
 ?>					
 				</div><!-- end col -->
 				<div class='col-sm-4 col-md-4 col-lg-4'>
+					{{{map}}}	
+					<hr>
 <?php
 					if ($vs_brand = $t_item->get('ca_entities.brand', array('convertCodesToDisplayText' => true))) {
 						print "<div class='unit'><h6>Brand Names</h6>".$vs_brand."</div>";
@@ -68,7 +71,9 @@
 					
 					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}					
+					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}	
+					
+													
 				</div>
 
 			</div><!-- end row -->
@@ -101,3 +106,4 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
+</div><!-- end container -->
