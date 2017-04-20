@@ -164,7 +164,7 @@
  				$ps_view = array_shift(array_keys($va_views));
  			}
  			# --- only set the current view if it's not an export format
- 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx"))){
+ 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx", "timelineData"))){
  				$this->opo_result_context->setCurrentView($ps_view);
  			}
 			
