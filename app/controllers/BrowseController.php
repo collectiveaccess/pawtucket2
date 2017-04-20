@@ -132,7 +132,7 @@
  				$ps_view = array_shift(array_keys($va_views));
  			}
  			# --- only set the current view if it's not an export format
- 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx"))){
+ 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx", "timelineData"))){
  				$this->opo_result_context->setCurrentView($ps_view);
  			}
  			
@@ -207,7 +207,7 @@
 			// Sorting
 			//
 			$vb_sort_changed = false;
- 			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
+ 			if (!($ps_sort = urldecode($this->request->getParameter("sort", pString)))) {
  				if (!($ps_sort = $this->opo_result_context->getCurrentSort())) {
  					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
  						$ps_sort = array_shift(array_keys($va_sorts));
