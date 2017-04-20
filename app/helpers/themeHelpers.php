@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2015 Whirl-i-Gig
+ * Copyright 2009-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1159,6 +1159,17 @@
 		$va_params = $po_request->getParameters(['GET', 'REQUEST', 'PATH']);
 		$va_params['lang'] = $ps_locale;
 		return caNavLink($po_request, $ps_content, $ps_classname, '*', '*', '*', $va_params, $pa_attributes, $pa_options);
+	}
+	# ---------------------------------------
+	/** 
+	 * Returns number of global values defined in the current theme
+	 *
+	 * @return int
+	 */
+	function caGetGlobalValuesCount() {
+		$o_config = Configuration::load();
+		$va_template_values = $o_config->getAssoc('global_template_values');
+		return is_array($va_template_values) ? sizeof($va_template_values) : 0;
 	}
 	# ---------------------------------------
 	/**

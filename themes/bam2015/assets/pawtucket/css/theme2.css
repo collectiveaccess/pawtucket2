@@ -43,6 +43,9 @@ input:focus{
 	color:#33D9C5;
 	font-size:14px;
 }
+.bBAMResultListItem.occItemDetail a{
+	line-height:1em !important;
+}
 #browseResultsContainer .bBAMResultListItem.occItem a{
 	font-size:20px;
 }

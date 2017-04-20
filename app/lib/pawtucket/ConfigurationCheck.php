@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2015 Whirl-i-Gig
+ * Copyright 2010-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -57,7 +57,7 @@ final class ConfigurationCheck {
 		$va_methods = $vo_reflection->getMethods();
 		foreach($va_methods as $vo_method){
 			if(strpos($vo_method->name,"QuickCheck")!==false){
-				if (!$vo_method->invoke("ConfigurationCheck")) {
+				if (!$vo_method->invoke(null, "ConfigurationCheck")) {
 					return;
 				}
 			}
@@ -80,7 +80,7 @@ final class ConfigurationCheck {
 		$va_methods = $vo_reflection->getMethods();
 		foreach($va_methods as $vo_method){
 			if(strpos($vo_method->name,"ExpensiveCheck")!==false){
-				if (!$vo_method->invoke("ConfigurationCheck")) {	// true means keep on doing checks; false means stop performing checks
+				if (!$vo_method->invoke(null, "ConfigurationCheck")) {	// true means keep on doing checks; false means stop performing checks
 					return;
 				}
 			}

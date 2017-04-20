@@ -445,6 +445,9 @@
  			
 			switch($ps_view = $this->request->getParameter('view', pString)) {
  				case 'pdf':
+ 					if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
+					set_time_limit($vn_limit * 6);
+				
  					caExportItemAsPDF($this->request, $t_subject, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_options, null), ['t_subject' => $t_subject]), ['checkAccess' => $this->opa_access_values]);
  					break;
  				default:

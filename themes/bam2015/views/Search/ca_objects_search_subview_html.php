@@ -75,12 +75,14 @@
 				$t_list_item->load($qr_results->get("type_id"));
 				$vs_typecode = $t_list_item->get("idno");
 				$vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon");
+				$vb_show_copyright_caption = false;
 				if(!($vs_thumbnail = $qr_results->getMediaTag('ca_object_representations.media', 'small', array("checkAccess" => $va_access_values)))){
 					if($vs_type_placeholder){
 						$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
 					}else{
 						$vs_thumbnail = $vs_default_placeholder_tag;
 					}
+					$vb_show_copyright_caption = true;
 				}
 				
 				if(!$this->request->getParameter("openResultsInOverlay", pInteger)){
@@ -97,7 +99,7 @@
 	<div class='col-xs-12 col-sm-3'>
 		<div class='bBAMResultItem'>
 			<div class='bSetsSelectMultiple bSetsSelectMultipleCheckbox'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-			<div class='bBAMResultItemImgContainer' ><div class='bBAMResultItemImg' ><span style='position:relative;display:inline-block;'>{$vs_add_to_set_link}{$vs_rep_detail_link}</span></div></div>
+			<div class='bBAMResultItemImgContainer' ".($vb_show_copyright_caption ? "title='Copyright restricted, please contact archive'" : "")."><div class='bBAMResultItemImg' ><span style='position:relative;display:inline-block;'>{$vs_add_to_set_link}{$vs_rep_detail_link}</span></div></div>
 			<div class='bBAMResultItemText'>
 				<div class='bBAMIcon'>{$vs_type_placeholder}</div>
 				".caDetailLink($this->request, $vs_link_text, '', 'ca_objects', $vn_id)."
@@ -109,7 +111,7 @@
 			$vn_count++;
 			if ($vn_count == $vn_hits_per_block) {break;} 
 		}
-		print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $this->getVar("cacheKey"), 'block' => $vs_block, 'search'=> $vs_search));
+		print "<div style='clear:both;'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $this->getVar("cacheKey"), 'block' => $vs_block, 'search'=> $vs_search));
 		
 		if (!$this->request->isAjax()) {
 ?>
