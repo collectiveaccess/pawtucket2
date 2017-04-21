@@ -27,7 +27,8 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-		<div id="footer">
+		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+		<footer id="footer">
 			<ul class="list-inline pull-right social">
 				<li><i class="fa fa-twitter"></i></li>
 				<li><i class="fa fa-facebook-square"></i></li>
@@ -42,7 +43,7 @@
 				<li><a href="#">Link 3</a></li>
 			</ul>
 			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>
-		</div><!-- end footer -->
+		</footer><!-- end footer -->
 <?php
 	//
 	// Output HTML for debug bar
@@ -51,7 +52,7 @@
 		print Debug::$bar->getJavascriptRenderer()->render();
 	}
 ?>
-	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">
