@@ -33,7 +33,7 @@
 	if($vs_facet_list) {
 ?>			
 	<div class="filterMenuFacetList col-sm-2">
-		<div class="filterbylabel"><?php print _t("Browse by:"); ?></div>
+		<div class="filterbylabel"><?php print _t("Browse by"); ?></div>
 		<ul>
 			<?php print $vs_facet_list; ?>
 		</ul>

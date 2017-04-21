@@ -37,9 +37,5 @@
 		<title><?php print $this->getVar('criteria_summary_truncated'); ?></title>
 		<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
 		<meta charset="utf-8" />
-		
-		<script type="text/javascript">
-			var PhantomJSPrinting = {};
-		</script>
 	</head>
 	<body>

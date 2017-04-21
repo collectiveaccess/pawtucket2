@@ -3182,7 +3182,7 @@
 									$vn_child_count = isset($va_list_child_count_cache[$vn_val]) ? $va_list_child_count_cache[$vn_val] : 0;
 									$va_facet_list[$vn_val] = array(
 										'id' => $vn_val,
-										'label' => ($vs_label = html_entity_decode($va_list_label_cache[$vn_val])) ? $vs_label : _t('[BLANK]'),
+										'label' => ($vs_label = html_entity_decode($va_list_label_cache[$vn_val])) ? $vs_label : '['._t('BLANK').']',
 										'parent_id' => isset($va_list_item_cache[$vn_val]['parent_id']) ? $va_list_item_cache[$vn_val]['parent_id'] : null,
 										'child_count' => $vn_child_count
 									);

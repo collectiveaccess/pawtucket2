@@ -442,7 +442,10 @@
  			if (!$this->viewExists($vs_path = "Details/{$vs_table}_{$vs_type}_html.php")) {
  				$vs_path = "Details/{$vs_table}_default_html.php";		// If no type specific view use the default
  			}
- 			
+ 			//
+ 			// pdf link
+ 			//
+ 			$this->view->setVar('pdfEnabled', (bool)$va_options['enablePDF']);
 			switch($ps_view = $this->request->getParameter('view', pString)) {
  				case 'pdf':
  					if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
