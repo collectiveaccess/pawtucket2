@@ -63,8 +63,9 @@
 	
 if (!$vb_ajax) {	// !ajax
 ?>
+<div class="container">
 <div class="row" style="clear:both;">
-	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
+	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-9 col-lg-9"; ?>'>
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -195,6 +196,8 @@ if (!$vb_ajax) {	// !ajax
 	
 } // !ajax
 
+if ($vb_ajax) {
+
 	if ((int)$this->request->getParameter('s', pInteger) === 0) {
 		print "<div class='row'><div class='col-sm-12'><div class='browseSearchBar'>";
 		print 	"<div class='resultCount'>".($qr_res->numHits() > 1 ? $qr_res->numHits()." Results" : $qr_res->numHits()." Result")."</div>"; 
@@ -208,7 +211,7 @@ if (!$vb_ajax) {	// !ajax
 					</form>';
 		print "</div></div></div>";
 	}
-
+}
 
 print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
 
@@ -218,7 +221,7 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end row -->
 		</form>
 	</div><!-- end col-8 -->
-	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
+	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-lg-3 "; ?>">
 		<div id="bViewButtons">
 <?php
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
@@ -238,7 +241,7 @@ if (!$vb_ajax) {	// !ajax
 	</div><!-- end col-2 -->
 	
 	
-</div><!-- end row -->	
+</div><!-- end row -->	</div><!-- end container -->
 
 <script type="text/javascript">
 	jQuery(document).ready(function() {

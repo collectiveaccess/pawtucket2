@@ -34,7 +34,7 @@ body {
 a, a:hover, a:active, a:focus {
 	color:#004b8d;
 }
-h1, h2, h4, h6 {
+h1, h2, h3, h4, h5, h6 {
 	font-family: "Myriad Pro";
 	color:#494949;
 }
@@ -221,7 +221,7 @@ h6 {
 	color:#fff;
 	background-color:#004b8d;
 	clear:both;
-	margin-bottom:20px;
+	margin-bottom:30px;
 	height:56px;
 	padding-top:10px;
 }
@@ -309,8 +309,14 @@ h6 {
 	padding-left:15px;
 	padding-top:7px;
 }
-
-
+.bResultItem {
+	padding:0px;
+}
+.bResultItem .bResultItemText {
+	font-size:13px;
+	padding-left:10px;
+	padding-right:10px;
+}
 .browsedivider {
 	border:0px;
 }
@@ -333,7 +339,7 @@ div.browseFacetItem a {
 	color:#494949;
 	text-transform:uppercase;
 	font-weight:bold;
-	padding-left:3px;
+	padding-left:4px;
 }
 .filterMenuFacetList li.active {
 	background-color:#004b8d;
@@ -343,7 +349,35 @@ div.browseFacetItem a {
     color: #fff;
 }
 .filterMenuFacetList li {
-	padding-top:2px;
+	padding-top:5px;
+}
+.bResultItemImgPlaceholder {
+	border:0px;
+}	
+#bRefine {
+	background-color:#f5f5f5;
+}
+#bRefine H5 {
+	color:#434343;
+	margin-bottom:5px;
+}
+#bRefine a {
+	font-size:13px;
+}
+/*.results a .glyphicon, .results a .fa {
+    font-size: 24px;
+}*/
+
+.browse .btn, .sets .btn {
+	font-size:13px;
+	color:#fff;
+	border:0px;
+	border-radius:0px;
+	background-color:#004b8d;
+	padding-top:4px;
+}	
+.browse .btn .glyphicon {
+	color:#fff !important;
 }
 
 /* About */
@@ -370,6 +404,7 @@ div.browseFacetItem a {
 	padding-left:10px;
 	padding-right:10px;
 	display:inline-block;
+	line-height: 1.1em;
 }
 #objectsResults .objectsResult.multisearchResult {
 	height:195px;
@@ -388,4 +423,16 @@ div.browseFacetItem a {
 .multisearch .multisearchResult img {
 	margin-bottom:10px;
 }
-
+.multisearch H3 a, .multisearch H3 a:hover {
+	color:#434343;
+}
+.multisearchFullResults a, .multisearchSort ul li a {
+	color: #004b8d;
+}
+.multisearch small {
+	font-size:13px;
+}
+.multisearch small {
+	color: #ABABAB;
+	font-size:85%;
+}

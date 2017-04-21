@@ -30,12 +30,13 @@
 					if ($vs_inst_image = $t_item->get('ca_entities.inst_images', array('version' => 'medium'))) {
 						print "<div class='instLogo'><a href='".$vs_link."' target='_blank'>".$vs_inst_image."</a></div>";
 					}
+					print "<div style='text-align:center;padding-top:15px;'><a href='".$vs_link."' target='_blank'>More Information</a></div>";
 ?>							
 				</div><!-- end col -->						
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
 					if ($vs_description = $t_item->get('ca_entities.biography')) {
-						print "<div class='unit'>".$vs_description."</div>";
+						print "<div >".$vs_description."</div>";
 					}									
 ?>					
 				</div><!-- end col -->
@@ -55,7 +56,7 @@
 					if ($vs_liq = $t_item->get('ca_entities.entity_liquidated')) {
 						print "<div class='unit'><h6>Date of liquidation</h6>".$vs_liq."</div>";
 					}
-					print "<a href='".$vs_link."' target='_blank'>More Information</a>";
+					
 ?>
 					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
 					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
