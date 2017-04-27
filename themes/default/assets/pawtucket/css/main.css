@@ -434,6 +434,9 @@ h1 i {
 /* ----------------------------------------- */
 /* navbar - browse menu */
 /* ----------------------------------------- */
+.filterMenuFacetList{
+	min-height:200px;
+}
 .browseMenuFacet {
 	clear: both;
     margin-bottom: 0px;

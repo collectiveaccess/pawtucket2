@@ -4,7 +4,7 @@
 	$vn_num2 = rand(1,10);
 	$vn_sum = $vn_num1 + $vn_num2;
 ?>
-<div class="container"><div class="row"><div class="col-sm-12">
+<div class="row"><div class="col-sm-12">
 <H1><?php print _t("Contact"); ?></H1>
 <?php
 	if(sizeof($va_errors["display_errors"])){
@@ -57,4 +57,4 @@
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 	</form>
 	
-</div><!-- end col --></div><!-- end row --></div><!-- end container -->	
+</div><!-- end col --></div><!-- end row -->

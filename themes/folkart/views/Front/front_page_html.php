@@ -29,11 +29,18 @@
  *
  * ----------------------------------------------------------------------
  */
-		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 	<div class="row">
+		<div class="col-sm-12">
+<?php
+		print $this->render("Front/featured_set_slideshow_html.php");
+?>
+		</div>
+	</div>
+<div class="container">
+	<div class="row">
 		<div class="col-sm-8">
-			<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
+			<H2>Lorem ipsum dolor sit amet.</H2>
 		</div><!--end col-sm-8-->
 		<div class="col-sm-4">
 <?php
@@ -41,3 +48,4 @@
 ?>
 		</div> <!--end col-sm-4-->	
 	</div><!-- end row -->
+</div> <!--end container-->
