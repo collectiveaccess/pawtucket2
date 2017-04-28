@@ -84,7 +84,7 @@
 						print "<div class='unit'><b>Dimensions:</b> <i>Unavailable</i></div>";
 					}		
 				$vn_source_id = null;
-				if($t_object->get("ca_objects.credit_line")){
+				if($t_object->get("ca_objects.credit_line", ['delimiter' => ''])){
 					$vs_credit_line = $t_object->get("ca_objects.credit_line");
 				}else{
 					$vs_credit_line = $t_object->get("ca_object_lots.credit_line");
