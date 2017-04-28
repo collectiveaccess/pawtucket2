@@ -32,18 +32,41 @@
  * ----------------------------------------------------------------------
  */
  
-	if($this->request->config->get('summary_header_enabled')) {
+ if($this->request->config->get('summary_header_enabled')) {
+	switch($this->getVar('PDFRenderer')) {
+		case 'wkhtmltopdf':
 ?>
-<div id='header'>
+			<!--BEGIN HEADER--><!DOCTYPE html>
+			<html>
+				<head>
+					<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+					<meta charset="utf-8" />
+					<meta charset="utf-8" />
+				</head>
+				<body><div id='header'>
+			<?php
+					if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
+						print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
+					}
+			?>	
+				</div>
+				<br style="clear: both;"/>
+			</body>
+			</html><!--END HEADER-->
 <?php
-	if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
-		print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
-	}
-	if($this->request->config->get('summary_page_numbers')) {
-		print "<div class='pagingText'>"._t('Page')." </div>";
-	}
+		break;
+		# ----------------------------------------
+		default:
 ?>
-</div>
+			<div id='headerdompdf'>
 <?php
-	}
+				if(file_exists($this->request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$this->request->config->get('report_img'))){
+					print '<img src="'.$this->request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$this->request->config->get('report_img').'" class="headerImg"/>';
+				}
 ?>
+			</div>
+<?php
+		break;
+		# ----------------------------------------
+	}
+}

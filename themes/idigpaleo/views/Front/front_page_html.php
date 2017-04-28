@@ -33,30 +33,32 @@
  	require_once(__CA_APP_DIR__.'/lib/vendor/autoload.php');
 	require_once(__CA_MODELS_DIR__."/ca_item_comments.php");
 	$t_item_comments = new ca_item_comments();
-	$va_comments = $t_item_comments->getCommentsList("moderated", 2);
+	$va_comments = $t_item_comments->getCommentsList("moderated");
 	$va_access_values = $this->getVar("access_values");
 ?>
 	<div class="row">
 		<div class="col-sm-6 border-right news">
-			<?php print caGetThemeGraphic($this->request, 'hp_news2.jpg'); ?>
-			<H1>News</H1>
+			<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_news2.jpg'), "", "", "About", "News"); ?>
+			<?php print caNavLink($this->request, "<H1>News</H1>", "", "", "About", "News"); ?>
 <?php
 		use Guzzle\Http\Client;
-	
-		$client = new Client('http://fossilinsects.colorado.edu/');
 		
-		$client = new Client();
-		$response = $client->get('http://fossilinsects.colorado.edu/feed/')->send();
-		$va_news = json_decode(json_encode($response->xml()),TRUE);
-		if(is_array($va_news)){
-			$va_first_item = $va_news["channel"]["item"][0];
-			print "<H2>";
-			if($va_first_item["link"]){
-				print "<a href='".$va_first_item["link"]."' target='_blank'>".$va_first_item["title"]."</a>";
-			}else{
-				print $va_first_item["title"];
+		try {	
+			$client = new Client();
+			$response = $client->get('http://fossilinsects.colorado.edu/feed/')->send();
+			$va_news = json_decode(json_encode($response->xml()),TRUE);
+			if(is_array($va_news)){
+				$va_first_item = $va_news["channel"]["item"][0];
+				print "<H2>";
+				if($va_first_item["link"]){
+					print "<a href='".$va_first_item["link"]."' target='_blank'>".$va_first_item["title"]."</a>";
+				}else{
+					print $va_first_item["title"];
+				}
+				print "</H2>";	
 			}
-			print "</H2>";	
+		} catch (Exception $e) {
+			print "<h2>No news</h2>";
 		}
 ?>
 			<H3 class="text-right"><?php print caNavLink($this->request, _t("More"), "", "", "About", "News"); ?></H3>
@@ -73,15 +75,25 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-5 commentsImg">
+		<div class="col-sm-4 commentsImg">
+			<h2>Tweets <small>by <a href="https://twitter.com/FossilInsectTCN" target="blank">@FossilInsectTCN</a></small></h2>
+			<a class="twitter-timeline" data-height="320" data-dnt="true" data-link-color="#2a6496" href="https://twitter.com/FossilInsectTCN" data-chrome="noheader nofooter">Tweets by FossilInsectTCN</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 <?php
+		$i = 1;
 		if(is_array($va_comments) && sizeof($va_comments)){
+			/*
 			foreach($va_comments as $va_comment){
 				$t_object = new ca_objects($va_comment["row_id"]);
-				print $t_object->getWithTemplate('<l>^ca_object_representations.media.mediumlarge</l>', array("checkAccess" => $va_access_values));
-				print "<H3>".$t_object->get("ca_objects.idno")."</H3>";
-				break;
+				if($t_object->get('ca_objects.idno')){
+					print $t_object->getWithTemplate('<l>^ca_object_representations.media.small</l>', array("checkAccess" => $va_access_values));
+					print "<H3>".$t_object->get("ca_objects.idno")."</H3>";
+					if($i == 2){
+						break;
+					}
+					$i++;
+				}
 			}
+			*/
 			reset($va_comments);
 		}else{
 			print caGetThemeGraphic($this->request, 'hp_comments.jpg');
@@ -92,23 +104,27 @@
 <?php
 		if(is_array($va_comments) && sizeof($va_comments)){
 ?>
-		<div class="col-sm-3 border-right border-left frontComments">
+		<div class="col-sm-4 border-right border-left frontComments">
 			<H2>Latest Comments</H2>
 <?php
 			$i = 1;
 			foreach($va_comments as $va_comment){
-				print "<div class='quote'>".caGetThemeGraphic($this->request, 'quote.png')." ";
-				if(mb_strlen($va_comment["comment"]) > 150){
-					print mb_substr($va_comment["comment"], 0, 150)."...";
-				}else{
-					print $va_comment["comment"];
+				$t_object = new ca_objects($va_comment["row_id"]);
+				if($t_object->get('ca_objects.idno')){
+					print "<div class='quote'>".caGetThemeGraphic($this->request, 'quote.png')." ";
+					if(mb_strlen($va_comment["comment"]) > 150){
+						print mb_substr($va_comment["comment"], 0, 150)."...";
+					}else{
+						print $va_comment["comment"];
+					}
+					print "<div class='byline'>- ".$va_comment["fname"]." ".$va_comment["lname"]."</div>";
+					print $t_object->getWithTemplate('<l><small>View ^ca_objects.preferred_labels</small></l>');
+					print "</div>";
+					if($i == 2){
+						break;
+					}
+					$i++;
 				}
-				print "<div class='byline'>- ".$va_comment["fname"]." ".$va_comment["lname"]."</div>";
-				print "</div>";
-				if($i == 1){
-					print "<HR/>";
-				}
-				$i++;
 			}
 ?>
 		</div>
@@ -122,7 +138,7 @@
 			array("name" => "Colorado Museum of Natural History", "graphic" => caGetThemeGraphic($this->request, 'hp_cu_logo2.jpg')),
 			array("name" => "National Museum of Natural History", "graphic" => caGetThemeGraphic($this->request, 'hp_nmnh_logo.jpg')),
 			array("name" => "Museum of Comparative Zoology, Harvard University", "graphic" => caGetThemeGraphic($this->request, 'hp_harvard_logo.jpg')),
-			array("name" => "Yale Peabody Museum of Natural History", "graphic" => caGetThemeGraphic($this->request, 'hp_yale_logo.jpg'))		
+			array("name" => "Yale Peabody Museum of Natural History", "graphic" => caGetThemeGraphic($this->request, 'hp_yale_logo.jpg'))
 		);
 		$vn_key = array_rand($va_institutions);
 ?>

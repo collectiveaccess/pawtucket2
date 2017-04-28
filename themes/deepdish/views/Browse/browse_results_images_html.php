@@ -105,7 +105,9 @@
 						}
 					}
 					$vs_info = null;
-					if ($vs_date_value = $qr_res->get('ca_objects.productionDate')) {
+					$t_list = new ca_lists();
+					$vs_series_value =  $t_list->getItemIDFromList('object_types', 'series');
+					if (($vs_date_value = $qr_res->get('ca_objects.productionDate')) && $qr_res->get('ca_objects.type_id') != $vs_series_value) {
 						$vs_date = "<p>".$vs_date_value."</p>";
 					} else {
 						$vs_date = null;

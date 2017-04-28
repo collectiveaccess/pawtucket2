@@ -427,6 +427,11 @@ body {
   /* Margin bottom by footer height */
   margin-bottom: 210px;
 }
+@media (max-width: 450px) {
+	body {
+		margin-bottom:310px;
+	}
+}
 
 #footer {
 	background-color: #000000;
@@ -439,6 +444,11 @@ body {
   	/* Set the fixed height of the footer here */
   	height: 170px;
   	margin-bottom:0px;
+}
+@media (max-width: 450px) {
+	#footer {
+		height:270px;
+	}
 }
 .footerHeader {
 	color: #fff;
@@ -461,7 +471,15 @@ body {
 	#footer .copyright{
 		float:right;
 	}
+	#footer .copyright div{
+		text-align:center;
+	}
 }
+#footer .copyright img{
+	width:150px;
+	height:auto;
+}
+
 /* Homepage */
 
 #homePanel {
@@ -750,6 +768,10 @@ a.readmore-js-toggle {
 		min-width:500px !important;
 	}
 }
+.detailOverlayImg .detailMediaToolbar{
+	display:none;
+}
+
 .detailOverlayItemImgPlaceholder{
 	background-color: #FFFFFF;
     border: 0px;
@@ -1318,6 +1340,10 @@ p.linkInfo {
 	color: #00cfb7;
 	width:18px;
 	display:inline-block;
+}
+.staticImg img{
+	width:100%;
+	height:auto;
 }
 
 /* Ipad Styles */

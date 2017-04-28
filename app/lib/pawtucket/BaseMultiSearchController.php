@@ -112,6 +112,9 @@
 				}
  				return; 
  			} 
+ 			
+ 			$vn_result_count = 0;
+ 			$vs_redirect_to_only_result = null;
  			foreach($this->opa_result_contexts as $vs_block => $o_context) {
  				$o_context->setParameter('search', $vs_search);
  				if (!isset($va_results[$vs_block]['ids']) || !is_array($va_results[$vs_block]['ids'])) { continue; }
@@ -119,6 +122,17 @@
  				if($va_results[$vs_block]['sort']) { $o_context->setCurrentSort($va_results[$vs_block]['sort']); }
 				if (isset($va_results[$vs_block]['sortDirection'])) { $o_context->setCurrentSortDirection($va_results[$vs_block]['sortDirection']); }
  				$o_context->saveContext();
+ 				
+ 				$vn_result_count += sizeof($va_results[$vs_block]['ids']);
+ 				
+ 				if ((sizeof($va_results[$vs_block]['ids']) == 1) && ($vn_result_count == 1)) {
+ 					$vs_redirect_to_only_result = caDetailUrl($this->request, $va_results[$vs_block]['table'], $va_results[$vs_block]['ids'][0], false);
+ 				}
+ 			}
+ 			
+ 			if (($vn_result_count == 1) && ($vs_redirect_to_only_result)) {
+ 				$this->response->setRedirect($vs_redirect_to_only_result);
+ 				return;
  			}
  			
  			$this->render('Search/multisearch_results_html.php');

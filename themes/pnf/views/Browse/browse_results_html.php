@@ -128,12 +128,13 @@ if (!$vb_ajax) {	// !ajax
 					if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 						foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 							if ($vs_current_sort === $vs_sort) {
-								print "<li><a href='#'><em>{$vs_sort}</em></a></li>\n";
+								print "<li><a href='#'><em>".$vs_sort."</em></a></li>\n";
 							} else {
 								print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort))."</li>\n";
 							}
 						}
 					}
+					
 ?>										
 				</ul>
 				</div><!-- end buttongrp -->

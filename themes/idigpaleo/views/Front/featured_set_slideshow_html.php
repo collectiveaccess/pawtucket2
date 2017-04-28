@@ -32,6 +32,20 @@
 	$va_access_values = $this->getVar("access_values");
 	$qr_res = $this->getVar('featured_set_items_as_search_result');
 	$o_config = $this->getVar("config");
+	$t_set = $this->getVar("featured_set");
+	$va_set_item_captions = array();
+	if($t_set && $t_set->get("set_id")){
+		$va_items = $t_set->getItems();
+		if(is_array($va_items) && sizeof($va_items)){
+			$va_items = caExtractValuesByUserLocale($va_items);
+			# --- get set item captions
+			foreach($va_items as $va_item){
+				if($va_item["caption"] && ($va_item["caption"] != "[BLANK]")){
+					$va_set_item_captions[$va_item["row_id"]] = $va_item["caption"];
+				}
+			}
+		}
+	}
 	$vs_caption_template = $o_config->get("front_page_set_item_caption_template");
 	if(!$vs_caption_template){
 		$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
@@ -48,7 +62,8 @@
 					while($qr_res->nextHit()){
 						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.mediumlarge</l>', array("checkAccess" => $va_access_values))){
 							print "<li id='slide".$qr_res->get("ca_objects.object_id")."'><div class='frontSlide'>".$vs_media;
-							$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
+							$vs_set_item_caption = $va_set_item_captions[$qr_res->get("object_id")];
+							$vs_caption = $qr_res->getWithTemplate($vs_caption_template).(($vs_set_item_caption) ? ", ".$vs_set_item_caption : "");
 							if($vs_caption){
 								print "<div class='frontSlideCaption'>".$vs_caption."</div>";
 							}

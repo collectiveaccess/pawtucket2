@@ -7,7 +7,8 @@
 	$va_exclude_collection_type_ids = $this->getVar("exclude_collection_type_ids");
 	$va_non_linkable_collection_type_ids = $this->getVar("non_linkable_collection_type_ids");
 	$va_collection_type_icons = $this->getVar("collection_type_icons");
-
+	$vb_collapse_levels = $o_collections_config->get("collapse_levels");
+	
 function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_options = array()) {
 	if($o_config->get("max_levels") && ($vn_level > $o_config->get("max_levels"))){
 		return;
@@ -16,6 +17,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 	$vs_output = "";
 	$vs_desc_template = $o_config->get("description_template");
 	$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
+	
 	if($qr_collections->numHits()){
 		while($qr_collections->nextHit()) {
 			$vs_icon = "";
@@ -30,7 +32,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 				continue;
 			}
 			$vs_output .= "<div style='margin-left:".(20*($vn_level - 1))."px;'>";
-			# --- should collection record be a link?
+			# --- should collection record link to detail?
 			$vb_link = true;
 			# --- check if collection record type has been configured to not be a link to detail page
 			if(is_array($va_options["non_linkable_collection_type_ids"]) && (in_array($qr_collections->get("ca_collections.type_id"), $va_options["non_linkable_collection_type_ids"]))){
@@ -41,13 +43,34 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 					$vb_link = false;
 				}
 			}
+			# --- should collection record title open collapsed sub items?
+			if(($vn_level > 1) && $va_options["collapse_levels"]){
+				$vb_collapse_link = true;
+			}else{
+				$vb_collapse_link = false;
+			}
+			if(!sizeof($va_child_ids)){
+				$vb_collapse_link = false;
+			}
 			if($vn_level == 1){
 				$vs_output .= "<div class='label'>";
 			}
 			if($vb_link){
-				$vs_output .= $vs_icon." ".caDetailLink($po_request, $qr_collections->get('ca_collections.preferred_labels')." ".(($o_config->get("link_out_icon")) ? $o_config->get("link_out_icon") : ""), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
+				$vs_output .= $vs_icon." ";
+				if($vb_collapse_link){
+					$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels')."</a>";
+				}else{
+					$vs_output .= caDetailLink($po_request, $qr_collections->get('ca_collections.preferred_labels'), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
+				}
+				$vs_output .= " ".caDetailLink($po_request, (($o_config->get("link_out_icon")) ? $o_config->get("link_out_icon") : ""), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
 			}else{
-				$vs_output .= "<span class='nonLinkedCollection'>".$vs_icon." ".$qr_collections->get("ca_collections.preferred_labels")."</span>";
+				$vs_output .= "<span class='nonLinkedCollection'>".$vs_icon." ";
+				if($vb_collapse_link){
+					$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels')."</a>";
+				}else{
+					$vs_output .= $qr_collections->get("ca_collections.preferred_labels");
+				}
+				$vs_output .= "</span>";
 			}
 			if($vn_rel_object_count){
 				$vs_output .= " <small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
@@ -61,7 +84,13 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 			}
 			$vs_output .= "</div>";
 			if(sizeof($va_child_ids)) {
+				if($vb_collapse_link){
+					$vs_output .= "<div id='level".$qr_collections->get("ca_collections.collection_id")."' style='display:none;'>";
+				}
 				$vs_output .=  printLevel($po_request, $va_child_ids, $o_config, $vn_level + 1, $va_options);
+				if($vb_collapse_link){
+					$vs_output .= "</div>";
+				}
 			}
 		}
 	}
@@ -69,7 +98,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 }
 
 if ($vn_collection_id) {
-	print printLevel($this->request, array($vn_collection_id), $o_collections_config, 1, array("exclude_collection_type_ids" => $va_exclude_collection_type_ids, "non_linkable_collection_type_ids" => $va_non_linkable_collection_type_ids, "collection_type_icons" => $va_collection_type_icons));
+	print printLevel($this->request, array($vn_collection_id), $o_collections_config, 1, array("exclude_collection_type_ids" => $va_exclude_collection_type_ids, "non_linkable_collection_type_ids" => $va_non_linkable_collection_type_ids, "collection_type_icons" => $va_collection_type_icons, "collapse_levels" => $vb_collapse_levels));
 }
 
 

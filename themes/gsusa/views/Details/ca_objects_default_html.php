@@ -80,8 +80,8 @@
 				{{{<ifdef code="ca_objects.overall_date"><H6>Date</H6>^ca_objects.overall_date<br/></ifdev>}}}
 				{{{<ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_height|ca_objects.cdwa_indexingMeasurementsSet.dimensions_width|ca_objects.cdwa_indexingMeasurementsSet.dimensions_depth|ca_objects.cdwa_indexingMeasurementsSet.dimensions_diameter"><H6>Dimensions</H6><unit delimiter="<br/>">^ca_objects.cdwa_indexingMeasurementsSet.dimensions_height<ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_height,ca_objects.cdwa_indexingMeasurementsSet.dimensions_width"> x </ifdef><ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_width">^ca_objects.cdwa_indexingMeasurementsSet.dimensions_width</ifdef><ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_depth"> x ^ca_objects.cdwa_indexingMeasurementsSet.dimensions_depth</ifdef><ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_diameter"> x ^ca_objects.cdwa_indexingMeasurementsSet.dimensions_diameter</ifdef></unit></ifdef>}}}
 				
-				{{{<ifcount code="ca_objects.children" min="1" max="1"><HR></HR><H6>Component</H6></ifcount>}}}
-				{{{<ifcount code="ca_objects.children" min="2"><HR></HR><H6>Components</H6></ifcount>}}}
+				{{{<ifcount code="ca_objects.children" min="1" max="1"><HR></HR><H6>Copy</H6></ifcount>}}}
+				{{{<ifcount code="ca_objects.children" min="2"><HR></HR><H6>Copies</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_objects.children" delimiter=" "><div class="component">^ca_objects.preferred_labels.name, <small>^ca_objects.idno</small><ifdef code="ca_objects.description"><div>^ca_objects.description</div></ifdef><ifdef code="ca_objects.content_description"><ifdef code="ca_objects.content_description,ca_objects.description"><div class="componentDescSpacer"></ifdef>^ca_objects.content_description<ifdef code="ca_objects.content_description,ca_objects.description"></div></ifdef></ifdef></div></unit>}}}
 				
 				<HR></HR>

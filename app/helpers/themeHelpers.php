@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2015 Whirl-i-Gig
+ * Copyright 2009-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1159,5 +1159,37 @@
 		$va_params = $po_request->getParameters(['GET', 'REQUEST', 'PATH']);
 		$va_params['lang'] = $ps_locale;
 		return caNavLink($po_request, $ps_content, $ps_classname, '*', '*', '*', $va_params, $pa_attributes, $pa_options);
+	}
+	# ---------------------------------------
+	/** 
+	 * Returns number of global values defined in the current theme
+	 *
+	 * @return int
+	 */
+	function caGetGlobalValuesCount() {
+		$o_config = Configuration::load();
+		$va_template_values = $o_config->getAssoc('global_template_values');
+		return is_array($va_template_values) ? sizeof($va_template_values) : 0;
+	}
+	# ---------------------------------------
+	/**
+	 * 
+	 *
+	 * 
+	 */
+	function caGetComparisonList($po_request, $ps_table, $pa_options=null) {
+		if (!is_array($va_comparison_list = $po_request->session->getVar("{$ps_table}_comparison_list"))) { $va_comparison_list = []; }
+		
+		// Get title template from config
+		$va_compare_config = $po_request->config->get('compare_images');
+		if (!is_array($va_compare_config = $va_compare_config[$ps_table])) { $va_compare_config = []; }
+		$va_display_list = caProcessTemplateForIDs(caGetOption('title_template', $va_compare_config, "^{$ps_table}.preferred_labels"), $ps_table, $va_comparison_list, ['returnAsArray' => true]);
+		
+		$va_list = [];
+		foreach($va_comparison_list as $vn_i => $vn_id) {
+			$va_list[$vn_id] = $va_display_list[$vn_i];
+		}
+		
+		return $va_list;
 	}
 	# ---------------------------------------
