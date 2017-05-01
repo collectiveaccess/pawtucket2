@@ -25,13 +25,12 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	require_once(__CA_LIB_DIR__.'/ca/ApplicationPluginManager.php');
  	require_once(__CA_MODELS_DIR__."/ca_bundle_displays.php");
  	require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
- 	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
- 	require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
 	
  	class FindController extends BasePawtucketController {
@@ -46,18 +45,31 @@
          */
  		 protected $ops_view_prefix=null;
  		 
+ 		 /**
+ 		  * 
+ 		  */
+ 		  protected $opo_app_plugin_manager;
+ 		 
  		# -------------------------------------------------------
  		/**
  		 *
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
- 			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 			// Make application plugin manager available to superclasses
+ 			$this->opo_app_plugin_manager = new ApplicationPluginManager();
  			
+ 			parent::__construct($po_request, $po_response, $pa_view_paths);
+ 		}
+ 		# ------------------------------------------------------------------
+ 		/**
+ 		 * 
+ 		 */
+ 		protected function setTableSpecificViewVars() {
  			// merge displays with drop-in print templates
-			$va_export_options = (bool)$po_request->config->get('disable_pdf_output') ? array() : caGetAvailablePrintTemplates('results', array('table' => $this->ops_tablename)); 
+			$va_export_options = (bool)$this->request->config->get('disable_pdf_output') ? array() : caGetAvailablePrintTemplates('results', array('table' => $this->ops_tablename)); 
 			
 			// add Excel/PowerPoint export options configured in app.conf
-			$va_export_config = (bool)$po_request->config->get('disable_export_output') ? array() : $po_request->config->getAssoc('export_formats');
+			$va_export_config = (bool)$this->request->config->get('disable_export_output') ? array() : $this->request->config->getAssoc('export_formats');
 	
 			if(is_array($va_export_config) && is_array($va_export_config[$this->ops_tablename])) {
 				foreach($va_export_config[$this->ops_tablename] as $vs_export_code => $va_export_option) {
@@ -82,6 +94,9 @@
  			}
  			ksort($va_options);
  			
+ 			// Set comparison list view vars
+ 			$this->view->setVar('comparison_list', $va_comparison_list = caGetComparisonList($this->request, $this->ops_tablename));
+ 			
 			$this->view->setVar('export_format_select', caHTMLSelect('export_format', $va_options, array('class' => 'searchToolsSelect'), array('value' => $this->view->getVar('current_export_format'), 'width' => '150px')));
  		}
  		# ------------------------------------------------------------------
@@ -95,6 +110,7 @@
 			$this->view->setVar('browse', $po_browse);
 			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
+			$this->view->setVar('isNav', $vb_is_nav);
 			$vs_facet = $this->request->getParameter('facet', pString);
 			$vn_s = $vb_is_nav ? $this->request->getParameter('s', pInteger) : 0;	// start menu-based browse menu facet data at page boundary; all others get the full facet
 			$this->view->setVar('start', $vn_s);
@@ -130,7 +146,8 @@
  			$ps_facet_name = $this->request->getParameter('facet', pString);
  			$ps_cache_key = $this->request->getParameter('key', pString);
  			$ps_browse_type = $this->request->getParameter('browseType', pString);
- 			
+ 			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
+			
  			if($ps_browse_type == "caLightbox"){
  				$va_browse_info['table'] = 'ca_objects';
  			}else{
@@ -301,7 +318,8 @@
  		 * Returned data is JSON format
  		 */
  		public function getFacetHierarchyAncestorList() {
- 			$pn_id = $this->request->getParameter('id', pInteger);
+ 			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
+			$pn_id = $this->request->getParameter('id', pInteger);
  			$va_access_values = caGetUserAccessValues($this->request);
  			$ps_facet_name = $this->request->getParameter('facet', pString);
  			$this->view->setVar("facet_name", $ps_facet_name);
@@ -415,7 +433,7 @@
 				$this->opo_result_context->setParameter('last_export_type', $ps_output_type);
 				$this->opo_result_context->saveContext();
 			}
-				
+		
 			caExportResult($this->request, $po_result, $ps_template, $ps_output_filename, ['criteriaSummary' => $ps_criteria_summary]);
 		}
 		# ------------------------------------------------------------------

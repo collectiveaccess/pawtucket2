@@ -47,7 +47,7 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_collections.abstract"><br/><p>^ca_collections.abstract</p></ifdef>}}}
+					{{{<ifdef code="ca_collections.description"><br/><p>^ca_collections.description</p></ifdef>}}}
 					{{{<ifdef code="ca_collections.preferCite"><H6>Preferred Citation</H6>^ca_collections.preferCite</ifdef>}}}
 					
 					{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}

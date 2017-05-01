@@ -22,6 +22,7 @@ H1, h1{
 body{
 	background-color: #DEDFE0;
 	color:#4d4d4d;
+	margin-bottom:0px;
 }
 #pageArea, .container{
 	background-color:#FFFFFF;
@@ -54,8 +55,20 @@ header .headerSubTitle{
 	
 	}
 }
-a{
+a, a:hover{
 	color: #0685bf;
+}
+.btn-default, .btn-default a, .browse .btn, .sets .btn{
+	background-color: #0685bf;
+	color:#FFF !important;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
+    background-color: #0685bf !important;
+    color:#FFF !important;
+}
+ul.dropdown-menu a.browseMenuBrowseAll, ul.dropdown-menu a.browseMenuBrowseAll .glyphicon{
+	background-color: #0685bf;
+	color:#FFF !important;
 }
 
 /*
@@ -190,6 +203,9 @@ ul.dropdown-menu a{
 	margin-left:20px !important;
 }
 /* browse nav panel */
+.browseHeadernav.active  a{
+	color:#FFF !important;
+}
 .filterMenuFacetList li a:hover, .filterMenuFacetList li a, .filterMenuFacetList li a:focus, .filterMenuFacetList li a:visited{
 	background-color:#FFFFFF !important;
 	color: #4d4d4d !important;
@@ -204,9 +220,9 @@ ul.dropdown-menu a{
 	padding-top:0px !important;
 	padding-bottom:0px !important;
 }
-#browse-menu .glyphicon{
+/*#browse-menu .glyphicon{
 	color:#666;
-}
+}*/
 .filterMenuFacetList li.active a{
 	color:#FFFFFF !important;
 }
@@ -216,6 +232,8 @@ ul.dropdown-menu a{
 	margin-bottom:0px;
 	border:0px;
 	background-color:#663190;
+	position:relative;
+	height:auto;
 }
 #footer .container{
 	padding-bottom:5px;
@@ -410,4 +428,60 @@ ul.dropdown-menu a{
     -ms-hyphens: none;
     hyphens: none;
     word-wrap: normal;
+}
+
+/* TIME LINE */
+.tl-slide-content{
+	padding-right:0px !important;
+}
+#bTimelineContainer .tl-slidenav-icon, #bTimelineContainer .tl-slidenav-icon a{
+	font-family:tl-icons !important;
+}
+.tl-text h2.tl-headline {
+    font-size: 14px !important;
+    line-height: 1.1em !important;
+}
+.tl-timeline p {
+    font-size: 12px !important;
+}
+.lbSet h5{
+	height:1.2em;
+}
+
+/* lightbox presentation */
+.reveal H1{
+	font-family: 'Rokkitt', serif !important;
+	font-style: normal;
+	font-weight: 400;
+	color:#fff;
+}
+.reveal H2, .reveal H3, .reveal H4, .reveal a{
+	font-family: 'Lato', sans-serif !important;
+	font-style: normal;
+	font-weight: 400;
+	color:#FFF;
+}
+.reveal H1{
+	font-size:16px;
+	text-shadow:none;
+	margin:0px;
+	padding-bottom:5px;
+}
+.reveal H2{
+	font-size:16px;
+	text-transform:none;
+	margin:0px;
+}
+.reveal H3{
+	font-size:12px;
+	text-transform:none;
+	margin:0px;
+	padding-bottom:5px;
+}
+.reveal a{
+	color:#FFFFFF !important;
+	text-decoration:underline !important;
+}
+.reveal a img{
+	border:0px;
 }

@@ -31,6 +31,10 @@
  * @pageSize letter
  * @pageOrientation portrait
  * @tables ca_objects
+ * @marginTop 0.75in
+ * @marginLeft 0.5in
+ * @marginRight 0.5in
+ * @marginBottom 0.75in
  *
  * ----------------------------------------------------------------------
  */
@@ -42,6 +46,7 @@
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
 	print $this->render("footer.php");	
+
 ?>
 	<div class="title">
 		<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
@@ -63,7 +68,10 @@
 	}
 ?>
 	</div>
-		
-	{{{<unit relativeTo='ca_entities' restrictToRelationshipTypes='artist'>Artist: ^ca_entities.preferred_labels.displayname</unit>}}}
+	<div class='tombstone'>
+		{{{<ifdef code="ca_objects.idno"><div class='unit'><h6>Identifier</h6>^ca_objects.idno</div></ifdef>}}}
+		{{{<ifcount min="1" code="ca_objects.dates.dates_value"><div class='unit'><h6>Date</h6><unit delimiter="<br/>">^ca_objects.dates.dates_value</unit></div></ifcount>}}}
+		{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes='artist'><div class='unit'><h6>Artist</h6><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist'>^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
+	</div>
 <?php	
 	print $this->render("pdfEnd.php");

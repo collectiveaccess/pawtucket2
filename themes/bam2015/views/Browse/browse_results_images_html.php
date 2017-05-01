@@ -171,6 +171,7 @@
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
+				$vb_show_copyright_caption = false;
 				if ($vs_table == 'ca_objects') {
 					$t_list_item->load($qr_res->get("type_id"));
 					$vs_typecode = $t_list_item->get("idno");
@@ -181,6 +182,7 @@
 						}else{
 							$vs_thumbnail = $vs_default_placeholder_tag;
 						}
+						$vb_show_copyright_caption = true;
 					}
 					
 					if(!$this->request->getParameter("openResultsInOverlay", pInteger)){
@@ -238,7 +240,7 @@
 		<div class='col-xs-12 col-sm-".(($this->request->getParameter("openResultsInOverlay", pInteger) || $this->request->getParameter("homePage", pInteger)) ? "3" : "4")."'>
 			<div class='bBAMResultItem'>
 				<div class='bSetsSelectMultiple bSetsSelectMultipleCheckbox'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-				<div class='bBAMResultItemImgContainer' ><div class='bBAMResultItemImg' ><span style='position:relative;display:inline-block;'>{$vs_add_to_set_link}{$vs_rep_detail_link}</span></div></div>
+				<div class='bBAMResultItemImgContainer' ".($vb_show_copyright_caption ? "title='Copyright restricted, please contact archive'" : "")."><div class='bBAMResultItemImg' ><span style='position:relative;display:inline-block;'>{$vs_add_to_set_link}{$vs_rep_detail_link}</span></div></div>
 				<div class='bBAMResultItemText'>
 					<div class='bBAMIcon'>{$vs_type_placeholder}</div>
 					".$vs_caption_detail_link."
@@ -249,7 +251,7 @@
 				$vn_c++;
 			}
 			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => (int)$this->request->getParameter("openResultsInOverlay", pInteger), 'homePage' => (int)$this->request->getParameter("homePage", pInteger)));
+			print "<div style='clear:both;'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => (int)$this->request->getParameter("openResultsInOverlay", pInteger), 'homePage' => (int)$this->request->getParameter("homePage", pInteger)));
 		}
 ?>
 <script type="text/javascript">

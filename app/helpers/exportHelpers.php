@@ -38,9 +38,8 @@
    
 	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel.php');
 	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel/IOFactory.php');
-	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPPowerPoint/Autoloader.php');
-   
-	\PhpOffice\PhpPowerpoint\Autoloader::register();
+	
+	\PhpOffice\PhpPresentation\Autoloader::register();
 	
    # ----------------------------------------
 	/**
@@ -347,7 +346,7 @@
 				exit;
 				break;
 			case 'pptx':
-				$ppt = new PhpOffice\PhpPowerpoint\PhpPowerpoint();
+				$ppt = new PhpOffice\PhpPresentation\PhpPresentation();
 
 				$vn_slide = 0;
 				while($po_result->nextHit()) {
@@ -386,14 +385,14 @@
 						} elseif ($vs_display_text = html_entity_decode(strip_tags(br2nl($po_result->getWithTemplate($va_settings['template']))))) {
 							switch($vs_align = caGetOption('align', $va_settings, 'center')) {
 								case 'center':
-									$vs_align = \PhpOffice\PhpPowerpoint\Style\Alignment::HORIZONTAL_CENTER;
+									$vs_align = \PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_CENTER;
 									break;
 								case 'left':
-									$vs_align = \PhpOffice\PhpPowerpoint\Style\Alignment::HORIZONTAL_LEFT;
+									$vs_align = \PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_LEFT;
 									break;
 								case 'right':
 								default:
-									$vs_align = \PhpOffice\PhpPowerpoint\Style\Alignment::HORIZONTAL_RIGHT;
+									$vs_align = \PhpOffice\PhpPresentation\Style\Alignment::HORIZONTAL_RIGHT;
 									break;
 							}
 			
@@ -406,7 +405,7 @@
 							$textRun = $shape->createTextRun($vs_display_text);
 							$textRun->getFont()->setBold((bool)caGetOption('bold', $va_settings, false))
 											   ->setSize(caConvertMeasurementToPoints(caGetOption('size', $va_settings, '36px'), array('dpi' => 96)))
-											   ->setColor( new \PhpOffice\PhpPowerpoint\Style\Color( caGetOption('color', $va_settings, 'cccccc') ) );
+											   ->setColor( new \PhpOffice\PhpPresentation\Style\Color( caGetOption('color', $va_settings, 'cccccc') ) );
 						}
 
 					}
@@ -418,7 +417,7 @@
 				header('Content-type: application/vnd.openxmlformats-officedocument.presentationml.presentation');
 				header('Content-Disposition:inline;filename=Export.pptx ');
 				
-				$o_writer = \PhpOffice\PhpPowerpoint\IOFactory::createWriter($ppt, 'PowerPoint2007');
+				$o_writer = \PhpOffice\PhpPresentation\IOFactory::createWriter($ppt, 'PowerPoint2007');
 				$o_writer->save('php://output');
 				return;
 				break;
@@ -506,7 +505,7 @@
 
 			$o_pdf->setPage(caGetOption('pageSize', $pa_template_info, 'letter'), caGetOption('pageOrientation', $pa_template_info, 'portrait'), caGetOption('marginTop', $pa_template_info, '0mm'), caGetOption('marginRight', $pa_template_info, '0mm'), caGetOption('marginBottom', $pa_template_info, '0mm'), caGetOption('marginLeft', $pa_template_info, '0mm'));
 		
-			$ps_output_filename = ($ps_output_filename) ? preg_replace('![^A-Za-z0-9_\-]+!', '_', $ps_output_filename) : 'export';
+			$ps_output_filename = ($ps_output_filename) ? preg_replace('![^A-Za-z0-9_\-\.]+!', '_', $ps_output_filename) : 'export';
 
 			$o_pdf->render($ps_content, array('stream'=> true, 'filename' => $ps_output_filename));
 
@@ -517,5 +516,38 @@
 		}
 		
 		return $vb_printed_properly;
+	}
+	# ----------------------------------------
+	/**
+	 * Generate name for downloadable file. Can take a display template evaluated relative to a provided model instance, a template
+	 * evaluated with an array of tag values or static text. (Note: for compatibility reasons if the static text "label" is passed and
+	 * a model instance is passed in the 't_subject' option then the preferred label of the instance will be returned).
+	 *
+	 * The returned value will have all non-alphanumeric characters replaced with underscores, ready for use as a download file name.
+	 *
+	 * @param string $ps_template A display template or static text used to generate the file name.
+	 * @param array $pa_options Options include:
+	 * 		t_subject = a model instance to evaluate the filename template relative to. [Default is null]
+	 *		values = an array of values, where keys are tag names in the filename template. [Default is null]
+	 *
+	 * Note that if neither the t_subject or values options are set the template will be evaluated as static text.
+	 *
+	 * @return string
+	 */
+	function caGenerateDownloadFileName($ps_template, $pa_options=null) {
+		$pt_subject = caGetOption('t_subject', $pa_options, null);
+		if ((strpos($ps_template, "^") !== false) && ($pt_subject)) {
+			return caProcessTemplateForIDs($ps_template, $pt_subject->tableName(), [$pt_subject->getPrimaryKey()], $pa_options);
+		} elseif ((strpos($ps_template, "^") !== false) && is_array($va_values = caGetOption('values', $pa_options, null))) {
+			return caProcessTemplate($ps_template, $va_values, $pa_options);
+		}
+		
+		switch(strtolower($ps_template)) {
+			case 'label':
+				return $pt_subject ? $pt_subject->getLabelForDisplay() : "export";
+				break;
+		}
+		
+		return $ps_template;
 	}
 	# ----------------------------------------

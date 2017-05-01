@@ -52,6 +52,13 @@ i.trefoilPlaceholder.smallPlaceholder{
     border: 0px;
     padding-top: 40px
 }
+.bResultListItemImg .bResultItemImgPlaceholder{
+	padding:0px 5px 0px 0px;
+}
+.bResultListItemImg i.trefoilPlaceholder.smallPlaceholder {
+    width: 75px;
+    height: 72px;
+}
 .detail .detailMediaPlaceholder {
     padding-top: 75px;
     padding-bottom: 75px;
@@ -173,6 +180,10 @@ h1 {
 .dropdown-menu > .active > a,
 .dropdown-menu > .active > a:hover,
 .dropdown-menu > .active > a:focus {
+  background-color: #009447 !important;
+  color:#FFFFFF;
+}
+.navbar-default .navbar-nav > .open > a {
   background-color: #009447 !important;
   color:#FFFFFF;
 }
@@ -426,4 +437,17 @@ a.readmore-js-toggle{
 /* About */
 address{
 	font-size:13px;
+}
+
+/* timeline */
+h2.tl-headline a, h2.tl-headline {
+	color:#00AE58 !important;
+	font-size:14px !important;
+	line-height:1.1em !important;
+}
+h2.tl-headline {
+	color:#000 !important;
+}
+.tl-text-content{
+	font-size:12px !important;
 }
