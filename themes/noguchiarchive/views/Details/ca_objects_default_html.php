@@ -52,34 +52,73 @@
 				{{{representationViewer}}}
 				
 <?php
-				if ($va_image_credit = $t_object->get('ca_objects.image_credit_line')) {
-					print "<div>Credit: ".$va_image_credit."</div>";
-				}
-
 				print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-4")); 
-			
+				if ($this->getVar("representationViewer")) {
+					print "<hr>";
+				}
 ?>
-				<hr>
-				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
+				
+				<div class='relatedInfo'>
+<?php
+				$va_entities_array = array();
+				if ($va_entities = $t_object->get('ca_entities', array('returnWithStructure' => true))) {
+					foreach ($va_entities as $va_key => $va_entity) {
+						$va_entities_array[$va_entity['relationship_typename']][] = caNavLink($this->request, $va_entity['displayname'], '', '', 'Detail', 'entities/'.$va_entity['entity_id']);
+					}
+				}
+				foreach ($va_entities_array as $va_typename => $va_entity_list) {
+					print "<h6>".ucfirst($va_typename)."</h6>";
+					foreach ($va_entity_list as $va_key => $va_entity_link) {
+						print "<p>".$va_entity_link."</p>";
+					}
+				}
+				if ($va_exhibitions = $t_object->get('ca_occurrences.occurrence_id', array('restrictToTypes' => array('exhibition'), 'returnAsArray' => true))) {
+					print "<h6>Related Exhibitions</h6>";
+					foreach ($va_exhibitions as $va_key => $va_exhibition) {
+						$t_exhibition = new ca_occurrences($va_exhibition);
+						print "<div class='related'>";
+						$vs_exibition = null;
+						$vs_exibition.= "<p>".$t_exhibition->get('ca_occurrences.preferred_labels')."</p>";
+						if ($vs_date = $t_exhibition->get('ca_occurrences.date.display_date')) {
+							$vs_exibition.= "<p>".$vs_date."</p>";
+						} elseif($vs_date = $t_exhibition->get('ca_occurrences.date.parsed_date')) {
+							$vs_exibition.= "<p>".$vs_date."</p>";
+						}
+						print caNavLink($this->request, $vs_exibition, '', '', 'Detail', 'occurrences/'.$va_exhibition);
+						print "</div>";
+					}
+				}
+				if ($va_bibliographies = $t_object->get('ca_occurrences.occurrence_id', array('restrictToTypes' => array('bibliography'), 'returnAsArray' => true))) {
+					print "<h6>Related Bibliography</h6>";
+					foreach ($va_bibliographies as $va_key => $va_bibliography) {
+						$t_bibliography = new ca_occurrences($va_bibliography);
+						print "<div class='related'>";
+						$vs_bibliography = null;
+						$vs_bib_info = array();
+						$vs_bibliography.= "<p>".$t_bibliography->get('ca_occurrences.preferred_labels')."</p>";
+						if ($vs_author = $t_bibliography->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))) {
+							$vs_bib_info[] = $vs_author;  
+						}
+						if ($vs_place = $t_bibliography->get('ca_occurrences.bib_place_published')) {
+							$vs_bib_info[] = $vs_place;
+						}
+						if ($vs_date = $t_bibliography->get('ca_occurrences.bib_year_published')) {
+							$vs_bib_info[] = $vs_date;
+						}
+						$vs_bibliography.= join(', ', $vs_bib_info);
+						print caNavLink($this->request, $vs_bibliography, '', '', 'Detail', 'occurrences/'.$va_bibliography);
+						print "</div>";
+					}
+				}				
+?>
+				</div>
 
-				{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1" max="1"><H6>Related exhibition</H6></ifcount>}}}
-				{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="2"><H6>Related exhibitions</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="exhibition"><l>^ca_occurrences.preferred_labels</l></unit>}}}
-
-				{{{<ifcount code="ca_occurrences" restrictToTypes="bibliography" min="1" max="1"><H6>Related bibliography</H6></ifcount>}}}
-				{{{<ifcount code="ca_occurrences" restrictToTypes="bibliography" min="2"><H6>Related bibliography</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="bibliography"><l>^ca_occurrences.preferred_labels</l></unit>}}}
-										
+						
 				{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 				{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
 				
-				{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
-				{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter="<br/>"><unit relativeTo="ca_list_items"><l>^ca_list_items.preferred_labels.name_plural</l></unit></unit>}}}
-				
+
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
@@ -137,7 +176,10 @@
 				}
 				if ($va_image_id = $t_object->get('ca_objects.image_id', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Image Identifier</h6>".$va_image_id."</div>";
-				}					
+				}
+				if ($va_image_credit = $t_object->get('ca_objects.image_credit_line')) {
+					print "<div>Credit: ".$va_image_credit."</div>";
+				}									
 				if ($va_published = $t_object->get('ca_objects.published_on_text', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Published On</h6>".$va_published."</div>";
 				}
@@ -148,28 +190,36 @@
 					print "<div class='unit'><h6>Status</h6>".$va_status."</div>";
 				}
 																																																	
-?>				
-				<hr></hr>
-					<div class="row">
-						<div class="col-sm-12">	
+?>	
+				{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Keyword</H6></ifcount>}}}
+				{{{<ifcount code="ca_list_items" min="2"><H6>Keywords</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter=", "><unit relativeTo="ca_list_items"><l>^ca_list_items.preferred_labels.name_plural</l></unit></unit>}}}
+							
+				
+				<div class="row">
+					<div class="col-sm-12">	
 <?php							
-						if ($va_related_objects = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
-							print "<div class='unit relatedObjects'><h6>Related Objects</h6><div class='row'>";
-							$vn_i = 0;
-							foreach ($va_related_objects as $va_key => $va_related_object) {
-								$t_rel = new ca_objects($va_related_object);
-								print "<div class='col-sm-4'><span class='relatedObj' data-toggle='popover' data-trigger='hover' data-content='".$t_rel->get('ca_objects.preferred_labels').", ".$t_rel->get('ca_objects.date.display_date')."'>".caNavLink($this->request, $t_rel->get('ca_object_representations.media.icon'), '', '', 'Detail', 'objects/'.$va_related_object)."</span></div>";
+					if ($va_related_objects = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+						print "<hr></hr>";
+						print "<div class='unit relatedObjects'><h6>Related Objects</h6><div class='row'>";
+						$vn_i = 0;
+						foreach ($va_related_objects as $va_key => $va_related_object) {
+							$t_rel = new ca_objects($va_related_object);
+							if ($t_rel->get('ca_object_representations.media.icon', array('checkAccess' => $va_access_values))) {
+								print "<div class='col-sm-4 relatedObj'><span class='relatedObj' data-toggle='popover' data-trigger='hover' data-content='".$t_rel->get('ca_objects.preferred_labels').", ".$t_rel->get('ca_objects.date.display_date')."'>".caNavLink($this->request, $t_rel->get('ca_object_representations.media.icon'), '', '', 'Detail', 'objects/'.$va_related_object)."</span></div>";
 								$vn_i++;
 								if ($vn_i == 3) {
 									print "<div class='clearfix'></div>";
 									$vn_i = 0;
-								}
+								}								
 							}
-							print "</div></div>";
+
 						}
+						print "</div></div>";
+					}
 ?>					
-						</div><!-- end col -->				
-					</div><!-- end row -->
+					</div><!-- end col -->				
+				</div><!-- end row -->
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
