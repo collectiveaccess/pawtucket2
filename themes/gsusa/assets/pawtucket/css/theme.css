@@ -22,7 +22,7 @@ body {
 	width:100%;
 	clear:both;
 }
-.btn-default, .browse .btn, .sets .btn{
+.btn-default, .btn-default:hover, .browse .btn, .sets .btn{
 	background-color:#009447;
 }
 .black{
