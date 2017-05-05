@@ -355,7 +355,7 @@
 						}	
 						if ($va_series = $t_object->get('ca_objects.MARC_series')) {
 							$va_series_and_volume = explode('; ', $va_series);
-							print "<div class='unit'><h8>Series</h8>".caNavLink($this->request, $va_series_and_volume[0], '', '', 'Search', 'library', array('search' => "'".$va_series_and_volume[0]."'")).( $va_series_and_volume[1] ? "; ".$va_series_and_volume[1] : "")."</div>";
+							print "<div class='unit'><h8>Series</h8>".caNavLink($this->request, $va_series_and_volume[0], '', '', 'Search', 'library', array('search' => "ca_objects.MARC_series:'".$va_series_and_volume[0]."'")).( $va_series_and_volume[1] ? "; ".$va_series_and_volume[1] : "")."</div>";
 						}
 						if ($va_dc_note = $t_object->get('ca_objects.MARC_generalNote')) {
 							print "<div class='unit trimText'><h8>Notes</h8>".$va_dc_note."</div>";
@@ -403,7 +403,7 @@
 							print "<div class='unit'><h8>Object ID</h8>".$va_alt_id."</div>";
 						}
 						if ($vs_type == "Archival Item") {
-							if ($va_idno = $t_object->get('ca_objects.idno')) {
+							if ($va_idno = $t_object->get('ca_objects.objectIdno')) {
 								print "<div class='unit'><h8>Identifier</h8>".$va_idno."</div>";
 							}						
 							if ($va_creator_archives = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => ', ', 'returnAsLink' => true))) {
@@ -571,7 +571,7 @@
 			#Entities
 			$vs_related_entities = "";
 			$va_ents_by_type = array();
-			if ($va_related_entities = $t_object->get('ca_entities', array('checkAccess' => $va_access_values, 'returnWithStructure' => true))) {
+			if ($va_related_entities = $t_object->get('ca_entities', array('checkAccess' => $va_access_values, 'returnWithStructure' => true, 'excludeRelationshipTypes' => array('donor')))) {
 				foreach ($va_related_entities as $va_key => $va_related_entity) {
 					$va_ents_by_type[$va_related_entity['item_type_id']][$va_related_entity['entity_id']] = "<div class='col-sm-4'><div class='entityThumb'><p>".caNavLink($this->request, $va_related_entity['label'], '', '', 'Detail', 'entities/'.$va_related_entity['entity_id'])." (".$va_related_entity['relationship_typename'].")</p></div></div>";
 				}
