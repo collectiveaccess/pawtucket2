@@ -82,12 +82,7 @@
 			>Funding Note:</span><br/>
 			{{{ca_objects.funding_note%width=300px&height=1}}}
 		</div>	
-		<div class="advancedSearchField">
-			<span 
-				data-toggle="popover" data-trigger="hover" data-content="Limit searching to archival records that have digital images."
-			>Digital Content:</span><br/>
-			{{{ca_object_representations.media%width=300px&height=1&render=is_set}}}
-		</div>
+		
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Limit searching to born-digital archival records."
