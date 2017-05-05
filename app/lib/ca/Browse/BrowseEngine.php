@@ -971,6 +971,7 @@
 		 *		limitToModifiedOn = if set returned results will be limited to rows modified within the specified date range. The value should be a date/time expression parse-able by TimeExpressionParser
 		 *		user_id = If set item level access control is performed relative to specified user_id, otherwise defaults to logged in user
 		 *		expandResultsHierarchically = expand result set items that are hierarchy roots to include their entire hierarchy. [Default is false]
+		 *		rootRecordsOnly = only return records that are the root of whatever hierarchy they are in. [Default is false]
 		 *
 		 * @return bool True on success, null if the browse could not be executed (Eg. no settings), false no error
 		 */
@@ -1731,6 +1732,8 @@
 											$t_loc = new ca_storage_locations();
 											
 											if (!is_array($va_loc_ids = $t_loc->getHierarchy($va_row_tmp[2], ['returnAsArray' => true, 'includeSelf' => true, 'idsOnly' => true])) || !sizeof($va_loc_ids)) { continue; }
+											
+											array_pop($va_row_tmp);
 											$va_row_tmp[] = array_values($va_loc_ids);
 											
 											$vs_sql = "
@@ -2058,6 +2061,10 @@
 						if ((!isset($pa_options['showDeleted']) || !$pa_options['showDeleted']) && $t_item->hasField('deleted')) {
 							$va_wheres[] = "(".$this->ops_browse_table_name.".deleted = 0)";
 						}
+						
+						if ((isset($pa_options['rootRecordsOnly']) && $pa_options['rootRecordsOnly']) && $t_item->hasField('parent_id')) {
+							$va_wheres[] = "(".$this->ops_browse_table_name.".parent_id IS NULL)";
+						}
 
 						if ((isset($pa_options['limitToModifiedOn']) && $pa_options['limitToModifiedOn'])) {
 							$o_tep = new TimeExpressionParser();
@@ -2104,7 +2111,7 @@
 							$va_results = $this->filterHitsByACL($va_results, $this->opn_browse_table_num, $vn_user_id, __CA_ACL_READONLY_ACCESS__);
 						}
 
-						$this->opo_ca_browse_cache->setResults($va_results);
+						$this->opo_ca_browse_cache->setResults(array_values($va_results));
 						$vb_need_to_save_in_cache = true;
 					} else {
 						// No results for some reason - we're here because we don't want to throw a SQL error
@@ -2129,6 +2136,9 @@
 
 					if ((!isset($pa_options['showDeleted']) || !$pa_options['showDeleted']) && $t_item->hasField('deleted')) {
 						$va_wheres[] = "(".$this->ops_browse_table_name.".deleted = 0)";
+					}
+					if ((isset($pa_options['rootRecordsOnly']) && $pa_options['rootRecordsOnly']) && $t_item->hasField('parent_id')) {
+						$va_wheres[] = "(".$this->ops_browse_table_name.".parent_id IS NULL)";
 					}
 
 					if ((isset($pa_options['limitToModifiedOn']) && $pa_options['limitToModifiedOn'])) {
@@ -3212,7 +3222,7 @@
 											
 											$va_facet_list[$vn_ancestor_id] = array(
 												'id' => $vn_ancestor_id,
-												'label' => ($vs_label = $qr_ancestors->get('ca_list_items.preferred_labels.name_plural')) ? $vs_label : _t('[BLANK]'),
+												'label' => ($vs_label = $qr_ancestors->get('ca_list_items.preferred_labels.name_plural')) ? $vs_label : '['._t('BLANK').']',
 												'parent_id' => $vn_parent_id,
 												'hierarchy_id' => $qr_ancestors->get('list_id'),
 												'child_count' => 1
