@@ -106,6 +106,11 @@
 					$vn_c++;
 				}
 				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => $vs_version, 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images_1 = array();
+				# --- default to any related image if the configured relationship type is not available
+				if($vs_other_rel_type = caGetOption('selectMediaUsingRelationshipTypes2', $va_options, null)){
+					$va_images_1 = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => $vs_version, 'relationshipTypes' => $vs_other_rel_type, 'checkAccess' => $va_access_values));	
+				}
 				$va_images_2 = array();
 				# --- default to any related image if the configured relationship type is not available
 				if(caGetOption('selectMediaUsingRelationshipTypes', $va_options, null)){
@@ -166,6 +171,7 @@
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
+				$vb_show_copyright_caption = false;
 				if ($vs_table == 'ca_objects') {
 					$t_list_item->load($qr_res->get("type_id"));
 					$vs_typecode = $t_list_item->get("idno");
@@ -176,6 +182,7 @@
 						}else{
 							$vs_thumbnail = $vs_default_placeholder_tag;
 						}
+						$vb_show_copyright_caption = true;
 					}
 					
 					if(!$this->request->getParameter("openResultsInOverlay", pInteger)){
@@ -198,9 +205,11 @@
 						$vs_add_to_set_link = "<div class='bBAMResultLB'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$vs_ligthbox_icon."</a></div>";
 					}				
 				} else {
-					if($va_images[$vn_id] || $va_images_2[$vn_id]){
+					if($va_images[$vn_id] || $va_images_2[$vn_id] || $va_images_1[$vn_id]){
 						if($va_images[$vn_id]){
 							$vs_thumbnail = $va_images[$vn_id];
+						}elseif($va_images_1[$vn_id]){
+							$vs_thumbnail = $va_images_1[$vn_id];
 						}else{
 							$vs_thumbnail = $va_images_2[$vn_id];
 						}
@@ -231,7 +240,7 @@
 		<div class='col-xs-12 col-sm-".(($this->request->getParameter("openResultsInOverlay", pInteger) || $this->request->getParameter("homePage", pInteger)) ? "3" : "4")."'>
 			<div class='bBAMResultItem'>
 				<div class='bSetsSelectMultiple bSetsSelectMultipleCheckbox'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-				<div class='bBAMResultItemImgContainer' ><div class='bBAMResultItemImg' ><span style='position:relative;display:inline-block;'>{$vs_add_to_set_link}{$vs_rep_detail_link}</span></div></div>
+				<div class='bBAMResultItemImgContainer' ".($vb_show_copyright_caption ? "title='Copyright restricted, please contact archive'" : "")."><div class='bBAMResultItemImg' ><span style='position:relative;display:inline-block;'>{$vs_add_to_set_link}{$vs_rep_detail_link}</span></div></div>
 				<div class='bBAMResultItemText'>
 					<div class='bBAMIcon'>{$vs_type_placeholder}</div>
 					".$vs_caption_detail_link."
@@ -242,7 +251,7 @@
 				$vn_c++;
 			}
 			
-			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => (int)$this->request->getParameter("openResultsInOverlay", pInteger), 'homePage' => (int)$this->request->getParameter("homePage", pInteger)));
+			print "<div style='clear:both;'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'openResultsInOverlay' => (int)$this->request->getParameter("openResultsInOverlay", pInteger), 'homePage' => (int)$this->request->getParameter("homePage", pInteger)));
 		}
 ?>
 <script type="text/javascript">

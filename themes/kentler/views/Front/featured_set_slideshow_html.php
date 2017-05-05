@@ -42,7 +42,7 @@
 			$va_current_exhibition_info["name"][] = $qr_current_exhibitions->getWithTemplate("<l>^ca_occurrences.preferred_labels.name</l>");
 			$va_reps = $t_exhibit->getRepresentations(array("large"), null, array("restrictToTypes" => array("installation", "artwork"), "checkAccess" => $va_access_values));
 			foreach($va_reps as $va_rep){
-				$va_current_exhibition_info["images"][]	= $va_rep["tags"]["large"];
+				$va_current_exhibition_info["images"][]	= caDetailLink($this->request, $va_rep["tags"]["large"], '', 'ca_occurrences', $qr_current_exhibitions->get("occurrence_id"));
 			}
 		}
 	}

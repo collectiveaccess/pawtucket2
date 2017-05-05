@@ -165,10 +165,10 @@ class ca_user_representation_annotations_x_vocabulary_terms extends BaseRelation
 	# Change logging
 	# ------------------------------------------------------
 	protected $UNIT_ID_FIELD = null;
-	protected $LOG_CHANGES_TO_SELF = false;
+	protected $LOG_CHANGES_TO_SELF = true;
 	protected $LOG_CHANGES_USING_AS_SUBJECT = array(
 		"FOREIGN_KEYS" => array(
-			'annotation_id'
+			'annotation_id', 'item_id'
 		),
 		"RELATED_TABLES" => array(
 		

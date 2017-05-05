@@ -37,9 +37,12 @@
 		<div class="col-xs-12 col-sm-4 col-md-5">
 			<h2>For Researchers</h2>
 			
-				<p>Researchers can digitally access information from much of the collection housed in the BAM Hamm Archives. All known performances dating from the institution’s founding in 1861 have been catalogued, and all existing playbills have been scanned. These provide detailed information about individual performances, including dates of performance, genre, cast lists, companies, production credits, and BAM venue.</p>
-				<p>The digital archive also allows researchers to track relationships and connections, for instance multiple appearances by individuals or companies, or multiple performances of specific works. It includes narrative text about iconic artists, productions, series, and BAM history, providing a frame of reference for the performances, and a sense of historical context. Researchers can also access images related to BAM and its performances, for instance photographs and posters.</p>
-				<p>For a list of all collections, see "Browse Archival Collections."</p>
+				<p>
+					Researchers can access: All known performances dating from the institution's founding in 1861 and all existing playbills, which provide detailed information about individual performances.
+				</p>
+				<p>
+					For a list of all collections, see <?php print caNavLink($this->request, 'Browse Archival Collections', '', '', 'Collections', 'Index'); ?>.
+				</p>
 			
 			</div><!-- end col -->
 	</div><!-- end row -->

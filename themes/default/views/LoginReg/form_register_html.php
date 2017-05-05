@@ -1,6 +1,14 @@
 <?php
 	$va_errors = $this->getVar("errors");
 	$t_user = $this->getVar("t_user");
+	$co_security = $this->request->config->get('registration_security');
+	if($co_security == 'captcha'){
+		if(strlen($this->request->config->get('google_recaptcha_sitekey')) != 40 || strlen($this->request->config->get('google_recaptcha_secretkey')) != 40){
+			//Then the captcha will not work and should not be implemenented. Alert the user in the console
+			print "<script>console.log('reCaptcha disabled, please provide a valid site_key and secret_key to enable it.');</script>";
+			$co_security = 'equation_sum';
+		}
+	}
 	if($this->request->isAjax()){
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
@@ -12,6 +20,17 @@
 	caUI.initUtils();
 
 </script>
+<?php
+	if($co_security == 'captcha'){
+?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+                grecaptcha.render('regCaptcha', {'sitekey': '<?php print $this->request->config->get('google_recaptcha_sitekey'); ?>'});
+        	};
+		</script>
+<?php
+	}
+?>
 	<form id="RegForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
 	<div class="row"><div class="col-sm-4"><H1><?php print _t("Register"); ?></H1></div></div>
 <?php
@@ -35,25 +54,34 @@
 				print "</div><!-- end form-group -->";
 			}
 		}
-		if($va_errors["security"]){
-			print "<div class='alert alert-danger'>".$va_errors["security"]."</div>";
-		}
-		$vn_num1 = rand(1,10);
-		$vn_num2 = rand(1,10);
-		$vn_sum = $vn_num1 + $vn_num2;
+		if($co_security == 'captcha'){
 ?>
-		<div class='form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>'>
-			<label for='security' class='col-sm-4 control-label'><?php print _t("Security Question"); ?></label>
-			<div class='col-sm-7'>
-				<div class='col-sm-5'>
-					<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
-				</div>
-				<div class='col-sm-5'>
-					<input name="security" value="" id="security" type="text" class="form-control" />
-				</div>
-			</div><!-- end col-sm-7 -->
-		</div><!-- end form-group -->
+			<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+        		<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
+        	</div>
+<?php		
+		} else {
+			if($va_errors["security"]){
+				print "<div class='alert alert-danger'>".$va_errors["security"]."</div>";
+			}
+			$vn_num1 = rand(1,10);
+			$vn_num2 = rand(1,10);
+			$vn_sum = $vn_num1 + $vn_num2;
+	?>
+			<div class='form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>'>
+				<label for='security' class='col-sm-4 control-label'><?php print _t("Security Question"); ?></label>
+				<div class='col-sm-7'>
+					<div class='col-sm-5'>
+						<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
+					</div>
+					<div class='col-sm-5'>
+						<input name="security" value="" id="security" type="text" class="form-control" />
+					</div>
+				</div><!-- end col-sm-7 -->
+			</div><!-- end form-group -->
+		
 <?php
+		}
 		if($va_errors["password"]){
 			print "<div class='alert alert-danger'>".$va_errors["password"]."</div>";
 		}
@@ -87,6 +115,11 @@
 		});
 	});
 </script>
+<?php
+	if($co_security == 'captcha'){
+		print "<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>";
+	}
+?>
 <?php
 	}
 ?>

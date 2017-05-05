@@ -38,6 +38,7 @@
 <html>
 	<head>
 		<title><?php print _t('Summary for %1 (%2)', $t_item->getLabelForDisplay(), $t_item->get($t_item->getProperty('ID_NUMBERING_ID_FIELD'))); ?></title>
-		<link type="text/css" href="pdf.css" rel="stylesheet" />
+		<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+		<meta charset="utf-8" />
 	</head>
 	<body>

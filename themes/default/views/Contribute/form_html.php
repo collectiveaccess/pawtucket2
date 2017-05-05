@@ -29,7 +29,7 @@
 	$t_subject = $this->getVar('t_subject');	
 ?>
 
-<div class="container">
+
 	<div class="row collection">
 		<div class="col-sm-6">	
 			<div class="contributeForm">
@@ -93,4 +93,3 @@
 			</div>
 		</div>
 	</div>
-</div>

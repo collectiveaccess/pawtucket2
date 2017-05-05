@@ -233,6 +233,15 @@ if($vb_search_again){
 			}else{
 				$va_related_ids = $va_related_more;
 			}
+<<<<<<< HEAD
+=======
+		}
+		shuffle($va_related_more);
+		if(is_array($va_related_ids) && sizeof($va_related_ids)){
+			$va_related_ids = array_unique(array_merge($va_related_ids, $va_related_more));
+		}else{
+			$va_related_ids = $va_related_more;
+>>>>>>> 4f5b4a2238c4b5e929aed6692f176b41c49e81d1
 		}
 	}
 }

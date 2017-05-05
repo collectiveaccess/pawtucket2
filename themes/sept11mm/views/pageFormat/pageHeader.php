@@ -134,7 +134,11 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
+<<<<<<< HEAD
 				print "<a href='http://www.911memorial.org/' class='navbar-brand'>".caGetThemeGraphic($this->request, 'logo2.jpg', array('alt' => '911 Memorial'))."</a>";
+=======
+				print "<a href='http://www.911memorial.org/' class='navbar-brand'>".caGetThemeGraphic($this->request, 'logo.png', array('alt' => '911 Memorial'))."</a>";
+>>>>>>> 4f5b4a2238c4b5e929aed6692f176b41c49e81d1
 ?>
 			</div>
 			<div class="collapse navbar-collapse">

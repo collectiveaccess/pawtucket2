@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2014 Whirl-i-Gig
+ * Copyright 2008-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -213,7 +213,7 @@
  			
  			if (strlen($ps_value) && !is_numeric($ps_value)) {
  				// value is not numeric
- 				$vs_err_str = _t('%1 must a number', $pa_element_info['displayLabel']); 
+ 				$vs_err_str = _t('%1 must be a number', $pa_element_info['displayLabel']); 
 				$this->postError(1970, $vs_err_str, 'NumericAttributeValue->parseValue()');
 				return false;
  			}
@@ -223,7 +223,10 @@
 					$this->postError(1970, _t('%1 must not be empty', $pa_element_info['displayLabel']), 'NumericAttributeValue->parseValue()');
 					return false;
 				} else {
-					return null;
+					return array(
+						'value_longtext1' => null,
+						'value_decimal1' => null
+					);
 				}
 			}
  			
