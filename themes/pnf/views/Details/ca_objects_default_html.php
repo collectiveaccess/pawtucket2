@@ -193,9 +193,12 @@
 				if ($vs_added_bookseller = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('bookseller'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Added Entry Bookseller</h6>".$vs_added_bookseller."</div>";
 				}
-				if ($vs_url = $t_object->get('ca_objects.856_url')) {
-					print "<div class='unit'><h6>Permanent Link to URL</h6>".$vs_url."</div>";
-				}																																																																																																																																	
+				if ($vs_url = $t_object->get('ca_objects.856_electronic')) {
+					print "<div class='unit'><h6>Electronic Access</h6><a href='".$vs_url."' target='_blank'>".$vs_url."</a></div>";
+				}	
+				if ($vs_inst_access = $t_object->get('ca_objects.856_url')) {
+					print "<div class='unit'><h6>Permanent link to institution record</h6><a href='".$vs_inst_access."' target='_blank'>".$vs_inst_access."</a></div>";
+				}																																																																																																																																				
 ?>
 
 				

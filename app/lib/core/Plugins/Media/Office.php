@@ -294,7 +294,7 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 	 */
 	private function isWordExcelorPPTdoc($ps_filepath) {
 		// Check Powerpoint
-		//if (in_array(pathinfo(strtolower($ps_filepath), PATHINFO_EXTENSION), ['ppt', 'pptx'])) {
+		if (in_array(pathinfo(strtolower($ps_filepath), PATHINFO_EXTENSION), ['ppt', 'pptx'])) {
 			$va_ppt_types = ['PowerPoint2007' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation', 'PowerPoint97' => 'application/vnd.ms-powerpoint'];
 		
 			foreach ($va_ppt_types as $vs_type => $vs_mimetype) {
@@ -303,7 +303,7 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 					return $vs_mimetype;
 				}
 			}
-		//}
+		}
 		
 		// 2007+ .docx files
 		if (in_array(pathinfo(strtolower($ps_filepath), PATHINFO_EXTENSION), ['doc', 'docx'])) {	// PhpWord often will identify Excel docs as Word (and PHPExcel will identify Word docs as Excel...) so we test file extensions here			
@@ -535,7 +535,7 @@ class WLPlugMediaOffice Extends BaseMediaPlugin Implements IWLPlugMedia {
 			
 				$va_out_file = explode(".", $vs_out_file);
 				if (sizeof($va_out_file) > 1) { array_pop($va_out_file); }
-				$this->handle['content'] = file_exists("{$vs_tmp_dir_path}/".join(".", $va_out_file).".html") ? strip_tags(file_get_contents("{$vs_tmp_dir_path}/".join(".", $va_out_file).".html")) : '';
+				$this->handle['content'] = $this->ohandle['content']  = file_exists("{$vs_tmp_dir_path}/".join(".", $va_out_file).".html") ? strip_tags(file_get_contents("{$vs_tmp_dir_path}/".join(".", $va_out_file).".html")) : '';
 				$va_out_file[] = 'pdf';
 				
 				

@@ -98,6 +98,7 @@
 			$vs_sort = ($this->opo_config->get("landing_page_sort")) ? $this->opo_config->get("landing_page_sort") : "ca_collections.preferred_labels.name";
 			$qr_collections = ca_collections::find(array('type_id' => $vn_collection_type_id), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => $vs_sort));
 			$this->view->setVar("collection_results", $qr_collections);
+			caSetPageCSSClasses(array("collections", "landing"));
  			$this->render("Collections/index_html.php");
  		}
  		# -------------------------------------------------------

@@ -74,13 +74,7 @@
 				data-toggle="popover" data-trigger="hover" data-content="Places associated with an item; including both contemporary geographic locations and historical places, such as camps and ghettos."
 			>Place:</span> <br/>
 			{{{ca_places.preferred_labels%width=300px}}}
-		</div>																				
-		<div class="advancedSearchField">
-			<span 
-				data-toggle="popover" data-trigger="hover" data-content="Limit searching to records with media."
-			>Digital Content:</span><br/> 
-			{{{ca_object_representations.media%width=300px&height=23px&render=is_set}}}
-		</div>
+		</div>	
 															
 		<br style="clear: both;"/>
 	

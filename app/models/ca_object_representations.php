@@ -421,7 +421,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			$va_metadata = $this->get('media_metadata', array('binary' => true));
 			caExtractEmbeddedMetadata($this, $va_metadata, $this->get('locale_id'));
 			
-			$vn_rc = parent::update();
+			$vn_rc = parent::update($pa_options);
 
 			// Trigger automatic replication
 			$va_auto_targets = $this->getAvailableMediaReplicationTargets('media', 'original', array('trigger' => 'auto', 'access' => $this->get('access')));
@@ -1779,8 +1779,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
  	 * @return string HTML output
  	 */
  	public function getRepresentationViewerHTMLBundle($po_request, $pa_options=null, $pa_additional_display_options=null) {
- 		$va_object_ids = $this->get('ca_objects.object_id', ['returnAsArray' => true]);
- 		return array_shift(caRepresentationViewerHTMLBundles($po_request, caMakeSearchResult($this->tableName(), [$this->getPrimaryKey()]), new ca_objects($va_object_ids[0]), array_merge(['noToolBar' => true], $pa_options)));
+ 		return caRepresentationViewerHTMLBundle($this, $po_request, $pa_options, $pa_additional_display_options);
  	}
  	# ------------------------------------------------------
 	/** 

@@ -22,7 +22,7 @@
 
 			{{{<unit><ifdef code="ca_objects.idno"><div style='word-wrap: break-word;'><span class='metaTitle'>Identifier</span><span class='meta'>^ca_objects.idno</span></div></ifdef></unit>}}}
 			{{{<unit><ifdef code="ca_occurrences.workType"><div><span class='metaTitle'>Type: </span><span class='meta'><unit delimiter='; '>^ca_occurrences.workType</unit></span></div></ifdef></unit>}}}
-
+			{{{<unit><ifdef code="ca_objects.technicalNotes"><div><span class='metaTitle'>Technical notes: </span><span class='meta'><unit delimiter='; '>^ca_objects.technicalNotes</unit></span></div></ifdef></unit>}}}
 
 <?php
 			if ($va_essence_track = $t_object->get('ca_objects.essenceTrack', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
@@ -35,7 +35,6 @@
 						if ($va_essence_info['essenceTrackAspectRatio']) {$vs_track.= "<p>Aspect Ratio: ".$va_essence_info['essenceTrackAspectRatio']."</p>";}
 						if (($va_essence_info['essenceTrackDuration'])&&($va_essence_info['essenceTrackDuration'] != "0.0s")) {$vs_track.= "<p>Duration: ".$va_essence_info['essenceTrackDuration']."</p>";}
 						if ($va_essence_info['recorder_model']) {$vs_track.= "<p>Recorder Model: ".$va_essence_info['recorder_model']."</p>";}
-						if ($va_essence_info['technicalNotes']) {$vs_track.= "<p>Technical Notes: ".$va_essence_info['technicalNotes']."</p>";}
 					}
 				}
 				if ($vs_track != "") {

@@ -86,13 +86,6 @@
 			>Subject - People & Organizations: </span><br/>
 			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=subject}}}
 		</div>	
-		<div class="advancedSearchField">
-			<span 
-				data-toggle="popover" data-trigger="hover" data-content="Limit searching to records that have playable media."
-			>Digital Content:</span><br/>
-			{{{ca_object_representations.media%width=300px&height=1&render=is_set}}}
-		</div>
-
 
 																																								
 		<br style="clear: both;"/>

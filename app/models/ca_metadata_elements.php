@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2016 Whirl-i-Gig
+ * Copyright 2008-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -37,6 +37,7 @@
 require_once(__CA_LIB_DIR__.'/ca/ITakesSettings.php');
 require_once(__CA_LIB_DIR__.'/ca/LabelableBaseModelWithAttributes.php');
 require_once(__CA_MODELS_DIR__.'/ca_metadata_type_restrictions.php');
+require_once(__CA_LIB_DIR__."/ca/SyncableBaseModel.php");
 
 
 BaseModel::$s_ca_models_definitions['ca_metadata_elements'] = array(
@@ -134,6 +135,7 @@ BaseModel::$s_ca_models_definitions['ca_metadata_elements'] = array(
 );
 
 class ca_metadata_elements extends LabelableBaseModelWithAttributes implements ITakesSettings {
+	use SyncableBaseModel;
 	# ---------------------------------
 	# --- Object attribute properties
 	# ---------------------------------
@@ -259,6 +261,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 		$this->set('settings', $this->getSettings());
 		if ($vn_rc =  parent::insert($pa_options)) {
 			$this->flushCacheForElement();
+			$this->setGUID($pa_options);
 		}
 		return $vn_rc;
 	}
@@ -271,7 +274,14 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 	# ------------------------------------------------------
 	public function delete($pb_delete_related = false, $pa_options = NULL, $pa_fields = NULL, $pa_table_list = NULL) {
 		$this->flushCacheForElement();
-		return parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list);
+		
+		$vn_primary_key = $this->getPrimaryKey();
+		
+		$vn_rc = parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list);
+		if($vn_primary_key && $vn_rc && caGetOption('hard', $pa_options, false)) {
+			$this->removeGUID($vn_primary_key);
+		}
+		return $vn_rc;
 	}
 	# ------------------------------------------------------
 	/**
@@ -343,7 +353,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 
 		if($pb_use_cache && CompositeCache::contains($pn_element_id, 'ElementSets')) {
 			$va_set = CompositeCache::fetch($pn_element_id, 'ElementSets');
-			//return (caGetOption('idsOnly', $pa_options, false) ?  array_keys($va_set) : $va_set);
+			return (caGetOption('idsOnly', $pa_options, false) ?  caExtractArrayValuesFromArrayOfArrays($va_set, 'element_id') : $va_set);
 		}
 
 		$va_hier = $this->getHierarchyAsList($pn_element_id);
@@ -700,6 +710,17 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 
 			if ($pb_return_stats) {
 				$va_record['ui_counts'] = $va_counts_by_attribute[$vs_code = $qr_tmp->get('element_code')];
+
+				if(!$pb_root_elements_only && !$va_record['ui_counts'] && $va_record['parent_id']) {
+					$t_element->load($va_record['parent_id']);
+
+					while($t_element->get('parent_id')) {
+						$t_element->load($t_element->get('parent_id'));
+					}
+
+					$va_record['ui_counts'] = $va_counts_by_attribute[$t_element->get('element_code')];
+				}
+
 				$va_record['restrictions'] = $va_restrictions_by_attribute[$vs_code];
 			}
 			$va_return[$vn_element_id] = $va_record;
@@ -812,12 +833,16 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 
 		$vs_key = caGetOption('indexByElementCode', $pa_options, false) ? 'element_code' : 'element_id';
 		foreach($va_elements as $vn_id => $va_element) {
+
 			if ((int)$va_element['datatype'] === 0) { continue; }
 			if (!isset($va_element['settings']['canBeUsedInSort'])) { $va_element['settings']['canBeUsedInSort'] = true; }
 			if ($va_element['settings']['canBeUsedInSort']) {
+				$va_element['typeRestrictions'] = array_shift(self::getTypeRestrictionsAsList($va_element['element_code']));
+
 				$va_sortable_elements[$va_element[$vs_key]] = $va_element;
 			}
 		}
+
 		return $va_sortable_elements;
 	}
 	# ------------------------------------------------------
@@ -828,6 +853,25 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 		} else {
 			return false;
 		}
+	}
+	# ------------------------------------------------------
+	/**
+	 * Check if element is used for any recorded values
+	 *
+	 * @param mixed $pm_element_code_or_id 
+	 * @param array $pa_options No options are currently suported.
+	 */
+	public static function elementIsInUse($pm_element_code_or_id, $pa_options=null) {
+		if(!($vn_element_id = ca_metadata_elements::getElementID($pm_element_code_or_id))) { return null; }
+		$t_element = new ca_metadata_elements();
+		
+		$o_db = new Db();
+		$qr_res = $o_db->query("SELECT count(*) c FROM ca_attribute_values WHERE element_id = ? LIMIT 1", [$vn_element_id]);
+		
+		if ($qr_res->nextRow() && ($qr_res->get('c') > 0)) {
+			return true;
+		}
+		return false;
 	}
 	# ------------------------------------------------------
 	/**
@@ -999,7 +1043,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 		}
 
 		$vm_return = null;
-		$t_element = self::getInstance($pm_element_id);
+		if (!$t_element = self::getInstance($pm_element_id)) { return null; }
 
 		if($t_element->getPrimaryKey()) {
 			$vm_return = $t_element->get('element_code');
@@ -1070,7 +1114,7 @@ class ca_metadata_elements extends LabelableBaseModelWithAttributes implements I
 		if(is_numeric($pm_element_code_or_id)) { $pm_element_code_or_id = (int) $pm_element_code_or_id; }
 
 		$vm_return = null;
-		$t_element = self::getInstance($pm_element_code_or_id);
+		if (!($t_element = self::getInstance($pm_element_code_or_id))) { return null; }
 
 		if($t_element->getPrimaryKey()) {
 			$vm_return = (int) $t_element->get('list_id');
