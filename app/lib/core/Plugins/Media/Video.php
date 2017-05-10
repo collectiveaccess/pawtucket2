@@ -1112,10 +1112,13 @@ class WLPlugMediaVideo Extends BaseMediaPlugin Implements IWLPlugMedia {
 				</video>
 			<script type="text/javascript">
 				_V_.players["<?php print $vs_id; ?>"] = undefined;	// make sure VideoJS doesn't think it has already loaded the viewer
-				var width = jQuery('#<?php print $vs_id; ?>:parent').width();
-				var height = Math.ceil((jQuery('#<?php print $vs_id; ?>:parent').width()) * .7);
-				jQuery("#<?php print $vs_id; ?>").attr('width', width).attr('height', height);
-				jQuery("#<?php print $vs_id; ?>").attr('style', 'width:' + width + 'px; height: ' + height + 'px;');
+				
+				w = jQuery('#<?php print $vs_id; ?>:parent').width();
+				if ((h = jQuery('#<?php print $vs_id; ?>:parent').height()) < 100) {
+					h = Math.ceil(w * .7);
+				}
+				jQuery("#<?php print $vs_id; ?>").attr('width', w).attr('height', h);
+				jQuery("#<?php print $vs_id; ?>").attr('style', 'width:' + w + 'px; height: ' + h + 'px;');
 				_V_("<?php print $vs_id; ?>", {}, function() {});
 				
 				if (caUI.mediaPlayerManager) { caUI.mediaPlayerManager.register("<?php print $vs_id; ?>", _V_.players["<?php print $vs_id; ?>"], 'VideoJS'); }
