@@ -43,35 +43,24 @@
 	</div><!-- end wrapper -->	
 </div><!-- end page -->
 <div id="footer">
-	<div class="row" style="padding-left:20px;">
-		<div class="footer-col mcol two flush-left" style="height: 168px;">
+	<div class="row" >
+		<div class="footer-col mcol col-sm-3 col-md-2 flush-left" style="height: 168px;">
         	<p><strong>Rare Book School</strong>
             114 Alderman Library<br>
 			University of Virginia<br>
 			P.O. Box 400103 <br>
 			Charlottesville, VA 22904</p>
         </div>
-		<div class="footer-col mcol three" style="height: 168px;">
+		<div class="footer-col mcol col-sm-3 col-md-2 " style="height: 168px;">
 			<p><strong>CONTACT</strong>
-			Phone: 434-924-8851<br>
-			Fax: 434-924-8824<br>
-			Email: <a href="mailto:oldbooks@virginia.edu">oldbooks@virginia.edu</a><br>
-			<a href="http://rarebookschool.org/about-rbs/staff/">Staff Directory</a>
+			Ruth-Ellen St. Onge <br/>
+			Phone: 434-924-8434<br>
+			Email: <a href="mailto:ruthellen.stonge@virginia.edu">ruthellen.stonge@virginia.edu</a><br>
 			</p>
 		</div> 
-		<div class="footer-col mcol two" style="height: 168px;">
-			<strong>CONNECT WITH RBS</strong>
-			<ul class="social-links">
-				<li><a target="_blank" href="https://www.facebook.com/rarebookschool"><div class="fa fa-facebook"></div></a></li>
-				<li><a target="_blank" href="https://twitter.com/rarebookschool"><div class="fa fa-twitter"></div></a></li>
-				<li><a target="_blank" href="https://www.youtube.com/user/rarebookschool"><div class="fa fa-youtube"></div></a></li>
-				<li class="join"><a target="_blank" href="http://rarebookschool.us2.list-manage.com/subscribe?u=c3921162713adaa3f481a4987&amp;id=3b19c4e1ef">Join Our Email List</a></li>
-			</ul>
-			<a target="_blank" href="http://rbsconnect.org/"><img src="http://rarebookschool.org/wp-content/themes/RBS/images/rbs-connect.png" alt="" width="113"></a><br>
-			<a target="_blank" href="https://rbs.sites.virginia.edu"><img src="http://rarebookschool.org/wp-content/themes/RBS/images/myRBS.png" alt="" width="80"></a>
-		</div>
-		<div class="footer-col mcol five flush-right" style="height: 168px;"> </div>
-		<p id="copyright">Copyright ©2017</p>				       
+		<div class="footer-col mcol " style="text-align:right;float:right">
+			<p id="copyright">Copyright ©2017</p>
+		</div>				       
 	</div>
 
 </div><!-- end footer -->

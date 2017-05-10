@@ -24,11 +24,31 @@ h1 {
     margin-bottom: 15px;
     text-transform:none;
 }
+h1 i {
+	font-size: 20px;
+	color: #444;
+}
+h2 {
+    color: #444;
+    font-family: 'Montserrat', sans-serif;
+}
 h3, .multisearch h3 {
 	font-family: 'Montserrat', sans-serif;
 	text-transform: uppercase;
     font-size: 13px;
     font-weight: bold;
+    color:#444;
+}
+h4,h5,h6 {
+	font-family: 'Montserrat', sans-serif;
+}
+h5 {
+	color:#444;
+	font-size:13px;
+}
+h6 {
+	font-weight:bold;
+	padding-bottom:2px;
 }
 .page {
   margin: 0
@@ -223,6 +243,13 @@ ul.social-links li.join a {
 	margin-top:15px;
 }
 
+/* Front */
+
+.front H1 {
+	font-size:20px;
+	color:#444;
+}
+
 /* Search */
 
 .multisearch #objectsBlock .multisearchResult {
@@ -233,9 +260,16 @@ ul.social-links li.join a {
 	height:205px;
 	line-height:1.3em;
 }
+.multisearch h3 {
+    font-family: 'Montserrat', sans-serif;
+    text-transform: uppercase;
+    font-size: 13px;
+    font-weight: bold;
+    color: #9a2513;
+}
 .multisearch H3 a, .multisearch H3 a:hover {
     text-decoration: none;
-    color: #444;
+    color: #9a2513;
 }
 .multisearchFullResults a, .multisearchSort ul li a {
 	color: #9a2513;
@@ -297,19 +331,26 @@ ul.social-links li.join a {
 div.advancedSearchField {
 	width:100%;
 }
-.btn-default, .btn-default:hover {
+.advancedSearchField .attributeListItem {
+	width:100%;
+}
+.btn-default, .btn-default:hover, .browse .btn, .sets .btn {
     font-size: 12px;
     font-size: 1.2rem;
-    margin-top: 5px;
+    margin-top: 2px;
     font-weight: bold;
     text-transform: uppercase;
     background-color: #9a2513;
     color: #ffffff!important;
-    padding: 5px;
+    padding: 3px 5px 3px 5px;
     border-radius:0px;
     border:0px;
+    font-family:lato;
 }	
 .btn-default a, .btn-default:hover a {
+	color: #ffffff!important;
+}
+.results a .btn .glyphicon {
 	color: #ffffff!important;
 }
 
@@ -319,6 +360,116 @@ div.advancedSearchField {
 	margin-bottom:0px;
 }
 .filterMenuResults div div.row {
+	max-height:none;
+	padding-right:15px;
+}
+.filterMenuResults {
+	padding:0px;
+}
+.filterMenuFacetList {
+	padding-left:5px;
+}
+.filterMenuFacetList li a {
+	text-transform:uppercase;
+	color:#444;
+	font-family:montserrat;
+	font-size:13px;
+}
+.filterMenuFacetList li.active {
+    background-color: #eee;
+}
+.filterMenuFacetList li {
+	margin-left:-5px;
+}
+@media (min-width: 768px) {
+	div.browseFacetItem a {
+		display: block;
+		height: 50px;
+	}
+}
+div.browseFacetItem a:hover {
+	color: #9a2513;
+}
+#bRefine {
+	background-color:#f5f5f5;
+}
+.bResultItem {
+	box-shadow:none;
+	border:2px solid #eee;
+}
+.bResultItemImgPlaceholder {
+	border:0px;
+}
+div.browseFacetItem.letterHeader {
+	background-color:#e7e7e7;
+}	
+
+/* detail */
+
+.detail .detailNavBgLeft, .detail .detailNavBgRight {
+	background-color:transparent;
+}
+.detail a h4 {
+	margin-top:20px;
+	border-top:1px solid #ededed;
+	padding-top:7px;
+}
+.detail a h4 .fa {
+	color:#ccc;
+	font-size:13px;
+}
+.drawer {
+	display:none;
+	margin-bottom:20px;
+}
+.notes p {
+	line-height:1.8em;
 }
 
+/* Lightbox */
 
+.lbSet {
+	box-shadow:none;
+	border:2px solid #ededed; 
+}
+.lbSet h5 {
+	font-weight:bold;
+}
+.lbItem, .bResultListItem {
+	box-shadow:none;
+	border:2px solid #eee;
+}
+.bResultListItem:hover {
+	box-shadow:none;
+}
+.lbItem p, .bResultItemText p, .bResultListItemContent p {
+	padding-bottom:3px;
+	margin-bottom:0px;
+}
+.lbSetImgPlaceholder {
+	border:0px;
+}
+.bResultListItemContent:hover .fa-2x, .bResultListItemContent .fa-2x{
+    font-size: 18px;
+}
+.bResultListItem:hover .bResultListItemContent, .bResultListItem:hover {
+	height:auto;
+}	
+.bResultListItemExpandedInfo {
+	box-shadow:none;
+}
+.bResultListItemCol:hover {
+    z-index: 100000;
+}
+#bRefine a {
+	color:#444;
+}
+.bResultListItem .bResultListItemText a, .bResultItem .bResultItemText a {
+	color:#444;
+}
+
+/* static page */
+
+.staticPage p {
+	line-height:1.8em;
+}
