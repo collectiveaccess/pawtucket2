@@ -38,12 +38,6 @@
 				data-toggle="popover" data-trigger="hover" data-content="The title of the record assigned by the creator or cataloguer."
 			>Title:</span><br/>
 			{{{ca_objects.preferred_labels.name%width=300px}}}
-		</div>
-		<div class="advancedSearchField">
-			<span 
-				data-toggle="popover" data-trigger="hover" data-content="Individuals and organizations related to an item."
-			>Creator/Contributor:</span><br/>
-			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=creator;contributor}}}
 		</div>		
 		<div class="advancedSearchField">
 			<span 
@@ -59,7 +53,7 @@
 		</div>
 		<div class="advancedSearchField">
 			<span 
-				data-toggle="popover" data-trigger="hover" data-content="Individuals and organizations related to an item."
+				data-toggle="popover" data-trigger="hover" data-content="Individuals and organizations related to an item such as creator, contributor, interviewee, subject etc."
 			>People & Organizations:</span><br/>
 			{{{ca_entities.preferred_labels%width=420px&excludeRelationshipTypes=creator;contributor}}}
 		</div>
@@ -74,13 +68,7 @@
 				data-toggle="popover" data-trigger="hover" data-content="Places associated with an item; including both contemporary geographic locations and historical places, such as camps and ghettos."
 			>Place:</span> <br/>
 			{{{ca_places.preferred_labels%width=300px}}}
-		</div>																				
-		<div class="advancedSearchField">
-			<span 
-				data-toggle="popover" data-trigger="hover" data-content="Limit searching to records with media."
-			>Digital Content:</span><br/> 
-			{{{ca_object_representations.media%width=300px&height=23px&render=is_set}}}
-		</div>
+		</div>	
 															
 		<br style="clear: both;"/>
 	

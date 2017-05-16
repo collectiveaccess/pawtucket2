@@ -108,6 +108,11 @@ textarea {
 	letter-spacing:1px;
 	border-radius:0px;
 	font-size: 13px;
+	color:#666;
+}
+.browse .btn, .sets .btn, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
+	background-color: #f1f1f1;
+	color:#666;
 }
 .green {
 	color: #33450D;
@@ -964,6 +969,11 @@ a.readmore-js-toggle {
     font-size: 12px;
     height: 200px;
     margin-bottom: 20px;
+}
+@media (min-width:1350px) {
+	.relatedThumb {
+		height:250px;
+	}
 }
 .relatedThumb img{
 	width:100%;

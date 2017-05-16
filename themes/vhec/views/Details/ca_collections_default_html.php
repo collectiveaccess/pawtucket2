@@ -57,7 +57,7 @@
 							$vs_access_point.= "<div {$vs_subject_style}>".caNavLink($this->request, $va_local_subject, '', '',  'Search', 'objects', array('search' => "ca_objects.local_subject:'".$va_local_subject."'"))."</div>";
 						
 							if (($vn_subject == 3) && (sizeof($va_local_subjects) > 3)) {
-								$vs_access_point.= "<a class='seeMore' href='#' onclick='$(\".seeMore\").hide();$(\".subjectHidden\").slideDown(300);return false;'>more...</a>";
+								$vs_access_point.= "<a class='seeMore' href='#' onclick='jQuery(\".seeMore\").hide();$(\".subjectHidden\").slideDown(300);return false;'>more...</a>";
 							}
 							$vn_subject++;
 						}
@@ -98,7 +98,7 @@
 							
 					if ($vs_rights == true) {
 						print "<div class='rightsBlock'>";
-						print "<h8 style='margin-bottom:10px;'><a href='#' onclick='$(\"#rightsText\").toggle(300);return false;'>Rights <i class='fa fa-chevron-down'></i></a></h8>";
+						print "<h8 style='margin-bottom:10px;'><a href='#' onclick='jQuery(\"#rightsText\").toggle(300);return false;'>Rights <i class='fa fa-chevron-down'></i></a></h8>";
 						print "<div style='display:none;' id='rightsText'>".$vs_rights_text."</div>";
 						print "</div>";
 					}					
@@ -207,14 +207,14 @@
 						$vn_i = 0;
 					
 						( $vn_top_level_id == $vn_id ? $vs_highlight = "showme" : $vs_highlight = "");
-						$vs_buf.= "<div>".(($qr_series_level->numHits() > 0) ? "<a href='#' onclick='$(\".seriesLevel".$vn_top_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_top_collection->get('ca_collections.preferred_labels')." (".$t_top_collection->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$vn_top_level_id)."</div>".($t_top_collection->get('ca_collections.ISADG_scope') ? "<div style='margin-left:20px;' class='trimText'>".$t_top_collection->get('ca_collections.ISADG_scope')."</div>" : "");
+						$vs_buf.= "<div>".(($qr_series_level->numHits() > 0) ? "<a href='#' onclick='jQuery(\".seriesLevel".$vn_top_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_top_collection->get('ca_collections.preferred_labels')." (".$t_top_collection->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$vn_top_level_id)."</div>".($t_top_collection->get('ca_collections.ISADG_scope') ? "<div style='margin-left:20px;' class='trimText'>".$t_top_collection->get('ca_collections.ISADG_scope')."</div>" : "");
 						$vs_buf.= "<div class='seriesLevel".$vn_top_level_id." ' >";
 						
 						while($qr_series_level->nextHit()) {
 							$vn_series_level_id = $qr_series_level->get('ca_collections.collection_id');
 							$qr_subseries_level = $qr_series_level->get('ca_collections.children.collection_id', array('returnAsSearchResult' => true, 'sort' => 'ca_collections.collection_identifier'));
 							(($vn_series_level_id == $vn_id) ? $vs_highlight = "showme" : $vs_highlight = "");
-							$vs_buf.= "<div>".(($qr_subseries_level && $qr_subseries_level->numHits() > 0) ? "&mdash;<a href='#' onclick='$(\".subseriesLevel".$vn_series_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "&mdash;<span class='colspacer'></span>").caNavLink($this->request, $qr_series_level->get('ca_collections.preferred_labels')." (".$qr_series_level->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$vn_series_level_id)."</div>";
+							$vs_buf.= "<div>".(($qr_subseries_level && $qr_subseries_level->numHits() > 0) ? "&mdash;<a href='#' onclick='jQuery(\".subseriesLevel".$vn_series_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "&mdash;<span class='colspacer'></span>").caNavLink($this->request, $qr_series_level->get('ca_collections.preferred_labels')." (".$qr_series_level->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$vn_series_level_id)."</div>";
 							$vs_buf.= "<div class='subseriesLevel{$vn_series_level_id} borderlevel' style='margin-left:40px;'>";
 		
 							while($qr_subseries_level && $qr_subseries_level->nextHit()) {
@@ -223,7 +223,7 @@
 								$qr_box_level = $qr_subseries_level->get('ca_collections.children.collection_id', array("returnAsSearchResult" => true, 'sort' => 'ca_collections.collection_identifier'));
 								( $vn_subseries_level_id == $vn_id ? $vs_highlight = "showme" : $vs_highlight = "");
 
-								$vs_buf.= "<div>".($qr_box_level && ($qr_box_level->numHits() > 0) ? "&mdash;<a href='#' onclick='$(\".boxLevel".$vn_subseries_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "&mdash;<span class='colspacer'></span>").caNavLink($this->request, $qr_subseries_level->get('ca_collections.preferred_labels')." (".$qr_subseries_level->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$vn_subseries_level_id)."</div>";
+								$vs_buf.= "<div>".($qr_box_level && ($qr_box_level->numHits() > 0) ? "&mdash;<a href='#' onclick='jQuery(\".boxLevel".$vn_subseries_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "&mdash;<span class='colspacer'></span>").caNavLink($this->request, $qr_subseries_level->get('ca_collections.preferred_labels')." (".$qr_subseries_level->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$vn_subseries_level_id)."</div>";
 								$vs_buf.= "<div class='boxLevel{$vn_subseries_level_id} borderlevel' style='margin-left:60px;'>";
 						
 								while($qr_box_level && $qr_box_level->nextHit()) {
@@ -304,18 +304,17 @@
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery("#browseResultsContainer").load(
-						"<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>", 
-						{'search': 'ca_collection_labels.collection_id/part_of:^ca_collections.collection_id'}, 
-					function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print "Loading..."; ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next' 
-						});
-					});
-					
-					
+						"<?php print caNavUrl($this->request, '', 'Search', 'objects/sort/Identifier'); ?>", 
+						{"search": "ca_collection_labels.collection_id/part_of:^ca_collections.collection_id"}, 
+						function() {
+							jQuery('#browseResultsContainer').jscroll({
+								'autoTrigger': true,
+								'loadingHtml': 'Loading',
+								'padding': 20,
+								'nextSelector': 'a.jscroll-next' 
+							});
+						}
+					);
 				});
 			</script>
 
