@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * themes/default/Front/front_page_html : Front page of site 
+ * themes/default/Listings/listing_html : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,19 +29,18 @@
  *
  * ----------------------------------------------------------------------
  */
-
-		print $this->render("Front/featured_set_slideshow_html.php");
+ 
+ 	$va_lists = $this->getVar('lists');
+ 	$va_type_info = $this->getVar('typeInfo');
+ 	$va_listing_info = $this->getVar('listingInfo');
+ 
+	foreach($va_lists as $vn_type_id => $qr_list) {
+		if(!$qr_list) { continue; }
+		
+		print "<h1>{$va_listing_info['displayName']}</h1>\n";
+		
+		while($qr_list->nextHit()) {
+			print $qr_list->getWithTemplate('<l>^ca_entities.preferred_labels.displayname</l>')."<br>\n";	
+		}
+	}
 ?>
-<div class="container">
-	<div class="row">
-		<div class="col-sm-8">
-			<H2>Welcome to the Bartlett Library and Archives</H2>
-			<p>Explore online archival collections, find out more about other parts of the archives, learn about past exhibitions at the museum, and browse information about artists. The Bartlett Library and Archives documents the history of the Museum of International Folk Art and provides books, periodicals, audiovisual materials, artist files and other resources to support research and study related to museum’s collection of objects. We’re just starting to put information online, so please be patient, and please <a href="mailto:bartlett.library@state.nm.us">ask the archivist</a> for more information about our archives holdings.</p>
-		</div><!--end col-sm-8-->
-		<div class="col-sm-4">
-<?php
-		print $this->render("Front/gallery_set_links_html.php");
-?>
-		</div> <!--end col-sm-4-->	
-	</div><!-- end row -->
-</div> <!--end container-->

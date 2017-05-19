@@ -85,25 +85,28 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
-				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}</H4>
+				{{{<ifcount min="1" code="ca_collections"><H6>Collection</H6><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><br/></ifcount>}}}
+				{{{<ifdef code="ca_objects.idno"><H6>Identifier:</H6>^ca_objects.idno<br/></ifdef>}}}			
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				<HR>
-				
-				{{{<ifdef code="ca_objects.measurementSet.measurements">^ca_objects.measurementSet.measurements (^ca_objects.measurementSet.measurementsType)</ifdef><ifdef code="ca_objects.measurementSet.measurements,ca_objects.measurementSet.measurements"> x </ifdef><ifdef code="ca_objects.measurementSet.measurements2">^ca_objects.measurementSet.measurements2 (^ca_objects.measurementSet.measurementsType2)</ifdef>}}}
-				
-				
-				{{{<ifdef code="ca_objects.idno"><H6>Identifier:</H6>^ca_objects.idno<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.containerID"><H6>Box/series:</H6>^ca_objects.containerID<br/></ifdef>}}}				
-				
 				{{{<ifdef code="ca_objects.description">
 					<div class='unit'><h6>Description</h6>
 						<span class="trimText">^ca_objects.description</span>
 					</div>
+					<HR>
 				</ifdef>}}}
 				
+				{{{<ifdef code="ca_objects.date"><H6>Date</H6><unit relativeTo="ca_objects.date" delimiter="<br/>">^ca_objects.date.date_value ^ca_objects.date.date_types</unit><br/></ifdev>}}}
+				{{{<ifdef code="ca_objects.dimensions.dimensions_length|ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_thickness|ca_objects.dimensions.dimensions_diameter|ca_objects.dimensions.dimensions_weight"><H6>Dimensions</H6></ifdef>
+						<ifdef code="ca_objects.dimensions.dimensions_length">^ca_objects.dimensions.dimensions_length (length)<ifdef code="ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_thickness|ca_objects.dimensions.dimensions_diameter|ca_objects.dimensions.dimensions_weight"> x </ifdef></ifdef>
+						<ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width (width)<ifdef code="ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_thickness|ca_objects.dimensions.dimensions_diameter|ca_objects.dimensions.dimensions_weight"> x </ifdef></ifdef>
+						<ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height (height)<ifdef code="ca_objects.dimensions.dimensions_thickness|ca_objects.dimensions.dimensions_diameter|ca_objects.dimensions.dimensions_weight"> x </ifdef></ifdef>
+						<ifdef code="ca_objects.dimensions.dimensions_thickness">^ca_objects.dimensions.dimensions_thickness (thickness)<ifdef code="ca_objects.dimensions.dimensions_diameter|ca_objects.dimensions.dimensions_weight"> x </ifdef></ifdef>
+						<ifdef code="ca_objects.dimensions.dimensions_diameter">^ca_objects.dimensions.dimensions_diameter (diameter)<ifdef code="ca_objects.dimensions.dimensions_weight"> x </ifdef></ifdef>
+						<ifdef code="ca_objects.dimensions.dimensions_weight">^ca_objects.dimensions.dimensions_weight (weight)</ifdef>
+						}}}
+				{{{<ifdef code="ca_objects.curatorial_category"><H6>Curatorial Category</H6>^ca_objects.curatorial_category<br/></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H6>Date:</H6>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}
-			
 				<hr></hr>
 					<div class="row">
 						<div class="col-sm-6">		
@@ -111,14 +114,11 @@
 							{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
 							
+							{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related exhibition/event</H6></ifcount>}}}
+							{{{<ifcount code="ca_occurrences" min="2"><H6>Related exhibitions/events</H6></ifcount>}}}
+							{{{<unit relativeTo="ca_objects_x_occurrences" delimiter="<br/>"><unit relativeTo="ca_occurrences"><l>^ca_occurrences.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
 							
-							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
 							
-							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
-							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter="<br/>"><unit relativeTo="ca_list_items"><l>^ca_list_items.preferred_labels.name_plural</l></unit> (^relationship_typename)</unit>}}}
 							
 						</div><!-- end col -->				
 						<div class="col-sm-6 colBorderLeft">
