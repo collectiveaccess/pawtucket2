@@ -57,6 +57,8 @@
  			$vn_season_type_id = $t_list->getItemIDFromList('occurrence_types', 'season');
  			$vn_event_series_type_id = $t_list->getItemIDFromList('occurrence_types', 'event_series'); 			
  			if($ps_function == "index"){
+ 				$pn_season_id = $this->request->getParameter("season_id", pInteger);
+ 				$this->view->setVar("season_id", $pn_season_id);
  				# --- start with seasons
  				# --- get the top of the hierarchy
  				$o_search = caGetSearchInstance("ca_occurrences");
@@ -73,9 +75,11 @@
 						$va_children = array();
 						if($qr_res_series->numHits()){
 							while($qr_res_series->nextHit()){
-								$va_children[$qr_res_series->get("ca_occurrences.occurrence_id")] = array("id" => $qr_res_series->get("ca_occurrences.occurrence_id"),
-													"name" => $qr_res_series->get("ca_occurrences.preferred_labels")
-													);
+								if(in_array($qr_res_series->get("ca_occurrences.access"), $this->opa_access_values)){
+									$va_children[$qr_res_series->get("ca_occurrences.occurrence_id")] = array("id" => $qr_res_series->get("ca_occurrences.occurrence_id"),
+														"name" => $qr_res_series->get("ca_occurrences.preferred_labels")
+														);
+								}
 							}
 						}
 						if(strpos(strtolower($qr_res->get("ca_occurrences.preferred_labels")), "fall") !== false){
@@ -117,7 +121,7 @@
 											<p>Each year DanceAfrica welcomes artists from the African diaspora at the BAM Howard Gilman Opera House. The performances include other traditional and contemporary dance companies, including students of BAM/Restoration DanceAfrica Ensemble, plus live music. The weekend-long festival also includes master classes, community events, film screenings, an art exhibition, and the one-and-only DanceAfrica outdoor bazaar, a global marketplace of African, African-American, and Caribbean arts, crafts, and food featuring over 200 vendors and attracting up to 30,000 visitors per year.</p>";
  					}elseif(strpos($vs_parent_name_lower, 'humanities') !== false){
  						# --- Education & Humanities Spring  & Fall
- 						$vs_description = "<p>Since 1861 there have been educational, community, social and humanities programing. These departments have been reorganized numerous times. In 2016 the Humanities department was moved under the programing department. Between 1967 and 2016  BAM's Education/Humanities Departments offered a comprehensive schedule of events for audiences of all ages. Programs for adults include artist talks scheduled in conjunction with productions, and literary events with authors. BAM also works with schools to integrate the arts into the curriculum. Students attend matinees of live performances and films, attend post-show Q&A sessions, and prepare for these visits with in-school pre-show workshops conducted by BAM teaching artists. Other school programs include in-school residencies, after-school programs for high school teens, and professional development workshops for teachers. BAM also has events for families, including performances, concerts, films, block parties, and children's book author appearances.</p>";
+ 						$vs_description = "<p>Since 1861 BAM has presented educational, community, social, and humanities programming offering a comprehensive schedule of events for audiences of all ages. Programs for adults include artist talks scheduled in conjunction with productions, and literary events with authors. BAM also works with schools to integrate performing arts into the curriculum. Students attend matinees of live performances and films, attend post-show Q&A sessions, and prepare for these visits with in-school pre-show workshops conducted by BAM teaching artists. Other school programs include in-school residencies, after-school programs for high school teens, and professional development workshops for teachers. BAM also has events for families, including performances, concerts, films, block parties, and children's book author appearances.</p>";
  					}elseif(strpos($vs_parent_name_lower, 'wave festival') !== false){
  						# --- Next Wave festival
  						$vs_description = "<p>BAM's fall Next Wave Festival is a showcase for contemporary performance. Founded in 1983 by pioneering BAM President and Executive Producer Harvey Lichtenstein, the Next Wave Festival began presenting exciting new works by known and emerging artists. The festival grew quickly in prestige, artistic scope, and geographical reach into today's vibrant festival.</p>
@@ -134,8 +138,7 @@
  						$vs_description = "<p>The Chelsea Theater Center was established in NYC in 1965, and in 1968 became a resident company at BAM. Company repertoire was an eclectic mix of plays—new, neglected, groundbreaking British and European, lesser known classics, and authored by writers known in other genres. One production, Hal Prince's environmental staging of Leonard Bernstein's <i>Candide</i>, moved to Broadway where it ran for two years. The Chelsea Theater attracted many talented actors, often at the dawn of their careers, including Glenn Close, Meryl Streep, Frank Langella, and Des McAnuff. In 1978, after a decade at BAM, the Chelsea Theater struggled and was ended its residency.</p>";
  					}elseif(strpos($vs_parent_name_lower, 'bam spring') !== false){
  						# --- BAM Spring
- 						$vs_description = "<p>The Next Wave programming in the fall is anchored by an equally strong spring season, showcasing theater, dance, and opera, with bookings of local artists as well as major international companies reflecting BAM's global relationships. These include prominent British and other international theater companies such as the Royal Shakespeare Company, Royal Dramatic Theatre of Sweden, Young Vic, Chichester Festival Theatre, and Propeller, presenting new takes on the classics. Dance companies range from the classical Mariinsky to the contemporary Batsheva, and opera includes frequent visits from Les Arts Florissants.</p>
-											<p>One outstanding highlight of the spring season has been The Bridge Project, a three-year transatlantic partnership involving BAM, the Old Vic, and Neal Street Productions, that showcased distinguished theater artists from New York and London. Launched in 2009, and running for three years (2009-2012), the partnership produced five international productions of classic works, directed by Sam Mendes: <i>The Winter's Tale, The Cherry Orchard, As You Like It, The Tempest,</i> and in the final year, <i>Richard III</i> with Kevin Spacey in the title role.</p>";
+ 						$vs_description = "<p>The Winter/Spring Season showcases theater, dance, and opera, and more. Major international companies alongside New York artists reflect BAM's global and local reach. Performance runs are often longer in length than in the fall, and can include partnership projects of, for example, repertory theater or live renditions of public radio programs.</p>";
  					}elseif(strpos($vs_parent_name_lower, 'presents') !== false){
  						# --- BAM Presents
  						$vs_description = "<p>BAM Presents is a series programmed separately from Next Wave or BAM Spring. It typically includes widely popular talks, music, or comedy that sell out the Opera House as one-night-only events.</p>";

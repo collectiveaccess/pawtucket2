@@ -26,7 +26,7 @@
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="The unique identifier assigned to a work. Traditionally an accession number, Museum Works are assigned a barcode identifier."
 			>Object ID:</span><br/>
-			{{{ca_objects.altID%width=300px&height=1}}}
+			{{{ca_objects.alt_id%width=300px&height=1}}}
 		</div>						
 		<div class="advancedSearchField">
 			<span 
@@ -92,14 +92,9 @@
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Search for individuals who are the subject of a work. "
 			>Subject - People & Organizations:</span><br/>
-			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=subject&width=300px&height=1}}}
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=artist,author,compiler,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,other,performer,photographer,producer,related_ob,repository,researcher,speaker,subject,translator,venue,videographer&width=300px&height=1}}}
 		</div>	
-		<div class="advancedSearchField">
-			<span 
-				data-toggle="popover" data-trigger="hover" data-content="Limit searching to records that have digital images."
-			>Digital Content:</span><br/>
-			{{{ca_object_representations.media%width=300px&height=1&render=is_set}}}
-		</div>											
+												
 		<br style="clear: both;"/>
 	
 		<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>

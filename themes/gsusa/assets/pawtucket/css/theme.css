@@ -22,6 +22,9 @@ body {
 	width:100%;
 	clear:both;
 }
+.btn-default, .btn-default:hover, .browse .btn, .sets .btn{
+	background-color:#009447;
+}
 .black{
 	color:#000;
 }
@@ -378,9 +381,22 @@ h1 {
 }
 .detail .component{
 	margin-bottom:10px;
+	clear:left;
+}
+.detail .componentThumbnail{
+	float:left;
+	margin: 0px 10px 10px 0px;
+	
+}
+.detail .component .small{
+	font-size:10px;
 }
 .detail .componentDescSpacer{
 	margin-top:5px !important;
+}
+.popover{
+	max-width:1000px !important;
+	width:auto !important;
 }
 .navLeftRight{
 	text-align:right;
@@ -411,6 +427,9 @@ a.readmore-js-toggle{
 /* Collections/Finding Aid */
 .collectionsList a{
 	font-size:16px;
+    font-weight: bold;
+    color: #00AE58;
+    text-decoration: none;
 }
 .collectionsList{
 	font-size:13px;
@@ -450,4 +469,8 @@ h2.tl-headline {
 }
 .tl-text-content{
 	font-size:12px !important;
+}
+/* gallery */
+.gallery H4, .gallery H4 a {
+    text-transform: none !important;
 }
