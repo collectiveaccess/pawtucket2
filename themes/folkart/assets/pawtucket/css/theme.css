@@ -497,7 +497,7 @@ div.browseMenuBrowseAll{
 }
 
 
-.detail a{
+.detail a, .detail H6 a{
 	text-decoration:underline;
 	color:#3d3932;
 }

@@ -75,7 +75,7 @@
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
 					if ($vn_pdf_enabled) {
-						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caNavLink($this->request, 'Download as PDF', 'faDownload', 'Detail', 'objects', $vn_id.'/view/pdf/export_format/_pdf_ca_objects_summary')."</div>";
+						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
 					print '</div><!-- end detailTools -->';
 				}				
@@ -86,7 +86,7 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				{{{<ifcount min="1" code="ca_collections"><H6>Collection</H6><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><br/></ifcount>}}}
-				{{{<ifdef code="ca_objects.idno"><H6>Identifier:</H6>^ca_objects.idno<br/></ifdef>}}}			
+				{{{<ifdef code="ca_objects.idno"><H6>Identifier</H6>^ca_objects.idno<br/></ifdef>}}}			
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				<HR>
 				{{{<ifdef code="ca_objects.description">
@@ -105,7 +105,7 @@
 						<ifdef code="ca_objects.dimensions.dimensions_diameter">^ca_objects.dimensions.dimensions_diameter (diameter)<ifdef code="ca_objects.dimensions.dimensions_weight"> x </ifdef></ifdef>
 						<ifdef code="ca_objects.dimensions.dimensions_weight">^ca_objects.dimensions.dimensions_weight (weight)</ifdef>
 						}}}
-				{{{<ifdef code="ca_objects.curatorial_category"><H6>Curatorial Category</H6>^ca_objects.curatorial_category<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.curatorial_category"><H6>Curatorial Category</H6>^ca_objects.curatorial_category%delimiter=,_<br/></ifdef>}}}
 				
 				<hr></hr>
 					<div class="row">

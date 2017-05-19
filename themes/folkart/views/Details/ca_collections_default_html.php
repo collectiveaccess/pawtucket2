@@ -3,6 +3,7 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
+	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -10,6 +11,8 @@
 	if($o_collections_config->get("do_not_display_collection_browser")){
 		$vb_show_hierarchy_viewer = false;	
 	}
+	# --- get the collection hierarchy parent to use for exportin finding aid
+	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 ?>
 <div class="container">
 	<div class="row">
@@ -33,8 +36,12 @@
 				<div class='col-md-12 col-lg-12'>
 					<H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6>
 					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
+<?php					
+					if ($vn_pdf_enabled) {
+						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
+					}
+?>					
 					{{{<ifdef code="ca_collections.label">^ca_collections.label<br/></ifdev>}}}
-					
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
