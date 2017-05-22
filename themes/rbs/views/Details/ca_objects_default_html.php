@@ -115,9 +115,44 @@
 				if ($vs_notes = $t_object->getWithTemplate('<unit delimiter="<br/>">^ca_objects.notes</unit>')) {
 					print "<div class='unit notes'><h6>Notes</h6><p>".$vs_notes."</p></div>";
 				}
-				if ($vs_teaching = $t_object->get('ca_objects.teaching_points', array('delimiter' => ', '))) {
-					print "<div class='unit'><h6>Teaching Points</h6>".$vs_teaching."</div>";
+				$vs_teaching = $t_object->get('ca_objects.teaching_points', array('delimiter' => ', '));
+				print "<div class='unit'><h6>Teaching Points";
+				if($this->request->isLoggedIn()){
+?>
+					&nbsp;<span class='teachingpoint' data-toggle="popover" data-trigger="hover" data-content="Click to add or edit teaching points."><i class="fa fa-pencil-square-o" aria-hidden="true" onClick="$('#teachingPointsText').toggle(); $('#teachingPointsForm').toggle(); return false;"></i></span>
+<?php
 				}
+				print "</h6><span id='teachingPointsText'>".$vs_teaching."</span>";
+				if($this->request->isLoggedIn()){
+?>
+					<form id="teachingPointsForm" style="display:none;">
+						<input type="text" class="form-control" name="teaching_points" value="<?php print $vs_teaching; ?>" autocomplete="off" style="width:90%; float:left;">&nbsp;&nbsp;<button type="submit" class="btn" style="background-color:#FFF; padding-left:0px; padding-right:0px;"><i class="fa fa-arrow-circle-right" style="font-size:20px;"></i></button>
+						<input type="hidden" name="object_id" value="<?php print $t_object->get('ca_objects.object_id'); ?>">
+						<input type="hidden" name="field" value="teaching_points">
+						
+						<div style="clear:left;"></div>
+					</form>
+					<script type='text/javascript'>
+						jQuery(document).ready(function() {
+							jQuery('#teachingPointsForm').submit(function(e){		
+								jQuery('#teachingPointsText').load(
+									'<?php print caNavUrl($this->request, '', 'UpdateObjectMd', 'ajaxSave', null); ?>',
+									jQuery('#teachingPointsForm').serialize(),
+									function(){
+										$('#teachingPointsText').toggle();
+										$('#teachingPointsForm').toggle();
+									}
+								);
+								
+								e.preventDefault();
+								return false;
+							});
+						});
+					</script>
+<?php
+				}					
+				print "</div>";
+			
 				if ($vs_collections = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Related Collections</h6>".$vs_collections."</div>";
 				}
@@ -300,4 +335,10 @@
 		  maxHeight: 120
 		});
 	});
+</script>
+<script>
+	jQuery(document).ready(function() {
+		$('.teachingpoint').popover(); 
+	});
+	
 </script>
