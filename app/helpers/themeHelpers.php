@@ -1235,3 +1235,64 @@ jQuery(document).ready(function() {
 		return $va_list;
 	}
 	# ---------------------------------------
+	/**
+	 * Used to export collection hierarchy as PDF finding aid
+	 * recursive loop to display all collection children and objects
+	 * 
+	 */	
+	function caGetCollectionLevelSummary($po_request, $va_collection_ids, $vn_level) {
+		$va_access_values = caGetUserAccessValues($po_request);
+		# --- get collections configuration
+		$o_collections_config = caGetCollectionsConfig();
+		$vs_output = "";
+		$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
+		
+		$vs_sub_collection_label_template = $o_collections_config->get("export_sub_collection_label_template");
+		$vs_sub_collection_desc_template = $o_collections_config->get("export_sub_collection_description_template");
+		$vs_object_template = $o_collections_config->get("export_object_label_template");
+	
+		if($qr_collections->numHits()){
+			while($qr_collections->nextHit()) {
+				$vs_icon = "";
+				# --- related objects?
+				$va_object_ids = $qr_collections->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values));
+				$vn_rel_object_count = sizeof($va_object_ids);
+				$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.idno_sort"));
+				$vs_output .= "<div class='unit' style='margin-left:".(40*($vn_level - 1))."px;'>";
+				$vs_output .= "<b>";
+				if($vs_sub_collection_label_template){
+					$vs_output .= $qr_collections->getWithTemplate($vs_sub_collection_label_template);
+				}else{
+					$vs_output .= $qr_collections->get("ca_collections.preferred_labels");
+				}
+				$vs_output .= "</b>";
+			
+				if($vn_rel_object_count){
+					$vs_output .= " <span class='small'>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</span>";
+				}
+				$vs_output .= "<br/>";
+				$vs_desc = "";
+				if($vs_sub_collection_desc_template && ($vs_desc = $qr_collections->getWithTemplate($vs_sub_collection_desc_template))){
+					$vs_output .= "<p>".$vs_desc."</p>";
+				}
+				# --- objects
+				if(sizeof($va_object_ids)){
+					$qr_objects = caMakeSearchResult("ca_objects", $va_object_ids);
+					while($qr_objects->nextHit()){
+						$vs_output .= "<div style='margin-left:20px;'>";
+						if($vs_object_template){
+							$vs_output .= $qr_objects->getWithTemplate($vs_object_template);
+						}else{
+							$vs_output .= $qr_objects->get("ca_objects.preferred_labels.name");
+						}
+						$vs_output .= "</div>";
+					}
+				}
+				$vs_output .= "</div>";
+				if(sizeof($va_child_ids)) {
+					$vs_output .=  caGetCollectionLevelSummary($po_request, $va_child_ids, $vn_level + 1);
+				}
+			}
+		}
+		return $vs_output;
+	}

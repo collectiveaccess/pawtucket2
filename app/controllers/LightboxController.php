@@ -1255,10 +1255,6 @@
  			$this->view->setvar("object_ids", $this->request->getParameter('object_ids', pString));
  			$this->view->setvar("saveLastResults", $this->request->getParameter('saveLastResults', pInteger));
  			if(($pn_object_id = $this->request->getParameter('object_id', pInteger)) || ($pn_save_last_results = $this->request->getParameter('saveLastResults', pInteger)) || ($pa_object_ids = sizeof(explode(";", $this->request->getParameter('object_ids', pString))))){
- 				$this->view->setVar('object_id', $pn_object_id);
- 				$this->view->setVar('object_ids', $pa_object_ids);
- 				$this->view->setVar('saveLastResults', $pn_save_last_results);
- 				
  				$this->render("Lightbox/form_add_set_item_html.php");
  			}else{
  				$this->view->setVar('message', _t("Object ID is not defined"));
