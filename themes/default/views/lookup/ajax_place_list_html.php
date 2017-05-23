@@ -1,13 +1,13 @@
 <?php
-/** ---------------------------------------------------------------------
- * themes/default/Listings/listing_html : 
+/* ----------------------------------------------------------------------
+ * lookup/ajax_place_list_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2009-2013 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,31 +23,7 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
- * @package CollectiveAccess
- * @subpackage Core
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
- *
  * ----------------------------------------------------------------------
  */
- 
- 	$va_lists = $this->getVar('lists');
- 	$va_type_info = $this->getVar('typeInfo');
- 	$va_listing_info = $this->getVar('listingInfo');
- 
-	foreach($va_lists as $vn_type_id => $qr_list) {
-		if(!$qr_list) { continue; }
+ 	print json_encode($this->getVar('place_list'));
 ?>
-	<div class="row">
-		<div class='col-sm-12'>
-<?php		
-		print "<h1>{$va_listing_info['displayName']}</h1>\n";
-		
-		if($qr_list && $qr_list->numHits()) {
-			while($qr_list->nextHit()) {
-				print "<div class='listingItem'>".$qr_list->getWithTemplate('<l>^ca_entities.preferred_labels.displayname</l>')."</div>";
-			}
-		}
-	}
-?>
-		</div>
-	</div>

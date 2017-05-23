@@ -2244,7 +2244,13 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 											break;
 									}
 								}
-								if (caGetOption('select', $pa_options, false)) {
+								
+								// Autocompletion for fields from related tables
+								if (caGetOption('autocomplete', $pa_options, false)) {
+									$pa_options['asArrayElement'] = false;
+									
+									return caGetAdvancedSearchFormAutocompleteJS($po_request, $ps_field, $t_instance, $pa_options);
+								} elseif (caGetOption('select', $pa_options, false)) {
 									$va_access = caGetOption('checkAccess', $pa_options, null);
 									if (!($t_instance = $this->_DATAMODEL->getInstanceByTableName($va_tmp[0], true))) { return null; }
 								

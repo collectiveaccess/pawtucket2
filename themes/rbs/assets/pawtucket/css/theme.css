@@ -12,7 +12,7 @@ body {
     width: 100%;
     overflow-x: hidden;	
 }
-a {
+a, a:hover, a:active, a:focus { 
 	color: #9a2513;
 }
 h1 {
@@ -473,3 +473,19 @@ div.browseFacetItem.letterHeader {
 .staticPage p {
 	line-height:1.8em;
 }
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+    border: 1px solid #000 !important;
+    background: #ddd !important;
+    font-weight: bold !important;
+    color: #333 !important;
+}
+.ui-state-hover, .ui-widget-content {
+	font-size:12px;
+}
+
+h6 .teachingpoint {
+	text-transform:none;
+	font-weight:normal;   
+}
+

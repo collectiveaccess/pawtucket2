@@ -645,6 +645,8 @@
 	 *
 	 */
 	function caGetQueryStringForHTMLFormInput($po_result_context, $pa_options=null) {
+		$o_dm = Datamodel::load();
+		
 		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
 		$va_form_contents = explode('|', caGetOption('_formElements', $pa_form_values, ''));
 		
@@ -670,15 +672,29 @@
 						$pa_form_values[$vs_dotless_element] = array($pa_form_values[$vs_dotless_element]);
 					}
 					if (is_array($pa_form_values[$vs_dotless_element])) {
+					
 						// are there relationship types?
+						$vs_element_rel_type = '';
 						if (is_array($pa_form_values[$vs_dotless_element.':relationshipTypes'])) {
-							$vs_element .= "/".join(";", $pa_form_values[$vs_dotless_element.':relationshipTypes']);
+							$vs_element_rel_type = "/".join(";", $pa_form_values[$vs_dotless_element.':relationshipTypes']);
 						}
-						foreach($pa_form_values[$vs_dotless_element] as $vn_j => $vs_element_value) {
+					
+						if(isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}_autocomplete"])) {
+							$va_fld = explode(".", $vs_element);
+							$t_table = $o_dm->getInstanceByTableName($va_fld[0], true);
+							foreach($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}"] as $vn_j => $vs_element_value) {
+								if ($t_table) { $vs_search_element = $t_table->primaryKey(true); }
+								
+								$va_values[$vs_search_element.$vs_element_rel_type][] = trim($vs_element_value);
+								$va_booleans["{$vs_search_element}{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
+							}
+							continue;
+						}
+						foreach($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}"] as $vn_j => $vs_element_value) {
 							if(!strlen(trim($vs_element_value))) { continue; }
-							$va_default_values[$vs_element][] = trim($vs_element_value);
-							$va_values[$vs_element][] = trim($vs_element_value);
-							$va_booleans["{$vs_element}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}:boolean"][$vn_j] : null;
+							$va_default_values[$vs_element.$vs_element_rel_type][] = trim($vs_element_value);
+							$va_values[$vs_element.$vs_element_rel_type][] = trim($vs_element_value);
+							$va_booleans["{$vs_element}{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
 						}
 					}
 					break;
@@ -761,8 +777,15 @@
 			) { continue; }
 	
 			if(!is_array($pa_form_values[$vs_dotless_element])) { $pa_form_values[$vs_dotless_element] = array($pa_form_values[$vs_dotless_element]); }
-			if(!($vs_label = trim($pa_form_values[$vs_dotless_element.'_label']))) { $vs_label = "???"; }
-		
+			if(!($vs_label = trim($pa_form_values["{$vs_dotless_element}_label"]))) { $vs_label = "???"; }
+			
+			if(isset($pa_form_values["{$vs_dotless_element}_autocomplete"])) {
+				if(!is_array($pa_form_values["{$vs_dotless_element}_autocomplete"])) { $pa_form_values["{$vs_dotless_element}_autocomplete"] = [$pa_form_values["{$vs_dotless_element}_autocomplete"]]; }
+				
+				foreach($pa_form_values[$vs_dotless_element] as $vn_j => $vs_element_value) {
+					$pa_form_values[$vs_dotless_element][$vn_j] = $pa_form_values["{$vs_dotless_element}_autocomplete"][$vn_j];
+				}
+			}
 			$va_fld = explode(".", $vs_element);
 			$t_table = $o_dm->getInstanceByTableName($va_fld[0], true);
 		

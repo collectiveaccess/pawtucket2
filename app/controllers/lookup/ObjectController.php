@@ -1,13 +1,13 @@
 <?php
-/** ---------------------------------------------------------------------
- * themes/default/Listings/listing_html : 
+/* ----------------------------------------------------------------------
+ * app/controllers/lookup/ObjectController.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2009 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,31 +23,16 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
- * @package CollectiveAccess
- * @subpackage Core
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
- *
  * ----------------------------------------------------------------------
  */
+ 	require_once(__CA_LIB_DIR__."/pawtucket/BaseLookupController.php");
  
- 	$va_lists = $this->getVar('lists');
- 	$va_type_info = $this->getVar('typeInfo');
- 	$va_listing_info = $this->getVar('listingInfo');
- 
-	foreach($va_lists as $vn_type_id => $qr_list) {
-		if(!$qr_list) { continue; }
-?>
-	<div class="row">
-		<div class='col-sm-12'>
-<?php		
-		print "<h1>{$va_listing_info['displayName']}</h1>\n";
-		
-		if($qr_list && $qr_list->numHits()) {
-			while($qr_list->nextHit()) {
-				print "<div class='listingItem'>".$qr_list->getWithTemplate('<l>^ca_entities.preferred_labels.displayname</l>')."</div>";
-			}
-		}
-	}
-?>
-		</div>
-	</div>
+ 	class ObjectController extends BaseLookupController {
+ 		# -------------------------------------------------------
+ 		protected $opb_uses_hierarchy_browser = true;
+ 		protected $ops_table_name = 'ca_objects';		// name of "subject" table (what we're editing)
+ 		protected $ops_name_singular = 'object';
+ 		protected $ops_search_class = 'ObjectSearch';
+ 		# -------------------------------------------------------
+ 	}
+ ?>

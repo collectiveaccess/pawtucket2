@@ -1104,6 +1104,7 @@
 			});
 			jQuery('.caAdvancedSearchFormReset').bind('click', function() {
 				jQuery('#caAdvancedSearch').find('input[type!=\"hidden\"],textarea').val('');
+				jQuery('#caAdvancedSearch').find('input.lookupBg').val('');
 				jQuery('#caAdvancedSearch').find('select.caAdvancedSearchBoolean').val('AND');
 				jQuery('#caAdvancedSearch').find('select').prop('selectedIndex', 0);
 				return false;
@@ -1130,6 +1131,47 @@
  		$po_view->setVar("/form", $vs_script.caHTMLHiddenInput("_advancedFormName", array("value" => $ps_function)).caHTMLHiddenInput("_formElements", array("value" => join('|', $va_form_elements))).caHTMLHiddenInput("_advanced", array("value" => 1))."</form>");
  			
 		return $va_form_elements;
+	}
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caGetAdvancedSearchFormAutocompleteJS($po_request, $ps_field, $pt_instance, $pa_options=null) {
+		$vs_field_proc = preg_replace("![\.]+!", "_", $ps_field);
+		if ($vs_rel_types = join(";", caGetOption('restrictToRelationshipTypes', $pa_options, []))) { $vs_rel_types_proc = "_{$vs_rel_types}"; $vs_rel_types = "/{$vs_rel_types}";  }
+	
+		$vs_buf = $pt_instance->htmlFormElementForSearch($po_request, $ps_field, array_merge($pa_options, ['class'=> 'lookupBg', 'name' => "{$ps_field}", 'id' => "{$vs_field_proc}{$vs_rel_types_proc}", 'autocomplete' => 1, 'nojs' => 1]));
+		$vs_buf .= "<input type=\"hidden\" name=\"{$ps_field}{$vs_rel_types}\" id=\"{$vs_field_proc}{$vs_rel_types_proc}\" value=\"\" class=\"lookupBg\"/>";
+									
+		if (!is_array($va_json_lookup_info = caJSONLookupServiceUrl($po_request, $pt_instance->tableName()))) { return null; }
+		$vs_buf .= "<script type=\"text/javascript\">
+jQuery(document).ready(function() {
+	jQuery('#{$vs_field_proc}{$vs_rel_types_proc}_autocomplete').autocomplete({ minLength: 3, delay: 800, html: true,
+					source: function( request, response ) {
+						$.ajax({
+							url: '".$va_json_lookup_info['search']."',
+							dataType: \"json\",
+							data: { term: '{$ps_field}:' + request.term },
+							success: function( data ) {
+								response(data);
+							}
+						});
+					},
+					select: function( event, ui ) {
+						if(!parseInt(ui.item.id) || (ui.item.id <= 0)) {
+							jQuery('#{$vs_field_proc}{$vs_rel_types_proc}').val('');  // no matches so clear text input
+							event.preventDefault();
+							return;
+						}
+						jQuery('#{$vs_field_proc}{$vs_rel_types_proc}_autocomplete').val(jQuery.trim(ui.item.label.replace(/<\/?[^>]+>/gi, '')));
+						jQuery('#{$vs_field_proc}{$vs_rel_types_proc}').val(ui.item.id);
+						event.preventDefault();
+					}
+			})});
+										
+</script>";
+
+		return $vs_buf;
 	}
 	# ---------------------------------------
 	/**
