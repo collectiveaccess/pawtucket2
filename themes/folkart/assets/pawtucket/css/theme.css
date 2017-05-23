@@ -89,6 +89,15 @@ h1{
 	margin-left:-30px !important;
 	margin-right:-30px !important;
 }
+.lightbox H1{
+	padding-left: 30px !important;
+	padding-right: 30px !important;
+	margin-left:-30px !important;
+	margin-right:-30px !important;
+}
+.lightbox H1{
+	margin-bottom:25px;
+}
 H1.searchBrowseMainTitle{
 	margin-left:0px;
 	margin-right:0px;
@@ -155,8 +164,12 @@ h5 {
 	border:0px;
 	color:#FFF;
 }
-.browse .btn{
+.browse .btn, .sets .btn{
 	background-color: #ed6b41;
+}
+.sets .setsBack{
+	background-color:#e5ddda;
+	margin-top:10px;
 }
 #pageArea{
 	margin-bottom:20px;
@@ -518,3 +531,11 @@ div.browseMenuBrowseAll{
 
 .form-control:focus {
     border-color: #000;
+}
+.listing .listingItem a{
+	text-decoration:none;
+	color:#3d3932;
+}
+.listing .listingItem{
+	padding-bottom:10px;
+}

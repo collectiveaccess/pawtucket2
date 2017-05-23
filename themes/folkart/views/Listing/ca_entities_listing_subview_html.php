@@ -38,24 +38,13 @@
 		if(!$qr_list) { continue; }
 ?>
 	<div class="row">
-		<div class='col-md-12 col-lg-12 collectionsList'>
+		<div class='col-sm-12'>
 <?php		
 		print "<h1>{$va_listing_info['displayName']}</h1>\n";
 		
-		$vn_i = 0;
 		if($qr_list && $qr_list->numHits()) {
 			while($qr_list->nextHit()) {
-				if ( $vn_i == 0) { print "<div class='row'>"; } 
-				print "<div class='col-sm-6'><div class='collectionTile'><div class='title'>".$qr_list->getWithTemplate('<l>^ca_entities.preferred_labels.displayname</l>')."</div>";	
-				print "</div></div>";
-				$vn_i++;
-				if ($vn_i == 2) {
-					print "</div><!-- end row -->\n";
-					$vn_i = 0;
-				}
-			}
-			if (($vn_i < 2) && ($vn_i != 0) ) {
-				print "</div><!-- end row -->\n";
+				print "<div class='listingItem'>".$qr_list->getWithTemplate('<l>^ca_entities.preferred_labels.displayname</l>')."</div>";
 			}
 		}
 	}
