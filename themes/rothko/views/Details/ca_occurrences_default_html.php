@@ -46,9 +46,11 @@
 			print "<div class='unit'>".join(', ', $va_place_output)."</div>";
 		}
 		if ($va_date = $t_item->get('ca_occurrences.occurrence_dates')) {
-			$va_raw_date = $t_item->get('ca_occurrences.occurrence_dates', array('rawDate' => true, 'returnAsArray' => true));
-			$vs_start_date = explode('.', $va_raw_date[0]['start']);
-			print "<div class='unit'>".caNavLink($this->request, $va_date, '', 'Search', 'exhibitions', 'search/exhibition_dates', ["values" => [$vs_start_date[0]]])."</div>";
+			$va_raw_date = $t_item->get('ca_occurrences.occurrence_dates', array('returnWithStructure' => true, 'rawDate' => true));
+			if (sizeof($va_raw_date) > 0) {
+				$va_raw_date = array_pop(array_pop($va_raw_date));
+				print "<div class='unit'>".caNavLink($this->request, $va_date, '', 'Search', 'exhibitions', 'search/exhibition_dates', ["values" => [(int)$va_raw_date['occurrence_dates']['start']]])."</div>";
+			}
 		}
 		if ($va_related_exhibitions = $t_item->get('ca_occurrences.related', array('returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 			foreach ($va_related_exhibitions as $va_key => $va_related_exhibition) {
