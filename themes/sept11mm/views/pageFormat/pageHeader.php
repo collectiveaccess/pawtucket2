@@ -402,7 +402,7 @@
 				</form>
 				<ul class="nav navbar-nav navbar-right">
 					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home")."<span>/</span>", "", "", "", ""); ?></li>
-					<li <?php print (($this->request->getController() == "Browse") || ($this->request->getController() == "Search")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse")."<span>/</span>", "", "", "Browse", "objects", array("sort" => urlencode("Most Views"))); ?></li>
+					<li <?php print (($this->request->getController() == "Browse") || ($this->request->getController() == "Search")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse")."<span>/</span>", "", "", "Browse", "objects", array("sort" => "Most&nbsp;Views")); ?></li>
 <?php
 						#print $this->render("pageFormat/browseMenu.php");
 						#print $this->render("pageFormat/advancedSearchMenu.php");
