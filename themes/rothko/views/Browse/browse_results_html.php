@@ -125,17 +125,33 @@ if($this->request->getParameter("detailNav", pInteger)){
 					if($vs_sort_control_type == 'dropdown'){
 						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 							print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
-							foreach($va_sorts as $vs_sort => $vs_sort_flds) {
-								if ($vs_current_sort === $vs_sort) {
-									print "<li><a href='#' onClick='return false;'><em>{$vs_sort}</em></a></li>\n";
-								} else {
-									print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'sort' => $vs_sort, 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.$vs_sort.'</a></li>';
+							
+							if ($vb_show_filter){ 
+								foreach($va_sorts as $vs_sort => $vs_sort_flds) {
+									if ($vs_current_sort === $vs_sort) {
+										print "<li><a href='#' onClick='return false;'><em>{$vs_sort}</em></a></li>\n";
+									} else {
+										print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => $vs_facet, 'id' => $this->request->getParameter('id', pInteger), 'detailNav' => '1', 'key' => $vs_browse_key, 'sort' => urlencode($vs_sort), 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.$vs_sort.'</a></li>';
+									}
 								}
+								print "<li class='divider'></li>\n";
+								print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
+								print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => $vs_facet, 'id' => $this->request->getParameter('id', pInteger), 'detailNav' => '1', 'key' => $vs_browse_key, 'sort' => urlencode($vs_current_sort), 'view' => $vs_current_view, 'direction' => 'asc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : '').'</a></li>';
+								print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => $vs_facet, 'id' => $this->request->getParameter('id', pInteger), 'detailNav' => '1', 'key' => $vs_browse_key, 'sort' => urlencode($vs_current_sort), 'view' => $vs_current_view, 'direction' => 'desc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : '').'</a></li>';
+
+							} else {
+								foreach($va_sorts as $vs_sort => $vs_sort_flds) {
+									if ($vs_current_sort === $vs_sort) {
+										print "<li><a href='#' onClick='return false;'><em>{$vs_sort}</em></a></li>\n";
+									} else {
+										print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'sort' => $vs_sort, 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.$vs_sort.'</a></li>';
+									}
+								}
+								print "<li class='divider'></li>\n";
+								print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
+								print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'asc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : '').'</a></li>';
+								print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'desc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : '').'</a></li>';
 							}
-							print "<li class='divider'></li>\n";
-							print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
-							print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'asc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : '').'</a></li>';
-							print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'desc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : '').'</a></li>';
 						}
 					}
 ?>
