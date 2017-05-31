@@ -1272,9 +1272,6 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			}
 			
 			// Index the links
-<<<<<<< HEAD
-			$this->getSearchIndexer()->reindexRows('ca_set_items', $va_item_ids, array('queueIndexing' => false));
-=======
 			$this->getSearchIndexer()->reindexRows('ca_set_items', $va_item_ids, array('queueIndexing' => (bool) caGetOption('queueIndexing', $pa_options, true)));
 		
 			// Create change log entries
@@ -1305,8 +1302,6 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 					$t_set->logChange("U", $pn_user_id, ['row_id' => $qr_res->get('ca_sets.set_id'), 'snapshot' => $va_snapshot]);
 				}
 			}
-			
->>>>>>> 4f5b4a2238c4b5e929aed6692f176b41c49e81d1
 		}
 		
 		return sizeof($va_item_values);

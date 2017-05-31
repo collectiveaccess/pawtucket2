@@ -27,10 +27,7 @@
  */
 
 	print TooltipManager::getLoadHTML();
-<<<<<<< HEAD
 	if(!in_array($this->request->getController(), array("Lightbox"))){
-=======
->>>>>>> 4f5b4a2238c4b5e929aed6692f176b41c49e81d1
 ?>
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
@@ -38,11 +35,7 @@
 			$('#caMediaPanelContentArea').on('contextmenu', 'img', function(e){ return false; });
 			$('img:not([alt])').attr('alt', '');
 		});
-<<<<<<< HEAD
 	</script>
 <?php
 	}
 ?>
-=======
-	</script>
->>>>>>> 4f5b4a2238c4b5e929aed6692f176b41c49e81d1

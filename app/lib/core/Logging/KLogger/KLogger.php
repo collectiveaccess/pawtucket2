@@ -175,14 +175,10 @@ class KLogger
         	return false;
         }
         if (!file_exists($logDirectory)) {
-<<<<<<< HEAD
-            @mkdir($logDirectory, self::$_defaultPermissions, true);
-=======
             if (!@mkdir($logDirectory, self::$_defaultPermissions, true)) {
             	$this->_logStatus = self::STATUS_OPEN_FAILED;
             	$this->_messageQueue[] = $this->_messages['openfail'];
             }
->>>>>>> 4f5b4a2238c4b5e929aed6692f176b41c49e81d1
         }
 
         if (file_exists($this->_logFilePath) && !is_writable($this->_logFilePath)) {
