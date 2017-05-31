@@ -1013,7 +1013,7 @@
 			
 			// Bail and return list default
 			$t_list = new ca_lists();
-			return $t_list->getDefaultItemID($this->getSourceListCode());
+			return $t_list->getDefaultItemID($this->getSourceListCode(), ['useFirstElementAsDefaultDefault' => true]);
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -1179,7 +1179,7 @@
 		 */
 		public function getDefaultTypeID() {
 			$t_list = new ca_lists();
-			return $t_list->getDefaultItemID($this->getTypeListCode(), array('omitRoot' => true));
+			return $t_list->getDefaultItemID($this->getTypeListCode(), ['omitRoot' => true, 'useFirstElementAsDefaultDefault' => true]);
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -1326,16 +1326,29 @@
 			if ($ps_render = caGetOption('render', $pa_options, null)) {
 				switch($ps_render) {
 					case 'is_set':
-						return caHTMLCheckboxInput($ps_field.$vs_rel_types, array('value' => '[SET]'));
+						return caHTMLCheckboxInput($ps_field.$vs_rel_types, array('value' => '['._t('SET').']'));
 						break;
 					case 'is':
 						return caHTMLCheckboxInput($ps_field.$vs_rel_types, array('value' => caGetOption('value', $pa_options, null)));
 						break;
 				}
 			}
-											
+			
 			if (in_array($va_tmp[1], array('preferred_labels', 'nonpreferred_labels'))) {
-				return caHTMLTextInput($ps_field.$vs_rel_types.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)), $pa_options);
+				$vs_autocomplete = caGetOption('autocomplete', $pa_options, false) ? "_autocomplete" : "";
+				if ($va_tmp[0] == $this->tableName() && $vs_autocomplete) {
+					
+					if (!caGetOption('nojs', $pa_options, false)) {	
+						return caGetAdvancedSearchFormAutocompleteJS($po_request, $ps_field, $this, $pa_options);
+					} else {
+						$ps_field_proc = preg_replace("![\.]+!", "_", $ps_field);
+						if ($vs_rel_types = join(";", caGetOption('restrictToRelationshipTypes', $pa_options, []))) { $vs_rel_types_proc = "_{$vs_rel_types}"; $vs_rel_types = "/{$vs_rel_types}";  }
+					
+						return $vs_buf.caHTMLTextInput(caGetOption('name', $pa_options, $ps_field).$vs_rel_types.$vs_autocomplete.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'class' => $pa_options['class'], 'id' => caGetOption('id', $pa_options, str_replace('.', '_', caGetOption('name', $pa_options, $ps_field))).$vs_autocomplete), $pa_options);
+					}
+				} else {
+					return caHTMLTextInput(caGetOption('name', $pa_options, $ps_field).$vs_rel_types.$vs_autocomplete.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'class' => $pa_options['class'], 'id' => caGetOption('id', $pa_options, str_replace('.', '_', caGetOption('name', $pa_options, $ps_field)))), $pa_options);
+				}
 			}
 			
 			if (!in_array($va_tmp[0], array('created', 'modified'))) {		// let change log searches filter down to BaseModel
@@ -1761,8 +1774,7 @@
 						if ((bool)$this->getAppConfig()->get('perform_source_access_checking')) {
 							$pa_options['value'] = $this->get($ps_field);
 							$pa_options['disableItemsWithID'] = caGetSourceRestrictionsForUser($this->tableName(), array('access' => __CA_BUNDLE_ACCESS_READONLY__, 'exactAccess' => true));
-							
-							return $this->getSourceListAsHTMLFormElement($ps_field, array(), $pa_options);
+							return $this->getSourceListAsHTMLFormElement($pa_options['name'], array(), $pa_options);
 						}
 						break;
 				}

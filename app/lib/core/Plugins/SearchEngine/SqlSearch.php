@@ -910,7 +910,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								//$vs_term = preg_replace("%((?<!\d)[".$this->ops_search_tokenizer_regex."]+|[".$this->ops_search_tokenizer_regex."]+(?!\d))%u", '', $vs_raw_term);
 								$vs_term = join(' ', $this->_tokenize($vs_raw_term, true));
 								
-								if ($vs_access_point && (mb_strtoupper($vs_raw_term) == _t('[BLANK]'))) {
+								if ($vs_access_point && (mb_strtoupper($vs_raw_term) == '['._t('BLANK').']')) {
 									$t_ap = $this->opo_datamodel->getInstanceByTableNum($va_access_point_info['table_num'], true);
 									if (is_a($t_ap, 'BaseLabel')) {	// labels have the literal text "[Blank]" indexed to "blank" to indicate blank-ness 
 										$vb_is_blank_search = false;
@@ -921,7 +921,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 										$vs_fld_num = $va_access_point_info['field_num'];
 										break;
 									} 
-								} elseif ($vs_access_point && (mb_strtoupper($vs_raw_term) == _t('[SET]'))) {
+								} elseif ($vs_access_point && (mb_strtoupper($vs_raw_term) == '['._t('SET').']')) {
 									$vb_is_not_blank_search = true;
 									$vs_table_num = $va_access_point_info['table_num'];
 									$vs_fld_num = $va_access_point_info['field_num'];
@@ -1522,9 +1522,10 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 					if (!$vs_fld_num && is_array($va_exclude_fields_from_search = caGetOption('excludeFieldsFromSearch', $pa_options, null)) && sizeof($va_exclude_fields_from_search)) {
 						$va_field_restrict_sql = array();
 						foreach($va_exclude_fields_from_search as $va_restrict) {
-							$va_field_restrict_sql[] = "((swi.field_table_num <> ".intval($va_restrict['table_num']).") AND (swi.field_num <> '".$va_restrict['field_num']."'))";
+							$va_field_restrict_sql[] = "'".$va_restrict['field_num']."'";
 						}
-						$vs_sql_where .= " AND (".join(" OR ", $va_field_restrict_sql).")";
+						
+						$vs_sql_where .= " AND (swi.field_num  NOT IN (".join(",", $va_field_restrict_sql)."))";
 					}
 					
 					
@@ -1587,7 +1588,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 
 						
 						if ((($vn_num_terms = (sizeof($va_ft_terms) + sizeof($va_ft_like_terms) + sizeof($va_ft_stem_terms))) > 1) && (!$vs_direct_sql_query)){
-							$vs_sql .= " HAVING count(distinct sw.word_id) = {$vn_num_terms}";
+							$vs_sql .= " HAVING count(distinct sw.stem) >= {$vn_num_terms}";
 						}
 						
 						$t = new Timer();
@@ -1626,9 +1627,9 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								";
 								
 								if (($vn_num_terms = (sizeof($va_ft_terms) + sizeof($va_ft_like_terms) + sizeof($va_ft_stem_terms))) > 1) {
-									$vs_sql .= " HAVING count(distinct sw.word_id) = {$vn_num_terms}";
+									$vs_sql .= " HAVING count(distinct sw.stem) >= {$vn_num_terms}";
 								}
-							
+								
 								$t = new Timer();
 								
 								$pa_direct_sql_query_params = is_array($pa_direct_sql_query_params) ? $pa_direct_sql_query_params : array((int)$pn_subject_tablenum);

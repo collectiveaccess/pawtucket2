@@ -66,11 +66,11 @@
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
             if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
-            	$ps_id = urldecode($this->request->getActionExtra());
+            	if (!($ps_id = urldecode($this->request->getActionExtra()))) { $ps_id = $this->request->getParameter('id', pInteger); }
             	
             	$t_set_list = new ca_sets();
             	$t_set = new ca_sets();
-            	$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 1));
+            	$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values));
 				$va_user_has_access = false;
 				if (sizeof($va_sets) > 0) {
 					foreach ($va_sets as $va_key => $va_set) {
@@ -442,9 +442,15 @@
  			if (!$this->viewExists($vs_path = "Details/{$vs_table}_{$vs_type}_html.php")) {
  				$vs_path = "Details/{$vs_table}_default_html.php";		// If no type specific view use the default
  			}
- 			
+ 			//
+ 			// pdf link
+ 			//
+ 			$this->view->setVar('pdfEnabled', (bool)$va_options['enablePDF']);
 			switch($ps_view = $this->request->getParameter('view', pString)) {
  				case 'pdf':
+ 					if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
+					set_time_limit($vn_limit * 6);
+				
  					caExportItemAsPDF($this->request, $t_subject, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_options, null), ['t_subject' => $t_subject]), ['checkAccess' => $this->opa_access_values]);
  					break;
  				default:
@@ -1025,9 +1031,9 @@
 					$vs_mail_message_text = $o_view->render("mailTemplates/share_email_text.tpl");
 				}
 				if($ps_tablename == "ca_objects"){
-					$vs_mail_message_html = $o_view->render("/mailTemplates/share_object_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/share_object_email_html.tpl");
 				}else{
-					$vs_mail_message_html = $o_view->render("/mailTemplates/share_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/share_email_html.tpl");
 				}
 				
 				$va_media = null;

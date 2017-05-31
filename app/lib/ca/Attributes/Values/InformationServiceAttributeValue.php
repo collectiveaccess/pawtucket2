@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2015 Whirl-i-Gig
+ * Copyright 2011-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -338,9 +338,10 @@ class InformationServiceAttributeValue extends AttributeValue implements IAttrib
 								minLength: 3,delay: 800,
 								source: '{$vs_url}',
 								html: true,
-								select: function(event, ui) {
-									jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').val(ui.item.label + '|' + ui.item.idno + '|' + ui.item.url);
-									
+								select: function(event, ui) {".((!$pb_for_search) ? "
+									jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').val(ui.item.label + '|' + ui.item.idno + '|' + ui.item.url);" : 
+									"jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').val(ui.item.label);"
+								)."
 								}
 							}
 						).click(function() { this.select(); });
@@ -375,8 +376,10 @@ class InformationServiceAttributeValue extends AttributeValue implements IAttrib
 	 */
 	public function getAvailableSettings($pa_element_info=null) {
 		global $_ca_attribute_settings;
-
-		$vs_service = isset($pa_element_info['service']) ? $pa_element_info['service'] : null;
+		if (!($vs_service = isset($pa_element_info['settings']['service']) ? $pa_element_info['settings']['service'] : null)) {
+			$vs_service = isset($pa_element_info['service']) ? $pa_element_info['service'] : null;
+		}
+		
 		$va_names = InformationServiceManager::getInformationServiceNames();
 		if (!in_array($vs_service, $va_names)) {
 			$vs_service = $va_names[0];

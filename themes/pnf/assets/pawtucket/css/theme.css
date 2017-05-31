@@ -640,4 +640,12 @@ div.caMediaOverlayControls {
 }
 
 
-
+.tl-timeline a {
+	color: #7f4539 !important;
+}
+.tl-timeline h1 , .tl-timeline h2 , .tl-timeline h3 {
+	font-size:12px !important;
+}
+.tl-timeline h1 a, .tl-timeline h2 a, .tl-timeline h3 a{
+	font-size:18px !important;
+}

@@ -96,7 +96,7 @@
 			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable")) {
 				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable"));
 			} else {
-				ExternalCache::save("{$vs_class}totalRecordsAvailable", $vn_count = ca_objects::find(['deleted' => 0, 'access' => $this->opa_access_values], ['returnAs' => 'count']));
+				ExternalCache::save("{$vs_class}totalRecordsAvailable", $vn_count = $vs_class::find(['deleted' => 0], ['checkAccess' => $this->opa_access_values, 'returnAs' => 'count', 'restrictToTypes' => (sizeof($va_types)) ? $va_types : null]));
 				$this->view->setVar('totalRecordsAvailable', $vn_count);
 			}
 			
@@ -132,7 +132,7 @@
  				$ps_view = array_shift(array_keys($va_views));
  			}
  			# --- only set the current view if it's not an export format
- 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx"))){
+ 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx", "timelineData"))){
  				$this->opo_result_context->setCurrentView($ps_view);
  			}
  			
@@ -207,7 +207,7 @@
 			// Sorting
 			//
 			$vb_sort_changed = false;
- 			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
+ 			if (!($ps_sort = urldecode($this->request->getParameter("sort", pString)))) {
  				if (!($ps_sort = $this->opo_result_context->getCurrentSort())) {
  					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
  						$ps_sort = array_shift(array_keys($va_sorts));
@@ -356,7 +356,7 @@
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
-				if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
+				if (($vn_key_start = (int)$vn_start - 1000) < 0) { $vn_key_start = 0; }
 				$qr_res->seek($vn_key_start);
 				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 				$qr_res->seek($vn_start);

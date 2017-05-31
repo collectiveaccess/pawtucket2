@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2015 Whirl-i-Gig
+ * Copyright 2011-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -56,17 +56,19 @@ class ObjectRepresentationSearchResult extends BaseSearchResult {
  	 *
  	 * @param RequestHTTP $po_request
  	 * @param array $pa_options
+ 	 * @param array $pa_additional_display_options
  	 * @return string HTML output
  	 */
- 	public function getRepresentationViewerHTMLBundle($po_request, $pt_subject, $pa_options=null) {
- 		return array_shift(caRepresentationViewerHTMLBundles($po_request, caMakeSearchResult($this->tableName(), [$this->getPrimaryKey()]), $pt_subject, $pa_options));
+ 	public function getRepresentationViewerHTMLBundle($po_request, $pa_options=null, $pa_additional_display_options=null) {
+ 		return caRepresentationViewerHTMLBundle($this, $po_request, $pa_options, $pa_additional_display_options);
  	}
  	# ------------------------------------------------------
  	/**
  	 * 
  	 *
- 	 * @param RequestHTTP $po_request
- 	 * @param array $pa_options
+ 	 * @param RequestHTTP $po_request The current request
+ 	 * @param RepresentableBaseModel $pt_subject A model instance loaded with the subject (the record the media is shown in the context of. Eg. if a representation is shown for an object this is an instance for that object record)
+ 	 * @param array $pa_options See caRepresentationViewerHTMLBundles in DisplayHelpers
  	 * @return string HTML output
  	 */
  	public function getRepresentationViewerHTMLBundles($po_request, $pt_subject, $pa_options=null) {
