@@ -250,6 +250,7 @@ a:hover, a:focus, a:visited {
 }
 .navbar .dropdown-menu {
 	border-left:0px;
+	box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
 }
 .navbar-default .navbar-nav > li:hover, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:active{
 	background-color: #00cfb7;
@@ -296,7 +297,7 @@ a:hover, a:focus, a:visited {
 }
 .yamm .nav.navbar-right .dropdown-menu {
 	background-color: #262626;
-	margin-top:-1px;
+	/*margin-top:-1px;*/
 }
 .yamm .nav.navbar-right .dropdown-menu > li > a {
 	color: #7c7c7c;
@@ -427,6 +428,11 @@ body {
   /* Margin bottom by footer height */
   margin-bottom: 210px;
 }
+@media (max-width: 450px) {
+	body {
+		margin-bottom:310px;
+	}
+}
 
 #footer {
 	background-color: #000000;
@@ -439,6 +445,11 @@ body {
   	/* Set the fixed height of the footer here */
   	height: 170px;
   	margin-bottom:0px;
+}
+@media (max-width: 450px) {
+	#footer {
+		height:270px;
+	}
 }
 .footerHeader {
 	color: #fff;
@@ -461,7 +472,15 @@ body {
 	#footer .copyright{
 		float:right;
 	}
+	#footer .copyright div{
+		text-align:center;
+	}
 }
+#footer .copyright img{
+	width:150px;
+	height:auto;
+}
+
 /* Homepage */
 
 #homePanel {
@@ -750,6 +769,10 @@ a.readmore-js-toggle {
 		min-width:500px !important;
 	}
 }
+.detailOverlayImg .detailMediaToolbar{
+	display:none;
+}
+
 .detailOverlayItemImgPlaceholder{
 	background-color: #FFFFFF;
     border: 0px;
@@ -1030,6 +1053,10 @@ a.caAdvancedSearchFormSubmit:hover, a.caAdvancedSearchFormReset:hover {
 .dropdown-header {
 	color: #000;
 	font-size:14px;
+}
+.dropdown-menu{
+	border:0px solid transparent;
+	
 }
 .dropdown-menu > li > a {
 	font-size:14px;
@@ -1318,6 +1345,10 @@ p.linkInfo {
 	color: #00cfb7;
 	width:18px;
 	display:inline-block;
+}
+.staticImg img{
+	width:100%;
+	height:auto;
 }
 
 /* Ipad Styles */

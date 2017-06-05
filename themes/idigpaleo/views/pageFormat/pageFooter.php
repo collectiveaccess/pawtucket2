@@ -30,9 +30,10 @@
 	</div><!-- end pageArea -->
 	<div id="footer">
 		<ul class="list-inline pull-right social">
-			<li><i class="fa fa-twitter"></i></li>
-			<li><i class="fa fa-facebook-square"></i></li>
-			<li><i class="fa fa-youtube-play"></i></li>
+			<li><a href="https://twitter.com/FossilInsectTCN" target="_blank"><i class="fa fa-twitter"></i></a></li>
+			<li><a href="https://www.facebook.com/FossilInsectCollaborativeDigitizationProject/" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
+			<li><a href="https://www.instagram.com/fossilinsectcollaborativetcn/" target="_blank"><i class="fa fa-instagram"></i></a></li>
+			<!--<li><i class="fa fa-youtube-play"></i></li>-->
 		</ul>
 		<!--<div>
 			Footer text here
@@ -50,6 +51,7 @@
 </div><!-- end container -->
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
+		<a href="#" onclick="caMediaPanel.hidePanel(); return false;" title="close" class="caMediaPanelCloseButton"><i class="caIcon fa fa-times-circle"></i></a>
 			<div id="caMediaPanelContentArea">
 			
 			</div>
@@ -73,6 +75,14 @@
 						closeButtonSelector: '.close'					/* anything with the CSS classname "close" will trigger the panel to close */
 					});
 				}
+				
+				jQuery("#caMediaPanel").click(function() {
+					caMediaPanel.hidePanel();
+					return false;
+				}).children().click(function(e) {
+				  return false;
+				});
+
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
 		</script>

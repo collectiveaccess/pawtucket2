@@ -143,5 +143,5 @@
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
-	<div class="container"><div class="row"><div class="col-xs-12">
+	<div class="container"><div class="row">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

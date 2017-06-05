@@ -1,4 +1,4 @@
-<div>
+<div class="row"><div class="col-sm-12">
 	<H1><?php print $this->getVar("section_name"); ?></H1>
 <?php
 	$va_sets = $this->getVar("sets");
@@ -122,4 +122,4 @@
 <?php
 	}
 ?>
-</div>
+</div><!-- end col --></div><!-- end row -->

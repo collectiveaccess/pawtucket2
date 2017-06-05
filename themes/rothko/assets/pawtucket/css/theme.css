@@ -102,7 +102,7 @@ p {
 #footer {
 	position:absolute;
 	bottom:0px;
-	height:100px;
+	height:60px;
 	width:100%;
 	padding-right:15px;
 	padding-left:15px;
@@ -117,12 +117,16 @@ p {
 	color:#333;
 }
 .footerlink {
-	float:left;
-	padding-right:40px;
+	display:inline-block;
+	padding-right:10px;
+	padding-left:10px;
 	color:#333;
 }
 #footer .footerlink a {
 	color:#333;
+}
+#footer a {
+	text-decoration:none;
 }
 
 /* Homepage */
@@ -596,9 +600,14 @@ a .fa.clearFacet {
 .objNav .previousLink {
 	padding-right:20px;
 }
-.exhibition.detail .repViewerCont img {
-	width:auto;
+/*.exhibition.detail .repViewerCont img {
+	width:100%;
 	max-height:500px;
+	height:auto;
+}*/
+.exhibition.detail .jcarousel-wrapper ul{
+	padding-left:15px;
+	padding-right:15px;
 }
 #detailRepresentationThumbnails a img, #detailRepresentationThumbnails a.active img {
 	border:0px;
@@ -653,7 +662,7 @@ a .fa.clearFacet {
 .versoInfo {
 	background-color:#f5f5f5;
 	padding:15px;
-	margin-top:30px;
+	margin-top:0px;
 }
 .versoInfo .unit {
 	font-size:12px;
@@ -715,13 +724,13 @@ a .fa.clearFacet {
     float: left;
     position: absolute;
     top: 215px;
-    left: -30px;
+    left: -25px;
 }
 .detail #detailRepNavNext {
     float: right;
     position: absolute;
     top: 215px;
-    right: -30px; 
+    right: -25px; 
 }
 .detail #detailRepNav {
 	font-size:20px;
@@ -730,7 +739,10 @@ a .fa.clearFacet {
 	margin-left:10px;
 	font-size:12px;
 }
-
+.detail .repViewerCont img {
+    max-height: 500px;
+    object-fit: contain;
+}
 /* Advanced Search */
 
 .advancedContainer {
@@ -873,3 +885,4 @@ h3.window-manifest-title {
 	bottom:5px;
 	right:5px;
 }
+

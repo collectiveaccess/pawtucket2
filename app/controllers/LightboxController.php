@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2015 Whirl-i-Gig
+ * Copyright 2013-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -372,7 +372,7 @@
 			
 			$o_context->setParameter('key', $vs_key);
 			
-			if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
+			if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
 			$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 			//if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
@@ -1255,10 +1255,6 @@
  			$this->view->setvar("object_ids", $this->request->getParameter('object_ids', pString));
  			$this->view->setvar("saveLastResults", $this->request->getParameter('saveLastResults', pInteger));
  			if(($pn_object_id = $this->request->getParameter('object_id', pInteger)) || ($pn_save_last_results = $this->request->getParameter('saveLastResults', pInteger)) || ($pa_object_ids = sizeof(explode(";", $this->request->getParameter('object_ids', pString))))){
- 				$this->view->setVar('object_id', $pn_object_id);
- 				$this->view->setVar('object_ids', $pa_object_ids);
- 				$this->view->setVar('saveLastResults', $pn_save_last_results);
- 				
  				$this->render("Lightbox/form_add_set_item_html.php");
  			}else{
  				$this->view->setVar('message', _t("Object ID is not defined"));

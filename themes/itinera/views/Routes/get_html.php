@@ -27,16 +27,16 @@
 <?php
 	}
 
-	if(is_array($va_removed_entity_ids) && sizeof($va_removed_entity_ids)) {
-		foreach($va_removed_entity_ids as $vn_removed_entity_id) {
+	if((is_array($va_removed_entity_ids) && sizeof($va_removed_entity_ids)) || (is_array($va_removed_object_ids) && sizeof($va_removed_object_ids))) {
 ?>
-			var entity_to_remove = map.entityMarkers['entity_<?php print $vn_removed_entity_id; ?>'];
-			if (entity_to_remove) { 
-				map.l.removeLayer(entity_to_remove);
-				map.data['entity_<?php print $vn_removed_entity_id; ?>'] = null;
-			}
+		// get data for entity
+		jQuery.getJSON('<?php print caNavUrl($this->request, '*', '*', 'GetMapData'); ?>', function(d) {
+			map.data = d;
+			jQuery('#routeMap').data('_map_', map);
+			map.generateMap(map);
+			map.setMapSlider(map);
+		});
 <?php
-		}
 	}
 	
 	
@@ -54,28 +54,13 @@
 		});
 <?php
 	}
-
-	if(is_array($va_removed_object_ids) && sizeof($va_removed_object_ids)) {
-		foreach($va_removed_object_ids as $vn_removed_object_id) {
 ?>
-			var object_to_remove = map.entityMarkers['object_<?php print $vn_removed_object_id; ?>'];
-			if (object_to_remove) { 
-				map.l.removeLayer(object_to_remove);
-				map.data['object_<?php print $vn_removed_object_id; ?>'] = null;
-			}
-<?php
-		}
-	}
-?>
-		jQuery('#routeMap').data('_map_', map);	
-		map.generateMap(map);
-		map.setMapSlider(map);
 	}
 	</script>
 <?php
 
 	
-	if (true) {
+	if ((is_array($va_entity_list) && sizeof($va_entity_list)) || (is_array($va_object_list) && sizeof($va_object_list))) {
 		if (is_array($va_entity_list) && sizeof($va_entity_list)) {
 			$qr_res = caMakeSearchResult('ca_entities', array_values($va_entity_list));
 		
@@ -122,9 +107,11 @@
 				print "<div class='travelerMapList clearfix'>";
 				print "<div class='travelerMapListRemove' data-object_id='{$vn_object_id}'>&#10006;</div>";
 				print "<div class='travelerMapListColorKey' style='background-color: #".$va_used_colors[$vn_object_id].";'>&nbsp;</div>";
-				print "<div class='travelerMapListImage'>".caNavLink($this->request, $vs_image_tag, '', '', 'Detail', 'object', array('id' => $vn_object_id))."</div>";
-		
-				print "<div class='travelerMapListArtistName'>".caNavLink($this->request, $qr_res->get('ca_objects.preferred_labels'), '', '', 'Detail', 'object', array('id' => $vn_object_id))."</div>";									
+				print "<div class='travelerMapListImage'>".$vs_image_tag."</div>";
+				print "<div class='travelerMapListArtistName'>".$qr_res->get('ca_objects.preferred_labels')."</div>";									
+			
+				#print "<div class='travelerMapListImage'>".caNavLink($this->request, $vs_image_tag, '', '', 'Detail', 'object', array('id' => $vn_object_id))."</div>";
+				#print "<div class='travelerMapListArtistName'>".caNavLink($this->request, $qr_res->get('ca_objects.preferred_labels'), '', '', 'Detail', 'object', array('id' => $vn_object_id))."</div>";									
 			
 				print "</div>";
 			}

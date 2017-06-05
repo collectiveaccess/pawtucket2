@@ -61,25 +61,22 @@
 <?php
 				$va_dates_display = array();
 				$va_dates_mentioned = array();
-				if($t_object->get("ca_objects.date.dates_value")){
-					$va_dates = $t_object->get("ca_objects.date", array("returnWithStructure" => true, "convertCodesToDisplayText" => true));
-					if(is_array($va_dates) && sizeof($va_dates)){
-						$va_dates = array_pop($va_dates);
-						# --- sort out dates with type "date mentioned"
-						foreach($va_dates as $va_date){
-							if(strtolower($va_date["dc_dates_types"]) == "date mentioned"){
-								$va_dates_mentioned[] = $va_date["dates_value"].", ".$va_date["dc_dates_types"];
-							}else{
-								$va_dates_display[] = $va_date["dates_value"].((trim($va_date["dc_dates_types"]) != "-") ? ", ".$va_date["dc_dates_types"] : "");
-							}
-						}
-						if(is_array($va_dates_display) && sizeof($va_dates_display)){
-							print "<H6>Date</H6>";
-							print join("<br/>", $va_dates_display); 
+				$va_date_values = $t_object->get("ca_objects.date.dates_value", array("returnAsArray" => true));
+				$va_date_types = $t_object->get("ca_objects.date.dc_dates_types", array("returnAsArray" => true, "convertCodesToDisplayText" => true));
+				foreach($va_date_types as $vn_i => $vs_type){
+					if($va_date_values[$vn_i]){
+						if(strpos($vs_type, "mention")){
+							$va_dates_mentioned[] = $va_date_values[$vn_i].", ".$vs_type;
+						}else{
+							$va_dates_display[] = $va_date_values[$vn_i].", ".$vs_type;
 						}
 					}
 				}
-								
+				if(is_array($va_dates_display) && sizeof($va_dates_display)){
+					print "<H6>Date</H6>";
+					print join("<br/>", $va_dates_display); 
+				}
+				
 				print $t_object->getWithTemplate('<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="creator"><H6>Creator</H6></ifcount>');
 				print $t_object->getWithTemplate('<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="creator"><l>^ca_entities.preferred_labels.displayname</l></unit>');
 
