@@ -8,7 +8,7 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-6'>
 <?php
-		print "<H4>".$this->getVar("label")."</H4>";
+		print "<H4>".caNavLink($this->request, $this->getVar("label"), "", "", "Gallery", $this->getVar("set_id"))."</H4>";
 		print "<p><small class='uppercase'>".$this->getVar("num_items")." ".(($this->getVar("num_items") == 1) ? _t("item") : _t("items"))."</small></p>";
 		print "<p>".$this->getVar("description")."</p>";
 		

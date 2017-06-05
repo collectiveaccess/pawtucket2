@@ -2237,14 +2237,20 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 								if ($ps_render = caGetOption('render', $pa_options, null)) {
 									switch($ps_render) {
 										case 'is_set':
-											return caHTMLCheckboxInput($ps_field.$vs_rel_types, array('value' => '[SET]'));
+											return caHTMLCheckboxInput($ps_field.$vs_rel_types, array('value' => '['._t('SET').']'));
 											break;
 										case 'is':
 											return caHTMLCheckboxInput($ps_field.$vs_rel_types, array('value' => caGetOption('value', $pa_options, null)));
 											break;
 									}
 								}
-								if (caGetOption('select', $pa_options, false)) {
+								
+								// Autocompletion for fields from related tables
+								if (caGetOption('autocomplete', $pa_options, false)) {
+									$pa_options['asArrayElement'] = false;
+									
+									return caGetAdvancedSearchFormAutocompleteJS($po_request, $ps_field, $t_instance, $pa_options);
+								} elseif (caGetOption('select', $pa_options, false)) {
 									$va_access = caGetOption('checkAccess', $pa_options, null);
 									if (!($t_instance = $this->_DATAMODEL->getInstanceByTableName($va_tmp[0], true))) { return null; }
 								
@@ -3010,8 +3016,8 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		$o_view->setVar('placement_code', $ps_placement_code);
 		$o_view->setVar('add_label', caExtractSettingValueByLocale($pa_bundle_settings, 'add_label', $g_ui_locale));
 
-		$o_view->setVar('relationship_types', $t_item_rel->getRelationshipTypes(null, null,  array_merge($pa_options, $pa_bundle_settings)));
-		$o_view->setVar('relationship_types_by_sub_type', $t_item_rel->getRelationshipTypesBySubtype($this->tableName(), $this->get('type_id'),  array_merge($pa_options, $pa_bundle_settings)));
+		$o_view->setVar('relationship_types', method_exists($t_item_rel, 'getRelationshipTypes') ? $t_item_rel->getRelationshipTypes(null, null,  array_merge($pa_options, $pa_bundle_settings)) : []);
+		$o_view->setVar('relationship_types_by_sub_type',  method_exists($t_item_rel, 'getRelationshipTypesBySubtype') ? $t_item_rel->getRelationshipTypesBySubtype($this->tableName(), $this->get('type_id'),  array_merge($pa_options, $pa_bundle_settings)) : []);
 
 		$va_initial_values = $this->getRelatedBundleFormValues($po_request, $ps_form_name, $vs_table_name, $ps_placement_code, $pa_bundle_settings, $pa_options);
 
