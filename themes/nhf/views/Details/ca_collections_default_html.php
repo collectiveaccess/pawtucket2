@@ -77,8 +77,7 @@
 					print "<div class='result'>".$vn_item_num_label.") ";
 					print caDetailLink($this->request, $qr_hits->get("ca_occurrences.preferred_labels.name"), '', 'ca_occurrences', $vn_occurrence_id)." ".$vs_has_video;
 					print "<div class='resultDescription'>".$vs_description;
-					print caGetThemeGraphic($this->request, 'cross.gif', array("style" => "margin: 0px 3px 0px 15px;"));
-					print caDetailLink($this->request, _t("more"), '', 'ca_occurrences', $vn_occurrence_id);
+					print "&nbsp;&nbsp;&nbsp;".caDetailLink($this->request, caGetThemeGraphic($this->request, 'cross.gif', array("style" => "margin: 0px 3px 0px 0px;")).""._t("more"), 'moreLink', 'ca_occurrences', $vn_occurrence_id);
 					print "</div><!-- end description -->";
 					print "</div>\n";
 					$vn_item_num_label++;

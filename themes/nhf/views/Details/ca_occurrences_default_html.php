@@ -202,8 +202,9 @@ if($xxxx){
 			$va_dates = $t_occurrence->get('ca_occurrences.pbcoreCoverage.coverage', array("returnAsArray" => 1, 'convertCodesToDisplayText' => true));
 			if(is_array($va_dates) && sizeof($va_dates)){
 				$vs_date = join(", ", $va_dates);
-				print "\n<div class='unit'><div class='infoButton' data-toggle='popover' data-content='Associated dates.'>".caGetThemeGraphic($this->request, 'b_info.gif')."</div><div class='heading'>"._t("Date(s)")."</div><div>".(implode(", ", $va_dates))."</div></div><!-- end unit -->";
-				
+				if($vs_date){
+					print "\n<div class='unit'><div class='infoButton' data-toggle='popover' data-content='Associated dates.'>".caGetThemeGraphic($this->request, 'b_info.gif')."</div><div class='heading'>"._t("Date(s)")."</div><div>".(implode(", ", $va_dates))."</div></div><!-- end unit -->";
+				}
 			}
 			
 			# --- image

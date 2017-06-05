@@ -1409,6 +1409,9 @@ div.moreFacetListHeading{
     margin: 10px 0px 10px 0px;
     color: #333333;
 }
+.resultDescription b{
+	color: #666666;
+}
 .result {
     margin-top: 25px;
 	font-size: 12px;
@@ -1425,6 +1428,11 @@ div.moreFacetListHeading{
 #block-menu-primary-links ul.menu li li.last {
     background:none !important;
     background-color:#FFF;
+}
+.highlightSearchTerm{
+	font-weight:bold !important;
+	color:#666666 !important;
+	text-transform:uppercase;
 }
 
 /* detail */
@@ -1446,14 +1454,12 @@ div.moreFacetListHeading{
 }
 .detail #itemResults{
 	overflow-y:hidden;
-	padding-right:15px;
 }
 .detail #itemResults.scroll{
 	height:100%;
 }
 .detail #itemResults.scroll:hover{
 	overflow-y:auto;
-	padding-right:0px;
 }
 #searchResultHeadingCollection{
 	color:#666666;
@@ -1466,6 +1472,9 @@ div.moreFacetListHeading{
 .detail .result video{
 	width:100%;
 	height:auto;
+}
+.detail .result .moreLink{
+	white-space: nowrap;
 }
 .detailNavigation{
 	position:absolute;
@@ -1497,4 +1506,20 @@ div.moreFacetListHeading{
 }
 .multisearch .authoritySet a {
     color: #41a8ba;
+}
+/* header search */
+#navSearch{
+	margin-top:-8px;
+	font-size:11px;
+}
+#navSearch input[type="text"] {
+	font-size:12px;
+	font-weight: normal;
+	padding: 1px 2px 3px 2px;
+	border: 1px solid #e2e2e2;
+	width:185px;
+	margin-right:5px;
+}
+#navSearch input[type="submit"], #hpSearch input[type="submit"] {
+	border: 1px solid #e2e2e2;
 }
