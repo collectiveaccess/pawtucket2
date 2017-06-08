@@ -100,7 +100,7 @@
 		if ($vs_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions.display_dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"> (^ca_objects.dimensions.dimensions_notes)</ifdef><if rule="^ca_objects.dimensions.dimensions_uncertain =~ /163/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i></if></unit></ifcount>')) {
 			print "<div class='unit'>Dimensions - ".$vs_dimensions."</div>";
 		}		
-		if ($va_watermark = $t_object->get('ca_objects.watermark', array('returnWithStructure' => true))) {
+		if ($va_watermark = $t_parent->get('ca_objects.watermark', array('returnWithStructure' => true))) {
 			$va_media_links = array();
 			foreach ($va_watermark as $va_key => $va_watermark_id_t) {
 				foreach ($va_watermark_id_t as $va_key => $va_watermark_id) {
@@ -199,7 +199,7 @@
 			<div class='row'>
 <?php		
 		$t_verso = new ca_objects($vn_verso_id);
-		print "<div class='col-sm-2'>".$t_verso->get('ca_object_representations.media.small', array('checkAccess' => $va_access_values))."</div>";
+		print "<div class='col-sm-2'>".$t_verso->get('ca_object_representations.media.medium', array('checkAccess' => $va_access_values))."</div>";
 		print "<div class='col-sm-10'>";
 		if ($vn_catno = $t_verso->get('ca_objects.catalog_number')) {
 			print "<div class='unit'>".$vn_catno."</div>";
@@ -338,7 +338,24 @@
 <div class='row'>
 	<div class='col-sm-12 col-md-12 col-lg-12'>
 <?php
-		if ($vs_exhibition = $t_object->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_occurrences"><l><i>^ca_occurrences.preferred_labels</i></l><ifcount min="1" code="ca_entities.preferred_labels">, <unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", "> ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit></ifcount><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef><if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</if><unit relativeTo="ca_objects_x_occurrences"><ifdef code="ca_objects_x_occurrences.exhibition_remarks">, ^ca_objects_x_occurrences.exhibition_remarks</ifdef><if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i></if></unit></unit>')) {
+		if ($vs_exhibition = $t_object->getWithTemplate('
+			<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_occurrences">
+				<l><i>^ca_occurrences.preferred_labels</i></l>
+				<ifcount min="1" code="ca_entities.preferred_labels">, 
+					<unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", "> 
+						^ca_entities.preferred_labels
+						<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef>
+						<ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef>
+						<ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef>
+					</unit>
+				</ifcount>
+				<ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef>
+				<if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</if>
+				<ifdef code="ca_objects_x_occurrences.exhibition_remarks">, ^ca_objects_x_occurrences.exhibition_remarks</ifdef>
+				<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> 
+					<i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i>
+				</if>
+			</unit>')) {
 			print "<div class='drawer'>";
 			print "<h6><a href='#' onclick='$(\"#exhibitionDiv\").toggle(400);return false;'>Exhibitions <i class='fa fa-chevron-down'></i></a></h6>";
 			print "<div id='exhibitionDiv'>".$vs_exhibition."</div>";
@@ -350,7 +367,13 @@
 <div class='row'>
 	<div class='col-sm-12 col-md-12 col-lg-12'>
 <?php
-		if ($vs_reference = $t_object->getWithTemplate('<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences"><l>^ca_occurrences.preferred_labels</l><unit relativeTo="ca_objects_x_occurrences"><ifdef code="ca_objects_x_occurrences.page_number">, ^ca_objects_x_occurrences.page_number</ifdef><ifdef code="ca_objects_x_occurrences.reference_remarks">, ^ca_objects_x_occurrences.reference_remarks</ifdef><if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i></if></unit></unit>')) {
+		if ($vs_reference = $t_object->getWithTemplate('
+			<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences">
+				<l>^ca_occurrences.preferred_labels</l>
+					<ifdef code="ca_objects_x_occurrences.page_number">, ^ca_objects_x_occurrences.page_number</ifdef>
+					<ifdef code="ca_objects_x_occurrences.reference_remarks">, ^ca_objects_x_occurrences.reference_remarks</ifdef>
+					<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i></if>
+			</unit>')) {
 			print "<div class='drawer'>";
 			print "<h6><a href='#' onclick='$(\"#referenceDiv\").toggle(400);return false;'>References <i class='fa fa-chevron-down'></i></a></h6>";
 			print "<div id='referenceDiv'>".$vs_reference."</div>";

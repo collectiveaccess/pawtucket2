@@ -158,7 +158,7 @@
 							if ($vs_ex_date = $qr_res->get('ca_occurrences.occurrence_dates')) {
 								$vs_result_text.=", ".$vs_ex_date;
 							}
-							$vs_result_text_link = caDetailLink($this->request, $vs_result_text, '', $vs_table, $vn_id);
+							$vs_result_text_link = caDetailLink($this->request, $vs_result_text, 'occLink', $vs_table, $vn_id); 
 						} 
 					} elseif ($vs_table === 'ca_collections') {
 						if ($vs_location) {
