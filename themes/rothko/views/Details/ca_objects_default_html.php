@@ -368,12 +368,13 @@
 	<div class='col-sm-12 col-md-12 col-lg-12'>
 <?php
 		if ($vs_reference = $t_object->getWithTemplate('
-			<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences">
+			<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_objects_x_occurrences">
 				<l>^ca_occurrences.preferred_labels</l>
-			</unit>
-					<ifdef code="ca_objects_x_occurrences.page_number">, ^ca_objects_x_occurrences.page_number</ifdef>
+				
+				<ifdef code="ca_objects_x_occurrences.page_number">, ^ca_objects_x_occurrences.page_number</ifdef>
 					<ifdef code="ca_objects_x_occurrences.reference_remarks">, ^ca_objects_x_occurrences.reference_remarks</ifdef>
-					<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i></if>')) {
+					<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i></if>
+			</unit>')) {
 			print "<div class='drawer'>";
 			print "<h6><a href='#' onclick='$(\"#referenceDiv\").toggle(400);return false;'>References <i class='fa fa-chevron-down'></i></a></h6>";
 			print "<div id='referenceDiv'>".$vs_reference."</div>";
