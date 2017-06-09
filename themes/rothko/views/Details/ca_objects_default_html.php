@@ -339,7 +339,7 @@
 	<div class='col-sm-12 col-md-12 col-lg-12'>
 <?php
 		if ($vs_exhibition = $t_object->getWithTemplate('
-			<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_occurrences">
+			<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_objects_x_occurrences">
 				<l><i>^ca_occurrences.preferred_labels</i></l>
 				<ifcount min="1" code="ca_entities.preferred_labels">, 
 					<unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", "> 
