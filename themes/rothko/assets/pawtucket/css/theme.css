@@ -57,6 +57,10 @@ p {
 .navbar-brand {
 	padding-top:15px;
 }
+.comma {
+	display:inline-block;
+	margin-left:-3px;
+}
 .logoUpper {
 	display:block;
 	color:#333;
@@ -100,8 +104,8 @@ p {
 .navbar-form {
 	margin-top:12px;
 }
-.btn-default {
-	background-color:#ccc;
+.btn-default, .btn-default:hover { 
+	background-color:#888;
 	letter-spacing:0px;
 	
 }

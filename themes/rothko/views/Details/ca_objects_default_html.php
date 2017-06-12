@@ -340,18 +340,14 @@
 <?php
 		if ($vs_exhibition = $t_object->getWithTemplate('
 			<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_objects_x_occurrences">
-				<l><i>^ca_occurrences.preferred_labels</i></l>
-				<ifcount min="1" code="ca_entities.preferred_labels">, 
+				<l><i>^ca_occurrences.preferred_labels</i></l><unit relativeTo="ca_occurrences"><ifcount min="1" code="ca_entities.preferred_labels">, 
 					<unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", "> 
 						^ca_entities.preferred_labels
 						<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef>
 						<ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef>
 						<ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef>
 					</unit>
-				</ifcount>
-				<ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef>
-				<if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</if>
-				<ifdef code="ca_objects_x_occurrences.exhibition_remarks">, ^ca_objects_x_occurrences.exhibition_remarks</ifdef>
+				</ifcount></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef><if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</if><ifdef code="ca_objects_x_occurrences.exhibition_remarks">, ^ca_objects_x_occurrences.exhibition_remarks</ifdef>
 				<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> 
 					<i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i>
 				</if>
