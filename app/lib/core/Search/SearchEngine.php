@@ -222,7 +222,8 @@ class SearchEngine extends SearchBase {
 			$o_query_parser->setDefaultOperator(LuceneSyntaxParser::B_AND);
 			
 			$ps_search = preg_replace('![\']+!', '', $ps_search);												// strip slashes
-			$ps_search = preg_replace('/\[([A-Za-z0-9\- ]+)(?!to [A-Za-z0-9\- ]+)\]+/', "$1", $ps_search);		// remove search strings (but not range expressions) from square brackets so they may be searched
+			$ps_search = preg_replace('/\[([A-Za-z0-9\- \.]+)(?!to [A-Za-z0-9\- \.]+)\]/', "$1", $ps_search, $va_matches);		// remove search strings (but not range expressions) from square brackets so they may be searched
+			
 			try {
 				$o_parsed_query = $o_query_parser->parse($ps_search, $vs_char_set);
 			} catch (Exception $e) {
