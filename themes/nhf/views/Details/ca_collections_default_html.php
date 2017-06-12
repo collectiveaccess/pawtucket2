@@ -36,6 +36,13 @@
 	$va_access_values = 			$this->getVar('access_values');	
 
 	$va_occ_with_ids = nhfOccWithClips($this->request, $vn_collection_id);
+	
+	# --- last search term
+	$o_result_context = new ResultContext($this->request, "ca_collections", "multisearch");
+	$vs_last_search = $o_result_context->getSearchExpression();
+	$vs_last_search_replace = "<span class='highlightSearchTerm'>".$vs_last_search."</span>";
+
+
 ?>
 	<div class="row" style="clear:both;">
 		<div class="col-xs-3">
@@ -77,8 +84,7 @@
 					print "<div class='result'>".$vn_item_num_label.") ";
 					print caDetailLink($this->request, $qr_hits->get("ca_occurrences.preferred_labels.name"), '', 'ca_occurrences', $vn_occurrence_id)." ".$vs_has_video;
 					print "<div class='resultDescription'>".$vs_description;
-					print caGetThemeGraphic($this->request, 'cross.gif', array("style" => "margin: 0px 3px 0px 15px;"));
-					print caDetailLink($this->request, _t("more"), '', 'ca_occurrences', $vn_occurrence_id);
+					print "&nbsp;&nbsp;&nbsp;".caDetailLink($this->request, caGetThemeGraphic($this->request, 'cross.gif', array("style" => "margin: 0px 3px 0px 0px;")).""._t("more"), 'moreLink', 'ca_occurrences', $vn_occurrence_id);
 					print "</div><!-- end description -->";
 					print "</div>\n";
 					$vn_item_num_label++;
@@ -183,11 +189,11 @@
 				}
 				# --- collection_summary
 				if($t_collection->get('ca_collections.collection_summary')){
-					print "\n<div class='unit'><div class='infoButton' id='collection_summary' data-toggle='popover' data-content='Basic information about the nature of the collection'>".caGetThemeGraphic($this->request, 'b_info.gif')."</div><div class='heading'>"._t("Summary")."</div><div>".$t_collection->get('ca_collections.collection_summary', array("convertLineBreaks" => true))."</div></div><!-- end unit -->";	
+					print "\n<div class='unit'><div class='infoButton' id='collection_summary' data-toggle='popover' data-content='Basic information about the nature of the collection'>".caGetThemeGraphic($this->request, 'b_info.gif')."</div><div class='heading'>"._t("Summary")."</div><div>".str_ireplace($vs_last_search, $vs_last_search_replace, $t_collection->get('ca_collections.collection_summary', array("convertLineBreaks" => true)))."</div></div><!-- end unit -->";	
 				}
 				# --- collection_biographical_notes
 				if($t_collection->get('ca_collections.collection_biographical_notes')){
-					print "\n<div class='unit'><div class='infoButton' id='collection_biographical_notes' data-toggle='popover' data-content='Information about the creator, donor, and content.'>".caGetThemeGraphic($this->request, 'b_info.gif')."</div><div class='heading'>"._t("Biographical/Historical Notes")."</div><div>".$t_collection->get('ca_collections.collection_biographical_notes', array("convertLineBreaks" => true))."</div></div><!-- end unit -->";		
+					print "\n<div class='unit'><div class='infoButton' id='collection_biographical_notes' data-toggle='popover' data-content='Information about the creator, donor, and content.'>".caGetThemeGraphic($this->request, 'b_info.gif')."</div><div class='heading'>"._t("Biographical/Historical Notes")."</div><div>".str_ireplace($vs_last_search, $vs_last_search_replace, $t_collection->get('ca_collections.collection_biographical_notes', array("convertLineBreaks" => true)))."</div></div><!-- end unit -->";		
 				}
 				# --- entities - relationship type depicts
 				$va_entities = $t_collection->get("ca_entities", array('restrict_to_relationship_types' => array('depicts'), 'checkAccess' => $va_access_values, "returnWithStructure" => 1));
