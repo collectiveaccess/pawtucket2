@@ -1542,10 +1542,9 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 					if (!$vs_fld_num && is_array($va_exclude_fields_from_search = caGetOption('excludeFieldsFromSearch', $pa_options, null)) && sizeof($va_exclude_fields_from_search)) {
 						$va_field_restrict_sql = array();
 						foreach($va_exclude_fields_from_search as $va_restrict) {
-							$va_field_restrict_sql[] = "'".$va_restrict['field_num']."'";
+							$va_field_restrict_sql[] = "((swi.field_table_num <> ".intval($va_restrict['table_num']).") AND (swi.field_num <> '".$va_restrict['field_num']."'))";
 						}
-						
-						$vs_sql_where .= " AND (swi.field_num  NOT IN (".join(",", $va_field_restrict_sql)."))";
+						$vs_sql_where .= " AND (".join(" OR ", $va_field_restrict_sql).")";
 					}
 					
 					
