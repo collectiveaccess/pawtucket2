@@ -49,8 +49,13 @@
 		{{{representationViewer}}} 
 						
 		<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "version" => "iconlarge")); ?>
-		
-	</div><!-- end col -->		
+	</div><!-- end col -->
+<script>
+	jQuery(document).ready(function() {
+		$(".detailMediaToolbar").append("<a href='#' class='compare_link' data-id='<?php print $vn_id; ?>'><i class='fa fa-clone' aria-hidden='true'></i></a>");
+	});
+	
+</script>		
 	<div class='col-sm-6 col-md-6 col-lg-5'>
 <?php
 		if ($va_catalog_id = $t_object->get('ca_objects.catalog_number')) {
@@ -212,6 +217,7 @@
 			print "<div class='unit'>Collection - ".$vs_verso_collection."</div>";
 		}
 		print caNavLink($this->request, 'View', 'viewLink', '', 'Detail', 'objects/'.$vn_verso_id); 
+		print "<a href='#' class='compare_link verso' data-id='".$vn_verso_id."'><i class='fa fa-clone' aria-hidden='true'></i></a>";
 		print "</div>";	
 ?>	
 
@@ -260,6 +266,7 @@
 				if ($va_collection = $t_rel_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {
 					$vs_buf.= "<p>".$va_collection."</p>";
 				}	
+				$vs_buf.= "<a href='#' class='compare_link' data-id='".$vs_rel_work_id."'><i class='fa fa-clone' aria-hidden='true'></i></a>";
 				$vs_buf.= "</div></div></div><!-- end col -->";			
 				$vs_buf.= "</div>";
 			}
