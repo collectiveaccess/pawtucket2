@@ -2036,7 +2036,6 @@ class SearchResult extends BaseObject {
                                             break;
                                     }
                                 }
-                                print "GOT $vs_return_type/$vs_version<Br>\n";
                                 $vs_val_proc = $o_value->getDisplayValue(['return' => $vs_return_type, 'version' => $vs_version]);
 						        break;
 							case __CA_ATTRIBUTE_VALUE_LIST__:
