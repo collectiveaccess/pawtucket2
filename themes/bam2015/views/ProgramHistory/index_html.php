@@ -1,6 +1,7 @@
 <?php
 	$va_access_values = $this->getVar("access_values");
 	$va_seasons = $this->getVar("seasons");
+	$pn_season_id = $this->getVar("season_id");
 ?>
 <div class="row">
 	<div class='col-xs-12 col-md-8 col-md-offset-2'>
@@ -18,7 +19,7 @@
 	if(is_array($va_seasons) && sizeof($va_seasons)){
 		foreach($va_seasons as $va_season){
 			if(is_array($va_season["children"]) && sizeof($va_season["children"])){
-				print "<div><i class='fa fa-caret-right caret".$va_season["id"]."'></i><a href='#' onClick='$(\"#seriesChild".$va_season["id"]."\").toggle(); $(this).toggleClass(\"seasonLinkActive\"); $(\".caret".$va_season["id"]."\").toggleClass(\"fa-caret-right fa-caret-down\"); return false;'>".$va_season["name"]."</a></div>";
+				print "<div><i class='fa fa-caret-right caret".$va_season["id"]."'></i><a href='#' id='seasonLink".$va_season["id"]."' onClick='$(\"#seriesChild".$va_season["id"]."\").toggle(); $(this).toggleClass(\"seasonLinkActive\"); $(\".caret".$va_season["id"]."\").toggleClass(\"fa-caret-right fa-caret-down\"); return false;'>".$va_season["name"]."</a></div>";
 				print '<div class="seriesChildren" id="seriesChild'.$va_season["id"].'">';
 				foreach($va_season["children"] as $vn_child_id => $va_child){
 					print '<div><a href="#" onClick="$(\'.children\').load(\''.caNavUrl($this->request, "", "ProgramHistory", "child", array("id" => $vn_child_id)).'\'); $(\'a\').removeClass(\'seriesLinkActive\'); $(this).addClass(\'seriesLinkActive\'); return false;">'.$va_child["name"].'</a></div>';
@@ -52,4 +53,18 @@
 	jQuery(document).ready(function() {
 		$(".phScrollHeight").height(($(window).height() - $(".phScrollHeight").offset().top) + "px");
 	});
+<?php
+	# --- if a season id is passed, open up that menu
+	if($pn_season_id){
+?>
+	jQuery(document).ready(function() {
+		$("#seriesChild<?php print $pn_season_id; ?>").toggle();
+		$("#seasonLink<?php print $pn_season_id; ?>").toggleClass("seasonLinkActive");
+		$(".caret<?php print $pn_season_id; ?>").toggleClass("fa-caret-right fa-caret-down");
+		var position = $("#seasonLink<?php print $pn_season_id; ?>").position();
+		$(".phSeasonsList").scrollTop(position.top - 80);
+	});
+<?php	
+	}
+?>
 </script>

@@ -66,11 +66,11 @@
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
             if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
-            	$ps_id = urldecode($this->request->getActionExtra());
+            	if (!($ps_id = urldecode($this->request->getActionExtra()))) { $ps_id = $this->request->getParameter('id', pInteger); }
             	
             	$t_set_list = new ca_sets();
             	$t_set = new ca_sets();
-            	$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 1));
+            	$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values));
 				$va_user_has_access = false;
 				if (sizeof($va_sets) > 0) {
 					foreach ($va_sets as $va_key => $va_set) {
@@ -1031,9 +1031,9 @@
 					$vs_mail_message_text = $o_view->render("mailTemplates/share_email_text.tpl");
 				}
 				if($ps_tablename == "ca_objects"){
-					$vs_mail_message_html = $o_view->render("/mailTemplates/share_object_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/share_object_email_html.tpl");
 				}else{
-					$vs_mail_message_html = $o_view->render("/mailTemplates/share_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/share_email_html.tpl");
 				}
 				
 				$va_media = null;

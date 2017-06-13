@@ -32,6 +32,10 @@
 	$va_classroomDisplayName = caGetClassroomDisplayName();
 	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	
+	# --- last search term
+	$o_result_context = new ResultContext($this->request, "ca_collections", "multisearch");
+	$vs_last_search = $o_result_context->getSearchExpression();
+	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
 	if($this->request->isLoggedIn()){
@@ -262,8 +266,16 @@ if($x){
 
 	<li class="leaf"><a href="/node/13" title="" class="">Donate Film or Equipment</a></li>
 	<li class="leaf last"><a href="/node/23" title="">Collecting Policy</a></li>
-	
-
+<?php
+	if($vs_section != "Front"){
+?>
+	<li class="leaf last">
+		<div id="navSearch"><form name="hp_search2" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" method="get">
+			Search Collections: <input type="text" name="search" value="<?php print $vs_last_search; ?>" autocomplete="off" size="100"/><input type="submit" name="op" id="edit-submit" value="GO"  class="form-submit" />
+	</form></div><!-- end hpSearch --></li>
+<?php
+	}
+?>
 </ul></li>
 <li id="studycenter" class="collapsed"><div class="left"></div><div class="right"></div><a href="/node/4" title="">Study Center</a></li>
 <li id="services" class="collapsed"><div class="left"></div><div class="right"></div><a href="/node/5" title="">Services</a></li>

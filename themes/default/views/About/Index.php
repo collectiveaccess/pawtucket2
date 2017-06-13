@@ -1,8 +1,12 @@
 <?php
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
 ?>
-<div class="container">
-	<H1><?php print _t("About"); ?></H1>
+
+	<div class="row">
+		<div class="col-sm-12">
+			<H1><?php print _t("About"); ?></H1>
+		</div>
+	</div>
 	<div class="row">
 		<div class="col-sm-8">
 			<h3>Contact The Archives</h3>
@@ -14,4 +18,3 @@
 			<address>Jennifer Smith, Archivist<br>			<span class="info">Phone</span> — 212 222.2222<br>			<span class="info">Fax</span> — 212 222.2223<br>			<span class="info">Email</span> — <a href="#">email@archive.edu</a></address>
 		</div>
 	</div>
-</div>

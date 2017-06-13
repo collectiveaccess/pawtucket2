@@ -64,7 +64,7 @@
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Library of Congress Subject Headings used to describe what the library work is about."
 			>Library of Congress Subject Headings Keyword Search:</span><br/>
-			{{{ca_objects.LcshSubjects%width=300px&height=1}}}
+			{{{ca_objects.LOC_text%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
