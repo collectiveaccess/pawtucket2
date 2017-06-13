@@ -196,23 +196,6 @@ if (!$vb_ajax) {	// !ajax
 	
 } // !ajax
 
-if ($vb_ajax) {
-
-	if ((int)$this->request->getParameter('s', pInteger) === 0) {
-		print "<div class='row'><div class='col-sm-12'><div class='browseSearchBar'>";
-		print 	"<div class='resultCount'>".($qr_res->numHits() > 1 ? $qr_res->numHits()." Results" : $qr_res->numHits()." Result")."</div>"; 
-		print 		'<form class="detailSearch" role="search" action="">
-						<div class="formOutline">
-							<div class="form-group">
-								<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>						
-								<input type="text" class="form-control" placeholder="Search" name="search">
-							</div>	
-						</div>
-					</form>';
-		print "</div></div></div>";
-	}
-}
-
 print $this->render("Browse/browse_results_{$vs_current_view}_html.php");			
 
 if (!$vb_ajax) {	// !ajax

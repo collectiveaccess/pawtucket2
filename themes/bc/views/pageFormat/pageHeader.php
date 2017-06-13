@@ -97,8 +97,10 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'bc_logo.jpg'), "navbar-brand", "", "","");
+				print "<a href='http://www2.gov.bc.ca/' class='navbar-brand'>".caGetThemeGraphic($this->request, 'bc-logo.png')."</a>";
 ?>
+				<span class='siteName'><?php print caNavLink($this->request, 'Provincial Heritage Artifacts Database', '', '', '', '');?></span>
+
 			</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -143,7 +145,7 @@
 				</form>
 				<ul class="nav navbar-nav navbar-right">
 					<li ><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>	  			
-					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "Index")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "Index")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "about"); ?></li>
 					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "map")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contributor Map"), "", "Institutions", "MemberMap", "Index"); ?></li>
 					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "browse")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "About", "browse"); ?></li>				
 				</ul>

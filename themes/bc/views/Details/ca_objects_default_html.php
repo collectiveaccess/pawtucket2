@@ -51,75 +51,104 @@
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-
+<?php
+				if ($va_related_objects = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true))) {
+					print "<div class='unit row' style='border-top:1px solid #e6e6e6; margin-top:70px;padding-top:15px;'>";
+					print "<div class='relObj'>Similar Items</div>";
+					foreach ($va_related_objects as $va_key => $va_related_object) {
+						$t_object = new ca_objects($va_related_object);
+						print "<div class='col-sm-4 relatedObjects' data-toggle='popover' data-trigger='hover' data-content='".$t_object->get('ca_objects.preferred_labels')."'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.iconlarge'), '', '', 'Detail', 'objects/'.$va_related_object)."</div>";	
+					}
+					print "</div>";
+				}
+?>
+<script>
+	jQuery(document).ready(function() {
+		$('.relatedObjects').popover(); 
+	});
+	
+</script>
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
-				<div class='objectBanner'>
+				<table class='objectBanner'><tr>
 <?php
-					if ($vs_category = $t_object->get('ca_objects.ns_category', array('convertCodesToDisplayText' => false))) {
-						print "<div class='category'>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_category, true), '', '', 'Browse', 'objects/facet/ca_facet/id/'.$vs_category)."</div>";
-					}
-					print "<div class='institution'>";
-					if ($va_institution = $t_object->getWithTemplate('<unit relativeTo="ca_entities" restrictToTypes="member_inst"><div class="instName">^ca_entities.preferred_labels </div><div class="instLogo">^ca_entities.inst_images</div></unit>')) {
+					if ($va_institution = $t_object->getWithTemplate('<unit relativeTo="ca_entities" restrictToTypes="member_inst"><td class="instName"><l>^ca_entities.preferred_labels </l></td><td class="instLogo"><l>^ca_entities.inst_images</l></td></unit>')) {
 						$vs_inst_id = $t_object->get('ca_entities.entity_id', array('restrictToTypes' => array('member_inst')));
 						print caNavLink($this->request, $va_institution, '', '', 'Detail', 'entities/'.$vs_inst_id );
 					}		
-					print "</div>";		
 ?>				
 					<div class="width:100%;clear:both;"></div>
-				</div>
+				</tr></table>
+				{{{<unit><p>^ca_objects.idno</p></unit>}}}
+				{{{<unit relativeTo="ca_object_lots"><p>^ca_object_lots.idno</p></unit>}}}
 				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				<HR>
 <?php
-					if ($vs_object_type = $t_object->get('ca_objects.ns_objectType', array('delimiter' => '<br/>'))) {
-						print "<div class='unit'><span class='data'>Object Type</span><span class='meta'>".$vs_object_type."</span></div>";
+					if ($vs_category = $t_object->get('ca_objects.ns_category', array('returnAsArray' => 'true'))) {
+						print "<div class='unit'><span class='data'>Category</span><span class='meta'>";
+						$va_categories = array();
+						foreach ($vs_category as $va_key => $vs_categories) {
+							$va_categories[] = caNavLink($this->request, caGetListItemByIDForDisplay($vs_categories, true), '', '', 'Browse', 'objects/facet/ca_facet/id/'.$vs_categories);
+						}
+						print join(', ', $va_categories);
+						print "</span></div>";
 					}
-					if ($vs_object_subtype = $t_object->get('ca_objects.ns_ns_objectSubType', array('delimiter' => '<br/>'))) {
-						print "<div class='unit'><span class='data'>Object Sub-Type</span><span class='meta'>".$vs_object_subtype."</span></div>";
+					if ($vs_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
+						print "<div class='unit'><span class='data'>Related Entities</span><span class='meta'>".$vs_entities."</span></div>";
 					}
-					if ($vs_date = $t_object->get('ca_objects.date', array('delimiter' => '<br/>'))) {
-						print "<div class='unit'><span class='data'>Date</span><span class='meta'>".$vs_date."</span></div>";
-					}	
+					if ($vs_title = $t_object->get('ca_objects.ns_title', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><span class='data'>Title</span><span class='meta'>".$vs_title."</span></div>";
+					}					
 					if ($vs_desc = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><span class='data'>Description</span><span class='meta'>".$vs_desc."</span></div>";
-					}
+					}	
 					if ($vs_history_use = $t_object->get('ca_objects.historyUse', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><span class='data'>History of Use</span><span class='meta'>".$vs_history_use."</span></div>";
-					}	
-					if ($vs_origin = $t_object->get('ca_objects.originPlace', array('delimiter' => '<br/>'))) {
-						print "<div class='unit'><span class='data'>Origin Place</span><span class='meta'>".$vs_origin."</span></div>";
+					}
+					if ($vs_measurements = $t_object->getWithTemplate('<unit><ifdef code="ca_objects.measurements.dimensions_length">^ca_objects.measurements.dimensions_length L</ifdef><ifdef code="ca_objects.measurements.dimensions_length,ca_objects.measurements.dimensions_width"> x </ifdef><ifdef code="ca_objects.measurements.dimensions_width">^ca_objects.measurements.dimensions_width W</ifdef><ifdef code="ca_objects.measurements.dimensions_height,ca_objects.measurements.dimensions_width"> x </ifdef><ifdef code="ca_objects.measurements.dimensions_height">^ca_objects.measurements.dimensions_height H</ifdef><ifdef code="ca_objects.measurements.dimensions_height,ca_objects.measurements.dimensions_thick"> x </ifdef><ifdef code="ca_objects.measurements.dimensions_thick">^ca_objects.measurements.dimensions_thick Thick</ifdef><ifdef code="ca_objects.measurements.dimensions_diam,ca_objects.measurements.dimensions_thick"> x </ifdef><ifdef code="ca_objects.measurements.dimensions_diam">^ca_objects.measurements.dimensions_diam Diameter</ifdef><ifdef code="ca_objects.measurements.dimensions_diam,ca_objects.measurements.dimensions_depth"> x </ifdef><ifdef code="ca_objects.measurements.dimensions_depth">^ca_objects.measurements.dimensions_depth Deep</ifdef><ifdef code="ca_objects.measurements.dimensions_remarks"><br/>^ca_objects.measurements.dimensions_remarks<ifdef></unit>')) {
+						print "<div class='unit'><span class='data'>Measurements</span><span class='meta'>".$vs_measurements."</span></div>";
 					}
 					if ($vs_mat = $t_object->get('ca_objects.materials', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><span class='data'>Materials</span><span class='meta'>".$vs_mat."</span></div>";
+					}	
+					if ($vs_narrative = $t_object->get('ca_objects.narrative', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><span class='data'>Narrative</span><span class='meta'>".$vs_narrative."</span></div>";
+					}	
+					if ($vs_culture = $t_object->get('ca_objects.culture', array('returnAsArray' => 'true'))) {
+						print "<div class='unit'><span class='data'>Culture</span><span class='meta'>";
+						$va_cultures = array();
+						foreach ($vs_culture as $va_key => $vs_cultures) {
+							$va_cultures[] = caNavLink($this->request, caGetListItemByIDForDisplay($vs_cultures, true), '', '', 'Browse', 'objects/facet/culture_facet/id/'.$vs_cultures);
+						}
+						print join(', ', $va_cultures);
+						print "</span></div>";
+					}	
+					if ($vs_subject = $t_object->get('ca_objects.subject', array('returnAsArray' => 'true'))) {	
+						$va_subjects = array();
+						foreach ($vs_subject as $va_key => $vs_subjects) {
+							if ($vs_subjects != "") {
+								$va_subjects[] = caNavLink($this->request, $vs_subjects, '', '', 'Browse', 'objects/facet/subject_facet/id/'.$vs_subjects);
+							}
+						}
+						if (sizeof($va_subjects) > 0 ){
+							print "<div class='unit'><span class='data'>Subject</span><span class='meta'>";
+							print join(', ', $va_subjects);
+							print "</span></div>";
+						}
 					}
-					if ($vs_numb = $t_object->get('ca_objects.numberOfComponents', array('delimiter' => '<br/>'))) {
-						print "<div class='unit'><span class='data'>Number of Components</span><span class='meta'>".$vs_numb."</span></div>";
-					}																																	
+					if ($vs_entities = $t_object->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'restrictToTypes' => array('member_inst')))) {
+						print "<div class='unit'><span class='data'>From the collection of</span><span class='meta'>".$vs_entities."</span></div>";
+					}
+					if ($vs_occurrences = $t_object->getWithTemplate('<unit relativeTo="ca_occurrences">^ca_occurrences.preferred_labels <br/>^ca_occurrences.description</unit>')) {
+						print "<div class='unit'><span class='data'>Related Event</span><span class='meta'>".$vs_occurrences."</span></div>";
+					}																																											
+																																						
 ?>
-					<div class="row">
-						<div class="col-sm-6">		
-							{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-							{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
-							
-							
-							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
-							
-							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
-							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name_plural</unit>}}}
-							
-							{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
-							{{{<unit delimiter="<br/>"><l>^ca_objects.LcshNames</l></unit>}}}
-						</div><!-- end col -->				
-						<div class="col-sm-6 colBorderLeft">
-							{{{map}}}
-						</div>
-					</div><!-- end row -->
+					{{{map}}}
+					<hr>
+
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->

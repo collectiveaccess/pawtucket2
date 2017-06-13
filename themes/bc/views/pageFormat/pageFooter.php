@@ -28,23 +28,8 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		<div id="footer">
-			<div class='row'>
-				<div class='col-sm-3'>
-					<div>1459 Barclay Street</div>
-					<div>Vancouver, B.C.</div>
-					<div>Canada V6G 1J6</div>
-					<div>Office hours: Monday-Thursday 8am-5pm</div>
-				</div>	
-				<div class='col-sm-3'>
-					<div>604.428.7243</div>
-					<div>1.855.349.7243</div>
-				</div>
-				<div class='col-sm-3'>
-				</div>				
-				<div class='col-sm-3'>
-					<div class='copyright'><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
-				</div>
-			</div>
+			{{{footer_text}}}
+			<div class='pull-right footerLogo'><?php print caGetThemeGraphic($this->request, 'BClogo.png'); ?></div>
 		</div><!-- end footer -->
 <?php
 	//
