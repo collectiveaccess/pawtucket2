@@ -160,7 +160,7 @@
 							}
 							$vs_result_text_link = caDetailLink($this->request, $vs_result_text, 'occLink', $vs_table, $vn_id); 
 						} else if ( $vs_nonpreferred = $qr_res->get('ca_occurrences.nonpreferred_labels')){
-							$vs_info.= "<span class='comma'>, ".$vs_nonpreferred."</span>";
+							$vs_info.= "<span class='comma'>: ".$vs_nonpreferred."</span>";
 						} else {
 							$vs_nonpreferred = null;
 						}

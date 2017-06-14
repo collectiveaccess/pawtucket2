@@ -18,7 +18,7 @@
 		}
 		print "<h1>".$t_item->get('ca_occurrences.preferred_labels');
 			if ($vs_non_preferred = $t_item->get('ca_occurrences.nonpreferred_labels')) {
-				print ", ".$vs_non_preferred;
+				print ": ".$vs_non_preferred;
 			}
 		print "</h1>";
 		
