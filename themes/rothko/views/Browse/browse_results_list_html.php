@@ -156,15 +156,15 @@
 								$vs_result_text.=", ".$vs_museum;
 							}
 							if ($vs_ex_date = $qr_res->get('ca_occurrences.occurrence_dates')) {
-								$vs_result_text.=", ".$vs_ex_date;
+								$vs_result_text.=", ".$vs_ex_date.".";
 							}
 							$vs_result_text_link = caDetailLink($this->request, $vs_result_text, 'occLink', $vs_table, $vn_id); 
 						} else if ( $vs_nonpreferred = $qr_res->get('ca_occurrences.nonpreferred_labels')){
-							$vs_info.= "<span class='comma'>: ".$vs_nonpreferred."</span>";
+							$vs_info.= "<span class='comma'>: ".$vs_nonpreferred."</span>.";
 						} else {
 							$vs_nonpreferred = null;
+							$vs_info.= "<span class='comma'>.</span>";
 						}
-						
 					} elseif ($vs_table === 'ca_collections') {
 						if ($vs_location) {
 							$vs_info.= $vs_location;

@@ -280,24 +280,23 @@
 </div><!-- end row -->	
 <?php
 	$vs_provenance = "";
-	if ($va_provenance = $t_parent->get('ca_collections', array('returnWithStructure' => true))) {
+	if ($va_provenance = $t_parent->get('ca_objects_x_collections.relation_id', array('returnWithStructure' => true, 'sort' => 'ca_objects_x_collections.display_date', 'sortOrder' => 'ASC'))) {
 		foreach ($va_provenance as $va_key => $va_relation_id) {
-			$t_prov = new ca_collections($va_relation_id['collection_id']);
-			$t_prov_rel = new ca_objects_x_collections($va_relation_id['relation_id']);
+			$t_prov_rel = new ca_objects_x_collections($va_relation_id);
+			$t_prov = new ca_collections($t_prov_rel->get('ca_collections.collection_id'));
 			if ($t_prov->get('ca_collections.public_private', array('convertCodesToDisplayText' => true)) == 'private') {
 				$vs_provenance.= "<div>";
 				$vs_provenance.= $t_prov->get('ca_collections.preferred_labels');
 				if ($vs_display_date = $t_prov_rel->get('ca_objects_x_collections.display_date')) {
 					$vs_provenance.= ", ".$vs_display_date;
-				}
+				}				
 				if ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line')) {
 					$vs_provenance.= ", ".$vs_remark;
 				}				
 				$vs_provenance.= "</div>";
 			} elseif ($t_prov->get('access') != 0 ){
 				$va_provenance_id = $t_prov->get('ca_collections.collection_id');
-				$vs_provenance.= "<div>".caNavLink($this->request, $t_prov->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_provenance_id);
-								
+				$vs_provenance.= "<div>".caNavLink($this->request, $t_prov->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_provenance_id);				
 				if ($t_prov_rel) {
 					$vs_buf = array();
 					if ($vs_auction_name = $t_prov_rel->get('ca_objects_x_collections.auction_name')) {
@@ -329,7 +328,6 @@
 					$vs_provenance.= " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>";
 				}
 				$vs_provenance.= "</div><!-- end prov entry -->";
-
 			}
 		}
 	}
@@ -345,20 +343,7 @@
 <div class='row'>
 	<div class='col-sm-12 col-md-12 col-lg-12'>
 <?php
-		if ($vs_exhibition = $t_object->getWithTemplate('
-			<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_objects_x_occurrences">
-				<l><i>^ca_occurrences.preferred_labels</i></l><unit relativeTo="ca_occurrences"><ifcount min="1" code="ca_entities.preferred_labels">, 
-					<unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", "> 
-						^ca_entities.preferred_labels
-						<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef>
-						<ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef>
-						<ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef>
-					</unit>
-				</ifcount></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef><if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</if><ifdef code="ca_objects_x_occurrences.exhibition_remarks">, ^ca_objects_x_occurrences.exhibition_remarks</ifdef>
-				<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> 
-					<i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i>
-				</if>
-			</unit>')) {
+		if ($vs_exhibition = $t_object->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_objects_x_occurrences" sort="ca_occurrences.occurrence_dates"><l><i>^ca_occurrences.preferred_labels</i></l><unit relativeTo="ca_occurrences"><ifcount min="1" code="ca_entities.preferred_labels">, <unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", "> ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit></ifcount></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef><if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</if><ifdef code="ca_objects_x_occurrences.exhibition_remarks">, ^ca_objects_x_occurrences.exhibition_remarks</ifdef>.<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i></if></unit>')) {
 			print "<div class='drawer'>";
 			print "<h6><a href='#' onclick='$(\"#exhibitionDiv\").toggle(400);return false;'>Exhibitions <i class='fa fa-chevron-down'></i></a></h6>";
 			print "<div id='exhibitionDiv'>".$vs_exhibition."</div>";
@@ -370,14 +355,7 @@
 <div class='row'>
 	<div class='col-sm-12 col-md-12 col-lg-12'>
 <?php
-		if ($vs_reference = $t_object->getWithTemplate('
-			<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_objects_x_occurrences">
-				<l>^ca_occurrences.preferred_labels</l>
-				
-				<ifdef code="ca_objects_x_occurrences.page_number">, ^ca_objects_x_occurrences.page_number</ifdef>
-					<ifdef code="ca_objects_x_occurrences.reference_remarks">, ^ca_objects_x_occurrences.reference_remarks</ifdef>
-					<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i></if>
-			</unit>')) {
+		if ($vs_reference = $t_object->getWithTemplate('<unit restrictToTypes="reference" sort="ca_occurrences.occurrence_dates" delimiter="<br/>" relativeTo="ca_objects_x_occurrences"><l>^ca_occurrences.preferred_labels</l><ifdef code="ca_objects_x_occurrences.reference_remarks">, ^ca_objects_x_occurrences.reference_remarks</ifdef>.<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i></if></unit>')) {
 			print "<div class='drawer'>";
 			print "<h6><a href='#' onclick='$(\"#referenceDiv\").toggle(400);return false;'>References <i class='fa fa-chevron-down'></i></a></h6>";
 			print "<div id='referenceDiv'>".$vs_reference."</div>";
