@@ -21,7 +21,7 @@
 			if ($vs_non_preferred = $t_item->get('ca_occurrences.nonpreferred_labels')) {
 				print ": ".$vs_non_preferred;
 			}
-		print "</h1>";
+		print ".</h1>"; 
 		
 		if ($va_authors = $t_item->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('author'), 'returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 			print "<div class='unit'>";
