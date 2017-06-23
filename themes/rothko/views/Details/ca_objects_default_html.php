@@ -110,7 +110,7 @@
 			foreach ($va_watermark as $va_key => $va_watermark_id_t) {
 				foreach ($va_watermark_id_t as $va_key => $va_watermark_id) {
 					if ($va_watermark_id['watermark_list'] == 247){continue;}
-					$va_media_links[] = caNavLink($this->request, strtolower(caGetListItemByIDForDisplay($va_watermark_id['watermark_list'])), '', '', 'Browse', 'artworks/facet/watermark_facet/id/'.$va_watermark_id['watermark_list']).($vs_list_value == $va_watermark_id['watermark_uncertain'] ? " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "" );	
+					$va_media_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_watermark_id['watermark_list']), '', '', 'Browse', 'artworks/facet/watermark_facet/id/'.$va_watermark_id['watermark_list']).($vs_list_value == $va_watermark_id['watermark_uncertain'] ? " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "" );	
 				}
 			}
 			if (sizeof($va_media_links) > 0) {

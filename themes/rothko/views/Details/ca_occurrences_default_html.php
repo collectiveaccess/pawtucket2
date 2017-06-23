@@ -100,7 +100,7 @@
 <div class='row'>
 	<div class='col-sm-12 col-md-12 col-lg-12'>
 <?php
-		if ($vs_reference = $t_item->getWithTemplate('<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences.related"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels">, ^ca_occurrences.nonpreferred_labels, </ifdef></l><unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=", ">^ca_entities.preferred_labels</unit><ifdef code="ca_occurrences.display_date">, ^ca_occurrences.display_date</ifdef>.</unit>')) {
+		if ($vs_reference = $t_item->getWithTemplate('<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences.related"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels">: ^ca_occurrences.nonpreferred_labels</ifdef></l>.</unit>')) {
 			print "<div class='drawer'>";
 			print "<h6><a href='#' onclick='$(\"#referenceDiv\").toggle(400);return false;'>Exhibition Catalog <i class='fa fa-chevron-down'></i></a></h6>";
 			print "<div id='referenceDiv'>".$vs_reference."</div>";

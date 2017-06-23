@@ -150,8 +150,11 @@
 				
 					} elseif ($vs_table === 'ca_occurrences') {
 						$vs_result_text = "";
+
 						$vs_type = $qr_res->get('ca_occurrences.type_id', array('convertCodesToDisplayText' => true));
 						if ($vs_type == 'Exhibition') {
+							$vs_label_detail_link 	= "<span class='listTitle'><i>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id)."</i></span>";
+
 							if ($vs_museum = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue')))) {
 								$vs_result_text.=", ".$vs_museum;
 							}
