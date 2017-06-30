@@ -116,6 +116,8 @@
 			$this->view->setVar('description_attribute', $this->ops_description_attribute);
 			
 			$this->purifier = new HTMLPurifier();
+			
+ 			parent::setTableSpecificViewVars();
  		}
  		# -------------------------------------------------------
         /**
