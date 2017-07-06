@@ -57,8 +57,8 @@
 								}
 							}
 							if(sizeof($va_dimensions_pieces)){
-								$va_dimensions_formatted[] = ($va_dimensions_information["dimension_text"] ? trim($va_dimensions_information["dimension_text"]).": " : "").join(" X ", $va_dimensions_pieces);
-								$va_dimensions_metric_formatted[] = ($va_dimensions_information["dimension_text"] ? trim($va_dimensions_information["dimension_text"]).": " : "").join(" X ", $va_dimensions_pieces_metric);
+								$va_dimensions_formatted[] = join(" X ", $va_dimensions_pieces);
+								$va_dimensions_metric_formatted[] = join(" X ", $va_dimensions_pieces_metric);
 								if((sizeof($va_dimensions_pieces) > 1)){
 									$vb_has_dia = false;
 								}
