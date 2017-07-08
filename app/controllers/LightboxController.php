@@ -133,7 +133,7 @@
 
             # Get sets for display
             $t_sets = new ca_sets();
- 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => 1, "parents_only" => true));
+ 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
  			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
 
  			# Remove write sets from the read array
@@ -1161,7 +1161,7 @@
 				
 				$vn_object_table_num = $t_object->tableNum();
 				$t_set->setMode(ACCESS_WRITE);
-				$t_set->set('access', 1);
+				$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
 				#$t_set->set('access', $this->request->getParameter('access', pInteger));
 				$t_set->set('table_num', $vn_object_table_num);
 				$t_set->set('type_id', $vn_set_type_user);
