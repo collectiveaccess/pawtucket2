@@ -134,7 +134,7 @@
 						#	$vs_catno = "<div class='catno'>cat. ".$vs_catalog_number."</div>";
 						#}
 						$vs_info = null;
-						if ($vs_date = $qr_res->get('ca_objects.creation_date')) {
+						if ($vs_date = $qr_res->get('ca_objects.display_date')) {
 							$vs_info.= "<p>".$vs_date."</p>";
 						}
 						if ($va_collection = $t_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {

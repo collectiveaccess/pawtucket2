@@ -55,6 +55,15 @@
 			}
 			print "</div>";
 		}
+		if ($va_rel_places = $t_item->get('ca_places.hierarchy.place_id', array('returnWithStructure' => true, 'hierarchyDirection' => 'desc'))) {	
+			foreach ($va_rel_places as $va_key => $va_rel_place) {
+				foreach ($va_rel_place as $va_key => $va_rel_place_id) {
+					$t_place = new ca_places($va_rel_place_id);
+					$vs_place_name = $t_place->get('ca_places.preferred_labels');
+					print "<div class='unit'>".caNavLink($this->request, $vs_place_name, '', 'Search', 'references', 'search/location', ["values" => [$vs_place_name]])."</div>";
+				}
+			}
+		}
 		if ($va_date = $t_item->get('ca_occurrences.occurrence_dates')) {
 			print "<div class='unit'>".caNavLink($this->request, $va_date, '', 'Search', 'references', 'search/reference_dates', ["values" => [$va_date]])."</div>";
 		}						
@@ -81,7 +90,7 @@
 <div class="row">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 <?php
-		if ($vs_exhibitions = $t_item->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_occurrences.related"><l><i>^ca_occurrences.preferred_labels</i></l><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue">, ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit><ifdef code="ca_occurrences.display_date">, ^ca_occurrences.display_date</ifdef>.<if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</ifdef></unit>')) {
+		if ($vs_exhibitions = $t_item->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_occurrences.related"><l><i>^ca_occurrences.preferred_labels</i></l><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue">, ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef>.</unit>')) {
 			print "<div class='drawer'>";
 			print "<h6><a href='#' onclick='$(\"#exhibitionDiv\").toggle(400);return false;'>Related Exhibitions <i class='fa fa-chevron-down'></i></a></h6>";
 			print "<div id='exhibitionDiv'>".$vs_exhibitions."</div>";
