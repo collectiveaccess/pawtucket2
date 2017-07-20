@@ -208,8 +208,9 @@
 			//
 			$vb_sort_changed = false;
  			if (!($ps_sort = urldecode($this->request->getParameter("sort", pString)))) {
- 				if (!($ps_sort = $this->opo_result_context->getCurrentSort())) {
- 					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
+ 				$ps_sort = $this->opo_result_context->getCurrentSort();
+ 				if(is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
+ 					if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
  						$ps_sort = array_shift(array_keys($va_sorts));
  						$vb_sort_changed = true;
  					}

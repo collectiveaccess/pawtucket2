@@ -277,6 +277,10 @@ p {
 	height:210px;
 	padding-top:90px;
 }
+.refTitle {
+	max-height: 50px;
+    overflow: hidden;
+}
 
 /* Browse */
 
