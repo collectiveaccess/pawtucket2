@@ -472,7 +472,11 @@
  			$vb_is_insert = false;
  			if(sizeof($va_errors) == 0){
 				$t_set->setMode(ACCESS_WRITE);
-				$t_set->set('access', 1);
+				if($this->request->getParameter('access', pInteger) !== NULL){
+					$t_set->set('access', $this->request->getParameter('access', pInteger));
+				}else{
+					$t_set->set('access', 0);
+				}
 				if($t_set->get("set_id")){
 					// edit/add description
 					$t_set->replaceAttribute(array($this->ops_description_attribute => $ps_description, 'locale_id' => $g_ui_locale_id), $this->ops_description_attribute);
