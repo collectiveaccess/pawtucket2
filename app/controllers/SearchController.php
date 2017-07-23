@@ -267,12 +267,16 @@
  					}
  				}
  				
- 				if (!$ps_sort && !($ps_sort = $this->opo_result_context->getCurrentSort())) {
- 					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
- 						$ps_sort = array_shift(array_keys($va_sorts));
- 						$vb_sort_changed = true;
- 					}
+ 				if (!$ps_sort){
+ 					$ps_sort = $this->opo_result_context->getCurrentSort();
+					if(is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
+						if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
+							$ps_sort = array_shift(array_keys($va_sorts));
+							$vb_sort_changed = true;
+						}
+					}
  				}
+ 				
  			}else{
  				$vb_sort_changed = true;
  			}

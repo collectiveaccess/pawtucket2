@@ -38,6 +38,7 @@
 	$o_config = $this->getVar("config");
 	$o_browse_config = caGetBrowseConfig();
 	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
+	$va_ids_with_video = nhfCollectionsWithClips($this->request);
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -74,8 +75,12 @@
 		$vn_i = 0;
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
+			$vs_has_video = "";
+			if(in_array($qr_results->get("collection_id"), $va_ids_with_video)){
+				$vs_has_video = "<span class='glyphicon glyphicon-facetime-video'></span>";
+			}			
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true; }
-				print "<div class='{{{block}}}Result authorityResult'>".$qr_results->get('ca_collections.preferred_labels.name', array('returnAsLink' => true))."</div>";
+				print "<div class='{{{block}}}Result authorityResult'>".$qr_results->get('ca_collections.preferred_labels.name', array('returnAsLink' => true))." ".$vs_has_video."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i == $vn_items_per_column) {

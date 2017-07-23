@@ -102,7 +102,7 @@
 				}
 				
 				var loadComparisonListSummary;
-				$('#comparison_list, #browseResultsContainer').on('click', '.compare_link, .comparison_list_remove', loadComparisonListSummary = function(e) {
+				$('#comparison_list, #pageArea').on('click', '.compare_link, .comparison_list_remove', loadComparisonListSummary = function(e) {
 					var id = this ? $(this).data('id') : null;
 					var remove_id = this ? $(this).data('remove_id') : null;
 		
@@ -152,8 +152,8 @@
 			});
 			function checkOffset() {
 				if($('#comparison_list').offset().top + $('#comparison_list').height() 
-													   >= $('#footer').offset().top - 100)
-					$('#comparison_list').css({"position": "absolute", "bottom": "100px"});
+													   >= $('#footer').offset().top - 60)
+					$('#comparison_list').css({"position": "absolute", "bottom": "60px"});
 				if($(document).scrollTop() + window.innerHeight < $('#footer').offset().top)
 					$('#comparison_list').css({"position": "fixed", "bottom": "0px"}); // restore when you scroll up
 			}

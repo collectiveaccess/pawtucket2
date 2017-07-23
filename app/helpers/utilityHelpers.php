@@ -1183,7 +1183,7 @@ function caFileIsIncludable($ps_file) {
 			if (!is_array($va_data)) { continue; }
 			$va_key = array();
 			foreach($va_sort_keys as $vs_sort_key) {
-				$va_key[] = $va_data[$vs_sort_key];
+				$va_key[] = isset($va_data[$vs_sort_key.'_sort_']) ? $va_data[$vs_sort_key.'_sort_'] : $va_data[$vs_sort_key];  // an alternative sort-specific value for a key may be present with the suffix "_sort_"; when present we use this in preference to the key value
 			}
 			$va_sorted_by_key[join('/', $va_key)][$vn_id] = $va_data;
 		}
@@ -3503,9 +3503,10 @@ function caFileIsIncludable($ps_file) {
 	function caExtractTagsFromTemplate($ps_template, $pa_options=null) {
 		$va_tags = [];
 		
-		$vb_in_tag = $vb_in_single_quote = $vb_in_double_quote = $vb_have_seen_param_delimiter = false;
+		$vb_in_tag = $vb_in_single_quote = $vb_in_double_quote = $vb_have_seen_param_delimiter = $vb_is_ca_get_ref = false;
 		$vs_tag = '';
 		$vs_last_char = null;
+		
 		for($i=0; $i < mb_strlen($ps_template); $i++) {
 			switch($vs_char = mb_substr($ps_template, $i, 1)) {
 				case '^':
@@ -3514,7 +3515,7 @@ function caFileIsIncludable($ps_file) {
 					}
 					$vb_in_tag = true;
 					$vs_tag = '';
-					$vb_in_single_quote = $vb_in_double_quote = $vb_have_seen_param_delimiter = false;
+					$vb_in_single_quote = $vb_in_double_quote = $vb_have_seen_param_delimiter = $vb_is_ca_get_ref = false;
 					break;
 				case '%':
 					if($vb_in_tag) {
@@ -3528,7 +3529,7 @@ function caFileIsIncludable($ps_file) {
 					if (!$vb_in_single_quote && !$vb_in_double_quote && (!$vb_have_seen_param_delimiter || (!in_array($vs_char, [','])))) {
 						if ($vs_tag = trim($vs_tag)) { $va_tags[] = $vs_tag; }
 						$vs_tag = '';
-						$vb_in_tag = $vb_in_single_quote = $vb_in_double_quote = false;
+						$vb_in_tag = $vb_in_single_quote = $vb_in_double_quote = $vb_is_ca_get_ref = false;
 					} else {
 						$vs_tag .= $vs_char;
 					}
@@ -3543,7 +3544,7 @@ function caFileIsIncludable($ps_file) {
 					} elseif($vb_in_tag) {
 						if ($vs_tag = trim($vs_tag)) { $va_tags[] = $vs_tag; }
 						$vs_tag = '';
-						$vb_in_tag = $vb_in_single_quote = $vb_in_double_quote = false;
+						$vb_in_tag = $vb_in_single_quote = $vb_in_double_quote = $vb_is_ca_get_ref = false;
 					}
 					break;
 				case "'":
@@ -3552,13 +3553,22 @@ function caFileIsIncludable($ps_file) {
 					break;
 				default:
 					if ($vb_in_tag) {
-						$vs_tag .= $vs_char;
+						if ((!$vb_is_ca_get_ref) && preg_match("!^ca_[a-z]+\.$!", $vs_tag)) {
+							$vb_is_ca_get_ref = true;
+						}
+						if ($vb_is_ca_get_ref && !$vb_have_seen_param_delimiter && (!preg_match("![A-Za-z0-9_\-\.]!", $vs_char))) {
+							$va_tags[] = $vs_tag;
+							$vs_tag = '';
+							$vb_in_tag = $vb_in_single_quote = $vb_in_double_quote = $vb_is_ca_get_ref = false;
+						} else {
+							$vs_tag .= $vs_char;
+						}
 					}
 					break;
 			}
 			$vs_last_char = $vs_char;
 		}
-		
+
 		if ($vb_in_tag) {
 			if ($vs_tag = trim($vs_tag)) { $va_tags[] = $vs_tag; }
 		}

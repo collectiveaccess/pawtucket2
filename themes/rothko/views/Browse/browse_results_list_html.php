@@ -140,7 +140,7 @@
 						if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
 							$vs_catno = "<div class='catno'>".$vs_catalog_number."</div>";
 						}				
-						if ($vs_date = $qr_res->get('ca_objects.creation_date')) {
+						if ($vs_date = $qr_res->get('ca_objects.display_date')) {
 							$vs_info.= "<p>".$vs_date."</p>";
 						}
 						if ($va_collection = $t_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {
@@ -150,16 +150,24 @@
 				
 					} elseif ($vs_table === 'ca_occurrences') {
 						$vs_result_text = "";
+
 						$vs_type = $qr_res->get('ca_occurrences.type_id', array('convertCodesToDisplayText' => true));
 						if ($vs_type == 'Exhibition') {
+							$vs_label_detail_link 	= "<span class='listTitle'><i>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id)."</i></span>";
+
 							if ($vs_museum = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue')))) {
 								$vs_result_text.=", ".$vs_museum;
 							}
 							if ($vs_ex_date = $qr_res->get('ca_occurrences.occurrence_dates')) {
-								$vs_result_text.=", ".$vs_ex_date;
+								$vs_result_text.=", ".$vs_ex_date.".";
 							}
-							$vs_result_text_link = caDetailLink($this->request, $vs_result_text, '', $vs_table, $vn_id);
-						} 
+							$vs_result_text_link = caDetailLink($this->request, $vs_result_text, 'occLink', $vs_table, $vn_id); 
+						} else if ( $vs_nonpreferred = $qr_res->get('ca_occurrences.nonpreferred_labels')){
+							$vs_info.= "<span class='comma'>: ".$vs_nonpreferred."</span>.";
+						} else {
+							$vs_nonpreferred = null;
+							$vs_info.= "<span class='comma'>.</span>";
+						}
 					} elseif ($vs_table === 'ca_collections') {
 						if ($vs_location) {
 							$vs_info.= $vs_location;
