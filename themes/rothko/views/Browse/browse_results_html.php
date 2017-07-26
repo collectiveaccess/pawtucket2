@@ -61,9 +61,10 @@
 	$vs_result_col_class 		= $o_config->get('result_col_class');
 	$vs_refine_col_class 		= $o_config->get('refine_col_class');
 	$va_export_formats 			= $this->getVar('export_formats');
+
 	
 	$va_add_to_set_link_info 	= caGetAddToSetInfo($this->request);
-	
+
 if($this->request->getParameter("detailNav", pInteger)){
 	# --- this is the filter/sort nav bar above related objects on authority detail pages.
 	# --- get the current search
@@ -79,7 +80,16 @@ if($this->request->getParameter("detailNav", pInteger)){
 	$vb_show_filter = false; # collection pages have filter option
 	$vs_current_facet = null;
 	foreach($va_criteria as $va_criterion) {
-		if (in_array($va_criterion['facet_name'], ['collection', 'current_collection', 'past_collection'])) { $vb_show_filter = true; $vs_current_facet = $va_criterion['facet_name']; break; }
+		if (in_array($va_criterion['facet_name'], ['collection', 'current_collection', 'past_collection'])) { 
+			$vb_show_filter = true; 
+			$vs_current_facet = $va_criterion['facet_name'];
+			$vn_record_id = $va_criterion['id'];
+			$t_collection = new ca_collections($vn_record_id);
+			if ($t_collection->get('ca_collections.type_id', array('convertCodesToDisplayText' => true)) == "Sketchbook") {
+				$vb_is_sketchbook = true; 
+			}
+			break; 
+		}
 	}
 	$vs_search_target = "artworks";
 ?>
@@ -158,7 +168,7 @@ if($this->request->getParameter("detailNav", pInteger)){
 				</ul>
 			</div><!-- end btn-group -->
 <?php
-			if($vb_show_filter){
+			if($vb_show_filter && !$vb_is_sketchbook){
 				$va_options = ['collection' => 'all', 'current_collection' => 'current', 'past_collection' => 'previous'];
 				$t_lists = new ca_lists();
 				if (!($vn_collection_id = $this->request->getParameter('collection_id', pInteger))) { $vn_collection_id = $this->request->getParameter('id', pInteger);}

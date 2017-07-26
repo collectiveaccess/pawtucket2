@@ -281,7 +281,7 @@
 </div><!-- end row -->	
 <?php
 	$vs_provenance = "";
-	if ($va_provenance = $t_parent->get('ca_objects_x_collections.relation_id', array('returnWithStructure' => true, 'sort' => 'ca_objects_x_collections.rank', 'sortOrder' => 'ASC'))) {
+	if ($va_provenance = $t_parent->get('ca_objects_x_collections.relation_id', array('returnWithStructure' => true, 'restrictToTypes' => array('collection', 'other'), 'sort' => 'ca_objects_x_collections.rank', 'sortOrder' => 'ASC'))) {
 		foreach ($va_provenance as $va_key => $va_relation_id) {
 			$t_prov_rel = new ca_objects_x_collections($va_relation_id);
 			$t_prov = new ca_collections($t_prov_rel->get('ca_collections.collection_id'));
