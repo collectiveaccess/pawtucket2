@@ -158,11 +158,10 @@ ul.list {
 .socialButtons{
 	position: relative;
 	display: inline;
-	left: 30px;
 }
 
 .socialButtons .fb_iframe_widget{
-	top: -6px;
+	top: -5.5px;
 }
 
 .inpageButtons{
