@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2016-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -99,8 +99,17 @@
 					if (is_array($va_versions = $po_request->config->getList('ca_object_representation_download_versions'))) {
 						$vs_controls .= "<div class='download'>";
 						// -- provide user with a choice of versions to download
-						$vs_controls .= caFormTag($po_request, 'DownloadMedia', 'caMediaDownloadForm', $po_request->getModulePath().'/'.$po_request->getController(), 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true, 'noTimestamp' => true));
-						$vs_controls .= _t('Download as %1', caHTMLSelect('version', array_combine(array_map("_t", $va_versions), $va_versions), array('style' => 'font-size: 8px; height: 16px;')));
+						$va_url = array_filter([$po_request->getModulePath(), $po_request->getController()], "strlen");
+						
+						$vs_controls .= caFormTag($po_request, 'DownloadMedia', 'caMediaDownloadForm', join("/", $va_url), 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true, 'noTimestamp' => true));
+						
+						$va_versions_proc = array_combine(array_map("_t", $va_versions), $va_versions);
+						
+						if(sizeof($va_versions_proc) == 1) {
+							$vs_controls .= caHTMLHiddenInput('version', ['value' => $va_versions_proc[0]]);
+						} else {
+							$vs_controls .= _t('Download as %1', caHTMLSelect('version', $va_versions_proc, array('style' => 'font-size: 8px; height: 16px;')));
+						}
 						$vs_controls .= caFormSubmitLink($po_request, caNavIcon(__CA_NAV_ICON_DOWNLOAD__, 1, [], ['color' => 'white']), '', 'caMediaDownloadForm', 'caMediaDownloadFormButton');
 						$vs_controls .= caHTMLHiddenInput($t_subject->primaryKey(), array('value' => $t_subject->getPrimaryKey()));
 						if (is_a($t_instance, 'ca_object_representations')) { $vs_controls .= caHTMLHiddenInput("representation_id", array('value' => $t_instance->getPrimaryKey())); }
@@ -120,6 +129,20 @@
 			$o_view->setVar('controls', $vs_controls);
 		
 			return $o_view->render(caGetOption('viewerWrapper', $pa_options, 'viewerWrapper').'.php');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function searchViewerData($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
+		    throw new ApplicationException(_t('Media search is not available'));
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function autocomplete($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
+		    throw new ApplicationException(_t('Media search autocomplete is not available'));
 		}
 		# -------------------------------------------------------
 	}

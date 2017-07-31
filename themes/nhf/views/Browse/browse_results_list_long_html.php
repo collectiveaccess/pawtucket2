@@ -69,6 +69,23 @@
 	}else{
 		$va_ids_with_video = nhfOccWithClips($this->request);
 	}
+	$vs_search_term = "";
+	$va_search_term_pieces = array();
+	$va_search_term_pieces_replace = array();
+	foreach($va_criteria as $va_criterion) {
+		if ($va_criterion['facet_name'] == '_search') {
+			$vs_search_term = $va_criterion['value'];
+			break;
+		}
+	}
+	if($vs_search_term){
+		$va_search_term_pieces = explode(" ", $vs_search_term);
+		if(sizeof($va_search_term_pieces)){
+			foreach($va_search_term_pieces as $vs_search_term_piece){
+				$va_search_term_pieces_replace[] = "<span class='highlightSearchTerm'>".$vs_search_term_piece."</span>";
+			}
+		}
+	}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_item_num_label = $vn_start + 1;
 			$vn_c = 0;
@@ -86,7 +103,7 @@
 					}
 				}
 				
-				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
+				$vn_id = $qr_res->get("{$vs_table}.{$vs_pk}");
 				if($vn_id == $vn_row_id){
 					$vb_row_id_loaded = true;
 				}
@@ -96,17 +113,36 @@
 				if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
-					$vs_description =  $qr_res->get('ca_collections.collection_summary');
+					$vs_collection = "";
+					$vs_label = $qr_res->get("{$vs_table}.preferred_labels");
+					# --- bold term in label
+					if(sizeof($va_search_term_pieces)){
+						$vs_label = str_ireplace($va_search_term_pieces, $va_search_term_pieces_replace, $vs_label);
+					}
+					
+					$vs_label_detail_link 	= caDetailLink($this->request, $vs_label, '', $vs_table, $vn_id);
+					if($vs_table == "ca_collections"){
+						$vs_description =  $qr_res->get('ca_collections.collection_summary');
+					}else{
+						$vs_description =  $qr_res->get('ca_occurrences.pbcoreDescription.description_text');
+						$vs_collection = $qr_res->getWithTemplate("<unit relativeTo='ca_collections' delimiter=', '><l>^ca_collections.preferred_labels.name</l></unit>");
+						if($vs_collection){
+							$vs_collection = "<br/><b>Part of:</b> ".$vs_collection;
+						}
+					}
 					if(strlen($vs_description) > 185){
-						$vs_description = trim(substr($vs_description, 0, 185))."...";
+						$vs_description = trim(mb_substr($vs_description, 0, 185))."...";
+					}
+					# --- bold term in description
+					if(sizeof($va_search_term_pieces)){
+						$vs_description = str_ireplace($va_search_term_pieces, $va_search_term_pieces_replace, $vs_description);
 					}
 					$vs_has_video = "";
 					if(in_array($vn_id, $va_ids_with_video)){
 						$vs_has_video = "<span class='glyphicon glyphicon-facetime-video'></span>";
 					}
 					$vs_result_output = "<div class='result'>".$vn_item_num_label.") ".$vs_label_detail_link." ".$vs_has_video."
-						<div class='resultDescription'>".$vs_description.caGetThemeGraphic($this->request, 'cross.gif', array('style' => 'margin: 0px 3px 0px 15px;')).caDetailLink($this->request, _t("more"), '', $vs_table, $vn_id)."</div><!-- end description --></div>\n";
+						<div class='resultDescription'>".$vs_description.caGetThemeGraphic($this->request, 'cross.gif', array('style' => 'margin: 0px 3px 0px 15px;')).caDetailLink($this->request, _t("more"), '', $vs_table, $vn_id).$vs_collection."</div><!-- end description --></div>\n";
 					
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');
 					print $vs_result_output;

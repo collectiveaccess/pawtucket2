@@ -9,7 +9,7 @@ html {
     min-height: 100%;
 }
 body {
-	font-family: arial;
+	font-family: LatoLight;
 	color:#454545;
 	margin-bottom:80px; 
 }
@@ -72,6 +72,8 @@ label {
     margin-bottom: 5px;
     font-size:11px;
     text-transform:uppercase;
+    font-family:lato;
+    font-weight:normal;
 }	
 .colBorderLeft{
 	border-left:1px solid #EDEDED;
@@ -415,6 +417,7 @@ h1 i {
     border-radius: 0px;
     letter-spacing: 1px;
     color: #fff;
+    font-family:Lato;
 }
 .btn-default a{
 	color: #fff;
@@ -434,6 +437,9 @@ h1 i {
 /* ----------------------------------------- */
 /* navbar - browse menu */
 /* ----------------------------------------- */
+.filterMenuFacetList{
+	min-height:200px;
+}
 .browseMenuFacet {
 	clear: both;
     margin-bottom: 0px;
@@ -445,6 +451,7 @@ h1 i {
 	padding-bottom:10px;
 	/*float:left;*/
 	padding-top:10px;
+	font-family:Lato;
 }
 
 .filterMenuFacetList ul{
@@ -470,7 +477,7 @@ h1 i {
 }	
 
 .filterMenuFacetList li a{
-    color: #999;
+    color: #666;
     cursor: pointer;
     font-size: 12px;
     line-height: 16px;
@@ -486,7 +493,6 @@ h1 i {
 	color: #666;
     font-size: 12px;
     padding-bottom: 3px;
-    font-weight:bold;
     padding-left: 4px;
 }
 
@@ -687,6 +693,7 @@ div.browseMenuBrowseSearch input {
 }	
 .browseHeadernav a{
 	color:#666;
+	font-family:Lato;
 }
 a.browseRemoveFacet img {
 	margin-bottom: 3px;	
@@ -799,6 +806,7 @@ a.browseRemoveFacet img {
 	width:100%;
 	height:80px;
 	padding: 0px 15px 0px 15px;
+	font-family:lato;
 }
 @media (min-width: 768px) {
 	#footer {
@@ -1118,6 +1126,11 @@ a.browseRemoveFacet img {
 		width:220px;
 	}
 }
+.lbSetItemComment .btn-xs, .lbSetComment .btn-xs{
+	padding:5px !important;
+	font-size:10px;
+	margin-top:-10px;
+}
 .lbItemContainerList .lbSetItemComment{
 	left:0px;
 	width:100%;
@@ -1339,6 +1352,8 @@ a.browseRemoveFacet img {
 @media (min-width: 768px) {
 	.front H1 {
 		font-size:28px;
+		font-family:LatoLight;
+		padding-top:15px;
 	}
 }
 .front .jcarousel-wrapper{
@@ -1627,7 +1642,7 @@ a.browseRemoveFacet img {
 	clear:both;
 	padding-top:10px;
 	margin-top:30px;
-
+	font-family:lato;
 }
 .detail .detailTool {
 	color: #858585;
@@ -1774,6 +1789,12 @@ a.readmore-js-toggle{
 
 .caAudioPlayer{
 	padding-top:26px;
+}
+.detail .exportCollection .fa, .detail .exportCollection .glyphicon, .detail .exportCollection a{
+	color: #858585 !important;
+	font-size: 11px;
+    text-transform: uppercase;
+    text-decoration:none;
 }
 /* --------------------------------- */
 /* browse b */
@@ -2388,6 +2409,9 @@ a.browseRemoveFacet .glyphicon {
 	font-size:13px;
 	letter-spacing:1px;
 }
+.multisearch .pull-right {
+	font-family:lato;
+}
 @media (max-width:500px) {
 	.jumpLinks, .sortValues {
 		display:none;
@@ -2513,6 +2537,7 @@ a.browseRemoveFacet .glyphicon {
 .gallery #gallerySetInfo{
 	font-size:13px;
 	padding-bottom:20px;
+	line-height:1.8em;
 }
 .gallery #gallerySetInfo img{
 	max-width:400px;
@@ -2641,6 +2666,7 @@ a.browseRemoveFacet .glyphicon {
 }
 .gallery #galleryDetailObjectInfo{
 	padding-top:10px;
+	line-height:1.8em;
 }
 .gallery #galleryDetailImageGrid{
 	min-height:300px;
@@ -2661,6 +2687,7 @@ a.browseRemoveFacet .glyphicon {
 .gallery .setDescription{
 	font-size:12px;
 	font-weight:bold;
+	line-height:1.8em;
 }
 .gallery .galleryDetailBottom{
 	clear:both; 
@@ -2833,7 +2860,13 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 }
 
 
+/* --------------------------------------------------------- */
+/* Static Pages */
+/* --------------------------------------------------------- */
 
+.staticPage p {
+	line-height:1.8em;
+}
 
 /* --------------------------------------------------------- */
 /* DOCUMENT VIEWER */
@@ -3044,7 +3077,7 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	text-transform:uppercase;
 	color:#454545;
 	font-size:11px;
-	font-weight:bold;
+	font-family:lato;	
 }
 .advancedFormSubmit {
 	margin-bottom:20px;
@@ -3104,7 +3137,22 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	padding:4px 10px 4px 10px;
 	font-weight:bold;
 }
-
+.collectionTile {
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	margin-bottom:15px;
+	padding:15px;
+	font-size:13px;
+	line-height:1.8em;
+}
+.collectionTile .title {
+	padding-bottom:10px;
+	font-family:lato;
+	
+}
+.collectionTile .title a {
+	text-decoration:none;
+	font-size:14px;
+}
 
 /* tooltips */
 .ui-tooltip {

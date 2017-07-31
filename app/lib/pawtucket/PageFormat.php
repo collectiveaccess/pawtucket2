@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -36,6 +36,7 @@
  
  	require_once(__CA_LIB_DIR__.'/core/Controller/AppController/AppControllerPlugin.php');
  	require_once(__CA_LIB_DIR__.'/core/View.php');
+ 	require_once(__CA_LIB_DIR__.'/core/ApplicationVars.php');
  	require_once(__CA_LIB_DIR__."/core/Controller/Request/NotificationManager.php");
  
 	class PageFormat extends AppControllerPlugin {
@@ -59,17 +60,23 @@
 		}
 		# -------------------------------------------------------
 		public function postDispatch() {
-			$o_view = new View($this->getRequest(), $this->getRequest()->config->get('views_directory'));
+			$o_view = new View($o_request = $this->getRequest(), $o_request->config->get('views_directory'));
 			
-			$o_notification = new NotificationManager($this->getRequest());
+			$o_notification = new NotificationManager($o_request);
 			if($o_notification->numNotifications()) {
 				$o_view->setVar('notifications', $o_notification->getNotifications($this->getResponse()->isRedirect()));
 				$this->getResponse()->prependContent($o_view->render('pageFormat/notifications.php'), 'notifications');
 			}
 			
-			//$nav = new AppNavigation($this->getRequest(), $this->getResponse());
 			$o_view->setVar('nav', $nav);
-			//$this->getResponse()->prependContent($o_view->render('pageFormat/menuBar.php'), 'menubar');
+			
+			if(is_array($va_template_values = $o_request->config->getAssoc('global_template_values'))) {
+				$o_appvars = new ApplicationVars();
+ 				foreach($va_template_values as $vs_name => $va_info) {
+ 					$o_view->setVar($vs_name, $o_appvars->getVar("pawtucket_global_{$vs_name}"));
+ 				}
+ 			}
+			
 			$this->getResponse()->prependContent($o_view->render('pageFormat/pageHeader.php'), 'head');
 			$this->getResponse()->appendContent($o_view->render('pageFormat/pageFooter.php'), 'footer');
 		}

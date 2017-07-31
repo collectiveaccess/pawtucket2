@@ -36,8 +36,7 @@ $va_access_values = caGetUserAccessValues($this->request);
 				</div>
 
 				<div class="advancedSearchField">
-					{{{_fieldlist%width=200px&height=1&fieldListWidth=100&fieldListHeight=1&fields=_fulltext:Keyword;title:Title;ca_entities.preferred_labels.displayname/author:Author;ca_objects.pub_year:Date of Publication;ca_entities.preferred_labels.displayname/publisher:Publisher;ca_objects.ISBN:ISBN;ca_objects.series:Series;ca_objects.lcsh_terms:Subject;}}}
-					
+					{{{_fieldlist%width=200px&height=1&fieldListWidth=100&fieldListHeight=1&fields=_fulltext:Keyword;title:Title;ca_entities.preferred_labels.displayname/author:Author;ca_objects.pub_year:Date of Publication;ca_entities.preferred_labels.displayname/publisher:Publisher;ca_objects.ISBN:ISBN;ca_objects.series:Series;ca_objects.lcsh_terms:Subject;}}}			
 				</div>
 
 				<div class="advancedSearchField">
