@@ -65,9 +65,9 @@
 			}
 			if($vn_most_recent_set_id){
 				unset($va_set_ids[array_search($vn_most_recent_set_id, $va_set_ids)]);
-				#$vn_limit = 9;
+				$vn_limit = 9;
 			}else{
-				#$vn_limit = 10;
+				$vn_limit = 10;
 			}
 			$va_set_ids = array_slice($va_set_ids,0,$vn_limit,true);
 			if($vn_most_recent_set_id){
@@ -106,9 +106,9 @@
 					print "</div></div>";
 					$i++;
 				}
-				if($vn_limit > $vn_c){
+				#if($vn_limit > $vn_c){
 					$vn_limit = $vn_c;
-				}
+				#}
 			}
 		}
 
