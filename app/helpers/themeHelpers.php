@@ -757,6 +757,8 @@
 		if (!($t_instance = $o_dm->getInstanceByTableName($pm_table, true))) { return null; }
 		if (method_exists($t_instance, "isRelationship") && $t_instance->isRelationship()) { return array(); }
 		
+		$ps_return = caGetOption("return", $pa_options, 'tags');
+		
 		if ((!caGetOption("useRelatedObjectRepresentations", $pa_options, array())) && method_exists($t_instance, "getPrimaryMediaForIDs")) {
 			// Use directly related media if defined
 			$va_media = $t_instance->getPrimaryMediaForIDs($pa_ids, array($vs_version = caGetOption('version', $pa_options, 'icon')), $pa_options);
@@ -815,7 +817,18 @@
 		$qr_res = $o_db->query($vs_sql, $va_params);
 		$va_res = array();
 		while($qr_res->nextRow()) {
-			$va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaTag("media", caGetOption('version', $pa_options, 'icon'));
+		    switch($ps_return) {
+		        case 'urls':
+			        $va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaUrl("media", caGetOption('version', $pa_options, 'icon'));
+			        break;
+		        case 'paths':
+			        $va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaPath("media", caGetOption('version', $pa_options, 'icon'));
+			        break;
+		        case 'tags':
+		        default:
+			        $va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaTag("media", caGetOption('version', $pa_options, 'icon'));
+			        break;
+			}
 		}
 		return $va_res;
 	}
