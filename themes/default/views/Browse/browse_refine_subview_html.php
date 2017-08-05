@@ -45,7 +45,8 @@
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-				print "<H5>".$va_facet_info['label_singular']."</H5>"; 
+				print "<H5>".$va_facet_info['label_singular']."</H5>";
+				print "<p>".$va_facet_info['description']."</p>";
 ?>
 					<script type="text/javascript">
 						jQuery(document).ready(function() {

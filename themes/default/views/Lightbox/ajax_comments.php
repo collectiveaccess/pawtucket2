@@ -93,7 +93,7 @@
 				return false;
 			});
 
-            jQuery("#lbSetComments{{{item_id}}}").on('click', '.lbComment', function(e) {
+            jQuery("#lbSetComments{{{item_id}}}").on('click', '.lbCommentRemove', function(e) {
                 var comment_id = jQuery(this).data("comment_id");
                 if(comment_id) {
                     jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id }, function(data) {

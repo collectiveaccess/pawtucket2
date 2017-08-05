@@ -66,11 +66,11 @@
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
             if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
-            	$ps_id = urldecode($this->request->getActionExtra());
+            	if (!($ps_id = urldecode($this->request->getActionExtra()))) { $ps_id = $this->request->getParameter('id', pInteger); }
             	
             	$t_set_list = new ca_sets();
             	$t_set = new ca_sets();
-            	$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 1));
+            	$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values));
 				$va_user_has_access = false;
 				if (sizeof($va_sets) > 0) {
 					foreach ($va_sets as $va_key => $va_set) {
@@ -442,7 +442,10 @@
  			if (!$this->viewExists($vs_path = "Details/{$vs_table}_{$vs_type}_html.php")) {
  				$vs_path = "Details/{$vs_table}_default_html.php";		// If no type specific view use the default
  			}
- 			
+ 			//
+ 			// pdf link
+ 			//
+ 			$this->view->setVar('pdfEnabled', (bool)$va_options['enablePDF']);
 			switch($ps_view = $this->request->getParameter('view', pString)) {
  				case 'pdf':
  					if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
@@ -1028,9 +1031,9 @@
 					$vs_mail_message_text = $o_view->render("mailTemplates/share_email_text.tpl");
 				}
 				if($ps_tablename == "ca_objects"){
-					$vs_mail_message_html = $o_view->render("/mailTemplates/share_object_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/share_object_email_html.tpl");
 				}else{
-					$vs_mail_message_html = $o_view->render("/mailTemplates/share_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/share_email_html.tpl");
 				}
 				
 				$va_media = null;
@@ -1421,8 +1424,84 @@
 				throw new ApplicationException(_t('Cannot view media'));
 			}
 		
-			$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
+			$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $ps_context]));
 		}
+		# -------------------------------------------------------
+        /**
+         * Provide in-viewer search for those that support it (Eg. UniversalViewer)
+         */
+        public function SearchMediaData() {
+           $ps_context = $this->request->getParameter('context', pString);
+            
+            $o_dm = Datamodel::load();
+            if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
+    
+            switch($ps_context) {
+                case 'gallery':
+                case 'GetMediaInline':
+                case 'GetMediaOverlay':
+                    $va_context = ['table' => 'ca_objects'];
+                    break;
+                default:
+                    if(!is_array($va_context = $this->opa_detail_types[$ps_context])) { 
+                        throw new ApplicationException(_t('Invalid context'));
+                    }
+                    break;
+            }
+        
+            if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {
+                throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
+            }
+        
+            if (!($pn_subject_id = $this->request->getParameter('id', pInteger))) { $pn_subject_id = $this->request->getParameter($pt_subject->primaryKey(), pInteger); }
+            if (!$pt_subject->load($pn_subject_id)) { 
+                throw new ApplicationException(_t('Invalid id %1', $pn_subject_id));
+            }
+        
+            if (!$pt_subject->isReadable($this->request)) { 
+                throw new ApplicationException(_t('Cannot view media'));
+            }
+    
+            $this->response->addContent(caSearchMediaData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
+        }
+        # -------------------------------------------------------
+        /**
+         * Provide in-viewer search for those that support it (Eg. UniversalViewer)
+         */
+        public function MediaDataAutocomplete() {
+           $ps_context = $this->request->getParameter('context', pString);
+            
+            $o_dm = Datamodel::load();
+            if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
+    
+            switch($ps_context) {
+                case 'gallery':
+                case 'GetMediaInline':
+                case 'GetMediaOverlay':
+                    $va_context = ['table' => 'ca_objects'];
+                    break;
+                default:
+                    if(!is_array($va_context = $this->opa_detail_types[$ps_context])) { 
+                        throw new ApplicationException(_t('Invalid context'));
+                    }
+                    break;
+            }
+        
+            if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {
+                throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
+            }
+        
+            if (!($pn_subject_id = $this->request->getParameter('id', pInteger))) { $pn_subject_id = $this->request->getParameter($pt_subject->primaryKey(), pInteger); }
+            if (!$pt_subject->load($pn_subject_id)) { 
+                throw new ApplicationException(_t('Invalid id %1', $pn_subject_id));
+            }
+        
+            if (!$pt_subject->isReadable($this->request)) { 
+                throw new ApplicationException(_t('Cannot view media'));
+            }
+    
+            $this->response->addContent(caMediaDataAutocomplete($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
+        }
 		# -------------------------------------------------------
 		/**
 		 * Clean up tmp files

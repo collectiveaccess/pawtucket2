@@ -128,8 +128,11 @@
  			$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  			$this->view->setVar("num_items", $t_set->getItemCount(array("checkAccess" => $this->opa_access_values)));
  			#$this->view->setVar("set_item", array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values)))));
- 			$this->view->setVar("set_item", array_shift(array_shift($t_set->getPrimaryItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values)))));
- 			
+ 			$va_set_item = array_shift(array_shift($t_set->getPrimaryItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));
+ 			if(!$va_set_item){
+ 				$va_set_item = array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));
+ 			}
+ 			$this->view->setVar("set_item", $va_set_item);
  			$this->render("Gallery/set_info_html.php");
  		}
 		# -------------------------------------------------------

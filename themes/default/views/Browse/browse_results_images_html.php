@@ -128,9 +128,6 @@
 							}
 						}
 						$vs_info = null;
-						if ($qr_res->get('ca_objects.date')) {
-							$vs_date = "<p>".$qr_res->get('ca_objects.date')."</p>";
-						}
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 					} else {
 						if($va_images[$vn_id]){
@@ -152,7 +149,7 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_date}
+						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
 					</div><!-- end bResultItemText -->
 				</div><!-- end bResultItemContent -->
 				<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
@@ -168,7 +165,7 @@
 				$vn_results_output++;
 			}
 			
-			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
 		}
 ?>
 <script type="text/javascript">
