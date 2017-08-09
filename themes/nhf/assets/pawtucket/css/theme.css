@@ -1499,6 +1499,15 @@ div.moreFacetListHeading{
 	width:100%;
 	height:auto;
 }
+#caMediaOverlayContent .video-js {
+    margin-left: auto;
+    margin-right: auto;
+	bottom:40px;
+}
+/* hide full screen option in player */
+.vjs-fullscreen-control{
+	display:none; 
+}
 .detail .result .moreLink{
 	white-space: nowrap;
 }

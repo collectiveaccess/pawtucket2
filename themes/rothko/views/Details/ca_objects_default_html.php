@@ -228,6 +228,33 @@
 </div><!-- end row -->
 <?php
 	}
+	
+if ($va_related_sketchbook_id = $t_parent->get('ca_collections.related.collection_id', array('restrictToTypes' => array('sketchbook')))) {
+	$t_sketchbook = new ca_collections($va_related_sketchbook_id);
+	print "<div class='row'><div class='col-sm-12 col-md-12 col-lg-12'>";
+	print "<div class='drawer'>";
+	print "<h6><a href='#' onclick='$(\"#sketchDiv\").toggle(400);return false;'>Related Sketchbook <i class='fa fa-chevron-down'></i></a></h6>";
+	print "<div id='sketchDiv'>";	
+	print "<div class='col-sm-3 bResultItemCol' style='float:none;padding-left:0px;'><div class='bResultItem'><div class='bResultItemContent'>";
+	if ($va_sk_rep = $t_sketchbook->get('ca_object_representations.media.small', array("checkAccess" => $va_access_values))) {
+		print "<div class='text-center bResultItemImg'>".caNavLink($this->request, $va_sk_rep, '', '', 'Detail', 'collections/'.$va_related_sketchbook_id)."</div>";
+	} else {
+		$vs_buf.= '<div class="bResultItemImgPlaceholder"><i class="fa fa-picture-o fa-2x"></i></div>';
+	}
+	print "<div class='bResultItemText'>";
+	print "<p>".caNavLink($this->request, $t_sketchbook->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_related_sketchbook_id)."</p>"; 
+	if ($vs_date = $t_sketchbook->get('ca_collections.display_date')) {
+		print "<p>".$vs_date."</p>"; 
+	}
+	if ($va_collection = $t_sketchbook->getWithTemplate('<unit relativeTo="ca_collections_x_collections" restrictToTypes="collection,other"><if rule="^ca_collections_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections" >^ca_collections.preferred_labels</unit></if></unit>')) {
+		print "<p>".$va_collection."</p>";
+	}	
+	print caNavLink($this->request, 'View', 'viewLink', '', 'Detail', 'collections/'.$va_related_sketchbook_id); 
+	print "<a href='#' class='compare_link' data-id='".$va_related_sketchbook_id."'><i class='fa fa-clone' aria-hidden='true'></i></a>";	
+	print "</div></div></div></div>";
+	print "</div><!-- end sketchdiv --></div><!-- end drawer -->";
+	print "</div></div><!-- end col end row -->";
+}
 ?>
 <div class='row'>
 	<div class='col-sm-12 col-md-12 col-lg-12'>
@@ -281,7 +308,7 @@
 </div><!-- end row -->	
 <?php
 	$vs_provenance = "";
-	if ($va_provenance = $t_parent->get('ca_objects_x_collections.relation_id', array('returnWithStructure' => true, 'sort' => 'ca_objects_x_collections.rank', 'sortOrder' => 'ASC'))) {
+	if ($va_provenance = $t_parent->get('ca_objects_x_collections.relation_id', array('returnWithStructure' => true, 'restrictToTypes' => array('collection', 'other'), 'sort' => 'ca_objects_x_collections.rank', 'sortOrder' => 'ASC'))) {
 		foreach ($va_provenance as $va_key => $va_relation_id) {
 			$t_prov_rel = new ca_objects_x_collections($va_relation_id);
 			$t_prov = new ca_collections($t_prov_rel->get('ca_collections.collection_id'));

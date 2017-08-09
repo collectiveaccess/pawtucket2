@@ -472,6 +472,7 @@
 			
 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, $va_browse_info['table'], $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br style='clear:both;'/>")));
 			
+			$this->view->setVar('heading', trim($va_view_info['display']['heading']) ? caProcessTemplateForIDs($va_view_info['display']['heading'], $va_browse_info['table'], [$pa_ids[0]], array('checkAccess' => $this->opa_access_values)) : "");
 			$this->view->setVar('table', $va_browse_info['table']);
 			$this->view->setVar('ids', $pa_ids);
          	$this->render("Browse/ajax_map_item_html.php");   
