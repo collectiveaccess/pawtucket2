@@ -3,7 +3,7 @@
 	<div id="introText">
 		Our online catalog holds newly described and heritage database descriptions of film and video including local television news, amateur film, industrials, and many other genres.  Many holdings are not yet described.  To explore our catalog, enter a search term in the box below, or browse by <?php print caNavLink($this->request, _t('collection names'), '', '', 'Browse', 'Collections'); ?>.
 
-	<div id="hpSearch"><form name="hp_search2" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" method="get">
+	<div id="hpSearch"><form name="hp_search2" action="<?php print caNavUrl($this->request, '', 'Search', 'Occurrences'); ?>" method="get">
 			Search: <input type="text" name="search" value="" autocomplete="off" size="100"/><input type="submit" name="op" id="edit-submit" value="GO"  class="form-submit" />
 	</form></div><!-- end hpSearch -->
 
