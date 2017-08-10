@@ -30,19 +30,21 @@
 				<div id="itemResults">
 <?php
 				$vn_item_num_label = 1;
+				$vs_video = "";
 				while($qr_hits->nextHit()) {
 					$vn_object_id = $qr_hits->get('ca_objects.object_id');
 					
 					print  "<div class='result'>".$vn_item_num_label.") ";
 					print "<b>".$qr_hits->get("ca_objects.preferred_labels.name")."</b>";
 					
-					if($vs_video = $qr_hits->get('ca_object_representations.media.original', array("checkAccess" => $va_access_values))){
-						print $vs_video;
+					if(!$vs_video && ($vs_video = $qr_hits->get('ca_object_representations.media.original', array("checkAccess" => $va_access_values)))){
+						#print $vs_video;
+						$vs_video .= "<div style='float:right; margin-top:3px;'><a href='#' style='text-decoration:none; font-size:16px;' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_object_id, 'representation_id' => $qr_hits->get('ca_object_representations.representation_id'), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in orange'></span></a></div>\n";
 					}
 					print "<div class='resultDescription'>";
-					if($vs_video){
-						print "<div style='float:right;'><a href='#' style='text-decoration:none; font-size:16px;' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_object_id, 'representation_id' => $qr_hits->get('ca_object_representations.representation_id'), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in orange'></span></a></div>\n";
-					}
+					#if($vs_video){
+						#print "<div style='float:right;'><a href='#' style='text-decoration:none; font-size:16px;' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_object_id, 'representation_id' => $qr_hits->get('ca_object_representations.representation_id'), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in orange'></span></a></div>\n";
+					#}
 					$va_desc = array();
 					# --- pbcoreFormatStandard
 					if($vs_format_standards = $qr_hits->get("ca_objects.pbcoreFormatStandard", array("delimiter" => ", ", 'convertCodesToDisplayText' => true))){
@@ -90,6 +92,9 @@
 			</div><!-- end detailBodyTopInfo -->
 
 <?php
+			if($vs_video){
+				print "\n<div class='unit'>".$vs_video."<br/></div>";
+			}
 			# --- idno
 			if($t_occurrence->get('ca_occurrences.idno')){
 				print "\n<div class='unit'><div class='infoButton' id='idno' data-toggle='popover' data-content='Identifier description.'>".caGetThemeGraphic($this->request, 'b_info.gif')."</div><div class='heading'>"._t("Identifier")."</div><div>".$t_occurrence->get('ca_occurrences.idno')."</div></div><!-- end unit -->";
