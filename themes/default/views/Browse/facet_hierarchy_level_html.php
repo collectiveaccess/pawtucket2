@@ -38,17 +38,19 @@
 		foreach($va_facet as $vn_id => $va_children){
 			if (!is_array($va_children)) { continue; }
 			
+			$vs_content_count = (isset($va_children['content_count']) && ($va_children['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
 			$vs_name = caTruncateStringWithEllipsis($va_children["name"], 75);
+			
 			if(isset($vs_name)){
 				$vs_buf = "<div ".($vb_is_nav ? "class='browseFacetItem browseFacetHierarchyItem col-sm-6 col-md-4'" : "").">";
 				if($vs_link_to == "morePanel"){
 					if((int)$va_children["children"] > 0){
 						$vs_buf .= "<a href='#' data-item_id='{$vn_id}' class='caSubItems caSubItem{$vs_facet_name}' title='".addslashes(_t('View sub-items'))."'>{$vs_name}</a>";
 					}else{
-						$vs_buf .= caNavLink($this->request, $vs_name, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0));
+						$vs_buf .= caNavLink($this->request, $vs_name.$vs_content_count, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0));
 					}
 				}else{
-					$vs_buf .= caNavLink($this->request, $vs_name, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0));
+					$vs_buf .= caNavLink($this->request, $vs_name.$vs_content_count, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0));
 					if((int)$va_children["children"] > 0){
 						$vs_buf .= ' <a href="#" title="'._t('View sub-items').'" onClick=\'jQuery("#bHierarchyList'.(($vs_link_to) ? '' : 'MorePanel').'_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'key' => $vs_key, 'browseType' => $vs_browse_type, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0)).'"); jQuery(".bAncestorList_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0)).'"); return false;\'><span class="glyphicon glyphicon-chevron-down"></span></a>';
 					}
