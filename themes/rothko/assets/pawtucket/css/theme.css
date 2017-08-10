@@ -778,7 +778,9 @@ a .fa.clearFacet {
 .exhibition.detail h1 {
 	margin-bottom:8px;
 }
-
+.detail.sketchbook #detailRepNav {
+	display:none;
+}
 .detail #detailRepNavPrev {
     float: left;
     position: absolute;
