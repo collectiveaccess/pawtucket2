@@ -236,7 +236,7 @@ if ($va_related_sketchbook_id = $t_parent->get('ca_collections.related.collectio
 	print "<h6><a href='#' onclick='$(\"#sketchDiv\").toggle(400);return false;'>Related Sketchbook <i class='fa fa-chevron-down'></i></a></h6>";
 	print "<div id='sketchDiv'>";	
 	print "<div class='col-sm-3 bResultItemCol' style='float:none;padding-left:0px;'><div class='bResultItem'><div class='bResultItemContent'>";
-	if ($va_sk_rep = $t_sketchbook->get('ca_object_representations.media.small', array("checkAccess" => $va_access_values))) {
+	if ($va_sk_rep = $t_sketchbook->get('ca_object_representations.media.small', array("checkAccess" => $va_access_values, "limit" => 1))) {
 		print "<div class='text-center bResultItemImg'>".caNavLink($this->request, $va_sk_rep, '', '', 'Detail', 'collections/'.$va_related_sketchbook_id)."</div>";
 	} else {
 		$vs_buf.= '<div class="bResultItemImgPlaceholder"><i class="fa fa-picture-o fa-2x"></i></div>';

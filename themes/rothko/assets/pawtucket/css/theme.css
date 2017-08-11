@@ -670,6 +670,16 @@ a .fa.clearFacet {
 	color:#333;
 	font-size:17px;
 }
+.detail.sketchbook span.glyphicon.glyphicon-zoom-in::after {
+	content: "\e015";
+}
+.detail.sketchbook span.glyphicon.glyphicon-zoom-in::before {
+	content: "View sketchbook pages";
+	font-family: LatoLight;
+	padding-right: 10px;
+    font-size: 14px;
+    vertical-align: top;
+}
 .detail .detailMediaToolbar .dlButton {
 	display:none;
 }
@@ -764,7 +774,7 @@ a .fa.clearFacet {
 }
 .detail .viewLink {
 	text-transform:uppercase;
-	text-decoration:underline;
+	border-bottom:1px solid #454545;
 	margin-top:5px;
 	display:inline-block;
 	color:#858585;
