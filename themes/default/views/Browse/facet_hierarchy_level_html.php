@@ -38,7 +38,7 @@
 		foreach($va_facet as $vn_id => $va_children){
 			if (!is_array($va_children)) { continue; }
 			
-			$vs_content_count = (isset($va_children['content_count']) && ($va_children['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+			$vs_content_count = (isset($va_children['content_count']) && ($va_children['content_count'] > 0)) ? " (".$va_children['content_count'].")" : "";
 			$vs_name = caTruncateStringWithEllipsis($va_children["name"], 75);
 			
 			if(isset($vs_name)){
