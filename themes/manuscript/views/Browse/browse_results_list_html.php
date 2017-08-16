@@ -161,6 +161,8 @@
 							if($vs_label_avail_info = $qr_res->get("ca_objects.institution_link") and $vs_table != 'ca_collections'){
 								$vs_label_see_link = "<a class='viewableLink' href='{$vs_label_avail_info}' target='_blank'>Viewable Online</a>";
 							}
+						} else {
+							$vs_label_see_link = "";
 						}
 						if($vs_label_date_info = $qr_res->get("ca_objects.date_index") and $vs_table != 'ca_collections'){
 							$vs_label_date_see = ' / '.$vs_label_date_info;
