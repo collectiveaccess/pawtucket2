@@ -2028,6 +2028,7 @@
 					if (caGetOption('expandResultsHierarchically', $pa_options, false) && ($vs_hier_id_fld = $this->opo_datamodel->getTableProperty($this->ops_browse_table_name, 'HIERARCHY_ID_FLD'))) { 
 
                        foreach($va_acc as $vn_i => $va_acc_content) {
+                            if(!sizeof($va_acc_content)) { continue; }
                             $qr_expand =  $this->opo_db->query("
                                 SELECT ".$this->ops_browse_table_name.".".$t_item->primaryKey()." 
                                 FROM ".$this->ops_browse_table_name."
@@ -4501,13 +4502,22 @@
 						// If a date criterion is already set then force current facet to only return values within the
 						// envelope set by the existing criterion.
 						if (is_array($va_current_criteria = $this->getCriteria())) {
+						    $vn_min = $vn_max = null;
 							foreach($va_current_criteria as $vs_criteria_facet => $va_criteria_values) {
 								if (is_array($va_criteria_facet_info = $this->getInfoForFacet($vs_criteria_facet))) {
 									if ($va_criteria_facet_info['type'] == 'normalizedDates') {
 										foreach(array_keys($va_criteria_values) as $vs_date) {
 											if ($o_tep->parse($vs_date)) {
-												$va_facet_info['minimum_date'] = $o_tep->getText(['start_as_iso8601' => true]);
-												$va_facet_info['maximum_date'] = $o_tep->getText(['end_as_iso8601' => true]);
+											    $va_ts = $o_tep->getHistoricTimestamps();
+											 
+											    if (is_null($vn_min) || ($va_ts['start'] < $vn_min)) {
+												    $va_facet_info['minimum_date'] = $o_tep->getText(['start_as_iso8601' => true]);
+												    $vn_min = $va_ts['start'];
+												}
+												if (is_null($vn_max) || ($va_ts['end'] > $vn_max)) {
+												    $va_facet_info['maximum_date'] = $o_tep->getText(['end_as_iso8601' => true]);
+												    $vn_max = $va_ts['end'];
+												}
 											}
 										}
 									}

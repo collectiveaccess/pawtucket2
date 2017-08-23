@@ -159,8 +159,8 @@
 
 				}
 				# --- image
-				if($t_collection->get('ca_collections.collection_still')){
-					print "\n<div class='unit'><div>".$t_collection->get('ca_collections.collection_still', array('version' => "medium", "showMediaInfo" => false))."</div>";
+				if($vs_tag = $t_collection->get('ca_collections.collection_still.medium', array("showMediaInfo" => false))){
+					print "\n<div class='unit'><div>{$vs_tag}</div>";
 					if($t_collection->get('ca_collections.collection_still_credit')){
 						print "<div class='imageCaption'>"._t("Credit:")." ".$t_collection->get('ca_collections.collection_still_credit')."</div>";
 					}
@@ -168,8 +168,8 @@
 				}
 			
 				# --- video clip
-				if($vs_player = $t_collection->get("ca_collections.collection_moving_image_media", array('version' => 'original', 'showMediaInfo' => false, 'viewer_width'=> 400, 'viewer_height' => 300, 'poster_frame_version' => 'medium'))){
-					print "\n<div class='unit'><div>".$vs_player."</div>";
+				if($vs_player = $t_collection->get("ca_collections.collection_moving_image_media.original", array('showMediaInfo' => false, 'viewer_width'=> 400, 'viewer_height' => 300, 'poster_frame_version' => 'medium'))){
+					print "\n<div class='unit'><div>{$vs_player}</div>";
 					if($t_collection->get("ca_collections.collection_moving_image_credit")){
 						print "<div class='imageCaption'>"._t("Credit:")." ".$t_collection->get("ca_collections.collection_moving_image_credit")."</div>";
 					}
