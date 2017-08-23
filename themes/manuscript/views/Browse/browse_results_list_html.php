@@ -154,6 +154,16 @@
 					</div><!-- end bResultListItemContent -->
 				</div><!-- end bResultListItem -->
 			</div><!-- end col -->";
+					} else if($vs_table == 'ca_collections') {
+						$vs_result_output = "
+			<div class='collectionResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+				<div class='collectionResultListItem' id='row{$vn_id}'>
+					<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
+					<div class='collectionResultListItemText'>
+						{$vs_label_detail_link}<br/>{$vs_materials}<br/>{$vs_label_coll_info}
+					</div><!-- end bResultListItemText -->
+				</div><!-- end bResultListItem -->
+			</div><!-- end col -->";
 					} else {
 						// Get additional info for Manuscripts as they will have no images
 
