@@ -413,6 +413,9 @@
 				}
           		$this->_checkErrors($t_subject, $va_response_data, $vn_num_errors); 
             }
+            
+            if (isset($va_form_info['access'])) { $t_subject->set('access', $va_form_info['access']); }
+            if (isset($va_form_info['status'])) { $t_subject->set('status', $va_form_info['status']); }
         
             // Insert
             $t_subject->insert();

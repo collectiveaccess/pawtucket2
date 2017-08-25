@@ -289,6 +289,24 @@ div.advancedSearchField {
 .bResultListItemCol{
 	height: 152px;
 }
+
+.collectionResultListItemCol{
+	height: 66px;
+}
+
+.collectionResultListItemContent {
+	height: 56px;
+}
+
+.collectionResultListItem:hover{
+	height: 66px;
+}
+
+.collectionResultListItemText:hover{
+	background-color: #ededed;
+	padding: 3px 9px;
+}
+
 .bResultListItemContent{
 	height: 142px;
 }

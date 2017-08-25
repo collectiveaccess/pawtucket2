@@ -106,6 +106,7 @@
 		}
 		# ------------------------------------------------------
 		function profileSave() {
+		    caValidateCSRFToken($this->request);
 			if(!$this->request->isLoggedIn()){
 				$this->notification->addNotification(_t("User is not logged in"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
@@ -203,6 +204,7 @@
 		}
 		# ------------------------------------------------------
 		function login() {
+		    caValidateCSRFToken($this->request);
 			if (!$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $this->request->getParameter('username', pString), 'password' => $this->request->getParameter('password', pString)))) {
 				$this->view->setVar("message", _t("Login failed"));
 				$this->loginForm();
@@ -259,6 +261,7 @@
 		}
 		# -------------------------------------------------------
 		function register() {
+		    caValidateCSRFToken($this->request);
 			if ($this->request->config->get('dont_allow_registration_and_login')) {
 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
