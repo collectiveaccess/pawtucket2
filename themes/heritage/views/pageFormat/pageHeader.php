@@ -98,8 +98,9 @@
 				</button>
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo.svg'), "navbar-brand", "", "","");
+				
 ?>
-				<div class="subtitle">Heritage</div>
+				<div class="subtitle"><?php print caNavLink($this->request, "heritage", "", "", "",""); ?></div>
 			</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -137,15 +138,12 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav menuItems">
-					<li class="steelcaseHome">
-						<a href="http://www.steelcase.com"><span class="glyphicon glyphicon-home"></span>&nbsp;&nbsp;Steelcase.com</a>
-					</li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<!--<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>-->
-					<li <?php print ($this->request->getAction() == "occurrences") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Timeline"), "", "", "Browse", "occurrences"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+					<li <?php print ($this->request->getAction() == "Lightbox") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("My Sets"), "", "", "Lightbox", "Index"); ?></li>
+					<li <?php print ($this->request->getAction() == "occurrences") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Timeline"), "", "", "Browse", "occurrences"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
