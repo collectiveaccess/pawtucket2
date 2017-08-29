@@ -142,11 +142,11 @@
 ?>
 				{{{<ifdef code="ca_objects.related"><H6>Related Items</H6><unit relativeto="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifdef>}}}
 <?php
-				if($t_object->get("external_link")){
+				if($t_object->get("ca_objects.external_link.url_entry")){
 					print "<H6>Related Links</H6>";
 					print $t_object->getWithTemplate("<unit><a href='^ca_objects.external_link.url_entry' target='_blank'>^ca_objects.external_link.url_source</a></unit>", array("delimiter" => "<br/>"));
 				}
-				if($t_object->get("external_link") || $t_object->get("ca_objects.related") || $t_object->get("ca_places", array("checkAccess" => $va_access_values)) || $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("subject"), "checkAccess" => $va_access_values)) || $t_object->get("ca_objects.LcshNames") || $t_object->get("ca_objects.keyword") || $t_object->get("ca_objects.LcshNames")){
+				if($t_object->get("ca_objects.external_link.url_entry") || $t_object->get("ca_objects.related") || $t_object->get("ca_places", array("checkAccess" => $va_access_values)) || $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("subject"), "checkAccess" => $va_access_values)) || $t_object->get("ca_objects.LcshNames") || $t_object->get("ca_objects.keyword") || $t_object->get("ca_objects.LcshNames")){
 ?>				
 					<HR/>				
 <?php				
