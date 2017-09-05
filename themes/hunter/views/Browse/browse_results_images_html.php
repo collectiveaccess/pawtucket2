@@ -94,6 +94,7 @@
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
+				$vs_date = "";
 				if ($vs_table == 'ca_objects') {
 					if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
 						$t_list_item->load($qr_res->get("type_id"));
