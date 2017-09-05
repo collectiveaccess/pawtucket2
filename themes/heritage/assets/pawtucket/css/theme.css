@@ -226,3 +226,10 @@ ul.about li i{
 #browse .dropdown-menu > li > a{
 	font-family: HelveticaNeueLight;
 }
+#bRefine.fixed {
+    position: fixed;
+    top: 50px;
+}
+#bRefine.fixed div:last-child {
+	margin-bottom:100px;
+}
