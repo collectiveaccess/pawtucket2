@@ -54,12 +54,6 @@
 		</div>				
 		<div class="advancedSearchField">
 			<span 
-				data-toggle="popover" data-trigger="hover" data-content="Search terms associated with the work’s ownership history."
-			>Provenance:</span><br/>
-			{{{ca_objects.cdwa_ownership.ownership_provenance%width=300px&height=1}}}
-		</div>
-		<div class="advancedSearchField">
-			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Classification terms are applied from the Getty’s Art & Architecture Thesaurus®"
 			>Classification:</span><br/>
 			{{{ca_objects.classification%width=300px}}}

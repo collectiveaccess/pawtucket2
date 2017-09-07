@@ -238,9 +238,6 @@
 						if ($va_resource_type_library = $t_object->get('ca_objects.resourceType', array('convertCodesToDisplayText' => true))) {
 							print "<div class='unit'><h8>Resource Type</h8>".$va_resource_type_library."</div>";
 						}
-						if ($va_local_call = $t_object->get('ca_objects.MARC_localNo')) {
-							print "<div class='unit'><h8>Call Number</h8>".$va_local_call."</div>";
-						}
 						if ($vs_type != "Library Component")  {
 							print "<div class='unit'><h8><a href='#' class='components' onclick='$(\".hiddenComponents\").toggle(300);return false;'>Find or request this item <i class='fa fa-chevron-down'></i></a></h8>";
 							print "<div class='hiddenComponents' style='display:none;'>";
@@ -250,21 +247,23 @@
 								$t_item_checkout = new ca_object_checkouts($vn_item_id);
 								$va_item_checkout_info = $t_item_checkout->objectIsOut($vn_item_id);
 								$vs_library_status = $t_object->get('ca_objects.circulation_status_id', array('convertCodesToDisplayText' => true));
-								print "<div class='component'>";
-								print "<div>".$t_object->get('ca_objects.preferred_labels')."<br/>";
-								print "<b>Call No: </b>".$t_object->get('ca_objects.MARC_localNo')."</div>";
-								if (ucfirst(substr($t_object->get('ca_objects.alt_id'), 0, 1)) != "F") {
-									if ($va_item_checkout_info['due_date']) {
-										print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $vn_item_id))."\"); return false;' title='Request this item'>Due ".date('j F Y', $va_item_checkout_info['due_date'])."</a></div>";
-									} elseif ($vs_library_status == "Unavailable") {
-										print "<div class='status unavailable'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $vn_item_id))."\"); return false;' title='Request this item'><i class='fa fa-close'></i> ".$vs_library_status."</a></div>";
-									} else {
-										print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $vn_item_id))."\"); return false;' title='Request this item'><i class='fa fa-check-circle'></i> ".$vs_library_status."</a></div>";
+								if ($vs_library_status){
+									print "<div class='component'>";
+									print "<div>".$t_object->get('ca_objects.preferred_labels')."<br/>";
+									print "<b>Call No: </b>".$t_object->get('ca_objects.MARC_localNo')."</div>";
+									if (ucfirst(substr($t_object->get('ca_objects.alt_id'), 0, 1)) != "F") {
+										if ($va_item_checkout_info['due_date']) {
+											print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $vn_item_id))."\"); return false;' title='Request this item'>Due ".date('j F Y', $va_item_checkout_info['due_date'])."</a></div>";
+										} elseif ($vs_library_status == "Unavailable") {
+											print "<div class='status unavailable'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $vn_item_id))."\"); return false;' title='Request this item'><i class='fa fa-close'></i> ".$vs_library_status."</a></div>";
+										} else {
+											print "<div class='status'><a href='#' class='available' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'libraryRequest', array('object_id' => $vn_item_id))."\"); return false;' title='Request this item'><i class='fa fa-check-circle'></i> ".$vs_library_status."</a></div>";
+										}
 									}
-								}
-								print "<div class='clearfix'></div>";
-								print "<hr/>";
-								print "</div>";							
+									print "<div class='clearfix'></div>";
+									print "<hr/>";
+									print "</div>";
+								}							
 							}						
 							if ($va_components = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 								foreach ($va_components as $va_key => $va_component) {
@@ -293,7 +292,13 @@
 							}
 							print "</div>";
 							print "</div>";
-						}											
+						}
+						if ($va_local_call = $t_object->get('ca_objects.MARC_localNo')) {
+							print "<div class='unit'><h8>Call Number</h8>".$va_local_call."</div>";
+						}
+						if ($va_sub_collection = $t_object->get('ca_objects.sub_collection', array('convertCodesToDisplayText' => true, 'excludeIdnos' => 'null'))) {
+							print "<div class='unit'><h8>Sub-Collection</h8>".$va_sub_collection."</div>";
+						}																
 						$va_date_line = array();
 						if ($va_publication_date = $t_object->get('ca_objects.displayDate')) {
 							$va_date_line[] = $va_publication_date;

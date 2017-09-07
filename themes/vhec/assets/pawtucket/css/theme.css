@@ -540,7 +540,7 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 	width:100% !important;
 }
 .advancedContainer textarea {
-	height:23px !important;
+	height:29px !important; 
 }
 
 
@@ -728,6 +728,16 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 }
 #browseTable .ui-state-default, #browseTable .ui-widget-content .ui-state-default, #browseTable .ui-widget-header .ui-state-default {
 	background-color:transparent;
+}
+.browse .btn a, .browse .btn .glyphicon, .sets .btn a, .sets .btn .glyphicon {
+    color: #8c8c8c !important;
+}
+#bRefine .caSubItems::after {
+	padding-right:4px;
+	padding-left:4px;
+	content: "\e114";
+	font-family: 'Glyphicons Halflings';
+	font-size:8px;
 }
 
 
