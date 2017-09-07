@@ -165,7 +165,7 @@ a:hover {
 		padding-bottom: 15px;
 	}
 	.navbar-brand {
-		width: 250px;
+		width: 200px;
 		padding-top: 20px;
 		padding-bottom: 10px;
 	}
@@ -615,6 +615,9 @@ a.jcarousel-control-prev, a.jcarousel-control-next,
 	margin-bottom:10px;
 	padding:10px;
 }
+h1 i {
+    font-size: 14px !important;
+}
 @media (max-width: 768px) {
 	.bResultItem .bResultItemImg .glyphicon.glyphicon-volume-up, .bResultItem .bResultItemImg .glyphicon.glyphicon-film {
 		/*font-size: 30px;
@@ -970,7 +973,7 @@ p.bookTitle {
 	font-size:14px;
 }
 .detailMediaToolbar .dlButton{
-	display:none;
+	/*display:none;*/
 }
 .detail #detailRepNav {
 	font-size:14px;
@@ -1027,8 +1030,12 @@ p.bookTitle {
 	text-align:center;
 }
 .relatedLoan {
-	height:420px;
+	height:520px;
 }	
+.relatedLoan img {
+	max-width:100%;
+	height:auto;
+}
 .loans .loanImg {
 	max-height: 260px;
 	overflow:hidden;

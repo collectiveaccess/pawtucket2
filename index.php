@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2016 Whirl-i-Gig
+ * Copyright 2008-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -35,7 +35,6 @@
 	}
 	require_once('./setup.php');
 	if (!defined("__CA_APP_TYPE__")) { define("__CA_APP_TYPE__", "PAWTUCKET");	}
-	caWriteServerConfigHints();
 	
 	try {
 		define("__CA_BASE_MEMORY_USAGE__", memory_get_usage(true));
