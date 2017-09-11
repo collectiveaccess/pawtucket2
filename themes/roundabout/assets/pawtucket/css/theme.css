@@ -622,5 +622,42 @@ a.faDownload:hover {
 	color:#000;
 }
 
+.promo-block {
+    border-bottom: solid 0px #000;
+    font-size: 13px;
+    line-height: 15px;
+    margin: 0px;
+    padding: 15px 0px 20px 0px;
+    position: relative;
+}
+.promo-block h3 {
+    color: #303030;
+    font-size: 22px;
+    line-height: 20px;
+    margin: 0 0 4px 0;
+    font-weight: normal;
+    font-family: "Futura W02 Bold" !important;
+    padding-bottom:10px;
+}
+.promo-block a.downloadAccess {
+    font-family: "Futura W02 Bold" !important;
+    background-color: #000000;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 16px;
+    /* height: 16px; */
+    line-height: 16px;
+    padding: 5px 8px 5px 8px;
+    text-transform: uppercase;
+    white-space: nowrap;
+    width: auto;
+    -webkit-transition: background-color .3s ease-in-out;
+    -moz-transition: background-color .3s ease-in-out;
+    -o-transition: background-color .3s ease-in-out;
+    -ms-transition: color .3s ease-in-out;
+    transition: background-color .3s ease-in-out;
+}
+
 
 

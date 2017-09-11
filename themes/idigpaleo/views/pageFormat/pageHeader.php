@@ -45,8 +45,9 @@
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		$va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>";
-		$va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>";
+		$va_user_links[] = "<li><form id='LoginFormMenu' action='".caNavUrl($this->request, "", "LoginReg", "login")."' class='form-vertical' role='form' method='POST'><H1>Login</H1><div class='form-group'><label for='username' class='control-label'>Username</label><input type='text' class='form-control input-sm' id='username' name='username'></div><div class='form-group'><label for='password' class='control-label'>Password</label><input type='password' name='password' class='form-control input-sm' id='password' /></div><div class='form-group'><button type='submit' class='btn btn-default'>login</button></div></form></li>";
+		#$va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>";	
+		$va_user_links[] = "<li>".caNavLink($this->request, _t('Forgot Password?'), '', '', 'LoginReg', 'resetForm')."</li>";
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
@@ -69,7 +70,7 @@
 			s.parentNode.insertBefore(link_element, s);
 		})();
 	</script>
-	
+	<script type="text/javascript" async src="https://platform.twitter.com/widgets.js"></script>	
 	<script type="text/javascript">window.caBasePath = '<?php print $this->request->getBaseUrlPath(); ?>';</script>
 
 	<?php print MetaTagManager::getHTML(); ?>
@@ -96,7 +97,7 @@
 <body>
 	<div class="container"><div class="navHeader">
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'fossilInsectCollaborative.png'), "", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'idigpaleo_header_new_ver4.png'), "header-img", "", "","");
 ?>		
 	</div><!-- end navHeader --></div><!-- end container -->
 	<div class="container">
@@ -156,15 +157,13 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav">
-					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "Index")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<li <?php print ($this->request->getAction() == "News") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("News"), "", "", "About", "News"); ?></li>
-
 <?php
-						print $this->render("pageFormat/browseMenu.php");
+						#print $this->render("pageFormat/browseMenu.php");
 ?>	
-					
-					<li <?php print ($this->request->getAction() == "Join") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Join"), "", "", "About", "Join"); ?></li>
-					<li <?php print ($this->request->getAction() == "Education") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Education"), "", "", "About", "Education"); ?></li>
+					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects", array("facet" => "has_media_facet", "id" => 1)); ?></li>
+					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "Index")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+					<li <?php print ($this->request->getAction() == "Register") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Register"), "", "", "LoginReg", "RegisterForm"); ?></li>
+					<li <?php print ($this->request->getAction() == "Educators") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Educators"), "", "", "About", "Education"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</nav>

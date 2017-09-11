@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2016 Whirl-i-Gig
+ * Copyright 2010-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -84,7 +84,7 @@
 		 * @return string - expression or null if no expression is defined
 		 */
 		public function getSearchExpression($pb_from_context_only=false) {
-			if(!$pb_from_context_only && ($ps_search = urldecode($this->opo_request->getParameter('search', pString))) != ''){
+			if(!$pb_from_context_only && ($ps_search = urldecode(htmlspecialchars(strip_tags($this->opo_request->getParameter('search', pString))))) != ''){
 				// search specified by request parameter
 				if ($ps_search != $this->getContextValue('expression')) {
 					$this->setContextValue('expression', $ps_search);
@@ -113,7 +113,7 @@
 		public function searchExpressionHasChanged($pb_from_context_only=false) {
 			if (!is_null($this->opb_search_expression_has_changed)) { return $this->opb_search_expression_has_changed; }
 			 
-			if(!$pb_from_context_only && ($ps_search = urldecode($this->opo_request->getParameter('search', pString))) != ''){
+			if(!$pb_from_context_only && ($ps_search = urldecode(htmlspecialchars(strip_tags($this->opo_request->getParameter('search', pString))))) != ''){
 				// search specified by request parameter
 				if ($ps_search != $this->getContextValue('expression')) {
 					return $this->opb_search_expression_has_changed = true;
@@ -288,6 +288,39 @@
 		}
 		# ------------------------------------------------------------------
 		/**
+		 * Returns the letter bar page to display. This is either the value set for the current context,
+		 * a letter set in the current request via the 'l' parameter or null if neither is set. The value of the
+		 * request parameter 'l' take precedence over any existing context value and will be set as the current
+		 * context value when present.
+		 *
+		 * @return string - First letter of results to display on results page, or null if no value is set
+		 */
+		public function getLetterBarPage() {
+			if (!($ps_letter_bar_page = htmlspecialchars(strip_tags($this->opo_request->getParameter('l', pString))))) {
+ 				if ($va_context = $this->getContext()) {
+					return $va_context['letter_bar_page'] ? $va_context['letter_bar_page'] : null;
+				}
+			} else {
+				$this->setContextValue('letter_bar_page', $ps_letter_bar_page);
+				return $ps_letter_bar_page;
+			}
+			return null;
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Sets the letter bar page to display for this context. While you can
+		 * call this directly, usually the letter bar page is set by setLetterBarPage()
+		 * using a value passed in the request.
+		 *
+		 * @param $ps_letter_bar_page - letter bar page
+		 * 
+		 * @return string - letter bar page as set
+		 */
+		public function setLetterBarPage($ps_letter_bar_page) {
+			return $this->setContextValue('letter_bar_page', $ps_letter_bar_page);
+		}
+		# ------------------------------------------------------------------
+		/**
 		 * Returns the current view mode for the context. This is a bit of text that indicates
 		 * which view to use when displaying the result set. The returned value will be either 
 		 * the value set for the current context, the value set via the 'view' parameter in the
@@ -298,7 +331,7 @@
 		 * @return string - the view to use
 		 */
 		public function getCurrentView() {
-			if (!($ps_view = $this->opo_request->getParameter('view', pString))) {
+			if (!($ps_view = htmlspecialchars($this->opo_request->getParameter('view', pString)))) {
  				if ($va_context = $this->getContext()) {
 					return $va_context['view'] ? $va_context['view'] : null;
 				}
@@ -333,7 +366,7 @@
 		 * @return string - the field (or fields in a comma separated list) to sort by
 		 */
 		public function getCurrentSort() {
-			if (!($ps_sort = $this->opo_request->getParameter('sort', pString))) {
+			if (!($ps_sort = htmlspecialchars($this->opo_request->getParameter('sort', pString)))) {
  				if ($va_context = $this->getContext()) {
 					return $va_context['sort'] ? $va_context['sort'] : null;
 				}
@@ -369,7 +402,7 @@
 		 * @return string - the field (or fields in a comma separated list) to refine the primary sort by
 		 */
 		public function getCurrentSecondarySort() {
-			if (!($ps_secondary_sort = $this->opo_request->getParameter('secondarySort', pString))) {
+			if (!($ps_secondary_sort = htmlspecialchars($this->opo_request->getParameter('secondarySort', pString)))) {
  				if ($va_context = $this->getContext()) {
 					return $va_context['secondarySort'] ? $va_context['secondarySort'] : null;
 				}
@@ -404,7 +437,7 @@
 		 * @return string - the sort direction
 		 */
 		public function getCurrentSortDirection() {
-			if (!($ps_sort_direction = $this->opo_request->getParameter('direction', pString))) {
+			if (!($ps_sort_direction = htmlspecialchars($this->opo_request->getParameter('direction', pString)))) {
  				if ($va_context = $this->getContext()) {
 					return in_array($va_context['sort_direction'], array('asc', 'desc')) ? $va_context['sort_direction'] : 'asc';
 				}
@@ -443,17 +476,21 @@
 		 */
 		public function getTypeRestriction(&$pb_type_restriction_has_changed) {
 			$pb_type_restriction_has_changed = false;
-			if (!($pn_type_id = $this->opo_request->getParameter('type_id', pString))) {
+			if (!($pn_type_id = htmlspecialchars($this->opo_request->getParameter('type_id', pString)))) {
  				if ($va_context = $this->getContext()) {
 					return $va_context['type_id'] ? $va_context['type_id'] : null;
 				}
 			} else {
+				if (!is_numeric($pn_type_id)) { 
+					$pn_type_id = array_shift(caMakeTypeIDList($this->ops_table_name, [$pn_type_id]));
+				}
 				$va_context = $this->getContext();
 				$this->setTypeRestriction($pn_type_id);
 				
 				if (isset($va_context['type_id']) && ($va_context['type_id'] != $pn_type_id)) {
 					$pb_type_restriction_has_changed = true;
 				}
+				$_GET['type_id'] = $this->opn_type_restriction_id;								// push type_id into globals so breadcrumb trail can pick it up
 				return $pn_type_id;
 			}
 			return null;
@@ -475,18 +512,20 @@
 		/**
 		 * Returns the display_id for the currently set results bundle display (ca_bundle_displays), or null if none is set
 		 * 
-		 * @return integer - display_id of ca_bundle_displays row to use
+		 * @param int $pn_type_id Optional type_id to limit bundle display to
+		 *
+		 * @return int Display_id of ca_bundle_displays row to use
 		 */
-		public function getCurrentBundleDisplay() {
-			if (!strlen($pn_display_id = $this->opo_request->getParameter('display_id', pString))) { 
+		public function getCurrentBundleDisplay($pn_type_id=null) {
+			if (!strlen($pn_display_id = htmlspecialchars($this->opo_request->getParameter('display_id', pString)))) { 
  				if ($va_context = $this->getContext()) {
-					$pn_display_id = $va_context['display_id'];
+					$pn_display_id = $va_context[$pn_type_id ? "display_id_{$pn_type_id}" : "display_id"];
 				}
  				if (!$pn_display_id) { $pn_display_id = null; }
  				return $pn_display_id;
  			} else {
  				// page set by request param so set context
- 				$this->setCurrentBundleDisplay((int)$pn_display_id);
+ 				$this->setCurrentBundleDisplay((int)$pn_display_id, $pn_type_id);
  				return $pn_display_id;
  			}
  			
@@ -496,11 +535,12 @@
 		/**
 		 * Sets the currently selected bundle display
 		 *
-		 * @param $pn_display_id - display_id of ca_bundle_displays row to use
-		 * @return integer - display_id as set
+		 * @param int $pn_display_id Display_id of ca_bundle_displays row to use
+		 * @param int $pn_type_id Optional type_id to limit bundle display to
+		 * @return int Display_id as set
 		 */
-		public function setCurrentBundleDisplay($pn_display_id) {
-			return $this->setContextValue('display_id', $pn_display_id);
+		public function setCurrentBundleDisplay($pn_display_id, $pn_type_id=null) {
+			return $this->setContextValue($pn_type_id ? "display_id_{$pn_type_id}" : "display_id", $pn_display_id);
 		}
 		# ------------------------------------------------------------------
 		/**

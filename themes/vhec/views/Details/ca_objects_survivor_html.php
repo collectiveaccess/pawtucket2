@@ -32,6 +32,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$va_access_values = $this->getVar('access_values');
 	$vn_object_id = 		$t_object->get('ca_objects.object_id');
+	$va_access_values = 	$this->getVar('access_values');
 	
 	$vs_home = caNavLink($this->request, "Home", '', '', '', '');
 	$vs_type = $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
@@ -98,8 +99,8 @@
 						<a class="addthis_button_tweet"></a>
 						<a class="addthis_counter addthis_pill_style"></a>
 					</div>
-					<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid=xa-50278eb55c33574f"></script>
-				</div>	
+					<script type="text/javascript" src="https://s7.addthis.com/js/300/addthis_widget.js"></script>
+				</div>
 <?php
 				if ($va_local_subjects = $t_object->get('ca_objects.local_subject', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
 					$vn_subject = 1;
@@ -274,7 +275,7 @@
 			#Entities
 			$vs_related_entities = "";
 			$va_ents_by_type = array();
-			if ($va_related_entities = $t_object->get('ca_entities', array('checkAccess' => $va_access_values, 'returnWithStructure' => true))) {
+			if ($va_related_entities = $t_object->get('ca_entities', array('checkAccess' => $va_access_values, 'returnWithStructure' => true, 'excludeRelationshipTypes' => array('donor')))) {
 				foreach ($va_related_entities as $va_key => $va_related_entity) {
 					$va_ents_by_type[$va_related_entity['item_type_id']][$va_related_entity['entity_id']] = "<div class='col-sm-4'><div class='entityThumb'><p>".caNavLink($this->request, $va_related_entity['label'], '', '', 'Detail', 'entities/'.$va_related_entity['entity_id'])." (".$va_related_entity['relationship_typename'].")</p></div></div>";
 				}

@@ -8,8 +8,8 @@
  	$va_view_icons = $o_config->getAssoc("views")
 ?>
 <div class="row">
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-		<div class="container">
+	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+		<div>
 			<div class="row">			
 				<div class='col-xs-4 col-sm-4 col-md-4 col-lg-4'>
 <?php
@@ -26,9 +26,6 @@
 				
 					<H4>{{{^ca_occurrences.preferred_labels}}}</H4>
 <?php	
-				if ($va_description = $t_occurrence->get('ca_occurrences.description_public', array('delimiter' => '<br/>'))) {
-					print "<p>".$va_description."</p>";
-				}	
 				if ($va_idno = $t_occurrence->get('ca_occurrences.idno', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><span class='detailLabel'>ID</span><span class='detailInfo'>".$va_idno."</span></div>";
 				}
@@ -84,6 +81,12 @@
 						print "<div class='unit'><span class='detailLabel'>Website</span><span class='detailInfo'><a href='".$t_occurrence->get('ca_occurrences.external_link.url_entry')."' target='_blank'>".$t_occurrence->get('ca_occurrences.external_link.url_entry')."</a></span></div>";
 					}
 				}																									
+				if ($va_description = $t_occurrence->get('ca_occurrences.description_public', array('delimiter' => '<br/>'))) {
+					print "<h6>Description</h6>";
+					print "<p>".$va_description."</p>";
+				}	
+
+				
 				if ($va_department = $t_occurrence->get('ca_entities.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('department'), 'checkAccess' => $va_access_values))) {
 					print "<h6>Department</h6>";
 					print "<p>".$va_department."</p>";
@@ -155,7 +158,6 @@
 			</div><!-- end col -->		
 		</div><!-- end col -->
 	</div><!-- end row -->
-</div><!-- end container -->
 
 <script type="text/javascript">
 		

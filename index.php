@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2016 Whirl-i-Gig
+ * Copyright 2008-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -35,7 +35,6 @@
 	}
 	require_once('./setup.php');
 	if (!defined("__CA_APP_TYPE__")) { define("__CA_APP_TYPE__", "PAWTUCKET");	}
-	caWriteServerConfigHints();
 	
 	try {
 		define("__CA_BASE_MEMORY_USAGE__", memory_get_usage(true));
@@ -84,11 +83,6 @@
 		
 		$t_locale = new ca_locales();
 		$g_ui_locale_id = $t_locale->localeCodeToID($g_ui_locale);		// get current UI locale as locale_id	  (available as global)
-		$_ = array();
-		if (file_exists($vs_theme_specific_locale_path = $g_request->getThemeDirectoryPath().'/locale/'.$g_ui_locale.'/messages.mo')) {
-			$_[] = new Zend_Translate('gettext', $vs_theme_specific_locale_path, $g_ui_locale);
-		}
-		$_[] = new Zend_Translate('gettext', __CA_APP_DIR__.'/locale/'.$g_ui_locale.'/messages.mo', $g_ui_locale);
 		if(!initializeLocale($g_ui_locale)) die("Error loading locale ".$g_ui_locale);
 		$g_request->reloadAppConfig();	// need to reload app config to reflect current locale
 	

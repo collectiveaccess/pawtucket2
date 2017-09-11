@@ -54,7 +54,7 @@
 	}
 		
 	$qr_objects = itineraGetObjects($ps_letter);
-	if ($qr_objects) {
+	if ($qr_objects->numHits()) {
 ?>
 	<div class="row <?php print ($qr_travelers) ? 'travelerListSpacer' : ''; ?>">
 		<div class="col-md-2 travelerListSectionHeading">Objects</div>
@@ -103,10 +103,16 @@
 			if (id = jQuery(this).data('object_id')) { idname = 'object_id'; }
 		}
 <?php
-	if ($this->request->getController() == 'Chronology') {
+	if ($this->request->getController() == 'ChronologyOld') {
 ?>
 		jQuery.get('<?php print caNavUrl($this->request, '*', '*', 'Get'); ?>/' + idname + '/' + id, function(d){ 
 	  		jQuery(d).appendTo("#travelerContent");
+		});
+<?php
+	} elseif($this->request->getController() == 'Chronology') {
+?>
+		jQuery.get('<?php print caNavUrl($this->request, '*', '*', 'Get'); ?>/' + idname + '/' + id +'/m/add', function(d){ 
+	  		jQuery(d).appendTo("#travelerContentTimelineColumns");
 		});
 <?php
 	} else {

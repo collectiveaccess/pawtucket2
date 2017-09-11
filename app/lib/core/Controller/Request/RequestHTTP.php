@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2016 Whirl-i-Gig
+ * Copyright 2007-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -83,6 +83,12 @@ class RequestHTTP extends Request {
  	private $ops_parsed_action_extra;
  	private $ops_parsed_controller_url;
  	private $ops_parsed_is_app_plugin = false;
+ 	
+ 	
+ 	/**
+ 	 * 
+ 	 */
+ 	static $html_purifier;
  		
 	# -------------------------------------------------------
 	/**
@@ -330,7 +336,10 @@ class RequestHTTP extends Request {
 	}
 	# -------------------------------------------------------
 	/**
-	 * 
+	 * Return file path on server to views path in current theme.
+	 *
+	 * @param bool $pb_use_default Return path in default theme no matter what theme user has selected. [Default is false]
+	 * @return string Path to file on server
 	 */
 	public function getViewsDirectoryPath($pb_use_default=false) {
 		if ($this->config->get('always_use_default_theme')) { $pb_use_default = true; }
@@ -343,6 +352,42 @@ class RequestHTTP extends Request {
 				return $this->getThemeDirectoryPath($pb_use_default).'/views';
 				break;
 		}
+	}
+	# -------------------------------------------------------
+	/**
+	 * Search for and return file path on server for a theme file. The selected theme will be searched followed
+	 * by the default theme, ceasing when the file is found. 
+	 *
+	 * @param string $ps_relative_file_path Path to theme file relative to the theme root directory. To find the file path of the base.css file "css/base.css" would be passed.
+	 * @return Path to file on server
+	 */
+	public function getDirectoryPathForThemeFile($ps_relative_file_path) {
+		if(
+			file_exists($vs_path = $this->getThemeDirectoryPath()."/{$ps_relative_file_path}")
+			||
+			file_exists($vs_path = $this->getDefaultThemeDirectoryPath()."/{$ps_relative_file_path}")
+		) {
+			return $vs_path;
+		} 
+		return null;
+	}
+	# -------------------------------------------------------
+	/**
+	 * Search for and return URL path for a theme file. The selected theme will be searched followed
+	 * by the default theme, ceasing when the file is found. 
+	 *
+	 * @param string $ps_relative_file_path Path to theme file relative to the theme root directory. To find the URL path of the base.css file "css/base.css" would be passed.
+	 * @return URL to file
+	 */
+	public function getUrlPathForThemeFile($ps_relative_file_path) {
+		if(
+			file_exists($this->getThemeDirectoryPath()."/{$ps_relative_file_path}")
+		) {
+			return $this->getThemeUrlPath()."/{$ps_relative_file_path}";
+		} elseif(file_exists($this->getDefaultThemeDirectoryPath()."/{$ps_relative_file_path}")) {
+			return $this->getDefaultThemeUrlPath()."/{$ps_relative_file_path}";
+		} 
+		return null;
 	}
 	# -------------------------------------------------------
 	/**
@@ -467,6 +512,16 @@ class RequestHTTP extends Request {
 		
 		return join('/', $va_url);
 	}
+	# --------------------------------------------------------------------------------
+	/**
+	 * Return HTMLPurifier instance
+	 *
+	 * @return HTMLPurifier Returns instance
+	 */
+	static public function getPurifier() {
+		if (!RequestHTTP::$html_purifier) { RequestHTTP::$html_purifier = new HTMLPurifier(); }
+		return RequestHTTP::$html_purifier;
+	}
 	# -------------------------------------------------------
 	public function getParameter($ps_name, $pn_type, $ps_http_method=null, $pa_options=array()) {
 		if (in_array($ps_http_method, array('GET', 'POST', 'COOKIE', 'PATH', 'REQUEST'))) {
@@ -482,6 +537,9 @@ class RequestHTTP extends Request {
 		if (!isset($vm_val)) { return ""; }
 		
 		$vm_val = str_replace("\0", '', $vm_val);
+		if(caGetOption('purify', $pa_options, true) || $this->config->get('purify_all_text_input')) {
+		    $vm_val = RequestHTTP::getPurifier()->purify(rawurldecode($vm_val));
+		}
 		
 		if ($vm_val == "") { return ""; }
 		
@@ -490,14 +548,14 @@ class RequestHTTP extends Request {
 			case pInteger:
 				if (is_numeric($vm_val)) {
 					if ($vm_val == intval($vm_val)) {
-						return $vm_val;
+						return (int)$vm_val;
 					}
 				}
 				break;
 			# -----------------------------------------
 			case pFloat:
 				if (is_numeric($vm_val)) {
-					return $vm_val;
+					return (float)$vm_val;
 				}
 				break;
 			# -----------------------------------------

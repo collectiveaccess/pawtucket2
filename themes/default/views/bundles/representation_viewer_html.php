@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2016 Whirl-i-Gig
+ * Copyright 2015-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -27,7 +27,7 @@
  */
 	$vn_representation_count 			= $this->getVar('representation_count');
 	$va_representation_ids				= $this->getVar('representation_ids');
-	$vs_show_annotations_mode			= $this->getVar('show_annotations');
+	$vs_show_annotations_mode			= $this->getVar('display_annotations');
 	$vs_context							= $this->getVar('context');
 	
 	$t_subject							= $this->getVar('t_subject');
@@ -84,7 +84,7 @@
 	if ($vs_show_annotations_mode == 'div') {
 ?>
 			// load annotation list via ajax
-			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>'); }
+			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[0]); }
 <?php
 	}
 ?>
@@ -129,9 +129,9 @@
 				}
 			});
 			
-		//if({{{representation_id}}} > 0){
-		//	$('.jcarousel').jcarousel('scroll', $('#slide{{{representation_id}}}'));
-		//}
+		if({{{representation_id}}} > 0){
+			$('.jcarousel').jcarousel('scroll', $('#slide{{{representation_id}}}'));
+		}
 	});
 </script>
 <?php

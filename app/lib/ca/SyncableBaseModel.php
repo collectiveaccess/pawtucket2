@@ -40,15 +40,18 @@ trait SyncableBaseModel {
 	 */
 	public function setGUID($pa_options=null) {
 		if(!$this->getPrimaryKey()) { return; }
+		$vs_guid = caGetOption('setGUIDTo', $pa_options, caGenerateGUID());
 
 		/** @var ca_guids $t_guid */
 		$t_guid = $this->getAppDatamodel()->getInstance('ca_guids');
 		$t_guid->setTransaction($this->getTransaction());
 
+		$t_guid->load(array('guid' => $vs_guid));
+
 		$t_guid->setMode(ACCESS_WRITE);
 		$t_guid->set('table_num', $this->tableNum());
 		$t_guid->set('row_id', $this->getPrimaryKey());
-		$t_guid->set('guid', caGetOption('setGUIDTo', $pa_options, caGenerateGUID()));
+		$t_guid->set('guid', $vs_guid);
 
 		if($t_guid->getPrimaryKey()) {
 			$t_guid->update();
@@ -144,6 +147,25 @@ trait SyncableBaseModel {
 	 */
 	public static function getGUIDByPrimaryKey($pn_primary_key) {
 		return ca_guids::getForRow(Datamodel::load()->getTableNum(get_called_class()), $pn_primary_key);
+	}
+	# -----------------------------------------------------
+	/**
+	 * Get loaded BaseModel instance by GUID
+	 * @param string $ps_guid
+	 * @return null|BaseModel
+	 */
+	public static function GUIDToInstance($ps_guid) {
+
+		$o_db = new Db();
+		$o_dm = Datamodel::load();
+		$qr_res = $o_db->query("SELECT * FROM ca_guids WHERE guid = ?", [$ps_guid]);
+		
+		if($qr_res->nextRow()) {
+			if (($t_instance = $o_dm->getInstanceByTableNum($qr_res->get('table_num'))) && ($t_instance->load($qr_res->get('row_id')))) {
+				return $t_instance;
+			}
+		}
+		return null;
 	}
 	# -----------------------------------------------------
 }

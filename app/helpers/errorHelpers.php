@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2016 Whirl-i-Gig
+ * Copyright 2015-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -28,20 +28,20 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
  *
  * ----------------------------------------------------------------------
- */
-
+ */	
 # --------------------------------------------------------------------------------------------
 /**
  * Display exception error screen
  * @param Exception $e
  */
 function caDisplayException(Exception $e) {
-	if(class_exists('AppController')) { AppController::getInstance()->removeAllPlugins(); }
+    if (defined("__CA_LIB_DIR__")) { require_once(__CA_LIB_DIR__.'/core/Logging/KLogger/KLogger.php'); }
+	if(!is_a($e, "DatabaseException") && class_exists('AppController')) { AppController::getInstance()->removeAllPlugins(); }
 
 	$pn_errno = 0;
 	$ps_errstr = $e->getMessage();
-	$ps_errfile = __FILE__;
-	$pn_errline = __LINE__;
+	$ps_errfile = $e->getFile();
+	$pn_errline = $e->getLine();
 	$pa_errcontext = $e->getTrace();
 	$pa_errcontext_args = caExtractStackTraceArguments($pa_errcontext);
 	$pa_request_params = caExtractRequestParams();

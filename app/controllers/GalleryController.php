@@ -95,6 +95,12 @@
  				$this->view->setVar("set_id", $ps_set_id);
  				$t_set->load($ps_set_id);
  				$this->view->setVar("set", $t_set);
+ 				
+ 				$o_context = new ResultContext($this->request, 'ca_objects', 'gallery');
+ 				$o_context->setAsLastFind();
+ 				$o_context->setResultList(array_keys($t_set->getItemRowIDs()));
+ 				$o_context->saveContext();
+ 				 				
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
  				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
@@ -122,8 +128,11 @@
  			$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  			$this->view->setVar("num_items", $t_set->getItemCount(array("checkAccess" => $this->opa_access_values)));
  			#$this->view->setVar("set_item", array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values)))));
- 			$this->view->setVar("set_item", array_shift(array_shift($t_set->getPrimaryItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values)))));
- 			
+ 			$va_set_item = array_shift(array_shift($t_set->getPrimaryItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));
+ 			if(!$va_set_item){
+ 				$va_set_item = array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));
+ 			}
+ 			$this->view->setVar("set_item", $va_set_item);
  			$this->render("Gallery/set_info_html.php");
  		}
 		# -------------------------------------------------------
@@ -166,7 +175,7 @@
  			$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
  			$this->view->setVar("rep_object", $t_rep);
  			$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
- 			$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"]));
+ 			$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"], ['context' => 'gallery']));
  			$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
  			$this->view->setVar("object_id", $va_set_items[$pn_item_id]["row_id"]);
  			$pn_previous_id = 0;
@@ -222,6 +231,20 @@
  			}
  			
  			$this->render("Gallery/set_item_info_html.php");
+ 		}
+ 		# -------------------------------------------------------
+		/** 
+		 * Generate the URL for the "back to results" link
+		 * as an array of path components.
+		 */
+ 		public static function getReturnToResultsUrl($po_request) {
+ 			$va_ret = array(
+ 				'module_path' => '',
+ 				'controller' => 'Gallery',
+ 				'action' => 'Index',
+ 				'params' => array()
+ 			);
+			return $va_ret;
  		}
  		# -------------------------------------------------------
 	}

@@ -7,11 +7,11 @@
  	$va_view_icons = $o_config->getAssoc("views")
 ?>
 <div class="row">
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-		<div class="container">
+	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+		<div>
 			<div class="row">			
 					
-				<div class='col-md-6 col-lg-6'>
+				<div class='col-xs-12 col-md-4 col-lg-4'>
 <?php
 					$va_related_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true));
 					$vn_related_id = $va_related_objects[0];
@@ -25,7 +25,7 @@
 
 ?>						
 				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6'>
+				<div class='col-xs-12 col-md-8 col-lg-8'>
 					<H6>{{{^ca_entities.type_id}}}</H6>				
 					<H4>{{{^ca_entities.preferred_labels.displayname}}}</H4>
 <?php			
