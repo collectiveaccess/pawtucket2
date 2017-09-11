@@ -108,6 +108,11 @@ textarea {
 	letter-spacing:1px;
 	border-radius:0px;
 	font-size: 13px;
+	color:#666;
+}
+.browse .btn, .sets .btn, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
+	background-color: #f1f1f1;
+	color:#666;
 }
 .green {
 	color: #33450D;
@@ -535,7 +540,7 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 	width:100% !important;
 }
 .advancedContainer textarea {
-	height:23px !important;
+	height:29px !important; 
 }
 
 
@@ -723,6 +728,16 @@ div.advancedSearchField input, div.advancedSearchField textarea {
 }
 #browseTable .ui-state-default, #browseTable .ui-widget-content .ui-state-default, #browseTable .ui-widget-header .ui-state-default {
 	background-color:transparent;
+}
+.browse .btn a, .browse .btn .glyphicon, .sets .btn a, .sets .btn .glyphicon {
+    color: #8c8c8c !important;
+}
+#bRefine .caSubItems::after {
+	padding-right:4px;
+	padding-left:4px;
+	content: "\e114";
+	font-family: 'Glyphicons Halflings';
+	font-size:8px;
 }
 
 
@@ -965,6 +980,11 @@ a.readmore-js-toggle {
     height: 200px;
     margin-bottom: 20px;
 }
+@media (min-width:1350px) {
+	.relatedThumb {
+		height:250px;
+	}
+}
 .relatedThumb img{
 	width:100%;
 	height:auto;
@@ -1156,6 +1176,10 @@ a.thumbControl:hover {
 	color: #33450D;
 }
 
+.staticPage h6 a {
+	color: #33450D;
+}
+
 /* Finding Aids */
 
 .findingaid H1 {
@@ -1165,6 +1189,12 @@ a.thumbControl:hover {
     font-size: 24px;
     font-family: "futura bold";
     letter-spacing: 2px;
+}
+.collectionsBlock {
+	margin-bottom:20px;
+}
+.collectionsBlock a.readmore-js-toggle {
+	margin-top:0px;
 }
 .collHeader a {
 	font-family: futura;
