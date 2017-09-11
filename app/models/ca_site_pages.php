@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2016-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -36,6 +36,7 @@
  
 require_once(__CA_LIB_DIR__.'/core/BaseModel.php');
 require_once(__CA_MODELS_DIR__.'/ca_site_templates.php');
+require_once(__CA_MODELS_DIR__.'/ca_site_page_media.php');
 
 
 BaseModel::$s_ca_models_definitions['ca_site_pages'] = array(
@@ -117,7 +118,7 @@ BaseModel::$s_ca_models_definitions['ca_site_pages'] = array(
 				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => 'View count', 'DESCRIPTION' => 'Number of views for this page.'
+				'LABEL' => _t('View count'), 'DESCRIPTION' => _t('Number of views for this page.')
 		)
  	)
 );
@@ -234,6 +235,7 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 	protected function initLabelDefinitions($pa_options=null) {
 		parent::initLabelDefinitions($pa_options);
 		$this->BUNDLES['ca_site_pages_content'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Page content'));
+		$this->BUNDLES['ca_site_page_media'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Page media'));
 	}
 	# ------------------------------------------------------
 	/**
@@ -267,6 +269,7 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 	 * @return array An array of arrays, each of which contains fields values for a content tag present in the page template.
 	 */
 	public function getHTMLFormElements($pa_options=null) {
+	    if(!is_array($pa_options)) { $pa_options = []; }
 		if (!($vn_template_id = $this->get('template_id'))) { return null; }
 		
 		if(!is_array($va_page_content = $this->get('content'))) { $va_page_content = []; }
@@ -387,6 +390,192 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
  		$o_view->setVar('t_template', new ca_site_templates($this->get('template_id')));
 		
 		return $o_view->render('ca_site_pages_content.php');
+	}
+	# ------------------------------------------------------
+	/** 
+	 * Returns HTML form bundle (ca_site_page_media) for media on page instance
+	 *
+	 * @param HTTPRequest $po_request The current request
+	 * @param string $ps_form_name
+	 * @param string $ps_placement_code
+	 * @param array $pa_bundle_settings
+	 * @param array $pa_options No options are currently supported.
+	 *
+	 * @return string Rendered HTML bundle
+	 */
+	public function getPageMediaHTMLFormBundle($po_request, $ps_form_name, $ps_placement_code, $pa_bundle_settings=null, $pa_options=null) {
+		global $g_ui_locale;
+		
+		$o_view = new View($po_request, $po_request->getViewsDirectoryPath().'/bundles/');
+		
+		if(!is_array($pa_options)) { $pa_options = array(); }
+		
+		$o_view->setVar('id_prefix', $ps_form_name);
+		$o_view->setVar('placement_code', $ps_placement_code);		// pass placement code
+		
+		$o_view->setVar('settings', $pa_bundle_settings);
+		
+		$o_view->setVar('t_subject', $this);
+ 		$o_view->setVar('t_page', $this);
+ 		$o_view->setVar('t_item', new ca_site_page_media());
+ 		
+		$o_view->setVar('defaultRepresentationUploadType', $po_request->user->getVar('defaultRepresentationUploadType'));
+		
+		return $o_view->render('ca_site_page_media.php');
+	}
+	# ------------------------------------------------------
+	/**
+	 * Return the total number of media for current page. Return null if no page is loaded 
+	 *
+	 * @return int
+	 */
+	public function pageMediaCount($pa_options=null) {
+	    if (!($vn_page_id = $this->getPrimaryKey())) { return null; }
+		return ca_site_page_media::find(['page_id' => $vn_page_id], ['returnAs' => 'count']);
+	}
+	# ------------------------------------------------------
+	/**
+	 * 
+	 *
+	 * @return array
+	 */
+	public function getPageMedia($pa_versions=null, $pa_options=null) {
+	    if (!($vn_page_id = $this->getPrimaryKey())) { return null; }
+	    if (!is_array($pa_versions) || !sizeof($pa_versions)) { $pa_versions = ['original']; }
+		$va_media =  ca_site_page_media::find(['page_id' => $vn_page_id], ['returnAs' => 'arrays', 'sort' => 'rank']);
+	
+	    $va_media_list = []; 
+        foreach($va_media as $i => $va_media_info) {
+            $o_coder = new MediaInfoCoder($va_media_info['media']);
+            $va_media_list[$va_media_info['media_id']] = array_merge($va_media_info, [
+                'info' => $o_coder->getMedia(),
+                'tags' => [],
+                'urls' => [],
+                'paths' => [],
+                'versions' => $o_coder->getMediaVersions(),
+                'fetched_on' => null,
+                'fetched_from' => null,
+                'dimensions' => null
+            ]);
+            $va_media_list[$va_media_info['media_id']]['info']['original_filename'] = $va_media_list[$va_media_info['media_id']]['info']['ORIGINAL_FILENAME'];
+            
+	        foreach($pa_versions as $vs_version) {
+                $va_disp = caGetMediaInfoForDisplay($o_coder, $vs_version);
+                
+                $va_media_list[$va_media_info['media_id']]['tags'][$vs_version] = $o_coder->getMediaTag($vs_version);
+                $va_media_list[$va_media_info['media_id']]['urls'][$vs_version] = $o_coder->getMediaUrl($vs_version);
+                $va_media_list[$va_media_info['media_id']]['paths'][$vs_version] = $o_coder->getMediaPath($vs_version);
+                $va_media_list[$va_media_info['media_id']]['dimensions'][$vs_version] = $va_disp['dimensions'];
+            }
+        }
+		return $va_media_list;
+	}
+	# ------------------------------------------------------
+	/**
+	 * 
+	 *
+	 * @return array
+	 */
+	public function addMedia($ps_path, $ps_title, $ps_caption, $ps_idno, $pn_access, $pa_options=null) {
+	    $t_media = new ca_site_page_media();
+	    $t_media->setMode(ACCESS_WRITE);
+	    $t_media->set([
+	        'page_id' => $this->getPrimaryKey(),
+	        'media' => $ps_path,
+	        'title' => $ps_title,
+	        'caption' => $ps_caption,
+	        'idno' => $ps_idno,
+	        'access' => $pn_access
+	    ], null, $pa_options);
+	    if (!($vn_rc = $t_media->insert($pa_options))) {
+	        $this->errors = $t_media->errors;
+	        return $vn_rc;
+	    }
+	    return $t_media;
+	}
+	# ------------------------------------------------------
+	/**
+	 * 
+	 *
+	 * @return array
+	 */
+	public function editMedia($pn_media_id, $ps_path, $ps_title, $ps_caption, $ps_idno, $pn_access, $pa_options=null) {
+	    $t_media = new ca_site_page_media($pn_media_id);
+	    if (!$t_media->isLoaded()) { return null; }
+	    $t_media->setMode(ACCESS_WRITE);
+	    
+	    $va_fld_data = [
+	        'page_id' => $this->getPrimaryKey(),
+	        'media' => $ps_path,
+	        'title' => $ps_title,
+	        'caption' => $ps_caption,
+	        'idno' => $ps_idno,
+	        'access' => $pn_access
+	    ];
+	    if ($vn_rank = caGetOption('rank', $pa_options, null)) {
+	        $va_fld_data['rank'] = $vn_rank;
+	        unset($pa_options['rank']);
+	    }
+	    
+	    foreach($va_fld_data as $vs_f => $vs_v) {
+	        $t_media->set($vs_f, $vs_v, $pa_options);
+	    }
+	    if (!($vn_rc = $t_media->update($pa_options))) {
+	        $this->errors = $t_media->errors;
+	        return $vn_rc;
+	    }
+	    return $t_media;
+	}
+	# ------------------------------------------------------
+	/**
+	 * 
+	 *
+	 * @return array
+	 */
+	public function removeMedia($pn_media_id, $pa_options=null) {
+	    $t_media = new ca_site_page_media($pn_media_id);
+	    if (!$t_media->isLoaded()) { return null; }
+	    $t_media->setMode(ACCESS_WRITE);
+	    $t_media->delete(true);
+	    if (!($vn_rc = $t_media->insert($pa_options))) {
+	        $this->errors = $t_media->errors;
+	    }
+	    return $vn_rc;
+	}
+	# ------------------------------------------------------
+	/**
+	 * 
+	 *
+	 * @return array
+	 */
+	public function getBundleFormValues($ps_bundle_name, $ps_placement_code, $pa_bundle_settings, $pa_options=null) {
+	    $va_media = $this->getPageMedia(array('thumbnail', 'original'), $pa_options);
+				       
+        $t_item = new ca_site_page_media();
+        $va_initial_values = [];
+        foreach($va_media as $vn_media_id => $va_m) {
+            $va_initial_values[$vn_media_id] = array(
+                    'idno' => $va_m['idno'], 
+                    'title' => $va_m['title'],
+                    'caption' => $va_m['caption'],
+                    'access' => $va_m['access'],
+                    'access_display' => $t_item->getChoiceListValue('access', $va_m['access']), 
+                    'icon' => $va_m['tags']['thumbnail'], 
+                    'mimetype' => $va_m['info']['original']['PROPERTIES']['mimetype'], 
+                    'filesize' => @filesize($va_m['paths']['original']), 
+                    'type' => $va_m['info']['original']['PROPERTIES']['typename'], 
+                    'dimensions' => $va_m['dimensions']['original'], 
+                    'filename' => $va_m['info']['ORIGINAL_FILENAME'] ? $va_m['info']['ORIGINAL_FILENAME'] : _t('Unknown'),
+                    'metadata' => $vs_extracted_metadata,
+                    'md5' => $va_m['info']['original']['PROPERTIES']['MD5'],
+                    'versions' => join("; ", $va_m['versions']),
+                    'page_id' => $va_m['page_id'],
+                    'fetched_from' => $va_m['fetched_from'],
+                    'fetched_on' => $va_m['fetched_on'] ? date('c', $va_m['fetched_on']) : null,
+                    'fetched' => $va_m['fetched_from'] ? _t("<h3>Fetched from:</h3> URL %1 on %2", '<a href="'.$va_m['fetched_from'].'" target="_ext" title="'.$va_m['fetched_from'].'">'.$va_m['fetched_from'].'</a>', date('c', $va_m['fetched_on'])): ""
+                );
+        }
+        return $va_initial_values;
 	}
 	# ------------------------------------------------------
 }
