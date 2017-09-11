@@ -45,6 +45,7 @@ require_once(__CA_LIB_DIR__."/core/Zend/Registry.php");
 
 require_once(__CA_LIB_DIR__."/core/Utils/Debug.php");
 require_once(__CA_APP_DIR__."/helpers/utilityHelpers.php");
+require_once(__CA_APP_DIR__."/helpers/themeHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/initializeLocale.php");
 
 if (isset($_COOKIE['CA_'.__CA_APP_NAME__.'_ui_locale'])) {
@@ -52,6 +53,7 @@ if (isset($_COOKIE['CA_'.__CA_APP_NAME__.'_ui_locale'])) {
 	if (!initializeLocale($g_ui_locale)) { $g_ui_locale = null; }
 }
 
+require_once(__CA_LIB_DIR__.'/ca/ResultContext.php');
 require_once(__CA_APP_DIR__.'/helpers/navigationHelpers.php');
 require_once(__CA_APP_DIR__.'/helpers/mailHelpers.php');
 
@@ -76,6 +78,8 @@ require_once(__CA_LIB_DIR__.'/core/Cache/MemoryCache.php');
 
 require_once(__CA_APP_DIR__.'/lib/ca/GarbageCollection.php');
 require_once(__CA_APP_DIR__.'/helpers/guidHelpers.php');
+require_once(__CA_APP_DIR__.'/helpers/browseHelpers.php');
+require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 
 // initialize Tooltip manager
 TooltipManager::init();
