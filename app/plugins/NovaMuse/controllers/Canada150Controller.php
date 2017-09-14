@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * includes/MemberMapController.php
+ * includes/Canada150Controller.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2012 Whirl-i-Gig
+ * Copyright 2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -27,13 +27,16 @@
  */
  
  	require_once(__CA_MODELS_DIR__.'/ca_entities.php');
+ 	require_once(__CA_MODELS_DIR__.'/ca_objects.php');
  	require_once(__CA_MODELS_DIR__.'/ca_lists.php');
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
  	require_once(__CA_LIB_DIR__.'/ca/ResultContext.php');
- 	require_once(__CA_LIB_DIR__.'/core/GeographicMap.php');
  	require_once(__CA_LIB_DIR__.'/ca/Search/EntitySearch.php');
+ 	require_once(__CA_LIB_DIR__.'/ca/Search/ObjectSearch.php');
+ 	require_once(__CA_LIB_DIR__.'/core/Parsers/TimeExpressionParser.php');
+ 	
  
- 	class MemberMapController extends ActionController {
+ 	class Canada150Controller extends ActionController {
  		# -------------------------------------------------------
  		private $opo_plugin_config;			// plugin config file
  		private $ops_theme;						// current theme
@@ -54,50 +57,51 @@
  			
  			if (!(bool)$this->opo_plugin_config->get('enabled')) { die(_t('NovaMuse plugin is not enabled')); }
  			
- 			MetaTagManager::addLink('stylesheet', $po_request->getBaseUrlPath()."/app/plugins/NovaMuse/themes/".$this->ops_theme."/css/memberMap.css",'text/css');
- 			AssetLoadManager::register('maps');
+ 			MetaTagManager::addLink('stylesheet', $po_request->getBaseUrlPath()."/app/plugins/NovaMuse/themes/".$this->ops_theme."/css/dashboard.css",'text/css');
  			
- 			$this->opo_result_context = new ResultContext($po_request, 'ca_entities', 'member_map');
- 			
- 			$t_list = new ca_lists();
- 		 	$this->opn_member_institution_id = $t_list->getItemIDFromList('entity_types', 'member_institution');
- 		 	
- 		 	$va_access_values = caGetUserAccessValues($this->request);
+ 			$this->opo_result_context = new ResultContext($po_request, 'ca_objects', 'dashboard');
+
+ 			$t_object = new ca_objects();
+ 			$this->opn_objectTableNum = $t_object->tableNum();
+ 			 			
+ 			$va_access_values = caGetUserAccessValues($this->request);
  		 	$this->opa_access_values = $va_access_values;
 			$this->view->setVar('access_values', $va_access_values);
 			
  		}
  		# -------------------------------------------------------
  		/**
- 		 * Displays map of all member inst
+ 		 * Displays site stats
  		 */
  		public function Index() {
  			
-			$o_search = new EntitySearch();
- 		 	#$o_search->setTypeRestrictions(array($this->opn_member_institution_id));
- 			$o_search->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
-			//$qr_res = $o_search->search("*", array('sort' => 'ca_entity_labels.name', 'sort_direction' => 'asc'));
- 			$qr_res = $o_search->search("ca_entities.type_id:".$this->opn_member_institution_id);		// This is fastest
- 			$o_map = new GeographicMap(900, 500, 'map');
-			$va_map_stats = $o_map->mapFrom($qr_res, "georeference", array("ajaxContentUrl" => caNavUrl($this->request, "NovaMuse", "MemberMap", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
-			$this->view->setVar("map", $o_map->render('HTML', array('delimiter' => "<br/>")));
+ 			$this->render('canada150_html.php');
  			
- 			$this->render('member_map_html.php');
+ 			
+ 		} 		
+ 		# -------------------------------------------------------
+ 		public function mostVoted() {
+ 		 	$o_db = new Db();
+ 			$q_most_voted = $o_db->query("SELECT o.object_id, count(ic.row_id) c
+ 												FROM ca_item_comments ic
+ 												RIGHT JOIN ca_objects AS o ON ic.row_id = o.object_id
+ 												WHERE o.access = 1 AND o.deleted = 0 AND ic.rating > 0 AND ic.table_num = ".$this->opn_objectTableNum."
+ 												GROUP BY ic.row_id order by c DESC limit 1500;");
+ 			$va_most_voted = array();
+ 			if($q_most_voted->numRows()){
+ 				while($q_most_voted->nextRow()){	
+ 					$va_most_voted[$q_most_voted->get("object_id")] = $q_most_voted->get("c");
+				}
+ 			}
+ 			$q_results = caMakeSearchResult("ca_objects", array_keys($va_most_voted));
+
+ 			$this->view->setVar('counts', $va_most_voted);
+ 			$this->view->setVar('results', $q_results);
+ 			
+ 			
+ 			$this->render('most_voted_html.php');
+ 			
  		}
  		
- 		# -------------------------------------------------------
- 		/**
- 		 *
- 		 */
- 		public function getMapItemInfo() {
- 			$pa_entity_ids = explode(';', $this->request->getParameter('id', pString));
- 			
- 			$this->view->setVar('entity_ids', $pa_entity_ids);
- 			$this->view->setVar('access_values', $this->opa_access_values);
- 			
- 		 	$this->render("member_map_balloon_html.php");		
- 		}
- 		
- 		# -------------------------------------------------------
  	}
  ?>

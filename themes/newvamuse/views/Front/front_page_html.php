@@ -142,14 +142,15 @@
 				<ul>
 <?php
 
-			foreach ($va_curated_ids as $va_curated_id => $thing) {
-				$t_curated = new ca_objects($va_curated_id);
-				print "<li><div class='memberTile'>";
-				print "<div class='memberImage'>".caNavLink($this->request, $t_curated->get('ca_object_representations.media.iconlarge'), '', '', 'Detail', 'objects/'.$va_curated_id)."</div>";
-				print "<p>".caNavLink($this->request, $t_curated->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$va_curated_id)."</p>";
-				print "</div></li>";
+			if(is_array($va_curated_ids) && sizeof($va_curated_ids)){
+				foreach ($va_curated_ids as $va_curated_id => $thing) {
+					$t_curated = new ca_objects($va_curated_id);
+					print "<li><div class='memberTile'>";
+					print "<div class='memberImage'>".caNavLink($this->request, $t_curated->get('ca_object_representations.media.iconlarge'), '', '', 'Detail', 'objects/'.$va_curated_id)."</div>";
+					print "<p>".caNavLink($this->request, $t_curated->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$va_curated_id)."</p>";
+					print "</div></li>";
+				}
 			}
-
 ?>	
 				</ul>
 			</div>	<!-- end jc  -->
@@ -221,7 +222,7 @@
 	</div><!-- end row curated -->
 
 	<div class="row cats" >
-		<h2>Browse Topics</h2>
+		<h2>Browse Themes</h2>
 		<div class="col-sm-1"></div>
 		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'architecturedark.png')."<p>Architecture</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/470'); ?></div>
 		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'artdark.png')."<p>Art</p>", '', 'Browse/objects', 'facet', 'novastory_category_facet/id/474'); ?></div>
@@ -328,7 +329,7 @@
 	</div><!-- end row recent -->
 	<div class="row" style='height:300px;'>
 		<h2>Support the Museums</h2>
-		<div class="col-sm-12">
-			Lorem Ipsum fundraising campaign goes here
+		<div class="col-sm-12 supportText">
+			Help preserve Nova Scotia's rich history. Museums across the province depend on generous contributions from dedicated volunteers and community members. Contact your local museum to see what opportunities there are for you.
 		</div>
 	</div><!-- end row fund -->

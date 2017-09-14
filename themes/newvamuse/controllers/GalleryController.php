@@ -94,7 +94,12 @@
 				
 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")));
  				$this->render("Gallery/index_html.php");
- 			}else{
+ 			}elseif ($ps_function == "featured") {
+ 				$va_set_confs = $this->config->get('set_types');
+ 				$this->view->setVar('sets_typename', $this->request->getActionExtra());
+ 				$this->view->setVar('sets_type_config', $va_set_confs);
+ 				$this->render("Gallery/featured_types_html.php");
+ 			} else {
  				$ps_set_id = $ps_function;
  				$this->view->setVar("set_id", $ps_set_id);
  				$t_set->load($ps_set_id);

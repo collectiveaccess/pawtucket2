@@ -86,7 +86,7 @@ print "<p>Use one or more fields below to search for specific terms found in obj
 	</div>
 	<div class="col-sm-3 image" >
 <?php
-		print caGetThemeGraphic($this->request, 'manwithrock.png');
+		print caGetThemeGraphic($this->request, 'womanwithbook.jpg');
 ?>
 	</div><!-- end col -->
 </div><!-- end row -->
