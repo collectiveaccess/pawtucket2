@@ -28,6 +28,15 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+<?php
+		$vb_show_footer = true;
+		if(in_array(strtolower($this->request->getController()), array("browse", "search"))){
+			if(strtolower($this->request->getAction()) != "advanced"){
+				$vb_show_footer = false;
+			}
+		}
+		if($vb_show_footer){
+?>
 		<footer id="footer">
 			<ul class="list-inline pull-right social">
 				<li class='connectWith'>Connect With Us</li>
@@ -52,6 +61,7 @@
 		?> 			
 		</footer><!-- end footer -->
 <?php
+		}
 	//
 	// Output HTML for debug bar
 	//

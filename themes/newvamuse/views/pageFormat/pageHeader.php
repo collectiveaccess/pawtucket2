@@ -68,10 +68,11 @@
 	<meta property="og:image" content="<?php print $va_og_tag;?>"/>
 	<meta property="og:url" content="<?php print $va_og_url;?>"/>
 	<meta property="og:title" content="<?php print $va_og_title;?>"/>
-	<meta property="og:site_name" content="Craigdarroch Castle Collection"/>
+	<meta property="og:site_name" content="Novamuse"/>
 	<meta property="og:type" content="website"/> 	
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	<link rel="shortcut icon" href="/favicon.png">
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
@@ -140,7 +141,7 @@
 					</div>
 				</form>-->
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li class="<?php print (($this->request->getController() == "About")  && ($this->request->getAction() != "guide"))? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
+					<li class="<?php print (($this->request->getController() == "About")  && (($this->request->getAction() == "Index") | ($this->request->getAction() == "support")))? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
 						<ul class='dropdown-menu'>
 							<li><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Support Us"), "", "", "About", "support"); ?></li>
@@ -155,10 +156,10 @@
 						</ul>
 					</li>
 					<!--<li <?php print ($this->request->getController() == "Canada150") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("#Canada150"), "", "NovaMuse", "Canada150", "Index"); ?></li>-->
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><a href="#">For Teachers</a></li>
-					<li class="<?php print (($this->request->getController() == "About") && ($this->request->getAction() == "guide")) ? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Help</a>
+					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "teachers")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("For Teachers"), "", "", "About", "teachers"); ?></li>
+					<li class="<?php print (($this->request->getController() == "About") && ($this->request->getAction() != "teachers") && ($this->request->getAction() != "support") && ($this->request->getAction() != "Index")) ? 'active' : ''; ?> dropdown"><a href="#" class="dropdown-toggle" data-toggle="dropdown">Help</a>
 						<ul class='dropdown-menu'>
-							<li><?php print caNavLink($this->request, _t("Help"), "", "", "About", "help"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Guide"), "", "", "About", "guide"); ?></li>
 							<li><?php print caNavLink($this->request, _t("FAQ"), "", "", "About", "questions"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "About", "termsou"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Plan Your Visit"), "", "", "About", "planyv"); ?></li>
