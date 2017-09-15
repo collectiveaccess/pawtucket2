@@ -16,18 +16,20 @@
 	
 ?>
 <div class="breadcrumb"><?php print $breadcrumb_link; ?></div>
-<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
-<div class="container">
+<div class="row">
+	<div class="col-sm-12">
+		<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
+	</div>
+</div>
+	
 	<div class="row">
 		<div class="col-sm-8"><div id="galleryDetailImageArea">
 			image here
 		</div><!-- end galleryDetailImageArea --></div><!--end col-sm-8-->
 		<div class="col-sm-4" id="galleryDetailObjectInfo"> </div>
 	</div><!-- end row -->
-</div><!-- end container -->
 <div class="galleryDetailBottom"></div>
-
-<div class="container">
+	<div class="container">
 	<div class="row">
 <?php
 	if($ps_description){
@@ -68,7 +70,7 @@
 			</div><!-- end row -->
 		</div><!-- end col -->
 	</div><!-- end row -->
-</div><!-- end container -->
+	</div><!-- end container -->
 <script type='text/javascript'>
 		jQuery(document).ready(function() {		
 			jQuery("#galleryDetailImageArea").load("<?php print caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => ($pn_set_item_id) ? $pn_set_item_id : $vn_first_item_id, 'set_id' => $pn_set_id)); ?>");
