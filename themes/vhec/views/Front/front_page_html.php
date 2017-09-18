@@ -37,7 +37,6 @@
 		$vs_featured_library = $this->config->get("library_set_code");
 		$vs_featured_testimony = $this->config->get("testimony_set_code");
 ?>
-<div class="container">
 	<div class="row">
 		<div class="col-sm-12">
 <?php 
@@ -149,4 +148,3 @@
 ?>
 		</div>				
 	</div>
-</div> <!--end container-->
