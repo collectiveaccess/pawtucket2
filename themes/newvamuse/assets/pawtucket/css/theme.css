@@ -583,11 +583,15 @@ a.filterCollection:hover {
 	/*margin-top:20px;*/
 }
 #pageArea.staticPage .image {
-	background-color:#f5f5f5;
 	margin-top:-40px;
-	min-height:250px;
 	width:100%;
 	margin-bottom:20px;
+	padding:0px;
+}
+#pageArea.staticPage .image img{
+	width:100%;
+	height:auto;
+	max-width:2000px;
 }
 .scaleImg img{
 	width:100%;
