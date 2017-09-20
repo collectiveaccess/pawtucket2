@@ -613,7 +613,7 @@ if (!$pb_omit_editing_info) {
 									}
 									if ($vs_list_code) {
 										$va_placements[$vn_placement_id]['inlineEditingType'] = DT_SELECT;
-										if (!is_array($va_list_items = $t_list->getItemsForList($vs_list_code))) {
+										if (($t_list->numItemsInList($vs_list_code) > 500) || !is_array($va_list_items = $t_list->getItemsForList($vs_list_code))) {
 											break;
 										}
 										$va_list_items = caExtractValuesByUserLocale($va_list_items);
@@ -657,7 +657,7 @@ if (!$pb_omit_editing_info) {
 												$va_placements[$vn_placement_id]['allowInlineEditing'] = $vb_user_can_edit;
 												$va_placements[$vn_placement_id]['inlineEditingType'] = DT_SELECT;
 												
-												$va_list_values = $t_list->getItemsForList($t_element->get("list_id"), array('labelsOnly' => true));
+												$va_list_values = ($t_list->numItemsInList($t_element->get("list_id")) > 500) ? [] : $t_list->getItemsForList($t_element->get("list_id"), array('labelsOnly' => true));
 												
 												$qr_list_items = caMakeSearchResult('ca_list_items', array_keys($va_list_values));
 												$va_list_item_labels = [];
