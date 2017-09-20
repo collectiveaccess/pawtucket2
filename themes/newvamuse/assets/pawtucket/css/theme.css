@@ -271,7 +271,7 @@ h1,h2 {
 	text-align:center;
 }
 .front .supportText {
-	font-size:20px;
+	font-size:18px;
 }
 .front .jcarousel-wrapper {
 	margin-top:10px;
@@ -578,6 +578,11 @@ a.filterCollection:hover {
 }
 .aboutMenu {
 	line-height:2.2em;
+}
+.supportBodyText img{
+	float: left;
+	margin: 30px 40px 10px 0px;
+	width: auto;
 }
 #pageArea.staticPage, .textContent {
 	/*margin-top:20px;*/
