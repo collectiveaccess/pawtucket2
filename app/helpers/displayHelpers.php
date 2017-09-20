@@ -4230,6 +4230,9 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 	function caProcessReferenceTags($po_request, $ps_text, $pa_options=null) {
 	    $pm_page = caGetOption('page', $pa_options, null);
 	    $va_idnos = [];
+	    
+	    if (!is_array($va_access_values = caGetUserAccessValues($po_request)) || !sizeof($va_access_values)) { $va_access_values = null; }
+	    
         foreach([
             'object' => 'ca_objects', 'entity' => 'ca_entities', 'place' => 'ca_places', 
             'occurrrence' => 'ca_occurrences', 'collection' => 'ca_collections', 'loan' => 'ca_loans', 
@@ -4262,7 +4265,11 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
                                 $va_params['path'] = $pm_page;
                             }
                             $qr_m = ca_site_page_media::find($va_params, ['returnAs' => 'searchResult']);
-                            if ($qr_m->nextHit()) {
+                            while ($qr_m->nextHit()) {
+                                if (is_array($va_access_values) && !in_array($qr_m->get('access'), $va_access_values)) { 
+                                    $ps_text = str_replace($vs_tag, '', $ps_text); // remove tag that cannot be resolved.
+                                    continue; 
+                                }
                                 if ($vs_template = $va_l['content']) {
                                     $vs_template = str_replace("^title", $qr_m->get('title'), $vs_template);
                                     $vs_template = str_replace("^caption", $qr_m->get('caption'), $vs_template);
@@ -4272,23 +4279,28 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
                                 } else {
                                     $ps_text = str_replace($vs_tag, $qr_m->getMediaTag('media', caGetOption('version', $va_l, array_shift($qr_m->getMediaVersions('media')))), $ps_text);
                                 }
+                                
+                                break;
                             }
                         }
                         break;
                     default:
-                        $va_map = call_user_func($vs_ref_type.'::getIDsForIdnos', array_map(function($v) { return $v['idno']; }, $va_idnos[$vs_ref_type]), ['forceToLowercase' => true]);
+                        $va_map = call_user_func($vs_ref_type.'::getIDsForIdnos', array_map(function($v) { return $v['idno']; }, $va_idnos[$vs_ref_type]), ['forceToLowercase' => true, 'checkAccess' => $va_access_values]);
             
                         $va_idnos[$vs_ref_type] = array_map(function($v) use ($va_map) { $v['id'] = $va_map[$v['idno']]; return $v; }, $va_tags);
             
                         foreach($va_idnos[$vs_ref_type] as $vs_tag => $va_l) {
-                            switch(__CA_APP_TYPE__) {
-                                case 'PROVIDENCE':
-                                    $vs_link_text= caEditorLink($po_request, $va_l['content'], $va_l['class'], $vs_ref_type, $va_l['id']);
-                                    break;
-                                case 'PAWTUCKET':
-                                    $vs_link_text= caDetailLink($po_request, $va_l['content'], $va_l['class'], $vs_ref_type, $va_l['id']);
-                                    break;
-                            }	
+                            $vs_link_text = '';
+                            if (isset($va_l['id']) && $va_l['id']) {
+                                switch(__CA_APP_TYPE__) {
+                                    case 'PROVIDENCE':
+                                        $vs_link_text= caEditorLink($po_request, $va_l['content'], $va_l['class'], $vs_ref_type, $va_l['id']);
+                                        break;
+                                    case 'PAWTUCKET':
+                                        $vs_link_text= caDetailLink($po_request, $va_l['content'], $va_l['class'], $vs_ref_type, $va_l['id']);
+                                        break;
+                                }	
+                            }
                             $ps_text = str_replace($vs_tag, $vs_link_text, $ps_text);
                         }
                         break;
