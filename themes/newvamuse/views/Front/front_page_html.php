@@ -327,9 +327,11 @@
 			});
 		</script>
 	</div><!-- end row recent -->
-	<div class="row" style='height:300px;'>
-		<h2>Support the Museums</h2>
-		<div class="col-sm-12 supportText">
+	<div class="row">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-8 offset-sm-1 supportText">
+			<h2>Support the Museums</h2>
 			Help preserve Nova Scotia's rich history. Museums across the province depend on generous contributions from dedicated volunteers and community members. Contact your local museum to see what opportunities there are for you.
+			<br/><br/><br/>
 		</div>
 	</div><!-- end row fund -->

@@ -2436,7 +2436,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 		$va_start = $o_tep->getHistoricDateParts($pa_historic_timestamps[0]);
 		$va_end = $o_tep->getHistoricDateParts($pa_historic_timestamps[1]);
 		
-		//if ($va_start['year'] < 0) { $va_start['year'] = 1900; }
+		if ($va_start['year'] <= -2000000) { $va_start['year'] = -50000; }
 		if ($va_end['year'] >= 2000000) { $va_end['year'] = date("Y"); }
 
 		if (
