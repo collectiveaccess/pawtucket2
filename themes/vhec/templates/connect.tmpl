@@ -11,7 +11,7 @@
 <div class="row connectSocial">
 	<div class="col-sm-4 websiteScreenshot">
 		<H5>Main website</h5><h4><a href="http://vhec.org" target="_blank">Vancouver Holocaust Education Center</a></h4>
-		<?php print caGetThemeGraphic($this->request, 'VHEC_website.jpg'); ?>
+		<?php ($this->request) ? print caGetThemeGraphic($this->request, 'VHEC_website.jpg') : ""; ?>
 	</div>
 	<div class="col-sm-4">
 		<H5>Twitter</h5><h4><a href="http://twitter.com/VHECCollections" target="_blank">@VHECCollections</a></h4>
