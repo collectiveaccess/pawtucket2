@@ -354,6 +354,9 @@ h1 small{
 	margin-left: 15px !important;
 }
 
+.gm-style-iw{
+	max-height: 400px !important;
+}
 
 .gm-style-iw > div > div > p{
 	margin: 0;
@@ -380,4 +383,12 @@ h1 small{
 /* TIMELINE */
 .tl-headline a{
 	color: #5a7957 !important;
+}
+
+.tl-timeline p a, .tl-timeline p a:hover{
+	color: #5a7957 !important;
+}
+
+.tl-timeline p a:hover{
+	text-decoration: underline;
 }

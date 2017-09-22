@@ -47,7 +47,7 @@
 <?php
 			if($t_object->get('ca_object_representations')){
 ?>
-				<div class='col-sm-5 col-sm-offset-1'>
+				<div class='col-sm-4 col-sm-offset-1'>
 					{{{representationViewer}}}
 								
 					<div id="detailAnnotations"></div>
@@ -55,11 +55,10 @@
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 				
 				</div>
-				<div class='col-sm-5 col-sm-offset-1'>
+				<div class='col-sm-7'>
 <?php
 			} else {
 				print "<div class='col-sm-10 col-sm-offset-1'>";
-				print "hello";
 			}
 ?>
 <?php

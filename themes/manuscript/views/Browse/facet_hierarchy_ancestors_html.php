@@ -37,7 +37,7 @@
 	if(is_array($va_ancestors) && sizeof($va_ancestors)){
 		#if (sizeof($va_ancestors) > 1) {
 			$va_ancestor = $va_ancestors[0];
-			print '<div style="float:right"><a href="#" onClick="jQuery(\'#bMorePanel\').hide();"><span class="glyphicon glyphicon-remove"></span>'._t('Close').'</a></div>';
+			
 			print '<div style="float:right;"><a href="#" onClick=\'jQuery("#bHierarchyListMorePanel_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'key' => $vs_key, 'browseType' => $vs_browse_type, 'isNav' => $vb_is_nav ? 1 : 0, 'id' => (int)$va_ancestor['parent_id'])).'"); jQuery(".bAncestorList_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'isNav' => $vb_is_nav ? 1 : 0)).'"); return false;\'><span class="glyphicon glyphicon-arrow-up"></span>'._t('Top').'</a></div>';
 			
 		#}	
