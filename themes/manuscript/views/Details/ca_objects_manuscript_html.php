@@ -44,7 +44,24 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
-			<div class='col-sm-10 col-md-10 col-lg-10 col-sm-offset-1'>
+<?php
+			if($t_object->get('ca_object_representations')){
+?>
+				<div class='col-sm-5 col-sm-offset-1'>
+					{{{representationViewer}}}
+								
+					<div id="detailAnnotations"></div>
+				
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
+				
+				</div>
+				<div class='col-sm-5 col-sm-offset-1'>
+<?php
+			} else {
+				print "<div class='col-sm-10 col-sm-offset-1'>";
+				print "hello";
+			}
+?>
 <?php
 	$viewable = $t_object->get('ca_objects.viewable', array('convertCodesToDisplayText' => true));
 	$vs_link_text = '';

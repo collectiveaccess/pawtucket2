@@ -220,6 +220,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
 			foreach($va_views as $vs_view => $va_view_info) {
+				if($vs_view === 'timeline' && $vn_result_size < 4){ continue; }
 				if ($vs_current_view === $vs_view) {
 					print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
 				} else {

@@ -17,7 +17,7 @@
 				$o_dm = Datamodel::load();
 				$t_instance = $o_dm->getInstanceByTableName('ca_collection_labels', true);
 				$o_db = $t_instance->getDb();
-				$qr_res = $o_db->query("SELECT DISTINCT name FROM ca_collection_labels INNER JOIN ca_collections ON ca_collections.collection_id = ca_collection_labels.collection_id INNER JOIN ca_objects_x_collections ON ca_collections.collection_id = ca_objects_x_collections.collection_id INNER JOIN ca_objects ON ca_objects_x_collections.object_id = ca_objects.object_id WHERE is_preferred = 1 AND ca_objects.type_id = 24 ORDER BY name;");
+				$qr_res = $o_db->query("SELECT DISTINCT name FROM ca_collection_labels INNER JOIN ca_collections ON ca_collections.collection_id = ca_collection_labels.collection_id INNER JOIN ca_objects_x_collections ON ca_collections.collection_id = ca_objects_x_collections.collection_id INNER JOIN ca_objects ON ca_objects_x_collections.object_id = ca_objects.object_id WHERE is_preferred = 1 AND ca_objects.type_id = 24 AND ca_objects.access = 1 ORDER BY name;");
 				#print_r($qr_res);
 				while($qr_res->nextRow()) {
 					$vs_coll_name = $qr_res->get("name");

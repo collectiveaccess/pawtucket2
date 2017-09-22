@@ -354,6 +354,11 @@ h1 small{
 	margin-left: 15px !important;
 }
 
+
+.gm-style-iw > div > div > p{
+	margin: 0;
+}
+
 .browse .btn{
 	background-color: #5a7957;
 	border-radius: 5px;
