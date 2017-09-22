@@ -92,7 +92,7 @@
  				foreach($va_response_data['errors'] as $vs_field => $va_errors_for_field) {
  					if (!isset($va_tag_list[$vs_field])) { 
  						foreach($va_errors_for_field as $vn_i => $vs_error_for_field) {
- 							$va_errors_for_field[$vn_i] = "<strong>{$vs_field}</strong>: {$vs_error_for_field}";
+ 							$va_errors_for_field[$vn_i] = "<strong>".$t_subject->getDisplayLabel($vs_field)."</strong>: {$vs_error_for_field}";
  						}
  						$va_response_data['errors']['_general_'] = array_merge($va_response_data['errors']['_general_'], $va_errors_for_field);
  					}	

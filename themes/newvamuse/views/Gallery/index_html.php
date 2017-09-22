@@ -1,9 +1,9 @@
 <div class="row"><div class="col-sm-12">
 	<?php print "<div class='leader'>".caGetThemeGraphic($this->request, 'ship.jpg')."</div>";?>
 	<H1><?php print $this->getVar("section_name"); ?></H1>
-	<p style='margin-left:15px;'>
+	<p style='margin-left:15px;' class='textContent'>
 		Explore connections across all our collections. See what objects appear in Galleries created by museums and other users. Make your own connections between objects by <?php print caNavLink($this->request, 'creating your own', '', '', 'Lightbox', 'Index');?>. myNovaMuse allows you to save items, add comments, and share your Galleries if you wish.</p>
-	<p style='text-align:center;margin-top:45px;'><?php print caNavLink($this->request, '<span class="btn-default">Create My Gallery</span>', '', '', 'Lightbox', 'Index');?></p>
+	<p style='text-align:center;margin-top:45px;' class='textContent'><?php print caNavLink($this->request, '<span class="btn-default">Create My Gallery</span>', '', '', 'Lightbox', 'Index');?></p>
 	<hr>
 <?php
 	$va_sets = $this->getVar("sets");
@@ -26,8 +26,8 @@
 							$va_set_ids = array_keys($va_sets);
 							$r_sets = caMakeSearchResult("ca_sets", $va_set_ids, array("sort" => array("ca_sets.set_rank"), "sortDirection" => "asc"));
 							print '<div class="row">';
-							print "<h2>".$va_set_confs[$vs_typename]['name']."</h2>";
-							print "<div class='lightboxDescription'>".$va_set_confs[$vs_typename]['description']."</div>";
+							print "<h2>".$va_set_confs[$vs_typename]['name']." ".caNavLink($this->request, '<small> | see all <i class="fa fa-external-link"></i></small>', '', 'Gallery', 'featured', $vs_typename)."</h2>";
+							print "<div class='lightboxDescription textContent'>".$va_set_confs[$vs_typename]['description']."</div>";
 							print '
 								<div class="jcarousel-wrapper col-sm-12">
 									<div class="jcarousel">
@@ -132,8 +132,8 @@
 <?php							
 						} else {
 							print '<div class="row">';
-							print "<h2>".$va_set_confs[$vs_typename]['name']."</h2>";
-							print "<div class='lightboxDescription'>".$va_set_confs[$vs_typename]['description']."</div>";
+							print "<h2>".$va_set_confs[$vs_typename]['name']." ".caNavLink($this->request, '<small> | see all <i class="fa fa-external-link"></i></small>', '', 'Gallery', 'featured', $vs_typename)."</h2>";
+							print "<div class='lightboxDescription textContent'>".$va_set_confs[$vs_typename]['description']."</div>";
 
 							$va_set_ids = array_keys($va_sets);
 							$r_sets = caMakeSearchResult("ca_sets", $va_set_ids, array("sort" => array("ca_sets.set_rank"), "sortDirection" => "asc"));

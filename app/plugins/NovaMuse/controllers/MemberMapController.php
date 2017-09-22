@@ -55,7 +55,7 @@
  			if (!(bool)$this->opo_plugin_config->get('enabled')) { die(_t('NovaMuse plugin is not enabled')); }
  			
  			MetaTagManager::addLink('stylesheet', $po_request->getBaseUrlPath()."/app/plugins/NovaMuse/themes/".$this->ops_theme."/css/memberMap.css",'text/css');
- 			JavascriptLoadManager::register('maps');
+ 			AssetLoadManager::register('maps');
  			
  			$this->opo_result_context = new ResultContext($po_request, 'ca_entities', 'member_map');
  			
