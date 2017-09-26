@@ -83,6 +83,12 @@ a:hover {
 	text-decoration:none;
 	color:#33450D;
 }
+b, strong{
+	font-family:inherit;
+}
+.form-control:focus {
+    border-color: #778459;
+}
 textarea {
 	resize: none;
 }
@@ -222,7 +228,7 @@ textarea {
 }
 .navbar-default .navRightSide{
 	margin-top:-47px;
-	margin-right:0px !Important;
+	margin-right:15px !Important;
 }
 .navbar-default .navbar-form {
 	margin-top:-43px;
@@ -1305,13 +1311,33 @@ a.thumbControl:hover {
 .researchGuide a, .researchGuide a:hover, .donate a, .donate a:hover {
 	color: #33450D;
 }
-
+.staticPage .toc{
+	margin-top:60px;
+	color: #778459;
+}
+.staticPage .toc ol, .staticPage .toc ul{
+	padding-left: 15px;
+}
+.staticPage .userguide{
+	border-left:1px solid #ddd;
+	padding-left:30px;
+}
+.staticPage .userguide strong{
+	font-size:16px;
+}
 .staticPage h6 a {
 	color: #33450D;
 }
-.staticPage p, .staticPage div{
+.staticPage p, .staticPage div, .staticPage strong, .staticPage b{
 	font-size: 14px;
 	font-family: 'Open Sans', sans-serif;
+}
+.staticPage .image img{
+	width:100%;
+	height:auto;
+	max-width:800px;
+	text-align:center;
+	margin-bottom:30px;
 }
 .connectSocial {
 	margin-top:70px;

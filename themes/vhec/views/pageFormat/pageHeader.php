@@ -181,7 +181,7 @@ $va_info_links = array(
 <?php	
 					$vs_controller = strtolower($this->request->getController());
 					$vs_action = strtolower($this->request->getAction());
-					$va_highlight_collections = array("search", "browse", "archives", "archive", "library", "libraries", "museum", "museums", "testimony", "testimonies");
+					$va_highlight_collections = array("search", "browse", "archives", "archive", "library", "libraries", "museum", "museums", "testimony", "testimonies", "collection");
 					print "<li class='dropdown".((in_array($vs_controller, $va_highlight_collections)) ? " selected" : "")."' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Collections <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>\n";
 					print "<li>".caNavLink($this->request, _t("Browse All"), "", "", "Browse", "landing")."</li>";			
@@ -193,7 +193,7 @@ $va_info_links = array(
 					print "</li>";	
 								
 					#print $this->render("pageFormat/browseMenu.php"); 	
-					$va_highlight_resources = array("collection", "researchers", "voices", "researchguide");
+					$va_highlight_resources = array("researchers", "voices", "researchguide");
 					print "<li class='dropdown".((in_array($vs_controller, $va_highlight_resources) || in_array($vs_action, $va_highlight_resources)) ? " selected" : "")."' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Resources <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>\n";
 					print "<li>".caNavLink($this->request, 'Researchers and Educators', 'first', '', 'About', 'researchers')."</li>\n"; 					
@@ -233,7 +233,7 @@ $va_info_links = array(
 	</nav>
 				
 <?php
-	if (($this->request->getController() == "Museum") | (($this->request->getController() == "Browse") && ($this->request->getAction() == "museum"))) {
+	if (($this->request->getController() == "Museums") | ($this->request->getController() == "Museum") | (($this->request->getController() == "Browse") && ($this->request->getAction() == "museum"))) {
 		print "<div class='container submenu museum '><div class='row'>";
 		print "<div class='col-sm-12'>";
 		print "<ul class='nav navbar-nav navbar-left'>";
@@ -275,7 +275,7 @@ $va_info_links = array(
 		
 		print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>About <span class='caret'></span></a>\n";
 		print "<ul class='dropdown-menu'>\n";
-		print "<li>".caNavLink($this->request, 'The Archives', 'first', '', 'Archives', 'about')."</li>\n";
+		print "<li>".caNavLink($this->request, 'The Archives', 'first', '', 'Archive', 'about')."</li>\n";
 		print "<li>".caNavLink($this->request, 'Information for Donors', 'last', '', 'About', 'donate')."</li>\n"; 
 		print "</ul>";
 		print "</li>";
