@@ -45,12 +45,12 @@
 					<div class="col-sm-12">
 						<div class="pull-right">
 							<div class="socialButtons">
-								<a href="https://www.pinterest.com/pin/create/button/">
-    								<img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" />
-								</a>
 								<?php $current_url = $_SERVER["HTTP_HOST"].$_SERVER["REQUEST_URI"]; ?>
 								<div class="fb-like" data-href="<?php echo $current_url; ?>" data-width="60" data-layout="button" data-action="like" data-size="small" data-show-faces="false" data-share="false"></div>
 								<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal">Tweet</a>
+								<a href="https://www.pinterest.com/pin/create/button/">
+    								<img src="//assets.pinterest.com/images/pidgets/pinit_fg_en_rect_gray_20.png" />
+								</a>
 								<g:plusone size="medium" data-align="right"></g:plusone>
 							</div>
 							<div class="inpageButtons"><a href="#" onclick="window.print();return false;"><i class="fa fa-print fa-2x" style="font-size: 1.25em"></i></a>				

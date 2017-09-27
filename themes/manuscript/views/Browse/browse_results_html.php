@@ -222,9 +222,9 @@ if (!$vb_ajax) {	// !ajax
 			foreach($va_views as $vs_view => $va_view_info) {
 				if($vs_view === 'timeline' && $vn_result_size < 4){ continue; }
 				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
+					print '<a href="#" class="active iconPopoverTrigger" data-content="'.$vs_view.'"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
 				} else {
-					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+					print caNavLink($this->request, '<span data-toggle="tooltip" data-content="'.$vs_view.'" class="glyphicon iconPopoverTrigger '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 				}
 			}
 		}
@@ -269,6 +269,14 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		}
 ?>
+		 $(function(){
+			$('.iconPopoverTrigger').popover({
+				trigger: 'hover',
+				container: 'body',
+				placement: 'top',
+				template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><div class="popover-content"></div></div>'
+			});
+        });
 	});
 
 </script>

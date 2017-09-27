@@ -93,7 +93,10 @@ var caUI = caUI || {};
 			var marker = new google.maps.Marker(opts);
 			
 			if(label || content || ajaxContentUrl){
-				google.maps.event.addListener(marker, 'click', function(e) { that.openMarkerInfoWindow(marker); });
+				google.maps.event.addListener(marker, 'click', function(e) { 
+					that.map.setCenter(marker.getPosition());
+					that.openMarkerInfoWindow(marker); 
+				});
 			}
 			return marker;
 		};

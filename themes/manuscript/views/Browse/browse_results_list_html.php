@@ -118,7 +118,11 @@
 				}else{
 
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					$vs_tmp_label = $qr_res->get("{$vs_table}.preferred_labels");
+					if(strlen($vs_tmp_label) > 190){
+						$vs_tmp_label = substr($vs_tmp_label, 0, 187)."...";
+					}
+					$vs_label_detail_link 	= caDetailLink($this->request, $vs_tmp_label, '', $vs_table, $vn_id);
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];

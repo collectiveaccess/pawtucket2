@@ -102,7 +102,7 @@
 				</div>
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
-						jQuery("#browseManuscriptsResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'manuscripts', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery("#browseManuscriptsResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'manuscripts/view/list', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 							jQuery('#browseManuscriptsResultsContainer').jscroll({
 								autoTrigger: true,
 								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
