@@ -12,7 +12,7 @@
 	<div class='row'>
 		<div class='col-sm-12 hero'>
 <?php
-			print caGetThemeGraphic($this->request, 'findingaids.jpg');
+			print caGetThemeGraphic($this->request, 'findingaidHeader.jpg');
 ?>
 			<h1 class="hero"><?php print $vs_page_title; ?></h1>
 		</div>

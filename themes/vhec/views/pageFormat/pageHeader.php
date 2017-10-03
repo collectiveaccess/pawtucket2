@@ -123,10 +123,10 @@
 				<ul class="nav navbar-nav">
 <?php
 $va_info_links = array(
-	"<li>".caNavLink($this->request, 'About The Collections', '', '', 'About', 'collections')."</li>",
+	"<li>".caNavLink($this->request, 'About the Collections', '', '', 'About', 'collections')."</li>",
 	"<li>".caNavLink($this->request, 'Plan a Research Visit', '', '', 'About', 'plan')."</li>",
 	"<li>".caNavLink($this->request, 'Use and Licensing', '', '', 'About', 'use')."</li>",
-	"<li>".caNavLink($this->request, 'Connect With Us', '', '', 'About', 'connect')."</li>",
+	"<li>".caNavLink($this->request, 'Connect with Us', '', '', 'About', 'connect')."</li>",
 	"<li>".caNavLink($this->request, 'User Guides', '', '', 'About', 'userguide')."</li>",
 	"<li>".caNavLink($this->request, 'Acknowledgments', '', '', 'About', 'acknowledgments')."</li>"
 );
@@ -241,7 +241,7 @@ $va_info_links = array(
 		print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>About <span class='caret'></span></a>\n";
 		print "<ul class='dropdown-menu'>\n";
 		print "<li>".caNavLink($this->request, 'The Museum Collection', 'first', '', 'Museums', 'collection')."</li>\n";
-		print "<li>".caNavLink($this->request, 'Information For Donors', 'last', '', 'About', 'donate/#museum')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'Information for Donors', 'last', '', 'About', 'donate/#museum')."</li>\n"; 
 		print "</ul>";
 		print "</li>";
 		
