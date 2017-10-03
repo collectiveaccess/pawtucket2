@@ -36,13 +36,13 @@
 					<li><a href="https://twitter.com/VHECCollections" target="_blank"><i class="fa fa-twitter"></i></a></li>
 				</ul>
 				<div class='pull-left footer-left'>
-					<p><b>P: 604.264.0499&nbsp;&nbsp;&nbsp;E: <a href='mailto:info@vhec.org'>info@vhec.org</a></b></p>
-					<p>50 - 950 West 41st Ave, Vancouver BC, V5Z 2N7 Canada</p>
+					<p><b>P: {{{footer_phone}}}&nbsp;&nbsp;&nbsp;E: <a href='mailto:{{{footer_email}}}'>{{{footer_email}}}</a></b></p>
+					<p>{{{footer_address}}}</p>
 				</div>
 			</div>
 			
 			<div class="pull-right ca">
-				<div>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></div>
+				<div>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2017</a></div>
 			</div>
 			
 			<div style="clear:both; height:1px;"><!-- empty --></div>
