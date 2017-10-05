@@ -79,16 +79,16 @@
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 			$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				if ($qr_res->get('ca_objects.type_id') == 30) {
-					$vs_label_author	 	= "<p class='artist'>".caNavLink($this->request, $qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.preferred_labels.forename ^ca_entities.preferred_labels.middlename ^ca_entities.preferred_labels.surname')), '', '', 'Detail', 'library/'.$vn_id)."</p>";
-					$vs_label_detail 	= "<p style='text-decoration:underline;'>".caNavLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', '', 'Detail', 'library/'.$vn_id)."</p>";
+					$vs_label_author	 	= "<p class='artist'>".$qr_res->getWithTemplate("<unit delimiter='; ' restrictToRelationshipTypes='author' relativeTo='ca_entities'><l>^ca_entities.preferred_labels.forename ^ca_entities.preferred_labels.middlename ^ca_entities.preferred_labels.surname</l></unit>")."</p>";
+					$vs_label_detail 	= "<p style='text-decoration:underline;'>".caNavLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', '', 'Detail', 'library/'.$vn_id)."</p>";
 					$vs_label_pub 	= "<p>".$qr_res->get("ca_objects.publication_description")."</p>";
 					$vs_label_call 	= "<p>".$qr_res->get("ca_objects.call_number")."</p>";
 					$vs_label_status 	= "<p>".$qr_res->get("ca_objects.purchase_status")."</p>";
 					$vs_idno_detail_link 	= "";
 					$vs_library_info = $vs_label_detail.$vs_label_author.$vs_label_pub.$vs_label_call.$vs_label_status;
 				} elseif ($qr_res->get('ca_objects.type_id') == 1903) {
-					$vs_label_author	 	= "<p class='artist'>".caNavLink($this->request, $qr_res->get("ca_entities.parent.preferred_labels.name", array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.parent.preferred_labels.forename ^ca_entities.parent.preferred_labels.middlename ^ca_entities.parent.preferred_labels.surname')), '', '', 'Detail', 'library/'.$qr_res->get('ca_objects.parent_id'))."</p>";
-					$vs_label_detail 	= "<p style='text-decoration:underline;'>".caNavLink($this->request, $qr_res->get("{$vs_table}.parent.preferred_labels.name"), '', '', 'Detail', 'library/'.$qr_res->get('ca_objects.parent_id'))."</p>";
+					$vs_label_author	 	= "<p class='artist'>".caNavLink($this->request, $qr_res->get("ca_entities.parent.preferred_labels", array('restrictToRelationshipTypes' => 'author', 'delimiter' => '; ', 'template' => '^ca_entities.parent.preferred_labels.forename ^ca_entities.parent.preferred_labels.middlename ^ca_entities.parent.preferred_labels.surname')), '', '', 'Detail', 'library/'.$qr_res->get('ca_objects.parent_id'))."</p>";
+					$vs_label_detail 	= "<p style='text-decoration:underline;'>".caNavLink($this->request, $qr_res->get("{$vs_table}.parent.preferred_labels"), '', '', 'Detail', 'library/'.$qr_res->get('ca_objects.parent_id'))."</p>";
 
 					$vs_label_pub 	= "<p>".$qr_res->get("ca_objects.parent.publication_description")."</p>";
 					$vs_label_call 	= "<p>".$qr_res->get("ca_objects.parent.call_number")."</p>";
@@ -97,8 +97,8 @@
 					$vs_label_detail_link = "";
 					$vs_library_info = $vs_label_detail.$vs_label_author.$vs_label_pub.$vs_label_call.$vs_label_status;
 				} elseif ($qr_res->get('ca_objects.type_id') == 28) {
-					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
-					$vs_label_detail_link 	= "<p><i>".$qr_res->get("{$vs_table}.preferred_labels.name")."</i>, ".$qr_res->get("ca_objects.creation_date")."</p>";
+					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels", array('restrictToRelationshipTypes' => 'artist'))."</p>";
+					$vs_label_detail_link 	= "<p><i>".$qr_res->get("{$vs_table}.preferred_labels")."</i>, ".$qr_res->get("ca_objects.creation_date")."</p>";
 					if ($qr_res->get('is_deaccessioned') && ($qr_res->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
 						$vs_idno_detail_link = "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $qr_res->get('deaccession_date'))."</div>\n";
 					} else {
@@ -110,7 +110,7 @@
 						$vs_art_idno_link = "";
 					}				
 				}else {
-					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels.name", array('restrictToRelationshipTypes' => 'artist'))."</p>";
+					$vs_label_artist	 	= "<p class='artist lower'>".$qr_res->get("ca_entities.preferred_labels", array('restrictToRelationshipTypes' => 'artist'))."</p>";
 					if ($qr_res->get('ca_objects.type_id') == 23 || $qr_res->get('ca_objects.type_id') == 26 || $qr_res->get('ca_objects.type_id') == 25 || $qr_res->get('ca_objects.type_id') == 24 || $qr_res->get('ca_objects.type_id') == 27){
 						$va_collection_id = $qr_res->get('ca_collections.collection_id');
 						$t_collection = new ca_collections($va_collection_id);
@@ -119,7 +119,7 @@
 						$t_top_level = new ca_collections($vn_highest_level);
 						$vs_collection_link = "<p>".caNavLink($this->request, $t_top_level->get('ca_collections.preferred_labels'), '', 'Detail', 'collections', $vn_highest_level)."</p>";					
 					}					
-					$vs_label_detail_link 	= "<p>".caNavLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', '', 'Detail', 'archives/'.$qr_res->get('ca_objects.object_id'))."</p>{$vs_collection_link}<p>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p><p>".$qr_res->get('ca_objects.dc_date', array('returnAsLink' => true, 'delimiter' => '; ', 'template' => '^dc_dates_value'))."</p>";
+					$vs_label_detail_link 	= "<p>".caNavLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', '', 'Detail', 'archives/'.$qr_res->get('ca_objects.object_id'))."</p>{$vs_collection_link}<p>".$qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p><p>".$qr_res->get('ca_objects.dc_date', array('returnAsLink' => true, 'delimiter' => '; ', 'template' => '^dc_dates_value'))."</p>";
 
 					#$vs_idno_detail_link 	= "<p class='idno'>".$qr_res->get("{$vs_table}.idno")."</p>";
 				}

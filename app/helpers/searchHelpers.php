@@ -481,10 +481,12 @@
 			$va_sort_by = caGetOption('sortBy', $va_block_info, null);
 			
 			$vs_sort_list = '';
+			$va_sort_dd = array();
 			if(is_array($va_sort_by)) {
 				$va_sort_list = array();
 				foreach ($va_sort_by as $vs_sort_label => $vs_sort) {
 					$va_sort_list[] = "<li".(($vs_sort_label == $ps_sort) ? " class='selectedSort'" : '')."><a href='#' rel='{$vs_sort_label}'>{$vs_sort_label}</a></li>";
+					$va_sort_dd[$vs_sort_label] = $vs_sort_label;
 				}
 				
 				$vs_sort_list = "<ul id='{$vs_block}_sort'>".join("\n", $va_sort_list)."</ul>";
@@ -502,7 +504,7 @@
 			$o_view->setVar('itemsPerColumn', $vn_items_per_column);
 			$o_view->setVar('hasMore', (bool)($vn_count > $vn_start + $vn_items_per_page));
 			$o_view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
-			$o_view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("{$vs_block}_sort", $va_sort_by, array('id' => "{$vs_block}_sort", "class" => "form-control input-sm"), array("value" => $ps_sort)) : ''));
+			$o_view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_dd) ? caHTMLSelect("{$vs_block}_sort", $va_sort_dd, array('id' => "{$vs_block}_sort", "class" => "form-control input-sm"), array("value" => $ps_sort)) : ''));
 			$o_view->setVar('sortByControl', ($va_block_info["sortControlType"] && ($va_block_info["sortControlType"] == "list")) ? $vs_sort_list : $vs_sort_by_select); // synonym for sortBySelect
 			$o_view->setVar('sortByList', $vs_sort_list);
 			$o_view->setVar('sort', $ps_sort);
@@ -672,7 +674,6 @@
 						$pa_form_values[$vs_dotless_element] = array($pa_form_values[$vs_dotless_element]);
 					}
 					if (is_array($pa_form_values[$vs_dotless_element])) {
-					
 						// are there relationship types?
 						$vs_element_rel_type = '';
 						if (is_array($pa_form_values[$vs_dotless_element.':relationshipTypes'])) {

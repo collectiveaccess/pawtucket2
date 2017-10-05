@@ -32,7 +32,6 @@
 		}
 		if ($va_places = $t_item->get('ca_places.hierarchy.preferred_labels', array('returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 			$va_place_list = array_reverse(array_pop($va_places));
-			array_pop($va_place_list);
 			$va_place_output = array();
 			foreach ($va_place_list as $va_key => $va_place_ids) {
 				foreach ($va_place_ids as $va_key => $va_place_id_t) {
