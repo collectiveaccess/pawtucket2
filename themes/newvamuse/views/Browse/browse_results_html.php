@@ -66,6 +66,7 @@
 	$va_browse_type_info = $o_config->get($va_browse_info["table"]);
 	$va_all_facets = $va_browse_type_info["facets"];	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
+	$va_search_terms = array();
 	
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -174,11 +175,9 @@ if (!$vb_ajax) {	// !ajax
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
 				print "<strong>".$va_criterion['facet'].':</strong>';
-				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
-				}else{
-					print ' '.$va_criterion['value'];
-					$vs_search = $va_criterion['value'];
+				print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+				if ($va_criterion['facet_name'] == '_search') {
+					$va_search_terms[] = $va_criterion['value'];
 				}
 				$i++;
 				if($i < sizeof($va_criteria)){
@@ -214,10 +213,10 @@ if (!$vb_ajax) {	// !ajax
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
-		if($vb_is_search && !$vn_result_size && $vs_search){
+		if($vb_is_search && !$vn_result_size && (sizeof($va_search_terms) == 1)){
 			# --- try to display did you mean results if available
 			$o_search = caGetSearchInstance($vs_table);
-			if (sizeof($va_suggestions = $o_search->suggest($vs_search, array('request' => $this->request)))) {
+			if (sizeof($va_suggestions = $o_search->suggest($va_search_terms[0], array('request' => $this->request)))) {
 				$va_suggest_links = array();
 				foreach($va_suggestions as $vs_suggestion){
 					$va_suggest_links[] = caNavLink($this->request, $vs_suggestion, '', '*', '*', '*', array('search' => $vs_suggestion, 'sort' => $vs_current_sort, 'view' => $vs_current_view));

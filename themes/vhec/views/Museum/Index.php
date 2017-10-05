@@ -7,15 +7,14 @@
 	include_once(__CA_LIB_DIR__."/ca/Search/SetSearch.php");
 	#AssetLoadManager::register("cycle");
 ?>
-<div class='container'>
 <H1><?php print _t("Museum Collections"); ?></H1>
 <div class='row'>
 	<div class='col-sm-6'>
 <?php		
-		if ($va_description = $t_set->get('ca_sets.description')) {
+		if ($t_set && $va_description = $t_set->get('ca_sets.description')) {
 			print "<p>".$va_description."</p>";
 		}
-		print caNavLink($this->request, 'About the Museum Collection <i class="fa fa-chevron-right"></i>', '', '', 'Museum', 'collection'); 
+		print caNavLink($this->request, 'About the Museum Collection <i class="fa fa-chevron-right"></i>', '', '', 'Museums', 'collection'); 
 ?>
 	</div>
 	<div class='col-sm-6 spotlight'>
@@ -79,10 +78,4 @@
 
 	
 
-?>			
-
-
-
-	
-
-</div>
+?>

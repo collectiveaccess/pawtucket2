@@ -7,7 +7,6 @@
 	include_once(__CA_LIB_DIR__."/ca/Search/SetSearch.php");
 	#AssetLoadManager::register("cycle");
 ?>
-<div class='container'>
 <H1><?php print _t("Testimony"); ?></H1>
 <div class='row'>
 	<div class='col-sm-6'>
@@ -79,10 +78,4 @@
 
 	
 
-?>			
-
-
-
-	
-
-</div>
+?>

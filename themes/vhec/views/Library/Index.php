@@ -7,7 +7,6 @@
 	include_once(__CA_LIB_DIR__."/ca/Search/SetSearch.php");
 	#AssetLoadManager::register("cycle");
 ?>
-<div class='container'>
 <H1><?php print _t("Library"); ?></H1>
 <div class='row'>
 	<div class='col-sm-6'>
@@ -15,7 +14,7 @@
 		if ($va_description = $t_set->get('ca_sets.description')) {
 			print "<p>".$va_description."</p>";
 		}
-		print caNavLink($this->request, 'About the Library <i class="fa fa-chevron-right"></i>', '', '', 'Library', 'collection');  
+		print caNavLink($this->request, 'About the Library <i class="fa fa-chevron-right"></i>', '', '', 'Libraries', 'collection');  
 ?>
 	</div>
 	<div class='col-sm-6 spotlight'>
@@ -79,10 +78,4 @@
 
 	
 
-?>			
-
-
-
-	
-
-</div>
+?>

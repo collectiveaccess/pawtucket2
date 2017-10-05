@@ -37,13 +37,11 @@
 		$vs_featured_library = $this->config->get("library_set_code");
 		$vs_featured_testimony = $this->config->get("testimony_set_code");
 ?>
-<div class="container">
 	<div class="row">
 		<div class="col-sm-12">
-			<h1>Welcome to VHEC</h1>
 <?php 
 			if ($va_set_description = $t_set->get('ca_sets.description')) {
-				print "<p>".$va_set_description."</p>";
+				print "<p class='homeDesc'>".$va_set_description."</p>";
 			}
 ?>
 		</div><!--end col-sm-12-->
@@ -150,4 +148,3 @@
 ?>
 		</div>				
 	</div>
-</div> <!--end container-->

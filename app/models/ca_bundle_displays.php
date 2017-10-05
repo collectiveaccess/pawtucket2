@@ -544,7 +544,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 				$vs_bundle_name = $qr_res->get('bundle_name');
 				$va_bundle_name = explode(".", $vs_bundle_name);
 				
-				$vb_user_can_edit = $t_subject->isSaveable($t_user, $vs_bundle_name);
+				$vb_user_can_edit = $t_subject->isSaveable(caGetOption('request', $pa_options, null), $vs_bundle_name);
 				
 				$va_placements[$vn_placement_id = (int)$qr_res->get('placement_id')] = $qr_res->getRow();
 				$va_placements[$vn_placement_id]['settings'] = $va_settings = caUnserializeForDatabase($qr_res->get('settings'));
@@ -613,7 +613,7 @@ if (!$pb_omit_editing_info) {
 									}
 									if ($vs_list_code) {
 										$va_placements[$vn_placement_id]['inlineEditingType'] = DT_SELECT;
-										if (!is_array($va_list_items = $t_list->getItemsForList($vs_list_code))) {
+										if (($t_list->numItemsInList($vs_list_code) > 500) || !is_array($va_list_items = $t_list->getItemsForList($vs_list_code))) {
 											break;
 										}
 										$va_list_items = caExtractValuesByUserLocale($va_list_items);
@@ -657,7 +657,7 @@ if (!$pb_omit_editing_info) {
 												$va_placements[$vn_placement_id]['allowInlineEditing'] = $vb_user_can_edit;
 												$va_placements[$vn_placement_id]['inlineEditingType'] = DT_SELECT;
 												
-												$va_list_values = $t_list->getItemsForList($t_element->get("list_id"), array('labelsOnly' => true));
+												$va_list_values = ($t_list->numItemsInList($t_element->get("list_id")) > 500) ? [] : $t_list->getItemsForList($t_element->get("list_id"), array('labelsOnly' => true));
 												
 												$qr_list_items = caMakeSearchResult('ca_list_items', array_keys($va_list_values));
 												$va_list_item_labels = [];
@@ -2446,7 +2446,7 @@ if (!$pb_omit_editing_info) {
 		$pn_type_id = caGetOption('type_id', $pa_options, null);
 		
 		if($this->haveAccessToDisplay($pn_user_id, __CA_BUNDLE_DISPLAY_READ_ACCESS__)) {
-			$va_placements = $this->getPlacements(array('settingsOnly' => true, 'hierarchicalDelimiter' => ' ➜ ', 'user_id' => $pn_user_id));
+			$va_placements = $this->getPlacements(array('settingsOnly' => true, 'hierarchicalDelimiter' => ' ➜ ', 'user_id' => $pn_user_id, 'request' => caGetOption('request', $pa_options, null)));
 		
 			foreach($va_placements as $vn_placement_id => $va_display_item) {
 				$va_settings = caUnserializeForDatabase($va_display_item['settings']);

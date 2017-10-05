@@ -210,7 +210,7 @@
 					$vs_rights_text.= "<h8>Rights Holder</h8>";
 					$vs_rights_text.= "<div>".$vs_rights_statement."</div>";
 				}	
-				if (($vs_licensing = caNavLink($this->request, 'Licensing', '', '', 'About', 'licensing')) && (($vs_type != "Library Item"))) {
+				if (($vs_licensing = caNavLink($this->request, 'Licensing', '', '', 'About', 'use')) && (($vs_type != "Library Item"))) {
 					$vs_rights = true;
 					$vs_rights_text.= "<div class='unit'><h8>".$vs_licensing."</h8></div>";
 				}
