@@ -25,6 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
+	define("__CA_APP_TYPE__", "PAWTUCKET");
 	define("__CA_MICROTIME_START_OF_REQUEST__", microtime());
 	define("__CA_SEARCH_IS_FOR_PUBLIC_DISPLAY__", 1);
 	require("./app/helpers/errorHelpers.php");
@@ -34,7 +35,6 @@
 		exit; 
 	}
 	require_once('./setup.php');
-	if (!defined("__CA_APP_TYPE__")) { define("__CA_APP_TYPE__", "PAWTUCKET");	}
 	
 	try {
 		define("__CA_BASE_MEMORY_USAGE__", memory_get_usage(true));
