@@ -144,7 +144,7 @@
 							if ($va_related_entities = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_entities" delimiter="<br/>" excludeRelationshipTypes="author,accession,collected,creator,donor,engraver,draftsmen_surveyor,lithographer,origin,photographer"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>')) {
 								print "<div class='unit'><h6>Related Entities</h6>".$va_related_entities."</div>";
 							}
-							if ($va_related_objects = $t_object->get('ca_objects.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
+							if ($va_related_objects = $t_object->get('ca_objects.related.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'excludeRelationshipTypes' => array('appears')))) {
 								print "<div class='unit'><h6>Related Objects</h6>".$va_related_objects."</div>";
 							}
 							if ($va_related_collections = $t_object->get('ca_collections.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {

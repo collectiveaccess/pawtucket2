@@ -68,6 +68,7 @@ class ExcelDataReader extends BaseDataReader {
 	 * @return bool
 	 */
 	public function read($ps_source, $pa_options=null) {
+		parent::read($ps_source, $pa_options);
 		try {
 			$this->opo_handle = PHPExcel_IOFactory::load($ps_source);
 			$this->opo_handle->setActiveSheetIndex(caGetOption('dataset', $pa_options, 0));
@@ -112,11 +113,13 @@ class ExcelDataReader extends BaseDataReader {
 				foreach ($o_cells as $o_cell) {
 					if (PHPExcel_Shared_Date::isDateTime($o_cell)) {
 						if (!($vs_val = caGetLocalizedDate(PHPExcel_Shared_Date::ExcelToPHP(trim((string)$o_cell->getValue()))))) {
-							$vs_val = trim((string)$o_cell->getValue());
+							if (!($vs_val = trim(PHPExcel_Style_NumberFormat::toFormattedString((string)$o_cell->getValue(),'YYYY-MM-DD')))) {
+								$vs_val = trim((string)$o_cell->getValue());
+							}
 						}
 						$this->opa_row_buf[] = $vs_val;
 					} else {
-						$this->opa_row_buf[] = $vs_val = trim((string)$o_cell->getValue());
+						$this->opa_row_buf[] = $vs_val = trim((string)self::getCellAsHTML($o_cell));
 					}
 					if (strlen($vs_val) > 0) { $vb_val_was_set = true; $vn_last_col_set = $vn_col;}
 				
@@ -124,6 +127,7 @@ class ExcelDataReader extends BaseDataReader {
 				
 					if ($vn_col > 255) { break; }	// max 255 columns; some Excel files have *thousands* of "phantom" columns
 				}
+				
 				//if (!$vb_val_was_set) { 
 					//return $this->nextRow(); 
 				//	continue;
@@ -144,7 +148,7 @@ class ExcelDataReader extends BaseDataReader {
 	 */
 	public function seek($pn_row_num) {
 		$this->opn_current_row = $pn_row_num-1;
-		$this->opo_rows->seek(($pn_row_num > 0) ? ($pn_row_num - 1) : 0);
+		$this->opo_rows->seek(($pn_row_num > 0) ? $pn_row_num : 0);
 		return $this->nextRow();
 	}
 	# -------------------------------------------------------
@@ -156,6 +160,12 @@ class ExcelDataReader extends BaseDataReader {
 	 * @return mixed
 	 */
 	public function get($pn_col, $pa_options=null) {
+		if ($vm_ret = parent::get($pn_col, $pa_options)) { return $vm_ret; }
+		
+		if(!is_numeric($pn_col)) {
+			$pn_col = PHPExcel_Cell::columnIndexFromString($pn_col);
+		}
+
 		if (is_array($this->opa_row_buf) && ((int)$pn_col > 0) && ((int)$pn_col <= sizeof($this->opa_row_buf))) {
 			return $this->opa_row_buf[(int)$pn_col];
 		}
@@ -238,6 +248,39 @@ class ExcelDataReader extends BaseDataReader {
 		} catch (Exception $e) {
 			return false;
 		}
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function getCellAsHTML($po_cell) {
+		$o_value = $po_cell->getValue();
+		
+		if ($o_value instanceof PHPExcel_RichText) {
+			$va_elements = $o_value->getRichTextElements();
+			
+			$va_values = [];
+			foreach($va_elements as $o_element) {
+				$vs_prefix = $vs_suffix = '';
+				if($o_element instanceof PHPExcel_RichText_Run) {
+					$o_font = $o_element->getFont();
+					if ($o_font->getBold()) { $vs_prefix = "<b>"; $vs_suffix = "</b>"; }
+					if ($o_font->getItalic()) { $vs_prefix .= "<i>"; $vs_suffix = "</i>{$vs_suffix}"; }
+					if ($o_font->getSuperScript()) { $vs_prefix .= "<sup>"; $vs_suffix = "</sup>{$vs_suffix}"; }
+					if ($o_font->getSubScript()) { $vs_prefix .= "<sub>"; $vs_suffix = "</sub>{$vs_suffix}"; }
+					
+					// PHPExcel seems to report underline in all cases where italics are present (doh) so remove for now
+					//if ($o_font->getUnderline()) { $vs_prefix .= "<u>"; $vs_suffix = "</u>{$vs_suffix}"; }
+					if ($o_font->getStrikethrough()) { $vs_prefix .= "<strike>"; $vs_suffix = "</strike>{$vs_suffix}"; }
+					$va_values[] = $vs_prefix.$o_element->getText().$vs_suffix;
+				} elseif ($o_element instanceof PHPExcel_RichText_TextElement) {
+					$va_values[] = $o_element->getText();
+				} 
+			}
+			return join('', $va_values);
+		}
+		
+		return $o_value;
 	}
 	# -------------------------------------------------------
 }

@@ -57,7 +57,7 @@
 			$this->setRequest($po_request);
 			$this->setResponse($po_response);
 			$this->opo_config = Configuration::load();
-			$this->opo_nav_config = Configuration::load(__CA_CONF_DIR__.'/navigation.conf');
+			$this->opo_nav_config = Configuration::load($this->opo_config->get("nav_config"));
 			$this->opa_nav_config = $this->opo_nav_config->getAssoc('navigation');
 			$this->opa_widgets_config = $this->opo_nav_config->getAssoc('widgets');
 			$this->ops_controller_path = $this->opo_request->config->get('controllers_directory');
@@ -118,7 +118,7 @@
 					$va_path[] = $va_node['key'];
 				} else {
 					// no
-					$this->opa_reverse_nav_table[$vs_controller_path] = join('/', array_merge($va_path, array($va_node['key'])));
+					$this->opa_reverse_nav_table[$vs_controller_path] = join('/', array_merge(is_array($va_path) ? $va_path : array(), array($va_node['key'])));
 				}
 				if (isset($va_node['navnode']['aliased_actions'])) {
 					$vs_tmp = '/'.join('/', array($va_action_info['module'], $va_action_info['controller']));
@@ -525,7 +525,7 @@
 			$va_submenu_nav_info = $o_action_controller->{$va_info['handler']['action']}($va_info);
 		
 			if ($o_action_controller->numErrors()) {
-				$this->postError(2300, _t("Controller error: %1", join('; ', $o_action_controller->getErrors())), "AppNavigation->getDynamicNavigation()");
+				$this->postError(2300, _t("Controller error: %1", join('; ', $o_action_controller->getErrors())), "AppNavigation->getDynamicSubmenu()");
 				return false;
 			}
 			return $va_submenu_nav_info;

@@ -35,7 +35,7 @@
 						<ul class="list-inline">
 							<li><?php print caNavLink($this->request, _t("Contact Us"), "", "", "Contact", "Form"); ?></li>
 							<li>|</li>
-							<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/blog" target="_blank">Blog</a></li>
+							<li><a href="#"><?php print _t("FAQ"); ?></a></li>
 							<li>|</li>
 							<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/training" target="_blank">Training</a></li>
 							<li>|</li>

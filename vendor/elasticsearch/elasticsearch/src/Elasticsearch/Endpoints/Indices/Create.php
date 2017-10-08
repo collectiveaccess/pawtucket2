@@ -1,29 +1,23 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints\Indices;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
+use Elasticsearch\Endpoints\AbstractEndpoint;
 
 /**
  * Class Create
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Indices
+ * @package  Elasticsearch\Endpoints\Indices
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Create extends AbstractEndpoint
 {
     /**
-     * @param array $body
+     * @param array|object $body
      *
      * @throws \Elasticsearch\Common\Exceptions\InvalidArgumentException
      * @return $this
@@ -34,12 +28,10 @@ class Create extends AbstractEndpoint
             return $this;
         }
 
-
         $this->body = $body;
+
         return $this;
     }
-
-
 
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
@@ -53,7 +45,7 @@ class Create extends AbstractEndpoint
             );
         }
         $index = $this->index;
-        $uri   = "/$index";
+        $uri = "/$index";
 
         if (isset($index) === true) {
             $uri = "/$index";
@@ -62,28 +54,28 @@ class Create extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'timeout',
             'master_timeout',
-        );
+            'update_all_types',
+        ];
     }
-
 
     /**
      * @return string
      */
     protected function getMethod()
     {
-        if (isset($this->body['mappings']) === true) {
+        if (is_array($this->body) && isset($this->body['mappings']) === true) {
             return 'POST';
-        } else {
-            return 'PUT';
+        } elseif (is_object($this->body) && isset($this->body->mappings) === true) {
+            return 'POST';
         }
+        return 'PUT';
     }
 }

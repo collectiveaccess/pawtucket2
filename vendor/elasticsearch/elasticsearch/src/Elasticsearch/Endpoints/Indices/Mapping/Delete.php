@@ -1,25 +1,19 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints\Indices\Mapping;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
+use Elasticsearch\Endpoints\AbstractEndpoint;
 
 /**
  * Class Delete
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Indices\Mapping
+ * @package  Elasticsearch\Endpoints\Indices\Mapping
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Delete extends AbstractEndpoint
 {
     /**
@@ -40,7 +34,7 @@ class Delete extends AbstractEndpoint
         }
         $index = $this->index;
         $type = $this->type;
-        $uri   = "/$index/$type/_mapping";
+        $uri = "/$index/$type/_mapping";
 
         if (isset($index) === true && isset($type) === true) {
             $uri = "/$index/$type/_mapping";
@@ -49,17 +43,15 @@ class Delete extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'master_timeout',
-        );
+        ];
     }
-
 
     /**
      * @return string

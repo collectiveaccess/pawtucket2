@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2015 Whirl-i-Gig
+ * Copyright 2011-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -236,8 +236,7 @@ class InformationServiceAttributeValue extends AttributeValue implements IAttrib
 					'value_decimal1' => $va_tmp[1], 		// id
 					'value_blob' => caSerializeForDatabase($va_info)
 				);
-			} elseif(sizeof($va_tmp)==1 && (isURL($va_tmp[0]) || is_numeric($va_tmp[0]))) { // URI or ID -> try to look it up. we match hit when exactly 1 hit comes back
-
+			} elseif((sizeof($va_tmp)==1) && (isURL($va_tmp[0], array('strict' => true)) || is_numeric($va_tmp[0]))) { // URI or ID -> try to look it up. we match hit when exactly 1 hit comes back
 				// try lookup cache
 				if(CompositeCache::contains($va_tmp[0], "InformationServiceLookup{$vs_service}")) {
 					return CompositeCache::fetch($va_tmp[0], "InformationServiceLookup{$vs_service}");
@@ -262,12 +261,8 @@ class InformationServiceAttributeValue extends AttributeValue implements IAttrib
 						'value_blob' => caSerializeForDatabase($va_info)
 					);
 				} else {
-					$va_return = array(
-						'value_longtext1' => '',	// text
-						'value_longtext2' => '',	// url
-						'value_decimal1' => null,	// id
-						'value_blob' => null		// extra info
-					);
+					$this->postError(1970, _t('Value for InformationService lookup has to be an ID or URL that returns exactly 1 hit. We got more or no hits. Value was %1', $ps_value), 'ListAttributeValue->parseValue()');
+					return false;
 				}
 
 				CompositeCache::save($va_tmp[0], $va_return, "InformationServiceLookup{$vs_service}");
@@ -299,7 +294,8 @@ class InformationServiceAttributeValue extends AttributeValue implements IAttrib
 	 */
 	public function htmlFormElement($pa_element_info, $pa_options=null) {
 		$va_settings = $this->getSettingValuesFromElementArray($pa_element_info, array('fieldWidth', 'fieldHeight'));
-		$vs_class = trim((isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : 'lookupBg');
+		$ps_class = caGetOption('class', $pa_options, 'lookupBg');
+		$pb_for_search = caGetOption('forSearch', $pa_options, false);
 
 		$vs_element = '<div id="infoservice_'.$pa_element_info['element_id'].'_input{n}">'.
 			caHTMLTextInput(
@@ -310,7 +306,7 @@ class InformationServiceAttributeValue extends AttributeValue implements IAttrib
 					'value' => '{{'.$pa_element_info['element_id'].'}}',
 					'maxlength' => 512,
 					'id' => "infoservice_".$pa_element_info['element_id']."_autocomplete{n}",
-					'class' => $vs_class
+					'class' => $ps_class
 				)
 			).
 			caHTMLHiddenInput(
@@ -330,8 +326,10 @@ class InformationServiceAttributeValue extends AttributeValue implements IAttrib
 			$vs_detail_url = '/index.php/lookup/InformationService/GetDetail';
 		}
 
-		$vs_element .= " <a href='#' class='caInformationServiceMoreLink' id='{fieldNamePrefix}".$pa_element_info['element_id']."_link{n}'>"._t("More &rsaquo;")."</a>";
-		$vs_element .= "<div id='{fieldNamePrefix}".$pa_element_info['element_id']."_detail{n}' class='caInformationServiceDetail'>".($pa_options['request'] ? caBusyIndicatorIcon($pa_options['request']) : '')."</div></div>";
+		if (!$pb_for_search) {
+			$vs_element .= " <a href='#' class='caInformationServiceMoreLink' id='{fieldNamePrefix}".$pa_element_info['element_id']."_link{n}'>"._t("More &rsaquo;")."</a>";
+			$vs_element .= "<div id='{fieldNamePrefix}".$pa_element_info['element_id']."_detail{n}' class='caInformationServiceDetail'>".($pa_options['request'] ? caBusyIndicatorIcon($pa_options['request']) : '')."</div></div>";
+		}
 		$vs_element .= "
 				<script type='text/javascript'>
 					jQuery(document).ready(function() {
@@ -340,14 +338,16 @@ class InformationServiceAttributeValue extends AttributeValue implements IAttrib
 								minLength: 3,delay: 800,
 								source: '{$vs_url}',
 								html: true,
-								select: function(event, ui) {
-									jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').val(ui.item.label + '|' + ui.item.idno + '|' + ui.item.url);
-									
+								select: function(event, ui) {".((!$pb_for_search) ? "
+									jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').val(ui.item.label + '|' + ui.item.idno + '|' + ui.item.url);" : 
+									"jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').val(ui.item.label);"
+								)."
 								}
 							}
 						).click(function() { this.select(); });
-						
-						if ('{{".$pa_element_info['element_id']."}}') {
+				";
+		if (!$pb_for_search) {
+			$vs_element .= "					if ('{{".$pa_element_info['element_id']."}}') {
 							jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_link{n}').css('display', 'inline').on('click', function(e) {
 								if (jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_detail{n}').css('display') == 'none') {
 									jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_detail{n}').slideToggle(250, function() {
@@ -361,9 +361,11 @@ class InformationServiceAttributeValue extends AttributeValue implements IAttrib
 								return false;
 							});
 						}
-					});
-				</script>
 			";
+		}
+		$vs_element .= "
+					});
+					</script>";
 
 		return $vs_element;
 	}
@@ -374,8 +376,10 @@ class InformationServiceAttributeValue extends AttributeValue implements IAttrib
 	 */
 	public function getAvailableSettings($pa_element_info=null) {
 		global $_ca_attribute_settings;
-
-		$vs_service = isset($pa_element_info['service']) ? $pa_element_info['service'] : null;
+		if (!($vs_service = isset($pa_element_info['settings']['service']) ? $pa_element_info['settings']['service'] : null)) {
+			$vs_service = isset($pa_element_info['service']) ? $pa_element_info['service'] : null;
+		}
+		
 		$va_names = InformationServiceManager::getInformationServiceNames();
 		if (!in_array($vs_service, $va_names)) {
 			$vs_service = $va_names[0];

@@ -1,22 +1,21 @@
 <?php
-/**
- * User: zach
- * Date: 05/31/2013
- * Time: 16:47:11 pm
- */
 
 namespace Elasticsearch\Endpoints\Indices\Validate;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
+use Elasticsearch\Endpoints\AbstractEndpoint;
 
 /**
  * Class Query
- * @package Elasticsearch\Endpoints\Indices\Validate
+ *
+ * @category Elasticsearch
+ * @package  Elasticsearch\Endpoints\Indices\Validate
+ * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
+ * @link     http://elasticsearch.org
  */
 class Query extends AbstractEndpoint
 {
-
     /**
      * @param array $body
      *
@@ -29,8 +28,8 @@ class Query extends AbstractEndpoint
             return $this;
         }
 
-
         $this->body = $body;
+
         return $this;
     }
 
@@ -47,13 +46,23 @@ class Query extends AbstractEndpoint
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'explain',
+            'ignore_unavailable',
             'ignore_indices',
+            'allow_no_indices',
+            'expand_wildcards',
             'operation_threading',
             'source',
-            'q'
-        );
+            'q',
+            'analyzer',
+            'analyze_wildcard',
+            'default_operator',
+            'df',
+            'lenient',
+            'lowercase_expanded_terms',
+            'rewrite',
+        ];
     }
 
     /**

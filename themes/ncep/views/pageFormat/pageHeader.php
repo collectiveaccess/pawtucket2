@@ -41,6 +41,9 @@
 		if(caDisplayClassroom($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
 		}
+		if($this->request->user->hasUserRole("author")){
+			$va_user_links[] = "<li>".caNavLink($this->request, _t('Author Dashboard'), '', '', 'Author', 'Index', array())."</li>";
+		}
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
@@ -130,12 +133,19 @@
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
-<?php
-						print $this->render("pageFormat/browseMenu.php");
-?>
+					<li class="dropdown"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Module Collection"); ?></a>
+						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, _t("Browse All Modules"), "", "", "Browse", "objects"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Browse Network Picks"), "", "", "Gallery", "Index"); ?></li>
+						</ul>
 					<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/publications/lessons-in-conservation"><?php print _t("Our Journal"); ?></a></li>
 					<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/training"><?php print _t("Training & Events"); ?></a></li>
-					<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep"><?php print _t("About NCEP"); ?></a></li>
+					<li class="dropdown"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About NCEP"); ?></a>
+						<ul class="dropdown-menu">
+							<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep"><?php print _t("NCEP Home"); ?></a></li>
+							<li><a href="http://www.amnh.org/our-research/center-for-biodiversity-conservation/capacity-development/network-of-conservation-educators-and-practitioners-ncep/faq"><?php print _t("FAQ"); ?></a></li>
+						</ul>
+					</li>
 <?php
 	if ($vb_has_user_links) {
 ?>

@@ -1,28 +1,21 @@
 <?php
-/**
- * User: zach
- * Date: 7/23/14
- * Time: 2:25 PM
- */
 
 namespace Elasticsearch\Endpoints\Template;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
+use Elasticsearch\Endpoints\AbstractEndpoint;
 
 /**
  * Class Get
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Template
+ * @package  Elasticsearch\Endpoints\Template
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Get extends AbstractEndpoint
 {
-
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
      * @return string
@@ -35,20 +28,21 @@ class Get extends AbstractEndpoint
             );
         }
         $templateId = $this->id;
-        $uri  = "/_search/template/$templateId";
+        $uri = "/_search/template/$templateId";
 
         return $uri;
     }
-
 
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array();
+        return [
+            'version',
+            'version_type',
+        ];
     }
-
 
     /**
      * @return string

@@ -1,30 +1,18 @@
 <?php
-/**
- * User: zach
- * Date: 4/29/14
- * Time: 12:44 PM
- */
 
 namespace Elasticsearch\Endpoints;
-
-use Elasticsearch\Common\Exceptions\InvalidArgumentException;
-use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Search
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints
+ * @package  Elasticsearch\Endpoints
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class SearchShards extends AbstractEndpoint
 {
-
-
     /**
      * @return string
      */
@@ -32,7 +20,7 @@ class SearchShards extends AbstractEndpoint
     {
         $index = $this->index;
         $type = $this->type;
-        $uri   = "/_search_shards";
+        $uri = "/_search_shards";
 
         if (isset($index) === true && isset($type) === true) {
             $uri = "/$index/$type/_search_shards";
@@ -45,22 +33,20 @@ class SearchShards extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'preference',
             'routing',
             'local',
             'ignore_unavailable',
             'allow_no_indices',
-            'expand_wildcards'
-        );
+            'expand_wildcards',
+        ];
     }
-
 
     /**
      * @return string

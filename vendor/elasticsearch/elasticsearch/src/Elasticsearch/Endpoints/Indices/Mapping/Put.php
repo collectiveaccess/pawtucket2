@@ -1,25 +1,19 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints\Indices\Mapping;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
+use Elasticsearch\Endpoints\AbstractEndpoint;
 
 /**
  * Class Put
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Indices\Mapping
+ * @package  Elasticsearch\Endpoints\Indices\Mapping
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Put extends AbstractEndpoint
 {
     /**
@@ -34,12 +28,10 @@ class Put extends AbstractEndpoint
             return $this;
         }
 
-
         $this->body = $body;
+
         return $this;
     }
-
-
 
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
@@ -54,7 +46,7 @@ class Put extends AbstractEndpoint
         }
         $index = $this->index;
         $type = $this->type;
-        $uri   = "/_mapping/$type";
+        $uri = "/_mapping/$type";
 
         if (isset($index) === true && isset($type) === true) {
             $uri = "/$index/$type/_mapping";
@@ -65,22 +57,21 @@ class Put extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
-            'ignore_conflicts',
+        return [
             'timeout',
             'master_timeout',
+            'ignore_conflicts',
             'ignore_unavailable',
             'allow_no_indices',
             'expand_wildcards',
-        );
+            'update_all_types',
+        ];
     }
-
 
     /**
      * @return array
@@ -91,9 +82,9 @@ class Put extends AbstractEndpoint
         if (isset($this->body) !== true) {
             throw new Exceptions\RuntimeException('Body is required for Put Mapping');
         }
+
         return $this->body;
     }
-
 
     /**
      * @return string

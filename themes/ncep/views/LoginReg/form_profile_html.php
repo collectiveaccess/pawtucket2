@@ -20,7 +20,13 @@
 	}
 ?>
 	<form id="ProfileForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "profileSave"); ?>" class="form-horizontal" role="form" method="POST">
+        <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 <?php
+		if($t_user->getPreference("user_profile_classroom_role") == "STUDENT"){
+			print "<div class='row'><div class='col-sm-8 col-sm-offset-4'><b>You are registered as a student.</b>  You will not be able to download some materials geared towards educators.  If you are an educator please contact <a href='mailto:ncep@amnh.org'>ncep@amnh.org</a> to have your account status changed.<br/><br/></div></div>";
+		}else{
+			print "<div class='row'><div class='col-sm-8 col-sm-offset-4'><b>You are registered as an educator.</b>  As such you have full access to download all materials on this site.<br/><br/></div></div>";
+		}
 		foreach(array("fname", "lname", "email") as $vs_field){
 			if($va_errors[$vs_field]){
 				print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";

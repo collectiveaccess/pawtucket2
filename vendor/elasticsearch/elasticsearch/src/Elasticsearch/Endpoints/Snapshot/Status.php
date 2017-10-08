@@ -1,25 +1,19 @@
 <?php
-/**
- * User: zach
- * Date: 5/7/14
- * Time: 12:04 PM
- */
 
 namespace Elasticsearch\Endpoints\Snapshot;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
+use Elasticsearch\Endpoints\AbstractEndpoint;
 
 /**
  * Class Status
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Snapshot
+ * @package  Elasticsearch\Endpoints\Snapshot
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Status extends AbstractEndpoint
 {
     // A comma-separated list of repository names
@@ -27,7 +21,6 @@ class Status extends AbstractEndpoint
 
     // A comma-separated list of snapshot names
     private $snapshot;
-
 
     /**
      * @param $repository
@@ -41,9 +34,9 @@ class Status extends AbstractEndpoint
         }
 
         $this->repository = $repository;
+
         return $this;
     }
-
 
     /**
      * @param $snapshot
@@ -57,9 +50,9 @@ class Status extends AbstractEndpoint
         }
 
         $this->snapshot = $snapshot;
+
         return $this;
     }
-
 
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
@@ -74,8 +67,8 @@ class Status extends AbstractEndpoint
         }
 
         $repository = $this->repository;
-        $snapshot   = $this->snapshot;
-        $uri        = "/_snapshot/_status";
+        $snapshot = $this->snapshot;
+        $uri = "/_snapshot/_status";
 
         if (isset($repository) === true) {
             $uri = "/_snapshot/$repository/_status";
@@ -86,17 +79,15 @@ class Status extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'master_timeout',
-        );
+        ];
     }
-
 
     /**
      * @return string

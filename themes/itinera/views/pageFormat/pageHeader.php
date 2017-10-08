@@ -77,10 +77,6 @@
 		<div class="container">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
-				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
-					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
-				</button>
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
 					<span class="sr-only">Toggle navigation</span>
 					<span class="icon-bar"></span>
@@ -102,16 +98,6 @@
 				</ul>
 			</div>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
-				<ul class="nav navbar-nav navbar-right" id="user-navbar">
-					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
-						<ul class="dropdown-menu">
-<?php
-							print $vs_user_links;
-?>
-						</ul>
-					</li>
-				</ul>
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
@@ -126,7 +112,11 @@
 ?>	
 					<li <?php print ($this->request->getController() == "Travelers") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Travelers"), "", "", "Travelers", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Routes") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Routes"), "", "", "Routes", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+					<li <?php print ($this->request->getController() == "Chronology") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Chronology"), "", "", "Chronology", "Index"); ?></li>
+					<li><a href="https://sites.haa.pitt.edu/itineraguide/">Help</a></li>
+					
+					
+				<!--	<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?> --> </li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

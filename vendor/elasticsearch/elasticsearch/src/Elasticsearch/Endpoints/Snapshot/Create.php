@@ -1,34 +1,26 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints\Snapshot;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
+use Elasticsearch\Endpoints\AbstractEndpoint;
 
 /**
  * Class Create
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Snapshot
+ * @package  Elasticsearch\Endpoints\Snapshot
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Create extends AbstractEndpoint
 {
     // A repository name
     private $repository;
 
-
     // A snapshot name
     private $snapshot;
-
 
     /**
      * @param array $body
@@ -42,12 +34,10 @@ class Create extends AbstractEndpoint
             return $this;
         }
 
-
         $this->body = $body;
+
         return $this;
     }
-
-
 
     /**
      * @param $repository
@@ -61,9 +51,9 @@ class Create extends AbstractEndpoint
         }
 
         $this->repository = $repository;
+
         return $this;
     }
-
 
     /**
      * @param $snapshot
@@ -77,9 +67,9 @@ class Create extends AbstractEndpoint
         }
 
         $this->snapshot = $snapshot;
+
         return $this;
     }
-
 
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
@@ -99,7 +89,7 @@ class Create extends AbstractEndpoint
         }
         $repository = $this->repository;
         $snapshot = $this->snapshot;
-        $uri   = "/_snapshot/$repository/$snapshot";
+        $uri = "/_snapshot/$repository/$snapshot";
 
         if (isset($repository) === true && isset($snapshot) === true) {
             $uri = "/_snapshot/$repository/$snapshot";
@@ -108,18 +98,16 @@ class Create extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'master_timeout',
             'wait_for_completion',
-        );
+        ];
     }
-
 
     /**
      * @return string

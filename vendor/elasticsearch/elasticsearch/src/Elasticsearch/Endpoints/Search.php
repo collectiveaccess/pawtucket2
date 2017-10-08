@@ -1,26 +1,18 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints;
 
-use Elasticsearch\Common\Exceptions\InvalidArgumentException;
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Search
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints
+ * @package  Elasticsearch\Endpoints
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Search extends AbstractEndpoint
 {
     /**
@@ -36,10 +28,9 @@ class Search extends AbstractEndpoint
         }
 
         $this->body = $body;
+
         return $this;
     }
-
-
 
     /**
      * @return string
@@ -48,7 +39,7 @@ class Search extends AbstractEndpoint
     {
         $index = $this->index;
         $type = $this->type;
-        $uri   = "/_search";
+        $uri = "/_search";
 
         if (isset($index) === true && isset($type) === true) {
             $uri = "/$index/$type/_search";
@@ -61,19 +52,20 @@ class Search extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'analyzer',
             'analyze_wildcard',
             'default_operator',
             'df',
             'explain',
             'fields',
+            'fielddata_fields',
+            'filter_path',
             'from',
             'ignore_unavailable',
             'allow_no_indices',
@@ -83,6 +75,8 @@ class Search extends AbstractEndpoint
             'lowercase_expanded_terms',
             'preference',
             'q',
+            'query_cache',
+            'request_cache',
             'routing',
             'scroll',
             'search_type',
@@ -92,16 +86,18 @@ class Search extends AbstractEndpoint
             '_source',
             '_source_exclude',
             '_source_include',
+            'terminate_after',
             'stats',
             'suggest_field',
             'suggest_mode',
             'suggest_size',
             'suggest_text',
             'timeout',
+            'track_scores',
             'version',
-        );
+            'request_cache',
+        ];
     }
-
 
     /**
      * @return string

@@ -1,14 +1,9 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints\Indices\Template;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
+use Elasticsearch\Endpoints\AbstractEndpoint;
 
 /**
  * Class Delete
@@ -19,12 +14,10 @@ use Elasticsearch\Common\Exceptions;
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Delete extends AbstractEndpoint
 {
     // The name of the template
     private $name;
-
 
     /**
      * @param $name
@@ -38,9 +31,9 @@ class Delete extends AbstractEndpoint
         }
 
         $this->name = $name;
+
         return $this;
     }
-
 
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
@@ -54,7 +47,7 @@ class Delete extends AbstractEndpoint
             );
         }
         $name = $this->name;
-        $uri   = "/_template/$name";
+        $uri = "/_template/$name";
 
         if (isset($name) === true) {
             $uri = "/_template/$name";
@@ -63,18 +56,16 @@ class Delete extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'timeout',
             'master_timeout',
-        );
+        ];
     }
-
 
     /**
      * @return string

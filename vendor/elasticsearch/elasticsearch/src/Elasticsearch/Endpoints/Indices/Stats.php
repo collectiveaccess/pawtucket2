@@ -1,30 +1,22 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints\Indices;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Stats
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Indices
+ * @package  Elasticsearch\Endpoints\Indices
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Stats extends AbstractEndpoint
 {
     // Limit the information returned the specific metrics.
     private $metric;
-
 
     /**
      * @param $metric
@@ -42,9 +34,9 @@ class Stats extends AbstractEndpoint
         }
 
         $this->metric = $metric;
+
         return $this;
     }
-
 
     /**
      * @return string
@@ -53,7 +45,7 @@ class Stats extends AbstractEndpoint
     {
         $index = $this->index;
         $metric = $this->metric;
-        $uri   = "/_stats";
+        $uri = "/_stats";
 
         if (isset($index) === true && isset($metric) === true) {
             $uri = "/$index/_stats/$metric";
@@ -66,13 +58,12 @@ class Stats extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'completion_fields',
             'fielddata_fields',
             'fields',
@@ -80,10 +71,9 @@ class Stats extends AbstractEndpoint
             'human',
             'level',
             'types',
-            'metric'
-        );
+            'metric',
+        ];
     }
-
 
     /**
      * @return string

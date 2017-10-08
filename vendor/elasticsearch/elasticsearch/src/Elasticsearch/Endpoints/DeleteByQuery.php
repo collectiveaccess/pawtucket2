@@ -1,25 +1,18 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Deletebyquery
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints
+ * @package  Elasticsearch\Endpoints
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class DeleteByQuery extends AbstractEndpoint
 {
     /**
@@ -34,12 +27,10 @@ class DeleteByQuery extends AbstractEndpoint
             return $this;
         }
 
-
         $this->body = $body;
+
         return $this;
     }
-
-
 
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
@@ -49,12 +40,12 @@ class DeleteByQuery extends AbstractEndpoint
     {
         if (isset($this->index) !== true) {
             throw new Exceptions\RuntimeException(
-                'index is required for Deletebyquery'
+                'index is required for DeleteByQuery'
             );
         }
         $index = $this->index;
         $type = $this->type;
-        $uri   = "/$index/_query";
+        $uri = "/$index/_query";
 
         if (isset($index) === true && isset($type) === true) {
             $uri = "/$index/$type/_query";
@@ -65,28 +56,27 @@ class DeleteByQuery extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
-            'analyzer',
+        return [
+            'q',
             'consistency',
-            'default_operator',
-            'df',
             'ignore_unavailable',
             'allow_no_indices',
             'expand_wildcards',
             'replication',
-            'q',
-            'routing',
+            'size',
             'source',
             'timeout',
-        );
+            'routing',
+            'df',
+            'analyzer',
+            'default_operator',
+        ];
     }
-
 
     /**
      * @return string

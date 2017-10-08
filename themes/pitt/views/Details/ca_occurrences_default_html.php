@@ -19,7 +19,7 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
-				<div class='col-md-6 col-lg-6'>
+				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_occurrences.exh_dates"><h6>Exhibition Dates</h6>^ca_occurrences.exh_dates</ifdef>}}}
 					{{{<ifdef code="ca_occurrences.exh_location"><h6>Exhibition Location</h6>^ca_occurrences.exh_location</ifdef>}}}
 					{{{<ifdef code="ca_occurrences.description"><h6>Description</h6>^ca_occurrences.description</ifdef>}}}
@@ -41,8 +41,8 @@
 					</div><!-- end detailTools -->
 					
 				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6'>
-
+				<div class='col-sm-6 col-md-6 col-lg-6'>
+					{{{representationViewer}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">

@@ -25,6 +25,8 @@
  *
  * ----------------------------------------------------------------------
  */
+	$vs_centro_url = "https://centropr.hunter.cuny.edu";
+	
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
 	$va_classroomDisplayName = caGetClassroomDisplayName();
@@ -78,16 +80,14 @@
 	<link href='https://fonts.googleapis.com/css?family=Rokkitt' rel='stylesheet' type='text/css'>
 </head>
 <body>
-	<header id="navbar" role="banner" class="navbar container navbar-default bg-white no-border">
-		<div class="navbar-header">
-			<a class="logo navbar-btn pull-left" href="/igicom4_1/" title="Home">
-				<?php print caGetThemeGraphic($this->request, 'Centro_logo_small.png'); ?>
-			</a>
-		</div>
-		<p class="pull-right"><small>Understanding, Preserving, Sharing<br/>the Puerto Rican Experience</small></p>
-		<br/><br/><br/>
-		<i class="icon glyphicon glyphicon-search pull-right" aria-hidden="true" data-toggle="modal" data-target="#myModal"></i>
-	</header>
+	<div class="bg-white">
+		<header id="navbar" role="banner" class="navbar container navbar-default bg-white no-border">			
+			<div class="logo navbar-btn pull-left">
+				<a href="<?php print $vs_centro_url; ?>" title="Home"><?php print caGetThemeGraphic($this->request, 'Centro_logo_1.png'); ?></a>
+			</div>
+			<div class="headerSubTitle">Understanding, Preserving, Sharing the Puerto Rican Experience</div>
+		</header>
+	</div>
 	<nav class="navbar bg-dk-gray navHunter" role="navigation">
 		<div class="container bg-dk-gray">
 			<div class="navbar-header">
@@ -113,12 +113,13 @@
 				</button>
 			</div>
 
-			<div class="collapse navbar-collapse bg-dk-gray" id="bs-main-navbar-collapse-2">
+			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-2">
 				<ul class="nav navbar-nav">
-					<li><a href="#">Events & Culture</a></li>
-					<li><a href="#">Collections</a></li>
-					<li><a href="#">Library and Publications</a></li>
-					<li><a href="#">Research & Education</a></li>
+					<li><a href="<?php print $vs_centro_url; ?>/about">About Centro</a></li>
+					<li><a href="<?php print $vs_centro_url; ?>/events-news">Events & News</a></li>
+					<li><a href="<?php print $vs_centro_url; ?>/collections">Collections</a></li>
+					<li><a href="<?php print $vs_centro_url; ?>/library-publications">Library & Publications</a></li>
+					<li><a href="<?php print $vs_centro_url; ?>/research-education">Research & Education</a></li>
 				</ul>			
 			</div>
 		</div>
@@ -163,8 +164,8 @@
 					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "Front", "Index"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
+					<!--<li <?php print ($this->request->getAction() == "usetakedown") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Use and Takedown"), "", "", "About", "usetakedown"); ?></li>-->
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Ask an Archivist"), "", "", "Contact", "Form"); ?></li>
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Copyright"), "", "", "About", "copyright"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

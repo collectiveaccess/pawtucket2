@@ -1,30 +1,23 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints\Indices\Field;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
+use Elasticsearch\Endpoints\AbstractEndpoint;
 
 /**
  * Class Get
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Indices\Field
+ * @package  Elasticsearch\Endpoints\Indices\Field
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Get extends AbstractEndpoint
 {
     // A comma-separated list of fields
     private $field;
-
 
     /**
      * @param $field
@@ -38,9 +31,9 @@ class Get extends AbstractEndpoint
         }
 
         $this->field = $field;
+
         return $this;
     }
-
 
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
@@ -56,7 +49,7 @@ class Get extends AbstractEndpoint
         $index = $this->index;
         $type = $this->type;
         $field = $this->field;
-        $uri   = "/_mapping/field/$field";
+        $uri = "/_mapping/field/$field";
 
         if (isset($index) === true && isset($type) === true && isset($field) === true) {
             $uri = "/$index/_mapping/$type/field/$field";
@@ -71,21 +64,19 @@ class Get extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'include_defaults',
             'ignore_unavailable',
             'allow_no_indices',
             'expand_wildcards',
             'local',
-        );
+        ];
     }
-
 
     /**
      * @return string

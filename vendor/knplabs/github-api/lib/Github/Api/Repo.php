@@ -12,6 +12,7 @@ use Github\Api\Repository\Releases;
 use Github\Api\Repository\Forks;
 use Github\Api\Repository\Hooks;
 use Github\Api\Repository\Labels;
+use Github\Api\Repository\Stargazers;
 use Github\Api\Repository\Statuses;
 
 /**
@@ -37,6 +38,24 @@ class Repo extends AbstractApi
     public function find($keyword, array $params = array())
     {
         return $this->get('legacy/repos/search/'.rawurlencode($keyword), array_merge(array('start_page' => 1), $params));
+    }
+
+    /**
+     * List all public repositories.
+     *
+     * @link https://developer.github.com/v3/repos/#list-all-public-repositories
+     *
+     * @param int|null $id The integer ID of the last Repository that you’ve seen.
+     *
+     * @return array list of users found
+     */
+    public function all($id = null)
+    {
+        if (!is_int($id)) {
+            return $this->get('repositories');
+        }
+
+        return $this->get('repositories?since=' . rawurldecode($id));
     }
 
     /**
@@ -92,7 +111,7 @@ class Repo extends AbstractApi
      * @param string $username   the user who owns the repository
      * @param string $repository the name of the repository
      *
-     * @return array informations about the repository
+     * @return array information about the repository
      */
     public function show($username, $repository)
     {
@@ -158,7 +177,7 @@ class Repo extends AbstractApi
      * @param string $repository the name of the repository
      * @param array  $values     the key => value pairs to post
      *
-     * @return array informations about the repository
+     * @return array information about the repository
      */
     public function update($username, $repository, array $values)
     {
@@ -289,6 +308,18 @@ class Repo extends AbstractApi
     public function forks()
     {
         return new Forks($this->client);
+    }
+
+    /**
+     * Manage the stargazers of a repository.
+     *
+     * @link https://developer.github.com/v3/activity/starring/#list-stargazers
+     *
+     * @return Stargazers
+     */
+    public function stargazers()
+    {
+        return new Stargazers($this->client);
     }
 
     /**
@@ -457,10 +488,25 @@ class Repo extends AbstractApi
      */
     public function merge($username, $repository, $base, $head, $message = null)
     {
-        return $this->post('repos/'.rawurlencode($username).'/'.rawurlencode($repository).'/merges', array(
-            'base'           => $base,
-            'head'           => $head,
-            'commit_message' => $message
-        ));
+        $parameters = array(
+            'base' => $base,
+            'head' => $head,
+        );
+
+        if (is_string($message)) {
+            $parameters['commit_message'] = $message;
+        }
+
+        return $this->post('repos/'.rawurlencode($username).'/'.rawurlencode($repository).'/merges', $parameters);
+    }
+
+    /**
+     * @param string $username
+     * @param string $repository
+     * @return array
+     */
+    public function milestones($username, $repository)
+    {
+        return $this->get('repos/'.rawurldecode($username).'/'.rawurldecode($repository).'/milestones');
     }
 }

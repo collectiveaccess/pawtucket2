@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2014 Whirl-i-Gig
+ * Copyright 2008-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -110,6 +110,7 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 		),
 		"TRANSFORMATIONS" => array(
 			"SCALE" 			=> array("width", "height", "mode", "antialiasing", "trim_edges", "crop_from"),
+			'CROP' 				=> array('width', 'height', 'x', 'y'),
 			"ANNOTATE"			=> array("text", "font", "size", "color", "position", "inset"),
 			"WATERMARK"			=> array("image", "width", "height", "position", "opacity"),
 			"ROTATE" 			=> array("angle"),
@@ -120,6 +121,7 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 			"DESPECKLE"			=> array(""),
 			"SHARPEN"			=> array("radius", "sigma"),
 			"UNSHARPEN_MASK"	=> array("radius", "sigma", "amount", "threshold"),
+			'FLIP'				=> array('direction')
 		),
 		"PROPERTIES" => array(
 			"width" 			=> 'R',
@@ -129,6 +131,7 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 			'tiles'				=> 'R',
 			'layers'			=> 'W',
 			"quality" 			=> 'W',
+			'colorspace'		=> 'W',
 			'tile_width'		=> 'W',
 			'tile_height'		=> 'W',
 			'antialiasing'		=> 'W',
@@ -227,12 +230,6 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 		$this->ops_imagemagick_path = $this->opo_external_app_config->get('imagemagick_path');
 		$this->ops_graphicsmagick_path = $this->opo_external_app_config->get('graphicsmagick_app');
 		
-		$this->ops_CoreImage_path = $this->opo_external_app_config->get('coreimagetool_app');
-		
-		if (caMediaPluginCoreImageInstalled($this->ops_CoreImage_path)) {
-			return null;	// don't use if CoreImage executable are available
-		}
-		
 		if (caMediaPluginImagickInstalled()) {	
 			return null;	// don't use if Imagick is available
 		} 
@@ -258,10 +255,6 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 		if ($this->register()) {
 			$va_status['available'] = true;
 		} else {
-			if (caMediaPluginCoreImageInstalled($this->ops_CoreImage_path)) {
-				$va_status['unused'] = true;
-				$va_status['warnings'][] = _t("Didn't load because CoreImageTool is available and preferred");
-			}
 			if (caMediaPluginGraphicsMagickInstalled($this->ops_graphicsmagick_path)) {
 				$va_status['unused'] = true;
 				$va_status['warnings'][] = _t("Didn't load because GraphicsMagick is available and preferred");
@@ -767,6 +760,36 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 				'radius' => $radius,
 				'sigma' => $sigma
 			);
+			break;		
+		# -----------------------
+		case "CROP":
+			$x = $parameters["x"];
+			$y = $parameters["y"];
+			$w = $parameters["width"];
+			$h = $parameters["height"];
+			
+			$this->handle['ops'][] = array(
+				'op' => 'crop',
+				'x' => $x,
+				'y' => $x,
+				'width' => $w,
+				'height' => $h
+			);
+			break;
+		# -----------------------
+		case "FLIP":
+			$dir = strtolower($parameters["direction"]);
+			
+			if ($dir == 'vertical') {
+				$this->handle['ops'][] = array(
+					'op' => 'flip'
+				);
+			} else {
+				$this->handle['ops'][] = array(
+					'op' => 'flop'
+				);
+			}
+			
 			break;
 		# -----------------------
 		case "UNSHARPEN_MASK":
@@ -867,7 +890,7 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 		}
 
 		$va_output = array();
-		exec($this->ops_imagemagick_path.'/identify -format "%m\n" '.caEscapeShellArg($this->filepath)." 2> /dev/null", $va_output, $vn_return);
+		exec($this->ops_imagemagick_path.'/identify -format "%m\n" '.caEscapeShellArg($this->filepath).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
 		
 		// don't extract previews from "normal" images (the output line count is always # of files + 1)
 		if(sizeof($va_output)<=2) { return false; } 
@@ -875,7 +898,7 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 		$vs_output_file_prefix = tempnam($vs_tmp_dir, 'caMultipagePreview');
 		$vs_output_file = $vs_output_file_prefix.'_%05d.jpg';
 
-		exec($this->ops_imagemagick_path.'/convert '.caEscapeShellArg($this->filepath)." ".$vs_output_file." 2> /dev/null", $va_output, $vn_return);
+		exec($this->ops_imagemagick_path.'/convert '.caEscapeShellArg($this->filepath)." ".$vs_output_file.(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
 
 		$vn_i = 0;
 		$va_files = array();
@@ -908,7 +931,7 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 		}
 
 		if(sizeof($va_acceptable_files)){
-			exec($this->ops_imagemagick_path."/convert ".join(" ",$va_acceptable_files)." ".$vs_archive_original, $va_output, $vn_return);
+			exec($this->ops_imagemagick_path."/convert ".join(" ",$va_acceptable_files)." ".$vs_archive_original.(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
 			if($vn_return === 0){
 				return $vs_archive_original;
 			}
@@ -999,7 +1022,7 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 	# ------------------------------------------------
 	private function _imageMagickIdentify($ps_filepath) {
 		if (caMediaPluginImageMagickInstalled($this->ops_imagemagick_path)) {
-			exec($this->ops_imagemagick_path.'/identify -format "%m" '.caEscapeShellArg($ps_filepath.'[0]')." 2> /dev/null", $va_output, $vn_return);
+			exec($this->ops_imagemagick_path.'/identify -format "%m" '.caEscapeShellArg($ps_filepath.'[0]').(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
 			return $this->magickToMimeType($va_output[0]);
 		}
 		return null;
@@ -1027,14 +1050,14 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 				}
 			}
 			
-			exec($this->ops_imagemagick_path."/identify -format '%[DPX:*]' ".caEscapeShellArg($ps_filepath), $va_output, $vn_return);
+			exec($this->ops_imagemagick_path."/identify -format '%[DPX:*]' ".caEscapeShellArg($ps_filepath).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
 			if ($va_output[0]) { $va_metadata['DPX'] = $va_output; }
 			
 			/* IPTC metadata */
 			$vs_iptc_file = tempnam(caGetTempDirPath(), 'imiptc');
 			@rename($vs_iptc_file, $vs_iptc_file.'.iptc'); // IM uses the file extension to figure out what we want
 			$vs_iptc_file .= '.iptc';
-			exec($this->ops_imagemagick_path."/convert ".caEscapeShellArg($ps_filepath)." ".caEscapeShellArg($vs_iptc_file), $va_output, $vn_return);
+			exec($this->ops_imagemagick_path."/convert ".caEscapeShellArg($ps_filepath)." ".caEscapeShellArg($vs_iptc_file).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
 
 			$vs_iptc_data = file_get_contents($vs_iptc_file);
 			@unlink($vs_iptc_file);
@@ -1090,7 +1113,7 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 	private function _imageMagickRead($ps_filepath) {
 		if (caMediaPluginImageMagickInstalled($this->ops_imagemagick_path)) {
 		
-			exec($this->ops_imagemagick_path.'/identify -format "%m;%w;%h;%[colorspace];%[depth];%[xresolution];%[yresolution]\n" '.caEscapeShellArg($ps_filepath)." 2> /dev/null", $va_output, $vn_return);
+			exec($this->ops_imagemagick_path.'/identify -format "%m;%w;%h;%[colorspace];%[depth];%[xresolution];%[yresolution]\n" '.caEscapeShellArg($ps_filepath).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
 			
 			$va_tmp = explode(';', $va_output[0]);
 			
@@ -1143,6 +1166,29 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 	# ------------------------------------------------
 	private function _imageMagickWrite($pa_handle, $ps_filepath, $ps_mimetype, $pn_quality=null) {
 		if (caMediaPluginImageMagickInstalled($this->ops_imagemagick_path)) {
+			if (($this->properties["colorspace"]) && ($this->properties["colorspace"] != "default")){ 
+				$vn_colorspace = null;
+				switch($this->properties["colorspace"]) {
+					case 'greyscale':
+					case 'grey':
+						$pa_handle['ops'][] = ['op' => 'colorspace', 'colorspace' => 'Gray'];
+						break;
+					case 'RGB':
+					case 'color':
+						$pa_handle['ops'][] = ['op' => 'colorspace', 'colorspace' => 'RGB'];
+						break;
+					case 'sRGB':
+						$pa_handle['ops'][] = ['op' => 'colorspace', 'colorspace' => 'sRGB'];
+						break;
+					case 'CMYK':
+						$pa_handle['ops'][] = ['op' => 'colorspace', 'colorspace' => 'CMYK'];
+						break;
+					case 'bitonal':
+						$pa_handle['ops'][] = ['op' => 'threshold', 'threshold' => '50%'];
+						break;
+				}
+			}
+			
 			$va_ops = array();	
 			foreach($pa_handle['ops'] as $va_op) {
 				switch($va_op['op']) {
@@ -1176,6 +1222,12 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 					case 'rotate':
 						if (!is_numeric($va_op['angle'])) { break; }
 						$va_ops['convert'][] = '-rotate '.$va_op['angle'];
+						break;
+					case 'colorspace':
+						$va_ops['convert'][] = '-colorspace '.$va_op['colorspace'];
+						break;
+					case 'threshold':
+						$va_ops['convert'][] = '-threshold '.$va_op['threshold'];
 						break;
 					case 'filter_despeckle':
 						$va_ops['convert'][] = '-despeckle';
@@ -1219,11 +1271,11 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 					array_unshift($va_ops['convert'], '-quality '.intval($pn_quality));
 				}
 				array_unshift($va_ops['convert'], '-colorspace RGB');
-				exec($this->ops_imagemagick_path.'/convert '.caEscapeShellArg($vs_input_file.'[0]').' '.join(' ', $va_ops['convert']).' '.caEscapeShellArg($ps_filepath));
+				exec($this->ops_imagemagick_path.'/convert '.caEscapeShellArg($vs_input_file.'[0]').' '.join(' ', $va_ops['convert']).' '.caEscapeShellArg($ps_filepath).(caIsPOSIX() ? " 2> /dev/null" : ""));
 				$vs_input_file = $ps_filepath;
 			}
 			if (is_array($va_ops['composite']) && sizeof($va_ops['composite'])) {
-				exec($this->ops_imagemagick_path.'/composite '.join(' ', $va_ops['composite']).' '.caEscapeShellArg($vs_input_file.'[0]').' '.caEscapeShellArg($ps_filepath));
+				exec($this->ops_imagemagick_path.'/composite '.join(' ', $va_ops['composite']).' '.caEscapeShellArg($vs_input_file.'[0]').' '.caEscapeShellArg($ps_filepath).(caIsPOSIX() ? " 2> /dev/null" : ""));
 			}	
 			
 			return true;
@@ -1232,5 +1284,3 @@ class WLPlugMediaImageMagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 	}
 	# ------------------------------------------------
 }
-# ----------------------------------------------------------------------
-?>

@@ -6,58 +6,57 @@
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+	<div class='col-xs-12 col-sm-12'>
+		<div class="row">
+			<div class='col-sm-4'>
 				{{{representationViewer}}}
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-				<div id="detailTools">
-					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-				</div><!-- end detailTools -->
+<?php
+				if(strtolower($t_object->get("ca_objects.removed.removal_text", array("convertCodesToDisplayText" => true))) == "yes"){
+?>
+					<div class='text-right'><small>No longer available</small></div>
+<?php
+				}
+?>
 			</div><!-- end col -->
 			
-			<div class='col-sm-6 col-md-6 col-lg-5'>
-				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
+			<div class='col-sm-6'>
+				<H1><span class="ltgrayText">Flatfile Artwork</span><br/>{{{ca_objects.preferred_labels.name}}}</H1>
 				<H4>{{{<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="artist"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}</H4>
-				<H6>{{{^ca_objects.category<ifdef code="ca_objects.category"> > </ifdef>^ca_objects.medium}}}</H6>
-				<HR>
-				{{{<ifdef code="ca_objects.date"><H6>Date:</H6>^ca_objects.date<br/></ifdev>}}}
-				{{{<ifdef code="ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width"><H6>Dimensions:</H6></ifdef><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width<br/></ifdef>}}}
-				
-				
-				{{{<ifdef code="ca_objects.medium_notes">^ca_objects.medium_notes</ifdef>}}}
-				
-				
-				
-				
-				<hr></hr>
-					<div class="row">
-						<div class="col-sm-6">		
-							{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related exhibition</H6></ifcount>}}}
-							{{{<ifcount code="ca_occurrences" min="2"><H6>Related exhibitions</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
-						</div><!-- end col -->
-						<div class="col-sm-6">		
-							{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-							{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
-							
-						</div><!-- end col -->
-					</div><!-- end row -->
+				<HR/>
+<?php
+				$vs_medium = "";
+				if($t_object->get("medium_text")){
+					$vs_medium = $t_object->get("medium_text");
+				}else{
+					if($t_object->get("category")){
+						$vs_medium = $t_object->get("category");
+					}
+					if($t_object->get("category") && $t_object->get("medium")){
+						$vs_medium .= " > ";
+					}
+					if($t_object->get("medium")){
+						$vs_medium .= $t_object->get("medium");
+					}
+				}
+				if($vs_medium){
+					print "<H6>Medium</H6>".$vs_medium."<br/>";
+				}
+?>
+				{{{<ifdef code="ca_objects.date"><H6>Date</H6>^ca_objects.date<br/></ifdev>}}}
+				{{{<ifdef code="ca_objects.dimensions.dimensions_height|ca_objects.dimensions.dimensions_width"><H6>Dimensions</H6></ifdef><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.artwork_tags"><HR/><H6>Tags</H6><unit delimiter=", ">^ca_objects.artwork_tags</unit><br/></ifdef>}}}
+		
+				{{{<ifcount code="ca_occurrences" min="1" max="1"><HR/><H6>Related exhibition</H6></ifcount>}}}
+				{{{<ifcount code="ca_occurrences" min="2"><HR/><H6>Related exhibitions</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
 			</div><!-- end col -->
-		</div><!-- end row --></div><!-- end container -->
-	</div><!-- end col -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
+			<div class='navLeftRight col-sm-2'>
+				<div class="detailNavBgRight">
+					{{{resultsLink}}}{{{previousLink}}}{{{nextLink}}}
+				</div><!-- end detailNavBgLeft -->
+			</div><!-- end col -->
+		</div><!-- end row -->
 	</div><!-- end col -->
 </div><!-- end row -->

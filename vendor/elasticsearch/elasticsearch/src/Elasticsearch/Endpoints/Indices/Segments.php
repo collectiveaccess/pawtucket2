@@ -1,25 +1,18 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints\Indices;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Segments
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Indices
+ * @package  Elasticsearch\Endpoints\Indices
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Segments extends AbstractEndpoint
 {
     /**
@@ -28,7 +21,7 @@ class Segments extends AbstractEndpoint
     protected function getURI()
     {
         $index = $this->index;
-        $uri   = "/_segments";
+        $uri = "/_segments";
 
         if (isset($index) === true) {
             $uri = "/$index/_segments";
@@ -37,21 +30,20 @@ class Segments extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'ignore_unavailable',
             'allow_no_indices',
             'expand_wildcards',
             'human',
             'operation_threading',
-        );
+            'verbose',
+        ];
     }
-
 
     /**
      * @return string

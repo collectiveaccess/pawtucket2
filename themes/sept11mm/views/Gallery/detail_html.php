@@ -7,8 +7,11 @@
 ?>
 <div class="container">
 	<div class="row">
-		<div class="col-sm-12">
+		<div class="col-sm-10">
 			<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>	
+		</div>
+		<div class="col-sm-2 navLeftRight">
+			<?php print caNavLink($this->request, _t("BACK"), "", "", "Gallery", "Index"); ?>
 		</div>
 	</div>
 	<div class="row">

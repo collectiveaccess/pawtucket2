@@ -1,0 +1,235 @@
+/* blue: 0096db */
+@font-face {
+    font-family: HelveticaNeueLight;
+    src: url(HelveticaNeueLight.ttf);
+}
+@font-face {
+    font-family: HelveticaNeueBold;
+    src: url(HelveticaNeueBold.ttf);
+}
+body {
+	font-family: HelveticaNeueLight;
+	color:#8e8e8e;
+	margin-bottom:80px;
+	font-size:12px;
+	font-weight: 400;
+    line-height: 1.4;
+    margin-bottom:300px;
+    /*background-color: #f6f6f6;*/
+}
+.container{
+	max-width: 1197px;
+	/*background-color:#FFF;*/
+}
+a {
+	color:#0096db;
+}
+a:hover {
+	color:#0089c8;
+}
+a, a:active, a:focus {
+   outline: 0;
+   text-decoration:none;
+}
+
+H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
+	font-family: HelveticaNeueBold;
+	font-weight: normal;
+	font-style: normal;
+	color:#333;	
+	text-transform:none;
+}
+H1, h1{
+	font-size: 30px;
+}
+H2, h2{
+	font-size: 24px;
+}
+H3, h3{
+	font-size: 12px;
+}
+#caFormOverlay{
+	border-radius:0px;
+}
+/* buttons */
+.btn-default {
+    background-color: #0096db;
+    color: #fff;
+    font-family: HelveticaNeueLight;
+    font-size:10px;
+    padding: 7px 9px 7px 9px;
+}
+.btn-default:hover {
+	background-color:#0089c8;
+    color: #fff;
+}
+/* Navbar */
+.navbar {
+    background-color: #FFFFFF;
+    border-bottom: 2px solid #dedede;
+    box-shadow:none;
+    -webkit-box-shadow:none;
+}
+.navbar.fixed {
+	border-bottom:0px !important;
+  	-webkit-box-shadow:0 1px 3px rgba(0, 0, 0, 0.3);
+  	box-shadow:0 1px 3px rgba(0, 0, 0, 0.3);
+  	position:fixed;
+  	width:100%;
+  	background-color:rgba(255, 255, 255, 0.95);
+}
+.navbar.fixed .navbar-header {
+	display:none;
+}
+.navbar.fixed .menuItems{
+	width:auto;
+}
+#pageArea.scrolled{
+	margin-top:150px;
+}
+.navbar-brand {
+    width: 165px;
+    padding-top: 15px;
+    padding-bottom: 8px;
+    padding-left: 15px;
+}
+.subtitle{
+	font-size:37px;
+	text-transform:lowercase;
+	padding-left:5px;
+	padding-top:3px;
+	color:#646766;
+	float:left;
+}
+.subtitle a, .subtitle a:hover{
+	font-size:37px;
+	color:#646766;
+	text-decoration:none;
+}
+.navbar-default .navbar-nav > li > a {
+    font-family: HelveticaNeueBold;
+    color: #a1a2a4;
+    font-size:14px;
+}
+.navbar .navbar-nav > .active > a, .navbar .navbar-nav > .active > a:hover{
+	background-color:transparent;
+	color:#191919;
+}
+.navbar-default .navbar-nav > li > a:hover {
+    color: #7e7e7e;
+}
+.form-control{
+	border-color: #e5e5e5;
+}
+.form-control:focus {
+    border-color: #e5e5e5;
+}
+.navbar .formOutline {
+    border: 1px solid #e5e5e5;
+    border-radius: 0px;
+	box-shadow:none;
+}
+.navbar .form-control{
+	font-family: HelveticaNeueLight;
+	box-shadow:none;
+}
+.btn-search{
+	color:#acacac;
+}
+
+/* force it into second line even at large size */
+ul.menuItems {
+	width:100%;
+	margin-top:10px;
+}
+ul.menuItems.fixed {
+	border-top:solid 1px #ddd;
+	margin-top:0px;
+}
+.menuItems.navbar-nav > li > a {
+	padding: 5px 35px 5px 15px;
+}
+.menuItems.navbar-nav > li.steelcaseHome {
+	float:right;
+}
+.menuItems.navbar-nav > li.steelcaseHome > a {
+	color:#a1a2a4;
+	padding-right:15px;
+}
+.menuItems.navbar-nav > li.steelcaseHome > a:hover {
+	color:#0089c8;
+}
+.navbar-collapse .navbar-nav.navbar-right:last-child {
+	margin-right:0px;
+}
+.container.menuBar {
+	padding:0px;
+}
+.navbar > .container .navbar-brand {
+	margin-left:0px;
+}
+.nav > li.dropdown > a.icon{
+	color:#0096db;
+}
+.nav > li.dropdown > a.icon:hover{
+	color:#0089c8;
+}
+
+/* footer */
+#footer{
+	background-color: #f6f6f6;
+	color:#8e8e8e;
+	border-top:0px;
+	line-height: 1.25;
+	font-size:12px;
+	padding-top:35px;
+	height:auto;
+	/*position:relative;*/
+	padding-bottom:65px;
+	font-family: HelveticaNeueLight;
+	font-weight: 600;
+}
+#footer img{
+	transition: opacity .3s ease-in-out;
+	opacity:.6;
+	width:116px;
+	height:auto;
+	margin-bottom:35px;
+}
+
+.filterMenuFacetList li.active {
+    background-color: #0096db;
+}
+.browseMenuContent .mainfacet{
+	display:none;
+}
+div.browseFacetItem a:hover {
+    text-decoration: none;
+    color: #0096db;
+}
+.browse .btn, .sets .btn {
+    background-color: #0096db;
+}
+ul.about{
+	padding-left:15px;
+}
+ul.about li{
+	padding-bottom:20px;
+	list-style-type:none;
+	text-indent:-7px;
+}
+ul.about li i{
+	color:#DEDEDE;
+}
+
+/* browse */
+#browse .dropdown-menu > li > a{
+	font-family: HelveticaNeueLight;
+}
+#bRefine.fixed {
+    position: fixed;
+    top: 50px;
+}
+#bRefine.fixed div:last-child {
+	margin-bottom:100px;
+}

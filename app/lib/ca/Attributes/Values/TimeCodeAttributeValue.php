@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2014 Whirl-i-Gig
+ * Copyright 2009-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -125,7 +125,7 @@
 		'displayDelimiter' => array(
 			'formatType' => FT_TEXT,
 			'displayType' => DT_FIELD,
-			'default' => ',',
+			'default' => '; ',
 			'width' => 10, 'height' => 1,
 			'label' => _t('Value delimiter'),
 			'validForRootOnly' => 1,
@@ -151,7 +151,9 @@
  		 * Returns value suitable for display
  		 *
  		 * @param $pa_options array Options are:
- 		 *		returnAsDecimal = return duration in seconds as decimal number
+ 		 *		format = timecode format, either colonDelimited, hoursMinutesSeconds, or raw. [Default is hoursMinutesSeconds]
+ 		 *		returnAsDecimal = return duration in seconds as decimal number. [Default is false]
+ 		 *		omitSeconds = omit seconds from returned value. [Default is false]
  		 *
  		 * @return mixed Values as string or decimal
  		 */
@@ -164,8 +166,11 @@
 			$o_tcp->setParsedValueInSeconds($this->opn_duration);
 			
 			$o_config = Configuration::load();
-			if (!($vs_format = $o_config->get('timecode_output_format'))) { $vs_format = 'HOURS_MINUTES_SECONDS'; }
-			return $o_tcp->getText($vs_format); 
+			
+			if(!($ps_format = caGetOption('format', $pa_options, $o_config->get('timecode_output_format')))) {
+				$ps_format = 'HOURS_MINUTES_SECONDS';
+			}
+			return $o_tcp->getText($ps_format, $pa_options); 
 		}
  		# ------------------------------------------------------------------
 		public function getNumberOfSeconds() {

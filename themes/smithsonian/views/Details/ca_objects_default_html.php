@@ -2,7 +2,6 @@
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 ?>
-<div class="row">
 	<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgLeft">
 			{{{previousLink}}}{{{resultsLink}}}
@@ -21,25 +20,29 @@
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 				</div><!-- end detailTools -->		
 
-			{{{<unit><ifdef code="ca_objects.idno"><div><span class='metaTitle'>Identifier</span><span class='meta'>^ca_objects.idno</span></div></ifdef></unit>}}}
+			{{{<unit><ifdef code="ca_objects.idno"><div style='word-wrap: break-word;'><span class='metaTitle'>Identifier</span><span class='meta'>^ca_objects.idno</span></div></ifdef></unit>}}}
 			{{{<unit><ifdef code="ca_occurrences.workType"><div><span class='metaTitle'>Type: </span><span class='meta'><unit delimiter='; '>^ca_occurrences.workType</unit></span></div></ifdef></unit>}}}
+			{{{<unit><ifdef code="ca_objects.technicalNotes"><div><span class='metaTitle'>Technical notes: </span><span class='meta'><unit delimiter='; '>^ca_objects.technicalNotes</unit></span></div></ifdef></unit>}}}
 
-		    {{{<ifdef code="ca_objects.essenceTrack.essenceTrackFrameRate|ca_objects.essenceTrack.essenceTrackFrameSize|ca_objects.essenceTrack.ScanType|ca_objects.essenceTrack.essenceTrackAspectRatio|ca_objects.essenceTrack.essenceTrackDuration|ca_objects.technicalNotes">
-		    	<div>
-		    		<span class='metaTitle'>Technical Specs</span>
-		    		<div class='meta'>
-		    			<unit>
-		    				<p><ifdef code="ca_objects.essenceTrack.essenceTrackFrameRate">Frame Rate: ^ca_objects.essenceTrack.essenceTrackFrameRate</ifdef></p>
-		    				<p><ifdef code="ca_objects.essenceTrack.essenceTrackFrameSize">Frame Size: ^ca_objects.essenceTrack.essenceTrackFrameSize</ifdef></p>
-		    				<p><ifdef code="ca_objects.essenceTrack.ScanType">Scan Type: ^ca_objects.essenceTrack.ScanType</ifdef></p>
-		    				<p><ifdef code="ca_objects.essenceTrack.essenceTrackAspectRatio">Aspect Ratio: ^ca_objects.essenceTrack.essenceTrackAspectRatio</ifdef></p>
-		    				<p><ifdef code="ca_objects.essenceTrack.essenceTrackDuration">Duration: ^ca_objects.essenceTrack.essenceTrackDuration</ifdef></p>
-		    				<p><ifdef code="ca_objects.technicalNotes">Technical Notes: ^ca_objects.technicalNotes</ifdef></p>
-		    			</unit> 
-		    		</div>
-		    	</div> 
-		    </ifdef>}}}
 <?php
+			if ($va_essence_track = $t_object->get('ca_objects.essenceTrack', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
+				$vs_track = "";
+				foreach ($va_essence_track as $va_key => $va_essence_track_t) {
+					foreach ($va_essence_track_t as $va_key => $va_essence_info) {
+						if ($va_essence_info['essenceTrackFrameRate']) {$vs_track.= "<p>Frame Rate: ".$va_essence_info['essenceTrackFrameRate']."</p>";}
+						if ($va_essence_info['essenceTrackFrameSize']) {$vs_track.= "<p>Frame Size: ".$va_essence_info['essenceTrackFrameSize']."</p>";}
+						if ($va_essence_info['ScanType']) {$vs_track.= "<p>Scan Type: ".$va_essence_info['ScanType']."</p>";}
+						if ($va_essence_info['essenceTrackAspectRatio']) {$vs_track.= "<p>Aspect Ratio: ".$va_essence_info['essenceTrackAspectRatio']."</p>";}
+						if (($va_essence_info['essenceTrackDuration'])&&($va_essence_info['essenceTrackDuration'] != "0.0s")) {$vs_track.= "<p>Duration: ".$va_essence_info['essenceTrackDuration']."</p>";}
+						if ($va_essence_info['recorder_model']) {$vs_track.= "<p>Recorder Model: ".$va_essence_info['recorder_model']."</p>";}
+					}
+				}
+				if ($vs_track != "") {
+					print "<div><span class='metaTitle'>Technical Specs</span><div class='meta'>";
+					print $vs_track;
+					print "</div></div>";
+				}
+			}
 
 			if (($vs_val = trim($t_object->get('ca_objects.video_physical', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
 				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
@@ -52,11 +55,13 @@
 			}
 			if (($vs_val = trim($t_object->get('ca_objects.digital_supporting', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
 				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
-			}				
+			}
+			if (($vs_val = trim($t_object->get('ca_objects.item_format_digital', array('convertCodesToDisplayText' => true, 'excludeValues' => array('not_specified'))))) != "") {
+				print "<div><span class='metaTitle'>Master Format</span><span class='meta'>{$vs_val}</span></div>";
+			}							
 ?>
 
-				{{{<unit><ifdef code="ca_objects.recorder_model"><div><span class='metaTitle'>Recorder Model: </span><span class='meta'><unit delimiter='; '>^ca_objects.recorder_model</unit></span></div></ifdef></unit>}}}
-				{{{<unit><ifdef code="ca_objects.color"><div><span class='metaTitle'>Color: </span><span class='meta'><unit delimiter='; '>^ca_objects.color</unit></span></div></ifdef></unit>}}}
+				{{{<ifdef code="ca_objects.color"><div><span class='metaTitle'>Color: </span><span class='meta'>^ca_objects.color</span></div></ifdef>}}}
 
 					
 			</div><!-- end col -->
@@ -73,7 +78,6 @@
 		$vs_date = '';
 		while($qr_occ->nextHit()) {
 			$va_dates = $qr_occ->get('ca_occurrences.workDate', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true));
-			
 			foreach($va_dates as $vn_attr_id => $va_date_t) {
 				foreach ($va_date_t as $vn_att => $va_date) {
 					if (!$va_date['dates_value']) { continue; }
@@ -85,9 +89,9 @@
 		if ($vs_date) {
 ?>
 		<div>
-			<span class='metaTitle'>Date:</span> 
+			<span class='metaTitle'>Date</span> 
 <?php
-			print $vs_date;
+			print "<span class='meta'>".$vs_date."</span>";
 ?>
 		</div>
 <?php
@@ -95,25 +99,15 @@
 	}
 ?>
 			
-			{{{<ifcount code="ca_occurrences.description" min="1"><span class='metaTitle'>Description</span><span class='meta'><unit>^ca_occurrences.description</unit></span></ifcount>}}}
-			{{{<ifdef relativeTo="ca_occurrences" code="ca_occurrences.locationText" ><span class='metaTitle'>Location</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.locationText</unit></span></ifdef>}}}
-			{{{<ifdef relativeTo="ca_occurrences" code="ca_occurrences.legacyLocation" ><span class='metaTitle'>Location</span><span class='meta'><unit relativeTo="ca_occurrences">^ca_occurrences.legacyLocation</unit></span></ifdef>}}}
+			{{{<ifcount code="ca_occurrences.description" min="1"><div><span class='metaTitle'>Description</span><span class='meta'><div class='trimText'><unit delimiter="<br/><br/>">^ca_occurrences.description</unit></div></span></div></ifcount>}}}
+			{{{<ifdef relativeTo="ca_occurrences" code="ca_occurrences.locationText" ><span class='metaTitle'>Location</span><span class='meta'><unit relativeTo="ca_occurrences" delimiter="<br/><br/>">^ca_occurrences.locationText</unit></span></ifdef>}}}
+			{{{<ifdef relativeTo="ca_occurrences" code="ca_occurrences.legacyLocation" ><span class='metaTitle'>Location</span><span class='meta'><unit relativeTo="ca_occurrences" delimiter="<br/><br/>">^ca_occurrences.legacyLocation</unit></span></ifdef>}}}
 <?php
-			if ($va_rel_works = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true))) {
-				$va_places = array();
-				foreach ($va_rel_works as $va_key => $va_occurrence_id) {
-					$t_occurrence = new ca_occurrences($va_occurrence_id);
-					if ($vs_places = $t_occurrence->get('ca_places.preferred_labels')) {
-						$va_places[] = $vs_places;
-					}
-				}
-				
-				if(sizeof($va_places)) {
-					print "<span class='metaTitle'>SI Locations</span>";
-					print "<div class='meta'>";
-					print join("; ", $va_places);
-					print "</div>";
-				}
+			if ($va_places = $t_object->getWithTemplate("<unit relativeTo='ca_occurrences'><unit relativeTo='ca_places' delimiter='<br/><br/>'>^ca_places.preferred_labels</unit></unit>")) {
+				print "<span class='metaTitle'>SI Locations</span>";
+				print "<div class='meta'>";
+				print $va_places; 
+				print "</div>";
 			}
 				
 			if ($qr_occ) {
@@ -168,13 +162,16 @@
 			if ((strlen($vs_genre = $t_object->get('ca_occurrences.genre', array('convertCodesToDisplayText' => true)))) > 1) {
 				print "<div><span class='metaTitle'>Genre</span><div class='meta'>{$vs_genre}</div></div>";
 			}	
-
-			if (($vs_mission_crit = $t_object->get('ca_occurrences.mission.missionCritical', array('convertCodesToDisplayText' => true))) == "Yes") {
-				print "<div><span class='metaTitle'>Mission critical</span><span class='meta'><div>Mission Critical: {$vs_mission_crit}</div>";
-				print "<div>Year: ".$t_object->get('ca_occurrences.mission.missionYear')." (".$t_object->get('ca_occurrences.mission.mission_dates_types').")</div>";
-				print "</span></div>";
+			$vs_mission_crit = $t_object->get('ca_occurrences.mission', array('convertCodesToDisplayText' => true, 'returnWithStructure' => true));
+			foreach ($vs_mission_crit as $va_key => $vs_mission_critical_t) {
+				foreach ($vs_mission_critical_t as $va_key => $vs_mission_critical) {
+					if ($vs_mission_critical['missionCritical'] == "Yes") {
+						print "<div><span class='metaTitle'>Mission critical</span><span class='meta'><div>Mission Critical: Yes</div>";
+						print "<div>Year: ".$vs_mission_critical['missionYear'].($vs_mission_critical['mission_dates_types'] != "NA " ? " (".$vs_mission_critical['mission_dates_types'].") " : "")."</div>";
+						print "</span></div>";				
+					}
+				}
 			}
-			
 	
 			if ($qr_occ) {
 				while($qr_occ->nextHit()) {
@@ -229,4 +226,13 @@
 			{{{nextLink}}}
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
-</div><!-- end row -->
+	
+	<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 120
+		});
+	});
+	</script>
+	

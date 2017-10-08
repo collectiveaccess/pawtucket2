@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -46,18 +46,19 @@
 ?>	
 		<div id="footer">
 			<div class="container">
-				<ul class="list-inline pull-right">
-					&#169; 2015 Brooklyn Academy of Music
+				<ul class="list-inline copyright">
+					&#169; 2017 Brooklyn Academy of Music
+					<div><a href="http://www.leonlevyfoundation.org/" target="_blank"><?php print caGetThemeGraphic($this->request, 'leonlevylogo.jpg'); ?></a></div>
 				</ul>
 				<div class='footerHeader'>
 					More Information
 				</div>
 				<ul class="footer-links">
-					<li><?php print caNavLink($this->request, "For Researchers", '', '', 'Search', 'advanced/objects');?></li>
 					<li><?php print caNavLink($this->request, _t("About BAM Hamm Archives"), "", "", "About", "Index"); ?></li>
-					<li><a href="#">Contact BAM Hamm Archives</a></li>
 					<li><a href="http://www.bam.org">BAM.org</a></li>
-					<li><a href="#">Privacy Policy</a></li>
+					<li><a href="http://www.bam.org/about/privacy-policy">Privacy Policy</a></li>
+					<li><?php print caNavLink($this->request, _t("Rights and Usage Statement"), "", "", "About", "RightsAndUsage"); ?></li>
+					<li><a href="http://www.leonlevyfoundation.org/" target="_blank">About the Leon Levy Foundation</a></li>
 				</ul>
 			</div><!-- end container -->
 		</div><!-- end footer -->
@@ -94,6 +95,12 @@
 				}
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
+		</script>
+ 
+<script type="text/javascript" language="javascript">
+			jQuery(document).ready(function() {
+				$('html').on('contextmenu', 'body', function(e){ return false; });
+			});
 		</script>
 	
 	</body>

@@ -1,25 +1,18 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints\Cat;
 
 use Elasticsearch\Endpoints\AbstractEndpoint;
-use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Indices
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Cat
+ * @package  Elasticsearch\Endpoints\Cat
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Indices extends AbstractEndpoint
 {
     /**
@@ -28,7 +21,7 @@ class Indices extends AbstractEndpoint
     protected function getURI()
     {
         $index = $this->index;
-        $uri   = "/_cat/indices";
+        $uri = "/_cat/indices";
 
         if (isset($index) === true) {
             $uri = "/_cat/indices/$index";
@@ -37,13 +30,12 @@ class Indices extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'bytes',
             'local',
             'master_timeout',
@@ -51,9 +43,8 @@ class Indices extends AbstractEndpoint
             'help',
             'pri',
             'v',
-        );
+        ];
     }
-
 
     /**
      * @return string

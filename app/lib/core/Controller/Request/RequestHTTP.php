@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2014 Whirl-i-Gig
+ * Copyright 2007-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -46,20 +46,22 @@ class RequestHTTP extends Request {
 	# -------------------------------------------------------
 	private $opb_is_dispatched;
  		
-/**
- * Current session object. If you need to set session variables you may
- * do so using Session object method calls on the object referenced by this property
- *
- * @access public
- */	
+	/**
+	 * Current session object. If you need to set session variables you may
+	 * do so using Session object method calls on the object referenced by this property
+	 *
+	 * @var Session
+	 * @access public
+	 */
 	public $session;
 	
-/**
- * User object for currently logged in user. Will be undefined if no user is logged in.
- * You may check to see if a user is logged in using the isLoggedIn() method.
- *
- * @access public
- */	
+	/**
+	 * User object for currently logged in user. Will be undefined if no user is logged in.
+	 * You may check to see if a user is logged in using the isLoggedIn() method.
+	 *
+	 * @var ca_users
+	 * @access public
+	 */
 	public $user;
 	
 	private $opo_response;
@@ -81,6 +83,12 @@ class RequestHTTP extends Request {
  	private $ops_parsed_action_extra;
  	private $ops_parsed_controller_url;
  	private $ops_parsed_is_app_plugin = false;
+ 	
+ 	
+ 	/**
+ 	 * 
+ 	 */
+ 	static $html_purifier;
  		
 	# -------------------------------------------------------
 	/**
@@ -123,10 +131,28 @@ class RequestHTTP extends Request {
 				$pa_options["no_authentication"] = true;
 			}
 		}
-	
-		# get session
+
+		# figure out script name
+		$va_tmp = (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME']) ? explode('/', $_SERVER['SCRIPT_NAME']) : array();
+		$this->ops_script_name = '';
+		while((!$this->ops_script_name) && (sizeof($va_tmp) > 0)) {
+			$this->ops_script_name = array_pop($va_tmp);
+		}
+
+		# create session
 		$vs_app_name = $this->config->get("app_name");
-		$this->session = new Session($vs_app_name, isset($pa_options["dont_create_new_session"]) ? $pa_options["dont_create_new_session"] : false);
+
+		// restore session from token for service requests
+		if(($this->ops_script_name=="service.php") && isset($_GET['authToken']) && (strlen($_GET['authToken']) > 0)) {
+			$vs_token = preg_replace("/[^a-f0-9]/", "", $_GET['authToken']); // sanitize
+
+			$this->session = Session::restoreFromServiceAuthToken($vs_token, $vs_app_name);
+		}
+
+		// plain old session
+		if(!$this->session) {
+			$this->session = new Session($vs_app_name, isset($pa_options["dont_create_new_session"]) ? $pa_options["dont_create_new_session"] : false);
+		}
 		
 		if (!isset($pa_options["no_authentication"]) || !$pa_options["no_authentication"]) {
 			$this->doAuthentication($pa_options);
@@ -143,19 +169,12 @@ class RequestHTTP extends Request {
 		$this->opa_params['GET'] =& $_GET;
 		$this->opa_params['POST'] =& $_POST;
 		$this->opa_params['COOKIE'] =& $_COOKIE;
-		$this->opa_params['URL'] = array();
+		$this->opa_params['PATH'] = array();
 		
 		$this->ops_request_method = (isset($_SERVER["REQUEST_METHOD"]) ? $_SERVER["REQUEST_METHOD"] : null);
-
-		$va_tmp = (isset($_SERVER['SCRIPT_NAME']) && $_SERVER['SCRIPT_NAME']) ? explode('/', $_SERVER['SCRIPT_NAME']) : array();
-		
-		$this->ops_script_name = '';
-		while((!$this->ops_script_name) && (sizeof($va_tmp) > 0)) {
-			$this->ops_script_name = array_pop($va_tmp);
-		}
 		
 		/* allow authentication via URL for web service API like so: http://user:pw@example.com/ */
-		if($this->ops_script_name=="service.php"){
+		if($this->ops_script_name=="service.php") {
 			$this->ops_raw_post_data = file_get_contents("php://input");
 
 			if($_SERVER["PHP_AUTH_USER"] && $_SERVER["PHP_AUTH_PW"]){
@@ -172,7 +191,7 @@ class RequestHTTP extends Request {
 		
 		$this->ops_base_path = join('/', $va_tmp);
 		$this->ops_full_path = $_SERVER['REQUEST_URI'];
-		if (!preg_match("!/index.php!", $this->ops_full_path) && !preg_match("!/service.php!", $this->ops_full_path)) { $this->ops_full_path = rtrim($this->ops_full_path, "/")."/index.php"; }
+		if (!caUseCleanUrls() && !preg_match("!/index.php!", $this->ops_full_path) && !preg_match("!/service.php!", $this->ops_full_path)) { $this->ops_full_path = rtrim($this->ops_full_path, "/")."/index.php"; }
 		$vs_path_info = str_replace($_SERVER['SCRIPT_NAME'], "", str_replace("?".$_SERVER['QUERY_STRING'], "", $this->ops_full_path));
 		
 		$this->ops_path_info = $vs_path_info ? $vs_path_info : (isset($_SERVER['PATH_INFO']) ? $_SERVER['PATH_INFO'] : '');
@@ -276,6 +295,7 @@ class RequestHTTP extends Request {
 		} else {
 			$vs_theme = $this->config->get('theme');		// default theme
 		}
+		if (!$vs_theme) { $vs_theme = $this->config->get('theme'); }
 		return $this->config->get('themes_url').'/'.$vs_theme;
 	}
 	# -------------------------------------------------------
@@ -286,6 +306,7 @@ class RequestHTTP extends Request {
 		} else {
 			$vs_theme = $this->config->get('theme');		// default theme
 		}
+		if (!$vs_theme) { $vs_theme = $this->config->get('theme'); }
 		return $this->config->get('themes_directory').'/'.$vs_theme;
 	}
 	# -------------------------------------------------------
@@ -307,10 +328,19 @@ class RequestHTTP extends Request {
 		return $this->config->get('themes_directory').'/default';
 	}
 	# -------------------------------------------------------
+	/**
+	 * 
+	 */
 	public function getServiceViewPath(){
 		return $this->config->get('service_view_path');
 	}
 	# -------------------------------------------------------
+	/**
+	 * Return file path on server to views path in current theme.
+	 *
+	 * @param bool $pb_use_default Return path in default theme no matter what theme user has selected. [Default is false]
+	 * @return string Path to file on server
+	 */
 	public function getViewsDirectoryPath($pb_use_default=false) {
 		if ($this->config->get('always_use_default_theme')) { $pb_use_default = true; }
 		switch($this->getScriptName()){
@@ -324,10 +354,66 @@ class RequestHTTP extends Request {
 		}
 	}
 	# -------------------------------------------------------
+	/**
+	 * Search for and return file path on server for a theme file. The selected theme will be searched followed
+	 * by the default theme, ceasing when the file is found. 
+	 *
+	 * @param string $ps_relative_file_path Path to theme file relative to the theme root directory. To find the file path of the base.css file "css/base.css" would be passed.
+	 * @return Path to file on server
+	 */
+	public function getDirectoryPathForThemeFile($ps_relative_file_path) {
+		if(
+			file_exists($vs_path = $this->getThemeDirectoryPath()."/{$ps_relative_file_path}")
+			||
+			file_exists($vs_path = $this->getDefaultThemeDirectoryPath()."/{$ps_relative_file_path}")
+		) {
+			return $vs_path;
+		} 
+		return null;
+	}
+	# -------------------------------------------------------
+	/**
+	 * Search for and return URL path for a theme file. The selected theme will be searched followed
+	 * by the default theme, ceasing when the file is found. 
+	 *
+	 * @param string $ps_relative_file_path Path to theme file relative to the theme root directory. To find the URL path of the base.css file "css/base.css" would be passed.
+	 * @return URL to file
+	 */
+	public function getUrlPathForThemeFile($ps_relative_file_path) {
+		if(
+			file_exists($this->getThemeDirectoryPath()."/{$ps_relative_file_path}")
+		) {
+			return $this->getThemeUrlPath()."/{$ps_relative_file_path}";
+		} elseif(file_exists($this->getDefaultThemeDirectoryPath()."/{$ps_relative_file_path}")) {
+			return $this->getDefaultThemeUrlPath()."/{$ps_relative_file_path}";
+		} 
+		return null;
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function getAssetsUrlPath() {
+		return $this->config->get('ca_url_root')."/assets";
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function getAssetsDirectoryPath() {
+		return $this->config->get('ca_base_dir').$this->config->get('ca_url_root')."/assets";
+	}
+	# -------------------------------------------------------
+	/**
+	 * 
+	 */
 	public function isDispatched() {
 		return $this->opb_is_dispatched;
 	}
 	# -------------------------------------------------------
+	/**
+	 * 
+	 */
 	public function setIsDispatched($ps_is_dispatched=true) {
 		$this->opb_is_dispatched = $ps_is_dispatched;
 	}
@@ -426,8 +512,18 @@ class RequestHTTP extends Request {
 		
 		return join('/', $va_url);
 	}
+	# --------------------------------------------------------------------------------
+	/**
+	 * Return HTMLPurifier instance
+	 *
+	 * @return HTMLPurifier Returns instance
+	 */
+	static public function getPurifier() {
+		if (!RequestHTTP::$html_purifier) { RequestHTTP::$html_purifier = new HTMLPurifier(); }
+		return RequestHTTP::$html_purifier;
+	}
 	# -------------------------------------------------------
-	public function getParameter($ps_name, $pn_type, $ps_http_method=null) {
+	public function getParameter($ps_name, $pn_type, $ps_http_method=null, $pa_options=array()) {
 		if (in_array($ps_http_method, array('GET', 'POST', 'COOKIE', 'PATH', 'REQUEST'))) {
 			$vm_val = $this->opa_params[$ps_http_method][$ps_name];
 		} else {
@@ -441,6 +537,9 @@ class RequestHTTP extends Request {
 		if (!isset($vm_val)) { return ""; }
 		
 		$vm_val = str_replace("\0", '', $vm_val);
+		if(caGetOption('purify', $pa_options, true) || $this->config->get('purify_all_text_input')) {
+		    $vm_val = RequestHTTP::getPurifier()->purify(rawurldecode($vm_val));
+		}
 		
 		if ($vm_val == "") { return ""; }
 		
@@ -449,20 +548,22 @@ class RequestHTTP extends Request {
 			case pInteger:
 				if (is_numeric($vm_val)) {
 					if ($vm_val == intval($vm_val)) {
-						return $vm_val;
+						return (int)$vm_val;
 					}
 				}
 				break;
 			# -----------------------------------------
 			case pFloat:
 				if (is_numeric($vm_val)) {
-					return $vm_val;
+					return (float)$vm_val;
 				}
 				break;
 			# -----------------------------------------
 			case pString:
 				if (is_string($vm_val)) {
-					$vm_val = str_replace("\\", "\\\\", $vm_val);	// retain backslashes for some strange people desire them as valid input
+					if(caGetOption('retainBackslashes', $pa_options, true)) {
+						$vm_val = str_replace("\\", "\\\\", $vm_val);	// retain backslashes for some strange people desire them as valid input
+					}
 					$vm_val = rawurldecode($vm_val);
 					return $vm_val;
 				}
@@ -483,8 +584,10 @@ class RequestHTTP extends Request {
 	 *
 	 */
 	public function getParameters($pa_http_methods=null) {
+		if (!$pa_http_methods) { $pa_http_methods = array('GET', 'POST', 'COOKIE', 'PATH', 'REQUEST'); }
 		if($pa_http_methods && !is_array($pa_http_methods)) { $pa_http_methods = array($pa_http_methods); }
 		$va_params = array();
+		if (!is_array($pa_http_methods)) { $pa_http_methods = array('GET', 'POST', 'COOKIE', 'PATH', 'REQUEST'); }
 		foreach($pa_http_methods as $vs_http_method) {
 			if (isset($this->opa_params[$vs_http_method]) && is_array($this->opa_params[$vs_http_method])) {
 				$va_params = array_merge($va_params, $this->opa_params[$vs_http_method]);
@@ -501,18 +604,44 @@ class RequestHTTP extends Request {
 		return false;
 	}
 	# -------------------------------------------------------
- 		/**
- * 
- * Saves changes to session and user objects. You should call this at the end of every request to ensure
- * that user and session variables are saved.
- *
- * @access public 
- * @return float Seconds elapsed since request started.
- */	
+ 	/**
+	 *
+	 * Saves changes to session, user objects and sends asynchronous request for search indexing
+	 * You should call this at the end of every request to ensure that user and session variables are saved.
+	 *
+	 * @access public
+	 */
 	function close() {
 		$this->session->close();
 		if (is_object($this->user)) {
 			$this->user->close();
+		}
+
+		if(defined('__CA_SITE_HOSTNAME__') && strlen(__CA_SITE_HOSTNAME__) > 0) {
+
+			if(isset($_SERVER['SERVER_PORT']) &&  $_SERVER['SERVER_PORT']) {
+				$vn_port = $_SERVER['SERVER_PORT'];
+			} else {
+				$vn_port = 80;
+			}
+			
+			if($vn_port == 443) {
+				$vs_proto = 'tls://';
+			} else {
+				$vs_proto = 'tcp://';
+			}
+
+			// trigger async search indexing
+			if((__CA_APP_TYPE__ === 'PROVIDENCE') && !$this->getAppConfig()->get('disable_out_of_process_search_indexing')) {
+				$r_socket = fsockopen($vs_proto . __CA_SITE_HOSTNAME__, $vn_port, $errno, $err, 3);
+				if ($r_socket) {
+					$vs_http  = "GET ".$this->getBaseUrlPath()."/index.php?processIndexingQueue=1 HTTP/1.1\r\n";
+					$vs_http .= "Host: ".__CA_SITE_HOSTNAME__."\r\n";
+					$vs_http .= "Connection: Close\r\n\r\n";
+					fwrite($r_socket, $vs_http);
+					fclose($r_socket);
+				}
+			}
 		}
 	}
 	# ----------------------------------------
@@ -685,10 +814,7 @@ class RequestHTTP extends Request {
 			}
 			if (!$pa_options["dont_redirect_to_login"]) {
 				$vs_auth_login_url = $this->getBaseUrlPath().'/'.$this->getScriptName().'/'.$this->config->get("auth_login_path");
-				//header("Location: ".$vs_auth_login_url.(($pa_options["user_name"]) ? "&lf=1" : ""));
 				$this->opo_response->addHeader("Location", $vs_auth_login_url);
-				
-				//exit;
 			}
 			return false;
 		} else {		
@@ -706,14 +832,23 @@ class RequestHTTP extends Request {
 			$this->user->setVar('last_login', time(), array('volatile' => true));
 			$this->user->setLastLogout($this->user->getLastPing(), array('volatile' => true));
 			
-			//$this->user->close(); ** will be called externally **
+			$this->user->setMode(ACCESS_WRITE);
+			$this->user->update();
+			
 			$AUTH_CURRENT_USER_ID = $vn_user_id;
+
 			if ($pa_options['redirect']) {
-				$this->opo_response->addHeader("Location", $pa_options['redirect']);
-			} elseif (!$pa_options["dont_redirect_to_welcome"]) {
-				//header("Location: ".$this->getBaseUrlPath().'/'.$this->getScriptName().'/'.$this->config->get("auth_login_welcome_path"));				// redirect to "welcome" page
-				$this->opo_response->addHeader("Location", $this->getBaseUrlPath().'/'.$this->getScriptName().'/'.$this->config->get("auth_login_welcome_path"));
-				//exit;
+				// redirect to specified URL
+				$this->opo_response->setRedirect($pa_options['redirect']);
+				$this->opo_response->sendResponse();
+				exit;
+			}
+
+			if (!$pa_options["dont_redirect_to_welcome"]) {
+				// redirect to "welcome" page
+				$this->opo_response->setRedirect($this->getBaseUrlPath().'/'.$this->getScriptName().'/'.$this->config->get("auth_login_welcome_path"));
+				$this->opo_response->sendResponse();
+				exit;
 			}
 			
 			return true;
@@ -785,4 +920,4 @@ class RequestHTTP extends Request {
 		);
 	}
 	# ----------------------------------------
- }
+}

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2015 Whirl-i-Gig
+ * Copyright 2007-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -142,8 +142,8 @@ class SearchEngine extends SearchBase {
 			$ps_search .= $vs_append_to_search;
 		}
 		
-		$ps_search = preg_replace('/(?!")\[BLANK\](?!")/i', '"[BLANK]"', $ps_search); // the special [BLANK] search term, which returns records that have *no* content in a specific fields, has to be quoted in order to protect the square brackets from the parser.
-		$ps_search = preg_replace('/(?!")\[SET\](?!")/i', '"[SET]"', $ps_search); // the special [SET] search term, which returns records that have *any* content in a specific fields, has to be quoted in order to protect the square brackets from the parser.
+		$ps_search = preg_replace('/(?!")\['._t('BLANK').'\](?!")/i', '"['._t('BLANK').']"', $ps_search); // the special [BLANK] search term, which returns records that have *no* content in a specific fields, has to be quoted in order to protect the square brackets from the parser.
+		$ps_search = preg_replace('/(?!")\['._t('SET').'\](?!")/i', '"['._t('SET').']"', $ps_search); // the special [SET] search term, which returns records that have *any* content in a specific fields, has to be quoted in order to protect the square brackets from the parser.
 		
 		if(!is_array($pa_options)) { $pa_options = array(); }
 		if(($vn_limit = caGetOption('limit', $pa_options, null, array('castTo' => 'int'))) < 0) { $vn_limit = null; }
@@ -172,7 +172,15 @@ class SearchEngine extends SearchBase {
 				}
 			}
 		}
-			
+		
+		// apply query rewrites
+		if (is_array($va_rewrite_regexs = $this->opo_search_config->get('rewrite_regexes'))) {
+			if (isset($va_rewrite_regexs[$this->ops_tablename]) && is_array($va_rewrite_regexs[$this->ops_tablename])) { $va_rewrite_regexs = $va_rewrite_regexs[$this->ops_tablename]; }
+			foreach($va_rewrite_regexs as $vs_regex_name => $va_rewrite_regex) {
+				$ps_search = preg_replace("!".trim($va_rewrite_regex[0])."!", trim($va_rewrite_regex[1]), $ps_search);
+			}
+		}
+		
 		$vb_no_cache = isset($pa_options['no_cache']) ? $pa_options['no_cache'] : false;
 		unset($pa_options['no_cache']);
 
@@ -180,8 +188,8 @@ class SearchEngine extends SearchBase {
 		if($vn_cache_timeout == 0) { $vb_no_cache = true; } // don't try to cache if cache timeout is 0 (0 means disabled)
 		
 		$t_table = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true);
-		
-		$vs_cache_key = md5($ps_search."/".print_R($this->getTypeRestrictionList($pa_options), true));
+		$vs_cache_key = md5($ps_search."/".serialize($this->getTypeRestrictionList($pa_options))."/".serialize($this->opa_result_filters));
+
 		$o_cache = new SearchCache();
 		$vb_from_cache = false;
 
@@ -200,7 +208,7 @@ class SearchEngine extends SearchBase {
 				$o_res = new WLPlugSearchEngineCachedResult($va_hits, $this->opn_tablenum);
 				$vb_from_cache = true;
 			} else {
-				Debug::msg('cache expire for '.$vs_cache_key);
+				Debug::msg('SEARCH cache expire for '.$vs_cache_key);
 				$o_cache->remove();
 			}
 		}
@@ -213,18 +221,21 @@ class SearchEngine extends SearchBase {
 			$o_query_parser->setEncoding($vs_char_set);
 			$o_query_parser->setDefaultOperator(LuceneSyntaxParser::B_AND);
 			
-			$ps_search = preg_replace('![\']+!', '', $ps_search);
+			$ps_search = preg_replace('![\']+!', '', $ps_search);	
+			$ps_search = preg_replace("/\[((?!SET|BLANK)[A-Za-z0-9\-]+[ ]+(?!to)[^\]]*)\]/", "$1", $ps_search);		// remove search strings (but not range expressions) from square brackets so they may be searched
+		
 			try {
 				$o_parsed_query = $o_query_parser->parse($ps_search, $vs_char_set);
 			} catch (Exception $e) {
 				// Retry search with all non-alphanumeric characters removed
 				try {
-					$o_parsed_query = $o_query_parser->parse(preg_replace("![^A-Za-z0-9 ]+!", " ", $ps_search), $vs_char_set);
+					$vs_search_proc = preg_replace("!^(AND|OR)!i", "", $ps_search);
+					$vs_search_proc = preg_replace("![^A-Za-z0-9 ]+!", " ", $vs_search_proc);
+					$o_parsed_query = $o_query_parser->parse($vs_search_proc, $vs_char_set);
 				} catch (Exception $e) {
 					$o_parsed_query = $o_query_parser->parse("", $vs_char_set);
 				}
 			}
-			
 			$va_rewrite_results = $this->_rewriteQuery($o_parsed_query);
 			$o_rewritten_query = new Zend_Search_Lucene_Search_Query_Boolean($va_rewrite_results['terms'], $va_rewrite_results['signs']);
 
@@ -272,11 +283,12 @@ class SearchEngine extends SearchBase {
 					$this->opo_engine->setOption('excludeFieldsFromSearch', $va_exclude_fields_from_search);
 				}
 				
+				$vb_do_acl = $this->opo_app_config->get('perform_item_level_access_checking') && method_exists($t_table, "supportsACL") && $t_table->supportsACL();
 
 				$o_res =  $this->opo_engine->search($this->opn_tablenum, $vs_search, $this->opa_result_filters, $o_rewritten_query);
 			
 				// cache the results
-				$va_hits = $o_res->getPrimaryKeyValues($vn_limit);
+				$va_hits = $o_res->getPrimaryKeyValues($vb_do_acl ? null : $vn_limit);
 				
 										
 				if ($pa_options['expandToIncludeParents'] && sizeof($va_hits)) {
@@ -308,13 +320,14 @@ class SearchEngine extends SearchBase {
 			}
 						
 			$vn_user_id = (isset($pa_options['user_id']) && (int)$pa_options['user_id']) ?  (int)$pa_options['user_id'] : (int)$AUTH_CURRENT_USER_ID;
-			if ((!isset($pa_options['dontFilterByACL']) || !$pa_options['dontFilterByACL']) && $this->opo_app_config->get('perform_item_level_access_checking') && method_exists($t_table, "supportsACL") && $t_table->supportsACL()) {
+			if ((!isset($pa_options['dontFilterByACL']) || !$pa_options['dontFilterByACL']) && $vb_do_acl) {
 				$va_hits = $this->filterHitsByACL($va_hits, $this->opn_tablenum, $vn_user_id, __CA_ACL_READONLY_ACCESS__);
+				if ($vn_limit > 0) { $va_hits = array_slice($va_hits, 0, $vn_limit); }
 			}
 			
 			if ($vs_sort && ($vs_sort !== '_natural')) {
-				$va_hits = $this->sortHits($va_hits, $t_table->tableName(), $pa_options['sort'], (isset($pa_options['sort_direction']) ? $pa_options['sort_direction'] : null));
-			} elseif (($vs_sort == '_natural') && ($vs_sort_direction == 'desc')) {
+				$va_hits = $this->sortHits($va_hits, $t_table->tableName(), $vs_sort, $vs_sort_direction);
+			} elseif ((($vs_sort == '_natural') || !$vs_sort) && ($vs_sort_direction == 'desc')) {
 				$va_hits = array_reverse($va_hits);
 			}
 			
@@ -517,8 +530,12 @@ class SearchEngine extends SearchBase {
 		$vs_fld = $po_term->getTerm()->field;
 		if (sizeof($va_access_points = $this->getAccessPoints($this->opn_tablenum))) {
 			// if field is access point then do rewrite
+			$va_fld_tmp = explode("/", mb_strtolower($vs_fld));
+			$vs_fld_lc = $va_fld_tmp[0];
+			$vs_rel_types = isset($va_fld_tmp[1]) ? $va_fld_tmp[1] : null;
+			
 			if (
-				isset($va_access_points[$vs_fld_lc = mb_strtolower($vs_fld)]) 
+				isset($va_access_points[$vs_fld_lc]) 
 				&&
 				($va_ap_info = $va_access_points[$vs_fld_lc])
 			) {
@@ -549,7 +566,7 @@ class SearchEngine extends SearchBase {
 					if(isset($va_ap_info['options']) && ($va_ap_info['options']['DONT_STEM'] || in_array('DONT_STEM', $va_ap_info['options']))) {
 						$vs_term .= '|';
 					}
-					$va_terms['terms'][] = new Zend_Search_Lucene_Index_Term($vs_term, $vs_field);
+					$va_terms['terms'][] = new Zend_Search_Lucene_Index_Term($vs_term, $vs_field.($vs_rel_types ? "/{$vs_rel_types}" : ''));
 					$va_terms['signs'][] = ($vs_bool == 'AND') ? true : null;
 					$va_terms['options'][] = is_array($va_ap_info['options']) ? $va_ap_info['options'] : array();
 				}
@@ -564,6 +581,21 @@ class SearchEngine extends SearchBase {
 				
 				if (sizeof($va_terms['signs']) > 0) { array_pop($va_terms['signs']); }
 				return $va_terms;
+			}
+		}
+		
+		// is it an idno?
+		if (is_array($va_idno_regexs = $this->opo_search_config->get('idno_regexes'))) {
+			if (isset($va_idno_regexs[$this->ops_tablename]) && is_array($va_idno_regexs[$this->ops_tablename])) { $va_idno_regexs = $va_idno_regexs[$this->ops_tablename]; }
+			foreach($va_idno_regexs as $vs_idno_regex) {
+				if ((preg_match("!{$vs_idno_regex}!", (string)$po_term->getTerm()->text, $va_matches)) && ($t_instance = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true)) && ($vs_idno_fld = $t_instance->getProperty('ID_NUMBERING_ID_FIELD'))) {
+					$vs_table_name = $t_instance->tableName();
+					return array(
+						'terms' => array(new Zend_Search_Lucene_Index_Term((string)((sizeof($va_matches) > 1) ? $va_matches[1] : $va_matches[0]), "{$vs_table_name}.{$vs_idno_fld}")),
+						'signs' => array($pb_sign),
+						'options' => array()
+					);
+				}
 			}
 		}
 		

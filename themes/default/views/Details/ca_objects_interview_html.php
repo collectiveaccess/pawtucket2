@@ -1,6 +1,9 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+	$vn_share_enabled = 	$this->getVar("shareEnabled");
+		
 	# --- what media should be shown on the page?
 	# --- first check for a video
 	$va_videos = $t_object->representationsWithMimeType(array("video/x-flv", "video/mpeg", "audio/x-realaudio", "video/quicktime", "video/x-ms-asf", "video/x-ms-wmv", "application/x-shockwave-flash", "video/x-matroska"), array("versions" => array(), "checkAccess" => $this->getVar("access_values")));
@@ -149,30 +152,38 @@
 <div class="row">
 	<div class='col-sm-5 col-md-5 col-lg-5 col-sm-offset-1 col-md-offset-1 col-lg-offset-1' style='border-right:1px solid #dedede;'>
 		{{{<ifdef code="ca_objects.description"><span class="trimText">^ca_objects.description</span></ifdef>}}}
-		<div id="detailTools">
-			<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-			<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-			<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-		</div><!-- end detailTools -->
+<?php
+		# Comment and Share Tools
+		if ($vn_comments_enabled | $vn_share_enabled) {
+				
+			print '<div id="detailTools">';
+			if ($vn_comments_enabled) {
+?>				
+				<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+				<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
+<?php				
+			}
+			if ($vn_share_enabled) {
+				print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
+			}
+			print '</div><!-- end detailTools -->';
+		}				
+?>
 	</div><!-- end col -->
 	<div class='col-sm-5 col-md-5 col-lg-5'>
 		{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
 		{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-		{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
+		{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
 		
 		
 		{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 		{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-		{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit><br/><br/>}}}
+		{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
 		
+		{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
+		{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
+		{{{<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter="<br/>"><unit relativeTo="ca_list_items"><l>^ca_list_items.preferred_labels.name_plural</l></unit> (^relationship_typename)</unit>}}}
 		
-		{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
-		{{{<ifcount code="ca_occurrences" min="2"><H6>Related occurrences</H6></ifcount>}}}
-		{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit><br/><br/>}}}
-		
-		
-		{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
-		{{{<unit delimiter="<br/>">^ca_objects.LcshNames</unit>}}}
 	</div><!-- end col -->
 </div><!-- end row -->
 

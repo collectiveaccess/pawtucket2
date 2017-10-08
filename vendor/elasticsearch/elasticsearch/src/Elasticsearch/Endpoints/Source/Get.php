@@ -1,25 +1,19 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints\Source;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
+use Elasticsearch\Endpoints\AbstractEndpoint;
 
 /**
  * Class Get
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Source
+ * @package  Elasticsearch\Endpoints\Source
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Get extends AbstractEndpoint
 {
     /**
@@ -46,7 +40,7 @@ class Get extends AbstractEndpoint
         $id = $this->id;
         $index = $this->index;
         $type = $this->type;
-        $uri   = "/$index/$type/$id/_source";
+        $uri = "/$index/$type/$id/_source";
 
         if (isset($index) === true && isset($type) === true && isset($id) === true) {
             $uri = "/$index/$type/$id/_source";
@@ -55,13 +49,12 @@ class Get extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'parent',
             'preference',
             'realtime',
@@ -72,9 +65,8 @@ class Get extends AbstractEndpoint
             '_source_include',
             'version',
             'version_type',
-        );
+        ];
     }
-
 
     /**
      * @return string

@@ -183,14 +183,14 @@ class ca_item_tags extends BaseModel {
 	 *
 	 */
 	public function getModeratedTags($pn_limit=0) {
-		return $this->getAllTags(false, $pn_limit);
+		return $this->getAllTags(true, $pn_limit);
 	}
 	# ------------------------------------------------------
 	/**
 	 *
 	 */
 	public function getUnmoderatedTags($pn_limit=0) {
-		return $this->getAllTags(true, $pn_limit);
+		return $this->getAllTags(false, $pn_limit);
 	}
 	# ------------------------------------------------------
 	/**
@@ -210,9 +210,9 @@ class ca_item_tags extends BaseModel {
 		
 		$vs_where = '';
 		
-		if ($pb_moderation_status === true) {
+		if ($pb_moderation_status === false) {
 			$vs_where = ' WHERE cixt.moderated_on IS NULL';
-		} elseif($pb_moderation_status === false) {
+		} elseif($pb_moderation_status === true) {
 			$vs_where = ' WHERE cixt.moderated_on IS NOT NULL';
 		} else {
 			$vs_where = '';

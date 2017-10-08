@@ -1,25 +1,18 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Explain
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints
+ * @package  Elasticsearch\Endpoints
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Explain extends AbstractEndpoint
 {
     /**
@@ -34,12 +27,10 @@ class Explain extends AbstractEndpoint
             return $this;
         }
 
-
         $this->body = $body;
+
         return $this;
     }
-
-
 
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
@@ -65,7 +56,7 @@ class Explain extends AbstractEndpoint
         $id = $this->id;
         $index = $this->index;
         $type = $this->type;
-        $uri   = "/$index/$type/$id/_explain";
+        $uri = "/$index/$type/$id/_explain";
 
         if (isset($index) === true && isset($type) === true && isset($id) === true) {
             $uri = "/$index/$type/$id/_explain";
@@ -74,13 +65,12 @@ class Explain extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'analyze_wildcard',
             'analyzer',
             'default_operator',
@@ -96,9 +86,8 @@ class Explain extends AbstractEndpoint
             '_source',
             '_source_exclude',
             '_source_include',
-        );
+        ];
     }
-
 
     /**
      * @return string

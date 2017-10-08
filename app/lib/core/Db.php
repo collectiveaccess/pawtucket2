@@ -38,7 +38,7 @@ require_once(__CA_LIB_DIR__."/core/Db/DbBase.php");
 require_once(__CA_LIB_DIR__."/core/Db/DbStatement.php");
 require_once(__CA_LIB_DIR__."/core/Db/DbResult.php");
 
-require_once(__CA_LIB_DIR__."/core/Error.php");
+require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
 require_once(__CA_LIB_DIR__."/core/Datamodel.php");
 require_once(__CA_LIB_DIR__."/core/Configuration.php");
 
@@ -264,7 +264,7 @@ class Db extends DbBase {
 		$o_stmt->dieOnError($this->getDieOnError());
 
 		// If second parameter is array use that as query params for placeholders, otherwise use successive params to fill placeholders
-		if (is_array($va_args[0])) {
+		if (is_array($va_args) && key_exists(0, $va_args) && is_array($va_args[0])) {
 			$o_res = $o_stmt->executeWithParamsAsArray($va_args[0], $pa_options);
 		} else {
 			$o_res = $o_stmt->executeWithParamsAsArray($va_args);

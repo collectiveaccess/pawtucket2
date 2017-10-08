@@ -40,10 +40,7 @@
                 if (stmt.memory_str) {
                     $('<span title="Memory usage" />').addClass(csscls('memory')).text(stmt.memory_str).appendTo(li);
                 }
-                if (typeof(stmt.is_success) != 'undefined' && !stmt.is_success) {
-                    li.addClass(csscls('error'));
-                    li.append($('<span />').addClass(csscls('error')).text("[" + stmt.error_code + "] " + stmt.error_message));
-                } else if (typeof(stmt.row_count) != 'undefined') {
+                if (typeof(stmt.row_count) != 'undefined') {
                     $('<span title="Row count" />').addClass(csscls('row-count')).text(stmt.row_count).appendTo(li);
                 }
                 if (typeof(stmt.stmt_id) != 'undefined' && stmt.stmt_id) {
@@ -54,7 +51,7 @@
                     li.attr("connection",stmt.connection);
                     if ( $.inArray(stmt.connection, filters) == -1 ) {
                         filters.push(stmt.connection);
-                        $('<a href="javascript:" />')
+                        $('<a />')
                             .addClass(csscls('filter'))
                             .text(stmt.connection)
                             .attr('rel', stmt.connection)
@@ -66,12 +63,16 @@
                         }
                     }
                 }
+                if (typeof(stmt.is_success) != 'undefined' && !stmt.is_success) {
+                    li.addClass(csscls('error'));
+                    li.append($('<span />').addClass(csscls('error')).text("[" + stmt.error_code + "] " + stmt.error_message));
+                }
                 if (stmt.params && !$.isEmptyObject(stmt.params)) {
                     var table = $('<table><tr><th colspan="2">Params</th></tr></table>').addClass(csscls('params')).appendTo(li);
                     for (var key in stmt.params) {
                         if (typeof stmt.params[key] !== 'function') {
                             table.append('<tr><td class="' + csscls('name') + '">' + key + '</td><td class="' + csscls('value') +
-                            '">' + stmt.params[key] + '</td></tr>');
+                                '">' + stmt.params[key] + '</td></tr>');
                         }
                     }
                     li.css('cursor', 'pointer').click(function() {
@@ -90,7 +91,7 @@
                 this.$status.empty();
 
                 // Search for duplicate statements.
-                for (var sql = {}, duplicate = 0, i = 0; i < data.statements.length; i++) {
+                for (var sql = {}, unique = 0, i = 0; i < data.statements.length; i++) {
                     var stmt = data.statements[i].sql;
                     if (data.statements[i].params && !$.isEmptyObject(data.statements[i].params)) {
                         stmt += ' {' + $.param(data.statements[i].params, false) + '}';
@@ -101,10 +102,10 @@
                 // Add classes to all duplicate SQL statements.
                 for (var stmt in sql) {
                     if (sql[stmt].keys.length > 1) {
-                        duplicate++;
+                        unique++;
                         for (var i = 0; i < sql[stmt].keys.length; i++) {
                             this.$list.$el.find('.' + csscls('list-item')).eq(sql[stmt].keys[i])
-                                .addClass(csscls('sql-duplicate')).addClass(csscls('sql-duplicate-'+duplicate));
+                                .addClass(csscls('sql-duplicate')).addClass(csscls('sql-duplicate-'+unique));
                         }
                     }
                 }
@@ -113,8 +114,9 @@
                 if (data.nb_failed_statements) {
                     t.append(", " + data.nb_failed_statements + " of which failed");
                 }
-                if (duplicate) {
-                    t.append(", " + duplicate + " of which were duplicated");
+                if (unique) {
+                    t.append(", " + (data.nb_statements - unique) + " of which were duplicated");
+                    t.append(", " + unique + " unique");
                 }
                 if (data.accumulated_duration_str) {
                     this.$status.append($('<span title="Accumulated duration" />').addClass(csscls('duration')).text(data.accumulated_duration_str));

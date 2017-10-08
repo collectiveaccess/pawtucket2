@@ -1,28 +1,21 @@
 <?php
-/**
- * User: zach
- * Date: 7/23/14
- * Time: 2:25 PM
- */
 
 namespace Elasticsearch\Endpoints\Template;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
+use Elasticsearch\Endpoints\AbstractEndpoint;
 
 /**
  * Class Delete
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints\Template
+ * @package  Elasticsearch\Endpoints\Template
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Delete extends AbstractEndpoint
 {
-
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
      * @return string
@@ -34,21 +27,22 @@ class Delete extends AbstractEndpoint
                 'id is required for Delete'
             );
         }
-        $templateId   = $this->id;
-        $uri  = "/_search/template/$templateId";
+        $templateId = $this->id;
+        $uri = "/_search/template/$templateId";
 
         return $uri;
     }
-
 
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array();
+        return [
+            'version',
+            'version_type',
+        ];
     }
-
 
     /**
      * @return string

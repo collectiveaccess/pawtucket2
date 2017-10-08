@@ -48,8 +48,8 @@
 		<div class="row">
 			<div class="col-sm-10">
 				<div class="form-group<?php print (($va_errors["feedback"]) ? " has-error" : ""); ?>">
-					<label for="feedback">Your message*</label>
-					<textarea class="form-control input-sm" id="sources" name="feedback" rows="5"><?php print $this->getVar("feedback");?></textarea>
+					<label for="feedback">Your message</label>
+					<textarea class="form-control input-sm" id="sources" name="feedback" rows="5" maxlength="500"><?php print $this->getVar("feedback");?></textarea>
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->
@@ -60,7 +60,7 @@
 		<div class="row">
 			<div class="col-sm-10">
 				<div class="form-group<?php print (($va_errors["information"]) ? " has-error" : ""); ?>">
-					<label for="information">What information are you seeking?*</label>
+					<label for="information">What information are you seeking?</label>
 					<textarea class="form-control input-sm" id="information" name="information" rows="5"><?php print $this->getVar("information");?></textarea>
 				</div>
 			</div><!-- end col -->
@@ -126,19 +126,27 @@
 		<div class="row">
 			<div class="col-md-9">
 				<div class="row">
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 							<label for="name">Name*</label>
 							<input type="text" class="form-control input-sm" id="email" placeholder="Enter name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : $vs_user_name; ?>">
 						</div>
 					</div><!-- end col -->
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
 							<label for="email">Email address*</label>
 							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $vs_user_email; ?>">
 						</div>
 					</div><!-- end col -->
-					<div class="col-sm-4">
+				</div><!-- end row -->
+				<div class="row">
+					<div class="col-sm-6">
+						<div class="form-group<?php print (($va_errors["phone"]) ? " has-error" : ""); ?>">
+							<label for="phone">Daytime telephone*</label>
+							<input type="text" class="form-control input-sm" id="phone" placeholder="Enter phone number" name="phone" value="<?php print $this->getVar("phone");?>">
+						</div>
+					</div><!-- end col -->
+					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
 							<label for="security">Security Question*</label>
 							<div class='row'>
@@ -150,60 +158,6 @@
 								</div>
 							</div><!--end row-->	
 						</div><!-- end form group -->
-					</div><!-- end col -->
-				</div><!-- end row -->
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="form-group<?php print (($va_errors["address1"]) ? " has-error" : ""); ?>">
-							<label for="address1">Address line 1</label>
-							<input type="text" class="form-control input-sm" id="address1" placeholder="Enter address" name="address1" value="<?php print $this->getVar("address1");?>">
-						</div>
-					</div><!-- end col -->
-					<div class="col-sm-6">
-						<div class="form-group<?php print (($va_errors["address2"]) ? " has-error" : ""); ?>">
-							<label for="address2">Address line 2</label>
-							<input type="text" class="form-control input-sm" id="address2" placeholder="Enter address" name="address2" value="<?php print $this->getVar("address2");?>">
-						</div>
-					</div><!-- end col -->
-				</div><!-- end row -->
-				<div class="row">
-					<div class="col-sm-3">
-						<div class="form-group<?php print (($va_errors["city"]) ? " has-error" : ""); ?>">
-							<label for="city">City</label>
-							<input type="text" class="form-control input-sm" id="city" placeholder="Enter city" name="city" value="<?php print $this->getVar("city");?>">
-						</div>
-					</div><!-- end col -->
-					<div class="col-sm-3">
-						<div class="form-group<?php print (($va_errors["state"]) ? " has-error" : ""); ?>">
-							<label for="state">State</label>
-							<input type="text" class="form-control input-sm" id="state" placeholder="Enter state" name="state" value="<?php print $this->getVar("state");?>">
-						</div>
-					</div><!-- end col -->
-					<div class="col-sm-3">
-						<div class="form-group<?php print (($va_errors["postalCode"]) ? " has-error" : ""); ?>">
-							<label for="postalCode">Postal/Zip code</label>
-							<input type="text" class="form-control input-sm" id="postalCode" placeholder="Enter postal code" name="postalCode" value="<?php print $this->getVar("postalCode");?>">
-						</div>
-					</div><!-- end col -->
-					<div class="col-sm-3">
-						<div class="form-group<?php print (($va_errors["country"]) ? " has-error" : ""); ?>">
-							<label for="country">Country</label>
-							<input type="text" class="form-control input-sm" id="country" placeholder="Enter country" name="country" value="<?php print $this->getVar("country");?>">
-						</div>
-					</div><!-- end col -->
-				</div><!-- end row -->
-				<div class="row">
-					<div class="col-sm-6">
-						<div class="form-group<?php print (($va_errors["phone"]) ? " has-error" : ""); ?>">
-							<label for="phone">Daytime telephone</label>
-							<input type="text" class="form-control input-sm" id="phone" placeholder="Enter phone number" name="phone" value="<?php print $this->getVar("phone");?>">
-						</div>
-					</div><!-- end col -->
-					<div class="col-sm-6">
-						<div class="form-group<?php print (($va_errors["fax"]) ? " has-error" : ""); ?>">
-							<label for="fax">Fax number</label>
-							<input type="text" class="form-control input-sm" id="fax" placeholder="Enter fax" name="fax" value="<?php print $this->getVar("fax");?>">
-						</div>
 					</div><!-- end col -->
 				</div><!-- end row -->
 

@@ -59,80 +59,6 @@
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
-if($this->request->getParameter("detailNav", pInteger)){
-?>
-	<div class="container"><div class="row bNavOptions" style="clear:both; position:relative;">
-	<div class="col-xs-12 col-sm-2">
-<?php
-	print _t("Related objects");	
-?>
-	</div><!-- end col -->
-	<div class="col-xs-12 col-sm-8 text-center bNavOptionsFilterList">
-<?php
-	if (sizeof($va_criteria) > 1) {
-		foreach($va_criteria as $va_criteria_info){
-			if($va_criteria_info["facet_name"] == "type_facet"){
-				print _t("Filtering by")." <i>".$va_criteria_info["value"]."</i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";
-			}
-		}
-?>
-		<a href="#" onClick="loadResults('<?php print caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => '1', 'openResultsInOverlay' => 1, 'search' => $this->request->getParameter("search", pString), 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)); ?>'); return false;">View All</a>
-<?php
-	}else{
-		if(is_array($va_facets["type_facet"]) && sizeof($va_facets["type_facet"])){
-			print _t("FILTER");
-			foreach($va_facets["type_facet"]["content"] as $vn_item_id => $va_item){
-?>
-				<a href="#" onClick="loadResults('<?php print caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => '1', 'openResultsInOverlay' => 1, 'key' => $vs_browse_key, 'facet' => 'type_facet', 'id' => $va_item['id'], 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)); ?>'); return false;"><?php print $va_item["label"]; ?></a>
-<?php
-			}
-		}
-	}
-?>
-	</div><!-- end col -->
-	<div class="col-xs-12 col-sm-2">
-<?php
-		print _t("View");
-		if(is_array($va_views) && (sizeof($va_views) > 1)){
-			foreach($va_views as $vs_view => $va_view_info) {
-				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active">'.$va_view_icons[$vs_view]['icon'].'</a> ';
-				} else {
-?>
-					<a href="#" onClick="loadResults('<?php print caNavUrl($this->request, '', 'Search', 'objects', array('detailNav' => '1', 'openResultsInOverlay' => 1, 'key' => $vs_browse_key, 'view' => $vs_view), array('dontURLEncodeParameters' => true)); ?>'); return false;"><?php print $va_view_icons[$vs_view]['icon']; ?></a>
-<?php
-				}
-			}
-		}
-?>			
-	</div><!-- end col -->
-</div><!-- end row --></div><!-- end container -->
-<br/><br/>
-<script type="text/javascript">		
-	function loadResults(url) {
-		jQuery("#browseResultsContainer").data('jscroll', null);
-		jQuery("#browseResultsContainer").load(url, function() {
-			jQuery("#browseResultsContainer").jscroll({
-				autoTrigger: true,
-				loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-				padding: 20,
-				nextSelector: "a.jscroll-next"
-			});
-		});
-	}
-</script>
-<?php
-}
-if (!$vb_ajax) {	// !ajax
-?>
-<div class="container">
-<div class="row bNavOptions" style="clear:both; position:relative;">
-	<div class="col-xs-12 col-sm-5">
-<?php
-	print $va_browse_info["displayName"]." <span class='grayText'>(".$qr_res->numHits()." result".(($qr_res->numHits() != 1 ? "s" : "")).")</span>";	
-?>
-	</div><!-- end col -->
-<?php
 	$vs_search = "";
 	if (sizeof($va_criteria) > 0) {
 		foreach($va_criteria as $va_criterion) {
@@ -143,17 +69,261 @@ if (!$vb_ajax) {	// !ajax
 		}
 		reset($va_criteria);
 	}
+
+if($vs_table == "ca_collections"){
+	if($qr_res->numHits()== 0){
 ?>
-	<div class="col-xs-12 col-sm-3">
+		<H1>Your search found no results.</H1>
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+				jQuery('#collectionSearch').delay(1000).slideUp();
+			});
+		</script>	
+<?php
+	}
+}
+if($this->request->getParameter("openResultsInOverlay", pInteger)){
+	$vn_search_id = "";  # entity_id or occurrence_id passed through to search from entity/occurrence detail pages.  It can be extracted from the search term
+	# --- get the search_id from the search string
+	if($vs_search){
+		$vn_start_pos = strpos($vs_search, ":");
+		if($vn_start_pos){
+			$vn_search_id = substr($vs_search, $vn_start_pos + 1);
+			$this->setVar("search_id", $vn_search_id); # --- pass through to results
+		} 
+		if($vs_table == 'ca_occurrences'){
+			# --- these are occ results appearing on an entity detail page
+			$vs_entity_role = "";
+			$vs_entity_role_code = 
+			# was a role passed in the filter?
+			$vn_start_pos2 = strpos($vs_search, "/");
+			if($vn_start_pos2){
+				$vs_entity_role_code = substr($vs_search, $vn_start_pos2 + 1);
+				$vs_entity_role_code = str_replace(":".$vn_search_id, "", $vs_entity_role_code);
+				# --- get label for filtered upon role
+				$t_rel_types = new ca_relationship_types();
+				$t_rel_types->load(array("type_code" => $vs_entity_role_code));
+				$vs_entity_role = $t_rel_types->get("ca_relationship_types.preferred_labels.typename");
+			}
+		}
+	}
+	if($vs_table == 'ca_occurrences'){
+		$va_ent_x_occ_relationship_types = array();
+		$vn_principal_artist_type_id = "";
+		$rel_types = new ca_relationship_types();
+		$va_ent_x_occ_relationship_types = $rel_types->getRelationshipInfo("ca_entities_x_occurrences");
+		$rel_types->load(array("type_code" => "principal_artist"));
+		$vn_principal_artist_type_id = $rel_types->get("type_id");
+		$va_roles_for_entity = array();
+		$va_roles_by_occurrence = array();
+		if($vn_search_id){
+			# --- get all roles/relationship types associated with the entity so can filter by role
+			$t_list = new ca_lists();
+ 			$vn_event_id = $t_list->getItemIDFromList('occurrence_types', 'special_event');
+ 			$vn_production_id = $t_list->getItemIDFromList('occurrence_types', 'production');
+ 			$vn_work_id = $t_list->getItemIDFromList('occurrence_types', 'work');
+			$o_db = new Db();
+			$q_rel_type_ids = $o_db->query("
+											SELECT exo.entity_id, exo.occurrence_id, exo.type_id 
+											FROM ca_entities_x_occurrences exo 
+											INNER JOIN ca_occurrences AS o ON exo.occurrence_id = o.occurrence_id
+											WHERE exo.entity_id = ? AND o.type_id IN (".$vn_event_id.", ".$vn_production_id.", ".$vn_work_id.") AND o.access IN (".join(", ", $va_access_values).") AND o.deleted = 0
+											", $vn_search_id); // (removed , ".$vn_work_id." from the o.type_id list)
+			if($q_rel_type_ids->numRows()){
+				while($q_rel_type_ids->nextRow()){
+					if($q_rel_type_ids->get("type_id") != $vn_principal_artist_type_id){
+						$va_roles_by_occurrence[$q_rel_type_ids->get("occurrence_id")][] = $va_ent_x_occ_relationship_types[$q_rel_type_ids->get("type_id")]["typename"];
+						$va_roles_for_entity[$q_rel_type_ids->get("type_id")] = array("typename" => $va_ent_x_occ_relationship_types[$q_rel_type_ids->get("type_id")]["typename"], "code" => $va_ent_x_occ_relationship_types[$q_rel_type_ids->get("type_id")]["type_code"]);
+					}
+				}
+			}
+		}
+		$this->setVar("entity_roles_by_occurrence", $va_roles_by_occurrence);
+	}	
+}
+if($this->request->getParameter("detailNav", pInteger)){
+	# --- this is the filter/sort nav bar above related objects and productions on production/entity detail pages.
+	$vs_search_target = ""; # objects, occurrences --- used to construct links properly --- all nav links must target the container they were ajax loaded in and return the correct type of results
+	$vs_load_function = ""; # js function name changes based on target to allow results for both objects and occurrences to be loaded on the same page...can't use the same function anme twice
+	$vs_search_string = ""; # what are we searching by, entities of occurrences depending on what detail page we're on
+	$vn_end_pos = strpos($vs_search, "/");
+	if($vn_end_pos){
+		$vs_search_string = substr($vs_search, 0, $vn_end_pos);
+		$this->setVar("search_string", $vs_search_string); # --- pass through to results
+	}else{
+		$vn_end_pos = strpos($vs_search, ":");
+		if($vn_end_pos){
+			$vs_search_string = substr($vs_search, 0, $vn_end_pos);
+			$this->setVar("search_string", $vs_search_string); # --- pass through to results
+		}
+	}	
+	print "<H1 class='detailResults'>";
+	switch($vs_table){
+		case "ca_objects":
+			print _t("Related Objects");
+			$vs_search_target = "objects";
+			$vs_load_function = "loadResults";
+		break;
+		# -----
+		case "ca_occurrences":
+			print _t("Related Productions & Events");
+			$vs_search_target = "occurrences";
+			$vs_load_function = "loadResultsOcc";
+		break;
+	}
+	print "</H1>";
+	print "<div class='resultsLeader'>".$qr_res->numHits()." Result".(($qr_res->numHits() == 1) ? "" : "s")."</div>";
+	# --- if there are 6 or less related occ's on the entity detail page, do not show the filter navigation, only the title
+	if(($vs_table == "ca_occurrences") && ($qr_res->numHits() < 7) && (sizeof($va_criteria) > 2)){
+		print "<hr class='divide'/><br/>";
+	}else{
+
+?>
+		<div class="container"><div class="row bNavOptions detailBrowse" style="clear:both; position:relative;">
+<?php
+		# --- are we displaying the filter bycolumn?
+		$vb_show_filter_by = false;
+		if($vs_entity_role || (sizeof($va_criteria) > 1) || (is_array($va_facets["type_facet"]) && sizeof($va_facets["type_facet"]["content"]) > 1) || ($vs_table == "ca_occurrences" && is_array($va_roles_for_entity) && sizeof($va_roles_for_entity) > 1)){
+			$vb_show_filter_by = true;
+?>
+		<div class="col-xs-12 col-sm-5 col-md-5 col-lg-4">FILTER BY
+<?php
+		}
+		if($vs_entity_role || (sizeof($va_criteria) > 1)){
+			if(sizeof($va_criteria) > 1){
+				# --- check if type criteria has been selected
+				foreach($va_criteria as $va_facet_criteria){
+					if($va_facet_criteria["facet_name"] == "type_facet"){
+						print '<div class="btn-group filterSelected"><a href="#" onClick="'.$vs_load_function.'(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'openResultsInOverlay' => 1, 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\', \''.$vs_search_string.':'.$vn_search_id.'\'); return false;"><highlight>Type</highlight> '.$va_facet_criteria["value"].' <span class="icon-cross"></span></a></div>';
+				
+						break;
+					}
+				}
+			}
+			if($vs_entity_role){
+				# --- display filtered role
+				print '<div class="btn-group filterSelected"><a href="#" onClick="'.$vs_load_function.'(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'openResultsInOverlay' => 1, 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\', \''.$vs_search_string.':'.$vn_search_id.'\'); return false;"><highlight>Artistic Role</highlight> '.$vs_entity_role.' <span class="icon-cross"></span></a></div>';
+			}
+		}else{
+			if(is_array($va_facets["type_facet"]) && sizeof($va_facets["type_facet"]) && sizeof($va_facets["type_facet"]["content"]) > 1){
+?>
+				<div class="btn-group filter">
+					<a href="#" data-toggle="dropdown"><highlight>Type</highlight><i class="fa fa-caret-down"></i></a>
+					<ul class="dropdown-menu" role="menu">
+<?php
+						foreach($va_facets["type_facet"]["content"] as $vn_item_id => $va_item){
+							print '<li><a href="#" onClick="'.$vs_load_function.'(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'openResultsInOverlay' => 1, 'key' => $vs_browse_key, 'facet' => 'type_facet', 'id' => $va_item['id'], 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.$va_item["label"].'</a></li>';
+						}
+?>
+					</ul>
+				</div><!-- end btn-group -->
+<?php
+			}
+			if($vs_table == "ca_occurrences" && is_array($va_roles_for_entity) && sizeof($va_roles_for_entity) > 1){
+				# show role filter for occ results on entity detail
+?>
+				<div class="btn-group filter">
+					<a href="#" data-toggle="dropdown"><highlight>Artistic Role</highlight><i class="fa fa-caret-down"></i></a>
+					<ul class="dropdown-menu" role="menu">
+<?php
+						foreach($va_roles_for_entity as $vn_type_id => $va_role_info){
+							print '<li><a href="#" onClick="'.$vs_load_function.'(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'openResultsInOverlay' => 1, 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\', \''.$vs_search_string.'/'.$va_role_info['code'].':'.$vn_search_id.'\'); return false;">'.$va_role_info['typename'].'</a></li>';
+						}
+?>
+					</ul>
+				</div><!-- end btn-group -->
+<?php
+			}
+		}
+		if($vb_show_filter_by){
+?>
+		</div><!-- end col -->
+<?php
+		}
+?>
+		<div class="col-xs-7 col-sm-5 col-md-4 text-left">SORT BY 
+			<div class="btn-group filter">
+				<a href="#" data-toggle="dropdown"><highlight><?php print urldecode($vs_current_sort); ?></highlight><i class="fa fa-caret-down"></i></a>
+				<ul class="dropdown-menu" role="menu">
+<?php
+					if($vs_sort_control_type == 'dropdown'){
+						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
+							print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
+							foreach($va_sorts as $vs_sort => $vs_sort_flds) {
+								if ($vs_current_sort === $vs_sort) {
+									print "<li><a href='#' onClick='return false;'><em>{$vs_sort}</em></a></li>\n";
+								} else {
+									print '<li><a href="#" onClick="'.$vs_load_function.'(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'openResultsInOverlay' => 1, 'key' => $vs_browse_key, 'sort' => $vs_sort, 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.$vs_sort.'</a></li>';
+								}
+							}
+							print "<li class='divider'></li>\n";
+							print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
+							print '<li><a href="#" onClick="'.$vs_load_function.'(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'openResultsInOverlay' => 1, 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'asc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : '').'</a></li>';
+							print '<li><a href="#" onClick="'.$vs_load_function.'(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'openResultsInOverlay' => 1, 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'desc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : '').'</a></li>';
+						}
+					}
+?>
+				</ul>
+			</div><!-- end btn-group -->
+		</div><!-- end col -->
+		<div class="<?php print ($vb_show_filter_by) ? "col-xs-0 col-sm-0 col-md-0 col-lg-2" : "col-xs-0 col-sm-5 col-md-5 col-lg-6"; ?> blankSpace"></div>
+		<div class="col-xs-5 col-sm-2 col-md-3 col-lg-2">
+<?php
+			print _t("View");
+			if(is_array($va_views) && (sizeof($va_views) > 1)){
+				foreach($va_views as $vs_view => $va_view_info) {
+					if ($vs_current_view === $vs_view) {
+						print '<a href="#" class="active" onCLick="return false;">'.$va_view_icons[$vs_view]['icon'].'</a> ';
+					} else {
+?>
+						<a href="#" onClick="<?php print $vs_load_function; ?>('<?php print caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'openResultsInOverlay' => 1, 'key' => $vs_browse_key, 'view' => $vs_view), array('dontURLEncodeParameters' => true)); ?>', ''); return false;"><?php print $va_view_icons[$vs_view]['icon']; ?></a>
+<?php
+					}
+				}
+			}
+?>			
+		</div><!-- end col -->
+	</div><!-- end row --></div><!-- end container -->
+	<br/><br/>
+	<script type="text/javascript">		
+		function <?php print $vs_load_function; ?>(url, searchParam) {
+			jQuery("#browseResultsContainer<?php print ($vs_table == ca_occurrences) ? "Occ" : ""; ?>").data('jscroll', null);
+			jQuery("#browseResultsContainer<?php print ($vs_table == ca_occurrences) ? "Occ" : ""; ?>").load(url, {'search': searchParam}, function() {
+				jQuery("#browseResultsContainer<?php print ($vs_table == ca_occurrences) ? "Occ" : ""; ?>").jscroll({
+					autoTrigger: true,
+					loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+					padding: 20,
+					nextSelector: "a.jscroll-next"
+				});
+			});
+		}
+	</script>
+<?php
+	}
+}
+if (!$vb_ajax) {	// !ajax
+	# --- are we showing the views dropdown?
+	$vb_show_views = false;
+	if(($vs_table != ca_occurrences) && (is_array($va_views) && (sizeof($va_views) > 1))){
+		$vb_show_views = true;
+	}
+?>
+<div class="container">
+<div class="row bNavOptions fullBrowse" style="clear:both; position:relative;">
+	<div class="col-xs-12 col-sm-12 col-md-4">
+<?php
+	print $va_browse_info["displayName"]." <span class='grayText'>(".$qr_res->numHits()." result".(($qr_res->numHits() != 1 ? "s" : "")).")</span>";	
+?>
+	</div><!-- end col -->
+	<div class="<?php print ($vb_show_views) ? "col-xs-12 col-sm-5 col-md-3" : "col-xs-12 col-sm-5 col-md-4"; ?>">
 		<form role="search" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-			<button type="submit" class="btn-search pull-right"><span class="icon-magnifier"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within" <?php print ($vs_search) ? "value='".$vs_search."'" : ""; ?>" name="search">
-			<!--<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
-			<input type="hidden" name="facet" value="_search">-->
+			<button type="submit" class="btn-search pull-right"><span class="icon-magnifier"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within" <?php #print ($vs_search) ? "value='".$vs_search."'" : ""; ?> name="search_refine">
+			<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 		</form>
 	</div><!-- end col -->
-	<div class="col-xs-12 col-sm-2">
+	<div class="<?php print ($vb_show_views) ? "col-xs-7 col-sm-4 col-md-3" : "col-xs-12 col-sm-7 col-md-4"; ?>">
 		<div class="btn-group">
-			<a href="#" data-toggle="dropdown">SORT<i class="fa fa-caret-down"></i></a>
+			<a href="#" data-toggle="dropdown">SORT BY <highlight><?php print urldecode($vs_current_sort); ?></highlight><i class="fa fa-caret-down"></i></a>
 			<ul class="dropdown-menu" role="menu">
 <?php
 				if($vs_sort_control_type == 'dropdown'){
@@ -176,20 +346,24 @@ if (!$vb_ajax) {	// !ajax
 			</ul>
 		</div><!-- end btn-group -->
 	</div><!-- end col -->
-	<div class="col-xs-12 col-sm-2">
 <?php
-		print _t("View");
-		if(is_array($va_views) && (sizeof($va_views) > 1)){
+		if($vb_show_views){
+?>
+	<div class="col-xs-5 col-sm-3 col-md-2">
+<?php
+			print _t("View");
 			foreach($va_views as $vs_view => $va_view_info) {
 				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active">'.$va_view_icons[$vs_view]['icon'].'</span></a> ';
+					print '<a href="#" class="active" onClick="return false;">'.$va_view_icons[$vs_view]['icon'].'</a> ';
 				} else {
 					print caNavLink($this->request, $va_view_icons[$vs_view]['icon'], 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 				}
 			}
-		}
-?>			
+?>
 	</div><!-- end col -->
+<?php
+		}
+?>
 </div><!-- end row --></div><!-- end container -->
 		<div class="row">
 			<div class="col-xs-12">
@@ -224,7 +398,7 @@ if (!$vb_ajax) {	// !ajax
 		</div>	
 		<div class="row">
 <?php
-	if((sizeof($va_facets) > 0) || ((sizeof($va_criteria) > 0) && ($qr_res->numHits()))){
+	if((sizeof($va_facets) > 0) || ((sizeof($va_criteria) > 0))){
 ?>
 			<div class="col-sm-4 col-md-4 col-lg-4">
 				<?php print $this->render("Browse/browse_refine_subview_html.php"); ?>			
@@ -257,7 +431,7 @@ if (!$vb_ajax) {	// !ajax
 		jQuery('#browseResultsContainer').jscroll({
 			autoTrigger: true,
 			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-			padding: 60,
+			padding: 800,
 			nextSelector: 'a.jscroll-next'
 		});
 		

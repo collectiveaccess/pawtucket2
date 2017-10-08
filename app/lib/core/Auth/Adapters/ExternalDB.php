@@ -35,12 +35,12 @@ require_once(__CA_LIB_DIR__.'/core/Auth/PasswordHash.php');
 
 class ExternalDBAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 	# --------------------------------------------------------------------------------
-	public static function authenticate($ps_username, $ps_password = '', $pa_options=null) {
+	public function authenticate($ps_username, $ps_password = '', $pa_options=null) {
 		if(!$ps_username) {
 			return false;
 		}
 
-		$o_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
+		$o_auth_config = Configuration::load(Configuration::load()->get('authentication_config'));
 
 		$o_log = new Eventlog();
 
@@ -97,7 +97,7 @@ class ExternalDBAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 		return false;
 	}
 	# --------------------------------------------------------------------------------
-	public static function createUserAndGetPassword($ps_username, $ps_password) {
+	public function createUserAndGetPassword($ps_username, $ps_password) {
 		// We don't create users in external databases, we assume they're already there
 
 		// We will create a password hash that is compatible with the CaUsers authentication adapter though
@@ -106,8 +106,8 @@ class ExternalDBAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 		return create_hash($ps_password);
 	}
 	# --------------------------------------------------------------------------------
-	public static function getUserInfo($ps_username, $ps_password) {
-		$o_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
+	public function getUserInfo($ps_username, $ps_password) {
+		$o_auth_config = Configuration::load(Configuration::load()->get('authentication_config'));
 
 		// external database config
 		$vs_extdb_host = $o_auth_config->get("extdb_host");
@@ -241,7 +241,7 @@ class ExternalDBAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 		return $va_return;
 	}
 	# --------------------------------------------------------------------------------
-	public static function supports($pn_feature) {
+	public function supports($pn_feature) {
 		switch($pn_feature){
 			case __CA_AUTH_ADAPTER_FEATURE_AUTOCREATE_USERS__:
 				return true;
@@ -252,15 +252,15 @@ class ExternalDBAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 		}
 	}
 	# --------------------------------------------------------------------------------
-	public static function deleteUser($ps_username) {
+	public function deleteUser($ps_username) {
 		// do something?
 		return true;
 	}
 	# --------------------------------------------------------------------------------
-	public static function getAccountManagementLink() {
-		$o_auth_cfg = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
+	public function getAccountManagementLink() {
+		$o_auth_cfg = Configuration::load(Configuration::load()->get('authentication_config'));
 
-		if($vs_link = $o_auth_cfg->get('extdb_manage_account_url')) {
+		if($vs_link = $o_auth_cfg->get('manage_account_url')) {
 			return $vs_link;
 		}
 

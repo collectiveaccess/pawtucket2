@@ -19,7 +19,7 @@
 
 namespace Doctrine\Common\Cache;
 
-use Redis;
+ use Redis;
 
 /**
  * Redis cache provider.
@@ -44,10 +44,9 @@ class RedisCache extends CacheProvider
      */
     public function setRedis(Redis $redis)
     {
-        $redis->setOption(Redis::OPT_SERIALIZER, $this->getSerializerValue());
-        $this->redis = $redis;
+	 $redis->setOption(Redis::OPT_SERIALIZER, $this->getSerializerValue());   
+         $this->redis = $redis;
     }
-
     /**
      * Gets the redis instance used by the cache.
      *
@@ -71,15 +70,14 @@ class RedisCache extends CacheProvider
      */
     protected function doFetchMultiple(array $keys)
     {
-        $returnValues = array();
         $fetchedItems = $this->redis->mget($keys);
-        foreach ($keys as $key) {
-            if (isset($fetchedItems[$key])) {
-                $returnValues[$key] = $fetchedItems[$key];
-            }
-        }
 
-        return $returnValues;
+        return array_filter(
+            array_combine($keys, $fetchedItems),
+            function ($value) {
+                return $value !== false;
+            }
+        );
     }
 
     /**
@@ -107,7 +105,7 @@ class RedisCache extends CacheProvider
      */
     protected function doDelete($id)
     {
-        return $this->redis->delete($id) > 0;
+        return $this->redis->delete($id) >= 0;
     }
 
     /**
@@ -125,8 +123,8 @@ class RedisCache extends CacheProvider
     {
         $info = $this->redis->info();
         return array(
-            Cache::STATS_HITS   => false,
-            Cache::STATS_MISSES => false,
+            Cache::STATS_HITS   => $info['keyspace_hits'],
+            Cache::STATS_MISSES => $info['keyspace_misses'],
             Cache::STATS_UPTIME => $info['uptime_in_seconds'],
             Cache::STATS_MEMORY_USAGE      => $info['used_memory'],
             Cache::STATS_MEMORY_AVAILABLE  => false

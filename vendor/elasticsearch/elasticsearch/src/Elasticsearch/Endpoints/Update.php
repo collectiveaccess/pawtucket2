@@ -1,25 +1,18 @@
 <?php
-/**
- * User: zach
- * Date: 01/20/2014
- * Time: 14:34:49 pm
- */
 
 namespace Elasticsearch\Endpoints;
 
-use Elasticsearch\Endpoints\AbstractEndpoint;
 use Elasticsearch\Common\Exceptions;
 
 /**
  * Class Update
  *
  * @category Elasticsearch
- * @package Elasticsearch\Endpoints
+ * @package  Elasticsearch\Endpoints
  * @author   Zachary Tong <zachary.tong@elasticsearch.com>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
  * @link     http://elasticsearch.org
  */
-
 class Update extends AbstractEndpoint
 {
     /**
@@ -34,12 +27,10 @@ class Update extends AbstractEndpoint
             return $this;
         }
 
-
         $this->body = $body;
+
         return $this;
     }
-
-
 
     /**
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
@@ -65,7 +56,7 @@ class Update extends AbstractEndpoint
         $id = $this->id;
         $index = $this->index;
         $type = $this->type;
-        $uri   = "/$index/$type/$id/_update";
+        $uri = "/$index/$type/$id/_update";
 
         if (isset($index) === true && isset($type) === true && isset($id) === true) {
             $uri = "/$index/$type/$id/_update";
@@ -74,13 +65,12 @@ class Update extends AbstractEndpoint
         return $uri;
     }
 
-
     /**
      * @return string[]
      */
     protected function getParamWhitelist()
     {
-        return array(
+        return [
             'consistency',
             'fields',
             'lang',
@@ -90,14 +80,15 @@ class Update extends AbstractEndpoint
             'retry_on_conflict',
             'routing',
             'script',
+            'script_id',
+            'scripted_upsert',
             'timeout',
             'timestamp',
             'ttl',
             'version',
             'version_type',
-        );
+        ];
     }
-
 
     /**
      * @return string

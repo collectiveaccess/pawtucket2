@@ -55,9 +55,9 @@
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
-	
+	<meta name="Description" content="The BAM Hamm Archives is a rich resource documenting more than 150 years of BAM history.  The digital archive is generously funded by the Leon Levy Foundation" />
 	<script type="text/javascript">window.caBasePath = '<?php print $this->request->getBaseUrlPath(); ?>';</script>
-
+	<link rel="icon" href="<?php print caGetThemeGraphicUrl($this->request, 'favicon.ico'); ?>">
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
@@ -86,13 +86,12 @@
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
 					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
+					<?php print ($this->request->isLoggedIn()) ? "<span class='icon-user-heart'></span>" : "<span class='icon-user'></span>"; ?>
 				</button>
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
 					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
+					<i class="fa fa-bars"></i>
+
 				</button>
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'bam_logo.png'), "navbar-brand", "", "","");
@@ -101,20 +100,24 @@
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
-			<div class="collapse navbar-collapse" id="user-navbar-toggle">
-				<ul class="nav navbar-nav">					
 <?php
-							print $vs_user_links;
+	if ($vb_has_user_links) {
 ?>
+			<div class="collapse navbar-collapse" id="user-navbar-toggle">
+				<ul class="nav navbar-nav">
+					<?php print join("\n", $va_user_links); ?>
 				</ul>
 			</div>
+<?php
+	}
+?>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 <?php
 	if ($vb_has_user_links) {
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
-					<li class="dropdown"  style="position:relative;border-right:4px solid #000;">
-						<a href="#" class="dropdown-toggle userIcon" data-toggle="dropdown"><span class="icon-user"></span></a>
+					<li class="dropdown" style="position:relative;">
+						<a href="#" class="dropdown-toggle userIcon" data-toggle="dropdown"><?php print ($this->request->isLoggedIn()) ? "<span class='icon-user-heart'></span>" : "<span class='icon-user'></span>"; ?></a>
 						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
@@ -126,22 +129,24 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search">
+							<input type="text" class="form-control" placeholder="Search" name="search" id="navSearch">
 						</div>
-						<button type="submit" class="btn-search"><span class="fa fa-search"></span></button>
+						<button type="submit" class="btn-search" id="navSearchButton"><span class="icon-magnifier"></span></button>
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right">
 <?php
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>Browse <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>\n<li>".caNavLink($this->request, 'People & Organizations', 'first', '', 'Browse', 'entities')."</li>\n"; 
-					print "<li>".caNavLink($this->request, 'Productions & Events', 'last', '', 'Browse', 'occurrences')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Productions & Events', '', '', 'Browse', 'occurrences', array("view" => "list"))."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Programming History', 'last', '', 'ProgramHistory', 'Index')."</li>\n"; 
+					print "<li>".caNavLink($this->request, 'Archival Collections', '', '', 'Collections', 'Index')."</li>\n";
 					print "</ul></li>";
 					print "<li class='dropdown' style='position:relative;'><a href='#' class='dropdown-toggle' data-toggle='dropdown'>For Researchers <span class='caret'></span></a>\n";
 					print "<ul class='dropdown-menu'>"; 
 					print "<li>".caNavLink($this->request, 'Advanced Search', 'first', '', 'Search', 'advanced/objects')."</li>\n";
-					print "<li>".caNavLink($this->request, 'Browse Archival Collections', '', '', 'FindingAid', 'Collection/Index')."</li>\n";
-					print "<li>".caNavLink($this->request, 'About the Archives', 'last', '', 'About', 'Index')."</li>\n";					
+					#print "<li>".caNavLink($this->request, 'Archival Services', 'last', '', 'About', 'ArchivalServices')."</li>\n";					
+					print "<li>".caNavLink($this->request, 'About BAM Hamm Archives', 'last', '', 'About', 'Index')."</li>\n";			
 					print "</ul></li>";
 
 					#print $this->render("pageFormat/browseMenu.php");
@@ -150,6 +155,17 @@
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
+<script type="text/javascript">
+	jQuery(document).ready(function() {
+		$( "#navSearch" ).focus(function() {
+		  $("#navSearchButton").addClass("navSearchButtonHighlight");
+		});
+		
+		$( "#navSearch" ).focusout(function() {
+		  $("#navSearchButton").removeClass("navSearchButtonHighlight");
+		});
+	});
+</script>
 <?php
 	if($this->request->getController() != "Front"){
 ?>

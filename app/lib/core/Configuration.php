@@ -87,16 +87,19 @@ class Configuration {
 
 	/* ---------------------------------------- */
 	/**
+	 * Load a configuration file
+	 *
 	 * @param string $ps_file_path
-	 * @param bool $pb_dont_cache
-	 * @param bool $pb_dont_cache_instance
+	 * @param bool $pb_dont_cache Don't use config file cached. [Default is false]
+	 * @param bool $pb_dont_cache_instance Don't attempt to cache config file Configuration instance. [Default is false]
+	 * @param bool $pb_dont_load_from_default_path Don't attempt to load additional configuration files from default paths (defined by __CA_LOCAL_CONFIG_DIRECTORY__ and __CA_LOCAL_CONFIG_DIRECTORY__). [Default is false]
 	 * @return Configuration
 	 */
-	static function load($ps_file_path=__CA_APP_CONFIG__, $pb_dont_cache=false, $pb_dont_cache_instance=false) {
+	static function load($ps_file_path=__CA_APP_CONFIG__, $pb_dont_cache=false, $pb_dont_cache_instance=false, $pb_dont_load_from_default_path=false) {
 		if(!$ps_file_path) { $ps_file_path = __CA_APP_CONFIG__; }
 
 		if(!MemoryCache::contains($ps_file_path, 'ConfigurationInstances') || $pb_dont_cache || $pb_dont_cache_instance) {
-			MemoryCache::save($ps_file_path, new Configuration($ps_file_path, true, $pb_dont_cache), 'ConfigurationInstances');
+			MemoryCache::save($ps_file_path, new Configuration($ps_file_path, true, $pb_dont_cache, $pb_dont_load_from_default_path), 'ConfigurationInstances');
 		}
 
 		return MemoryCache::fetch($ps_file_path, 'ConfigurationInstances');
@@ -109,12 +112,13 @@ class Configuration {
 	 *		$g_configuration_cache_suffix - any text it contains is used along with the configuration path and $g_ui_locale to compute the MD5 signature of the current configuration for caching purposes. By setting this to some value you can support simultaneous caching of configurations for several different modes. This is mainly used to support caching of theme-specific configurations. Since the theme can change based upon user agent, we need to potentially keep several computed configurations cached at the same time, one for each theme used.
 	 *
 	 * @param string $ps_file_path Absolute path to configuration file to parse
-	 * @param bool $pb_die_on_error If true, request processing will halt with call to die() on error in parsing config file
-	 * @param bool $pb_dont_cache If true, file will be parsed even if it's already cached
+	 * @param bool $pb_die_on_error If true, request processing will halt with call to die() on error in parsing config file. [Default is false]
+	 * @param bool $pb_dont_cache If true, file will be parsed even if it's already cached. [Default is false]
+	 * @param bool $pb_dont_load_from_default_path Don't attempt to load additional configuration files from default paths (defined by __CA_LOCAL_CONFIG_DIRECTORY__ and __CA_LOCAL_CONFIG_DIRECTORY__). [Default is false]
 	 *
 	 *
 	 */
-	public function __construct($ps_file_path=__CA_APP_CONFIG__, $pb_die_on_error=false, $pb_dont_cache=false) {
+	public function __construct($ps_file_path=__CA_APP_CONFIG__, $pb_die_on_error=false, $pb_dont_cache=false, $pb_dont_load_from_default_path=false) {
 		global $g_ui_locale, $g_configuration_cache_suffix;
 
 		$this->ops_config_file_path = $ps_file_path ? $ps_file_path : __CA_APP_CONFIG__;	# path to configuration file
@@ -129,10 +133,12 @@ class Configuration {
 
 
 		$vs_local_conf_file_path = null;
-		if (defined('__CA_LOCAL_CONFIG_DIRECTORY__') && file_exists(__CA_LOCAL_CONFIG_DIRECTORY__.'/'.$vs_config_filename)) {
-			$vs_local_conf_file_path = __CA_LOCAL_CONFIG_DIRECTORY__.'/'.$vs_config_filename;
-		} elseif (defined('__CA_DEFAULT_THEME_CONFIG_DIRECTORY__') && file_exists(__CA_DEFAULT_THEME_CONFIG_DIRECTORY__.'/'.$vs_config_filename)) {
-			$vs_local_conf_file_path = __CA_DEFAULT_THEME_CONFIG_DIRECTORY__.'/'.$vs_config_filename;
+		if (!$pb_dont_load_from_default_path) {
+			if (defined('__CA_LOCAL_CONFIG_DIRECTORY__') && file_exists(__CA_LOCAL_CONFIG_DIRECTORY__.'/'.$vs_config_filename)) {
+				$vs_local_conf_file_path = __CA_LOCAL_CONFIG_DIRECTORY__.'/'.$vs_config_filename;
+			} elseif (defined('__CA_DEFAULT_THEME_CONFIG_DIRECTORY__') && file_exists(__CA_DEFAULT_THEME_CONFIG_DIRECTORY__.'/'.$vs_config_filename)) {
+				$vs_local_conf_file_path = __CA_DEFAULT_THEME_CONFIG_DIRECTORY__.'/'.$vs_config_filename;
+			}
 		}
 
 		// try to figure out if we can get it from cache
@@ -247,7 +253,7 @@ class Configuration {
 			$vn_tok_count = sizeof($va_token_tmp);
 			for($vn_i = 0; $vn_i < $vn_tok_count; $vn_i++) {
 				if (strlen($va_token_tmp[$vn_i])) {
-					$va_tokens[] = &$va_token_tmp[$vn_i];
+					$va_tokens[] =& $va_token_tmp[$vn_i];
 				}
 			}
 			while (sizeof($va_tokens)) {
@@ -291,8 +297,18 @@ class Configuration {
 								if(!is_array($this->ops_config_settings["assoc"][$vs_key]) || !$vb_merge_mode) {
 									$this->ops_config_settings["assoc"][$vs_key] = array();
 								}
-								$va_assoc_pointer_stack[] = &$this->ops_config_settings["assoc"][$vs_key];
+								$va_assoc_pointer_stack[] =& $this->ops_config_settings["assoc"][$vs_key];
 								$vn_state = 40;
+								break;
+							case '"':
+								if($vn_in_quote) {
+									$vn_in_quote = 0;
+									$vn_state = -1;
+								} else {
+									$vs_scalar_value = '';
+									$vn_in_quote = 1;
+									$vn_state = 20;
+								}
 								break;
 							default:
 								// strip leading exclaimation in scalar to allow scalars to start with [ or {
@@ -303,9 +319,11 @@ class Configuration {
 									$vs_scalar_value .= $vs_token;
 									$vn_state = 20;
 
-									if (sizeof($va_tokens) == 0) {
-										$this->ops_config_settings["scalars"][$vs_key] = $this->_trimScalar($vs_scalar_value);
-										$vn_state = -1;
+									if(!$vn_in_quote) {
+										if (sizeof($va_tokens) == 0) {
+											$this->ops_config_settings["scalars"][$vs_key] = $this->_trimScalar($vs_scalar_value);
+											$vn_state = -1;
+										}
 									}
 								}
 								break;
@@ -314,11 +332,22 @@ class Configuration {
 					# ------------------------------------
 					# handle scalar values
 					case 20:
-						if ((preg_match("/[\r\n]/", $vs_token))) {
+						// end quote? -> accept scalar
+						if((trim($vs_token) == '"') && $vn_in_quote) {
+							if($vn_in_quote) {
+								$vn_in_quote = 0;
+								$vn_state = -1;
+
+								$this->ops_config_settings["scalars"][$vs_key] = $this->_trimScalar($vs_scalar_value);
+								break;
+							}
+						}
+
+						if (preg_match("/[\r\n]/", $vs_token) && !$vn_in_quote) {
 							$this->ops_config_settings["scalars"][$vs_key] = $this->_trimScalar($vs_scalar_value);
 							$vn_state = -1;
 						} else {
-							if (sizeof($va_tokens) == 0) {
+							if ((sizeof($va_tokens) == 0) && !$vn_in_quote) {
 								$vs_scalar_value .= $vs_token;
 
 								# accept scalar
@@ -326,8 +355,9 @@ class Configuration {
 
 								# initialize
 								$vn_state = -1;
-							} else {
+							} else { # keep going to next line
 								$vs_scalar_value .= $vs_token;
+								$vn_state = 20;
 							}
 						}
 						break;
@@ -400,22 +430,25 @@ class Configuration {
 					# handle associative array values
 					# get associative key
 					case 40:
-						if ($this->opb_debug) { print "CONFIG DEBUG: STATE=40\n"; }
 						switch($vs_token) {
 							# -------------------
 							case '"':
-								if (!$vn_in_quote) {
-									$vn_in_quote = 1;
+								if ($vb_escape_set) {
+									$vs_assoc_key .= '"';
 								} else {
-									$vn_in_quote = 0;
+									if (!$vn_in_quote) {
+										$vn_in_quote = 1;
+									} else {
+										$vn_in_quote = 0;
+									}
 								}
+								$vb_escape_set = false;
 								break;
 							# -------------------
 							case '=':
-								if ($vn_in_quote) {
+								if ($vn_in_quote || $vb_escape_set) {
 									$vs_assoc_key .= "=";
 								} else {
-									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=40; Got associative key '$vs_assoc_key'\n"; }
 									if (($vs_assoc_key = trim($this->_interpolateScalar($vs_assoc_key))) == '') {
 										$this->ops_error = "Associative key must not be empty";
 										fclose($r_file);
@@ -426,13 +459,13 @@ class Configuration {
 
 									$vn_state = 50;
 								}
+								$vb_escape_set = false;
 								break;
 							# -------------------
 							case ',':
-								if ($vn_in_quote) {
+								if ($vn_in_quote || $vb_escape_set) {
 									$vs_assoc_key .= ",";
 								} else {
-									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=40; Got associative comma\n"; }
 									if ($vs_assoc_key) {
 										$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][] = trim($vs_assoc_key);
 									}
@@ -444,10 +477,9 @@ class Configuration {
 								break;
 							# -------------------
 							case '}':
-								if ($vn_in_quote) {
+								if ($vn_in_quote || $vb_escape_set) {
 									$vs_scalar_value .= "}";
 								} else {
-									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=40; Got close }; KEY IS '$vs_assoc_key'\n"; }
 									if (sizeof($va_assoc_pointer_stack) > 1) {
 										if ($vs_assoc_key) {
 											$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][] = trim($vs_assoc_key);
@@ -467,10 +499,18 @@ class Configuration {
 								$vb_escape_set = false;
 								break;
 							# -------------------
+							case '\\':
+								if ($vb_escape_set) {
+									$vs_assoc_key .= $vs_token;
+								} else {
+									$vb_escape_set = true;
+								}
+								break;
 							default:
 								if (preg_match("/^#/", trim($vs_token))) {
 									// comment
 								} else {
+									$vb_escape_set = false;
 									$vs_assoc_key .= $vs_token;
 								}
 								break;
@@ -513,12 +553,12 @@ class Configuration {
 							# open nested associative value
 							case '{':
 								if (!$vn_in_quote && !$vb_escape_set) {
-									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=50; Got open {; KEY IS '$vs_assoc_key'\n"; }
-
-									if (!is_array($va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key]) || !$vb_merge_mode) {
-										$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key] = array();
+									$i = sizeof($va_assoc_pointer_stack) - 1;
+									if (!is_array($va_assoc_pointer_stack[$i][$vs_assoc_key]) || !$vb_merge_mode) {
+										$va_assoc_pointer_stack[$i][$vs_assoc_key] = array();
 									}
-									$va_assoc_pointer_stack[] =& $va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key];
+									$va_assoc_pointer_stack[] =& $va_assoc_pointer_stack[$i][$vs_assoc_key];
+									
 									$vn_state = 40;
 									$vs_key = $vs_assoc_key = $vs_scalar_value = "";
 									$vn_in_quote = 0;
@@ -532,7 +572,6 @@ class Configuration {
 								if ($vn_in_quote || $vb_escape_set) {
 									$vs_scalar_value .= "}";
 								} else {
-									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=50; Got close }; KEY IS '$vs_assoc_key'\n"; }
 									if (sizeof($va_assoc_pointer_stack) > 1) {
 										if ($vs_assoc_key) {
 											$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key] = $this->_trimScalar($this->_interpolateScalar($vs_scalar_value));
@@ -554,15 +593,14 @@ class Configuration {
 							# -------------------
 							# open list
 							case '[':
-								if ($this->opb_debug) { print "CONFIG DEBUG: STATE=50; Got open [; KEY IS '$vs_assoc_key'\n"; }
-
 								if ($vn_in_quote || $vb_escape_set) {
 									$vs_scalar_value .= $vs_token;
 								} else {
+									$i = sizeof($va_assoc_pointer_stack) - 1;
 									if(!is_array($va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key]) || !$vb_merge_mode) {
-										$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key] = array();
+										$va_assoc_pointer_stack[$i][$vs_assoc_key] = array();
 									}
-									$va_assoc_pointer_stack[] =& $va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][$vs_assoc_key];
+									$va_assoc_pointer_stack[] =& $va_assoc_pointer_stack[$i][$vs_assoc_key];
 									$vn_state = 60;
 									$vn_in_quote = 0;
 								}
@@ -603,7 +641,6 @@ class Configuration {
 								break;
 							# -------------------
 							case ',':
-								if ($this->opb_debug) { print "CONFIG DEBUG: STATE=60; Got list-in-associative list comma; KEY IS '$vs_assoc_key'\n"; }
 								if ($vn_in_quote || $vb_escape_set) {
 									$vs_scalar_value .= ",";
 								} else {
@@ -619,7 +656,6 @@ class Configuration {
 								if ($vn_in_quote || $vb_escape_set) {
 									$vs_scalar_value .= "]";
 								} else {
-									if ($this->opb_debug) { print "CONFIG DEBUG: STATE=60; Got ]; KEY IS '$vs_assoc_key'\n"; }
 									# accept list
 									if (strlen($vs_item = trim($this->_interpolateScalar($this->_trimScalar($vs_scalar_value)))) > 0) {
 										$va_assoc_pointer_stack[sizeof($va_assoc_pointer_stack) - 1][] = $vs_item;
@@ -637,8 +673,6 @@ class Configuration {
 								break;
 							# -------------------
 							default:
-								if ($this->opb_debug) { print "CONFIG DEBUG: STATE=60; Got scalar '$vs_token'; KEY IS '$vs_assoc_key'\n"; }
-
 								$vs_scalar_value .= $vs_token;
 								$vb_escape_set = false;
 								break;
@@ -655,12 +689,16 @@ class Configuration {
 
 				}
 			}
-			if (($vn_state == 10) || ($vn_state == 20)) {
+			if ((($vn_state == 10) || ($vn_state == 20)) && !$vn_in_quote) {
 				$this->ops_config_settings["scalars"][$vs_key] = "";
 				$vn_state = -1;
 			}
 
-			if ($vn_in_quote) {
+			if(in_array($vn_state, [10,20]) && $vn_in_quote) {
+				$vs_scalar_value .= "\n";
+			}
+
+			if ($vn_in_quote && !in_array($vn_state, [10,20])) {
 				switch($vn_state) {
 					case 30:
 						$this->ops_error = "Missing trailing quote in list '$vs_key'<br/><strong>Last ".sizeof($va_token_history)." tokens were: </strong>".$this->_formatTokenHistory($va_token_history, array('outputAsHTML' => true));
@@ -692,7 +730,6 @@ class Configuration {
 				$this->ops_config_settings["scalars"][$vs_key] = $this->_interpolateScalar($vs_val);
 			}
 		}
-
 		fclose($r_file);
 
 		return true;
@@ -729,14 +766,32 @@ class Configuration {
 		$this->ops_error = "";
 
 		$vs_tmp = $this->getScalar($ps_key);
-		if (!$vs_tmp) {
+		if (!strlen($vs_tmp)) {
 			$vs_tmp = $this->getList($ps_key);
 		}
-		if (!$vs_tmp) {
+		if (!is_array($vs_tmp) && !strlen($vs_tmp)) {
 			$vs_tmp = $this->getAssoc($ps_key);
 		}
 		Configuration::$s_get_cache[$this->ops_md5_path][$ps_key] = $vs_tmp;
 		return $vs_tmp;
+	}
+	/* ---------------------------------------- */
+	/**
+	 * Determine if specified key is present in the configuration file.
+	 *
+	 * @param string $ps_key Name of configuration value.
+	 *
+	 * @return bool
+	 */
+	public function exists($ps_key) {
+		if (isset(Configuration::$s_get_cache[$this->ops_md5_path][$ps_key])) { return true; }
+		$this->ops_error = "";
+
+		if (array_key_exists($ps_key, $this->ops_config_settings["scalars"])) { return true; }
+		if (array_key_exists($ps_key, $this->ops_config_settings["lists"])) { return true; }
+		if (array_key_exists($ps_key, $this->ops_config_settings["assoc"])) { return true; }
+		
+		return false;
 	}
 	/* ---------------------------------------- */
 	/**
@@ -902,7 +957,12 @@ class Configuration {
 		// assumes translation function _t() is present; if not loaded will not attempt translation
 		if (preg_match("/_\(([^\"\)]+)\)/", $ps_text, $va_matches)) {
 			if(function_exists('_t')) {
-				return _t($va_matches[1]);
+				$vs_trans_text = $ps_text;
+				array_shift($va_matches);
+				foreach($va_matches as $vs_match) {
+					$vs_trans_text = str_replace("_({$vs_match})", _t($vs_match), $vs_trans_text);
+				}
+				return $vs_trans_text;
 			}
 		}
 		return $ps_text;
@@ -931,7 +991,7 @@ class Configuration {
 	 * Destructor: Save config cache to disk/external provider
 	 */
 	public function __destruct() {
-		if(self::$s_have_to_write_config_cache) {
+		if(isset(Configuration::$s_have_to_write_config_cache) && Configuration::$s_have_to_write_config_cache) {
 			ExternalCache::save('ConfigurationCache', self::$s_config_cache, 'default', 0);
 			self::$s_have_to_write_config_cache = false;
 		}
