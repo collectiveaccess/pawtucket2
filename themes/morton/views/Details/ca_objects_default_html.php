@@ -56,10 +56,11 @@
 					$va_dims_buf = null;
 					if ($t_object->get('ca_objects.dimensions')) {
 						$va_dimensions_list = $t_object->get('ca_objects.dimensions', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true));
-						$va_dims = array();
+						
 						foreach ($va_dimensions_list as $va_dims_key => $va_dimensions) {
 							foreach ($va_dimensions as $va_dim => $va_dimension) {
 								#if ($va_dimension['is_primary'] == 'yes'){
+									$va_dims = array();
 									if ($va_dimension['dimensions_length']) {
 										$va_dims[] = $va_dimension['dimensions_length']." L";
 									}
