@@ -97,13 +97,12 @@
 					<h3>Manuscript Cookbooks</h3>
 					<div class="row">
 						<div id="browseManuscriptsResultsContainer">
-							<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 						</div><!-- end browseResultsContainer -->
 					</div>
 				</div>
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
-						jQuery("#browseManuscriptsResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'manuscripts', array('search' => 'collection_id:\"^ca_collections.collection_id\"'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery("#browseManuscriptsResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'manuscripts/view/list', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 							jQuery('#browseManuscriptsResultsContainer').jscroll({
 								autoTrigger: true,
 								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -125,13 +124,12 @@
 					<h3>Utensils</h3>
 					<div class="row">
 						<div id="browseUtensilsResultsContainer">
-							<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 						</div><!-- end browseResultsContainer -->
 					</div>
 				</div>
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
-						jQuery("#browseUtensilsResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'utensils/view/list', array('search' => 'collection_id:\"^ca_collections.collection_id\"'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery("#browseUtensilsResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'utensils/view/list', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 							jQuery('#browseUtensilsResultsContainer').jscroll({
 								autoTrigger: true,
 								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

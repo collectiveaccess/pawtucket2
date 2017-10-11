@@ -4015,7 +4015,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 					}
 				}
 			
-				$vs_tool_bar = caGetOption('noToolBar', $pa_options, false) ? "" : caRepToolbar($po_request, $po_data, $pt_subject, array('display' => $ps_display_type, 'context' => caGetOption('context', $pa_options, null)));
+				$vs_tool_bar = caGetOption('noToolBar', $pa_options, false) ? "" : caRepToolbar($po_request, $t_instance, $pt_subject, array('display' => $ps_display_type, 'context' => caGetOption('context', $pa_options, null)));
 					
 				$vs_caption = (isset($pa_options["captionTemplate"]) && $pa_options["captionTemplate"]) ? $po_data->getWithTemplate($pa_options["captionTemplate"]) : "";
 			

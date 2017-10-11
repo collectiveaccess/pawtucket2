@@ -4804,8 +4804,12 @@ class BaseModel extends BaseObject {
 						$vs_serialized_data = caSerializeForDatabase($this->_FILES[$ps_field], true);
 						$vs_sql =  "$ps_field = ".$this->quote($vs_serialized_data).",";
 						if (($vs_metadata_field_name = $o_media_proc_settings->getMetadataFieldName()) && $this->hasField($vs_metadata_field_name)) {
+						    $vn_embedded_media_metadata_limit = (int)$this->_CONFIG->get('dont_extract_embedded_media_metdata_when_length_exceeds');
+						    if (($vn_embedded_media_metadata_limit > 0) && (strlen($vs_serialized_metadata = caSerializeForDatabase($media_metadata, true)) > $vn_embedded_media_metadata_limit)) {
+						        $media_metadata = null; $vs_serialized_metadata = '';
+						    }
 							$this->set($vs_metadata_field_name, $media_metadata);
-							$vs_sql .= " ".$vs_metadata_field_name." = ".$this->quote(caSerializeForDatabase($media_metadata, true)).",";
+							$vs_sql .= " ".$vs_metadata_field_name." = ".$this->quote($vs_serialized_metadata).",";
 						}
 				
 						if (($vs_content_field_name = $o_media_proc_settings->getMetadataContentName()) && $this->hasField($vs_content_field_name)) {
@@ -7033,6 +7037,7 @@ class BaseModel extends BaseObject {
 	 *		returnDeleted = return deleted records in list [default: false]
 	 *		additionalTableToJoin = name of table to join to hierarchical table (and return fields from); only fields related many-to-one are currently supported
 	 *		idsOnly = return simple array of primary key values for child records rather than full result
+	 *      sort = 
 	 *
 	 * @return Mixed DbResult or array
 	 */
@@ -7050,6 +7055,8 @@ class BaseModel extends BaseObject {
 			$vs_hier_parent_id_fld	= $this->getProperty("HIERARCHY_PARENT_ID_FLD");
 			$vs_hier_id_fld 		= $this->getProperty("HIERARCHY_ID_FLD");
 			$vs_hier_id_table 		= $this->getProperty("HIERARCHY_DEFINITION_TABLE");
+			
+			if (!($vs_rank_fld = caGetOption('sort', $pa_options, $this->getProperty('RANK'))) || !$this->hasField($vs_rank_fld)) { $vs_rank_fld = $vs_hier_left_fld; }
 		
 			if (!$pn_id) {
 				if (!($pn_id = $t_instance->getHierarchyRootID($t_instance->get($vs_hier_id_fld)))) {
@@ -7138,7 +7145,7 @@ class BaseModel extends BaseObject {
 							{$vs_deleted_sql}
 							{$vs_additional_wheres}
 						ORDER BY
-							{$vs_table_name}.{$vs_hier_left_fld}
+							{$vs_table_name}.{$vs_rank_fld}
 					";
 					//print $vs_sql;
 					$qr_hier = $o_db->query($vs_sql);
@@ -8813,6 +8820,7 @@ $pa_options["display_form_field_tips"] = true;
 								
 								if(!is_array($va_toolbar_config = $this->getAppConfig()->getAssoc('wysiwyg_editor_toolbar'))) { $va_toolbar_config = array(); }
 								
+								
 								$vs_element .= "<script type='text/javascript'>jQuery(document).ready(function() {
 								var ckEditor = CKEDITOR.replace( '".$pa_options['id']."',
 								{
@@ -8820,7 +8828,9 @@ $pa_options["display_form_field_tips"] = true;
 									width: '{$vs_width}',
 									height: '{$vs_height}',
 									toolbarLocation: 'top',
-									enterMode: CKEDITOR.ENTER_BR
+									enterMode: CKEDITOR.ENTER_BR,
+                                    lookupUrls: ".json_encode(caGetLookupUrlsForTables()).",
+                                    key: '".$pa_options['id']."_lookup'
 								});
 						
 								ckEditor.on('instanceReady', function(){ 
