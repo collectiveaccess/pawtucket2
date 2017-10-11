@@ -348,7 +348,7 @@ $va_info_links = array(
 		print "<ul class='dropdown-menu'>\n";
 		print "<li>".caNavLink($this->request, 'The Testimony Collection', 'first', '', 'Testimonies', 'collection')."</li>\n";
 		print "<li>".caNavLink($this->request, 'History of the Testimony Collection', '', '', 'Testimonies', 'history')."</li>\n"; 
-		print "<li>".caNavLink($this->request, 'Holocaust Documentation Project Timeline', '', '', 'Featured', 'Index/theme/827')."</li>\n"; 
+		print "<li>".caNavLink($this->request, 'Holocaust Documentation Project Timeline', '', '', 'Gallery', 'Index', array('theme' => 827))."</li>\n"; 
 		print "<li>".caNavLink($this->request, 'Information for Donors', 'last', '', 'About', 'donate/#testimony')."</li>\n"; 
 		print "</ul>";
 		print "</li>";

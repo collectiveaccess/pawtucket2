@@ -14,7 +14,7 @@
 		if ($va_description = $t_set->get('ca_sets.description')) {
 			print "<p>".$va_description."</p>";
 		}
-		print caNavLink($this->request, 'About the Archival Collection <i class="fa fa-chevron-right"></i>', '', '', 'Archives', 'about'); 
+		print caNavLink($this->request, 'About the Archival Collection <i class="fa fa-chevron-right"></i>', '', '', 'Archive', 'about'); 
 ?>	
 	</div>
 	<div class='col-sm-6 spotlight'>
