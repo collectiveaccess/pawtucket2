@@ -90,7 +90,9 @@
 <?php
 				if ($va_collections = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h5>Manuscript Location</h5>".$va_collections;
-                    if($vs_library_location = $t_object->get('ca_objects.sublocation')){
+					$locs = is_array($locs = $t_object->get('ca_objects.sublocation', ['returnAsArray' => true])) ? array_filter($locs, function($v) { return strlen(trim($v)); }) : $locs;
+				
+                    if(sizeof($locs) && ($vs_library_location = trim(join("; ", $locs)))){
                         print ", ".$vs_library_location;
                     }
                     print "</div>";
