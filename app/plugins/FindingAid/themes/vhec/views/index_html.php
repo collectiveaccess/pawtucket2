@@ -12,7 +12,7 @@
 	<div class='row'>
 		<div class='col-sm-12 hero'>
 <?php
-			print caGetThemeGraphic($this->request, 'findingaids.jpg');
+			print caGetThemeGraphic($this->request, 'findingaidHeader.jpg');
 ?>
 			<h1 class="hero"><?php print $vs_page_title; ?></h1>
 		</div>
@@ -24,7 +24,7 @@
 	</div>
 	<div id='findingAidCont'>
 <?php	
-	$qr_collections = ca_collections::find(array('type_id' => 140), array('returnAs' => 'searchResult', 'sort' => 'ca_collections.preferred_labels'));
+	$qr_collections = ca_collections::find(array('type_id' => 140), array('returnAs' => 'searchResult', 'sort' => 'ca_collection_labels.name'));
 
 	if ($qr_collections) {
 		while ($qr_collections->nextHit()) {

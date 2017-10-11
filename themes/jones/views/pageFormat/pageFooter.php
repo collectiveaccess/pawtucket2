@@ -28,25 +28,13 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
-
-		<div id="footer">
-			<div class="list-inline pull-left">
-				<ul class="list-inline pull-left social">
-					<li><a href="https://www.facebook.com/Vancouver-Holocaust-Education-Centre-140874547755/" target="_blank"><i class="fa fa-facebook"></i></a></li>
-					<li><a href="https://twitter.com/VHECCollections" target="_blank"><i class="fa fa-twitter"></i></a></li>
-				</ul>
-				<div class='pull-left footer-left'>
-					<p><b>P: {{{footer_phone}}}&nbsp;&nbsp;&nbsp;E: <a href='mailto:{{{footer_email}}}'>{{{footer_email}}}</a></b></p>
-					<p>{{{footer_address}}}</p>
-				</div>
-			</div>
-			
-			<div class="pull-right ca">
-				<div>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2017</a></div>
-			</div>
-			
-			<div style="clear:both; height:1px;"><!-- empty --></div>
-		</div><!-- end footer -->
+		<footer id="footer">
+			<ul class="list-inline pull-right social">
+				<li><a href="http://www.twitter.com/joneslibraryma" target="_blank"><i class="fa fa-twitter"></i></a></li>
+				<li><a href="https://www.facebook.com/joneslibrary" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
+			</ul>
+			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>
+		</footer><!-- end footer -->
 <?php
 	//
 	// Output HTML for debug bar
@@ -55,6 +43,7 @@
 		print Debug::$bar->getJavascriptRenderer()->render();
 	}
 ?>
+	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">
@@ -85,4 +74,3 @@
 		</script>
 	</body>
 </html>
-
