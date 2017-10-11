@@ -383,6 +383,10 @@ div.advancedSearchField {
 .bResultItemImgPlaceholder, .bResultListItem .bResultListItemImg{
 	max-height: 48px;
 }
+.bResultListItem img {
+    width: auto;
+    height: 48px;
+}
 
 .bResultListItem .bResultListItemText a, .bResultItem .bResultItemText a{
 	font-size: 16px;
