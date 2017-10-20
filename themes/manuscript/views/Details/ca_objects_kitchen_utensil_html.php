@@ -109,6 +109,9 @@
 				if ($va_provenance = $t_object->get('ca_objects.provenance')) {
 					print "<div class='unit'><h6>Provenance</h6>".$va_provenance."</div>";
 				}
+				if ($vs_idno = $t_object->get('ca_objects.idno')) {
+					print "<div class='unit'><h6>Kitchen Artifact ID</h6>".$vs_idno."</div>";
+				}
 				if ($va_collections = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Institutional Collection</h6>".$va_collections."</div>";
 				}

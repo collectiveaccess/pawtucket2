@@ -102,7 +102,7 @@
 				print "<div class='unit'>Mount - ".join(', ', $va_mount_links)."</div>";
 			}
 		}
-		if ($vs_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions.display_dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"> (^ca_objects.dimensions.dimensions_notes)</ifdef><if rule="^ca_objects.dimensions.dimensions_uncertain =~ /no/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="sight dimensions"></i></if></unit></ifcount>')) {
+		if ($vs_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions.display_dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"> (^ca_objects.dimensions.dimensions_notes)</ifdef><if rule="^ca_objects.dimensions.dimensions_uncertain =~ /yes/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="sight dimensions"></i></if></unit></ifcount>')) {
 			print "<div class='unit'>Dimensions - ".$vs_dimensions."</div>";
 		}		
 		if ($va_watermark = $t_parent->get('ca_objects.watermark', array('returnWithStructure' => true))) {
