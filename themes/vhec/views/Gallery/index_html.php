@@ -7,13 +7,10 @@
 
 ?>
 
-<div>
-	<div class='container'>
 		<div class='row'><div class='col-sm-12'>
 			<div class="breadcrumb"><?php print $breadcrumb_link; ?></div>
 			<H1><?php print $vs_page_type; ?></H1>
 		</div></div>
-	</div>
 <?php
 	$va_sets = $this->getVar("sets");
 	$va_first_items_from_set = $this->getVar("first_items_from_sets");
@@ -21,7 +18,6 @@
 	if(is_array($va_sets) && sizeof($va_sets)){
 		# --- main area with info about selected set loaded via Ajax
 ?>
-		<div class="container">
 			<div class="row">
 				<div class='col-sm-8'>
 					<div id="gallerySetInfo">
@@ -37,7 +33,7 @@
 						<div class="jcarousel"><ul>
 <?php
 							$i = 0;
-
+							arsort($va_sets);
 							foreach($va_sets as $vn_set_id => $va_set){
 								if(!$vn_first_set_id){
 									$vn_first_set_id = $vn_set_id;
@@ -129,7 +125,6 @@
 				}
 ?>
 			</div><!-- end row -->
-		</div><!-- end container -->
 		<script type='text/javascript'>
 			jQuery(document).ready(function() {		
 				jQuery("#gallerySetInfo").load("<?php print caNavUrl($this->request, '*', 'Gallery', 'getSetInfo', array('set_id' => $vn_first_set_id)); ?>");
@@ -138,4 +133,3 @@
 <?php
 	}
 ?>
-</div>

@@ -329,7 +329,18 @@ class ca_storage_locations extends BaseObjectLocationModel implements IBundlePro
 		parent::initLabelDefinitions($pa_options);
 		$this->BUNDLES['ca_object_representations'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Media representations'));
 		$this->BUNDLES['ca_objects'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related objects'));
-		$this->BUNDLES['ca_objects_table'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related objects table'));
+		$this->BUNDLES['ca_objects_table'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related objects list'));
+		$this->BUNDLES['ca_objects_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related objects list'));
+		$this->BUNDLES['ca_object_representations_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related object representations list'));
+		$this->BUNDLES['ca_entities_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related entities list'));
+		$this->BUNDLES['ca_places_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related places list'));
+		$this->BUNDLES['ca_occurrences_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related occurrences list'));
+		$this->BUNDLES['ca_collections_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related collections list'));
+		$this->BUNDLES['ca_list_items_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related list items list'));
+		$this->BUNDLES['ca_storage_locations_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related storage locations list'));
+		$this->BUNDLES['ca_loans_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related loans list'));
+		$this->BUNDLES['ca_movements_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related movements list'));
+		$this->BUNDLES['ca_object_lots_related_list'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related object lots list'));
 		$this->BUNDLES['ca_object_lots'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related lots'));
 		$this->BUNDLES['ca_entities'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related entities'));
 		$this->BUNDLES['ca_places'] = array('type' => 'related_table', 'repeating' => true, 'label' => _t('Related places'));
@@ -526,11 +537,31 @@ class ca_storage_locations extends BaseObjectLocationModel implements IBundlePro
 		
 		$o_view->setVar('mode', $vs_mode = caGetOption('locationTrackingMode', $pa_bundle_settings, 'ca_movements'));
 		
+		$o_view->setVar('qr_result', ($qr_result = $this->getLocationContents($vs_mode)));
 		switch($vs_mode) {
 			case 'ca_storage_locations':
-				// Get current storage locations
-				
 				$o_view->setVar('t_subject_rel', new ca_objects_x_storage_locations());
+				break;
+			case 'ca_movements':
+			default:
+				$o_view->setVar('t_subject_rel', new ca_movements_x_objects());
+				break;
+		}
+		
+		return $o_view->render('ca_storage_locations_contents.php');
+ 	}
+	# ------------------------------------------------------
+	/**
+	 * Return search result containing objects currently resident in this location
+	 *
+	 * @param string $ps_mode Location tracking mode: ca_storage_locations (for direct object-location relationship tracking) or ca_movements (for movement-based location tracking)
+	 * @param array $pa_options No options are currently supported
+	 *
+	 * @return ObjectSearchResult Result set containing objects currently in this location
+	 */
+	public function getLocationContents($ps_mode, $pa_options=null) {
+		switch($ps_mode) {
+			case 'ca_storage_locations':
 				// Get current objects for location
 				$va_object_ids = $this->getRelatedItems('ca_objects', array('idsOnly' => true));
 				if (is_array($va_object_ids) && sizeof($va_object_ids)) {
@@ -545,15 +576,15 @@ class ca_storage_locations extends BaseObjectLocationModel implements IBundlePro
 						if ($va_location_info['location_id'] == $this->getPrimaryKey()) { $va_object_rels[] = $vn_relation_id; }
 					}
 					
-					$o_view->setVar('qr_result', sizeof($va_object_rels) ? caMakeSearchResult('ca_objects_x_storage_locations', $va_object_rels) : null);
-					
+					return sizeof($va_object_rels) ? caMakeSearchResult('ca_objects_x_storage_locations', $va_object_rels) : null;
 				}
 				break;
 			case 'ca_movements':
 			default:
 				// Get current movements for location
-				
-				$va_movement_ids = $this->getRelatedItems('ca_movements', array('idsOnly' => true));
+				$va_location_ids = array_merge($this->get($x=$this->tableName().".children.".$this->primaryKey(), ['returnAsArray' => true]), [$this->getPrimaryKey()]);
+			
+				$va_movement_ids = $this->getRelatedItems('ca_movements', array('idsOnly' => true, 'row_ids' => $va_location_ids));
 				if (is_array($va_movement_ids) && sizeof($va_movement_ids)) {
 					// get list of objects on these movements...
 					$t_movement = new ca_movements();
@@ -564,19 +595,15 @@ class ca_storage_locations extends BaseObjectLocationModel implements IBundlePro
 					$va_current_movement_ids = $t_object->getRelatedItems('ca_movements', array('idsOnly' => false, 'showCurrentOnly' => true, 'row_ids' => $va_object_ids));
 					
 					$va_movement_rels = array(); 
-					foreach($va_current_movement_ids as $vn_relation_id => $va_movement_info) {
-						if (in_array($va_movement_info['movement_id'], $va_movement_ids)) { $va_movement_rels[] = $vn_relation_id; }
+					foreach($va_current_movement_ids as $vn_i => $va_movement_info) {
+						if (in_array($va_movement_info['movement_id'], $va_movement_ids)) { $va_movement_rels[] = $va_movement_info['relation_id']; }
 					}
 					
-					$o_view->setVar('qr_result', sizeof($va_movement_rels) ? caMakeSearchResult('ca_movements_x_objects', $va_movement_rels) : null);
-					
+					return sizeof($va_movement_rels) ? caMakeSearchResult('ca_movements_x_objects', $va_movement_rels) : null;
 				}
-				
-				$o_view->setVar('t_subject_rel', new ca_movements_x_objects());
 				break;
 		}
-		
-		return $o_view->render('ca_storage_locations_contents.php');
- 	}
+		return null;
+	}
 	# ------------------------------------------------------
 }

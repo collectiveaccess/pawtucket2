@@ -86,7 +86,14 @@
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.taxonomy_specimen.scientific_name"), '', $vs_table, $vn_id);
-				
+				$formation_place 	= $qr_res->get("{$vs_table}.lithostratigraphy.formation");
+				if ($formation_place) {
+					$vs_formation_name = (strlen($formation_place) >= 30) ? "<small>Fossil Deposit: </small>".substr($formation_place, 0, 30)."...<br/>" : "<small>Fossil Deposit: </small>".$formation_place."<br/>";
+				};
+				$common_name_place	= $qr_res->get("{$vs_table}.taxonomy_specimen.vernacular_name");
+				if ($common_name_place) {
+					$vs_common_name = (strlen($common_name_place) >= 30) ? "<small>Common Name: </small>".substr($common_name_place, 0, 30)."...<br/>" : "<small>Common Name: </small>".$common_name_place."<br/>";
+				};	
 				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
 				if(!$vs_image){
@@ -105,7 +112,7 @@
 		<div class='bResultListItem' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultListItemText'>
-					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}<br/>{$vs_formation_name}{$vs_common_name}
 				</div><!-- end bResultListItemText -->
 			</div><!-- end bResultListItemContent -->
 			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
@@ -118,6 +125,7 @@
 				$vn_c++;
 			}
 			
+			print "<div style='clear:both;'></div>";
 			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
 		}
 ?>

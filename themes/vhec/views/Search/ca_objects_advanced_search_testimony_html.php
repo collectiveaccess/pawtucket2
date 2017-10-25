@@ -1,7 +1,6 @@
-<div class="container">
 	<div class="row">
 		<div class="col-sm-8 " style='border-right:1px solid #ddd;'>
-			<h1>Advanced Search</h1>
+			<h1>Holocaust Testimony Advanced Search</h1>
 
 <?php			
 	print "<p>Enter your search terms in the fields below.</p>";
@@ -13,8 +12,8 @@
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Keyword search of all record fields."
-			>Keyword:</span><br/>
-			{{{_fulltext%width=300px&height=25px}}}
+			>Keyword (All Fields):</span><br/>
+			{{{_fulltext%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span>Resource Type:</span><br/>
@@ -24,7 +23,7 @@
 			<span
 				data-toggle="popover" data-trigger="hover" data-content="The unique alphanumeric identifier assigned to testimony holdings."
 			>Unique ID:</span><br/>
-			{{{ca_objects.alt_id%width=300px&height=23px}}}
+			{{{ca_objects.alt_id%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
@@ -36,7 +35,7 @@
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Recording date of a testimony, which can be entered as a single date, approximate date, or a date range."
 			>Recording Date </span><br/>
-			{{{ca_objects.indexingDatesSet%width=300px&height=25px&useDatePicker=0}}}
+			{{{ca_objects.indexingDatesSet%width=300px&height=1&useDatePicker=0}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
@@ -60,39 +59,32 @@
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Language spoken during the testimony recording."
 			>Language:</span><br/>
-			{{{ca_objects.language%width=300px&height=23px}}}
+			{{{ca_objects.language%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Search recordings by associated donor funding."
 			>Funding Note:</span><br/>
-			{{{ca_objects.funding_note%width=300px&height=23px}}}
+			{{{ca_objects.funding_note%width=300px&height=1}}}
 		</div>																	
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Local thesaurus terms used to describe subjects referred to in the testimony. "
-			>Access Points – Topical :</span><br/>
-			{{{ca_objects.local_subject%width=300px&height=23px}}}
+			>Subject – Topical :</span><br/>
+			{{{ca_objects.local_subject%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Search for places that are the subject of a testimony. Places can include both contemporary geographic regions as well as historical places (including camps and ghettos)."
-			>Access Point - Places: </span><br/>
+			>Subject - Place: </span><br/>
 			{{{ca_places.preferred_labels%restrictToRelationshipTypes=subject}}}
 		</div>		
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Search for individuals or organizations who are the subject of a testimony."
-			>Access Point - People & Organizations: </span><br/>
+			>Subject - People & Organizations: </span><br/>
 			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=subject}}}
 		</div>	
-		<div class="advancedSearchField">
-			<span 
-				data-toggle="popover" data-trigger="hover" data-content="Limit searching to records that have playable media."
-			>Only Digital Collections:</span><br/>
-			{{{ca_object_representations.media%width=300px&height=23px&render=is_set}}}
-		</div>
-
 
 																																								
 		<br style="clear: both;"/>
@@ -106,12 +98,11 @@
 {{{/form}}}
 
 		</div>
-		<div class="col-sm-4" >
-			<h1>Helpful Hints</h1>
-			<p>Include some helpful info for your users here.</p>
+		<div class="col-sm-4 searchHints" >
+			<H1>Helpful Hints</H1>
+			{{{search_help}}}
 		</div><!-- end col -->
 	</div><!-- end row -->
-</div><!-- end container -->
 
 <script>
 	jQuery(document).ready(function() {

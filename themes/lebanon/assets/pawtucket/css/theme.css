@@ -1,0 +1,85 @@
+h1, h2, h3, h4, h5 {
+	color: #69694E;
+}
+.detail H6 a {
+	color: #69694E;
+}
+a, a:active, a:visited, a:hover, a.readmore-js-toggle {
+    color: #69694E;
+}
+.btn-default, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default, .browse .btn, .sets .btn {
+	background-color: #69694E;
+}
+.navbar-brand {
+	width:80px;
+	height:auto;
+}
+@media (min-width: 768px) {
+	.navbar-nav > li > a {
+		padding-top: 35px;
+		padding-bottom: 19px;
+	}
+	.navbar-form {
+		margin-top:25px;
+	}
+	.nav > li.dropdown > a.icon {
+		font-size: 16px;
+		padding-top: 31px;
+		padding-bottom: 13px;
+	}	
+}
+#footer {
+	height:50px;
+}
+/* Browse Panel */
+
+.filterMenuFacetList li.active {
+    background-color: #69694E;
+}
+div.browseFacetItem a:hover {
+    text-decoration: none;
+    color: #69694E;
+}
+
+/* Multisearch */
+
+.multisearchSort ul li a {
+	color: #69694E;
+}
+.multisearchFullResults a {
+	color: #69694E;
+}
+
+/* Adv search */
+
+.attributeListItem {
+	width:100% !important;
+}
+
+/* CollectionTile */
+
+.collectionTile {
+	min-height:200px;
+}
+.collectionTile a.readmore-js-toggle {
+	font-size:12px;
+	text-align:right;
+}
+.exportCollection {
+	margin-top:30px;
+}
+
+/* About */
+
+.building img {
+	width:100%;
+	height:auto;
+}
+
+/* Collections */
+
+#collectionLoad p {
+	text-align:left;
+	padding-top:3px;
+	display:inline;
+}

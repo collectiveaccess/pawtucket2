@@ -3,6 +3,7 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$va_access_values = 	$this->getVar('access_values');
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -17,8 +18,20 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_entities.preferred_labels.displayname}}}</H4>
-					<H5>{{{<ifdef code='ca_entities.nonpreferred_labels'><span>Also known as: </span>^ca_entities.nonpreferred_labels.displayname</ifdef>}}}</H5>
+					<H4>{{{^ca_entities.preferred_labels.displayname}}}
+<?php
+						if ($va_entity_dates = $t_item->get('ca_entities.entity_date', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
+							foreach ($va_entity_dates as $va_key => $va_entity_date_t) {
+								foreach ($va_entity_date_t as $va_key => $va_entity_date) {
+									if ($va_entity_date['entity_date_supress'] == "No") {
+										print " (".$va_entity_date['entity_date_value'].")";
+									}
+								}
+							}
+						}	
+?>										
+					</H4>
+					<H5>{{{<ifcount min="1" code='ca_entities.nonpreferred_labels'><span>Also known as: </span><unit delimiter=', '>^ca_entities.nonpreferred_labels.displayname</unit></ifcount>}}}</H5>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
@@ -28,11 +41,15 @@
 						print "<div class='unit'><h8>Birthplace</h8>".$va_birthplace."</div>";
 					}
 					if ($va_bio = $t_item->get('ca_entities.biography')) {
-						print "<div class='unit'><h8>Biography</h8>".$va_bio."</div>";
+						if ($t_item->get('ca_entities.type_id', array('convertCodesToDisplayText' => true)) == "Individual") {
+							print "<div class='unit trimText'><h8>Biography</h8>".$va_bio."</div>";
+						} else {
+							print "<div class='unit trimText'><h8>Administrative History</h8>".$va_bio."</div>";
+						}
 					}
-					if ($va_admin_hist = $t_item->get('ca_entities.administrative_history')) {
-						print "<div class='unit'><h8>Administrative History</h8>".$va_admin_hist."</div>";
-					}						
+					#if ($va_admin_hist = $t_item->get('ca_entities.administrative_history')) {
+					#	print "<div class='unit trimText'><h8>Administrative History</h8>".$va_admin_hist."</div>";
+					#}						
 					if ($va_public_notes = $t_item->get('ca_entities.public_notes')) {
 						print "<div class='unit'><h8>Notes</h8>".$va_public_notes."</div>";
 					}
@@ -50,7 +67,7 @@
 <?php
 
 			#Archives Objects etc
-			$vs_related_holdings = "";			
+			/*$vs_related_holdings = "";			
 			if ($va_related_holdings_objects = $t_item->get('ca_objects.related.object_id', array('returnWithStructure' => true, 'restrictToTypes' => array('archival', 'library', 'survivor', 'work'), 'checkAccess' => $va_access_values, 'sort' => 'ca_objects.type_id'))) {
 				$va_my_type = array();
 				$va_other_type = array();
@@ -69,15 +86,35 @@
 					$vs_related_holdings.= $va_other_type_object_link;
 				}				
 				
-			}
+			}*/
+			$vs_related_holdings = "";
+			$va_holdings_by_rel_type = array();
+			if ($va_related_holdings_objects = $t_item->get('ca_objects', array('checkAccess' => $va_access_values, 'returnWithStructure' => true, 'excludeRelationshipTypes' => array('donor')))) {
+				foreach ($va_related_holdings_objects as $va_key => $va_related_holding) {
+					$t_object = new ca_objects($va_related_holding['object_id']);
+					$va_holdings_by_rel_type[$va_related_holding['relationship_typename']][$va_related_holding['object_id']] = "<div class='col-sm-3'><div class='relatedThumb'><p>".caNavLink($this->request, $t_object->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))."<br/>".(strlen($va_related_holding['label']) >  70 ? substr($va_related_holding['label'], 0, 67)."... ": $va_related_holding['label']), '', '', 'Detail', 'objects/'.$va_related_holding['object_id'])."</p></div></div>";
+				}
+				foreach ($va_holdings_by_rel_type as $vs_holding_rel_type => $va_holding) {
+					$vs_related_holdings.= "<h8>".$vs_holding_rel_type."</h8>";
+					$vs_related_holdings.= "<div class='row'>";
+					foreach ($va_holding as $va_key => $va_holding_name) {
+						$vs_related_holdings.= $va_holding_name;
+					}
+					$vs_related_holdings.= "</div>";
+				}
+			}			
 			if ($va_related_collections = $t_item->get('ca_collections.collection_id', array('returnWithStructure' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('fonds', 'series', 'sub_series', 'file')))) {
-				foreach ($va_related_collections as $va_key => $va_related_collection_id) {				
+				$vs_related_holdings.= "<h8>Related Archival Collections</h8>";
+				$vs_related_holdings.= "<div class='row'>";
+				foreach ($va_related_collections as $va_key => $va_related_collection_id) {					
+					
 					$t_collection = new ca_collections($va_related_collection_id);
 					$vs_related_holdings.= "<div class='col-sm-3'>";
 					$vs_related_holdings.= "<div class='relatedThumb'>";
-					$vs_related_holdings.= "<p>".caNavLink($this->request, $t_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_related_collection_id)."</p></div>";
-					$vs_related_holdings.= "</div>";					
+					$vs_related_holdings.= "<p>".caNavLink($this->request, $t_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_related_collection_id)."</p></div><!-- end relatedThumb -->";
+					$vs_related_holdings.= "</div><!-- end col -->";					
 				}
+				$vs_related_holdings.= "</div><!-- end row -->";
 			}					
 			#Entities
 			$vs_related_entities = "";
@@ -108,7 +145,7 @@
 					$vs_place_name = $t_place->get('ca_places.preferred_labels');
 					$vs_related_places.= "<div class='col-sm-3'>";
 					$vs_related_places.= "<div class='entityThumb'>";
-					$vs_related_places.= "<p>".caNavLink($this->request, $vs_place_name, '', '', 'Search', 'objects', array('search' => 'ca_places.preferred_labels:"'.$vs_place_name.'"'))."</p></div>";
+					$vs_related_places.= "<p>".caNavLink($this->request, $vs_place_name, '', '', 'Detail', 'places/'.$va_related_place_id)."</p></div>";
 					$vs_related_places.= "</div>";					
 				}
 			}
@@ -179,28 +216,7 @@
 			}
 ?>						
 			
-			
-{{{<ifcount code="ca_objects" min="1">
-			<div class="row">
-				<div id="browseResultsContainer">
-					<?php print "Loading..."; ?>
-				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print "Loading...";?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
-					});
-					
-					
-				});
-			</script>
-</ifcount>}}}
+
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
@@ -212,6 +228,10 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 97
+		});	
 		$('#relationshipTable').tabs();
 	});
 </script>

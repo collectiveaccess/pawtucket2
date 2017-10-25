@@ -53,7 +53,7 @@
 		</div>
 		<div class="col-sm-4" style='border-left:1px solid #ddd;'>
 			<h1>Archival Research Assistance</h1>
-			<h3><a href='mailto:ray.barker@glenstone.org'>Contact the Archives</a></h3>
+			<h3><a href='https://glenstone.sharepoint.com/Lists/Glenstone%20Archival%20Request%20Form/NewForm.aspx?Source=https%3A%2F%2Fglenstone%2Esharepoint%2Ecom%2FLists%2FGlenstone%2520Archival%2520Request%2520Form%2FMain%2520View%2Easpx&RootFolder='>Contact the Archives</a></h3>
 			<h3>SOCIETY OF AMERICAN ARCHIVISTS GUIDES</h3>
 				<p><a href='http://www2.archivists.org/usingarchives' target='_blank'>Guide to Archival Research</a></p>
 				<p><a href='http://www2.archivists.org/glossary' target='_blank'>Glossary of Terminology</a></p>

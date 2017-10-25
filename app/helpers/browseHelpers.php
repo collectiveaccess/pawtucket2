@@ -52,7 +52,7 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	 */
 	function caGetLabelForDisplay(&$pa_facet, $pa_item, $pa_facet_info, $pa_options=null) {
 		$vs_term_class = (isset($pa_options['termClass']) && $pa_options['termClass']) ? $pa_options['termClass'] : 'hierarchyBrowserItemTerm';
-		$vs_label = "<span class='{$vs_term_class}'>".htmlentities($pa_item['label'], ENT_COMPAT, 'UTF-8')."</span>";
+		$vs_label = "<span class='{$vs_term_class}'>".htmlentities(isset($pa_item['display_label']) ? $pa_item['display_label'] : $pa_item['label'], ENT_COMPAT, 'UTF-8')."</span>";
 		if ($pa_facet_info['show_hierarchy'] && $pa_item['parent_id']) {
 			$va_hierarchy = caGetHierarchicalLabelsForDisplay($pa_facet, $pa_item['parent_id'], $pa_options);
 			array_unshift($va_hierarchy, $vs_label);
@@ -99,9 +99,11 @@ require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 	}
 	# ---------------------------------------
 	/**
-	 * 
+	 * Get browse instance
 	 *
-	 * @return string 
+	 * @param string|int $pm_table_name_or_num
+	 * @param null $pa_options
+	 * @return BaseBrowse
 	 */
 	function caGetBrowseInstance($pm_table_name_or_num, $pa_options=null) {
 		$o_dm = Datamodel::load();

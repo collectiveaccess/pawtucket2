@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2014 Whirl-i-Gig
+ * Copyright 2009-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -126,14 +126,17 @@
 			if(isset($pa_options['forDuplication']) && $pa_options['forDuplication']) { $pa_options['return'] = 'path'; }
 			if(!isset($pa_options['return'])) { $pa_options['return'] = null; } else { $pa_options['return'] = strtolower($pa_options['return']); }
 			
-			switch($pa_options['return']) {
-				case 'url':
-					return $this->opo_file_info_coder->getFileUrl($this->opa_file_data);
-					break;
-				case 'path':
-					return $this->opo_file_info_coder->getFilePath($this->opa_file_data);
-					break;
-			}
+			if(isset($pa_options['return'])) {
+                switch($pa_options['return']) {
+                    case 'path':
+                        return $this->opo_file_info_coder->getFilePath($this->opa_file_data);
+                        break;
+                    case 'url':
+                    default:
+                        return $this->opo_file_info_coder->getFileUrl($this->opa_file_data);
+                        break;
+                }
+            }
 			
 			$vs_val = '';
 			
@@ -159,7 +162,7 @@
 				$vs_val = "<div class='attributeFileInfoContainer'>";
 				$vs_val .= "<div class='attributeFileFileName'>{$vs_filename}</div><div class='attributeFileFileInfo'>{$vs_dimensions}";
 				if (is_object($pa_options['request'])) {
-					$vs_val .= caNavLink($pa_options['request'], caNavIcon($pa_options['request'], __CA_NAV_BUTTON_DOWNLOAD__, array('align' => 'middle')), '', $pa_options['request']->getModulePath(), $pa_options['request']->getController(), 'DownloadAttributeFile', array('download' => 1, 'value_id' => $this->opn_value_id), array('class' => 'attributeDownloadButton'));
+					$vs_val .= caNavLink($pa_options['request'], caNavIcon(__CA_NAV_ICON_DOWNLOAD__, 1, array('align' => 'middle')), '', $pa_options['request']->getModulePath(), $pa_options['request']->getController(), 'DownloadAttributeFile', array('download' => 1, 'value_id' => $this->opn_value_id), array('class' => 'attributeDownloadButton'));
 				}
 				$vs_val .= "</div></div>";
 			}
@@ -272,4 +275,3 @@
 		}
  		# ------------------------------------------------------------------
 	}
- ?>

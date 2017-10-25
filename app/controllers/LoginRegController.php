@@ -106,6 +106,7 @@
 		}
 		# ------------------------------------------------------
 		function profileSave() {
+		    caValidateCSRFToken($this->request);
 			if(!$this->request->isLoggedIn()){
 				$this->notification->addNotification(_t("User is not logged in"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
@@ -126,7 +127,6 @@
 			$ps_password = $this->request->getParameter("password", pString);
 			$ps_password2 = $this->request->getParameter("password2", pString);
 			$ps_security = $this->request->getParameter("security", pString);
-
 			$va_errors = array();
 
 			if (!caCheckEmailAddress($ps_email)) {
@@ -148,11 +148,14 @@
 			if ($ps_password) {
 				if($ps_password != $ps_password2){
 					$va_errors["password"] = _t("Passwords do not match");
-				}else{
+				}
+				if(strlen($ps_password) < 4){
+					$va_errors["password"] = _t("Password must be at least 4 characters long");
+				}
+				if(!$va_errors["password"]){
 					$t_user->set("password", $ps_password);
 				}
 			}
-
 			// Check user profile responses
 			$va_profile_prefs = $t_user->getValidPreferences('profile');
 			if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
@@ -201,6 +204,7 @@
 		}
 		# ------------------------------------------------------
 		function login() {
+		    caValidateCSRFToken($this->request);
 			if (!$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $this->request->getParameter('username', pString), 'password' => $this->request->getParameter('password', pString)))) {
 				$this->view->setVar("message", _t("Login failed"));
 				$this->loginForm();
@@ -257,6 +261,7 @@
 		}
 		# -------------------------------------------------------
 		function register() {
+		    caValidateCSRFToken($this->request);
 			if ($this->request->config->get('dont_allow_registration_and_login')) {
 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
@@ -276,6 +281,7 @@
 			$ps_password = $this->request->getParameter("password", pString);
 			$ps_password2 = $this->request->getParameter("password2", pString);
 			$ps_security = $this->request->getParameter("security", pString);
+			$ps_captcha = $this->request->getParameter("g-recaptcha-response", pString);
 
 			$va_errors = array();
 
@@ -299,18 +305,47 @@
 			}else{
 				if($ps_password != $ps_password2){
 					$va_errors["password"] = _t("Passwords do not match");
-				}else{
+				}
+				if(strlen($ps_password) < 4){
+					$va_errors["password"] = _t("Password must be at least 4 characters long");
+				}
+				if(!$va_errors["password"]){
 					$t_user->set("password", $ps_password);
 				}
 			}
-			if ((!$ps_security)) {
-				$va_errors["security"] = _t("Please answer the security question.");
-			}else{
-				if($ps_security != $_REQUEST["sum"]){
-					$va_errors["security"] = _t("Your answer was incorrect, please try again");
+			$co_security = $this->request->config->get('registration_security');
+			if($co_security == 'captcha'){
+         			if(strlen($this->request->config->get('google_recaptcha_sitekey')) != 40 || strlen($this->request->config->get('google_recaptcha_secretkey')) != 40){
+					//Then the captcha will not work and should not be implemenented.
+                    			$co_security = 'equation_sum';
+                		}
+        		}
+			if($co_security == 'captcha'){
+				if(!$ps_captcha){
+						$va_errors["recaptcha"] = _t("Please complete the captcha");
+				} else {
+						$va_request = curl_init();
+						curl_setopt($va_request, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
+						curl_setopt($va_request, CURLOPT_HEADER, 0);
+						curl_setopt($va_request, CURLOPT_RETURNTRANSFER, 1);
+						curl_setopt($va_request, CURLOPT_POST, 1);
+						$va_request_params = ['secret'=>$this->request->config->get('google_recaptcha_secretkey'), 'response'=>$ps_captcha];
+						curl_setopt($va_request, CURLOPT_POSTFIELDS, $va_request_params);
+						$va_captcha_resp = curl_exec($va_request);
+						$captcha_json = json_decode($va_captcha_resp, true);
+						if(!$captcha_json['success']){
+								$va_errors["recaptcha"] = _t("Your Captcha was rejected, please try again");
+						}
+				}
+			} else {
+				if ((!$ps_security)) {
+					$va_errors["security"] = _t("Please answer the security question.");
+				}else{
+					if($ps_security != $_REQUEST["sum"]){
+						$va_errors["security"] = _t("Your answer was incorrect, please try again");
+					}
 				}
 			}
-
 			// Check user profile responses
 			$va_profile_prefs = $t_user->getValidPreferences('profile');
 			if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
@@ -608,6 +643,12 @@
 						}
 						if ($ps_password != $ps_password_confirm) {
 							$this->view->setVar("message", _t("Passwords do not match. Please try again."));
+							$ps_action = "reset";
+							break;
+						}
+						
+						if(strlen($ps_password) < 4){
+							$this->view->setVar("message", _t("Password must be at least 4 characters long."));
 							$ps_action = "reset";
 							break;
 						}

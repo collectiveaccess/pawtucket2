@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2015 Whirl-i-Gig
+ * Copyright 2013-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -36,6 +36,8 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_users.php");
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
  	require_once(__CA_LIB_DIR__."/core/GeographicMap.php");
+	require_once(__CA_LIB_DIR__.'/core/Parsers/ZipStream.php');
+	require_once(__CA_LIB_DIR__.'/core/Logging/Downloadlog.php');
  
  	class LightboxController extends FindController {
  		# -------------------------------------------------------
@@ -116,12 +118,14 @@
 			$this->view->setVar('description_attribute', $this->ops_description_attribute);
 			
 			$this->purifier = new HTMLPurifier();
+			
+ 			parent::setTableSpecificViewVars();
  		}
  		# -------------------------------------------------------
         /**
          *
          */
- 		function index($va_options = null) {
+ 		function index($pa_options = null) {
  			if($this->opb_is_login_redirect) { return; }
 
 			
@@ -131,7 +135,7 @@
 
             # Get sets for display
             $t_sets = new ca_sets();
- 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => 1, "parents_only" => true));
+ 			$va_read_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
  			$va_write_sets = $t_sets->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
 
  			# Remove write sets from the read array
@@ -152,13 +156,13 @@
 
             MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name));
  			
- 			$this->render(caGetOption("view", $va_options, "Lightbox/set_list_html.php"));
+ 			$this->render(caGetOption("view", $pa_options, "Lightbox/set_list_html.php"));
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function setDetail($va_options = null) {
+ 		function setDetail($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
             $this->request->setParameter('callback', null);
             unset($_REQUEST['callback']);
@@ -372,7 +376,7 @@
 			
 			$o_context->setParameter('key', $vs_key);
 			
-			if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
+			if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
 			$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 			//if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
@@ -396,14 +400,14 @@
  				case 'xlsx':
  				case 'pptx':
  				case 'pdf':
- 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_label = $t_set->get('ca_sets.preferred_labels'), $vs_label);
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $vs_label = $t_set->get('ca_sets.preferred_labels.name')), ['t_subject' => $t_set]), $vs_label);
  					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
  					$this->render("Lightbox/set_detail_timelineData_json.php");
  					break;
  				default:
- 					$this->render(caGetOption("view", $va_options, "Lightbox/set_detail_html.php"));
+ 					$this->render(caGetOption("view", $pa_options, "Lightbox/set_detail_html.php"));
  					break;
  			}
  		}
@@ -411,7 +415,7 @@
         /**
          *
          */
- 		function setForm($va_options = null) {
+ 		function setForm($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
 			// set_id is passed, so we're editing a set
@@ -427,20 +431,20 @@
 				$t_set = new ca_sets();
 			}
  			$this->view->setVar("set", $t_set);
- 			$this->render(caGetOption("view", $va_options, "Lightbox/form_set_info_html.php"));
+ 			$this->render(caGetOption("view", $pa_options, "Lightbox/form_set_info_html.php"));
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function ajaxSaveSetInfo($va_options = null) {
+ 		function ajaxSaveSetInfo($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
             if (!$this->request->isAjax()) { $this->response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index')); return; }
  			
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
  			
- 			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
+ 			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
  			// set_id is passed through form, otherwise we're saving a new set
  			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_EDIT_READ_ACCESS__) : new ca_sets();
  			
@@ -472,7 +476,11 @@
  			$vb_is_insert = false;
  			if(sizeof($va_errors) == 0){
 				$t_set->setMode(ACCESS_WRITE);
-				$t_set->set('access', 1);
+				if(!is_null($vn_access = $this->request->getParameter('access', pInteger))) {
+					$t_set->set('access', $vn_access);
+				} else {
+					$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
+				}
 				if($t_set->get("set_id")){
 					// edit/add description
 					$t_set->replaceAttribute(array($this->ops_description_attribute => $ps_description, 'locale_id' => $g_ui_locale_id), $this->ops_description_attribute);
@@ -508,7 +516,7 @@
 					$this->request->user->setVar('current_set_id', $t_set->get("set_id"));
 					
 					$this->view->setVar("message", _t('Saved %1', $vs_display_name));
-					$vs_set_list_item_function = (string) caGetOption("set_list_item_function", $va_options, "caLightboxSetListItem");
+					$vs_set_list_item_function = (string) caGetOption("set_list_item_function", $pa_options, "caLightboxSetListItem");
 					$this->view->setVar('block', $vs_set_list_item_function($this->request, $t_set, $this->opa_access_values, array('write_access' => $vb_is_insert ? true : $this->view->getVar('write_access'))));
 				}
 			}else{
@@ -523,7 +531,7 @@
         /**
          *
          */
- 		function setAccess($va_options = null) {
+ 		function setAccess($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
             if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
             	throw new ApplicationException(_t("You do not have access to this lightbox"));
@@ -532,7 +540,7 @@
  			$this->view->setVar("users", $t_set->getSetUsers());
  			$this->view->setVar("user_groups", $t_set->getSetGroups());
  			
- 			$this->render(caGetOption("view", $va_options, "Lightbox/set_access_html.php"));
+ 			$this->render(caGetOption("view", $pa_options, "Lightbox/set_access_html.php"));
  		}
  		# ------------------------------------------------------
         /**
@@ -657,12 +665,12 @@
         /**
          *
          */
- 		function shareSetForm($va_options = null) {
+ 		function shareSetForm($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 			if(!$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
  				throw new ApplicationException(_t("You do not have access to this lightbox"));
  			}
-			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
+			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
 			$this->view->setVar("display_name", $vs_display_name);
  			$this->render("Lightbox/form_share_set_html.php");
  		}
@@ -670,14 +678,14 @@
         /**
          *
          */
- 		function saveShareSet($va_options = null) {
+ 		function saveShareSet($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			if(!$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__)){
  				throw new ApplicationException(_t("You do not have access to this lightbox"));
  			}
- 			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
- 			$vs_display_name_plural = caGetOption("display_name_plural", $va_options, $this->ops_lightbox_display_name_plural);
+ 			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
+ 			$vs_display_name_plural = caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural);
  			$this->view->setVar("display_name", $vs_display_name);
  			$this->view->setVar("display_name_plural", $vs_display_name_plural);
  			$ps_user = $this->purifier->purify($this->request->getParameter('user', pString));
@@ -828,25 +836,25 @@
         /**
          *
          */
- 		function userGroupForm($va_options = null) {
+ 		function userGroupForm($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			$t_user_group = new ca_user_groups();
  			$this->view->setVar("user_group",$t_user_group);
-			$this->view->setVar("user_group_heading", caGetOption("user_group_heading", $va_options, _t("User Group")));
+			$this->view->setVar("user_group_heading", caGetOption("user_group_heading", $pa_options, _t("User Group")));
  			$this->render("Lightbox/form_user_group_html.php");
  		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function saveUserGroup($va_options = null) {
+ 		function saveUserGroup($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
  			
- 			$vs_user_group_terminology = caGetOption("user_group_terminology", $va_options, _t("user group"));
+ 			$vs_user_group_terminology = caGetOption("user_group_terminology", $pa_options, _t("user group"));
  			
  			$t_user_group = new ca_user_groups();
  			if($pn_group_id = $this->request->getParameter('group_id', pInteger)){
@@ -1083,7 +1091,7 @@
 				foreach($va_row_ids_raw as $vn_row_id_raw){
 					$va_row_ids[] = str_replace('row[]=', '', $vn_row_id_raw);
 				}
-				$va_errors = $t_set->reorderItems($va_row_ids);
+				$va_errors = $t_set->reorderItems($va_row_ids, ['user_id' => $this->request->getUserID()]);
 			}else{
 				throw new ApplicationException(_t("You do not have access to this lightbox"));
 			}
@@ -1119,15 +1127,15 @@
         /**
          *
          */
- 		public function ajaxAddItem($va_options = null) {
+ 		public function ajaxAddItem($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
  			
- 			$vs_display_name = caGetOption("display_name", $va_options, $this->ops_lightbox_display_name);
+ 			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
  			$this->view->setVar("display_name", $vs_display_name);
- 			$vs_display_name_plural = caGetOption("display_name_plural", $va_options, $this->ops_lightbox_display_name_plural);
+ 			$vs_display_name_plural = caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural);
             $this->view->setVar("display_name_plural", $vs_display_name_plural);
             
  			// set_id is passed through form, otherwise we're saving a new set, and adding the item to it
@@ -1159,7 +1167,7 @@
 				
 				$vn_object_table_num = $t_object->tableNum();
 				$t_set->setMode(ACCESS_WRITE);
-				$t_set->set('access', 1);
+				$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
 				#$t_set->set('access', $this->request->getParameter('access', pInteger));
 				$t_set->set('table_num', $vn_object_table_num);
 				$t_set->set('type_id', $vn_set_type_user);
@@ -1185,7 +1193,7 @@
 			}
 			if($t_set){
 				$pn_item_id = null;
-				$pn_object_id = $this->request->getParameter('object_id', pInteger);
+				$pn_object_id = $this->request->getParameter('id', pInteger);
 				if($pn_object_id){
 					if(!$t_set->isInSet("ca_objects", $pn_object_id, $t_set->get("set_id"))){
 						if ($pn_item_id = $t_set->addItem($pn_object_id, array(), $this->request->getUserID())) {
@@ -1211,11 +1219,13 @@
 						$this->render("Form/reload_html.php");
 					}				
 				}else{
-					if(($pb_saveLastResults = $this->request->getParameter('saveLastResults', pString)) || ($ps_object_ids = $this->request->getParameter('object_ids', pString))){
+					if(($pb_saveLastResults = $this->request->getParameter('saveLastResults', pString)) || ($ps_object_ids = $this->request->getParameter('object_ids', pString)) || ($pn_object_id = $this->request->getParameter('object_id', pInteger))){
 						if($pb_saveLastResults){
 							// get object ids from last result
 							$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
 							$va_object_ids = $o_context->getResultList();
+						} elseif($pn_object_id) {
+							$va_object_ids = [$pn_object_id];
 						}else{
 							$va_object_ids = explode(";", $ps_object_ids);
 						}
@@ -1243,16 +1253,16 @@
         /**
          *
          */
- 		public function addItemForm($va_options = array()){
+ 		public function addItemForm($pa_options = array()){
             if($this->opb_is_login_redirect) { return; }
 
-            $this->view->setVar("display_name", caGetOption("display_name", $va_options, $this->ops_lightbox_display_name));
-            $this->view->setVar("display_name_plural", caGetOption("display_name_plural", $va_options, $this->ops_lightbox_display_name_plural));
+            $this->view->setVar("display_name", caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name));
+            $this->view->setVar("display_name_plural", caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural));
             $this->view->setvar("set", new ca_Sets());
  			$this->view->setvar("object_id", $this->request->getParameter('object_id', pInteger));
  			$this->view->setvar("object_ids", $this->request->getParameter('object_ids', pString));
  			$this->view->setvar("saveLastResults", $this->request->getParameter('saveLastResults', pInteger));
- 			if($this->request->getParameter('object_id', pInteger) || $this->request->getParameter('saveLastResults', pInteger) || sizeof(explode(";", $this->request->getParameter('object_ids', pString)))){
+ 			if(($pn_object_id = $this->request->getParameter('object_id', pInteger)) || ($pn_save_last_results = $this->request->getParameter('saveLastResults', pInteger)) || ($pa_object_ids = sizeof(explode(";", $this->request->getParameter('object_ids', pString))))){
  				$this->render("Lightbox/form_add_set_item_html.php");
  			}else{
  				$this->view->setVar('message', _t("Object ID is not defined"));
@@ -1283,15 +1293,15 @@
 		/**
 		 *
 		 */
-		public function present($va_options = null) {
+		public function present($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
 			if(!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
 				$this->Index();
 				return;
 			}
-			$this->view->setVar("controller", caGetOption("controller", $va_options, "Lightbox"));
-            $this->view->setVar("display_name", caGetOption("display_name", $va_options, $this->ops_lightbox_display_name));
-            $this->view->setVar("display_name_plural", caGetOption("display_name_plural", $va_options, $this->ops_lightbox_display_name_plural));
+			$this->view->setVar("controller", caGetOption("controller", $pa_options, "Lightbox"));
+            $this->view->setVar("display_name", caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name));
+            $this->view->setVar("display_name_plural", caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural));
 			
 			AssetLoadManager::register("reveal.js");
 			$o_app = AppController::getInstance();
@@ -1299,6 +1309,137 @@
 			$this->view->setVar("set", $t_set);
 
 			$this->render("Lightbox/present_html.php");
+		}
+		# -------------------------------------------------------
+		/**
+		 * Download (accessible) media for all records in this set
+		 */
+		public function getLightboxMedia() {
+			set_time_limit(600); // allow a lot of time for this because the sets can be potentially large
+			$o_dm = Datamodel::load();
+			$t_set = new ca_sets($this->request->getParameter('set_id', pInteger));
+			if (!$t_set->getPrimaryKey()) {
+				$this->notification->addNotification(_t('No set defined'), __NOTIFICATION_TYPE_ERROR__);
+				$this->opo_response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index'));
+				return false;
+			}
+
+			$va_record_ids = array_keys($t_set->getItemRowIDs(array('checkAccess' => $this->opa_access_values, 'limit' => 100000)));
+			if(!is_array($va_record_ids) || !sizeof($va_record_ids)) {
+				$this->notification->addNotification(_t('No media is available for download'), __NOTIFICATION_TYPE_ERROR__);
+				$this->opo_response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index'));
+				return false;
+			}
+
+			$vs_subject_table = $o_dm->getTableName($t_set->get('table_num'));
+			$t_instance = $o_dm->getInstanceByTableName($vs_subject_table);
+
+			$qr_res = $vs_subject_table::createResultSet($va_record_ids);
+			$qr_res->filterNonPrimaryRepresentations(false);
+
+			$va_paths = array();
+			$t_download_log = new Downloadlog();
+			while($qr_res->nextHit()) {
+				$t_instance->load($qr_res->get("ca_objects.object_id"));
+				if (!$t_instance->getPrimaryKey()) { continue; }
+				
+				$va_reps = $t_instance->getRepresentations(null, null, array("checkAccess" => $this->opa_access_values));
+				$vs_idno = $t_instance->get('idno');
+				
+				$vn_c = 1;
+				foreach($va_reps as $vn_representation_id => $va_rep) {
+					
+					$t_download_log->log(array(
+						"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
+						"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+						"table_num" => $t_instance->TableNum(), 
+						"row_id" => $t_instance->get("ca_objects.object_id"), 
+						"representation_id" => $vn_representation_id, 
+						"download_source" => "pawtucket"
+					));
+				
+					
+					# -- get version to download configured in media_display.conf
+					$va_download_display_info = caGetMediaDisplayInfo('download', $va_rep["mimetype"]);
+					$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);
+	
+					$t_rep = new ca_object_representations($va_rep['representation_id']);
+					$va_rep_info = $t_rep->getMediaInfo("media", $vs_download_version);
+					//$va_rep_info = $va_rep['info'][$vs_download_version];
+					$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $vs_idno);
+
+					switch($this->request->user->getPreference('downloaded_file_naming')) {
+						case 'idno':
+							$vs_file_name = $vs_idno_proc.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
+							break;
+						case 'idno_and_version':
+							$vs_file_name = $vs_idno_proc.'_'.$vs_download_version.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
+							break;
+						case 'idno_and_rep_id_and_version':
+							$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$vs_download_version.'.'.$va_rep_info['EXTENSION'];
+							break;
+						case 'original_name':
+						default:
+							if ($va_rep['info']['original_filename']) {
+								$va_tmp = explode('.', $va_rep['info']['original_filename']);
+								if (sizeof($va_tmp) > 1) { 
+									if (strlen($vs_ext = array_pop($va_tmp)) < 3) {
+										$va_tmp[] = $vs_ext;
+									}
+								}
+								$vs_file_name = join('_', $va_tmp); 					
+							} else {
+								$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$vs_download_version;
+							}
+							
+							if (isset($va_file_names[$vs_file_name.'.'.$va_rep_info['EXTENSION']])) {
+								$vs_file_name.= "_{$vn_c}";
+							}
+							$vs_file_name .= '.'.$va_rep_info['EXTENSION'];
+							break;
+					} 
+					
+					$va_file_names[$vs_file_name] = true;
+				
+					//
+					// Perform metadata embedding
+					if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $vs_download_version), 'ca_objects', $t_instance->getPrimaryKey(), $t_instance->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
+						$vs_path = $t_rep->getMediaPath('media', $vs_download_version);
+					}
+					$va_file_paths[$vs_path] = $vs_file_name;
+					
+					$vn_c++;
+				}
+				$va_paths[$qr_res->get($t_instance->primaryKey())] = $va_file_paths;
+			}	
+
+			if (sizeof($va_paths) > 0){
+				$o_zip = new ZipStream();
+
+				foreach($va_paths as $vn_pk => $va_reps) {
+					$vn_c = 1;
+					foreach($va_reps as $vs_path => $vs_file_name) {
+						if (!file_exists($vs_path)) { continue; }
+						$o_zip->addFile($vs_path, $vs_file_name);
+
+						$vn_c++;
+					}
+				}
+
+				$o_view = new View($this->request, $this->request->getViewsDirectoryPath().'/bundles/');
+
+				// send files
+				$o_view->setVar('zip_stream', $o_zip);
+				$o_view->setVar('archive_name', 'media_for_'.mb_substr(preg_replace('![^A-Za-z0-9]+!u', '_', ($vs_set_code = $t_set->get('set_code')) ? $vs_set_code : $t_set->getPrimaryKey()), 0, 20).'.zip');
+				$this->response->addContent($o_view->render('download_file_binary.php'));
+				return;
+			} else {
+				$this->notification->addNotification(_t('No files to download'), __NOTIFICATION_TYPE_ERROR__);
+				$this->opo_response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index'));
+				return;
+			}
+
+			return $this->Index();
 		}
  		# -------------------------------------------------------
  		

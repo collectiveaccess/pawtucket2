@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2015 Whirl-i-Gig
+ * Copyright 2008-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -36,8 +36,11 @@
   
  	require_once(__CA_LIB_DIR__.'/core/BaseModel.php');
  	require_once(__CA_LIB_DIR__.'/core/Parsers/TimeExpressionParser.php');
+	require_once(__CA_LIB_DIR__."/ca/SyncableBaseModel.php");
  
 	class BaseLabel extends BaseModel {
+		# -------------------------------------------------------
+		use SyncableBaseModel;
 		# -------------------------------------------------------
 		public function __construct($pn_id=null, $pb_use_cache=true) {
 			parent::__construct($pn_id, $pb_use_cache);
@@ -47,7 +50,11 @@
 			$this->_generateSortableValue();	// populate sort field
 			// invalidate get() prefetch cache
 			SearchResult::clearResultCacheForTable($this->tableName());
-			return parent::insert($pa_options);
+			if($vn_rc = parent::insert($pa_options)) {
+				$this->setGUID($pa_options);
+			}
+
+			return $vn_rc;
 		}
 		# -------------------------------------------------------
 		public function update($pa_options=null) {
@@ -60,7 +67,20 @@
 			
 			// Unset label cache entry for modified label only
 			unset(LabelableBaseModelWithAttributes::$s_label_cache[$this->getSubjectTableName()][$this->get($this->getSubjectKey())]);
+
 			return parent::update($pa_options);
+		}
+		# -------------------------------------------------------
+		public function delete ($pb_delete_related=false, $pa_options=null, $pa_fields=null, $pa_table_list=null) {
+			$vn_primary_key = $this->getPrimaryKey();
+			$vn_rc = parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list);
+
+			if($vn_primary_key && $vn_rc && caGetOption('hard', $pa_options, false)) {
+				// Don't remove GUID, otherwise wrong GUID will be sent to target
+				//$this->removeGUID($vn_primary_key);
+			}
+
+			return $vn_rc;
 		}
 		# -------------------------------------------------------
 		/**
@@ -75,6 +95,13 @@
 		 */
 		public function getDisplayField() {
 			return $this->LABEL_DISPLAY_FIELD;
+		}
+		# -------------------------------------------------------
+		/**
+		 * Returns list of secondary display fields. If not defined for the label (most don't have these) an empty array is returned.
+		 */
+		public function getSecondaryDisplayFields() {
+			return property_exists($this, "LABEL_SECONDARY_DISPLAY_FIELDS") ? $this->LABEL_SECONDARY_DISPLAY_FIELDS : [];
 		}
 		# -------------------------------------------------------
 		/**
@@ -138,9 +165,12 @@
 			if ($vs_sort_field = $this->getProperty('LABEL_SORT_FIELD')) {
 				$vs_display_field = $this->getProperty('LABEL_DISPLAY_FIELD');
 				
-				$t_locale = new ca_locales();
-				$vs_display_value = caSortableValue($this->get($vs_display_field), array('locale' => $t_locale->localeIDToCode($this->get('locale_id'))));
-			
+				if (!($vs_locale = $this->getAppConfig()->get('use_locale_for_sortable_titles'))) {
+					$t_locale = new ca_locales();
+					$vs_locale = $t_locale->localeIDToCode($this->get('locale_id'));
+				}
+				$vs_display_value = caSortableValue($this->get($vs_display_field), array('locale' => $vs_locale));
+				
 				$this->set($vs_sort_field, $vs_display_value);
 			}
 		}
@@ -154,6 +184,27 @@
 				return true;
 			}
 			return false;
+		}
+		# -------------------------------------------------------
+		public function getAdditionalChecksumComponents() {
+			return [$this->getSubjectTableInstance()->getGUID()];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public function htmlFormElement($ps_field, $ps_format=null, $pa_options=null) {
+			if (($ps_field == $this->getDisplayField()) && (is_array($va_use_list = caGetOption('use_list', $pa_options, false))) && ($po_request = caGetOption('request', $pa_options, null))) {
+				$vn_list_id = array_shift($va_use_list);
+				if ($vn_list_id > 0) {
+                    $va_urls = caJSONLookupServiceUrl($po_request, 'ca_list_items', ['list' => caGetListCode($vn_list_id)]);
+                
+                    $pa_options['height'] = 1;
+                    $pa_options['usewysiwygeditor'] = false;
+                    $pa_options['lookup_url'] = $va_urls['search'];
+                }
+			}
+			return parent::htmlFormElement($ps_field, $ps_format, $pa_options);
 		}
 		# -------------------------------------------------------
 	}

@@ -35,6 +35,8 @@
   */
 
 require_once(__CA_LIB_DIR__."/ca/IBundleProvider.php");
+require_once(__CA_LIB_DIR__."/ca/SyncableBaseModel.php");
+require_once(__CA_LIB_DIR__."/ca/DeduplicateBaseModel.php");
 require_once(__CA_LIB_DIR__."/ca/LabelableBaseModelWithAttributes.php");
 require_once(__CA_LIB_DIR__."/core/Plugins/SearchEngine/CachedResult.php");
 require_once(__CA_LIB_DIR__."/core/Search/SearchResult.php");
@@ -63,6 +65,9 @@ define('__CA_PARENT_CHANGED__', 1);
 define('__CA_PARENT_COLLECTION_CHANGED__', 2);
 
 class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAttributes implements IBundleProvider {
+	# ------------------------------------------------------
+	use SyncableBaseModel;
+	use DeduplicateBaseModel;
 	# ------------------------------------------------------
 	/**
 	 *
@@ -93,7 +98,8 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		require_once(__CA_MODELS_DIR__."/ca_editor_uis.php");
 		require_once(__CA_MODELS_DIR__."/ca_acl.php");
 		require_once(__CA_MODELS_DIR__.'/ca_metadata_dictionary_entries.php');
-		
+		require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
+
 		parent::__construct($pn_id);	# call superclass constructor
 		
 		if ($pn_id) {
@@ -256,6 +262,8 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			$this->_FIELD_VALUES[$this->primaryKey()] = null;		// clear primary key set by BaseModel::insert()
 			return false;
 		}
+
+		$this->setGUID($pa_options);
 		
 		if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 	
@@ -349,8 +357,17 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				return false;
 			}
 		}
+
+		$vn_primary_key = $this->getPrimaryKey();
 		SearchResult::clearResultCacheForRow($this->tableName(), $this->getPrimaryKey());
-		return parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list);
+
+		$vn_rc = parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list);
+		if($vn_primary_key && $vn_rc && caGetOption('hard', $pa_options, false)) {
+			// Don't remove GUID, otherwise wrong GUID will be sent to target
+			//$this->removeGUID($vn_primary_key);
+		}
+
+		return $vn_rc;
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -496,7 +513,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				foreach($va_label_list as $vn_i => $va_label_info) {
 					unset($va_label_info['source_info']);
 					if (!$vb_duplicate_nonpreferred_labels && key_exists('is_preferred', $va_label_info) && !$va_label_info['is_preferred']) { continue; }
-					$va_label_info[$vs_label_display_field] .= " ["._t('Duplicate')."]";
+					if (!$this->getAppConfig()->get('dont_mark_duplicated_records_in_preferred_label')) { $va_label_info[$vs_label_display_field] .= " ["._t('Duplicate')."]"; }
 					$t_dupe->addLabel(
 						$va_label_info, $va_label_info['locale_id'], $va_label_info['type_id'], isset($va_label_info['is_preferred']) ? (bool)$va_label_info['is_preferred'] : false
 					);
@@ -520,8 +537,16 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					}
 				}
 			}
+
+			$va_options = ['restrictToAttributesByCodes' => $va_attrs_to_duplicate];
+
+			if($va_dont_duplicate_codes = $this->getAppConfig()->get($this->tableName().'_dont_duplicate_element_codes')) {
+				if(is_array($va_dont_duplicate_codes)) {
+					$va_options['excludeAttributesByCodes'] = $va_dont_duplicate_codes;
+				}
+			}
 	
-			if (!$t_dupe->copyAttributesFrom($this->getPrimaryKey(), ['restrictToAttributesByCodes' => $va_attrs_to_duplicate])) {
+			if (!$t_dupe->copyAttributesFrom($this->getPrimaryKey(), $va_options)) {
 				$this->errors = $t_dupe->errors;
 				if ($vb_we_set_transaction) { $o_t->rollback();}
 				return false;
@@ -539,6 +564,11 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				if ($vb_we_set_transaction) { $o_t->rollback();}
 				return false;
 			}
+		}
+		
+		// Set rank of duplicated record such that it immediately follows its original
+		if($t_dupe->getProperty('RANK') && $this->isHierarchical() && ($vn_parent_id = $this->get($this->getProperty('HIERARCHY_PARENT_ID_FLD')) > 0)) {
+			$t_dupe->setRankAfter($this->getPrimaryKey());
 		}
 		
 		if ($vb_we_set_transaction) { $o_t->commit();}
@@ -587,7 +617,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 
 		if ($vn_rc = parent::set($pa_fields, "", $pa_options)) {
 			// Set type for idno purposes
-			if (in_array($vs_type_field_name = $this->getTypeFieldName(), $pa_fields) && $this->opo_idno_plugin_instance) {
+			if (in_array($vs_type_field_name = $this->getTypeFieldName(), array_keys($pa_fields)) && $this->opo_idno_plugin_instance) {
 				$this->opo_idno_plugin_instance->setType($this->getTypeCode());
 			}
 		}
@@ -795,38 +825,49 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 	# ------------------------------------------------------
 	/**
 	 * Check if a record already exists with the specified label
+	 *
+	 * @param int $pn_locale_id
+	 * @param array $pa_label_values
+	 * @param bool $pb_preferred_only
+	 * @return bool
 	 */
-	 public function checkForDupeLabel($pn_locale_id, $pa_label_values) {
-	 	$o_db = $this->getDb();
-	 	$t_label = $this->getLabelTableInstance();
-	 	
-	 	unset($pa_label_values['displayname']);
-	 	$va_sql = array();
-	 	foreach($pa_label_values as $vs_field => $vs_value) {
-	 		$va_sql[] = "(l.{$vs_field} = ?)";
-	 	}
-	 	
-	 	if ($t_label->hasField('is_preferred')) { $va_sql[] = "(l.is_preferred = 1)"; }
-	 	if ($t_label->hasField('locale_id')) { $va_sql[] = "(l.locale_id = ?)"; }
-	 	if ($this->hasField('deleted')) { $va_sql[] = "(t.deleted = 0)"; }
-	 	$va_sql[] = "(l.".$this->primaryKey()." <> ?)";
-	 	
-	 	$vs_sql = "SELECT ".$t_label->primaryKey()."
+	public function checkForDupeLabel($pn_locale_id, $pa_label_values, $pb_preferred_only=true) {
+		$o_db = $this->getDb();
+		$t_label = $this->getLabelTableInstance();
+		unset($pa_label_values['displayname']);
+		$va_wheres = array();
+		foreach($pa_label_values as $vs_field => $vs_value) {
+			$va_wheres[] = "(l.{$vs_field} = ?)";
+		}
+		if($pb_preferred_only) {
+			if ($t_label->hasField('is_preferred')) {
+				$va_wheres[] = "(l.is_preferred = 1)";
+			}
+		}
+		if($pn_locale_id && $t_label->hasField('locale_id')) {
+			$va_wheres[] = "(l.locale_id = ?)";
+		}
+		if ($this->hasField('deleted')) { $va_wheres[] = "(t.deleted = 0)"; }
+		if ($this->getPrimaryKey()) {
+			$va_wheres[] = "(l.".$this->primaryKey()." <> ?)";
+		}
+		$vs_sql = "SELECT ".$t_label->primaryKey()."
 	 	FROM ".$t_label->tableName()." l
 	 	INNER JOIN ".$this->tableName()." AS t ON t.".$this->primaryKey()." = l.".$this->primaryKey()."
-	 	WHERE ".join(' AND ', $va_sql);
-	
-	 	$va_values = array_values($pa_label_values);
-	 	$va_values[] = (int)$pn_locale_id;
-	 	$va_values[] = (int)$this->getPrimaryKey();
-	 	$qr_res = $o_db->query($vs_sql, $va_values);
-	 	
-	 	if ($qr_res->numRows() > 0) {
-	 		return true;
-	 	}
-	 
-	 	return false;
-	 }
+	 	WHERE ".join(' AND ', $va_wheres);
+		$va_values = array_values($pa_label_values);
+		if($pn_locale_id && $t_label->hasField('locale_id')) {
+			$va_values[] = (int)$pn_locale_id;
+		}
+		if ($this->getPrimaryKey()) {
+			$va_values[] = (int)$this->getPrimaryKey();
+		}
+		$qr_res = $o_db->query($vs_sql, $va_values);
+		if ($qr_res->numRows() > 0) {
+			return true;
+		}
+		return false;
+	}
 	# ------------------------------------------------------
 	/**
 	 *
@@ -910,14 +951,16 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 	/**
  	 * Check if currently loaded row is readable
  	 *
- 	 * @param RequestHTTP $po_request
+ 	 * @param RequestHTTP|ca_user $po_request
  	 * @param string $ps_bundle_name Optional bundle name to test readability on. If omitted readability is considered for the item as a whole.
  	 * @return bool True if record can be read by the current user, false if not
  	 */
 	function isReadable($po_request, $ps_bundle_name=null) {
+ 		$t_user = is_a($po_request, 'ca_users') ? $po_request : $po_request->user;
+ 		
 		// Check type restrictions
  		if ((bool)$this->getAppConfig()->get('perform_type_access_checking')) {
-			$vn_type_access = $po_request->user->getTypeAccessLevel($this->tableName(), $this->getTypeID());
+			$vn_type_access = $t_user->getTypeAccessLevel($this->tableName(), $this->getTypeID());
 			if ($vn_type_access < __CA_BUNDLE_ACCESS_READONLY__) {
 				return false;
 			}
@@ -925,7 +968,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		
 		// Check source restrictions
  		if ((bool)$this->getAppConfig()->get('perform_source_access_checking')) {
-			$vn_source_access = $po_request->user->getSourceAccessLevel($this->tableName(), $this->getSourceID());
+			$vn_source_access = $t_user->getSourceAccessLevel($this->tableName(), $this->getSourceID());
 			if ($vn_source_access < __CA_BUNDLE_ACCESS_READONLY__) {
 				return false;
 			}
@@ -933,14 +976,19 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		
 		// Check item level restrictions
 		if ((bool)$this->getAppConfig()->get('perform_item_level_access_checking')) {
-			$vn_item_access = $this->checkACLAccessForUser($po_request->user);
+			$vn_item_access = $this->checkACLAccessForUser($t_user);
 			if ($vn_item_access < __CA_ACL_READONLY_ACCESS__) {
 				return false;
 			}
 		}
 		
 		if ($ps_bundle_name) {
-			if ($po_request->user->getBundleAccessLevel($this->tableName(), $ps_bundle_name) < __CA_BUNDLE_ACCESS_READONLY__) { return false; }
+			if ($t_user->getBundleAccessLevel($this->tableName(), $ps_bundle_name) < __CA_BUNDLE_ACCESS_READONLY__) { return false; }
+		}
+		
+		if ((defined("__CA_APP_TYPE__") && (__CA_APP_TYPE__ == "PAWTUCKET") && ($this->hasField('access')))) {
+			$va_access = caGetUserAccessValues($po_request);
+			if (is_array($va_access) && sizeof($va_access) && !in_array($this->get('access'), $va_access)) { return false; }
 		}
 		
 		return true;
@@ -949,14 +997,17 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
  	/**
  	 * Check if currently loaded row is save-able
  	 *
- 	 * @param RequestHTTP $po_request
+ 	 * @param RequestHTTP|ca_user $po_request
  	 * @param string $ps_bundle_name Optional bundle name to test write-ability on. If omitted write-ability is considered for the item as a whole.
  	 * @return bool True if record can be saved, false if not
  	 */
  	public function isSaveable($po_request, $ps_bundle_name=null) {
+ 		$t_user = is_a($po_request, 'ca_users') ? $po_request : $po_request->user;
+ 		if (!$t_user) { return false; }
+ 		
  		// Check type restrictions
  		if ((bool)$this->getAppConfig()->get('perform_type_access_checking')) {
-			$vn_type_access = $po_request->user->getTypeAccessLevel($this->tableName(), $this->getTypeID());
+			$vn_type_access = $t_user->getTypeAccessLevel($this->tableName(), $this->getTypeID());
 			if ($vn_type_access != __CA_BUNDLE_ACCESS_EDIT__) {
 				return false;
 			}
@@ -964,7 +1015,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		
 		// Check source restrictions
  		if ((bool)$this->getAppConfig()->get('perform_source_access_checking')) {
-			$vn_source_access = $po_request->user->getSourceAccessLevel($this->tableName(), $this->getSourceID());
+			$vn_source_access = $t_user->getSourceAccessLevel($this->tableName(), $this->getSourceID());
 			if ($vn_source_access < __CA_BUNDLE_ACCESS_EDIT__) {
 				return false;
 			}
@@ -972,22 +1023,22 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		
 		// Check item level restrictions
 		if ((bool)$this->getAppConfig()->get('perform_item_level_access_checking') && $this->getPrimaryKey()) {
-			$vn_item_access = $this->checkACLAccessForUser($po_request->user);
+			$vn_item_access = $this->checkACLAccessForUser($t_user);
 			if ($vn_item_access < __CA_ACL_EDIT_ACCESS__) {
 				return false;
 			}
 		}
 		
  		// Check actions
- 		if (!$this->getPrimaryKey() && !$po_request->user->canDoAction('can_create_'.$this->tableName())) {
+ 		if (!$this->getPrimaryKey() && !$t_user->canDoAction('can_create_'.$this->tableName())) {
  			return false;
  		}
- 		if ($this->getPrimaryKey() && !$po_request->user->canDoAction('can_edit_'.$this->tableName())) {
+ 		if ($this->getPrimaryKey() && !$t_user->canDoAction('can_edit_'.$this->tableName())) {
  			return false;
  		}
  		
 		if ($ps_bundle_name) {
-			if ($po_request->user->getBundleAccessLevel($this->tableName(), $ps_bundle_name) < __CA_BUNDLE_ACCESS_EDIT__) { return false; }
+			if ($t_user->getBundleAccessLevel($this->tableName(), $ps_bundle_name) < __CA_BUNDLE_ACCESS_EDIT__) { return false; }
 		}
  		
  		return true;
@@ -995,14 +1046,19 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
  	# ------------------------------------------------------
  	/**
  	 * Check if currently loaded row is deletable
+ 	 *
+ 	 * @param RequestHTTP|ca_user $po_request
+ 	 * @return bool True if record can be deleted, false if not
  	 */
  	public function isDeletable($po_request) {
+ 		$t_user = is_a($po_request, 'ca_users') ? $po_request : $po_request->user;
+ 		
  		// Is row loaded?
  		if (!$this->getPrimaryKey()) { return false; }
  		
  		// Check type restrictions
  		if ((bool)$this->getAppConfig()->get('perform_type_access_checking')) {
-			$vn_type_access = $po_request->user->getTypeAccessLevel($this->tableName(), $this->getTypeID());
+			$vn_type_access = $t_user->getTypeAccessLevel($this->tableName(), $this->getTypeID());
 			if ($vn_type_access != __CA_BUNDLE_ACCESS_EDIT__) {
 				return false;
 			}
@@ -1010,7 +1066,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		
 		// Check source restrictions
  		if ((bool)$this->getAppConfig()->get('perform_source_access_checking')) {
-			$vn_source_access = $po_request->user->getSourceAccessLevel($this->tableName(), $this->getSourceID());
+			$vn_source_access = $t_user->getSourceAccessLevel($this->tableName(), $this->getSourceID());
 			if ($vn_source_access < __CA_BUNDLE_ACCESS_EDIT__) {
 				return false;
 			}
@@ -1018,14 +1074,14 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		
 		// Check item level restrictions
 		if ((bool)$this->getAppConfig()->get('perform_item_level_access_checking') && $this->getPrimaryKey()) {
-			$vn_item_access = $this->checkACLAccessForUser($po_request->user);
+			$vn_item_access = $this->checkACLAccessForUser($t_user);
 			if ($vn_item_access < __CA_ACL_EDIT_DELETE_ACCESS__) {
 				return false;
 			}
 		}
 		
  		// Check actions
- 		if (!$this->getPrimaryKey() || !$po_request->user->canDoAction('can_delete_'.$this->tableName())) {
+ 		if (!$this->getPrimaryKey() || !$t_user->canDoAction('can_delete_'.$this->tableName())) {
  			return false;
  		}
  		
@@ -1079,8 +1135,6 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			}
 		}
 		
-		
-		
 		$va_info = $this->getBundleInfo($ps_bundle_name);
 		if (!($vs_type = $va_info['type'])) { return null; }
 		
@@ -1095,7 +1149,6 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		// start and count
 		$pn_start = caGetOption('start', $pa_options, 0);
 		$pn_limit = caGetOption('limit', $pa_options, null);
-		
 		$vs_element = '';
 		switch($vs_type) {
 			# -------------------------------------------------
@@ -1116,76 +1169,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				switch($ps_bundle_name) {
 					# -------------------------------
 					case 'ca_object_representations':
-						foreach(array('restrict_to_types', 'restrict_to_relationship_types') as $vs_k) {
-							$pa_options[$vs_k] = $pa_bundle_settings[$vs_k];
-						}
-						$va_reps = $this->getRepresentations(array('thumbnail', 'original'), null, $pa_options);
-						
-						$t_item = new ca_object_representations();
-						$va_rep_type_list = $t_item->getTypeList();
-						$va_errors = array();
-							
-						$vs_bundle_template = caGetOption('display_template', $pa_bundle_settings, null);
-
-						// Paging
-						$vn_primary_id = 0;
-						$va_initial_values = array();
-						if (sizeof($va_reps)) {
-							$o_type_config = Configuration::load($t_item->getAppConfig()->get('annotation_type_config'));
-							$va_annotation_type_mappings = $o_type_config->getAssoc('mappings');
-	
-							// Get display template values
-							$va_display_template_values = array();
-							if($vs_bundle_template && is_array($va_relation_ids = caExtractValuesFromArrayList($va_reps, 'relation_id')) && sizeof($va_relation_ids)) {
-								if ($vs_linking_table = RepresentableBaseModel::getRepresentationRelationshipTableName($this->tableName())) {
-									$va_display_template_values = caProcessTemplateForIDs($vs_bundle_template, $vs_linking_table, $va_relation_ids, array_merge($pa_options, array('returnAsArray' => true, 'returnAllLocales' => false, 'includeBlankValuesInArray' => true)));
-								}
-							}
-	
-							$vn_i = 0;
-							foreach ($va_reps as $va_rep) {
-								$vn_num_multifiles = $va_rep['num_multifiles'];
-								if ($vs_extracted_metadata = caFormatMediaMetadata(caSanitizeArray(caUnserializeForDatabase($va_rep['media_metadata']), array('removeNonCharacterData' => true)))) {
-									$vs_extracted_metadata = "<h3>"._t('Extracted metadata').":</h3>\n{$vs_extracted_metadata}\n";
-								}
-								$vs_md5 = isset($va_rep['info']['original']['MD5']) ? "<h3>"._t('MD5 signature').':</h3>'.$va_rep['info']['original']['MD5'] : '';
-
-								if ($va_rep['is_primary']) {
-									$vn_primary_id = $va_rep['representation_id'];
-								}
-								
-								$va_initial_values[$va_rep['representation_id']] = array(
-									'idno' => $va_rep['idno'], 
-									'_display' => ($vs_bundle_template && isset($va_display_template_values[$vn_i])) ? $va_display_template_values[$vn_i] : '',
-									'status' => $va_rep['status'], 
-									'status_display' => $t_item->getChoiceListValue('status', $va_rep['status']), 
-									'access' => $va_rep['access'],
-									'access_display' => $t_item->getChoiceListValue('access', $va_rep['access']), 
-									'rep_type_id' => $va_rep['type_id'],
-									'rep_type' => $t_item->getTypeName($va_rep['type_id']), 
-									'rep_label' => $va_rep['label'],
-									'is_primary' => (int)$va_rep['is_primary'],
-									'is_primary_display' => ($va_rep['is_primary'] == 1) ? _t('PRIMARY') : '', 
-									'locale_id' => $va_rep['locale_id'], 
-									'icon' => $va_rep['tags']['thumbnail'], 
-									'mimetype' => $va_rep['info']['original']['PROPERTIES']['mimetype'], 
-									'annotation_type' => isset($va_annotation_type_mappings[$va_rep['info']['original']['PROPERTIES']['mimetype']]) ? $va_annotation_type_mappings[$va_rep['info']['original']['PROPERTIES']['mimetype']] : null,
-									'type' => $va_rep['info']['original']['PROPERTIES']['typename'], 
-									'dimensions' => $va_rep['dimensions']['original'], 
-									'filename' => $va_rep['info']['original_filename'] ? $va_rep['info']['original_filename'] : _t('Unknown'),
-									'num_multifiles' => ($vn_num_multifiles ? (($vn_num_multifiles == 1) ? _t('+ 1 additional preview') : _t('+ %1 additional previews', $vn_num_multifiles)) : ''),
-									'metadata' => $vs_extracted_metadata,
-									'md5' => $vs_md5 ? "{$vs_md5}" : "",
-									'typename' => $va_rep_type_list[$va_rep['type_id']]['name_singular'],
-									'fetched_from' => $va_rep['fetched_from'],
-									'fetched_on' => date('c', $va_rep['fetched_on']),
-									'fetched' => $va_rep['fetched_from'] ? _t("<h3>Fetched from:</h3> URL %1 on %2", '<a href="'.$va_rep['fetched_from'].'" target="_ext" title="'.$va_rep['fetched_from'].'">'.$va_rep['fetched_from'].'</a>', date('c', $va_rep['fetched_on'])) : ""
-								);
-		
-								$vn_i++;
-							}
-						}
-						return $va_initial_values;
+						return parent::getBundleFormValues($ps_bundle_name, $ps_placement_code, $pa_bundle_settings, $pa_options);
 						break;
 					case 'ca_entities':
 					case 'ca_places':
@@ -1198,7 +1182,18 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					case 'ca_movements':
 					case 'ca_tour_stops':
 					case 'ca_sets':
-					case 'ca_objects_table':
+					case 'ca_objects_table': // for compatibility with first version
+					case 'ca_objects_related_list':
+					case 'ca_object_representations_related_list':
+					case 'ca_entities_related_list':
+					case 'ca_places_related_list':
+					case 'ca_occurrences_related_list':
+					case 'ca_collections_related_list':
+					case 'ca_list_items_related_list':
+					case 'ca_storage_locations_related_list':
+					case 'ca_loans_related_list':
+					case 'ca_movements_related_list':
+					case 'ca_object_lots_related_list':
 						return $this->getRelatedBundleFormValues($pa_options['request'], $pa_options['formName'], $ps_bundle_name, $ps_placement_code, $pa_bundle_settings, $pa_options);
 						break;
 					# -------------------------------
@@ -1217,7 +1212,17 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				}
 				
 				break;
-			}
+			
+			# -------------------------------------------------
+			case 'special':
+				switch($ps_bundle_name) {
+				    case 'ca_site_page_media':
+				        return parent::getBundleFormValues($ps_bundle_name, $ps_placement_code, $pa_bundle_settings, $pa_options);
+				        break;
+				}
+				break;
+			# -------------------------------------------------
+		}
 		return null;
 	}
 	# ------------------------------------------------------
@@ -1231,8 +1236,9 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 	 *		graphicsPath
 	 *		request
 	 */
-	public function getBundleFormHTML($ps_bundle_name, $ps_placement_code, $pa_bundle_settings, $pa_options, &$ps_bundle_label=null) {
+	public function getBundleFormHTML($ps_bundle_name, $ps_placement_code, $pa_bundle_settings, $pa_options=null, &$ps_bundle_label=null) {
 		global $g_ui_locale;
+		if (!is_array($pa_bundle_settings)) { $pa_bundle_settings = []; }
 		
 		$vb_batch = (isset($pa_options['batch']) && $pa_options['batch']) ? true : false;
 		
@@ -1279,6 +1285,12 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			}
 		}
 		
+		// convert intrinsics to bare field names if they include tablename (eg. ca_objects.idno => idno)
+		$va_tmp = explode('.', $ps_bundle_name);
+		if (($this->tableName() === $va_tmp[0]) && $this->hasField($va_tmp[1])) {
+			$ps_bundle_name = $va_tmp[1];
+		}
+		
 		$va_info = $this->getBundleInfo($ps_bundle_name);
 		if (!($vs_type = $va_info['type'])) { return null; }
 		
@@ -1298,9 +1310,9 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		$ps_bundle_name_proc = str_replace("ca_attribute_", "", $ps_bundle_name);
 		$va_violations = null;
 		if (
-			($va_dictionary_entry = ca_metadata_dictionary_entries::getEntry($ps_bundle_name_proc, $pa_bundle_settings))
+			($va_dictionary_entry = ca_metadata_dictionary_entries::getEntry($ps_bundle_name_proc, $this, $pa_bundle_settings))
 			||
-			($va_dictionary_entry = ca_metadata_dictionary_entries::getEntry($this->tableName().'.'.$ps_bundle_name_proc, $pa_bundle_settings))
+			($va_dictionary_entry = ca_metadata_dictionary_entries::getEntry($this->tableName().'.'.$ps_bundle_name_proc, $this, $pa_bundle_settings))
 		) {
 			$pa_bundle_settings['definition'][$g_ui_locale] = $va_dictionary_entry['settings']['definition'];
 			if ($va_dictionary_entry['settings']['mandatory']) {
@@ -1319,9 +1331,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		}
 		
 		// is label for this bundle forced in bundle settings?
-		if (isset($pa_bundle_settings['label']) && isset($pa_bundle_settings['label'][$g_ui_locale]) && ($pa_bundle_settings['label'][$g_ui_locale])) {
-			$vs_label = $vs_label_text = $pa_bundle_settings['label'][$g_ui_locale];
-		}
+		$vs_label = $vs_label_text = caExtractSettingValueByLocale($pa_bundle_settings, 'label', $g_ui_locale);
 		
 		// Set bundle level documentation URL
 		$vs_documentation_url =  trim((isset($pa_bundle_settings['documentation_url']) && $pa_bundle_settings['documentation_url']) ? $pa_bundle_settings['documentation_url']  : '');
@@ -1352,7 +1362,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					$vs_label .= ' '.$vs_required_marker;
 				}
 				
-				$vs_description = isset($pa_bundle_settings['description'][$g_ui_locale]) ? $pa_bundle_settings['description'][$g_ui_locale] : null;
+				$vs_description = caExtractSettingValueByLocale($pa_bundle_settings, 'description', $g_ui_locale);
 				
 				if (($vs_label) && ($vs_description) && !is_array($va_dictionary_entry)) {
 					TooltipManager::add('#'.$vs_field_id, "<h3>{$vs_label_text}</h3>{$vs_description}");
@@ -1360,10 +1370,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				break;
 			# -------------------------------------------------
 			case 'intrinsic':
-				if (isset($pa_bundle_settings['label'][$g_ui_locale]) && $pa_bundle_settings['label'][$g_ui_locale]) {
-					$pa_options['label'] = $pa_bundle_settings['label'][$g_ui_locale];
-				}
-				if (!$pa_options['label']) {
+				if (!($pa_options['label'] = caExtractSettingValueByLocale($pa_bundle_settings, 'label', $g_ui_locale))) {
 					$pa_options['label'] = $this->getFieldInfo($ps_bundle_name, 'LABEL');
 				}
 				
@@ -1390,11 +1397,12 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						array_merge(
 							array(	
 								'readonly' 					=> $vb_read_only,						
-								'error_icon' 				=> $pa_options['request']->getThemeUrlPath()."/graphics/icons/warning_small.gif",
-								'progress_indicator'		=> $pa_options['request']->getThemeUrlPath()."/graphics/icons/indicator.gif",
+								'error_icon' 				=> caNavIcon(__CA_NAV_ICON_ALERT__, 1),
+								'progress_indicator'		=> caNavIcon(__CA_NAV_ICON_SPINNER__, 1),
 								'lookup_url' 				=> $va_lookup_url_info['intrinsic'],
 								
-								'name'						=> $ps_placement_code.$pa_options['formName'].$ps_bundle_name
+								'name'						=> $ps_placement_code.$pa_options['formName'].$ps_bundle_name,
+								'usewysiwygeditor' 			=> $pa_bundle_settings['usewysiwygeditor']
 							),
 							$pa_options,
 							$va_additional_field_options
@@ -1436,7 +1444,10 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				$vs_element = $o_view->render('intrinsic.php', true);
 				
 				
-				$vs_description =  (isset($pa_bundle_settings['description'][$g_ui_locale]) && $pa_bundle_settings['description'][$g_ui_locale]) ? $pa_bundle_settings['description'][$g_ui_locale]  : $this->getFieldInfo($ps_bundle_name, 'DESCRIPTION');
+				if(!($vs_description =  caExtractSettingValueByLocale($pa_bundle_settings, 'description', $g_ui_locale))) {
+					$vs_description = $this->getFieldInfo($ps_bundle_name, 'DESCRIPTION');
+				}
+				
 				if (($pa_options['label']) && ($vs_description) && !is_array($va_dictionary_entry)) {
 					TooltipManager::add('#'.$vs_field_id, "<h3>".$pa_options['label']."</h3>{$vs_description}");
 				}
@@ -1461,7 +1472,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				if (!$vs_label_text) { $vs_label_text = $this->getAttributeLabel($vs_attr_element_code); }
 				
 				if ($vb_batch) {
-					$t_element = $this->_getElementInstance($vs_attr_element_code);
+					$t_element = ca_metadata_elements::getInstance($vs_attr_element_code);
 					$va_type_restrictions = $t_element->getTypeRestrictionsForDisplay($this->tableNum());
 					if (sizeof($va_type_restrictions)) {
 						$vs_restriction_list = join("; ", $va_type_restrictions);
@@ -1475,11 +1486,13 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				}
 
 				// fall back to element description if applicable
-				$vs_description =  (isset($pa_bundle_settings['description'][$g_ui_locale]) && $pa_bundle_settings['description'][$g_ui_locale]) ? $pa_bundle_settings['description'][$g_ui_locale]  : $this->getAttributeDescription($vs_attr_element_code);
+				if(!($vs_description =  caExtractSettingValueByLocale($pa_bundle_settings, 'description', $g_ui_locale))) {
+					$vs_description = $this->getAttributeDescription($vs_attr_element_code);
+				}
 
                 $vs_documentation_url =  trim((isset($pa_bundle_settings['documentation_url']) && $pa_bundle_settings['documentation_url']) ? $pa_bundle_settings['documentation_url']  : $vs_documentation_url = $this->getAttributeDocumentationUrl($vs_attr_element_code));
 
-				if ($t_element = $this->_getElementInstance($vs_attr_element_code)) {
+				if ($t_element = ca_metadata_elements::getInstance($vs_attr_element_code)) {
 					if ($o_config->get('show_required_field_marker') && (($t_element->getSetting('minChars') > 0) || ((bool)$t_element->getSetting('mustNotBeBlank')) || ((bool)$t_element->getSetting('requireValue')))) { 
 						$vs_label .= ' '.$vs_required_marker;
 					}
@@ -1543,10 +1556,23 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 
 						break;
 					# -------------------------------
-					case 'ca_objects_table':
-						if (($this->_CONFIG->get('ca_objects_disable'))) { return ''; }		// don't display if master "disable" switch is set
+					case 'ca_objects_table': // for compatibility with first version
+					case 'ca_objects_related_list':
+					case 'ca_object_representations_related_list':
+					case 'ca_entities_related_list':
+					case 'ca_places_related_list':
+					case 'ca_occurrences_related_list':
+					case 'ca_collections_related_list':
+					case 'ca_list_items_related_list':
+					case 'ca_storage_locations_related_list':
+					case 'ca_loans_related_list':
+					case 'ca_movements_related_list':
+					case 'ca_tour_stops_related_list':
+					case 'ca_object_lots_related_list':
+						$vs_table_name = preg_replace("/_related_list|_table$/", '', $ps_bundle_name);
+						if (($this->_CONFIG->get($vs_table_name. '_disable'))) { return ''; }		// don't display if master "disable" switch is set
 						$pa_options['start'] = 0;
-						$vs_element = $this->getRelatedObjectsTableHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_bundle_settings, $pa_options);
+						$vs_element = $this->getRelatedListHTMLFormBundle($pa_options['request'], $ps_bundle_name, $pa_options['formName'], $ps_placement_code, $pa_bundle_settings, $pa_options);
 						break;
 					# -------------------------------
 					default:
@@ -1558,7 +1584,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				if (!$vs_label_text) { $vs_label_text = $va_info['label']; }				
 				$vs_label = '<span class="formLabelText" id="'.$pa_options['formName'].'_'.$ps_placement_code.'">'.$vs_label_text.'</span>'; 
 				
-				$vs_description = (isset($pa_bundle_settings['description'][$g_ui_locale]) && $pa_bundle_settings['description'][$g_ui_locale]) ? $pa_bundle_settings['description'][$g_ui_locale] : null;
+				$vs_description = caExtractSettingValueByLocale($pa_bundle_settings, 'description', $g_ui_locale);
 				
 				if (($vs_label_text) && ($vs_description) && !is_array($va_dictionary_entry)) {
 					TooltipManager::add('#'.$pa_options['formName'].'_'.$ps_placement_code, "<h3>{$vs_label}</h3>{$vs_description}");
@@ -1609,18 +1635,6 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						$vs_element .= $this->getScreenHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_options);
 						break;
 					# -------------------------------
-					// This bundle is only available when editing objects of type ca_editor_uis
-					case 'ca_editor_ui_type_restrictions':
-						if ($vb_batch) { return null; } // not supported in batch mode
-						$vs_element .= $this->getTypeRestrictionsHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_options);
-						break;
-					# -------------------------------
-					// This bundle is only available when editing objects of type ca_editor_ui_screens
-					case 'ca_editor_ui_screen_type_restrictions':
-						$t_editor = new ca_editor_uis($this->get('ui_id'));
-						$vs_element .= $this->getTypeRestrictionsHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_options);
-						break;
-					# -------------------------------
 					// This bundle is only available when editing objects of type ca_editor_ui_screens
 					case 'ca_editor_ui_bundle_placements':
 						if ($vb_batch) { return null; } // not supported in batch mode
@@ -1637,15 +1651,14 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					case 'hierarchy_navigation':
 						if ($vb_batch) { return null; } // not supported in batch mode
 						if ($this->isHierarchical()) {
-							$vs_element .= $this->getHierarchyNavigationHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, array(), $pa_bundle_settings, $pa_options);
+							$vs_element .= $this->getHierarchyNavigationHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_options, $pa_bundle_settings);
 						}
 						break;
 					# -------------------------------
 					// Hierarchical item location control
 					case 'hierarchy_location':
-						if ($vb_batch) { return null; } // not supported in batch mode
 						if ($this->isHierarchical()) {
-							$vs_element .= $this->getHierarchyLocationHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, array(), $pa_bundle_settings, $pa_options);
+							$vs_element .= $this->getHierarchyLocationHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_options, $pa_bundle_settings);
 						}
 						break;
 					# -------------------------------
@@ -1665,6 +1678,9 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					# -------------------------------
 					// This bundle is only available when editing objects of type ca_bundle_displays
 					case 'ca_bundle_display_type_restrictions':
+					case 'ca_search_form_type_restrictions':
+					case 'ca_editor_ui_screen_type_restrictions':
+					case 'ca_editor_ui_type_restrictions':
 						$vs_element .= $this->getTypeRestrictionsHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_options);
 						break;
 					# -------------------------------
@@ -1715,8 +1731,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					# -------------------------------
 					// This bundle is only available for objects
 					case 'ca_objects_location':		// storage location via ca_objects_x_storage_locations or ca_movements_x_objects
-						if ($vb_batch) { return null; } 				// not supported in batch mode
-						if (!$this->getPrimaryKey()) { return null; }	// not supported for new records
+						if (!$this->getPrimaryKey() && !$vb_batch) { return null; }	// not supported for new records
 						if (!$pa_options['request']->user->canDoAction('can_edit_ca_objects')) { break; }
 					
 						$vs_element .= $this->getObjectLocationHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_bundle_settings, $pa_options);
@@ -1725,8 +1740,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					# -------------------------------
 					// This bundle is only available for objects
 					case 'ca_objects_history':		// summary of object accession, movement, exhibition and deaccession
-						if ($vb_batch) { return null; } // not supported in batch mode
-						if (!$this->getPrimaryKey()) { return null; }	// not supported for new records
+						if (!$this->getPrimaryKey() && !$vb_batch) { return null; }	// not supported for new records
 						if (!$pa_options['request']->user->canDoAction('can_edit_ca_objects')) { break; }
 					
 						$vs_element .= $this->getObjectHistoryHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_bundle_settings, $pa_options);
@@ -1768,9 +1782,37 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 						
 						break;
 					# -------------------------------
-					// This bundle is only available items that can be used as authority references (object, entities, occurrences, list items, etc.)
+					// This bundle is only available for objects
+					case 'ca_object_circulation_status':		// circulation status for objects (part of the library module)
+						if ($vb_batch) { return null; } // not supported in batch mode
+						if (!$pa_options['request']->user->canDoAction('can_edit_ca_objects')) { break; }
+
+						$vs_element .= $this->getObjectCirculationStatusHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_bundle_settings, $pa_options);
+
+						break;
+					# -------------------------------
+					// This bundle is only available for items that can be used as authority references (object, entities, occurrences, list items, etc.)
 					case 'authority_references_list':
 						$vs_element .= $this->getAuthorityReferenceListHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_bundle_settings, $pa_options);
+						break;
+					# -------------------------------
+					// This bundle is only available items for batch editing on representable models
+					case 'ca_object_representations_access_status':
+						if (($vb_batch) && (is_a($this, 'RepresentableBaseModel'))) {
+							$vs_element .= $this->getObjectRepresentationAccessStatusHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_bundle_settings, $pa_options);
+						} else {
+							return null;
+						}
+						break;
+					# -------------------------------
+					// This bundle is only available items for ca_site_pages
+					case 'ca_site_pages_content':
+						$vs_element .= $this->getPageContentHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_bundle_settings, $pa_options);
+						break;
+					# -------------------------------
+					// This bundle is only available items for ca_site_pages
+					case 'ca_site_page_media':
+						$vs_element .= $this->getPageMediaHTMLFormBundle($pa_options['request'], $pa_options['formName'], $ps_placement_code, $pa_bundle_settings, $pa_options);
 						break;
 					# -------------------------------
 					default:
@@ -1785,7 +1827,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				}
 				$vs_label = '<span class="formLabelText" id="'.$pa_options['formName'].'_'.$ps_placement_code.'">'.$vs_label_text.'</span>'; 
 				
-				$vs_description = (isset($pa_bundle_settings['description'][$g_ui_locale]) && $pa_bundle_settings['description'][$g_ui_locale]) ? $pa_bundle_settings['description'][$g_ui_locale] : null;
+				$vs_description = caExtractSettingValueByLocale($pa_bundle_settings, 'description', $g_ui_locale);
 				
 				if (($vs_label_text) && ($vs_description) && !is_array($va_dictionary_entry)) {
 					TooltipManager::add('#'.$pa_options['formName'].'_'.$ps_placement_code, "<h3>{$vs_label}</h3>{$vs_description}");
@@ -1804,7 +1846,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			if(preg_match("!^[a-z]!",$vs_documentation_url) && !preg_match("!^http[s]?://!",$vs_documentation_url)) {
 				$vs_documentation_url = "http://".$vs_documentation_url;
 			}
-			$vs_documentation_link = "<a class='bundleDocumentationLink' href='$vs_documentation_url' target='_blank'>documentation</a>";
+			$vs_documentation_link = "<a class='bundleDocumentationLink' href='$vs_documentation_url' target='_blank' >".caNavIcon(__CA_NAV_ICON_INFO__, '15px')."</a>";
 		}
 		
 		
@@ -1837,6 +1879,10 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
  	  * Returns associative array with descriptive information about the bundle
  	  */
  	public function getBundleInfo($ps_bundle_name) {
+ 		if (isset($this->BUNDLES[$ps_bundle_name])) { return $this->BUNDLES[$ps_bundle_name]; }
+ 		$ps_bundle_name = str_replace($this->tableName().".", "ca_attribute_", $ps_bundle_name);
+ 		if (isset($this->BUNDLES[$ps_bundle_name])) { return $this->BUNDLES[$ps_bundle_name]; }
+ 		$ps_bundle_name = str_replace("ca_attribute_", "", $ps_bundle_name);
  		return isset($this->BUNDLES[$ps_bundle_name]) ? $this->BUNDLES[$ps_bundle_name] : null;
  	}
  	# --------------------------------------------------------------------------------------------
@@ -1881,9 +1927,9 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					case 'preferred_labels':		
 						if (method_exists($t_instance, 'getLabelTableInstance') && ($t_label_instance = $t_instance->getLabelTableInstance())) {
 							if (!isset($va_tmp[2])) {
-								return unicode_ucfirst($t_label_instance->getProperty('NAME_PLURAL')).$vs_suffix;
+								return caUcFirstUTF8Safe($t_label_instance->getProperty('NAME_PLURAL')).$vs_suffix;
 							} else {
-								return unicode_ucfirst($t_label_instance->getDisplayLabel($t_label_instance->tableName().'.'.$va_tmp[2])).$vs_suffix;
+								return caUcFirstUTF8Safe($t_label_instance->getDisplayLabel($t_label_instance->tableName().'.'.$va_tmp[2])).$vs_suffix;
 							}
 						}
 						break;
@@ -1896,9 +1942,9 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 								$vs_suffix = ' ('._t('alternates').')';
 							}
 							if (!isset($va_tmp[2])) {
-								return unicode_ucfirst($t_label_instance->getProperty('NAME_PLURAL')).$vs_suffix;
+								return caUcFirstUTF8Safe($t_label_instance->getProperty('NAME_PLURAL')).$vs_suffix;
 							} else {
-								return unicode_ucfirst($t_label_instance->getDisplayLabel($t_label_instance->tableName().'.'.$va_tmp[2])).$vs_suffix;
+								return caUcFirstUTF8Safe($t_label_instance->getDisplayLabel($t_label_instance->tableName().'.'.$va_tmp[2])).$vs_suffix;
 							}
 						}
 						break;
@@ -2134,11 +2180,20 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 								if ($ps_render = caGetOption('render', $pa_options, null)) {
 									switch($ps_render) {
 										case 'is_set':
-											return caHTMLCheckboxInput($ps_field.$vs_rel_types, array('value' => '[SET]'));
+											return caHTMLCheckboxInput($ps_field.$vs_rel_types, array('value' => '['._t('SET').']'));
+											break;
+										case 'is':
+											return caHTMLCheckboxInput($ps_field.$vs_rel_types, array('value' => caGetOption('value', $pa_options, null)));
 											break;
 									}
 								}
-								if (caGetOption('select', $pa_options, false)) {
+								
+								// Autocompletion for fields from related tables
+								if (caGetOption('autocomplete', $pa_options, false)) {
+									$pa_options['asArrayElement'] = false;
+									
+									return caGetAdvancedSearchFormAutocompleteJS($po_request, $ps_field, $t_instance, $pa_options);
+								} elseif (caGetOption('select', $pa_options, false)) {
 									$va_access = caGetOption('checkAccess', $pa_options, null);
 									if (!($t_instance = $this->_DATAMODEL->getInstanceByTableName($va_tmp[0], true))) { return null; }
 								
@@ -2185,11 +2240,13 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 										}
 									}
 									
-									while($qr_res->nextHit()) {
-										if (($va_tmp[0] == 'ca_list_items') && (!$qr_res->get('parent_id'))) { continue; }
-										if (is_array($va_access) && sizeof($va_access) && !in_array($qr_res->get($va_tmp[0].'.access'), $va_access)) { continue; }
-										if (is_array($va_in_use_list) && !in_array($vn_item_id = $qr_res->get($vs_rel_pk), $va_in_use_list)) { continue; }
-										$va_opts[$qr_res->get($va_tmp[0].".preferred_labels.{$vs_label_display_field}")] = $qr_res->get($ps_field);
+									if ($qr_res) {
+										while($qr_res->nextHit()) {
+											if (($va_tmp[0] == 'ca_list_items') && (!$qr_res->get('parent_id'))) { continue; }
+											if (is_array($va_access) && sizeof($va_access) && !in_array($qr_res->get($va_tmp[0].'.access'), $va_access)) { continue; }
+											if (is_array($va_in_use_list) && !in_array($vn_item_id = $qr_res->get($vs_rel_pk), $va_in_use_list)) { continue; }
+											$va_opts[$qr_res->get($va_tmp[0].".preferred_labels.{$vs_label_display_field}")] = $qr_res->get($ps_field);
+										}
 									}
 									uksort($va_opts, "strnatcasecmp");
 									return caHTMLSelect($ps_field.$vs_rel_types.($vb_as_array_element ? "[]" : ""), $va_opts, array('value' => $pa_options['values'][$ps_field], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
@@ -2285,16 +2342,19 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
  	 * $pm_screen can be a screen tag (eg. "Screen5") or a screen_id (eg. 5) 
  	 *
  	 * @param mixed $pm_screen screen_id or code in default UI to return bundles for
- 	 * @param array $pa_options Array of options. Supports and option getBundleFormHTML() supports plus:
+ 	 * @param array $pa_options Array of options. Supports any option getBundleFormHTML() supports plus:
  	 *		request = the current request object; used to apply user privs to bundle generation
  	 *		force = list of bundles to force onto form if they are not included in the UI; forced bundles will be included at the bottom of the form
  	 *		forceHidden = list of *intrinsic* fields to force onto form as hidden <input> elements if they are not included in the UI; NOTE: only intrinsic fields may be specified
  	 *		omit = list of bundles to omit from form in the event they are included in the UI
  	 *		restrictToTypes = 
+ 	 *		bundles = 
+ 	 *		dontAllowBundleShowHide = Do not provide per-bundle show/hide control. [Default is false]
  	 *	@return array List of bundle HTML to display in form, keyed on placement code
  	 */
  	public function getBundleFormHTMLForScreen($pm_screen, $pa_options, &$pa_placements=null) {
  		$va_omit_bundles = (isset($pa_options['omit']) && is_array($pa_options['omit'])) ? $pa_options['omit'] : array();
+ 		$vb_dont_allow_bundle_show_hide = caGetOption('dontAllowBundleShowHide', $pa_options, false);
  		
  		$vs_table_name = $this->tableName();
  		
@@ -2305,22 +2365,26 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
  		}
  		if (!$t_ui) { return false; }
  		
+ 		$pa_options['ui'] = $t_ui; 	// stash UI object and screen in options for use by getBundleFormHTML()
+ 		$pa_options['screen'] = $pm_screen;
+ 		
  		if (($vn_ui_access = ca_editor_uis::getAccessForUI($pa_options['request'], $t_ui->getPrimaryKey())) === __CA_BUNDLE_ACCESS_NONE__) {
  			// no access to UI
- 			$this->postError(2320, _t('Access denied to UI %1', $t_ui->get('editor_code')), "BundlableLabelableBaseModelWithAttributes->getBundleFormHTMLForScreen()");				
-			return false;
- 		}
- 		
- 		if (($vn_screen_access = ca_editor_uis::getAccessForScreen($pa_options['request'], $pm_screen)) === __CA_BUNDLE_ACCESS_NONE__) {
- 			// no access to screen
- 			$this->postError(2320, _t('Access denied to screen %1', $pm_screen), "BundlableLabelableBaseModelWithAttributes->getBundleFormHTMLForScreen()");				
+ 			$this->postError(2320, _t('Access denied to UI %1', $t_ui->get('editor_code')), "BundlableLabelableBaseModelWithAttributes->getBundleFormHTMLForScreen()");
 			return false;
  		}
  		
  		if (isset($pa_options['bundles']) && is_array($pa_options['bundles'])) {
  			$va_bundles = $pa_options['bundles'];
+ 			$vn_screen_access = __CA_BUNDLE_ACCESS_EDIT__;
  		} else {
- 			$va_bundles = $t_ui->getScreenBundlePlacements($pm_screen);
+ 			$va_bundles = $t_ui->getScreenBundlePlacements($pm_screen, $this->getTypeID());
+ 		
+			if (($vn_screen_access = ca_editor_uis::getAccessForScreen($pa_options['request'], $pm_screen)) === __CA_BUNDLE_ACCESS_NONE__) {
+				// no access to screen
+				$this->postError(2320, _t('Access denied to screen %1', $pm_screen), "BundlableLabelableBaseModelWithAttributes->getBundleFormHTMLForScreen()");				
+				return false;
+			}
  		}
  		
  		$vs_form_name = caGetOption('formName', $pa_options, '');
@@ -2370,6 +2434,15 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				if ((!$vn_pk_id) && ($va_bundle['bundle_name'] === $vs_hier_parent_id_fld)) { continue; }
 				if (in_array($va_bundle['bundle_name'], $va_omit_bundles)) { continue; }
 				
+				if (!is_array($va_bundle['settings'])) { $va_bundle['settings'] = []; }
+				
+				
+				if ($vs_element_set_code = preg_replace("/^(ca_attribute_|".$this->tableName()."\.)/", "", $va_bundle['bundle_name'])) {
+					if (($o_element = ca_metadata_elements::getInstance($vs_element_set_code)) && ($this->hasElement($vs_element_set_code))) {
+						$va_bundle['bundle_name'] = "ca_attribute_{$vs_element_set_code}";
+					}
+				}
+				
 				if ($va_valid_element_codes && (substr($va_bundle['bundle_name'],0, 13) == 'ca_attribute_')) {
 					if (!in_array(substr($va_bundle['bundle_name'],13), $va_valid_element_codes)) {
 						continue;
@@ -2398,7 +2471,11 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					continue;
 				}
 				
+				if ($vb_dont_allow_bundle_show_hide) {
+					$va_bundle['settings']['dont_allow_bundle_show_hide'] = true;
+				}
 				$va_bundle['settings']['placement_id'] = $va_bundle['placement_id'];
+				
 				if ($vs_bundle_form_html = $this->getBundleFormHTML($va_bundle['bundle_name'], 'P'.$va_bundle['placement_id'], $va_bundle['settings'], $pa_options, $vs_bundle_display_name)) {
 					$va_bundle_html[$va_bundle['placement_code']] = "<a name=\"{$pm_screen}_{$va_bundle['placement_id']}\"></a>{$vs_bundle_form_html}";
 					$va_bundles_present[$va_bundle['bundle_name']] = true;
@@ -2412,7 +2489,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				}
 			}
 		}
-		
+
 		// is this a form to create a new item?
 		if (!$vn_pk_id) {
 			// auto-add mandatory fields if this is a new object
@@ -2482,6 +2559,8 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 	private function _getHierarchyLocationHTMLFormBundleInfo($po_request, $ps_form_name, $ps_placement_code, $pa_options=null, $pa_bundle_settings=null) {
 		$vs_view_path = (isset($pa_options['viewPath']) && $pa_options['viewPath']) ? $pa_options['viewPath'] : $po_request->getViewsDirectoryPath();
 		$o_view = new View($po_request, "{$vs_view_path}/bundles/");
+		
+		$pb_batch = caGetOption('batch', $pa_options, false);
 		
 		if(!is_array($pa_bundle_settings)) { $pa_bundle_settings = array(); }
 		
@@ -2619,10 +2698,18 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			}
 		}
 		
+		$vn_first_id = null;
+		if ($pb_batch && ($pn_set_id = caGetOption('set_id', $pa_options, null))) { 
+			$t_set = new ca_sets($pn_set_id); 
+			if (is_array($va_ids = $t_set->getItemRowIDs()) && sizeof($va_ids)) {
+				$vn_first_id = array_shift($va_ids);
+			}
+		}
 		
+		$o_view->setVar('batch', $pb_batch);
 		$o_view->setVar('parent_id', $vn_parent_id);
 		$o_view->setVar('ancestors', $va_ancestor_list);
-		$o_view->setVar('id', $this->getPrimaryKey());
+		$o_view->setVar('id', $pb_batch && $vn_first_id ? $vn_first_id : $this->getPrimaryKey());
 		$o_view->setVar('settings', $pa_bundle_settings);
 		
 		return $o_view;
@@ -2677,7 +2764,19 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			$va_get_related_opts['sortDirection'] = $pa_bundle_settings['sortDirection'];
 		}
 
+		$t_rel = $this->getAppDatamodel()->getInstanceByTableName($ps_related_table, true);
+		$va_opts = [
+			'table' => $vb_is_many_many ? $t_rel->tableName() : null,
+			'primaryKey' => $vb_is_many_many ? $t_rel->primaryKey() : null,
+			'template' => caGetBundleDisplayTemplate($this, $ps_related_table, $pa_bundle_settings),
+			'primaryIDs' => array($this->tableName() => array($this->getPrimaryKey())),
+			'request' => $po_request,
+			'stripTags' => true
+		];
+
 		if($ps_related_table == 'ca_sets') {
+			// sets special case
+			
 			$t_set = new ca_sets();
 			$va_items = caExtractValuesByUserLocale($t_set->getSetsForItem($this->tableNum(), $this->getPrimaryKey(), $va_get_related_opts));
 
@@ -2686,7 +2785,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				$va_items = caSortArrayByKeyInValue($va_items, array($ps_sort), caGetOption('sortDirectio ', $va_get_related_opts, 'ASC'));
 			}
 
-			$va_vals = array();
+			$va_vals = [];
 			$vs_template = caGetBundleDisplayTemplate($this, 'ca_sets', $pa_bundle_settings);
 			if(is_array($va_items) && sizeof($va_items)) {
 				foreach($va_items as $vn_id => $va_item) {
@@ -2696,30 +2795,27 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			}
 
 			return $va_vals;
-		} else {
-			if (sizeof($va_items = $this->getRelatedItems($ps_related_table, $va_get_related_opts))) {
-				$t_rel = $this->getAppDatamodel()->getInstanceByTableName($ps_related_table, true);
-				$vs_rel_pk = $t_rel->primaryKey();
-
-				$va_opts = array('relatedItems' => $va_items, 'stripTags' => true);
-				if ($vb_is_many_many) {
-					$va_ids = caExtractArrayValuesFromArrayOfArrays($va_items, 'relation_id');
-					$qr_rel_items = $t_item->makeSearchResult($t_item_rel->tableNum(), $va_ids);
-					$va_opts['table'] = $t_rel->tableName();
-					$va_opts['primaryKey'] = $t_rel->primaryKey();
-				} else {
-					$va_ids = caExtractArrayValuesFromArrayOfArrays($va_items, $vs_rel_pk);
-					$qr_rel_items = $t_item->makeSearchResult($t_rel->tableNum(), $va_ids);
-				}
-
-				$va_opts['template'] = caGetBundleDisplayTemplate($this, $ps_related_table, $pa_bundle_settings);
-				$va_opts['primaryIDs'] = array($this->tableName() => array($this->getPrimaryKey()));
-				$va_opts['request'] = $po_request;
-
-				$va_vals = caProcessRelationshipLookupLabel($qr_rel_items, $t_item_rel, $va_opts);
-
-				return $va_vals;
+		} elseif(($ps_related_table == 'ca_objects') && ($this->tableName() == 'ca_storage_locations') && (strlen($vs_mode = $pa_bundle_settings['locationTrackingMode']) > 0)) {
+			// Limit list to objects _currently_ in this location
+			if(!($qr_results = $this->getLocationContents($vs_mode))) { return []; }
+			
+			if (sizeof($va_ids = $qr_results->getAllFieldValues('ca_objects.object_id')) == 0) { return []; }
+			$qr_rel_items = caMakeSearchResult('ca_objects', $va_ids);
+			
+			return caProcessRelationshipLookupLabel($qr_rel_items, $t_item_rel, $va_opts);
+		} elseif (sizeof($va_items = $this->getRelatedItems($ps_related_table, $va_get_related_opts))) {
+			// Show fill list
+			
+			$va_opts['relatedItems'] = $va_items;
+			if ($vb_is_many_many) {
+				$va_ids = caExtractArrayValuesFromArrayOfArrays($va_items, 'relation_id');
+				$qr_rel_items = $t_item->makeSearchResult($t_item_rel->tableNum(), $va_ids);
+			} else {
+				$va_ids = caExtractArrayValuesFromArrayOfArrays($va_items, $t_rel->primaryKey());
+				$qr_rel_items = $t_item->makeSearchResult($t_rel->tableNum(), $va_ids);
 			}
+
+			return caProcessRelationshipLookupLabel($qr_rel_items, $t_item_rel, $va_opts);
 		}
 
 		return array();
@@ -2773,17 +2869,27 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		$o_view->setVar('t_item_rel', $t_item_rel);
 		$o_view->setVar('bundle_name', $ps_related_table);
 		
+		$o_view->setVar('ui', caGetOption('ui', $pa_options, null));
+		$o_view->setVar('screen', caGetOption('screen', $pa_options, null));
+		
 		$vb_read_only = ($po_request->user->getBundleAccessLevel($this->tableName(), $ps_related_table) == __CA_BUNDLE_ACCESS_READONLY__) ? true : false;
 		if (!$pa_bundle_settings['readonly']) { $pa_bundle_settings['readonly'] = (!isset($pa_bundle_settings['readonly']) || !$pa_bundle_settings['readonly']) ? $vb_read_only : true;	}
 		
 		// pass bundle settings
+		
+		if(!is_array($pa_bundle_settings['prepopulateQuickaddFields'])) { $pa_bundle_settings['prepopulateQuickaddFields'] = []; }
 		$o_view->setVar('settings', $pa_bundle_settings);
 		$o_view->setVar('graphicsPath', $pa_options['graphicsPath']);
 		
 		// pass placement code
 		$o_view->setVar('placement_code', $ps_placement_code);
 		
-		$o_view->setVar('add_label', isset($pa_bundle_settings['add_label'][$g_ui_locale]) ? $pa_bundle_settings['add_label'][$g_ui_locale] : null);
+		// quickadd available?
+		$vb_quickadd_enabled = (bool)$po_request->user->canDoAction("can_quickadd_{$ps_related_table}");
+		if ($pa_bundle_settings['disableQuickadd']) { $vb_quickadd_enabled = false; }
+		$o_view->setVar('quickadd_enabled', $vb_quickadd_enabled);
+		
+		$o_view->setVar('add_label', caExtractSettingValueByLocale($pa_bundle_settings, 'add_label', $g_ui_locale));
 		
 		$t_label = null;
 		if ($t_item->getLabelTableName()) {
@@ -2829,57 +2935,63 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 	# ------------------------------------------------------
 	/**
 	 * @param RequestHTTP $po_request
+	 * @param string $ps_bundle_name
 	 * @param string $ps_form_name
 	 * @param null|string $ps_placement_code
 	 * @param null|array $pa_bundle_settings
 	 * @param null|array $pa_options
 	 * @return mixed|null|string
 	 */
-	public function getRelatedObjectsTableHTMLFormBundle($po_request, $ps_form_name, $ps_placement_code=null, $pa_bundle_settings=null, $pa_options=null) {
+	public function getRelatedListHTMLFormBundle($po_request, $ps_bundle_name, $ps_form_name, $ps_placement_code=null, $pa_bundle_settings=null, $pa_options=null) {
 		global $g_ui_locale;
 
 		if(!is_array($pa_bundle_settings)) { $pa_bundle_settings = array(); }
 		if(!is_array($pa_options)) { $pa_options = array(); }
 
+		$vs_table_name = preg_replace("/_related_list|_table$/", '', $ps_bundle_name);
 		$vs_view_path = (isset($pa_options['viewPath']) && $pa_options['viewPath']) ? $pa_options['viewPath'] : $po_request->getViewsDirectoryPath();
 		$o_view = new View($po_request, "{$vs_view_path}/bundles/");
 
-		$va_path = array_keys($this->getAppDatamodel()->getPath($this->tableName(), 'ca_objects'));
-		$t_item = new ca_objects;
+		$va_path = array_keys($this->getAppDatamodel()->getPath($this->tableName(), $vs_table_name));
+		$t_item = new $vs_table_name;
 		/** @var BaseRelationshipModel $t_item_rel */
 		$t_item_rel = $this->getAppDatamodel()->getTableInstance($va_path[1]);
 
 		$o_view->setVar('id_prefix', $ps_form_name);
+		$o_view->setVar('bundle_name', $ps_bundle_name);
 		$o_view->setVar('t_instance', $this);
 		$o_view->setVar('t_subject', $this);
 		$o_view->setVar('t_item', $t_item);
 		$o_view->setVar('t_item_rel', $t_item_rel);
 
-		$vb_read_only = ($po_request->user->getBundleAccessLevel($this->tableName(), 'ca_objects_table') == __CA_BUNDLE_ACCESS_READONLY__) ? true : false;
+		$vb_read_only = ($po_request->user->getBundleAccessLevel($this->tableName(), $ps_bundle_name) == __CA_BUNDLE_ACCESS_READONLY__) ? true : false;
 		if (!$pa_bundle_settings['readonly']) { $pa_bundle_settings['readonly'] = (!isset($pa_bundle_settings['readonly']) || !$pa_bundle_settings['readonly']) ? $vb_read_only : true;	}
 
+		if(!is_array($pa_bundle_settings['prepopulateQuickaddFields'])) { $pa_bundle_settings['prepopulateQuickaddFields'] = []; }
 		$o_view->setVar('settings', $pa_bundle_settings);
 		$o_view->setVar('placement_code', $ps_placement_code);
-		$o_view->setVar('add_label', isset($pa_bundle_settings['add_label'][$g_ui_locale]) ? $pa_bundle_settings['add_label'][$g_ui_locale] : null);
+		$o_view->setVar('add_label', caExtractSettingValueByLocale($pa_bundle_settings, 'add_label', $g_ui_locale));
 
-		$o_view->setVar('relationship_types', $t_item_rel->getRelationshipTypes(null, null,  array_merge($pa_options, $pa_bundle_settings)));
-		$o_view->setVar('relationship_types_by_sub_type', $t_item_rel->getRelationshipTypesBySubtype($this->tableName(), $this->get('type_id'),  array_merge($pa_options, $pa_bundle_settings)));
+		$o_view->setVar('relationship_types', method_exists($t_item_rel, 'getRelationshipTypes') ? $t_item_rel->getRelationshipTypes(null, null,  array_merge($pa_options, $pa_bundle_settings)) : []);
+		$o_view->setVar('relationship_types_by_sub_type',  method_exists($t_item_rel, 'getRelationshipTypesBySubtype') ? $t_item_rel->getRelationshipTypesBySubtype($this->tableName(), $this->get('type_id'),  array_merge($pa_options, $pa_bundle_settings)) : []);
 
-		$va_initial_values = $this->getRelatedBundleFormValues($po_request, $ps_form_name, 'ca_objects', $ps_placement_code, $pa_bundle_settings, $pa_options);
+		$va_initial_values = $this->getRelatedBundleFormValues($po_request, $ps_form_name, $vs_table_name, $ps_placement_code, $pa_bundle_settings, $pa_options);
 
 		$o_view->setVar('initialValues', $va_initial_values);
-		$o_view->setVar('result', caMakeSearchResult('ca_objects', array_keys($va_initial_values)));
+		$o_view->setVar('result', caMakeSearchResult($vs_table_name, array_keys($va_initial_values)));
 		$o_view->setVar('batch', (bool)(isset($pa_options['batch']) && $pa_options['batch']));
 
-		return $o_view->render('ca_objects_table.php');
+		return $o_view->render('related_list.php');
 	}
 	# ------------------------------------------------------
 	/**
 	 *
 	 */
 	protected function getBundleListsForScreen($pm_screen, $po_request, $t_ui, $pa_options=null) {
-		if(!$t_ui) { return; }
-		$va_bundles = $t_ui->getScreenBundlePlacements($pm_screen);
+		if (!(($va_bundles = caGetOption('bundles', $pa_options, null)) && is_array($va_bundles))) {
+			if(!$t_ui) { return; }
+			$va_bundles = $t_ui->getScreenBundlePlacements($pm_screen);
+		}
 		
 		// sort fields by type
 		$va_fields_by_type = array();
@@ -2978,13 +3090,13 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				foreach($_REQUEST as $vs_key => $vs_val) {
 					$vs_element_set_code = preg_replace("/^ca_attribute_/", "", $vs_f);
 					
-					$t_element = $this->_getElementInstance($vs_element_set_code);
+					$t_element = ca_metadata_elements::getInstance($vs_element_set_code);
 					$vn_element_id = $t_element->getPrimaryKey();
 					
 					if (
-						preg_match('/'.$vs_placement_code.$vs_form_prefix.'_attribute_'.$vn_element_id.'_([\w\d\-_]+)_new_([\d]+)/', $vs_key, $va_matches)
+						preg_match('/'.$vs_placement_code.$vs_form_prefix.'_attribute_'.$vn_element_id.'_([\w\-_]+)_new_([\d]+)/', $vs_key, $va_matches)
 						||
-						preg_match('/'.$vs_placement_code.$vs_form_prefix.'_attribute_'.$vn_element_id.'_([\w\d\-_]+)_([\d]+)/', $vs_key, $va_matches)
+						preg_match('/'.$vs_placement_code.$vs_form_prefix.'_attribute_'.$vn_element_id.'_([\w\-_]+)_([\d]+)/', $vs_key, $va_matches)
 					) { 
 						$vn_c = intval($va_matches[2]);
 						// yep - grab the locale and value
@@ -3085,6 +3197,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 	* @param mixed $pm_screen
 	* @param RequestHTTP $po_request
 	* @param array $pa_options Options are:
+	*		formName = 
 	*		dryRun = Go through the motions of saving but don't actually write information to the database
 	*		batch = Process save in "batch" mode. Specifically this means honoring batch mode settings (add, replace, remove), skipping bundles that are not supported in batch mode and ignoring updates
 	*		existingRepresentationMap = an array of representation_ids key'ed on file path. If set saveBundlesForScreen() use link the specified representation to the row it is saving rather than processing the uploaded file. saveBundlesForScreen() will build the map as it goes, adding newly uploaded files. If you want it to process a file in a batch situation where it should be processed the first time and linked subsequently then pass an empty array here. saveBundlesForScreen() will use the empty array to build the map.
@@ -3133,6 +3246,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				}
 			}
 		}
+		
 		$va_bundles = $va_bundle_lists['bundles'];
 		$va_fields_by_type = $va_bundle_lists['fields_by_type'];
 
@@ -3140,6 +3254,13 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		if (is_array($va_fields_by_type['intrinsic'])) {
 			$vs_idno_field = $this->getProperty('ID_NUMBERING_ID_FIELD');
 			foreach($va_fields_by_type['intrinsic'] as $vs_placement_code => $vs_f) {
+				
+				// convert intrinsics to bare field names if they include tablename (eg. ca_objects.idno => idno)
+				$va_tmp = explode('.', $vs_f);
+				if (($this->tableName() === $va_tmp[0]) && $this->hasField($va_tmp[1])) {
+					$vs_f = $va_tmp[1];
+				}
+		
 				if ($vb_batch) { 
 					$vs_batch_mode = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_batch_mode", pString);
 					if($vs_batch_mode == '_disabled_') { continue; }
@@ -3158,11 +3279,13 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 							}
 							break;
 						case $vs_idno_field:
-							if ($this->opo_idno_plugin_instance) {
-								$this->opo_idno_plugin_instance->setDb($this->getDb());
-								$this->set($vs_f, $vs_tmp = $this->opo_idno_plugin_instance->htmlFormValue($vs_idno_field));
-							} else {
-								$this->set($vs_f, $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}{$vs_f}", pString));
+							if(!(bool)$this->getAppConfig()->get($this->tableName().'_dont_allow_editing_of_codes_when_in_use') || !$this->getPrimaryKey()) {
+								if ($this->opo_idno_plugin_instance) {
+									$this->opo_idno_plugin_instance->setDb($this->getDb());
+									$this->set($vs_f, $vs_tmp = $this->opo_idno_plugin_instance->htmlFormValue($vs_idno_field));
+								} else {
+									$this->set($vs_f, $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}{$vs_f}", pString));
+								}
 							}
 							break;
 						default:
@@ -3210,9 +3333,11 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 			$va_inserted_attributes = array();
 			$reserved_elements = array();
 			foreach($va_fields_by_type['attribute'] as $vs_placement_code => $vs_f) {
-				$vs_element_set_code = preg_replace("/^ca_attribute_/", "", $vs_f);
-				//does the attribute's datatype have a saveElement method - if so, use that instead
-				$vs_element = $this->_getElementInstance($vs_element_set_code);
+				$vs_element_set_code = preg_replace("/^(ca_attribute_|".$this->tableName()."\.)/", "", $vs_f);
+				
+				// does the attribute's datatype have a saveElement method? If so, use that instead
+				$vs_element = ca_metadata_elements::getInstance($vs_element_set_code);
+
 				$vn_element_id = $vs_element->getPrimaryKey();
 				$vs_element_datatype = $vs_element->get('datatype');
 				$vs_datatype = Attribute::getValueInstance($vs_element_datatype);
@@ -3333,7 +3458,6 @@ if (!$vb_batch) {
 						$va_sub_elements = $t_element->getElementsInSet($vn_element_set_id);
 						foreach($va_sub_elements as $vn_i => $va_element_info) {
 							if ($va_element_info['datatype'] == 0) { continue; }
-							//$vn_element_id = $o_attr_val->getElementID();
 							$vn_element_id = $va_element_info['element_id'];
 							
 							$vs_k = $vs_placement_code.$vs_form_prefix.'_attribute_'.$vn_element_set_id.'_'.$vn_element_id.'_'.$vn_attribute_id;
@@ -3356,10 +3480,11 @@ if (!$vb_batch) {
 		}
 }
 		
-if (!$vb_batch) {		// hierarchy moves are not supported in batch mode
 	if (is_array($va_fields_by_type['special'])) {
 		foreach($va_fields_by_type['special'] as $vs_placement_code => $vs_bundle) {
 			if ($vs_bundle !== 'hierarchy_location') { continue; }
+			
+			if ($vb_batch && ($po_request->getParameter($vs_placement_code.$vs_form_prefix.'_batch_mode', pString) !== '_replace_')) { continue; }
 			
 			$va_parent_tmp = explode("-", $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_new_parent_id", pString));
 		
@@ -3396,7 +3521,6 @@ if (!$vb_batch) {		// hierarchy moves are not supported in batch mode
 			break;
 		}
 	}
-}
 		
 		//
 		// Call processBundlesBeforeBaseModelSave() method in sub-class, if it is defined. The method is passed
@@ -3452,7 +3576,9 @@ if (!$vb_batch) {		// hierarchy moves are not supported in batch mode
 			
 			if ($vb_is_insert) {
 			 	BaseModel::unsetChangeLogUnitID();
-			 	if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+			 	if ($vb_we_set_transaction) {
+					$this->removeTransaction(false);
+				}
 				return false;	// bail on insert error
 			}
 		}
@@ -3489,15 +3615,13 @@ if (!$vb_batch) {
 					foreach($va_labels_by_locale as $vn_locale_id => $va_label_list) {
 						foreach($va_label_list as $va_label) {
 							if ($vn_label_locale_id = $po_request->getParameter($vs_placement_code.$vs_form_prefix.'_Pref'.'locale_id_'.$va_label['label_id'], pString)) {
-							
+								$vn_label_type_id = $po_request->getParameter($vs_placement_code.$vs_form_prefix.'_Pref'.'type_id_'.$va_label['label_id'], pInteger);
 								if(is_array($va_label_values = $this->getLabelUIValuesFromRequest($po_request, $vs_placement_code.$vs_form_prefix, $va_label['label_id'], true))) {
-									
 									if ($vb_check_for_dupe_labels && $this->checkForDupeLabel($vn_label_locale_id, $va_label_values)) {
 										$this->postError(1125, _t('Value <em>%1</em> is already used and duplicates are not allowed', join("/", $va_label_values)), "BundlableLabelableBaseModelWithAttributes->saveBundlesForScreen()", $this->tableName().'.preferred_labels');
 										$po_request->addActionErrors($this->errors(), 'preferred_labels');
 										continue;
 									}
-									$vn_label_type_id = $po_request->getParameter($vs_placement_code.$vs_form_prefix.'_Pref'.'type_id_'.$va_label['label_id'], pInteger);
 									$this->editLabel($va_label['label_id'], $va_label_values, $vn_label_locale_id, $vn_label_type_id, true, array('queueIndexing' => true));
 									if ($this->numErrors()) {
 										foreach($this->errors() as $o_e) {
@@ -3512,6 +3636,13 @@ if (!$vb_batch) {
 											}
 										}
 									}
+								} else {
+									$this->editLabel($va_label['label_id'],
+										array($this->getLabelDisplayField() => '['._t('BLANK').']'),
+										$vn_label_locale_id,
+										$vn_label_type_id,
+										true, array('queueIndexing' => true)
+									);
 								}
 							} else {
 								if ($po_request->getParameter($vs_placement_code.$vs_form_prefix.'_PrefLabel_'.$va_label['label_id'].'_delete', pString)) {
@@ -3623,8 +3754,8 @@ if (!$vb_batch) {
 					foreach($va_labels_by_locale as $vn_locale_id => $va_label_list) {
 						foreach($va_label_list as $va_label) {
 							if ($vn_label_locale_id = $po_request->getParameter($vs_placement_code.$vs_form_prefix.'_NPref'.'locale_id_'.$va_label['label_id'], pString)) {
+								$vn_label_type_id = $po_request->getParameter($vs_placement_code.$vs_form_prefix.'_NPref'.'type_id_'.$va_label['label_id'], pInteger);
 								if (is_array($va_label_values = $this->getLabelUIValuesFromRequest($po_request, $vs_placement_code.$vs_form_prefix, $va_label['label_id'], false))) {
-									$vn_label_type_id = $po_request->getParameter($vs_placement_code.$vs_form_prefix.'_NPref'.'type_id_'.$va_label['label_id'], pInteger);
 									$this->editLabel($va_label['label_id'], $va_label_values, $vn_label_locale_id, $vn_label_type_id, false, array('queueIndexing' => true));
 									if ($this->numErrors()) {
 										foreach($this->errors() as $o_e) {
@@ -3639,6 +3770,13 @@ if (!$vb_batch) {
 											}
 										}
 									}
+								} else {
+									$this->editLabel($va_label['label_id'],
+										array($this->getLabelDisplayField() => '['._t('BLANK').']'),
+										$vn_label_locale_id,
+										$vn_label_type_id,
+										false, array('queueIndexing' => true)
+									);
 								}
 							} else {
 								if ($po_request->getParameter($vs_placement_code.$vs_form_prefix.'_NPrefLabel_'.$va_label['label_id'].'_delete', pString)) {
@@ -3694,12 +3832,15 @@ if (!$vb_batch) {
 		// save data in related tables
 		if (isset($va_fields_by_type['related_table']) && is_array($va_fields_by_type['related_table'])) {
 			foreach($va_fields_by_type['related_table'] as $vs_placement_code => $vs_f) {
-				if($vs_f == 'ca_objects_table') { $vs_f = 'ca_objects'; }
+				// replace ca_objects_table or ca_objects_related_list w/ ca_objects
+				if(preg_match("/^([a-z_]+)_(related_list|table)$/", $vs_f, $va_matches)) {
+					$vs_f = $va_matches[1];
+				}
 				
 				// get settings
 				$va_bundle_settings = array();
 				foreach($va_bundles as $va_bundle_info) {
-					if ($va_bundle_info['placement_code'] == $vs_placement_code) {
+					if ('P'.$va_bundle_info['placement_id'] == $vs_placement_code) {
 						$va_bundle_settings = $va_bundle_info['settings'];
 						break;
 					}
@@ -3804,10 +3945,16 @@ if (!$vb_batch) {
 						// check for new representations to add 
 						$va_file_list = $_FILES;
 						foreach($_REQUEST as $vs_key => $vs_value) {
-							if (!preg_match('/^'.$vs_prefix_stub.'media_url_new_([\d]+)$/', $vs_key, $va_matches)) { continue; }
-							$va_file_list[$vs_key] = array(
-								'url' => $vs_value
-							);
+							if (preg_match('/^'.$vs_prefix_stub.'media_url_new_([\d]+)$/', $vs_key, $va_matches)) {
+								$va_file_list[$vs_key] = array(
+									'url' => $vs_value
+								);
+							} elseif(preg_match('/^'.$vs_prefix_stub.'media_new_([\d]+)$/', $vs_key, $va_matches)) {
+								$va_file_list[$vs_key] = array(
+									'tmp_name' => $vs_value,
+									'name' => $vs_value
+								);
+							}
 						}
 						
 						foreach($va_file_list as $vs_key => $va_values) {
@@ -4002,12 +4149,6 @@ if (!$vb_batch) {
 						$this->savePlacementsFromHTMLForm($po_request, $vs_form_prefix, $vs_placement_code);
 						break;
 					# -------------------------------------
-					// This bundle is only available for ca_bundle_displays 
-					case 'ca_bundle_display_type_restrictions':
-						if ($vb_batch) { break; } // not supported in batch mode
-						$this->saveTypeRestrictionsFromHTMLForm($po_request, $vs_form_prefix, $vs_placement_code);
-						break;
-					# -------------------------------------
 					// This bundle is only available for ca_search_forms 
 					case 'ca_search_form_placements':
 						if ($vb_batch) { break; } // not supported in batch mode
@@ -4051,14 +4192,10 @@ if (!$vb_batch) {
 						$this->savePlacementsFromHTMLForm($po_request, $vs_form_prefix, $vs_placement_code);
 						break;
 					# -------------------------------------
-					// This bundle is only available for ca_editor_uis
 					case 'ca_editor_ui_type_restrictions':
-						if ($vb_batch) { break; } // not supported in batch mode
-						$this->saveTypeRestrictionsFromHTMLForm($po_request, $vs_form_prefix, $vs_placement_code);
-						break;
-					# -------------------------------------
-					// This bundle is only available for ca_editor_ui_screens
+					case 'ca_bundle_display_type_restrictions':
 					case 'ca_editor_ui_screen_type_restrictions':
+					case 'ca_search_form_type_restrictions':
 						if ($vb_batch) { break; } // not supported in batch mode
 						$this->saveTypeRestrictionsFromHTMLForm($po_request, $vs_form_prefix, $vs_placement_code);
 						break;
@@ -4282,7 +4419,6 @@ if (!$vb_batch) {
 					# -------------------------------
 					// This bundle is only available for objects
 					case 'ca_objects_location':
-						if ($vb_batch) { return null; } // not supported in batch mode
 						if (!$po_request->user->canDoAction('can_edit_ca_objects')) { break; }
 						
 						if ($vn_location_id = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_location_idnew_0", pInteger)) {
@@ -4307,19 +4443,46 @@ if (!$vb_batch) {
 					# -------------------------------
 					// This bundle is only available for objects
 					case 'ca_objects_history':
-						if ($vb_batch) { return null; } // not supported in batch mode
+						//if ($vb_batch) { return null; } // not supported in batch mode
 						if (!$po_request->user->canDoAction('can_edit_ca_objects')) { break; }
-					
+								
 						// set storage location
 						if ($vn_location_id = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_location_idnew_0", pInteger)) {
 							if (
-								(is_array($va_relationship_types = caGetOption('ca_storage_locations_showRelationshipTypes', $va_bundle_settings, null)))
-								&& 
-								($vn_relationship_type_id = array_shift($va_relationship_types))
+								($vn_relationship_type_id = $this->getAppConfig()->get('object_storage_location_tracking_relationship_type'))
+								||
+								(
+									(is_array($va_relationship_types = caGetOption('ca_storage_locations_showRelationshipTypes', $va_bundle_settings, null)))
+									&& 
+									($vn_relationship_type_id = array_shift($va_relationship_types))
+								)
 							) {
-								$this->addRelationship('ca_storage_locations', $vn_location_id, $vn_relationship_type_id, null, null, null, null, array('allowDuplicates' => true));
+								// is effective date set?
+								$vs_effective_date = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_location_effective_datenew_0", pString);
+						
+								$t_item_rel = $this->addRelationship('ca_storage_locations', $vn_location_id, $vn_relationship_type_id, $vs_effective_date, null, null, null, array('allowDuplicates' => true));
 								if ($this->numErrors()) {
 									$po_request->addActionErrors($this->errors(), 'ca_objects_history', 'general');
+								} else {
+									// set any other defined interstitials
+									if (is_array($va_storage_location_elements = caGetOption('ca_storage_locations_elements', $va_bundle_settings, array()))) {
+										foreach($va_storage_location_elements as $vs_element) {
+											if ($vs_element == 'effective_date') { continue; }
+											if ($this->hasField($vs_element)) {
+												$t_item_rel->set($vs_element, $vs_val = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_location_{$vs_element}new_0", pString));
+											} elseif ($vn_element_id = ca_metadata_elements::getElementID($vs_element)) {
+												$va_sub_element_ids = ca_metadata_elements::getElementsForSet($vn_element_id, ['idsOnly' => true]);
+												$t_item_rel->setMode(ACCESS_WRITE);
+												
+												$va_vals = [];
+												foreach($va_sub_element_ids as $vn_sub_element_id) {
+													$va_vals[ca_metadata_elements::getElementCodeForID($vn_sub_element_id)] = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_location_{$vn_sub_element_id}_new_0", pString);
+												}
+												$t_item_rel->addAttribute($va_vals, $vs_element);
+												$t_item_rel->update();
+											}
+										}
+									}								
 								}
 							}
 						}
@@ -4330,6 +4493,21 @@ if (!$vb_batch) {
 								$this->addRelationship('ca_loans', $vn_loan_id, $vn_loan_type_id);
 								if ($this->numErrors()) {
 									$po_request->addActionErrors($this->errors(), 'ca_objects_history', 'general');
+								}
+							}
+						}
+						
+						// set occurrence
+						require_once(__CA_MODELS_DIR__."/ca_occurrences.php");
+						$t_occ = new ca_occurrences();
+						$va_occ_types = $t_occ->getTypeList();
+						foreach($va_occ_types as $vn_type_id => $vn_type_info) {
+							if ($vn_occurrence_id = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_occurrence_{$vn_type_id}_idnew_0", pInteger)) {
+								if ($vn_occ_type_id = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_occurrence_{$vn_type_id}_type_idnew_0", pInteger)) {
+									$this->addRelationship('ca_occurrences', $vn_occurrence_id, $vn_occ_type_id);
+									if ($this->numErrors()) {
+										$po_request->addActionErrors($this->errors(), 'ca_objects_history', 'general');
+									}
 								}
 							}
 						}
@@ -4361,6 +4539,176 @@ if (!$vb_batch) {
 					
 						break;
 					# -------------------------------
+					case 'ca_object_circulation_status':
+						if ($vb_batch) { return null; } // not supported in batch mode
+						if (!$po_request->user->canDoAction('can_edit_ca_objects')) { break; }
+						$this->set('circulation_status_id', $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}ca_object_circulation_status", pInteger));
+
+						break;
+					# -------------------------------
+					// This bundle is only available items for batch editing on representable models
+					case 'ca_object_representations_access_status':		
+						if (($vb_batch) && (is_a($this, 'RepresentableBaseModel'))) {
+							$vn_access = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_access", pString);
+							$vn_status = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_status", pString);
+							
+							$t_rep = new ca_object_representations();
+							if ($this->inTransaction()) { $t_rep->setTransaction($this->getTransaction()); }
+							if(is_array($va_rep_ids = $this->getRepresentationIDs())) {
+								foreach(array_keys($va_rep_ids) as $vn_rep_id) {
+									if ($t_rep->load($vn_rep_id)) {
+										$t_rep->setMode(ACCESS_WRITE);
+										$t_rep->set('access', $vn_access);
+										$t_rep->set('status', $vn_status);
+										$t_rep->update();
+										
+										if ($t_rep->numErrors()) {
+											$po_request->addActionErrors($t_rep->errors(), 'ca_object_representations_access_status', 'general');
+										}
+									}
+								}
+							}
+							
+						}
+						break;
+					# -------------------------------
+					// This bundle is only available items for ca_site_pages
+					case 'ca_site_pages_content':
+						if(is_array($va_field_list = $this->getHTMLFormElements())) {
+							if (!is_array($va_content = $this->get('content'))) { $va_content = []; }
+							foreach($va_field_list as $vs_field => $va_element_info) {
+								$vs_value = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_{$va_element_info['code']}", pString);
+				
+								$va_content[$va_element_info['code']] = $vs_value;
+							}
+				
+							$this->set('content', $va_content);
+							$this->update();
+						}
+						break;
+					# -------------------------------
+					// This bundle is only available items for ca_site_pages
+					case 'ca_site_page_media':
+					    if ($vb_batch) { break; }   // no batch mode
+						// check for existing representations to update (or delete)
+						
+						$vs_prefix_stub = $vs_placement_code.$vs_form_prefix.'_';
+						$vb_allow_fetching_of_urls = (bool)$this->_CONFIG->get('allow_fetching_of_media_from_remote_urls');
+						$va_media_ids_sorted = $va_mediasort_order = explode(';',$po_request->getParameter($vs_prefix_stub.'MediaBundleList', pString));
+						sort($va_media_ids_sorted, SORT_NUMERIC);
+						$va_media_list = $this->getPageMedia();
+						
+						if (is_array($va_media_ids_sorted)) {
+							foreach($va_media_list as $vn_i => $va_media) {
+								$this->clearErrors();
+								if (strlen($po_request->getParameter($vs_prefix_stub.'access_'.$va_media['media_id'], pInteger)) > 0) {
+									if ($vb_allow_fetching_of_urls && ($vs_path = $_REQUEST[$vs_prefix_stub.'media_url_'.$va_media['media_id']])) {
+										$va_tmp = explode('/', $vs_path);
+										$vs_original_name = array_pop($va_tmp);
+									} else {
+										$vs_path = $_FILES[$vs_prefix_stub.'media_'.$va_media['media_id']]['tmp_name'];
+										$vs_original_name = $_FILES[$vs_prefix_stub.'media_'.$va_media['media_id']]['name'];
+									}
+									
+									$vs_idno = $po_request->getParameter($vs_prefix_stub.'idno_'.$va_media['media_id'], pString);
+									$vn_access = $po_request->getParameter($vs_prefix_stub.'access_'.$va_media['media_id'], pInteger);
+									$vs_title = trim($po_request->getParameter($vs_prefix_stub.'title_'.$va_media['media_id'], pString));
+									$vs_caption = trim($po_request->getParameter($vs_prefix_stub.'caption_'.$va_media['media_id'], pString));
+									
+									$vn_rank = null;
+									if (($vn_rank_index = array_search($va_media['media_id'], $va_mediasort_order)) !== false) {
+										$vn_rank = $va_media_ids_sorted[$vn_rank_index];
+									}
+									
+									$this->editMedia($va_media['media_id'], $vs_path, $vs_title, $vs_caption, $vs_idno, $vn_access, ['original_filename' => $vs_original_name, 'rank' => $vn_rank]);
+									if ($this->numErrors()) {
+										foreach($this->errors() as $o_e) {
+											switch($o_e->getErrorNumber()) {
+												case 795:
+													// field conflicts
+													$po_request->addActionError($o_e, $vs_f, $va_media['media_id']);
+													break;
+												default:
+													$po_request->addActionError($o_e, $vs_f, $va_media['media_id']);
+													break;
+											}
+										}
+									}
+									
+									if ($vs_title) {
+										//
+										// Set media title
+										//
+										$t_rep = new ca_object_representations();
+										if ($this->inTransaction()) { $t_rep->setTransaction($this->getTransaction()); }
+										global $g_ui_locale_id;
+										if ($t_rep->load($va_media['media_id'])) {
+											$t_rep->setMode(ACCESS_WRITE);
+											$t_rep->replaceLabel(array('name' => $vs_title), $g_ui_locale_id, null, true, array('queueIndexing' => true));
+											if ($t_rep->numErrors()) {
+												$po_request->addActionErrors($t_rep->errors(), $vs_f, $va_media['media_id']);
+											}
+										}
+									}
+								} else {
+									// is it a delete key?
+									$this->clearErrors();
+									if (($po_request->getParameter($vs_prefix_stub.$va_media['media_id'].'_delete', pInteger)) > 0) {
+										$this->removeMedia($va_media['media_id']);
+										if ($this->numErrors()) {
+											$po_request->addActionErrors($this->errors(), $vs_f, $va_media['media_id']);
+										}
+									}
+								}
+							}
+						}
+
+					
+						// check for new media to add 
+						$va_file_list = $_FILES;
+						foreach($_REQUEST as $vs_key => $vs_value) {
+						    
+							if (preg_match('/^'.$vs_prefix_stub.'media_url_new_([\d]+)$/', $vs_key, $va_matches)) {
+								$va_file_list[$vs_key] = array(
+									'url' => $vs_value
+								);
+							} elseif(preg_match('/^'.$vs_prefix_stub.'media_new_([\d]+)$/', $vs_key, $va_matches)) {
+								$va_file_list[$vs_key] = array(
+									'tmp_name' => $vs_value,
+									'name' => $vs_value
+								);
+							}
+						}
+						
+						foreach($va_file_list as $vs_key => $va_values) {
+							$this->clearErrors();
+							
+							if (!preg_match('/^'.$vs_prefix_stub.'media_new_([\d]+)$/', $vs_key, $va_matches) && (($vb_allow_fetching_of_urls && !preg_match('/^'.$vs_prefix_stub.'media_url_new_([\d]+)$/', $vs_key, $va_matches)) || !$vb_allow_fetching_of_urls)) { continue; }
+							
+							if($vs_upload_type = $po_request->getParameter($vs_prefix_stub.'upload_typenew_'.$va_matches[1], pString)) {
+								$po_request->user->setVar('defaultRepresentationUploadType', $vs_upload_type);
+							}
+							
+                            if ($vb_allow_fetching_of_urls && ($vs_path = $va_values['url'])) {
+                                $va_tmp = explode('/', $vs_path);
+                                $vs_original_name = array_pop($va_tmp);
+                            } else {
+                                $vs_path = $va_values['tmp_name'];
+                                $vs_original_name = $va_values['name'];
+                            }
+                            if (!$vs_path) { continue; }
+                            
+                            $vs_title = trim($po_request->getParameter($vs_prefix_stub.'title_new_'.$va_matches[1], pString));	
+                            $vs_caption = $po_request->getParameter($vs_prefix_stub.'caption_new_'.$va_matches[1], pString);
+                            $vs_idno = $po_request->getParameter($vs_prefix_stub.'idno_new_'.$va_matches[1], pString);
+                            $vn_access = $po_request->getParameter($vs_prefix_stub.'access_new_'.$va_matches[1], pInteger);
+                            $this->addMedia($vs_path, $vs_title, $vs_caption, $vs_idno, $vn_access, ['original_filename' => $vs_original_name]);
+                            if ($this->numErrors()) {
+                                $po_request->addActionErrors($this->errors(), $vs_f, 'new_'.$va_matches[1]);
+                            } 
+						}
+						break;
+					# -------------------------------
 				}
 			}
 		}
@@ -4382,7 +4730,7 @@ if (!$vb_batch) {
 			if ($vb_we_set_transaction && isset($va_violations['ERR']) && is_array($va_violations['ERR']) && (sizeof($va_violations['ERR']) > 0)) { 
 			 	BaseModel::unsetChangeLogUnitID();
 				$this->removeTransaction(false); 
-				$this->_FIELD_VALUES[$this->primaryKey()] = null;	// clear primary key since transaction has been rolled back
+				if ($vb_is_insert) { $this->_FIELD_VALUES[$this->primaryKey()] = null; }	// clear primary key since transaction has been rolled back
 				
 				foreach($va_violations['ERR'] as $vs_bundle => $va_errs_by_bundle) {
 					foreach($va_errs_by_bundle as $vn_i => $va_rule) {
@@ -4453,18 +4801,20 @@ if (!$vb_batch) {
 		}
 }
  		
- 		// check for new relations to add
+ 		// process batch remove
  		if ($vb_batch) {
 			$vs_batch_mode = $_REQUEST["{$ps_placement_code}{$ps_form_prefix}_batch_mode"];
  			if ($vs_batch_mode == '_disabled_') { return true; }
 			if ($vs_batch_mode == '_delete_') {				// remove all relationships and return
-				$this->removeRelationships($ps_bundle_name);
+				$this->removeRelationships($ps_bundle_name, caGetOption('restrict_to_relationship_types', $pa_settings, null), ['restrictToTypes' => caGetOption('restrict_to_types', $pa_settings, null)]);
 				return true;
 			}
 			if ($vs_batch_mode == '_replace_') {			// remove all existing relationships and then add new ones
-				$this->removeRelationships($ps_bundle_name);
+				$this->removeRelationships($ps_bundle_name, caGetOption('restrict_to_relationship_types', $pa_settings, null), ['restrictToTypes' => caGetOption('restrict_to_types', $pa_settings, null)]);
 			}
 		}
+		
+ 		// check for new relations to add
  		foreach($_REQUEST as $vs_key => $vs_value ) {
 			if (preg_match("/^{$ps_placement_code}{$ps_form_prefix}_idnew_([\d]+)/", $vs_key, $va_matches)) { 
 				$vn_c = intval($va_matches[1]);
@@ -4578,8 +4928,8 @@ if (!$vb_batch) {
  	/**
  	 * Returns list of items in the specified table related to the currently loaded row or rows specified in options.
  	 * 
- 	 * @param $pm_rel_table_name_or_num - the table name or table number of the item type you want to get a list of (eg. if you are calling this on an ca_objects instance passing 'ca_entities' here will get you a list of entities related to the object)
- 	 * @param $pa_options - array of options. Supported options are:
+ 	 * @param mixed $pm_rel_table_name_or_num The table name or table number of the item type you want to get a list of (eg. if you are calling this on an ca_objects instance passing 'ca_entities' here will get you a list of entities related to the object)
+ 	 * @param array $pa_options Array of options. Supported options are:
  	 *
  	 *		[Options controlling rows for which data is returned]
  	 *			row_ids = Array of primary key values to use when fetching related items. If omitted or set to a null value the 'row_id' option will be used. [Default is null]
@@ -4591,19 +4941,20 @@ if (!$vb_batch) {
  	 *			restrictToBundleValues = Restrict returned items to those with specified bundle values. Specify an associative array with keys set to bundle names and key values set to arrays of values to filter on (eg. [bundle_name1 => [value1, value2, ...]]). [Default is null]
  	 *			where = Restrict returned items to specified field values. The fields must be intrinsic and in the related table. This option can be useful when you want to efficiently fetch specific rows from a related table. Note that multiple fields/values are logically AND'ed together – all must match for a row to be returned - and that only equivalence is supported. [Default is null]			
  	 *			criteria = Restrict returned items using SQL criteria appended directly onto the query. Criteria is used as-is and must be compatible with the generated SQL query. [Default is null]
- 	 *			showCurrentOnly = Returns only relationships with the latest effective date for their row_id that is not greater than the current date. Note that effective dates are treated as point dates, not ranges, when analyzed for "current-ness". That is, the more recent dates in the past, even if the "end" date is in the past are treated as current. This option is only supported for standard many-many non-self relations and is ignored for all other kinds of relationships. [Default is false]
+ 	 *			showCurrentOnly = Returns the relationship with the latest effective date for the row_id that is not greater than the current date. This option is only supported for standard many-many self and non-self relations and is ignored for all other kinds of relationships. [Default is false]
+ 	 *			showCurrentUsingDate = Bundle (intrinsic or attribute) to use to select the "current" relationship. [Default is effective_date]
  	 *			currentOnly = Synonym for showCurrentOnly
  	 *		
  	 *		[Options controlling scope of data in return value]
- 	 *			restrictToTypes = Restrict returned items to those of the specified types. An array of list item idnos and/or item_ids may be specified. [Default is null]
- 	 *			restrictToRelationshipTypes =  Restrict returned items to those related using the specified relationship types. An array of relationship type idnos and/or type_ids may be specified. [Default is null]
- 	 *			excludeTypes = Restrict returned items to those *not* of the specified types. An array of list item idnos and/or item_ids may be specified. [Default is null]
- 	 *			excludeRelationshipTypes = Restrict returned items to those *not* related using the specified relationship types. An array of relationship type idnos and/or type_ids may be specified. [Default is null]
+ 	 *			restrictToTypes = Restrict returned items to those of the specified types. An array or comma/semicolon delimited string of list item idnos and/or item_ids may be specified. [Default is null]
+ 	 *			restrictToRelationshipTypes =  Restrict returned items to those related using the specified relationship types. An array or comma/semicolon delimited string of relationship type idnos and/or type_ids may be specified. [Default is null]
+ 	 *			excludeTypes = Restrict returned items to those *not* of the specified types. An array or comma/semicolon delimited string of list item idnos and/or item_ids may be specified. [Default is null]
+ 	 *			excludeRelationshipTypes = Restrict returned items to those *not* related using the specified relationship types. An or comma/semicolon delimited string array of relationship type idnos and/or type_ids may be specified. [Default is null]
  	 *			restrictToType = Synonym for restrictToTypes. [Default is null]
  	 *			restrictToRelationshipType = Synonym for restrictToRelationshipTypes. [Default is null]
  	 *			excludeType = Synonym for excludeTypes. [Default is null]
  	 *			excludeRelationshipType = Synonym for excludeRelationshipTypes. [Default is null]
- 	 *			restrictToLists = Restrict returned items to those that are in one or more specified lists. This option is only relevant when fetching related ca_list_items. An array of list list_codes or list_ids may be specified. [Default is null]
+ 	 *			restrictToLists = Restrict returned items to those that are in one or more specified lists. This option is only relevant when fetching related ca_list_items. An array or comma/semicolon delimited string of list list_codes or list_ids may be specified. [Default is null]
  	 * 			fields = array of fields (in table.fieldname format) to include in returned data. [Default is null]
  	 *			returnNonPreferredLabels = Return non-preferred labels in returned data. [Default is false]
  	 *			returnLabelsAsArray = Return all labels associated with row in an array, rather than as a text value in the current locale. [Default is false]
@@ -4632,9 +4983,11 @@ if (!$vb_batch) {
 	 *
 	 *					Default is "data" - returns a list of arrays with data about each related item
  	 *
+ 	 * @param int $pn_count Variable to return number of related items. The count reflects the absolute number of related items, independent of how the start and limit options are set, and may differ from the number of items actually returned.
+ 	 *
  	 * @return array List of related items
  	 */
-	public function getRelatedItems($pm_rel_table_name_or_num, $pa_options=null) {
+	public function getRelatedItems($pm_rel_table_name_or_num, $pa_options=null, &$pn_count=null) {
 		global $AUTH_CURRENT_USER_ID;
 		$vn_user_id = (isset($pa_options['user_id']) && $pa_options['user_id']) ? $pa_options['user_id'] : (int)$AUTH_CURRENT_USER_ID;
 		$vb_show_if_no_acl = (bool)($this->getAppConfig()->get('default_item_access_level') > __CA_ACL_NO_ACCESS__);
@@ -4645,16 +4998,16 @@ if (!$vb_batch) {
 
 		// convert options
 		if (($pa_options['restrictToTypes'] = caGetOption(array('restrictToTypes', 'restrict_to_types', 'restrictToType', 'restrict_to_type'), $pa_options, null)) && !is_array($pa_options['restrictToTypes'])) {
-			$pa_options['restrictToTypes'] = array($pa_options['restrictToTypes']);
+			$pa_options['restrictToTypes'] = preg_split("![;,]{1}!", $pa_options['restrictToTypes']);
 		}
 		if (($pa_options['restrictToRelationshipTypes'] = caGetOption(array('restrictToRelationshipTypes', 'restrict_to_relationship_types', 'restrictToRelationshipType', 'restrict_to_relationship_type'), $pa_options, null)) && !is_array($pa_options['restrictToRelationshipTypes'])) {
-			$pa_options['restrictToRelationshipTypes'] = array($pa_options['restrictToRelationshipTypes']);
+			$pa_options['restrictToRelationshipTypes'] = preg_split("![;,]{1}!", $pa_options['restrictToRelationshipTypes']);
 		}
 		if (($pa_options['excludeTypes'] = caGetOption(array('excludeTypes', 'exclude_types', 'excludeType', 'exclude_type'), $pa_options, null)) && !is_array($pa_options['excludeTypes'])) {
-			$pa_options['excludeTypes'] = array($pa_options['excludeTypes']);
+			$pa_options['excludeTypes'] = preg_split("![;,]{1}!", $pa_options['excludeTypes']);
 		}
 		if (($pa_options['excludeRelationshipTypes'] = caGetOption(array('excludeRelationshipTypes', 'exclude_relationship_types', 'excludeRelationshipType', 'exclude_relationship_type'), $pa_options, null)) && !is_array($pa_options['excludeRelationshipTypes'])) {
-			$pa_options['excludeRelationshipTypes'] = array($pa_options['excludeRelationshipTypes']);
+			$pa_options['excludeRelationshipTypes'] = preg_split("![;,]{1}!", $pa_options['excludeRelationshipTypes']);
 		}
 		
 		if (!isset($pa_options['dontIncludeSubtypesInTypeRestriction']) && (isset($pa_options['dont_include_subtypes_in_type_restriction']) && $pa_options['dont_include_subtypes_in_type_restriction'])) { $pa_options['dontIncludeSubtypesInTypeRestriction'] = $pa_options['dont_include_subtypes_in_type_restriction']; }
@@ -4662,9 +5015,14 @@ if (!$vb_batch) {
 		if (!isset($pa_options['returnLabelsAsArray']) && (isset($pa_options['return_labels_as_array']) && $pa_options['return_labels_as_array'])) { $pa_options['returnLabelsAsArray'] = $pa_options['return_labels_as_array']; }
 		if (!isset($pa_options['restrictToLists']) && (isset($pa_options['restrict_to_lists']) && $pa_options['restrict_to_lists'])) { $pa_options['restrictToLists'] = $pa_options['restrict_to_lists']; }
 		
+		if (($pa_options['restrictToLists'] = caGetOption(array('restrictToLists', 'restrict_to_lists'), $pa_options, null)) && !is_array($pa_options['restrictToLists'])) {
+			$pa_options['restrictToLists'] = preg_split("![;,]{1}!", $pa_options['restrictToLists']);
+		}
+		
 		$pb_group_fields = isset($pa_options['groupFields']) ? $pa_options['groupFields'] : false;
 		$pa_primary_ids = (isset($pa_options['primaryIDs']) && is_array($pa_options['primaryIDs'])) ? $pa_options['primaryIDs'] : null;
 		$pb_show_current_only = caGetOption('showCurrentOnly', $pa_options, caGetOption('currentOnly', $pa_options, false));
+		$ps_current_date_bundle = caGetOption('showCurrentUsingDate', $pa_options, 'effective_date');
 		
 		if (!isset($pa_options['useLocaleCodes']) && (isset($pa_options['returnLocaleCodes']) && $pa_options['returnLocaleCodes'])) { $pa_options['useLocaleCodes'] = $pa_options['returnLocaleCodes']; }
 		$pb_use_locale_codes = isset($pa_options['useLocaleCodes']) ? $pa_options['useLocaleCodes'] : false;
@@ -4679,6 +5037,7 @@ if (!$vb_batch) {
 		$o_tep = $this->getTimeExpressionParser();
 		
 		$vb_uses_effective_dates = false;
+		$vn_current_date = TimeExpressionParser::now();
 
 		if(isset($pa_options['sort']) && !is_array($pa_options['sort'])) { $pa_options['sort'] = array($pa_options['sort']); }
 		$pa_sort_fields = (isset($pa_options['sort']) && is_array($pa_options['sort'])) ? array_filter($pa_options['sort'], "strlen") : null;
@@ -4963,8 +5322,8 @@ if (!$vb_batch) {
 			if ($vs_label_table_name) {
 				$va_label_rel_info = $this->getAppDatamodel()->getRelationships($va_path[0], $vs_label_table_name);
 			}
-
-			$va_rels = array();
+	
+			$va_rels = $va_rels_by_date = [];
 
 			$vn_i = 0;
 			foreach($va_rel_info[$va_path[0]][$va_path[1]] as $va_possible_keys) {
@@ -5003,6 +5362,8 @@ if (!$vb_batch) {
 					{$vs_order_by}";
 
 				$qr_res = $o_db->query($vs_sql);
+				
+				if (!is_null($pn_count)) { $pn_count = $qr_res->numRows(); }
 
 				if ($vb_uses_relationship_types) { $va_rel_types = $t_rel->getRelationshipInfo($va_path[1]); }
 				$vn_c = 0;
@@ -5038,7 +5399,7 @@ if (!$vb_batch) {
 
 					$vn_locale_id = $qr_res->get('locale_id');
 					if ($pb_use_locale_codes) {
-						$va_rels[$vs_v]['locale_id'] = $vn_locale_id = $t_locale->localeIDToCode($vn_locale_id);
+						$va_rels[$vs_sort_key][$vn_id]['locale_id'] = $vn_locale_id = $t_locale->localeIDToCode($vn_locale_id);
 					}
 
 					$va_rels[$vs_sort_key][$vn_id]['labels'][$vn_locale_id] =  ($pb_return_labels_as_array) ? $va_row : $vs_display_label;
@@ -5058,23 +5419,41 @@ if (!$vb_batch) {
 						$vs_rel_pk = $t_rel_item->primaryKey();
 						if ($t_rel_item_label) {
 							foreach($t_rel_item_label->getFormFields() as $vs_field => $va_field_info) {
-								if (!isset($va_rels[$vs_v][$vs_field]) || ($vs_field == $vs_rel_pk)) { continue; }
-								$va_rels[$vs_v]['preferred_labels'][$vs_field] = $va_rels[$vs_v][$vs_field];
-								unset($va_rels[$vs_v][$vs_field]);
+								if (!isset($va_rels[$vs_sort_key][$vn_id][$vs_field]) || ($vs_field == $vs_rel_pk)) { continue; }
+								$va_rels[$vs_sort_key][$vn_id]['preferred_labels'][$vs_field] = $va_rels[$vs_sort_key][$vn_id][$vs_field];
+								unset($va_rels[$vs_sort_key][$vn_id][$vs_field]);
 							}
 						}
 						foreach($t_rel_item->getFormFields() as $vs_field => $va_field_info) {
-							if (!isset($va_rels[$vs_v][$vs_field]) || ($vs_field == $vs_rel_pk)) { continue; }
-							$va_rels[$vs_v]['intrinsic'][$vs_field] = $va_rels[$vs_v][$vs_field];
-							unset($va_rels[$vs_v][$vs_field]);
+							if (!isset($va_rels[$vs_sort_key][$vn_id][$vs_field]) || ($vs_field == $vs_rel_pk)) { continue; }
+							$va_rels[$vs_sort_key][$vn_id]['intrinsic'][$vs_field] = $va_rels[$vs_sort_key][$vn_id][$vs_field];
+							unset($va_rel[$vs_sort_key][$vn_id][$vs_field]);
 						}
-						unset($va_rels[$vs_v]['_key']);
-						unset($va_rels[$vs_v]['row_id']);
+						unset($va_rels[$vs_sort_key][$vn_id]['_key']);
+						unset($va_rels[$vs_sort_key][$vn_id]['row_id']);
 					}
-				};
+					
+					// filter for current?
+					if($pb_show_current_only && $t_item_rel) {
+						$qr_rels = caMakeSearchResult($t_item_rel->tableName(), [$qr_res->get($vs_key)]);
+						
+						while($qr_rels->nextHit()) {
+							foreach($qr_rels->get($ps_current_date_bundle, ['returnAsArray' => true, 'sortable' => true]) as $vs_date) {
+								$va_tmp = explode("/", $vs_date);
+								if ($va_tmp[0] > $vn_current_date) { continue; } 	// skip future dates
+								$va_rels_by_date[$vs_date.'/'.sprintf("%09d", $qr_rels->get($t_item_rel->tableName().".relation_id"))][$vs_sort_key][$vn_id] = $va_rels[$vs_sort_key][$vn_id];
+							}
+						}
+					}
+				}
 				$vn_i++;
 			}
 
+			if($pb_show_current_only && $t_item_rel) {
+				ksort($va_rels_by_date);
+				$va_rels = array_pop($va_rels_by_date);
+			}
+			
 			ksort($va_rels);	// sort by sort key... we'll remove the sort key in the next loop while we add the labels
 
 			// Set 'label' entry - display label in current user's locale
@@ -5096,6 +5475,8 @@ if (!$vb_batch) {
 			//
 			// START - from self relation itself (Eg. get related ca_objects from ca_objects_x_objects); in this case there are two possible paths (keys) to check, "left" and "right"
 			//
+			
+			$pb_show_current_only = false;
 			
 			$va_wheres[] = "({$vs_subject_table_name}.".$this->primaryKey()." IN (".join(",", $pa_row_ids)."))";
 			$vs_cur_table = array_shift($va_path);
@@ -5140,6 +5521,8 @@ if (!$vb_batch) {
 
 				//print "<pre>$vs_sql</pre>\n";
 				$qr_res = $o_db->query($vs_sql);
+				
+				if (!is_null($pn_count)) { $pn_count = $qr_res->numRows(); }
 				
 				if ($vb_uses_relationship_types)  {
 					$va_rel_types = $t_rel->getRelationshipInfo($vs_item_rel_table_name);
@@ -5213,7 +5596,6 @@ if (!$vb_batch) {
 					}
 				}
 
-				//if (!isset($pa_options['idsOnly']) || !$pa_options['idsOnly']) {
 				if ($ps_return_as === 'data') {
 					// Set 'label' entry - display label in current user's locale
 					foreach($va_rels as $vs_v => $va_rel) {
@@ -5260,6 +5642,40 @@ if (!$vb_batch) {
 					$va_joins[] = $vs_join.join(' OR ', $va_tmp);
 					$vs_cur_table = $vs_join_table;
 				}
+				
+				
+			
+                if (method_exists($t_rel_item, 'isRelationship') && $t_rel_item->isRelationship()) {
+                    if(is_array($pa_options['restrictToTypes']) && sizeof($pa_options['restrictToTypes'])) {
+                        $va_rels = $this->getAppDataModel()->getManyToOneRelations($t_rel_item->tableName());
+
+                        foreach($va_rels as $vs_rel_pk => $va_rel_info) {
+                            if ($va_rel_info['one_table'] != $this->tableName()) {
+                                $va_type_ids = caMakeTypeIDList($va_rel_info['one_table'], $pa_options['restrictToTypes']);
+                    
+                                if (is_array($va_type_ids) && sizeof($va_type_ids)) { 
+                                    $va_joins[] = "INNER JOIN {$va_rel_info['one_table']} AS r ON r.{$va_rel_info['one_table_field']} = ".$t_rel_item->tableName().".{$vs_rel_pk}";
+                                    $va_wheres[] = "(r.type_id IN (".join(",", $va_type_ids)."))";
+                                }
+                                break;
+                            }
+                        }
+                    }elseif(is_array($pa_options['excludeTypes']) && sizeof($pa_options['excludeTypes'])) {
+                        $va_rels = $this->getAppDataModel()->getManyToOneRelations($t_rel_item->tableName());
+
+                        foreach($va_rels as $vs_rel_pk => $va_rel_info) {
+                            if ($va_rel_info['one_table'] != $this->tableName()) {
+                                $va_type_ids = caMakeTypeIDList($va_rel_info['one_table'], $pa_options['excludeTypes']);
+                                
+                                if (is_array($va_type_ids) && sizeof($va_type_ids)) { 
+                                    $va_joins[] = "INNER JOIN {$va_rel_info['one_table']} AS r ON r.{$va_rel_info['one_table_field']} = ".$t_rel_item->tableName().".{$vs_rel_pk}";
+                                    $va_wheres[] = "(r.type_id NOT IN (".join(",", $va_type_ids)."))";
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
 			}
 
 			// If we're getting ca_set_items, we have to rename the intrinsic row_id field because the pk is named row_id below. Hence, this hack.
@@ -5268,27 +5684,6 @@ if (!$vb_batch) {
 			}
 
 			$va_selects[] = $vs_subject_table_name.'.'.$this->primaryKey().' AS row_id';
-			
-			//
-			// Filter to only current relationships
-			//
-			if ($pb_show_current_only && $vb_uses_effective_dates) {
-				// _filter_current.edatetime IS NULL criteria allows undated relationships to be considered "current"; if current filtering is done it
-				// is assumed that all relationships are dated and that undated relations are legacy and therefore should be considered potentially current 
-				$vs_filter_to_current_join = "
-					INNER JOIN (
-						SELECT {$vs_item_rel_table_name}.".$this->primaryKey().", max({$vs_item_rel_table_name}.edatetime) edatetime
-						FROM {$vs_subject_table_name}
-						".join("\n", array_merge($va_joins, $va_joins_post_add))."
-						WHERE
-							(".join(' AND ', array_merge($va_wheres, array("({$vs_item_rel_table_name}.sdatetime <= ".TimeExpressionParser::now().")"))).")
-							OR ({$vs_item_rel_table_name}.sdatetime IS NULL)
-						GROUP BY 
-							{$vs_item_rel_table_name}.".$this->primaryKey()."
-					) AS _filter_current ON _filter_current.".$this->primaryKey()." = {$vs_item_rel_table_name}.".$this->primaryKey()." AND (_filter_current.edatetime = {$vs_item_rel_table_name}.edatetime OR _filter_current.edatetime IS NULL)
-				";
-				$va_joins[] = $vs_filter_to_current_join;
-			}
 
 			$vs_order_by = '';
 			if ($t_item_rel && $t_item_rel->hasField('rank')) {
@@ -5311,6 +5706,9 @@ if (!$vb_batch) {
 			";
 			
 			$qr_res = $o_db->query($vs_sql);
+			
+			if (!is_null($pn_count)) { $pn_count = $qr_res->numRows(); }
+			
 			if ($vb_uses_relationship_types)  {
 				$va_rel_types = $t_rel->getRelationshipInfo($t_tmp->tableName());
 				if(method_exists($t_tmp, 'getLeftTableName')) {
@@ -5318,84 +5716,113 @@ if (!$vb_batch) {
 					$vs_direction = ($vs_left_table == $vs_subject_table_name) ? 'ltor' : 'rtol';
 				}
 			}
-			$va_rels = array();
+			
+			$va_rels = [];
+			$va_rels_by_date = [];
+			
 			$vn_c = 0;
 			if ($pn_start > 0) { $qr_res->seek($pn_start); }
 			$va_seen_row_ids = array();
+			$va_relation_ids = $va_rels_for_id_by_date = [];
 			while($qr_res->nextRow()) {
+				$va_rels_for_id = [];
 				if ($vn_c >= $pn_limit) { break; }
 				
 				if (is_array($pa_primary_ids) && is_array($pa_primary_ids[$vs_related_table])) {
 					if (in_array($qr_res->get($vs_key), $pa_primary_ids[$vs_related_table])) { continue; }
 				}
 				
-				//if (isset($pa_options['idsOnly']) && $pa_options['idsOnly']) {
-				if ($ps_return_as !== 'data') {
-					$va_rels[] = $qr_res->get($t_rel_item->primaryKey());
-					continue;
-				}
+				//if ($ps_return_as !== 'data') {
+				//	$va_rels_for_id[] = $qr_res->get($t_rel_item->primaryKey());
+				//	continue;
+				//}
 
 				$va_row = $qr_res->getRow();
 				$vs_v = (sizeof($va_path) <= 2) ? $va_row['row_id'].'/'.$va_row[$vs_key] : $va_row[$vs_key];
 
 				$vs_display_label = $va_row[$vs_label_display_field];
 
-				if (!isset($va_rels[$vs_v]) || !$va_rels[$vs_v]) {
-					$va_rels[$vs_v] = $va_row;
+				if (!isset($va_rels_for_id[$vs_v]) || !$va_rels_for_id[$vs_v]) {
+					$va_rels_for_id[$vs_v] = $va_row;
 				}
 
 				if ($vb_uses_effective_dates) {	// return effective dates as display/parse-able text
-					if ($va_rels[$vs_v]['sdatetime'] || $va_rels[$vs_v]['edatetime']) {
-						$o_tep->setHistoricTimestamps($va_rels[$vs_v]['sdatetime'], $va_rels[$vs_v]['edatetime']);
-						$va_rels[$vs_v]['effective_date'] = $o_tep->getText();
+					if ($va_rels_for_id[$vs_v]['sdatetime'] || $va_rels_for_id[$vs_v]['edatetime']) {
+						$o_tep->setHistoricTimestamps($va_rels_for_id[$vs_v]['sdatetime'], $va_rels_for_id[$vs_v]['edatetime']);
+						$va_rels_for_id[$vs_v]['effective_date'] = $o_tep->getText();
 					}
-					
-					
-					// Only allow one current item per row_id
-					//if ($pb_show_current_only && isset($va_seen_row_ids[$va_row['row_id']])) {
-					//	unset($va_rels[$vs_v]); 
-					//	continue;
-					//}
 				}
 
 				$vn_locale_id = $qr_res->get('locale_id');
 				if ($pb_use_locale_codes) {
-					$va_rels[$vs_v]['locale_id'] = $vn_locale_id = $t_locale->localeIDToCode($vn_locale_id);
+					$va_rels_for_id[$vs_v]['locale_id'] = $vn_locale_id = $t_locale->localeIDToCode($vn_locale_id);
 				}
 
-				$va_rels[$vs_v]['labels'][$vn_locale_id] =  ($pb_return_labels_as_array) ? $va_row : $vs_display_label;
+				$va_rels_for_id[$vs_v]['labels'][$vn_locale_id] =  ($pb_return_labels_as_array) ? $va_row : $vs_display_label;
 
-				$va_rels[$vs_v]['_key'] = $vs_key;
-				$va_rels[$vs_v]['direction'] = $vs_direction;
+				$va_rels_for_id[$vs_v]['_key'] = $vs_key;
+				$va_rels_for_id[$vs_v]['direction'] = $vs_direction;
 
 				$vn_c++;
 				if ($vb_uses_relationship_types) {
-					$va_rels[$vs_v]['relationship_typename'] = ($vs_direction == 'ltor') ? $va_rel_types[$va_row['relationship_type_id']]['typename'] : $va_rel_types[$va_row['relationship_type_id']]['typename_reverse'];
-					$va_rels[$vs_v]['relationship_type_code'] = $va_rel_types[$va_row['relationship_type_id']]['type_code'];
+					$va_rels_for_id[$vs_v]['relationship_typename'] = ($vs_direction == 'ltor') ? $va_rel_types[$va_row['relationship_type_id']]['typename'] : $va_rel_types[$va_row['relationship_type_id']]['typename_reverse'];
+					$va_rels_for_id[$vs_v]['relationship_type_code'] = $va_rel_types[$va_row['relationship_type_id']]['type_code'];
 				}
 
 				if ($pb_group_fields) {
 					$vs_rel_pk = $t_rel_item->primaryKey();
 					if ($t_rel_item_label) {
 						foreach($t_rel_item_label->getFormFields() as $vs_field => $va_field_info) {
-							if (!isset($va_rels[$vs_v][$vs_field]) || ($vs_field == $vs_rel_pk)) { continue; }
-							$va_rels[$vs_v]['preferred_labels'][$vs_field] = $va_rels[$vs_v][$vs_field];
-							unset($va_rels[$vs_v][$vs_field]);
+							if (!isset($va_rels_for_id[$vs_v][$vs_field]) || ($vs_field == $vs_rel_pk)) { continue; }
+							$va_rels_for_id[$vs_v]['preferred_labels'][$vs_field] = $va_rels_for_id[$vs_v][$vs_field];
+							unset($va_rels_for_id[$vs_v][$vs_field]);
 						}
 					}
 					foreach($t_rel_item->getFormFields() as $vs_field => $va_field_info) {
-						if (!isset($va_rels[$vs_v][$vs_field]) || ($vs_field == $vs_rel_pk)) { continue; }
-						$va_rels[$vs_v]['intrinsic'][$vs_field] = $va_rels[$vs_v][$vs_field];
-						unset($va_rels[$vs_v][$vs_field]);
+						if (!isset($va_rels_for_id[$vs_v][$vs_field]) || ($vs_field == $vs_rel_pk)) { continue; }
+						$va_rels_for_id[$vs_v]['intrinsic'][$vs_field] = $va_rels_for_id[$vs_v][$vs_field];
+						unset($va_rels_for_id[$vs_v][$vs_field]);
 					}
-					unset($va_rels[$vs_v]['_key']);
-					unset($va_rels[$vs_v]['row_id']);
+					unset($va_rels_for_id[$vs_v]['_key']);
+					unset($va_rels_for_id[$vs_v]['row_id']);
 				}
+							
+				// filter for current?
+				if($pb_show_current_only && $t_item_rel) {
+					$qr_rels = caMakeSearchResult($t_item_rel->tableName(), [$qr_res->get($vs_key)]);
+					while($qr_rels->nextHit()) {
+						foreach($qr_rels->get($ps_current_date_bundle, ['returnAsArray' => true, 'sortable' => true]) as $vs_date) {
+							$va_tmp = explode("/", $vs_date);
+							if ($va_tmp[0] > $vn_current_date) { continue; } 	// skip future dates
+							$va_rels_for_id_by_date[$qr_rels->get($this->primaryKey(true))][$vs_date.'/'.sprintf("%09d", $qr_rels->get($t_item_rel->tableName().".relation_id"))][$vs_v] = $va_rels_for_id[$vs_v];
+						}
+					}
+				}
+				$va_rels = array_replace($va_rels, $va_rels_for_id);
 				
 				$va_seen_row_ids[$va_row['row_id']] = true;
 			}
+			
+			if($pb_show_current_only && $t_item_rel) {
+				$va_rels_for_id = [];
+				foreach($va_rels_for_id_by_date as $vn_id => $va_by_date) {
+					ksort($va_by_date);
+					if (sizeof($va_by_date)) { 
+						foreach(array_pop($va_by_date) as $vs_v => $va_rel) {
+							$va_rels_for_id[$vs_v] = $va_rel;
+						}
+						
+						//break;
+					}
+				}
+				$va_rels = $va_rels_for_id;
+			}
+							
+			if ($ps_return_as !== 'data') {
+				$va_rels = caExtractArrayValuesFromArrayOfArrays($va_rels, $t_rel_item->primaryKey());
+			}
+			
 
-			//if (!isset($pa_options['idsOnly']) || !$pa_options['idsOnly']) {
 			if ($ps_return_as === 'data') {
 				// Set 'label' entry - display label in current user's locale
 				foreach($va_rels as $vs_v => $va_rel) {
@@ -5403,7 +5830,7 @@ if (!$vb_batch) {
 					$va_tmp2 = caExtractValuesByUserLocale($va_tmp);
 					$va_rels[$vs_v]['label'] = array_shift($va_tmp2);
 				}
-			}
+			} 
 			
 			//
 			// END - non-self relation
@@ -5422,7 +5849,7 @@ if (!$vb_batch) {
 						// is value a list attribute idno?
 						$va_tmp = explode('.',$vs_filter);
 						$vs_element = array_pop($va_tmp);
-						if (!is_numeric($vs_filter_val) && (($t_element = $t_rel_item->_getElementInstance($vs_element)) && ($t_element->get('datatype') == 3))) {
+						if (!is_numeric($vs_filter_val) && (($t_element = ca_metadata_elements::getInstance($vs_element)) && ($t_element->get('datatype') == 3))) {
 							$va_filter_vals[$vn_index] = caGetListItemID($t_element->get('list_id'), $vs_filter_val);
 						}
 					}
@@ -5457,7 +5884,11 @@ if (!$vb_batch) {
 			$va_ids = $va_ids_to_rel_ids = array();
 			$vs_rel_pk = $t_rel_item->primaryKey();
 			foreach($va_rels as $vn_i => $va_rel) {
-				$va_ids[$vn_i] = $va_rel[$vs_rel_pk];
+				if(is_array($va_rel)) {
+					$va_ids[$vn_i] = $va_rel[$vs_rel_pk];
+				} else {
+					$va_ids[$vn_i] = $va_rel;
+				}
 				$va_ids_to_rel_ids[$va_rel[$vs_rel_pk]][] = $vn_i;
 			}
 			if (sizeof($va_ids) > 0) {
@@ -5586,7 +6017,7 @@ if (!$vb_batch) {
 			
 			
 			
-			if (($this->tableName() == 'ca_objects') && $this->getAppConfig()->get('ca_objects_x_collections_hierarchy_enabled') && $pa_options['request'] && ($vn_collection_id = $pa_options['request']->getParameter('collection_id', pInteger))) {
+			if (($this->tableName() == 'ca_objects') && $this->getAppConfig()->get('ca_objects_x_collections_hierarchy_enabled') && !$this->getAppConfig()->get('ca_objects_x_collections_hierarchy_disable_object_collection_idno_inheritance') && $pa_options['request'] && ($vn_collection_id = $pa_options['request']->getParameter('collection_id', pInteger))) {
 				// Parent will be set to collection
 				$t_coll = new ca_collections($vn_collection_id);
 				if ($this->inTransaction()) { $t_coll->setTransaction($this->getTransaction()); }
@@ -5616,8 +6047,8 @@ if (!$vb_batch) {
 										array_merge(
 											$pa_options,
 											array(
-												'error_icon' 				=> $pa_options['request']->getThemeUrlPath()."/graphics/icons/warning_small.gif",
-												'progress_indicator'		=> $pa_options['request']->getThemeUrlPath()."/graphics/icons/indicator.gif",
+												'error_icon' 				=> caNavIcon(__CA_NAV_ICON_ALERT__, 1),
+												'progress_indicator'		=> caNavIcon(__CA_NAV_ICON_SPINNER__, 1),
 												'show_errors'				=> ($this->getPrimaryKey()) ? true : false,
 												'context_id'				=> isset($pa_options['context_id']) ? $pa_options['context_id'] : null,
 												'table' 					=> $this->tableName(),
@@ -5759,16 +6190,16 @@ $pa_options["display_form_field_tips"] = true;
 	 * @return SearchResult A search result of for the specified table
 	 */
 	public function makeSearchResult($pm_rel_table_name_or_num, $pa_ids, $pa_options=null) {
-		if (!is_array($pa_ids) || !sizeof($pa_ids)) { return null; }
+		if (!is_array($pa_ids)) { return null; }
 		
 		if (!isset($pa_options['instance']) || !($t_instance = $pa_options['instance'])) {
 			$pn_table_num = $this->getAppDataModel()->getTableNum($pm_rel_table_name_or_num);
 			if (!($t_instance = $this->getAppDataModel()->getInstanceByTableNum($pn_table_num, true))) { return null; }
 		}
 		$va_ids = array();
-		foreach($pa_ids as $vn_id) {
+		foreach($pa_ids as $vn_k => $vn_id) {
 			if (is_numeric($vn_id)) { 
-				$va_ids[] = $vn_id;
+				$va_ids[$vn_k] = $vn_id;
 			}
 		}
 		// sort?
@@ -5778,11 +6209,18 @@ $pa_options["display_form_field_tips"] = true;
 			$vo_sort = new BaseFindEngine($this->getDb());
 			$va_ids = $vo_sort->sortHits($va_ids, $t_instance->tableName(), join(';', $pa_sort), caGetOption('sortDirection', $pa_options, 'asc'), $pa_options);
 		}
+
 		if (!($vs_search_result_class = $t_instance->getProperty('SEARCH_RESULT_CLASSNAME'))) { return null; }
 		if (!class_exists($vs_search_result_class)) { include(__CA_LIB_DIR__.'/ca/Search/'.$vs_search_result_class.'.php'); }
 		$o_data = new WLPlugSearchEngineCachedResult($va_ids, $t_instance->tableNum());
+		/** @var BaseSearchResult $o_res */
 		$o_res = new $vs_search_result_class($t_instance->tableName());	// we pass the table name here so generic multi-table search classes such as InterstitialSearch know what table they're operating over
 		$o_res->init($o_data, array(), $pa_options);
+
+		if(caGetOption('returnIndex', $pa_options, false)) {
+			return array('result' => $o_res, 'index' => $va_ids);
+		}
+
 		return $o_res;
 	}
 	# ------------------------------------------------------------------
@@ -6439,6 +6877,16 @@ side. For many self-relations the direction determines the nature and display te
 			'options' => &$pa_options,
 		));
 
+		if(is_null($ps_effective_date) && is_array($pa_options) && is_array($pa_options['interstitialValues'])) {
+			$ps_effective_date = caGetOption('effective_date', $pa_options['interstitialValues'], null);
+			unset($pa_options['interstitialValues']['effective_date']);
+		}
+
+		if(is_null($ps_source_info) && is_array($pa_options) && is_array($pa_options['interstitialValues'])) {
+			$ps_source_info = caGetOption('source_info', $pa_options['interstitialValues'], null);
+			unset($pa_options['interstitialValues']['source_info']);
+		}
+
 		if ($t_rel = parent::addRelationship($pm_rel_table_name_or_num, $pn_rel_id, $pm_type_id, $ps_effective_date, $ps_source_info, $ps_direction, $pn_rank, $pa_options)) {
 			if ($t_rel->numErrors()) {
 				$this->errors = $t_rel->errors;
@@ -6482,6 +6930,42 @@ side. For many self-relations the direction determines the nature and display te
 			}
 		}
 		return $t_rel;
+	}
+	# --------------------------------------------------------------------------------------------
+	public function moveRelationships($pm_rel_table_name_or_num, $pn_to_id, $pa_options=null) {
+		$vb_we_set_transaction = false;
+
+		if (!$this->inTransaction()) {
+			$this->setTransaction(new Transaction($this->getDb()));
+			$vb_we_set_transaction = true;
+		}
+
+		$this->opo_app_plugin_manager->hookBeforeMoveRelationships(array(
+			'table_name' => $this->tableName(),
+			'instance' => &$this,
+			'related_table' => &$pm_rel_table_name_or_num,
+			'to_id' => &$pn_to_id,
+			'options' => &$pa_options,
+		));
+
+		$vn_rc = parent::moveRelationships($pm_rel_table_name_or_num, $pn_to_id, $pa_options=null);
+
+		$this->opo_app_plugin_manager->hookAfterMoveRelationships(array(
+			'table_name' => $this->tableName(),
+			'instance' => &$this,
+			'related_table' => &$pm_rel_table_name_or_num,
+			'to_id' => &$pn_to_id,
+			'options' => &$pa_options,
+		));
+
+		if ($this->numErrors()) {
+			if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+			return false;
+		} else {
+			if ($vb_we_set_transaction) { $this->removeTransaction(true); }
+		}
+
+		return $vn_rc;
 	}
 	# --------------------------------------------------------------------------------------------
 	/**
@@ -6706,6 +7190,7 @@ side. For many self-relations the direction determines the nature and display te
 	 	if(!$this->getPrimaryKey()) { return null; }
 			
 		$t_violation = new ca_metadata_dictionary_rule_violations();
+		if ($this->inTransaction()) { $t_violation->setTransaction($this->getTransaction()); }
 		
 		$va_rules = ca_metadata_dictionary_rules::getRules(array('db' => $o_db, 'bundles' => caGetOption('bundles', $pa_options, null)));
 		
@@ -6729,7 +7214,7 @@ side. For many self-relations the direction determines the nature and display te
 			}
 			
 			// is there a violation recorded for this rule and row?
-			if ($t_found = ca_metadata_dictionary_rule_violations::find(array('rule_id' => $va_rule['rule_id'], 'row_id' => $this->getPrimaryKey(), 'table_num' => $this->tableNum()), array('returnAs' => 'firstModelInstance'))) {
+			if ($t_found = ca_metadata_dictionary_rule_violations::find(array('rule_id' => $va_rule['rule_id'], 'row_id' => $this->getPrimaryKey(), 'table_num' => $this->tableNum()), array('returnAs' => 'firstModelInstance', 'transaction' => $this->getTransaction()))) {
 				$t_violation = $t_found;
 			}
 					

@@ -11,6 +11,15 @@
  	}else{
  		$vn_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
  	}
+ 	
+ 	
+ 	# --- get collections configuration
+	$o_collections_config = caGetCollectionsConfig();
+	$vb_show_hierarchy_viewer = true;
+	if($o_collections_config->get("do_not_display_collection_browser")){
+		$vb_show_hierarchy_viewer = false;	
+	}
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -43,6 +52,9 @@
 
 					print caNavLink($this->request, 'Download Finding Aid', 'faDownload', 'Detail', 'collections', $vn_collection_id.'/view/pdf/export_format/_pdf_ca_collections_summary');
 					print "<div class='clearfix'></div>";					
+?>
+					{{{<ifdef code="ca_collections.parent_id"><div class='unit'><span class='label'>Part of: </span><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
+<?php
 					if ($vs_historical = $t_item->get('ca_collections.biogHist')) {
 						print "<div class='unit'><span class='label'>Historical Note: </span>".$vs_historical."</div>";
 					}
@@ -56,7 +68,7 @@
 					#	print "<div class='unit'><span class='label'>Related Productions & Events: </span>".$va_events."</div>";
 					#}
 					
-					if ($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+					if ($va_collection_children = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_collections.idno_sort'))) {
 ?>
 						<div class="collection-form"  >
 							<div class="formOutline" style="position:relative;">
@@ -95,54 +107,31 @@
 							});
 						</script>
 						<div class='clearfix'></div>					
-					
-					
-						<div class='unit row' style='margin-bottom:0px;'>
-							<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
-								<hr class='divide' style='margin-bottom:0px; margin-top:3px;'></hr>
-							</div>
-							<div class='col-xs-12 col-sm-4 col-md-4 col-lg-4'>
-								<div class='findingAidContainer'><div class='label collection'>Collection Contents </div>
 <?php
-						foreach ($va_collection_children as $col_key => $vn_collection_id) {
-							$t_collection_series = new ca_collections($vn_collection_id);
-							$vs_collection_label = $t_collection_series->get('ca_collections.preferred_labels');
-							if (($t_collection_series->get('ca_collections.type_id', array('convertCodesToDisplayText' => true))) == "Box") {
-								$vs_icon = "<i class='fa fa-archive'></i>&nbsp;";
-							} else {
-								$vs_icon = null;
-							}
-							print "<div style='margin-left:0px;margin-top:5px;'><a href='#' class='openCollection openCollection".$vn_collection_id."'>".$vs_icon.$vs_collection_label."</a></div>";	
-?>													
+					}
+?>					
+					
+					<div class="row unit">
+						<div class='col-sm-12'>
+		<?php
+					if ($vb_show_hierarchy_viewer) {	
+		?>
+						<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 						<script>
 							$(document).ready(function(){
-								$('.openCollection<?php print $vn_collection_id;?>').click(function(){
-									$('#collectionLoad').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
-									$('#collectionLoad').load("<?php print caNavUrl($this->request, '', 'About', 'collectionsubview', array('collection_id' => $vn_collection_id)); ?>");
-									$('.openCollection').removeClass('active');
-									$('.openCollection<?php print $vn_collection_id;?>').addClass('active');
-									return false;
-								}); 
+								$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
 							})
-						</script>						
-<?php								
-						}
-?>
-								</div><!-- end findingAidContainer -->
-							</div><!-- end col -->
-							<div id='collectionLoad' class='col-xs-12 col-sm-8 col-md-8 col-lg-8'>
-								<i class='fa fa-arrow-left'></i> Click a Collection container to the left to see its contents.
-							</div>
-							<div class='col-sm-12 col-md-12 col-lg-12'><hr class='divide' style='margin-top:0px;'></hr></div>
-						</div><!-- end row unit -->
-<?php						
-					}										
-?>				
+						</script>
+		<?php				
+					}									
+		?>				
+						</div><!-- end col -->
+					</div><!-- end row -->
+			
 				</div><!-- end col -->
 
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">
-			<hr class="divide" style="margin-bottom:0px;"/>
 			<div class="row">
 				<div class="col-sm-12 col-md-12 col-lg-12">
 					<div id="browseResultsContainer">
@@ -163,7 +152,9 @@
 					
 					
 				});
-			</script>
+			</script>			
+</ifcount>}}}
+
 			<script type='text/javascript'>
 				jQuery(document).ready(function() {
 					$('.trimText').readmore({
@@ -171,7 +162,6 @@
 					  maxHeight: 135
 					});		
 				});
-			</script>			
-</ifcount>}}}
+			</script>
 	</div><!-- end col -->
 </div><!-- end row -->

@@ -28,7 +28,7 @@
 					if ($t_entity->get('ca_entities.entity_dates')) {
 						print $t_entity->get('ca_entities.entity_dates');
 					}
-					if ($va_nationality = $t_entity->get('ca_entities.nationality', array('returnAsArray' => true))) {
+					if ($va_nationality = $t_entity->get('ca_entities.nationality', array('returnAsArray' => true, 'returnWithStructure' => true))) {
 						foreach ($va_nationality as $nat_key => $va_nation) {
 							foreach($va_nation as $va_nations) {
 								$nationality = explode("[", $va_nations);
@@ -45,7 +45,7 @@
 					
 			<!-- Related Artworks -->
 <?php			
-		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {	
+		if ($va_artwork_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork'), 'returnWithStructure' => true, 'returnAsArray' => true))) {	
 
 ?>		
 			<div id="detailRelatedObjects">
@@ -131,7 +131,7 @@
 		
 <!-- Related Archives -->
 <?php	
-		$va_archive_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnAsArray' => true));		
+		$va_archive_ids = $t_entity->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnWithStructure' => true, 'returnAsArray' => true));		
 		if (sizeof($va_archive_ids) > 0) {	
 ?>		
 			<div id="detailRelatedArchives">
@@ -272,7 +272,7 @@
 			<div class='col-md-6 col-lg-6'> 
 <?php
 #				if ($t_entity->get('ca_entities.locations.location_description') != "") {			
-#					$va_locations = $t_entity->get('ca_entities.locations', array('returnAsArray' => true));
+#					$va_locations = $t_entity->get('ca_entities.locations', array('returnAsArray' => true, 'returnWithStructure' => true));
 #					print "<H6>Location</H6>";
 #					foreach ($va_locations as $va_location) {
 #						print "<p>".$va_location['location_type'].": ".$va_location['location_description']."</p>";
@@ -291,26 +291,28 @@
 <?php				
 				if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new")  || $this->request->user->hasUserRole("library_new")){
 					
-					if ($va_addresses = $t_entity->get("ca_entities.address", array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+					if ($va_addresses = $t_entity->get("ca_entities.address", array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 						print "<h2>Contact Information</h2>";
-						foreach ($va_addresses as $va_add_key => $va_address) {
-							#print_r($va_address);
-							if ($va_address['address1']) {
-								print $va_address['address1']."<br/>";
+						foreach ($va_addresses as $va_add_key => $va_address_t) {
+							foreach ($va_address_t as $va_add_key => $va_address) {
+								#print_r($va_address);
+								if ($va_address['address1']) {
+									print $va_address['address1']."<br/>";
+								}
+								if ($va_address['address2']) {
+									print $va_address['address2']."<br/>";
+								}
+								if ($va_address['city']) {
+									print $va_address['city'].", ";
+								}
+								print $va_address['stateprovince'];
+								print " ".$va_address['postalcode'];
+								print " ".$va_address['country'];
+								if (trim($va_address['address1_type'])) {
+									print "<br/>(".$va_address['address1_type'].") ";
+								}					
+								print "<br/><br/>";
 							}
-							if ($va_address['address2']) {
-								print $va_address['address2']."<br/>";
-							}
-							if ($va_address['city']) {
-								print $va_address['city'].", ";
-							}
-							print $va_address['stateprovince'];
-							print " ".$va_address['postalcode'];
-							print " ".$va_address['country'];
-							if (trim($va_address['address1_type'])) {
-								print "<br/>(".$va_address['address1_type'].") ";
-							}					
-							print "<br/><br/>";
 						}
 					}
 					print $t_entity->getWithTemplate("^ca_entities.telephone.telephone2 ^ca_entities.telephone.telephone3<br/>", array('delimiter' => ""));

@@ -91,7 +91,7 @@
  					#$vs_set_theme = $t_set->get('ca_sets.lightbox_cats');
 					#$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id)));
 #					$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
-					$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
+					$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $this->opa_access_values));
 					
 	#				$o_front_config = caGetFrontConfig();
 	#				$vs_front_page_set = $o_front_config->get('front_page_set_code');
@@ -205,7 +205,7 @@
  			$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
  			$this->view->setVar("rep_object", $t_rep);
  			$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
- 			$this->view->setVar("repToolBar", caRepToolbar($this->getRequest(), $t_rep, $va_set_items[$pn_item_id]["row_id"]));
+ 			$this->view->setVar("repToolBar", caRepToolbar($this->getRequest(), $t_rep, new ca_objects($va_set_items[$pn_item_id]["row_id"])));
  			$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
  			$this->view->setVar("object_id", $va_set_items[$pn_item_id]["row_id"]);
  			$pn_previous_id = 0;

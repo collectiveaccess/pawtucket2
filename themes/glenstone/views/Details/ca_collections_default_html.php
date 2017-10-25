@@ -2,6 +2,9 @@
 	$va_comments = $this->getVar("comments");
 	$t_collection = $this->getVar("item");
 	$va_collection_id = $t_collection->get('ca_collections.collection_id');
+	$va_access_values = caGetUserAccessValues($this->request);
+
+
 ?>
 <div class="container">
 <div class="row">
@@ -100,14 +103,16 @@
 					$va_table_contents[] = "<a href='#arrangement'>Arrangement</a>";
 				}																																																																								
 			}
-			if ($t_collection->get('ca_collections.children')) {
+			if ($t_collection->get('ca_collections.children.collection_id')) {
 				print "<h6 id='contents'>Collection Contents</h6>";
 				$va_table_contents[] = "<a href='#contents'>Collection Contents</a>";
 
-				$va_hierarchy = $t_collection->hierarchyWithTemplate("<l>^ca_collections.preferred_labels.name</l>", array('collection_id' => $va_collection_id, 'sort' => 'ca_collections.preferred_labels.name'));
+				$va_hierarchy = $t_collection->hierarchyWithTemplate("<l>^ca_collections.preferred_labels.name</l>", array('collection_id' => $va_collection_id, 'sort' => 'ca_collections.preferred_labels.name', 'checkAccess' => $va_access_values));
 				foreach($va_hierarchy as $vn_i => $va_hierarchy_item) {
 					$t_collection_item = new ca_collections($va_hierarchy_item['id']);
-					
+					if (!in_array($t_collection_item->get('ca_collections.access'), $va_access_values)) {
+						continue;
+					}
 					if ($t_collection_item->get('ca_collections.fa_access') != 261 && $va_hierarchy_item['level'] != 0) {
 						$va_indent = "style='margin-left:".(($va_hierarchy_item['level'] * 15) - 15)."px;' ";
 						if ($va_hierarchy_item['level'] == 1) {
@@ -118,7 +123,7 @@
 						}
 						print "<div class='collName {$vn_text_class}' {$va_indent} >";
 						if ($va_hierarchy_item['level'] == 1) {
-							print "<i class='fa fa-square-o finding-aid down{$vn_top_level_collection_id}'  ></i>";
+							print "<i class='fa fa-angle-double-down finding-aid down{$vn_top_level_collection_id}'  ></i>";
 ?>
 					<script>
 						$(function() {
@@ -153,7 +158,7 @@
 
 <!-- Related Artworks -->
 <?php			
-		if ($va_artwork_ids = $t_collection->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnAsArray' => true))) {	
+		if ($va_artwork_ids = $t_collection->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document'), 'returnWithStructure' => true, 'returnAsArray' => true))) {	
 ?>		
 			<div id="detailRelatedArchives">
 				<div class='contents'>

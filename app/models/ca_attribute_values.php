@@ -36,6 +36,7 @@
  
 require_once(__CA_LIB_DIR__.'/ca/Attributes/Attribute.php');
 require_once(__CA_MODELS_DIR__.'/ca_attribute_value_multifiles.php');
+require_once(__CA_LIB_DIR__."/ca/SyncableBaseModel.php");
 
 
 BaseModel::$s_ca_models_definitions['ca_attribute_values'] = array(
@@ -85,7 +86,7 @@ BaseModel::$s_ca_models_definitions['ca_attribute_values'] = array(
 				'LABEL' => 'Longtext value container 2', 'DESCRIPTION' => 'Second longtext attribute value container'
 		),
 		'value_blob' => array(
-				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
+				'FIELD_TYPE' => FT_MEDIA, 'DISPLAY_TYPE' => DT_FIELD, 
 				'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
 				'IS_NULL' => true, 
 				'DEFAULT' => '',
@@ -125,6 +126,8 @@ BaseModel::$s_ca_models_definitions['ca_attribute_values'] = array(
 );
 
 class ca_attribute_values extends BaseModel {
+	# ---------------------------------
+	use SyncableBaseModel;
 	# ---------------------------------
 	# --- Object attribute properties
 	# ---------------------------------
@@ -231,7 +234,15 @@ class ca_attribute_values extends BaseModel {
 	public function doSearchIndexing($pa_changed_field_values_array=null, $pb_reindex_mode=false, $ps_engine=null) {
 		return;
 	}
-	# ------------------------------------------------------
+	# -------------------------------------------------------
+	public function insert($pa_options=null) {
+		if($vm_ret = parent::insert($pa_options)) {
+			$this->setGUID($pa_options); // generate and set GUID
+		}
+
+		return $vm_ret;
+	}
+	# -------------------------------------------------------
 	/**
 	 * Adds value to specified attribute. Returns value_id if new value on success, false on failure and
 	 * null on "silent" failure, in which case no error message is displayed to the user.
@@ -239,6 +250,8 @@ class ca_attribute_values extends BaseModel {
 	 * @param string $ps_value The user-input value to parse
 	 * @param array $pa_element_info An array of information about the element for which this value will be set
 	 * @param int $pn_attribute_id The attribute_id of the attribute to add the value to
+	 * @param array $pa_options Options include:
+	 *      skipExistingValues = attempt to detect and skip values already attached to the specified row to which the attribute is bound. [Default is false]
 	 *
 	 * @return int Returns the value_id of the newly created value. If the value cannot be added due to an error, false is returned. "Silent" failures, for which the user should not see an error message, are indicated by a null return value.
 	 */
@@ -259,6 +272,26 @@ class ca_attribute_values extends BaseModel {
 		if (isset($va_values['_dont_save']) && $va_values['_dont_save']) { return true; }
 		
 		if (is_array($va_values)) {
+		    if ((caGetOption('skipExistingValues', $pa_options, false)) && ($t_attr = caGetOption('t_attribute', $pa_options, null)) && ($t_instance = $t_attr->getRowInstance())) {
+                if(is_array($va_attrs = $t_instance->getAttributesByElement($vn_attr_element_id = $t_attr->get('element_id')))){
+                    $o_attr_value->loadTypeSpecificValueFromRow($va_values);
+                    $vs_new_value = (string)$o_attr_value->getDisplayValue($pa_options);
+                    
+                    $vb_already_exists = false;
+                    foreach($va_attrs as $o_attr) {
+                        foreach($o_attr->getValues() as $o_val) {
+                            if ((int)$o_val->getElementID() !== (int)$pa_element_info['element_id']) { continue; }
+                            $vs_old_value = (string)$o_val->getDisplayValue($pa_options);
+                            if (strlen($vs_old_value) && strlen($vs_new_value) && ($vs_old_value === $vs_new_value)) {
+                                return null;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+		
+		
 			$this->useBlobAsFileField(false);
 			if (!$o_attr_value->numErrors()) {
 				foreach($va_values as $vs_key => $vs_val) {
@@ -348,6 +381,18 @@ class ca_attribute_values extends BaseModel {
 			return $va_values;
 		}
 		
+		// Clear cache against attribute and any pages
+		$vn_id = $this->getPrimaryKey();
+		CompositeCache::delete("attribute:{$vn_id}", 'IIIFMediaInfo');
+		CompositeCache::delete("attribute:{$vn_id}", 'IIIFTileCounts');
+		
+		$vn_p = 1;
+		while(CompositeCache::contains($vs_key = "attribute:{$vn_id}:{$vn_p}", "IIIFMediaInfo")) {
+			CompositeCache::delete($vs_key, 'IIIFMediaInfo');
+			CompositeCache::delete($vs_key, 'IIIFTileCounts');
+			$vn_p++;
+		}
+		
 		$this->update();
 		
 		if ($this->numErrors()) {
@@ -375,7 +420,13 @@ class ca_attribute_values extends BaseModel {
 				$this->useBlobAsMediaField(false);
 				break;
 		}
-		return parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list);
+
+		$vn_primary_key = $this->getPrimaryKey();
+		$vn_rc = parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list);
+		if($vn_primary_key && $vn_rc) {
+			//$this->removeGUID($vn_primary_key);
+		}
+		return $vn_rc;
 	}
 	# ------------------------------------------------------
 	/**

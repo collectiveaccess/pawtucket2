@@ -13,7 +13,8 @@
 
 </script>
 	<form id="RegForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
-	<div class="row"><div class="col-sm-4"><H1 style="background-color:transparent;"><?php print _t("Register"); ?></H1></div></div>
+	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
+	    <div class="row"><div class="col-sm-4"><H1 style="background-color:transparent;"><?php print _t("Register"); ?></H1></div></div>
 <?php
 	if($va_errors["register"]){
 		print "<div class='alert alert-danger'>".$va_errors["register"]."</div>";
