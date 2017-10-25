@@ -73,7 +73,7 @@
 			$va_media_links = array();
 			foreach ($va_medium as $va_key => $va_medium_id_t) {
 				foreach ($va_medium_id_t as $va_key => $va_medium_id) {
-					if ($va_medium_id['medium_list'] == 387){continue;}
+					if ($va_medium_id['medium_list'] == 383){continue;}
 					$va_media_links[] = caNavLink($this->request, strtolower(caGetListItemByIDForDisplay($va_medium_id['medium_list'])), '', '', 'Browse', 'artworks/facet/medium_facet/id/'.$va_medium_id['medium_list']).($vs_list_value == $va_medium_id['medium_uncertain'] ? " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "" );	
 				}
 			}
