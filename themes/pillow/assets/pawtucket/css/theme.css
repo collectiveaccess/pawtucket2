@@ -312,7 +312,7 @@ div.browseFacetItem a {
 	text-transform:uppercase;
 }
 .hpContainer .largeHome {
-	height:450px;
+	height:550px;
 	overflow:hidden;
 	background-color: #281e15;
 }
@@ -328,7 +328,7 @@ div.browseFacetItem a {
 }
 .featuredSidebar {
 	background-color:#281e15; 
-	height:450px;
+	height:550px;
 	padding:30px;
 	color:#fff;
 }
@@ -593,6 +593,12 @@ div.browseFacetItem a {
     margin-left: 10px;
     font-size: 12px;	
 }
+.bResultItemCol {
+    height: 330px;
+}
+.bResultItemContent {
+	height:280px;
+}
 .bResultListItem .bResultListItemText {
 	line-height: 1.5em;
 }
@@ -612,17 +618,31 @@ div.browseFacetItem a {
 	display:inline-block;
 }
 .bResultListItemContent {
-	height:62px;
+	height:102px;
+}
+.bResultItem .bResultItemText small, .bResultItem .bResultItemText small a {
+	font-size:9px;  
+	line-height:1em; 
+}
+.bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemText small a {
+	font-size:9px;
+	line-height:1em;
 }
 .bResultItem .bResultItemText {
 	font-size:12px;
 	line-height:1.5em;
 }
+.bResultItemText p, .bResultListItemText p {
+	margin-bottom:3px;
+}
 .bResultListItemCol {
-	height:92px;
+	height:132px;
+}
+.bResultListItemCol:hover {
+    z-index: 100000;
 }
 .bResultListItem:hover {
-	height:92px;
+	height:112px;
 }
 .bResultListItemExpandedInfo {
 	margin-top:-10px;
@@ -696,6 +716,40 @@ strong.facetName {
 }
 .bResultItemExpandedInfo .fa {
 	font-size:16px;
+}
+
+/* placeholders */
+.placeHolderGeneral{
+	background-image: url("../graphics/artwork_audio_ephemera_periodical_thumbnail.jpg");
+	background-repeat:no-repeat;
+	background-position: top left;
+	background-size: 100%; 
+	width:100%;
+}
+.placeHolderBox{
+	max-width:350px;
+	padding-top:75%;
+	background-image: url("../graphics/artwork_audio_ephemera_periodical_thumbnail.jpg");
+}
+.placeholderMovingImage{
+	max-width:336px;
+	padding-top:82%;
+	background-image: url("../graphics/movingimage_thumbnail.jpg");
+}
+.placeholderBook{
+	max-width:350px;
+	padding-top:75%;
+	background-image: url("../graphics/books_thumbnail.jpg");
+}
+.detail .detailMediaPlaceholder{
+	padding:0px !important;
+	border:0px !important;
+	max-width:350px;
+}
+.bResultItemImgPlaceholder{
+	padding:0px;
+	border:0px;
+	background-color:#FFF;
 }
 
 /* Advanced Search */
@@ -977,25 +1031,43 @@ a.readmore-js-toggle {
 
 @media (max-width: 1050px) {
 	.featuredSidebar {
-		height:550px;
-	} 
-	.hpContainer .largeHome {
-    	height: 550px;
-    }
-}
-@media (max-width: 790px) {
-	.featuredSidebar {
 		height:600px;
+		font-size:13px;
 	} 
 	.hpContainer .largeHome {
     	height: 600px;
     }
 }
-@media (max-width: 700px) {
+@media (max-width: 932px) {
 	.featuredSidebar {
-		height:720px;
+		height:650px;
 	} 
 	.hpContainer .largeHome {
-    	height: 720px;
+    	height: 650px;
     }
+}
+@media (max-width: 832px) {
+	.featuredSidebar {
+		height:700px;
+	} 
+	.hpContainer .largeHome {
+    	height: 700px;
+    }
+}
+@media (max-width: 767px) {
+	.featuredSidebar {
+		height:400px;
+		font-size:12px;
+	} 
+	.hpContainer .largeHome {
+    	height: 400px;
+    }
+    .smallFeatured {
+    	overflow:hidden;
+    }
+}
+@media (max-width: 487px) {
+	.featuredSidebar {
+		height:500px;
+	}
 }

@@ -128,7 +128,7 @@
 <?php
 	}
 ?>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
 							<input type="text" class="form-control" placeholder="Search" name="search">
