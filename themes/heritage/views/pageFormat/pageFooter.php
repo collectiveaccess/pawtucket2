@@ -31,13 +31,16 @@
 		<footer id="footer">
 			<div class="container">
 				<div class="row">
-					<div class="col-md-4 text-left">
+					<div class="col-sm-4 text-left">
 						<p>
 						<a href="http://www.steelcase.com"><?php print caGetThemeGraphic($this->request, 'logo.svg'); ?></a>
 						</p>
 						<p>
 							&copy; 1996 - <?php print date("Y"); ?> Steelcase Inc. is the global leader in office furniture, interior architecture and space solutions for offices, hospitals and classrooms. Our furniture is inspired by innovative research in workspace design.
 						</p>
+					</div>
+					<div class="col-sm-8 text-right">
+						Questions or comments?<br/>Contact <a href="mailto:archives@steelcase.com">archives@steelcase.com</a>
 					</div>
 				</div>
 			</div>

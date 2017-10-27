@@ -51,9 +51,12 @@ H3, h3{
 #caFormOverlay{
 	border-radius:0px;
 }
+.blue{
+	color:#0096db;
+}
 /* buttons */
-.btn-default {
-    background-color: #0096db;
+.btn-default, .btn-default:active {
+    background-color: #0096db !important;
     color: #fff;
     font-family: HelveticaNeueLight;
     font-size:10px;
@@ -62,6 +65,7 @@ H3, h3{
 .btn-default:hover {
 	background-color:#0089c8;
     color: #fff;
+    text-decoration:none;
 }
 /* Navbar */
 .navbar {
@@ -232,4 +236,220 @@ ul.about li i{
 }
 #bRefine.fixed div:last-child {
 	margin-bottom:100px;
+}
+
+/* list results */
+.bResultListItem:hover {
+    padding: 10px;
+    margin:0px;
+    height:auto;
+}
+
+/* front timeline */
+.frontIntro {
+	font-size:14px;
+	position:relative;
+}
+.frontIntro img{
+	width:100%;
+	height:auto;
+}
+.frontIntroOverlay{
+	position:absolute;
+	bottom:30px;
+	left:30px;
+	padding:0px 15px 10px 15px;
+	width:650px;
+	background-color:rgba(255, 255, 255, 0.85);
+	color:#000;
+	font-size:12px;
+}
+.frontSocial {
+	margin-bottom:40px;
+	margin-top:10px;
+}
+.front H1{
+	color:#000000;
+	font-size:40px;
+	font-family: HelveticaNeueBold;
+}
+.front H2{
+	font-family: HelveticaNeueBold;
+	font-size:24px;
+}
+.frontTimeline .frontDecadeCol H1{
+	background-color: #666666;
+	color:#FFFFFF;
+	padding:10px;
+	font-family: HelveticaNeueBold;
+	font-size:30px;
+}
+.frontTimeline H1{
+	font-weight: normal;
+	font-style: normal;	
+	text-transform:none;
+}
+.frontYearCol{
+	padding-left:7px;
+	padding-right:7px;
+}
+.frontYearCol H1{
+	text-align:center;
+	font-weight:normal;
+	padding:10px 0px 10px 0px;
+	font-family: HelveticaNeueLight;
+}
+.frontYearCol img{
+	width:100%;
+	height:auto;
+}
+.frontEventCaption{
+	margin-bottom:10px;
+	color:#FFF;
+	background-color:#666;
+	padding:2px 0px 2px 0px;
+	text-align:center;
+	font-size:9px;
+}
+
+.frontTimelineCard{
+	margin-bottom:20px;
+	-webkit-box-shadow: 1px 1px 3px 1px rgba(102,102,102,0.5);
+	-moz-box-shadow: 1px 1px 3px 1px rgba(102,102,102,0.5);
+	box-shadow: 1px 1px 3px 1px rgba(102,102,102,0.5);
+	background-color:#FFFFFF;
+	position:relative;
+}
+.frontTimelineCardCaption{
+	padding:10px;
+	height:75px;
+	line-height:1.1em;
+	font-size:11px;
+}
+.frontTimelineCardCaptionDate{
+	font-family: HelveticaNeueBold;
+	color:#000;
+	font-size:12px;
+	padding-bottom:5px;
+}
+.frontTimelineCard .fa-search{
+	position:absolute;
+	bottom:3px;
+	right:3px;
+	color: #0096db;
+}
+.frontTimelineCardFull{
+	position:absolute;
+	z-index:10;
+	display:none;
+	top:-75px;
+	left:-200px;
+	right:-100px;
+	-webkit-box-shadow: 1px 1px 3px 1px rgba(102,102,102,0.5);
+	-moz-box-shadow: 1px 1px 3px 1px rgba(102,102,102,0.5);
+	box-shadow: 1px 1px 3px 1px rgba(102,102,102,0.5);
+	background-color:#FFFFFF;
+}
+.frontTimelineCardFullCol{
+	float:left;
+	width:50%;
+	padding-right:10px;
+	padding:10px;
+}
+.frontTimelineCardFullCol img{
+	width:100%;
+	height:auto;
+	margin-bottom:10px;
+}
+.frontTimelineCardFullDesc{
+	max-height:325px;
+	overflow:auto;
+	line-height:1.3em;
+	font-size:12px;
+}
+.frontTimelineCardFullTitle{
+	font-size:12px;
+	color:#000;
+	font-family: HelveticaNeueBold;
+	padding:5px 10px 0px 10px;
+}
+.frontTimeLineCol{
+	display:relative;
+}
+/*.frontTimeLineCol:hover .frontTimelineCardFull{
+	display:inline;
+}*/
+
+
+.frontTimelineWorldEvent{
+	margin-top:20px;
+	margin-bottom:10px;
+}
+.frontTimelineWorldEventDate{
+	font-family: HelveticaNeueBold;
+	color:#0096db;
+}
+
+
+
+.frontTimelineDivide{
+	padding:2px 5px 2px 5px;
+	color:#FFF;
+	font-family: HelveticaNeueBold;
+	font-size:13px;
+}
+.frontTimelineDivide .pull-right a{
+	font-family: HelveticaNeueLight;
+	color:#FFF;
+	text-decoration:underline;
+}
+
+.frontFilter a{
+	padding-left:15px;
+	color: #8e8e8e;
+}
+.currentFilter{
+	font-weight:bold;
+	text-decoration:underline;	
+	font-family: HelveticaNeueBold;
+}
+.companyDivide{
+	background-color:#11afc8;
+}
+.company, a.company{
+	color:#11afc8;
+}
+.leadershipDivide{
+	background-color:#4747a6;
+}
+.leadership, a.leadership{
+	color:#4747a6;
+}
+.productsDivide{
+	background-color:#00957f;
+}
+.products, a.products{
+	color:#00957f;
+}
+.communitiesDivide{
+	background-color:#D26200;
+}
+.communities, a.communities{
+	color:#D26200;
+}
+.sustainabilityDivide{
+	background-color:#81ad16;
+}
+.sustainability, a.sustainability{
+	color:#81ad16;
+}
+.industryDivide{
+	background-color:#cfc500;
+}
+.industry, a.industry{
+	color:#cfc500;
+}
+.frontFilter{
+	margin-bottom:15px;
+	font-size:14px;
 }

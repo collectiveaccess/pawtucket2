@@ -25,9 +25,10 @@
  *
  * ----------------------------------------------------------------------
  */
-	if (!($this->request->isLoggedIn())) {
-		$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-	}
+if (!($this->request->isLoggedIn())) {
+	print $this->render("LoginReg/form_login_html.php");
+}else{
+
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
@@ -294,4 +295,6 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		print $this->render('Browse/browse_panel_subview_html.php');
 } //!ajax
+
+}
 ?>
