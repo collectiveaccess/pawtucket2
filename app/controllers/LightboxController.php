@@ -1091,7 +1091,7 @@
 				foreach($va_row_ids_raw as $vn_row_id_raw){
 					$va_row_ids[] = str_replace('row[]=', '', $vn_row_id_raw);
 				}
-				$va_errors = $t_set->reorderItems($va_row_ids);
+				$va_errors = $t_set->reorderItems($va_row_ids, ['user_id' => $this->request->getUserID()]);
 			}else{
 				throw new ApplicationException(_t("You do not have access to this lightbox"));
 			}

@@ -7,13 +7,15 @@
 	include_once(__CA_LIB_DIR__."/ca/Search/SetSearch.php");
 	#AssetLoadManager::register("cycle");
 ?>
-<div class='container'>
 <H1><?php print _t("Testimony"); ?></H1>
 <div class='row'>
 	<div class='col-sm-6'>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras nec ligula erat. Pellentesque nibh leo, pharetra et posuere vel, accumsan vitae sapien. Phasellus a tortor id felis scelerisque blandit. Curabitur a tristique tortor. Morbi non tortor eget dui blandit laoreet. Quisque lacus quam, auctor sit amet volutpat dictum, scelerisque sit amet neque. Vivamus non massa finibus, ultrices nunc vel, scelerisque dui. Aliquam commodo, quam eget fringilla finibus, enim diam sodales ligula, sollicitudin faucibus ligula lorem vitae arcu. Sed efficitur nisi sit amet lobortis malesuada. Ut quis imperdiet elit. Mauris blandit suscipit leo, non tristique est ultrices eu.</p>
-		<p>Aliquam commodo, quam eget fringilla finibus, enim diam sodales ligula, sollicitudin faucibus ligula lorem vitae arcu. Sed efficitur nisi sit amet lobortis malesuada. Ut quis imperdiet elit. Mauris blandit suscipit leo, non tristique est ultrices eu.</p>	
-		<?php print caNavLink($this->request, 'About Survivor Testimonies <i class="fa fa-chevron-right"></i>', '', '', 'About', 'Index'); ?>
+<?php 
+		if ($va_description = $t_set->get('ca_sets.description')) {
+			print "<p>".$va_description."</p>";
+		}
+		print caNavLink($this->request, 'About Survivor Testimonies <i class="fa fa-chevron-right"></i>', '', '', 'Testimonies', 'collection');  
+?>
 	</div>
 	<div class='col-sm-6 spotlight'>
 		<div class="cycle-prev" id="prev"><i class="fa fa-angle-left"></i></div>
@@ -76,10 +78,4 @@
 
 	
 
-?>			
-
-
-
-	
-
-</div>
+?>

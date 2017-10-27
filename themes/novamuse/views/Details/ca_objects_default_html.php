@@ -429,12 +429,3 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 	}
 ?>
 	</div><!--end subcontentcontainer-->
-	
-	
-<?php
-	require_once(__CA_LIB_DIR__.'/core/Parsers/COinS.php');
-	
-	print COinS::getTags($t_object);
-	
-	
-?>

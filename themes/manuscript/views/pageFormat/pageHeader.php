@@ -122,8 +122,8 @@
 							<li class="dropdown-item"><?php print caNavLink($this->request, 'Kitchen Artifacts', '', 'Search', 'advanced', 'utensils'); ?></li>
 						</ul>
 					</li>
-					<li><a href="/blog">Blog</a></li>
 					<li><a href="/?post_type=adapted_recipes">Adapted Recipes</a></li>
+					<li><a href="/blog">Blog</a></li>
 					<li><a href="/?post_type=essays">History</a></li>
 					<li><a href="/glossary/">Glossary</a></li>
 					<li class='dropdown'><a href="/about-us/">About</a>

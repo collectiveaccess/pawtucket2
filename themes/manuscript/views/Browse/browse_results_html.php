@@ -75,6 +75,8 @@ if (!$vb_ajax) {	// !ajax
 	<?php if($vs_current_view == "map" && $vs_table == "ca_collections" ){ ?>
 		<div class="col-sm-10">
 		
+	<?php }elseif($vs_current_view == "list" && $vs_table == "ca_collections" ){ ?>
+	        <div class="col-sm-10">
 	<?php } else { ?>
 		<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 	<?php } ?>
@@ -213,6 +215,8 @@ if (!$vb_ajax) {	// !ajax
 	</div><!-- end col-8 -->
 	<?php if($vs_current_view == "map" && $vs_table == "ca_collections" ){ ?>
 		<div class="col-sm-1 col-sm-offset-1">
+	<?php } elseif($vs_current_view == "list" && $vs_table == "ca_collections" ) { ?>
+	    <div class="col-sm-1 col-sm-offset-1">
 	<?php } else { ?>
 		<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
 	<?php } ?>
@@ -220,10 +224,11 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
 			foreach($va_views as $vs_view => $va_view_info) {
+				if($vs_view === 'timeline' && $vn_result_size < 4){ continue; }
 				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
+					print '<a href="#" class="active iconPopoverTrigger" data-content="'.$vs_view.'"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
 				} else {
-					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+					print caNavLink($this->request, '<span data-toggle="tooltip" data-content="'.$vs_view.'" class="glyphicon iconPopoverTrigger '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 				}
 			}
 		}
@@ -268,6 +273,14 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		}
 ?>
+		 $(function(){
+			$('.iconPopoverTrigger').popover({
+				trigger: 'hover',
+				container: 'body',
+				placement: 'top',
+				template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><div class="popover-content"></div></div>'
+			});
+        });
 	});
 
 </script>
