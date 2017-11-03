@@ -47,13 +47,22 @@
 		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
 		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
-	$vb_has_user_links = (sizeof($va_user_links) > 0);
-
+	if($this->request->isLoggedIn()){
+		$vb_has_user_links = (sizeof($va_user_links) > 0);
+	}else{
+		$vb_has_user_links = 0;
+	}
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	<meta property="og:url"           content="<?php print $this->request->config->get("site_host"); ?>" />
+  	<meta property="og:type"          content="website" />
+  	<meta property="og:title"         content="<?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?>" />
+  	<meta property="og:description"   content="Steelcase Heritage Website" />
+  	<meta property="og:image"         content="<?php print $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'hpTruck.jpg'); ?>" />
+
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
@@ -128,6 +137,7 @@
 				</ul>
 <?php
 	}
+	if($this->request->isLoggedIn()){
 ?>
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
@@ -137,13 +147,27 @@
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 				</form>
+<?php
+	}
+?>
 				<ul class="nav navbar-nav menuItems">
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
+					<?php print ($this->request->isLoggedIn()) ? $this->render("pageFormat/browseMenu.php") : "<li>".caNavLink($this->request, _t("Browse Archives"), "", "", "LoginReg", "LoginForm")."</li>"; ?>	
 					<!--<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>-->
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
+<?php
+					if(!$this->request->isLoggedIn()){
+?>
+						<li><?php print caNavLink($this->request, _t("Timeline"), "", "", "", ""); ?></li>
+						<li><?php print caNavLink($this->request, _t("Login"), "", "", 'LoginReg', 'LoginForm'); ?></li>
+<?php
+					}else{
+?>
 					<li <?php print ($this->request->getAction() == "Lightbox") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("My Sets"), "", "", "Lightbox", "Index"); ?></li>
 					<li <?php print ($this->request->getAction() == "occurrences") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Timeline"), "", "", "Browse", "occurrences"); ?></li>
+<?php
+					}
+?>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

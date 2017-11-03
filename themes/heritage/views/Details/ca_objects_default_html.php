@@ -25,7 +25,11 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+	if (!($this->request->isLoggedIn())) {
+		print $this->render("LoginReg/form_login_html.php");
+		
+	}else{
+
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
@@ -144,3 +148,6 @@
 		});
 	});
 </script>
+<?php
+}
+?>
