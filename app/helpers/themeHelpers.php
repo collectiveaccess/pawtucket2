@@ -392,7 +392,7 @@
 	 * @return string HTML output
 	 */
 	function caObjectRepresentationThumbnails($po_request, $pn_representation_id, $pt_object, $pa_options){
-		if(!$pt_object || !$pt_object->get("object_id")){
+		if(!$pt_object || !$pt_object->getPrimaryKey()){
 			return false;
 		}
 		if(!is_array($pa_options)){
@@ -430,7 +430,7 @@
 			switch($vs_link_to){
 				# -------------------------------
 				case "viewer":
-					$va_links[$vn_rep_id] = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pt_object->get("object_id"), 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
+					$va_links[$vn_rep_id] = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array($pt_object->primaryKey() => $pt_object->getPrimaryKey(), 'representation_id' => $vn_rep_id, 'overlay' => 1, 'context' => $po_request->getAction()))."\"); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
 					break;
 				# -------------------------------
 				case "carousel":
@@ -439,7 +439,7 @@
 				# -------------------------------
 				default:
 				case "detail":
-					$va_links[$vn_rep_id] = caDetailLink($po_request, $vs_thumb, $vs_class, 'ca_objects', $pt_object->get("object_id"), array("representation_id" => $vn_rep_id));
+					$va_links[$vn_rep_id] = caDetailLink($po_request, $vs_thumb, $vs_class, $pt_object->tableName(), $pt_object->getPrimaryKey(), array("representation_id" => $vn_rep_id));
 					break;
 				# -------------------------------
 			}
@@ -1006,6 +1006,8 @@
 		$o_dm = Datamodel::load();
  		if (!($pt_subject = $o_dm->getInstanceByTableName($va_search_info['table'], true))) { return null; }
  		
+ 		$va_globals = $pt_subject->getAppConfig()->getAssoc('global_template_values');
+ 		
 		$po_request = caGetOption('request', $pa_options, null);
 		$ps_controller = caGetOption('controller', $pa_options, null);
 		$ps_form_name = caGetOption('formName', $pa_options, 'caAdvancedSearch');
@@ -1019,6 +1021,8 @@
 		
 		$vb_submit_or_reset_set = false;
 		foreach($pa_tags as $vs_tag) {
+		    if(isset($va_globals[$vs_tag])) { continue; }
+		    
 			$va_parse = caParseTagOptions($vs_tag);
 			$vs_tag_proc = $va_parse['tag'];
 			$va_opts = $va_parse['options'];

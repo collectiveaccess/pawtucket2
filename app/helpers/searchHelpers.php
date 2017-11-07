@@ -674,7 +674,6 @@
 						$pa_form_values[$vs_dotless_element] = array($pa_form_values[$vs_dotless_element]);
 					}
 					if (is_array($pa_form_values[$vs_dotless_element])) {
-					
 						// are there relationship types?
 						$vs_element_rel_type = '';
 						if (is_array($pa_form_values[$vs_dotless_element.':relationshipTypes'])) {

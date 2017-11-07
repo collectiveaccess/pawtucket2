@@ -48,7 +48,6 @@
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_collections.notes"><H6>About</H6>^ca_collections.notes<br/></ifdef>}}}
-					{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
@@ -98,13 +97,12 @@
 					<h3>Manuscript Cookbooks</h3>
 					<div class="row">
 						<div id="browseManuscriptsResultsContainer">
-							<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 						</div><!-- end browseResultsContainer -->
 					</div>
 				</div>
 				<script type="text/javascript">
 					jQuery(document).ready(function() {
-						jQuery("#browseManuscriptsResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'manuscripts', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery("#browseManuscriptsResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'manuscripts/view/list', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 							jQuery('#browseManuscriptsResultsContainer').jscroll({
 								autoTrigger: true,
 								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -126,7 +124,6 @@
 					<h3>Utensils</h3>
 					<div class="row">
 						<div id="browseUtensilsResultsContainer">
-							<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 						</div><!-- end browseResultsContainer -->
 					</div>
 				</div>

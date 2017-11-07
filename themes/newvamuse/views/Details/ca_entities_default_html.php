@@ -3,6 +3,18 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	
+	if ($va_external_link = $t_item->get('ca_entities.external_link', array('returnWithStructure' => true))) {
+		foreach ($va_external_link as $va_key => $va_external_link_t) {
+			foreach ($va_external_link_t as $va_key => $va_external_link_info) {
+				if ($va_external_link_info['url_entry']) {
+					$vs_external_link = $va_external_link_info['url_entry'];
+					break;
+				}
+			}
+		}
+	}					
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -17,7 +29,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_entities.preferred_labels.displayname}}}</H4>
+					<H4><?php print ($vs_external_link) ? "<a href='".$vs_external_link."' target='_blank'>".$t_item->get("ca_entities.preferred_labels.displayname")." <i class='fa fa-external-link'></i></a>" : $t_item->get("ca_entities.preferred_labels.displayname"); ?></H4>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
@@ -26,18 +38,18 @@
 					if ($va_description = $t_item->get('ca_entities.biography')) {
 						print "<div class='unit'>".$va_description."</div>";
 					}
-					if ($va_external_link = $t_item->get('ca_entities.external_link', array('returnWithStructure' => true))) {
-						foreach ($va_external_link as $va_key => $va_external_link_t) {
-							foreach ($va_external_link_t as $va_key => $va_external_link_info) {
-								if ($va_external_link_info['url_source']) {
-									print "<div class='unit'><span class='data'><a href='".$va_external_link_info['url_entry']."' target='_blank'>".$va_external_link_info['url_source']."</a></span></div>";
-								} else {
-									print "<div class='unit'><span class='data'><a href='".$va_external_link_info['url_entry']."' target='_blank'>".$va_external_link_info['url_entry']."</a></span></div>";
-								
-								}
-							}
-						}
-					}					
+#					if ($va_external_link = $t_item->get('ca_entities.external_link', array('returnWithStructure' => true))) {
+#						foreach ($va_external_link as $va_key => $va_external_link_t) {
+#							foreach ($va_external_link_t as $va_key => $va_external_link_info) {
+#								if ($va_external_link_info['url_source']) {
+#									print "<div class='unit'><span class='data'><a href='".$va_external_link_info['url_entry']."' target='_blank'>".$va_external_link_info['url_source']."</a></span></div>";
+#								} else {
+#									print "<div class='unit'><span class='data'><a href='".$va_external_link_info['url_entry']."' target='_blank'>".$va_external_link_info['url_entry']."</a></span></div>";
+#								
+#								}
+#							}
+#						}
+#					}					
 					if ($va_social_media = $t_item->get('ca_entities.social_media', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 						print "<div class='unit connect'><div class='name' style='width:100%;'>Connect</div>";
 						foreach ($va_social_media as $va_key => $va_social_media_t) { 
@@ -111,7 +123,7 @@
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
-					if ($va_member_image = $t_item->get('ca_entities.mem_inst_image', array('version' => 'medium'))) {
+					if ($va_member_image = $t_item->get('ca_entities.mem_inst_image', array('version' => 'medium', 'limit' => 1))) {
 						print "<div class='unit'>".$va_member_image."</div>"; 
 					}
 					if ($va_manu_image = $t_item->get('ca_entities.manufacturers_media', array('version' => 'medium'))) {
@@ -191,7 +203,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:'.$t_item->get('ca_entities.entity_id'), 'sort' => 'Media'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:'.$t_item->get('ca_entities.entity_id'), 'sort' => 'Media', 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

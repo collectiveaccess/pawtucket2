@@ -73,7 +73,7 @@
 			$va_media_links = array();
 			foreach ($va_medium as $va_key => $va_medium_id_t) {
 				foreach ($va_medium_id_t as $va_key => $va_medium_id) {
-					if ($va_medium_id['medium_list'] == 387){continue;}
+					if ($va_medium_id['medium_list'] == 383){continue;}
 					$va_media_links[] = caNavLink($this->request, strtolower(caGetListItemByIDForDisplay($va_medium_id['medium_list'])), '', '', 'Browse', 'artworks/facet/medium_facet/id/'.$va_medium_id['medium_list']).($vs_list_value == $va_medium_id['medium_uncertain'] ? " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "" );	
 				}
 			}
@@ -102,7 +102,7 @@
 				print "<div class='unit'>Mount - ".join(', ', $va_mount_links)."</div>";
 			}
 		}
-		if ($vs_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions.display_dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"> (^ca_objects.dimensions.dimensions_notes)</ifdef><if rule="^ca_objects.dimensions.dimensions_uncertain =~ /163/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i></if></unit></ifcount>')) {
+		if ($vs_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions.display_dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"> (^ca_objects.dimensions.dimensions_notes)</ifdef><if rule="^ca_objects.dimensions.dimensions_uncertain =~ /yes/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="sight dimensions"></i></if></unit></ifcount>')) {
 			print "<div class='unit'>Dimensions - ".$vs_dimensions."</div>";
 		}		
 		if ($va_watermark = $t_parent->get('ca_objects.watermark', array('returnWithStructure' => true))) {
@@ -236,7 +236,7 @@ if ($va_related_sketchbook_id = $t_parent->get('ca_collections.related.collectio
 	print "<h6><a href='#' onclick='$(\"#sketchDiv\").toggle(400);return false;'>Related Sketchbook <i class='fa fa-chevron-down'></i></a></h6>";
 	print "<div id='sketchDiv'>";	
 	print "<div class='col-sm-3 bResultItemCol' style='float:none;padding-left:0px;'><div class='bResultItem'><div class='bResultItemContent'>";
-	if ($va_sk_rep = $t_sketchbook->get('ca_object_representations.media.small', array("checkAccess" => $va_access_values))) {
+	if ($va_sk_rep = $t_sketchbook->get('ca_object_representations.media.small', array("checkAccess" => $va_access_values, "limit" => 1))) {
 		print "<div class='text-center bResultItemImg'>".caNavLink($this->request, $va_sk_rep, '', '', 'Detail', 'collections/'.$va_related_sketchbook_id)."</div>";
 	} else {
 		$vs_buf.= '<div class="bResultItemImgPlaceholder"><i class="fa fa-picture-o fa-2x"></i></div>';
@@ -288,7 +288,7 @@ if ($va_related_sketchbook_id = $t_parent->get('ca_collections.related.collectio
 					$vs_buf.= "<p>".$vs_catno."</p>"; 
 				}	
 				$vs_buf.= "<p>".caNavLink($this->request, $t_work->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$vs_rel_work_id)."</p>"; 
-				if ($vs_date = $t_work->get('ca_objects.creation_date')) {
+				if ($vs_date = $t_work->get('ca_objects.display_date')) {
 					$vs_buf.= "<p>".$vs_date."</p>"; 
 				}
 				if ($va_collection = $t_rel_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {

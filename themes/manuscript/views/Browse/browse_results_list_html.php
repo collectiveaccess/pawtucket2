@@ -51,7 +51,7 @@
 
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
-
+	
 	$vb_ajax			= (bool)$this->request->isAjax();
 
 	$o_icons_conf = caGetIconsConfig();
@@ -60,7 +60,6 @@
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
-
 
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 
@@ -79,6 +78,8 @@
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
 
+			
+			
 			if ($vs_table != 'ca_objects') {
 				$va_ids = array();
 				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
@@ -93,6 +94,11 @@
 
 			$t_list_item = new ca_list_items();
 			while($qr_res->nextHit()) {
+				$vs_typecode = "";
+				if ($vs_table == 'ca_objects') {
+					$t_list_item->load($qr_res->get("type_id"));
+					$vs_typecode = $t_list_item->get("idno");
+				}
 				if($vn_c == $vn_hits_per_block){
 					if($vb_row_id_loaded){
 						break;
@@ -112,15 +118,16 @@
 				}else{
 
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					$vs_tmp_label = $qr_res->get("{$vs_table}.preferred_labels");
+					if(strlen($vs_tmp_label) > 190){
+						$vs_tmp_label = substr($vs_tmp_label, 0, 187)."...";
+					}
+					$vs_label_detail_link 	= caDetailLink($this->request, $vs_tmp_label, '', $vs_table, $vn_id);
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
-					$vs_typecode = "";
 					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 					if(!$vs_image){
 						if ($vs_table == 'ca_objects') {
-							$t_list_item->load($qr_res->get("type_id"));
-							$vs_typecode = $t_list_item->get("idno");
 							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 								$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
 							}else{
@@ -154,6 +161,16 @@
 					</div><!-- end bResultListItemContent -->
 				</div><!-- end bResultListItem -->
 			</div><!-- end col -->";
+					} else if($vs_table == 'ca_collections') {
+						$vs_result_output = "
+			<div class='collectionResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+				<div class='collectionResultListItem' id='row{$vn_id}'>
+					<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
+					<div class='collectionResultListItemText'>
+						{$vs_label_detail_link}<br/>{$vs_materials}<br/>{$vs_label_coll_info}
+					</div><!-- end bResultListItemText -->
+				</div><!-- end bResultListItem -->
+			</div><!-- end col -->";
 					} else {
 						// Get additional info for Manuscripts as they will have no images
 
@@ -161,6 +178,8 @@
 							if($vs_label_avail_info = $qr_res->get("ca_objects.institution_link") and $vs_table != 'ca_collections'){
 								$vs_label_see_link = "<a class='viewableLink' href='{$vs_label_avail_info}' target='_blank'>Viewable Online</a>";
 							}
+						} else {
+							$vs_label_see_link = "";
 						}
 						if($vs_label_date_info = $qr_res->get("ca_objects.date_index") and $vs_table != 'ca_collections'){
 							$vs_label_date_see = ' / '.$vs_label_date_info;

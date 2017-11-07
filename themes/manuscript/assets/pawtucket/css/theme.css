@@ -6,14 +6,61 @@ body {
 	font-family:"Times new Roman";
 	margin-bottom:165px;
 }
-@media(min-width: 960px){
+@media only screen and (max-width: 990px) and (min-width: 768px){
+	.navbar-left > li{
+		clear: none !important;
+		float: left;
+	}
+}
+@media only screen and (max-width: 990px){
+	#imgHeader{
+		width: 96%;
+		margin: 0 auto !important;
+		padding: 0;
+	}
+	.menuBar, .nav .dropdown {
+		height: 50px !important;
+	}
+	.dropdown > .dropdown-menu{
+		top: 49px !important;
+	}
+	.navbar-left{
+		position: relative !important;
+		top: -2px;
+	}
+}
+@media only screen and (max-width: 768px){
+	.navbar-left{
+		top: -10px;
+		background-color: #7BA477;
+	}
+	.navbar-left > li{
+		float: none;
+	}
+	.navbar-collapse{
+		position: relative;
+		top: -14px;
+		border: none;
+	}
+	.navbar-default .navbar-toggle .icon-bar{
+		background-color: #a3783c;
+	}
+	.navbar-default .navbar-toggle, .navbar-default .navbar-toggle:hover, .navbar-default .navbar-toggle:focus{
+		background-color: #034710;
+		border: none;
+	}
+}
+@media(min-width: 990px){
 	#imgHeader, .navbar-collapse, .mainContainer{
 		width: 960px;
 		margin: 0 auto !important;
 	}
 	#imgHeader{
-		padding: 0;
+		padding: 17px 0 7px 0;
 	}
+}
+#imgHeader{
+	padding: 17px 0 7px 0;
 }
 a, a:hover, a:focus {
 	color: #a3783c;
@@ -31,6 +78,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .menuBar {
 	background-color: #7BA477;
+	height: 53px;
 }
 .navbar {
 	box-shadow:none;
@@ -38,6 +86,13 @@ h1, h2, h3, h4, h5, h6 {
 .navbar-brand {
 	width:751px;
 }
+
+.header-img > img {
+    width: 100%;
+	max-width: 751px;
+	margin: 3px 0;
+}
+
 .navbar-form {
 	margin-bottom:0px;
 	margin-top:12px;
@@ -68,6 +123,11 @@ h1, h2, h3, h4, h5, h6 {
     background-color: transparent;
     color: #E0C572;
 }
+
+.navbar-collapse .navbar-nav.navbar-left:first-child{
+	margin-left: 10px !important;
+}
+
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     background-color: transparent;
     color: #E0C572;
@@ -81,11 +141,11 @@ h1, h2, h3, h4, h5, h6 {
 	height:20px;
 }
 .nav .dropdown{
-	height: 57px;
+	height: 53px;
 }
 .dropdown > .dropdown-menu {
 	position: absolute;
-	top: 57px;
+	top: 53px;
 	visibilty: hidden;
 	background-color: #7ba477;
 	border: none;
@@ -130,6 +190,7 @@ h1, h2, h3, h4, h5, h6 {
 	margin-bottom:0px;
 	padding-bottom: 25px;
 	border:0px;
+	font-family: "Times New Roman";
 }
 #footer .pull-right {
 	text-align:right;
@@ -275,11 +336,6 @@ div.advancedSearchField {
 	border: none;
 	padding: 5px 16px;
 }
-.header-img > img {
-    width: 100%;
-	max-width: 600px;
-	margin: 3px 0;
-}
 
 /* Browse Results Styles */
 .bResultListItem{
@@ -289,6 +345,24 @@ div.advancedSearchField {
 .bResultListItemCol{
 	height: 152px;
 }
+
+.collectionResultListItemCol{
+	height: 66px;
+}
+
+.collectionResultListItemContent {
+	height: 56px;
+}
+
+.collectionResultListItem:hover{
+	height: 66px;
+}
+
+.collectionResultListItemText:hover{
+	background-color: #ededed;
+	padding: 3px 9px;
+}
+
 .bResultListItemContent{
 	height: 142px;
 }
@@ -309,6 +383,10 @@ div.advancedSearchField {
 .bResultItemImgPlaceholder, .bResultListItem .bResultListItemImg{
 	max-height: 48px;
 }
+.bResultListItem img {
+    width: auto;
+    height: 48px;
+}
 
 .bResultListItem .bResultListItemText a, .bResultItem .bResultItemText a{
 	font-size: 16px;
@@ -324,7 +402,7 @@ div.advancedSearchField {
 }
 
 .bResultListItem:hover{
-	height: 132px;
+	height: 146px;
 }
 
 h1 small{
@@ -334,6 +412,18 @@ h1 small{
 
 #map{
 	margin-left: 15px !important;
+}
+
+.gm-style-iw{
+	max-height: 200px !important;
+}
+
+.gm-style-iw > div{
+	max-height: 200px !important;
+}
+
+.gm-style-iw > div > div > p{
+	margin: 0;
 }
 
 .browse .btn{
@@ -355,6 +445,28 @@ h1 small{
 }
 
 /* TIMELINE */
+
+#bTimelineContainer{
+	height: 600px;
+}
+
+.tl-slide-content{
+	width: 640px !important;
+}
+
 .tl-headline a{
 	color: #5a7957 !important;
+}
+
+.tl-timeline p a, .tl-timeline p a:hover{
+	color: #5a7957 !important;
+}
+
+.tl-timeline p a:hover{
+	text-decoration: underline;
+}
+
+.tl-embed-media {
+	float: left;
+	padding: 0 20px 20px 0;
 }

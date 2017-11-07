@@ -56,17 +56,17 @@
 
 	// title slide
 	$va_data = [
-		'title' => [
-			'text' => [
-				'headline' => '',
-				'text' => '',
-			],
-			'media' => [
-				'url' => '',
-				'credit' => '',
-				'caption' => ''
-			]
-		],
+		// 'title' => [
+// 			'text' => [
+// 				'headline' => '',
+// 				'text' => '',
+// 			],
+// 			'media' => [
+// 				'url' => '',
+// 				'credit' => '',
+// 				'caption' => ''
+// 			]
+// 		],
 		'scale' => 'human'
 	];
 	

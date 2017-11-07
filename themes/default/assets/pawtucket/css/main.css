@@ -13,6 +13,9 @@ body {
 	color:#454545;
 	margin-bottom:80px; 
 }
+b, strong{
+	font-family: Lato;
+}
 a, a:hover {
 	color:#19bed1;
 }

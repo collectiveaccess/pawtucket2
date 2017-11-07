@@ -37,6 +37,24 @@ class AxisTest extends \PHPUnit_Framework_TestCase
         $this->assertNull($object->getMajorGridlines());
     }
 
+    public function testBounds()
+    {
+        $value = rand(0, 100);
+        $object = new Axis();
+
+        $this->assertNull($object->getMinBounds());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setMinBounds($value));
+        $this->assertEquals($value, $object->getMinBounds());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setMinBounds());
+        $this->assertNull($object->getMinBounds());
+
+        $this->assertNull($object->getMaxBounds());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setMaxBounds($value));
+        $this->assertEquals($value, $object->getMaxBounds());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setMaxBounds());
+        $this->assertNull($object->getMaxBounds());
+    }
+
     public function testFont()
     {
         $object = new Axis();
@@ -60,7 +78,7 @@ class AxisTest extends \PHPUnit_Framework_TestCase
     {
         $object = new Axis();
 
-        $oMock = $this->getMock('PhpOffice\PhpPresentation\Shape\Chart\Gridlines');
+        $oMock = $this->getMockBuilder('PhpOffice\PhpPresentation\Shape\Chart\Gridlines')->getMock();
 
         $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setMajorGridlines($oMock));
         $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Gridlines', $object->getMajorGridlines());
@@ -78,11 +96,57 @@ class AxisTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($value, $object->getHashIndex());
     }
 
+    public function testIsVisible()
+    {
+        $object = new Axis();
+        $this->assertTrue($object->isVisible());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setIsVisible(false));
+        $this->assertFalse($object->isVisible());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setIsVisible(true));
+        $this->assertTrue($object->isVisible());
+    }
+
     public function testTitle()
     {
         $object = new Axis();
         $this->assertEquals('Axis Title', $object->getTitle());
         $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setTitle('AAAA'));
         $this->assertEquals('AAAA', $object->getTitle());
+    }
+
+    public function testTickMark()
+    {
+        $value = Axis::TICK_MARK_INSIDE;
+        $object = new Axis();
+
+        $this->assertEquals(Axis::TICK_MARK_NONE, $object->getMinorTickMark());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setMinorTickMark($value));
+        $this->assertEquals($value, $object->getMinorTickMark());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setMinorTickMark());
+        $this->assertEquals(Axis::TICK_MARK_NONE, $object->getMinorTickMark());
+
+        $this->assertEquals(Axis::TICK_MARK_NONE, $object->getMajorTickMark());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setMajorTickMark($value));
+        $this->assertEquals($value, $object->getMajorTickMark());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setMajorTickMark());
+        $this->assertEquals(Axis::TICK_MARK_NONE, $object->getMajorTickMark());
+    }
+
+    public function testUnit()
+    {
+        $value = rand(0, 100);
+        $object = new Axis();
+
+        $this->assertNull($object->getMinorUnit());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setMinorUnit($value));
+        $this->assertEquals($value, $object->getMinorUnit());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setMinorUnit());
+        $this->assertNull($object->getMinorUnit());
+
+        $this->assertNull($object->getMajorUnit());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setMajorUnit($value));
+        $this->assertEquals($value, $object->getMajorUnit());
+        $this->assertInstanceOf('PhpOffice\\PhpPresentation\\Shape\\Chart\\Axis', $object->setMajorUnit());
+        $this->assertNull($object->getMajorUnit());
     }
 }
