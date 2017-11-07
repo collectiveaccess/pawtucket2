@@ -204,9 +204,12 @@ a:hover, a:active, a:focus, a.readmore-js-toggle {
 /* Front */
 
 .front h1 {
-	padding: 0px 0px 50px 0px;
-	font-size:24px;
-	line-height:1.5em;
+    padding: 30px 0px 50px 0px;
+    font-size: 18px;
+    line-height: 1.8em;
+}
+.front h1 p {
+	margin-bottom:15px;
 }
 	
 /* Advanced Search */
