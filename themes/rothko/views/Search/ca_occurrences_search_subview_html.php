@@ -86,9 +86,9 @@
 					$vs_result_text.= ", ".$vs_ex_date;
 				}
 			} else {
-				$vs_title_text = $qr_results->get('ca_occurrences.preferred_labels.name');				
-				$vs_result_text.= ( strlen($vs_title_text) > 105 ? strip_tags(substr($vs_title_text, 0, 103))."... " : $vs_title_text);			
-
+				$vs_title_text = $qr_results->get('ca_occurrences.preferred_labels.name').( $qr_results->get('ca_occurrences.nonpreferred_labels') ? ": ".$qr_results->get('ca_occurrences.nonpreferred_labels') : "" );				
+				#$vs_result_text.= ( strlen($vs_title_text) > 105 ? strip_tags(substr($vs_title_text, 0, 103))."... " : $vs_title_text);			
+				$vs_result_text.= "<div class='refTitle'>".$vs_title_text."</div>";
 			}		
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true; }
 				print "<div class='{{{block}}}Result authorityResult'>".caNavLink($this->request, $vs_result_text, '', '', 'Detail', 'occurrences/'.$vn_id)."</div>";

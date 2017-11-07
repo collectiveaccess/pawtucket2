@@ -29,18 +29,14 @@
  *
  * ----------------------------------------------------------------------
  */
-?>
-	<div class="row">
-		<div class="col-sm-12">
-<?php
+
 		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
-		</div>
-	</div>
 <div class="container">
 	<div class="row">
 		<div class="col-sm-8">
-			<H2>Lorem ipsum dolor sit amet.</H2>
+			<H2>Welcome to the Bartlett Library and Archives</H2>
+			<p>Explore online archival collections, find out more about other parts of the archives, learn about past exhibitions at the museum, and browse information about artists. The Bartlett Library and Archives documents the history of the Museum of International Folk Art and provides books, periodicals, audiovisual materials, artist files and other resources to support research and study related to museum’s collection of objects. We’re just starting to put information online, so please be patient, and please <a href="mailto:bartlett.library@state.nm.us">ask the archivist</a> for more information about our archives holdings.</p>
 		</div><!--end col-sm-8-->
 		<div class="col-sm-4">
 <?php

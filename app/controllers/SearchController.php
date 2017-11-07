@@ -267,12 +267,16 @@
  					}
  				}
  				
- 				if (!$ps_sort && !($ps_sort = $this->opo_result_context->getCurrentSort())) {
- 					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
- 						$ps_sort = array_shift(array_keys($va_sorts));
- 						$vb_sort_changed = true;
- 					}
+ 				if (!$ps_sort){
+ 					$ps_sort = $this->opo_result_context->getCurrentSort();
+					if(is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
+						if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
+							$ps_sort = array_shift(array_keys($va_sorts));
+							$vb_sort_changed = true;
+						}
+					}
  				}
+ 				
  			}else{
  				$vb_sort_changed = true;
  			}
@@ -379,7 +383,7 @@
 			
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
-			if (($vn_key_start = $vn_start - 5000) < 0) { $vn_key_start = 0; }
+			if (($vn_key_start = (int)$vn_start - 5000) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
 			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(5000));
 			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(5000)); $o_block_result_context->saveContext();}

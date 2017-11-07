@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2016 Whirl-i-Gig
+ * Copyright 2009-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,9 +33,9 @@
 		
  		# -------------------------------------------------------
  		function Show() {
- 			$o_purify = new HTMLPurifier();
+ 			$o_purify = new HTMLPurifier(HTMLPurifier_Config::createDefault());
  			
- 			$va_nums = explode(';', $this->request->getParameter('n', pString));
+ 			$va_nums = array_map(function($v) { return intval($v); }, explode(';', $this->request->getParameter('n', pString)));
  			
  			$va_error_messages = $this->notification->getNotifications();
  			if ((!is_array($va_error_messages) || (sizeof($va_error_messages) == 0)) && is_array($va_nums)) {
@@ -47,7 +47,7 @@
  			}
  			
  			$this->view->setVar('error_messages', $va_error_messages);
- 			$this->view->setVar('referrer', $o_purify->purify($this->request->getParameter('r', pString)));
+ 			$this->view->setVar('referrer', $o_purify->purify(strip_tags($this->request->getParameter('r', pString))));
  			$this->render('error_html.php');
  		}
  		# -------------------------------------------------------

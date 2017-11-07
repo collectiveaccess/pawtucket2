@@ -26,7 +26,7 @@
 
 		<!-- Related Artworks -->
 <?php			
-		if ($va_artwork_ids = $t_occurrence->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {	
+		if ($va_artwork_ids = $t_occurrence->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork'), 'returnWithStructure' => true, 'returnAsArray' => true))) {	
 ?>		
 			<div id="detailRelatedObjects">
 				<H6>Related Artworks </H6>
@@ -112,7 +112,7 @@
 		<!-- Related Archival Materials -->
 			
 <?php	
-		#$va_related_objects = $t_occurrence->get('ca_objects', array('restrictToRelationshipTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document', 'returnAsArray' => true)));	
+		#$va_related_objects = $t_occurrence->get('ca_objects', array('restrictToRelationshipTypes' => array('audio', 'moving_image', 'image', 'ephemera', 'document', 'returnWithStructure' => true, 'returnAsArray' => true)));	
 		if ($va_related_objects) {	
 ?>		
 			<div id="detailRelatedArchives">
@@ -237,6 +237,66 @@
 				});
 			</script>			
 			
+			
+					<!-- Related Archive Materials -->
+			
+		{{{<ifcount code="ca_objects" restrictToTypes="audio,document,ephemera,image,moving_image" min="1">
+			<div id="detailRelatedArchive">
+				<H6>Related Archival Material </H6>
+				<div class="jcarousel-wrapper">
+					<div id="detailScrollButtonNextArchive"><i class="fa fa-angle-right"></i></div>
+					<div id="detailScrollButtonPreviousArchive"><i class="fa fa-angle-left"></i></div>
+					<!-- Carousel -->
+					<div class="jcarouselarchive">
+						<ul>
+							<unit relativeTo="ca_objects"  restrictToTypes="audio,document,ephemera,image,moving_image" delimiter=" "><li><div class='detailObjectsResult'><l>^ca_object_representations.media.library</l></div><div class='caption'><i><l>^ca_objects.preferred_labels.name</l></i><ifdef code="ca_objects.creation_date">, ^ca_objects.creation_date</ifdef></div></li><!-- end detailObjectsBlockResult --></unit>
+						</ul>
+					</div><!-- end jcarousel -->
+					
+				</div><!-- end jcarousel-wrapper -->
+			</div><!-- end detailRelatedObjects -->
+			</ifcount>}}}<!-- Related Archival items -->			
+<script type='text/javascript'>
+				jQuery(document).ready(function() {
+					/*
+					Carousel initialization
+					*/
+					$('.jcarouselarchive')
+						.jcarousel({
+							// Options go here
+						});
+			
+					/*
+					 Prev control initialization
+					 */
+					$('#detailScrollButtonPreviousArchive')
+						.on('jcarouselcontrol:active', function() {
+							$(this).removeClass('inactive');
+						})
+						.on('jcarouselcontrol:inactive', function() {
+							$(this).addClass('inactive');
+						})
+						.jcarouselControl({
+							// Options go here
+							target: '-=1'
+						});
+			
+					/*
+					 Next control initialization
+					 */
+					$('#detailScrollButtonNextArchive')
+						.on('jcarouselcontrol:active', function() {
+							$(this).removeClass('inactive');
+						})
+						.on('jcarouselcontrol:inactive', function() {
+							$(this).addClass('inactive');
+						})
+						.jcarouselControl({
+							// Options go here
+							target: '+=1'
+						});
+				});
+			</script>		
 		</div><!-- end container -->
 	</div><!-- end row -->
 	<div class="row">

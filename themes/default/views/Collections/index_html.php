@@ -18,17 +18,16 @@
 			print "</div></div>";
 			$vn_i++;
 			if ($vn_i == 2) {
-				print "</div>";
+				print "</div><!-- end row -->\n";
 				$vn_i = 0;
 			}
 		}
-		if (($vn_i < 2) && ($vn_i == 0) ) {
-			print "</div><!-- end row -->";
+		if (($vn_i < 2) && ($vn_i != 0) ) {
+			print "</div><!-- end row -->\n";
 		}
 	} else {
 		print _t('No collections available');
 	}
 ?>
-			</div>
 		</div>
 	</div>

@@ -101,7 +101,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo.png'), "navbar-brand", "", "","");
+				print "<a href='http://www.internationalfolkart.org' class='navbar-brand'>".caGetThemeGraphic($this->request, 'logo.png')."</a>";
 ?>
 			</div>
 
@@ -139,11 +139,21 @@
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 				</form>
-				<ul class="nav navbar-nav navbar-right menuItems">
+				<ul class="nav navbar-nav navbar-right menuItems" style="clear:right;">
+					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
+					<li style="position:relative;" class="dropdown <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? ' active' : ''; ?>">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Advanced Search</a>
+						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, _t("Search Objects"), "", "", "Search", "advanced/objects"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Search People/Orgs"), "", "", "Search", "advanced/entities"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Search Exhibitions/Events"), "", "", "Search", "advanced/occurrences"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Search Collections"), "", "", "Search", "advanced/collections"); ?></li>
+						</ul>
+					</li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Highlights"), "", "", "Gallery", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Listing") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Listing", "Artists"); ?></li>
+					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archives Collections"), "", "", "Collections", "index"); ?></li>					
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
@@ -163,7 +173,7 @@
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
 <?php
-	if(strtolower($this->request->getController()) != "detail"){
+	if(!in_array(strtolower($this->request->getController()), array("detail", "front"))){
 ?>
 		<div class="container">
 <?php

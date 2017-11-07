@@ -1,0 +1,28 @@
+### Temporary files
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
+
+### IDE Jetbrains PhpStorm
+.idea
+### IDE Eclipse
+*.settings
+*.project
+*.buildpath
+
+### Continuous Integration
+build/
+phpunit.xml
+composer.phar
+vendor
+/batch_CI.bat
+
+### Samples
+/samples/Sample_00_Test.php
+/samples/#*
+/samples/Github_*.*
+/samples/results
+/composer.lock

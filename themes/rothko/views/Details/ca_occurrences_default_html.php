@@ -32,7 +32,6 @@
 		}
 		if ($va_places = $t_item->get('ca_places.hierarchy.preferred_labels', array('returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 			$va_place_list = array_reverse(array_pop($va_places));
-			array_pop($va_place_list);
 			$va_place_output = array();
 			foreach ($va_place_list as $va_key => $va_place_ids) {
 				foreach ($va_place_ids as $va_key => $va_place_id_t) {
@@ -46,9 +45,11 @@
 			print "<div class='unit'>".join(', ', $va_place_output)."</div>";
 		}
 		if ($va_date = $t_item->get('ca_occurrences.occurrence_dates')) {
-			$va_raw_date = $t_item->get('ca_occurrences.occurrence_dates', array('rawDate' => true, 'returnAsArray' => true));
-			$vs_start_date = explode('.', $va_raw_date[0]['start']);
-			print "<div class='unit'>".caNavLink($this->request, $va_date, '', 'Search', 'exhibitions', 'search/exhibition_dates', ["values" => [$vs_start_date[0]]])."</div>";
+			$va_raw_date = $t_item->get('ca_occurrences.occurrence_dates', array('returnWithStructure' => true, 'rawDate' => true));
+			if (sizeof($va_raw_date) > 0) {
+				$va_raw_date = array_pop(array_pop($va_raw_date));
+				print "<div class='unit'>".caNavLink($this->request, $va_date, '', 'Search', 'exhibitions', 'search/exhibition_dates', ["values" => [(int)$va_raw_date['occurrence_dates']['start']]])."</div>";
+			}
 		}
 		if ($va_related_exhibitions = $t_item->get('ca_occurrences.related', array('returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 			foreach ($va_related_exhibitions as $va_key => $va_related_exhibition) {
@@ -86,7 +87,7 @@
 <div class="row">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 <?php
-		if ($vs_exhibitions = $t_item->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_occurrences.related"><l>^ca_occurrences.preferred_labels</l><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue">, ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef><if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</ifdef></unit>')) {
+		if ($vs_exhibitions = $t_item->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_occurrences.related"><i><l>^ca_occurrences.preferred_labels</l></i><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue">, ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef>.<if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</ifdef></unit>')) {
 			print "<div class='drawer'>";
 			print "<h6><a href='#' onclick='$(\"#exhibitionDiv\").toggle(400);return false;'>Venues <i class='fa fa-chevron-down'></i></a></h6>";
 			print "<div id='exhibitionDiv'>".$vs_exhibitions."</div>";
@@ -98,7 +99,7 @@
 <div class='row'>
 	<div class='col-sm-12 col-md-12 col-lg-12'>
 <?php
-		if ($vs_reference = $t_item->getWithTemplate('<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences.related"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels">, ^ca_occurrences.nonpreferred_labels, </ifdef></l><unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=", ">^ca_entities.preferred_labels</unit><ifdef code="ca_occurrences.display_date">, ^ca_occurrences.display_date</ifdef></unit>')) {
+		if ($vs_reference = $t_item->getWithTemplate('<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences.related"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels">: ^ca_occurrences.nonpreferred_labels</ifdef></l>.</unit>')) {
 			print "<div class='drawer'>";
 			print "<h6><a href='#' onclick='$(\"#referenceDiv\").toggle(400);return false;'>Exhibition Catalog <i class='fa fa-chevron-down'></i></a></h6>";
 			print "<div id='referenceDiv'>".$vs_reference."</div>";

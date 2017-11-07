@@ -23,7 +23,7 @@
 	// get sets for public display
 	$t_list = new ca_lists();
 	$vn_public_set_type_id = $t_list->getItemIDFromList('set_types', 'Staff Pick');
-	
+
 	$t_set = new ca_sets();
 	$va_staff_picks_sets = array();
 	#$va_staff_picks_sets = caExtractValuesByUserLocale($t_set->getSets('ca_collections', null, $va_access_values, null, $vn_public_set_type_id));
