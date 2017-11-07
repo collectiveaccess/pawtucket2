@@ -167,6 +167,14 @@
 					}					
 					print "</div>";
 				}
+				if ($vs_lcsh = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true))) {
+					print "<div class='unit'><h6>Library of Congress Subject Headings</h6>";
+					foreach ($vs_lcsh as $va_key2 => $vs_lcsh_name) {
+						$vs_lcsh_name_term = explode('[',$vs_lcsh_name);
+						print "<p>".caNavLink($this->request, $vs_lcsh_name_term[0], '', '', 'Search', 'objects', array('search' => 'ca_objects.lcsh_terms:"'.$vs_lcsh_name_term[0].'"'))."</p>"; 
+					}					
+					print "</div>";
+				}				
 				
 /*								
 
@@ -183,14 +191,7 @@
 					print "<div class='unit'><h6>Duration</h6>".$vs_duration."</div>";
 				}
 
-				if ($vs_lcsh = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true))) {
-					print "<div class='unit'><h6>Library of Congress Subject Headings</h6>";
-					foreach ($vs_lcsh as $va_key2 => $vs_lcsh_name) {
-						$vs_lcsh_name_term = explode('[',$vs_lcsh_name);
-						print "<p>".caNavLink($this->request, $vs_lcsh_name_term[0], '', '', 'Search', 'objects', array('search' => 'ca_objects.lcsh_terms:"'.$vs_lcsh_name_term[0].'"'))."</p>"; 
-					}					
-					print "</div>";
-				}
+
 */																																									
 ?>			
 				<hr></hr>
