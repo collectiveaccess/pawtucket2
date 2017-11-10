@@ -24,7 +24,7 @@
 	</div>
 	<div id='findingAidCont'>
 <?php	
-	$qr_collections = ca_collections::find(array('type_id' => 140), array('returnAs' => 'searchResult', 'sort' => 'ca_collection_labels.name'));
+	$qr_collections = ca_collections::find(array('type_id' => 140), array('returnAs' => 'searchResult', 'sort' => 'ca_collections.preferred_labels.name'));
 
 	if ($qr_collections) {
 		while ($qr_collections->nextHit()) {

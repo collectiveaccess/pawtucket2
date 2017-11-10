@@ -92,6 +92,7 @@ ul.specialCollections {
 }
 .menuItems {
 	border-top:1px solid #bbb;
+	clear:right;
 }
 #footer {
 	background-color:#c8462a;
