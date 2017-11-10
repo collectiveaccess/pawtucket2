@@ -58,7 +58,7 @@
 		</div>
 		<div class="col-sm-4" >
 			<h1>Helpful Links</h1>
-			<p>Include some helpful info for your users here.</p>
+			<p>{{{links_text}}}</p>
 		</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->	
