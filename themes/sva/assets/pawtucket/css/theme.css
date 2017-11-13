@@ -1,34 +1,30 @@
 body {
-	font-family: Helvetica;
+
 }
 
 .container {
-	max-width: 900px;
+
 }
 
 
 h1,h2,h3,h4,h5,h6,h7,h8.h9 {
-	font-family:Helvetica;
-	color: black;
+
 }
 
 h1 {
-	margin: 20px 0 10px 0;
+
 }
 
 h6{
-	letter-spacing: 1px;
-	margin-top: 20px;
-	padding-bottom: 5px;
+
 }
 
 a {
-	color:red;
+
 }
+
 a:hover {
-	color:black;
-	text-decoration: none;
-	border-bottom: 1px solid #ccc;
+
 	
 }
 .svaMenu li.active a {
@@ -101,6 +97,9 @@ a:hover {
 
 .btn-search {
 	float: right;
+	margin-top: -27px;
+	background: none;
+	border: 0;
 }
 
 .svaMenu {
@@ -135,13 +134,10 @@ h2.about {
 
 
 .front H1 {
-	padding:0px;
-	font-size:17px;
+
 }
 .splashImage {
-	background-color:#eee;
-	width: 200px;
-	height:120px;
+
 }
 .exGrid {
 	float:left;
@@ -180,22 +176,27 @@ div.advancedSearchField {
 	float:right;
 	margin:0px 10px 0px 10px;
 }
-.detailImage img {
+.detailImage img, #caMediaDisplayContentMedia {
 	width:100%;
 	height:auto;
 }
+
+
 .detailLabel {
-	width:50%;
-	border-bottom:1px solid #ccc;
+	vertical-align: top;
+	width:20%;
+	border-top:1px solid #ccc;
 	display:inline-block;
 }
 .detailInfo {
-	width:50%;
-	border-bottom:1px solid #ccc;
+	width:80%;
+	padding-left: 20px;
+	border-top:1px solid #ccc;
 	display:inline-block;
 }
 .detailLabel, .detailInfo {
-	line-height:2em;
+	line-height:1.7em;
+	padding: 5px 0;
 }
 .detail #bViewButtons {
 	padding-top:20px;
@@ -236,8 +237,7 @@ div.advancedSearchField {
 	font-size:14px;
 }
 #browseResultsContainer {
-	padding-left:15px;
-	padding-right:15px;
+
 }
 .currentLetter {
 	clear:both;
@@ -250,25 +250,33 @@ div.advancedSearchField {
 	margin-top:10px;
 }
 .exhibitions .bResultItem {
-	padding:0px;
+	padding:0;
+	margin: 0;
+	max-height: 200px;
+	overflow: hidden;
+	border-bottom: 1px solid #ccc;
 }
+
+.exhibitions .bResultItemCol {
+	height: 150px;
+}
+
 .exhibitions .bResultItem:hover {
-	min-height:0px;
-	margin:0px;
-	font-size:12px;
-	height:100px;
+
 }
 .exhibitions .bResultItem:hover .bResultItemContent {
-	min-height:0px;
+
 }
 .exhibitions .bResultItem .bResultItemImg {
 	float:left;
 	min-height:0px;
 	width:100%;
+	background-color: #fefefe;
 }
 .exhibitions .bResultItemContent {
-	height:220px;
-	margin-top:15px;
+	height:150px;
+	margin:10px 0 0 0;
+	padding: 0;
 }
 .occurrences.browse.results .bResultItemCol  {
 	height:150px;
@@ -280,12 +288,9 @@ div.advancedSearchField {
 }
 .extitles {
 	padding:5px 0px 5px 0px;
-	border-top:1px solid #000;
-	border-bottom:1px solid #000;
+	border-bottom:1px solid #ccc;
 }
 #bRefine {
-	background-color:#fff;
-	color:#000;
 	padding-left:3px;
 }
 #bRefine a{
@@ -304,16 +309,13 @@ div.advancedSearchField {
 }
 .exhibitions .bResultItemImgPlaceholder {
 	padding: 25px 40px 25px;
+	background-color: #efefef;
 }
 .bResultListItemContent {
-	height:32px;
+
 }
 .bResultListItem:hover {
-	height:42px;
-	padding:10px;
-	margin:0px;
-	-webkit-box-shadow: none;
-	box-shadow:none;
+
 }
 .bResultListItem {
 	-webkit-box-shadow: none;
@@ -329,10 +331,7 @@ div.advancedSearchField {
 	padding:0px;
 }
 .bResultItem:hover {
-	margin:0px;
-	min-height:0px;
-	font-size:inherit;
-	height:240px;
+
 }
 .bResultItem {
 	-webkit-box-shadow: none;
@@ -345,13 +344,13 @@ div.advancedSearchField {
 	display:none;
 }
 .bResultItemCol {
-	height:280px;
+
 }
 .bResultItemContent {
-	height:280px;
+
 }
 .bResultItem:hover .bResultItemContent {
-	background-color:#fff;
+
 }
 .bResultItem .bResultItemImg {
 	max-height:none;
@@ -365,24 +364,132 @@ div.advancedSearchField {
 	font-size:11px;
 }
 
-.colHeader {
-
+.collHeader {
+	line-height: 2em;
+	margin-top: 5exttipx;
 }
 
-.collHeader a {
-	font-size:12px;
-	font-family: Helvetica;
-	line-height: 25px;
-	
+
+
+#findingAidCont .collHeader div a {
+	font-size: 16px;
+	font-weight: bold;
+	margin: 40px 0 0 0;	
+}
+
+#findingAidCont .collHeader i {
+	display: none;
+}
+
+
+.collHeader i {
+	float: left;
+	line-height: 2em;
+	margin: 0 5px 0 0;
+}
+
+.collHeader>div {
+
 }
 
 .findingaid table {
 	margin-left:25px;
 	width:95%;
+	table-layout: fixed;
+}
+
+.findingaid tr {
+	border: 0;
 }
 .findingaid th {
-	font-size:12px;
+	letter-spacing: 2px;
+	font-weight: normal;
+	border: 0;
+	font-size: .9em;
+	text-align:left;
 }
 .findingaid td { 
-	font-size:12px;
+
 }
+
+ol#table_of_contents  {
+	list-style-type: none;
+	padding-left: 0px;
+	line-height: 30px;
+	padding-bottom: 40px;
+}
+
+ol#table_of_contents li.subseries {
+	padding-left: 20px;
+}
+
+ol#table_of_contents li.level-1 {
+	padding-left: 20px;
+}
+
+ol#table_of_contents li.level-2 {
+	padding-left: 40px;
+}
+
+.col_box_drawer, .col_folder_item {
+	width: 30px;
+}
+
+.col_title {
+	width: 100%;
+}
+
+.col_date {
+	width: 100px;
+}
+
+
+ol#table_of_contents a {
+	border-bottom: 1px solid black;
+}
+
+.breadcrumb > li + li:before {
+    padding: 0 5px;
+    font-size: 150%;
+    color: #ccc;
+    content: "\2192";
+    vertical-align: -1px;
+}
+.breadcrumb > .active {
+    color: #999999;
+}
+.hierarchyLevel a {
+	border-bottom:1px solid #000 !important;
+}
+.hierarchyLevel {
+	margin-bottom:10px;
+}
+.findingaid th {
+    letter-spacing: 2px;
+    font-weight: normal;
+    border: 0;
+    font-size: .8em;
+}
+.table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
+    padding: 8px;
+    line-height: 1.428571429;
+    vertical-align: top;
+    border-top: 1px solid #dddddd;
+}
+.table thead > tr > th {
+    vertical-align: bottom;
+    border-bottom: 1px solid #dddddd;
+}
+.findingaid thead > tr > th {
+    border: 0;
+    padding-left: 8px;
+    text-align: left;
+}
+.toc-series{
+    font-size: 16px;
+    font-weight: bold;
+    border-bottom: 0px;
+    text-decoration: none;
+}
+
+

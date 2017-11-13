@@ -28,10 +28,35 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		<div id="footer">
+        
+            <div class="pull-left" style="color:#000">
+				<strong>INTERFACE GUIDANCE</strong>
+			</div>
+            
 			<div class="pull-right">
 				<?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?>
-				<a href="#">Help</a>
+				<!--<a href="#">Help</a>-->
 			</div>
+            
+<br />
+            
+			<div style="line-height:1.25; color:#666">
+			<div class="row">
+				
+				<div class="col-md-4 front-text">
+                    <strong>Travelers</strong>: This page displays the Traveler's biographical information and their collective network of associations. Selecting a Traveler from the "Index" will bring up the corresponding life role and notable achievements of the Traveler in the green box to the right of your screen. In the main window, the Traveler's social relationships are visualized as a nodal network. The name of the selected Traveler is highlighted in red, while his or her associations are in black. The more associations a Traveler has, the more connections appear. The nodes of these people can be selected, and doing so will bring up the corresponding information and social network of the new Traveler.
+                	<br/><br/>
+                </div>
+                <div class="col-md-4 front-text">
+                	<strong>Routes</strong>: The "Routes" map interface visualizes the Travelers' movements. You may select one or multiple Travelers from the "Index." The traveler's individual journey is displayed in a series of geographically specific "stops." Clicking on an individual stop will display further information about the Traveler's stop in a floating window. Clicking the 'x' will close the information box. Beneath the map, a sliding bar allows you to select a date range for the displayed stops. If you click on the name of the Traveler (in light blue, indicating a hyperlink), you will be directed to the Social Network page of that Traveler.
+                	<br/><br/>
+                </div>
+                <div class="col-md-4 front-text">
+                	<strong>Chronology</strong>: The Chronology page displays a Traveler's Route in a timeline format. If a Traveler has already been selected in the "Routes" page, they will appear automatically on the Chronology page. If no traveler is selected, then you may select a Traveler from the "Index." Just like on the "Routes" page, you may select multiple Travelers. In chronological order, small windows represent each of the Traveler's Stops. If you place you mouse over the box, the information for that Stop appears in a fly away window. Below each Traveler's Route, a sliding bar will allow you to move along the chronological timeline. 
+                	<br/><br/>
+                </div>
+			</div>
+			</div>            
 			
 			<div><small>&copy; 2015 <a href="http://www.haa.pitt.edu/collections/visual-media-workshop">Visual Media Workshop</a>, University of Pittsburgh</small></div>
 		</div><!-- end footer -->

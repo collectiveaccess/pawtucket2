@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2015 Whirl-i-Gig
+ * Copyright 2013-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -27,8 +27,9 @@
  */
  	require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
  	require_once(__CA_LIB_DIR__.'/ca/ResultContext.php');
+	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  
- 	abstract class BaseMultiSearchController extends ActionController {
+ 	abstract class BaseMultiSearchController extends BasePawtucketController {
  		# -------------------------------------------------------
  		/**
  		 * 
@@ -44,11 +45,6 @@
  		 * List of searches to execute
  		 */
  		protected $opa_search_blocks = array();
- 		
- 		/**
- 		 *
- 		 */
- 		protected $opa_access_values = array();
  		
  		/**
  		 * Search configuation file
@@ -75,8 +71,6 @@
  			foreach(array_keys($va_tables) as $vs_table) {
  				$this->opa_result_contexts["_multisearch_{$vs_table}"] = new ResultContext($po_request, $vs_table, $this->ops_find_type);
  			}
- 			
- 			$this->opa_access_values = caGetUserAccessValues($po_request);
  		}
  		# -------------------------------------------------------
  		/**
@@ -118,6 +112,9 @@
 				}
  				return; 
  			} 
+ 			
+ 			$vn_result_count = 0;
+ 			$vs_redirect_to_only_result = null;
  			foreach($this->opa_result_contexts as $vs_block => $o_context) {
  				$o_context->setParameter('search', $vs_search);
  				if (!isset($va_results[$vs_block]['ids']) || !is_array($va_results[$vs_block]['ids'])) { continue; }
@@ -125,6 +122,17 @@
  				if($va_results[$vs_block]['sort']) { $o_context->setCurrentSort($va_results[$vs_block]['sort']); }
 				if (isset($va_results[$vs_block]['sortDirection'])) { $o_context->setCurrentSortDirection($va_results[$vs_block]['sortDirection']); }
  				$o_context->saveContext();
+ 				
+ 				$vn_result_count += sizeof($va_results[$vs_block]['ids']);
+ 				
+ 				if ((sizeof($va_results[$vs_block]['ids']) == 1) && ($vn_result_count == 1)) {
+ 					$vs_redirect_to_only_result = caDetailUrl($this->request, $va_results[$vs_block]['table'], $va_results[$vs_block]['ids'][0], false);
+ 				}
+ 			}
+ 			
+ 			if (($vn_result_count == 1) && ($vs_redirect_to_only_result)) {
+ 				$this->response->setRedirect($vs_redirect_to_only_result);
+ 				return;
  			}
  			
  			$this->render('Search/multisearch_results_html.php');
@@ -133,4 +141,3 @@
  		abstract public static function getReturnToResultsUrl($po_request);
  		# -------------------------------------------------------
  	}
- ?>

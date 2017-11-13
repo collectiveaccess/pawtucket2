@@ -48,11 +48,14 @@
 					if (($vs_language = $t_item->get('ca_occurrences.productionLanguage', array('convertCodesToDisplayText' => true))) != "null") {
 						$vs_col_1 .= "<div class='unit'><span class='label'>Production Language </span>".$vs_language."</div>";
 					}	
-					if ($vs_country = $t_item->get('ca_occurrences.country_origin', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
+					if ($vs_country = $t_item->get('ca_occurrences.country_origin_list', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
 						$vs_col_1 .= "<div class='unit'><span class='label'>Country of Origin </span>".$vs_country."</div>";
 					}
 					if ($va_description = $t_item->get('ca_occurrences.productionDescription.prodesc_text')) {
 						$vs_col_1 .= "<div class='unit'><span class='label'>Description </span>".$va_description."</div>";
+					}
+					if ($vs_idno = $t_item->get('ca_occurrences.idno')) {
+						$vs_col_1 .= "<div class='unit'><span class='label'>Identifier </span>".$vs_idno."</div>";
 					}
 					if($vs_col_1){
 ?>
@@ -71,12 +74,12 @@
 					if ($vn_parent_id = $t_item->get('ca_occurrences.parent.occurrence_id', array('checkAccess' => $va_access_values))) {
 						$t_parent = new ca_occurrences($vn_parent_id);
 						if ($vs_season = $t_parent->get('ca_occurrences.parent.preferred_labels')) {
-							print "<div class='unit'><span class='label'>Season </span>".caNavLink($this->request, $vs_season, '', '', '', 'Search/objects/search/"'.$vs_season.'"')."</div>";
+							print "<div class='unit'><span class='label'>Season </span>".caNavLink($this->request, $vs_season, '', '', 'ProgramHistory', 'Index', array("season_id" => $t_parent->get('ca_occurrences.parent_id')))."</div>";
 						}
 					}
 					if ($vs_venue = $t_item->get('ca_occurrences.venue', array('convertCodesToDisplayText' => true))) {
 						if ($vs_venue != " ") {
-							print "<div class='unit'><span class='label'>Venue</span>".caNavLink($this->request, $vs_venue, '', '', '', 'Search/objects/search/"'.$vs_venue.'"')."</div>";
+							print "<div class='unit'><span class='label'>Venue</span>".$vs_venue."</div>";
 						}
 					}
 					$va_entity_list = array();

@@ -5,7 +5,7 @@
 	$vs_intro_text = $this->getVar('intro_text');
 	$va_open_by_default = $this->getVar('open_by_default');
 	
-	$qr_top_level_collections = ca_collections::find(array('parent_id' => null), array('returnAs' => 'searchResult'));
+	$qr_top_level_collections = ca_collections::find(array('parent_id' => null), array('returnAs' => 'searchResult', 'sort' => 'ca_collections.rank'));
 	
 	if (!$va_open_by_default) {
 		$vs_hierarchy_style = "style='display:none;'";

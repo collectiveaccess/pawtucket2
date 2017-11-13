@@ -52,11 +52,26 @@ var caUI = caUI || {};
 			var markerLatLng = marker.getPosition();
 			
 			if(marker.ajaxContentUrl.length > 0) {
-				jQuery.ajax(marker.ajaxContentUrl, { success: function(data, textStatus, jqXHR) { that.infoWindow.setContent(data); }})
+				jQuery.ajax(marker.ajaxContentUrl, { success: function(data, textStatus, jqXHR) { 
+					that.infoWindow.setContent(data); 
+				}});
 			} else {
 				that.infoWindow.setContent(marker.content);
 			}
 			that.infoWindow.open(that.map, marker);
+		};
+		
+		that.openCircleInfoWindow = function(circle) {
+			var circleLat = circle.getCenter().lat();
+			var circleLng = circle.getCenter().lng();
+			var circleLatLng = new google.maps.LatLng(circleLat, circleLng);
+			if(circle.ajaxContentUrl.length > 0) {
+				jQuery.ajax(circle.ajaxContentUrl, { success: function(data, textStatus, jqXHR) { that.infoWindow.setContent(data); }})
+			} else {
+				that.infoWindow.setContent(circle.content);
+			}
+			that.infoWindow.setPosition(circleLatLng);
+			that.infoWindow.open(that.map, circle);
 		};
 		// --------------------------------------------------------------------------------
 		that.openPathInfoWindow = function(latlng, path) {
@@ -67,19 +82,22 @@ var caUI = caUI || {};
 		// --------------------------------------------------------------------------------
 		that.makeMarker = function(lat, lng, label, content, ajaxContentUrl, options) {
 			var pt = new google.maps.LatLng(lat, lng);
-		
 			var opts = {
 				position: pt,
 				map: that.map,
 				title: label + ' ',
 				content: content + ' ',
-				ajaxContentUrl: ajaxContentUrl
+				ajaxContentUrl: ajaxContentUrl,
 			};
 			if (options && options.icon) { opts['icon'] = options.icon; }
 			var marker = new google.maps.Marker(opts);
 			
-			google.maps.event.addListener(marker, 'click', function(e) { that.openMarkerInfoWindow(marker); });
-			
+			if(label || content || ajaxContentUrl){
+				google.maps.event.addListener(marker, 'click', function(e) { 
+					that.map.setCenter(marker.getPosition());
+					that.openMarkerInfoWindow(marker); 
+				});
+			}
 			return marker;
 		};
 		// --------------------------------------------------------------------------------
@@ -103,7 +121,7 @@ var caUI = caUI || {};
 			}
 			var circle = new google.maps.Circle(opts);
 			
-			google.maps.event.addListener(circle, 'click', function(e) { that.openMarkerInfoWindow(marker); });
+			google.maps.event.addListener(circle, 'click', function(e) { that.openCircleInfoWindow(circle); });
 			
 			return circle;
 		};

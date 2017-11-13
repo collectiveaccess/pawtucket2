@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,11 +29,13 @@
 	$t_subject = $this->getVar('t_subject');	
 ?>
 
-<div class="container">
+
 	<div class="row collection">
 		<div class="col-sm-6">	
 			<div class="contributeForm">
 				<h1>Search Collection</h1>
+				
+				<div class="notificationMessage">{{{errors}}}</div>
 				
 				{{{form}}}
 					
@@ -91,4 +93,3 @@
 			</div>
 		</div>
 	</div>
-</div>

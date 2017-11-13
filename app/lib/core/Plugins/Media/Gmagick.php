@@ -65,77 +65,80 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 	var $filepath;
 	
 	var $info = array(
-		"IMPORT" => array(
-			"image/jpeg" 		=> "jpg",
-			"image/gif" 		=> "gif",
-			"image/tiff" 		=> "tiff",
-			"image/png" 		=> "png",
-			"image/x-bmp" 		=> "bmp",
-			"image/x-psd" 		=> "psd",
-			"image/tilepic" 	=> "tpc",
-			"image/x-dpx"		=> "dpx",
-			"image/x-exr"		=> "exr",
-			"image/jp2"		=> "jp2",
-			"image/x-adobe-dng"	=> "dng",
-			"image/x-canon-cr2"	=> "cr2",
-			"image/x-canon-crw"	=> "crw",
-			"image/x-sony-arw"	=> "arw",
-			"image/x-olympus-orf"	=> "orf",
-			"image/x-pentax-pef"	=> "pef",
-			"image/x-epson-erf"	=> "erf",
-			"image/x-nikon-nef"	=> "nef",
-			"image/x-sony-sr2"	=> "sr2",
-			"image/x-sony-srf"	=> "srf",
-			"image/x-sigma-x3f"	=> "x3f",
-			"image/x-dcraw"	=> "raw",
-			"application/dicom" => "dcm",
+		'IMPORT' => array(
+			'image/jpeg' 		=> 'jpg',
+			'image/gif' 		=> 'gif',
+			'image/tiff' 		=> 'tiff',
+			'image/png' 		=> 'png',
+			'image/x-bmp' 		=> 'bmp',
+			'image/x-psd' 		=> 'psd',
+			'image/tilepic' 	=> 'tpc',
+			'image/x-dpx'		=> 'dpx',
+			'image/x-exr'		=> 'exr',
+			'image/jp2'		=> 'jp2',
+			'image/x-adobe-dng'	=> 'dng',
+			'image/x-canon-cr2'	=> 'cr2',
+			'image/x-canon-crw'	=> 'crw',
+			'image/x-sony-arw'	=> 'arw',
+			'image/x-olympus-orf'	=> 'orf',
+			'image/x-pentax-pef'	=> 'pef',
+			'image/x-epson-erf'	=> 'erf',
+			'image/x-nikon-nef'	=> 'nef',
+			'image/x-sony-sr2'	=> 'sr2',
+			'image/x-sony-srf'	=> 'srf',
+			'image/x-sigma-x3f'	=> 'x3f',
+			'image/x-dcraw'	=> 'raw',
+			'application/dicom' => 'dcm',
 		),
-		"EXPORT" => array(
-			"image/jpeg" 		=> "jpg",
-			"image/gif" 		=> "gif",
-			"image/tiff" 		=> "tiff",
-			"image/png" 		=> "png",
-			"image/x-bmp" 		=> "bmp",
-			"image/x-psd" 		=> "psd",
-			"image/tilepic" 	=> "tpc",
-			"image/x-dpx"		=> "dpx",
-			"image/x-exr"		=> "exr",
-			"image/jp2"		=> "jp2",
-			"image/x-adobe-dng"	=> "dng",
-			"image/x-canon-cr2"	=> "cr2",
-			"image/x-canon-crw"	=> "crw",
-			"image/x-sony-arw"	=> "arw",
-			"image/x-olympus-orf"	=> "orf",
-			"image/x-pentax-pef"	=> "pef",
-			"image/x-epson-erf"	=> "erf",
-			"image/x-nikon-nef"	=> "nef",
-			"image/x-sony-sr2"	=> "sr2",
-			"image/x-sony-srf"	=> "srf",
-			"image/x-sigma-x3f"	=> "x3f",
-			"image/x-dcraw"	=> "raw",
-			"application/dicom" => "dcm",
+		'EXPORT' => array(
+			'image/jpeg' 		=> 'jpg',
+			'image/gif' 		=> 'gif',
+			'image/tiff' 		=> 'tiff',
+			'image/png' 		=> 'png',
+			'image/x-bmp' 		=> 'bmp',
+			'image/x-psd' 		=> 'psd',
+			'image/tilepic' 	=> 'tpc',
+			'image/x-dpx'		=> 'dpx',
+			'image/x-exr'		=> 'exr',
+			'image/jp2'		=> 'jp2',
+			'image/x-adobe-dng'	=> 'dng',
+			'image/x-canon-cr2'	=> 'cr2',
+			'image/x-canon-crw'	=> 'crw',
+			'image/x-sony-arw'	=> 'arw',
+			'image/x-olympus-orf'	=> 'orf',
+			'image/x-pentax-pef'	=> 'pef',
+			'image/x-epson-erf'	=> 'erf',
+			'image/x-nikon-nef'	=> 'nef',
+			'image/x-sony-sr2'	=> 'sr2',
+			'image/x-sony-srf'	=> 'srf',
+			'image/x-sigma-x3f'	=> 'x3f',
+			'image/x-dcraw'	=> 'raw',
+			'application/dicom' => 'dcm',
 		),
-		"TRANSFORMATIONS" => array(
-			"SCALE" 			=> array("width", "height", "mode", "antialiasing"),
-			"ANNOTATE"			=> array("text", "font", "size", "color", "position", "inset"),
-			"WATERMARK"			=> array("image", "width", "height", "position", "opacity"),
-			"ROTATE" 			=> array("angle"),
-			"SET" 				=> array("property", "value"),
+		'TRANSFORMATIONS' => array(
+			'SCALE' 			=> array('width', 'height', 'mode', 'antialiasing'),
+			'CROP' 				=> array('width', 'height', 'x', 'y'),
+			'ANNOTATE'			=> array('text', 'font', 'size', 'color', 'position', 'inset'),
+			'WATERMARK'			=> array('image', 'width', 'height', 'position', 'opacity'),
+			'ROTATE' 			=> array('angle'),
+			'SET' 				=> array('property', 'value'),
+			'FLIP'				=> array('direction'),
 			
 			# --- filters
-			"MEDIAN"			=> array("radius"),
-			"DESPECKLE"			=> array(""),
-			"SHARPEN"			=> array("radius", "sigma"),
-			"UNSHARPEN_MASK"	=> array("radius", "sigma", "amount", "threshold"),
+			'MEDIAN'			=> array('radius'),
+			'DESPECKLE'			=> array(''),
+			'SHARPEN'			=> array('radius', 'sigma'),
+			'UNSHARPEN_MASK'	=> array('radius', 'sigma', 'amount', 'threshold'),
 		),
-		"PROPERTIES" => array(
-			"width" 			=> 'R',
-			"height" 			=> 'R',
-			"mimetype" 			=> 'R',
-			"typename" 			=> 'R',
+		'PROPERTIES' => array(
+			'width' 			=> 'R',
+			'height' 			=> 'R',
+			'mimetype' 			=> 'R',
+			'typename' 			=> 'R',
 			'tiles'				=> 'R',
 			'layers'			=> 'W',
-			"quality" 			=> 'W',
+			'quality' 			=> 'W',
+			'colorspace'		=> 'W',
 			'tile_width'		=> 'W',
 			'tile_height'		=> 'W',
 			'antialiasing'		=> 'W',
@@ -150,80 +153,85 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 			'version'			=> 'W'	// required of all plug-ins
 		),
 		
-		"NAME" => "Gmagick"
+		'NAME' => 'Gmagick'
 	);
 	
 	var $typenames = array(
-		"image/jpeg" 		=> "JPEG",
-		"image/gif" 		=> "GIF",
-		"image/tiff" 		=> "TIFF",
-		"image/png" 		=> "PNG",
-		"image/x-bmp" 		=> "Windows Bitmap (BMP)",
-		"image/x-psd" 		=> "Photoshop",
-		"image/tilepic" 	=> "Tilepic",
-		"image/x-dpx"		=> "DPX",
-		"image/x-exr"		=> "OpenEXR",
-		"image/jp2"		=> "JPEG-2000",
-		"image/x-adobe-dng"	=> "Adobe DNG",
-		"image/x-canon-cr2"	=> "Canon CR2 RAW Image",
-		"image/x-canon-crw"	=> "Canon CRW RAW Image",
-		"image/x-sony-arw"	=> "Sony ARW RAW Image",
-		"image/x-olympus-orf"	=> "Olympus ORF Raw Image",
-		"image/x-pentax-pef"	=> "Pentax Electronic File Image",
-		"image/x-epson-erf"	=> "Epson ERF RAW Image",
-		"image/x-nikon-nef"	=> "Nikon NEF RAW Image",
-		"image/x-sony-sr2"	=> "Sony SR2 RAW Image",
-		"image/x-sony-srf"	=> "Sony SRF RAW Image",
-		"image/x-sigma-x3f"	=> "Sigma X3F RAW Image",
-		"image/x-dcraw"	=> "RAW Image",
-		"application/dicom" => "DICOM medical imaging data",
+		'image/jpeg' 		=> 'JPEG',
+		'image/gif' 		=> 'GIF',
+		'image/tiff' 		=> 'TIFF',
+		'image/png' 		=> 'PNG',
+		'image/x-bmp' 		=> 'Windows Bitmap (BMP)',
+		'image/x-psd' 		=> 'Photoshop',
+		'image/tilepic' 	=> 'Tilepic',
+		'image/x-dpx'		=> 'DPX',
+		'image/x-exr'		=> 'OpenEXR',
+		'image/jp2'		=> 'JPEG-2000',
+		'image/x-adobe-dng'	=> 'Adobe DNG',
+		'image/x-canon-cr2'	=> 'Canon CR2 RAW Image',
+		'image/x-canon-crw'	=> 'Canon CRW RAW Image',
+		'image/x-sony-arw'	=> 'Sony ARW RAW Image',
+		'image/x-olympus-orf'	=> 'Olympus ORF Raw Image',
+		'image/x-pentax-pef'	=> 'Pentax Electronic File Image',
+		'image/x-epson-erf'	=> 'Epson ERF RAW Image',
+		'image/x-nikon-nef'	=> 'Nikon NEF RAW Image',
+		'image/x-sony-sr2'	=> 'Sony SR2 RAW Image',
+		'image/x-sony-srf'	=> 'Sony SRF RAW Image',
+		'image/x-sigma-x3f'	=> 'Sigma X3F RAW Image',
+		'image/x-dcraw'	=> 'RAW Image',
+		'application/dicom' => 'DICOM medical imaging data',
 	);
 	
 	var $magick_names = array(
-		"image/jpeg" 		=> "JPEG",
-		"image/gif" 		=> "GIF",
-		"image/tiff" 		=> "TIFF",
-		"image/png" 		=> "PNG",
-		"image/x-bmp" 		=> "BMP",
-		"image/x-psd" 		=> "PSD",
-		"image/tilepic" 	=> "TPC",
-		"image/x-dpx"		=> "DPX",
-		"image/x-exr"		=> "EXR",
-		"image/jp2"		=> "JP2",
-		"image/x-adobe-dng"	=> "DNG",
-		"image/x-canon-cr2"	=> "CR2",
-		"image/x-canon-crw"	=> "CRW",
-		"image/x-sony-arw"	=> "ARW",
-		"image/x-olympus-orf"	=> "ORF",
-		"image/x-pentax-pef"	=> "PEF",
-		"image/x-epson-erf"	=> "ERF",
-		"image/x-nikon-nef"	=> "NEF",
-		"image/x-sony-sr2"	=> "SR2",
-		"image/x-sony-srf"	=> "SRF",
-		"image/x-sigma-x3f"	=> "X3F",
-		"image/x-dcraw"		=> "RAW",
-		"application/dicom" => "DCM",
+		'image/jpeg' 		=> 'JPEG',
+		'image/gif' 		=> 'GIF',
+		'image/tiff' 		=> 'TIFF',
+		'image/png' 		=> 'PNG',
+		'image/x-bmp' 		=> 'BMP',
+		'image/x-psd' 		=> 'PSD',
+		'image/tilepic' 	=> 'TPC',
+		'image/x-dpx'		=> 'DPX',
+		'image/x-exr'		=> 'EXR',
+		'image/jp2'		=> 'JP2',
+		'image/x-adobe-dng'	=> 'DNG',
+		'image/x-canon-cr2'	=> 'CR2',
+		'image/x-canon-crw'	=> 'CRW',
+		'image/x-sony-arw'	=> 'ARW',
+		'image/x-olympus-orf'	=> 'ORF',
+		'image/x-pentax-pef'	=> 'PEF',
+		'image/x-epson-erf'	=> 'ERF',
+		'image/x-nikon-nef'	=> 'NEF',
+		'image/x-sony-sr2'	=> 'SR2',
+		'image/x-sony-srf'	=> 'SRF',
+		'image/x-sigma-x3f'	=> 'X3F',
+		'image/x-dcraw'		=> 'RAW',
+		'application/dicom' => 'DCM',
 	);
 	
 	#
-	# Some versions of ImageMagick return variants on the "normal"
+	# Some versions of ImageMagick return variants on the 'normal'
 	# mimetypes for certain image formats, so we convert them here
 	#
 	var $magick_mime_map = array(
-		"image/x-jpeg" 		=> "image/jpeg",
-		"image/x-gif" 		=> "image/gif",
-		"image/x-tiff" 		=> "image/tiff",
-		"image/x-png" 		=> "image/png",
-		"image/dpx" 		=> "image/x-dpx",
-		"image/exr" 		=> "image/x-exr",
-		"image/jpx"		=> "image/jp2",
-		"image/jpm"		=> "image/jp2",
-		"image/dng"		=> "image/x-adobe-dng"
+		'image/x-jpeg' 		=> 'image/jpeg',
+		'image/x-gif' 		=> 'image/gif',
+		'image/x-tiff' 		=> 'image/tiff',
+		'image/x-png' 		=> 'image/png',
+		'image/dpx' 		=> 'image/x-dpx',
+		'image/exr' 		=> 'image/x-exr',
+		'image/jpx'		=> 'image/jp2',
+		'image/jpm'		=> 'image/jp2',
+		'image/dng'		=> 'image/x-adobe-dng'
 	);
 
 	private $ops_dcraw_path;
 	private $ops_graphicsmagick_path;
 	private $ops_imagemagick_path;
+	
+	/**
+	 * Per-request cache of extracted metadata from read files
+	 */
+	static $s_metadata_read_cache = [];
 	# ------------------------------------------------
 	public function __construct() {
 		$this->description = _t('Provides image processing and conversion services using ImageMagick via the PECL Gmagick PHP extension');
@@ -765,6 +773,35 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 				}
 				break;
 			# -----------------------
+			case "CROP":
+				$x = $parameters["x"];
+				$y = $parameters["y"];
+				$w = $parameters["width"];
+				$h = $parameters["height"];
+				
+				if (!$this->handle->cropimage($w, $h, $x, $y)) {
+					$this->postError(1610, _t("Error during image crop"), "WLPlugGmagick->transform:CROP()");
+					return false;
+				}
+				break;
+			# -----------------------
+			case "FLIP":
+				$dir = strtolower($parameters["direction"]);
+				
+				if ($dir == 'vertical') {
+					if (!$this->handle->flipimage()) {
+						$this->postError(1610, _t("Error during vertical image flip"), "WLPlugGmagick->transform:FLIP()");
+						return false;
+					}
+				} else {
+					if (!$this->handle->flopimage()) {
+						$this->postError(1610, _t("Error during horizontal image flip"), "WLPlugGmagick->transform:FLIP()");
+						return false;
+					}
+				}
+				
+				break;
+			# -----------------------
 			case "UNSHARPEN_MASK":
 				# noop
 				break;
@@ -835,6 +872,31 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 				if (!$this->properties['reference-black']) { $this->properties['reference-black'] = 0; }
 				if (!$this->properties['reference-white']) { $this->properties['reference-white'] = 65535; }
 				$this->handle->levelimage($this->properties['reference-black'], $this->properties['gamma'], $this->properties['reference-white']);
+			}
+			
+			if (($this->properties["colorspace"]) && ($this->properties["colorspace"] != "default")){ 
+				$vn_colorspace = null;
+				switch($this->properties["colorspace"]) {
+					case 'greyscale':
+					case 'grey':
+						$vn_colorspace = Gmagick::COLORSPACE_GRAY;
+						break;
+					case 'RGB':
+					case 'color':
+						$vn_colorspace = Gmagick::COLORSPACE_RGB;
+						break;
+					case 'sRGB':
+						$vn_colorspace = Gmagick::COLORSPACE_SRGB;
+						break;
+					case 'CMYK':
+						$vn_colorspace = Gmagick::COLORSPACE_CMYK;
+						break;
+					case 'bitonal':
+						$vn_colorspace = Gmagick::COLORSPACE_GRAY;
+						$this->handle->setimagedepth(1);
+						break;
+				}
+				if ($vn_colorspace) { $this->handle->setimagecolorspace($vn_colorspace); }
 			}
 			
 			$this->handle->stripimage();	// remove all lingering metadata
@@ -1116,14 +1178,18 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 			$this->handle = $handle;
 			$this->filepath = $ps_filepath;
 
-
 			$this->metadata = array();
 
+		if (WLPlugMediaGmagick::$s_metadata_read_cache[$ps_filepath]) {
+			$this->metadata = WLPlugMediaGmagick::$s_metadata_read_cache[$ps_filepath];
+		} else {
 			// handle metadata
 
 			/* EXIF */
 			if(function_exists('exif_read_data') && !($this->opo_config->get('dont_use_exif_read_data'))) {
-				if (is_array($va_exif = caSanitizeArray(@exif_read_data($ps_filepath, 'EXIF', true, false)))) { $va_metadata['EXIF'] = $va_exif; }
+			    $va_exif_data = exif_read_data($ps_filepath, 'IFD0', true, false);
+			    $vn_exif_size = strlen(print_R($va_exif_data, true));
+				if (($vn_exif_size <= $this->opo_config->get('dont_use_exif_read_data_if_larger_than')) && (is_array($va_exif = caSanitizeArray($va_exif_data)))) { $va_metadata['EXIF'] = $va_exif; }
 			}
 
 			// if the builtin EXIF extraction is not used or failed for some reason, try ExifTool
@@ -1180,62 +1246,64 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 			}
 
 			// try to get IPTC and DPX with GraphicsMagick, if available
-			if(caMediaPluginGraphicsMagickInstalled()) {
-				/* IPTC metadata */
-				$vs_iptc_file = tempnam(caGetTempDirPath(), 'gmiptc');
-				@rename($vs_iptc_file, $vs_iptc_file.'.iptc'); // GM uses the file extension to figure out what we want
-				$vs_iptc_file .= '.iptc';
-				exec($this->ops_graphicsmagick_path." convert ".caEscapeShellArg($ps_filepath)." ".caEscapeShellArg($vs_iptc_file).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
+			 if(caMediaPluginGraphicsMagickInstalled()) {
+ 				/* IPTC metadata */
+ 				$vs_iptc_file = tempnam(caGetTempDirPath(), 'gmiptc');
+ 				@rename($vs_iptc_file, $vs_iptc_file.'.iptc');  // GM uses the file extension to figure out what we want
+ 				$vs_iptc_file .= '.iptc';
+ 				exec($this->ops_graphicsmagick_path." convert ".caEscapeShellArg($ps_filepath)." ".caEscapeShellArg($vs_iptc_file).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
+ 
+ 				$vs_iptc_data = file_get_contents($vs_iptc_file);
+ 				@unlink($vs_iptc_file);
+ 
+ 				$va_iptc_raw = iptcparse($vs_iptc_data);
+ 
+ 				$va_iptc_tags = array(
+ 					'2#004'=>'Genre',
+ 					'2#005'=>'DocumentTitle',
+ 					'2#010'=>'Urgency',
+ 					'2#015'=>'Category',
+ 					'2#020'=>'Subcategories',
+ 					'2#025'=>'Keywords',
+ 					'2#040'=>'SpecialInstructions',
+ 					'2#055'=>'CreationDate',
+ 					'2#060'=>'TimeCreated',
+ 					'2#080'=>'AuthorByline',
+ 					'2#085'=>'AuthorTitle',
+ 					'2#090'=>'City',
+ 					'2#095'=>'State',
+ 					'2#100'=>'CountryCode',
+ 					'2#101'=>'Country',
+ 					'2#103'=>'OTR',
+ 					'2#105'=>'Headline',
+ 					'2#110'=>'Credit',
+ 					'2#115'=>'PhotoSource',
+ 					'2#116'=>'Copyright',
+ 					'2#120'=>'Caption',
+ 					'2#122'=>'CaptionWriter'
+ 				);
+ 
+ 				$va_iptc = array();
+ 				if (is_array($va_iptc_raw)) {
+ 					foreach($va_iptc_raw as $vs_iptc_tag => $va_iptc_tag_data){
+ 						if(isset($va_iptc_tags[$vs_iptc_tag])) {
+ 							$va_iptc[$va_iptc_tags[$vs_iptc_tag]] = join('; ',$va_iptc_tag_data);
+ 						}
+ 					}
+ 				}
+ 
+ 				if (sizeof($va_iptc)) {
+ 					$va_metadata['IPTC'] = $va_iptc;
+ 				}
+ 
+ 				/* DPX metadata */
+ 				exec($this->ops_graphicsmagick_path." identify -format '%[DPX:*]' ".caEscapeShellArg($ps_filepath).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
+ 				if ($va_output[0]) { $va_metadata['DPX'] = $va_output; }
+ 			}
 
-				$vs_iptc_data = file_get_contents($vs_iptc_file);
-				@unlink($vs_iptc_file);
-
-				$va_iptc_raw = iptcparse($vs_iptc_data);
-
-				$va_iptc_tags = array(
-					'2#004'=>'Genre',
-					'2#005'=>'DocumentTitle',
-					'2#010'=>'Urgency',
-					'2#015'=>'Category',
-					'2#020'=>'Subcategories',
-					'2#025'=>'Keywords',
-					'2#040'=>'SpecialInstructions',
-					'2#055'=>'CreationDate',
-					'2#060'=>'TimeCreated',
-					'2#080'=>'AuthorByline',
-					'2#085'=>'AuthorTitle',
-					'2#090'=>'City',
-					'2#095'=>'State',
-					'2#100'=>'CountryCode',
-					'2#101'=>'Country',
-					'2#103'=>'OTR',
-					'2#105'=>'Headline',
-					'2#110'=>'Credit',
-					'2#115'=>'PhotoSource',
-					'2#116'=>'Copyright',
-					'2#120'=>'Caption',
-					'2#122'=>'CaptionWriter'
-				);
-
-				$va_iptc = array();
-				if (is_array($va_iptc_raw)) {
-					foreach($va_iptc_raw as $vs_iptc_tag => $va_iptc_tag_data){
-						if(isset($va_iptc_tags[$vs_iptc_tag])) {
-							$va_iptc[$va_iptc_tags[$vs_iptc_tag]] = join('; ',$va_iptc_tag_data);
-						}
-					}
-				}
-
-				if (sizeof($va_iptc)) {
-					$va_metadata['IPTC'] = $va_iptc;
-				}
-
-				/* DPX metadata */
-				exec($this->ops_graphicsmagick_path." identify -format '%[DPX:*]' ".caEscapeShellArg($ps_filepath).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
-				if ($va_output[0]) { $va_metadata['DPX'] = $va_output; }
-			}
-
-			$this->metadata = $va_metadata;
+			if (sizeof(WLPlugMediaGmagick::$s_metadata_read_cache) > 100) { WLPlugMediaGmagick::$s_metadata_read_cache = array_slice(WLPlugMediaGmagick::$s_metadata_read_cache, 50); }
+			$this->metadata = WLPlugMediaGmagick::$s_metadata_read_cache[$ps_filepath] = $va_metadata;
+		}
 
 			return $handle;
 		} catch(Exception $e) {

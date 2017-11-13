@@ -183,16 +183,17 @@ class WLPlugGeographicMapGoogleMaps Extends BaseGeographicMapPlugIn Implements I
 <script type='text/javascript'>
 	var caMap_{$vs_id};
 	var GeoMarker_{$vs_id};
+	var caMap_{$vs_id}_markers = [];
+	
 jQuery(document).ready(function() {
 	caMap_{$vs_id} = caUI.initGoogleMap({id: '{$vs_id}', mapType: '{$vs_type}', zoomControl: true, navigationControl: {$vb_show_navigation_control} , mapTypeControl: {$vb_show_map_type_control}, scaleControl: {$vb_show_scale_control}});
-	var caMap_{$vs_id}_markers = [];
 	var caMap_{$vs_id}_current_marker = -1;
 
 		var styles = [
 		  {
 			stylers: [
 
-			  { saturation: -100 },
+			 // { saturation: -100 },
 
 			]
 		  },{
@@ -207,9 +208,7 @@ jQuery(document).ready(function() {
 		
 
 			caMap_{$vs_id}.map.setOptions({styles: styles});
-			var mc_{$vs_id} = new MarkerClusterer(caMap_{$vs_id}.map, [], {maxZoom: 14});
-			GeoMarker_{$vs_id} = new GeolocationMarker(caMap_{$vs_id}.map);
-			GeoMarker_{$vs_id}.setCircleOptions({ fillColor: 'red', radius: '100', visible: true, map: caMap_{$vs_id}.map});
+			var mc_{$vs_id} = new MarkerClusterer(caMap_{$vs_id}.map);
 ";
 	
 	if ($vn_zoom_level > 0) {
@@ -221,7 +220,7 @@ jQuery(document).ready(function() {
 	} else {
 		if ($vn_min_zoom_level) {
 				$vs_buf .= "
-					var idleMinListener_{$vs_id} = google.maps.event.addListenerOnce(caMap_{$vs_id}.map, 'idle', function() {
+					var idleMinListener_{$vs_id} = google.maps.event.addListenerOnce(caMap_{$vs_id}.map, 'zoom_changed', function() {
 						if (caMap_{$vs_id}.map.getZoom() < {$vn_min_zoom_level}) {
 							caMap_{$vs_id}.map.setZoom({$vn_min_zoom_level});
 						}
@@ -230,7 +229,7 @@ jQuery(document).ready(function() {
 			}
 			if ($vn_max_zoom_level) {
 				$vs_buf .= "
-					var idleMaxListener_{$vs_id} = google.maps.event.addListenerOnce(caMap_{$vs_id}.map, 'idle', function() {
+					var idleMaxListener_{$vs_id} = google.maps.event.addListener(caMap_{$vs_id}.map, 'zoom_changed', function() {
 						if (caMap_{$vs_id}.map.getZoom() > {$vn_max_zoom_level}) {
 							caMap_{$vs_id}.map.setZoom({$vn_max_zoom_level});
 						}
@@ -295,7 +294,11 @@ jQuery(document).ready(function() {
 					$vn_lon_offset = $vn_radius/111302.61697430261;
 					$va_extents = array("north" => number_format(($va_extents['north'] + $vn_lat_offset), 7, ".", ""), "south" => number_format(($va_extents['south'] - $vn_lat_offset), 7, ".", ""), "east" => number_format(($va_extents['east'] + $vn_lon_offset), 7, ".", ""), "west" => number_format(($va_extents['west'] - $vn_lon_offset), 7, ".", ""));
 				}else{
-					$vs_buf .= "	caMap_{$vs_id}_markers.push(caMap_{$vs_id}.makeMarker(".$vn_latitude.", ".$vn_longitude.", '".preg_replace("![\n\r]+!", " ", addslashes($vs_label))."', '".preg_replace("![\n\r]+!", " ", addslashes($vs_balloon_content))."', '".preg_replace("![\n\r]+!", " ", ($vs_ajax_content_url ? addslashes($vs_ajax_content_url."/_ajax/1/id/".join(';', $va_ajax_ids)) : ''))."', {} ));\n";
+					if(file_exists(__CA_THEME_DIR__."/assets/pawtucket/graphics/google_map_marker.png")){
+						$vs_buf .= "	caMap_{$vs_id}_markers.push(caMap_{$vs_id}.makeMarker(".$vn_latitude.", ".$vn_longitude.", '".preg_replace("![\n\r]+!", " ", addslashes($vs_label))."', '".preg_replace("![\n\r]+!", " ", addslashes($vs_balloon_content))."', '".preg_replace("![\n\r]+!", " ", ($vs_ajax_content_url ? addslashes($vs_ajax_content_url."/_ajax/1/id/".join(';', $va_ajax_ids)) : ''))."', {icon: '".__CA_THEME_URL__."/assets/pawtucket/graphics/google_map_marker.png'}));\n";
+					} else {
+						$vs_buf .= "	caMap_{$vs_id}_markers.push(caMap_{$vs_id}.makeMarker(".$vn_latitude.", ".$vn_longitude.", '".preg_replace("![\n\r]+!", " ", addslashes($vs_label))."', '".preg_replace("![\n\r]+!", " ", addslashes($vs_balloon_content))."', '".preg_replace("![\n\r]+!", " ", ($vs_ajax_content_url ? addslashes($vs_ajax_content_url."/_ajax/1/id/".join(';', $va_ajax_ids)) : ''))."', {} ));\n";
+					}
 				}
 			}
 		}
@@ -305,8 +308,11 @@ jQuery(document).ready(function() {
 		}
 		
 		$vs_buf .= "
+				var mc_{$vs_id} = new MarkerClusterer(caMap_{$vs_id}.map, caMap_{$vs_id}_markers, {maxZoom: 14, imagePath: '".__CA_THEME_URL__."/assets/pawtucket/graphics/m'});
+				
+				
 				caMap_{$vs_id}.fitBounds(".$va_extents['north'].",".$va_extents['south'].",".$va_extents['east'].",".$va_extents['west'].");";
-	
+		# var mc_{$vs_id} = new MarkerClusterer(caMap_{$vs_id}.map, caMap_{$vs_id}_markers, {maxZoom: 14, imagePath: 'http://manuscriptcookbook.whirl-i-gig.com/pawtucket/themes/manuscript/assets/pawtucket/graphics/m'});
 	if (isset($pa_options['cycleRandomly']) && $pa_options['cycleRandomly']) {
 		if (isset($pa_options['cycleRandomlyInterval']) && $pa_options['cycleRandomlyInterval']) {
 			$vs_interval = $pa_options['cycleRandomlyInterval'];
@@ -339,14 +345,6 @@ jQuery(document).ready(function() {
 	
 $vs_buf .= "
 	});
-	function clickroute() { 
-		var latLng = GeoMarker_{$vs_id}.getPosition();
-		if (typeof latLng === 'undefined' ) {
-			document.getElementById('helpDiv').style.display = 'block';
-		} else {
-			caMap_{$vs_id}.map.panTo(latLng);
-		}
-	}
 </script>\n"; 
 				break;
 			# ---------------------------------

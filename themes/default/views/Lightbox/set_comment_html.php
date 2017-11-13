@@ -34,7 +34,7 @@
 		<blockquote id="lbComments{{{comment_id}}}" data-comment_id="{{{comment_id}}}" class='lbComment'>
         <?php
         if($this->getVar('is_writeable') || ($this->getVar('is_author'))){
-            print "<div class='pull-right'><a href='#' class='setComment'><i class='fa fa-times' title='"._t("Remove comment")."'></i></a></div>";
+            print "<div class='pull-right'><a href='#' class='setComment'><i class='fa fa-times lbCommentRemove' data-comment_id='".$this->getVar('comment_id')."' title='"._t("Remove comment")."'></i></a></div>";
         }
         ?>
     {{{comment}}}

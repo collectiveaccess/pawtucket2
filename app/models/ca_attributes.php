@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2016 Whirl-i-Gig
+ * Copyright 2008-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -36,6 +36,7 @@
 
 require_once(__CA_APP_DIR__.'/models/ca_attribute_values.php');
 require_once(__CA_LIB_DIR__.'/ca/Attributes/Attribute.php');
+require_once(__CA_LIB_DIR__."/ca/SyncableBaseModel.php");
 		
 
 BaseModel::$s_ca_models_definitions['ca_attributes'] = array(
@@ -83,6 +84,8 @@ BaseModel::$s_ca_models_definitions['ca_attributes'] = array(
 );
 
 class ca_attributes extends BaseModel {
+	# ---------------------------------
+	use SyncableBaseModel;
 	# ---------------------------------
 	# --- Object attribute properties
 	# ---------------------------------
@@ -163,7 +166,7 @@ class ca_attributes extends BaseModel {
 		)
 	);
 	
-	static $s_attribute_cache_size = 65535;
+	static $s_attribute_cache_size = 1024;
 	static $s_get_attributes_cache = array();
 	static $s_ca_attributes_element_instance_cache = array();
 	
@@ -195,11 +198,33 @@ class ca_attributes extends BaseModel {
 	public function doSearchIndexing($pa_changed_field_values_array=null, $pb_reindex_mode=false, $ps_engine=null) {
 		return;
 	}
-	# ------------------------------------------------------
+	# -------------------------------------------------------
+	public function insert($pa_options=null) {
+		if($vm_ret = parent::insert($pa_options)) {
+			$this->setGUID($pa_options); // generate and set GUID
+		}
+
+		return $vm_ret;
+	}
+	# -------------------------------------------------------
+
+
+	public function delete ($pb_delete_related=false, $pa_options=null, $pa_fields=null, $pa_table_list=null) {
+		$vn_primary_key = $this->getPrimaryKey();
+		$vn_rc = parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list);
+
+		if($vn_primary_key && $vn_rc) {
+			//$this->removeGUID($vn_primary_key);
+		}
+
+		return $vn_rc;
+	}
+	# -------------------------------------------------------
 	/**
 	 *
 	 */
 	public function addAttribute($pn_table_num, $pn_row_id, $pm_element_code_or_id, $pa_values, $pa_options=null) {
+	    if (!is_array($pa_options)) { $pa_options = []; }
 		require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');	// defer inclusion until runtime to ensure baseclasses are already loaded, otherwise you get circular dependencies
 		
 		global $g_ui_locale_id;
@@ -249,7 +274,6 @@ class ca_attributes extends BaseModel {
 		$va_elements = $t_element->getElementsInSet();
 		
 		$vb_dont_create_attribute = true;
-		
 		foreach($va_elements as $va_element) {
 			if ($va_element['datatype'] == 0) { continue; }	// 0 is always 'container' ...
 			
@@ -258,7 +282,12 @@ class ca_attributes extends BaseModel {
 			} else {
 				$vm_value = isset($pa_values[$va_element['element_code']]) ? $pa_values[$va_element['element_code']] : null;
 			}
-			if (($vb_status = $t_attr_val->addValue($vm_value, $va_element, $vn_attribute_id, $pa_options)) === false) {
+			
+			if ((isset($va_element['settings']['isDependentValue']) && (bool)$va_element['settings']['isDependentValue']) && (is_null($vm_value))) {
+			    $vm_value = caProcessTemplate($va_element['settings']['dependentValueTemplate'], $pa_values);
+			}
+			
+			if (($vb_status = $t_attr_val->addValue($vm_value, $va_element, $vn_attribute_id, array_merge($pa_options, ['t_attribute' => $this]))) === false) {
 				$this->postError(1972, join('; ', $t_attr_val->getErrors()), 'ca_attributes->addAttribute()');
 				$vb_dont_create_attribute = false;	// this causes an error to be displayed to the user, which is what we want here
 				break;
@@ -352,6 +381,11 @@ class ca_attributes extends BaseModel {
 				} else {
 					$vm_value = $pa_values[$o_attr_val->getElementCode()];
 				}
+							
+                if ((isset($va_element['settings']['isDependentValue']) && (bool)$va_element['settings']['isDependentValue']) && (is_null($vm_value))) {
+                    $vm_value = caProcessTemplate($va_element['settings']['dependentValueTemplate'], $pa_values);
+                }
+                
 				if ($t_attr_val->editValue($vm_value, $pa_options) === false) {
 					$this->postError(1973, join('; ', $t_attr_val->getErrors()), 'ca_attributes->editAttribute()');
 				}
@@ -378,7 +412,7 @@ class ca_attributes extends BaseModel {
 				$vm_value = $pa_values[$va_element['element_code']];
 			}
 			
-			if ($t_attr_val->addValue($vm_value, $va_element, $vn_attribute_id, $pa_options) === false) {
+			if ($t_attr_val->addValue($vm_value, $va_element, $vn_attribute_id, array_merge($pa_options, ['t_attribute' => $this])) === false) {
 				$this->postError(1972, join('; ', $t_attr_val->getErrors()), 'ca_attributes->editAttribute()');
 				break;
 			}
@@ -584,7 +618,7 @@ class ca_attributes extends BaseModel {
 		while($qr_attrs->nextRow()) {
 			$va_raw_row = $qr_attrs->getRow();
 			
-			$va_raw_row['element_code'] = ca_metadata_elements::getElementCode($va_raw_row['element_id']);
+			$va_raw_row['element_code'] = ca_metadata_elements::getElementCodeForID($va_raw_row['element_id']);
 			$va_raw_row['datatype'] = ca_metadata_elements::getElementDatatype($va_raw_row['element_id']);
 			
 			if ($vn_last_attribute_id != $va_raw_row['attribute_id']) {
@@ -719,23 +753,27 @@ class ca_attributes extends BaseModel {
 	}
 	# ------------------------------------------------------
 	/**
-	 * Return number of attributes with specified element_id attached to specified row in specified table.
+	 * Return number of attributes with specified element_id attached to specified row in specified table. By
+	 * default only non-blank attributes are counted. Set the includeBlanks option to get a count of all values.
 	 *
 	 * @param Db $po_db Db() instance to use for database access
 	 * @param int $pn_table_num Table number of table attributes to count are attached to
 	 * @param int $pn_row_id row_id of row attributes to count are attached to
 	 * @param int $pn_element_id Metadata element of attribute to count
+	 * @param array $pa_options Options include:
+	 *		includeBlanks = include blank values in count. [Default is false]
 	 *
 	 * @return int number of attributes with specified element_id attached to specified row
 	 */
-	static public function getAttributeCount($po_db, $pn_table_num, $pn_row_id, $pn_element_id) {
+	static public function getAttributeCount($po_db, $pn_table_num, $pn_row_id, $pn_element_id, $pa_options=null) {
+		$pb_include_blanks = caGetOption('includeBlanks', $pa_options, false);
 		$qr_attrs = $po_db->query("
 			SELECT count(distinct caa.attribute_id) c
 			FROM ca_attributes caa, ca_attribute_values cav
 			WHERE
 				(cav.attribute_id = caa.attribute_id) AND
-				(caa.table_num = ?) AND (caa.row_id = ?) AND (caa.element_id = ?) AND
-				(cav.item_id IS NOT NULL OR cav.value_longtext1 IS NOT NULL OR cav.value_decimal1 IS NOT NULL OR cav.value_integer1 IS NOT NULL OR cav.value_blob IS NOT NULL)
+				(caa.table_num = ?) AND (caa.row_id = ?) AND (caa.element_id = ?)
+				".(!$pb_include_blanks ? ("AND (cav.item_id IS NOT NULL OR cav.value_longtext1 IS NOT NULL OR cav.value_decimal1 IS NOT NULL OR cav.value_integer1 IS NOT NULL OR cav.value_blob IS NOT NULL)") : "")."
 		", (int)$pn_table_num, (int)$pn_row_id, (int)$pn_element_id);
 		if ($po_db->numErrors()) {
 			//$this->errors = $po_db->errors;
@@ -858,6 +896,53 @@ class ca_attributes extends BaseModel {
 		}
 		
 		return $va_values;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Get code for element
+	 * @return string
+	 * @throws MemoryCacheInvalidParameterException
+	 */
+	public function getElementCode() {
+		if(!$this->getPrimaryKey()) { return false; }
+
+		if(MemoryCache::contains($this->getPrimaryKey(), 'AttributeToElementCodeCache')) {
+			return MemoryCache::fetch($this->getPrimaryKey(), 'AttributeToElementCodeCache');
+		}
+
+		$t_element = new ca_metadata_elements($this->get('element_id'));
+		$vs_element_code = $t_element->get('element_code');
+
+		MemoryCache::save($this->getPrimaryKey(), $vs_element_code, 'AttributeToElementCodeCache');
+		return $vs_element_code;
+	}
+	# ------------------------------------------------------
+	/**
+	 * 
+	 */
+	public function getRowInstance() {
+		if(!$this->getPrimaryKey()) { return false; }
+
+        $o_dm = Datamodel::load();
+        if (($t_instance = $o_dm->getInstanceByTableNum($this->get('table_num'), true)) && ($t_instance->load($this->get('row_id')))) {
+            return $t_instance;
+        }
+        
+		return null;
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function getTableNumForAttribute($pn_attribute_id, $po_db=null) {
+		$o_db = $po_db ? $po_db : new Db();
+		
+		if ($qr_res = $o_db->query("SELECT table_num FROM ca_attributes WHERE attribute_id = ?", [$pn_attribute_id])) {
+			if ($qr_res->nextRow()) {
+				return $qr_res->get('table_num');
+			}
+		}
+		return null;
 	}
 	# ------------------------------------------------------
 }

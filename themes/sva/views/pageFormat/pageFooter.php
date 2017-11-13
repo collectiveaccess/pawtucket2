@@ -26,10 +26,45 @@
  * ----------------------------------------------------------------------
  */
 ?>
-		<div style="clear:both; height:1px;"><!-- empty --></div>
-		<div id="footer">
-			<div><small>Powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>
-		</div><!-- end footer -->
+
+
+
+       <div id="footer">
+            <div class="wrapper">
+
+                <div id="sitemap">
+
+                <a href="http://sva.edu"><img src="http://www.svaarchives.org/ugi/sva.png" id="sva"></a>
+				<p>&copy; Copyright School of Visual Arts. Presented by <a href="http://svaarchives.org">School of Visual Arts Archive</a>, part of the <a href="http://visualartsfoundation.org">Visual Arts Foundation</a>.</p>
+				<p>All names, logos, trademarks and/or copyrighted images are the property of their respective owners and their appearance on this site is merely intended to illustrate certain of the content available for educational purposes in the Milton Glaser Design Study Center and Archives of the Visual Arts Foundation and is not intended in any way to imply or suggest that the respective owners of these names, logos, trademarks and/or copyrighted images consent to, approve, endorse, sponsor, or intend to associate with the Visual Arts Foundation or any of its affiliates.</p>
+				<p>Built with <a href="http://collectiveaccess.org">CollectiveAccess</a>.</p>
+                </div>
+
+            </div>
+        </div>
+
+        </div>
+
+
+
+	</div>
+<!--
+        <script src="jquery-1.11.2.min.js"></script>
+        <script src="jquery.isotope.pkgd.min.js"></script>
+
+        <script src="jquery.tablesorter.min.js"></script>
+        <script src="jquery.metadata.js"></script> 
+
+		<script src="jquery.magnific-popup.min.js"></script>
+
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
+
+
+        <script src="main.js"></script>
+
+
+-->
+
 <?php
 	//
 	// Output HTML for debug bar

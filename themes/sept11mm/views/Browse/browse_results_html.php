@@ -25,7 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
@@ -138,6 +137,12 @@ if (!$vb_ajax) {	// !ajax
 				</ul>
 			</div><!-- end btn-group -->
 <?php
+			if(is_array($va_facets) && sizeof($va_facets)){
+?>
+
+			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
+<?php
+			}
 			print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $vs_lightbox_display_name)."</button></a>";
 ?>
 		</H1>
@@ -221,6 +226,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		</div>
 <?php
+		print "<div class='bAdvancedLink'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Search', 'Advanced', 'objects')."\"); return false;' >"._t("Advanced Search")."<span class='glyphicon glyphicon-search'></span></a></div>";
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->
@@ -248,7 +254,6 @@ if (!$vb_ajax) {	// !ajax
 			return false;
 		});
 	});
-
 </script>
 <?php
 			print $this->render('Browse/browse_panel_subview_html.php');

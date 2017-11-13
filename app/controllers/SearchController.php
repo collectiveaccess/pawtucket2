@@ -44,11 +44,6 @@
  		/**
  		 *
  		 */
- 		protected $opa_access_values = array();
- 		
- 		/**
- 		 *
- 		 */
  		protected $ops_view_prefix = 'Search';
  		
  		# -------------------------------------------------------
@@ -57,14 +52,16 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
+
  			if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
+            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
+            	throw new ApplicationException(_t("You do not have access to view this page"));
+            }	
             
             $this->opo_config = caGetBrowseConfig();
             
- 			$this->opa_access_values = caGetUserAccessValues($po_request);
- 		 	$this->view->setVar("access_values", $this->opa_access_values);
  			$this->view->setVar("find_type", $this->ops_find_type);
  			caSetPageCSSClasses(array("search", "results"));
  		}
@@ -95,11 +92,35 @@
  				throw new ApplicationException("Invalid browse type $ps_function");
  			}
  			$vs_class = $this->ops_tablename = $va_browse_info['table'];
+ 			
+ 			// Now that table name is known we can set standard view vars
+ 			parent::setTableSpecificViewVars();
+ 			
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
  			
+ 			# --- row id passed when click back button on detail page - used to load results to and jump to last viewed item
+			$this->view->setVar('row_id', $pn_row_id = $this->request->getParameter('row_id', pInteger));
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $ps_function);
  			
+ 			if($vs_named_search=caGetNamedSearch($vs_search_expression = $this->opo_result_context->getSearchExpression(), $this->request->getParameter('values', pString))) {
+ 		
+ 				$vs_search_expression_for_display = caGetNamedSearchForDisplay($vs_search_expression, $this->request->getParameter('values', pString));
+ 				$this->opo_result_context->setSearchExpression($vs_named_search);
+ 				$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
+ 				$vs_search_expression = $vs_named_search;
+ 				//print "got $vs_search_expression_for_display<br>\n";
+ 			} else {
+				$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
+			}
+		//	$vs_search_expression = $this->opo_result_context->getSearchExpression();
+		//	$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
+			
+			// Allow plugins to rewrite search prior to execution
+ 			$qr_res = null;
+			$this->opo_app_plugin_manager->hookReplaceSearch(['search' => $ps_function, 'browseInfo' => &$va_browse_info, 'searchExpression' => &$vs_search_expression, 'result' => &$qr_res]);
+			$vb_search_was_replaced = ($qr_res) ? true : false;
+			
  			$ps_view = $this->request->getParameter('view', pString);
  			if ($ps_view == 'jsonData') {
  				$this->view->setVar('context', $this->opo_result_context);
@@ -109,15 +130,15 @@
  			
  			$this->opo_result_context->setAsLastFind(true);
  			
+ 			
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_browse_info["displayName"]).": ".$this->opo_result_context->getSearchExpression());
  			
  			//
  			// Handle advanced search form submissions
  			//
- 			$vs_search_expression_for_display = '';
  			if($vb_is_advanced) { 
  				$this->opo_result_context->setSearchExpression(
- 					caGetQueryStringForHTMLFormInput($this->opo_result_context, array('matchOnStem' => $o_search_config->get('matchOnStem')))
+ 					$vs_search_expression = caGetQueryStringForHTMLFormInput($this->opo_result_context, array('matchOnStem' => $o_search_config->get('matchOnStem')))
  				); 
  				if ($vs_search_expression_for_display = caGetDisplayStringForHTMLFormInput($this->opo_result_context)) {
  					$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
@@ -135,9 +156,18 @@
 			} else {
 				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = array();
 			}
-			if(!in_array($ps_view, array_keys($va_views))) {
-				$ps_view = array_shift(array_keys($va_views));
-			}
+			
+			if (!$ps_view) {
+ 				$ps_view = $this->opo_result_context->getCurrentView();
+ 			}
+ 			if(!in_array($ps_view, array_keys($va_views))) {
+ 				$ps_view = array_shift(array_keys($va_views));
+ 			}
+ 			# --- only set the current view if it's not an export format
+ 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx", "timelineData"))){
+ 				$this->opo_result_context->setCurrentView($ps_view);
+ 			}
+			
 			$va_view_info = $va_views[$ps_view];
 
  			$vs_format = ($ps_view == 'timelineData') ? 'json' : 'html';
@@ -199,12 +229,12 @@
 					case "alphabetical":
 					case "list":
 					default:
-						$this->view->setVar('facet_content', $o_browse->getFacetContent($vs_facet, array("checkAccess" => $this->opa_access_values)));
+						$this->view->setVar('facet_content', !$vb_search_was_replaced ? $o_browse->getFacetContent($vs_facet, array("checkAccess" => $this->opa_access_values)) : []);
 						$this->render("Browse/list_facet_html.php");
-					break;
+						break;
 					case "hierarchical":
 						$this->render("Browse/hierarchy_facet_html.php");
-					break;
+						break;
 				}
 				return;
 			}
@@ -212,8 +242,6 @@
 			//
 			// Add criteria and execute
 			//
-			$vs_search_expression = $this->opo_result_context->getSearchExpression();
-			$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
 			
 			if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
 				$o_browse->addCriteria("_search", array($vs_search_expression.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_expression) && preg_match('![\w]+$!', $vs_search_expression)) ? '*' : '')), array($vs_search_expression_for_display));
@@ -229,7 +257,7 @@
 			//
 			$vb_sort_changed = false;
 			$o_block_result_context = null;
- 			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
+ 			if (!($ps_sort = urldecode($this->request->getParameter("sort", pString)))) {
  				// inherit sort setting from multisearch? (used when linking to full results from multisearch result)
  				if ($this->request->getParameter("source", pString) === 'multisearch') {
  					$o_block_result_context = new ResultContext($this->request, $va_browse_info['table'], 'multisearch', $ps_function);
@@ -239,12 +267,16 @@
  					}
  				}
  				
- 				if (!$ps_sort && !($ps_sort = $this->opo_result_context->getCurrentSort())) {
- 					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
- 						$ps_sort = array_shift(array_keys($va_sorts));
- 						$vb_sort_changed = true;
- 					}
+ 				if (!$ps_sort){
+ 					$ps_sort = $this->opo_result_context->getCurrentSort();
+					if(is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
+						if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
+							$ps_sort = array_shift(array_keys($va_sorts));
+							$vb_sort_changed = true;
+						}
+					}
  				}
+ 				
  			}else{
  				$vb_sort_changed = true;
  			}
@@ -285,7 +317,7 @@
 			}
 			
 			
-			$o_browse->execute(array_merge($va_options, array('expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced)));
+			if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced))); }
 		
 			//
 			// Facets
@@ -303,8 +335,10 @@
 				}
 			} 
 		
-			foreach($va_facets as $vs_facet_name => $va_facet_info) {
-				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array("checkAccess" => $this->opa_access_values));
+			if (!$vb_search_was_replaced) {
+				foreach($va_facets as $vs_facet_name => $va_facet_info) {
+					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array("checkAccess" => $this->opa_access_values));
+				}
 			}
 		
 			$this->view->setVar('facets', $va_facets);
@@ -332,7 +366,8 @@
 			// 
 			// Results
 			//
-			$qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort], 'sort_direction' => $ps_sort_direction));
+			if (!$vb_search_was_replaced) { $qr_res = $o_browse->getResults(array('sort' => $va_sort_by[$ps_sort], 'sort_direction' => $ps_sort_direction)); }
+		
 			$this->view->setVar('result', $qr_res);
 		
 			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {
@@ -348,10 +383,11 @@
 			
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
-			if (($vn_key_start = $vn_start - 500) < 0) { $vn_key_start = 0; }
+			if (($vn_key_start = (int)$vn_start - 5000) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
-			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(10000));
-			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(10000)); $o_block_result_context->saveContext();}
+			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(5000));
+			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(5000)); $o_block_result_context->saveContext();}
+
 			$qr_res->seek($vn_start);
 			
 			$this->opo_result_context->saveContext();
@@ -377,14 +413,13 @@
  				case 'xlsx':
  				case 'pptx':
  				case 'pdf':
- 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), $vs_search_expression, $this->getCriteriaForDisplay($o_browse));
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $vs_search_expression)), $this->getCriteriaForDisplay($o_browse));
  					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
  					$this->render("Browse/browse_results_timelineData_json.php");
  					break;
  				default:
- 					$this->opo_result_context->setCurrentView($ps_view);
  					$this->render("Browse/browse_results_html.php");
  					break;
  			}

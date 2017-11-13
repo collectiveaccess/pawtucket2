@@ -12,9 +12,13 @@
 				{{{representationViewer}}}
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-				<div id="detailTools">
-					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-				</div><!-- end detailTools -->
+<?php
+				if(strtolower($t_object->get("ca_objects.removed.removal_text", array("convertCodesToDisplayText" => true))) == "yes"){
+?>
+					<div class='text-right'><small>No longer available</small></div>
+<?php
+				}
+?>
 			</div><!-- end col -->
 			
 			<div class='col-sm-6'>

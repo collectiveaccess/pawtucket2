@@ -665,6 +665,10 @@ ul#mainMenu li.item:hover #browse-menu .browseHeadernav.active a {
 .multisearch small {
 	font-size:100%;
 }
+.multisearch .authorityResult.collectionsResult{
+	height:70px;
+	overflow-y:scroll;
+}
 .vco-slider .slider-item .content .content-container .text .container h2.date {
 	display:none !important;
 }
@@ -1409,20 +1413,41 @@ div.advancedSearchField {
 
 /* Finding Aid */
 
+.collectionsContainer {
+/*
+	float:left;
+	padding:20px 10px 10px 10px;
+	font-size:14px;
+	width:100%;
+*/
+	float:none !important;
+	max-height:none !important;
+	overflow-y: auto !important;
+	padding:0px !important;
+}
+.collectionsContainer a.openCollection.active small {
+    color: #fff;
+}
+#collectionLoad {
+	float:none !important;	
+	padding:15px 0px 0px 0px !important;
+	border-left:none !important;
+	max-height:none !important;
+	height: auto !important;
+	overflow-y: auto !important;
+}
+
 .findingaid H1 {
 	color: #d6742a;
 	font-family:"Gudea";
 }
-.collHeader a {
+.collHeader a, .collHeader h3 a {
 	font-family:"Gudea";
 	color: #d6742a;
 	font-size:14px;
 }
 .collHeader {
 	font-size:14px;
-}
-.collHeader h3 a{
-	color: #d6742a;
 }
 .fa-angle-double-down.finding-aid {
 	margin-left:0px;
@@ -1432,13 +1457,12 @@ div.advancedSearchField {
 	text-transform:uppercase;
 }
 .collectionNav {
-
 	padding:5px 5px 15px 5px;
 }
 .collectionNav div{
-	margin-bottom:10px;
+	/*margin-bottom:10px;*/
 }
-.collection.detail h3 a:hover{
+.collection.detail h3, .collection.detail h3 a:hover{
 	text-decoration:none;
 	color: #d77421;
 }
@@ -1477,9 +1501,65 @@ div.advancedSearchField {
 	color:#666;
 	font-size:13px;
 	padding:0px;
+	margin-bottom:10px !important;
 } 
 #contTab p {
 	margin-left:25px;
+}
+.collChildMd, .collChildMd a, .collChildMd h3 a, .collChildMd .label, .collChildMd .unit {
+	font-size:12px !important;
+}
+.collChildMd H3, #collectionLoad H3{
+	margin-bottom:0px;
+	margin-top:10px;
+	color: #d77421;
+}
+.collDates, .collDates .unit {
+	font-size:12px !important;
+	text-align:left;
+	color: #000;
+}
+#collectionLoad div {
+    margin-bottom: 0px;
+    margin-top:5px;
+}
+.collectionsContainer{
+	padding-left:10px;
+}
+#collectionsWrapper{
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	border-right: 1px solid #eee;
+	border-left: 1px solid #eee;
+	padding-top:0px;
+	margin:20px -5px 0px -5px !important;
+}
+#collectionLoad {
+    float: left;
+    padding: 20px 20px 10px 20px;
+    height: 500px;
+    overflow-y: scroll;
+    border-left: 2px solid #ededed;
+}
+#collectionLoad a{
+	padding-bottom:0px;
+}
+#collectionLoad .collListItem{
+	margin-bottom:10px;
+}
+#collectionLoad .collListItem a:hover{
+	text-decoration:none;
+}
+#collectionLoad .collListItem .fa-chevron-right{
+	width:14px
+}
+.collectionLoadDefault{
+	font-size:16px;
+}
+#collectionLoad .fa-object-group{
+	color:#5e9eaa !important;
+}
+#collectionLoad .fa-object-group.orange{
+	color:#d77421 !important;
 }
 
 /* Sets */

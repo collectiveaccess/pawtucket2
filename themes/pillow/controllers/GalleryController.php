@@ -61,6 +61,7 @@
  			AssetLoadManager::register("panel");
  			AssetLoadManager::register("mediaViewer");
  			AssetLoadManager::register("carousel");
+ 			AssetLoadManager::register("readmore");
  		}
  		# -------------------------------------------------------
  		
@@ -68,6 +69,7 @@
  		 *
  		 */ 
  		public function __call($ps_function, $pa_args) {
+ 		
  			$ps_function = strtolower($ps_function);
  			# --- which type of set is configured for display in gallery section
  			$t_list = new ca_lists();
@@ -115,6 +117,7 @@
  		 *
  		 */ 
  		public function getSetInfo() {
+
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set->load($pn_set_id);
@@ -130,6 +133,7 @@
  		}
  		# -------------------------------------------------------
  		public function getSetItemRep(){
+
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set->load($pn_set_id);
@@ -161,6 +165,7 @@
  		}
  		# -------------------------------------------------------
  		public function getSetItemInfo(){
+
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
