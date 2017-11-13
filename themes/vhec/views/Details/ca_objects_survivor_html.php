@@ -111,7 +111,7 @@
 						if ($vn_subject > 3) {
 							$vs_subject_style = "class='subjectHidden'";
 						}
-						print "<div {$vs_subject_style}>".caNavLink($this->request, $va_local_subject, '', '', 'Search', 'objects', array('search' => "ca_objects.local_subject:\"".$va_local_subject."\""))."</div>";
+						print "<div {$vs_subject_style}>".caNavLink($this->request, $vs_local_subject, '', '', 'Browse', 'objects', array('facet' => "subject_facet", "id" => $vn_subject_id))."</div>";
 						if (($vn_subject == 3) && (sizeof($va_local_subjects) > 3)) {
 							print "<a class='seeMore' href='#' onclick='$(\".seeMore\").hide();$(\".subjectHidden\").slideDown(300);return false;'>more...</a>";
 						}
