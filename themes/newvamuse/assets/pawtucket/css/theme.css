@@ -809,6 +809,10 @@ div.caMediaOverlayControlsMinimal:hover {
 
 	margin-top:10px;
 }
+.gallery h1 small{
+	font-size:12px;
+	color:#222;
+}
 .gallery .jcarousel {
 	height:275px;
 }

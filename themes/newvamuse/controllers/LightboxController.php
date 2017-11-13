@@ -468,8 +468,11 @@
  			$this->view->setVar("description", $ps_description);
 
  			$t_list = new ca_lists();
- 			$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
- 			
+ 			if($this->request->user->hasRole("member")){
+ 				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('contributor_set_type'));
+ 			}else{
+ 				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
+ 			}
  			$t_object = new ca_objects();
  			$vn_object_table_num = $t_object->tableNum();
  			
@@ -1160,8 +1163,12 @@
 				$ps_description =  $this->purifier->purify($this->request->getParameter($this->ops_description_attribute, pString));
 	
 				$t_list = new ca_lists();
-				$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
-				
+				if($this->request->user->hasRole("member")){
+					$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('contributor_set_type'));
+				}else{
+					$vn_set_type_user = $t_list->getItemIDFromList('set_types', $this->request->config->get('user_set_type'));
+				}
+			
 				$t_object = new ca_objects();
 				$t_object->purify(true);
 				

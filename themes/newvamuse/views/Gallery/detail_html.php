@@ -9,7 +9,20 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="galleryBack"><?php print caNavLink($this->request, "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Gallery", "Index"); ?></div><!-- end galleryBack -->
-			<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
+			<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label"); ?>
+<?php
+# --- if this set was made by a contributor, created them with link to their contributor page
+$t_set_creator = new ca_users($t_set->get('ca_users.user_id'));
+$vs_contributor_credit = null;
+$t_contributor = null;
+if($t_set_creator->hasRole("member")){
+	# --- is there a contributor entity related to the suer account that made the set?
+	$t_contributor = new ca_entities($t_set_creator->get("entity_id"));
+	print "<br/><small>Curated by: ".caDetailLink($this->request, $t_contributor->get("ca_entities.preferred_labels.displayname"), '', 'ca_entities',  $t_set_creator->get("entity_id"))."</small>";
+}
+
+?>
+			</H1>
 		</div>
 	</div>
 	<div class="row">
