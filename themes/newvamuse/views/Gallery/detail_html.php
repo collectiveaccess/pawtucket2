@@ -8,6 +8,7 @@
 ?>
 	<div class="row">
 		<div class="col-sm-12">
+			<div class="galleryBack"><?php print caNavLink($this->request, "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Gallery", "Index"); ?></div><!-- end galleryBack -->
 			<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
 		</div>
 	</div>

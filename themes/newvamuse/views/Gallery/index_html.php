@@ -56,7 +56,8 @@
 													$vs_item++;
 												}
 												print "<div class='name'>".caNavLink($this->request, $va_set_info['name'], '', '', 'Gallery', $vn_set_id)." <small>(".$va_set_info['item_count']." items)</small></div>";
-												print "<div class='user'>created by: ".$r_sets->get('ca_users.user_name')."</div>";
+												$t_u = new ca_users($r_sets->get('ca_users.user_id'));
+												print "<div class='user'>created by: ".$t_u->getPreference('user_profile_username')."</div>";
 												print "</div></li>";
 											}
 										}
