@@ -79,43 +79,38 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				<HR>
-<?php
-				if ($va_collections = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => ', '))) {
-					print "<div class='unit'><h6>Related Collection</h6>".$va_collections."</div>";
-				}
-?>
-				{{{<ifdef code="ca_objects.idno"><H6>Identifier:</H6>^ca_objects.idno<br/></ifdef>}}}
-<?php				
-				if ($va_date = $t_object->getWithTemplate('<unit>^ca_objects.date.date_value (^ca_objects.date.date_types)</unit>')) {
-					print "<div class='unit'><h6>Date</h6>".$va_date."</div>";
-				}
-?>							
 				{{{<ifdef code="ca_objects.description">
 					<div class='unit'><h6>Description</h6>
 						<span class="trimText">^ca_objects.description</span>
 					</div>
-				</ifdef>}}}
-<?php
-				if ($vs_source = $t_object->get('ca_objects.source')) {
-					print "<div class='unit'><h6>Source</h6>".$vs_source."</div>";
+				</ifdef>}}}	
+<?php				
+				if ($va_date = $t_object->getWithTemplate('<unit>^ca_objects.date.date_value (^ca_objects.date.date_types)</unit>')) {
+					print "<div class='unit'><h6>Date</h6>".$va_date."</div>";
 				}
-				if ($vs_language = $t_object->get('ca_objects.language', array('convertCodesToDisplayText' => true))) {
-					print "<div class='unit'><h6>Language</h6>".$vs_language."</div>";
+				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('publisher')))) {
+					$va_entities_by_type = array();
+					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
+						$t_rel = new ca_objects_x_entities($va_entity_rel);
+						$vn_type_id = $t_rel->get('ca_relationship_types.preferred_labels');
+						$va_entities_by_type[$vn_type_id][] = caNavLink($this->request, $t_rel->get('ca_entities.preferred_labels'), '', '', 'Detail', 'entities/'.$t_rel->get('ca_entities.entity_id'));
+					}
+					print "<div class='unit'>";
+					foreach ($va_entities_by_type as $va_type => $va_entity_id) {
+						print "<h6>".$va_type."</h6>";
+						foreach ($va_entity_id as $va_key => $va_entity_link) {
+							print "<p>".$va_entity_link."</p>";
+						} 
+					}
+					print "</div>";
 				}
-				if ($vs_condition = $t_object->get('ca_objects.condition', array('convertCodesToDisplayText' => true))) {
-					print "<div class='unit'><h6>Condition</h6>".$vs_condition."</div>";
+				if ($va_collections = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => ', '))) {
+					print "<div class='unit'><h6>Related Collection</h6>".$va_collections."</div>";
 				}
-				if ($vs_provenance = $t_object->get('ca_objects.provenance')) {
-					print "<div class='unit'><h6>Provenance</h6>".$vs_provenance."</div>";
-				}	
-				if ($vs_text = $t_object->get('ca_objects.text', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Text</h6>".$vs_text."</div>";
-				}	
 				if ($vs_format = $t_object->get('ca_objects.original_format', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Original Format</h6>".$vs_format."</div>";
-				}
+				}				
 				if ($va_dimensions = $t_object->get('ca_objects.dimensions', array('returnWithStructure' => true))) {
 					$va_dims = array();
 					$va_dimsnotes = "";
@@ -146,16 +141,25 @@
 				if ($vs_duration = $t_object->get('ca_objects.duration', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Duration</h6>".$vs_duration."</div>";
 				}
+				if ($vs_source = $t_object->get('ca_objects.source')) {
+					print "<div class='unit'><h6>Source</h6>".$vs_source."</div>";
+				}
+				if ($vs_language = $t_object->get('ca_objects.language', array('convertCodesToDisplayText' => true))) {
+					print "<div class='unit'><h6>Language</h6>".$vs_language."</div>";
+				}																
 				if ($vs_rights = $t_object->get('ca_objects.rights', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Rights</h6>".$vs_rights."</div>";
-				}
+				}							
+?>
+				{{{<ifdef code="ca_objects.idno"><H6>Identifier:</H6>^ca_objects.idno<br/></ifdef>}}}
+<?php
 				if ($vs_subjects = $t_object->get('ca_list_items.item_id', array('returnAsArray' => true, 'restrictToLists' => array('subjects')))) {
 					print "<div class='unit'><h6>Subjects</h6>";
 					foreach ($vs_subjects as $va_key => $vs_subject_id) {
 						print "<p>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_subject_id, true), '', '', 'Search', 'objects', array('search' => 'ca_list_items.item_id:'.$vs_subject_id))."</p>"; 
 					}
 					print "</div>";
-				}	
+				}
 				if ($vs_keywords = $t_object->get('ca_list_items.item_id', array('returnAsArray' => true, 'restrictToLists' => array('keywords')))) {
 					print "<div class='unit'><h6>Keywords</h6>";
 					foreach ($vs_keywords as $va_key2 => $vs_keyword_id) {
@@ -170,34 +174,29 @@
 						print "<p>".caNavLink($this->request, $vs_lcsh_name_term[0], '', '', 'Search', 'objects', array('search' => 'ca_objects.lcsh_terms:"'.$vs_lcsh_name_term[0].'"'))."</p>"; 
 					}					
 					print "</div>";
-				}																																					
+				}				
+				
+/*								
+
+				if ($vs_condition = $t_object->get('ca_objects.condition', array('convertCodesToDisplayText' => true))) {
+					print "<div class='unit'><h6>Condition</h6>".$vs_condition."</div>";
+				}
+				if ($vs_provenance = $t_object->get('ca_objects.provenance')) {
+					print "<div class='unit'><h6>Provenance</h6>".$vs_provenance."</div>";
+				}	
+				if ($vs_text = $t_object->get('ca_objects.text', array('delimiter' => '<br/>'))) {
+					print "<div class='unit'><h6>Text</h6>".$vs_text."</div>";
+				}	
+				if ($vs_duration = $t_object->get('ca_objects.duration', array('delimiter' => '<br/>'))) {
+					print "<div class='unit'><h6>Duration</h6>".$vs_duration."</div>";
+				}
+
+
+*/																																									
 ?>			
 				<hr></hr>
-					<div class="row">
-						<div class="col-sm-6">		
-<?php
-							if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('publisher')))) {
-								$va_entities_by_type = array();
-								foreach ($va_entity_rels as $va_key => $va_entity_rel) {
-									$t_rel = new ca_objects_x_entities($va_entity_rel);
-									$vn_type_id = $t_rel->get('ca_relationship_types.preferred_labels');
-									$va_entities_by_type[$vn_type_id][] = caNavLink($this->request, $t_rel->get('ca_entities.preferred_labels'), '', '', 'Detail', 'entities/'.$t_rel->get('ca_entities.entity_id'));
-								}
-								print "<div class='unit'>";
-								foreach ($va_entities_by_type as $va_type => $va_entity_id) {
-									print "<h6>".$va_type."</h6>";
-									foreach ($va_entity_id as $va_key => $va_entity_link) {
-										print "<p>".$va_entity_link."</p>";
-									} 
-								}
-								print "</div>";
-							}
-?>
-						</div><!-- end col -->				
-						<div class="col-sm-6 colBorderLeft">
-							{{{map}}}
-						</div>
-					</div><!-- end row -->
+
+				{{{map}}}
 						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
