@@ -107,7 +107,7 @@
 					asort($va_local_subjects);
 					print "<div class='subjectBlock'>";
 					print "<h8 style='margin-bottom:10px;'>Access Points</h8>";
-					foreach ($va_local_subjects as $va_key => $va_local_subject) {
+					foreach ($va_local_subjects as $va_key => $vs_local_subject) {
 						if ($vn_subject > 3) {
 							$vs_subject_style = "class='subjectHidden'";
 						}
