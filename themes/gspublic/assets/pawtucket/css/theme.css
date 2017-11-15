@@ -642,6 +642,10 @@ a.readmore-js-toggle{
 	width:100%;
 	height:auto;
 }
+.staticImage img{
+	width:100%;
+	height:auto;
+}
 
 /* timeline */
 h2.tl-headline a, h2.tl-headline {
