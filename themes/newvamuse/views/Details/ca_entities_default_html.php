@@ -123,11 +123,11 @@
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
-					if ($va_member_image = $t_item->get('ca_entities.mem_inst_image', array('version' => 'medium', 'limit' => 1))) {
+					if ($va_member_image = $t_item->get('ca_entities.mem_inst_image', array('version' => 'large', 'limit' => 1))) {
 						print "<div class='unit'>".$va_member_image."</div>"; 
 					}
 					if ($va_manu_image = $t_item->get('ca_entities.manufacturers_media', array('version' => 'medium'))) {
-						if ($va_manu_image != "; ") {
+						if (trim($va_manu_image) != ";") {
 							print "<div class='unit image'>".$va_manu_image."</div>"; 
 						}
 					}					
@@ -163,8 +163,13 @@
 {{{<ifcount code="ca_objects" min="1">
 			<div class='row'><div class='col-sm-12'><div class='browseSearchBar'>
 <?php
-			$vn_num_objects = sizeof($t_item->get("ca_objects", array("returnAsArray" => true)));
-			print 	"<div class='resultCountDetailPage resultCount'>".($vn_num_objects > 1 ? $vn_num_objects." Results" : $vn_num_objects." Result")."</div>"; 
+			if (($vn_num_objects = $t_item->get("ca_objects", array("returnAsCount" => true, 'limit' => 1001))) > 1000) {
+			    $vs_num_objects = "1000+ results";
+			} else {
+			    $vs_num_objects = ($vn_num_objects == 1) ? "{$vn_num_objects} result" : "{$vn_num_objects} results";
+			}
+			
+			print 	"<div class='resultCountDetailPage resultCount'>{$vs_num_objects}</div>"; 
 
 		print 		'<form class="detailSearch" role="search" action="" id="detailSearchForm">
 						<div class="formOutline">
@@ -203,7 +208,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:'.$t_item->get('ca_entities.entity_id'), 'sort' => 'Media', 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:'.$t_item->get('ca_entities.entity_id'), 'sort' => 'Title', 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
