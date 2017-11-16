@@ -129,20 +129,24 @@
 					case 'map':
 						AssetLoadManager::register("maps");
 						$va_views_info = $this->config->get('views');
-						$o_res = caMakeSearchResult(
-							$t_set->get('table_num'),
-							array_keys($t_set->getItemRowIDs()),
-							['checkAccess' => $this->opa_access_values]
-						);
+						if($va_views_info['map']['data']){
+							$o_res = caMakeSearchResult(
+								$t_set->get('table_num'),
+								array_keys($t_set->getItemRowIDs()),
+								['checkAccess' => $this->opa_access_values]
+							);
 
-						$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000', 'label' => 'ca_places.preferred_labels.name', 'content' => 'ca_places.preferred_labels.name');
+							$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000', 'label' => 'ca_places.preferred_labels.name', 'content' => 'ca_places.preferred_labels.name');
 		
-						$va_opts['ajaxContentUrl'] = caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('set_id' => $ps_set_id));
+							$va_opts['ajaxContentUrl'] = caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('set_id' => $ps_set_id));
 			
-						$o_map = new GeographicMap(caGetOption("width", $va_views_info['map'], "100%"), caGetOption("height", $va_views_info['map'], "600px"));
-						$o_map->mapFrom($o_res, $va_views_info['map']['data'], $va_opts);
-						$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_views_info['map'], 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_views_info['map'], 12), 'request' => $this->request)));
-						$this->render("Gallery/set_detail_map_html.php");
+							$o_map = new GeographicMap(caGetOption("width", $va_views_info['map'], "100%"), caGetOption("height", $va_views_info['map'], "600px"));
+							$o_map->mapFrom($o_res, $va_views_info['map']['data'], $va_opts);
+							$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_views_info['map'], 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_views_info['map'], 12), 'request' => $this->request)));
+							$this->render("Gallery/set_detail_map_html.php");
+						}else{
+							$this->render("Gallery/detail_html.php");
+						}
 						break;
 					case 'slideshow':
 					default:
