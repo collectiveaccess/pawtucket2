@@ -73,8 +73,11 @@
  			$t_set = new ca_sets();
  			if($ps_function == "index"){
  				if($vn_gallery_set_type_id){
-					$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id)));
-					#$va_set_first_items = $t_set->getFirstItemsFromSets(array_keys($va_sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
+					$va_tmp = array('checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id);
+					if(!$this->config->get("gallery_include_all_tables")){
+						$va_tmp["table"] = "ca_objects";
+					}
+					$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
 					$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
 					
 					$o_front_config = caGetFrontConfig();
@@ -96,7 +99,10 @@
  				$t_set->load($ps_set_id);
  				$this->view->setVar("set", $t_set);
  				
- 				$o_context = new ResultContext($this->request, 'ca_objects', 'gallery');
+ 				$o_dm = $this->getAppDatamodel();
+				$vs_table = $o_dm->getTableName($t_set->get('table_num'));
+			
+ 				$o_context = new ResultContext($this->request, $vs_table, 'gallery');
  				$o_context->setAsLastFind();
  				$o_context->setResultList(array_keys($t_set->getItemRowIDs()));
  				$o_context->saveContext();
@@ -110,7 +116,39 @@
  				}
  				$this->view->setVar("set_item_id", $pn_set_item_id);
  				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).": ".$t_set->getLabelForDisplay());
- 				$this->render("Gallery/detail_html.php");
+ 				$vs_display_attribute = $this->config->get('gallery_set_presentation_element_code');
+ 				$vs_display = "";
+ 				if($vs_display_attribute){
+ 					$vs_display = $t_set->get('ca_sets.'.$vs_display_attribute, ['convertCodesToIdno' => true]);
+ 				}
+ 				switch($vs_display) {
+					case 'timeline':
+						AssetLoadManager::register('timeline');
+						$this->render('Gallery/set_detail_timeline_html.php');
+						break;
+					case 'map':
+						AssetLoadManager::register("maps");
+						$va_views_info = $this->config->get('views');
+						$o_res = caMakeSearchResult(
+							$t_set->get('table_num'),
+							array_keys($t_set->getItemRowIDs()),
+							['checkAccess' => $this->opa_access_values]
+						);
+
+						$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000', 'label' => 'ca_places.preferred_labels.name', 'content' => 'ca_places.preferred_labels.name');
+		
+						$va_opts['ajaxContentUrl'] = caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('set_id' => $ps_set_id));
+			
+						$o_map = new GeographicMap(caGetOption("width", $va_views_info['map'], "100%"), caGetOption("height", $va_views_info['map'], "600px"));
+						$o_map->mapFrom($o_res, $va_views_info['map']['data'], $va_opts);
+						$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_views_info['map'], 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_views_info['map'], 12), 'request' => $this->request)));
+						$this->render("Gallery/set_detail_map_html.php");
+						break;
+					case 'slideshow':
+					default:
+						$this->render("Gallery/detail_html.php");
+						break;
+				}
  			}
  		}
  		# -------------------------------------------------------
@@ -161,6 +199,28 @@
 					$this->render('Gallery/set_detail_timeline_json.php');
 			}
 		}
+ 		# -------------------------------------------------------
+        /**
+         * Return text for map item info bubble
+         */
+ 		public function ajaxGetMapItem() {
+            if($this->opb_is_login_redirect) { return; }
+            $pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
+			$t_set = new ca_sets($pn_set_id);
+			
+            $pa_ids = explode(";",$this->request->getParameter('id', pString)); 
+            $va_views_info = $this->config->get('views');
+            $va_view_info = $va_views_info["map"];
+            $vs_content_template = $va_view_info['display']['icon'].$va_view_info['display']['title_template'].$va_view_info['display']['description_template'];
+			$o_dm = $this->getAppDatamodel();
+			$vs_table = $o_dm->getTableName($t_set->get('table_num'));
+			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, $vs_table, $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br style='clear:both;'/>")));
+			
+			$this->view->setVar('heading', trim($va_view_info['display']['heading']) ? caProcessTemplateForIDs($va_view_info['display']['heading'], $vs_table, [$pa_ids[0]], array('checkAccess' => $this->opa_access_values)) : "");
+			$this->view->setVar('table', $vs_table);
+			$this->view->setVar('ids', $pa_ids);
+         	$this->render("Browse/ajax_map_item_html.php");   
+        }
 		# -------------------------------------------------------
  		public function getSetItemRep(){
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
@@ -198,15 +258,17 @@
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set_item = new ca_set_items($pn_item_id);
- 			$t_object = new ca_objects($t_set_item->get("row_id"));
+ 			$o_dm = $this->getAppDatamodel();
+			$t_instance = $o_dm->getInstanceByTableNum($t_set_item->get("table_num"));
+ 			$t_instance = new ca_objects($t_set_item->get("row_id"));
  			$va_set_item_ids = array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values)));
  			$this->view->setVar("item_id", $pn_item_id);
  			$this->view->setVar("set_num_items", sizeof($va_set_item_ids));
  			$this->view->setVar("set_item_num", (array_search($pn_item_id, $va_set_item_ids) + 1));
  			
- 			$this->view->setVar("object", $t_object);
+ 			$this->view->setVar("object", $t_instance);
  			$this->view->setVar("object_id", $t_set_item->get("row_id"));
- 			$this->view->setVar("label", $t_object->getLabelForDisplay());
+ 			$this->view->setVar("label", $t_instance->getLabelForDisplay());
  			
  			//
  			// Tag substitution
@@ -222,9 +284,9 @@
  			foreach($va_tag_list as $vs_tag) {
  				if (in_array($vs_tag, $va_defined_vars)) { continue; }
  				if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
- 					$this->view->setVar($vs_tag, $t_object->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
+ 					$this->view->setVar($vs_tag, $t_instance->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
  				} elseif (strpos($vs_tag, ".") !== false) {
- 					$this->view->setVar($vs_tag, $t_object->get($vs_tag, array('checkAccess' => $this->opa_access_values)));
+ 					$this->view->setVar($vs_tag, $t_instance->get($vs_tag, array('checkAccess' => $this->opa_access_values)));
  				} else {
  					$this->view->setVar($vs_tag, "?{$vs_tag}");
  				}

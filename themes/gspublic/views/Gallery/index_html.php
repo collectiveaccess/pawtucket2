@@ -2,7 +2,11 @@
 	
 <?php
 	$va_sets = $this->getVar("sets");
-	$va_first_items_from_set = $this->getVar("first_items_from_sets");
+	#$va_first_items_from_set = $this->getVar("first_items_from_sets");
+	$va_access_values = $this->getVar("access_values");
+	$t_set = new ca_sets();
+	$va_first_items_from_set = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "wideslide", "checkAccess" => $va_access_values));
+					
 	if(is_array($va_sets) && sizeof($va_sets)){
 		# --- main area with info about selected set loaded via Ajax
 ?>

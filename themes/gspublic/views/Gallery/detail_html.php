@@ -12,9 +12,7 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-8"><div id="galleryDetailImageArea">
-			image here
-		</div><!-- end galleryDetailImageArea --></div><!--end col-sm-8-->
+		<div class="col-sm-8"><div id="galleryDetailImageArea"></div><!-- end galleryDetailImageArea --></div><!--end col-sm-8-->
 		<div class="col-sm-4" id="galleryDetailObjectInfo"> </div>
 	</div><!-- end row -->
 

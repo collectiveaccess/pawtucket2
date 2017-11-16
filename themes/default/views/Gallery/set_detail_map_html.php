@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -31,25 +31,12 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
+			<?php print ($this->getVar("description")) ? "<p>".$this->getVar("description")."</p>" : ""; ?>
 		</div>
 	</div>
 	<div class="row">
 		<div class="col-sm-12">
-			<div id="lbTimelineContainer">
-				<div id="timeline-embed"></div>
-			</div>
+			<?php print $this->getVar("map"); ?>
 		</div>
 	</div>
 	<div style="clear:both;"><!-- empty --></div>
-	
-    <script type="text/javascript">
-		jQuery(document).ready(function() {
-			createStoryJS({
-				type:       'timeline',
-				width:      '100%',
-				height:     '100%',
-				source:     '<?php print caNavUrl($this->request, '', '*', 'getSetInfoAsJSON', array('mode' => 'timeline', 'set_id' => $t_set->get("set_id"))); ?>',
-				embed_id:   'timeline-embed'
-			});
-		});
-	</script>
