@@ -25,9 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
-	if (!($this->request->isLoggedIn())) {
-		$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-	}
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
