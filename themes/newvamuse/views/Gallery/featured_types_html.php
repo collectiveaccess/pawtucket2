@@ -51,8 +51,8 @@
 							$t_contributor = new ca_entities($t_set_creator->get("entity_id"));
 							print "<div class='user'>Curated by: ".caDetailLink($this->request, $t_contributor->get("ca_entities.preferred_labels.displayname"), '', 'ca_entities',  $t_set_creator->get("entity_id"))."</div>";
 						}else{
-							if($vs_set_type == $this->request->config->get('user_set_type')){
-								print "<div class='user'>created by: ".$r_sets->get('ca_users.user_name')."</div>";
+							if($t_set_creator->getPreference('user_profile_username')){
+								print "<div class='user'>created by: ".$t_set_creator->getPreference('user_profile_username')."</div>";
 							}
 						}
 						print "</div></div>";
