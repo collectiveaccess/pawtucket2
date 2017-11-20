@@ -3496,10 +3496,15 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
  	
 		$va_rep_ids = array();
  		while($vo_data->nextHit()) {
- 			if (!($vn_representation_id = $vo_data->get('ca_object_representations.representation_id', ['checkAccess' => $va_access_values]))) { continue; }
- 			
+ 			if (!($vn_representation_id = $vo_data->get('ca_object_representations.representation_id', ['checkAccess' => $va_access_values, 'limit' => 1]))) { continue; }
  			$t_instance->load($vo_data->getPrimaryKey());
- 			
+ 			if($t_instance->getPrimaryRepresentationId()){
+ 				$vn_representation_id = $t_instance->getPrimaryRepresentationId();
+ 			}
+ 			if($pn_representation_id = $po_request->getParameter("representation_id", pInteger)){
+ 				$vn_representation_id = $pn_representation_id;
+ 			}
+ 						
  			// Assemble id's for representations to display
 			if($pb_primary_only){
 				$va_rep_ids[] = $vn_representation_id;
@@ -3512,7 +3517,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 					$va_rep_ids = array_keys($va_rep_ids);
 				}
 			}
-	
+			
 			$o_view->setVar('representation_id', $vn_representation_id);
 			$o_view->setVar('representation_count', sizeof($va_rep_ids));
 			$o_view->setVar('representation_ids', $va_rep_ids);
@@ -3528,11 +3533,12 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 				
 				while($qr_reps->nextHit()) {
 					$vn_rep_id = $qr_reps->get('representation_id');
-					
-					if (!($vn_index = ($vn_rep_id !== $vn_primary_id) ? (int)$qr_reps->get(RepresentableBaseModel::getRepresentationRelationshipTableName($qr_reps->tableName()).'.rank') : 0)) {
+					$vn_index = null;
+					if($vn_rep_id == $vn_primary_id){
+						$vn_index = 0;
+					}elseif (!($vn_index = (int)$qr_reps->get(RepresentableBaseModel::getRepresentationRelationshipTableName($qr_reps->tableName()).'.rank'))) {
 						$vn_index = $qr_reps->get('ca_object_representations.representation_id');
 					}
-				
 					$va_rep_info[$vn_index] = array("rep_id" => $vn_rep_id, "tag" => $va_rep_tags[$vn_rep_id]);
 				}
 
@@ -3598,6 +3604,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 		$ps_display_type 		= caGetOption('display', $pa_options, 'detail');
 		$ps_context 			= caGetOption('context', $pa_options, null);
 		
+		$ps_table = is_object($pt_subject) ? $pt_subject->tablename() : "ca_objects";
 		$pn_subject_id = is_object($pt_subject) ? $pt_subject->getPrimaryKey() : (int)$pt_subject;
 		
 		$va_rep_display_info = caGetMediaDisplayInfo($ps_display_type, $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
@@ -3609,7 +3616,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 		if(!$va_rep_display_info["no_overlay"]){
 			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array('context' => $ps_context, 'id' => $pn_subject_id, 'representation_id' => $pt_representation->getPrimaryKey(), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
 		}
-		if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+		if(($ps_table == "ca_objects") && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 			$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array('context' => $ps_context, (is_object($pt_subject) && $pt_subject->primaryKey()) ? $pt_subject->primaryKey() : "object_id" => $pn_subject_id))."\"); return false;' title='".$va_add_to_set_link_info['link_text']."'>".$va_add_to_set_link_info['icon']."</a>\n";
 		}
 		if(caObjectsDisplayDownloadLink($po_request, $pn_subject_id)){

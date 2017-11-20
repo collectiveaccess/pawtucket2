@@ -72,7 +72,7 @@
 			</p>
 		</div>
 		<div class="col-md-7  col-md-offset-1 bleed">
-			<?php print caGetThemeGraphic($this->request, 'hptest.jpg'); ?>
+			<?php print caGetThemeGraphic($this->request, 'hptest3.jpg'); ?>
 		</div>
 	</div>
 	<div class="row">

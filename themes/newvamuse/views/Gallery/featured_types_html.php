@@ -24,6 +24,7 @@
 		if($r_sets->numHits()){
 			while($r_sets->nextHit()){
 				if ($r_sets->get('ca_sets.hide', array('convertCodesToDisplayText' => true)) != "No") {					
+					$vs_set_type = $r_sets->get('ca_sets.type_id', array("convertCodesToDisplayText" => true));
 					$vn_set_id = $r_sets->get("set_id");
 					$t_set = new ca_sets($vn_set_id);
 					$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("iconlarge", "icon"), "checkAccess" => $va_check_access, "limit" => 3)));
@@ -42,7 +43,18 @@
 							$vs_item++;
 						}
 						print "<div class='name'>".caNavLink($this->request, $va_set_info['name'], '', '', 'Gallery', $vn_set_id)." <small>(".$va_set_info['item_count']." items)</small></div>";
-						print "<div class='user'>created by: ".$r_sets->get('ca_users.user_name')."</div>";
+
+						# --- if this set was made by a contributor, created them with link to their contributor page
+						$t_set_creator = new ca_users($t_set->get('ca_users.user_id'));
+						if($t_set_creator->hasRole("member")){
+							# --- is there a contributor entity related to the suer account that made the set?
+							$t_contributor = new ca_entities($t_set_creator->get("entity_id"));
+							print "<div class='user'>Curated by: ".caDetailLink($this->request, $t_contributor->get("ca_entities.preferred_labels.displayname"), '', 'ca_entities',  $t_set_creator->get("entity_id"))."</div>";
+						}else{
+							if($t_set_creator->getPreference('user_profile_username')){
+								print "<div class='user'>created by: ".$t_set_creator->getPreference('user_profile_username')."</div>";
+							}
+						}
 						print "</div></div>";
 					}
 				}

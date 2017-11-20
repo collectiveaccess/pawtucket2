@@ -34,6 +34,7 @@ $qr_res	 						= $this->getVar("result");
 $t_set 							= $this->getVar("set");
 $va_views						= $this->getVar('views');
 $vs_current_view				= $this->getVar('view');
+$vs_set_description				= $this->getVar('description');
 
 $va_view_info 					= $va_views[$vs_current_view];
 
@@ -42,7 +43,7 @@ $va_data = [
 	'title' => [
 		'text' => [
 			'headline' => $t_set->getWithTemplate($va_view_info['title']['headline_template'] ?: '^ca_sets.preferred_labels.name'),
-			'text' => $t_set->getWithTemplate($va_view_info['title']['introduction_template'] ?: '^ca_sets.description'),
+			'text' => $t_set->getWithTemplate($va_view_info['title']['introduction_template'] ?: $vs_set_description),
 		],
 		'media' => [
 			'url' => '',
