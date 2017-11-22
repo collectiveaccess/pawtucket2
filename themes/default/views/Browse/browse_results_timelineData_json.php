@@ -91,7 +91,7 @@
 				"credit" => $qr_res->getWithTemplate(caGetOption('credit_template', $va_view_info['display'], null)),
 				"caption" => $qr_res->getWithTemplate(caGetOption('caption_template', $va_view_info['display'], null))
 			],
-			"display_date" => $qr_res->get($va_view_info['data']),
+			"display_date" => $qr_res->get($va_view_info['data'], array('delimiter' => '; ')),
 			'start_date' => $va_timeline_dates['start_date'],
 			'end_date' => $va_timeline_dates['end_date'],
 		];

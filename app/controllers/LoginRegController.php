@@ -132,8 +132,31 @@
 			if (!caCheckEmailAddress($ps_email)) {
 				$va_errors["email"] = _t("E-mail address is not valid.");
 			}else{
-				$t_user->set("email", $ps_email);
-				$t_user->set("user_name",$ps_email);
+				# --- if the username is changing, make sure there isn't an account uwith the same user name already
+				if($ps_email != $t_user->get("user_name")){
+					# --- does deleted user login record for this user already exist?
+					# --- (look for active records only; inactive records will effectively block reregistration)
+					$t_user_check = new ca_users();
+					$vb_user_exists_but_is_deleted = false;
+					if ($t_user_check->load(array('user_name' => $ps_email))) {
+						if ((int)$t_user_check->get('userclass') == 255) {
+							if ($t_user_check->get('active') == 1) {
+								// yeah... so allow registration
+								$vb_user_exists_but_is_deleted = true;
+							} else {
+								// existing inactive user record blocks registration
+								$va_errors["email"] = _t("User cannot register");
+							}
+						} else {
+							// already valid login with this user name
+							$va_errors["email"] = _t("A user has already registered with this email address");
+						}
+					}
+				}
+				if(!$va_errors["email"]){
+					$t_user->set("user_name",$ps_email);
+					$t_user->set("email", $ps_email);
+				}
 			}
 			if (!$ps_fname) {
 				$va_errors["fname"] = _t("Please enter your first name");
@@ -172,23 +195,21 @@
 			}		
 		
 			if(sizeof($va_errors) == 0){
-				if(sizeof($va_errors) == 0){
-					# --- there are no errors so update new user record
-					$t_user->setMode(ACCESS_WRITE);
-					$t_user->update();
-					if($t_user->numErrors()) {
-						$va_errors["general"] = join("; ", $t_user->getErrors());
-					}else{
-						#success
-						$this->notification->addNotification(_t("Updated profile"), __NOTIFICATION_TYPE_INFO__);
-						// If we are editing the user record of the currently logged in user
-						// we have a problem: the request object flushes out changes to its own user object
-						// for the logged-in user at the end of the request overwriting any changes we've made.
-						//
-						// To avoid this we check here to see if we're editing the currently logged-in
-						// user and reload the request's copy if needed.
-						$this->request->user->load($t_user->getPrimaryKey());
-					}
+				# --- there are no errors so update new user record
+				$t_user->setMode(ACCESS_WRITE);
+				$t_user->update();
+				if($t_user->numErrors()) {
+					$va_errors["general"] = join("; ", $t_user->getErrors());
+				}else{
+					#success
+					$this->notification->addNotification(_t("Updated profile"), __NOTIFICATION_TYPE_INFO__);
+					// If we are editing the user record of the currently logged in user
+					// we have a problem: the request object flushes out changes to its own user object
+					// for the logged-in user at the end of the request overwriting any changes we've made.
+					//
+					// To avoid this we check here to see if we're editing the currently logged-in
+					// user and reload the request's copy if needed.
+					$this->request->user->load($t_user->getPrimaryKey());
 				}
 			}
 			if(sizeof($va_errors)){
