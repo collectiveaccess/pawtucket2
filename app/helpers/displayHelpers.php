@@ -4278,7 +4278,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
                             if ($vs_template = $va_tag['content']) {
                             
                                 $t_attr = ca_attributes::getAttributeForValueID($vn_value_id);
-                                $ps_text = str_replace($vs_tag, caProcessTemplate($vs_template, $t_attr->getAttributeValues(['returnAs' => 'array']), []), $ps_text);
+                                $ps_text = str_replace($vs_tag, caProcessTemplate($vs_template, $t_attr->getAttributeValues(['returnAs' => 'array', 'version' => caGetOption('version', $va_tag, array_shift($t_attr->getMediaVersions('value_blob')))]), []), $ps_text);
                             } else {
                                 $t_val = new ca_attribute_values($vn_value_id);
                                 $ps_text = str_replace($vs_tag, $t_val->getMediaTag('value_blob', caGetOption('version', $va_tag, array_shift($t_val->getMediaVersions('value_blob')))), $ps_text);
