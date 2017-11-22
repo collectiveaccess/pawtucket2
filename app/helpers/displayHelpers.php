@@ -2179,10 +2179,12 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 	 *
 	 * @param string $ps_value
 	 * @param array $pa_directives
+	 * @param array $pa_options Options include:
+	 *      omitUnits = Omit unit specifier on dimensional quantities. [Default is false]
 	 *
 	 * @return string
 	 */
-	function caProcessTemplateTagDirectives($ps_value, $pa_directives) {
+	function caProcessTemplateTagDirectives($ps_value, $pa_directives, $pa_options=null) {
 	    global $g_ui_locale;
 		if (!is_array($pa_directives) || !sizeof($pa_directives)) { return $ps_value; }
 		foreach($pa_directives as $vs_directive) {
@@ -2195,7 +2197,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
                         $vs_measure_conv = null;
                         switch(strtoupper($va_tmp[1])) {
                             case 'INFRAC':
-                                $vs_measure_conv = caLengthToFractions($vo_measurement->convertTo(Zend_Measure_Length::INCH, 4), 8, true);
+                                $vs_measure_conv = caLengthToFractions($vo_measurement->convertTo(Zend_Measure_Length::INCH, 8), 16, true);
                                 break;
                             case 'M':
                                 $vs_measure_conv = $vo_measurement->convertTo(Zend_Measure_Length::METER, 4);
@@ -2220,6 +2222,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
                         }
                     
                         if ($vs_measure_conv) {
+                            if (caGetOption('omitUnits', $pa_options, false)) { $vs_measure_conv = trim(preg_replace("![^\d\-\.\/ ]+!", "", $vs_measure_conv)); }
                             $ps_value = "{$vs_measure_conv}";
                         }
                     } catch (Exception $e) {
@@ -4245,19 +4248,20 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
         foreach([
             'object' => 'ca_objects', 'entity' => 'ca_entities', 'place' => 'ca_places', 
             'occurrrence' => 'ca_occurrences', 'collection' => 'ca_collections', 'loan' => 'ca_loans', 
-            'movement' => 'ca_movements', 'location' => 'ca_storage_locations', 'media' => 'ca_site_page_media'] as $vs_ref_tag => $vs_ref_type
+            'movement' => 'ca_movements', 'location' => 'ca_storage_locations', 'media' => 'ca_site_page_media', 'mediaRef' => 'ca_attributes'] as $vs_ref_tag => $vs_ref_type
         ) { 
             if (preg_match_all("!\[{$vs_ref_tag} ([^\]]+)\]([^\[]+)\[/{$vs_ref_tag}\]!", $ps_text, $va_matches)) {
                 foreach($va_matches[1] as $i => $vs_attr_string) {
-                    if (sizeof($va_vals = caParseAttributes($vs_attr_string, ['idno', 'class', 'version'])) > 0) {
-                        $va_idnos[$vs_ref_type][$va_matches[0][$i]] = ['idno' => $va_vals['idno'], 'class' => $va_vals['class'], 'version' => $va_vals['version'], 'content' => $va_matches[2][$i]]; 
+                    if (sizeof($va_vals = caParseAttributes($vs_attr_string, ['id', 'idno', 'class', 'version'])) > 0) {
+                        $va_vals['content'] = $va_matches[2][$i];
+                        $va_idnos[$vs_ref_type][$va_matches[0][$i]] = array_filter($va_vals, function($v) { return !is_null($v); });
                     }
                 }
             }
             if (preg_match_all("!\[{$vs_ref_tag} ([^\]]+)/\]!", $ps_text, $va_matches)) {
                 foreach($va_matches[1] as $i => $vs_attr_string) {
-                    if (sizeof($va_vals = caParseAttributes($vs_attr_string, ['idno', 'class', 'version'])) > 0) {
-                        $va_idnos[$vs_ref_type][$va_matches[0][$i]] = ['idno' => $va_vals['idno'], 'class' => $va_vals['class'], 'version' => $va_vals['version'], 'content' => '']; 
+                    if (sizeof($va_vals = caParseAttributes($vs_attr_string, ['id', 'idno', 'class', 'version'])) > 0) {
+                        $va_idnos[$vs_ref_type][$va_matches[0][$i]] = array_filter($va_vals, function($v) { return !is_null($v); }); 
                     }
                 }
             }
@@ -4265,6 +4269,22 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
         if (sizeof($va_idnos)) {
             foreach($va_idnos as $vs_ref_type => $va_tags) {
                 switch($vs_ref_type) {
+                    case 'ca_attributes':
+                        foreach($va_tags as $vs_tag => $va_tag) {
+                            $vn_value_id = (int)$va_tag['id'];
+                            
+                            $t_instance = ca_attributes::getRowInstanceForValueID($vn_value_id);
+                            if (!$t_instance->isReadable($po_request)) { continue; }
+                            if ($vs_template = $va_tag['content']) {
+                            
+                                $t_attr = ca_attributes::getAttributeForValueID($vn_value_id);
+                                $ps_text = caProcessTemplate($vs_template, $t_attr->getAttributeValues(['returnAs' => 'array']), []);
+                            } else {
+                                $t_val = new ca_attribute_values($vn_value_id);
+                                $ps_text = str_replace($vs_tag, $t_val->getMediaTag('value_blob', caGetOption('version', $va_tag, array_shift($t_val->getMediaVersions('value_blob')))), $ps_text);
+                            }
+                        }
+                        break;
                     case 'ca_site_page_media':
                         foreach($va_idnos[$vs_ref_type] as $vs_tag => $va_l) {
                             $va_params = ['idno' => $va_l['idno']];
@@ -4318,5 +4338,27 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
             }
         }
         return $ps_text;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
+	function caGetLookupUrlsForTables($po_request=null, $pa_tables=null) {
+	    global $g_request;
+	    if (!$po_request) { $po_request = $g_request; }
+	    if (!$po_request) { return []; }
+	    if (!is_array($pa_tables) && !sizeof($pa_tables)) {
+	        $pa_tables = ['ca_objects', 'ca_entities', 'ca_places', 'ca_occurrences', 'ca_collections', 'ca_object_lots', 'ca_loans', 'ca_movements'];
+	    }
+	    
+	    $o_dm = Datamodel::load();
+	    
+	    $va_lookup_urls = [];
+        foreach($pa_tables as $vs_table) {
+            if (!caTableIsActive($vs_table)) { continue; }
+            $va_urls = caJSONLookupServiceUrl($po_request, $vs_table);
+            $va_lookup_urls[$vs_table] = ['singular' => $o_dm->getTableProperty($vs_table, 'NAME_SINGULAR'), 'plural' => $o_dm->getTableProperty($vs_table, 'NAME_PLURAL'), 'code' => strtolower($o_dm->getTableProperty($vs_table, 'NAME_SINGULAR')), 'url' => $va_urls['search']];   
+        }
+        return $va_lookup_urls;
 	}
 	# ------------------------------------------------------------------
