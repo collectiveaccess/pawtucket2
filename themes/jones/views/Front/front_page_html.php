@@ -33,9 +33,9 @@
 ?>
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-1 contentArea">
-			<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
+			<H1>{{{homepage_title}}}</H1>
 			<div>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas ut orci ac justo viverra maximus. Phasellus pharetra lorem eget placerat tristique. Mauris ipsum massa, placerat mattis nulla eu, consequat mollis sem. Nunc non metus ut ipsum lacinia tempus ut et lectus. Sed eu ante nec ligula accumsan imperdiet non vel augue. Maecenas rutrum sapien quis quam faucibus, ut lobortis felis tempor. Quisque viverra consequat orci accumsan gravida. Sed feugiat, dui suscipit consectetur posuere, urna sem scelerisque arcu, et consequat tellus ante sed purus. In hac habitasse platea dictumst. Vestibulum congue risus ligula, vel porta lacus hendrerit eu. Suspendisse at placerat turpis. Vestibulum scelerisque turpis a nibh malesuada aliquam.
+				{{{homepage_text}}}
 			</div>
 		</div><!--end col-sm-8-->	
 	</div><!-- end row -->

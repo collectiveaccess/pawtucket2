@@ -44,7 +44,7 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
 				if($va_media = $t_object->get("ca_object_representations")){
 ?>
@@ -115,8 +115,14 @@
 				if ($va_collections = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Institutional Collection</h6>".$va_collections."</div>";
 				}
-				if ($va_collection_link = $t_object->get('ca_places.institution_link')) {
-					print "<div class='unit'><h6><a href='".$va_collection_link."' target='_blank'>View Original Kitchen Utensil Catalog Record</a></div>";
+				if ($va_collection_link = $t_object->get('ca_objects.institution_link')) {
+					$vs_link_institution = $t_object->get('ca_objects.link_institution', array('convertCodesToDisplayText' => true));
+					$vs_link_text = $t_object->get('ca_objects.link_text', array('convertCodesToDisplayText' => true));
+					if(!$vs_link_text){
+						$vs_link_text = "View Original Kitchen Utensil Catalog Record";
+					}
+					$vs_link_text .= " <span class='glyphicon glyphicon-new-window' aria-hidden='true'></span>";
+					print "<div class='unit'><a href='".$va_collection_link."' target='_blank'>".$vs_link_text."</a></div>";
 				}
 ?>								
 			
