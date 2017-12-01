@@ -230,7 +230,11 @@ a:hover, a:active, a:focus, a.readmore-js-toggle {
 .bResultListItemImg .bResultItemImgPlaceholder {
     font-size: 14px;
 }
-
+.objectsResult.multisearchResult p{
+	margin-bottom:0px;
+	line-height:1.4em;
+}
+	
 /* Detail */
 
 .detail h1 small {
@@ -258,6 +262,7 @@ a:hover, a:active, a:focus, a.readmore-js-toggle {
 	color:#333;
 	width:50%;
 	display:inline-block;
+	vertical-align:top;
 }
 .data {
 	width:50%;
@@ -305,6 +310,67 @@ div.caMediaOverlayControls {
 	font-size: 20px;
     padding-top: 15px;
     display: inline-block;
+}
+.detail hr.dark {
+	border-top:2px solid #ccc;
+}
+.tileviewer canvas {
+	background-color:#000 !important;
+}
+.tileviewer div a.tileviewerControl {
+	opacity:1 !important;
+}
+
+/* Browse */
+
+.bResultItemContent {
+    text-align: center;
+    display: table;
+    width: 100%; 
+}
+.bResultItem {
+	border-bottom: 1px solid #e1e1e1;
+    height: 350px;
+    margin-bottom: 35px;
+    position: relative;
+    background-color:transparent;
+    box-shadow:none;
+    left:0px;
+}
+.bResultItem:hover {
+	height: 350px;
+	margin:0px;
+	margin-bottom: 35px;
+}
+.bResultItemImg {
+	text-align: center;
+    overflow: hidden;
+    height: 240px;
+    position: relative;
+    display: table-cell;
+    vertical-align: middle;
+}
+.bResultItem .bResultItemText {
+    margin-top: 8px;
+    font-size: 12px;
+    line-height: 1.2em;
+    max-height: 6.5em;
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    text-align:left;
+    left:0px;
+}
+.bResultItem img {
+    max-width: 100%;
+    height: auto;
+    width:auto;
+}
+.lightBoxLink {
+	right:0px;
+	position: absolute;
+    bottom: -7px;
+    font-size: 16px;
 }
 
 

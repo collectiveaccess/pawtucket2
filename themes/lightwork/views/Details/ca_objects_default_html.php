@@ -58,8 +58,9 @@
 				
 				<div id="detailAnnotations"></div>
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-
+<?php 
+				print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); 
+?>				
 			</div><!-- end col -->
 			
 			<div class='col-sm-5 col-md-5 col-lg-5'>
@@ -104,19 +105,19 @@
 				}
 				if ($vs_accession = $t_object->get('ca_objects.accession')) {
 					print "<div class='unit'><h6>Catalogue Number</h6>".$vs_accession."</div>";
-				}														
+				}
+				if ($vs_current_loc = $t_object->get('ca_storage_locations.preferred_labels', array('delimiter' => '<br>'))) {
+					print "<div class='unit'><h6>Current Location</h6>".$vs_current_loc."</div>";
+				}																		
 #				if ($vs_info = $t_object->get('ca_objects.idno')) {
 #					print "<div class='unit'><h6>Identifier</h6>".$vs_info."</div>";
 #				}
 #				if ($vs_location = $t_object->get('ca_objects.location')) {
 #					print "<div class='unit'><h6>Location</h6>".$vs_location."</div>";
+#				}				
+#				if ($va_related_pub = $t_object->get('ca_objects.related.preferred_labels', array('restrictToTypes' => array('publication'), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+#					print "<div class='unit'><h6>Related Publications</h6>".$va_related_pub."</div>";
 #				}
-				if ($vs_description = $t_object->get('ca_objects.description')) {
-					print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
-				}				
-				if ($va_related_pub = $t_object->get('ca_objects.related.preferred_labels', array('restrictToTypes' => array('publication'), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
-					print "<div class='unit'><h6>Related Publications</h6>".$va_related_pub."</div>";
-				}
 				if ($t_object->get('ca_objects.type_id') != $vn_pub_type_id) {
 					print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 				}
@@ -126,9 +127,7 @@
 #				if ($vs_available = $t_object->get('ca_objects.available')) {
 #					print "<div class='unit'><h6>Available Prints and Publications</h6><a href='".$vs_available."' target='_blank'>".$vs_available."</a></div>";
 #				}
-#				if ($vs_current_loc = $t_object->get('ca_objects.current_location')) {
-#					print "<div class='unit'><h6>Current Location</h6>".$vs_current_loc."</div>";
-#				}																					
+																					
 ?>
 			</div><!-- end col -->
 		</div><!-- end row -->	
@@ -139,6 +138,9 @@
 ?>		
 		<hr></hr>
 <?php
+		if ($vs_description = $t_object->get('ca_objects.description')) {
+			print "<div class='row'><div class='col-sm-12'><h2>Object Specific Text</h2><div class='unit trimText'>".$vs_description."</div></div><!-- end col --></div><!-- end row --><hr>";
+		}
 		if ($va_artist = $t_object->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('artist')))) {
 			$t_entity = new ca_entities($va_artist);
 		}
@@ -153,44 +155,56 @@
 				
 					if ($vs_birthdate = $t_entity->get('ca_entities.birthday')) {
 						print "<div class='info'><span class='metaLabel'>Born</span><span class='data'>".$vs_birthdate."</span></div>";
-					}	
+					}
+					if ($vs_deathdate = $t_entity->get('ca_entities.deathdate')) {
+						print "<div class='info'><span class='metaLabel'>Died</span><span class='data'>".$vs_deathdate."</span></div>";
+					}						
 					if ($vs_birthplace = $t_entity->get('ca_entities.birthplace')) {
 						print "<div class='info'><span class='metaLabel'>Birthplace</span><span class='data'>".$vs_birthplace."</span></div>";
 					}
-#					if ($vs_deathdate = $t_entity->get('ca_entities.deathdate')) {
-#						print "<div class='info'><span class='metaLabel'>Date of Death</span><span class='data'>".$vs_deathdate."</span></div>";
-#					}
-					if ($vs_gender = $t_entity->get('ca_entities.gender', array('convertCodesToDisplayText' => true))) {
-						print "<div class='info'><span class='metaLabel'>Gender</span><span class='data'>".caNavLink($this->request, $vs_gender, '', '', 'MultiSearch', 'Index', array('search' => "ca_entities.gender:'".addslashes($vs_gender)."'", 'label' => 'gender'))."</span></div>";
+					if ($vs_gender = $t_entity->get('ca_entities.gender')) {
+						print "<div class='info'><span class='metaLabel'>Gender</span><span class='data'>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_gender, true), '', 'Browse', 'entities', 'facet/gender_facet/id/'.$vs_gender)."</span></div>";
 					}	
-					if ($vs_citizenship = $t_entity->get('ca_entities.citizenship', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
-						print "<div class='info'><span class='metaLabel'>Citizenship</span><span class='data'>".caNavLink($this->request, $vs_citizenship, '', '', 'MultiSearch', 'Index', array('search' => "ca_entities.citizenship:'".addslashes($vs_citizenship)."'", 'label' => 'citizenship'))."</span></div>";
+					if ($va_citizenship = $t_entity->get('ca_entities.citizenship', array('returnAsArray' => true))) {
+						print "<div class='info'><span class='metaLabel'>Citizenship</span><span class='data'>";
+						$va_ct = array();
+						foreach ($va_citizenship as $va_key => $va_citizen) {
+							$va_ct[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_citizen, true), '', 'Browse', 'entities', 'facet/citizenship_facet/id/'.$va_citizen);
+						}
+						print join(', ', $va_ct);
+						print "</span></div>";
 					}
-					if ($vs_cultural = $t_entity->get('ca_entities.cultural', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
-						print "<div class='info'><span class='metaLabel'>Cultural Heritage</span><span class='data'>".caNavLink($this->request, $vs_cultural, '', '', 'MultiSearch', 'Index', array('search' => "ca_entities.cultural:'".addslashes($vs_cultural)."'", 'label' => 'culture'))."</span></div>";
+					if ($va_cultural = $t_entity->get('ca_entities.cultural', array('returnAsArray' => true))) {
+						print "<div class='info'><span class='metaLabel'>Cultural Heritage</span><span class='data'>";
+						$va_cl = array();
+						foreach ($va_cultural as $va_key => $va_culture) {
+							$va_cl[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_culture, true), '', 'Browse', 'entities', 'facet/cultural_facet/id/'.$va_culture);
+						}
+						print join(', ', $va_cl);
+						print "</span></div>";
 					}					
 #					if ($vs_nationality = $t_entity->get('ca_entities.nationality', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
 #						print "<div class='info'><span class='metaLabel'>Nationality</span><span class='data'>".$vs_nationality."</span></div>";
 #					}
 	
-					if ($vs_lw_relationship = $t_entity->get('ca_entities.lw_relationship', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
+					if ($vs_lw_relationship = $t_entity->get('ca_entities.lw_relationship', array('returnWithStructure' => true, 'sort' => 'ca_entities.lw_relationship.lwdate'))) {
 						print "<div class='info'><span class='metaLabel'>Light Work Relationship</span><span class='data'>";
 						foreach ($vs_lw_relationship as $vs_key => $vs_lw_relationships) {
 							foreach ($vs_lw_relationships as $vs_key => $vs_lw_relationship) {
 								if ($vs_lw_relationship['Relationship']) {
-									print caNavLink($this->request, $vs_lw_relationship['Relationship'], '', '', 'MultiSearch', 'Index', array('search' => "ca_entities.lw_relationship.Relationship:'".addslashes($vs_lw_relationship['Relationship'])."' AND ca_entities.lw_relationship.lwdate:'".addslashes($vs_lw_relationship['lwdate'])."'", 'label' => 'relationship'));
+									print caNavLink($this->request, caGetListItemByIDForDisplay($vs_lw_relationship['Relationship'], true), '', 'Browse', 'entities', 'facet/lw_relationship_facet/id/'.$vs_lw_relationship['Relationship']);
 								}
 								if ($vs_lw_relationship['lwdate']) {
 									print ", ".$vs_lw_relationship['lwdate']."<br/>";
 								}
-								if ($vs_lw_relationship['relationship_notes']) {
-									print $vs_lw_relationship['relationship_notes'];
-								}																
+								#if ($vs_lw_relationship['relationship_notes']) {
+								#	print $vs_lw_relationship['relationship_notes'];
+								#}																
 							}
 						}
 						print "</span></div>";
 					}	
-					if ($vs_entity_pub = $t_entity->get('ca_objects.preferred_labels', array('restrictToTypes' => array('publication'), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+					if ($vs_entity_pub = $t_entity->get('ca_objects.preferred_labels', array('restrictToTypes' => array('publication'), 'delimiter' => '<br/>', 'returnAsLink' => true, 'sort' => 'ca_objects.preferred_labels'))) {
 						print "<div class='info'><span class='metaLabel'>Light Work Publications</span><span class='data'>".$vs_entity_pub."</span></div>";
 					}
 #					if ($vs_websites = $t_entity->get('ca_entities.website', array('returnAsArray' => true))) {
@@ -200,8 +214,15 @@
 #						}				
 #						print "</span></div>";
 #					}
-					if ($vs_essay = $t_entity->get('ca_entities.essays', array('delimiter' => '<hr>'))) {
-						print "<p class='trimText' style='margin-top:35px;'>".$vs_essay."</p>";
+					if ($vs_bio = $t_entity->get('ca_entities.biography', array('delimiter' => '<hr class="dark">'))) {
+						print "<p class='trimText' style='margin-top:35px;'><h2 class='artist'>Biography</h2>".$vs_bio."</p><hr class='dark'>";
+					}
+					if ($va_essays = $t_entity->get('ca_entities.essays', array('returnAsArray' => true))) {
+						$vs_essays = array();
+						foreach ($va_essays as $va_key => $va_essay) {
+							$vs_essays[] = "<div class='trimText'>".$va_essay."</div>";
+						}
+						print "<div class='unit'><h2 class='artist'>Essays</h2>".join($vs_essays, "<hr class='dark'>")."</div>";
 					}																																					
 ?>						
 				</div>	<!-- end col-12 -->		
@@ -229,7 +250,7 @@
 			}
 			print "</div></div>";
 		}
-		if ($va_related_objects = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'restrictToTypes' => array('publication')))) {
+		if ($va_related_objects = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'restrictToTypes' => array('publication'), 'sort' => 'ca_objects.preferred_labels'))) {
 			$qr_related_objects = caMakeSearchResult('ca_objects', $va_related_objects);
 			print "<hr><div class='row'><div class='browseResultsContainer'><h2 style='margin-left:15px;padding-bottom:15px;'>Related Publications</h2>";
 			while($qr_related_objects->nextHit()) {
