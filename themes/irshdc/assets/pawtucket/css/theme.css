@@ -201,3 +201,13 @@ a.readmore-js-toggle {
 .detail .tab-pane{
 	padding:30px;
 }
+.detail a.btn-default{
+	color:#FFF;
+}
+.detail .unit.icon img {
+    width: auto;
+    height: auto;
+}
+.detail .nav-tabs > li > a{
+	text-align:center;
+}

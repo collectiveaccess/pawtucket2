@@ -152,19 +152,19 @@
 ?>
 				<ul class="nav navbar-nav menuItems">
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<?php print ($this->request->isLoggedIn()) ? $this->render("pageFormat/browseMenu.php") : "<li>".caNavLink($this->request, _t("Browse Archives"), "", "", "LoginReg", "LoginForm")."</li>"; ?>	
+					<?php print ($this->request->isLoggedIn()) ? $this->render("pageFormat/browseMenu.php") : ""; ?>	
 					<!--<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>-->
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features from the Archive"), "", "", "Gallery", "Index"); ?></li>
 <?php
 					if(!$this->request->isLoggedIn()){
 ?>
-						<li><?php print caNavLink($this->request, _t("Timeline"), "", "", "", ""); ?></li>
-						<li><?php print caNavLink($this->request, _t("Login"), "", "", 'LoginReg', 'LoginForm'); ?></li>
+						<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse Timeline"), "", "", "", ""); ?></li>
+						<li><?php print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a>"; ?></li>
 <?php
 					}else{
 ?>
 					<li <?php print ($this->request->getAction() == "Lightbox") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("My Sets"), "", "", "Lightbox", "Index"); ?></li>
-					<li <?php print ($this->request->getAction() == "occurrences") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Timeline"), "", "", "Browse", "occurrences"); ?></li>
+					<li <?php print ($this->request->getAction() == "occurrences") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse Timeline"), "", "", "Browse", "occurrences"); ?></li>
 <?php
 					}
 ?>

@@ -1,13 +1,22 @@
 <div class="container">
 	<div class="row">
-		<div class="col-sm-6 col-sm-offset-3">
-			<h1>Search Manuscript Database</h1>
+		<div class="col-sm-5">
+			<div class="scaleImg">
+<?php
+	$va_man_images = array("manuscript1.jpg", "manuscript2.jpg", "manuscript3.jpg", "manuscript4.jpg", "manuscript5.jpg", "manuscript6.jpg");
+	$vn_key = array_rand($va_man_images);
+	print caGetThemeGraphic($this->request, $va_man_images[$vn_key])
+?>
+			</div>
+		</div>
+		<div class="col-sm-7">
 
 {{{form}}}
 
 	<div class='advancedContainer'>
+		<h1>Search Manuscript Database</h1>
 		<div class='row'>
-			<div class="advancedSearchField col-sm-12">
+			<div class="advancedSearchField col-sm-12 col-md-8">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search Collections currently holding Manuscripts.">Institutions</span>
 				{{{ca_collections.preferred_labels%width=220px}}}
 				<select name="ca_collections.preferred_labels" value id="ca_collections_preferred_labels_2">
@@ -26,21 +35,25 @@
 			</div>
 		</div>
 		<div class='row'>
-			<div class="advancedSearchField col-sm-12">
+			<div class="advancedSearchField col-sm-12 col-md-8">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search on location and period.">Period</span>
 				{{{ca_objects.period%width=220px}}}
 			</div>
 		</div>
 		<div class='row'>
-			<div class="advancedSearchField col-sm-12">
+			<div class="advancedSearchField col-sm-12 col-md-8">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the database.">Keyword</span>
 				{{{_fulltext%width=200px&height=1}}}
 			</div>
 		</div>
-		<br style="clear: both;"/>
-		<div class='advancedFormSubmit'>
-			<span class='btn btn-default'>{{{reset%label=Reset}}}</span>
-			<span class='btn btn-default' style="margin-left: 20px;">{{{submit%label=Search}}}</span>
+		<div class='row'>
+			<div class="advancedSearchField col-sm-12 col-md-8">
+				<br style="clear: both;"/>
+				<div class='advancedFormSubmit'>
+					<span class='btn btn-default'>{{{reset%label=Reset}}}</span>
+					<span class='btn btn-default' style="margin-left: 20px;">{{{submit%label=Search}}}</span>
+				</div>
+			</div>
 		</div>
 	</div>
 

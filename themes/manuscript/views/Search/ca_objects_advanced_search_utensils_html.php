@@ -1,13 +1,44 @@
+<?php
+	require_once(__CA_MODELS_DIR__."/ca_sets.php");
+	$va_access_values = caGetUserAccessValues($this->request);
+	# --- get the set of items to feature
+	$vn_featured_id = null;
+	$t_set = new ca_sets(array("set_code" => "featured_artifacts"));
+	if($t_set->get("set_id")){
+		$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => true))) ? $va_tmp : array());
+		$vn_featured_id = $va_featured_ids[array_rand($va_featured_ids)];		
+	}
+?>
+
 <div class="container">
 	<div class="row">
+<?php
+	if($vn_featured_id){
+		$t_object = new ca_objects($vn_featured_id);
+?>
+		<div class="col-sm-5">
+			<div class="scaleImg">
+<?php
+			$va_media = $t_object->getPrimaryRepresentation(array("large"), null, array('checkAccess' => $va_access_values));
+			print caDetailLink($this->request, $va_media["tags"]["large"], '', 'ca_objects', $t_object->get("object_id"));
+			print caDetailLink($this->request, $t_object->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $t_object->get("object_id"));
+?>				
+			</div>
+		</div>
+		<div class="col-sm-7">
+<?php
+	}else{
+?>
 		<div class="col-sm-6 col-sm-offset-3">
-			<h1>Search Kitchen Artifact Database</h1>
-
+<?php
+	}
+?>
 {{{form}}}
 
 	<div class='advancedContainer'>
+		<h1>Search Kitchen Artifact Database</h1>
 		<div class='row'>
-			<div class="advancedSearchField col-sm-12">
+			<div class="advancedSearchField col-sm-12 col-md-8">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search Collections currently holding Kitchen Artifacts.">Institutions</span>
 				{{{ca_collections.preferred_labels%width=220px}}}
 				<select name="ca_collections.preferred_labels" id="ca_collections_preferred_labels_2">
@@ -28,27 +59,31 @@
 			</div>
 		</div>
 		<div class='row'>
-			<div class="advancedSearchField col-sm-12">
+			<div class="advancedSearchField col-sm-12 col-md-8">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search the creation dates of Kitchen Artifacts">Dates</span>
 				{{{ca_objects.utensil_date%width=220px}}}
 			</div>
 		</div>
 		<div class='row'>
-			<div class="advancedSearchField col-sm-12">
+			<div class="advancedSearchField col-sm-12 col-md-8">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search Kitchen Artificats by their material">Materials</span>
 				{{{ca_objects.materials%width=220px}}}
 			</div>
 		</div>
 		<div class='row'>
-			<div class="advancedSearchField col-sm-12">
+			<div class="advancedSearchField col-sm-12 col-md-8">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the database.">Keyword</span>
 				{{{_fulltext%width=200px&height=1}}}
 			</div>
 		</div>
-		<br style="clear: both;"/>
-		<div class='advancedFormSubmit'>
-			<span class='btn btn-default'>{{{reset%label=Reset}}}</span>
-			<span class='btn btn-default' style="margin-left: 20px;">{{{submit%label=Search}}}</span>
+		<div class='row'>
+			<div class="advancedSearchField col-sm-12 col-md-8">
+				<br style="clear: both;"/>
+				<div class='advancedFormSubmit'>
+					<span class='btn btn-default'>{{{reset%label=Reset}}}</span>
+					<span class='btn btn-default' style="margin-left: 20px;">{{{submit%label=Search}}}</span>
+				</div>
+			</div>
 		</div>
 	</div>
 

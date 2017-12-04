@@ -306,9 +306,14 @@ jQuery(document).ready(function() {
 		foreach($va_paths as $vn_i => $va_path) {
 			$vs_buf .= "caMap_{$vs_id}.makePath([".join(',', $va_path['pathJS'])."], '".preg_replace("![\n\r]+!", " ", addslashes($va_path['label']))."','".preg_replace("![\n\r]+!", " ", addslashes($va_path['content']))."', {strokeColor: '{$vs_path_color}', strokeWeight: {$vn_path_weight}, strokeOpacity: {$vn_path_opacity}});\n";
 		}
-		
+		$vs_marker_path = __CA_THEMES_URL__."/default/assets/pawtucket/graphics/m/m";
+		if(file_exists(__CA_THEME_DIR__."/assets/pawtucket/graphics/m")){
+			$vs_marker_path = __CA_THEME_URL__."/assets/pawtucket/graphics/m/m";
+		}elseif(file_exists(__CA_THEME_DIR__."/assets/pawtucket/graphics/m1.png")){
+			$vs_marker_path = __CA_THEME_URL__."/assets/pawtucket/graphics/m";
+		}
 		$vs_buf .= "
-				var mc_{$vs_id} = new MarkerClusterer(caMap_{$vs_id}.map, caMap_{$vs_id}_markers, {maxZoom: 14, imagePath: '".__CA_THEME_URL__."/assets/pawtucket/graphics/m'});
+				var mc_{$vs_id} = new MarkerClusterer(caMap_{$vs_id}.map, caMap_{$vs_id}_markers, {maxZoom: 14, imagePath: '".$vs_marker_path."'});
 				
 				
 				caMap_{$vs_id}.fitBounds(".$va_extents['north'].",".$va_extents['south'].",".$va_extents['east'].",".$va_extents['west'].");";

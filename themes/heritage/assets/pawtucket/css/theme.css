@@ -258,11 +258,11 @@ ul.about li i{
 	position:absolute;
 	bottom:30px;
 	left:30px;
-	padding:0px 15px 10px 15px;
+	padding:25px 20px 15px 20px;
 	width:650px;
 	background-color:rgba(255, 255, 255, 0.85);
 	color:#000;
-	font-size:12px;
+	font-size:14px;
 }
 .frontSocial {
 	margin-bottom:40px;
@@ -332,7 +332,7 @@ ul.about li i{
 	font-size:12px;
 	padding-bottom:5px;
 }
-.frontTimelineCard .fa-search{
+.frontTimelineCard .fa-ellipsis-h{
 	position:absolute;
 	bottom:3px;
 	right:3px;
@@ -356,10 +356,14 @@ ul.about li i{
 	padding-right:10px;
 	padding:10px;
 }
-.frontTimelineCardFullCol img{
+.frontTimelineCardFullCol img, .frontTimelineSlide img{
 	width:100%;
 	height:auto;
 	margin-bottom:10px;
+}
+.front .jcarousel-wrapper {
+    margin-bottom: 0px;
+    margin-top: 0px;
 }
 .frontTimelineCardFullDesc{
 	max-height:325px;
@@ -375,6 +379,16 @@ ul.about li i{
 }
 .frontTimeLineCol{
 	display:relative;
+}
+.front .jcarousel-control-prev, .front .jcarousel-control-next{
+	top:50%;
+	font-size:30px;
+}
+.front .jcarousel-control-prev{
+	left:-10px !Important;
+}
+.front .jcarousel-control-next{
+	right:-10px !Important;
 }
 /*.frontTimeLineCol:hover .frontTimelineCardFull{
 	display:inline;
@@ -452,4 +466,51 @@ ul.about li i{
 .frontFilter{
 	margin-bottom:15px;
 	font-size:14px;
+}
+
+/* login form */
+#caFormOverlay.caFormOverlayLogin{
+	padding:0px;
+	width:400px;
+	border-radius:5px;
+}
+#caFormOverlay.caFormOverlayLogin input, #caFormOverlay.caFormOverlayLogin .btn-default{
+	border-radius:3px;
+}
+#caFormOverlay.caFormOverlayLogin input:focus{
+	border: 1px solid #0093c3;
+}
+#caFormOverlay.caFormOverlayLogin .btn-default{
+	width:100%;
+	font-size:13px;
+	background-color:#0093c3;
+}
+#caFormOverlay.caFormOverlayLogin .btn-default:hover{
+	background-color: #00b9f6 !important;
+	-webkit-transition: background-color 0.25s ease 0s;
+	-moz-transition: background-color 0.25s ease 0s;
+	-ms-transition: background-color 0.25s ease 0s;
+	-o-transition: background-color 0.25s ease 0s;
+	transition: background-color 0.25s ease 0s;
+}
+#caFormOverlay.caFormOverlayLogin #LoginForm{
+	padding-left:20px;
+	padding-right:20px;
+}
+.caFormOverlayLogin .loginFormHeader{
+	background-color: #6f6f6f;
+	text-align:center;
+	padding:20px;
+	margin-bottom:20px;
+}
+.caFormOverlayLogin .loginFormHeader img{
+	height:60px;
+	width:auto;
+}
+.caFormOverlayLogin .loginFormHeader .glyphicon{
+	color: #fff !Important;
+}
+.caFormOverlayLogin a{
+	color:#666;
+	font-size:13px;
 }
