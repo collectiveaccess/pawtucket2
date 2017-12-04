@@ -60,14 +60,10 @@
 			} else {
 				print "<div class='col-sm-10 col-sm-offset-1'>";
 			}
-?>
-<?php
-	$viewable = $t_object->get('ca_objects.viewable', array('convertCodesToDisplayText' => true));
-	$vs_link_text = '';
-	if($viewable == "Yes"){
-		$vs_link_text = 'View Online';
-	} else {
-		$vs_link_text = 'View Catalog Record';
+
+	$vs_link_text = $t_object->get('ca_objects.link_text', array('convertCodesToDisplayText' => true));
+	if(!$vs_link_text){
+		$vs_link_text = "View Catalog Record";
 	}
 	$vs_link_text .= " <span class='glyphicon glyphicon-new-window' aria-hidden='true'></span>";
 ?>
@@ -90,7 +86,9 @@
 <?php
 				if ($va_collections = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h5>Manuscript Location</h5>".$va_collections;
-                    if($vs_library_location = $t_object->get('ca_objects.sublocation')){
+					$locs = is_array($locs = $t_object->get('ca_objects.sublocation', ['returnAsArray' => true])) ? array_filter($locs, function($v) { return strlen(trim($v)); }) : $locs;
+				
+                    if(sizeof($locs) && ($vs_library_location = trim(join("; ", $locs)))){
                         print ", ".$vs_library_location;
                     }
                     print "</div>";
@@ -100,8 +98,8 @@
                 #    print "<div class='unit'><h5>Library Title</h5>".$vs_library_title."</div>";
                 #}
 
-				if ($va_place = $t_object->get('ca_places.hierarchy.preferred_labels', array('delimiter' => ', '))) {
-					print "<div class='unit'><h5>Place of Origin</h5>".$va_place."</div>";
+				if ($va_place = $t_object->get('ca_places.hierarchy.preferred_labels', array('delimiter' => ' ➔ ', 'returnAsArray' => true))) {
+					print "<div class='unit'><h5>Place of Origin</h5>".join(" and ", $va_place)."</div>";
 				}
 				if ($va_date = $t_object->get('ca_objects.date_composition')) {
 					print "<div class='unit'><h5>Date of Composition</h5>".$va_date."</div>";

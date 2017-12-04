@@ -131,6 +131,7 @@
 							<li class="dropdown-item"><a href="/about-us/">About Us</a></li>
 							<li class="dropdown-item"><a href="/about-the-project/">About the Project</a></li>
 							<li class="dropdown-item"><?php print caNavLink($this->request, 'Institutions', '', '', 'Browse', 'collections'); ?></li>
+							<li class="dropdown-item"><a href="/contact-us/">Contact Us</a></li>
 						</ul>
 					</li>
 
