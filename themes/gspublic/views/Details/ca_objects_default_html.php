@@ -68,7 +68,10 @@
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
 					print '</div><!-- end detailTools -->';
-				}				
+				}					
+									
+				print "<div class='unit restriction'>This photo may be used for internal promotional purposes on marketing and publicity materials and in publications produced by Girl Scouts of the USA.  If you intend to offer this photo to a 3rd party for their use, you will first need them to complete the <a href='http://www.girlscouts.org/en/contact-us/contact-us/permission-request.html' target='_blank'>Permission form</a>.</div>";
+				
 ?>
 			</div><!-- end col -->
 			
@@ -99,6 +102,7 @@
 						if($t_child->get("ca_objects.content_description")){
 							print '<div class="small">'.$t_child->get("ca_objects.content_description").'</div>';
 						}
+						print "</div><!-- end component -->";
 					}
 				}
 ?>
@@ -106,12 +110,12 @@
 				{{{<ifdef code="ca_objects.description"><H6>Physical Description</H6><span class="trimText">^ca_objects.description</span></ifdef>}}}
 				{{{<ifdef code="ca_objects.content_description"><H6>Description</H6><span class="trimText">^ca_objects.content_description</span></ifdef>}}}
 
-				<H6>Conditions Governing Access and Use</H6>
+				
 <?php
-				if(trim($t_object->get("ca_objects.accessrestrict"))){
-					print "This photo may not be used, published or distributed without first consulting with GSUSA legal due to the use restrictions associated with this photo.";
-				}else{
-					print "This photo may be used for internal promotional purposes on marketing and publicity materials and in publications produced by Girl Scouts of the USA.  If you intend to offer this photo to a 3rd party for their use, you will first need them to complete the <a href='http://www.girlscouts.org/en/contact-us/contact-us/permission-request.html' target='_blank'>Permission form</a>.";
+				if($vs_access = trim($t_object->get("ca_objects.accessrestrict"))){
+					print "<div class='unit'><H6>Conditions Governing Access and Use</H6>";
+					print $vs_access;
+					print "</div>";
 				}
 ?>
 				<hr></hr>
@@ -146,6 +150,17 @@
 // 					}
 // 					print join($va_terms, "<br/>");
 // 				}
+				if ($va_related_object_ids = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true))) {
+					print "<hr><div class='container relatedObjects' style='padding-left:0px;'><h6>Related objects</h6>";
+					foreach ($va_related_object_ids as $va_key => $va_related_object_id) {
+						$t_rel_object = new ca_objects($va_related_object_id);
+						print "<div class='unit row'><div class='col-sm-6'>";
+						print caNavLink($this->request, $t_rel_object->get('ca_object_representations.media.iconlarge'), '', '', 'Detail', 'objects/'.$va_related_object_id)."</div>";
+						print "<div class='col-sm-6'><div class='caption'>".$t_rel_object->get('ca_objects.preferred_labels', array('returnAsLink' => true))."</div>";
+						print "</div></div>";
+					}
+					print "</div>";
+				}
 		?>
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
