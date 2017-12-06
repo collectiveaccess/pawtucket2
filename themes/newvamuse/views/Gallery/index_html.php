@@ -57,7 +57,9 @@
 												}
 												print "<div class='name'>".caNavLink($this->request, $va_set_info['name'], '', '', 'Gallery', $vn_set_id)." <small>(".$va_set_info['item_count']." items)</small></div>";
 												$t_u = new ca_users($r_sets->get('ca_users.user_id'));
-												print "<div class='user'>created by: ".$t_u->getPreference('user_profile_username')."</div>";
+												if($t_u->getPreference('user_profile_username')){
+													print "<div class='user'>created by: ".$t_u->getPreference('user_profile_username')."</div>";
+												}
 												print "</div></li>";
 											}
 										}
@@ -157,6 +159,8 @@
 										# --- is there a contributor entity related to the suer account that made the set?
 										$t_contributor = new ca_entities($t_set_creator->get("entity_id"));
 										$vs_contributor_credit = caDetailLink($this->request, $t_contributor->get("ca_entities.preferred_labels.displayname"), '', 'ca_entities',  $t_set_creator->get("entity_id"));
+									}else{
+										$vs_contributor_credit = $t_set_creator->getPreference('user_profile_username');
 									}
 									if ($va_first_item['representation_tag']) {
 										$va_layout[$vn_col_no][]= ( $vn_rule_no > 4 ? "<hr>" : "" )."<div class='setCascade'><div class='setCascadeImage'>".caNavLink($this->request, $va_first_item['representation_tag'], '', '', 'Gallery', $vn_set_id)."</div><div class='name'>".caNavLink($this->request, $va_set_info['name'], '', '', 'Gallery', $vn_set_id)." <small>(".$va_set_info['item_count']." items)</small></div>".(($vs_contributor_credit) ? "<div>Curated by: ".$vs_contributor_credit."</div>" : "")."<div>".$t_set->get('ca_sets.set_description')."</div></div>";

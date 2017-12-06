@@ -16,13 +16,14 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 	$va_access_values = caGetUserAccessValues($po_request);
 	$vs_output = "";
 	$vs_desc_template = $o_config->get("description_template");
-	$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
+	$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids, array('sort' => 'ca_collections.preferred_labels'));
 	
 	if($qr_collections->numHits()){
 		while($qr_collections->nextHit()) {
 			$vs_icon = "";
 			# --- related objects?
-			$vn_rel_object_count = sizeof($qr_collections->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values)));
+			$vn_object_ids = $qr_collections->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values));
+			$vn_rel_object_count = sizeof($vn_object_ids);
 			if(is_array($va_options["collection_type_icons"])){
 				$vs_icon = $va_options["collection_type_icons"][$qr_collections->get("ca_collections.type_id")];
 			}
@@ -88,6 +89,10 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 				$vs_output .= "<p>".$vs_desc."</p>";
 			}
 			$vs_output .= "</div>";
+			$qr_objects = caMakeSearchResult('ca_objects', $vn_object_ids, array('sort' => 'ca_object_labels.name_sort'));
+			while ( $qr_objects->nextHit() ) {
+				$vs_output .= "<div class='objectLevel'>".caDetailLink($po_request, "<i class='fa fa-file-o'></i> ".$qr_objects->get('ca_objects.preferred_labels'), '', 'ca_objects', $qr_objects->get('ca_objects.object_id'))."</div>";
+			}	  		
 			if(sizeof($va_child_ids)) {
 				if($vb_collapse_link){
 					$vs_output .= "<div id='level".$qr_collections->get("ca_collections.collection_id")."' style='display:none;'>";
