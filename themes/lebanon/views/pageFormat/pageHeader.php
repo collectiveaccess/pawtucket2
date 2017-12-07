@@ -97,7 +97,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'LCHS-seal.gif'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'lchs.png')."<div class='headerText'>Lebanon County Historical Society</div>", "navbar-brand", "", "","");
 ?>
 			</div>
 
