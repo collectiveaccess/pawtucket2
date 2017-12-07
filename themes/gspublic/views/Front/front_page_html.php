@@ -35,41 +35,40 @@
 			<?php print caGetThemeGraphic($this->request, 'about_wideslide.jpg'); ?>
 		</div>
 		<div class="col-sm-4 textRight">
-			<H1>Welcome to the Girl Scouts of the USA Collections</H1>
+			<H1>Welcome to the<br/>Girl Scouts of the USA Collections</H1>
 			<p>
 				The collection of the Girl Scouts of the USA documents the history of the world’s largest female-led global organization for girls. 
 			</p>
 		</div><!--end col-sm-8-->
 	
 	</div><!-- end row -->
+	<div class="row frontBand browse">
+		<div class="col-sm-4  textLeft">
+			<h1>Discover the Collection</h1>
+			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia ex eu nisi mattis, id sollicitudin mauris sollicitudin. Aliquam eleifend eros tortor, id fringilla lacus ultrices non. </p>
+<?php
+			print caNavLink($this->request, 'Explore', 'btn-default', '', 'About', 'browse');
+?>			
+		</div>	
+		<div class="col-sm-8" style='padding-right:0px;'>
+			<?php print caGetThemeGraphic($this->request, 'browse_wideslide.jpg'); ?>	
+		</div>			
+	</div>				
 	<div class="row frontBand gallery">
-		<div class="col-sm-4 textLeft">
+		<div class="col-sm-8" style='padding-left:0px;'>
+			<?php print caGetThemeGraphic($this->request, 'gallery_wideslide.jpg'); ?>		
+		</div>	
+		<div class="col-sm-4 textRight">
 			<h1>Featured Galleries</h1>
 			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia ex eu nisi mattis, id sollicitudin mauris sollicitudin. Aliquam eleifend eros tortor, id fringilla lacus ultrices non. </p>
 <?php
 			print caNavLink($this->request, 'More', 'btn-default', '', 'Gallery', 'Index');
 ?>		
 		</div>	
-		<div class="col-sm-8" style='padding-right:0px;'>
-			<?php print caGetThemeGraphic($this->request, 'gallery_wideslide.jpg'); ?>		
-		</div>
-	</div>	
-	<div class="row frontBand browse">
-		<div class="col-sm-8" style='padding-left:0px;'>
-			<?php print caGetThemeGraphic($this->request, 'browse_wideslide.jpg'); ?>	
-		</div>	
-		<div class="col-sm-4 textRight">
-			<h1>Browse People and Objects</h1>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia ex eu nisi mattis, id sollicitudin mauris sollicitudin. Aliquam eleifend eros tortor, id fringilla lacus ultrices non. </p>
-<?php
-			print caNavLink($this->request, 'Browse Objects', 'btn-default', '', 'Browse ', 'objects');
-			print caNavLink($this->request, 'Browse People', 'btn-default', '', 'Browse ', 'entities');
-?>			
-		</div>	
 	</div>	
 	<div class="row frontBand collections">
 		<div class="col-sm-4 textLeft">
-			<h1>Explore Collections</h1>
+			<h1>Research Collections</h1>
 			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia ex eu nisi mattis, id sollicitudin mauris sollicitudin. Aliquam eleifend eros tortor, id fringilla lacus ultrices non. </p>
 <?php
 			print caNavLink($this->request, 'More', 'btn-default', '', 'Collections', 'Index');
@@ -78,4 +77,5 @@
 		<div class="col-sm-8" style='padding-right:0px;'>
 			<?php print caGetThemeGraphic($this->request, 'collection_wideslide.jpg'); ?>	
 		</div>	
-	</div>				
+	</div>
+			

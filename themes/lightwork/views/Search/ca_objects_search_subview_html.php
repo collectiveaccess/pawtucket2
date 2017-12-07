@@ -93,12 +93,13 @@
 					}
 				}
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
-?>
-				<p><?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)).($qr_results->get('ca_objects.date') ? ", ".$qr_results->get('ca_objects.date') : "" ); ?></p>
-<?php
+
 				if ($vs_block == "objects") {				
-					print "<p>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."</p>";
+					print "<p><b>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."</b></p>";
+					print "<p>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)).($qr_results->get('ca_objects.date') ? ", ".$qr_results->get('ca_objects.date') : "" )."</p>";
 					print "<p>".$qr_results->get('ca_objects.medium', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))."</p>";
+				} else {
+					print "<p>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)).($qr_results->get('ca_objects.date') ? ", ".$qr_results->get('ca_objects.date') : "" )."</p>";	
 				}
 ?>				
 			</div><!-- end blockResult -->

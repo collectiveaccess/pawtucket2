@@ -43,7 +43,7 @@
 													<div class='col-sm-8' style='padding-left:0px;'><div class='galleryItemImg'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', 'Gallery', $vn_set_id)."</div></div>
 													<div class='col-sm-4'><div class='galleryText'><h5>".caNavLink($this->request, $va_set["name"], '', '', 'Gallery', $vn_set_id)."</h5>
 													<p class='setDesc'>".(strlen($t_set->get('ca_sets.set_description')) > 210 ? substr($t_set->get('ca_sets.set_description'), 0, 207)."..." : $t_set->get('ca_sets.set_description'))."</p>
-													<p class='count'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</p>
+													<p class='count'>".caNavLink($this->request, $va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items")), 'smallLink', '', 'Gallery', $vn_set_id)."</p>
 													</div></div></div>
 											</div></div>\n";
 								} else {
@@ -52,7 +52,7 @@
 													
 													<h5>".caNavLink($this->request, $va_set["name"], '', '', 'Gallery', $vn_set_id)."</h5>
 													<p class='setDesc'>".(strlen($t_set->get('ca_sets.set_description')) > 210 ? substr($t_set->get('ca_sets.set_description'), 0, 207)."..." : $t_set->get('ca_sets.set_description'))."</p>
-													<p class='count'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</p>
+													<p class='count'>".caNavLink($this->request, $va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items")), 'smallLink', '', 'Gallery', $vn_set_id)."</p>
 												</div></div><!-- end col-4 -->
 												<div class='col-sm-8' style='padding-right:0px;'>
 													<div class='galleryItemImg right'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', 'Gallery', $vn_set_id)."</div>
