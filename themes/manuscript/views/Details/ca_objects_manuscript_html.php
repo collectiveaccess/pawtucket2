@@ -71,11 +71,11 @@
 					{{{ca_objects.preferred_labels.name}}}
 					<?php
 						if ($vs_link = $t_object->get('ca_objects.institution_link')) {
-							print "<h5><a href='".$vs_link."' target='_blank'>".$vs_link_text."</a> ";
+							print "<h5><a href='".$vs_link."' target='_blank'>".$vs_link_text."</a><br/>";
 						}
                         if ($vs_library_title = $t_object->get('ca_objects.nonpreferred_labels')){
-							if(strlen($vs_library_title) > 60){
-								print "[Library Title: ".substr($vs_library_title, 0, 57)." . . .]</h5>";
+							if(strlen($vs_library_title) > 180){
+								print "[Library Title: ".substr($vs_library_title, 0, 177)." . . .]</h5>";
 							} else {
 								print "[Library Title: ".$vs_library_title."]</h5>";
 							}
