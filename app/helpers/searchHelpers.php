@@ -832,13 +832,22 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Format search expression into display string suitable for presentation to users
 	 *
+	 * @param string $ps_search
+	 * @param array $pa_options Options include:
+	 *      omitFieldNames = Omit field names (aka. qualifiers) in display string. Only search terms will be included. [Default is false]
+	 *      omitQualifiers = Synonym for omitFieldNames
+	 *
+	 * @return string
 	 */
 	function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 		$o_config = Configuration::load();
 		$o_query_parser = new LuceneSyntaxParser();
 		$o_query_parser->setEncoding($o_config->get('character_set'));
 		$o_query_parser->setDefaultOperator(LuceneSyntaxParser::B_AND);
+		
+		$pb_omit_field_names = caGetOption(['omitFieldNames', 'omitQualifiers'], $pa_options, false);
 		
 		$ps_search = preg_replace('![\']+!', '', $ps_search);
 		try {
@@ -895,24 +904,24 @@
 					}
 					
 					$vs_field_disp = caGetLabelForBundle($vs_field);
-					$va_query[] = ($vs_field_disp ? "{$vs_field_disp}: \"" : "").caGetDisplayValueForBundle($vs_field, join(" ", $va_terms))."\"";
+					$va_query[] = ($vs_field_disp && !$pb_omit_field_names ? "{$vs_field_disp}: \"" : "").caGetDisplayValueForBundle($vs_field, join(" ", $va_terms))."\"";
 					break;
 				case 'Zend_Search_Lucene_Index_Term':
 					$subquery = new Zend_Search_Lucene_Search_Query_Term($subquery);
 					// intentional fallthrough to next case here
 				case 'Zend_Search_Lucene_Search_Query_Term':
 					$vs_field = caGetLabelForBundle($subquery->getTerm()->field);
-					$va_query[] = ($vs_field ? "{$vs_field}: " : "").$subquery->getTerm()->text;
+					$va_query[] = ($vs_field && !$pb_omit_field_names ? "{$vs_field}: " : "").$subquery->getTerm()->text;
 					break;	
 				case 'Zend_Search_Lucene_Search_Query_Range':
 					$vs_field = caGetLabelForBundle($subquery->getLowerTerm()->field);
-					$va_query[] = ($vs_field ? "{$v_field}: " : "")._t("%1 to %2", $subquery->getLowerTerm()->text, $subquery->getUpperTerm()->text);
+					$va_query[] = ($vs_field && !$pb_omit_field_names ? "{$v_field}: " : "")._t("%1 to %2", $subquery->getLowerTerm()->text, $subquery->getUpperTerm()->text);
 					break;
 				case 'Zend_Search_Lucene_Search_Query_Wildcard':
 					$va_query[] = "*";
 					break;
 				default:
-					$va_query[] = caGetDisplayStringForSearch($subquery);
+					$va_query[] = caGetDisplayStringForSearch($subquery, $pa_options);
 					break;
 			}
 		}

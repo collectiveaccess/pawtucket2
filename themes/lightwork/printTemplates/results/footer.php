@@ -39,7 +39,7 @@
 	 	$t_item = $this->getVar('t_subject');
 	
 	if($this->request->config->get('summary_footer_enabled')) {
-		$vs_footer = "<div class='pagingText' id='pagingText'>"._t('Page')." <span class='page'></span> "._t('of')." <span class='topage'></span></div>";
+		$vs_footer = "<div class='pagingText' id='pagingText'>Light Work — 316 Waverly Avenue, Syracuse, NY 13244  — 315-443-1300 — info@lightwork.org</div>";
 		
 		switch($this->getVar('PDFRenderer')) {
 			case 'wkhtmltopdf':
@@ -66,7 +66,7 @@
 				<body onLoad="subst()">
 					<div id='footer'>
 				<?php
-					print "<div class='pagingText' id='pagingText'>"._t('Page')." <span class='page'></span> "._t('of')." <span class='topage'></span></div>";
+					print "<div class='pagingText' id='pagingText' style='padding-left:0px;margin-left:0px;text-align:left;'>Light Work — 316 Waverly Avenue, Syracuse, NY 13244  — 315-443-1300 — info@lightwork.org</div>";
 				?>
 					</div>
 				</body>

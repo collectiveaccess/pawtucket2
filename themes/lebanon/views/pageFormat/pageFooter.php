@@ -27,22 +27,21 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
+		
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
-			<ul class="list-inline pull-right social">
-				<li><i class="fa fa-twitter"></i></li>
-				<li><i class="fa fa-facebook-square"></i></li>
-				<li><i class="fa fa-youtube-play"></i></li>
-			</ul>
-			<div>
-				Footer text here
+			<div class='footerInner'>
+				<div>
+					This catalog and all information and images within are property of the Lebanon County Historical Society.  The publication of images and/or data within is strictly prohibited without prior LCHS consent.
+				</div>
+				<ul class="list-inline">
+					<li><a href="https://lebanoncountyhistoricalsociety.org/research-archives" target="_blank">Research Archives Policies</a></li>
+					<li><a href="https://lebanoncountyhistoricalsociety.org/research-archives/research-by-mail" target="_blank">Research by Mail Info</a></li>
+					<li><a href="https://lebanoncountyhistoricalsociety.org/" target="_blank">LCHS Main</a></li>
+					<li><a href='https://www.facebook.com/Lebanon-County-Historical-Society-258385377528956/' target="_blank">Facebook</a></li>
+				</ul>
+				<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2017</a></small></div>
 			</div>
-			<ul class="list-inline">
-				<li><a href="#">Link 1</a></li>
-				<li><a href="#">Link 2</a></li>
-				<li><a href="#">Link 3</a></li>
-			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>
 		</footer><!-- end footer -->
 <?php
 	//
