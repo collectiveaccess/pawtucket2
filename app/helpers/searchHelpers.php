@@ -886,14 +886,15 @@
 		
 		$va_query = [];
 		foreach ($va_items as $id => $subquery) {
-		
-			if (($va_signs === null || $va_signs[$id] === true) && ($id)) {
-				$va_query[] = 'AND';
-			} else if (($va_signs[$id] === false) && $id) {
-				$va_query[] = 'NOT';
-			} else {
-				if ($id) { $va_query[] = 'OR'; }
-			}
+		    if ($subquery->getTerm()->field) {
+                if (($va_signs === null || $va_signs[$id] === true) && ($id)) {
+                    $va_query[] = 'AND';
+                } else if (($va_signs[$id] === false) && $id) {
+                    $va_query[] = 'NOT';
+                } else {
+                    if ($id) { $va_query[] = 'OR'; }
+                }
+            }
 			switch(get_class($subquery)) {
 				case 'Zend_Search_Lucene_Search_Query_Phrase':
 					$vs_field = null;
