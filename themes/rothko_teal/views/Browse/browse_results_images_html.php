@@ -113,7 +113,7 @@
 				}else{
 
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
+					$vs_label_detail_link 	= "<span class='resultLabel'>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id)."</span>";
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
@@ -164,18 +164,17 @@
 					#}
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
-					$vs_compare_link = !$vs_type_placeholder ? "<a href='#' class='compare_link' data-id='{$vn_id}'><i class='fa fa-clone' aria-hidden='true'></i></a>" : '';
+					$vs_compare_link = !$vs_type_placeholder ? "<a href='#' class='compare_link' data-id='{$vn_id}'><div class='compareIcon' aria-hidden='true'></div></a>" : '';
 					
 					$vs_result_output = "
 		<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 			<div class='bResultItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
-					<div class='bResultItemText'>
-					
-						{$vs_catno}
+				<div class='bResultItemContent'><div class='imgContainer'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div></div>
+					<div class='bResultItemText'>	
 						{$vs_label_detail_link}
 						{$vs_info}
+						{$vs_catno}
 						{$vs_compare_link}
 					</div><!-- end bResultItemText -->
 				</div><!-- end bResultItemContent -->

@@ -54,7 +54,7 @@
 			if (($vs_browse_type == 'works_in_collection') && ($vs_browse_id == 'artworks')) {
 			    $vs_browse_type = 'artworks';
 			}
-			print "<div class='browseTarget'>".caNavLink($this->request, $va_browse_type['displayName'], ($vs_browse_type == $vs_browse_id ? 'activeBrowse' : ''), '', 'Browse', $vs_browse_id)."</div>";
+			#print "<div class='browseTarget'>".caNavLink($this->request, $va_browse_type['displayName'], ($vs_browse_type == $vs_browse_id ? 'activeBrowse' : ''), '', 'Browse', $vs_browse_id)."</div>";
 			if ($vs_browse_type == $vs_browse_id) {
 				if(is_array($va_facets) && sizeof($va_facets)) {
 					print "<H5>"._t("Filter by")."</H5>";
@@ -63,7 +63,7 @@
 					$va_multiple_selection_facet_list[$vs_facet_name] = caGetOption('multiple', $va_facet_info, false, ['castTo' => 'boolean']);
 			
 					if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-						print '<div class="dropdown">';
+						print '<div class="dropdown button">';
 						print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>".$va_facet_info['label_singular']."</H5><ul class='facetGroup panel dropdown-menu dropdown-menu-right' id='facetGroup{$vs_facet_name}'>"; 
 						print "<div class='filterLeader'>Filter by ".$va_facet_info['label_plural']."</div>";
 						print "<div class='filterDesc'>".$va_facet_info['description']."<hr/></div>";
@@ -81,23 +81,36 @@
 						print "</div><!-- end dropdown -->";
 					} else {				
 						if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-						print '<div class="dropdown">';
-						print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>".$va_facet_info['label_singular']."</H5><ul class='facetGroup panel dropdown-menu dropdown-menu-right' id='facetGroup{$vs_facet_name}'>"; 
-						print "<div class='filterLeader'>Filter by ".$va_facet_info['label_plural']."</div>";
-						print "<div class='filterDesc'>".$va_facet_info['description']."<hr/></div>";
-						print "<li><div class='container' id='{$vs_facet_name}_facet_container'><div class='row'>";
+						if ($va_facet_info['show_only'] != 1) {
+							print '<div class="dropdown button">';
+							print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>".$va_facet_info['label_singular']."<span class='caret'></span></H5><ul class='facetGroup panel dropdown-menu ' id='facetGroup{$vs_facet_name}' style='width:".$va_facet_info['width']."%;".(($va_facet_info['left'] == 1) ? 'left:-'.($va_facet_info['width'] - 100).'%;' : '')."'>"; 
+							print "<li><div class='container' id='{$vs_facet_name}_facet_container'><div class='row'>";
+						} elseif (($va_facet_info['show_only'] == 1) && ($va_facet_info['open_show_only'] == 1)) {
+							print '<div class="dropdown button showOnly">';
+							print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>Show Only<span class='caret'></span></H5><ul class='facetGroup panel dropdown-menu ' id='facetGroupShowOnly' style='width:200%;left:-120%'>"; 
+							print "<li><div class='container' id='ShowOnly_facet_container'><div class='row'>";
+			
+						}
+						if (($va_facet_info['show_only'] == 1) && ($va_facet_info['open_show_only'] != 1)) {
+							print "<hr/>";
+						}
 						switch($va_facet_info["group_mode"]){
 							case "alphabetical":
 							case "list":
 							default:
 								$vn_facet_size = sizeof($va_facet_info['content']);
 								$vn_c = 0;
+								$vs_show_only = "";
 								foreach($va_facet_info['content'] as $va_item) {
-									print "<div class='col-sm-4 facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'>".caNavLink($this->request, $va_item['label'], '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
-									$vn_c++;
-									if ($vn_c == 3) {
-										print "<div style='clear:both;width:100%;margin-bottom:10px;'></div>";
-										$vn_c = 0;
+									if ($va_facet_info['show_only'] != 1) {
+										print "<div class='col-sm-".$va_facet_info['column']." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'><div class='checkArea'></div>".caNavLink($this->request, ucfirst($va_item['label']), '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+										$vn_c++;
+										if ($vn_c == 3) {
+											print "<div style='clear:both;width:100%;margin-bottom:10px;'></div>";
+											$vn_c = 0;
+										}
+									} else {
+										$vs_show_only .= "<div class='col-sm-".$va_facet_info['column']." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'><div class='checkArea'></div>".caNavLink($this->request, ucfirst($va_item['label']), '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 									}
 						
 									#if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
@@ -120,15 +133,18 @@
 							break;	
 							# ---------------------------------------------
 						}
-						
+						if ($vs_show_only != "") {
+							print $vs_show_only;
+						}
 						if ($va_multiple_selection_facet_list[$vs_facet_name]) {
 ?>
 	<a href="#" id="<?php print $vs_facet_name; ?>_facet_apply" data-facet="<?php print $vs_facet_name; ?>" class="facetApply">Apply</a>
 <?php
 						}
-						
-						print "</div><!-- end row --></div><!-- end container --></li></ul><!-- end facetGroup -->";
-						print "</div><!-- end dropdown -->";
+						if (($va_facet_info['show_only'] == 0) | ($va_facet_info['close_show_only'])) {
+							print "</div><!-- end row --></div><!-- end container --></li></ul><!-- end facetGroup -->";
+							print "</div><!-- end dropdown -->";
+						}
 					}
 				}
 				if(is_array($va_facets) && sizeof($va_facets)) {
@@ -140,24 +156,10 @@
 ?>
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-            if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
-				var offset = jQuery('#bRefine').height(jQuery(window).height() - 30).offset();   // 0px top + (2 * 15px padding) = 30px
-				var panelWidth = jQuery('#bRefine').width();
-				jQuery(window).scroll(function () {
-					var scrollTop = $(window).scrollTop();
-					// check the visible top of the browser
-					if (offset.top<scrollTop && ((offset.top + jQuery('#pageArea').height() - jQuery('#bRefine').height() + 155) > scrollTop)) {
-						jQuery('#bRefine').addClass('fixed');
-						jQuery('#bRefine').width(panelWidth);
-					} else {
-						jQuery('#bRefine').removeClass('fixed');
-					}
-				});
-            }
             
             var multiple_selection_facet_list = <?php print json_encode($va_multiple_selection_facet_list); ?>;
             
-            jQuery(".facetApply").hide();
+            
             
             jQuery(".facetItem").on('click', function(e) { 
             	if (!multiple_selection_facet_list[jQuery(this).data('facet')]) { return; }
@@ -167,11 +169,7 @@
             		jQuery(this).attr('facet_item_selected', '1');
             	}
             	
-            	if (jQuery("div.facetItem[facet_item_selected='1']").length > 0) {
-            		jQuery("#" + jQuery(this).data('facet') + "_facet_apply").show();
-            	} else {
-            		jQuery("#" + jQuery(this).data('facet') + "_facet_apply").hide();
-            	}
+
             	
             	e.preventDefault();
             	return false;

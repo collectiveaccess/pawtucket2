@@ -215,15 +215,27 @@ if($this->request->getParameter("detailNav", pInteger)){
 <?php
 }	
 if (!$vb_ajax) {	// !ajax
-?>
-<div class="row" style="clear:both;">
-	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-3 col-md-3  col-lg-3"; ?>">
+	$va_browse_types = caGetBrowseTypes();
+	$vs_current_browse = $this->getVar('browse_type');
+	print '<div class="browseTargets row">';
+	print "<div class='col-sm-2'></div>";
+	foreach ($va_browse_types as $va_browse_type => $va_browse_info_list) {
+		if ($va_browse_type == 'works_in_collection') { continue; }
+		if ($vs_current_browse == $va_browse_type) {
+			$vs_active_class = "active";
+		} else {
+			$vs_active_class = null;
+		}
+		print '<div class="browseTargetLink col-sm-2">'.caNavLink($this->request, $va_browse_info_list['displayName'], $vs_active_class, '', 'Browse', $va_browse_type).'</div>';
+	}
+	print "<div class='col-sm-2'></div>";
+	print '</div>';
 
-<?php
 		print $this->render("Browse/browse_refine_subview_html.php");
-?>			
-	</div><!-- end col-2 -->
-	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-9 col-md-9 col-lg-9"; ?>'>
+?>	
+<div class="container">	
+<div class="row" style="clear:both;">
+	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-12"; ?>'>
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -247,21 +259,55 @@ if (!$vb_ajax) {	// !ajax
 ?>
 			<H2>
 <?php
-				print _t('%3 <span class="hitCount">(%1 %2)</span>', $qr_res->numHits(), ($qr_res->numHits() > 1) ? $va_browse_info["labelPlural"] : $va_browse_info["labelSingular"], ($qr_res->numHits() == 1) ? _t("Result") : _t("Results"));	
+				print _t('<span class="hitCount">%1 %2</span>', $qr_res->numHits(), ($qr_res->numHits() > 1) ? $va_browse_info["labelPlural"] : $va_browse_info["labelSingular"]);	
 ?>		
 			</H2>
+			<div class="btn-group sortResults">
+<?php			
+				$vs_sort_display = str_replace('+', ' ', $vs_current_sort);
+?>
+				<span class="sortMenu" data-toggle="dropdown">Sort by: <span class="sortValue"><?php print ucfirst($vs_sort_display); ?><i class='fa fa-chevron-down'></i></span></span>
+				<ul class="dropdown-menu dropdown-menu-right" role="menu">
+<?php
+					if($qr_res->numHits() && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
+						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
+						print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
+						print "<li class='divider'></li>";
+					}
+					if($vs_sort_control_type == 'dropdown'){
+						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
+							foreach($va_sorts as $vs_sort => $vs_sort_flds) {
+								if ($vs_current_sort === $vs_sort) {
+									print "<li><a href='#'><div class='circleSelected'></div>".strtolower($vs_sort)."</a></li>\n";
+								} else {
+									print "<li>".caNavLink($this->request, "<div class='circleSelect'></div>".strtolower($vs_sort), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
+								}
+							}
+							print "<li class='divider'></li>\n";
+							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<div class="circleSelected"></div>' : '<div class="circleSelect"></div>')._t("ascending"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<div class="circleSelected"></div>' : '<div class="circleSelect"></div>')._t("descending"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+						}
+					
+						if ((sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) && is_array($va_sorts) && sizeof($va_sorts)) {
+
+						}
+					}				
+
+?>
+				</ul>
+			</div><!-- end btn-group -->			
 			<H5>				
 <?php
 			if (sizeof($va_criteria) > 0) {
 				$i = 0;
 				print "<div style='height:15px;clear:both;'></div>";
-				print "<span class='filteringBy'>Filtering by </span>";
+				#print "<span class='filteringBy'>Filtering by </span>";
 				foreach($va_criteria as $va_criterion) {
-					print "<strong class='criterion'>".strtolower($va_criterion['facet']).':</strong>';
+					#print "<strong class='criterion'>".strtolower($va_criterion['facet']).':</strong>';
 					if ($va_criterion['facet_name'] != '_search') {
-						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm refine">'.$va_criterion['value'].' <span class="fa fa-close clearFacet"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm refine">'.ucfirst($va_criterion['value']).' '.caGetThemeGraphic($this->request, 'closewhite.png', array('class' => 'clearFacet')).'</button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
 					}else{
-						print ' <button type="button" class="btn btn-default btn-sm refine">'.$va_criterion['value'].'</button>';
+						print ' <button type="button" class="btn btn-default btn-sm refine">'.ucfirst($va_criterion['value']).'</button>';
 						$vs_search = $va_criterion['value'];
 					}
 					$i++;
@@ -289,12 +335,12 @@ if (!$vb_ajax) {	// !ajax
 				print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 			}
 			if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
-				print "<span>".caNavLink($this->request, "<button type='button' class='btn btn-default clear'>"._t("Clear all")." <i class='fa fa-close'></i></button>", '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))." or modify your results by choosing another filter term</span>";
+				print "<span>".caNavLink($this->request, "<button type='button' class='btn btn-default clear'>"._t("Clear All")."</button>", '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</span>";
 			}
 			
 ?>		
-			</H5>			
-			<hr style="margin-top:10px;">
+			</H5>	
+				
 			<div class="row">
 				<div class="col-sm-9">
 <?php
@@ -324,42 +370,6 @@ if (!$vb_ajax) {	// !ajax
 				}
 ?>
 				</div>			
-				<div class="btn-group sortResults">
-<?php			
-					$vs_sort_display = str_replace('+', ' ', $vs_current_sort);
-?>
-					<span class="sortMenu" data-toggle="dropdown">sort by: <?php print strtolower($vs_sort_display); ?></span>
-					<ul class="dropdown-menu" role="menu">
-<?php
-						if($qr_res->numHits() && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
-							print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
-							print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
-							print "<li class='divider'></li>";
-						}
-						if($vs_sort_control_type == 'dropdown'){
-							if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-								print "<li class='dropdown-header'>"._t("sort by")."</li>\n";
-								foreach($va_sorts as $vs_sort => $vs_sort_flds) {
-									if ($vs_current_sort === $vs_sort) {
-										print "<li><a href='#'><em>".strtolower($vs_sort)."</em></a></li>\n";
-									} else {
-										print "<li>".caNavLink($this->request, strtolower($vs_sort), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
-									}
-								}
-								print "<li class='divider'></li>\n";
-								print "<li class='dropdown-header'>"._t("sort order")."</li>\n";
-								print "<li>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<em>' : '')._t("ascending").(($vs_sort_dir == 'asc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-								print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<em>' : '')._t("descending").(($vs_sort_dir == 'desc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-							}
-						
-							if ((sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) && is_array($va_sorts) && sizeof($va_sorts)) {
-
-							}
-						}				
-
-	?>
-					</ul>
-				</div><!-- end btn-group -->
 			</div><!-- end col -->
 		</div><!-- end row -->
 
@@ -407,7 +417,7 @@ if (!$vb_ajax) {	// !ajax
 	
 	
 </div><!-- end row -->	
-
+</div><!-- end container -->
 <script type="text/javascript">
 	jQuery(document).ready(function() {
 		jQuery('#browseResultsContainer').jscroll({
