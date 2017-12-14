@@ -92,16 +92,66 @@
 							<div class="row">
 								<div class="col-md-7">
 									<H6>Title</H6><div class='unitTop'>{{{<ifdef code="ca_objects.preferred_labels.name">^ca_objects.preferred_labels.name</ifdef>}}}{{{<ifnotdef code="ca_objects.preferred_labels.name">N/A</ifnotdef>}}}</div>
-									<H6>Author</H6><div class='unitTop'>{{{<case><ifcount code="ca_entities" min="1" restrictToRelationshipTypes="author"><unit relativeTo="ca_entities" restrictToRelationshipTypes="author">^ca_entities.preferred_labels.displayname</unit></ifcount><ifcount code="ca_entities" max="0" restrictToRelationshipTypes="author">N/A</ifcount></case>}}}
+									<H6>Author</H6><div class='unitTop'>
+<?php
+									$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("author")));
+									if(sizeof($va_entities)){
+										$va_entity_display = array();
+										foreach($va_entities as $va_entity){
+											$va_entity_display[] = caNavLink($this->request, $va_entity["displayname"], "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
+										}
+										print join($va_entity_display, "; ");
+									}else{
+										print "N/A";
+									}
+?>
 									</div>
 									<H6>Course</H6><div class='unitTop'>
-									{{{<case><ifcount code="ca_occurrences" restrictToTypes="course" min="1"><unit relativeTo="ca_occurrences" restrictToTypes="course">^ca_occurrences.preferred_labels.name</unit></ifcount><ifcount code="ca_occurrences" restrictToTypes="course" max="0">N/A</ifcount></case>}}}
+<?php
+									$va_courses = $t_object->get("ca_occurrences", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "restrictToTypes" => array("course")));
+									if(sizeof($va_courses)){
+										$va_course_display = array();
+										foreach($va_courses as $va_course){
+											$va_course_display[] = caNavLink($this->request, $va_course["name"], "", "", "Browse", "projects", array("facet" => "course_facet", "id" => $va_course["occurrence_id"]));
+										}
+										print join($va_course_display, "; ");
+									}else{
+										print "N/A";
+									}
+?>
 									</div>
 								</div>
 								<div class="col-md-5">
-									<H6>Academic Year</H6><div class='unitTop'>{{{<ifcount code="ca_occurrences" restrictToTypes="academic_year" min="1"><unit relativeTo="ca_occurrences" restrictToTypes="academic_year" delimiter="; ">^ca_occurrences.preferred_labels.name</unit></ifcount>}}}</div>
+									<H6>Academic Year</H6>
+									<div class='unitTop'>
+<?php
+									$va_years = $t_object->get("ca_occurrences", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "restrictToTypes" => array("academic_year")));
+									if(sizeof($va_years)){
+										$va_year_display = array();
+										foreach($va_years as $va_year){
+											$va_year_display[] = caNavLink($this->request, $va_year["name"], "", "", "Browse", "projects", array("facet" => "year_facet", "id" => $va_year["occurrence_id"]));
+										}
+										print join($va_year_display, "; ");
+									}else{
+										print "N/A";
+									}
+?>
+									</div>
 									<H6>Semester</H6><div class='unitTop'>{{{<ifdef code="ca_objects.semester">^ca_objects.semester</ifdef>}}}{{{<ifnotdef code="ca_objects.semester">N/A</ifnotdef>}}}</div>
-									<H6>Faculty</H6><div class='unitTop'>{{{<case><ifcount code="ca_entities" min="1" restrictToRelationshipTypes="faculty"><unit relativeTo="ca_entities" restrictToRelationshipTypes="faculty">^ca_entities.preferred_labels.displayname</unit></ifcount><ifcount code="ca_entities" max="0" restrictToRelationshipTypes="faculty">N/A</ifcount></case>}}}</div>
+									<H6>Faculty</H6><div class='unitTop'>
+<?php
+									$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("faculty")));
+									if(sizeof($va_entities)){
+										$va_entity_display = array();
+										foreach($va_entities as $va_entity){
+											$va_entity_display[] = caNavLink($this->request, $va_entity["displayname"], "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
+										}
+										print join($va_entity_display, "; ");
+									}else{
+										print "N/A";
+									}
+?>									
+									</div>
 								</div>
 							</div><!-- end row -->
 						</div>
@@ -125,23 +175,17 @@
 								<div role="tabpanel" class="tab-pane active" id="md">
 									<div class="row">
 										<div class="col-sm-4">
-		<?php
-		// $va_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("problem_types")));
-		// if(sizeof($va_list_items)){
-		// 	print "<H6>Program Type".((sizeof($va_list_items) > 1) ? "s" : "")."</H6>";
-		// 	$va_terms = array();
-		// 	foreach($va_list_items as $va_list_item){
-		// 		//$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Browse", "projects", array("facet" => "program_type_facet", "id" => urlencode($va_list_item["item_id"])));
-		// 		$va_terms[] = $va_list_item["name_singular"];
-		// 	}
-		// 	print join($va_terms, "; ");
-		// }
-											$va_vocs = array("problem_types" => "Problem Type", "program_types" => "Program Types", "architectural_elements" => "Architectural Elements");
-											foreach($va_vocs as $vs_list_code => $vs_voc_name){
-												$vs_list_items = $t_object->get("ca_list_items", array("delimiter" => "; ", "restrictToLists" => array($vs_list_code)));
-												print "<H7>".$vs_voc_name."</H7><div class='unitBottom'>";
-												if($vs_list_items){
-													print $vs_list_items;
+<?php
+											$va_vocs = array("problem_types" => array("name" => "Problem Type", "facet" => "problem_facet"), "program_types" => array("name" => "Program Types", "facet" => "program_types_facet"), "architectural_elements" => array("name" => "Architectural Elements", "facet" => "architectural_elements_facet"));
+											foreach($va_vocs as $vs_list_code => $va_voc){
+												$va_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array($vs_list_code)));
+												print "<H7>".$va_voc["name"]."</H7><div class='unitBottom'>";
+												if(sizeof($va_list_items)){
+													$va_terms = array();
+		 											foreach($va_list_items as $va_list_item){
+		 												$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Browse", "projects", array("facet" => $va_voc["facet"], "id" => urlencode($va_list_item["item_id"])));
+		 											}
+		 											print join($va_terms, "; ");
 												}else{
 													print "N/A";
 												}
@@ -154,17 +198,28 @@
 										</div>
 										<div class="col-sm-4">
 											<H7>Photographer</H7><div class='unitBottom'>
-											{{{<case>
-													<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="photographer"><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer">^ca_entities.preferred_labels.displayname</unit></ifcount>
-													<ifcount code="ca_entities" max="0" restrictToRelationshipTypes="photographer">N/A</ifcount>
-												</case>
-											}}}
+<?php
+											$va_entities = $t_object->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("photographer")));
+											if(sizeof($va_entities)){
+												$va_entity_display = array();
+												foreach($va_entities as $va_entity){
+													$va_entity_display[] = caNavLink($this->request, $va_entity["displayname"], "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
+												}
+												print join($va_entity_display, "; ");
+											}else{
+												print "N/A";
+											}
+?>
 											</div>
 											<H7>Subjects</H7><div class='unitBottom'>
 		<?php
-												$vs_list_items = $t_object->get("ca_list_items", array("delimiter" => "; ", "restrictToLists" => array("student_work_subjects")));
-												if($vs_list_items){
-													print $vs_list_items;
+												$vs_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("student_project_subjects")));
+												if(sizeof($va_list_items)){
+													$va_terms = array();
+		 											foreach($va_list_items as $va_list_item){
+		 												$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Browse", "projects", array("facet" => "student_project_subjects_facet", "id" => urlencode($va_list_item["item_id"])));
+		 											}
+		 											print join($va_terms, "; ");
 												}else{
 													print "N/A";
 												}
