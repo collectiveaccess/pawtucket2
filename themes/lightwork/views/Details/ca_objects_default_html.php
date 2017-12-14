@@ -192,7 +192,8 @@
 						foreach ($vs_lw_relationship as $vs_key => $vs_lw_relationships) {
 							foreach ($vs_lw_relationships as $vs_key => $vs_lw_relationship) {
 								if ($vs_lw_relationship['Relationship']) {
-									print caNavLink($this->request, caGetListItemByIDForDisplay($vs_lw_relationship['Relationship'], true), '', 'Browse', 'entities', 'facet/lw_relationship_facet/id/'.$vs_lw_relationship['Relationship']);
+									//print caNavLink($this->request, caGetListItemByIDForDisplay($vs_lw_relationship['Relationship'], true), '', 'Browse', 'entities', 'facet/lw_relationship_facet/id/'.$vs_lw_relationship['Relationship']);
+									print caNavLink($this->request, caGetListItemByIDForDisplay($vs_lw_relationship['Relationship'], true), '', 'Browse', 'entities', 'facets/lw_relationship_facet:'.$vs_lw_relationship['Relationship'].($vs_lw_relationship['lwdate'] ? ';lw_relationship_year_facet:'.(int)$vs_lw_relationship['lwdate'] : ''));
 								}
 								if ($vs_lw_relationship['lwdate']) {
 									print ", ".$vs_lw_relationship['lwdate']."<br/>";
