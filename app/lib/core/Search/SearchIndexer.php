@@ -1342,11 +1342,12 @@ class SearchIndexer extends SearchBase {
 
 		switch($vn_datatype) {
 			case __CA_ATTRIBUTE_VALUE_CONTAINER__: 		// container
+				$vn_element_id = is_numeric($pm_element_code_or_id) ? $pm_element_code_or_id : ca_metadata_elements::getElementID($pm_element_code_or_id);
+				
 				// index components of complex multi-value attributes
 				if ($vn_count = sizeof($va_attributes)) {
 					foreach($va_attributes as $vo_attribute) {
 						/* index each element of the container */
-						$vn_element_id = is_numeric($pm_element_code_or_id) ? $pm_element_code_or_id : ca_metadata_elements::getElementID($pm_element_code_or_id);
 						$va_sub_element_ids = $this->opo_metadata_element->getElementsInSet($vn_element_id, true, array('idsOnly' => true));
 						if (is_array($va_sub_element_ids) && sizeof($va_sub_element_ids)) {
 							$va_sub_element_ids = array_flip($va_sub_element_ids);
@@ -1373,10 +1374,15 @@ class SearchIndexer extends SearchBase {
 									$va_values_to_index[] = $vs_raw_display_value;
 								}
 								
+								if ($vo_value->getDatatype() == __CA_ATTRIBUTE_VALUE_LIST__) {
+                                    $va_values_to_index[] = $vo_value->getDisplayValue(['output' => 'idno']);
+                                }
+								
 								$va_sub_data = $pa_data;
 								if(isset($pa_data[$vs_sub_element_code]) && is_array($pa_data[$vs_sub_element_code])) {
 									$va_sub_data = array_merge($pa_data, $pa_data[$vs_sub_element_code]);
 								}
+								$va_sub_data['container_id'] = $vo_attribute->getAttributeID();
 
 								$this->opo_engine->indexField($pn_subject_table_num, "A{$vn_sub_element_id}", $pn_row_id, $va_values_to_index, $va_sub_data);
 								$this->_genIndexInheritance($t_inheritance_subject ? $t_inheritance_subject : $pt_subject, $t_inheritance_subject ? $pt_subject : null, "A{$vn_sub_element_id}", $pn_inheritance_subject_id ? $pn_inheritance_subject_id : $pn_row_id, $pn_row_id, $va_values_to_index, $va_sub_data, $pa_options);
@@ -1386,7 +1392,7 @@ class SearchIndexer extends SearchBase {
 
 							// Clear out any elements that aren't defined
 							foreach(array_keys($va_sub_element_ids) as $vn_element_id) {
-								$this->opo_engine->indexField($pn_subject_table_num, 'A'.$vn_element_id, $pn_row_id, [''], $pa_data);
+								$this->opo_engine->indexField($pn_subject_table_num, 'A'.$vn_element_id, $pn_row_id, [''], array_merge($pa_data, ['container_id' => $vo_attribute->getAttributeID()]));
 								$this->_genIndexInheritance($t_inheritance_subject ? $t_inheritance_subject : $pt_subject, $t_inheritance_subject ? $pt_subject : null, 'A'.$vn_element_id, $pn_inheritance_subject_id ? $pn_inheritance_subject_id : $pn_row_id, $pn_row_id, [''], $pa_data);
 							}
 						}
@@ -1415,7 +1421,7 @@ class SearchIndexer extends SearchBase {
 				// this only done for list attributes that are standalone and not a sub-element in a container. Perhaps
 				// we should also index the text of sub-element lists, but it's not clear that it is a good idea yet. The list_id's of
 				// sub-elements *are* indexed however, so advanced search forms passing ids instead of text will work.
-				$va_tmp = array();
+				$va_tmp = [];
 
 				$vn_element_id = is_numeric($pm_element_code_or_id) ? $pm_element_code_or_id : ca_metadata_elements::getElementID($pm_element_code_or_id);
 				$va_attributes = $pt_subject->getAttributesByElement($vn_element_id, array('row_id' => $pn_row_id));
@@ -1442,7 +1448,6 @@ class SearchIndexer extends SearchBase {
 								$this->opo_engine->indexField($pn_subject_table_num, 'A'.$vn_element_id, $pn_row_id, [$vs_v = $vo_value->getDisplayValue(['output' => 'idno'])], array_merge($pa_data, ['DONT_TOKENIZE' => 1]));
 								$this->_genIndexInheritance($t_inheritance_subject ? $t_inheritance_subject : $pt_subject, $t_inheritance_subject ? $pt_subject : null, 'A'.$vn_element_id, $pn_inheritance_subject_id ? $pn_inheritance_subject_id : $pn_inheritance_subject_id ? $pn_inheritance_subject_id : $pn_row_id, $pn_row_id, [$vs_v], array_merge($pa_data, ['DONT_TOKENIZE' => 1]));
 							}
-
 							$va_tmp[$vo_attribute->getAttributeID()] = $vs_value_to_index;
 						}
 					}

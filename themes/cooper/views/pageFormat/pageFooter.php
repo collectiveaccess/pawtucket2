@@ -31,6 +31,9 @@
 		<footer id="footer">
 			<div class="container"><div class="row">
 				<div class="col-sm-12">
+					<div class="footerLogo pull-right">
+						<?php print caGetThemeGraphic($this->request, 'IMLS_Logo.png'); ?><?php print caGetThemeGraphic($this->request, 'levyLogo2.jpg'); ?>
+					</div>
 					<ul class="list-inline pull-right">
 						<li><a href="#">Help</a></li>
 						<li><a href="#">Contact</a></li>
