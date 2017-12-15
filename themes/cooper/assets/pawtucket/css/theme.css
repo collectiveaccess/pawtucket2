@@ -514,6 +514,9 @@ body.initial .navbar-form {
 .detail{
 	color: #000;
 }
+.detail a {
+    color: #000;
+}
 .detail .detailImages{
 	margin-bottom:50px;
 }
