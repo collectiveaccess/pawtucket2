@@ -713,6 +713,7 @@ a, a:hover, a:focus {
     background-color: #f3f3f3;
     border: 1px solid #757575;
     border-top: 1px solid #ccc;
+    right: 0px;
 }
 .sortResults .dropdown-menu-right li a {
 	font-size: 14px;
@@ -1062,12 +1063,24 @@ a .fa.clearFacet {
 
 /* Detail */
 
+.detailHead {
+	border-bottom: 1px solid #d6d6d6;
+	height:10px;
+	margin-bottom:60px;
+}
 .objNav {
-	text-align:right;
+	text-align:left;
 	font-size:14px;
-	padding-bottom:20px;
-	text-transform:lowercase;
-	margin-top:-15px;
+	margin-top:-17px;
+	color:#161616;
+	font-size: 13px;
+    line-height: 15px;
+    font-weight:bold;
+    vertical-align:middle;
+    padding-left:10px;
+}
+.objNav a{
+	color:#161616;
 }
 .objNav .resultsLink, .objNav .previousLink, .objNav .nextLink,
 .objNav .resultsLink .small, .objNav .previousLink .small, .objNav .nextLink .small{
@@ -1078,6 +1091,22 @@ a .fa.clearFacet {
 }
 .objNav .previousLink {
 	padding-right:20px;
+}
+.pdfLink {
+	text-align:right;
+	margin-top:-21px;
+	float:right;
+	padding-right:10px;
+}
+.pdfLink img {
+	width:18px;
+	height:18px;
+}
+.teal-results {
+	content: url('../graphics/results.png');
+	height:8px;
+	width:12px;
+	padding-right:4px;
 }
 /*.exhibition.detail .repViewerCont img {
 	width:100%;
@@ -1116,6 +1145,58 @@ a .fa.clearFacet {
 .detail .objNav a:hover {
 	text-decoration:none;
 }
+.detail .jcarousel-pagination a {
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1px;
+    line-height: 1em;
+    min-width: 10px;
+    width: 10px;
+    height: 10px;
+    background: #161616;
+    color: #161616;
+    border-radius: 25px;
+    padding: 3px;
+    text-align: center;
+    margin-right: 5px;
+    border: 1px solid #161616;
+    opacity: .75;
+}
+.detail .jcarousel-pagination a.active {
+    background: #df7354;
+    color: #df7354;
+    border: 1px solid #df7354;
+    opacity: 1;
+    text-shadow: none;
+    text-decoration: none;
+}
+.detail .detailMediaToolbar .compare_link .fa {
+	content: url('../graphics/compare.png');
+	height:18px;
+	width:18px;
+}
+.detailMediaToolbar .glyphicon.glyphicon-zoom-in {
+	content: url('../graphics/enlarge.png');
+	height:18px;
+	width:18px;
+	padding:0px;
+}
+.guide {
+	margin-top:30px;
+	color:#161616;
+	font-weight:bold;
+	font-size:14px;
+	margin-left:-15px;
+}
+.guide a {
+	color:#161616;
+}
+.guide img {
+	height:14px;
+	width:14px;
+	margin-right:5px;
+	vertical-align:middle;
+}	
 .photoCredit {
 	color:#aaa;
 }
@@ -1126,19 +1207,29 @@ a .fa.clearFacet {
 .unit.spacer {
 	margin-top:30px;
 }
+.detail .jcarousel {
+	height:auto !important;
+	padding-bottom:30px;
+}
 .jcarousel li {
     float: left;
     text-align: center;
+}
+.detail .jcarousel-pagination {
+	right: 15px;
+	left:auto;
+	bottom:10px;
 }
 .detail .detailMediaToolbar {
 	display:block;
 	position:relative;
 	background-color:#fff;
-	float:right;
-	width:auto;
-	text-align:right;
-	right:20px;
-	top:10px;
+	float:none;
+	width:80px;
+	text-align:center;
+	top:40px;
+	margin-left:auto;
+	margin-right:auto;
 }
 .detail .detailMediaToolbar a {
 	color:#333;
@@ -1160,7 +1251,8 @@ a .fa.clearFacet {
 .detail .detailMediaToolbar .compare_link {
 	position:relative !important;
     display: inline-block;
-    margin-left: -45px;
+    float: right;
+    margin-top: 10px;
 }
 .detail .compare_link {
     color: #333;
@@ -1187,12 +1279,10 @@ a .fa.clearFacet {
 
 }
 .detailMediaToolbar .zoomButton {
-	vertical-align: bottom;
-    margin-top: -30px;
     display: inline-block;
+    float:left;
 }
 .detailMediaToolbar .glyphicon.glyphicon-zoom-in {
-	vertical-align:top;
 	padding-top:0px;
 }
 .jcarousel-wrapper {

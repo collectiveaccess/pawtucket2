@@ -39,10 +39,15 @@
 
 ?>
 <div class='container'>
-<div class="row">
-	<div class='col-xs-12 objNav'><!--- only shown at small screen size -->
+<div class="row detailHead">
+	<div class='col-xs-6 objNav'><!--- only shown at small screen size -->
 		<div class='resultsLink'>{{{resultsLink}}}</div><div class='previousLink'>{{{previousLink}}}</div><div class='nextLink'>{{{nextLink}}}</div>
-	</div><!-- end detailTop -->
+	</div>
+	<div class='col-xs-5 pdfLink'>
+<?php		
+		print caNavLink($this->request, caGetThemeGraphic($this->request, 'pdf.png'), 'faDownload', 'Detail', 'objects', $vn_id.'/view/pdf/export_format/_pdf_ca_objects_summary');
+?>	
+	</div><!-- end col --> 
 </div>
 <div class="row">
 	<div class='col-sm-6 col-md-6 col-lg-6'>
@@ -55,7 +60,7 @@
 	<div class='col-sm-6 col-md-6 col-lg-6' style="padding-right:30px;">
 		{{{representationViewer}}} 
 						
-		<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "version" => "iconlarge")); ?>
+		<?php #print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "version" => "iconlarge")); ?>
 <?php
 		if ($va_catalog_id = $t_object->get('ca_objects.catalog_number')) {
 			print "<div >".$va_catalog_id."</div>";
@@ -188,9 +193,9 @@
 			foreach ($va_keywords as $va_key => $va_keyword_id) {
 				$va_keyword_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_keyword_id), '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
 			}
-			print "<div class='unit row'><div class='{$vn_label_col} label'>Keywords</div><div class='$vn_data_col'>".join(', ', $va_keyword_links)."</div></div>";
-		}											
-		print "<div class='unit spacer'>".caNavLink($this->request, 'PDF', 'faDownload', 'Detail', 'objects', $vn_id.'/view/pdf/export_format/_pdf_ca_objects_summary')."</div>";
+			print "<div class='unit row'><div class='{$vn_label_col} label'>Tags</div><div class='$vn_data_col'>".join(', ', $va_keyword_links)."</div></div>";
+		}	
+		print "<div class='guide'>".caNavLink($this->request, caGetThemeGraphic($this->request, 'guide.png').' Guide to Entries', '', '', 'About', 'notes')."</div>";									
 ?>			
 	</div><!-- end col -->
 </div><!-- end row -->

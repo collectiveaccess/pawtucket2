@@ -48,6 +48,10 @@
 		<a href='#' id='detailRepNavNext' title='<?php print _t("Next"); ?>'><span class='fa fa-chevron-right'></span></a>
 		<div style='clear:both;'></div>
 	</div><!-- end detailRepNav -->
+	<!-- Pagination -->
+	<p class="jcarousel-pagination">
+	<!-- Pagination items will be generated in here -->
+	</p>
 </div><!-- end jcarousel-wrapper -->
 
 <script type='text/javascript'>
@@ -129,7 +133,19 @@
 					
 				}
 			});
-			
+			/*
+			 Pagination initialization
+			 */
+			$('.jcarousel-pagination')
+				.on('jcarouselpagination:active', 'a', function() {
+					$(this).addClass('active');
+				})
+				.on('jcarouselpagination:inactive', 'a', function() {
+					$(this).removeClass('active');
+				})
+				.jcarouselPagination({
+					// Options go here
+				});			
 		if( current_rep_id > 0){
 			$('.jcarousel').jcarousel('scroll', $('#slide' + current_rep_id));
 		}
