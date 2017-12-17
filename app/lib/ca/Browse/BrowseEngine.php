@@ -3730,7 +3730,7 @@
 
 							$vs_order_by = (sizeof($va_orderbys) ? "ORDER BY ".join(', ', $va_orderbys) : '');
 							$vs_sql = "
-								SELECT COUNT(*) _count, lil.item_id, lil.name_singular, lil.name_plural, lil.name_sort, lil.locale_id, li.rank, li.idno_sort
+								SELECT COUNT(*) _count, lil.item_id, lil.name_singular, lil.name_plural, lil.name_sort, lil.locale_id, li.rank, li.idno_sort, li.parent_id
 								FROM ca_list_items li
 								INNER JOIN ca_list_item_labels AS lil ON lil.item_id = li.item_id
 								{$vs_join_sql}
@@ -3742,25 +3742,65 @@
 							//print $vs_sql." [$vs_list_name]";
 							$qr_res = $this->opo_db->query($vs_sql, $vs_list_name);
 
-							$va_values = array();
+							$va_values = [];
+							$vn_root_id = $t_list->getRootItemIDForList();
 							while($qr_res->nextRow()) {
+							    $vn_parent_id = $qr_res->get('parent_id');
 								$vn_id = $qr_res->get('item_id');
 								if ($va_criteria[$vn_id]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 
 								$va_values[$vn_id][$qr_res->get('locale_id')] = array(
 									'id' => $vn_id,
 									'label' => $qr_res->get('name_plural'),
-									'content_count' => $qr_res->get('_count')
+									'content_count' => $qr_res->get('_count'),
+									'parent_id' => $vn_parent_id,
+									'child_count' => 0
 								);
 								if (!is_null($vs_single_value) && ($vn_id == $vs_single_value)) {
 									$vb_single_value_is_present = true;
 								}
 							}
+							
+							$va_values = caExtractValuesByUserLocale($va_values);
+							if ($va_facet_info['group_mode'] == 'hierarchical') {
+                                $t_rel_item = new ca_list_items();
+                                $qr_ancestors = call_user_func($t_rel_item->tableName().'::getHierarchyAncestorsForIDs', array_keys($va_values), array('returnAs' => 'SearchResult'));
+
+                                $vs_rel_table = $t_rel_item->tableName();
+                                $vs_rel_pk = $t_rel_item->primaryKey();
+
+                                $vb_check_ancestor_access = (bool)(isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_item->hasField('access'));
+
+                                if($qr_ancestors) {
+                                    while($qr_ancestors->nextHit()) {
+                                        if ($qr_ancestors->get('deleted')) { continue; }
+                                        $vn_ancestor_id = (int)$qr_ancestors->get("{$vs_rel_pk}");
+                                        $vn_parent_type_id = $qr_ancestors->get('type_id');
+                                        if (is_array($va_suppress_values) && (in_array($vn_ancestor_id, $va_suppress_values))) { continue; }
+                                        if ((sizeof($va_exclude_types) > 0) && in_array($vn_parent_type_id, $va_exclude_types)) { continue; }
+                                        if ((sizeof($va_restrict_to_types) > 0) && !in_array($vn_parent_type_id, $va_restrict_to_types)) { continue; }
+                                        if ($vb_check_ancestor_access && !in_array($qr_ancestors->get('access'), $pa_options['checkAccess'])) { continue; }
+                                        $va_values[$vn_ancestor_id] = array(
+                                            'id' => $vn_ancestor_id,
+                                            'label' => ($vs_label = $qr_ancestors->get('ca_list_items.preferred_labels.name_plural')) ? $vs_label : '['._t('BLANK').']',
+                                            'parent_id' => $qr_ancestors->get('ca_list_items.parent_id'),
+                                            'child_count' => 1
+                                        );
+                                    }
+                                }
+                            }
+							
+							
+							foreach($va_values as $vn_id => $va_value) {
+                                if ($va_value['parent_id'] && isset($va_values[$va_value['parent_id']])) {
+                                    $va_values[$va_value['parent_id']]['child_count']++;
+                                }
+                            }
 
 							if (!is_null($vs_single_value) && !$vb_single_value_is_present) {
 								return array();
 							}
-							return caExtractValuesByUserLocale($va_values);
+							return $va_values;
 						}
 					} else {
 
