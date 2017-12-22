@@ -747,7 +747,7 @@ h2.tl-headline {
 
 /* Contact */
 
-textarea.form-control, .contact .form-control, .contributeForm .form-control, #CommentForm .form-control, #LoginForm .form-control {
+textarea.form-control, .contact .form-control, .contributeForm .form-control, #CommentForm .form-control, #LoginForm .form-control, #AddItemForm .form-control {
     height: auto;
     background-color: #daeddd;
     border: 0px;

@@ -5,7 +5,7 @@
 ?>
 	<div id="caFormOverlay"><div class='alert alert-info'>
 <?php
-		print $vs_message." + ".$vn_row_id;
+		print $vs_message;
 ?>
 	</div><!-- end alert --></div><!-- end caFormOverlay -->
 <?php
