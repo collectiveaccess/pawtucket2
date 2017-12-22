@@ -52,7 +52,7 @@
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> | 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> | 
 <?php
 				}
 ?>
@@ -97,7 +97,7 @@
 				if ($vs_block == "objects") {				
 					print "<p><b>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."</b></p>";
 					print "<p>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)).($qr_results->get('ca_objects.date') ? ", ".$qr_results->get('ca_objects.date') : "" )."</p>";
-					print "<p>".$qr_results->get('ca_objects.medium', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))."</p>";
+					print "<p>".$qr_results->get('ca_objects.medium', array('delimiter' => ', ', 'convertCodesToDisplayText' => true, 'useSingular' => true))."</p>";
 				} else {
 					print "<p>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)).($qr_results->get('ca_objects.date') ? ", ".$qr_results->get('ca_objects.date') : "" )."</p>";	
 				}

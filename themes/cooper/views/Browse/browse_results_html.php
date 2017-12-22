@@ -25,7 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
 	$va_criteria 		= $this->getVar('criteria');			// array of browse criteria
@@ -51,9 +50,7 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
-	# Why did this break?
-	#$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
-	$vn_result_size 	= $qr_res->numHits();
+	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
 	
 	
 	$va_options			= $this->getVar('options');
@@ -72,17 +69,85 @@
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
-	<?php if($vs_current_view == "map" && $vs_table == "ca_collections" ){ ?>
-		<div class="col-sm-10">
-		
-	<?php }elseif($vs_current_view == "list" && $vs_table == "ca_collections" ){ ?>
-	        <div class="col-sm-10">
-	<?php } else { ?>
-		<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
-	<?php } ?>
+	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
+		<div id="bViewButtons">
+<?php
+		if(is_array($va_views) && (sizeof($va_views) > 1)){
+			foreach($va_views as $vs_view => $va_view_info) {
+				if ($vs_current_view === $vs_view) {
+					print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
+				} else {
+					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+				}
+			}
+		}
+?>
+		</div>
+		<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>
+		<div id='bRefine'>
+			<H3>Filter Results By:
+<?php
+			if (sizeof($va_criteria) > 0) {
+				$i = 0;
+				foreach($va_criteria as $va_criterion) {
+					//print "<strong>".$va_criterion['facet'].':</strong>';
+					if ($va_criterion['facet_name'] != '_search') {
+						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span>'.$va_criterion['value'].' </button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					}else{
+						print ' '.$va_criterion['value'];
+						$vs_search = $va_criterion['value'];
+					}
+					$i++;
+					if($i < sizeof($va_criteria)){
+						print "<br/>";
+					}
+					$va_current_facet = $va_all_facets[$va_criterion['facet_name']];
+					if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
+						$t_authority_table = new $va_current_facet["table"];
+						$t_authority_table->load($va_criterion['id']);
+						$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
+						$vs_facet_img = $t_authority_table->get("ca_object_representations.media.medium", array("limit" => 1, "checkAccess" => $va_access_values));
+						$vs_facet_based_title = $t_authority_table->get("preferred_labels");
+					}
+				}
+			}
+?>		
+			</H3>
+<?php
+		print $this->render("Browse/browse_refine_subview_html.php");
+?>
+		</div><!-- end bRefine -->
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+				jQuery('.bRefineFacet H5').click(function (){
+					$(this).siblings("div").slideToggle("fast");
+					if($(this).children("span").html() == "+"){
+						$(this).children("span").html("-");
+					}else{
+						$(this).children("span").html("+");
+					}
+					$(this).children("span").toggleClass("grey");
+				});
+				//if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
+					var offset = jQuery('#bRefine').height(jQuery(window).height() - 110).offset();   // 0px top + (2 * 15px padding) + 80 (fixed header) = 110px
+					var panelWidth = jQuery('#bRefine').width();
+					jQuery(window).scroll(function () {
+						var scrollTop = $(window).scrollTop();
+						// check the visible top of the browser
+						if (offset.top<scrollTop && ((offset.top + jQuery('#pageArea').height() - jQuery('#bRefine').height()) > scrollTop)) {
+							jQuery('#bRefine').addClass('fixed');
+							jQuery('#bRefine').width(panelWidth);
+						} else {
+							jQuery('#bRefine').removeClass('fixed');
+						}
+					});
+				//}
+			});
+		</script>			
+	</div><!-- end col-2 -->
+	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 <?php 
 			if($vs_sort_control_type == 'list'){
-				
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 					print "<H5 id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
 					$i = 0;
@@ -104,23 +169,59 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		<H1>
 <?php
-			if ($vs_current_view == 'map' && $vs_table == "ca_objects" ){
-				print _t('Manuscript Origins');
-			} else if ($vs_current_view == 'map' && $vs_table == "ca_collections" ) {
-				print _t('Participating Institutions');
-			} else {
-				print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+			if($vs_facet_based_title){
+				print $vs_facet_based_title;
+			}else{
+				print $va_browse_info["displayName"];
 			}
+			print "<span class='resultCount'> / "._t('%1 %2', $vn_result_size, ($vn_result_size == 1) ? $va_browse_info["labelSingular"] : $va_browse_info["labelPlural"]);	
 ?>		
-			<small>	
-<?php 
-			if($vs_table == 'ca_collections'){
-				print caNavLink($this->request, _("View all Manuscripts"), '', '', 'Browse', 'manuscripts');
-				print " | ";
-				print caNavLink($this->request, _("View all Utensils"), '', '', 'Browse', 'utensils');
-			}
+			<div class="btn-group">
+				<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
+				<ul class="dropdown-menu" role="menu">
+<?php
+					if($vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
+						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
+						print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
+						print "<li class='divider'></li>";
+					}
+					if($vs_sort_control_type == 'dropdown'){
+						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
+							print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
+							foreach($va_sorts as $vs_sort => $vs_sort_flds) {
+								if ($vs_current_sort === $vs_sort) {
+									print "<li><a href='#'><em>{$vs_sort}</em></a></li>\n";
+								} else {
+									print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
+								}
+							}
+							print "<li class='divider'></li>\n";
+							print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
+							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+						}
+						
+						if ((sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) && is_array($va_sorts) && sizeof($va_sorts)) {
 ?>
-			</small>
+						<li class="divider"></li>
+<?php
+						}
+					}
+					if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
+						print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+					}
+					
+					//if(is_array($va_export_formats) && sizeof($va_export_formats)){
+						// Export as PDF links
+					//	print "<li class='divider'></li>\n";
+					//	print "<li class='dropdown-header'>"._t("Download results as:")."</li>\n";
+					//	foreach($va_export_formats as $va_export_format){
+					//		print "<li class='".$va_export_format["code"]."'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+					//	}
+					//}
+?>
+				</ul>
+			</div><!-- end btn-group -->
 <?php
 			if(is_array($va_facets) && sizeof($va_facets)){
 ?>
@@ -132,50 +233,15 @@ if (!$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
-		<H5>
 <?php
-		if (sizeof($va_criteria) > 0) {
-			$i = 0;
-			foreach($va_criteria as $va_criterion) {
-				print "<strong>".$va_criterion['facet'].':</strong>';
-				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
-				}else{
-					# --- if this is an advanced search for manuscripts with an institution passed, convert the id to the institution name
-					if($vb_is_search && $vn_is_advanced && ($vs_table == 'ca_objects')){
-						$va_search_parts = explode("; ", $va_criterion['value']);
-						$va_search_parts_processed = array();
-						foreach($va_search_parts as $vs_search_part){
-							if(strpos($vs_search_part, "CollectiveAccess id (from related collections)") !== false){
-								$vn_institution_id = str_replace("CollectiveAccess id (from related collections): ", "", $vs_search_part);
-								$t_inst = new ca_collections($vn_institution_id);
-								$vs_search_part = "Related Collection: ".$t_inst->get("ca_collections.preferred_labels.name");	
-							}
-							$va_search_parts_processed[] = $vs_search_part;
-						}
-						print ' '.join("; ", $va_search_parts_processed);
-					}else{
-						print ' '.$va_criterion['value'];
-					}
-					$vs_search = $va_criterion['value'];
-				}
-				$i++;
-				if($i < sizeof($va_criteria)){
-					print " ";
-				}
-				$va_current_facet = $va_all_facets[$va_criterion['facet_name']];
-				if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
-					$t_authority_table = new $va_current_facet["table"];
-					$t_authority_table->load($va_criterion['id']);
-					$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
-				}
+		if($vs_facet_description || $vs_fact_img){
+			print "<div class='row bFacetContextHeader'>";
+			if($vs_facet_img){
+				print "<div class='col-md-4 scaleimg'>".$vs_facet_img."</div><div class='col-md-8'>";
+			}else{
+				print "<div class='col-md-12'>";
 			}
-		}
-?>		
-		</H5>
-<?php
-		if($vs_facet_description){
-			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
+			print "<div class='bFacetDescription'>".$vs_facet_description."</div></div></div>";
 		}
 
 		if($vb_showLetterBar){
@@ -185,7 +251,7 @@ if (!$vb_ajax) {	// !ajax
 					print caNavLink($this->request, $vs_l, ($vs_letter == $vs_l) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => $vs_l))." ";
 				}
 			}
-			print " | ".caNavLink($this->request, _t("All"), (!$vs_letter) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all')); 
+			print " ".caNavLink($this->request, _t("All"), (!$vs_letter) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all')); 
 			print "</div>";
 		}
 ?>
@@ -227,34 +293,7 @@ if (!$vb_ajax) {	// !ajax
 			</div><!-- end browseResultsContainer -->
 		</div><!-- end row -->
 		</form>
-	</div><!-- end col-8 -->
-	<?php if($vs_current_view == "map" && $vs_table == "ca_collections" ){ ?>
-		<div class="col-sm-1 col-sm-offset-1">
-	<?php } elseif($vs_current_view == "list" && $vs_table == "ca_collections" ) { ?>
-	    <div class="col-sm-1 col-sm-offset-1">
-	<?php } else { ?>
-		<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
-	<?php } ?>
-		<div id="bViewButtons">
-<?php
-		if(is_array($va_views) && (sizeof($va_views) > 1)){
-			foreach($va_views as $vs_view => $va_view_info) {
-				if($vs_view === 'timeline' && $vn_result_size < 4){ continue; }
-				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active iconPopoverTrigger" data-content="'.$vs_view.'"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
-				} else {
-					print caNavLink($this->request, '<span data-toggle="tooltip" data-content="'.$vs_view.'" class="glyphicon iconPopoverTrigger '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
-				}
-			}
-		}
-?>
-		</div>
-<?php
-		print $this->render("Browse/browse_refine_subview_html.php");
-?>			
-	</div><!-- end col-2 -->
-	
-	
+	</div><!-- end col-8 -->	
 </div><!-- end row -->	
 
 <script type="text/javascript">
@@ -262,7 +301,7 @@ if (!$vb_ajax) {	// !ajax
 		jQuery('#browseResultsContainer').jscroll({
 			autoTrigger: true,
 			loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-			padding: 600,
+			padding: 800,
 			nextSelector: 'a.jscroll-next'
 		});
 <?php
@@ -288,14 +327,6 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		}
 ?>
-		 $(function(){
-			$('.iconPopoverTrigger').popover({
-				trigger: 'hover',
-				container: 'body',
-				placement: 'top',
-				template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><div class="popover-content"></div></div>'
-			});
-        });
 	});
 
 </script>
