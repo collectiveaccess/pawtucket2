@@ -66,17 +66,24 @@
 	$va_browse_type_info = $o_config->get($va_browse_info["table"]);
 	$va_all_facets = $va_browse_type_info["facets"];	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
-	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
 <?php
-		print $this->render("Browse/browse_refine_subview_html.php");
+	if(is_array($va_facets) && sizeof($va_facets)){
+?>
+		<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
+<?php
+			print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
-	</div><!-- end col-2 -->
-	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
+		</div><!-- end col-2 -->
+		<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 <?php 
+	}else{
+?>
+		<div class='col-sm-12'>
+<?php
+	}
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 					print "<H5 id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
@@ -178,7 +185,7 @@ if (!$vb_ajax) {	// !ajax
 			foreach($va_criteria as $va_criterion) {
 				print "<strong>".$va_criterion['facet'].':</strong>';
 				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
 					print ' '.$va_criterion['value'];
 					$vs_search = $va_criterion['value'];

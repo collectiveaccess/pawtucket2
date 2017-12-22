@@ -97,7 +97,7 @@
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
             if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
-				var offset = jQuery('#bRefine').height(jQuery(window).height() - 30).offset();   // 0px top + (2 * 15px padding) = 30px
+				var offset = jQuery('#bRefine').height(jQuery(window).height() - 100).offset();   // 0px top + (2 * 15px padding) + 70 fixed header = 100px
 				var panelWidth = jQuery('#bRefine').width();
 				jQuery(window).scroll(function () {
 					var scrollTop = $(window).scrollTop();

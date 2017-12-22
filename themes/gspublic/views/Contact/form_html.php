@@ -25,7 +25,7 @@
 	$vn_num2 = rand(1,10);
 	$vn_sum = $vn_num1 + $vn_num2;
 
-	print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'contact.png')."</div>";
+	print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'contact/'.rand(1,3).'.jpg')."</div>";
 	
 	if($ps_contactType == "contact"){
 		print "<H1>"._t("Contact")."</H1>";
@@ -37,6 +37,7 @@
 	}
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 <?php
 	if($ps_contactType == "askArchivist"){
 ?>

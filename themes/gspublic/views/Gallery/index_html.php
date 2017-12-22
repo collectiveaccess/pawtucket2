@@ -2,7 +2,7 @@
 	
 <?php
 	$va_sets = $this->getVar("sets");
-	#$va_first_items_from_set = $this->getVar("first_items_from_sets");
+	$va_first_items_from_set = $this->getVar("first_items_from_sets");
 	$va_access_values = $this->getVar("access_values");
 	$t_set = new ca_sets();
 	$va_first_items_from_set = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "wideslide", "checkAccess" => $va_access_values));
@@ -13,7 +13,7 @@
 
 				<div class='col-sm-12'>
 <?php				
-					print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'gallery.png')."</div>";
+					print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'gallery/'.rand(1,4).'.jpg')."</div>";
 ?>				
 					<H1><?php print $this->getVar("section_name"); ?></H1>
 					<p style="margin-bottom:35px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc fermentum in mi pellentesque ornare. Mauris bibendum ipsum nec massa pharetra, consectetur tempor felis elementum. Fusce nec magna sodales, convallis sem id, tempus libero. Proin gravida ut neque eget vehicula. Aliquam pulvinar arcu sit amet viverra imperdiet. Nullam semper risus nec dapibus efficitur. Praesent a justo ut lorem luctus aliquet. Quisque ac felis eleifend, varius eros eu, tincidunt sapien. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sagittis orci cursus sagittis viverra. Nunc non rhoncus magna. Maecenas iaculis scelerisque tellus, ut rhoncus lectus ornare a. Fusce in leo et magna maximus hendrerit eleifend id dui.</p>
@@ -24,11 +24,12 @@
 <?php
 				if(sizeof($va_sets) > 1){
 ?>
-			</div><!-- end row -->
-			<div class="row">	
+</div><!-- end row -->
+<div class="row">	
 				
 
 <?php
+							$o_datamodel = Datamodel::load();
 							$i = 1;
 							foreach($va_sets as $vn_set_id => $va_set){
 			#					if(!$vn_first_set_id){
@@ -38,6 +39,12 @@
 								#if ($i == 1) {continue;}
 								$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
 								$t_set = new ca_sets($vn_set_id);
+								# --- if there isn't a rep tag in $va_first_item["representation_tag"], and this isn't an object based set, get the first item from the set and try to get objects linked to it
+								if(!$va_first_item["representation_tag"] && ($t_set->get("table_num") != 57)){
+									$t_first_set_item = $o_datamodel->getInstanceByTableNum($t_set->get("table_num"), true);
+									$t_first_set_item->load($va_first_item["row_id"]);
+									$va_first_item["representation_tag"] = $t_first_set_item->getWithTemplate("<unit relativeTo='ca_objects.related' length='1'>^ca_object_representations.media.wideslide</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+								}
 								if ($i % 2 == 0) {
 									print "<div class='col-sm-12'><div class='container galleryContainer'><div class='galleryItem item".$i." row'>
 													<div class='col-sm-8' style='padding-left:0px;'><div class='galleryItemImg'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', 'Gallery', $vn_set_id)."</div></div>

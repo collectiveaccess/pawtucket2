@@ -538,7 +538,15 @@ class RequestHTTP extends Request {
 		
 		$vm_val = str_replace("\0", '', $vm_val);
 		if(caGetOption('purify', $pa_options, true) || $this->config->get('purify_all_text_input')) {
-		    $vm_val = RequestHTTP::getPurifier()->purify(rawurldecode($vm_val));
+		    if(is_array($vm_val)){
+		    	$vm_val_process = array();
+		    	foreach($vm_val as $vs_key => $vs_value){
+		    		$vm_val_process[$vs_key] = RequestHTTP::getPurifier()->purify(rawurldecode($vs_value));
+		    	}
+		    	$vm_val = $vm_val_process;
+		    }else{
+		    	$vm_val = RequestHTTP::getPurifier()->purify(rawurldecode($vm_val));
+		    }
 		}
 		
 		if ($vm_val == "") { return ""; }
