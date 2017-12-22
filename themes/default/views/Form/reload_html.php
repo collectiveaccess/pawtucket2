@@ -28,7 +28,7 @@ $(document).ready(function() {
 ?>
 						var url = window.location.href;
 						var n = url.indexOf("/row_id");
-						if(n){
+						if(n > 0){
 							url = url.substring(0, n);
 						}
 						window.location.href = url + "/row_id/<?php print $vn_row_id; ?>";
@@ -48,7 +48,7 @@ $(document).ready(function() {
 ?>
 				var url = window.location.href;
 				var n = url.indexOf("/row_id");
-				if(n){
+				if(n > 0){
 					url = url.substring(0, n);
 				}
 				window.location.href = url + "/row_id/<?php print $vn_row_id; ?>";
