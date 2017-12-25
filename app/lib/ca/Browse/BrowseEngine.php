@@ -1515,8 +1515,8 @@
 															(
 																(ca_attribute_values.value_decimal1 <= ?) AND
 																(ca_attribute_values.value_decimal2 >= ?) AND
-																(ca_attribute_values.value_decimal1 <> ".TEP_START_OF_UNIVERSE.") AND
-																(ca_attribute_values.value_decimal2 <> ".TEP_END_OF_UNIVERSE.") 
+																(ca_attribute_values.value_decimal1 <> ".TEP_START_OF_UNIVERSE.".0000000000) AND
+																(ca_attribute_values.value_decimal2 <> ".TEP_END_OF_UNIVERSE.".1231235959) 
 															)
 															OR
 															(ca_attribute_values.value_decimal1 BETWEEN ? AND ?)
@@ -2949,13 +2949,23 @@
 					if (!($t_item = $this->opo_datamodel->getInstanceByTableName($vs_browse_table_name, true))) { break; }
 					if (!($t_label = $t_item->getLabelTableInstance())) { break; }
 					if (!is_array($va_restrict_to_types = $va_facet_info['restrict_to_types'])) { $va_restrict_to_types = array(); }
-
+					
+					if(sizeof($va_label_order_by_fields = isset($va_facet_info['order_by_label_fields']) ? $va_facet_info['order_by_label_fields'] : [])) {
+					    $va_label_order_by_fields = array_map(function($v) { return "l.{$v}"; }, $va_label_order_by_fields);
+					} else {
+					    $va_label_order_by_fields = [];
+					}
 
 					$vs_item_pk = $t_item->primaryKey();
 					$vs_label_table_name = $t_label->tableName();
 					$vs_label_pk = $t_label->primaryKey();
 					$vs_label_display_field = $t_item->getLabelDisplayField();
+					$va_label_ui_fields = $t_item->getLabelUIFields(); 
 					$vs_label_sort_field = $t_item->getLabelSortField();
+					
+					if(is_array($va_label_ui_fields) && sizeof($va_label_ui_fields)) {
+					    $va_label_ui_fields = array_map(function($v) { return "l.{$v}"; }, $va_label_ui_fields);
+					}
 
 					$vs_where_sql = $vs_join_sql = '';
 					$vb_needs_join = false;
@@ -3062,12 +3072,12 @@
 					} else {
 						$vs_parent_fld_select = (($vs_parent_fld = $t_item->getProperty('HIERARCHY_PARENT_ID_FLD')) ? ", ".$vs_browse_table_name.".".$vs_parent_fld : '');
 						$vs_sql = "
-							SELECT COUNT(*) as _count, l.locale_id, l.{$vs_label_display_field} {$vs_parent_fld_select}, l.{$vs_item_pk}
+							SELECT COUNT(*) as _count, l.locale_id, l.{$vs_label_display_field} {$vs_parent_fld_select}, l.{$vs_item_pk}".((sizeof($va_label_ui_fields) > 0) ? ", ".join(", ", $va_label_ui_fields) : "")."
 							FROM {$vs_label_table_name} l
 								{$vs_join_sql}
 								{$vs_where_sql}
-							GROUP BY l.{$vs_label_display_field} {$vs_parent_fld_select}, l.locale_id, l.{$vs_item_pk}
-							ORDER BY l.{$vs_label_display_field}
+							GROUP BY l.{$vs_label_display_field} {$vs_parent_fld_select}, l.locale_id, l.{$vs_item_pk}".((sizeof($va_label_order_by_fields) > 0) ? ", ".join(", ", $va_label_order_by_fields) : "")."
+							ORDER BY ".((sizeof($va_label_order_by_fields) > 0) ? join(", ", $va_label_order_by_fields) : "l.{$vs_label_display_field}")."
 						";
 
 						$qr_res = $this->opo_db->query($vs_sql);
@@ -3078,6 +3088,8 @@
 
 						$va_unique_values = array();
 						$vn_id = 0;
+						
+						$vs_label_template = caGetOption('template', $va_facet_info, null);
 						while($qr_res->nextRow()) {
 							$vn_id++;
 
@@ -3086,24 +3098,31 @@
 								if ($vn_parent_id) { $va_child_counts[$vn_parent_id]++; }
 							}
 
-							$vs_label = trim($qr_res->get($vs_label_display_field));
+                            if ($vs_label_template) {
+                                $vs_label = caProcessTemplate($vs_label_template, $qr_res->getRow());
+                            } else {
+							    $vs_label = trim($qr_res->get($vs_label_display_field));
+							}
 							$vs_sort_label = trim($qr_res->get($vs_label_sort_field));
 							
-							if (isset($va_unique_values[$vs_label])) { continue; }
+							//if (isset($va_unique_values[$vs_label])) { continue; }
 							$va_unique_values[$vs_label] = true;
-
-							$va_values[$vn_id][$qr_res->get('locale_id')] = array_merge($qr_res->getRow(), array(
-								'id' => $qr_res->get($vs_item_pk),
-								'parent_id' => $vn_parent_id,
-								'label' => $vs_label,
-								'sort_label' =>  mb_strtolower($vs_sort_label ? $vs_sort_label :  $vs_label),
-								'content_count' => $qr_res->get('_count')
-							));
+                            $vs_label_key = strtolower($vs_label);
+                            if (!isset($va_values[$vs_label_key][$qr_res->get('locale_id')])) {
+                                $va_values[$vs_label_key][$qr_res->get('locale_id')] = array_merge($qr_res->getRow(), array(
+                                    'id' => $qr_res->get($vs_item_pk),
+                                    'parent_id' => $vn_parent_id,
+                                    'label' => $vs_label,
+                                    'sort_label' =>  mb_strtolower($vs_sort_label ? $vs_sort_label :  $vs_label),
+                                    'content_count' => $qr_res->get('_count')
+                                ));
+                            } else {
+                                $va_values[$vs_label_key][$qr_res->get('locale_id')]['content_count'] += (int)$qr_res->get('_count');
+                            }
 							if (!is_null($vs_single_value) && ($vn_id == $vs_single_value)) {
 								$vb_single_value_is_present = true;
 							}
 						}
-
 
 						if ($vs_parent_fld) {
 							foreach($va_values as $vn_id => $va_values_by_locale) {
@@ -3118,7 +3137,7 @@
 						}
 
 						$va_values = caExtractValuesByUserLocale($va_values);
-						return $va_values;
+						return array_values($va_values);
 					}
 					break;
 				# -----------------------------------------------------
@@ -4711,11 +4730,16 @@
 
 
 									if (is_numeric($vs_normalized_value) && (int)$vs_normalized_value === 0) { continue; }		// don't include year=0
-									$va_values[$vn_sort_value][$vs_normalized_value] = array(
-										'id' => $vs_normalized_value,
-										'label' => $vs_normalized_value,
-										'content_count' => $qr_res->get('_count')
-									);
+									
+									if (!isset($va_values[$vn_sort_value][$vs_normalized_value])) {
+                                        $va_values[$vn_sort_value][$vs_normalized_value] = array(
+                                            'id' => $vs_normalized_value,
+                                            'label' => $vs_normalized_value,
+                                            'content_count' => (int)$qr_res->get('_count')
+                                        );
+                                    } else {
+                                         $va_values[$vn_sort_value][$vs_normalized_value]['content_count'] += $qr_res->get('_count');
+                                    }
 									if (!is_null($vs_single_value) && ($vs_normalized_value == $vs_single_value)) {
 										$vb_single_value_is_present = true;
 									}
@@ -4741,11 +4765,15 @@
 								}
 							}
 							if ($vb_unknown_is_set && (sizeof($va_values) > 0)) {
-								$va_values['999999999'][_t('Date unknown')] = array(
-									'id' => 'null',
-									'label' => _t('Date unknown'),
-									'content_count' => $qr_res->numRows()
-								);
+							    if(!isset($va_values['999999999'][_t('Date unknown')])) { 
+                                    $va_values['999999999'][_t('Date unknown')] = array(
+                                        'id' => 'null',
+                                        'label' => _t('Date unknown'),
+                                        'content_count' => $qr_res->numRows()
+                                    );
+                                } else {
+                                     $va_values['999999999'][_t('Date unknown')]['content_count'] += (int)$qr_res->numRows();
+                                }
 							}
 
 							if (!is_null($vs_single_value) && !$vb_single_value_is_present) {
@@ -4827,11 +4855,15 @@
 									if ($va_criteria[$vs_normalized_value]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 
 									if (is_numeric($vs_normalized_value) && (int)$vs_normalized_value === 0) { continue; }		// don't include year=0
-									$va_values[$vn_sort_value][$vs_normalized_value] = array(
-										'id' => $vs_normalized_value,
-										'label' => $vs_normalized_value,
-										'content_count' => $qr_res->get('_count')
-									);
+									if(!isset($va_values[$vn_sort_value][$vs_normalized_value])) {
+                                        $va_values[$vn_sort_value][$vs_normalized_value] = array(
+                                            'id' => $vs_normalized_value,
+                                            'label' => $vs_normalized_value,
+                                            'content_count' => $qr_res->get('_count')
+                                        );
+                                    } else {
+                                        $va_values[$vn_sort_value][$vs_normalized_value]['content_count'] += (int)$qr_res->get('_count');
+                                    }
 									if (!is_null($vs_single_value) && ($vs_normalized_value == $vs_single_value)) {
 										$vb_single_value_is_present = true;
 									}
