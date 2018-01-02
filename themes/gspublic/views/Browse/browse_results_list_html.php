@@ -134,7 +134,7 @@
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				
 					$vs_add_to_set_link = "";
-					if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+					if($vs_table == "ca_objects" && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
 				
@@ -148,12 +148,8 @@
 					<div class='bResultListItemText'>
 						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
 					</div><!-- end bResultListItemText -->
-				</div><!-- end bResultListItemContent -->
-				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
-					<hr>
-					{$vs_expanded_info}{$vs_add_to_set_link}
-				</div><!-- bResultListItemExpandedInfo -->
-			</div><!-- end bResultListItem -->
+				</div><!-- end bResultListItemContent -->".(($vs_expanded_info || $vs_add_to_set_link) ? "<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'><hr>{$vs_expanded_info}{$vs_add_to_set_link}</div><!-- bResultListItemExpandedInfo -->" : "")
+			."</div><!-- end bResultListItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');
 					print $vs_result_output;

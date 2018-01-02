@@ -1,10 +1,10 @@
 <?php
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
 
-	print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'reading.png')."</div>";
+	print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'discover/'.rand(1,1).'.jpg')."</div>";
 ?>
 
-<H1><?php print _t("Browse"); ?></H1>
+<H1><?php print _t("Discover"); ?></H1>
 <div class="row">
 	<div class="col-sm-12">
 		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent augue nunc, gravida a augue non, tincidunt sagittis justo. Phasellus euismod, elit ac condimentum elementum, ante nisl blandit lorem, sit amet malesuada odio enim id urna. Fusce egestas lacus at pellentesque tristique. In id purus eget metus pellentesque mattis ut ac ligula. Phasellus eu luctus neque. Fusce sagittis condimentum condimentum. Donec ut nunc porttitor, volutpat ligula ut, fermentum nisi. Quisque at hendrerit tortor.</p>

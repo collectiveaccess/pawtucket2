@@ -26,12 +26,11 @@
 					{{{<ifdef code="ca_entities.entity_note"><H6>Notes</H6>^ca_entities.entity_note<br/></ifdef>}}}
 					{{{<ifdef code="ca_entities.entity_roles"><H6>Roles</H6>^ca_entities.entity_roles%delimiter=,_<br/></ifdef>}}}
 					{{{<ifdef code="ca_entities.other_roles"><H6>Other Roles</H6>^ca_entities.other_roles<br/></ifdef>}}}
-					{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
 <?php
+				print '<div id="detailTools">';
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
 						
-					print '<div id="detailTools">';
 					if ($vn_comments_enabled) {
 ?>				
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
@@ -41,8 +40,9 @@
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
-					print '</div><!-- end detailTools -->';
-				}				
+				}
+				print '<div class="detailTool"><span class="glyphicon glyphicon-upload"></span>'.caNavLink($this->request, _t("Contribute content"), "", "", "Contribute", "objects").'</div><!-- end detailTool -->';
+				print '</div><!-- end detailTools -->';
 ?>
 					
 				</div><!-- end col -->
@@ -53,10 +53,14 @@
 					
 					{{{<ifcount code="ca_entities.related" min="1" max="1"><H6>Related person</H6></ifcount>}}}
 					{{{<ifcount code="ca_entities.related" min="2"><H6>Related people</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.related.preferred_labels.displayname</l></unit>}}}
+					{{{<unit relativeTo="ca_entities.related" delimiter="<br/>"><l>^ca_entities.related.preferred_labels.displayname</l></unit>}}}
 					
-					{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="2"><H6>Related occurrences</H6></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1" max="1"><H6>Related event</H6></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="2"><H6>Related events</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
+					
+					{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1" max="1"><H6>Related exhibition</H6></ifcount>}}}
+					{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="2"><H6>Related exhibitions</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
 					
 					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
@@ -64,7 +68,13 @@
 					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}				
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
+			<div class="row">
+				<hr style='margin-top:30px;'>
+				<div class="col-sm-12">
+					<h4>Related Items</h4>
+				</div>
+			</div>
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>

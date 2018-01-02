@@ -35,17 +35,17 @@
 					<div class="col-sm-6">
 						<ul>
 <?php
-						print "<li>".caGetThemeGraphic($this->request, 'facebook.png')."</li>";
-						print "<li>".caGetThemeGraphic($this->request, 'twitter.png')."</li>";
-						print "<li>".caGetThemeGraphic($this->request, 'youtube.png')."</li>";
-						print "<li>".caGetThemeGraphic($this->request, 'pinterest.png')."</li>";
-						print "<li>".caGetThemeGraphic($this->request, 'in.png')."</li>";
-						print "<li>".caGetThemeGraphic($this->request, 'camera.png')."</li>";
+						print "<li><a href='https://www.facebook.com/GirlScoutsUSA' target='_blank'>".caGetThemeGraphic($this->request, 'facebook.png')."</a></li>";
+						print "<li><a href='https://twitter.com/girlscouts' target='_blank'>".caGetThemeGraphic($this->request, 'twitter.png')."</a></li>";
+						print "<li><a href='https://www.youtube.com/user/girlscoutvideos' target='_blank'>".caGetThemeGraphic($this->request, 'youtube.png')."</a></li>";
+						print "<li><a href='https://www.pinterest.com/gsusa/' target='_blank'>".caGetThemeGraphic($this->request, 'pinterest.png')."</a></li>";
+						print "<li><a href='https://www.linkedin.com/company/girl-scouts-of-the-usa/' target='_blank'>".caGetThemeGraphic($this->request, 'in.png')."</a></li>";
+						print "<li><a href='https://www.instagram.com/girlscouts/' target='_blank'>".caGetThemeGraphic($this->request, 'camera.png')."</a></li>";
 ?>		
 						</ul>		
 					</div>
 					<div class="col-sm-6">
-						<span class='keep'>Keep in Touch</span><input type="email" placeholder="Email address"><span class='go'>GO</span>
+						<!--<span class='keep'>Keep in Touch</span><input type="email" placeholder="Email address"><span class='go'>GO</span>-->
 					</div>				
 				</div>
 			</div>
@@ -53,40 +53,27 @@
 		<div id="footerGreen">
 			<div class="container">
 				<div class="row">
-					<div class="col-sm-12">
-<?php
-	/*					if($this->request->isLoggedIn()){
-							print "<div class='footerRight'><div>".trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email")."</div>";
-							print "<ul class='list-inline'>";
-							print "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
-							print "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";	
-							print "</ul></div>";
-						} */
-?>			
-					</div><!-- end col -->
-				</div><!-- end row -->
-				<div class="row">
 					<div class="col-sm-3">
-						<div>Contact Us</div>
-						<div>Visit Us</div>
-						<div>Careers</div>
-						<div>Blog</div>
+						<div><a href="http://www.girlscouts.org/en/contact-us/contact-us.html" target="_blank">Contact Us</a></div>
+						<div><a href="http://www.girlscouts.org/en/visit-us/visit-us.html" target="_blank">Visit Us</a></div>
+						<div><a href="http://www.girlscouts.org/en/careers/careers.html" target="_blank">Careers</a></div>
+						<div><a href="http://blog.girlscouts.org/" target="_blank">Blog</a></div>
 					</div>
 					<div class="col-sm-3">
-						<div>Press Room</div>
-						<div>FAQ</div>
-						<div>Partners</div>
-						<div>Help</div>
+						<div><a href="http://www.girlscouts.org/en/press-room/press-room.html" target="_blank">Press Room</a></div>
+						<div><a href="http://www.girlscouts.org/en/faq/faq.html" target="_blank">FAQ</a></div>
+						<div><a href="http://www.girlscouts.org/en/about-girl-scouts/our-partners.html" target="_blank">Partners</a></div>
+						<div><a href="http://www.girlscouts.org/en/help/help.html" target="_blank">Help</a></div>
 					</div>
 					<div class="col-sm-3">
-						<div>Disclosure Statement</div>
-						<div>Privacy Policy</div>
-						<div>Terms</div>
+						<div><a href="http://www.girlscouts.org/en/help/help/disclosure-statement.html" target="_blank">Disclosure Statement</a></div>
+						<div><a href="http://www.girlscouts.org/en/help/help/privacy-policy.html" target="_blank">Privacy Policy</a></div>
+						<div><a href="http://www.girlscouts.org/en/help/help/terms-and-conditions.html" target="_blank">Terms</a></div>
 					</div>							
 				</div><!-- end row -->
 				<div class="row">
 					<div class="col-sm-12 smallText">
-						&copy; 2016 Girl Scouts of the United States of America. A 501(c)(3) Organization. All Rights Reserved.	
+						&copy; <?php print date("Y"); ?> Girl Scouts of the United States of America. A 501(c)(3) Organization. All Rights Reserved.	
 					</div>
 				</div>
 			</div><!-- end container -->
