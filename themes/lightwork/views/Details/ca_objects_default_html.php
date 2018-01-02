@@ -141,10 +141,10 @@
 		if ($vs_description = $t_object->get('ca_objects.description')) {
 			print "<div class='row'><div class='col-sm-12'><h2>Object Specific Text</h2><div class='unit trimText'>".$vs_description."</div></div><!-- end col --></div><!-- end row --><hr>";
 		}
-		if ($va_artist = $t_object->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('artist')))) {
-			$t_entity = new ca_entities($va_artist);
-		}
-		if (($t_entity) && ($t_object->get('ca_objects.type_id') != $vn_pub_type_id)) {		
+		if ($va_artist = $t_object->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('artist'), 'returnAsArray' => true))) {
+			foreach ($va_artist as $va_key => $va_artist_id) {
+				$t_entity = new ca_entities($va_artist_id);
+				if (($t_entity) && ($t_object->get('ca_objects.type_id') != $vn_pub_type_id)) {		
 ?>				
 		<div class="row" style="padding-bottom:20px;">
 			<div class="col-sm-12 artist">
@@ -217,7 +217,7 @@
 #						print "</span></div>";
 #					}
 					if ($vs_bio = $t_entity->get('ca_entities.biography', array('delimiter' => '<hr class="dark">'))) {
-						print "<p class='trimText' style='margin-top:35px;'><h2 class='artist'>Biography</h2>".$vs_bio."</p><hr class='dark'>";
+						print "<p class='trimText' style='margin-top:35px;'><h2 class='artist'>Biography</h2>".$vs_bio."</p>";
 					}
 					if ($va_essays = $t_entity->get('ca_entities.essays', array('returnAsArray' => true))) {
 						$vs_essays = array();
@@ -232,6 +232,8 @@
 			</div><!-- end col-12 -->
 		</div><!-- end row -->
 <?php
+				}
+			}
 		}
 
 		if ($va_related_objects = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'restrictToTypes' => array('artwork')))) {
@@ -286,7 +288,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 230
+		  maxHeight: 235
 		});
 	});
 </script>
