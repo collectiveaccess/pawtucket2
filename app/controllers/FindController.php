@@ -211,6 +211,25 @@
 							}
 						}
 						break;
+					case 'fieldList':
+					    if (!$vn_id) {
+                            $t_item = $this->request->datamodel->getInstanceByTableName($vs_class);
+                            $vs_list_code = $t_item->getFieldInfo($va_facet_info['field'], 'LIST_CODE');
+                            $t_list = new ca_lists(['list_code' => $vs_list_code]);
+					        $vn_id = $t_list->getRootItemIDForList();
+					    }
+					    foreach($va_facet as $vn_i => $va_item) {
+                            if ($va_item['parent_id'] == $vn_id) {
+                                $va_item['item_id'] = $va_item['id'];
+                                $va_item['name'] = $va_item['label'];
+                                $va_item['children'] = $va_item['child_count'];
+                                unset($va_item['label']);
+                                unset($va_item['child_count']);
+                                unset($va_item['id']);
+                                $va_json_data[$va_item['item_id']] = $va_item;
+                            }
+                        }
+                        break;
 					case 'label':
 						// label facet
 						$va_facet_info['table'] = $this->ops_tablename;
@@ -368,6 +387,23 @@
  						}
  					}
  					break;
+ 				case 'fieldList':
+					$t_item = $this->request->datamodel->getInstanceByTableName($vs_class);
+					$vs_list_code = $t_item->getFieldInfo($va_facet_info['field'], 'LIST_CODE');
+					$t_list = new ca_lists(['list_code' => $vs_list_code]);
+					$t_list_item = new ca_list_items();
+					$this->view->setVar("display_field", 'name_plural');
+ 				    $va_ancestors = array_reverse($t_list_item->getHierarchyAncestors($pn_id, array(
+                            'includeSelf' => true, 
+                            'additionalTableToJoin' => 'ca_list_item_labels', 
+                            'additionalTableJoinType' => 'LEFT',
+                            'additionalTableSelectFields' => array('name_singular', 'name_plural', 'locale_id'),
+                            'additionalTableWheres' => array('(ca_list_item_labels.is_preferred = 1 OR ca_list_item_labels.is_preferred IS NULL)')
+                            )));
+                    $va_root = array_shift($va_ancestors);
+                    $va_root['NODE']['name_singular'] = $va_root['NODE']['name_plural'] = $t_list->get('ca_lists.preferred_labels.name');
+                    array_unshift($va_ancestors, $va_root);
+ 				    break;
  				case 'label':
  					// label facet
  					$va_facet_info['table'] = $this->ops_tablename;

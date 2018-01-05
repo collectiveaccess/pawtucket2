@@ -59,7 +59,7 @@
 
 				print '<H3>'.caNavLink($this->request, $va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search));
 ?>
-				 <span class='pipe'>|</span> <span class='multisearchFullResults'><?php print caNavLink($this->request, _t('Filter results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?><i class="fa fa-external-link"></i></span> 
+				 <span class='pipe'>|</span> <span class='multisearchFullResults'><?php print caNavLink($this->request, _t('Filter results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search, 'sort' => 'Relevance')); ?><i class="fa fa-external-link"></i></span> 
 <?php				
 				print '</H3>'; 
 			}else{

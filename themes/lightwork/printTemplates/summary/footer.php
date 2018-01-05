@@ -46,7 +46,7 @@
 			break;
 		}
 		if($this->request->config->get('summary_show_identifier')) {
-			$vs_footer .= "<span class='footerText'>".$t_item->getLabelForDisplay()." (".$t_item->get($t_item->getProperty('ID_NUMBERING_ID_FIELD')).")</span>";
+			$vs_footer .= "<span class='footerText'>Light Work — 316 Waverly Avenue, Syracuse, NY 13244  — 315-443-1300 — info@lightwork.org</span>";
 		}
 	
 		if($this->request->config->get('summary_show_timestamp')) {

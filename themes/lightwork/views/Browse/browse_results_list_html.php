@@ -143,6 +143,10 @@
 						if ($va_media = $qr_res->get('ca_objects.medium', array('convertCodesToDisplayText' => true))) {
 							$vs_info.= "<p>".$va_media."</p>";
 						}					
+					} else {
+						$vs_info = null;
+						$vs_info.= 	$vs_label_detail_link;
+
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				
