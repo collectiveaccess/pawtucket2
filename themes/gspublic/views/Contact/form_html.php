@@ -25,7 +25,7 @@
 	$vn_num2 = rand(1,10);
 	$vn_sum = $vn_num1 + $vn_num2;
 
-	print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'contact.png')."</div>";
+	print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'contact/'.rand(1,3).'.jpg')."</div>";
 	
 	if($ps_contactType == "contact"){
 		print "<H1>"._t("Contact")."</H1>";
@@ -37,6 +37,7 @@
 	}
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 <?php
 	if($ps_contactType == "askArchivist"){
 ?>
@@ -61,14 +62,14 @@
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
-							<label for="name">Name</label>
-							<input type="text" class="form-control input-sm" id="email" placeholder="Enter name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+							<label for="name">Your Name</label>
+							<input type="text" class="form-control input-sm" id="email" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
-							<label for="email">Email address</label>
-							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $this->request->user->get("email"); ?>">
+							<label for="email">Your Email address</label>
+							<input type="text" class="form-control input-sm" id="email" placeholder="Enter your email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $this->request->user->get("email"); ?>">
 						</div>
 					</div><!-- end col -->
 				</div><!-- end row -->

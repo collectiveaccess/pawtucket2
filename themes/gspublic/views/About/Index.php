@@ -1,7 +1,7 @@
 <?php
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
 	
-print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'about.jpg')."</div>";	
+print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'about/'.rand(1,6).'.jpg')."</div>";	
 ?>
 <H1><?php print _t("About GSUSA Cultural Resources"); ?></H1>
 <div class="row">
@@ -22,34 +22,9 @@ print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'about.jpg')."
 			<b>Cultural Resources</b><br/>
 			420 Fifth Avenue<br/>
 			New York, NY 10018
+			<br/><br/>
+			<a href="mailto:culturalresourcesrequests@girlsscouts.org" class="btn-default" title="culturalresourcesrequests@girlsscouts.org">Email <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a>
 		</address>
 		
-		<address>
-			<b>Cindi Malinick</b><br/>
-			<i>Chief Cultural Resources Executive</i><br/>
-			<small>
-				<span class="info">Phone (New York)</span> — 212-852-5094<br/>
-				<span class="info">Phone (Washington DC)</span> — 202-360-1618<br/>
-				<span class="info">Email</span> — <a href="mailto:cmalinick@girlscouts.org">cmalinick@girlscouts.org</a>
-			</small>
-		</address>
-		
-		<address>
-			<b>Yevgeniya Gribov</b><br/>
-			<i>Senior Archivist</i><br/>
-			<small>
-				<span class="info">Phone</span> — 212-852-8622<br/>
-				<span class="info">Email</span> — <a href="mailto:ygribov@girlscouts.org">ygribov@girlscouts.org</a>
-			</small>
-		</address>
-		
-		<address>
-			<b>Diane Russo</b><br/>
-			<i>Archivist</i><br/>
-			<small>
-				<span class="info">Phone</span> — 212-852-6539<br/>
-				<span class="info">Email</span> — <a href="mailto:drusso@girlscouts.org">drusso@girlscouts.org</a>
-			</small>
-		</address>
 	</div>
 </div>

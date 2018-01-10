@@ -4,6 +4,9 @@ body {
 	font: 13px/1.65em 'Open Sans', Helvetica, sans-serif;
 	color: #444;
 }
+#pageArea {
+	margin-bottom:40px;
+}
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Open Sans', Helvetica, sans-serif;
     font-weight: 400;
@@ -98,6 +101,12 @@ a:hover, a:active, a:focus, a.readmore-js-toggle {
 .navbar-default .navbar-form {
 	margin-top:20px;
 }
+.yamm .nav.navbar-right .dropdown-menu {
+	margin-top:10px;
+}
+.dropdown-menu > li > a {
+	color: #919191;
+}
 .container.menuBar {
 	padding-top: 0px;
 } 
@@ -128,6 +137,7 @@ a:hover, a:active, a:focus, a.readmore-js-toggle {
 	} 
 	.navbar-collapse .navbar-nav.navbar-right:last-child {
 		margin-right: inherit;
+		padding-right:20px;
 	}	
 	ul.menuItems {
 		width: inherit;
@@ -139,6 +149,7 @@ a:hover, a:active, a:focus, a.readmore-js-toggle {
 	}
 	.navbar-form {
 		padding-left:0px;
+		padding-right:15px; 
 	}		
 }
 .btn-search {
@@ -162,6 +173,9 @@ a:hover, a:active, a:focus, a.readmore-js-toggle {
 }
 .menuBar {
 	padding-right:0px;
+}
+.front .jcarousel-wrapper {
+    margin-top: 0px;
 }
 #footer {
 	padding-top:14px;
@@ -253,9 +267,12 @@ a:hover, a:active, a:focus, a.readmore-js-toggle {
 	background-color:#fff;
 }
 .detail .info {
-	border-bottom:1px solid #e1e1e1;
+	border-top:1px solid #e1e1e1;
 	padding-top:5px;
 	padding-bottom:5px;
+}
+.detail .unit.biography {
+	font: 13px/1.65em 'Open Sans', Helvetica, sans-serif !important;
 }
 .metaLabel {
 	text-transform:uppercase;
@@ -327,8 +344,15 @@ div.caMediaOverlayControls {
     text-align: center;
     display: table;
     width: 100%; 
+    height: 240px;
 }
-.bResultItem {
+.bResultItem:hover .bResultItemContent {
+	height:240px;
+}
+.bResultItemCol {
+    height: 350px;
+}
+.bResultItem { 
 	border-bottom: 1px solid #e1e1e1;
     height: 350px;
     margin-bottom: 35px;
@@ -342,6 +366,13 @@ div.caMediaOverlayControls {
 	margin:0px;
 	margin-bottom: 35px;
 }
+.relatedArtists .bResultItem { 
+	height: 300px;
+}
+.relatedArtists .bResultItemCol { 
+	height: 320px;
+}
+
 .bResultItemImg {
 	text-align: center;
     overflow: hidden;
@@ -371,6 +402,15 @@ div.caMediaOverlayControls {
 	position: absolute;
     bottom: -7px;
     font-size: 16px;
+}
+
+@media (min-width: 768px) {
+	.lbItemContainer .lbItem:hover {
+		padding: 10px;
+		width: 100%;
+		left: 0;
+		top: 0;
+	}
 }
 
 

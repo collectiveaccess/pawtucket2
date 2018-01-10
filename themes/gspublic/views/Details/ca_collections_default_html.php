@@ -137,6 +137,12 @@
 				</div>
 			</div>
 {{{<ifcount code="ca_objects" min="2">
+			<hr style='margin-top:30px;'>
+			<div class="row">
+				<div class="col-sm-12">
+					<h4>Related Items</h4>
+				</div>
+			</div>
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>

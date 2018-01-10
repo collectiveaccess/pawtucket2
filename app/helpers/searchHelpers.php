@@ -735,6 +735,8 @@
 							$va_query_elements[$vs_element][] = "(".$va_values['_fieldlist_field'][$vn_i].":".$pa_form_values['_fieldlist_value'][$vn_i].")";
 							break;
 						default:
+						    $va_tmp = explode('.', $vs_element);
+						    if ((sizeof($va_tmp) > 2) && ($va_tmp[1] == 'related')) { unset($va_tmp[1]); $vs_element = join('.', $va_tmp); }
 							$va_query_elements[$vs_element][] = "({$vs_element}:{$vs_query_element})";
 							break;
 					}
@@ -788,6 +790,9 @@
 				}
 			}
 			$va_fld = explode(".", $vs_element);
+			if ((sizeof($va_fld) > 2) && ($va_fld[1] == 'related')) {
+			    unset($va_fld[1]); $vs_element = join('.', $va_fld); $va_fld = array_values($va_fld);
+			}
 			$t_table = $o_dm->getInstanceByTableName($va_fld[0], true);
 		
 		// TODO: need universal way to convert item_ids in attributes and intrinsics to display text
@@ -796,6 +801,9 @@
 					case 'type_id':
 						$va_values = array($t_table->getTypeName($pa_form_values[$vs_dotless_element][0]));
 						break;
+					case $t_table->primaryKey():
+					    $va_display_string[] = join(", ", $t_table->getPreferredDisplayLabelsForIDs($pa_form_values[$vs_dotless_element]));
+					    break(2);
 					default:
 						$va_values = $pa_form_values[$vs_dotless_element];
 						break;
@@ -861,39 +869,21 @@
 			}
 		}
 		
-		switch(get_class($o_parsed_query)) {
-			case 'Zend_Search_Lucene_Search_Query_Boolean':
-				$va_items = $o_parsed_query->getSubqueries();
-				$va_signs = $o_parsed_query->getSigns();
-				break;
-			case 'Zend_Search_Lucene_Search_Query_MultiTerm':
-				$va_items = $o_parsed_query->getTerms();
-				$va_signs = $o_parsed_query->getSigns();
-				break;
-			case 'Zend_Search_Lucene_Search_Query_Phrase':
-				$va_items = $o_parsed_query;
-				$va_signs = null;
-				break;
-			case 'Zend_Search_Lucene_Search_Query_Range':
-				$va_items = $o_parsed_query;
-				$va_signs = null;
-				break;
-			default:
-				$va_items = array();
-				$va_signs = null;
-				break;
-		}
+		$va_subqueries = caGetSubQueries($o_parsed_query);
+		$va_items = $va_subqueries['items'];
+		$va_signs = $va_subqueries['signs'];
 		
 		$va_query = [];
 		foreach ($va_items as $id => $subquery) {
-		
-			if (($va_signs === null || $va_signs[$id] === true) && ($id)) {
-				$va_query[] = 'AND';
-			} else if (($va_signs[$id] === false) && $id) {
-				$va_query[] = 'NOT';
-			} else {
-				if ($id) { $va_query[] = 'OR'; }
-			}
+		    if ($subquery->getTerm()->field) {
+                if (($va_signs === null || $va_signs[$id] === true) && ($id)) {
+                    $va_query[] = 'AND';
+                } else if (($va_signs[$id] === false) && $id) {
+                    $va_query[] = 'NOT';
+                } else {
+                    if ($id) { $va_query[] = 'OR'; }
+                }
+            }
 			switch(get_class($subquery)) {
 				case 'Zend_Search_Lucene_Search_Query_Phrase':
 					$vs_field = null;
@@ -926,6 +916,39 @@
 			}
 		}
 		return join(" ", $va_query);
+	}
+	# ---------------------------------------
+	/**
+	 *
+	 */
+	function caGetSubQueries($po_parsed_query) {
+	    switch(get_class($po_parsed_query)) {
+			case 'Zend_Search_Lucene_Search_Query_Boolean':
+			    $va_items = $va_signs = [];
+			    foreach($po_parsed_query->getSubqueries() as $o_q) {
+			        $va_subqueries = caGetSubQueries($o_q);
+			        $va_items = array_merge($va_items, is_array($va_subqueries['items']) ? $va_subqueries['items'] : []);
+				    $va_signs = array_merge($va_signs, is_array($va_subqueries['signs']) ? $va_subqueries['signs'] : []);
+				}
+				break;
+			case 'Zend_Search_Lucene_Search_Query_MultiTerm':
+				$va_items = $po_parsed_query->getTerms();
+				$va_signs = $po_parsed_query->getSigns();
+				break;
+			case 'Zend_Search_Lucene_Search_Query_Phrase':
+				$va_items = $po_parsed_query;
+				$va_signs = null;
+				break;
+			case 'Zend_Search_Lucene_Search_Query_Range':
+				$va_items = $po_parsed_query;
+				$va_signs = null;
+				break;
+			default:
+				$va_items = array();
+				$va_signs = null;
+				break;
+		}
+		return ['items' => $va_items, 'signs' => $va_signs];
 	}
 	# ---------------------------------------
 	/**
@@ -1315,6 +1338,7 @@
 	 * @return array
 	 */
 	function caGetChangeLogForElasticSearch($po_db, $pn_table_num, $pn_row_id) {
+	    if(!$po_db->connected()) { $po_db->connect(); }
 		$qr_res = $po_db->query("
 				SELECT ccl.log_id, ccl.log_datetime, ccl.changetype, u.user_name
 				FROM ca_change_log ccl

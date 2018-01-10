@@ -35,6 +35,7 @@
 	if($this->request->isLoggedIn()){
 		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$va_user_links[] = '<li class="divider nav-divider"></li>';
+		$va_user_links[] = "<li>".caNavLink($this->request, _t('Contribute'), '', '', 'contribute', 'objects', array())."</li>";
 		if(caDisplayLightbox($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
@@ -75,14 +76,14 @@
 	}
 ?>
 </head>
-<body>
+<body class="initial">
 	<div class="container" style="max-width:none;">
 		<div class="row topHeader">
 			<div class="container">
 				<div class="col-xs-12 col-sm-6">
 			
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'gsusaLogo.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'gsusaLogo.png'), "navbar-brand initialLogo", "", "","");
 ?>					
 					<div style="clear:both;"></div>
 				</div>
@@ -145,10 +146,10 @@
 				</form>
 				<ul class="nav navbar-nav ">
 					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "Index")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "browse")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "About", "browse"); ?></li>	
+					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "browse")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Discover"), "", "", "About", "browse"); ?></li>	
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), '', '', 'Collections', 'Index'); ?></li>
+					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Research"), '', '', 'Collections', 'Index'); ?></li>
 					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "project")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("News"), "", "", "About", "project"); ?></li>
 
 <?php
