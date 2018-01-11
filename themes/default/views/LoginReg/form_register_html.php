@@ -38,7 +38,7 @@
 	}
 	if($this->request->isAjax()){
 ?>
-<div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+<div id="caFormOverlay">
 <?php
 	}
 ?>
@@ -60,8 +60,21 @@
 ?>
 	<form id="RegForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
 	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
+<?php
+	if($this->request->isAjax()){
+?>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+				<H1><?php print _t("Register"); ?></H1>
+			</div>
+		</div>
+<?php
+	}else{
+?>
 	    <div class="row"><div class="col-sm-4"><H1><?php print _t("Register"); ?></H1></div></div>
 <?php
+	}
 	if($va_errors["register"]){
 		print "<div class='alert alert-danger'>".$va_errors["register"]."</div>";
 	}

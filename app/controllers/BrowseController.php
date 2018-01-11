@@ -189,7 +189,14 @@
 			// Get any preset-criteria
 			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 			
-			if ($vs_facet = $this->request->getParameter('facet', pString)) {
+			if (($vs_facets = $this->request->getParameter('facets', pString)) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
+			    foreach ($va_facets as $vs_facet_spec) {
+			        $va_tmp = explode(':', $vs_facet_spec);
+			        $vs_facet = array_shift($va_tmp);
+			        $o_browse->addCriteria($vs_facet, explode("|", join(":", $va_tmp))); 
+			    }
+			
+			} elseif ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, explode('|', $this->request->getParameter('id', pString)));
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
@@ -216,7 +223,9 @@
  					}
  				}
  			}else{
- 				$vb_sort_changed = true;
+ 				if($ps_sort != $this->opo_result_context->getCurrentSort()){
+ 					$vb_sort_changed = true;
+ 				}
  			}
  			if($vb_sort_changed){
 				# --- set the default sortDirection if available

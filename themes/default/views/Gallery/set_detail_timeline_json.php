@@ -35,8 +35,9 @@ $t_set 							= $this->getVar("set");
 $va_views						= $this->getVar('views');
 $vs_current_view				= $this->getVar('view');
 $vs_set_description				= $this->getVar('description');
+$vs_table						= $this->getVar('table');
 
-$va_view_info 					= $va_views[$vs_current_view];
+$va_view_info 					= $va_views[$vs_current_view][$vs_table];
 
 // title slide
 $va_data = [

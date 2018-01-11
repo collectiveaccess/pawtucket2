@@ -35,6 +35,7 @@
 	if($this->request->isLoggedIn()){
 		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$va_user_links[] = '<li class="divider nav-divider"></li>';
+		$va_user_links[] = "<li>".caNavLink($this->request, _t('Contribute'), '', '', 'contribute', 'objects', array())."</li>";
 		if(caDisplayLightbox($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}

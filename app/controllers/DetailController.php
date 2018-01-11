@@ -168,12 +168,22 @@
  			}
  			
  			$t_subject = $this->getAppDatamodel()->getInstanceByTableName($vs_table, true);
- 			if (($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) && (substr($ps_id, 0, 3) == "id:")) {
+ 			$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls($vs_table);
+ 			if ((($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) || ($vs_use_alt_identifier_in_urls)) && (substr($ps_id, 0, 3) == "id:")) {
  				$va_tmp = explode(":", $ps_id);
  				$ps_id = (int)$va_tmp[1];
- 				$vb_use_identifiers_in_urls = false;
+ 				$vb_use_identifiers_in_urls = $vs_use_alt_identifier_in_urls = false;
  			}
- 			if (!$t_subject->load(($vb_use_identifiers_in_urls && $t_subject->getProperty('ID_NUMBERING_ID_FIELD')) ? (($t_subject->hasField('deleted')) ? array($t_subject->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_subject->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id)) : (($t_subject->hasField('deleted')) ? array($t_subject->primaryKey() => (int)$ps_id, 'deleted' => 0) : array($t_subject->primaryKey() => (int)$ps_id)))) {
+ 
+ 			if($vs_use_alt_identifier_in_urls && $t_subject->hasElement($vs_use_alt_identifier_in_urls)) {
+ 			    $va_load_params = [$vs_use_alt_identifier_in_urls => $ps_id];
+ 			} elseif ($vb_use_identifiers_in_urls && $t_subject->getProperty('ID_NUMBERING_ID_FIELD')) {
+ 			    $va_load_params = [$t_subject->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id];
+ 			} else {
+ 			    $va_load_params = [$t_subject->primaryKey() => (int)$ps_id];
+ 			}
+ 			
+ 			if (!($t_subject = call_user_func_array($t_subject->tableName().'::find', array($va_load_params, ['returnAs' => 'firstModelInstance'])))) {
  				// invalid id - throw error
  				throw new ApplicationException("Invalid id");
  			} 

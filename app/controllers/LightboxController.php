@@ -1226,6 +1226,7 @@
 							$va_object_ids = $o_context->getResultList();
 						} elseif($pn_object_id) {
 							$va_object_ids = [$pn_object_id];
+							$this->view->setVar("row_id", $pn_object_id);
 						}else{
 							$va_object_ids = explode(";", $ps_object_ids);
 						}

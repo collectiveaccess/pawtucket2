@@ -51,12 +51,12 @@
 ?>			
 		</div>	
 		<div class="col-sm-8" style='padding-right:0px;'>
-			<?php print caGetThemeGraphic($this->request, 'browse_wideslide.jpg'); ?>	
+			<?php print caGetThemeGraphic($this->request, 'home/discover/'.rand(1,5).'.jpg'); ?>	
 		</div>			
 	</div>				
 	<div class="row frontBand gallery">
 		<div class="col-sm-8" style='padding-left:0px;'>
-			<?php print caGetThemeGraphic($this->request, 'gallery_wideslide.jpg'); ?>		
+			<?php print caGetThemeGraphic($this->request, 'home/gallery/'.rand(1,6).'.jpg'); ?>		
 		</div>	
 		<div class="col-sm-4 textRight">
 			<h1>Featured Galleries</h1>
