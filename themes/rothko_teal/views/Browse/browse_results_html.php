@@ -94,22 +94,7 @@ if($this->request->getParameter("detailNav", pInteger)){
 	$vs_search_target = "artworks";
 ?>
 	<div class="row" style="clear:both; position:relative;">
-		<div class="col-sm-12">
-			<div id="bViewButtons">
-<?php
-			if(is_array($va_views) && (sizeof($va_views) > 1)){
-				foreach($va_views as $vs_view => $va_view_info) {
-					if ($vs_current_view == $vs_view) {
-						print '<a href="#" class="active" onClick="return false;"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
-					} else {
-?>
-						<a href="#" class="disabled" onClick="loadResults('<?php print caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'view' => $vs_view), array('dontURLEncodeParameters' => true)); ?>', ''); return false;"><span class="glyphicon <?php print $va_view_icons[$vs_view]['icon']; ?>"></span></a>
-<?php
-					}
-				}
-			}
-?>			
-			</div><!-- end bViewButtons -->		
+		<div class="col-sm-12">	
 			<div class="viewAll">
 <?php 
 				$vs_value = explode('.',$va_criteria['value']);
@@ -129,44 +114,57 @@ if($this->request->getParameter("detailNav", pInteger)){
 <?php
 				$vs_sort_display = str_replace('+', ' ', $vs_current_sort);
 ?>			
-				<span class="sortMenu" data-toggle="dropdown">sort by: <?php print strtolower($vs_sort_display); ?></span>
-				<ul class="dropdown-menu" role="menu">
+				<span class="sortMenu" data-toggle="dropdown">Sort by: <span class="sortValue"><?php print ucfirst($vs_sort_display); ?><i class='fa fa-chevron-down'></i></span></span>
+				<ul class="dropdown-menu dropdown-menu-right" style="left:57px;" role="menu">
 <?php
 					if($vs_sort_control_type == 'dropdown'){
 						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-							print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
 							
 							if ($vb_show_filter){ 
 								foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 									if ($vs_current_sort === $vs_sort) {
-										print "<li><a href='#' onClick='return false;'><em>{$vs_sort}</em></a></li>\n";
+										print "<li><a href='#' onClick='return false;'><div class='circleSelected'></div>{$vs_sort}</a></li>\n";
 									} else {
-										print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => $vs_facet, 'id' => $this->request->getParameter('id', pInteger), 'detailNav' => '1', 'key' => $vs_browse_key, 'sort' => urlencode($vs_sort), 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.$vs_sort.'</a></li>';
+										print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => $vs_facet, 'id' => $this->request->getParameter('id', pInteger), 'detailNav' => '1', 'key' => $vs_browse_key, 'sort' => urlencode($vs_sort), 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;"><div class="circleSelect"></div>'.$vs_sort.'</a></li>';
 									}
 								}
 								print "<li class='divider'></li>\n";
-								print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
-								print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => $vs_facet, 'id' => $this->request->getParameter('id', pInteger), 'detailNav' => '1', 'key' => $vs_browse_key, 'sort' => urlencode($vs_current_sort), 'view' => $vs_current_view, 'direction' => 'asc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : '').'</a></li>';
-								print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => $vs_facet, 'id' => $this->request->getParameter('id', pInteger), 'detailNav' => '1', 'key' => $vs_browse_key, 'sort' => urlencode($vs_current_sort), 'view' => $vs_current_view, 'direction' => 'desc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : '').'</a></li>';
+								print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => $vs_facet, 'id' => $this->request->getParameter('id', pInteger), 'detailNav' => '1', 'key' => $vs_browse_key, 'sort' => urlencode($vs_current_sort), 'view' => $vs_current_view, 'direction' => 'asc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'asc') ? '<div class="circleSelected"></div>' : '<div class="circleSelect"></div>')._t("Ascending").'</a></li>';
+								print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => $vs_facet, 'id' => $this->request->getParameter('id', pInteger), 'detailNav' => '1', 'key' => $vs_browse_key, 'sort' => urlencode($vs_current_sort), 'view' => $vs_current_view, 'direction' => 'desc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'desc') ? '<div class="circleSelected"></div>' : '<div class="circleSelect"></div>')._t("Descending").'</a></li>';
 
 							} else {
 								foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 									if ($vs_current_sort === $vs_sort) {
-										print "<li><a href='#' onClick='return false;'><em>{$vs_sort}</em></a></li>\n";
+										print "<li><a href='#' onClick='return false;'><div class='circleSelected'></div>{$vs_sort}</a></li>\n";
 									} else {
-										print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'sort' => $vs_sort, 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.$vs_sort.'</a></li>';
+										print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'sort' => $vs_sort, 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;"><div class="circleSelect"></div>'.$vs_sort.'</a></li>';
 									}
 								}
 								print "<li class='divider'></li>\n";
 								print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
-								print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'asc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : '').'</a></li>';
-								print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'desc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : '').'</a></li>';
+								print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'asc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'asc') ? '<div class="circleSelected"></div>' : '<div class="circleSelect"></div>')._t("Ascending").'</a></li>';
+								print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'sort' => $vs_current_sort, 'view' => $vs_current_view, 'direction' => 'desc'), array('dontURLEncodeParameters' => true)).'\', \'\'); return false;">'.(($vs_sort_dir == 'desc') ? '<div class="circleSelected"></div>' : '<div class="circleSelect"></div>')._t("Descending").'</a></li>';
 							}
 						}
 					}
 ?>
 				</ul>
 			</div><!-- end btn-group -->
+			<div id="bViewButtons">
+<?php
+			if(is_array($va_views) && (sizeof($va_views) > 1)){
+				foreach($va_views as $vs_view => $va_view_info) {
+					if ($vs_current_view == $vs_view) {
+						print '<a href="#" class="active" onClick="return false;"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
+					} else {
+?>
+						<a href="#" class="disabled" onClick="loadResults('<?php print caNavUrl($this->request, '', 'Search', $vs_search_target, array('detailNav' => '1', 'key' => $vs_browse_key, 'view' => $vs_view), array('dontURLEncodeParameters' => true)); ?>', ''); return false;"><span class="glyphicon <?php print $va_view_icons[$vs_view]['icon']; ?>"></span></a>
+<?php
+					}
+				}
+			}
+?>			
+			</div><!-- end bViewButtons -->				
 <?php
 			if($vb_show_filter && !$vb_is_sketchbook){
 				$va_options = ['collection' => 'all', 'current_collection' => 'current', 'past_collection' => 'previous'];
@@ -174,15 +172,15 @@ if($this->request->getParameter("detailNav", pInteger)){
 				if (!($vn_collection_id = $this->request->getParameter('collection_id', pInteger))) { $vn_collection_id = $this->request->getParameter('id', pInteger);}
 ?>
 				<div class="btn-group sortResults">
-					<span class="sortMenu" data-toggle="dropdown">collection status: <?php print $va_options[$vs_current_facet]; ?></span>
-					<ul class="dropdown-menu" role="menu">
+					<span class="sortMenu" data-toggle="dropdown">Collection Status: <span class="sortValue"><?php print ucfirst($va_options[$vs_current_facet]); ?><i class='fa fa-chevron-down'></i></span></span>
+					<ul class="dropdown-menu dropdown-menu-right" style="left:115px;" role="menu">
 <?php
 							# --- add any as an option
 							foreach($va_options as $vs_facet => $vs_label) {
 								if ($vs_facet == $vs_current_facet) {
-									print "<li><a href='#' onClick='return false;'><em>{$vs_label}</em></a></li>\n";
+									print "<li><a href='#' onClick='return false;'><div class='circleSelected'></div>{$vs_label}</a></li>\n";
 								} else {
-									print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Browse', 'works_in_collection', ['facet' => $vs_facet, 'id' => $vn_collection_id, 'detailNav' => '1', 'sort' => $vs_current_sort, 'view' => $vs_current_view], ['dontURLEncodeParameters' => true]).'\'); return false;">'.$vs_label.'</a></li>';
+									print '<li><a href="#" onClick="loadResults(\''.caNavUrl($this->request, '', 'Browse', 'works_in_collection', ['facet' => $vs_facet, 'id' => $vn_collection_id, 'detailNav' => '1', 'sort' => $vs_current_sort, 'view' => $vs_current_view], ['dontURLEncodeParameters' => true]).'\'); return false;"><div class="circleSelect"></div>'.$vs_label.'</a></li>';
 								}
 							}
 ?>
@@ -217,7 +215,8 @@ if($this->request->getParameter("detailNav", pInteger)){
 if (!$vb_ajax) {	// !ajax
 	$va_browse_types = caGetBrowseTypes();
 	$vs_current_browse = $this->getVar('browse_type');
-	print '<div class="browseTargets row">';
+	print '<div class="container"><div class="row"><div class="col-sm-1"></div><div class="col-sm-10">';
+	print '<div class="container"><div class="browseTargets row">';
 	print "<div class='col-sm-2'></div>";
 	foreach ($va_browse_types as $va_browse_type => $va_browse_info_list) {
 		if ($va_browse_type == 'works_in_collection') { continue; }
@@ -229,17 +228,18 @@ if (!$vb_ajax) {	// !ajax
 		print '<div class="browseTargetLink col-sm-2">'.caNavLink($this->request, $va_browse_info_list['displayName'], $vs_active_class, '', 'Browse', $va_browse_type).'</div>';
 	}
 	print "<div class='col-sm-2'></div>";
-	print '</div>';
+	print '</div></div>';
 
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>	
+		</div><div class="col-sm-1"></div></div></div>
 <div class="container">	
 <div class="row" style="clear:both;">
-	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-12"; ?>'>
+	<div class='col-sm-10 col-sm-offset-1'>
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-					print "<H5 id='bSortByList'><ul><li><strong>"._t("sort by")."</strong></li>\n";
+					print "<H5 id='bSortByList'><ul><li><strong>"._t("Sort by")."</strong></li>\n";
 					$i = 0;
 					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 						$i++;
@@ -262,6 +262,7 @@ if (!$vb_ajax) {	// !ajax
 				print _t('<span class="hitCount">%1 %2</span>', $qr_res->numHits(), ($qr_res->numHits() > 1) ? $va_browse_info["labelPlural"] : $va_browse_info["labelSingular"]);	
 ?>		
 			</H2>
+				
 			<div class="btn-group sortResults">
 <?php			
 				$vs_sort_display = str_replace('+', ' ', $vs_current_sort);
@@ -295,7 +296,20 @@ if (!$vb_ajax) {	// !ajax
 
 ?>
 				</ul>
-			</div><!-- end btn-group -->			
+			</div><!-- end btn-group -->
+			<div id="bViewButtons">
+<?php
+				if(is_array($va_views) && (sizeof($va_views) > 1)){
+					foreach($va_views as $vs_view => $va_view_info) {
+						if ($vs_current_view === $vs_view) {
+							print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
+						} else {
+							print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+						}
+					}
+				}
+?>
+			</div>			
 			<H5>				
 <?php
 			if (sizeof($va_criteria) > 0) {
@@ -357,25 +371,13 @@ if (!$vb_ajax) {	// !ajax
 ?>				
 				</div><!-- enf col -->
 				<div class="col-sm-3">
-				<div id="bViewButtons">
-<?php
-				if(is_array($va_views) && (sizeof($va_views) > 1)){
-					foreach($va_views as $vs_view => $va_view_info) {
-						if ($vs_current_view === $vs_view) {
-							print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
-						} else {
-							print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
-						}
-					}
-				}
-?>
-				</div>			
-			</div><!-- end col -->
-		</div><!-- end row -->
+		
+				</div><!-- end col -->
+			</div><!-- end row -->
 
 		<div style="clear:both;height:0px;"></div>
 		<form id="setsSelectMultiple">
-		<div class="row">
+
 			<div id="browseResultsContainer">
 <?php
 		if($vb_is_search && !$qr_res->numHits() && $vs_search){
@@ -410,6 +412,7 @@ if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_ke
 if (!$vb_ajax) {	// !ajax
 ?>
 			</div><!-- end browseResultsContainer -->
+
 		</div><!-- end row -->
 		</form>
 	</div><!-- end col-8 -->

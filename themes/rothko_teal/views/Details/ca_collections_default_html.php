@@ -11,12 +11,18 @@
 		$vb_show_hierarchy_viewer = false;	
 	}
 ?>
+
 <div class="container">
-<div class="row">
-	<div class='col-xs-12 objNav'><!--- only shown at small screen size -->
-		<div class='resultsLink'>{{{resultsLink}}}</div><div class='previousLink'>{{{previousLink}}}</div><div class='nextLink'>{{{nextLink}}}</div>
-	</div><!-- end detailTop -->
-</div>
+	<div class="row">
+		<div class="col-sm-1"><div class='previousLink'>{{{previousLink}}}</div></div>
+		<div class="col-sm-10">
+
+<div class="container">
+	<div class="row detailHead">
+		<div class='col-xs-6 objNav'><!--- only shown at small screen size -->
+			<div class='resultsLink'>{{{resultsLink}}}</div>
+		</div>
+	</div>
 <div class="row">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 <?php
@@ -35,13 +41,13 @@
 			}
 		}
 		if (sizeof($va_place_output) > 0) {
-			print "<div class='unit'>".join(', ', $va_place_output)."</div>";
+			print "<div class='unit borderless'>".join(', ', $va_place_output)."</div>";
 		}		
 		
 		if ($vs_remarks = $t_item->get('ca_collections.collection_notes')) {
-			print "<div class='drawer' style='border-bottom:0px; padding-top:0px;'>";
+			print "<div class='col-sm-6 collectionText'>";
 			#print "<h6><a href='#' onclick='$(\"#remarksDiv\").toggle(400);return false;'>Remarks <i class='fa fa-chevron-down'></i></a></h6>";
-			print "<div id='remarksDiv'>{$vs_remarks}</div>";
+			print "<div class='trimText'>{$vs_remarks}</div>";
 			print "</div>";
 		}
 ?>			
@@ -71,3 +77,17 @@
 </ifcount>}}}
 
 </div><!-- end container -->
+			</div>
+			<div class="col-sm-1"><div class='nextLink'>{{{nextLink}}}</div></div>
+		</div><!-- end row -->
+	</div><!-- end container -->
+	
+	
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 320
+		});
+	});
+</script>	

@@ -42,12 +42,12 @@
 		</ul>
 	</div><!-- end jcarousel -->
 
-	<!-- Prev/next controls -->
+	<!-- Prev/next controls  
 	<div id='detailRepNav'>
 		<a href='#' id='detailRepNavPrev' title='<?php print _t("Previous"); ?>'><span class='fa fa-chevron-left'></span></a> 
 		<a href='#' id='detailRepNavNext' title='<?php print _t("Next"); ?>'><span class='fa fa-chevron-right'></span></a>
 		<div style='clear:both;'></div>
-	</div><!-- end detailRepNav -->
+	</div> -->
 	<!-- Pagination -->
 	<p class="jcarousel-pagination">
 	<!-- Pagination items will be generated in here -->

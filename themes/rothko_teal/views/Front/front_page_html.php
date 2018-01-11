@@ -32,16 +32,21 @@
  		$o_config = $this->getVar("config");
 		$vs_set_code = $o_config->get("front_page_set_code");
 		$t_set = new ca_sets();
- 		$t_set->load(array('set_code' => $vs_set_code));
+ 		$t_set->load(array('set_code' => 'homepage'));
+ 		$va_access_values = caGetUserAccessValues($this->request);
+ 		$vn_homepage_ids = array_keys($t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1)));
+		$t_home_object = new ca_objects($vn_homepage_ids[0]);
 ?>
 <div class="frontBanner">
 <?php
-	print caGetThemeGraphic($this->request, 'titlePage.jpg');
-	print "<div class='pageTitle'><div class='lineOne'>Mark Rothko</div>";
-	print "<div class='lineTwo'>Works on Paper</div>";
-	print "<div class='lineThree'>National Gallery of Art, Washington</div></div>";
-	print "<div class='workCaption'>Detail, ".caNavLink($this->request, '[Seated woman wearing striped blouse]', '', '', 'Detail', 'objects/2096')."<br/>1933/1934</div>";
-	print "<div class='moreInfo'><a href='#' onclick='$(\".expandedFrontBanner\").slideDown(300);$(\"html, body\").animate({ scrollTop: $(document).height() }, \"slow\"); return false;'>".caGetThemeGraphic($this->request, 'arrow-bottom.png')."</a></div>";
+	if ($t_home_object) {
+		print $t_home_object->get('ca_objects.homepage_media', array('version' => 'original'));
+		print "<div class='pageTitle'><div class='lineOne'>Mark Rothko</div>";
+		print "<div class='lineTwo'>Works on Paper</div>";
+		print "<div class='lineThree'>National Gallery of Art, Washington</div></div>";
+		print "<div class='workCaption'>Detail, ".caNavLink($this->request, $t_home_object->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$t_home_object->get('ca_objects.object_id'))."<br/>".$t_home_object->get('ca_objects.display_date')."</div>";
+		print "<div class='moreInfo'><a href='#' onclick='$(\".expandedFrontBanner\").slideDown(300);$(\"html, body\").animate({ scrollTop: $(document).height() }, \"slow\"); return false;'>".caGetThemeGraphic($this->request, 'arrow-bottom.png')."</a></div>";
+	}
 ?>
 </div> <!--end frontBanner-->
 <div class="expandedFrontBanner">
@@ -61,8 +66,8 @@
 					<div class="footerLink space"><?php print caNavLink($this->request, ' Credits', '', '', 'About', 'credits'); ?></div> | 
 					<div class="footerLink space"><?php print caNavLink($this->request, ' Notices', '', '', 'About', 'notices'); ?></div> | 
 					<div class="footerLink space"><?php print caNavLink($this->request, ' Contact', '', '', 'About', 'contact'); ?></div><br/>
-					<div class="socialLink"><a href="http://www.facebook.com"><i class="fa fa-facebook"></i></a></div>
-					<div class="socialLink"><a href="http://www.twitter.com"><i class="fa fa-twitter"></i></a></div>
+					<div class="socialLink"><a href="http://www.facebook.com"><i class="fab fa-facebook-f"></i></a></div>
+					<div class="socialLink"><a href="http://www.twitter.com"><i class="fab fa-twitter"></i></a></div>
 				</div>				
 			</div>
 		</div>

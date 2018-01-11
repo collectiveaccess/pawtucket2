@@ -137,17 +137,23 @@
 						$vn_parent_id = $qr_res->get("ca_objects.parent_id");
 						$t_parent = new ca_objects($vn_parent_id);
 						#$vs_catno = "";
-						if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
-							$vs_catno = "<div class='catno'>".$vs_catalog_number."</div>";
-						}				
+				
 						if ($vs_date = $qr_res->get('ca_objects.display_date')) {
 							$vs_info.= "<p>".$vs_date."</p>";
 						}
 						if ($va_collection = $t_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {
 							$vs_info.= "<p>".$va_collection."</p>";
 						}
-						$vs_compare_link = !$vs_type_placeholder ? "<a href='#' class='compare_link' data-id='{$vn_id}'><i class='fa fa-clone' aria-hidden='true'></i></a>" : '';
-				
+						$vs_bottom_info = "";
+						if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
+							$vs_bottom_info.= "<div class='catno'>".$vs_catalog_number."</div>";
+						}
+						$vs_bottom_info.= !$vs_type_placeholder ? "<a href='#' class='compare_link' data-id='{$vn_id}'><div class='compareIcon' aria-hidden='true'></div></a>" : '';
+						if ($vs_bottom_info != "") {
+							$vs_bottom = "<div class='catalog'>".$vs_bottom_info."</div>";
+						} else {
+							$vs_bottom = null;
+						}
 					} elseif ($vs_table === 'ca_occurrences') {
 						$vs_result_text = "";
 
@@ -173,6 +179,11 @@
 							$vs_info.= $vs_location;
 						}
 					}
+					if ($vs_table != 'ca_objects') {
+						$vs_chevron = "<i class='fa fa-chevron-right'></i>";
+					} else {
+						$vs_chevron = null;
+					}
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 				
 					
@@ -182,11 +193,11 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 				<div class='bResultListItemContent'>{$vs_rep_detail_link}
 					<div class='bResultListItemText'>
-						{$vs_catno}
+						
 						{$vs_label_detail_link}
 						{$vs_info}
 						{$vs_result_text_link}
-						{$vs_compare_link}
+						{$vs_bottom}{$vs_chevron}
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
 			

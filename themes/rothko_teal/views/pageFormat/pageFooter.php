@@ -48,21 +48,23 @@
 	<div id="footer">
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-5 col-md-5 col-lg-5">
+				<div class="col-sm-1"></div>
+				<div class="col-sm-4">
 					<p class="footerTitle"><a href='http://www.nga.gov'>National Gallery of Art</a></p>
 					<p>© 2016 National Gallery of Art, Washington</p>
 				</div>
-				<div class="col-sm-7 col-md-7 col-lg-7">
+				<div class="col-sm-6">
 					<div style="margin-bottom:15px;"><u>Mark Rothko: Works on Paper</u> will ultimately document approximately 2,600 works from public and private collections worldwide.  Cataloguing is ongoing, and works and information will be added to the site continuously during the coming years.</div>
 					<div class="footerLinks">
 						<div class="footerLink"><?php print caNavLink($this->request, 'About', '', '', 'About', 'project');?></div> | 
 						<div class="footerLink space"><?php print caNavLink($this->request, ' Credits', '', '', 'About', 'credits'); ?></div> | 
 						<div class="footerLink space"><?php print caNavLink($this->request, ' Notices', '', '', 'About', 'notices'); ?></div> | 
 						<div class="footerLink space"><?php print caNavLink($this->request, ' Contact', '', '', 'About', 'contact'); ?></div>
-						<div class="socialLink"><a href="http://www.facebook.com"><i class="fa fa-facebook"></i></a></div>
-						<div class="socialLink"><a href="http://www.twitter.com"><i class="fa fa-twitter"></i></a></div>
+						<div class="socialLink"><a href="http://www.facebook.com"><i class="fab fa-facebook-f"></i></a></div>
+						<div class="socialLink"><a href="http://www.twitter.com"><i class="fab fa-twitter"></i></a></div>
 					</div>																																	
 				</div>
+				<div class="col-sm-1"></div>
 			</div>
 		</div>
 	</div><!-- end footer -->	
@@ -146,8 +148,8 @@
 			});
 			function checkOffset() {
 				if($('#comparison_list').offset().top + $('#comparison_list').height() 
-													   >= $('#footer').offset().top - 60)
-					$('#comparison_list').css({"position": "absolute", "bottom": "60px"});
+													   >= $('#footer').offset().top - 160)
+					$('#comparison_list').css({"position": "absolute", "bottom": "160px"});
 				if($(document).scrollTop() + window.innerHeight < $('#footer').offset().top)
 					$('#comparison_list').css({"position": "fixed", "bottom": "0px"}); // restore when you scroll up
 			}

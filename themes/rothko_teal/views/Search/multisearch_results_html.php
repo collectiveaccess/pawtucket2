@@ -1,6 +1,12 @@
 <?php
 	$va_results = $this->getVar('results');
 	$va_result_count = $va_results['_info_']['totalCount'];
+?>	
+	<div class="container">
+		<div class="row">
+			<div class="col-sm-1"></div>
+			<div class="col-sm-10">
+<?php	
 	if ($va_result_count > 0) {
 ?>
 		<small class='pull-right'>
@@ -46,3 +52,7 @@
 <?php
 	TooltipManager::add('#Block', 'Type of record');
 ?>
+			</div>
+			<div class="col-sm-1"></div>
+		</div>
+	</div>

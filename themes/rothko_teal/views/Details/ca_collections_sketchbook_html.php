@@ -10,21 +10,38 @@
 
 ?>
 <div class="container">
+	<div class="row">
+		<div class="col-sm-1"><div class='previousLink'>{{{previousLink}}}</div></div>
+		<div class="col-sm-10">
+
+
+<div class="container">
+	<div class="row detailHead">
+		<div class='col-xs-6 objNav'><!--- only shown at small screen size -->
+			<div class='resultsLink'>{{{resultsLink}}}</div>
+		</div>
+		<div class='col-xs-5 pdfLink'>
+	<?php		
+			#print caNavLink($this->request, caGetThemeGraphic($this->request, 'pdf.png'), 'faDownload', 'Detail', 'objects', $vn_id.'/view/pdf/export_format/_pdf_ca_objects_summary');
+	?>	
+		</div><!-- end col --> 
+	</div>
 <div class="row">
-	<div class='col-xs-12 objNav'><!--- only shown at small screen size -->
-		<div class='resultsLink'>{{{resultsLink}}}</div><div class='previousLink'>{{{previousLink}}}</div><div class='nextLink'>{{{nextLink}}}</div>
-	</div><!-- end detailTop -->
-</div>
-<div class="row">
-	<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1' style="padding-left:30px;padding-right:30px;">
+	<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1' style="padding-right:30px;margin-bottom:40px;">
 		{{{representationViewer}}}
+<?php
+			if ($va_catalog_id = $t_item->get('ca_collections.catalog_number')) {
+				print "<div class='objIdno'>".$va_catalog_id."</div>";
+			}	
+?>		
 	</div>
 	<div class='col-sm-6 col-md-6 col-lg-5'>
 <?php
-		print "<div class='unit'>".$t_item->get('ca_collections.catalog_number')."</div>";
+		$vn_label_col = "col-sm-4";
+		$vn_data_col = "col-sm-8";
 		print "<h1>".$t_item->get('ca_collections.preferred_labels')."</h1>";
 		if ($vs_date = $t_item->get('ca_collections.display_date')) {
-			print "<div class='unit'>Date - ".$vs_date."</div>";
+			print "<div class='unit row'><div class='{$vn_label_col} label'>Date</div><div class='$vn_data_col'>".$vs_date."</div></div>";
 		}		
 		$vs_verso_collection = null;
 		if ($qr_collections = $t_item->get('ca_collections_x_collections.relation_id', array('returnAsSearchResult' => true))) {
@@ -36,39 +53,40 @@
 					$vn_current_collection_id = $qr_collections->get('ca_collections_x_collections.collection_id');
 					$t_collection = new ca_collections($vn_current_collection_id);
 					if ($t_collection->get('ca_collections.public_private', array('convertCodesToDisplayText' => true)) != 'private'){
-						print "<div class='unit'>Collection - ".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections" restrictToTypes="collection,other"><l>^ca_collections.preferred_labels</l></unit>')." ".(($qr_collections->get('ca_collections_x_collections.uncertain') == $vs_list_value) ? "<i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "")."</div>";
+						print "<div class='unit row'><div class='{$vn_label_col} label'>Collection</div><div class='$vn_data_col'>".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections" restrictToTypes="collection,other"><l>^ca_collections.preferred_labels</l></unit>');
 						$vs_verso_collection = $qr_collections->getWithTemplate('<unit relativeTo="ca_collections" restrictToTypes="collection,other"><l>^ca_collections.preferred_labels</l></unit>');
 					} else {
-						print "<div class='unit'>Collection - ".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections" restrictToTypes="collection,other">^ca_collections.preferred_labels</unit>')." ".(($qr_collections->get('ca_collections_x_collections.uncertain') == $vs_list_value) ? "<i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "")."</div>";
+						print "<div class='unit row'><div class='{$vn_label_col} label'>Collection</div><div class='$vn_data_col'>".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections" restrictToTypes="collection,other">^ca_collections.preferred_labels</unit>');
 						$vs_verso_collection = $qr_collections->getWithTemplate('<unit relativeTo="ca_collections" restrictToTypes="collection,other">^ca_collections.preferred_labels</unit>');
 					}
 					if ($vs_credit_line = $qr_collections->get('ca_collections_x_collections.collection_line', array('restrictToTypes' => array('collection', 'other')))) {
-						print "<div class='unit'>Credit - ".$vs_credit_line."</div>";
+						print ", ".$vs_credit_line;
 					}
-					#if ($vs_institutional = $t_item->get('ca_collections.institutional_id', array('restrictToTypes' => array('collection', 'other')))) {
-					#	print "<div class='unit'>Institutional id - ".$vs_institutional."</div>";
-					#}							
+					if ($qr_collections->get('ca_collections_x_collections.uncertain') == $vs_list_value){
+						"<i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>";
+					}
+					print "</div></div><!-- end unit -->";							
 				}		
 			}
 		}		
 		if ($vs_credit = $t_item->get('ca_collections.collection_line')) {
-			print "<div class='unit'>Credit - ".$vs_credit."</div>";
+			print "<div class='unit row'><div class='{$vn_label_col} label'>Credit</div><div class='$vn_data_col'>".$vs_credit."</div></div>";
 		}
 		if ($vs_inst = $t_item->get('ca_collections.institutional_id')) {
-			print "<div class='unit'>Institutional id - ".$vs_inst."</div>";
+			print "<div class='unit row'><div class='{$vn_label_col} label'>Institutional id</div><div class='$vn_data_col'>".$vs_inst."</div></div>";
 		}				
 		if ($vs_provenance_note = $t_item->get('ca_collections.provenance_note')) {
-			print "<div class='unit'>Provenance Notes - ".$vs_provenance_note."</div>";
+			print "<div class='unit row'><div class='{$vn_label_col} label'>Provenance Notes</div><div class='$vn_data_col'>".$vs_provenance_note."</div></div>";
 		}	
 		if ($vs_object_note = $t_item->get('ca_collections.object_note')) {
-			print "<div class='unit'>Note - ".$vs_object_note."</div>";
+			print "<div class='unit row'><div class='{$vn_label_col} label'>Note</div><div class='$vn_data_col'>".$vs_object_note."</div></div>";
 		}	
 		if ($va_keywords = $t_item->get('ca_list_items.item_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 			$va_keyword_links = array();
 			foreach ($va_keywords as $va_key => $va_keyword_id) {
 				$va_keyword_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_keyword_id), '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
 			}
-			print "<div class='unit'>Keywords - ".join(', ', $va_keyword_links)."</div>";
+			print "<div class='unit row'><div class='{$vn_label_col} label'>Keywords</div><div class='$vn_data_col'>".join(', ', $va_keyword_links)."</div></div>";
 		}							
 ?>			
 	</div><!-- end col -->
@@ -78,7 +96,7 @@
 <?php
 		if ($vs_remarks = $t_item->get('ca_collections.remarks')) {
 			print "<div class='drawer'>";
-			print "<h6><a href='#' onclick='$(\"#remarksDiv\").toggle(400);return false;'>Remarks <i class='fa fa-chevron-down'></i></a></h6>";
+			print "<h6><a href='#' onclick='$(\"#remarksDiv\").toggle(400);return false;'>Remarks <i class='fa fa-window-minimize'></i></a></h6>";
 			print "<div id='remarksDiv'>".$vs_remarks."</div>";
 			print "</div>";
 		}
@@ -138,13 +156,13 @@
 				if ($t_prov_rel->get('ca_collections_x_collections.uncertain') == $vs_list_value) {
 					$vs_provenance.= " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>";
 				}
-				$vs_provenance.= "</div><!-- end prov entry -->";
+				$vs_provenance.= "<i class='fa fa-chevron-right'></i></div><!-- end prov entry -->";
 			}
 		}
 	}
 	if ($vs_provenance != "") {
 		print "<div class='row'><div class='col-sm-12 col-md-12 col-lg-12'><div class='drawer'>";
-		print "<h6><a href='#' onclick='$(\"#provenanceDiv\").toggle(400);return false;'>Provenance <i class='fa fa-chevron-down'></i></a></h6>";
+		print "<h6><a href='#' onclick='$(\"#provenanceDiv\").toggle(400);return false;'>Provenance <i class='fa fa-window-minimize'></i></a></h6>";
 		print "<div id='provenanceDiv'>";
 		print $vs_provenance;
 		print "</div><!-- end provenanceDiv -->";
@@ -175,3 +193,8 @@
 </ifcount>}}}
 
 </div><!-- end container -->
+
+		</div><!-- end col -->
+		<div class="col-sm-1"><div class='nextLink'>{{{nextLink}}}</div></div>
+	</div>
+</div>

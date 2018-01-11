@@ -72,9 +72,9 @@
 				$vn_parent_id = $qr_results->get("ca_objects.parent_id");
 				$t_parent = new ca_objects($vn_parent_id);
 				if ($vs_catno = $qr_results->get('ca_objects.catalog_number')) {
-					$vs_catno = "<p>".$vs_catno."</p>";
+					$vs_catno = "<div class='catno'>".$vs_catno."</div>";
 				}
-				$vs_label_detail_link 	= caDetailLink($this->request, $qr_results->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id);
+				$vs_label_detail_link 	= "<span class='resultLabel'>".caDetailLink($this->request, $qr_results->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id)."</span>";
 				
 				$vs_link_text = "";
 				if ($va_date = $qr_results->get('ca_objects.display_date')) {
@@ -113,15 +113,15 @@
 					$vs_download_link = caNavLink($this->request, '<i style="padding-left:10px;" class="fa fa-download"></i>', 'multiDl', '', 'Detail', 'DownloadRepresentation', array('representation_id' => $vs_rep_id, 'object_id' => $vs_obj_id, 'download' => 1, 'version' => 'original'));
 				}	
 				
-				$vs_compare_link = ($vb_has_image ? "<a href='#' class='compare_link' data-id='{$vn_id}'><i class='fa fa-clone' aria-hidden='true'></i></a>" : '');			
+				$vs_compare_link = ($vb_has_image ? "<a href='#' class='compare_link' data-id='{$vn_id}'><div class='compareIcon' aria-hidden='true'></div></a>" : '');			
 				print "
 	<div class='bResultItemCol col-xs-6 col-sm-3'>
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
-			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+			<div class='bResultItemContent'><div class='imgContainer'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div></div>
 				<div class='bResultItemText'>
-					{$vs_catno}
 					{$vs_label_detail_link}
 					{$vs_link_text}
+					{$vs_catno}
 					{$vs_compare_link}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->

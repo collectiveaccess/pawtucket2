@@ -29,7 +29,7 @@ html {
 }
 body {
 	font-family:hkgrotesque;
-	margin-bottom:180px;
+	margin-bottom:220px;
 	color: #161616;
 	font-size:15px;
 	line-height:21px;
@@ -64,11 +64,14 @@ h2 {
 h3, .multisearch h3, h3 a, h3 a:hover {
 	font-family: hkgrotesque;
     font-weight: bold;
-    color: #888;
-    text-transform: uppercase;
+    color: #161616;
+    text-transform: none;
     font-size:21px;
     line-height:28px;;
     text-decoration:none;
+}
+.multisearch H3 a, .multisearch H3 a:hover {
+    color: #161616;
 }
 h4 {
 	font-height:bold;
@@ -80,13 +83,19 @@ h5 {
 	line-height:21px;
 	font-family: hkgrotesque;
 }
+.results h5 {
+	margin-left:0px;
+}	
 h6 {
-    text-transform: uppercase;
-    color: #858585;
+	text-transform:none;
+    color: #161616;
     font-size: 16px;
     font-family: hkgrotesque;
     padding: 0px 0px 10px 0px;
     display: inline-block;
+}
+b, strong {
+	font-family: hkgrotesque;
 }
 a, a:hover, a:focus {
 	color:#161616;
@@ -312,6 +321,9 @@ a, a:hover, a:focus {
     margin-right: 25px;
     margin-top: 15px;
 }
+.frontNavBar li a:hover {
+	text-decoration:none;
+}		
 .noMargin .container.first {
 	padding:0px;
 }
@@ -470,7 +482,7 @@ a, a:hover, a:focus {
 .bResultItem:hover .bResultItemImg {
     height: 220px; 
 }
-.bResultItem .bResultItemText .resultLabel a{
+.bResultItem .bResultItemText .resultLabel a, .detail .resultLabel a{
 	font-weight:bold;
 	color: #161616;
 }
@@ -490,7 +502,7 @@ a, a:hover, a:focus {
 	line-height:21px;
 	margin:0px;
 }
-.bResultItem .bResultItemText .catno {
+.bResultItem .bResultItemText .catno, .multisearch .bResultItemText .catno {
 	position: absolute;
 	bottom:10px;
 	left:15px;
@@ -502,7 +514,7 @@ a, a:hover, a:focus {
     max-width: 100%;
 }
 .bResultItemCol {
-    height: 400px;
+    height: 412px;
 }
 .bResultItemContent, .bResultItem:hover .bResultItemContent {
     height: 360px;
@@ -510,6 +522,16 @@ a, a:hover, a:focus {
 .bResultItem:hover {
 	z-index:0;
 }
+.hitCount {
+    font-size: 24px;
+    line-height: 30px;
+    color: #161616;
+    margin-top: 0px;
+    margin-bottom: 0px;	
+}
+.detail.collection .hitCount {
+	margin-left:15px;
+}	
 .compareIcon {
 	width:20px;
 	height:20px;
@@ -537,11 +559,17 @@ a, a:hover, a:focus {
 }
 .multisearch #exhibitionsBlock .authoritySet, .multisearch #referencesBlock .authoritySet {
 	height:220px;
+	width:290px;
+}
+.multisearch .authoritySet a {
+    font-size: 14px;
+    color: #161616;
 }
 
 .multisearchFullResults a {
 	text-transform:none;
-	border-bottom:1px solid #ccc;
+	border-bottom:1px solid #757575;
+	color:#757575;
 }
 .multisearch #exhibitionsBlock .scrollButtonNext, .multisearch #exhibitionsBlock .scrollButtonPrevious,
 .multisearch #referencesBlock .scrollButtonNext, .multisearch #referencesBlock .scrollButtonPrevious {
@@ -584,14 +612,12 @@ a, a:hover, a:focus {
 #bRefine {
 	background-color:#fff;
 	overflow:visible;
-	width: calc(100% - 30px);
+	width: 100%;
 	border: 1px solid #161616;
 	padding: 0px 20px;
 	margin-top:70px;
-	margin-left:15px;
-	margin-right:15px;
 	margin-bottom:40px;
-	text-align:center;
+	text-align:left;
 }
 #bRefine H5 {
 	color: #161616;
@@ -601,15 +627,21 @@ a, a:hover, a:focus {
     margin-top: 0px;
     font-weight:800;
     display: inline-block;
-    padding: 16px 30px 2px 25px;
+    padding: 16px 30px 2px 0px;
     font-size:16px;
 }
 #bRefine .dropdown.button {
 	display: inline-block;
+	width: 17%;
+    text-align: center;
 }
 #bRefine .dropdown.button.showOnly {
 	border-left:1px solid #ccc;
     padding-top: 5px;
+    text-align: center;
+    width: 15%;
+    float: right;
+    margin-top: 12px;
 }
 #bRefine .dropdown.button.showOnly h5 {
     font-size: 13px;
@@ -619,6 +651,7 @@ a, a:hover, a:focus {
 #bRefine .dropdown.button h5{
 	padding-top:0px;
 	color:#161616;
+	padding-right:0px;
 }
 #bRefine .dropdown.open.button h5 .caret {
     display: inline-block;
@@ -706,7 +739,7 @@ a, a:hover, a:focus {
 	content: "\f077";
 }
 .sortResults .dropdown-menu-right {
-    left: 57px;
+    left: 56px;
     top: 22px;
     z-index: 10000;
     box-shadow:none;
@@ -750,7 +783,8 @@ a, a:hover, a:focus {
 }
 #bViewButtons {
 	float:right;
-	margin-top: -4px;
+    padding-right: 20px;
+    padding-top: 5px;
 }
 #bViewButtons a {
 	color:#333 !Important;
@@ -762,24 +796,31 @@ a, a:hover, a:focus {
 	float:right;
 	font-size:12px;
 }
+.detail.collection .sortResults, .detail.sketchbook .sortResults {
+	margin-right:30px;
+}
 .sortResults .dropdown-menu {
 	margin-top:10px;
 }
 .bResultListItemText p{
-	line-height:1.4em;
-	font-weight:400;
-	margin:0px;
+	margin-bottom:3px;
 }
 .bResultListItem .bResultListItemText a {
-	color: #454545;
+	color: #161616;
 }
 .bResultListItem .bResultListItemText a:hover {
 	text-decoration:none;
+	color: #df7354;
 }
 .bResultListItem .bResultListItemText a.compare_link {
 	position: relative;
     padding: 5px;
     top: 5px;
+    left:0px;
+}
+.bResultListItem .bResultListItemText .catalog a.compare_link {
+	top:0px;
+	padding:0px;
 }
 .bResultListItem {
 	box-shadow:none;
@@ -804,12 +845,12 @@ a, a:hover, a:focus {
 	border-top:1px solid #ccc;
 }
 [facet_item_selected="1"]::before {
-	font-family: FontAwesome;
-	content: "\f00c"; 
+	font: normal normal normal 14px/1 FontAwesome;
+	content: url('../graphics/check.png'); 
 	padding-right:6px;
 	position:absolute;
-    left: 21px;
-    top: 6px;
+    left: 20px;
+    top: 4px;
 }
 .facetApply {
 	clear:both;
@@ -859,8 +900,13 @@ a, a:hover, a:focus {
     font-size:14px;
 }
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
-	background-color:#f5f5f5;
-	color:#333;
+	background-color:transparent;
+	color:#757575;
+}
+.dropdown .hierarchicalList .fa-chevron-right {
+	color:#161616 !important;
+	font-size: 12px;
+    padding-left: 5px;
 }
 .filteringBy {
 	font-weight:800;
@@ -893,12 +939,13 @@ a .fa.clearFacet {
 }
 .search.results .btn-default {
 	border:0px;
-	background-color:#ddd;
 	color:#333;
 	font-size: 13px;
     margin-top: -2px;
-    margin-left:5px;
     margin-right:5px;	
+    font-weight:bold;
+    background-color:transparent;
+    padding-left:0px;
 }
 .btn-default.refine {
 	text-transform:none;
@@ -919,8 +966,10 @@ a .fa.clearFacet {
 }
 .bResultListItem, .bResultListItem:hover {
 	background-color:#fff;
-	margin-bottom:20px;
+	margin-bottom:10px;
 	padding-left:0px;
+	border-bottom: 1px solid #d6d6d6;
+    padding-bottom: 20px;
 }
 .exhibitions.browse.results .listTitle {
 	font-style:italic;
@@ -928,15 +977,32 @@ a .fa.clearFacet {
 .bResultListItem .bResultListItemText {
 	font-size:14px;
 }
+.bResultListItem .bResultListItemText {
+	font-size: 14px;
+    color: #757575;
+}
+.bResultListItem .bResultListItemText .catno{
+    margin-bottom: 3px;
+}
+.artworks .bResultListItem .bResultListItemText .listTitle {
+	font-weight:bold;
+	margin-bottom:3px;
+	font-size:14px;
+	display:inline-block;
+}
 .bResultListItemCol {
 	height:auto;
 }
 .bResultListItemContent {
 	height:auto;
 }
+.bResultListItemContent .catalog {
+	margin-top:10px;
+}
 .bResultListItem .bResultListItemImg {
 	margin-right:10px;
 	max-height:100px;
+	width:25%;
 }
 .bResultListItem img {
     width: auto;
@@ -944,6 +1010,12 @@ a .fa.clearFacet {
 }
 #browseResultsContainer {
 	margin-top:40px;
+	margin-left:-15px;
+	margin-right:-15px;
+}
+.detail.exhibition #browseResultsContainer {
+	margin-left:0px;
+	margin-right:0px;
 }
 .results a .clearFacet  {
 	color: #fff !important;
@@ -961,12 +1033,19 @@ a .fa.clearFacet {
 }
 .viewAll {
 	float:right;
-	margin-right:25px;
-	border-bottom:1px solid #464646;
+	color:#757575;
+	font-size:13px;
+}
+.detail.collection .viewAll { 
+	margin-right:15px;
+	padding-top:7px;
+}
+.detail.sketchbook .viewAll { 
+	padding-top:7px;
 }
 .viewAll a, .viewAll a:hover {
-	text-decoration:none;
-	color:#333;
+	text-decoration:underline;
+	color:#757575;
 }
 .occLink {
 	margin-left:-3px;
@@ -1049,24 +1128,35 @@ a .fa.clearFacet {
 .bScrollListHierarchy {
 	clear:left;
 }
-#bAncestorList {
-	position:absolute;
-	height:20px;
-	background-color:#fff;
-	width:100%;
-	top: 40px;
+#bRefine div {
+	margin-bottom:0px;
+}
+#bRefine div#bAncestorList {
+	width:80%;
+	margin-bottom:12px;
 }
 .facetItem .glyphicon-chevron-down {
 	font-size:10px;
 }
-
+#bRefine .row.hierarchicalList {
+	margin-bottom:0px;
+}
 
 /* Detail */
 
+.detail {
+	color:#161616;
+	font-size:15px;
+}
+.detail HR {
+	color:#fff;
+	border-bottom:1px solid #d6d6d6;
+	border-top:0px;
+}
 .detailHead {
 	border-bottom: 1px solid #d6d6d6;
 	height:10px;
-	margin-bottom:60px;
+	margin-bottom:40px;
 }
 .objNav {
 	text-align:left;
@@ -1091,6 +1181,18 @@ a .fa.clearFacet {
 }
 .objNav .previousLink {
 	padding-right:20px;
+}
+.detail .fa-angle-left {
+	content:url('../graphics/arrow-previous.png');
+	height:28px;
+	width:15px;
+	opacity: .8;
+}
+.detail .fa-angle-right {
+	content:url('../graphics/arrow-next.png');
+	height:28px;
+	width:15px;
+	opacity: .8;
 }
 .pdfLink {
 	text-align:right;
@@ -1121,16 +1223,42 @@ a .fa.clearFacet {
 	border:0px;
 	background-color:#fff;
 }
+.detail .objIdno {
+	position: absolute;
+    bottom: 5px;
+    font-weight: bold;
+    font-size: 14px;
+}	
 .detail h1 {
 	margin-left:-15px;
+}
+.detail.collection h1, .detail.exhibition h1 {
+	margin-left:0px;
+	margin-bottom:0px;
+}
+.detail.reference h1 {
+	margin-left:0px;
+}
+.sketchbook #browseResultsContainer h6 {
+	margin-left:15px;
+}
+.collectionText {
+	margin-left:-15px;
+	color:#161616;
+	margin-top:20px;
+	margin-bottom:25px;
 }
 .detail .unit {
 	color:#464646;
 	margin-bottom:5px;
-	padding-top:5px;
+	padding-top:7px;
 	font-size:14px;
 	font-weight:200;
 	border-top:1px solid #d6d6d6;
+}
+.detail .unit.borderless {
+	border:0px;
+	margin-bottom:0px;
 }
 .detail .unit .label {
 	color: #161616;
@@ -1138,6 +1266,7 @@ a .fa.clearFacet {
 	text-align:left;
 	font-size:14px;
 	padding-left:0px;
+	padding-top:4px;
 }
 .detail .unit a {
 	text-decoration:underline;
@@ -1175,14 +1304,43 @@ a .fa.clearFacet {
 	height:18px;
 	width:18px;
 }
-.detailMediaToolbar .glyphicon.glyphicon-zoom-in {
+.detailMediaToolbar .glyphicon.glyphicon-zoom-in, .remarksImg .glyphicon.glyphicon-zoom-in {
 	content: url('../graphics/enlarge.png');
 	height:18px;
 	width:18px;
 	padding:0px;
 }
+.remarksImg .zoomIcon, .remarksImg .compare {
+	width:50%;
+	text-align:center;
+	padding-top:15px;
+	float:left;
+}
+.remarksImg .compare {
+	padding-top:13px;
+}
+.remarksImg .compare img{
+	width:18px;
+	height:18px;
+	display:inline-block;
+}
+.remarksImg .remarkText {
+	color:#757575;
+	font-size:14px;
+	line-height: 21px;
+}
+.detail .previousLink, .detail .nextLink {
+    text-align: center;
+    font-size: 40px;
+    font-weight: normal;
+    color: #757575;
+    margin-top:300px;
+}
+.detail .previousLink a, .detail .nextLink a {
+	color: #757575;
+}	
 .guide {
-	margin-top:30px;
+	margin-top:40px;
 	color:#161616;
 	font-weight:bold;
 	font-size:14px;
@@ -1196,19 +1354,67 @@ a .fa.clearFacet {
 	width:14px;
 	margin-right:5px;
 	vertical-align:middle;
-}	
+}
+#guideLoadContainer {
+    position: absolute;
+    top: 50px;
+    width: 100%;
+    z-index:1000;
+}
+.guideLoadInner {
+    background-color: #fff;
+    border: 1px solid #161616;
+    width:80%;
+    min-height:550px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.guideLoadInner h1 {
+	margin-left:0px;
+}
+.guideLoadInner .close {
+	opacity:.9;
+	padding-right:15px;
+	padding-top:15px;
+}
+.guideLoadInner .close img{
+	width:16px;
+	height:16px;
+}
+#guideLoad	{
+    padding: 25px 30px 25px 30px;
+    max-height: 500px;
+    overflow-y: scroll;
+}
+#guideLoadContainer .complete {
+	width:100%;
+	padding-top:25px;
+	padding-bottom:25px;
+	text-align:center;
+	background-color:#757575;
+}
+#guideLoadContainer .complete a, #guideLoadContainer a:hover  {
+	color:#fff;
+	text-decoration:none;
+}
 .photoCredit {
 	color:#aaa;
 }
 .photoCaption {
 	padding-top:5px;
 	min-height: 25px;
+	clear:both;
+	top: -20px;
+    position: relative;
 }
 .unit.spacer {
 	margin-top:30px;
 }
 .detail .jcarousel {
 	height:auto !important;
+
+}
+.repViewerCont {
 	padding-bottom:30px;
 }
 .jcarousel li {
@@ -1235,6 +1441,16 @@ a .fa.clearFacet {
 	color:#333;
 	font-size:17px;
 }
+.detail.exhibition .detailMediaToolbar {
+	width:100%;
+	text-align:left;
+	background-color:transparent;
+}
+.detail.exhibition .jcarousel-pagination {
+	bottom:-10px;
+	left: 40px;
+    right: 40px;
+}
 .detail.sketchbook span.glyphicon.glyphicon-zoom-in::after {
 	content: "\e015";
 }
@@ -1257,7 +1473,8 @@ a .fa.clearFacet {
 .detail .compare_link {
     color: #333;
     font-weight: bold;
-    font-size: 17px;
+    width:18px;
+    height:18px;
 }  
 .detail .compare_link:hover {
 	color: #333;
@@ -1268,7 +1485,7 @@ a .fa.clearFacet {
 }
 .compare_link.verso {
     position: relative;
-    margin-left: 20px;
+    margin-left: 12px;
     font-size: 14px;
     display: inline-block;
     vertical-align: bottom;
@@ -1276,7 +1493,26 @@ a .fa.clearFacet {
 }
 .detail #remarksDiv a{
 	border-bottom: 1px solid #454545;
-
+}
+.remarksImg {
+	border: 1px solid #d6d6d6;
+	padding-top:15px;
+	padding-bottom:15px;
+	height:250px;
+	margin-top:15px;
+}
+.remarksImg img { 
+	width:100%;
+	height:auto;
+}
+.detail .drawer a.readmore-js-toggle{
+	color: #161616;
+	font-weight:bold;
+	font-size:16px;
+}
+.detail .drawer a.readmore-js-toggle:hover {
+	border-bottom:0px;
+	color: #161616;
 }
 .detailMediaToolbar .zoomButton {
     display: inline-block;
@@ -1291,29 +1527,43 @@ a .fa.clearFacet {
 .jcarousel {
 	width:100% !important;
 }
+.detail h6.verso {
+	margin-top:30px;
+	color:#161616;
+	text-transform:none;
+	font-size:20px;
+	font-weight:bold;
+}	
 .versoInfo {
-	background-color:#f5f5f5;
-	padding:15px;
-	margin-top:0px;
+	margin-top:50px;
 }
-.versoInfo .unit {
-	font-size:12px;
+.versoInfo div {
+	font-size:14px;
 	margin-bottom:3px;
+	color:#757575;
 }
-.versoTitle.unit {
-	font-size:16px;
+.detail .versoInfo a{
+	color:#757575;
+}
+.detail .versoInfo .versoTitle a{
+	color:#161616;
+	font-weight:bold;
 }
 .versoInfo img {
 	width:100%;
 	height:auto;
 }
+.catInfo {
+	margin-top:-55px;
+}	
 .drawer {
-	border-bottom: 1px solid #eee;
-	padding-top:20px;
+	border-top: 1px solid #161616;
+	padding-top:15px;
 	padding-bottom:15px;
 	font-size:14px;
 	font-weight:200;
 	line-height:2em;
+	margin-top:25px;
 }
 .drawer a {
 	color:#454545;
@@ -1323,18 +1573,32 @@ a .fa.clearFacet {
 	text-decoration:none;
 	border-bottom:1px solid #454545;
 }
+.detail .drawer h6 {
+	width:100%;
+}	
+.detail .drawer h6 .fa {
+	float:right;
+	font-size:12px;
+	padding-right:5px;
+}	
 .detail .drawer h6 a {
-	text-transform:uppercase;
-	color: #858585;
-	font-size:16px;
+	text-transform:none;
+	color: #161616;
+	font-size:18px;
+	font-weight:bold;
 	font-family:hkgrotesque;
 	padding:0px 0px 10px 0px;
 	display:inline-block;
+	width:100%;
 }
 .detail .drawer h6 a:hover {
 	text-decoration:none;
 	border-bottom:0px;
-	color: #858585;
+	color: #161616;
+}
+.detail .drawer .fa-chevron-right, .bResultListItemText .fa-chevron-right {
+	font-size:10px;
+	padding-left:10px;
 }
 .detail .viewLink {
 	text-transform:uppercase;
@@ -1348,6 +1612,8 @@ a .fa.clearFacet {
 	margin-top:-10px;
 	margin-bottom:0px;
 	font-size:14px;
+	font-weight:bold;
+	color:#161616;
 }
 .exhibition.detail h1 {
 	margin-bottom:8px;
@@ -1390,9 +1656,9 @@ div.advancedSearchField {
 	margin-bottom:10px;
 }
 .advancedSearchField .formLabel {
-	text-transform:uppercase;
+	text-transform:none;
 	color:#454545;
-	font-size:11px;
+	font-size:13px;
 	font-weight:bold;
 }
 .advancedFormSubmit {
@@ -1411,12 +1677,12 @@ div.advancedSearchField {
 	width:100% !important;
 	resize:none;
 	line-height: 1.5;
-    border-radius: 3px;
-    border: 1px solid #cccccc;
-	-webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
-    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
-    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s; 
+    border-radius: 0px;
+    border: 1px solid #d6d6d6;
+	-webkit-box-shadow: none;
+    box-shadow: none;
+    -webkit-transition: none;
+    transition: none; 
     font-size: 12px;   
     padding: 5px 10px;
     color: #555555;
@@ -1429,28 +1695,30 @@ div.advancedSearchField {
 }
 .advancedSearch h1 small {
 	font-size:14px;
-	color:#858585;
+	color:#757575;
 }
 .advancedSearch h1 small a {
-	color:#858585;
-	border-bottom:1px solid #858585;
+	color:#757575;
+	border-bottom:1px solid #757575;
 }
 .advancedSearch h1 small a:hover {
 	text-decoration:none;
 }
 .advancedSearchField .formLabel {
-	color:#858585;
+	color:#161616;
 }
 .attributeListItem {
 	width:100% !important;
 }
 .search.results .advancedFormSubmit .btn-default {
-	background-color:#888;
+	background-color:#161616;
 	border-radius:0px;
 	padding:5px 12px;
+	text-transform:none;
 }
 .advancedFormSubmit .btn-default a, .advancedFormSubmit .btn-default a:hover {
-	color:#fff;
+    color: #ccc;
+    font-size: 12px;
 	text-decoration:none;
 	font-weight:200;
 }
@@ -1481,16 +1749,27 @@ h3.window-manifest-title {
 }
 .compareDrawer {
 	display:none;
-	background-color:#f5f5f5;
-	width:30%;
+	background-color:#161616;
+	width:22%;
 	position:fixed;
 	bottom:0px;
-	right:0px;
+	right:100px;
 	z-index:1000;
-	padding-top:5px;
+	padding-top:10px;
+	color:#ccc;
 }
 .compareDrawer ul {
 	padding-left:25px;
+}
+.compareDrawer a {
+	color:#ccc;
+}
+.compareDrawer .fa.fa-clone {
+	content: url('../graphics/compare-tab.png');
+	height:22px;
+	width:23px;
+	padding-right:5px;
+	vertical-align: text-bottom;
 }
 .compareDrawer a:hover {
 	text-decoration:none;
@@ -1504,11 +1783,12 @@ h3.window-manifest-title {
 	clear:both;
 }
 .listTitle {
-	font-size:14px;
+	font-size:15px;
 }
 .compareDrawer p {
 	margin-bottom:5px;
 	float:left;
+	line-height:2em;
 }
 .openItems {
 	float:right;
@@ -1519,5 +1799,8 @@ h3.window-manifest-title {
 	position:absolute;
 	bottom:10px;
 	right:10px;
+}
+.noMargin .compareDrawer {
+	display:none !important;
 }
 

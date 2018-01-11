@@ -48,7 +48,7 @@
 
 		foreach ($va_browse_types as $vs_browse_id => $va_browse_type) {
 			if($vs_browse_id == 'works_in_collection') { continue; }    // Never show "works in collection", which is a browse type uses only to filter objects on collection details
-			
+			$vs_menu_width = $va_browse_type['menuWidth'];
 			// When browse type is "works_in_collection" we don't want to show the browse title but we DO want to show the facet
 			// so we force the browse type to "artworks", which will have the same facets but be labelled as NGA requests
 			if (($vs_browse_type == 'works_in_collection') && ($vs_browse_id == 'artworks')) {
@@ -57,16 +57,16 @@
 			#print "<div class='browseTarget'>".caNavLink($this->request, $va_browse_type['displayName'], ($vs_browse_type == $vs_browse_id ? 'activeBrowse' : ''), '', 'Browse', $vs_browse_id)."</div>";
 			if ($vs_browse_type == $vs_browse_id) {
 				if(is_array($va_facets) && sizeof($va_facets)) {
-					print "<H5>"._t("Filter by")."</H5>";
+					print "<H5 >"._t("Filter by")."</H5>";
 				}
 				foreach($va_facets as $vs_facet_name => $va_facet_info) {
 					$va_multiple_selection_facet_list[$vs_facet_name] = caGetOption('multiple', $va_facet_info, false, ['castTo' => 'boolean']);
-			
+					$vs_menu_width = $va_facet_info['width'];
+
 					if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-						print '<div class="dropdown button">';
-						print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>".$va_facet_info['label_singular']."</H5><ul class='facetGroup panel dropdown-menu dropdown-menu-right' id='facetGroup{$vs_facet_name}'>"; 
-						print "<div class='filterLeader'>Filter by ".$va_facet_info['label_plural']."</div>";
-						print "<div class='filterDesc'>".$va_facet_info['description']."<hr/></div>";
+						print '<div class="dropdown button" >';
+						print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>".$va_facet_info['label_singular']."<span class='caret'></span></H5><ul class='facetGroup panel dropdown-menu' id='facetGroup{$vs_facet_name}' style='width:".$vs_menu_width."%;'>"; 
+
 						print "<li><div class='container'><div class='row hierarchicalList'>"; 
 ?>
 						
@@ -82,11 +82,11 @@
 					} else {				
 						if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 						if ($va_facet_info['show_only'] != 1) {
-							print '<div class="dropdown button">';
+							print '<div class="dropdown button" >';
 							print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>".$va_facet_info['label_singular']."<span class='caret'></span></H5><ul class='facetGroup panel dropdown-menu ' id='facetGroup{$vs_facet_name}' style='width:".$va_facet_info['width']."%;".(($va_facet_info['left'] == 1) ? 'left:-'.($va_facet_info['width'] - 100).'%;' : '')."'>"; 
 							print "<li><div class='container' id='{$vs_facet_name}_facet_container'><div class='row'>";
 						} elseif (($va_facet_info['show_only'] == 1) && ($va_facet_info['open_show_only'] == 1)) {
-							print '<div class="dropdown button showOnly">';
+							print '<div class="dropdown button showOnly" style="width:'.$vs_menu_width.'%;">'; 
 							print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>Show Only<span class='caret'></span></H5><ul class='facetGroup panel dropdown-menu ' id='facetGroupShowOnly' style='width:200%;left:-120%'>"; 
 							print "<li><div class='container' id='ShowOnly_facet_container'><div class='row'>";
 			
@@ -148,7 +148,7 @@
 					}
 				}
 				if(is_array($va_facets) && sizeof($va_facets)) {
-					print "<div style='height:5px;width:100%;'></div>";
+					print "<div style='height:10px;width:100%;'></div>";
 				}
 			}	
 		}

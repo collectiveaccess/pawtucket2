@@ -84,6 +84,9 @@
 ?>
 	<nav class="navbar navbar-default" role="navigation">
 		<div class="container">
+			<div class="row">
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
 
@@ -147,6 +150,9 @@
 					
 				</ul>
 			</div><!-- /.navbar-collapse -->
+			</div>
+			<div class="col-sm-1"></div>
+			</div>
 		</div><!-- end container -->
 	</nav>
 <?php
