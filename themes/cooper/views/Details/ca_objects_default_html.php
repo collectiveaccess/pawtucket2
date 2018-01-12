@@ -44,10 +44,26 @@
 				if(is_array($va_child_ids) && sizeof($va_child_ids)){
 					$qr_children = caMakeSearchResult("ca_objects", $va_child_ids);
 					$va_children = array();
+					$va_children_captions = array();
 					if($qr_children->numHits()){
 						while($qr_children->nextHit()){
 							if($vs_icon = $qr_children->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values))){
 								$va_children[$qr_children->get("object_id")] = array("icon" => $vs_icon, "large" => $qr_children->get("ca_object_representations.media.page", array("checkAccess" => $va_access_values)));
+								$va_photographers = $qr_children->get("ca_entities", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("photographer")));
+								$va_entity_display = array();
+								$vs_photographer = "";
+								if(is_array($va_photographers) && sizeof($va_photographers)){
+									foreach($va_photographers as $va_entity){
+										$vs_ent_name = $va_entity["surname"].(($va_entity["surname"] && $va_entity["forename"]) ? ", " : "").$va_entity["forename"];
+										$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
+									}
+									ksort($va_entity_display);
+									$vs_photographer = join($va_entity_display, ", ");
+									if($vs_photographer){
+										$vs_photographer = " Photography by: ".$vs_photographer;
+									}	
+								}
+								$va_children_captions[$qr_children->get("object_id")] = ((!in_array($qr_children->get("ca_objects.preferred_labels.name"), array("[BLANK]", "[]"))) ? $qr_children->get("ca_objects.preferred_labels.name") : "").$vs_photographer;
 							}
 						}
 					}
@@ -63,16 +79,28 @@
 						<div class="col-sm-10">
 <?php
 							foreach($va_children as $vn_child_object_id => $va_child){
-								print "<span id='large".$vn_child_object_id."' class='detailImagesMain'>".$va_child["large"]."</span>";
+								if(!$vn_first_img_id){
+									$vn_first_img_id = $vn_child_object_id;
+								}
+								print "<div id='large".$vn_child_object_id."' class='detailImagesMain'>".$va_child["large"]."<br/>".$va_children_captions[$vn_child_object_id]."</div>";
 							}
 ?>
 						</div>
 					</div>
 					<script type="text/javascript">
-						$(".detailImagesMain:first").show();
+						showMainImg(<?php print $vn_first_img_id; ?>);
 						function showMainImg(childID){
 							$(".detailImagesMain").hide();
 							$("#large" + childID).show();
+							if($("#large" + childID + " img").height() > $("#large" + childID + " img").width()){
+								if(!$("#large" + childID + " img").hasClass("vertical")){
+									$("#large" + childID + " img").addClass("vertical");
+								}
+							}else{
+								if(!$("#large" + childID + " img").hasClass("horizontal")){
+									$("#large" + childID + " img").addClass("horizontal");
+								}
+							}
 						}
 					</script>
 <?php
@@ -98,9 +126,11 @@
 									if(sizeof($va_entities)){
 										$va_entity_display = array();
 										foreach($va_entities as $va_entity){
-											$va_entity_display[] = caNavLink($this->request, $va_entity["displayname"], "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
+											$vs_ent_name = $va_entity["surname"].(($va_entity["surname"] && $va_entity["forename"]) ? ", " : "").$va_entity["forename"];
+											$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 										}
-										print join($va_entity_display, "; ");
+										ksort($va_entity_display);
+										print join($va_entity_display, "<br/>");
 									}else{
 										print "N/A";
 									}
@@ -144,9 +174,11 @@
 									if(sizeof($va_entities)){
 										$va_entity_display = array();
 										foreach($va_entities as $va_entity){
-											$va_entity_display[] = caNavLink($this->request, $va_entity["displayname"], "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
+											$vs_ent_name = $va_entity["surname"].(($va_entity["surname"] && $va_entity["forename"]) ? ", " : "").$va_entity["forename"];
+											$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 										}
-										print join($va_entity_display, "; ");
+										ksort($va_entity_display);
+										print join($va_entity_display, "<br/>");
 									}else{
 										print "N/A";
 									}
@@ -203,9 +235,11 @@
 											if(sizeof($va_entities)){
 												$va_entity_display = array();
 												foreach($va_entities as $va_entity){
-													$va_entity_display[] = caNavLink($this->request, $va_entity["displayname"], "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
+													$vs_ent_name = $va_entity["surname"].(($va_entity["surname"] && $va_entity["forename"]) ? ", " : "").$va_entity["forename"];
+													$va_entity_display[$vs_ent_name] = caNavLink($this->request, $vs_ent_name, "", "", "Browse", "projects", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]));
 												}
-												print join($va_entity_display, "; ");
+												ksort($va_entity_display);
+												print join($va_entity_display, "<br/>");
 											}else{
 												print "N/A";
 											}

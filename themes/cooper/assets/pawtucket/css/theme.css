@@ -399,7 +399,7 @@ body.initial .navbar-form {
 }
 /*@media (min-width: 768px) and (max-width: 1200px) {*/
 @media (min-width: 768px) {
-	.frontTop H1, .frontTop p{
+	.frontTop H1, .frontTop H2, .frontTop p{
 		padding-left:40px;
 		padding-right:30px;
 	}
@@ -408,6 +408,11 @@ body.initial .navbar-form {
 	font-size:45px;
 	text-transform:none;
 	padding-top:60px;	
+}
+.frontTop H2{
+	font-size:25px;
+	text-transform:none;
+	color:#FFFFFF;	
 }
 .frontTopSlideCaption{
 	font-family:gotham;
@@ -520,7 +525,7 @@ body.initial .navbar-form {
 .detail .detailImages{
 	margin-bottom:50px;
 }
-.detail .detailImages img{
+.detail .detailImagesThumbs img{
 	width:100%;
 	height:auto;
 	cursor: pointer;
@@ -531,6 +536,16 @@ body.initial .navbar-form {
 }
 .detail .detailImagesMain{
 	display:none;
+	height:630px;
+	text-align:center;
+}
+.detailImagesMain img.horizontal{
+	width:100%;
+	height:auto;
+}
+.detail .detailImagesMain img.vertical{
+	width:auto;
+	height:100%;
 }
 .detail H6{
 	font-weight:bold;
