@@ -136,7 +136,7 @@
 							$vs_info.= ", ".$va_date;
 						}
 
-						if ($va_media = $qr_res->get('ca_objects.medium', array('convertCodesToDisplayText' => true))) {
+						if ($va_media = $qr_res->get('ca_objects.medium', array('convertCodesToDisplayText' => true, 'useSingular' => true))) {
 							$vs_info.= "<p>".$va_media."</p>";
 						}						
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				

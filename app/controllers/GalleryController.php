@@ -128,8 +128,9 @@
 						break;
 					case 'map':
 						AssetLoadManager::register("maps");
-						$va_views_info = $this->config->get('views');
-						if($va_views_info['map']['data']){
+						$va_views = $this->config->get('views');
+						$va_views_info = $va_views['map'][$vs_table];
+						if($va_views_info['data']){
 							$o_res = caMakeSearchResult(
 								$t_set->get('table_num'),
 								array_keys($t_set->getItemRowIDs()),
@@ -140,9 +141,9 @@
 		
 							$va_opts['ajaxContentUrl'] = caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('set_id' => $ps_set_id));
 			
-							$o_map = new GeographicMap(caGetOption("width", $va_views_info['map'], "100%"), caGetOption("height", $va_views_info['map'], "600px"));
-							$o_map->mapFrom($o_res, $va_views_info['map']['data'], $va_opts);
-							$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_views_info['map'], 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_views_info['map'], 12), 'request' => $this->request)));
+							$o_map = new GeographicMap(caGetOption("width", $va_views_info, "100%"), caGetOption("height", $va_views_info, "600px"));
+							$o_map->mapFrom($o_res, $va_views_info['data'], $va_opts);
+							$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_views_info, 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_views_info, 12), 'request' => $this->request)));
 							$this->render("Gallery/set_detail_map_html.php");
 						}else{
 							$this->render("Gallery/detail_html.php");
@@ -185,8 +186,11 @@
 			$pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
 			$t_set = new ca_sets($pn_set_id);
 			$this->getView()->setVar('set', $t_set);
-
-			$this->getView()->setVar('views', $this->config->get('views'));
+			$o_dm = $this->getAppDatamodel();
+			$vs_table = $o_dm->getTableName($t_set->get('table_num'));
+			$va_views = $this->config->get('views');
+			$this->getView()->setVar('table', $vs_table);
+			$this->getView()->setVar('views', $va_views);
 
 			$o_res = caMakeSearchResult(
 				$t_set->get('table_num'),
@@ -211,13 +215,13 @@
             if($this->opb_is_login_redirect) { return; }
             $pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
 			$t_set = new ca_sets($pn_set_id);
+			$o_dm = $this->getAppDatamodel();
+			$vs_table = $o_dm->getTableName($t_set->get('table_num'));
 			
             $pa_ids = explode(";",$this->request->getParameter('id', pString)); 
             $va_views_info = $this->config->get('views');
-            $va_view_info = $va_views_info["map"];
+            $va_view_info = $va_views_info["map"][$vs_table];
             $vs_content_template = $va_view_info['display']['icon'].$va_view_info['display']['title_template'].$va_view_info['display']['description_template'];
-			$o_dm = $this->getAppDatamodel();
-			$vs_table = $o_dm->getTableName($t_set->get('table_num'));
 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, $vs_table, $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br style='clear:both;'/>")));
 			
 			$this->view->setVar('heading', trim($va_view_info['display']['heading']) ? caProcessTemplateForIDs($va_view_info['display']['heading'], $vs_table, [$pa_ids[0]], array('checkAccess' => $this->opa_access_values)) : "");

@@ -2171,7 +2171,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				case 3:		// table_name.field_name.sub_element	
 					if (!($t_instance = $this->_DATAMODEL->getInstanceByTableName($va_tmp[0], true))) { return null; }
 										
-					if ($va_tmp[0] != $this->tableName()) {
+					if (($va_tmp[0] != $this->tableName()) || ($va_tmp[1] == 'related')) {
 						switch(sizeof($va_tmp)) {
 							case 1:
 								return caHTMLTextInput($ps_field.($vb_as_array_element ? "[]" : ""), array('value' => $pa_options['values'][$ps_field], 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
@@ -2208,8 +2208,9 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 											break;
 									}
 									
-									$qr_res = call_user_func_array($va_tmp[0].'::find', array($va_find_params, array('sort' => caGetOption('sort', $pa_options, $t_instance->getLabelTableName().'.'.$vs_label_display_field), 'returnAs' => 'searchResult')));
-			
+									$vs_sort = caGetOption('sort', $pa_options, $t_instance->tableName().'.preferred_labels.'.$vs_label_display_field);
+									$qr_res = call_user_func_array($va_tmp[0].'::find', array($va_find_params, array('restrictToTypes' => caGetOption('restrictToTypes', $pa_options, null), 'sort' => $vs_sort, 'returnAs' => 'searchResult')));
+
 									$vs_pk = $t_instance->primaryKey();
 									$va_opts = array('-' => '');
 									
@@ -2241,14 +2242,16 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 									}
 									
 									if ($qr_res) {
+									    $vs_field = ($va_tmp[1] == 'related') ? $va_tmp[0].'.'.$va_tmp[2] : $ps_field;
 										while($qr_res->nextHit()) {
 											if (($va_tmp[0] == 'ca_list_items') && (!$qr_res->get('parent_id'))) { continue; }
 											if (is_array($va_access) && sizeof($va_access) && !in_array($qr_res->get($va_tmp[0].'.access'), $va_access)) { continue; }
 											if (is_array($va_in_use_list) && !in_array($vn_item_id = $qr_res->get($vs_rel_pk), $va_in_use_list)) { continue; }
-											$va_opts[$qr_res->get($va_tmp[0].".preferred_labels.{$vs_label_display_field}")] = $qr_res->get($ps_field);
+											$va_opts[$qr_res->get($va_tmp[0].".preferred_labels.{$vs_label_display_field}")] = $qr_res->get($vs_field);
 										}
 									}
-									uksort($va_opts, "strnatcasecmp");
+									
+									if (!isset($pa_options['sort'])) { uksort($va_opts, "strnatcasecmp"); }
 									return caHTMLSelect($ps_field.$vs_rel_types.($vb_as_array_element ? "[]" : ""), $va_opts, array('value' => $pa_options['values'][$ps_field], 'class' => $pa_options['class'], 'id' => str_replace('.', '_', $ps_field)));
 								} else {
 									return $t_instance->htmlFormElementForSearch($po_request, $ps_field, $pa_options);
@@ -4240,7 +4243,7 @@ if (!$vb_batch) {
 								$vs_effective_date = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_effective_date_".$va_matches[1], pString);
 								$vn_group_id = (int)$po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_id".$va_matches[1], pInteger);
 								$vn_access = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_access_".$va_matches[1], pInteger);
-								if ($vn_access > 0) {
+								if ($vn_access >= 0) {
 									$va_groups_to_set[$vn_group_id] = $vn_access;
 									$va_group_effective_dates[$vn_group_id] = $vs_effective_date;
 								}
@@ -4521,10 +4524,12 @@ if (!$vb_batch) {
 					
 						$this->set('is_deaccessioned', $vb_is_deaccessioned = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}is_deaccessioned", pInteger));
 						$this->set('deaccession_notes', $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}deaccession_notes", pString));
-						$this->set('deaccession_type_id', $x=$po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}deaccession_type_id", pString));
+						$this->set('deaccession_type_id', $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}deaccession_type_id", pString));
 	
 						$this->set('deaccession_date', $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}deaccession_date", pString));
-						
+						if ($po_request->config->get('deaccession_use_disposal_date')) {
+						    $this->set('deaccession_disposal_date', $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}deaccession_disposal_date", pString));
+						}
 						if ($vb_is_deaccessioned && (bool)$this->getAppConfig()->get('deaccession_force_access_private')) { $this->get('access', 0); }	// set access to private for accessioned items
 						$this->update();
 						break;
@@ -6802,7 +6807,7 @@ $pa_options["display_form_field_tips"] = true;
 			}
 		}
 		
-		if ($this->update()) {
+		if ($this->update(['queueIndexing' => true])) {
 			if (!$vb_already_in_transaction) { $o_t->commit(); }
 			return true;
 		}

@@ -1,7 +1,7 @@
 <?php
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
 	
-print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'about.jpg')."</div>";	
+print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'about/'.rand(1,6).'.jpg')."</div>";	
 ?>
 <H1><?php print _t("About GSUSA Cultural Resources"); ?></H1>
 <div class="row">
@@ -23,7 +23,7 @@ print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'about.jpg')."
 			420 Fifth Avenue<br/>
 			New York, NY 10018
 			<br/><br/>
-			<a href="mailto:culturalresourcesrequests@girlsscouts.org">culturalresourcesrequests@girlsscouts.org</a>
+			<a href="mailto:culturalresourcesrequests@girlsscouts.org" class="btn-default" title="culturalresourcesrequests@girlsscouts.org">Email <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a>
 		</address>
 		
 	</div>

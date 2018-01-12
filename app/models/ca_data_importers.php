@@ -1398,6 +1398,8 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 		$vs_type_id_fld = $t_subject->getTypeFieldName();
 		$vs_idno_fld = $t_subject->getProperty('ID_NUMBERING_ID_FIELD');
 		
+		$va_subject_type_list = $t_subject->getTypeList();
+		
 		// get mapping rules
 		$va_mapping_rules = $t_mapping->getRules();
 		
@@ -1551,7 +1553,12 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 					$vs_key = join('.', $va_tmp);
 				}
 				if(!isset($va_row[$vs_key])) { continue; }
-				$va_row_with_replacements[$vs_key] = ca_data_importers::replaceValue($va_row[$vs_key], $va_item, []);
+				
+				if(is_array($va_row[$vs_key])) {
+				    $va_row_with_replacements[$vs_key] = array_map(function($v) use ($va_item) { return ca_data_importers::replaceValue($v, $va_item, []); }, $va_row[$vs_key]);
+				} else {
+				    $va_row_with_replacements[$vs_key] = ca_data_importers::replaceValue($va_row[$vs_key], $va_item, []);
+			    }
 			}
 			
 			//
@@ -1614,10 +1621,18 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 			if ($vn_type_id_mapping_item_id) {
 				// Type is specified in row
 				$vs_type = ca_data_importers::getValueFromSource($va_mapping_items[$vn_type_id_mapping_item_id], $o_reader, array('otherValues' => $va_rule_set_values, 'environment' => $va_environment));
+			    if (isset($va_mapping_items[$vn_type_id_mapping_item_id]['settings']['default']) && strlen($va_mapping_items[$vn_type_id_mapping_item_id]['settings']['default']) && !strlen($vs_type)) {
+					$vs_type = $va_mapping_items[$vn_type_id_mapping_item_id]['settings']['default'];
+				}
 			} else {
 				// Type is constant for all rows
 				$vs_type = $vs_type_mapping_setting;	
 			}
+			
+			// Set default when set type is invalid
+			if (isset($va_mapping_items[$vn_type_id_mapping_item_id]['settings']['default']) && strlen($va_mapping_items[$vn_type_id_mapping_item_id]['settings']['default']) && (sizeof(array_filter($va_subject_type_list, function($v) use ($vs_type) { return ($vs_type === $v['idno']);  })) == 0)) {
+                $vs_type = $va_mapping_items[$vn_type_id_mapping_item_id]['settings']['default'];
+            }
 			
 			// Get idno
 			$vs_idno = $va_idnos_for_row = null;
@@ -1849,6 +1864,10 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 						// Get location in content tree for addition of new content
 						$va_item_dest = explode(".",  $va_item['destination']);
 						$vs_item_terminal = $va_item_dest[sizeof($va_item_dest)-1];
+						
+						if (isset($va_item['settings']['filterEmptyValues']) && (bool)$va_item['settings']['filterEmptyValues'] && is_array($va_vals)) {
+						    $va_vals = array_filter($va_vals, function($v) { return strlen($v); });
+						}
 						
 						// Do value conversions
 						foreach($va_vals as $vn_i => $vm_val) {
@@ -3065,6 +3084,7 @@ class ca_data_importers extends BundlableLabelableBaseModelWithAttributes {
 		if (!$pm_value && isset($pa_item['settings']['default']) && strlen($pa_item['settings']['default'])) {
 			$pm_value = $pa_item['settings']['default'];
 		}
+		
 		return $pm_value;
 	}
 	# ------------------------------------------------------
