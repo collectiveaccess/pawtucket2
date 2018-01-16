@@ -14,6 +14,8 @@
 <div class="col-sm-1"></div>
 <div class="col-sm-10 staticPageArea">
 	<h4><?php print $vs_page_title; ?></h4>
+	<div class='searchButton'><?php print caNavLink($this->request, 'Search Collections', 'btn-default', 'Search', 'advanced', 'collections'); ?></div>
+	<div style="clear:both;width:100%"></div>
 	<div class='findingIntro'><?php print $vs_intro_text; ?></div>
 	<div id='findingAidCont'>
 <?php	
