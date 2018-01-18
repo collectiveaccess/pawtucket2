@@ -136,7 +136,12 @@
 						$vs_info = "";
 						if ($va_date = $qr_res->get('ca_objects.date')) {
 							$vs_info.= "<p>".$va_date."</p>";
-						}					
+						}
+						if ($va_author = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes'=> array('author'), 'delimiter' => ', '))) {
+							$vs_info.= "<p>".$va_author."</p>";
+						} else {
+							$va_author = null;
+						}				
 					}
 					$vs_add_to_set_link = "";
 					if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
@@ -149,16 +154,15 @@
 		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
-					<div class='bResultListItemText'>
+				<div class='bResultListItemContent'>";
+					if ($qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) != 'Book') {
+						$vs_result_output .= "<div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>";
+					}
+					$vs_result_output .= "<div class='bResultListItemText'>
 						{$vs_label_detail_link}
 						{$vs_info}
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
-				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
-					<hr>
-					{$vs_expanded_info}{$vs_add_to_set_link}
-				</div><!-- bResultListItemExpandedInfo -->
 			</div><!-- end bResultListItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');

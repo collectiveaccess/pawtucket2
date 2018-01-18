@@ -90,7 +90,20 @@
 				}else{
 					$t_occ = new ca_occurrences($qr_res->get("ca_occurrences.occurrence_id"));
 					$va_reps = $t_occ->getPrimaryRepresentation(array("iconlarge", "medium"), null, array("checkAccess" => $va_access_values));
-					$va_events_by_decade[$vs_decade][$vs_start_year][$qr_res->get("ca_occurrences.occurrence_id")] = array("id" => $qr_res->get("ca_occurrences.occurrence_id"), "date" => $qr_res->get("ca_occurrences.timeline_date"), "title" => $qr_res->get("ca_occurrences.preferred_labels"), "public_description" => $qr_res->get("public_description"), "category_code" => $vs_category_code, "category_id" => $vn_category_id, "iconlarge" => $va_reps["tags"]["iconlarge"], "medium" => $va_reps["tags"]["medium"]);
+					$va_all_reps = $t_occ->getRepresentations(array("medium"), null, array("checkAccess" => $va_access_values));
+					$va_medium_reps = array();
+					if(sizeof($va_all_reps) > 1){
+						# --- add the primary rep first
+						$va_medium_reps[] = $va_reps["tags"]["medium"];
+						foreach($va_all_reps as $va_tmp){
+							if($va_reps["representation_id"] != $va_tmp["representation_id"]){
+								$va_medium_reps[] = $va_tmp["tags"]["medium"];
+							}
+						}
+					}else{
+						$va_medium_reps[] = $va_reps["tags"]["medium"];
+					}
+					$va_events_by_decade[$vs_decade][$vs_start_year][$qr_res->get("ca_occurrences.occurrence_id")] = array("id" => $qr_res->get("ca_occurrences.occurrence_id"), "date" => $qr_res->get("ca_occurrences.timeline_date"), "title" => $qr_res->get("ca_occurrences.preferred_labels"), "public_description" => $qr_res->get("public_description"), "category_code" => $vs_category_code, "category_id" => $vn_category_id, "iconlarge" => $va_reps["tags"]["iconlarge"], "medium" => $va_medium_reps);
 				}
 			}
 		}
@@ -120,13 +133,12 @@
 		<div class="col-sm-12">
 			<?php print caGetThemeGraphic($this->request, 'hpTruck.jpg'); ?>
 			<div class="frontIntroOverlay">
-				<h2>Our Story</h2>
-				<p>Our story began with a simple innovation, a fireproof metal wastebasket for offices.</p>
-
-				<p>Looking back, it's clear our company has always been about looking forward. Our past, present and future are all about turning insights into innovations that unlock the promise of people at work and make the world a better place.</p>
-
-				<p>So now step back in time. Discover the many turning points in our history that together reveal the bigger picture of who we are and where we're headed. Our story, our future, is just beginning.</p>
-
+				<p>
+					Over 100 years ago a group of investors trusted that a metal office furniture company could compete in a city renown for wood manufacturing.
+				</p>
+ 				<p>
+ 					Looking back, it's clear our company has always been about looking forward. Our past, present and future are all about turning insights into innovations that unlock the promise of people at work and make the world a better place.
+ 				</p>
 			</div>
 		</div>
 	</div>
@@ -206,12 +218,29 @@
 <?php
 							print $va_event["iconlarge"]."<div class='frontTimelineDivide ".$va_event["category_code"]."Divide'></div><div class='frontTimelineCardCaption'><div class='frontTimelineCardCaptionDate'>".$va_event["date"]."</div>".$va_event["title"]."</div>";
 ?>
-								<i class="fa fa-search" id="mag<?php print $va_event["id"]; ?>"></i>
+								<i class="fa fa-ellipsis-h" id="mag<?php print $va_event["id"]; ?>"></i>
 							</div><!--end frontTimelineCard -->
 							<div class="frontTimelineCardFull" id="full<?php print $va_event["id"]; ?>">
 <?php
 							print "<div class='frontTimelineDivide ".$va_event["category_code"]."Divide'><div class='pull-right'><a href='".caNavUrl($this->request, "", "Front", "Index", array("filter_id" => $va_event["category_id"]))."#timeline'>".$va_event["category_code"]."</a></div>".$va_event["date"]."</div><div class='frontTimelineCardFullTitle'>".$va_event["title"]."</div>";
-							print "<div class='frontTimelineCardFullCol'>".$va_event["medium"]."</div>";
+							if(sizeof($va_event["medium"]) > 1){
+								print "<div class='frontTimelineCardFullCol'>";
+?>							
+				<div class="jcarousel-wrapper"><div class="jcarousel"><ul>
+<?php
+					foreach($va_event["medium"] as $vs_medium_rep){
+						print "<li><div class='frontTimelineSlide'>".$vs_medium_rep."</div></li>";
+					}
+?>
+					</ul></div><!-- end jcarousel -->
+					<a href="#" class="jcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
+					<a href="#" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
+				</div><!-- end wrapper -->
+<?php							
+								print "</div>";
+							}else{
+								print "<div class='frontTimelineCardFullCol'>".$va_event["medium"][0]."</div>";
+							}
 							print "<div class='frontTimelineCardFullCol'><div class='frontTimelineCardFullDesc'>".$va_event["public_description"]."</div>";
 							if($this->request->isLoggedIn()){
 								print "<div class='text-right'>".caDetailLink($this->request, 'More', '', 'ca_occurrences', $va_event["id"])."</div>";
@@ -253,6 +282,56 @@
 			</div><!-- end row -->
 <?php
 		}
+	# ------ carousel js here
+?>
+		<script type='text/javascript'>
+			imgWidth = ($('.frontTimelineCardFull').width()/2) - 20;
+			$('.jcarousel li').width(imgWidth + "px");
+			jQuery(document).ready(function() {
+				/*
+				Carousel initialization
+				*/
+				$('.jcarousel')
+					.jcarousel({
+						// Options go here
+						wrap:'circular'
+					});
+		
+				/*
+				 Prev control initialization
+				 */
+				$('.jcarousel-control-prev')
+					.on('jcarouselcontrol:active', function() {
+						$(this).removeClass('inactive');
+					})
+					.on('jcarouselcontrol:inactive', function() {
+						$(this).addClass('inactive');
+					})
+					.jcarouselControl({
+						// Options go here
+						target: '-=1'
+					});
+		
+				/*
+				 Next control initialization
+				 */
+				$('.jcarousel-control-next')
+					.on('jcarouselcontrol:active', function() {
+						$(this).removeClass('inactive');
+					})
+					.on('jcarouselcontrol:inactive', function() {
+						$(this).addClass('inactive');
+					})
+					.jcarouselControl({
+						// Options go here
+						target: '+=1'
+					});
+		
+				
+			});
+		</script>
+<?php
+	# ------ end carousel js
 	}else{
 		foreach($va_events_by_decade as $vs_decade => $va_events_by_year){
 ?>

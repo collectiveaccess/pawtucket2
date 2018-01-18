@@ -88,6 +88,12 @@
  			$o_first_result_context = array_shift(array_values($this->opa_result_contexts));
  			
  			$vs_search = $o_first_result_context->getSearchExpression();
+ 			
+ 			if ($ps_label = $this->request->getParameter('label', pString)) {
+				$o_first_result_context->setSearchExpressionForDisplay("{$ps_label}: ".caGetDisplayStringForSearch($vs_search, ['omitFieldNames' => true]));
+ 			} else {
+ 			    $o_first_result_context->setSearchExpressionForDisplay(caGetDisplayStringForSearch($vs_search)); 
+ 			}
  			$vs_search_display = $o_first_result_context->getSearchExpressionForDisplay();
  			
  			$this->view->setVar('search', $vs_search);
