@@ -206,7 +206,7 @@
 						}
 						print "</span></div>";
 					}	
-					if ($vs_entity_pub = $t_object->get('ca_objects.related.preferred_labels', array('restrictToTypes' => array('publication'), 'delimiter' => '<br/>', 'returnAsLink' => true, 'sort' => 'ca_objects.preferred_labels'))) {
+					if ($vs_entity_pub = $t_entity->get('ca_objects.preferred_labels', array('restrictToTypes' => array('publication'), 'delimiter' => '<br/>', 'returnAsLink' => true, 'sort' => 'ca_objects.preferred_labels'))) {
 						print "<div class='info'><span class='metaLabel'>Light Work Publications</span><span class='data'>".$vs_entity_pub."</span></div>";
 					}
 #					if ($vs_websites = $t_entity->get('ca_entities.website', array('returnAsArray' => true))) {
@@ -236,7 +236,7 @@
 			}
 		}
 
-		if ($va_related_objects = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'restrictToTypes' => array('artwork')))) {
+/*		if ($va_related_objects = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'restrictToTypes' => array('artwork')))) {
 			$qr_related_objects = caMakeSearchResult('ca_objects', $va_related_objects);
 			$va_entity_ids = array();
 			while($qr_related_objects->nextHit()) {
@@ -254,6 +254,21 @@
 			}
 			print "</div></div>";				
 
+		}
+*/
+		if($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Publication") {
+			$va_entity_ids = $t_object->get('ca_entities.entity_id', array('returnAsArray' => true, 'sort' => 'ca_entities.preferred_labels.surname'));
+			print "<div class='row'><div class='browseResultsContainer relatedArtists'><h2 style='margin-left:15px;padding-bottom:15px;'>Related Artists</h2>";
+			$qr_related_artists = caMakeSearchResult('ca_entities', array_unique($va_entity_ids));
+			while($qr_related_artists->nextHit()) {
+				print "<div class='bResultItemCol col-xs- col-sm-4 col-md-4'><div class='bResultItem'><div class='bResultItemContent'>";
+				print "<div class='text-center bResultItemImg'>".caDetailLink($this->request, $qr_related_artists->getWithTemplate('<unit relativeTo="ca_objects" length="1"><unit relativeTo="ca_object_representations" length="1">^ca_object_representations.media.small</unit><ifnotdef code="ca_object_representations.media.small"><div class="bResultItemImgPlaceholder"><i class="fa fa-picture-o fa-2x"></i></div></ifnotdef></unit>'), '', 'ca_entities', $qr_related_artists->get('ca_entities.entity_id'))."</div>";
+				print "<div class='bResultItemText'>";
+				print caDetailLink($this->request, $qr_related_artists->get('ca_entities.preferred_labels'), '', 'ca_entities', $qr_related_artists->get('ca_entities.entity_id'));			
+				print "</div>";
+				print "</div><!-- end bResultItemContent --></div><!-- end bResultItem --></div><!-- end col-sm-4 -->";		 		
+			}
+			print "</div></div>";			
 		}
 	
 /*		
