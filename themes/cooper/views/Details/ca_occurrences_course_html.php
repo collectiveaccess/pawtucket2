@@ -73,11 +73,11 @@
 		if(sizeof($va_rel_projects)){
 ?>
 			<div class="row">
-				<div class="col-sm-12">
-					<div class="pull-right">
-						<?php print caNavLink($this->request, _t("See All")." <i class='fa fa-caret-down'></i>", "btn-default", "", "Browse", "projects", array("facet" => "course_facet", "id" => $t_item->get("occurrence_id"))); ?>
-					</div>
+				<div class="col-sm-10">
 					<H1 class="courseProjects">All <?php print $vs_title; ?> <span class='grey'>/ <?php print sizeof($va_rel_projects)." ".((sizeof($va_rel_projects) == 1) ? "project" : "projects"); ?></span></H1>
+				</div>
+				<div class="col-sm-2 text-right">
+					<?php print caNavLink($this->request, _t("See All")." <i class='fa fa-caret-down'></i>", "btn-default", "", "Browse", "projects", array("facet" => "course_facet", "id" => $t_item->get("occurrence_id"))); ?>
 				</div>
 			</div>
 			<div class="row">
