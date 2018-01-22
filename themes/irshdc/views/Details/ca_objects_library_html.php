@@ -79,23 +79,22 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6>{{{<unit>^ca_objects.type_id<ifdef code="ca_objects.resource_type">: ^ca_objects.resource_type</ifdef></unit>}}}</H6>
+				<H6>{{{<unit><ifdef code="ca_objects.resource_type">^ca_objects.resource_type</ifdef></unit>}}}</H6>
+				{{{<ifdef code="ca_objects.indexingDatesSet"><div class='unit'>^ca_objects.indexingDatesSet</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.MARC_copyrightDate"><div class='unit'>&copy; ^ca_objects.MARC_copyrightDate</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.contributors|ca_objects.creators"><H6>Creators and Contributors</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.contributors</unit><ifdef code="ca_objects.contributors,ca_objects.creators"><br/></ifdef><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.creators</unit></ifdef>}}}
 
 <?php
 		include("curation_html.php");
 ?>
-				{{{<ifcount code="ca_entities.related" restrictToTypes="repository" min="1"><H6>Holding Library</H6><unit relativeTo="ca_entities.related" restrictToTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></ifcount>}}}
 				
 				{{{<ifdef code="ca_objects.nonpreferred_labels.name"><HR/><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>">^nonpreferred_labels.name</unit></ifdef>}}}
 				
-				{{{<ifcount code="ca_entities.related" excludeTypes="school" restrictToRelationshipTypes="creator" min="1"><H6>Authors/Creators</H6><unit relativeTo="ca_objects_x_entities" excludeTypes="school" restrictToRelationshipTypes="creator" delimiter=", "><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels.displayname</l></unit></unit></ifcount>}}}
-				{{{<ifcount code="ca_entities.related" excludeTypes="school" restrictToRelationshipTypes="contributor" min="1"><H6>Contributors</H6><unit relativeTo="ca_objects_x_entities" excludeTypes="school" restrictToRelationshipTypes="contributor" delimiter=", "><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels.displayname</l></unit></unit></ifcount>}}}
-
+				
 <!--				{{{<ifdef code="ca_objects.MARC_volume"><div class='unit'><h6>Series and Volume</h6>^ca_objects.MARC_volume%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.MARC_edition"><div class='unit'><h6>Edition</h6>^ca_objects.MARC_edition</div></ifdef>}}} -->
 				<!--{{{<ifdef code="ca_objects.RAD_pubPlace"><div class='unit'><h6>Published/Distributed</h6>^RAD_pubPlace</div></ifdef>}}}-->
-				{{{<ifdef code="ca_objects.indexingDatesSet"><div class='unit'><h6>Date of Publication</h6>^ca_objects.indexingDatesSet</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.MARC_copyrightDate"><div class='unit'>&copy; ^ca_objects.MARC_copyrightDate</div></ifdef>}}}
+				
 			</div>
 		</div>
 		<div class="row">	
@@ -111,33 +110,37 @@
 
 				<div class="tab-content">
 					<div role="tabpanel" class="tab-pane active" id="source">
+						{{{<ifcount code="ca_entities.related" restrictToTypes="repository" min="1"><H6>Holding Library</H6><unit relativeTo="ca_entities.related" restrictToTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></ifcount>}}}
+				
 <!--						{{{<ifdef code="ca_objects.internal_external"><div class='unit'><h6>Internal/External</h6>^ca_objects.internal_external</div></ifdef>}}} -->
-						{{{<ifdef code="ca_objects.link"><div class='unit'><h6>Permalink/Link to record in home repository</h6><a href="^ca_objects.link" target="_blank">^ca_objects.link</a></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.link"><div class='unit'><h6>Link to Record in Holding Library</h6><a href="^ca_objects.link" target="_blank">^ca_objects.link</a></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.electronic_URL"><div class='unit'><h6>Electronic Location</h6><a href="^ca_objects.electronic_URL" target="_blank">^ca_objects.electronic_URL</a></div></ifdef>}}}
 						
-						{{{<ifdef code="ca_objects.call_number"><div class='unit'><h6>^ca_objects.call_number.call_number_source Call Number</h6>^ca_objects.call_number.call_number_value</div></ifdef>}}}
-	<!--					{{{<ifdef code="ca_objects.MARC_physical"><div class='unit'><h6>Physical Description</h6>^ca_objects.MARC_physical</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.MARC_isbn"><div class='unit'><h6>ISBN</h6>^ca_objects.MARC_isbn</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.MARC_issn"><div class='unit'><h6>ISSN</h6>^ca_objects.MARC_issn</div></ifdef>}}} -->
+<!--					{{{<ifdef code="ca_objects.call_number"><div class='unit'><h6>^ca_objects.call_number.call_number_source Call Number</h6>^ca_objects.call_number.call_number_value</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.MARC_physical"><div class='unit'><h6>Physical Description</h6>^ca_objects.MARC_physical</div></ifdef>}}}
+-->
 					</div>
 					<div role="tabpanel" class="tab-pane" id="notes">
-						<!--{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>General Note</h6>^ca_objects.MARC_generalNote</div></ifdef>}}}			
-						{{{<ifdef code="ca_objects.bibliography"><div class='unit'><h6>Bibliography, etc. Note</h6>^ca_objects.bibliography</div></ifdef>}}}	-->		
+						{{{<ifdef code="ca_objects.MARC_isbn"><div class='unit'><h6>ISBN</h6><unit delimiter="<br/>">^ca_objects.MARC_isbn</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.MARC_issn"><div class='unit'><h6>ISSN</h6><unit delimiter="<br/>">^ca_objects.MARC_issn</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>General Note</h6>^ca_objects.MARC_generalNote</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.local_note"><div class='unit'><h6>Local Note</h6>^ca_objects.local_note</div></ifdef>}}}				
+						<!--{{{<ifdef code="ca_objects.bibliography"><div class='unit'><h6>Bibliography, etc. Note</h6>^ca_objects.bibliography</div></ifdef>}}}	-->		
 						{{{<ifdef code="ca_objects.MARC_formattedContents"><div class='unit'><h6>Contents</h6>^ca_objects.MARC_formattedContents</div></ifdef>}}}			
 						{{{<ifdef code="ca_objects.ISADG_titleNote"><div class='unit'><h6>Title Note</h6>^ca_objects.ISADG_titleNote</div></ifdef>}}}			
 						{{{<ifdef code="ca_objects.participant_performer"><div class='unit'><h6>Participant or Performer Note</h6>^ca_objects.participant_performer</div></ifdef>}}}			
 						<!--{{{<ifdef code="ca_objects.additional_form"><div class='unit'><h6>Additional Physical Form Note</h6>^ca_objects.additional_form</div></ifdef>}}}			
 						{{{<ifdef code="ca_objects.system_note"><div class='unit'><h6>System Details Note</h6>^ca_objects.system_note</div></ifdef>}}}		-->	
 						
-						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6>^ca_objects.language</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.local_note"><div class='unit'><h6>Local Note</h6>^ca_objects.local_note</div></ifdef>}}}			
+						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6>^ca_objects.language</div></ifdef>}}}		
 						
 					</div>
 					<div role="tabpanel" class="tab-pane" id="subjects">
-						{{{<ifdef code="ca_objects.LOC_text"><div class='unit'><h6>Subject(s) - Topical</h6>^ca_objects.LOC_text%delimiter=,_</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.local_subject"><div class='unit'><h6>Subject(s) - Local</h6>^ca_objects.local_subject%delimiter=,_</div></ifdef>}}}
+						{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="subject" min="1"><H6>Subject Entity</H6><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="subject" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></ifcount>}}}
+						{{{<ifdef code="ca_objects.LOC_text"><div class='unit'><h6>Subject Access - Topical</h6>^ca_objects.LOC_text%delimiter=,_</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.tgn"><div class='unit'><H6>Subject Access - Geographical</H6>^ca_objects.tgn%delimiter=,_</div></ifcount>}}}					
+						{{{<ifdef code="ca_objects.local_subject"><div class='unit'><h6>Subject Access - Local</h6>^ca_objects.local_subject%delimiter=,_</div></ifdef>}}}
 									
-						{{{<ifdef code="ca_objects.tgn"><div class='unit'><H6>Subject(s) - Geographical</H6>^ca_objects.tgn%delimiter=,_</div></ifcount>}}}					
 					</div>
 					<div role="tabpanel" class="tab-pane" id="related">
 						{{{<ifcount code="ca_objects.related" restrictToTypes="library" min="1"><H6>Related Library Items</H6><unit relativeTo="ca_objects.related" restrictToTypes="library" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}

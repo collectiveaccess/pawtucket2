@@ -79,9 +79,9 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H4 data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="{{{^ca_objects.ISADG_titleNote}}}">{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6>{{{<unit>^ca_objects.type_id<ifdef code="ca_objects.resource_type">: ^ca_objects.resource_type</ifdef></unit>}}}</H6>
+				<H6>{{{<unit><ifdef code="ca_objects.resource_type">^ca_objects.resource_type</ifdef></unit>}}}</H6>
 				{{{<ifdef code="ca_objects.parent_id"><H6>Part of: <unit relativeTo="ca_objects.hierarchy" delimiter=" &gt; "><l>^ca_objects.preferred_labels.name</l></unit></H6></ifdef>}}}
-				{{{<ifdef code="ca_objects.displayDate"><div class='unit'><h6>Date</h6>^ca_objects.displayDate</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.displayDate"><div class='unit'>^ca_objects.displayDate</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.IRSHDC_identifier"><div class='unit'><h6>IRSHDC Identifier</h6>^ca_objects.IRSHDC_identifier</div></ifdef>}}} 
 				
 <?php
