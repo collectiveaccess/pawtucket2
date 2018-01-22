@@ -83,7 +83,9 @@
 </script>
 <script>
 	jQuery(document).ready(function() {
-		$('.galleryIcon').popover(); 
+		$('.galleryIcon').popover({
+			container: 'body'
+		}); 
 	});
 	
 </script>

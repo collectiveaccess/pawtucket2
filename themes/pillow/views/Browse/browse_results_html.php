@@ -175,9 +175,6 @@ if (!$vb_ajax) {	// !ajax
 					}
 		?>
 					</div>	<!-- end buttongrp -->
-					<div class='col-sm-3 col-md-3 col-lg-3 '>
-						<div class='searchButton' style='padding-top:12px;'><?php print caNavLink($this->request, 'Search Collections', 'btn-default', 'Search', 'advanced', 'collections'); ?></div>
-					</div>
 				</div><!-- end row -->										
 			</div><!-- end searchoptions -->	
 <?php			

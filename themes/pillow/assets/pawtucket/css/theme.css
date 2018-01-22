@@ -381,10 +381,15 @@ div.browseFacetItem a:hover {
 	color: #482b11;
 }
 .multisearchFullResults a, .multisearchSort ul li a {
-	color: #482b11;
+	color: #333;
+    font-weight: bold;
+    font-size: 14px;
 }
 .multisearch .blockResults {
 	height:210px;
+}
+.multisearchSort select {
+	margin-top: -5px;
 }
 .multisearch #productionsBlock .blockResults {
 	height:200px;
@@ -1038,6 +1043,10 @@ a.readmore-js-toggle {
 	border:0px;
 	background-color:#fff;
 }
+.gallery a.galleryIcon {
+	display:inline-block;
+	white-space: nowrap;
+}
 
 /* Contact */
 
@@ -1123,4 +1132,8 @@ a.readmore-js-toggle {
 	.featuredSidebar {
 		height:500px;
 	}
+}
+.popover.left {
+	left:inherit;
+	margin-left:inherit;
 }
