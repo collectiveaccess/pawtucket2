@@ -94,7 +94,7 @@
 				{{{<ifdef code="ca_objects.file_series"><H6>Series (Short title)</H6><unit delimiter=", ">^ca_objects.file_series</unit></ifdef>}}}
 				{{{<ifdef code="ca_objects.record_type"><H6>Record Type</H6><unit delimiter=", ">^ca_objects.record_type</unit></ifdef>}}}
 				{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="original_source" min="1"><H6>Original Source</H6><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="original_source" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></ifcount>}}}
-				{{{<ifdef code="ca_objects.alternate_text.alternate_desc_upload.url"><div class='unit icon'><h6>Transcriptions/Translations</h6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.alternate_text.alternate_desc_upload"><a href="^ca_objects.alternate_text.alternate_desc_upload.url%version=original">View file</a><br/></ifdef><ifdef code="ca_objects.alternate_text.alternate_text_type">^ca_objects.alternate_text.alternate_text_type<br/></ifdef><ifdef code="ca_objects.alternate_text.alternate_desc_note">^ca_objects.alternate_text.alternate_desc_note</ifdef></unit></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.alternate_text.alternate_desc_upload.url"><div class='unit icon transcription'><h6>Transcriptions/Translations</h6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.alternate_text.alternate_desc_upload"><a href="^ca_objects.alternate_text.alternate_desc_upload.url%version=original">View ^ca_objects.alternate_text.alternate_text_type</a></ifdef><ifdef code="ca_objects.alternate_text.alternate_desc_note">^ca_objects.alternate_text.alternate_desc_note</ifdef></unit></div></ifdef>}}}
 						
 				<div style='background-color:#EDEDED; padding:10px; margin:10px 0px 10px 0px;'>
 					{{{<ifdef code="ca_objects.microfilm_reel"><H6>Microfilm Reel</H6><unit delimiter="<br/>">^ca_objects.microfilm_reel</unit></ifdef>}}}
@@ -123,13 +123,15 @@
 					<div role="tabpanel" class="tab-pane active" id="LAC">
 						{{{<ifdef code="ca_objects.mikan_number"><div class='unit'><h6>Mikan Number</h6><unit delimiter=", ">^ca_objects.mikan_number</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.file_series_full"><div class='unit'><h6>Series (Full Title)</h6><unit delimiter=", ">^ca_objects.file_series_full</unit></div></ifdef>}}}
-						{{{<ifdef code="ca_objects.RAD_scopecontent"><div class='unit'><h6>Scope and Content</h6><unit delimiter=", ">^ca_objects.RAD_scopecontent</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.RAD_scopecontent"><div class='unit'><h6>Series Scope and Content</h6><unit delimiter=", ">^ca_objects.RAD_scopecontent</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.lac_URL"><div class='unit'><h6>LAC URL</h6><unit delimiter=", "><a href="^ca_objects.lac_URL" target="_blank">^ca_objects.lac_URL</a></unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.rg_source"><div class='unit'><h6>Source note</h6><unit delimiter="<br/>">^ca_objects.rg_source</unit></div></ifdef>}}}
 					</div>
 					<div role="tabpanel" class="tab-pane" id="NCTR">
 						{{{<ifdef code="ca_objects.trc"><div class='unit'><h6>TRC Document</h6><unit delimiter=", ">^ca_objects.trc</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.NCTR_site_ID"><div class='unit'><h6>NCTR Site ID</h6><unit delimiter=", ">^ca_objects.NCTR_site_ID</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.NCTR_container_ID"><div class='unit'><h6>NCTR Container ID</h6><unit delimiter=", ">^ca_objects.NCTR_container_ID</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.NCTR_document_ID"><div class='unit'><h6>NCTR Document ID</h6><unit delimiter=", ">^ca_objects.NCTR_document_ID</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.NCTR_URL"><div class='unit'><h6>NCTR URL</h6><unit delimiter=", "><a href="^ca_objects.NCTR_URL" target="_blank">^ca_objects.NCTR_URL</a></unit></div></ifdef>}}}						
 					</div>
 					<div role="tabpanel" class="tab-pane" id="koerner">
@@ -137,10 +139,12 @@
 					</div>
 					<div role="tabpanel" class="tab-pane" id="notes">
 						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter="<br/>">^ca_objects.language</unit></div></ifdef>}}}
-						{{{<ifdef code="ca_objects.language_note"><div class='unit'><h6>Local Note</h6><unit delimiter="<br/>">^ca_objects.language_note</unit></div></ifdef>}}}			
+						{{{<ifdef code="ca_objects.language_note"><div class='unit'><h6>Language Note</h6><unit delimiter="<br/>">^ca_objects.language_note</unit></div></ifdef>}}}			
+						{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Note</h6>^ca_objects.MARC_generalNote</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Note on Description</h6>^ca_objects.ISADG_archNote</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_objects.ISADG_rules</div></ifdef>}}}
+<!--					{{{<ifdef code="ca_objects.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_objects.ISADG_rules</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.description_date"><div class='unit'><h6>Date(s) of Description(s)</h6>^ca_objects.description_date</div></ifdef>}}}
+-->
 					</div>
 					<div role="tabpanel" class="tab-pane" id="related">
 						{{{<ifcount code="ca_objects.related" restrictToTypes="file" min="1"><H6>Related RG10 File</H6><unit relativeTo="ca_objects_x_objects" restrictToTypes="file" delimiter=", "><unit relativeTo="ca_objects"><l>^ca_objects.preferred_labels.name</l></unit> (^relationship_typename)</unit></ifcount>}}}

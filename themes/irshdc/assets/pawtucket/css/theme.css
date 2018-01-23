@@ -211,3 +211,6 @@ a.readmore-js-toggle {
 .detail .nav-tabs > li > a{
 	text-align:center;
 }
+.detail .transcription img{
+	display:none;
+}
