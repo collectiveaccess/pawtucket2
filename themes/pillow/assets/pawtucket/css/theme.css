@@ -13,7 +13,7 @@ body {
 	font-family: Futura, sans-serif;
 	color: #482b11;
 	letter-spacing:1px;
-	margin-bottom:120px;
+	margin-bottom:120px !important;
 }
 a, .detail a, #footer a, #footer ul a {
 	color: #0d58d2;
