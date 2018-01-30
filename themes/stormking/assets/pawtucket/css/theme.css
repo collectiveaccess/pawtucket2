@@ -92,8 +92,11 @@ body {
 #pageArea {
 	padding-top:30px;
 }
-.Front #pageArea {
+.Front #pageArea, .About #pageArea {
 	padding-top:0px;
+}
+.Browse #pageArea {
+	padding-left:10px;
 }
 h1 {
     font-size: 16px;
@@ -121,6 +124,9 @@ h4 {
     padding: 10px 40px 10px 0;
     cursor: pointer;
     position: relative;
+}
+.collections h4 {
+	display:inline;
 }
 h6 {
 	color:#000;
@@ -181,6 +187,12 @@ p, .collectionsList p {
 		line-height: 17px;
 	}
 }
+@media (max-width: 1010px) {
+	ul.menuItems {
+    	width: 100%;
+    	border-top: 0px; 
+	}
+}
 .sidebar .logo {
     display: block;
     font-size: 0;
@@ -193,6 +205,8 @@ p, .collectionsList p {
 .sidebar .subMenu li {
 	list-style-type:none;
 	margin-bottom:6px;
+	border-bottom:2px solid transparent;
+	display:list-item;
 }
 .sidebar .subMenu li a {
 	color:#000;
@@ -202,6 +216,13 @@ p, .collectionsList p {
 .sidebar .subMenu li a:hover {
 	text-decoration:none;
 	border-bottom: 2px solid #000;
+}
+.sidebar .subMenu li:hover {
+	text-decoration:none;
+/*	border-bottom: 2px solid #000;*/
+}
+.sidebar .subMenu li.active a:hover {
+	border-bottom:0px;
 }
 .sidebar nav {
 	display:block;
@@ -244,7 +265,7 @@ p, .collectionsList p {
 .sidebar .secondary-menu {
 	margin-bottom:20px;
 }
-.Front .sidebar {
+.Front .sidebar, .About .sidebar {
 	background: rgba(255, 255, 255, 0.8);
 }
 .social ul {
@@ -254,6 +275,10 @@ p, .collectionsList p {
     display: inline-block;
     margin-right: 10px;
     float:left; 
+}
+.sidebar .subMenu li.active {
+	border-bottom: 2px solid #000;
+	display:inline-block;
 }
 .social ul li a svg {
     width: 20px;
@@ -318,7 +343,7 @@ p, .collectionsList p {
 	padding: 0px 5px 0px 5px;
 }
 .detail hr {
-	border-top: #c7c7c7 solid 1px;
+	border-top: #989697 solid 1px;
 	color:transparent;
 }
 .detail .exportCollection a {
@@ -328,6 +353,10 @@ p, .collectionsList p {
 	min-height:150px;
 	background-color:#f5f5f5;
 	margin-top:15px;
+}
+.bResultItemImgPlaceholder {
+	border:0px;
+	color:#000;
 }
 
 /* Collection */
@@ -340,6 +369,9 @@ p, .collectionsList p {
     font-size: 14px;
     line-height: 18px;
     box-shadow:none;
+}
+.collectionTile .title a {
+	color: #000;
 }
 .detail .exportCollection .fa, .detail .exportCollection .glyphicon, .detail .exportCollection a {
 	color:#000 !important;
@@ -380,6 +412,17 @@ p, .collectionsList p {
 	padding: 0px;
     font-size: 14px;
     text-transform: uppercase;
+}
+.colImage {
+	text-align:center;
+	margin-bottom:10px; 
+}
+.colImage img {
+	width:100%;
+	height:auto;
+}
+.collectionDetail {
+	text-transform:none;
 }
 
 /* Listing */
@@ -439,4 +482,19 @@ p, .collectionsList p {
 }
 .attributeListItem {
 	width:100%;
+}
+
+/* Browse */
+
+.bResultItem {
+	box-shadow:none;
+	border-bottom:1px solid #c7c7c7;
+}
+.bResultItem:hover {
+	margin:0px;
+	min-height:0;
+	font-size:16px;
+}
+.bResultItem .bResultItemText {
+	font-size:14px;
 }
