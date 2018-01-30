@@ -992,7 +992,7 @@
 			if (!$pa_mimetypes) { return array(); }
 			if (!is_array($pa_mimetypes) && $pa_mimetypes) { $pa_mimetypes = array($pa_mimetypes); }
 			$va_rep_list = array();
-			if (is_array($va_reps = $this->getRepresentations(null, null, $pa_options))) {
+			if (is_array($va_reps = $this->getRepresentations(caGetOption('versions', $pa_options, null), null, $pa_options))) {
 				foreach($va_reps as $vn_rep_id => $va_rep) {
 					if (in_array($va_rep['mimetype'], $pa_mimetypes)) {	
 						$va_rep_list[$vn_rep_id] = $va_rep;
