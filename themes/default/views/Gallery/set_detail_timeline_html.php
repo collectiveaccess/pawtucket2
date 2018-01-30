@@ -26,13 +26,20 @@
  * ----------------------------------------------------------------------
  */
  	
-	AssetLoadManager::register('timeline');
 	$t_set = $this->getVar("set");
 ?>
-	<div id="lbTimelineContainer">
-		<div id="timeline-embed"></div>
+	<div class="row">
+		<div class="col-sm-12">
+			<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
+		</div>
 	</div>
-	
+	<div class="row">
+		<div class="col-sm-12">
+			<div id="lbTimelineContainer">
+				<div id="timeline-embed"></div>
+			</div>
+		</div>
+	</div>
 	<div style="clear:both;"><!-- empty --></div>
 	
     <script type="text/javascript">
