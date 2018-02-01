@@ -106,8 +106,8 @@
 				if ($vs_accession = $t_object->get('ca_objects.accession')) {
 					print "<div class='unit'><h6>Catalogue Number</h6>".$vs_accession."</div>";
 				}
-				if ($vs_current_loc = $t_object->get('ca_storage_locations.preferred_labels', array('delimiter' => '<br>'))) {
-					print "<div class='unit'><h6>Current Location</h6>".$vs_current_loc."</div>";
+				if ($vs_current_loc = $t_object->get('ca_objects.current_location')) {
+					print "<div class='unit'><h6>Current Location</h6>".$vs_current_loc."</div>"; 
 				}																		
 #				if ($vs_info = $t_object->get('ca_objects.idno')) {
 #					print "<div class='unit'><h6>Identifier</h6>".$vs_info."</div>";
