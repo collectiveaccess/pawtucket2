@@ -96,7 +96,8 @@
 						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("ca_collections.preferred_labels.name"), '', $vs_table, $vn_id)."<br/>".$qr_res->get('ca_collections.collectionDate');
 						break;
 					case 'ca_objects':
-						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("ca_objects.preferred_labels.name"), '', $vs_table, $vn_id)."<br/>Barcode:".$qr_res->get('ca_objects.locationContainer.instantiationLocation')."<br/>".
+						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("ca_objects.preferred_labels.name"), '', $vs_table, $vn_id)."<br/>";
+						#print "Barcode:".$qr_res->get('ca_objects.locationContainer.instantiationLocation')."<br/>";
 							(($vs_tmp = $qr_res->get("ca_objects.instantiationPhysical", array('convertCodesToDisplayText' => true))) ? "{$vs_tmp}<br/>" : "").
 							(($vs_tmp = $qr_res->get("ca_objects.instantiationDigital", array('convertCodesToDisplayText' => true))) ? "{$vs_tmp}" : "");
 						break;

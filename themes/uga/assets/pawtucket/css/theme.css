@@ -1,5 +1,33 @@
 /* Detail */
 
+.navbar .menuSearch .form-control {
+	width:80%;
+	color:black;
+	font-size: 14px;
+	margin-top:6px;
+}
+.navbar .menuSearch .btn-primary {
+	background-image:none;
+	padding:0px;
+	background-color:transparent;
+	border:0px;
+	color:black;
+}
+.navbar .menuSearch .btn-primary .fa {
+	font-size:16px;
+}
+.navbar .menuSearch .form-control::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    color: black;
+    opacity: 1; /* Firefox */
+}
+
+.navbar .menuSearch .form-control:-ms-input-placeholder { /* Internet Explorer 10-11 */
+    color: black;
+}
+
+.navbar .menuSearch .form-control::-ms-input-placeholder { /* Microsoft Edge */
+    color: black;
+}
 .leader {
 	text-transform:uppercase;
 	font-family: DIN17SBOP-Regular;
@@ -221,17 +249,18 @@ ul#main-menu {
     background-color: #96b0ba;
 }
 ul#main-menu li { height: 40px; border-right: 1px solid #eee; }
-ul#main-menu li a {
+
+/*ul#main-menu li a {
 	font-size: 18px;
 	padding: 10px 25px 3px;
 }
 ul#main-menu li a:hover { background-color: lightgray;}
-
+*/
 /* less than 1182px, 960px  */
-@media (max-width: 1182px) {
+
 	ul#main-menu li { padding: 0 0 0 0; }
 	ul#main-menu li a { font-size: 14px; padding: 10px 15px 3px; }
-}
+
 /* less than 860px  */
 @media (max-width: 860px) {
 	ul#main-menu li a { padding: 10px 10px 3px; }
