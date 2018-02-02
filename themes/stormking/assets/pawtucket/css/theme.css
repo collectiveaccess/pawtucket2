@@ -89,6 +89,9 @@ body {
     font-family:neuzeit;
     margin-bottom:0px;
 }
+a, a:hover{
+	color:#000;
+}
 #pageArea {
 	padding-top:30px;
 }
@@ -97,6 +100,10 @@ body {
 }
 .Browse #pageArea {
 	padding-left:10px;
+}
+.fullWidthImage img{
+	width:100%;
+	height:auto;
 }
 h1 {
     font-size: 16px;
@@ -121,12 +128,15 @@ h4 {
     line-height: 22px;
     font-weight: bold;
     text-transform: uppercase;
-    padding: 10px 40px 10px 0;
+    padding: 0px 40px 10px 0;
     cursor: pointer;
     position: relative;
 }
 .collections h4 {
 	display:inline;
+}
+h5 {
+	color: #000;
 }
 h6 {
 	color:#000;
@@ -157,6 +167,9 @@ p, .collectionsList p {
     letter-spacing: 1.1px;
 }
 
+.rowSpacing{
+	margin-bottom:30px;
+}
 /* Menu */
 
 .nav > li {
@@ -202,6 +215,9 @@ p, .collectionsList p {
     margin-top: 7px;
     margin-bottom: 26px;
 }
+.sidebar .subMenu{
+	padding-left:20px;
+}
 .sidebar .subMenu li {
 	list-style-type:none;
 	margin-bottom:6px;
@@ -210,8 +226,8 @@ p, .collectionsList p {
 }
 .sidebar .subMenu li a {
 	color:#000;
-	font-size: 17px;
-	line-height: 17px;
+	font-size: 16px;
+	line-height: 16px;
 }
 .sidebar .subMenu li a:hover {
 	text-decoration:none;
@@ -485,10 +501,20 @@ p, .collectionsList p {
 }
 
 /* Browse */
-
+.bSimplePlaceholder{
+	background-color:#f2f2f2;
+}
+.bSimplePlaceholder img{
+	width:100%;
+	height:auto;
+}
+.browse .btn, .sets .btn {
+	background-color:#000;
+}
 .bResultItem {
 	box-shadow:none;
 	border-bottom:1px solid #c7c7c7;
+	
 }
 .bResultItem:hover {
 	margin:0px;
@@ -497,4 +523,149 @@ p, .collectionsList p {
 }
 .bResultItem .bResultItemText {
 	font-size:14px;
+}
+.bResultItem .bResultItemText a {
+	color:#000;
+}
+#bRefine a {
+	color:#000;
+	font-size:14px;
+}
+.bResultListItem {
+	box-shadow:none;
+	border-bottom:1px solid #c7c7c7;
+	/*height:112px;*/
+}
+.bResultListItem:hover {
+	margin:0px;
+	min-height:0;
+	font-size:16px;
+	box-shadow:none;
+	padding:10px;
+}
+.bResultListItemTextContainer{
+	overflow:hidden;
+}
+.bResultListItem:hover .bResultListItemTextContainer:hover{
+	overflow:visible;
+}
+.bResultListItem:hover .bResultListItemTextContainer  .bResultListItemText{
+	z-index:100;
+	position:relative;
+}
+.entities .bResultListItem .bResultListItemTextContainer {
+	height: 1.2em;
+}
+.exhibitions .bResultListItem .bResultListItemTextContainer {
+	height: 2.4em;
+}
+.bResultListItem .bResultListItemText {
+	font-size:14px;
+	margin-left:-10px;
+	margin-right:-10px;
+	padding-left:10px;
+	padding-right:10px;
+	background-color:#FFFFFF;
+}
+.bResultListItem .bResultListItemText a {
+	color:#000;
+}
+#bLetterBar a {
+	font-size:14px;
+	color:#000;
+}
+.bResultListItem .bResultListItemImg {
+	margin-right:0px;
+	float:none;
+	text-align:center;
+	max-height: none;
+	min-height: none;
+	margin: 0px 0px 10px 0px;
+}
+.bResultListItem .bResultListItemImg img {
+	width:100%;
+	height:auto;
+}
+.results a .glyphicon, .results a .fa {
+	color: #000 !important;
+}
+.browseRemoveFacet button .glyphicon{
+	color:#FFF !important;
+}
+.bResultListItemContent {
+	height:auto;
+	overflow:visible;
+}
+.bResultListItem, .bResultListItem:hover {
+	height:auto;
+}
+.bResultListItemCol {
+    margin-bottom: 20px;
+    height:auto;
+}
+
+.bResultItemContent {
+    text-align: center;
+    display: table;
+    width: 100%;
+    height: 240px;
+}
+.bResultItemImg {
+    text-align: center;
+    overflow: hidden;
+    height: 240px;
+    position: relative;
+    display: table-cell;
+    vertical-align: middle;
+}
+.bResultItem:hover .bResultItemImg {
+	height:240px;
+}
+.bResultItem img {
+    max-width: 100%;
+    max-height: 100%;
+    height: auto;
+    width: auto;
+}
+.bResultItem .bResultItemText{
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 1.2em;
+    position: absolute;
+    bottom: 10px;
+    width:80%;
+    text-align: left;
+    left: 25px;
+    background-color:#FFF;
+    max-height: 4.8em;
+	overflow: hidden;
+}
+.bResultItem:hover .bResultItemText {
+	left:10px;
+	bottom:9px;
+	width: 90%;
+    max-height: none;
+}
+.bResultItem, .bResultItem:hover {
+	height:350px;
+}
+.bResultItemCol {
+	height:auto;
+}
+
+/* Upcoming Exhibitions - also uses browse list styles*/
+.upcomingExhibitions a{
+	font-weight:bold;
+	font-size:20px;
+}
+@media (max-width: 768px) {
+	.upcomingExhibitions .upcomingTitle{
+		margin-top:15px;
+	}
+}
+.upcomingExhibitions .upcomingDate{
+	font-size:16px;
+}
+.upcomingExhibitions .upcomingDesc{
+	margin-top:30px;
 }

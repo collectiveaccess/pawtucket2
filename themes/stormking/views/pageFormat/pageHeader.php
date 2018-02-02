@@ -96,7 +96,7 @@
 						<li>
 							<?php print caNavLink($this->request, _t("Collection"), "", "", "About", "collection"); ?>
 <?php
-						if (($this->request->getController() == "Browse") | (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities")) | (($this->request->getController() == "About") && ($this->request->getAction() == "collection"))) {
+						if ((($this->request->getController() == "Browse") && ($this->request->getAction() != "exhibitions")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities")) | (($this->request->getController() == "About") && ($this->request->getAction() == "collection"))) {
 ?>								
 							<ul class='subMenu'>
 								<li style="padding-top:6px;" <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects") ) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Works"), "", "", "Browse", "objects"); ?></li>					
@@ -106,7 +106,20 @@
 						} 
 ?>							
 						</li>					
-						<li><a href='http://stormking.org/exhibitions/'>Exhibitions</a></li>
+						<li>
+							<?php print caNavLink($this->request, _t("Exhibitions"), "", "", "About", "exhibitions"); ?>
+<?php
+							if ((($this->request->getController() == "About") && ($this->request->getAction() == "exhibitions")) | (($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) | (($this->request->getController() == "Listing") && ($this->request->getAction() == "currentexhibitions"))) {
+?>							
+								<ul class='subMenu'>
+									<li style="padding-top:6px;" <?php print ((($this->request->getController() == "Listing")| ($this->request->getAction() == "currentexhibitions") ) ? 'class="active"' : ''); ?>><?php print caNavLink($this->request, _t("Current & Upcoming"), "", "", "Listing", "currentexhibitions"); ?></li>					
+									<li <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) ? 'class="active"' : ''); ?>><?php print caNavLink($this->request, _t("Past"), "", "", "Browse", "exhibitions"); ?></li>					
+								</ul>
+<?php
+							}
+?>							
+						
+						</li>
 						<li><a href='http://stormking.org/education-2/'>Education</a></li>
 						<li>
 							<?php print caNavLink($this->request, _t("Archives"), "", "", "About", "archives"); ?> 

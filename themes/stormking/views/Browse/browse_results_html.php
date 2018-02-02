@@ -70,7 +70,7 @@
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
-	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
+	<div class='<?php print ($vs_table != 'ca_entities') ? $vs_result_col_class : "col-sm-12"; ?>'>
 <?php 
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -91,10 +91,12 @@ if (!$vb_ajax) {	// !ajax
 					print "</ul></H5>\n";
 				}
 			}
+		
 ?>
 		<H1>
 <?php
 			print _t('%1 %2', $vn_result_size, $va_browse_info["labelPlural"]);	
+			if ($vs_table != 'ca_entities') {
 ?>		
 			<div class="btn-group">
 				<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
@@ -130,7 +132,7 @@ if (!$vb_ajax) {	// !ajax
 					if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
 						print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
 					}
-					if(is_array($va_export_formats) && sizeof($va_export_formats)){
+/*					if(is_array($va_export_formats) && sizeof($va_export_formats)){
 						// Export as PDF links
 						print "<li class='divider'></li>\n";
 						print "<li class='dropdown-header'>"._t("Download results as:")."</li>\n";
@@ -138,6 +140,7 @@ if (!$vb_ajax) {	// !ajax
 							print "<li class='".$va_export_format["code"]."'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
 						}
 					}
+*/					
 ?>
 				</ul>
 			</div><!-- end btn-group -->
@@ -150,8 +153,9 @@ if (!$vb_ajax) {	// !ajax
 			if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
 			}
+		}	
 ?>
-		</H1>
+		</H1>	
 		<H5>
 <?php
 		if (sizeof($va_criteria) > 0) {
@@ -233,6 +237,9 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end row -->
 		</form>
 	</div><!-- end col-8 -->
+<?php
+	if ($vs_table != 'ca_entities') {
+?>	
 	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
 		<div id="bViewButtons">
 <?php
@@ -251,7 +258,9 @@ if (!$vb_ajax) {	// !ajax
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->
-	
+<?php
+	}
+?>	
 	
 </div><!-- end row -->	
 

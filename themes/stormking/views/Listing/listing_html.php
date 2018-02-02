@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * themes/default/Front/front_page_html : Front page of site 
+ * themes/default/Listings/listing_html : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,12 +29,35 @@
  *
  * ----------------------------------------------------------------------
  */
-	$vs_image_url = $this->request->getThemeUrlPath()."/assets/pawtucket/graphics/archives_home.jpg";
+ 
+ 	$va_lists = 			$this->getVar('lists');
+ 	$va_type_info = 		$this->getVar('typeInfo');
+ 	$va_listing_info = 		$this->getVar('listingInfo');
+ 	$vs_current_sort = 		$this->getVar('sort');
 ?>
-	<div id="main-background" style="background-image:url(<?php  print $vs_image_url; ?>)"></div>
 
-	<div class="content-narrow">
-		<h1>Archives</h1>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tempor tristique tristique. Duis sit amet metus porta ex fringilla placerat. Morbi efficitur iaculis dapibus. Integer convallis lacus quis pulvinar malesuada. Mauris scelerisque lobortis orci sit amet fermentum. Mauris lobortis elementum nisi non cursus. Aliquam vitae tincidunt lorem. Pellentesque vitae felis vel ligula blandit tincidunt. Nulla varius lorem et augue iaculis rutrum.</p>
-		<p>Fusce pellentesque ex metus, id dictum metus rhoncus eu. Curabitur sagittis tellus tempus quam pharetra, nec faucibus massa porta. Phasellus pellentesque lorem scelerisque ligula tempor tempor. Sed in est id lectus ultricies dictum. Vestibulum congue mi id elit maximus pulvinar. Ut ultricies at felis a porttitor. </p>
-	</div><!--end col-sm-8-->
+<div id='listingResults'>
+<?php
+	if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts) > 1) {
+?>
+	<H4>	
+		<div class="btn-group">
+			<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
+			<ul class="dropdown-menu" role="menu">
+<?php
+				foreach($va_sorts as $vs_sort => $vs_sort_flds) {
+					if ($vs_current_sort === $vs_sort) {
+						print "<li><a href='#'><em>{$vs_sort}</em></a></li>\n";
+					} else {
+						print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('sort' => $vs_sort, 'facet' => $this->getVar('facet'), 'id' => $this->getVar('facet_id')))."</li>\n";
+					}
+				}			
+?>
+			</ul>
+		</div><!-- end btn-group -->
+	</H4>
+<?php
+	}
+ 	print $this->render($va_listing_info['view']);
+?>
+</div>
