@@ -62,7 +62,16 @@
 						$vn_c = 0;
 						foreach($va_facet_info['content'] as $va_item) {
 						    $vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? $va_item['content_count'] : "";
-							print "<div>".caNavLink($this->request, "<span>".$vs_content_count."</span>".$va_item['label'], '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+							$vs_label = "";
+							if($va_facet_info["table"] == "ca_entities"){
+								$vs_label = $va_item["surname"].(($va_item["forename"]) ? ", ".$va_item["forename"] : "");
+								if(!$vs_label){
+									$vs_label = $va_item['label'];
+								}
+							}else{
+								$vs_label = $va_item['label'];
+							}
+							print "<div>".caNavLink($this->request, "<span>".$vs_content_count."</span>".$vs_label, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 							$vn_c++;
 						
 // 							if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
