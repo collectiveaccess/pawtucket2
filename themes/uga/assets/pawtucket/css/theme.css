@@ -262,8 +262,17 @@ ul#main-menu li a:hover { background-color: lightgray;}
 	ul#main-menu li a { font-size: 14px; padding: 10px 15px 3px; }
 
 /* less than 860px  */
-@media (max-width: 860px) {
-	ul#main-menu li a { padding: 10px 10px 3px; }
+@media (max-width: 1000px) {
+	ul#main-menu li a { 
+		padding: 10px 10px 3px; 
+		font-size:12px;
+	}
+	.navbar .menuSearch .form-control {
+		font-size:12px;
+	}
+	.navbar .menuSearch {
+		width:100px;
+	}
 }
 /* less than 860px, 768px */
 @media (max-width: 768px) {

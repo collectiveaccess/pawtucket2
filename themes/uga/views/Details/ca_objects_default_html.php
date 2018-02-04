@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2015 Whirl-i-Gig
+ * Copyright 2013-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -49,7 +49,7 @@
 				
 				<div id="detailAnnotations"></div>
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 				
 <?php
 				# Comment and Share Tools
@@ -95,7 +95,14 @@
 				
 				
 				{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H6>Date:</H6>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}
+<?php
+				if ($va_works = $t_object->getWithTemplate('<unit relativeTo="ca_occurrences"><l>^ca_occurrences.preferred_labels</l><br/><br/><unit relativeTo="ca_occurrences.pbcoreAssetDate" delimiter="<br/>">^ca_occurrences.pbcoreAssetDate.pbcoreAssetDateText (^ca_occurrences.pbcoreAssetDate.pbcoreWorkDateType)</unit><br/><br/>^ca_occurrences.pbcoreDescription</unit>')){
+					print "<h6>Related Work</h6>".$va_works;
+				}
+?>				
+				
 				<br/><br/>
+<!--				
 				<button id="aeon_submit">Request Item</button>
 				
 				<form id="aeon_request" name="EADRequest" action="https://uga.aeon.atlas-sys.com/aeon/aeon.dll" method="post">
@@ -151,7 +158,7 @@
 						
 						$('#aeon_submit').aeonRequestsDialog(settings);
 				 </script>
-
+-->
 				
 				<hr></hr>
 					<div class="row">
@@ -173,7 +180,7 @@
 							{{{<unit delimiter="<br/>"><l>^ca_objects.LcshNames</l></unit>}}}
 						</div><!-- end col -->				
 						<div class="col-sm-6 colBorderLeft">
-							{{{map}}}
+							
 						</div>
 					</div><!-- end row -->
 			</div><!-- end col -->
