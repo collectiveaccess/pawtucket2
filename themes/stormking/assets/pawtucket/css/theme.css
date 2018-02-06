@@ -46,7 +46,7 @@
     z-index: 30;
     overflow-y: auto;
     
-	position: relative;
+	/*position: relative; */
 	width: 262px;
 	margin-right: -262px;
 	float: left;
@@ -331,6 +331,11 @@ p, .collectionsList p {
 
 .detail {
 	color:#000;
+	font-size:14px;
+}
+.detail p {
+	font-size:14px;
+	margin-bottom:5px;
 }
 .detail a {
 	color:#000;
@@ -343,6 +348,9 @@ p, .collectionsList p {
 .detail H6 a {
 	color:#000;
 	padding-left:0px;
+}
+.detail h6.header {
+	margin-bottom:15px;
 }
 .detail .detailNavBgLeft, .detail .detailNavBgRight {
 	background-color:transparent;
@@ -365,10 +373,25 @@ p, .collectionsList p {
 .detail .exportCollection a {
 	font-size:12px;
 }
+.detail .detailLine {
+	margin-bottom:15px;
+}
+.detail .relatedArtwork {
+	margin-bottom:25px;
+}
+.detail .objectInfo {
+	font-size:16px;
+}
+.detail .dlButton {
+	display:none; 
+}
 .relImg {
 	min-height:150px;
 	background-color:#f5f5f5;
-	margin-top:15px;
+}
+.relImg img {
+	width:100%;
+	height:auto; 
 }
 .bResultItemImgPlaceholder {
 	border:0px;
@@ -501,6 +524,12 @@ p, .collectionsList p {
 }
 
 /* Browse */
+.browse H1 .btn-group{
+	vertical-align:baseline;
+}
+.browse H1 .btn-group i{
+	color:#000;
+}
 .bSimplePlaceholder{
 	background-color:#f2f2f2;
 }
@@ -554,7 +583,7 @@ p, .collectionsList p {
 	position:relative;
 }
 .entities .bResultListItem .bResultListItemTextContainer {
-	height: 1.2em;
+	height: 1.1em;
 }
 .exhibitions .bResultListItem .bResultListItemTextContainer {
 	height: 2.4em;
@@ -614,6 +643,7 @@ p, .collectionsList p {
     text-align: center;
     overflow: hidden;
     height: 240px;
+    max-height:none !important;
     position: relative;
     display: table-cell;
     vertical-align: middle;
@@ -633,21 +663,24 @@ p, .collectionsList p {
     line-height: 1.2em;
     position: absolute;
     bottom: 10px;
-    width:80%;
     text-align: left;
-    left: 25px;
     background-color:#FFF;
-    max-height: 4.8em;
+    max-height: 4.7em;
 	overflow: hidden;
+    /*
+    width:80%;
+    left: 25px;
+    */
 }
 .bResultItem:hover .bResultItemText {
-	left:10px;
-	bottom:9px;
-	width: 90%;
+	bottom:10px;
     max-height: none;
+    /*width:80%;
+	left:10px;*/
 }
 .bResultItem, .bResultItem:hover {
 	height:350px;
+	position: relative;
 }
 .bResultItemCol {
 	height:auto;

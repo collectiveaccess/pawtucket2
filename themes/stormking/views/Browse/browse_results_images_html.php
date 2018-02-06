@@ -166,10 +166,11 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 				<div class='bResultItemContent'>
 					<div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
-					<div class='bResultItemText'>
-						{$vs_artist_text}{$vs_label_detail_link}{$vs_date_text}{$vs_entity_date_text}
-					</div><!-- end bResultItemText -->
+					
 				</div><!-- end bResultItemContent -->
+				<div class='bResultItemText'>
+					{$vs_artist_text}{$vs_label_detail_link}{$vs_date_text}{$vs_entity_date_text}
+				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');
