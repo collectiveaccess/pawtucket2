@@ -42,21 +42,22 @@
 				<div class='detailNav'>{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
 			</div>
 		</div>
-		<div class="row">	
-			<div class='col-sm-12' style="text-align:center;">
-<?php
-				if ($vn_vimeo_id = $t_object->get('ca_objects.vimeo_id')) {			
-					print '<iframe src="https://player.vimeo.com/video/'.$vn_vimeo_id.'?color=ffffff&title=0&byline=0&portrait=0" width="640" height="360" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-				}
-?>			
-			</div><!-- end col -->
-		</div>	
-		<hr>
 		<div class="row">
 			<div class="col-sm-12 ">
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
 			</div>		
 		</div>
+		<hr style='padding-bottom:5px;'>		
+		<div class="row">	
+			<div class='col-sm-12' style="text-align:center;">
+<?php
+				if ($vn_vimeo_id = $t_object->get('ca_objects.vimeo_id')) {			
+					print '<iframe src="https://player.vimeo.com/video/'.$vn_vimeo_id.'?color=ffffff&title=0&byline=0&portrait=0" width="840" height="460" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+				}
+?>			
+			</div><!-- end col -->
+		</div>	
+		<hr>
 		<div class="row">					
 			<div class="col-sm-6 ">
 <?php
@@ -91,36 +92,41 @@
 				if ($va_date = $t_object->get('ca_objects.object_date')) {
 					print "<div class='unit'><h6>Interview Date</h6>".$va_date."</div>";
 				}
-				if ($va_reps = $t_object->representationsWithMimeType(array('application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',' application/vnd.ms-excel', 'application/pdf'), array('return_with_access' => $va_access_values))) {
-					#print "<pre>";
-					#print_r($va_reps);
-					#print "</pre>";
-					foreach ($va_reps as $va_rep_num => $va_rep) {
-					print "<h6><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay/context/objects', array('id' => $vn_id, 'representation_id' => $va_rep['representation_id'], 'overlay' => 1))."\"); return false;'><span class='glyphicon glyphicon-file'></span>Interview Transcript</a></h6>";
+				#if ($va_reps = $t_object->representationsWithMimeType(array('application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',' application/vnd.ms-excel', 'application/pdf'), array('return_with_access' => $va_access_values))) {
+				#	foreach ($va_reps as $va_rep_num => $va_rep) {
+				#	print "<h6><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay/context/objects', array('id' => $vn_id, 'representation_id' => $va_rep['representation_id'], 'overlay' => 1))."\"); return false;'><span class='glyphicon glyphicon-file'></span>Interview Transcript</a></h6>";
+				#	}
+				#}
+				if ($va_reps_transcript = $t_object->representationsWithMimeType(array('application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',' application/vnd.ms-excel', 'application/pdf'), array('versions' => array('original'), 'return_with_access' => $va_access_values))) {
+					foreach ($va_reps_transcript as $va_rep_num => $va_rep) {
+						print "<h6><span class='glyphicon glyphicon-file'></span><a href='".$va_rep['urls']['original']."'>Interview Transcript</a></h6>";
 					}
-				}
+				}				
 ?>	
 			</div><!-- end col -->	
 		</div><!-- end row -->
-		<div class="row">	
-			<div class="col-sm-12">	
-				<hr>
-				<h6>Related Artworks</h6>
-			</div>
-		</div>
-		<div class="row" style="margin-bottom:50px;">		
+			
 <?php
+				$vs_related_art = null;
 				if ($va_related_artworks = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork')))) {
+					print '<div class="row">	
+							<div class="col-sm-12">	
+								<hr>
+								<h6>Related Artworks</h6>
+							</div>
+						  </div>
+						  <div class="row" style="margin-bottom:50px;">	';
 					foreach ($va_related_artworks as $va_id => $va_related_artwork_id) {
 						$t_rel_obj = new ca_objects($va_related_artwork_id);
 						print "<div class='col-sm-3'>";
 						print "<div class='relImg'>".$t_rel_obj->get('ca_object_representations.media.iconlarge')."</div>";
 						print $t_rel_obj->get('ca_objects.preferred_labels');
 						print "</div>";
-					}				
+					}
+					print "</div><!-- end row -->";				
 				}
 ?>							
-		</div><!-- end row --></div><!-- end container -->
+		</div><!-- end container -->
 	</div><!-- end col -->
 </div><!-- end row -->
 
