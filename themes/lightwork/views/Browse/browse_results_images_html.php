@@ -128,7 +128,7 @@
 							}
 						}
 						$vs_info = null;
-						if ($va_artist = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes'=> array('artist')))) {
+						if ($va_artist = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes'=> array('artist'), 'delimiter' => ', '))) {
 							$vs_info.= "<p><b>".$va_artist."</b></p>";
 						}	
 						$vs_info.=  $vs_label_detail_link;				

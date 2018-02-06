@@ -106,8 +106,8 @@
 				if ($vs_accession = $t_object->get('ca_objects.accession')) {
 					print "<div class='unit'><h6>Catalogue Number</h6>".$vs_accession."</div>";
 				}
-				if ($vs_current_loc = $t_object->get('ca_storage_locations.preferred_labels', array('delimiter' => '<br>'))) {
-					print "<div class='unit'><h6>Current Location</h6>".$vs_current_loc."</div>";
+				if ($vs_current_loc = $t_object->get('ca_objects.current_location')) {
+					print "<div class='unit'><h6>Current Location</h6>".$vs_current_loc."</div>"; 
 				}																		
 #				if ($vs_info = $t_object->get('ca_objects.idno')) {
 #					print "<div class='unit'><h6>Identifier</h6>".$vs_info."</div>";
@@ -141,10 +141,10 @@
 		if ($vs_description = $t_object->get('ca_objects.description')) {
 			print "<div class='row'><div class='col-sm-12'><h2>Object Specific Text</h2><div class='unit trimText'>".$vs_description."</div></div><!-- end col --></div><!-- end row --><hr>";
 		}
-		if ($va_artist = $t_object->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('artist')))) {
-			$t_entity = new ca_entities($va_artist);
-		}
-		if (($t_entity) && ($t_object->get('ca_objects.type_id') != $vn_pub_type_id)) {		
+		if ($va_artist = $t_object->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('artist'), 'returnAsArray' => true))) {
+			foreach ($va_artist as $va_key => $va_artist_id) {
+				$t_entity = new ca_entities($va_artist_id);
+				if (($t_entity) && ($t_object->get('ca_objects.type_id') != $vn_pub_type_id)) {		
 ?>				
 		<div class="row" style="padding-bottom:20px;">
 			<div class="col-sm-12 artist">
@@ -206,7 +206,7 @@
 						}
 						print "</span></div>";
 					}	
-					if ($vs_entity_pub = $t_object->get('ca_objects.related.preferred_labels', array('restrictToTypes' => array('publication'), 'delimiter' => '<br/>', 'returnAsLink' => true, 'sort' => 'ca_objects.preferred_labels'))) {
+					if ($vs_entity_pub = $t_entity->get('ca_objects.preferred_labels', array('restrictToTypes' => array('publication'), 'delimiter' => '<br/>', 'returnAsLink' => true, 'sort' => 'ca_objects.preferred_labels'))) {
 						print "<div class='info'><span class='metaLabel'>Light Work Publications</span><span class='data'>".$vs_entity_pub."</span></div>";
 					}
 #					if ($vs_websites = $t_entity->get('ca_entities.website', array('returnAsArray' => true))) {
@@ -217,7 +217,7 @@
 #						print "</span></div>";
 #					}
 					if ($vs_bio = $t_entity->get('ca_entities.biography', array('delimiter' => '<hr class="dark">'))) {
-						print "<p class='trimText' style='margin-top:35px;'><h2 class='artist'>Biography</h2>".$vs_bio."</p><hr class='dark'>";
+						print "<p class='trimText' style='margin-top:35px;'><h2 class='artist'>Biography</h2>".$vs_bio."</p>";
 					}
 					if ($va_essays = $t_entity->get('ca_entities.essays', array('returnAsArray' => true))) {
 						$vs_essays = array();
@@ -232,9 +232,11 @@
 			</div><!-- end col-12 -->
 		</div><!-- end row -->
 <?php
+				}
+			}
 		}
 
-		if ($va_related_objects = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'restrictToTypes' => array('artwork')))) {
+/*		if ($va_related_objects = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'restrictToTypes' => array('artwork')))) {
 			$qr_related_objects = caMakeSearchResult('ca_objects', $va_related_objects);
 			$va_entity_ids = array();
 			while($qr_related_objects->nextHit()) {
@@ -252,6 +254,21 @@
 			}
 			print "</div></div>";				
 
+		}
+*/
+		if($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == "Publication") {
+			$va_entity_ids = $t_object->get('ca_entities.entity_id', array('returnAsArray' => true, 'sort' => 'ca_entities.preferred_labels.surname'));
+			print "<div class='row'><div class='browseResultsContainer relatedArtists'><h2 style='margin-left:15px;padding-bottom:15px;'>Related Artists</h2>";
+			$qr_related_artists = caMakeSearchResult('ca_entities', array_unique($va_entity_ids));
+			while($qr_related_artists->nextHit()) {
+				print "<div class='bResultItemCol col-xs- col-sm-4 col-md-4'><div class='bResultItem'><div class='bResultItemContent'>";
+				print "<div class='text-center bResultItemImg'>".caDetailLink($this->request, $qr_related_artists->getWithTemplate('<unit relativeTo="ca_objects" length="1"><unit relativeTo="ca_object_representations" length="1">^ca_object_representations.media.small</unit><ifnotdef code="ca_object_representations.media.small"><div class="bResultItemImgPlaceholder"><i class="fa fa-picture-o fa-2x"></i></div></ifnotdef></unit>'), '', 'ca_entities', $qr_related_artists->get('ca_entities.entity_id'))."</div>";
+				print "<div class='bResultItemText'>";
+				print caDetailLink($this->request, $qr_related_artists->get('ca_entities.preferred_labels'), '', 'ca_entities', $qr_related_artists->get('ca_entities.entity_id'));			
+				print "</div>";
+				print "</div><!-- end bResultItemContent --></div><!-- end bResultItem --></div><!-- end col-sm-4 -->";		 		
+			}
+			print "</div></div>";			
 		}
 	
 /*		
@@ -286,7 +303,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 230
+		  maxHeight: 235
 		});
 	});
 </script>

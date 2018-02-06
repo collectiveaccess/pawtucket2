@@ -1,7 +1,7 @@
 
 <div class="row">
 	<div class="col-sm-12 " >
-		<h1>Objects Advanced Search</h1>
+		<h1>Artwork Search</h1>
 
 <div>{{{search_text}}}</div>
 
@@ -20,7 +20,19 @@
 			{{{ca_entities.entity_id%restrictToRelationshipTypes=artist&width=200px&height=40px&select=1&sort=ca_entities.preferred_labels.surname}}}
 
 		</div>
-	</div>				
+	</div>
+	<div class='row'>
+		<div class="advancedSearchField col-sm-12">
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Artist biographies.">Artist Biography</span>
+			{{{ca_entities.biography%width=220px&height=1}}}
+		</div>
+	</div>	
+	<div class='row'>
+		<div class="advancedSearchField col-sm-12">
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Artist essays.">Artist Essay</span>
+			{{{ca_entities.essays%width=220px&height=1}}}
+		</div>
+	</div>						
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Object Titles only.">Artwork Title</span>
@@ -42,7 +54,7 @@
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records related to a specific publication.">Light Work Publication </span>
-			{{{ca_objects.related.object_id%restrictToTypes=publication&width=200px&height=1&select=1}}}
+			{{{ca_objects.related.idno%restrictToTypes=publication&width=200px&height=1&select=1}}}
 		</div>
 	</div>	
 	<div class='row'>

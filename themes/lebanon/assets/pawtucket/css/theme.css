@@ -332,6 +332,9 @@ div.browseFacetItem a:hover {
 }
 .detail a {
 	color: #602129;
+}
+.dlButton {
+	display:none;
 }	
 
 /* Results */

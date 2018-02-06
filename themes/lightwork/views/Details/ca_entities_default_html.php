@@ -23,14 +23,13 @@
 			<div class="row">
 				
 <?php
-				if ($va_bio = $t_item->get('ca_entities.biography')) {
-					print "<div class='col-sm-7 col-md-7 col-lg-7'>";
+					if ($va_bio = $t_item->get('ca_entities.biography')){
+						print "<div class='col-sm-12'>";
 						print "<div class='unit biography trimText'>".$va_bio."</div>";		
-					print "</div><!-- end col -->";					
-					print "<div class='col-sm-5 col-md-5 col-lg-5' style='padding-right:0px;'>";
-				} else {
+						print "</div><!-- end col -->";		
+					}			
+
 					print "<div class='col-sm-12'>";
-				}
 
 					if ($va_birthdate = $t_item->get('ca_entities.birthday')) {
 						print "<div class='info' style='border-top:0px;'><span class='metaLabel'>Born</span><span class='data'>".$va_birthdate."</span></div>";
@@ -91,7 +90,7 @@
 						}
 						print "</span></div>";
 					}
-					$vn_related_publications = "";
+/*					$vn_related_publications = "";
 					if ($va_entity_pub = $t_item->get('ca_objects.object_id', array('restrictToTypes' => array('artwork'), 'returnAsArray' => true))) {
 						$qr_related_pub = caMakeSearchResult('ca_objects', $va_entity_pub);
 						$va_publication_ids = array();
@@ -110,6 +109,10 @@
 					if ($vn_related_publications != "") {	
 						print "<div class='info'><span class='metaLabel'>Light Work Publications</span><span class='data'>".$vn_related_publications."</span></div>";
 					}
+*/
+					if ($vn_related_publications = $t_item->get('ca_objects.preferred_labels', array('restrictToTypes' => array('publication'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {	
+						print "<div class='info'><span class='metaLabel'>Light Work Publications</span><span class='data'>".$vn_related_publications."</span></div>";
+					}					
 					$vs_website = false;
 					$vs_web_text = "";
 					if ($va_websites = $t_item->get('ca_entities.website', array('returnAsArray' => true))) {
