@@ -796,6 +796,15 @@
 				$va_params[] = $va_rel_types;
 			}
 		}
+		
+		$vs_type_where = '';
+		if (is_array($va_object_types = caGetOption('objectTypes', $pa_options, null)) && sizeof($va_object_types)) {
+			$va_object_types = caMakeTypeIDList('ca_objects', $va_object_types);
+			if (is_array($va_object_types) && sizeof($va_object_types)) {
+				$vs_type_where = " AND (ca_objects.type_id IN (?))";
+				$va_params[] = $va_object_types;
+			}
+		}
 
 		if(is_array($pa_ids) && sizeof($pa_ids)) {
 			$vs_id_sql = "AND {$vs_table}.{$vs_pk} IN (?)";
@@ -809,7 +818,7 @@
 			INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = ca_objects.object_id
 			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
 			WHERE
-				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where} {$vs_id_sql}
+				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where} {$vs_type_where} {$vs_id_sql}
 		";
 
 		$o_db = $t_instance->getDb();

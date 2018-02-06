@@ -6,7 +6,14 @@
 		<div class="row">
 			<div class='col-md-12 col-lg-12 collectionsList'>
 <?php			
-				print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'collections.png')."</div>";	
+	$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/research/";
+	$vn_filecount = 0;
+	$va_files = glob($vs_directory . "*");
+	if ($va_files){
+	 $vn_filecount = count($va_files);
+	}
+
+	print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'research/'.rand(1,$vn_filecount).'.jpg')."</div>";
 ?>
 				<h1><?php print $this->getVar("section_name"); ?></h1>
 				<p><?php print $o_collections_config->get("collections_intro_text"); ?></p>

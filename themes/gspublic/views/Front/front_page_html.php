@@ -31,8 +31,16 @@
  */
 ?>
 	<div class="row frontBand about">
-		<div class="col-sm-8" style='padding-left:0px;'>
-			<?php print caGetThemeGraphic($this->request, 'about_wideslide.jpg'); ?>
+		<div class="col-sm-8 noPaddingLeft">
+<?php
+		$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/home/welcome/";
+		$vn_filecount = 0;
+		$va_files = glob($vs_directory . "*");
+		if ($va_files){
+		 $vn_filecount = count($va_files);
+		}
+?>
+			<?php print caGetThemeGraphic($this->request, 'home/welcome/'.rand(1,$vn_filecount).'.jpg'); ?>
 		</div>
 		<div class="col-sm-4 textRight">
 			<H1>Welcome to the<br/>Girl Scouts of the USA Collections</H1>
@@ -45,22 +53,38 @@
 	<div class="row frontBand browse">
 		<div class="col-sm-4  textLeft">
 			<h1>Discover the Collection</h1>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia ex eu nisi mattis, id sollicitudin mauris sollicitudin. Aliquam eleifend eros tortor, id fringilla lacus ultrices non. </p>
+			<p>Journey through the rich cultural history of Girl Scouts of the USA. Discover where it all began by clicking through to explore the collection.</p>
 <?php
 			print caNavLink($this->request, 'Explore', 'btn-default', '', 'About', 'browse');
 ?>			
 		</div>	
-		<div class="col-sm-8" style='padding-right:0px;'>
-			<?php print caGetThemeGraphic($this->request, 'home/discover/'.rand(1,5).'.jpg'); ?>	
+		<div class="col-sm-8 noPaddingRight">
+<?php
+		$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/home/discover/";
+		$vn_filecount = 0;
+		$va_files = glob($vs_directory . "*");
+		if ($va_files){
+		 $vn_filecount = count($va_files);
+		}
+?>
+			<?php print caGetThemeGraphic($this->request, 'home/discover/'.rand(1,$vn_filecount).'.jpg'); ?>	
 		</div>			
 	</div>				
 	<div class="row frontBand gallery">
-		<div class="col-sm-8" style='padding-left:0px;'>
-			<?php print caGetThemeGraphic($this->request, 'home/gallery/'.rand(1,6).'.jpg'); ?>		
+		<div class="col-sm-8 noPaddingLeft">
+<?php
+		$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/home/gallery/";
+		$vn_filecount = 0;
+		$va_files = glob($vs_directory . "*");
+		if ($va_files){
+		 $vn_filecount = count($va_files);
+		}
+?>
+			<?php print caGetThemeGraphic($this->request, 'home/gallery/'.rand(1,$vn_filecount).'.jpg'); ?>		
 		</div>	
 		<div class="col-sm-4 textRight">
 			<h1>Featured Galleries</h1>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia ex eu nisi mattis, id sollicitudin mauris sollicitudin. Aliquam eleifend eros tortor, id fringilla lacus ultrices non. </p>
+			<p>Explore iconic Girl Scout moments from shaking hands with First Ladies to the design of the first uniform.  Take a walk through the interactive galleries.</p>
 <?php
 			print caNavLink($this->request, 'More', 'btn-default', '', 'Gallery', 'Index');
 ?>		
@@ -69,13 +93,21 @@
 	<div class="row frontBand collections">
 		<div class="col-sm-4 textLeft">
 			<h1>Research Collections</h1>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec lacinia ex eu nisi mattis, id sollicitudin mauris sollicitudin. Aliquam eleifend eros tortor, id fringilla lacus ultrices non. </p>
+			<p>For over 100 years Girl Scouts have been at the forefront of empowering others and striving to make a difference. Delve deeper into history through the Research Collections.</p>
 <?php
 			print caNavLink($this->request, 'More', 'btn-default', '', 'Collections', 'Index');
 ?>			
 		</div>		
-		<div class="col-sm-8" style='padding-right:0px;'>
-			<?php print caGetThemeGraphic($this->request, 'collection_wideslide.jpg'); ?>	
+		<div class="col-sm-8 noPaddingRight">
+<?php
+		$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/home/research/";
+		$vn_filecount = 0;
+		$va_files = glob($vs_directory . "*");
+		if ($va_files){
+		 $vn_filecount = count($va_files);
+		}
+?>
+			<?php print caGetThemeGraphic($this->request, 'home/research/'.rand(1,$vn_filecount).'.jpg'); ?>
 		</div>	
 	</div>
 			
