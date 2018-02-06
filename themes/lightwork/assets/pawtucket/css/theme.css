@@ -87,6 +87,18 @@ a:hover, a:active, a:focus, a.readmore-js-toggle {
 	border-bottom: 2px solid #777;
 	color:#111;
 }
+.container > .navbar-collapse {
+	margin-left:0px;
+	padding-left:15px;
+}
+.container > .navbar-collapse .navbar-form {
+	margin-left:0px;
+	margin-right:0px;
+}
+.container > .navbar-collapse .btn-search {
+	top:0px;
+	right:0px;
+}
 .navbar .formOutline {
 	background-color:#eee;
 	border: 1px solid #e1e1e1;
@@ -340,6 +352,9 @@ div.caMediaOverlayControls {
 .tileviewer div a.tileviewerControl {
 	opacity:1 !important;
 }
+#app .headerPanel .options .rightOptions .settings {
+	display:none;
+}
 
 /* Browse */
 
@@ -416,7 +431,9 @@ div.caMediaOverlayControls {
 	}
 }
 
-
+div.caMediaOverlayControls .objectInfo {
+	display:none;
+}
 
 
 	
