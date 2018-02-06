@@ -85,29 +85,6 @@
 				{{{<ifdef code="ca_objects.overall_date"><H6>Date</H6>^ca_objects.overall_date<br/></ifdev>}}}
 				{{{<ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_height|ca_objects.cdwa_indexingMeasurementsSet.dimensions_width|ca_objects.cdwa_indexingMeasurementsSet.dimensions_depth|ca_objects.cdwa_indexingMeasurementsSet.dimensions_diameter"><H6>Dimensions</H6><unit delimiter="<br/>">^ca_objects.cdwa_indexingMeasurementsSet.dimensions_height<ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_height,ca_objects.cdwa_indexingMeasurementsSet.dimensions_width"> x </ifdef><ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_width">^ca_objects.cdwa_indexingMeasurementsSet.dimensions_width</ifdef><ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_depth"> x ^ca_objects.cdwa_indexingMeasurementsSet.dimensions_depth</ifdef><ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_diameter"> x ^ca_objects.cdwa_indexingMeasurementsSet.dimensions_diameter</ifdef></unit></ifdef>}}}
 				
-				{{{<ifcount code="ca_objects.children" min="1" max="1"><HR></HR><H6>Copy</H6></ifcount>}}}
-				{{{<ifcount code="ca_objects.children" min="2"><HR></HR><H6>Copies</H6></ifcount>}}}
-<?php
-				if($va_children = $t_object->get("ca_objects.children", array("returnWithStructure" => true, "checkAccess" => $va_access_values))){
-					foreach(array_keys($va_children) as $vn_child_id){
-						$t_child = new ca_objects($vn_child_id);
-						print '<div class="component"><div>'.$t_child->get("ca_objects.preferred_labels.name").', <small>'.$t_child->get("ca_objects.idno").'</small></div>';
-						if($t_child->get("ca_object_representations.media.thumbnail")){
-							print '<div class="componentThumbnail"  data-container="body" data-toggle="popover" data-placement="left" data-trigger="hover" data-html="true" data-content="'.$t_child->get("ca_object_representations.media.medium").'">'.$t_child->get("ca_object_representations.media.icon").'</div>';
-						}
-						if($t_child->get("ca_objects.description")){
-							print '<div class="small">'.$t_child->get("ca_objects.description").'</div>';
-						}
-						if($t_child->get("ca_objects.description") && $t_child->get("ca_objects.content_description")){
-							print "<div class='componentDescSpacer'></div>";
-						}
-						if($t_child->get("ca_objects.content_description")){
-							print '<div class="small">'.$t_child->get("ca_objects.content_description").'</div>';
-						}
-						print "</div><!-- end component -->";
-					}
-				}
-?>
 				{{{<ifdef code="ca_objects.description|ca_objects.content_description"><HR></HR></ifdef>}}}
 				{{{<ifdef code="ca_objects.description"><H6>Physical Description</H6><span class="trimText">^ca_objects.description</span></ifdef>}}}
 				{{{<ifdef code="ca_objects.content_description"><H6>Description</H6><span class="trimText">^ca_objects.content_description</span></ifdef>}}}

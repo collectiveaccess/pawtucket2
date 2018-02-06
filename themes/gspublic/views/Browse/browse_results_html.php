@@ -106,7 +106,11 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		<H1>
 <?php
-			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+			$vs_result_label = ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR');
+			if(strToLower($vs_result_label) == "object"){
+				$vs_result_label = "";
+			}
+			print _t('%1 %2 %3', $vn_result_size, $vs_result_label, ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 ?>		
 			<div class="btn-group">
 				<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
