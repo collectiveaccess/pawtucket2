@@ -40,9 +40,6 @@
 
 				<H2><b>Regarding this URL: </b><a href="<?php print $vs_url; ?>"><?php print $vs_url; ?></a></H2>
 				<br/>
-				<input type="hidden" name="itemId" value="<?php print $t_object->get("ca_objects.idno"); ?>">
-				<input type="hidden" name="itemTitle" value="<?php print $t_object->get("ca_objects.preferred_labels.name"); ?>">
-				<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
 			</div>
 		</div>
 		<div class="row">
@@ -169,4 +166,7 @@
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 		<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
 		<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
+		<input type="hidden" name="itemId" value="<?php print $t_object->get("ca_objects.idno"); ?>">
+		<input type="hidden" name="itemTitle" value="<?php print $t_object->get("ca_objects.preferred_labels.name"); ?>">
+		<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
 	</form>
