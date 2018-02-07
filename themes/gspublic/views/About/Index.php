@@ -1,7 +1,13 @@
 <?php
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
-	
-print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'about/'.rand(1,6).'.jpg')."</div>";	
+		$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/about/";
+		$vn_filecount = 0;
+		$va_files = glob($vs_directory . "*");
+		if ($va_files){
+		 $vn_filecount = count($va_files);
+		}
+
+		print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'about/'.rand(1,$vn_filecount).'.jpg')."</div>";
 ?>
 <H1><?php print _t("About GSUSA Cultural Resources"); ?></H1>
 <div class="row">
@@ -17,9 +23,9 @@ print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'about/'.rand(
 		</p>
 	</div>
 	<div class="col-sm-3 col-sm-offset-1">
-		<h2><b>Contact the Archives</b></h2>
+		<h2><b>Contact Us</b></h2>
 		<address>
-			<b>Cultural Resources</b><br/>
+			<b>Cultural & Property Assets</b><br/>
 			420 Fifth Avenue<br/>
 			New York, NY 10018
 			<br/><br/>
