@@ -25,7 +25,15 @@
 	$vn_num2 = rand(1,10);
 	$vn_sum = $vn_num1 + $vn_num2;
 
-	print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'contact/'.rand(1,3).'.jpg')."</div>";
+
+		$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/contact/";
+		$vn_filecount = 0;
+		$va_files = glob($vs_directory . "*");
+		if ($va_files){
+		 $vn_filecount = count($va_files);
+		}
+
+		print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'contact/'.rand(1,$vn_filecount).'.jpg')."</div>";
 	
 	if($ps_contactType == "contact"){
 		print "<H1>"._t("Contact")."</H1>";
