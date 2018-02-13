@@ -128,7 +128,6 @@
 						{{{<ifdef code="ca_objects.rg_source"><div class='unit'><h6>Source note</h6><unit delimiter="<br/>">^ca_objects.rg_source</unit></div></ifdef>}}}
 					</div>
 					<div role="tabpanel" class="tab-pane" id="NCTR">
-						{{{<ifdef code="ca_objects.trc"><div class='unit'><h6>TRC Document</h6><unit delimiter=", ">^ca_objects.trc</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.NCTR_site_ID"><div class='unit'><h6>NCTR Site ID</h6><unit delimiter=", ">^ca_objects.NCTR_site_ID</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.NCTR_container_ID"><div class='unit'><h6>NCTR Container ID</h6><unit delimiter=", ">^ca_objects.NCTR_container_ID</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.NCTR_document_ID"><div class='unit'><h6>NCTR Document ID</h6><unit delimiter=", ">^ca_objects.NCTR_document_ID</unit></div></ifdef>}}}
