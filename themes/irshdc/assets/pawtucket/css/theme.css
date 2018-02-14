@@ -1,4 +1,4 @@
-/* red text: #D20000; red bg:#8a0000; tan: #e0d7ba; */
+/* red text: #D20000; red bg:#8a0000; tan: #e0d7ba; charcoal: #605b4b; stone:#f0ede4; */
 body{
 	color: #000000;
 }
@@ -25,6 +25,9 @@ a.black{
 }
 .grayBg{
 	background-color:#605b4b;
+}
+.stoneBg{
+	background-color:#f0ede4;
 }
 .uppercase{
 	text-transform:uppercase;
@@ -293,7 +296,50 @@ div.browseFacetItem a:hover {
 }
 
 /* details */
+.detail{
+	padding-bottom:40px;
+}
+.detail H4{
+	margin-bottom:10px;
+}
+.detail H6{
+	text-transform:none;
+	margin: 15px 0px 5px 0px;
+}
+.detail H6.inline{
+	display:inline-block;
+}
+.detail H3, .detail H3 a{
+	font-size:14px;
+	color:#605b4b;
+	margin:0px;
+	padding:0px;
+	cursor:pointer;
+}
+.detail H3 .fa{
+	font-size:12px;
+}
+.detail .collapseBlock{
+	border-color:#efefef;
+	border-top:1px solid #efefef;
+	padding:10px;
+}
+.detail .collapseBlock.last{
+	border-bottom:1px solid #efefef;
+}
+.detail .collapseBlock .collapseContent{
+	padding-left:10px;
+	padding-right:10px;
+	display:none;
+}
+.detail .collapseBlock .collapseContent.open{
+	display:block;
+}
 
+.detail .stoneBg{
+	padding:10px;
+	margin-bottom:20px;
+}
 a.readmore-js-toggle {
     color: #d20000;
 }
@@ -313,6 +359,43 @@ a.readmore-js-toggle {
 .detail .transcription img{
 	display:none;
 }
+.detail #detailTools{
+	margin-top:0px;
+	padding-top:0px;
+}
+.detail #detailTools a, .detail #detailTools span{
+	color:#8a0000;
+}
+.detail .narrativeThreadContainer{
+	margin-top:10px;
+	margin-bottom:10px;
+	border:1px solid #333;
+}
+.detail .narrativeThreadContainer img{
+	width:100%;
+	height:auto;
+}
+.detail .narrativeThreadContainer .narrativeThreadDesc {
+	background-color:#605b4b;
+	color:#fff;
+	padding:5px;
+}
+.detail .narrativeThreadContainer .narrativeThreadDesc H2{
+	padding:0px;
+	margin:0px;
+	text-align:center;
+	font-size:12px;
+}
+.detail .narrativeThreadContainer .narrativeThreadDesc H2 a{
+	text-transform:none;
+	color:#FFF;
+	font-size:12px;
+}
+.detail .narrativeThreadContainer .narrativeThreadDesc H2 a:hover{
+	text-decoration:none;
+	color:#d20000;
+}
+
 
 /* EXPLORE */
 
