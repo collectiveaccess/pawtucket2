@@ -79,7 +79,7 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6>{{{<unit>^ca_objects.type_id<ifdef code="ca_objects.resourceType">: ^ca_objects.ca_objects.resourceType</ifdef></unit>}}}</H6>
+				<H6>{{{<unit>^ca_objects.type_id<ifdef code="ca_objects.resourceType">: ^ca_objects.ca_objects.resourceType%useSingular=1</ifdef></unit>}}}</H6>
 				
 				
 				{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><HR/><H6>Related school(s)</H6><unit relativeTo="ca_objects_x_entities" restrictToTypes="school" delimiter=", "><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels.displayname</l></unit> (^relationship_typename)</unit></ifcount>}}}
