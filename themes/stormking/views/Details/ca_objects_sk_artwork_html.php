@@ -54,7 +54,7 @@
 				} else {
 					print $vs_record_title;
 				}
-				if ($vs_date = $t_object->get('ca_objects.display_date')) {
+				if ($vs_date = $t_object->get('ca_objects.object_date')) {
 					print ", ".$vs_date;
 				}
 ?>
@@ -90,7 +90,7 @@
 					}
 					print "</div>";
 				}
-				if ($va_date = $t_object->get('ca_objects.display_date')) {
+				if ($va_date = $t_object->get('ca_objects.object_date')) {
 					print "<div class='unit'><h6>Date</h6>".$va_date."</div>";
 				}
 				if ($va_medium = $t_object->get('ca_objects.medium')) {
@@ -104,22 +104,12 @@
 				}	
 				if ($va_credit = $t_object->get('ca_objects.credit_line')) {
 					print "<div class='unit'><h6>Credit Line</h6>".$va_credit."</div>";
-				}							
-				#if ($va_reps = $t_object->representationsWithMimeType(array('application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',' application/vnd.ms-excel', 'application/pdf'), array('return_with_access' => $va_access_values))) {
-				#	foreach ($va_reps as $va_rep_num => $va_rep) {
-				#	print "<h6><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay/context/objects', array('id' => $vn_id, 'representation_id' => $va_rep['representation_id'], 'overlay' => 1))."\"); return false;'><span class='glyphicon glyphicon-file'></span>Interview Transcript</a></h6>";
-				#	}
-				#}
-				if ($va_reps_transcript = $t_object->representationsWithMimeType(array('application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',' application/vnd.ms-excel', 'application/pdf'), array('versions' => array('original'), 'return_with_access' => $va_access_values))) {
-					foreach ($va_reps_transcript as $va_rep_num => $va_rep) {
-						print "<h6><span class='glyphicon glyphicon-file'></span><a href='".$va_rep['urls']['original']."'>Interview Transcript</a></h6>";
-					}
-				}				
+				}											
 ?>	
 				</div></div></div>
-			</div><!-- end col -->	
+			</div><!-- end col -->
 			<div class="col-sm-6">
-				<div class="row"><div class="col-sm-12">	
+				<div class="container"><div class="row"><div class="col-sm-12">	
 <?php
 				if ($va_related_ex_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'public_program')))) {
 					print '<div class="unit"><h6>Related Exhibitions & Programs</h6>';
@@ -143,7 +133,7 @@
 					print "</div>";
 				}				
 ?>
-				</div></div>
+				</div></div></div>
 			</div><!-- end col -->	
 		</div><!-- end row -->
 			
@@ -169,13 +159,13 @@
 				print "</div>";				
 			}
 ?>			
-				<div class="col-sm-6">	
+				<div class="col-sm-6">
 <?php 	
 					if ($vs_map = $this->getVar('map')) {				
 						print '<hr><h6 class="header">Location</h6>';
 						print $vs_map;
 					}
-?>
+?>					
 				</div>
 			</div><!-- end row -->							
 		</div><!-- end container -->

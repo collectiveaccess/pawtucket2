@@ -94,6 +94,7 @@ a, a:hover{
 }
 #pageArea {
 	padding-top:30px;
+	padding-bottom:30px;
 }
 .Front #pageArea, .About #pageArea {
 	padding-top:0px;
@@ -129,7 +130,7 @@ h4 {
     font-weight: bold;
     text-transform: uppercase;
     padding: 0px 40px 10px 0;
-    cursor: pointer;
+    cursor: auto;
     position: relative;
 }
 .collections h4 {
@@ -140,6 +141,7 @@ h5 {
 }
 h6 {
 	color:#000;
+	font-weight:bold;
 }
 p, .collectionsList p {
     font-size: 16px;
@@ -336,6 +338,7 @@ p, .collectionsList p {
 .detail p {
 	font-size:14px;
 	margin-bottom:5px;
+	line-height:1.3em;
 }
 .detail a {
 	color:#000;
@@ -348,6 +351,9 @@ p, .collectionsList p {
 .detail H6 a {
 	color:#000;
 	padding-left:0px;
+}
+.detail h6 {
+	margin-bottom:3px;
 }
 .detail h6.header {
 	margin-bottom:15px;
@@ -374,7 +380,10 @@ p, .collectionsList p {
 	font-size:12px;
 }
 .detail .detailLine {
-	margin-bottom:15px;
+	margin-bottom:10px;
+}
+.detail .detailLine p {
+	margin-bottom:0px !important;
 }
 .detail .relatedArtwork {
 	margin-bottom:25px;
@@ -385,9 +394,13 @@ p, .collectionsList p {
 .detail .dlButton {
 	display:none; 
 }
+.detail .unit {
+	margin-bottom:15px;
+}
 .relImg {
 	min-height:150px;
 	background-color:#f5f5f5;
+	margin-bottom:5px;
 }
 .relImg img {
 	width:100%;
@@ -396,6 +409,7 @@ p, .collectionsList p {
 .bResultItemImgPlaceholder {
 	border:0px;
 	color:#000;
+	font-size:14px;
 }
 
 /* Collection */
@@ -529,6 +543,21 @@ p, .collectionsList p {
 }
 .browse H1 .btn-group i{
 	color:#000;
+}
+.bSearchWithin, .bSearchWithin:focus{
+	float:left;
+	width:auto;
+	box-shadow: none;
+	border:0px;
+	border-bottom: 1px solid #989697;
+	border-radius: 0px;
+	padding-bottom: 2px;
+	padding-top: 2px;
+	padding-left: 0px;
+	height: 30px;
+	font-size: 14px;
+	line-height: 26px;
+	background-color: transparent;
 }
 .bSimplePlaceholder{
 	background-color:#f2f2f2;

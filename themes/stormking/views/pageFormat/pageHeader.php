@@ -99,8 +99,8 @@
 						if ((($this->request->getController() == "Browse") && ($this->request->getAction() != "exhibitions")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities")) | (($this->request->getController() == "About") && ($this->request->getAction() == "collection"))) {
 ?>								
 							<ul class='subMenu'>
-								<li style="padding-top:6px;" <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects") ) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Works"), "", "", "Browse", "objects"); ?></li>					
-								<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "entities")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "entities"); ?></li>					
+								<li style="padding-top:6px;" <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art"), "", "", "Browse", "objects"); ?></li>					
+								<li <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "entities")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "entities"); ?></li>					
 							</ul>												
 <?php						
 						} 
