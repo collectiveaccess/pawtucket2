@@ -371,34 +371,46 @@ a.readmore-js-toggle {
 .detail #detailTools a, .detail #detailTools span{
 	color:#8a0000;
 }
-.detail .narrativeThreadContainer{
+.detail .narrativeThreadLink{
 	margin-top:10px;
 	margin-bottom:10px;
+	padding:10px 5px 10px 10px;
 	border:1px solid #333;
+	background:
+		linear-gradient(
+		  rgba(96, 91, 75, 1), 
+		  rgba(96, 91, 75, 0.3)
+		),
+		url("../graphics/buttonBg.jpg"),
+		no-repeat;
+	background-size: cover;
+	text-align:left;
 }
-.detail .narrativeThreadContainer img{
-	width:100%;
-	height:auto;
+.detail .narrativeThreadLink:hover{
+	cursor:pointer;
+	border:1px solid #8a0000;	
+	background:
+		linear-gradient(
+		  rgba(0, 0, 0, 1), 
+		  rgba(0, 0, 0, 0.3)
+		),
+		url("../graphics/buttonBg.jpg"),
+		no-repeat;
+	background-size: cover;
 }
-.detail .narrativeThreadContainer .narrativeThreadDesc {
-	background-color:#605b4b;
-	color:#fff;
-	padding:5px;
-}
-.detail .narrativeThreadContainer .narrativeThreadDesc H2{
-	padding:0px;
-	margin:0px;
-	text-align:center;
-	font-size:12px;
-}
-.detail .narrativeThreadContainer .narrativeThreadDesc H2 a{
-	text-transform:none;
+.detail .narrativeThreadLink a{
+	font-family: lato;
 	color:#FFF;
 	font-size:12px;
 }
-.detail .narrativeThreadContainer .narrativeThreadDesc H2 a:hover{
+.detail .narrativeThreadLink a:hover{
 	text-decoration:none;
-	color:#d20000;
+	color:#FFF;
+}
+.detail .narrativeThreadLink .fa{
+	float:right;
+	margin-top:13%;
+	margin-left:5px;
 }
 
 

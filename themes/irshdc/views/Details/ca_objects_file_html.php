@@ -86,25 +86,29 @@
 					</div><!-- end stoneBg -->
 					<div class="row">
 						<div class="col-sm-12">
-							<div class="collapseBlock">
-								<h3>Source Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-								<div class="collapseContent">
-									{{{<ifdef code="ca_objects.file_series"><H6 class="inline">Series:</H6> <unit delimiter=", ">^ca_objects.file_series</unit><br/></ifdef>}}}
-									{{{<ifdef code="ca_objects.record_group_id"><H6 class="inline">Record group:</H6> <unit delimiter=", ">^ca_objects.record_group_id</unit><br/></ifdef>}}}
-									{{{<ifdef code="ca_objects.mikan_number"><div class='unit'><H6 class="inline">Mikan Number:</H6> <unit delimiter=", ">^ca_objects.mikan_number</unit><br/></div></ifdef>}}}
-									{{{<ifdef code="ca_objects.microfilm_reel"><H6 class="inline">Microfilm Reel:</H6> <unit delimiter="<br/>">^ca_objects.microfilm_reel</unit><br/></ifdef>}}}
-									{{{<ifdef code="ca_objects.volume"><H6 class="inline">Volume:</H6> <unit delimiter="<br/>">^ca_objects.volume</unit><br/></ifdef>}}}
-									{{{<ifdef code="ca_objects.file_number"><H6 class="inline">File Number:</H6> <unit delimiter="<br/>">^ca_objects.file_number</unit><br/></ifdef>}}}
-									{{{<ifdef code="ca_objects.part"><H6 class="inline">Part:</H6> <unit delimiter="<br/>">^ca_objects.part</unit><br/></ifdef>}}}
+							{{{<ifdef code="ca_objects.file_series|ca_objects.record_group_id|ca_objects.mikan_number|ca_objects.microfilm_reel|ca_objects.volume|ca_objects.file_number|ca_objects.part">
+								<div class="collapseBlock">
+									<h3>Source Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+									<div class="collapseContent">
+										<ifdef code="ca_objects.file_series"><H6 class="inline">Series:</H6> <unit delimiter=", ">^ca_objects.file_series</unit><br/></ifdef>
+										<ifdef code="ca_objects.record_group_id"><H6 class="inline">Record group:</H6> <unit delimiter=", ">^ca_objects.record_group_id</unit><br/></ifdef>
+										<ifdef code="ca_objects.mikan_number"><div class='unit'><H6 class="inline">Mikan Number:</H6> <unit delimiter=", ">^ca_objects.mikan_number</unit><br/></div></ifdef>
+										<ifdef code="ca_objects.microfilm_reel"><H6 class="inline">Microfilm Reel:</H6> <unit delimiter="<br/>">^ca_objects.microfilm_reel</unit><br/></ifdef>
+										<ifdef code="ca_objects.volume"><H6 class="inline">Volume:</H6> <unit delimiter="<br/>">^ca_objects.volume</unit><br/></ifdef>
+										<ifdef code="ca_objects.file_number"><H6 class="inline">File Number:</H6> <unit delimiter="<br/>">^ca_objects.file_number</unit><br/></ifdef>
+										<ifdef code="ca_objects.part"><H6 class="inline">Part:</H6> <unit delimiter="<br/>">^ca_objects.part</unit><br/></ifdef>
+									</div>
 								</div>
-							</div>
-							<div class="collapseBlock">
-								<h3>Other Repositories <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-								<div class="collapseContent">
-									{{{<ifdef code="ca_objects.NCTR_URL"><div class='unit'><h6>National Centre for Truth and Reconciliation</h6><unit delimiter=", "><a href="^ca_objects.NCTR_URL" target="_blank">^ca_objects.NCTR_URL</a></unit></div></ifdef>}}}
-									{{{<ifdef code="ca_objects.Koerner_URL"><div class='unit'><h6>University of British Columbia Libraries</h6><unit delimiter=", "><a href="^ca_objects.Koerner_URL" target="koerner_URL">^ca_objects.Koerner_URL</a></unit></div></ifdef>}}}						
+							</ifdef>}}}
+							{{{<ifdef code="ca_objects.NCTR_URL|ca_objects.Koerner_URL">
+								<div class="collapseBlock">
+									<h3>Other Repositories <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+									<div class="collapseContent">
+										<ifdef code="ca_objects.NCTR_URL"><div class='unit'><h6>National Centre for Truth and Reconciliation</h6><unit delimiter=", "><a href="^ca_objects.NCTR_URL" target="_blank">^ca_objects.NCTR_URL</a></unit></div></ifdef>
+										<ifdef code="ca_objects.Koerner_URL"><div class='unit'><h6>University of British Columbia Libraries</h6><unit delimiter=", "><a href="^ca_objects.Koerner_URL" target="koerner_URL">^ca_objects.Koerner_URL</a></unit></div></ifdef>				
+									</div>
 								</div>
-							</div>
+							</ifdef>}}}
 				
 							<div class="collapseBlock">
 								<h3>Related <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
@@ -114,19 +118,23 @@
 ?>
 								</div>
 							</div>
-							<div class="collapseBlock">
-								<h3>Research Guide <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
-								<div class="collapseContent open">
-									{{{<ifdef code="ca_objects.alternate_text.alternate_desc_upload.url"><div class='unit icon transcription'><h6>Research Guide</h6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.alternate_text.alternate_desc_upload"><a href="^ca_objects.alternate_text.alternate_desc_upload.url%version=original">View ^ca_objects.alternate_text.alternate_text_type</a></ifdef><ifdef code="ca_objects.alternate_text.alternate_desc_note">^ca_objects.alternate_text.alternate_desc_note</ifdef></unit></div></ifdef>}}}
+							{{{<ifdef code="ca_objects.alternate_text.alternate_desc_upload.url">
+								<div class="collapseBlock">
+									<h3>Research Guide <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
+									<div class="collapseContent open">
+										<div class='unit icon transcription'><h6>Research Guide</h6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.alternate_text.alternate_desc_upload"><a href="^ca_objects.alternate_text.alternate_desc_upload.url%version=original">View ^ca_objects.alternate_text.alternate_text_type</a></ifdef><ifdef code="ca_objects.alternate_text.alternate_desc_note">^ca_objects.alternate_text.alternate_desc_note</ifdef></unit></div>
+									</div>
 								</div>
-							</div>
-							<div class="collapseBlock last">
-								<h3>Notes <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
-								<div class="collapseContent open">
-									{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Note</h6>^ca_objects.MARC_generalNote</div></ifdef>}}}
-									{{{<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Note on Description</h6>^ca_objects.ISADG_archNote</div></ifdef>}}}
+							</ifdef>}}}
+							{{{<ifdef code="ca_objects.MARC_generalNote|ca_objects.ISADG_archNote">
+								<div class="collapseBlock last">
+									<h3>Notes <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
+									<div class="collapseContent open">
+										<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Note</h6>^ca_objects.MARC_generalNote</div></ifdef>
+										<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Note on Description</h6>^ca_objects.ISADG_archNote</div></ifdef>
+									</div>
 								</div>
-							</div>
+							</ifdef>}}}
 						</div><!-- end col -->
 					</div><!-- end row -->
 									
