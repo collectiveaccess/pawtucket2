@@ -47,18 +47,13 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-sm-12 col-md-12 col-lg-12'>
-					
-				</div>
-			</div>
-			<div class="row">
-				<div class='col-sm-4'>
+				<div class='col-sm-12 col-md-4'>
 					{{{representationViewer}}}
 				
 				
 					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 				</div><!-- end col -->
-				<div class='col-sm-6 '>
+				<div class='col-sm-8 col-md-6'>
 				
 					<div class="stoneBg">
 						<H4><?php print ucwords(strtolower($t_object->get("ca_objects.preferred_labels.name"))); ?></H4>
@@ -113,6 +108,8 @@
 							<div class="collapseBlock">
 								<h3>Related <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
 								<div class="collapseContent open">
+									{{{<ifcount code="ca_objects.related" restrictToTypes="file" min="1"><H6>Related Files</H6><unit relativeTo="ca_objects.related" restrictToTypes="library" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
+									{{{<ifcount code="ca_objects.related" excludeTypes="file" min="1"><H6>Related Archival Items, Library Items, Museum Works, and Testimonies</H6><unit relativeTo="ca_objects.related" excludeTypes="library" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
 <?php
 							include("related_html.php");
 ?>
@@ -140,7 +137,7 @@
 									
 
 				</div>
-				<div class='col-sm-2 col-md-2 col-lg-2'>
+				<div class='col-sm-4 col-md-2'>
 	<?php
 					# Comment and Share Tools
 						
@@ -194,10 +191,6 @@
 		
 		$('[data-toggle="popover"]').popover();
 		
-		
-		$("a[href='#map-tab']").on('shown.bs.tab', function(){
-		  	google.maps.event.trigger(map, "resize");
-		});
 		$('.collapseBlock h3').click(function() {
   			block = $(this).parent();
   			block.find('.collapseContent').toggle();
