@@ -451,7 +451,8 @@
  			// find view
  			//		first look for type-specific view
  			$vs_path = "Details/{$vs_table}_default_html.php";		// If no type specific view use the default
- 			if (is_array($va_type_codes = caMakeTypeList($vs_table, ['artwork']))) {
+ 			
+ 			if (is_array($va_type_codes = caMakeTypeList($vs_table, [$t_subject->getTypeCode()]))) {
                 foreach(array_reverse($va_type_codes) as $vs_type_code) {   // reverse list to try more specific types first
                     if ($this->viewExists("Details/{$vs_table}_{$vs_type_code}_html.php")) {
                         $vs_path = "Details/{$vs_table}_{$vs_type_code}_html.php";
@@ -459,6 +460,7 @@
                     }
                 }
             }
+            
  			//
  			// pdf link
  			//
