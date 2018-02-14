@@ -69,30 +69,8 @@
 	
 if (!$vb_ajax) {	// !ajax
 ?>
-<div class="row" style="clear:both;">
-	<div class='<?php print ($vs_table != 'ca_entities') ? $vs_result_col_class : "col-sm-12"; ?>'>
-<?php 
-			if($vs_sort_control_type == 'list'){
-				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-					print "<H5 id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
-					$i = 0;
-					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
-						$i++;
-						if ($vs_current_sort === $vs_sort) {
-							print "<li class='selectedSort'>{$vs_sort}</li>\n";
-						} else {
-							print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
-						}
-						if($i < sizeof($va_sorts)){
-							print "<li class='divide'>&nbsp;</li>";
-						}
-					}
-					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-					print "</ul></H5>\n";
-				}
-			}
-		
-?>
+<div class="row" style="clear:both">
+	<div class='<?php print $vs_result_col_class; ?>'>
 		<H1>
 <?php
 			print _t('%1 %2', $vn_result_size, $va_browse_info["labelPlural"]);	
@@ -155,19 +133,51 @@ if (!$vb_ajax) {	// !ajax
 			}
 		}	
 ?>
-		</H1>	
+		</H1>		
+	</div>
+	<div class="<?php print $vs_refine_col_class; ?>">
+		<form role="search" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+			<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." <?php #print ($vs_search) ? "value='".$vs_search."'" : ""; ?> name="search_refine">
+			<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+		</form>
+	</div>
+</div>
+<div class="row" style="clear:both;">
+	<div class='<?php print ($vs_table != 'ca_entities') ? $vs_result_col_class : "col-sm-12"; ?>'>
+<?php 
+			if($vs_sort_control_type == 'list'){
+				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
+					print "<H5 id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
+					$i = 0;
+					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
+						$i++;
+						if ($vs_current_sort === $vs_sort) {
+							print "<li class='selectedSort'>{$vs_sort}</li>\n";
+						} else {
+							print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
+						}
+						if($i < sizeof($va_sorts)){
+							print "<li class='divide'>&nbsp;</li>";
+						}
+					}
+					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc")), '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+					print "</ul></H5>\n";
+				}
+			}
+		
+?>	
 		<H5>
 <?php
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
 				print "<strong>".$va_criterion['facet'].':</strong>';
-				if ($va_criterion['facet_name'] != '_search') {
+				#if ($va_criterion['facet_name'] != '_search') {
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
-				}else{
-					print ' '.$va_criterion['value'];
-					$vs_search = $va_criterion['value'];
-				}
+				#}else{
+				#	print ' '.$va_criterion['value'];
+				#	$vs_search = $va_criterion['value'];
+				#}
 				$i++;
 				if($i < sizeof($va_criteria)){
 					print " ";
