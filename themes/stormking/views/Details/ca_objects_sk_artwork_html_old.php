@@ -54,7 +54,7 @@
 				} else {
 					print $vs_record_title;
 				}
-				if ($vs_date = $t_object->get('ca_objects.object_date')) {
+				if ($vs_date = $t_object->get('ca_objects.display_date')) {
 					print ", ".$vs_date;
 				}
 ?>
@@ -90,7 +90,7 @@
 					}
 					print "</div>";
 				}
-				if ($va_date = $t_object->get('ca_objects.object_date')) {
+				if ($va_date = $t_object->get('ca_objects.display_date')) {
 					print "<div class='unit'><h6>Date</h6>".$va_date."</div>";
 				}
 				if ($va_medium = $t_object->get('ca_objects.medium')) {
