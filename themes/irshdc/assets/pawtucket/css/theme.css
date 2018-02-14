@@ -66,6 +66,11 @@ a.black{
     font-size:14px;
     font-weight:normal
 }
+.btn-sm {
+    padding: 5px 10px !important;
+    font-size:12px;
+    font-weight:normal
+}
 .filterMenuFacetList li.active {
     background-color: #000000;
 }
@@ -412,8 +417,12 @@ a.readmore-js-toggle {
 .explore #featured_set{
 	margin:0px 0px 100px 0px;
 }
-.gallery h4{
+.gallery H4, .gallery H4 a {
 	text-transform:none;
+    font-size: 14px !important;
+}
+.gallery H6{
+	margin-bottom:0px;
 }
 .gallery .galleryDetailBottom{
 	border:0px;
@@ -440,6 +449,13 @@ a.readmore-js-toggle {
 .gallery #galleryDetailObjectInfo{
 	padding:25px;
 	background-color:#f0ede4;
+}
+.gallery .galleryTombstoneScroll{
+	max-height:325px;
+	overflow-y:scroll;
+}
+.gallery .unit{
+	margin-top:10px;
 }
 .schoolBottom{
 	margin-bottom:100px;
@@ -501,8 +517,23 @@ a.readmore-js-toggle {
 	font-family: lato;
 }
 #exploreMapBalloonContainer {
-    max-height: 200px;
+    max-height: 160px;
     width: 400px;
-    margin-right: 20px;
     overflow-y: auto;
+}
+#exploreMapBalloonContainer .mapItem{
+	margin-bottom:15px;
+	clear:both;
+}
+.mapImage{
+	float:left;
+	width:35%;
+	margin-right:20px;
+}
+.mapImage img{
+	width:100%;
+	height:auto;
+}
+#exploreMapBalloonContainer h6{
+	margin-bottom:0px;
 }
