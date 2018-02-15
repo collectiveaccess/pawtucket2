@@ -64,7 +64,9 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
-	<link href="https://fonts.googleapis.com/css?family=Chivo:300|Open+Sans:300,400,400i,700,700i" rel="stylesheet">
+	
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700,700i" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Chivo:400" rel="stylesheet" type="text/css">
 <?php
 	if(Debug::isEnabled()) {		
 		//
@@ -126,7 +128,7 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li> 
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "first", "", "About", "Index"); ?></li> 
 					<li <?php print (($this->request->getController() == "artists") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "artists"); ?></li>											
 					<li <?php print (($this->request->getController() == "objects") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artworks"), "", "", "Browse", "objects"); ?></li>	
 					<li <?php print (($this->request->getController() == "objects") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Publications"), "", "", "Browse", "contact"); ?></li>						
