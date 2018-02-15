@@ -5,67 +5,108 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 ?>
 <div class="row">
-	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+	<div class='col-xs-12 '>
 		<div class="container">
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_entities.preferred_labels.displayname}}}</H4>
-					<H6>{{{^ca_entities.type_id}}}{{{<ifdef code="ca_entities.idno">, ^ca_entities.idno</ifdef>}}}</H6>
-				</div><!-- end col -->
+				<div class='col-sm-12'>
+					<div class='detailNav'>{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-12 objectInfo">
+<?php
+					print trim($t_item->get('ca_entities.preferred_labels'))."<br/>";
+					if ($vs_nationality = $t_item->get('ca_entities.nationality_text')) {
+						print $vs_nationality.", ";
+					}
+					if ($vs_lifespan = $t_item->get('ca_entities.entity_display_date')) {
+						print $vs_lifespan;
+					}					
+?>				
+					<hr></hr> 
+				</div>		
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
-<?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled) {
-						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
-					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-					}
-					print '</div><!-- end detailTools -->';
-				}				
-?>
-					
+					<div style='padding-left:15px;'>
+					{{{representationViewer}}}		
+					</div>	
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_entities.description"><div class='unit'><H6>Biography</H6>^ca_entities.description</div></ifdef>}}}
-					
-					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_collections" delimiter="<br/>"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels.name</l> (^relationship_typename)</unit></unit>}}}
+<?php
+					if ($va_remarks_images = $t_item->get('ca_entities.bibliography', array('returnWithStructure' => true, 'version' => 'medium'))) {
+						foreach ($va_remarks_images as $vn_attribute_id => $va_remarks_image_info) {
+							foreach ($va_remarks_image_info as $vn_value_id => $va_remarks_image) {
+								print "<div class='unit' style='margin-bottom:20px;'>";
 
-					
-					{{{<ifcount code="ca_entities.related" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities.related" min="2"><H6>Related people</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.related.preferred_labels.displayname</l></unit> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="2"><H6>Related occurrences</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_occurrences" delimiter="<br/>"><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_places" delimiter="<br/>"><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}				
+								$o_db = new Db();
+								$t_element = ca_attributes::getElementInstance('bibliography');
+								$vn_media_element_id = $t_element->getElementID('bibliography');							
+
+								$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_value_id, $vn_media_element_id)) ;
+								if ($qr_res->nextRow()) {
+									print "<div class='zoomIcon'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $t_item->get("entity_id"), 'context' => 'entities', 'identifier' => 'attribute:'.$qr_res->get("value_id"), 'overlay' => 1))."\"); return false;'><h6>View Bibliography <i class='fa fa-file'></i></h6></a></div>";
+								}
+								print "</div>";
+							}
+						}
+					}
+							
+					if ($va_related_or_history = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history')))) {
+						print '<div class="unit"><h6>Related Oral Histories</h6>';
+						foreach ($va_related_or_history as $va_id => $va_related_or_history_id) {
+							$t_rel_or = new ca_objects($va_related_or_history_id);
+							print "<div class='detailLine'>";
+							print "<p>".caDetailLink($this->request, $t_rel_or->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_or->get('ca_objects.object_id'))."</p>";
+							print "</div>";
+						}
+						print "</div>";
+					}	
+					if ($va_related_library = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('library')))) {
+						print '<div class="unit"><h6>Related Library Items</h6>';
+						foreach ($va_related_library as $va_id => $va_related_library_id) {
+							$t_rel_lib = new ca_objects($va_related_library_id);
+							print "<div class='detailLine'>";
+							print "<p>".caDetailLink($this->request, $t_rel_lib->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_lib->get('ca_objects.object_id'))."</p>";
+							print "</div>";
+						}
+						print "</div>";
+					}									
+?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
+<?php
+			if ($va_related_exhibitions = $t_item->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program')))) {
+				$va_ex_images = caGetDisplayImagesForAuthorityItems('ca_occurrences', $va_related_exhibitions, array('version' => 'iconlarge', 'relationshipTypes' => 'includes', 'objectTypes' => 'artwork', 'checkAccess' => $va_access_values));
+				print "<hr><div class='row'><div class='col-sm-12'>";
+				print '<h6 class="header">Related Exhibitions and Programs</h6>';
+				foreach ($va_related_exhibitions as $va_key => $va_related_exhibition_id) {
+					$t_exhibition = new ca_occurrences($va_related_exhibition_id);
+					print "<div class='col-sm-3'> <div class='relatedArtwork'>";
+					print "<div class='relImg'>".caDetailLink($this->request, $va_ex_images[$va_related_exhibition_id], '', 'ca_occurrences', $t_exhibition->get('ca_occurrences.occurrence_id'))."</div>";
+					print "<p>".caDetailLink($this->request, $t_exhibition->get('ca_occurrences.preferred_labels'), '', 'ca_occurrences', $t_exhibition->get('ca_occurrences.occurrence_id'))."</p>";
+					print "<p>".$t_exhibition->get('ca_occurrences.exhibition_dates', array('delimiter' => '<br/>'))."</p>";
+					print "</div></div>";
+				}
+				print "</div><!-- end col --></div><!-- end row -->";
+			}
+			if ($va_related_archival = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('archival')))) {
+				print "<hr><div class='row'><div class='col-sm-12'>";
+				print '<h6 class="header">Related Archival Items</h6>';
+				foreach ($va_related_archival as $va_key => $va_related_archival_id) {
+					$t_archival = new ca_objects($va_related_archival_id);
+					print "<div class='col-sm-3'> <div class='relatedArtwork'>";
+					print "<div class='relImg'>".caDetailLink($this->request, $t_archival->get('ca_object_representations.media.iconlarge'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</div>";
+					print "<p>".caDetailLink($this->request, $t_archival->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</p>";
+					print "</div></div>";
+				}
+				print "</div><!-- end col --></div><!-- end row -->";
+			}			
+?>
 			
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
+			<hr>
+			<h6>Related Artworks</h6>
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
@@ -73,7 +114,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'allworks', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -87,11 +128,6 @@
 			</script>
 </ifcount>}}}
 		</div><!-- end container -->
-	</div><!-- end col -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
 <script type='text/javascript'>

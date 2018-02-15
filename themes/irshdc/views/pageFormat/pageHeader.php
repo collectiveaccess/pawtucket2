@@ -136,7 +136,13 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print ($this->request->getController() == "Explore") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "<span>"._t("Explore")."</span>", "", "", "About", "Index"); ?></li>
+					<li class="dropdown <?php print ($this->request->getController() == "Explore") ? ' active"' : ''; ?>" style="position:relative;">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>Explore</span></a>
+						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, "<span>"._t("Narrative Threads")."</span>", "", "", "Explore", "narrativethreads"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Schools")."</span>", "", "", "Explore", "schools"); ?></li>
+						</ul>
+					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "<span>"._t("About")."</span>", "", "", "About", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "<span>"._t("Contact")."</span>", "", "", "Contact", "Form"); ?></li>
