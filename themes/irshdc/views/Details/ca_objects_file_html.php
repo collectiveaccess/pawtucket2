@@ -87,7 +87,7 @@
 									<div class="collapseContent">
 										<ifdef code="ca_objects.file_series"><H6 class="inline">Series:</H6> <unit delimiter=", ">^ca_objects.file_series</unit><br/></ifdef>
 										<ifdef code="ca_objects.record_group_id"><H6 class="inline">Record group:</H6> <unit delimiter=", ">^ca_objects.record_group_id</unit><br/></ifdef>
-										<ifdef code="ca_objects.mikan_number"><div class='unit'><H6 class="inline">Mikan Number:</H6> <unit delimiter=", ">^ca_objects.mikan_number</unit><br/></div></ifdef>
+										<ifdef code="ca_objects.mikan_number"><H6 class="inline">Mikan Number:</H6> <unit delimiter=", ">^ca_objects.mikan_number</unit><br/></ifdef>
 										<ifdef code="ca_objects.microfilm_reel"><H6 class="inline">Microfilm Reel:</H6> <unit delimiter="<br/>">^ca_objects.microfilm_reel</unit><br/></ifdef>
 										<ifdef code="ca_objects.volume"><H6 class="inline">Volume:</H6> <unit delimiter="<br/>">^ca_objects.volume</unit><br/></ifdef>
 										<ifdef code="ca_objects.file_number"><H6 class="inline">File Number:</H6> <unit delimiter="<br/>">^ca_objects.file_number</unit><br/></ifdef>
