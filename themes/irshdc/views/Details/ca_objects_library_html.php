@@ -61,7 +61,7 @@
 						<H4>{{{^ca_objects.preferred_labels.name}}}</H4>
 						{{{<ifdef code="ca_objects.MARC_copyrightDate"><div class='unit'>&copy; ^ca_objects.MARC_copyrightDate</div></ifdef>}}}
 						<H6>
-							{{{<ifdef code="ca_objects.resource_type">^ca_objects.resource_type</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef>}}}
+							{{{<ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef>}}}
 						</H6>
 						{{{<ifdef code="ca_objects.record_type"><H6>Record type</H6>^ca_objects.record_type%=_</ifdef>}}}
 						{{{<ifdef code="ca_objects.contributors|ca_objects.creators"><H6>Creators and Contributors</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.contributors</unit><ifdef code="ca_objects.contributors,ca_objects.creators"><br/></ifdef><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.creators</unit></ifdef>}}}
@@ -78,41 +78,10 @@
 								<span class="trimText">^ca_objects.community_input_objects.comments_objects</span>
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter="<br/>">^ca_objects.language</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter="; ">^ca_objects.language</unit></div></ifdef>}}}
 					</div><!-- end stoneBg -->
 					<div class="row">
 						<div class="col-sm-12">
-							{{{<ifdef code="ca_objects.MARC_isbn|ca_objects.nonpreferred_labels.name|ca_objects.MARC_generalNote|ca_objects.local_note|ca_objects.MARC_formattedContents|ca_objects.ISADG_titleNote|ca_objects.participant_performer|ca_objects.electronic_URL">
-								<div class="collapseBlock">
-									<h3>Notes <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-									<div class="collapseContent">
-										<ifdef code="ca_objects.MARC_isbn"><div class='unit'><h6>ISBN</h6><unit delimiter="; ">^ca_objects.MARC_isbn</unit></div></ifdef>
-										<ifdef code="ca_objects.nonpreferred_labels.name"><HR/><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>">^nonpreferred_labels.name</unit></ifdef>
-										<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>General Note</h6>^ca_objects.MARC_generalNote</div></ifdef>
-										<ifdef code="ca_objects.local_note"><div class='unit'><h6>Local Note</h6>^ca_objects.local_note</div></ifdef>				
-										<ifdef code="ca_objects.MARC_formattedContents|ca_objects.ISADG_titleNote"><div class='unit'><h6>Contents</h6><ifdef code="ca_objects.MARC_formattedContents">^ca_objects.MARC_formattedContents</ifdef><ifdef code="ca_objects.ISADG_titleNote">^ca_objects.ISADG_titleNote</ifdef></div></ifdef>			
-										<ifdef code="ca_objects.participant_performer"><div class='unit'><h6>Participant or Performer</h6>^ca_objects.participant_performer</div></ifdef>			
-										<ifdef code="ca_objects.electronic_URL"><div class='unit'><h6>Related Electronic Resources</h6><ifdef code="ca_objects.electronic_specified">^ca_objects.electronic_specified: </ifdef><a href="^ca_objects.electronic_URL" target="_blank">^ca_objects.electronic_URL</a> <span class="glyphicon glyphicon-new-window"></span></div></ifdef>
-									</div>
-								</div>
-							</ifdef>}}}
-<?php
-							$vs_subjects = "";
-							$vs_subjects .= $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="subject" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>');
-							$vs_subjects .= $t_object->get("ca_objects.LOC_text", array("delimiter" => "<br/>"));
-							$vs_subjects .= $t_object->get("ca_objects.tgn", array("delimiter" => "<br/>"));
-							$vs_subjects .= $t_object->get("ca_objects.local_subject", array("delimiter" => "<br/>"));
-							if($vs_subjects){
-?>							
-								<div class="collapseBlock">
-									<h3>Subjects <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-									<div class="collapseContent">
-										<div class="unit"><?php print $vs_subjects; ?></div>									
-									</div>
-								</div>
-<?php
-							}
-?>				
 							<div class="collapseBlock">
 								<h3>Related <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
 								<div class="collapseContent open">
@@ -123,6 +92,57 @@
 ?>
 								</div>
 							</div>
+<?php
+							$va_loc = array();
+							$vs_loc = "";
+							if($vs_entity_subjects = $t_object->getWithTemplate('<ifdef code="ca_objects.themes"><div class="unit"><h6>Local</h6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.themes</unit></div></ifdef>')){
+								$va_loc[] = $vs_entity_subjects;
+							}
+							if($vs_subjects = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="subject" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l>')){
+								$va_loc[] = $vs_subjects;
+							}
+							if($vs_topical = $t_object->get("ca_objects.LOC_text", array("delimiter" => "<br/>"))){
+								$va_loc[] = $vs_topical;
+							}
+							if($vs_tgn = $t_object->get("ca_objects.tgn", array("delimiter" => "<br/>"))){
+								$va_loc[] = $vs_tgn;
+							}
+							if(sizeof($va_loc)){
+								$vs_loc = "<div class='unit'><H6>Library of Congress</H6>".join("<br/>", $va_loc)."</div>";
+							}
+							
+							if($vs_tmp = $t_object->get("ca_objects.local_subject", array("delimiter" => "<br/>"));){
+								$vs_local_subjects = "<div class='unit'><H6>Holding Libraries</H6>".$vs_tmp."</div>";
+							}
+							
+							if(sizeof($va_loc)){
+?>							
+								<div class="collapseBlock">
+									<h3>Subjects <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+									<div class="collapseContent">
+										<div class="unit">
+<?php
+											print .$vs_local_subjects; 
+											
+?>
+										</div>									
+									</div>
+								</div>
+<?php
+							}
+?>				
+							
+							{{{<ifdef code="ca_objects.MARC_isbn|ca_objects.nonpreferred_labels.name|ca_objects.MARC_generalNote|ca_objects.local_note|ca_objects.MARC_formattedContents|ca_objects.ISADG_titleNote|ca_objects.participant_performer|ca_objects.electronic_URL">
+								<div class="collapseBlock">
+									<h3>Notes <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+									<div class="collapseContent">
+										<ifdef code="ca_objects.MARC_isbn"><div class='unit'><h6>ISBN</h6><unit delimiter="; ">^ca_objects.MARC_isbn</unit></div></ifdef>
+										<ifdef code="ca_objects.nonpreferred_labels.name"><HR/><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>">^nonpreferred_labels.name</unit></ifdef>
+										<ifdef code="ca_objects.MARC_formattedContents|ca_objects.ISADG_titleNote"><div class='unit'><h6>Contents</h6><ifdef code="ca_objects.MARC_formattedContents">^ca_objects.MARC_formattedContents</ifdef><ifdef code="ca_objects.ISADG_titleNote">^ca_objects.ISADG_titleNote</ifdef></div></ifdef>			
+										<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>General Note</h6>^ca_objects.MARC_generalNote</div></ifdef>									
+									</div>
+								</div>
+							</ifdef>}}}
 						</div><!-- end col -->
 					</div><!-- end row -->
 									
@@ -146,7 +166,7 @@
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
 ?>
-					{{{<ifdef code="ca_objects.link"><div class='detailTool'><span class='glyphicon glyphicon-link'></span><a href="^ca_objects.link" target="_blank">Holding repository</a></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.link"><div class='detailTool'><span class='glyphicon glyphicon-link'></span><a href="^ca_objects.link" target="_blank">Source record</a></div></ifdef>}}}
 					
 <?php					
 					print "<div class='detailTool'><span class='glyphicon glyphicon-link'></span><a href='".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/815')."'>Permalink</a></div>";

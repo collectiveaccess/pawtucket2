@@ -141,6 +141,7 @@
 						<ul class="dropdown-menu">
 							<li><?php print caNavLink($this->request, "<span>"._t("Narrative Threads")."</span>", "", "", "Explore", "narrativethreads"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Schools")."</span>", "", "", "Explore", "schools"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Features")."</span>", "", "", "Gallery", "Index"); ?></li>
 						</ul>
 					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
