@@ -59,7 +59,7 @@
 						<H4><?php print ucwords(strtolower($t_object->get("ca_objects.preferred_labels.name"))); ?></H4>
 						{{{<ifdef code="ca_objects.displayDate"><div class='unit'>^ca_objects.displayDate</div></ifdef>}}}
 						<H6>
-							{{{<ifdef code="ca_objects.resource_type">^ca_objects.resource_type</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef>}}}
+							{{{<ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef>}}}
 						</H6>
 						{{{<ifdef code="ca_objects.record_type"><H6>Record type</H6>^ca_objects.record_type%=_</ifdef>}}}
 						{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="original_source" min="1"><H6>Creator</H6><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="original_source" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></ifcount>}}}
@@ -113,6 +113,7 @@
 <?php
 							include("related_html.php");
 ?>
+									{{{<ifdef code="ca_objects.themes"><div class='unit'><h6>Subject<ifcount code="ca_objects.themes" min="2">s</ifcount></h6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.themes</unit></div></ifdef>}}}
 								</div>
 							</div>
 							{{{<ifdef code="ca_objects.alternate_text.alternate_desc_upload.url">
@@ -127,8 +128,8 @@
 								<div class="collapseBlock last">
 									<h3>Notes <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
 									<div class="collapseContent open">
+										<ifdef code="ca_objects.MARC_formattedContents|ISADG_titleNote"><div class='unit'><h6>Table of Content</h6><ifdef code="ca_objects.MARC_formattedContents">^ca_objects.MARC_formattedContents</ifdef><ifdef code="ca_objects.ISADG_titleNote">^ca_objects.ISADG_titleNote</ifdef></div></ifdef>
 										<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Note</h6>^ca_objects.MARC_generalNote</div></ifdef>
-										<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Note on Description</h6>^ca_objects.ISADG_archNote</div></ifdef>
 									</div>
 								</div>
 							</ifdef>}}}
@@ -155,11 +156,11 @@
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
 ?>
-					{{{<ifdef code="ca_objects.lac_URL"><div class='detailTool'><span class='glyphicon glyphicon-link'></span><a href="^ca_objects.lac_URL" target="_blank">Holding repository</a></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.lac_URL"><div class='detailTool'><span class='glyphicon glyphicon-link'></span><a href="^ca_objects.lac_URL" target="_blank">Source record</a></div></ifdef>}}}
 					
 <?php					
-					print "<div class='detailTool'><span class='glyphicon glyphicon-link'></span><a href='".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/815')."'>Permalink</a></div>";
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask an Archivist", "", "", "Contact", "Form")."</div>";
+					print "<div class='detailTool'><span class='glyphicon glyphicon-link'></span><a href='".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("object_id"))."'>Permalink</a></div>";
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask an Archivist", "", "", "Contact", "Form", array("contactType" => "askArchivist", "object_id" => $t_object->get("object_id")))."</div>";
 					
 					print '</div><!-- end detailTools -->';			
 					
