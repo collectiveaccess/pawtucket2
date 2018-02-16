@@ -77,7 +77,7 @@
 								<span class="trimText">^ca_objects.community_input_objects.comments_objects</span>
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter="<br/>">^ca_objects.language</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter=", ">^ca_objects.language</unit></div></ifdef>}}}
 					</div><!-- end stoneBg -->
 					<div class="row">
 						<div class="col-sm-12">
@@ -108,8 +108,8 @@
 							<div class="collapseBlock">
 								<h3>Related <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
 								<div class="collapseContent open">
-									{{{<ifcount code="ca_objects.related" restrictToTypes="file" min="1"><H6>Related Files</H6><unit relativeTo="ca_objects.related" restrictToTypes="library" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
-									{{{<ifcount code="ca_objects.related" excludeTypes="file" min="1"><H6>Related Archival Items, Library Items, Museum Works, and Testimonies</H6><unit relativeTo="ca_objects.related" excludeTypes="library" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
+									{{{<ifcount code="ca_objects.related" restrictToTypes="file" min="1"><H6>Related Files</H6><unit relativeTo="ca_objects.related" restrictToTypes="file" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
+									{{{<ifcount code="ca_objects.related" excludeTypes="file" min="1"><H6>Related Archival Items, Library Items, Museum Works, and Testimonies</H6><unit relativeTo="ca_objects.related" excludeTypes="file" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
 <?php
 							include("related_html.php");
 ?>
@@ -128,8 +128,8 @@
 								<div class="collapseBlock last">
 									<h3>Notes <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
 									<div class="collapseContent open">
-										<ifdef code="ca_objects.MARC_formattedContents|ISADG_titleNote"><div class='unit'><h6>Table of Content</h6><ifdef code="ca_objects.MARC_formattedContents">^ca_objects.MARC_formattedContents</ifdef><ifdef code="ca_objects.ISADG_titleNote">^ca_objects.ISADG_titleNote</ifdef></div></ifdef>
 										<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Note</h6>^ca_objects.MARC_generalNote</div></ifdef>
+										<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Note on Description</h6>^ca_objects.ISADG_archNote</div></ifdef>
 									</div>
 								</div>
 							</ifdef>}}}

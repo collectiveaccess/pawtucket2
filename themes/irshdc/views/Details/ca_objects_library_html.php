@@ -78,26 +78,23 @@
 								<span class="trimText">^ca_objects.community_input_objects.comments_objects</span>
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter="<br/>">^ca_objects.language</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter="; ">^ca_objects.language</unit></div></ifdef>}}}
 					</div><!-- end stoneBg -->
 					<div class="row">
 						<div class="col-sm-12">
-							{{{<ifdef code="ca_objects.MARC_isbn|ca_objects.nonpreferred_labels.name|ca_objects.MARC_generalNote|ca_objects.local_note|ca_objects.MARC_formattedContents|ca_objects.ISADG_titleNote|ca_objects.participant_performer|ca_objects.electronic_URL">
-								<div class="collapseBlock">
-									<h3>Notes <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-									<div class="collapseContent">
-										<ifdef code="ca_objects.MARC_isbn"><div class='unit'><h6>ISBN</h6><unit delimiter="; ">^ca_objects.MARC_isbn</unit></div></ifdef>
-										<ifdef code="ca_objects.nonpreferred_labels.name"><HR/><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>">^nonpreferred_labels.name</unit></ifdef>
-										<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>General Note</h6>^ca_objects.MARC_generalNote</div></ifdef>
-										<ifdef code="ca_objects.local_note"><div class='unit'><h6>Local Note</h6>^ca_objects.local_note</div></ifdef>				
-										<ifdef code="ca_objects.MARC_formattedContents|ca_objects.ISADG_titleNote"><div class='unit'><h6>Contents</h6><ifdef code="ca_objects.MARC_formattedContents">^ca_objects.MARC_formattedContents</ifdef><ifdef code="ca_objects.ISADG_titleNote">^ca_objects.ISADG_titleNote</ifdef></div></ifdef>			
-										<ifdef code="ca_objects.participant_performer"><div class='unit'><h6>Participant or Performer</h6>^ca_objects.participant_performer</div></ifdef>			
-										<ifdef code="ca_objects.electronic_URL"><div class='unit'><h6>Related Electronic Resources</h6><ifdef code="ca_objects.electronic_specified">^ca_objects.electronic_specified: </ifdef><a href="^ca_objects.electronic_URL" target="_blank">^ca_objects.electronic_URL</a> <span class="glyphicon glyphicon-new-window"></span></div></ifdef>
-									</div>
+							<div class="collapseBlock">
+								<h3>Related <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
+								<div class="collapseContent open">
+									{{{<ifcount code="ca_objects.related" restrictToTypes="library" min="1"><H6>Related Library Items</H6><unit relativeTo="ca_objects.related" restrictToTypes="library" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
+									{{{<ifcount code="ca_objects.related" excludeTypes="library" min="1"><H6>Related Archival Items, Museum Works, and Testimonies</H6><unit relativeTo="ca_objects.related" excludeTypes="library" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
+<?php
+							include("related_html.php");
+?>
 								</div>
-							</ifdef>}}}
+							</div>
 <?php
 							$va_loc = array();
+							$vs_loc = "";
 							if($vs_entity_subjects = $t_object->getWithTemplate('<ifdef code="ca_objects.themes"><div class="unit"><h6>Local</h6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.themes</unit></div></ifdef>')){
 								$va_loc[] = $vs_entity_subjects;
 							}
@@ -109,6 +106,9 @@
 							}
 							if($vs_tgn = $t_object->get("ca_objects.tgn", array("delimiter" => "<br/>"))){
 								$va_loc[] = $vs_tgn;
+							}
+							if(sizeof($va_loc)){
+								$vs_loc = "<div class='unit'><H6>Library of Congress</H6>".join("<br/>", $va_loc)."</div>";
 							}
 							
 							if($vs_tmp = $t_object->get("ca_objects.local_subject", array("delimiter" => "<br/>"));){
@@ -122,7 +122,7 @@
 									<div class="collapseContent">
 										<div class="unit">
 <?php
-											print join("<br/>", $va_loc).$vs_local_subjects; 
+											print .$vs_local_subjects; 
 											
 ?>
 										</div>									
@@ -131,16 +131,18 @@
 <?php
 							}
 ?>				
-							<div class="collapseBlock">
-								<h3>Related <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
-								<div class="collapseContent open">
-									{{{<ifcount code="ca_objects.related" restrictToTypes="library" min="1"><H6>Related Library Items</H6><unit relativeTo="ca_objects.related" restrictToTypes="library" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
-									{{{<ifcount code="ca_objects.related" excludeTypes="library" min="1"><H6>Related Archival Items, Museum Works, and Testimonies</H6><unit relativeTo="ca_objects.related" excludeTypes="library" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
-<?php
-							include("related_html.php");
-?>
+							
+							{{{<ifdef code="ca_objects.MARC_isbn|ca_objects.nonpreferred_labels.name|ca_objects.MARC_generalNote|ca_objects.local_note|ca_objects.MARC_formattedContents|ca_objects.ISADG_titleNote|ca_objects.participant_performer|ca_objects.electronic_URL">
+								<div class="collapseBlock">
+									<h3>Notes <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+									<div class="collapseContent">
+										<ifdef code="ca_objects.MARC_isbn"><div class='unit'><h6>ISBN</h6><unit delimiter="; ">^ca_objects.MARC_isbn</unit></div></ifdef>
+										<ifdef code="ca_objects.nonpreferred_labels.name"><HR/><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>">^nonpreferred_labels.name</unit></ifdef>
+										<ifdef code="ca_objects.MARC_formattedContents|ca_objects.ISADG_titleNote"><div class='unit'><h6>Contents</h6><ifdef code="ca_objects.MARC_formattedContents">^ca_objects.MARC_formattedContents</ifdef><ifdef code="ca_objects.ISADG_titleNote">^ca_objects.ISADG_titleNote</ifdef></div></ifdef>			
+										<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>General Note</h6>^ca_objects.MARC_generalNote</div></ifdef>									
+									</div>
 								</div>
-							</div>
+							</ifdef>}}}
 						</div><!-- end col -->
 					</div><!-- end row -->
 									
