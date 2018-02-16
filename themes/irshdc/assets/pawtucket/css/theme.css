@@ -100,6 +100,10 @@ body{
 		margin-top:100px;
 	}
 }
+.fullWidth img{
+	width:100%;
+	height:auto;
+}
 /* navbar */
 .navbar-default{
 	border-top:2px solid #d20000;
@@ -443,7 +447,13 @@ a.readmore-js-toggle {
 	margin-top: 2px;
 	margin-left: 5px;
 }
-
+.detail H6 a, .detail H6 a:hover{
+	padding:0px;
+	color: #8a0000;
+}
+#pageArea.resource .detailMediaToolbar{
+	display:none;
+}
 
 /* EXPLORE */
 
@@ -662,4 +672,59 @@ a.readmore-js-toggle {
 }
 #exploreMapBalloonContainer h6{
 	margin-bottom:0px;
+}
+
+/* listing */
+.exploreResourcesRow{
+	background:
+		linear-gradient(
+		  rgba(224, 215, 186, .95), 
+		  rgba(224, 215, 186, 0.75)
+		),
+		url("../graphics/centre2.jpg");
+	background-position: center; 
+}
+.listing{
+	padding-bottom:40px;
+}
+.listingContainer{
+	margin-bottom:45px;
+	border:1px solid #333;
+}
+.listingContainerImgContainer{
+	max-height:400px;
+	overflow:hidden;
+}
+.listingContainer img{
+	width:100%;
+	height:auto;
+}
+.listingContainer .listingContainerDesc {
+	background-color:#605b4b;
+	color:#fff;
+	padding:20px;
+}
+.listingContainer .listingContainerDesc H2{
+	text-transform:none;
+	color:#FFF;
+	margin-bottom:5px;
+}
+.listingContainer .listingContainerDesc H2 a{
+	text-transform:none;
+	color:#FFF;
+}
+.listingContainer .listingContainerDesc H2 a:hover{
+	text-decoration:none;
+	color:#d20000;
+}
+.listingContainer .listingContainerDesc small{
+	margin-bottom:25px;
+	display:inline-block;
+	font-size:12px;
+}
+.listingContainer .listingContainerDesc small a{
+	color:#FFF;
+}
+.listingContainer .listingContainerDesc .text-center{
+	margin:40px 0px 30px 0px;
 }
