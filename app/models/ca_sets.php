@@ -1687,8 +1687,14 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$va_representation_counts = array();
 		
 		$vs_rep_join_sql = $vs_rep_where_sql = $vs_rep_select = '';
-		if (($t_rel_table->tableName() === 'ca_objects') && (isset($pa_options['thumbnailVersion']) || isset($pa_options['thumbnailVersions']))) {
-			$vs_rep_join_sql = "LEFT JOIN ca_objects_x_object_representations AS coxor ON rel.object_id = coxor.object_id
+		if ((is_a($t_rel_table, "RepresentableBaseModel")) && (isset($pa_options['thumbnailVersion']) || isset($pa_options['thumbnailVersions']))) {
+			$vs_rep_link_table = "";
+			if($t_rel_table->tableName() === 'ca_objects'){
+				$vs_rep_link_table = "ca_objects_x_object_representations";
+			}else{
+				$vs_rep_link_table = "ca_object_representations_x_".str_replace("ca_", "", $t_rel_table->tableName());
+			}
+			$vs_rep_join_sql = "LEFT JOIN ".$vs_rep_link_table." AS coxor ON rel.".$t_rel_table->primaryKey()." = coxor.".$t_rel_table->primaryKey()."
 LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.representation_id\n";
 			$vs_rep_where_sql = " AND (coxor.is_primary = 1 OR coxor.is_primary IS NULL)";
 			
@@ -1697,18 +1703,18 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			// get representation counts
 			$qr_rep_counts = $o_db->query("
 				SELECT 
-					rel.object_id, count(*) c
+					rel.".$t_rel_table->primaryKey().", count(*) c
 				FROM ca_set_items casi
-				INNER JOIN ca_objects AS rel ON rel.object_id = casi.row_id
-				INNER JOIN ca_objects_x_object_representations AS coxor ON coxor.object_id = rel.object_id
+				INNER JOIN ".$t_rel_table->tableName()." AS rel ON rel.".$t_rel_table->primaryKey()." = casi.row_id
+				INNER JOIN ".$vs_rep_link_table." AS coxor ON coxor.".$t_rel_table->primaryKey()." = rel.".$t_rel_table->primaryKey()."
 				WHERE
 					casi.set_id = ? {$vs_access_sql} {$vs_deleted_sql} AND casi.deleted = 0
 				GROUP BY
-					rel.object_id
+					rel.".$t_rel_table->primaryKey()."
 			", (int)$vn_set_id);
 			
 			while($qr_rep_counts->nextRow()) {
-				$va_representation_counts[(int)$qr_rep_counts->get('object_id')] = (int)$qr_rep_counts->get('c');
+				$va_representation_counts[(int)$qr_rep_counts->get($t_rel_table->primaryKey())] = (int)$qr_rep_counts->get('c');
 			}
 		}
 		

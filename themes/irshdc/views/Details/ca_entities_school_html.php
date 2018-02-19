@@ -17,20 +17,29 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H4{{{<ifcount code="ca_entities.related" min="1"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="source" delimiter="<br/>"> data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.preferred_labels.displayname"</unit></ifcount>}}}>{{{^ca_entities.preferred_labels.displayname}}}</H4>
+					<H4{{{<ifdef code="ca_entities.school_name_source"><unit delimiter="<br/>"> data-toggle="popover" data-placement="bottom" data-trigger="hover" title="Source" data-content="^ca_entities.school_name_source"</unit></ifdef>}}}>{{{^ca_entities.preferred_labels.displayname}}}</H4>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-6'>
-					{{{<ifdef code="ca_entities.nonpreferred_labels.displayname"><HR/><div class="unit" onClick="$('#alt_names_content').toggle(); return false;" data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.alt_name_source.alternate_name : ^ca_entities.alt_name_source.alternate_name_source"><H6>Alternate name(s) +</H6><div id="alt_names_content" style="display:none;">^ca_entities.nonpreferred_labels.displayname%delimiter=,_</div></div></ifdef></ifdef>}}}
-					{{{<ifdef code="ca_entities.school_dates"><div class='unit' data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.school_dates.date_source"><H6>Dates of operation</H6><unit delimiter="<br/><br/>"><ifdef code="ca_entities.school_dates.school_dates_value">^ca_entities.school_dates.school_dates_value<br/></ifdef><ifdef code="ca_entities.school_dates.date_narrative"><span class="trimText">^ca_entities.school_dates.date_narrative</span><br/></ifdef></unit></div></ifdef>}}}
-					{{{<ifdef code="ca_entities.denomination"><div class='unit'><H6>Denomination</H6>^ca_entities.denomination%delimiter=,_</div></ifdef>}}}		
-					
-					{{{<ifdef code="ca_objects.narrative_thread"><div class='unit'><h6>Narrative thread(s)</h6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.narrative_thread</unit></div></ifdef>}}}
-					{{{<ifdef code="ca_entities.themes"><div class='unit'><HR/><H6>Themes</H6>^ca_entities.themes%delimiter=,_</div></ifdef>}}}		
+					{{{representationViewer}}}
 				</div>
 				<div class='col-sm-6'>
 					{{{map}}}
+				</div>			
+			</div>
+			<div class="row">			
+				<div class='col-sm-6'>
+				
+				
+					{{{<ifdef code="ca_entities.nonpreferred_labels.displayname"><HR/><div class="unit" onClick="$('#alt_names_content').toggle(); return false;" data-toggle="popover" data-placement="bottom" data-trigger="hover" title="Source" data-content="^ca_entities.alt_name_source"><H6>Alternate name(s) +</H6><div id="alt_names_content" style="display:none;">^ca_entities.nonpreferred_labels.displayname%delimiter=,_</div></div></ifdef></ifdef>}}}
+					{{{<ifdef code="ca_entities.school_dates.school_dates_value"><div class='unit' data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.school_dates.date_source"><H6>Dates of operation</H6><unit delimiter="<br/><br/>"><ifdef code="ca_entities.school_dates.school_dates_value">^ca_entities.school_dates.school_dates_value<br/></ifdef><ifdef code="ca_entities.school_dates.date_narrative"><span class="trimText">^ca_entities.school_dates.date_narrative</span><br/></ifdef></unit></div></ifdef>}}}
+					{{{<ifdef code="ca_entities.denomination"><div class='unit'><H6>Denomination</H6>^ca_entities.denomination%delimiter=,_</div></ifdef>}}}		
+					
+					{{{<ifdef code="ca_entities.narrative_thread"><div class='unit'><h6>Narrative thread(s)</h6><unit relativeTo="ca_entities" delimiter=", ">^ca_entities.narrative_thread</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_entities.themes"><div class='unit'><HR/><H6>Themes</H6>^ca_entities.themes%delimiter=,_</div></ifdef>}}}		
+				</div>
+				<div class='col-sm-6'>
 					{{{<ifdef code="ca_entities.entity_location.location_text|ca_entities.entity_location.location_narrative"><div class='unit'><H6>Location</H6><unit delimiter="<br/><br/>"><ifdef code="ca_entities.entity_location.location_text"><b>^ca_entities.entity_location.location_text</b><br/></ifdef><ifdef code="ca_entities.entity_location.location_narrative">^ca_entities.entity_location.location_narrative</ifdef></unit></div></ifdef>}}}
 					
 <?php
@@ -99,8 +108,8 @@
 				</ifcount>}}}
 					
 					<div role="tabpanel" class="tab-pane" id="related_people">
-						{{{<ifcount code="ca_entities.related" restrictToTypes="religious_organization" restrictToRelationshipTypes="related" min="1"><H6>Religous/Missionary organization(s)</H6><unit relativeTo="ca_entities.related" restrictToTypes="religious_organization" restrictToRelationshipTypes="related" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></ifcount>}}}
-						{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="principal,founder,matron,administrator,teacher,staff" min="1"><H6>Related Individuals</H6><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="principal,founder,matron,administrator,teacher,staff" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> <unit relativeTo="ca_entities_x_entities" restrictToRelationshipTypes="principal,founder,matron,administrator,teacher,staff">(^relationship_typename)</unit></unit></ifcount>}}}
+						{{{<ifcount code="ca_entities.related" restrictToTypes="religious_organization,organization" restrictToRelationshipTypes="related" min="1"><H6>Religous/Missionary organization(s)</H6><unit relativeTo="ca_entities.related" restrictToTypes="religious_organization,organization" restrictToRelationshipTypes="related" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> <unit relativeTo="ca_entities_x_entities"  restrictToTypes="religious_organization,organization" restrictToRelationshipTypes="related"><ifdef code="relationshipDate">(^relationshipDate)</ifdef></unit></unit></ifcount>}}}
+						{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="principal,founder,matron,administrator,teacher,staff" min="1"><H6>Related Individuals</H6><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="principal,founder,matron,administrator,teacher,staff" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> <unit relativeTo="ca_entities_x_entities" restrictToRelationshipTypes="principal,founder,matron,administrator,teacher,staff">(^relationship_typename<ifdef code="relationshipDate"> ^relationshipDate</ifdef>)</unit></unit></ifcount>}}}
 				
 					</div>
 					<div role="tabpanel" class="tab-pane" id="comm">

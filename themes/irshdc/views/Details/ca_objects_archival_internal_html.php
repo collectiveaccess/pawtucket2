@@ -79,10 +79,10 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6>{{{<unit>^ca_objects.type_id<ifdef code="ca_objects.resource_type">: ^ca_objects.resource_type</ifdef></unit>}}}</H6>
+				<H6>{{{<unit><ifdef code="ca_objects.resource_type">^ca_objects.resource_type</ifdef></unit>}}}</H6>
 				{{{<ifdef code="ca_objects.parent_id"><H6>Part of: <unit relativeTo="ca_objects.hierarchy" delimiter=" &gt; "><l>^ca_objects.preferred_labels.name</l></unit></H6></ifdef>}}}
 
-				{{{<ifdef code="ca_objects.displayDate"><div class='unit'><h6>Date</h6>^ca_objects.displayDate</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.displayDate"><div class='unit'>^ca_objects.displayDate</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.IRSHDC_identifier"><div class='unit'><h6>IRSHDC Identifier</h6>^ca_objects.IRSHDC_identifier</div></ifdef>}}} 
 				
 <?php
@@ -109,6 +109,7 @@
 					<li role="presentation"><a href="#context_content" aria-controls="context_content" role="tab" data-toggle="tab">Context/ Content and Structure</a></li>
 					<li role="presentation"><a href="#conditions_access" aria-controls="conditions_access" role="tab" data-toggle="tab">Conditions of Access and Use</a></li>
 					<li role="presentation"><a href="#notes_desc" aria-controls="notes_desc" role="tab" data-toggle="tab">Notes/ Description Control</a></li>
+					<li role="presentation"><a href="#related" aria-controls="related" role="tab" data-toggle="tab">Related</a></li>
 					<li role="presentation"><a href="#rights" aria-controls="rights" role="tab" data-toggle="tab">Rights</a></li>
 					<li role="presentation"><a href="#map-tab" aria-controls="map-tab" role="tab" data-toggle="tab">Map</a></li>
 				</ul>
@@ -132,7 +133,7 @@
 						
 					</div>
 					<div role="tabpanel" class="tab-pane" id="conditions_access">
-						{{{<ifdef code="ca_objects.RAD_langMaterial"><div class='unit'><h6>Language/Scripts of Material</h6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.RAD_langMaterial</unit></div></ifdef>}}}
+<!--  change to language after next run 11/21 -->{{{<ifdef code="ca_objects.RAD_langMaterial"><div class='unit'><h6>Language/Scripts of Material</h6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.RAD_langMaterial</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.language_note"><div class='unit'><h6>Language Note</h6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.language_note</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.alternate_text.alternate_desc_upload.url"><div class='unit icon'><h6>Alternate Text</h6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.alternate_text.alternate_desc_upload"><a href="^ca_objects.alternate_text.alternate_desc_upload.url%version=original">View file</a><br/></ifdef><ifdef code="ca_objects.alternate_text.alternate_text_type">^ca_objects.alternate_text.alternate_text_type<br/></ifdef><ifdef code="ca_objects.alternate_text.alternate_desc_note">^ca_objects.alternate_text.alternate_desc_note</ifdef></unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.RAD_condition"><div class='unit'><h6>Physical Characteristics and Technical Requirements</h6>^ca_objects.RAD_condition</div></ifdef>}}}
@@ -140,10 +141,17 @@
 					<div role="tabpanel" class="tab-pane" id="notes_desc">
 						{{{<ifdef code="ca_objects.ISADG_titleNote"><div class='unit'><h6>Title Note</h6>^ca_objects.ISADG_titleNote</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.ISADG_dateNote"><div class='unit'><h6>Date Note</h6>^ca_objects.ISADG_dateNote</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.RAD_generalNote"><div class='unit'><h6>Notes</h6>^ca_objects.RAD_generalNote</div></ifdef>}}}
+<!-- change to MARC_generalNote  after next data revision 11/21-->{{{<ifdef code="ca_objects.RAD_generalNote"><div class='unit'><h6>Notes</h6>^ca_objects.RAD_generalNote</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Note on Description</h6>^ca_objects.ISADG_archNote</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.ISADG_rules"><div class='unit'><h6>Rules or Conventions</h6>^ca_objects.ISADG_rules</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.description_date"><div class='unit'><h6>Date(s) of Description(s)</h6>^ca_objects.description_date</div></ifdef>}}}
+					</div>
+					<div role="tabpanel" class="tab-pane" id="related">
+						{{{<ifcount code="ca_objects.related" restrictToTypes="archival_external,archival_internal" min="1"><H6>Related Archival Items</H6><unit relativeTo="ca_objects.related" restrictToTypes="archival_external,archival_internal" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
+						{{{<ifcount code="ca_objects.related" excludeTypes="archival_external,archival_internal" min="1"><H6>Related Library Items, Museum Works, and Testimonies</H6><unit relativeTo="ca_objects.related" excludeTypes="archival_external,archival_internal" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
+<?php
+					include("related_html.php");
+?>											
 					</div>
 					<div role="tabpanel" class="tab-pane" id="rights">
 <?php

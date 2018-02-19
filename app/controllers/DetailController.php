@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2016 Whirl-i-Gig
+ * Copyright 2013-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -252,7 +252,7 @@
  			$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $va_options, _t('Previous')), '', $vs_table, $vn_previous_id) : '');
  			$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $va_options, _t('Next')), '', $vs_table, $vn_next_id) : '');
  			$va_params = array();
- 			$va_params["row_id"] = (int)$ps_id; # --- used to jump to the last viewed item in the search/browse results
+ 			$va_params["row_id"] = $t_subject->getPrimaryKey(); # --- used to jump to the last viewed item in the search/browse results
  			$this->view->setVar('resultsLink', ResultContext::getResultsLinkForLastFind($this->request, $vs_table, caGetOption('resultsLink', $va_options, _t('Back')), null, $va_params));
  			
  			
@@ -275,6 +275,7 @@
 				}
 				if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
 				
+				$this->view->setVar('representationViewerPrimaryOnly', caGetOption('representationViewerPrimaryOnly', $va_options, false));
 				$this->view->setVar('representationViewer', 
 					caRepresentationViewer(
 						$this->request, 
@@ -449,9 +450,17 @@
 
  			// find view
  			//		first look for type-specific view
- 			if (!$this->viewExists($vs_path = "Details/{$vs_table}_{$vs_type}_html.php")) {
- 				$vs_path = "Details/{$vs_table}_default_html.php";		// If no type specific view use the default
- 			}
+ 			$vs_path = "Details/{$vs_table}_default_html.php";		// If no type specific view use the default
+ 			if (is_array($va_type_codes = caMakeTypeList($vs_table, [$t_subject->getTypeCode()]))) {
+ 			    $va_type_codes = array_merge($va_type_codes, caMakeTypeList($vs_table, $t_subject->getTypeInstance()->getHierarchyAncestors($t_subject->getTypeID(), ['idsOnly' => true]), ['dontIncludeSubtypesInTypeRestriction' => true]));
+                foreach(array_reverse($va_type_codes) as $vs_type_code) {   // reverse list to try more specific types first
+                    if ($this->viewExists("Details/{$vs_table}_{$vs_type_code}_html.php")) {
+                        $vs_path = "Details/{$vs_table}_{$vs_type_code}_html.php";
+                        break;
+                    }
+                }
+            }
+            
  			//
  			// pdf link
  			//
@@ -1389,7 +1398,7 @@
 				throw new ApplicationException(_t('Cannot view media'));
 			}
 		
-			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, array_merge($va_options, $pa_options, ['showAnnotations' => true])));
+			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, array_merge($va_options, $pa_options, ['showAnnotations' => true, 'checkAccess' => $this->opa_access_values])));
 		}
 		# -------------------------------------------------------
 		/** 
@@ -1434,7 +1443,7 @@
 				throw new ApplicationException(_t('Cannot view media'));
 			}
 		
-			$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $ps_context]));
+			$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $ps_context, 'checkAccess' => $this->opa_access_values]));
 		}
 		# -------------------------------------------------------
         /**

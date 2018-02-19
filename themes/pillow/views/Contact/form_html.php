@@ -16,20 +16,13 @@
 		<p>Norton Owen, Director of Preservation </p>
 		<p><a href='mailto:nowen@jacobspillow.org'>nowen@jacobspillow.org</a></p>		
 		<p>413.243.9919 ext. 150</p>
-		<br>	
-		
-		<p>Brittany Austin, Associate Archivist & Librarian</p>
-		<p><a href='mailto:baustin@jacobspillow.org'>baustin@jacobspillow.org</a></p>		
+        <p>Patsy Gay, Associate Archivist </p>
+		<p><a href='mailto:pgay@jacobspillow.org'>pgay@jacobspillow.org</a></p>		
 		<p>413.243.9919 ext. 154</p>
-		<br>	
-		
-		<p>Nel Shelby, Videographer (summer only)</p>
-		<p><a href='mailto:nshelby@jacobspillow.org'>nshelby@jacobspillow.org</a></p>		
-		<p>413.243.9919 ext. 155</p>
-		<br>	
+		<br>		
 		
 		<h2>Ask an Archivist</h2>
-		<p>Do you have a research question or general inquiry about our collection? We’d love to hear from you! Please fill out the following form, and we will get back with you as soon as possible.</p>
+		<p>Would you like to schedule an appointment? Do you have a research question or general inquiry about our collection? We’d love to hear from you! Please fill out the following form, and we will get back with you as soon as possible.</p>
 		<p>Your question or research request:</p>	
 
 
