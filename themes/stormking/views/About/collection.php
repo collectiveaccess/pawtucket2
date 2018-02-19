@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
-	$vs_image_url = $this->request->getThemeUrlPath()."/assets/pawtucket/graphics/archives_home.jpg";
+	$vs_image_url = $this->request->getThemeUrlPath()."/assets/pawtucket/graphics/collections_home.jpg";
 ?>
 	<div id="main-background" style="background-image:url(<?php  print $vs_image_url; ?>)"></div>
 

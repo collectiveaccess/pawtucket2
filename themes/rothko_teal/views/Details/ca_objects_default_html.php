@@ -75,7 +75,7 @@
 		</div><!-- end col -->
 	<script>
 		jQuery(document).ready(function() {
-			$(".detailMediaToolbar").append("<a href='#' class='compare_link' data-id='<?php print $vn_id; ?>'><i class='fa fa-clone' aria-hidden='true'></i></a>");
+			$(".detailMediaToolbar").append("<a href='#' class='compare_link' data-id='object:<?php print $vn_id; ?>'><i class='fa fa-clone' aria-hidden='true'></i></a>");
 		});
 	
 	</script>		
@@ -273,7 +273,7 @@
 				if ($vn_catno = $t_verso->get('ca_objects.catalog_number')) {
 					print "<div class='catInfo'>".$vn_catno."</div>";
 				}			
-				print "<a href='#' class='compare_link verso' data-id='".$vn_verso_id."'>".caGetThemeGraphic($this->request, 'compare.png')."</a>";
+				print "<a href='#' class='compare_link verso' data-id='object:{$vn_verso_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a>";
 			
 			print "</div>";
 			print "</div>";	
@@ -429,7 +429,7 @@
 					if ($vs_catno = $t_work->get('ca_objects.catalog_number')) {
 						$vs_buf.= "<div class='catno'>".$vs_catno."</div>"; 
 					}	
-					$vs_buf.= "<a href='#' class='compare_link' data-id='".$vs_rel_work_id."'>".caGetThemeGraphic($this->request, 'compare.png')."</a>";
+					$vs_buf.= "<a href='#' class='compare_link' data-id='object:{$vs_rel_work_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a>";
 					$vs_buf.= "</div></div></div><!-- end col -->";			
 					$vs_buf.= "</div>";
 				}
@@ -466,9 +466,11 @@
 
 						$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_value_id, $vn_media_element_id)) ;
 						if ($qr_res->nextRow()) {
-							print "<div class='zoomIcon'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'identifier' => 'attribute:'.$qr_res->get("value_id"), 'overlay' => 1))."\"); return false;'><i class='glyphicon glyphicon-zoom-in'></i></a></div>";
+						    $vn_attr_id = (int)$qr_res->get("value_id");
+							print "<div class='zoomIcon'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'identifier' => "attribute:{$vn_attr_id}", 'overlay' => 1))."\"); return false;'><i class='glyphicon glyphicon-zoom-in'></i></a></div>";
+						
+						    print "<div class='compare'><a href='#' class='compare_link' data-id='attribute:{$vn_attr_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a></div>";
 						}
-						print "<div class='compare'><a href='#' class=''>".caGetThemeGraphic($this->request, 'compare.png')."</a></div>";
 						print "</div>";
 						print "<div class='col-sm-7'><div class='remarkText'>".$va_remarks_image['remark_caption']."</div></div>";
 						print "</div></div></div>";

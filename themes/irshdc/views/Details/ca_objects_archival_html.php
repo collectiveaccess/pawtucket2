@@ -79,7 +79,7 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6>{{{<unit>^ca_objects.type_id<ifdef code="ca_objects.resource_type">: ^ca_objects.resource_type</ifdef></unit>}}}</H6>
+				<H6>{{{<unit>^ca_objects.type_id<ifdef code="ca_objects.resource_type">: ^ca_objects.resource_type%useSingular=1</ifdef></unit>}}}</H6>
 				{{{<ifdef code="ca_objects.displayDate"><div class='unit'><h6>Date</h6>^ca_objects.displayDate</div></ifdef>}}}
 				
 <?php
@@ -119,7 +119,6 @@
 					<div role="tabpanel" class="tab-pane active" id="source_allied">
 						{{{<ifdef code="ca_objects.source_identifier"><div class='unit'><h6>Holding Repository Object Identifier</h6>^ca_objects.source_identifier</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.NCTR_id"><div class='unit'><h6>NCTR Object Identifier</h6>^ca_objects.NCTR_id</div></ifdef>}}}
-						{{{<ifdef code="ca_objects.trc"><div class='unit'><h6>TRC Document</h6>^ca_objects.trc</div></ifdef>}}}
 						
 						{{{<ifdef code="ca_objects.related_collection_list"><div class='unit'><H6>Source Fonds or Collection</H6><unit relativeTo="ca_objects" delimiter="<br/>"><l>^ca_objects.related_collection_list</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.link"><div class='unit'><h6>Link to record in home repository</h6><a href="^ca_objects.link" target="_blank">^ca_objects.link</a></div></ifdef>}}}
