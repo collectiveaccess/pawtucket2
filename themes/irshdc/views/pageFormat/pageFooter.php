@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
 ?>
-		<div style="clear:both; height:1px;"><!-- empty --></div>
+		<div style="clear:both;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
 			<div class="darkRedBg">

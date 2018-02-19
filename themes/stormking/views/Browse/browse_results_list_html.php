@@ -93,7 +93,7 @@
 				}
 			
 				$qr_res->seek($vn_start);
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'widepreview', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'widepreview', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			} else {
 				$va_images = null;
 			}
@@ -117,9 +117,9 @@
 				if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
-				
+					$vs_record_title 		= $qr_res->get("{$vs_table}.preferred_labels");
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					$vs_label_detail_link 	= caDetailLink($this->request, $vs_record_title, '', $vs_table, $vn_id);
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
@@ -151,6 +151,11 @@
 						} else {
 							$vs_date_text = null;
 						}
+						if ($vs_record_title != "Untitled") {
+							$vs_style = "style='font-style:italic';";
+						} else {
+							$vs_style = "";
+						}
 					}
 					if ($vs_table == 'ca_entities') {
 						if ($vs_entity_date = $qr_res->get('ca_entities.entity_display_date')) {
@@ -181,7 +186,7 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultListItemTextContainer'><div class='bResultListItemText'>
-						{$vs_artist_text}{$vs_label_detail_link}{$vs_date_text}{$vs_entity_date_text}{$vs_ex_date_text}
+						{$vs_artist_text}<span {$vs_style}>{$vs_label_detail_link}<span>{$vs_date_text}{$vs_entity_date_text}{$vs_ex_date_text}
 					</div><!-- end bResultListItemText --></div><!-- end bResultListItemTextContainer -->
 				</div><!-- end bResultListItemContent -->
 			</div><!-- end bResultListItem -->

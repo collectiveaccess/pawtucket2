@@ -104,19 +104,7 @@
 				}	
 				if ($va_credit = $t_object->get('ca_objects.credit_line')) {
 					print "<div class='unit'><h6>Credit Line</h6>".$va_credit."</div>";
-				}	
-				if ($va_extended = $t_object->getWithTemplate('
-				    <unit delimiter="<br/>">
-				        <ifdef code="ca_objects.plaque.plaque_text"><h6>Plaque Text</h6>^ca_objects.plaque.plaque_text</ifdef>
-				        <ifdef code="ca_objects.plaque.plaque_date"><h6>Text Date</h6>^ca_objects.plaque.plaque_date</ifdef>
-				        <ifdef code="ca_objects.plaque.plaque_purpose"><h6>Text Purpose</h6>^ca_objects.plaque.plaque_purpose</ifdef>
-				        <ifdef code="ca_objects.plaque.plaque_exh"><h6>Related Exhibition</h6>^ca_objects.plaque.plaque_exh</ifdef>
-				    </unit>')) {
-					print "<div class='unit'>".$va_extended."</div>";
-				}	
-				if ($vs_view_status = $t_object->get('ca_objects.view_status', array('convertCodesToDisplayText' => true))) {
-					print "<div class='unit'><h6>View Status</h6>".$vs_view_status."</div>";
-				}									
+				}											
 ?>	
 				</div></div></div>
 			</div><!-- end col -->

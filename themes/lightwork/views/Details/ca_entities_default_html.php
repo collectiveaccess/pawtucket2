@@ -162,7 +162,7 @@
 								<div class='row'>
 									<div class='col-sm-12'>
 										<h2>Essays</h2>";
-							print "<div class='unit trimText'>".$va_essays."</div>";
+							print "<div class='unit trimText forceText'>".$va_essays."</div>";
 							print 	"</div><!-- end col -->
 								</div> <!-- end row -->";
 						}
