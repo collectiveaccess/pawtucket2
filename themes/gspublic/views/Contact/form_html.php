@@ -12,10 +12,10 @@
 		$vs_name = $t_item->get("ca_objects.preferred_labels.name");
 		$vs_idno = $t_item->get("ca_objects.idno");
 	}
-	$pn_collecion_id = $this->request->getParameter("collection_id", pInteger);
-	if($pn_collecion_id){
+	$pn_collection_id = $this->request->getParameter("collection_id", pInteger);
+	if($pn_collection_id){
 		require_once(__CA_MODELS_DIR__."/ca_collections.php");
-		$t_item = new ca_collections($pn_collecion_id);
+		$t_item = new ca_collections($pn_collection_id);
 		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "collections", $t_item->get("ca_collections.collection_id"));
 		$vs_name = $t_item->get("ca_collections.preferred_labels.name");
 		$vs_idno = $t_item->get("ca_collections.idno");
@@ -97,4 +97,5 @@
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 		<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
 		<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
+		<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
 	</form>

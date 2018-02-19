@@ -70,7 +70,7 @@
 			<?php print caGetThemeGraphic($this->request, 'home/discover/'.rand(1,$vn_filecount).'.jpg'); ?>	
 		</div>			
 	</div>				
-	<div class="row frontBand gallery">
+	<div class="row frontBand galleryFront">
 		<div class="col-sm-8 noPaddingLeft">
 <?php
 		$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/home/gallery/";
