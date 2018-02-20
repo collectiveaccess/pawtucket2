@@ -73,6 +73,7 @@
  			$t_set = new ca_sets();
  			if($ps_function == "index"){
  				if($vn_gallery_set_type_id){
+ 					$o_dm = $this->getAppDatamodel();
 					$va_tmp = array('checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id);
 					if(!$this->config->get("gallery_include_all_tables")){
 						$va_tmp["table"] = "ca_objects";
@@ -86,6 +87,19 @@
 					foreach($va_sets as $vn_set_id => $va_set) {
 						if ($vb_omit_front_page_set && $va_set['set_code'] == $vs_front_page_set) { 
 							unset($va_sets[$vn_set_id]); 
+						}
+						$va_first_item = $va_set_first_items[$vn_set_id];
+						$va_first_item = array_shift($va_first_item);
+						$vn_item_id = $va_first_item["item_id"];
+						# --- it there isn't a rep and this is not a set of objects, try to get a related object to show something
+						if(!$va_set_first_items[$vn_set_id][$vn_item_id]["representation_tag"]){
+							if($o_dm->getTableName($va_set['table_num']) != "ca_objects"){
+								$t_instance = $o_dm->getInstanceByTableNum($va_set['table_num']);
+								$t_instance->load($va_first_item["row_id"]);
+								if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.iconlarge</unit>')){
+ 									$va_set_first_items[$vn_set_id][$vn_item_id] = array("representation_tag" => $vs_thumbnail);
+ 								}
+							}
 						}
 					}
 					$this->view->setVar('sets', $va_sets);
@@ -175,6 +189,17 @@
  			if(!$va_set_item){
  				$va_set_item = array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));
  			}
+ 			if(is_array($va_set_item) && !$va_set_item["representation_tag"]){
+ 				$o_dm = $this->getAppDatamodel();
+				if($o_dm->getTableName($t_set->get('table_num')) != "ca_objects"){
+					$t_instance = $o_dm->getInstanceByTableNum($t_set->get('table_num'));
+					$t_instance->load($va_set_item["row_id"]);
+						if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.large</unit>')){
+							$va_set_item["representation_tag"] = $vs_thumbnail;
+							$va_set_item["representation_id"] = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.representation_id</unit>');
+						}
+					}
+ 			}
  			$this->view->setVar("set_item", $va_set_item);
  			$this->render("Gallery/set_info_html.php");
  		}
@@ -234,7 +259,9 @@
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set->load($pn_set_id);
- 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values)));
+ 			$o_dm = $this->getAppDatamodel();
+			$vs_table = $o_dm->getTableName($t_set->get('table_num'));
+			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values)));
  			$this->view->setVar("set_id", $pn_set_id);
  			
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
@@ -246,6 +273,8 @@
  			$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"], ['context' => 'gallery']));
  			$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
  			$this->view->setVar("object_id", $va_set_items[$pn_item_id]["row_id"]);
+ 			$this->view->setVar("row_id", $va_set_items[$pn_item_id]["row_id"]);
+ 			$this->view->setVar("table", $vs_table);
  			$pn_previous_id = 0;
  			$pn_next_id = 0;
  			$va_set_item_ids = array_keys($va_set_items);
@@ -267,16 +296,20 @@
  			$t_set = new ca_sets($pn_set_id);
  			$t_set_item = new ca_set_items($pn_item_id);
  			$o_dm = $this->getAppDatamodel();
-			$t_instance = $o_dm->getInstanceByTableNum($t_set_item->get("table_num"));
- 			$t_instance = new ca_objects($t_set_item->get("row_id"));
+			$t_instance = $o_dm->getInstanceByTableNum($t_set->get("table_num"));
+			$vs_table = $o_dm->getTableName($t_set_item->get('table_num'));
+			$t_instance->load($t_set_item->get("row_id"));
  			$va_set_item_ids = array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values)));
  			$this->view->setVar("item_id", $pn_item_id);
  			$this->view->setVar("set_num_items", sizeof($va_set_item_ids));
  			$this->view->setVar("set_item_num", (array_search($pn_item_id, $va_set_item_ids) + 1));
  			
  			$this->view->setVar("object", $t_instance);
+ 			$this->view->setVar("instance", $t_instance);
  			$this->view->setVar("object_id", $t_set_item->get("row_id"));
+ 			$this->view->setVar("row_id", $t_set_item->get("row_id"));
  			$this->view->setVar("label", $t_instance->getLabelForDisplay());
+ 			$this->view->setVar("table", $vs_table);
  			
  			//
  			// Tag substitution

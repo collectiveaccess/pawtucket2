@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -102,18 +102,17 @@
 					var id = this ? $(this).data('id') : null;
 					var remove_id = this ? $(this).data('remove_id') : null;
 		
-					$.getJSON('<?php print caNavUrl($this->request, '', 'Compare', 'AddToList'); ?>', {table: 'ca_objects', id: id, remove_id: remove_id}, function(d) {
+					$.getJSON('<?php print caNavUrl($this->request, '', 'Compare', 'AddToList'); ?>', {id: id, remove_id: remove_id}, function(d) {
 						if (parseInt(d.ok) == 1) {
 							var l = '';
 							
-							var display_list = d.comparison_display_list;
 							if (d.comparison_list && (d.comparison_list.length > 0)) {
-								l += "<p class='listTitle'><?php print caNavLink($this->request, _t("<i class='fa fa-clone'></i> Compare images"), "", "", "Compare", "View", ['table' => 'ca_objects']); ?> (" + d.comparison_list.length + ")</p>\n";
+								l += "<p class='listTitle'><?php print caNavLink($this->request, _t("<i class='fa fa-clone'></i> Compare images"), "", "", "Compare", "View", []); ?> (" + d.comparison_list.length + ")</p>\n";
 								l += "<a href='#' class='openItems' onClick=\"$('.compareDrawer .items').toggle(100); return false;\"><i class='fa fa-chevron-down'></i></a>\n"; 
 								
 								l += "<div class='items'>";
-								jQuery.each(d.comparison_list, function(i, id) {
-									l += "<p><a href='#' class='comparison_list_remove' data-remove_id='" + id + "'><i class='fa fa-close'></i> " + display_list[i] + "</a></p>\n";
+								jQuery.each(d.comparison_list, function(i, item) {
+									l += "<p><a href='#' class='comparison_list_remove' data-remove_id='" + item['id'] + "'><i class='fa fa-close'></i> " + item['display'] + "</a></p>\n";
 								});
 								l += "</div>";
 								
@@ -127,7 +126,7 @@
 							
 							// Reload page when removing from within "Compare" view
 							if (remove_id && <?php print ($this->request->getController() == 'Compare') ? "true" : "false"; ?>) {
-								window.location = '<?php print caNavUrl($this->request, '', 'Compare', 'View', ['table' => 'ca_objects']); ?>';
+								window.location = '<?php print caNavUrl($this->request, '', 'Compare', 'View', []); ?>';
 								return;
 							}
 						}

@@ -148,7 +148,7 @@
 						if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
 							$vs_bottom_info.= "<div class='catno'>".$vs_catalog_number."</div>";
 						}
-						$vs_bottom_info.= !$vs_type_placeholder ? "<a href='#' class='compare_link' data-id='{$vn_id}'><div class='compareIcon' aria-hidden='true'></div></a>" : '';
+						$vs_bottom_info.= !$vs_type_placeholder ? "<a href='#' class='compare_link' data-id='object:{$vn_id}'><div class='compareIcon' aria-hidden='true'></div></a>" : '';
 						if ($vs_bottom_info != "") {
 							$vs_bottom = "<div class='catalog'>".$vs_bottom_info."</div>";
 						} else {

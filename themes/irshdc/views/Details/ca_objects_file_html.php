@@ -108,8 +108,8 @@
 							<div class="collapseBlock">
 								<h3>Related <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
 								<div class="collapseContent open">
-									{{{<ifcount code="ca_objects.related" restrictToTypes="file" min="1"><H6>Related Files</H6><unit relativeTo="ca_objects.related" restrictToTypes="file" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
-									{{{<ifcount code="ca_objects.related" excludeTypes="file" min="1"><H6>Related Archival Items, Library Items, Museum Works, and Testimonies</H6><unit relativeTo="ca_objects.related" excludeTypes="file" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
+									{{{<ifcount code="ca_objects.related" restrictToTypes="file" min="1"><H6>Files</H6><unit relativeTo="ca_objects.related" restrictToTypes="file" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
+									{{{<ifcount code="ca_objects.related" excludeTypes="file" min="1"><H6>Archival Items, Library Items, Museum Works, and Testimonies</H6><unit relativeTo="ca_objects.related" excludeTypes="file" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit></ifcount>}}}
 <?php
 							include("related_html.php");
 ?>
@@ -156,7 +156,7 @@
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
 ?>
-					{{{<ifdef code="ca_objects.lac_URL"><div class='detailTool'><span class='glyphicon glyphicon-link'></span><a href="^ca_objects.lac_URL" target="_blank">Source record</a></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.lac_URL"><div class='detailTool'><span class='glyphicon glyphicon-new-window'></span><a href="^ca_objects.lac_URL" target="_blank">Source record</a></div></ifdef>}}}
 					
 <?php					
 					print "<div class='detailTool'><span class='glyphicon glyphicon-link'></span><a href='".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("object_id"))."'>Permalink</a></div>";

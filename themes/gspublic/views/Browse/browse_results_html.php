@@ -187,17 +187,17 @@ if (!$vb_ajax) {	// !ajax
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
-				print "<strong>".$va_criterion['facet'].':</strong>';
+				#print "<strong>".$va_criterion['facet'].":</strong>";
 				if ($va_criterion['facet_name'] != '_search') {
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
-					print ' '.$va_criterion['value'];
+					print "<strong>".$va_criterion['facet'].":</strong>".$va_criterion['value']."<br/>";
 					$vs_search = $va_criterion['value'];
 				}
 				$i++;
-				if($i < sizeof($va_criteria)){
-					print " ";
-				}
+				#if($i < sizeof($va_criteria)){
+				#	print " ";
+				#}
 				$va_current_facet = $va_all_facets[$va_criterion['facet_name']];
 				if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
 					$t_authority_table = new $va_current_facet["table"];
