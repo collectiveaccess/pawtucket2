@@ -71,9 +71,6 @@
 			<div class="col-sm-6">
 				<div class="container"><div class="row"><div class="col-sm-12">		
 <?php
-				if ($vs_idno = $t_object->get('ca_objects.idno')) {
-					print "<div class='unit'><h6>Identifier</h6>".$vs_idno."</div>";
-				}
 				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('publisher')))) {
 					$va_entities_by_type = array();
 					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
