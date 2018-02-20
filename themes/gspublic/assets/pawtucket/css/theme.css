@@ -91,8 +91,11 @@ body {
 .btn-sm, .btn-sm:hover, .btn-sm:active, .btn-sm:focus{
 	font-size:14px;
 }
-.browse .btn, .results strong {
-	font-size:16px;	    
+.results .btn, .results strong {
+	font-size:12px;	
+	line-height: 1rem;
+	margin:1px 5px 1px 0px; 
+	padding:4px 5px 5px 5px;  
 }
 .results strong {
 	vertical-align: middle;
@@ -214,8 +217,12 @@ h1 {
     font-size: 2rem;
     font-weight:200;
 }
-.staticPage h1, .gallery h1, .contact h1, .sets h1, .collections.landing h1 {
+.gallery h1, .contact h1, .sets h1, .collections.landing h1 {
     font-size: 3rem;
+    font-weight:500;
+}
+.staticPage h1 {
+    font-size: 2rem;
     font-weight:500;
 }
 @media (max-width: 768px) {
@@ -236,6 +243,10 @@ h1 {
 .staticPage address a.btn-default span.glyphicon{
 	font-size:15px;
 }
+.staticPage address {
+    font-size: .9rem;
+}
+
 
 /* nav bar */
 /* links */
@@ -863,6 +874,28 @@ a.readmore-js-toggle{
 	background-color:#004e9a;
 	color:#fff;
 }
+.quote{
+	margin-bottom:35px;
+}
+.quote .quoteCredit{
+	margin-top:25px;
+	font-style:italic;
+	font-size:12px;
+}
+.quote .quoteText {
+	font-size:16px;
+}
+@media (min-width: 768px) {
+	.quote .quoteCredit{
+		margin-left:50%;
+	}
+	.gallery .quote .quoteText {
+		font-size:16px;
+		width:50%;
+		margin-left:auto;
+		margin-right:auto;
+	}
+}
 
 /* timeline */
 h2.tl-headline a, h2.tl-headline {
@@ -901,6 +934,10 @@ textarea.form-control, .contact .form-control, .contributeForm .form-control, #C
 	width:100%;
 }
 
+#caFormOverlay.contribute {
+    width: 75%;
+    margin: 5% auto 0px auto;
+}
 /* Browse */
 /* placeholder */
 i.trefoilPlaceholder{
@@ -952,7 +989,7 @@ i.trefoilPlaceholder.smallPlaceholder{
 .results a .glyphicon, .results a .fa {
 	color:#222 !important;
 }
-.browse .btn .glyphicon {
+.results .btn .glyphicon {
 	color:#fff !important;
 }
 .results h1 i {
@@ -1165,4 +1202,6 @@ i.trefoilPlaceholder.smallPlaceholder{
 .gallery .galleryItem a.smallLink {
 	font-size:15px;
 }
-
+.multisearch H1{
+	clear:right;
+}

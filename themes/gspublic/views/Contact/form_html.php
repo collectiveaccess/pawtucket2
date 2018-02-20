@@ -40,6 +40,14 @@
 	}else{
 		print "<H1>"._t("Ask An Archivist")."</H1>";	
 	}
+?>
+		<div class="quote">
+			<div class="quoteText">
+				"This hunger to grow is the real YOU. It is the real ME. However much we laugh at other things, we must take seriously the thing inside which pushes us to build our lives."
+			</div>
+			<div class="quoteCredit">&mdash; Jane Deeter Rippin, Girl Scout National Executive Director, 1919-1930</div>
+		</div>
+<?php
 	if(sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
@@ -51,9 +59,10 @@
 ?>
 		<div class="row">
 			<div class="col-sm-10">
-				<h2>Please use this form to inquire about a specific item in our archive.</h2>
+				<hr/>
+				<h2><b>Please use this form to inquire about a specific item in our archive.</b></h2>
 				<H2><b>Item title: </b><?php print $vs_name; ?></H2>
-				<H2><b>Item identifier: </b><?php print $vs_idno; ?></H2>
+				<!--<H2><b>Item identifier: </b><?php print $vs_idno; ?></H2>-->
 
 				<H2><b>Regarding this URL: </b><a href="<?php print $vs_url; ?>"><?php print $vs_url; ?></a></H2>
 				<br/>

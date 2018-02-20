@@ -70,7 +70,12 @@
 					}
 					
 				}
-				print '<div class="detailTool"><span class="glyphicon glyphicon-upload"></span>'.caNavLink($this->request, _t("Contribute content"), "", "", "Contribute", "objects").'</div><!-- end detailTool -->';
+				if($this->request->isLoggedIn()){
+					print '<div class="detailTool"><span class="glyphicon glyphicon-upload"></span>'.caNavLink($this->request, _t("Contribute content"), "", "", "Contribute", "objects", array("ref_table" => "ca_objects", "ref_row_id" => $t_object->get("object_id"))).'</div><!-- end detailTool -->';
+					#print "<div class='detailTool'><span class='glyphicon glyphicon-upload'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Contribute', 'objects', array("ref_table" => "ca_objects", "ref_row_id" => $t_object->get("object_id")))."\"); return false;' >"._t("Contribute content")."</a></div><!-- end detailTool -->";
+				}else{
+					print "<div class='detailTool'><span class='glyphicon glyphicon-upload'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm')."\"); return false;' >"._t("Login to contribute content")."</a></div><!-- end detailTool -->";
+				}
 				print '</div><!-- end detailTools -->';					
 				if($this->getVar("representation_id")){
 					print "<div class='unit restriction'>This photo may be used for internal promotional purposes on marketing and publicity materials and in publications produced by Girl Scouts of the USA.  If you intend to offer this photo to a 3rd party for their use, you will first need them to complete the <a href='http://www.girlscouts.org/en/contact-us/contact-us/permission-request.html' target='_blank'>Permission form</a>.</div>";
@@ -105,6 +110,8 @@
 					print "</div>";
 				}
 ?>
+				{{{<ifdef code="ca_objects.transcription"><H6>Transcription</H6><span class="trimText">^ca_objects.transcription</span></ifdef>}}}
+
 				{{{<case>
 						 <ifcount code="ca_entities.related" min="1"><hr></hr></ifcount>
 						 <ifcount code="ca_collections.related" min="1"><hr></hr></ifcount>

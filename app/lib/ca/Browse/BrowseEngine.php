@@ -5458,11 +5458,15 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							while($qr_ancestors->nextHit()) {
 								if ($qr_ancestors->get("{$vs_rel_table}.deleted")) { continue; }
 								if (!($vn_parent_type_id = $qr_ancestors->get('type_id'))) { continue; }
+								
+								$vn_ancestor_id = (int)$qr_ancestors->get("{$vs_rel_pk}");
+								if (isset($va_criteria[$vn_ancestor_id])) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
+
 								if ((sizeof($va_exclude_types) > 0) && in_array($vn_parent_type_id, $va_exclude_types)) { continue; }
 								if ((sizeof($va_restrict_to_types) > 0) && !in_array($vn_parent_type_id, $va_restrict_to_types)) { continue; }
 								if ($vb_check_ancestor_access && !in_array($qr_ancestors->get('access'), $pa_options['checkAccess'])) { continue; }
 
-								$va_facet_items[$vn_ancestor_id = (int)$qr_ancestors->get("{$vs_rel_pk}")] = array(
+								$va_facet_items[$vn_ancestor_id] = array(
 									'id' => $vn_ancestor_id,
 									'type_id' => array(),
 									'parent_id' => $vb_rel_is_hierarchical ? $qr_ancestors->get("{$vs_hier_parent_id_fld}") : null,
