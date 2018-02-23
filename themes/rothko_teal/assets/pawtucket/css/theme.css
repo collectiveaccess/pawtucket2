@@ -29,7 +29,7 @@ html {
 }
 body {
 	font-family:hkgrotesque;
-	margin-bottom:220px;
+	margin-bottom:160px !important;
 	color: #161616;
 	font-size:15px;
 	line-height:21px;
@@ -376,6 +376,7 @@ a, a:hover, a:focus {
     text-align: center;
     bottom: 20px;
 	float:none;
+	display:none;
 }
 .moreInfo img{
 	width:16px;
@@ -383,7 +384,7 @@ a, a:hover, a:focus {
 }
 .expandedFrontBanner {
 	background-color:#fff;
-	display:none;
+	display:block;
 	padding:50px 30px;
 	font-size:18px;
 	line-height:28px
