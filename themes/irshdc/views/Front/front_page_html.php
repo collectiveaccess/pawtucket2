@@ -72,18 +72,18 @@
 	<div class="row blackBg">
 		<div class="col-sm-5 col-md-3 col-md-offset-1">
 			<br/><br/><br/><br/><br/>
-			<H2>Primer orci quis vehicula eleifend</H2>
+			<H2><?php print caNavLink($this->request, "Primer orci quis vehicula eleifend", "", "", "Listing", "Resources"); ?></H2>
 			<H3>Metus elit laoreet elit</H3>
 			<br/>
 			<p>
 				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.
 			</p>
 			<p class="text-center">
-				<br/><a href="#" class="btn-default outline">MORE</a>
+				<br/><?php print caNavLink($this->request, "MORE", "btn-default outline", "", "Listing", "Resources"); ?>
 			</p>
 		</div>
 		<div class="col-md-7  col-md-offset-1 bleed">
-			<?php print caGetThemeGraphic($this->request, 'hptest3.jpg'); ?>
+			<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hptest3.jpg'), "", "", "Listing", "Resources"); ?>
 		</div>
 	</div>
 <?php
@@ -111,7 +111,44 @@
 	</div>
 <?php
 	}
+?>
 	
+	<div class="row tanBg">
+		<div class="col-md-12 col-lg-10 col-lg-offset-1">
+			<H2>Explore by Narrative Thread</H2>
+			<div class="row frontNarrativeThreads">
+<?php
+	$t_set = new ca_sets();
+	if(is_array($va_narrative_threads) && sizeof($va_narrative_threads)){
+		foreach($va_narrative_threads as $vn_item_id => $va_narrative_thread){
+			# --- is there a set of featured items to pull from?
+			$vs_image = "";
+			$t_set->load(array("set_code" => str_replace(" ", "_", $va_narrative_thread["idno"])));
+			if($t_set->get("set_id")){
+				$va_set_reps = $t_set->getRepresentationTags("widepreview", array("checkAccess" => $va_access_values));
+				shuffle($va_set_reps);
+				$vs_image = $va_set_reps[0];
+			}
+			print "<div class='col-sm-3'>";
+			print "<div class='frontNarrativeThreadContainer'><div>".caNavLink($this->request, $vs_image, "", "", "Explore", "narrativethreads", array("id" => $vn_item_id))."</div>".
+						"<div class='frontNarrativeThreadDesc'><H2>".caNavLink($this->request, $va_narrative_thread["name_singular"], "", "", "Explore", "narrativethreads", array("id" => $vn_item_id))."</H2>".
+						"</div></div>";
+			print "</div>";
+		}
+		print "<div class='col-sm-3 frontNarrativeThreadsAllLink'>".caNavLink($this->request, "Explore All <i class='fa fa-arrow-right' aria-hidden='true'></i>", "btn-default btn-lg", "", "Explore", "narrativethreads")."</div>";
+	}
+ 
+#			if(is_array($va_narrative_threads) && sizeof($va_narrative_threads)){
+#				foreach($va_narrative_threads as $vn_item_id => $va_narrative_thread){
+#					print "<div class='col-sm-3'>".caNavLink($this->request, "<div class='frontIconButton'><span>".$va_narrative_thread["idno"]."</span></div>", "", "", "Explore", "narrativethreads", array("id" => $vn_item_id))."</div>";
+#				}
+#			}
+
+?>
+			</div>
+		</div>
+	</div>
+<?php	
 	$t_list = new ca_lists();
  	$vn_repository_id = $t_list->getItemIDFromList('entity_types', 'repository');
 	$o_search = new EntitySearch();
@@ -121,8 +158,8 @@
 	$qr_res = $o_search->search("ca_entities.type_id:".$vn_repository_id);
 	if($qr_res->numHits()){
 ?>
-	<div class="row tanBg">
-		<H1 class="text-center">Partners</H1>
+	<div class="row">
+		<H2 class="text-center">Partners</H2>
 		<div class="col-lg-12">
 			<div class="jcarousel-wrapper">
 				<div class="jcarousel">
@@ -214,69 +251,6 @@
 
 <?php
 	}
-?>
-	
-	<div class="row">
-		<div class="col-md-12 col-lg-10 col-lg-offset-1">
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-			<br/><H2>Explore by Narrative Thread</H2>
-			<div class="row frontNarrativeThreads">
-<?php
-	$t_set = new ca_sets();
-	if(is_array($va_narrative_threads) && sizeof($va_narrative_threads)){
-		foreach($va_narrative_threads as $vn_item_id => $va_narrative_thread){
-			# --- is there a set of featured items to pull from?
-			$vs_image = "";
-			$t_set->load(array("set_code" => str_replace(" ", "_", $va_narrative_thread["idno"])));
-			if($t_set->get("set_id")){
-				$va_set_reps = $t_set->getRepresentationTags("widepreview", array("checkAccess" => $va_access_values));
-				shuffle($va_set_reps);
-				$vs_image = $va_set_reps[0];
-			}
-			print "<div class='col-sm-3'>";
-			print "<div class='frontNarrativeThreadContainer'><div>".caNavLink($this->request, $vs_image, "", "", "Explore", "narrativethreads", array("id" => $vn_item_id))."</div>".
-						"<div class='frontNarrativeThreadDesc'><H2>".caNavLink($this->request, $va_narrative_thread["name_singular"], "", "", "Explore", "narrativethreads", array("id" => $vn_item_id))."</H2>".
-						"</div></div>";
-			print "</div>";
-		}
-		print "<div class='col-sm-3 frontNarrativeThreadsAllLink'>".caNavLink($this->request, "Explore All <i class='fa fa-arrow-right' aria-hidden='true'></i>", "btn-default btn-lg", "", "Explore", "narrativethreads")."</div>";
-	}
- 
-#			if(is_array($va_narrative_threads) && sizeof($va_narrative_threads)){
-#				foreach($va_narrative_threads as $vn_item_id => $va_narrative_thread){
-#					print "<div class='col-sm-3'>".caNavLink($this->request, "<div class='frontIconButton'><span>".$va_narrative_thread["idno"]."</span></div>", "", "", "Explore", "narrativethreads", array("id" => $vn_item_id))."</div>";
-#				}
-#			}
-
-?>
-			</div>
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-		</div>
-	</div>
-<!--	<div class="row">
-		<div class="col-md-12 col-lg-10 col-lg-offset-1">
-			<br/>
-			<br/>
-			<br/>
-			<H2>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H2>
-			<br/>
-			<br/>
-			<br/>
-		</div>
-	</div>-->
-
-
-<?php
-		#print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 
 <script type='text/javascript'>
