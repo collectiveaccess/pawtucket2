@@ -71,36 +71,25 @@
 			<div class="col-sm-6">
 				<div class="container"><div class="row"><div class="col-sm-12">		
 <?php
-				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('publisher')))) {
-					$va_entities_by_type = array();
-					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
-						$t_rel = new ca_objects_x_entities($va_entity_rel);
-						$vn_type_id = $t_rel->get('ca_relationship_types.preferred_labels');
-						$va_entities_by_type[$vn_type_id][] = $t_rel->get('ca_entities.preferred_labels');
-					}
-					print "<div class='unit'>";
-					foreach ($va_entities_by_type as $va_type => $va_entity_id) {
-						print "<h6>".$va_type."</h6>";
-						foreach ($va_entity_id as $va_key => $va_entity_link) {
-							print "<div>".caDetailLink($this->request, $va_entity_link, '', 'ca_entities', $t_rel->get('ca_entities.entity_id'))."</div>";
-						} 
-					}
-					print "</div>";
+				if ($vs_artist = $t_object->getWithTemplate('<unit relativeTo="ca_entities"><div><l>^ca_entities.preferred_labels</l></div><div>^ca_entities.nationality_text, ^ca_entities.entity_display_date</div></unit>')) { 
+					print "<div class='tombstone'>".$vs_artist."</div>";
 				}
+				print "<div class='tombstone'><i>".$t_object->get('ca_objects.preferred_labels')."</i>";
 				if ($va_date = $t_object->get('ca_objects.display_date')) {
-					print "<div class='unit'><h6>Date</h6>".$va_date."</div>";
+					print ", ".$va_date;
 				}
+				print "</div>";
 				if ($va_medium = $t_object->get('ca_objects.medium')) {
-					print "<div class='unit'><h6>Medium</h6>".$va_medium."</div>";
+					print "<div class='tombstone'>".$va_medium."</div>";
 				}
 				if ($vs_dimensions = $t_object->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects.dimensions">^ca_objects.dimensions.display_dimensions <ifdef code="ca_objects.dimensions.dimensions_type">(^ca_objects.dimensions.dimensions_type)</ifdef></unit>')) {
-					print "<div class='unit'><h6>Dimensions</h6>".$vs_dimensions."</div>";
+					print "<div class='tombstone'>".$vs_dimensions."</div>";
 				}				
-				if ($va_type = $t_object->get('ca_objects.artwork_type', array('convertCodesToDisplayText' => true))) {
-					print "<div class='unit'><h6>Artwork Type</h6>".$va_type."</div>";
-				}	
+#				if ($va_type = $t_object->get('ca_objects.artwork_type', array('convertCodesToDisplayText' => true))) {
+#					print "<div class='unit'><h6>Artwork Type</h6>".$va_type."</div>";
+#				}	
 				if ($va_credit = $t_object->get('ca_objects.credit_line')) {
-					print "<div class='unit'><h6>Credit Line</h6>".$va_credit."</div>";
+					print "<div class='tombstone'>".$va_credit."</div>";
 				}	
 				if ($va_extended = $t_object->getWithTemplate('
 				    <unit delimiter="<br/>">

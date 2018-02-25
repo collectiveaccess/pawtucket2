@@ -397,6 +397,9 @@ p, .collectionsList p {
 .detail .unit {
 	margin-bottom:15px;
 }
+.detail .repViewerCont:hover .detailMediaToolbar {
+	display:none;
+}
 .relImg {
 	min-height:150px;
 	background-color:#f5f5f5;

@@ -1,6 +1,7 @@
 /* red text: #D20000; red bg:#8a0000; tan: #e0d7ba; charcoal: #605b4b; stone:#f0ede4; */
 body{
-	color: #000000;
+	color: #454545;
+	size:14px;
 }
 .red, a, a:hover{
 	color: #d20000;
@@ -167,6 +168,7 @@ body{
 	padding:0px;
 	height:300px;
 	border:0px;
+	font-family: LatoLight;
 }
 #footer > div{
 	padding:40px 15px 40px 15px;
@@ -181,14 +183,40 @@ body{
 	width:300px;
 	height:auto;
 }
-
+#footer .footerAddress{
+	margin-left:40px;
+	line-height:1.5em;
+	margin-top:-5px;
+}
+#footer .list-inline.footerLinks{
+	padding-top:10px;
+	padding-right:5px;
+}
+#footer .list-inline.footerLinks li{
+	padding:0px 5px 0px 5px;
+}
+#footer .darkRedBg{
+	font-size:16px;
+}
+#footer .darkRedBg strong{
+	font-weight:normal;
+	font-family: Lato;
+}
 /* front */
+.front{
+	margin-bottom:80px;
+}
 .front H1, .front h1{
 	color:#000;
 }
 .front H2, .front h2{
 	font:lato;
 	font-size:24px;
+	color:#820000;
+	padding-top:80px;
+}
+.front .tanBg{
+	margin-top:40px;
 }
 .front img{
 	width:100%;
@@ -251,14 +279,18 @@ a:hover .frontIconButton{
 .front .bleed{
 	padding:0px;
 }
+.front .blackBg H2 a, .front .blackBg H2 a:hover{
+	color:#FFFFFF;
+}
 .front #frontTimelineContainer {
     height: 500px;
-    margin-top:50px;
-    margin-bottom:50px;
+    margin-top:80px;
+    margin-bottom:80px;
 }
 .front .tl-timeline h2.tl-headline-title{
 	color:#d20000;
 }
+
 /*@media (max-width: 767px) {
 	.frontSearchCol .btn-search {
 		position:relative;
@@ -292,6 +324,9 @@ a:hover .frontIconButton{
 	margin-top:0px;
 	margin-bottom:20px;
 }
+.frontNarrativeThreads{
+	margin-bottom:80px;
+}
 .frontNarrativeThreads .frontNarrativeThreadsAllLink{
 	margin-top:100px;
 	text-align:center;
@@ -319,6 +354,7 @@ a:hover .frontIconButton{
 	margin-top:0px;
 	margin-bottom:0px;
 	text-align:center;
+	padding-top:0px;
 }
 .frontNarrativeThreadContainer .frontNarrativeThreadDesc H2 a:hover{
 	text-decoration:none;
@@ -338,13 +374,15 @@ div.browseFacetItem a:hover {
 /* details */
 .detail{
 	padding-bottom:40px;
+	font-size:14px;
 }
 .detail H4{
 	margin-bottom:10px;
 }
 .detail H6{
 	text-transform:none;
-	margin: 15px 0px 5px 0px;
+	margin: 15px 0px 2px 0px;
+	font-size:14px;
 }
 .detail H6.inline{
 	display:inline-block;
@@ -358,6 +396,10 @@ div.browseFacetItem a:hover {
 }
 .detail H3 .fa{
 	font-size:12px;
+}
+.detail a {
+    color: #454545;
+    text-decoration: underline;
 }
 .detail .collapseBlock{
 	border-color:#efefef;
@@ -437,6 +479,7 @@ a.readmore-js-toggle {
 	font-family: lato;
 	color:#FFF;
 	font-size:12px;
+	text-decoration:none;
 }
 .detail .narrativeThreadLink a:hover{
 	text-decoration:none;
@@ -592,6 +635,9 @@ a.readmore-js-toggle {
 }
 .gallery .unit{
 	margin-top:10px;
+}
+.gallery .galleryPrevious, .gallery .galleryNext{
+	margin-bottom:45px;
 }
 .schoolBottom{
 	margin-bottom:100px;
