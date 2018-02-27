@@ -61,7 +61,7 @@
 
 						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter=", ">^ca_objects.language</unit></div></ifdef>}}}
 						
-						{{{<ifdef code="ca_objects.dc_description"><div class='unit'>^ca_objects.dc_description</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.description"><div class='unit'>^ca_objects.description</div></ifdef>}}}
 					</div><!-- end stoneBg -->
 <?php
 					$vs_related = "";

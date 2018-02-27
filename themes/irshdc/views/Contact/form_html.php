@@ -1,5 +1,5 @@
 <?php
-	# --- ask an archivist
+	# --- ask an archivist, takedown
 	$ps_contactType = $this->request->getParameter("contactType", pString);
 	if(!$ps_contactType){
 		$ps_contactType = "contact";
@@ -23,19 +23,17 @@
 	$vn_num2 = rand(1,10);
 	$vn_sum = $vn_num1 + $vn_num2;
 
-
-		$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/contact/";
-		$vn_filecount = 0;
-		$va_files = glob($vs_directory . "*");
-		if ($va_files){
-		 $vn_filecount = count($va_files);
-		}
-
-	
-	if($ps_contactType == "contact"){
-		print "<H1>"._t("Contact")."</H1>";
-	}else{
-		print "<H1>"._t("Ask An Archivist")."</H1>";	
+	switch($ps_contactType){
+		case "askArchivist":
+			print "<H1>"._t("Ask An Archivist")."</H1>";
+		break;
+		case "takedown":
+			print "<H1>"._t("Takedown Request")."</H1>";
+		break;
+		case "contact":
+		default:
+			print "<H1>"._t("Contact")."</H1>";
+		break;
 	}
 	if(sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
@@ -44,14 +42,21 @@
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
 		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 <?php
-	if($ps_contactType == "askArchivist"){
+	if(in_array($ps_contactType, array("takedown", "askArchivist"))){
 ?>
 		<div class="row">
 			<div class="col-sm-10">
-				<h4>Please use this form to inquire about a specific item in our archive.</h4>
-				<H4><b>Item title: </b><?php print $vs_name; ?></H4>
+<?php
+				if($ps_contactType == "askArchivist"){
+					print "<h4>Please use this form to inquire about a specific item in our archive.</h4>";
+				}elseif($ps_contactType == "takedown"){
+					print "<h4>Please use this form to request a record be removed from the website for privacy or other reasons.</h4>";
+					print "<input type='hidden' name='takedownRequest' value='User Requested Record be Taken Down'>";
+				}
+?>				
+				<H6><b>Item title: </b><?php print $vs_name; ?></H6>
 				
-				<H4><b>Regarding this URL: </b><a href="<?php print $vs_url; ?>"><?php print $vs_url; ?></a></H4>
+				<H6><b>Regarding this URL: </b><a href="<?php print $vs_url; ?>"><?php print $vs_url; ?></a></H6>
 				<br/>
 				<input type="hidden" name="itemId" value="<?php print $vs_idno; ?>">
 				<input type="hidden" name="itemTitle" value="<?php print $vs_name; ?>">
@@ -62,7 +67,7 @@
 	}
 ?>
 		<div class="row">
-			<div class="col-md-12">
+			<div class="col-md-12 col-lg-8">
 				<div class="row">
 					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
@@ -80,13 +85,37 @@
 			</div><!-- end col -->
 		</div><!-- end row -->
 		<div class="row">
-			<div class="col-sm-12">
+			<div class="col-md-12 col-lg-8">
 				<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
 					<label for="message">Message</label>
 					<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->
+<?php
+	if($this->request->isLoggedIn()){
+		print '<input type="hidden" name="security" value="'.$vn_sum.'">';
+	}else{
+		# --- only show security question if not logged in
+?>
+			<div class="row">
+				<div class="col-md-12 col-lg-8">
+					<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
+						<label for="security">Security Question</label>
+						<div class='row'>
+							<div class='col-sm-4'>
+								<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
+							</div>
+							<div class='col-sm-4'>
+								<input name="security" value="" id="security" type="text" class="form-control input-sm" />
+							</div>
+						</div><!-- end row -->
+					</div>
+				</div>
+			</div><!-- end row -->
+<?php
+	}
+?>
 		<div class="form-group">
 			<button type="submit" class="btn btn-default">Send</button>
 		</div><!-- end form-group -->

@@ -69,9 +69,8 @@
 			<br/>
 		</div>
 	</div>
-	<div class="row blackBg">
-		<div class="col-sm-5 col-md-3 col-md-offset-1">
-			<br/><br/><br/><br/><br/>
+	<div class="row blackBg primer">
+		<div class="col-sm-5 col-sm-offset-0 col-md-5 col-md-offset-1 col-lg-5 col-lg-offset-1">
 			<H2><?php print caNavLink($this->request, "Primer orci quis vehicula eleifend", "", "", "Listing", "Resources"); ?></H2>
 			<H3>Metus elit laoreet elit</H3>
 			<br/>
@@ -82,8 +81,8 @@
 				<br/><?php print caNavLink($this->request, "MORE", "btn-default outline", "", "Listing", "Resources"); ?>
 			</p>
 		</div>
-		<div class="col-md-7  col-md-offset-1 bleed">
-			<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hptest3.jpg'), "", "", "Listing", "Resources"); ?>
+		<div class="col-sm-7 col-sm-offset-0 col-md-6 col-md-offset-0 col-lg-5 col-lg-offset-1 bleed">
+			<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'centre6.jpg'), "", "", "Listing", "Resources"); ?>
 		</div>
 	</div>
 <?php
