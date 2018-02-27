@@ -130,11 +130,7 @@
 					if ($va_related_ex_ids | $va_extended) {
 						print "<hr>";
 					}
-					print "<div class='col-sm-6'>";
-					print '<div class="col-sm-12">	
-								<hr>
-								<h6 class="header">Related Artworks</h6>
-							</div>';
+					print '	<h6 class="header">Related Artworks</h6>';
 					foreach ($va_related_artworks as $va_id => $va_related_artwork_id) {
 						$t_rel_obj = new ca_objects($va_related_artwork_id);
 						print "<div class='col-sm-6'>";
@@ -142,9 +138,7 @@
 						print "<div class='relImg'>".caDetailLink($this->request, $t_rel_obj->get('ca_object_representations.media.iconlarge'), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</div>";
 						print "<p>".caDetailLink($this->request, $t_rel_obj->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</p>";
 						print "</div>";
-						print "</div>";
-					}
-					print "</div>";				
+					}			
 				}
 							
 				if ($va_related_or_history = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history')))) {
