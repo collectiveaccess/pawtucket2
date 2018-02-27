@@ -1533,7 +1533,7 @@ class SearchResult extends BaseObject {
 						$this->prefetchLabels($va_path_components['table_name'], $this->opo_engine_result->currentRow(), $this->getOption('prefetch'), $pa_options);
 					}
 					
-					$vm_val = $this->_getLabelValue(self::$s_prefetch_cache[$vs_label_table_name][$vn_row_id][$vs_opt_md5], $t_instance, array_merge($va_val_opts, ['restrictToTypes' => caGetOption('restrictToTypes', $pa_options, null)]));
+					$vm_val = $this->_getLabelValue(self::$s_prefetch_cache[$vs_label_table_name][$vn_row_id][$vs_opt_md5], $t_instance, array_merge($va_val_opts, ['restrictToTypes' => caGetOption('restrictToTypes', $pa_options, null), 'excludeTypes' => caGetOption('excludeTypes', $pa_options, null)]));
 					if ($vb_return_as_count) { return $vm_val; }
 					goto filter;
 				}
@@ -1873,6 +1873,7 @@ class SearchResult extends BaseObject {
 		) {
 		    $va_restrict_to_type_ids = caMakeItemIDList($vs_label_type_list_code, $va_restrict_to_types);
 		}
+		
 		$va_exclude_type_ids = null;
 		if (
 		    is_array($va_exclude_types = caGetOption('excludeTypes', $pa_options, null))
@@ -1881,7 +1882,6 @@ class SearchResult extends BaseObject {
 		) {
 		    $va_exclude_type_ids = caMakeItemIDList($vs_label_type_list_code, $va_exclude_types);
 		}
-		
 		if ($vb_convert_codes_to_display_text) { $pa_options['output'] = 'text'; }
 		if ($vb_convert_codes_to_idno) { $pa_options['output'] = 'idno'; }
 		
