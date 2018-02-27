@@ -414,6 +414,12 @@ p, .collectionsList p {
 	color:#000;
 	font-size:14px;
 }
+.objectCaption {
+	color:#fff;
+}
+.repViewerContCont:hover .objectCaption {
+	color:#000;
+}
 
 /* Collection */
 
