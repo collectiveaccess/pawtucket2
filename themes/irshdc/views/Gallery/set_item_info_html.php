@@ -1,10 +1,13 @@
 <?php print "(".$this->getVar("set_item_num")."/".$this->getVar("set_num_items").")<br/>"; ?>
 <div class="galleryTombstoneScroll">
 
-	{{{<ifdef code="ca_objects.resource_type"><H6>^ca_objects.resource_type%useSingular=1</H6></ifdef>}}}
 	{{{<ifdef code="ca_objects.preferred_labels.name"><H4>^ca_objects.preferred_labels.name</H4></ifdef>}}}
+	{{{<ifdef code="ca_objects.dc_website"><div class='unit'><a href="^ca_objects.dc_website" target="_blank">View Website <span class="glyphicon glyphicon-new-window"></span></a></div></ifdef>}}}
+	
 	{{{<ifdef code="ca_objects.displayDate"><div class='unit'><h6>Date</h6>^ca_objects.displayDate</div></ifdef>}}}
 	{{{<ifdef code="ca_objects.MARC_copyrightDate"><div class='unit'>&copy; ^ca_objects.MARC_copyrightDate</div></ifdef>}}}
+
+	{{{<ifdef code="ca_objects.dc_description"><div class='unit'>^ca_objects.dc_description</div></ifdef>}}}
 
 
 	{{{<ifdef code="ca_objects.curators_comments.comments">

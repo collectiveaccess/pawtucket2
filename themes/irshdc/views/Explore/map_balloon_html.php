@@ -37,7 +37,7 @@
 		$t_entity->load($vn_entity_id);
 		$vs_image = $t_entity->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values, "limit" => 1));
 		if(!$vs_image){
-			$vs_image = $t_entity->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='depicted'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+			$vs_image = $t_entity->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 		}
 		if($vs_image){
 			print "<div class='mapImage'>".caDetailLink($this->request, $vs_image, '', 'ca_entities', $t_entity->get("entity_id"))."</div>";
@@ -48,8 +48,20 @@
 			print "<H6>Dates of Operation</H6>".$t_entity->get("ca_entities.school_dates.school_dates_value", array("delimiter" => ", "));
 		}
 		
-		if($t_entity->get("ca_places.preferred_labels")){
-			print "<H6>Location</H6>".$t_entity->get("ca_places.hierarchy.preferred_labels", array("delimiter" => " > "));
+		if($t_entity->get("ca_places.place_id")){
+			print "<H6>Location</H6>";
+			$t_list = new ca_lists();
+ 		 	$vn_city_id = $t_list->getItemIDFromList('place_types', 'city');
+ 		 	
+ 		 	$t_place = new ca_places($t_entity->get("ca_places.place_id"));
+			$va_hier = $t_place->getHierarchyAsList(array("restrictToTypes" => array("city")));
+			foreach($va_hier as $va_place){
+				if($va_place["NODE"]["type_id"] == $vn_city_id){
+					$t_place->get($va_place["NODE"]["place_id"]);
+					print $t_place->get("ca_places.preferred_labels");
+					break;
+				}
+			}
 		}
 		print "<div><br/>".caNavLink($this->request, _t("More"), 'btn-default btn-sm', '', 'Detail', 'entities/'.$t_entity->get("ca_entities.entity_id"))."</div>";
 		print "<div style='clear:both;'></div>";

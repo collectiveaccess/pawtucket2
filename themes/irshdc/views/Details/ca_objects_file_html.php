@@ -56,6 +56,7 @@
 				<div class='col-sm-8 col-md-6'>
 				
 					<div class="stoneBg">
+						<h1>{{{<unit relativeTo='ca_object_representations' delimiter='|'>^ca_object_representations.num_multifiles</unit>}}}</h1>
 						<H4><?php print ucwords(strtolower($t_object->get("ca_objects.preferred_labels.name"))); ?></H4>
 						{{{<ifdef code="ca_objects.displayDate"><div class='unit'>^ca_objects.displayDate</div></ifdef>}}}
 						<H6>
@@ -160,8 +161,10 @@
 					
 <?php					
 					print "<div class='detailTool'><span class='glyphicon glyphicon-link'></span><a href='".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("object_id"))."'>Permalink</a></div>";
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask an Archivist", "", "", "Contact", "Form", array("contactType" => "askArchivist", "object_id" => $t_object->get("object_id")))."</div>";
-					
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "object_id" => $t_object->get("object_id")))."</div>";
+					if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
+						print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "object_id" => $t_object->get("object_id")))."</div>";
+					}
 					print '</div><!-- end detailTools -->';			
 					
 					if($t_object->get("narrative_thread")){

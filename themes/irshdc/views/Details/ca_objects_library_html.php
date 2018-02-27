@@ -58,16 +58,22 @@
 					<div class="stoneBg">
 						
 						
-						<H4>{{{^ca_objects.preferred_labels.name}}}</H4>
+						<H4>
+							{{{^ca_objects.preferred_labels.name}}}
+							{{{<ifdef code="ca_objects.link"><br/><a href="^ca_objects.link" class='redLink' target="_blank">Source record <span class="glyphicon glyphicon-new-window"></span></a></div></ifdef>}}}
+						</H4>
 						{{{<ifdef code="ca_objects.MARC_copyrightDate"><div class='unit'>&copy; ^ca_objects.MARC_copyrightDate</div></ifdef>}}}
 						<H6>
 							{{{<ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef>}}}
 						</H6>
 						{{{<ifdef code="ca_objects.record_type"><H6>Record type</H6>^ca_objects.record_type%=_</ifdef>}}}
 						{{{<ifdef code="ca_objects.contributors|ca_objects.creators"><H6>Creators and Contributors</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.contributors</unit><ifdef code="ca_objects.contributors,ca_objects.creators"><br/></ifdef><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.creators</unit></ifdef>}}}
-						{{{<ifcount code="ca_entities.related" restrictToTypes="repository" min="1"><H6>Holding Library</H6><unit relativeTo="ca_entities.related" restrictToTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></ifcount>}}}
-				
-<!-- description? -->				
+						{{{<ifcount code="ca_entities.related" restrictToTypes="repository" min="1"><H6>Holding Library</H6><unit relativeTo="ca_entities.related" restrictToTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></ifcount>}}}				
+						{{{<ifdef code="ca_objects.description_new.description_new_txt">
+							<div class="unit" data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_objects.description_new.description_new_source"><h6>Description</h6>
+								<span class="trimText">^ca_objects.description_new.description_new_txt</span>
+							</div>
+						</ifdef>}}}
 						{{{<ifdef code="ca_objects.curators_comments.comments">
 							<div class="unit" data-toggle="popover" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial comment</h6>
 								<span class="trimText">^ca_objects.curators_comments.comments</span>
@@ -82,6 +88,34 @@
 					</div><!-- end stoneBg -->
 					<div class="row">
 						<div class="col-sm-12">
+<?php
+						if ($vn_comments_enabled) {
+							$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
+?>				
+							<div class="collapseBlock">
+								<h3>Comments<?php print ($vn_num_comments) ? " (".$vn_num_comments.")" : ""; ?> <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+								<div class="collapseContent">
+									<div id='detailComments' style='display:block;'>
+										Do you have a story to contribute related to these records or a comment about this item?<br/>
+<?php
+										print $this->getVar("itemComments");
+?>
+									</div><!-- end itemComments -->
+								</div>
+							</div>
+<?php				
+						}
+?>
+						<div class="collapseBlock">
+							<h3>Permalink <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+							<div class="collapseContent">
+									
+<?php
+						print "<div class='unit'><br/><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/815')."</textarea></div>";
+					
+?>
+								</div>
+							</div>
 							<div class="collapseBlock">
 								<h3>Related <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
 								<div class="collapseContent open">
@@ -116,7 +150,7 @@
 							if(sizeof($va_loc)){
 ?>							
 								<div class="collapseBlock">
-									<h3>Subjects <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+									<h3>Subjects <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
 									<div class="collapseContent open">
 										<div class="unit">
 <?php
@@ -131,16 +165,17 @@
 ?>				
 							
 							{{{<ifdef code="ca_objects.MARC_isbn|ca_objects.nonpreferred_labels.name|ca_objects.MARC_generalNote|ca_objects.local_note|ca_objects.MARC_formattedContents|ca_objects.ISADG_titleNote|ca_objects.participant_performer|ca_objects.electronic_URL">
-								<div class="collapseBlock">
-									<h3>Notes <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+								<div class="collapseBlock last">
+									<h3>Notes <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
 									<div class="collapseContent open">
 										<ifdef code="ca_objects.MARC_isbn"><div class='unit'><h6>ISBN</h6><unit delimiter="; ">^ca_objects.MARC_isbn</unit></div></ifdef>
-										<ifdef code="ca_objects.nonpreferred_labels.name"><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>">^nonpreferred_labels.name</unit></ifdef>
+										<ifdef code="ca_objects.nonpreferred_labels.name" excludeTypes="exhibition_title"><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>" excludeTypes="exhibition_title">^nonpreferred_labels.name</unit></ifdef>
 										<ifdef code="ca_objects.MARC_formattedContents|ca_objects.ISADG_titleNote"><div class='unit'><h6>Contents</h6><ifdef code="ca_objects.MARC_formattedContents">^ca_objects.MARC_formattedContents</ifdef><ifdef code="ca_objects.ISADG_titleNote">^ca_objects.ISADG_titleNote</ifdef></div></ifdef>			
 										<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>General Note</h6>^ca_objects.MARC_generalNote</div></ifdef>									
 									</div>
 								</div>
-							</ifdef>}}}
+							</ifdef>}}}					
+						
 						</div><!-- end col -->
 					</div><!-- end row -->
 									
@@ -151,25 +186,20 @@
 					# Comment and Share Tools
 						
 					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
-					}
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
 					if ($vn_pdf_enabled) {
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "object_id" => $t_object->get("object_id")))."</div>";
+					if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
+						print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "object_id" => $t_object->get("object_id")))."</div>";
+					}
 ?>
-					{{{<ifdef code="ca_objects.link"><div class='detailTool'><span class='glyphicon glyphicon-link'></span><a href="^ca_objects.link" target="_blank">Source record</a></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.link"><div class='detailTool'><span class='glyphicon glyphicon-new-window'></span><a href="^ca_objects.link" target="_blank">Source record</a></div></ifdef>}}}
 					
-<?php					
-					print "<div class='detailTool'><span class='glyphicon glyphicon-link'></span><a href='".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/815')."'>Permalink</a></div>";
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask an Archivist", "", "", "Contact", "Form")."</div>";
-					
+<?php
 					print '</div><!-- end detailTools -->';			
 					
 					if($t_object->get("narrative_thread")){

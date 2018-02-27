@@ -29,25 +29,29 @@
 		<div style="clear:both;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
-			<div class="darkRedBg">
-				<ul class="list-inline pull-right social">
-					<li><i class="fa fa-twitter"></i></li>
-					<li><i class="fa fa-facebook-square"></i></li>
-					<li><i class="fa fa-youtube-play"></i></li>
-				</ul>
+			<div class="darkRedBg text-center">
 				<div>
-					<b>Vancouver Campus</b>
-					<br/>2329 West Mall
-					<br/>Vancouver, BC Canada V6T 1Z4 
+					<strong>A National Residential School Crisis Line has been set up to provide support to former students.</strong><br/>This 24-Hour Crisis Line can be accessed at: 1-866-925-4419.
+					
 				</div>
 			</div>
 			<div class="footerBottom">
 				<div class="row">
 					<div class="col-sm-6">
 						<?php print caGetThemeGraphic($this->request, 'ubc.jpg'); ?>
+						<div class='footerAddress'>
+							Vancouver Campus
+							<br/>2329 West Mall
+							<br/>Vancouver, BC Canada V6T 1Z4 
+						</div>
 					</div>
 					<div class="col-sm-6 text-right">
-						<ul class="list-inline">
+						<ul class="list-inline pull-right social">
+							<li><i class="fa fa-twitter"></i></li>
+							<li><i class="fa fa-facebook-square"></i></li>
+							<li><i class="fa fa-youtube-play"></i></li>
+						</ul>
+						<ul class="list-inline footerLinks" style="clear:right;">
 							<li><a href="//cdn.ubc.ca/clf/ref/terms" title="Terms of Use">Terms of Use</a></li>
 							<li>|</li>
 							<li><a href="//cdn.ubc.ca/clf/ref/copyright" title="UBC Copyright">Copyright</a></li>

@@ -19,7 +19,7 @@ if(is_array($va_threads) && sizeof($va_threads)){
 			#	shuffle($va_set_reps);
 			#	$vs_image = $va_set_reps[0];
 			#}
-			print "<div class='narrativeThreadLink'>".caNavLink($this->request, "<i class='fa fa-arrow-right' aria-hidden=true'></i>".$qr_threads->get("ca_list_items.preferred_labels.name_singular"), "", "", "Explore", "narrativethreads", array("id" => $qr_threads->get("ca_list_items.item_id")))."</div>";
+			print caNavLink($this->request, "<div class='narrativeThreadLink'><i class='fa fa-arrow-right' aria-hidden=true'></i>".$qr_threads->get("ca_list_items.preferred_labels.name_singular")."</div>", "noUnderline", "", "Explore", "narrativethreads", array("id" => $qr_threads->get("ca_list_items.item_id")));
 		}
 	}
 ?>

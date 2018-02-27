@@ -1,6 +1,7 @@
 /* red text: #D20000; red bg:#8a0000; tan: #e0d7ba; charcoal: #605b4b; stone:#f0ede4; */
 body{
-	color: #000000;
+	color: #454545;
+	size:14px;
 }
 .red, a, a:hover{
 	color: #d20000;
@@ -167,6 +168,7 @@ body{
 	padding:0px;
 	height:300px;
 	border:0px;
+	font-family: LatoLight;
 }
 #footer > div{
 	padding:40px 15px 40px 15px;
@@ -181,14 +183,40 @@ body{
 	width:300px;
 	height:auto;
 }
-
+#footer .footerAddress{
+	margin-left:40px;
+	line-height:1.5em;
+	margin-top:-5px;
+}
+#footer .list-inline.footerLinks{
+	padding-top:10px;
+	padding-right:5px;
+}
+#footer .list-inline.footerLinks li{
+	padding:0px 5px 0px 5px;
+}
+#footer .darkRedBg{
+	font-size:16px;
+}
+#footer .darkRedBg strong{
+	font-weight:normal;
+	font-family: Lato;
+}
 /* front */
+.front{
+	margin-bottom:80px;
+}
 .front H1, .front h1{
 	color:#000;
 }
 .front H2, .front h2{
 	font:lato;
 	font-size:24px;
+	color:#820000;
+	padding-top:80px;
+}
+.front .tanBg{
+	margin-top:40px;
 }
 .front img{
 	width:100%;
@@ -251,13 +279,35 @@ a:hover .frontIconButton{
 .front .bleed{
 	padding:0px;
 }
+.front .blackBg H2 a, .front .blackBg H2 a:hover{
+	color:#FFFFFF;
+}
+
+@media (max-width: 1300px) {
+	.front .blackBg.primer H2{
+		padding-top:40px;
+	} 
+}
+@media (max-width: 1100px) {
+	.front .blackBg.primer H2{
+		padding-top:20px;
+	} 
+}
+@media (max-width: 768px) {
+	.front .blackBg.primer .text-center{
+		margin-bottom:30px; /* --- space below more button */
+	} 
+}
 .front #frontTimelineContainer {
     height: 500px;
-    margin-top:50px;
-    margin-bottom:50px;
+    margin-top:80px;
+    margin-bottom:80px;
 }
 .front .tl-timeline h2.tl-headline-title{
 	color:#d20000;
+}
+.front .tl-timeline h2{
+	padding-top:15px !Important;
 }
 /*@media (max-width: 767px) {
 	.frontSearchCol .btn-search {
@@ -292,6 +342,9 @@ a:hover .frontIconButton{
 	margin-top:0px;
 	margin-bottom:20px;
 }
+.frontNarrativeThreads{
+	margin-bottom:80px;
+}
 .frontNarrativeThreads .frontNarrativeThreadsAllLink{
 	margin-top:100px;
 	text-align:center;
@@ -319,6 +372,7 @@ a:hover .frontIconButton{
 	margin-top:0px;
 	margin-bottom:0px;
 	text-align:center;
+	padding-top:0px;
 }
 .frontNarrativeThreadContainer .frontNarrativeThreadDesc H2 a:hover{
 	text-decoration:none;
@@ -338,13 +392,15 @@ div.browseFacetItem a:hover {
 /* details */
 .detail{
 	padding-bottom:40px;
+	font-size:14px;
 }
 .detail H4{
 	margin-bottom:10px;
 }
 .detail H6{
 	text-transform:none;
-	margin: 15px 0px 5px 0px;
+	margin: 15px 0px 2px 0px;
+	font-size:14px;
 }
 .detail H6.inline{
 	display:inline-block;
@@ -358,6 +414,10 @@ div.browseFacetItem a:hover {
 }
 .detail H3 .fa{
 	font-size:12px;
+}
+.detail a {
+    color: #454545;
+    text-decoration: underline;
 }
 .detail .collapseBlock{
 	border-color:#efefef;
@@ -406,41 +466,32 @@ a.readmore-js-toggle {
 .detail #detailTools a, .detail #detailTools span{
 	color:#8a0000;
 }
-.detail .narrativeThreadLink{
+.detail a.noUnderline{
+	text-decoration:none !important;
+}
+.detail a .narrativeThreadLink{
 	margin-top:10px;
 	margin-bottom:10px;
-	padding:10px 5px 10px 10px;
-	border:1px solid #333;
+	padding:20px 5px 18px 10px;
+	border:1px solid #837e6e;
 	background:
 		linear-gradient(
-		  rgba(96, 91, 75, 1), 
-		  rgba(96, 91, 75, 0.3)
+		  rgba(240, 237, 228, 1), 
+		  rgba(240, 237, 228, 0.6)
 		),
 		url("../graphics/buttonBg.jpg"),
 		no-repeat;
 	background-size: cover;
 	text-align:left;
-}
-.detail .narrativeThreadLink:hover{
-	cursor:pointer;
-	border:1px solid #8a0000;	
-	background:
-		linear-gradient(
-		  rgba(0, 0, 0, 1), 
-		  rgba(0, 0, 0, 0.3)
-		),
-		url("../graphics/buttonBg.jpg"),
-		no-repeat;
-	background-size: cover;
-}
-.detail .narrativeThreadLink a{
 	font-family: lato;
-	color:#FFF;
-	font-size:12px;
+	color:#605b4b;
+	font-size:14px;
+	text-decoration:none !important;
 }
-.detail .narrativeThreadLink a:hover{
+.detail a:hover .narrativeThreadLink{
+	border:1px solid #8a0000;
 	text-decoration:none;
-	color:#FFF;
+	color:#8a0000;
 }
 .detail .narrativeThreadLink .fa{
 	float: right;
@@ -454,7 +505,25 @@ a.readmore-js-toggle {
 #pageArea.resource .detailMediaToolbar{
 	display:none;
 }
-
+#detailComments{
+	border-top:0px;
+}
+#detailComments .btn-default{
+	padding: 3px 5px 3px 5px;
+	font-size:10px;
+	margin-top:10px;
+}
+.detail #detailComments {
+    font-family: latoLight;
+    color: #454545;
+}
+.detail .redLink{
+	color:#8a0000;
+	text-transform:uppercase;
+	font-family:lato;
+	text-decoration:none;
+	font-size:11px;
+}
 /* EXPLORE */
 
 .narrativeThreadContainer{
@@ -592,6 +661,9 @@ a.readmore-js-toggle {
 }
 .gallery .unit{
 	margin-top:10px;
+}
+.gallery .galleryPrevious, .gallery .galleryNext{
+	margin-bottom:45px;
 }
 .schoolBottom{
 	margin-bottom:100px;
