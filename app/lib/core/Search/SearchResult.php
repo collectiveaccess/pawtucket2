@@ -1758,6 +1758,7 @@ class SearchResult extends BaseObject {
 		$vb_assume_display_field 	= isset($pa_options['assumeDisplayField']) ? (bool)$pa_options['assumeDisplayField'] : true;
 		
 		$pa_check_access		= $pa_options['checkAccess'];
+		$pb_primary_only		= $pa_options['primaryOnly'];
 		if (!is_array($pa_exclude_idnos	= $pa_options['excludeIdnos'])) { $pa_exclude_idnos = []; }
 		
 		if (!($t_rel_instance = SearchResult::$s_instance_cache[$va_path_components['table_name']])) {
@@ -1784,9 +1785,9 @@ class SearchResult extends BaseObject {
 		}
 		$vs_pk = $t_rel_instance->primaryKey();
 		
-		
 		$va_ids = array();
 		foreach($pa_value_list as $vn_i => $va_rel_item) {
+		    if ($pb_primary_only && isset($va_rel_item['is_primary']) && !$va_rel_item['is_primary']) { continue; }
 			$va_ids[] = $va_rel_item[$vs_pk];
 		}
 		if (!sizeof($va_ids)) { return $pa_options['returnAsArray'] ? array() : null; }
