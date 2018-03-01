@@ -79,8 +79,17 @@
 				foreach ($va_related_artworks as $va_key => $vn_related_artwork_id) {
 					$t_artwork = new ca_objects($vn_related_artwork_id);
 					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem'>";
-					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_artwork->get('ca_object_representations.media.medium'), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</div></div>";
-					print "<p>".caDetailLink($this->request, $t_artwork->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</p>";
+					if ($t_artwork->get('ca_object_representations.media.medium')) {
+						print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_artwork->get('ca_object_representations.media.medium'), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</div></div>";
+					} else {
+						print "<div class='bResultItemImgPlaceholder'><i class='fa fa-picture-o fa-2x'></i></div>";
+					}
+					print "<div class='bResultItemText'>";
+					print "<p><i>".caDetailLink($this->request, $t_artwork->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</i>";
+					if ($vs_art_date = $t_artwork->get('ca_objects.display_date')) {
+						print ", ".$vs_art_date;
+					}
+					print "</p></div>";
 					print "</div></div>";
 				}
 				print "</div><!-- end col --></div><!-- end row -->";
