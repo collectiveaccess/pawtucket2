@@ -65,7 +65,11 @@
 				foreach ($va_related_exhibitions as $va_key => $va_related_exhibition_id) {
 					$t_exhibition = new ca_occurrences($va_related_exhibition_id);
 					print "<div class='col-sm-3'> <div class='relatedArtwork'>";
-					print "<div class='relImg'>".caDetailLink($this->request, $va_ex_images[$va_related_exhibition_id], '', 'ca_occurrences', $t_exhibition->get('ca_occurrences.occurrence_id'))."</div>";
+					if ($va_ex_images[$va_related_exhibition_id]) {
+						print "<div class='relImg'>".caDetailLink($this->request, $va_ex_images[$va_related_exhibition_id], '', 'ca_occurrences', $t_exhibition->get('ca_occurrences.occurrence_id'))."</div>";
+					} else {
+						print "<div class='bResultItemImgPlaceholder'><i class='fa fa-picture-o fa-2x'></i></div>";
+					}
 					print "<p>".caDetailLink($this->request, $t_exhibition->get('ca_occurrences.preferred_labels'), '', 'ca_occurrences', $t_exhibition->get('ca_occurrences.occurrence_id'))."</p>";
 					print "<p>".$t_exhibition->get('ca_occurrences.exhibition_dates', array('delimiter' => '<br/>'))."</p>";
 					print "</div></div>";
@@ -74,12 +78,18 @@
 			}
 			#Related Artworks
 			if ($va_related_artworks = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork')))) {
+				$vs_art_count = 0;
 				print "<hr><div class='row'>";
 				print '<div class="col-sm-12"><h6 class="header">Related Artworks</h6></div>';
 				print "</div><div class='row'>";
 				foreach ($va_related_artworks as $va_key => $vn_related_artwork_id) {
+					if ($vs_art_count < 4) {
+						$vs_style = "noBorder";
+					} else {
+						$vs_style = "";
+					}
 					$t_artwork = new ca_objects($vn_related_artwork_id);
-					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem'>";
+					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem {$vs_style}'>";
 					if ($t_artwork->get('ca_object_representations.media.medium')) {
 						print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_artwork->get('ca_object_representations.media.medium'), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</div></div>";
 					} else {
@@ -90,6 +100,7 @@
 					if ($vs_art_date = $t_artwork->get('ca_objects.display_date')) {
 						print ", ".$vs_art_date;
 					}
+					$vs_art_count++;
 					print "</p></div>";
 					print "</div></div>";
 				}
@@ -97,27 +108,41 @@
 			}
 			#Related Archival
 			if ($va_related_archival = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('archival')))) {
+				$vs_arch_count = 0;
 				print "<hr><div class='row'><div class='col-sm-12'>";
 				print '<h6 class="header">Related Archives</h6>';
 				foreach ($va_related_archival as $va_key => $vn_related_archival_id) {
+					if ($vs_arch_count < 4) {
+						$vs_style = "noBorder";
+					} else {
+						$vs_style = "";
+					}
 					$t_archival = new ca_objects($vn_related_archival_id);
-					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem'>";
+					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem {$vs_style}'>";
 					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_archival->get('ca_object_representations.media.medium'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</div></div>";
 					print "<p>".caDetailLink($this->request, $t_archival->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</p>";
 					print "</div></div>";
+					$vs_arch_count++;
 				}
 				print "</div><!-- end col --></div><!-- end row -->";
 			}	
 			#Related Oral History
 			if ($va_related_oralh = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history')))) {
+				$vs_oh_count = 0;
 				print "<hr><div class='row'><div class='col-sm-12'>";
 				print '<h6 class="header">Related Oral History</h6>';
 				foreach ($va_related_oralh as $va_key => $vn_related_oralh_id) {
+					if ($vs_oh_count < 4) {
+						$vs_style = "noBorder";
+					} else {
+						$vs_style = "";
+					}
 					$t_oralh = new ca_objects($vn_related_oralh_id);
-					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem'>";
+					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem {$vs_style}'>";
 					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_oralh->get('ca_object_representations.media.medium'), '', 'ca_objects', $t_oralh->get('ca_objects.object_id'))."</div></div>";
 					print "<p>".caDetailLink($this->request, $t_oralh->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_oralh->get('ca_objects.object_id'))."</p>";
 					print "</div></div>";
+					$vs_oh_count++;
 				}
 				print "</div><!-- end col --></div><!-- end row -->";
 			}									
