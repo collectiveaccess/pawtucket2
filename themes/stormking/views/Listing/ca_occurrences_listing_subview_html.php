@@ -104,7 +104,7 @@
 		}
 		$vb_output = 1;
 	}
-
+	if ($blah) { // removed from display but saving this unless we need to put it back
 	if(is_array($va_past) && sizeof($va_past)){
 ?>
 	<div class="row">
@@ -134,6 +134,7 @@
 		}
 		# --- close trailing row
 		$vb_output = 1;
+	}
 	}
 ?>
 	</div><!-- end row -->

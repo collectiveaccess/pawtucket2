@@ -15,13 +15,15 @@
 			<div class="row">
 				<div class="col-sm-12 objectInfo">
 <?php
-					print trim($t_item->get('ca_entities.preferred_labels'))."<br/>";
+					print "<div class='artistName'>".trim($t_item->get('ca_entities.preferred_labels'))."</div>";
+					print "<div>";
 					if ($vs_nationality = $t_item->get('ca_entities.nationality_text')) {
 						print $vs_nationality.", ";
 					}
 					if ($vs_lifespan = $t_item->get('ca_entities.entity_display_date')) {
 						print $vs_lifespan;
-					}					
+					}
+					print "</div>";					
 ?>				
 					<hr></hr> 
 				</div>		
@@ -51,31 +53,11 @@
 							}
 						}
 					}
-							
-					if ($va_related_or_history = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history')))) {
-						print '<div class="unit"><h6>Related Oral Histories</h6>';
-						foreach ($va_related_or_history as $va_id => $va_related_or_history_id) {
-							$t_rel_or = new ca_objects($va_related_or_history_id);
-							print "<div class='detailLine'>";
-							print "<p>".caDetailLink($this->request, $t_rel_or->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_or->get('ca_objects.object_id'))."</p>";
-							print "</div>";
-						}
-						print "</div>";
-					}	
-					if ($va_related_library = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('library')))) {
-						print '<div class="unit"><h6>Related Library Items</h6>';
-						foreach ($va_related_library as $va_id => $va_related_library_id) {
-							$t_rel_lib = new ca_objects($va_related_library_id);
-							print "<div class='detailLine'>";
-							print "<p>".caDetailLink($this->request, $t_rel_lib->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_lib->get('ca_objects.object_id'))."</p>";
-							print "</div>";
-						}
-						print "</div>";
-					}									
-?>				
+?>					
 				</div><!-- end col -->
 			</div><!-- end row -->
 <?php
+			# Related Exhibitions
 			if ($va_related_exhibitions = $t_item->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program')))) {
 				$va_ex_images = caGetDisplayImagesForAuthorityItems('ca_occurrences', $va_related_exhibitions, array('version' => 'iconlarge', 'relationshipTypes' => 'includes', 'objectTypes' => 'artwork', 'checkAccess' => $va_access_values));
 				print "<hr><div class='row'><div class='col-sm-12'>";
@@ -90,43 +72,46 @@
 				}
 				print "</div><!-- end col --></div><!-- end row -->";
 			}
+			#Related Artworks
+			if ($va_related_artworks = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork')))) {
+				print "<hr><div class='row'><div class='col-sm-12'>";
+				print '<h6 class="header">Related Artworks</h6>';
+				foreach ($va_related_artworks as $va_key => $vn_related_artwork_id) {
+					$t_artwork = new ca_objects($vn_related_artwork_id);
+					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem'>";
+					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_artwork->get('ca_object_representations.media.medium'), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</div></div>";
+					print "<p>".caDetailLink($this->request, $t_artwork->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</p>";
+					print "</div></div>";
+				}
+				print "</div><!-- end col --></div><!-- end row -->";
+			}
+			#Related Archival
 			if ($va_related_archival = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('archival')))) {
 				print "<hr><div class='row'><div class='col-sm-12'>";
-				print '<h6 class="header">Related Archival Items</h6>';
-				foreach ($va_related_archival as $va_key => $va_related_archival_id) {
-					$t_archival = new ca_objects($va_related_archival_id);
-					print "<div class='col-sm-3'> <div class='relatedArtwork'>";
-					print "<div class='relImg'>".caDetailLink($this->request, $t_archival->get('ca_object_representations.media.iconlarge'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</div>";
+				print '<h6 class="header">Related Archives</h6>';
+				foreach ($va_related_archival as $va_key => $vn_related_archival_id) {
+					$t_archival = new ca_objects($vn_related_archival_id);
+					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem'>";
+					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_archival->get('ca_object_representations.media.medium'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</div></div>";
 					print "<p>".caDetailLink($this->request, $t_archival->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</p>";
 					print "</div></div>";
 				}
 				print "</div><!-- end col --></div><!-- end row -->";
-			}			
-?>
-			
-{{{<ifcount code="ca_objects" min="1">
-			<hr>
-			<h6>Related Artworks</h6>
-			<div class="row">
-				<div id="browseResultsContainer">
-					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'allworks', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
-					});
-					
-					
-				});
-			</script>
-</ifcount>}}}
+			}	
+			#Related Oral History
+			if ($va_related_oralh = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history')))) {
+				print "<hr><div class='row'><div class='col-sm-12'>";
+				print '<h6 class="header">Related Oral History</h6>';
+				foreach ($va_related_oralh as $va_key => $vn_related_oralh_id) {
+					$t_oralh = new ca_objects($vn_related_oralh_id);
+					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem'>";
+					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_oralh->get('ca_object_representations.media.medium'), '', 'ca_objects', $t_oralh->get('ca_objects.object_id'))."</div></div>";
+					print "<p>".caDetailLink($this->request, $t_oralh->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_oralh->get('ca_objects.object_id'))."</p>";
+					print "</div></div>";
+				}
+				print "</div><!-- end col --></div><!-- end row -->";
+			}									
+?>			
 		</div><!-- end container -->
 	</div><!-- end col -->
 </div><!-- end row -->
