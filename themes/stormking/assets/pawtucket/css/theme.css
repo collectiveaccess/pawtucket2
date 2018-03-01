@@ -368,6 +368,9 @@ p, .collectionsList p {
 	float:right;
 	margin-bottom:20px;
 }
+.detail .detailNav a {
+	text-decoration:none;
+}
 .detail .detailNav .small {
 	display:inline;
 	padding: 0px 5px 0px 5px;

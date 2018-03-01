@@ -74,8 +74,9 @@
 			}
 			#Related Artworks
 			if ($va_related_artworks = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork')))) {
-				print "<hr><div class='row'><div class='col-sm-12'>";
-				print '<h6 class="header">Related Artworks</h6>';
+				print "<hr><div class='row'>";
+				print '<div class="col-sm-12"><h6 class="header">Related Artworks</h6></div>';
+				print "</div><div class='row'>";
 				foreach ($va_related_artworks as $va_key => $vn_related_artwork_id) {
 					$t_artwork = new ca_objects($vn_related_artwork_id);
 					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem'>";
