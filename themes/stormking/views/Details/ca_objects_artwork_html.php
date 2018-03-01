@@ -81,10 +81,10 @@
 			<div class="col-sm-6">
 				<div class="container"><div class="row"><div class="col-sm-12">		
 <?php
-				if ($vs_artist = $t_object->getWithTemplate('<unit relativeTo="ca_entities"><div><l>^ca_entities.preferred_labels</l></div><div>^ca_entities.nationality_text, ^ca_entities.entity_display_date</div></unit>')) { 
+				if ($vs_artist = $t_object->getWithTemplate('<unit relativeTo="ca_entities"><div class="artistName"><l>^ca_entities.preferred_labels</l></div><div>^ca_entities.nationality_text, ^ca_entities.entity_display_date</div></unit>')) { 
 					print "<div class='tombstone'>".$vs_artist."</div>";
 				}
-				print "<div class='tombstone'><i>".$t_object->get('ca_objects.preferred_labels')."</i>";
+				print "<div class='tombstone artTitle'><i>".$t_object->get('ca_objects.preferred_labels')."</i>";
 				if ($va_date = $t_object->get('ca_objects.display_date')) {
 					print ", ".$va_date;
 				}
@@ -100,7 +100,14 @@
 #				}	
 				if ($va_credit = $t_object->get('ca_objects.credit_line')) {
 					print "<div class='tombstone'>".$va_credit."</div>";
-				}		
+				}	
+				print "<div class='spacer'></div>";	
+				if ($va_photo_credit = $t_object->get('ca_object_representations.caption')) {
+					print "<div class='tombstone'>".$va_photo_credit."</div>";
+				}	
+				if ($va_photo_name = $t_object->getWithTemplate('<unit relativeTo="ca_object_representations"><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer">^ca_entities.preferred_labels</unit></unit>')) {
+					print "<div class='tombstone'>".$va_photo_name."</div>";
+				}				
 								
 ?>	
 				</div></div></div>
