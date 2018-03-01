@@ -424,8 +424,8 @@ p, .collectionsList p {
 	width:100%;
 	height:auto; 
 }
-.relatedArtwork.bResultItem {
-	
+.entities .bResultItem .bResultItemText a {
+	text-decoration:none;
 }
 .bResultItemImgPlaceholder {
 	border:0px;
