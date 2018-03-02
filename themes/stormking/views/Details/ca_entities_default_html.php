@@ -57,25 +57,11 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 <?php
-			# Related Exhibitions
-			if ($va_related_exhibitions = $t_item->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program'), 'sort' => 'ca_occurrences.exhibition_dates'))) {
-				$va_ex_images = caGetDisplayImagesForAuthorityItems('ca_occurrences', $va_related_exhibitions, array('version' => 'iconlarge', 'relationshipTypes' => 'includes', 'objectTypes' => 'artwork', 'checkAccess' => $va_access_values));
-				print "<hr><div class='row'><div class='col-sm-12'>";
-				print '<h6 class="header">Related Exhibitions and Programs</h6>';
-				foreach ($va_related_exhibitions as $va_key => $va_related_exhibition_id) {
-					$t_exhibition = new ca_occurrences($va_related_exhibition_id);
-					print "<div class='col-sm-3'> <div class='relatedArtwork'>";
-					print "<p>".caDetailLink($this->request, $t_exhibition->get('ca_occurrences.preferred_labels'), '', 'ca_occurrences', $t_exhibition->get('ca_occurrences.occurrence_id'))."</p>";
-					print "<p>".$t_exhibition->get('ca_occurrences.exhibition_dates', array('delimiter' => '<br/>'))."</p>";
-					print "</div></div>";
-				}
-				print "</div><!-- end col --></div><!-- end row -->";
-			}
 			#Related Artworks
 			if ($va_related_artworks = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork')))) {
 				$vs_art_count = 0;
 				print "<hr><div class='row'>";
-				print '<div class="col-sm-12"><h6 class="header">Works by this Artist</h6></div>';
+				print '<div class="col-sm-12"><h6 class="header">Related Artworks</h6></div>';
 				print "</div><div class='row'>";
 				foreach ($va_related_artworks as $va_key => $vn_related_artwork_id) {
 					if ($vs_art_count < 4) {
@@ -85,10 +71,10 @@
 					}
 					$t_artwork = new ca_objects($vn_related_artwork_id);
 					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem {$vs_style}'>";
-					if ($t_artwork->get('ca_object_representations.media.medium')) {
-						print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_artwork->get('ca_object_representations.media.medium'), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</div></div>";
+					if ($t_artwork->get('ca_object_representations.media.widepreview')) {
+						print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_artwork->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</div></div>";
 					} else {
-						print "<div class='bResultItemImgPlaceholder'><i class='fa fa-picture-o fa-2x'></i></div>";
+						print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'><div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div></div></div>";
 					}
 					print "<div class='bResultItemText'>";
 					print "<p><i>".caDetailLink($this->request, $t_artwork->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</i>";
@@ -97,6 +83,20 @@
 					}
 					$vs_art_count++;
 					print "</p></div>";
+					print "</div></div>";
+				}
+				print "</div><!-- end col --></div><!-- end row -->";
+			}
+			# Related Exhibitions
+			if ($va_related_exhibitions = $t_item->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program'), 'sort' => 'ca_occurrences.exhibition_dates', 'sortDirection' => 'desc'))) {
+				$va_ex_images = caGetDisplayImagesForAuthorityItems('ca_occurrences', $va_related_exhibitions, array('version' => 'iconlarge', 'relationshipTypes' => 'includes', 'objectTypes' => 'artwork', 'checkAccess' => $va_access_values));
+				print "<hr><div class='row'><div class='col-sm-12'>";
+				print '<h6 class="header">Related Exhibitions and Programs</h6>';
+				foreach ($va_related_exhibitions as $va_key => $va_related_exhibition_id) {
+					$t_exhibition = new ca_occurrences($va_related_exhibition_id);
+					print "<div class='col-sm-12'> <div class='relatedArtwork' style='margin-bottom:20px;'>";
+					print "<p>".caDetailLink($this->request, $t_exhibition->get('ca_occurrences.preferred_labels'), '', 'ca_occurrences', $t_exhibition->get('ca_occurrences.occurrence_id'))."</p>";
+					print "<p>".$t_exhibition->get('ca_occurrences.exhibition_dates', array('delimiter' => '<br/>'))."</p>";
 					print "</div></div>";
 				}
 				print "</div><!-- end col --></div><!-- end row -->";
@@ -114,7 +114,7 @@
 					}
 					$t_archival = new ca_objects($vn_related_archival_id);
 					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem {$vs_style}'>";
-					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_archival->get('ca_object_representations.media.medium'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</div></div>";
+					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_archival->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</div></div>";
 					print "<p>".caDetailLink($this->request, $t_archival->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</p>";
 					print "</div></div>";
 					$vs_arch_count++;
@@ -134,7 +134,7 @@
 					}
 					$t_oralh = new ca_objects($vn_related_oralh_id);
 					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem {$vs_style}'>";
-					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_oralh->get('ca_object_representations.media.medium'), '', 'ca_objects', $t_oralh->get('ca_objects.object_id'))."</div></div>";
+					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_oralh->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_oralh->get('ca_objects.object_id'))."</div></div>";
 					print "<p>".caDetailLink($this->request, $t_oralh->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_oralh->get('ca_objects.object_id'))."</p>";
 					print "</div></div>";
 					$vs_oh_count++;

@@ -114,7 +114,7 @@
 			</div><!-- end col -->
 			<div class='col-sm-6'>
 <?php
-				if ($va_extended = $t_object->getWithTemplate('<unit delimiter="<br/>"><ifdef code="ca_objects.plaque.plaque_text">^ca_objects.plaque.plaque_text</ifdef></unit>')) {
+				if ($va_extended = $t_object->getWithTemplate('<unit delimiter="<br/>"><if rule="^ca_objects.display_website =~ /yes/"><ifdef code="ca_objects.plaque.plaque_text">^ca_objects.plaque.plaque_text</ifdef></if></unit>')) {
 					print "<div class='unit'>".$va_extended."</div>";
 				}	
 				if ($vs_map = $this->getVar('map')) {	
@@ -130,7 +130,7 @@
 		<div class="row objInfo">	
 			<div class="col-sm-12">			
 <?php
-				if ($va_related_ex_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'public_program')))) {
+/*				if ($va_related_ex_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'public_program')))) {
 					
 					print "<hr/>";
 
@@ -144,33 +144,34 @@
 					}
 					print "</div>";
 				}
+*/				
 ?>
 			</div><!-- end col -->
 		</div><!-- end row -->
 		<div class="row objInfo">
-			<div class="col-sm-12">	
+				
 <?php				
 				if ($va_related_artworks = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork')))) {
 
 					print "<hr>";
 
-					print '	<h6 class="header">Related Artworks</h6>';
+					print '	<div class="col-sm-12"><h6 class="header">Other works by this artist</h6></div>';
 					foreach ($va_related_artworks as $va_id => $va_related_artwork_id) {
 						$t_rel_obj = new ca_objects($va_related_artwork_id);
-						print "<div class='col-sm-6'>";
+						print "<div class='col-sm-3'>";
 						print "<div class='relatedArtwork'>";
-						print "<div class='relImg'>".caDetailLink($this->request, $t_rel_obj->get('ca_object_representations.media.iconlarge'), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</div>";
+						print "<div class='relImg'>".caDetailLink($this->request, $t_rel_obj->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</div>";
 						print "<p>".caDetailLink($this->request, "<i>".$t_rel_obj->get('ca_objects.preferred_labels')."</i>", '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</p>";
 						print "</div>";
+						print "</div><!-- end col -->";
 					}			
 				}
 ?>
-			</div><!-- end col -->
 		</div><!-- end row -->
 		<div class="row objInfo">
 			<div class="col-sm-12">	
 <?php							
-				if ($va_related_or_history = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history')))) {
+/*				if ($va_related_or_history = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history')))) {
 					print '<div class="unit"><h6>Related Oral Histories</h6>';
 					foreach ($va_related_or_history as $va_id => $va_related_or_history_id) {
 						$t_rel_or = new ca_objects($va_related_or_history_id);
@@ -179,7 +180,8 @@
 						print "</div>";
 					}
 					print "</div>";
-				}				
+				}
+*/								
 ?>				
 			</div><!-- end col -->	
 		</div><!-- end row --></div><!-- end container -->
