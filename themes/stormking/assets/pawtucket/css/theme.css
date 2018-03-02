@@ -400,8 +400,12 @@ p, .collectionsList p {
 .detail .repViewerCont:hover .detailMediaToolbar {
 	display:none;
 }
+.detail .zoomIcon.unit h6{
+	font-size:14px;
+}
 .artistName {
-	font-size:16px;
+	font-size:18px;
+	font-weight:bold;
 }
 .entities .artistName {
 	font-size:22px;

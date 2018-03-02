@@ -58,18 +58,13 @@
 			</div><!-- end row -->
 <?php
 			# Related Exhibitions
-			if ($va_related_exhibitions = $t_item->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program')))) {
+			if ($va_related_exhibitions = $t_item->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program'), 'sort' => 'ca_occurrences.exhibition_dates'))) {
 				$va_ex_images = caGetDisplayImagesForAuthorityItems('ca_occurrences', $va_related_exhibitions, array('version' => 'iconlarge', 'relationshipTypes' => 'includes', 'objectTypes' => 'artwork', 'checkAccess' => $va_access_values));
 				print "<hr><div class='row'><div class='col-sm-12'>";
 				print '<h6 class="header">Related Exhibitions and Programs</h6>';
 				foreach ($va_related_exhibitions as $va_key => $va_related_exhibition_id) {
 					$t_exhibition = new ca_occurrences($va_related_exhibition_id);
 					print "<div class='col-sm-3'> <div class='relatedArtwork'>";
-					if ($va_ex_images[$va_related_exhibition_id]) {
-						print "<div class='relImg'>".caDetailLink($this->request, $va_ex_images[$va_related_exhibition_id], '', 'ca_occurrences', $t_exhibition->get('ca_occurrences.occurrence_id'))."</div>";
-					} else {
-						print "<div class='bResultItemImgPlaceholder'><i class='fa fa-picture-o fa-2x'></i></div>";
-					}
 					print "<p>".caDetailLink($this->request, $t_exhibition->get('ca_occurrences.preferred_labels'), '', 'ca_occurrences', $t_exhibition->get('ca_occurrences.occurrence_id'))."</p>";
 					print "<p>".$t_exhibition->get('ca_occurrences.exhibition_dates', array('delimiter' => '<br/>'))."</p>";
 					print "</div></div>";
@@ -80,7 +75,7 @@
 			if ($va_related_artworks = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork')))) {
 				$vs_art_count = 0;
 				print "<hr><div class='row'>";
-				print '<div class="col-sm-12"><h6 class="header">Related Artworks</h6></div>';
+				print '<div class="col-sm-12"><h6 class="header">Works by this Artist</h6></div>';
 				print "</div><div class='row'>";
 				foreach ($va_related_artworks as $va_key => $vn_related_artwork_id) {
 					if ($vs_art_count < 4) {
