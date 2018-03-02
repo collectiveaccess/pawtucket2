@@ -156,7 +156,7 @@ p, .collectionsList p {
     font-size: 14px;
     line-height: 18px;
 }
-.btn-default, .btn-default:hover {
+.browse .btn-default, .browse .btn-default:hover {
     height: 30px;
     line-height: 30px;
     background: #000;
