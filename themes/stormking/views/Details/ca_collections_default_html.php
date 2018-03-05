@@ -102,7 +102,7 @@
 						print "<div class='unit'><h6>Scope and Content</h6>".$vs_scope."</div>";
 					}
 					if ($vs_notes = $t_item->get('ca_collections.general_notes')) {
-						print "<div class='unit'><h6>General notes</h6>".$vs_notes."</div>";
+						print "<div class='unit'><h6>Notes</h6>".$vs_notes."</div>";
 					}
 					if ($vs_storage_location = $t_item->get('ca_storage_locations.hierarchy.preferred_labels', array('delimiter' => ' > '))) {
 						print "<div class='unit'><h6>Location</h6>".$vs_storage_location."</div>";

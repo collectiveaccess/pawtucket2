@@ -11,13 +11,13 @@
 	if($qr_collections && $qr_collections->numHits()) {
 		while($qr_collections->nextHit()) {
 			if ( $vn_i == 0) { print "<div class='row'>"; } 
-			print "<div class='col-sm-6'><div class='collectionTile'>";
+			print "<div class='col-sm-5'><div class='collectionTile'>";
 			print "<div class='colImage'>".caDetailLink($this->request, $qr_collections->get("ca_object_representations.media.widepreview", array('primaryOnly' => true)), "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";
 			print "<div class='title'>".caDetailLink($this->request, $qr_collections->get("ca_collections.preferred_labels"), "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";	
 			if (($o_collections_config->get("description_template")) && ($vs_scope = $qr_collections->getWithTemplate($o_collections_config->get("description_template")))) {
 				print "<div class='collectionDetail'>".$vs_scope."</div>";
 			}
-			print "</div></div>";
+			print "</div></div><div class='col-sm-1'></div>";
 			$vn_i++;
 			if ($vn_i == 2) {
 				print "</div><!-- end row -->\n";
