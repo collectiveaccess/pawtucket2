@@ -376,6 +376,9 @@ div.caMediaOverlayControls {
 .forceText, .forceText span{
 	font: 13px/1.65em 'Open Sans', Helvetica, sans-serif !important;
 }
+.repViewerCont img {
+	border: 1px solid #ddd; 
+}
 
 /* Browse */
 
@@ -419,6 +422,10 @@ div.caMediaOverlayControls {
     position: relative;
     display: table-cell;
     vertical-align: middle;
+    overflow:visible !important;
+}
+.bResultItemImg img{
+	border: 1px solid #ddd;
 }
 .bResultItem .bResultItemText {
     margin-top: 8px;
