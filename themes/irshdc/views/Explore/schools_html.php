@@ -64,8 +64,8 @@
 			</div><!-- end row -->
 			<div class='row noPadding'>
 				<div class="col-md-4 col-sm-12 noPadding">
-					<a href="#" class="selected schoolTabButton" id="exploreSchoolMapButton" onClick="toggleTag('exploreSchoolMap'); return false;"><div class="grayBg text-center">
-						<i class="fa fa-map" aria-hidden="true"></i> Map
+					<a href="#" class="selected schoolTabButton" id="exploreSchoolListButton" onClick="toggleTag('exploreSchoolList'); return false;"><div class="grayBg text-center">
+						<i class="fa fa-align-left" aria-hidden="true"></i> List
 					</div></a>
 				</div><!-- end col -->
 				<div class="col-md-4 col-sm-12 noPadding">
@@ -74,8 +74,8 @@
 					</div></a>
 				</div><!-- end col -->
 				<div class="col-md-4 col-sm-12 noPadding">
-					<a href="#" class="schoolTabButton" id="exploreSchoolListButton" onClick="toggleTag('exploreSchoolList'); return false;"><div class="grayBg text-center">
-						<i class="fa fa-align-left" aria-hidden="true"></i> List
+					<a href="#" class="schoolTabButton" id="exploreSchoolMapButton" onClick="toggleTag('exploreSchoolMap'); return false;"><div class="grayBg text-center">
+						<i class="fa fa-map" aria-hidden="true"></i> Map
 					</div></a>
 				</div><!-- end col -->
 			</div><!-- end row -->

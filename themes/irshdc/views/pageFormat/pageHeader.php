@@ -148,7 +148,7 @@
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "<span>"._t("About")."</span>", "", "", "About", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "<span>"._t("Contact")."</span>", "", "", "Contact", "Form"); ?></li>
-					<li><a href="#"><span>Centre Home</span></a></li>
+					<li><a href="http://irshdc.ubc.ca" target="_blank"><span>Centre Home</span></a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

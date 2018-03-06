@@ -89,7 +89,7 @@ H1, h1, H2, h2 {
 }
 body{
 	margin-top:72px;
-	margin-bottom:300px;
+	margin-bottom:350px;
 }
 @media (min-width: 768px) {
 	body{
@@ -166,7 +166,7 @@ body{
 	background-color:#000;
 	color:#ffffff;
 	padding:0px;
-	height:300px;
+	height:auto;
 	border:0px;
 	font-family: LatoLight;
 }
@@ -189,7 +189,7 @@ body{
 	margin-top:-5px;
 }
 #footer .list-inline.footerLinks{
-	padding-top:10px;
+	/*padding-top:10px;*/
 	padding-right:5px;
 }
 #footer .list-inline.footerLinks li{
@@ -394,6 +394,12 @@ div.browseFacetItem a:hover {
 	padding-bottom:40px;
 	font-size:14px;
 }
+.detail H2{
+	color:#605b4b;
+	font-size:12px;
+	text-transform:uppercase;
+	font-family:latoLight;
+}
 .detail H4{
 	margin-bottom:10px;
 }
@@ -410,32 +416,110 @@ div.browseFacetItem a:hover {
 	color:#605b4b;
 	margin:0px;
 	padding:0px;
-	cursor:pointer;
 }
 .detail H3 .fa{
 	font-size:12px;
 }
-.detail a {
-    color: #454545;
-    text-decoration: underline;
+.detail a, .detail a:hover {
+    color: #8a0000;
 }
-.detail .collapseBlock{
+.detail .collapseBlock, .detail .block, .detail .relatedBlock{
 	border-color:#efefef;
 	border-top:1px solid #efefef;
 	padding:10px;
+	clear:both;
 }
 .detail .collapseBlock.last{
 	border-bottom:1px solid #efefef;
+	margin-bottom:15px;
 }
 .detail .collapseBlock .collapseContent{
 	padding-left:10px;
 	padding-right:10px;
 	display:none;
 }
+.detail .collapseBlock H3, .detail H3.collapseBlock  a{
+	cursor:pointer;
+}
 .detail .collapseBlock .collapseContent.open{
 	display:block;
 }
-
+.detail .blockContent{
+	margin-top:8px;
+}
+.detail .block a{
+	display:inline-block;
+	font-family:latoLight;
+	padding:5px 10px 5px 10px;
+	width: 100%;
+	text-decoration: none;
+	text-transform:uppercase;
+	font-size:11px;
+	font-family: lato;
+}
+.detail .block a span{
+	font-size:11px;
+	text-transform:none;
+	color:#454545;
+	font-family: latoLight;
+}
+.detail .block a:hover{
+	background-color:#f0ede4;
+}
+.detail .block a.moreLess{
+	background-color:#FFF;
+	display:inline;
+}
+.detail .relatedBlock .relatedBlockContent a{
+	display:inline-block;
+	background-color:#f0ede4;
+	font-size:11px;
+	margin-bottom:2px;
+	font-family:latoLight;
+	padding:5px;
+	width: 100%;
+	text-decoration: none;
+	color:#454545;
+}
+.detail .relatedBlock .relatedBlockContent a:hover{
+	background-color:#e0d7ba;
+}
+.detail .relatedBlock .relatedBlockContent img{
+	width:100%;
+	height:auto;
+	display:block;
+}
+.detail .relatedBlock .relatedBlockContent span{
+	height:2.4em;
+	overflow:hidden;
+	display:block;
+	line-height: 1.2em;
+	text-align:center;
+	margin:20px 0px 20px 0px;
+}
+.detail .relatedBlockContent{
+	clear:both;
+	margin-top:10px;
+	position:relative;
+}
+.detail .relatedBlock .relatedBlockContent a{
+	margin-bottom:15px;
+}
+.relTabButton{
+	display:inline-block;
+	padding-right:30px;
+	cursor: pointer;
+	color:#b6b3a7;
+}
+.relTabButton:hover{
+	color:#605b4b;
+}
+.relTabButton.selected{
+	color:#605b4b;
+}
+.detail .relatedBlockContent .relTab{
+	display:none;
+}
 .detail .stoneBg{
 	padding:10px;
 	margin-bottom:20px;
@@ -463,12 +547,25 @@ a.readmore-js-toggle {
 	margin-top:0px;
 	padding-top:0px;
 }
+.detail .detailToolsInline .detailTool{
+	float:left;
+	margin-right:0px;
+}
+.detail .detailToolsInline{
+	border-bottom:#EDEDED;
+}
+.detail #detailTools.detailToolsInline a, .detail #detailTools.detailToolsInline span{
+	size:11px;
+}
 .detail #detailTools a, .detail #detailTools span{
 	color:#8a0000;
 }
 .detail a.noUnderline{
 	text-decoration:none !important;
 }
+
+
+/* remove ? */
 .detail a .narrativeThreadLink{
 	margin-top:10px;
 	margin-bottom:10px;
@@ -498,6 +595,8 @@ a.readmore-js-toggle {
 	margin-top: 2px;
 	margin-left: 5px;
 }
+/* end remove block */
+
 .detail H6 a, .detail H6 a:hover{
 	padding:0px;
 	color: #8a0000;
@@ -505,17 +604,38 @@ a.readmore-js-toggle {
 #pageArea.resource .detailMediaToolbar{
 	display:none;
 }
-#detailComments{
+#detailDiscussion, #detailComments{
 	border-top:0px;
+	display:block;
 }
-#detailComments .btn-default{
+#detailDiscussion .btn-default, #detailComments .btn-default{
 	padding: 3px 5px 3px 5px;
 	font-size:10px;
 	margin-top:10px;
 }
-.detail #detailComments {
+.detail #detailDiscussion, .detail #detailComments {
     font-family: latoLight;
     color: #454545;
+    padding: 10px 0px 10px 0px;
+}
+#detailComments{
+	margin-left:10px;
+}
+#detailComments blockquote{
+	margin-top:10px;
+	padding-top:0px;
+}
+.detail #tags a{
+	display:inline !important;
+	padding: 0px;
+	width: auto;
+	text-transform: none;
+	font-family:latoLight;
+	font-size:13px;
+}
+.detail #tags a:hover{
+	text-decoration:underline;
+	background-color:#FFF;
 }
 .detail .redLink{
 	color:#8a0000;
@@ -523,6 +643,17 @@ a.readmore-js-toggle {
 	font-family:lato;
 	text-decoration:none;
 	font-size:11px;
+}
+.detail a.readmore-js-toggle {
+    padding-top: 3px;
+    font-size:11px;
+    text-transform:none !important;
+    font-family:latoLight;
+}
+.popover-title {
+    font-size: 12px;
+    text-transform:none;
+    padding:3px 15px 3px 15px !important;
 }
 /* EXPLORE */
 
@@ -705,7 +836,7 @@ a.readmore-js-toggle {
 	overflow-y:scroll;
 	overflow-x:hidden;
 }
-#exploreSchoolMapContainer{
+#exploreSchoolListContainer{
 	z-index:10;
 }
 .schoolBottom #exploreSchoolListContainer img{
