@@ -28,8 +28,14 @@
 			<div id="featured_set" class="gallery"></div>
 		</div><!-- end col -->
 	</div><!-- end row -->
-<script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery("#featured_set").load("<?php print caNavUrl($this->request, '', 'Gallery', $vn_set_id); ?>");
-	});
-</script>
+<?php
+	if($vn_set_id){
+?>
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			jQuery("#featured_set").load("<?php print caNavUrl($this->request, '', 'Gallery', $vn_set_id); ?>");
+		});
+	</script>
+<?php
+	}
+?>
