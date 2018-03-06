@@ -63,15 +63,15 @@
 	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
-	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
+	$vs_default_placeholder_tag = "<div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div>";
 		
 
-		$vn_col_span = 3;
+		$vn_col_span = 4;
 		$vn_col_span_sm = 4;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = 3;
+			$vn_col_span = 4;
 			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 6;
 		}
@@ -86,7 +86,7 @@
 					$va_ids[] = $qr_res->get($vs_pk);
 					$vn_c++;
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'widepreview', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
@@ -119,14 +119,12 @@
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
 					if ($vs_table == 'ca_objects') {
-						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
+						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values)))){
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
-							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-								$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-							}else{
-								$vs_thumbnail = $vs_default_placeholder_tag;
-							}
+							
+							$vs_thumbnail = $vs_default_placeholder_tag;
+
 						}
 						if ($vs_artist = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'delimiter' => ', '))) {
 							$vs_artist_text = $vs_artist."<br/>";
@@ -174,9 +172,9 @@
 					<div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 					
 				</div><!-- end bResultItemContent -->
-				<div class='bResultItemText'>
+				<div class='bResultItemText'><div class='bResultItemTextInner'>
 					{$vs_artist_text}<span {$vs_style}>{$vs_label_detail_link}</span>{$vs_date_text}{$vs_entity_date_text}
-				</div><!-- end bResultItemText -->
+				</div></div><!-- end bResultItemText -->
 			</div><!-- end bResultItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');

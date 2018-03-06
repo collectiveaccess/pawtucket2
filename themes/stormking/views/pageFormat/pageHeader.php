@@ -107,12 +107,12 @@
 ?>							
 						</li>					
 						<li>
-							<?php print caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "currentexhibitions", array("sort" => "default", "direction" => "desc")); ?>
+							<?php print caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "exhibitions", array("sort" => "default", "direction" => "desc")); ?>
 <?php
-							if ((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) | (($this->request->getController() == "Listing") && ($this->request->getAction() == "currentexhibitions"))) {
+							if ((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) | (($this->request->getController() == "Listing") && ($this->request->getAction() == "currentexhibitions"))  | (($this->request->getController() == "Listing") && ($this->request->getAction() == "exhibitions"))) {
 ?>							
 								<ul class='subMenu'>
-									<li style="padding-top:6px;" <?php print ((($this->request->getController() == "Listing")| ($this->request->getAction() == "currentexhibitions") ) ? 'class="active"' : ''); ?>><?php print caNavLink($this->request, _t("Current & Upcoming"), "", "", "Listing", "currentexhibitions", array("sort" => "default", "direction" => "desc")); ?></li>					
+									<li style="padding-top:6px;" <?php print ((($this->request->getAction() == "currentexhibitions") ) ? 'class="active"' : ''); ?>><?php print caNavLink($this->request, _t("Current & Upcoming"), "", "", "Listing", "currentexhibitions", array("sort" => "default", "direction" => "desc")); ?></li>					
 									<li <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) ? 'class="active"' : ''); ?>><?php print caNavLink($this->request, _t("Past"), "", "", "Browse", "exhibitions"); ?></li>					
 								</ul>
 <?php
@@ -124,7 +124,7 @@
 						<li>
 							<?php print caNavLink($this->request, _t("Archives"), "", "", "About", "archives"); ?> 
 <?php
-							if (($this->request->getController() == "Collections") | (($this->request->getController() == "Listing") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "About") && ($this->request->getAction() == "archives"))) {
+							if (($this->request->getController() == "Collections") | (($this->request->getController() == "Listing") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "About") && ($this->request->getAction() == "archives")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "collections"))) {
 ?>							
 								<ul class='subMenu'>
 									<li style="padding-top:6px;" <?php print (($this->request->getController() == "Listing")| ($this->request->getAction() == "objects") ) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Oral History"), "", "", "Listing", "objects"); ?></li>					
