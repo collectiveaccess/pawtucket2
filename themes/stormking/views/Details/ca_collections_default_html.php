@@ -24,7 +24,13 @@
 					<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
 					<H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6>
 <?php					
-					if ($vn_pdf_enabled) {
+					if ($va_media_upload = $t_item->get('ca_collections.finding_aid_upload.url', array('returnWithStructure' => true, 'returnUrls' => true, 'version' => 'original'))) {
+						foreach ($va_media_upload as $va_key => $va_media_upload_t) {
+							foreach ($va_media_upload_t as $va_ket => $va_media_upload_url) {
+								print "<div class='exportCollection'><a href='".$va_media_upload_url['finding_aid_upload']."'><span class='glyphicon glyphicon-file'></span> Download PDF</a></div>";
+							}
+						}
+					} elseif ($vn_pdf_enabled) {
 						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
 					}
 ?>
