@@ -12,7 +12,10 @@
 <H1><?php print _t("Discover"); ?></H1>
 <div class="row">
 	<div class="col-sm-12">
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent augue nunc, gravida a augue non, tincidunt sagittis justo. Phasellus euismod, elit ac condimentum elementum, ante nisl blandit lorem, sit amet malesuada odio enim id urna. Fusce egestas lacus at pellentesque tristique. In id purus eget metus pellentesque mattis ut ac ligula. Phasellus eu luctus neque. Fusce sagittis condimentum condimentum. Donec ut nunc porttitor, volutpat ligula ut, fermentum nisi. Quisque at hendrerit tortor.</p>
+		<div class="quote">
+			<div class="quoteText">"To put yourself in another's place requires real imagination, but by doing so each Girl Scout will be able to live among others happily."</div>
+			<div class="quoteCredit">&mdash; Juliette Gordon Low, A Message from the Founder of the Girl Scouts, American Girl Magazine October 1923</div>
+		</div>
 	</div>
 </div>
 <div class="row">

@@ -141,7 +141,7 @@ h5 {
 }
 h6 {
 	color:#000;
-	font-weight:bold;
+	font-weight:800;
 }
 p, .collectionsList p {
     font-size: 16px;
@@ -156,7 +156,7 @@ p, .collectionsList p {
     font-size: 14px;
     line-height: 18px;
 }
-.btn-default, .btn-default:hover {
+.browse .btn-default, .browse .btn-default:hover {
     height: 30px;
     line-height: 30px;
     background: #000;
@@ -342,7 +342,7 @@ p, .collectionsList p {
 }
 .detail a {
 	color:#000;
-	text-decoration:none;
+	text-decoration:underline;
 }
 .detail a:hover {
 	color:#000;
@@ -368,6 +368,9 @@ p, .collectionsList p {
 	float:right;
 	margin-bottom:20px;
 }
+.detail .detailNav a {
+	text-decoration:none;
+}
 .detail .detailNav .small {
 	display:inline;
 	padding: 0px 5px 0px 5px;
@@ -385,9 +388,6 @@ p, .collectionsList p {
 .detail .detailLine p {
 	margin-bottom:0px !important;
 }
-.detail .relatedArtwork {
-	margin-bottom:25px;
-}
 .detail .objectInfo {
 	font-size:16px;
 }
@@ -397,19 +397,67 @@ p, .collectionsList p {
 .detail .unit {
 	margin-bottom:15px;
 }
+.detail .repViewerCont:hover .detailMediaToolbar {
+	display:none;
+}
+.detail .zoomIcon.unit h6{
+	font-size:14px;
+}
+.artistName {
+	font-size:18px;
+	font-weight:bold;
+}
+.entities .artistName {
+	font-size:22px;
+}
+.artTitle {
+	font-size:16px;
+}
+.spacer {
+	width:100%;
+	height:10px;
+}
+.objInfo {
+	margin-top:15px;
+}
+.objInfo h6{
+	margin-bottom:10px;
+}
 .relImg {
 	min-height:150px;
-	background-color:#f5f5f5;
 	margin-bottom:5px;
 }
 .relImg img {
 	width:100%;
 	height:auto; 
 }
+.entities .bResultItem .bResultItemText a {
+	text-decoration:none;
+}
 .bResultItemImgPlaceholder {
 	border:0px;
 	color:#000;
 	font-size:14px;
+}
+.entities .bResultItem {
+    border-top: 1px solid #c7c7c7;
+    border-bottom:0px;
+    height: auto;
+}
+.entities .bResultItem:hover {
+	height:auto;
+}
+.entities .bResultItem.noBorder {
+	border:0px;
+}
+.zoomIcon a {
+	text-decoration:none;
+}
+.objectCaption {
+	color:#fff;
+}
+.repViewerContCont:hover .objectCaption {
+	color:#000;
 }
 
 /* Collection */
@@ -584,10 +632,14 @@ p, .collectionsList p {
 }
 .bResultItem .bResultItemText a {
 	color:#000;
+	text-decoration:none;
 }
 #bRefine a {
 	color:#000;
 	font-size:14px;
+}
+.relatedArtwork a {
+	text-decoration:none;
 }
 .bResultListItem {
 	box-shadow:none;
@@ -664,21 +716,27 @@ p, .collectionsList p {
 
 .bResultItemContent {
     text-align: center;
-    display: table;
+    /*display: table;*/
     width: 100%;
-    height: 240px;
+    height: auto;
 }
 .bResultItemImg {
     text-align: center;
     overflow: hidden;
-    height: 240px;
+    height: auto;
     max-height:none !important;
     position: relative;
-    display: table-cell;
+    /*display: table-cell;*/
     vertical-align: middle;
 }
-.bResultItem:hover .bResultItemImg {
-	height:240px;
+.bResultItemImg:hover {
+	height: auto;
+}
+.bResultItem .bResultItemImg {
+	margin-bottom:10px;
+}
+.bResultItem:hover .bResultItemContent {
+	min-height:auto;
 }
 .bResultItem img {
     max-width: 100%;
@@ -690,8 +748,8 @@ p, .collectionsList p {
     margin-top: 8px;
     font-size: 14px;
     line-height: 1.2em;
-    position: absolute;
-    bottom: 10px;
+/*    position: absolute;
+    bottom: 10px;*/
     text-align: left;
     background-color:#FFF;
     max-height: 4.7em;
@@ -700,6 +758,11 @@ p, .collectionsList p {
     width:80%;
     left: 25px;
     */
+    height:60px;
+}
+.bResultItemTextInner{
+	position:absolute;
+	bottom:10px;
 }
 .bResultItem:hover .bResultItemText {
 	bottom:10px;
@@ -708,7 +771,7 @@ p, .collectionsList p {
 	left:10px;*/
 }
 .bResultItem, .bResultItem:hover {
-	height:350px;
+	height:auto;
 	position: relative;
 }
 .bResultItemCol {
