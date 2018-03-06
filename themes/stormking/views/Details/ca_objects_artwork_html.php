@@ -114,7 +114,7 @@
 			</div><!-- end col -->
 			<div class='col-sm-6'>
 <?php
-				if ($va_extended = $t_object->getWithTemplate('<unit delimiter="<br/>"><if rule="^ca_objects.display_website =~ /yes/"><ifdef code="ca_objects.plaque.plaque_text">^ca_objects.plaque.plaque_text</ifdef></if></unit>')) {
+				if ($va_extended = $t_object->getWithTemplate('<unit delimiter="<br/>"><if rule="^ca_objects.plaque.display_website =~ /yes/"><ifdef code="ca_objects.plaque.plaque_text">^ca_objects.plaque.plaque_text</ifdef></if></unit>')) {
 					print "<div class='unit'>".$va_extended."</div>";
 				}	
 				if ($vs_map = $this->getVar('map')) {	
@@ -161,8 +161,11 @@
 						print "<div class='col-sm-3'>";
 						print "<div class='relatedArtwork'>";
 						print "<div class='relImg'>".caDetailLink($this->request, $t_rel_obj->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</div>";
-						print "<p>".caDetailLink($this->request, "<i>".$t_rel_obj->get('ca_objects.preferred_labels')."</i>", '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</p>";
-						print "</div>";
+						print "<p>".caDetailLink($this->request, "<i>".$t_rel_obj->get('ca_objects.preferred_labels')."</i>", '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'));
+						if ($vs_art_date = $t_rel_obj->get('ca_objects.display_date')) {
+							print ", ".$vs_art_date;
+						}
+						print "</p></div>";
 						print "</div><!-- end col -->";
 					}			
 				}
