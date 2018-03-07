@@ -459,6 +459,9 @@ p, .collectionsList p {
 .repViewerContCont:hover .objectCaption {
 	color:#000;
 }
+.relatedExhibitions a {
+	text-decoration:underline;
+}
 
 /* Collection */
 

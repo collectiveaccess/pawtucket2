@@ -3,6 +3,7 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$va_access_values =		caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 '>
@@ -58,7 +59,7 @@
 			</div><!-- end row -->
 <?php
 			#Related Artworks
-			if ($va_related_artworks = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork')))) {
+			if ($va_related_artworks = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork'), 'sort' => 'ca_object_labels.name'))) {
 				$vs_art_count = 0;
 				print "<hr><div class='row'>";
 				print '<div class="col-sm-12"><h6 class="header">Related Artworks</h6></div>';
@@ -90,7 +91,7 @@
 			# Related Exhibitions
 			if ($va_related_exhibitions = $t_item->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program'), 'sort' => 'ca_occurrences.exhibition_dates', 'sortDirection' => 'desc'))) {
 				$va_ex_images = caGetDisplayImagesForAuthorityItems('ca_occurrences', $va_related_exhibitions, array('version' => 'iconlarge', 'relationshipTypes' => 'includes', 'objectTypes' => 'artwork', 'checkAccess' => $va_access_values));
-				print "<hr><div class='row'><div class='col-sm-12'>";
+				print "<hr><div class='row relatedExhibitions'><div class='col-sm-12'>";
 				print '<h6 class="header">Related Exhibitions and Programs</h6>';
 				foreach ($va_related_exhibitions as $va_key => $va_related_exhibition_id) {
 					$t_exhibition = new ca_occurrences($va_related_exhibition_id);
