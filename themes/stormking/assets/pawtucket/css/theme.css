@@ -424,7 +424,6 @@ p, .collectionsList p {
 	margin-bottom:10px;
 }
 .relImg {
-	min-height:150px;
 	margin-bottom:5px;
 }
 .relImg img {
@@ -459,7 +458,7 @@ p, .collectionsList p {
 .repViewerContCont:hover .objectCaption {
 	color:#000;
 }
-.relatedExhibitions a {
+.relatedExhibitions .relatedArtwork a {
 	text-decoration:underline;
 }
 
