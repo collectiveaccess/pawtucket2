@@ -6,7 +6,7 @@
 	$va_sets = caExtractValuesByUserLocale($t_set->getSetsForItem("ca_objects", $t_object->get("object_id"), array("user_id" => $this->request->user->get("user_id"))));
 	$va_lightbox_crumbs = array();
 	foreach($va_sets as $vn_set_id => $va_set){
-		$va_lightbox_crumbs[] = caNavLink($this->request, _t("Lightbox"), "", "", "Lightbox", "Index")." &#8594; ".caNavLink($this->request, $va_set["name"], "", "", "Lightbox", "SetDetail", array("set_id" => $vn_set_id))." &#8594; ".$t_object->get("ca_objects.preferred_labels.name");
+		$va_lightbox_crumbs[] = caNavLink($this->request, _t("Lightbox"), "", "", "Sets", "Index")." &#8594; ".caNavLink($this->request, $va_set["name"], "", "", "Sets", "SetDetail", array("set_id" => $vn_set_id))." &#8594; ".$t_object->get("ca_objects.preferred_labels.name");
 	}
 	$vs_lightbox_crumbs = "";
 	if(sizeof($va_lightbox_crumbs)){
@@ -96,8 +96,8 @@
 				{{{<ifdef min="1" code="ca_objects.idno"><div class="unit"><span class='metaTitle'>ID: </span><span class='meta'>^ca_objects.idno</span></div></ifdef>}}}				
 				{{{<ifcount min="1" code="ca_storage_locations.preferred_labels"><div class='unit'><span class='metaTitle'>Storage Location </span><span class='meta'><unit delimiter="<br/>">^ca_storage_locations.preferred_labels</unit></span></div></ifcount>}}}
 			
-				{{{<ifcount min="1" relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToRelationshipTypes="creator"><div class='unit'><span class='metaTitle'>Creator: </span><span class='meta'><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="creator"><l>^ca_entities.preferred_labels.name</l></unit></span></div></ifcount>}}}
-				{{{<ifcount min="1" relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToRelationshipTypes="publisher"><div class='unit'><span class='metaTitle'>Publisher: </span><span class='meta'><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="publisher"><l>^ca_entities.preferred_labels.name</l></unit></span></div></ifcount>}}}
+				{{{<ifcount min="1" relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToRelationshipTypes="creator"><div class='unit'><span class='metaTitle'>Creator: </span><span class='meta'><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="creator"><l>^ca_entities.preferred_labels</l></unit></span></div></ifcount>}}}
+				{{{<ifcount min="1" relativeTo="ca_entities" code="ca_entities.preferred_labels" restrictToRelationshipTypes="publisher"><div class='unit'><span class='metaTitle'>Publisher: </span><span class='meta'><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="publisher"><l>^ca_entities.preferred_labels</l></unit></span></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.object_dates.object_date"><div class='unit'><span class='metaTitle'>Date: </span><span class='meta'>^ca_objects.object_dates.object_date</span></div></ifdef>}}}
 				{{{<ifcount min="1" code="ca_objects.dc_date.dc_dates_value"><div class='unit'><span class='metaTitle'>Date: </span><span class='meta'><unit delimiter='; '>^ca_objects.dc_date.dc_dates_value</unit></span></div></ifcount>}}}				
 				{{{<ifdef code="ca_objects.archival_description"><div class='unit'><span class='metaTitle'>Item Description: </span><span class='meta'>^ca_objects.archival_description</span></div></ifdef>}}}
@@ -139,10 +139,10 @@
 ?>				
 				{{{<ifcount min="1" relativeTo="ca_occurrences" code="ca_occurrences.preferred_labels"><div class="unit"><span class="metaTitle">Exhibition: </span><span class="meta"><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></span></div></ifcount>}}}				
 <?php	
-				if ($va_rel_entities = $t_object->get('ca_entities', array('template' => '<l>^ca_entities.preferred_labels (^relationship_typename)</l>', 'delimiter' => '<br/>', 'convertCodesToDisplayText' => true))) {
+				if ($va_rel_entities = $t_object->getWithTemplate('<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
 					print "<div class='unit'><span class='metaTitle'>Related Entities: </span><span class='meta'>".$va_rel_entities."</span></div>";
 				}			 
-				if ($va_lcsh_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true))) {
+				if ($va_lcsh_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true, 'returnWithStructure' => true))) {
 					print "<div class='unit '><span class='metaTitle'>Library of Congress Subject Headings</span><span class='meta'>";
 					foreach ($va_lcsh_terms as $k_lchs => $va_lcsh_term) {
 						$va_lcsh = explode("[", $va_lcsh_term['lcsh_terms']);
@@ -160,135 +160,173 @@
 <?php
 	if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('audio', 'document', 'ephemera', 'image', 'moving_image')))) {
 ?>	
-<div class="row">
+<div class="row" style="clear:both;">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 		<div class="container">
-<?php	
-			if (!$this->request->isAjax()) {
-?>		<hr>
-		<H6>Related Archive Items </H6>
-		<div class="archivesBlock ">
-			<div class="blockResults scrollBlock">
-				<!--<div id="archivesscrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div>
-				<div id="archivesscrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>-->
-					<div class="scrollingDiv">
-					<div class="scrollingDivContent">				
+		
+		<div id='archivesBlock'>
+			<H6>Related Archive Items</H6>
+			<div class='blockResults'><div id="archivesscrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="archivesscrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
+				<div id='archivesResults' class='scrollBlock'>
+					<div class='blockResultsScroller'>
 <?php
-				}
-			$va_archive_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('audio', 'document', 'ephemera', 'image', 'moving_image')));
-			foreach ($va_archive_ids as $obj_key => $vn_object_id) { 
-				$t_archive = new ca_objects($vn_object_id); 
-				$vs_icon = "";
-				if($t_archive->get("type_id") == 26){
-					# --- moving image
-					$vs_icon = "<i class='glyphicon glyphicon-film'></i>";	
-				}
-				if($t_archive->get("type_id") == 25){
-					# --- audio
-					$vs_icon = "<i class='glyphicon glyphicon-volume-up'></i>";	
-				}
-				print "<div class='archivesResult'>";
-				print "<div class='resultImg'>".caNavLink($this->request, $vs_icon.$t_archive->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'archives/'.$vn_object_id)."</div>";
-				print "<p>".caNavLink($this->request, $t_archive->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'archives/'.$vn_object_id)."</p>";
-				print "<p>".$t_archive->get('ca_objects.dc_date.dc_dates_value')."</p>";
-				print "</div><!-- archivesResult -->";
-			}
-			if (!$this->request->isAjax()) {		
-?>	
-					</div> <!-- scrollingDivContent -->
-					</div> <!-- scrollingDiv -->
-			</div> <!-- blockResults -->
-		</div> <!-- archivesBlock -->
-<?php
-			}	
-?>	
+						$va_archive_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'returnWithStructure' => true, 'restrictToTypes' => array('audio', 'document', 'ephemera', 'image', 'moving_image')));
+						foreach ($va_archive_ids as $obj_key => $vn_object_id) { 
+							$t_archive = new ca_objects($vn_object_id); 
+							$vs_icon = "";
+							if($t_archive->get("type_id") == 26){
+								# --- moving image
+								$vs_icon = "<i class='glyphicon glyphicon-film'></i>";	
+							}
+							if($t_archive->get("type_id") == 25){
+								# --- audio
+								$vs_icon = "<i class='glyphicon glyphicon-volume-up'></i>";	
+							}
+							print "<div class='archivesResult'>";
+							$va_rep = $t_archive->getPrimaryRepresentation(array('widepreview'), null, array('return_with_access' => caGetUserAccessValues($this->request)));
+							print "<div class='resultImg'>".caNavLink($this->request, $vs_icon.$va_rep['tags']['widepreview'], '', '', 'Detail', 'archives/'.$vn_object_id)."</div>";
+							print "<p>".caNavLink($this->request, $t_archive->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'archives/'.$vn_object_id)."</p>";
+							print "<p>".$t_archive->get('ca_objects.dc_date.dc_dates_value')."</p>";
+							print "</div><!-- archivesResult -->";
+						}
+?>		
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+				jQuery('#archivesResults').hscroll({
+					name: 'archives',
+					itemCount: <?php print sizeof($va_archive_ids); ?>,
+					preloadCount: <?php print sizeof($va_archive_ids); ?>,
+					itemWidth: jQuery('.archivesResult').outerWidth(true),
+					itemsPerLoad: <?php print sizeof($va_archive_ids); ?>,
+					itemLoadURL: '',
+					itemContainerSelector: '.blockResultsScroller',
+					scrollPreviousControlSelector: '#archivesscrollButtonPrevious',
+					scrollNextControlSelector: '#archivesscrollButtonNext',
+					scrollControlDisabledOpacity: 0,
+					scrollControlEnabledOpacity: .5,						
+					cacheKey: ''
+				});
+			});
+		</script>
+		
 		</div><!-- end container -->	
 	</div><!-- end col -->
 </div>	<!-- end row -->
-<script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery('.archiveResults').hscroll({
-			name: 'archives',
-			itemWidth: jQuery('.archivesResult').outerWidth(true),
-			itemsPerLoad: 10,
-			itemContainerSelector: '.blockResultsScroller',
-			sortParameter: 'archivesSort',
-			sortControlSelector: '#archives_sort',
-			scrollPreviousControlSelector: '#archivesscrollButtonPrevious',
-			scrollNextControlSelector: '#archivesscrollButtonNext',
-			scrollControlDisabledOpacity: 0,
-			cacheKey: '{{{cacheKey}}}'
-		});
-	});
-</script>
-
-<script type='text/javascript'>
-	jQuery(document).ready(function() {
-		$('.trimText').readmore({
-		  speed: 75,
-		  maxHeight: 65
-		});
-	});
-</script>
 <?php
 	}
-	if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork')))) {
+		if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork')))) {
 ?>	
-<div class="row">
+<div class="row" style="clear:both;">
 	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 		<div class="container">
-<?php	
-			if (!$this->request->isAjax()) {
-?>		<hr>
-		<H6>Related Artworks</H6>
-		<div class="artworksBlock scrollBlock">
-			<div class="blockResults">
-				<div id="artworksscrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div>
-				<div id="artworksscrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
-				<div id="artworkResults">
-					<div id="blockResultsScroller">				
+		
+		<div id='artworksBlock'>
+			<H6>Related Artworks</H6>
+			<div class='blockResults'><div id="artworksscrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="artworksscrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
+				<div id='artworksResults' class='scrollBlock'>
+					<div class='blockResultsScroller'>
 <?php
-				}
-			$va_artwork_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnAsArray' => true, 'restrictToTypes' => array('artwork')));
-			foreach ($va_artwork_ids as $obj_key => $vn_object_id) {
-				$t_artwork = new ca_objects($vn_object_id);
-				print "<div class='artworksResult'>";
-				print "<div class='resultImg'>".caNavLink($this->request, $t_artwork->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'artworks/'.$vn_object_id)."</div>";
-				print "<p>".caNavLink($this->request, $t_artwork->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'artworks/'.$vn_object_id)."</p>";
-				print "<p class='artist'>".$t_artwork->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'))."</p>";
-				print "<p>".$t_artwork->get('ca_objects.object_dates')."</p>";
-				print "</div><!-- artworksResult -->";
-			}
-			if (!$this->request->isAjax()) {		
-?>	
-					</div> <!-- blockResultsScroller -->
-				</div> <!-- artworksResults -->
-			</div> <!-- blockResults -->
-		</div> <!-- artworksBlock -->
-<?php
-			}	
-?>	
+					$va_artwork_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('artwork')));
+					foreach ($va_artwork_ids as $obj_key => $vn_object_id) {
+						$t_artwork = new ca_objects($vn_object_id);
+						print "<div class='artworksResult'>";
+						$va_rep = $t_artwork->getPrimaryRepresentation(array('widepreview'), null, array('return_with_access' => caGetUserAccessValues($this->request)));
+						print "<div class='resultImg'>".caNavLink($this->request, $va_rep['tags']['widepreview'], '', '', 'Detail', 'artworks/'.$vn_object_id)."</div>";
+						print "<p class='artist'>".$t_artwork->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'))."</p>";						
+						print "<p><i>".caNavLink($this->request, $t_artwork->get('ca_objects.preferred_labels.name'), '', '', 'Detail', 'artworks/'.$vn_object_id).", ".$t_artwork->get('ca_objects.creation_date')."</i></p>";
+						print "</div><!-- artworksResult -->";
+					}
+?>		
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+				jQuery('#artworksResults').hscroll({
+					name: 'artworks',
+					itemCount: <?php print sizeof($va_artwork_ids); ?>,
+					preloadCount: <?php print sizeof($va_artwork_ids); ?>,
+					itemWidth: jQuery('.artworksResult').outerWidth(true),
+					itemsPerLoad: <?php print sizeof($va_artwork_ids); ?>,
+					itemLoadURL: '',
+					itemContainerSelector: '.blockResultsScroller',
+					scrollPreviousControlSelector: '#artworksscrollButtonPrevious',
+					scrollNextControlSelector: '#artworksscrollButtonNext',
+					scrollControlDisabledOpacity: 0,
+					scrollControlEnabledOpacity: .5,						
+					cacheKey: ''
+				});
+			});
+		</script>
+		
 		</div><!-- end container -->	
 	</div><!-- end col -->
 </div>	<!-- end row -->
-<script type="text/javascript">
-	jQuery(document).ready(function() {
-		jQuery('.artworkResults').hscroll({
-			name: 'artworks',
-			itemWidth: jQuery('.artworksResult').outerWidth(true),
-			itemsPerLoad: 10,
-			itemContainerSelector: '.blockResultsScroller',
-			scrollPreviousControlSelector: '#artworksscrollButtonPrevious',
-			scrollNextControlSelector: '#artworksscrollButtonNext',
-			scrollControlDisabledOpacity: 0,
-			cacheKey: '{{{cacheKey}}}'
-		});
-	});
-</script>
 <?php
-	}	
+	}
+	
+	if ($t_object->get('ca_objects.related', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('book')))) {
+?>	
+<div class="row" style="clear:both;">
+	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+		<div class="container">
+		
+		<div id='libraryBlock'>
+			<H6>Related Library Items</H6>
+			<div class='blockResults'><div id="libraryscrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="libraryscrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
+				<div id='libraryResults' class='scrollBlock'>
+					<div class='blockResultsScroller'>
+<?php
+			$va_object_ids = $t_object->get('ca_objects.related.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'returnWithStructure' => true, 'returnAsArray' => true, 'restrictToTypes' => array('book')));
+			
+			if (is_array($va_object_ids) && sizeof($va_object_ids)) {
+				$qr_res = caMakeSearchResult('ca_objects', $va_object_ids);
+				//foreach ($va_object_ids as $obj_key => $vn_object_id) {
+				while($qr_res->nextHit()) {
+					//$t_library = new ca_objects($vn_object_id);
+					print "<div class='libraryResult'>";
+					print "<div class='resultImg'>".caNavLink($this->request, $qr_res->get('ca_object_representations.media.library'), '', '', 'Detail', 'library/'.$qr_res->get('ca_objects.object_id'))."</div>";
+					print "<p>".caNavLink($this->request, $qr_res->get('ca_objects.preferred_labels'), '', '', 'Detail', 'library/'.$qr_res->get('ca_objects.object_id'))."</p>";				
+					print "<p>".caNavLink($this->request, $qr_res->get('ca_entities.preferred_labels.name', array('restrictToRelationshipTypes' => array('author'))), '', '', 'Detail', 'library/'.$qr_res->get('ca_objects.object_id'))."</p>";
+					print "<p>".$qr_res->get('ca_entities.preferred_labels.name', array('restrictToRelationshipTypes' => array('publisher')))."</p>";
+					print "</div><!-- libraryResult -->";
+				}
+			}
+?>	
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+				jQuery('#libraryResults').hscroll({
+					name: 'library',
+					itemCount: <?php print sizeof($va_object_ids); ?>,
+					preloadCount: <?php print sizeof($va_object_ids); ?>,
+					itemWidth: jQuery('.libraryResult').outerWidth(true),
+					itemsPerLoad: <?php print sizeof($va_object_ids); ?>,
+					itemLoadURL: '',
+					itemContainerSelector: '.blockResultsScroller',
+					scrollPreviousControlSelector: '#libraryscrollButtonPrevious',
+					scrollNextControlSelector: '#libraryscrollButtonNext',
+					scrollControlDisabledOpacity: 0,
+					scrollControlEnabledOpacity: .5,						
+					cacheKey: ''
+				});
+			});
+		</script>
+		
+		</div><!-- end container -->	
+	</div><!-- end col -->
+</div>	<!-- end row -->
+<?php
+	}			
 ?>
-
 
 
 <script type='text/javascript'>

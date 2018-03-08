@@ -27,6 +27,10 @@
 					<div class='unit'><H6>Type</H6>{{{^ca_occurrences.type_id}}}</div>
 					{{{<ifdef code="ca_occurrences.idno"><div class='unit'><H6>Identifier</H6>^ca_occurrences.idno</div></ifdef>}}}
 					
+					{{{<ifdef code="ca_occurrences.event_date"><div class='unit'><H6>Date</H6>^ca_occurrences.event_date</div></ifdef>}}}
+					{{{<ifcount code="ca_storage_locations" min="1" max="1"><H6>Location</H6></ifcount>}}}
+					{{{<ifcount code="ca_storage_locations" min="2"><H6>Locations</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_storage_locations" delimiter=", ">^ca_storage_locations.preferred_labels.name</unit>}}}
 					{{{<ifdef code="ca_occurrences.description"><H6>About</H6>^ca_occurrences.description<br/></ifdef>}}}
 					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
 
@@ -69,13 +73,18 @@
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="2">
 			<div class="row">
+				<div class="col-sm-12">
+					<br/><H4>Related Items</H4>
+				</div>
+			</div>
+			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('view' => 'images', 'search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

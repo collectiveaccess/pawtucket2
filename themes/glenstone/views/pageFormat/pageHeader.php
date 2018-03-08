@@ -59,7 +59,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'glenstone_logo.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'glenstone_white.jpg'), "navbar-brand", "", "","");
 ?>
 			</div>
 

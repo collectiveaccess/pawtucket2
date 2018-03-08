@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2016 Whirl-i-Gig
+ * Copyright 2013-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -49,6 +49,7 @@
  		}
  		# ------------------------------------------------------
  		public function Send() {
+ 		    caValidateCSRFToken($this->request);
  			$o_purifier = new HTMLPurifier();
  			# --- check for errors
  			$va_errors = array();

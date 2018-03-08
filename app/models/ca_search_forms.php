@@ -723,7 +723,7 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
 		$va_names = [];
 		while($qr_res->nextRow()) {
 			$t_instance = $o_dm->getInstanceByTableNum($qr_res->get('table_num'), true);
-			$va_restriction_names = array_map(function($v) { return caUcFirstUTF8Safe(caGetListItemForDisplayByItemID($v['type_id'], !$vb_use_singular)); }, $t_form->getTypeRestrictions(null, ['form_id' => $qr_res->get('form_id')]));
+			$va_restriction_names = array_map(function($v) { return caUcFirstUTF8Safe(caGetListItemByIDForDisplay($v['type_id'], !$vb_use_singular)); }, $t_form->getTypeRestrictions(null, ['form_id' => $qr_res->get('form_id')]));
 			
 			switch($t_instance->tableName()) {
 				case 'ca_occurrences':
@@ -1274,13 +1274,23 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
 							$va_query_elements[] = $vs_query_element;
 							break;
 						default:
+							$va_tmp = explode(".", $vs_element);
+							$t_element = ca_metadata_elements::getInstance($vs_element_code = array_pop($va_tmp));
+							switch(ca_metadata_elements::getDataTypeForElementCode($vs_element_code)) {
+								case __CA_ATTRIBUTE_VALUE_INFORMATIONSERVICE__:
+									$o_value = new InformationServiceAttributeValue();
+									$va_data = $o_value->parseValue($vs_query_element, ['settings' => $t_element->getSettings()]);
+								
+									$vs_query_element = $va_data['value_longtext1'];
+									break;
+							}
 							$va_query_elements[] = "({$vs_element}:{$vs_query_element})";
 							break;
 					}
 				}
 			}
 		}
-
+		
 		return join(' AND ', $va_query_elements);
 	}
 	# ------------------------------------------------------

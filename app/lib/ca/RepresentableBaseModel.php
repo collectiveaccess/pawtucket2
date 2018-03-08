@@ -45,7 +45,8 @@
 		 * @param array $pa_versions An array of media versions to include information for. If you omit this then a single version, 'preview170', is assumed by default.
 		 * @param array $pa_version_sizes Optional array of sizes to force specific versions to. The array keys are version names; the values are arrays with two keys: 'width' and 'height'; if present these values will be used in lieu of the actual values in the database
 		 * @param array $pa_options An optional array of options to use when getting representation information. Supported options are:
-		 *		return_primary_only - If true then only the primary representation will be returned
+		 *		return_primary_only - If true then only the primary representation will be returned [Default is false]
+		 *      primaryOnly = Synonym for return_primary_only
 		 *		return_with_access - Set to an array of access values to filter representation through; only representations with an access value in the list will be returned
 		 *		checkAccess - synonym for return_with_access
 		 *		start = 
@@ -73,7 +74,7 @@
 				$pa_versions = array('preview170');
 			}
 		
-			if (isset($pa_options['return_primary_only']) && $pa_options['return_primary_only']) {
+		    if (caGetOption(['primaryOnly', 'return_primary_only'], $pa_options, false)) {
 				$vs_is_primary_sql = ' AND (caoor.is_primary = 1)';
 			} else {
 				$vs_is_primary_sql = '';
@@ -636,7 +637,7 @@
 			$t_oxor->set('representation_id', $t_rep->getPrimaryKey());
 			$t_oxor->set('is_primary', $pb_is_primary ? 1 : 0);
 			$t_oxor->set('rank', isset($pa_options['rank']) ? (int)$pa_options['rank'] : $t_rep->getPrimaryKey());
-			if ($t_oxor->hasField('type_id')) { $t_oxor->set('type_id', isset($pa_options['type_id']) ? (int)$pa_options['type_id'] : null); }
+			if ($t_oxor->hasField('type_id')) { $t_oxor->set('type_id', isset($pa_options['type_id']) ? $pa_options['type_id'] : null); }
 			$t_oxor->insert();
 		
 		
@@ -923,7 +924,21 @@
 			$t_oxor->set('representation_id', $pn_representation_id);
 			$t_oxor->set('is_primary', $pb_is_primary ? 1 : 0);
 			$t_oxor->set('rank', isset($pa_options['rank']) ? (int)$pa_options['rank'] : $pn_representation_id);
-			if ($t_oxor->hasField('type_id')) { $t_oxor->set('type_id', isset($pa_options['type_id']) ? (int)$pa_options['type_id'] : null); }
+			if ($t_oxor->hasField('type_id') && ($pm_type_id = caGetOption('type_id', $pa_options, null))) {
+			    $pn_type_id = null;
+			    if ($pm_type_id && !is_numeric($pm_type_id)) {
+                    $t_rel_type = new ca_relationship_types();
+                    if ($vs_linking_table = $t_rel_type->getRelationshipTypeTable($this->tableName(), $t_oxor->tableName())) {
+                        $pn_type_id = $t_rel_type->getRelationshipTypeID($vs_linking_table, $pm_type_id);
+                    } else {
+                        $this->postError(2510, _t('Type id "%1" is not valid', $pm_type_id), 'RepresentableBaseModel->linkRepresentation()');
+                        return false;
+                    }
+                } else {
+                    $pn_type_id = $pm_type_id;
+                }
+			    $t_oxor->set('type_id', $pn_type_id); 
+			}
 			$t_oxor->insert();
 		
 		
@@ -992,7 +1007,7 @@
 			if (!$pa_mimetypes) { return array(); }
 			if (!is_array($pa_mimetypes) && $pa_mimetypes) { $pa_mimetypes = array($pa_mimetypes); }
 			$va_rep_list = array();
-			if (is_array($va_reps = $this->getRepresentations(null, null, $pa_options))) {
+			if (is_array($va_reps = $this->getRepresentations(caGetOption('versions', $pa_options, null), null, $pa_options))) {
 				foreach($va_reps as $vn_rep_id => $va_rep) {
 					if (in_array($va_rep['mimetype'], $pa_mimetypes)) {	
 						$va_rep_list[$vn_rep_id] = $va_rep;
@@ -1158,6 +1173,82 @@
 			if (!is_array($va_path) || (sizeof($va_path) != 3)) { return null; }
 			$va_path = array_keys($va_path);
 			return $o_dm->getInstanceByTableName($va_path[1], true);
+		}
+		# ------------------------------------------------------
+        /**
+         *
+         */
+        public function getBundleFormValues($ps_bundle_name, $ps_placement_code, $pa_bundle_settings, $pa_options=null) {		
+            foreach(array('restrict_to_types', 'restrict_to_relationship_types') as $vs_k) {
+                $pa_options[$vs_k] = $pa_bundle_settings[$vs_k];
+            }
+            $va_reps = $this->getRepresentations(array('thumbnail', 'original'), null, $pa_options);
+        
+            $t_item = new ca_object_representations();
+            $va_rep_type_list = $t_item->getTypeList();
+            $va_errors = array();
+            
+            $vs_bundle_template = caGetOption('display_template', $pa_bundle_settings, null);
+
+            // Paging
+            $vn_primary_id = 0;
+            $va_initial_values = array();
+            if (sizeof($va_reps)) {
+                $o_type_config = Configuration::load($t_item->getAppConfig()->get('annotation_type_config'));
+                $va_annotation_type_mappings = $o_type_config->getAssoc('mappings');
+
+                // Get display template values
+                $va_display_template_values = array();
+                if($vs_bundle_template && is_array($va_relation_ids = caExtractValuesFromArrayList($va_reps, 'relation_id')) && sizeof($va_relation_ids)) {
+                    if ($vs_linking_table = RepresentableBaseModel::getRepresentationRelationshipTableName($this->tableName())) {
+                        $va_display_template_values = caProcessTemplateForIDs($vs_bundle_template, $vs_linking_table, $va_relation_ids, array_merge($pa_options, array('returnAsArray' => true, 'returnAllLocales' => false, 'includeBlankValuesInArray' => true)));
+                    }
+                }
+
+                $vn_i = 0;
+                foreach ($va_reps as $va_rep) {
+                    $vn_num_multifiles = $va_rep['num_multifiles'];
+                    if ($vs_extracted_metadata = caFormatMediaMetadata(caSanitizeArray(caUnserializeForDatabase($va_rep['media_metadata']), array('removeNonCharacterData' => true)))) {
+                        $vs_extracted_metadata = "<h3>"._t('Extracted metadata').":</h3>\n{$vs_extracted_metadata}\n";
+                    }
+                    $vs_md5 = isset($va_rep['info']['original']['MD5']) ? "<h3>"._t('MD5 signature').':</h3>'.$va_rep['info']['original']['MD5'] : '';
+
+                    if ($va_rep['is_primary']) {
+                        $vn_primary_id = $va_rep['representation_id'];
+                    }
+                
+                    $va_initial_values[$va_rep['representation_id']] = array(
+                        'idno' => $va_rep['idno'], 
+                        '_display' => ($vs_bundle_template && isset($va_display_template_values[$vn_i])) ? $va_display_template_values[$vn_i] : '',
+                        'status' => $va_rep['status'], 
+                        'status_display' => $t_item->getChoiceListValue('status', $va_rep['status']), 
+                        'access' => $va_rep['access'],
+                        'access_display' => $t_item->getChoiceListValue('access', $va_rep['access']), 
+                        'rep_type_id' => $va_rep['type_id'],
+                        'rep_type' => $t_item->getTypeName($va_rep['type_id']), 
+                        'rep_label' => $va_rep['label'],
+                        'is_primary' => (int)$va_rep['is_primary'],
+                        'is_primary_display' => ($va_rep['is_primary'] == 1) ? _t('PRIMARY') : '', 
+                        'locale_id' => $va_rep['locale_id'], 
+                        'icon' => $va_rep['tags']['thumbnail'], 
+                        'mimetype' => $va_rep['info']['original']['PROPERTIES']['mimetype'], 
+                        'annotation_type' => isset($va_annotation_type_mappings[$va_rep['info']['original']['PROPERTIES']['mimetype']]) ? $va_annotation_type_mappings[$va_rep['info']['original']['PROPERTIES']['mimetype']] : null,
+                        'type' => $va_rep['info']['original']['PROPERTIES']['typename'], 
+                        'dimensions' => $va_rep['dimensions']['original'], 
+                        'filename' => $va_rep['info']['original_filename'] ? $va_rep['info']['original_filename'] : _t('Unknown'),
+                        'num_multifiles' => ($vn_num_multifiles ? (($vn_num_multifiles == 1) ? _t('+ 1 additional preview') : _t('+ %1 additional previews', $vn_num_multifiles)) : ''),
+                        'metadata' => $vs_extracted_metadata,
+                        'md5' => $vs_md5 ? "{$vs_md5}" : "",
+                        'typename' => $va_rep_type_list[$va_rep['type_id']]['name_singular'],
+                        'fetched_from' => $va_rep['fetched_from'],
+                        'fetched_on' => date('c', $va_rep['fetched_on']),
+                        'fetched' => $va_rep['fetched_from'] ? _t("<h3>Fetched from:</h3> URL %1 on %2", '<a href="'.$va_rep['fetched_from'].'" target="_ext" title="'.$va_rep['fetched_from'].'">'.$va_rep['fetched_from'].'</a>', date('c', $va_rep['fetched_on'])) : ""
+                    );
+
+                    $vn_i++;
+                }
+            }
+            return $va_initial_values;
 		}
 		# ------------------------------------------------------
 	}

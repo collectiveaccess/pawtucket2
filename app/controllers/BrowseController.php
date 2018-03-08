@@ -189,8 +189,15 @@
 			// Get any preset-criteria
 			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 			
-			if ($vs_facet = $this->request->getParameter('facet', pString)) {
-				$o_browse->addCriteria($vs_facet, explode('|', $this->request->getParameter('id', pString)));
+			if (($vs_facets = $this->request->getParameter('facets', pString)) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
+			    foreach ($va_facets as $vs_facet_spec) {
+			        if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
+			        $vs_facet = array_shift($va_tmp);
+			        $o_browse->addCriteria($vs_facet, explode("|", join(":", $va_tmp))); 
+			    }
+			
+			} elseif (($vs_facet = $this->request->getParameter('facet', pString)) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString))), function($v) { return strlen($v); })) && sizeof($p)) {
+				$o_browse->addCriteria($vs_facet, $p);
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
 					if (is_array($va_base_criteria)) {
@@ -208,14 +215,17 @@
 			//
 			$vb_sort_changed = false;
  			if (!($ps_sort = urldecode($this->request->getParameter("sort", pString)))) {
- 				if (!($ps_sort = $this->opo_result_context->getCurrentSort())) {
- 					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
+ 				$ps_sort = $this->opo_result_context->getCurrentSort();
+ 				if(is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
+ 					if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
  						$ps_sort = array_shift(array_keys($va_sorts));
  						$vb_sort_changed = true;
  					}
  				}
  			}else{
- 				$vb_sort_changed = true;
+ 				if($ps_sort != $this->opo_result_context->getCurrentSort()){
+ 					$vb_sort_changed = true;
+ 				}
  			}
  			if($vb_sort_changed){
 				# --- set the default sortDirection if available
@@ -370,14 +380,14 @@
  			
  			// map
 			if ($ps_view === 'map') {
-				$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000');
+				$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000', 'label' => 'ca_places.preferred_labels.name', 'content' => 'ca_places.preferred_labels.name');
 		
 				$va_opts['ajaxContentUrl'] = caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view));
 			
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
 				$qr_res->seek(0);
 				$o_map->mapFrom($qr_res, $va_view_info['data'], $va_opts);
-				$this->view->setVar('map', $o_map->render('HTML', array()));
+				$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_view_info, 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_view_info, 12), 'request' => $this->request)));
 			}
  			
  			switch($ps_view) {

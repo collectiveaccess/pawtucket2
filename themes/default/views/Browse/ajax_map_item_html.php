@@ -28,5 +28,5 @@
  	// other vars: 
  	// 		ids = list of items associated with this map location
  	//		table = primary table for results in current browse
- 
+ 	print $this->getVar('heading');
 	print $this->getVar('contentTemplate');

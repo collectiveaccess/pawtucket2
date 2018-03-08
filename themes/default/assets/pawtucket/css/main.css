@@ -13,6 +13,9 @@ body {
 	color:#454545;
 	margin-bottom:80px; 
 }
+b, strong{
+	font-family: Lato;
+}
 a, a:hover {
 	color:#19bed1;
 }
@@ -1126,6 +1129,11 @@ a.browseRemoveFacet img {
 		width:220px;
 	}
 }
+.lbSetItemComment .btn-xs, .lbSetComment .btn-xs{
+	padding:5px !important;
+	font-size:10px;
+	margin-top:-10px;
+}
 .lbItemContainerList .lbSetItemComment{
 	left:0px;
 	width:100%;
@@ -1784,6 +1792,12 @@ a.readmore-js-toggle{
 
 .caAudioPlayer{
 	padding-top:26px;
+}
+.detail .exportCollection .fa, .detail .exportCollection .glyphicon, .detail .exportCollection a{
+	color: #858585 !important;
+	font-size: 11px;
+    text-transform: uppercase;
+    text-decoration:none;
 }
 /* --------------------------------- */
 /* browse b */

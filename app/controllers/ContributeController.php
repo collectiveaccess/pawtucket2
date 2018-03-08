@@ -92,7 +92,7 @@
  				foreach($va_response_data['errors'] as $vs_field => $va_errors_for_field) {
  					if (!isset($va_tag_list[$vs_field])) { 
  						foreach($va_errors_for_field as $vn_i => $vs_error_for_field) {
- 							$va_errors_for_field[$vn_i] = "<strong>{$vs_field}</strong>: {$vs_error_for_field}";
+ 							$va_errors_for_field[$vn_i] = "<strong>".$t_subject->getDisplayLabel($vs_field)."</strong>: {$vs_error_for_field}";
  						}
  						$va_response_data['errors']['_general_'] = array_merge($va_response_data['errors']['_general_'], $va_errors_for_field);
  					}	
@@ -413,6 +413,9 @@
 				}
           		$this->_checkErrors($t_subject, $va_response_data, $vn_num_errors); 
             }
+            
+            if (isset($va_form_info['access'])) { $t_subject->set('access', $va_form_info['access']); }
+            if (isset($va_form_info['status'])) { $t_subject->set('status', $va_form_info['status']); }
         
             // Insert
             $t_subject->insert();
@@ -532,6 +535,17 @@
           	
           	$t_subject->update();
           	$this->_checkErrors($t_subject, $va_response_data, $vn_num_errors); 
+
+			# references -> links to table that are embeded in form/ not created by the user
+			# this is useful for cases where the contribute form is linked to from another record and you want to create a link to that record          	
+          	if(($ps_ref_table = $this->request->getParameter('ref_table', pString)) && ($ps_ref_row_id = $this->request->getParameter('ref_row_id', pInteger))){
+          		# --- look up if the relationship type is configured for this reference table
+          		$va_ref_config = caGetOption('references', $va_form_info, array());
+          		if($vs_rel_type = $va_ref_config[$ps_ref_table]){
+          			$t_subject->addRelationship($ps_ref_table, $ps_ref_row_id, $vs_rel_type);
+					if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $va_response_data, $vn_num_errors);} 
+          		}
+          	}
           	
             if($vn_num_errors > 0) {            
             	$va_response_data['numErrors'] = $vn_num_errors;
@@ -549,7 +563,17 @@
             	if (caGetOption('set_post_submission_notification', $va_form_info, false)) {
             		$this->notification->addNotification(caGetOption($vb_has_media ? 'post_submission_notification_message_with_media' : 'post_submission_notification_message', $va_form_info, _t('Thank you!')), __NOTIFICATION_TYPE_INFO__);
             	}
-            
+            	if($vs_admin_email = $this->config->get('admin_notification_email')){	
+            	 	# --- send admin email notification
+ 					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+ 					# -- generate email subject line from template
+					$vs_subject_line = $o_view->render("mailTemplates/admin_contribute_subject.tpl");
+						
+					# -- generate mail text from template - get both the text and the html versions
+					$vs_mail_message_text = $o_view->render("mailTemplates/admin_contribute_notification.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/admin_contribute_notification_html.tpl");
+					caSendmail($vs_admin_email, $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+				}
             	// Redirect to "thank you" page. Options are:        
 				#		splash = redirect to Pawtucket splash/front page
 				#		url = redirect to Pawtucket url specified in post_submission_destination_url directive

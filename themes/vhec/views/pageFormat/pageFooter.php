@@ -30,21 +30,21 @@
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 
 		<div id="footer">
-			<ul class="list-inline pull-right social">
-				<div>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></div>
-			</ul>
 			<div class="list-inline pull-left">
-				<div class='footerLeft'>
-					<p>50 - 950 West 41st Ave, </p>
-					<p>Vancouver BC, V5Z 2N7 </p>
-					<p>Canada</p>
+				<ul class="list-inline pull-left social">
+					<li><a href="https://www.facebook.com/Vancouver-Holocaust-Education-Centre-140874547755/" target="_blank"><i class="fa fa-facebook"></i></a></li>
+					<li><a href="https://twitter.com/VHECCollections" target="_blank"><i class="fa fa-twitter"></i></a></li>
+				</ul>
+				<div class='pull-left footer-left'>
+					<p><b>P: {{{footer_phone}}}&nbsp;&nbsp;&nbsp;E: <a href='mailto:{{{footer_email}}}'>{{{footer_email}}}</a></b></p>
+					<p>{{{footer_address}}}</p>
 				</div>
-				<div class='footerRight'>
-					<p>P: 604.264.0499 </p>
-					<p>F: 604.264.0497  </p>
-					<p>E: <a href='mailto:info@vhec.org'>info@vhec.org</a></p>
-				</div>
-			</div>	
+			</div>
+			
+			<div class="pull-right ca">
+				<div>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2017</a></div>
+			</div>
+			
 			<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end footer -->
 <?php
