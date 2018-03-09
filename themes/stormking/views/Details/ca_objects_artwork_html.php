@@ -77,11 +77,12 @@
 			</div><!-- end col -->
 		</div>	
 		<hr>
-		<div class="row">					
-			<div class="col-sm-6">
+		<div class="row">
+								
+			<div class="col-sm-6" style="padding-left:30px;">
 					
 <?php
-				if ($vs_artist = $t_object->getWithTemplate('<unit relativeTo="ca_entities"><div class="artistName"><l>^ca_entities.preferred_labels</l></div><div>^ca_entities.nationality_text, ^ca_entities.entity_display_date</div></unit>')) { 
+				if ($vs_artist = $t_object->getWithTemplate('<unit relativeTo="ca_entities" delimiter="<br/>"><div class="artistName"><l>^ca_entities.preferred_labels</l></div><div>^ca_entities.nationality_text, ^ca_entities.entity_display_date</div></unit>')) { 
 					print "<div class='tombstone'>".$vs_artist."</div>";
 				}
 				print "<div class='spacer'></div>";

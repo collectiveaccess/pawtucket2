@@ -44,8 +44,8 @@
 		while($qr_list->nextHit()) {
 			if ( $vn_i == 0) { print "<div class='row'>"; } 
 			print "<div class='col-sm-6'><div class='collectionTile'>";
-			print "<div class='colImage'>".caDetailLink($this->request, $qr_list->get("ca_object_representations.media.widepreview"), "", "ca_objects",  $qr_list->get("ca_objects.object_id"))."</div>";
-			print "<div class='title'>".caDetailLink($this->request, $qr_list->get("ca_objects.preferred_labels"), "", "ca_objects",  $qr_list->get("ca_objects.object_id"))."</div>";	
+			print "<div class='colImage'>".caNavLink($this->request, $qr_list->get("ca_object_representations.media.widepreview"), "", "Detail", "oralhistory",  $qr_list->get("ca_objects.object_id"))."</div>";
+			print "<div class='title'>".caNavLink($this->request, $qr_list->get("ca_objects.preferred_labels"), "", "Detail", "oralhistory",  $qr_list->get("ca_objects.object_id"))."</div>";	
 			print "<div class='collectionDetail'>".$qr_list->get("ca_objects.description")."</div>";
 
 			print "</div></div>";

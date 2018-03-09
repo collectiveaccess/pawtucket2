@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$vn_id = $t_item->get('ca_collections.collection_id');
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -141,3 +142,8 @@
 		</div><!-- end container -->
 	</div><!-- end col -->
 </div><!-- end row -->
+<?php
+		if($this->request->isLoggedIn()){
+			print "<a href='http://stormking.collectihost.com/admin/index.php/editor/collections/CollectionEditor/Edit/collection_id/".$vn_id."'>Edit This Record</a>";
+		}
+?>	
