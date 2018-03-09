@@ -78,7 +78,7 @@
 						print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'><div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div></div></div>";
 					}
 					print "<div class='bResultItemText'>";
-					print "<p><i>".caDetailLink($this->request, ($t_artwork->get('ca_objects.preferred_labels') == "Untitled" ? $t_artwork->get('ca_objects.preferred_labels') : "<i>".$t_artwork->get('ca_objects.preferred_labels')."</i>"), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</i>";
+					print "<p>".caDetailLink($this->request, ($t_artwork->get('ca_objects.preferred_labels') == "Untitled" ? $t_artwork->get('ca_objects.preferred_labels') : "<i>".$t_artwork->get('ca_objects.preferred_labels')."</i>"), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'));
 					if ($vs_art_date = $t_artwork->get('ca_objects.display_date')) {
 						print ", ".$vs_art_date;
 					}
