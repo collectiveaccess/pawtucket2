@@ -44,11 +44,11 @@
 ?>
 <div class="container">
 	<div class="row blue">
-		<div class="col-sm-3"></div>
-		<div class="col-sm-6">
+		<div class="col-sm-2"></div>
+		<div class="col-sm-8">
 			<div class='tagLine'>{{{homepage_leader}}}</div>
 		</div><!--end col-sm-8-->
-		<div class="col-sm-3"></div>
+		<div class="col-sm-2"></div>
 	</div><!-- end row -->
 <?php 
 		include_once(__CA_LIB_DIR__."/ca/Search/EntitySearch.php");
@@ -61,7 +61,13 @@
 		print "<div class='row'>
 			<h1 class='blue' style='text-align:center;margin-bottom:10px;'>Heritage Sites</h1><p class='subHead'>Explore the Artifact Collections of each Provincial Heritage Property</p>";
 		while ($qr_members->nextHit()) {
-			print "<div class='col-sm-2'><div class='institution'>".caNavLink($this->request, $qr_members->get('ca_entities.inst_images', array('version' => 'medium')), '', '', 'Detail', 'entities/'.$qr_members->get('ca_entities.entity_id'))."</div></div>";
+			$vs_style = null;
+			if ($qr_members->get('ca_entities.inst_images.medium.height') > $qr_members->get('ca_entities.inst_images.medium.width')) {
+				$vs_style = "tall";
+			} else {
+				$vs_style = "wide";
+			}
+			print "<div class='col-sm-2'><div class='institution {$vs_style}'>".caNavLink($this->request, $qr_members->get('ca_entities.inst_images', array('version' => 'medium')), '', '', 'Detail', 'entities/'.$qr_members->get('ca_entities.entity_id'))."</div></div>";
 			$vn_i++;
 			if ($vn_i == 6) {
 				print "</div><div class='row'><div class='col-sm-1'></div>";
