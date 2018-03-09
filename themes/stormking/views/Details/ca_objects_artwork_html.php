@@ -85,7 +85,12 @@
 					print "<div class='tombstone'>".$vs_artist."</div>";
 				}
 				print "<div class='spacer'></div>";
-				print "<div class='tombstone artTitle'><i>".$t_object->get('ca_objects.preferred_labels')."</i>";
+				print "<div class='tombstone artTitle'>";
+				if ($t_object->get('ca_objects.preferred_labels') == "Untitled") {
+					print $t_object->get('ca_objects.preferred_labels');
+				} else {
+					print "<i>".$t_object->get('ca_objects.preferred_labels')."</i>";
+				}
 				if ($va_date = $t_object->get('ca_objects.display_date')) {
 					print ", ".$va_date;
 				}
@@ -161,7 +166,7 @@
 						print "<div class='col-sm-3'>";
 						print "<div class='relatedArtwork'>";
 						print "<div class='relImg'>".caDetailLink($this->request, $t_rel_obj->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</div>";
-						print "<p>".caDetailLink($this->request, "<i>".$t_rel_obj->get('ca_objects.preferred_labels')."</i>", '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'));
+						print "<p>".caDetailLink($this->request, ( $t_rel_obj->get('ca_objects.preferred_labels') == "Untitled" ? $t_rel_obj->get('ca_objects.preferred_labels') : "<i>".$t_rel_obj->get('ca_objects.preferred_labels')."</i>"), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'));
 						if ($vs_art_date = $t_rel_obj->get('ca_objects.display_date')) {
 							print ", ".$vs_art_date;
 						}

@@ -152,7 +152,7 @@
 					print "<div class='col-sm-6'>";
 					print "<div class='relatedArtwork'>";
 					print "<div class='relImg'>".caDetailLink($this->request, $t_rel_obj->get('ca_object_representations.media.iconlarge'), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</div>";
-					print "<p>".caDetailLink($this->request, $t_rel_obj->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</p>";
+					print "<p>".caDetailLink($this->request, ($t_rel_obj->get('ca_objects.preferred_labels') == "Untitled" ? $t_rel_obj->get('ca_objects.preferred_labels') : "<i>".$t_rel_obj->get('ca_objects.preferred_labels')."</i>"), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</p>";
 					print "</div>";
 					print "</div>";
 				}
