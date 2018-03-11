@@ -45,7 +45,8 @@
 		 * @param array $pa_versions An array of media versions to include information for. If you omit this then a single version, 'preview170', is assumed by default.
 		 * @param array $pa_version_sizes Optional array of sizes to force specific versions to. The array keys are version names; the values are arrays with two keys: 'width' and 'height'; if present these values will be used in lieu of the actual values in the database
 		 * @param array $pa_options An optional array of options to use when getting representation information. Supported options are:
-		 *		return_primary_only - If true then only the primary representation will be returned
+		 *		return_primary_only - If true then only the primary representation will be returned [Default is false]
+		 *      primaryOnly = Synonym for return_primary_only
 		 *		return_with_access - Set to an array of access values to filter representation through; only representations with an access value in the list will be returned
 		 *		checkAccess - synonym for return_with_access
 		 *		start = 
@@ -73,7 +74,7 @@
 				$pa_versions = array('preview170');
 			}
 		
-			if (isset($pa_options['return_primary_only']) && $pa_options['return_primary_only']) {
+		    if (caGetOption(['primaryOnly', 'return_primary_only'], $pa_options, false)) {
 				$vs_is_primary_sql = ' AND (caoor.is_primary = 1)';
 			} else {
 				$vs_is_primary_sql = '';
@@ -636,7 +637,7 @@
 			$t_oxor->set('representation_id', $t_rep->getPrimaryKey());
 			$t_oxor->set('is_primary', $pb_is_primary ? 1 : 0);
 			$t_oxor->set('rank', isset($pa_options['rank']) ? (int)$pa_options['rank'] : $t_rep->getPrimaryKey());
-			if ($t_oxor->hasField('type_id')) { $t_oxor->set('type_id', isset($pa_options['type_id']) ? (int)$pa_options['type_id'] : null); }
+			if ($t_oxor->hasField('type_id')) { $t_oxor->set('type_id', isset($pa_options['type_id']) ? $pa_options['type_id'] : null); }
 			$t_oxor->insert();
 		
 		
@@ -923,7 +924,21 @@
 			$t_oxor->set('representation_id', $pn_representation_id);
 			$t_oxor->set('is_primary', $pb_is_primary ? 1 : 0);
 			$t_oxor->set('rank', isset($pa_options['rank']) ? (int)$pa_options['rank'] : $pn_representation_id);
-			if ($t_oxor->hasField('type_id')) { $t_oxor->set('type_id', isset($pa_options['type_id']) ? (int)$pa_options['type_id'] : null); }
+			if ($t_oxor->hasField('type_id') && ($pm_type_id = caGetOption('type_id', $pa_options, null))) {
+			    $pn_type_id = null;
+			    if ($pm_type_id && !is_numeric($pm_type_id)) {
+                    $t_rel_type = new ca_relationship_types();
+                    if ($vs_linking_table = $t_rel_type->getRelationshipTypeTable($this->tableName(), $t_oxor->tableName())) {
+                        $pn_type_id = $t_rel_type->getRelationshipTypeID($vs_linking_table, $pm_type_id);
+                    } else {
+                        $this->postError(2510, _t('Type id "%1" is not valid', $pm_type_id), 'RepresentableBaseModel->linkRepresentation()');
+                        return false;
+                    }
+                } else {
+                    $pn_type_id = $pm_type_id;
+                }
+			    $t_oxor->set('type_id', $pn_type_id); 
+			}
 			$t_oxor->insert();
 		
 		
@@ -992,7 +1007,7 @@
 			if (!$pa_mimetypes) { return array(); }
 			if (!is_array($pa_mimetypes) && $pa_mimetypes) { $pa_mimetypes = array($pa_mimetypes); }
 			$va_rep_list = array();
-			if (is_array($va_reps = $this->getRepresentations(null, null, $pa_options))) {
+			if (is_array($va_reps = $this->getRepresentations(caGetOption('versions', $pa_options, null), null, $pa_options))) {
 				foreach($va_reps as $vn_rep_id => $va_rep) {
 					if (in_array($va_rep['mimetype'], $pa_mimetypes)) {	
 						$va_rep_list[$vn_rep_id] = $va_rep;

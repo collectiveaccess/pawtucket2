@@ -58,6 +58,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 		$va_default_locales = $o_config->getList('locale_defaults');
 		
 		$va_preferred_locales = array();
+		$va_similar_locales = [];
 		if ($ps_item_locale) {
 			// if item locale is passed as locale_id we need to convert it to a code
 			if (is_numeric($ps_item_locale)) {
@@ -71,6 +72,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 			if ($ps_item_locale) {
 				$va_preferred_locales[$ps_item_locale] = true;
 			}
+			$va_similar_locales = ca_locales::localesForLanguage($ps_item_locale, ['codesOnly' => true]);
 		}
 		
 		if (is_array($pa_preferred_locales)) {
@@ -82,17 +84,24 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 		$va_fallback_locales = array();
 		if (is_array($va_default_locales)) {
 			foreach($va_default_locales as $vs_fallback_locale) {
+			    $va_similar_locales = array_merge($va_similar_locales, ca_locales::localesForLanguage($vs_fallback_locale, ['codesOnly' => true]));
 				if (!isset($va_preferred_locales[$vs_fallback_locale]) || !$va_preferred_locales[$vs_fallback_locale]) {
 					$va_fallback_locales[$vs_fallback_locale] = true;
 				}
 			}
 		}
+		// add locales with same language
+		foreach($va_similar_locales as $vs_similar_locale) {
+		    $va_fallback_locales[$vs_similar_locale] = true;
+		}
+		
 		if ($g_ui_locale) {
 			if (!isset($va_preferred_locales[$g_ui_locale]) || !$va_preferred_locales[$g_ui_locale]) {
 				$va_preferred_locales[$g_ui_locale] = true;
 			}
 		}
-
+		$va_fallback_locales = array_filter($va_fallback_locales, function($v, $k) use ($ps_item_locale, $va_fallback_locales, $va_preferred_locales) { return !isset($va_preferred_locales[$k]) && ($k !== $ps_item_locale); }, ARRAY_FILTER_USE_BOTH);
+		
 		$va_rules = array(
 			'preferred' => $va_preferred_locales,	/* all of these locales will display if available */
 			'fallback' => $va_fallback_locales		/* the first of these that is available will display, but only if none of the preferred locales are available */
@@ -2179,10 +2188,12 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 	 *
 	 * @param string $ps_value
 	 * @param array $pa_directives
+	 * @param array $pa_options Options include:
+	 *      omitUnits = Omit unit specifier on dimensional quantities. [Default is false]
 	 *
 	 * @return string
 	 */
-	function caProcessTemplateTagDirectives($ps_value, $pa_directives) {
+	function caProcessTemplateTagDirectives($ps_value, $pa_directives, $pa_options=null) {
 	    global $g_ui_locale;
 		if (!is_array($pa_directives) || !sizeof($pa_directives)) { return $ps_value; }
 		foreach($pa_directives as $vs_directive) {
@@ -2195,7 +2206,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
                         $vs_measure_conv = null;
                         switch(strtoupper($va_tmp[1])) {
                             case 'INFRAC':
-                                $vs_measure_conv = caLengthToFractions($vo_measurement->convertTo(Zend_Measure_Length::INCH, 4), 8, true);
+                                $vs_measure_conv = caLengthToFractions($vo_measurement->convertTo(Zend_Measure_Length::INCH, 8), 16, true);
                                 break;
                             case 'M':
                                 $vs_measure_conv = $vo_measurement->convertTo(Zend_Measure_Length::METER, 4);
@@ -2220,6 +2231,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
                         }
                     
                         if ($vs_measure_conv) {
+                            if (caGetOption('omitUnits', $pa_options, false)) { $vs_measure_conv = trim(preg_replace("![^\d\-\.\/ ]+!", "", $vs_measure_conv)); }
                             $ps_value = "{$vs_measure_conv}";
                         }
                     } catch (Exception $e) {
@@ -2843,19 +2855,23 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 			switch($o_config->get('allow_ca_objects_representation_download')){
 				case "anyone":
 					$vn_can_download = true;
-				break;
+				    break;
 				# ------------------------------------------
 				case "logged_in":
 					if ($po_request->isLoggedIn()) {
 						$vn_can_download = true;
 					}
-				break;
+				    break;
 				# ------------------------------------------
 				case "logged_in_privileged":
 					if (($po_request->isLoggedIn()) && ($po_request->user->canDoAction('can_download_media'))) {
 						$vn_can_download = true;
 					}
-				break;
+				    break;
+				# ------------------------------------------
+				case "never":
+				    $vn_can_download = false;
+				    break;
 				# ------------------------------------------
 			}
 		}
@@ -2949,26 +2965,26 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 						$vs_content = str_replace($va_l['directive'], $va_l['content'], $vs_content);
 					}
 				}
-				$va_links[] = $vs_content;
+				$va_links[$vn_i] = $vs_content;
 			} else {
 				if (isset($pa_options['requireLinkTags']) && $pa_options['requireLinkTags']) { 
-					$va_links[] = $vs_text;
+					$va_links[$vn_i] = $vs_text;
 					continue;
 				}
 				if ($vb_can_handle_target) {
 					$va_params = array('request' => $g_request, 'content' => $vs_text, 'table' => $ps_table_name, 'id' => $pa_row_ids[$vn_i], 'classname' => $ps_class, 'target' => $ps_target, 'additionalParameters' => null, 'options' => null);
 					$va_params = $o_app_plugin_manager->hookGetAsLink($va_params);
-					$va_links[]  = $va_params['tag'];
+					$va_links[$vn_i]  = $va_params['tag'];
 				} else {
 					switch(__CA_APP_TYPE__) {
 						case 'PROVIDENCE':
-							$va_links[] = ($vs_link = caEditorLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], ($pb_add_rel ? array('rel' => true) : array()))) ? $vs_link : $vs_text;
+							$va_links[$vn_i] = ($vs_link = caEditorLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i], ($pb_add_rel ? array('rel' => true) : array()))) ? $vs_link : $vs_text;
 							break;
 						case 'PAWTUCKET':
-							$va_links[] = ($vs_link = caDetailLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i])) ? $vs_link : $vs_text;
+							$va_links[$vn_i] = ($vs_link = caDetailLink($g_request, $vs_text, $ps_class, $ps_table_name, $pa_row_ids[$vn_i])) ? $vs_link : $vs_text;
 							break;
 						default:
-							$va_links[] = $vs_text;
+							$va_links[$vn_i] = $vs_text;
 							break;
 					}
 				}
@@ -3706,6 +3722,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 		$ps_display_annotations	 			= caGetOption('displayAnnotations', $pa_options, false);
  		$ps_annotation_display_template 	= caGetOption('displayAnnotationTemplate', $pa_options, caGetOption('displayAnnotationTemplate', $va_detail_config['options'], '^ca_representation_annotations.preferred_labels.name'));
 		$pb_hide_overlay_controls			= (bool)caGetOption('hideOverlayControls.', $pa_options, false);
+		$pa_check_acccess 					= caGetOption('checkAccess', $pa_options, null);
 		
 		$vs_caption = $vs_tool_bar = '';
 				
@@ -3720,9 +3737,15 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 				if ($pb_inline) {
 					$vs_caption = ($vs_template = caGetOption('captionTemplate', $pa_options, caGetOption('captionTemplate', $va_display_info, null))) ? $t_instance->getWithTemplate($vs_template) : '';
 				}
+				if (!$t_instance->isReadable($po_request)) { 
+                    throw new ApplicationException(_t('Cannot view media'));
+                }
 				
-				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE')))) {
-					throw new ApplicationException(_t('Invalid viewer'));
+				if (!($vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE'))) {
+				    $vs_mimetype = $t_instance->getMediaInfo('media', 'h264_hi', 'MIMETYPE');
+				}
+				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype))) {
+					throw new ApplicationException(_t('Invalid viewer: %1/%2', $vs_mimetype, $ps_display_type));
 				}
 			
 				$va_display_info = caGetMediaDisplayInfo($ps_display_type, $vs_mimetype);
@@ -3759,11 +3782,11 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 					$po_request, 
 					"representation:{$pn_representation_id}", 
 					['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
-					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls]
+					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 'checkAccess' => $pa_check_acccess]
 				);
 				
 				if ($pb_inline) {	
-					$vs_tool_bar = caRepToolbar($po_request, $t_instance, $pt_subject, array('display' => $ps_display_type, 'context' => $ps_context));
+					$vs_tool_bar = caRepToolbar($po_request, $t_instance, $pt_subject, array('display' => $ps_display_type, 'context' => $ps_context, 'checkAccess' => $pa_check_acccess));
 					$vs_viewer = "<div class='repViewerContCont'><div id='cont{$pn_representation_id}' class='repViewerCont'>{$vs_viewer}{$vs_tool_bar}{$vs_caption}</div></div>";
 				}
 				
@@ -3786,6 +3809,10 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 				$pt_subject = $o_dm->getInstanceByTableNum($t_attr->get('table_num'), true);
 				$pt_subject->load($t_attr->get('row_id'));
 
+                
+				if (!$pt_subject->isReadable($po_request)) { 
+                    throw new ApplicationException(_t('Cannot view media'));
+                }
 				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('value_blob', 'original', 'MIMETYPE')))) {
 					throw new ApplicationException(_t('Invalid viewer'));
 				}
@@ -3794,11 +3821,11 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 					$po_request, 
 					"attribute:{$pn_value_id}", 
 					['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => caGetMediaDisplayInfo($ps_display_type, $vs_mimetype), 'display_type' => $ps_display_type],
-					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls]
+					['viewerWrapper' => caGetOption('inline', $pa_options, false) ? 'viewerInline' : null, 'context' => $ps_context, 'hideOverlayControls' => $pb_hide_overlay_controls, 'checkAccess' => $pa_check_acccess]
 				);
 				
 				if ($pb_inline) {
-					$vs_tool_bar = caRepToolbar($po_request, $t_instance, $pt_subject, array('display' => $ps_display_type, 'context' => $ps_context));
+					$vs_tool_bar = caRepToolbar($po_request, $t_instance, $pt_subject, array('display' => $ps_display_type, 'context' => $ps_context, 'checkAccess' => $pa_check_acccess));
 					$vs_viewer = "<div class='repViewerContCont'><div id='cont{$pn_representation_id}' class='repViewerCont'>{$vs_viewer}{$vs_tool_bar}{$vs_caption}{$vs_tool_bar}</div></div>";
 				}
 				
@@ -3997,8 +4024,11 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
  			
  			foreach($va_representation_ids as $vn_representation_id) {
 				$t_instance = new ca_object_representations($vn_representation_id);
-			
-				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE')))) {
+				
+				if (!($vs_mimetype = $t_instance->getMediaInfo('media', 'original', 'MIMETYPE'))) {
+				    $vs_mimetype = $t_instance->getMediaInfo('media', 'large', 'MIMETYPE');
+			        $vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype);
+			    } elseif (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype))) {
 					throw new ApplicationException(_t('Invalid viewer %1/%2', $ps_display_type, $vs_mimetype));
 				}
 		
@@ -4245,19 +4275,20 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
         foreach([
             'object' => 'ca_objects', 'entity' => 'ca_entities', 'place' => 'ca_places', 
             'occurrrence' => 'ca_occurrences', 'collection' => 'ca_collections', 'loan' => 'ca_loans', 
-            'movement' => 'ca_movements', 'location' => 'ca_storage_locations', 'media' => 'ca_site_page_media'] as $vs_ref_tag => $vs_ref_type
+            'movement' => 'ca_movements', 'location' => 'ca_storage_locations', 'media' => 'ca_site_page_media', 'mediaRef' => 'ca_attributes'] as $vs_ref_tag => $vs_ref_type
         ) { 
             if (preg_match_all("!\[{$vs_ref_tag} ([^\]]+)\]([^\[]+)\[/{$vs_ref_tag}\]!", $ps_text, $va_matches)) {
                 foreach($va_matches[1] as $i => $vs_attr_string) {
-                    if (sizeof($va_vals = caParseAttributes($vs_attr_string, ['idno', 'class', 'version'])) > 0) {
-                        $va_idnos[$vs_ref_type][$va_matches[0][$i]] = ['idno' => $va_vals['idno'], 'class' => $va_vals['class'], 'version' => $va_vals['version'], 'content' => $va_matches[2][$i]]; 
+                    if (sizeof($va_vals = caParseAttributes($vs_attr_string, ['id', 'idno', 'class', 'version'])) > 0) {
+                        $va_vals['content'] = $va_matches[2][$i];
+                        $va_idnos[$vs_ref_type][$va_matches[0][$i]] = array_filter($va_vals, function($v) { return !is_null($v); });
                     }
                 }
             }
             if (preg_match_all("!\[{$vs_ref_tag} ([^\]]+)/\]!", $ps_text, $va_matches)) {
                 foreach($va_matches[1] as $i => $vs_attr_string) {
-                    if (sizeof($va_vals = caParseAttributes($vs_attr_string, ['idno', 'class', 'version'])) > 0) {
-                        $va_idnos[$vs_ref_type][$va_matches[0][$i]] = ['idno' => $va_vals['idno'], 'class' => $va_vals['class'], 'version' => $va_vals['version'], 'content' => '']; 
+                    if (sizeof($va_vals = caParseAttributes($vs_attr_string, ['id', 'idno', 'class', 'version'])) > 0) {
+                        $va_idnos[$vs_ref_type][$va_matches[0][$i]] = array_filter($va_vals, function($v) { return !is_null($v); }); 
                     }
                 }
             }
@@ -4265,6 +4296,22 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
         if (sizeof($va_idnos)) {
             foreach($va_idnos as $vs_ref_type => $va_tags) {
                 switch($vs_ref_type) {
+                    case 'ca_attributes':
+                        foreach($va_tags as $vs_tag => $va_tag) {
+                            $vn_value_id = (int)$va_tag['id'];
+                            
+                            $t_instance = ca_attributes::getRowInstanceForValueID($vn_value_id);
+                            if (!$t_instance->isReadable($po_request)) { continue; }
+                            if ($vs_template = $va_tag['content']) {
+                            
+                                $t_attr = ca_attributes::getAttributeForValueID($vn_value_id);
+                                $ps_text = str_replace($vs_tag, caProcessTemplate($vs_template, $t_attr->getAttributeValues(['returnAs' => 'array', 'version' => caGetOption('version', $va_tag, array_shift($t_attr->getMediaVersions('value_blob')))]), []), $ps_text);
+                            } else {
+                                $t_val = new ca_attribute_values($vn_value_id);
+                                $ps_text = str_replace($vs_tag, $t_val->getMediaTag('value_blob', caGetOption('version', $va_tag, array_shift($t_val->getMediaVersions('value_blob')))), $ps_text);
+                            }
+                        }
+                        break;
                     case 'ca_site_page_media':
                         foreach($va_idnos[$vs_ref_type] as $vs_tag => $va_l) {
                             $va_params = ['idno' => $va_l['idno']];
@@ -4318,5 +4365,27 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
             }
         }
         return $ps_text;
+	}
+	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
+	function caGetLookupUrlsForTables($po_request=null, $pa_tables=null) {
+	    global $g_request;
+	    if (!$po_request) { $po_request = $g_request; }
+	    if (!$po_request) { return []; }
+	    if (!is_array($pa_tables) && !sizeof($pa_tables)) {
+	        $pa_tables = ['ca_objects', 'ca_entities', 'ca_places', 'ca_occurrences', 'ca_collections', 'ca_object_lots', 'ca_loans', 'ca_movements'];
+	    }
+	    
+	    $o_dm = Datamodel::load();
+	    
+	    $va_lookup_urls = [];
+        foreach($pa_tables as $vs_table) {
+            if (!caTableIsActive($vs_table)) { continue; }
+            $va_urls = caJSONLookupServiceUrl($po_request, $vs_table);
+            $va_lookup_urls[$vs_table] = ['singular' => $o_dm->getTableProperty($vs_table, 'NAME_SINGULAR'), 'plural' => $o_dm->getTableProperty($vs_table, 'NAME_PLURAL'), 'code' => strtolower($o_dm->getTableProperty($vs_table, 'NAME_SINGULAR')), 'url' => $va_urls['search']];   
+        }
+        return $va_lookup_urls;
 	}
 	# ------------------------------------------------------------------

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2016 Whirl-i-Gig
+ * Copyright 2008-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -501,13 +501,13 @@
 			$t_instance = null;
 			$vs_table = get_called_class();
 			
+			$t_instance = new $vs_table;
 			if (!is_array($pa_values)) {
 				if ((int)$pa_values > 0) { 
-					$t_instance = new $vs_table;
 					$pa_values = array($t_instance->primaryKey() => (int)$pa_values);
 					if (!isset($pa_options['returnAs'])) { $pa_options['returnAs'] = 'firstModelInstance'; }
 				} elseif($pa_values === '*') {
-					$pa_values = caGetOption('includeDeleted', $pa_options, false) ? [] : ['deleted' => 0];
+					$pa_values = (caGetOption('includeDeleted', $pa_options, false) || !$t_instance->hasField('deleted')) ? [] : ['deleted' => 0];
 				}
 			}
 			
@@ -524,8 +524,6 @@
 			$vb_purify_with_fallback 	= caGetOption('purifyWithFallback', $pa_options, false);
 			$vb_purify 					= $vb_purify_with_fallback ? true : caGetOption('purify', $pa_options, true);
 			
-			
-			if (!$t_instance) { $t_instance = new $vs_table; }
 			$vn_table_num = $t_instance->tableNum();
 			$vs_table_pk = $t_instance->primaryKey();
 			
@@ -551,12 +549,15 @@
 			$pa_values = caNormalizeValueArray($pa_values, ['purify' => $vb_purify]);
 		
 			// Check for intrinsics in value array
+			if (is_array($pa_values) && !sizeof($pa_values)) { 
+			    return parent::find($t_instance->hasField('deleted') ? ['deleted' => 0] : '*', $pa_options);
+			}
 			$vb_has_simple_fields = false;
 			foreach ($pa_values as $vs_field => $va_field_values) {
 				foreach ($va_field_values as  $va_field_value) {
 					$vs_op = $va_field_value[0];
 					$vm_value = $va_field_value[1];
-					if ($vm_value === '*') { return parent::find(['deleted' => 0], $pa_options); }
+					if ($vm_value === '*') { return parent::find($t_instance->hasField('deleted') ? ['deleted' => 0] : '*', $pa_options); }
 					if ($t_instance->hasField($vs_field)) { $vb_has_simple_fields = true; break; }
 				}
 			}
@@ -852,8 +853,7 @@
 										break;
 								}
 						
-						
-								$va_attr_sql[] = join(" AND ", $va_q);
+						        if (sizeof($va_q)) { $va_attr_sql[] = join(" AND ", $va_q); }
 							}
 						}
 					}
@@ -2377,13 +2377,19 @@
 		 * is key'ed on user group group_id; each value is an  array containing information about the group. Array keys are:
 		 *			group_id		[group_id for group]
 		 *			name			[name of group]
-		 *			code				[short alphanumeric code identifying the group]
-		 *			description	[text description of group]
+		 *			code			[short alphanumeric code identifying the group]
+		 *			description		[text description of group]
+		 *			sdatetime		[start date/time of access]
+		 *			edatetime		[end date/time of access]
+		 *			access			[access level]
+		 *
+		 * @param array $pa_options Options include:
+		 *		row_id = Get group list for a specific row rather than the currently loaded one. [Default is null]
 		 *
 		 * @return array List of groups associated with the currently loaded row
 		 */ 
 		public function getUserGroups($pa_options=null) {
-			if (!($vn_id = (int)$this->getPrimaryKey())) { return null; }
+			if (!($vn_id = caGetOption('row_id', $pa_options, null)) && !($vn_id = (int)$this->getPrimaryKey())) { return null; }
 			if (!($vs_group_rel_table = $this->getProperty('USER_GROUPS_RELATIONSHIP_TABLE'))) { return null; }
 			$vs_pk = $this->primaryKey();
 			
@@ -2622,14 +2628,21 @@
 		 * Returns array of users associated with the currently loaded row. The array
 		 * is key'ed on user user user_id; each value is an  array containing information about the user. Array keys are:
 		 *			user_id			[user_id for user]
-		 *			user_name	[name of user]
-		 *			code				[short alphanumeric code identifying the group]
-		 *			description	[text description of group]
+		 *			user_name		[name of user]
+		 *			fname			[first name of user]
+		 *			lname			[last name of user]
+		 *			email			[email address for user]
+		 *			sdatetime		[start date/time of access]
+		 *			edatetime		[end date/time of access]
+		 *			access			[access level]
+		 *
+		 * @param array $pa_options Options include:
+		 *		row_id = Get user list for a specific row rather than the currently loaded one. [Default is null]
 		 *
 		 * @return array List of groups associated with the currently loaded row
 		 */ 
 		public function getUsers($pa_options=null) {
-			if (!($vn_id = (int)$this->getPrimaryKey())) { return null; }
+			if (!($vn_id = caGetOption('row_id', $pa_options, null)) && !($vn_id = (int)$this->getPrimaryKey())) { return null; }
 			if (!($vs_user_rel_table = $this->getProperty('USERS_RELATIONSHIP_TABLE'))) { return null; }
 			$vs_pk = $this->primaryKey();
 			

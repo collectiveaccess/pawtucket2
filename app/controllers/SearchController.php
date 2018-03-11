@@ -103,13 +103,15 @@
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $ps_function);
  			
- 			if($vs_named_search=caGetNamedSearch($vs_search_expression = $this->opo_result_context->getSearchExpression(), $this->request->getParameter('values', pString))) {
+ 			if ($ps_label = $this->request->getParameter('label', pString)) {
+				$this->opo_result_context->setSearchExpressionForDisplay("{$ps_label}: {$vs_search_expression}"); 
+ 			    $vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
+ 			} elseif($vs_named_search=caGetNamedSearch($vs_search_expression = $this->opo_result_context->getSearchExpression(), $this->request->getParameter('values', pString))) {
  		
  				$vs_search_expression_for_display = caGetNamedSearchForDisplay($vs_search_expression, $this->request->getParameter('values', pString));
  				$this->opo_result_context->setSearchExpression($vs_named_search);
  				$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
  				$vs_search_expression = $vs_named_search;
- 				//print "got $vs_search_expression_for_display<br>\n";
  			} else {
 				$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
 			}
@@ -210,11 +212,12 @@
 			
 			if ((bool)$this->request->getParameter('clear', pInteger)) {
 				// Clear all refine critera but *not* underlying _search criterion
-				$va_criteria = $o_browse->getCriteria();
-				foreach($va_criteria as $vs_criterion => $va_criterion_info) {
-					if ($vs_criterion == '_search') { continue; }
-					$o_browse->removeCriteria($vs_criterion, array_keys($va_criterion_info));
-				}
+				if (is_array($va_criteria = $o_browse->getCriteria())) {
+                    foreach($va_criteria as $vs_criterion => $va_criterion_info) {
+                        if ($vs_criterion == '_search') { continue; }
+                        $o_browse->removeCriteria($vs_criterion, array_keys($va_criterion_info));
+                    }
+                }
 			}
 			
 				
@@ -278,7 +281,9 @@
  				}
  				
  			}else{
- 				$vb_sort_changed = true;
+ 				if($ps_sort != $this->opo_result_context->getCurrentSort()){
+ 					$vb_sort_changed = true;
+ 				}
  			}
  			if($vb_sort_changed){
 				# --- set the default sortDirection if available
@@ -405,7 +410,7 @@
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
 				$qr_res->seek(0);
 				$o_map->mapFrom($qr_res, $va_view_info['data'], $va_opts);
-				$this->view->setVar('map', $o_map->render('HTML', array()));
+				$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_view_info, 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_view_info, 12), 'request' => $this->request)));
 			}
  			
  			

@@ -448,6 +448,8 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 		
 		if(!is_array($pa_options)) { $pa_options = array(); }
 		
+        $o_view->setVar('lookup_urls', caGetLookupUrlsForTables($po_request));
+		
 		$o_view->setVar('id_prefix', $ps_form_name);
 		$o_view->setVar('placement_code', $ps_placement_code);		// pass placement code
 		

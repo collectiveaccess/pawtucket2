@@ -16,6 +16,7 @@
 		
 		<p><i>On-Site Access</i></p>
 		<p>During the summer season, the Norton Owen Reading Room is open daily from noon until final curtain. Everyone is welcome and encouraged to come explore – including Pillow students, faculty, visiting artists, long-time patrons or first time visitors - and there is no appointment necessary. Simply stop by Blake’s Barn!</p>
+        <p>Throughout the winter months and off-season, the Archives may be visited during regular business hours by <a href='http://archives.jacobspillow.org/index.php/Contact/form' target='_blank'>appointment</a>.</p>
 		<p>Visitors can peruse our print collection of over 2500 books and periodicals, watch our award-winning Pillow documentary Never Stand Still on our big screen, and have immediate access to over 6000 performance and other Pillow related video documentation. Full versions of nearly every performance from the past 35 years are available here for viewing, along with talks, rehearsals, classes, interviews, and films dating from the earliest days of the Pillow.</p>
 		
 		<p><i>Events</i></p>
@@ -30,7 +31,7 @@
 			<li>Doris Duke Theatre Lobby</li>
 		</ul>
 		<p>Please visit our <a href='http://www.jacobspillow.org' target='_blank'>main site</a> to learn more about upcoming events and exhibitions.</p>
-		<p>Throughout the winter months and off-season, the Archives may be visited during regular business hours by appointment. (link to contact page – see below)</p>
+		
 		
 		<p><i>Off-Site Access</i></p>
 		

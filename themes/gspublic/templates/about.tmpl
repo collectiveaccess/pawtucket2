@@ -1,0 +1,30 @@
+<?php
+		$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/about/";
+		$vn_filecount = 0;
+		$va_files = glob($vs_directory . "*");
+		if ($va_files){
+		 $vn_filecount = count($va_files);
+		}
+		
+		print "<div class='bannerImg'><img src='".__CA_THEME_URL__."/assets/pawtucket/graphics/about/".rand(1,$vn_filecount).".jpg'></div>";
+?>
+<H1>{{{title}}}</H1>
+<div class="row">
+	<div class="col-sm-8">
+		{{{bodytext}}}
+		<br/>
+		<br/>
+		<br/>
+	</div>
+	<div class="col-sm-3 col-sm-offset-1">
+		<h2><b>Contact Us</b></h2>
+		<address>
+			<b>Cultural & Property Assets</b><br/>
+			420 Fifth Avenue<br/>
+			New York, NY 10018
+			<br/><br/>
+			<a href="mailto:culturalresourcesrequests@girlsscouts.org" class="btn-default" title="culturalresourcesrequests@girlsscouts.org">Email <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span></a>
+		</address>
+		
+	</div>
+</div>
