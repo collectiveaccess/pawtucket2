@@ -35,9 +35,9 @@
 						if($qr_schools->numHits()){
 							while($qr_schools->nextHit()){
 								print "<div class='col-md-2 col-sm-6'>";
-								$vs_image = $qr_schools->getWithTemplate("<unit relativeTo='ca_entities'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+								$vs_image = $qr_schools->getWithTemplate("<unit relativeTo='ca_entities' length='1'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 								if(!$vs_image){
-									$vs_image = $qr_schools->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='depicted'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+									$vs_image = $qr_schools->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 								}
 								if($vs_image){
 									print "<div>".caDetailLink($this->request, $vs_image, '', 'ca_entities', $qr_schools->get("entity_id"))."</div>";
@@ -64,8 +64,8 @@
 			</div><!-- end row -->
 			<div class='row noPadding'>
 				<div class="col-md-4 col-sm-12 noPadding">
-					<a href="#" class="selected schoolTabButton" id="exploreSchoolMapButton" onClick="toggleTag('exploreSchoolMap'); return false;"><div class="grayBg text-center">
-						<i class="fa fa-map" aria-hidden="true"></i> Map
+					<a href="#" class="selected schoolTabButton" id="exploreSchoolListButton" onClick="toggleTag('exploreSchoolList'); return false;"><div class="grayBg text-center">
+						<i class="fa fa-align-left" aria-hidden="true"></i> List
 					</div></a>
 				</div><!-- end col -->
 				<div class="col-md-4 col-sm-12 noPadding">
@@ -74,8 +74,8 @@
 					</div></a>
 				</div><!-- end col -->
 				<div class="col-md-4 col-sm-12 noPadding">
-					<a href="#" class="schoolTabButton" id="exploreSchoolListButton" onClick="toggleTag('exploreSchoolList'); return false;"><div class="grayBg text-center">
-						<i class="fa fa-align-left" aria-hidden="true"></i> List
+					<a href="#" class="schoolTabButton" id="exploreSchoolMapButton" onClick="toggleTag('exploreSchoolMap'); return false;"><div class="grayBg text-center">
+						<i class="fa fa-map" aria-hidden="true"></i> Map
 					</div></a>
 				</div><!-- end col -->
 			</div><!-- end row -->

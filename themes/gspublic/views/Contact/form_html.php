@@ -12,10 +12,10 @@
 		$vs_name = $t_item->get("ca_objects.preferred_labels.name");
 		$vs_idno = $t_item->get("ca_objects.idno");
 	}
-	$pn_collecion_id = $this->request->getParameter("collection_id", pInteger);
-	if($pn_collecion_id){
+	$pn_collection_id = $this->request->getParameter("collection_id", pInteger);
+	if($pn_collection_id){
 		require_once(__CA_MODELS_DIR__."/ca_collections.php");
-		$t_item = new ca_collections($pn_collecion_id);
+		$t_item = new ca_collections($pn_collection_id);
 		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "collections", $t_item->get("ca_collections.collection_id"));
 		$vs_name = $t_item->get("ca_collections.preferred_labels.name");
 		$vs_idno = $t_item->get("ca_collections.idno");
@@ -40,6 +40,14 @@
 	}else{
 		print "<H1>"._t("Ask An Archivist")."</H1>";	
 	}
+?>
+		<div class="quote">
+			<div class="quoteText">
+				"This hunger to grow is the real YOU. It is the real ME. However much we laugh at other things, we must take seriously the thing inside which pushes us to build our lives."
+			</div>
+			<div class="quoteCredit">&mdash; Jane Deeter Rippin, Girl Scout National Executive Director, 1919-1930</div>
+		</div>
+<?php
 	if(sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
@@ -51,9 +59,10 @@
 ?>
 		<div class="row">
 			<div class="col-sm-10">
-				<h2>Please use this form to inquire about a specific item in our archive.</h2>
+				<hr/>
+				<h2><b>Please use this form to inquire about a specific item in our archive.</b></h2>
 				<H2><b>Item title: </b><?php print $vs_name; ?></H2>
-				<H2><b>Item identifier: </b><?php print $vs_idno; ?></H2>
+				<!--<H2><b>Item identifier: </b><?php print $vs_idno; ?></H2>-->
 
 				<H2><b>Regarding this URL: </b><a href="<?php print $vs_url; ?>"><?php print $vs_url; ?></a></H2>
 				<br/>
@@ -97,4 +106,5 @@
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 		<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
 		<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
+		<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
 	</form>

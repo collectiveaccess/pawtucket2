@@ -61,7 +61,7 @@
 
 						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter=", ">^ca_objects.language</unit></div></ifdef>}}}
 						
-						{{{<ifdef code="ca_objects.dc_description"><div class='unit'>^ca_objects.dc_description</div></ifdef>}}}
+						{{{<ifdef code="ca_objects.description"><div class='unit'>^ca_objects.description</div></ifdef>}}}
 					</div><!-- end stoneBg -->
 <?php
 					$vs_related = "";
@@ -108,7 +108,7 @@
 					{{{<ifdef code="ca_objects.dc_website"><div class='detailTool'><span class='glyphicon glyphicon-new-window'></span><a href="^ca_objects.dc_website" target="_blank">View Website</a></div></ifdef>}}}
 					
 <?php					
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask an Archivist", "", "", "Contact", "Form", array("contactType" => "askArchivist", "object_id" => $t_object->get("object_id")))."</div>";
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "object_id" => $t_object->get("object_id")))."</div>";
 					
 					print '</div><!-- end detailTools -->';			
 					

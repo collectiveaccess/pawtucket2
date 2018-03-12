@@ -29,12 +29,27 @@
  *
  * ----------------------------------------------------------------------
  */
-	$vs_image_url = $this->request->getThemeUrlPath()."/assets/pawtucket/graphics/archives_home.jpg";
+	$vs_image_url = $this->request->getThemeUrlPath()."/assets/pawtucket/graphics/sketch.jpg";
+	
+
 ?>
 	<div id="main-background" style="background-image:url(<?php  print $vs_image_url; ?>)"></div>
 
 	<div class="content-narrow">
 		<h1>Archives</h1>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tempor tristique tristique. Duis sit amet metus porta ex fringilla placerat. Morbi efficitur iaculis dapibus. Integer convallis lacus quis pulvinar malesuada. Mauris scelerisque lobortis orci sit amet fermentum. Mauris lobortis elementum nisi non cursus. Aliquam vitae tincidunt lorem. Pellentesque vitae felis vel ligula blandit tincidunt. Nulla varius lorem et augue iaculis rutrum.</p>
-		<p>Fusce pellentesque ex metus, id dictum metus rhoncus eu. Curabitur sagittis tellus tempus quam pharetra, nec faucibus massa porta. Phasellus pellentesque lorem scelerisque ligula tempor tempor. Sed in est id lectus ultricies dictum. Vestibulum congue mi id elit maximus pulvinar. Ut ultricies at felis a porttitor. </p>
+		<p class="trimText">
+			As a repository and memory infrastructure for both historical and current documentation, Storm King Art Center’s Archives collects, organizes, preserves and makes accessible multi-format records of enduring value which document Storm King’s development, collections, installations, exhibitions and ongoing activities. <a href="#" style="font-weight:bold;text-decoration:underline;" onclick="$('#archivesMore').toggle(300);return false;">Read More</a>
+		</p>
+		<p id="archivesMore" style="display:none;">
+			They are made available for the administrative support of current museum activities, the successful stewardship of its collections, and for research conducted by staff and the public. In addition, a robust archival program directly reflects Storm King’s visionary curatorial and educational mission to contribute to art historical scholarship and contemporary art discourse, enhance internal and external collaboration through resource integration, and inspire an active and engaging Storm King experience for all.	
+		</p>	
+
+		<p>
+			Among the Archive’s Special Collections, the Oral History Program offers a dynamic point of entry. Presented alongside archival materials referenced in interviews, the oral histories provide historical narratives that detail the curation and maintenance of the collection from the perspective of institutional leaders, as well as in-depth accounts from artists of creating commissioned work sited and shown at Storm King.		
+		</p>
+		<p>
+			<i>Support for Storm King Art Center’s Oral History Program and Archival Program is made possible by generous lead support from the Henry Luce Foundation. Support is also provided by the Pine Tree Foundation.</i>		
+		</p>		
 	</div><!--end col-sm-8-->
+	
+	

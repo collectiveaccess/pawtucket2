@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$vn_id = $t_item->get('ca_collections.collection_id');
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -24,7 +25,13 @@
 					<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
 					<H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6>
 <?php					
-					if ($vn_pdf_enabled) {
+					if ($va_media_upload = $t_item->get('ca_collections.finding_aid_upload.url', array('returnWithStructure' => true, 'returnUrls' => true, 'version' => 'original'))) {
+						foreach ($va_media_upload as $va_key => $va_media_upload_t) {
+							foreach ($va_media_upload_t as $va_ket => $va_media_upload_url) {
+								print "<div class='exportCollection'><a href='".$va_media_upload_url['finding_aid_upload']."'><span class='glyphicon glyphicon-file'></span> Download PDF</a></div>";
+							}
+						}
+					} elseif ($vn_pdf_enabled) {
 						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
 					}
 ?>
@@ -102,7 +109,7 @@
 						print "<div class='unit'><h6>Scope and Content</h6>".$vs_scope."</div>";
 					}
 					if ($vs_notes = $t_item->get('ca_collections.general_notes')) {
-						print "<div class='unit'><h6>General notes</h6>".$vs_notes."</div>";
+						print "<div class='unit'><h6>Notes</h6>".$vs_notes."</div>";
 					}
 					if ($vs_storage_location = $t_item->get('ca_storage_locations.hierarchy.preferred_labels', array('delimiter' => ' > '))) {
 						print "<div class='unit'><h6>Location</h6>".$vs_storage_location."</div>";
@@ -119,7 +126,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'archival', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -135,3 +142,8 @@
 		</div><!-- end container -->
 	</div><!-- end col -->
 </div><!-- end row -->
+<?php
+		if($this->request->isLoggedIn()){
+			print "<a href='http://stormking.collectihost.com/admin/index.php/editor/collections/CollectionEditor/Edit/collection_id/".$vn_id."'>Edit This Record</a>";
+		}
+?>	

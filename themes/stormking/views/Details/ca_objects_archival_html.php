@@ -127,7 +127,7 @@
 					foreach ($va_related_or_history as $va_id => $va_related_or_history_id) {
 						$t_rel_or = new ca_objects($va_related_or_history_id);
 						print "<div class='detailLine'>";
-						print "<p>".caDetailLink($this->request, $t_rel_or->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_or->get('ca_objects.object_id'))."</p>";
+						print "<p>".caNavLink($this->request, $t_rel_or->get('ca_objects.preferred_labels'), '', 'Detail', 'oralhistory', $t_rel_or->get('ca_objects.object_id'))."</p>";
 						print "</div>";
 					}
 					print "</div>";
@@ -152,7 +152,7 @@
 					print "<div class='col-sm-6'>";
 					print "<div class='relatedArtwork'>";
 					print "<div class='relImg'>".caDetailLink($this->request, $t_rel_obj->get('ca_object_representations.media.iconlarge'), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</div>";
-					print "<p>".caDetailLink($this->request, $t_rel_obj->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</p>";
+					print "<p>".caDetailLink($this->request, ($t_rel_obj->get('ca_objects.preferred_labels') == "Untitled" ? $t_rel_obj->get('ca_objects.preferred_labels') : "<i>".$t_rel_obj->get('ca_objects.preferred_labels')."</i>"), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</p>";
 					print "</div>";
 					print "</div>";
 				}
@@ -171,7 +171,11 @@
 		</div><!-- end container -->
 	</div><!-- end col -->
 </div><!-- end row -->
-
+<?php
+		if($this->request->isLoggedIn()){
+			print "<a href='http://stormking.collectihost.com/admin/index.php/editor/objects/ObjectEditor/Edit/object_id/".$vn_id."'>Edit This Record</a>";
+		}
+?>	
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({

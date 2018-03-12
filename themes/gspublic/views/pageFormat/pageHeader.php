@@ -144,7 +144,7 @@
 						<li class='dropdown<?php print (($this->request->getController() == "About")&&($this->request->getAction() != "browse")) ? ' active' : ''; ?>' style="position:relative;">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
 							<ul class="dropdown-menu">
-								<li><?php print caNavLink($this->request, _t("About the GSUSA Collection"), "", "", "About", "Collection"); ?></li>
+								<li><?php print caNavLink($this->request, _t("About the Cultural & Property Assets Department"), "", "", "About", "Collection"); ?></li>
 								<li><?php print caNavLink($this->request, _t("About Girl Scouts of the USA"), "", "", "About", "GSUSA"); ?></li>
 								<li><?php print caNavLink($this->request, _t("Rights, Reproduction and Usage"), "", "", "About", "Usage"); ?></li>
 								<li><?php print caNavLink($this->request, _t("Research Services"), "", "", "About", "Services"); ?></li>

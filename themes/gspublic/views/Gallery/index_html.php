@@ -24,10 +24,19 @@
 
 ?>				
 					<H1><?php print $this->getVar("section_name"); ?></H1>
-					<p style="margin-bottom:35px;">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc fermentum in mi pellentesque ornare. Mauris bibendum ipsum nec massa pharetra, consectetur tempor felis elementum. Fusce nec magna sodales, convallis sem id, tempus libero. Proin gravida ut neque eget vehicula. Aliquam pulvinar arcu sit amet viverra imperdiet. Nullam semper risus nec dapibus efficitur. Praesent a justo ut lorem luctus aliquet. Quisque ac felis eleifend, varius eros eu, tincidunt sapien. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec sagittis orci cursus sagittis viverra. Nunc non rhoncus magna. Maecenas iaculis scelerisque tellus, ut rhoncus lectus ornare a. Fusce in leo et magna maximus hendrerit eleifend id dui.</p>
-					<!--<div id="gallerySetInfo">
-						set info here
-					</div>-->
+					<div class="quote">
+						<div class="quoteText">
+							<strong>Lines to a Golden Eaglet</strong><br/>
+							I would wish you the range of the eaglet's eye<br/>
+							And the strength of his wings, that your spirit may fly<br/>
+							Over all of life's turmoil, your purpose held high.<br/>
+							I would wish you the courage to walk unafraid,<br/>
+							Wearing proudly the symbol of your accolade.
+						</div>
+						<div class="quoteCredit">
+							&mdash; Birdsall Otis Edey, National Presidents of Girl Scouts of the USA 1930-1935, from Builders: Poems by Birdsall Otis Edey, 1940
+						</div>
+					</div>		
 				</div><!-- end col -->
 <?php
 				if(sizeof($va_sets) > 1){

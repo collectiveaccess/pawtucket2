@@ -25,8 +25,8 @@
 		<div class="row">			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
-				if ($vs_exhibition_types = $t_item->get('ca_occurrences.solo_group', array('convertCodesToDisplayText' => true))) {
-					print "<div class='unit'><h6>Type</h6>".$vs_exhibition_types."</div>";
+				if ($vs_description = $t_item->get('ca_occurrences.description')) {
+					print "<div class='unit'>".$vs_description."</div>";
 				}
 				if ($va_venue = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue')))){
 					print "<div class='unit'><h6>Venue</h6>".$va_venue."</div>";
@@ -39,7 +39,7 @@
 					foreach ($va_related_or_history as $va_id => $va_related_or_history_id) {
 						$t_rel_or = new ca_objects($va_related_or_history_id);
 						print "<div class='detailLine'>";
-						print "<p>".caDetailLink($this->request, $t_rel_or->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_or->get('ca_objects.object_id'))."</p>";
+						print "<p>".caNavLink($this->request, $t_rel_or->get('ca_objects.preferred_labels'), '', 'Detail', 'oralhistory', $t_rel_or->get('ca_objects.object_id'))."</p>";
 						print "</div>";
 					}
 				}				
@@ -48,9 +48,7 @@
 			</div><!-- end col -->
 			<div class='col-md-6 col-lg-6'>
 <?php
-				if ($vs_description = $t_item->get('ca_occurrences.description')) {
-					print "<div class='unit'>".$vs_description."</div>";
-				}
+
 				if ($va_remarks_images = $t_item->get('ca_occurrences.bibliography', array('returnWithStructure' => true, 'version' => 'medium'))) {
 					foreach ($va_remarks_images as $vn_attribute_id => $va_remarks_image_info) {
 						foreach ($va_remarks_image_info as $vn_value_id => $va_remarks_image) {
@@ -86,7 +84,7 @@
 					}
 				}
 				if ($vs_website = $t_item->get('ca_occurrences.exhibition_website')) {
-					print "<div class='unit'><h6><i class='fa fa-external-link-square'></i> <a href='".$vs_website."' target='_blank'>View Website</a></h6></div>";
+					print "<div class='unit zoomIcon'><h6><i class='fa fa-external-link-square'></i> <a href='".$vs_website."' target='_blank'>View Website</a></h6></div>";
 				}				
 ?>			
 			</div><!-- end col -->
