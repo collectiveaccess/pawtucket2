@@ -112,7 +112,7 @@
 				<div class="container"><div class="row"><div class="col-sm-12">	
 <?php
 				if ($va_related_ex_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'public_program')))) {
-					print '<div class="unit"><h6>Related Exhibitions & Programs</h6>';
+					print '<div class="unit"><h6>Exhibitions & Programs</h6>';
 					foreach ($va_related_ex_ids as $va_id => $va_related_ex_id) {
 						$t_rel_ex = new ca_occurrences($va_related_ex_id);
 						print "<div class='detailLine'>";
@@ -123,7 +123,7 @@
 					print "</div>";
 				}
 				if ($va_related_or_history = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history')))) {
-					print '<div class="unit"><h6>Related Oral Histories</h6>';
+					print '<div class="unit"><h6>Oral Histories</h6>';
 					foreach ($va_related_or_history as $va_id => $va_related_or_history_id) {
 						$t_rel_or = new ca_objects($va_related_or_history_id);
 						print "<div class='detailLine'>";
@@ -145,7 +145,7 @@
 				print "<div class='col-sm-6'>";
 				print '<div class="col-sm-12">	
 							<hr>
-							<h6 class="header">Related Artworks</h6>
+							<h6 class="header">Artworks</h6>
 						</div>';
 				foreach ($va_related_artworks as $va_id => $va_related_artwork_id) {
 					$t_rel_obj = new ca_objects($va_related_artwork_id);
