@@ -42,16 +42,18 @@
 		</ul>
 	</div><!-- end jcarousel -->
 
-	<!-- Prev/next controls  
+	<!-- Prev/next controls  -->
 	<div id='detailRepNav'>
 		<a href='#' id='detailRepNavPrev' title='<?php print _t("Previous"); ?>'><span class='fa fa-chevron-left'></span></a> 
+		
+	    <span id="detailRepNavStart"></span>/<span id="detailRepNavCount"></span>
 		<a href='#' id='detailRepNavNext' title='<?php print _t("Next"); ?>'><span class='fa fa-chevron-right'></span></a>
 		<div style='clear:both;'></div>
-	</div> -->
-	<!-- Pagination -->
+	</div> 
+	<div class="num"></div>
+	<!-- Pagination 
 	<p class="jcarousel-pagination">
-	<!-- Pagination items will be generated in here -->
-	</p>
+	</p>-->
 </div><!-- end jcarousel-wrapper -->
 
 <script type='text/javascript'>
@@ -68,7 +70,6 @@
 		}).on('jcarousel:createend jcarousel:animateend', function(event, carousel) {
 			var current_rep_id = parseInt($('.jcarousel').jcarousel('first').attr('id').replace('slide', ''));
 			var i = caSliderepresentation_ids.indexOf(current_rep_id);
-
 			if (event.type == 'jcarousel:animateend') {
 				if (!jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html()) {
 					// load media via ajax
@@ -85,6 +86,9 @@
 					if (h > 0) $('.jcarousel').height(h);
 				}
 			}
+			
+			jQuery("#detailRepNavStart").html((i + 1) + '');
+			jQuery("#detailRepNavCount").html(caSliderepresentation_ids.length + '');
 <?php
 	if ($vs_show_annotations_mode == 'div') {
 ?>
@@ -132,20 +136,7 @@
 					
 					
 				}
-			});
-			/*
-			 Pagination initialization
-			 */
-			$('.jcarousel-pagination')
-				.on('jcarouselpagination:active', 'a', function() {
-					$(this).addClass('active');
-				})
-				.on('jcarouselpagination:inactive', 'a', function() {
-					$(this).removeClass('active');
-				})
-				.jcarouselPagination({
-					// Options go here
-				});			
+			});	
 		if( current_rep_id > 0){
 			$('.jcarousel').jcarousel('scroll', $('#slide' + current_rep_id));
 		}

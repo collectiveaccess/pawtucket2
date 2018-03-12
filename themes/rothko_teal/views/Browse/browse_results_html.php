@@ -97,15 +97,18 @@ if($this->request->getParameter("detailNav", pInteger)){
 		<div class="col-sm-12">	
 			<div class="viewAll">
 <?php 
-				$vs_value = explode('.',$va_criteria['value']);
+				$vs_value = explode('.',$va_criteria[0]['value']);
 				$vs_search_value = $vs_value[0];
 				$vs_string = null;
+				
 				if ($va_criteria[0]['facet_name'] == 'collection') {
-					//$vs_string = 'ca_collections.collection_id:'.$this->request->getParameter('id', pInteger);
-					print caNavLink($this->request, 'View all', '', '', 'Browse', 'works_in_collection/facet/collection/id/'.$this->request->getParameter('id', pInteger)); 
-				} else if (($va_criteria['facet_name'] == '_search') && ($vs_search_value == 'ca_occurrences')) {
-					//$vs_string = 'ca_occurrences.occurrence_id:'.$this->request->getParameter('id', pInteger);
-					print caNavLink($this->request, 'View all', '', '', 'Browse', 'works_in_exhibition/facet/exhibition/id/'.$this->request->getParameter('id', pInteger)); 
+					print caNavLink($this->request, 'View All', '', '', 'Browse', 'works_in_collection/facet/collection/id/'.$this->request->getParameter('id', pInteger)); 
+				} else if (($va_criteria[0]['facet_name'] == '_search') && (preg_match("!^occurrence_id:([\d]+)$!", $vs_search_value, $va_matches))) {
+				    if($this->request->getParameter('type', pString) == 'reference') {
+				        print caNavLink($this->request, 'View All', '', '', 'Browse', 'works_in_occurrence/facet/reference/id/'.$va_matches[1]); 
+				    } else {
+					    print caNavLink($this->request, 'View All', '', '', 'Browse', 'works_in_occurrence/facet/exhibition/id/'.$va_matches[1]); 
+					}
 				}	
 				
 ?>		
@@ -115,7 +118,7 @@ if($this->request->getParameter("detailNav", pInteger)){
 				$vs_sort_display = str_replace('+', ' ', $vs_current_sort);
 ?>			
 				<span class="sortMenu" data-toggle="dropdown">Sort by: <span class="sortValue"><?php print ucfirst($vs_sort_display); ?><i class='fa fa-chevron-down'></i></span></span>
-				<ul class="dropdown-menu dropdown-menu-right" style="left:57px;" role="menu">
+				<ul class="dropdown-menu " role="menu">
 <?php
 					if($vs_sort_control_type == 'dropdown'){
 						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -173,7 +176,7 @@ if($this->request->getParameter("detailNav", pInteger)){
 ?>
 				<div class="btn-group sortResults">
 					<span class="sortMenu" data-toggle="dropdown">Collection Status: <span class="sortValue"><?php print ucfirst($va_options[$vs_current_facet]); ?><i class='fa fa-chevron-down'></i></span></span>
-					<ul class="dropdown-menu dropdown-menu-right" style="left:115px;" role="menu">
+					<ul class="dropdown-menu " role="menu">
 <?php
 							# --- add any as an option
 							foreach($va_options as $vs_facet => $vs_label) {
@@ -192,6 +195,7 @@ if($this->request->getParameter("detailNav", pInteger)){
 			<H6 style='margin-top:-30px;'>
 <?php
 				print _t('<span class="hitCount">%1 %2</span>', $qr_res->numHits(), ($qr_res->numHits() !== 1) ? $va_browse_info["labelPlural"] : $va_browse_info["labelSingular"]);	
+
 ?>		
 			</H6>
 		</div><!-- end col -->
@@ -217,17 +221,19 @@ if (!$vb_ajax) {	// !ajax
 	$vs_current_browse = $this->getVar('browse_type');
 	print '<div class="container"><div class="row"><div class="col-sm-1"></div><div class="col-sm-10">';
 	print '<div class="container"><div class="browseTargets row">';
-	print "<div class='col-sm-2'></div>";
+	print "<div class='col-xs-12 col-md-1 col-lg-2'></div>";
+	print "<div class='col-xs-12 col-md-10 col-lg-8'>";
 	foreach ($va_browse_types as $va_browse_type => $va_browse_info_list) {
-		if ($va_browse_type == 'works_in_collection') { continue; }
+		if (in_array($va_browse_type, ['works_in_collection', 'works_in_occurrence'])) { continue; }
 		if ($vs_current_browse == $va_browse_type) {
 			$vs_active_class = "active";
 		} else {
 			$vs_active_class = null;
 		}
-		print '<div class="browseTargetLink col-sm-2">'.caNavLink($this->request, $va_browse_info_list['displayName'], $vs_active_class, '', 'Browse', $va_browse_type).'</div>';
+		print '<div class="browseTargetLink '.$va_browse_type.'">'.caNavLink($this->request, $va_browse_info_list['displayName'], $vs_active_class, '', 'Browse', $va_browse_type).'</div>';
 	}
-	print "<div class='col-sm-2'></div>";
+	print "</div>";
+	print "<div class='col-xs-12 col-md-1 col-lg-2'></div>";
 	print '</div></div>';
 
 		print $this->render("Browse/browse_refine_subview_html.php");
@@ -259,7 +265,9 @@ if (!$vb_ajax) {	// !ajax
 ?>
 			<H2>
 <?php
-				print _t('<span class="hitCount">%1 %2</span>', $qr_res->numHits(), ($qr_res->numHits() > 1) ? $va_browse_info["labelPlural"] : $va_browse_info["labelSingular"]);	
+            $vn_num_hits = $qr_res->numHits();
+			print _t('<span class="hitCount">%1 %2</span>', $qr_res->numHits(), ($vn_num_hits == 1) ? ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR') : ($va_browse_info["labelPlural"]) ? $va_browse_info["labelPlural"] : $t_instance->getProperty('NAME_PLURAL'));	
+
 ?>		
 			</H2>
 				
@@ -268,7 +276,7 @@ if (!$vb_ajax) {	// !ajax
 				$vs_sort_display = str_replace('+', ' ', $vs_current_sort);
 ?>
 				<span class="sortMenu" data-toggle="dropdown">Sort by: <span class="sortValue"><?php print ucfirst($vs_sort_display); ?><i class='fa fa-chevron-down'></i></span></span>
-				<ul class="dropdown-menu dropdown-menu-right" role="menu">
+				<ul class="dropdown-menu " role="menu">
 <?php
 					if($qr_res->numHits() && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
 						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
