@@ -2206,7 +2206,11 @@ class SearchResult extends BaseObject {
 							    $va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()][$vs_element_code.'_sort_'] = $o_value->getDisplayValue(['sortable' => true]); // add sortable alternate representation for dates; this will be used by the SearchResult::get() "sort" option to properly sort date values
 							}
 						} else { 
-							$va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()][] = $vs_val_proc;	
+							if ($o_value->getType() == __CA_ATTRIBUTE_VALUE_DATERANGE__) {  // add sortable alternate value for dates
+								$va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()][$o_value->getDisplayValue(['sortable' => true])] = $vs_val_proc;	
+							} else {
+								$va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()][] = $vs_val_proc;	
+							}
 						}
 					}
 				}
@@ -2454,7 +2458,14 @@ class SearchResult extends BaseObject {
 				if (!is_array($va_by_attr)) { $va_flattened_values[] = $va_by_attr; continue;  }
 				foreach($va_by_attr as $vs_val) {
 					if (is_array($vs_val) && sizeof($vs_val) == 1) { 
-						$vs_val = array_shift($vs_val); 
+						if (caIsAssociativeArray($vs_val)) {
+							foreach($vs_val as $k => $v) {
+								$va_flattened_values[$k] = $v;
+							}
+							continue;
+						} else {
+							$vs_val = array_shift($vs_val); 
+						}
 					} elseif(is_array($vs_val)) {
 						$va_flattened_values[] = $vs_val;
 						continue;
@@ -2497,8 +2508,15 @@ class SearchResult extends BaseObject {
 			foreach($pa_array as $va_vals) {
 				if(!is_array($va_vals)) { $va_flattened_values[] = $va_vals; continue; }
 				foreach($va_vals as $vs_val) {
-					if (is_array($vs_val) && sizeof($vs_val) == 1) { 
-						$vs_val = array_shift($vs_val); 
+					if (is_array($vs_val) && sizeof($vs_val) == 1) {
+						if (caIsAssociativeArray($vs_val)) {
+							foreach($vs_val as $k => $v) {
+								$va_flattened_values[$k] = $v;
+							}
+							continue;
+						} else {
+							$vs_val = array_shift($vs_val); 
+						}
 					} elseif(is_array($vs_val)) {
 						$va_flattened_values[] = $vs_val;
 						continue;
@@ -2536,6 +2554,11 @@ class SearchResult extends BaseObject {
 					$va_flattened_values[] = $vs_val;
 				}
 			}	
+		}
+		
+		if (caGetOption('sort', $pa_options, null)) {
+			ksort($va_flattened_values);
+			if(caGetOption('sortDirection', $pa_options, null, ['forceLowercase' => true]) == 'desc') { $va_flattened_values = array_reverse($va_flattened_values); }
 		}
 		return $va_flattened_values;
 	}
