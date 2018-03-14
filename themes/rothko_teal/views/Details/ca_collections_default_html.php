@@ -89,5 +89,7 @@
 		  speed: 75,
 		  maxHeight: 320
 		});
+
+        tronicTheToggles();
 	});
 </script>	

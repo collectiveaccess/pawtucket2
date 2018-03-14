@@ -34,7 +34,7 @@
 				print "<div class='objIdno'>".$va_catalog_id."</div>";
 			}	
 ?>		
-	</div>
+	</div>	
 	<div class='col-sm-6 col-md-6 col-lg-5'>
 <?php
 		$vn_label_col = "col-sm-4";
@@ -92,11 +92,11 @@
 	</div><!-- end col -->
 </div><!-- end row -->
 <div class='row'>
-	<div class='col-sm-12 col-md-12 col-lg-12'>
+	<div class='col-sm-8 col-sm-offset-2'>
 <?php
 		if ($vs_remarks = $t_item->get('ca_collections.remarks')) {
 			print "<div class='drawer'>";
-			print "<h6><a href='#' onclick='$(\"#remarksDiv\").toggle(400);return false;'>Remarks <i class='fa fa-window-minimize'></i></a></h6>";
+			print "<h6><a href='#' data-toggleDiv='remarksDiv' class='togglertronic'>Remarks <i class='fa fa-plus drawerToggle'></i></a></h6>";
 			print "<div id='remarksDiv'>".$vs_remarks."</div>";
 			print "</div>";
 		}
@@ -125,7 +125,7 @@
 				$vs_provenance.= "</div>";
 			} elseif ($t_prov->get('access') != 0 ){
 				$va_provenance_id = $t_item->get('ca_collections.collection_id');
-				$vs_provenance.= "<div>".caNavLink($this->request, $t_prov->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_provenance_id);				
+				$vs_provenance_line = $t_prov->get('ca_collections.preferred_labels');				
 				if ($t_prov_rel) {
 					$vs_buf = array();
 					if ($vs_auction_name = $t_prov_rel->get('ca_collections_x_collections.auction_name')) {
@@ -147,22 +147,23 @@
 						$vs_buf[]= "(not sold)";
 					}	
 					if (sizeof($vs_buf) > 0){
-						$vs_provenance.= ", ".join(', ', $vs_buf);
+						$vs_provenance_line.= ", ".join(', ', $vs_buf);
 					}
 					if ($vs_remark = $t_prov_rel->get('ca_collections_x_collections.collection_line')) {
-						$vs_provenance.= ", ".$vs_remark;
+						$vs_provenance_line.= ", ".$vs_remark;
 					}
 				}
 				if ($t_prov_rel->get('ca_collections_x_collections.uncertain') == $vs_list_value) {
-					$vs_provenance.= " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>";
+					$vs_provenance_line.= " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>";
 				}
-				$vs_provenance.= "<i class='fa fa-chevron-right'></i></div><!-- end prov entry -->";
+				$vs_provenance_line.= "<i class='fa fa-chevron-right'></i><!-- end prov entry -->";
+				$vs_provenance.= "<div>".caNavLink($this->request, $vs_provenance_line, '', '', 'Detail', 'collections/'.$va_provenance_id)."</div>";
 			}
 		}
 	}
 	if ($vs_provenance != "") {
-		print "<div class='row'><div class='col-sm-12 col-md-12 col-lg-12'><div class='drawer'>";
-		print "<h6><a href='#' onclick='$(\"#provenanceDiv\").toggle(400);return false;'>Provenance <i class='fa fa-window-minimize'></i></a></h6>";
+		print "<div class='row'><div class='col-sm-8 col-sm-offset-2'><div class='drawer'>";
+		print "<h6><a href='#' data-toggleDiv='provenanceDiv' class='togglertronic'>Provenance <i class='fa fa-plus drawerToggle'></i></a></h6>";
 		print "<div id='provenanceDiv'>";
 		print $vs_provenance;
 		print "</div><!-- end provenanceDiv -->";
@@ -188,6 +189,8 @@
 					nextSelector: 'a.jscroll-next'
 				});
 			});		
+
+            tronicTheToggles();
 		});
 	</script>
 </ifcount>}}}

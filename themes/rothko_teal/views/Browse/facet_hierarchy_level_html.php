@@ -43,7 +43,7 @@
 				$vs_buf = "<div ".($vb_is_nav ? "class='browseFacetItem browseFacetHierarchyItem col-sm-6 col-md-4'" : "").">";
 //				if($vs_link_to == "morePanel"){
 					if((int)$va_children["children"] > 0){
-						$vs_buf .= "<div class='col-sm-6 facetItem'>".caNavLink($this->request, $vs_name, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0))." <a href='#' data-item_id='{$vn_id}' class='caSubItems caSubItem{$vs_facet_name}' title='".addslashes(_t('View sub-items'))."'><span class='fa fa-chevron-right'></span></a></div>";					
+						$vs_buf .= "<div class='col-sm-6 facetItem'><a href='#' data-item_id='{$vn_id}' class='caSubItems caSubItem{$vs_facet_name}' title='".addslashes(_t('View sub-items'))."'>".$vs_name." <span class='fa fa-chevron-right'></span></a></div>";					
 					}else{
 						$vs_buf .= "<div class='col-sm-6 facetItem'>".caNavLink($this->request, $vs_name, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0))."</div>";
 					}

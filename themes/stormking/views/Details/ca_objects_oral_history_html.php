@@ -111,7 +111,7 @@
 				print '<div class="row objInfo">';
 				print "<hr>";
 
-				print '	<div class="col-sm-12"><h6 class="header">Related Artworks</h6></div>';
+				print '	<div class="col-sm-12"><h6 class="header">Artworks</h6></div>';
 				foreach ($va_related_artworks as $va_id => $va_related_artwork_id) {
 					$t_rel_obj = new ca_objects($va_related_artwork_id);
 					print "<div class='col-sm-3'>";
@@ -132,7 +132,7 @@
 			if ($va_related_exhibitions = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program'), 'sort' => 'ca_occurrences.exhibition_dates', 'sortDirection' => 'desc'))) {
 				$va_ex_images = caGetDisplayImagesForAuthorityItems('ca_occurrences', $va_related_exhibitions, array('version' => 'iconlarge', 'relationshipTypes' => 'includes', 'objectTypes' => 'artwork', 'checkAccess' => $va_access_values));
 				print "<div class='row relatedExhibitions'><hr>";
-				print '<div class="col-sm-12"><h6 class="header">Related Exhibitions and Programs</h6></div>';
+				print '<div class="col-sm-12"><h6 class="header">Exhibitions and Programs</h6></div>';
 				foreach ($va_related_exhibitions as $va_key => $va_related_exhibition_id) {
 					$t_exhibition = new ca_occurrences($va_related_exhibition_id);
 					print "<div class='col-sm-12'> <div class='relatedArtwork' style='margin-bottom:20px;'>";
@@ -146,7 +146,7 @@
 			if ($va_related_archival = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('archival')))) {
 				$vs_arch_count = 0;
 				print "<div class='row'><hr>";
-				print '<div class="col-sm-12"><h6 class="header">Related Archives</h6></div>';
+				print '<div class="col-sm-12"><h6 class="header">Archives</h6></div>';
 				foreach ($va_related_archival as $va_key => $vn_related_archival_id) {
 					if ($vs_arch_count < 4) {
 						$vs_style = "noBorder";
@@ -168,9 +168,9 @@
 </div><!-- end row -->
 
 <?php
-		if($this->request->isLoggedIn()){
+		#if($this->request->isLoggedIn()){
 			print "<a href='http://stormking.collectihost.com/admin/index.php/editor/objects/ObjectEditor/Edit/object_id/".$vn_id."'>Edit This Record</a>";
-		}
+		#}
 ?>	
 
 <script type='text/javascript'>

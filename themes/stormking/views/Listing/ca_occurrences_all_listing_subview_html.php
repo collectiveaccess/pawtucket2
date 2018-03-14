@@ -73,7 +73,7 @@
 ?>
 		<div class="row">
 			<div class="col-sm-12">
-				<H4><?php print (sizeof($va_current) > 1) ? _t("Current & Upcoming Exhibitions") : _t("Current & Upcoming Exhibition"); ?></H4><br/>
+				<H4><?php print caNavLink($this->request, (sizeof($va_current) > 1) ? _t("Current & Upcoming Exhibitions") : _t("Current & Upcoming Exhibition"), '', '', 'Listing', 'currentexhibitions'); ?></H4><br/>
 			</div>
 		</div>
 <?php
@@ -108,7 +108,7 @@
 ?>
 	<div class="row">
 		<div class="col-sm-12">
-			<H4><?php print _t("Past Exhibitions"); ?></H4><br/>
+			<H4><?php print caNavLink($this->request, _t("Past Exhibitions"), '', '', 'Browse', 'exhibitions'); ?></H4><br/>
 		</div>
 	</div>
 	<div class="row">

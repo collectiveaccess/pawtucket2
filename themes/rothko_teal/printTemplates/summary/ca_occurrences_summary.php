@@ -32,6 +32,10 @@
  * @pageOrientation portrait
  * @tables ca_occurrences
  *
+ * @marginTop 0.5in
+ * @marginLeft 0.25in
+ * @marginBottom 0.5in
+ * @marginRight 0.25in
  * ----------------------------------------------------------------------
  */
  
@@ -43,7 +47,7 @@
 	print $this->render($this->getVar('base_path')."/header.php");
 	print $this->render($this->getVar('base_path')."/footer.php");	
 ?>
-	<div class="representationList" style="margin-top:100px;">
+	<div class="representationList" style="margin-top:50px;">
 		
 <?php
 	$va_reps = $t_item->getRepresentations(array("medium", "small"));
@@ -77,18 +81,53 @@
 			print "<div id='remarksDiv'>".$vs_remarks."</div>";
 			print "</div>";
 		}				
-		if ($vs_exhibitions = $t_item->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_occurrences"><l>^ca_occurrences.preferred_labels</l><ifcount min="1" code="ca_entities.preferred_labels">, <unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", "> ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit></ifcount><ifdef code="ca_occurrences.display_date">, ^ca_occurrences.display_date</ifdef><if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</ifdef></unit>')) {
+		if ($vs_exhibitions = $t_item->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_occurrences.related"><l>^ca_occurrences.preferred_labels</l><ifcount min="1" code="ca_entities.preferred_labels">, <unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", "> ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit></ifcount><ifdef code="ca_occurrences.display_date">, ^ca_occurrences.display_date</ifdef><if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</ifdef></unit>')) {
 			print "<div class='unit'>";
 			print "<h6>Exhibitions</h6>";
 			print "<div id='exhibitionDiv'>".$vs_exhibitions."</div>";
 			print "</div>";
 		}
-		if ($vs_reference = $t_item->getWithTemplate('<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels">, ^ca_occurrences.nonpreferred_labels</ifdef></l><ifcount code="ca_entities.preferred_labels" min="1">, <unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=", ">^ca_entities.preferred_labels</unit></ifcount><ifdef code="ca_occurrences.display_date">, ^ca_occurrences.display_date</ifdef></unit>')) {
+		if ($vs_reference = $t_item->getWithTemplate('<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences.related"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels">, ^ca_occurrences.nonpreferred_labels</ifdef></l><ifcount code="ca_entities.preferred_labels" min="1">, <unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=", ">^ca_entities.preferred_labels</unit></ifcount><ifdef code="ca_occurrences.display_date">, ^ca_occurrences.display_date</ifdef></unit>')) {
 			print "<div class='unit'>";
 			print "<h6>Exhibition Catalog</h6>";
 			print "<div id='referenceDiv'>".$vs_reference."</div>";
 			print "</div>";
-		}		
+		}	
+		if ($va_related_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true))) {
+			$vs_count = 0;
+			print "<div class='unit' class='page-break-inside: avoid;'><h6>Related Objects</h6>";
+			foreach ($va_related_objects as $va_key => $va_related_object_id) {
+				$t_obj = new ca_objects($va_related_object_id);
+				if ($vs_count == 0) {
+					print "<table class='relObjects'><tr>";
+				}
+				print "<td>".$t_obj->get('ca_object_representations.media.small');
+					print "<div>".$t_obj->get('ca_objects.preferred_labels')."</div>";
+					if ($va_date = $t_obj->get('ca_objects.display_date')) {
+						print "<div>".$va_date."</div>";
+					}
+					$vs_parent_id = $t_obj->get('ca_objects.parent_id');
+					$t_parent = new ca_objects($vs_parent_id);
+					if ($va_collection = $t_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {
+						print "<div>".$va_collection."</div>";
+					}
+					print "<div>".$t_obj->get('ca_objects.institutional_id')."</div>";
+				print "</td>";
+				$vs_count++;
+				if ($vs_count == 4) {
+					print "<tr/></table>";
+					$vs_count = 0;
+				}
+			}
+			if (($vs_count < 4) && ($vs_count != 0)) {
+				while ($vs_count < 4) {
+					print "<td></td>";
+					$vs_count++;
+				}
+				print "</tr></table>";
+			}
+			print "</div><!-- end unit -->";
+		}	
 		
 		
 	print $this->render("pdfEnd.php");

@@ -37,7 +37,10 @@
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
-					if ($va_remarks_images = $t_item->get('ca_entities.bibliography', array('returnWithStructure' => true, 'version' => 'medium'))) {
+					if ($vs_bio = $t_item->get('<unit relativeTo="ca_entities.biography"><if rule="^ca_objects.biography.display_bio =~ /yes/">^ca_entities.biography.bio_text</if></unit>')) {
+						print $vs_bio;
+					}
+/*					if ($va_remarks_images = $t_item->get('ca_entities.bibliography', array('returnWithStructure' => true, 'version' => 'medium'))) {
 						foreach ($va_remarks_images as $vn_attribute_id => $va_remarks_image_info) {
 							foreach ($va_remarks_image_info as $vn_value_id => $va_remarks_image) {
 								print "<div class='unit' style='margin-bottom:20px;'>";
@@ -54,6 +57,7 @@
 							}
 						}
 					}
+*/					
 ?>					
 				</div><!-- end col -->
 			</div><!-- end row -->
@@ -62,7 +66,7 @@
 			if ($va_related_artworks = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork'), 'sort' => 'ca_object_labels.name'))) {
 				$vs_art_count = 0;
 				print "<hr><div class='row'>";
-				print '<div class="col-sm-12"><h6 class="header">Related Artworks</h6></div>';
+				print '<div class="col-sm-12"><h6 class="header">Artworks</h6></div>';
 				print "</div><div class='row'>";
 				foreach ($va_related_artworks as $va_key => $vn_related_artwork_id) {
 					if ($vs_art_count < 4) {
@@ -92,7 +96,7 @@
 			if ($va_related_exhibitions = $t_item->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program'), 'sort' => 'ca_occurrences.exhibition_dates', 'sortDirection' => 'desc'))) {
 				$va_ex_images = caGetDisplayImagesForAuthorityItems('ca_occurrences', $va_related_exhibitions, array('version' => 'iconlarge', 'relationshipTypes' => 'includes', 'objectTypes' => 'artwork', 'checkAccess' => $va_access_values));
 				print "<hr><div class='row relatedExhibitions'><div class='col-sm-12'>";
-				print '<h6 class="header">Related Exhibitions and Programs</h6>';
+				print '<h6 class="header">Exhibitions and Programs</h6>';
 				foreach ($va_related_exhibitions as $va_key => $va_related_exhibition_id) {
 					$t_exhibition = new ca_occurrences($va_related_exhibition_id);
 					print "<div class='col-sm-12'> <div class='relatedArtwork' style='margin-bottom:20px;'>";
@@ -106,7 +110,7 @@
 			if ($va_related_archival = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('archival')))) {
 				$vs_arch_count = 0;
 				print "<hr><div class='row'><div class='col-sm-12'>";
-				print '<h6 class="header">Related Archives</h6>';
+				print '<h6 class="header">Archives</h6>';
 				foreach ($va_related_archival as $va_key => $vn_related_archival_id) {
 					if ($vs_arch_count < 4) {
 						$vs_style = "noBorder";
@@ -126,7 +130,7 @@
 			if ($va_related_oralh = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history')))) {
 				$vs_oh_count = 0;
 				print "<hr><div class='row'><div class='col-sm-12'>";
-				print '<h6 class="header">Related Oral History</h6>';
+				print '<h6 class="header">Oral History</h6>';
 				foreach ($va_related_oralh as $va_key => $vn_related_oralh_id) {
 					if ($vs_oh_count < 4) {
 						$vs_style = "noBorder";
