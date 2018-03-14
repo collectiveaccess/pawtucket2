@@ -392,7 +392,7 @@
 			</div>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 				
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'Objects', array('sort' => 'Most&nbsp;Views')); ?>">
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'Objects', array('sort' => 'relevance')); ?>">
 					<div class="formOutline">
 						<div class="form-group">
 							<input type="text" class="form-control" placeholder="Search" name="search">
