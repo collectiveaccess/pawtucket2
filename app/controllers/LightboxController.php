@@ -476,7 +476,7 @@
  			$vb_is_insert = false;
  			if(sizeof($va_errors) == 0){
 				$t_set->setMode(ACCESS_WRITE);
-				if(!is_null($vn_access = $this->request->getParameter('access', pInteger))) {
+				if(strlen($vn_access = $this->request->getParameter('access', pInteger))) {
 					$t_set->set('access', $vn_access);
 				} else {
 					$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
