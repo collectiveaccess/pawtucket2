@@ -131,7 +131,7 @@
 <?php
 	}
 ?>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'projects'); ?>">
 					<div class="formOutline">
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 						<div class="form-group">
@@ -140,12 +140,10 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+					<li <?php print (strToLower($this->request->getAction()) == "courses") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Course"), "", "", "Listing", "Courses"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "projects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Projects"), "", "", "Browse", "projects"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "people")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people"); ?></li>
+					<li><a href="#">Location</a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
@@ -171,7 +169,7 @@
 	</script>
 <?php
 	# --- front page output these divs later, after top slideshow
-	if($this->request->getController() != "Front"){
+	if((strtolower($this->request->getController()) != "front") && !((strtolower($this->request->getController()) == "detail") && (strtolower($this->request->getAction()) == "courses"))){
 ?>
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

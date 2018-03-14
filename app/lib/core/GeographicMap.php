@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2015 Whirl-i-Gig
+ * Copyright 2010-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -185,7 +185,7 @@
 								}
 							}
 						}
-						$va_path = explode(";", $va_coordinate['path']);
+						$va_path = preg_split("/[:;]/", $va_coordinate['path']);
 					
 						if (sizeof($va_path) > 1) {
 							$va_coordinate_pairs = array();
@@ -197,8 +197,7 @@
 						} else {
 							$this->addMapItem(new GeographicMapItem(array('latitude' => $va_coordinate['latitude'], 'longitude' => $va_coordinate['longitude'], 'label' => $vs_label, 'content' => $vs_content, 'ajaxContentUrl' => $vs_ajax_content, 'ajaxContentID' => $vn_id, 'color' => $vs_color)));
 						}
-						//if (!$va_point_buf[$va_coordinate['latitude'].'/'.$va_coordinate['longitude']]) { $vn_point_count++;}
-						//$va_point_buf[$va_coordinate['latitude'].'/'.$va_coordinate['longitude']]++;
+						
 						$vn_item_count++;
 					}
 				}
@@ -211,7 +210,7 @@
  		// Data object is a search result?
  		//
  		if (is_subclass_of($po_data_object, 'SearchResult')) {
- 			$po_data_object->setOption('prefetch', 1000);
+ 			//$po_data_object->setOption('prefetch', 1000);
  			$va_access_values = null;
  			if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess'])) {
  				$va_access_values = $pa_options['checkAccess'];

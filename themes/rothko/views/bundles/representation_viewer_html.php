@@ -52,6 +52,7 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
+		var current_rep_id = null;
 		var caSliderepresentation_ids = <?php print json_encode($va_representation_ids); ?>;
 		/* width of li */
 		$('.jcarousel, .jcarousel li').width($('.jcarousel').width());	// don't ask
@@ -129,8 +130,8 @@
 				}
 			});
 			
-		if({{{representation_id}}} > 0){
-			$('.jcarousel').jcarousel('scroll', $('#slide{{{representation_id}}}'));
+		if( current_rep_id > 0){
+			$('.jcarousel').jcarousel('scroll', $('#slide' + current_rep_id));
 		}
 	});
 </script>

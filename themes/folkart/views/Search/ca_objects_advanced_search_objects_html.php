@@ -1,6 +1,6 @@
 	<div class="row">
 		<div class="col-sm-12">
-			<H1><?php print _t("Advanced Search"); ?></H1>
+			<H1><?php print _t("Objects Advanced Search"); ?></H1>
 		</div>
 	</div>
 	<div class="row">
@@ -37,7 +37,7 @@
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records of a particular date or date range.">Date range <i>(e.g. 1970-1979)</i></span>
-				{{{ca_objects.dates.dates_value%width=200px&height=40px&useDatePicker=0}}}
+				{{{ca_objects.date.date_value%width=400px&height=40px&useDatePicker=0}}}
 			</div>
 		</div>
 		<div class='row'>

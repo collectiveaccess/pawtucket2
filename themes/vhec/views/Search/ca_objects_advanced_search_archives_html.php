@@ -1,4 +1,3 @@
-<div class="container">
 	<div class="row">
 		<div class="col-sm-8 " style='border-right:1px solid #ddd;'>
 			<h1>Archives Advanced Search</h1>
@@ -48,7 +47,7 @@
 		</div>
 		<div class="advancedSearchField">
 			<span 
-				data-toggle="popover" data-trigger="hover" data-content="The individual credited as the creator of the work. Please note that while many works have unknown creators, a search of “unknown” will not return any of these records."
+				data-toggle="popover" data-trigger="hover" data-content="The individual credited as the creator of the work. Please note that while many works have unknown creators, a search of "unknown" will not return any of these records."
 			>Creator: </span><br/>
 			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=creator;author;illustrator;artist;composer;contributor;curator;director;editor;filmmaker;funder;interviewee;interviewer;narrator;organizer;performer;photographer;producer;researcher;speaker;subject;translator;videographer;other%width=420px}}}
 		</div>
@@ -74,7 +73,7 @@
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Language of the item, where applicable."
 			>Language:</span><br/>
-			{{{ca_objects.language%width=300px&height=1}}}
+			{{{ca_objects.RAD_langMaterial%width=300px&height=1}}}
 		</div>	
 		<div class="advancedSearchField">
 			<span 
@@ -100,12 +99,11 @@
 {{{/form}}}
 
 		</div>
-		<div class="col-sm-4" >
-			<h1>Helpful Hints</h1>
-			<p>Include some helpful info for your users here.</p>
+		<div class="col-sm-4 searchHints" >
+			<H1>Helpful Hints</H1>
+			{{{search_help}}}
 		</div><!-- end col -->
 	</div><!-- end row -->
-</div><!-- end container -->
 
 <script>
 	jQuery(document).ready(function() {

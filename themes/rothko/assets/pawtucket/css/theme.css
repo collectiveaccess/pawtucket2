@@ -57,6 +57,10 @@ p {
 .navbar-brand {
 	padding-top:15px;
 }
+.comma {
+	display:inline-block;
+	margin-left:-3px;
+}
 .logoUpper {
 	display:block;
 	color:#333;
@@ -87,6 +91,7 @@ p {
 	border:0px;
 	border-radius:0px;
 	background-color:#f5f5f5;
+	box-shadow:none;
 }
 @media (min-width: 768px){
 	.navbar-form .form-group {
@@ -98,6 +103,11 @@ p {
 }
 .navbar-form {
 	margin-top:12px;
+}
+.btn-default, .btn-default:hover { 
+	background-color:#888;
+	letter-spacing:0px;
+	
 }
 #footer {
 	position:absolute;
@@ -266,6 +276,10 @@ p {
 .multisearch #referencesBlock .scrollButtonNext, .multisearch #referencesBlock .scrollButtonPrevious {
 	height:210px;
 	padding-top:90px;
+}
+.refTitle {
+	max-height: 50px;
+    overflow: hidden;
 }
 
 /* Browse */
@@ -505,6 +519,12 @@ a .fa.clearFacet {
 	text-decoration:none;
 	color:#333;
 }
+.occLink {
+	margin-left:-3px;
+}
+.browse .btn, .sets .btn {
+	letter-spacing:0px;
+}
 
 /* Filter panel */
 
@@ -641,17 +661,65 @@ a .fa.clearFacet {
 	position:relative;
 	background-color:#fff;
 	float:right;
+	width:auto;
+	text-align:right;
+	right:20px;
+	top:10px;
 }
 .detail .detailMediaToolbar a {
 	color:#333;
 	font-size:17px;
 }
+.detail.sketchbook span.glyphicon.glyphicon-zoom-in::after {
+	content: "\e015";
+}
+.detail.sketchbook span.glyphicon.glyphicon-zoom-in::before {
+	content: "View sketchbook pages";
+	font-family: LatoLight;
+	padding-right: 10px;
+    font-size: 14px;
+    vertical-align: top;
+}
 .detail .detailMediaToolbar .dlButton {
 	display:none;
+}
+.detail .detailMediaToolbar .compare_link {
+	position:relative !important;
+    display: inline-block;
+    margin-left: -45px;
+}
+.detail .compare_link {
+    color: #333;
+    font-weight: bold;
+    font-size: 17px;
+}  
+.detail .compare_link:hover {
+	color: #333;
+	text-decoration:none;
+} 
+.detail .drawer .compare_link:hover {
+	border-bottom:0px;
+}
+.compare_link.verso {
+    position: relative;
+    margin-left: 20px;
+    font-size: 14px;
+    display: inline-block;
+    vertical-align: bottom;
+    padding-top: 8px;
 }
 .detail #remarksDiv a{
 	border-bottom: 1px solid #454545;
 
+}
+.detailMediaToolbar .zoomButton {
+	vertical-align: bottom;
+    margin-top: -30px;
+    display: inline-block;
+}
+.detailMediaToolbar .glyphicon.glyphicon-zoom-in {
+	vertical-align:top;
+	padding-top:0px;
 }
 .jcarousel-wrapper {
 	width:100%;
@@ -706,10 +774,11 @@ a .fa.clearFacet {
 }
 .detail .viewLink {
 	text-transform:uppercase;
-	text-decoration:underline;
+	border-bottom:1px solid #454545;
 	margin-top:5px;
 	display:inline-block;
 	color:#858585;
+	vertical-align:top;
 }
 .leader {
 	margin-top:-10px;
@@ -719,7 +788,9 @@ a .fa.clearFacet {
 .exhibition.detail h1 {
 	margin-bottom:8px;
 }
-
+.detail.sketchbook #detailRepNav {
+	display:none;
+}
 .detail #detailRepNavPrev {
     float: left;
     position: absolute;
@@ -846,7 +917,7 @@ h3.window-manifest-title {
 }
 .compareDrawer {
 	display:none;
-	background-color:#eaeaea;
+	background-color:#f5f5f5;
 	width:30%;
 	position:fixed;
 	bottom:0px;

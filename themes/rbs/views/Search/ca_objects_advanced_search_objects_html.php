@@ -25,25 +25,25 @@
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records associated with an author.">Author </span>
-				{{{ca_entities.preferred_labels%restrictToRelationshipTypes=author%width=200px&height=1}}}
+				{{{ca_entities.preferred_labels%restrictToRelationshipTypes=author&width=200px&height=1}}}
 			</div>
 		</div>	
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records associated with a publisher.">Publisher </span>
-				{{{ca_entities.preferred_labels%restrictToRelationshipTypes=publisher%width=200px&height=1}}}
+				{{{ca_entities.preferred_labels%restrictToRelationshipTypes=publisher&width=200px&height=1}}}
 			</div>
 		</div>					
 		<div class='row'>
 			<div class="advancedSearchField col-sm-6">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search object identifiers.">Accession Number</span>
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search object identifiers.">Object Identifier</span>
 				{{{ca_objects.idno%width=210px}}}
 			</div>
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records with a controlled vocabulary term.">Controlled Vocabulary Term </span>
-				{{{ca_list_items.preferred_labels%width=200px&height=1}}}
+				{{{ca_list_items.preferred_labels%width=200px&height=1&autocomplete=1}}}
 			</div>
 		</div>
 		<div class='row'>
@@ -55,13 +55,7 @@
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records within a particular course.">Course </span>
-				{{{ca_occurrences.preferred_labels%width=200px&height=1}}}
-			</div>
-		</div>	
-		<div class='row'>
-			<div class="advancedSearchField col-sm-12">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records by cource identifier.">Course Identifier</span>
-				{{{ca_occurrences.idno%width=200px&height=1}}}
+				{{{ca_occurrences.preferred_labels%width=200px&height=1&autocomplete=1}}}
 			</div>
 		</div>			
 		<br style="clear: both;"/>

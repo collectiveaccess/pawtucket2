@@ -5,6 +5,8 @@ $va_list_items = $t_list->getItemsForList('resource_type', array('checkAccess' =
 $va_subject_items = $t_list->getItemsForList('genre', array('checkAccess' => $this->getVar('access_values')));
 
 ?>
+<div class="row">
+	<div class="col-sm-12">
 	<div id='browseTable'>
 		<ul >
 			<li>Browse: </li>
@@ -68,7 +70,8 @@ $va_subject_items = $t_list->getItemsForList('genre', array('checkAccess' => $th
 			</div>
 		</div>
 	</div><!-- end browseTable -->
-	
+</div>
+</div>	
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		$('#browseTable').tabs();

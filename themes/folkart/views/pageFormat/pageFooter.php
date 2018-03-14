@@ -46,13 +46,14 @@
 						Phone: (505) 476-1200 
 					</p>
 					<p class="directions">
-						<a href="visit/directions.html"><i class="fa fa-location-arrow "></i> View Maps and Directions</a>
+						<a href="http://www.internationalfolkart.org/visit/directions.html"><i class="fa fa-location-arrow "></i> View Maps and Directions</a>
 					</p>
 				</div>
 				<div class="col-md-3 col-sm-12">
 					<ul>
 						<li><a href="http://www.internationalfolkart.org">Museum Home</a></li>
-						<li><?php print caNavLink($this->request, _t("About the Archive"), "", "", "About", "Index"); ?></li>
+						<li><a href="http://internationalfolkart.org/learn/library-and-archives.html">About the Archive</a></li>
+						<li><a href="mailto:bartlett.library@state.nm.us">Questions? Ask the archivist</a></li>
 					</ul>
 				</div>
 				<div class="col-md-4 col-sm-12">
@@ -119,6 +120,11 @@
 				}
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
+		</script>
+		<script type="text/javascript" language="javascript">
+			jQuery(document).ready(function() {
+				$('html').on('contextmenu', 'body', function(e){ return false; });
+			});
 		</script>
 	</body>
 </html>

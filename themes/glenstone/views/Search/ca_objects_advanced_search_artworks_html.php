@@ -19,7 +19,12 @@ $va_access_values = caGetUserAccessValues($this->request);
 			$t_object = new ca_objects();
 			$va_item_media = $t_object->getPrimaryMediaForIDs($va_item_ids, array("slideshowsmall"), array('checkAccess' => caGetUserAccessValues($this->request)));
 		}
-	}	
+	}
+	if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
+		$vs_style = "";
+	} else {
+		$vs_style = "style='display:none;'";
+	}
 ?>
 <div class="container">
 	<div class="row collection">
@@ -32,13 +37,13 @@ $va_access_values = caGetUserAccessValues($this->request);
 						Title:<br/>
 						{{{ca_objects.preferred_labels.name%width=220px}}}
 					</div>
-					<div class="advancedSearchField">
+					<div class="advancedSearchField" <?php print $vs_style ?>>
 						Accession number:<br/>
 						{{{ca_objects.idno%width=210px}}}
 					</div>
 					<div class="advancedSearchField">
 						Artist:<br/>
-						{{{ca_entities.preferred_labels.displayname/artist%width=220px&height=40px}}}
+						{{{ca_entities.preferred_labels.displayname/artist%width=220px&height=1}}}
 					</div>
 					<div class="advancedSearchField">
 						Date:<br/>
@@ -52,8 +57,8 @@ $va_access_values = caGetUserAccessValues($this->request);
 
 					<br style="clear: both;"/>
 
-					<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
-					<div style="float: right;">{{{submit%label=Search}}}</div>
+					<div style="float: right; margin-left: 20px; margin-top:20px;">{{{reset%label=Reset}}}</div>
+					<div style="float: right; margin-top:20px;">{{{submit%label=Search}}}</div>
 				{{{/form}}}
 				<div class='clearfix'></div>
 			</div>
@@ -83,8 +88,9 @@ $va_access_values = caGetUserAccessValues($this->request);
 		//$o_artist_search = new ObjectSearch();
 		//$qr_artists = $o_artist_search->search("ca_entities.preferred_labels.displayname/artist:*");
 		$o_db = new Db();
+		$t = new Timer();
 		$qr_res = $o_db->query("
-			SELECT DISTINCT e.entity_id FROM ca_entities e
+			SELECT DISTINCT e.entity_id, el.surname, el.forename FROM ca_entities e
 			INNER JOIN ca_entity_labels AS el ON el.entity_id = e.entity_id
 			INNER JOIN ca_objects_x_entities AS oxe ON e.entity_id = oxe.entity_id
 			WHERE
@@ -92,30 +98,24 @@ $va_access_values = caGetUserAccessValues($this->request);
 			ORDER BY
 				el.surname, el.forename
 		");
-		
 		$qr_artists = caMakeSearchResult('ca_entities', $qr_res->getAllFieldValues('entity_id'));
 		
 		$va_artists = array();
 		while ($qr_artists->nextHit()) {
-			$va_has_artwork = false;
-			if ($qr_artists->get('ca_objects', array('restrictToRelationshipTypes' => 'artist', 'checkAccess' => $va_access_values))) {
-				$va_artworks = $qr_artists->get('ca_objects', array('restrictToRelationshipTypes' => 'artist', 'checkAccess' => $va_access_values, 'returnAsArray' => true));
+			$vb_has_artwork = false;
+			if (is_array($va_artworks = $qr_artists->get('ca_objects', array('restrictToRelationshipTypes' => 'artist', 'checkAccess' => $va_access_values, 'returnAsArray' => true, 'returnWithStructure' => true))) && sizeof($va_artworks)) {
 				foreach ($va_artworks as $vn_artwork_key => $va_artwork) {
 					$vn_artwork_id = $va_artwork['object_id'];
-					$t_object = new ca_objects($vn_artwork_id);
-					if ($t_object->get('ca_objects.type_id') == 28){
-						$va_has_artwork = true;
-					}
+					$vn_type_id = $va_artwork['item_type_id'];
+					if ($vn_type_id == 28){ $vb_has_artwork = true;}
 				}
-				if ($va_has_artwork == true) {
-					$va_first_letter = substr($qr_artists->get('ca_entities.preferred_labels.surname'), 0, 1);
-					$va_artists[$va_first_letter][] = $qr_artists->get('ca_entities.preferred_labels.displayname', array('returnAsLink' => true));
+				if ($vb_has_artwork == true) {
+					$va_first_letter = substr(ucfirst($qr_artists->get('ca_entities.preferred_labels.surname')), 0, 1);
+					$va_artists[$va_first_letter][] = caNavLink($this->request, $qr_artists->get('ca_entities.preferred_labels.displayname'), '', 'Browse', 'artworks', 'facet/artists_facet/id/'.$qr_artists->get('ca_entities.entity_id'));
 				}
 			}
 		} 
-		#print "<pre>";
-		#print_r($va_artists);
-		#print "<pre>";
+
 		foreach ($va_artists as $va_letter_key => $va_artist_name) { 
 			print "<div class='letterMenu'><a href='#".$va_letter_key."'>".$va_letter_key."</a></div>";
 		}
