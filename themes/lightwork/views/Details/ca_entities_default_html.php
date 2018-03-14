@@ -157,7 +157,7 @@
 </ifcount>}}}
 
 <?php
-						if ($va_essays = $t_item->get('ca_entities.essays')) {
+						if ($va_essays = $t_item->get('ca_entities.essays', array('delimiter' => '<br/><hr/><br/>'))) {
 							print "	<hr/>
 								<div class='row'>
 									<div class='col-sm-12'>
