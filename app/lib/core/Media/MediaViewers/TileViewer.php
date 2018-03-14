@@ -74,6 +74,7 @@
 						'download_url' => caNavUrl($po_request, '*', '*', 'DownloadMedia', array('representation_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'version' => 'original')),
 						'help_load_url' => caNavUrl($po_request, '*', '*', 'ViewerHelp', array()),
 						'annotationEditorPanel' => 'caRepresentationAnnotationEditor',
+						'read_only' => !$po_request->isLoggedIn(),
 						'annotationEditorUrl' => caNavUrl($po_request, 'editor/representation_annotations', 'RepresentationAnnotationQuickAdd', 'Form', array('representation_id' => (int)$t_instance->getPrimaryKey())),
 						'captions' => $t_instance->getCaptionFileList(), 'progress_id' => 'caMediaOverlayProgress'
 					];
@@ -105,6 +106,7 @@
 						'viewer_base_url' => $po_request->getBaseUrlPath(),
 						'download_url' => caNavUrl($po_request, '*', '*', 'DownloadMedia', array('value_id' => (int)$t_instance->getPrimaryKey(), $t_subject->primaryKey() => (int)$t_subject->getPrimaryKey(), 'version' => 'original')),
 						'help_load_url' => caNavUrl($po_request, '*', '*', 'ViewerHelp', array()),
+						'read_only' => !$po_request->isLoggedIn(),
 						'captions' => null, 'progress_id' => 'caMediaOverlayProgress'
 					];
 					
