@@ -41,16 +41,17 @@
 						<?php print caGetThemeGraphic($this->request, 'ubc.jpg'); ?>
 						<div class='footerAddress'>
 							Vancouver Campus
-							<br/>2329 West Mall
-							<br/>Vancouver, BC Canada V6T 1Z4 
+							<br/>1985 Learner's Walk
+							<br/>Vancouver, BC, Canada
+							<br/>V6T 1Z1
 						</div>
 					</div>
 					<div class="col-sm-6 text-right">
-						<ul class="list-inline pull-right social">
+						<!--<ul class="list-inline pull-right social">
 							<li><i class="fa fa-twitter"></i></li>
 							<li><i class="fa fa-facebook-square"></i></li>
 							<li><i class="fa fa-youtube-play"></i></li>
-						</ul>
+						</ul>-->
 						<ul class="list-inline footerLinks" style="clear:right;">
 							<li><a href="//cdn.ubc.ca/clf/ref/terms" title="Terms of Use">Terms of Use</a></li>
 							<li>|</li>

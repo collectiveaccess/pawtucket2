@@ -89,7 +89,7 @@ body {
     font-family:neuzeit;
     margin-bottom:0px;
 }
-a, a:hover{
+a, a:hover, a:active, a:focus{
 	color:#000;
 }
 #pageArea {
@@ -424,7 +424,6 @@ p, .collectionsList p {
 	margin-bottom:10px;
 }
 .relImg {
-	min-height:150px;
 	margin-bottom:5px;
 }
 .relImg img {
@@ -458,6 +457,9 @@ p, .collectionsList p {
 }
 .repViewerContCont:hover .objectCaption {
 	color:#000;
+}
+.relatedExhibitions .relatedArtwork a {
+	text-decoration:underline;
 }
 
 /* Collection */
@@ -667,7 +669,7 @@ p, .collectionsList p {
 	height: 1.1em;
 }
 .exhibitions .bResultListItem .bResultListItemTextContainer {
-	height: 2.4em;
+	height: 68px;
 }
 .bResultListItem .bResultListItemText {
 	font-size:14px;
@@ -778,6 +780,36 @@ p, .collectionsList p {
 	height:auto;
 }
 
+.btn-group.sort a:hover {
+	text-decoration:none;
+}
+.browse .sort .btn {
+	background-color:transparent;
+	color:#000;
+	font-size: 15px;
+    border-bottom: 1px solid #000;
+    border-radius:0px;
+}
+.browse .sort .btn:active, .browse .sort .btn:focus {
+	box-shadow:none;
+	border-style:solid;
+	text-shadow:none;
+}
+.btn-group.sort {
+	margin-right:20px;
+}
+.sort.open > .dropdown-menu {
+    display: block;
+    right: 0px;
+    border: 1px solid #000;
+    font-size: 15px;
+    margin-top: -1px;
+    box-shadow:none;
+}
+#bLetterBar {
+	margin-top:10px;
+}
+
 /* Upcoming Exhibitions - also uses browse list styles*/
 .upcomingExhibitions a{
 	font-weight:bold;
@@ -794,3 +826,6 @@ p, .collectionsList p {
 .upcomingExhibitions .upcomingDesc{
 	margin-top:30px;
 }
+.listing .exhibitions h4 a {
+	text-decoration:underline;
+}	

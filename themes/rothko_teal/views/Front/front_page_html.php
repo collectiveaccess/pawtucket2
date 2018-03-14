@@ -66,8 +66,8 @@
 					<div class="footerLink space"><?php print caNavLink($this->request, ' Credits', '', '', 'About', 'credits'); ?></div> | 
 					<div class="footerLink space"><?php print caNavLink($this->request, ' Notices', '', '', 'About', 'notices'); ?></div> | 
 					<div class="footerLink space"><?php print caNavLink($this->request, ' Contact', '', '', 'About', 'contact'); ?></div><br/>
-					<div class="socialLink"><a href="http://www.facebook.com"><i class="fab fa-facebook-f"></i></a></div>
-					<div class="socialLink"><a href="http://www.twitter.com"><i class="fab fa-twitter"></i></a></div>
+					<!--<div class="socialLink"><a href="http://www.facebook.com"><i class="fab fa-facebook-f"></i></a></div>
+					<div class="socialLink"><a href="http://www.twitter.com"><i class="fab fa-twitter"></i></a></div>-->
 				</div>				
 			</div>
 		</div>

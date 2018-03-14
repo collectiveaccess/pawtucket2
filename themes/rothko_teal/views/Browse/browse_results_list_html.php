@@ -145,7 +145,7 @@
 							$vs_info.= "<p>".$va_collection."</p>";
 						}
 						$vs_bottom_info = "";
-						if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
+						if ($vs_catalog_number = $qr_res->get('ca_objects.institutional_id')) {
 							$vs_bottom_info.= "<div class='catno'>".$vs_catalog_number."</div>";
 						}
 						$vs_bottom_info.= !$vs_type_placeholder ? "<a href='#' class='compare_link' data-id='object:{$vn_id}'><div class='compareIcon' aria-hidden='true'></div></a>" : '';
@@ -159,27 +159,34 @@
 
 						$vs_type = $qr_res->get('ca_occurrences.type_id', array('convertCodesToDisplayText' => true));
 						if ($vs_type == 'Exhibition') {
-							$vs_label_detail_link 	= "<span class='listTitle'><i>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id)."</i></span>";
-
+							$vs_title = $qr_res->get("{$vs_table}.preferred_labels");
 							if ($vs_museum = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue')))) {
-								$vs_result_text.=", ".$vs_museum;
+								$vs_title.=", ".$vs_museum;
 							}
 							if ($vs_ex_date = $qr_res->get('ca_occurrences.occurrence_dates')) {
-								$vs_result_text.=", ".$vs_ex_date.".";
+								$vs_title.=", ".$vs_ex_date.".";
 							}
-							$vs_result_text_link = caDetailLink($this->request, $vs_result_text, 'occLink', $vs_table, $vn_id); 
-						} else if ( $vs_nonpreferred = $qr_res->get('ca_occurrences.nonpreferred_labels')){
-							$vs_info.= "<span class='comma'>: ".$vs_nonpreferred."</span>.";
-						} else {
-							$vs_nonpreferred = null;
-							$vs_info.= "<span class='comma'>.</span>";
-						}
+							$vs_title.= "<i class='fa fa-chevron-right'></i>";
+							#$vs_result_text_link = caDetailLink($this->request, $vs_result_text, 'occLink', $vs_table, $vn_id);
+							$vs_label_detail_link 	= "<span class='listTitle'><i>".caDetailLink($this->request, $vs_title, '', $vs_table, $vn_id)."</i></span>";
+ 
+						} elseif ($vs_type == 'Reference') {
+							$vs_title = $qr_res->get("{$vs_table}.preferred_labels");
+							if ($vs_nonpreferred = $qr_res->get('ca_occurrences.nonpreferred_labels')){
+								$vs_title.= "<span class=''>: ".$vs_nonpreferred."</span>.";
+							} else {
+								$vs_nonpreferred = null;
+								$vs_title.= "<span class=''>.</span>";	
+							}
+							$vs_title.= "<i class='fa fa-chevron-right'></i>";
+							$vs_label_detail_link = "<span class='listTitle'>".caDetailLink($this->request, $vs_title, '', $vs_table, $vn_id)."</span>";
+						}	
 					} elseif ($vs_table === 'ca_collections') {
 						if ($vs_location) {
 							$vs_info.= $vs_location;
 						}
 					}
-					if ($vs_table != 'ca_objects') {
+					if (($vs_table != 'ca_objects') && ($vs_table != 'ca_occurrences')) {
 						$vs_chevron = "<i class='fa fa-chevron-right'></i>";
 					} else {
 						$vs_chevron = null;

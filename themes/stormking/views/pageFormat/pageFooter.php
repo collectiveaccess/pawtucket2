@@ -27,6 +27,7 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
+	
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 
 				</div><!-- end content -->

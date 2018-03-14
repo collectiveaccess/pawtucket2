@@ -28,9 +28,9 @@
 				if ($vs_description = $t_item->get('ca_occurrences.description')) {
 					print "<div class='unit'>".$vs_description."</div>";
 				}
-				if ($va_venue = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue')))){
-					print "<div class='unit'><h6>Venue</h6>".$va_venue."</div>";
-				}
+#				if ($va_venue = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue')))){
+#					print "<div class='unit'><h6>Venue</h6>".$va_venue."</div>";
+#				}
 				if ($va_rel_programs = $t_item->get('ca_occurrences.related.preferred_labels', array('restrictToTypes' => array('exhibition', 'public_program'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Related Programs</h6>".$va_rel_programs."</div>";
 				}
@@ -39,7 +39,7 @@
 					foreach ($va_related_or_history as $va_id => $va_related_or_history_id) {
 						$t_rel_or = new ca_objects($va_related_or_history_id);
 						print "<div class='detailLine'>";
-						print "<p>".caDetailLink($this->request, $t_rel_or->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_or->get('ca_objects.object_id'))."</p>";
+						print "<p>".caNavLink($this->request, $t_rel_or->get('ca_objects.preferred_labels'), '', 'Detail', 'oralhistory', $t_rel_or->get('ca_objects.object_id'))."</p>";
 						print "</div>";
 					}
 				}				
@@ -84,7 +84,7 @@
 					}
 				}
 				if ($vs_website = $t_item->get('ca_occurrences.exhibition_website')) {
-					print "<div class='unit zoomIcon'><h6><i class='fa fa-external-link-square'></i> <a href='".$vs_website."' target='_blank'>View Website</a></h6></div>";
+					print "<div class='unit zoomIcon'><h6><i class='fa fa-external-link-square'></i> <a href='".$vs_website."' target='_blank'>View Exhibition Website</a></h6></div>";
 				}				
 ?>			
 			</div><!-- end col -->
@@ -92,7 +92,7 @@
 <?php		
 		if ($va_related_archival = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('archival')))) {
 			print "<hr><div class='row'><div class='col-sm-12'>";
-			print '<h6 class="header">Related Archival Items</h6>';
+			print '<h6 class="header">Archival Items</h6>';
 			foreach ($va_related_archival as $va_key => $va_related_archival_id) {
 				$t_archival = new ca_objects($va_related_archival_id);
 				print "<div class='col-sm-2'> <div class='relatedArtwork' style='word-break: break-all;'>";
@@ -105,7 +105,7 @@
 ?>				
 {{{<ifcount code="ca_objects" min="1" restrictToTypes="sk_artwork,loaned_artwork">
 			<hr>
-			<h6>Related Artworks</h6>
+			<h6>Artworks</h6>
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
