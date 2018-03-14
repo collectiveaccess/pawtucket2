@@ -47,10 +47,8 @@
 	$t_instance			= $this->getVar('t_instance');
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
-
+	
 	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
-	
-	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 	$vb_ajax			= (bool)$this->request->isAjax();
@@ -183,10 +181,20 @@ if (!$vb_ajax) {	// !ajax
 		</H1>
 		<H5>
 <?php
+		$s_config = caGetSearchConfig();
+		if($va_base_criteria = $s_config->get('baseCriteria')){
+			if(isset($va_base_criteria[$vs_table]) && count($va_base_criteria[$vs_table]) > 0){
+				$va_table_criteria = $va_base_criteria[$vs_table];
+			}
+		}
+		
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			$vs_last_facet = "";
 			foreach($va_criteria as $va_criterion) {
+				if(is_array($va_table_criteria)){
+					if(array_key_exists($va_criterion['facet_name'], $va_table_criteria)) { continue; }
+				}
 				if($va_criterion['facet'] != $vs_last_facet){
 					print "<strong>".$va_criterion['facet'].':</strong>';
 				}

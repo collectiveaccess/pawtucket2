@@ -35,10 +35,10 @@
 			<li><a href="https://www.instagram.com/fossilinsectcollaborativetcn/" target="_blank"><i class="fa fa-instagram"></i></a></li>
 			<!--<li><i class="fa fa-youtube-play"></i></li>-->
 		</ul>
-		<!--<div>
-			Footer text here
+		<div class="footer-logo">
+			<?php print caGetThemeGraphic($this->request, 'nsf_logo.jpg'); ?>	
 		</div>
-		<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>-->
+		<!--<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>-->
 	</div><!-- end footer -->
 <?php
 	//

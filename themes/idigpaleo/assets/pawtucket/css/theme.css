@@ -9,11 +9,62 @@ a {
 	color:#676767;
 }
 /* --- header styles --- */
-.navHeader{
-	padding:0px 0px 3px 0px;
+#headerbar{
+        background-color: #3B3B3B;
+        box-shadow: none;
+        -webkit-box-shadow: none;
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        height: 25px;
+        padding: 0;
+        z-index: 9999;
+}
+#headerbar > .navbar{
+        height: 25px;
+        border: none;
+        min-height: 0;
+        border-bottom: 1px solid #FFBD1F;
+}
+#headerbar > .navbar > .nav {
+        margin: 0;
+        padding-left: 20px;
+}
+#headerbar > .navbar > .nav > li{
+        float: left;
+}
+#headerbar > .navbar > .nav > li > a {
+        font-size: 12px;
+        text-transform: none;
+        color: #d3d3d3 !important;
+        font-weight: 200;
+        padding: 0px 2px 0px 10px;
+        letter-spacing: 1.5px;
+}
+
+#headerbar > .navbar > .nav > li > a > .header_text {
+		position: relative;
+		top: 2px;
+}
+
+#headerbar > .navbar > .nav > li > a:hover, #headerbar > .navbar-collapse > .nav > li > a:focus {
+        background: none !important;
+        color: #DFA800 !important;
+}
+#headerbar > .navbar > .nav > li > a > img{
+        height: 24px;
+        position: relative;
+}
+#headerbar > .navbar > .nav > li >#idp-header{
+        color: #DFA800 !important;
 }
 .header-img > img {
-	width: 100%;
+		padding-top: 25px;
+        width: 100%;
+}
+.navHeader{
+	padding:0px 0px 3px 0px;
 }
 .navbar{
 	background-color: #3B3B3B;
@@ -29,6 +80,25 @@ a {
 	border:1px solid #FFF;
 	background-color:#FFFFFF;
 }
+
+/* GENERAL */
+
+.btn-default, .sets .btn{
+	background-color: #FFBD1F;
+	border-radius: 3px;
+}
+
+.btn-default:hover, .btn-default:active, .btn-default:focus{
+	background-color: #DFA800;
+	border-radius: 3px;
+}
+
+.btn-sm{
+	margin: 1px 5px;
+	padding: 3px;
+	font-size: 12px; 
+}
+
 H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 	font-family: "News Cycle";
 	font-weight: 400;
@@ -107,6 +177,7 @@ hr{
 /* --- footer ---*/
 #footer{
 	border-top: 3px solid #FFBD1F;
+	max-width: 1015px;
 }
 #footer ul a{
 	color: #676767;
@@ -116,6 +187,16 @@ hr{
 	color: #2a6496;
 	text-decoration:none;
 }
+
+.footer-logo img{
+	height: 40px;
+	margin-top: 3px;
+}
+
+#footer ul.social{
+	padding-top: 8px;
+}
+
 /*--- front page ---*/
 #pageArea.front{
 	padding:0px;
@@ -130,6 +211,7 @@ hr{
 }
 .front .news{
 	padding-bottom:20px;
+	margin-top: -20px;
 }
 .front .news img{
 	width:100%;
@@ -189,7 +271,7 @@ hr{
 }
 .frontSlide .frontSlideCaption, .frontSlide:hover .frontSlideCaption{
 	opacity:1;
-	padding:10px;
+	padding:16px 10px 10px 25px;
 	height:45px;
 	left:183px;
 	font-weight:normal;

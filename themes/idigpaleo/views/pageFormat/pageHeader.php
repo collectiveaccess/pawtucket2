@@ -30,7 +30,6 @@
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
 	$va_classroomDisplayName = caGetClassroomDisplayName();
 	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
-	
 	# --- collect the user links - they are output twice - once for toggle menu and once for nav
 	$va_user_links = array();
 	if($this->request->isLoggedIn()){
@@ -95,6 +94,22 @@
 ?>
 </head>
 <body>
+	<div class="container-fluid">
+		<div id="headerbar" class="yamm">
+			<div class="navbar navbar-default">
+				<ul class="nav navbar-nav">
+				<li><a href="/?current_theme=idigpaleo" id="idp-header"><?php print caGetThemeGraphic($this->request, 'idp_logo_header_gold.png'); ?> <span class="header_text">iDigPaleo</span></a></li>
+				<li><a href="/?current_theme=cw_idigpaleo" id="cw-header"><?php print caGetThemeGraphic($this->request, 'cw_logo_header.png'); ?> <span class="header_text">Cretaceous World</span></a></li>
+				<li><a href="/?current_theme=cw_florissant" id="flfo-header"><?php print caGetThemeGraphic($this->request, 'flfo_logo_header.png'); ?> <span class="header_text">Florissant Fossil Beds</span></a></li>
+				</ul>
+			</div>
+		</div>
+		<script>
+			$('#headerbar > .navbar-collapse > .nav > li').hover(function(){
+				$(this).html();
+			});
+		</script>
+	</div>
 	<div class="container"><div class="navHeader">
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'idigpaleo_header_new_ver4.png'), "header-img", "", "","");

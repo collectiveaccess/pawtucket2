@@ -85,7 +85,7 @@
 			
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
-				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
+				$vs_pref_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.taxonomy_specimen.scientific_name"), '', $vs_table, $vn_id);
 				
 				$formation_place	= $qr_res->get("{$vs_table}.lithostratigraphy.formation");
@@ -125,7 +125,7 @@
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}<br/>{$vs_common_detail}{$vs_formation_detail}
+					<small>{$vs_pref_detail_link}</small><br/>{$vs_label_detail_link}<br/>{$vs_common_detail}{$vs_formation_detail}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
