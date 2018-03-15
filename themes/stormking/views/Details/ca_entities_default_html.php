@@ -139,8 +139,8 @@
 					}
 					$t_oralh = new ca_objects($vn_related_oralh_id);
 					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem {$vs_style}'>";
-					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_oralh->get('ca_object_representations.media.widepreview'), '', 'Detail', 'oralhistory', $t_oralh->get('ca_objects.object_id'))."</div></div>";
-					print "<p>".caDetailLink($this->request, $t_oralh->get('ca_objects.preferred_labels'), '', 'Detail', 'oralhistory', $t_oralh->get('ca_objects.object_id'))."</p>";
+					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_oralh->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_oralh->get('ca_objects.object_id'))."</div></div>";
+					print "<p>".caDetailLink($this->request, $t_oralh->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_oralh->get('ca_objects.object_id'))."</p>";
 					print "</div></div>";
 					$vs_oh_count++;
 				}
