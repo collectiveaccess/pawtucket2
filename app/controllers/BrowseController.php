@@ -93,10 +93,11 @@
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
 			
-			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable")) {
-				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable"));
+			$vs_type_key = caMakeCacheKeyFromOptions($va_types);
+			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable{$vs_type_key}")) {
+				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable{$vs_type_key}"));
 			} else {
-				ExternalCache::save("{$vs_class}totalRecordsAvailable", $vn_count = $vs_class::find(['deleted' => 0], ['checkAccess' => $this->opa_access_values, 'returnAs' => 'count', 'restrictToTypes' => (sizeof($va_types)) ? $va_types : null]));
+				ExternalCache::save("{$vs_class}totalRecordsAvailable{$vs_type_key}", $vn_count = $vs_class::find(['deleted' => 0], ['checkAccess' => $this->opa_access_values, 'returnAs' => 'count', 'restrictToTypes' => (sizeof($va_types)) ? $va_types : null]));
 				$this->view->setVar('totalRecordsAvailable', $vn_count);
 			}
 			
