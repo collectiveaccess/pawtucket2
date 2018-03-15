@@ -78,7 +78,7 @@
 					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
 						$t_rel = new ca_objects_x_entities($va_entity_rel);
 						$vn_type_id = $t_rel->get('ca_relationship_types.preferred_labels');
-						$va_entities_by_type[$vn_type_id][] = $t_rel->get('ca_entities.preferred_labels');
+						$va_entities_by_type[$vn_type_id][] = caDetailLink($this->request, $t_rel->get('ca_entities.preferred_labels'), '', 'ca_entities', $t_rel->get('ca_entities.entity_id'));
 					}
 					print "<div class='unit'>";
 					foreach ($va_entities_by_type as $va_type => $va_entity_id) {

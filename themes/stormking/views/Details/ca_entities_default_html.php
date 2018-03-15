@@ -129,6 +129,7 @@
 			#Related Oral History
 			if ($va_related_oralh = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history')))) {
 				$vs_oh_count = 0;
+				array_unique($va_related_oralh);
 				print "<hr><div class='row'><div class='col-sm-12'>";
 				print '<h6 class="header">Oral History</h6>';
 				foreach ($va_related_oralh as $va_key => $vn_related_oralh_id) {
