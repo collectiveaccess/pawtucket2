@@ -39,7 +39,7 @@
 		<div class="col-sm-12">
 			<H1>Resources</H1>
 			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut vitae nulla nunc. Nullam malesuada, orci rutrum consequat euismod, ex libero pulvinar lacus, et consequat nisi orci ut ante. Nunc dignissim diam nulla, vitae vestibulum massa aliquet a. Ut malesuada suscipit augue vel feugiat. Quisque condimentum lectus quis eros blandit mollis. Fusce hendrerit suscipit ligula, non egestas urna pellentesque et. Suspendisse consectetur venenatis elit et mollis. Nulla ullamcorper dolor in felis malesuada, vulputate condimentum ligula finibus. Nunc interdum sapien laoreet risus vulputate vestibulum. 
+				The materials in this section are a continually growing set of resources that explore the historical context of settler colonialism in Canada and foundational themes relating to the history of the Indian Residential School System. Identity, which introduces the complexity and plurality of Indigenous identity in Canada; settler government policy, which lays out policies and legislation asserting jurisdiction over Indigenous territories and governance; and Indigenous communities, which presents the currency of Indigenous communities in an introductory way, are but some of the areas included. This section is meant to acknowledge, build upon, and support recent and more long-standing resources and projects related to the Indian Residential School System and Indigenous histories, contemporary realities, and futures. As such, this section seeks to be an ever-expanding set of resources that ground visitors in existing work and provide direction for pursuing additional information.
 			</p>
 		</div>
 	</div>

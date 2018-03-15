@@ -4,19 +4,14 @@
 	if(!$ps_contactType){
 		$ps_contactType = "contact";
 	}
-	$pn_object_id = $this->request->getParameter("object_id", pInteger);
-	if($pn_object_id){
-		require_once(__CA_MODELS_DIR__."/ca_objects.php");
-		$t_item = new ca_objects($pn_object_id);
-		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "objects", $t_item->get("ca_objects.object_id"));
-		$vs_name = $t_item->get("ca_objects.preferred_labels.name");
-	}
-	$pn_entity_id = $this->request->getParameter("entity_id", pInteger);
-	if($pn_entity_id){
-		require_once(__CA_MODELS_DIR__."/ca_entities.php");
-		$t_item = new ca_collections($pn_entity_id);
-		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "entities", $t_item->get("ca_entities.collection_id"));
-		$vs_name = $t_item->get("ca_entities.preferred_labels.name");
+	$ps_table = $this->request->getParameter("table", pString);
+	$pn_row_id = $this->request->getParameter("row_id", pInteger);
+	if($pn_row_id && $ps_table){
+		$o_dm = $this->request->getAppDatamodel();
+		$t_instance = $o_dm->getInstanceByTableNum($ps_table);
+		$t_instance->load($pn_row_id);
+		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", str_replace("ca_", "", $ps_table), $pn_row_id);
+		$vs_name = $t_instance->get("preferred_labels");
 	}
 	$va_errors = $this->getVar("errors");
 	$vn_num1 = rand(1,10);
@@ -58,7 +53,6 @@
 				
 				<H6><b>Regarding this URL: </b><a href="<?php print $vs_url; ?>"><?php print $vs_url; ?></a></H6>
 				<br/>
-				<input type="hidden" name="itemId" value="<?php print $vs_idno; ?>">
 				<input type="hidden" name="itemTitle" value="<?php print $vs_name; ?>">
 				<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
 			</div>
@@ -121,6 +115,6 @@
 		</div><!-- end form-group -->
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 		<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
-		<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
-		<input type="hidden" name="entity_id" value="<?php print $pn_entity_id; ?>">
+		<input type="hidden" name="row_id" value="<?php print $pn_row_id; ?>">
+		<input type="hidden" name="table" value="<?php print $ps_table; ?>">
 	</form>
