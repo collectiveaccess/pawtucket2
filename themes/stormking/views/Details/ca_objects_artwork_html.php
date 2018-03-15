@@ -77,15 +77,21 @@
 			</div><!-- end col -->
 		</div>	
 		<hr>
-		<div class="row">					
-			<div class="col-sm-6">
+		<div class="row">
+								
+			<div class="col-sm-6" style="padding-left:30px;">
 					
 <?php
-				if ($vs_artist = $t_object->getWithTemplate('<unit relativeTo="ca_entities"><div class="artistName"><l>^ca_entities.preferred_labels</l></div><div>^ca_entities.nationality_text, ^ca_entities.entity_display_date</div></unit>')) { 
+				if ($vs_artist = $t_object->getWithTemplate('<unit relativeTo="ca_entities" delimiter="<br/>"><div class="artistName"><l>^ca_entities.preferred_labels</l></div><div>^ca_entities.nationality_text, ^ca_entities.entity_display_date</div></unit>')) { 
 					print "<div class='tombstone'>".$vs_artist."</div>";
 				}
 				print "<div class='spacer'></div>";
-				print "<div class='tombstone artTitle'><i>".$t_object->get('ca_objects.preferred_labels')."</i>";
+				print "<div class='tombstone artTitle'>";
+				if ($t_object->get('ca_objects.preferred_labels') == "Untitled") {
+					print $t_object->get('ca_objects.preferred_labels');
+				} else {
+					print "<i>".$t_object->get('ca_objects.preferred_labels')."</i>";
+				}
 				if ($va_date = $t_object->get('ca_objects.display_date')) {
 					print ", ".$va_date;
 				}
@@ -151,7 +157,7 @@
 		<div class="row objInfo">
 				
 <?php				
-				if ($va_related_artworks = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork')))) {
+				if ($va_related_artworks = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork'), 'sort' => 'ca_object_labels.name'))) {
 
 					print "<hr>";
 
@@ -161,7 +167,7 @@
 						print "<div class='col-sm-3'>";
 						print "<div class='relatedArtwork'>";
 						print "<div class='relImg'>".caDetailLink($this->request, $t_rel_obj->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</div>";
-						print "<p>".caDetailLink($this->request, "<i>".$t_rel_obj->get('ca_objects.preferred_labels')."</i>", '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'));
+						print "<p>".caDetailLink($this->request, ( $t_rel_obj->get('ca_objects.preferred_labels') == "Untitled" ? $t_rel_obj->get('ca_objects.preferred_labels') : "<i>".$t_rel_obj->get('ca_objects.preferred_labels')."</i>"), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'));
 						if ($vs_art_date = $t_rel_obj->get('ca_objects.display_date')) {
 							print ", ".$vs_art_date;
 						}

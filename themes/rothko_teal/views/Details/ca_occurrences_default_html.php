@@ -31,7 +31,7 @@
 		if ($vs_type = $t_item->get('ca_occurrences.type_id', array('convertCodesToDisplayText' => true))) {
 			print "<h6 class='leader'>".$vs_type."</h6>";
 		}
-		print "<h1><i>".$t_item->get('ca_occurrences.preferred_labels')."</i></h1>"; 
+		print "<h1>".$t_item->get('ca_occurrences.preferred_labels')."</h1>"; 
 		if ($va_venue_ids = $t_item->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('venue'), 'returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 			print "<div class='unit borderless'>";
 			foreach ($va_venue_ids as $va_key => $va_venue_id) {
@@ -61,14 +61,14 @@
 				print "<div class='unit borderless'>".caNavLink($this->request, $va_date, '', 'Search', 'exhibitions', 'search/exhibition_dates', ["values" => [(int)$va_raw_date['occurrence_dates']['start']]])."</div>";
 			}
 		}
-		if ($va_related_exhibitions = $t_item->get('ca_occurrences.related', array('returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
+/*		if ($va_related_exhibitions = $t_item->get('ca_occurrences.related', array('returnWithStructure' => true, 'checkAccess' => $va_access_values))) {
 			foreach ($va_related_exhibitions as $va_key => $va_related_exhibition) {
 				$t_exhi = new ca_occurrences($va_related_exhibition['occurrence_id']);
 				if($t_exhi->get('ca_occurrences.exhibition_origination') == $vs_yes_value) {
 					print "<div class='unit borderless'>Originating venue: ".caNavLink($this->request, $t_exhi->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue'))), '', 'Search', 'exhibitions', 'search/exhibition', ["values" => [$t_exhi->get('ca_entities.entity_id', array('restrictToRelationshipTypes' => array('venue')))]])."</div>";
 				}
 			}
-		}
+		} */
 		if ($t_item->get('ca_occurrences.exhibition_origination') == $vs_yes_value) {
 			print "<div class='unit borderless'>Originating venue</div>";
 		}
@@ -84,23 +84,23 @@
 <?php
 		$vs_first = true;
 		$vs_no_border = "style=border-top:0px;";
-		if ($vs_exhibitions = $t_item->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_occurrences.related"><i><l>^ca_occurrences.preferred_labels</l></i><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue">, ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef>.<if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</ifdef></unit>')) {
+		if ($vs_exhibitions = $t_item->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_occurrences.related"><l><i>^ca_occurrences.preferred_labels</i><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue">, ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef>.<if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</if> <i class="fa fa-chevron-right"></i></l></unit>')) {
 			print "<div class='row'><div class='col-sm-8  col-sm-offset-2  '><div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
-			print "<h6><a href='#' onclick='$(\"#exhibitionDiv\").toggle(400);return false;'>Venues <i class='fa fa-window-minimize'></i></a></h6>";
+			print "<h6><a href='#'  data-toggleDiv='exhibitionDiv' class='togglertronic'>Venues <i class='fa fa-plus drawerToggle'></i></a></h6>";
 			print "<div id='exhibitionDiv'>".$vs_exhibitions."</div>";
 			print "</div></div></div>";
 			$vs_first = false;
 		}
-		if ($vs_reference = $t_item->getWithTemplate('<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences.related"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels">: ^ca_occurrences.nonpreferred_labels</ifdef></l>.</unit>')) {
+		if ($vs_reference = $t_item->getWithTemplate('<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences.related"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels">: ^ca_occurrences.nonpreferred_labels</ifdef>. <i class="fa fa-chevron-right"></i></l></unit>')) {
 			print "<div class='row'><div class='col-sm-8  col-sm-offset-2  '><div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
-			print "<h6><a href='#' onclick='$(\"#referenceDiv\").toggle(400);return false;'>Exhibition Catalog <i class='fa fa-window-minimize'></i></a></h6>";
+			print "<h6><a href='#' data-toggleDiv='referenceDiv' class='togglertronic'>Exhibition Catalog <i class='fa fa-plus drawerToggle'></i></a></h6>";
 			print "<div id='referenceDiv'>".$vs_reference."</div>";
 			print "</div></div></div><!-- end row -->";
 		}
 ?>		
 
 {{{<ifcount code="ca_objects" relativeTo="ca_objects" restrictToTypes="side" min="1">
-	<div class="row " style="border-bottom: 1px solid #d6d6d6;margin:40px -15px 0px -15px;"></div>
+	<div class="row " style="border-bottom: 1px solid #d6d6d6;margin:5px -15px 0px -15px;"></div>
 	<div class="row"><div class='col-sm-12'>
 	
 		<div id="browseResultsContainer">
@@ -109,7 +109,7 @@
 	</div><!-- end col --></div><!-- end row -->
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'artworks', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id', 'detailNav' => 1, 'occurrence_id' => '^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'artworks', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id', 'detailNav' => 1, 'type' => 'exhibition', 'occurrence_id' => '^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 				jQuery('#browseResultsContainer').jscroll({
 					autoTrigger: true,
 					loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -118,7 +118,7 @@
 				});
 			});
 			
-			
+		    tronicTheToggles();
 		});
 	</script>
 </ifcount>}}}		

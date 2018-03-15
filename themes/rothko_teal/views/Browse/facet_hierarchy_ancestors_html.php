@@ -41,8 +41,8 @@
 		$vn_c = 0;
 		foreach($va_ancestors as $va_ancestor){
 			$va_ancestor = $va_ancestor['NODE'];
-			
-			print '<a href="#" onClick=\'jQuery("#bHierarchyListMorePanel_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'key' => $vs_key, 'browseType' => $vs_browse_type, 'isNav' => $vb_is_nav ? 1 : 0, 'id' => (int)$va_ancestor[$vs_primary_key])).'"); jQuery(".bAncestorList_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'id' => $va_ancestor[$vs_primary_key], 'isNav' => $vb_is_nav ? 1 : 0)).'"); return false;\'>'.caTruncateStringWithEllipsis($va_ancestor[$vs_display_field], 40).'</a>';
+			print caNavLink($this->request, caTruncateStringWithEllipsis($va_ancestor[$vs_display_field], 40), '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_ancestor[$vs_primary_key], 'isNav' => $vb_is_nav ? 1 : 0));
+			#print '<a href="#" onClick=\'jQuery("#bHierarchyListMorePanel_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'key' => $vs_key, 'browseType' => $vs_browse_type, 'isNav' => $vb_is_nav ? 1 : 0, 'id' => (int)$va_ancestor[$vs_primary_key])).'"); jQuery(".bAncestorList_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'id' => $va_ancestor[$vs_primary_key], 'isNav' => $vb_is_nav ? 1 : 0)).'"); return false;\'>'.caTruncateStringWithEllipsis($va_ancestor[$vs_display_field], 40).'</a>';
 			if ($vn_c < sizeof($va_ancestors) - 1) { print " <span class='glyphicon glyphicon-chevron-right'></span> "; }
 			$vn_c++;
 		}

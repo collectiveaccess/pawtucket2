@@ -254,6 +254,15 @@
 			} elseif ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
 			}
+			//
+			// Add Additional base criteria if necessary
+			//
+			if($va_base_criteria = $o_search_config->get('baseCriteria')){
+				$va_table_criteria = $va_base_criteria[$va_browse_info['table']];
+				foreach($va_table_criteria as $vs_facet => $vs_value){
+					$o_browse->addCriteria($vs_facet, $vs_value);
+				}
+			}
 			
 			//
 			// Sorting

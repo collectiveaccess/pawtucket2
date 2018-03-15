@@ -476,7 +476,7 @@
  			$vb_is_insert = false;
  			if(sizeof($va_errors) == 0){
 				$t_set->setMode(ACCESS_WRITE);
-				if(!is_null($vn_access = $this->request->getParameter('access', pInteger))) {
+				if(strlen($vn_access = $this->request->getParameter('access', pInteger))) {
 					$t_set->set('access', $vn_access);
 				} else {
 					$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
@@ -1168,7 +1168,6 @@
 				$vn_object_table_num = $t_object->tableNum();
 				$t_set->setMode(ACCESS_WRITE);
 				$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
-				#$t_set->set('access', $this->request->getParameter('access', pInteger));
 				$t_set->set('table_num', $vn_object_table_num);
 				$t_set->set('type_id', $vn_set_type_user);
 				$t_set->set('user_id', $this->request->getUserID());

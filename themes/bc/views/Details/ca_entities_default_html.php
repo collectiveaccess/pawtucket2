@@ -199,6 +199,12 @@ if ($vs_type == "Member Institution") {
 							print "<div class='unit'>".$vs_address."</div>";
 						}
 					}
+					if ($vs_email = $t_item->get('ca_entities.email')) {
+						print "<div class='unit'><span class='data'>Email</span><span class='meta'><a href='mailto:".$vs_email."'>".$vs_email."</a></span></div>";
+					}	 
+					if ($vs_telephone = $t_item->get('ca_entities.telephone')) { 
+						print "<div class='unit'><span class='data'>Telephone</span><span class='meta'>".$vs_telephone."</span></div>";
+					}									
 					if ($vs_life_dates = $t_item->get('ca_entities.life_dates')) {
 						print "<div class='unit'><span class='data'>Life Dates</span><span class='meta'>".$vs_life_dates."</span></div>";
 					}
@@ -295,7 +301,7 @@ if ($vs_type == "Member Institution") {
 							searchTerm = encodeURIComponent(" AND " + searchTerm);
 						}
 						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', null, array('dontURLEncodeParameters' => true)); ?>/search/entity_id:<?php print $t_item->get('ca_entities.entity_id'); ?>" + searchTerm, function() {
-							jQuery('#browseResultsContainer').jscroll.destroy();
+							jQuery('#browseResultsContainer').removeData('jscroll').jscroll.destroy();
 							jQuery('#browseResultsContainer').jscroll({
 								autoTrigger: true,
 								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
