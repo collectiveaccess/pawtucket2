@@ -102,7 +102,7 @@
 				if ($va_credit = $t_object->get('ca_objects.credit_line')) {
 					print "<div class='unit'><h6>Credit Line</h6>".$va_credit."</div>";
 				}	
-				print caNavLink($this->request, '<i class="fa fa-envelope"></i> Contact the Archivist', '', '', 'Contact', 'form');										
+														
 ?>	
 				</div></div></div>
 			</div><!-- end col -->	
