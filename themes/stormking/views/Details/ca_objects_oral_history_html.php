@@ -156,7 +156,7 @@
 					$t_archival = new ca_objects($vn_related_archival_id);
 					print "<div class='col-sm-3'> <div class='relatedArtwork {$vs_style}'>";
 					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_archival->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</div></div>";
-					print "<p>".caDetailLink($this->request, $t_archival->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</p>";
+					print "<p style='height:45px;'>".caDetailLink($this->request, $t_archival->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</p>";
 					print "</div></div>";
 					$vs_arch_count++;
 				}
