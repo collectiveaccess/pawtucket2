@@ -134,7 +134,6 @@
 						"</div></div>";
 			print "</div>";
 		}
-		print "<div class='col-sm-3 frontNarrativeThreadsAllLink'>".caNavLink($this->request, "Explore All <i class='fa fa-arrow-right' aria-hidden='true'></i>", "btn-default btn-lg", "", "Explore", "narrativethreads")."</div>";
 	}
  
 #			if(is_array($va_narrative_threads) && sizeof($va_narrative_threads)){
@@ -144,6 +143,8 @@
 #			}
 
 ?>
+				<div class='col-sm-12 frontNarrativeThreadsAllLink'><?php print caNavLink($this->request, "Explore All <i class='fa fa-arrow-right' aria-hidden='true'></i>", "btn-default btn-lg", "", "Explore", "narrativethreads"); ?></div>
+
 			</div>
 		</div>
 	</div>

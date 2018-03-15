@@ -25,52 +25,58 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-	$t_object = 			$this->getVar("item");
+
+	$t_item = 				$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-	$vn_id =				$t_object->get('ca_objects.object_id');
-	$va_access_values = $this->getVar("access_values");
 ?>
-	<div class="row">
-		<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-		</div><!-- end detailTop -->
-	</div>
+			<div class="row">
+				<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
+					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+				</div><!-- end detailTop -->
+			</div>
 			<div class="row">
 <?php
-				$vs_representationViewer = trim($this->getVar("representationViewer"));
-				if($vs_representationViewer){
+				if($vs_map = $this->getVar("map")){
 ?>
-				<div class='col-sm-12 col-md-5'>
-					<?php print $vs_representationViewer; ?>				
-					<div id="detailAnnotations"></div>
-<?php				
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3"));
-?>
-				</div><!-- end col -->
+					<div class='col-sm-12 col-md-5'>
+						<?php print $vs_map; ?>				
+					</div><!-- end col -->
 <?php
 				}
 ?>
-				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>
+				<div class='col-sm-12 col-md-<?php print ($vs_map) ? "5" : "7"; ?>'>
 					<div class="stoneBg">				
-
-						<H4>{{{^ca_objects.preferred_labels.name}}}
-						{{{<ifdef code="ca_objects.dc_website"><br/><unit delimiter="<br/>"><a href="^ca_objects.dc_website" class="redLink" target="_blank">^ca_objects.dc_website <span class="glyphicon glyphicon-new-window"></span></a></unit></ifdef>}}}
-						</H4>
-						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter=", ">^ca_objects.language</unit></div></ifdef>}}}
+						<H4>{{{^ca_places.preferred_labels.name}}}</H4>
+						{{{<ifdef code="ca_places.parent_id"><H6><unit relativeTo="ca_places"><l>^ca_places.parent.preferred_labels.name</l> > ^ca_places.preferred_labels.name</unit></H6></ifdef>}}}
 						
+						{{{<ifdef code="ca_places.nonpreferred_labels.name"><div class='unit'><H6>Alternate Name(s)</H6><unit relativeTo="ca_places" delimiter="<br/>">^ca_places.nonpreferred_labels.name</unit></div></ifdef>}}}
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
-						{{{<ifdef code="ca_objects.description"><div class='unit'>^ca_objects.description</div></ifdef>}}}
+						
+						{{{<ifdef code="ca_places.description">
+							<div class="unit"><h6>Description</h6>
+								<span class="trimText">^ca_places.description</span>
+							</div>
+						</ifdef>}}}
+						{{{<ifdef code="ca_places.community_input_items.comments_objects">
+							<div class='unit' data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_places.community_input_items.comment_reference_objects"><h6>Dialogue</h6>
+								<span class="trimText">^ca_places.community_input_items.comments_objects</span>
+							</div>
+						</ifdef>}}}
 					</div><!-- end stoneBg -->
-<?php
-						include("themes_html.php");
-?>
+					{{{<ifdef code="ca_places.public_notes">
+						<div class="collapseBlock">
+							<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+							<div class="collapseContent">
+								<ifdef code="ca_places.public_notes"><div class='unit'><h6>Notes</h6>^ca_places.public_notes%delimiter=<br/></div></ifdef>
+							</div>
+						</div>
+					</ifdef>}}}
 				</div>
-				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>
+				<div class='col-sm-12 col-md-<?php print ($vs_map) ? "2" : "5"; ?>'>
 	<?php
 					# Comment and Share Tools
 						
@@ -90,12 +96,7 @@
 					if ($vn_pdf_enabled) {
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
-?>
-					{{{<ifdef code="ca_objects.dc_website"><div class='detailTool'><span class='glyphicon glyphicon-new-window'></span><a href="^ca_objects.dc_website" target="_blank">View Website</a></div></ifdef>}}}
-					
-<?php					
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
-					
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_places", "row_id" => $t_item->get("place_id")))."</div>";
 					print '</div><!-- end detailTools -->';			
 
 						if ($vn_comments_enabled) {
@@ -105,11 +106,11 @@
 								<h3>Discussion</H3>
 								<div class="collapseContent open">
 									<div id='detailDiscussion'>
-										Do you have a story to contribute related to these records or a comment about this item?<br/>
+										Do you have a story or comment to contribute?<br/>
 <?php
 										
 										if($this->request->isLoggedIn()){
-											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_objects", "item_id" => $t_object->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
+											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_places", "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
 										}else{
 											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment")."</button>";
 										}
@@ -122,12 +123,6 @@
 							</div>
 <?php				
 						}
-?>
-
-<?php
-					if($vs_map = $this->getVar("map")){
-						print "<div class='unit'>".$vs_map."</div>";
-					}
 ?>
 				</div>
 			</div>

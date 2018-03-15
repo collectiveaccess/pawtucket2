@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/bundles/ca_entities_school_html.php : 
+ * themes/default/views/bundles/ca_entities_repository_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -39,83 +39,45 @@
 </div>
 			<div class="row">
 <?php
-				$vs_featured_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'><l>^ca_object_representations.media.large</l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></unit>", array("checkAccess" => $va_access_values, "limit" => 1));
-				if($vs_featured_image){
+				$vs_representationViewer = trim($this->getVar("representationViewer"));
+				if($vs_representationViewer){
 ?>
-				<div class='col-sm-12 col-md-5 fullWidth'>
-					<?php print $vs_featured_image; ?>
+				<div class='col-sm-12 col-md-5'>
+					<?php print $vs_representationViewer; ?>
+				
+				
+					<div id="detailAnnotations"></div>
+<?php				
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4"));
+?>
+
 				</div><!-- end col -->
 <?php
 				}
 ?>
-				<div class='col-sm-12 col-md-<?php print ($vs_featured_image) ? "5" : "7"; ?>'>
+				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>
 					<div class="stoneBg">	
-						{{{<ifdef code="ca_entities.preferred_labels.displayname">
-							<H4><span data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.school_name_source">^ca_entities.preferred_labels.displayname</span>
-								<ifdef code="ca_entities.entity_website"><br/><a href="^ca_entities.entity_website" class='redLink' target="_blank">^ca_entities.entity_website <span class="glyphicon glyphicon-new-window"></span></a></div></ifdef>
-							</H4>
-						</ifdef>}}}
-						{{{<ifdef code="ca_entities.school_dates.school_dates_value">
-							<div class='unit'>
-								<H6>Dates of operation</H6>
-								<unit delimiter=" "><div  data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.school_dates.date_source">
-									<ifdef code="ca_entities.school_dates.school_dates_value">^ca_entities.school_dates.school_dates_value<br/></ifdef>
-									<ifdef code="ca_entities.school_dates.date_narrative"><span class="trimText">^ca_entities.school_dates.date_narrative</span><br/></ifdef>
-								</div></unit>
-							</div>
-						</ifdef>}}}
+						<H4>{{{^ca_entities.preferred_labels.displayname}}}
+							{{{<ifdef code="ca_entities.link"><br/><unit delimiter="<br/>"><a href="^ca_entities.link" class="redLink" target="_blank">^ca_entities.link <span class="glyphicon glyphicon-new-window"></span></a></unit></ifdef>}}}
+						</H4>
+						{{{<ifdef code="ca_entities.nonpreferred_labels.displayname"><div class='unit'><H6>Alternate Name(s)</H6><unit relativeTo="ca_entities" delimiter="<br/>">^ca_entities.nonpreferred_labels.displayname</unit></div></ifdef>}}}
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities_x_entities" restrictToTypes="school" delimiter=", "><l><unit relativeTo="ca_entities.related">^ca_entities.preferred_labels.displayname</unit> (^relationship_typename<ifdef code="relationshipDate">, ^relationshipDate</ifdef>)</l></unit></div></ifcount>}}}
-						{{{<ifdef code="ca_entities.description_new.description_new_txt">
-							<div class="unit" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
-								<span class="trimText">^ca_entities.description_new.description_new_txt</span>
+						{{{<ifdef code="ca_entities.repository_description">
+							<div class="unit"><h6>Description</h6>
+								<span class="trimText">^ca_entities.repository_description</span>
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_entities.community_input_objects.comments_objects">
-							<div class='unit' data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
-								<span class="trimText">^ca_entities.community_input_objects.comments_objects</span>
-							</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_entities.denomination"><div class='unit'><H6>Denomination</H6>^ca_entities.denomination%delimiter=,_</div></ifdef>}}}		
-						{{{<ifdef code="ca_entities.home_community.home_community_text"><div class='unit'><H6>Home Communities of Students</H6><unit delimiter="<br/>"><span data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.home_community.home_community_source"><span class="trimText">^ca_entities.home_community.home_community_text</span></span></unit></div></ifdef>}}}					
 					</div><!-- end stoneBg -->
-<?php
-						include("themes_html.php");
-?>
-							{{{<ifdef code="ca_entities.alternate_text.alternate_desc_upload.url">
-								<div class="collapseBlock">
-									<h3>Research Guide <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-									<div class="collapseContent">
-										<div class='unit icon transcription'><h6></h6><unit relativeTo="ca_entities" delimiter="<br/>"><ifdef code="ca_entities.alternate_text.alternate_desc_upload"><a href="^ca_entities.alternate_text.alternate_desc_upload.url%version=original">View ^ca_entities.alternate_text.alternate_text_type</a></ifdef><ifdef code="ca_entities.alternate_text.alternate_desc_note">^ca_entities.alternate_text.alternate_desc_note</ifdef></unit></div>
-									</div>
-								</div>
-							</ifdef>}}}
-							<div class="collapseBlock">
-								<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-								<div class="collapseContent"><h6></h6>	
-									{{{<unit relativeTo="ca_entities" delimiter="<br/>">
-										<div class="unit" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.alt_name_source">
-											<H6>Alternate Name(s)</H6>
-											^ca_entities.nonpreferred_labels.displayname
-										<div>
-									</unit>}}}
-									{{{<ifdef code="ca_entities.public_notes"><div class='unit'><h6>Notes</h6>^ca_entities.public_notes%delimiter=<br/></div></ifdef>}}}
-<?php
-									print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'entities/'.$t_item->get("entity_id"))."</textarea></div>";					
-?>
-								</div>
+					{{{<ifdef code="ca_entities.public_notes">
+						<div class="collapseBlock">
+							<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+							<div class="collapseContent">
+								<ifdef code="ca_places.public_notes"><div class='unit'><h6>Notes</h6>^ca_entities.public_notes%delimiter=<br/></div></ifdef>
 							</div>
-<!--
-							{{{<ifdef code="ca_entities.public_notes">
-								<div class="collapseBlock">
-									<h3>Notes <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-									<div class="collapseContent">
-										<ifdef code="ca_entities.public_notes"><div class='unit'><h6></h6>^ca_entities.public_notes%delimiter=<br/></div></ifdef>
-									</div>
-								</div>
-							</ifdef>}}}
--->
+						</div>
+					</ifdef>}}}
 				</div>
-				<div class='col-sm-12 col-md-<?php print ($vs_featured_image) ? "2" : "5"; ?>'>
+				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>
 	<?php
 					# Comment and Share Tools
 						
@@ -142,7 +104,7 @@
 							<h3>Discussion</H3>
 							<div class="collapseContent open">
 								<div id='detailDiscussion'>
-									Do you have a story or comment about this school?<br/>
+									Do you have a story or comment to contribute?<br/>
 <?php
 									
 									if($this->request->isLoggedIn()){

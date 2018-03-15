@@ -345,9 +345,10 @@ a:hover .frontIconButton{
 .frontNarrativeThreads{
 	margin-bottom:80px;
 }
-.frontNarrativeThreads .frontNarrativeThreadsAllLink{
-	margin-top:100px;
-	text-align:center;
+.frontNarrativeThreadsAllLink{
+	padding-top: 30px;
+	text-align: center;
+	clear: both;
 }
 .frontNarrativeThreadContainer{
 	margin-bottom:15px;
@@ -444,6 +445,18 @@ div.browseFacetItem a:hover {
 .detail .collapseBlock .collapseContent.open{
 	display:block;
 }
+.detail .collapseBlock.discussion{
+	padding-left:5px;
+	padding-right:5px;
+}
+.detail .collapseBlock.discussion{
+	padding-left:5px;
+	padding-right:5px;
+}
+.detail .collapseBlock.discussion .collapseContent{
+	padding-left:0px;
+	padding-right:0px;
+}
 .detail .blockContent{
 	margin-top:8px;
 }
@@ -476,7 +489,7 @@ div.browseFacetItem a:hover {
 	font-size:11px;
 	margin-bottom:2px;
 	font-family:latoLight;
-	padding:5px;
+	padding:10px;
 	width: 100%;
 	text-decoration: none;
 	color:#454545;
@@ -547,24 +560,57 @@ a.readmore-js-toggle {
 	margin-top:0px;
 	padding-top:0px;
 }
-.detail .detailToolsInline .detailTool{
-	float:left;
-	margin-right:0px;
-}
-.detail .detailToolsInline{
+.detail .detailTools{
 	border-bottom:#EDEDED;
 }
-.detail #detailTools.detailToolsInline a, .detail #detailTools.detailToolsInline span{
+.detail #detailTools a, .detail #detailTools span{
 	size:11px;
 }
-.detail #detailTools a, .detail #detailTools span{
+.detail #detailTools a, .detail #detailTools span, .detail .detailTool i{
 	color:#8a0000;
 }
 .detail a.noUnderline{
 	text-decoration:none !important;
 }
+.detail #detailTools div.small{
+	display:inline;
+}
+.detail #detailTools .detailTool{
+	clear:left;
+}
+.detail #detailTools .detailTool.detailToolInline{
+	padding:0px 1px 0px 1px;
+	float:left;
+	margin-right:0px;
+	clear:none;
+}
+.detail #detailTools .detailTool.detailToolInline i{
+	display:none;
+}
+@media (min-width: 1075px) {
+	.detail #detailTools .detailTool.detailToolInline{
+		
+		padding:0px 2px 0px 2px;
+	}
+	.detail #detailTools .detailTool.detailToolInline i{
+		display:inline;
+	}
+}
+.detail #detailTools .detailTool.detailToolInline .btn-small{
+	padding: 4px 3px 3px 3px;
+	font-size: 8px;
+	margin-bottom:5px;
+}
+.detail .detailToolInline i{
+	color:#FFF;
+	padding:0px;
+	margin:0px;
+}
 
-
+.mediaViewerCaption{
+	font-size:12px;
+	margin-top:5px;
+}
 /* remove ? */
 .detail a .narrativeThreadLink{
 	margin-top:10px;
@@ -620,6 +666,7 @@ a.readmore-js-toggle {
 }
 #detailComments{
 	margin-left:10px;
+	font-size:12px;
 }
 #detailComments blockquote{
 	margin-top:10px;
@@ -650,10 +697,16 @@ a.readmore-js-toggle {
     text-transform:none !important;
     font-family:latoLight;
 }
+.popover{
+	z-index:100000;
+}
 .popover-title {
     font-size: 12px;
     text-transform:none;
     padding:3px 15px 3px 15px !important;
+}
+.popover-content {
+    font-size: 12px !important;
 }
 /* EXPLORE */
 
