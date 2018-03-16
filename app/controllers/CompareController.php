@@ -41,7 +41,7 @@
             
             AssetLoadManager::register("mirador");
             
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Compare"));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Compare"));
  			caSetPageCSSClasses(array("compare"));
  		}
  		# ------------------------------------------------------

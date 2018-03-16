@@ -105,7 +105,7 @@
 					$this->view->setVar('sets', $va_sets);
 					$this->view->setVar('first_items_from_sets', $va_set_first_items);
 				}
-				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")));
+				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")));
  				$this->render("Gallery/index_html.php");
  			}else{
  				$ps_set_id = $ps_function;
@@ -129,7 +129,7 @@
  					$pn_set_item_id = "";	
  				}
  				$this->view->setVar("set_item_id", $pn_set_item_id);
- 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).": ".$t_set->getLabelForDisplay());
+ 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
  				$vs_display_attribute = $this->config->get('gallery_set_presentation_element_code');
  				$vs_display = "";
  				if($vs_display_attribute){
