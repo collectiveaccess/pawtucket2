@@ -71,7 +71,7 @@
 				if ($vs_idno = $t_object->get('ca_objects.idno')) {
 					print "<div class='unit'><h6>Identifier</h6>".$vs_idno."</div>";
 				}
-				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('publisher')))) {
+/*				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('publisher')))) {
 					$va_entities_by_type = array();
 					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
 						$t_rel = new ca_objects_x_entities($va_entity_rel);
@@ -87,6 +87,7 @@
 					}
 					print "</div>";
 				}
+*/				
 				if ($va_date = $t_object->get('ca_objects.display_date')) {
 					print "<div class='unit'><h6>Date</h6>".$va_date."</div>";
 				}
@@ -117,7 +118,21 @@
 			</div>	
 		</div><!-- end row -->		
 		
-<?php				
+<?php	
+			# Related Entities
+			if ($va_related_entity_ids = $t_object->get('ca_entities.entity_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {				
+				print "<hr/>";
+
+				print '<div class="unit"><h6>Related Entities</h6>';
+				foreach ($va_related_entity_ids as $va_id => $va_related_entity_id) {
+					$t_rel_ent = new ca_entities($va_related_entity_id);
+					print "<div class='detailLine'>";
+					print "<p><i>".caDetailLink($this->request, $t_rel_ent->get('ca_entities.preferred_labels'), '', 'ca_entities', $t_rel_ent->get('ca_entities.entity_id'))."</i></p>";
+					print "</div>";
+				}
+				print "</div>";
+			}
+			# Related Artworks			
 			if ($va_related_artworks = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork'), 'sort' => 'ca_object_labels.name'))) {
 				print '<div class="row objInfo">';
 				print "<hr>";
@@ -138,6 +153,26 @@
 				}
 				print "</div><!-- end row -->";			
 			}
+			if ($va_related_library = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('library'), 'sort' => 'ca_object_labels.name'))) {
+				print '<div class="row objInfo">';
+				print "<hr>";
+
+				print '	<div class="col-sm-12"><h6 class="header">Artworks</h6></div>';
+				foreach ($va_related_library as $va_id => $va_related_library_id) {
+					$t_rel_lib = new ca_objects($va_related_library_id);
+					print "<div class='col-sm-3'>";
+					print "<div class='relatedArtwork'>";
+					print "<div class='relImg'>".caDetailLink($this->request, $t_rel_lib->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values)), '', 'ca_objects', $t_rel_lib->get('ca_objects.object_id'))."</div>";
+					print "<p>".$t_rel_lib->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'checkAccess' => $va_access_values))."</p>";
+					print "<p>".caDetailLink($this->request, $t_rel_lib->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_lib->get('ca_objects.object_id'));
+					if ($vs_lib_date = $t_rel_lib->get('ca_objects.display_date')) {
+						print ", ".$vs_lib_date;
+					}
+					print "</p></div>";
+					print "</div><!-- end col -->";
+				}
+				print "</div><!-- end row -->";			
+			}			
 			#Related Archival
 			if ($va_related_archival = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('library')))) {
 				$vs_arch_count = 0;
