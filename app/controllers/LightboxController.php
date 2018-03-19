@@ -154,7 +154,7 @@
  			}
  			$this->view->setVar("activity", $va_set_change_log);
 
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name));
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name));
  			
  			$this->render(caGetOption("view", $pa_options, "Lightbox/set_list_html.php"));
  		}
@@ -395,7 +395,7 @@
 				$this->view->setVar('map', $o_map->render('HTML', array()));
 			}
  			
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name).": ".$t_set->getLabelForDisplay());
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name).$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
  			switch($ps_view) {
  				case 'xlsx':
  				case 'pptx':
