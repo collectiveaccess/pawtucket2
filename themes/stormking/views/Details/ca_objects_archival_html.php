@@ -71,6 +71,21 @@
 				if ($vs_idno = $t_object->get('ca_objects.idno')) {
 					print "<div class='unit'><h6>Identifier</h6>".$vs_idno."</div>";
 				}
+				if ($vs_date = $t_object->getWithTemplate('<unit relativeTo="ca_objects.unitdate" delimiter="<br/>"><ifdef code="ca_objects.unitdate.dacs_date_value">^ca_objects.unitdate.dacs_date_value (^ca_objects.unitdate.dacs_dates_types)</ifdef></unit>')) {
+					print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
+				}
+				if ($vs_extent = $t_object->get('ca_objects.extentDACS')) {
+					print "<div class='unit'><h6>Extent</h6>".$vs_extent."</div>";
+				}	
+				if ($vs_creator = $t_object->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'restrictToRelationshipTypes' => ('creator'), 'delimiter' => '<br/>'))) {
+					print "<div class='unit'><h6>Creator</h6>".$vs_creator."</div>";
+				}	
+				if ($vs_conditions_access = $t_object->get('ca_objects.accessrestrict')) {
+					print "<div class='unit'><h6>Conditions Governing Access</h6>".$vs_conditions_access."</div>";
+				}
+				if ($vs_conditions_repro = $t_object->get('ca_objects.reproduction')) {
+					print "<div class='unit'><h6>Conditions Governing Reproduction</h6>".$vs_conditions_repro."</div>";
+				}										
 /*				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('publisher')))) {
 					$va_entities_by_type = array();
 					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
@@ -88,21 +103,6 @@
 					print "</div>";
 				}
 */				
-				if ($va_date = $t_object->get('ca_objects.display_date')) {
-					print "<div class='unit'><h6>Date</h6>".$va_date."</div>";
-				}
-				if ($va_medium = $t_object->get('ca_objects.medium')) {
-					print "<div class='unit'><h6>Medium</h6>".$va_medium."</div>";
-				}
-				if ($vs_dimensions = $t_object->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects.dimensions">^ca_objects.dimensions.display_dimensions <ifdef code="ca_objects.dimensions.dimensions_type">(^ca_objects.dimensions.dimensions_type)</ifdef></unit>')) {
-					print "<div class='unit'><h6>Dimensions</h6>".$vs_dimensions."</div>";
-				}				
-				if ($va_type = $t_object->get('ca_objects.artwork_type', array('convertCodesToDisplayText' => true))) {
-					print "<div class='unit'><h6>Artwork Type</h6>".$va_type."</div>";
-				}	
-				if ($va_credit = $t_object->get('ca_objects.credit_line')) {
-					print "<div class='unit'><h6>Credit Line</h6>".$va_credit."</div>";
-				}	
 														
 ?>	
 				</div></div></div>
@@ -119,7 +119,7 @@
 		</div><!-- end row -->		
 		
 <?php	
-			# Related Entities
+/*			# Related Entities
 			if ($va_related_entity_ids = $t_object->get('ca_entities.entity_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {				
 				print "<hr/>";
 
@@ -132,6 +132,7 @@
 				}
 				print "</div>";
 			}
+*/			
 			# Related Artworks			
 			if ($va_related_artworks = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork'), 'sort' => 'ca_object_labels.name'))) {
 				print '<div class="row objInfo">';
