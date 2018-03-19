@@ -1398,7 +1398,7 @@
 				throw new ApplicationException(_t('Cannot view media'));
 			}
 		
-			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, array_merge($va_options, $pa_options, ['showAnnotations' => true, 'checkAccess' => $this->opa_access_values])));
+			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, array_merge($va_options, $pa_options, ['noOverlay' => true, 'showAnnotations' => true, 'checkAccess' => $this->opa_access_values])));
 		}
 		# -------------------------------------------------------
 		/** 
