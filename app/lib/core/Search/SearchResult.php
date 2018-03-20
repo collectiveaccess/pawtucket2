@@ -2206,11 +2206,7 @@ class SearchResult extends BaseObject {
 							    $va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()][$vs_element_code.'_sort_'] = $o_value->getDisplayValue(['sortable' => true]); // add sortable alternate representation for dates; this will be used by the SearchResult::get() "sort" option to properly sort date values
 							}
 						} else { 
-							if ($o_value->getType() == __CA_ATTRIBUTE_VALUE_DATERANGE__) {  // add sortable alternate value for dates
-								$va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()][$o_value->getDisplayValue(['sortable' => true])] = $vs_val_proc;	
-							} else {
-								$va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()][] = $vs_val_proc;	
-							}
+							$va_return_values[(int)$vn_id][$vm_locale_id][(int)$o_attribute->getAttributeID()][] = $vs_val_proc;	
 						}
 					}
 				}
