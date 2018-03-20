@@ -131,7 +131,7 @@
  				
  				$vn_result_count += sizeof($va_results[$vs_block]['ids']);
  				
- 				if ((sizeof($va_results[$vs_block]['ids']) == 1) && ($vn_result_count == 1)) {
+ 				if ((sizeof($va_results[$vs_block]['ids']) == 1) && ($vn_result_count == 1) && (!$this->config->get('dont_redirect_to_single_search_result'))) {
  					$vs_redirect_to_only_result = caDetailUrl($this->request, $va_results[$vs_block]['table'], $va_results[$vs_block]['ids'][0], false);
  				}
  			}

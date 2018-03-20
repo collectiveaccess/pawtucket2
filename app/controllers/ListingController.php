@@ -67,7 +67,7 @@
  				// invalid listing type – throw error
  				throw new ApplicationException("Invalid listing type");
  			}
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".$va_listing_info["displayName"]);
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$va_listing_info["displayName"]);
  			
  			$o_dm = Datamodel::load();
  		

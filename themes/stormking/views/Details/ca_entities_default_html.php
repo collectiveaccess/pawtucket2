@@ -129,6 +129,7 @@
 			#Related Oral History
 			if ($va_related_oralh = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history')))) {
 				$vs_oh_count = 0;
+				array_unique($va_related_oralh);
 				print "<hr><div class='row'><div class='col-sm-12'>";
 				print '<h6 class="header">Oral History</h6>';
 				foreach ($va_related_oralh as $va_key => $vn_related_oralh_id) {
@@ -139,8 +140,8 @@
 					}
 					$t_oralh = new ca_objects($vn_related_oralh_id);
 					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem {$vs_style}'>";
-					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_oralh->get('ca_object_representations.media.widepreview'), '', 'Detail', 'oralhistory', $t_oralh->get('ca_objects.object_id'))."</div></div>";
-					print "<p>".caDetailLink($this->request, $t_oralh->get('ca_objects.preferred_labels'), '', 'Detail', 'oralhistory', $t_oralh->get('ca_objects.object_id'))."</p>";
+					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_oralh->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_oralh->get('ca_objects.object_id'))."</div></div>";
+					print "<p>".caDetailLink($this->request, $t_oralh->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_oralh->get('ca_objects.object_id'))."</p>";
 					print "</div></div>";
 					$vs_oh_count++;
 				}

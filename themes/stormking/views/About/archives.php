@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
-	$vs_image_url = $this->request->getThemeUrlPath()."/assets/pawtucket/graphics/sketch.jpg";
+	$vs_image_url = $this->request->getThemeUrlPath()."/assets/pawtucket/graphics/landscape.jpg";
 	
 
 ?>
@@ -49,7 +49,11 @@
 		</p>
 		<p>
 			<i>Support for Storm King Art Center’s Oral History Program and Archival Program is made possible by generous lead support from the Henry Luce Foundation. Support is also provided by the Pine Tree Foundation.</i>		
-		</p>		
+		</p>
+<?php
+		print "<p>".caNavLink($this->request, '<i class="fa fa-envelope"></i> Contact the Archives', '', '', 'Contact', 'form')."</p>";
+
+?>				
 	</div><!--end col-sm-8-->
 	
 	

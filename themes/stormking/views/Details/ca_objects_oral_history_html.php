@@ -78,7 +78,7 @@
 					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
 						$t_rel = new ca_objects_x_entities($va_entity_rel);
 						$vn_type_id = $t_rel->get('ca_relationship_types.preferred_labels');
-						$va_entities_by_type[$vn_type_id][] = $t_rel->get('ca_entities.preferred_labels');
+						$va_entities_by_type[$vn_type_id][] = caDetailLink($this->request, $t_rel->get('ca_entities.preferred_labels'), '', 'ca_entities', $t_rel->get('ca_entities.entity_id'));
 					}
 					print "<div class='unit'>";
 					foreach ($va_entities_by_type as $va_type => $va_entity_id) {
@@ -156,7 +156,7 @@
 					$t_archival = new ca_objects($vn_related_archival_id);
 					print "<div class='col-sm-3'> <div class='relatedArtwork {$vs_style}'>";
 					print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_archival->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</div></div>";
-					print "<p>".caDetailLink($this->request, $t_archival->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</p>";
+					print "<p style='height:55px;'>".caDetailLink($this->request, $t_archival->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_archival->get('ca_objects.object_id'))."</p>";
 					print "</div></div>";
 					$vs_arch_count++;
 				}
