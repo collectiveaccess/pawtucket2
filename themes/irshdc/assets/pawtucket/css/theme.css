@@ -389,6 +389,9 @@ a:hover .frontIconButton{
 div.browseFacetItem a:hover {
     color: #d20000;
 }
+#bRefine.fixed {
+    top: 85px;
+}
 
 /* details */
 .detail{
@@ -424,6 +427,9 @@ div.browseFacetItem a:hover {
 .detail a, .detail a:hover {
     color: #8a0000;
 }
+.detail .breadcrumbTrail{
+	padding-bottom:10px;
+}
 .detail .collapseBlock, .detail .block, .detail .relatedBlock{
 	border-color:#efefef;
 	border-top:1px solid #efefef;
@@ -458,30 +464,22 @@ div.browseFacetItem a:hover {
 	padding-right:0px;
 }
 .detail .blockContent{
-	margin-top:8px;
+	margin:8px 10px 0px 10px;
 }
 .detail .block a{
-	display:inline-block;
 	font-family:latoLight;
-	padding:5px 10px 5px 10px;
-	width: 100%;
-	text-decoration: none;
 	text-transform:uppercase;
 	font-size:11px;
 	font-family: lato;
 }
-.detail .block a span{
+.detail .block div span{
 	font-size:11px;
 	text-transform:none;
 	color:#454545;
 	font-family: latoLight;
 }
-.detail .block a:hover{
-	background-color:#f0ede4;
-}
 .detail .block a.moreLess{
-	background-color:#FFF;
-	display:inline;
+	padding-left:10px;
 }
 .detail .relatedBlock .relatedBlockContent a{
 	display:inline-block;
@@ -700,6 +698,12 @@ a.readmore-js-toggle {
 .popover{
 	z-index:100000;
 }
+.popover.top{
+	left:20px !Important;
+}
+.popover.left .arrow{
+	left:auto !important;
+}
 .popover-title {
     font-size: 12px;
     text-transform:none;
@@ -707,6 +711,11 @@ a.readmore-js-toggle {
 }
 .popover-content {
     font-size: 12px !important;
+}
+@media (max-width: 992px) {
+	[data-toggle="popover"] {
+	  cursor: pointer;
+	}
 }
 /* EXPLORE */
 
@@ -902,10 +911,12 @@ a.readmore-js-toggle {
 	box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.5);
 }
 .schoolBottom #exploreSchoolListContainer .schoolLink{
-	padding:5px 0px 20px 2px;
+	margin:5px 0px 20px 2px;
+	height: 2.2em;
+	line-height: 1.1em;
 }
 .schoolBottom #exploreSchoolListContainer .schoolLink a{
-	font-size: 16px;
+	font-size: 14px;
 	font-family: lato;
 }
 #exploreMapBalloonContainer {

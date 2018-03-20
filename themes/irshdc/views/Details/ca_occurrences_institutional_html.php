@@ -33,12 +33,43 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	
+	$va_access_values = $this->getVar("access_values");
+	$va_breadcrumb_trail = array(caNavLink($this->request, "Home", '', '', '', ''));
+	$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_occurrences");
+	$vs_last_find = strToLower($o_context->getLastFind($this->request, "ca_occurrences"));
+	$vs_link_text = "";
+	if(strpos($vs_last_find, "browse") !== false){
+		$vs_link_text = "Find";	
+	}elseif(strpos($vs_last_find, "search") !== false){
+		$vs_link_text = "Search";	
+	}elseif(strpos($vs_last_find, "gallery") !== false){
+		$vs_link_text = "Explore Features";	
+	}elseif(strpos($vs_last_find, "school") !== false){
+		$vs_link_text = "Explore Schools";	
+	}elseif(strpos($vs_last_find, "front") !== false){
+		# --- home link is always in breadcrumb trail
+		$vs_link_text = "";	
+	}
+	if($vs_link_text){
+		$va_params["row_id"] = $t_item->getPrimaryKey();
+ 		$va_breadcrumb_trail[] = $o_context->getResultsLinkForLastFind($this->request, "ca_occurrences", $vs_link_text, null, $va_params);		
+ 	}
+ 	$va_breadcrumb_trail[] = caTruncateStringWithEllipsis($t_item->get('ca_occurrences.preferred_labels.name'), 60);
 ?>
 			<div class="row">
 				<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 				</div><!-- end detailTop -->
 			</div>
+<?php
+			 	if ($this->getVar("resultsLink")) {
+					# --- breadcrumb trail only makes sense when there is a back button
+					print "<div class='row'><div class='col-sm-12 breadcrumbTrail'><small>";
+					print join(" > ", $va_breadcrumb_trail);
+					print "</small></div></div>";
+				}
+?>
 			<div class="row">
 <?php
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
@@ -63,12 +94,12 @@
 						{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1"><div class="unit"><H6>Creator<ifcount code="ca_entities.related" restrictToRelationshipTypes="creator" min="2">s</ifcount></H6><span class="trimTextShort"><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></span></div></ifcount>}}}
 						{{{<ifcount code="ca_places" min="1"><div class="unit"><H6>Location<ifcount code="ca_places" min="2">s</ifcount></H6><unit relativeTo="ca_places"><l>^ca_places.preferred_labels.name</l></unit></div></ifcount>}}}
 						{{{<ifdef code="ca_occurrences.description_new.description_new_txt">
-							<div class="unit" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_occurrences.description_new.description_new_source"><h6>Description</h6>
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_occurrences.description_new.description_new_source"><h6>Description</h6>
 								<span class="trimText">^ca_occurrences.description_new.description_new_txt</span>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_occurrences.community_input_items.comments_objects">
-							<div class='unit' data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_occurrences.community_input_items.comment_reference_objects"><h6>Dialogue</h6>
+							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_occurrences.community_input_items.comment_reference_objects"><h6>Dialogue</h6>
 								<span class="trimText">^ca_occurrences.community_input_items.comments_objects</span>
 							</div>
 						</ifdef>}}}
@@ -199,7 +230,34 @@
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});
 		
-		$('[data-toggle="popover"]').popover();
+		var options = {
+			placement: function () {
+<?php
+			if($vs_representationViewer){
+?>
+				if ($(window).width() > 992) {
+					return "left";
+				}else{
+					return "auto top";
+				}
+<?php
+			}else{
+?>
+				return "auto top";
+<?php			
+			}
+?>
+			},
+			trigger: "hover",
+			html: "true"
+		};
+		$('[data-toggle="popover"]').each(function() {
+  			if($(this).attr('data-content')){
+  				$(this).popover(options).click(function(e) {
+					$(this).popover('toggle');
+				});
+  			}
+		});
 		
 		$('.collapseBlock h3').click(function() {
   			block = $(this).parent();

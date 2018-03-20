@@ -33,13 +33,43 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	
 	$va_access_values = $this->getVar("access_values");
+	$va_breadcrumb_trail = array(caNavLink($this->request, "Home", '', '', '', ''));
+	$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
+	$vs_last_find = strToLower($o_context->getLastFind($this->request, "ca_objects"));
+	$vs_link_text = "";
+	if(strpos($vs_last_find, "browse") !== false){
+		$vs_link_text = "Find";	
+	}elseif(strpos($vs_last_find, "search") !== false){
+		$vs_link_text = "Search";	
+	}elseif(strpos($vs_last_find, "gallery") !== false){
+		$vs_link_text = "Explore Features";	
+	}elseif(strpos($vs_last_find, "narrative") !== false){
+		$vs_link_text = "Explore Narrative Threads";	
+	}elseif(strpos($vs_last_find, "listing") !== false){
+		$vs_link_text = "Explore Resources";	
+	}
+	if($vs_link_text){
+		$va_params["row_id"] = $t_object->getPrimaryKey();
+ 		$va_breadcrumb_trail[] = $o_context->getResultsLinkForLastFind($this->request, "ca_objects", $vs_link_text, null, $va_params);
+ 	}
+ 	$va_breadcrumb_trail[] = caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels.name'), 60);
+
 ?>
-	<div class="row">
-		<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-		</div><!-- end detailTop -->
-	</div>
+			<div class="row">
+				<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
+					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+				</div><!-- end detailTop -->
+			</div>
+<?php
+			 	if ($this->getVar("resultsLink")) {
+					# --- breadcrumb trail only makes sense when there is a back button
+					print "<div class='row'><div class='col-sm-12 breadcrumbTrail'><small>";
+					print join(" > ", $va_breadcrumb_trail);
+					print "</small></div></div>";
+				}
+?>
 			<div class="row">
 <?php
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
@@ -49,6 +79,10 @@
 					<?php print $vs_representationViewer; ?>				
 					<div id="detailAnnotations"></div>
 <?php				
+					$va_reps = $t_object->getRepresentations("icon", null, array("checkAcces" => $va_access_values));
+					if(sizeof($va_reps) > 1){
+						print "<div><small>".sizeof($va_reps)." media</small></div>";
+					}
 					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3"));
 ?>
 				</div><!-- end col -->
@@ -135,28 +169,8 @@
 				<div class="col-sm-12">
 <?php
 		include("related_tabbed_html.php");
-?>
-					{{{<ifcount code="ca_objects.related" min="1">
-						<div class="relatedBlock">
-							<h3>Objects</H3>
-							<div class="row" id="browseResultsContainer">
-								<unit relativeTo="ca_objects.related" delimiter=" ">
-									<div class="bResultItemCol col-xs-12 col-sm-6 col-md-3">
-										<div class="bResultItem" onmouseover="jQuery("#bResultItemExpandedInfo^ca_objects.object_id").show();" onmouseout="jQuery("#bResultItemExpandedInfo^ca_objects.object_id").hide();">
-											<div class="bResultItemContent"><div class="text-center bResultItemImg"><l>^ca_object_representations.media.medium</l></div>
-												<div class="bResultItemText">
-													<small><l>^ca_objects.preferred_labels.name</l></small>
-												</div><!-- end bResultItemText -->
-											</div><!-- end bResultItemContent -->
-											<div class="bResultItemExpandedInfo" id="bResultItemExpandedInfo^ca_objects.object_id" style="display: none;">
-											</div><!-- bResultItemExpandedInfo -->
-										</div><!-- end bResultItem -->
-									</div>
-								</unit>
-							</div>
-						</div>
-					</ifcount>}}}
-<?php
+		include("related_objects_html.php");
+		
 					if($vn_num_comments){
 ?>
 						<a name="comments"></a><div class="block">
@@ -197,7 +211,34 @@
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});
 		
-		$('[data-toggle="popover"]').popover();
+		var options = {
+			placement: function () {
+<?php
+			if($vs_representationViewer){
+?>
+				if ($(window).width() > 992) {
+					return "left";
+				}else{
+					return "auto top";
+				}
+<?php
+			}else{
+?>
+				return "auto top";
+<?php			
+			}
+?>
+			},
+			trigger: "hover",
+			html: "true"
+		};
+		$('[data-toggle="popover"]').each(function() {
+  			if($(this).attr('data-content')){
+  				$(this).popover(options).click(function(e) {
+					$(this).popover('toggle');
+				});
+  			}
+		});
 		
 		$('.collapseBlock h3').click(function() {
   			block = $(this).parent();

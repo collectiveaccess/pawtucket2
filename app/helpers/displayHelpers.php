@@ -2135,7 +2135,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 	 * @return array An array of tags, or an array of arrays when parseOptions option is set.
 	 */
 	function caGetTemplateTags($ps_template, $pa_options=null) {
-		$va_tags = caExtractTagsFromTemplate($ps_template);
+		$va_tags = caExtractTagsFromTemplate($ps_template, $pa_options);
 		
 		if (caGetOption('firstPartOnly', $pa_options, false)) {
 			foreach($va_tags as $vn_i => $vs_tag) {
