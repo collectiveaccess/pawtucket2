@@ -77,7 +77,7 @@
 				if ($vs_extent = $t_object->get('ca_objects.extentDACS')) {
 					print "<div class='unit'><h6>Extent</h6>".$vs_extent."</div>";
 				}	
-				if ($vs_creator = $t_object->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'restrictToRelationshipTypes' => ('creator'), 'delimiter' => '<br/>'))) {
+				if ($vs_creator = $t_object->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => ('creator'), 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Creator</h6>".$vs_creator."</div>";
 				}	
 				if ($vs_conditions_access = $t_object->get('ca_objects.accessrestrict')) {
