@@ -86,7 +86,11 @@
 					$va_ids[] = $qr_res->get($vs_pk);
 					$vn_c++;
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_tmp_options = array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values);
+				if($vs_table == 'ca_entities'){
+					$va_tmp_options["useRelatedObjectRepresentations"] = true;
+				}
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, $va_tmp_options);
 			
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
