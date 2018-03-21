@@ -451,6 +451,9 @@ p, .collectionsList p {
 .entities .bResultItem .bResultItemText a {
 	text-decoration:none;
 }
+.relArtTitle {
+	height:60px;
+}
 .bResultItemImgPlaceholder {
 	border:0px;
 	color:#000;
