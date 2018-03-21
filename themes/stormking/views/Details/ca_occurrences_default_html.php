@@ -2,7 +2,8 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$vn_share_enabled = 	$this->getVar("shareEnabled");
+	$va_access_values = caGetUserAccessValues($this->request);	
 ?>
 <div class="row">
 	<div class='col-xs-12 '>
@@ -51,7 +52,8 @@
 				if ($va_rep = $t_item->get('ca_objects.object_id', array('restrictToRelationshipTypes' => array('primary_rep'), 'returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 					foreach ($va_rep as $va_key => $vn_rep_id) {
 						$t_primary = new ca_objects($vn_rep_id);
-						print $t_primary->get('ca_object_representations.media.large');
+						print "<div class='exhibitionRep'>".$t_primary->get('ca_object_representations.media.large')."</div>";
+						print "<div class='exhibitionRepCaption'>".caDetailLink($this->request, $t_primary->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_primary->get('ca_objects.object_id'))."</div>";
 						break;
 					}
 				}

@@ -109,7 +109,7 @@
 						<li>
 							<?php print caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "exhibitions", array("sort" => "default", "direction" => "desc")); ?>
 <?php
-							if ((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) | (($this->request->getController() == "Listing") && ($this->request->getAction() == "currentexhibitions"))  | (($this->request->getController() == "Listing") && ($this->request->getAction() == "exhibitions"))) {
+							if ((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) | (($this->request->getController() == "Listing") && ($this->request->getAction() == "currentexhibitions"))  | (($this->request->getController() == "Listing") && ($this->request->getAction() == "exhibitions")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "occurrences"))) {
 ?>							
 								<ul class='subMenu'>
 									<li style="padding-top:6px;" <?php print ((($this->request->getAction() == "currentexhibitions") ) ? 'class="active"' : ''); ?>><?php print caNavLink($this->request, _t("Current & Upcoming"), "", "", "Listing", "currentexhibitions", array("sort" => "default", "direction" => "desc")); ?></li>					

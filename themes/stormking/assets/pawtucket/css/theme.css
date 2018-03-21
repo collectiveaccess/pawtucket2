@@ -482,6 +482,10 @@ p, .collectionsList p {
 .relatedExhibitions .relatedArtwork a {
 	text-decoration:underline;
 }
+.exhibitionRep img{
+	width:100%;
+	height:auto;
+}
 
 /* Collection */
 
