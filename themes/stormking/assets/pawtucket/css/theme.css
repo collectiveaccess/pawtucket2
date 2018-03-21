@@ -453,6 +453,7 @@ p, .collectionsList p {
 }
 .relArtTitle {
 	height:60px;
+	overflow:hidden;
 }
 .bResultItemImgPlaceholder {
 	border:0px;
@@ -485,6 +486,15 @@ p, .collectionsList p {
 .exhibitionRep img{
 	width:100%;
 	height:auto;
+}
+.viewAll {
+	text-align:center;
+	font-weight:bold;
+	padding-top:10px;
+	clear:both;
+}
+.detail .viewAll a {
+	text-decoration:none;
 }
 
 /* Collection */
@@ -725,6 +735,9 @@ p, .collectionsList p {
 }
 .results a .glyphicon, .results a .fa {
 	color: #000 !important;
+}
+.results H5 {
+	margin-top:15px;
 }
 .browseRemoveFacet button .glyphicon{
 	color:#FFF !important;
