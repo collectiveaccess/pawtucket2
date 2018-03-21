@@ -67,7 +67,8 @@
 				$vs_art_count = 0;
 				print "<hr><div class='row'>";
 				print '<div class="col-sm-12"><h6 class="header">Artworks</h6></div>';
-				print "</div><div class='row'>";
+				print "</div>";
+				print "<div class='row'>";
 				foreach ($va_related_artworks as $va_key => $vn_related_artwork_id) {
 					if ($vs_art_count < 4) {
 						$vs_style = "noBorder";
@@ -90,12 +91,12 @@
 					print "</p></div>";
 					print "</div></div>";
 				}
-				print "</div><!-- end col --></div><!-- end row -->";
+				print "</div><!-- end row -->";
 			}
 			# Related Exhibitions
 			if ($va_related_exhibitions = $t_item->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program'), 'sort' => 'ca_occurrences.exhibition_dates', 'sortDirection' => 'desc'))) {
 				$va_ex_images = caGetDisplayImagesForAuthorityItems('ca_occurrences', $va_related_exhibitions, array('version' => 'iconlarge', 'relationshipTypes' => 'includes', 'objectTypes' => 'artwork', 'checkAccess' => $va_access_values));
-				print "<div class='row relatedExhibitions'><div class='col-sm-12'><hr>";
+				print "<hr><div class='row relatedExhibitions'><div class='col-sm-12'>";
 				print '<h6 class="header">Exhibitions and Programs</h6>';
 				foreach ($va_related_exhibitions as $va_key => $va_related_exhibition_id) {
 					$t_exhibition = new ca_occurrences($va_related_exhibition_id);
