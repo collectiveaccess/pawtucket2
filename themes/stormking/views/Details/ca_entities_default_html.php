@@ -40,6 +40,9 @@
 					if ($vs_bio = $t_item->get('<unit relativeTo="ca_entities.biography"><if rule="^ca_objects.biography.display_bio =~ /yes/">^ca_entities.biography.bio_text</if></unit>')) {
 						print $vs_bio;
 					}
+					if ($vs_ext_link = $t_item->getWithTemplate('<unit relativeTo="ca_entities.external_link"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_entities.external_link.url_entry">^ca_entities.external_link.url_source</a></h6></div></unit>')) {
+						print $vs_ext_link;
+					}
 /*					if ($va_remarks_images = $t_item->get('ca_entities.bibliography', array('returnWithStructure' => true, 'version' => 'medium'))) {
 						foreach ($va_remarks_images as $vn_attribute_id => $va_remarks_image_info) {
 							foreach ($va_remarks_image_info as $vn_value_id => $va_remarks_image) {
@@ -76,13 +79,13 @@
 						$vs_style = "";
 					}
 					$t_artwork = new ca_objects($vn_related_artwork_id);
-					print "<div class='col-sm-3'> <div class='relatedArtwork bResultItem {$vs_style}'>";
+					print "<div class='col-sm-3'> <div class='relatedArtwork {$vs_style}'>";
 					if ($t_artwork->get('ca_object_representations.media.widepreview')) {
-						print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_artwork->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</div></div>";
+						print "<div class='relImg'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_artwork->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</div></div>";
 					} else {
-						print "<div class='relImg bResultItemContent'><div class='text-center bResultItemImg'><div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div></div></div>";
+						print "<div class='relImg'><div class='text-center bResultItemImg'><div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div></div></div>";
 					}
-					print "<div class='bResultItemText'>";
+					print "<div class='relArtTitle'>";
 					print "<p>".caDetailLink($this->request, ($t_artwork->get('ca_objects.preferred_labels') == "Untitled" ? $t_artwork->get('ca_objects.preferred_labels') : "<i>".$t_artwork->get('ca_objects.preferred_labels')."</i>"), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'));
 					if ($vs_art_date = $t_artwork->get('ca_objects.display_date')) {
 						print ", ".$vs_art_date;

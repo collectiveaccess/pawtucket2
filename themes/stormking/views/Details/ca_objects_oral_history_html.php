@@ -77,6 +77,7 @@
 					$va_entities_by_type = array();
 					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
 						$t_rel = new ca_objects_x_entities($va_entity_rel);
+						if ($t_rel->get('ca_objects.access') != 0){ continue;}
 						$vn_type_id = $t_rel->get('ca_relationship_types.preferred_labels');
 						$va_entities_by_type[$vn_type_id][] = caDetailLink($this->request, $t_rel->get('ca_entities.preferred_labels'), '', 'ca_entities', $t_rel->get('ca_entities.entity_id'));
 					}
@@ -101,7 +102,10 @@
 					foreach ($va_reps_transcript as $va_rep_num => $va_rep) {
 						print "<h6><span class='glyphicon glyphicon-file'></span><a href='".$va_rep['urls']['original']."'>Interview Transcript</a></h6>";
 					}
-				}				
+				}	
+				if ($vs_ext_link = $t_object->getWithTemplate('<unit relativeTo="ca_objects.external_link"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_objects.external_link.url_entry">^ca_objects.external_link.url_source</a></h6></div></unit>')) {
+					print $vs_ext_link;
+				}							
 ?>	
 			</div><!-- end col -->	
 		</div><!-- end row -->
@@ -117,12 +121,12 @@
 					print "<div class='col-sm-3'>";
 					print "<div class='relatedArtwork'>";
 					print "<div class='relImg'>".caDetailLink($this->request, $t_rel_obj->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values)), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'))."</div>";
-					print "<p>".$t_rel_obj->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values))."</p>";
+					print "<div class='relArtTitle'><p>".$t_rel_obj->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values))."</p>";
 					print "<p>".caDetailLink($this->request, ( $t_rel_obj->get('ca_objects.preferred_labels') == "Untitled" ? $t_rel_obj->get('ca_objects.preferred_labels') : "<i>".$t_rel_obj->get('ca_objects.preferred_labels')."</i>"), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'));
 					if ($vs_art_date = $t_rel_obj->get('ca_objects.display_date')) {
 						print ", ".$vs_art_date;
 					}
-					print "</p></div>";
+					print "</p></div></div>";
 					print "</div><!-- end col -->";
 				}
 				print "</div><!-- end row -->";			
