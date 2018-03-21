@@ -38,10 +38,10 @@
 	<div class="content-narrow">
 		<h1>Archives</h1>
 		<p class="trimText">
-			As a repository and memory infrastructure for both historical and current documentation, Storm King Art Center’s Archives collects, organizes, preserves and makes accessible multi-format records of enduring value which document Storm King’s development, collections, installations, exhibitions and ongoing activities. <a href="#" style="font-weight:bold;text-decoration:underline;" onclick="$('#archivesMore').toggle(300);return false;">Read More</a>
+			As a repository and memory infrastructure for both historical and current documentation, Storm King Art Center’s Archives collects, organizes, preserves and makes accessible multi-format records of enduring value which document Storm King’s development, collections, installations, exhibitions and ongoing activities. <a href="#" style="text-decoration:underline;" onclick="$('#archivesMore').toggle(300);return false;">Read More</a>
 		</p>
 		<p id="archivesMore" style="display:none;">
-			They are made available for the administrative support of current museum activities, the successful stewardship of its collections, and for research conducted by staff and the public. In addition, a robust archival program directly reflects Storm King’s visionary curatorial and educational mission to contribute to art historical scholarship and contemporary art discourse, enhance internal and external collaboration through resource integration, and inspire an active and engaging Storm King experience for all.	
+			They are made available for the administrative support of current museum activities, the successful stewardship of its collections, and for research conducted by staff and the public. In addition, a robust archival program directly reflects Storm King’s visionary curatorial and educational mission to contribute to art historical scholarship and contemporary art discourse, enhance collaboration through resource integration, and inspire an active and engaging Storm King experience for all.	
 		</p>	
 
 		<p>

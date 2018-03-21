@@ -84,6 +84,15 @@
 					if ($vs_extent = $t_item->get('ca_collections.extentDACS')) {
 						print "<div class='unit'><h6>Extent</h6>".$vs_extent."</div>";
 					} 
+					if ($vs_access = $t_item->get('ca_collections.accessrestrict')) {
+						print "<div class='unit'><h6>Conditions Governing Access</h6>".$vs_access."</div>";
+					}
+					if ($vs_repro = $t_item->get('ca_collections.reproduction')) {
+						print "<div class='unit'><h6>Conditions Governing Reproduction</h6>".$vs_repro."</div>";
+					}
+					if ($vs_lang = $t_item->get('ca_collections.langmaterial')) {
+						print "<div class='unit'><h6>Languages and Scripts on the Material</h6>".$vs_lang."</div>";
+					}										
 																
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {

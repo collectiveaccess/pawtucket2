@@ -850,15 +850,24 @@ p, .collectionsList p {
 #listingResults .bResultListItem, #listingResults .bResultListItem:hover {
 	padding:0px;
 }
-
+.bSimplePlaceholder {
+	position:relative;
+	text-align:center;
+	font-size:16px;
+	font-weight:normal;
+}
 .bSimplePlaceholder::before {
 	content:"image not available";
 	position:absolute;
 	width:100%;
 	left:50%;
 	margin-left:-50%;
-	top:30%;
+	top:40%;
 	color:#999;
+}
+.fullWidthImage {
+	width:100%;
+	position:relative;
 }
 
 
