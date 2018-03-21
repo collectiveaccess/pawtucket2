@@ -221,7 +221,34 @@
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});
 		
-		$('[data-toggle="popover"]').popover();
+		var options = {
+			placement: function () {
+<?php
+			if($vs_representationViewer){
+?>
+				if ($(window).width() > 992) {
+					return "left";
+				}else{
+					return "auto top";
+				}
+<?php
+			}else{
+?>
+				return "auto top";
+<?php			
+			}
+?>
+			},
+			trigger: "hover",
+			html: "true"
+		};
+		$('[data-toggle="popover"]').each(function() {
+  			if($(this).attr('data-content')){
+  				$(this).popover(options).click(function(e) {
+					$(this).popover('toggle');
+				});
+  			}
+		});
 		
 		$('.collapseBlock h3').click(function() {
   			block = $(this).parent();

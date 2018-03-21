@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/bundles/ca_objects_default_html.php : 
+ * themes/default/views/bundles/ca_objects_archival_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -33,12 +33,43 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	
+	$va_access_values = $this->getVar("access_values");
+	$va_breadcrumb_trail = array(caNavLink($this->request, "Home", '', '', '', ''));
+	$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
+	$vs_last_find = strToLower($o_context->getLastFind($this->request, "ca_objects"));
+	$vs_link_text = "";
+	if(strpos($vs_last_find, "browse") !== false){
+		$vs_link_text = "Find";	
+	}elseif(strpos($vs_last_find, "search") !== false){
+		$vs_link_text = "Search";	
+	}elseif(strpos($vs_last_find, "gallery") !== false){
+		$vs_link_text = "Explore Features";	
+	}elseif(strpos($vs_last_find, "narrative") !== false){
+		$vs_link_text = "Explore Narrative Threads";	
+	}elseif(strpos($vs_last_find, "listing") !== false){
+		$vs_link_text = "Explore Resources";	
+	}
+	if($vs_link_text){
+		$va_params["row_id"] = $t_object->getPrimaryKey();
+ 		$va_breadcrumb_trail[] = $o_context->getResultsLinkForLastFind($this->request, "ca_objects", $vs_link_text, null, $va_params);
+ 	}
+ 	$va_breadcrumb_trail[] = caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels.name'), 60);
+
 ?>
 			<div class="row">
 				<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 				</div><!-- end detailTop -->
 			</div>
+<?php
+			 	if ($this->getVar("resultsLink")) {
+					# --- breadcrumb trail only makes sense when there is a back button
+					print "<div class='row'><div class='col-sm-12 breadcrumbTrail'><small>";
+					print join(" > ", $va_breadcrumb_trail);
+					print "</small></div></div>";
+				}
+?>
 			<div class="row">
 <?php
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
@@ -48,6 +79,10 @@
 					<?php print $vs_representationViewer; ?>				
 					<div id="detailAnnotations"></div>
 <?php				
+					$va_reps = $t_object->getRepresentations("icon", null, array("checkAcces" => $va_access_values));
+					if(sizeof($va_reps) > 1){
+						print "<div><small>".sizeof($va_reps)." media</small></div>";
+					}
 					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3"));
 ?>
 				</div><!-- end col -->
@@ -55,7 +90,7 @@
 				}
 ?>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>
-					<div class="stoneBg">				
+					<div class="stoneBg">
 <?php
 						$vs_source = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="source" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>');						
 						$vs_source_link = $t_object->get("ca_objects.link");
@@ -67,14 +102,14 @@
 						
 						print "<H4>";
 						if($vs_title_hover){
-							print '<span data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Note" data-content="'.$vs_title_hover.'">'.$vs_title.'</span>';
+							print '<span data-toggle="popover" title="Note" data-content="'.$vs_title_hover.'">'.$vs_title.'</span>';
 						}else{
 							print $vs_title;
 						}
 						print $vs_source_link."</H4>";
 ?>
 						{{{<ifdef code="ca_objects.displayDate">
-							<div class="unit" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Note" data-content="^ca_objects.ISADG_dateNote">
+							<div class="unit" data-toggle="popover" title="Note" data-content="^ca_objects.ISADG_dateNote">
 								^ca_objects.displayDate
 							</div>
 						</ifdef>}}}
@@ -83,59 +118,59 @@
 							{{{<ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef>}}}
 						</H6>
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
-						{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="archival_creator,artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue" min="1"><div class="unit"><H6>Creators and Contributors</H6><span class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="archival_creator,artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></span></div></ifcount>}}}
+						{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue" min="1"><div class="unit"><H6>Creators and Contributors</H6><span class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></span></div></ifcount>}}}
 						{{{<ifdef code="ca_objects.scope_new.scope_new_text">
-							<div class="unit" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_objects.scope_new.scope_new_source"><h6>Description</h6>
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.scope_new.scope_new_source"><h6>Description</h6>
 								<span class="trimText">^ca_objects.scope_new.scope_new_text</span>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.curators_comments.comments">
-							<div class="unit" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial comment</h6>
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial comment</h6>
 								<span class="trimText">^ca_objects.curators_comments.comments</span>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.community_input_objects.comments_objects">
-							<div class='unit' data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_objects.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
+							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
 								<span class="trimText">^ca_objects.community_input_objects.comments_objects</span>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.language">
-							<div class="unit" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Note" data-content="^ca_objects.language_note"><h6>Language</h6>
+							<div class="unit" data-toggle="popover" title="Note" data-content="^ca_objects.language_note"><h6>Language</h6>
 								^ca_objects.language
 							</div>
 						</ifdef>}}}			
 					</div><!-- end stoneBg -->
 <?php
-						include("themes_html.php");
+					include("themes_html.php");
 ?>
-						{{{<ifdef code="ca_objects.alternate_text.alternate_desc_upload.url">
-							<div class="collapseBlock">
-								<h3>Research Guide <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-								<div class="collapseContent">
-									<div class='unit icon transcription'><h6></h6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.alternate_text.alternate_desc_upload"><a href="^ca_objects.alternate_text.alternate_desc_upload.url%version=original">View ^ca_objects.alternate_text.alternate_text_type</a></ifdef><ifdef code="ca_objects.alternate_text.alternate_desc_note">^ca_objects.alternate_text.alternate_desc_note</ifdef></unit></div>
-								</div>
-							</div>
-						</ifdef>}}}
+					{{{<ifdef code="ca_objects.alternate_text.alternate_desc_upload.url">
 						<div class="collapseBlock">
-							<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+							<h3>Research Guide <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 							<div class="collapseContent">
-								{{{<ifdef code="ca_objects.nonpreferred_labels.name" excludeTypes="exhibition_title"><div class='unit'><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>" excludeTypes="exhibition_title">^ca_objects.nonpreferred_labels.name</unit></div></ifdef>}}}
-								{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Repository</H6><span class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></span></div></ifcount>}}}
-								{{{<ifdef code="ca_objects.RAD_extent"><div class='unit'><h6>Extent and Medium</h6>^ca_objects.RAD_extent</div></ifdef>}}}
-								{{{<ifdef code="ca_objects.source_identifer"><div class='unit'><h6>Holding Repository Object Identifier</h6>^ca_objects.source_identifer</div></ifdef>}}}
-								{{{<ifdef code="ca_objects.NCTR_id"><div class='unit'><h6>NCTR Object Identifier</h6>^ca_objects.NCTR_id</div></ifdef>}}}
-								<!--{{{<ifdef code="ca_objects.related_collection_list"><div class='unit'><H6>Collection Hierarchy List</H6><unit relativeTo="ca_objects" delimiter="<br/>"><l>^ca_objects.related_collection_list</l></unit></div></ifdef>}}}-->
-								{{{<ifdef code="ca_objects.ownership_credit"><div class='unit'><h6>Credit/Citation</h6>^ca_objects.ownership_credit</div></ifdef>}}}
-								{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Notes</h6>^ca_objects.MARC_generalNote</div></ifdef>}}}
-								{{{<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Note on Description</h6>^ca_objects.ISADG_archNote</div></ifdef>}}}
-								{{{<ifdef code="ca_objects.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_objects.govAccess</div></ifdef>}}}
-								{{{<ifdef code="ca_objects.rights_new"><div class='unit'><h6>Terms Governing Use and Reproduction</h6>^ca_objects.rights_new</div></ifdef>}}}
-								{{{<ifdef code="ca_objects.RAD_local_rights"><div class='unit'><h6>Notes: Rights and Access</h6>^ca_objects.RAD_local_rights</div></ifdef>}}}
-<?php
-								print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("object_id"))."</textarea></div>";					
-?>
+								<div class='unit icon transcription'><h6></h6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.alternate_text.alternate_desc_upload"><a href="^ca_objects.alternate_text.alternate_desc_upload.url%version=original">View ^ca_objects.alternate_text.alternate_text_type</a></ifdef><ifdef code="ca_objects.alternate_text.alternate_desc_note">^ca_objects.alternate_text.alternate_desc_note</ifdef></unit></div>
 							</div>
 						</div>
+					</ifdef>}}}
+					<div class="collapseBlock">
+						<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+						<div class="collapseContent">
+							{{{<ifdef code="ca_objects.nonpreferred_labels.name" excludeTypes="exhibition_title"><div class='unit'><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>" excludeTypes="exhibition_title">^ca_objects.nonpreferred_labels.name</unit></div></ifdef>}}}
+							{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Repository</H6><span class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></span></div></ifcount>}}}
+							{{{<ifdef code="ca_objects.source_identifer"><div class='unit'><h6>Repository Object Identifier</h6>^ca_objects.source_identifer</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.NCTR_id"><div class='unit'><h6>NCTR Object Identifier</h6>^ca_objects.NCTR_id</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.RAD_extent"><div class='unit'><h6>Extent and Medium</h6>^ca_objects.RAD_extent</div></ifdef>}}}
+							<!--{{{<ifdef code="ca_objects.related_collection_list"><div class='unit'><H6>Collection Hierarchy List</H6><unit relativeTo="ca_objects" delimiter="<br/>"><l>^ca_objects.related_collection_list</l></unit></div></ifdef>}}}-->
+							{{{<ifdef code="ca_objects.ownership_credit"><div class='unit'><h6>Credit/Citation</h6>^ca_objects.ownership_credit</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Notes</h6>^ca_objects.MARC_generalNote</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Note on Description</h6>^ca_objects.ISADG_archNote</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_objects.govAccess</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.rights_new"><div class='unit'><h6>Terms Governing Use and Reproduction</h6>^ca_objects.rights_new</div></ifdef>}}}
+							{{{<ifdef code="ca_objects.RAD_local_rights"><div class='unit'><h6>Notes: Rights and Access</h6>^ca_objects.RAD_local_rights</div></ifdef>}}}
+<?php
+							print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("object_id"))."</textarea></div>";					
+?>
+						</div>
+					</div>
 <!--							{{{<ifdef code="ca_objects.MARC_generalNote|ca_objects.ISADG_archNote">
 								<div class="collapseBlock">
 									<h3>Notes <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
@@ -220,28 +255,8 @@
 				<div class="col-sm-12">
 <?php
 		include("related_tabbed_html.php");
-?>
-					{{{<ifcount code="ca_objects.related" min="1">
-						<div class="relatedBlock">
-							<h3>Objects</H3>
-							<div class="row" id="browseResultsContainer">
-								<unit relativeTo="ca_objects.related" delimiter=" ">
-									<div class="bResultItemCol col-xs-12 col-sm-6 col-md-3">
-										<div class="bResultItem" onmouseover="jQuery("#bResultItemExpandedInfo^ca_objects.object_id").show();" onmouseout="jQuery("#bResultItemExpandedInfo^ca_objects.object_id").hide();">
-											<div class="bResultItemContent"><div class="text-center bResultItemImg"><l>^ca_object_representations.media.medium</l></div>
-												<div class="bResultItemText">
-													<small><l>^ca_objects.preferred_labels.name</l></small>
-												</div><!-- end bResultItemText -->
-											</div><!-- end bResultItemContent -->
-											<div class="bResultItemExpandedInfo" id="bResultItemExpandedInfo^ca_objects.object_id" style="display: none;">
-											</div><!-- bResultItemExpandedInfo -->
-										</div><!-- end bResultItem -->
-									</div>
-								</unit>
-							</div>
-						</div>
-					</ifcount>}}}
-<?php
+		include("related_objects_html.php");
+
 					if($vn_num_comments){
 ?>
 						<a name="comments"></a><div class="block">
@@ -281,8 +296,34 @@
 		  moreLink: '<a href="#" class="moreLess">More</a>',
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});
-		
-		$('[data-toggle="popover"]').popover();
+		var options = {
+			placement: function () {
+<?php
+			if($vs_representationViewer){
+?>
+				if ($(window).width() > 992) {
+					return "left";
+				}else{
+					return "auto top";
+				}
+<?php
+			}else{
+?>
+				return "auto top";
+<?php			
+			}
+?>
+			},
+			trigger: "hover",
+			html: "true"
+		};
+		$('[data-toggle="popover"]').each(function() {
+  			if($(this).attr('data-content')){
+  				$(this).popover(options).click(function(e) {
+					$(this).popover('toggle');
+				});
+  			}
+		});
 		
 		$('.collapseBlock h3').click(function() {
   			block = $(this).parent();

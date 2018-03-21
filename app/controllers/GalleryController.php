@@ -115,12 +115,13 @@
  				
  				$o_dm = $this->getAppDatamodel();
 				$vs_table = $o_dm->getTableName($t_set->get('table_num'));
-			
- 				$o_context = new ResultContext($this->request, $vs_table, 'gallery');
- 				$o_context->setAsLastFind();
- 				$o_context->setResultList(array_keys($t_set->getItemRowIDs()));
- 				$o_context->saveContext();
- 				 				
+				# --- don't save the gallery context when loaded via ajax
+				if (!$this->request->isAjax()){
+					$o_context = new ResultContext($this->request, $vs_table, 'gallery');
+					$o_context->setAsLastFind();
+					$o_context->setResultList(array_keys($t_set->getItemRowIDs()));
+					$o_context->saveContext();
+				} 				 				
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
  				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));

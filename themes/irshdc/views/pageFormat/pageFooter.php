@@ -28,6 +28,10 @@
 ?>
 		<div style="clear:both;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+<?php
+	$vs_controller = strToLower($this->request->getController());
+	if(!in_array($vs_controller, array("browse", "search"))){
+?>
 		<footer id="footer">
 			<div class="darkRedBg text-center">
 				<div>
@@ -62,6 +66,8 @@
 			</div>
 		</footer><!-- end footer -->
 <?php
+	}
+	
 	//
 	// Output HTML for debug bar
 	//

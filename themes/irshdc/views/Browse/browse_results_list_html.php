@@ -86,7 +86,11 @@
 				}
 			
 				$qr_res->seek($vn_start);
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_tmp_options = array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values);
+				if($vs_table == 'ca_entities'){
+					$va_tmp_options["useRelatedObjectRepresentations"] = true;
+				}
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, $va_tmp_options);
 			} else {
 				$va_images = null;
 			}
@@ -128,7 +132,13 @@
 								$vs_image = $vs_default_placeholder_tag;
 							}
 						}else{
-							$vs_image = $vs_default_placeholder_tag;
+							$t_list_item->load($qr_res->get("type_id"));
+							$vs_typecode = $t_list_item->get("idno");
+							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+								$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+							}else{
+								$vs_image = $vs_default_placeholder_tag;
+							}
 						}
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	

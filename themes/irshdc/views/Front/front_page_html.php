@@ -39,6 +39,10 @@
 		$t_set = new ca_sets();
 		$t_set->load(array('set_code' => $vs_timeline_set_code));
 		$vn_timeline_set_id = $t_set->get("set_id");
+		$o_occ_context = new ResultContext($this->request, 'ca_occurrences', 'front');
+		$o_occ_context->setAsLastFind();
+		$o_occ_context->setResultList(array_keys($t_set->getItemRowIDs()));
+		$o_occ_context->saveContext();
 	}
 # --- get the narrative threads to link to browses
 	$t_list = new ca_lists();
@@ -157,6 +161,10 @@
 	}
 	$qr_res = $o_search->search("ca_entities.type_id:".$vn_repository_id);
 	if($qr_res->numHits()){
+		$o_occ_context = new ResultContext($this->request, 'ca_entities', 'front');
+		$o_occ_context->setAsLastFind();
+		$o_occ_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+		$o_occ_context->saveContext();
 ?>
 	<div class="row">
 		<H2 class="text-center">Partners</H2>
