@@ -80,8 +80,8 @@
 					}
 					$t_artwork = new ca_objects($vn_related_artwork_id);
 					print "<div class='col-sm-3'> <div class='relatedArtwork {$vs_style}'>";
-					if ($t_artwork->get('ca_object_representations.media.widepreview')) {
-						print "<div class='relImg'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_artwork->get('ca_object_representations.media.widepreview'), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</div></div>";
+					if ($t_artwork->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))) {
+						print "<div class='relImg'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $t_artwork->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values)), '', 'ca_objects', $t_artwork->get('ca_objects.object_id'))."</div></div>";
 					} else {
 						print "<div class='relImg'><div class='text-center bResultItemImg'><div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div></div></div>";
 					}
