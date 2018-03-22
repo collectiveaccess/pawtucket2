@@ -45,9 +45,10 @@
 		<div class="row">
 			<div class="col-sm-12 ">
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-			</div>		
+			</div>	
+			<hr style='padding-bottom:5px;'>	
 		</div>
-		<hr style='padding-bottom:5px;'>		
+				
 		<div class="row">	
 			<div class='col-sm-12' style="text-align:center;">
 <?php
@@ -64,8 +65,9 @@
 				}	
 ?>			
 			</div><!-- end col -->
+			<hr>
 		</div>	
-		<hr>
+		
 		<div class="row">					
 			<div class="col-sm-6 ">
 <?php
