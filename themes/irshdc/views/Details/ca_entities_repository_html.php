@@ -163,7 +163,25 @@
 			<div class="row" style="margin-top:30px;">
 				<div class="col-sm-12">		
 <?php
-		include("related_tabbed_entities_html.php");
+					include("related_tabbed_entities_html.php");
+
+					if($vn_num_comments){
+?>
+						<a name="comments"></a><div class="block">
+							<h3>Discussion</H3>
+							<div class="blockContent">
+								<div id="detailComments">
+<?php
+								if(sizeof($va_comments)){
+									print "<H2>Comments</H2>";
+								}
+								print $this->getVar("itemComments");
+?>
+								</div>
+							</div>
+						</div>
+<?php
+					}
 ?>
 					{{{<ifcount code="ca_objects" min="1">
 								<div class="relatedBlock">
@@ -188,26 +206,7 @@
 										});
 									</script>
 								</div>
-					</ifcount>}}}
-<?php
-					if($vn_num_comments){
-?>
-						<a name="comments"></a><div class="block">
-							<h3>Discussion</H3>
-							<div class="blockContent">
-								<div id="detailComments">
-<?php
-								if(sizeof($va_comments)){
-									print "<H2>Comments</H2>";
-								}
-								print $this->getVar("itemComments");
-?>
-								</div>
-							</div>
-						</div>
-<?php
-					}
-?>				
+					</ifcount>}}}				
 					
 				</div>
 			</div>
