@@ -55,13 +55,17 @@
 			'loadedManifest' => $vs_url,
 			'overlay' => false,
 			'viewType' => "ImageView",
+			'availableViews' => ["ImageView"],
 			'displayLayout' => false,
 			'bottomPanel' => false,
 			'bottomPanelAvailable' => false,
 			'bottomPanelVisible' => false,
 			'sidePanel' => false,
 			'annotationLayer' => false,
-			'annotationCreation' => false
+			'annotationCreation' => false,
+			'layoutOptions' => [
+				'close' => false
+			]
 		];
 	 }
 ?>
@@ -75,7 +79,12 @@
 		layout: "<?php print $vs_layout; ?>",
 		data: <?php print json_encode($va_data); ?>,  
 		windowObjects: <?php print json_encode($va_windows); ?>,
-		buildPath: '<?php print __CA_URL_ROOT__."/assets/mirador/"; ?>'
+		buildPath: '<?php print __CA_URL_ROOT__."/assets/mirador/"; ?>',
+		mainMenuSettings: {
+			buttons: { 
+				layout: false
+			}
+		}
 	});
 	$("#comparison_viewer").height($(window).height() - $("nav").height() + "px");
 </script>
