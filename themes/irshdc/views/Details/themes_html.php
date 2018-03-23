@@ -8,7 +8,7 @@
 		$t_list = new ca_lists();
 		$t_list_item = new ca_list_items();
 		foreach($va_attributes as $vs_attribute => $vs_facet){
-			if($va_themes = $t_item->get($vs_table.".".$vs_attribute, array("returnAsArray" => true))){
+			if($va_themes = $t_item->get($vs_table.".".$vs_attribute, array("returnAsArray" => true, "checkAccess" => $va_access_values))){
 				foreach($va_themes as $vn_theme_id){
 					#$vs_theme_name = $t_list->getItemFromListForDisplayByItemID($vs_attribute, $vn_theme_id);
 					$t_list_item->load($vn_theme_id);

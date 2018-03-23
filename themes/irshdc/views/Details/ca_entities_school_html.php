@@ -90,7 +90,7 @@
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.school_dates.school_dates_value">
 							<div class='unit'>
-								<H6>Dates of operation</H6>
+								<H6>Dates of Operation</H6>
 								<unit delimiter=" "><div  data-toggle="popover" title="Source" data-content="^ca_entities.school_dates.date_source">
 									<ifdef code="ca_entities.school_dates.school_dates_value">^ca_entities.school_dates.school_dates_value<br/></ifdef>
 									<ifdef code="ca_entities.school_dates.date_narrative"><span class="trimText">^ca_entities.school_dates.date_narrative</span><br/></ifdef>
@@ -114,39 +114,29 @@
 <?php
 						include("themes_html.php");
 ?>
-							{{{<ifdef code="ca_entities.alternate_text.alternate_desc_upload.url">
-								<div class="collapseBlock">
-									<h3>Research Guide <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-									<div class="collapseContent">
-										<div class='unit icon transcription'><h6></h6><unit relativeTo="ca_entities" delimiter="<br/>"><ifdef code="ca_entities.alternate_text.alternate_desc_upload"><a href="^ca_entities.alternate_text.alternate_desc_upload.url%version=original">View ^ca_entities.alternate_text.alternate_text_type</a></ifdef><ifdef code="ca_entities.alternate_text.alternate_desc_note">^ca_entities.alternate_text.alternate_desc_note</ifdef></unit></div>
-									</div>
-								</div>
-							</ifdef>}}}
-							<div class="collapseBlock">
-								<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-								<div class="collapseContent"><h6></h6>	
-									{{{<unit relativeTo="ca_entities" delimiter="<br/>">
-										<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.alt_name_source">
-											<H6>Alternate Name(s)</H6>
-											^ca_entities.nonpreferred_labels.displayname
-										<div>
-									</unit>}}}
-									{{{<ifdef code="ca_entities.public_notes"><div class='unit'><h6>Notes</h6>^ca_entities.public_notes%delimiter=<br/></div></ifdef>}}}
-<?php
-									print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'entities/'.$t_item->get("entity_id"))."</textarea></div>";					
-?>
-								</div>
+					{{{<ifdef code="ca_entities.alternate_text.alternate_desc_upload.url">
+						<div class="collapseBlock">
+							<h3>Research Guide <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+							<div class="collapseContent">
+								<div class='unit icon transcription'><h6></h6><unit relativeTo="ca_entities" delimiter="<br/>"><ifdef code="ca_entities.alternate_text.alternate_desc_upload"><a href="^ca_entities.alternate_text.alternate_desc_upload.url%version=original">View ^ca_entities.alternate_text.alternate_text_type</a></ifdef><ifdef code="ca_entities.alternate_text.alternate_desc_note">^ca_entities.alternate_text.alternate_desc_note</ifdef></unit></div>
 							</div>
-<!--
-							{{{<ifdef code="ca_entities.public_notes">
-								<div class="collapseBlock">
-									<h3>Notes <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-									<div class="collapseContent">
-										<ifdef code="ca_entities.public_notes"><div class='unit'><h6></h6>^ca_entities.public_notes%delimiter=<br/></div></ifdef>
-									</div>
-								</div>
-							</ifdef>}}}
--->
+						</div>
+					</ifdef>}}}
+					<div class="collapseBlock">
+						<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+						<div class="collapseContent"><h6></h6>	
+							{{{<unit relativeTo="ca_entities" delimiter="<br/>">
+								<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.alt_name_source">
+									<H6>Alternate Name(s)</H6>
+									^ca_entities.nonpreferred_labels.displayname
+								<div>
+							</unit>}}}
+							{{{<ifdef code="ca_entities.public_notes"><div class='unit'><h6>Notes</h6>^ca_entities.public_notes%delimiter=<br/></div></ifdef>}}}
+<?php
+							print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'entities/'.$t_item->get("entity_id"))."</textarea></div>";					
+?>
+						</div>
+					</div>
 				</div>
 				<div class='col-sm-12 col-md-<?php print ($vs_featured_image) ? "2" : "5"; ?>'>
 	<?php

@@ -75,11 +75,11 @@
 	</div>
 	<div class="row blackBg primer">
 		<div class="col-sm-5 col-sm-offset-0 col-md-5 col-md-offset-1 col-lg-5 col-lg-offset-1">
-			<H2><?php print caNavLink($this->request, "Primer orci quis vehicula eleifend", "", "", "Listing", "Resources"); ?></H2>
-			<H3>Metus elit laoreet elit</H3>
+			<H2><?php print caNavLink($this->request, "Resources", "", "", "Listing", "Resources"); ?></H2>
+			<H3>Perspectives, stories and dialogues</H3>
 			<br/>
 			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.
+				Explore a continually growing set of resources that explore the historical context of settler colonialism in Canada and foundational themes relating to the history of the Indian Residential School System, Indigenous histories, contemporary realities, and futures.
 			</p>
 			<p class="text-center">
 				<br/><?php print caNavLink($this->request, "MORE", "btn-default outline", "", "Listing", "Resources"); ?>
@@ -139,13 +139,6 @@
 			print "</div>";
 		}
 	}
- 
-#			if(is_array($va_narrative_threads) && sizeof($va_narrative_threads)){
-#				foreach($va_narrative_threads as $vn_item_id => $va_narrative_thread){
-#					print "<div class='col-sm-3'>".caNavLink($this->request, "<div class='frontIconButton'><span>".$va_narrative_thread["idno"]."</span></div>", "", "", "Explore", "narrativethreads", array("id" => $vn_item_id))."</div>";
-#				}
-#			}
-
 ?>
 				<div class='col-sm-12 frontNarrativeThreadsAllLink'><?php print caNavLink($this->request, "Explore All <i class='fa fa-arrow-right' aria-hidden='true'></i>", "btn-default btn-lg", "", "Explore", "narrativethreads"); ?></div>
 
@@ -153,18 +146,22 @@
 		</div>
 	</div>
 <?php	
-	$t_list = new ca_lists();
- 	$vn_repository_id = $t_list->getItemIDFromList('entity_types', 'repository');
-	$o_search = new EntitySearch();
-	if(is_array($this->opa_access_values) && sizeof($this->opa_access_values)){
-		$o_search->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
+	if($vs_partners_set_code = $this->config->get("front_page_partners_set_code")){
+		$t_partners_set = new ca_sets();
+		$t_partners_set->load(array('set_code' => $vs_partners_set_code));
+		$vn_partners_set_id = $t_partners_set->get("set_id");
+		
+		# Enforce access control on set
+		if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_partners_set->get("access"), $va_access_values))){
+			$va_partner_ids = array_keys(is_array($va_tmp = $t_partners_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());
+			$qr_partners = caMakeSearchResult('ca_entities', $va_partner_ids);
+		}
 	}
-	$qr_res = $o_search->search("ca_entities.type_id:".$vn_repository_id);
-	if($qr_res->numHits()){
-		$o_occ_context = new ResultContext($this->request, 'ca_entities', 'front');
-		$o_occ_context->setAsLastFind();
-		$o_occ_context->setResultList($qr_res->getPrimaryKeyValues(1000));
-		$o_occ_context->saveContext();
+	if($qr_partners && $qr_partners->numHits()){
+		$o_ent_context = new ResultContext($this->request, 'ca_entities', 'front');
+		$o_ent_context->setAsLastFind();
+		$o_ent_context->setResultList(array_keys($t_partners_set->getItemRowIDs()));
+		$o_ent_context->saveContext();
 ?>
 	<div class="row">
 		<H2 class="text-center">Partners</H2>
@@ -174,16 +171,16 @@
 					<ul>
 
 <?php
-			while($qr_res->nextHit()){
+			while($qr_partners->nextHit()){
 				print "<li><div class='repositoryTile'>";
-				$vs_image = $qr_res->getWithTemplate("<unit relativeTo='ca_entities'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+				$vs_image = $qr_partners->getWithTemplate("<unit relativeTo='ca_entities'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 				if(!$vs_image){
-					$vs_image = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+					$vs_image = $qr_partners->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 				}
 				if($vs_image){
-					print "<div>".caDetailLink($this->request, $vs_image, '', 'ca_entities', $qr_res->get("entity_id"))."</div>";
+					print "<div>".caDetailLink($this->request, $vs_image, '', 'ca_entities', $qr_partners->get("entity_id"))."</div>";
 				}
-				print "<div>".caDetailLink($this->request, $qr_res->get('ca_entities.preferred_labels'), '', 'ca_entities', $qr_res->get("entity_id"))."</div>";
+				print "<div>".caDetailLink($this->request, $qr_partners->get('ca_entities.preferred_labels'), '', 'ca_entities', $qr_partners->get("entity_id"))."</div>";
 				print "</div></li>";
 			}
 ?>

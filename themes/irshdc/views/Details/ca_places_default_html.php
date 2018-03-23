@@ -159,24 +159,28 @@
 <?php
 		include("related_tabbed_html.php");
 ?>
-					{{{<ifcount code="ca_objects.related" min="1">
+					{{{<ifcount code="ca_objects" min="1">
 						<div class="relatedBlock">
-							<h3>Objects</H3>
-							<div class="row" id="browseResultsContainer">
-								<unit relativeTo="ca_objects.related" delimiter=" ">
-									<div class="bResultItemCol col-xs-12 col-sm-6 col-md-3">
-										<div class="bResultItem" onmouseover="jQuery("#bResultItemExpandedInfo^ca_objects.object_id").show();" onmouseout="jQuery("#bResultItemExpandedInfo^ca_objects.object_id").hide();">
-											<div class="bResultItemContent"><div class="text-center bResultItemImg"><l>^ca_object_representations.media.medium</l></div>
-												<div class="bResultItemText">
-													<small><l>^ca_objects.preferred_labels.name</l></small>
-												</div><!-- end bResultItemText -->
-											</div><!-- end bResultItemContent -->
-											<div class="bResultItemExpandedInfo" id="bResultItemExpandedInfo^ca_objects.object_id" style="display: none;">
-											</div><!-- bResultItemExpandedInfo -->
-										</div><!-- end bResultItem -->
-									</div>
-								</unit>
-							</div>
+						<h3>Objects</H3>
+							<div class="row">
+								<div id="browseResultsContainer">
+									<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+								</div><!-- end browseResultsContainer -->
+							</div><!-- end row -->
+							<script type="text/javascript">
+								jQuery(document).ready(function() {
+									jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'place_id:^ca_places.place_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+										jQuery('#browseResultsContainer').jscroll({
+											autoTrigger: true,
+											loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+											padding: 20,
+											nextSelector: 'a.jscroll-next'
+										});
+									});
+			
+			
+								});
+							</script>
 						</div>
 					</ifcount>}}}
 <?php
