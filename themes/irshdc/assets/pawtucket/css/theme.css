@@ -222,6 +222,10 @@ body{
 	width:100%;
 	height:auto;
 }
+.byline{
+	text-align:right;
+	font-size:22px;
+}
 .frontSearchRow{
 	background-image: url("../graphics/centre.jpg");
 	background-repeat: no-repeat;
