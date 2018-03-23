@@ -141,6 +141,7 @@
 						} else {
 							$vs_style = "";
 						}
+						$vs_entity_date_text = $qr_res->get('ca_objects.idno');
 						$vs_info = null;
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 					} else {

@@ -451,6 +451,10 @@ p, .collectionsList p {
 .entities .bResultItem .bResultItemText a {
 	text-decoration:none;
 }
+.relArtTitle {
+	height:60px;
+	overflow:hidden;
+}
 .bResultItemImgPlaceholder {
 	border:0px;
 	color:#000;
@@ -478,6 +482,19 @@ p, .collectionsList p {
 }
 .relatedExhibitions .relatedArtwork a {
 	text-decoration:underline;
+}
+.exhibitionRep img{
+	width:100%;
+	height:auto;
+}
+.viewAll {
+	text-align:center;
+	font-weight:bold;
+	padding-top:10px;
+	clear:both;
+}
+.detail .viewAll a {
+	text-decoration:none;
 }
 
 /* Collection */
@@ -719,6 +736,9 @@ p, .collectionsList p {
 .results a .glyphicon, .results a .fa {
 	color: #000 !important;
 }
+.results H5 {
+	margin-top:15px;
+}
 .browseRemoveFacet button .glyphicon{
 	color:#FFF !important;
 }
@@ -850,15 +870,24 @@ p, .collectionsList p {
 #listingResults .bResultListItem, #listingResults .bResultListItem:hover {
 	padding:0px;
 }
-
+.bSimplePlaceholder {
+	position:relative;
+	text-align:center;
+	font-size:16px;
+	font-weight:normal;
+}
 .bSimplePlaceholder::before {
 	content:"image not available";
 	position:absolute;
 	width:100%;
 	left:50%;
 	margin-left:-50%;
-	top:30%;
+	top:40%;
 	color:#999;
+}
+.fullWidthImage {
+	width:100%;
+	position:relative;
 }
 
 
