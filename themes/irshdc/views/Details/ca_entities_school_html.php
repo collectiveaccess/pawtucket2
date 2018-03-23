@@ -31,266 +31,187 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	$vn_id =				$t_item->get('ca_entities.entity_id');
+	
+	$va_access_values = $this->getVar("access_values");
+	$va_breadcrumb_trail = array(caNavLink($this->request, "Home", '', '', '', ''));
+	$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_entities");
+	$vs_last_find = strToLower($o_context->getLastFind($this->request, "ca_entities"));
+	$vs_link_text = "";
+	if(strpos($vs_last_find, "browse") !== false){
+		$vs_link_text = "Find";	
+	}elseif(strpos($vs_last_find, "search") !== false){
+		$vs_link_text = "Search";	
+	}elseif(strpos($vs_last_find, "gallery") !== false){
+		$vs_link_text = "Explore Features";	
+	}elseif(strpos($vs_last_find, "school") !== false){
+		$vs_link_text = "Explore Schools";	
+	}elseif(strpos($vs_last_find, "front") !== false){
+		# --- home link is always in breadcrumb trail
+		$vs_link_text = "";	
+	}
+	if($vs_link_text){
+		$va_params["row_id"] = $t_item->getPrimaryKey();
+ 		$va_breadcrumb_trail[] = $o_context->getResultsLinkForLastFind($this->request, "ca_entities", $vs_link_text, null, $va_params);		
+ 	}
+ 	$va_breadcrumb_trail[] = caTruncateStringWithEllipsis($t_item->get('ca_entities.preferred_labels.displayname'), 60);
+
+
 ?>
-<div class="row">
-	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-		<div class="container">
+			<div class="row">
+				<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
+					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+				</div><!-- end detailTop -->
+			</div>
+<?php
+			 	if ($this->getVar("resultsLink")) {
+					# --- breadcrumb trail only makes sense when there is a back button
+					print "<div class='row'><div class='col-sm-12 breadcrumbTrail'><small>";
+					print join(" > ", $va_breadcrumb_trail);
+					print "</small></div></div>";
+				}
+?>
 			<div class="row">
 <?php
-				$vs_representationViewer = trim($this->getVar("representationViewer"));
-				if($vs_representationViewer){
+				$vs_featured_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'><ifdef code='ca_object_representations.media.large'><l>^ca_object_representations.media.large</l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></ifdef></unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+				if($vs_featured_image){
 ?>
-				<div class='col-sm-12 col-md-4'>
-					<?php print $vs_representationViewer; ?>
-				
-				
-					<div id="detailAnnotations"></div>
-<?php				
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4"));
-
-					if($vs_map = $this->getVar("map")){
-						print "<div class='unit'>".$vs_map."</div>";
-					}
-?>
-
+				<div class='col-sm-12 col-md-5 fullWidth'>
+					<?php print $vs_featured_image; ?>
 				</div><!-- end col -->
 <?php
 				}
 ?>
-				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>
+				<div class='col-sm-12 col-md-<?php print ($vs_featured_image) ? "5" : "7"; ?>'>
 					<div class="stoneBg">	
 						{{{<ifdef code="ca_entities.preferred_labels.displayname">
-							<H4><span data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.school_name_source">^ca_entities.preferred_labels.displayname</span>
+							<H4><span data-toggle="popover" title="Source" data-content="^ca_entities.school_name_source">^ca_entities.preferred_labels.displayname</span>
 								<ifdef code="ca_entities.entity_website"><br/><a href="^ca_entities.entity_website" class='redLink' target="_blank">^ca_entities.entity_website <span class="glyphicon glyphicon-new-window"></span></a></div></ifdef>
 							</H4>
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.school_dates.school_dates_value">
-							<div class='unit' data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.school_dates.date_source">
-								<H6>Dates of operation</H6>
-								<unit delimiter="<br/><br/>">
+							<div class='unit'>
+								<H6>Dates of Operation</H6>
+								<unit delimiter=" "><div  data-toggle="popover" title="Source" data-content="^ca_entities.school_dates.date_source">
 									<ifdef code="ca_entities.school_dates.school_dates_value">^ca_entities.school_dates.school_dates_value<br/></ifdef>
 									<ifdef code="ca_entities.school_dates.date_narrative"><span class="trimText">^ca_entities.school_dates.date_narrative</span><br/></ifdef>
-								</unit>
+								</div></unit>
 							</div>
 						</ifdef>}}}
+						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities_x_entities" restrictToTypes="school" delimiter=", "><l><unit relativeTo="ca_entities.related">^ca_entities.preferred_labels.displayname</unit></l> (^relationship_typename<ifdef code="relationshipDate">, ^relationshipDate</ifdef>)</unit></div></ifcount>}}}
 						{{{<ifdef code="ca_entities.description_new.description_new_txt">
-							<div class="unit" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
+							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
 								<span class="trimText">^ca_entities.description_new.description_new_txt</span>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.community_input_objects.comments_objects">
-							<div class='unit' data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
+							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_entities.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
 								<span class="trimText">^ca_entities.community_input_objects.comments_objects</span>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.denomination"><div class='unit'><H6>Denomination</H6>^ca_entities.denomination%delimiter=,_</div></ifdef>}}}		
-<!-- related organizations and individual here or with the list of related at bottom? -->					
-						{{{<ifdef code="ca_entities.home_community.home_community_text"><div class='unit'><H6>Home Communities of Students</H6><unit delimiter="<br/>"><span data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.home_community.home_community_source">^ca_entities.home_community.home_community_text</span></unit></div></ifdef>}}}					
+						{{{<ifdef code="ca_entities.home_community.home_community_text"><div class='unit'><H6>Home Communities of Students</H6><unit delimiter="<br/>"><span data-toggle="popover" title="Source" data-content="^ca_entities.home_community.home_community_source"><span class="trimText">^ca_entities.home_community.home_community_text</span></span></unit></div></ifdef>}}}					
 					</div><!-- end stoneBg -->
+<?php
+						include("themes_html.php");
+?>
+					{{{<ifdef code="ca_entities.alternate_text.alternate_desc_upload.url">
+						<div class="collapseBlock">
+							<h3>Research Guide <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+							<div class="collapseContent">
+								<div class='unit icon transcription'><h6></h6><unit relativeTo="ca_entities" delimiter="<br/>"><ifdef code="ca_entities.alternate_text.alternate_desc_upload"><a href="^ca_entities.alternate_text.alternate_desc_upload.url%version=original">View ^ca_entities.alternate_text.alternate_text_type</a></ifdef><ifdef code="ca_entities.alternate_text.alternate_desc_note">^ca_entities.alternate_text.alternate_desc_note</ifdef></unit></div>
+							</div>
+						</div>
+					</ifdef>}}}
+					<div class="collapseBlock">
+						<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+						<div class="collapseContent"><h6></h6>	
+							{{{<unit relativeTo="ca_entities" delimiter="<br/>">
+								<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.alt_name_source">
+									<H6>Alternate Name(s)</H6>
+									^ca_entities.nonpreferred_labels.displayname
+								<div>
+							</unit>}}}
+							{{{<ifdef code="ca_entities.public_notes"><div class='unit'><h6>Notes</h6>^ca_entities.public_notes%delimiter=<br/></div></ifdef>}}}
+<?php
+							print "<div class='unit'><H6>Permalink</H6><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'entities/'.$t_item->get("entity_id"))."</textarea></div>";					
+?>
+						</div>
+					</div>
 				</div>
-				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "3" : "5"; ?>'>
+				<div class='col-sm-12 col-md-<?php print ($vs_featured_image) ? "2" : "5"; ?>'>
 	<?php
 					# Comment and Share Tools
 						
-					print '<div id="detailTools" class="detailToolsInline">';
+					print '<div id="detailTools">';
+					if ($this->getVar("resultsLink")) {
+						print '<div class="detailTool detailToolInline">'.$this->getVar("resultsLink").'</div><!-- end detailTool -->';
+					}
+					if ($this->getVar("previousLink")) {
+						print '<div class="detailTool detailToolInline">'.$this->getVar("previousLink").'</div><!-- end detailTool -->';
+					}
+					if ($this->getVar("nextLink")) {
+						print '<div class="detailTool detailToolInline">'.$this->getVar("nextLink").'</div><!-- end detailTool -->';
+					}
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "entity_id" => $t_item->get("entity_id")))."</div>";
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_entities", "row_id" => $t_item->get("entity_id")))."</div>";
 					print '</div><!-- end detailTools -->';			
 
-							# --- themes AKA "Local" subjects
-							$va_attributes = array("narrative_thread" => "narrative_threads_facet", "themes" => "theme_facet", "keywords" => "keyword_facet");
-							$vs_themes = "";
-							$t_list = new ca_lists();
-							foreach($va_attributes as $vs_attribute => $vs_facet){
-								if($va_themes = $t_item->get("ca_entities.".$vs_attribute, array("returnAsArray" => true))){
-									foreach($va_themes as $vn_theme_id){
-										$vs_theme_name = $t_list->getItemFromListForDisplayByItemID($vs_attribute, $vn_theme_id);
-										$vs_themes .= caNavLink($this->request, "<i class='fa fa-angle-right' aria-hidden='true'></i> ".$vs_theme_name." <span>(".str_replace("_", " ", $vs_attribute).")</span>", "", "", "browse", "objects", array("facet" => $vs_facet, "id" => $vn_theme_id));
-									}
-								}
-							}
-							
-							if($vs_themes){
-?>							
-								<div class="block">
-									<h3>Themes</H3>
-									<div class="blockContent trimTextSubjects">
-<?php
-											print $vs_themes; 
-											
-?>
-									</div>
-								</div>
-<?php
-							}
-
-						if ($vn_comments_enabled) {
-							$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
+					if ($vn_comments_enabled) {
+						$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
 ?>				
-							<div class="collapseBlock">
-								<h3>Discussion <i class="fa fa-toggle-up" aria-hidden="true"></i></H3>
-								<div class="collapseContent open">
-									<div id='detailDiscussion'>
-										Do you have a story to contribute related to these records or a comment about this item?<br/>
+						<div class="collapseBlock last discussion">
+							<h3>Discussion</H3>
+							<div class="collapseContent open">
+								<div id='detailDiscussion'>
+									Do you have a story or comment about this school?<br/>
 <?php
-										
-										if($this->request->isLoggedIn()){
-											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_entities", "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your tags and comment")."</button>";
-										}else{
-											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment on this record")."</button>";
-										}
-										if($vn_num_comments){
-											print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
-										}
-?>
-									</div><!-- end itemComments -->
-								</div>
-							</div>
-<?php				
-						}
-?>
-							
-							{{{<ifdef code="ca_entities.nonpreferred_labels.displayname">
-								<div class="collapseBlock">
-									<h3>Alternate Names <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-									<div class="collapseContent"><h6></h6>	
-										<unit relativeTo="ca_entities" delimiter="<br/>">
-											<div class="unit" data-toggle="popover" data-html="true" data-placement="left" data-trigger="hover" title="Source" data-content="^ca_entities.alt_name_source">
-												^ca_entities.nonpreferred_labels.displayname
-											<div>
-										</unit>
-									</div>
-								</div>
-							</ifdef>}}}
-							{{{<ifdef code="ca_entities.alternate_text.alternate_desc_upload.url">
-								<div class="collapseBlock">
-									<h3>Research Guide <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-									<div class="collapseContent">
-										<div class='unit icon transcription'><h6></h6><unit relativeTo="ca_entities" delimiter="<br/>"><ifdef code="ca_entities.alternate_text.alternate_desc_upload"><a href="^ca_entities.alternate_text.alternate_desc_upload.url%version=original">View ^ca_entities.alternate_text.alternate_text_type</a></ifdef><ifdef code="ca_entities.alternate_text.alternate_desc_note">^ca_entities.alternate_text.alternate_desc_note</ifdef></unit></div>
-									</div>
-								</div>
-							</ifdef>}}}
-							{{{<ifdef code="ca_entities.public_notes">
-								<div class="collapseBlock">
-									<h3>Notes <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-									<div class="collapseContent">
-										<ifdef code="ca_entities.public_notes"><div class='unit'><h6></h6>^ca_entities.public_notes%delimiter=<br/></div></ifdef>
-									</div>
-								</div>
-							</ifdef>}}}
-							<div class="collapseBlock last">
-								<h3>Permalink <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-								<div class="collapseContent">
 									
-<?php
-						print "<div class='unit'><br/><textarea name='permalink' id='permalink' class='form-control input-sm'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'entities/'.$t_item->get("entity_id"))."</textarea></div>";
-					
+									if($this->request->isLoggedIn()){
+										print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_entities", "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
+									}else{
+										print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment")."</button>";
+									}
+									if($vn_num_comments){
+										print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
+									}
 ?>
-								</div>
+								</div><!-- end itemComments -->
 							</div>
+						</div>
+<?php				
+					}
+					if($vs_map = $this->getVar("map")){
+						print "<div class='unit'>".$vs_map."</div>";
+					}
+?>
 				</div>
 			</div>
 			<div class="row" style="margin-top:30px;">
 				<div class="col-sm-12">		
 <?php
-					# --- get all related authority records for tabbed presentation
-					$vs_rel_schools = $vs_rel_communities = $vs_rel_places = $vs_rel_entities = $vs_rel_events = $vs_rel_exhibitions = $vs_rel_collections = $vs_rel_fonds;
-					$vs_rel_schools = $t_item->getWithTemplate('<ifcount code="ca_entities.related" restrictToTypes="school" restrictToRelationshipTypes="related" min="1"><div class="row relTab" id="relSchools"><unit relativeTo="ca_entities" restrictToTypes="school" restrictToRelationshipTypes="related" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_entities.preferred_labels.displayname (^relationship_typename)</span></l></div></unit></div></ifcount>');
-					$vs_rel_places = $t_item->getWithTemplate('<ifcount code="ca_places.related" min="1"><div class="row relTab" id="relPlaces"><unit relativeTo="ca_places" delimiter=", "><div class="col-sm-12 col-md-3"><l><span>^ca_places.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>');
-					$vs_rel_entities = $t_item->getWithTemplate('<ifcount code="ca_entities.related" excludeTypes="school,community" min="1"><div class="row relTab" id="relEntities"><unit relativeTo="ca_entities" excludeTypes="school,community" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></div></unit></div></ifcount>');
-					$vs_rel_communities = $t_item->getWithTemplate('<ifcount code="ca_entities.related" restrictToTypes="community" min="1"><div class="row relTab" id="relCommunities"><unit relativeTo="ca_entities" restrictToTypes="community" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></div></unit></div></ifcount>');
-					$vs_rel_events = $t_item->getWithTemplate('<ifcount code="ca_occurrences.related" restrictToTypes="institutional" min="1"><div class="row relTab" id="relEvents"><unit relativeTo="ca_occurrences" restrictToTypes="institutional" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_occurrences.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>');
-					$vs_rel_exhibitions = $t_item->getWithTemplate('<ifcount code="ca_occurrences.related" restrictToTypes="exhibitions" min="1"><div class="row relTab" id="relExhibitions"><unit relativeTo="ca_objects_x_occurrences" restrictToTypes="exhibitions" delimiter=", "><unit relativeTo="ca_occurrences" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_occurrences.preferred_labels.name (^relationship_typename)</span></l></div></unit></unit></div></ifcount>');
-					$vs_rel_collections = $t_item->getWithTemplate('<ifcount code="ca_collections.related" restrictToTypes="collection" min="1"><div class="row relTab" id="relCollections"><unit relativeTo="ca_collections" restrictToTypes="collection" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_collections.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>');
-					$vs_rel_fonds = $t_item->getWithTemplate('<ifcount code="ca_collections.related" excludeTypes="collection,source" min="1"><div class="row relTab" id="relFonds"><unit relativeTo="ca_collections" excludeTypes="collection,source" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_collections.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>');
+					include("related_tabbed_entities_html.php");
 					
-					
-					if($vs_rel_schools || $vs_rel_places || $vs_rel_entities || $vs_rel_events || $vs_rel_exhibitions || $vs_rel_collections || $vs_rel_fonds){
-?>				
-						<div class="relatedBlock relatedBlockTabs">
-							<h3>
-<?php
-								$vs_firstTab = "";
-								if($vs_rel_schools){
-									print "<div id='relSchoolsButton' class='relTabButton' onClick='toggleTag(\"relSchools\");'>Schools</div>";
-									if(!$vs_firstTab){
-										$vs_firstTab = "relSchools";
-									}
-								}
-								if($vs_rel_places){
-									print "<div id='relPlacesButton' class='relTabButton' onClick='toggleTag(\"relPlaces\");'>Places</div>";
-									if(!$vs_firstTab){
-										$vs_firstTab = "relPlaces";
-									}
-								}
-								if($vs_rel_entities){
-									print "<div id='relEntitiesButton' class='relTabButton' onClick='toggleTag(\"relEntities\");'>People/Organizations</div>";
-									if(!$vs_firstTab){
-										$vs_firstTab = "relEntities";
-									}
-								}
-								if($vs_rel_communities){
-									print "<div id='relCommunitiesButton' class='relTabButton' onClick='toggleTag(\"relEntities\");'>Communities</div>";
-									if(!$vs_firstTab){
-										$vs_firstTab = "relCommunities";
-									}
-								}
-								if($vs_rel_events){
-									print "<div id='relEventsButton' class='relTabButton' onClick='toggleTag(\"relEvents\");'>Events</div>";
-									if(!$vs_firstTab){
-										$vs_firstTab = "relEvents";
-									}
-								}
-								if($vs_rel_exhibitions){
-									print "<div id='relExhibitionsButton' class='relTabButton' onClick='toggleTag(\"relExhibitions\");'>Exhibitions</div>";
-									if(!$vs_firstTab){
-										$vs_firstTab = "relExhibitions";
-									}
-								}
-								if($vs_rel_collections){
-									print "<div id='relCollectionsButton' class='relTabButton' onClick='toggleTag(\"relCollections\");'>Collections</div>";
-									if(!$vs_firstTab){
-										$vs_firstTab = "relCollections";
-									}
-								}
-								if($vs_rel_collections){
-									print "<div id='relFondsButton' class='relTabButton' onClick='toggleTag(\"relFonds\");'>Fonds/Archival Collections</div>";
-									if(!$vs_firstTab){
-										$vs_firstTab = "relFonds";
-									}
-								}
+					if($vn_num_comments){
 ?>
-							</h3>
-							<div class="relatedBlockContent">							
+						<a name="comments"></a><div class="block">
+							<h3>Discussion</H3>
+							<div class="blockContent">
+								<div id="detailComments">
 <?php
-								print $vs_rel_schools.$vs_rel_places.$vs_rel_entities.$vs_rel_communities.$vs_rel_events.$vs_rel_exhibitions.$vs_rel_collections.$vs_rel_fonds;
+								if(sizeof($va_comments)){
+									print "<H2>Comments</H2>";
+								}
+								print $this->getVar("itemComments");
 ?>
+								</div>
 							</div>
 						</div>
-						<script type="text/javascript">
-							function toggleTag(ID){
-								$('.relTab').css('display', 'none');
-								$('#' + ID).css('display', 'block');
-								$('.relTabButton').removeClass('selected');
-								$('#' + ID + 'Button').addClass('selected');
-							}
-							jQuery(document).ready(function() {
-								toggleTag("<?php print $vs_firstTab; ?>");
-							});
-						</script>
 <?php
 					}
-?>
+?>				
+
 					{{{<ifcount code="ca_objects" min="1">
 								<div class="relatedBlock">
 								<h3>Objects</H3>
@@ -314,37 +235,9 @@
 										});
 									</script>
 								</div>
-					</ifcount>}}}
-<?php
-					if($vn_num_comments){
-?>
-						<a name="comments"></a><div class="block">
-							<h3>Discussion</H3>
-							<div class="blockContent">
-								<div id="detailComments">
-<?php
-								if(sizeof($va_comments)){
-									print "<H2>Comments</H2>";
-								}
-								print $this->getVar("itemComments");
-?>
-								</div>
-							</div>
-						</div>
-<?php
-					}
-?>				
-					
+					</ifcount>}}}					
 				</div>
 			</div>
-		</div><!-- end container -->
-	</div><!-- end col -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-</div><!-- end row -->
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
@@ -363,7 +256,34 @@
 		  lessLink: '<a href="#" class="moreLess">Less</a>'
 		});
 		
-		$('[data-toggle="popover"]').popover();
+		var options = {
+			placement: function () {
+<?php
+			if($vs_featured_image){
+?>
+				if ($(window).width() > 992) {
+					return "left";
+				}else{
+					return "auto top";
+				}
+<?php
+			}else{
+?>
+				return "auto top";
+<?php			
+			}
+?>
+			},
+			trigger: "hover",
+			html: "true"
+		};
+		$('[data-toggle="popover"]').each(function() {
+  			if($(this).attr('data-content')){
+  				$(this).popover(options).click(function(e) {
+					$(this).popover('toggle');
+				});
+  			}
+		});
 		
 		$('.collapseBlock h3').click(function() {
   			block = $(this).parent();

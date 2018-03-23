@@ -134,7 +134,7 @@
 			print "<div class='unit'><h6>Born</h6><span class='data'>".$vs_birthdate."</span></div>";
 		}
 		if ($vs_deathdate = $t_entity->get('ca_entities.deathdate')) {
-			print "<div class='info'><span class='metaLabel'>Died</span><span class='data'>".$vs_deathdate."</span></div>";
+			print "<div class='unit'><h6>Died</h6><span class='data'>".$vs_deathdate."</span></div>";
 		}			
 		if ($vs_birthplace = $t_entity->get('ca_entities.birthplace')) {
 			print "<div class='unit'><h6>Birthplace</h6><span class='data'>".$vs_birthplace."</span></div>";

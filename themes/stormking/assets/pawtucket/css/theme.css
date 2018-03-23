@@ -1,4 +1,4 @@
-/* Fonts */
+/* Fonts
 @font-face{font-family:neuzeit;src:url(https://use.typekit.net/af/620f98/0000000000000000000178a5/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
 	format("woff2"),url(https://use.typekit.net/af/620f98/0000000000000000000178a5/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
 	format("woff"),url(https://use.typekit.net/af/620f98/0000000000000000000178a5/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
@@ -14,6 +14,24 @@
 @font-face{font-family:tk-neuzeit-grotesk-n9;src:url(https://use.typekit.net/af/3d5194/0000000000000000000178a8/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
 	format("woff2"),url(https://use.typekit.net/af/3d5194/0000000000000000000178a8/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
 	format("woff"),url(https://use.typekit.net/af/3d5194/0000000000000000000178a8/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
+	format("opentype");font-weight:900;font-style:normal;}
+ */	
+	
+@font-face{font-family:neuzeit;src:url(https://use.typekit.net/af/2db03d/0000000000000000000178a5/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
+	format("woff2"),url(https://use.typekit.net/af/2db03d/0000000000000000000178a5/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
+	format("woff"),url(https://use.typekit.net/af/2db03d/0000000000000000000178a5/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
+	format("opentype");font-weight:300;font-style:normal;}
+@font-face{font-family:neuzeit;src:url(https://use.typekit.net/af/342b40/0000000000000000000178a6/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) 
+	format("woff2"),url(https://use.typekit.net/af/342b40/0000000000000000000178a6/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) 
+	format("woff"),url(https://use.typekit.net/af/342b40/0000000000000000000178a6/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) 
+	format("opentype");font-weight:400;font-style:normal;}
+@font-face{font-family:neuzeit;src:url(https://use.typekit.net/af/ae9007/0000000000000000000178a7/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) 
+	format("woff2"),url(https://use.typekit.net/af/ae9007/0000000000000000000178a7/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) 
+	format("woff"),url(https://use.typekit.net/af/ae9007/0000000000000000000178a7/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) 
+	format("opentype");font-weight:700;font-style:normal;}
+@font-face{font-family:neuzeit;src:url(https://use.typekit.net/af/394058/0000000000000000000178a8/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
+	format("woff2"),url(https://use.typekit.net/af/394058/0000000000000000000178a8/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
+	format("woff"),url(https://use.typekit.net/af/394058/0000000000000000000178a8/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
 	format("opentype");font-weight:900;font-style:normal;}
 
 
@@ -89,7 +107,7 @@ body {
     font-family:neuzeit;
     margin-bottom:0px;
 }
-a, a:hover{
+a, a:hover, a:active, a:focus{
 	color:#000;
 }
 #pageArea {
@@ -156,7 +174,7 @@ p, .collectionsList p {
     font-size: 14px;
     line-height: 18px;
 }
-.browse .btn-default, .browse .btn-default:hover {
+.browse .btn-default, .browse .btn-default:hover, .btn-default, .btn-default:hover {
     height: 30px;
     line-height: 30px;
     background: #000;
@@ -433,6 +451,10 @@ p, .collectionsList p {
 .entities .bResultItem .bResultItemText a {
 	text-decoration:none;
 }
+.relArtTitle {
+	height:60px;
+	overflow:hidden;
+}
 .bResultItemImgPlaceholder {
 	border:0px;
 	color:#000;
@@ -460,6 +482,19 @@ p, .collectionsList p {
 }
 .relatedExhibitions .relatedArtwork a {
 	text-decoration:underline;
+}
+.exhibitionRep img{
+	width:100%;
+	height:auto;
+}
+.viewAll {
+	text-align:center;
+	font-weight:bold;
+	padding-top:10px;
+	clear:both;
+}
+.detail .viewAll a {
+	text-decoration:none;
 }
 
 /* Collection */
@@ -669,7 +704,7 @@ p, .collectionsList p {
 	height: 1.1em;
 }
 .exhibitions .bResultListItem .bResultListItemTextContainer {
-	height: 2.4em;
+	height: 68px;
 }
 .bResultListItem .bResultListItemText {
 	font-size:14px;
@@ -700,6 +735,9 @@ p, .collectionsList p {
 }
 .results a .glyphicon, .results a .fa {
 	color: #000 !important;
+}
+.results H5 {
+	margin-top:15px;
 }
 .browseRemoveFacet button .glyphicon{
 	color:#FFF !important;
@@ -780,6 +818,36 @@ p, .collectionsList p {
 	height:auto;
 }
 
+.btn-group.sort a:hover {
+	text-decoration:none;
+}
+.browse .sort .btn {
+	background-color:transparent;
+	color:#000;
+	font-size: 15px;
+    border-bottom: 1px solid #000;
+    border-radius:0px;
+}
+.browse .sort .btn:active, .browse .sort .btn:focus {
+	box-shadow:none;
+	border-style:solid;
+	text-shadow:none;
+}
+.btn-group.sort {
+	margin-right:20px;
+}
+.sort.open > .dropdown-menu {
+    display: block;
+    right: 0px;
+    border: 1px solid #000;
+    font-size: 15px;
+    margin-top: -1px;
+    box-shadow:none;
+}
+#bLetterBar {
+	margin-top:10px;
+}
+
 /* Upcoming Exhibitions - also uses browse list styles*/
 .upcomingExhibitions a{
 	font-weight:bold;
@@ -796,3 +864,31 @@ p, .collectionsList p {
 .upcomingExhibitions .upcomingDesc{
 	margin-top:30px;
 }
+.listing .exhibitions h4 a {
+	text-decoration:underline;
+}
+#listingResults .bResultListItem, #listingResults .bResultListItem:hover {
+	padding:0px;
+}
+.bSimplePlaceholder {
+	position:relative;
+	text-align:center;
+	font-size:16px;
+	font-weight:normal;
+}
+.bSimplePlaceholder::before {
+	content:"image not available";
+	position:absolute;
+	width:100%;
+	left:50%;
+	margin-left:-50%;
+	top:40%;
+	color:#999;
+}
+.fullWidthImage {
+	width:100%;
+	position:relative;
+}
+
+
+

@@ -223,7 +223,7 @@
  				return;
  			}
  			
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".$t_subject->getTypeName().": ".$t_subject->get('preferred_labels').(($vs_idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_subject->getTypeName().$this->request->config->get("page_title_delimiter").$t_subject->get('preferred_labels').(($vs_idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
  			
  			$vs_type = $t_subject->getTypeCode();
  			
@@ -491,12 +491,12 @@
  		 *
  		 */ 
  		public function GetTimebasedRepresentationAnnotationList() {
- 			$pn_object_id 			= $this->request->getParameter('object_id', pInteger);
+ 			$pn_id 			= $this->request->getParameter('id', pInteger);
  			$pn_representation_id 	= $this->request->getParameter('representation_id', pInteger);
- 			$ps_detail_type			= $this->request->getParameter('detail_type', pString);
- 			$va_detail_options 		= (isset($this->opa_detail_types[$ps_detail_type]['options']) && is_array($this->opa_detail_types[$ps_detail_type]['options'])) ? $this->opa_detail_types['objects']['options'] : array();
+ 			$ps_detail_type			= $this->request->getParameter('context', pString);
+ 			$va_detail_options 		= (isset($this->opa_detail_types[$ps_detail_type]['options']) && is_array($this->opa_detail_types[$ps_detail_type]['options'])) ? $this->opa_detail_types[$ps_detail_type]['options'] : array();
  			
- 			if(!$pn_object_id) { $pn_object_id = 0; }
+ 			if(!$pn_id) { $pn_id = 0; }
  			$t_rep = new ca_object_representations($pn_representation_id);
  			if (!$t_rep->getPrimaryKey()) { 
  				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetTimebasedRepresentationAnnotationList');
@@ -519,11 +519,13 @@
 					$va_annotation_list[] = $qr_annotations->getWithTemplate($vs_template);
 					$va_annotation_times[] = array((float)$qr_annotations->getPropertyValue('startTimecode', true) - (float)$va_props['timecode_offset'], (float)$qr_annotations->getPropertyValue('endTimecode', true) - (float)$va_props['timecode_offset']);
 				}
+				$qr_annotations->seek(0);
 			}
 			
 			$this->view->setVar('representation_id', $pn_representation_id);
 			$this->view->setVar('annotation_list', $va_annotation_list);
 			$this->view->setVar('annotation_times', $va_annotation_times);
+			$this->view->setVar('annotations_search_results', $qr_annotations);
 			$this->view->setVar('player_name', "caMediaOverlayTimebased_{$pn_representation_id}_detail");
 			
 			$this->render('Details/annotations_html.php');
@@ -1398,7 +1400,7 @@
 				throw new ApplicationException(_t('Cannot view media'));
 			}
 		
-			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, array_merge($va_options, $pa_options, ['showAnnotations' => true, 'checkAccess' => $this->opa_access_values])));
+			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, array_merge($va_options, $pa_options, ['noOverlay' => true, 'showAnnotations' => true, 'checkAccess' => $this->opa_access_values])));
 		}
 		# -------------------------------------------------------
 		/** 

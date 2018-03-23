@@ -43,8 +43,7 @@
             	print "You do not have access to view this page.";
             	die;
             }
-            $this->view->setVar("access_values", $this->opa_access_values);
- 			caSetPageCSSClasses(array("explore"));
+            caSetPageCSSClasses(array("explore"));
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Explore");
  			
  			AssetLoadManager::register("panel");
@@ -75,6 +74,10 @@
  				if($t_set->get("set_id")){
  					$this->view->setVar("set", $t_set);
  					$this->view->setVar("set_id", $t_set->get("set_id"));
+ 					$o_context = new ResultContext($this->request, 'ca_objects', 'exploreNarrativeThreads');
+					$o_context->setAsLastFind();
+					$o_context->setResultList(array_keys($t_set->getItemRowIDs()));
+					$o_context->saveContext();
  				}
  				$this->render("Explore/narrativethread_html.php");
  			}else{
@@ -97,20 +100,44 @@
  		 		$o_search->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
 			}
 			$qr_res = $o_search->search("ca_entities.type_id:".$this->opn_school_id);
+ 			$o_entity_context = new ResultContext($this->request, 'ca_entities', 'exploreSchools');
+ 			$o_entity_context->setAsLastFind();
+ 			$o_entity_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+ 			$o_entity_context->saveContext();
+ 				
  			$o_map = new GeographicMap('100%', 500, 'map');
 			$va_map_stats = $o_map->mapFrom($qr_res, "ca_places.georeference", array("ajaxContentUrl" => caNavUrl($this->request, "", "Explore", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));
 			$this->view->setVar("map", $o_map->render('HTML', array('delimiter' => "<br/>")));
 
 			# --- timeline set
 			if($vs_timeline_set_code = $this->request->config->get("school_timeline_set_code")){
+				
 				$t_set = new ca_sets();
 				$t_set->load(array('set_code' => $vs_timeline_set_code));
 				$vn_timeline_set_id = $t_set->get("set_id");
+				
+				$o_occ_context = new ResultContext($this->request, 'ca_occurrences', 'exploreSchools');
+ 				$o_occ_context->setAsLastFind();
+ 				$o_occ_context->setResultList(array_keys($t_set->getItemRowIDs()));
+ 				$o_occ_context->saveContext();
+ 			
 			}
 			$this->view->setVar("timeline_set_id", $vn_timeline_set_id);
 			
 			$qr_res->seek(0);
 			$this->view->setVar("schools_results", $qr_res);
+			
+			# --- get BC schools
+			#$o_browse = caGetBrowseInstance("ca_entities");
+			#$o_browse->setTypeRestrictions(array("school"));
+			#$o_browse->addCriteria("place_facet", 21);
+			#if(is_array($this->opa_access_values) && sizeof($this->opa_access_values)){
+ 		 	#	$o_browse->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
+			#}
+			#$o_browse->execute();
+			#$qr_bc_schools = $o_browse->getResults(array('sort' => 'ca_entities.preferred_labels.displayname', 'sort_direction' => 'ASC')); 
+ 			
+ 			#print $qr_bc_schools->numHits();
 
  			$this->render("Explore/schools_html.php");
  		}
@@ -373,8 +400,8 @@
  		public static function getReturnToResultsUrl($po_request) {
  			$va_ret = array(
  				'module_path' => '',
- 				'controller' => 'Gallery',
- 				'action' => 'Index',
+ 				'controller' => 'Explore',
+ 				'action' => 'Schools',
  				'params' => array()
  			);
 			return $va_ret;
