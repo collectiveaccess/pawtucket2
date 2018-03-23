@@ -101,7 +101,7 @@
 							print "<li><div class='container' id='{$vs_facet_name}_facet_container'><div class='row'>";
 						} elseif ($vb_show_only_open) {
 							print '<div class="dropdown button showOnly" style="width:'.$vs_menu_item_width.'%;">'; 
-							print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>Show Only<span class='caret'></span></H5><ul class='facetGroup panel dropdown-menu ' id='facetGroupShowOnly' style='width:150%;left:-120%'>"; 
+							print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>Show Only<span class='caret'></span></H5><ul class='facetGroup panel dropdown-menu ' id='facetGroupShowOnly' style='width:150%;left:-90%'>"; 
 							print "<li><div class='container' id='ShowOnly_facet_container'><div class='row'>";
 			
 						}

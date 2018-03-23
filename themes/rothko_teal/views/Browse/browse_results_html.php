@@ -266,7 +266,9 @@ if (!$vb_ajax) {	// !ajax
 			<H2>
 <?php
             $vn_num_hits = $qr_res->numHits();
-			print _t('<span class="hitCount">%1 %2</span>', $qr_res->numHits(), ($vn_num_hits == 1) ? ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR') : ($va_browse_info["labelPlural"]) ? $va_browse_info["labelPlural"] : $t_instance->getProperty('NAME_PLURAL'));	
+            	#print _t('<span class="hitCount">%1 %2</span>', $qr_res->numHits(), ($vn_num_hits == 1) ? ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR') : ($va_browse_info["labelPlural"]) ? $va_browse_info["labelPlural"] : $t_instance->getProperty('NAME_PLURAL'));	
+
+				print _t('<span class="hitCount">%1 %2</span>', $qr_res->numHits(), ($qr_res->numHits() !== 1) ? $va_browse_info["labelPlural"] : $va_browse_info["labelSingular"]);	
 
 ?>		
 			</H2>

@@ -107,11 +107,12 @@
 		print "<h6><a href='#' data-toggleDiv='referenceDiv' class='togglertronic'>Related References <i class='fa fa-plus drawerToggle'></i></a></h6>";
 		print "<div id='referenceDiv'>".$vs_reference."</div>";
 		print "</div></div></div><!-- end row -->";
+		$vs_first = false;
 	}
 ?>		
 
 {{{<ifcount code="ca_objects" relativeTo="ca_objects" restrictToTypes="side" min="1">
-	<div class="row"><hr><div class='col-sm-12'>
+	<div class="row"><?php print ($vs_first==true ? "" : "<hr>"); ?><div class='col-sm-12'>
 	
 		<div id="browseResultsContainer">
 			<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>

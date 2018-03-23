@@ -37,7 +37,11 @@
 	}
 ?>
 	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
-	<div id="backToTop"><a href="#"><i class="fa fa-arrow-up"></i>Top</a></div>
+<?php
+	if ((strtolower($this->request->getController()) !== "front")) {	
+		print '<div id="backToTop"><a href="#"><i class="fa fa-arrow-up"></i>Top</a></div>';
+	}
+?>	
 	<div id="comparison_list" class="compareDrawer compare_menu_item">
 		<ul>
 		

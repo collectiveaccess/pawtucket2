@@ -61,12 +61,6 @@
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by Institional accession number.">Institution Accession Number </span>
 				{{{ca_objects.institutional_id%width=200px&height=30px}}}
 			</div>
-		</div>	
-		<div class='row'>
-			<div class="advancedSearchField col-sm-12">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by catalog number.">Catalog Number </span>
-				{{{ca_objects.catalog_number%width=200px&height=30px}}}
-			</div>
 		</div>			
 		<br style="clear: both;"/>
 		<div class='advancedFormSubmit'>

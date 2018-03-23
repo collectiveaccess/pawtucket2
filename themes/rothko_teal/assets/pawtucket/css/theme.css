@@ -436,7 +436,7 @@ a, a:hover, a:focus {
 #backToTop {
 	position:fixed;
 	right:30px;
-	bottom:30px;
+	bottom:10px;
 	text-align:center;
 	font-weight:bold;
 }
@@ -1038,9 +1038,6 @@ a .svg-inline--fa.clearFacet {
 	border-bottom: 0px solid #d6d6d6;
     padding-bottom: 20px;
 }
-.exhibitions.browse.results .listTitle {
-	font-style:italic;
-}
 .bResultListItem .bResultListItemText {
 	font-size:14px;
 }
@@ -1102,6 +1099,7 @@ a .svg-inline--fa.clearFacet {
 	float:right;
 	color:#757575;
 	font-size:13px;
+	padding-left:10px;
 }
 .detail.collection .viewAll { 
 	margin-right:15px;
@@ -1365,6 +1363,9 @@ a .svg-inline--fa.clearFacet {
 .detail .unit a {
 	text-decoration:underline;
 	color: #757575;
+}
+.detail .unit a:hover {
+	color: #df7354;
 }
 .detail .col-sm-8 .unit {
 	color:#757575;
@@ -1742,13 +1743,13 @@ a .svg-inline--fa.clearFacet {
     float: left;
     position: absolute;
     top: 215px;
-    left: -25px;
+    left: -5px;
 }
 .detail #detailRepNavNext {
     float: right;
     position: absolute;
     top: 215px;
-    right: -25px; 
+    right: -5px; 
 }
 .detail #detailRepNav {
 	font-size:20px;
@@ -1769,14 +1770,20 @@ a .svg-inline--fa.clearFacet {
 #relatedWorksDiv {
 	margin-top:20px;
 }
+#remarksDiv a {
+	text-decoration:underline;
+}
+#remarksDiv a:hover {
+	color: #df7354;
+}
 /* Rep viewer changes */
 
 .detail #detailRepNav {
 	position:absolute;
 	bottom:15px;
-	text-align:right;
+	text-align:center;
 	width:100%;
-	right:70px;
+	right:0px;
 	font-size:16px;
 }
 .detail #detailRepNavPrev {
@@ -1898,6 +1905,9 @@ h3.window-manifest-title {
 .mirador-osd-annotation-controls {
 	display:none;
 }
+.mirador-viewer {
+	z-index: 1000000 !important;
+}
 .hud-control {
 	color: #000 !important;
 }
@@ -1906,6 +1916,7 @@ div.caMediaOverlayControls {
 	top:0px;
 	bottom:inherit;
 	width:auto;
+	z-index: 32000000;
 }
 div.caMediaOverlayControls a, div.caMediaOverlayControls a .fa-times {
 	color:#000 !important;
@@ -1982,6 +1993,7 @@ div.caMediaOverlayControlsMinimal, .material-icons, div.caMediaOverlayControls:h
 div.caMediaOverlayControlsMinimal {
 	top:5px;
 	left:0px;
+	z-index:1000000;
 }
 div.caMediaOverlayControlsMinimal .close {
 	opacity:1;
@@ -1999,3 +2011,4 @@ div.caMediaOverlayControlsMinimal .svg-inline--fa {
 .mirador-icon-view-type {
 	display: none !important;
 }
+
