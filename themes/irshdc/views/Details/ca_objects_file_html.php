@@ -94,7 +94,7 @@
 					<div class="stoneBg">				
 <?php
 						$vs_source = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="source" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>');						
-						$vs_source_link = $t_object->get("ca_objects.lac_URL");
+						$vs_source_link = $t_object->get("ca_objects.nctr_URL");
 						if($vs_source_link){
 							$vs_source_link = '<br/><a href="'.$vs_source_link.'" class="redLink" target="_blank">'.(($vs_source) ? $vs_source : 'Source Record').' <span class="glyphicon glyphicon-new-window"></span></a>';
 						}
@@ -132,25 +132,26 @@
 
 					{{{<ifdef code="ca_objects.alternate_text.alternate_desc_upload.url">
 						<div class="collapseBlock">
-							<h3>Research Guide <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+							<h3>Research Guide <i class="fa fa-toggle-down" aria-hidden="true"></i></h3>
 							<div class="collapseContent">
 								<div class='unit icon transcription'><h6></h6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.alternate_text.alternate_desc_upload"><a href="^ca_objects.alternate_text.alternate_desc_upload.url%version=original">View ^ca_objects.alternate_text.alternate_text_type</a></ifdef><ifdef code="ca_objects.alternate_text.alternate_desc_note">^ca_objects.alternate_text.alternate_desc_note</ifdef></unit></div>
 							</div>
 						</div>
 					</ifdef>}}}
 					<div class="collapseBlock">
-						<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+						<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></h3>
 						<div class="collapseContent">
-							{{{<ifdef code="ca_objects.nonpreferred_labels.name" excludeTypes="exhibition_title"><div class='unit'><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>" excludeTypes="exhibition_title">^nonpreferred_labels.name</unit></div></ifdef>}}}
+							{{{<ifcount min="1" code="ca_objects.nonpreferred_labels.name" excludeTypes="exhibition_title"><div class='unit'><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>" excludeTypes="exhibition_title">^ca_objects.nonpreferred_labels.name</unit></div></ifcount>}}}
 							{{{<ifdef code="ca_objects.record_type"><div class='unit'><H6>Record type</H6>^ca_objects.record_type%=_</div></ifdef>}}}
 							{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Repository</H6><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}							
-							{{{<ifdef code="ca_objects.file_series"><H6 class="inline">Series:</H6> <unit delimiter=", ">^ca_objects.file_series</unit><br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.record_group_id"><H6 class="inline">Record group:</H6> <unit delimiter=", ">^ca_objects.record_group_id</unit><br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.mikan_number"><H6 class="inline">Mikan Number:</H6> <unit delimiter=", ">^ca_objects.mikan_number</unit><br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.microfilm_reel"><H6 class="inline">Microfilm Reel:</H6> <unit delimiter="<br/>">^ca_objects.microfilm_reel</unit><br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.volume"><H6 class="inline">Volume:</H6> <unit delimiter="<br/>">^ca_objects.volume</unit><br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.file_number"><H6 class="inline">File Number:</H6> <unit delimiter="<br/>">^ca_objects.file_number</unit><br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.part"><H6 class="inline">Part:</H6> <unit delimiter="<br/>">^ca_objects.part</unit><br/></ifdef>}}}
+							{{{<ifdef code="ca_objects.lac_URL"><div class='unit'><H6 class="inline">Repository URL:</H6> <unit delimiter=", "><a href="^ca_objects.lac_URL">^ca_objects.lac_url</a></unit></div></ifdef>}}}
+							{{{<ifdef code="ca_objects.file_series"><div class='unit'><H6 class="inline">Series:</H6> <unit delimiter=", ">^ca_objects.file_series</unit></div></ifdef>}}}
+							{{{<ifdef code="ca_objects.record_group_id"><div class='unit'><H6 class="inline">Record group:</H6> <unit delimiter=", ">^ca_objects.record_group_id</unit></div></ifdef>}}}
+							{{{<ifdef code="ca_objects.mikan_number"><div class='unit'><H6 class="inline">Mikan Number:</H6> <unit delimiter=", ">^ca_objects.mikan_number</unit></div></ifdef>}}}
+							{{{<ifdef code="ca_objects.microfilm_reel"><div class='unit'><H6 class="inline">Microfilm Reel:</H6> <unit delimiter="<br/>">^ca_objects.microfilm_reel</unit></div></ifdef>}}}
+							{{{<ifdef code="ca_objects.volume"><div class='unit'><H6 class="inline">Volume:</H6> <unit delimiter="<br/>">^ca_objects.volume</unit></div></ifdef>}}}
+							{{{<ifdef code="ca_objects.file_number"><div class='unit'><H6 class="inline">File Number:</H6> <unit delimiter="<br/>">^ca_objects.file_number</unit></div></ifdef>}}}
+							{{{<ifdef code="ca_objects.part"><div class='unit'><H6 class="inline">Part:</H6> <unit delimiter="<br/>">^ca_objects.part</unit></div></ifdef>}}}
 							{{{<ifdef code="ca_objects.MARC_generalNote"><div class='unit'><h6>Notes</h6>^ca_objects.MARC_generalNote</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.ISADG_archNote"><div class='unit'><h6>Note on Description</h6>^ca_objects.ISADG_archNote</div></ifdef>}}}
 <?php
@@ -160,9 +161,9 @@
 					</div>
 					{{{<ifdef code="ca_objects.NCTR_URL|ca_objects.Koerner_URL">
 						<div class="collapseBlock">
-							<h3>Other Repositories <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
+							<h3>Other Repositories <i class="fa fa-toggle-down" aria-hidden="true"></i></h3>
 							<div class="collapseContent">
-								<ifdef code="ca_objects.NCTR_URL"><div class='unit'><h6>National Centre for Truth and Reconciliation</h6><unit delimiter=", "><a href="^ca_objects.NCTR_URL" target="_blank">^ca_objects.NCTR_URL</a></unit></div></ifdef>
+								<ifdef code="ca_objects.nctr_URL"><div class='unit'><h6>National Centre for Truth and Reconciliation</h6><unit delimiter=", "><a href="^ca_objects.nctr_URL" target="_blank">^ca_objects.nctr_URL</a></unit></div></ifdef>
 								<ifdef code="ca_objects.Koerner_URL"><div class='unit'><h6>University of British Columbia Libraries</h6><unit delimiter=", "><a href="^ca_objects.Koerner_URL" target="koerner_URL">^ca_objects.Koerner_URL</a></unit></div></ifdef>				
 							</div>
 						</div>
@@ -190,7 +191,7 @@
 					}
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
 					if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
-						print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "object_id" => $t_object->get("object_id")))."</div>";
+						print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
 					}
 					print '</div><!-- end detailTools -->';	
 						if ($vn_comments_enabled) {

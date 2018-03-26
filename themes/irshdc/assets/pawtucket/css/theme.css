@@ -222,6 +222,10 @@ body{
 	width:100%;
 	height:auto;
 }
+.byline{
+	text-align:right;
+	font-size:22px;
+}
 .frontSearchRow{
 	background-image: url("../graphics/centre.jpg");
 	background-repeat: no-repeat;
@@ -342,6 +346,9 @@ a:hover .frontIconButton{
 	margin-top:0px;
 	margin-bottom:20px;
 }
+.front .jcarousel-control-next, .front .jcarousel-control-prev {
+    margin-top: -70px;
+}
 .frontNarrativeThreads{
 	margin-bottom:80px;
 }
@@ -392,6 +399,9 @@ div.browseFacetItem a:hover {
 #bRefine.fixed {
     top: 85px;
 }
+.browseRemoveFacet button.btn-default{
+	text-transform:none;
+}
 
 /* details */
 .detail{
@@ -413,7 +423,7 @@ div.browseFacetItem a:hover {
 	font-size:14px;
 }
 .detail H6.inline{
-	display:inline-block;
+	display:inline;
 }
 .detail H3, .detail H3 a{
 	font-size:14px;
@@ -515,6 +525,7 @@ div.browseFacetItem a:hover {
 }
 .detail .relatedBlock .relatedBlockContent a{
 	margin-bottom:15px;
+	color:#000;
 }
 .relTabButton{
 	display:inline-block;
@@ -534,6 +545,7 @@ div.browseFacetItem a:hover {
 .detail .stoneBg{
 	padding:10px;
 	margin-bottom:20px;
+	color:#000;
 }
 a.readmore-js-toggle {
     color: #d20000;
@@ -652,7 +664,7 @@ a.readmore-js-toggle {
 	border-top:0px;
 	display:block;
 }
-#detailDiscussion .btn-default, #detailComments .btn-default{
+#detailDiscussion .btn-default, #detailComments .btn-default, #transcriptLink .btn-default{
 	padding: 3px 5px 3px 5px;
 	font-size:10px;
 	margin-top:10px;
@@ -716,6 +728,72 @@ a.readmore-js-toggle {
 	[data-toggle="popover"] {
 	  cursor: pointer;
 	}
+}
+#transcriptLink{
+	margin-bottom:5px;
+}
+.detail #detailAnnotations .detailAnnotationList{
+	max-height:600px;
+}
+.detail #detailAnnotations ul li{
+	background-color: #f5f5f5;
+}
+.detail #detailAnnotations ul li:hover{
+	background-color: #ededed;
+	curson:arrow;
+}
+.detail #detailAnnotations li.active {
+    font-weight: normal;
+    font-style: inherit;
+}
+.detailAnnotation .annotationMD{
+	display:none;
+	padding:10px;
+}
+.detailAnnotation.active .annotationMD{
+	display:block;
+	background-color: #fff;
+}
+.detailAnnotation .detailAnnotationTitle{
+	curson:pointer;
+	font-weight:normal;
+	font-family: lato;
+}
+.detailAnnotation .detailAnnotationTitle span{
+	font-weight:normal;
+	font-size:11px;
+	font-family: latoLight;
+}
+.detailAnnotation.active .detailAnnotationTitle{
+	color:#8a0000;
+}
+.detailAnnotation .detailAnnotationTitle .fa-play-circle{
+	display:none;
+}
+.detailAnnotation .detailAnnotationTitle .fa-play-circle-o{
+	display:inline;
+}
+.detailAnnotation.active .detailAnnotationTitle .fa-play-circle{
+	display:inline;
+	color:green;
+}
+.detailAnnotation.active .detailAnnotationTitle .fa-play-circle-o{
+	display:none;
+}
+.annotationTranscription{
+	max-height:250px;
+	overflow:auto;
+}
+.annotationLinks a{
+	text-transform:uppercase;
+	font-size:11px;
+	font-family: lato;
+}
+.annotationLinks span{
+	font-size: 11px;
+	text-transform: none;
+	color: #454545;
+	font-family: latoLight;
 }
 /* EXPLORE */
 

@@ -100,7 +100,6 @@
  		 		$o_search->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
 			}
 			$qr_res = $o_search->search("ca_entities.type_id:".$this->opn_school_id);
- 			
  			$o_entity_context = new ResultContext($this->request, 'ca_entities', 'exploreSchools');
  			$o_entity_context->setAsLastFind();
  			$o_entity_context->setResultList($qr_res->getPrimaryKeyValues(1000));
@@ -127,6 +126,18 @@
 			
 			$qr_res->seek(0);
 			$this->view->setVar("schools_results", $qr_res);
+			
+			# --- get BC schools
+			#$o_browse = caGetBrowseInstance("ca_entities");
+			#$o_browse->setTypeRestrictions(array("school"));
+			#$o_browse->addCriteria("place_facet", 21);
+			#if(is_array($this->opa_access_values) && sizeof($this->opa_access_values)){
+ 		 	#	$o_browse->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
+			#}
+			#$o_browse->execute();
+			#$qr_bc_schools = $o_browse->getResults(array('sort' => 'ca_entities.preferred_labels.displayname', 'sort_direction' => 'ASC')); 
+ 			
+ 			#print $qr_bc_schools->numHits();
 
  			$this->render("Explore/schools_html.php");
  		}

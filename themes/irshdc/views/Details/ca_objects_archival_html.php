@@ -72,11 +72,25 @@
 ?>
 			<div class="row">
 <?php
+				$va_transcript_rep_ids = array();
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
 				if($vs_representationViewer){
 ?>
 				<div class='col-sm-12 col-md-5'>
 					<?php print $vs_representationViewer; ?>				
+<?php
+					# --- is there a transcript media
+					$t_list = new ca_lists();
+					$va_type = $t_list->getItemFromList("object_representation_types", "transcript");
+					$va_transcript_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
+						print "<div id='transcriptLink' class='text-center'>";
+						foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
+							print caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")));
+						}
+						print "</div>";
+					}
+?>
 					<div id="detailAnnotations"></div>
 <?php				
 					$va_reps = $t_object->getRepresentations("icon", null, array("checkAcces" => $va_access_values));
@@ -84,6 +98,7 @@
 						print "<div><small>".sizeof($va_reps)." media</small></div>";
 					}
 					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3"));
+					
 ?>
 				</div><!-- end col -->
 <?php
@@ -136,7 +151,7 @@
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.language">
 							<div class="unit" data-toggle="popover" title="Note" data-content="^ca_objects.language_note"><h6>Language</h6>
-								^ca_objects.language
+								<unit delimiter=", ">^ca_objects.language</unit>
 							</div>
 						</ifdef>}}}			
 					</div><!-- end stoneBg -->
@@ -154,7 +169,7 @@
 					<div class="collapseBlock">
 						<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 						<div class="collapseContent">
-							{{{<ifdef code="ca_objects.nonpreferred_labels.name" excludeTypes="exhibition_title"><div class='unit'><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>" excludeTypes="exhibition_title">^ca_objects.nonpreferred_labels.name</unit></div></ifdef>}}}
+							{{{<ifcount min="1" code="ca_objects.nonpreferred_labels.name" excludeTypes="exhibition_title"><div class='unit'><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>" excludeTypes="exhibition_title">^ca_objects.nonpreferred_labels.name</unit></div></ifcount>}}}
 							{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Repository</H6><span class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></span></div></ifcount>}}}
 							{{{<ifdef code="ca_objects.source_identifer"><div class='unit'><h6>Repository Object Identifier</h6>^ca_objects.source_identifer</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.NCTR_id"><div class='unit'><h6>NCTR Object Identifier</h6>^ca_objects.NCTR_id</div></ifdef>}}}
@@ -171,26 +186,6 @@
 ?>
 						</div>
 					</div>
-<!--							{{{<ifdef code="ca_objects.MARC_generalNote|ca_objects.ISADG_archNote">
-								<div class="collapseBlock">
-									<h3>Notes <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-									<div class="collapseContent">
-										
-									</div>
-								</div>
-							</ifdef>}}}
-							{{{<ifdef code="ca_objects.govAccess|ca_objects.rights_new|ca_objects.RAD_local_rights">
-								<div class="collapseBlock">
-									<h3>Rights <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
-									<div class="collapseContent">
-										<ifdef code="ca_objects.govAccess"><div class='unit'><h6>Conditions Governing Access</h6>^ca_objects.govAccess</div></ifdef>
-										<ifdef code="ca_objects.rights_new"><div class='unit'><h6>Terms Governing Use and Reproduction</h6>^ca_objects.rights_new</div></ifdef>
-										<ifdef code="ca_objects.RAD_local_rights"><div class='unit'><h6>Notes: Rights and Access</h6>^ca_objects.RAD_local_rights</div></ifdef>
-									
-									</div>
-								</div>
-							</ifdef>}}}
--->
 				</div>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>
 	<?php
@@ -214,7 +209,7 @@
 					}
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
 					if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
-						print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "object_id" => $t_object->get("object_id")))."</div>";
+						print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Takedown", "", "", "Contact", "Form", array("contactType" => "takedown", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
 					}
 					print '</div><!-- end detailTools -->';			
 

@@ -77,6 +77,19 @@
 ?>
 				<div class='col-sm-12 col-md-5'>
 					<?php print $vs_representationViewer; ?>				
+<?php
+					# --- is there a transcript media
+					$t_list = new ca_lists();
+					$va_type = $t_list->getItemFromList("object_representation_types", "transcript");
+					$va_transcript_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
+						print "<div id='transcriptLink' class='text-center'>";
+						foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
+							print caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")));
+						}
+						print "</div>";
+					}
+?>
 					<div id="detailAnnotations"></div>
 <?php				
 					$va_reps = $t_object->getRepresentations("icon", null, array("checkAcces" => $va_access_values));
@@ -84,6 +97,7 @@
 						print "<div><small>".sizeof($va_reps)." media</small></div>";
 					}
 					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3"));
+					
 ?>
 				</div><!-- end col -->
 <?php
