@@ -175,7 +175,7 @@
 					$fc++;
 				}
 				if(is_array($va_facets) && sizeof($va_facets)) {
-					print "<div style='height:10px;width:100%;'></div>";
+					#print "<div style='height:10px;width:100%;'></div>";
 				}
 			}
 		}

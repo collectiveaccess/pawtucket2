@@ -269,8 +269,8 @@
 			print "<div class='row'><div class='col-sm-12'><h6 class='verso'>Other Side</h6></div></div>";		
 			$t_verso = new ca_objects($vn_verso_id);
 			print "<div class='row'>";
-			print "<div class='col-sm-5' style='min-height:140px;'>".caNavLink($this->request, $t_verso->get('ca_object_representations.media.medium', array('checkAccess' => $va_access_values)), '', '', 'Detail', 'objects/'.$vn_verso_id)."</div>";
-			print "<div class='col-sm-7'>";
+			print "<div class='col-sm-4' style='min-height:140px;'>".caNavLink($this->request, $t_verso->get('ca_object_representations.media.medium', array('checkAccess' => $va_access_values)), '', '', 'Detail', 'objects/'.$vn_verso_id)."</div>";
+			print "<div class='col-sm-8'>";
 
 			print "<div class='versoTitle'>".caNavLink($this->request, $t_verso->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$vn_verso_id)."</div>";
 			if ($vn_date = $t_verso->get('ca_objects.display_date')) {
@@ -282,8 +282,8 @@
 			print "</div>";
 			print "</div>";
 			print "<div class='row'>";
-			print "<div class='col-sm-5'></div>";
-			print "<div class='col-sm-7'>";
+			print "<div class='col-sm-4'></div>";
+			print "<div class='col-sm-8'>";
 				if ($vn_catno = $t_verso->get('ca_objects.catalog_number')) {
 					print "<div class='catInfo'>".$vn_catno."</div>";
 				}			
@@ -308,14 +308,14 @@
 		print "<h6><a href='#' onclick='$(\"#sketchDiv\").toggle(400);return false;'>Sketchbook <i class='fa fa-window-minimize'></i></a></h6>";
 		print "<div id='sketchDiv'>";
 		print "<div class='container versoInfo'><div class='row'>";	
-		print "<div class='col-sm-5' style='padding-left:0px;'>";
+		print "<div class='col-sm-4' style='padding-left:0px;'>";
 		if ($va_sk_rep = $t_sketchbook->get('ca_object_representations.media.small', array("checkAccess" => $va_access_values, "limit" => 1))) {
 			print "<div class='text-center bResultItemImg'>".caNavLink($this->request, $va_sk_rep, '', '', 'Detail', 'collections/'.$va_related_sketchbook_id)."</div>";
 		} else {
 			$vs_buf.= '<div class="bResultItemImgPlaceholder"><i class="fa fa-picture-o fa-2x"></i></div>';
 		}
 		print "</div>";
-		print "<div class='col-sm-7'>";
+		print "<div class='col-sm-8'>";
 		print "<div class='versoTitle'>".caNavLink($this->request, $t_sketchbook->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_related_sketchbook_id)."</div>"; 
 		if ($vs_date = $t_sketchbook->get('ca_collections.display_date')) {
 			print "<div>".$vs_date."</div>"; 
@@ -415,7 +415,7 @@
 				print "<div id='referenceDiv'>".$vs_reference."</div>";
 				print "</div>";
 			}
-			$vs_first = false;
+			$vs_first = false; 
 ?>		
 		</div>
 	</div><!-- end row -->
