@@ -79,7 +79,7 @@
 				<div class='col-sm-12 col-md-<?php print ($vs_map) ? "5" : "7"; ?>'>
 					<div class="stoneBg">				
 						<H4>{{{^ca_places.preferred_labels.name}}}</H4>
-						{{{<ifdef code="ca_places.parent_id"><H6><unit relativeTo="ca_places"><l>^ca_places.parent.preferred_labels.name</l> > ^ca_places.preferred_labels.name</unit></H6></ifdef>}}}
+						{{{<ifdef code="ca_places.parent_id"><H6><unit relativeTo="ca_places.parent"><l>^ca_places.preferred_labels.name</l></unit> > <unit relativeTo="ca_places">^ca_places.preferred_labels.name</unit></H6></ifdef>}}}
 						
 						{{{<ifdef code="ca_places.nonpreferred_labels.name"><div class='unit'><H6>Alternate Name(s)</H6><unit relativeTo="ca_places" delimiter="<br/>">^ca_places.nonpreferred_labels.name</unit></div></ifdef>}}}
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}

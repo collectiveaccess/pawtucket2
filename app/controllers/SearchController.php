@@ -219,8 +219,7 @@
                     }
                 }
 			}
-			
-				
+					
 			if ($this->request->getParameter('getFacet', pInteger)) {
 				$vs_facet = $this->request->getParameter('facet', pString);
 				$this->view->setVar('facet_name', $vs_facet);
@@ -253,6 +252,12 @@
 				$o_browse->addCriteria('_search', array($vs_search_refine.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_refine) && preg_match('![\w]+$!', $vs_search_refine)) ? '*' : '')), array($vs_search_refine));
 			} elseif ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
+			} elseif (($vs_facets = $this->request->getParameter('facets', pString)) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
+			    foreach ($va_facets as $vs_facet_spec) {
+			        if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
+			        $vs_facet = array_shift($va_tmp);
+			        $o_browse->addCriteria($vs_facet, explode("|", join(":", $va_tmp))); 
+			    }
 			}
 			//
 			// Add Additional base criteria if necessary

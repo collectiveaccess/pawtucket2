@@ -169,7 +169,7 @@
 				print "</div><!-- end row -->";
 			}
 			#Related Archival
-			if ($va_related_archival = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('archival')))) {
+			if ($va_related_archival = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('archival'), 'restrictToRelationshipTypes' => array('related_front')))) {
 				$vs_arch_count = 0;
 				print "<div class='row'><hr>";
 				print '<div class="col-sm-12"><h6 class="header">Related Archives</h6></div>';
