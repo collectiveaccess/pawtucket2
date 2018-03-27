@@ -68,18 +68,20 @@
 					print "<div style='color:red;'>Off view</div>";
 				}		
 ?>
-			</div>		
+			</div>
+			<hr style='padding-bottom:5px;'>		
 		</div>
-		<hr style='padding-bottom:5px;'>		
+				
 		<div class="row">	
 			<div class='col-sm-12' style="text-align:center;">
 				{{{representationViewer}}}	
 			</div><!-- end col -->
+			<hr>
 		</div>	
-		<hr>
+		
 		<div class="row">
 								
-			<div class="col-sm-6" style="padding-left:30px;">
+			<div class="col-sm-6">
 					
 <?php
 				if ($vs_artist = $t_object->getWithTemplate('<unit relativeTo="ca_entities" delimiter="<br/>"><div class="artistName"><l>^ca_entities.preferred_labels</l></div><div>^ca_entities.nationality_text, ^ca_entities.entity_display_date</div></unit>')) { 
