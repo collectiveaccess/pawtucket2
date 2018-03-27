@@ -30,7 +30,7 @@
 	<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1' style="padding-right:30px;margin-bottom:40px;">
 		{{{representationViewer}}}
 <?php
-			if ($va_catalog_id = $t_item->get('ca_collections.catalog_number')) {
+			if ($va_catalog_id = $t_item->get('ca_collections.institutional_id')) {
 				print "<div class='objIdno'>".$va_catalog_id."</div>";
 			}	
 ?>		

@@ -436,7 +436,7 @@ a, a:hover, a:focus {
 #backToTop {
 	position:fixed;
 	right:30px;
-	bottom:30px;
+	bottom:10px;
 	text-align:center;
 	font-weight:bold;
 }
@@ -625,11 +625,10 @@ a, a:hover, a:focus {
 	font-size:26px;
 	display:inline-block;
 	font-weight:bold;
-	padding-left:10px;
-	padding-right:10px;
+	padding-left:14px;
+	padding-right:14px;
 	color: #757575;
 	padding-top:40px;
-	width:24%;
 }
 .browseTargetLink a {
 	color: #757575;
@@ -683,13 +682,15 @@ a, a:hover, a:focus {
     margin-top: 0px;
     font-weight:800;
     display: inline-block;
-    padding: 16px 30px 2px 0px;
+    padding: 16px 10px 2px 0px;
     font-size:16px;
 }
 #bRefine .dropdown.button {
 	display: inline-block;
-	width: 17%;
+	width: auto;
     text-align: center;
+    padding-top: 15px;
+    margin-bottom: 12px;
 }
 #bRefine .dropdown.button.showOnly {
 	border-left:1px solid #ccc;
@@ -1038,9 +1039,6 @@ a .svg-inline--fa.clearFacet {
 	border-bottom: 0px solid #d6d6d6;
     padding-bottom: 20px;
 }
-.exhibitions.browse.results .listTitle {
-	font-style:italic;
-}
 .bResultListItem .bResultListItemText {
 	font-size:14px;
 }
@@ -1102,6 +1100,7 @@ a .svg-inline--fa.clearFacet {
 	float:right;
 	color:#757575;
 	font-size:13px;
+	padding-left:10px;
 }
 .detail.collection .viewAll { 
 	margin-right:15px;
@@ -1222,6 +1221,25 @@ a .svg-inline--fa.clearFacet {
 }
 #bRefine .row.hierarchicalList {
 	margin-bottom:0px;
+}
+/* new menu styles */
+
+#bRefine {
+  display: flex;
+  justify-content: space-between;
+}
+.provenance.browse #bRefine, .references.browse #bRefine {
+    display: inline-block;
+    justify-content: inherit;
+}
+.provenance.browse #bRefine .dropdown.button, .references.browse #bRefine .dropdown.button {
+	width:17%;
+}
+#bRefine h5{
+	white-space: nowrap;
+}
+.references.browse #facetGroupplace_facet {
+	width:250% !important;
 }
 
 /* Detail */
@@ -1365,6 +1383,9 @@ a .svg-inline--fa.clearFacet {
 .detail .unit a {
 	text-decoration:underline;
 	color: #757575;
+}
+.detail .unit a:hover {
+	color: #df7354;
 }
 .detail .col-sm-8 .unit {
 	color:#757575;
@@ -1546,10 +1567,12 @@ a .svg-inline--fa.clearFacet {
 }
 .detail.sketchbook .detailMediaToolbar {
 	margin-bottom:25px;
+	width:200px;
+	text-align:center;
 }
 .detail.exhibition .detailMediaToolbar {
 	width:100%;
-	text-align:left;
+	text-align:center;
 	background-color:transparent;
 }
 .detail.exhibition .jcarousel-pagination {
@@ -1631,8 +1654,19 @@ a .svg-inline--fa.clearFacet {
     display: inline-block;
     float:left;
 }
+.exhibition .detailMediaToolbar .zoomButton {
+    display: inline-block;
+    float:none;
+    margin-left: -150px;
+}
 .detailMediaToolbar .glyphicon.glyphicon-zoom-in {
 	padding-top:0px;
+}
+.sketchbook.detail .detailMediaToolbar .zoomButton:after {
+	content: " View sketchbook pages"; 
+	font-size:12px;
+	white-space:nowrap;
+	vertical-align:top;
 }
 .jcarousel-wrapper {
 	width:100%;
@@ -1742,13 +1776,13 @@ a .svg-inline--fa.clearFacet {
     float: left;
     position: absolute;
     top: 215px;
-    left: -25px;
+    left: -5px;
 }
 .detail #detailRepNavNext {
     float: right;
     position: absolute;
     top: 215px;
-    right: -25px; 
+    right: -5px; 
 }
 .detail #detailRepNav {
 	font-size:20px;
@@ -1769,15 +1803,24 @@ a .svg-inline--fa.clearFacet {
 #relatedWorksDiv {
 	margin-top:20px;
 }
+#remarksDiv a {
+	text-decoration:underline;
+}
+#remarksDiv a:hover {
+	color: #df7354;
+}
 /* Rep viewer changes */
 
 .detail #detailRepNav {
 	position:absolute;
 	bottom:15px;
-	text-align:right;
+	text-align:center;
 	width:100%;
-	right:70px;
+	right:0px;
 	font-size:16px;
+}
+.detail.exhibition #detailRepNav {
+	bottom:18px;
 }
 .detail #detailRepNavPrev {
 	float:none;
@@ -1898,6 +1941,9 @@ h3.window-manifest-title {
 .mirador-osd-annotation-controls {
 	display:none;
 }
+.mirador-viewer {
+	z-index: 1000000 !important;
+}
 .hud-control {
 	color: #000 !important;
 }
@@ -1906,6 +1952,7 @@ div.caMediaOverlayControls {
 	top:0px;
 	bottom:inherit;
 	width:auto;
+	z-index: 32000000;
 }
 div.caMediaOverlayControls a, div.caMediaOverlayControls a .fa-times {
 	color:#000 !important;
@@ -1982,6 +2029,7 @@ div.caMediaOverlayControlsMinimal, .material-icons, div.caMediaOverlayControls:h
 div.caMediaOverlayControlsMinimal {
 	top:5px;
 	left:0px;
+	z-index:1000000;
 }
 div.caMediaOverlayControlsMinimal .close {
 	opacity:1;
@@ -1999,3 +2047,5 @@ div.caMediaOverlayControlsMinimal .svg-inline--fa {
 .mirador-icon-view-type {
 	display: none !important;
 }
+
+

@@ -56,7 +56,7 @@
 				<?php print caGetThemeGraphic($this->request, 'canvas.jpg'); ?>
 			</div>
 			<div class="col-sm-6">
-				The National Gallery of Art maintains the largest public collection of work by the American artist Mark Rothko (1903-1970).  Beginning with the nation's collection, Mark Rothko: Works on Paper will documemt some 2,600 drawings, watercolors, and paintings on paper in public and private collections worldwide.
+				The National Gallery of Art maintains the largest public collection of work by the American artist Mark Rothko (1903-1970).  Beginning with the nation's collection, Mark Rothko: Works on Paper will document some 2,600 drawings, watercolors, and paintings on paper in public and private collections worldwide.
 			</div>
 			<div class="col-sm-3">
 				<div class='homeTitle'>National Gallery of Art</div>

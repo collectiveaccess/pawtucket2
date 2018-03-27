@@ -159,7 +159,7 @@
 
 						$vs_type = $qr_res->get('ca_occurrences.type_id', array('convertCodesToDisplayText' => true));
 						if ($vs_type == 'Exhibition') {
-							$vs_title = $qr_res->get("{$vs_table}.preferred_labels");
+							$vs_title = "<i>".$qr_res->get("{$vs_table}.preferred_labels")."</i>";
 							if ($vs_museum = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue')))) {
 								$vs_title.=", ".$vs_museum;
 							}
@@ -168,7 +168,7 @@
 							}
 							$vs_title.= "<i class='fa fa-chevron-right'></i>";
 							#$vs_result_text_link = caDetailLink($this->request, $vs_result_text, 'occLink', $vs_table, $vn_id);
-							$vs_label_detail_link 	= "<span class='listTitle'><i>".caDetailLink($this->request, $vs_title, '', $vs_table, $vn_id)."</i></span>";
+							$vs_label_detail_link 	= "<span class='listTitle'>".caDetailLink($this->request, $vs_title, '', $vs_table, $vn_id)."</span>";
  
 						} elseif ($vs_type == 'Reference') {
 							$vs_title = $qr_res->get("{$vs_table}.preferred_labels");
