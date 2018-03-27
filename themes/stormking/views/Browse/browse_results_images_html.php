@@ -141,11 +141,12 @@
 						} else {
 							$vs_style = "";
 						}
-						$t_list = new ca_lists();
+						/*$t_list = new ca_lists();
 						$vn_object_type_id = $t_list->getItemIDFromList("object_types", "archival");
 						if ($qr_res->get('ca_objects.type_id') == $vn_object_type_id) {
 							$vs_entity_date_text = "<p>".$qr_res->get('ca_objects.idno')."</p>";
 						}
+						*/
 						$vs_info = null;
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 					} else {
