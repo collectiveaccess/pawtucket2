@@ -795,6 +795,21 @@ a.readmore-js-toggle {
 	color: #454545;
 	font-family: latoLight;
 }
+/* browse filters on repository and school pages */
+.detailFilter{
+	padding: 0px 15px 20px 15px;
+	font-family:lato;
+}
+.detailFilter .btn-group{
+	padding-left:5px;
+	padding-right:20px;
+}
+.detailFilter .btn-group .btn-default {
+    background-color: #f0ede4;
+    color: #000000;
+}
+
+
 /* EXPLORE */
 
 .narrativeThreadContainer{
@@ -1072,4 +1087,32 @@ a.readmore-js-toggle {
 }
 .listingContainer .listingContainerDesc .text-center{
 	margin:40px 0px 30px 0px;
+}
+
+/* About page */
+.staticPage H1.quote{
+	font-size: 28px;
+	font-family: LatoLight;
+	padding-top: 15px;
+	color:#000;
+	text-transform:none;
+	margin-bottom:30px;
+}
+.staticPage H1{
+	margin-top:40px;
+}
+.staticPage p{
+	font-size:16px;
+	margin-bottom:20px;
+}
+.staticPage b{
+	font-family: lato;
+	font-weight: normal;
+}
+.aboutLogo{
+	margin-bottom:25px;
+}
+.aboutLogo img{
+	width:100%;
+	height:auto;
 }
