@@ -65,20 +65,20 @@
 	<div class="row">
 		<div class="col-sm-12 col-md-8 col-md-offset-2">
 <?php
-		$va_quotes = array(
-			"\"Many of us, through our pain and suffering, managed to hold our heads up ... We were brave children.\"<div class='byline'>– Barney Williams, Kamloops School Survivor</div>",
-			"\"[T]hey did not break my spirit.... This journey we will walk together. This Dialogue has started the support, being there for each other, sharing what we learned and also our pain. That is who we are.\"<div class='byline'>–  Angie Crerar, Survivor</div>",
-			"\"And until people show that they have learned from this, we will never forget, and we should never forget, even once they have learned from it, because this is part of who we are.\"<div class='byline'>– Senator Murray Sinclair</div>",
-			"\"First, the Survivors need to know before they leave this earth that people understand what happened and what the schools did to them. Second, the Survivors need to know that, having been heard and understood, that we will act to ensure the repair of damages done.\"<div class='byline'>– Senator Murray Sinclair</div>",
-			"\"[E]ven though you have family, you still feel separated, you still, you don't have a name, you don't have an identity, you just have a number, and mine was 56.\"<div class='byline'>– Antonette White, Kuper Island School Survivor</div>",
-			"\"[T]here's value in our knowledge, there's value in our culture, there's value in our ways as a community, and that really matters, that it does make a difference, and that we cannot put that responsibility aside…It's a responsibility of everyone who lives on this land and that has colonized it and benefited from it, to make that right.\"<div class='byline'>– Jeannette Armstrong</div>"
-		);
-		$vs_quote = $va_quotes[array_rand($va_quotes)];
+#		$va_quotes = array(
+#			"\"Many of us, through our pain and suffering, managed to hold our heads up ... We were brave children.\"<div class='byline'>– Barney Williams, Kamloops School Survivor</div>",
+#			"\"[T]hey did not break my spirit.... This journey we will walk together. This Dialogue has started the support, being there for each other, sharing what we learned and also our pain. That is who we are.\"<div class='byline'>–  Angie Crerar, Survivor</div>",
+#			"\"And until people show that they have learned from this, we will never forget, and we should never forget, even once they have learned from it, because this is part of who we are.\"<div class='byline'>– Senator Murray Sinclair</div>",
+#			"\"First, the Survivors need to know before they leave this earth that people understand what happened and what the schools did to them. Second, the Survivors need to know that, having been heard and understood, that we will act to ensure the repair of damages done.\"<div class='byline'>– Senator Murray Sinclair</div>",
+#			"\"[E]ven though you have family, you still feel separated, you still, you don't have a name, you don't have an identity, you just have a number, and mine was 56.\"<div class='byline'>– Antonette White, Kuper Island School Survivor</div>",
+#			"\"[T]here's value in our knowledge, there's value in our culture, there's value in our ways as a community, and that really matters, that it does make a difference, and that we cannot put that responsibility aside…It's a responsibility of everyone who lives on this land and that has colonized it and benefited from it, to make that right.\"<div class='byline'>– Jeannette Armstrong</div>"
+#		);
+#		$vs_quote = $va_quotes[array_rand($va_quotes)];
 ?>
 			<br/>
 			<br/>
 			<br/>
-			<H1><?php print $vs_quote; ?></H1>
+			<H1>The Indian Residential School History and Dialogue Centre is located on the traditional, ancestral, unceded territory of the hən̓q̓əmin̓əm̓ speaking xʷməθkʷəy̓əm (Musqueam) people.</H1>
 			<br/>
 			<br/>
 			<br/>
