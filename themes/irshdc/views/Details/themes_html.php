@@ -13,7 +13,7 @@
 					#$vs_theme_name = $t_list->getItemFromListForDisplayByItemID($vs_attribute, $vn_theme_id);
 					$t_list_item->load($vn_theme_id);
 					#$vs_theme_name = $t_list_item->get("ca_list_item_labels.name_singular");
-					$va_theme_hier = $t_list_item->get("ca_list_item_labels.hierarchy", array("returnWithStructure" => true));
+					$va_theme_hier = $t_list_item->get("ca_list_item_labels.hierarchy", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 					$va_theme_breadcrumb = array();
 					foreach($va_theme_hier as $va_theme){
 						foreach($va_theme as $vn_hier_theme_id => $va_theme_info){
