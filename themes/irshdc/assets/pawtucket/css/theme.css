@@ -442,7 +442,7 @@ div.browseFacetItem a:hover {
     color: #d20000;
 }
 #bRefine.fixed {
-    top: 85px;
+    top: 95px;
 }
 .browseRemoveFacet button.btn-default{
 	text-transform:none;

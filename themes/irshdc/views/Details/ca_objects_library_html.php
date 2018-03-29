@@ -148,12 +148,6 @@
 							if($vs_subjects = $t_object->getWithTemplate('<unit relativeTo="ca_entities.related" restrictToRelationshipTypes="subject" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>', array("checkAccess" => $va_access_values))){
 								$va_loc[] = $vs_subjects;
 							}
-							#if($vs_topical = $t_object->get("ca_objects.LOC_text", array("delimiter" => "<br/>"))){
-							#	$va_loc[] = $vs_topical;
-							#}
-							#if($vs_tgn = $t_object->get("ca_objects.tgn", array("delimiter" => "<br/>"))){
-							#	$va_loc[] = $vs_tgn;
-							#}
 							if($va_topical = $t_object->get("ca_objects.LOC_text", array("returnAsArray" => true))){
 								foreach($va_topical as $vs_topical_term){
 									$va_loc[] = caNavLink($this->request, $vs_topical_term, "", "", "Search", "objects", array("search" => "ca_objects.LOC_text:".$vs_topical_term));
