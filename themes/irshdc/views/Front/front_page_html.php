@@ -33,7 +33,7 @@
  	$this->config = caGetFrontConfig();
  	AssetLoadManager::register('timeline');
  	$va_access_values = $this->getVar("access_values");
- print $po_view->request->getThemeUrlPath()."/assets/universalviewer/config.json";	 	
+ 	 	
 # --- timeline set - occurrences
 	if($vs_timeline_set_code = $this->config->get("front_page_timeline_set_code")){
 		$t_set = new ca_sets();
