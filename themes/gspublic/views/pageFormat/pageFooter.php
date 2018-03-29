@@ -28,6 +28,9 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+<?php
+if(($this->request->getController() != "Browse") && ($this->request->getController() != "Search")){
+?>
 	<div id="stickyFooter" >
 		<div id="socialFooter">
 			<div class="container">
@@ -80,6 +83,7 @@
 		</div><!-- end footerGreen -->
 	</div><!-- end sticky footer -->
 <?php
+}
 	//
 	// Output HTML for debug bar
 	//

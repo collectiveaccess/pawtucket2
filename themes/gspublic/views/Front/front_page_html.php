@@ -84,7 +84,7 @@
 		</div>	
 		<div class="col-sm-4 textRight">
 			<h1>Featured Galleries</h1>
-			<p>Explore iconic Girl Scout moments from shaking hands with First Ladies to the design of the first uniform.  Take a virtual-walk through the interactive galleries.</p>
+			<p>Explore iconic Girl Scout moments from shaking hands with First Ladies to the design of the first uniform.  Take a virtual walk through the interactive galleries.</p>
 <?php
 			print caNavLink($this->request, 'More', 'btn-default', '', 'Gallery', 'Index');
 ?>		
@@ -93,7 +93,7 @@
 	<div class="row frontBand collections">
 		<div class="col-sm-4 textLeft">
 			<h1>Research Collections</h1>
-			<p>For over 100 years Girl Scouts have been at the forefront of empowering others and striving to make a difference. Delve deeper into this history through the Research Collections.</p>
+			<p>For over 100 years Girl Scouts have been at the forefront of empowering others and striving to make a difference. Delve deeper into Girl Scout history through the Research Collections.</p>
 <?php
 			print caNavLink($this->request, 'More', 'btn-default', '', 'Collections', 'Index');
 ?>			

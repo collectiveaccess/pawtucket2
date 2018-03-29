@@ -1271,6 +1271,9 @@ jQuery(document).ready(function() {
 		$va_access_values = caGetUserAccessValues($po_request);
 		# --- get collections configuration
 		$o_collections_config = caGetCollectionsConfig();
+		if($o_collections_config->get("export_max_levels") && ($vn_level > $o_collections_config->get("export_max_levels"))){
+			return;
+		}
 		$vs_output = "";
 		$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
 		
