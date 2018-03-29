@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$vn_id = $t_item->get('ca_collections.collection_id');
 	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
@@ -83,6 +84,15 @@
 					if ($vs_extent = $t_item->get('ca_collections.extentDACS')) {
 						print "<div class='unit'><h6>Extent</h6>".$vs_extent."</div>";
 					} 
+					if ($vs_access = $t_item->get('ca_collections.accessrestrict')) {
+						print "<div class='unit'><h6>Conditions Governing Access</h6>".$vs_access."</div>";
+					}
+					if ($vs_repro = $t_item->get('ca_collections.reproduction')) {
+						print "<div class='unit'><h6>Conditions Governing Reproduction</h6>".$vs_repro."</div>";
+					}
+					if ($vs_lang = $t_item->get('ca_collections.langmaterial')) {
+						print "<div class='unit'><h6>Languages and Scripts on the Material</h6>".$vs_lang."</div>";
+					}										
 																
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
@@ -125,7 +135,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'archival', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'archival', array('search' => 'collection_id:^ca_collections.collection_id', 'sort' => 'ca_objects.idno'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -141,3 +151,8 @@
 		</div><!-- end container -->
 	</div><!-- end col -->
 </div><!-- end row -->
+<?php
+		#if($this->request->isLoggedIn()){
+			print "<a href='http://stormking.collectihost.com/admin/index.php/editor/collections/CollectionEditor/Edit/collection_id/".$vn_id."'>Edit This Record</a>";
+		#}
+?>	

@@ -37,6 +37,11 @@
 	}
 ?>
 	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+<?php
+	if ((strtolower($this->request->getController()) !== "front")) {	
+		print '<div id="backToTop"><a href="#"><i class="fa fa-arrow-up"></i>Top</a></div>';
+	}
+?>	
 	<div id="comparison_list" class="compareDrawer compare_menu_item">
 		<ul>
 		
@@ -51,17 +56,17 @@
 				<div class="col-sm-1"></div>
 				<div class="col-sm-4">
 					<p class="footerTitle"><a href='http://www.nga.gov'>National Gallery of Art</a></p>
-					<p>© 2016 National Gallery of Art, Washington</p>
+					<p>© <?php print date('Y');?> National Gallery of Art, Washington</p>
 				</div>
 				<div class="col-sm-6">
-					<div style="margin-bottom:15px;"><u>Mark Rothko: Works on Paper</u> will ultimately document approximately 2,600 works from public and private collections worldwide.  Cataloguing is ongoing, and works and information will be added to the site continuously during the coming years.</div>
+					<div style="margin-bottom:15px;"><i>Mark Rothko: Works on Paper</i> will ultimately document approximately 2,600 works from public and private collections worldwide.  Cataloguing is ongoing, and works and information will be added to the site continuously during the coming years.</div>
 					<div class="footerLinks">
 						<div class="footerLink"><?php print caNavLink($this->request, 'About', '', '', 'About', 'project');?></div> | 
 						<div class="footerLink space"><?php print caNavLink($this->request, ' Credits', '', '', 'About', 'credits'); ?></div> | 
 						<div class="footerLink space"><?php print caNavLink($this->request, ' Notices', '', '', 'About', 'notices'); ?></div> | 
 						<div class="footerLink space"><?php print caNavLink($this->request, ' Contact', '', '', 'About', 'contact'); ?></div>
-						<div class="socialLink"><a href="http://www.facebook.com"><i class="fab fa-facebook-f"></i></a></div>
-						<div class="socialLink"><a href="http://www.twitter.com"><i class="fab fa-twitter"></i></a></div>
+						<!--<div class="socialLink"><a href="http://www.facebook.com"><i class="fab fa-facebook-f"></i></a></div>
+						<div class="socialLink"><a href="http://www.twitter.com"><i class="fab fa-twitter"></i></a></div>-->
 					</div>																																	
 				</div>
 				<div class="col-sm-1"></div>
@@ -107,12 +112,17 @@
 							var l = '';
 							
 							if (d.comparison_list && (d.comparison_list.length > 0)) {
-								l += "<p class='listTitle'><?php print caNavLink($this->request, _t("<i class='fa fa-clone'></i> Compare images"), "", "", "Compare", "View", []); ?> (" + d.comparison_list.length + ")</p>\n";
+								if ( d.comparison_list.length > 1) {
+									var im = " images";
+								} else {
+									var im = " image";
+								}
+								l += "<p class='listTitle'><?php print caNavLink($this->request, _t("<i class='fa fa-clone'></i> Compare "), "", "", "Compare", "View", []); ?> " + d.comparison_list.length + im + "</p>\n";
 								l += "<a href='#' class='openItems' onClick=\"$('.compareDrawer .items').toggle(100); return false;\"><i class='fa fa-chevron-down'></i></a>\n"; 
 								
 								l += "<div class='items'>";
 								jQuery.each(d.comparison_list, function(i, item) {
-									l += "<p><a href='#' class='comparison_list_remove' data-remove_id='" + item['id'] + "'><i class='fa fa-close'></i> " + item['display'] + "</a></p>\n";
+									l += "<p><a href='#' class='comparison_list_remove' data-remove_id='" + item['id'] + "'><i class='fa fa-times'></i> " + item['display'] + "</a></p>\n";
 								});
 								l += "</div>";
 								
@@ -151,6 +161,13 @@
 					$('#comparison_list').css({"position": "absolute", "bottom": "160px"});
 				if($(document).scrollTop() + window.innerHeight < $('#footer').offset().top)
 					$('#comparison_list').css({"position": "fixed", "bottom": "0px"}); // restore when you scroll up
+				
+				
+				if($('#backToTop').offset().top + $('#backToTop').height() 
+													   >= $('#footer').offset().top - 170)
+					$('#backToTop').css({"position": "absolute", "bottom": "170px"});
+				if($(document).scrollTop() + window.innerHeight < $('#footer').offset().top)
+					$('#backToTop').css({"position": "fixed", "bottom": "10px"}); // restore when you scroll up			
 			}
 		</script>
 	</body>

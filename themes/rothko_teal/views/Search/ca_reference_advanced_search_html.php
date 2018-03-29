@@ -29,7 +29,7 @@
 			</div>
 			<div class="advancedSearchField col-sm-6">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by publication dates.">Date</span>
-				{{{ca_occurrences.occurrence_dates%height=30px&height=1}}}
+				{{{ca_occurrences.occurrence_dates%height=30px&height=1&useDatePicker=0}}}
 			</div>
 		</div>
 		<div class='row'>

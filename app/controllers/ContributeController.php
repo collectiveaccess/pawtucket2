@@ -67,7 +67,7 @@
  			
  			if (!($va_form_info = $this->_checkForm($ps_function))) { return; }
  			
- 			MetaTagManager::setWindowTitle(caGetOption('formTitle', $va_form_info, $this->request->config->get("app_display_name").": "._t("Contribute")));
+ 			MetaTagManager::setWindowTitle(caGetOption('formTitle', $va_form_info, $this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Contribute")));
  	
  			$this->view->setVar('t_subject', $t_subject = $this->pt_subject);
  			
@@ -226,7 +226,7 @@
  			$t_subject->set('type_id', $va_form_info['type'] ?  $va_form_info['type'] : $this->request->getParameter('type_id', pInteger));	// set type so idno's reflect proper format
     		
     		// Set window title        
-            MetaTagManager::setWindowTitle(caGetOption('formTitle', $va_form_info, $this->request->config->get("app_display_name").": "._t("Contribute")));
+            MetaTagManager::setWindowTitle(caGetOption('formTitle', $va_form_info, $this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Contribute")));
             
             // Get list of form elements to process
             $va_fields = explode(';', $this->request->getParameter('_formElements', pString));

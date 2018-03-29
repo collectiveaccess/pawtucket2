@@ -819,7 +819,7 @@
 			INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = ca_objects.object_id
 			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
 			WHERE
-				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where} {$vs_type_where} {$vs_id_sql}
+				ca_objects_x_object_representations.is_primary = 1 {$vs_access_wheres} {$vs_rel_type_where} {$vs_type_where} {$vs_id_sql}
 		";
 
 		$o_db = $t_instance->getDb();

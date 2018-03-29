@@ -7,7 +7,7 @@
 		<div class="col-sm-12">
 			<H1><?php print _t("Explore Narrative Threads"); ?></H1>
 			<p>
-				Lorem ispum nulla ultricies neque vitae scelerisque eleifend. Sed id luctus metus. Pellentesque sed erat et velit elementum aliquet nec at neque. Morbi tristique sapien a sem porta, nec laoreet nisl gravida. Nam consectetur eleifend sapien, ac pharetra augue aliquet et. Integer eleifend turpis ac mollis placerat. Morbi in nibh convallis lacus dignissim eleifend. Donec lectus orci, venenatis quis tempus porttitor, blandit malesuada odio. Ut in lorem at est vestibulum consectetur. Suspendisse volutpat felis vel tellus pulvinar, et elementum turpis fringilla. Pellentesque lacinia tempor mi id porttitor.
+				There is not a singular residential school narrative. The history and legacy of residential schools is complex. Their impact on Survivors and Indigenous communities continues to be realized, and the colonial aspirations that established the schools continue. These <b>Narrative Threads</b> group together records and information about residential schools as a way to help build an understanding of Canada’s residential school system. While much of the content currently in the IRSHDC collections reflect government and church records and stories, it is necessary and important that Survivor voices and agency be prioritized in this work. This not a complete collection of threads; the intention is that through engagement, ongoing work and collaboration they will continue to grow.
 			</p>
 		</div>
 	</div>

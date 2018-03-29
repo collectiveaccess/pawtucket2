@@ -56,7 +56,7 @@
 				<?php print caGetThemeGraphic($this->request, 'canvas.jpg'); ?>
 			</div>
 			<div class="col-sm-6">
-				The National Gallery of Art maintains the largest public collection of work by the American artist Mark Rothko (1903-1970).  Beginning with the nation's collection, Mark Rothko: Works on Paper will documemt some 2,600 drawings, watercolors, and paintings on paper in public and private collections worldwide.
+				The National Gallery of Art maintains the largest public collection of work by the American artist Mark Rothko (1903-1970).  Beginning with the nation's collection, Mark Rothko: Works on Paper will document some 2,600 drawings, watercolors, and paintings on paper in public and private collections worldwide.
 			</div>
 			<div class="col-sm-3">
 				<div class='homeTitle'>National Gallery of Art</div>
@@ -66,8 +66,8 @@
 					<div class="footerLink space"><?php print caNavLink($this->request, ' Credits', '', '', 'About', 'credits'); ?></div> | 
 					<div class="footerLink space"><?php print caNavLink($this->request, ' Notices', '', '', 'About', 'notices'); ?></div> | 
 					<div class="footerLink space"><?php print caNavLink($this->request, ' Contact', '', '', 'About', 'contact'); ?></div><br/>
-					<div class="socialLink"><a href="http://www.facebook.com"><i class="fab fa-facebook-f"></i></a></div>
-					<div class="socialLink"><a href="http://www.twitter.com"><i class="fab fa-twitter"></i></a></div>
+					<!--<div class="socialLink"><a href="http://www.facebook.com"><i class="fab fa-facebook-f"></i></a></div>
+					<div class="socialLink"><a href="http://www.twitter.com"><i class="fab fa-twitter"></i></a></div>-->
 				</div>				
 			</div>
 		</div>

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2017 Whirl-i-Gig
+ * Copyright 2013-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -4321,6 +4321,103 @@
 		 */
 		public static function import_mediaHelp() {
 			return _t("Import media from a directory or directory tree.");
+		}
+		# -------------------------------------------------------
+		/**
+		 * @param Zend_Console_Getopt|null $po_opts
+		 * @return bool
+		 */
+		public static function create_screen_from_detail_template($po_opts=null) {
+			require_once(__CA_MODELS_DIR__."/ca_editor_uis.php");
+			
+			
+			$vs_editor_code = $po_opts->getOption('editor');
+			if(!($t_ui = ca_editor_uis::find(['editor_code' => $vs_editor_code], ['returnAs' => 'firstModelInstance']))) {
+				CLIUtils::addError(_t('Editor %1 does not exist', $vs_editor_code));
+				return false;
+			}
+			
+			$va_paths = [$b = $po_opts->getOption('detail')];
+			if (defined("__CA_BASE_DIR__")) {
+				$va_paths[] = __CA_BASE_DIR__."/{$b}";
+				$va_paths[] = __CA_BASE_DIR__."/{$b}.php";
+			}
+			if (defined("__CA_THEMES_DIR__") && defined("__CA_THEME__")) {
+				$va_paths[] = __CA_THEMES_DIR__."/".__CA_THEME__."/views/Details/{$b}";
+				$va_paths[] = __CA_THEMES_DIR__."/".__CA_THEME__."/views/Details/{$b}.php";
+			}
+			
+			$vs_path_to_template = null;
+			foreach($va_paths as $vs_path) {
+				if(file_exists($vs_path)) {
+					$vs_path_to_template = $vs_path;
+					break;
+				}
+			}
+			
+			if(!$vs_path_to_template) {
+				CLIUtils::addError(_t('Template %1 does not exist', $b));
+				return false;
+			}
+			
+			
+			$vs_name_of_screen = $po_opts->getOption('screen');
+			if(!$vs_name_of_screen) {
+				CLIUtils::addError(_t('You must specify a screen'));
+				return false;
+			}
+			
+			$va_type_restrictions = preg_split("![ ]*[;,][ ]*!", $po_opts->getOption('restrictions'));
+			
+			
+			CLIUtils::addMessage(_t("Scanning %1 for tags", $vs_path_to_template));
+			if ($va_results = $t_ui->createScreenFromPawtucketDetailTemplate($vs_path_to_template, $vs_name_of_screen, ['replace' => !(bool)$po_opts->getOption('preserve'), 'restrictions' => $va_type_restrictions])) {
+				CLIUtils::addMessage(_t("Added screen %1 (%2)", $va_results['screen'], $va_results['screen_idno']));
+				if (is_array($va_results['type_restrictions']) && ($s = sizeof($va_results['type_restrictions']))) {
+					CLIUtils::addMessage(($s == 1) ? _t("Set type restriction for screen to %1", join(", ", $va_results['type_restrictions'])): _t("Set type restrictions for screen to %1", join(", ", $va_results['type_restrictions'])));
+				}
+				if ($va_results['replace']) {
+					CLIUtils::addMessage(_t("Replaced screen contents with %1", join(", ", $va_results['bundles'])));
+				} else {
+					CLIUtils::addMessage(_t("Added %1 to screen", join(", ", $va_results['bundles'])));
+				}
+				
+				return true;
+			} else {
+				CLIUtils::addError(_t("Could not generate screen from %1", $vs_path_to_template));
+				return false;
+			}
+		}
+		# -------------------------------------------------------
+		public static function create_screen_from_detail_templateParamList() {
+			return [
+				"editor|e-s" => _t('Code of editor to add screen to. The editor must already exist.'),
+				"detail|d-s" => _t('Path to detail template. This can be an absolute path to the detail template, relative to the root directory of the CollectiveAccess installation, or the file name of a template in the "Details" views directory in the currrently selected theme.'),
+				"screen|s-s" => _t('Name or type code for screen. If screen does not exist it will be created.'),
+				"restrictions|r-s" => _t('One or more type codes, separated by commas or semicolons, to restrict the screen to. Types must be valid for the specified detail. If omitted and a type-specific detail is specified the screen will automatially be restricted to the detail type.'),
+				"preserve|p-s" => _t('Preserve existing contents of screen; default behavior is to clear screen before adding new placements.')
+			];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function create_screen_from_detail_templateUtilityClass() {
+			return _t('Configuration');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function create_screen_from_detail_templateShortHelp() {
+			return _t('Create screen for editor using metadata element references extracted from a Pawtucket detail template.');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function create_screen_from_detail_templateHelp() {
+			return _t('Create a screen in an editor based upon metadata elements referenced in a Pawtucket detail template. This allows one to quickly create interfaces to manage public-facing content. Elements will be added to the screen in the order in which they are encountered in the template.');
 		}
 		# -------------------------------------------------------
 	}

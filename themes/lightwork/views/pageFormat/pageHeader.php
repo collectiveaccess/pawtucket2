@@ -48,6 +48,11 @@
 		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
+	
+	if ($this->request->getController() == "Gallery") {
+		AssetLoadManager::register("readmore");		
+	}
+
 
 ?><!DOCTYPE html>
 <html lang="en">
