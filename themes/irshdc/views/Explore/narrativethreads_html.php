@@ -26,7 +26,6 @@
 			if($t_set->get("set_id")){
 				$va_set_reps = $t_set->getRepresentationTags("large", array("checkAccess" => $va_access_values));
 				shuffle($va_set_reps);
-				print sizeof($va_set_reps);
 				$vs_image = $va_set_reps[0];
 			}
 			$vs_desc = $qr_threads->get("ca_list_items.description");
