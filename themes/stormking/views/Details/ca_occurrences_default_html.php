@@ -95,7 +95,7 @@
 				if ($vs_website = $t_item->get('ca_occurrences.exhibition_website')) {
 					print "<div class='unit zoomIcon'><h6><i class='fa fa-external-link-square'></i> <a href='".$vs_website."' target='_blank'>View Exhibition Website</a></h6></div>";
 				}	
-				if ($vs_ext_link = $t_item->getWithTemplate('<ifcount min="1" code="ca_occurrences.external_link.url_entry"><unit relativeTo="ca_occurrences.external_link"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_occurrences.external_link.url_entry">^ca_occurrences.external_link.url_source</a></h6></div></unit></ifcount>')) {
+				if ($vs_ext_link = $t_item->getWithTemplate('<ifcount min="1" code="ca_occurrences.external_link.url_entry"><unit relativeTo="ca_occurrences.external_link"><ifdef code="ca_occurrences.external_link.url_entry"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_occurrences.external_link.url_entry">^ca_occurrences.external_link.url_source</a></h6></div></ifdef></unit></ifcount>')) {
 					print $vs_ext_link;
 				}			
 ?>			

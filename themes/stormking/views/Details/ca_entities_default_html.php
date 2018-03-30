@@ -40,7 +40,7 @@
 					if ($vs_bio = $t_item->get('<unit relativeTo="ca_entities.biography"><if rule="^ca_objects.biography.display_bio =~ /yes/">^ca_entities.biography.bio_text</if></unit>')) {
 						print $vs_bio;
 					}
-					if ($vs_ext_link = $t_item->getWithTemplate('<ifcount min="1" code="ca_entities.external_link.url_entry"><unit relativeTo="ca_entities.external_link"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_entities.external_link.url_entry">^ca_entities.external_link.url_source</a></h6></div></unit></ifcount>')) {
+					if ($vs_ext_link = $t_item->getWithTemplate('<ifcount min="1" code="ca_entities.external_link.url_entry"><unit relativeTo="ca_entities.external_link"><ifdef code="ca_entities.external_link.url_entry"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_entities.external_link.url_entry">^ca_entities.external_link.url_source</a></h6></div></ifdef></unit></ifcount>')) {
 						print $vs_ext_link;
 					}
 /*					if ($va_remarks_images = $t_item->get('ca_entities.bibliography', array('returnWithStructure' => true, 'version' => 'medium'))) {

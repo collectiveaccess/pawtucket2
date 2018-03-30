@@ -478,10 +478,13 @@ p, .collectionsList p {
 	color:#fff;
 }
 .entityCaption {
-	font-size:12px;
+	font-size:13px;
+    line-height: 16px;
+    margin-top: 15px;	
 }
 .entityCaption .caption{
 	font-size:11px;
+	color:#000;
 }
 .repViewerContCont:hover .objectCaption {
 	color:#000;
