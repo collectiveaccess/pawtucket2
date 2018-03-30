@@ -478,6 +478,9 @@ p, .collectionsList p {
 	color:#fff;
 }
 .entityCaption {
+	font-size:12px;
+}
+.entityCaption .caption{
 	font-size:11px;
 }
 .repViewerContCont:hover .objectCaption {
