@@ -17,7 +17,7 @@
 			<div class="col-sm-12 ">
 				<H4>{{{ca_occurrences.preferred_labels.name}}}</H4>
 <?php				
-				if ($vs_ex_dates = $t_item->get('ca_occurrences.exhibition_dates')) {
+				if ($vs_ex_dates = $t_item->get('ca_occurrences.exhibition_dates', array('delimiter' => '<br/>'))) {
 					print "<div>".$vs_ex_dates."</div>";
 				}
 ?>								

@@ -5,12 +5,18 @@
 	{{{<ifdef code="ca_objects.dc_website"><div class='unit'><a href="^ca_objects.dc_website" target="_blank">View Website <span class="glyphicon glyphicon-new-window"></span></a></div></ifdef>}}}
 	
 	{{{<case>
-		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Library/'>&copy; ^ca_objects.MARC_copyrightDate</if>
-		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /RG10/'>
-			<ifdef code='ca_objects.record_group_id|ca_objects.file_series'>^ca_objects.displayDate</ifdef>
+		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Library/'>
+			<ifdef code='ca_objects.displayDate'>^ca_objects.MARC_copyrightDate</ifdef>
 		</if>
-		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Archival/'>^ca_objects.displayDate</if>
-		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Museum/'>^ca_objects.displayDate</if>
+		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /RG10/'>
+			<ifdef code='ca_objects.displayDate'>^ca_objects.displayDate</ifdef>
+		</if>
+		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Archival/'>
+			<ifdef code='ca_objects.displayDate'>^ca_objects.displayDate</ifdef>
+		</if>
+		<if rule='^ca_objects.type_id%convertCodesToDisplayText=1 =~ /Museum/'>
+			<ifdef code='ca_objects.displayDate'>^ca_objects.displayDate</ifdef>
+		</if>
 	</case>}}}
 	
 	{{{<ifcount code="ca_entities" restrictToTypes="school" min="1"><div class="unit"><ifcount code="ca_entities" restrictToTypes="school" min="1" max="1"><h6>School</h6></ifcount><ifcount code="ca_entities" restrictToTypes="school" min="2"><h6>Schools</h6></ifcount><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}

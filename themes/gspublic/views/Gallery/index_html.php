@@ -10,7 +10,6 @@
 	if(is_array($va_sets) && sizeof($va_sets)){
 		# --- main area with info about selected set loaded via Ajax
 ?>
-
 				<div class='col-sm-12'>
 <?php				
 				$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/gallery/";
@@ -23,7 +22,6 @@
 				print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'gallery/'.rand(1,$vn_filecount).'.jpg')."</div>";
 
 ?>				
-					<H1><?php print $this->getVar("section_name"); ?></H1>
 					<div class="quote">
 						<div class="quoteText">
 							<strong>Lines to a Golden Eaglet</strong><br/>
@@ -34,9 +32,10 @@
 							Wearing proudly the symbol of your accolade.
 						</div>
 						<div class="quoteCredit">
-							&mdash; Birdsall Otis Edey, National Presidents of Girl Scouts of the USA 1930-1935, from Builders: Poems by Birdsall Otis Edey, 1940
+							&mdash; Birdsall Otis Edey, National Presidents of Girl Scouts of the USA 1930-1935,<br/>from Builders: Poems by Birdsall Otis Edey, 1940
 						</div>
-					</div>		
+					</div>
+					<H1><?php print $this->getVar("section_name"); ?></H1>
 				</div><!-- end col -->
 <?php
 				if(sizeof($va_sets) > 1){
