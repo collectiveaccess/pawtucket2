@@ -82,7 +82,7 @@
 
 							$o_db = new Db();
 							$t_check_element = ca_attributes::getElementInstance('checklist');
-							$vn_check_media_element_id = $t_element->getElementID('checklist');							
+							$vn_check_media_element_id = $t_check_element->getElementID('checklist');							
 
 							$qr_check_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_check_value_id, $vn_check_media_element_id)) ;
 							if ($qr_check_res->nextRow()) {
