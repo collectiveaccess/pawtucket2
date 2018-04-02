@@ -104,7 +104,7 @@
 <!-- individuals/family -->	{{{<ifdef code="ca_entities.biography"><div class="unit"><H6>Description</H6><unit relativeTo="ca_entities">^ca_entities.biography</unit></div></ifdef>}}}					
 <!-- community desc -->		{{{<ifdef code="ca_entities.description_new.description_new_txt">
 								<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
-									<span class="trimText">^ca_entities.description_new.description_new_txt</span>
+									<div class="trimText">^ca_entities.description_new.description_new_txt</div>
 								</div>
 							</ifdef>}}}
 						
