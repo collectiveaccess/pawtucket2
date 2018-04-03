@@ -48,6 +48,7 @@
 <?php
 	$vn_i = 0;
 	$vn_cols = 3;
+	$va_col_content = array();
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		while($qr_list->nextHit()) {

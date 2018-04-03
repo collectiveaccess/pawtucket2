@@ -17,7 +17,7 @@
 			<div class="col-sm-12 ">
 				<H4>{{{ca_occurrences.preferred_labels.name}}}</H4>
 <?php				
-				if ($vs_ex_dates = $t_item->get('ca_occurrences.exhibition_dates')) {
+				if ($vs_ex_dates = $t_item->get('ca_occurrences.exhibition_dates', array('delimiter' => '<br/>', 'sort' => 'ca_occurrences.exhibition_dates', 'sortDirection' => 'DESC'))) {
 					print "<div>".$vs_ex_dates."</div>";
 				}
 ?>								
@@ -82,7 +82,7 @@
 
 							$o_db = new Db();
 							$t_check_element = ca_attributes::getElementInstance('checklist');
-							$vn_check_media_element_id = $t_element->getElementID('checklist');							
+							$vn_check_media_element_id = $t_check_element->getElementID('checklist');							
 
 							$qr_check_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_check_value_id, $vn_check_media_element_id)) ;
 							if ($qr_check_res->nextRow()) {
@@ -95,7 +95,7 @@
 				if ($vs_website = $t_item->get('ca_occurrences.exhibition_website')) {
 					print "<div class='unit zoomIcon'><h6><i class='fa fa-external-link-square'></i> <a href='".$vs_website."' target='_blank'>View Exhibition Website</a></h6></div>";
 				}	
-				if ($vs_ext_link = $t_item->getWithTemplate('<unit relativeTo="ca_occurrences.external_link"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_occurrences.external_link.url_entry">^ca_occurrences.external_link.url_source</a></h6></div></unit>')) {
+				if ($vs_ext_link = $t_item->getWithTemplate('<ifcount min="1" code="ca_occurrences.external_link.url_entry"><unit relativeTo="ca_occurrences.external_link"><ifdef code="ca_occurrences.external_link.url_entry"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_occurrences.external_link.url_entry">^ca_occurrences.external_link.url_source</a></h6></div></ifdef></unit></ifcount>')) {
 					print $vs_ext_link;
 				}			
 ?>			

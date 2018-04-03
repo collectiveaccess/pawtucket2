@@ -39,7 +39,7 @@
 		$vb_show_hierarchy_viewer = false;	
 	}
 	# --- get the collection hierarchy parent to use for exportin finding aid
-	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
+	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true, "checkAccess" => $va_access_values)));
 
 ?>
 <div class="row">
@@ -58,7 +58,7 @@
 				
 					<div id="detailAnnotations"></div>
 <?php				
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4"));
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
 ?>
 
 				</div><!-- end col -->
@@ -71,10 +71,10 @@
 						<H6>{{{^ca_collections.type_id}}}</H6>
 						{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
 						{{{<ifdef code="ca_collections.indexingDatesSet"><div class="unit"><unit relativeTo="ca_collections" delimiter=", ">^ca_collections.indexingDatesSet</unit></div></ifdef>}}}
-						{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator,contributor" min="1"><div class="unit"><H6>Creators and Contributors</H6><span class="trimTextShort"><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,contributor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></span></div></ifcount>}}}
+						{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator,contributor" min="1"><div class="unit"><H6>Creators and Contributors</H6><div class="trimTextShort"><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator,contributor" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
 						{{{<ifdef code="ca_collections.description">
 							<div class="unit"><h6>Description</h6>
-								<span class="trimText">^ca_collections.description</span>
+								<div class="trimText">^ca_collections.description</div>
 							</div>
 						</ifdef>}}}
 						
@@ -94,13 +94,13 @@
 						
 					print '<div id="detailTools">';
 					if ($this->getVar("resultsLink")) {
-						print '<div class="detailTool detailToolInline">'.$this->getVar("resultsLink").'</div><!-- end detailTool -->';
+						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("resultsLink").'</div><!-- end detailTool -->';
 					}
 					if ($this->getVar("previousLink")) {
-						print '<div class="detailTool detailToolInline">'.$this->getVar("previousLink").'</div><!-- end detailTool -->';
+						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("previousLink").'</div><!-- end detailTool -->';
 					}
 					if ($this->getVar("nextLink")) {
-						print '<div class="detailTool detailToolInline">'.$this->getVar("nextLink").'</div><!-- end detailTool -->';
+						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("nextLink").'</div><!-- end detailTool -->';
 					}
 
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "collection_id" => $t_item->get("collection_id")))."</div>";

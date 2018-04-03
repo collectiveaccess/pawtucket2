@@ -76,14 +76,14 @@
  					$this->view->setVar("set_id", $t_set->get("set_id"));
  					$o_context = new ResultContext($this->request, 'ca_objects', 'exploreNarrativeThreads');
 					$o_context->setAsLastFind();
-					$o_context->setResultList(array_keys($t_set->getItemRowIDs()));
+					$o_context->setResultList(array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))));
 					$o_context->saveContext();
  				}
  				$this->render("Explore/narrativethread_html.php");
  			}else{
  				# --- narrative thread landing page
  				$t_list = new ca_lists();
-				$va_narrative_threads = $t_list->getItemsForList("narrative_thread", array("extractValuesByUserLocale" => true));
+				$va_narrative_threads = $t_list->getItemsForList("narrative_thread", array("extractValuesByUserLocale" => true, "checkAccess" => $this->opa_access_values, "sort" => __CA_LISTS_SORT_BY_RANK__));
 				$qr_threads = caMakeSearchResult('ca_list_items', array_keys($va_narrative_threads));
  				$this->view->setVar("threads", $va_narrative_threads);
  				$this->view->setVar("threads_search", $qr_threads);
@@ -118,7 +118,7 @@
 				
 				$o_occ_context = new ResultContext($this->request, 'ca_occurrences', 'exploreSchools');
  				$o_occ_context->setAsLastFind();
- 				$o_occ_context->setResultList(array_keys($t_set->getItemRowIDs()));
+ 				$o_occ_context->setResultList(array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))));
  				$o_occ_context->saveContext();
  			
 			}
@@ -126,18 +126,6 @@
 			
 			$qr_res->seek(0);
 			$this->view->setVar("schools_results", $qr_res);
-			
-			# --- get BC schools
-			#$o_browse = caGetBrowseInstance("ca_entities");
-			#$o_browse->setTypeRestrictions(array("school"));
-			#$o_browse->addCriteria("place_facet", 21);
-			#if(is_array($this->opa_access_values) && sizeof($this->opa_access_values)){
- 		 	#	$o_browse->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
-			#}
-			#$o_browse->execute();
-			#$qr_bc_schools = $o_browse->getResults(array('sort' => 'ca_entities.preferred_labels.displayname', 'sort_direction' => 'ASC')); 
- 			
- 			#print $qr_bc_schools->numHits();
 
  			$this->render("Explore/schools_html.php");
  		}
@@ -194,7 +182,7 @@
 			
  				$o_context = new ResultContext($this->request, $vs_table, 'gallery');
  				$o_context->setAsLastFind();
- 				$o_context->setResultList(array_keys($t_set->getItemRowIDs()));
+ 				$o_context->setResultList(array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))));
  				$o_context->saveContext();
  				 				
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
@@ -223,7 +211,7 @@
 						if($va_views_info['data']){
 							$o_res = caMakeSearchResult(
 								$t_set->get('table_num'),
-								array_keys($t_set->getItemRowIDs()),
+								array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))),
 								['checkAccess' => $this->opa_access_values]
 							);
 
@@ -284,8 +272,8 @@
 
 			$o_res = caMakeSearchResult(
 				$t_set->get('table_num'),
-				array_keys($t_set->getItemRowIDs()),
-				['checkAccess' => caGetUserAccessValues($this->getRequest())]
+				array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))),
+				['checkAccess' => $this->opa_access_values]
 			);
 
 			$this->getView()->setVar('result', $o_res);
