@@ -45,8 +45,9 @@
 		<div class="row">
 			<div class="col-sm-12 ">
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
+				<hr style='padding-bottom:5px;'>
 			</div>	
-			<hr style='padding-bottom:5px;'>	
+				
 		</div>
 				
 		<div class="row">	
@@ -64,8 +65,9 @@
 					print "<div class='small ohCaption'>".$vs_caption."</div>";
 				}	
 ?>			
+				<hr>
 			</div><!-- end col -->
-			<hr>
+			
 		</div>	
 		
 		<div class="row">					
@@ -130,8 +132,9 @@
 				
 <?php				
 			if ($va_related_artworks = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork'), 'sort' => 'ca_object_labels.name'))) {
-				print '<div class="row objInfo">';
 				print "<hr>";
+				print '<div class="row objInfo">';
+				
 
 				print '	<div class="col-sm-12"><h6 class="header">Artworks Discussed</h6></div>';
 				foreach ($va_related_artworks as $va_id => $va_related_artwork_id) {
@@ -157,7 +160,7 @@
 			# Related Exhibitions
 			if ($va_related_exhibitions = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program'), 'sort' => 'ca_occurrences.exhibition_dates', 'sortDirection' => 'desc'))) {
 				$va_ex_images = caGetDisplayImagesForAuthorityItems('ca_occurrences', $va_related_exhibitions, array('version' => 'iconlarge', 'relationshipTypes' => 'includes', 'objectTypes' => 'artwork', 'checkAccess' => $va_access_values));
-				print "<div class='row relatedExhibitions'><hr>";
+				print "<hr><div class='row relatedExhibitions'>";
 				print '<div class="col-sm-12"><h6 class="header">Exhibitions and programs discussed</h6></div>';
 				foreach ($va_related_exhibitions as $va_key => $va_related_exhibition_id) {
 					$t_exhibition = new ca_occurrences($va_related_exhibition_id);
@@ -171,7 +174,7 @@
 			#Related Archival
 			if ($va_related_archival = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('archival'), 'restrictToRelationshipTypes' => array('related_front')))) {
 				$vs_arch_count = 0;
-				print "<div class='row'><hr>";
+				print "<hr><div class='row'>";
 				print '<div class="col-sm-12"><h6 class="header">Related Archives</h6></div>';
 				foreach ($va_related_archival as $va_key => $vn_related_archival_id) {
 					if ($vs_arch_count < 4) {
