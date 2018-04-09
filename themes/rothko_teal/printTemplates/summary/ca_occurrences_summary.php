@@ -42,6 +42,7 @@
  	$t_item = $this->getVar('t_subject');
 	$t_display = $this->getVar('t_display');
 	$va_placements = $this->getVar("placements");
+	$va_access_values = caGetUserAccessValues($this->request);
 
 	print $this->render($this->getVar('base_path')."/pdfStart.php");
 	print $this->render($this->getVar('base_path')."/header.php");
@@ -93,7 +94,7 @@
 			print "<div id='referenceDiv'>".$vs_reference."</div>";
 			print "</div>";
 		}	
-		if ($va_related_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true))) {
+		if ($va_related_objects = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 			$vs_count = 0;
 			print "<div class='unit' class='page-break-inside: avoid;'><h6>Related Objects</h6>";
 			foreach ($va_related_objects as $va_key => $va_related_object_id) {

@@ -31,7 +31,7 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					<div style='padding-left:15px;'>
+					<div >
 					{{{representationViewer}}}		
 					</div>	
 				</div><!-- end col -->
@@ -65,6 +65,114 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 <?php
+		#Related Artworks	
+		if ($va_related_artworks = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork'), 'sort' => 'ca_object_labels.name'))) {
+			$vs_art_count = 0;
+			print '<div class="row objInfo">';
+			print '	<div class="col-sm-12"><hr><h6 class="header">Artworks</h6></div>';
+			foreach ($va_related_artworks as $va_id => $va_related_artwork_id) {
+				$t_rel_obj = new ca_objects($va_related_artwork_id);
+				print "<div class='col-sm-3'>";
+				print "<div class='relatedArtwork'>";
+				if ($t_rel_obj->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))) {
+					$vs_art_image = caDetailLink($this->request, $t_rel_obj->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values)), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'));
+				} else {
+					$vs_art_image = null;
+				}
+				print "<div class='relImg'>".($vs_art_image ? $vs_art_image : "<div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div>")."</div>";
+				print "<div class='relArtTitle'><p>".$t_rel_obj->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values))."</p>";
+				print "<p>".caDetailLink($this->request, ( $t_rel_obj->get('ca_objects.preferred_labels') == "Untitled" ? $t_rel_obj->get('ca_objects.preferred_labels') : "<i>".$t_rel_obj->get('ca_objects.preferred_labels')."</i>"), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'));
+				if ($vs_art_date = $t_rel_obj->get('ca_objects.display_date')) {
+					print ", ".$vs_art_date;
+				}
+				print "</p></div></div>";
+				print "</div><!-- end col -->";
+				$vs_art_count++;
+				if ($vs_art_count == 4) {
+					break;
+				}
+
+			}
+			if ($vs_art_count == 4) {
+				print "<div class='viewAll'>".caNavLink($this->request, "View all <i class='fa fa-angle-right'></i>", '', '', 'Browse', 'allworks', array('facet' => 'occurrence_facet', 'id' => $vn_item_id))."</div>";
+			}
+			print "</div><!-- end row -->";			
+		}
+		# Related Exhibitions
+		if ($va_related_exhibitions = $t_item->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program'), 'sort' => 'ca_occurrences.exhibition_dates', 'sortDirection' => 'desc'))) {
+			$va_ex_images = caGetDisplayImagesForAuthorityItems('ca_occurrences', $va_related_exhibitions, array('version' => 'iconlarge', 'relationshipTypes' => 'includes', 'objectTypes' => 'artwork', 'checkAccess' => $va_access_values));
+			print "<div class='row relatedExhibitions'><div class='col-sm-12'><hr><h6 class='header'>Exhibitions and Programs</h6></div></div>";
+			print "<div class='row'>";
+			foreach ($va_related_exhibitions as $va_key => $va_related_exhibition_id) {
+				$t_exhibition = new ca_occurrences($va_related_exhibition_id);
+				print "<div class='col-sm-12'> <div class='relatedArtwork' style='margin-bottom:20px;'>";
+				print "<p>".caDetailLink($this->request, $t_exhibition->get('ca_occurrences.preferred_labels'), '', 'ca_occurrences', $t_exhibition->get('ca_occurrences.occurrence_id'))."</p>";
+				print "<p>".$t_exhibition->get('ca_occurrences.exhibition_dates', array('delimiter' => '<br/>'))."</p>";
+				print "</div></div>";
+			}
+			print "</div><!-- end row -->";
+		}				
+		#Related Archival Items
+		if ($va_related_archival = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('archival'), 'sort' => 'ca_object_labels.name'))) {
+			$vs_archival_count = 0;
+			print '<div class="row objInfo">';
+
+			print '	<div class="col-sm-12"><hr><h6 class="header">Archival Items</h6></div>';
+			foreach ($va_related_archival as $va_id => $va_related_archival_id) {
+				$t_rel_archival = new ca_objects($va_related_archival_id);
+				print "<div class='col-sm-3'>";
+				print "<div class='relatedArtwork'>";
+				if ($t_rel_archival->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))) {
+					$vs_archival_image = caDetailLink($this->request, $t_rel_archival->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values)), '', 'ca_objects', $t_rel_archival->get('ca_objects.object_id'));
+				} else {
+					$vs_archival_image = null;
+				}				
+				print "<div class='relImg'>".caDetailLink($this->request, ($vs_archival_image ? $vs_archival_image : "<div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div>"), '', 'ca_objects', $t_rel_archival->get('ca_objects.object_id'))."</div>";
+				print "<p>".$t_rel_archival->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values))."</p>";
+				print "<p>".caDetailLink($this->request, $t_rel_archival->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_archival->get('ca_objects.object_id'));
+				print "</p></div>";
+				print "</div><!-- end col -->";
+				$vs_archival_count++;
+				if ($vs_archival_count == 4) {
+					break;
+				}				
+			}
+			if ($vs_archival_count == 4) {
+				print "<div class='viewAll'>".caNavLink($this->request, "View all <i class='fa fa-angle-right'></i>", '', '', 'Browse', 'install', array('facet' => 'archive_item_facet', 'id' => $vn_item_id))."</div>";
+			}	
+			print "</div><!-- end row -->";			
+		}
+		#Related Oral Histories
+		if ($va_related_oral = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history'), 'sort' => 'ca_object_labels.name'))) {
+			$vs_oral_count = 0;
+			print '<div class="row objInfo">';
+
+			print '	<div class="col-sm-12"><hr><h6 class="header">Oral Histories</h6></div>';
+			foreach ($va_related_oral as $va_id => $va_related_oral_id) {
+				$t_rel_oral = new ca_objects($va_related_oral_id);
+				print "<div class='col-sm-3'>";
+				print "<div class='relatedArtwork'>";
+				if ($t_rel_oral->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))) {
+					$vs_oral_image = caDetailLink($this->request, $t_rel_oral->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values)), '', 'ca_objects', $t_rel_oral->get('ca_objects.object_id'));
+				} else {
+					$vs_oral_image = null;
+				}				
+				print "<div class='relImg'>".caDetailLink($this->request, ($vs_oral_image ? $vs_oral_image : "<div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div>"), '', 'ca_objects', $t_rel_oral->get('ca_objects.object_id'))."</div>";
+				print "<p>".$t_rel_oral->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values))."</p>";
+				print "<p>".caDetailLink($this->request, $t_rel_oral->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_oral->get('ca_objects.object_id'));
+				print "</p></div>";
+				print "</div><!-- end col -->";
+				$vs_oral_count++;
+				if ($vs_oral_count == 4) {
+					break;
+				}				
+			}
+			if ($vs_oral_count == 4) {
+				print "<div class='viewAll'>".caNavLink($this->request, "View all <i class='fa fa-angle-right'></i>", '', '', 'Browse', 'install', array('facet' => 'archive_item_facet', 'id' => $vn_item_id))."</div>";
+			}	
+			print "</div><!-- end row -->";			
+		}					
+/*
 			#Related Artworks
 			if ($va_related_artworks = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork'), 'sort' => 'ca_object_labels.name'))) {
 				$vs_art_count = 0;
@@ -92,21 +200,6 @@
 					}
 					$vs_art_count++;
 					print "</p></div>";
-					print "</div></div>";
-				}
-				print "</div><!-- end row -->";
-			}
-			# Related Exhibitions
-			if ($va_related_exhibitions = $t_item->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program'), 'sort' => 'ca_occurrences.exhibition_dates', 'sortDirection' => 'desc'))) {
-				$va_ex_images = caGetDisplayImagesForAuthorityItems('ca_occurrences', $va_related_exhibitions, array('version' => 'iconlarge', 'relationshipTypes' => 'includes', 'objectTypes' => 'artwork', 'checkAccess' => $va_access_values));
-				print "<hr>";
-				print "<div class='row relatedExhibitions'><div class='col-sm-12'><h6 class='header'>Exhibitions and Programs</h6></div></div>";
-				print "<div class='row'>";
-				foreach ($va_related_exhibitions as $va_key => $va_related_exhibition_id) {
-					$t_exhibition = new ca_occurrences($va_related_exhibition_id);
-					print "<div class='col-sm-12'> <div class='relatedArtwork' style='margin-bottom:20px;'>";
-					print "<p>".caDetailLink($this->request, $t_exhibition->get('ca_occurrences.preferred_labels'), '', 'ca_occurrences', $t_exhibition->get('ca_occurrences.occurrence_id'))."</p>";
-					print "<p>".$t_exhibition->get('ca_occurrences.exhibition_dates', array('delimiter' => '<br/>'))."</p>";
 					print "</div></div>";
 				}
 				print "</div><!-- end row -->";
@@ -153,7 +246,8 @@
 					$vs_oh_count++;
 				}
 				print "</div><!-- end row -->";
-			}									
+			}
+*/												
 ?>			
 		</div><!-- end container -->
 	</div><!-- end col -->

@@ -24,6 +24,21 @@
 			</div>		
 		</div>
 		<hr style='padding-bottom:5px;'>
+		
+<?php	
+		if ($vs_related_rep = $t_item->get('ca_objects.object_id', array('restrictToRelationshipTypes' => array('primary_rep'), 'returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+			$vn_rep_obj_id = $vs_related_rep[0];
+			$t_ex_rep = new ca_objects($vn_rep_obj_id);
+			print '<div class="row"><div class="col-sm-12">';
+			$vs_ex_rep_info = $t_ex_rep->getPrimaryRepresentation(array('version' => 'page'), null, array('return_with_access' => $va_access_values));
+			print "<div class='exhibitionRep'>";
+			print caDetailLink($this->request, $vs_ex_rep_info['tags']['page'], '', 'ca_objects', $t_ex_rep->get('ca_objects.object_id'));
+			print caDetailLink($this->request, $t_ex_rep->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_ex_rep->get('ca_objects.object_id'));		
+			print "</div>";
+			print "<hr style='padding-bottom:5px;'>";						
+			print '</div></div>';
+		}
+?>				
 		<div class="row">			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
@@ -50,15 +65,15 @@
 			</div><!-- end col -->
 			<div class='col-md-6 col-lg-6'>
 <?php
-				if ($va_rep = $t_item->get('ca_objects.object_id', array('restrictToRelationshipTypes' => array('primary_rep'), 'returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+				/*if ($va_rep = $t_item->get('ca_objects.object_id', array('restrictToRelationshipTypes' => array('primary_rep'), 'returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 					foreach ($va_rep as $va_key => $vn_rep_id) {
 						$t_primary = new ca_objects($vn_rep_id);
 						print "<div class='exhibitionRep'>".$t_primary->get('ca_object_representations.media.large')."</div>";
 						print "<div class='exhibitionRepCaption'>".caDetailLink($this->request, $t_primary->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_primary->get('ca_objects.object_id'))."</div>";
 						break;
 					}
-				}
-				if ($va_remarks_images = $t_item->get('ca_occurrences.bibliography', array('returnWithStructure' => true, 'version' => 'medium'))) {
+				}*/
+/*				if ($va_remarks_images = $t_item->get('ca_occurrences.bibliography', array('returnWithStructure' => true, 'version' => 'medium'))) {
 					foreach ($va_remarks_images as $vn_attribute_id => $va_remarks_image_info) {
 						foreach ($va_remarks_image_info as $vn_value_id => $va_remarks_image) {
 							print "<div class='unit' style='margin-bottom:20px;'>";
@@ -91,7 +106,19 @@
 							print "</div>";
 						}
 					}
+				} */
+				if ($va_remarks_images_url = $t_item->get('ca_occurrences.bibliography.url', array('returnAsArray' => true, 'version' => 'original'))) {
+					foreach ($va_remarks_images_url as $va_key => $va_remarks_images_url_path) {
+						print "<h6><i class='fa fa-file'></i> <a href='".$va_remarks_images_url_path."'>View Bibliography </a></h6>";
+					}
+				}				
+				if ($va_checklist_images_url = $t_item->get('ca_occurrences.checklist.url', array('returnAsArray' => true, 'version' => 'original'))) {
+					foreach ($va_checklist_images_url as $va_key => $va_checklist_images_url_path) {
+						print "<h6><i class='fa fa-file'></i> <a href='".$va_checklist_images_url_path."'>View Checklist </a></h6>";
+					}
 				}
+				
+
 				if ($vs_website = $t_item->get('ca_occurrences.exhibition_website')) {
 					print "<div class='unit zoomIcon'><h6><i class='fa fa-external-link-square'></i> <a href='".$vs_website."' target='_blank'>View Exhibition Website</a></h6></div>";
 				}	

@@ -30,7 +30,7 @@
  * @type page
  * @pageSize letter
  * @pageOrientation portrait
- * @marginTop 1in
+ * @marginTop 1.25in
  * @marginLeft 0.5in
  * @marginRight 0.5in
  * @marginBottom 0.5in 
@@ -69,7 +69,7 @@
 	$t_parent = new ca_objects($t_object->get('ca_objects.parent_id'));
 	print "<div class='unit'>Title - ".$t_object->get('ca_objects.preferred_labels')."</div>";
 	if ($va_date = $t_object->get('ca_objects.display_date')) {
-		print "<div class='unit'>Creation year - ".$va_date."</div>";
+		print "<div class='unit'>Date - ".$va_date."</div>";
 	}
 	if ($va_medium = $t_object->get('ca_objects.medium.medium_list', array('returnAsArray' => true, 'excludeIdnos' => array('null')))) {
 		$va_media_links = array();
@@ -109,21 +109,38 @@
 	if ($va_institutional_id = $t_object->get('ca_objects.institutional_id')) {
 		print "<div class='unit'>Institutional ID - ".$va_institutional_id."</div>";
 	}	
-	if ($va_catalog_id = $t_object->get('ca_objects.catalog_number')) {
-		print "<div class='unit'>Catalog ID - ".$va_catalog_id."</div>";
-	}
+#	if ($va_catalog_id = $t_object->get('ca_objects.catalog_number')) {
+#		print "<div class='unit'>Catalog ID - ".$va_catalog_id."</div>";
+#	}
 	if ($va_keywords = $t_object->get('ca_list_items.item_id', array('returnAsArray' => true))) {
 		$va_keyword_links = array();
 		foreach ($va_keywords as $va_key => $va_keyword_id) {
-			$va_keyword_links[] = caNavLink($this->request, ucfirst(caGetListItemByIDForDisplay($va_keyword_id)), '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
+			$va_keyword_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_keyword_id), '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
 		}
-		print "<div class='unit'>Keywords - ".join(', ', $va_keyword_links)."</div>";
+		print "<div class='unit'>Tags - ".join(', ', $va_keyword_links)."</div>";
 	}
 	if ($vs_remarks = $t_object->get('ca_objects.remarks')) {
 		print "<div class='unit'>";
 		print "<h6>Remarks</h6>";
-		print "<div id='remarksDiv'>".$vs_remarks."</div>";
+		print "<div >".$vs_remarks."</div>";
+		
+		if ($va_remarks_images = $t_object->get('ca_objects.remarks_images', array('returnWithStructure' => true, 'version' => 'medium'))) {
+			print "<div class='unit'>";
+			foreach ($va_remarks_images as $vn_attribute_id => $va_remarks_image_info) {
+				foreach ($va_remarks_image_info as $vn_value_id => $va_remarks_image) {
+					print "<div class='container remarksImg'>";
+					print "<div style='width:300px;'>";
+					print $va_remarks_image['remark_media'];
+					print "<div class='remarkCaption' style='font-size:12px;'>".$va_remarks_image['remark_caption']."</div>";
+					print "</div>";
+					print "</div>";
+				}
+			}
+			print "</div>";
+		}				
+		
 		print "</div>";
+		$vs_first = false;
 	}
 	$vs_provenance = "";
 	if ($va_provenance = $t_parent->get('ca_collections.collection_id', array('returnAsArray' => true))) {
@@ -138,7 +155,7 @@
 	}
 	if ($vs_provenance != "") {
 		print "<div class='unit'>";
-		print "<h6>Collection</h6>";
+		print "<h6>Provenance</h6>";
 		print "<div id='provenanceDiv'>".$vs_provenance."</div>";
 		print "</div><!-- end unit -->";
 	}	

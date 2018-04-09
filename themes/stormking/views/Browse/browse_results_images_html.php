@@ -73,7 +73,7 @@
 			$vb_refine = true;
 			$vn_col_span = 4;
 			$vn_col_span_sm = 6;
-			$vn_col_span_xs = 6;
+			$vn_col_span_xs = 12;
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
