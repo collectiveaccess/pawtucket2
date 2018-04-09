@@ -54,7 +54,7 @@
 			<div class='col-sm-12' style="text-align:center;">
 <?php
 				if ($vn_vimeo_id = $t_object->get('ca_objects.vimeo_id')) {			
-					print '<iframe src="https://player.vimeo.com/video/'.$vn_vimeo_id.'?color=ffffff&title=0&byline=0&portrait=0" width="840" height="460" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+					print '<iframe src="https://player.vimeo.com/video/'.$vn_vimeo_id.'?color=ffffff&title=0&byline=0&portrait=0" width="100%" height="460" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
 				} else if ($va_oh_images = $t_object->representationsWithMimeType(array('image/jpeg', 'image/tiff', 'image/png', 'image/x-dcraw', 'image/x-psd', 'image/x-dpx', 'image/jp2', 'image/x-adobe-dng'), array('versions' => array('large'), 'return_with_access' => $va_access_values))) {
 					foreach ($va_oh_images as $va_key => $va_oh_image) {
 						print $va_oh_image['tags']['large'];

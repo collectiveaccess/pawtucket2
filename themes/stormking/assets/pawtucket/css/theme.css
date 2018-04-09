@@ -248,9 +248,9 @@ p, .collectionsList p {
 	text-decoration:none;
 /*	border-bottom: 2px solid #000;*/
 }
-.sidebar .subMenu li.active a:hover {
+/*.sidebar .subMenu li.active a:hover {
 	border-bottom:0px;
-}
+}*/
 .sidebar nav {
 	display:block;
 }
@@ -262,6 +262,13 @@ p, .collectionsList p {
 	width:26px;
 	text-align: left;
 	background-color:transparent;
+}
+@media (max-width: 767px) {
+	.results .btn-search {
+		position:inherit;
+		right:auto;
+		top:auto;
+	}
 }
 .navbar-form {
 	margin:0px;
@@ -303,9 +310,8 @@ p, .collectionsList p {
     margin-right: 10px;
     float:left; 
 }
-.sidebar .subMenu li.active {
+.sidebar .subMenu li.active a {
 	border-bottom: 2px solid #000;
-	display:inline-block;
 }
 .social ul li a svg {
     width: 20px;
@@ -377,6 +383,12 @@ p, .collectionsList p {
 .detail .detailNav {
 	float:right;
 	margin-bottom:20px;
+}
+@media (max-width: 767px) {
+	.detail .detailNav {
+		float:none;
+		text-align:center;
+	}
 }
 .detail .detailNav a {
 	text-decoration:none;
@@ -473,6 +485,7 @@ p, .collectionsList p {
 	font-size:13px;
     line-height: 16px;
     margin-top: 15px;	
+    text-align:center;
 }
 .entityCaption .caption{
 	font-size:11px;
@@ -506,7 +519,17 @@ p, .collectionsList p {
     max-height: 500px;
     object-fit: contain;
 }
-
+/* oral history video */
+@media (max-width: 767px) {
+	.detail iframe{
+		height:300px;
+	}
+}
+@media (max-width: 400px) {
+	.detail iframe{
+		height:200px;
+	}
+}
 /* Collection */
 
 .collectionTile {
@@ -853,6 +876,32 @@ p, .collectionsList p {
     font-size: 15px;
     margin-top: -1px;
     box-shadow:none;
+}
+@media (max-width: 767px) {
+	.btn-group.sort {
+		padding-top:20px;
+		font-size:12px;
+		display:inline;
+		margin-right:10px;
+	}
+	.browse .sort .btn {
+		font-size:12px;
+		margin-left:0px;
+		margin-right:0px;		
+		padding-left:5px;		
+		padding-right:5px;
+	}
+	.bSearchWithin, .bSearchWithin:focus {
+		width:90%;
+	}
+	.sort.open > .dropdown-menu {
+		left:0px;
+		right:auto;
+		margin-top:9px;
+	}
+	.sort.open > .dropdown-menu a{
+		font-size:12px;
+	}
 }
 #bLetterBar {
 	margin-top:10px;
@@ -1222,6 +1271,9 @@ p, .collectionsList p {
     display: block;
 }
 
+.container{
+	max-width:2000px;
+}
 .container.noLeftPadding{
 	padding-left:0px;
 }
