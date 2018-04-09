@@ -83,7 +83,7 @@
  			}else{
  				# --- narrative thread landing page
  				$t_list = new ca_lists();
-				$va_narrative_threads = $t_list->getItemsForList("narrative_thread", array("extractValuesByUserLocale" => true, "checkAccess" => $this->opa_access_values));
+				$va_narrative_threads = $t_list->getItemsForList("narrative_thread", array("extractValuesByUserLocale" => true, "checkAccess" => $this->opa_access_values, "sort" => __CA_LISTS_SORT_BY_RANK__));
 				$qr_threads = caMakeSearchResult('ca_list_items', array_keys($va_narrative_threads));
  				$this->view->setVar("threads", $va_narrative_threads);
  				$this->view->setVar("threads_search", $qr_threads);

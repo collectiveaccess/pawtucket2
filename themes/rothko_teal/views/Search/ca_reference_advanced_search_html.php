@@ -34,12 +34,6 @@
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-6">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by reference publishers.">Publisher</span>
-				{{{ca_entities.preferred_labels%width=210px&height=1&restrictToRelationshipTypes=publisher}}}
-			</div>
-		</div>	
-		<div class='row'>
-			<div class="advancedSearchField col-sm-6">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by reference types.">Type</span>
 				{{{ca_occurrences.reference_type%width=210px&height=1}}}
 			</div>

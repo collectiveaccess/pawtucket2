@@ -95,7 +95,7 @@
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities_x_entities" restrictToTypes="school" delimiter=", "><unit relativeTo="ca_entities.related"><l>^ca_entities.preferred_labels.displayname</l></unit> (^relationship_typename<ifdef code="relationshipDate">, ^relationshipDate</ifdef>)</unit></div></ifcount>}}}
 						{{{<ifdef code="ca_entities.repository_description">
 							<div class="unit"><h6>Description</h6>
-								<span class="trimText">^ca_entities.repository_description</span>
+								<div class="trimText">^ca_entities.repository_description</div>
 							</div>
 						</ifdef>}}}
 					</div><!-- end stoneBg -->

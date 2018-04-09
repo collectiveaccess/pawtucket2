@@ -121,7 +121,9 @@
 				$va_water_links = array();
 				foreach ($va_watermark as $va_key => $va_watermark_id_t) {
 					foreach ($va_watermark_id_t as $va_key => $va_watermark_id) {
-						$va_water_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_watermark_id['watermark_list']), '', '', 'Browse', 'artworks/facet/watermark_facet/id/'.$va_watermark_id['watermark_list']).($vs_list_value == $va_watermark_id['watermark_uncertain'] ? " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "" );	
+						if ($va_watermark_id['watermark_list']) {
+							$va_water_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_watermark_id['watermark_list']), '', '', 'Browse', 'artworks/facet/watermark_facet/id/'.$va_watermark_id['watermark_list']).($vs_list_value == $va_watermark_id['watermark_uncertain'] ? " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "" );	
+						}
 					}
 				}
 				if (sizeof($va_water_links) > 0) {
@@ -214,7 +216,7 @@
 					if ($vn_keyword == 0) {
 						$vs_keyword_label = ucfirst(caGetListItemByIDForDisplay($va_keyword_id));
 					} else {
-						$vs_keyword_label = strtolower(caGetListItemByIDForDisplay($va_keyword_id));
+						$vs_keyword_label = caGetListItemByIDForDisplay($va_keyword_id);
 					}
 					$va_keyword_links[] = caNavLink($this->request, $vs_keyword_label, '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
 					$vn_keyword++;
@@ -284,7 +286,7 @@
 			print "<div class='row'>";
 			print "<div class='col-sm-4'></div>";
 			print "<div class='col-sm-8'>";
-				if ($vn_catno = $t_verso->get('ca_objects.catalog_number')) {
+				if ($vn_catno = $t_verso->get('ca_objects.institutional_id')) {
 					print "<div class='catInfo'>".$vn_catno."</div>";
 				}			
 				print "<a href='#' class='compare_link verso' title='Compare' data-id='object:{$vn_verso_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a>";
@@ -442,7 +444,7 @@
 					if ($va_collection = $t_rel_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {
 						$vs_buf.= "<p>".$va_collection."</p>";
 					}	
-					if ($vs_catno = $t_work->get('ca_objects.catalog_number')) {
+					if ($vs_catno = $t_work->get('ca_objects.institutional_id')) {
 						$vs_buf.= "<div class='catno'>".$vs_catno."</div>"; 
 					}	
 					$vs_buf.= "<a href='#' class='compare_link' data-id='object:{$vs_rel_work_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a>";

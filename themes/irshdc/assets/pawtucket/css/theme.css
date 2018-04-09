@@ -902,6 +902,16 @@ a.readmore-js-toggle {
 	color:#fff;
 	padding:20px;
 }
+@media (min-width: 768px) {
+	.narrativeThreadContainer .narrativeThreadDesc {
+		min-height: 400px;
+	}
+}
+@media (min-width: 1010px) {
+	.narrativeThreadContainer .narrativeThreadDesc {
+		min-height: 350px;
+	}
+}
 .narrativeThreadContainer .narrativeThreadDesc H2{
 	text-transform:none;
 	color:#FFF;
