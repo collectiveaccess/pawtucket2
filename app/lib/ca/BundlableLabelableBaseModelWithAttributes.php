@@ -5656,6 +5656,11 @@ if (!$vb_batch) {
 
 			if ($vb_is_combo_key_relation) {
 				$va_joins = array("INNER JOIN {$vs_related_table_name} ON {$vs_related_table_name}.row_id = ".$this->primaryKey(true)." AND {$vs_related_table_name}.table_num = ".$this->tableNum());
+				if(method_exists($t_rel_item, "getLabelTableInstance") && ($t_rel_label = $t_rel_item->getLabelTableInstance())) {
+				    $vs_related_label_table_name = $t_rel_label->tableName();
+				    $vs_rel_pk = $t_rel_item->primaryKey();
+				    $va_joins[] = "INNER JOIN {$vs_related_label_table_name} ON {$vs_related_label_table_name}.{$vs_rel_pk} = {$vs_related_table_name}.{$vs_rel_pk}";
+			    }
 			} else {
 				foreach($va_path as $vs_join_table) {
 					$va_rel_info = $this->getAppDatamodel()->getRelationships($vs_cur_table, $vs_join_table);
