@@ -68,14 +68,14 @@
 						
 			<?php #print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "version" => "iconlarge")); ?>
 	<?php
-			if ($va_catalog_id = $t_object->get('ca_objects.catalog_number')) {
+			if ($va_catalog_id = $t_object->get('ca_objects.institutional_id')) { 
 				print "<div class='objIdno'>".$va_catalog_id."</div>";
 			}	
 	?>	
 		</div><!-- end col -->
 	<script>
 		jQuery(document).ready(function() {
-			$(".detailMediaToolbar").append("<a href='#' class='compare_link' data-id='object:<?php print $vn_id; ?>'><i class='fa fa-clone' aria-hidden='true'></i></a>");
+			$(".detailMediaToolbar").append("<a href='#' class='compare_link' title='Compare' data-id='object:<?php print $vn_id; ?>'><i class='fa fa-clone' aria-hidden='true'></i></a>");
 		});
 	
 	</script>		
@@ -121,7 +121,9 @@
 				$va_water_links = array();
 				foreach ($va_watermark as $va_key => $va_watermark_id_t) {
 					foreach ($va_watermark_id_t as $va_key => $va_watermark_id) {
-						$va_water_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_watermark_id['watermark_list']), '', '', 'Browse', 'artworks/facet/watermark_facet/id/'.$va_watermark_id['watermark_list']).($vs_list_value == $va_watermark_id['watermark_uncertain'] ? " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "" );	
+						if ($va_watermark_id['watermark_list']) {
+							$va_water_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_watermark_id['watermark_list']), '', '', 'Browse', 'artworks/facet/watermark_facet/id/'.$va_watermark_id['watermark_list']).($vs_list_value == $va_watermark_id['watermark_uncertain'] ? " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "" );	
+						}
 					}
 				}
 				if (sizeof($va_water_links) > 0) {
@@ -208,9 +210,16 @@
 				print "<div class='unit row'><div class='{$vn_label_col} label'>Photography Credit</div><div class='$vn_data_col'>".$va_photo_credit."</div></div>";
 			}	
 			if ($va_keywords = $t_object->get('ca_list_items.item_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+				$vn_keyword = 0;
 				$va_keyword_links = array();
 				foreach ($va_keywords as $va_key => $va_keyword_id) {
-					$va_keyword_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_keyword_id), '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
+					if ($vn_keyword == 0) {
+						$vs_keyword_label = ucfirst(caGetListItemByIDForDisplay($va_keyword_id));
+					} else {
+						$vs_keyword_label = caGetListItemByIDForDisplay($va_keyword_id);
+					}
+					$va_keyword_links[] = caNavLink($this->request, $vs_keyword_label, '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
+					$vn_keyword++;
 				}
 				print "<div class='unit row'><div class='{$vn_label_col} label'>Tags</div><div class='$vn_data_col'>".join(', ', $va_keyword_links)."</div></div>";
 			}	
@@ -262,8 +271,8 @@
 			print "<div class='row'><div class='col-sm-12'><h6 class='verso'>Other Side</h6></div></div>";		
 			$t_verso = new ca_objects($vn_verso_id);
 			print "<div class='row'>";
-			print "<div class='col-sm-5' style='min-height:140px;'>".caNavLink($this->request, $t_verso->get('ca_object_representations.media.medium', array('checkAccess' => $va_access_values)), '', '', 'Detail', 'objects/'.$vn_verso_id)."</div>";
-			print "<div class='col-sm-7'>";
+			print "<div class='col-sm-4' style='min-height:140px;'>".caNavLink($this->request, $t_verso->get('ca_object_representations.media.medium', array('checkAccess' => $va_access_values)), '', '', 'Detail', 'objects/'.$vn_verso_id)."</div>";
+			print "<div class='col-sm-8'>";
 
 			print "<div class='versoTitle'>".caNavLink($this->request, $t_verso->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$vn_verso_id)."</div>";
 			if ($vn_date = $t_verso->get('ca_objects.display_date')) {
@@ -275,12 +284,12 @@
 			print "</div>";
 			print "</div>";
 			print "<div class='row'>";
-			print "<div class='col-sm-5'></div>";
-			print "<div class='col-sm-7'>";
-				if ($vn_catno = $t_verso->get('ca_objects.catalog_number')) {
+			print "<div class='col-sm-4'></div>";
+			print "<div class='col-sm-8'>";
+				if ($vn_catno = $t_verso->get('ca_objects.institutional_id')) {
 					print "<div class='catInfo'>".$vn_catno."</div>";
 				}			
-				print "<a href='#' class='compare_link verso' data-id='object:{$vn_verso_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a>";
+				print "<a href='#' class='compare_link verso' title='Compare' data-id='object:{$vn_verso_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a>";
 			
 			print "</div>";
 			print "</div>";	
@@ -301,14 +310,14 @@
 		print "<h6><a href='#' onclick='$(\"#sketchDiv\").toggle(400);return false;'>Sketchbook <i class='fa fa-window-minimize'></i></a></h6>";
 		print "<div id='sketchDiv'>";
 		print "<div class='container versoInfo'><div class='row'>";	
-		print "<div class='col-sm-5' style='padding-left:0px;'>";
+		print "<div class='col-sm-4' style='padding-left:0px;'>";
 		if ($va_sk_rep = $t_sketchbook->get('ca_object_representations.media.small', array("checkAccess" => $va_access_values, "limit" => 1))) {
 			print "<div class='text-center bResultItemImg'>".caNavLink($this->request, $va_sk_rep, '', '', 'Detail', 'collections/'.$va_related_sketchbook_id)."</div>";
 		} else {
 			$vs_buf.= '<div class="bResultItemImgPlaceholder"><i class="fa fa-picture-o fa-2x"></i></div>';
 		}
 		print "</div>";
-		print "<div class='col-sm-7'>";
+		print "<div class='col-sm-8'>";
 		print "<div class='versoTitle'>".caNavLink($this->request, $t_sketchbook->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_related_sketchbook_id)."</div>"; 
 		if ($vs_date = $t_sketchbook->get('ca_collections.display_date')) {
 			print "<div>".$vs_date."</div>"; 
@@ -316,6 +325,7 @@
 		if ($va_collection = $t_sketchbook->getWithTemplate('<unit relativeTo="ca_collections_x_collections" restrictToTypes="collection,other"><if rule="^ca_collections_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections" >^ca_collections.preferred_labels</unit></if></unit>')) {
 			print "<div>".$va_collection."</div>";
 		}	
+		print "<a href='#' onclick='caMediaPanel.showPanel(\"/index.php/Detail/GetMediaOverlay/context/collections/id/".$va_related_sketchbook_id."/representation_id/".$t_sketchbook->get('ca_object_representations.representation_id')."/overlay/1\"); return false;'>View Sketchbook Pages</a>";
 		print "</div><!-- end col --></div><!-- end row --></div><!-- end container -->";
 		print "</div><!-- end sketchdiv --></div><!-- end drawer -->";
 		print "</div><div class='col-sm-2'></div></div><!-- end col end row -->";
@@ -323,7 +333,7 @@
 	}
 
 	$vs_provenance = "";
-	if ($va_provenance = $t_parent->get('ca_objects_x_collections.relation_id', array('returnWithStructure' => true, 'restrictToTypes' => array('collection', 'other'), 'sort' => 'ca_objects_x_collections.rank', 'sortOrder' => 'ASC'))) {
+	if ($va_provenance = $t_parent->get('ca_objects_x_collections.relation_id', array('returnWithStructure' => true, 'restrictToTypes' => array('collection', 'other'), 'sort' => 'ca_objects_x_collections.collection_date', 'sortOrder' => 'ASC'))) {
 		foreach ($va_provenance as $va_key => $va_relation_id) {
 			$t_prov_rel = new ca_objects_x_collections($va_relation_id);
 			$t_prov = new ca_collections($t_prov_rel->get('ca_collections.collection_id'));
@@ -407,7 +417,7 @@
 				print "<div id='referenceDiv'>".$vs_reference."</div>";
 				print "</div>";
 			}
-			$vs_first = false;
+			$vs_first = false; 
 ?>		
 		</div>
 	</div><!-- end row -->
@@ -434,7 +444,7 @@
 					if ($va_collection = $t_rel_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {
 						$vs_buf.= "<p>".$va_collection."</p>";
 					}	
-					if ($vs_catno = $t_work->get('ca_objects.catalog_number')) {
+					if ($vs_catno = $t_work->get('ca_objects.institutional_id')) {
 						$vs_buf.= "<div class='catno'>".$vs_catno."</div>"; 
 					}	
 					$vs_buf.= "<a href='#' class='compare_link' data-id='object:{$vs_rel_work_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a>";
@@ -473,9 +483,9 @@
 							$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_value_id, $vn_media_element_id)) ;
 							if ($qr_res->nextRow()) {
 								$vn_attr_id = (int)$qr_res->get("value_id");
-								print "<div class='zoomIcon'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'identifier' => "attribute:{$vn_attr_id}", 'overlay' => 1))."\"); return false;'><i class='glyphicon glyphicon-zoom-in'></i></a></div>";
+								print "<div class='zoomIcon'><a href='#' title='Zoom' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'identifier' => "attribute:{$vn_attr_id}", 'overlay' => 1))."\"); return false;'><i class='glyphicon glyphicon-zoom-in'></i></a></div>";
 						
-								print "<div class='compare'><a href='#' class='compare_link' data-id='attribute:{$vn_attr_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a></div>";
+								print "<div class='compare'><a href='#' class='compare_link' title='Compare' data-id='attribute:{$vn_attr_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a></div>";
 							}
 							print "</div>";
 							print "<div class='col-sm-7'><div class='remarkText'>".$va_remarks_image['remark_caption']."</div></div>";

@@ -6,10 +6,11 @@
 	if ($va_files){
 	 $vn_filecount = count($va_files);
 	}
-
+?>
+	<H1 class='discover'><?php print _t("Discover"); ?></H1>
+<?php
 	print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'discover/'.rand(1,$vn_filecount).'.jpg')."</div>";
 ?>
-<H1><?php print _t("Discover"); ?></H1>
 <div class="row">
 	<div class="col-sm-12">
 		<div class="quote">

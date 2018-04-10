@@ -11552,6 +11552,7 @@ $pa_options["display_form_field_tips"] = true;
 						} else {
 							$vm_value = $t_instance->quote($vs_field, is_null($vm_value) ? '' : $vm_value);
 						}
+						if (is_null($vs_value)) { $vs_op = '='; }
 					}
 
 					if (is_null($vm_value)) {

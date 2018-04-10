@@ -47,7 +47,7 @@
 			print "<div class='pagingText'>"._t('Page')." </div>";
 		}
 ?>
-		<div ><br/><br/><br/><br/><span class='logoUpper'>Mark Rothko</span><span class='logoLower'>works on paper</span></div>
+		<div ><br/><br/><br/><span class='logoUpper'>Mark Rothko</span><span class='logoLower'>works on paper</span></div>
 	</div>
 </body>
 </html><!--END HEADER-->

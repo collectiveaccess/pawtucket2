@@ -28,6 +28,10 @@
 ?>
 		<div style="clear:both;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+<?php
+	$vs_controller = strToLower($this->request->getController());
+	if(!in_array($vs_controller, array("browse", "search"))){
+?>
 		<footer id="footer">
 			<div class="darkRedBg text-center">
 				<div>
@@ -46,12 +50,7 @@
 							<br/>V6T 1Z1
 						</div>
 					</div>
-					<div class="col-sm-6 text-right">
-						<!--<ul class="list-inline pull-right social">
-							<li><i class="fa fa-twitter"></i></li>
-							<li><i class="fa fa-facebook-square"></i></li>
-							<li><i class="fa fa-youtube-play"></i></li>
-						</ul>-->
+					<div class="col-sm-6">
 						<ul class="list-inline footerLinks" style="clear:right;">
 							<li><a href="//cdn.ubc.ca/clf/ref/terms" title="Terms of Use">Terms of Use</a></li>
 							<li>|</li>
@@ -62,6 +61,8 @@
 			</div>
 		</footer><!-- end footer -->
 <?php
+	}
+	
 	//
 	// Output HTML for debug bar
 	//

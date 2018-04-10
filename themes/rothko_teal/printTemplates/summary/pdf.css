@@ -107,6 +107,19 @@ table.relObjects td img{
 }
 #header_wk {
 	top:0px;
-	margin-top:-70px;
-	background-color:red;
+	margin-top:-40px;
+	background-color:white;
+	height:80px;
+}
+.remarkCaption span{
+	font-size:12px !important;
+	font-family: 'Gudea', sans-serif !important;
+	color: #333 !important;
+}
+.remarksImg {
+	margin-top:15px;
+}
+.remarksImg img{
+	width:100%;
+	height:auto;
 }

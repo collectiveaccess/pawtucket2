@@ -9,13 +9,7 @@
 
 {{{form}}}
 	
-	<div class='advancedContainer'>
-		<div class='row'>
-			<div class="advancedSearchField col-sm-12">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the catalog.">Tags</span>
-				{{{_fulltext%width=200px&height=1}}}
-			</div>			
-		</div>		
+	<div class='advancedContainer'>		
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object titles only.">Object Title</span>
@@ -40,16 +34,22 @@
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Documentation of any portion of a watermark (a design formed during the papermaking process that usually includes the manufacturer’s name or trademark) visible in the paper support.">Watermark</i></span>
+				{{{ca_objects.watermark.watermark_list%width=200px&height=1}}}
+			</div>
+		</div>			
+		<div class='row'>
+			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Description of the material characteristics of a secondary support—original, of aesthetic integrity, and/or historical significance—to which a work has been attached.">Mount</i></span>
 				{{{ca_objects.mount%width=200px&height=1}}}
 			</div>
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Documentation of any portion of a watermark (a design formed during the papermaking process that usually includes the manufacturer’s name or trademark) visible in the paper support.">Watermark</i></span>
-				{{{ca_objects.watermark.watermark_list%width=200px&height=1}}}
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by Institional accession number.">Institution Accession Number </span>
+				{{{ca_objects.institutional_id%width=200px&height=30px}}}
 			</div>
-		</div>				
+		</div>						
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records within a particular collection.">Collection </span>
@@ -58,16 +58,10 @@
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by Institional accession number.">Institution Accession Number </span>
-				{{{ca_objects.institutional_id%width=200px&height=30px}}}
-			</div>
-		</div>	
-		<div class='row'>
-			<div class="advancedSearchField col-sm-12">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by catalog number.">Catalog Number </span>
-				{{{ca_objects.catalog_number%width=200px&height=30px}}}
-			</div>
-		</div>			
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the catalog.">Tags</span>
+				{{{_fulltext%width=200px&height=1}}
+			</div>			
+		</div>				
 		<br style="clear: both;"/>
 		<div class='advancedFormSubmit'>
 			<span class='btn btn-default'>{{{reset%label=Reset}}}</span>
