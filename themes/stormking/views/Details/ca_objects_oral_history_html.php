@@ -146,7 +146,7 @@
 					} else {
 						print "<div class='relImg'><div class='text-center bResultItemImg'><div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div></div></div>";
 					}
-					print "<div class='relArtTitle'><p>".$t_rel_obj->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values))."</p>";
+					print "<div class='relArtTitle'><p>".$t_rel_obj->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values, 'delimiter' => ', '))."</p>";
 					print "<p>".caDetailLink($this->request, ( $t_rel_obj->get('ca_objects.preferred_labels') == "Untitled" ? $t_rel_obj->get('ca_objects.preferred_labels') : "<i>".$t_rel_obj->get('ca_objects.preferred_labels')."</i>"), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'));
 					if ($vs_art_date = $t_rel_obj->get('ca_objects.display_date')) {
 						print ", ".$vs_art_date;
@@ -158,14 +158,14 @@
 			}
 	
 			# Related Exhibitions
-			if ($va_related_exhibitions = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program'), 'sort' => 'ca_occurrences.exhibition_dates', 'sortDirection' => 'desc'))) {
+			if ($va_related_exhibitions = array_unique($t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program'), 'sort' => 'ca_occurrences.exhibition_dates', 'sortDirection' => 'desc')))) {
 				$va_ex_images = caGetDisplayImagesForAuthorityItems('ca_occurrences', $va_related_exhibitions, array('version' => 'iconlarge', 'relationshipTypes' => 'includes', 'objectTypes' => 'artwork', 'checkAccess' => $va_access_values));
 				print "<hr><div class='row relatedExhibitions'>";
 				print '<div class="col-sm-12"><h6 class="header">Exhibitions and programs discussed</h6></div>';
 				foreach ($va_related_exhibitions as $va_key => $va_related_exhibition_id) {
 					$t_exhibition = new ca_occurrences($va_related_exhibition_id);
 					print "<div class='col-sm-12'> <div class='relatedArtwork' style='margin-bottom:20px;'>";
-					print "<p>".caDetailLink($this->request, $t_exhibition->get('ca_occurrences.preferred_labels'), '', 'ca_occurrences', $t_exhibition->get('ca_occurrences.occurrence_id'))."</p>";
+					print "<p>".caDetailLink($this->request, "<i>".$t_exhibition->get('ca_occurrences.preferred_labels')."</i>", '', 'ca_occurrences', $t_exhibition->get('ca_occurrences.occurrence_id'))."</p>";
 					print "<p>".$t_exhibition->get('ca_occurrences.exhibition_dates', array('delimiter' => '<br/>'))."</p>";
 					print "</div><!-- end relArtwork --></div><!-- end col -->";
 				}
