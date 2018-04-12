@@ -45,7 +45,7 @@
 		</p>	
 
 		<p>
-			Among the Archive’s Special Collections, the Oral History Program offers a dynamic point of entry. Presented alongside archival materials referenced in interviews, the oral histories provide historical narratives that detail the curation and maintenance of the collection from the perspective of institutional leaders, as well as in-depth accounts from artists of creating commissioned work sited and shown at Storm King.		
+			Among the Archive’s <?php print caNavLink($this->request, _t("Special Collections"), "underline", "", "Collections", "index"); ?>, the <?php print caNavLink($this->request, _t("Oral History Program"), "underline", "", "Listing", "oralhistory"); ?> offers a dynamic point of entry. Presented alongside archival materials referenced in interviews, the oral histories provide historical narratives that detail the curation and maintenance of the collection from the perspective of institutional leaders, as well as in-depth accounts from artists of creating commissioned work sited and shown at Storm King.		
 		</p>
 		<p>
 			<i>Support for Storm King Art Center’s Oral History Program and Archival Program is made possible by generous lead support from the Henry Luce Foundation. Support is also provided by the Pine Tree Foundation.</i>		

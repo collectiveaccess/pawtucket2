@@ -4,6 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	$va_access_values =		caGetUserAccessValues($this->request);
+	$vn_item_id = $t_item->get("entity_id");
 ?>
 <div class="row">
 	<div class='col-xs-12 '>
@@ -94,7 +95,7 @@
 
 			}
 			if ($vs_art_count == 4) {
-				print "<div class='viewAll'>".caNavLink($this->request, "View all <i class='fa fa-angle-right'></i>", '', '', 'Browse', 'allworks', array('facet' => 'occurrence_facet', 'id' => $vn_item_id))."</div>";
+				print "<div class='viewAll'>".caNavLink($this->request, "View all <i class='fa fa-angle-right'></i>", '', '', 'Browse', 'allworks', array('facet' => 'entity_facet', 'id' => $vn_item_id))."</div>";
 			}
 			print "</div><!-- end row -->";			
 		}
@@ -159,7 +160,7 @@
 				}				
 			}
 			if ($vs_archival_count == 4) {
-				print "<div class='viewAll'>".caNavLink($this->request, "View all <i class='fa fa-angle-right'></i>", '', '', 'Browse', 'install', array('facet' => 'archive_item_facet', 'id' => $vn_item_id))."</div>";
+				print "<div class='viewAll'>".caNavLink($this->request, "View all <i class='fa fa-angle-right'></i>", '', '', 'Browse', 'archival', array('facet' => 'rel_entity_facet', 'id' => $vn_item_id))."</div>";
 			}	
 			print "</div><!-- end row -->";			
 		}

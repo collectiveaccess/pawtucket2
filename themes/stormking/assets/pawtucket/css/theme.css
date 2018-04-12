@@ -83,7 +83,9 @@
 	font-size: 12px;
 	line-height: 20px;
 }
-
+a.underline{
+	text-decoration:underline;
+}
 /* Storm King theme */
 
 html,body,.page,.wrapper {
@@ -111,7 +113,7 @@ a, a:hover, a:active, a:focus{
 .Browse #pageArea {
 	padding-left:10px;
 }
-.fullWidthImage img{
+.fullWidth img{
 	width:100%;
 	height:auto;
 }
