@@ -51,7 +51,7 @@
 				if ($va_rel_programs = $t_item->get('ca_occurrences.related.preferred_labels', array('restrictToTypes' => array('exhibition', 'public_program'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Related Programs</h6>".$va_rel_programs."</div>";
 				}
-				if ($va_related_or_history = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history')))) {
+				if ($va_related_or_history = array_unique($t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('oral_history'))))) {
 					print '<h6>Related Oral Histories</h6>';
 					foreach ($va_related_or_history as $va_id => $va_related_or_history_id) {
 						$t_rel_or = new ca_objects($va_related_or_history_id);
@@ -144,7 +144,7 @@
 					$vs_art_image = null;
 				}
 				print "<div class='relImg'>".($vs_art_image ? $vs_art_image : "<div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div>")."</div>";
-				print "<div class='relArtTitle'><p>".$t_rel_obj->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values))."</p>";
+				print "<div class='relArtTitle'><p>".$t_rel_obj->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values, 'delimiter' => ', '))."</p>";
 				print "<p>".caDetailLink($this->request, ( $t_rel_obj->get('ca_objects.preferred_labels') == "Untitled" ? $t_rel_obj->get('ca_objects.preferred_labels') : "<i>".$t_rel_obj->get('ca_objects.preferred_labels')."</i>"), '', 'ca_objects', $t_rel_obj->get('ca_objects.object_id'));
 				if ($vs_art_date = $t_rel_obj->get('ca_objects.display_date')) {
 					print ", ".$vs_art_date;
@@ -179,7 +179,7 @@
 					$vs_install_image = null;
 				}				
 				print "<div class='relImg'>".caDetailLink($this->request, ($vs_install_image ? $vs_install_image : "<div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div>"), '', 'ca_objects', $t_rel_install->get('ca_objects.object_id'))."</div>"; 
-				print "<div class='relArtTitle'><p>".$t_rel_install->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values))."</p>";
+				print "<div class='relArtTitle'><p>".$t_rel_install->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values, 'delimiter' => ', '))."</p>";
 				print "<p>".caDetailLink($this->request, $t_rel_install->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_install->get('ca_objects.object_id'));
 				print "</p></div></div>";
 				print "</div><!-- end col -->";
@@ -210,7 +210,7 @@
 					$vs_media_image = null;
 				}					
 				print "<div class='relImg'>".caDetailLink($this->request, ($vs_media_image ? $vs_media_image : "<div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div>"), '', 'ca_objects', $t_rel_media->get('ca_objects.object_id'))."</div>";
-				print "<p>".$t_rel_media->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values))."</p>";
+				print "<p>".$t_rel_media->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values, 'delimiter' => ', '))."</p>";
 				print "<p>".caDetailLink($this->request, $t_rel_media->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_media->get('ca_objects.object_id'));
 				print "</p></div>";
 				print "</div><!-- end col -->";
@@ -241,7 +241,7 @@
 					$vs_archival_image = null;
 				}				
 				print "<div class='relImg'>".caDetailLink($this->request, ($vs_archival_image ? $vs_archival_image : "<div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div>"), '', 'ca_objects', $t_rel_archival->get('ca_objects.object_id'))."</div>";
-				print "<p>".$t_rel_archival->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values))."</p>";
+				print "<p>".$t_rel_archival->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values, 'delimiter' => ', '))."</p>";
 				print "<p>".caDetailLink($this->request, $t_rel_archival->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_archival->get('ca_objects.object_id'));
 				print "</p></div>";
 				print "</div><!-- end col -->";
@@ -266,7 +266,7 @@
 				print "<div class='col-sm-3'>";
 				print "<div class='relatedArtwork'>";
 				print "<div class='relImg'>".caDetailLink($this->request, $t_rel_catalogue->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values)), '', 'ca_objects', $t_rel_catalogue->get('ca_objects.object_id'))."</div>";
-				print "<p>".$t_rel_catalogue->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values))."</p>";
+				print "<p>".$t_rel_catalogue->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values, 'delimiter' => ', '))."</p>";
 				print "<p>".caDetailLink($this->request, $t_rel_catalogue->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_catalogue->get('ca_objects.object_id'));
 				print "</p></div>";
 				print "</div><!-- end col -->";

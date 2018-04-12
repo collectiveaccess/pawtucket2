@@ -125,7 +125,7 @@
 					<div class='bResultListItem'>
 						<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep}</div>
 							<div class='bResultListItemTextContainer'><div class='bResultListItemText'>
-								".$va_exhibit_info["title_link"]."<br/>".$va_exhibit_info["date"]."
+								<i>".$va_exhibit_info["title_link"]."</i><br/>".$va_exhibit_info["date"]."
 							</div><!-- end bResultListItemText --></div><!-- end bResultListItemTextContainer -->
 						</div><!-- end bResultListItemContent -->
 					</div><!-- end bResultListItem -->
