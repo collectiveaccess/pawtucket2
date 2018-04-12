@@ -18,6 +18,11 @@
 	 */
 	function caRothkoGetEntitySearchDisplayText($ps_name, $pa_values, $pa_options=null) {
 		switch(strtolower($ps_name)) {
+		    case 'editor':
+				if ($t_entity = ca_entities::find(['entity_id' => (int)$pa_values[0]], ['returnAs' => 'firstModelInstance'])) {
+					return "Editor: ".$t_entity->get('ca_entities.preferred_labels.displayname');
+				}
+				break;
 			case 'author':
 				if ($t_entity = ca_entities::find(['entity_id' => (int)$pa_values[0]], ['returnAs' => 'firstModelInstance'])) {
 					return "Author: ".$t_entity->get('ca_entities.preferred_labels.displayname');
