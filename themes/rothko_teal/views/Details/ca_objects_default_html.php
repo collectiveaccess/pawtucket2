@@ -483,7 +483,7 @@
 							$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_value_id, $vn_media_element_id)) ;
 							if ($qr_res->nextRow()) {
 								$vn_attr_id = (int)$qr_res->get("value_id");
-								print "<div class='zoomIcon'><a href='#' title='Zoom' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'identifier' => "attribute:{$vn_attr_id}", 'overlay' => 1))."\"); return false;'><i class='glyphicon glyphicon-zoom-in'></i></a></div>";
+								print "<div class='zoomIcon'><a href='#' title='Zoom' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_object_id, 'identifier' => "attribute:{$vn_attr_id}", 'overlay' => 1))."\"); return false;'><i class='glyphicon glyphicon-zoom-in'></i></a></div>";
 						
 								print "<div class='compare'><a href='#' class='compare_link' title='Compare' data-id='attribute:{$vn_attr_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a></div>";
 							}
