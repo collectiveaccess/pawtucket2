@@ -36,6 +36,9 @@
 		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$va_user_links[] = '<li class="divider nav-divider"></li>';
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Contribute'), '', '', 'contribute', 'objects', array())."</li>";
+		if(caDisplayLightbox($this->request)){
+			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
+		}
 		if(caDisplayClassroom($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
 		}
@@ -144,15 +147,11 @@
 						<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() != "browse")) ? "class='active'" : ""; ?>'><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 						<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "browse")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Discover"), "", "", "About", "browse"); ?></li>	
 						<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-						<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 						<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Research"), '', '', 'Collections', 'Index'); ?></li>
 						<li <?php print ($this->request->getController() == "News") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("News"), "", "", "News", ""); ?></li>
-
+						<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+						
 	<?php
-						if(caDisplayLightbox($this->request)){
-							print "<li ".(($this->request->getController() == "Lightbox") ? 'class="active"' : '').">".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
-						}
-
 		if ($vb_has_user_links) {
 	?>
 					<ul class="nav navbar-nav " id="user-navbar">

@@ -1,4 +1,4 @@
-<H1><?php print _t("About"); ?></H1>
+<!--<H1><?php print _t("About"); ?></H1>-->
 <?php
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
 		$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/about/";
@@ -10,16 +10,6 @@
 
 		print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'about/'.rand(1,$vn_filecount).'.jpg')."</div>";
 ?>
-	<div class="row">
-		<div class="col-sm-12 ">				
-			<div class="quote">
-				<div class="quoteText">
-					"Quote here"	
-				</div>
-				<div class="quoteCredit">&mdash; Byline here</div>
-			</div>		
-		</div>
-	</div>
 	<div class="row">
 		<div class="col-sm-12 ">
 			<div class="band">

@@ -13,32 +13,15 @@
 				 $vn_filecount = count($va_files);
 				}
 ?>
-		<H1><?php print $this->getVar("section_name"); ?></H1>
+		<!--<H1><?php print $this->getVar("section_name"); ?></H1>-->
 <?php
 		print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'gallery/'.rand(1,$vn_filecount).'.jpg')."</div>";
 
-?>
-		<div class="row">
-			<div class="col-sm-12">			
-				<div class="quote">
-					<div class="quoteText"><div class="quoteTextCenter">
-						<strong>Lines to a Golden Eaglet</strong><br/>
-						I would wish you the range of the eaglet's eye<br/>
-						And the strength of his wings, that your spirit may fly<br/>
-						Over all of life's turmoil, your purpose held high.<br/>
-						I would wish you the courage to walk unafraid,<br/>
-						Wearing proudly the symbol of your accolade.
-					</div></div>
-					<div class="quoteCredit">
-						&mdash; Birdsall Otis Edey, National Presidents of Girl Scouts of the USA 1930-1935,<br/>from Builders: Poems by Birdsall Otis Edey, 1940
-					</div>
-				</div>
-			</div>
-		</div>		
+?>		
 		<div class="row">
 			<div class="col-sm-12 ">
 				<div class="band">
-					<div>View the Galleries</div>
+					<div>View by Subject or Type</div>
 				</div>
 			</div>
 		</div>

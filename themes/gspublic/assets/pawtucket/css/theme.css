@@ -1,5 +1,5 @@
 /* green #00AE58, dark green #009447 green link: #00964c; very light green #C1EAD4; */
-/* magenta: #ec008b; navy: #004e9a; blue (daisies): #00abe6; gsgreen: #00ae58, purple (junior cookie) #6e298d, red: #ee3124 */
+/* magenta: #ec008b; navy: #004e9a; blue (daisies): #00abe6; gsgreen: #00ae58, purple (junior cookie) #6e298d, red: #ee3124, orange ambassador: #faa61a */
 @font-face {
  font-family: Trefoil;
  src: url("fonts/TrefoilSans-Regular.eot") format("embedded-opentype"),
@@ -836,57 +836,57 @@ a.readmore-js-toggle{
 	padding-left:0px;
 }
 
-/* About */
+/* browse landing */
 
-.browseTile {
+.browseTile, .collectionLandingTile {
 	background-color: #daeddd;
 	margin-bottom:25px;
 }
-.browseText {
+.browseText, .collectionText {
 	float:left;
 	font-size:14px;
 }
 @media (min-width: 1000px) {
-	.browseText, .browseImg {
+	.browseText, .browseImg, .collectionText, .collectionImg {
 		width:50%;
 		float:left;
 	}
 }
 @media (min-width: 768px) and (max-width: 1000px) {
-	.browseText {
+	.browseText, .collectionText {
 		height:150px;
 	}
 }
-.browseImg img {
+.browseImg img, .collectionImg img {
 	width:100%;
 	height:auto;
 }
-.browseText h3 {
+.browseText h3, .collectionText h3 {
 	font-weight:bold;
 	font-size:18px;
 	padding-bottom:0px;
 	color:#fff;
 	margin-bottom:5px;
 }
-.browseText {
+.browseText, .collectionText {
 	padding-bottom:50px;
     padding: 15px;
     color:#fff;
 }
-.browseText a{
+.browseText a, .collectionText a{
 	color:#fff;
 }
 .band {
-	background-color:#6e298d;
+	background-color:#004e9a;
 	color:#fff;
 	padding:10px;
 	font-size:22px;
 	margin-top:30px;
 	margin-bottom:30px;
 }
-.bannerImg {
+/*.bannerImg {
 	margin-bottom:60px;
-}
+}*/
 .bannerImg img{
 	width:100%;
 	height:auto;
