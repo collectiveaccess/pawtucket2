@@ -713,6 +713,12 @@ p, .collectionsList p {
 .relatedArtwork a {
 	text-decoration:none;
 }
+.detail .relatedArtwork a {
+	text-decoration:underline;
+}
+.relatedArtwork{
+	overflow:hidden;
+}
 .bResultListItem {
 	box-shadow:none;
 	border-bottom:1px solid #c7c7c7;

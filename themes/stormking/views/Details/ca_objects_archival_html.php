@@ -34,6 +34,7 @@
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values =		caGetUserAccessValues($this->request);
+	$t_rep = 				$this->getVar("t_representation");
 ?>
 <div class="row">
 	<div class='col-xs-12 '>
@@ -45,9 +46,6 @@
 		<div class="row">
 			<div class="col-sm-12 objectInfo">
 <?php
-				if ($va_artist = $t_object->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('artist')))) {
-					print $va_artist."<br/>";
-				}
 				$vs_record_title = $t_object->get('ca_objects.preferred_labels.name');
 				if ($vs_record_title != "Untitled") {
 					print "<i>".$vs_record_title."</i>";
@@ -57,6 +55,10 @@
 				if ($vs_date = $t_object->get('ca_objects.display_date')) {
 					print ", ".$vs_date;
 				}
+				if ($va_artist = $t_object->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('artist')))) {
+					print "<br/>".$va_artist;
+				}
+				
 ?>
 			</div>		
 		</div>
@@ -80,12 +82,9 @@
 				if ($va_medium = $t_object->get('ca_objects.medium')) {
 					print "<div class='unit'><h6>Medium</h6>".$va_medium."</div>";
 				}
-				if ($vs_dimensions = trim($t_object->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects.dimensions">^ca_objects.dimensions.display_dimensions <ifdef code="ca_objects.dimensions.dimensions_type">(^ca_objects.dimensions.dimensions_type)</ifdef></unit>'))) {
-					print "<div class='unit'><h6>Dimensions</h6>".$vs_dimensions."</div>";
-				}					
-				/*if ($vs_creator = $t_object->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => ('creator'), 'delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Creator</h6>".$vs_creator."</div>";
-				}*/	
+				if ($vs_credit = $t_rep->get('ca_object_representations.caption')) {
+					print "<div class='unit'><h6>Image Credit Line</h6>".$vs_credit."</div>";
+				}
 				if ($vs_conditions_access = $t_object->get('ca_objects.accessrestrict')) {
 					print "<div class='unit'><h6>Conditions Governing Access</h6>".$vs_conditions_access."</div>";
 				}
