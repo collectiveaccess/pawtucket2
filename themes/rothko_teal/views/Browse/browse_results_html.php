@@ -221,8 +221,8 @@ if (!$vb_ajax) {	// !ajax
 	$vs_current_browse = $this->getVar('browse_type');
 	print '<div class="container"><div class="row"><div class="col-sm-1"></div><div class="col-sm-10">';
 	print '<div class="container"><div class="browseTargets row">';
-	print "<div class='col-xs-12 col-md-1 col-lg-2'></div>";
-	print "<div class='col-xs-12 col-md-10 col-lg-8'>";
+	
+	print "<div class='col-xs-12 col-md-12 col-lg-12'>";
 	foreach ($va_browse_types as $va_browse_type => $va_browse_info_list) {
 		if (in_array($va_browse_type, ['works_in_collection', 'works_in_occurrence'])) { continue; }
 		if ($vs_current_browse == $va_browse_type) {
@@ -233,7 +233,7 @@ if (!$vb_ajax) {	// !ajax
 		print '<div class="browseTargetLink '.$va_browse_type.'">'.caNavLink($this->request, $va_browse_info_list['displayName'], $vs_active_class, '', 'Browse', $va_browse_type).'</div>';
 	}
 	print "</div>";
-	print "<div class='col-xs-12 col-md-1 col-lg-2'></div>";
+
 	print '</div></div>';
 
 		print $this->render("Browse/browse_refine_subview_html.php");

@@ -73,7 +73,7 @@
 			$vb_refine = true;
 			$vn_col_span = 4;
 			$vn_col_span_sm = 6;
-			$vn_col_span_xs = 6;
+			$vn_col_span_xs = 12;
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
@@ -119,9 +119,9 @@
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
 					if ($vs_table == 'ca_objects') {
+						$t_list_item->load($qr_res->get("type_id"));
+						$vs_typecode = $t_list_item->get("idno");
 						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values)))){
-							$t_list_item->load($qr_res->get("type_id"));
-							$vs_typecode = $t_list_item->get("idno");
 							
 							$vs_thumbnail = $vs_default_placeholder_tag;
 
@@ -136,7 +136,7 @@
 						} else {
 							$vs_date_text = null;
 						}
-						if ($vs_record_title != "Untitled") {
+						if (($vs_typecode != "archival") && ($vs_record_title != "Untitled")) {
 							$vs_style = "style='font-style:italic';";
 						} else {
 							$vs_style = "";

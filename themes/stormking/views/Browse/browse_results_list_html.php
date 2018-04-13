@@ -118,6 +118,9 @@
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
 					$vs_record_title 		= $qr_res->get("{$vs_table}.preferred_labels");
+					if($vs_table == "ca_occurrences"){
+						$vs_record_title = "<i>".$vs_record_title."</i>";
+					}		
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 					$vs_label_detail_link 	= caDetailLink($this->request, $vs_record_title, '', $vs_table, $vn_id);
 					$vs_thumbnail = "";

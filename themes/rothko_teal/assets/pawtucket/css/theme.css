@@ -110,6 +110,9 @@ b, strong {
 a, a:hover, a:focus {
 	color:#161616;
 }
+a:focus {
+	outline: thin dotted #fff;
+}
 .btn-default {
 	font-family: hkgrotesque;
 }
@@ -192,7 +195,7 @@ a, a:hover, a:focus {
 	color:#ccc;
     font-size: 12px;
     padding-top: 8px;
-    padding-bottom: 7px;
+    padding-bottom: 8px;
     padding-left: 12px;
     padding-right: 12px;
 }
@@ -566,7 +569,7 @@ a, a:hover, a:focus {
 	width:20px;
 	height:20px;
 	opacity:.6;
-	background-color: url('../graphics/compare.png');
+	background: url('../graphics/compare.png');
 	background-size:20px;
 }
 .multisearch #exhibitionsBlock .authorityResult, .multisearch #referencesBlock .authorityResult{
@@ -625,10 +628,16 @@ a, a:hover, a:focus {
 	font-size:26px;
 	display:inline-block;
 	font-weight:bold;
-	padding-left:14px;
-	padding-right:14px;
+	padding-left:35px;
+	padding-right:35px;
 	color: #757575;
 	padding-top:40px;
+}
+@media (max-width:1213px) {
+	.browseTargetLink {
+		padding-left:20px;
+		padding-right:20px;
+	}
 }
 .browseTargetLink a {
 	color: #757575;
@@ -765,6 +774,15 @@ a, a:hover, a:focus {
     top: -5px;
     z-index:10000;
 }*/
+button.refine {
+	cursor:default;
+}
+button.refine:focus, button.refine:active {
+	box-shadow:none;
+	text-shadow:none;
+	border:0px;
+	outline: thin dotted #fff; 
+}
 .browseTarget a:hover{
 	text-decoration:none;
 }
@@ -947,7 +965,18 @@ a, a:hover, a:focus {
     display: inline-block;
     margin-right: 10px;
     margin-bottom:4px;
+    margin-top:2px;
     vertical-align:middle;
+}
+/* checkthis */
+#bRefine div.checkArea {
+	float:left;
+	display:block
+}
+#bRefine .facetItem a {
+	float:right;
+	width:calc(100% - 12px);
+	margin-right:-12px;
 }
 .dropdown-menu > li > a:hover, .dropdown-menu > li > a:focus, .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
 	background-color:transparent;
@@ -975,6 +1004,15 @@ a, a:hover, a:focus {
 }
 #facetGroupShowOnly {
 	min-width:240px !important;
+	padding-right:0px;
+	padding-left:0px;
+}
+#bRefine #facetGroupShowOnly li .facetItem {
+	padding-left:30px;
+}
+#bRefine #facetGroupShowOnly .row {
+    max-height: 270px;
+    margin-bottom: 35px;
 }
 .filteringBy {
 	font-weight:800;
@@ -1179,6 +1217,7 @@ a .svg-inline--fa.clearFacet {
 }
 #bRefine .facetGroup li .facetItem {
     margin-bottom: 12px;
+    min-height:24px;
 }
 #bRefine .row, #bRefine .container {
 	margin-bottom:0px;
@@ -1571,7 +1610,7 @@ a .svg-inline--fa.clearFacet {
 	text-align:center;
 }
 .detail.exhibition .detailMediaToolbar {
-	width:100%;
+	width:20px;
 	text-align:center;
 	background-color:transparent;
 }
@@ -1624,9 +1663,10 @@ a .svg-inline--fa.clearFacet {
 	border: 1px solid #d6d6d6;
 	padding-top:15px;
 	padding-bottom:15px;
-	height:250px;
+	height:350px;
 	margin-top:15px;
 	margin-bottom:35px;
+	overflow:hidden;
 }
 .remarksImg img { 
 	width:100%;
@@ -1772,6 +1812,10 @@ a .svg-inline--fa.clearFacet {
 .detail.sketchbook #detailRepNav {
 	display:none;
 }
+.detail.side #detailRepNav {
+	text-align:right;
+	margin-right:10px;
+}
 .detail #detailRepNavPrev {
     float: left;
     position: absolute;
@@ -1797,7 +1841,7 @@ a .svg-inline--fa.clearFacet {
 }
 
 #provenanceDiv, #exhibitionDiv, #referenceDiv, #remarksDiv, #relatedWorksDiv {
-	display:none;
+	display:block;
 	padding-bottom:5px;
 }
 #relatedWorksDiv {

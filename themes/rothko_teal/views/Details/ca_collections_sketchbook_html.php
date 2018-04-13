@@ -96,7 +96,7 @@
 <?php
 		if ($vs_remarks = $t_item->get('ca_collections.remarks')) {
 			print "<div class='drawer'>";
-			print "<h6><a href='#' data-toggleDiv='remarksDiv' class='togglertronic'>Remarks <i class='fa fa-plus drawerToggle'></i></a></h6>";
+			print "<h6><a href='#' data-toggleDiv='remarksDiv' class='togglertronic'>Remarks <i class='fa fa-minus drawerToggle'></i></a></h6>";
 			print "<div id='remarksDiv'>".$vs_remarks."</div>";
 			print "</div>";
 		}
@@ -124,7 +124,7 @@
 				}				
 				$vs_provenance.= "</div>";
 			} elseif ($t_prov->get('access') != 0 ){
-				$va_provenance_id = $t_item->get('ca_collections.collection_id');
+				$va_provenance_id = $t_prov->get('ca_collections.collection_id');
 				$vs_provenance_line = $t_prov->get('ca_collections.preferred_labels');				
 				if ($t_prov_rel) {
 					$vs_buf = array();
