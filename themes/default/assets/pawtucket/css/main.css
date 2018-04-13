@@ -1364,7 +1364,7 @@ a.browseRemoveFacet img {
     left: 0px !important;
 }
 .front .jcarousel-control-next {
-    right:0px; !important;
+    right:0px !important;
 }
 .front .jcarousel-control-next,
 .front .jcarousel-control-prev {
@@ -3159,7 +3159,7 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	padding: 5px;
 	/* min-width: 120px; */
 	max-width: 300px;
-	*/ min-height: 50px; */
+	/* min-height: 50px; */
 }
 
 /* ----------------- print specific styles ----------------------*/
