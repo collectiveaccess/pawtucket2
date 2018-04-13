@@ -141,16 +141,7 @@
 						</div>
 					</form>
 					<ul class="nav navbar-nav ">
-						<li class='dropdown<?php print (($this->request->getController() == "About")&&($this->request->getAction() != "browse")) ? ' active' : ''; ?>' style="position:relative;">
-							<a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
-							<ul class="dropdown-menu">
-								<li><?php print caNavLink($this->request, _t("About the Cultural & Property Assets Department"), "", "", "About", "Collection"); ?></li>
-								<li><?php print caNavLink($this->request, _t("About Girl Scouts of the USA"), "", "", "About", "GSUSA"); ?></li>
-								<li><?php print caNavLink($this->request, _t("Rights, Reproduction and Usage"), "", "", "About", "Usage"); ?></li>
-								<li><?php print caNavLink($this->request, _t("Research Services"), "", "", "About", "Services"); ?></li>
-								<li><?php print caNavLink($this->request, _t("Internship and Volunteer Opportunities"), "", "", "About", "Opportunities"); ?></li>
-							</ul>
-						</li>
+						<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() != "browse")) ? "class='active'" : ""; ?>'><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 						<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "browse")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Discover"), "", "", "About", "browse"); ?></li>	
 						<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
 						<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
