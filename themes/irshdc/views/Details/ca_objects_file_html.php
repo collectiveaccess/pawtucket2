@@ -109,18 +109,18 @@
 							{{{<ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef>}}}
 						</H6>
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
-						{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="creator" min="1"><div class="unit"><H6>Creator</H6><span class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></span></div></ifcount>}}}
+						{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="creator" min="1"><div class="unit"><H6>Creator</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
 						
 						<div class="unit"><H6>Description</H6>{{{<ifdef code="ca_objects.record_group_id|ca_objects.file_series">^ca_objects.record_group_id%=_<ifdef code="ca_objects.record_group_id,ca_objects.file_series">: </ifdef>^ca_objects.file_series%delimiter=,_.</ifdef>}}} The School Files Series from RG-10 (Record Group 10) contains records relating to the administration of Indian residential schools and education in Canada between 1879 and 1953.</div>
 				
 						{{{<ifdef code="ca_objects.curators_comments.comments">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial comment</h6>
-								<span class="trimText">^ca_objects.curators_comments.comments</span>
+								<div class="trimText">^ca_objects.curators_comments.comments</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.community_input_objects.comments_objects">
 							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
-								<span class="trimText">^ca_objects.community_input_objects.comments_objects</span>
+								<div class="trimText">^ca_objects.community_input_objects.comments_objects</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter=", ">^ca_objects.language</unit></div></ifdef>}}}

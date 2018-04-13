@@ -133,20 +133,20 @@
 							{{{<ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef>}}}
 						</H6>
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
-						{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue" min="1"><div class="unit"><H6>Creators and Contributors</H6><span class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></span></div></ifcount>}}}
+						{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue" min="1"><div class="unit"><H6>Creators and Contributors</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></div></ifcount>}}}
 						{{{<ifdef code="ca_objects.scope_new.scope_new_text">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.scope_new.scope_new_source"><h6>Description</h6>
-								<span class="trimText">^ca_objects.scope_new.scope_new_text</span>
+								<div class="trimText">^ca_objects.scope_new.scope_new_text</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.curators_comments.comments">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial comment</h6>
-								<span class="trimText">^ca_objects.curators_comments.comments</span>
+								<div class="trimText">^ca_objects.curators_comments.comments</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.community_input_objects.comments_objects">
 							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
-								<span class="trimText">^ca_objects.community_input_objects.comments_objects</span>
+								<div class="trimText">^ca_objects.community_input_objects.comments_objects</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.language">
@@ -170,7 +170,7 @@
 						<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 						<div class="collapseContent">
 							{{{<ifcount min="1" code="ca_objects.nonpreferred_labels.name" excludeTypes="exhibition_title"><div class='unit'><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>" excludeTypes="exhibition_title">^ca_objects.nonpreferred_labels.name</unit></div></ifcount>}}}
-							{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Repository</H6><span class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></span></div></ifcount>}}}
+							{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Repository</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
 							{{{<ifdef code="ca_objects.source_identifer"><div class='unit'><h6>Repository Object Identifier</h6>^ca_objects.source_identifer</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.NCTR_id"><div class='unit'><h6>NCTR Object Identifier</h6>^ca_objects.NCTR_id</div></ifdef>}}}
 							{{{<ifdef code="ca_objects.RAD_extent"><div class='unit'><h6>Extent and Medium</h6>^ca_objects.RAD_extent</div></ifdef>}}}

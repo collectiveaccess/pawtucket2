@@ -93,23 +93,23 @@
 								<H6>Dates of Operation</H6>
 								<unit delimiter=" "><div  data-toggle="popover" title="Source" data-content="^ca_entities.school_dates.date_source">
 									<ifdef code="ca_entities.school_dates.school_dates_value">^ca_entities.school_dates.school_dates_value<br/></ifdef>
-									<ifdef code="ca_entities.school_dates.date_narrative"><span class="trimText">^ca_entities.school_dates.date_narrative</span><br/></ifdef>
+									<ifdef code="ca_entities.school_dates.date_narrative"><div class="trimText">^ca_entities.school_dates.date_narrative</div><br/></ifdef>
 								</div></unit>
 							</div>
 						</ifdef>}}}
 						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities_x_entities" restrictToTypes="school" delimiter=", "><l><unit relativeTo="ca_entities.related">^ca_entities.preferred_labels.displayname</unit></l> (^relationship_typename<ifdef code="relationshipDate">, ^relationshipDate</ifdef>)</unit></div></ifcount>}}}
 						{{{<ifdef code="ca_entities.description_new.description_new_txt">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_entities.description_new.description_new_source"><h6>Description</h6>
-								<span class="trimText">^ca_entities.description_new.description_new_txt</span>
+								<div class="trimText">^ca_entities.description_new.description_new_txt</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.community_input_objects.comments_objects">
 							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_entities.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
-								<span class="trimText">^ca_entities.community_input_objects.comments_objects</span>
+								<div class="trimText">^ca_entities.community_input_objects.comments_objects</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_entities.denomination"><div class='unit'><H6>Denomination</H6>^ca_entities.denomination%delimiter=,_</div></ifdef>}}}		
-						{{{<ifdef code="ca_entities.home_community.home_community_text"><div class='unit'><H6>Home Communities of Students</H6><unit delimiter="<br/>"><span data-toggle="popover" title="Source" data-content="^ca_entities.home_community.home_community_source"><span class="trimText">^ca_entities.home_community.home_community_text</span></span></unit></div></ifdef>}}}					
+						{{{<ifdef code="ca_entities.home_community.home_community_text"><div class='unit'><H6>Home Communities of Students</H6><unit delimiter="<br/>"><span data-toggle="popover" title="Source" data-content="^ca_entities.home_community.home_community_source"><div class="trimText">^ca_entities.home_community.home_community_text</div></span></unit></div></ifdef>}}}					
 					</div><!-- end stoneBg -->
 <?php
 						include("themes_html.php");

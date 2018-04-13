@@ -101,12 +101,12 @@
 						{{{<ifcount code="ca_places" min="1"><div class="unit"><H6>Location<ifcount code="ca_places" min="2">s</ifcount></H6><unit relativeTo="ca_places"><l>^ca_places.preferred_labels.name</l></unit></div></ifcount>}}}
 						{{{<ifdef code="ca_occurrences.description_new.description_new_txt">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_occurrences.description_new.description_new_source"><h6>Description</h6>
-								<span class="trimText">^ca_occurrences.description_new.description_new_txt</span>
+								<div class="trimText">^ca_occurrences.description_new.description_new_txt</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_occurrences.community_input_items.comments_objects">
 							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_occurrences.community_input_items.comment_reference_objects"><h6>Dialogue</h6>
-								<span class="trimText">^ca_occurrences.community_input_items.comments_objects</span>
+								<div class="trimText">^ca_occurrences.community_input_items.comments_objects</div>
 							</div>
 						</ifdef>}}}
 					</div><!-- end stoneBg -->

@@ -132,26 +132,26 @@
 						$vs_display_creator = $t_object->getWithTemplate("<unit delimiter=', '>^ca_objects.cdwa_display_creator</unit>");
 						$vs_creators_contributors = $t_object->getWithTemplate("<unit relativeTo='ca_entities.related' restrictToRelationshipTypes='artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue' delimiter=', '><l>^ca_entities.preferred_labels.displayname</l></unit>", array("checkAccess" => $va_access_values));
 						if($vs_display_creator || $vs_creators_contributors){
-							print "<div class='unit'><H6>Creators and Contributors</H6><span class='trimTextShort'>".$vs_display_creator.(($vs_display_creator && $vs_creators_contributors) ? ", " : "").$vs_creators_contributors."</span></div>";
+							print "<div class='unit'><H6>Creators and Contributors</H6><div class='trimTextShort'>".$vs_display_creator.(($vs_display_creator && $vs_creators_contributors) ? ", " : "").$vs_creators_contributors."</div></div>";
 						}
 ?>
 						{{{<ifdef code="ca_objects.cultural_context"><div class='unit'><h6>Culture</h6>^ca_objects.cultural_context</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.place_made"><div class='unit'><h6>Place Made</h6>^ca_objects.place_made</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.curatorial_description.curatorial_desc_value">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curatorial_description.curatorial_desc_source"><h6>Description</h6>
-								<span class="trimText">^ca_objects.curatorial_description.curatorial_desc_value</span>
+								<div class="trimText">^ca_objects.curatorial_description.curatorial_desc_value</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.narrative"><div class="unit"><H6>Narrative</H6><unit delimiter="<br/>">^ca_objects.narrative</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.history_use"><div class="unit"><H6>History of Use</H6><unit delimiter="<br/>">^ca_objects.history_use</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.curators_comments.comments">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_objects.curators_comments.comment_reference"><h6>Curatorial comment</h6>
-								<span class="trimText">^ca_objects.curators_comments.comments</span>
+								<div class="trimText">^ca_objects.curators_comments.comments</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.community_input_objects.comments_objects">
 							<div class='unit' data-toggle="popover" title="Source" data-content="^ca_objects.community_input_objects.comment_reference_objects"><h6>Dialogue</h6>
-								<span class="trimText">^ca_objects.community_input_objects.comments_objects</span>
+								<div class="trimText">^ca_objects.community_input_objects.comments_objects</div>
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.language">
@@ -175,7 +175,7 @@
 							<h3>More Information <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 							<div class="collapseContent">
 								{{{<ifcount min="1" code="ca_objects.nonpreferred_labels.name" excludeTypes="exhibition_title"><div class='unit'><H6>Alternate Title(s)</H6><unit relativeTo="ca_objects" delimiter="<br/>" excludeTypes="exhibition_title">^ca_objects.nonpreferred_labels.name</unit></div></ifcount>}}}
-								{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Repository</H6><span class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></span></div></ifcount>}}}
+								{{{<ifcount code="ca_entities.related" restrictToRelationshipTypes="repository" min="1"><div class="unit"><H6>Repository</H6><div class="trimTextShort"><unit relativeTo="ca_entities.related" restrictToRelationshipTypes="repository" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
 								{{{<ifdef code="ca_objects.source_identifer"><div class='unit'><h6>Repository Object Identifier</h6>^ca_objects.source_identifer</div></ifdef>}}}
 								{{{<ifdef code="ca_objects.cdwa_displayMeasurements"><div class='unit'><H6>Display Measurements</H6><unit delimiter=", ">^ca_objects.cdwa_displayMeasurements</unit></div></ifdef>}}}
 								{{{<ifdef code="ca_objects.material_tech"><div class='unit'><H6>Materials and Techniques</H6><unit delimiter=", ">^ca_objects.material_tech</unit></div></ifdef>}}}
