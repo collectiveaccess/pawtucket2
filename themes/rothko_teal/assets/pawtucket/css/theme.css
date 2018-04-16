@@ -2092,4 +2092,6 @@ div.caMediaOverlayControlsMinimal .svg-inline--fa {
 	display: none !important;
 }
 
-
+.mirador-manipulation-controls {
+	display: none !important;
+}
