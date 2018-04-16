@@ -5,15 +5,15 @@ namespace Elasticsearch\Endpoints;
 use Elasticsearch\Common\Exceptions;
 
 /**
- * Class MGet
+ * Class Mget
  *
  * @category Elasticsearch
  * @package  Elasticsearch\Endpoints
- * @author   Zachary Tong <zachary.tong@elasticsearch.com>
+ * @author   Zachary Tong <zach@elastic.co>
  * @license  http://www.apache.org/licenses/LICENSE-2.0 Apache2
- * @link     http://elasticsearch.org
+ * @link     http://elastic.co
  */
-class MGet extends AbstractEndpoint
+class Mget extends AbstractEndpoint
 {
     /**
      * @param array $body
@@ -35,11 +35,11 @@ class MGet extends AbstractEndpoint
     /**
      * @return string
      */
-    protected function getURI()
+    public function getURI()
     {
         $index = $this->index;
         $type = $this->type;
-        $uri = "/_mget";
+        $uri   = "/_mget";
 
         if (isset($index) === true && isset($type) === true) {
             $uri = "/$index/$type/_mget";
@@ -55,25 +55,26 @@ class MGet extends AbstractEndpoint
     /**
      * @return string[]
      */
-    protected function getParamWhitelist()
+    public function getParamWhitelist()
     {
-        return [
+        return array(
             'fields',
             'preference',
             'realtime',
-            'routing',
             'refresh',
             '_source',
             '_source_exclude',
             '_source_include',
-        ];
+            'routing',
+            'stored_fields'
+        );
     }
 
     /**
      * @return array
      * @throws \Elasticsearch\Common\Exceptions\RuntimeException
      */
-    protected function getBody()
+    public function getBody()
     {
         if (isset($this->body) !== true) {
             throw new Exceptions\RuntimeException('Body is required for MGet');
@@ -85,7 +86,7 @@ class MGet extends AbstractEndpoint
     /**
      * @return string
      */
-    protected function getMethod()
+    public function getMethod()
     {
         return 'POST';
     }

@@ -4,17 +4,23 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitbebc7a39807c835d7d302d1d0ca4dcb8
+class ComposerStaticInit7d30fd7e80061f0009530528e57b91b9
 {
     public static $files = array (
         'd5e184bb3537ab5eb44dbd1454cfd70b' => __DIR__ . '/..' . '/hoa/core/Core.php',
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         'ad155f8f1cf0d418fe49e248db8c661b' => __DIR__ . '/..' . '/react/promise/src/functions_include.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '667aeda72477189d0494fecd327c3641' => __DIR__ . '/..' . '/symfony/var-dumper/Resources/functions/dump.php',
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        'Z' => 
+        array (
+            'Zend\\Validator\\' => 15,
+            'Zend\\Stdlib\\' => 12,
+            'Zend\\Escaper\\' => 13,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Mbstring\\' => 26,
@@ -29,6 +35,7 @@ class ComposerStaticInitbebc7a39807c835d7d302d1d0ca4dcb8
         'P' => 
         array (
             'Psr\\Log\\' => 8,
+            'PhpOffice\\PhpWord\\' => 18,
             'PhpOffice\\PhpPresentation\\' => 26,
             'PhpOffice\\Common\\' => 17,
         ),
@@ -66,6 +73,18 @@ class ComposerStaticInitbebc7a39807c835d7d302d1d0ca4dcb8
     );
 
     public static $prefixDirsPsr4 = array (
+        'Zend\\Validator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-validator/src',
+        ),
+        'Zend\\Stdlib\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-stdlib/src',
+        ),
+        'Zend\\Escaper\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/zendframework/zend-escaper/src',
+        ),
         'Symfony\\Polyfill\\Mbstring\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
@@ -89,6 +108,10 @@ class ComposerStaticInitbebc7a39807c835d7d302d1d0ca4dcb8
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'PhpOffice\\PhpWord\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpoffice/phpword/src/PhpWord',
         ),
         'PhpOffice\\PhpPresentation\\' => 
         array (
@@ -644,10 +667,10 @@ class ComposerStaticInitbebc7a39807c835d7d302d1d0ca4dcb8
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitbebc7a39807c835d7d302d1d0ca4dcb8::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitbebc7a39807c835d7d302d1d0ca4dcb8::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitbebc7a39807c835d7d302d1d0ca4dcb8::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitbebc7a39807c835d7d302d1d0ca4dcb8::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit7d30fd7e80061f0009530528e57b91b9::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit7d30fd7e80061f0009530528e57b91b9::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit7d30fd7e80061f0009530528e57b91b9::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit7d30fd7e80061f0009530528e57b91b9::$classMap;
 
         }, null, ClassLoader::class);
     }
