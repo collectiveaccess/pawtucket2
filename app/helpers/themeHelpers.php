@@ -1274,6 +1274,10 @@ jQuery(document).ready(function() {
 		if($o_collections_config->get("export_max_levels") && ($vn_level > $o_collections_config->get("export_max_levels"))){
 			return;
 		}
+		$va_exclude_type_ids = $o_collections_config->get("export_exclude_collection_type_ids");
+		if($va_exclude_type_ids && is_array($va_exclude_type_ids) && (in_array($va_exclude_type_ids))){
+			return;
+		}
 		$vs_output = "";
 		$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
 		

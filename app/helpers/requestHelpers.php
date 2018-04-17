@@ -111,4 +111,3 @@ session_start();
  		return isset($va_url_names_to_tables[$ps_name]) ? $va_url_names_to_tables[$ps_name] : null;
 	}
 	# ---------------------------------------------------------------------------------------------
- ?>

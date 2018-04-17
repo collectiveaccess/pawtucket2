@@ -930,7 +930,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								$vs_raw_term = (string)$o_term->text;
 								//$vs_term = preg_replace("%((?<!\d)[".$this->ops_search_tokenizer_regex."]+|[".$this->ops_search_tokenizer_regex."]+(?!\d))%u", '', $vs_raw_term);
 								$vs_term = join(' ', $this->_tokenize($vs_raw_term, true));
-								
+	
 								if ($vs_access_point && (mb_strtoupper($vs_raw_term) == '['._t('BLANK').']')) {
 									$t_ap = $this->opo_datamodel->getInstanceByTableNum($va_access_point_info['table_num'], true);
 									if (is_a($t_ap, 'BaseLabel')) {	// labels have the literal text "[Blank]" indexed to "blank" to indicate blank-ness 
@@ -1916,13 +1916,22 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 			}
 		}
 		
-		// insert word
-		if (!($vs_stem = trim($this->opo_stemmer->stem($ps_word)))) { $vs_stem = $ps_word; }
-		if (mb_strlen($vs_stem) > 255) { $vs_stem = mb_substr($vs_stem, 0, 255); }
-		
-		$this->opqr_insert_word->execute($ps_word, $vs_stem);
-		if ($this->opqr_insert_word->numErrors()) { return null; }
-		if (!($vn_word_id = (int)$this->opqr_insert_word->getLastInsertID())) { return null; }
+		try {
+            // insert word
+            if (!($vs_stem = trim($this->opo_stemmer->stem($ps_word)))) { $vs_stem = $ps_word; }
+            if (mb_strlen($vs_stem) > 255) { $vs_stem = mb_substr($vs_stem, 0, 255); }
+        
+            $this->opqr_insert_word->execute($ps_word, $vs_stem);
+            if ($this->opqr_insert_word->numErrors()) { return null; }
+            if (!($vn_word_id = (int)$this->opqr_insert_word->getLastInsertID())) { return null; }
+        } catch (Exception $e) {
+            if ($qr_res = $this->opqr_lookup_word->execute($ps_word)) {
+                if ($qr_res->nextRow()) {
+                    return WLPlugSearchEngineSqlSearch::$s_word_cache[$ps_word] = (int)$qr_res->get('word_id', array('binary' => true));
+                }
+            }
+            return null;
+        }
 		
 		// create ngrams
 		// 		$va_ngrams = caNgrams($ps_word, 4);
@@ -2099,7 +2108,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 				}
 			}
 		
-			return preg_split('![ ]+!', trim(preg_replace("%((?<!\d)[".$this->ops_search_tokenizer_regex."]+|[".$this->ops_search_tokenizer_regex."]+(?!\d))%u", ' ', strip_tags($ps_content))));
+			return preg_split('![ ]+!', trim(preg_replace("%((?<!\d)[".$this->ops_search_tokenizer_regex."]+(?!\d))%u", ' ', strip_tags($ps_content))));
 		} else {
 			return preg_split('![ ]+!', trim(preg_replace("%((?<!\d)[".$this->ops_search_tokenizer_regex."]+|[".$this->ops_search_tokenizer_regex."]+(?!\d))%u", ' ', strip_tags($ps_content))));
 		}
@@ -2397,7 +2406,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 				$va_values = array();
 				foreach($va_tmp as $vs_tmp) {
 					if ($vs_tmp == 'NULL') { continue; }
-					$va_values[] = (int)$vs_tmp;
+					$va_values[] = (int)preg_replace("![^\d]+!", "", $vs_tmp);
 				}
 				return "(".join(",", $va_values).")";
 				break;
