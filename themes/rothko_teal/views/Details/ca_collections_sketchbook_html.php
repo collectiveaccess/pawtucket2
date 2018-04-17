@@ -63,7 +63,7 @@
 						print ", ".$vs_credit_line;
 					}
 					if ($qr_collections->get('ca_collections_x_collections.uncertain') == $vs_list_value){
-						"<i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>";
+						"<span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>";
 					}
 					print "</div></div><!-- end unit -->";							
 				}		
@@ -154,7 +154,7 @@
 					}
 				}
 				if ($t_prov_rel->get('ca_collections_x_collections.uncertain') == $vs_list_value) {
-					$vs_provenance_line.= " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>";
+					$vs_provenance_line.= " <span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>";
 				}
 				$vs_provenance_line.= "<i class='fa fa-chevron-right'></i><!-- end prov entry -->";
 				$vs_provenance.= "<div>".caNavLink($this->request, $vs_provenance_line, '', '', 'Detail', 'collections/'.$va_provenance_id)."</div>";
@@ -191,6 +191,7 @@
 			});		
 
             tronicTheToggles();
+            $('.rollover').popover();
 		});
 	</script>
 </ifcount>}}}

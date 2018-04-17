@@ -1,5 +1,5 @@
 /* green #00AE58, dark green #009447 green link: #00964c; very light green #C1EAD4; */
-/* magenta: #ec008b; navy: #004e9a; blue (daisies): #00abe6; gsgreen: #00ae58, purple (junior cookie) #6e298d, red: #ee3124 */
+/* magenta: #ec008b; navy: #004e9a; blue (daisies): #00abe6; gsgreen: #00ae58, purple (junior cookie) #6e298d, red: #ee3124, orange ambassador: #faa61a */
 @font-face {
  font-family: Trefoil;
  src: url("fonts/TrefoilSans-Regular.eot") format("embedded-opentype"),
@@ -106,7 +106,24 @@ body {
 .green{
 	color:#00AE58;
 }
-
+.bgRed{
+	background-color: #ee3124;
+}
+.bgGreen{
+	background-color: #00ae58;
+}
+.bgDarkBlue{
+	background-color: #004e9a;
+}
+.bgLightBlue{
+	background-color: #00abe6;
+}
+.bgPurple{
+	background-color: #6e298d;
+}
+.bgPink{
+	background-color: #ec008b;
+}
 
 .navbar{
 	box-shadow:none;
@@ -217,11 +234,7 @@ h1 {
     font-size: 2rem;
     font-weight:200;
 }
-.staticPage h1 {
-    font-size: 2rem;
-    font-weight:500;
-}
-.gallery h1, .contact h1, .sets h1, .collections.landing h1, h1.discover {
+.gallery h1, .contact h1, .sets h1, .collections.landing h1, h1.discover, .staticPage h1 {
     font-size: 3rem;
     font-weight:500;
 }
@@ -230,7 +243,7 @@ h1 {
 		font-size: 1rem;
 		font-weight:200;
 	}
-	.staticPage h1, .gallery h1, .contact h1, .sets h1, .collections.landing h1 {
+	.staticPage h1, .gallery h1, .contact h1, .sets h1, .collections.landing h1, .staticPage h1 {
 		font-size: 1.5rem;
 		font-weight:500;
 	}
@@ -774,14 +787,35 @@ a.readmore-js-toggle{
 	padding-top:0px;
 }
 /* Collections/Finding Aid */
-.collectionsList a{
-	font-size:18px;
-    font-weight: normal;
-    color: #00AE58;
-    text-decoration: none;
+.collections.landing h2{
+	font-size:20px;
+	font-weight: 500;
 }
-.collectionsList{
-	font-size:13px;
+.collectionsLeftCol .collectionBlock{
+	background-color: #00ae58;
+}
+.collectionsRightCol .collectionBlock{
+	background-color: #00abe6;
+}
+.collectionsRightCol .collectionBlock, .collectionsLeftCol .collectionBlock{
+	color:#FFF;
+	padding:25px 20px 5px 20px;
+	margin-bottom:25px;
+}
+.collectionsRightCol .collectionBlock a, .collectionsLeftCol .collectionBlock a{
+	font-size:1.2rem;
+	color:#FFF;
+	font-weight: 500;
+    text-decoration: none;
+    line-height:1.1rem;
+}
+.collectionBlock p{
+	line-height: 1.1rem;
+	padding-bottom:20px;
+	margin-bottom:0px;
+}
+.collectionBlock div{
+	padding-bottom:20px;
 }
 #collectionLoad div a, #collectionLoad div .nonLinkedCollection{
 	font-size:16px;
@@ -802,57 +836,57 @@ a.readmore-js-toggle{
 	padding-left:0px;
 }
 
-/* About */
+/* browse landing */
 
-.browseTile {
+.browseTile, .collectionLandingTile {
 	background-color: #daeddd;
 	margin-bottom:25px;
 }
-.browseText {
+.browseText, .collectionText {
 	float:left;
 	font-size:14px;
 }
 @media (min-width: 1000px) {
-	.browseText, .browseImg {
+	.browseText, .browseImg, .collectionText, .collectionImg {
 		width:50%;
 		float:left;
 	}
 }
 @media (min-width: 768px) and (max-width: 1000px) {
-	.browseText {
+	.browseText, .collectionText {
 		height:150px;
 	}
 }
-.browseImg img {
+.browseImg img, .collectionImg img {
 	width:100%;
 	height:auto;
 }
-.browseText h3 {
+.browseText h3, .collectionText h3 {
 	font-weight:bold;
 	font-size:18px;
 	padding-bottom:0px;
 	color:#fff;
 	margin-bottom:5px;
 }
-.browseText {
+.browseText, .collectionText {
 	padding-bottom:50px;
     padding: 15px;
     color:#fff;
 }
-.browseText a{
+.browseText a, .collectionText a{
 	color:#fff;
 }
 .band {
-	background-color:#6e298d;
+	background-color:#004e9a;
 	color:#fff;
 	padding:10px;
 	font-size:22px;
 	margin-top:30px;
 	margin-bottom:30px;
 }
-.bannerImg {
-	margin-bottom:25px;
-}
+/*.bannerImg {
+	margin-bottom:60px;
+}*/
 .bannerImg img{
 	width:100%;
 	height:auto;
@@ -889,7 +923,7 @@ a.readmore-js-toggle{
 	.quote .quoteCredit{
 		margin-left:45%;
 	}
-	.gallery .quote .quoteText {
+	.quote .quoteText .quoteTextCenter {
 		font-size:16px;
 		width:50%;
 		margin-left:auto;
@@ -1204,4 +1238,32 @@ i.trefoilPlaceholder.smallPlaceholder{
 }
 .multisearch H1{
 	clear:right;
+}
+.aboutLandingBlocks{
+	padding:10px 15px 20px 15px;
+}
+.aboutLandingBlocks a{
+	font-size: 1.25rem;
+	font-weight:bold;
+	color:#000;
+}
+.aboutLandingBlocks .fa{
+	color:#00AE58;
+	margin-right:15px;
+}
+.aboutSideNav{
+	line-height:1.1rem;
+}
+.aboutSideNav a{
+	color:#000;
+	font-weight: 500;
+}
+.aboutSideNav div{
+	padding-bottom:15px;
+	text-indent: -10px;
+	margin-left: 25px;
+}
+.aboutSideNav .fa{
+	color:#00AE58;
+	margin-right:5px;
 }
