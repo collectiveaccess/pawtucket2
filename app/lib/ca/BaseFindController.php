@@ -575,7 +575,6 @@
 					$o_pdf->render($vs_content, array('stream'=> true, 'filename' => ($vs_filename = $this->view->getVar('filename')) ? $vs_filename : caGetOption('filename', $va_template_info, 'export_results.pdf')));
 					exit;
 				} catch (Exception $e) {
-					die($e->getMessage());
 					$this->postError(3100, _t("Could not generate PDF"),"BaseFindController->PrintSummary()");
 				}
 				return;			
