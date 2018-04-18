@@ -33,7 +33,7 @@
 			$vs_ex_rep_info = $t_ex_rep->getPrimaryRepresentation(array('version' => 'page'), null, array('return_with_access' => $va_access_values));
 			print "<div class='exhibitionRep'>";
 			print caDetailLink($this->request, $vs_ex_rep_info['tags']['page'], '', 'ca_objects', $t_ex_rep->get('ca_objects.object_id'));
-			print caDetailLink($this->request, $t_ex_rep->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_ex_rep->get('ca_objects.object_id'));		
+			print "<br/><br/>".caDetailLink($this->request, $t_ex_rep->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_ex_rep->get('ca_objects.object_id'));		
 			print "</div>";
 			print "<hr style='padding-bottom:5px;'>";						
 			print '</div></div>';
@@ -107,6 +107,14 @@
 						}
 					}
 				} */
+				if($va_related_catalogue = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('catalogue'), 'sort' => 'ca_object_labels.name'))){
+					foreach ($va_related_catalogue as $vn_i => $vn_related_catalogue_id) {
+						$t_rel_catalogue = new ca_objects($vn_related_catalogue_id);
+						if($vn_rep_id = $t_rel_catalogue->get('ca_object_representations.representation_id', array("checkAccess" => $va_access_values))){
+							print "<h6><i class='fa fa-file'></i> <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'archival', 'id' => $vn_related_catalogue_id, 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;'>View Catalogue </a></h6>";
+						}
+					}
+				}
 				if ($va_remarks_images_url = $t_item->get('ca_occurrences.bibliography.url', array('returnAsArray' => true, 'version' => 'original'))) {
 					foreach ($va_remarks_images_url as $va_key => $va_remarks_images_url_path) {
 						print "<h6><i class='fa fa-file'></i> <a href='".$va_remarks_images_url_path."'>View Bibliography </a></h6>";
