@@ -1072,7 +1072,7 @@ a .svg-inline--fa.clearFacet {
 }
 .bResultListItem, .bResultListItem:hover {
 	background-color:#fff;
-	margin-bottom:10px;
+	margin-bottom:0px;
 	padding-left:0px;
 	border-bottom: 0px solid #d6d6d6;
     padding-bottom: 20px;
@@ -1267,11 +1267,13 @@ a .svg-inline--fa.clearFacet {
   display: flex;
   justify-content: space-between;
 }
-.provenance.browse #bRefine, .references.browse #bRefine {
+.provenance.browse #bRefine, .references.browse #bRefine,
+.provenance.search #bRefine, .references.search #bRefine {
     display: inline-block;
     justify-content: inherit;
 }
-.provenance.browse #bRefine .dropdown.button, .references.browse #bRefine .dropdown.button {
+.provenance.browse #bRefine .dropdown.button, .references.browse #bRefine .dropdown.button,
+.provenance.search #bRefine .dropdown.button, .references.search #bRefine .dropdown.button {
 	width:17%;
 }
 #bRefine h5{
@@ -2092,4 +2094,6 @@ div.caMediaOverlayControlsMinimal .svg-inline--fa {
 	display: none !important;
 }
 
-
+.mirador-manipulation-controls {
+	display: none !important;
+}

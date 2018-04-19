@@ -41,7 +41,7 @@
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search exhibitions by location.">Location</span>
-				{{{ca_places.preferred_labels.name%width=220px&height=1}}}
+				{{{ca_places.preferred_labels.name%width=220px&height=1}}} <input type="hidden" name="ca_places_preferred_labels_name_label" value="Location"/>
 			</div>
 		</div>					
 		<br style="clear: both;"/>
