@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/controllers/GalleryController.php : 
+ * app/controllers/InteractiveController.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -30,7 +30,7 @@
  	require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  	
- 	class GalleryController extends BasePawtucketController {
+ 	class InteractiveController extends BasePawtucketController {
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
@@ -47,12 +47,12 @@
  			$this->opo_datamodel = Datamodel::load();
  			
  		 	# --- what is the section called - title of page
- 			if(!$vs_section_name = $this->config->get('gallery_section_name')){
- 				$vs_section_name = _t("Featured Galleries");
+ 			if(!$vs_section_name = $this->config->get('interactive_section_name')){
+ 				$vs_section_name = _t("Featured Interactives");
  			}
  			$this->view->setVar("section_name", $vs_section_name);
- 			if(!$vs_section_item_name = $this->config->get('gallery_section_item_name')){
- 				$vs_section_item_name = _t("gallery");
+ 			if(!$vs_section_item_name = $this->config->get('interactive_section_item_name')){
+ 				$vs_section_item_name = _t("Interactive");
  			}
  			$this->view->setVar("section_item_name", $vs_section_item_name);
  			caSetPageCSSClasses(array("gallery"));
@@ -69,7 +69,7 @@
  			$ps_function = strtolower($ps_function);
  			# --- which type of set is configured for display in gallery section
  			$t_list = new ca_lists();
- 			$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $this->config->get('gallery_set_type')); 			
+ 			$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $this->config->get('interactive_set_type')); 			
  			$t_set = new ca_sets();
  			if($ps_function == "index"){
  				if($vn_gallery_set_type_id){
@@ -105,7 +105,7 @@
 					$this->view->setVar('sets', $va_sets);
 					$this->view->setVar('first_items_from_sets', $va_set_first_items);
 				}
-				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")));
+				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('interactive_section_name')) ? $this->config->get('interactive_section_name') : _t("Interactive")));
  				$this->render("Gallery/index_html.php");
  			}else{
  				$ps_set_id = $ps_function;
@@ -117,7 +117,7 @@
 				$vs_table = $o_dm->getTableName($t_set->get('table_num'));
 				# --- don't save the gallery context when loaded via ajax
 				if (!$this->request->isAjax()){
-					$o_context = new ResultContext($this->request, $vs_table, 'gallery');
+					$o_context = new ResultContext($this->request, $vs_table, 'interactive');
 					$o_context->setAsLastFind();
 					$o_context->setResultList(array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))));
 					$o_context->saveContext();
@@ -130,7 +130,7 @@
  					$pn_set_item_id = "";	
  				}
  				$this->view->setVar("set_item_id", $pn_set_item_id);
- 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
+ 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('interactive_section_name')) ? $this->config->get('interactive_section_name') : _t("Interactive")).$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
  				$vs_display_attribute = $this->config->get('gallery_set_presentation_element_code');
  				$vs_display = "";
  				if($vs_display_attribute){
@@ -272,7 +272,7 @@
 				$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
 				$this->view->setVar("rep_object", $t_rep);
 				$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
-				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"], ['context' => 'gallery']));
+				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"], ['context' => 'interactive']));
 				$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
 			}
  			$this->view->setVar("object_id", $va_set_items[$pn_item_id]["row_id"]);
@@ -346,7 +346,7 @@
  		public static function getReturnToResultsUrl($po_request) {
  			$va_ret = array(
  				'module_path' => '',
- 				'controller' => 'Gallery',
+ 				'controller' => 'Interactive',
  				'action' => 'Index',
  				'params' => array()
  			);

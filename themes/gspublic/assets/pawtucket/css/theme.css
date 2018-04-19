@@ -67,11 +67,11 @@ body {
 	padding-top:190px;
 }
 .initial #pageArea{
-	padding-top:20px;
+	padding-top:0px;
 }
 @media (max-width: 768px) {
 	#pageArea, .initial #pageArea{
-		padding-top:30px;
+		padding-top:0px;
 	}
 }
 .clearfix {
@@ -143,10 +143,14 @@ body {
 	background-color:#2fb56a;
     -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	padding-left:0px;
+	padding-right:0px;
 }
 .initial .headerContainer{
 	position:relative;	
 	-webkit-box-shadow:none;
+	padding-left:15px;
+	padding-right:15px;
 }
 .topHeader{
 	background-color:#2fb56a;
@@ -265,9 +269,12 @@ h1 {
 /* links */
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 	font-family: Trefoil, Arial, sans-serif;
-    font-size:1rem;
+    font-size:.9rem;
 	color:#C1EAD4;
 	text-transform:uppercase;
+}
+.initial .nav > li > a, .initial .nav > li > a:hover, .initial .nav > li > a:focus {
+	font-size:1rem;
 }
 .nav > li > a:hover, .nav > li > a:focus{
 	color:#FFFFFF !important;
@@ -839,15 +846,27 @@ a.readmore-js-toggle{
 /* browse landing */
 
 .browseTile, .collectionLandingTile {
-	background-color: #daeddd;
+	background-color: #efecdf;
 	margin-bottom:25px;
 }
 .browseText, .collectionText {
 	float:left;
 	font-size:14px;
 }
-@media (min-width: 1000px) {
-	.browseText, .browseImg, .collectionText, .collectionImg {
+@media (min-width: 992px) {
+	.browseText, .browseImg {
+		width:50%;
+		float:left;
+	}
+}
+@media (min-width: 992px) {
+	.collectionText, .collectionImg {
+		width:50%;
+		float:left;
+	}
+}
+@media (max-width: 768px) {
+	.collectionText, .collectionImg {
 		width:50%;
 		float:left;
 	}
@@ -857,6 +876,7 @@ a.readmore-js-toggle{
 		height:150px;
 	}
 }
+
 .browseImg img, .collectionImg img {
 	width:100%;
 	height:auto;
@@ -873,16 +893,33 @@ a.readmore-js-toggle{
     padding: 15px;
     color:#fff;
 }
-.browseText a, .collectionText a{
+.browseText a{
 	color:#fff;
+}
+.collectionText a{
+	color:#000;
+	font-weight: 500;
+}
+.collectionLink{
+	background-color:#009447;
+	color:#fff;
+	text-align:right;
+	padding:5px 10px 5px 0px;
+}
+.collectionLink a{
+	color:#FFF;
+	text-transform:uppercase;
+}
+.collectionLink a .fa{
+	font-size:12px;
 }
 .band {
 	background-color:#004e9a;
 	color:#fff;
 	padding:10px;
 	font-size:22px;
-	margin-top:30px;
-	margin-bottom:30px;
+	margin-top:0px;
+	margin-bottom:45px;
 }
 /*.bannerImg {
 	margin-bottom:60px;

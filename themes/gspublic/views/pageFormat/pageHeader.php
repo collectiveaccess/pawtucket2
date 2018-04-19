@@ -147,6 +147,7 @@
 						<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() != "browse")) ? "class='active'" : ""; ?>'><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 						<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "browse")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Discover"), "", "", "About", "browse"); ?></li>	
 						<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
+						<li <?php print ($this->request->getController() == "Interactive") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Interactive"), "", "", "Interactive", "Index"); ?></li>
 						<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Research"), '', '', 'Collections', 'Index'); ?></li>
 						<li <?php print ($this->request->getController() == "News") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("News"), "", "", "News", ""); ?></li>
 						<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>

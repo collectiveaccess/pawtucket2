@@ -38,6 +38,7 @@
 		$t_instance->load($pn_ref_row_id);
 		$vs_ref_name = caDetailLink($this->request, $t_instance->get($ps_ref_table.".preferred_labels"), '', $ps_ref_table, $pn_ref_row_id);
 	}
+	$vs_intro = $this->getVar("contribute_intro");
 	
 	if($this->request->isAjax()){
 ?>
@@ -56,6 +57,9 @@
 }
 ?>
 			<h1>Contribute to the Girl Scouts of the USA Collection</h1>
+			<p>
+				<?php print $vs_intro; ?>
+			</p><br/><br/>
 <?php
 			if($ps_ref_table && $pn_ref_row_id){
 ?>
