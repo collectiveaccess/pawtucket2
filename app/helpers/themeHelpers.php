@@ -389,27 +389,28 @@
 	 *		bsColClasses = pass the classes to assign to bs col [Default = col-sm-4 col-md-3 col-lg-3]
 	 *		dontShowCurrentRep = true, false [Default = false]
 	 *		currentRepClass = set to class name added to li and a tag for current rep [Default = active]
+	 *      primaryOnly = Only show primary representations. [Default is false]
 	 * @return string HTML output
 	 */
 	function caObjectRepresentationThumbnails($po_request, $pn_representation_id, $pt_object, $pa_options){
-		if(!$pt_object || !$pt_object->get("object_id")){
+		if(!$pt_object || !$pt_object->getPrimaryKey()){
 			return false;
 		}
 		if(!is_array($pa_options)){
 			$pa_options = array();
 		}
 		# --- set defaults
-		$vs_version = caGetOption('version', $pa_options, 'icon');
-		$vs_link_to = caGetOption('linkTo', $pa_options, 'carousel');
-		$vs_return_as = caGetOption('returnAs', $pa_options, 'list');
-		$vs_bs_col_classes = caGetOption('bsColClasses', $pa_options, 'col-sm-4 col-md-3 col-lg-3');
-		$vs_current_rep_class = caGetOption('currentRepClass', $pa_options, 'active');
+ 		$pb_primary_only 					= caGetOption('primaryOnly', $pa_options, false);
+		$ps_version                         = caGetOption('version', $pa_options, 'icon');
+		$ps_link_to                         = caGetOption('linkTo', $pa_options, 'carousel');
+		$ps_return_as                       = caGetOption('returnAs', $pa_options, 'list');
+		$ps_bs_col_classes                  = caGetOption('bsColClasses', $pa_options, 'col-sm-4 col-md-3 col-lg-3');
+		$ps_current_rep_class               = caGetOption('currentRepClass', $pa_options, 'active');
 		
-		if(!$pa_options["currentRepClass"]){
-			$pa_options["currentRepClass"] = "active";
-		}
+		if(!$pa_options["currentRepClass"]){ $pa_options["currentRepClass"] = "active"; }
+		
 		# --- get reps as thumbnails
-		$va_reps = $pt_object->getRepresentations(array($vs_version), null, array("checkAccess" => caGetUserAccessValues($po_request)));
+		$va_reps = $pt_object->getRepresentations(array($ps_version), null, array("checkAccess" => caGetUserAccessValues($po_request), 'primaryOnly' => $pb_primary_only));
 		if(sizeof($va_reps) < 2){
 			return;
 		}
@@ -424,22 +425,22 @@
 				if($pa_options["dontShowCurrentRep"]){
 					continue;
 				}
-				$vs_class = $vs_current_rep_class;
+				$vs_class = $ps_current_rep_class;
 			}
-			$vs_thumb = $va_rep["tags"][$vs_version];
-			switch($vs_link_to){
+			$vs_thumb = $va_rep["tags"][$ps_version];
+			switch($ps_link_to){
 				# -------------------------------
 				case "viewer":
-					$va_links[$vn_rep_id] = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetRepresentationInfo', array('object_id' => $pt_object->get("object_id"), 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
+					$va_links[$vn_rep_id] = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array($pt_object->primaryKey() => $pt_object->getPrimaryKey(), 'representation_id' => $vn_rep_id, 'overlay' => 1, 'context' => $po_request->getAction()))."\"); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
 					break;
 				# -------------------------------
 				case "carousel":
-					$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".{$vs_current_rep_class}\").removeClass(\"{$vs_current_rep_class}\"); $(this).parent().addClass(\"{$vs_current_rep_class}\"); $(this).addClass(\"{$vs_current_rep_class}\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"), false); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
+					$va_links[$vn_rep_id] = "<a href='#' onclick='$(\".{$ps_current_rep_class}\").removeClass(\"{$ps_current_rep_class}\"); $(this).parent().addClass(\"{$ps_current_rep_class}\"); $(this).addClass(\"{$ps_current_rep_class}\"); $(\".jcarousel\").jcarousel(\"scroll\", $(\"#slide".$vn_rep_id."\"), false); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
 					break;
 				# -------------------------------
 				default:
 				case "detail":
-					$va_links[$vn_rep_id] = caDetailLink($po_request, $vs_thumb, $vs_class, 'ca_objects', $pt_object->get("object_id"), array("representation_id" => $vn_rep_id));
+					$va_links[$vn_rep_id] = caDetailLink($po_request, $vs_thumb, $vs_class, $pt_object->tableName(), $pt_object->getPrimaryKey(), array("representation_id" => $vn_rep_id));
 					break;
 				# -------------------------------
 			}
@@ -452,12 +453,12 @@
 		
 		# --- formatting
 		$vs_formatted_thumbs = "";
-		switch($vs_return_as){
+		switch($ps_return_as){
 			# ---------------------------------
 			case "list":
 				$vs_formatted_thumbs = "<ul id='detailRepresentationThumbnails'>";
 				foreach($va_links as $vn_rep_id => $vs_link){
-					if($vs_link){ $vs_formatted_thumbs .= "<li id='detailRepresentationThumbnail{$vn_rep_id}'".(($vn_rep_id == $pn_representation_id) ? " class='{$vs_current_rep_class}'" : "").">{$vs_link}</li>\n"; }
+					if($vs_link){ $vs_formatted_thumbs .= "<li id='detailRepresentationThumbnail{$vn_rep_id}'".(($vn_rep_id == $pn_representation_id) ? " class='{$ps_current_rep_class}'" : "").">{$vs_link}</li>\n"; }
 				}
 				$vs_formatted_thumbs .= "</ul>";
 				return $vs_formatted_thumbs;
@@ -466,7 +467,7 @@
 			case "bsCols":
 				$vs_formatted_thumbs = "<div class='container'><div class='row' id='detailRepresentationThumbnails'>";
 				foreach($va_links as $vn_rep_id => $vs_link){
-					if($vs_link){ $vs_formatted_thumbs .= "<div id='detailRepresentationThumbnail{$vn_rep_id}' class='{$vs_bs_col_classes}".(($vn_rep_id == $pn_representation_id) ? " {$vs_current_rep_class}" : "")."'>{$vs_link}</div>\n"; }
+					if($vs_link){ $vs_formatted_thumbs .= "<div id='detailRepresentationThumbnail{$vn_rep_id}' class='{$ps_bs_col_classes}".(($vn_rep_id == $pn_representation_id) ? " {$ps_current_rep_class}" : "")."'>{$vs_link}</div>\n"; }
 				}
 				$vs_formatted_thumbs .= "</div></div>\n";
 				return $vs_formatted_thumbs;
@@ -796,6 +797,15 @@
 				$va_params[] = $va_rel_types;
 			}
 		}
+		
+		$vs_type_where = '';
+		if (is_array($va_object_types = caGetOption('objectTypes', $pa_options, null)) && sizeof($va_object_types)) {
+			$va_object_types = caMakeTypeIDList('ca_objects', $va_object_types);
+			if (is_array($va_object_types) && sizeof($va_object_types)) {
+				$vs_type_where = " AND (ca_objects.type_id IN (?))";
+				$va_params[] = $va_object_types;
+			}
+		}
 
 		if(is_array($pa_ids) && sizeof($pa_ids)) {
 			$vs_id_sql = "AND {$vs_table}.{$vs_pk} IN (?)";
@@ -809,7 +819,7 @@
 			INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = ca_objects.object_id
 			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
 			WHERE
-				ca_objects_x_object_representations.is_primary = 1 {$vs_rel_type_where} {$vs_id_sql}
+				ca_objects_x_object_representations.is_primary = 1 {$vs_access_wheres} {$vs_rel_type_where} {$vs_type_where} {$vs_id_sql}
 		";
 
 		$o_db = $t_instance->getDb();
@@ -1006,6 +1016,8 @@
 		$o_dm = Datamodel::load();
  		if (!($pt_subject = $o_dm->getInstanceByTableName($va_search_info['table'], true))) { return null; }
  		
+ 		$va_globals = $pt_subject->getAppConfig()->getAssoc('global_template_values');
+ 		
 		$po_request = caGetOption('request', $pa_options, null);
 		$ps_controller = caGetOption('controller', $pa_options, null);
 		$ps_form_name = caGetOption('formName', $pa_options, 'caAdvancedSearch');
@@ -1019,6 +1031,8 @@
 		
 		$vb_submit_or_reset_set = false;
 		foreach($pa_tags as $vs_tag) {
+		    if(isset($va_globals[$vs_tag])) { continue; }
+		    
 			$va_parse = caParseTagOptions($vs_tag);
 			$vs_tag_proc = $va_parse['tag'];
 			$va_opts = $va_parse['options'];
@@ -1257,6 +1271,13 @@ jQuery(document).ready(function() {
 		$va_access_values = caGetUserAccessValues($po_request);
 		# --- get collections configuration
 		$o_collections_config = caGetCollectionsConfig();
+		if($o_collections_config->get("export_max_levels") && ($vn_level > $o_collections_config->get("export_max_levels"))){
+			return;
+		}
+		$va_exclude_type_ids = $o_collections_config->get("export_exclude_collection_type_ids");
+		if($va_exclude_type_ids && is_array($va_exclude_type_ids) && (in_array($va_exclude_type_ids))){
+			return;
+		}
 		$vs_output = "";
 		$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
 		

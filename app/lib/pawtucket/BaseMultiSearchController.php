@@ -88,6 +88,12 @@
  			$o_first_result_context = array_shift(array_values($this->opa_result_contexts));
  			
  			$vs_search = $o_first_result_context->getSearchExpression();
+ 			
+ 			if ($ps_label = $this->request->getParameter('label', pString)) {
+				$o_first_result_context->setSearchExpressionForDisplay("{$ps_label}: ".caGetDisplayStringForSearch($vs_search, ['omitFieldNames' => true]));
+ 			} else {
+ 			    $o_first_result_context->setSearchExpressionForDisplay(caGetDisplayStringForSearch($vs_search)); 
+ 			}
  			$vs_search_display = $o_first_result_context->getSearchExpressionForDisplay();
  			
  			$this->view->setVar('search', $vs_search);
@@ -125,7 +131,7 @@
  				
  				$vn_result_count += sizeof($va_results[$vs_block]['ids']);
  				
- 				if ((sizeof($va_results[$vs_block]['ids']) == 1) && ($vn_result_count == 1)) {
+ 				if ((sizeof($va_results[$vs_block]['ids']) == 1) && ($vn_result_count == 1) && (!$this->config->get('dont_redirect_to_single_search_result'))) {
  					$vs_redirect_to_only_result = caDetailUrl($this->request, $va_results[$vs_block]['table'], $va_results[$vs_block]['ids'][0], false);
  				}
  			}

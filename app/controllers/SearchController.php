@@ -103,13 +103,15 @@
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $ps_function);
  			
- 			if($vs_named_search=caGetNamedSearch($vs_search_expression = $this->opo_result_context->getSearchExpression(), $this->request->getParameter('values', pString))) {
+ 			if ($ps_label = $this->request->getParameter('label', pString)) {
+				$this->opo_result_context->setSearchExpressionForDisplay("{$ps_label}: {$vs_search_expression}"); 
+ 			    $vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
+ 			} elseif($vs_named_search=caGetNamedSearch($vs_search_expression = $this->opo_result_context->getSearchExpression(), $this->request->getParameter('values', pString))) {
  		
  				$vs_search_expression_for_display = caGetNamedSearchForDisplay($vs_search_expression, $this->request->getParameter('values', pString));
  				$this->opo_result_context->setSearchExpression($vs_named_search);
  				$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
  				$vs_search_expression = $vs_named_search;
- 				//print "got $vs_search_expression_for_display<br>\n";
  			} else {
 				$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
 			}
@@ -131,7 +133,7 @@
  			$this->opo_result_context->setAsLastFind(true);
  			
  			
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_browse_info["displayName"]).": ".$this->opo_result_context->getSearchExpression());
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search %1", $va_browse_info["displayName"]).$this->request->config->get("page_title_delimiter").$this->opo_result_context->getSearchExpression());
  			
  			//
  			// Handle advanced search form submissions
@@ -217,8 +219,7 @@
                     }
                 }
 			}
-			
-				
+					
 			if ($this->request->getParameter('getFacet', pInteger)) {
 				$vs_facet = $this->request->getParameter('facet', pString);
 				$this->view->setVar('facet_name', $vs_facet);
@@ -251,6 +252,21 @@
 				$o_browse->addCriteria('_search', array($vs_search_refine.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_refine) && preg_match('![\w]+$!', $vs_search_refine)) ? '*' : '')), array($vs_search_refine));
 			} elseif ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
+			} elseif (($vs_facets = $this->request->getParameter('facets', pString)) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
+			    foreach ($va_facets as $vs_facet_spec) {
+			        if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
+			        $vs_facet = array_shift($va_tmp);
+			        $o_browse->addCriteria($vs_facet, explode("|", join(":", $va_tmp))); 
+			    }
+			}
+			//
+			// Add Additional base criteria if necessary
+			//
+			if($va_base_criteria = $o_search_config->get('baseCriteria')){
+				$va_table_criteria = $va_base_criteria[$va_browse_info['table']];
+				foreach($va_table_criteria as $vs_facet => $vs_value){
+					$o_browse->addCriteria($vs_facet, $vs_value);
+				}
 			}
 			
 			//
@@ -279,7 +295,9 @@
  				}
  				
  			}else{
- 				$vb_sort_changed = true;
+ 				if($ps_sort != $this->opo_result_context->getCurrentSort()){
+ 					$vb_sort_changed = true;
+ 				}
  			}
  			if($vb_sort_changed){
 				# --- set the default sortDirection if available
@@ -384,7 +402,7 @@
 			
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
-			if (($vn_key_start = $vn_start - 5000) < 0) { $vn_key_start = 0; }
+			if (($vn_key_start = (int)$vn_start - 5000) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
 			$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(5000));
 			if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(5000)); $o_block_result_context->saveContext();}
@@ -406,7 +424,7 @@
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
 				$qr_res->seek(0);
 				$o_map->mapFrom($qr_res, $va_view_info['data'], $va_opts);
-				$this->view->setVar('map', $o_map->render('HTML', array()));
+				$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_view_info, 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_view_info, 12), 'request' => $this->request)));
 			}
  			
  			
@@ -446,7 +464,7 @@
  			$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type.'_advanced', $ps_function);
  			$this->opo_result_context->setAsLastFind();
  			
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_search_info["displayName"]));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search %1", $va_search_info["displayName"]));
  			$this->view->setVar('searchInfo', $va_search_info);
  			$this->view->setVar('options', caGetOption('options', $va_search_info, array(), array('castTo' => 'array')));
  			

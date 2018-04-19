@@ -36,6 +36,8 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_users.php");
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
  	require_once(__CA_LIB_DIR__."/core/GeographicMap.php");
+	require_once(__CA_LIB_DIR__.'/core/Parsers/ZipStream.php');
+	require_once(__CA_LIB_DIR__.'/core/Logging/Downloadlog.php');
  
  	class LightboxController extends FindController {
  		# -------------------------------------------------------
@@ -152,7 +154,7 @@
  			}
  			$this->view->setVar("activity", $va_set_change_log);
 
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name));
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name));
  			
  			$this->render(caGetOption("view", $pa_options, "Lightbox/set_list_html.php"));
  		}
@@ -374,7 +376,7 @@
 			
 			$o_context->setParameter('key', $vs_key);
 			
-			if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
+			if (($vn_key_start = (int)$vn_start - 1000) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
 			$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 			//if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
@@ -393,7 +395,7 @@
 				$this->view->setVar('map', $o_map->render('HTML', array()));
 			}
  			
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name).": ".$t_set->getLabelForDisplay());
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name).$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
  			switch($ps_view) {
  				case 'xlsx':
  				case 'pptx':
@@ -474,7 +476,7 @@
  			$vb_is_insert = false;
  			if(sizeof($va_errors) == 0){
 				$t_set->setMode(ACCESS_WRITE);
-				if(!is_null($vn_access = $this->request->getParameter('access', pInteger))) {
+				if(strlen($vn_access = $this->request->getParameter('access', pInteger))) {
 					$t_set->set('access', $vn_access);
 				} else {
 					$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
@@ -1089,7 +1091,7 @@
 				foreach($va_row_ids_raw as $vn_row_id_raw){
 					$va_row_ids[] = str_replace('row[]=', '', $vn_row_id_raw);
 				}
-				$va_errors = $t_set->reorderItems($va_row_ids);
+				$va_errors = $t_set->reorderItems($va_row_ids, ['user_id' => $this->request->getUserID()]);
 			}else{
 				throw new ApplicationException(_t("You do not have access to this lightbox"));
 			}
@@ -1166,7 +1168,6 @@
 				$vn_object_table_num = $t_object->tableNum();
 				$t_set->setMode(ACCESS_WRITE);
 				$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
-				#$t_set->set('access', $this->request->getParameter('access', pInteger));
 				$t_set->set('table_num', $vn_object_table_num);
 				$t_set->set('type_id', $vn_set_type_user);
 				$t_set->set('user_id', $this->request->getUserID());
@@ -1224,6 +1225,7 @@
 							$va_object_ids = $o_context->getResultList();
 						} elseif($pn_object_id) {
 							$va_object_ids = [$pn_object_id];
+							$this->view->setVar("row_id", $pn_object_id);
 						}else{
 							$va_object_ids = explode(";", $ps_object_ids);
 						}
@@ -1307,6 +1309,137 @@
 			$this->view->setVar("set", $t_set);
 
 			$this->render("Lightbox/present_html.php");
+		}
+		# -------------------------------------------------------
+		/**
+		 * Download (accessible) media for all records in this set
+		 */
+		public function getLightboxMedia() {
+			set_time_limit(600); // allow a lot of time for this because the sets can be potentially large
+			$o_dm = Datamodel::load();
+			$t_set = new ca_sets($this->request->getParameter('set_id', pInteger));
+			if (!$t_set->getPrimaryKey()) {
+				$this->notification->addNotification(_t('No set defined'), __NOTIFICATION_TYPE_ERROR__);
+				$this->opo_response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index'));
+				return false;
+			}
+
+			$va_record_ids = array_keys($t_set->getItemRowIDs(array('checkAccess' => $this->opa_access_values, 'limit' => 100000)));
+			if(!is_array($va_record_ids) || !sizeof($va_record_ids)) {
+				$this->notification->addNotification(_t('No media is available for download'), __NOTIFICATION_TYPE_ERROR__);
+				$this->opo_response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index'));
+				return false;
+			}
+
+			$vs_subject_table = $o_dm->getTableName($t_set->get('table_num'));
+			$t_instance = $o_dm->getInstanceByTableName($vs_subject_table);
+
+			$qr_res = $vs_subject_table::createResultSet($va_record_ids);
+			$qr_res->filterNonPrimaryRepresentations(false);
+
+			$va_paths = array();
+			$t_download_log = new Downloadlog();
+			while($qr_res->nextHit()) {
+				$t_instance->load($qr_res->get("ca_objects.object_id"));
+				if (!$t_instance->getPrimaryKey()) { continue; }
+				
+				$va_reps = $t_instance->getRepresentations(null, null, array("checkAccess" => $this->opa_access_values));
+				$vs_idno = $t_instance->get('idno');
+				
+				$vn_c = 1;
+				foreach($va_reps as $vn_representation_id => $va_rep) {
+					
+					$t_download_log->log(array(
+						"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
+						"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+						"table_num" => $t_instance->TableNum(), 
+						"row_id" => $t_instance->get("ca_objects.object_id"), 
+						"representation_id" => $vn_representation_id, 
+						"download_source" => "pawtucket"
+					));
+				
+					
+					# -- get version to download configured in media_display.conf
+					$va_download_display_info = caGetMediaDisplayInfo('download', $va_rep["mimetype"]);
+					$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);
+	
+					$t_rep = new ca_object_representations($va_rep['representation_id']);
+					$va_rep_info = $t_rep->getMediaInfo("media", $vs_download_version);
+					//$va_rep_info = $va_rep['info'][$vs_download_version];
+					$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $vs_idno);
+
+					switch($this->request->user->getPreference('downloaded_file_naming')) {
+						case 'idno':
+							$vs_file_name = $vs_idno_proc.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
+							break;
+						case 'idno_and_version':
+							$vs_file_name = $vs_idno_proc.'_'.$vs_download_version.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
+							break;
+						case 'idno_and_rep_id_and_version':
+							$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$vs_download_version.'.'.$va_rep_info['EXTENSION'];
+							break;
+						case 'original_name':
+						default:
+							if ($va_rep['info']['original_filename']) {
+								$va_tmp = explode('.', $va_rep['info']['original_filename']);
+								if (sizeof($va_tmp) > 1) { 
+									if (strlen($vs_ext = array_pop($va_tmp)) < 3) {
+										$va_tmp[] = $vs_ext;
+									}
+								}
+								$vs_file_name = join('_', $va_tmp); 					
+							} else {
+								$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$vs_download_version;
+							}
+							
+							if (isset($va_file_names[$vs_file_name.'.'.$va_rep_info['EXTENSION']])) {
+								$vs_file_name.= "_{$vn_c}";
+							}
+							$vs_file_name .= '.'.$va_rep_info['EXTENSION'];
+							break;
+					} 
+					
+					$va_file_names[$vs_file_name] = true;
+				
+					//
+					// Perform metadata embedding
+					if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $vs_download_version), 'ca_objects', $t_instance->getPrimaryKey(), $t_instance->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
+						$vs_path = $t_rep->getMediaPath('media', $vs_download_version);
+					}
+					$va_file_paths[$vs_path] = $vs_file_name;
+					
+					$vn_c++;
+				}
+				$va_paths[$qr_res->get($t_instance->primaryKey())] = $va_file_paths;
+			}	
+
+			if (sizeof($va_paths) > 0){
+				$o_zip = new ZipStream();
+
+				foreach($va_paths as $vn_pk => $va_reps) {
+					$vn_c = 1;
+					foreach($va_reps as $vs_path => $vs_file_name) {
+						if (!file_exists($vs_path)) { continue; }
+						$o_zip->addFile($vs_path, $vs_file_name);
+
+						$vn_c++;
+					}
+				}
+
+				$o_view = new View($this->request, $this->request->getViewsDirectoryPath().'/bundles/');
+
+				// send files
+				$o_view->setVar('zip_stream', $o_zip);
+				$o_view->setVar('archive_name', 'media_for_'.mb_substr(preg_replace('![^A-Za-z0-9]+!u', '_', ($vs_set_code = $t_set->get('set_code')) ? $vs_set_code : $t_set->getPrimaryKey()), 0, 20).'.zip');
+				$this->response->addContent($o_view->render('download_file_binary.php'));
+				return;
+			} else {
+				$this->notification->addNotification(_t('No files to download'), __NOTIFICATION_TYPE_ERROR__);
+				$this->opo_response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index'));
+				return;
+			}
+
+			return $this->Index();
 		}
  		# -------------------------------------------------------
  		
