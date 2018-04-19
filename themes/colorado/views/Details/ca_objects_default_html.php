@@ -28,7 +28,7 @@
 			}
 ?>
 		</div><!-- end nav -->
-		<h1><?php print unicode_ucfirst($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))).': '.caReturnDefaultIfBlank($t_object->get('idno')); ?></h1>
+		<h1><?php print caUcFirstUTF8Safe($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))).': '.caReturnDefaultIfBlank($t_object->get('idno')); ?></h1>
 		<div id="leftCol">
 <?php
 
