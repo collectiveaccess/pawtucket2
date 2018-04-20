@@ -55,11 +55,13 @@
 <?php
 				if ($vn_vimeo_id = $t_object->get('ca_objects.vimeo_id')) {			
 					print '<iframe src="https://player.vimeo.com/video/'.$vn_vimeo_id.'?color=ffffff&title=0&byline=0&portrait=0" width="100%" height="460" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
-				} else if ($va_oh_images = $t_object->representationsWithMimeType(array('image/jpeg', 'image/tiff', 'image/png', 'image/x-dcraw', 'image/x-psd', 'image/x-dpx', 'image/jp2', 'image/x-adobe-dng'), array('versions' => array('page'), 'return_with_access' => $va_access_values))) {
-					foreach ($va_oh_images as $va_key => $va_oh_image) {
-						print "<div class='row'><div class='col-sm-12 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2 fullWidth'>".$va_oh_image['tags']['page']."</div></div>";
-						break;
-					}
+				#} else if ($va_oh_images = $t_object->representationsWithMimeType(array('image/jpeg', 'image/tiff', 'image/png', 'image/x-dcraw', 'image/x-psd', 'image/x-dpx', 'image/jp2', 'image/x-adobe-dng'), array('versions' => array('page'), 'return_with_access' => $va_access_values))) {
+				#	foreach ($va_oh_images as $va_key => $va_oh_image) {
+				#		print "<div class='row'><div class='col-sm-12 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2 fullWidth'>".$va_oh_image['tags']['page']."</div></div>";
+				#		break;
+				#	}
+				}else if($vs_image = $t_object->get('ca_object_representations.media.page', array('checkAccess' => $va_access_values))){
+					print "<div class='row'><div class='col-sm-12 col-md-8 col-md-offset-2 col-lg-8 col-lg-offset-2 fullWidth'>".$vs_image."</div></div>";	
 				}
 				if ($vs_caption = $t_object->get('ca_objects.caption')) {
 					print "<div class='small ohCaption'>".$vs_caption."</div>";
