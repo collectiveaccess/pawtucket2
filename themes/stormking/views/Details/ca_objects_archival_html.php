@@ -221,11 +221,6 @@
 		</div><!-- end container -->
 	</div><!-- end col -->
 </div><!-- end row -->
-<?php
-		#if($this->request->isLoggedIn()){
-			print "<a href='http://stormking.collectihost.com/admin/index.php/editor/objects/ObjectEditor/Edit/object_id/".$vn_id."'>Edit This Record</a>";
-		#}
-?>	
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
