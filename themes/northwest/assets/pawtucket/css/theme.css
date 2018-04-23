@@ -1,0 +1,135 @@
+@font-face {
+    font-family: Apercu;
+    src: url('fonts/apercu_regular_pro.otf');
+    font-weight: normal;
+    font-style: normal;
+}
+@font-face {
+    font-family: Apercu;
+    src: url('fonts/apercu_bold_pro.otf');
+    font-weight: bold;
+    font-style: normal;
+}
+@font-face {
+    font-family: Apercu;
+    src: url('fonts/apercu_regular_italic_pro.otf');
+    font-weight: normal;
+    font-style: italic;
+}
+@font-face {
+    font-family: Apercu;
+    src: url('fonts/apercu_bold_italic_pro.otf');
+    font-weight: bold;
+    font-style: italic;
+}
+body {
+	margin-bottom:443px !important;
+	font-size: 62.5% !important;
+	color: #7a3030;
+	font-family:apercu;
+}
+a {
+	-webkit-transition: all 250ms linear;
+    -moz-transition: all 250ms linear;
+    -ms-transition: all 250ms linear;
+    -o-transition: all 250ms linear;
+    transition: all 250ms linear;
+    font-weight:bold;
+}
+a, a:hover, a:active, a:focus {
+	color:#7a3030;
+}
+p {
+    font-size: 1.16em;
+    margin-bottom: 1em;
+    line-height: 1.3em;
+}
+b, strong {
+    font-weight: bold;
+    font-family:apercu;
+}
+ul {
+    list-style: none;
+}
+h1, h2, h3, h4, h5, h6 {
+	color:#7a3030;
+}
+#footer {
+	background-image:url('../graphics/footer-pattern.svg');
+	background-color: #333;
+    background-position: center center;
+    background-size: 1707px;
+    color: #fff;
+    text-align: center;
+    height:443px;
+    padding-left:0px;
+    padding-right:0px;
+    border:0px;
+    font-family:apercu;
+}
+#footer a.back-to-top {
+    background-color: #cf0;
+    color: #7a3030;
+    display: block;
+    font-size: 1.16em;
+    height:73px;
+    line-height:73px;
+    text-align: center;
+    width: 100%;
+    text-decoration:none;
+    font-family:Apercu;
+    font-weight:bold;
+}
+#footer a, #footer ul a {
+    color: #fff;
+    text-decoration: none;
+}
+#footer .top-bar {
+    margin: 0 3.3em;
+    padding-top: 3.2em;
+    height:126px;
+}
+#footer .top-bar address {
+    float: left;
+    text-align: left;
+}
+.sidr-class-social li, .social li {
+    float: left;
+    margin-right: .5em;
+}
+#footer .top-bar .follow {
+    display: block;
+    float: right;
+}
+#footer .top-bar .follow ul {
+    float: left;
+    font-size: 2em;
+}
+#footer .bottom-center img {
+    display: block;
+    margin: 3.4em auto;
+    width: 63px;
+}
+#footer .bottom-center small {
+    font-size: 1.16em;
+    line-height: 1.4em;
+}
+#footer .bottom-center ul {
+    overflow: hidden;
+    font-size: 1.17em;
+    margin: .5em auto;
+    width: 165px;
+    padding-left:0px;
+}
+#footer .bottom-center ul li {
+    float: left;
+    padding-right:0px;
+}
+#footer .bottom-center ul li:first-child {
+    margin-right: 1em;
+}
+#footer .bottom-center {
+    padding: 0 4em 4em;
+    text-align: center;
+    height:204px;
+}
