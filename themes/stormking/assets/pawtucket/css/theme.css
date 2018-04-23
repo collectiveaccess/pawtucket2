@@ -420,6 +420,12 @@ p, .collectionsList p {
 }
 .detail .unit {
 	margin-bottom:15px;
+	line-height:1.5em;
+}
+.detail .unit p {
+	font-size:14px;
+	margin-bottom:15px;
+	line-height:1.5em;
 }
 .detail .repViewerCont:hover .detailMediaToolbar {
 	display:none;

@@ -151,8 +151,3 @@
 		</div><!-- end container -->
 	</div><!-- end col -->
 </div><!-- end row -->
-<?php
-		#if($this->request->isLoggedIn()){
-			print "<a href='http://stormking.collectihost.com/admin/index.php/editor/collections/CollectionEditor/Edit/collection_id/".$vn_id."'>Edit This Record</a>";
-		#}
-?>	

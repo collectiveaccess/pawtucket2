@@ -20,7 +20,7 @@
 <?php
 					print "<div class='artistName'>".trim($t_item->get('ca_entities.preferred_labels'))."</div>";
 					print "<div>";
-					if ($vs_nationality = $t_item->get('ca_entities.nationality_text')) {
+					if ($vs_nationality = trim($t_item->get('ca_entities.nationality_text'))) {
 						print $vs_nationality.", ";
 					}
 					if ($vs_lifespan = $t_item->get('ca_entities.entity_display_date')) {
