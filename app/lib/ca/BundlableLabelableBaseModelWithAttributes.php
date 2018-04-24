@@ -834,7 +834,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 	public function checkForDupeLabel($pn_locale_id, $pa_label_values, $pb_preferred_only=true) {
 		$o_db = $this->getDb();
 		$t_label = $this->getLabelTableInstance();
-		unset($pa_label_values['displayname']);
+		//unset($pa_label_values['displayname']);
 		$va_wheres = array();
 		foreach($pa_label_values as $vs_field => $vs_value) {
 			$va_wheres[] = "(l.{$vs_field} = ?)";
@@ -1327,7 +1327,6 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				}
 				$pa_bundle_settings['definition'][$g_ui_locale] = "<div class='caMetadataDictionaryViolationsList'><div class='caMetadataDictionaryViolationsListHeading'>"._t('These problems require attention:')."</div><ol>".join("\n", $va_violation_text)."</ol></div>\n".$pa_bundle_settings['definition'][$g_ui_locale]."<br style='clear: both;'/>";
 			}
-			if (!caGetOption($g_ui_locale, $pa_bundle_settings['description'], null)) { $pa_bundle_settings['description'][$g_ui_locale] = $va_dictionary_entry['settings']['definition']; }
 		}
 		
 		// is label for this bundle forced in bundle settings?
@@ -1363,8 +1362,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				}
 				
 				$vs_description = caExtractSettingValueByLocale($pa_bundle_settings, 'description', $g_ui_locale);
-				
-				if (($vs_label) && ($vs_description) && !is_array($va_dictionary_entry)) {
+				if (($vs_label) && ($vs_description)) { 
 					TooltipManager::add('#'.$vs_field_id, "<h3>{$vs_label_text}</h3>{$vs_description}");
 				}
 				break;
@@ -1448,7 +1446,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					$vs_description = $this->getFieldInfo($ps_bundle_name, 'DESCRIPTION');
 				}
 				
-				if (($pa_options['label']) && ($vs_description) && !is_array($va_dictionary_entry)) {
+				if (($pa_options['label']) && ($vs_description)) {
 					TooltipManager::add('#'.$vs_field_id, "<h3>".$pa_options['label']."</h3>{$vs_description}");
 				}
 				
@@ -1498,7 +1496,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					}
 				}
 				
-				if (($vs_label_text) && ($vs_description) && !is_array($va_dictionary_entry)) {
+				if (($vs_label_text) && ($vs_description)) {
 					TooltipManager::add('#'.$vs_field_id, "<h3>{$vs_label_text}</h3>{$vs_description}");
 				}
 		
@@ -1586,7 +1584,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				
 				$vs_description = caExtractSettingValueByLocale($pa_bundle_settings, 'description', $g_ui_locale);
 				
-				if (($vs_label_text) && ($vs_description) && !is_array($va_dictionary_entry)) {
+				if (($vs_label_text) && ($vs_description)) {
 					TooltipManager::add('#'.$pa_options['formName'].'_'.$ps_placement_code, "<h3>{$vs_label}</h3>{$vs_description}");
 				}
 				break;
@@ -1829,7 +1827,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				
 				$vs_description = caExtractSettingValueByLocale($pa_bundle_settings, 'description', $g_ui_locale);
 				
-				if (($vs_label_text) && ($vs_description) && !is_array($va_dictionary_entry)) {
+				if (($vs_label_text) && ($vs_description)) {
 					TooltipManager::add('#'.$pa_options['formName'].'_'.$ps_placement_code, "<h3>{$vs_label}</h3>{$vs_description}");
 				}
 				
@@ -1915,6 +1913,10 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 				}
 				switch($va_tmp[1]) {
 					# --------------------
+					case '_generic_bundle_':
+						return _t('Generic bundle');
+						break;
+					# --------------------
 					case 'related':
 						unset($va_tmp[1]);
 						$vs_label = $this->getDisplayLabel(join('.', $va_tmp));
@@ -1961,7 +1963,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 					# --------------------
 					default:
 						if ($va_tmp[0] !== $this->tableName()) {
-							return unicode_ucfirst($t_instance->getDisplayLabel($ps_field)).$vs_suffix;
+							return caUcFirstUTF8Safe($t_instance->getDisplayLabel($ps_field)).$vs_suffix;
 						}
 						break;
 					# --------------------
@@ -2247,7 +2249,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 											if (($va_tmp[0] == 'ca_list_items') && (!$qr_res->get('parent_id'))) { continue; }
 											if (is_array($va_access) && sizeof($va_access) && !in_array($qr_res->get($va_tmp[0].'.access'), $va_access)) { continue; }
 											if (is_array($va_in_use_list) && !in_array($vn_item_id = $qr_res->get($vs_rel_pk), $va_in_use_list)) { continue; }
-											$va_opts[$l = $qr_res->get($va_tmp[0].".preferred_labels.{$vs_label_display_field}")] = ($v = $qr_res->get($vs_field)) ? $v : $l;
+											$va_opts[$qr_res->get($va_tmp[0].".preferred_labels.{$vs_label_display_field}")] = $qr_res->get($vs_field);
 										}
 									}
 									
@@ -3612,6 +3614,8 @@ if ($this->getProperty('LABEL_TABLE_NAME')) {
 		$vb_check_for_dupe_labels = $this->_CONFIG->get('allow_duplicate_labels_for_'.$this->tableName()) ? false : true;
 		$vb_error_inserting_pref_label = false;
 		if (is_array($va_fields_by_type['preferred_label'])) {
+		    $vs_label_must_be_in_list = $this->_CONFIG->get('preferred_label_for_'.$this->tableName().'_must_be_in_list');
+		    
 			foreach($va_fields_by_type['preferred_label'] as $vs_placement_code => $vs_f) {
 
 if (!$vb_batch) {	
@@ -3625,6 +3629,11 @@ if (!$vb_batch) {
 								if(is_array($va_label_values = $this->getLabelUIValuesFromRequest($po_request, $vs_placement_code.$vs_form_prefix, $va_label['label_id'], true))) {
 									if ($vb_check_for_dupe_labels && $this->checkForDupeLabel($vn_label_locale_id, $va_label_values)) {
 										$this->postError(1125, _t('Value <em>%1</em> is already used and duplicates are not allowed', join("/", $va_label_values)), "BundlableLabelableBaseModelWithAttributes->saveBundlesForScreen()", $this->tableName().'.preferred_labels');
+										$po_request->addActionErrors($this->errors(), 'preferred_labels');
+										continue;
+									}
+									if ($vs_label_must_be_in_list && !caGetListItemIDForLabel($vs_label_must_be_in_list, $vs_label_val = $va_label_values[$this->getLabelDisplayField()])) {
+									    $this->postError(1100, _t('Value <em>%1</em> is not in <em>%2</em>', $vs_label_val, caGetListName($vs_label_must_be_in_list)), "BundlableLabelableBaseModelWithAttributes->saveBundlesForScreen()", $this->tableName().'.preferred_labels');
 										$po_request->addActionErrors($this->errors(), 'preferred_labels');
 										continue;
 									}
@@ -3718,6 +3727,13 @@ if (!$vb_batch) {
 								$vb_error_inserting_pref_label = true;
 								continue;
 							}
+							if ($vs_label_must_be_in_list && !caGetListItemIDForLabel($vs_label_must_be_in_list, $vs_label_val = $va_label_values[$this->getLabelDisplayField()])) {
+                                $this->postError(1100, _t('Value <em>%1</em> is not in <em>%2</em>', $vs_label_val, caGetListName($vs_label_must_be_in_list)), "BundlableLabelableBaseModelWithAttributes->saveBundlesForScreen()", $this->tableName().'.preferred_labels');
+                                $po_request->addActionErrors($this->errors(), 'preferred_labels');
+                                $vb_error_inserting_pref_label = true;
+                                continue;
+                            }
+                            
 							$vn_label_type_id = $po_request->getParameter($vs_placement_code.$vs_form_prefix.'_Pref'.'type_id_new_'.$vn_c, pInteger);
 							$this->addLabel($va_label_values, $vn_new_label_locale_id, $vn_label_type_id, true, array('queueIndexing' => true));
 							if ($this->numErrors()) {
@@ -5070,12 +5086,12 @@ if (!$vb_batch) {
 		$pn_start = (isset($pa_options['start']) && ((int)$pa_options['start'] > 0)) ? (int)$pa_options['start'] : 0;
 
 		if (is_numeric($pm_rel_table_name_or_num)) {
-			if(!($vs_related_table_name = $this->getAppDataModel()->getTableName($pm_rel_table_name_or_num))) { return null; }
+			if(!($vs_related_table_name = $this->getAppDatamodel()->getTableName($pm_rel_table_name_or_num))) { return null; }
 		} else {
 			if (sizeof($va_tmp = explode(".", $pm_rel_table_name_or_num)) > 1) {
 				$pm_rel_table_name_or_num = array_shift($va_tmp);
 			}
-			if (!($o_instance = $this->getAppDataModel()->getInstanceByTableName($pm_rel_table_name_or_num, true))) { return null; }
+			if (!($o_instance = $this->getAppDatamodel()->getInstanceByTableName($pm_rel_table_name_or_num, true))) { return null; }
 			$vs_related_table_name = $pm_rel_table_name_or_num;
 		}
 
@@ -5656,6 +5672,11 @@ if (!$vb_batch) {
 
 			if ($vb_is_combo_key_relation) {
 				$va_joins = array("INNER JOIN {$vs_related_table_name} ON {$vs_related_table_name}.row_id = ".$this->primaryKey(true)." AND {$vs_related_table_name}.table_num = ".$this->tableNum());
+				if(method_exists($t_rel_item, "getLabelTableInstance") && ($t_rel_label = $t_rel_item->getLabelTableInstance())) {
+				    $vs_related_label_table_name = $t_rel_label->tableName();
+				    $vs_rel_pk = $t_rel_item->primaryKey();
+				    $va_joins[] = "INNER JOIN {$vs_related_label_table_name} ON {$vs_related_label_table_name}.{$vs_rel_pk} = {$vs_related_table_name}.{$vs_rel_pk}";
+			    }
 			} else {
 				foreach($va_path as $vs_join_table) {
 					$va_rel_info = $this->getAppDatamodel()->getRelationships($vs_cur_table, $vs_join_table);
@@ -6052,6 +6073,7 @@ if (!$vb_batch) {
 			$vs_idno_fld = $this->getProperty('ID_NUMBERING_ID_FIELD');
 			
 			if (($this->tableName() == 'ca_objects') && $this->getAppConfig()->get('ca_objects_x_collections_hierarchy_enabled') && !$this->getAppConfig()->get('ca_objects_x_collections_hierarchy_disable_object_collection_idno_inheritance') && $pa_options['request'] && ($vn_collection_id = $pa_options['request']->getParameter('collection_id', pInteger))) {
+				require_once(__CA_MODELS_DIR__."/ca_collections.php");
 				// Parent will be set to collection
 				$t_coll = new ca_collections($vn_collection_id);
 				if ($this->inTransaction()) { $t_coll->setTransaction($this->getTransaction()); }

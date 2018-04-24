@@ -230,7 +230,7 @@
 				}
 				foreach($va_entity_by_type as $vs_relationship_typename => $va_entities_by_type){
 ?>
-					<div class="unit"><div class='infoButton'  data-toggle='popover' data-content='Entity descriptions'>x<?php print caGetThemeGraphic($this->request, 'b_info.gif'); ?></div><div class='heading'><?php print unicode_ucfirst($vs_relationship_typename); ?></div>
+					<div class="unit"><div class='infoButton'  data-toggle='popover' data-content='Entity descriptions'>x<?php print caGetThemeGraphic($this->request, 'b_info.gif'); ?></div><div class='heading'><?php print caUcFirstUTF8Safe($vs_relationship_typename); ?></div>
 <?php
 					$vn_i = 1;
 					foreach($va_entities_by_type as $va_entity) {

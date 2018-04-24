@@ -2472,7 +2472,7 @@
 						}
 
 						foreach($va_groups as $vs_group) {
-							$vs_group = unicode_ucfirst($vs_group);
+							$vs_group = caUcFirstUTF8Safe($vs_group);
 							$vs_alpha_key = '';
 							foreach($va_label_order_by_fields as $vs_f) {
 								$vs_alpha_key .= $va_item[$vs_f];
@@ -3251,7 +3251,7 @@
 							{$vs_join_sql}
 							WHERE
 								ca_attribute_values.element_id = ? {$vs_where_sql} {$vs_container_sql}
-						    GROUP BY value_longtext1, value_decimal1, value_longtext2, value_integer1	
+						    GROUP BY value_longtext1, value_decimal1, value_longtext2, value_integer1, ca_attributes.attribute_id
 						";
 						$qr_res = $this->opo_db->query($vs_sql, $va_params);
 

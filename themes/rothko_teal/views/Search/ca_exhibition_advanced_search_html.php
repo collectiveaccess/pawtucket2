@@ -25,7 +25,7 @@
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to related object titles only.">Object Title</span>
-				{{{ca_objects.preferred_labels.name%width=220px&height=1}}}
+				{{{ca_objects.preferred_labels%width=220px&height=1}}}
 			</div>
 		</div>		
 		<div class='row'>
@@ -35,13 +35,13 @@
 			</div>
 			<div class="advancedSearchField col-sm-6">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by exhibition dates.">Date</span>
-				{{{ca_occurrences.occurrence_dates%height=30px&height=1}}}
+				{{{ca_occurrences.occurrence_dates%height=30px&height=1&useDatePicker=0}}}
 			</div>
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search exhibitions by location.">Location</span>
-				{{{ca_places.preferred_labels.name%width=220px&height=1}}}
+				{{{ca_places.preferred_labels.name%width=220px&height=1}}} <input type="hidden" name="ca_places_preferred_labels_name_label" value="Location"/>
 			</div>
 		</div>					
 		<br style="clear: both;"/>

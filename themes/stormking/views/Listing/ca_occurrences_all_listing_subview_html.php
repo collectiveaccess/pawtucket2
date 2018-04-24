@@ -73,7 +73,7 @@
 ?>
 		<div class="row">
 			<div class="col-sm-12">
-				<H4><?php print (sizeof($va_current) > 1) ? _t("Current & Upcoming Exhibitions") : _t("Current & Upcoming Exhibition"); ?></H4><br/>
+				<H4><?php print caNavLink($this->request, (sizeof($va_current) > 1) ? _t("Current & Upcoming Exhibitions") : _t("Current & Upcoming Exhibition"), '', '', 'Listing', 'currentexhibitions'); ?></H4><br/>
 			</div>
 		</div>
 <?php
@@ -90,7 +90,7 @@
 			}
 ?>
 				<div class='col-xs-12 col-sm-6'>
-					<div class='fullWidthImage'><?php print $vs_rep; ?></div>
+					<div class='fullWidth'><?php print $vs_rep; ?></div>
 				</div>
 				<div class='col-xs-12 col-sm-6'>
 <?php
@@ -108,7 +108,7 @@
 ?>
 	<div class="row">
 		<div class="col-sm-12">
-			<H4><?php print _t("Past Exhibitions"); ?></H4><br/>
+			<H4><?php print caNavLink($this->request, _t("Past Exhibitions"), '', '', 'Browse', 'exhibitions'); ?></H4><br/>
 		</div>
 	</div>
 	<div class="row">
@@ -125,7 +125,7 @@
 					<div class='bResultListItem'>
 						<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep}</div>
 							<div class='bResultListItemTextContainer'><div class='bResultListItemText'>
-								".$va_exhibit_info["title_link"]."<br/>".$va_exhibit_info["date"]."
+								<i>".$va_exhibit_info["title_link"]."</i><br/>".$va_exhibit_info["date"]."
 							</div><!-- end bResultListItemText --></div><!-- end bResultListItemTextContainer -->
 						</div><!-- end bResultListItemContent -->
 					</div><!-- end bResultListItem -->

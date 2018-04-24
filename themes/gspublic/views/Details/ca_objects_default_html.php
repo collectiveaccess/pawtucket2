@@ -78,7 +78,9 @@
 				}
 				print '</div><!-- end detailTools -->';					
 				if($this->getVar("representation_id")){
-					print "<div class='unit restriction'>This photo may be used for internal promotional purposes on marketing and publicity materials and in publications produced by Girl Scouts of the USA.  If you intend to offer this photo to a 3rd party for their use, you will first need them to complete the <a href='http://www.girlscouts.org/en/contact-us/contact-us/permission-request.html' target='_blank'>Permission form</a>.</div>";
+?>
+					<div class='unit restriction'>{{{rights_text}}}</div>
+<?php
 				}
 ?>
 			</div><!-- end col -->
