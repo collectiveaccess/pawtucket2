@@ -128,7 +128,7 @@
 					if ($va_extended = $t_object->getWithTemplate('<unit delimiter="<br/>"><if rule="^ca_objects.plaque.display_website =~ /yes/"><ifdef code="ca_objects.plaque.plaque_text">^ca_objects.plaque.plaque_text</ifdef></if></unit>')) {
 						print "<div class='unit'>".$va_extended."</div>";
 					}
-					if ($vs_ext_link = $t_object->getWithTemplate('<unit relativeTo="ca_objects.external_link"><ifdef code="ca_objects.external_link.url_entry"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_objects.external_link.url_entry">^ca_objects.external_link.url_source</a></h6></div></ifdef></unit>')) {
+					if ($vs_ext_link = $t_object->getWithTemplate('<unit relativeTo="ca_objects.external_link" delimiter=" "><ifdef code="ca_objects.external_link.url_entry"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_objects.external_link.url_entry">^ca_objects.external_link.url_source</a></h6></div></ifdef></unit>')) {
 						print $vs_ext_link;
 					}	
 					if($t_object->get("ca_storage_locations.georeference", array('checkAccess' => $va_access_values))){

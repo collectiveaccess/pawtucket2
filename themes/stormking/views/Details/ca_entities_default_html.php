@@ -100,7 +100,7 @@
 			}
 			print "</div><!-- end row -->";			
 		}		
-		if ($vs_ext_link = $t_item->getWithTemplate('<ifcount min="1" code="ca_entities.external_link.url_entry"><unit relativeTo="ca_entities.external_link"><ifdef code="ca_entities.external_link.url_entry"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_entities.external_link.url_entry">^ca_entities.external_link.url_source</a></h6></div></ifdef></unit></ifcount>')) {
+		if ($vs_ext_link = $t_item->getWithTemplate('<ifcount min="1" code="ca_entities.external_link.url_entry"><unit relativeTo="ca_entities.external_link" delimiter=" "><ifdef code="ca_entities.external_link.url_entry"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_entities.external_link.url_entry">^ca_entities.external_link.url_source</a></h6></div></ifdef></unit></ifcount>')) {
 			print "<div class='row'><div class='col-sm-12'><hr>".$vs_ext_link."</div></div>";
 		}
 		# Related Exhibitions
