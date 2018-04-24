@@ -50,13 +50,13 @@
 		foreach($this->getVar('blockNames') as $vs_block) {
 ?>
 			<a name='<?php print $vs_block; ?>'></a>
-			<div id="<?php print $vs_block; ?>Block" class='resultBlock'>
+			<div id="<?php print $vs_block; ?>Block"<?php print ($vs_block != "objects_search") ? " class='resultBlock'" : ""; ?>>
 				<?php print $va_results[$vs_block]['html']; ?>
 			</div>
 <?php
 		} 
 	} else {
-		print "<H1 class='noResultsMsg'>"._t("Your search for %1 returned no results", caUcFirstUTF8Safe($this->getVar('search')))."</H1>";
+		print "<H1 class='noResultsMsg' style='display:none;'>"._t("Your search for %1 returned no results", caUcFirstUTF8Safe($this->getVar('search')))."</H1>";
 		
 		$o_search = caGetSearchInstance('ca_objects');
 		if (sizeof($va_suggestions = $o_search->suggest($this->getVar('search'), array('returnAsLink' => true, 'request' => $this->request)))) {
@@ -73,7 +73,6 @@
 ?>
 <script type="text/javascript">
 	jQuery("#siteBlock").css("display", "none");
-	jQuery("#noResultsMsg").css( "display", "none");
 	jQuery(document).ready(function() {
 		// grab search results
 		jQuery.getJSON("http://stormking.org/wp-json/wp/v2/pages", <?php print json_encode(array('search' => $this->getVar('search'), 'per_page' => 100)); ?>, function(d) {
