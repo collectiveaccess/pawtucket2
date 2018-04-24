@@ -966,10 +966,13 @@ p, .collectionsList p {
 
 
 
-
-
-
-
+.multisearch .jcarousel-next, .multisearch .jcarousel-prev{
+	top:0px;
+}
+.multisearch .jcarousel-next.inactive, .multisearch .jcarousel-prev.inactive{
+	display:block;
+	opacity:.25;
+}
 
 
 

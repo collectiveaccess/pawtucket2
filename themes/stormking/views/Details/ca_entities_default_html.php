@@ -45,9 +45,6 @@
 					if ($vs_bio = $t_item->get('<unit relativeTo="ca_entities.biography"><if rule="^ca_objects.biography.display_bio =~ /yes/">^ca_entities.biography.bio_text</if></unit>')) {
 						print $vs_bio;
 					}
-					if ($vs_ext_link = $t_item->getWithTemplate('<ifcount min="1" code="ca_entities.external_link.url_entry"><unit relativeTo="ca_entities.external_link"><ifdef code="ca_entities.external_link.url_entry"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_entities.external_link.url_entry">^ca_entities.external_link.url_source</a></h6></div></ifdef></unit></ifcount>')) {
-						print $vs_ext_link;
-					}
 /*					if ($va_remarks_images = $t_item->get('ca_entities.bibliography', array('returnWithStructure' => true, 'version' => 'medium'))) {
 						foreach ($va_remarks_images as $vn_attribute_id => $va_remarks_image_info) {
 							foreach ($va_remarks_image_info as $vn_value_id => $va_remarks_image) {
@@ -102,6 +99,9 @@
 				print "<div class='viewAll'>".caNavLink($this->request, "View all <i class='fa fa-angle-right'></i>", '', '', 'Browse', 'allworks', array('facet' => 'entity_facet', 'id' => $vn_item_id))."</div>";
 			}
 			print "</div><!-- end row -->";			
+		}		
+		if ($vs_ext_link = $t_item->getWithTemplate('<ifcount min="1" code="ca_entities.external_link.url_entry"><unit relativeTo="ca_entities.external_link"><ifdef code="ca_entities.external_link.url_entry"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_entities.external_link.url_entry">^ca_entities.external_link.url_source</a></h6></div></ifdef></unit></ifcount>')) {
+			print "<div class='row'><div class='col-sm-12'><hr>".$vs_ext_link."</div></div>";
 		}
 		# Related Exhibitions
 		if ($va_related_exhibitions = $t_item->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'program'), 'sort' => 'ca_occurrences.exhibition_dates', 'sortDirection' => 'desc'))) {
