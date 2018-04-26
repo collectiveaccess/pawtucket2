@@ -79,11 +79,11 @@
 				if ($va_medium = $t_object->get('ca_objects.medium')) {
 					print "<div class='unit'><h6>Medium</h6>".$va_medium."</div>";
 				}
-				if ($vs_dimensions = $t_object->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects.dimensions">^ca_objects.dimensions.display_dimensions <ifdef code="ca_objects.dimensions.dimensions_type">(^ca_objects.dimensions.dimensions_type)</ifdef></unit>')) {
+				if ($vs_dimensions = $t_object->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects.dimensions"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions <ifdef code="ca_objects.dimensions.dimensions_type">(^ca_objects.dimensions.dimensions_type)</ifdef></ifdef></unit>')) {
 					print "<div class='unit'><h6>Dimensions</h6>".$vs_dimensions."</div>";
 				}
 				if($t_rep){
-					if ($vs_photographer = $t_rep->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('photographer')))) {
+					if ($vs_photographer = $t_rep->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'delimiter' => '<br/>', 'restrictToRelationshipTypes' => array('photographer')))) {
 						print "<div class='unit'><h6>Photographer</h6>".$vs_photographer."</div>";
 					}
 					if ($vs_credit = $t_rep->get('ca_object_representations.caption')) {
@@ -221,11 +221,6 @@
 		</div><!-- end container -->
 	</div><!-- end col -->
 </div><!-- end row -->
-<?php
-		#if($this->request->isLoggedIn()){
-			print "<a href='http://stormking.collectihost.com/admin/index.php/editor/objects/ObjectEditor/Edit/object_id/".$vn_id."'>Edit This Record</a>";
-		#}
-?>	
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({

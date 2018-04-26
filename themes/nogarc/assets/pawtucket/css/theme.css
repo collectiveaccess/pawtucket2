@@ -257,3 +257,19 @@ a, a:hover, a:active, a:focus, a.readmore-js-toggle {
 	margin-top:2px;
 	padding-bottom:3px;
 }
+.customPlaceholder {
+	background-image:url('../graphics/placeholder.png');
+	background-size:50%;
+	display:block;
+	height:100%;
+	width:100%;
+	background-repeat:no-repeat;
+	background-position: center; 
+	z-index:100;
+	min-height:180px;
+}
+.bResultItemImgPlaceholder {
+	border:0px;
+	padding:0px;
+	min-height:180px;
+}

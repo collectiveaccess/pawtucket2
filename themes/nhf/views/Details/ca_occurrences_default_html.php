@@ -39,7 +39,7 @@
 					
 					if(!$vs_video && ($vs_video = $qr_hits->get('ca_object_representations.media.original', array("checkAccess" => $va_access_values)))){
 						#print $vs_video;
-						$vs_video .= "<div style='float:right; margin-top:3px;'><a href='#' style='text-decoration:none; font-size:16px;' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_object_id, 'representation_id' => $qr_hits->get('ca_object_representations.representation_id'), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in orange'></span></a></div>\n";
+						$vs_video .= "<div style='float:right; margin-top:3px;'><a href='#' style='text-decoration:none; font-size:16px;' onclick='pauseVideo(); caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_object_id, 'representation_id' => $qr_hits->get('ca_object_representations.representation_id'), 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in orange'></span></a></div>\n";
 					}
 					print "<div class='resultDescription'>";
 					#if($vs_video){
@@ -359,6 +359,12 @@
 			title: ''
 		  })
 		})
+		
 	});
+	pauseVideo = function(){
+		$('.video-js video').each(function() {
+			$(this).get(0).pause();
+		});
+	}
 
 </script>

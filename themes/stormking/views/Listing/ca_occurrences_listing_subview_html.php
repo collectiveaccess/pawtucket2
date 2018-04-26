@@ -90,7 +90,7 @@
 			}
 ?>
 				<div class='col-xs-12 col-sm-6'>
-					<div class='fullWidthImage'><?php print $vs_rep; ?></div>
+					<div class='fullWidth'><?php print $vs_rep; ?></div>
 				</div>
 				<div class='col-xs-12 col-sm-6'>
 <?php
