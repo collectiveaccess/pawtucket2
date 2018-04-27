@@ -31,11 +31,8 @@
 			$t_ex_rep = new ca_objects($vn_rep_obj_id);
 			print '<div class="row"><div class="col-sm-12">';
 			$vs_ex_rep_info = $t_ex_rep->getPrimaryRepresentation(array('version' => 'page'), null, array('return_with_access' => $va_access_values));
-			print "<div class='exhibitionRep'>";
-			print caDetailLink($this->request, $vs_ex_rep_info['tags']['page'], '', 'ca_objects', $t_ex_rep->get('ca_objects.object_id'));
-			print "<br/><br/>".caDetailLink($this->request, $t_ex_rep->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_ex_rep->get('ca_objects.object_id'));		
-			print "</div>";
-			print "<hr style='padding-bottom:5px;'>";						
+			print "<div class='exhibitionRep'>".$vs_ex_rep_info['tags']['page']."</div>";
+			print "<hr style='padding-bottom:5px; margin-top:15px;'>";						
 			print '</div></div>';
 		}
 ?>				
@@ -45,9 +42,6 @@
 				if ($vs_description = $t_item->get('ca_occurrences.description')) {
 					print "<div class='unit'>".$vs_description."</div>";
 				}
-#				if ($va_venue = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue')))){
-#					print "<div class='unit'><h6>Venue</h6>".$va_venue."</div>";
-#				}
 				if ($va_rel_programs = $t_item->get('ca_occurrences.related.preferred_labels', array('restrictToTypes' => array('exhibition', 'public_program'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Related Programs</h6>".$va_rel_programs."</div>";
 				}
@@ -65,48 +59,6 @@
 			</div><!-- end col -->
 			<div class='col-md-6 col-lg-6'>
 <?php
-				/*if ($va_rep = $t_item->get('ca_objects.object_id', array('restrictToRelationshipTypes' => array('primary_rep'), 'returnAsArray' => true, 'checkAccess' => $va_access_values))) {
-					foreach ($va_rep as $va_key => $vn_rep_id) {
-						$t_primary = new ca_objects($vn_rep_id);
-						print "<div class='exhibitionRep'>".$t_primary->get('ca_object_representations.media.large')."</div>";
-						print "<div class='exhibitionRepCaption'>".caDetailLink($this->request, $t_primary->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_primary->get('ca_objects.object_id'))."</div>";
-						break;
-					}
-				}*/
-/*				if ($va_remarks_images = $t_item->get('ca_occurrences.bibliography', array('returnWithStructure' => true, 'version' => 'medium'))) {
-					foreach ($va_remarks_images as $vn_attribute_id => $va_remarks_image_info) {
-						foreach ($va_remarks_image_info as $vn_value_id => $va_remarks_image) {
-							print "<div class='unit' style='margin-bottom:20px;'>";
-
-							$o_db = new Db();
-							$t_element = ca_attributes::getElementInstance('bibliography');
-							$vn_media_element_id = $t_element->getElementID('bibliography');							
-
-							$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_value_id, $vn_media_element_id)) ;
-							if ($qr_res->nextRow()) {
-								print "<div class='zoomIcon'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $t_item->get("occurrence_id"), 'context' => 'occurrences', 'identifier' => 'attribute:'.$qr_res->get("value_id"), 'overlay' => 1))."\"); return false;'><h6><i class='fa fa-file'></i> View Bibliography </h6></a></div>";
-							}
-							print "</div>";
-						}
-					}
-				}
-				if ($va_checklist_images = $t_item->get('ca_occurrences.checklist', array('returnWithStructure' => true, 'version' => 'medium'))) {
-					foreach ($va_checklist_images as $vn_check_attribute_id => $va_checklist_image_info) {
-						foreach ($va_checklist_image_info as $vn_check_value_id => $va_checklist_image) {
-							print "<div class='unit' style='margin-bottom:20px;'>";
-
-							$o_db = new Db();
-							$t_check_element = ca_attributes::getElementInstance('checklist');
-							$vn_check_media_element_id = $t_check_element->getElementID('checklist');							
-
-							$qr_check_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_check_value_id, $vn_check_media_element_id)) ;
-							if ($qr_check_res->nextRow()) {
-								print "<div class='zoomIcon'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $t_item->get("occurrence_id"), 'context' => 'occurrences', 'identifier' => 'attribute:'.$qr_check_res->get("value_id"), 'overlay' => 1))."\"); return false;'><h6><i class='fa fa-file'></i> View Checklist </h6></a></div>";
-							}
-							print "</div>";
-						}
-					}
-				} */
 				if($va_related_catalogue = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('catalogue'), 'sort' => 'ca_object_labels.name'))){
 					foreach ($va_related_catalogue as $vn_i => $vn_related_catalogue_id) {
 						$t_rel_catalogue = new ca_objects($vn_related_catalogue_id);
