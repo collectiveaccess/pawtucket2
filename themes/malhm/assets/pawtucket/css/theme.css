@@ -1,0 +1,127 @@
+body {
+	color: #333333;
+	font: 15px/1 'Merriweather', arial, sans-serif;
+}
+a {
+	-webkit-transition: all 200ms linear;
+    -moz-transition: all 200ms linear;
+    -o-transition: all 200ms linear;
+    -ms-transition: all 200ms linear;
+    transition: all 200ms linear;
+}
+h1 {
+	font-family: 'Montserrat';
+	color:#333;
+} 
+.front h1 {
+	color:#fff;
+	padding-top:0px;
+}
+.front .members h1 { 
+	color: #333;
+	text-align:center;
+}
+.containerWrapper {
+	max-width: 1100px;
+	margin-left:auto;
+	margin-right:auto;
+}  
+.purple {
+	background-color:#6e416c;
+	color:#fff;
+	padding-bottom:20px;
+	padding-top:20px;
+} 
+#wsite-title {    
+    display: block;
+    color: inherit;
+    font-family: 'Josefin Sans';
+    font-size: 27.5px;
+    line-height:27px;
+    font-weight: bold;
+    text-transform: uppercase;
+    padding-top:8px;
+    padding-left:7px;
+    padding-top:10px;
+    padding-bottom:10px;
+    letter-spacing:.2px;
+}
+#wsite-title a {
+	color:#333;
+}
+#wsite-title a:hover {
+	color:#000;
+	text-decoration:none;
+}
+@media (max-width: 1010px) {
+	#wsite-title {
+    	padding-left:15px;	
+	}
+}
+.attributeListItem {
+	width:100%;
+}
+.navbar-default .navbar-nav > li > a {
+	font-family: 'Montserrat';
+	text-transform:uppercase;
+}
+ul.socialRow {
+	margin-bottom:0px;
+}
+ul.socialRow li {
+	float:right;
+	list-style-type:none;
+	display: inline-block;
+	margin: 10px 8px;
+	font-size:17px;
+	color:#fff;
+	line-height:15px;
+	font-weight:400;
+}
+ul.socialRow li a{
+	color:#fff;
+}
+ul.socialRow li .connect{
+	font-size:14px;
+	font-family: 'Montserrat';
+	color:#fff;
+	padding-left:20px;
+}
+.grayBack {
+	background-color:#333333;
+}
+.navbar {
+	box-shadow: 0px 1px 3px -1px rgba(0,0,0,0.15);
+}
+.navbar .formOutline {
+	border-radius:0px;
+}
+.navbar  input.form-control::placeholder, .navbar input.form-control {
+	color:#333333;
+	font-size:14px;
+	font-family: 'Montserrat';
+}
+.navbar-nav > li > a {
+	padding-top:25px;
+}
+.navbar-default .navbar-form {
+	margin-top:20px;
+}
+.nav > li.dropdown > a.icon {
+	padding-top:27px;
+}
+
+/* Front */
+
+.front .members {
+	padding-top:30px;
+	padding-bottom:30px;
+}
+.front .jcarousel-wrapper {
+	margin-top:0px;
+}
+.memberCaption {
+	padding-top:10px;
+}
+
+

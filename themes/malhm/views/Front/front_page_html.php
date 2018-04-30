@@ -1,0 +1,74 @@
+<?php
+/** ---------------------------------------------------------------------
+ * themes/default/Front/front_page_html : Front page of site 
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
+ * ----------------------------------------------------------------------
+ *
+ * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
+ * Copyright 2013 Whirl-i-Gig
+ *
+ * For more information visit http://www.CollectiveAccess.org
+ *
+ * This program is free software; you may redistribute it and/or modify it under
+ * the terms of the provided license as published by Whirl-i-Gig
+ *
+ * CollectiveAccess is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ *
+ * This source code is free and modifiable under the terms of 
+ * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
+ * the "license.txt" file for details, or visit the CollectiveAccess web site at
+ * http://www.CollectiveAccess.org
+ *
+ * @package CollectiveAccess
+ * @subpackage Core
+ * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
+ *
+ * ----------------------------------------------------------------------
+ */
+		print $this->render("Front/featured_set_slideshow_html.php");
+		$va_access_values = caGetUserAccessValues($this->request);
+?>
+	<div class="row purple">
+		<div class="containerWrapper">
+			<div class="col-sm-10 col-sm-offset-1">
+				<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
+			</div><!--end col-sm-8-->	
+		</div>
+	</div><!-- end row -->
+<?php
+	$qr_members = ca_entities::find(["type_id" => "member"], ["returnAs" => "searchResult"]);
+	if ($qr_members) {
+		print "<div class='row members'>";
+		print '<div class="containerWrapper">';
+		print "<div class='col-sm-12'><h1>Member Institutions</h1></div>";
+		print '<div class="col-sm-12"><div class="jcarousel-wrapper">
+				<!-- Carousel -->
+				<div class="jcarousel">';
+		
+		
+		while ($qr_members->nextHit()) {
+			print "<div class='memberTile'>";
+			print "<div class='memberImage'>".caDetailLink($this->request, $qr_members->get('ca_object_representations.media.iconlarge'), '', 'Detail', 'ca_entities', $qr_members->get('ca_entities.entity_id'))."</div>";
+			print "<div class='memberCaption'>".$qr_members->get('ca_entities.preferred_labels')."</div>";
+			print "</div>";
+		}
+		
+		print "</div></div><!-- end carousel --></div><!-- end col -->";
+		
+		print "</div><!-- end containerWrapper -->";
+		print "</div><!-- end row -->";
+	}
+?>	
+<script type="text/javascript">
+$(document).ready(function() {
+   $('.jcarousel').cycle({
+               fx: 'fade', // choose your transition type, ex: fade, scrollUp, shuffle, etc...
+               speed:  1000,
+               timeout: 4000
+       });
+});
+</script>
