@@ -10,7 +10,6 @@
 	include_once(__CA_LIB_DIR__."/ca/Search/SetSearch.php");
 ?>
 
-<div class='container'>
 	<div class='row'>
 		<div class='col-sm-12'>
 			<h1>Featured Galleries</h1>
@@ -40,4 +39,3 @@
 ?>	
 				
 	</div>
-</div>

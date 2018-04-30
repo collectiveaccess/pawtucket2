@@ -81,7 +81,7 @@ if (!$this->request->isAjax()) {
 			print "<h3>"._t("Identifier")."</h3><p>";
 			print $t_collection->get('idno');
 			print "</p>";
-			print "<h3>Type</h3><p>".unicode_ucfirst($t_collection->get('ca_collections.type_id', array('convertCodesToDisplayText' => true)))."</p>";
+			print "<h3>Type</h3><p>".caUcFirstUTF8Safe($t_collection->get('ca_collections.type_id', array('convertCodesToDisplayText' => true)))."</p>";
 			if($va_alt_name = $t_collection->get('ca_collections.nonpreferred_labels')){
 				print "<h3>"._t("Alternate title")."</h3><p> ".$va_alt_name."</p><!-- end unit -->";
 			}

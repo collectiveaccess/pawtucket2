@@ -270,8 +270,8 @@ if($x){
 	if($vs_section != "Front"){
 ?>
 	<li class="leaf last">
-		<div id="navSearch"><form name="hp_search2" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" method="get">
-			Search Collections: <input type="text" name="search" value="<?php print $vs_last_search; ?>" autocomplete="off" size="100"/><input type="submit" name="op" id="edit-submit" value="GO"  class="form-submit" />
+		<div id="navSearch"><form name="hp_search2" action="<?php print caNavUrl($this->request, '', 'Search', 'Occurrences'); ?>" method="get">
+			Search Works: <input type="text" name="search" value="<?php print $vs_last_search; ?>" autocomplete="off" size="100"/><input type="submit" name="op" id="edit-submit" value="GO"  class="form-submit" />
 	</form></div><!-- end hpSearch --></li>
 <?php
 	}

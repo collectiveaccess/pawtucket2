@@ -89,7 +89,7 @@
 			$t_list_item = new ca_list_items();
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
-				#$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
+				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id);
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
@@ -108,8 +108,13 @@
 					$vs_typecode = "<h7>".$qr_res->get("{$vs_table}.type_id", array('convertCodesToDisplayText' => true))."</h7>";
 
 					$vs_info = null;
+					$vs_date = '';
 					if ($qr_res->get('ca_objects.date')) {
 						$vs_date = "<p>".$qr_res->get('ca_objects.date')."</p>";
+					}
+					$vs_camera = '';
+					if ($qr_res->get('ca_objects.camera')) {
+						$vs_camera = "<p>".$qr_res->get('ca_objects.camera', array('convertCodesToDisplayText' => true))."</p>";
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 				} else {
@@ -132,7 +137,7 @@
 			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					{$vs_typecode}{$vs_label_detail_link}{$vs_date}
+					<small>{$vs_idno_detail_link}</small><br/>{$vs_typecode}{$vs_label_detail_link}{$vs_date}{$vs_camera}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>

@@ -45,7 +45,8 @@
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-				print "<H5>".$va_facet_info['label_singular']."</H5>"; 
+				print "<H5>".$va_facet_info['label_singular']."</H5>";
+				print "<p>".$va_facet_info['description']."</p>";
 ?>
 					<script type="text/javascript">
 						jQuery(document).ready(function() {
@@ -64,11 +65,12 @@
 						$vn_facet_size = sizeof($va_facet_info['content']);
 						$vn_c = 0;
 						foreach($va_facet_info['content'] as $va_item) {
-							print "<div>".caNavLink($this->request, $va_item['label'], '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+						    $vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+							print "<div>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 							$vn_c++;
 						
 							if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
-								print "<div id='{$vs_facet_name}_more' style='display: none;'>";
+								print "<span id='{$vs_facet_name}_more' style='display: none;'>";
 							} else {
 								if(($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_maximum))  {
 									break;
@@ -76,7 +78,7 @@
 							}
 						}
 						if (($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
-							print "</div>\n";
+							print "</span>\n";
 						
 							$vs_link_open_text = _t("and %1 more", $vn_facet_size - $vn_facet_display_length_initial);
 							$vs_link_close_text = _t("close", $vn_facet_size - $vn_facet_display_length_initial);

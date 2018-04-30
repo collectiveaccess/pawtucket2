@@ -507,6 +507,7 @@ msgstr "editores"
 
 #: conf/browse.conf:195
 msgid "bookseller"
+
 msgstr "librero"
 
 #: conf/browse.conf:196
@@ -591,6 +592,7 @@ msgstr ""
 
 #: conf/browse.conf:335
 msgid "Has media"
+
 msgstr "Tiene imágen"
 
 #: conf/browse.conf:336
