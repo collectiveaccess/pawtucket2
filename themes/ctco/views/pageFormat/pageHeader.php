@@ -64,6 +64,7 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
+	<script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=58e54a3021bc4400110fdfdb&product=inline-share-buttons"></script>
 	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700,700i" rel="stylesheet">
 <?php
 	if(Debug::isEnabled()) {		
@@ -98,7 +99,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'menu_logo.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'menu_logo_white.png'), "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -120,10 +121,14 @@
 	if ($vb_has_user_links) {
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
+					<li class="infoLink"> 
+						<?php print caNavLink($this->request, '<i class="fa fa-info-circle"></i>', '', '', 'About', 'info');?>
+					</li>
 					<li class="dropdown" style="position:relative;">
 						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
 						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
+
 				</ul>
 <?php
 	}

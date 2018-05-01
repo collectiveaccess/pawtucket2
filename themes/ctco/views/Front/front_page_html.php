@@ -40,7 +40,7 @@
 ?>
 <div class="container">
 	<div class="row">
-		<div class="col-sm-8">
+		<div class="col-sm-12">
 <?php		
 	if($qr_res && $qr_res->numHits()){
 ?>   
@@ -86,15 +86,19 @@
 ?>		
 			
 		</div><!--end col-sm-8-->
+	</div><!-- end row -->
+	<div class="row" style="margin-top:20px;">
+
+		<div class="col-sm-6 col-sm-offset-1" style="text-align:left;"> 
+			<h2 style='margin-top:45px;'>Welcome to Connecticut Collections</h2>
+			<p class='pageText'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tristique bibendum sollicitudin. Cras id lectus justo. Suspendisse quis ligula vitae libero aliquam commodo sed condimentum neque. Proin convallis ultricies hendrerit. Donec rhoncus pellentesque molestie. Proin condimentum nisl quis posuere dapibus. Vivamus quis interdum velit. Morbi mi eros, faucibus ut fermentum id, dictum at lectus. Vivamus et rhoncus augue, eget condimentum nunc. Aliquam ornare at augue vel sagittis. Duis convallis dapibus orci sit amet sagittis. Suspendisse ac vestibulum dui.</p>
+		</div>
 		<div class="col-sm-4" style="text-align:center;">
 <?php
-			print "<div style='margin-top:20px;'>".caGetThemeGraphic($this->request, 'ctco_logo.png')."</div>";
+			print "<div style='margin-top:10px;'>".caGetThemeGraphic($this->request, 'ctco_logo.png')."</div>";
 ?>
-			<h2>Welcome to Connecticut Collections</h2>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tristique bibendum sollicitudin. Cras id lectus justo. Suspendisse quis ligula vitae libero aliquam commodo sed condimentum neque. Proin convallis ultricies hendrerit. Donec rhoncus pellentesque molestie. Proin condimentum nisl quis posuere dapibus. Vivamus quis interdum velit. Morbi mi eros, faucibus ut fermentum id, dictum at lectus. Vivamus et rhoncus augue, eget condimentum nunc. Aliquam ornare at augue vel sagittis. Duis convallis dapibus orci sit amet sagittis. Suspendisse ac vestibulum dui.</p>
-
-		</div> <!--end col-sm-4-->	
-	</div><!-- end row -->
+		</div>			
+	</div>
 	<div class="row" style='background-color:#f5f5f5; padding-bottom:40px;margin-top:40px; '>
 		<div class="col-sm-12"><h2>Participating Institutions</h2></div>
 		<div class="col-sm-3 col-lg-2">
@@ -155,14 +159,14 @@
 	foreach ($va_recent_items as $vn_key => $va_recent_item) {
 		$t_item = new ca_objects($va_recent_item['object_id']);
 		if (!$t_item->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))) {continue;}
-		print "		<div class='col-sm-3 col-lg-2'>
+		print "		<div class='col-sm-4'>
 						<div class='newTile'>";
 		print "<div class='tileImage'>".caNavLink($this->request, $t_item->get('ca_object_representations.media.widepreview'), '', '', 'Detail', 'objects/'.$va_recent_item['object_id'])."</div>";			
 		print "<div class='tileCaption'>".caNavLink($this->request, $t_item->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$va_recent_item['object_id'])."<p>".$t_item->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))."</p>"."</div>";
 		print "			</div>
 					</div>";
 		$vn_i++;
-		if ($vn_i == 7) {
+		if ($vn_i == 4) {
 			break;
 		}			
 	}
