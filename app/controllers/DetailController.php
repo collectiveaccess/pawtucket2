@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2016 Whirl-i-Gig
+ * Copyright 2013-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -66,11 +66,11 @@
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
             }
             if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
-            	$ps_id = urldecode($this->request->getActionExtra());
+            	if (!($ps_id = urldecode($this->request->getActionExtra()))) { $ps_id = $this->request->getParameter('id', pInteger); }
             	
             	$t_set_list = new ca_sets();
             	$t_set = new ca_sets();
-            	$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 1));
+            	$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values));
 				$va_user_has_access = false;
 				if (sizeof($va_sets) > 0) {
 					foreach ($va_sets as $va_key => $va_set) {
@@ -168,12 +168,22 @@
  			}
  			
  			$t_subject = $this->getAppDatamodel()->getInstanceByTableName($vs_table, true);
- 			if (($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) && (substr($ps_id, 0, 3) == "id:")) {
+ 			$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls($vs_table);
+ 			if ((($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) || ($vs_use_alt_identifier_in_urls)) && (substr($ps_id, 0, 3) == "id:")) {
  				$va_tmp = explode(":", $ps_id);
  				$ps_id = (int)$va_tmp[1];
- 				$vb_use_identifiers_in_urls = false;
+ 				$vb_use_identifiers_in_urls = $vs_use_alt_identifier_in_urls = false;
  			}
- 			if (!$t_subject->load(($vb_use_identifiers_in_urls && $t_subject->getProperty('ID_NUMBERING_ID_FIELD')) ? (($t_subject->hasField('deleted')) ? array($t_subject->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id, 'deleted' => 0) : array($t_subject->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id)) : (($t_subject->hasField('deleted')) ? array($t_subject->primaryKey() => (int)$ps_id, 'deleted' => 0) : array($t_subject->primaryKey() => (int)$ps_id)))) {
+ 
+ 			if($vs_use_alt_identifier_in_urls && $t_subject->hasElement($vs_use_alt_identifier_in_urls)) {
+ 			    $va_load_params = [$vs_use_alt_identifier_in_urls => $ps_id];
+ 			} elseif ($vb_use_identifiers_in_urls && $t_subject->getProperty('ID_NUMBERING_ID_FIELD')) {
+ 			    $va_load_params = [$t_subject->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id];
+ 			} else {
+ 			    $va_load_params = [$t_subject->primaryKey() => (int)$ps_id];
+ 			}
+ 			
+ 			if (!($t_subject = call_user_func_array($t_subject->tableName().'::find', array($va_load_params, ['returnAs' => 'firstModelInstance'])))) {
  				// invalid id - throw error
  				throw new ApplicationException("Invalid id");
  			} 
@@ -213,7 +223,7 @@
  				return;
  			}
  			
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".$t_subject->getTypeName().": ".$t_subject->get('preferred_labels').(($vs_idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_subject->getTypeName().$this->request->config->get("page_title_delimiter").$t_subject->get('preferred_labels').(($vs_idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
  			
  			$vs_type = $t_subject->getTypeCode();
  			
@@ -242,7 +252,7 @@
  			$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $va_options, _t('Previous')), '', $vs_table, $vn_previous_id) : '');
  			$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $va_options, _t('Next')), '', $vs_table, $vn_next_id) : '');
  			$va_params = array();
- 			$va_params["row_id"] = (int)$ps_id; # --- used to jump to the last viewed item in the search/browse results
+ 			$va_params["row_id"] = $t_subject->getPrimaryKey(); # --- used to jump to the last viewed item in the search/browse results
  			$this->view->setVar('resultsLink', ResultContext::getResultsLinkForLastFind($this->request, $vs_table, caGetOption('resultsLink', $va_options, _t('Back')), null, $va_params));
  			
  			
@@ -265,6 +275,7 @@
 				}
 				if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
 				
+				$this->view->setVar('representationViewerPrimaryOnly', caGetOption('representationViewerPrimaryOnly', $va_options, false));
 				$this->view->setVar('representationViewer', 
 					caRepresentationViewer(
 						$this->request, 
@@ -439,12 +450,26 @@
 
  			// find view
  			//		first look for type-specific view
- 			if (!$this->viewExists($vs_path = "Details/{$vs_table}_{$vs_type}_html.php")) {
- 				$vs_path = "Details/{$vs_table}_default_html.php";		// If no type specific view use the default
- 			}
- 			
+ 			$vs_path = "Details/{$vs_table}_default_html.php";		// If no type specific view use the default
+ 			if (is_array($va_type_codes = caMakeTypeList($vs_table, [$t_subject->getTypeCode()]))) {
+ 			    $va_type_codes = array_merge($va_type_codes, caMakeTypeList($vs_table, $t_subject->getTypeInstance()->getHierarchyAncestors($t_subject->getTypeID(), ['idsOnly' => true]), ['dontIncludeSubtypesInTypeRestriction' => true]));
+                foreach(array_reverse($va_type_codes) as $vs_type_code) {   // reverse list to try more specific types first
+                    if ($this->viewExists("Details/{$vs_table}_{$vs_type_code}_html.php")) {
+                        $vs_path = "Details/{$vs_table}_{$vs_type_code}_html.php";
+                        break;
+                    }
+                }
+            }
+            
+ 			//
+ 			// pdf link
+ 			//
+ 			$this->view->setVar('pdfEnabled', (bool)$va_options['enablePDF']);
 			switch($ps_view = $this->request->getParameter('view', pString)) {
  				case 'pdf':
+ 					if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
+					set_time_limit($vn_limit * 6);
+				
  					caExportItemAsPDF($this->request, $t_subject, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_options, null), ['t_subject' => $t_subject]), ['checkAccess' => $this->opa_access_values]);
  					break;
  				default:
@@ -466,12 +491,12 @@
  		 *
  		 */ 
  		public function GetTimebasedRepresentationAnnotationList() {
- 			$pn_object_id 			= $this->request->getParameter('object_id', pInteger);
+ 			$pn_id 			= $this->request->getParameter('id', pInteger);
  			$pn_representation_id 	= $this->request->getParameter('representation_id', pInteger);
- 			$ps_detail_type			= $this->request->getParameter('detail_type', pString);
- 			$va_detail_options 		= (isset($this->opa_detail_types[$ps_detail_type]['options']) && is_array($this->opa_detail_types[$ps_detail_type]['options'])) ? $this->opa_detail_types['objects']['options'] : array();
+ 			$ps_detail_type			= $this->request->getParameter('context', pString);
+ 			$va_detail_options 		= (isset($this->opa_detail_types[$ps_detail_type]['options']) && is_array($this->opa_detail_types[$ps_detail_type]['options'])) ? $this->opa_detail_types[$ps_detail_type]['options'] : array();
  			
- 			if(!$pn_object_id) { $pn_object_id = 0; }
+ 			if(!$pn_id) { $pn_id = 0; }
  			$t_rep = new ca_object_representations($pn_representation_id);
  			if (!$t_rep->getPrimaryKey()) { 
  				$this->postError(1100, _t('Invalid object/representation'), 'DetailController->GetTimebasedRepresentationAnnotationList');
@@ -494,11 +519,13 @@
 					$va_annotation_list[] = $qr_annotations->getWithTemplate($vs_template);
 					$va_annotation_times[] = array((float)$qr_annotations->getPropertyValue('startTimecode', true) - (float)$va_props['timecode_offset'], (float)$qr_annotations->getPropertyValue('endTimecode', true) - (float)$va_props['timecode_offset']);
 				}
+				$qr_annotations->seek(0);
 			}
 			
 			$this->view->setVar('representation_id', $pn_representation_id);
 			$this->view->setVar('annotation_list', $va_annotation_list);
 			$this->view->setVar('annotation_times', $va_annotation_times);
+			$this->view->setVar('annotations_search_results', $qr_annotations);
 			$this->view->setVar('player_name', "caMediaOverlayTimebased_{$pn_representation_id}_detail");
 			
 			$this->render('Details/annotations_html.php');
@@ -1025,9 +1052,9 @@
 					$vs_mail_message_text = $o_view->render("mailTemplates/share_email_text.tpl");
 				}
 				if($ps_tablename == "ca_objects"){
-					$vs_mail_message_html = $o_view->render("/mailTemplates/share_object_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/share_object_email_html.tpl");
 				}else{
-					$vs_mail_message_html = $o_view->render("/mailTemplates/share_email_html.tpl");
+					$vs_mail_message_html = $o_view->render("mailTemplates/share_email_html.tpl");
 				}
 				
 				$va_media = null;
@@ -1373,7 +1400,7 @@
 				throw new ApplicationException(_t('Cannot view media'));
 			}
 		
-			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, array_merge($va_options, $pa_options, ['showAnnotations' => true])));
+			$this->response->addContent(caGetMediaViewerHTML($this->request, caGetMediaIdentifier($this->request), $pt_subject, array_merge($va_options, $pa_options, ['noOverlay' => true, 'showAnnotations' => true, 'checkAccess' => $this->opa_access_values])));
 		}
 		# -------------------------------------------------------
 		/** 
@@ -1418,8 +1445,84 @@
 				throw new ApplicationException(_t('Cannot view media'));
 			}
 		
-			$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
+			$this->response->addContent(caGetMediaViewerData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $ps_context, 'checkAccess' => $this->opa_access_values]));
 		}
+		# -------------------------------------------------------
+        /**
+         * Provide in-viewer search for those that support it (Eg. UniversalViewer)
+         */
+        public function SearchMediaData() {
+           $ps_context = $this->request->getParameter('context', pString);
+            
+            $o_dm = Datamodel::load();
+            if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
+    
+            switch($ps_context) {
+                case 'gallery':
+                case 'GetMediaInline':
+                case 'GetMediaOverlay':
+                    $va_context = ['table' => 'ca_objects'];
+                    break;
+                default:
+                    if(!is_array($va_context = $this->opa_detail_types[$ps_context])) { 
+                        throw new ApplicationException(_t('Invalid context'));
+                    }
+                    break;
+            }
+        
+            if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {
+                throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
+            }
+        
+            if (!($pn_subject_id = $this->request->getParameter('id', pInteger))) { $pn_subject_id = $this->request->getParameter($pt_subject->primaryKey(), pInteger); }
+            if (!$pt_subject->load($pn_subject_id)) { 
+                throw new ApplicationException(_t('Invalid id %1', $pn_subject_id));
+            }
+        
+            if (!$pt_subject->isReadable($this->request)) { 
+                throw new ApplicationException(_t('Cannot view media'));
+            }
+    
+            $this->response->addContent(caSearchMediaData($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
+        }
+        # -------------------------------------------------------
+        /**
+         * Provide in-viewer search for those that support it (Eg. UniversalViewer)
+         */
+        public function MediaDataAutocomplete() {
+           $ps_context = $this->request->getParameter('context', pString);
+            
+            $o_dm = Datamodel::load();
+            if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
+    
+            switch($ps_context) {
+                case 'gallery':
+                case 'GetMediaInline':
+                case 'GetMediaOverlay':
+                    $va_context = ['table' => 'ca_objects'];
+                    break;
+                default:
+                    if(!is_array($va_context = $this->opa_detail_types[$ps_context])) { 
+                        throw new ApplicationException(_t('Invalid context'));
+                    }
+                    break;
+            }
+        
+            if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {
+                throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
+            }
+        
+            if (!($pn_subject_id = $this->request->getParameter('id', pInteger))) { $pn_subject_id = $this->request->getParameter($pt_subject->primaryKey(), pInteger); }
+            if (!$pt_subject->load($pn_subject_id)) { 
+                throw new ApplicationException(_t('Invalid id %1', $pn_subject_id));
+            }
+        
+            if (!$pt_subject->isReadable($this->request)) { 
+                throw new ApplicationException(_t('Cannot view media'));
+            }
+    
+            $this->response->addContent(caMediaDataAutocomplete($this->request, caGetMediaIdentifier($this->request), $pt_subject, ['display' => $ps_display_type, 'context' => $this->request->getParameter('context', pString)]));
+        }
 		# -------------------------------------------------------
 		/**
 		 * Clean up tmp files

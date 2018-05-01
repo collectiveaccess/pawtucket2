@@ -1,4 +1,3 @@
-<div class="container">
 	<div class="row">
 		<div class="col-sm-8 " style='border-right:1px solid #ddd;'>
 			<h1>Library Advanced Search</h1>
@@ -53,18 +52,18 @@
 				data-toggle="popover" data-trigger="hover" data-content="All individuals or organizations associated with a work, including those that are the subject of a work."
 			>People & Organizations: </span><br/>
 			{{{ca_entities.preferred_labels%width=420px}}}
-		</div>	
+		</div>
 		<div class="advancedSearchField">
 			<span 
-				data-toggle="popover" data-trigger="hover" data-content="Local thesaurus terms used to describe what the library work is about."
+				data-toggle="popover" data-trigger="hover" data-content="Local thesaurus terms used to describe Local thesaurus terms used to describe the subject and content of the work."
 			>Local Subject Headings:</span><br/>
-			{{{ca_objects.LOC_text%width=300px&height=1}}}
-		</div>	
+			{{{ca_objects.local_subject%width=300px&height=1}}}
+		</div>					
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Library of Congress Subject Headings used to describe what the library work is about."
 			>Library of Congress Subject Headings Keyword Search:</span><br/>
-			{{{ca_objects.LcshSubjects%width=300px&height=1}}}
+			{{{ca_objects.LOC_text%width=300px&height=1}}}
 		</div>
 		<div class="advancedSearchField">
 			<span 
@@ -89,7 +88,7 @@
 				data-toggle="popover" data-trigger="hover" data-content="Search for items in the library’s special and designated collections."
 			>Sub-Collection:</span><br/>
 			{{{ca_objects.sub_collection%width=300px}}}
-		</div>
+		</div>	
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Search items by publicly available donor names and dedications."
@@ -107,12 +106,11 @@
 {{{/form}}}
 
 		</div>
-		<div class="col-sm-4" >
-			<h1>Helpful Hints</h1>
-			<p>Include some helpful info for your users here.</p>
+		<div class="col-sm-4 searchHints" >
+			<H1>Helpful Hints</H1>
+			{{{search_help}}}
 		</div><!-- end col -->
 	</div><!-- end row -->
-</div><!-- end container -->
 
 <script>
 	jQuery(document).ready(function() {

@@ -66,7 +66,7 @@
 					
 					{{{<ifdef code="ca_objects.idno"><H6>Identifer:</H6>^ca_objects.idno<br/></ifdef>}}}
 					
-					{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H6>Date:</H6>^ca_objects.dateSet.setDisplayValue<br/></ifdev>}}}
+					{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H6>Date:</H6>^ca_objects.dateSet.setDisplayValue<br/></ifdef>}}}
 					
 				</div><!-- end col -->
 			</div><!-- end row -->
@@ -173,21 +173,17 @@
 	<div class='col-sm-5 col-md-5 col-lg-5'>
 		{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
 		{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-		{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
+		{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
 		
 		
 		{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 		{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-		{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit><br/><br/>}}}
+		{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
 		
+		{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
+		{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
+		{{{<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter="<br/>"><unit relativeTo="ca_list_items"><l>^ca_list_items.preferred_labels.name_plural</l></unit> (^relationship_typename)</unit>}}}
 		
-		{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
-		{{{<ifcount code="ca_occurrences" min="2"><H6>Related occurrences</H6></ifcount>}}}
-		{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit><br/><br/>}}}
-		
-		
-		{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
-		{{{<unit delimiter="<br/>">^ca_objects.LcshNames</unit>}}}
 	</div><!-- end col -->
 </div><!-- end row -->
 

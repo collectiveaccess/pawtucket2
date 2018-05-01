@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2014 Whirl-i-Gig
+ * Copyright 2008-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -197,7 +197,7 @@
  				$pa_element_info, 
  				array('minChars', 'maxChars', 'minValue', 'maxValue', 'regex', 'mustNotBeBlank')
  			);
- 			$vn_strlen = unicode_strlen($ps_value);
+ 			$vn_strlen = mb_strlen($ps_value);
  			if ($va_settings['minChars'] && ($vn_strlen < $va_settings['minChars'])) {
  				// length is too short
  				$vs_err_str = ($va_settings['minChars'] == 1) ? _t('%1 must be at least 1 character long', $pa_element_info['displayLabel']) : _t('%1 must be at least %2 characters long', $pa_element_info['displayLabel'], $va_settings['minChars']); 
@@ -223,7 +223,10 @@
 					$this->postError(1970, _t('%1 must not be empty', $pa_element_info['displayLabel']), 'NumericAttributeValue->parseValue()');
 					return false;
 				} else {
-					return null;
+					return array(
+						'value_longtext1' => null,
+						'value_decimal1' => null
+					);
 				}
 			}
  			

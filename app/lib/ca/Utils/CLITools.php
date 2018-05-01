@@ -45,9 +45,6 @@
 		 *
 		 */
 		public static function make_list_from_excel($po_opts=null) {
-			require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel.php');
-			require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel/IOFactory.php');
-			
 			$vs_filepath = (string)$po_opts->getOption('file');
 			if (!$vs_filepath) { 
 				CLITools::addError(_t("You must specify a file", $vs_filepath));
@@ -211,6 +208,11 @@
 			if (!is_writeable(pathinfo($vs_output_path, PATHINFO_DIRNAME))) { 
 				CLITools::addError(_t("Cannot write to %1", $vs_output_path));
 				return false;
+			}
+			
+			if (!caExifToolInstalled()) {
+				CLITools::addError(_t("ExifTool external application is required but not installed on this server."));
+				return false;	
 			}
 			
 			$va_file_list = caGetDirectoryContentsAsList($vs_directory_path);

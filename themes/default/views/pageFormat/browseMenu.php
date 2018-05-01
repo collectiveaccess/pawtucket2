@@ -35,7 +35,7 @@
 			case "list":
 				if(sizeof($va_browse_types) > 1){
 ?>
-				<li class="dropdown<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
+				<li class="dropdown<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print $o_config->get("browse_menu_button_text") ? $o_config->get("browse_menu_button_text") : _t("Browse"); ?></a>
 					<ul class="dropdown-menu">
 <?php
 						foreach($va_browse_types as $vs_browse_name => $va_browse_type){
@@ -69,7 +69,7 @@
 										<ul class="nav nav-pills">			
 <?php
 											foreach($va_browse_types as $vs_browse_name => $va_browse_type){
-												print "<li><div class='browseHeadernav caps".((!$vs_first_browse) ? " active" : "")."'><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(\".browseHeadernav\").removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_browse_type['displayName'])."</a></div></li>";
+												print "<li><div class='browseHeadernav caps".((!$vs_first_browse) ? " active" : "")."'><a href='#' onclick='jQuery(\"#browseMenuTypeFacet\").load(\"".caNavUrl($this->request, '', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_browse_name))."\"); jQuery(\".browseHeadernav\").removeClass(\"active\"); jQuery(this).parent().addClass(\"active\"); return false;'>".caUcFirstUTF8Safe($va_browse_type['displayName'])."</a><b class='caret'></b></div></li>";
 												if(!$vs_first_browse){
 													$vs_first_browse = $vs_browse_name;
 												}

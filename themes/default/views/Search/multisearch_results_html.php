@@ -3,7 +3,7 @@
 	$va_result_count = $va_results['_info_']['totalCount'];
 	if ($va_result_count > 0) {
 ?>
-		<small class='pull-right'>
+		<small class='pull-right jumpLinks'>
 <?php
 		$i = 0;
 		foreach($this->getVar('blockNames') as $vs_block) {

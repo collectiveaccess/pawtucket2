@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2016 Whirl-i-Gig
+ * Copyright 2008-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -301,6 +301,9 @@
 		 * The $pn_mode parameter can be used to restrict removal to preferred or non-preferred if needed.
 		 *
 		 * @param int $pn_mode Set to __CA_LABEL_TYPE_PREFERRED__ or __CA_LABEL_TYPE_NONPREFERRED__ to restrict removal. Default is __CA_LABEL_TYPE_ANY__ (no restriction)
+		 * @param array $pa_options Options include:
+		 *		locales = Limit removal to specific locales. Values must be valid locale ids or codes. A single locale or array of locales may be passed. [Default is null, delete all labels]
+		 *		locale = Synonym for locales.
 		 *
 		 * @return bool True on success, false on error
 		 */
@@ -312,11 +315,14 @@
  				$o_trans = $this->getTransaction();
 				$t_label->setTransaction($o_trans);
 			}
- 			
+			
+			$va_locale_ids = array_map(function($v) { return is_numeric($v) ? $v : ca_locales::codeToID($v); }, caGetOption(['locales', 'locale'], $pa_options, null, ['castTo' => 'array']));
+ 	
  			$vb_ret = true;
  			$va_labels = $this->getLabels();
  			foreach($va_labels as $vn_id => $va_labels_by_locale) {
  				foreach($va_labels_by_locale as $vn_locale_id => $va_labels) {
+ 					if (is_array($va_locale_ids) && sizeof($va_locale_ids) && !in_array($vn_locale_id, $va_locale_ids)) { continue; }
  					foreach($va_labels as $vn_i => $va_label) {
  						if (isset($va_label['is_preferred'])) {
 							switch($pn_mode) {
@@ -501,13 +507,13 @@
 			$t_instance = null;
 			$vs_table = get_called_class();
 			
+			$t_instance = new $vs_table;
 			if (!is_array($pa_values)) {
 				if ((int)$pa_values > 0) { 
-					$t_instance = new $vs_table;
 					$pa_values = array($t_instance->primaryKey() => (int)$pa_values);
 					if (!isset($pa_options['returnAs'])) { $pa_options['returnAs'] = 'firstModelInstance'; }
 				} elseif($pa_values === '*') {
-					$pa_values = caGetOption('includeDeleted', $pa_options, false) ? [] : ['deleted' => 0];
+					$pa_values = (caGetOption('includeDeleted', $pa_options, false) || !$t_instance->hasField('deleted')) ? [] : ['deleted' => 0];
 				}
 			}
 			
@@ -524,18 +530,17 @@
 			$vb_purify_with_fallback 	= caGetOption('purifyWithFallback', $pa_options, false);
 			$vb_purify 					= $vb_purify_with_fallback ? true : caGetOption('purify', $pa_options, true);
 			
-			
-			if (!$t_instance) { $t_instance = new $vs_table; }
 			$vn_table_num = $t_instance->tableNum();
 			$vs_table_pk = $t_instance->primaryKey();
 			
 			$va_sql_params = [];
 			
 			$vs_type_restriction_sql = '';
+			$va_type_restriction_params = [];
 			if ($va_restrict_to_types = caGetOption('restrictToTypes', $pa_options, null)) {
 				if (is_array($va_restrict_to_types = caMakeTypeIDList($vs_table, $va_restrict_to_types)) && sizeof($va_restrict_to_types)) {
-					$vs_type_restriction_sql = " {$vs_table}.".$t_instance->getTypeFieldName()." IN (?) AND ";
-					$va_sql_params[] = $va_restrict_to_types;
+					$vs_type_restriction_sql = "{$vs_table}.".$t_instance->getTypeFieldName()." IN (?)";
+					$va_type_restriction_params[] = $va_restrict_to_types;
 				}
 			}
 			
@@ -550,12 +555,15 @@
 			$pa_values = caNormalizeValueArray($pa_values, ['purify' => $vb_purify]);
 		
 			// Check for intrinsics in value array
+			if (is_array($pa_values) && !sizeof($pa_values)) { 
+			    return parent::find($t_instance->hasField('deleted') ? ['deleted' => 0] : '*', $pa_options);
+			}
 			$vb_has_simple_fields = false;
 			foreach ($pa_values as $vs_field => $va_field_values) {
 				foreach ($va_field_values as  $va_field_value) {
 					$vs_op = $va_field_value[0];
 					$vm_value = $va_field_value[1];
-					if ($vm_value === '*') { return parent::find(['deleted' => 0], $pa_options); }
+					if ($vm_value === '*') { return parent::find($t_instance->hasField('deleted') ? ['deleted' => 0] : '*', $pa_options); }
 					if ($t_instance->hasField($vs_field)) { $vb_has_simple_fields = true; break; }
 				}
 			}
@@ -599,29 +607,58 @@
 			//
 			// Begin query building
 			//
-			$va_joins = $va_sql_wheres = $va_label_sql = [];
+			$va_joins = $va_label_sql = [];
 			
 			if ($vb_has_simple_fields) {				
 				//
 				// Convert type id
 				//
 				if ($t_instance->ATTRIBUTE_TYPE_LIST_CODE) {
-					if (isset($pa_values[$t_instance->ATTRIBUTE_TYPE_ID_FLD]) && !is_numeric($pa_values[$t_instance->ATTRIBUTE_TYPE_ID_FLD])) {
+					if (isset($pa_values[$vs_type_field_name = $t_instance->getTypeFieldName()]) && !is_numeric($pa_values[$vs_type_field_name])) {
 						
-						$va_field_values = $pa_values[$t_instance->ATTRIBUTE_TYPE_ID_FLD];
+						$va_field_values = $pa_values[$vs_type_field_name];
 						foreach($va_field_values as $vn_i => $va_field_value) {
 							$vs_op = strtolower($va_field_value[0]);
 							$vm_value = $va_field_value[1];
 				
 							if (!is_numeric($vm_value)) {
-								if ($vn_id = ca_lists::getItemID($t_instance->ATTRIBUTE_TYPE_LIST_CODE, $vm_value)) {
-									$pa_values[$t_instance->ATTRIBUTE_TYPE_ID_FLD][$vn_i] = ['=', $vn_id];
+								if (is_array($vm_value)) {
+									$va_trans_vals = [];
+									foreach($vm_value as $vn_j => $vs_value) {
+										if ($vn_id = ca_lists::getItemID($t_instance->getTypeListCode(), $vs_value)) {
+											$va_trans_vals[] = $vn_id;
+										}
+										$pa_values[$vs_type_field_name][$vn_i] = [$vs_op, $va_trans_vals];
+									}
+								} elseif ($vn_id = ca_lists::getItemID($t_instance->getTypeListCode(), $vm_value)) {
+									$pa_values[$vs_type_field_name][$vn_i] = [$vs_op, $vn_id];
 								}
 							}
 						}
 					}
 				}
-			
+				
+				if (method_exists($t_instance, "isRelationship") && $t_instance->isRelationship()) {
+					if (isset($pa_values['type_id']) && !is_numeric($pa_values['type_id'])) {
+						
+						$va_field_values = $pa_values['type_id'];
+						foreach($va_field_values as $vn_i => $va_field_value) {
+							$vs_op = strtolower($va_field_value[0]);
+							$vm_value = $va_field_value[1];
+							if (!$vm_value) { continue; }
+				
+							if (!is_numeric($vm_value)) {
+								if (!is_array($vm_value)) {
+								    $vm_value = [$vm_value];
+								}
+                                if ($va_types = caMakeRelationshipTypeIDList($t_instance->tableName(), $vm_value)) {
+                                    $pa_values['type_id'][$vn_i] = [$vs_op, $va_types];
+                                }
+							}
+						}
+					}
+				}
+				
 				//
 				// Convert other intrinsic list references
 				//
@@ -741,6 +778,8 @@
 				$va_joins[] = " INNER JOIN ca_attributes ON ca_attributes.row_id = {$vs_table}.{$vs_table_pk} AND ca_attributes.table_num = {$vn_table_num} ";
 				$va_joins[] = " INNER JOIN ca_attribute_values ON ca_attribute_values.attribute_id = ca_attributes.attribute_id ";
 
+                $vn_attr_count = 0;
+                $va_attr_sql = $va_attr_params = [];
 				foreach($pa_values as $vs_field => $va_field_values) {
 					foreach ($va_field_values as $vs_key => $va_field_values_by_key) {
 						if (is_array($va_field_values_by_key) && isset($va_field_values_by_key[0]) && !is_array($va_field_values_by_key[0]) && caIsValidSqlOperator($va_field_values_by_key[0], ['nullable' => true, 'isList' => true])) {
@@ -754,6 +793,7 @@
 					
 							$va_q = [];
 							if (($vn_element_id = array_search($vs_field, $va_element_codes)) !== false) {
+							    $vn_attr_count++;
 								switch($vn_datatype = ca_metadata_elements::getElementDatatype($vs_field)) {
 									case __CA_ATTRIBUTE_VALUE_CONTAINER__:
 										$va_subelement_codes = $t_instance->getApplicableElementCodes($vn_element_id, true, true);
@@ -762,7 +802,7 @@
 									
 											if (($vn_subelement_id = array_search($vs_subfld, $va_subelement_codes)) === false) { continue; }
 									
-											$vs_q = "(ca_attribute_values.element_id = {$vn_subelement_id}) AND  ";
+											$vs_q = "((ca_attribute_values.element_id = {$vn_subelement_id}) AND  ";
 									
 											$vs_op = strtolower($va_subfield_value[0]);
 											$vm_value = $va_subfield_value[1];
@@ -771,18 +811,18 @@
 							
 											if (is_null($vm_value)) {
 												if ($vs_op !== '=') { $vs_op = 'IS'; }
-												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} {$vs_op} NULL)";
+												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} {$vs_op} NULL))";
 											} elseif (is_array($vm_value) && sizeof($vm_value)) {
 												if ($vs_op !== '=') { $vs_op = 'IN'; }
-												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} {$vs_op} (?))";
+												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} {$vs_op} (?)))";
 											} elseif (caGetOption('allowWildcards', $pa_options, false) && (strpos($vm_value, '%') !== false)) {
-												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} LIKE ?)";
+												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} LIKE ?))";
 											} else {
 												if ($vm_value === '') { continue; }
-												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} {$vs_op} ?)";
+												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} {$vs_op} ?))";
 											}
 									
-											$va_sql_params[] = $vm_value;
+											$va_attr_params[] = $vm_value;
 								
 										}
 										break;
@@ -793,16 +833,16 @@
 										break;
 									case __CA_ATTRIBUTE_VALUE_DATERANGE__:
 										if(is_array($va_date = caDateToHistoricTimestamps($vm_value))) {
-											$va_q[] = "(ca_attribute_values.element_id = {$vn_element_id}) AND ((ca_attribute_values.value_decimal1 BETWEEN ? AND ?) OR (ca_attribute_values.value_decimal2 BETWEEN ? AND ?))";
-											array_push($va_sql_params, $va_date['start'], $va_date['end'], $va_date['start'], $va_date['end']);
+											$va_q[] = "((ca_attribute_values.element_id = {$vn_element_id}) AND ((ca_attribute_values.value_decimal1 BETWEEN ? AND ?) OR (ca_attribute_values.value_decimal2 BETWEEN ? AND ?)))";
+											array_push($va_attr_params, $va_date['start'], $va_date['end'], $va_date['start'], $va_date['end']);
 										} else {
 											continue(2);
 										}
 										break;
 									case __CA_ATTRIBUTE_VALUE_CURRENCY__:
 										if (is_array($va_parsed_value = caParseCurrencyValue($vm_value))) {
-											$va_q[] = "(ca_attribute_values.element_id = {$vn_element_id}) AND ((ca_attribute_values.value_longtext1 = ?) OR (ca_attribute_values.value_decimal1 {$vs_op} ?))";
-											array_push($va_sql_params, $va_parsed_value['currency'], $va_parsed_value['value']);
+											$va_q[] = "((ca_attribute_values.element_id = {$vn_element_id}) AND ((ca_attribute_values.value_longtext1 = ?) OR (ca_attribute_values.value_decimal1 {$vs_op} ?)))";
+											array_push($va_attr_params, $va_parsed_value['currency'], $va_parsed_value['value']);
 										} else {
 											continue(2);
 										}
@@ -822,44 +862,76 @@
 											}
 										}
 								
-										$vs_q = "(ca_attribute_values.element_id = {$vn_element_id}) AND  ";
+										$vs_q = "((ca_attribute_values.element_id = {$vn_element_id}) AND  ";
 										if (is_null($vm_value)) {
 											if ($vs_op !== '=') { $vs_op = 'IS'; }
-											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} {$vs_op} NULL)";
+											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} {$vs_op} NULL))";
 										} elseif (is_array($vm_value) && sizeof($vm_value)) {
 											if ($vs_op !== '=') { $vs_op = 'IN'; }
-											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} {$vs_op} (?))";
+											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} {$vs_op} (?)))";
 										} elseif (caGetOption('allowWildcards', $pa_options, false) && (strpos($vm_value, '%') !== false)) {
-											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} LIKE ?)";
+											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} LIKE ?))";
 										} else {
 											if ($vm_value === '') { continue; }
-											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} {$vs_op} ?)";
+											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} {$vs_op} ?))";
 										}
 								
-										$va_sql_params[] = $vm_value;
+										$va_attr_params[] = $vm_value;
 										break;
 								}
 						
-						
-								$va_label_sql[] = join(" AND ", $va_q);
+						        if (sizeof($va_q)) { $va_attr_sql[] = join(" AND ", $va_q); }
 							}
 						}
 					}
 				}
 			}
 			
-			if (!sizeof($va_label_sql)) { return null; }
+			if (($vn_attr_count == 1) || (($vn_attr_count > 0) && strtolower($ps_boolean) !== 'and')) {
+			    $va_label_sql = array_merge($va_label_sql, $va_attr_sql);
+			    $va_sql_params = array_merge($va_sql_params, $va_attr_params);
+			} 
+			
+			if (!sizeof($va_label_sql) && ($vn_attr_count == 0)) { return null; }
 			
 			
 			if (is_array($pa_check_access) && sizeof($pa_check_access) && $t_instance->hasField('access')) {
 				$va_label_sql[] = "({$vs_table}.access IN (?))";
 				$va_sql_params[] = $pa_check_access;
 			}
+						
+			$vs_deleted_sql = ($t_instance->hasField('deleted')) ? "({$vs_table}.deleted = 0)" : '';
 			
-			$vs_deleted_sql = ($t_instance->hasField('deleted')) ? "({$vs_table}.deleted = 0) AND " : '';
-			$vs_sql = "SELECT * FROM {$vs_table}";
-			$vs_sql .= join("\n", $va_joins);
-			$vs_sql .=" WHERE {$vs_deleted_sql} {$vs_type_restriction_sql} (".join(" {$ps_boolean} ", $va_label_sql).")";
+			$va_sql = [];
+			if ($vs_wheres = join(" {$ps_boolean} ", $va_label_sql)) { $va_sql[] = "({$vs_wheres})"; }
+			if ($vs_type_restriction_sql) { $va_sql[] = $vs_type_restriction_sql; }
+			if ($vs_deleted_sql) { $va_sql[] = $vs_deleted_sql; }			
+
+
+			if (isset($pa_options['transaction']) && ($pa_options['transaction'] instanceof Transaction)) {
+				$o_db = $pa_options['transaction']->getDb();
+			} else {
+				$o_db = new Db();
+			}
+			
+			if (($vn_attr_count > 1) && (strtolower($ps_boolean) == 'and')) {
+			    $va_ids = null;
+			    foreach($va_attr_sql as $i => $vs_attr_sql) {
+			        $qr_p = $o_db->query("SELECT t.{$vs_table_pk} FROM {$vs_table} t INNER JOIN ca_attributes ON ca_attributes.table_num = {$vn_table_num} AND ca_attributes.row_id = t.{$vs_table_pk} INNER JOIN ca_attribute_values ON ca_attribute_values.attribute_id = ca_attributes.attribute_id WHERE {$vs_attr_sql}", [$va_attr_params[$i]]);
+			        if (is_null($va_ids)) { 
+			            $va_ids = array_unique($qr_p->getAllFieldValues($vs_table_pk));
+			        } else {
+			            $va_ids = array_intersect(array_unique($va_ids), $qr_p->getAllFieldValues($vs_table_pk)); 
+			        }  
+			    }
+			    if (!is_array($va_ids) || !sizeof($va_ids)) { $va_ids = [0]; }
+			    
+                $va_sql[] = "({$vs_table}.{$vs_table_pk} IN (?))";
+                $va_sql_params[] = $va_ids;
+			} 
+            $vs_sql = "SELECT DISTINCT {$vs_table}.* FROM {$vs_table}";
+            $vs_sql .= join("\n", $va_joins);
+            $vs_sql .= ((sizeof($va_sql) > 0) ? " WHERE (".join(" AND ", $va_sql).")" : "");
 			
 			$vs_orderby = '';
 			if ($vs_sort_proc) {
@@ -881,16 +953,10 @@
 				}
 				if ($vs_orderby) { $vs_sql .= $vs_orderby; }
 			}
-
-			if (isset($pa_options['transaction']) && ($pa_options['transaction'] instanceof Transaction)) {
-				$o_db = $pa_options['transaction']->getDb();
-			} else {
-				$o_db = new Db();
-			}
 		
 			$vn_limit = (isset($pa_options['limit']) && ((int)$pa_options['limit'] > 0)) ? (int)$pa_options['limit'] : null;
 	
-			$qr_res = $o_db->query($vs_sql, $va_sql_params);
+			$qr_res = $o_db->query($vs_sql, array_merge($va_sql_params, $va_type_restriction_params));
 
 			if ($vb_purify_with_fallback && ($qr_res->numRows() == 0)) {
 				return self::find($pa_values, array_merge($pa_options, ['purifyWithFallback' => false, 'purify' => false]));
@@ -1526,6 +1592,16 @@
 		}
 		# ------------------------------------------------------------------
 		/**
+		 * Returns list of names of fields that may be used to generate the display field. For most labels this will be empty. For ca_entities this will be a list on constituent name fields.
+		 *
+		 * @return array
+		 */
+		public function getSecondaryLabelDisplayFields() {
+			if (!($t_label = $this->_DATAMODEL->getInstanceByTableName($this->getLabelTableName(), true))) { return null; }
+			return $t_label->getSecondaryDisplayFields();
+		}
+		# ------------------------------------------------------------------
+		/**
 		 * Returns the name of the field that is used to sort label content
 		 *
 		 * @return string Name of sort field
@@ -1616,7 +1692,7 @@
  		public function getLabels($pa_locale_ids=null, $pn_mode=__CA_LABEL_TYPE_ANY__, $pb_dont_cache=true, $pa_options=null) {
  			if(isset($pa_options['restrictToTypes']) && (!isset($pa_options['restrict_to_types']) || !$pa_options['restrict_to_types'])) { $pa_options['restrict_to_types'] = $pa_options['restrictToTypes']; }
 	 	
- 			if (!($vn_id = $this->getPrimaryKey()) && !(isset($pa_options['row_id']) && ($vn_id = $pa_options['row_id']))) { return null; }
+ 			if (!($vn_id = caGetOption('row_id', $pa_options, $this->getPrimaryKey())) ) { return null; }
  			if (isset($pa_options['forDisplay']) && $pa_options['forDisplay']) {
  				$pa_options['extractValuesByUserLocale'] = true;
  			}
@@ -1783,9 +1859,10 @@
 		 * Returns number of preferred or nonpreferred labels for the current row
 		 *
 		 * @param bool $pb_preferred
+		 * @param int $pn_locale_id
 		 * @return int Number of labels
 		 */
- 		public function getLabelCount($pb_preferred=true) {
+ 		public function getLabelCount($pb_preferred=true, $pn_locale_id=null) {
  			if (!$this->getPrimaryKey()) { return null; }
 			if (!($t_label = $this->_DATAMODEL->getInstanceByTableName($this->getLabelTableName(), true))) { return null; }
 			if ($this->inTransaction()) {
@@ -1793,24 +1870,31 @@
 				$t_label->setTransaction($o_trans);
 			}
 			$o_db = $this->getDb();
+			
+			$vn_is_preferred = ($pb_preferred ? 1 : 0);
+			$va_params = [$vn_is_preferred, $this->getPrimaryKey()];
+			$vs_locale_sql = '';
+			if ((int)$pn_locale_id > 0) { 
+				$vs_locale_sql = ' AND (l.locale_id = ?)';
+				$va_params[] = (int)$pn_locale_id;
+			}
  			
  			if (!$t_label->hasField('is_preferred')) { 
+ 				array_shift($va_params);
  				$qr_res = $o_db->query("
 					SELECT l.label_id 
 					FROM ".$this->getLabelTableName()." l
 					WHERE 
-						(l.".$this->primaryKey()." = ?)
-				", $this->getPrimaryKey());
+						(l.".$this->primaryKey()." = ?) {$vs_locale_sql}
+				", $va_params);
  			} else {
-				$vn_is_preferred = ($pb_preferred ? 1 : 0);
-				$qr_res = $o_db->query("
+				$qr_res = $o_db->query($x="
 					SELECT l.label_id 
 					FROM ".$this->getLabelTableName()." l
 					WHERE 
-						(l.is_preferred = ?) AND (l.".$this->primaryKey()." = ?)
-				", $vn_is_preferred, $this->getPrimaryKey());
+						(l.is_preferred = ?) AND (l.".$this->primaryKey()." = ?) {$vs_locale_sql}
+				", $va_params);
 			}
- 			
  			return $qr_res->numRows();
 		}
 		# ------------------------------------------------------------------
@@ -2320,13 +2404,19 @@
 		 * is key'ed on user group group_id; each value is an  array containing information about the group. Array keys are:
 		 *			group_id		[group_id for group]
 		 *			name			[name of group]
-		 *			code				[short alphanumeric code identifying the group]
-		 *			description	[text description of group]
+		 *			code			[short alphanumeric code identifying the group]
+		 *			description		[text description of group]
+		 *			sdatetime		[start date/time of access]
+		 *			edatetime		[end date/time of access]
+		 *			access			[access level]
+		 *
+		 * @param array $pa_options Options include:
+		 *		row_id = Get group list for a specific row rather than the currently loaded one. [Default is null]
 		 *
 		 * @return array List of groups associated with the currently loaded row
 		 */ 
 		public function getUserGroups($pa_options=null) {
-			if (!($vn_id = (int)$this->getPrimaryKey())) { return null; }
+			if (!($vn_id = caGetOption('row_id', $pa_options, null)) && !($vn_id = (int)$this->getPrimaryKey())) { return null; }
 			if (!($vs_group_rel_table = $this->getProperty('USER_GROUPS_RELATIONSHIP_TABLE'))) { return null; }
 			$vs_pk = $this->primaryKey();
 			
@@ -2565,14 +2655,21 @@
 		 * Returns array of users associated with the currently loaded row. The array
 		 * is key'ed on user user user_id; each value is an  array containing information about the user. Array keys are:
 		 *			user_id			[user_id for user]
-		 *			user_name	[name of user]
-		 *			code				[short alphanumeric code identifying the group]
-		 *			description	[text description of group]
+		 *			user_name		[name of user]
+		 *			fname			[first name of user]
+		 *			lname			[last name of user]
+		 *			email			[email address for user]
+		 *			sdatetime		[start date/time of access]
+		 *			edatetime		[end date/time of access]
+		 *			access			[access level]
+		 *
+		 * @param array $pa_options Options include:
+		 *		row_id = Get user list for a specific row rather than the currently loaded one. [Default is null]
 		 *
 		 * @return array List of groups associated with the currently loaded row
 		 */ 
 		public function getUsers($pa_options=null) {
-			if (!($vn_id = (int)$this->getPrimaryKey())) { return null; }
+			if (!($vn_id = caGetOption('row_id', $pa_options, null)) && !($vn_id = (int)$this->getPrimaryKey())) { return null; }
 			if (!($vs_user_rel_table = $this->getProperty('USERS_RELATIONSHIP_TABLE'))) { return null; }
 			$vs_pk = $this->primaryKey();
 			

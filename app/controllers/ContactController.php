@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2016 Whirl-i-Gig
+ * Copyright 2013-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -40,7 +40,7 @@
  				$this->notification->addNotification(_t("Contact form is not configured properly"), __NOTIFICATION_TYPE_ERROR__);
  				$this->response->setRedirect(caNavUrl($this->request, '', '', ''));
  			}
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Contact"));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Contact"));
  			caSetPageCSSClasses(array("contact"));
  		}
  		# -------------------------------------------------------
@@ -49,6 +49,7 @@
  		}
  		# ------------------------------------------------------
  		public function Send() {
+ 		    caValidateCSRFToken($this->request);
  			$o_purifier = new HTMLPurifier();
  			# --- check for errors
  			$va_errors = array();

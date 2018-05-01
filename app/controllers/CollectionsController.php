@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/controllers/ListingController.php : 
+ * app/controllers/CollectionsController.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2014 Whirl-i-Gig
+ * Copyright 2013-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -88,7 +88,7 @@
  		 *
  		 */ 
  		public function Index() {
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".$this->opo_config->get("section_title"));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("section_title"));
  			
  			$this->opo_result_context = new ResultContext($this->request, "ca_collections", "collections");
  			$this->opo_result_context->setAsLastFind();
@@ -96,8 +96,9 @@
  			$t_list = new ca_lists();
 			$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", ($this->opo_config->get("landing_page_collection_type")) ? $this->opo_config->get("landing_page_collection_type") : "collection");
 			$vs_sort = ($this->opo_config->get("landing_page_sort")) ? $this->opo_config->get("landing_page_sort") : "ca_collections.preferred_labels.name";
-			$qr_collections = ca_collections::find(array('type_id' => $vn_collection_type_id), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => $vs_sort));
+			$qr_collections = ca_collections::find(array('type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => $vs_sort));
 			$this->view->setVar("collection_results", $qr_collections);
+			caSetPageCSSClasses(array("collections", "landing"));
  			$this->render("Collections/index_html.php");
  		}
  		# -------------------------------------------------------

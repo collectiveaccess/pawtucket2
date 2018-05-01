@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2016 Whirl-i-Gig
+ * Copyright 2007-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -46,6 +46,12 @@ class MultipartIDNumber extends IDNumber {
 	private $opo_idnumber_config;
 	
 	/**
+	 * A configuration object loaded with search.conf
+	 * @type Configuration
+	 */
+	private $opo_search_config;
+	
+	/**
 	 * The list of valid formats, related types and elements
 	 * @type array
 	 */
@@ -71,6 +77,7 @@ class MultipartIDNumber extends IDNumber {
 
 		parent::__construct();
 		$this->opo_idnumber_config = Configuration::load(__CA_APP_DIR__."/conf/multipart_id_numbering.conf");
+		$this->opo_search_config = Configuration::load(__CA_APP_DIR__."/conf/search.conf");
 		$this->opa_formats = $this->opo_idnumber_config->getAssoc('formats');
 
 		if ($ps_format) { $this->setFormat($ps_format); }
@@ -457,7 +464,7 @@ class MultipartIDNumber extends IDNumber {
 					break;
 				case 'CONSTANT':
 					if ($vs_value && ($vs_value != $va_element_info['value'])) {
-						$va_element_errors[$vs_element_name] = _t("%1 must be set to %2", $va_element_info['description'], $va_element_info['value']);
+						$va_element_errors[$vs_element_name] = _t("%1 must be set to %2; was %3", $va_element_info['description'], $va_element_info['value'], $vs_value);
 					}
 					break;
 				case 'FREE':
@@ -646,21 +653,38 @@ class MultipartIDNumber extends IDNumber {
 
 		// Get the next number based upon field data
 		$vn_type_id = null;
+		$vs_type_limit_sql = '';
 		
 		$o_dm = Datamodel::load();
 		if (!($t_instance = $o_dm->getInstanceByTableName($vs_table, true))) { return 'ERR'; }
 		if ((bool)$va_element_info['sequence_by_type']) {
-			$vn_type_id = (int)$t_instance->getTypeIDForCode($this->getType());
+			$vs_type = $this->getType();
+			if ($vs_type == '__default__') {
+			    $va_types = $this->getTypes(); 
+			    
+			    $va_exclude_type_ids = [];
+			    foreach($va_types as $vs_type) {
+			        if ($vs_type == '__default__') { continue; }
+			        if ($vn_type_id = (int)$t_instance->getTypeIDForCode($vs_type)) {
+			            $va_exclude_type_ids[] = $vn_type_id;
+			        }
+			    }
+			    if (sizeof($va_exclude_type_ids) > 0) {
+			        $vs_type_limit_sql = " AND type_id NOT IN (".join(", ", $va_exclude_type_ids).")";
+			    }
+			} elseif($vn_type_id = (int)$t_instance->getTypeIDForCode($vs_type)) {
+		        $vs_type_limit_sql = " AND type_id = {$vn_type_id}";
+		    }
 		}
 		
-		if ($qr_res = $this->opo_db->query($x="
+		if ($qr_res = $this->opo_db->query("
 			SELECT $vs_field FROM ".$vs_table."
 			WHERE
-				$vs_field LIKE ? ".(($vn_type_id > 0) ? " AND type_id = {$vn_type_id}" : "")."
+				$vs_field LIKE ? {$vs_type_limit_sql}
 				".($t_instance->hasField('deleted') ? " AND (deleted = 0)" : '')."
 			ORDER BY
 				$vs_sort_field DESC
-		", ($y=$vs_stub.(($vs_stub != '') ? $vs_separator.'%' : '%')))) {
+		", ($vs_stub.(($vs_stub != '') ? $vs_separator.'%' : '%')))) {
 			if ($this->opo_db->numErrors()) {
 				return "ERR";
 			}
@@ -756,7 +780,7 @@ class MultipartIDNumber extends IDNumber {
 								array_unshift($va_tmp, $va_matches[2]);
 							}
 						}
-						$vn_pad_len = 12 - mb_strlen($vs_piece);
+						$vn_pad_len = $vn_padding - mb_strlen($vs_piece);
 
 						if ($vn_pad_len >= 0) {
 							if (is_numeric($vs_piece)) {
@@ -778,11 +802,7 @@ class MultipartIDNumber extends IDNumber {
 				case 'SERIAL':
 				case 'NUMERIC':
 					if ($vn_padding < $va_element_info['width']) { $vn_padding = $va_element_info['width']; }
-					if (preg_match("/^([0-9]+)([A-Za-z]{1})$/", $va_element_vals[$vn_i], $va_matches)) {
-						$va_output[] = str_repeat(' ', $vn_padding - mb_strlen(intval($va_matches[1]))).intval($va_matches[1]).$va_matches[2];
-					} else {
-						$va_output[] = str_repeat(' ', $vn_padding - mb_strlen(intval($va_element_vals[$vn_i]))).intval($va_element_vals[$vn_i]);
-					}
+					$va_output[] = str_repeat(' ', $vn_padding - strlen(intval($va_element_vals[$vn_i]))).intval($va_element_vals[$vn_i]);
 					break;
 				case 'YEAR':
 					$vn_p = (($va_element_info['width'] == 2) ? 2 : 4) - mb_strlen($va_element_vals[$vn_i]);
@@ -814,7 +834,7 @@ class MultipartIDNumber extends IDNumber {
 	 * @param string $ps_value Value from which to derive the index values. If omitted the current value is used. [Default is null]
 	 * @return array Array of string for indexing
 	 */
-	public function getIndexValues($ps_value=null) {
+	public function getIndexValues($ps_value=null, $pa_options=null) {
 		$vs_separator = $this->getSeparator();
 		if (!is_array($va_elements_normal_order = $this->getElements())) { $va_elements_normal_order = array(); }
 		$va_element_names_normal_order = array_keys($va_elements_normal_order);
@@ -893,7 +913,7 @@ class MultipartIDNumber extends IDNumber {
 				$va_output_values[] = join('', $va_acc);
 				if (is_numeric($vs_element_value)) {
 					array_pop($va_acc);
-					$va_acc[] = (int)$vs_element_value;
+					$va_acc[] = $vs_element_value;
 					$va_output_values[] = join('', $va_acc);
 				}
 				if (sizeof($va_delimiters[0]) > 0) { $va_acc[] = array_shift($va_delimiters[0]); }
@@ -915,8 +935,20 @@ class MultipartIDNumber extends IDNumber {
 		foreach($va_tmp as $vs_value_proc) {
 			$va_output_values[] = preg_replace("!([\d]+)[A-Za-z]+$!", "$1", $vs_value_proc);
 		}
-
-		return array_values(array_unique($va_output_values));
+		
+		$va_output_values = array_unique($va_output_values);
+		
+		// generate tokenized version
+		if($va_tokens = preg_split("![".$this->opo_search_config->get('indexing_tokenizer_regex')."]+!", $ps_value)) {
+			$va_output_values = array_merge($va_output_values, $va_tokens);
+		}
+		
+		if (isset($pa_options['INDEX_IDNO_PARTS']) || (is_array($pa_options) && (in_array('INDEX_IDNO_PARTS', $pa_options)))) {
+		    if (is_array($va_delimiters = caGetOption('IDNO_DELIMITERS', $pa_options, [$this->getSeparator()])) && sizeof($va_delimiters)) {
+		        $va_output_values = array_merge($va_output_values, preg_split("![".preg_quote(join('', $va_delimiters), "!")."]!", $ps_value));
+		    }
+		}
+		return array_unique($va_output_values);
 	}
 	# -------------------------------------------------------
 	# User interace (HTML)
@@ -942,6 +974,8 @@ class MultipartIDNumber extends IDNumber {
 	 * @return string HTML output
 	 */
 	public function htmlFormElement($ps_name, &$pa_errors=null, $pa_options=null) {
+		$o_config = Configuration::load();
+		
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		$vs_id_prefix = isset($pa_options['id_prefix']) ? $pa_options['id_prefix'] : null;
 		$vb_generate_for_search_form = isset($pa_options['for_search_form']) ? true : false;
@@ -949,6 +983,9 @@ class MultipartIDNumber extends IDNumber {
 		$pa_errors = $this->validateValue($this->getValue());
 		$vs_separator = $this->getSeparator();
 		$va_element_vals = $this->explodeValue($this->getValue());
+		
+		$vb_dont_allow_editing = isset($pa_options['row_id']) && ($pa_options['row_id'] > 0) && $o_config->exists($this->getFormat().'_dont_allow_editing_of_codes_when_in_use') && (bool)$o_config->get($this->getFormat().'_dont_allow_editing_of_codes_when_in_use');
+		if ($vb_dont_allow_editing) { $pa_options['readonly'] = true; }
 
 		if (!is_array($va_elements = $this->getElements())) { $va_elements = array(); }
 
@@ -984,6 +1021,16 @@ class MultipartIDNumber extends IDNumber {
 			foreach($va_extra_vals as $vn_i => $vs_extra_val) {
 				$va_element_controls[] = "<input type='text' name='{$ps_name}_extra_{$vn_i}' id='{$ps_name}_extra_{$vn_i}' value='".htmlspecialchars($vs_extra_val, ENT_QUOTES, 'UTF-8')."' size='{$vn_extra_size}'".($pa_options['readonly'] ? ' disabled="1" ' : '').">";
 				$va_element_control_names[] = $ps_name.'_extra_'.$vn_i;
+			}
+		}
+		
+		if ($o_config->exists($this->getFormat().'_dont_allow_editing_of_codes_when_in_use')) {
+			if (isset($pa_options['row_id']) && ($pa_options['row_id'] > 0)) {
+				if ($vb_dont_allow_editing) {
+					$va_element_controls[] =  '<span class="formLabelWarning"><i class="caIcon fa fa-info-circle fa-1x"></i> '._t('Value cannot be edited because it is in use').'</span>';	
+				} else {
+					$va_element_controls[] =  '<span class="formLabelWarning"><i class="caIcon fa fa-exclamation-triangle fa-1x"></i> '._t('Changing this value may break parts of the system configuration').'</span>';	
+				}
 			}
 		}
 
@@ -1270,6 +1317,7 @@ class MultipartIDNumber extends IDNumber {
 		switch($va_element_info['type']) {
 			# ----------------------------------------------------
 			case 'LIST':
+				if (!is_array($va_element_info['values'])) { $va_element_info['values'] = []; }
 				if (!$vs_element_value || $va_element_info['editable'] || $pb_generate_for_search_form) {
 					if (!$vs_element_value && !$pb_generate_for_search_form) { $vs_element_value = $va_element_info['default']; }
 					$vs_element = '<select name="'.$vs_element_form_name.'" id="'.$ps_id_prefix.$vs_element_form_name.'">';
@@ -1289,7 +1337,8 @@ class MultipartIDNumber extends IDNumber {
 
 					$vs_element .= '</select>';
 				} else {
-					$vs_element .= '<input type="hidden" name="'.$vs_element_form_name.'" id="'.$ps_id_prefix.$vs_element_form_name.'" value="'.htmlspecialchars($vs_element_value, ENT_QUOTES, 'UTF-8').'"/>'.$vs_element_value;
+					$vs_element_val_proc = (in_array($vs_element_value, $va_element_info['values']) ? $vs_element_value : $va_element_info['values'][0]);
+					$vs_element .= '<input type="hidden" name="'.$vs_element_form_name.'" id="'.$ps_id_prefix.$vs_element_form_name.'" value="'.htmlspecialchars($vs_element_val_proc, ENT_QUOTES, 'UTF-8').'"/>'.$vs_element_val_proc;
 				}
 
 				break;

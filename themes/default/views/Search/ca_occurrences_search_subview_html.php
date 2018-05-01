@@ -42,11 +42,11 @@
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
-			<small class="pull-right">
+			<small class="pull-right sortValues">
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> | 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> | 
 <?php
 				}
 ?>
@@ -64,7 +64,7 @@
 <?php
 			}
 ?>
-			<div class='blockResults'>
+			<div class='blockResults authorityBlock'>
 				<div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
 				<div id='{{{block}}}Results' class='multiSearchResults'>
 					<div class='blockResultsScroller'>
@@ -93,6 +93,13 @@
 					</div><!-- end blockResultsScroller -->
 				</div>
 			</div><!-- end blockResults -->
+<?php
+			if ($qr_results->numHits() > 3) {
+?>			
+				<div class='allLink'><?php print caNavLink($this->request, 'See '.($qr_results->numHits() - 3)." more ".$va_block_info['displayName'].($qr_results->numHits() == 4 ? ' result' : ' results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search));?></div>
+<?php
+			}
+?>
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery('#{{{block}}}Results').hscroll({

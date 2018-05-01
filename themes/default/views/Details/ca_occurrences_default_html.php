@@ -22,9 +22,9 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
-				<div class='col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_occurrences.notes"><H6>About</H6>^ca_occurrences.notes<br/></ifdef>}}}
-					{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
+				<div class='col-sm-6 col-md-6 col-lg-6'>
+					{{{<ifdef code="ca_occurrences.description"><H6>About</H6>^ca_occurrences.description<br/></ifdef>}}}
+					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
 
 <?php
 				# Comment and Share Tools
@@ -91,3 +91,11 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 120
+		});
+	});
+</script>

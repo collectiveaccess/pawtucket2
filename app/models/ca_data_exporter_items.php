@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2012-2015 Whirl-i-Gig
+ * Copyright 2012-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -352,16 +352,15 @@ class ca_data_exporter_items extends BaseModel {
 			'description' => _t('The current mapping is skipped if the given expression evaluates to true.')
 		);
 
-		// Deprecated -- remove?
-		//$va_settings['filterByRegExp'] = array(
-		//	'formatType' => FT_TEXT,
-		//	'displayType' => DT_FIELD,
-		//	'width' => 40, 'height' => 1,
-		//	'takesLocale' => false,
-		//	'default' => '',
-		//	'label' => _t('Regular expression filter'),
-		//	'description' => _t('Any value that does NOT match this PCRE regular expression is filtered and not exported. Insert expression without delimiters.')
-		//);
+		$va_settings['filterByRegExp'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 1,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Regular expression filter'),
+			'description' => _t('Any value that does NOT match this PCRE regular expression is filtered and not exported. Insert expression without delimiters.')
+		);
 
 		$va_settings['original_values'] = array(
 			'formatType' => FT_TEXT,
@@ -428,6 +427,7 @@ class ca_data_exporter_items extends BaseModel {
 			'displayType' => DT_FIELD,
 			'width' => 10, 'height' => 1,
 			'takesLocale' => false,
+			'multiple' => 1,
 			'default' => '',
 			'label' => _t('Restrict to types'),
 			'description' => _t('Restricts the context of the mapping to only records of the designated type. Only valid when context is set.')
@@ -438,6 +438,7 @@ class ca_data_exporter_items extends BaseModel {
 			'displayType' => DT_FIELD,
 			'width' => 10, 'height' => 1,
 			'takesLocale' => false,
+			'multiple' => 1,
 			'default' => '',
 			'label' => _t('Restrict to relationship types'),
 			'description' => _t('Restricts the context of the mapping to only records related with the designated relationship type. Only valid when context is set.')
@@ -448,6 +449,7 @@ class ca_data_exporter_items extends BaseModel {
 			'displayType' => DT_FIELD,
 			'width' => 10, 'height' => 1,
 			'takesLocale' => false,
+			'multiple' => 1,
 			'default' => '',
 			'label' => _t('Restrict to bundle values'),
 			'description' => _t('Restricts the context of the mapping to only records related with the designated bundle values. Only valid when context is set.')
@@ -500,6 +502,20 @@ class ca_data_exporter_items extends BaseModel {
 			'label' => _t('End as ISO8601'),
 			'description' => _t('If set, only the beginning of a date range is exported for the current mapping. Format is ISO8601. Only applies to exports of DateRange attributes.')
 		);
+		
+		$va_settings['timeOmit'] = array(
+			'formatType' => FT_BIT,
+			'displayType' => DT_SELECT,
+			'width' => 40, 'height' => 1,
+			'takesLocale' => false,
+			'default' => 0,
+			'options' => array(
+				_t('yes') => 1,
+				_t('no') => 0
+			),
+			'label' => _t('Omit time portion of date/time values'),
+			'description' => _t('If set, only the date portion of a date/time value is exported.')
+		);
 
 		$va_settings['dontReturnValueIfOnSameDayAsStart'] = array(
 			'formatType' => FT_BIT,
@@ -523,6 +539,15 @@ class ca_data_exporter_items extends BaseModel {
 			'default' => '',
 			'label' => _t('Date format'),
 			'description' => _t('Formatting option for DateRange attributes.')
+		);
+		$va_settings['coordinatesOnly'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 10, 'height' => 1,
+			'takesLocale' => false,
+			'default' => '',
+			'label' => _t('Return geocode coordinates only'),
+			'description' => _t('Formatting option for Geocode attributes. Forces return of coordinates only, omitting text labels.')
 		);
 		
 		$va_settings['_id'] = array(

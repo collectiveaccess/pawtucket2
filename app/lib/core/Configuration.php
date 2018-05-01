@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2000-2015 Whirl-i-Gig
+ * Copyright 2000-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -338,7 +338,7 @@ class Configuration {
 								$vn_in_quote = 0;
 								$vn_state = -1;
 
-								$this->ops_config_settings["scalars"][$vs_key] = $this->_trimScalar($vs_scalar_value);
+								$this->ops_config_settings["scalars"][$vs_key] = $vs_scalar_value;
 								break;
 							}
 						}
@@ -777,6 +777,24 @@ class Configuration {
 	}
 	/* ---------------------------------------- */
 	/**
+	 * Determine if specified key is present in the configuration file.
+	 *
+	 * @param string $ps_key Name of configuration value.
+	 *
+	 * @return bool
+	 */
+	public function exists($ps_key) {
+		if (isset(Configuration::$s_get_cache[$this->ops_md5_path][$ps_key])) { return true; }
+		$this->ops_error = "";
+
+		if (array_key_exists($ps_key, $this->ops_config_settings["scalars"])) { return true; }
+		if (array_key_exists($ps_key, $this->ops_config_settings["lists"])) { return true; }
+		if (array_key_exists($ps_key, $this->ops_config_settings["assoc"])) { return true; }
+		
+		return false;
+	}
+	/* ---------------------------------------- */
+	/**
 	 * Get boolean configuration value
 	 *
 	 * @param string $ps_key Name of configuration value to get. getBoolean() will look for the
@@ -937,7 +955,7 @@ class Configuration {
 
 		// attempt translation if text is enclosed in _( and ) ... for example _t(translate me)
 		// assumes translation function _t() is present; if not loaded will not attempt translation
-		if (preg_match("/_\(([^\"]+)\)/", $ps_text, $va_matches)) {
+		if (preg_match("/_\(([^\"\)]+)\)/", $ps_text, $va_matches)) {
 			if(function_exists('_t')) {
 				$vs_trans_text = $ps_text;
 				array_shift($va_matches);
@@ -973,7 +991,7 @@ class Configuration {
 	 * Destructor: Save config cache to disk/external provider
 	 */
 	public function __destruct() {
-		if(self::$s_have_to_write_config_cache) {
+		if(isset(Configuration::$s_have_to_write_config_cache) && Configuration::$s_have_to_write_config_cache) {
 			ExternalCache::save('ConfigurationCache', self::$s_config_cache, 'default', 0);
 			self::$s_have_to_write_config_cache = false;
 		}

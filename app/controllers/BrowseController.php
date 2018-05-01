@@ -82,7 +82,7 @@
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type");
  			}
-			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Browse %1", $va_browse_info["displayName"]));
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Browse %1", $va_browse_info["displayName"]));
  			$this->view->setVar("browse_type", $ps_function);
  			$vs_class = $this->ops_tablename = $va_browse_info['table'];
  			
@@ -93,10 +93,11 @@
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
 			
-			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable")) {
-				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable"));
+			$vs_type_key = caMakeCacheKeyFromOptions($va_types);
+			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable{$vs_type_key}")) {
+				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable{$vs_type_key}"));
 			} else {
-				ExternalCache::save("{$vs_class}totalRecordsAvailable", $vn_count = ca_objects::find(['deleted' => 0, 'access' => $this->opa_access_values], ['returnAs' => 'count']));
+				ExternalCache::save("{$vs_class}totalRecordsAvailable{$vs_type_key}", $vn_count = $vs_class::find(['deleted' => 0], ['checkAccess' => $this->opa_access_values, 'returnAs' => 'count', 'restrictToTypes' => (sizeof($va_types)) ? $va_types : null]));
 				$this->view->setVar('totalRecordsAvailable', $vn_count);
 			}
 			
@@ -132,7 +133,7 @@
  				$ps_view = array_shift(array_keys($va_views));
  			}
  			# --- only set the current view if it's not an export format
- 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx"))){
+ 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx", "timelineData"))){
  				$this->opo_result_context->setCurrentView($ps_view);
  			}
  			
@@ -189,8 +190,15 @@
 			// Get any preset-criteria
 			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 			
-			if ($vs_facet = $this->request->getParameter('facet', pString)) {
-				$o_browse->addCriteria($vs_facet, explode('|', $this->request->getParameter('id', pString)));
+			if (($vs_facets = $this->request->getParameter('facets', pString)) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
+			    foreach ($va_facets as $vs_facet_spec) {
+			        if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
+			        $vs_facet = array_shift($va_tmp);
+			        $o_browse->addCriteria($vs_facet, explode("|", join(":", $va_tmp))); 
+			    }
+			
+			} elseif (($vs_facet = $this->request->getParameter('facet', pString)) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString))), function($v) { return strlen($v); })) && sizeof($p)) {
+				$o_browse->addCriteria($vs_facet, $p);
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
 					if (is_array($va_base_criteria)) {
@@ -207,15 +215,18 @@
 			// Sorting
 			//
 			$vb_sort_changed = false;
- 			if (!($ps_sort = $this->request->getParameter("sort", pString))) {
- 				if (!($ps_sort = $this->opo_result_context->getCurrentSort())) {
- 					if(is_array(($va_sorts = caGetOption('sortBy', $va_browse_info, null)))) {
+ 			if (!($ps_sort = urldecode($this->request->getParameter("sort", pString)))) {
+ 				$ps_sort = $this->opo_result_context->getCurrentSort();
+ 				if(is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
+ 					if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
  						$ps_sort = array_shift(array_keys($va_sorts));
  						$vb_sort_changed = true;
  					}
  				}
  			}else{
- 				$vb_sort_changed = true;
+ 				if($ps_sort != $this->opo_result_context->getCurrentSort()){
+ 					$vb_sort_changed = true;
+ 				}
  			}
  			if($vb_sort_changed){
 				# --- set the default sortDirection if available
@@ -356,7 +367,7 @@
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
-				if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
+				if (($vn_key_start = (int)$vn_start - 1000) < 0) { $vn_key_start = 0; }
 				$qr_res->seek($vn_key_start);
 				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 				$qr_res->seek($vn_start);
@@ -370,14 +381,14 @@
  			
  			// map
 			if ($ps_view === 'map') {
-				$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000');
+				$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000', 'label' => 'ca_places.preferred_labels.name', 'content' => 'ca_places.preferred_labels.name');
 		
 				$va_opts['ajaxContentUrl'] = caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view));
 			
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
 				$qr_res->seek(0);
 				$o_map->mapFrom($qr_res, $va_view_info['data'], $va_opts);
-				$this->view->setVar('map', $o_map->render('HTML', array()));
+				$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_view_info, 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_view_info, 12), 'request' => $this->request)));
 			}
  			
  			switch($ps_view) {

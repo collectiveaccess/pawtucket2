@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2014 Whirl-i-Gig
+ * Copyright 2009-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -38,6 +38,7 @@
 	require_once(__CA_LIB_DIR__."/core/Datamodel.php");
 	require_once(__CA_MODELS_DIR__."/ca_search_forms.php");
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
+	require_once(__CA_LIB_DIR__.'/core/Media/MediaViewerManager.php');
  	
  	class BaseSearchController extends BaseRefineableSearchController {
  		# -------------------------------------------------------
@@ -45,31 +46,6 @@
  		protected $opo_datamodel;
  		protected $ops_find_type;
  		
- 		# -------------------------------------------------------
- 		#
- 		# -------------------------------------------------------
- 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
- 			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			
- 			if ($this->ops_tablename) {
-				if ($va_items_per_page_config = $po_request->config->getList('items_per_page_options_for_'.$this->ops_tablename.'_search')) {
-					$this->opa_items_per_page = $va_items_per_page_config;
-				}
-				if (($vn_items_per_page_default = (int)$po_request->config->get('items_per_page_default_for_'.$this->ops_tablename.'_search')) > 0) {
-					$this->opn_items_per_page_default = $vn_items_per_page_default;
-				} else {
-					$this->opn_items_per_page_default = $this->opa_items_per_page[0];
-				}
-				
-				$this->ops_view_default = null;
-				if ($vs_view_default = $po_request->config->get('view_default_for_'.$this->ops_tablename.'_search')) {
-					$this->ops_view_default = $vs_view_default;
-				}
-
-				if(!is_array($this->opa_sorts)) { $this->opa_sorts = array(); }
-				$this->opa_sorts = array_replace($this->opa_sorts, caGetAvailableSortFields($this->ops_tablename, $this->opn_type_restriction_id, array('request' => $po_request)));
-			}
- 		}
  		# -------------------------------------------------------
  		/**
  		 * Options:
@@ -133,14 +109,6 @@
  			
  			MetaTagManager::setWindowTitle(_t('%1 search', $this->searchName('plural')));
  			
- 			// Get attribute sorts
- 			$va_sortable_elements = ca_metadata_elements::getSortableElements($this->ops_tablename, $this->opn_type_restriction_id);
- 			
- 			if (!is_array($this->opa_sorts)) { $this->opa_sorts = array(); }
- 			foreach($va_sortable_elements as $va_sortable_element) {
- 				$this->opa_sorts[$this->ops_tablename.'.'.$va_sortable_element['element_code']] = $va_sortable_element['display_label'];
- 			}
-
 			$vs_append_to_search = '';
  			if ($pa_options['appendToSearch']) {
  				$vs_append_to_search .= " AND (".$pa_options['appendToSearch'].")";
@@ -148,7 +116,19 @@
 			//
 			// Execute the search
 			//
-			if($vs_search && ($vs_search != "")){ /* any request? */
+			if($vs_search){ /* any request? */
+				if(is_array($va_set_ids = caSearchIsForSets($vs_search))) {
+					// When search includes sets we add sort options for the references sets...
+					foreach($va_set_ids as $vn_set_id => $vs_set_name) {
+						$this->opa_sorts["ca_sets.set_id:{$vn_set_id}"] = _t("Set order: %1", $vs_set_name);
+					}
+					
+					// ... and default the sort to the set
+					if ($vb_is_new_search) {
+						$this->opo_result_context->setCurrentSort($vs_sort = "ca_sets.set_id:{$vn_set_id}");
+					}
+				}
+				
 				$va_search_opts = array(
 					'sort' => $vs_sort, 
 					'sort_direction' => $vs_sort_direction, 
@@ -156,8 +136,11 @@
 					'checkAccess' => $va_access_values,
 					'no_cache' => $vb_is_new_search,
 					'dontCheckFacetAvailability' => true,
-					'filterNonPrimaryRepresentations' => true
+					'filterNonPrimaryRepresentations' => true,
+					'rootRecordsOnly' => $this->view->getVar('hide_children')
 				);
+				
+				
 				if ($vb_is_new_search ||isset($pa_options['saved_search']) || (is_subclass_of($po_search, "BrowseEngine") && !$po_search->numCriteria()) ) {
 					$vs_browse_classname = get_class($po_search);
  					$po_search = new $vs_browse_classname;
@@ -194,6 +177,12 @@
  					}
  					
 					$vo_result = $po_search->getResults($va_search_opts);
+					
+					if (!is_array($va_facets_with_info = $po_search->getInfoForAvailableFacets()) || !sizeof($va_facets_with_info)) {
+						$this->view->setVar('open_refine_controls', false);
+						$this->view->setVar('noRefineControls', false); 
+					}
+					
 				} elseif($po_search) {
 					$vo_result = $po_search->search($vs_search, $va_search_opts);
 				}
@@ -226,10 +215,12 @@
  				if($vb_is_new_search || $vb_criteria_have_changed || $vb_sort_has_changed) {
 					$this->opo_result_context->setResultList($vo_result->getPrimaryKeyValues());
 					$this->opo_result_context->setParameter('availableVisualizationChecked', 0);
-					if ($this->opo_result_context->searchExpressionHasChanged()) { $vn_page_num = 1; }
+					//if ($this->opo_result_context->searchExpressionHasChanged()) { $vn_page_num = 1; }
+					$vn_page_num = 1; 
 				}
  				$this->view->setVar('num_hits', $vo_result->numHits());
  				$this->view->setVar('num_pages', $vn_num_pages = ceil($vo_result->numHits()/$vn_items_per_page));
+ 				$this->view->setVar('start', ($vn_page_num - 1) * $vn_items_per_page);
  				if ($vn_page_num > $vn_num_pages) { $vn_page_num = 1; }
  				
  				$vo_result->seek(($vn_page_num - 1) * $vn_items_per_page);
@@ -268,52 +259,8 @@
 			
 			$t_display = $this->view->getVar('t_display');
 			if (!is_array($va_display_list = $this->view->getVar('display_list'))) { $va_display_list = array(); }
-			if ($vs_view == 'editable') {
-				
-				$va_initial_data = array();
-				$va_row_headers = array();
-				
- 				$vn_item_count = 0;
- 				
- 				if ($vo_result) {
-					$vs_pk = $vo_result->primaryKey();
-				
-					while(($vn_item_count < 100) && $vo_result->nextHit()) {
-						$va_result = array('item_id' => $vn_id = $vo_result->get($vs_pk));
-	
-						foreach($va_display_list as $vn_placement_id => $va_bundle_info) {
-							$va_result[str_replace(".", "-", $va_bundle_info['bundle_name'])] = $t_display->getDisplayValue($vo_result, $vn_placement_id, array('request' => $this->request));
-						}
-	
-						$va_initial_data[] = $va_result;
-	
-						$vn_item_count++;
-	
-						$va_row_headers[] = ($vn_item_count)." ".caEditorLink($this->request, caNavIcon(__CA_NAV_ICON_EDIT__, 2), 'caResultsEditorEditLink', $this->ops_tablename, $vn_id);
-	
-					}
-				}
-				
-				$this->view->setVar('initialData', $va_initial_data);
-				$this->view->setVar('rowHeaders', $va_row_headers);
-			}
 			
-			//
-			// Bottom line
-			//
-			$va_bottom_line = array();
-			$vb_bottom_line_is_set = false;
-			foreach($va_display_list as $vn_placement_id => $va_placement) {
-				if(isset($va_placement['settings']['bottom_line']) && $va_placement['settings']['bottom_line']) {
-					$va_bottom_line[$vn_placement_id] = caProcessBottomLineTemplate($this->request, $va_placement, $vo_result, array('pageStart' => ($vn_page_num - 1) * $vn_items_per_page, 'pageEnd' => (($vn_page_num - 1) * $vn_items_per_page) + $vn_items_per_page));
-					$vb_bottom_line_is_set = true;
-				} else {
-					$va_bottom_line[$vn_placement_id] = '';
-				}
-			}
-			
-			$this->view->setVar('bottom_line', $vb_bottom_line_is_set ? $va_bottom_line : null);
-			
+			$this->_setBottomLineValues($vo_result, $va_display_list, $t_display);
 			
  			switch($pa_options['output_format']) {
  				# ------------------------------------
@@ -401,14 +348,16 @@
 				foreach($va_hier as $vn_item_id => $va_item) {
 					if (is_array($va_restrict_to_types) && !in_array($vn_item_id, $va_restrict_to_types)) { continue; }
 					if ($va_item['parent_id'] != $vn_root_id) { continue; }
+					//if (!$va_item['is_enabled']) { continue; }
+					
 					// does this item have sub-items?
 					if (isset($va_item['item_id']) && isset($va_types_by_parent_id[$va_item['item_id']]) && is_array($va_types_by_parent_id[$va_item['item_id']])) {
 						$va_subtypes = $this->_getSubTypes($va_types_by_parent_id[$va_item['item_id']], $va_types_by_parent_id, $va_restrict_to_types);
 					} else {
-						$va_subtypes = array();
+						$va_subtypes = method_exists($this, "_getSubTypeActionNav") ? $this->_getSubTypeActionNav($va_item) : [];
 					}
 					$va_types[] = array(
-						'displayName' =>$va_item['name_plural'],
+						'displayName' => $va_item['name_plural'],
 						'parameters' => array(
 							'type_id' => $va_item['item_id']
 						),
@@ -419,6 +368,8 @@
 			}
  			return $va_types;
  		}
+ 		
+ 	
  		# ------------------------------------------------------------------
 		private function _getSubTypes($pa_subtypes, $pa_types_by_parent_id, $pa_restrict_to_types=null) {
 			$va_subtypes = array();
@@ -459,7 +410,7 @@
 				$va_results = caExtractValuesByUserLocale(SearchEngine::quickSearch($vs_search, 'ca_objects', 57, array('limit' => 3, 'checkAccess' => $va_access_values)));
 				// break found objects out by type
 				foreach($va_results as $vn_id => $va_match_info) {
-					$vs_type = unicode_ucfirst($t_list->getItemFromListForDisplayByItemID('object_types', $va_match_info['type_id'], true));
+					$vs_type = caUcFirstUTF8Safe($t_list->getItemFromListForDisplayByItemID('object_types', $va_match_info['type_id'], true));
 					$va_data['ca_objects'][$vs_type][$vn_id] = $va_match_info;
 				}
 			}
@@ -476,7 +427,7 @@
 				$va_results = caExtractValuesByUserLocale(SearchEngine::quickSearch($vs_search, 'ca_occurrences', 67, array('limit' => 10, 'checkAccess' => $va_access_values)));
 				// break found occurrences out by type
 				foreach($va_results as $vn_id => $va_match_info) {
-					$vs_type = unicode_ucfirst($t_list->getItemFromListForDisplayByItemID('occurrence_types', $va_match_info['type_id'], true));
+					$vs_type = caUcFirstUTF8Safe($t_list->getItemFromListForDisplayByItemID('occurrence_types', $va_match_info['type_id'], true));
 					$va_data['ca_occurrences'][$vs_type][$vn_id] = $va_match_info;
 				}
 			}
@@ -504,8 +455,7 @@
  		 * If $ps_mode is 'singular' [default] then the singular version of the name is returned, otherwise the plural is returned
  		 */
  		public function searchName($ps_mode='singular') {
- 			// MUST BE OVERRIDDEN 
- 			return "undefined";
+ 			return $this->getResultsDisplayName($ps_mode);
  		}
  		# -------------------------------------------------------
  		public function usesHierarchyBrowser() {
@@ -528,5 +478,34 @@
  			
  			return $this->render('Search/widget_'.$this->ops_tablename.'_search_tools.php', true);
  		}
+ 		# -------------------------------------------------------
+ 		/**
+ 		 * QuickLook
+ 		 */
+ 		public function QuickLook() {
+ 			$t_subject = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true);
+ 			$vn_id = (int)$this->request->getParameter($t_subject->primaryKey(), pInteger);
+ 			$t_subject->load($vn_id);
+ 			if (!($vn_representation_id = (int)$this->request->getParameter('representation_id', pInteger))) {
+ 				$vn_representation_id = $t_subject->getPrimaryRepresentationID();
+ 			}
+ 			$t_rep = new ca_object_representations($vn_representation_id);
+ 			
+			if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("media_overlay", $vs_mimetype = $t_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) {
+				// error: no viewer available
+				die("Invalid viewer");
+			}
+			
+			if(!$vn_id) {
+				$this->postError(1100, _t('Invalid object/representation'), 'SearchObjectsController->QuickLook');
+				return;
+			}
+
+			$this->response->addContent($vs_viewer_name::getViewerHTML(
+				$this->request, 
+				"representation:{$vn_representation_id}", 
+				['context' => 'media_overlay', 't_instance' => $t_rep, 't_subject' => $t_subject, 'display' => caGetMediaDisplayInfo('media_overlay', $vs_mimetype)])
+			);
+		}
  		# -------------------------------------------------------
  	}

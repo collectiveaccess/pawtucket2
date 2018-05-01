@@ -28,7 +28,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 			}
 			$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.idno_sort"));
 			# --- check if collection record type is configured to be excluded
-			if(($vn_level > 2) && is_array($va_options["exclude_collection_type_ids"]) && (in_array($qr_collections->get("ca_collections.type_id"), $va_options["exclude_collection_type_ids"]))){
+			if(($vn_level > 1) && is_array($va_options["exclude_collection_type_ids"]) && (in_array($qr_collections->get("ca_collections.type_id"), $va_options["exclude_collection_type_ids"]))){
 				continue;
 			}
 			$vs_output .= "<div style='margin-left:".(20*($vn_level - 1))."px;'>";
@@ -84,11 +84,11 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 			}
 			$vs_output .= "</div>";
 			if(sizeof($va_child_ids)) {
-				if(($vn_level > 1) && $va_options["collapse_levels"]){
+				if($vb_collapse_link){
 					$vs_output .= "<div id='level".$qr_collections->get("ca_collections.collection_id")."' style='display:none;'>";
 				}
 				$vs_output .=  printLevel($po_request, $va_child_ids, $o_config, $vn_level + 1, $va_options);
-				if(($vn_level > 1) && $va_options["collapse_levels"]){
+				if($vb_collapse_link){
 					$vs_output .= "</div>";
 				}
 			}

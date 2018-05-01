@@ -1,4 +1,3 @@
-<div class="container">
 	<div class="row">
 		<div class="col-sm-8 " style='border-right:1px solid #ddd;'>
 			<h1>Holocaust Testimony Advanced Search</h1>
@@ -86,13 +85,6 @@
 			>Subject - People & Organizations: </span><br/>
 			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=subject}}}
 		</div>	
-		<div class="advancedSearchField">
-			<span 
-				data-toggle="popover" data-trigger="hover" data-content="Limit searching to records that have playable media."
-			>Digital Content:</span><br/>
-			{{{ca_object_representations.media%width=300px&height=1&render=is_set}}}
-		</div>
-
 
 																																								
 		<br style="clear: both;"/>
@@ -106,12 +98,11 @@
 {{{/form}}}
 
 		</div>
-		<div class="col-sm-4" >
-			<h1>Helpful Hints</h1>
-			<p>Include some helpful info for your users here.</p>
+		<div class="col-sm-4 searchHints" >
+			<H1>Helpful Hints</H1>
+			{{{search_help}}}
 		</div><!-- end col -->
 	</div><!-- end row -->
-</div><!-- end container -->
 
 <script>
 	jQuery(document).ready(function() {

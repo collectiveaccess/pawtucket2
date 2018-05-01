@@ -32,6 +32,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$va_access_values = $this->getVar('access_values');
 	$vn_object_id = 		$t_object->get('ca_objects.object_id');
+	$va_access_values = 	$this->getVar('access_values');
 	
 	$vs_home = caNavLink($this->request, "Home", '', '', '', '');
 	$vs_type = $t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
@@ -101,16 +102,20 @@
 					<script type="text/javascript" src="https://s7.addthis.com/js/300/addthis_widget.js"></script>
 				</div>
 <?php
-				if ($va_local_subjects = $t_object->get('ca_objects.local_subject', array('returnAsArray' => true, 'convertCodesToDisplayText' => true))) {
+				if ($va_local_subjects = $t_object->get('ca_objects.local_subject', array('returnAsArray' => true, 'convertCodesToDisplayText' => false))) {
+					$va_subjects_display = array();
+					foreach($va_local_subjects as $vn_subject_id){
+						$va_subjects_display[$vn_subject_id] = caGetListItemByIDForDisplay($vn_subject_id, false);
+					}
+					asort($va_subjects_display);
 					$vn_subject = 1;
-					asort($va_local_subjects);
 					print "<div class='subjectBlock'>";
 					print "<h8 style='margin-bottom:10px;'>Access Points</h8>";
-					foreach ($va_local_subjects as $va_key => $va_local_subject) {
+					foreach ($va_subjects_display as $vn_subject_id => $vs_local_subject) {
 						if ($vn_subject > 3) {
 							$vs_subject_style = "class='subjectHidden'";
 						}
-						print "<div {$vs_subject_style}>".caNavLink($this->request, $va_local_subject, '', '', 'Search', 'objects', array('search' => "ca_objects.local_subject:\"".$va_local_subject."\""))."</div>";
+						print "<div {$vs_subject_style}>".caNavLink($this->request, $vs_local_subject, '', '', 'Browse', 'objects', array('facet' => "subject_facet", "id" => $vn_subject_id))."</div>";
 						if (($vn_subject == 3) && (sizeof($va_local_subjects) > 3)) {
 							print "<a class='seeMore' href='#' onclick='$(\".seeMore\").hide();$(\".subjectHidden\").slideDown(300);return false;'>more...</a>";
 						}
@@ -140,7 +145,7 @@
 					$vs_rights_text.= "<h8>Rights Holder</h8>";
 					$vs_rights_text.= "<div>".$vs_rights_statement."</div>";
 				}	
-				if ($vs_licensing = caNavLink($this->request, 'Licensing', '', '', 'About', 'licensing')) {
+				if ($vs_licensing = caNavLink($this->request, 'Licensing', '', '', 'About', 'use')) {
 					$vs_rights = true;
 					$vs_rights_text.= "<div class='unit'><h8>".$vs_licensing."</h8></div>";
 				}
@@ -274,7 +279,7 @@
 			#Entities
 			$vs_related_entities = "";
 			$va_ents_by_type = array();
-			if ($va_related_entities = $t_object->get('ca_entities', array('checkAccess' => $va_access_values, 'returnWithStructure' => true))) {
+			if ($va_related_entities = $t_object->get('ca_entities', array('checkAccess' => $va_access_values, 'returnWithStructure' => true, 'excludeRelationshipTypes' => array('donor')))) {
 				foreach ($va_related_entities as $va_key => $va_related_entity) {
 					$va_ents_by_type[$va_related_entity['item_type_id']][$va_related_entity['entity_id']] = "<div class='col-sm-4'><div class='entityThumb'><p>".caNavLink($this->request, $va_related_entity['label'], '', '', 'Detail', 'entities/'.$va_related_entity['entity_id'])." (".$va_related_entity['relationship_typename'].")</p></div></div>";
 				}

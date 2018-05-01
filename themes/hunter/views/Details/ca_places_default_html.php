@@ -38,8 +38,7 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
-				{{{<ifdef code="ca_places.description">^ca_places.description</ifdef>}}}
-				
+				{{{<ifdef code="ca_places.description.description_text">^ca_places.description.description_text</ifdef>}}}
 <?php
 				$vs_children = $t_item->getWithTemplate("<unit relativeTo='ca_places.children'><l>^ca_places.preferred_labels.name</l></unit>", array("delimiter" => ", "));
 				if($vs_children){

@@ -86,7 +86,7 @@
 			</div>
 			<div class="col-sm-6 text-right">
 				<div class="subTitle">Digital Collection</div>
-				<form class="headerForm navbar-form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>">
+				<form class="headerForm navbar-form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
 							<input type="text" class="form-control" placeholder="Search" name="search">
@@ -144,7 +144,7 @@
 <?php
 	}
 ?>
-				<form class="navbar-form navbar-right navbarForm" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>">
+				<form class="navbar-form navbar-right navbarForm" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
 							<input type="text" class="form-control" placeholder="Search" name="search">

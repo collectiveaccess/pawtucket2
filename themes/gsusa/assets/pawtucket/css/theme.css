@@ -22,6 +22,9 @@ body {
 	width:100%;
 	clear:both;
 }
+.btn-default, .btn-default:hover, .browse .btn, .sets .btn{
+	background-color:#009447;
+}
 .black{
 	color:#000;
 }
@@ -51,6 +54,13 @@ i.trefoilPlaceholder.smallPlaceholder{
     background-color: #ffffff;
     border: 0px;
     padding-top: 40px
+}
+.bResultListItemImg .bResultItemImgPlaceholder{
+	padding:0px 5px 0px 0px;
+}
+.bResultListItemImg i.trefoilPlaceholder.smallPlaceholder {
+    width: 75px;
+    height: 72px;
 }
 .detail .detailMediaPlaceholder {
     padding-top: 75px;
@@ -173,6 +183,10 @@ h1 {
 .dropdown-menu > .active > a,
 .dropdown-menu > .active > a:hover,
 .dropdown-menu > .active > a:focus {
+  background-color: #009447 !important;
+  color:#FFFFFF;
+}
+.navbar-default .navbar-nav > .open > a {
   background-color: #009447 !important;
   color:#FFFFFF;
 }
@@ -367,9 +381,22 @@ h1 {
 }
 .detail .component{
 	margin-bottom:10px;
+	clear:left;
+}
+.detail .componentThumbnail{
+	float:left;
+	margin: 0px 10px 10px 0px;
+	
+}
+.detail .component .small{
+	font-size:10px;
 }
 .detail .componentDescSpacer{
 	margin-top:5px !important;
+}
+.popover{
+	max-width:1000px !important;
+	width:auto !important;
 }
 .navLeftRight{
 	text-align:right;
@@ -400,6 +427,9 @@ a.readmore-js-toggle{
 /* Collections/Finding Aid */
 .collectionsList a{
 	font-size:16px;
+    font-weight: bold;
+    color: #00AE58;
+    text-decoration: none;
 }
 .collectionsList{
 	font-size:13px;
@@ -426,4 +456,21 @@ a.readmore-js-toggle{
 /* About */
 address{
 	font-size:13px;
+}
+
+/* timeline */
+h2.tl-headline a, h2.tl-headline {
+	color:#00AE58 !important;
+	font-size:14px !important;
+	line-height:1.1em !important;
+}
+h2.tl-headline {
+	color:#000 !important;
+}
+.tl-text-content{
+	font-size:12px !important;
+}
+/* gallery */
+.gallery H4, .gallery H4 a {
+    text-transform: none !important;
 }

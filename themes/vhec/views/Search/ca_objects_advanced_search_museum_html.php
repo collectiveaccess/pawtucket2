@@ -1,4 +1,3 @@
-<div class="container">
 	<div class="row">
 		<div class="col-sm-8 " style='border-right:1px solid #ddd;'>
 			<h1>Museum Advanced Search</h1>
@@ -26,7 +25,7 @@
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="The unique identifier assigned to a work. Traditionally an accession number, Museum Works are assigned a barcode identifier."
 			>Object ID:</span><br/>
-			{{{ca_objects.altID%width=300px&height=1}}}
+			{{{ca_objects.alt_id%width=300px&height=1}}}
 		</div>						
 		<div class="advancedSearchField">
 			<span 
@@ -52,12 +51,6 @@
 			>Places: </span><br/>
 			{{{ca_places.preferred_labels%width=300px}}}
 		</div>				
-		<div class="advancedSearchField">
-			<span 
-				data-toggle="popover" data-trigger="hover" data-content="Search terms associated with the work’s ownership history."
-			>Provenance:</span><br/>
-			{{{ca_objects.cdwa_ownership.ownership_provenance%width=300px&height=1}}}
-		</div>
 		<div class="advancedSearchField">
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Classification terms are applied from the Getty’s Art & Architecture Thesaurus®"
@@ -92,14 +85,9 @@
 			<span 
 				data-toggle="popover" data-trigger="hover" data-content="Search for individuals who are the subject of a work. "
 			>Subject - People & Organizations:</span><br/>
-			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=subject&width=300px&height=1}}}
+			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=artist,author,compiler,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,other,performer,photographer,producer,related_ob,repository,researcher,speaker,subject,translator,venue,videographer&width=300px&height=1}}}
 		</div>	
-		<div class="advancedSearchField">
-			<span 
-				data-toggle="popover" data-trigger="hover" data-content="Limit searching to records that have digital images."
-			>Digital Content:</span><br/>
-			{{{ca_object_representations.media%width=300px&height=1&render=is_set}}}
-		</div>											
+												
 		<br style="clear: both;"/>
 	
 		<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
@@ -111,12 +99,11 @@
 {{{/form}}}
 
 		</div>
-		<div class="col-sm-4" >
-			<h1>Helpful Hints</h1>
-			<p>Include some helpful info for your users here.</p>
+		<div class="col-sm-4 searchHints" >
+			<H1>Helpful Hints</H1>
+			{{{search_help}}}
 		</div><!-- end col -->
 	</div><!-- end row -->
-</div><!-- end container -->
 
 <script>
 	jQuery(document).ready(function() {

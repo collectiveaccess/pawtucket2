@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2015 Whirl-i-Gig
+ * Copyright 2008-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -247,15 +247,23 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 				case 'text':
 					$pa_options['returnIdno'] = false;
 					$pa_options['idsOnly'] = false;
+					$pa_options['returnDisplayText'] = true;
 					break;
 				default:
 					$pa_options['idsOnly'] = true;
 					break;
 			}
 		}
+		
+		if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess'])) {
+			if (!in_array(ca_lists::getAccessForItemID($this->opn_item_id), $pa_options['checkAccess'])) { return null; }
+		}
 
 		if($vb_return_idno = ((isset($pa_options['returnIdno']) && (bool)$pa_options['returnIdno']))) {
-			return caGetListItemIdno($this->opn_item_id);
+			return caGetListItemIdno($this->opn_item_id, $pa_options);
+		}
+		if($vb_return_idno = ((isset($pa_options['returnDisplayText']) && (bool)$pa_options['returnDisplayText']))) {
+			return caGetListItemByIDForDisplay($this->opn_item_id, array_merge($pa_options, ['return' => caGetOption('useSingular', $pa_options, false) ? 'singular' : 'plural']));
 		}
 
 		if(is_null($vb_ids_only = isset($pa_options['idsOnly']) ? (bool)$pa_options['idsOnly'] : null)) {
@@ -284,7 +292,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 				return $t_item->get('ca_list_items.hierarchy.'.$vs_get_spec, array_merge(array('delimiter' => ' ➔ ', $pa_options)));
 			}
 
-			return $t_list->getItemFromListForDisplayByItemID($vn_list_id, $this->opn_item_id, (isset($pa_options['useSingular']) && $pa_options['useSingular']) ? false : true);
+			return $t_list->getItemFromListForDisplayByItemID($vn_list_id, $this->opn_item_id, array_merge($pa_options, ['return' => caGetOption('useSingular', $pa_options, false) ? 'singular' : 'plural']));
 		}
 		return $this->ops_text_value;
 	}
@@ -313,8 +321,8 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 
 		$va_match_on = caGetOption('matchOn', $pa_options, null);
 		if ($va_match_on && !is_array($va_match_on)){ $va_match_on = array($va_match_on); }
-		if (!is_array($va_match_on) && $vb_treat_value_as_idno) { $va_match_on = array('idno', 'item_id'); }
-		if ((!is_array($va_match_on) || !sizeof($va_match_on)) && preg_match('![^\d]+!', $ps_value)) { $va_match_on = array('idno', 'item_id'); }
+		if (!is_array($va_match_on) && $vb_treat_value_as_idno) { $va_match_on = array('idno', 'label', 'item_id'); }
+		if ((!is_array($va_match_on) || !sizeof($va_match_on)) && preg_match('![^\d]+!', $ps_value)) { $va_match_on = array('idno', 'label', 'item_id'); }
 		if (($vb_treat_value_as_idno) && (!in_array('idno', $va_match_on))) { array_push($va_match_on, 'idno'); }
 		if (!is_array($va_match_on) || !sizeof($va_match_on)) { $va_match_on = array('item_id'); }
 
@@ -348,12 +356,15 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 				default:
 					if ($vn_id = ca_list_items::find(array('item_id' => (int)$ps_value, 'list_id' => $pa_element_info['list_id']), array('returnAs' => 'firstId', 'transaction' => $o_trans))) {
 						break(2);
-						//} else {
-						//$this->postError(1970, _t('Value with item_id %1 does not exist in list %2', $ps_value, $pa_element_info['list_id']), 'ListAttributeValue->parseValue()');
 					}
 					break;
 			}
 		}
+		
+		if ((!$vn_id) && ($o_log = caGetOption('log', $pa_options, null)) && (strlen($ps_value) > 0)) {
+			$o_log->logError(_t('Value %1 was not set for %2 because it does not exist in list %3', $ps_value, caGetOption('logIdno', $pa_options, '???'), caGetListCode($pa_element_info['list_id'])));
+		}
+		
 		if (!$vb_require_value && !$vn_id) {
 			return array(
 				'value_longtext1' => null,
@@ -385,7 +396,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 	public function htmlFormElement($pa_element_info, $pa_options=null) {
 		/** @var RequestHTTP $o_request */
 		$o_request = $pa_options['request'];
-		$vb_require_value = (is_null($pa_element_info['settings']['requireValue'])) ? true : (bool)$pa_element_info['settings']['requireValue'];
+		$vb_require_value = (is_null($pa_element_info['settings']['requireValue'])) ? false : (bool)$pa_element_info['settings']['requireValue'];
 		if (($pa_element_info['parent_id']) && ($pa_element_info['settings']['render'] == 'checklist')) { $pa_element_info['settings']['render'] = ''; }	// checklists can only be top-level
 		if ((!isset($pa_options['width']) || !strlen($pa_options['width'])) && isset($pa_element_info['settings']['listWidth']) && strlen($pa_element_info['settings']['listWidth']) > 0) { $pa_options['width'] = $pa_element_info['settings']['listWidth']; }
 		if ((!isset($pa_options['height']) || !strlen($pa_options['height'])) && isset($pa_element_info['settings']['listHeight']) && strlen($pa_element_info['settings']['listHeight']) > 0) { $pa_options['height'] = $pa_element_info['settings']['listHeight']; }
@@ -434,10 +445,13 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 
 			if($vb_print_js) {
 				$t_list = new ca_lists();
-				$vb_yes_was_set = false; $vs_select = '';
+				$vb_yes_was_set = false;
 				foreach($t_list->getItemsForList($pa_element_info['list_id']) as $va_items_by_locale) {
 					foreach ($va_items_by_locale as $vn_locale_id => $va_item) {
 						$vs_hide_js = '';
+						$vs_show_js = '';
+						$vs_condition = '';
+						$vs_select = '';
 
 						if(isset($pa_element_info['settings']['hideIfSelected_'.$va_item['idno']])) {
 							$va_hideif_for_idno = $pa_element_info['settings']['hideIfSelected_'.$va_item['idno']];
@@ -449,6 +463,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 								if(!is_array($va_tmp)) { continue; }
 
 								$vs_hide_js .= "jQuery(\"a[name='Screen".$va_tmp[0]."_".$va_tmp[1]."']\").next().hide();\n";
+								$vs_show_js .= "jQuery(\"a[name='Screen".$va_tmp[0]."_".$va_tmp[1]."']\").next().show();\n";
 							}
 						}
 
@@ -478,7 +493,8 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 								continue;
 						}
 
-						$vs_element .= "
+						if ($vs_select && $vs_hide_js && $vs_condition) {
+							$vs_element .= "
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		var select = {$vs_select};
@@ -486,6 +502,8 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 			if ({$vs_condition}) {
 				jQuery('div.bundleLabel').show();
 				{$vs_hide_js}
+			} else {
+			    {$vs_show_js}
 			}
 		});
 
@@ -495,6 +513,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 	});
 </script>
 	";
+						}
 					}
 				}
 			}
@@ -511,7 +530,11 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 		 * For the dependent field visibility feature we need to add a select-able list of all applicable
 		 * UI bundle placements here ... for each item in that list!
 		 */
-
+		$vs_cache_key = "ca_metadata_elements_available_settings_".$pa_element_info['element_id'];
+		 
+        if (CompositeCache::contains($vs_cache_key)) {
+            return CompositeCache::fetch($vs_cache_key);
+        }
 		if(
 			Configuration::load()->get('enable_dependent_field_visibility') &&
 			is_array($pa_element_info) &&
@@ -559,6 +582,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 						$va_element_settings['hideIfSelected_'.$va_item['idno']] = array(
 							'formatType' => FT_TEXT,
 							'displayType' => DT_SELECT,
+							'multiple' => true,
 							'options' => $va_options_for_settings,
 							'takesLocale' => false,
 							'default' => '',
@@ -569,6 +593,7 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 					}
 				}
 			}
+            CompositeCache::save($vs_cache_key, $va_element_settings);
 		} elseif(defined('__CollectiveAccess_Installer__') && Configuration::load()->get('enable_dependent_field_visibility')) {
 			// when installing, UIs, screens and placements are not yet available when we process elementSets, so
 			// we just add the hideIfSelected_* as available settings (without actual settings) so that the validation doesn't fail
@@ -577,12 +602,11 @@ class ListAttributeValue extends AuthorityAttributeValue implements IAttributeVa
 			if(is_array($va_list_items) && sizeof($va_list_items)) {
 				foreach($va_list_items as $va_items_by_locale) {
 					foreach($va_items_by_locale as $vn_locale_id => $va_item) {
-						$va_element_settings['hideIfSelected_'.$va_item['idno']] = true;
+						$va_element_settings['hideIfSelected_'.$va_item['idno']] = ['deferred' => true, 'multiple' => true];
 					}
 				}
 			}
 		}
-
 
 		return $va_element_settings;
 	}
