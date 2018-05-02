@@ -45,30 +45,88 @@
 		print "<div class='row members'>";
 		print '<div class="containerWrapper">';
 		print "<div class='col-sm-12'><h1>Member Institutions</h1></div>";
-		print '<div class="col-sm-12"><div class="jcarousel-wrapper">
+		print '<div class="col-sm-12"><div class="members jcarousel-wrapper">
 				<!-- Carousel -->
-				<div class="jcarousel">';
+				<div class="members jcarousel">';
 		
 		
 		while ($qr_members->nextHit()) {
 			print "<div class='memberTile'>";
-			print "<div class='memberImage'>".caDetailLink($this->request, $qr_members->get('ca_object_representations.media.iconlarge'), '', 'Detail', 'ca_entities', $qr_members->get('ca_entities.entity_id'))."</div>";
-			print "<div class='memberCaption'>".$qr_members->get('ca_entities.preferred_labels')."</div>";
+			print "<div class='memberImage'>".caDetailLink($this->request, $qr_members->get('ca_object_representations.media.iconlarge', array('checkAccess' => $va_access_values)), '', 'ca_entities', $qr_members->get('ca_entities.entity_id'))."</div>";
+			print "<div class='memberCaption'>".caDetailLink($this->request, $qr_members->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values)), '', 'ca_entities', $qr_members->get('ca_entities.entity_id'))."</div>";
 			print "</div>";
 		}
 		
-		print "</div></div><!-- end carousel --></div><!-- end col -->";
+		print "</div>";
+?>
+		<!-- Prev/next controls -->
+			<a href="#" class="members jcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
+			<a href="#" class="members jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
+		
+			<!-- Pagination -->
+			<p class="members jcarousel-pagination">
+			<!-- Pagination items will be generated in here -->
+			</p>
+<?php			
+		print "</div><!-- end carousel --></div><!-- end col -->";
 		
 		print "</div><!-- end containerWrapper -->";
 		print "</div><!-- end row -->";
 	}
 ?>	
-<script type="text/javascript">
-$(document).ready(function() {
-   $('.jcarousel').cycle({
-               fx: 'fade', // choose your transition type, ex: fade, scrollUp, shuffle, etc...
-               speed:  1000,
-               timeout: 4000
-       });
-});
-</script>
+		<script type='text/javascript'>
+			jQuery(document).ready(function() {
+				/*
+				Carousel initialization
+				*/
+				$('.members.jcarousel')
+					.jcarousel({
+						// Options go here
+						wrap:'circular'
+					});
+		
+				/*
+				 Prev control initialization
+				 */
+				$('.members.jcarousel-control-prev')
+					.on('.members.jcarouselcontrol:active', function() {
+						$(this).removeClass('inactive');
+					})
+					.on('.members.jcarouselcontrol:inactive', function() {
+						$(this).addClass('inactive');
+					})
+					.jcarouselControl({
+						// Options go here
+						target: '-=1'
+					});
+		
+				/*
+				 Next control initialization
+				 */
+				$('.members.jcarousel-control-next')
+					.on('.members.jcarouselcontrol:active', function() {
+						$(this).removeClass('inactive');
+					})
+					.on('.members.jcarouselcontrol:inactive', function() {
+						$(this).addClass('inactive');
+					})
+					.jcarouselControl({
+						// Options go here
+						target: '+=1'
+					});
+		
+				/*
+				 Pagination initialization
+				 */
+				$('.members.jcarousel-pagination')
+					.on('.members.jcarouselpagination:active', 'a', function() {
+						$(this).addClass('active');
+					})
+					.on('.members.jcarouselpagination:inactive', 'a', function() {
+						$(this).removeClass('active');
+					})
+					.jcarouselPagination({
+						// Options go here
+					});
+			});
+		</script>

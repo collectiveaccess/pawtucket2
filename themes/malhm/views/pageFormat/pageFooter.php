@@ -29,20 +29,10 @@
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
-			<ul class="list-inline pull-right social">
-				<li><i class="fa fa-twitter"></i></li>
-				<li><i class="fa fa-facebook-square"></i></li>
-				<li><i class="fa fa-youtube-play"></i></li>
-			</ul>
-			<div>
-				Footer text here
+			<div class="containerWrapper">
+				<div><h2>Minnesota Alliance of Local History Museums: Peers Helping Peers Since 1991</h2></div>
+				<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>
 			</div>
-			<ul class="list-inline">
-				<li><a href="#">Link 1</a></li>
-				<li><a href="#">Link 2</a></li>
-				<li><a href="#">Link 3</a></li>
-			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>
 		</footer><!-- end footer -->
 <?php
 	//

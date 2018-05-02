@@ -34,6 +34,9 @@
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = caGetUserAccessValues($this->request);
+	$t_list = new ca_lists();
+	$vn_arch_record_id = $t_list->getItemIDFromList("object_types", "archaeology_object");
+	$vn_type_id = $t_object->get('ca_objects.type_id');	
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -86,7 +89,7 @@
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
 				if ($vs_idno = $t_object->get('ca_objects.idno')) {
-					print "<div class='unit'><h6>Identifier</h6>".$vs_idno."</div>";
+					print "<div class='unit'><h6>Object ID</h6>".$vs_idno."</div>";
 				}			
 				if ($va_chenhall_ids = $t_object->get('ca_objects.chenhall', array('returnAsArray' => true))) {
 					print "<div class='unit'><h6>Category</h6>";
@@ -99,17 +102,17 @@
 					print "<div class='unit'><h6>Alternate object names</h6>".$vs_alt."</div>";
 				}
 				if ($vs_date = $t_object->get('ca_objects.date_created', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
-				}				
-				if ($vs_description = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
+					print "<div class='unit'><h6>Creation Date</h6>".$vs_date."</div>";
 				}
-				if ($va_lang_ids = $t_object->get('ca_objects.language', array('returnAsArray' => true))) {
-					print "<div class='unit'><h6>Language</h6>";
-					foreach ($va_lang_ids as $va_key => $vs_lang) {
-						print "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_lang, true), '', '', 'Browse', 'objects', array('facet' => 'lang_facet', 'id' => $vs_lang))."</div>";
+				if ($va_material_ids = $t_object->get('ca_objects.material', array('returnAsArray' => true))) {
+					print "<div class='unit'><h6>Materials</h6>";
+					foreach ($va_material_ids as $va_key => $vs_material) {
+						print "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_material, true), '', '', 'Browse', 'objects', array('facet' => 'material_facet', 'id' => $vs_material))."</div>";
 					}
 					print "</div>";
+				}								
+				if ($vs_description = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
+					print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
 				}
 				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 					$va_entities_by_type = array();
@@ -128,6 +131,14 @@
 					}
 					print "</div>";
 				}
+/*
+				if ($va_lang_ids = $t_object->get('ca_objects.language', array('returnAsArray' => true))) {
+					print "<div class='unit'><h6>Language</h6>";
+					foreach ($va_lang_ids as $va_key => $vs_lang) {
+						print "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_lang, true), '', '', 'Browse', 'objects', array('facet' => 'lang_facet', 'id' => $vs_lang))."</div>";
+					}
+					print "</div>";
+				}				
 				if ($vs_ex_label = $t_object->get('ca_objects.exhibition_label', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Exhibition Label</h6>".$vs_ex_label."</div>";
 				}	
@@ -183,13 +194,7 @@
 				if ($vs_accessory = $t_object->get('ca_objects.accessory', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Accessory</h6>".$vs_accessory."</div>";
 				}
-				if ($va_material_ids = $t_object->get('ca_objects.material', array('returnAsArray' => true))) {
-					print "<div class='unit'><h6>Material</h6>";
-					foreach ($va_material_ids as $va_key => $vs_material) {
-						print "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_material, true), '', '', 'Browse', 'objects', array('facet' => 'material_facet', 'id' => $vs_material))."</div>";
-					}
-					print "</div>";
-				}
+
 				if ($vs_marks = $t_object->get('ca_objects.marks_labels', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Manufacturer's Mark</h6>".$vs_marks."</div>";
 				}	
@@ -232,10 +237,16 @@
 				}	
 				if ($vs_style = $t_object->get('ca_objects.style', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Style</h6>".$vs_style."</div>";
-				}																																																																		
-?>	
-				<hr/>
-				{{{map}}}					
+				}
+*/
+
+				if ($vs_map = $this->getVar('map')) {
+					if ($vn_arch_record_id != $vn_type_id) {
+						print "<hr/>";
+						print $vs_map;	
+					}
+				}																																																																						
+?>										
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
