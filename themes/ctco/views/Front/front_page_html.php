@@ -91,7 +91,9 @@
 
 		<div class="col-sm-6 col-sm-offset-1" style="text-align:left;"> 
 			<h2 style='margin-top:45px;'>Welcome to Connecticut Collections</h2>
-			<p class='pageText'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tristique bibendum sollicitudin. Cras id lectus justo. Suspendisse quis ligula vitae libero aliquam commodo sed condimentum neque. Proin convallis ultricies hendrerit. Donec rhoncus pellentesque molestie. Proin condimentum nisl quis posuere dapibus. Vivamus quis interdum velit. Morbi mi eros, faucibus ut fermentum id, dictum at lectus. Vivamus et rhoncus augue, eget condimentum nunc. Aliquam ornare at augue vel sagittis. Duis convallis dapibus orci sit amet sagittis. Suspendisse ac vestibulum dui.</p>
+			<p class='pageText'>Explore this site to search for the treasures in Connecticut Collections! You can browse by terms, object type, location, or participating organization. </p>
+			<p class='pageText'>Connecticut Collections enables organizations to share their historic archives, artifacts, and other material with the public. Participating organizations also use the system to manage and catalog their collections.</p>
+			<p class='pageText'><i>Connecticut Collections is a project of the Connecticut League of History Organizations.</i></p>
 		</div>
 		<div class="col-sm-4" style="text-align:center;">
 <?php

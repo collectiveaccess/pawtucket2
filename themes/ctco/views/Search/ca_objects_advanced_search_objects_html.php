@@ -1,6 +1,6 @@
 <div class="container">
 	<div class="row">
-		<div class="col-sm-8 " style='border-right:1px solid #ddd;'>
+		<div class="col-sm-12 " >
 			<h1>Advanced Search</h1>
 
 <?php			
@@ -54,10 +54,6 @@
 {{{/form}}}
 
 		</div>
-		<div class="col-sm-4" >
-			<h1>Helpful Links</h1>
-			<p>Include some helpful info for your users here.</p>
-		</div><!-- end col -->
 	</div><!-- end row -->
 </div><!-- end container -->
 

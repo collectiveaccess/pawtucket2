@@ -121,9 +121,6 @@
 	if ($vb_has_user_links) {
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
-					<li class="infoLink"> 
-						<?php print caNavLink($this->request, '<i class="fa fa-info-circle"></i>', '', '', 'About', 'info');?>
-					</li>
 					<li class="dropdown" style="position:relative;">
 						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
 						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
