@@ -188,7 +188,7 @@
 		}
 		
 		#Related Archival Items
-		if ($va_related_archival = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('archival_item'), 'sort' => 'ca_object_labels.name'))) {
+		if ($va_related_archival = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('archival_item')))) {
 			$vs_archival_count = 0;
 			print '<div class="row objInfo">';
 
