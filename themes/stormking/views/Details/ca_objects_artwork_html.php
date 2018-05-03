@@ -46,18 +46,6 @@
 			<div class="row">
 				<div class="col-sm-12 objectInfo">
 <?php
-	/*				if ($va_artist = $t_object->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('artist')))) {
-						print $va_artist."<br/>";
-					}
-					$vs_record_title = $t_object->get('ca_objects.preferred_labels.name');
-					if ($vs_record_title != "Untitled") {
-						print "<i>".$vs_record_title."</i>";
-					} else {
-						print $vs_record_title;
-					}
-					if ($vs_date = $t_object->get('ca_objects.display_date')) {
-						print ", ".$vs_date;
-					} */
 					$t_list = new ca_lists();
 					$vn_view_on_status_id = $t_list->getItemIDFromList("view_status", "on_view");
 					$vn_view_off_status_id = $t_list->getItemIDFromList("view_status", "off_view");
@@ -107,9 +95,6 @@
 					if ($vs_dimensions = $t_object->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects.dimensions">^ca_objects.dimensions.display_dimensions <ifdef code="ca_objects.dimensions.dimensions_type">(^ca_objects.dimensions.dimensions_type)</ifdef></unit>')) {
 						print "<div class='tombstone'>".$vs_dimensions."</div>";
 					}				
-	#				if ($va_type = $t_object->get('ca_objects.artwork_type', array('convertCodesToDisplayText' => true))) {
-	#					print "<div class='unit'><h6>Artwork Type</h6>".$va_type."</div>";
-	#				}	
 					if ($va_credit = $t_object->get('ca_objects.credit_line')) {
 						print "<div class='tombstone'>".$va_credit."</div>";
 					}	
@@ -143,27 +128,6 @@
 ?>				
 				</div>
 			</div> <!-- end row -->
-			<div class="row objInfo">	
-				<div class="col-sm-12">			
-<?php
-	/*				if ($va_related_ex_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('exhibition', 'public_program')))) {
-					
-						print "<hr/>";
-
-						print '<div class="unit"><h6>Related Exhibitions & Programs</h6>';
-						foreach ($va_related_ex_ids as $va_id => $va_related_ex_id) {
-							$t_rel_ex = new ca_occurrences($va_related_ex_id);
-							print "<div class='detailLine'>";
-							print "<p><i>".caDetailLink($this->request, $t_rel_ex->get('ca_occurrences.preferred_labels'), '', 'ca_occurrences', $t_rel_ex->get('ca_occurrences.occurrence_id'))."</i></p>";
-							print "<p>".$t_rel_ex->get('ca_occurrences.exhibition_dates', array('delimiter' => '<br/>'))."</p>";
-							print "</div>";
-						}
-						print "</div>";
-					}
-	*/				
-?>
-				</div><!-- end col -->
-			</div><!-- end row -->
 			<div class="row objInfo">
 				
 <?php				

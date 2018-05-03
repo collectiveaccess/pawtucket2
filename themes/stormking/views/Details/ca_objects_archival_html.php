@@ -54,11 +54,7 @@
 				}
 				if ($vs_date = $t_object->get('ca_objects.display_date')) {
 					print ", ".$vs_date;
-				}
-				/*if ($va_artist = $t_object->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'delimiter' => '<br/>', 'returnAsLink' => true, 'restrictToRelationshipTypes' => array('artist')))) {
-					print "<br/>".$va_artist;
-				}*/
-				
+				}				
 ?>
 			</div>		
 		</div>
@@ -95,40 +91,7 @@
 				}
 				if ($vs_conditions_repro = $t_object->get('ca_objects.reproduction')) {
 					print "<div class='unit'><h6>Conditions Governing Reproduction</h6>".$vs_conditions_repro."</div>";
-				}										
-				
-				/*if($va_rel_entities = $t_object->get('ca_entities', array('returnWithStructure' => true, 'excludeRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values))){
-					$va_entities_for_display = array();
-					foreach($va_rel_entities as $vn_rel_id => $va_entity_info){
-						$va_entities_for_display[$va_entity_info["relationship_typename"]][$va_entity_info["entity_id"]] = caDetailLink($this->request, $va_entity_info["displayname"], '', 'ca_entities', $va_entity_info["entity_id"]);
-					}
-					if(sizeof($va_entities_for_display)){
-						foreach($va_entities_for_display as $vs_rel_type => $va_entities_for_type){
-							print "<div class='unit'>";
-							print "<h6>".$vs_rel_type."</h6>";
-							print join(", ", $va_entities_for_type);
-							print "</div>";						
-						}
-					}
-				}*/
-				/*if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('publisher')))) {
-					$va_entities_by_type = array();
-					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
-						$t_rel = new ca_objects_x_entities($va_entity_rel);
-						$vn_type_id = $t_rel->get('ca_relationship_types.preferred_labels');
-						$va_entities_by_type[$vn_type_id][] = $t_rel->get('ca_entities.preferred_labels');
-					}
-					print "<div class='unit'>";
-					foreach ($va_entities_by_type as $va_type => $va_entity_id) {
-						print "<h6>".$va_type."</h6>";
-						foreach ($va_entity_id as $va_key => $va_entity_link) {
-							print "<div>".caDetailLink($this->request, $va_entity_link, '', 'ca_entities', $t_rel->get('ca_entities.entity_id'))."</div>";
-						} 
-					}
-					print "</div>";
-				}*/
-				
-														
+				}																								
 ?>	
 				</div></div></div>
 			</div><!-- end col -->	
@@ -144,20 +107,6 @@
 		</div><!-- end row -->		
 		
 <?php	
-/*			# Related Entities
-			if ($va_related_entity_ids = $t_object->get('ca_entities.entity_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {				
-				print "<hr/>";
-
-				print '<div class="unit"><h6>Related Entities</h6>';
-				foreach ($va_related_entity_ids as $va_id => $va_related_entity_id) {
-					$t_rel_ent = new ca_entities($va_related_entity_id);
-					print "<div class='detailLine'>";
-					print "<p><i>".caDetailLink($this->request, $t_rel_ent->get('ca_entities.preferred_labels'), '', 'ca_entities', $t_rel_ent->get('ca_entities.entity_id'))."</i></p>";
-					print "</div>";
-				}
-				print "</div>";
-			}
-*/			
 			# Related Artworks			
 			if ($va_related_artworks = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToTypes' => array('loaned_artwork', 'sk_artwork'), 'sort' => 'ca_object_labels.name'))) {
 				print '<div class="row objInfo">';
