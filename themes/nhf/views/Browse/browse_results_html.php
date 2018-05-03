@@ -75,6 +75,12 @@ if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
 	<div class="col-xs-3 col-sm-3 col-md-3 col-lg-3">
+		<form role="search" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+			<div class="bSearchWithinContainer">
+			<input type="text" class="bSearchWithin" placeholder="Search within..." <?php #print ($vs_search) ? "value='".$vs_search."'" : ""; ?> name="search_refine"><input type="submit" name="op" id="edit-submit" value="GO"  class="form-submit" />
+			<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+			</div>
+		</form>
 <?php
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
@@ -88,17 +94,18 @@ if (!$vb_ajax) {	// !ajax
 				print "<div id='searchFor'>Results for: ";
 				$i = 0;
 				foreach($va_criteria as $va_criterion) {
-					if ($va_criterion['facet_name'] != '_search') {
+					#if ($va_criterion['facet_name'] != '_search') {
 						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
-					}else{
-						print ' '.$va_criterion['value'];
-						$vs_search = $va_criterion['value'];
-					}
+					#}else{
+					#	print ' '.$va_criterion['value'];
+					#	$vs_search = $va_criterion['value'];
+					#}
 					$i++;
 					if($i < sizeof($va_criteria)){
 						print " ";
 					}
 				}
+				
 				print "</div><div id='searchCount'>Showing ".$qr_res->numHits()." ".(($qr_res->numHits() == 1) ? $va_browse_info["labelSingular"] : $va_browse_info["labelPlural"])."</div>";
 			}else{
 				if($vs_table == "ca_collections"){
