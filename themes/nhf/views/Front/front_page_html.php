@@ -47,6 +47,7 @@
 		$t_list = new ca_lists();
 		$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', 'curatorial'); 			
 		$t_set = new ca_sets();
+		$vn_gallery_set_type_id = 2859;
 		$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id)));
 		foreach($va_sets as $vn_set_id => $va_set_info){
 			$t_set->load($vn_set_id);
