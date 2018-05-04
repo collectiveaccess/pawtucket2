@@ -55,7 +55,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
-    <link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
+	<link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
 	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
@@ -75,8 +75,10 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+    
+    <link href="https://fonts.googleapis.com/css?family=Radley:400,400i&amp;subset=latin-ext" rel="stylesheet">
 </head>
-<body>
+<body class="initial">
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -98,7 +100,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'ca_nav_logo300.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'Resource.png'), "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -135,15 +137,17 @@
 						</div>
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
+					<div class="advSearchLinkTop"><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></div>
 				</form>
-				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+				<div class='menuContainer'><ul class="nav navbar-nav navbar-right menuItems">
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "About"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
+					<li class="mobileLink<?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
+					<li class="mobileLink<?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-				</ul>
+				</ul></div>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
