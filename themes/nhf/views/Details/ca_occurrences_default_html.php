@@ -120,15 +120,24 @@
 				
 			}
 			
-			# --- coverage
-			$va_dates = $t_occurrence->get('ca_occurrences.pbcoreCoverage.coverage', array("returnAsArray" => 1, 'convertCodesToDisplayText' => true));
-			if(is_array($va_dates) && sizeof($va_dates)){
-				$vs_date = join(", ", $va_dates);
-				if($vs_date){
-					print "\n<div class='unit'><div class='infoButton' data-toggle='popover' data-content='Associated dates.'>".caGetThemeGraphic($this->request, 'b_info.gif')."</div><div class='heading'>"._t("Date(s)")."</div><div>".(implode(", ", $va_dates))."</div></div><!-- end unit -->";
+			if($vs_date = $t_occurrence->get('ca_occurrences.occ_date', array("delimiter" => ", "))){
+				print "\n<div class='unit'><div class='infoButton' data-toggle='popover' data-content='Associated dates.'>".caGetThemeGraphic($this->request, 'b_info.gif')."</div><div class='heading'>"._t("Date(s)")."</div><div>".$vs_date."</div></div><!-- end unit -->";		
+			}else{			
+				# --- coverage
+				$va_coverage = $t_occurrence->get('ca_occurrences.pbcoreCoverage', array("returnWithStructure" => 1, 'convertCodesToDisplayText' => true));
+				if(is_array($va_coverage) && sizeof($va_coverage)){
+					$va_dates = array();
+					$va_coverage = array_pop($va_coverage);
+					foreach($va_coverage as $va_coverage_info){
+						if($va_coverage_info["coverageType"] == "Temporal"){
+							$va_dates[] = $va_coverage_info["coverage"];
+						}
+					}
+					if(sizeof($va_dates)){
+						print "\n<div class='unit'><div class='infoButton' data-toggle='popover' data-content='Associated dates.'>".caGetThemeGraphic($this->request, 'b_info.gif')."</div><div class='heading'>"._t("Date(s)")."</div><div>".(implode(", ", $va_dates))."</div></div><!-- end unit -->";
+					}
 				}
 			}
-			
 			# --- image
 			if($t_occurrence->get('ca_occurrences.ic_stills.ic_stills_media')){
 				print "\n<div class='unit'><div>".$t_occurrence->get('ca_occurrences.ic_stills.ic_stills_media', array('version' => "medium", "showMediaInfo" => false))."</div>";
