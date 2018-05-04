@@ -1150,7 +1150,7 @@
  			$ps_version = $this->request->getParameter('version', pString);
  			
  			
- 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			//if (!$this->_checkAccess($t_subject)) { return false; }
  			
  			//
  			// Does user have access to bundle?
@@ -1170,11 +1170,11 @@
  			if ($t_element->get('datatype') != 15) { 	// 15=file
  				return;
  			} 
- 			$o_view->setVar('file_path', $t_attr_val->getFilePath('value_blob'));
- 			$o_view->setVar('file_name', ($vs_name = trim($t_attr_val->get('value_longtext2'))) ? $vs_name : _t("downloaded_file"));
+ 			$o_view->setVar('archive_path', $t_attr_val->getFilePath('value_blob'));
+ 			$o_view->setVar('archive_name', ($vs_name = trim($t_attr_val->get('value_longtext2'))) ? $vs_name : _t("downloaded_file"));
  			
  			// send download
- 			$this->response->addContent($o_view->render('ca_attributes_download_file.php'));
+ 			$this->response->addContent($o_view->render('download_file_binary.php'));
  		}
  		# -------------------------------------------------------
  		# Media attribute bundle download
@@ -1199,7 +1199,7 @@
  			$ps_version = $this->request->getParameter('version', pString);
  			
  			
- 			if (!$this->_checkAccess($t_subject)) { return false; }
+ 			//if (!$this->_checkAccess($t_subject)) { return false; }
  			
  			
  			//
@@ -1232,11 +1232,11 @@
  				$vs_name = _t("downloaded_file.%1", $vs_path_ext);
  			}
  			
- 			$o_view->setVar('file_path', $vs_path);
- 			$o_view->setVar('file_name', $vs_name);
+ 			$o_view->setVar('archive_path', $vs_path);
+ 			$o_view->setVar('archive_name', $vs_name);
  			
  			// send download
- 			$this->response->addContent($o_view->render('ca_attributes_download_media.php'));
+ 			$this->response->addContent($o_view->render('download_file_binary.php'));
  		}
  		# -------------------------------------------------------
  		# User annotations
