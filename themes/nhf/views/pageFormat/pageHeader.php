@@ -271,8 +271,20 @@ if($x){
 ?>
 	<li class="leaf last">
 		<div id="navSearch"><form name="hp_search2" action="<?php print caNavUrl($this->request, '', 'Search', 'Occurrences'); ?>" method="get">
-			Search Works: <input type="text" name="search" value="<?php print $vs_last_search; ?>" autocomplete="off" size="100"/><input type="submit" name="op" id="edit-submit" value="GO"  class="form-submit" />
+			Search Works: <input type="text" name="search" value="<?php print $vs_last_search; ?>" autocomplete="off" size="100"/><input type="submit" name="op" id="edit-submit" value="GO"  class="form-submit" /> <span class="searchHelpLink"><?php print caGetThemeGraphic($this->request, 'b_info.gif'); ?><div class="searchHelp"><div class="searchHelpTitle">Search Tips</div><b>Boolean combination:</b> Search expressions can be combined using the standard boolean "AND" and "OR" operators.<br/><br/><b>Exact phase matching:</b> Surround a search term in quotes to find exact matches.<br/><br/><b>Wildcard matching:</b> Use an asterisk (*) as a wildcard character to match any text. Wildcards may only be used at the end of a word, to match words that start your search term.</div></span>
 	</form></div><!-- end hpSearch --></li>
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			$(function () {
+			  $('[data-toggle="popover"]').popover({
+				trigger: 'hover',
+				title: ''
+			  })
+			})
+		
+		});
+	</script>
+
 <?php
 	}
 ?>
