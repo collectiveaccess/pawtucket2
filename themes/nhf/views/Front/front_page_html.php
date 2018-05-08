@@ -3,7 +3,7 @@
 	require_once(__CA_MODELS_DIR__."/ca_lists.php");
 	$va_access_values = $this->getVar('access_values');	
 ?>
-<div id="browseListBody">
+<div id="browseListBody" style="margin-bottom:100px;">
 	<div id="title">Explore Our Moving Image Collections</div>
 	<div id="introText">
 		Our online catalog holds newly described and heritage database descriptions of film and video including local television news, amateur film, industrials, and many other genres.  Many holdings are not yet described.  To explore our catalog, enter a search term in the box below, or browse by <?php print caNavLink($this->request, _t('collection names'), '', '', 'Browse', 'Collections'); ?>.
@@ -49,25 +49,30 @@
 		$t_set = new ca_sets();
 		$vn_gallery_set_type_id = 2859;
 		$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id)));
-		foreach($va_sets as $vn_set_id => $va_set_info){
-			$t_set->load($vn_set_id);
+		if(is_array($va_sets) && sizeof($va_sets)){
 ?>
-		<div class='featuredCollection'>
+			<div style="clear:both;"></div><br/><br/><div class="subTitle">Featured Collections</div>
 <?php
-			print caNavLink($this->request, $t_set->get('ca_sets.collection_still.small'), "", "", "About", "FeaturedCollectionsList", array("set_id" => $t_set->get('ca_sets.set_id')));
-			print caNavLink($this->request, $t_set->get("ca_sets.preferred_labels.name"), "", "", "About", "FeaturedCollectionsList", array("set_id" => $t_set->get('ca_sets.set_id')))."<br/>\n";
+			foreach($va_sets as $vn_set_id => $va_set_info){
+				$t_set->load($vn_set_id);
 ?>
-			<div>
+			<div class='featuredCollection'>
 <?php
-				$vs_desc = $t_set->get("description");
-				if(mb_strlen($vs_desc) > 250){
-					$vs_desc = mb_substr($vs_desc, 0, 250)."...";
-				}
-				print $vs_desc;
+				print caNavLink($this->request, $t_set->get('ca_sets.collection_still.small'), "", "", "About", "FeaturedCollectionsList", array("set_id" => $t_set->get('ca_sets.set_id')));
+				print caNavLink($this->request, $t_set->get("ca_sets.preferred_labels.name"), "", "", "About", "FeaturedCollectionsList", array("set_id" => $t_set->get('ca_sets.set_id')))."<br/>\n";
 ?>
-			</div>
-		</div><!-- end featuredCollection -->			
+				<div>
 <?php
+					$vs_desc = $t_set->get("description");
+					if(mb_strlen($vs_desc) > 250){
+						$vs_desc = mb_substr($vs_desc, 0, 250)."...";
+					}
+					print $vs_desc;
+?>
+				</div>
+			</div><!-- end featuredCollection -->			
+<?php
+			}
 		}
 ?> 			
 	</div><!-- end featuredCollections -->
