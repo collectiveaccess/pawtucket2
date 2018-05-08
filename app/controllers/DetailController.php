@@ -319,7 +319,7 @@
 			}
 			
 			// Filtering of related items
-			if ($t_subject->tableName() != 'ca_objects') {
+			if (($t_subject->tableName() != 'ca_objects') && (!$this->opa_detail_types[$ps_function]['disableRelatedItemsBrowse'])) {
 				$vs_class = 'ca_objects';
 				$o_browse = caGetBrowseInstance($vs_class);
 				if ($ps_cache_key = $this->request->getParameter('key', pString)) {
@@ -704,14 +704,30 @@
 				return;
 			}
 			
+			$ps_context = $this->request->getParameter('context', pString);
+			
+			if ($ps_context == 'gallery') {
+				$va_context = [
+					'table' => 'ca_objects'
+				];
+			} elseif (!is_array($va_context = $this->opa_detail_types[$ps_context])) { 
+				throw new ApplicationException(_t('Invalid context'));
+			}
+			
+			$o_dm = Datamodel::load();
+			if (!($t_instance = $o_dm->getInstanceByTableName($va_context['table'], true))) {
+			    throw new ApplicationException(_t('Invalid context'));
+			}
+			
+			
 			if (!($vn_object_id = $this->request->getParameter('object_id', pInteger))) {
 				$vn_object_id = $this->request->getParameter('id', pInteger);
 			}
-			$t_object = new ca_objects($vn_object_id);
-			if (!$t_object->isLoaded()) {
+			$t_instance->load($vn_object_id);
+			if (!$t_instance->isLoaded()) {
 				throw new ApplicationException(_t('Cannot download media'));
 			}
-			if(sizeof($this->opa_access_values) && (!in_array($t_object->get("access"), $this->opa_access_values))){
+			if(sizeof($this->opa_access_values) && (!in_array($t_instance->get("access"), $this->opa_access_values))){
   				return;
  			}
 			$pn_representation_id = $this->request->getParameter('representation_id', pInteger);
@@ -728,7 +744,7 @@
 			$t_download_log->log(array(
 					"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
 					"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
-					"table_num" => $t_object->TableNum(), 
+					"table_num" => $t_instance->TableNum(), 
 					"row_id" => $vn_object_id, 
 					"representation_id" => $pn_representation_id, 
 					"download_source" => "pawtucket"
@@ -743,7 +759,7 @@
 			$this->view->setVar('version_info', $va_rep_info);
 			
 			$va_info = $t_rep->getMediaInfo('media');
-			$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $t_object->get('idno'));
+			$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $t_instance->get('idno'));
 			
 			if (!($vs_mode = $this->request->user->getPreference('downloaded_file_naming'))) {
 				$vs_mode = $this->request->config->get('downloaded_file_naming');
@@ -777,7 +793,7 @@
 			
 			//
 			// Perform metadata embedding
-			if ($this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_object->getPrimaryKey(), $t_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode())) {
+			if ($this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_instance->getPrimaryKey(), $t_instance->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode())) {
 				$this->view->setVar('version_path', $this->ops_tmp_download_file_path);
 			} else {
 				$this->view->setVar('version_path', $t_rep->getMediaPath('media', $ps_version));
