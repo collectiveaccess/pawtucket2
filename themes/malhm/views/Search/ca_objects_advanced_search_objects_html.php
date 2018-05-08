@@ -1,4 +1,4 @@
-
+<div class='containerWrapper'>
 <div class="row">
 	<div class="col-sm-8 " style='border-right:1px solid #ddd;'>
 		<h1>Objects Advanced Search</h1>
@@ -53,7 +53,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 		<p>Include some helpful info for your users here.</p>
 	</div><!-- end col -->
 </div><!-- end row -->
-
+</div>
 <script>
 	jQuery(document).ready(function() {
 		$('.advancedSearchField .formLabel').popover(); 

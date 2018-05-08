@@ -38,20 +38,21 @@
 	$vn_arch_record_id = $t_list->getItemIDFromList("object_types", "archaeology_object");
 	$vn_type_id = $t_object->get('ca_objects.type_id');	
 ?>
+<div class='containerWrapper'>
 <div class="row">
-	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
+	<div class='navLeftRight col-xs-12 col-sm-12 col-md-12 col-lg-12'>
 		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
+			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+</div><!-- end row -->
+<div class="row">
+
+	<div class='col-xs-12 '>
 		<div class="container"><div class="row">
 			<div class="col-sm-12">
 				<h4>{{{^ca_objects.preferred_labels}}}</h4>
-				<h6>{{{^ca_objects.type_id}}}</h6>	
+				<h6>{{{^ca_objects.idno}}}</h6>
 				<hr/>		
 			</div>
 			<div class='col-sm-6 col-md-6 col-lg-6'>
@@ -62,35 +63,20 @@
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 				
-<?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
-						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
-					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-					}
-					if ($vn_pdf_enabled) {
-						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
-					}
-					print '</div><!-- end detailTools -->';
-				}				
 
-?>
 
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
-				if ($vs_idno = $t_object->get('ca_objects.idno')) {
-					print "<div class='unit'><h6>Object ID</h6>".$vs_idno."</div>";
-				}			
+				#For testing only needs to be hooked up when holding institution information is available#
+				print "<div class='instLink'><small>from the collection of</small><div>".caDetailLink($this->request, 'Pope County Museum', '', 'ca_entities', 13845)."</div></div>";
+				#Fix me I'm just a slug!!
+				
+				
+				if ($vs_alt = $t_object->get('ca_objects.title')) {
+					print "<div class='unit'><h6>Title</h6>".$vs_alt."</div>";
+				}							
 				if ($va_chenhall_ids = $t_object->get('ca_objects.chenhall', array('returnAsArray' => true))) {
 					print "<div class='unit'><h6>Category</h6>";
 					foreach ($va_chenhall_ids as $va_key => $vs_chenhall) {
@@ -98,9 +84,7 @@
 					}
 					print "</div>";
 				}
-				if ($vs_alt = $t_object->get('ca_objects.alternate_object_name')) {
-					print "<div class='unit'><h6>Alternate object names</h6>".$vs_alt."</div>";
-				}
+
 				if ($vs_date = $t_object->get('ca_objects.date_created', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Creation Date</h6>".$vs_date."</div>";
 				}
@@ -120,17 +104,40 @@
 						$t_rel = new ca_objects_x_entities($va_entity_rel);
 						if ($t_rel->get('ca_objects.access') != 0){ continue;}
 						$vn_type_id = $t_rel->get('ca_relationship_types.preferred_labels');
-						$va_entities_by_type[$vn_type_id][] = caDetailLink($this->request, $t_rel->get('ca_entities.preferred_labels'), '', 'ca_entities', $t_rel->get('ca_entities.entity_id'));
+						$va_entities_by_type[$vn_type_id][] = $t_rel->get('ca_entities.preferred_labels');
 					}
 					print "<div class='unit'>";
+					print "<hr>";
+					print "<h6>Related People and Organizations</h6>";
 					foreach ($va_entities_by_type as $va_type => $va_entity_id) {
-						print "<h6>".$va_type."</h6>";
+						print "<div><b>".ucfirst($va_type)."</b></div>";
 						foreach ($va_entity_id as $va_key => $va_entity_link) {
 							print "<div>".$va_entity_link."</div>";
 						} 
 					}
 					print "</div>";
 				}
+
+				# Comment and Share Tools
+				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
+						
+					print '<div id="detailTools">';
+					if ($vn_comments_enabled) {
+?>				
+						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
+						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
+<?php				
+					}
+					if ($vn_share_enabled) {
+						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
+					}
+					if ($vn_pdf_enabled) {
+						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
+					}
+					print '</div><!-- end detailTools -->';
+				}				
+
+			
 /*
 				if ($va_lang_ids = $t_object->get('ca_objects.language', array('returnAsArray' => true))) {
 					print "<div class='unit'><h6>Language</h6>";
@@ -250,13 +257,8 @@
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
 </div><!-- end row -->
-
+</div>
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({

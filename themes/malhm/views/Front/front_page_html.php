@@ -45,9 +45,9 @@
 		print "<div class='row members'>";
 		print '<div class="containerWrapper">';
 		print "<div class='col-sm-12'><h1>Member Institutions</h1></div>";
-		print '<div class="col-sm-12"><div class="members jcarousel-wrapper">
+		print '<div class="col-sm-12"><div class="membersjcarousel-wrapper">
 				<!-- Carousel -->
-				<div class="members jcarousel">';
+				<div class="membersjcarousel">';
 		
 		
 		while ($qr_members->nextHit()) {
@@ -60,11 +60,11 @@
 		print "</div>";
 ?>
 		<!-- Prev/next controls -->
-			<a href="#" class="members jcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
-			<a href="#" class="members jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
+			<a href="#" class="membersjcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
+			<a href="#" class="membersjcarousel-control-next"><i class="fa fa-angle-right"></i></a>
 		
 			<!-- Pagination -->
-			<p class="members jcarousel-pagination">
+			<p class="membersjcarousel-pagination">
 			<!-- Pagination items will be generated in here -->
 			</p>
 <?php			
@@ -79,7 +79,7 @@
 				/*
 				Carousel initialization
 				*/
-				$('.members.jcarousel')
+				$('.membersjcarousel')
 					.jcarousel({
 						// Options go here
 						wrap:'circular'
@@ -88,11 +88,11 @@
 				/*
 				 Prev control initialization
 				 */
-				$('.members.jcarousel-control-prev')
-					.on('.members.jcarouselcontrol:active', function() {
+				$('.membersjcarousel-control-prev')
+					.on('.membersjcarouselcontrol:active', function() {
 						$(this).removeClass('inactive');
 					})
-					.on('.members.jcarouselcontrol:inactive', function() {
+					.on('.membersjcarouselcontrol:inactive', function() {
 						$(this).addClass('inactive');
 					})
 					.jcarouselControl({
@@ -103,11 +103,11 @@
 				/*
 				 Next control initialization
 				 */
-				$('.members.jcarousel-control-next')
-					.on('.members.jcarouselcontrol:active', function() {
+				$('.membersjcarousel-control-next')
+					.on('.membersjcarouselcontrol:active', function() {
 						$(this).removeClass('inactive');
 					})
-					.on('.members.jcarouselcontrol:inactive', function() {
+					.on('.membersjcarouselcontrol:inactive', function() {
 						$(this).addClass('inactive');
 					})
 					.jcarouselControl({
@@ -118,11 +118,11 @@
 				/*
 				 Pagination initialization
 				 */
-				$('.members.jcarousel-pagination')
-					.on('.members.jcarouselpagination:active', 'a', function() {
+				$('.membersjcarousel-pagination')
+					.on('.membersjcarouselpagination:active', 'a', function() {
 						$(this).addClass('active');
 					})
-					.on('.members.jcarouselpagination:inactive', 'a', function() {
+					.on('.membersjcarouselpagination:inactive', 'a', function() {
 						$(this).removeClass('active');
 					})
 					.jcarouselPagination({
