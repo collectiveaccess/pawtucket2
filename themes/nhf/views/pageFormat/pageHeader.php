@@ -250,22 +250,12 @@
 ?>
 	<li class="leaf first <?php print ($vs_section == "Splash") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Overview'), ($vs_section == "Splash") ? "active" : "", '', '', ''); ?></li>
 	<li class="leaf <?php print ($vs_section == "CollectionsList") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Collections'), ($vs_section == "CollectionsList") ? "active" : "", '', 'Browse', 'Collections'); ?></li>
-<?php
-if($x){
-?>
-	<li class="leaf <?php print ($vs_section == "PlaceList") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Places'), ($vs_section == "PlaceList") ? "active" : "", '', 'Browse', 'PlaceList', array('target' => 'ca_collections')); ?></li>
-	<li class="leaf <?php print ($vs_section == "GenreList") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Genres'), ($vs_section == "GenreList") ? "active" : "", '', 'Browse', 'GenreList', array('target' => 'ca_collections')); ?></li>
-	<li class="leaf <?php print ($vs_section == "SubjectList") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Subjects'), ($vs_section == "SubjectList") ? "active" : "", '', 'Browse', 'SubjectList', array('target' => 'ca_collections')); ?></li>
-	<li class="leaf <?php print ($vs_section == "DecadeList") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Decades'), ($vs_section == "DecadeList") ? "active" : "", '', 'Browse', 'DecadeList', array('target' => 'ca_collections')); ?></li>
-	<li class="leaf <?php print ($vs_section == "PeopleList") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('People and Organizations'), ($vs_section == "PeopleList") ? "active" : "", '', 'Browse', 'PeopleList', array('target' => 'ca_collections')); ?></li>
-<?php
-}
-?>
 	<li class="leaf"><a href="/node/26" title="">Archival Moments</a></li>
 	<li class="collapsed"><a href="/content/exhibits" title="">Exhibits</a></li>
 
 	<li class="leaf"><a href="/node/13" title="" class="">Donate Film or Equipment</a></li>
-	<li class="leaf last"><a href="/node/23" title="">Collecting Policy</a></li>
+	<li class="leaf"><a href="/node/23" title="">Collecting Policy</a></li>
+	<li class="leaf"><a href="/content/stock-footage-or-research-request-form" title="">Request Footage or Research</a></li>
 <?php
 	if($vs_section != "Front"){
 ?>
