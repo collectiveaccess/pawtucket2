@@ -1579,6 +1579,7 @@ div.moreFacetListHeading{
 	background-color:#FFF;
 	border:1px solid #dedede;
 	padding:15px;
+	z-index:100;
 }
 .searchHelpLink .searchHelp .searchHelpTitle{
 	color: #41a8ba;
