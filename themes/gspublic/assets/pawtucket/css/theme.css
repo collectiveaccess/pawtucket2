@@ -69,6 +69,9 @@ body {
 .initial #pageArea{
 	padding-top:0px;
 }
+.initial #pageArea.detail, .initial #pageArea.results, .initial #pageArea.front{
+	padding-top:40px;
+}
 @media (max-width: 768px) {
 	#pageArea, .initial #pageArea{
 		padding-top:0px;
@@ -593,7 +596,7 @@ nav{
 
 .front H1{
 	font-family: Trefoil, Arial, sans-serif;
-	font-size: 1.6rem;
+	font-size: 1.5rem;
 	padding:0px !important;
 	font-weight: 500;
 }
@@ -660,7 +663,8 @@ nav{
 	background-color:#6e298d;
 }
 .frontBand.collections {
-	background-color:#c7c8ca;
+	/*background-color:#c7c8ca;*/
+	background-color:#faa61a;
 }
 .frontBand.about, .frontBand.galleryFront, .frontBand.browse, .frontBand.collections{
 	color:#fff;
@@ -892,6 +896,11 @@ a.readmore-js-toggle{
 	padding-bottom:50px;
     padding: 15px;
     color:#fff;
+}
+@media (max-width: 992px) {
+	.browseText h3, .collectionText h3 {
+		font-size:14px;
+	}
 }
 .browseText a{
 	color:#fff;

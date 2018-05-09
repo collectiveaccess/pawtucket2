@@ -303,7 +303,7 @@
 			
 			$va_browse_options = array('checkAccess' => $this->opa_access_values, 'no_cache' => true);
 
-            $o_browse->execute(array_merge($va_browse_options, array('strictPhraseSearching' => true)));
+            $o_browse->execute(array_merge($va_browse_options, array('strictPhraseSearching' => true, 'checkAccess' => $this->opa_access_values, 'request' => $this->request)));
 
 		if ($ps_view !== 'timelineData') {
 			//
@@ -313,7 +313,7 @@
 				$o_browse->setFacetGroup($vs_facet_group);
 			}
 			$va_available_facet_list = $this->opo_config->get("availableFacets");
-			$va_facets = $o_browse->getInfoForAvailableFacets();
+			$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request,]);
 			if(is_array($va_available_facet_list) && sizeof($va_available_facet_list)) {
 				foreach($va_facets as $vs_facet_name => $va_facet_info) {
 					if (!in_array($vs_facet_name, $va_available_facet_list)) {
@@ -323,7 +323,7 @@
 			} 
 		
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
-				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array("checkAccess" => $this->opa_access_values));
+				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, ['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
 			}
 		
 			$this->view->setVar('facets', $va_facets);

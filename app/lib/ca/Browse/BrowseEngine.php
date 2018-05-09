@@ -788,8 +788,11 @@
 		 *
 		 * @return array()
 		 */
-		public function getFacetList() {
+		public function getFacetList($pa_options=null) {
 			if (!is_array($this->opa_browse_settings)) { return null; }
+			
+			if (!is_array($pa_check_access = caGetOption('checkAccess', $pa_options, null)) || !sizeof($pa_check_access)) { $pa_check_access = null; }
+			$po_request = caGetOption('request', $pa_options, null);
 
 			// Facets can be restricted such that they are applicable only to certain types when browse type restrictions are in effect.
 			// These restrictions are distinct from per-facet 'restrict_to_type' and 'restrict_to_relationship_types' settings, which affect
@@ -810,6 +813,7 @@
 			if (is_array($va_type_restrictions) && sizeof($va_type_restrictions)) {
 				$va_facets = array();
 				foreach($this->opa_browse_settings['facets'] as $vs_facet_name => $va_facet_info) {
+				    if (!$this->_checkFacetAccess($va_facet_info, $pa_check_access, $po_request)) { continue; }
 					if (in_array($vs_facet_name, $va_criteria_facets) && (caGetOption('type', $va_facet_info, null) == 'field')) { continue; }	// fields can only appear once
 					if (isset($va_facet_info['requires']) && !is_array($va_facet_info['requires']) && $va_facet_info['requires']) { $va_facet_info['requires'] = array($va_facet_info['requires']); }
 					//
@@ -850,6 +854,7 @@
 				$va_facets = array();
 
 				foreach($this->opa_browse_settings['facets'] as $vs_facet_name => $va_facet_info) {
+				    if (!$this->_checkFacetAccess($va_facet_info, $pa_check_access, $po_request)) { continue; }
 					if (isset($va_facet_info['requires']) && !is_array($va_facet_info['requires']) && $va_facet_info['requires']) { $va_facet_info['requires'] = array($va_facet_info['requires']); }
 					if (isset($va_facet_info['requires']) && is_array($va_facet_info['requires'])) {
 						foreach($va_facet_info['requires'] as $vs_req_facet) {
@@ -893,14 +898,21 @@
 		 * Returns list of all facets that currently have content (ie. that can refine the browse further)
 		 * with full facet info included
 		 *
+		 * @param array $pa_options Options include:
+		 *		checkAccess = array of access values to filter facets by based upon access restrictions set in browse.conf. [Default is null – no filtering]
+		 *      user = user object to verify facets with using role restrictions configured in browse.conf. [Default is null – no filtering]
+		 *
 		 * @return array
 		 */
-		public function getInfoForAvailableFacets() {
+		public function getInfoForAvailableFacets($pa_options=null) {
 			if (!is_array($this->opa_browse_settings)) { return null; }
 			$va_facets = $this->opa_browse_settings['facets'];
 			$va_facet_with_content = $this->opo_ca_browse_cache->getFacets();
 
 			$vs_facet_group = $this->getFacetGroup();
+			
+			if (!is_array($pa_check_access = caGetOption('checkAccess', $pa_options, null)) || !sizeof($pa_check_access)) { $pa_check_access = null; }
+			$po_request = caGetOption('request', $pa_options, null);
 
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
 				if ($vs_facet_group) {
@@ -908,6 +920,11 @@
 						unset($va_facets[$vs_facet_name]);
 						continue;
 					}
+				}
+				
+				if (!$this->_checkFacetAccess($va_facet_info, $pa_check_access, $po_request)) { 
+				    unset($va_facets[$vs_facet_name]);
+					continue;
 				}
 
 				if (!isset($va_facet_with_content[$vs_facet_name]) || !$va_facet_with_content[$vs_facet_name]) {
@@ -926,9 +943,9 @@
 		 *
 		 * @return array List of facet codes
 		 */
-		public function getFacetsWithContentList() {
+		public function getFacetsWithContentList($pa_options=null) {
 			$t_browse = new BrowseEngine($this->opn_browse_table_num, null, $this->getContext());
-			return $t_browse->getFacetList();
+			return $t_browse->getFacetList($pa_options);
 		}
 		# ------------------------------------------------------
 		/**
@@ -938,12 +955,15 @@
 		 *
 		 * @return array
 		 */
-		public function getInfoForFacetsWithContent() {
+		public function getInfoForFacetsWithContent($pa_options=null) {
 			if (!($va_facets_with_content = $this->opo_ca_browse_cache->getGlobalParameter('facets_with_content'))) {
 				$t_browse = new BrowseEngine($this->opn_browse_table_num, null, $this->getContext());
 				$t_browse->execute();
 
 			}
+			
+			if (!is_array($pa_check_access = caGetOption('checkAccess', $pa_options, null)) || !sizeof($pa_check_access)) { $pa_check_access = null; }
+			$po_request = caGetOption('request', $pa_options, null);
 
 			if (is_array($va_facets_with_content)) {
 				$va_facets = $this->opa_browse_settings['facets'];
@@ -951,6 +971,7 @@
 
 				$va_tmp = array();
 				foreach($va_facets_with_content as $vs_facet) {
+				    if (!$this->_checkFacetAccess($va_facets[$vs_facet], $pa_check_access, $po_request)) { continue; }
 					if (($vs_facet_group && $va_facets[$vs_facet]['facet_groups'] && is_array($va_facets[$vs_facet]['facet_groups'])) && (!in_array($vs_facet_group, $va_facets[$vs_facet]['facet_groups']))) { continue; }
 					$va_tmp[$vs_facet] = $va_facets[$vs_facet];
 				}
@@ -993,6 +1014,9 @@
 			$vb_need_to_cache_facets = false;
 			$vb_results_cached = false;
 			$vb_need_to_save_in_cache = false;
+			
+			if (!is_array($pa_check_access = caGetOption('checkAccess', $pa_options, null)) || !sizeof($pa_check_access)) { $pa_check_access = null; }
+			$po_request = caGetOption('request', $pa_options, null);
 
 			$vs_cache_key = $this->opo_ca_browse_cache->getCurrentCacheKey();
 
@@ -1046,6 +1070,8 @@
 						$vs_target_browse_table_pk = $t_item->primaryKey();
 
 						$va_facet_info = $this->getInfoForFacet($vs_facet_name);
+						if (!$this->_checkFacetAccess($va_facet_info, $pa_check_access, $po_request)) { continue; }
+					
 						
 						$vb_is_relative_to_parent = ($va_facet_info['relative_to'] && $this->_isParentRelative($va_facet_info['relative_to']));
 						
@@ -2301,14 +2327,14 @@
 			$va_criteria = $this->getCriteria();
 
 			if (($o_results->numHits() > 1) || !sizeof($va_criteria)) {
-				$va_facets = $this->getFacetList();
+				$va_facets = $this->getFacetList($pa_options);
 				$va_parent_browse_params = $this->opo_ca_browse_cache->getParameters();
 
 				//
 				// If we couldn't get facets for a parent browse then use full facet list
 				//
 				if (!$va_facets) {
-					$va_facets = $this->getFacetList();
+					$va_facets = $this->getFacetList($pa_options);
 				}
 
 				//
@@ -6229,6 +6255,27 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 				}
 			}
 			return $va_collapse_map;
+		}
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		private function _checkFacetAccess($pa_facet_info, $pa_check_access, $po_request) {
+		    if((!is_array($pa_check_access) || !sizeof($pa_check_access)) && (!$po_request || !$po_request->isLoggedIn())) { return true; }
+		    if((!is_array($pa_facet_info['access']) || !sizeof($pa_facet_info['access'])) && (!is_array($pa_facet_info['roles']) || !sizeof($pa_facet_info['roles']))) { return true; }
+		    
+		    if(is_array($pa_check_access) && is_array($pa_facet_info['access']) && sizeof(array_intersect($pa_check_access, $pa_facet_info['access']))) {
+		        return true;  
+            }
+            
+            if (is_array($pa_facet_info['roles']) && sizeof($pa_facet_info['roles']) && $po_request && $po_request->isLoggedIn()) {
+                foreach($pa_facet_info['roles'] as $vs_role) {
+                    if ($po_request->user->hasRole($vs_role)) {
+                        return true;
+                    }
+                }   
+            }
+            return false;
 		}
 		# ------------------------------------------------------
 	}
