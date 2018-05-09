@@ -29,20 +29,13 @@
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
-			<a href="#navbar" class="smooth back-to-top">Back to Top</a>
+			<a href="#top" class="smooth back-to-top">Back to Top</a>
 			<section class="top-bar clearfix">
 				<address>
 					<p><strong>The Northwest School</strong><strong><br></strong>1415 Summit Avenue<br>Seattle, Washington 98122<br>206-682-7309</p>
 				</address>
 
-				<div class="follow">
-					<p>Follow Us!</p>
-					<ul class="social">
-						<li><a href="https://twitter.com/northwestschool" target="_blank"><span class="icon-twitter"></span> <span class="offscreen">Twitter</span></a></li>
-						<li><a href="https://www.facebook.com/NorthwestSchool" target="_blank"><span class="icon-facebook"></span> <span class="offscreen">Facebook</span></a></li>
-						<li><a href="https://instagram.com/thenorthwestschool/" target="_blank"><span class="icon-instagram"></span> <span class="offscreen">Instagram</span></a></li>
-					</ul>
-				</div>
+
 			</section>
 			<section class="bottom-center">
 				<?php print caGetThemeGraphic($this->request, 'founded.png'); ?>
@@ -57,6 +50,12 @@
 				<small>© 2018 The Northwest School. All Rights Reserved.</small>
 			</section>			
 		</footer><!-- end footer -->
+		<script>
+			$("a[href='#top']").click(function() {
+			  $("html, body").animate({ scrollTop: 0 }, 300);
+			  return false;
+			});			
+		</script>
 <?php
 	//
 	// Output HTML for debug bar
