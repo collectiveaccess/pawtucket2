@@ -420,6 +420,12 @@ p, .collectionsList p {
 }
 .detail .unit {
 	margin-bottom:15px;
+	line-height:1.5em;
+}
+.detail .unit p {
+	font-size:14px;
+	margin-bottom:15px;
+	line-height:1.5em;
 }
 .detail .repViewerCont:hover .detailMediaToolbar {
 	display:none;
@@ -960,10 +966,13 @@ p, .collectionsList p {
 
 
 
-
-
-
-
+.multisearch .jcarousel-next, .multisearch .jcarousel-prev{
+	top:0px;
+}
+.multisearch .jcarousel-next.inactive, .multisearch .jcarousel-prev.inactive{
+	display:block;
+	opacity:.25;
+}
 
 
 

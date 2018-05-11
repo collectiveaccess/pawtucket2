@@ -49,21 +49,12 @@
 			$vn_object_id = $qr_list->get('ca_objects.object_id');
 			$t_object = new ca_objects($vn_object_id);
 			$vs_icons = "";
-			#if ($t_object->get('ca_objects.vimeo_id')) {
-			#	$vs_icons.= " <i class='fa fa-film'></i>";
-			#}
-			#if ($t_object->representationsWithMimeType(array('application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',' application/vnd.ms-excel', 'application/pdf'), array('versions' => array('original'), 'checkAccess' => $va_access_values, 'return_with_access' => $va_access_values))) {
-			#	$vs_icons.= " <i class='fa fa-file'></i>";
-			#}
 			print "<div class='col-sm-6'><div class='collectionTile'>";
 			if ($qr_list->get('ca_object_representations.media.widepreviewlarge', array('checkAccess' => $va_access_values))) {
-				print "<div class='colImage'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $qr_list->get('ca_object_representations.media.widepreviewlarge', array('checkAccess' => $va_access_values)), '', 'ca_objects', $qr_list->get('ca_objects.object_id'))."</div></div>";
+				print "<div class='colImage'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $qr_list->get('ca_object_representations.media.widepreviewlarge', array('checkAccess' => $va_access_values)), '', 'ca_objects', $qr_list->get('ca_objects.object_id'), null, array('title' => $qr_list->get("ca_objects.preferred_labels")))."</div></div>";
 			} else {
-				print "<div class='relImg'><div class='text-center bResultItemImg'><div class='bSimplePlaceholder'>".caDetailLink($this->request, caGetThemeGraphic($this->request, 'spacer.png'), '', 'ca_objects', $qr_list->get('ca_objects.object_id'))."</div></div></div>";
+				print "<div class='relImg'><div class='text-center bResultItemImg'><div class='bSimplePlaceholder'>".caDetailLink($this->request, caGetThemeGraphic($this->request, 'spacer.png'), '', 'ca_objects', $qr_list->get('ca_objects.object_id'), null, array('title' => $qr_list->get("ca_objects.preferred_labels")))."</div></div></div>";
 			}			
-			print "<div class='title'>".caNavLink($this->request, $qr_list->get("ca_objects.preferred_labels"), "", "Detail", "oralhistory",  $qr_list->get("ca_objects.object_id"))." ".$vs_icons."</div>";	
-			#print "<div class='collectionDetail'>".$qr_list->get("ca_objects.description")."</div>";
-
 			print "</div></div>";
 			$vn_i++;
 			if ($vn_i == 2) {

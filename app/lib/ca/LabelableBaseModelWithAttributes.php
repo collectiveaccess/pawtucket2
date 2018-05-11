@@ -301,6 +301,9 @@
 		 * The $pn_mode parameter can be used to restrict removal to preferred or non-preferred if needed.
 		 *
 		 * @param int $pn_mode Set to __CA_LABEL_TYPE_PREFERRED__ or __CA_LABEL_TYPE_NONPREFERRED__ to restrict removal. Default is __CA_LABEL_TYPE_ANY__ (no restriction)
+		 * @param array $pa_options Options include:
+		 *		locales = Limit removal to specific locales. Values must be valid locale ids or codes. A single locale or array of locales may be passed. [Default is null, delete all labels]
+		 *		locale = Synonym for locales.
 		 *
 		 * @return bool True on success, false on error
 		 */
@@ -312,11 +315,14 @@
  				$o_trans = $this->getTransaction();
 				$t_label->setTransaction($o_trans);
 			}
- 			
+			
+			$va_locale_ids = array_map(function($v) { return is_numeric($v) ? $v : ca_locales::codeToID($v); }, caGetOption(['locales', 'locale'], $pa_options, null, ['castTo' => 'array']));
+ 	
  			$vb_ret = true;
  			$va_labels = $this->getLabels();
  			foreach($va_labels as $vn_id => $va_labels_by_locale) {
  				foreach($va_labels_by_locale as $vn_locale_id => $va_labels) {
+ 					if (is_array($va_locale_ids) && sizeof($va_locale_ids) && !in_array($vn_locale_id, $va_locale_ids)) { continue; }
  					foreach($va_labels as $vn_i => $va_label) {
  						if (isset($va_label['is_preferred'])) {
 							switch($pn_mode) {
@@ -632,6 +638,27 @@
 					}
 				}
 				
+				if (method_exists($t_instance, "isRelationship") && $t_instance->isRelationship()) {
+					if (isset($pa_values['type_id']) && !is_numeric($pa_values['type_id'])) {
+						
+						$va_field_values = $pa_values['type_id'];
+						foreach($va_field_values as $vn_i => $va_field_value) {
+							$vs_op = strtolower($va_field_value[0]);
+							$vm_value = $va_field_value[1];
+							if (!$vm_value) { continue; }
+				
+							if (!is_numeric($vm_value)) {
+								if (!is_array($vm_value)) {
+								    $vm_value = [$vm_value];
+								}
+                                if ($va_types = caMakeRelationshipTypeIDList($t_instance->tableName(), $vm_value)) {
+                                    $pa_values['type_id'][$vn_i] = [$vs_op, $va_types];
+                                }
+							}
+						}
+					}
+				}
+				
 				//
 				// Convert other intrinsic list references
 				//
@@ -775,7 +802,7 @@
 									
 											if (($vn_subelement_id = array_search($vs_subfld, $va_subelement_codes)) === false) { continue; }
 									
-											$vs_q = "(ca_attribute_values.element_id = {$vn_subelement_id}) AND  ";
+											$vs_q = "((ca_attribute_values.element_id = {$vn_subelement_id}) AND  ";
 									
 											$vs_op = strtolower($va_subfield_value[0]);
 											$vm_value = $va_subfield_value[1];
@@ -784,15 +811,15 @@
 							
 											if (is_null($vm_value)) {
 												if ($vs_op !== '=') { $vs_op = 'IS'; }
-												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} {$vs_op} NULL)";
+												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} {$vs_op} NULL))";
 											} elseif (is_array($vm_value) && sizeof($vm_value)) {
 												if ($vs_op !== '=') { $vs_op = 'IN'; }
-												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} {$vs_op} (?))";
+												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} {$vs_op} (?)))";
 											} elseif (caGetOption('allowWildcards', $pa_options, false) && (strpos($vm_value, '%') !== false)) {
-												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} LIKE ?)";
+												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} LIKE ?))";
 											} else {
 												if ($vm_value === '') { continue; }
-												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} {$vs_op} ?)";
+												$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_subfld} {$vs_op} ?))";
 											}
 									
 											$va_attr_params[] = $vm_value;
@@ -806,7 +833,7 @@
 										break;
 									case __CA_ATTRIBUTE_VALUE_DATERANGE__:
 										if(is_array($va_date = caDateToHistoricTimestamps($vm_value))) {
-											$va_q[] = "(ca_attribute_values.element_id = {$vn_element_id}) AND ((ca_attribute_values.value_decimal1 BETWEEN ? AND ?) OR (ca_attribute_values.value_decimal2 BETWEEN ? AND ?))";
+											$va_q[] = "((ca_attribute_values.element_id = {$vn_element_id}) AND ((ca_attribute_values.value_decimal1 BETWEEN ? AND ?) OR (ca_attribute_values.value_decimal2 BETWEEN ? AND ?)))";
 											array_push($va_attr_params, $va_date['start'], $va_date['end'], $va_date['start'], $va_date['end']);
 										} else {
 											continue(2);
@@ -814,7 +841,7 @@
 										break;
 									case __CA_ATTRIBUTE_VALUE_CURRENCY__:
 										if (is_array($va_parsed_value = caParseCurrencyValue($vm_value))) {
-											$va_q[] = "(ca_attribute_values.element_id = {$vn_element_id}) AND ((ca_attribute_values.value_longtext1 = ?) OR (ca_attribute_values.value_decimal1 {$vs_op} ?))";
+											$va_q[] = "((ca_attribute_values.element_id = {$vn_element_id}) AND ((ca_attribute_values.value_longtext1 = ?) OR (ca_attribute_values.value_decimal1 {$vs_op} ?)))";
 											array_push($va_attr_params, $va_parsed_value['currency'], $va_parsed_value['value']);
 										} else {
 											continue(2);
@@ -835,18 +862,18 @@
 											}
 										}
 								
-										$vs_q = "(ca_attribute_values.element_id = {$vn_element_id}) AND  ";
+										$vs_q = "((ca_attribute_values.element_id = {$vn_element_id}) AND  ";
 										if (is_null($vm_value)) {
 											if ($vs_op !== '=') { $vs_op = 'IS'; }
-											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} {$vs_op} NULL)";
+											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} {$vs_op} NULL))";
 										} elseif (is_array($vm_value) && sizeof($vm_value)) {
 											if ($vs_op !== '=') { $vs_op = 'IN'; }
-											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} {$vs_op} (?))";
+											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} {$vs_op} (?)))";
 										} elseif (caGetOption('allowWildcards', $pa_options, false) && (strpos($vm_value, '%') !== false)) {
-											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} LIKE ?)";
+											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} LIKE ?))";
 										} else {
 											if ($vm_value === '') { continue; }
-											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} {$vs_op} ?)";
+											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} {$vs_op} ?))";
 										}
 								
 										$va_attr_params[] = $vm_value;
@@ -876,7 +903,7 @@
 			$vs_deleted_sql = ($t_instance->hasField('deleted')) ? "({$vs_table}.deleted = 0)" : '';
 			
 			$va_sql = [];
-			if ($vs_wheres = join(" {$ps_boolean} ", $va_label_sql)) { $va_sql[] = $vs_wheres; }
+			if ($vs_wheres = join(" {$ps_boolean} ", $va_label_sql)) { $va_sql[] = "({$vs_wheres})"; }
 			if ($vs_type_restriction_sql) { $va_sql[] = $vs_type_restriction_sql; }
 			if ($vs_deleted_sql) { $va_sql[] = $vs_deleted_sql; }			
 

@@ -481,7 +481,7 @@
 		}
 		# -------------------------------------------------------
 		/**
-		 * Remove media present in media directories but not referenced in database (aka. orphan media)
+		 * Permanently remove object representations marked for deletion, deleting referenced files on disk and reclaiming disk space
 		 */
 		public static function remove_deleted_representations($po_opts=null) {
 			require_once(__CA_LIB_DIR__."/core/Db.php");
@@ -558,6 +558,90 @@
 		 */
 		public static function remove_deleted_representationsHelp() {
 			return _t("Detects and, optionally, completely removes object representations marked as deleted in the database. Files referenced by these records are also removed. This can be useful if there has been a lot of fluctuation in your representation stock and you want to free up disk space.");
+		}
+		# -------------------------------------------------------
+		/**
+		 * Permanently remove records marked as deleted
+		 */
+		public static function purge_deleted($po_opts=null) {
+			CLIUtils::addMessage(_t("Are you sure you want to PERMANENTLY remove all deleted records? This cannot be undone.\n\nType 'y' to proceed or 'N' to cancel, then hit return ", $vn_current_revision, __CollectiveAccess_Schema_Rev__));
+            flush();
+            ob_flush();
+            $confirmation  =  trim( fgets( STDIN ) );
+            if ( $confirmation !== 'y' ) {
+                // The user did not say 'y'.
+                return false;
+            }
+
+			$o_dm = Datamodel::load();
+			$va_tables = $o_dm->getTableNames();
+			$o_db = new Db();
+			$va_tables_to_process = array_filter(array_map("trim", preg_split('![ ,;]!', (string)$po_opts->getOption('tables'))), "strlen");
+
+			$vn_t = 0;
+			foreach($va_tables as $vs_table) {
+				if(is_array($va_tables_to_process) && sizeof($va_tables_to_process) && !in_array($vs_table, $va_tables_to_process)) { continue; }
+				if (!$t_instance = $o_dm->getInstanceByTableName($vs_table, true)) { continue; }
+				if (!$t_instance->hasField('deleted')) { continue; }
+			
+				$t_instance->setMode(ACCESS_WRITE);
+
+				$qr_del = $o_db->query("SELECT * FROM {$vs_table} WHERE deleted=1");
+				if($qr_del->numRows() > 0) {
+					print CLIProgressBar::start($qr_del->numRows(), _t('Removing deleted %1 from database', $t_instance->getProperty('NAME_PLURAL')));
+
+					$vn_c = 0;
+					while($qr_del->nextRow()) {
+						print CLIProgressBar::next();
+						$t_instance->load($qr_del->get($t_instance->primaryKey()));
+						$t_instance->setMode(ACCESS_WRITE);
+						$t_instance->removeAllLabels();
+						$t_instance->delete(true, array('hard' => true));
+						$vn_c++;
+					}
+
+					CLIUtils::addMessage(_t('Removed %1 %2', $vn_c, $t_instance->getProperty(($vn_c == 1) ? 'NAME_SINGULAR' : 'NAME_PLURAL')), array('color' => 'green'));
+					print CLIProgressBar::finish();
+					
+					$vn_t += $vn_c;
+				}
+			}
+			
+			if ($vn_t > 0) {
+				CLIUtils::addMessage(_t('Done!'), array('color' => 'green'));
+			} else {
+				CLIUtils::addMessage(_t('Nothing to delete!'), array('color' => 'red'));
+			}
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function purge_deletedParamList() {
+			return array(
+				"tables|t=s" => _t('List of tables for which to purge deleted records. List multiple tables names separated by commas. If no table list is provided all tables are purged.')
+			);
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function purge_deletedUtilityClass() {
+			return _t('Maintenance');
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function purge_deletedShortHelp() {
+			return _t("Completely and permanently removes records marked as deleted in the database.");
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function purge_deletedHelp() {
+			return _t("Completely and permanently removes records marked as deleted in the database. Files referenced by these records are also removed. Note that this cannot be undone.");
 		}
 		# -------------------------------------------------------
 		/**
@@ -1900,9 +1984,6 @@
 		 * Load metadata dictionary
 		 */
 		public static function load_metadata_dictionary_from_excel_file($po_opts=null) {
-
-			require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel.php');
-			require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel/IOFactory.php');
 			require_once(__CA_MODELS_DIR__.'/ca_metadata_dictionary_entries.php');
 
 			$t_entry = new ca_metadata_dictionary_entries();
@@ -3273,9 +3354,6 @@
 		 * Load metadata dictionary
 		 */
 		public static function load_chenhall_nomenclature($po_opts=null) {
-
-			require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel.php');
-			require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel/IOFactory.php');
 			require_once(__CA_MODELS_DIR__.'/ca_lists.php');
 			require_once(__CA_MODELS_DIR__.'/ca_locales.php');
 
@@ -4274,6 +4352,31 @@
 		 *
 		 */
 		public static function import_mediaParamList() {
+		
+			$access_status_values = caGetListItems('access_statuses', ['index' => 'item_value', 'value' => 'name_plural']);
+			$access_status_default = caGetListItems('access_statuses', ['index' => 'item_value', 'value' => 'name_plural', 'defaultOnly' => true]);
+			
+			$access_status_list_str = join(", ", array_map(function($v, $k) { return "{$k} ({$v})"; }, $access_status_values, array_keys($access_status_values)));
+			$access_status_default_str = join(", ", array_map(function($v, $k) { return "{$k} ({$v})"; }, $access_status_default, array_keys($access_status_default)));
+			
+			$workflow_status_values = caGetListItems('workflow_statuses', ['index' => 'item_value', 'value' => 'name_plural']);
+			$workflow_status_default = caGetListItems('workflow_statuses', ['index' => 'item_value', 'value' => 'name_plural', 'defaultOnly' => true]);
+			
+			$workflow_status_list_str = join(", ", array_map(function($v, $k) { return "{$k} ({$v})"; }, $workflow_status_values, array_keys($workflow_status_values)));
+			$workflow_status_default_str = join(", ", array_map(function($v, $k) { return "{$k} ({$v})"; }, $workflow_status_default, array_keys($workflow_status_default)));
+			
+			$object_type_values = caGetListItems('object_types', ['index' => 'item_value', 'value' => 'name_plural']);
+			$object_type_default = caGetListItems('object_types', ['index' => 'item_value', 'value' => 'name_plural', 'defaultOnly' => true]);
+			
+			$object_type_list_str = join(", ", array_map(function($v, $k) { return "{$k} ({$v})"; }, $object_type_values, array_keys($object_type_values)));
+			$object_type_default_str = join(", ", array_map(function($v, $k) { return "{$k} ({$v})"; }, $object_type_default, array_keys($object_type_default)));
+			
+			$representation_type_values = caGetListItems('object_representation_types', ['index' => 'item_value', 'value' => 'name_plural']);
+			$representation_type_default = caGetListItems('object_representation_types', ['index' => 'item_value', 'value' => 'name_plural', 'defaultOnly' => true]);
+			
+			$representation_type_list_str = join(", ", array_map(function($v, $k) { return "{$k} ({$v})"; }, $representation_type_values, array_keys($representation_type_values)));
+			$representation_type_default_str = join(", ", array_map(function($v, $k) { return "{$k} ({$v})"; }, $representation_type_default, array_keys($representation_type_default)));
+			
 			return array(
 				"source|s=s" => _t('Data to import. For files provide the path; for database, OAI and other non-file sources provide a URL.'),
 				"username|u-s" => _t('User name of user to log import against.'),
@@ -4290,13 +4393,13 @@
 				'import-target-type|itt-s' => _t('Type to use for all newly created target records. Default is the first type in the target\'s type list.'),
 				'import-target-idno|iti-s' => _t('Identifier to use for all newly created target records.'),
 				'import-target-idno-mode|itim-s' => _t('Sets how identifiers of newly created target records are set. Valid values are AUTO, FILENAME, FILENAME_NO_EXT, DIRECTORY_AND_FILENAME. Set to AUTO to use an identifier calculated according to system numbering settings; set to FILENAME to use the file name as identifier; set to FILENAME_NO_EXT to use the file name stripped of extension as the identifier; use DIRECTORY_AND_FILENAME to set the identifer to the directory name and file name with extension. Default is AUTO.'),
-				'import-target-access|ita-s' => _t('Set access for newly created target records. Default is private.'),
-				'import-target-status|its-s' => _t('Set status for newly created target records. Default is first value in status list.'),
-				'representation-type|rt-s' => _t('Type to use for all newly created representations. Default is the first type in the representation type list.'),
+				'import-target-access|ita-s' => _t('Set access for newly created target records. Possible values are %1. Default is %2.', $access_status_list_str, $access_status_default_str),
+				'import-target-status|its-s' => _t('Set status for newly created target records. Possible values are %1. Default is %2.', $workflow_status_list_str, $workflow_status_default_str),
+				'representation-type|rt-s' => _t('Type to use for all newly created representations. Possible values are %1. Default is %2.', $representation_type_list_str, $representation_type_default_str),
 				'representation-idno|ri-s' => _t('Identifier to use for all newly created representation records.'),
 				'representation-idno-mode|rim-s' => _t('Sets how identifiers of newly created representations are set. Valid values are AUTO, FILENAME, FILENAME_NO_EXT, DIRECTORY_AND_FILENAME. Set to AUTO to use an identifier calculated according to system numbering settings; set to FILENAME to use the file name as identifier; set to FILENAME_NO_EXT to use the file name stripped of extension as the identifier; use DIRECTORY_AND_FILENAME to set the identifer to the directory name and file name with extension. Default is AUTO.'),
-				'representation-access|ra-s' => _t('Set access for newly created representations. Default is private.'),
-				'representation-status|rs-s' => _t('Set status for newly created representations. Default is first value in status list.'),
+				'representation-access|ra-s' => _t('Set access for newly created representations. Possible values are %1. Default is %2.', $access_status_list_str, $access_status_default_str),
+				'representation-status|rs-s' => _t('Set status for newly created representations. Possible values are %1. Default is %2.', $workflow_status_list_str, $workflow_status_default_str),
 				'representation-mapping|rm-s' => _t('Code for mapping to apply when importing media.'),
 				'delete-media-on-import|dmoi-s' => _t('Remove media from directory after it has been successfully imported. Default is false.')
 			);
@@ -4327,97 +4430,84 @@
 		 * @param Zend_Console_Getopt|null $po_opts
 		 * @return bool
 		 */
-		public static function create_screen_from_detail_template($po_opts=null) {
-			require_once(__CA_MODELS_DIR__."/ca_editor_uis.php");
+		public static function regenerate_dependent_field_values($po_opts=null) {
+			// Find containers with dependent fields
+			$va_elements = ca_metadata_elements::getElementSetsWithSetting("isDependentValue", 1);
+			$o_dm = Datamodel::load();
 			
 			
-			$vs_editor_code = $po_opts->getOption('editor');
-			if(!($t_ui = ca_editor_uis::find(['editor_code' => $vs_editor_code], ['returnAs' => 'firstModelInstance']))) {
-				CLIUtils::addError(_t('Editor %1 does not exist', $vs_editor_code));
-				return false;
+			$c = 0;
+			foreach($va_elements as $va_element) {
+			    $t_element = ca_metadata_elements::getInstance($va_element['element_code']);
+			    $t_root = ca_metadata_elements::getInstance($va_element['hier_element_id']);
+			    $vs_root_code = $t_root->get('element_code');
+			    $vn_root_id = $t_root->get('element_id');
+			    
+			    CLIUtils::addMessage(_t('Processing %1.%2', $vs_root_code, $va_element['element_code']));
+			    
+			    // get type restrictions
+			    $va_type_res_list = $t_element->getTypeRestrictions();
+			    foreach($va_type_res_list as $va_type_res) {
+			        if (!($t_instance = $o_dm->getInstanceByTableNum($va_type_res['table_num']))) { continue; }
+			        $vs_table_name = $t_instance->tableName();
+			        if ($va_type_res['type_id'] > 0) {
+			            $qr_res = call_user_func("{$vs_table_name}::find", ["type_id" => (int)$va_type_res['type_id']], ['returnAs' => 'searchResult']);
+			        } else {
+			            $qr_res = call_user_func("{$vs_table_name}::find", ["*"], ['returnAs' => 'searchResult']);
+			        }
+			        
+			        while($qr_res->nextHit()) {
+			            $va_value_list = $qr_res->get("{$vs_table_name}.{$vs_root_code}", ["returnWithStructure" => true]);
+			            foreach($va_value_list as $vn_row_id => $va_values_by_attribute_id) {
+			                CLIUtils::addMessage(_t('Processing row %1 for %2.%3', $vn_row_id, $vs_root_code, $va_element['element_code']));
+			                foreach($va_values_by_attribute_id as $vn_attr_id => $va_values) {
+			                    $vs_processed_value = caProcessTemplate($va_element['settings']['dependentValueTemplate'], $va_values);
+			                    
+			                    $va_values[$va_element['element_code']] = $vs_processed_value;
+			                    if (!$t_instance->load($vn_row_id)) { continue; }
+			                    $t_instance->setMode(ACCESS_WRITE);
+			                    $t_instance->editAttribute(
+			                        $vn_attr_id, $vn_root_id, $va_values
+			                    );
+			                    $t_instance->update();
+			                    $c++;
+			                    if ($t_instance->numErrors() > 0) {
+			                        CLIUtils::addError(_t("Could not update dependent value: %1", join("; ", $t_instance->getErrors())));
+			                    }
+			                }
+			            }
+			        }
+			    }
 			}
 			
-			$va_paths = [$b = $po_opts->getOption('detail')];
-			if (defined("__CA_BASE_DIR__")) {
-				$va_paths[] = __CA_BASE_DIR__."/{$b}";
-				$va_paths[] = __CA_BASE_DIR__."/{$b}.php";
-			}
-			if (defined("__CA_THEMES_DIR__") && defined("__CA_THEME__")) {
-				$va_paths[] = __CA_THEMES_DIR__."/".__CA_THEME__."/views/Details/{$b}";
-				$va_paths[] = __CA_THEMES_DIR__."/".__CA_THEME__."/views/Details/{$b}.php";
-			}
-			
-			$vs_path_to_template = null;
-			foreach($va_paths as $vs_path) {
-				if(file_exists($vs_path)) {
-					$vs_path_to_template = $vs_path;
-					break;
-				}
-			}
-			
-			if(!$vs_path_to_template) {
-				CLIUtils::addError(_t('Template %1 does not exist', $b));
-				return false;
-			}
-			
-			
-			$vs_name_of_screen = $po_opts->getOption('screen');
-			if(!$vs_name_of_screen) {
-				CLIUtils::addError(_t('You must specify a screen'));
-				return false;
-			}
-			
-			$va_type_restrictions = preg_split("![ ]*[;,][ ]*!", $po_opts->getOption('restrictions'));
-			
-			
-			CLIUtils::addMessage(_t("Scanning %1 for tags", $vs_path_to_template));
-			if ($va_results = $t_ui->createScreenFromPawtucketDetailTemplate($vs_path_to_template, $vs_name_of_screen, ['replace' => !(bool)$po_opts->getOption('preserve'), 'restrictions' => $va_type_restrictions])) {
-				CLIUtils::addMessage(_t("Added screen %1 (%2)", $va_results['screen'], $va_results['screen_idno']));
-				if (is_array($va_results['type_restrictions']) && ($s = sizeof($va_results['type_restrictions']))) {
-					CLIUtils::addMessage(($s == 1) ? _t("Set type restriction for screen to %1", join(", ", $va_results['type_restrictions'])): _t("Set type restrictions for screen to %1", join(", ", $va_results['type_restrictions'])));
-				}
-				if ($va_results['replace']) {
-					CLIUtils::addMessage(_t("Replaced screen contents with %1", join(", ", $va_results['bundles'])));
-				} else {
-					CLIUtils::addMessage(_t("Added %1 to screen", join(", ", $va_results['bundles'])));
-				}
-				
-				return true;
-			} else {
-				CLIUtils::addError(_t("Could not generate screen from %1", $vs_path_to_template));
-				return false;
-			}
+			CLIUtils::addMessage(_t("Regenerated %1 values", $c));
 		}
 		# -------------------------------------------------------
-		public static function create_screen_from_detail_templateParamList() {
+		public static function regenerate_dependent_field_valuesParamList() {
 			return [
-				"editor|e-s" => _t('Code of editor to add screen to. The editor must already exist.'),
-				"detail|d-s" => _t('Path to detail template. This can be an absolute path to the detail template, relative to the root directory of the CollectiveAccess installation, or the file name of a template in the "Details" views directory in the currrently selected theme.'),
-				"screen|s-s" => _t('Name or type code for screen. If screen does not exist it will be created.'),
-				"restrictions|r-s" => _t('One or more type codes, separated by commas or semicolons, to restrict the screen to. Types must be valid for the specified detail. If omitted and a type-specific detail is specified the screen will automatially be restricted to the detail type.'),
-				"preserve|p-s" => _t('Preserve existing contents of screen; default behavior is to clear screen before adding new placements.')
+				
 			];
 		}
 		# -------------------------------------------------------
 		/**
 		 *
 		 */
-		public static function create_screen_from_detail_templateUtilityClass() {
-			return _t('Configuration');
+		public static function regenerate_dependent_field_valuesUtilityClass() {
+			return _t('Maintenance');
 		}
 		# -------------------------------------------------------
 		/**
 		 *
 		 */
-		public static function create_screen_from_detail_templateShortHelp() {
-			return _t('Create screen for editor using metadata element references extracted from a Pawtucket detail template.');
+		public static function regenerate_dependent_field_valuesShortHelp() {
+			return _t('Regenerate template-generated values for fields that are dependent values.');
 		}
 		# -------------------------------------------------------
 		/**
 		 *
 		 */
-		public static function create_screen_from_detail_templateHelp() {
-			return _t('Create a screen in an editor based upon metadata elements referenced in a Pawtucket detail template. This allows one to quickly create interfaces to manage public-facing content. Elements will be added to the screen in the order in which they are encountered in the template.');
+		public static function regenerate_dependent_field_valuesHelp() {
+			return _t('Text fields that are dependent upon other fields are only refreshed on save and import. For dependent display templates using dimensions (length, width) formatting, changes in the dimensions.conf configuration files are not automatically applied to existing values. This utility will batch update all dependent values using the current system configuration.');
 		}
 		# -------------------------------------------------------
 	}

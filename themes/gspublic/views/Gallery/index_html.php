@@ -16,12 +16,11 @@
 		<!--<H1><?php print $this->getVar("section_name"); ?></H1>-->
 <?php
 		print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'gallery/'.rand(1,$vn_filecount).'.jpg')."</div>";
-
 ?>		
 		<div class="row">
 			<div class="col-sm-12 ">
 				<div class="band">
-					<div>View by Subject or Type</div>
+					<div><?php print (strToLower($this->request->getController()) == "gallery") ? "View by Subject or Type" : "Connect and Collaborate"; ?></div>
 				</div>
 			</div>
 		</div>
@@ -45,22 +44,22 @@
 					}
 					if ($i % 2 == 0) {
 						print "<div class='col-sm-6 col-md-12'><div class='container galleryContainer'><div class='galleryItem item".$i_color." row'>
-										<div class='col-md-8 col-md-8 noPaddingLeft'><div class='galleryItemImg'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', 'Gallery', $vn_set_id)."</div></div>
-										<div class='col-md-4'><div class='galleryText'><h5>".caNavLink($this->request, $va_set["name"], '', '', 'Gallery', $vn_set_id)."</h5>
+										<div class='col-md-8 col-md-8 noPaddingLeft'><div class='galleryItemImg'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', '*', $vn_set_id)."</div></div>
+										<div class='col-md-4'><div class='galleryText'><h5>".caNavLink($this->request, $va_set["name"], '', '', '*', $vn_set_id)."</h5>
 										<p class='setDesc'>".(strlen($t_set->get('ca_sets.set_description')) > 190 ? substr($t_set->get('ca_sets.set_description'), 0, 187)."..." : $t_set->get('ca_sets.set_description'))."</p>
-										<p class='count'>".caNavLink($this->request, $va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items")), 'smallLink', '', 'Gallery', $vn_set_id)."</p>
+										<p class='count'>".caNavLink($this->request, $va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items")), 'smallLink', '', '*', $vn_set_id)."</p>
 										</div></div></div>
 								</div></div>\n";
 					} else {
 						print "<div class='col-sm-6 col-md-12'><div class='container galleryContainer'><div class='galleryItem item".$i_color." row'>
 									<div class='col-md-4'><div class='galleryText right'>
 										
-										<h5>".caNavLink($this->request, $va_set["name"], '', '', 'Gallery', $vn_set_id)."</h5>
+										<h5>".caNavLink($this->request, $va_set["name"], '', '', '*', $vn_set_id)."</h5>
 										<p class='setDesc'>".(strlen($t_set->get('ca_sets.set_description')) > 190 ? substr($t_set->get('ca_sets.set_description'), 0, 187)."..." : $t_set->get('ca_sets.set_description'))."</p>
-										<p class='count'>".caNavLink($this->request, $va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items")), 'smallLink', '', 'Gallery', $vn_set_id)."</p>
+										<p class='count'>".caNavLink($this->request, $va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items")), 'smallLink', '', '*', $vn_set_id)."</p>
 									</div></div><!-- end col-4 -->
 									<div class='col-md-8 noPaddingRight'>
-										<div class='galleryItemImg right'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', 'Gallery', $vn_set_id)."</div>
+										<div class='galleryItemImg right'>".caNavLink($this->request, $va_first_item["representation_tag"], '', '', '*', $vn_set_id)."</div>
 									</div><!-- end col-8 -->
 									</div><!-- end galleryItem --></div><!-- end container -->
 								</div><!-- end col-12 -->\n";								
