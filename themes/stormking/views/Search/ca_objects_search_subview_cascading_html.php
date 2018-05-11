@@ -70,7 +70,7 @@
 				<!--<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
 				{{{sortDirectionControl}}}-->
 			</small>
-			<H3><?php print caNavLink($this->request, $va_block_info['displayName']."&nbsp;&nbsp;<span class='highlight'>(".$qr_results->numHits().")</span>", '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></H3>
+			<H3><?php print $va_block_info['displayName']."&nbsp;&nbsp;<span class='highlight'>(".$qr_results->numHits().")</span>"; ?></H3>
 			<div class="row"><div id='browseResultsContainer'>
 <?php
 		}

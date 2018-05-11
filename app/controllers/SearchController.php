@@ -231,7 +231,7 @@
 					case "alphabetical":
 					case "list":
 					default:
-						$this->view->setVar('facet_content', !$vb_search_was_replaced ? $o_browse->getFacetContent($vs_facet, array("checkAccess" => $this->opa_access_values)) : []);
+						$this->view->setVar('facet_content', !$vb_search_was_replaced ? $o_browse->getFacetContent($vs_facet, array('checkAccess' => $this->opa_access_values, 'request' => $this->request)) : []);
 						$this->render("Browse/list_facet_html.php");
 						break;
 					case "hierarchical":
@@ -336,7 +336,7 @@
 			}
 			
 			
-			if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced))); }
+			if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced))); }
 		
 			//
 			// Facets
@@ -345,7 +345,7 @@
 				$o_browse->setFacetGroup($vs_facet_group);
 			}
 			$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
-			$va_facets = $o_browse->getInfoForAvailableFacets();
+			$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
 			if(is_array($va_available_facet_list) && sizeof($va_available_facet_list)) {
 				foreach($va_facets as $vs_facet_name => $va_facet_info) {
 					if (!in_array($vs_facet_name, $va_available_facet_list)) {
@@ -356,7 +356,7 @@
 		
 			if (!$vb_search_was_replaced) {
 				foreach($va_facets as $vs_facet_name => $va_facet_info) {
-					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array("checkAccess" => $this->opa_access_values));
+					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array('checkAccess' => $this->opa_access_values, 'request' => $this->request));
 				}
 			}
 		
