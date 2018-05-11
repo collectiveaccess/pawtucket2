@@ -106,7 +106,7 @@
 				            $attr_ids = array_keys(array_shift($va_id['subject_instance']->get($vs_prefix, ['returnWithStructure' => true])));
 				            $index = array_search($va_id['instance']->get('ca_attribute_values.attribute_id'), $attr_ids);
 				       
-				            $vs_display = caProcessTemplateForIDs($vs_template, $va_id['subject'], [$va_id['subject_id']], [ 'relativeToContainer' => $vs_prefix, 'unitStart' => $index, 'unitEnd' => $index, 'returnAsArray' => false, 'checkAccess' => $this->opa_access_values]);
+				            $vs_display = caProcessTemplateForIDs($vs_template, $va_id['subject'], [$va_id['subject_id']], [ 'relativeToContainer' => $vs_prefix, 'unitStart' => $index, 'unitLength' => 1, 'returnAsArray' => false, 'checkAccess' => $this->opa_access_values]);
 
 				        } else {
 				            $vs_display = caProcessTemplateForIDs($vs_template, $va_id['subject'], [$va_id['subject_id']], ['returnAsArray' => false, 'checkAccess' => $this->opa_access_values]);
