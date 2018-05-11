@@ -106,8 +106,8 @@
 					print "<p><span $vs_style>".substr($qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)), 0, $va_strlen-3)."... </span>".$qr_results->get('ca_objects.creation_date')."</p>";  
 				} else {
 					print "<p><span $vs_style>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</span>";
-					if ($qr_results->get('ca_objects.creation_date')) {
-						print $qr_results->get('ca_objects.creation_date', array('returnAsLink' => true, 'delimiter' => ', ', 'template' => ', ^creation_date'));
+					if ($qr_results->get('ca_objects.creation_date_display')) {
+						print $qr_results->get('ca_objects.creation_date_display', array('returnAsLink' => true, 'delimiter' => ', ', 'template' => ', ^ca_objects.creation_date_display'));
 					}
 					print "</p>";
 				}
