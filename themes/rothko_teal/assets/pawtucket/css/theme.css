@@ -934,6 +934,9 @@ button.refine:focus, button.refine:active {
     left: 20px;
     top: 2px;
 }
+#ShowOnly_facet_container [facet_item_selected="1"]::before {
+	left:29px;
+}
 .facetApply {
 	clear:both;
 	display:block;
