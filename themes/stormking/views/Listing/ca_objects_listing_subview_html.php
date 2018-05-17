@@ -42,8 +42,10 @@
 		if(!$qr_list) { continue; }
 		
 		print "<h4>{$va_listing_info['displayName']}</h4>\n";
- 		print "<p style='clear:both;'>The Storm King Art Center Oral History Program includes interviews with artists and institutional leaders integral to the evolution of Storm King since its founding in 1960. Artist oral histories focus on the role of Storm King in the career of the artist, as well as on the artists’ work at Storm King. Oral histories with institutional leaders explore personal perspectives on Storm King’s growth with regard to movements in contemporary art, museum education, and sustainability. Short films created from excerpts of each oral history offer an entry point to the full interview transcripts, which are presented here alongside some of the media from Storm King’s Archives that illustrate the development of artworks, exhibitions, infrastructure, and programming.</p>";
-		
+ 		#print "<p style='clear:both;'>The Storm King Art Center Oral History Program includes interviews with artists and institutional leaders integral to the evolution of Storm King since its founding in 1960. Artist oral histories focus on the role of Storm King in the career of the artist, as well as on the artists’ work at Storm King. Oral histories with institutional leaders explore personal perspectives on Storm King’s growth with regard to movements in contemporary art, museum education, and sustainability. Short films created from excerpts of each oral history offer an entry point to the full interview transcripts, which are presented here alongside some of the media from Storm King’s Archives that illustrate the development of artworks, exhibitions, infrastructure, and programming.</p>";
+?>
+		<p style='clear:both;'>{{{oral_history_text}}}</p>
+<?php		
 		while($qr_list->nextHit()) {
 			if ( $vn_i == 0) { print "<div class='row'>"; } 
 			$vn_object_id = $qr_list->get('ca_objects.object_id');

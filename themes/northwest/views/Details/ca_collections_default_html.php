@@ -64,6 +64,18 @@
 					if ($vs_subjects = $t_item->get('ca_collections.lcsh_terms', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><h6>Subjects</h6>".$vs_subjects."</div>";
 					}
+					if ($vs_tgm = $t_item->get('ca_collections.tgm', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Thesaurus for Graphic Materials</h6>".$vs_tgm."</div>";
+					}
+					if ($vs_lc = $t_item->get('ca_collections.lc_names', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Library of Congress Name Authority File</h6>".$vs_lc."</div>";
+					}
+					if ($vs_aat = $t_item->get('ca_collections.aat', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Getty Art and Architecture Thesarus</h6>".$vs_aat."</div>";
+					}
+					if ($vs_ca_list = $t_item->get('ca_list_items.preferred_labels', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>North West Subjects</h6>".$vs_ca_list."</div>";
+					}					
 					if ($vs_entities = $t_item->get('ca_entities.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
 						print "<div class='unit'><h6>Related People/Organizations</h6>".$vs_entities."</div>";
 					}											
