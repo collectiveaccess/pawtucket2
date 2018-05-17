@@ -101,15 +101,20 @@
 				        if (($va_id['type'] == 'attribute') && is_object($va_id['instance'])) {
 				            if ($vs_template = caGetOption('attribute_template', $va_compare_config, null)) {
 				                $vs_prefix = $va_id['subject'].".".ca_metadata_elements::getElementCodeForId(ca_metadata_elements::getElementHierarchyID($va_id['instance']->get('element_id')));
-				                $vs_template = "<unit relativeTo='{$vs_prefix}'>{$vs_template}</unit>";
 				            } 
-				        } 
-				        $vs_display = caProcessTemplateForIDs($vs_template, $va_id['subject'], [$va_id['subject_id']], ['returnAsArray' => false, 'checkAccess' => $this->opa_access_values]);
-                        
+				            
+				            $attr_ids = array_keys(array_shift($va_id['subject_instance']->get($vs_prefix, ['returnWithStructure' => true])));
+				            $index = array_search($va_id['instance']->get('ca_attribute_values.attribute_id'), $attr_ids);
+				       
+				            $vs_display = caProcessTemplateForIDs($vs_template, $va_id['subject'], [$va_id['subject_id']], [ 'relativeToContainer' => $vs_prefix, 'unitStart' => $index, 'unitLength' => 1, 'returnAsArray' => false, 'checkAccess' => $this->opa_access_values]);
+
+				        } else {
+				            $vs_display = caProcessTemplateForIDs($vs_template, $va_id['subject'], [$va_id['subject_id']], ['returnAsArray' => false, 'checkAccess' => $this->opa_access_values]);
+                        }
                         $va_comparison_list[] = [
                             'id' => $ps_id,
                             'resolved_id' => $va_id['type'].':'.$va_id['id'],
-                            'display' => $vs_display
+                            'display' => $vs_display ? strip_tags($vs_display) : '['._t('BLANK').']'
                         ];
                     }
 				}

@@ -78,6 +78,9 @@
 				if ($vs_dimensions = $t_object->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects.dimensions"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions <ifdef code="ca_objects.dimensions.dimensions_type">(^ca_objects.dimensions.dimensions_type)</ifdef></ifdef></unit>')) {
 					print "<div class='unit'><h6>Dimensions</h6>".$vs_dimensions."</div>";
 				}
+				if ($va_creator = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'returnAsArray' => true, 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
+					print "<div class='unit'><h6>Creator".((sizeof($va_creator) > 1) ? "s" : "")."</h6>".join("<br/>", $va_creator)."</div>";
+				}
 				if($t_rep){
 					if ($vs_photographer = $t_rep->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'delimiter' => '<br/>', 'restrictToRelationshipTypes' => array('photographer')))) {
 						print "<div class='unit'><h6>Photographer</h6>".$vs_photographer."</div>";
