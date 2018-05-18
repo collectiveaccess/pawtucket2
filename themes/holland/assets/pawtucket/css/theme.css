@@ -141,6 +141,10 @@ a, a:hover, a:focus, .detail a {
 	background-color: #eb9316;
 	text-decoration:none;
 }
+.btn-default.btn-sm{
+	font-size:12px;
+	padding: 5px 10px 5px 10px;
+}
 hr {
     display: block;
     clear: both;
@@ -404,7 +408,7 @@ body.initial .navbar .form-control{
 	height: 34px;
 }
 .filterMenuFacetList li.active {
-    background-color: #0d394e;
+    background-color: #454545;
 }
 .filterMenuFacetList li{
 	border-radius:0px;
@@ -412,27 +416,39 @@ body.initial .navbar .form-control{
 .filterMenuFacetList li a {
     color: #000;
 }
-/*
-body.initial #browse-menu{
-	border:0px;
-}
 .browseFacetItem a, .browseFacetItem a:focus, div.browseFacetItem a:hover{
-	color: #0d394e;
+	color: #00a1e0;
 }
+.filterbylabel{
+	font-family: 'Playfair Display', serif;
+	font-size:14px;
+}
+.filterMenuFacetList{
+	font-family: 'Roboto';
+}
+/*
+454545
 div.browseFacetItem{
 	background-color:#e4eff4;
 	padding-top:0px;
 }
 div.browseFacetItem:hover{
 	background-color:#cae0e9;
-}
+}*/
 @media (min-width: 768px) {
 	div.browseFacetItem a{
 		display: table-cell;
-    	height: 55px;
+    	height: 50px;
     	vertical-align: middle;
 	}
-}*/
+}
+body.initial .browseMenuFacetSearchInput.form-control, .browseMenuFacetSearchInput.form-control{
+	height:20px;
+}
+.btn-default.browseMenuBrowseAll{
+	padding:3px 10px;
+	font-size:12px;
+}
 /* footer */
 
 .site-footer {
@@ -652,4 +668,15 @@ div.browseFacetItem:hover{
 
 .browse .btn, .sets .btn {
     background-color: #16a0da;
+}
+
+/* explore */
+.exploreCategoryContainer img{
+	width:100%;
+	height:auto;
+}
+@media (max-width:768px){
+	.exploreCategoryContainer img{
+		max-width:350px;
+	}
 }
