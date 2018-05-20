@@ -889,10 +889,13 @@ button.refine:focus, button.refine:active {
 }
 .bResultListItem .bResultListItemText a:hover {
 	text-decoration:none;
-	color: #df7354;
+	color: #df7354 !important;
+}
+.bResultListItem .bResultListItemText a:hover .fa-chevron-right{
+	color: #df7354 !important;
 }
 .bResultListItem .bResultListItemText:hover .fa-chevron-right{
-	color: #df7354 !important; 
+/*	color: #df7354 !important; */
 }
 .bResultListItem .bResultListItemText a.compare_link {
 	position: relative;
@@ -925,6 +928,7 @@ button.refine:focus, button.refine:active {
     margin-top: 15px;
     margin-bottom: 20px;
 	border-top:1px solid #ccc;
+	border-bottom:0px;
 }
 [facet_item_selected="1"]::before {
 	font: normal normal normal 14px/1 FontAwesome;
@@ -1221,6 +1225,7 @@ a .svg-inline--fa.clearFacet {
 #bRefine .facetGroup li .facetItem {
     margin-bottom: 12px;
     min-height:24px;
+    clear:both;
 }
 #bRefine .row, #bRefine .container {
 	margin-bottom:0px;
@@ -1380,7 +1385,6 @@ a .svg-inline--fa.clearFacet {
 .detail .objIdno {
 	position: absolute;
     bottom: 24px;
-    font-weight: bold;
     font-size: 14px;
 }	
 .detail h1 {
@@ -1841,7 +1845,7 @@ a .svg-inline--fa.clearFacet {
 	font-size:12px;
 }
 .detail .repViewerCont img {
-    max-height: 500px;
+    max-height: 400px;
     object-fit: contain;
 }
 
@@ -1866,7 +1870,10 @@ a .svg-inline--fa.clearFacet {
 	text-align:center;
 	width:100%;
 	right:0px;
-	font-size:16px;
+	font-size:14px;
+}
+.detail #detailRepNav .svg-inline--fa {
+	font-size:12px;
 }
 .detail.exhibition #detailRepNav {
 	bottom:18px;

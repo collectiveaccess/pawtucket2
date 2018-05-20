@@ -56,8 +56,11 @@
 	$vs_base_url = $vo_request->getBaseUrlPath();
 	$vn_num_resources = sizeof($va_resources);
 	
+	$vs_res_title = null;
 	foreach($va_resources as $va_resource) {
 		$vs_canvas_id = "{$vs_identifer}:{$vn_page}";
+		
+		if (!$vs_res_title) { $vs_res_title = $va_resource['title']; }
 		
 		if (isset($va_resource['noPages'])) {
 			// If resource includes explicitly set "noPages" then assume representation identifier with that id
@@ -113,7 +116,7 @@
 		"@context" => "http://iiif.io/api/presentation/2/context.json",
 		"@id" => "{$vs_identifer}/manifest",
 		"@type" => "sc:Manifest",
-		"label" => '',
+		"label" => ($vn_num_resources == 1) ? $vs_res_title : '',
 		"metadata" => $va_metadata,
 		"license" => "",
 		"logo" => "",
