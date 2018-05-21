@@ -1980,6 +1980,9 @@ h3.window-manifest-title {
 	font-weight:normal;
 	font-size:13px;
 	color:#eee;
+	text-align:left;
+	padding-left:50px;
+	margin-top:0px;
 }
 .manifest-info {
 	background-color:#000;
