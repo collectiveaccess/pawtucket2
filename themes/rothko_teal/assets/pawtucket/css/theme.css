@@ -1868,7 +1868,7 @@ a .svg-inline--fa.clearFacet {
 	position:absolute;
 	bottom:15px;
 	text-align:center;
-	width:100%;
+	width:60%;
 	right:0px;
 	font-size:14px;
 }
@@ -1876,7 +1876,7 @@ a .svg-inline--fa.clearFacet {
 	font-size:12px;
 }
 .detail.exhibition #detailRepNav {
-	bottom:18px;
+	bottom:20px;
 }
 .detail #detailRepNavPrev {
 	float:none;
