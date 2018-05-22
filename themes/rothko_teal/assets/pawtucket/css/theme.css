@@ -1830,7 +1830,7 @@ a .svg-inline--fa.clearFacet {
 	display:none;
 }
 .detail.side #detailRepNav {
-	text-align:right;
+	/*text-align:right;*/
 	margin-right:10px;
 }
 .detail #detailRepNavPrev {
@@ -1876,7 +1876,7 @@ a .svg-inline--fa.clearFacet {
 	position:absolute;
 	bottom:15px;
 	text-align:center;
-	width:60%;
+	width:100%;
 	right:0px;
 	font-size:14px;
 }
