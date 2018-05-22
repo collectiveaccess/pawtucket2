@@ -1898,6 +1898,35 @@ a .svg-inline--fa.clearFacet {
 	display:inline;
 	top:0px;
 }
+
+.detail #detailRepNavZoom {
+	float:none;
+	position:relative;
+	display:inline;
+	top:5px;
+	margin: 0 10px 0 10px;
+	
+	content: url('../graphics/enlarge.png');
+	background-size:18px;
+	height:18px;
+	width:18px;
+}
+
+.detail #detailRepNavCompare {
+	float:none;
+	position:relative;
+	display:inline;
+	top:5px;
+	margin: 0 10px 0 10px;
+	
+	content: url('../graphics/compare.png');
+	background-size:18px;
+	height:18px;
+	width:18px;
+	padding:0px;
+}
+
+
 .detail #detailRepNav a{ 
 	color:#161616;
 }
