@@ -111,10 +111,18 @@
 				        } else {
 				            $vs_display = caProcessTemplateForIDs($vs_template, $va_id['subject'], [$va_id['subject_id']], ['returnAsArray' => false, 'checkAccess' => $this->opa_access_values]);
                         }
+                        if (!($vs_display = strip_tags($vs_display))) {
+                            $vs_display = '['._t('BLANK').']';
+                        }
+                        
+                        if (($c = sizeof(array_filter($va_comparison_list, function($v) use ($vs_display) { return ($v['display'] === $vs_display); }))) > 0) {
+                            $vs_display .= " [".($c + 1)."]";
+                        }
+                        
                         $va_comparison_list[] = [
                             'id' => $ps_id,
                             'resolved_id' => $va_id['type'].':'.$va_id['id'],
-                            'display' => $vs_display ? strip_tags($vs_display) : '['._t('BLANK').']'
+                            'display' => $vs_display
                         ];
                     }
 				}
