@@ -691,7 +691,7 @@ a:focus {
     margin-top: 0px;
     font-weight:800;
     display: inline-block;
-    padding: 16px 10px 2px 0px;
+    padding: 16px 25px 2px 0px;
     font-size:16px;
 }
 #bRefine .dropdown.button {
@@ -700,6 +700,14 @@ a:focus {
     text-align: center;
     padding-top: 15px;
     margin-bottom: 12px;
+    padding-left:25px;
+    padding-right:25px;
+}
+@media (max-width:1220px) {
+	#bRefine .dropdown.button {
+		padding-left:15px;
+		padding-right:15px;
+    }
 }
 #bRefine .dropdown.button.showOnly {
 	border-left:1px solid #ccc;
@@ -1195,7 +1203,7 @@ a .svg-inline--fa.clearFacet {
 	margin-bottom:0px;
 }
 .facetGroup.panel {
-	width:250%;
+	width:250px !important;
 	background-color:#f3f3f3;
 	box-shadow:none;
 	min-height:250px;
@@ -1205,6 +1213,9 @@ a .svg-inline--fa.clearFacet {
 	padding:30px 20px 20px 20px;
 	margin-top:10px;
 	text-align:left;
+}
+#facetGroupplace_facet.facetGroup.panel {
+	width:450px !important;
 }
 .facetGroup.panel .container {
 	overflow-y:auto;
@@ -1272,23 +1283,20 @@ a .svg-inline--fa.clearFacet {
 /* new menu styles */
 
 #bRefine {
-  display: flex;
-  justify-content: space-between;
+/*  display: flex;
+  justify-content: space-between;*/
 }
 .provenance.browse #bRefine, .references.browse #bRefine,
 .provenance.search #bRefine, .references.search #bRefine {
     display: inline-block;
     justify-content: inherit;
 }
-.provenance.browse #bRefine .dropdown.button, .references.browse #bRefine .dropdown.button,
+/*.provenance.browse #bRefine .dropdown.button, .references.browse #bRefine .dropdown.button,
 .provenance.search #bRefine .dropdown.button, .references.search #bRefine .dropdown.button {
 	width:17%;
-}
+}*/
 #bRefine h5{
 	white-space: nowrap;
-}
-.references.browse #facetGroupplace_facet {
-	width:250% !important;
 }
 
 /* Detail */
