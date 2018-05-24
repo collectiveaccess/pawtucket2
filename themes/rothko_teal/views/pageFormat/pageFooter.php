@@ -105,7 +105,12 @@
 				var loadComparisonListSummary;
 				$('#comparison_list, #pageArea').on('click', '.compare_link, .comparison_list_remove', loadComparisonListSummary = function(e) {
 					var id = this ? $(this).data('id') : null;
+					var id_selector = this ? $(this).data('id_selector') : null;
 					var remove_id = this ? $(this).data('remove_id') : null;
+					
+					if (id_selector) {
+					    if (id = jQuery(id_selector).data('current_id')) { id = "representation:" + id; }
+					}
 		
 					$.getJSON('<?php print caNavUrl($this->request, '', 'Compare', 'AddToList'); ?>', {id: id, remove_id: remove_id}, function(d) {
 						if (parseInt(d.ok) == 1) {
@@ -142,7 +147,6 @@
 							} else if($(".compareDrawer").data('open')){
 							    jQuery(".compareDrawer .items").toggle(0);
 						    }
-						    console.log("X", jQuery(".compareDrawer .items").css('display'));
 						}
 					});
 					

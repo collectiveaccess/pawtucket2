@@ -100,7 +100,8 @@ if($this->request->getParameter("detailNav", pInteger)){
 				$vs_value = explode('.',$va_criteria[0]['value']);
 				$vs_search_value = $vs_value[0];
 				$vs_string = null;
-				if (in_array($va_criteria[0]['facet_name'], ['collection', 'current_collection']))  {
+				
+				if (in_array($va_criteria[0]['facet_name'], ['collection', 'past_collection', 'current_collection']))  {
 					print caNavLink($this->request, 'View All', '', '', 'Browse', 'works_in_collection/facet/collection/id/'.$this->request->getParameter('id', pInteger)); 
 				} else if (($va_criteria[0]['facet_name'] == '_search') && (preg_match("!^occurrence_id:([\d]+)$!", $vs_search_value, $va_matches))) {
 				    if($this->request->getParameter('type', pString) == 'reference') {

@@ -83,7 +83,6 @@
     	<div class="container">
         	<div class="row">
             	<div class="col-md-6  col-sm-6">
-                	<p></p>
                 </div>
                 <div class="col-md-6 col-sm-6">
                 	<ul class="pull-right social-icons-colored">
@@ -158,7 +157,7 @@
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+					<li <?php print ($this->request->getController() == "ContactUs") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "ContactUs", ""); ?></li>
 				</ul></div>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
@@ -179,7 +178,7 @@
 		case "gallery":
 			$vs_title = "Featured Galleries";
 		break;
-		case "contact":
+		case "contactus":
 			$vs_title = "Contact";
 		break;
 		case "explore":

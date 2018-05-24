@@ -243,14 +243,31 @@ body.initial .navbar{
 	width:auto;
 }
 .navbar-brand img{
-	width:150px;
+	width:40px;
 	height:auto;
 }
-.navbar-brand, .headerTagLine{
+body.initial .navbar-brand img{
+	width:80px;
+	height:auto;
+}
+@media (min-width: 768px) {
+	body.initial .navbar-brand img{
+		width:150px;
+		height:auto;
+	}
+}
+.headerTagLine{
 	display:none;
 }
-body.initial .headerTagLine{
-	display:block;
+@media (min-width: 768px) {
+	.navbar-brand{
+		display:none;
+	}
+}
+@media (min-width: 768px) {
+	body.initial .headerTagLine{
+		display:block;
+	}
 }
 body.initial .navbar-brand{
 	padding-top: 0px;
@@ -296,7 +313,11 @@ body.initial .menuContainer{
 	margin-right:auto !important;
 	margin-bottom:0px !important;
 	margin-top:10px;
-	padding-left: 258px;
+}
+@media (min-width: 1260px) {
+	.menuItems{
+		padding-left: 258px;
+	}
 }
 body.initial .menuItems{
 	margin-top:0px;
@@ -616,7 +637,7 @@ body.initial .browseMenuFacetSearchInput.form-control, .browseMenuFacetSearchInp
 	height:auto;
 }
 .front .jcarousel-control-prev.featuredItemsNav, .front .jcarousel-control-next.featuredItemsNav{
-	margin-top: -80px !important;
+	margin-top: -55px !important;
 }
 .front .frontSlideCaption a{
 	color:#777;
@@ -637,7 +658,7 @@ body.initial .browseMenuFacetSearchInput.form-control, .browseMenuFacetSearchInp
 
 /* browse */
 #bRefine.fixed {
-    top: 75px;
+    top: 40px;
 }
 
 /* detail */
