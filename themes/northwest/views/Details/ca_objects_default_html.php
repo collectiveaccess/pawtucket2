@@ -55,27 +55,40 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
-				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<div class='unit'><span class='metaLabel'>Type</span><span class='metaData'>{{{<unit>^ca_objects.type_id</unit>}}}</span></div>
-
-				<div class='unit'><span class='metaLabel'>Identifier</span><span class='metaData'>{{{<ifdef code="ca_objects.idno">^ca_objects.idno</ifdef>}}}</span></div>
+				<H4 style='padding-bottom:0px;'>{{{ca_objects.preferred_labels.name}}}</H4>
+				{{{<ifcount min="1" code="ca_objects.date"><h6 style='padding:0px 0px 30px 0px; margin-top:5px;'><unit delimiter="<br/>">^ca_objects.date</unit></h6></ifcount>}}}
 				
 				<div class='unit'><span class='metaLabel'>Description</span><span class='metaData'>{{{<ifdef code="ca_objects.description">^ca_objects.description</ifdef>}}}</span></div>
-
-				<div class='unit'><span class='metaLabel'>Date</span><span class='metaData'>{{{<ifcount min="1" code="ca_objects.date"><unit delimiter="<br/>">^ca_objects.date</unit></ifcount>}}}</span></div>
-<?php				
+<?php
+				if ($vs_medium = $t_object->get('ca_objects.medium', array('delimiter' => '<br/>'))) {
+					print "<div class='unit'><span class='metaLabel'>Medium</span><span class='metaData'>".$vs_medium."</span></div>";
+				}
+				if ($vs_format_notes = $t_object->get('ca_objects.format_notes', array('delimiter' => '<br/>'))) {
+					print "<div class='unit'><span class='metaLabel'>Format</span><span class='metaData'>".$vs_format_notes."</span></div>";
+				}				
+?>
+				<div class='unit'><span class='metaLabel'>Identifier</span><span class='metaData'>{{{<ifdef code="ca_objects.idno">^ca_objects.idno</ifdef>}}}</span></div>
+<?php
+				if ($vs_rights = $t_object->get('ca_objects.rights', array('delimiter' => '<br/>'))) {
+					print "<div class='unit'><span class='metaLabel'>Use Restrictions</span><span class='metaData'>".$vs_rights."</span></div>";
+				}
+				if ($va_related_entities = $t_object->get('ca_entities.entity_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+					print "<div class='unit'><span class='metaLabel'>Related Entities</span><span class='metaData'>";
+					foreach ($va_related_entities as $va_key => $va_related_entity_id) {
+						$t_rel_ent = new ca_entities($va_related_entity_id);
+						print "<div >".caDetailLink($this->request, $t_rel_ent->get('ca_entities.preferred_labels'), '', 'ca_entities', $t_rel_ent->get('ca_entities.entity_id'))."</div>";
+					}
+					print "</span></div>";		  
+				}				
+/*				
 				if ($vs_language = $t_object->get('ca_objects.language', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))) {
 					print "<div class='unit'><span class='metaLabel'>Language</span><span class='metaData'>".$vs_language."</span></div>";
 				}	
 				if ($vs_publications = $t_object->get('ca_objects.publications', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><span class='metaLabel'>Publications</span><span class='metaData'>".$vs_publications."</span></div>";
 				}	
-				if ($vs_format_notes = $t_object->get('ca_objects.format_notes', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><span class='metaLabel'>Format Notes</span><span class='metaData'>".$vs_format_notes."</span></div>";
-				}
-				if ($vs_medium = $t_object->get('ca_objects.medium', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><span class='metaLabel'>Medium</span><span class='metaData'>".$vs_medium."</span></div>";
-				}
+
+
 				if ($va_dims = $t_object->get('ca_objects.dimensions', array('returnWithStructure' => true))) {
 					$vs_dim = "";
 					$va_dims_array = array();
@@ -109,9 +122,7 @@
 						print "<div class='unit'><span class='metaLabel'>Dimensions</span><span class='metaData'>".$vs_dim."</span></div>";
 					}
 				}
-				if ($vs_rights = $t_object->get('ca_objects.rights', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><span class='metaLabel'>Rights Statement</span><span class='metaData'>".$vs_rights."</span></div>";
-				}
+
 				if ($vs_lcsh = $t_object->get('ca_objects.lcsh_terms', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><span class='metaLabel'>Library of Congress Subject Headings</span><span class='metaData'>".$vs_lcsh."</span></div>";
 				}
@@ -121,7 +132,7 @@
 				if ($vs_subjects = $t_object->get('ca_list_items.preferred_labels', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><span class='metaLabel'>Subjects</span><span class='metaData'>".$vs_subjects."</span></div>";
 				}
-
+*/
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						
@@ -170,14 +181,7 @@
 			print '</div><!-- end row -->';
 		}
 		
-		$vs_entity_text = null;
-		if ($va_related_entities = $t_object->get('ca_entities.entity_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
-			$vs_entity_text = "<h4>Related Entities</h4>";
-			foreach ($va_related_entities as $va_key => $va_related_entity_id) {
-				$t_rel_ent = new ca_entities($va_related_entity_id);
-				$vs_entity_text.= "<div class='relTitle'>".caDetailLink($this->request, $t_rel_ent->get('ca_entities.preferred_labels'), '', 'ca_entities', $t_rel_ent->get('ca_entities.entity_id'))."</div>";
-			}			
-		}
+/*
 
 		$vs_exhibition_text = null;
 		if ($va_related_exhibitions = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
@@ -209,7 +213,8 @@
 				print "<div class='col-sm-4 section'>".$vs_collection_text."</div>";
 			}						
 			print "</div></div>";
-		}				
+		}	
+*/					
 ?>		
 		</div><!-- end container -->
 	</div><!-- end col -->

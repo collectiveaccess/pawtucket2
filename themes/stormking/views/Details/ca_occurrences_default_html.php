@@ -64,7 +64,7 @@
 						$t_rel_catalogue = new ca_objects($vn_related_catalogue_id);
 						if($va_pdfs = $t_rel_catalogue->representationsWithMimeType(array('application/pdf'), array('versions' => array('original'), 'return_with_access' => $va_access_values))){
 							foreach($va_pdfs as $vn_rep_id => $va_pdf_info){
-								print "<h6><i class='fa fa-file'></i> <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'archival', 'id' => $vn_related_catalogue_id, 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;'>View Catalogue </a></h6>";
+								print "<h6><i class='fa fa-file'></i> <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'archival', 'id' => $vn_related_catalogue_id, 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;'>View Catalogue/Brochure </a></h6>";
 							}
 						}
 					}
