@@ -100,6 +100,14 @@
 				if ($vs_rep_id) {
 					$vs_download_link = caNavLink($this->request, '<i style="padding-left:10px;" class="fa fa-download"></i>', 'multiDl', '', 'Detail', 'DownloadRepresentation', array('representation_id' => $vs_rep_id, 'object_id' => $vs_obj_id, 'download' => 1, 'version' => 'original'));
 				}
+				$vs_description = "";
+				$vs_description = $qr_results->get("ca_objects.description");
+				if(mb_strlen($vs_description) > 50){
+					$vs_description = mb_substr($vs_description, 0, 47)."...";
+				}
+				if($vs_description){
+					$vs_description = "<br/>".$vs_description;
+				}
 				$vs_expanded_info = "";
 				if($vs_extended_info_template){
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);		
@@ -109,7 +117,7 @@
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_description}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
