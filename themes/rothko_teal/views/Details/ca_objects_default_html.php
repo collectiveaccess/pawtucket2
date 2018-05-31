@@ -51,7 +51,7 @@
 		</div>
 		<div class='col-xs-5 pdfLink'>
 	<?php		
-			print caNavLink($this->request, caGetThemeGraphic($this->request, 'pdf.png'), 'faDownload', 'Detail', 'objects', $vn_id.'/view/pdf/export_format/_pdf_ca_objects_summary');
+			#print caNavLink($this->request, caGetThemeGraphic($this->request, 'pdf.png'), 'faDownload', 'Detail', 'objects', $vn_id.'/view/pdf/export_format/_pdf_ca_objects_summary');
 	?>	
 		</div><!-- end col --> 
 	</div>
@@ -72,13 +72,7 @@
 				print "<div class='objIdno'>".$va_catalog_id."</div>";
 			}	
 	?>	
-		</div><!-- end col -->
-	<script>
-		jQuery(document).ready(function() {
-			$(".detailMediaToolbar").append("<a href='#' class='compare_link' title='Compare' data-id='object:<?php print $vn_id; ?>'><i class='fa fa-clone' aria-hidden='true'></i></a>");
-		});
-	
-	</script>		
+		</div><!-- end col -->		
 		<div class='col-sm-6 col-md-6 col-lg-6' style="padding-left:40px;">
 	<?php
 			$vn_label_col = "col-sm-4";

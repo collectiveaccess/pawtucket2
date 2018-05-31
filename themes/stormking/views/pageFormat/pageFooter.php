@@ -73,8 +73,11 @@
 		</script>		
 		<script type="text/javascript" language="javascript">
 			$(document).ready(function() {
-				$('html').on('contextmenu', 'body', function(e){ return false; });
+				$('img').bind('contextmenu', function(e) {
+					return false;
+				});
 			});
 		</script>
+		
 	</body>
 </html>

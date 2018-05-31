@@ -84,7 +84,7 @@
 <?php
 				if ($va_reps_transcript = $t_object->representationsWithMimeType(array('application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',' application/vnd.ms-excel', 'application/pdf'), array('versions' => array('original'), 'return_with_access' => $va_access_values))) {
 					foreach ($va_reps_transcript as $va_rep_num => $va_rep) {
-						print "<h6><span class='glyphicon glyphicon-file'></span>".caNavLink($this->request, "Interview Transcript", '', 'Detail', 'DownloadRepresentation', '', array('context' => 'ca_objects', 'representation_id' => $va_rep["representation_id"], "id" => $vn_id, "download" => 1, "version" => "original"))."</h6>";
+						print "<h6><span class='glyphicon glyphicon-file'></span>".caNavLink($this->request, "Interview Transcript", '', 'Detail', 'DownloadRepresentation', '', array('context' => 'objects', 'representation_id' => $va_rep["representation_id"], "id" => $vn_id, "download" => 1, "version" => "original"), array("target" => "_blank"))."</h6>";
 					}
 				}
 ?>	
