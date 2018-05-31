@@ -571,7 +571,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 								if ($va_inscription_image['inscription_uploads_primary'] == 162) {
 									$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_inscription_id, $vn_media_element_id)) ;
 									if ($qr_res->nextRow()) {
-										$vs_media_buf.= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail/artworks', 'GetMediaOverlay/ca_objects', array('context' => 'artworks', 'overlay' => 1, 'object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_inscription_image['inscription_uploads_media']."</a>";
+										$vs_media_buf.= "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay/ca_objects', array('context' => 'artworks', 'overlay' => 1, 'object_id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_inscription_image['inscription_uploads_media']."</a>";
 									}
 								}
 							}

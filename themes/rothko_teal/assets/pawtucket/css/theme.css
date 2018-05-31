@@ -691,7 +691,7 @@ a:focus {
     margin-top: 0px;
     font-weight:800;
     display: inline-block;
-    padding: 16px 10px 2px 0px;
+    padding: 16px 25px 2px 0px;
     font-size:16px;
 }
 #bRefine .dropdown.button {
@@ -700,6 +700,14 @@ a:focus {
     text-align: center;
     padding-top: 15px;
     margin-bottom: 12px;
+    padding-left:25px;
+    padding-right:25px;
+}
+@media (max-width:1220px) {
+	#bRefine .dropdown.button {
+		padding-left:15px;
+		padding-right:15px;
+    }
 }
 #bRefine .dropdown.button.showOnly {
 	border-left:1px solid #ccc;
@@ -889,10 +897,13 @@ button.refine:focus, button.refine:active {
 }
 .bResultListItem .bResultListItemText a:hover {
 	text-decoration:none;
-	color: #df7354;
+	color: #df7354 !important;
+}
+.bResultListItem .bResultListItemText a:hover .fa-chevron-right{
+	color: #df7354 !important;
 }
 .bResultListItem .bResultListItemText:hover .fa-chevron-right{
-	color: #df7354 !important; 
+/*	color: #df7354 !important; */
 }
 .bResultListItem .bResultListItemText a.compare_link {
 	position: relative;
@@ -925,6 +936,7 @@ button.refine:focus, button.refine:active {
     margin-top: 15px;
     margin-bottom: 20px;
 	border-top:1px solid #ccc;
+	border-bottom:0px;
 }
 [facet_item_selected="1"]::before {
 	font: normal normal normal 14px/1 FontAwesome;
@@ -933,6 +945,9 @@ button.refine:focus, button.refine:active {
 	position:absolute;
     left: 20px;
     top: 2px;
+}
+#ShowOnly_facet_container [facet_item_selected="1"]::before {
+	left:29px;
 }
 .facetApply {
 	clear:both;
@@ -1072,7 +1087,7 @@ a .svg-inline--fa.clearFacet {
 }
 .bResultListItem, .bResultListItem:hover {
 	background-color:#fff;
-	margin-bottom:10px;
+	margin-bottom:0px;
 	padding-left:0px;
 	border-bottom: 0px solid #d6d6d6;
     padding-bottom: 20px;
@@ -1188,7 +1203,7 @@ a .svg-inline--fa.clearFacet {
 	margin-bottom:0px;
 }
 .facetGroup.panel {
-	width:250%;
+	width:250px !important;
 	background-color:#f3f3f3;
 	box-shadow:none;
 	min-height:250px;
@@ -1198,6 +1213,9 @@ a .svg-inline--fa.clearFacet {
 	padding:30px 20px 20px 20px;
 	margin-top:10px;
 	text-align:left;
+}
+#facetGroupplace_facet.facetGroup.panel {
+	width:450px !important;
 }
 .facetGroup.panel .container {
 	overflow-y:auto;
@@ -1218,6 +1236,7 @@ a .svg-inline--fa.clearFacet {
 #bRefine .facetGroup li .facetItem {
     margin-bottom: 12px;
     min-height:24px;
+    clear:both;
 }
 #bRefine .row, #bRefine .container {
 	margin-bottom:0px;
@@ -1264,21 +1283,20 @@ a .svg-inline--fa.clearFacet {
 /* new menu styles */
 
 #bRefine {
-  display: flex;
-  justify-content: space-between;
+/*  display: flex;
+  justify-content: space-between;*/
 }
-.provenance.browse #bRefine, .references.browse #bRefine {
+.provenance.browse #bRefine, .references.browse #bRefine,
+.provenance.search #bRefine, .references.search #bRefine {
     display: inline-block;
     justify-content: inherit;
 }
-.provenance.browse #bRefine .dropdown.button, .references.browse #bRefine .dropdown.button {
+/*.provenance.browse #bRefine .dropdown.button, .references.browse #bRefine .dropdown.button,
+.provenance.search #bRefine .dropdown.button, .references.search #bRefine .dropdown.button {
 	width:17%;
-}
+}*/
 #bRefine h5{
 	white-space: nowrap;
-}
-.references.browse #facetGroupplace_facet {
-	width:250% !important;
 }
 
 /* Detail */
@@ -1375,7 +1393,6 @@ a .svg-inline--fa.clearFacet {
 .detail .objIdno {
 	position: absolute;
     bottom: 24px;
-    font-weight: bold;
     font-size: 14px;
 }	
 .detail h1 {
@@ -1813,7 +1830,7 @@ a .svg-inline--fa.clearFacet {
 	display:none;
 }
 .detail.side #detailRepNav {
-	text-align:right;
+	/*text-align:right;*/
 	margin-right:10px;
 }
 .detail #detailRepNavPrev {
@@ -1836,7 +1853,7 @@ a .svg-inline--fa.clearFacet {
 	font-size:12px;
 }
 .detail .repViewerCont img {
-    max-height: 500px;
+    max-height: 400px;
     object-fit: contain;
 }
 
@@ -1861,10 +1878,13 @@ a .svg-inline--fa.clearFacet {
 	text-align:center;
 	width:100%;
 	right:0px;
-	font-size:16px;
+	font-size:14px;
+}
+.detail #detailRepNav .svg-inline--fa {
+	font-size:12px;
 }
 .detail.exhibition #detailRepNav {
-	bottom:18px;
+	bottom:20px;
 }
 .detail #detailRepNavPrev {
 	float:none;
@@ -1878,6 +1898,35 @@ a .svg-inline--fa.clearFacet {
 	display:inline;
 	top:0px;
 }
+
+.detail #detailRepNavZoom {
+	float:none;
+	position:relative;
+	display:inline;
+	top:5px;
+	margin: 0 10px 0 10px;
+	
+	content: url('../graphics/enlarge.png');
+	background-size:18px;
+	height:18px;
+	width:18px;
+}
+
+.detail #detailRepNavCompare {
+	float:none;
+	position:relative;
+	display:inline;
+	top:5px;
+	margin: 0 10px 0 10px;
+	
+	content: url('../graphics/compare.png');
+	background-size:18px;
+	height:18px;
+	width:18px;
+	padding:0px;
+}
+
+
 .detail #detailRepNav a{ 
 	color:#161616;
 }
@@ -1968,6 +2017,9 @@ h3.window-manifest-title {
 	font-weight:normal;
 	font-size:13px;
 	color:#eee;
+	text-align:left;
+	padding-left:50px;
+	margin-top:0px;
 }
 .manifest-info {
 	background-color:#000;
@@ -2092,4 +2144,6 @@ div.caMediaOverlayControlsMinimal .svg-inline--fa {
 	display: none !important;
 }
 
-
+.mirador-manipulation-controls {
+	display: none !important;
+}

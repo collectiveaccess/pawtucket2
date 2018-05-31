@@ -105,7 +105,12 @@
 				var loadComparisonListSummary;
 				$('#comparison_list, #pageArea').on('click', '.compare_link, .comparison_list_remove', loadComparisonListSummary = function(e) {
 					var id = this ? $(this).data('id') : null;
+					var id_selector = this ? $(this).data('id_selector') : null;
 					var remove_id = this ? $(this).data('remove_id') : null;
+					
+					if (id_selector) {
+					    if (id = jQuery(id_selector).data('current_id')) { id = "representation:" + id; }
+					}
 		
 					$.getJSON('<?php print caNavUrl($this->request, '', 'Compare', 'AddToList'); ?>', {id: id, remove_id: remove_id}, function(d) {
 						if (parseInt(d.ok) == 1) {
@@ -118,7 +123,7 @@
 									var im = " image";
 								}
 								l += "<p class='listTitle'><?php print caNavLink($this->request, _t("<i class='fa fa-clone'></i> Compare "), "", "", "Compare", "View", []); ?> " + d.comparison_list.length + im + "</p>\n";
-								l += "<a href='#' class='openItems' onClick=\"$('.compareDrawer .items').toggle(100); return false;\"><i class='fa fa-chevron-down'></i></a>\n"; 
+								l += "<a href='#' class='openItems' onClick=\"$('.compareDrawer .items').toggle(100); $('.compareDrawer').data('open', !$('.compareDrawer').data('open')); return false;\"><i class='fa fa-chevron-down'></i></a>\n"; 
 								
 								l += "<div class='items'>";
 								jQuery.each(d.comparison_list, function(i, item) {
@@ -130,6 +135,7 @@
 
 							} else {
 								jQuery("#comparison_list").fadeOut(100);
+								jQuery(".compareDrawer").data('open', false);
 							}
 							jQuery("p.listTitle a").html("Compare (" + d.comparison_list.length + ")");
 							jQuery("#comparison_list ul").html(l);
@@ -138,7 +144,9 @@
 							if (remove_id && <?php print ($this->request->getController() == 'Compare') ? "true" : "false"; ?>) {
 								window.location = '<?php print caNavUrl($this->request, '', 'Compare', 'View', []); ?>';
 								return;
-							}
+							} else if($(".compareDrawer").data('open')){
+							    jQuery(".compareDrawer .items").toggle(0);
+						    }
 						}
 					});
 					

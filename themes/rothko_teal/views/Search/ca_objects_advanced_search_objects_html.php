@@ -29,13 +29,13 @@
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Description of the type of paper to which medium has been applied.">Support</i></span>
-				{{{ca_objects.paper%width=200px&height=1}}}
+				{{{ca_objects.paper%width=200px&height=1}}} <input type="hidden" name="ca_objects_paper_label" value="Support"/>
 			</div>
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Documentation of any portion of a watermark (a design formed during the papermaking process that usually includes the manufacturer’s name or trademark) visible in the paper support.">Watermark</i></span>
-				{{{ca_objects.watermark.watermark_list%width=200px&height=1}}}
+				{{{ca_objects.watermark.watermark_list%width=200px&height=1&inUse=1}}}
 			</div>
 		</div>			
 		<div class='row'>
@@ -58,8 +58,8 @@
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the catalog.">Tags</span>
-				{{{_fulltext%width=200px&height=1}}
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the catalog.">Tags </span>
+				{{{_fulltext%width=200px&height=1}}} <input type="hidden" name="_fulltext_label" value="Tags"/>
 			</div>			
 		</div>				
 		<br style="clear: both;"/>

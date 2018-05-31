@@ -1873,6 +1873,9 @@ a.browseRemoveFacet .glyphicon {
 	font-size:18px;
 	padding-bottom:5px;
 }
+#bViewButtons .disabled {
+    pointer-events: all;
+}
 #bLetterBar a{
 	padding:3px;
 	text-transform:uppercase;
@@ -2707,7 +2710,10 @@ a.browseRemoveFacet .glyphicon {
 	padding-bottom:10px; 
 	margin-bottom:15px;
 }	
- 
+ /* Universal viewer */
+.detail .repViewerCont .uv{
+	min-height:500px;
+}
    
 
 /* bookreader */

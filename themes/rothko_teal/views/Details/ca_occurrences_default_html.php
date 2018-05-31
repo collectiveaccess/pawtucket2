@@ -20,7 +20,7 @@
 		</div>
 		<div class='col-xs-5 pdfLink'>
 <?php		
-			print caNavLink($this->request, caGetThemeGraphic($this->request, 'pdf.png'), 'faDownload', 'Detail', 'occurrences', $vn_id.'/view/pdf/export_format/_pdf_ca_occurrences_summary');
+			#print caNavLink($this->request, caGetThemeGraphic($this->request, 'pdf.png'), 'faDownload', 'Detail', 'occurrences', $vn_id.'/view/pdf/export_format/_pdf_ca_occurrences_summary');
 ?>	
 		</div><!-- end col --> 		
 	</div>

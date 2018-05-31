@@ -343,11 +343,12 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 	 * @param string $ps_validation_format
 	 * @param int $pn_status
 	 * @param int $pn_access
-	 * @param int $pn_rank
+	 * @param int $pn_rank 
+	 * @param string $ps_color Color of list item, in hex without leading "#" (ex. FF0000). [Default is null]
 	 *
 	 * @return bool|ca_list_items
 	 */
-	public function addItem($ps_value, $pb_is_enabled=true, $pb_is_default=false, $pn_parent_id=null, $pn_type_id=null, $ps_idno=null, $ps_validation_format='', $pn_status=0, $pn_access=0, $pn_rank=null) {
+	public function addItem($ps_value, $pb_is_enabled=true, $pb_is_default=false, $pn_parent_id=null, $pn_type_id=null, $ps_idno=null, $ps_validation_format='', $pn_status=0, $pn_access=0, $pn_rank=null, $ps_color=null) {
 		if(!($vn_list_id = $this->getPrimaryKey())) { return null; }
 		
 		$t_item = new ca_list_items();
@@ -365,6 +366,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 		$t_item->set('validation_format', $ps_validation_format);
 		$t_item->set('status', $pn_status);
 		$t_item->set('access', $pn_access);
+		$t_item->set('color', $ps_color);
 		if (!is_null($pn_rank)) { $t_item->set('rank', $pn_rank); }
 		
 		$vn_item_id = $t_item->insert();
@@ -391,10 +393,11 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 	 * @param int $pn_status
 	 * @param int $pn_access
 	 * @param int $pn_rank
+	 * @param string $ps_color Color of list item, in hex without leading "#" (ex. FF0000). [Default is null]
 	 *
 	 * @return bool|ca_list_items
 	 */
-	public function editItem($pn_item_id, $ps_value, $pb_is_enabled=true, $pb_is_default=false, $pn_parent_id=null, $ps_idno=null, $ps_validation_format='', $pn_status=0, $pn_access=0, $pn_rank=null) {
+	public function editItem($pn_item_id, $ps_value, $pb_is_enabled=true, $pb_is_default=false, $pn_parent_id=null, $ps_idno=null, $ps_validation_format='', $pn_status=0, $pn_access=0, $pn_rank=null, $ps_color=null) {
 		if(!($vn_list_id = $this->getPrimaryKey())) { return false; }
 
 		$t_item = new ca_list_items($pn_item_id);
@@ -414,6 +417,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 		$t_item->set('validation_format', $ps_validation_format);
 		$t_item->set('status', $pn_status);
 		$t_item->set('access', $pn_access);
+		$t_item->set('color', $ps_color);
 		if (!is_null($pn_rank)) { $t_item->set('rank', $pn_rank); }
 
 		$t_item->update();
@@ -888,7 +892,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 			return ca_lists::$s_list_item_get_cache[$vs_cache_key];
 		}
 	
-		$vs_deleted_sql = caGetOption('includeDeleted', $pa_options, false) ? "(cli.deleted = 0) AND " : "";
+		$vs_deleted_sql = caGetOption('includeDeleted', $pa_options, false) ? "" : "(cli.deleted = 0) AND ";
 	
 		$vn_list_id = $this->_getListID($pm_list_name_or_id);
 		$vs_alt_key = caMakeCacheKeyFromOptions($pa_options, "{$vn_list_id}/{$ps_idno}");
@@ -932,7 +936,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 	public function getItemFromListByItemID($pm_list_name_or_id, $pn_item_id, $pa_options=null) {
 		$vn_list_id = $this->_getListID($pm_list_name_or_id);
 		
-		$vs_deleted_sql = caGetOption('includeDeleted', $pa_options, false) ? "(cli.deleted = 0) AND " : "";
+		$vs_deleted_sql = caGetOption('includeDeleted', $pa_options, false) ? "" : "(cli.deleted = 0) AND ";
 		
 		$va_params = [(int)$vn_list_id, (int)$pn_item_id];
         $vs_access_sql = '';
@@ -2182,6 +2186,22 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 	 */
 	public function getAdditionalChecksumComponents() {
 		return [$this->get('list_code')];
+	}
+	# ------------------------------------------------------
+	/**
+	 * Quickly return access value for list item 
+	 *
+	 * @param int $item_id 
+	 * 
+	 * @return bool or null if item does not exist
+	 */
+	static public function getAccessForItemID($pn_item_id) {
+		$o_db = new Db();
+		$q = $o_db->query("SELECT access FROM ca_list_items WHERE item_id = ? AND deleted = 0", [(int)$pn_item_id]);
+		while($q->nextRow()) {
+			return $q->get('access');
+		}
+		return null;
 	}
 	# ------------------------------------------------------
 }

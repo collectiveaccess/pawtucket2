@@ -1274,21 +1274,43 @@ jQuery(document).ready(function() {
 		if($o_collections_config->get("export_max_levels") && ($vn_level > $o_collections_config->get("export_max_levels"))){
 			return;
 		}
+		$t_list = new ca_lists();
+		$va_exclude_collection_type_ids = array();
+		if($va_exclude_collection_type_idnos = $o_collections_config->get("export_exclude_collection_types")){
+			# --- convert to type_ids
+			$va_exclude_collection_type_ids = $t_list->getItemIDsFromList("collection_types", $va_exclude_collection_type_idnos, array("dontIncludeSubItems" => true));
+		}
 		$vs_output = "";
 		$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
 		
 		$vs_sub_collection_label_template = $o_collections_config->get("export_sub_collection_label_template");
 		$vs_sub_collection_desc_template = $o_collections_config->get("export_sub_collection_description_template");
 		$vs_object_template = $o_collections_config->get("export_object_label_template");
-	
+		$va_collection_type_icons = array();
+		$va_collection_type_icons_by_idnos = $o_collections_config->get("export_collection_type_icons");
+		if(is_array($va_collection_type_icons_by_idnos) && sizeof($va_collection_type_icons_by_idnos)){
+			foreach($va_collection_type_icons_by_idnos as $vs_idno => $vs_icon){
+				$va_collection_type_icons[$t_list->getItemId("collection_types", $vs_idno)] = $vs_icon;
+			}
+		}
 		if($qr_collections->numHits()){
 			while($qr_collections->nextHit()) {
+				if($va_exclude_collection_type_ids && is_array($va_exclude_collection_type_ids) && (in_array($qr_collections->get("ca_collections.type_id"), $va_exclude_collection_type_ids))){
+					continue;
+				}
+		
 				$vs_icon = "";
+				if(is_array($va_collection_type_icons) && $va_collection_type_icons[$qr_collections->get("ca_collections.type_id")]){
+					$vs_icon = $va_collection_type_icons[$qr_collections->get("ca_collections.type_id")];
+				}			
 				# --- related objects?
 				$va_object_ids = $qr_collections->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values));
 				$vn_rel_object_count = sizeof($va_object_ids);
 				$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.idno_sort"));
 				$vs_output .= "<div class='unit' style='margin-left:".(40*($vn_level - 1))."px;'>";
+				if($vs_icon){
+					$vs_output .= $vs_icon." ";
+				}
 				$vs_output .= "<b>";
 				if($vs_sub_collection_label_template){
 					$vs_output .= $qr_collections->getWithTemplate($vs_sub_collection_label_template);

@@ -100,6 +100,9 @@
 			
 			$t_list_item = new ca_list_items();
 			while($qr_res->nextHit()) {
+				if(($vs_table == "ca_occurrences") && ($qr_res->get("view_status") == 258)){
+					continue;
+				}
 				if($vn_c == $vn_hits_per_block){
 					if($vb_row_id_loaded){
 						break;

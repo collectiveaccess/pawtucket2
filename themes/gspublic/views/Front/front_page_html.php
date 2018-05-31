@@ -83,10 +83,11 @@
 			<?php print caGetThemeGraphic($this->request, 'home/gallery/'.rand(1,$vn_filecount).'.jpg'); ?>		
 		</div>	
 		<div class="col-sm-4 textRight">
-			<h1>Featured Galleries</h1>
-			<p>Explore iconic Girl Scout moments from shaking hands with First Ladies to the design of the first uniform.  Take a virtual walk through the interactive galleries.</p>
+			<h1>Featured Galleries & Interactives</h1>
+			<p>Explore iconic Girl Scout moments. Take a virtual walk through the interactive galleries.</p>
 <?php
-			print caNavLink($this->request, 'More', 'btn-default', '', 'Gallery', 'Index');
+			print caNavLink($this->request, 'galleries', 'btn-default', '', 'Gallery', 'Index');
+			print "&nbsp;&nbsp;&nbsp;".caNavLink($this->request, 'Interactives', 'btn-default', '', 'Interactive', 'Index');
 ?>		
 		</div>	
 	</div>	
