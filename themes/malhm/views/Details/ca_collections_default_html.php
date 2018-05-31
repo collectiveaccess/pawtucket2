@@ -28,8 +28,9 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
+					<h6>{{{<ifdef code="ca_collections.idno">^ca_collections.idno</ifdef>}}}</h6>
 					<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
-					<H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6>
+
 					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
 <?php					
 					if ($vn_pdf_enabled) {
@@ -63,12 +64,36 @@
 					if ($vs_extent = $t_item->get('ca_collections.extentDACS')) {
 						print "<div class='unit'><h6>Extent</h6>".$vs_extent."</div>";
 					}
-					if ($vs_creator = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => '<br/>', 'returnAsLink' => true, 'checkAccess' => $va_access_values))) {
+					if ($vs_creator = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('creator'), 'delimiter' => '<br/>', 'checkAccess' => $va_access_values))) {
 						print "<div class='unit'><h6>Creators</h6>".$vs_creator."</div>";
 					}
 					if ($vs_scope = $t_item->get('ca_collections.scopecontent')) {
 						print "<div class='unit'><h6>Scope & Content</h6>".$vs_scope."</div>";
 					}
+					if ($vs_admin = $t_item->get('ca_collections.adminbiohist')) {
+						print "<div class='unit'><h6>Administrative Biographical History Elements</h6>".$vs_admin."</div>";
+					}	
+					if ($vs_cond = $t_item->get('ca_collections.accessrestrict')) {
+						print "<div class='unit'><h6>Conditions Governing Access</h6>".$vs_cond."</div>";
+					}
+					if ($vs_aat = $t_item->get('ca_collections.aat', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Getty Art and Architecture Thesarus</h6>".$vs_aat."</div>";
+					}	
+					if ($vs_ulan = $t_item->get('ca_collections.ulan', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Getty Union List of Artist Names</h6>".$vs_ulan."</div>";
+					}
+					if ($vs_geo = $t_item->get('ca_collections.geo_notes', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Geographic Notes</h6>".$vs_geo."</div>";
+					}
+					if ($vs_lcsh = $t_item->get('ca_collections.lcsh_terms', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Library of Congress Subject Headings</h6>".$vs_lcsh."</div>";
+					}																													
+					if ($vs_language = $t_item->get('ca_collections.langmaterial')) {
+						print "<div class='unit'><h6>Languages</h6>".$vs_language."</div>";
+					}	
+					if ($vs_otherfindingaid = $t_item->get('ca_collections.otherfindingaid')) {
+						print "<div class='unit'><h6>Finding Aids</h6>".$vs_otherfindingaid."</div>";
+					}										
 					if ($va_entity_rels = $t_item->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						$va_entities_by_type = array();
 						foreach ($va_entity_rels as $va_key => $va_entity_rel) {

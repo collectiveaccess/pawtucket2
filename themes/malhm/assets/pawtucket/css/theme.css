@@ -201,6 +201,24 @@ ul.socialRow li .connect{
 #footer .logo img {
 	max-width:305px;
 }
+@media (max-width:768px) {
+	#footer {
+		height:686px;
+		padding-top:1em;
+	}
+	#footer .pull-right{
+		text-align:center;
+		width:100%;
+		border-top:1px solid #fff;
+		padding-top:10px;
+		margin-top:10px;
+	}	
+	body {
+		margin-bottom:706;
+	}
+}
+
+
 
 /* Front */
 
@@ -481,6 +499,9 @@ ul.socialRow li .connect{
 }
 .detail .instLink a {
 	color:#fff;
+}
+.detail .detailMediaToolbar, .gallery .detailMediaToolbar {
+	padding-right:10px;
 }
 
 /* Search */

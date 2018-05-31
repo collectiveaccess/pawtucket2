@@ -28,10 +28,50 @@
 					}
 					if ($va_website = $t_item->get('ca_entities.website', array('returnAsArray' => true))) {
 						foreach ($va_website as $va_key => $va_website_link) {
-							print "<div><a href='".$va_website_link."' target='_blank'>".$va_website_link."</a></div>";
+							print "<div class='unit'><a href='".$va_website_link."' target='_blank'>".$va_website_link."</a></div>";
 						}
 					}
-?>					
+					if ($va_addresses = $t_item->get('ca_entities.address', array('returnWithStructure' => true))) {
+						$vs_address = "";
+						foreach ($va_addresses as $va_key => $va_addresses_t) {
+							foreach ($va_addresses_t as $va_key => $va_address) {
+								if ($va_address['address1']) {
+									$vs_address.= $va_address['address1']."<br/>";
+								}
+								if ($va_address['address2']) {
+									$vs_address.= $va_address['address2']."<br/>";
+								}
+								if ($va_address['city']) {
+									$vs_address.= $va_address['city'].", ";
+								}
+								if ($va_address['stateprovince']) {
+									$vs_address.= $va_address['stateprovince'];
+								}
+								if ($va_address['postalcode']) {
+									$vs_address.= " ".$va_address['postalcode'];
+								}
+								if ($va_address['country']) {
+									$vs_address.= "<br/>".$va_address['country'];
+								}																																
+							}
+						}
+						if ($vs_address != "") {
+							print "<div class='unit'>".$vs_address."</div>";
+						}
+					}
+					if ($vs_phones = $t_item->get('ca_entities.telephone_work', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'>".$vs_phones."</div>";
+					}
+					if ($va_email = $t_item->get('ca_entities.email', array('returnAsArray' => true))) {
+						print "<div class='unit'>";
+						foreach ($va_email as $va_key => $va_email_address) {
+							print "<a href='mailto:".$va_email_address."'>".$va_email_address."</a><br/>";
+						}
+						print "</div>";
+					}					
+?>			
+					<hr/>
+					{{{map}}}		
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 					{{{representationViewer}}}				
@@ -39,14 +79,14 @@
 			</div><!-- end row -->
 			
 {{{<ifcount code="ca_objects" min="1">
-			<div class="row">
+			<div class="row"><div class='col-sm-12'>
 
 			<hr>
 			<h4>Related Objects</h4>			
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
+			</div></div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {

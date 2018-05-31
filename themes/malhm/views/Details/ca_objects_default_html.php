@@ -94,11 +94,66 @@
 						print "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($vs_material, true), '', '', 'Browse', 'objects', array('facet' => 'material_facet', 'id' => $vs_material))."</div>";
 					}
 					print "</div>";
-				}								
+				}
+				if ($va_dimensions = $t_object->get('ca_objects.dimensions', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
+					$va_dims = array();
+					$vs_dims = "";
+					foreach ($va_dimensions as $va_key => $va_dimensions_t) {
+						foreach ($va_dimensions_t as $va_key => $va_dimension) {
+							if ($va_dimension['dimensions_height'] && ($va_dimension['dimensions_height'] != "0.000 cm.")) {
+								$va_dims[] = $va_dimension['dimensions_height']." H ";
+							}
+							if ($va_dimension['dimensions_width'] && ( $va_dimension['dimensions_width'] != "0.000 cm.")) {
+								$va_dims[] = $va_dimension['dimensions_width']." W ";
+							}							
+							if ($va_dimension['dimensions_depth'] && ( $va_dimension['dimensions_depth'] != "0.000 cm.")) {
+								$va_dims[] = $va_dimension['dimensions_depth']." D ";
+							}							
+							if ($va_dimension['dimensions_length'] && ( $va_dimension['dimensions_length'] != "0.000 cm.")) {
+								$va_dims[] = $va_dimension['dimensions_length']." L ";
+							}	
+							if (sizeof($va_dims) > 0) {						
+								$vs_dims.= "<p>".join(' x ', $va_dims);
+								if ($va_dimension['measurement_type']) {
+									$vs_dims.= $va_dimension['measurement_type'];
+								}
+								print "</p>";
+							}
+							if ($va_dimension['dimensions_weight'] && ( $va_dimension['dimensions_weight'] != "0 g")) {
+								$vs_dims.= "<p>".$va_dimension['dimensions_weight']." Weight </p>";
+							}
+							if ($va_dimension['dimensions_diameter'] && ( $va_dimension['dimensions_diameter'] != "0.000 cm.")) {
+								$vs_dims.= "<p>".$va_dimension['dimensions_diameter']." Diameter </p>";
+							}
+							if ($va_dimension['dimensions_circumference'] && ( $va_dimension['dimensions_circumference'] != "0.000 cm.")) {
+								$vs_dims.= "<p>".$va_dimension['dimensions_circumference']." Circumference </p>";
+							}
+							if ($va_dimension['dimensions_thickness'] && ( $va_dimension['dimensions_thickness'] != "0.000 cm.")) {
+								$vs_dims.= "<p>".$va_dimension['dimensions_thickness']." Thickness </p>";
+							}
+							if ($va_dimension['measurement_notes']) {
+								$vs_dims.= "<p>".$va_dimension['measurement_notes']."</p>";
+							}
+																																			
+						}
+					}
+					if ($vs_dims != "") {
+						print "<div class='unit'><h6>Dimensions</h6>".$vs_dims."</div>";
+					}
+				}	
+				if ($vs_count = $t_object->get('ca_objects.count', array('delimiter' => '<br/>'))) {
+					print "<div class='unit'><h6>Count</h6>".$vs_count."</div>";
+				}
+				if ($vs_accessory = $t_object->get('ca_objects.accessory', array('delimiter' => '<br/>'))) {
+					print "<div class='unit'><h6>Accessory</h6>".$vs_accessory."</div>";
+				}
+				if ($vs_marks = $t_object->get('ca_objects.marks_labels', array('delimiter' => '<br/>'))) {
+					print "<div class='unit'><h6>Maker's Mark</h6>".$vs_marks."</div>";
+				}																							
 				if ($vs_description = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
 				}
-				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'excludeRelationship' => array('authorizer', 'approved', 'inventory', 'tribal_contact')))) {
 					$va_entities_by_type = array();
 					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
 						$t_rel = new ca_objects_x_entities($va_entity_rel);
@@ -116,6 +171,17 @@
 						} 
 					}
 					print "</div>";
+				} 
+				if ($vn_arch_record_id != $vn_type_id) { // No places on archeology records
+					if ($va_rel_places = $t_object->get('ca_places.preferred_labels', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Related Places</h6>".$va_rel_places."</div>";
+					}
+					if ($vs_geo_notes = $t_object->get('ca_objects.geo_notes', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Geographic Notes</h6>".$vs_geo_notes."</div>";
+					}
+					if ($vs_geo_names = $t_object->get('ca_objects.geonames', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Geographic Names</h6>".$vs_geo_names."</div>";
+					}					
 				}
 
 				# Comment and Share Tools
@@ -149,62 +215,8 @@
 				if ($vs_ex_label = $t_object->get('ca_objects.exhibition_label', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Exhibition Label</h6>".$vs_ex_label."</div>";
 				}	
-				if ($va_dimensions = $t_object->get('ca_objects.dimensions', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
-					$va_dims = array();
-					$vs_dims = "";
-					foreach ($va_dimensions as $va_key => $va_dimensions_t) {
-						foreach ($va_dimensions_t as $va_key => $va_dimension) {
-							if ($va_dimension['dimensions_height']) {
-								$va_dims[] = $va_dimension['dimensions_height']." H ";
-							}
-							if ($va_dimension['dimensions_width']) {
-								$va_dims[] = $va_dimension['dimensions_width']." W ";
-							}							
-							if ($va_dimension['dimensions_depth']) {
-								$va_dims[] = $va_dimension['dimensions_depth']." D ";
-							}							
-							if ($va_dimension['dimensions_length']) {
-								$va_dims[] = $va_dimension['dimensions_length']." L ";
-							}	
-							if (sizeof($va_dims) > 0) {						
-								$vs_dims.= "<p>".join(' x ', $va_dims);
-								if ($va_dimension['measurement_type']) {
-									$vs_dims.= ", ".$va_dimension['measurement_type'];
-								}
-								print "</p>";
-							}
-							if ($va_dimension['dimensions_weight']) {
-								$vs_dims.= "<p>".$va_dimension['dimensions_weight']." Weight </p>";
-							}
-							if ($va_dimension['dimensions_diameter']) {
-								$vs_dims.= "<p>".$va_dimension['dimensions_diameter']." Diameter </p>";
-							}
-							if ($va_dimension['dimensions_circumference']) {
-								$vs_dims.= "<p>".$va_dimension['dimensions_circumference']." Circumference </p>";
-							}
-							if ($va_dimension['dimensions_thickness']) {
-								$vs_dims.= "<p>".$va_dimension['dimensions_thickness']." Thickness </p>";
-							}
-							if ($va_dimension['measurement_notes']) {
-								$vs_dims.= "<p>".$va_dimension['measurement_notes']."</p>";
-							}
-																																			
-						}
-					}
-					if ($vs_dims != "") {
-						print "<div class='unit'><h6>Dimensions</h6>".$vs_dims."</div>";
-					}
-				}
-				if ($vs_count = $t_object->get('ca_objects.count', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Count</h6>".$vs_count."</div>";
-				}
-				if ($vs_accessory = $t_object->get('ca_objects.accessory', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Accessory</h6>".$vs_accessory."</div>";
-				}
 
-				if ($vs_marks = $t_object->get('ca_objects.marks_labels', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Manufacturer's Mark</h6>".$vs_marks."</div>";
-				}	
+	
 				if ($vs_collection = $t_object->get('ca_collections.preferred_labels', array('returnAsLink' => true, 'checkAccess' => $va_access_values))) {
 					print "<div class='unit'><h6>Part of Collection</h6>".$vs_collection."</div>";
 				}

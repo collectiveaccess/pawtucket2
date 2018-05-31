@@ -34,10 +34,10 @@
 					<div><h2>Minnesota Alliance of Local History Museums: Peers Helping Peers Since 1991</h2></div>
 				</div></div>
 				<div class='row' style='margin-left:-25px;margin-right:-25px;'>
-					<div class='col-sm-4 logo'>
+					<div class='col-xs-6 col-sm-4 logo'>
 						<?php print caGetThemeGraphic($this->request, 'malhm.jpg'); ?>
 					</div>
-					<div class='col-sm-4'>
+					<div class='col-xs-6 col-sm-4'>
 						<div class="paragraph" style="text-align:left;">
 							General contact:<br>
 							Dustin Heckman, Alliance Coordinator<br>
@@ -51,7 +51,7 @@
 							320-235-1881
 						</div>					
 					</div>
-					<div class='col-sm-4'>
+					<div class='col-xs-12 col-sm-4'> 
 						<div class='pull-right social'>
 							<span class='socialFooter'><a href='https://www.facebook.com/MNHistoryAlliance/' target='_blank'><i class='fa fa-facebook'></i></a></span>
 							<span class='socialFooter'><a href='https://twitter.com/MNlocalhistory' target='_blank'><i class='fa fa-twitter'></i></a></span>
