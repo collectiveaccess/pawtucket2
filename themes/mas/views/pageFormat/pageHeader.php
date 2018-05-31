@@ -98,8 +98,14 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo-2017.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'sasklogo.png'), "navbar-brand", "", "","");
 ?>
+				<div class="broughtBy">
+					Supported by<br/>
+<?php
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo-2017.png'), "", "", "","");
+?>				
+				</div>
 				<div class="header-follow">
 					<span>Follow Us</span>
 					<a href="https://www.facebook.com/saskmuseums" class="ss-icon ss-social-circle" target="_blank"><i class="fab fa-facebook-f"></i></a>
@@ -128,10 +134,11 @@
 			<div class="menuItemWrapper">
 
 			<ul class="nav navbar-nav menuItems">
+				<li class="about"><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>			
 				<li class="browse"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
-				<li class="<?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? active : ''; ?> advSearch"><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
-				<li class="<?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?> gallery"><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-				<li class="<?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?> contact"><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+				<li class="advSearch"><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
+				<li class="gallery"><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
+				<li class="contact"><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 <?php
 if ($vb_has_user_links) {
 ?>

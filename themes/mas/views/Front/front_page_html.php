@@ -38,7 +38,7 @@
 ?>
 		</div> <!--end col-sm-4-->	
 		<div class="col-sm-8">
-			Discover the rich history of the Museums Association of Saskatchewan (MAS) through our online collection of photographs, documents and oral histories. Search our entire collection of records to learn more about the association’s 50 years of supporting Saskatchewan museums including oral history interviews from past and present members of the MAS community, up to date photographs of our member museums and archival photographs from previous MAS conferences and celebrations.
+			{{{homepage_text}}}
 		</div><!--end col-sm-8-->
 	
 	</div><!-- end row -->
