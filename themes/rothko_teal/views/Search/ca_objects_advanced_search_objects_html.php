@@ -35,7 +35,7 @@
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Documentation of any portion of a watermark (a design formed during the papermaking process that usually includes the manufacturer’s name or trademark) visible in the paper support.">Watermark</i></span>
-				{{{ca_objects.watermark.watermark_list%width=200px&height=1}}}
+				{{{ca_objects.watermark.watermark_list%width=200px&height=1&inUse=1}}}
 			</div>
 		</div>			
 		<div class='row'>

@@ -80,16 +80,35 @@
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Catalog Number</H6>^ca_objects.idno</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.book_title"><div class="unit"><H6>Title</H6><unit relativeTo="ca_objects" delimiter="<br/><br/>">^ca_objects.book_title.bookpaintingtitle<ifdef code="ca_objects.book_title.trans"><br/>^ca_objects.book_title.trans</ifdef></unit></div></ifdef>}}}
+<?php
+				$vs_obj_title = $t_object->get("ca_objects.book_title.bookpaintingtitle");
+				if(strToLower($vs_obj_title) == "none"){
+					$vs_obj_title = "";
+				}
+				$vs_obj_title_trans = $t_object->get("ca_objects.book_title.trans");
+				if($vs_obj_title_trans && $vs_obj_title_trans == "none"){
+					$vs_obj_title_trans = "";
+				}
+				if($vs_obj_title || $vs_obj_title_trans){
+					print "<div class='unit'><H6>Title</H6>";
+					print $vs_obj_title;
+					if($vs_obj_title && $vs_obj_title_trans){
+						print "<br/>";
+					}
+					if($vs_obj_title_trans){
+						print "<i>Translation:</i> ".$vs_obj_title_trans;
+					}
+					print "</div>";
+				}
+?>
 				{{{<ifdef code="ca_objects.fmp_date_of_origin"><div class="unit"><H6>Date of Origin</H6>^ca_objects.fmp_date_of_origin</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.manufacturer"><div class="unit"><H6>Manufacturer</H6>^ca_objects.manufacturer</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.author"><div class="unit"><H6>Artist/Author</H6>^ca_objects.author.auth</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.author.auth"><div class="unit"><H6>Artist/Author</H6>^ca_objects.author.auth</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.material"><div class="unit"><H6>Materials</H6>^ca_objects.material%delimiter=,_</div></ifdef>}}}
 <?php
 				$va_dimensions_pieces = array();
 				$va_dimensions = array();
 				if($t_object->get("ca_objects.dimensions")){
-					print "<div class='unit'><H6>Dimensions</H6>";
 					$va_dimension_fields = array("dimensions_height", "dimensions_length", "dimensions_width", "dimensions_depth");
 					foreach($va_dimension_fields as $vs_dim_field){
 						if($vs_tmp = $t_object->get("ca_objects.dimensions.".$vs_dim_field)){
@@ -106,21 +125,22 @@
 						}
 					}
 					if(sizeof($va_dimensions)){
+						print "<div class='unit'><H6>Dimensions</H6>";
 						print join(", ", $va_dimensions);
 						if($vs_dim_notes = $t_object->get("ca_objects.dimensions.meas_line1")){
 							print "<br/>";
 						}
+						print $vs_dim_notes;
+						print "</div>";
 					}
-					print $vs_dim_notes;
-					print "</div>";
+					
 				}
 ?>
 				{{{<ifdef code="ca_objects.descriptions">
 					<div class='unit'><h6>Description</h6>
 						<span class="trimText">^ca_objects.descriptions</span>
 					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.doninf.name"><div class="unit"><H6>Gift of</H6>^ca_objects.doninf.name</div></ifdef>}}}					
+				</ifdef>}}}					
 <?php
 				if($vs_history = nl2br($t_object->get("ca_objects.provenance"))){
 ?>					
@@ -129,7 +149,8 @@
 					</div>				
 <?php
 				}		
-?>
+?>				
+				{{{<ifdef code="ca_objects.doninf.name"><div class="unit"><H6>Gift of</H6>^ca_objects.doninf.name</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.obn.nos"><div class="unit"><H6>Notes</H6>^ca_objects.obn.nos</div></ifdef>}}}
 				
 						

@@ -35,7 +35,8 @@
 		<div class="jcarousel-wrapper mainSlideShow">
 			<!-- Carousel -->
 			<div class="jcarousel mainSlide">
-				<ul>
+				<ul id="hpSlides"><li class="loading"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></li>
+<!--
 					<li>
 						<div class='frontSlide'>
 							<div class="row">
@@ -102,7 +103,7 @@
 							</div>
 						</div>
 					</li>
-					
+-->					
 				</ul>
 			</div><!-- end jcarousel -->
 			<!-- Prev/next controls -->
@@ -121,6 +122,8 @@
 			</p>
 			<script type='text/javascript'>
 			jQuery(document).ready(function() {
+				$("#hpSlides").load("<?php print caNavUrl($this->request, "", "hpslides", "") ?>", function() {
+				
 				$('.mainSlide li').width($('.mainSlideShow').width());
 				$( window ).resize(function() {
 				  $('.mainSlide li').width($('.mainSlideShow').width());
@@ -177,12 +180,16 @@
 					.jcarouselPagination({
 						// Options go here
 					});
+			
+			
+				});
+			
 			});
 		</script>
 	</div></div>
 	<div class="row">
 		<div class="col-sm-12 col-md-8 col-md-offset-2">
-			<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
+			<H1>{{{home_page_tagline}}}</H1>
 		</div>
 	</div>
 <?php

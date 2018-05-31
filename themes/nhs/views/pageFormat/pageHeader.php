@@ -100,7 +100,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'Resource.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'CollectionsOnline.png'), "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -140,6 +140,7 @@
 					<div class="advSearchLinkTop"><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></div>
 				</form>
 				<div class='menuContainer'><ul class="nav navbar-nav navbar-right menuItems">
+					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "About"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li class="mobileLink<?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>

@@ -238,6 +238,7 @@
 	# --- get the section to highlight nav
 	$vs_section = "";
 	switch($this->request->getController()){
+		case "About":
 		case "Browse":
 			$vs_section = $this->request->getAction();
 		break;
@@ -248,8 +249,9 @@
 		# ----------------
 	}
 ?>
-	<li class="leaf first <?php print ($vs_section == "Splash") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Overview'), ($vs_section == "Splash") ? "active" : "", '', '', ''); ?></li>
-	<li class="leaf <?php print ($vs_section == "CollectionsList") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Collections'), ($vs_section == "CollectionsList") ? "active" : "", '', 'Browse', 'Collections'); ?></li>
+	<li class="leaf first <?php print ($vs_section == "Front") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Overview'), ($vs_section == "front") ? "active" : "", '', '', ''); ?></li>
+	<li class="leaf <?php print ($vs_section == "Collections") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Collections'), ($vs_section == "Collections") ? "active" : "", '', 'Browse', 'Collections'); ?></li>
+	<li class="leaf <?php print (in_array($vs_section, array("FeaturedCollections", "FeaturedCollectionsList"))) ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Highlighted Films'), (in_array($vs_section, array("FeaturedCollections", "FeaturedCollectionsList"))) ? "active" : "", '', 'About', 'FeaturedCollections'); ?></li>
 	<li class="leaf"><a href="/node/26" title="">Archival Moments</a></li>
 	<li class="collapsed"><a href="/content/exhibits" title="">Exhibits</a></li>
 

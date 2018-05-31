@@ -100,8 +100,10 @@
 				if ($vs_rep_id) {
 					$vs_download_link = caNavLink($this->request, '<i style="padding-left:10px;" class="fa fa-download"></i>', 'multiDl', '', 'Detail', 'DownloadRepresentation', array('representation_id' => $vs_rep_id, 'object_id' => $vs_obj_id, 'download' => 1, 'version' => 'original'));
 				}
-				
-				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);		
+				$vs_expanded_info = "";
+				if($vs_extended_info_template){
+					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);		
+				}
 				print "
 	<div class='bResultItemCol col-xs-12 col-sm-3 col-lg-2'>
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>

@@ -76,14 +76,13 @@
 	}
 ?>
     
-    <link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Roboto+Condensed|Roboto:400,700" rel="stylesheet">
+    <!--<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Roboto+Condensed|Roboto:400,700" rel="stylesheet">-->
 </head>
 <body class="initial">
 	<div class="topbar">
     	<div class="container">
         	<div class="row">
             	<div class="col-md-6  col-sm-6">
-                	<p></p>
                 </div>
                 <div class="col-md-6 col-sm-6">
                 	<ul class="pull-right social-icons-colored">
@@ -115,7 +114,7 @@
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'HMcolorRGB.PNG'), "navbar-brand", "", "","");
 ?>
-				<div class="headerTagLine">{{{header_text}}}</div>
+				<div class="headerTagLine"><?php print caNavLink($this->request, $this->getVar("header_text"), "", "", "", ""); ?></div>
 			</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -156,9 +155,10 @@
 					<li><a href="http://www.hollandmuseum.org" target="_blank">Museum Home</a></li>
 					<li <?php print ($this->request->getController() == "Explore") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Explore"), "", "", "Explore", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
+					<?php print $this->render("pageFormat/browseMenu.php"); ?>
+					<li class="browseAltLink <?php print (strToLower($this->request->getController()) == "browse") ? '' : ''; ?>"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>	
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+					<li <?php print ($this->request->getController() == "ContactUs") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "ContactUs", ""); ?></li>
 				</ul></div>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
@@ -179,11 +179,22 @@
 		case "gallery":
 			$vs_title = "Featured Galleries";
 		break;
-		case "contact":
+		case "contactus":
 			$vs_title = "Contact";
 		break;
 		case "explore":
 			$vs_title = "Explore";
+		break;
+		case "lightbox":
+			$vs_title = "Lightbox";
+		break;
+		case "loginreg":
+			if(in_array(strToLower($this->request->getAction()), array("profileform", "profilesave"))){
+				$vs_title = "Profile";
+			}
+			if(in_array(strToLower($this->request->getAction()), array("resetform", "resetsend", "resetsave"))){
+				$vs_title = "Reset your password";
+			}
 		break;
 	}
 	if($vs_title){
