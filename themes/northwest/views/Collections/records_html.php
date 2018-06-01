@@ -4,8 +4,8 @@
 ?>
 	<div class="row">
 		<div class='col-md-12 col-lg-12 collectionsList'>
-			<h1><?php print $this->getVar("section_name"); ?></h1>
-			<p><?php print $o_collections_config->get("collections_intro_text"); ?></p>
+			<h1>NWS Archive</h1>
+			<p>{{{archives_text}}}</p>
 <?php	
 	$vn_i = 0;
 	if($qr_collections && $qr_collections->numHits()) {

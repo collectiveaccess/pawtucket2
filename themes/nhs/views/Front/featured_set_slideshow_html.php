@@ -36,26 +36,21 @@
 	if(!$vs_caption_template){
 		$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
 	}
-
 	if($qr_res && $qr_res->numHits()){
-?>
-
-<div class="row bgLigthBlue">
-	<div class="col-sm-12"> 
-		<H2>Featured Items</H2>
+?>   
 		<div class="jcarousel-wrapper">
 			<!-- Carousel -->
-			<div class="jcarousel featuredItems">
+			<div class="jcarousel topSliderCarousel">
 				<ul>
 <?php
 					while($qr_res->nextHit()){
-						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.iconlarge</l>', array("checkAccess" => $va_access_values))){
-							print "<li>".$vs_media;
+						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large_watermark</l>', array("checkAccess" => $va_access_values))){
+							print "<li><div class='frontSlide'>".$vs_media;
 							$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
 							if($vs_caption){
 								print "<div class='frontSlideCaption'>".$vs_caption."</div>";
 							}
-							print "</li>";
+							print "</div></li>";
 							$vb_item_output = true;
 						}
 					}
@@ -66,25 +61,23 @@
 			if($vb_item_output){
 ?>
 			<!-- Prev/next controls -->
-			<a href="#" class="jcarousel-control-prev featuredItemsNav"><i class="fa fa-angle-left"></i></a>
-			<a href="#" class="jcarousel-control-next featuredItemsNav"><i class="fa fa-angle-right"></i></a>
+			<a href="#" class="jcarousel-control-prev topSlider"><i class="fa fa-angle-left"></i></a>
+			<a href="#" class="jcarousel-control-next topSlider"><i class="fa fa-angle-right"></i></a>
 		
 			<!-- Pagination -->
-			<p class="jcarousel-pagination featuredItemsNav">
+			<p class="jcarousel-pagination topSlider">
 			<!-- Pagination items will be generated in here -->
 			</p>
 <?php
 			}
 ?>
 		</div><!-- end jcarousel-wrapper -->
-	</div>
-</div>
 		<script type='text/javascript'>
 			jQuery(document).ready(function() {
 				/*
 				Carousel initialization
 				*/
-				$('.featuredItems')
+				$('.topSliderCarousel')
 					.jcarousel({
 						// Options go here
 						wrap:'circular'
@@ -93,7 +86,7 @@
 				/*
 				 Prev control initialization
 				 */
-				$('.jcarousel-control-prev.featuredItemsNav')
+				$('.jcarousel-control-prev.topSlider')
 					.on('jcarouselcontrol:active', function() {
 						$(this).removeClass('inactive');
 					})
@@ -108,7 +101,7 @@
 				/*
 				 Next control initialization
 				 */
-				$('.jcarousel-control-next.featuredItemsNav')
+				$('.jcarousel-control-next.topSlider')
 					.on('jcarouselcontrol:active', function() {
 						$(this).removeClass('inactive');
 					})
@@ -123,7 +116,7 @@
 				/*
 				 Pagination initialization
 				 */
-				$('.jcarousel-pagination.featuredItemsNav')
+				$('.jcarousel-pagination.topSlider')
 					.on('jcarouselpagination:active', 'a', function() {
 						$(this).addClass('active');
 					})
@@ -132,10 +125,10 @@
 					})
 					.jcarouselPagination({
 						// Options go here
+						'perPage': 2
 					});
 			});
 		</script>
-
 <?php
 	}
 ?>

@@ -30,8 +30,43 @@
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
 			<div class="containerWrapper">
-				<div><h2>Minnesota Alliance of Local History Museums: Peers Helping Peers Since 1991</h2></div>
-				<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>
+				<div class='row'><div class='col-sm-12'>
+					<div><h2>Minnesota Alliance of Local History Museums: Peers Helping Peers Since 1991</h2></div>
+				</div></div>
+				<div class='row' style='margin-left:-25px;margin-right:-25px;'>
+					<div class='col-xs-6 col-sm-4 logo'>
+						<?php print caGetThemeGraphic($this->request, 'malhm.jpg'); ?>
+					</div>
+					<div class='col-xs-6 col-sm-4'>
+						<div class="paragraph" style="text-align:left;">
+							General contact:<br>
+							Dustin Heckman, Alliance Coordinator<br>
+							612-500-7460<br>
+							<a href="mailto:mnhistoryalliance@gmail.com">Contact</a><br><br>
+							Financial office:<br>
+							Jill Wohnoutka, Treasurer<br>
+							Kandiyohi County Historical Society<br>
+							610 NE Hwy 71<br>
+							Willmar, MN 56201<br>
+							320-235-1881
+						</div>					
+					</div>
+					<div class='col-xs-12 col-sm-4'> 
+						<div class='pull-right social'>
+							<span class='socialFooter'><a href='https://www.facebook.com/MNHistoryAlliance/' target='_blank'><i class='fa fa-facebook'></i></a></span>
+							<span class='socialFooter'><a href='https://twitter.com/MNlocalhistory' target='_blank'><i class='fa fa-twitter'></i></a></span>
+							<span class='socialFooter'><a href='https://www.linkedin.com/company/28123620/' target='_blank'><i class='fa fa-linkedin'></i></a></span>
+							<span class='socialFooter'><a href='mailTo:mnhistoryalliance@gmail.com' target='_blank'><i class='fa fa-envelope-o'></i></a></span>
+							<span class='socialFooter'><a href='https://www.instagram.com/mnhistoryalliance/' target='_blank'><i class='fa fa-instagram'></i></a></span>
+							<div class='copy'>© COPYRIGHT 2018. ALL RIGHTS RESERVED.</div>
+							<div class='clean'>
+								<?php print caGetThemeGraphic($this->request, 'clean.jpg'); ?>
+							</div>
+							<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>
+						</div>
+					</div>
+				</div>
+				
 			</div>
 		</footer><!-- end footer -->
 <?php

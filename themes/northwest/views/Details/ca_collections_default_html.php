@@ -25,7 +25,7 @@
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 					<H4>{{{^ca_collections.preferred_labels.name}}}{{{<ifcount code="ca_collections.unitdate.dacs_date_value" min="1"><unit><ifdef code="ca_collections.unitdate.dacs_date_value"><small>, ^ca_collections.unitdate.dacs_date_value</small></ifdef></unit></ifcount>}}}</H4>
-					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
+					{{{<ifdef code="ca_collections.parent_id"><div class='collectionPath'><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
 <?php					
 					if ($vn_pdf_enabled) {
 						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";

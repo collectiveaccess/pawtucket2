@@ -401,6 +401,15 @@ input:focus, input:active, textarea:focus, textarea:active {
 .multisearch .multisearchResult img {
 	margin-bottom:10px;
 }
+.multisearchImgPlaceholder {
+	padding-top:30px;
+	font-size:2em;
+	color:#ddd;
+}
+.multisearch #collectionsBlock .scrollButtonNext, .multisearch #collectionsBlock .scrollButtonPrevious {
+	height:210px;
+	padding-top:90px;
+}
 
 /* Detail */
 
@@ -496,6 +505,23 @@ span.spacer {
 	font-size:16px;
 	color: #454545;
 	font-weight:normal;	
+}
+.detail H6 a {
+	color:#7a3030;
+}
+.detailCollectionPath {
+	font-size:15px;
+	margin-bottom:5px;
+}
+.detailCollectionPath .fa-chevron-right{
+	font-size:12px;
+	margin-left: 5px;
+    margin-right: 5px;
+}
+.collectionPath {
+	font-size:15px;
+	margin-bottom:20px;
+	margin-top:-20px;
 }
 
 /* Login */
@@ -623,6 +649,9 @@ span.spacer {
 }
 #collectionHierarchy HR {
 	border-top: 1px solid #b9b9b9 !important;
+}
+#collectionHierarchy .unit {
+	border:0px;
 }
 
 /* home */

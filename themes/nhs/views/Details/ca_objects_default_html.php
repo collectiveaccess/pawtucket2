@@ -58,6 +58,8 @@
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						
 					print '<div id="detailTools">';
+					#print '<div class="detailTool"><span class="glyphicon glyphicon-book"></span>'.caNavLink($this->request, _t("Ask a Curator / Request an Image"), "", "", "Contact", "Form", array("object_id" => $t_object->get("object_id"), "contactType" => "askCurator")).'</div><!-- end detailTool -->';
+					print "<div class='detailTool'><span class='glyphicon glyphicon-book'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavURL($this->request, '', 'Contact', 'Form', array('object_id' => $t_object->get("object_id"), 'contactType' => 'askCurator'))."\"); return false;' title='"._t("Ask a Curator / Request an Image")."'>"._t("Ask a Curator / Request an Image")."</a></div><!-- end detailTool -->";
 					if ($vn_comments_enabled) {
 ?>				
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
@@ -78,43 +80,36 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
-				<H4>{{{^ca_objects.preferred_labels.name}}}</H4>
-<?php
-				$va_types = $t_object->get("ca_objects.aat", array("returnAsArray" => true));
-				$va_types_processed = array();
-				if(is_array($va_types) && sizeof($va_types)){
-					foreach($va_types as $vs_type){
-						if($vs_type != $t_object->get("ca_objects.preferred_labels.name")){
-							$va_types_processed[] = $vs_type;
-						}
-					}
-					if(sizeof($va_types_processed)){
-						print "<H6>".join(", ", $va_types_processed)."</H6>";
-					}
-				}
-?>
-				<HR/>
+				{{{<ifdef code="ca_objects.preferred_labels.name"><div class="unit"><H4>^ca_objects.preferred_labels.name</H4></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Object number</H6>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.nonpreferred_labels.name"><unit relativeTo="ca_objects" delimiter=" "><div class="unit"><H6><if rule='^ca_objects.nonpreferred_labels.type_id%convertCodesToDisplayText=1 =~ /alternate/'>Alternate </if>Title</H6>^ca_objects.nonpreferred_labels.name</div></unit></ifdef>}}}
-				{{{<ifdef code="ca_objects.date.display_date"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.date.display_date</unit></div></ifdef>}}}
-				
-				
-				
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><div class="unit"><H6>Creator</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter="<br/>">^ca_entities.preferred_labels</unit></div></ifcount>}}}
+				{{{<ifdef code="ca_objects.date.dates_value"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.date.dates_value</unit></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.description">
-					<HR/>
 					<div class='unit'><h6>Description</h6>
 						<span class="trimText">^ca_objects.description</span>
 					</div>
 				</ifdef>}}}
-				<HR/>
-				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><div class="unit"><H6>Creator</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit></div></ifcount>}}}
-				{{{<ifdef code="ca_objects.materials"><div class="unit"><H6>Materials</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.materials</unit></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.credit_line"><div class="unit"><H6>Credit Line</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.credit_line</unit></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.signed.signed_name"><div class="unit"><H6>Inscription</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.signed.signed_name">^ca_objects.signed.signed_name</ifdef><ifdef code="ca_objects.signed.signed_location"> (^ca_objects.signed.signed_location)</ifdef></unit></div></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.materials|ca_objects.credit_line|ca_objects.signed.signed_name"><HR/></ifdef>}}}		
-
-<?php
+				{{{<ifdef code="ca_objects.materials"><div class="unit"><H6>Materials</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.materials</unit></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.signed.signed_name"><div class="unit"><H6>Inscription</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.signed.signed_name">^ca_objects.signed.signed_name</ifdef><ifdef code="ca_objects.signed.signed_location"> (^ca_objects.signed.signed_location)</ifdef></unit></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.credit_line"><div class="unit"><H6>Credit Line</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.credit_line</unit></div></ifdef>}}}
+<?php				
+				$va_types = $t_object->get("ca_objects.aat", array("returnAsArray" => true));
+				$va_types_processed = array();
+				if(is_array($va_types) && sizeof($va_types)){
+					foreach($va_types as $vs_type){
+						$vs_type = trim($vs_type);
+						if($vs_type && ($vs_type != $t_object->get("ca_objects.preferred_labels.name"))){
+							$va_types_processed[] = $vs_type;
+						}
+					}
+					if(sizeof($va_types_processed)){
+						print "<div class='unit'><H6>Object Type".((sizeof($va_types_processed) > 1) ? "s" : "")."</H6>";
+						print join(", ", $va_types_processed);
+						print "</div>";
+					}
+				}
 				# --- lcsh_tgm and list_items from the search_terms list are grouped together
 				$va_subjects = array();
 				$va_lcsh_tgm = $t_object->get("ca_objects.lcsh_tgm", array("returnAsArray" => true));
@@ -138,11 +133,10 @@
 					print join("<br/>", $va_subjects);
 					print "</div>";
 				}
+
 ?>
-				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="artist"><H6>Related People & Organizations</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>" excludeRelationshipTypes="artist"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
-									
-				{{{<ifcount code="ca_collections" min="1"><H6>Collection</H6><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="artist,donor"><div class="unit"><H6>Related People & Organizations</H6><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="artist,donor">^ca_entities.preferred_labels (^relationship_typename)</unit></div></unit>}}}
+				{{{<ifcount code="ca_collections" min="1"><div class="unit"><H6>Collection</H6><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 				
 				{{{map}}}
 						
