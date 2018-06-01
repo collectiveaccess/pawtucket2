@@ -676,13 +676,13 @@ body.initial .browseMenuFacetSearchInput.form-control, .browseMenuFacetSearchInp
 }
 .front div.slideTextRight{
 	margin-top:20px;
-	margin-left:20px;
+	margin-left:10px;
 	margin-right:35px;
 }
-@media (min-width:992px){
+@media (min-width:1100px){
 	.front div.slideTextRight{
 		margin-top:50px;
-		margin-left:50px;
+		margin-left:40px;
 		margin-right:65px;
 	}
 }
@@ -745,9 +745,14 @@ body.initial .browseMenuFacetSearchInput.form-control, .browseMenuFacetSearchInp
 	color: #0d394e;
 	font-family: 'Roboto';
 	margin:50px 0px 90px 0px;
-	font-size:28px;
+	font-size:18px;
 	line-height:1.5em;
 	text-align: center;
+}
+@media (min-width:768px){
+	.front h1{
+		font-size:28px;
+	}
 }
 .front .featuredItems li{
 	width:250px;
@@ -805,6 +810,10 @@ body.initial .browseMenuFacetSearchInput.form-control, .browseMenuFacetSearchInp
 /* static pages */
 .staticPage h2{
 	margin-top:0px;
+}
+
+.staticPage .bodytext{
+	font-size:16px;
 }
 
 /* browse */
