@@ -55,6 +55,17 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
+<?php
+				if ($vs_collection_paths = $t_object->get('ca_collections.hierarchy.preferred_labels', array('returnWithStructure' => true))) {
+					$va_collection_array = array();
+					foreach ($vs_collection_paths as $va_key => $vs_collection_path_t) {
+						foreach ($vs_collection_path_t as $vn_collection_id => $vs_collection_path) {
+							$va_collection_array[] = caDetailLink($this->request, $vs_collection_path[$vn_collection_id]['name'], '', 'ca_collections', $vn_collection_id);
+						}
+					}
+					print "<div class='detailCollectionPath'>".join(' <i class="fa fa-chevron-right"></i> ', $va_collection_array)."</div>";
+				}
+?>				
 				<H4 style='padding-bottom:0px;'>{{{ca_objects.preferred_labels.name}}}</H4>
 				{{{<ifcount min="1" code="ca_objects.date"><h6 style='padding:0px 0px 30px 0px; margin-top:5px;'><unit delimiter="<br/>">^ca_objects.date</unit></h6></ifcount>}}}
 				
