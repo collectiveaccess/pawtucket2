@@ -38,7 +38,7 @@
 	# --- loop through to grab current exhibitions and display on top
  	# --- build array of upcomig to list below
  	$va_current = array();
- 	$va_upcoming = array();
+ 	$va_past = array();
  	$va_ids = array();
  	$va_reps = array();
  	if(is_array($va_lists) && sizeof($va_lists)){
@@ -53,9 +53,12 @@
 				if($qr_list->get("view_status", array("convertCodesToDisplayText" => true)) == "on view"){
 					$va_current[] = array("id" => $qr_list->get("ca_occurrences.occurrence_id"), "title_link" => $qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>'), "date" => $qr_list->get("ca_occurrences.exhibition_dates"), "short_desc" => $qr_list->get("ca_occurrences.short_description"));
 				}else{
-					if($va_raw_dates["exhibition_dates"][0] > $vs_current_date){
-						$va_upcoming[] = array("id" => $qr_list->get("ca_occurrences.occurrence_id"), "title_link" => $qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>'), "date" => $qr_list->get("ca_occurrences.exhibition_dates"));
-					}
+					#if($va_raw_dates["exhibition_dates"][0] > $vs_current_date){
+						$va_past[] = array("id" => $qr_list->get("ca_occurrences.occurrence_id"), "title_link" => $qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>'), "date" => $qr_list->get("ca_occurrences.exhibition_dates"));
+					#}
+				}
+				if(sizeof($va_past) == 3){
+					break;
 				}
 			}
 		}
@@ -70,7 +73,7 @@
 ?>
 		<div class="row">
 			<div class="col-sm-12">
-				<H4><?php print (sizeof($va_current) > 1) ? _t("Current Exhibitions") : _t("Current Exhibition"); ?></H4><br/>
+				<H4><?php print (sizeof($va_current) > 1) ? _t("Current & Upcoming Exhibitions") : _t("Current & Upcoming Exhibition"); ?></H4><br/>
 			</div>
 		</div>
 <?php
@@ -87,7 +90,7 @@
 			}
 ?>
 				<div class='col-xs-12 col-sm-6'>
-					<div class='fullWidthImage'><?php print $vs_rep; ?></div>
+					<div class='fullWidth'><?php print $vs_rep; ?></div>
 				</div>
 				<div class='col-xs-12 col-sm-6'>
 <?php
@@ -101,19 +104,19 @@
 		}
 		$vb_output = 1;
 	}
-
-	if(is_array($va_upcoming) && sizeof($va_upcoming)){
+	if ($blah) { // removed from display but saving this unless we need to put it back
+	if(is_array($va_past) && sizeof($va_past)){
 ?>
 	<div class="row">
 		<div class="col-sm-12">
-			<H4><?php print _t("Upcoming Exhibitions"); ?></H4><br/>
+			<H4><?php print _t("Past Exhibitions"); ?></H4><br/>
 		</div>
 	</div>
 	<div class="row">
 <?php
-		$va_upcoming_reps = $t_occurrence->getPrimaryMediaForIDs($va_current_ids, array("medium"), array("checkAccess" => $va_access_values));
+		$va_past_reps = $t_occurrence->getPrimaryMediaForIDs($va_current_ids, array("medium"), array("checkAccess" => $va_access_values));
 		$vn_col = 0;
-		foreach($va_upcoming as $vn_occ_id => $va_exhibit_info) {
+		foreach($va_past as $vn_occ_id => $va_exhibit_info) {
 			if(is_array($va_reps) && $va_reps[$va_exhibit_info["id"]]){
 				$vs_rep = caDetailLink($this->request, $va_reps[$va_exhibit_info["id"]], "", "ca_occurrences",  $va_exhibit_info["id"]);
 			}else{
@@ -131,6 +134,7 @@
 		}
 		# --- close trailing row
 		$vb_output = 1;
+	}
 	}
 ?>
 	</div><!-- end row -->

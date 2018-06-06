@@ -38,11 +38,17 @@
 	if($vs_timeline_set_code = $this->config->get("front_page_timeline_set_code")){
 		$t_set = new ca_sets();
 		$t_set->load(array('set_code' => $vs_timeline_set_code));
-		$vn_timeline_set_id = $t_set->get("set_id");
+		if(is_array($va_access_values) && sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values)){
+			$vn_timeline_set_id = $t_set->get("set_id");
+			$o_occ_context = new ResultContext($this->request, 'ca_occurrences', 'front');
+			$o_occ_context->setAsLastFind();
+			$o_occ_context->setResultList(array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))));
+			$o_occ_context->saveContext();
+		}
 	}
 # --- get the narrative threads to link to browses
 	$t_list = new ca_lists();
-	$va_narrative_threads = $t_list->getItemsForList("narrative_thread", array("extractValuesByUserLocale" => true));
+	$va_narrative_threads = $t_list->getItemsForList("narrative_thread", array("extractValuesByUserLocale" => true, "checkAccess" => $va_access_values));
 #print_r($va_narrative_threads);	
 ?>
 	<div class="row frontSearchRow">
@@ -63,27 +69,26 @@
 			<br/>
 			<br/>
 			<br/>
-			<H1>Mission statement. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
+			<H1>The Indian Residential School History and Dialogue Centre is located on the traditional, ancestral, unceded territory of the hən̓q̓əmin̓əm̓ speaking xʷməθkʷəy̓əm (Musqueam) people.</H1>
 			<br/>
 			<br/>
 			<br/>
 		</div>
 	</div>
-	<div class="row blackBg">
-		<div class="col-sm-5 col-md-3 col-md-offset-1">
-			<br/><br/><br/><br/><br/>
-			<H2>Primer orci quis vehicula eleifend</H2>
-			<H3>Metus elit laoreet elit</H3>
+	<div class="row blackBg primer">
+		<div class="col-sm-5 col-sm-offset-0 col-md-5 col-md-offset-1 col-lg-5 col-lg-offset-1">
+			<H2><?php print caNavLink($this->request, "Resources", "", "", "Listing", "Resources"); ?></H2>
+			<H3>Perspectives, stories and dialogues</H3>
 			<br/>
 			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.
+				Explore a continually growing set of resources that explore the historical context of settler colonialism in Canada and foundational themes relating to the history of the Indian Residential School System, Indigenous histories, contemporary realities, and futures.
 			</p>
 			<p class="text-center">
-				<br/><a href="#" class="btn-default outline">MORE</a>
+				<br/><?php print caNavLink($this->request, "MORE", "btn-default outline", "", "Listing", "Resources"); ?>
 			</p>
 		</div>
-		<div class="col-md-7  col-md-offset-1 bleed">
-			<?php print caGetThemeGraphic($this->request, 'hptest3.jpg'); ?>
+		<div class="col-sm-7 col-sm-offset-0 col-md-6 col-md-offset-0 col-lg-5 col-lg-offset-1 bleed">
+			<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'centre6.jpg'), "", "", "Listing", "Resources"); ?>
 		</div>
 	</div>
 <?php
@@ -111,34 +116,64 @@
 	</div>
 <?php
 	}
-	
-	$t_list = new ca_lists();
- 	$vn_repository_id = $t_list->getItemIDFromList('entity_types', 'repository');
-	$o_search = new EntitySearch();
-	if(is_array($this->opa_access_values) && sizeof($this->opa_access_values)){
-		$o_search->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
-	}
-	$qr_res = $o_search->search("ca_entities.type_id:".$vn_repository_id);
-	if($qr_res->numHits()){
 ?>
+	
 	<div class="row tanBg">
-		<H1 class="text-center">Partners</H1>
+		<div class="col-md-12 col-lg-10 col-lg-offset-1">
+			<H2>Explore by Narrative Thread</H2>
+			<div class="row frontNarrativeThreads">
+<?php
+	if(is_array($va_narrative_threads) && sizeof($va_narrative_threads)){
+		foreach($va_narrative_threads as $vn_item_id => $va_narrative_thread){
+			print "<div class='col-sm-3'>";
+			print "<div class='frontNarrativeThreadContainer'>".
+						"<div class='frontNarrativeThreadDesc'><H2>".caNavLink($this->request, $va_narrative_thread["name_singular"], "", "", "Explore", "narrativethreads", array("id" => $vn_item_id))."</H2>".
+						"</div></div>";
+			print "</div>";
+		}
+	}
+?>
+				<div class='col-sm-12 frontNarrativeThreadsAllLink'><?php print caNavLink($this->request, "Explore All <i class='fa fa-arrow-right' aria-hidden='true'></i>", "btn-default btn-lg", "", "Explore", "narrativethreads"); ?></div>
+
+			</div>
+		</div>
+	</div>
+<?php	
+	if($vs_partners_set_code = $this->config->get("front_page_partners_set_code")){
+		$t_partners_set = new ca_sets();
+		$t_partners_set->load(array('set_code' => $vs_partners_set_code));
+		$vn_partners_set_id = $t_partners_set->get("set_id");
+		
+		# Enforce access control on set
+		if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_partners_set->get("access"), $va_access_values))){
+			$va_partner_ids = array_keys(is_array($va_tmp = $t_partners_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());
+			$qr_partners = caMakeSearchResult('ca_entities', $va_partner_ids);
+		}
+	}
+	if($qr_partners && $qr_partners->numHits()){
+		$o_ent_context = new ResultContext($this->request, 'ca_entities', 'front');
+		$o_ent_context->setAsLastFind();
+		$o_ent_context->setResultList(array_keys($t_partners_set->getItemRowIDs()));
+		$o_ent_context->saveContext();
+?>
+	<div class="row">
+		<H2 class="text-center">Partners</H2>
 		<div class="col-lg-12">
 			<div class="jcarousel-wrapper">
 				<div class="jcarousel">
 					<ul>
 
 <?php
-			while($qr_res->nextHit()){
+			while($qr_partners->nextHit()){
 				print "<li><div class='repositoryTile'>";
-				$vs_image = $qr_res->getWithTemplate("<unit relativeTo='ca_entities'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+				$vs_image = $qr_partners->getWithTemplate("<unit relativeTo='ca_entities'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 				if(!$vs_image){
-					$vs_image = $qr_res->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+					$vs_image = $qr_partners->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 				}
 				if($vs_image){
-					print "<div>".caDetailLink($this->request, $vs_image, '', 'ca_entities', $qr_res->get("entity_id"))."</div>";
+					print "<div>".caDetailLink($this->request, $vs_image, '', 'ca_entities', $qr_partners->get("entity_id"))."</div>";
 				}
-				print "<div>".caDetailLink($this->request, $qr_res->get('ca_entities.preferred_labels'), '', 'ca_entities', $qr_res->get("entity_id"))."</div>";
+				print "<div>".caDetailLink($this->request, $qr_partners->get('ca_entities.preferred_labels'), '', 'ca_entities', $qr_partners->get("entity_id"))."</div>";
 				print "</div></li>";
 			}
 ?>
@@ -214,69 +249,6 @@
 
 <?php
 	}
-?>
-	
-	<div class="row">
-		<div class="col-md-12 col-lg-10 col-lg-offset-1">
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-			<br/><H2>Explore by Narrative Thread</H2>
-			<div class="row frontNarrativeThreads">
-<?php
-	$t_set = new ca_sets();
-	if(is_array($va_narrative_threads) && sizeof($va_narrative_threads)){
-		foreach($va_narrative_threads as $vn_item_id => $va_narrative_thread){
-			# --- is there a set of featured items to pull from?
-			$vs_image = "";
-			$t_set->load(array("set_code" => str_replace(" ", "_", $va_narrative_thread["idno"])));
-			if($t_set->get("set_id")){
-				$va_set_reps = $t_set->getRepresentationTags("widepreview", array("checkAccess" => $va_access_values));
-				shuffle($va_set_reps);
-				$vs_image = $va_set_reps[0];
-			}
-			print "<div class='col-sm-3'>";
-			print "<div class='frontNarrativeThreadContainer'><div>".caNavLink($this->request, $vs_image, "", "", "Explore", "narrativethreads", array("id" => $vn_item_id))."</div>".
-						"<div class='frontNarrativeThreadDesc'><H2>".caNavLink($this->request, $va_narrative_thread["name_singular"], "", "", "Explore", "narrativethreads", array("id" => $vn_item_id))."</H2>".
-						"</div></div>";
-			print "</div>";
-		}
-		print "<div class='col-sm-3 frontNarrativeThreadsAllLink'>".caNavLink($this->request, "Explore All <i class='fa fa-arrow-right' aria-hidden='true'></i>", "btn-default btn-lg", "", "Explore", "narrativethreads")."</div>";
-	}
- 
-#			if(is_array($va_narrative_threads) && sizeof($va_narrative_threads)){
-#				foreach($va_narrative_threads as $vn_item_id => $va_narrative_thread){
-#					print "<div class='col-sm-3'>".caNavLink($this->request, "<div class='frontIconButton'><span>".$va_narrative_thread["idno"]."</span></div>", "", "", "Explore", "narrativethreads", array("id" => $vn_item_id))."</div>";
-#				}
-#			}
-
-?>
-			</div>
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-			<br/>
-		</div>
-	</div>
-<!--	<div class="row">
-		<div class="col-md-12 col-lg-10 col-lg-offset-1">
-			<br/>
-			<br/>
-			<br/>
-			<H2>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H2>
-			<br/>
-			<br/>
-			<br/>
-		</div>
-	</div>-->
-
-
-<?php
-		#print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 
 <script type='text/javascript'>

@@ -72,7 +72,7 @@
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
 			$vn_col_span = 3;
-			$vn_col_span_sm = 3;
+			$vn_col_span_sm = 4;
 			$vn_col_span_xs = 6;
 		}
 		if ($vn_start < $qr_res->numHits()) {
@@ -152,7 +152,7 @@
 					$vn_parent_id = $qr_res->get("ca_objects.parent_id");
 					$t_parent = new ca_objects($vn_parent_id);
 					$vs_catno = "";
-					if ($vs_catalog_number = $qr_res->get('ca_objects.catalog_number')) {
+					if ($vs_catalog_number = $qr_res->get('ca_objects.institutional_id')) {
 						$vs_catno = "<div class='catno'>".$vs_catalog_number."</div>";
 					}
 					#$vs_info = null;
@@ -164,7 +164,7 @@
 					#}
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
-					$vs_compare_link = !$vs_type_placeholder ? "<a href='#' class='compare_link' data-id='{$vn_id}'><div class='compareIcon' aria-hidden='true'></div></a>" : '';
+					$vs_compare_link = !$vs_type_placeholder ? "<a href='#' class='compare_link' data-id='object:{$vn_id}'><div class='compareIcon' aria-hidden='true'></div></a>" : '';
 					
 					$vs_result_output = "
 		<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>

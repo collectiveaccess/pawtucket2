@@ -1,6 +1,7 @@
 /* red text: #D20000; red bg:#8a0000; tan: #e0d7ba; charcoal: #605b4b; stone:#f0ede4; */
 body{
-	color: #000000;
+	color: #454545;
+	size:14px;
 }
 .red, a, a:hover{
 	color: #d20000;
@@ -80,6 +81,15 @@ a.black{
 .browse .btn, .sets .btn {
     background-color: #000000;
 }
+@media (max-width: 767px) {
+	.results ul.dropdown-menu{
+		left:auto;
+		right:0px;
+	}
+}
+.results a .fa.fa-gear{
+	color:#666 !important;
+}
 H1, h1, H2, h2 {
     color: #d20000;
 }
@@ -88,17 +98,22 @@ H1, h1, H2, h2 {
 }
 body{
 	margin-top:72px;
-	margin-bottom:300px;
+	margin-bottom:500px;
 }
 @media (min-width: 768px) {
 	body{
 		margin-top:117px;
+		margin-bottom:350px;
 	}
 }
 @media (min-width: 1010px) {
 	body{
 		margin-top:100px;
 	}
+}
+.fullWidth img{
+	width:100%;
+	height:auto;
 }
 /* navbar */
 .navbar-default{
@@ -157,12 +172,25 @@ body{
 		margin-top: 22px;
 	}
 }
+.yamm .nav.navbar-right .dropdown-menu {
+    left: auto;
+    right: auto;
+}
+#user-navbar .dropdown-menu {
+    right: 0px;
+}
+@media (max-width: 767px) {
+	.navbar-nav{
+		margin:0px;
+	}
+}
 #footer{
 	background-color:#000;
 	color:#ffffff;
 	padding:0px;
-	height:300px;
+	height:auto;
 	border:0px;
+	font-family: LatoLight;
 }
 #footer > div{
 	padding:40px 15px 40px 15px;
@@ -177,18 +205,64 @@ body{
 	width:300px;
 	height:auto;
 }
-
+#footer .footerAddress{
+	margin-left:40px;
+	line-height:1.5em;
+	margin-top:-5px;
+}
+#footer .list-inline.footerLinks{
+	/*padding-top:10px;*/
+	padding-right:5px;
+}
+#footer .list-inline.footerLinks{
+	margin-top:30px;
+	text-align:center;
+}
+@media (min-width: 767px) {
+	#footer .list-inline.footerLinks{
+		text-align:right;
+		margin-top:0px;
+	}
+}
+#footer .list-inline.footerLinks li{
+	padding:0px 5px 0px 5px;
+}
+#footer .darkRedBg{
+	font-size:13px;
+}
+@media (min-width: 768px) {
+	#footer .darkRedBg{
+		font-size:16px;
+	}
+}
+#footer .darkRedBg strong{
+	font-weight:normal;
+	font-family: Lato;
+}
 /* front */
+.front{
+	margin-bottom:80px;
+}
 .front H1, .front h1{
 	color:#000;
+	text-align:center;
 }
 .front H2, .front h2{
 	font:lato;
 	font-size:24px;
+	color:#820000;
+	padding-top:80px;
+}
+.front .tanBg{
+	margin-top:40px;
 }
 .front img{
 	width:100%;
 	height:auto;
+}
+.byline{
+	text-align:right;
+	font-size:22px;
 }
 .frontSearchRow{
 	background-image: url("../graphics/centre.jpg");
@@ -205,6 +279,7 @@ body{
 }
 .frontSearchCol .formOutline{
 	background-color:none;
+	position: relative;
 }
 .frontSearchCol .formOutline input, .frontSearchCol .formOutline input:focus{
 	border:0px;
@@ -247,13 +322,41 @@ a:hover .frontIconButton{
 .front .bleed{
 	padding:0px;
 }
+.front .blackBg H2 a, .front .blackBg H2 a:hover{
+	color:#FFFFFF;
+}
+
+@media (max-width: 1300px) {
+	.front .blackBg.primer H2{
+		padding-top:40px;
+	} 
+}
+@media (max-width: 1100px) {
+	.front .blackBg.primer H2{
+		padding-top:20px;
+	} 
+}
+@media (max-width: 768px) {
+	.front .blackBg.primer .text-center{
+		margin-bottom:30px; /* --- space below more button */
+	} 
+}
 .front #frontTimelineContainer {
     height: 500px;
-    margin-top:50px;
-    margin-bottom:50px;
+    margin-top:80px;
+    margin-bottom:80px;
 }
 .front .tl-timeline h2.tl-headline-title{
 	color:#d20000;
+}
+.front .tl-timeline h2{
+	padding-top:15px !Important;
+}
+
+.tl-media-content img{
+	max-height:auto !important;
+	height:auto !important;
+	width:auto !important;
 }
 /*@media (max-width: 767px) {
 	.frontSearchCol .btn-search {
@@ -269,7 +372,7 @@ a:hover .frontIconButton{
 	font-family: lato;
 }
 .front .repositoryTile {
-	width:300px;
+	width:250px;
 	padding-right:30px;
 	margin-top:20px;
 	margin-bottom:20px;
@@ -288,9 +391,16 @@ a:hover .frontIconButton{
 	margin-top:0px;
 	margin-bottom:20px;
 }
-.frontNarrativeThreads .frontNarrativeThreadsAllLink{
-	margin-top:100px;
-	text-align:center;
+.front .jcarousel-control-next, .front .jcarousel-control-prev {
+    margin-top: -70px;
+}
+.frontNarrativeThreads{
+	margin-bottom:80px;
+}
+.frontNarrativeThreadsAllLink{
+	padding-top: 30px;
+	text-align: center;
+	clear: both;
 }
 .frontNarrativeThreadContainer{
 	margin-bottom:15px;
@@ -315,6 +425,7 @@ a:hover .frontIconButton{
 	margin-top:0px;
 	margin-bottom:0px;
 	text-align:center;
+	padding-top:0px;
 }
 .frontNarrativeThreadContainer .frontNarrativeThreadDesc H2 a:hover{
 	text-decoration:none;
@@ -330,51 +441,175 @@ a:hover .frontIconButton{
 div.browseFacetItem a:hover {
     color: #d20000;
 }
+#bRefine.fixed {
+    top: 95px;
+}
+.browseRemoveFacet button.btn-default{
+	text-transform:none;
+}
 
 /* details */
 .detail{
 	padding-bottom:40px;
+	font-size:14px;
+}
+.detail .navTop a{
+	background-color:transparent;
+}
+@media (max-width: 767px) {
+	.detailNavFull{
+		display:none;
+	}
+}
+.detail H2{
+	color:#605b4b;
+	font-size:12px;
+	text-transform:uppercase;
+	font-family:latoLight;
 }
 .detail H4{
 	margin-bottom:10px;
 }
 .detail H6{
 	text-transform:none;
-	margin: 15px 0px 5px 0px;
+	margin: 15px 0px 2px 0px;
+	font-size:14px;
 }
 .detail H6.inline{
-	display:inline-block;
+	display:inline;
 }
 .detail H3, .detail H3 a{
 	font-size:14px;
 	color:#605b4b;
 	margin:0px;
 	padding:0px;
-	cursor:pointer;
 }
 .detail H3 .fa{
 	font-size:12px;
 }
-.detail .collapseBlock{
+.detail a, .detail a:hover {
+    color: #8a0000;
+}
+.detail .breadcrumbTrail{
+	padding-bottom:10px;
+}
+.detail .collapseBlock, .detail .block, .detail .relatedBlock{
 	border-color:#efefef;
 	border-top:1px solid #efefef;
 	padding:10px;
+	clear:both;
 }
 .detail .collapseBlock.last{
 	border-bottom:1px solid #efefef;
+	margin-bottom:15px;
 }
 .detail .collapseBlock .collapseContent{
 	padding-left:10px;
 	padding-right:10px;
 	display:none;
 }
+.detail .collapseBlock H3, .detail H3.collapseBlock  a{
+	cursor:pointer;
+}
 .detail .collapseBlock .collapseContent.open{
 	display:block;
 }
-
+.detail .collapseBlock.discussion{
+	padding-left:5px;
+	padding-right:5px;
+}
+.detail .collapseBlock.discussion{
+	padding-left:5px;
+	padding-right:5px;
+}
+.detail .collapseBlock.discussion .collapseContent{
+	padding-left:0px;
+	padding-right:0px;
+}
+.detail .blockContent{
+	margin:8px 10px 0px 10px;
+}
+.detail .block a{
+	font-family:latoLight;
+	text-transform:uppercase;
+	font-size:11px;
+	font-family: lato;
+}
+.detail .block div span{
+	font-size:11px;
+	text-transform:none;
+	color:#454545;
+	font-family: latoLight;
+}
+.detail .block a.moreLess{
+	padding-left:10px;
+}
+.detail .relatedBlock .relatedBlockContent a{
+	display:inline-block;
+	background-color:#f0ede4;
+	font-size:11px;
+	margin-bottom:2px;
+	font-family:latoLight;
+	padding:10px;
+	width: 100%;
+	text-decoration: none;
+	color:#454545;
+}
+.detail .relatedBlock .relatedBlockContent a:hover{
+	background-color:#e0d7ba;
+}
+.detail .relatedBlock .relatedBlockContent img{
+	width:100%;
+	height:auto;
+	display:block;
+}
+.detail .relatedBlock .relatedBlockContent span{
+	height:2.4em;
+	overflow:hidden;
+	display:block;
+	line-height: 1.2em;
+	text-align:center;
+	margin:20px 0px 20px 0px;
+}
+.detail .relatedBlockContent{
+	clear:both;
+	margin-top:10px;
+	position:relative;
+}
+.detail .relatedBlock .relatedBlockContent a{
+	margin-bottom:15px;
+	color:#000;
+}
+.relTabButton{
+	display:inline-block;
+	padding-right:30px;
+	cursor: pointer;
+	color:#b6b3a7;
+}
+@media (max-width: 767px) {
+	.relTabButton{
+		padding-right:12px;
+		font-size:12px;
+	}
+}
+.relTabButton:hover{
+	color:#605b4b;
+}
+.relTabButton.selected{
+	color:#605b4b;
+}
+.detail .relatedBlockContent .relTab{
+	display:none;
+}
 .detail .stoneBg{
 	padding:10px;
 	margin-bottom:20px;
+	color:#000;
+}
+@media (max-width: 767px) {
+	.detail .stoneBg{
+		margin-top:20px;
+	}
 }
 a.readmore-js-toggle {
     color: #d20000;
@@ -399,49 +634,252 @@ a.readmore-js-toggle {
 	margin-top:0px;
 	padding-top:0px;
 }
+.detail .detailTools{
+	border-bottom:#EDEDED;
+}
 .detail #detailTools a, .detail #detailTools span{
+	size:11px;
+}
+.detail #detailTools a, .detail #detailTools span, .detail .detailTool i{
 	color:#8a0000;
 }
-.detail .narrativeThreadLink{
+.detail a.noUnderline{
+	text-decoration:none !important;
+}
+.detail #detailTools div.small{
+	display:inline;
+}
+.detail #detailTools .detailTool{
+	clear:left;
+}
+.detail #detailTools .detailTool.detailToolInline{
+	padding:0px 1px 0px 1px;
+	float:left;
+	margin-right:0px;
+	clear:none;
+}
+.detail #detailTools .detailTool.detailToolInline i{
+	display:none;
+}
+@media (min-width: 1075px) {
+	.detail #detailTools .detailTool.detailToolInline{
+		
+		padding:0px 2px 0px 2px;
+	}
+	.detail #detailTools .detailTool.detailToolInline i{
+		display:inline;
+	}
+}
+.detail #detailTools .detailTool.detailToolInline .btn-small{
+	padding: 4px 3px 3px 3px;
+	font-size: 8px;
+	margin-bottom:5px;
+}
+.detail .detailToolInline i{
+	color:#FFF;
+	padding:0px;
+	margin:0px;
+}
+
+.mediaViewerCaption{
+	font-size:12px;
+	margin-top:5px;
+}
+/* remove ? */
+.detail a .narrativeThreadLink{
 	margin-top:10px;
 	margin-bottom:10px;
-	padding:10px 5px 10px 10px;
-	border:1px solid #333;
+	padding:20px 5px 18px 10px;
+	border:1px solid #837e6e;
 	background:
 		linear-gradient(
-		  rgba(96, 91, 75, 1), 
-		  rgba(96, 91, 75, 0.3)
+		  rgba(240, 237, 228, 1), 
+		  rgba(240, 237, 228, 0.6)
 		),
 		url("../graphics/buttonBg.jpg"),
 		no-repeat;
 	background-size: cover;
 	text-align:left;
-}
-.detail .narrativeThreadLink:hover{
-	cursor:pointer;
-	border:1px solid #8a0000;	
-	background:
-		linear-gradient(
-		  rgba(0, 0, 0, 1), 
-		  rgba(0, 0, 0, 0.3)
-		),
-		url("../graphics/buttonBg.jpg"),
-		no-repeat;
-	background-size: cover;
-}
-.detail .narrativeThreadLink a{
 	font-family: lato;
-	color:#FFF;
-	font-size:12px;
+	color:#605b4b;
+	font-size:14px;
+	text-decoration:none !important;
 }
-.detail .narrativeThreadLink a:hover{
+.detail a:hover .narrativeThreadLink{
+	border:1px solid #8a0000;
 	text-decoration:none;
-	color:#FFF;
+	color:#8a0000;
 }
 .detail .narrativeThreadLink .fa{
 	float: right;
 	margin-top: 2px;
 	margin-left: 5px;
+}
+/* end remove block */
+
+.detail H6 a, .detail H6 a:hover{
+	padding:0px;
+	color: #8a0000;
+}
+#pageArea.resource .detailMediaToolbar{
+	display:none;
+}
+#detailDiscussion, #detailComments{
+	border-top:0px;
+	display:block;
+}
+#detailDiscussion .btn-default, #detailComments .btn-default, #transcriptLink .btn-default{
+	padding: 3px 5px 3px 5px;
+	font-size:10px;
+	margin-top:10px;
+}
+.detail #detailDiscussion, .detail #detailComments {
+    font-family: latoLight;
+    color: #454545;
+    padding: 10px 0px 10px 0px;
+}
+#detailComments{
+	margin-left:10px;
+	font-size:12px;
+}
+#detailComments blockquote{
+	margin-top:10px;
+	padding-top:0px;
+}
+.detail #tags a{
+	display:inline !important;
+	padding: 0px;
+	width: auto;
+	text-transform: none;
+	font-family:latoLight;
+	font-size:13px;
+}
+.detail #tags a:hover{
+	text-decoration:underline;
+	background-color:#FFF;
+}
+.detail .redLink{
+	color:#8a0000;
+	text-transform:uppercase;
+	font-family:lato;
+	text-decoration:none;
+	font-size:11px;
+}
+.detail a.readmore-js-toggle {
+    padding-top: 3px;
+    font-size:11px;
+    text-transform:none !important;
+    font-family:latoLight;
+}
+.popover{
+	z-index:100000;
+}
+.popover.top{
+	left:20px !Important;
+}
+.popover.left .arrow{
+	left:auto !important;
+}
+.popover-title {
+    font-size: 12px;
+    text-transform:none;
+    padding:3px 15px 3px 15px !important;
+}
+.popover-content {
+    font-size: 12px !important;
+}
+@media (max-width: 992px) {
+	[data-toggle="popover"] {
+	  cursor: pointer;
+	}
+}
+#transcriptLink{
+	margin-bottom:5px;
+}
+.detail #detailAnnotations .detailAnnotationList{
+	max-height:600px;
+}
+.detail #detailAnnotations ul li{
+	background-color: #f5f5f5;
+}
+.detail #detailAnnotations ul li:hover{
+	background-color: #ededed;
+	curson:arrow;
+}
+.detail #detailAnnotations li.active {
+    font-weight: normal;
+    font-style: inherit;
+}
+.detailAnnotation .annotationMD{
+	display:none;
+	padding:10px;
+}
+.detailAnnotation.active .annotationMD{
+	display:block;
+	background-color: #fff;
+}
+.detailAnnotation .detailAnnotationTitle{
+	curson:pointer;
+	font-weight:normal;
+	font-family: lato;
+}
+.detailAnnotation .detailAnnotationTitle span{
+	font-weight:normal;
+	font-size:11px;
+	font-family: latoLight;
+}
+.detailAnnotation.active .detailAnnotationTitle{
+	color:#8a0000;
+}
+.detailAnnotation .detailAnnotationTitle .fa-play-circle{
+	display:none;
+}
+.detailAnnotation .detailAnnotationTitle .fa-play-circle-o{
+	display:inline;
+}
+.detailAnnotation.active .detailAnnotationTitle .fa-play-circle{
+	display:inline;
+	color:green;
+}
+.detailAnnotation.active .detailAnnotationTitle .fa-play-circle-o{
+	display:none;
+}
+.annotationTranscription{
+	max-height:250px;
+	overflow:auto;
+}
+.annotationLinks a{
+	text-transform:uppercase;
+	font-size:11px;
+	font-family: lato;
+}
+.annotationLinks span{
+	font-size: 11px;
+	text-transform: none;
+	color: #454545;
+	font-family: latoLight;
+}
+/* browse filters on repository and school pages */
+.detailFilter{
+	padding: 0px 15px 20px 15px;
+	font-family:lato;
+}
+.detailFilter .btn-group{
+	padding-left:5px;
+	padding-right:20px;
+}
+.detailFilter .btn-group .btn-default {
+    background-color: #f0ede4;
+    color: #000000;
+}
+@media (max-width: 767px) {
+	.detailFilter .btn-group{
+		display:block;
+		margin-bottom:20px;
+	}
+	.detailFilter .btn-group .btn-default, .detailFilter .btn-group ul.dropdown-menu {
+		width:100%;
+	}	
 }
 
 
@@ -463,6 +901,16 @@ a.readmore-js-toggle {
 	background-color:#605b4b;
 	color:#fff;
 	padding:20px;
+}
+@media (min-width: 768px) {
+	.narrativeThreadContainer .narrativeThreadDesc {
+		min-height: 400px;
+	}
+}
+@media (min-width: 1010px) {
+	.narrativeThreadContainer .narrativeThreadDesc {
+		min-height: 350px;
+	}
 }
 .narrativeThreadContainer .narrativeThreadDesc H2{
 	text-transform:none;
@@ -583,17 +1031,18 @@ a.readmore-js-toggle {
 .gallery .unit{
 	margin-top:10px;
 }
+.gallery .galleryPrevious, .gallery .galleryNext{
+	margin-bottom:45px;
+}
 .schoolBottom{
 	margin-bottom:100px;
 }
-@media (min-width: 768px) {
 	.schoolBottom .noPadding{
 		margin-right:0px;
 		margin-left:0px;
 		padding-right:0px;
 		padding-left:0px;
 	}
-}
 .schoolBottom a.schoolTabButton .grayBg, .schoolBottom a.schoolTabButton:hover{
 	font-size:30px;
 	color:#FFF;
@@ -623,7 +1072,7 @@ a.readmore-js-toggle {
 	overflow-y:scroll;
 	overflow-x:hidden;
 }
-#exploreSchoolMapContainer{
+#exploreSchoolListContainer{
 	z-index:10;
 }
 .schoolBottom #exploreSchoolListContainer img{
@@ -636,10 +1085,12 @@ a.readmore-js-toggle {
 	box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.5);
 }
 .schoolBottom #exploreSchoolListContainer .schoolLink{
-	padding:5px 0px 20px 2px;
+	margin:5px 0px 20px 2px;
+	height: 2.2em;
+	line-height: 1.1em;
 }
 .schoolBottom #exploreSchoolListContainer .schoolLink a{
-	font-size: 16px;
+	font-size: 14px;
 	font-family: lato;
 }
 #exploreMapBalloonContainer {
@@ -662,4 +1113,94 @@ a.readmore-js-toggle {
 }
 #exploreMapBalloonContainer h6{
 	margin-bottom:0px;
+}
+
+/* listing */
+.exploreResourcesRow{
+	background:
+		linear-gradient(
+		  rgba(224, 215, 186, .95), 
+		  rgba(224, 215, 186, 0.75)
+		),
+		url("../graphics/centre2.jpg");
+	background-position: center; 
+}
+.listing{
+	padding-bottom:40px;
+}
+.listingContainer{
+	margin-bottom:45px;
+	border:1px solid #333;
+}
+.listingContainerImgContainer{
+	max-height:400px;
+	overflow:hidden;
+}
+.listingContainer img{
+	width:100%;
+	height:auto;
+}
+.listingContainer .listingContainerDesc {
+	background-color:#605b4b;
+	color:#fff;
+	padding:20px;
+}
+.listingContainer .listingContainerDesc H2{
+	text-transform:none;
+	color:#FFF;
+	margin-bottom:5px;
+}
+.listingContainer .listingContainerDesc H2 a{
+	text-transform:none;
+	color:#FFF;
+}
+.listingContainer .listingContainerDesc H2 a:hover{
+	text-decoration:none;
+	color:#d20000;
+}
+.listingContainer .listingContainerDesc small{
+	margin-bottom:25px;
+	display:inline-block;
+	font-size:12px;
+}
+.listingContainer .listingContainerDesc small a{
+	color:#FFF;
+}
+.listingContainer .listingContainerDesc .text-center{
+	margin:40px 0px 30px 0px;
+}
+
+/* About page */
+.staticPage H1.quote{
+	font-size: 28px;
+	font-family: LatoLight;
+	padding-top: 15px;
+	color:#000;
+	text-transform:none;
+	margin-bottom:30px;
+	text-align:center;
+	line-height:1.3em;
+}
+@media (max-width: 767px) {
+	.staticPage H1.quote{
+		font-size: 18px;
+	}
+}
+.staticPage H1{
+	margin-top:40px;
+}
+.staticPage p{
+	font-size:16px;
+	margin-bottom:20px;
+}
+.staticPage b{
+	font-family: lato;
+	font-weight: normal;
+}
+.aboutLogo{
+	margin-bottom:25px;
+}
+.aboutLogo img{
+	width:100%;
+	height:auto;
 }

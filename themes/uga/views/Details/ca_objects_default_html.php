@@ -102,7 +102,7 @@
 ?>				
 				
 				<br/><br/>
-<!--				
+				
 				<button id="aeon_submit">Request Item</button>
 				
 				<form id="aeon_request" name="EADRequest" action="https://uga.aeon.atlas-sys.com/aeon/aeon.dll" method="post">
@@ -158,7 +158,7 @@
 						
 						$('#aeon_submit').aeonRequestsDialog(settings);
 				 </script>
--->
+
 				
 				<hr></hr>
 					<div class="row">

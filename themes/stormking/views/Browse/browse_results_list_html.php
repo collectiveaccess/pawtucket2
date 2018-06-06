@@ -65,7 +65,7 @@
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
 		$vn_col_span = 4;
-		$vn_col_span_md = 6;
+		$vn_col_span_md = 4;
 		$vn_col_span_sm = 6;
 		$vn_col_span_xs = 12;
 		$vb_refine = false;
@@ -76,8 +76,8 @@
 // 		}
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = 6;
-			$vn_col_span_md = 6;
+			$vn_col_span = 4;
+			$vn_col_span_md = 4;
 			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 12;
 		}
@@ -100,6 +100,9 @@
 			
 			$t_list_item = new ca_list_items();
 			while($qr_res->nextHit()) {
+				if(($vs_table == "ca_occurrences") && ($qr_res->get("view_status") == 258)){
+					continue;
+				}
 				if($vn_c == $vn_hits_per_block){
 					if($vb_row_id_loaded){
 						break;
@@ -118,6 +121,9 @@
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
 					$vs_record_title 		= $qr_res->get("{$vs_table}.preferred_labels");
+					if($vs_table == "ca_occurrences"){
+						$vs_record_title = "<i>".$vs_record_title."</i>";
+					}		
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 					$vs_label_detail_link 	= caDetailLink($this->request, $vs_record_title, '', $vs_table, $vn_id);
 					$vs_thumbnail = "";
@@ -165,7 +171,7 @@
 						}
 					}
 					if ($vs_table == 'ca_occurrences') {
-						if ($vs_ex_date = $qr_res->get('ca_occurrences.exhibition_dates')) {
+						if ($vs_ex_date = $qr_res->get('ca_occurrences.exhibition_dates', array('delimiter' => '<br/>', 'sort' => 'ca_occurrences.exhibition_dates', 'sortDirection' => 'DESC'))) {
 							$vs_ex_date_text = "<br/><span style='padding-top:5px;display:inline-block;'>".$vs_ex_date."</span>";
 						} else {
 							$vs_ex_date_text = null;

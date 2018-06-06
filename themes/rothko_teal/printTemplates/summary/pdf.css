@@ -8,7 +8,7 @@
 }    
 
 #header_wk { display:block; background-color:#DEDEDE; height: 0px; width: 100%; text-align: left; vertical-align: top; margin: -30px 5px 0px 0px; padding: 10px 5px 0px 0px;}
-#footer_wk { background-color:#DEDEDE; width: 100%; text-align: left; vertical-align: top; margin: 36px 5px 20px 0px; padding: 0px 5px 20px 0px; }
+#footer_wk { background-color:#fff; width: 100%; text-align: left; vertical-align: top; margin: 36px 5px 20px 0px; padding: 0px 5px 20px 0px; }
 
 .headerImg{
 	width:auto;
@@ -39,7 +39,7 @@ body {
 	font-size:12px;
 	font-family: Lato;
   	margin-top:5px;
-  	padding-top:55px;
+  	padding-top:5px;
   	padding-bottom:55px;
   	margin-left:50px;
   	margin-right:50px;
@@ -85,4 +85,41 @@ h6 {
 .unit a {
 	color: #333;
 	text-decoration:none;
+}
+table.relObjects {
+	width:700px;
+}
+table.relObjects td {
+	width:25%;
+	padding:15px;
+	font-size:12px;
+}
+table.relObjects td div{
+	margin-bottom:3px;
+	padding-bottom:0px;
+	line-height:14px;
+}
+table.relObjects td img{
+	width:100%;
+	height:auto;
+	margin-top:15px;
+	margin-bottom:10px;
+}
+#header_wk {
+	top:0px;
+	margin-top:-40px;
+	background-color:white;
+	height:80px;
+}
+.remarkCaption span{
+	font-size:12px !important;
+	font-family: 'Gudea', sans-serif !important;
+	color: #333 !important;
+}
+.remarksImg {
+	margin-top:15px;
+}
+.remarksImg img{
+	width:100%;
+	height:auto;
 }

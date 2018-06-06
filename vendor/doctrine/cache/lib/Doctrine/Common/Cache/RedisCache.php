@@ -19,7 +19,7 @@
 
 namespace Doctrine\Common\Cache;
 
- use Redis;
+use Redis;
 
 /**
  * Redis cache provider.
@@ -44,9 +44,10 @@ class RedisCache extends CacheProvider
      */
     public function setRedis(Redis $redis)
     {
-	 $redis->setOption(Redis::OPT_SERIALIZER, $this->getSerializerValue());   
-         $this->redis = $redis;
+        $redis->setOption(Redis::OPT_SERIALIZER, $this->getSerializerValue());
+        $this->redis = $redis;
     }
+
     /**
      * Gets the redis instance used by the cache.
      *

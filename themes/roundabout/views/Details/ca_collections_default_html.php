@@ -274,15 +274,15 @@
 				print "</div><!-- end unit -->";
 			}
 /*			if ($va_contents = $t_item->get('ca_collections.children.preferred_labels.name', array('delimiter' => '<br/>', 'returnAsLink' => true, 'returnAsLinkTarget' => 'FindingAids', "sort" => "filing_number"))) {
-				print "<div class='header'><a name='contents'>".unicode_ucfirst($t_item->getTypeName())." "._t('Contents')."</a></div>";
-				$va_anchors[] = '<p><a href="#contents">'.unicode_ucfirst($t_item->getTypeName())." "._t('Contents').'</a></p>';
+				print "<div class='header'><a name='contents'>".caUcFirstUTF8Safe($t_item->getTypeName())." "._t('Contents')."</a></div>";
+				$va_anchors[] = '<p><a href="#contents">'.caUcFirstUTF8Safe($t_item->getTypeName())." "._t('Contents').'</a></p>';
 
 				print "<div class='unit'>".$va_contents."</div>";
 			}
 */
 			if ($va_contents = $t_item->get('ca_collections.children.collection_id', array('returnAsArray' => 1, 'sort' => 'ca_collections.filing_number'))) {
-				print "<div class='header'><a name='contents'>".unicode_ucfirst($t_item->getTypeName())." "._t('Contents')."</a></div>";
-				$va_anchors[] = '<p><a href="#contents">'.unicode_ucfirst($t_item->getTypeName())." "._t('Contents').'</a></p>';
+				print "<div class='header'><a name='contents'>".caUcFirstUTF8Safe($t_item->getTypeName())." "._t('Contents')."</a></div>";
+				$va_anchors[] = '<p><a href="#contents">'.caUcFirstUTF8Safe($t_item->getTypeName())." "._t('Contents').'</a></p>';
 				print "<div class='unit'>";
 				foreach ($va_contents as $va_child_id) {
 					$t_item = new ca_collections($va_child_id);

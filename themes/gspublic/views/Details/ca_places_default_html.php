@@ -42,7 +42,12 @@
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
 				}
-				print '<div class="detailTool"><span class="glyphicon glyphicon-upload"></span>'.caNavLink($this->request, _t("Contribute content"), "", "", "Contribute", "objects").'</div><!-- end detailTool -->';
+				if($this->request->isLoggedIn()){
+					print '<div class="detailTool"><span class="glyphicon glyphicon-upload"></span>'.caNavLink($this->request, _t("Contribute content"), "", "", "Contribute", "objects", array("ref_table" => "ca_places", "ref_row_id" => $t_item->get("place_id"))).'</div><!-- end detailTool -->';
+					#print "<div class='detailTool'><span class='glyphicon glyphicon-upload'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Contribute', 'objects', array("ref_table" => "ca_places", "ref_row_id" => $t_item->get("place_id")))."\"); return false;' >"._t("Contribute content")."</a></div><!-- end detailTool -->";
+				}else{
+					print "<div class='detailTool'><span class='glyphicon glyphicon-upload'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm')."\"); return false;' >"._t("Login to contribute content")."</a></div><!-- end detailTool -->";
+				}
 				print '</div><!-- end detailTools -->';				
 ?>
 					

@@ -53,7 +53,7 @@
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, ''._t('Full Results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> | 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, ''._t('Full Results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> 
 <?php
 				}
 ?>
@@ -71,7 +71,7 @@
 				$vn_id 					= $qr_results->get("ca_objects.object_id");
 				$vn_parent_id = $qr_results->get("ca_objects.parent_id");
 				$t_parent = new ca_objects($vn_parent_id);
-				if ($vs_catno = $qr_results->get('ca_objects.catalog_number')) {
+				if ($vs_catno = $qr_results->get('ca_objects.institutional_id')) {
 					$vs_catno = "<div class='catno'>".$vs_catno."</div>";
 				}
 				$vs_label_detail_link 	= "<span class='resultLabel'>".caDetailLink($this->request, $qr_results->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id)."</span>";
@@ -113,9 +113,9 @@
 					$vs_download_link = caNavLink($this->request, '<i style="padding-left:10px;" class="fa fa-download"></i>', 'multiDl', '', 'Detail', 'DownloadRepresentation', array('representation_id' => $vs_rep_id, 'object_id' => $vs_obj_id, 'download' => 1, 'version' => 'original'));
 				}	
 				
-				$vs_compare_link = ($vb_has_image ? "<a href='#' class='compare_link' data-id='{$vn_id}'><div class='compareIcon' aria-hidden='true'></div></a>" : '');			
+				$vs_compare_link = ($vb_has_image ? "<a href='#' class='compare_link' data-id='object:{$vn_id}'><div class='compareIcon' aria-hidden='true'></div></a>" : '');			
 				print "
-	<div class='bResultItemCol col-xs-6 col-sm-3'>
+	<div class='bResultItemCol col-xs-6 col-sm-4 col-md-3'>
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultItemContent'><div class='imgContainer'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div></div>
 				<div class='bResultItemText'>

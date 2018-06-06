@@ -70,7 +70,7 @@
 			<?php print caGetThemeGraphic($this->request, 'home/discover/'.rand(1,$vn_filecount).'.jpg'); ?>	
 		</div>			
 	</div>				
-	<div class="row frontBand gallery">
+	<div class="row frontBand galleryFront">
 		<div class="col-sm-8 noPaddingLeft">
 <?php
 		$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/home/gallery/";
@@ -83,17 +83,18 @@
 			<?php print caGetThemeGraphic($this->request, 'home/gallery/'.rand(1,$vn_filecount).'.jpg'); ?>		
 		</div>	
 		<div class="col-sm-4 textRight">
-			<h1>Featured Galleries</h1>
-			<p>Explore iconic Girl Scout moments from shaking hands with First Ladies to the design of the first uniform.  Take a walk through the interactive galleries.</p>
+			<h1>Featured Galleries & Interactives</h1>
+			<p>Explore iconic Girl Scout moments. Take a virtual walk through the interactive galleries.</p>
 <?php
-			print caNavLink($this->request, 'More', 'btn-default', '', 'Gallery', 'Index');
+			print caNavLink($this->request, 'galleries', 'btn-default', '', 'Gallery', 'Index');
+			print "&nbsp;&nbsp;&nbsp;".caNavLink($this->request, 'Interactives', 'btn-default', '', 'Interactive', 'Index');
 ?>		
 		</div>	
 	</div>	
 	<div class="row frontBand collections">
 		<div class="col-sm-4 textLeft">
 			<h1>Research Collections</h1>
-			<p>For over 100 years Girl Scouts have been at the forefront of empowering others and striving to make a difference. Delve deeper into history through the Research Collections.</p>
+			<p>For over 100 years Girl Scouts have been at the forefront of empowering others and striving to make a difference. Delve deeper into Girl Scout history through the Research Collections.</p>
 <?php
 			print caNavLink($this->request, 'More', 'btn-default', '', 'Collections', 'Index');
 ?>			

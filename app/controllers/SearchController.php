@@ -133,7 +133,7 @@
  			$this->opo_result_context->setAsLastFind(true);
  			
  			
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_browse_info["displayName"]).": ".$this->opo_result_context->getSearchExpression());
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search %1", $va_browse_info["displayName"]).$this->request->config->get("page_title_delimiter").$this->opo_result_context->getSearchExpression());
  			
  			//
  			// Handle advanced search form submissions
@@ -219,8 +219,7 @@
                     }
                 }
 			}
-			
-				
+					
 			if ($this->request->getParameter('getFacet', pInteger)) {
 				$vs_facet = $this->request->getParameter('facet', pString);
 				$this->view->setVar('facet_name', $vs_facet);
@@ -232,7 +231,7 @@
 					case "alphabetical":
 					case "list":
 					default:
-						$this->view->setVar('facet_content', !$vb_search_was_replaced ? $o_browse->getFacetContent($vs_facet, array("checkAccess" => $this->opa_access_values)) : []);
+						$this->view->setVar('facet_content', !$vb_search_was_replaced ? $o_browse->getFacetContent($vs_facet, array('checkAccess' => $this->opa_access_values, 'request' => $this->request)) : []);
 						$this->render("Browse/list_facet_html.php");
 						break;
 					case "hierarchical":
@@ -253,6 +252,21 @@
 				$o_browse->addCriteria('_search', array($vs_search_refine.(($o_search_config->get('matchOnStem') && !preg_match('!\*$!', $vs_search_refine) && preg_match('![\w]+$!', $vs_search_refine)) ? '*' : '')), array($vs_search_refine));
 			} elseif ($vs_facet = $this->request->getParameter('facet', pString)) {
 				$o_browse->addCriteria($vs_facet, array($this->request->getParameter('id', pString)));
+			} elseif (($vs_facets = $this->request->getParameter('facets', pString)) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
+			    foreach ($va_facets as $vs_facet_spec) {
+			        if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
+			        $vs_facet = array_shift($va_tmp);
+			        $o_browse->addCriteria($vs_facet, explode("|", join(":", $va_tmp))); 
+			    }
+			}
+			//
+			// Add Additional base criteria if necessary
+			//
+			if($va_base_criteria = $o_search_config->get('baseCriteria')){
+				$va_table_criteria = $va_base_criteria[$va_browse_info['table']];
+				foreach($va_table_criteria as $vs_facet => $vs_value){
+					$o_browse->addCriteria($vs_facet, $vs_value);
+				}
 			}
 			
 			//
@@ -322,7 +336,7 @@
 			}
 			
 			
-			if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced))); }
+			if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced))); }
 		
 			//
 			// Facets
@@ -331,7 +345,7 @@
 				$o_browse->setFacetGroup($vs_facet_group);
 			}
 			$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
-			$va_facets = $o_browse->getInfoForAvailableFacets();
+			$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
 			if(is_array($va_available_facet_list) && sizeof($va_available_facet_list)) {
 				foreach($va_facets as $vs_facet_name => $va_facet_info) {
 					if (!in_array($vs_facet_name, $va_available_facet_list)) {
@@ -342,7 +356,7 @@
 		
 			if (!$vb_search_was_replaced) {
 				foreach($va_facets as $vs_facet_name => $va_facet_info) {
-					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array("checkAccess" => $this->opa_access_values));
+					$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array('checkAccess' => $this->opa_access_values, 'request' => $this->request));
 				}
 			}
 		
@@ -450,7 +464,7 @@
  			$this->opo_result_context = new ResultContext($this->request, $va_search_info['table'], $this->ops_find_type.'_advanced', $ps_function);
  			$this->opo_result_context->setAsLastFind();
  			
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search %1", $va_search_info["displayName"]));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search %1", $va_search_info["displayName"]));
  			$this->view->setVar('searchInfo', $va_search_info);
  			$this->view->setVar('options', caGetOption('options', $va_search_info, array(), array('castTo' => 'array')));
  			

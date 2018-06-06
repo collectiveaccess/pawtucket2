@@ -36,22 +36,27 @@
 	if ($vn_representation_count > 1) {
 ?>
 <div class="jcarousel-wrapper">
-	<div class="jcarousel" id="repViewerCarousel">
+	<div class="jcarousel" id="repViewerCarousel" data-current_id="<?php print $va_representation_ids[0]; ?>">
 		<ul>
 			{{{slides}}}
 		</ul>
 	</div><!-- end jcarousel -->
 
-	<!-- Prev/next controls  
+	<!-- Prev/next controls  -->
 	<div id='detailRepNav'>
-		<a href='#' id='detailRepNavPrev' title='<?php print _t("Previous"); ?>'><span class='fa fa-chevron-left'></span></a> 
+        <a href='#' class='zoomButton' id='detailRepNavZoom' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => $vs_context, 'id' => $vn_subject_id, 'overlay' => 1)); ?>/representation_id/" + $(".jcarousel").data("current_id")); return false;' title='<?php print _t("Zoom"); ?>'><span class='glyphicon glyphicon-zoom-in'></span></a>
+        <a href='#' class='compare_link' id='detailRepNavCompare' title='Compare' data-id_selector='.jcarousel'><i class='fa fa-clone' aria-hidden='true'></i></a>
+		
+	   <a href='#' id='detailRepNavPrev' title='<?php print _t("Previous"); ?>'><span class='fa fa-chevron-left'></span></a> 
+		
+	    <span id="detailRepNavStart"></span>/<span id="detailRepNavCount"></span>
 		<a href='#' id='detailRepNavNext' title='<?php print _t("Next"); ?>'><span class='fa fa-chevron-right'></span></a>
 		<div style='clear:both;'></div>
-	</div> -->
-	<!-- Pagination -->
+	</div> 
+	<div class="num"></div>
+	<!-- Pagination 
 	<p class="jcarousel-pagination">
-	<!-- Pagination items will be generated in here -->
-	</p>
+	</p>-->
 </div><!-- end jcarousel-wrapper -->
 
 <script type='text/javascript'>
@@ -68,7 +73,6 @@
 		}).on('jcarousel:createend jcarousel:animateend', function(event, carousel) {
 			var current_rep_id = parseInt($('.jcarousel').jcarousel('first').attr('id').replace('slide', ''));
 			var i = caSliderepresentation_ids.indexOf(current_rep_id);
-
 			if (event.type == 'jcarousel:animateend') {
 				if (!jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html()) {
 					// load media via ajax
@@ -85,6 +89,9 @@
 					if (h > 0) $('.jcarousel').height(h);
 				}
 			}
+			
+			jQuery("#detailRepNavStart").html((i + 1) + '');
+			jQuery("#detailRepNavCount").html(caSliderepresentation_ids.length + '');
 <?php
 	if ($vs_show_annotations_mode == 'div') {
 ?>
@@ -113,6 +120,9 @@
 						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('{{{active_representation_class}}}');
 						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('{{{active_representation_class}}}');
 					});
+					
+					var v = $('.jcarousel').jcarousel('fullyvisible');
+					$('.jcarousel').data('current_id', jQuery(v[0]).attr('id').replace("slide", ""));
 				}
 			});
 
@@ -129,23 +139,11 @@
 						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('{{{active_representation_class}}}');
 						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('{{{active_representation_class}}}');
 					});
-					
+					var v = $('.jcarousel').jcarousel('fullyvisible');
+					$('.jcarousel').data('current_id', jQuery(v[0]).attr('id').replace("slide", ""));
 					
 				}
-			});
-			/*
-			 Pagination initialization
-			 */
-			$('.jcarousel-pagination')
-				.on('jcarouselpagination:active', 'a', function() {
-					$(this).addClass('active');
-				})
-				.on('jcarouselpagination:inactive', 'a', function() {
-					$(this).removeClass('active');
-				})
-				.jcarouselPagination({
-					// Options go here
-				});			
+			});	
 		if( current_rep_id > 0){
 			$('.jcarousel').jcarousel('scroll', $('#slide' + current_rep_id));
 		}
@@ -156,6 +154,12 @@
 		// Just dump the slide list without controls when there is only one representation
 ?>
 		{{{slides}}}
+		
+		<div id='detailRepNav'>
+            <a href='#' class='zoomButton' id='detailRepNavZoom' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => $va_representation_ids[0], 'overlay' => 1)); ?>"); return false;' title='<?php print _t("Zoom"); ?>'><span class='glyphicon glyphicon-zoom-in'></span></a>
+            <a href='#' class='compare_link' id='detailRepNavCompare' title='Compare' data-id='representation:<?php print $va_representation_ids[0]; ?>'><i class='fa fa-clone' aria-hidden='true'></i></a>
+		    <div style='clear:both;'></div>
+	    </div> 
 <?php
 		if ($vs_show_annotations_mode == 'div') {
 ?>	

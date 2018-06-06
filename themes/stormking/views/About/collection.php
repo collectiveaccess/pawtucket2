@@ -34,7 +34,7 @@
 	<div id="main-background" style="background-image:url(<?php  print $vs_image_url; ?>)"></div>
 
 	<div class="content-narrow">
-		<h1>Collection</h1>
-		<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas tempor tristique tristique. Duis sit amet metus porta ex fringilla placerat. Morbi efficitur iaculis dapibus. Integer convallis lacus quis pulvinar malesuada. Mauris scelerisque lobortis orci sit amet fermentum. Mauris lobortis elementum nisi non cursus. Aliquam vitae tincidunt lorem. Pellentesque vitae felis vel ligula blandit tincidunt. Nulla varius lorem et augue iaculis rutrum.</p>
-		<p>Fusce pellentesque ex metus, id dictum metus rhoncus eu. Curabitur sagittis tellus tempus quam pharetra, nec faucibus massa porta. Phasellus pellentesque lorem scelerisque ligula tempor tempor. Sed in est id lectus ultricies dictum. Vestibulum congue mi id elit maximus pulvinar. Ut ultricies at felis a porttitor. </p>
-	</div><!--end col-sm-8-->
+		<h1>No longer used --- now content managed --- Collection</h1>
+		<p>Storm King collects, exhibits, and conserves modern and contemporary art—from large-scale sculpture situated in Storm King’s expansive landscape, to site-specific earthworks, to related drawings and photographs—to create a dynamic and unique place to explore art in nature.</p>
+		<p>The artworks in this section represent a selection from Storm King's permanent collection as well as long-term loans.</p>
+	</div><!--end col-sm-8--> 

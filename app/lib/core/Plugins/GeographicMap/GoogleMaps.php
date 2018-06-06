@@ -208,7 +208,9 @@ jQuery(document).ready(function() {
 		
 
 			caMap_{$vs_id}.map.setOptions({styles: styles});
-			var mc_{$vs_id} = new MarkerClusterer(caMap_{$vs_id}.map);
+			var mc_{$vs_id} = new MarkerClusterer(caMap_{$vs_id}.map, [], {maxZoom: 14});
+			GeoMarker_{$vs_id} = new GeolocationMarker(caMap_{$vs_id}.map);
+			GeoMarker_{$vs_id}.setCircleOptions({ fillColor: 'red', radius: '100', visible: true, map: caMap_{$vs_id}.map});
 ";
 	
 	if ($vn_zoom_level > 0) {
@@ -220,7 +222,7 @@ jQuery(document).ready(function() {
 	} else {
 		if ($vn_min_zoom_level) {
 				$vs_buf .= "
-					var idleMinListener_{$vs_id} = google.maps.event.addListenerOnce(caMap_{$vs_id}.map, 'zoom_changed', function() {
+					var idleMinListener_{$vs_id} = google.maps.event.addListenerOnce(caMap_{$vs_id}.map, 'idle', function() {
 						if (caMap_{$vs_id}.map.getZoom() < {$vn_min_zoom_level}) {
 							caMap_{$vs_id}.map.setZoom({$vn_min_zoom_level});
 						}

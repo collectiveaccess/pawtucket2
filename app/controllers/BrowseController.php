@@ -82,7 +82,7 @@
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type");
  			}
-			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Browse %1", $va_browse_info["displayName"]));
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Browse %1", $va_browse_info["displayName"]));
  			$this->view->setVar("browse_type", $ps_function);
  			$vs_class = $this->ops_tablename = $va_browse_info['table'];
  			
@@ -93,10 +93,11 @@
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
 			
-			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable")) {
-				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable"));
+			$vs_type_key = caMakeCacheKeyFromOptions($va_types);
+			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable{$vs_type_key}")) {
+				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable{$vs_type_key}"));
 			} else {
-				ExternalCache::save("{$vs_class}totalRecordsAvailable", $vn_count = $vs_class::find(['deleted' => 0], ['checkAccess' => $this->opa_access_values, 'returnAs' => 'count', 'restrictToTypes' => (sizeof($va_types)) ? $va_types : null]));
+				ExternalCache::save("{$vs_class}totalRecordsAvailable{$vs_type_key}", $vn_count = $vs_class::find(['deleted' => 0], ['checkAccess' => $this->opa_access_values, 'returnAs' => 'count', 'restrictToTypes' => (sizeof($va_types)) ? $va_types : null]));
 				$this->view->setVar('totalRecordsAvailable', $vn_count);
 			}
 			
@@ -191,13 +192,13 @@
 			
 			if (($vs_facets = $this->request->getParameter('facets', pString)) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
 			    foreach ($va_facets as $vs_facet_spec) {
-			        $va_tmp = explode(':', $vs_facet_spec);
+			        if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
 			        $vs_facet = array_shift($va_tmp);
 			        $o_browse->addCriteria($vs_facet, explode("|", join(":", $va_tmp))); 
 			    }
 			
-			} elseif ($vs_facet = $this->request->getParameter('facet', pString)) {
-				$o_browse->addCriteria($vs_facet, explode('|', $this->request->getParameter('id', pString)));
+			} elseif (($vs_facet = $this->request->getParameter('facet', pString)) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString))), function($v) { return strlen($v); })) && sizeof($p)) {
+				$o_browse->addCriteria($vs_facet, $p);
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
 					if (is_array($va_base_criteria)) {
@@ -265,7 +266,7 @@
 
  			$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
  			
-			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically));
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically));
 			
 			//
 			// Facets
@@ -275,10 +276,10 @@
 			}
 			
 			$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
-			$va_facets = $o_browse->getInfoForAvailableFacets();
+			$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
 				if(isset($va_base_criteria[$vs_facet_name])) { continue; } // skip base criteria 
-				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacet($vs_facet_name, array("checkAccess" => $this->opa_access_values, 'checkAvailabilityOnly' => caGetOption('deferred_load', $va_facet_info, false, array('castTo' => 'bool'))));
+				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacet($vs_facet_name, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'checkAvailabilityOnly' => caGetOption('deferred_load', $va_facet_info, false, array('castTo' => 'bool'))));
 			}
 			$this->view->setVar('facets', $va_facets);
 		
