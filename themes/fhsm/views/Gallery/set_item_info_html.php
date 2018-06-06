@@ -3,35 +3,31 @@
 <?php
 				$t_object = new ca_objects($this->getVar('object_id'));
                 $vs_sci_name_display = '';
-                $vs_sciNameAuthor = $t_object->get('ca_objects.taxonomy.scientificNameAuthorship');
-                $vs_yearPublished = $t_object->get('ca_objects.taxonomy.yearPublished');
-
-                if($vs_species = $t_object->get('ca_objects.taxonomy.specificEpithet')){
-                    if($vs_genus = $t_object->get('ca_objects.taxonomy.genus')){
-                        $vs_sci_name_display .= $vs_genus.' ';
-                    }
-                    $vs_sci_name_display .= $vs_species.' ';
-                } elseif($vs_genus = $t_object->get('ca_objects.taxonomy.genus')){
-                    $vs_sci_name_display .= $vs_genus.' ';
-                } elseif ($vs_family = $t_object->get('ca_objects.taxonomy.family')) {
-                    $vs_sci_name_display .= $vs_family.' ';
-                } elseif ($vs_order = $t_object->get('ca_objects.taxonomy.order')) {
-                    $vs_sci_name_display .= $vs_order.' ';
-                } elseif ($vs_class = $t_object->get('ca_objects.taxonomy.class')) {
-                    $vs_sci_name_display .= $vs_class.' ';
+                $vn_taxonID = $t_object->get('ca_occurrences.occurrence_id', ['restrictToRelationshipTypes' => 'taxonomy']);
+                $t_taxa = new ca_occurrences($vn_taxonID);
+                $vs_taxaName = $t_taxa->get("ca_occurrences.preferred_labels");
+                $vs_taxaType = $t_taxa->get("ca_occurrences.type_id", ['convertCodesToDisplayText' => true]);
+                if($vs_taxaType == 'Specific Epithet'){
+                    $vs_genus = $t_taxa->get("ca_occurrences.parent.parent.preferred_labels");
+                    $vs_sci_name_display = '<em>'.$vs_genus.' '.$vs_taxaName.'</em>';
                 } else {
-					$vs_sci_name_display .= 'Unknown ';
-				}
+                    $vs_sci_name_display = $vs_taxaName;
+                    if($vs_taxaType == 'Genus'){
+                        $vs_sci_name_display = '<em>'.$vs_sci_name_display.'</em>';
+                    }
+                }
+                $vs_sciNameAuthor = $t_taxa->get('ca_occurrences.authorship.taxaAuthor');
+                $vs_yearPublished = $t_taxa->get('ca_occurrences.authorship.taxaYear');
 
                 if($vs_sciNameAuthor){
-                    $vs_sci_name_display .= '('.$vs_sciNameAuthor;
+                    $vs_sci_name_display .= ' ('.$vs_sciNameAuthor;
                     if($vs_yearPublished){
                         $vs_sci_name_display .= ', '.$vs_yearPublished.")";
                     } else {
                         $vs_sci_name_display .= ')';
                     }
-                }elseif($vs_yearPublished){
-                    $vs_sci_name_display .= '('.$vs_yearPublished.')';
+                }else if($vs_yearPublished){
+                    $vs_sci_name_display .= ' ('.$vs_yearPublished.')';
                 }
                 print '<h6>'.$vs_sci_name_display.'</h6>';
 ?>

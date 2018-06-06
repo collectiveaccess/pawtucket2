@@ -113,35 +113,31 @@
 					$vs_object_details = '';
 					if($vs_table == 'ca_objects'){
 						$vs_sci_name_display = '';
-						$vs_sciNameAuthor = $qr_res->get('ca_objects.taxonomy.scientificNameAuthorship');
-						$vs_yearPublished = $qr_res->get('ca_objects.taxonomy.yearPublished');
-
-						if($vs_species = $qr_res->get('ca_objects.taxonomy.specificEpithet')){
-							if($vs_genus = $qr_res->get('ca_objects.taxonomy.genus')){
-								$vs_sci_name_display .= $vs_genus.' ';
-							}
-							$vs_sci_name_display .= $vs_species.' ';
-						} elseif($vs_genus = $qr_res->get('ca_objects.taxonomy.genus')){
-							$vs_sci_name_display .= $vs_genus.' ';
-						} elseif ($vs_family = $qr_res->get('ca_objects.taxonomy.family')) {
-							$vs_sci_name_display .= $vs_family.' ';
-						} elseif ($vs_order = $qr_res->get('ca_objects.taxonomy.order')) {
-							$vs_sci_name_display .= $vs_order.' ';
-						} elseif ($vs_class = $qr_res->get('ca_objects.taxonomy.class')) {
-							$vs_sci_name_display .= $vs_class.' ';
-						} else {
-							$vs_sci_name_display .= 'Unknown ';
-						}
+						$vn_taxonID = $qr_res->get('ca_occurrences.occurrence_id', ['restrictToRelationshipTypes' => 'taxonomy']);
+		                $t_taxa = new ca_occurrences($vn_taxonID);
+                        $vs_taxaName = $t_taxa->get("ca_occurrences.preferred_labels");
+                        $vs_taxaType = $t_taxa->get("ca_occurrences.type_id", ['convertCodesToDisplayText' => true]);
+                        if($vs_taxaType == 'Specific Epithet'){
+                            $vs_genus = $t_taxa->get("ca_occurrences.parent.parent.preferred_labels");
+                            $vs_sci_name_display = '<em>'.$vs_genus.' '.$vs_taxaName.'</em>';
+                        } else {
+                            $vs_sci_name_display = $vs_taxaName;
+                            if($vs_taxaType == 'Genus'){
+                                $vs_sci_name_display = '<em>'.$vs_sci_name_display.'</em>';
+                            }
+                        }
+						$vs_sciNameAuthor = $t_taxa->get('ca_occurrences.authorship.taxaAuthor');
+						$vs_yearPublished = $t_taxa->get('ca_occurrences.authorship.taxaYear');
 
 						if($vs_sciNameAuthor){
-							$vs_sci_name_display .= '('.$vs_sciNameAuthor;
+							$vs_sci_name_display .= ' ('.$vs_sciNameAuthor;
 							if($vs_yearPublished){
 								$vs_sci_name_display .= ', '.$vs_yearPublished.")";
 							} else {
 								$vs_sci_name_display .= ')';
 							}
-						}elseif($vs_yearPublished){
-							$vs_sci_name_display .= '('.$vs_yearPublished.')';
+						}else if($vs_yearPublished){
+							$vs_sci_name_display .= ' ('.$vs_yearPublished.')';
 						}
 						$vs_object_details .= $vs_sci_name_display."<br>";
 						if($vs_formation = $qr_res->get('ca_objects.lithostratigraphy.formation')){

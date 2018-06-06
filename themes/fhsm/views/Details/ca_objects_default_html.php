@@ -52,36 +52,32 @@
 						<H4>
 							{{{ca_objects.preferred_labels.name}}}<br/>
 		<?php
-						$vs_sci_name_display = '';
-						$vs_sciNameAuthor = $t_object->get('ca_objects.taxonomy.scientificNameAuthorship');
-						$vs_yearPublished = $t_object->get('ca_objects.taxonomy.yearPublished');
-
-						if($vs_species = $t_object->get('ca_objects.taxonomy.specificEpithet')){
-							if($vs_genus = $t_object->get('ca_objects.taxonomy.genus')){
-								$vs_sci_name_display .= $vs_genus.' ';
-							}
-							$vs_sci_name_display .= $vs_species.' ';
-						} elseif($vs_genus = $t_object->get('ca_objects.taxonomy.genus')){
-							$vs_sci_name_display .= $vs_genus.' ';
-						} elseif ($vs_family = $t_object->get('ca_objects.taxonomy.family')) {
-							$vs_sci_name_display .= $vs_family.' ';
-						} elseif ($vs_order = $t_object->get('ca_objects.taxonomy.order')) {
-							$vs_sci_name_display .= $vs_order.' ';
-						} elseif ($vs_class = $t_object->get('ca_objects.taxonomy.class')) {
-							$vs_sci_name_display .= $vs_class.' ';
-						} else {
-							$vs_sci_name_display .= 'Unknown ';
-						}
+		                $vn_taxonID = $t_object->get('ca_occurrences.occurrence_id', ['restrictToRelationshipTypes' => 'taxonomy']);
+		                $vs_sci_name_display = '';
+						$t_taxa = new ca_occurrences($vn_taxonID);
+                        $vs_taxaName = $t_taxa->get("ca_occurrences.preferred_labels");
+                        $vs_taxaType = $t_taxa->get("ca_occurrences.type_id", ['convertCodesToDisplayText' => true]);
+                        if($vs_taxaType == 'Specific Epithet'){
+                            $vs_genus = $t_taxa->get("ca_occurrences.parent.parent.preferred_labels");
+                            $vs_sci_name_display = '<em>'.$vs_genus.' '.$vs_taxaName.'</em>';
+                        } else {
+                            $vs_sci_name_display = $vs_taxaName;
+                            if($vs_taxaType == 'Genus'){
+                                $vs_sci_name_display = '<em>'.$vs_sci_name_display.'</em>';
+                            }
+                        }
+						$vs_sciNameAuthor = $t_taxa->get('ca_occurrences.authorship.taxaAuthor');
+						$vs_yearPublished = $t_taxa->get('ca_occurrences.authorship.taxaYear');
 
 						if($vs_sciNameAuthor){
-							$vs_sci_name_display .= '('.$vs_sciNameAuthor;
+							$vs_sci_name_display .= ' ('.$vs_sciNameAuthor;
 							if($vs_yearPublished){
 								$vs_sci_name_display .= ', '.$vs_yearPublished.")";
 							} else {
 								$vs_sci_name_display .= ')';
 							}
 						}elseif($vs_yearPublished){
-							$vs_sci_name_display .= '('.$vs_yearPublished.')';
+							$vs_sci_name_display .= ' ('.$vs_yearPublished.')';
 						}
 						print $vs_sci_name_display;
 ?>
@@ -131,7 +127,20 @@
 				
 				<div class="detailDivider"></div>
                 <!-- DETAILS SECTION -->
-
+<?php
+                $va_taxa = ['Kingdom' => '', 'Phylum' => '', 'Class' => '', 'Order' => '', 'Family' => '', 'Genus' => '', 'Specific Epithet' => ''];
+                $vs_taxaHierarchy = $t_object->get('ca_occurrences.hierarchy.idno');
+				$va_taxaHierarchy = explode(';', $vs_taxaHierarchy);
+				
+				foreach($va_taxaHierarchy as $vn_taxaIdno){
+				    $vo_taxa = ca_occurrences::find(['idno' => $vn_taxaIdno], ['returnAs' => 'firstModelInstance']);
+				    $vs_type = $vo_taxa->get('ca_occurrences.type_id', ['convertCodesToDisplayText' => true]);
+				    if(array_key_exists($vs_type, $va_taxa)){
+				        $vs_label = $vo_taxa->get('ca_occurrences.preferred_labels');
+				        $va_taxa[$vs_type] = $vs_label;
+				    }
+				}
+?>
 				<div class="row">
 					<div class="col-sm-6 col-xs-12">
 						<h4>Taxonomy</h4>
@@ -145,47 +154,47 @@
 						<div class="row detailRow">
 							<div class="col-xs-6 detailFeild">
 								<h6>Kingdom</h6>
-								{{{ca_objects.taxonomy.kingdom}}}
+								<?php print $va_taxa['Kingdom']; ?>
 							</div>
 							<div class="col-xs-6 detailFeild">
 								<h6>Genus</h6>
-								{{{ca_objects.taxonomy.genus}}}
+								<?php print $va_taxa['Genus']; ?>
 							</div>
 						</div>
 						<div class="row detailRow">
 							<div class="col-xs-6 detailFeild">
 								<h6>Phylum</h6>
-								<?php print $t_object->get('ca_objects.taxonomy.phylum', array('convertCodesToDisplayText' => true)); ?>
+								<?php print $va_taxa['Phylum']; ?>
 							</div>
 							<div class="col-xs-6 detailFeild">
 								<h6>Species</h6>
-								{{{ca_objects.taxonomy.specificEpithet}}}
+								<?php print $va_taxa['Specific Epithet']; ?>
 							</div>
 						</div>
 						<div class="row detailRow">
 							<div class="col-xs-6 detailFeild">
 								<h6>Class</h6>
-								{{{ca_objects.taxonomy.class}}}
+								<?php print $va_taxa['Class']; ?>
 							</div>
 							<div class="col-xs-6 detailFeild">
 								<h6>Author</h6>
-								{{{ca_objects.taxonomy.scientificNameAuthorship}}}
+								<?php print $vs_sciNameAuthor; ?>
 							</div>
 						</div>
 						<div class="row detailRow">
 							<div class="col-xs-6 detailFeild">
 								<h6>Order</h6>
-								{{{ca_objects.taxonomy.order}}}
+								<?php print $va_taxa['Order']; ?>
 							</div>
 							<div class="col-xs-6 detailFeild">
 								<h6>Year</h6>
-								{{{ca_objects.taxonomy.yearPublished}}}
+								<?php print $vs_yearPublished; ?>
 							</div>
 						</div>
 						<div class="row detailRow">
 							<div class="col-xs-6 detailFeild">
 								<h6>Family</h6>
-								{{{ca_objects.taxonomy.family}}}
+								<?php print $va_taxa['Family']; ?>
 							</div>
 						</div>
 					</div>
