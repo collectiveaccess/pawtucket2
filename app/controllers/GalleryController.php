@@ -268,7 +268,7 @@
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
  			$this->view->setVar("set_item_id", $pn_item_id); 
  			$t_rep = new ca_object_representations($va_set_items[$pn_item_id]["representation_id"]);
-			if(!sizeof($this->opa_access_values) || (is_array($this->opa_access_values) && sizeof($this->opa_access_values) && in_array($t_rep->get("access"), $this->opa_access_values))){
+			if(!(is_array($this->opa_access_values) && sizeof($this->opa_access_values) && !in_array($t_rep->get("access"), $this->opa_access_values))){
 				$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
 				$this->view->setVar("rep_object", $t_rep);
 				$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));

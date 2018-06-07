@@ -34,7 +34,7 @@
 				<div class="col-md-4 col-sm-4 widget footer-widget widget_text">
 					<h4 class="widgettitle">About our museum</h4>
 					<div class="textwidget">
-						<p><a href="http://www.hollandmuseum.org" class="footer-img"><?php print caGetThemeGraphic($this->request, 'HMcolorRGB.PNG'); ?></a></p>
+						<p><a href="http://www.hollandmuseum.org" class="footer-img"><?php print caGetThemeGraphic($this->request, 'HMcolorRGB.png'); ?></a></p>
 						<p>(616) 796-3329</p>
 						<p>The Holland Museum is located at the corner of 10th Street and River Avenue, across from Centennial Park. Please use the parking lot behind the museum on 9th Street or street parking available along 10th Street. Handicap accessibility is available from the east side of building.</p>
 					</div>
