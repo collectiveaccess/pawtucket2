@@ -364,7 +364,10 @@ input:focus, input:active, textarea:focus, textarea:active {
 .front .jcarousel-pagination a.active:hover {
 	background-color:#cf0;
 }
-
+.front .nav-pills > li > a, .front .nav-pills > li > a:hover {
+    font-weight: bold;
+    color:#7a3030;
+}
 /* Search */
 
 .multisearch .pull-right {
@@ -626,6 +629,22 @@ span.spacer {
 
 .collectionsList a {
 	color:#7a3030;
+}
+@media (max-width: 400px) {
+	.collectionTile .collectionImg{
+		margin-bottom:20px;
+	}
+}
+@media (min-width: 400px) {
+	.collectionTile .collectionImg{
+		float:left;
+		width:25%;
+		padding-right:20px;
+	}
+}
+.collectionTile .collectionImg img{
+	width:100%;
+	height:auto;
 }
 .collectionTile .title a {
 	font-weight:bold;

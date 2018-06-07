@@ -18,7 +18,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 	</div>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Object Titles only.">Title</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object titles only.">Title</span>
 			{{{ca_objects.preferred_labels.name%width=220px}}}
 		</div>
 	</div>
@@ -30,7 +30,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Object description text only.">Description</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object description text only.">Description</span>
 			{{{ca_objects.description%width=220px}}}
 		</div>
 	</div>	
