@@ -1646,7 +1646,7 @@ a .svg-inline--fa.clearFacet {
     font-size: 14px;
     vertical-align: top;
 }
-.detail .detailMediaToolbar .dlButton {
+.detail .detailMediaToolbar .dlButton, .detail .detailMediaToolbar .zoomButton {
 	display:none;
 }
 .detail .detailMediaToolbar .compare_link {
