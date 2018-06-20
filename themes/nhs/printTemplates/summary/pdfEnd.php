@@ -1,13 +1,13 @@
 <?php
-/** ---------------------------------------------------------------------
- * themes/default/Front/front_page_html : Front page of site 
+/* ----------------------------------------------------------------------
+ * app/templates/pdfEnd.php : bottom-matter appended to PDF templates
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,22 +23,14 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
- * @package CollectiveAccess
- * @subpackage Core
- * @license http://www.gnu.org/copyleft/gpl.html GNU Public License version 3
+ * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
+ * Template configuration:
+ *
+ * @name PDF end
+ * @type pageEnd
  *
  * ----------------------------------------------------------------------
  */
 ?>
-
-<?php
-	print $this->render("Front/featured_set_slideshow_html.php");
-?>
-	<div class="row">
-		<div class="col-sm-12 col-md-8 col-md-offset-2">
-			<H1>{{{home_intro_text}}}</H1>
-		</div>
-	</div>
-<?php
-	print $this->render("Front/gallery_slideshow_html.php");
-?>
+	</body>
+</html>
