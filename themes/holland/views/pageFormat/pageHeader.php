@@ -112,7 +112,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'HMcolorRGB.PNG'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'HMcolorRGB.png'), "navbar-brand", "", "","");
 ?>
 				<div class="headerTagLine"><?php print caNavLink($this->request, $this->getVar("header_text"), "", "", "", ""); ?></div>
 			</div>

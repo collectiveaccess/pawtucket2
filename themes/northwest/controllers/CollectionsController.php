@@ -94,13 +94,50 @@
  			$this->opo_result_context->setAsLastFind();
  			
  			$t_list = new ca_lists();
-			$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", ($this->opo_config->get("landing_page_collection_type")) ? $this->opo_config->get("landing_page_collection_type") : "collection");
+			$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", ($this->opo_config->get("landing_page_collection_type")) ? $this->opo_config->get("landing_page_collection_type") : "archive_collection");
 			$vs_sort = ($this->opo_config->get("landing_page_sort")) ? $this->opo_config->get("landing_page_sort") : "ca_collections.preferred_labels.name";
 			$qr_collections = ca_collections::find(array('type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => $vs_sort));
 			$this->view->setVar("collection_results", $qr_collections);
 			caSetPageCSSClasses(array("collections", "landing"));
  			$this->render("Collections/index_html.php");
  		}
+ 		# -------------------------------------------------------
+ 		public function CollectionList() {
+ 			# --- show children of NWS archives collection record
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("section_title"));
+ 			
+ 			$this->opo_result_context = new ResultContext($this->request, "ca_collections", "collections");
+ 			$this->opo_result_context->setAsLastFind();
+ 			
+ 			$vs_sort = ($this->opo_config->get("landing_page_records_sort")) ? $this->opo_config->get("landing_page_records_sort") : "ca_collections.preferred_labels.name";
+			$vn_collection_id = $this->request->getParameter('collection_id', pInteger);
+ 			$t_collection = new ca_collections($vn_collection_id);
+ 			$va_child_ids = $t_collection->get("ca_collections.children.collection_id", array('returnAsArray' => 1,'checkAccess' => $this->opa_access_values, 'sort' => $vs_sort));
+ 			$this->view->setVar("t_collection", $t_collection);
+ 			
+ 			if(is_array($va_child_ids) && sizeof($va_child_ids)){
+ 				$qr_collections = caMakeSearchResult('ca_collections', $va_child_ids);
+ 				$this->view->setVar("collection_results", $qr_collections);
+ 			}
+ 			caSetPageCSSClasses(array("collections", "landing"));
+ 			$this->render("Collections/records_html.php");
+ 		}
+ 		# -------------------------------------------------------
+ 		public function SpecialCollectionsList() {
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("section_title"));
+ 			
+ 			$this->opo_result_context = new ResultContext($this->request, "ca_collections", "collections");
+ 			$this->opo_result_context->setAsLastFind();
+ 			
+ 			$t_list = new ca_lists();
+			$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", ($this->opo_config->get("special_collection_records_type")) ? $this->opo_config->get("special_collection_records_type") : "collection");
+			$vs_sort = ($this->opo_config->get("special_collections_sort")) ? $this->opo_config->get("special_collections_sort") : "ca_collections.preferred_labels.name";
+			$qr_collections = ca_collections::find(array('type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values, 'sort' => $vs_sort));
+			$this->view->setVar("collection_results", $qr_collections);
+			caSetPageCSSClasses(array("collections", "landing"));
+ 			$this->render("Collections/records_html.php");
+ 		}		
+ 		# -------------------------------------------------------
  		public function Records() {
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("section_title"));
  			
