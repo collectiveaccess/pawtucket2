@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
 
-	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
+	require_once(__CA_LIB_DIR__."/ApplicationError.php");
 	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
 	require_once(__CA_MODELS_DIR__."/ca_users.php");
 	require_once(__CA_MODELS_DIR__."/ca_user_groups.php");
@@ -236,13 +236,13 @@
 				$this->loginForm();
 			} else {
 				# --- user is joining a user group from a supplied link
-				if($this->request->session->getVar("join_user_group_id")){
-					if(!$this->request->user->inGroup($this->request->session->getVar("join_user_group_id"))){
-						$this->request->user->addToGroups($this->request->session->getVar("join_user_group_id"));
-						$this->request->session->setVar("join_user_group_id", "");
+				if(Session::getVar("join_user_group_id")){
+					if(!$this->request->user->inGroup(Session::getVar("join_user_group_id"))){
+						$this->request->user->addToGroups(Session::getVar("join_user_group_id"));
+						Session::setVar("join_user_group_id", "");
 						$vs_group_message = _t(" and added to the group");
 					}else{
-						$this->request->session->setVar("join_user_group_id", "");
+						Session::setVar("join_user_group_id", "");
 						$vs_group_message = _t(" you are already a member of the group");
 					}
 				}
@@ -472,13 +472,13 @@
 						$t_user->addRoles($va_default_roles);
 					}
 					# --- user is joining a user group from a supplied link
-					if($this->request->session->getVar("join_user_group_id")){
-						if(!$t_user->inGroup($this->request->session->getVar("join_user_group_id"))){
-							$t_user->addToGroups($this->request->session->getVar("join_user_group_id"));
-							$this->request->session->setVar("join_user_group_id", "");
+					if(Session::getVar("join_user_group_id")){
+						if(!$t_user->inGroup(Session::getVar("join_user_group_id"))){
+							$t_user->addToGroups(Session::getVar("join_user_group_id"));
+							Session::setVar("join_user_group_id", "");
 							$vs_group_message = _t(" You were added to the group");
 						}else{
-							$this->request->session->setVar("join_user_group_id", "");
+							Session::setVar("join_user_group_id", "");
 							$vs_group_message = _t(" You are already a member of the group");
 						}
 					}
@@ -564,10 +564,10 @@
 				if($this->request->isLoggedIn()){
 					if(!$this->request->user->inGroup($pn_group_id)){
 						$this->request->user->addToGroups($pn_group_id);
-						$this->request->session->setVar("join_user_group_id", "");
+						Session::setVar("join_user_group_id", "");
 						$vs_group_message = _t("You were added to the group");
 					}else{
-						$this->request->session->setVar("join_user_group_id", "");
+						Session::setVar("join_user_group_id", "");
 						$vs_group_message = _t("You are already a member of the group");
 					}
 					$this->notification->addNotification($vs_group_message, __NOTIFICATION_TYPE_INFO__);
@@ -577,7 +577,7 @@
 					$this->response->setRedirect(caNavUrl($this->request, "", $vs_controller, "Index"));
 				}else{
 					$t_user_group->load($pn_group_id);
-					$this->request->session->setVar("join_user_group_id", $pn_group_id);
+					Session::setVar("join_user_group_id", $pn_group_id);
 					$this->view->setVar("message", _t("Login/Register to join \"%1\"", $t_user_group->get("name")));
 					$this->loginForm();
 				}

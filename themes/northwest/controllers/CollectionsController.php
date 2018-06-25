@@ -48,7 +48,6 @@
             
  			$this->opo_config = caGetCollectionsConfig();
  			$this->view->setVar("collections_config", $this->opo_config);
- 			$this->opo_datamodel = Datamodel::load();
  			$this->opa_access_values = caGetUserAccessValues($this->request);
  		 	$this->view->setVar("access_values", $this->opa_access_values);
  		 	# --- what is the section called - title of page

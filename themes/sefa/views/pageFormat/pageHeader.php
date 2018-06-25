@@ -44,9 +44,9 @@
 	if($qr_res->numHits()){
 		$qr_res->nextHit();
 		$vn_current_exhibition = $qr_res->get("ca_occurrences.occurrence_id");
-		$this->request->session->setVar("current_exhibition_id", $vn_current_exhibition);
+		Session::setVar("current_exhibition_id", $vn_current_exhibition);
 	}else{
-		$this->request->session->setVar("current_exhibition_id", "");
+		Session::setVar("current_exhibition_id", "");
 	}
 
 ?><!DOCTYPE html>

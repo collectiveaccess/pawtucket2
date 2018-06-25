@@ -93,21 +93,21 @@
 			$vs_add_to_lightbox_msg = addslashes(_t('Add to lightbox'));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
-				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id, array("subsite" => $this->request->session->getVar("coloradoSubSite")));
-				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id, array("subsite" => $this->request->session->getVar("coloradoSubSite")));
+				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id, array("subsite" => Session::getVar("coloradoSubSite")));
+				$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels.name"), '', $vs_table, $vn_id, array("subsite" => Session::getVar("coloradoSubSite")));
 				$vs_thumbnail = "";
 				if ($vs_table == 'ca_objects') {
 					if(!($vs_thumbnail = $qr_res->getMediaTag('ca_object_representations.media', 'medium', array("checkAccess" => $va_access_values)))){
 						$vs_thumbnail = $vs_placeholder_tag;	
 					}
-					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id, array("subsite" => $this->request->session->getVar("coloradoSubSite")));				
+					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id, array("subsite" => Session::getVar("coloradoSubSite")));				
 				} else {
 					if($va_images[$vn_id]){
 						$vs_thumbnail = $va_images[$vn_id];
 					}else{
 						$vs_thumbnail = $vs_placeholder_tag;
 					}
-					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id, array("subsite" => $this->request->session->getVar("coloradoSubSite")));			
+					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id, array("subsite" => Session::getVar("coloradoSubSite")));			
 				}
 				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array($vs_pk => $vn_id));
 

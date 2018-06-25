@@ -120,7 +120,7 @@
 
  			caAddPageCSSClasses(array($vs_class, $ps_function));
 
-			$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
+			$t_instance = Datamodel::getInstance($vs_class, true);
 			$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
 			
 			$this->view->setVar('t_instance', $t_instance);
@@ -249,7 +249,7 @@
 		
 			$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
 			
-			$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
+			Session::setVar($ps_function.'_last_browse_id', $vs_key);
 			
 			
 			// remove base criteria from display list

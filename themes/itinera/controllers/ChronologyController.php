@@ -50,8 +50,8 @@
 		}
 		# ------------------------------------------------------
  		 public function Get() {
- 		 	if (!is_array($va_entity_list = $this->request->session->getVar('itinera_entity_list'))) { $va_entity_list = array(); }
- 			if (!is_array($va_object_list = $this->request->session->getVar('itinera_object_list'))) { $va_object_list = array(); }
+ 		 	if (!is_array($va_entity_list = Session::getVar('itinera_entity_list'))) { $va_entity_list = array(); }
+ 			if (!is_array($va_object_list = Session::getVar('itinera_object_list'))) { $va_object_list = array(); }
  					
  		 	$ps_mode = $this->request->getParameter('m', pString);
  			$this->view->setVar('mode', $ps_mode);
@@ -66,7 +66,7 @@
 				
 						$va_entity_list[$vs_color] = $pn_entity_id; 
 				
-						$this->request->session->setVar('itinera_entity_list', $va_entity_list);
+						Session::setVar('itinera_entity_list', $va_entity_list);
 						# --- just set the entity list to the one entity you want to add on
 						$this->view->setVar('entity_list', array($vs_color => $pn_entity_id));
 					}
@@ -79,7 +79,7 @@
 				
 						$va_object_list[$vs_color] = $pn_object_id; 
 				
-						$this->request->session->setVar('itinera_object_list', $va_object_list);
+						Session::setVar('itinera_object_list', $va_object_list);
 						# --- just set the object list to the one object you want to add on
 						$this->view->setVar('object_list', array($vs_color => $pn_object_id));
 					}
@@ -89,12 +89,12 @@
  					$pn_entity_id = $this->request->getParameter('id', pInteger);
  					if(($vn_i = array_search($pn_entity_id, $va_entity_list)) !== false) {
 						unset($va_entity_list[$vn_i]);
-						$this->request->session->setVar('itinera_entity_list', $va_entity_list);
+						Session::setVar('itinera_entity_list', $va_entity_list);
 					}
 					$pn_object_id = $this->request->getParameter('object_id', pInteger);
  					if(($vn_i = array_search($pn_object_id, $va_object_list)) !== false) {
 						unset($va_object_list[$vn_i]);
-						$this->request->session->setVar('itinera_object_list', $va_object_list);
+						Session::setVar('itinera_object_list', $va_object_list);
 					}
  				break;
  				# ------------------------------
@@ -118,8 +118,8 @@
  		}
 		# ------------------------------------------------------
 		public function getTimelineData(){
-			if (!is_array($va_entity_list = $this->request->session->getVar('itinera_entity_list'))) { $va_entity_list = array(); }
-			if (!is_array($va_object_list = $this->request->session->getVar('itinera_object_list'))) { $va_object_list = array(); }
+			if (!is_array($va_entity_list = Session::getVar('itinera_entity_list'))) { $va_entity_list = array(); }
+			if (!is_array($va_object_list = Session::getVar('itinera_object_list'))) { $va_object_list = array(); }
 			$va_timeline_data = array();
 			
 			$vn_first_date = null;

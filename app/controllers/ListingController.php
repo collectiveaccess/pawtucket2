@@ -69,8 +69,6 @@
  			}
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$va_listing_info["displayName"]);
  			
- 			$o_dm = Datamodel::load();
- 		
  			$ps_function = strtolower($ps_function);
  			
  			$vs_table = $va_listing_info['table'];
@@ -80,7 +78,7 @@
  			$this->opo_result_context = new ResultContext($this->request, $vs_table, $this->ops_find_type);
  			$this->opo_result_context->setAsLastFind();
  			
- 			if (!($t_instance = $o_dm->getInstanceByTableName($vs_table, true))) {
+ 			if (!($t_instance = Datamodel::getInstance($vs_table, true))) {
  				throw new ApplicationException("Invalid table");
  			}
  			

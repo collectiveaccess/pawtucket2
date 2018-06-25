@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  	require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
- 	require_once(__CA_LIB_DIR__.'/ca/ResultContext.php');
+ 	require_once(__CA_LIB_DIR__.'/ResultContext.php');
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  
  	abstract class BaseMultiSearchController extends BasePawtucketController {
