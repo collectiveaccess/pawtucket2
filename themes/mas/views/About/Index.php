@@ -10,6 +10,7 @@
 	<div class="row">
 		<div class="col-sm-8">
 			{{{about_text}}}
+			<br/><br/>
 		</div>
 		<div class="col-sm-3 col-sm-offset-1">
 			<h6>&nbsp;</h6><address>Museums Association of Saskatchewan<br>			424 McDonald Street<br>			Regina, SK S4N 6E1</address>

@@ -168,10 +168,13 @@ a.ss-icon  {
 	border: 2px solid #FFF;
 	border-width: 2px 0;
 }
+.navbar-collapse .navbar-nav{
+	background-color:#1C8A39;
+}
 .navbar-collapse .navbar-nav > li > a {
 	color: #FFF;
     display: block;
-    padding: 20px 24px;
+    padding: 22px 24px 22px 24px;
     text-decoration: none;
     -moz-transition: color 0.2s linear;
     -webkit-transition: color 0.2s linear;
@@ -209,12 +212,23 @@ a.ss-icon  {
 .navbar-default .navbar-nav > li.active {
 	background-color:inherit;
 }
+#user-navbar, #user-navbar-toggle .navbar-nav{
+	background-color: #27529a;
+}
+#user-navbar-toggle{
+	margin-top:5px;
+}
 .nav > li.dropdown > a.icon {
 	padding-right:10px;
 	padding-left:10px;
-	padding-top:20px;
-	padding-bottom:19px;
+	padding-top:21px;
+	padding-bottom:21px;
 	background-color:#27529a;
+}
+@media (min-width: 768px) and (max-width: 1010px) {
+	.nav > li.dropdown > a.icon {
+		padding-bottom:22px;
+	}
 }
 .nav > li.dropdown > a.icon:hover {
 	background-color:#27529a;
@@ -273,8 +287,11 @@ a.ss-icon  {
 }
 @media (min-width: 768px){
 	.navbar-form {
-		margin-bottom:14px;
-		margin-top:12px;
+		/*margin-bottom:14px;*/
+		padding-bottom:14px;
+		padding-top:14px;
+		margin-top:0px;
+		margin-bottom:0px;
 	}
 }
 @media (min-width: 768px) and (max-width:937px) {
@@ -292,7 +309,7 @@ a.ss-icon  {
 @media (max-width:760px) {
 	.navbar > .container .navbar-brand {
 		float:left;
-		width:120px;
+		width:100px;
 		display:inline-block;
 		margin-left:auto;
 		margin-left:20px;
@@ -304,7 +321,7 @@ a.ss-icon  {
 		text-align:center;
 	}
 	.broughtBy img {
-		max-width:120px;
+		max-width:100px;
 	}
 	.container.menuBar {
     	padding: 5px 10px;
@@ -361,6 +378,9 @@ a.ss-icon  {
 .advancedSearchField input[type="checkbox"] {
 	width:auto !important;
 }
+/*.advancedSearch .col-sm-8{
+	border-right:2px solid #e9edf4;
+}*/
 
 /* Browse */
 
@@ -492,4 +512,8 @@ a-scene.fullscreen .a-canvas {
     /* right: 0!important; */
     /* bottom: 0!important; */
     position: relative !important; 
+}
+
+.browse .btn, .sets .btn {
+    background-color: #27529a;
 }

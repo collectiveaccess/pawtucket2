@@ -52,7 +52,6 @@
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
-
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
 
@@ -71,7 +70,7 @@
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = 3;
+			$vn_col_span = 4;
 			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 6;
 		}
@@ -142,14 +141,19 @@
 						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
 					$vs_description = "";
+					$vs_date = "";
 					if($vs_table == 'ca_objects'){
-						$vs_description = $qr_res->get("ca_objects.description");
-						if(mb_strlen($vs_description) > 50){
-							$vs_description = mb_substr($vs_description, 0, 47)."...";
+						$vs_date = $qr_res->get("ca_objects.date.dates_value");
+						if($vs_date){
+							$vs_date = "<br/>".$vs_date;
 						}
-						if($vs_description){
-							$vs_description = "<br/>".$vs_description;
-						}
+						#$vs_description = strip_tags($qr_res->get("ca_objects.description"));
+						#if(mb_strlen($vs_description) > 50){
+						#	$vs_description = mb_substr($vs_description, 0, 47)."...";
+						#}
+						#if($vs_description){
+						#	$vs_description = "<br/>".$vs_description;
+						#}
 					}
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
@@ -159,7 +163,7 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_description}
+						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_date}{$vs_description}
 					</div><!-- end bResultItemText -->
 				</div><!-- end bResultItemContent -->
 				<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>

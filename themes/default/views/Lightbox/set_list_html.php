@@ -46,7 +46,7 @@
 	<h1>
 		<?php print ucfirst($vs_lightbox_section_heading); ?>
 		<div class="btn-group">
-			<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
+			<span class="glyphicon glyphicon-cog bGear" data-toggle="dropdown"></span>
 			<ul class="dropdown-menu" role="menu">
 				<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
 				<li class="divider"></li>

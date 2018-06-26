@@ -45,7 +45,7 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
+			<div class='col-sm-6 col-md-6'>
 				{{{representationViewer}}}
 				
 				
@@ -79,7 +79,7 @@
 
 			</div><!-- end col -->
 			
-			<div class='col-sm-6 col-md-6 col-lg-5'>
+			<div class='col-sm-6 col-md-6'>
 				{{{<ifdef code="ca_objects.preferred_labels.name"><div class="unit"><H4>^ca_objects.preferred_labels.name</H4></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Object number</H6>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.nonpreferred_labels.name"><unit relativeTo="ca_objects" delimiter=" "><div class="unit"><H6><if rule='^ca_objects.nonpreferred_labels.type_id%convertCodesToDisplayText=1 =~ /alternate/'>Alternate </if>Title</H6>^ca_objects.nonpreferred_labels.name</div></unit></ifdef>}}}
