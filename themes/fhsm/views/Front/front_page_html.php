@@ -43,8 +43,9 @@
             <a class="twitter-timeline" data-height="320" data-dnt="true" data-link-color="#f5c135" href="https://twitter.com/sternbergmuseum" data-chrome="noheader nofooter">Tweets by sternbergmuseum</a> <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 		</div><!--end col-sm-4-->
 		<div class="col-sm-4 frontThird">
-			<h2>About the Collections</h2>
-			<p>Most of the collections are from the Great Plains and adjacent areas, but reference collections from other regions are maintained to facilitate taxonomic, systematic, and molecular research and for educational purposes. The initial paleontological collections were amassed by George Sternberg during his association with Fort Hays State University. The world famous Elam Bartholomew Herbarium botanical collections developed as a result of research by mycologist Elam Bartholomew. Collections continue to grow as the result of research and collaboration by curators associated with the museum and with the departments of geology and biology at Fort Hays State University as well as discoveries by landowners and fossil hunters around the country.</p>
+			<h2>{{{homepage_head}}}</h2>
+			{{{homepage_text}}}
+			
 		</div> <!--end col-sm-4-->
 		<div class="col-sm-4 frontThirdRight">
 			<?php
