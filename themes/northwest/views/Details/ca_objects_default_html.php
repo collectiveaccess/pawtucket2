@@ -37,7 +37,7 @@
 ?>
 <div class="row">
 	<div class='col-xs-12 navButtons'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{nextLink}}}<span class='spacer'></span>{{{resultsLink}}} 
+		{{{nextLink}}} {{{previousLink}}}<span class='spacer'></span>{{{resultsLink}}} 
 	</div><!-- end detailTop -->
 
 	<div class='col-xs-12 '>
@@ -49,12 +49,43 @@
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-				
-
-
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
+<?php
+				$vb_citation_special_collection = false;
+				$vs_citation_collection = "";
+				$t_list_item = new ca_list_items();
+				if ($va_collection_paths = $t_object->get('ca_collections.hierarchy.preferred_labels', array('returnWithStructure' => true, 'excludeRelationshipTypes' => array("primary")))) {
+					$va_collections_array = array();
+					foreach ($va_collection_paths as $va_key => $va_collection_path_t) {
+						$va_collection_array = array();
+						foreach ($va_collection_path_t as $vn_collection_id => $va_collection_path) {
+							if(!$vs_citation_collection){
+								$t_collection = new ca_collections($vn_collection_id);
+								$t_list_item->load($t_collection->get("type_id"));
+								$vs_coll_type_idno = $t_list_item->get("idno");
+								if($vs_coll_type_idno == "collection"){
+									# --- this is part of a "Special Collection"
+									$vb_citation_special_collection = true;
+									$vs_citation_collection = $va_collection_path[$vn_collection_id]['name'];
+									# --- add a link to Special Collections landing page since is not part of the hierarchy
+									$va_collection_array[] = caNavLink($this->request, "Special Collections of The Northwest School", "", "",  "Collections", "SpecialCollectionsList");
+								}elseif($vs_coll_type_idno != "archive_collection"){
+									# --- this is part of the NWS Archive collection
+									$vs_citation_collection = $va_collection_path[$vn_collection_id]['name'];
+									$vb_citation_special_collection = false;
+								}
+							}
+							$va_collection_array[] = caDetailLink($this->request, $va_collection_path[$vn_collection_id]['name'], '', 'ca_collections', $vn_collection_id);
+						}
+						$va_collections_array[] = $va_collection_array;
+					}
+					foreach($va_collections_array as $va_collection_trail){
+						print "<div class='detailCollectionPath'>".join(' <i class="fa fa-chevron-right"></i> ', $va_collection_trail)."</div>";
+					}
+				}
+?>				
 				<H4 style='padding-bottom:0px;'>{{{ca_objects.preferred_labels.name}}}</H4>
 				{{{<ifcount min="1" code="ca_objects.date"><h6 style='padding:0px 0px 30px 0px; margin-top:5px;'><unit delimiter="<br/>">^ca_objects.date</unit></h6></ifcount>}}}
 				
@@ -63,15 +94,35 @@
 				if ($vs_medium = $t_object->get('ca_objects.medium', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><span class='metaLabel'>Medium</span><span class='metaData'>".$vs_medium."</span></div>";
 				}
-				if ($vs_format_notes = $t_object->get('ca_objects.format_notes', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><span class='metaLabel'>Format</span><span class='metaData'>".$vs_format_notes."</span></div>";
-				}				
+				if($t_rep = $this->getVar("t_representation")){
+					$va_media_info = $t_rep->getMediaInfo("media");
+					print "<div class='unit'><span class='metaLabel'>Format</span><span class='metaData'>".$va_media_info["INPUT"]["MIMETYPE"]."</span></div>";
+				}
+				#if ($vs_format_notes = $t_object->get('ca_objects.format_notes', array('delimiter' => '<br/>'))) {
+				#	print "<div class='unit'><span class='metaLabel'>Format</span><span class='metaData'>".$vs_format_notes."</span></div>";
+				#}				
 ?>
 				<div class='unit'><span class='metaLabel'>Identifier</span><span class='metaData'>{{{<ifdef code="ca_objects.idno">^ca_objects.idno</ifdef>}}}</span></div>
 <?php
 				if ($vs_rights = $t_object->get('ca_objects.rights', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><span class='metaLabel'>Use Restrictions</span><span class='metaData'>".$vs_rights."</span></div>";
 				}
+				# --- citation
+				print "<div class='unit'><span class='metaLabel'>Citation</span><span class='metaData'><i>".$t_object->get("ca_objects.preferred_labels.name")."</i>";
+				if($t_object->get("ca_objects.date")){
+					print ", ".$t_object->get("ca_objects.date", array("delimiter" => ", ")).". ";
+				}
+				if($vs_citation_collection){
+					print $vs_citation_collection.". ";
+				}
+				if($vb_citation_special_collection){
+					print "Special Collections of The Northwest School. ";
+				}elseif($vs_citation_collection){
+					print "The Northwest School Archive. ";
+				}
+				
+				print "Retrieved from The Northwest School. Web. ".date("n/j/Y")."</span></div>";
+				
 				if ($va_related_entities = $t_object->get('ca_entities.entity_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 					print "<div class='unit'><span class='metaLabel'>Related Entities</span><span class='metaData'>";
 					foreach ($va_related_entities as $va_key => $va_related_entity_id) {

@@ -89,7 +89,7 @@
 			$(window).scroll(function(){ 
 				var scrollLimit = 200;
 				var pos = $(window).scrollTop();
-				if(pos > scrollLimit) {
+				if(($(window).width() > 850) && (pos > scrollLimit)) {
 					$("body").removeClass("initial");
 				}else {
 					if(!$("body").hasClass("initial")){
@@ -97,7 +97,11 @@
 					}
 				}
 			});
-		</script>		
-
+		</script>
+		<script type="text/javascript" language="javascript">
+			$(document).ready(function() {
+				$('#caMediaPanel').on('contextmenu', 'canvas', function(e){ return false; });
+			});
+		</script>
 	</body>
 </html>

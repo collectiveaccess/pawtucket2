@@ -3715,10 +3715,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 		
 		$va_detail_type_config = caGetDetailTypeConfig($ps_context);
 		
-		if (is_null($vb_show_zoom = caGetOption('zoom', $va_detail_type_config['options'], null))) {
-		    $vb_show_zoom = caGetOption('zoom', $va_rep_display_info, false);
-		}
-		if (!caGetOption(['no_overlay'], $va_rep_display_info, false) && $vb_show_zoom) {
+		if (!caGetOption(['no_overlay'], $va_rep_display_info, false)) {
 			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array('context' => $ps_context, 'id' => $pn_subject_id, 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
 		}
 		
@@ -3736,8 +3733,9 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 			# -- get version to download configured in media_display.conf
 			$va_download_display_info = caGetMediaDisplayInfo('download', $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 			$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);
-			
-			$vs_tool_bar .= caNavLink($po_request, " <span class='glyphicon glyphicon-download-alt'></span>", 'dlButton', 'Detail', 'DownloadRepresentation', '', array('context' => $ps_context, 'representation_id' => $pt_representation->getPrimaryKey(), "id" => $pn_subject_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
+			if($vs_download_version){
+				$vs_tool_bar .= caNavLink($po_request, " <span class='glyphicon glyphicon-download-alt'></span>", 'dlButton', 'Detail', 'DownloadRepresentation', '', array('context' => $ps_context, 'representation_id' => $pt_representation->getPrimaryKey(), "id" => $pn_subject_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
+			}
 		}
 		$vs_tool_bar .= "</div><!-- end detailMediaToolbar -->\n";
 		

@@ -18,30 +18,26 @@ print "<p>Enter your search terms in the fields below.</p>";
 	</div>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Object Titles only.">Title</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object titles only.">Title</span>
 			{{{ca_objects.preferred_labels.name%width=220px}}}
 		</div>
 	</div>
 	<div class='row'>
-		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search object identifiers.">Accession number</span>
-			{{{ca_objects.idno%width=210px}}}
-		</div>
-		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object types.">Type</span>
+		<div class="advancedSearchField col-sm-12">
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object types.">Object type</span>
 			{{{ca_objects.type_id%height=30px}}}
 		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records of a particular date or date range.">Date range <i>(e.g. 1970-1979)</i></span>
-			{{{ca_objects.date%width=200px&height=40px&useDatePicker=0}}}
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object description text only.">Description</span>
+			{{{ca_objects.description%width=220px}}}
 		</div>
-	</div>
+	</div>	
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records within a particular collection.">Collection </span>
-			{{{ca_collections.preferred_labels%restrictToTypes=collection%width=200px&height=1}}}
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records for subjects.">Subjects</span>
+			{{{ca_list_items.preferred_labels%width=200px&height=1}}}
 		</div>
 	</div>
 	<br style="clear: both;"/>
@@ -55,8 +51,8 @@ print "<p>Enter your search terms in the fields below.</p>";
 
 	</div>
 	<div class="col-sm-3" >
-		<h1>Helpful Links</h1>
-		<p>Include some helpful info for your users here.</p>
+		<h1>Help Tips</h1>
+		<p>{{{advanced_search_help_tips}}}</p>
 	</div><!-- end col -->
 </div><!-- end row -->
 

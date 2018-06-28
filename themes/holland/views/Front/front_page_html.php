@@ -35,7 +35,7 @@
 		<div class="jcarousel-wrapper mainSlideShow">
 			<!-- Carousel -->
 			<div class="jcarousel mainSlide">
-				<ul id="hpSlides">
+				<ul id="hpSlides"><li class="loading"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></li>
 <!--
 					<li>
 						<div class='frontSlide'>
