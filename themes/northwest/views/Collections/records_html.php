@@ -26,7 +26,7 @@
 		while($qr_collections->nextHit()) {
 			#if ( $vn_i == 0) { print "<div class='row'>"; } 
 			print "<div class='row'><div class='col-sm-12 col-lg-10 col-lg-offset-1'><div class='collectionTile'>";
-			# --- is there an image from a realted object to show?
+			# --- is there an image from a related object to show?
 			$vs_obj_image = "";
 			if($vs_obj_image = $qr_collections->getWithTemplate("<unit relativeTo='ca_objects.related' restrictToRelationshipTypes='primary' limit='1'>^ca_object_representations.media.iconlarge</unit>")){
 				print "<div class='collectionImg'>".caDetailLink($this->request, $vs_obj_image, "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";

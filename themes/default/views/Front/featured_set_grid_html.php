@@ -29,40 +29,46 @@
  *
  * ----------------------------------------------------------------------
  */
-?>
- 	<div class="row">
-		<div class="col-sm-12 col-md-10 col-md-offset-1">
+	$va_access_values = $this->getVar("access_values");
+	$qr_res = $this->getVar('featured_set_items_as_search_result');
+	$o_config = $this->getVar("config");
+	$vs_caption_template = $o_config->get("front_page_set_item_caption_template");
+	if(!$vs_caption_template){
+		$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
+	}
+	if($qr_res && $qr_res->numHits()){
+?>   
+<div class="frontGrid">	
 <?php
-		print $this->render("Front/gallery_slideshow_html.php");
+		$i = $vn_col = 0;
+		while($qr_res->nextHit()){
+			if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.iconlarge</l>', array("checkAccess" => $va_access_values))){
+				if($vn_col == 0){
+					print "<div class='row'>";
+				}
+				print "<div class='col-sm-3 col-xs-6'>".$vs_media;
+				$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
+				if($vs_caption){
+					print "<div class='frontGridCaption'>".$vs_caption."</div>";
+				}
+				print "</div>";
+				$vb_item_output = true;
+				$i++;
+				$vn_col++;
+				if($vn_col == 4){
+					print "</div>";
+					$vn_col = 0;
+				}
+			}
+			if($i == 8){
+				break;
+			}
+		}
+		if($vn_col > 0){
+			print "</div><!-- end row -->";
+		}
 ?>
-		</div>
-	</div>
-	<div class="row">
-		<div class="col-sm-12 yellowBg">
-			<div class="container">
-				<div class="row">
-					<div class="col-sm-12 col-md-10 col-md-offset-1">
-						<H1>{{{home_page_text}}}</H1>
-					</div>
-				</div>
-			</div>
-		</div><!--end col-sm-12-->
-	</div>
-	<div class="row">
-		<div class="col-sm-12 col-md-10 col-md-offset-1 hpSlideshowCol">
-			<H3>From the Collection</H3>
+</div>
 <?php
-		print $this->render("Front/featured_set_grid_html.php");
+	}
 ?>
-		</div><!-- end row -->
-	</div>
-	<script type='text/javascript'>
-		jQuery(document).ready(function() {
-			var offset = (($(document).width() - $(".yellowBg").width()) / 2) - 15;
-			$(".yellowBg").attr("style", "left: -" + offset + "px !important; width: " + $(document).width() + "px !important;");
-			$( window ).resize(function() {
-				var offset = (($("body").width() - $(".yellowBg").parent().width()) / 2);
-				$(".yellowBg").attr("style", "left: -" + offset + "px !important; width: " + $("body").width() + "px !important;");
-			});
-		});
-	</script>

@@ -37,7 +37,7 @@
 ?>
 <div class="row">
 	<div class='col-xs-12 navButtons'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{nextLink}}}<span class='spacer'></span>{{{resultsLink}}} 
+		{{{nextLink}}} {{{previousLink}}}<span class='spacer'></span>{{{resultsLink}}} 
 	</div><!-- end detailTop -->
 
 	<div class='col-xs-12 '>
@@ -49,9 +49,6 @@
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-				
-
-
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
@@ -59,7 +56,7 @@
 				$vb_citation_special_collection = false;
 				$vs_citation_collection = "";
 				$t_list_item = new ca_list_items();
-				if ($va_collection_paths = $t_object->get('ca_collections.hierarchy.preferred_labels', array('returnWithStructure' => true))) {
+				if ($va_collection_paths = $t_object->get('ca_collections.hierarchy.preferred_labels', array('returnWithStructure' => true, 'excludeRelationshipTypes' => array("primary")))) {
 					$va_collections_array = array();
 					foreach ($va_collection_paths as $va_key => $va_collection_path_t) {
 						$va_collection_array = array();

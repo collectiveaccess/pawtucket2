@@ -1477,6 +1477,27 @@ a.browseRemoveFacet img {
 	color:#FFF;
 }
 
+.frontGrid img{
+	width:100%;
+	height:auto;
+}
+.frontGridCaption{
+	padding-top:5px;
+	margin-bottom:30px;	
+}
+.frontGallerySlideCaption{
+	padding-top:5px;
+}
+.front .galleryItems li{
+	padding-right:30px;
+}
+.front .galleryItems-wrapper{
+	margin-top:0px;
+}
+.front .galleryItems-wrapper .jcarousel-control-prev, .front .galleryItems-wrapper .jcarousel-control-next {
+    top: 40%;
+}
+
 /* --------------------------------- */
 /* details */
 /* --------------------------------- */

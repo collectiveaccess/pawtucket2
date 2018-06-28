@@ -51,8 +51,8 @@ print "<p>Enter your search terms in the fields below.</p>";
 
 	</div>
 	<div class="col-sm-3" >
-		<h1>Helpful Links</h1>
-		<p>Include some helpful info for your users here.</p>
+		<h1>Help Tips</h1>
+		<p>{{{advanced_search_help_tips}}}</p>
 	</div><!-- end col -->
 </div><!-- end row -->
 
