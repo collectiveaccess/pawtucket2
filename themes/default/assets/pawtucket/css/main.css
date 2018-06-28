@@ -1894,7 +1894,7 @@ a.browseRemoveFacet .glyphicon {
 	font-size:18px;
 	padding-bottom:5px;
 }
-#bViewButtons .disabled {
+#bViewButtons .disabled, #lbViewButtons .disabled{
     pointer-events: all;
 }
 #bLetterBar a{

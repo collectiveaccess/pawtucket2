@@ -3715,10 +3715,7 @@ require_once(__CA_LIB_DIR__.'/core/Media/MediaInfoCoder.php');
 		
 		$va_detail_type_config = caGetDetailTypeConfig($ps_context);
 		
-		if (is_null($vb_show_zoom = caGetOption('zoom', $va_detail_type_config['options'], null))) {
-		    $vb_show_zoom = caGetOption('zoom', $va_rep_display_info, false);
-		}
-		if (!caGetOption(['no_overlay'], $va_rep_display_info, false) && $vb_show_zoom) {
+		if (!caGetOption(['no_overlay'], $va_rep_display_info, false)) {
 			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array('context' => $ps_context, 'id' => $pn_subject_id, 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
 		}
 		

@@ -38,6 +38,8 @@
 	$o_config = caGetSearchConfig();
 	$o_browse_config = caGetBrowseConfig();
 	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
+	$va_search_info = $o_config->get("multisearchTypes");
+	$va_search_info = $va_search_info["objects"];
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
 	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
@@ -45,22 +47,28 @@
 	}
 	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
-
+	$va_sorts = $va_search_info["sortBy"];
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
 			<small class="pull-right sortValues">
+				<!--<span class='multisearchSort'>SORT BY: 
+					<ul>
+<?php
+					#foreach($va_sorts as $vs_label => $vs_field){
+					#	print "<li id='objects_sort'>".caNavLink($this->request, $vs_label, "", "*", "*", "*", array("sort" => $vs_label))."</li>";
+					#}
+?>
+					</ul>
+				{{{sortDirectionControl}}}-->
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Filter results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search), 'sort' => 'relevance')); ?></span> 
 <?php
 				}
 ?>
-				
-				<!--<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
-				{{{sortDirectionControl}}}-->
 			</small>
 			<H3><?php print caNavLink($this->request, $va_block_info['displayName']."&nbsp;&nbsp;<span class='highlight'>(".$qr_results->numHits().")</span>", '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></H3>
 			<div id='browseResultsContainer'>
@@ -70,6 +78,7 @@
 		$t_list_item = new ca_list_items();
 		while($qr_results->nextHit()) {
 				$vn_id 					= $qr_results->get("ca_objects.object_id");
+				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_results->get("ca_objects.idno"), '', 'ca_objects', $vn_id);
 				$vs_label_detail_link 	= caDetailLink($this->request, $qr_results->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id);
 				$vs_link_text = ($qr_results->get("ca_objects.preferred_labels")) ? "<b>Title: </b>".$qr_results->get("ca_objects.preferred_labels") : $qr_results->get("ca_objects.idno");
 
@@ -92,21 +101,20 @@
 				}else{
 					$vs_rep_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_thumbnail."</a>";
 				}
-				$vs_add_to_set_link = "<div class='addTo'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array('object_id' => $vn_id))."\"); return false;' title='Add to lightbox'><i class='fa fa-suitcase'></i></a></div>";
+				$vs_add_to_set_link = "<div class='addTo'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array('object_id' => $vn_id))."\"); return false;' title='Add to lightbox'><i class='fa fa-folder'></i></a></div>";
 				
-				$vs_rep_id = $qr_results->get("ca_object_representations.representation_id");
 				$vs_obj_id = $qr_results->get("ca_objects.object_id");
-				$vs_download_link = "";
-				if ($vs_rep_id) {
-					$vs_download_link = caNavLink($this->request, '<i style="padding-left:10px;" class="fa fa-download"></i>', 'multiDl', '', 'Detail', 'DownloadRepresentation', array('representation_id' => $vs_rep_id, 'object_id' => $vs_obj_id, 'download' => 1, 'version' => 'original'));
+				$vs_date = $qr_results->get("ca_objects.date.dates_value");
+				if($vs_date){
+					$vs_date = "<br/>".$vs_date;
 				}
 				$vs_description = "";
 				$vs_description = $qr_results->get("ca_objects.description");
-				if(mb_strlen($vs_description) > 50){
-					$vs_description = mb_substr($vs_description, 0, 47)."...";
+				if(mb_strlen($vs_description) > 200){
+					$vs_description = mb_substr($vs_description, 0, 200)."...";
 				}
 				if($vs_description){
-					$vs_description = "<br/>".$vs_description;
+					$vs_description = "<br/>".$vs_description."<hr/>";
 				}
 				$vs_expanded_info = "";
 				if($vs_extended_info_template){
@@ -117,12 +125,12 @@
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_description}
+					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_date}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
 				<hr>
-				{$vs_expanded_info}{$vs_add_to_set_link}
+				{$vs_description}{$vs_add_to_set_link}
 			</div><!-- bResultItemExpandedInfo -->
 		</div><!-- end bResultItem -->
 	</div><!-- end col -->";

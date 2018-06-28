@@ -26,7 +26,7 @@
 				if($qr_res->numHits()){
 					$qr_res->seek(rand(1,$qr_res->numHits()));
 					$qr_res->nextHit();
-					$vs_img = $qr_res->get("ca_object_representations.media.iconlarge");
+					$vs_img = $qr_res->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values));
 				}
 			}
 			if($vn_i == 0){

@@ -836,3 +836,6 @@ body.initial .browseMenuFacetSearchInput.form-control, .browseMenuFacetSearchInp
 .form-control:focus {
     border-color: #515151;
 }
+.sets H1{
+	margin-bottom:25px;
+}

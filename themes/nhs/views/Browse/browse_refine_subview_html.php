@@ -45,8 +45,8 @@
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-				print "<H5>".$va_facet_info['label_singular']."</H5>";
-				print "<p>".$va_facet_info['description']."</p>";
+				print "<H5><a href=\"#\" onclick=\"$('#".$vs_facet_name."').toggle(200);return false;\">".$va_facet_info['label_singular']." + </a></H5>"; 
+				print "<div id='".$vs_facet_name."' style='display:none;'>";
 ?>
 					<script type="text/javascript">
 						jQuery(document).ready(function() {
@@ -54,10 +54,12 @@
 						});
 					</script>
 					<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+				</div>
 <?php
 			} else {				
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-				print "<H5>".$va_facet_info['label_singular']."</H5>"; 
+				print "<H5><a href=\"#\" onclick=\"$('#".$vs_facet_name."').toggle(200);return false;\">".$va_facet_info['label_singular']." + </a></H5>"; 
+				print "<div id='".$vs_facet_name."' style='display:none;'>";
 				switch($va_facet_info["group_mode"]){
 					case "alphabetical":
 					case "list":
@@ -65,7 +67,7 @@
 						$vn_facet_size = sizeof($va_facet_info['content']);
 						$vn_c = 0;
 						foreach($va_facet_info['content'] as $va_item) {
-						    $vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
+						   #$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
 							print "<div>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 							$vn_c++;
 						
@@ -89,6 +91,7 @@
 					break;
 					# ---------------------------------------------
 				}
+				print "</div>";
 			}
 		}
 		print "</div><!-- end bRefine -->\n";
