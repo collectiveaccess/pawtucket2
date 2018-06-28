@@ -77,7 +77,7 @@
 							print "<div class='frontGallerySlideCaption'><div class='frontGallerySlideCaptionTitle'>".caNavLink($this->request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</div>";
 							$vs_desc = $t_set->get("set_description");
 							if(mb_strlen($vs_desc) > 250){
-								$vs_desc  = substr(strip_tags($vs_desc), 0 ,100)."...";
+								$vs_desc  = substr(strip_tags($vs_desc), 0, 250)."...";
 							}
 							print $vs_desc."</div>"; 
 						}

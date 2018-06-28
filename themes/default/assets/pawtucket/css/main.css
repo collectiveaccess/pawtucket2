@@ -2527,6 +2527,9 @@ a.browseRemoveFacet .glyphicon {
 	color:#fff;
 	background-color: #858585;
 }
+.collectionsContainer a.openCollection.active small {
+    color: #fff;
+}
 .collectionsContainer a .fa, .collectionsContainer .fa, #collectionLoad a .fa, #collectionLoad .fa{
 	color: #858585;
 }
