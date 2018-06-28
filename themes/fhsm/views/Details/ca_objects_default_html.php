@@ -243,7 +243,7 @@
 ?>
 						<div class="row detailRow">
 							<div class="col-xs-10 detailFeild">
-								<h6>Element</h6>
+								<h6>Description</h6>
 								<?php print $va_displayElement; ?>
 							</div>
 						</div>
@@ -283,22 +283,22 @@
 								}
 							}
 ?>
-							<div class="col-xs-4 detailFeild">
+							<div class="col-sm-6 detailFeild">
 								<h6>Country</h6>
 								<?php print $vs_country; ?>
 							</div>
 							
-							<div class="col-xs-4 detailFeild">
+							<div class="col-sm-6 detailFeild">
 								<h6>State/Province</h6>
 								<?php print $vs_stateProvince; ?>
 							</div>
-							<div class="col-xs-4 detailFeild">
+						</div>
+						<div class="row detailRow">	
+							<div class="col-sm-6 detailFeild">
 								<h6>County</h6>
 								<?php print $vs_county; ?>
 							</div>
-						</div>
-						<div class="row detailRow">	
-							<div class="col-xs-12">
+							<div class="col-xs-6">
 								<h6>Remarks</h6>
 <?php 
 								$va_geoRemarks = $t_object->get('ca_places.georeferenceRemarks');
