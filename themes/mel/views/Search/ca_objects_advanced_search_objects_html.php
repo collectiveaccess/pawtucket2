@@ -34,16 +34,10 @@ print "<p>Enter your search terms in the fields below.</p>";
 	</div>
 	<div class='row'>
 	    <div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search the associated categories.">Description</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search the descriptions of each object.">Description</span>
 			{{{ca_objects.description%height=30px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object types.">Related Entities</span>
-			{{{ca_entities.preferred_labels.displayname}}}
-		</div>
-	</div>
-	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records of a particular date or date range.">Date range <i>(e.g. 1970-1979)</i></span>
 			{{{ca_objects.date_created%width=200px&height=40px&useDatePicker=0}}}
 		</div>

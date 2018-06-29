@@ -46,6 +46,8 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-6'>
+			
+			<?php if($t_object->get("ca_object_representations") || $t_object->get("3D_Scan_URL")){ ?>
 				{{{representationViewer}}}
 				
 				
@@ -58,6 +60,9 @@
 			        if($vs_3dURL = $t_object->get("3D_Scan_URL")){
 			            print '<div class="sketchfab-embed-wrapper"><iframe width="100%" height="360" src=" '.$vs_3dURL.'/embed" frameborder="0" allow="autoplay; fullscreen; vr" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe> <p style="font-size: 13px; font-weight: normal; margin: 5px; color: #4A4A4A;"> <a href="'.$vs_3dURL.'?utm_medium=embed&utm_source=website&utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">'.$t_object->get("ca_objects.preferred_labels").' ('.$t_object->get("ca_objects.idno").')</a> by <a href="https://sketchfab.com/mfmaritimemuseum?utm_medium=embed&utm_source=website&utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">The Mel Fisher Maritime Museum</a> on <a href="https://sketchfab.com?utm_medium=embed&utm_source=website&utm_campain=share-popup" target="_blank" style="font-weight: bold; color: #1CAAD9;">Sketchfab</a> </p> </div>';
 			        }
+			    } else {
+			    	print "<div class='mediaPlaceholder text-center'><i class='fa fa-photo fa-5x'></i></div>";
+			    }
 			    ?>
 
 			</div><!-- end col -->
@@ -153,7 +158,7 @@
 				if ($vs_inscription = $t_object->get('ca_objects.inscription', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Inscription</h6>".$vs_inscription."</div>";
 				}
-				if ($vs_signature = $t_object->getWithTemplate('<unit>^ca_objects.signature.signedname, ^ca_objects.signature.signloc</unit>')) {
+				if ($vs_signature = $t_object->getWithTemplate('<if code="ca_objects.signature"><unit>^ca_objects.signature.signedname, ^ca_objects.signature.signloc</unit></if>')) {
 					print "<div class='unit'><h6>Signature</h6>".$vs_signature."</div>";
 				}								
 				if ($vs_ex_label = $t_object->get('ca_objects.exhibition_label', array('delimiter' => '<br/>'))) {
