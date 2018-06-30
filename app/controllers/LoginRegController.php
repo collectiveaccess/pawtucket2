@@ -226,11 +226,6 @@
 		}
 		# ------------------------------------------------------
 		function login() {
-		    if (!caValidateCSRFToken($this->request, null, ['notifications' => $this->notification])) {
-		        $this->view->setVar("message", _t("CSRF token is invalid"));
-				$this->loginForm();
-				return;
-		    }
 			if (!$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $this->request->getParameter('username', pString), 'password' => $this->request->getParameter('password', pString)))) {
 				$this->view->setVar("message", _t("Login failed"));
 				$this->loginForm();
