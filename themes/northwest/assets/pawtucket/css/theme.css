@@ -22,6 +22,20 @@
     font-weight: bold;
     font-style: italic;
 }
+
+@font-face {
+	font-family:Noe;
+	src:url("fonts/Noe-Display-Bold.eot");
+	src:url("fonts/Noe-Display-Bold.eot?#iefix") format("embedded-opentype"),url("fonts/Noe-Display-Bold.woff") format("woff");
+	font-weight:400;
+	font-style:normal;
+}
+.container{
+	max-width:1300px;
+}
+.container.menuBar{
+	max-width:none;
+}
 body {
 	margin-bottom:483px !important;
 	font-size: 62.5% !important;
@@ -102,6 +116,46 @@ label, .advancedSearchField .formLabel {
 	padding-left:0px;
 	padding-right:0px;
 }
+.navbar-header .mainTitle{
+	font-family:Noe;
+	font-size: 5em;
+	color: #7a3030;
+	text-align:center;
+	margin-bottom:1em;
+	margin-top:.3em;
+	height:40px;
+}
+.navbar-header .mainTitle a{
+	text-decoration:none;
+}
+@media (max-width: 1080px) {
+	.navbar-header .mainTitle{
+		text-align:right;
+		padding-right:50px;
+	}
+}
+@media (max-width: 850px) {
+	.navbar-header .mainTitle{
+		font-size: 4em;
+	}
+}
+@media (max-width: 768px) {
+	.navbar-header .mainTitle{
+		font-size: 3em;
+		background-color:#7a3030;
+		padding:12px 0px 10px 0px;
+		display:block;
+		width:100%;
+		color:#FFF;
+		margin-top:70px;
+		text-align:center;
+		float:none;
+		height:auto;
+	}
+	.navbar-header .mainTitle a{
+		color:#FFF;
+	}
+}
 .navbar {
 	box-shadow:none;
 }
@@ -110,10 +164,13 @@ label, .advancedSearchField .formLabel {
 }
 .navbar-brand {
 	height:40px;
-	width:100%;
 	padding-top:0px;
 	padding-bottom:0px;
 	margin-bottom:1.8em;
+	float:none;
+	position:absolute;
+	left: -10px;
+	top:5px;
 }
 .navbar-brand img{
 	height:100%;
@@ -141,6 +198,9 @@ label, .advancedSearchField .formLabel {
 	right:0px;
 	left:auto;
 	text-align:left;
+}
+.navbar-toggle-user {
+    font-size: 2.3em;
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:active, .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:focus {
 	background-color:#7a3030;
@@ -343,7 +403,63 @@ input:focus, input:active, textarea:focus, textarea:active {
 }
 
 /* Front */
-
+.front .yellowBg{
+	background-color: #f9efc3;
+	color: #7a3030;
+	margin-bottom:70px;
+	margin-top:50px;
+	margin-left:auto;
+	margin-right:auto;
+	position:relative;
+}
+.front .yellowBg H1{
+	text-align:center;
+	margin:0px;
+	padding-top:100px;
+	padding-bottom:100px;
+	width:100%;
+	font-weight: normal;
+}
+@media (max-width: 992px) {
+	.front .yellowBg H1{
+		font-size:3.0em !important;
+		padding-top:50px;
+		padding-bottom:50px;
+	}
+}
+.front h3{
+	font-family: Noe;
+	text-align:center;
+	font-size: 4.5em;
+	margin-bottom:40px;
+	text-transform:none;
+}
+/*@media (max-width: 992px) {
+	.front .hpSlideshowCol{
+		padding-left:0px;
+		padding-right:0px;
+	}
+}*/
+.front .jcarousel-control-prev{
+	left:-15px !important;
+}
+.front .jcarousel-control-next{
+	right:-15px !important;
+}
+@media (max-width: 768px) {
+	.front .jcarousel-control-next, .front .jcarousel-control-prev{
+		font-size:35px;
+		width:35px;
+	}
+}
+@media (min-width: 992px) {
+	.front .jcarousel-control-prev{
+		left:-50px !important;
+	}
+	.front .jcarousel-control-next{
+		right:-50px !important;
+	}
+}
 .front .jcarousel-control-next, .front .jcarousel-control-prev, .front a.jcarousel-control-prev:hover, .front a.jcarousel-control-next:hover, .front a.jcarousel-control-prev:focus, .front a.jcarousel-control-next:focus {
 	color:#7a3030;
 	opacity:1;
@@ -364,7 +480,48 @@ input:focus, input:active, textarea:focus, textarea:active {
 .front .jcarousel-pagination a.active:hover {
 	background-color:#cf0;
 }
-
+.front .nav-pills > li > a, .front .nav-pills > li > a:hover {
+    font-weight: bold;
+    color:#7a3030;
+}
+.front .galleryItems li img{
+	width:100%;
+	height:auto;
+}
+.front .galleryItems li{
+	padding-right:0px;
+	margin-right:0px;
+}
+.front .galleryItem{
+	margin-right:15px;
+	margin-left:15px;
+}
+/*
+.front .galleryItems-wrapper .jcarousel-control-prev {
+	left: -50px !important;
+}
+.front .galleryItems-wrapper .jcarousel-control-next {
+	right: -50px !important;
+}
+*/
+.frontGridCaption {
+	font-size:2em;
+	height:2em;
+	overflow:hidden;
+}
+.frontGallerySlideCaption{
+	font-size:2em;
+	padding-top:30px;
+	
+}
+.frontGallerySlideCaption .frontGallerySlideCaptionTitle{
+	font-weight:bold;
+	font-size: 1.4em;
+	margin-bottom:25px;
+}
+.galleryItems-wrapper{
+	margin-top:40px !important;
+}
 /* Search */
 
 .multisearch .pull-right {
@@ -411,6 +568,9 @@ input:focus, input:active, textarea:focus, textarea:active {
 	padding-top:90px;
 }
 
+.multisearch .authorityResult{
+	line-height:2.2em;
+}
 /* Detail */
 
 .detail, .detail a {
@@ -460,6 +620,9 @@ span.spacer {
 .detail .metaData {
 	width:70%;
 	display:inline-block;
+}
+.detail .metaData div, .detail .metaData p{
+	font-size:inherit;
 }
 .objCaption {
 	font-weight:bold;
@@ -523,7 +686,12 @@ span.spacer {
 	margin-bottom:20px;
 	margin-top:-20px;
 }
-
+#detailComments blockquote, #tags{
+	font-size: 14px;
+}
+#detailComments .btn-default{
+	font-size:1em;
+}
 /* Login */
 
 #pageArea.loginreg {
@@ -537,7 +705,26 @@ span.spacer {
 #pageArea.loginreg a {
 	font-size:12px;
 }
+/* Browse and sets buttons */
 
+.browse .btn, .sets .btn {
+    background-color: #FFF;
+    color: #7a3030;
+    padding:5px;
+}
+.browse .btn a, .browse .btn .glyphicon, .sets .btn a, .sets .btn .glyphicon{
+	color: #7a3030 !important;
+}
+.results a .glyphicon, .results a .fa {
+    color: #7a3030 !important;
+}
+.results .bResultItemImgPlaceholder .fa, .multisearch .bResultItemImgPlaceholder .fa{
+	color:#ddd !important;
+	font-size:2em;
+}
+.bResultItemImgPlaceholder{
+	font-size: 14px;
+}
 /* Browse */
 
 #bRefine {
@@ -627,6 +814,22 @@ span.spacer {
 .collectionsList a {
 	color:#7a3030;
 }
+@media (max-width: 400px) {
+	.collectionTile .collectionImg{
+		margin-bottom:20px;
+	}
+}
+@media (min-width: 400px) {
+	.collectionTile .collectionImg{
+		float:left;
+		width:25%;
+		padding-right:20px;
+	}
+}
+.collectionTile .collectionImg img{
+	width:100%;
+	height:auto;
+}
 .collectionTile .title a {
 	font-weight:bold;
 	font-size:15px;
@@ -660,6 +863,19 @@ span.spacer {
 	font-size:16px;
 }
 
+/* form overly */
+#caFormOverlay .glyphicon{
+	font-size: 20px;
+}
 
+/* lightbox */
 
+.activitystream{
+	font-size:14px;
+}
 
+/* notifications */
+
+.notificationMessage, .notificationError, .notificationInfo, .notificationWarning, .alert{
+	font-size:16px;
+}

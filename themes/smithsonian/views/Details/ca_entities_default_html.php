@@ -79,7 +79,19 @@
 				
 				{{{<ifcount code="ca_occurrences" min="1" max="1"><span class='metaTitle'>Related Work</span></ifcount>}}}
 				{{{<ifcount code="ca_occurrences" min="2"><span class="metaTitle">Related Works</span></ifcount>}}}
-				{{{<div class='meta'><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l></unit></div>}}}				
+				
+<?php
+    $t_entity = $this->getVar('item');
+    $q = $t_entity->get('ca_occurrences.occurrence_id', ['returnAsSearchResult' => true]);
+  
+    $by_work_type = [];
+    while($q->nextHit()) {
+        $by_work_type[$q->get('ca_occurrences.workType', ['convertCodesToDisplayText' => true])][] =  $q->getWithTemplate('<unit delimiter=" "><div class="worklist"><l>^ca_occurrences.preferred_labels</l></div></div></unit>');
+    }
+    foreach($by_work_type as $type => $works) {
+        print "<div class='meta'><h6>{$type}</h6>".join(" ", $works)."</div>\n";
+    }
+?>			
 			
 			</div><!-- end col -->
 			<div class='col-md-6 col-lg-6'>
