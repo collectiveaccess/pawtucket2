@@ -62,7 +62,7 @@
 							<div class='clean'>
 								<?php print caGetThemeGraphic($this->request, 'clean.jpg'); ?>
 							</div>
-							<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2016</a></small></div>
+							<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess <?php print date("Y"); ?></a></small></div>
 						</div>
 					</div>
 				</div>
