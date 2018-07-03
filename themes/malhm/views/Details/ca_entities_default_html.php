@@ -31,6 +31,9 @@
 							print "<div class='unit'><a href='".$va_website_link."' target='_blank'>".$va_website_link."</a></div>";
 						}
 					}
+?>
+					<hr/>
+<?php
 					if ($va_addresses = $t_item->get('ca_entities.address', array('returnWithStructure' => true))) {
 						$vs_address = "";
 						foreach ($va_addresses as $va_key => $va_addresses_t) {
