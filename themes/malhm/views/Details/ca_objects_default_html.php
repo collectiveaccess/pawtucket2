@@ -74,10 +74,9 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
-				#For testing only needs to be hooked up when holding institution information is available#
-				print "<div class='instLink'><small>from the collection of</small><div>".caDetailLink($this->request, 'Pope County Museum', '', 'ca_entities', 13845)."</div></div>";
-				#Fix me I'm just a slug!!
-				
+ini_set("display_errors", "on");
+				print "<div class='instLink'><small>from the collection of</small><div>".caDetailLink($this->request, caGetListItemByIDForDisplay($vn_source_id = $t_object->get('source_id')), '', 'ca_entities', ca_entities::getIDForIdno(caGetListItemIdno($vn_source_id)))."</div></div>";
+
 				
 				if ($vs_alt = $t_object->get('ca_objects.title')) {
 					print "<div class='unit'><h6>Title</h6>".$vs_alt."</div>";

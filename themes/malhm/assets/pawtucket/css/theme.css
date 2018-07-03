@@ -61,7 +61,7 @@ p {
 	background-color:#6e416c;
 }
 .containerWrapper {
-	max-width: 1050px;
+	max-width: 1200px;  /* was 1050px */
 	margin-left:auto;
 	margin-right:auto;
 }  
