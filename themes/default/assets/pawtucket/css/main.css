@@ -1131,8 +1131,7 @@ a.browseRemoveFacet img {
 }
 .lbSetItemComment .btn-xs, .lbSetComment .btn-xs{
 	padding:5px !important;
-	font-size:10px;
-	margin-top:-10px;
+	font-size:10px !important;
 }
 .lbItemContainerList .lbSetItemComment{
 	left:0px;
@@ -1152,7 +1151,6 @@ a.browseRemoveFacet img {
 }
 .lbSetCommentHeader {
 	font-size:11px;
-	padding-bottom:5px;
 }
 
 .lbItemContainer .lbSetItemComment{
@@ -1224,8 +1222,7 @@ a.browseRemoveFacet img {
 }*/
 .activitycol .lbSetCommentHeader, .lbSetCommentHeader {
 	font-weight:bold;
-	padding-top:10px;
-	margin-top:10px;
+	padding-top:5px;
 	border-top:1px solid #e3e3e3;	
 }
 .lbSetCommentHeader a{
