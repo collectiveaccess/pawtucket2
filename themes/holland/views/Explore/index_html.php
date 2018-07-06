@@ -24,10 +24,12 @@
 				# --- get one object with this category
 				$qr_res = $o_search->search("ca_objects.object_category:".$qr_categories->get("ca_list_items.item_id"), array("checkAccess" => $va_access_values, "limit" => 50));
 				if($qr_res->numHits()){
-					while(!$vs_img){
+					$i = 0;
+					while(!$vs_img && ($i < $qr_res->numHits())){
 						$qr_res->seek(rand(1,$qr_res->numHits()));
 						$qr_res->nextHit();
 						$vs_img = $qr_res->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values));
+						$i++;
 					}
 				}
 			}
