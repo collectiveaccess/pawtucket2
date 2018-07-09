@@ -816,6 +816,21 @@ body.initial .browseMenuFacetSearchInput.form-control, .browseMenuFacetSearchInp
 		max-width:350px;
 	}
 }
+.exploreImgContainer{
+	margin-bottom:20px;
+}
+.explorePlaceholder{
+	background-color: #F5F5F5;
+	border: 2px solid #EDEDED;
+	color: #858585;
+	margin-bottom: 10px;
+	padding: 90px 5px 95px;
+	text-align: center;
+	width: 100%;	
+}
+.explorePlaceholder a{
+	color:#858585;
+}
 
 .form-control:focus {
     border-color: #515151;
