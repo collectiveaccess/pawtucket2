@@ -115,7 +115,7 @@
 		//
 		// Dispatch the request
 		//
-		$vb_auth_success = $g_request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false));
+		$vb_auth_success = $g_request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false, 'allow_external_auth' => ($g_request->getController() == 'LoginReg')));
 		$app->dispatch(true);
 
 		//
