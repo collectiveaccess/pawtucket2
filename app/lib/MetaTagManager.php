@@ -59,6 +59,22 @@
 		}
 		# --------------------------------------------------------------------------------
 		/**
+		 * Add <meta> tag to response with property
+		 *
+		 * @param $ps_tag_property (string) - name attribute of <meta> tag
+		 * @param $ps_content (string) - content of <meta> tag
+		 * @return (bool) - Returns true if was successfully added, false if not
+		 */
+		static function addMetaProperty($ps_tag_property, $ps_content) {			
+			if (!is_array(MetaTagManager::$opa_tags)) { MetaTagManager::init(); }
+			if (!$ps_tag_property) { return false; }
+			
+			MetaTagManager::$opa_tags['meta_property'][$ps_tag_property] = $ps_content;
+			
+			return true;
+		}
+		# --------------------------------------------------------------------------------
+		/**
 		 * Add <link> tag to response.
 		 *
 		 * @param $ps_rel (string) - rel attribute of <link> tag
@@ -99,6 +115,11 @@
 			if (sizeof(MetaTagManager::$opa_tags['meta'])) {	
 				foreach(MetaTagManager::$opa_tags['meta'] as $vs_tag_name => $vs_content) {
 					$vs_buf .= "<meta name='".htmlspecialchars($vs_tag_name, ENT_QUOTES)."' content='".htmlspecialchars($vs_content, ENT_QUOTES)."'/>\n";
+				}
+			}
+			if (sizeof(MetaTagManager::$opa_tags['meta_property'])) {	
+				foreach(MetaTagManager::$opa_tags['meta_property'] as $vs_tag_property => $vs_content) {
+					$vs_buf .= "<meta property='".htmlspecialchars($vs_tag_property, ENT_QUOTES)."' content='".htmlspecialchars($vs_content, ENT_QUOTES)."'/>\n";
 				}
 			}
 			if (sizeof(MetaTagManager::$opa_tags['link'])) {	
