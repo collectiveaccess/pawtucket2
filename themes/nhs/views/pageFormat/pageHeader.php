@@ -142,8 +142,8 @@
 				<div class='menuContainer'><ul class="nav navbar-nav navbar-right menuItems">
 					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li class="mobileLink<?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
+					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Objects"), "", "", "Browse", "objects"); ?></li>
+					<li class="mobileLink<?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Objects"), "", "", "Browse", "objects"); ?></li>
 					<li class="mobileLink<?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
