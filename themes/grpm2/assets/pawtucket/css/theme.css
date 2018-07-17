@@ -395,6 +395,12 @@ hr{
 	border-radius: 4px;
 }
 /* detail comments */
+.detail .notificationMessage{
+	position: absolute;
+	top: 0px;
+	z-index: 1;
+	width: 100%;
+}
 #detailComments {
     display: block;
     border:0px;
