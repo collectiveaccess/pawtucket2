@@ -618,7 +618,7 @@
  				throw new ApplicationException("Invalid contribute form type");
  			}
  			
- 			if (!($this->pt_subject = $this->request->datamodel->getInstanceByTableName($va_form_info['table']))) {
+ 			if (!($this->pt_subject = Datamodel::getInstance($va_form_info['table']))) {
  				// invalid form table (shouldn't happen unless misconfigured)
  				throw new ApplicationException("Invalid contribute table setting");
  			}
