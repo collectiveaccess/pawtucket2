@@ -194,7 +194,6 @@
 							<li><?php print caNavLink($this->request, "<span>"._t("About the Collection")."</span>", "", "", "About", "Collection"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Contact Us")."</span>", "", "", "About", "Contact"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("FAQ")."</span>", "", "", "About", "FAQ"); ?></li>
-							<li><?php print caNavLink($this->request, "<span>"._t("Terms of Use")."</span>", "", "", "About", "Terms"); ?></li>
 						</ul>
 					</li>
 				</ul>

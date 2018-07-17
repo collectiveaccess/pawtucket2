@@ -95,7 +95,15 @@
 											Aliquam eget augue iaculis, volutpat est eget, malesuada orci. Nulla mi lectus, aliquet ac facilisis id, malesuada sit amet dolor. Nam varius ex at mauris porta, id elementum purus sollicitudin. 
 										</p>
 										<p class="text-center">
-											<?php print "<a href='#' class='btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a>"; ?>
+<?php
+											if($this->request->isLoggedIn()){
+												$va_lightboxDisplayName = caGetLightboxDisplayName();
+												$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
+												print caNavLink($this->request, $vs_lightbox_sectionHeading, 'btn-default', '', 'Lightbox', 'Index', array());
+											}else{
+												print "<a href='#' class='btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a>";
+											}
+?>
 										</p>
 									</div>
 								</div>
