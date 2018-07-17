@@ -165,10 +165,5 @@ if ($vb_has_user_links) {
 			</div><!-- menu wrapper -->
 		</div><!-- /.navbar-collapse -->
 	</nav>
-<?php
-	if ($this->request->getController() == "Front") {
-		$vs_style = "style='padding:0px;'";
-	}
-?>	
-	<div class="container" <?php print $vs_style;?> ><div class="row"><div class="col-xs-12">
+	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

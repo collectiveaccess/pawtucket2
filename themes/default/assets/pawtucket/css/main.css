@@ -1131,8 +1131,7 @@ a.browseRemoveFacet img {
 }
 .lbSetItemComment .btn-xs, .lbSetComment .btn-xs{
 	padding:5px !important;
-	font-size:10px;
-	margin-top:-10px;
+	font-size:10px !important;
 }
 .lbItemContainerList .lbSetItemComment{
 	left:0px;
@@ -1152,7 +1151,6 @@ a.browseRemoveFacet img {
 }
 .lbSetCommentHeader {
 	font-size:11px;
-	padding-bottom:5px;
 }
 
 .lbItemContainer .lbSetItemComment{
@@ -1224,8 +1222,7 @@ a.browseRemoveFacet img {
 }*/
 .activitycol .lbSetCommentHeader, .lbSetCommentHeader {
 	font-weight:bold;
-	padding-top:10px;
-	margin-top:10px;
+	padding-top:5px;
 	border-top:1px solid #e3e3e3;	
 }
 .lbSetCommentHeader a{
@@ -1475,6 +1472,27 @@ a.browseRemoveFacet img {
 }
 .frontSlideCaption a{
 	color:#FFF;
+}
+
+.frontGrid img{
+	width:100%;
+	height:auto;
+}
+.frontGridCaption{
+	padding-top:5px;
+	margin-bottom:30px;	
+}
+.frontGallerySlideCaption{
+	padding-top:5px;
+}
+.front .galleryItems li{
+	padding-right:30px;
+}
+.front .galleryItems-wrapper{
+	margin-top:0px;
+}
+.front .galleryItems-wrapper .jcarousel-control-prev, .front .galleryItems-wrapper .jcarousel-control-next {
+    top: 40%;
 }
 
 /* --------------------------------- */
@@ -2505,6 +2523,9 @@ a.browseRemoveFacet .glyphicon {
 .collectionsContainer a.openCollection.active {
 	color:#fff;
 	background-color: #858585;
+}
+.collectionsContainer a.openCollection.active small {
+    color: #fff;
 }
 .collectionsContainer a .fa, .collectionsContainer .fa, #collectionLoad a .fa, #collectionLoad .fa{
 	color: #858585;

@@ -130,3 +130,10 @@
 					});
 			});
 		</script>
+	<div class="row grayBg">
+		<div class="containerWrapper">
+			<div class="col-sm-10 col-sm-offset-1">
+				<H1>SUPPORT THE MUSEUMS<br/><br/>{{{homepage_support_text}}}</H1>
+			</div><!--end col-sm-8-->	
+		</div>
+	</div><!-- end row -->

@@ -10,7 +10,7 @@ img.headerImg {height:45px; width:auto; margin-top:20px; margin-bottom:10px;}
 .pagingText { position: absolute; top: 30px; right: 30px; font: "helvetica"; font-size: 11px; text-align: right;  margin: 0px 0px 10px 25px;}
 #footer .pagingText{ top:20px; }
 .footerText { position:relative; font-size: 11px;  top:13px; padding-right:40px;  }  
-body{ font-family:apercu; margin:0px; padding:0px;}
+body{ font-family:apercu; margin:0px; padding:0px 0px 0px 5px;}
 
 /* dompdf */
 @page { margin: 65px 56px 35px 56px; }
@@ -30,7 +30,6 @@ h6 {font-size:12px; font-weight:bold;margin:0px 0px 5px 0px; padding:0px;}
 .tombstone { margin-top:20px;}
 .clear { clear: both; }
 .small { font-size:10px; }
-.unit div::before { content:' - '; }
 .unit p {
 	margin-top:2px; font-size:11px;
 }

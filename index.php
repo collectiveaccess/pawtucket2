@@ -28,6 +28,11 @@
 	define("__CA_APP_TYPE__", "PAWTUCKET");
 	define("__CA_MICROTIME_START_OF_REQUEST__", microtime());
 	define("__CA_SEARCH_IS_FOR_PUBLIC_DISPLAY__", 1);
+	
+	if (!defined("__CA_SITE_PROTOCOL__")) {
+        define("__CA_SITE_PROTOCOL__", isset($_SERVER['HTTPS']) ? 'https' : 'http');
+    }
+	
 	require("./app/helpers/errorHelpers.php");
 	
 	if (!file_exists('./setup.php')) {

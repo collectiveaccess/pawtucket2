@@ -7238,27 +7238,28 @@ class BaseModel extends BaseObject {
 			
 			$va_indent_stack = $va_hier = $va_parent_map = [];
 			
-			$vn_cur_level = -1;
-			
 			$vn_root_id = $pn_id;
 		
+		    $va_id2parent = [];
 			while($qr_hier->nextRow()) {
 			    $vn_row_id = $qr_hier->get($this->primaryKey());
-				
 				$vn_parent_id = $qr_hier->get($vs_parent_id_fld);
 				
-				if(!$vn_parent_id) {
-			        $vn_cur_level = 0;
+				$va_id2parent[$vn_row_id] = $vn_parent_id;
+			}
+			
+			foreach($va_id2parent as $vn_row_id => $vn_parent_id) {
+			    if(!$vn_parent_id) { 
 			        $va_parent_map[$vn_row_id] = ['level' =>  1];
-				} elseif (!isset($va_parent_map[$vn_parent_id])) {
-				    $va_parent_map[$vn_parent_id] = ['level' => $vn_cur_level + 1];
-				    $vn_cur_level++;
-				} else {
-				    $vn_cur_level =  $va_parent_map[$vn_parent_id]['level'];
-				}
-				if (!isset($va_parent_map[$vn_row_id])) {
-					$va_parent_map[$vn_row_id] = ['level' => $vn_cur_level + 1];
-				}
+			    } else {
+			        $r = $vn_row_id;
+			        $l = 0;
+			        while(isset($va_id2parent[$r])) {
+			            $r = $va_id2parent[$r];
+			            $l++;
+			        }
+			        $va_parent_map[$vn_row_id] = ['level' =>  $l];
+			    }
 			}
 			
 			$qr_hier->seek(0);
@@ -7270,7 +7271,7 @@ class BaseModel extends BaseObject {
 				
 				$vn_parent_id = $qr_hier->get($vs_parent_id_fld);
 				
-                $vn_cur_level =  $va_parent_map[$vn_parent_id]['level'];
+                $vn_cur_level =  $va_parent_map[$vn_row_id]['level'];
                 
 				$vn_r = $qr_hier->get($vs_hier_right_fld);
 				$vn_c = sizeof($va_indent_stack);

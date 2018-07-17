@@ -43,16 +43,25 @@ p {
 .front h1 {
 	color:#fff;
 	padding-top:0px;
+	text-align:center;
 }
 .front .members h1 { 
 	color: #333;
 	text-align:center;
 }
+.front .grayBg h1 { 
+	color: #333;
+	text-align:center;
+}
+.front .grayBg{
+	bottom: -42px;
+	position:relative;
+}
 .browse .btn, .sets .btn, .btn-default, .btn-default:hover {
 	background-color:#6e416c;
 }
 .containerWrapper {
-	max-width: 1050px;
+	max-width: 1200px;  /* was 1050px */
 	margin-left:auto;
 	margin-right:auto;
 }  
@@ -62,6 +71,12 @@ p {
 	padding-bottom:20px;
 	padding-top:20px;
 } 
+.grayBg{
+	background-color:#d9d9d9;
+	color:#333;
+	padding-bottom:20px;
+	padding-top:20px;
+}
 #wsite-title {    
     display: block;
     color: inherit;
@@ -635,5 +650,43 @@ ul.socialRow li .connect{
 	margin-left:-13px;
 	margin-right:-13px;
 }
-
+/* placeholder */
+.bResultItemImgPlaceholder{
+	padding:0px;
+	background-color:#fff;
+}
+.placeholderGraphic{
+	background-repeat:no-repeat;
+	background-position: top left;
+	background-size: 100%; 
+	width:100%;
+	min-height: 120px;
+	max-width:200px;
+	margin-left:auto;
+	margin-right:auto;
+}
+.detail .placeholderGraphic{
+	min-height: 150px;
+}
+.placeholderGeology{
+	background-image: url("../graphics/industry.png");
+}
+.placeholderNatHistory{
+	background-image: url("../graphics/fishing.png");
+}
+.placeholderObject{
+	background-image: url("../graphics/household_life.png");
+}
+.placeholderArt{
+	background-image: url("../graphics/art.png");
+}
+.placeholderFilm{
+	background-image: url("../graphics/film.png");
+}
+.placeholderAudio{
+	background-image: url("../graphics/audio.png");
+}
+.placeholderTypewriter{
+	background-image: url("../graphics/communications.png");
+}
 

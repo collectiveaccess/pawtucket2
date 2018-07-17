@@ -33,103 +33,103 @@
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					Kingdom<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=kingdom}}}
+					{{{ca_occurrence_labels.name%filterTypes=kingdom}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					Phylum<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=phylum}}}
+					{{{ca_occurrence_labels.name%filterTypes=phylum}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					Subphylum<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=subphylum}}}
+					{{{ca_occurrence_labels.name%filterTypes=subphylum}}}
 				</div>
 			</div>
 			<div class="col-sm-3 col-sm-offset-2">
 				<div class="advancedSearchField">
 					Superclass<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=superclass}}}
+					{{{ca_occurrence_labels.name%filterTypes=superclass}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					Class<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=class}}}
+					{{{ca_occurrence_labels.name%restrictToTypes=class}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					Subclass<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=subclass}}}
+					{{{ca_occurrence_labels.name%filterTypes=subclass}}}
 				</div>
 			</div>
 			<div class="col-sm-3 col-sm-offset-2">
 				<div class="advancedSearchField">
 					Superorder<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=superorder}}}
+					{{{ca_occurrence_labels.name%filterTypes=superorder}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					Order<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=order}}}
+					{{{ca_occurrence_labels.name%filterTypes=order}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					Suborder<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=suborder}}}
+					{{{ca_occurrence_labels.name%filterTypes=suborder}}}
 				</div>
 			</div>
 			<div class="col-sm-3 col-sm-offset-2">
 				<div class="advancedSearchField">
 					Infraorder<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=infraorder}}}
+					{{{ca_occurrence_labels.name%filterTypes=infraorder}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					Superfamily<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=superfamily}}}
+					{{{ca_occurrence_labels.name%filterTypes=superfamily}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					Family<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=family}}}
+					{{{ca_occurrence_labels.name%filterTypes=family}}}
 				</div>
 			</div>
 			<div class="col-sm-3 col-sm-offset-2">
 				<div class="advancedSearchField">
 					Subfamily<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=Subfamily}}}
+					{{{ca_occurrence_labels.name%filterTypes=subfamily}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					Tribe<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=tribe}}}
+					{{{ca_occurrence_labels.name%filterTypes=tribe}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					Subtribe<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=subtribe}}}
+					{{{ca_occurrence_labels.name%filterTypes=subtribe}}}
 				</div>
 			</div>
 			<div class="col-sm-3 col-sm-offset-2">
 				<div class="advancedSearchField">
 					Genus<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=genus}}}
+					{{{ca_occurrence_labels.name%filterTypes=genus}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					Subgenus<br/>
-					{{{ca_occurrences.preferred_labels.name%restrictToTypes=subgenus}}}
+					{{{ca_occurrence_labels.name%filterTypes=subgenus}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
@@ -213,19 +213,19 @@
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					Country<br/>
-					{{{ca_places%restrict_to_types=country}}}
+					{{{ca_places.preferred_labels.name%restrictToTypes=country}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					State/Province<br/>
-					{{{ca_places%restrict_to_types=stateProvince}}}
+					{{{ca_places.preferred_labels.name%restrictToTypes=stateProvince}}}
 				</div>
 			</div>
 			<div class="col-sm-3">
 				<div class="advancedSearchField">
 					County<br/>
-					{{{ca_places%restrict_to_types=county}}}
+					{{{ca_places.preferred_labels%filterTypes=county}}}
 				</div>
 			</div>
 		</div>

@@ -28,7 +28,7 @@
 					{{{<ifdef code="ca_collections.parent_id"><div class='collectionPath'><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
 <?php					
 					if ($vn_pdf_enabled) {
-						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
+						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download collection guide", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
 					}
 ?>
 				</div><!-- end col -->
@@ -116,7 +116,8 @@
 				</div>
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">
-			<hr/>
+			<div class="row"><div class="col-sm-12">
+			<br/><br/><hr/>
 			<h4>Digitized Holdings</h4>
 			<div class="row">
 				
@@ -124,6 +125,7 @@
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->
+			</div></div>
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
