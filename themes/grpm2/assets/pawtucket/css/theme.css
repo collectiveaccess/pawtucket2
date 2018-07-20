@@ -66,6 +66,9 @@ a.btn-default, .btn-default a{
 .bgLtGray{
 	background-color: #E1E1E1;
 }
+.bgWhite{
+	background-color:#FFFFFF;
+}
 H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 	 font-family:museo-slab;
 	 text-transform:none;
@@ -80,13 +83,19 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 hr{
 	border-top: 1px solid #dddddd;
 }
+.capHeightScroll{
+	max-height:300px;
+	overflow-y:scroll;
+}
 #pageArea{
 	margin-top:25px;
 	padding-bottom:25px;
 }
-.navbar-brand {
-    width: 350px;
-    margin-top:3px;
+@media (min-width:768px){	
+	.navbar-brand {
+		width: 350px;
+		margin-top:3px;
+	}
 }
 .navbar{
 	background-color: #f6f6f6;
@@ -110,9 +119,14 @@ hr{
     background-color: #00bcff;
     color:#fff;
 }
-.nav > li > a i{
+.nav > li > a i {
 	margin-right:8px;
 	font-size: 18px;
+	vertical-align: text-top;
+}
+.nav > li > a span.glyphicon{
+	margin-right:8px;
+	font-size: 16px;
 	vertical-align: text-top;
 }
 @media (min-width:1010px){	
@@ -185,6 +199,9 @@ hr{
 	background: #248cc8;
 }
 /* front */
+.front{
+	margin-bottom:75px;
+}
 .front H1{
 	margin-top:100px;
 	margin-bottom:100px;
@@ -197,7 +214,7 @@ hr{
 	margin-bottom:25px;
 	font-family:museo-slab;
 	text-align:center;
-	color:#FFFFFF;
+	color:#009fd8;
 	font-size:30px;
 }
 .front H3{
@@ -207,6 +224,19 @@ hr{
 	text-align:center;
 	color:#009fd8;
 	font-size:30px;
+}
+.front .collectionLinksSpacer{
+	height:100px;
+}
+.collectionLinks img{
+	width:100%;
+	height:auto;
+}
+.collectionLinks .col-xs-12{
+	margin-bottom:25px;
+}
+.collectionLinks{
+	margin-bottom:100px;
 }
 .frontGrid{
 	margin-top:20px;
@@ -352,7 +382,7 @@ hr{
 	margin-top: 20px;
 }
 .repViewerContCont{
-	padding-bottom:30px;
+	padding-bottom:38px;
 }
 .detail .detailMediaToolbar/*, .gallery .detailMediaToolbar*/ {
     background-color: #f6f6f6;
@@ -361,25 +391,31 @@ hr{
     position: absolute;
     display: block;
     top: auto;
-    bottom: -35px;
-    left:25%;
-    right:25%;
+    bottom: -43px;
+    left:30%;
+    right:30%;
     text-align: center;
     z-index:1500;
+}
+.detail .detailMediaToolbar a{
+	color: #4BB7E6;
 }
 .detail #detailRepNav {
     padding: 0px 0px 7px 0px;
     font-size: 12px;
     position: relative;
     z-index: 1000;
-    top: -25px;
-
+    top: -33px;
 }
 .detail .detailMediaToolbar {
-    font-size: 15px;
+    font-size: 20px;
 }
 .detail #detailAnnotations {
     margin: 0px 0px 0px 0px;
+}
+#detailRepresentationThumbnails{
+	max-height:210px;
+	overflow-y:auto;
 }
 .detail.ca_objects .shareBar {
 	text-align:center;
@@ -470,4 +506,25 @@ hr{
 }
 label{
 	font-family:inherit;
+}
+/* teacher gallery */
+.gallery .setCascade {
+	display:inline-block;
+	margin-bottom:20px;
+}
+.gallery .setCascade img {
+	width:100%;
+	height:auto;
+}
+.teacherGalleryIntro{
+	font-size:14px;
+	line-height:1.5em;
+}
+.gallery .setCascadeInfo{
+	background-color:#FFF;
+	padding:10px;
+}
+.gallery .setCascadeInfo .setCascadeTitle{
+	font-size:14px;
+	font-family:museo-slab;
 }

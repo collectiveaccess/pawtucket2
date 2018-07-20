@@ -161,14 +161,14 @@
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span><i class="fa fa-picture-o" aria-hidden="true"></i>Features</span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span><i class="fa fa-picture-o" aria-hidden="true"></i>Galleries</span></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, "<span>"._t("Teacher Galleries")."</span>", "", "", "Gallery", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, "<span>"._t("Galleries")."</span>", "", "", "Gallery", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Teacher Created Galleries")."</span>", "", "", "TeacherGallery", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, "<span>"._t("Curator Galleries")."</span>", "", "", "Gallery", "Index"); ?></li>
 						</ul>
 					</li>
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span><i class="fa fa-bars" aria-hidden="true"></i>Explore</span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span><span class="glyphicon glyphicon-search"></span>Explore</span></a>
 						<ul class="dropdown-menu">
 							<li><?php print caNavLink($this->request, "<span>"._t("Collections")."</span>", "", "", "Browse", "Collections"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Exhibits & Programs")."</span>", "", "", "Browse", "Occurrences"); ?></li>
@@ -188,14 +188,6 @@
 <?php
 	}
 ?>
-					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span><i class="fa fa-info-circle" aria-hidden="true"></i>Info</span></a>
-						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, "<span>"._t("About the Collection")."</span>", "", "", "About", "Collection"); ?></li>
-							<li><?php print caNavLink($this->request, "<span>"._t("Contact Us")."</span>", "", "", "About", "Contact"); ?></li>
-							<li><?php print caNavLink($this->request, "<span>"._t("FAQ")."</span>", "", "", "About", "FAQ"); ?></li>
-						</ul>
-					</li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

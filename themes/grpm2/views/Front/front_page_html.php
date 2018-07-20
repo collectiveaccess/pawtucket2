@@ -89,6 +89,30 @@
 								<div class="col-xs-12 col-sm-7 col-md-7">
 									<div class="slideTextRight">
 										<h2>
+											Explore
+										</h2>
+										<p>
+											Aliquam eget augue iaculis, volutpat est eget, malesuada orci. Nulla mi lectus, aliquet ac facilisis id, malesuada sit amet dolor. Nam varius ex at mauris porta, id elementum purus sollicitudin. 
+										</p>
+										<p class="text-center" style="line-height:2em;">
+<?php
+											print caNavLink($this->request, _t("Collections"), "btn-default", "", "Browse", "collections")." ".
+													caNavLink($this->request, _t("Exhibits & Programs"), "btn-default", "", "Browse", "occurrences")."<br/>".
+													caNavLink($this->request, _t("Makers & Donors"), "btn-default", "", "Browse", "entities")." ".
+													caNavLink($this->request, _t("Objects"), "btn-default", "", "Browse", "objects")." ";
+?>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</li>
+					<li>
+						<div class='frontSlide'>
+							<div class="row">
+								<div class="col-xs-12 col-sm-7 col-md-7">
+									<div class="slideTextLeft">
+										<h2>
 											Get Involved!
 										</h2>
 										<p>
@@ -104,12 +128,16 @@
 												print "<a href='#' class='btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a>";
 											}
 ?>
+
 										</p>
 									</div>
 								</div>
+								<div class="col-xs-12 col-sm-5 col-md-5">
+									<?php print caGetThemeGraphic($this->request, 'grand-rapids-public-museum.jpg'); ?>
+								</div>
 							</div>
 						</div>
-					</li>				
+					</li>			
 				</ul>
 			</div><!-- end jcarousel -->
 			<!-- Prev/next controls -->
@@ -139,7 +167,19 @@
 						.jcarousel({
 							// Options go here
 							wrap:'circular'
+						}).jcarouselAutoscroll({
+							interval: 3000,
+							target: '+=1',
+							autostart: true
 						});
+        
+						$('.mainSlide').hover(function() {
+							$(this).jcarouselAutoscroll('stop');
+						}, function() {
+							$(this).jcarouselAutoscroll('start');
+						});
+						
+						
 		
 					/*
 					 Prev control initialization
@@ -187,27 +227,45 @@
 			
 			
 					});
+					/*
+					setInterval("$('.jcarousel').jcarousel('scroll', '+=1')", 4000);
+					*/
 			</script>
 		</div>
 	</div>
+<?php
+	$vs_tagline = $this->getVar("frontpage_tagline");
+	if($vs_tagline){
+?>
 	<div class="row">
 		<div class="col-sm-12 col-md-10 col-md-offset-1">
-			<H1>{{{frontpage_tagline}}}</H1>
+			<H1><?php print $vs_tagline; ?></H1>
 		</div><!--end col-sm-12-->
 	</div><!-- end row -->
+<?php
+	}else{
+		print "<div class='row collectionLinksSpacer'><div class='col-sm-12'></div></div>";
+	}
+?>
+	<div class="row">
+		<div class="col-xs-12 col-sm-10 col-sm-offset-1">
+			<div class="row collectionLinks">
+				<div class="col-xs-12 col-sm-4">
+					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'Collections_Culture_620X620.jpg'), "", "", "Browse", "collections", array("facet" => "type_facet", "id" => 208)); ?>
+				</div>
+				<div class="col-xs-12 col-sm-4">
+					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'Collections_History_620X620.jpg'), "", "", "Browse", "collections", array("facet" => "type_facet", "id" => 88)); ?>
+				</div>
+				<div class="col-xs-12 col-sm-4">
+					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'Collections_Science_620X620.jpg'), "", "", "Browse", "collections", array("facet" => "type_facet", "id" => 207)); ?>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div class="container"><div class="row">
-		<div class="col-sm-12 bgGray">
+		<div class="col-sm-12 bgWhite">
 <?php
 			print $this->render("Front/gallery_slideshow_html.php");
 ?>
 		</div>
 	</div></div>
-	<div class="row">
-		<div class="col-sm-12">
-			<H3>Featured Items</H3>
-		</div>
-<?php
-			print $this->render("Front/featured_set_grid_html.php");
-?>
-		</div>
-	</div>

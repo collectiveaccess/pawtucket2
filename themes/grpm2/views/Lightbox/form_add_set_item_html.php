@@ -58,6 +58,10 @@
 		}
 		print "<div class='form-group'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' placeholder='"._t("Your %1", $vs_display_name)."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		#print $t_set->htmlFormElement("access","<div class='form-group'><label for='access' class='col-sm-4 control-label'>"._t("Display Option")."</label><div class='col-sm-7' class='form-control'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
+		if($va_errors["access"]){
+			print "<div class='alert alert-danger'>".$va_errors["access"]."</div>";
+		}
+		print "<div class='form-group".(($va_errors["access"]) ? " has-error" : "")."'><label for='access' class='col-sm-4 control-label'>"._t("Access")."</label><div class='col-sm-7'><select name='access' class='form-control'><option value='0'>Private</option><option value='1'".($t_set->get("access") ? " selected" : "").">Public</option></select></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		print "<div class='form-group'><label for='description' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='".$vs_description_attribute."' class='form-control' rows='3'></textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 
 ?>

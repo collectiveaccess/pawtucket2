@@ -149,9 +149,9 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 				$vs_content = preg_replace("![\n\r]+!", " ", join($vs_delimiter, $va_buf));
 				$vs_ajax_url = preg_replace("![\n\r]+!", " ", ($vs_ajax_content_url ? ($vs_ajax_content_url."/id/".join(';', $va_ajax_ids)) : ''));
 				
-        		$l = ['lat' => $lat, 'lng' => $lng, 'label' => $vs_label];
+        		$l = ['lat' => $lat, 'lng' => $lng, 'label' => $vs_label, 'content' => $vs_content];
         		if ($vn_angle !== 0) { $l['angle'] = $vn_angle; }
-        		if ($vs_ajax_url) { $l['ajaxUrl'] = $vs_ajax_url; } else { $l['content'] = $vs_content; }
+        		//if ($vs_ajax_url) { $l['ajaxUrl'] = $vs_ajax_url; } else { $l['content'] = $vs_content; }
         		$pointList[] = $l;
 			}
 			$vn_c++;
@@ -180,8 +180,8 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 				$vs_content = preg_replace("![\n\r]+!", " ", join($vs_delimiter, $va_buf));
 				$vs_ajax_url = preg_replace("![\n\r]+!", " ", ($vs_ajax_content_url ? ($vs_ajax_content_url."/id/".join(';', $va_ajax_ids)) : ''));
 				
-        		$l = ['lat' => $lat, 'lng' => $lng, 'label' => $vs_label, 'radius' => $vn_radius];
-        		if ($vs_ajax_url) { $l['ajaxUrl'] = $vs_ajax_url; } else { $l['content'] = $vs_content; }
+        		$l = ['lat' => $lat, 'lng' => $lng, 'label' => $vs_label,  'content' => $vs_content, 'radius' => $vn_radius];
+        		//if ($vs_ajax_url) { $l['ajaxUrl'] = $vs_ajax_url; } else { $l['content'] = $vs_content; }
         		$circleList[] = $l;
 			}
 			$vn_c++;

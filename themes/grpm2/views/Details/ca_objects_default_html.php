@@ -64,8 +64,9 @@
 				
 				<div id="detailAnnotations"></div>
 				
+				<div class="">
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-
+				</div>
 				<br/><hr/><H2>Comments and Tags</H2>
 <?php
 				if((sizeof($va_comments) + sizeof($va_tags)) == 0){
@@ -157,6 +158,7 @@
 				{{{<ifdef code="ca_objects.Format"><H6>Materials:</H6>^ca_objects.Format%delimiter=,_</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.Source"><H6>Source:</H6>^ca_objects.Source</ifdef>}}}
+				{{{<ifdef code="ca_objects.Current_Location"><H6>Currently:</H6>^ca_objects.Current_Location</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.Links"><H6>Links:</H6>^ca_objects.Links</ifdef>}}}
 
