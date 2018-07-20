@@ -52,7 +52,7 @@
 			<h1><?php print $this->getVar("section_name"); ?></h1>
 			<p>{{{collections_intro_text}}}</p>
 <?php
-			print "<p>Click here for the ".caNavLink($this->request, _t("Manuscript Collections Advanced Search"), "", "Search", "Advanced", "collections").".</p>";
+			#print "<p>Click here for the ".caNavLink($this->request, _t("Manuscript Collections Advanced Search"), "", "Search", "Advanced", "collections").".</p>";
 			if($vs_inventory_text){
 ?>
 				<p><?php print $vs_inventory_text; ?></p>
