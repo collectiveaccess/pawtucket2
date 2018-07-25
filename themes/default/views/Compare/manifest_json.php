@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2016-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -30,62 +30,58 @@
  * ----------------------------------------------------------------------
  */
  
- 	$pn_id		 			= $this->getVar('id');
- 	$t_subject 				= $this->getVar('t_subject');
- 	$vs_table				= $t_subject->tableName();
+ 	$ps_id		 			= $this->getVar('id');
+ 	$ps_id_proc             = preg_replace("![^A-Za-z0-9_]+!", "_", $ps_id);
+ 	$pa_info 				= $this->getVar('info');
  	
- 	$va_representations 	= $this->getVar('representations');
- 	
- 	$va_compare_config = $this->request->config->get('compare_images');
- 	if (!is_array($va_compare_config = $va_compare_config[$vs_table])) { $va_compare_config = []; }
+ 	$va_compare_config      = $this->request->config->get('compare_images');
+ 	if (!is_array($va_compare_config = $va_compare_config[$pa_info['subject']])) { $va_compare_config = []; }
 ?>
 {
   "@context": "http://iiif.io/api/presentation/2/context.json", 
-  "@id": "object_<?php print $pn_id ?>_manifest", 
+  "@id": "<?php print $ps_id_proc ?>_manifest", 
   "@type": "sc:Manifest", 
   "attribution": "", 
   "description": "", 
-  "label": <?php print json_encode($vs_label = $t_subject->getWithTemplate(caGetOption('title_template', $va_compare_config, "^{$vs_table}.preferred_labels"))); ?>, 
+  "label": <?php print json_encode(strip_tags($pa_info['display'])); ?>, 
   "license": "", 
   "logo": "", 
   "sequences": [
     {
-      "@id": "object_<?php print $pn_id; ?>", 
+      "@id": "<?php print $ps_id_proc; ?>", 
       "@type": "sc:Sequence", 
       "canvases": [
 <?php
 	$va_canvases = [];
-	foreach($va_representations as $vn_representation_id => $va_representation_info) {
-		$vn_width = $va_representation_info['info']['original']['WIDTH'];
-		$vn_height = $va_representation_info['info']['original']['HEIGHT'];
-		
-		$va_canvases[] = "			{
-			  \"@id\": \"representation_{$vn_representation_id}_canvas\", 
-			  \"@type\": \"sc:Canvas\", 
-			  \"height\": {$vn_width}, 
-			  \"images\": [
-				{
-				  \"@type\": \"oa:Annotation\", 
-				  \"motivation\": \"sc:painting\", 
-				  \"on\": \"representation_{$vn_representation_id}_canvas\", 
-				  \"resource\": {
-					\"@id\": \"representation_{$vn_representation_id}_res\", 
-					\"@type\": \"dctypes:Image\", 
-					\"format\": \"image/jpg\", 
-					\"height\": {$vn_height}, 
-					\"service\": {
-					  \"@context\": \"http://library.stanford.edu/iiif/image-api/1.1/context.json\", 
-					  \"@id\": \"/service.php/IIIF/representation:{$vn_representation_id}\", 
-					  \"profile\": \"http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level2\"
-					}, 
-					\"width\": {$vn_width}
-				  }
-				}
-			  ], 
-			  \"label\": ".json_encode($vs_label).", 
-			  \"width\": {$vn_height}
-			}";
-	}
+    $vn_width = $vn_height = 500; 
+    
+    $va_canvases[] = "			{
+          \"@id\": \"{$ps_id_proc}_canvas\", 
+          \"@type\": \"sc:Canvas\", 
+          \"height\": {$vn_height}, 
+          \"images\": [
+            {
+              \"@type\": \"oa:Annotation\", 
+              \"motivation\": \"sc:painting\", 
+              \"on\": \"{$ps_id_proc}_canvas\", 
+              \"resource\": {
+                \"@id\": \"{$ps_id_proc}_res\", 
+                \"@type\": \"dctypes:Image\", 
+                \"format\": \"image/jpg\", 
+                \"height\": {$vn_height}, 
+                \"service\": {
+                  \"@context\": \"http://library.stanford.edu/iiif/image-api/1.1/context.json\", 
+                  \"@id\": \"/service.php/IIIF/{$ps_id}\", 
+                  \"profile\": \"http://library.stanford.edu/iiif/image-api/1.1/compliance.html#level2\"
+                }, 
+                \"width\": {$vn_width}
+              }
+            }
+          ], 
+          \"label\": ".json_encode($pa_info['display']).", 
+          \"width\": {$vn_width}
+        }";
+        
 	print join(",", $va_canvases);
 ?>
     ]

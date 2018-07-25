@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -37,6 +37,11 @@
 	}
 ?>
 	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+<?php
+	if ((strtolower($this->request->getController()) !== "front")) {	
+		print '<div id="backToTop"><a href="#"><i class="fa fa-arrow-up"></i>Top</a></div>';
+	}
+?>	
 	<div id="comparison_list" class="compareDrawer compare_menu_item">
 		<ul>
 		
@@ -51,17 +56,17 @@
 				<div class="col-sm-1"></div>
 				<div class="col-sm-4">
 					<p class="footerTitle"><a href='http://www.nga.gov'>National Gallery of Art</a></p>
-					<p>© 2016 National Gallery of Art, Washington</p>
+					<p>© <?php print date('Y');?> National Gallery of Art, Washington</p>
 				</div>
 				<div class="col-sm-6">
-					<div style="margin-bottom:15px;"><u>Mark Rothko: Works on Paper</u> will ultimately document approximately 2,600 works from public and private collections worldwide.  Cataloguing is ongoing, and works and information will be added to the site continuously during the coming years.</div>
+					<div style="margin-bottom:15px;"><i>Mark Rothko: Works on Paper</i> will ultimately document approximately 2,600 works from public and private collections worldwide.  Cataloguing is ongoing, and works and information will be added to the site continuously during the coming years.</div>
 					<div class="footerLinks">
 						<div class="footerLink"><?php print caNavLink($this->request, 'About', '', '', 'About', 'project');?></div> | 
 						<div class="footerLink space"><?php print caNavLink($this->request, ' Credits', '', '', 'About', 'credits'); ?></div> | 
 						<div class="footerLink space"><?php print caNavLink($this->request, ' Notices', '', '', 'About', 'notices'); ?></div> | 
 						<div class="footerLink space"><?php print caNavLink($this->request, ' Contact', '', '', 'About', 'contact'); ?></div>
-						<div class="socialLink"><a href="http://www.facebook.com"><i class="fab fa-facebook-f"></i></a></div>
-						<div class="socialLink"><a href="http://www.twitter.com"><i class="fab fa-twitter"></i></a></div>
+						<!--<div class="socialLink"><a href="http://www.facebook.com"><i class="fab fa-facebook-f"></i></a></div>
+						<div class="socialLink"><a href="http://www.twitter.com"><i class="fab fa-twitter"></i></a></div>-->
 					</div>																																	
 				</div>
 				<div class="col-sm-1"></div>
@@ -100,20 +105,29 @@
 				var loadComparisonListSummary;
 				$('#comparison_list, #pageArea').on('click', '.compare_link, .comparison_list_remove', loadComparisonListSummary = function(e) {
 					var id = this ? $(this).data('id') : null;
+					var id_selector = this ? $(this).data('id_selector') : null;
 					var remove_id = this ? $(this).data('remove_id') : null;
+					
+					if (id_selector) {
+					    if (id = jQuery(id_selector).data('current_id')) { id = "representation:" + id; }
+					}
 		
-					$.getJSON('<?php print caNavUrl($this->request, '', 'Compare', 'AddToList'); ?>', {table: 'ca_objects', id: id, remove_id: remove_id}, function(d) {
+					$.getJSON('<?php print caNavUrl($this->request, '', 'Compare', 'AddToList'); ?>', {id: id, remove_id: remove_id}, function(d) {
 						if (parseInt(d.ok) == 1) {
 							var l = '';
 							
-							var display_list = d.comparison_display_list;
 							if (d.comparison_list && (d.comparison_list.length > 0)) {
-								l += "<p class='listTitle'><?php print caNavLink($this->request, _t("<i class='fa fa-clone'></i> Compare images"), "", "", "Compare", "View", ['table' => 'ca_objects']); ?> (" + d.comparison_list.length + ")</p>\n";
-								l += "<a href='#' class='openItems' onClick=\"$('.compareDrawer .items').toggle(100); return false;\"><i class='fa fa-chevron-down'></i></a>\n"; 
+								if ( d.comparison_list.length > 1) {
+									var im = " images";
+								} else {
+									var im = " image";
+								}
+								l += "<p class='listTitle'><?php print caNavLink($this->request, _t("<i class='fa fa-clone'></i> Compare "), "", "", "Compare", "View", []); ?> " + d.comparison_list.length + im + "</p>\n";
+								l += "<a href='#' class='openItems' onClick=\"$('.compareDrawer .items').toggle(100); $('.compareDrawer').data('open', !$('.compareDrawer').data('open')); return false;\"><i class='fa fa-chevron-down'></i></a>\n"; 
 								
 								l += "<div class='items'>";
-								jQuery.each(d.comparison_list, function(i, id) {
-									l += "<p><a href='#' class='comparison_list_remove' data-remove_id='" + id + "'><i class='fa fa-close'></i> " + display_list[i] + "</a></p>\n";
+								jQuery.each(d.comparison_list, function(i, item) {
+									l += "<p><a href='#' class='comparison_list_remove' data-remove_id='" + item['id'] + "'><i class='fa fa-times'></i> " + item['display'] + "</a></p>\n";
 								});
 								l += "</div>";
 								
@@ -121,15 +135,18 @@
 
 							} else {
 								jQuery("#comparison_list").fadeOut(100);
+								jQuery(".compareDrawer").data('open', false);
 							}
 							jQuery("p.listTitle a").html("Compare (" + d.comparison_list.length + ")");
 							jQuery("#comparison_list ul").html(l);
 							
 							// Reload page when removing from within "Compare" view
 							if (remove_id && <?php print ($this->request->getController() == 'Compare') ? "true" : "false"; ?>) {
-								window.location = '<?php print caNavUrl($this->request, '', 'Compare', 'View', ['table' => 'ca_objects']); ?>';
+								window.location = '<?php print caNavUrl($this->request, '', 'Compare', 'View', []); ?>';
 								return;
-							}
+							} else if($(".compareDrawer").data('open')){
+							    jQuery(".compareDrawer .items").toggle(0);
+						    }
 						}
 					});
 					
@@ -152,6 +169,13 @@
 					$('#comparison_list').css({"position": "absolute", "bottom": "160px"});
 				if($(document).scrollTop() + window.innerHeight < $('#footer').offset().top)
 					$('#comparison_list').css({"position": "fixed", "bottom": "0px"}); // restore when you scroll up
+				
+				
+				if($('#backToTop').offset().top + $('#backToTop').height() 
+													   >= $('#footer').offset().top - 170)
+					$('#backToTop').css({"position": "absolute", "bottom": "170px"});
+				if($(document).scrollTop() + window.innerHeight < $('#footer').offset().top)
+					$('#backToTop').css({"position": "fixed", "bottom": "10px"}); // restore when you scroll up			
 			}
 		</script>
 	</body>

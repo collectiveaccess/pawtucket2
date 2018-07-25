@@ -116,6 +116,12 @@
 					}
 				}
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
+				if ($qr_res->get('ca_objects.date')) {
+					$vs_date = "<p>".$qr_res->get('ca_objects.date')."</p>";
+				}				
+				if ($qr_res->get('ca_objects.camera')) {
+					$vs_camera = "<p>".$qr_res->get('ca_objects.camera', array('convertCodesToDisplayText' => true))."</p>";
+				}
 				
 				$vs_add_to_set_link = "";
 				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
@@ -131,7 +137,7 @@
 			<div class='bResultListItemContent'>";
 			#<div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 			print "<div class='bResultListItemText'>
-					{$vs_typecode}{$vs_label_detail_link}{$vs_date}
+					<small>{$vs_idno_detail_link}</small><br/>{$vs_typecode}{$vs_label_detail_link}{$vs_date}{$vs_camera}
 				</div><!-- end bResultListItemText -->
 			</div><!-- end bResultListItemContent -->
 			<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>

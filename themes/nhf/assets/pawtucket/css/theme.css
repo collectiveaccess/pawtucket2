@@ -626,10 +626,13 @@ div.searchlight-results div.searchlight-selected {
 }
 #browseListBody #featuredCollections .featuredCollection{
 	clear:left;
+	margin-bottom: 20px;
 }
 #browseListBody #featuredCollections img{
 	float:left;
 	margin:3px 10px 15px 0px;
+	width: 120px;
+	height:auto;
 }
 /* general browse */
 #browseLeftColWide{
@@ -1499,6 +1502,9 @@ div.moreFacetListHeading{
 	width:100%;
 	height:auto;
 }
+#detailBody .video-js{
+	width:100%;
+}
 #caMediaOverlayContent .video-js {
     margin-left: auto;
     margin-right: auto;
@@ -1558,6 +1564,42 @@ div.moreFacetListHeading{
 	width:185px;
 	margin-right:5px;
 }
-#navSearch input[type="submit"], #hpSearch input[type="submit"] {
+#navSearch input[type="submit"], #hpSearch input[type="submit"], .bSearchWithinContainer input[type="submit"]{
 	border: 1px solid #e2e2e2;
+}
+.searchHelpLink{
+	position:relative;
+}
+.searchHelpLink .searchHelp{
+	display:none;
+	width:250px;
+	position:absolute;
+	left:0px;
+	top:15px;
+	background-color:#FFF;
+	border:1px solid #dedede;
+	padding:15px;
+	z-index:100;
+}
+.searchHelpLink .searchHelp .searchHelpTitle{
+	color: #41a8ba;
+	border-bottom: 1px solid #D9F0F4;
+	font-size:14px;
+	font-weight:bold;
+	margin-bottom:10px;
+}
+.searchHelpLink:hover .searchHelp{
+	display:block;
+}
+.bSearchWithinContainer{
+	margin-top:15px;
+}
+.bSearchWithin{
+	font-size:12px;
+	font-weight: normal;
+	padding: 1px 2px 3px 2px;
+	border: 1px solid #e2e2e2;
+	width:120px;
+	margin-right:5px;
+	border-radius:0px;
 }

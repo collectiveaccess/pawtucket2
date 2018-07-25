@@ -51,7 +51,7 @@
 		</div>
 		<div class='col-xs-5 pdfLink'>
 	<?php		
-			print caNavLink($this->request, caGetThemeGraphic($this->request, 'pdf.png'), 'faDownload', 'Detail', 'objects', $vn_id.'/view/pdf/export_format/_pdf_ca_objects_summary');
+			#print caNavLink($this->request, caGetThemeGraphic($this->request, 'pdf.png'), 'faDownload', 'Detail', 'objects', $vn_id.'/view/pdf/export_format/_pdf_ca_objects_summary');
 	?>	
 		</div><!-- end col --> 
 	</div>
@@ -68,17 +68,11 @@
 						
 			<?php #print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "version" => "iconlarge")); ?>
 	<?php
-			if ($va_catalog_id = $t_object->get('ca_objects.catalog_number')) {
+			if ($va_catalog_id = $t_object->get('ca_objects.institutional_id')) { 
 				print "<div class='objIdno'>".$va_catalog_id."</div>";
 			}	
 	?>	
-		</div><!-- end col -->
-	<script>
-		jQuery(document).ready(function() {
-			$(".detailMediaToolbar").append("<a href='#' class='compare_link' data-id='<?php print $vn_id; ?>'><i class='fa fa-clone' aria-hidden='true'></i></a>");
-		});
-	
-	</script>		
+		</div><!-- end col -->		
 		<div class='col-sm-6 col-md-6 col-lg-6' style="padding-left:40px;">
 	<?php
 			$vn_label_col = "col-sm-4";
@@ -86,14 +80,21 @@
 			$t_parent = new ca_objects($t_object->get('ca_objects.parent_id'));		
 			if ($vs_date = $t_object->get('ca_objects.display_date')) {
 				$vs_creation_date = $t_object->get('ca_objects.creation_date');
-				print "<div class='unit row'><div class='{$vn_label_col} label'>Date</div><div class='$vn_data_col'>".caNavLink($this->request, $vs_date, '', 'Search', 'artworks', "search/dates", ["values" => json_encode([$vs_creation_date])])."</div></div>";
+				print "<div class='unit row'><div class='{$vn_label_col} label'>Date</div><div class='$vn_data_col'>".caNavLink($this->request, $vs_date, '', 'Search', 'artworks', "search/dates", ["values" => json_encode([preg_replace("![ ]*[\-–—][ ]*!u", "-", $vs_creation_date)])])."</div></div>";
 			}
+			$vn_med = 0;
 			if ($va_medium = $t_object->get('ca_objects.medium', array('returnWithStructure' => true))) {
 				$va_media_links = array();
 				foreach ($va_medium as $va_key => $va_medium_id_t) {
 					foreach ($va_medium_id_t as $va_key => $va_medium_id) {
 						if ($va_medium_id['medium_list'] == 383){continue;}
-						$va_media_links[] = caNavLink($this->request, strtolower(caGetListItemByIDForDisplay($va_medium_id['medium_list'])), '', '', 'Browse', 'artworks/facet/medium_facet/id/'.$va_medium_id['medium_list']).($vs_list_value == $va_medium_id['medium_uncertain'] ? " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "" );	
+						if ($vn_med == 0) {
+							$vs_med_name = ucfirst(caGetListItemByIDForDisplay($va_medium_id['medium_list']));
+						} else {
+							$vs_med_name = strtolower(caGetListItemByIDForDisplay($va_medium_id['medium_list']));
+						}
+						$va_media_links[] = caNavLink($this->request, $vs_med_name, '', '', 'Browse', 'artworks/facet/medium_facet/id/'.$va_medium_id['medium_list']).($vs_list_value == $va_medium_id['medium_uncertain'] ? " <span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>" : "" );	
+						$vn_med++;
 					}
 				}
 				if (sizeof($va_media_links) > 0) {
@@ -104,7 +105,7 @@
 				$va_paper_links = array();
 				foreach ($va_paper as $va_key => $va_paper_id) {
 					if ($va_paper_id == 0) {continue;}
-					$va_paper_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_paper_id), '', '', 'Browse', 'artworks/facet/paper_facet/id/'.$va_paper_id);	
+					$va_paper_links[] = caNavLink($this->request, ucfirst(caGetListItemByIDForDisplay($va_paper_id)), '', '', 'Browse', 'artworks/facet/paper_facet/id/'.$va_paper_id);	
 				}
 				if (sizeof($va_paper_links) > 0){
 					print "<div class='unit row'><div class='{$vn_label_col} label'>Support</div><div class='$vn_data_col'>".join(', ', $va_paper_links)."</div></div>";
@@ -114,7 +115,9 @@
 				$va_water_links = array();
 				foreach ($va_watermark as $va_key => $va_watermark_id_t) {
 					foreach ($va_watermark_id_t as $va_key => $va_watermark_id) {
-						$va_water_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_watermark_id['watermark_list']), '', '', 'Browse', 'artworks/facet/watermark_facet/id/'.$va_watermark_id['watermark_list']).($vs_list_value == $va_watermark_id['watermark_uncertain'] ? " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>" : "" );	
+						if ($va_watermark_id['watermark_list']) {
+							$va_water_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_watermark_id['watermark_list']), '', '', 'Browse', 'artworks/facet/watermark_facet/id/'.$va_watermark_id['watermark_list']).($va_watermark_id['watermark_remark'] ? ", ".$va_watermark_id['watermark_remark'] : "").($vs_list_value == $va_watermark_id['watermark_uncertain'] ? " <span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>" : "" );	
+						}
 					}
 				}
 				if (sizeof($va_water_links) > 0) {
@@ -132,7 +135,7 @@
 					print "<div class='unit row'><div class='{$vn_label_col} label'>Mount</div><div class='$vn_data_col'>".join(', ', $va_mount_links)."</div></div>";
 				}
 			}						
-			if ($vs_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions.display_dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"> (^ca_objects.dimensions.dimensions_notes)</ifdef><if rule="^ca_objects.dimensions.dimensions_uncertain =~ /yes/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="sight dimensions"></i></if></unit></ifcount>')) {
+			if ($vs_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions.display_dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"> (^ca_objects.dimensions.dimensions_notes)</ifdef><if rule="^ca_objects.dimensions.dimensions_uncertain =~ /yes/"> <span class="rollover" data-toggle="popover" data-trigger="hover" data-content="sight dimensions"><i class="fa fa-question-circle" ></i></span></if></unit></ifcount>')) {
 				print "<div class='unit row'><div class='{$vn_label_col} label'>Dimensions</div><div class='$vn_data_col'>".$vs_dimensions."</div></div>";
 			}		
 
@@ -179,31 +182,38 @@
 						if ($vs_credit_line = $qr_collections->get('ca_objects_x_collections.collection_line')) {
 							print ", ".$vs_credit_line;
 						}
-						if ($vs_institutional = $t_object->get('ca_collections.institutional_id')) {
+						if ($vs_institutional = $t_object->get('ca_objects.institutional_id')) {
 							print ", ".$vs_institutional.".  ";
 						}
 						if ($va_copyright = $t_parent->get('ca_objects.copyright')) {
 							print $va_copyright;
 						}	
 						if ($qr_collections->get('ca_objects_x_collections.uncertain') == $vs_list_value) {
-							print " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>";
+							print " <span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>";
 						}
 						print "</div><!-- end data --></div><!-- end unit -->";					
 					}			
 				}
 			}	
 
-			if ($va_institutional_id = $t_object->get('ca_objects.institutional_id')) {
-				print "<div class='unit row'><div class='{$vn_label_col} label'>Institutional ID</div><div class='$vn_data_col'>".$va_institutional_id."</div></div>";
-			}		
+			#if ($va_institutional_id = $t_object->get('ca_objects.institutional_id')) {
+			#	print "<div class='unit row'><div class='{$vn_label_col} label'>Institutional ID</div><div class='$vn_data_col'>".$va_institutional_id."</div></div>";
+			#}		
 	
 			if ($va_photo_credit = $t_object->get('ca_objects.photography_credit_line')) {
 				print "<div class='unit row'><div class='{$vn_label_col} label'>Photography Credit</div><div class='$vn_data_col'>".$va_photo_credit."</div></div>";
 			}	
 			if ($va_keywords = $t_object->get('ca_list_items.item_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+				$vn_keyword = 0;
 				$va_keyword_links = array();
 				foreach ($va_keywords as $va_key => $va_keyword_id) {
-					$va_keyword_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_keyword_id), '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
+					if ($vn_keyword == 0) {
+						$vs_keyword_label = ucfirst(caGetListItemByIDForDisplay($va_keyword_id));
+					} else {
+						$vs_keyword_label = caGetListItemByIDForDisplay($va_keyword_id);
+					}
+					$va_keyword_links[] = caNavLink($this->request, $vs_keyword_label, '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
+					$vn_keyword++;
 				}
 				print "<div class='unit row'><div class='{$vn_label_col} label'>Tags</div><div class='$vn_data_col'>".join(', ', $va_keyword_links)."</div></div>";
 			}	
@@ -252,11 +262,11 @@
 	<?php
 			$vs_first = true;
 			$vs_no_border = "style=border-top:0px;";
-			print "<div class='row'><div class='col-sm-12'><h6 class='verso'>Verso</h6></div></div>";		
+			print "<div class='row'><div class='col-sm-12'><h6 class='verso'>Other Side</h6></div></div>";		
 			$t_verso = new ca_objects($vn_verso_id);
 			print "<div class='row'>";
-			print "<div class='col-sm-5' style='min-height:140px;'>".caNavLink($this->request, $t_verso->get('ca_object_representations.media.medium', array('checkAccess' => $va_access_values)), '', '', 'Detail', 'objects/'.$vn_verso_id)."</div>";
-			print "<div class='col-sm-7'>";
+			print "<div class='col-sm-3' style='min-height:140px;'>".caNavLink($this->request, $t_verso->get('ca_object_representations.media.medium', array('checkAccess' => $va_access_values)), '', '', 'Detail', 'objects/'.$vn_verso_id)."</div>";
+			print "<div class='col-sm-9'>";
 
 			print "<div class='versoTitle'>".caNavLink($this->request, $t_verso->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$vn_verso_id)."</div>";
 			if ($vn_date = $t_verso->get('ca_objects.display_date')) {
@@ -268,12 +278,12 @@
 			print "</div>";
 			print "</div>";
 			print "<div class='row'>";
-			print "<div class='col-sm-5'></div>";
-			print "<div class='col-sm-7'>";
-				if ($vn_catno = $t_verso->get('ca_objects.catalog_number')) {
+			print "<div class='col-sm-3'></div>";
+			print "<div class='col-sm-9'>";
+				if ($vn_catno = $t_verso->get('ca_objects.institutional_id')) {
 					print "<div class='catInfo'>".$vn_catno."</div>";
 				}			
-				print "<a href='#' class='compare_link verso' data-id='".$vn_verso_id."'>".caGetThemeGraphic($this->request, 'compare.png')."</a>";
+				print "<a href='#' class='compare_link verso' title='Compare' data-id='object:{$vn_verso_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a>";
 			
 			print "</div>";
 			print "</div>";	
@@ -294,14 +304,14 @@
 		print "<h6><a href='#' onclick='$(\"#sketchDiv\").toggle(400);return false;'>Sketchbook <i class='fa fa-window-minimize'></i></a></h6>";
 		print "<div id='sketchDiv'>";
 		print "<div class='container versoInfo'><div class='row'>";	
-		print "<div class='col-sm-5' style='padding-left:0px;'>";
+		print "<div class='col-sm-4' style='padding-left:0px;'>";
 		if ($va_sk_rep = $t_sketchbook->get('ca_object_representations.media.small', array("checkAccess" => $va_access_values, "limit" => 1))) {
 			print "<div class='text-center bResultItemImg'>".caNavLink($this->request, $va_sk_rep, '', '', 'Detail', 'collections/'.$va_related_sketchbook_id)."</div>";
 		} else {
 			$vs_buf.= '<div class="bResultItemImgPlaceholder"><i class="fa fa-picture-o fa-2x"></i></div>';
 		}
 		print "</div>";
-		print "<div class='col-sm-7'>";
+		print "<div class='col-sm-8'>";
 		print "<div class='versoTitle'>".caNavLink($this->request, $t_sketchbook->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_related_sketchbook_id)."</div>"; 
 		if ($vs_date = $t_sketchbook->get('ca_collections.display_date')) {
 			print "<div>".$vs_date."</div>"; 
@@ -309,6 +319,7 @@
 		if ($va_collection = $t_sketchbook->getWithTemplate('<unit relativeTo="ca_collections_x_collections" restrictToTypes="collection,other"><if rule="^ca_collections_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections" >^ca_collections.preferred_labels</unit></if></unit>')) {
 			print "<div>".$va_collection."</div>";
 		}	
+		print "<a href='#' onclick='caMediaPanel.showPanel(\"/index.php/Detail/GetMediaOverlay/context/collections/id/".$va_related_sketchbook_id."/representation_id/".$t_sketchbook->get('ca_object_representations.representation_id')."/overlay/1\"); return false;'>View Sketchbook Pages</a>";
 		print "</div><!-- end col --></div><!-- end row --></div><!-- end container -->";
 		print "</div><!-- end sketchdiv --></div><!-- end drawer -->";
 		print "</div><div class='col-sm-2'></div></div><!-- end col end row -->";
@@ -316,7 +327,7 @@
 	}
 
 	$vs_provenance = "";
-	if ($va_provenance = $t_parent->get('ca_objects_x_collections.relation_id', array('returnWithStructure' => true, 'restrictToTypes' => array('collection', 'other'), 'sort' => 'ca_objects_x_collections.rank', 'sortOrder' => 'ASC'))) {
+	if ($va_provenance = $t_parent->get('ca_objects_x_collections.relation_id', array('returnWithStructure' => true, 'restrictToTypes' => array('collection', 'other'), 'sort' => 'ca_objects_x_collections.collection_date', 'sortOrder' => 'ASC'))) {
 		foreach ($va_provenance as $va_key => $va_relation_id) {
 			$t_prov_rel = new ca_objects_x_collections($va_relation_id);
 			$t_prov = new ca_collections($t_prov_rel->get('ca_collections.collection_id'));
@@ -332,7 +343,7 @@
 				$vs_provenance.= "<i class='fa fa-chevron-right'></i></div>";
 			} elseif ($t_prov->get('access') != 0 ){
 				$va_provenance_id = $t_prov->get('ca_collections.collection_id');
-				$vs_provenance.= "<div>".caNavLink($this->request, $t_prov->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$va_provenance_id);				
+				$vs_prov_line = $t_prov->get('ca_collections.preferred_labels');				
 				if ($t_prov_rel) {
 					$vs_buf = array();
 					if ($vs_auction_name = $t_prov_rel->get('ca_objects_x_collections.auction_name')) {
@@ -354,22 +365,23 @@
 						$vs_buf[]= "(not sold)";
 					}	
 					if (sizeof($vs_buf) > 0){
-						$vs_provenance.= ", ".join(', ', $vs_buf);
+						$vs_prov_line.= ", ".join(', ', $vs_buf);
 					}
-					if ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line')) {
-						$vs_provenance.= ", ".$vs_remark;
-					}
+					#if ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line')) {
+					#	$vs_provenance.= ", ".$vs_remark;
+					#}
 				}
 				if ($t_prov_rel->get('ca_objects_x_collections.uncertain') == $vs_list_value) {
-					$vs_provenance.= " <i class='fa fa-question-circle' data-toggle='popover' data-trigger='hover' data-content='uncertain'></i>";
+					$vs_prov_line.= " <span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>";
 				}
-				$vs_provenance.= "<i class='fa fa-chevron-right'></i></div><!-- end prov entry -->";
+				$vs_prov_line.= "<i class='fa fa-chevron-right'></i><!-- end prov entry -->";
+				$vs_provenance.= "<div>".caNavLink($this->request, $vs_prov_line, '', '', 'Detail', 'collections/'.$va_provenance_id)."</div>";
 			}
 		}
 	}
 	if ($vs_provenance != "") {
 		print "<div class='row'><div class='col-sm-8  col-sm-offset-2  '><div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
-		print "<h6><a href='#' onclick='$(\"#provenanceDiv\").toggle(400);return false;'>Provenance <i class='fa fa-window-minimize'></i></a></h6>";
+		print "<h6><a href='#' data-toggleDiv='provenanceDiv' class='togglertronic'>Provenance <i class='fa fa-minus drawerToggle'></i></a></h6>";
 		print "<div id='provenanceDiv'>";
 		print $vs_provenance;
 		print "</div><!-- end provenanceDiv -->";
@@ -380,9 +392,9 @@
 	<div class='row'>
 		<div class='col-sm-8  col-sm-offset-2  '>
 <?php
-			if ($vs_exhibition = $t_object->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_objects_x_occurrences" sort="ca_occurrences.occurrence_dates"><l><i>^ca_occurrences.preferred_labels</i></l><unit relativeTo="ca_occurrences"><ifcount min="1" code="ca_entities.preferred_labels">, <unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", "> ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit></ifcount></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef><if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</if><ifdef code="ca_objects_x_occurrences.exhibition_remarks">, ^ca_objects_x_occurrences.exhibition_remarks</ifdef>.<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i></if><i class="fa fa-chevron-right"></i></unit>')) {
+			if ($vs_exhibition = $t_object->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_objects_x_occurrences" sort="ca_occurrences.occurrence_dates"><l><i>^ca_occurrences.preferred_labels</i><unit relativeTo="ca_occurrences"><ifcount min="1" code="ca_entities.preferred_labels">, <unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", "> ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit></ifcount></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef><if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</if><ifdef code="ca_objects_x_occurrences.exhibition_remarks">, ^ca_objects_x_occurrences.exhibition_remarks</ifdef>.<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <span class="rollover" data-toggle="popover" data-trigger="hover" data-content="uncertain"><i class="fa fa-question-circle" ></i></span></if><i class="fa fa-chevron-right"></i></l></unit>')) {
 				print "<div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
-				print "<h6><a href='#' onclick='$(\"#exhibitionDiv\").toggle(400);return false;'>Exhibitions <i class='fa fa-window-minimize'></i></a></h6>";
+				print "<h6><a href='#' data-toggleDiv='exhibitionDiv' class='togglertronic'>Exhibitions <i class='fa fa-minus drawerToggle'></i></a></h6>";
 				print "<div id='exhibitionDiv'>".$vs_exhibition."</div>";
 				print "</div>";
 			}
@@ -393,13 +405,13 @@
 	<div class='row'>
 		<div class='col-sm-8  col-sm-offset-2  '>
 <?php
-			if ($vs_reference = $t_object->getWithTemplate('<unit restrictToTypes="reference" sort="ca_occurrences.occurrence_dates" delimiter="<br/>" relativeTo="ca_objects_x_occurrences" skipWhen=\'^ca_occurrences.preferred_labels.name = ""\'><l>^ca_occurrences.preferred_labels</l><ifdef code="ca_objects_x_occurrences.reference_remarks">: ^ca_objects_x_occurrences.reference_remarks</ifdef>.<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <i class="fa fa-question-circle" data-toggle="popover" data-trigger="hover" data-content="uncertain"></i></if><i class="fa fa-chevron-right"></i></unit>')) {
+			if ($vs_reference = $t_object->getWithTemplate('<unit restrictToTypes="reference" sort="ca_occurrences.occurrence_dates" delimiter="<br/>" relativeTo="ca_objects_x_occurrences" skipWhen=\'^ca_occurrences.preferred_labels.name = ""\'><l>^ca_occurrences.preferred_labels<ifdef code="ca_objects_x_occurrences.reference_remarks">: ^ca_objects_x_occurrences.reference_remarks</ifdef>.<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <span class="rollover" data-toggle="popover" data-trigger="hover" data-content="uncertain"><i class="fa fa-question-circle" ></i></span></if><i class="fa fa-chevron-right"></i></l></unit>')) { 
 				print "<div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
-				print "<h6><a href='#' onclick='$(\"#referenceDiv\").toggle(400);return false;'>References <i class='fa fa-window-minimize'></i></a></h6>";
+				print "<h6><a href='#' data-toggleDiv='referenceDiv' class='togglertronic'>References <i class='fa fa-minus drawerToggle'></i></a></h6>";
 				print "<div id='referenceDiv'>".$vs_reference."</div>";
 				print "</div>";
 			}
-			$vs_first = false;
+			$vs_first = false; 
 ?>		
 		</div>
 	</div><!-- end row -->
@@ -412,7 +424,7 @@
 					$t_work = new ca_objects($vs_rel_work_id);
 					$vn_parent_id = $t_work->get("ca_objects.parent_id");
 					$t_rel_parent = new ca_objects($vn_parent_id);
-					$vs_buf.= "<div class='col-sm-4 bResultItemCol'><div class='bResultItem'><div class='bResultItemContent'>";
+					$vs_buf.= "<div class='col-xs-6 col-md-4 bResultItemCol'><div class='bResultItem'><div class='bResultItemContent'>";
 					if ($va_rep = $t_work->get('ca_object_representations.media.small', array("checkAccess" => $va_access_values))) {
 						$vs_buf.= "<div class='text-center bResultItemImg'>".caNavLink($this->request, $va_rep, '', '', 'Detail', 'objects/'.$vs_rel_work_id)."</div>";
 					} else {
@@ -426,15 +438,15 @@
 					if ($va_collection = $t_rel_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {
 						$vs_buf.= "<p>".$va_collection."</p>";
 					}	
-					if ($vs_catno = $t_work->get('ca_objects.catalog_number')) {
+					if ($vs_catno = $t_work->get('ca_objects.institutional_id')) {
 						$vs_buf.= "<div class='catno'>".$vs_catno."</div>"; 
 					}	
-					$vs_buf.= "<a href='#' class='compare_link' data-id='".$vs_rel_work_id."'>".caGetThemeGraphic($this->request, 'compare.png')."</a>";
+					$vs_buf.= "<a href='#' class='compare_link' data-id='object:{$vs_rel_work_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a>";
 					$vs_buf.= "</div></div></div><!-- end col -->";			
 					$vs_buf.= "</div>";
 				}
 				print "<div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
-				print "<h6><a href='#' onclick='$(\"#relatedWorksDiv\").toggle(400);return false;'>Related Works <i class='fa fa-window-minimize'></i></a></h6>";
+				print "<h6><a href='#' data-toggleDiv='relatedWorksDiv' class='togglertronic'>Related Works on Paper<i class='fa fa-minus drawerToggle'></i></a></h6>";
 				print "<div id='relatedWorksDiv'><div class='row'>".$vs_buf."</div></div>";
 				print "</div>";
 				$vs_first = false;
@@ -447,35 +459,41 @@
 <?php
 			if ($vs_remarks = $t_object->get('ca_objects.remarks')) {
 				print "<div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
-				print "<h6><a href='#' onclick='$(\"#remarksDiv\").toggle(400);return false;'>Remarks <i class='fa fa-window-minimize'></i></a></h6>";
-				print "<div id='remarksDiv' class='trimText'>".$vs_remarks."</div>";
+				print "<h6><a href='#' data-toggleDiv='remarksDiv' class='togglertronic'>Remarks <i class='fa fa-minus drawerToggle'></i></a></h6>";
+				print "<div id='remarksDiv'><div class='trimText'>".$vs_remarks."</div>";
+				
+				if ($va_remarks_images = $t_object->get('ca_objects.remarks_images', array('returnWithStructure' => true, 'version' => 'medium'))) {
+					print "<div class='row'>";
+					foreach ($va_remarks_images as $vn_attribute_id => $va_remarks_image_info) {
+						foreach ($va_remarks_image_info as $vn_value_id => $va_remarks_image) {
+							print "<div class='col-xs-6 col-sm-12 col-md-6 '><div class='container remarksImg'><div class='row'>"; 
+							print "<div class='col-sm-5'>";
+							print $va_remarks_image['remark_media'];
+
+							$o_db = new Db();
+							$t_element = ca_attributes::getElementInstance('remark_media');
+							$vn_media_element_id = $t_element->getElementID('remark_media');							
+
+							$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_value_id, $vn_media_element_id)) ;
+							if ($qr_res->nextRow()) {
+								$vn_attr_id = (int)$qr_res->get("value_id");
+								print "<div class='zoomIcon'><a href='#' title='Zoom' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_object_id, 'identifier' => "attribute:{$vn_attr_id}", 'overlay' => 1))."\"); return false;'><i class='glyphicon glyphicon-zoom-in'></i></a></div>";
+						
+								print "<div class='compare'><a href='#' class='compare_link' title='Compare' data-id='attribute:{$vn_attr_id}'>".caGetThemeGraphic($this->request, 'compare.png')."</a></div>";
+							}
+							print "</div>";
+							print "<div class='col-sm-7'><div class='remarkText'>".$va_remarks_image['remark_caption']."</div></div>";
+							print "</div></div></div>";
+						}
+					}
+					print "</div>";
+				}				
+				
+				print "</div>";
 				print "</div>";
 				$vs_first = false;
 			}
-			if ($va_remarks_images = $t_object->get('ca_objects.remarks_images', array('returnWithStructure' => true, 'version' => 'medium'))) {
-				print "<div class='row'>";
-				foreach ($va_remarks_images as $vn_attribute_id => $va_remarks_image_info) {
-					foreach ($va_remarks_image_info as $vn_value_id => $va_remarks_image) {
-						print "<div class='col-sm-6 '><div class='container remarksImg'><div class='row'>";
-						print "<div class='col-sm-5'>";
-						print $va_remarks_image['remark_media'];
 
-						$o_db = new Db();
-						$t_element = ca_attributes::getElementInstance('remark_media');
-						$vn_media_element_id = $t_element->getElementID('remark_media');							
-
-						$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_value_id, $vn_media_element_id)) ;
-						if ($qr_res->nextRow()) {
-							print "<div class='zoomIcon'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'identifier' => 'attribute:'.$qr_res->get("value_id"), 'overlay' => 1))."\"); return false;'><i class='glyphicon glyphicon-zoom-in'></i></a></div>";
-						}
-						print "<div class='compare'><a href='#' class=''>".caGetThemeGraphic($this->request, 'compare.png')."</a></div>";
-						print "</div>";
-						print "<div class='col-sm-7'><div class='remarkText'>".$va_remarks_image['remark_caption']."</div></div>";
-						print "</div></div></div>";
-					}
-				}
-				print "</div>";
-			}
 ?>		
 		</div><!-- end col -->
 	</div><!-- end row -->		
@@ -496,7 +514,27 @@
 </script>
 <script>
 	jQuery(document).ready(function() {
-		$('.fa-question-circle').popover(); 
+		$('.rollover').popover(); 
+
+        jQuery('.togglertronic').on('click', function(e) {
+            var state = jQuery(this).data('togglestate');
+            
+            var toggle = this;
+            if (state == 'open') {
+                jQuery('#' + jQuery(toggle).data('togglediv')).slideUp(200, function() {
+                    jQuery(toggle).data('togglestate', 'closed').find('.drawerToggle').hide().attr("class", "fa fa-plus drawerToggle").show();
+                });
+            } else {
+                jQuery('#' + jQuery(toggle).data('togglediv')).slideDown(200, function() {
+                    jQuery(toggle).data('togglestate', 'open').find('.drawerToggle').hide().attr("class", "fa fa-minus drawerToggle").show();
+                });
+                
+            }
+            e.preventDefault();
+            return false;
+        });	
 	});
-	
+
+
+
 </script>

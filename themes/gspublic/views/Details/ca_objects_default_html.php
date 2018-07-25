@@ -70,10 +70,18 @@
 					}
 					
 				}
-				print '<div class="detailTool"><span class="glyphicon glyphicon-upload"></span>'.caNavLink($this->request, _t("Contribute content"), "", "", "Contribute", "objects").'</div><!-- end detailTool -->';
+				if($this->request->isLoggedIn()){
+					print '<div class="detailTool"><span class="glyphicon glyphicon-upload"></span>'.caNavLink($this->request, _t("Contribute content"), "", "", "Contribute", "objects", array("ref_table" => "ca_objects", "ref_row_id" => $t_object->get("object_id"))).'</div><!-- end detailTool -->';
+					#print "<div class='detailTool'><span class='glyphicon glyphicon-upload'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Contribute', 'objects', array("ref_table" => "ca_objects", "ref_row_id" => $t_object->get("object_id")))."\"); return false;' >"._t("Contribute content")."</a></div><!-- end detailTool -->";
+				}else{
+					print "<div class='detailTool'><span class='glyphicon glyphicon-upload'></span><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm')."\"); return false;' >"._t("Login to contribute content")."</a></div><!-- end detailTool -->";
+				}
 				print '</div><!-- end detailTools -->';					
-				print "<div class='unit restriction'>This photo may be used for internal promotional purposes on marketing and publicity materials and in publications produced by Girl Scouts of the USA.  If you intend to offer this photo to a 3rd party for their use, you will first need them to complete the <a href='http://www.girlscouts.org/en/contact-us/contact-us/permission-request.html' target='_blank'>Permission form</a>.</div>";
-				
+				if($this->getVar("representation_id")){
+?>
+					<div class='unit restriction'>{{{rights_text}}}</div>
+<?php
+				}
 ?>
 			</div><!-- end col -->
 			
@@ -84,33 +92,17 @@
 				{{{<ifdef code="ca_objects.idno"><H6>Identifer</H6>^ca_objects.idno<br/></ifdef>}}}
 				{{{<ifdef code="ca_objects.overall_date"><H6>Date</H6>^ca_objects.overall_date<br/></ifdev>}}}
 				{{{<ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_height|ca_objects.cdwa_indexingMeasurementsSet.dimensions_width|ca_objects.cdwa_indexingMeasurementsSet.dimensions_depth|ca_objects.cdwa_indexingMeasurementsSet.dimensions_diameter"><H6>Dimensions</H6><unit delimiter="<br/>">^ca_objects.cdwa_indexingMeasurementsSet.dimensions_height<ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_height,ca_objects.cdwa_indexingMeasurementsSet.dimensions_width"> x </ifdef><ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_width">^ca_objects.cdwa_indexingMeasurementsSet.dimensions_width</ifdef><ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_depth"> x ^ca_objects.cdwa_indexingMeasurementsSet.dimensions_depth</ifdef><ifdef code="ca_objects.cdwa_indexingMeasurementsSet.dimensions_diameter"> x ^ca_objects.cdwa_indexingMeasurementsSet.dimensions_diameter</ifdef></unit></ifdef>}}}
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1" max="1"><H6>Creator</H6></ifcount>}}}
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="2"><H6>Creators</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 				
-				{{{<ifcount code="ca_objects.children" min="1" max="1"><HR></HR><H6>Copy</H6></ifcount>}}}
-				{{{<ifcount code="ca_objects.children" min="2"><HR></HR><H6>Copies</H6></ifcount>}}}
-<?php
-				if($va_children = $t_object->get("ca_objects.children", array("returnWithStructure" => true, "checkAccess" => $va_access_values))){
-					foreach(array_keys($va_children) as $vn_child_id){
-						$t_child = new ca_objects($vn_child_id);
-						print '<div class="component"><div>'.$t_child->get("ca_objects.preferred_labels.name").', <small>'.$t_child->get("ca_objects.idno").'</small></div>';
-						if($t_child->get("ca_object_representations.media.thumbnail")){
-							print '<div class="componentThumbnail"  data-container="body" data-toggle="popover" data-placement="left" data-trigger="hover" data-html="true" data-content="'.$t_child->get("ca_object_representations.media.medium").'">'.$t_child->get("ca_object_representations.media.icon").'</div>';
-						}
-						if($t_child->get("ca_objects.description")){
-							print '<div class="small">'.$t_child->get("ca_objects.description").'</div>';
-						}
-						if($t_child->get("ca_objects.description") && $t_child->get("ca_objects.content_description")){
-							print "<div class='componentDescSpacer'></div>";
-						}
-						if($t_child->get("ca_objects.content_description")){
-							print '<div class="small">'.$t_child->get("ca_objects.content_description").'</div>';
-						}
-						print "</div><!-- end component -->";
-					}
-				}
-?>
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="author" min="1" max="1"><H6>Author</H6></ifcount>}}}
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="author" min="2"><H6>Authors</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
+				
 				{{{<ifdef code="ca_objects.description|ca_objects.content_description"><HR></HR></ifdef>}}}
 				{{{<ifdef code="ca_objects.description"><H6>Physical Description</H6><span class="trimText">^ca_objects.description</span></ifdef>}}}
-				{{{<ifdef code="ca_objects.content_description"><H6>Description</H6><span class="trimText">^ca_objects.content_description</span></ifdef>}}}
+				{{{<ifdef code="ca_objects.content_description"><H6>Content</H6><span class="trimText">^ca_objects.content_description</span></ifdef>}}}
 
 				
 <?php
@@ -120,18 +112,20 @@
 					print "</div>";
 				}
 ?>
+				{{{<ifdef code="ca_objects.transcription"><H6>Transcription</H6><span class="trimText">^ca_objects.transcription</span></ifdef>}}}
+
 				{{{<case>
 						 <ifcount code="ca_entities.related" min="1"><hr></hr></ifcount>
 						 <ifcount code="ca_collections.related" min="1"><hr></hr></ifcount>
 						 <ifcount code="ca_list_items.related" min="1"><hr></hr></ifcount>
 					</case>}}}
-				{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-				{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
+				{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related Collection</H6></ifcount>}}}
+				{{{<ifcount code="ca_collections" min="2"><H6>Related Collections</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
 				
-				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>}}}
+				{{{<ifcount code="ca_entities" excludeRelationshipTypes="author,creator" min="1" max="1"><H6>Related Person</H6></ifcount>}}}
+				{{{<ifcount code="ca_entities" excludeRelationshipTypes="author,creator" min="2"><H6>Related People</H6></ifcount>}}}
+				{{{<unit relativeTo="ca_entities" excludeRelationshipTypes="author,creator" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit>}}}
 				
 		<?php
 				$va_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true));
@@ -144,17 +138,17 @@
 					print join($va_terms, "<br/>");
 				}
 
-				// $va_lcsh_terms = $t_object->get("ca_objects.lcsh_terms", array("returnAsArray" => true));
-// 				if(sizeof($va_lcsh_terms)){
-// 					print "<H6>Library of Congress Subjects</H6>";
-// 					$va_terms = array();
-// 					foreach($va_lcsh_terms as $vs_lcsh_term){
-// 						$vn_chop = stripos($vs_lcsh_term, "[");
-// 						#$va_terms[] = caNavLink($this->request, ($vn_chop) ? substr($vs_lcsh_term, 0, $vn_chop) : $vs_lcsh_term, "", "", "Browse", "objects", array("facet" => "lcsh_facet", "id" => urlencode($vs_lcsh_term)));
-// 						$va_terms[] = ($vn_chop) ? substr($vs_lcsh_term, 0, $vn_chop) : $vs_lcsh_term;
-// 					}
-// 					print join($va_terms, "<br/>");
-// 				}
+				$va_lcsh_terms = $t_object->get("ca_objects.lcsh_terms", array("returnAsArray" => true));
+ 				if(sizeof($va_lcsh_terms)){
+ 					print "<H6>Library of Congress Subjects</H6>";
+ 					$va_terms = array();
+ 					foreach($va_lcsh_terms as $vs_lcsh_term){
+ 						$vn_chop = stripos($vs_lcsh_term, "[");
+ 						$va_terms[] = caNavLink($this->request, ($vn_chop) ? substr($vs_lcsh_term, 0, $vn_chop) : $vs_lcsh_term, "", "", "Browse", "objects", array("facet" => "lcsh_facet", "id" => urlencode($vs_lcsh_term)));
+ 						#$va_terms[] = ($vn_chop) ? substr($vs_lcsh_term, 0, $vn_chop) : $vs_lcsh_term;
+ 					}
+ 					print join($va_terms, "<br/>");
+ 				}
 				if ($va_related_object_ids = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 					print "<hr></hr><div class='container relatedObjects' style='padding-left:0px;'><h6>Related objects</h6>";
 					foreach ($va_related_object_ids as $va_key => $va_related_object_id) {

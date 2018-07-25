@@ -101,8 +101,11 @@
 				var panelWidth = jQuery('#bRefine').width();
 				jQuery(window).scroll(function () {
 					var scrollTop = $(window).scrollTop();
+					var footerOffset = jQuery('#stickyFooter').offset();
+					var footerTopFromWindow = footerOffset.top - scrollTop;
+					console.log(footerOffset.top - scrollTop);
 					// check the visible top of the browser
-					if (offset.top<scrollTop) {
+					if (offset.top<scrollTop && footerTopFromWindow>jQuery('#bRefine').height()) {
 						jQuery('#bRefine').addClass('fixed');
 						jQuery('#bRefine').width(panelWidth);
 					} else {

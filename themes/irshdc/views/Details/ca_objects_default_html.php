@@ -33,36 +33,104 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	
+	$va_access_values = $this->getVar("access_values");
+	$va_breadcrumb_trail = array(caNavLink($this->request, "Home", '', '', '', ''));
+	$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
+	$vs_last_find = strToLower($o_context->getLastFind($this->request, "ca_objects"));
+	$vs_link_text = "";
+	if(strpos($vs_last_find, "browse") !== false){
+		$vs_link_text = "Find";	
+	}elseif(strpos($vs_last_find, "search") !== false){
+		$vs_link_text = "Search";	
+	}elseif(strpos($vs_last_find, "gallery") !== false){
+		$vs_link_text = "Explore Features";	
+	}elseif(strpos($vs_last_find, "narrative") !== false){
+		$vs_link_text = "Explore Narrative Threads";	
+	}elseif(strpos($vs_last_find, "listing") !== false){
+		$vs_link_text = "Explore Resources";	
+	}
+	if($vs_link_text){
+		$va_params["row_id"] = $t_object->getPrimaryKey();
+ 		$va_breadcrumb_trail[] = $o_context->getResultsLinkForLastFind($this->request, "ca_objects", $vs_link_text, null, $va_params);
+ 	}
+ 	$va_breadcrumb_trail[] = caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels.name'), 60);
+
 ?>
-<div class="row">
-	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-		<div class="container"><div class="row">
-			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
-				{{{representationViewer}}}
-				
-				
-				<div id="detailAnnotations"></div>
-				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-				
+			<div class="row">
+				<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
+					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+				</div><!-- end detailTop -->
+			</div>
 <?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
+			 	if ($this->getVar("resultsLink")) {
+					# --- breadcrumb trail only makes sense when there is a back button
+					print "<div class='row'><div class='col-sm-12 breadcrumbTrail'><small>";
+					print join(" > ", $va_breadcrumb_trail);
+					print "</small></div></div>";
+				}
+?>
+			<div class="row">
+<?php
+				$vs_representationViewer = trim($this->getVar("representationViewer"));
+				if($vs_representationViewer){
+?>
+				<div class='col-sm-12 col-md-5'>
+					<?php print $vs_representationViewer; ?>				
+<?php
+					# --- is there a transcript media
+					$t_list = new ca_lists();
+					$va_type = $t_list->getItemFromList("object_representation_types", "transcript");
+					$va_transcript_rep_ids = array_keys($t_object->getRepresentations(null, null, array("checkAccess" => $va_access_values, "restrict_to_types" => array($va_type["item_id"]))));
+					if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
+						print "<div id='transcriptLink' class='text-center'>";
+						foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
+							print caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")));
+						}
+						print "</div>";
+					}
+?>
+					<div id="detailAnnotations"></div>
+<?php				
+					$va_reps = $t_object->getRepresentations("icon", null, array("checkAcces" => $va_access_values));
+					if(sizeof($va_reps) > 1){
+						print "<div><small>".sizeof($va_reps)." media</small></div>";
+					}
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
+					
+?>
+				</div><!-- end col -->
+<?php
+				}
+?>
+				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>
+					<div class="stoneBg">				
+
+						<H4>{{{^ca_objects.preferred_labels.name}}}
+						{{{<ifdef code="ca_objects.dc_website"><br/><unit delimiter="<br/>"><a href="^ca_objects.dc_website" class="redLink" target="_blank">^ca_objects.dc_website <span class="glyphicon glyphicon-new-window"></span></a></unit></ifdef>}}}
+						</H4>
+						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter=", ">^ca_objects.language</unit></div></ifdef>}}}
+						
+						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
+						{{{<ifdef code="ca_objects.description"><div class='unit'>^ca_objects.description</div></ifdef>}}}
+					</div><!-- end stoneBg -->
+<?php
+						include("themes_html.php");
+?>
+				</div>
+				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>
+	<?php
+					# Comment and Share Tools
 						
 					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
+					if ($this->getVar("resultsLink")) {
+						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("resultsLink").'</div><!-- end detailTool -->';
+					}
+					if ($this->getVar("previousLink")) {
+						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("previousLink").'</div><!-- end detailTool -->';
+					}
+					if ($this->getVar("nextLink")) {
+						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("nextLink").'</div><!-- end detailTool -->';
 					}
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
@@ -70,72 +138,128 @@
 					if ($vn_pdf_enabled) {
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
-					print '</div><!-- end detailTools -->';
-				}				
+?>
+					{{{<ifdef code="ca_objects.dc_website"><div class='detailTool'><span class='glyphicon glyphicon-new-window'></span><a href="^ca_objects.dc_website" target="_blank">View Website</a></div></ifdef>}}}
+					
+<?php					
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
+					
+					print '</div><!-- end detailTools -->';			
 
+						if ($vn_comments_enabled) {
+							$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
+?>				
+							<div class="collapseBlock last discussion">
+								<h3>Discussion</H3>
+								<div class="collapseContent open">
+									<div id='detailDiscussion'>
+										Do you have a story to contribute related to these records or a comment about this item?<br/>
+<?php
+										
+										if($this->request->isLoggedIn()){
+											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_objects", "item_id" => $t_object->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
+										}else{
+											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment")."</button>";
+										}
+										if($vn_num_comments){
+											print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
+										}
+?>
+									</div><!-- end itemComments -->
+								</div>
+							</div>
+<?php				
+						}
 ?>
 
-			</div><!-- end col -->
+<?php
+					if($vs_map = $this->getVar("map")){
+						print "<div class='unit'>".$vs_map."</div>";
+					}
+?>
+				</div>
+			</div>
+			<div class="row" style="margin-top:30px;">
+				<div class="col-sm-12">
+<?php
+		include("related_tabbed_html.php");
+		include("related_objects_html.php");
+		
+					if($vn_num_comments){
+?>
+						<a name="comments"></a><div class="block">
+							<h3>Discussion</H3>
+							<div class="blockContent">
+								<div id="detailComments">
+<?php
+								if(sizeof($va_comments)){
+									print "<H2>Comments</H2>";
+								}
+								print $this->getVar("itemComments");
+?>
+								</div>
+							</div>
+						</div>
+<?php
+					}
+?>				
 			
-			<div class='col-sm-6 col-md-6 col-lg-5'>
-				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6>{{{<unit>^ca_objects.type_id<ifdef code="ca_objects.resourceType">: ^ca_objects.ca_objects.resourceType</ifdef></unit>}}}</H6>
-				
-				
-				{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><HR/><H6>Related school(s)</H6><unit relativeTo="ca_objects_x_entities" restrictToTypes="school" delimiter=", "><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels.displayname</l></unit> (^relationship_typename)</unit></ifcount>}}}
-		{{{<ifdef code="ca_objects.narrative_thread|ca_objects.theme|ca_objects.genre|ca_objects.denomination|ca_objects.keywords|ca_objects.local_subject"><HR/></ifdef>}}}
-				{{{<ifdef code="ca_objects.narrative_thread"><div class='unit'><h6>Narrative thread(s)</h6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.narrative_thread</unit></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.theme"><div class='unit'><h6>Theme(s)</h6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.theme</unit></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.genre"><div class='unit'><h6>Genre(s)</h6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.genre</unit></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.keywords"><div class='unit'><h6>Keywords</h6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.keywords</unit></div></ifdef>}}}
-				
-				
-				{{{<ifdef code="ca_objects.description|ca_objects.historical_note|ca_objects.curators_comments.comments|ca_objects.community_input_objects.comments_objects"><HR/></ifdef>}}}
-				
-				{{{<ifdef code="ca_objects.description">
-					<div class='unit'><h6>Description</h6>
-						<span class="trimText">^ca_objects.description</span>
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.historical_note">
-					<div class='unit'><h6>Contextual note</h6>
-						<span class="trimText">^ca_objects.historical_note</span>
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.curators_comments.comments">
-					<div class='unit'><h6>Curatorial comment</h6>
-						<span class="trimText">^ca_objects.curators_comments.comments</span>
-						<br/>^ca_objects.curators_comments.comment_reference
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.community_input_objects.comments_objects">
-					<div class='unit'><h6>Community input</h6>
-						<span class="trimText">^ca_objects.community_input_objects.comments_objects</span>
-						^ca_objects.community_input_objects.comment_reference_objects
-					</div>
-				</ifdef>}}}
-				
-				
-				
-				{{{<ifcount code="ca_places" min="1" max="1"><hr/><H6>Related place</H6></ifcount>}}}
-				{{{<ifcount code="ca_places" min="2"><hr/><H6>Related places</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
-						
-			</div><!-- end col -->
-		</div><!-- end row --></div><!-- end container -->
-	</div><!-- end col -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-</div><!-- end row -->
+					
+				</div>
+			</div>
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 120
+		  maxHeight: 60
+		});
+		$('.trimTextShort').readmore({
+		  speed: 75,
+		  maxHeight: 18
+		});
+		$('.trimTextSubjects').readmore({
+		  speed: 75,
+		  maxHeight: 80,
+		  moreLink: '<a href="#" class="moreLess">More</a>',
+		  lessLink: '<a href="#" class="moreLess">Less</a>'
+		});
+		
+		var options = {
+			placement: function () {
+<?php
+			if($vs_representationViewer){
+?>
+				if ($(window).width() > 992) {
+					return "left";
+				}else{
+					return "auto top";
+				}
+<?php
+			}else{
+?>
+				return "auto top";
+<?php			
+			}
+?>
+			},
+			trigger: "hover",
+			html: "true"
+		};
+		$('[data-toggle="popover"]').each(function() {
+  			if($(this).attr('data-content')){
+  				$(this).popover(options).click(function(e) {
+					$(this).popover('toggle');
+				});
+  			}
+		});
+		
+		$('.collapseBlock h3').click(function() {
+  			block = $(this).parent();
+  			block.find('.collapseContent').toggle();
+  			block.find('.fa').toggleClass("fa-toggle-down");
+  			block.find('.fa').toggleClass("fa-toggle-up");
+  			
 		});
 	});
 </script>
