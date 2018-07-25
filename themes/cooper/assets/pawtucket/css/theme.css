@@ -540,7 +540,7 @@ body.initial .navbar-form {
 	text-align:center;
 }
 .detailImagesMain img{
-	width:600px;
+	width:670px;
 	height:600px;
 	object-fit:contain;
 }
@@ -557,6 +557,7 @@ body.initial .navbar-form {
 .detailCaption{
 	padding-top:3px;
 	text-align:right;
+	width:700px;
 }
 .detail H6{
 	font-weight:bold;
