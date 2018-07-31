@@ -3446,7 +3446,7 @@
 									if ($va_list_parent_ids[$vs_val]) {
 										 $vn_child_count++;
 									}
-									$va_values[$vs_val] = array(
+									$va_values[strToLower($vs_val)] = array(
 										'id' => str_replace('/', '&#47;', $vs_val),
 										'label' => html_entity_decode($va_list_items[$vs_val]['name_plural'] ? $va_list_items[$vs_val]['name_plural'] : $va_list_items[$vs_val]['item_value']),
 										'parent_id' => $va_list_items[$vs_val]['parent_id'],
@@ -3464,14 +3464,14 @@
 								case __CA_ATTRIBUTE_VALUE_STORAGELOCATIONS__:
 								case __CA_ATTRIBUTE_VALUE_OBJECTLOTS__:
 									$vn_id = $qr_res->get('value_integer1');
-									$va_values[$vs_val] = array(
+									$va_values[strToLower($vs_val)] = array(
 										'id' => $vn_id,
 										'label' => html_entity_decode($va_auth_items[$vn_id] ? $va_auth_items[$vn_id] : $vs_val),
 										'content_count' => $qr_res->get('_count')
 									);
 									break;
 								case __CA_ATTRIBUTE_VALUE_LCSH__:
-									$va_values[$vs_val] = array(
+									$va_values[strToLower($vs_val)] = array(
 										'id' => str_replace('/', '&#47;', $vs_val),
 										'label' => preg_replace('![ ]*\[[^\]]*\]!', '', $vs_val),
 										'content_count' => $qr_res->get('_count')
@@ -3485,7 +3485,7 @@
 									);
 									break;
 								default:
-									$va_values[$vs_val] = array(
+									$va_values[strToLower($vs_val)] = array(
 										'id' => str_replace('/', '&#47;', $vs_val),
 										'label' => $vs_val,
 										'content_count' => $qr_res->get('_count')

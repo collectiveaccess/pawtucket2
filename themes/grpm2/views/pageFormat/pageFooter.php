@@ -36,7 +36,7 @@
 						<br/><br/>
 					</div>
 					<div class="col-sm-12 col-md-4">
-						<a href="https://www.grpm.org/">Grand Rapids Public Museum</a>
+						<a href="https://www.grpm.org/" target="_blank">Grand Rapids Public Museum</a>
 						<br/>272 Pearl Street NW
 						<br/>Grand Rapids, MI 49504
 						<br/>
@@ -54,10 +54,10 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<ul class="list-inline pull-center social">
-							<li><a href="https://www.facebook.com/GRMuseum/?fref=ts" title="Grand Rapids Public Museum Facebook"><span class="fa fa-facebook"></span></a></li>
-							<li><a href="https://twitter.com/GRMuseum?lang=en" title="Grand Rapids Public Museum Twitter"><span class="fa fa-twitter"></span></i></a></li>
-							<li><a href="https://www.instagram.com/grmuseum/" title="Grand Rapids Public Museum Instagram"><span class="fa fa-instagram"></span></a></li>
-							<li><a href="https://www.pinterest.com/grpublicmuseum/" title="Grand Rapids Public Museum Pinterest"><span class="fa fa-pinterest"></span></a></li>
+							<li><a href="https://www.facebook.com/GRMuseum/?fref=ts" title="Grand Rapids Public Museum Facebook" target="_blank"><span class="fa fa-facebook"></span></a></li>
+							<li><a href="https://twitter.com/GRMuseum?lang=en" title="Grand Rapids Public Museum Twitter" target="_blank"><span class="fa fa-twitter"></span></i></a></li>
+							<li><a href="https://www.instagram.com/grmuseum/" title="Grand Rapids Public Museum Instagram" target="_blank"><span class="fa fa-instagram"></span></a></li>
+							<li><a href="https://www.pinterest.com/grpublicmuseum/" title="Grand Rapids Public Museum Pinterest" target="_blank"><span class="fa fa-pinterest"></span></a></li>
 						</ul>
 						<br/>
 						<br/>&copy; Grand Rapids Public Museum <?php print date("Y"); ?>
