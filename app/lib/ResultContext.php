@@ -55,9 +55,9 @@
 		 * 
 		 */
 		public function __construct($po_request, $pm_table_name_or_num, $ps_find_type, $ps_find_subtype=null) {
+			if (!($vs_table_name = Datamodel::getTableName($pm_table_name_or_num))) { return null; }
 			$this->opo_request = $po_request;
 			ResultContextStorage::init($po_request);
-			if (!($vs_table_name = Datamodel::getTableName($pm_table_name_or_num))) { return null; }
 			
 			
 			$this->ops_table_name = $vs_table_name;
@@ -682,8 +682,8 @@
 		 * @return string - the find type of the last find operation for this table
 		 */
 		static public function getLastFind($po_request, $pm_table_name_or_num, $pa_options=null) {
-			if (!ResultContextStorage::$storageLoaded) { ResultContextStorage::init($po_request); }
 			if (!($vs_table_name = Datamodel::getTableName($pm_table_name_or_num))) { return null; }
+			if (!ResultContextStorage::$storageLoaded) { ResultContextStorage::init($po_request); }
 			
 			if (caGetOption('noSubtype', $pa_options, false)) {
 				$vs_find_tag = ResultContextStorage::getVar('result_last_context_'.$vs_table_name);
@@ -702,6 +702,7 @@
 		 * @return ResultContext - result context from the last find operation for this table
 		 */
 		static public function getResultContextForLastFind($po_request, $pm_table_name_or_num) {
+			if (!($vs_table_name = Datamodel::getTableName($pm_table_name_or_num))) { return null; }
 			if (!ResultContextStorage::$storageLoaded) { ResultContextStorage::init($po_request); }
 			
 			$va_tmp = explode('/', ResultContextStorage::getVar('result_last_context_'.$vs_table_name));
