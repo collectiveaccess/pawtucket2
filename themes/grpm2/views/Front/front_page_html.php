@@ -40,7 +40,7 @@
 						<div class='frontSlide'>
 							<div class="row">
 								<div class="col-xs-12 col-sm-5 col-md-5">
-									<?php print caGetThemeGraphic($this->request, 'grand-rapids-public-museum.jpg'); ?>
+									<?php print caGetThemeGraphic($this->request, 'welcome.jpg'); ?>
 								</div>
 								<div class="col-xs-12 col-sm-7 col-md-7">
 									<div class="slideTextRight">
@@ -48,7 +48,7 @@
 											Welcome to Grand Rapid Public Museum's<br/>Digital Collections
 										</h2>
 										<p>
-											Aliquam eget augue iaculis, volutpat est eget, malesuada orci. Nulla mi lectus, aliquet ac facilisis id, malesuada sit amet dolor. Nam varius ex at mauris porta, id elementum purus sollicitudin. 
+											The Grand Rapids Public Museum preserves a Collection of over 250,000 artifacts and scientific specimens. The Museum is continuing to add new content for students, teachers and researchers around the world to explore the Digital Collection.
 										</p>
 										<p class="text-center">
 											<?php print caNavLink($this->request, _t("Get Started"), "btn-default", "", "Browse", "objects"); ?>
@@ -64,18 +64,18 @@
 								<div class="col-xs-12 col-sm-7 col-md-7">
 									<div class="slideTextLeft">
 										<h2>
-											Browse Featured Galleries
+											Featured Galleries
 										</h2>
 										<p>
-											Aliquam eget augue iaculis, volutpat est eget, malesuada orci. Nulla mi lectus, aliquet ac facilisis id, malesuada sit amet dolor. Nam varius ex at mauris porta, id elementum purus sollicitudin. 
+											The Galleries are curated collections of artifacts and specimens that tell stories. These educational resources were created and shared by teachers and curators.
 										</p>
-										<p class="text-center">
-											<?php print caNavLink($this->request, _t("Get Started"), "btn-default", "", "Gallery", "Index"); ?>
+										<p class="text-center" style="line-height:2em;">
+											<?php print caNavLink($this->request, _t("Curator Galleries"), "btn-default", "", "Gallery", "Index"); ?><br/><?php print caNavLink($this->request, _t("Teacher Created Galleries"), "btn-default", "", "TeacherGallery", "Index"); ?>
 										</p>
 									</div>
 								</div>
 								<div class="col-xs-12 col-sm-5 col-md-5">
-									<?php print caGetThemeGraphic($this->request, 'grand-rapids-public-museum.jpg'); ?>
+									<?php print caGetThemeGraphic($this->request, 'explore.jpg'); ?>
 								</div>
 							</div>
 						</div>
@@ -84,7 +84,7 @@
 						<div class='frontSlide'>
 							<div class="row">
 								<div class="col-xs-12 col-sm-5 col-md-5">
-									<?php print caGetThemeGraphic($this->request, 'grand-rapids-public-museum.jpg'); ?>
+									<?php print caGetThemeGraphic($this->request, 'gallery.jpg'); ?>
 								</div>
 								<div class="col-xs-12 col-sm-7 col-md-7">
 									<div class="slideTextRight">
@@ -92,7 +92,7 @@
 											Explore
 										</h2>
 										<p>
-											Aliquam eget augue iaculis, volutpat est eget, malesuada orci. Nulla mi lectus, aliquet ac facilisis id, malesuada sit amet dolor. Nam varius ex at mauris porta, id elementum purus sollicitudin. 
+											There are many ways to browse the Grand Rapids Public Museum’s Digital Collection!
 										</p>
 										<p class="text-center" style="line-height:2em;">
 <?php
@@ -116,7 +116,7 @@
 											Get Involved!
 										</h2>
 										<p>
-											Aliquam eget augue iaculis, volutpat est eget, malesuada orci. Nulla mi lectus, aliquet ac facilisis id, malesuada sit amet dolor. Nam varius ex at mauris porta, id elementum purus sollicitudin. 
+											Login and curate your own Collections. Save and share your favorites. Leave a comment to share your story about an artifact.
 										</p>
 										<p class="text-center">
 <?php
@@ -133,7 +133,7 @@
 									</div>
 								</div>
 								<div class="col-xs-12 col-sm-5 col-md-5">
-									<?php print caGetThemeGraphic($this->request, 'grand-rapids-public-museum.jpg'); ?>
+									<?php print caGetThemeGraphic($this->request, 'involved.jpg'); ?>
 								</div>
 							</div>
 						</div>
@@ -168,7 +168,7 @@
 							// Options go here
 							wrap:'circular'
 						}).jcarouselAutoscroll({
-							interval: 3000,
+							interval: 5000,
 							target: '+=1',
 							autostart: true
 						});
@@ -263,7 +263,7 @@
 		</div>
 	</div>
 	<div class="container"><div class="row">
-		<div class="col-sm-12 bgWhite">
+		<div class="col-sm-12">
 <?php
 			print $this->render("Front/gallery_slideshow_html.php");
 ?>
