@@ -24,17 +24,24 @@
 				# --- get one object with this category
 				$qr_res = $o_search->search("ca_objects.object_category:".$qr_categories->get("ca_list_items.item_id"), array("checkAccess" => $va_access_values, "limit" => 50));
 				if($qr_res->numHits()){
-					$qr_res->seek(rand(1,$qr_res->numHits()));
-					$qr_res->nextHit();
-					$vs_img = $qr_res->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values));
+					$i = 0;
+					while(!$vs_img && ($i < $qr_res->numHits())){
+						$qr_res->seek(rand(1,$qr_res->numHits()));
+						$qr_res->nextHit();
+						$vs_img = $qr_res->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values));
+						$i++;
+					}
 				}
+			}
+			if(!$vs_img){
+				$vs_img = "<div class='explorePlaceholder'><i class='fa fa-picture-o fa-2x'></i></div>";
 			}
 			if($vn_i == 0){
 				print "<div class='row'>";
 			}
 			print "<div class='col-sm-3'><div class='exploreCategoryContainer'>".
 						"<H2>".caNavLink($this->request, $qr_categories->get("ca_list_items.preferred_labels.name_plural"), "", "", "browse", "objects", array("facet" => "category_facet", "id" => $qr_categories->get("ca_list_items.item_id")))."</H2>".
-						"<p>".caNavLink($this->request, $vs_img, "", "", "browse", "objects", array("facet" => "category_facet", "id" => $qr_categories->get("ca_list_items.item_id")))."</p>
+						"<div class='exploreImgContainer'>".caNavLink($this->request, $vs_img, "", "", "browse", "objects", array("facet" => "category_facet", "id" => $qr_categories->get("ca_list_items.item_id")))."</div>
 						<p class='text-center'>".caNavLink($this->request, "View Items", "btn-default btn-sm", "", "browse", "objects", array("facet" => "category_facet", "id" => $qr_categories->get("ca_list_items.item_id")))."</p>
 						</div></div>";
 			$vn_i++;

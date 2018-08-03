@@ -23,7 +23,6 @@
 	}
 	if($vb_has_children){
 ?>					
-			<div class='text-right'><a href='#' onclick='$("#collectionsWrapper").toggle(300);return false;' class='showHide'>Show/Hide Collection Browser</a></div>
 				<div class="row" id="collectionsWrapper" <?php print ($o_collections_config->get("browser_closed")) ? "style='display:none;'" : ""; ?>>			
 					<div class='col-sm-12'>
 					
@@ -65,7 +64,8 @@
 							$vn_rel_object_count = sizeof($qr_collection_children->get("ca_objects.object_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values)));
 							$vs_record_count = "";
 							if($vn_rel_object_count){
-								$vs_record_count = "<small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+								#$vs_record_count = "<small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+								$vs_record_count = "<small>(digitized items available)</small>";
 							}
 							if($vb_link_sublist){
 								print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$vs_idno." - ".$qr_collection_children->get('ca_collections.preferred_labels').(($qr_collection_children->get("ca_collections.collection_date2.collection_date_inclusive")) ? ", ".$qr_collection_children->get("ca_collections.collection_date2.collection_date_inclusive") : "")."<br/>".$vs_record_count."</a>";
@@ -86,12 +86,12 @@
 								}else{
 									print "<div class='listItem'>".$vs_icon." ".$vs_idno." - ".$qr_collection_children->get('ca_collections.preferred_labels').(($qr_collection_children->get("ca_collections.collection_date2.collection_date_inclusive")) ? ", ".$qr_collection_children->get("ca_collections.collection_date2.collection_date_inclusive") : "")."</div>";
 								}
-								if(($vs_scope_content = $qr_collection_children->get('ca_collections.scope_content')) || $vs_record_count){
+								if($vs_record_count){
 									print "<div class='listItemDesc'>".$vs_record_count;
 									if($vs_record_count && $vs_scope_content){
 										print "<br/>";
 									}
-									print $vs_scope_content."</div>";
+									print "</div>";
 								}
 							}
 							print "</div>";	

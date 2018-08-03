@@ -34,7 +34,7 @@
 				<div class="col-md-4 col-sm-4 widget footer-widget widget_text">
 					<h4 class="widgettitle">About our museum</h4>
 					<div class="textwidget">
-						<p><a href="http://www.hollandmuseum.org" class="footer-img"><?php print caGetThemeGraphic($this->request, 'HMcolorRGB.png'); ?></a></p>
+						<p><a href="https://www.hollandmuseum.org" class="footer-img" target="_blank"><?php print caGetThemeGraphic($this->request, 'HMcolorRGB.png'); ?></a></p>
 						<p>(616) 796-3329</p>
 						<p>The Holland Museum is located at the corner of 10th Street and River Avenue, across from Centennial Park. Please use the parking lot behind the museum on 9th Street or street parking available along 10th Street. Handicap accessibility is available from the east side of building.</p>
 					</div>
@@ -43,24 +43,24 @@
 					<h4 class="widgettitle">Our Venues</h4>
 					<div class="textwidget">
 						<address>
-							<a href="http://www.hollandmuseum.org/?venue=holland-museum"><strong>Holland Museum</strong></a><br>
+							<a href="https://www.hollandmuseum.org/?venue=holland-museum" target="_blank"><strong>Holland Museum</strong></a><br>
 							<span>31 W. 10th Street<br>
 							Holland, MI 49423</span>
 						</address>
 						<hr>
 						<address>
-							<a href="http://www.hollandmuseum.org/?venue=cappon-house"><strong>Cappon House</strong></a><br>
+							<a href="https://www.hollandmuseum.org/?venue=cappon-house" target="_blank"><strong>Cappon House</strong></a><br>
 							<span>228 W. 9th Street<br>Holland, MI 49423</span>
 						</address>
 						<hr>
 						<address>
-							<a href="http://www.hollandmuseum.org/?venue=settlers-house"><strong>Settlers House</strong></a><br>
+							<a href="https://www.hollandmuseum.org/?venue=settlers-house" target="_blank"><strong>Settlers House</strong></a><br>
 							<span>190 W. 9th Street<br>
 							Holland, MI 49423</span>
 						</address>
 						<hr>
 						<address>
-							<a href="http://www.hollandmuseum.org/?venue=the-armory"><strong>The Armory</strong></a><br>
+							<a href="https://www.hollandmuseum.org/?venue=the-armory" target="_blank"><strong>The Armory</strong></a><br>
 							<span>16 W. 9th Street<br>Holland, MI 49423</span>
 						</address>
 					</div>

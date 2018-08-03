@@ -23,13 +23,6 @@
     font-weight: normal;
     text-rendering: optimizeLegibility;
 }
-/* Webfont: roboto bold italic */@font-face {
-    font-family: 'Roboto';
-    src: url('Roboto/Roboto-BoldItalic.ttf') format('truetype');
-    font-style: italic;
-    font-weight: bold;
-    text-rendering: optimizeLegibility;
-}
 /* Webfont: roboto bold */@font-face {
     font-family: 'Roboto';
     src: url('Roboto/Roboto-Bold.ttf') format('truetype');
@@ -52,35 +45,7 @@
     font-weight: bold;
     text-rendering: optimizeLegibility;
 }
-/* Webfont: Playfair italic  */@font-face {
-    font-family: 'Playfair Display';
-    src: url('Playfair_Display/PlayfairDisplay-Italic.ttf') format('truetype');
-    font-style: italic;
-    font-weight: normal;
-    text-rendering: optimizeLegibility;
-}
-/* Webfont: Playfair bold italic  */@font-face {
-    font-family: 'Playfair Display';
-    src: url('Playfair_Display/PlayfairDisplay-BoldItalic.ttf.ttf') format('truetype');
-    font-style: italic;
-    font-weight: bold;
-    text-rendering: optimizeLegibility;
-}
-/* Webfont: Playfair bold italic  */@font-face {
-    font-family: 'Playfair Display';
-    src: url('Playfair_Display/PlayfairDisplay-BoldItalic.ttf.ttf') format('truetype');
-    font-style: italic;
-    font-weight: bold;
-    text-rendering: optimizeLegibility;
-}
 
-/* Webfont: Playfair bold italic  */@font-face {
-    font-family: 'Roboto Condensed';
-    src: url('Roboto_Condensed/RobotoCondensed-Regular.ttf') format('truetype');
-    font-style: normal;
-    font-weight: normal;
-    text-rendering: optimizeLegibility;
-}
 /* Webfont: Playfair bold  */@font-face {
     font-family: 'Roboto Condensed';
     src: url('Roboto_Condensed/RobotoCondensed-Bold.ttf') format('truetype');
@@ -806,6 +771,25 @@ body.initial .browseMenuFacetSearchInput.form-control, .browseMenuFacetSearchInp
 .detail .detailTool span, .detail .detailTool i, .detail #detailRepNav a {
     color: #2c85b8;
 }
+#detailTools{
+	margin-bottom:30px;
+}
+.detailPagePlaceholder {
+    background-color: #F5F5F5;
+    border: 2px solid #EDEDED;
+    color: #858585;
+    margin-bottom: 10px;
+    padding: 60px 5px 72px;
+    text-align: center;
+    width: 100%;
+    font-size:16px;
+}
+@media (min-width: 768px) {
+	.detailPagePlaceholder {
+		padding: 100px 5px 112px;
+		font-size:24px;
+	}
+}
 
 /* static pages */
 .staticPage h2{
@@ -832,10 +816,36 @@ body.initial .browseMenuFacetSearchInput.form-control, .browseMenuFacetSearchInp
 		max-width:350px;
 	}
 }
+.exploreImgContainer{
+	margin-bottom:20px;
+}
+.explorePlaceholder{
+	background-color: #F5F5F5;
+	border: 2px solid #EDEDED;
+	color: #858585;
+	margin-bottom: 10px;
+	padding: 90px 5px 95px;
+	text-align: center;
+	width: 100%;	
+}
+.explorePlaceholder a{
+	color:#858585;
+}
 
 .form-control:focus {
     border-color: #515151;
 }
 .sets H1{
 	margin-bottom:25px;
+}
+
+/* gallery */
+.gallery H6{
+	font-size:14px;
+	margin-bottom:2px;
+	font-weight:bold;
+}
+.gallery .unit {
+    margin-bottom: 15px;
+    color:#000;
 }
