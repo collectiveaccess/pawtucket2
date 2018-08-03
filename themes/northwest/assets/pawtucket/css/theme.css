@@ -188,6 +188,9 @@ label, .advancedSearchField .formLabel {
 .navbar-default .navbar-nav > li > a:hover {
 	color:#ff461e;
 }
+.nav > li.dropdown > a.icon {
+    color: #cf0;
+}
 .searchArea {
 	float:right;
 }	
@@ -692,6 +695,28 @@ span.spacer {
 #detailComments .btn-default{
 	font-size:1em;
 }
+#pageArea.ca_collections .unit{
+	border:0px;
+}
+#pageArea.ca_collections a.readmore-js-toggle {
+    padding-top: 0px;
+}
+#pageArea.ca_collections #browseResultsContainer {
+    margin-top: 0px;
+}
+@media (min-width: 975px) {
+	#pageArea.ca_collections #collectionHierarchy .text-right{
+		margin-top:-40px;
+	}
+	#pageArea.ca_collections H4.collectionDetailHeader {
+    	margin-top: -53px;
+    }
+}
+@media (max-width: 975px) {
+	#pageArea.ca_collections #collectionHierarchy .text-right{
+		text-align:left;
+	}
+}
 /* Login */
 
 #pageArea.loginreg {
@@ -707,10 +732,11 @@ span.spacer {
 }
 /* Browse and sets buttons */
 
-.browse .btn, .sets .btn {
+.browse .btn, .search .btn, .sets .btn {
     background-color: #FFF;
     color: #7a3030;
     padding:5px;
+    font-size: 1em;
 }
 .browse .btn a, .browse .btn .glyphicon, .sets .btn a, .sets .btn .glyphicon{
 	color: #7a3030 !important;
@@ -776,6 +802,55 @@ span.spacer {
 	font-size:14px;
 }
 
+/* media viewer */
+
+div.caMediaOverlayControls .close {
+    float: none;
+    margin: 0;
+    font-size: 22px;
+    position: fixed;
+    top: 3px;
+	right: 80px;
+    width: auto;
+    padding:4px 8px 8px 8px;
+    text-align: right;
+    background-color:#000;
+    opacity 1;
+	border-radius: 3px;
+}
+.tileviewerToolbarZoom{
+	font-size:2em;
+	top: 3px;
+	background-color: rgba(0, 0, 0, 0.5);
+	height: 30px;
+	padding: 5px 10px 5px 10px;
+	border-radius:3px
+}
+.tileviewerControlZoomIn, .tileviewerControlZoomOut, tileviewerToolbarZoomSlider{
+	opacity:1 !important;
+}
+.tileviewerControlZoomIn{
+	right: 5px;
+	top: 6px;
+}
+.tileviewerControlZoomOut{
+	left: 5px;
+	top: 6px;
+}
+.tileviewerToolbarZoom .fa{
+	background-color: #FFF;
+	padding: 0px;
+	line-height: .8em;
+	height: 18px;
+	width: 18px;
+	border-radius: 3px;
+}
+.caMediaOverlayControlsMinimal .close{
+	position:absolute;
+	right:10px;
+	bottom:10px;
+	opacity: 1;
+}
 /* gallery */
 
 .gallery {
@@ -807,6 +882,9 @@ span.spacer {
 	background-color:transparent;
 	color: #7a3030;
 	top: 160px;
+}
+.gallery img[src*="audioIcon"] {
+    border:2px solid #EDEDED;
 }
 
 /* collection */

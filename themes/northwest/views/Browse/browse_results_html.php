@@ -94,7 +94,12 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		<H1>
 <?php
-			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+			if($vs_table == "ca_objects"){
+				print $vn_result_size." ".(($vn_result_size == 1) ? "Digital Holding" : "Digital Holdings");	
+			
+			}else{
+				print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+			}
 ?>		
 			<div class="btn-group">
 				<a href="#" data-toggle="dropdown"><i class="fa fa-cog bGear"></i></a>
@@ -152,6 +157,11 @@ if (!$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
+<?php
+		if(($vs_table == "ca_objects") && ($vs_intro = trim($this->getVar("browse_intro_text")))){
+			print "<p>".$vs_intro."</p>";			
+		}
+?>
 		<H5>
 <?php
 		if (sizeof($va_criteria) > 0) {
