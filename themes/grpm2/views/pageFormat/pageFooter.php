@@ -44,7 +44,7 @@
 					</div>
 					<div class="col-sm-12 col-md-4">
 						<?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "Collection"); ?>
-						<br/><?php print caNavLink($this->request, _t("Contact Us"), "", "", "About", "Contact"); ?>
+						<br/><a href="https://www.grpm.org/contact/">Contact Us</a>
 						<br/><?php print caNavLink($this->request, _t("FAQ"), "", "", "About", "FAQ"); ?>
 						<br/><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "About", "Terms"); ?>
 						<br/>
