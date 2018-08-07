@@ -224,14 +224,14 @@ hr{
 	margin-bottom:75px;
 }
 .front H1{
-	margin-top:100px;
-	margin-bottom:100px;
+	margin-top:60px;
+	margin-bottom:70px;
 	font-family:museo-slab;
 	text-align:center;	
 	color:#3a3a3a;
 }
 .front H2{
-	margin-top:25px;
+	margin-top:15px;
 	margin-bottom:25px;
 	font-family:museo-slab;
 	text-align:center;
@@ -247,7 +247,7 @@ hr{
 	font-size:30px;
 }
 .front .collectionLinksSpacer{
-	height:100px;
+	height:70px;
 }
 .collectionLinks img{
 	width:100%;
@@ -257,7 +257,7 @@ hr{
 	margin-bottom:25px;
 }
 .collectionLinks{
-	margin-bottom:100px;
+	margin-bottom:25px;
 }
 .frontGrid{
 	margin-top:20px;
