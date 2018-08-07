@@ -44,6 +44,11 @@ body{
 	font-size:13px;
 	color: #666666;
 }
+@media (max-width:768px){
+	body{
+		margin-bottom: 450px;
+	}
+}
 a, a:hover{
 	color:#009fd8;
 }
@@ -97,6 +102,11 @@ hr{
 		margin-top:3px;
 	}
 }
+@media (max-width:768px){	
+	.navbar-brand {
+		margin-top:5px;
+	}
+}
 .navbar{
 	background-color: #f6f6f6;
 	margin-bottom:0px;
@@ -142,6 +152,17 @@ hr{
 .nav .dropdown .dropdown-menu li {
     text-align: right;
 }
+@media (max-width:768px){
+	.nav .dropdown .dropdown-menu li {
+		text-align: left;
+	}
+	ul.menuItems {
+		margin-left:0px;
+	}
+}
+.navbar-toggle-user {
+    padding: 7px 10px 7px 10px;
+}
 /* footer */
 #footer{
 	background-color: #2f3033;
@@ -153,7 +174,7 @@ hr{
 	padding-bottom:25px;
 	height:450px;
 }
-@media (min-width:768px){
+@media (min-width:991px){
 	#footer{
 		height:275px;
 	}
@@ -352,6 +373,24 @@ hr{
 .front .jcarousel-wrapper{
 	margin-bottom:0px;
 }
+@media (max-width:768px){
+	.front .jcarousel-control-next {
+		right: -15px !important;
+	}
+	.front .jcarousel-control-prev {
+		left: -15px !important;
+	}
+	.front div.slideTextLeft{
+		padding-right:15px;
+	}
+	.front div.slideTextRight{
+		padding-left:15px;
+	}
+	.front .frontSlide .btn-default {
+		display: inline-block;
+		margin-bottom: 10px;
+	}
+}
 /* browse */
 #bRefine {
     background-color: #fff;
@@ -421,6 +460,13 @@ hr{
 	text-align:center;
 	padding-bottom:20px;
 }
+@media(max-width:500px){
+	.detail .shareBar{
+		width: 75%;
+		margin-left: auto;
+		margin-right: auto;
+	}
+}
 .shareBar .shareButton{
 	margin-right:15px;
 	float:left;
@@ -469,6 +515,11 @@ hr{
 	overflow:hidden;
 	margin-top:3px;
 	margin-bottom:15px;
+}
+/* force 3d viewer size */
+.detail #viewer canvas{
+	width:100% !important;
+	height:400px !Important;
 }
 /* search  */
 .advancedFormSubmit{

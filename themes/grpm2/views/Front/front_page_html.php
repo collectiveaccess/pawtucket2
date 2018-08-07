@@ -168,7 +168,7 @@
 							// Options go here
 							wrap:'circular'
 						}).jcarouselAutoscroll({
-							interval: 5000,
+							interval: 7000,
 							target: '+=1',
 							autostart: true
 						});
