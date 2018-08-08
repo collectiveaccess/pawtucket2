@@ -73,10 +73,14 @@
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 				<table class='objectBanner'><tr>
 <?php
-					if ($va_institution = $t_object->getWithTemplate('<unit relativeTo="ca_entities" restrictToTypes="member_inst"><td class="instName"><span class="fromThe">from the collection of</span> <l>^ca_entities.preferred_labels </l></td><td class="instLogo"><l>^ca_entities.inst_images</l></td></unit>')) {
-						$vs_inst_id = $t_object->get('ca_entities.entity_id', array('restrictToTypes' => array('member_inst')));
-						print caNavLink($this->request, $va_institution, '', '', 'Detail', 'entities/'.$vs_inst_id );
-					}		
+                    if($vs_institution_code = caGetListItemIdno($t_object->get('source_id'))) {    
+                        $t_member = ca_entities::find(['idno' => $vs_institution_code, 'type_id' => 'member_inst'], ['returnAs' => 'firstModelInstance']);
+                        if ($t_member) {
+                            $vs_institution_banner = $t_member->getWithTemplate('<td class="instName"><span class="fromThe">from the collection of</span> <l>^ca_entities.preferred_labels </l></td><td class="instLogo"><l>^ca_entities.inst_images</l></td>');
+                            $vs_inst_id = $t_member->get('ca_entities.entity_id');
+                            print caNavLink($this->request, $vs_institution_banner, '', '', 'Detail', 'entities/'.$vs_inst_id );
+                        }
+                    }		
 ?>				
 					<div class="width:100%;clear:both;"></div>
 				</tr></table>

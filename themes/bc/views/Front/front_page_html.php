@@ -54,8 +54,8 @@
 		include_once(__CA_LIB_DIR__."/ca/Search/EntitySearch.php");
 		$t_list = new ca_lists();
 		$vn_member_institution_type = $t_list->getItemIDFromList("entity_types", "member_inst");
-		$o_member_search = new EntitySearch();
-		$qr_members = $o_member_search->search("ca_entity.type_id:{$vn_member_institution_type}", array('sort' => 'ca_entity_labels.name_sort', 'sort_direction' => 'asc', "checkAccess" => $va_access_values));
+		
+		$qr_members = ca_entities::find(['type_id' => 'member_inst'], ['returnAs' => 'searchResult', 'sort' => 'ca_entity_labels.name_sort', 'sort_direction' => 'asc', "checkAccess" => $va_access_values]);
 		
 		$vn_i = 0;
 		print "<div class='row'>
@@ -71,6 +71,7 @@
 			$vn_i++;
 			if ($vn_i == 6) {
 				print "</div><div class='row'><div class='col-sm-1'></div>";
+				$vn_i = 0;
 			}
 		}
 		print "<div class='col-sm-1'></div></div><!-- end row -->";   
@@ -109,20 +110,20 @@
 	<div class="row cats">
 		<h1 class='blue' style='margin-bottom:10px;'>Browse Collections</h1><p class="subHead" style='margin-bottom:50px;'>Browse the Collections of all of the Heritage Properties by Category</p>
 		<div class="col-sm-1"></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'architecture.jpg')."<br/>Architecture", '', '', 'Browse', 'objects/facet/topic_facet/id/538'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'art.jpg')."<br/>Art", '', '', 'Browse', 'objects/facet/topic_facet/id/539'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'communication.jpg')."<br/>Communications and Technology", '', '', 'Browse', 'objects/facet/topic_facet/id/540'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'agriculture.jpg')."<br/>Agriculture and Fishing", '', '', 'Browse', 'objects/facet/topic_facet/id/541'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'clothing.jpg')."<br/>Clothing and Accessories", '', '', 'Browse', 'objects/facet/topic_facet/id/542'); ?></div>		
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'architecture.jpg')."<br/>Architecture", '', '', 'Browse', 'objects/facet/topic_facet/id/542'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'art.jpg')."<br/>Art", '', '', 'Browse', 'objects/facet/topic_facet/id/543'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'communication.jpg')."<br/>Communications and Technology", '', '', 'Browse', 'objects/facet/topic_facet/id/544'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'agriculture.jpg')."<br/>Agriculture and Fishing", '', '', 'Browse', 'objects/facet/topic_facet/id/545'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'clothing.jpg')."<br/>Clothing and Accessories", '', '', 'Browse', 'objects/facet/topic_facet/id/546'); ?></div>		
 		<div class="col-sm-1"></div>
 	</div><!-- end row -->
 	<div class="row cats" style="margin-bottom:80px;">
 		<div class="col-sm-1"></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'household.jpg')."<br/>Household Life", '', '', 'Browse', 'objects/facet/topic_facet/id/543'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'industry.jpg')."<br/>Industry and Manufacturing", '', '', 'Browse', 'objects/facet/topic_facet/id/544'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'military.jpg')."<br/>Military", '', '', 'Browse', 'objects/facet/topic_facet/id/545'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'recreation.jpg')."<br/>Recreation", '', '', 'Browse', 'objects/facet/topic_facet/id/546'); ?></div>
-		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'transportation.jpg')."<br/>Transportation", '', '', 'Browse', 'objects/facet/topic_facet/id/547'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'household.jpg')."<br/>Household Life", '', '', 'Browse', 'objects/facet/topic_facet/id/547'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'industry.jpg')."<br/>Industry and Manufacturing", '', '', 'Browse', 'objects/facet/topic_facet/id/548'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'military.jpg')."<br/>Military", '', '', 'Browse', 'objects/facet/topic_facet/id/549'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'recreation.jpg')."<br/>Recreation", '', '', 'Browse', 'objects/facet/topic_facet/id/550'); ?></div>
+		<div class="col-sm-2"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'transportation.jpg')."<br/>Transportation", '', '', 'Browse', 'objects/facet/topic_facet/id/551'); ?></div>
 		<div class="col-sm-1"></div>
 	</div><!-- end row -->	
 </div> <!--end container-->
