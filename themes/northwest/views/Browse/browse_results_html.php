@@ -158,7 +158,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		</H1>
 <?php
-		if(($vs_table == "ca_objects") && ($vs_intro = trim($this->getVar("browse_intro_text")))){
+		if((strToLower($this->request->getController()) == "browse") && ($vs_table == "ca_objects") && ($vs_intro = trim($this->getVar("browse_intro_text")))){
 			print "<p>".$vs_intro."</p>";			
 		}
 ?>
