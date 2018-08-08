@@ -12,7 +12,7 @@
 			</div?
 			<div class="col-sm-12">
 				<div class="advancedSearchField">
-					Keyword<br/>
+					Full text<br/>
 					{{{_fulltext%width=200px&height=25px}}}
 				</div>	
 			</div>

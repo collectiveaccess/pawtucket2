@@ -86,9 +86,10 @@
   
     $by_work_type = [];
     while($q->nextHit()) {
-        $by_work_type[$q->get('ca_occurrences.workType', ['convertCodesToDisplayText' => true])][] =  $q->getWithTemplate('<unit delimiter=" "><div class="worklist"><l>^ca_occurrences.preferred_labels</l></div></div></unit>');
+        $by_work_type[$q->get('ca_occurrences.workType', ['convertCodesToDisplayText' => true])][$q->get('ca_occurrences.preferred_labels.name').$q->get('ca_occurrences.occurrence_id')] =  $q->getWithTemplate('<unit delimiter=" "><div class="worklist"><l>^ca_occurrences.preferred_labels</l></div></div></unit>');
     }
     foreach($by_work_type as $type => $works) {
+        ksort($works);
         print "<div class='meta'><h6>{$type}</h6>".join(" ", $works)."</div>\n";
     }
 ?>			

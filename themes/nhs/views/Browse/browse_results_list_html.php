@@ -64,8 +64,8 @@
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
-		$vn_col_span = 4;
-		$vn_col_span_sm = 4;
+		$vn_col_span = 6;
+		$vn_col_span_sm = 6;
 		$vn_col_span_xs = 12;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
@@ -110,9 +110,22 @@
 				if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
-				
+					$vs_date = "";
+					$vs_collection_path = "";
+					if($vs_table == 'ca_collections'){
+						$vs_date = $qr_res->get("ca_collections.collection_date2.collection_date_inclusive", array("delimiter" => ", "));
+						if($vs_date){
+							$vs_date = ", ".$vs_date;
+						}
+						if($qr_res->get("ca_collections.parent_id")){
+							$vs_collection_path = "<br/>".$qr_res->get("ca_collections.type_id", array("convertCodesToDisplayText" => 1));
+							$vs_parent_collection_name = array_shift($qr_res->get('ca_collections.hierarchy.preferred_labels', array("returnAsArray" => true)));
+							$vn_parent_collection_id = array_shift($qr_res->get('ca_collections.hierarchy.collection_id', array("returnAsArray" => true)));
+							$vs_collection_path = "<div class='collectionPathResults'>Part of: ".caDetailLink($this->request, $vs_parent_collection_name, '', 'ca_collections', $vn_parent_collection_id)."</div>";
+						}
+					}
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels").$vs_date, '', $vs_table, $vn_id);
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
@@ -153,15 +166,15 @@
 		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
+				<div class='bResultListItemContent'>".(($vs_table == 'ca_objects') ? "<div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>" : "")."
 					<div class='bResultListItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_description}
+						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_collection_path}{$vs_description}
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
-				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
+				".(($vs_table == 'ca_objects') ? "<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
 					<hr>
 					{$vs_expanded_info}{$vs_add_to_set_link}
-				</div><!-- bResultListItemExpandedInfo -->
+				</div><!-- bResultListItemExpandedInfo -->" : "")."
 			</div><!-- end bResultListItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');
@@ -172,12 +185,14 @@
 			}
 			
 			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
+?>
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					if($("#bSetsSelectMultipleButton").is(":visible")){
+						$(".bSetsSelectMultiple").show();
+					}
+				});
+			</script>
+<?php
 		}
 ?>
-<script type="text/javascript">
-	jQuery(document).ready(function() {
-		if($("#bSetsSelectMultipleButton").is(":visible")){
-			$(".bSetsSelectMultiple").show();
-		}
-	});
-</script>

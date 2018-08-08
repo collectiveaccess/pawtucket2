@@ -5,6 +5,8 @@
 
 <?php			
 print "<p>Enter your search terms in the fields below. Hover over a field to see search tips.</p>";
+print "<p>Click here for the ".caNavLink($this->request, _t("Manuscript Collections Advanced Search"), "", "Search", "Advanced", "collections").".</p>";
+
 ?>
 
 {{{form}}}
@@ -30,7 +32,7 @@ print "<p>Enter your search terms in the fields below. Hover over a field to see
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search object identifiers.">Object number</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search object identifiers.">Object Number</span>
 			{{{ca_objects.idno%width=210px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
@@ -53,6 +55,7 @@ print "<p>Enter your search terms in the fields below. Hover over a field to see
 	</div>
 	<br style="clear: both;"/>
 	<div class='advancedFormSubmit'>
+		<input type="hidden" name="view" value="images">
 		<span class='btn btn-default'>{{{reset%label=Reset}}}</span>
 		<span class='btn btn-default' style="margin-left: 20px;">{{{submit%label=Search}}}</span>
 	</div>

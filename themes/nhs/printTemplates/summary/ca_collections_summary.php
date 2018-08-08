@@ -78,7 +78,7 @@
 		<div class="clear"></div>
 	</div>
 <?php
-	if($vs_tmp = $t_item->get("ca_entities.preferred_labels.displayname", array("checkAcces" => $va_access_values, "restrictToRelationshipTypes" => array("creator"), "delimiter" => ", "))){
+	if($vs_tmp = $t_item->get("ca_entities.preferred_labels.displayname", array("checkAcces" => $va_access_values, "restrictToRelationshipTypes" => array("creator"), "delimiter" => "<br/>"))){
 ?>
 	<div class="unit">
 		<div class="unitLabel">Creator</div>
@@ -146,7 +146,7 @@
 	</div>
 <?php
 	}
-	if($vs_tmp = $t_item->get("ca_collections.arrangement")){
+	if($vs_tmp = caConvertLineBreaks($t_item->get("ca_collections.arrangement"))){
 ?>
 	<div class="sectionLabel">
 		Organization
@@ -224,20 +224,28 @@
 	<div class="sectionLabel">
 		Access and Use
 	</div>
+<?php
+	if($vs_tmp = $t_item->get("ca_collections.physical_access")){
+?>
 	<div class="unit">
-		<div class="unitLabel">Access</div>
-		<div class="unitContent">This collection is open for research. It is housed on site at the Newport Historical Society. Researchers can be seen by appointment during operating hours at the Newport Historical Society.</div>
+		<div class="unitLabel">Physical Access</div>
+		<div class="unitContent"><?php print $vs_tmp; ?></div>
 		<div class="clear"></div>
 	</div>
+<?php
+	}
+	if($vs_tmp = caConvertLineBreaks($t_item->get("ca_collections.reproduction_and_use"))){
+?>
 	<div class="unit">
 		<div class="unitLabel">Reproduction & Use</div>
 		<div class="unitContent">
-			The Newport Historical Society’s special collections and archives may be photographed or photocopied by NHS staff only. We provide digital prints or scans of images and items from our collections for educational, commercial or personal use. 
-			<br/><br/>Purchase of digital prints and scans does not imply permission to reproduce or publish these materials. Images from the NHS collections may be reproduced only with written consent of the Newport Historical Society. Permission is granted for one time, non-exclusive use only. All subsequent and additional use requests must be made in writing. 
-			<br/><br/>We reserve the right to restrict photography of copyrighted, culturally sensitive or physically endangered materials.
+			<?php print $vs_tmp; ?>
 		</div>
 		<div class="clear"></div>
 	</div>
+<?php
+	}
+?>
 	<div class="unit">
 		<div class="unitLabel">Citation</div>
 		<div class="unitContent"><?php print $t_item->getLabelForDisplay().", ".$t_item->get("ca_collections.idno"); ?>, Newport Historical Society, Newport, Rhode Island</div>
@@ -248,7 +256,7 @@
 		Administrative Information
 	</div>
 <?php
-	if($vs_tmp = $t_item->getWithTemplate("<unit delimiter='<br/>'><ifdef code='ca_collections.cataloguer.cataloguers'>^ca_collections.cataloguer.cataloguers</ifdef><ifdef code='ca_collections.cataloguer.dates_catalogued'>, ^ca_collections.cataloguer.dates_catalogued</ifdef></unit>")){
+	if($vs_tmp = $t_item->getWithTemplate("<unit delimiter='; and '><ifdef code='ca_collections.cataloguer.cataloguers'>^ca_collections.cataloguer.cataloguers</ifdef><ifdef code='ca_collections.cataloguer.dates_catalogued'>, ^ca_collections.cataloguer.dates_catalogued</ifdef></unit>")){
 ?>	
 	<div class="unit">
 		<div class="unitLabel">Processor</div>
@@ -275,7 +283,7 @@
 <?php
 	}
 	$vs_tmp = $t_item->get("ca_collections.credit_line");
-	$vs_tmp2 = $t_item->getWithTemplate("<unit relativeTo='ca_object_lots' restricToTypes='accession'>^ca_object_lots.preferred_labels (^ca_object_lots.idno_stub)");
+	$vs_tmp2 = $t_item->getWithTemplate("<unit relativeTo='ca_object_lots' restrictToTypes='accession'>^ca_object_lots.idno_stub");
 	
 	if($vs_tmp || $vs_tmp2){
 ?>

@@ -352,6 +352,9 @@ a:hover .frontIconButton{
 .front .tl-timeline h2{
 	padding-top:15px !Important;
 }
+.front .tl-timemarker-content-small h2{
+	padding-top:0px !Important;
+}
 
 .tl-media-content img{
 	max-height:auto !important;

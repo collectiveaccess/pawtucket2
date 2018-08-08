@@ -212,7 +212,7 @@ ini_set("display_errors", "on");
 						print "<div class='unit'><h6>Geographic Names</h6>".$vs_geo_names."</div>";
 					}					
 				}
-				print "<HR/><div class='unit'><h5>Contact the ".caDetailLink($this->request, 'contributing institution', '', 'ca_entities', 13845)." for more information</h5></div><HR/>";
+				print "<HR/><div class='unit'><h5>Contact the ".caDetailLink($this->request, caGetListItemByIDForDisplay($vn_source_id = $t_object->get('source_id')), '', 'ca_entities', ca_entities::getIDForIdno(caGetListItemIdno($vn_source_id)))." for more information</h5></div><HR/>";
 
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {

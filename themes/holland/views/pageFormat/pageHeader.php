@@ -76,7 +76,6 @@
 	}
 ?>
     
-    <!--<link href="https://fonts.googleapis.com/css?family=Playfair+Display:400,700|Roboto+Condensed|Roboto:400,700" rel="stylesheet">-->
 </head>
 <body class="initial">
 	<div class="topbar">
@@ -146,11 +145,19 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search">
+							<input type="text" class="form-control" placeholder="Search" name="search" id="headerSearchInput">
 						</div>
-						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 				</form>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('#headerSearchButton').prop('disabled',true);
+		$('#headerSearchInput').keyup(function(){
+			$('#headerSearchButton').prop('disabled', this.value == "" ? true : false);     
+		})
+	});
+</script>
 				<div class='menuContainer'><ul class="nav navbar-nav navbar-right menuItems">
 					<li><a href="http://www.hollandmuseum.org" target="_blank">Museum Home</a></li>
 					<li <?php print ($this->request->getController() == "Explore") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Explore"), "", "", "Explore", "Index"); ?></li>
