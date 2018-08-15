@@ -713,3 +713,5 @@ fieldset[disabled] .btn-default.active {
   background-color: #ffffff;
   border-color: #cccccc;
 }
+
+.pubListing h2 { height:3.6em; overflow:hidden }
