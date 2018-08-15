@@ -244,7 +244,7 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 		});
 			
 		var bounds = g.getBounds();
-		if (bounds.isValid()) { map.fitBounds(bounds); }
+		if (bounds.isValid()) { map.fitBounds(bounds)".(strlen($vn_zoom_level) ? ".setZoom({$vn_zoom_level})" : "")."; }
 </script>\n"; 
 				break;
 			# ---------------------------------

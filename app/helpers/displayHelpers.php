@@ -2935,8 +2935,8 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	function caObjectsDisplayDownloadLink($po_request, $pn_object_id = null) {
 		$o_config = Configuration::load();
 		$vn_can_download = false;
-		if($o_config->get('allow_ca_objects_representation_download')){
-			switch($o_config->get('allow_ca_objects_representation_download')){
+		if($vs_allow = $o_config->get(['allowObjectRepresentationDownload', 'allow_ca_objects_representation_download'])){
+			switch($vs_allow){
 				case "anyone":
 					$vn_can_download = true;
 				    break;
@@ -2953,18 +2953,21 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 					}
 				    break;
 				# ------------------------------------------
+				default:
 				case "never":
 				    $vn_can_download = false;
 				    break;
 				# ------------------------------------------
 			}
 		}
-		if($pn_object_id && $vn_can_download && is_array($o_config->get('allow_ca_objects_representation_download_types')) && sizeof($o_config->get('allow_ca_objects_representation_download_types'))){
+		
+		$va_types = $o_config->get(['restrictObjectRepresentationDownloadToObjectTypes', 'allow_ca_objects_representation_download_types']);
+		if($pn_object_id && $vn_can_download && is_array() && sizeof($va_types)){
 			# --- see if current object's type is in the confirgured array
 			$t_object = new ca_objects($pn_object_id);
 			$t_list_item = new ca_list_items($t_object->get("type_id"));
 			$va_object_type_code = $t_list_item->get("idno");
-			if(!in_array($va_object_type_code, $o_config->get('allow_ca_objects_representation_download_types'))){
+			if(!in_array($va_object_type_code, $va_types)){
 				$vn_can_download = false;
 			}
 		}
