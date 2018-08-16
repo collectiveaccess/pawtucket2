@@ -164,7 +164,7 @@
 					}else{
 ?>
 					<li <?php print ($this->request->getAction() == "Lightbox") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("My Sets"), "", "", "Lightbox", "Index"); ?></li>
-					<li <?php print ($this->request->getAction() == "occurrences") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse Timeline"), "", "", "Browse", "occurrences"); ?></li>
+					<li <?php print (strtolower($this->request->getAction() == "occurrences")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse Timeline"), "", "", "Browse", "occurrences"); ?></li>
 <?php
 					}
 ?>

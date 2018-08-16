@@ -213,6 +213,7 @@ div.browseFacetItem a:hover {
 }
 .browse .btn, .sets .btn {
     background-color: #0096db;
+    font-size:10px;
 }
 ul.about{
 	padding-left:15px;
@@ -513,4 +514,60 @@ ul.about li i{
 .caFormOverlayLogin a{
 	color:#666;
 	font-size:13px;
+}
+
+a.readmore-js-toggle {
+    color: #0096db;
+}
+
+/* Chronology styles */
+.bChronoGroup{
+	position:relative;
+	max-height:300px;
+	border-bottom:2px solid #EDEDED;
+	overflow:hidden;
+	padding:0px 0px 25px 0px;
+	margin-bottom:25px;
+}
+.bChronoGroup .bChronoLabel{
+	position:absolute;
+	left:0px;
+	top:0px;
+	background: linear-gradient(to right, white, white 40%, transparent);
+	z-index:100;
+	padding-right:50px;
+	height:100%;
+	padding-top:50px;
+}
+.bChronoGroup .bChronoNav{
+	position:absolute;
+	right:0px;
+	top:0px;
+	background: linear-gradient(to left, white, white 40%, transparent);
+	z-index:100;
+	padding-left:50px;
+	height:100%;
+	padding-top:110px;
+}
+.bChronoNav .btn-default span{	
+	color:#FFF!important;
+	font-size:24px;
+}
+.bChronoGroup .bChronoGroupScroll{
+	overflow-x:scroll;
+	padding-left:100px;
+}
+.bChronoGroup .bChronoGroupResults{
+	width:8500px;
+	padding-top:5px;
+}
+.bChronoGroup .bResultItemCol {
+	width:200px;
+	float:left;
+	margin-right:25px;
+}
+.bChronoGroup .bResultItem:hover{
+	margin:0px;
+	min-height:auto;
+	z-index: 1;
 }
