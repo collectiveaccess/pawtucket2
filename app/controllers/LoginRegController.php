@@ -37,7 +37,7 @@
 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
 			parent::__construct($po_request, $po_response, $pa_view_paths);
 
-			if ($po_request->getAppConfig()->get('dont_allow_registration_and_login')) {
+			if ($po_request->getAppConfig()->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
 				throw new ApplicationException('Login/registration not allowed');
 			}
 			caSetPageCSSClasses(array("loginreg"));
@@ -49,7 +49,11 @@
 		}
 		# ------------------------------------------------------
 		function registerForm($t_user = "") {
-			if ($this->request->config->get('dont_allow_registration_and_login')) {
+			if (
+			    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
+			    ||
+			    $this->request->config->get('dontAllowRegistration')
+			) {
 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
@@ -80,7 +84,11 @@
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
 			}
-			if ($this->request->config->get('dont_allow_registration_and_login')) {
+			if (
+			    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
+			    ||
+			    $this->request->config->get('dontAllowRegistration')
+			) {
 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
@@ -112,7 +120,11 @@
                     $this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
                     return;
                 }
-                if ($this->request->config->get('dont_allow_registration_and_login')) {
+                if (
+                    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
+                    ||
+                    $this->request->config->get('dontAllowRegistration')
+                ) {
                     $this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
                     $this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
                     return;
@@ -286,7 +298,11 @@
 				$this->register();
 				return;
 		    }
-			if ($this->request->config->get('dont_allow_registration_and_login')) {
+			if (
+			    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
+			    ||
+			    $this->request->config->get('dontAllowRegistration')
+			) {
 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
