@@ -120,9 +120,9 @@
  			
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
- 				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
+ 				$va_views = array('list' => array(), 'images' => array(), 'chronology' => array(), 'chronology_images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
  			} else {
-				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = array();
+				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = $va_views['chronology_images'] = array();
 			}
 			
 			if (!($ps_view = $this->request->getParameter("view", pString))) {
@@ -132,7 +132,7 @@
  				$ps_view = array_shift(array_keys($va_views));
  			}
  			# --- only set the current view if it's not an export format
- 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx", "timelineData"))){
+ 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx", "timelineData", "chronology_images"))){
  				$this->opo_result_context->setCurrentView($ps_view);
  			}
  			
