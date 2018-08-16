@@ -31,8 +31,8 @@
 					foreach ($va_essence_track_t as $va_key => $va_essence_info) {
 						if ($va_essence_info['essenceTrackFrameRate']) {$vs_track.= "<p>Frame Rate: ".$va_essence_info['essenceTrackFrameRate']."</p>";}
 						if ($va_essence_info['essenceTrackFrameSize']) {$vs_track.= "<p>Frame Size: ".$va_essence_info['essenceTrackFrameSize']."</p>";}
-						if ($va_essence_info['ScanType']) {$vs_track.= "<p>Scan Type: ".$va_essence_info['ScanType']."</p>";}
-						if ($va_essence_info['essenceTrackAspectRatio']) {$vs_track.= "<p>Aspect Ratio: ".$va_essence_info['essenceTrackAspectRatio']."</p>";}
+						#if ($va_essence_info['ScanType']) {$vs_track.= "<p>Scan Type: ".$va_essence_info['ScanType']."</p>";}
+						#if ($va_essence_info['essenceTrackAspectRatio']) {$vs_track.= "<p>Aspect Ratio: ".$va_essence_info['essenceTrackAspectRatio']."</p>";}
 						if (($va_essence_info['essenceTrackDuration'])&&($va_essence_info['essenceTrackDuration'] != "0.0s")) {$vs_track.= "<p>Duration: ".$va_essence_info['essenceTrackDuration']."</p>";}
 						if ($va_essence_info['recorder_model']) {$vs_track.= "<p>Recorder Model: ".$va_essence_info['recorder_model']."</p>";}
 					}
@@ -76,6 +76,7 @@
 	if (is_array($va_occurrence_ids = $t_object->get('ca_occurrences.occurrence_id', array('returnAsArray' => true, 'checkAccess' => $this->getVar('access_values')))) && sizeof($va_occurrence_ids)) {
 		$qr_occ = caMakeSearchResult('ca_occurrences', $va_occurrence_ids);
 		$vs_date = '';
+		$vs_keyword = '';
 		while($qr_occ->nextHit()) {
 			$va_dates = $qr_occ->get('ca_occurrences.workDate', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true));
 			foreach($va_dates as $vn_attr_id => $va_date_t) {
@@ -84,9 +85,14 @@
 					$vs_date .= $va_date['dates_value']." (".$va_date['work_dates_types'].")<br/>";
 				}
 			}
+			if ($va_keywords = $qr_occ->get('ca_list_items.item_id', array('returnAsArray' => true))){
+				foreach ($va_keywords as $va_key => $va_keyword) {
+					$vs_keyword.= "<div>".caNavLink($this->request, caGetListItemByIDForDisplay($va_keyword, true), '', '', 'Browse', 'objects', array('facet' => 'term_facet', 'id' => $va_keyword))."</div>";	
+				}
+			}
 		}
 		
-		if ($vs_date) {
+		if ($vs_date != '') {
 ?>
 		<div>
 			<span class='metaTitle'>Date</span> 
@@ -96,6 +102,16 @@
 		</div>
 <?php
 		}
+		if ($vs_keyword != '') {
+?>
+		<div>
+			<span class='metaTitle'>Keywords</span> 
+<?php
+			print "<span class='meta'>".$vs_keyword."</span>";
+?>
+		</div>
+<?php
+		}		
 	}
 ?>
 			

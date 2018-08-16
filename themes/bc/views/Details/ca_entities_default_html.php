@@ -4,7 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	
-	$vs_link = $t_item->get('ca_entities.external_link.url_entry');
+	$vs_link = array_shift($t_item->get('ca_entities.external_link.url_entry', ['returnAsArray' => true]));
 	$vs_type = $t_item->get('ca_entities.type_id', array('convertCodesToDisplayText' => true));
 	$vs_detail_facet = "";
 	if(strtolower($vs_type) == "institution"){
@@ -199,6 +199,12 @@ if ($vs_type == "Member Institution") {
 							print "<div class='unit'>".$vs_address."</div>";
 						}
 					}
+					if ($vs_email = $t_item->get('ca_entities.email')) {
+						print "<div class='unit'><span class='data'>Email</span><span class='meta'><a href='mailto:".$vs_email."'>".$vs_email."</a></span></div>";
+					}	 
+					if ($vs_telephone = $t_item->get('ca_entities.telephone')) { 
+						print "<div class='unit'><span class='data'>Telephone</span><span class='meta'>".$vs_telephone."</span></div>";
+					}									
 					if ($vs_life_dates = $t_item->get('ca_entities.life_dates')) {
 						print "<div class='unit'><span class='data'>Life Dates</span><span class='meta'>".$vs_life_dates."</span></div>";
 					}
@@ -248,16 +254,16 @@ if ($vs_type == "Member Institution") {
 ?>			
 			<div class='row cats'>
 				<div class='col-sm-1'></div>
-				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Architecture"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'architecture.png'), '', '', 'Browse', 'objects', array('facet' => 'topic_facet', 'id' => 538)); ?></span></div>
-				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Art"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'art.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/539'); ?></span></div>
-				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Communications and Technology"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'communication.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/540'); ?></span></div>
-				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Agriculture and Fishing"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'agriculture.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/541'); ?></span></div>
-				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Clothing and Accessories"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'clothing.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/542'); ?></span></div>
-				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Household Life"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'household.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/543'); ?></span></div>
-				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Industry and Manufacturing"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'industry.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/544'); ?></span></div>
-				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Military"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'military.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/545'); ?></span></div>
-				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Recreation"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'recreation.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/546'); ?></span></div>
-				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Transportation"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'transportation.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/547'); ?></span></div>
+				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Architecture"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'architecture.png'), '', '', 'Browse', 'objects', array('facet' => 'topic_facet', 'id' => 542)); ?></span></div>
+				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Art"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'art.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/543'); ?></span></div>
+				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Communications and Technology"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'communication.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/544'); ?></span></div>
+				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Agriculture and Fishing"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'agriculture.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/545'); ?></span></div>
+				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Clothing and Accessories"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'clothing.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/546'); ?></span></div>
+				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Household Life"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'household.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/547'); ?></span></div>
+				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Industry and Manufacturing"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'industry.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/548'); ?></span></div>
+				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Military"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'military.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/549'); ?></span></div>
+				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Recreation"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'recreation.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/550'); ?></span></div>
+				<div class='col-sm-1'><span class='category' data-toggle="popover" data-trigger="hover" data-content="Transportation"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'transportation.png'), '', '', 'Browse', 'objects/facet/topic_facet/id/551'); ?></span></div>
 				<div class='col-sm-1'></div>
 			</div>
 			<script>
@@ -295,7 +301,7 @@ if ($vs_type == "Member Institution") {
 							searchTerm = encodeURIComponent(" AND " + searchTerm);
 						}
 						jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', null, array('dontURLEncodeParameters' => true)); ?>/search/entity_id:<?php print $t_item->get('ca_entities.entity_id'); ?>" + searchTerm, function() {
-							jQuery('#browseResultsContainer').jscroll.destroy();
+							jQuery('#browseResultsContainer').removeData('jscroll').jscroll.destroy();
 							jQuery('#browseResultsContainer').jscroll({
 								autoTrigger: true,
 								loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

@@ -86,7 +86,7 @@
 					$va_ids[] = $qr_res->get($vs_pk);
 					$vn_c++;
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
@@ -128,17 +128,28 @@
 							}
 						}
 						$vs_info = null;
-						if ($va_artist = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes'=> array('artist')))) {
-							$vs_info.= "<p><b>".$va_artist."</b></p>";
-						}	
-						$vs_info.=  $vs_label_detail_link;				
-						if ($va_date = $qr_res->get('ca_objects.date')) {
-							$vs_info.= ", ".$va_date;
-						}
+						if ($qr_res->get("ca_objects.type_id", array('convertCodesToDisplayText' => true)) == "Publication"){
+							$vs_info.=  "<b>".$vs_label_detail_link."</b>";
+							if ($va_artist = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes'=> array('artist'), 'delimiter' => ', '))) {
+								$vs_info.= "<p>".(strlen($va_artist) > 100 ? substr($va_artist, 0, 97)."..." : $va_artist)."</p>";
+							}
+						} else {	
+							if ($va_artist = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes'=> array('artist'), 'delimiter' => ', '))) {
+								$vs_info.= "<p><b>".$va_artist."</b></p>";
+							}	
+							$vs_info.=  $vs_label_detail_link;				
+							if ($va_date = $qr_res->get('ca_objects.date')) {
+								$vs_info.= ", ".$va_date;
+							}
 
-						if ($va_media = $qr_res->get('ca_objects.medium', array('convertCodesToDisplayText' => true))) {
-							$vs_info.= "<p>".$va_media."</p>";
-						}						
+							if ($va_media = $qr_res->get('ca_objects.medium', array('convertCodesToDisplayText' => true, 'useSingular' => true))) {
+								$vs_info.= "<p>".$va_media."</p>";
+							}
+							$vs_add_to_set_link = "";
+							if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+								$vs_add_to_set_link = "<a href='#' class='lightBoxLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+							}	
+						}					
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 					} else {
 					
@@ -151,10 +162,7 @@
 						}
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 					}
-					$vs_add_to_set_link = "";
-					if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-						$vs_add_to_set_link = "<a href='#' class='lightBoxLink' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
-					}
+
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 					$vs_result_output = "

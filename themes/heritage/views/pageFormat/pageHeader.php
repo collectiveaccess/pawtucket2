@@ -151,10 +151,15 @@
 	}
 ?>
 				<ul class="nav navbar-nav menuItems">
+<?php if ($this->request->isLoggedIn()) { ?>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+<?php } ?>
 					<?php print ($this->request->isLoggedIn()) ? $this->render("pageFormat/browseMenu.php") : ""; ?>	
 					<!--<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>-->
+
+<?php if ($this->request->isLoggedIn()) { ?>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features from the Archive"), "", "", "Gallery", "Index"); ?></li>
+<?php } ?>
 <?php
 					if(!$this->request->isLoggedIn()){
 ?>

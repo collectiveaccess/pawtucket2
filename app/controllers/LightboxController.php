@@ -154,7 +154,7 @@
  			}
  			$this->view->setVar("activity", $va_set_change_log);
 
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name));
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name));
  			
  			$this->render(caGetOption("view", $pa_options, "Lightbox/set_list_html.php"));
  		}
@@ -303,7 +303,7 @@
 			
 			$va_browse_options = array('checkAccess' => $this->opa_access_values, 'no_cache' => true);
 
-            $o_browse->execute(array_merge($va_browse_options, array('strictPhraseSearching' => true)));
+            $o_browse->execute(array_merge($va_browse_options, array('strictPhraseSearching' => true, 'checkAccess' => $this->opa_access_values, 'request' => $this->request)));
 
 		if ($ps_view !== 'timelineData') {
 			//
@@ -313,7 +313,7 @@
 				$o_browse->setFacetGroup($vs_facet_group);
 			}
 			$va_available_facet_list = $this->opo_config->get("availableFacets");
-			$va_facets = $o_browse->getInfoForAvailableFacets();
+			$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request,]);
 			if(is_array($va_available_facet_list) && sizeof($va_available_facet_list)) {
 				foreach($va_facets as $vs_facet_name => $va_facet_info) {
 					if (!in_array($vs_facet_name, $va_available_facet_list)) {
@@ -323,7 +323,7 @@
 			} 
 		
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
-				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array("checkAccess" => $this->opa_access_values));
+				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, ['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
 			}
 		
 			$this->view->setVar('facets', $va_facets);
@@ -376,7 +376,7 @@
 			
 			$o_context->setParameter('key', $vs_key);
 			
-			if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
+			if (($vn_key_start = (int)$vn_start - 1000) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
 			$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 			//if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
@@ -395,7 +395,7 @@
 				$this->view->setVar('map', $o_map->render('HTML', array()));
 			}
  			
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".ucfirst($this->ops_lightbox_display_name).": ".$t_set->getLabelForDisplay());
+            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name).$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
  			switch($ps_view) {
  				case 'xlsx':
  				case 'pptx':
@@ -476,7 +476,7 @@
  			$vb_is_insert = false;
  			if(sizeof($va_errors) == 0){
 				$t_set->setMode(ACCESS_WRITE);
-				if(!is_null($vn_access = $this->request->getParameter('access', pInteger))) {
+				if(strlen($vn_access = $this->request->getParameter('access', pInteger))) {
 					$t_set->set('access', $vn_access);
 				} else {
 					$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
@@ -1168,7 +1168,6 @@
 				$vn_object_table_num = $t_object->tableNum();
 				$t_set->setMode(ACCESS_WRITE);
 				$t_set->set('access', (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1);
-				#$t_set->set('access', $this->request->getParameter('access', pInteger));
 				$t_set->set('table_num', $vn_object_table_num);
 				$t_set->set('type_id', $vn_set_type_user);
 				$t_set->set('user_id', $this->request->getUserID());
@@ -1226,6 +1225,7 @@
 							$va_object_ids = $o_context->getResultList();
 						} elseif($pn_object_id) {
 							$va_object_ids = [$pn_object_id];
+							$this->view->setVar("row_id", $pn_object_id);
 						}else{
 							$va_object_ids = explode(";", $ps_object_ids);
 						}

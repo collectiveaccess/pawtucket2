@@ -97,12 +97,15 @@
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
             if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
-				var offset = jQuery('#bRefine').height(jQuery(window).height() - 30).offset();   // 0px top + (2 * 15px padding) = 30px
+				var offset = jQuery('#bRefine').height(jQuery(window).height() - 100).offset();   // 0px top + (2 * 15px padding) + 70 fixed header = 100px
 				var panelWidth = jQuery('#bRefine').width();
 				jQuery(window).scroll(function () {
 					var scrollTop = $(window).scrollTop();
+					var footerOffset = jQuery('#stickyFooter').offset();
+					var footerTopFromWindow = footerOffset.top - scrollTop;
+					console.log(footerOffset.top - scrollTop);
 					// check the visible top of the browser
-					if (offset.top<scrollTop) {
+					if (offset.top<scrollTop && footerTopFromWindow>jQuery('#bRefine').height()) {
 						jQuery('#bRefine').addClass('fixed');
 						jQuery('#bRefine').width(panelWidth);
 					} else {

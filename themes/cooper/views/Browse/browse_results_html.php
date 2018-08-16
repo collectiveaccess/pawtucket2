@@ -129,7 +129,7 @@ if (!$vb_ajax) {	// !ajax
 					$(this).children("span").toggleClass("grey");
 				});
 				//if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
-					var offset = jQuery('#bRefine').height(jQuery(window).height() - 110).offset();   // 0px top + (2 * 15px padding) + 80 (fixed header) = 110px
+					var offset = jQuery('#bRefine').height(jQuery(window).height() - 190).offset();   // 0px top + (2 * 15px padding) + 80 (fixed header) + 80 (fixed footer) = 190px
 					var panelWidth = jQuery('#bRefine').width();
 					jQuery(window).scroll(function () {
 						var scrollTop = $(window).scrollTop();

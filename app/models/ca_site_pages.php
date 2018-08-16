@@ -318,7 +318,12 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 	 * @return string Returns null if page cannot be rendered
 	 */
 	public static function renderPageForPath($po_controller, $ps_path, $pa_options=null) {
-		if (($t_page = ca_site_pages::find(['path' => $ps_path], ['returnAs' => 'firstModelInstance', 'checkAccess' => caGetOption('checkAccess', $pa_options, null)])) && ($t_template = ca_site_templates::find(['template_id' => $t_page->get('template_id')], ['returnAs' => 'firstModelInstance']))) {
+
+		if (
+			($t_page = ca_site_pages::find(['path' => $ps_path], ['returnAs' => 'firstModelInstance', 'checkAccess' => caGetOption('checkAccess', $pa_options, null)])) && ($t_template = ca_site_templates::find(['template_id' => $t_page->get('template_id')], ['returnAs' => 'firstModelInstance']))
+			||
+			($t_page = ca_site_pages::find(['path' => $ps_path."/"], ['returnAs' => 'firstModelInstance', 'checkAccess' => caGetOption('checkAccess', $pa_options, null)])) && ($t_template = ca_site_templates::find(['template_id' => $t_page->get('template_id')], ['returnAs' => 'firstModelInstance']))
+		) {
 			$o_content_view = new View($po_controller->request, $po_controller->request->getViewsDirectoryPath());
 	
 			if (is_array($va_content = caUnserializeForDatabase($t_page->get('content')))) {
@@ -447,6 +452,8 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 		$o_view = new View($po_request, $po_request->getViewsDirectoryPath().'/bundles/');
 		
 		if(!is_array($pa_options)) { $pa_options = array(); }
+		
+        $o_view->setVar('lookup_urls', caGetLookupUrlsForTables($po_request));
 		
 		$o_view->setVar('id_prefix', $ps_form_name);
 		$o_view->setVar('placement_code', $ps_placement_code);		// pass placement code

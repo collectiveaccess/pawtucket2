@@ -30,22 +30,42 @@
  * ----------------------------------------------------------------------
  */
  
+ # --- oral history list
+ 
  	$va_lists = $this->getVar('lists');
  	$va_type_info = $this->getVar('typeInfo');
  	$va_listing_info = $this->getVar('listingInfo');
+ 	$va_access_values =		caGetUserAccessValues($this->request);
  	
  
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		
 		print "<h4>{$va_listing_info['displayName']}</h4>\n";
- 		print "<p style='clear:both;'>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus convallis, tortor at varius ultricies, lacus neque imperdiet orci, id bibendum mi lorem ac quam. Pellentesque iaculis eleifend faucibus. Aliquam mauris justo, mollis sed ante in, lacinia condimentum diam. Duis et rhoncus ligula. Vivamus arcu leo, pellentesque ut neque et, viverra dapibus ante. Quisque ac ultricies sapien. Sed eget dui elementum, dictum lorem sit amet, ullamcorper lacus. Integer ut lectus pharetra, eleifend risus a, luctus urna. Fusce leo lacus, rutrum vel tempor vel, volutpat eget ipsum. Curabitur maximus maximus eros, ac finibus ligula volutpat sed. Nulla porttitor, sem nec lacinia pharetra, diam mi interdum velit, in semper orci magna eu lacus. Praesent luctus porta dui, non maximus leo sodales at. Quisque congue, nisl sed venenatis ullamcorper, augue sapien blandit diam, eu dictum metus erat non mi. Aenean neque felis, tristique at ligula id, vestibulum auctor odio.</p>";
-		
+ 		#print "<p style='clear:both;'>The Storm King Art Center Oral History Program includes interviews with artists and institutional leaders integral to the evolution of Storm King since its founding in 1960. Artist oral histories focus on the role of Storm King in the career of the artist, as well as on the artists’ work at Storm King. Oral histories with institutional leaders explore personal perspectives on Storm King’s growth with regard to movements in contemporary art, museum education, and sustainability. Short films created from excerpts of each oral history offer an entry point to the full interview transcripts, which are presented here alongside some of the media from Storm King’s Archives that illustrate the development of artworks, exhibitions, infrastructure, and programming.</p>";
+?>
+		<p style='clear:both;'>{{{oral_history_text}}}</p>
+<?php		
 		while($qr_list->nextHit()) {
-			print "<div class='listItem row'>";
-			print "<div class='listImage col-sm-3'>".caNavLink($this->request, $qr_list->get('ca_object_representations.media.iconlarge'), '', '', 'Detail', 'objects/'.$qr_list->get('ca_objects.object_id'))."</div>";
-			print "<div class='col-sm-9'>".$qr_list->getWithTemplate('<l>^ca_objects.preferred_labels</l><ifcount min="1" code="ca_entities.preferred_labels" relativeTo="ca_entities" restrictToRelationshipTypes="interviewee"><unit relativeTo="ca_entities" restrictToRelationshipTypes="interviewee"><div>^ca_entities.preferred_labels</div></unit></ifcount><ifdef code="ca_objects.object_date"><div>^ca_objects.object_date</div></ifdef><ifdef code="ca_objects.description"><div class="description">^ca_objects.description</div></ifdef>')."</div>";
-			print "</div>\n";	
+			if ( $vn_i == 0) { print "<div class='row'>"; } 
+			$vn_object_id = $qr_list->get('ca_objects.object_id');
+			$t_object = new ca_objects($vn_object_id);
+			$vs_icons = "";
+			print "<div class='col-sm-6'><div class='collectionTile'>";
+			if ($qr_list->get('ca_object_representations.media.widepreviewlarge', array('checkAccess' => $va_access_values))) {
+				print "<div class='colImage'><div class='text-center bResultItemImg'>".caDetailLink($this->request, $qr_list->get('ca_object_representations.media.widepreviewlarge', array('checkAccess' => $va_access_values)), '', 'ca_objects', $qr_list->get('ca_objects.object_id'), null, array('title' => $qr_list->get("ca_objects.preferred_labels")))."</div></div>";
+			} else {
+				print "<div class='relImg'><div class='text-center bResultItemImg'><div class='bSimplePlaceholder'>".caDetailLink($this->request, caGetThemeGraphic($this->request, 'spacer.png'), '', 'ca_objects', $qr_list->get('ca_objects.object_id'), null, array('title' => $qr_list->get("ca_objects.preferred_labels")))."</div></div></div>";
+			}			
+			print "</div></div>";
+			$vn_i++;
+			if ($vn_i == 2) {
+				print "</div><!-- end row -->\n";
+				$vn_i = 0;
+			}
+		}
+		if (($vn_i < 2) && ($vn_i != 0) ) {
+			print "</div><!-- end row -->\n";
 		}
 	}
 ?>

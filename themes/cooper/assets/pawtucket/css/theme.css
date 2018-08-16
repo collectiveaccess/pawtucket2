@@ -399,15 +399,20 @@ body.initial .navbar-form {
 }
 /*@media (min-width: 768px) and (max-width: 1200px) {*/
 @media (min-width: 768px) {
-	.frontTop H1, .frontTop p{
+	.frontTop H1, .frontTop H2, .frontTop p{
 		padding-left:40px;
 		padding-right:30px;
 	}
 }
 .frontTop H1{
 	font-size:45px;
-	text-transform:none;
+	text-transform:uppercase;
 	padding-top:60px;	
+}
+.frontTop H2{
+	font-size:25px;
+	text-transform:none;
+	color:#FFFFFF;	
 }
 .frontTopSlideCaption{
 	font-family:gotham;
@@ -514,10 +519,13 @@ body.initial .navbar-form {
 .detail{
 	color: #000;
 }
+.detail a {
+    color: #000;
+}
 .detail .detailImages{
 	margin-bottom:50px;
 }
-.detail .detailImages img{
+.detail .detailImagesThumbs img{
 	width:100%;
 	height:auto;
 	cursor: pointer;
@@ -528,6 +536,27 @@ body.initial .navbar-form {
 }
 .detail .detailImagesMain{
 	display:none;
+	height:630px;
+	text-align:center;
+}
+.detailImagesMain img{
+	width:600px;
+	height:600px;
+	object-fit:contain;
+}
+/*
+.detailImagesMain img.horizontal{
+	width:100%;
+	height:auto;
+}
+.detail .detailImagesMain img.vertical{
+	width:auto;
+	height:100%;
+}
+*/
+.detailCaption{
+	padding-top:3px;
+	text-align:right;
 }
 .detail H6{
 	font-weight:bold;
@@ -627,6 +656,7 @@ body.initial .navbar-form {
 	font-size:22px;
 	color:#000;
 	line-height:1.1em;
+	text-transform:uppercase;
 }
 .listingSubtitle, .listingSubtitle a{
 	font-family: 'Gotham-medium';
@@ -682,6 +712,11 @@ body.initial .navbar-form {
 		margin-top:0px;
 	} 
 }
+#bRefine a {
+    color: #000;
+    font-size: 15px;
+    line-height: 146%;
+}
 .bRefineFacet{
     padding-bottom:15px;
     padding-top: 20px;
@@ -699,16 +734,16 @@ body.initial .navbar-form {
 }
 .bRefineFacet > div{
 	display:none;
+	margin-top:15px !important;
+	margin-bottom:15px !important;
 }
 .bRefineFacet > div a span{
 	color: #939598;
 	float:right;
 	font-family: 'Gotham-medium';
 }
-#bRefine a {
-    color: #000;
-    font-size: 15px;
-    line-height: 146%;
+.bRefineFacet > div a, .bRefineFacet > div a span{
+	line-height:1.2em !important;
 }
 .browse .btn, .sets .btn {
     background-color: #000;
@@ -803,4 +838,9 @@ H1.courseProjects{
 }
 H1.courseProjects .grey{
 	font-size:15px;
+}
+.seeAll{
+	margin-right:15px;
+	float:right;
+	overflow:visible;
 }

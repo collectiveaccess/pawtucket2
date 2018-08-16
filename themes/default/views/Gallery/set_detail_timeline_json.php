@@ -35,8 +35,10 @@ $t_set 							= $this->getVar("set");
 $va_views						= $this->getVar('views');
 $vs_current_view				= $this->getVar('view');
 $vs_set_description				= $this->getVar('description');
+$vs_table						= $this->getVar('table');
 
-$va_view_info 					= $va_views[$vs_current_view];
+$va_view_info 					= $va_views[$vs_current_view][$vs_table];
+$va_access_values = caGetUserAccessValues($this->request);
 
 // title slide
 $va_data = [
@@ -71,8 +73,8 @@ while($qr_res->nextHit()) {
 			'text' => $qr_res->getWithTemplate($va_view_info['display']['description_template']),
 		],
 		'media' => [
-			'url' => $qr_res->getWithTemplate($va_view_info['display']['image'], array('returnURL' => true)),
-			'thumbnail' => $qr_res->getWithTemplate($va_view_info['display']['icon'], array('returnURL' => true)),
+			'url' => $qr_res->getWithTemplate($va_view_info['display']['image'], array('returnURL' => true, 'checkAccess' => $va_access_values)),
+			'thumbnail' => $qr_res->getWithTemplate($va_view_info['display']['icon'], array('returnURL' => true, 'checkAccess' => $va_access_values)),
 			'credit' => $qr_res->getWithTemplate($va_view_info['display']['credit_template']),
 			'caption' => $qr_res->getWithTemplate($va_view_info['display']['caption_template'])
 		],

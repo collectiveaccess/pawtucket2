@@ -67,7 +67,7 @@
  				// invalid listing type – throw error
  				throw new ApplicationException("Invalid listing type");
  			}
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".$va_listing_info["displayName"]);
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$va_listing_info["displayName"]);
  			
  			$o_dm = Datamodel::load();
  		
@@ -149,16 +149,18 @@
  			}else{
  				$vb_sort_changed = true;
  			}
+ 			$va_sort_direction = caGetOption('sortDirection', $va_listing_info, null);
  			if($vb_sort_changed){
-				# --- set the default sortDirection if available
-				$va_sort_direction = caGetOption('sortDirection', $va_listing_info, null);
+ 				# --- set the default sortDirection if available
 				if($ps_sort_direction = $va_sort_direction[$ps_sort]){
 					$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
 				} 			
  			}
   			if (!($ps_sort_direction = $this->request->getParameter("direction", pString))) {
  				if (!($ps_sort_direction = $this->opo_result_context->getCurrentSortDirection())) {
- 					$ps_sort_direction = 'asc';
+ 					if(!($ps_sort_direction = $va_sort_direction[$ps_sort])){
+						$ps_sort_direction = 'asc';
+					}
  				}
  			}
  			

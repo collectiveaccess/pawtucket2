@@ -106,7 +106,7 @@
 					}
 				}
 			}			
-			print "<h3>Type</h3><p>".caNavLink($this->request, unicode_ucfirst($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))), "", "", "Browse", "objects/facet/type_facet/id/".$t_object->get('ca_objects.type_id'))."</p>";
+			print "<h3>Type</h3><p>".caNavLink($this->request, caUcFirstUTF8Safe($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))), "", "", "Browse", "objects/facet/type_facet/id/".$t_object->get('ca_objects.type_id'))."</p>";
 			if($vs_artType = $t_object->get('ca_objects.artType', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))){
 				if ($vs_artType != "-") {
 					print "<h3>"._t("Subtype")."</h3><p>".caNavLink($this->request, $vs_artType, "", "", "Browse", "objects/facet/subtypeart_facet/id/".$t_object->get('ca_objects.artType'))."</p><!-- end unit -->";

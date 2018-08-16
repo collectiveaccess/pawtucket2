@@ -90,7 +90,7 @@ h6 {
 	font-size:20px;
 }
 .navbar-default .navbar-nav > li > a {
-    color: #494949;
+    color: #004b8d;
     font-weight:400;
 }
 .navbar .formOutline {
@@ -194,6 +194,14 @@ h6 {
 .front .jcarousel-wrapper {
 	overflow:hidden;
 }
+.frontGridItem {
+	padding-left:0px;
+	padding-right:0px;
+}
+.frontGridItem img{
+	width:100%;
+	height:auto;
+}
 .cats {
 	text-align:center;
 }
@@ -237,18 +245,16 @@ h6 {
 	height:auto;
 }
 .front .institution{
-	background-color:#f5f5f5;
-	border-radius:6px;
-	text-align:center;
-	font-size:52px;
-	height:auto;
-	padding-top:0px;
-	margin-top:25px;
+	/*background-color:#f5f5f5;*/
+	padding-bottom:100%; 
+	overflow:hidden; 
+	position:relative;
+	margin-bottom:20px;
 }
 .front .institution img {
+	position:absolute;
 	width:100%;
 	height:auto;
-	padding:5px;
 }
 .front .institutionName {
 	color: #494949;
@@ -260,7 +266,25 @@ h6 {
 	padding-right:40px;
 	text-align:center;
 }
-
+.front .tall img {
+    height: 100%;
+    width: auto;
+    display:block;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+}
+.front .wide img {
+    width: 100%;
+    height: auto;
+    display:block;
+    top:0;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:auto;
+}
 /* Detail */
 
 .detail {
@@ -269,6 +293,10 @@ h6 {
 }
 .detail a {
 	color:#004b8d;
+}
+.fromThe {
+	text-transform:none;
+	display:block;
 }
 .instLogo img{
 	width:100%;
@@ -319,7 +347,6 @@ h6 {
 	text-align:center;
 	margin-bottom:20px;
 	font-weight:400;
-	margin-top:-20px;
 	width:100%;
 }
 .detail .objectBanner a {
@@ -340,13 +367,18 @@ h6 {
 	display:inline-block;
 }
 .objectBanner .instLogo {
-	padding-left:15px;
+	text-align:right;
+	padding:5px;
+/*	padding-left:15px;
 	padding-top:10px;
 	padding-bottom:10px;
+*/	
 }
 .objectBanner .instLogo img {
 	width:auto;
 	height:auto;
+	max-width:100%;
+	max-height:80px;
 }
 .objectBanner a:hover{
 	text-decoration:none;
