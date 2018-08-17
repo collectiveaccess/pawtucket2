@@ -89,7 +89,7 @@
 						print "<div class='unit'><h6>Image Credit Line</h6>".$vs_credit."</div>";
 					}
 					if ($va_photo_copyright = $t_rep->get('ca_object_representations.caption_copyright')) {
-						print "<div class='unit'>".$va_photo_copyright."</div>";  
+						print "<div class='unit'><h6>Copyright</h6>".$va_photo_copyright."</div>";   
 					}
 				}
 				if ($vs_conditions_access = $t_object->get('ca_objects.accessrestrict')) {
