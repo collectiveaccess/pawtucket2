@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2016 Whirl-i-Gig
+ * Copyright 2009-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -47,15 +47,31 @@
 	function caGetThemeGraphic($po_request, $ps_file_path, $pa_attributes=null, $pa_options=null) {
 		$vs_base_url_path = $po_request->getThemeUrlPath();
 		$vs_base_path = $po_request->getThemeDirectoryPath();
-		$vs_file_path = '/assets/pawtucket/graphics/'.$ps_file_path;
+		$vs_file_path = "/assets/pawtucket/graphics/{$ps_file_path}";
 
-		if (!file_exists($vs_base_path.$vs_file_path)) {
-			$vs_base_url_path = $po_request->getDefaultThemeUrlPath();
+        if (file_exists($vs_base_path.$vs_file_path)) {
+            // Graphic is present in currently configured theme
+			return caHTMLImage($vs_base_url_path.$vs_file_path, $pa_attributes, $pa_options);
 		}
 
-		$vs_html = caHTMLImage($vs_base_url_path.$vs_file_path, $pa_attributes, $pa_options);
+        $o_config = Configuration::load();		
+		if ($o_config->get('allowThemeInheritance')) {
+            $i=0;
+            
+            while($vs_inherit_from_theme = trim(trim($o_config->get(['inheritFrom', 'inherit_from'])), "/")) {
+                $i++;
+                if (file_exists(__CA_THEMES_DIR__."/{$vs_inherit_from_theme}/{$vs_file_path}")) {
+                    return caHTMLImage(__CA_THEMES_URL__."/{$vs_inherit_from_theme}/{$vs_file_path}", $pa_attributes, $pa_options);
+                }
+                
+                if(!file_exists(__CA_THEMES_DIR__."/{$vs_inherit_from_theme}/conf/app.conf")) { break; }
+                $o_config = Configuration::load(__CA_THEMES_DIR__."/{$vs_inherit_from_theme}/conf/app.conf", false, false, true);
+                if ($i > 10) {break;} // max 10 levels
+            }
+        }
 
-		return $vs_html;
+        // Fall back to default theme
+		return caHTMLImage($po_request->getDefaultThemeUrlPath().$vs_file_path, $pa_attributes, $pa_options);
 	}
 	# ---------------------------------------
 	/**
