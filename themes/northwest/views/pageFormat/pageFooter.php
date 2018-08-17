@@ -42,12 +42,12 @@
 				<small>The Northwest School is accredited by the NWAIS.</small>
 
 				<ul>
-					<li><a href="/about-the-school/contact-us">Contact</a></li>
-					<li><a href="/legal-and-privacy">Legal &amp; Privacy</a></li>
+					<li><a href="http://northwestschool.org/about-the-school/contact-us">Contact</a></li>
+					<li><a href="http://northwestschool.org/legal-and-privacy">Legal &amp; Privacy</a></li>
 				</ul>
 
 			
-				<small>© 2018 The Northwest School. All Rights Reserved.</small>
+				<small>© <?php print date("Y"); ?> The Northwest School. All Rights Reserved.</small>
 			</section>			
 		</footer><!-- end footer -->
 		<script>

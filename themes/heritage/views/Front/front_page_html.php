@@ -133,12 +133,18 @@
 		<div class="col-sm-12">
 			<?php print caGetThemeGraphic($this->request, 'hpTruck.jpg'); ?>
 			<div class="frontIntroOverlay">
+<!--
 				<p>
 					Over 100 years ago a group of investors trusted that a metal office furniture company could compete in a city renown for wood manufacturing.
 				</p>
  				<p>
  					Looking back, it's clear our company has always been about looking forward. Our past, present and future are all about turning insights into innovations that unlock the promise of people at work and make the world a better place.
- 				</p>
+ 				</p>-->
+<p>We opened our doors in 1912 after 11 business men agreed to invest in Peter M. Wege's dream of opening a steel office furniture company in a city renown for wood furniture. Since then we've experienced many changes, including our name, but our business vision of always looking toward the future has remained the same.</p>
+
+<p>Here we'd like to share with you a few hundred of the thousands of noteworthy historical moments from our 105-year plus legacy. Steelcase employees and partners can access the full timeline and heritage archives using their existing login credentials. </p>
+
+
 			</div>
 		</div>
 	</div>

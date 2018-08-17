@@ -56,8 +56,13 @@
 				<hr/>		
 			</div>
 			<div class='col-sm-6 col-md-6 col-lg-6'>
-				{{{representationViewer}}}
-				
+<?php
+				if($vs_viewer = trim($this->getVar("representationViewer"))){
+					print $vs_viewer;
+				}else{
+					print "<div class='detailMediaPlaceholder'>".caGetPlaceholder($t_object->getTypeCode(), "placeholder_large_media_icon")."</div>";
+				}
+?>				
 				
 				<div id="detailAnnotations"></div>
 				
@@ -69,10 +74,9 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
-				#For testing only needs to be hooked up when holding institution information is available#
-				print "<div class='instLink'><small>from the collection of</small><div>".caDetailLink($this->request, 'Pope County Museum', '', 'ca_entities', 13845)."</div></div>";
-				#Fix me I'm just a slug!!
-				
+ini_set("display_errors", "on");
+				print "<div class='instLink'><small>from the collection of</small><div>".caDetailLink($this->request, caGetListItemByIDForDisplay($vn_source_id = $t_object->get('source_id')), '', 'ca_entities', ca_entities::getIDForIdno(caGetListItemIdno($vn_source_id)))."</div></div>";
+
 				
 				if ($vs_alt = $t_object->get('ca_objects.title')) {
 					print "<div class='unit'><h6>Title</h6>".$vs_alt."</div>";
@@ -98,39 +102,64 @@
 				if ($va_dimensions = $t_object->get('ca_objects.dimensions', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 					$va_dims = array();
 					$vs_dims = "";
+					$va_dimension_fields_1 = array("H" => "dimensions_height", "W" => "dimensions_width", "D" => "dimensions_depth", "L" => "dimensions_length");
+					$va_dimension_fields_2 = array("Weight" => "dimensions_weight", "Diameter" => "dimensions_diameter", "Circumference" => "dimensions_circumference", "Thickness" => "dimensions_thickness", "");
 					foreach ($va_dimensions as $va_key => $va_dimensions_t) {
 						foreach ($va_dimensions_t as $va_key => $va_dimension) {
-							if ($va_dimension['dimensions_height'] && ($va_dimension['dimensions_height'] != "0.000 cm.")) {
-								$va_dims[] = $va_dimension['dimensions_height']." H ";
+							foreach($va_dimension_fields_1 as $vs_unit => $vs_dim_field){
+								$vs_tmp = $vs_val = trim($va_dimension[$vs_dim_field]);
+								if($vs_val){
+									$vs_tmp = str_replace("cm.", "", $vs_tmp);
+									$vs_tmp = trim(str_replace("cm", "", $vs_tmp));
+									if($vs_tmp && intval($vs_tmp)){
+										$va_dims[] = $vs_val." ".$vs_unit." "; 
+									}
+								}
 							}
-							if ($va_dimension['dimensions_width'] && ( $va_dimension['dimensions_width'] != "0.000 cm.")) {
-								$va_dims[] = $va_dimension['dimensions_width']." W ";
-							}							
-							if ($va_dimension['dimensions_depth'] && ( $va_dimension['dimensions_depth'] != "0.000 cm.")) {
-								$va_dims[] = $va_dimension['dimensions_depth']." D ";
-							}							
-							if ($va_dimension['dimensions_length'] && ( $va_dimension['dimensions_length'] != "0.000 cm.")) {
-								$va_dims[] = $va_dimension['dimensions_length']." L ";
-							}	
-							if (sizeof($va_dims) > 0) {						
+							
+// 							if ($va_dimension['dimensions_height'] && ($va_dimension['dimensions_height'] != "0.000 cm.")) {
+// 								$va_dims[] = $va_dimension['dimensions_height']." H ";
+// 							}
+// 							if ($va_dimension['dimensions_width'] && ( $va_dimension['dimensions_width'] != "0.000 cm.")) {
+// 								$va_dims[] = $va_dimension['dimensions_width']." W ";
+// 							}							
+// 							if ($va_dimension['dimensions_depth'] && ( $va_dimension['dimensions_depth'] != "0.000 cm.")) {
+// 								$va_dims[] = $va_dimension['dimensions_depth']." D ";
+// 							}							
+// 							if ($va_dimension['dimensions_length'] && ( $va_dimension['dimensions_length'] != "0.000 cm.")) {
+// 								$va_dims[] = $va_dimension['dimensions_length']." L ";
+// 							}	
+ 							if (sizeof($va_dims) > 0) {						
 								$vs_dims.= "<p>".join(' x ', $va_dims);
 								if ($va_dimension['measurement_type']) {
 									$vs_dims.= $va_dimension['measurement_type'];
 								}
 								print "</p>";
 							}
-							if ($va_dimension['dimensions_weight'] && ( $va_dimension['dimensions_weight'] != "0 g")) {
-								$vs_dims.= "<p>".$va_dimension['dimensions_weight']." Weight </p>";
+							foreach($va_dimension_fields_2 as $vs_unit => $vs_dim_field){
+								$vs_tmp = $vs_val = trim($va_dimension[$vs_dim_field]);
+								if($vs_val){
+									$vs_tmp = str_replace("cm.", "", $vs_tmp);
+									$vs_tmp = trim(str_replace("cm", "", $vs_tmp));
+									$vs_tmp = str_replace("g.", "", $vs_tmp);
+									$vs_tmp = str_replace("g", "", $vs_tmp);
+									if($vs_tmp && intval($vs_tmp)){
+										$vs_dims.= "<p>".$vs_val." ".$vs_unit." </p>";
+									}
+								}
 							}
-							if ($va_dimension['dimensions_diameter'] && ( $va_dimension['dimensions_diameter'] != "0.000 cm.")) {
-								$vs_dims.= "<p>".$va_dimension['dimensions_diameter']." Diameter </p>";
-							}
-							if ($va_dimension['dimensions_circumference'] && ( $va_dimension['dimensions_circumference'] != "0.000 cm.")) {
-								$vs_dims.= "<p>".$va_dimension['dimensions_circumference']." Circumference </p>";
-							}
-							if ($va_dimension['dimensions_thickness'] && ( $va_dimension['dimensions_thickness'] != "0.000 cm.")) {
-								$vs_dims.= "<p>".$va_dimension['dimensions_thickness']." Thickness </p>";
-							}
+							// if ($va_dimension['dimensions_weight'] && ( $va_dimension['dimensions_weight'] != "0 g")) {
+// 								$vs_dims.= "<p>".$va_dimension['dimensions_weight']." Weight </p>";
+// 							}
+// 							if ($va_dimension['dimensions_diameter'] && ( $va_dimension['dimensions_diameter'] != "0.000 cm.")) {
+// 								$vs_dims.= "<p>".$va_dimension['dimensions_diameter']." Diameter </p>";
+// 							}
+// 							if ($va_dimension['dimensions_circumference'] && ( $va_dimension['dimensions_circumference'] != "0.000 cm.")) {
+// 								$vs_dims.= "<p>".$va_dimension['dimensions_circumference']." Circumference </p>";
+// 							}
+// 							if ($va_dimension['dimensions_thickness'] && ( $va_dimension['dimensions_thickness'] != "0.000 cm.")) {
+// 								$vs_dims.= "<p>".$va_dimension['dimensions_thickness']." Thickness </p>";
+// 							}
 							if ($va_dimension['measurement_notes']) {
 								$vs_dims.= "<p>".$va_dimension['measurement_notes']."</p>";
 							}
@@ -183,6 +212,7 @@
 						print "<div class='unit'><h6>Geographic Names</h6>".$vs_geo_names."</div>";
 					}					
 				}
+				print "<HR/><div class='unit'><h5>Contact the ".caDetailLink($this->request, caGetListItemByIDForDisplay($vn_source_id = $t_object->get('source_id')), '', 'ca_entities', ca_entities::getIDForIdno(caGetListItemIdno($vn_source_id)))." for more information</h5></div><HR/>";
 
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {

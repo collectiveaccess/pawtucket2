@@ -65,7 +65,7 @@
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Filter results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search), 'sort' => 'relevance')); ?></span> 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Filter objects results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search), 'sort' => 'relevance')); ?></span> 
 <?php
 				}
 ?>

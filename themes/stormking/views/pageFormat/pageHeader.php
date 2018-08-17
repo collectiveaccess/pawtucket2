@@ -355,7 +355,7 @@
 					</ul>
 				</nav>
 					<div class="search">
-						<form role="search" method="get" class="search-form" action="http://stormking.org/" autocomplete="off">
+						<form role="search" method="get" class="search-form" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" autocomplete="off">
 							<span class="icon">
 								<svg version="1.2" baseProfile="tiny" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
 								  <path fill="none" d="M7.7 2.7c-1.3 0-2.6.5-3.5 1.5-1 .9-1.5 2.2-1.5 3.5 0 1.3.5 2.6 1.5 3.5 2 1.9 5.1 1.9 7.1 0 .9-.9 1.5-2.2 1.5-3.5 0-1.3-.5-2.6-1.5-3.5-1-1-2.3-1.5-3.6-1.5z"></path>

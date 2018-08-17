@@ -58,15 +58,20 @@
 						$vs_output .= "</i>";
 					}
 					$vs_output .= "</div>";
-			
+					
+					$vs_inventory_content = "";
 					if(($vs_scope = $qr_collections->get("scope_content")) | ($vs_arrangement = $qr_collections->get("arrangement"))){
-						$vs_output .= "<div class='inventoryContent'>".$vs_scope;
-						if($vs_scope && $vs_arrangement){
-							$vs_output .= "<br/><br/>";
+						$vs_inventory_content .= $vs_scope;
+						if($qr_collections->get("type_id") != $vs_file_type_id){
+							if($vs_scope && $vs_arrangement){
+								$vs_inventory_content .= "<br/><br/>";
+							}
 						}
-						$vs_output .= $vs_arrangement."</div>";
+						$vs_inventory_content .= $vs_arrangement;
 					}
-				
+					if($vs_inventory_content){
+						$vs_output .= "<div class='inventoryContent'>".$vs_inventory_content."</div>";
+					}
 					$vs_output .= "</div>";
 				}
 				if(sizeof($va_child_ids)) {

@@ -94,6 +94,10 @@
 				print "</div>";
 			}
 		}
+		if($vs_search_note = $this->getVar("search_note")){
+			print "<p class='search_note'>".$vs_search_note."</p>";
+		}
+		
 		print "</div><!-- end bRefine -->\n";
 ?>
 	<script type="text/javascript">

@@ -29,15 +29,40 @@
  *
  * ----------------------------------------------------------------------
  */
-		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
-	<div class="row">
-		<div class="col-sm-8">
-			<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
-		</div><!--end col-sm-8-->
-		<div class="col-sm-4">
+ 	<div class="row">
+		<div class="col-sm-12 col-md-10 col-md-offset-1">
 <?php
-		print $this->render("Front/gallery_set_links_html.php");
+		print $this->render("Front/gallery_slideshow_html.php");
 ?>
-		</div> <!--end col-sm-4-->	
-	</div><!-- end row -->
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-12 yellowBg">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-12 col-md-10 col-md-offset-1">
+						<H1>{{{home_page_text}}}</H1>
+					</div>
+				</div>
+			</div>
+		</div><!--end col-sm-12-->
+	</div>
+	<div class="row">
+		<div class="col-sm-12 col-md-10 col-md-offset-1 hpSlideshowCol">
+			<H3>From the Collection</H3>
+<?php
+		print $this->render("Front/featured_set_grid_html.php");
+?>
+		</div><!-- end row -->
+	</div>
+	<script type='text/javascript'>
+		jQuery(document).ready(function() {
+			var offset = (($(document).width() - $(".yellowBg").width()) / 2) - 15;
+			$(".yellowBg").attr("style", "left: -" + offset + "px !important; width: " + $(document).width() + "px !important;");
+			$( window ).resize(function() {
+				var offset = (($("body").width() - $(".yellowBg").parent().width()) / 2);
+				$(".yellowBg").attr("style", "left: -" + offset + "px !important; width: " + $("body").width() + "px !important;");
+			});
+		});
+	</script>

@@ -37,7 +37,7 @@
 ?>
 <div class="row">
 	<div class='col-xs-12 navButtons'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{nextLink}}}<span class='spacer'></span>{{{resultsLink}}} 
+		{{{nextLink}}} {{{previousLink}}}<span class='spacer'></span>{{{resultsLink}}} 
 	</div><!-- end detailTop -->
 
 	<div class='col-xs-12 '>
@@ -49,9 +49,6 @@
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-				
-
-
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
@@ -59,7 +56,7 @@
 				$vb_citation_special_collection = false;
 				$vs_citation_collection = "";
 				$t_list_item = new ca_list_items();
-				if ($va_collection_paths = $t_object->get('ca_collections.hierarchy.preferred_labels', array('returnWithStructure' => true))) {
+				if ($va_collection_paths = $t_object->get('ca_collections.hierarchy.preferred_labels', array('returnWithStructure' => true, 'restrictToRelationshipTypes' => array("part_of")))) {
 					$va_collections_array = array();
 					foreach ($va_collection_paths as $va_key => $va_collection_path_t) {
 						$va_collection_array = array();
@@ -124,7 +121,7 @@
 					print "The Northwest School Archive. ";
 				}
 				
-				print "Retrieved from The Northwest School. Web. ".date("n/j/Y")."</span></div>";
+				print "Retrieved from The Northwest School. ".date("n/j/Y")."</span></div>";
 				
 				if ($va_related_entities = $t_object->get('ca_entities.entity_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 					print "<div class='unit'><span class='metaLabel'>Related Entities</span><span class='metaData'>";
@@ -207,7 +204,7 @@
 				}				
 
 ?>																																						
-				<div>There’s more! What you see here is only what is viewable online; in most cases it is only a small portion of what is available. Please visit the collection guide to find out more.</div>
+				<div>There’s more! What you see here is only what is viewable online; in most cases it is only a small portion of what is available. Please visit our comprehensive guide to the collection to find out more.</div>
 
 						
 			</div><!-- end col -->
@@ -279,6 +276,13 @@
 		$('.trimText').readmore({
 		  speed: 75,
 		  maxHeight: 120
+		});
+		
+		$('.glyphicon-zoom-in').addClass('glyphicon-fullscreen');
+		$('.glyphicon-zoom-in').removeClass('glyphicon-zoom-in');
+		$( document ).ajaxComplete(function() {
+		  $('.glyphicon-zoom-in').addClass('glyphicon-fullscreen');
+			$('.glyphicon-zoom-in').removeClass('glyphicon-zoom-in');
 		});
 	});
 </script>
