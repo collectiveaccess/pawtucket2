@@ -34,7 +34,7 @@
 	<div class="row maxWrapper">
 		<div class="col-sm-4">
 <?php
-			print caGetThemeGraphic($this->request, '50logo.jpeg');
+			print "<div class='logo'>".caGetThemeGraphic($this->request, 'logo 2013.jpg')."</div>";
 ?>
 		</div> <!--end col-sm-4-->	
 		<div class="col-sm-8">
