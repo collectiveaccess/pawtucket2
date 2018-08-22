@@ -217,7 +217,7 @@ if (!$vb_ajax) {	// !ajax
 			}
 		}
 } // !ajax
-if($this->request->getParameter("collectionDetail", pString)){
+if($qr_res->numHits() && $this->request->getParameter("collectionDetail", pString)){
 	# --- heading for collection detail pages object results - has to be done here cause we don't knowif the browse will have results on detail page
 	print "<div class='container'><div class='row'><div class='col-sm-12'><H4>Digitized Items from this Collection</H4><br/></div></div></div>";
 }
