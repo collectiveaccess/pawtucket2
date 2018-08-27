@@ -3,7 +3,7 @@
 </script>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		<div id="footer">
-		<?php # print $this->request->session->elapsedTime(4).'s'.caGetMemoryUsage(); ?>
+		<?php # print Session::elapsedTime(4).'s'.caGetMemoryUsage(); ?>
 			<div class='footerMenu'>
 				<div class='footerLink'><a href='#' style='padding-left:0px;'>JOIN</a></div>
 				<div class='footerLink'><a href='#'>CALENDAR</a></div>
@@ -43,7 +43,7 @@
 			});
 		</script>
 <?php
-	if ($this->request->session->getVar('visited') != 'has_visited') {		
+	if (Session::getVar('visited') != 'has_visited') {		
 ?>				
 		<script>
 			$(document).ready(function(){
@@ -79,7 +79,7 @@
 <?php
 	
 		#first visit sets the session
-		$this->request->session->setVar('visited', 'has_visited');
+		Session::setVar('visited', 'has_visited');
 ?>
 	</body>
 </html>

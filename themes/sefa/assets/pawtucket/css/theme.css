@@ -150,13 +150,17 @@ div.captionSlideshow{
 	font-size:6px;
 	padding-left:5px;
 }
+.fullWidthImg img{
+	height:auto;
+	width:100%;
+}
 /* ------Nav Styles------------ */
 .navbar-brand {
 	padding:15px 0 0 0;
 }
 .navbar-brand img{
-	/*max-height:69px;*/  /* this is the size for the regular logo */
-	max-height:75px;	/* taller for the 10 year logo */
+	max-height:69px;  /* this is the size for the regular logo */
+	/*max-height:75px;*/	/* taller for the 10 year logo */
 	width:auto;
 	max-width:auto;
 }
@@ -361,6 +365,26 @@ div.captionSlideshow{
 		width:990px;
 	}
 }
+.front .hpEvent{
+	margin:40px 0px 0px 0px;
+	border-top: 1px solid #b1b1b1;
+	border-bottom: 1px solid #b1b1b1;
+	padding:40px 0px 0px 0px;
+}
+.front .hpEvent img{
+	width:100%;
+	height:auto;
+}
+.front .hpEvent h1, .front .hpEvent h1 a{
+	font-size: 30px;
+	padding-top:0px;
+	color:#000;
+	text-decoration:none;
+}
+.front .hpEvent .col-xs-12{
+	margin-bottom:40px;
+}
+
 /* ------ Details -------------- */
 .jcarousel-control-prev{
 	left:0px !important;
@@ -529,10 +553,10 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 
 /* ------Footer Styles -------- */
 .footer {
-	font-size:11px;
+	font-size:12px;
 	line-height:130%;
 	text-transform:uppercase;
-	color:#b1b1b1;
+	color:#4d4d4d;
 	padding-top:60px;
 	padding-bottom:30px;
 }
@@ -564,6 +588,10 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 .socialicon img{
 	opacity:0.5;
 	filter:alpha(opacity=50); /* For IE8 and earlier */
+}
+.socialicon.darker img{
+	opacity:0.7;
+	filter:alpha(opacity=70); /* For IE8 and earlier */
 }
 a.footerButton{
 	background-color:#ababab;
@@ -611,3 +639,79 @@ a.footerButton:hover{
 #mc-embedded-subscribe{
 	margin-left:0px !Important;
 }
+
+.detail .repViewerCont img{
+	width:100%;
+	height:auto;
+	max-height: 1000px !important;
+    object-fit: contain;
+}
+
+
+.btn {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.428571429;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+       -o-user-select: none;
+          user-select: none;
+}
+
+.btn-default {
+    background:none;
+    border-color: #CCCCCC;
+    color:#666;
+    text-shadow: 0 0px 0 #FFFFFF;
+     font-size: 11px;
+    text-transform: uppercase;
+    padding:3px 5px;
+    box-shadow: 0 0px 0 rgba(255, 255, 255, 0.15) inset, 0 0px 0px rgba(0, 0, 0, 0.075);
+}
+
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active,
+.btn-default.active,
+.open .dropdown-toggle.btn-default {
+  color: #333333;
+  background-color: #ebebeb;
+  border-color: #adadad;
+}
+
+.btn-default:active,
+.btn-default.active,
+.open .dropdown-toggle.btn-default {
+  background-image: none;
+}
+
+.btn-default.disabled,
+.btn-default[disabled],
+fieldset[disabled] .btn-default,
+.btn-default.disabled:hover,
+.btn-default[disabled]:hover,
+fieldset[disabled] .btn-default:hover,
+.btn-default.disabled:focus,
+.btn-default[disabled]:focus,
+fieldset[disabled] .btn-default:focus,
+.btn-default.disabled:active,
+.btn-default[disabled]:active,
+fieldset[disabled] .btn-default:active,
+.btn-default.disabled.active,
+.btn-default[disabled].active,
+fieldset[disabled] .btn-default.active {
+  background-color: #ffffff;
+  border-color: #cccccc;
+}
+
+.pubListing h2 { height:3.6em; overflow:hidden }

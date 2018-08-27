@@ -26,9 +26,9 @@
  * ----------------------------------------------------------------------
  */
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
-	require_once(__CA_LIB_DIR__."/core/Datamodel.php");
- 	require_once(__CA_LIB_DIR__.'/ca/ResultContext.php');
- 	require_once(__CA_LIB_DIR__.'/core/GeographicMap.php');
+	require_once(__CA_LIB_DIR__."/Datamodel.php");
+ 	require_once(__CA_LIB_DIR__.'/ResultContext.php');
+ 	require_once(__CA_LIB_DIR__.'/GeographicMap.php');
 	require_once(__CA_MODELS_DIR__."/ca_bundle_displays.php");
 	require_once(__CA_MODELS_DIR__."/ca_relationship_types.php");
 	require_once(__CA_MODELS_DIR__."/ca_lists.php");
@@ -44,13 +44,11 @@
  		#
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
- 			
- 			$this->opo_datamodel = Datamodel::load();
  		
  			$vs_browse_table_name = $po_request->config->get('allow_browse_within_detail_for_'.$this->ops_tablename);
 			
 			// create object browse for filtering objects on collection detail page
-			$this->opo_browse = $this->getBrowseInstance($vs_browse_table_name, $po_request->session->getVar($this->ops_tablename.'_'.$this->ops_appname.'_detail_current_browse_id'), $this->ops_appname.'_detail');	
+			$this->opo_browse = $this->getBrowseInstance($vs_browse_table_name, Session::getVar($this->ops_tablename.'_'.$this->ops_appname.'_detail_current_browse_id'), $this->ops_appname.'_detail');	
 			$this->opa_sorts = $this->getBrowseSorts($vs_browse_table_name);
 		
 			parent::__construct($po_request, $po_response, $pa_view_paths);
@@ -115,7 +113,7 @@
  			$va_access_values = caGetUserAccessValues($this->request);
  			$this->view->setVar('access_values', $va_access_values);
  			
- 			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true)) {
+ 			if(!$t_item = Datamodel::getInstance($this->ops_tablename, true)) {
  				die("Invalid table name ".$this->ops_tablename." for detail");		// shouldn't happen
  			}
 
@@ -170,8 +168,8 @@
 					$this->opo_browse->setFacetGroup($vs_facet_group);
 				}
 				
- 				$t_table = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true);
-				if ($this->request->session->getVar($this->ops_tablename.'_'.$this->ops_appname.'_detail_current_item_id') != $vn_item_id) {
+ 				$t_table = Datamodel::getInstance($this->ops_tablename, true);
+				if (Session::getVar($this->ops_tablename.'_'.$this->ops_appname.'_detail_current_item_id') != $vn_item_id) {
 					$this->opo_browse->removeAllCriteria();	
 				}
 				
@@ -198,7 +196,7 @@
 					}
 					$this->opo_browse->addCriteria($vs_limit_facet_name, array($vn_item_id));
 					$this->opo_browse->execute(array('checkAccess' => $va_access_values));
-					$this->request->session->setVar($this->ops_tablename.'_'.$this->ops_appname.'_detail_current_browse_id', $this->opo_browse->getBrowseID());
+					Session::setVar($this->ops_tablename.'_'.$this->ops_appname.'_detail_current_browse_id', $this->opo_browse->getBrowseID());
 					$this->view->setVar('show_browse', true);
 					
 					//
@@ -245,11 +243,11 @@
 					$this->view->setVar('browse_criteria', $va_browse_criteria);
 				} else {
 					// not configured for browse
-					$this->request->session->setVar($this->ops_tablename.'_'.$this->ops_appname.'_detail_current_browse_id', null);
+					Session::setVar($this->ops_tablename.'_'.$this->ops_appname.'_detail_current_browse_id', null);
 					$this->view->setVar('show_browse', false);
 				}
  			}
- 			$this->request->session->setVar($this->ops_tablename.'_'.$this->ops_appname.'_detail_current_item_id', $vn_item_id);
+ 			Session::setVar($this->ops_tablename.'_'.$this->ops_appname.'_detail_current_item_id', $vn_item_id);
  			
  			# Next and previous navigation
  			$opo_result_context = new ResultContext($this->request, $this->ops_tablename, ResultContext::getLastFind($this->request, $this->ops_tablename));
@@ -367,7 +365,7 @@
  		# Tagging and commenting
  		# -------------------------------------------------------
  		public function saveCommentRanking() {
- 			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename)) {
+ 			if(!$t_item = Datamodel::getInstance($this->ops_tablename)) {
  				die("Invalid table name ".$this->ops_tablename." for saving comment");
  			}
 
@@ -445,7 +443,7 @@
  			if ($this->request->getParameter('clear', pInteger)) {
  				$this->opo_browse->removeAllCriteria();
  				$this->opo_browse->execute(array('checkAccess' => $va_access_values));
- 				$this->request->session->setVar($this->ops_tablename.'_'.$this->ops_context.'_current_browse_id', $this->opo_browse->getBrowseID());
+ 				Session::setVar($this->ops_tablename.'_'.$this->ops_context.'_current_browse_id', $this->opo_browse->getBrowseID());
  			} else {
  				if ($this->request->getParameter('modify', pString)) {
  					$vm_id = $this->request->getParameter('id', pString);
@@ -468,7 +466,7 @@
  			
  			// generate type menu and type value list for related authority table facet
  			if ($va_facet_info['type'] === 'authority') {
-				$t_model = $this->opo_datamodel->getTableInstance($va_facet_info['table']);
+				$t_model = Datamodel::getInstance($va_facet_info['table']);
 				if (method_exists($t_model, "getTypeList")) {
 					$this->view->setVar('type_list', $t_model->getTypeList());
 				}
@@ -477,7 +475,7 @@
 				$this->view->setVar('relationship_type_list', $t_rel_types->getRelationshipInfo($va_facet_info['relationship_table']));
 			}
 			
-			$t_table = $this->opo_datamodel->getTableInstance($this->ops_tablename);
+			$t_table = Datamodel::getInstance($this->ops_tablename);
 			$this->view->setVar('other_parameters', array($t_table->primaryKey() => $this->request->getParameter($t_table->primaryKey(), pInteger)));
  			$this->render('../Browse/ajax_browse_facet_html.php');
  		}
@@ -510,7 +508,7 @@
 		 * Export displayed item
 		 */
 		public function exportItem() {
-			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true)) {
+			if(!$t_item = Datamodel::getInstance($this->ops_tablename, true)) {
  				die("Invalid table name ".$this->ops_tablename." for detail");		// shouldn't happen
  			}
 
@@ -553,7 +551,7 @@
 		 * Download Summary of displayed item
 		 */
 		public function downloadSummary() {
-			if(!$t_item = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true)) {
+			if(!$t_item = Datamodel::getInstance($this->ops_tablename, true)) {
  				die("Invalid table name ".$this->ops_tablename." for detail");		// shouldn't happen
  			}
 			if(!($vn_item_id = $this->request->getParameter($t_item->primaryKey(), pInteger))){
@@ -578,7 +576,7 @@
  			$vs_output_filename = $t_item->getLabelForDisplay();
 			$vs_output_filename = mb_substr($vs_output_filename, 0, 30);
 
-			require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
+			require_once(__CA_LIB_DIR__.'/Parsers/dompdf/dompdf_config.inc.php');
 			$vs_output_file_name = mb_substr(preg_replace("/[^A-Za-z0-9\-]+/", '_', $vs_output_filename), 0, 40);
 			header("Content-Disposition: attachment; filename=".$vs_output_file_name.".pdf");
 			header("Content-type: application/pdf");
@@ -597,45 +595,45 @@
  		  *
  		  */
  		protected function getBrowseInstance($pm_table_name_or_num, $pn_browse_id, $ps_context) {
- 			$vs_table = $this->opo_datamodel->getTableName($pm_table_name_or_num);
+ 			$vs_table = Datamodel::getTableName($pm_table_name_or_num);
  			
  			switch($vs_table) {
  				case 'ca_entities':
- 					require_once(__CA_LIB_DIR__.'/ca/Browse/EntityBrowse.php');
+ 					require_once(__CA_LIB_DIR__.'/Browse/EntityBrowse.php');
  					return new EntityBrowse($pn_browse_id, $ps_context);
  					break;
  				case 'ca_places':
- 					require_once(__CA_LIB_DIR__.'/ca/Browse/PlaceBrowse.php');
+ 					require_once(__CA_LIB_DIR__.'/Browse/PlaceBrowse.php');
  					return new PlaceBrowse($pn_browse_id, $ps_context);
  					break;
  				case 'ca_occurrences':
- 					require_once(__CA_LIB_DIR__.'/ca/Browse/OccurrenceBrowse.php');
+ 					require_once(__CA_LIB_DIR__.'/Browse/OccurrenceBrowse.php');
  					return new OccurrenceBrowse($pn_browse_id, $ps_context);
  					break;
  				case 'ca_collections':
- 					require_once(__CA_LIB_DIR__.'/ca/Browse/CollectionBrowse.php');
+ 					require_once(__CA_LIB_DIR__.'/Browse/CollectionBrowse.php');
  					return new CollectionBrowse($pn_browse_id, $ps_context);
  					break;
  				case 'ca_object_lots':
- 					require_once(__CA_LIB_DIR__.'/ca/Browse/ObjectLotBrowse.php');
+ 					require_once(__CA_LIB_DIR__.'/Browse/ObjectLotBrowse.php');
  					return new ObjectLotBrowse($pn_browse_id, $ps_context);
  					break;
  				case 'ca_loans':
- 					require_once(__CA_LIB_DIR__.'/ca/Browse/LoanBrowse.php');
+ 					require_once(__CA_LIB_DIR__.'/Browse/LoanBrowse.php');
  					return new LoanBrowse($pn_browse_id, $ps_context);
  					break;
  				case 'ca_movements':
- 					require_once(__CA_LIB_DIR__.'/ca/Browse/MovementBrowse.php');
+ 					require_once(__CA_LIB_DIR__.'/Browse/MovementBrowse.php');
  					return new MovementBrowse($pn_browse_id, $ps_context);
  					break;
  				case 'ca_storage_locations':
- 					require_once(__CA_LIB_DIR__.'/ca/Browse/StorageLocationBrowse.php');
+ 					require_once(__CA_LIB_DIR__.'/Browse/StorageLocationBrowse.php');
  					return new StorageLocationBrowse($pn_browse_id, $ps_context);
  					break;
  				case 'ca_objects':
  				default:
  					if (($vs_table == 'ca_objects') || (int)$pm_table_name_or_num) {
-						require_once(__CA_LIB_DIR__.'/ca/Browse/ObjectBrowse.php');
+						require_once(__CA_LIB_DIR__.'/Browse/ObjectBrowse.php');
 						return new ObjectBrowse($pn_browse_id, $ps_context);
 					}
  					break;
@@ -732,9 +730,8 @@
  			$vs_rel_table = $this->request->getParameter('rtable', pString);
  			$vn_rel_type_id = $this->request->getParameter('rtypeid', pInteger);
  			
- 			$o_dm = Datamodel::load();
  			
- 			$t_instance = $o_dm->getInstanceByTableName($vs_table, true);
+ 			$t_instance = Datamodel::getInstance($vs_table, true);
  			$t_instance->load($vn_id);
  			
  			$va_data = array(
@@ -750,7 +747,7 @@
  			);
  			
  			if($vs_rel_table) {
- 				if ($t_rel_instance = $o_dm->getInstanceByTableName($vs_rel_table, true)) {
+ 				if ($t_rel_instance = Datamodel::getInstance($vs_rel_table, true)) {
 					$va_rel = $t_instance->getRelatedItems($vs_rel_table);
 					
 					$vn_c = 0;
@@ -777,7 +774,7 @@
  			} else {
 				foreach(array('ca_entities', 'ca_places', 'ca_occurrences', 'ca_collections') as $vs_rel_table) {
 					//if ($vs_rel_table == $vs_table) { continue; }
-					$t_rel_instance = $o_dm->getInstanceByTableName($vs_rel_table, true);
+					$t_rel_instance = Datamodel::getInstance($vs_rel_table, true);
 					$va_rel = $t_instance->getRelatedItems($vs_rel_table);
 					
 					$vn_c = 0;
@@ -814,7 +811,7 @@
  		 */
  		public function GetViz() {
  			$pn_id = $this->request->getParameter('id', pInteger);
- 			$this->view->setVar('t_subject', $t_instance = $this->opo_datamodel->getInstanceByTableName($this->ops_tablename, true));
+ 			$this->view->setVar('t_subject', $t_instance = Datamodel::getInstance($this->ops_tablename, true));
  			$t_instance->load($pn_id);
  			$this->render('ajax_visualization_html.php');
  		}

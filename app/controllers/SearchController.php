@@ -178,7 +178,7 @@
  			
  			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
  			
-			$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
+			$t_instance = Datamodel::getInstance($vs_class, true);
 			$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
 			
 			$this->view->setVar('t_instance', $t_instance);
@@ -363,7 +363,7 @@
 			$this->view->setVar('facets', $va_facets);
 		
 			$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
-			$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
+			Session::setVar($ps_function.'_last_browse_id', $vs_key);
 			
 		
 			//
@@ -417,9 +417,14 @@
  			
  			// map
 			if ($ps_view === 'map') {
-				$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000');
-		
-				$va_opts['ajaxContentUrl'] = caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view));
+				$va_opts = array(
+				    'renderLabelAsLink' => false, 
+				    'request' => $this->request, 
+				    'color' => '#cc0000', 
+				    'labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null),
+				    'contentTemplate' => caGetOption('contentTemplate', $va_view_info['display'], null),
+				    //'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view))
+				);
 	
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
 				$qr_res->seek(0);
