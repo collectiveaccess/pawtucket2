@@ -2540,12 +2540,22 @@ a.browseRemoveFacet .glyphicon {
 .collectionsContainer p{
 	font-size:12px;
 }
+
 #collectionLoad {
 	float:left;	
 	padding:20px 20px 10px 20px;
 	height: 500px;
 	overflow-y: scroll;
-	border-left:2px solid #454545;
+}
+@media (max-width: 768px) {
+	#collectionLoad {	
+		border-top:2px solid #454545;
+	}
+}
+@media (min-width: 768px) {
+	#collectionLoad {	
+		border-left:2px solid #454545;
+	}
 }
 #collectionLoad p{
 	font-size:12px;

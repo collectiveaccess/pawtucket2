@@ -209,7 +209,12 @@ ul.menuItems{
 	width:140px;
 }
 .navbar-default .navbar-nav.menuItems > li > a:hover, .navbar-default .navbar-nav.menuItems > li > a:focus, .navbar-default .navbar-nav.menuItems > li > a:active, .navbar-default .navbar-nav.menuItems > li.active > a{
-	color:#2c85b8 !important;
+	color:#FFF !important;
+}
+@media (min-width: 768px) {
+	.navbar-default .navbar-nav.menuItems > li > a:hover, .navbar-default .navbar-nav.menuItems > li > a:focus, .navbar-default .navbar-nav.menuItems > li > a:active, .navbar-default .navbar-nav.menuItems > li.active > a{
+		color:#2c85b8 !important;
+	}
 }
 @media (min-width: 768px) {
 	body.initial .navbar-default .navbar-nav.menuItems > li, body.initial .navbar-default .navbar-nav.menuItems > li > a, body.initial .navbar-default .navbar-nav.menuItems > li > a:hover, body.initial .navbar-default .navbar-nav.menuItems > li > a:focus, body.initial .navbar-default .navbar-nav.menuItems > li > a:active, body.initial .navbar-default .navbar-nav.menuItems > li.active > a{
@@ -274,14 +279,9 @@ body.initial #user-navbar{
 		margin-top:50px;
 	}
 }
-/*@media (min-width: 768px) {
-	body.initial .navbar-form{
-		margin-top:5px;
-	}
+.navbar-toggle-user{
+	padding: 6px 10px 5px 10px;
 }
-body.initial #user-navbar{
-	margin-top:-5px;
-}*/
 .advSearchLinkTop{
 	display:none;
 }
@@ -359,6 +359,14 @@ div.browseFacetItem:hover{
 	.nav > li.yamm-fw{
 		display:block;
 	}
+}
+
+#bRefine .search_note{
+	line-height:1.3em;
+	font-weight:normal;
+	font-size: 13px;
+	color:#666666;
+	margin-top:30px;
 }
 /* footer */
 #footer {
@@ -529,6 +537,9 @@ div.browseFacetItem:hover{
 .front .galleryItems img{
 	width:100%;
 	height:auto;
+}
+.front .galleryItems li{
+	padding-right:0px;
 }
 .front .bgLightBlue H2{
 	color:#FFF;
@@ -735,8 +746,14 @@ div.browseFacetItem:hover{
     text-decoration:none;
 }
 .collectionUnit .viewCollectionLinkList{
-	float:right;
-	margin-top:3px;
+	display:none;
+}
+@media (min-width: 768px) {
+	.collectionUnit .viewCollectionLinkList{
+		display:block;
+		float:right;
+		margin-top:3px;
+	}
 }
 .collectionUnit .viewCollectionLinkList a{
 	font-size:15px;
@@ -846,8 +863,9 @@ div.browseFacetItem:hover{
 }
 
 /* static pages */
-.staticPage h2{
-	margin-top:0px;
+.staticPage li{
+	margin-top:10px;
+	margin-bottom:10px;
 }
 
 /* gallery */

@@ -143,11 +143,10 @@
 					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Objects"), "", "", "Browse", "objects"); ?></li>
-					<li class="mobileLink<?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Objects"), "", "", "Browse", "objects"); ?></li>
 					<li class="mobileLink<?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? ' active' : ''; ?>"><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+					<li <?php print ($this->request->getController() == "Help") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Help"), "", "", "Help", ""); ?></li>
 				</ul></div>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

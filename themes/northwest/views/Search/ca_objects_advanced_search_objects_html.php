@@ -1,11 +1,8 @@
 
 <div class="row">
 	<div class="col-sm-8 col-sm-offset-1" style='border-right:1px solid #ddd;'>
-		<h1>Objects Advanced Search</h1>
-
-<?php			
-print "<p>Enter your search terms in the fields below.</p>";
-?>
+		<h1>Digital Holdings Advanced Search</h1>
+		<p>{{{advanced_search_intro_text}}}</p>
 
 {{{form}}}
 
