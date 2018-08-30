@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2017 Whirl-i-Gig
+ * Copyright 2009-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1474,6 +1474,14 @@
 											if (!$o_tep->parse($vn_row_id)) { continue; } // invalid date?
 											$va_dates = $o_tep->getHistoricTimestamps();
 										}
+										
+										if (
+										    ($va_dates[0] <= (int)$va_dates[0] + 0.01010000000)
+										    &&
+										    ($va_facet_info['treat_before_dates_as_circa'] || $va_facet_info['treat_after_dates_as_circa'])
+										) {
+                                            $va_dates[0] = $va_dates['start'] = (int)$va_dates[0];
+                                        }
 
 										if ($vb_is_element) {
 										    $vs_container_sql = '';
@@ -2083,8 +2091,7 @@
 						if (sizeof($va_hits) < sizeof($va_acc[$vn_smallest_list_index])) { $vn_smallest_list_index = $vn_i; }
 					}
 					
-					if (caGetOption('expandResultsHierarchically', $pa_options, false) && ($vs_hier_id_fld = Datamodel::getTableProperty($this->ops_browse_table_name, 'HIERARCHY_ID_FLD'))) { 
-
+					if ((!isset($pa_options['rootRecordsOnly']) || !$pa_options['rootRecordsOnly']) && caGetOption('expandResultsHierarchically', $pa_options, false) && ($vs_hier_id_fld = Datamodel::getTableProperty($this->ops_browse_table_name, 'HIERARCHY_ID_FLD'))) {
                        foreach($va_acc as $vn_i => $va_acc_content) {
                             if(!sizeof($va_acc_content)) { continue; }
                             $qr_expand =  $this->opo_db->query("
@@ -3634,7 +3641,7 @@
 										}
 										if (!$vn_max_browse_depth) { $vn_max_browse_depth = null; } else { $vn_max_browse_depth++; }	// add one to account for invisible root
 										
-										$vs_hier_pk = Datamodel::primaryKey($vs_hier_table_name, true);
+										$vs_hier_pk = Datamodel::primaryKey($vs_hier_table_name, false);
 									
 										$va_hier_ids = [];
 										while($qr_res->nextHit()) {
@@ -4767,7 +4774,14 @@
 							while($qr_res->nextRow()) {
 								$vn_start = $qr_res->get('value_decimal1');
 								$vn_end = $qr_res->get('value_decimal2');
-
+								
+								if (((int)$vn_start === -2000000000) && $va_facet_info['treat_before_dates_as_circa']) {
+								    $vn_start = (int)$vn_end;
+								}
+								if (((int)$vn_end === 2000000000) && $va_facet_info['treat_after_dates_as_circa']) {
+								    $vn_end = (int)$vn_start + .1231235959;
+								}
+								
 								if (!($vn_start && $vn_end)) {
 									if ($vb_include_unknown) {
 										$vb_unknown_is_set = true;
