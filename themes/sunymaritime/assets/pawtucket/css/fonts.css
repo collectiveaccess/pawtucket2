@@ -1,0 +1,108 @@
+/* @license
+ * MyFonts Webfont Build ID 2681900, 2013-11-05T14:49:13-0500
+ * 
+ * The fonts listed in this notice are subject to the End User License
+ * Agreement(s) entered into by the website owner. All other parties are 
+ * explicitly restricted from using the Licensed Webfonts(s).
+ * 
+ * You may obtain a valid license at the URLs below.
+ * 
+ * Webfont: DIN17 SB-Regular by Scangraphic Digital Type Collection
+ * URL: http://www.myfonts.com/fonts/efscangraphic/din-17-sb/regular/
+ * Copyright: Copyright (c) Scangraphic Prepress Technology GmbH, 1992 - 2003. Veronika Elsner, Guenther Flake GbR, Hamburg 2004
+ * Licensed pageviews: 10,000
+ * 
+ * 
+ * License: http://www.myfonts.com/viewlicense?type=web&buildid=2681900
+ * 
+ * © 2013 MyFonts Inc
+*/
+
+
+/* DIN-Regular  
+@font-face {font-family: 'DIN17SBOP-Regular';src: url('din/28EC2C_0_0.eot');src: url('din/28EC2C_0_0.eot?#iefix') format('embedded-opentype'),url('din/28EC2C_0_0.woff') format('woff'),url('din/28EC2C_0_0.ttf') format('truetype');}
+*/
+
+/* Proxima-Nova 
+@font-face {font-family: 'Proximanova';src: url('proximanova/proximanova-reg-webfont.eot');src: url('proximanova/proximanova-reg-webfont.eot?#iefix') format('embedded-opentype'),url('proximanova/proximanova-reg-webfont.woff') format('woff'),url('proximanova/proximanova-reg-webfont.ttf') format('truetype');}
+
+@font-face {font-family: 'ProximanovaBold';src: url('proximanova/proximanova-bold-webfont.eot');src: url('proximanova/proximanova-bold-webfont.eot?#iefix') format('embedded-opentype'),url('proximanova/proximanova-bold-webfont.woff') format('woff'),url('proximanova/proximanova-bold-webfont.ttf') format('truetype');}
+*/
+
+/* Franklin Gothic 
+
+@font-face {font-family: 'Franklin Gothic';src: url('franklingothic/frankgotmed-webfont.eot');src: url('franklingothic/frankgotmed-webfont.eot?#iefix') format('embedded-opentype'),url('franklingothic/frankgotmed-webfont.woff') format('woff'),url('franklingothic/frankgotmed-webfont.ttf') format('truetype');}
+*/
+
+/* Webfont: Lato-Bold */@font-face {
+    font-family: 'Lato';
+    src: url('Lato/Lato-Bold.eot'); /* IE9 Compat Modes */
+    src: url('Lato/Lato-Bold.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('Lato/Lato-Bold.woff2') format('woff2'), /* Modern Browsers */
+         url('Lato/Lato-Bold.woff') format('woff'), /* Modern Browsers */
+         url('Lato/Lato-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: bold;
+    text-rendering: optimizeLegibility;
+}
+
+/* Webfont: Lato-BoldItalic */@font-face {
+    font-family: 'Lato';
+    src: url('Lato/Lato-BoldItalic.eot'); /* IE9 Compat Modes */
+    src: url('Lato/Lato-BoldItalic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('Lato/Lato-BoldItalic.woff2') format('woff2'), /* Modern Browsers */
+         url('Lato/Lato-BoldItalic.woff') format('woff'), /* Modern Browsers */
+         url('Lato/Lato-BoldItalic.ttf') format('truetype');
+    font-style: italic;
+    font-weight: bold;
+    text-rendering: optimizeLegibility;
+}
+/* Webfont: Lato-Italic */@font-face {
+    font-family: 'Lato';
+    src: url('Lato/Lato-Italic.eot'); /* IE9 Compat Modes */
+    src: url('Lato/Lato-Italic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('Lato/Lato-Italic.woff2') format('woff2'), /* Modern Browsers */
+         url('Lato/Lato-Italic.woff') format('woff'), /* Modern Browsers */
+         url('Lato/Lato-Italic.ttf') format('truetype');
+    font-style: italic;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+/* Webfont: Lato-Regular */@font-face {
+    font-family: 'Lato';
+    src: url('Lato/Lato-Regular.eot'); /* IE9 Compat Modes */
+    src: url('Lato/Lato-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('Lato/Lato-Regular.woff2') format('woff2'), /* Modern Browsers */
+         url('Lato/Lato-Regular.woff') format('woff'), /* Modern Browsers */
+         url('Lato/Lato-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+/* Webfont: Lato-Light */@font-face {
+    font-family: 'LatoLight';
+    src: url('Lato/Lato-Light.eot'); /* IE9 Compat Modes */
+    src: url('Lato/Lato-Light.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('Lato/Lato-Light.woff2') format('woff2'), /* Modern Browsers */
+         url('Lato/Lato-Light.woff') format('woff'), /* Modern Browsers */
+         url('Lato/Lato-Light.ttf') format('truetype');
+    font-style: normal;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+/* Webfont: Lato-LightItalic */@font-face {
+    font-family: 'LatoLight';
+    src: url('Lato/Lato-LightItalic.eot'); /* IE9 Compat Modes */
+    src: url('Lato/Lato-LightItalic.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('Lato/Lato-LightItalic.woff2') format('woff2'), /* Modern Browsers */
+         url('Lato/Lato-LightItalic.woff') format('woff'), /* Modern Browsers */
+         url('Lato/Lato-LightItalic.ttf') format('truetype');
+    font-style: italic;
+    font-weight: normal;
+    text-rendering: optimizeLegibility;
+}
+
+
+

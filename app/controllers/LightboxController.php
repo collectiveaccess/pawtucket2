@@ -26,8 +26,8 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
-	require_once(__CA_LIB_DIR__."/core/Datamodel.php");
+	require_once(__CA_LIB_DIR__."/ApplicationError.php");
+	require_once(__CA_LIB_DIR__."/Datamodel.php");
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets.php");
@@ -35,9 +35,9 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_user_groups.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_users.php");
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
- 	require_once(__CA_LIB_DIR__."/core/GeographicMap.php");
-	require_once(__CA_LIB_DIR__.'/core/Parsers/ZipStream.php');
-	require_once(__CA_LIB_DIR__.'/core/Logging/Downloadlog.php');
+ 	require_once(__CA_LIB_DIR__."/GeographicMap.php");
+	require_once(__CA_LIB_DIR__.'/Parsers/ZipStream.php');
+	require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
  
  	class LightboxController extends FindController {
  		# -------------------------------------------------------
@@ -329,7 +329,7 @@
 			$this->view->setVar('facets', $va_facets);
 		
 			$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
-			$this->request->session->setVar('lightbox_last_browse_id', $vs_key);
+			Session::setVar('lightbox_last_browse_id', $vs_key);
 			
 			//
 			// Current criteria
@@ -911,7 +911,6 @@
  		function ajaxListComments() {
             if($this->opb_is_login_redirect) { return; }
 
- 			$o_datamodel = Datamodel::load();
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
                 throw new ApplicationException(_t("You do not have access to this lightbox"));
             }
@@ -924,7 +923,7 @@
             }
 
  			// load table
- 			if (!($t_item = $o_datamodel->getTableInstance($ps_tablename))) {
+ 			if (!($t_item = Datamodel::getInstance($ps_tablename))) {
                 throw new ApplicationException(_t("Invalid type"));
             }
  			$pn_item_id = $this->request->getParameter($t_item->primaryKey(), pInteger);
@@ -948,8 +947,6 @@
 
  			// when close is set to true, will make the form view disappear after saving form
 
- 			$o_datamodel = Datamodel::load();
-
             $va_errors = array();
             $vn_count = null;
             $vs_message = null;
@@ -964,7 +961,7 @@
                     $va_errors[] = _t("Invalid type: %1", $ps_comment_type);
                 } else {
                     // load table
-                    $t_item = $o_datamodel->getInstanceByTableName($ps_comment_type, true);
+                    $t_item = Datamodel::getInstance($ps_comment_type, true);
                     $pn_id = $this->request->getParameter('id', pInteger);
                     if (!$t_item->load($pn_id)) {
                         $va_errors[] = _t("Invalid id: %1", $pn_id);
@@ -1316,7 +1313,6 @@
 		 */
 		public function getLightboxMedia() {
 			set_time_limit(600); // allow a lot of time for this because the sets can be potentially large
-			$o_dm = Datamodel::load();
 			$t_set = new ca_sets($this->request->getParameter('set_id', pInteger));
 			if (!$t_set->getPrimaryKey()) {
 				$this->notification->addNotification(_t('No set defined'), __NOTIFICATION_TYPE_ERROR__);
@@ -1331,8 +1327,8 @@
 				return false;
 			}
 
-			$vs_subject_table = $o_dm->getTableName($t_set->get('table_num'));
-			$t_instance = $o_dm->getInstanceByTableName($vs_subject_table);
+			$vs_subject_table = Datamodel::getTableName($t_set->get('table_num'));
+			$t_instance = Datamodel::getInstance($vs_subject_table);
 
 			$qr_res = $vs_subject_table::createResultSet($va_record_ids);
 			$qr_res->filterNonPrimaryRepresentations(false);

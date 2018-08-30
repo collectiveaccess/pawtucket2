@@ -75,10 +75,10 @@
 		$va_ui_locales = $g_request->config->getList('ui_locales');
 		if ($vs_lang = $g_request->getParameter('lang', pString)) {
 			if (in_array($vs_lang, $va_ui_locales)) {
-				$g_request->session->setVar('lang', $vs_lang);
+				Session::setVar('lang', $vs_lang);
 			}
 		}
-		if (!($g_ui_locale = $g_request->session->getVar('lang'))) {
+		if (!($g_ui_locale = Session::getVar('lang'))) {
 			$g_ui_locale = $va_ui_locales[0];
 		}
 	
@@ -105,7 +105,7 @@
 		//
 		// ContentCaching plug-in caches output of selected pages for performance
 		//
-		require_once(__CA_LIB_DIR__.'/ca/ContentCaching.php');
+		require_once(__CA_LIB_DIR__.'/ContentCaching.php');
 		$app->registerPlugin(new ContentCaching());
 	
 		//
@@ -120,7 +120,7 @@
 		//
 		// Dispatch the request
 		//
-		$vb_auth_success = $g_request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false));
+		$vb_auth_success = $g_request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false, 'allow_external_auth' => ($g_request->getController() == 'LoginReg')));
 		$app->dispatch(true);
 
 		//
@@ -130,7 +130,7 @@
 	
 		// Note url of this page as "last page"
 		if (($g_request->getController() != 'LoginReg') && (!$g_request->isAjax()) && (!$g_request->getParameter('dont_set_pawtucket2_last_page', pInteger))) {	// the 'dont_set_pawtucket2_last_page' is a lame-but-effective way of suppressing recording of something we don't want to be a "last page" (and potentially redirected to)
-			$g_request->session->setVar('pawtucket2_last_page', $g_request->getFullUrlPath());
+			Session::setVar('pawtucket2_last_page', $g_request->getFullUrlPath());
 		}
 		$g_request->close();
 	} catch (Exception $e) {

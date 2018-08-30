@@ -81,3 +81,74 @@
 ?>
 	</div><!--end col-sm-12-->
 </div><!-- end row -->
+<?php
+	$vb_featured_event = false;
+	# --- check if there are events to show
+	$o_occ_search = caGetSearchInstance("ca_occurrences");
+	$qr_events = $o_occ_search->search("ca_occurrences.featured_event:yes", array("restrictToTypes" => array("event"), "checkAccess" => $va_access_values, "sort" => "ca_occurrences.event_date", "sortDirection" => "desc"));
+	if($qr_events->numHits()){
+		print "<div class='row hpEvent'>";
+		while($qr_events->nextHit()){
+			$vs_event_title = $qr_events->get("ca_occurrences.preferred_labels.name");
+			$vs_description = $qr_events->get("ca_occurrences.description");
+			$vs_date = $qr_events->get("ca_occurrences.event_date");
+			$vs_image = $qr_events->get("ca_object_representations.media.large", array("checkAccess" => $va_access_values));
+			if($vs_image){
+				print "<div class='col-xs-12 col-sm-6'>";
+			}else{
+				print "<div class='col-xs-12'>";
+			}
+			if($vs_event_title){
+				print "<H1>".$vs_event_title."</H1>";
+			}
+			if($vs_date){
+				print "<H4>".$vs_date."</H4>";
+			}
+			if($vs_description){
+				print "<p>".$vs_description."</p>";
+			}
+			print "</div>";
+			if($vs_image){
+				print "<div class='col-xs-12 col-sm-6'>".$vs_image."</div>";
+			}
+		}
+		print "</div><!- end row -->";
+		$vb_featured_event = true;
+	}
+?>
+<?php
+	# --- check if there are featured Fairs to show
+	$o_occ_search = caGetSearchInstance("ca_occurrences");
+	$qr_fairs = $o_occ_search->search("ca_occurrences.featured_fair:yes", array("restrictToTypes" => array("art_fair"), "checkAccess" => $va_access_values, "sort" => "ca_occurrences.opening_closing", "sortDirection" => "desc"));
+	if($qr_fairs->numHits()){
+		print "<div class='row hpEvent'".(($vb_featured_event) ? " style='border-top:0px;'" : "").">";
+		while($qr_fairs->nextHit()){
+			$vs_fair_title = $qr_fairs->get("ca_occurrences.preferred_labels.name");
+			if($qr_fairs->get("ca_occurrences.art_fair_location")){
+				$vs_location = caConvertLineBreaks($qr_fairs->get("ca_occurrences.art_fair_location"));
+			}
+			$vs_date = $qr_fairs->get("ca_occurrences.opening_closing");
+			$vs_image = $qr_fairs->get("ca_object_representations.media.large", array("checkAccess" => $va_access_values));
+			if($vs_image){
+				print "<div class='col-xs-12 col-sm-3 col-sm-offset-3'>".$vs_image."</div>";
+			}
+			if($vs_image){
+				print "<div class='col-xs-12 col-sm-6'>";
+			}else{
+				print "<div class='col-xs-12'>";
+			}
+			if($vs_fair_title){
+				print "<H1>".caDetailLink($this->request, $vs_fair_title, '', 'ca_occurrences', $qr_fairs->get("occurrence_id"), null, null)."</H1>";
+			}
+			if($vs_date){
+				print "<H4>".$vs_date."</H4>";
+			}
+			if($vs_location){
+				print "<p>".$vs_location."</p>";
+			}
+			print "<p>".caDetailLink($this->request, _t("More Information"), '', 'ca_occurrences', $qr_fairs->get("occurrence_id"), null, null)."</p>";
+			print "</div>";
+		}
+		print "</div><!- end row -->";
+	}
+?>

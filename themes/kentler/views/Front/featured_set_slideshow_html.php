@@ -46,7 +46,7 @@
 			}
 		}
 	}
-	if(is_array($va_current_exhibition_info) && sizeof($va_current_exhibition_info["images"])){
+	if(is_array($va_current_exhibition_info) && is_array($va_current_exhibition_info["images"]) && sizeof($va_current_exhibition_info["images"])){
 ?>   
 			<div class="jcarousel-wrapper" style="overflow:hidden;">
 <?php

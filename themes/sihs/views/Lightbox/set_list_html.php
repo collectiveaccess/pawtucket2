@@ -41,7 +41,6 @@
 	$vs_lightbox_section_heading		= $va_lightboxDisplayName["section_heading"];
 	$o_lightbox_config 					= $this->getVar("set_config");
 	
-	$o_dm = Datamodel::load();
 ?>
 	<h1>
 		<?php print ucfirst($vs_lightbox_section_heading); ?>
@@ -105,7 +104,7 @@
 					print "<div><small>";
 					print $va_activity["fname"]." ".$va_activity["lname"]." ";
 					switch($va_activity["logged_table_num"]){
-						case $o_dm->getTableNum("ca_set_items"):
+						case Datamodel::getTableNum("ca_set_items"):
 							switch($va_activity["changetype"]){
 								case "I":
 									print _t("added an item to %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
@@ -122,7 +121,7 @@
 							}
 							break;
 						# ----------------------------------------
-						case $o_dm->getTableNum("ca_sets_x_user_groups"):
+						case Datamodel::getTableNum("ca_sets_x_user_groups"):
 							$t_group->load($va_activity["snapshot"]["group_id"]);
 							switch($va_activity["changetype"]){
 								case "I":
@@ -140,16 +139,16 @@
 							}
 						break;
 						# ----------------------------------------
-						case $o_dm->getTableNum("ca_item_comments"):
-							if($va_activity["table_num"] == $o_dm->getTableNum("ca_sets")){
+						case Datamodel::getTableNum("ca_item_comments"):
+							if($va_activity["table_num"] == Datamodel::getTableNum("ca_sets")){
 								print _t("commented on %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
-							}elseif($va_activity["table_num"] == $o_dm->getTableNum("ca_set_items")){
+							}elseif($va_activity["table_num"] == Datamodel::getTableNum("ca_set_items")){
 								print _t("commented on an item in %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
 							}
 							print ": <i>".((mb_strlen($va_activity["comment"]) > 38) ? mb_substr($va_activity["comment"], 0, 38)."..." : $va_activity["comment"])."</i>";
 							break;
 						# ----------------------------------------
-						case $o_dm->getTableNum("ca_sets"):
+						case Datamodel::getTableNum("ca_sets"):
 							switch($va_activity["changetype"]){
 								case "I":
 									print _t("made %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));

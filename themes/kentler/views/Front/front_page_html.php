@@ -31,7 +31,7 @@
  */
  	$o_config = $this->getVar("config");
 	$va_access_values = $this->getVar("access_values");
-	if ($this->request->session->getVar('visited') != 'has_visited') {		
+	if (Session::getVar('visited') != 'has_visited') {		
 ?>	
 		<div id="homePanel">
 			<div class="titleLine1">Kentler</div>

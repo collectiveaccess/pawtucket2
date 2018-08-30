@@ -101,6 +101,9 @@
 					print "<div class='spacer'></div>";	
 					if ($va_photo_credit = $t_object->get('ca_object_representations.caption')) {
 						print "<div class='tombstone'>".$va_photo_credit."</div>";
+					}
+					if ($va_photo_copyright = $t_object->get('ca_object_representations.caption_copyright')) {
+						print "<div class='tombstone'>".$va_photo_copyright."</div>";  
 					}	
 					if ($va_photo_name = $t_object->getWithTemplate('<unit relativeTo="ca_object_representations"><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer">^ca_entities.preferred_labels</unit></unit>')) {
 						print "<div class='tombstone'>Photo by ".$va_photo_name."</div>";
