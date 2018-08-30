@@ -164,7 +164,6 @@
 					if(!$this->request->isLoggedIn()){
 ?>
 						<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse Timeline"), "", "", "", ""); ?></li>
-						<li><?php print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a>"; ?></li>
 <?php
 					}else{
 ?>

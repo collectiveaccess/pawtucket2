@@ -40,7 +40,8 @@
 						</p>
 					</div>
 					<div class="col-sm-8 text-right">
-						Questions or comments?<br/>Contact <a href="mailto:archives@steelcase.com">archives@steelcase.com</a>
+						<div>Questions or comments?<br/>Contact <a href="mailto:archives@steelcase.com">archives@steelcase.com</a></div>
+						<div class='loginButton'><?php print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Internal Login")."</a>"; ?></div>
 					</div>
 				</div>
 			</div>

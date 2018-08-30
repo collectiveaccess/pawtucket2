@@ -200,7 +200,10 @@ ul.menuItems.fixed {
 	height:auto;
 	margin-bottom:35px;
 }
-
+.loginButton {
+	margin-top:10px;
+	font-weight:bold;
+}
 .filterMenuFacetList li.active {
     background-color: #0096db;
 }
@@ -238,12 +241,24 @@ ul.about li i{
 #bRefine.fixed div:last-child {
 	margin-bottom:100px;
 }
+.bResultListItemCol {
+	height:100px;
+}
+.bResultListItem {
+	box-shadow:none;
+	-webkit-box-shadow:none;
+	border-bottom:1px solid #ccc;
+	padding-top:5px;
+}
 
 /* list results */
 .bResultListItem:hover {
     padding: 10px;
+    padding-top:5px;
     margin:0px;
     height:auto;
+    box-shadow:none;
+    -webkit-box-shadow:none;
 }
 
 /* front timeline */
