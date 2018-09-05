@@ -68,7 +68,7 @@
 		print Debug::$bar->getJavascriptRenderer()->render();
 	}	
 		#first visit sets the session
-		$this->request->session->setVar('visited', 'has_visited');
+		Session::setVar('visited', 'has_visited');
 ?>
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
