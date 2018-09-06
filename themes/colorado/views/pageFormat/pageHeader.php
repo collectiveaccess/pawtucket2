@@ -114,10 +114,10 @@ switch($this->request->getController()){
 	break;
 	# -----------------------------------
 }
-if($ps_subsite && ($ps_subsite != $this->request->session->getVar("coloradoSubSite"))){
-	$this->request->session->setVar("coloradoSubSite", $ps_subsite);
+if($ps_subsite && ($ps_subsite != Session::getVar("coloradoSubSite"))){
+	Session::setVar("coloradoSubSite", $ps_subsite);
 }
-$ps_subsite = $this->request->session->getVar("coloradoSubSite");
+$ps_subsite = Session::getVar("coloradoSubSite");
 if(!$ps_subsite){
 	$ps_subsite = "eggshell";
 }

@@ -5,8 +5,8 @@
 		$t_occurrence->load($pn_user_category);
 		$ps_user_category = strtolower($t_occurrence->get("ca_occurrences.preferred_labels.name"));
 	}else{
-		$pn_user_category = $this->request->session->getVar("bokUserCategory");
-		$ps_user_category = $this->request->session->getVar("bokUserCategoryLabel");
+		$pn_user_category = Session::getVar("bokUserCategory");
+		$ps_user_category = Session::getVar("bokUserCategoryLabel");
 	}
 ?>
 <div class="container containerTextPadding" id="comp_content">

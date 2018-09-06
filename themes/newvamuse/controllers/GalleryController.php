@@ -44,7 +44,6 @@
             }
             
  			$this->config = caGetGalleryConfig();
- 			$this->opo_datamodel = Datamodel::load();
  			
  		 	# --- what is the section called - title of page
  			if(!$vs_section_name = $this->config->get('gallery_section_name')){

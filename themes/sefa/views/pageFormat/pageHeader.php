@@ -39,16 +39,15 @@
 	# --- check if there is a current exhibition
 	$o_occ_search = caGetSearchInstance("ca_occurrences");
 	$va_access_values = caGetUserAccessValues($this->request);
-	$qr_res = $o_occ_search->search("current_exh:yes", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.opening_closing", "sortDirection" => "desc"));
+	$qr_res = $o_occ_search->search("ca_occurrences.current_exh:yes", array("checkAccess" => $va_access_values, "restrictToTypes" => array("exhibition"), "sort" => "ca_occurrences.opening_closing", "sortDirection" => "desc"));
 	$vn_current_exhibition = null;
 	if($qr_res->numHits()){
 		$qr_res->nextHit();
 		$vn_current_exhibition = $qr_res->get("ca_occurrences.occurrence_id");
-		$this->request->session->setVar("current_exhibition_id", $vn_current_exhibition);
+		Session::setVar("current_exhibition_id", $vn_current_exhibition);
 	}else{
-		$this->request->session->setVar("current_exhibition_id", "");
+		Session::setVar("current_exhibition_id", "");
 	}
-
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -82,8 +81,8 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				#print caNavLink($this->request, caGetThemeGraphic($this->request, 'SusanEleyFineArt.png'), "navbar-brand", "", "","");
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'sefaLogo10Years.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'SusanEleyFineArt.png'), "navbar-brand", "", "","");
+				#print caNavLink($this->request, caGetThemeGraphic($this->request, 'sefaLogo10Years.png'), "navbar-brand", "", "","");
 ?>
 			</div>
 
