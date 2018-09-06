@@ -59,7 +59,7 @@
 			</div><!-- end col -->
 			<div class='col-md-6 col-lg-6'>
 <?php
-/*				if($va_related_catalogue = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('catalogue'), 'sort' => 'ca_object_labels.name'))){
+				if($va_related_catalogue = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('catalogue'), 'sort' => 'ca_object_labels.name'))){
 					foreach ($va_related_catalogue as $vn_i => $vn_related_catalogue_id) {
 						$t_rel_catalogue = new ca_objects($vn_related_catalogue_id);
 						if($va_pdfs = $t_rel_catalogue->representationsWithMimeType(array('application/pdf'), array('versions' => array('original'), 'return_with_access' => $va_access_values))){
@@ -86,8 +86,7 @@
 				}	
 				if ($vs_ext_link = $t_item->getWithTemplate('<ifcount min="1" code="ca_occurrences.external_link.url_entry"><unit relativeTo="ca_occurrences.external_link" delimiter=" "><ifdef code="ca_occurrences.external_link.url_entry"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_occurrences.external_link.url_entry">^ca_occurrences.external_link.url_source</a></h6></div></ifdef></unit></ifcount>')) {
 					print $vs_ext_link;
-				}
-*/							
+				}			
 ?>			
 			</div><!-- end col -->
 		</div><!-- end row -->
@@ -220,7 +219,7 @@
 		}	
 		
 		#Related Catalogue
-		if ($va_related_catalogue = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('catalogue'), 'sort' => 'ca_object_labels.name'))) {
+/*		if ($va_related_catalogue = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('catalogue'), 'sort' => 'ca_object_labels.name'))) {
 			print '<div class="row objInfo">';
 
 			print '	<div class="col-sm-12"><hr><h6 class="header">Catalogue</h6></div>';
@@ -235,7 +234,8 @@
 				print "</div><!-- end col -->";
 			}
 			print "</div><!-- end row -->";			
-		}							
+		}	
+*/								
 ?>				
 		
 		</div><!-- end container -->
