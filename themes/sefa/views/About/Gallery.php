@@ -13,6 +13,14 @@
 		<p>
 			Eley has a BA in Art History from Brown University and an MA in Visual Arts Administration from NYU.
 		</p>
+		<div class="row" style="margin-top:50px;">
+			<div class="col-xs-6 col-md-3 col-md-offset-2 fullWidthImg">
+				<a href="http://womenartdealers.org/" target="_blank"><?php print caGetThemeGraphic($this->request, 'awad-logo.jpg'); ?></a>
+			</div>
+			<div class="col-xs-6 col-md-3  col-md-offset-2 fullWidthImg" style="padding-top:30px;">
+				<a href="https://www.arttable.org/" target="_blank"><?php print caGetThemeGraphic($this->request, 'arttable-logo.png'); ?></a>
+			</div>
+		</div>
 	</div>
 	<div class="col-sm-4 col-md-3 col-md-offset-1">
 	 	<H5>&nbsp;</H5>

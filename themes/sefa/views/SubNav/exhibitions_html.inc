@@ -1,5 +1,5 @@
 <?php
-	$vn_current_exhibition_id = $this->request->session->getVar("current_exhibition_id");
+	$vn_current_exhibition_id = Session::getVar("current_exhibition_id");
 	$t_item = $this->getVar("item");
 	$vn_exhibition_id_detail = null;
 	if($t_item && $t_item->get("occurrence_id")){

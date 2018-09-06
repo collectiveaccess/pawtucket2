@@ -90,7 +90,7 @@
 				<div class="unit"><h2><?php print _t("Other UCM Specimens From This Site"); ?></h2>
 <?php
 				foreach($va_objects as $va_object) {
-					print "<div>".caDetailLink($this->request, $va_object["idno"], '', 'ca_objects', $va_object['object_id'], array("subsite" => $this->request->session->getVar("coloradoSubSite")))."</div>";
+					print "<div>".caDetailLink($this->request, $va_object["idno"], '', 'ca_objects', $va_object['object_id'], array("subsite" => Session::getVar("coloradoSubSite")))."</div>";
 				}
 				print "</div><!-- end unit -->";
 

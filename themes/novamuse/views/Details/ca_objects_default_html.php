@@ -99,7 +99,7 @@
   			<!--<div class="objectnav">1 of 2</div>-->
    		
 <?php
-		if ((!$this->request->config->get('dont_allow_registration_and_login')) && (!$this->request->config->get('disable_lightbox'))) {
+		if ((!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) && (!$this->request->config->get('disable_lightbox'))) {
 			print '<div class="nav1">';
 			if($this->request->isLoggedIn()){
 				print caNavLink($this->request, _t("Add to Lightbox"), 'shareButton', '', 'Lightbox', 'addItem', array('object_id' => $vn_object_id));
@@ -329,7 +329,7 @@
 ?>
 <div class="clear"></div>	
 <?php
-if (!$this->request->config->get('dont_allow_registration_and_login')) {
+if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
 		# --- user data --- comments - ranking - tagging
 		$va_comments = $this->getVar("comments");
 		$va_tags = $this->getVar("tags_array");
@@ -422,7 +422,7 @@ if (!$this->request->config->get('dont_allow_registration_and_login')) {
 			</form>
 <?php
 		}else{
-			if (!$this->request->config->get('dont_allow_registration_and_login')) {
+			if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
 				print "<p class='detail-login-link'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Do you know more about this item?<br/>Login to add your tags or comment to this object!")."</a></p>";		
 			}
 		}

@@ -35,6 +35,8 @@
  	$va_listing_info = $this->getVar('listingInfo');
  	$va_access_values = caGetUserAccessValues($this->request);
  	$t_occurrence = new ca_occurrences();
+ 	$pn_row_id = $this->request->getParameter("row_id", pString);
+ 	$vs_highlight_year = null;
 
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
@@ -57,7 +59,10 @@
 					}
 				}
 				$va_years[$vs_start_year] = $vs_start_year;
-				$va_event_years[$qr_list->get("ca_occurrences.occurrence_id")] = $vs_start_year;
+				$va_event_years[$qr_list->get("ca_occurrences.occurrence_id")] = $vs_start_year;					
+				if($pn_row_id && ($pn_row_id == $qr_list->get("occurrence_id"))){
+					$vs_highlight_year = $vs_start_year;
+				}
 			}
 		}
 		$qr_list->seek(0);
@@ -174,13 +179,15 @@
 	}
 
 	if(is_array($va_years)){
-		$vs_first_year = array_shift($va_years);
+		if(!$vs_highlight_year){
+			$vs_highlight_year = array_shift($va_years);
+		}
 ?>
 	<script type='text/javascript'>
 		jQuery(document).ready(function() {		
-			jQuery("#yearTab<?php print $vs_first_year; ?>").show();
+			jQuery("#yearTab<?php print $vs_highlight_year; ?>").show();
 			jQuery(".yearBar").removeClass("active");
-			jQuery(".yearBar<?php print $vs_first_year; ?>").addClass("active");
+			jQuery(".yearBar<?php print $vs_highlight_year; ?>").addClass("active");
 		});
 	</script>
 <?php
