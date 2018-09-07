@@ -30,7 +30,14 @@ H1, h1 {
 .bgBlue{
 	background-color:#0e4c71;
 }
-
+#pageArea{
+	padding-top:20px;
+	padding-bottom:75px;
+}
+#pageArea.front{
+	padding-top:0px;
+	padding-bottom:0px;
+}
 .navbar-header{
 	padding-left:15px;
 	padding-right:15px;
@@ -221,6 +228,26 @@ ul.menuItems {
 }
 
 /* detail */
-.detail H6 a {
+.detail H6 a, .detail a {
     color: #0e4c71;
+}
+.detail .detailNavBgLeft, .detail .detailNavBgRight{
+	margin-top:-35px;
+}
+@media(min-width: 768px) {
+	.detail .exportCollection{
+		float:right;
+		margin-top:5px;
+	}
+}
+.detail .exportCollection a, .detail .exportCollection span.glyphicon{
+	color: #0e4c71 !important;
+}
+a.readmore-js-toggle {
+    padding-top: 10px;
+    color: #0e4c71;
+    font-weight:bold
+}
+.detail .unit b, .detail .unit strong {
+    font-weight: 300;
 }

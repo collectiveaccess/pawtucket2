@@ -80,26 +80,27 @@
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				
 				<H5>{{{<unit>^ca_objects.type_id</unit>}}}</H5><!--- she did not ask for type -->
-				<H4>{{{^ca_objects.preferred_labels<ifdef code="ca_objects.GMD"> [^ca_objects.GMD]</ifdef><ifdef code="OtherTitle"> :  </ifdef> ^OtherTitle <ifdef code="nonpreferred_labels"> =  </ifdef>  ^nonpreferred_labels <ifdef code="creator_name"> / </ifdef>^creator_name}}}</H4>
+				<H4>{{{^ca_objects.preferred_labels<ifdef code="ca_objects.GMD"> [<unit realtiveTo="ca_objects.GMD" delimiter=", ">^ca_objects.GMD</unit>]</ifdef><ifdef code="OtherTitle"> :  </ifdef> ^OtherTitle <ifdef code="nonpreferred_labels"> =  </ifdef>  ^nonpreferred_labels <ifdef code="creator_name"> / </ifdef>^creator_name}}}</H4>
 				{{{<ifdef code="ca_objects.continue_title"><div class="unit"><H6>Continuation of title</H6>...^ca_objects.continue_title</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.suptitlnote"><div class="unit"><H6>Supplied title note</H6>^ca_objects.suptitlnote</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.alt_title_note"><div class="unit"><H6>Parallel title note</H6>^ca_objects.alt_title_note</div></ifdef>}}}
 				{{{<ifcount min="1" code="ca_collections"><div class="unit"><H6>Part of</H6>^ca_collections.hierarchy.preferred_labels%delimiter=_»_</div></ifcount>}}}
-				{{{<if rule='^ca_objects.type_id IN ["Archival Item", "Ship"]'><ifdef code="ca_objects.pub"><div class="unit"><H6>Publisher</H6>^ca_objects.pub</div></ifdef></if>}}}
+				{{{<if rule='^ca_objects.type_id IN ["Archival Item", "Ship plan"]'><ifdef code="ca_objects.pub"><div class="unit"><H6>Publisher</H6>^ca_objects.pub</div></ifdef></if>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Item number</H6>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.previous_number"><div class="unit"><H6>Previous number(s)</H6>^ca_objects.previous_number%delimeter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.archive_display"><div class="unit"><H6>Date</H6>^ca_objects.archive_display</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.archive_dates.archive_display"><div class="unit"><H6>Date</H6>^ca_objects.archive_dates.archive_display</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.physical_description|ca_objects.measurements.height|ca_objects.measurements.width|ca_objects.measurements.depth|ca_objects.measurements.diameter"><div class="unit"><H6>Physical Description</H6>^ca_objects.physical_description<ifdef code="ca_objects.measurements.height"> ; </ifdef>^ca_objects.measurements.height<ifdef code="ca_objects.measurements.width"> x </ifdef>^ca_objects.measurements.width <ifdef code="ca_objects.measurements.depth"> x </ifdef>^ca_objects.measurements.depth <ifdef code="ca_objects.measurements.diameter"> ; </ifdef>^ca_objects.measurements.diameter<ifdef code="ca_objects.measurements.diameter"> (diam.)</ifdef></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.history_bio"><div class="unit"><H6>Administrative History / Biographical Sketch</H6>^ca_objects.history_bio</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.custodial_history"><div class="unit"><H6>Custodial history</H6>^ca_objects.custodial_history</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.scope_content"><div class="unit"><H6>Scope & Content</H6>^ca_objects.scope_content</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.arrangement"><div class="unit"><H6>Arrangement</H6>^ca_objects.arrangement</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.language"><div class="unit"><H6>Languages</H6>^ca_objects.language%delimeter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.language"><div class="unit"><H6>Languages</H6>^ca_objects.language%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.related_material"><div class="unit"><H6>Related materials</H6>^ca_objects.related_material</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.reproRestrictions.reproduction|ca_objects.reproRestrictions.access_restrictions"><div class="unit"><H6>Restrictions</H6><ifdef code="ca_objects.reproRestrictions.reproduction"><b>Reproduction: </b>^ca_objects.reproRestrictions.reproduction<br/></ifdef><ifdef code="ca_objects.reproRestrictions.access_restrictions"><b>Access: ^ca_objects.reproRestrictions.access_restrictions</ifdef></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.reproRestrictions.reproduction|ca_objects.reproRestrictions.access_restrictions"><div class="unit"><H6>Restrictions</H6><ifdef code="ca_objects.reproRestrictions.reproduction"><b>Reproduction: </b>^ca_objects.reproRestrictions.reproduction<br/></ifdef><ifdef code="ca_objects.reproRestrictions.access_restrictions"><b>Access: </b>^ca_objects.reproRestrictions.access_restrictions</ifdef></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.lcsh_terms"><div class="unit"><H6>LC Subject Headings</H6>^ca_objects.lcsh_terms%delimeter=,_</div></ifdef>}}}
 				
 				{{{<if rule='^ca_objects.type_id IN ["Map", "Chart"]'>
+					<ifdef code="ca_objects.scale"><div class="unit"><H6>Scale</H6>^ca_objects.scale</div></ifdef>
 					<ifdef code="ca_objects.correct">
 						<div class="unit">
 							<H6>Corrections</H6>
@@ -111,11 +112,11 @@
 					
 					<ifdef code="ca_objects.stateproj"><div class="unit"><H6>Statement of projection</H6>^ca_objects.stateproj</div></ifdef>
 					<ifdef code="ca_objects.coord"><div class="unit"><H6>Statement of coordinates</H6>^ca_objects.coord</div></ifdef>
-					<ifcount code="ca_entities" restrictToRelationshipTypes="publish"><div class="unit"><H6>Published by</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="publish"><l>^ca_entities.preferred_labels</l></unit></div></ifdef>
+					<ifcount code="ca_entities" restrictToRelationshipTypes="publish" min="1"><div class="unit"><H6>Published by</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="publish"><l>^ca_entities.preferred_labels</l></unit></div></ifdef>
 					<ifdef code="ca_objects.artist_note"><div class="unit"><H6>Artist/maker/manufacturer note</H6>^ca_objects.artist_note</div></ifdef>
 					<ifdef code="ca_objects.dist"><div class="unit"><H6>Distributor</H6>^ca_objects.dist</div></ifdef>					
 				</if>}}}
-				{{{<if rule='^ca_objects.type_id IN ["Map", "Chart", "Ship"]'><ifdef code="ca_objects.pub_date"><div class="unit"><H6>Original publication date</H6>^ca_objects.pub_date</div></ifdef></if>}}}
+				{{{<if rule='^ca_objects.type_id IN ["Map", "Chart", "Ship plan"]'><ifdef code="ca_objects.pub_date"><div class="unit"><H6>Original publication date</H6>^ca_objects.pub_date</div></ifdef></if>}}}
 				{{{<if rule='^ca_objects.type_id IN ["Chart"]'>
 					<ifdef code="ca_objects.chartno"><div class="unit"><H6>Chart number</H6>^ca_objects.chartno</div></ifdef>
 					<ifdef code="ca_objects.chartnotes">
@@ -129,17 +130,17 @@
 						</div>
 					</ifdef>
 				</if>}}}
-				{{{<if rule='^ca_objects.type_id IN ["Map", "Chart", "Ship"]'>
+				{{{<if rule='^ca_objects.type_id IN ["Map", "Chart", "Ship plan"]'>
 					<ifdef code="ca_objects.ship_plan_note"><div class="unit"><H6>Notes</H6>^ca_objects.ship_plan_note</div></ifdef>
 				</if>}}}
 				{{{<if rule='^ca_objects.type_id IN ["Map", "Chart"]'>
-					<ifcount code="ca_occurrences" restrictToTypes="vessel">
+					<ifcount code="ca_occurrences" restrictToTypes="vessel" min="1">
 						<div class="unit">
 							<H6>Related vessels</H6>
 							<unit relativeTo="ca_occurrences" restrictToTypes="vessel" delimiter=", ">^ca_occurrences.vesprefix <l><i>^ca_occurrences.preferred_labels</i></l> ^ca_occurrences.vessuffix</unit>
 						</div>
 					</ifcount>
-					<ifcount code="ca_entities" excludeRelationshipTypes="publish">
+					<ifcount code="ca_entities" excludeRelationshipTypes="publish" min="1">
 						<div class="unit">
 							<H6>Related people</H6>
 							<unit relativeTo="ca_entities" excludeRelationshipTypes="publish"><l>^ca_entities.preferred_labels</l></unit>
@@ -147,8 +148,8 @@
 					</ifcount>
 				</if>}}}
 				
-				{{{<if rule='^ca_objects.type_id IN ["Ship"]'>
-					<ifcount code="ca_occurrences" restrictToTypes="vessel">
+				{{{<if rule='^ca_objects.type_id IN ["Ship plan"]'>
+					<ifcount code="ca_occurrences" restrictToTypes="vessel" min="1">
 						<div class="unit">
 							<H6>Vessel portrayed</H6>
 							<unit relativeTo="ca_occurrences" restrictToTypes="vessel" delimiter=", ">^ca_occurrences.vesprefix <l><i>^ca_occurrences.preferred_labels</i></l> ^ca_occurrences.vessuffix</unit>
@@ -164,7 +165,7 @@
 						<ifdef code="ca_objects.archtechnote.edition_note_ship"><b>Edition note: </b>^ca_objects.chartnote.edition_note_ship</ifdef>
 						<ifdef code="ca_objects.archtechnote.date_note_ship"><b>Date note: </b>^ca_objects.archtechnote.date_note_ship</ifdef>
 					</div></ifdef>
-					<ifcount code="ca_entities">
+					<ifcount code="ca_entities" min="1">
 						<div class="unit">
 							<H6>Related people</H6>
 							<unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit>
