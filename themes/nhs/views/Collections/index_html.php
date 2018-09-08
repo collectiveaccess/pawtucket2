@@ -7,9 +7,9 @@
 	$ps_sort = $this->request->getParameter('sort', pString);
 
 	if(!$ps_sort){
-		$ps_sort = $this->request->session->getVar("collection_section_sort");
+		$ps_sort = Session::getVar("collection_section_sort");
 	}elseif(in_array($ps_sort, $va_sorts)){
-		$this->request->session->setVar("collection_section_sort", $ps_sort);
+		Session::setVar("collection_section_sort", $ps_sort);
 	}
 	if(!$ps_sort){
 		$ps_sort = "title";
