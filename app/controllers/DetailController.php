@@ -1143,7 +1143,7 @@
  				return;
  			}
  			$t_element = new ca_metadata_elements($t_attr->get('element_id'));
- 			$this->request->setParameter(Datamodel::getTablePrimaryKeyName($vn_table_num), $t_attr->get('row_id'));
+ 			$this->request->setParameter(Datamodel::primaryKey($vn_table_num), $t_attr->get('row_id'));
  			
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
  			$ps_version = $this->request->getParameter('version', pString);
