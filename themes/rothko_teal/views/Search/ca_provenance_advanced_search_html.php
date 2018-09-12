@@ -13,23 +13,23 @@
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the catalog.">Keyword</span>
-				{{{_fulltext%width=200px&height=1}}}
+				{{{_fulltext%width=200px&height=1&label=Keyword}}}
 			</div>			
 		</div>		
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to provenance names only.">Name</span>
-				{{{ca_collections.preferred_labels.name%width=220px}}}
+				{{{ca_collections.preferred_labels.name%width=220px&label=Name}}}
 			</div>
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-6">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Whether a work currently or previously resides in a location.">Provenance Status</span>
-				{{{ca_objects_x_collections.current_collection%width=210px&height=1}}}
+				{{{ca_objects_x_collections.current_collection%width=210px&height=1&label=Provenance_Status}}}
 			</div>
 			<div class="advancedSearchField col-sm-6">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Where a provenance resides.">Location</span>
-				{{{ca_places.preferred_labels%height=30px&height=1}}}
+				{{{ca_places.preferred_labels%height=30px&height=1&label=Location}}}
 			</div>
 		</div>			
 		<br style="clear: both;"/>

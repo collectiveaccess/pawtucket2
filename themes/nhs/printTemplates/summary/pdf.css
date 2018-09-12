@@ -4,9 +4,21 @@
     font-family: Constantia;
     src: url(Constantia.ttf);
 }
-body{ font-family: Constantia, serif; margin:0px; padding:0px 25px 0px 25px; font-size:14px; line-height:1.4em;}
+@font-face {
+    font-family: Constantia;
+    src: url(Constantiab.ttf);
+    font-weight:bold;
+}
+@font-face {
+    font-family: Constantia;
+    src: url(constani.ttf);
+    font-style:italic;
+}
+body{ font-family: Constantia, sans-serif; margin:0px; padding:0px 25px 0px 25px; font-size:14px; line-height:1.2em;}
+/* wkhtml needs line height of 1.4em for body */
 a, a:hover, a:focus, .detail a {
     color: #2c85b8;
+    text-decoration:none;
 }
 .nowrap{
 	white-space: nowrap;
@@ -20,8 +32,10 @@ a, a:hover, a:focus, .detail a {
 	margin-top:20px;
 }
 /* summary styles */
-.title { font-family: Constantia, serif; font-size: 22px; width:75%; margin-top:60px; margin-left:auto; margin-right:auto; text-align: center; font-weight: bold; line-height:1.3em;}
-.contact { text-align:center; margin-top:20px;}
+.title { font-family: Constantia, serif; font-size: 22px; width:75%; margin-top:60px; margin-left:auto; margin-right:auto; text-align: center; line-height:1.1em !important; font-weight:bold;}
+/* wkhtml needs line-height:1.3em; for title */
+.contact { text-align:center; margin-top:20px; line-height:1em !important;}
+/* wkhtml needs line-height removed for contact, just ingerit from body */
 .sectionLabel { clear:both; font-size:18px; padding-top:50px; margin-bottom:30px;}
 .unit{
 	clear:both;

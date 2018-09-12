@@ -51,6 +51,7 @@
  		public function View() {
  			if (!is_array($va_item_ids = Session::getVar("comparison_list"))) { $va_item_ids = []; }
  			
+ 			if($u = str_replace('|', '/', $this->request->getParameter('url', pString))) { Session::setVar('compare_last_page', $u); }
  			$this->view->setVar('items', $va_item_ids);
  			$this->render("Compare/view_html.php");
  		}
