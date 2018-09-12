@@ -69,6 +69,7 @@
 		];
 	 }
 ?>
+
 <div style="width: 100%; height: 400px" id="comparison_viewer">
 
 </div>
@@ -83,7 +84,13 @@
 		mainMenuSettings: {
 			buttons: { 
 				layout: false
-			}
+			},
+			userButtons: [
+			    {"label": "Back",
+                 "iconClass": "teal-results",
+                 "attributes": { "class": "small", "href":  "<?php print Session::getVar('compare_last_page'); ?>" }
+                }
+			]
 		}
 	});
 	$("#comparison_viewer").height($(window).height() - $("nav").height() + "px");

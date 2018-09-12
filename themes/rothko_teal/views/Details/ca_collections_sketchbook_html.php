@@ -27,7 +27,7 @@
 		</div><!-- end col --> 
 	</div>
 <div class="row">
-	<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1' style="padding-right:30px;margin-bottom:40px;">
+	<div class='col-sm-7 col-md-7 col-lg-7' style="padding-right:30px;margin-bottom:40px;">
 		{{{representationViewer}}}
 <?php
 			if ($va_catalog_id = $t_item->get('ca_collections.institutional_id')) {
@@ -35,7 +35,7 @@
 			}	
 ?>		
 	</div>	
-	<div class='col-sm-6 col-md-6 col-lg-5'>
+	<div class='col-sm-5 col-md-5 col-lg-5'>
 <?php
 		$vn_label_col = "col-sm-4";
 		$vn_data_col = "col-sm-8";
@@ -163,7 +163,7 @@
 	}
 	if ($vs_provenance != "") {
 		print "<div class='row'><div class='col-sm-8 col-sm-offset-2'><div class='drawer'>";
-		print "<h6><a href='#' data-toggleDiv='provenanceDiv' class='togglertronic'>Provenance <i class='fa fa-plus drawerToggle'></i></a></h6>";
+		print "<h6><a href='#' data-toggleDiv='provenanceDiv' class='togglertronic'>Provenance <i class='fa fa-minus drawerToggle'></i></a></h6>";
 		print "<div id='provenanceDiv'>";
 		print $vs_provenance;
 		print "</div><!-- end provenanceDiv -->";
@@ -181,20 +181,44 @@
 	</div><!-- end col --></div><!-- end row -->
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => 'collection', 'id' => '^ca_collections.collection_id', 'detailNav' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'worksInCollection', array('facet' => 'collection', 'id' => '^ca_collections.collection_id', 'detailNav' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 				jQuery('#browseResultsContainer').jscroll({
 					autoTrigger: true,
 					loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
 					padding: 20,
 					nextSelector: 'a.jscroll-next'
 				});
-			});		
-
-            tronicTheToggles();
-            $('.rollover').popover();
-		});
+			});	
 	</script>
 </ifcount>}}}
+					
+<script>
+	jQuery(document).ready(function() {
+		$('.rollover').popover(); 
+
+        jQuery('.togglertronic').on('click', function(e) {
+            var state = jQuery(this).data('togglestate');
+            
+            var toggle = this;
+            if (state == 'open') {
+                jQuery('#' + jQuery(toggle).data('togglediv')).slideUp(200, function() {
+                    jQuery(toggle).data('togglestate', 'closed').find('.drawerToggle').hide().attr("class", "fa fa-plus drawerToggle").show();
+                });
+            } else {
+                jQuery('#' + jQuery(toggle).data('togglediv')).slideDown(200, function() {
+                    jQuery(toggle).data('togglestate', 'open').find('.drawerToggle').hide().attr("class", "fa fa-minus drawerToggle").show();
+                });
+                
+            }
+            e.preventDefault();
+            return false;
+        });	
+	});
+
+</script>
+
+	
+
 
 </div><!-- end container -->
 

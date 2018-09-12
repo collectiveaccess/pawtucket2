@@ -1681,10 +1681,12 @@ class SearchResult extends BaseObject {
 				    
 				    $vb_is_three_level_array = false;
 				    foreach($vm_val as $vn_top_level_id => $va_data) {
-				        foreach($va_data as $k => $v) {
-				            if (is_array($v)) { $vb_is_three_level_array = true; }
-				            break(2);
-				        }
+				        if (is_array($va_data)) { 
+                            foreach($va_data as $k => $v) {
+                                if (is_array($v)) { $vb_is_three_level_array = true; }
+                                break(2);
+                            }
+                        }
 				    }
 				    
 				    if ($vb_is_three_level_array) {

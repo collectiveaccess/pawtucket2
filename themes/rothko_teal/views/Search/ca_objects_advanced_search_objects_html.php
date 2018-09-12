@@ -13,53 +13,53 @@
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object titles only.">Object Title</span>
-				{{{ca_objects.preferred_labels.name%width=220px}}}
+				{{{ca_objects.preferred_labels.name%width=220px&label=Object_Title}}}
 			</div>
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-6">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="The year, or range of years if a precise date is unknown, when a work was made.">Date</span>
-				{{{ca_objects.creation_date%width=210px&height=1}}}
+				{{{ca_objects.creation_date%width=210px&height=1&label=_Date}}}
 			</div>
 			<div class="advancedSearchField col-sm-6">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Description, based on physical examination, of the materials used to create a work.">Medium</span>
-				{{{ca_objects.medium.medium_list%height=30px}}}
+				{{{ca_objects.medium.medium_list%height=30px&label=Medium}}}
 			</div>
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Description of the type of paper to which medium has been applied.">Support</i></span>
-				{{{ca_objects.paper%width=200px&height=1}}} <input type="hidden" name="ca_objects_paper_label" value="Support"/>
+				{{{ca_objects.paper%width=200px&height=1&label=Support}}} <input type="hidden" name="ca_objects_paper_label" value="Support"/>
 			</div>
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Documentation of any portion of a watermark (a design formed during the papermaking process that usually includes the manufacturer’s name or trademark) visible in the paper support.">Watermark</i></span>
-				{{{ca_objects.watermark.watermark_list%width=200px&height=1&inUse=1}}}
+				{{{ca_objects.watermark.watermark_list%width=200px&height=1&inUse=1&label=Watermark}}}
 			</div>
 		</div>			
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Description of the material characteristics of a secondary support—original, of aesthetic integrity, and/or historical significance—to which a work has been attached.">Mount</i></span>
-				{{{ca_objects.mount%width=200px&height=1}}}
+				{{{ca_objects.mount%width=200px&height=1&label=Mount}}}
 			</div>
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by Institional accession number.">Institution Accession Number </span>
-				{{{ca_objects.institutional_id%width=200px&height=30px}}}
+				{{{ca_objects.institutional_id%width=200px&height=30px&label=Institution_Accession_Number}}}
 			</div>
 		</div>						
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records within a particular collection.">Collection </span>
-				{{{ca_collections.preferred_labels%width=200px&height=1}}}
+				{{{ca_collections.preferred_labels%width=200px&height=1&label=Collection}}}
 			</div>
 		</div>
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the catalog.">Tags </span>
-				{{{_fulltext%width=200px&height=1}}} <input type="hidden" name="_fulltext_label" value="Tags"/>
+				{{{_fulltext%width=200px&height=1&label=Tags}}} <input type="hidden" name="_fulltext_label" value="Tags"/>
 			</div>			
 		</div>				
 		<br style="clear: both;"/>

@@ -70,7 +70,7 @@ a, a:hover, a:focus, .detail a {
 	font-family: 'Radley', serif;
 	font-weight:normal;
 }
-.btn-default:hover{
+.btn-default:hover, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
 	background-color:#2c85b8;
 	font-weight:normal;
 }
@@ -668,6 +668,9 @@ div.browseFacetItem:hover{
 .detail .detailNavBgLeft a, .detail .detailNavBgRight a, .detail .detailNavBgLeft a .small, .detail .detailNavBgRight a .small {
     color: #021d26;
 }
+#pageArea.ca_collections{
+	padding-bottom:275px;
+}
 /* collection list */
 .collections.landing #bSortByList{
 	float:none;
@@ -888,4 +891,7 @@ div.browseFacetItem:hover{
 /* forms */
 label, .formLabel, .advancedSearchField .formLabel{
 	font-family: 'Radley', serif;
+}
+.advancedSearchField table.attributeListItem, .advancedSearchField table.attributeListItem td{
+	width:100%;
 }

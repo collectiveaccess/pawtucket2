@@ -72,7 +72,7 @@
 			<div class="row">
 			<table>
 			<tr>
-				<td>
+				<td class="imageCol">
 <?php 
 					if ($vs_path = $vo_result->getMediaPath('ca_object_representations.media', 'large_watermark')) {
 						print "<div class=\"imageTiny\"><img src='{$vs_path}'/></div>";

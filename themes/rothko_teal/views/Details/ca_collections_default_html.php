@@ -57,14 +57,14 @@
 {{{<ifcount code="ca_objects" relativeTo="ca_objects"  min="1">
 	
 	<div class="row"><div class='col-sm-12'>
-	<hr>
+	<hr style='margin-left:-5x;margin-right:-5px;'>
 		<div id="browseResultsContainer">
 			<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 		</div><!-- end browseResultsContainer -->
 	</div><!-- end col --></div><!-- end row -->
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => 'collection', 'id' => '^ca_collections.collection_id', 'detailNav' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'worksInCollection', array('facet' => 'collection', 'id' => '^ca_collections.collection_id', 'detailNav' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 				jQuery('#browseResultsContainer').jscroll({
 					autoTrigger: true,
 					loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -87,7 +87,8 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 320
+		  maxHeight: 318,
+		  moreLink: '<a href="#">More</a>',
 		});
 
         tronicTheToggles();
