@@ -40,8 +40,8 @@
 						</p>
 					</div>
 					<div class="col-sm-8 text-right">
-						<div>Questions or comments?<br/>Contact <a href="mailto:archives@steelcase.com">archives@steelcase.com</a></div>
-						<div class='loginButton'><?php print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Internal Login")."</a>"; ?></div>
+						<div><?php print caNavLink($this->request, 'Contact Archives', '', '', 'Contact', 'form')." | <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Employee Login")."</a>";?></div>
+						<div class='loginButton'><?php print caNavLink($this->request, "About", '', '', 'About', 'Index'); ?> | <a href='http://www.steelcase.com' target='_blank'>Steelcase.com</a></div>
 					</div>
 				</div>
 			</div>
@@ -85,7 +85,7 @@
 		
 			$(window).scroll(function(){ 
 				var pos = $(window).scrollTop();
-				if(pos > 150) {
+				if(pos > 55) {
 					$("#mainNav").addClass("fixed");
 					$("#pageArea").addClass("scrolled");
 				}else{

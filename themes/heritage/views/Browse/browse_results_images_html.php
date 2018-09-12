@@ -64,70 +64,7 @@
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
-	$va_chronology_config = $va_views["chronology"];
-#print "<pre>";
-#print_r($va_facets);
-#print "</pre>"; 
-
-# --- the chrono mode is based on cooresponding facets
-# --- this is the group_mode array in browse.conf under chronology view
-# --- need to make this dynamic/ selectable by user
-$va_group_modes = $va_chronology_config["group_mode"];
-$vs_group_mode = "decade_facet";
-$va_group_facet = $va_facets[$vs_group_mode];
-
-$va_my_facets = array();
-foreach ($va_criteria as $va_key => $va_criteria_name) {
-	$va_my_facets[] = $va_criteria_name['facet_name'];
-}
-if (!in_array('decade_facet', $va_my_facets)) {
-# ---
-if ($va_group_facet["content"]) {  
-	foreach($va_group_facet["content"] as $vs_item_id => $va_item_info){
-?>
-		<div id="chrono<?php print $vs_item_id; ?>" class="bChronoGroup">
-			<div class="bChronoLabel">
-<?php
-				print "<H1>".$va_item_info["label"]."</H1>";
-				print "<H3>".$va_item_info["content_count"]." items</H3>";
-				print caNavLink($this->request, "View All", 'btn btn-default', '*', '*', '*', array('facet' => $vs_group_mode, 'id' => $vs_item_id, 'view' => 'chronology', 'key' => $vs_browse_key));
-?>
-			</div>
-			<div class="bChronoNav">
-				<a href="#" id="bChronoNav<?php print $vs_item_id; ?>" class="btn btn-default"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></a>
-			</div>
-			<div id="bChronoGroupScroll<?php print $vs_item_id; ?>" class="bChronoGroupScroll">
-				<div id="chronoContent<?php print $vs_item_id; ?>" class="bChronoGroupResults"><!-- load results here --></div>
-			</div>
-		</div>
-		<script type="text/javascript">
-			jQuery(document).ready(function() {
-				jQuery("#chronoContent<?php print $vs_item_id; ?>").load("<?php print caNavUrl($this->request, '', '*', '*', array('key' => $vs_browse_key, 'facet' => $vs_group_mode, 'id' => $vs_item_id, 'view' => 'chronology_images'), array('dontURLEncodeParameters' => true)); ?>", function() {
-	//						jQuery('#chrono<?php print $vs_item_id; ?>').jscroll({
-	//							autoTrigger: true,
-	//							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-	//							padding: 20,
-	//							nextSelector: 'a.jscroll-next'
-	//						});
-						});
-					
-					
-					});
-					$('#bChronoNav<?php print $vs_item_id; ?>').click(function(){    
-						$('#bChronoGroupScroll<?php print $vs_item_id; ?>').animate({ //animate element that has scroll
-							scrollLeft: $('#bChronoGroupScroll<?php print $vs_item_id; ?>').scrollLeft() + 450 //for scrolling
-						}, 300);
-						return false;
-					});
-				</script>
-<?php
-	
-	}
-}
-
-
-} else {
-
+		
 
 		$vn_col_span = 3;
 		$vn_col_span_sm = 4;
@@ -149,7 +86,7 @@ if ($va_group_facet["content"]) {
 					$va_ids[] = $qr_res->get($vs_pk);
 					$vn_c++;
 				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
 				$vn_c = 0;	
 				$qr_res->seek($vn_start);
@@ -201,7 +138,7 @@ if ($va_group_facet["content"]) {
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 					}
 					$vs_add_to_set_link = "";
-					if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
@@ -214,11 +151,9 @@ if ($va_group_facet["content"]) {
 					<div class='bResultItemText'>
 						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
 					</div><!-- end bResultItemText -->
+					
 				</div><!-- end bResultItemContent -->
-				<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
-					<hr>
-					{$vs_expanded_info}{$vs_add_to_set_link}
-				</div><!-- bResultItemExpandedInfo -->
+				{$vs_add_to_set_link} 
 			</div><!-- end bResultItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');
@@ -230,7 +165,6 @@ if ($va_group_facet["content"]) {
 			
 			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
 		}
-	}
 ?>
 <script type="text/javascript">
 	jQuery(document).ready(function() {
