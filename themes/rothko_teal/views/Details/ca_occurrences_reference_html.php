@@ -68,7 +68,7 @@
 			foreach ($va_place_list as $va_key => $va_place_ids) {
 				foreach ($va_place_ids as $va_key => $va_place_id_t) {
 					foreach ($va_place_id_t as $va_key => $va_place_name) {
-						$va_place_output[] = caNavLink($this->request, $va_place_name, '', 'Search', 'exhibitions', 'search/location', ["values" => [$va_place_name]]);
+						$va_place_output[] = caNavLink($this->request, $va_place_name, '', 'Search', 'references', 'search/location', ["values" => [$va_place_name]]);
 					}
 				}
 			}
@@ -79,7 +79,11 @@
 		if ($va_date = $t_item->get('ca_occurrences.occurrence_dates')) {
 			print "<div class='unit borderless'>".caNavLink($this->request, $va_date, '', 'Search', 'references', 'search/reference_dates', ["values" => [$va_date]])."</div>";
 		}						
-		
+		if ($va_ref_type = $t_item->get('ca_occurrences.reference_type', array('returnAsArray' => true))) {
+			foreach ($va_ref_type as $vn_key => $vn_ref_id) {
+				print "<div class='unit borderless'>".caNavLink($this->request, caGetListItemByIDForDisplay($vn_ref_id, true), '', 'Browse', 'references', 'facet/reference_facet/id/'.$vn_ref_id)."</div>";
+			}
+		}
 		if ($vs_remarks = $t_item->get('ca_occurrences.occurrence_notes')) {
 			print "<div class='unit borderless' style='padding-top:40px;'>".$vs_remarks."</div>";
 		}		
@@ -90,8 +94,7 @@
 		{{{representationViewer}}}
 	</div>
 </div><!-- end row -->	
-<div class="row " style="margin:40px -15px 0px -15px;"></div>
-<div class="row " style="border-bottom: 1px solid #d6d6d6;margin:40px -15px 0px -15px;"></div>
+<div class="row " style="border-bottom: 1px solid #d6d6d6;margin:40px -10px 0px -10px;"></div>
 <?php
 	$vs_first = true;
 	$vs_no_border = "style=border-top:0px;";
@@ -112,7 +115,7 @@
 ?>		
 
 {{{<ifcount code="ca_objects" relativeTo="ca_objects" restrictToTypes="side" min="1">
-	<div class="row"><?php print ($vs_first==true ? "" : "<hr>"); ?><div class='col-sm-12'>
+	<div class="row"><div class='col-sm-12'><?php print ($vs_first==true ? "" : "<hr>"); ?><div class='container'>
 	
 		<div id="browseResultsContainer">
 			<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
@@ -134,9 +137,9 @@
 	</script>
 </ifcount>}}}		
 
-</div>
+</div></div>
 
-			</div>
+
 			<div class="col-sm-1"><div class='nextLink'>{{{nextLink}}}</div></div>
 		</div><!-- end row -->
 	</div><!-- end container -->
