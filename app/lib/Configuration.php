@@ -802,6 +802,8 @@ class Configuration {
                 $vs_tmp = $this->getAssoc($ps_key);
             }
             Configuration::$s_get_cache[$this->ops_md5_path][$ps_key] = $vs_tmp;
+            
+            if (!$vs_tmp) { continue; }
             return $vs_tmp;
         }
         return null;
