@@ -171,7 +171,7 @@ if ($va_group_facet["content"]) {
 				
 				# --- check if this result has been cached
 				# --- key is MD5 of table, id, list, refine(vb_refine)
-				$vs_cache_key = md5($vs_table.$vn_id."images".$vb_refine);
+				$vs_cache_key = caMakeCacheKeyFromOptions($va_facets, $vs_table.$vn_id."images".$vb_refine);
 				if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{			
