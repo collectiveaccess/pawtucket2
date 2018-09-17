@@ -129,25 +129,7 @@
 			<?php print caGetThemeGraphic($this->request, 'hpOffice.jpg'); ?>
 		</div>
 	</div>-->
-	<div class="row frontIntro">
-		<div class="col-sm-12">
-			<?php print caGetThemeGraphic($this->request, 'hpTruck.jpg'); ?>
-			<div class="frontIntroOverlay">
-<!--
-				<p>
-					Over 100 years ago a group of investors trusted that a metal office furniture company could compete in a city renown for wood manufacturing.
-				</p>
- 				<p>
- 					Looking back, it's clear our company has always been about looking forward. Our past, present and future are all about turning insights into innovations that unlock the promise of people at work and make the world a better place.
- 				</p>-->
-<p>We opened our doors in 1912 after 11 business men agreed to invest in Peter M. Wege's dream of opening a steel office furniture company in a city renown for wood furniture. Since then we've experienced many changes, including our name, but our business vision of always looking toward the future has remained the same.</p>
 
-<p>Here we'd like to share with you a few hundred of the thousands of noteworthy historical moments from our 105-year plus legacy. Steelcase employees and partners can access the full timeline and heritage archives using their existing login credentials. </p>
-
-
-			</div>
-		</div>
-	</div>
 	<div class="row frontSocial">
 		<div class="col-sm-12 text-right">
 			  <div id="fb-root"></div>
@@ -174,10 +156,7 @@
 	
 	<div class="row">
 		<div class="col-sm-9">
-			<a name="timeline"></a><h1>Explore the Timeline</h1>
-		</div>
-		<div class="col-sm-3 text-right">
-			<br/><br/><?php print caNavLink($this->request, ($this->request->isLoggedIn()) ? _t("Browse the full Timeline") : _t("Login to browse the full Timeline"), "btn-default", "", "Browse", "occurrences"); ?>
+			<a name="timeline"></a><h1>Innovating office environments for over 106 years</h1>
 		</div>
 	</div>
 	<div class="row">
@@ -220,50 +199,48 @@
 						}
 ?>
 						<div class="col-md-2 col-sm-3 col-xs-6 frontTimeLineCol" id="col<?php print $va_event["id"]; ?>">
-							<div class="frontTimelineCard">
+<?php
+							$vs_card_buf = "";
+							$vs_card_buf.= "<div class='frontTimelineCardFull' >";
+							$vs_card_buf.= "<div class='frontTimelineDivide ".$va_event["category_code"]."Divide'><div class='pull-right'><a href='".caNavUrl($this->request, "", "Front", "Index", array("filter_id" => $va_event["category_id"]))."#timeline'>".$va_event["category_code"]."</a></div>".$va_event["date"]."</div><div class='frontTimelineCardFullTitle'>".$va_event["title"]."</div>";
+							if(sizeof($va_event["medium"]) > 1){
+								$media_count = 1;
+								$vs_card_buf.= "<div class='frontTimelineCardFullCol'>";							
+								$vs_card_buf.= "<div id='carousel".$va_event["id"]."' class='carousel slide' data-ride=carousel' >
+										<div class='carousel-inner'>";
+											foreach($va_event["medium"] as $vs_medium_rep){
+												if ($media_count == 1) { $vs_class = "active"; } else { $vs_class = ""; }
+												$vs_card_buf.= "<div class='item ".$vs_class."'>".$vs_medium_rep."</div>";
+												$media_count++;
+											}
+								$vs_card_buf.=	"</div><!-- end carousel-inner -->
+										<a class='carousel-control-prev' href='#carousel".$va_event["id"]."' role='button' data-slide='prev'>
+    										<span class='carousel-control-prev-icon' aria-hidden='true'><i class='fa fa-chevron-left'></i></span>
+    										<span class='sr-only'>Previous</span>
+  										</a>
+  										<a class='carousel-control-next' href='#carousel".$va_event["id"]."' role='button' data-slide='next'>
+    										<span class='carousel-control-next-icon' aria-hidden='true'><i class='fa fa-chevron-right'></i></span>
+    										<span class='sr-only'>Next</span>
+  										</a>
+									</div><!-- end carousel -->";
+								$vs_card_buf.= "</div><!-- end frontTimelineCardFullCol --> ";
+							}else{
+								$vs_card_buf.= "<div class='frontTimelineCardFullCol'>".$va_event["medium"][0]."</div>";
+							}
+							$vs_card_buf.= "<div class='frontTimelineCardFullCol'><div class='frontTimelineCardFullDesc'>".htmlentities($va_event["public_description"])."</div><!-- end desc--></div><!-- end fullcol -->";
+							$vs_card_buf.= "</div><!-- end frontTimelineCardFull -->";
+?>						
+							<div class="frontTimelineCard" data-toggle="popover"  tabindex="0" data-trigger="click" data-html="true" <?php print ( $i > 3 ? 'data-placement="left"' : 'data-placement="right"') ;?>data-content="<?php print htmlentities($vs_card_buf);?>">
 <?php
 							print $va_event["iconlarge"]."<div class='frontTimelineDivide ".$va_event["category_code"]."Divide'></div><div class='frontTimelineCardCaption'><div class='frontTimelineCardCaptionDate'>".$va_event["date"]."</div>".$va_event["title"]."</div>";
 ?>
-								<i class="fa fa-ellipsis-h" id="mag<?php print $va_event["id"]; ?>"></i>
 							</div><!--end frontTimelineCard -->
-							<div class="frontTimelineCardFull" id="full<?php print $va_event["id"]; ?>">
-<?php
-							print "<div class='frontTimelineDivide ".$va_event["category_code"]."Divide'><div class='pull-right'><a href='".caNavUrl($this->request, "", "Front", "Index", array("filter_id" => $va_event["category_id"]))."#timeline'>".$va_event["category_code"]."</a></div>".$va_event["date"]."</div><div class='frontTimelineCardFullTitle'>".$va_event["title"]."</div>";
-							if(sizeof($va_event["medium"]) > 1){
-								print "<div class='frontTimelineCardFullCol'>";
-?>							
-				<div class="jcarousel-wrapper"><div class="jcarousel"><ul>
-<?php
-					foreach($va_event["medium"] as $vs_medium_rep){
-						print "<li><div class='frontTimelineSlide'>".$vs_medium_rep."</div></li>";
-					}
-?>
-					</ul></div><!-- end jcarousel -->
-					<a href="#" class="jcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
-					<a href="#" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
-				</div><!-- end wrapper -->
-<?php							
-								print "</div>";
-							}else{
-								print "<div class='frontTimelineCardFullCol'>".$va_event["medium"][0]."</div>";
-							}
-							print "<div class='frontTimelineCardFullCol'><div class='frontTimelineCardFullDesc'>".$va_event["public_description"]."</div>";
-							if($this->request->isLoggedIn()){
-								print "<div class='text-right'>".caDetailLink($this->request, 'More', '', 'ca_occurrences', $va_event["id"])."</div>";
-							}
-							print "</div>";
-?>
-							</div>
-						</div>
-	<script type="text/javascript">
-		jQuery(document).ready(function() {
-    		jQuery('#mag<?php print $va_event["id"]; ?>').on('click mouseover',function(e) { jQuery('#full<?php print $va_event["id"]; ?>').show(); });
-    		jQuery('#col<?php print $va_event["id"]; ?>').on('mouseleave',function(e) { jQuery('#full<?php print $va_event["id"]; ?>').hide(); });
-    		});
-	</script>
+							
+
+						</div><!-- end  col -->
 <?php
 						if($i == 6){
-							print "</div>";
+							print "</div><!-- end  row -->";
 							$i = 1;
 							$vn_row++;
 						}else{
@@ -272,7 +249,7 @@
 					}
 				}
 				if($i > 1){
-					print "</div>";
+					print "</div><!-- end  row -->";
 				}
 				if($vn_row > 1){
 ?>
@@ -288,56 +265,6 @@
 			</div><!-- end row -->
 <?php
 		}
-	# ------ carousel js here
-?>
-		<script type='text/javascript'>
-			imgWidth = ($('.frontTimelineCardFull').width()/2) - 20;
-			$('.jcarousel li').width(imgWidth + "px");
-			jQuery(document).ready(function() {
-				/*
-				Carousel initialization
-				*/
-				$('.jcarousel')
-					.jcarousel({
-						// Options go here
-						wrap:'circular'
-					});
-		
-				/*
-				 Prev control initialization
-				 */
-				$('.jcarousel-control-prev')
-					.on('jcarouselcontrol:active', function() {
-						$(this).removeClass('inactive');
-					})
-					.on('jcarouselcontrol:inactive', function() {
-						$(this).addClass('inactive');
-					})
-					.jcarouselControl({
-						// Options go here
-						target: '-=1'
-					});
-		
-				/*
-				 Next control initialization
-				 */
-				$('.jcarousel-control-next')
-					.on('jcarouselcontrol:active', function() {
-						$(this).removeClass('inactive');
-					})
-					.on('jcarouselcontrol:inactive', function() {
-						$(this).addClass('inactive');
-					})
-					.jcarouselControl({
-						// Options go here
-						target: '+=1'
-					});
-		
-				
-			});
-		</script>
-<?php
-	# ------ end carousel js
 	}else{
 		foreach($va_events_by_decade as $vs_decade => $va_events_by_year){
 ?>
@@ -370,4 +297,48 @@
 <?php
 		}
 	}
+	if(!Session::getVar('visited')){
 ?>
+<div id="welcomeMessage">
+	<div class="row frontIntro">
+		<div class="col-sm-12">	
+			<?php print caGetThemeGraphic($this->request, 'hpTruck.jpg');?>
+			<div class="frontIntroOverlay">
+<!--
+				<p>
+					Over 100 years ago a group of investors trusted that a metal office furniture company could compete in a city renown for wood manufacturing.
+				</p>
+ 				<p>
+ 					Looking back, it's clear our company has always been about looking forward. Our past, present and future are all about turning insights into innovations that unlock the promise of people at work and make the world a better place.
+ 				</p>-->
+<p>We opened our doors in 1912 after 11 business men agreed to invest in Peter M. Wege's dream of opening a steel office furniture company in a city renown for wood furniture. Since then we've experienced many changes, including our name, but our business vision of always looking toward the future has remained the same.</p>
+
+<p>Here we'd like to share with you a few hundred of the thousands of noteworthy historical moments from our 105-year plus legacy.</p>
+
+
+			</div>
+		</div>
+	</div>			
+	<a href="#" onclick="$('#welcomeMessage').fadeOut(200); return false;"><div class="ok btn-default">OK</div></a>
+</div>
+<?Php
+	}
+	Session::setVar('visited', true);
+?>
+<script>
+	jQuery(document).ready(function() { 		
+		$('#welcomeMessage').fadeIn(1000);
+		
+		$('.frontTimelineCard').popover({
+  			trigger: 'click'
+		});
+		$('.frontTimelineCard').on('click', function (e) {
+    		$('.frontTimelineCard').not(this).popover('hide');
+		});
+		$('#carousel').carousel({
+  			interval: 2000
+		});
+	});
+		
+	
+</script>
