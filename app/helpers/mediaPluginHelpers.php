@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2017 Whirl-i-Gig
+ * Copyright 2010-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -34,8 +34,8 @@
    *
    */
 
- 	require_once(__CA_LIB_DIR__.'/core/Configuration.php');
-	require_once(__CA_LIB_DIR__."/core/Parsers/MediaMetadata/XMPParser.php");
+ 	require_once(__CA_LIB_DIR__.'/Configuration.php');
+	require_once(__CA_LIB_DIR__."/Parsers/MediaMetadata/XMPParser.php");
 
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -538,6 +538,9 @@
 		$va_mappings = $o_metadata_config->getAssoc('import_mappings');
 		$vs_tablename = $po_instance->tableName();
 
+        if (!isset($pa_metadata['system']['filename']) && ($vs_original_filename = $po_instance->get('original_filename'))) {
+            $pa_metadata['system']['filename'] = $vs_original_filename;
+        }
 
 		// set extracted georef?
  		$va_georef_elements = $o_metadata_config->getList('extract_embedded_exif_georeferencing_to');
@@ -636,7 +639,6 @@
 				}
 			}
 		}
-
 
 		if (!isset($va_mappings[$po_instance->tableName()])) { return $vb_did_mapping; }
 		$va_mapping = $va_mappings[$vs_tablename];
@@ -743,7 +745,6 @@
 		//
 		// SUBJECT TABLE
 		//
-
 		if($vs_subject_table_export = caExportMediaMetadataForRecord($ps_table, $ps_type_code, $pn_pk)) {
 			$vs_export_filename = caGetTempFileName('mediaMetadataSubjExport','xml');
 			if(@file_put_contents($vs_export_filename, $vs_subject_table_export) === false) { return false; }
@@ -765,6 +766,39 @@
 		}
 
 		return $vs_tmp_filepath;
+	}
+	# ------------------------------------------------------------------------------------------------
+	function caGetExifTagArgsForExport($data) {
+	    $xml = new SimpleXMLElement($data);	
+        $xml->registerXPathNamespace('rdf', 'http://www.w3.org/1999/02/22-rdf-syntax-ns#');
+        $xml->registerXPathNamespace('et', 'http://ns.exiftool.ca/1.0/');
+        $xml->registerXPathNamespace('ExifTool', 'http://ns.exiftool.ca/1.0/');
+        $xml->registerXPathNamespace('System', 'http://ns.exiftool.ca/File/System/1.0/');
+        $xml->registerXPathNamespace('File', 'http://ns.exiftool.ca/File/1.0/');
+        $xml->registerXPathNamespace('JFIF', 'http://ns.exiftool.ca/JFIF/JFIF/1.0/');
+        $xml->registerXPathNamespace('IFF0', 'http://ns.exiftool.ca/EXIF/IFD0/1.0/');
+        $xml->registerXPathNamespace('ExifIFD', 'http://ns.exiftool.ca/EXIF/ExifIFD/1.0/');
+        $xml->registerXPathNamespace('Apple', 'http://ns.exiftool.ca/MakerNotes/Apple/1.0/');
+        $xml->registerXPathNamespace('XMP-x', 'http://ns.exiftool.ca/XMP/XMP-x/1.0/');
+        $xml->registerXPathNamespace('XMP-xmp', 'http://ns.exiftool.ca/XMP/XMP-xmp/1.0/');
+        $xml->registerXPathNamespace('XMP-photoshop', 'http://ns.exiftool.ca/XMP/XMP-photoshop/1.0/');
+        $xml->registerXPathNamespace('Photoshop', 'http://ns.exiftool.ca/Photoshop/Photoshop/1.0/');
+        $xml->registerXPathNamespace('ICC-header', 'http://ns.exiftool.ca/ICC_Profile/ICC-header/1.0/');
+        $xml->registerXPathNamespace('ICC_Profile', 'http://ns.exiftool.ca/ICC_Profile/ICC_Profile/1.0/');
+        $xml->registerXPathNamespace('ICC-view', 'http://ns.exiftool.ca/ICC_Profile/ICC-view/1.0/');
+        $xml->registerXPathNamespace('IVV-meas', 'http://ns.exiftool.ca/ICC_Profile/ICC-meas/1.0/');
+        $xml->registerXPathNamespace('Composite', 'http://ns.exiftool.ca/Composite/1.0/');
+        
+        $tags = $xml->xpath('rdf:Description/*');
+		
+        $tag_args = [];
+        foreach($tags as $t) {
+            $ns = array_shift(array_keys($t->getNamespaces()));
+            $n = $t->getName();
+            $v = $t->__toString();
+            $tag_args[] = "-{$n}=\"$v\"";
+        }
+        return $tag_args;
 	}
 	# ------------------------------------------------------------------------------------------------
 	function caExportMediaMetadataForRecord($ps_table, $ps_type_code, $pn_id) {
@@ -970,6 +1004,7 @@
 		$va_ret = null;
 		switch($vs_type = strtolower($va_tmp[0])) {
 			case 'representation':
+			    Datamodel::getInstance('ca_object_representations', true);
 				$va_ret = ['type' => $vs_type, 'id' => (int)$va_tmp[1], 'page' => isset($va_tmp[2]) ? (int)$va_tmp[2] : null, 'subject' => 'ca_object_representations', 'subject_id' => (int)$va_tmp[1]];
 				if (!($t_rep = ca_object_representations::find((int)$va_tmp[1], $pa_options))) { return null; } // ca_object_representations::find() performs checkAccess
 				if ($pb_include_instance) {
@@ -977,11 +1012,12 @@
 				}
 				break;
 			case 'attribute':
+			    Datamodel::getInstance('ca_attribute_values', true);
 			    $t_val = new ca_attribute_values((int)$va_tmp[1]);
 			    if (!$t_val->isLoaded()) { return null; }
 			    $t_attr = new ca_attributes($t_val->get('attribute_id'));
-			    $o_dm = Datamodel::load();
-			    $vs_table_name  = $o_dm->getTableName($t_attr->get('table_num'));
+			    $vs_table_name  = Datamodel::getTableName($t_attr->get('table_num'));
+			    Datamodel::getInstance($vs_table_name, true);
 			    $vn_subject_id = (int)$t_attr->get('row_id');
 			    if (!($t_subject = $vs_table_name::find($vn_subject_id, $pa_options))) { return null; } // table::find() performs checkAccess
 			    
@@ -993,7 +1029,7 @@
 				}
 			    break;
 			default:
-			    if (($vs_table = caMediaIdentifierTypeToTable($vs_type)) && ($t_instance = $vs_table::find((int)$va_tmp[1], $pa_options)) && ($vn_rep_id = $t_instance->getPrimaryRepresentationID($pa_options))) {
+			    if (($vs_table = caMediaIdentifierTypeToTable($vs_type)) && Datamodel::getInstance($vs_table, true) && ($t_instance = $vs_table::find((int)$va_tmp[1], $pa_options)) && ($vn_rep_id = $t_instance->getPrimaryRepresentationID($pa_options))) {
 			        // return primary representation (access checkAccess performed by table::find() )
 			        $va_ret = ['type' => 'representation', 'id' => (int)$vn_rep_id, 'page' => null, 'subject' => $vs_table, 'subject_id' => (int)$va_tmp[1]];
 			        
@@ -1001,6 +1037,7 @@
 			            $va_ret['subject_instance'] = $t_instance;
 			        }
 				} elseif (is_numeric($va_tmp[0])) {
+			        Datamodel::getInstance('ca_object_representations', true);
 				    if (!($t_rep = ca_object_representations::find((int)$va_tmp[1], $pa_options))) { return null; }     // ca_object_representations::find() performs checkAccess
 				    
 					$va_ret = ['type' => 'representation', 'id' => (int)$va_tmp[0], 'page' => isset($va_tmp[1]) ? (int)$va_tmp[1] : null, 'subject' => 'ca_object_representations', 'subject_id' => (int)$va_tmp[0]];
@@ -1034,8 +1071,7 @@
 	    
 	    $vs_table = isset($va_map[strtolower($ps_type)]) ? $va_map[strtolower($ps_type)] : null;
 	    if ($vs_table && caGetOption('returnInstance', $pa_options, false)) {
-	        $o_dm = Datamodel::load();
-	        return $o_dm->getInstanceByTableName($vs_table, true);
+	        return Datamodel::getInstanceByTableName($vs_table, true);
 	    } 
 	
 	    return $vs_table;
@@ -1051,7 +1087,7 @@
 		// try ZendPDF
 		if(!$o_config->get('dont_use_zendpdf_to_identify_pdfs')) {
 			try {
-				include_once(__CA_LIB_DIR__."/core/Zend/Pdf.php");
+				include_once(__CA_LIB_DIR__."/Zend/Pdf.php");
 				$o_pdf = Zend_Pdf::load($ps_filepath);
 			} catch(Exception $e){
 				$o_pdf = null;

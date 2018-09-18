@@ -34,14 +34,14 @@
    *
    */
 
-require_once(__CA_LIB_DIR__.'/core/Datamodel.php');
-require_once(__CA_LIB_DIR__.'/core/Configuration.php');
-require_once(__CA_LIB_DIR__.'/core/Parsers/ZipFile.php');
-require_once(__CA_LIB_DIR__.'/core/Logging/Eventlog.php');
-require_once(__CA_LIB_DIR__.'/core/Utils/Encoding.php');
-require_once(__CA_LIB_DIR__.'/core/Zend/Measure/Length.php');
-require_once(__CA_LIB_DIR__.'/core/Parsers/ganon.php');
-use Guzzle\Http\Client;
+require_once(__CA_LIB_DIR__.'/Datamodel.php');
+require_once(__CA_LIB_DIR__.'/Configuration.php');
+require_once(__CA_LIB_DIR__.'/Parsers/ZipFile.php');
+require_once(__CA_LIB_DIR__.'/Logging/Eventlog.php');
+require_once(__CA_LIB_DIR__.'/Utils/Encoding.php');
+require_once(__CA_LIB_DIR__.'/Zend/Measure/Length.php');
+require_once(__CA_LIB_DIR__.'/Parsers/ganon.php');
+use GuzzleHttp\Client;
 
 # ----------------------------------------------------------------------
 # String localization functions (getText)
@@ -59,14 +59,15 @@ $g_translations = Configuration::load(__CA_CONF_DIR__."/translations.conf");
 
 $g_translation_strings = $g_translations->get('strings');
 $g_translation_replacements = $g_translations->get('replacements');
+$g_translation_cache = [];
 
 function _t($ps_key) {
 	if(!$ps_key) { return ''; }
-	global $_, $g_translation_strings, $g_translation_replacements;
+	global $_, $g_translation_strings, $g_translation_replacements, $g_translation_cache;
 	
 	if (isset($g_translation_strings[$ps_key])) { return $g_translation_strings[$ps_key]; }
 	
-	if(!MemoryCache::contains($ps_key, 'translation')) {
+	if(!isset($g_translation_cache[$ps_key])) {
 		if (is_array($_)) {
 			$vs_str = $ps_key;
 			foreach($_ as $o_locale) {
@@ -87,9 +88,9 @@ function _t($ps_key) {
 		    $vs_str = str_replace(array_keys($g_translation_replacements), array_values($g_translation_replacements), $vs_str);
 		}
 		
-		MemoryCache::save($ps_key, $vs_str, 'translation');
+		$g_translation_cache[$ps_key] = $vs_str;
 	} else {
-		$vs_str = MemoryCache::fetch($ps_key, 'translation');
+		$vs_str = $g_translation_cache[$ps_key];
 	}
 
 	if (sizeof($va_args = func_get_args()) > 1) {
@@ -106,10 +107,10 @@ function _t($ps_key) {
  **/
 function _p($ps_key) {
 	if(!$ps_key) { return; }
-	global $_;
+	global $_, $g_translation_cache;
 
-	if (!sizeof(func_get_args()) && MemoryCache::contains($ps_key, 'translation')) {
-		print MemoryCache::fetch($ps_key, 'translation'); return;
+	if (!sizeof(func_get_args()) & isset($g_translation_cache[$ps_key])) {
+		print $g_translation_cache[$ps_key]; return;
 	}
 
 	if (is_array($_)) {
@@ -135,7 +136,7 @@ function _p($ps_key) {
 		}
 	}
 
-	MemoryCache::save($ps_key, $vs_str, 'translation');
+	$g_translation_cache[$ps_key] = $vs_str;
 	print $vs_str;
 	return;
 }
@@ -774,7 +775,7 @@ function caFileIsIncludable($ps_file) {
 
 		if ($vb_convert_breaks) {
 			$ps_text = preg_replace("/(\n|\r\n){2}/","<p/>",$ps_text);
-			$ps_text = ereg_replace("\n","<br/>",$ps_text);
+			$ps_text = preg_replace("/[\n]/","<br/>",$ps_text);
 		}
 
 		return $ps_text;
@@ -879,7 +880,7 @@ function caFileIsIncludable($ps_file) {
 
 		if ($vb_convert_breaks) {
 			$vs_text = preg_replace("/(\n|\r\n){2}/","<p/>",$vs_text);
-			$vs_text = ereg_replace("\n","<br/>",$vs_text);
+			$vs_text = preg_replace("![\n]{1}!","<br/>",$vs_text);
 		}
 
 		return $vs_text;
@@ -1498,7 +1499,7 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ---------------------------------------
 	function caFormatXML($ps_xml){
-		require_once(__CA_LIB_DIR__.'/core/Parsers/XMLFormatter.php');
+		require_once(__CA_LIB_DIR__.'/Parsers/XMLFormatter.php');
 
 		$va_options = array(
 			"paddingString" => " ",
@@ -2297,8 +2298,7 @@ function caFileIsIncludable($ps_file) {
 	 * @return null|SearchResult
 	 */
 	function caMakeSearchResult($ps_table, $pa_ids, $pa_options=null) {
-		$o_dm = Datamodel::load();
-		if ($t_instance = $o_dm->getInstanceByTableName('ca_objects', true)) {	// get an instance of a model inherits from BundlableLabelableBaseModelWithAttributes; doesn't matter which one
+		if ($t_instance = Datamodel::getInstanceByTableName('ca_objects', true)) {	// get an instance of a model inherits from BundlableLabelableBaseModelWithAttributes; doesn't matter which one
 			return $t_instance->makeSearchResult($ps_table, $pa_ids, $pa_options);
 		}
 		return null;
@@ -2444,7 +2444,7 @@ function caFileIsIncludable($ps_file) {
 	 * @return string Converted value with currency specifier, unless numericValue option is set. Returns null if value could not be converted.
 	 */
 	function caConvertCurrencyValue($ps_value, $ps_to, $pa_options=null) {
-		require_once(__CA_LIB_DIR__."/core/Plugins/CurrencyConversion/EuroBank.php");
+		require_once(__CA_LIB_DIR__."/Plugins/CurrencyConversion/EuroBank.php");
 		if ((!$ps_value) || is_numeric($ps_value)) return null;
 		try {
 			return WLPlugCurrencyConversionEuroBank::convert($ps_value, $ps_to, $pa_options);
@@ -2459,7 +2459,7 @@ function caFileIsIncludable($ps_file) {
 	 * @return array List of three character currency codes, or null if conversion is not available.
 	 */
 	function caAvailableCurrenciesForConversion() {
-		require_once(__CA_LIB_DIR__."/core/Plugins/CurrencyConversion/EuroBank.php");
+		require_once(__CA_LIB_DIR__."/Plugins/CurrencyConversion/EuroBank.php");
 
 		try {
 			$va_currency_list = WLPlugCurrencyConversionEuroBank::getCurrencyList();
@@ -2695,20 +2695,19 @@ function caFileIsIncludable($ps_file) {
 	function caExportDataToResourceSpace($ps_user, $ps_key, $ps_base_url, $ps_local_filepath) {
 		// check mandatory params
 		if(!$ps_user || !$ps_key || !$ps_base_url || !$ps_local_filepath) {
-			caLogEvent('DEBG', "Invalid parameters for ResourceSpace export. Check your configuration!", 'caUploadFileToGitHub');
+		    caLogEvent('DEBG', "Invalid parameters for ResourceSpace export. Check your configuration!", 'caExportDataToResourceSpace');
 			return false;
 		}
         $vs_content = file_get_contents($ps_local_filepath);
         $va_records = json_decode($vs_content, true);
-        foreach($va_records as $vs_key => $vs_value){
-            if($vs_key != 0){
-                $va_records = [$va_records];
-            }
-            break;
-        }
-        $o_client = new Client($ps_base_url);
+	foreach($va_records as $vs_key => $va_value){
+	    if($vs_key !== 0){
+	        $va_records = [$va_records];
+	    }
+	    break;
+	}
+        $o_client = new \GuzzleHttp\Client(['base_uri' => $ps_base_url]);
         foreach($va_records as $va_record){
-            print($va_record[8])."<br/>";
             if(!($vs_media_url = $va_record['media_url'])){
                 $vs_media_url = '';
             } else {
@@ -2719,14 +2718,17 @@ function caFileIsIncludable($ps_file) {
             } else {
                 unset($va_record['collection_name']);
             }
+	    if((!$vs_resource_type = $va_record['type'])){
+		$vs_resource_type = 0;
+	    } else {
+		unset($va_record['type']);
+	    }
             $o_temp = array();
             try{
-                $vs_query = 'user='.$ps_user.'&function=create_resource&param1=1&param2=0&param3='.rawurlencode($vs_media_url).'&param4=&param5=&param6=&param7='.rawurlencode(json_encode($va_record));
+                $vs_query = 'user='.$ps_user.'&function=create_resource&param1='.$vs_resource_type.'&param2=0&param3='.rawurlencode($vs_media_url).'&param4=&param5=&param6=&param7='.rawurlencode(json_encode($va_record));
                 $vs_hash = hash('sha256', $ps_key.$vs_query);
-                $vs_data_request = $o_client->get('?'.$vs_query.'&sign='.$vs_hash);
-                $va_response = $vs_data_request->send();
-                print $va_response->getBody()."<br/>";
-                $vn_rs_id = $va_response->json();
+                $va_response = $o_client->request('GET', '?'.$vs_query.'&sign='.$vs_hash);
+                $vn_rs_id = json_decode($va_response->getBody(), true);
                 if(!$vn_rs_id){
                     caLogEvent('ERR', "Could not create Resource. Check your ResourceSpace configuration", 'caExportDataToResourceSpace');
                     continue;
@@ -2736,9 +2738,8 @@ function caFileIsIncludable($ps_file) {
                     $vs_query = 'user='.$ps_user.'&function=get_user_collections';
                     $vs_hash = hash('sha256', $ps_key.$vs_query);
 
-                    $vs_data_request = $o_client->get('?'.$vs_query.'&sign='.$vs_hash);
-                    $va_response = $vs_data_request->send();
-                    $va_coll_data = $va_response->json();
+                    $va_response = $o_client->request('GET', '?'.$vs_query.'&sign='.$vs_hash);
+                    $va_coll_data = json_decode($va_response->getBody(), true);
                     foreach($va_coll_data as $va_collection){
                         if($va_collection['name'] == $vs_collection_name){
                             $vs_collection_id = $va_collection['ref'];
@@ -2748,16 +2749,14 @@ function caFileIsIncludable($ps_file) {
                         $vs_query = 'user='.$ps_user.'&function=create_collection&param1='.rawurlencode($vs_collection_name);
                         $vs_hash = hash('sha256', $ps_key.$vs_query);
 
-                        $vs_data_request = $o_client->get('?'.$vs_query.'&sign='.$vs_hash);
-                        $va_response = $vs_data_request->send();
-                        $vb_success = $va_response->json();
+                        $va_response = $o_client->request('GET', '?'.$vs_query.'&sign='.$vs_hash);
+                        $vb_success = json_decode($va_response->getBody(), true);
                         if($vb_success){
                             $vs_query = 'user='.$va_api['user'].'&function=search_public_collections&param1='.rawurlencode($vs_collection_name).'&param2=name&param3=ASC&param4=0&param5=0';
                             $vs_hash = hash('sha256', $ps_key.$vs_query);
 
-                            $vs_data_request = $o_client->get('?'.$vs_query.'&sign='.$vs_hash);
-                            $va_response = $vs_data_request->send();
-                            $va_coll_data = $va_response->json();
+                            $va_response = $o_client->request('GET', '?'.$vs_query.'&sign='.$vs_hash);
+                            $va_coll_data = json_decode($va_response->getBody(), true);
                             foreach($va_coll_data as $va_collection){
                                 if($va_collection['name'] == $vs_collection_name){
                                     $vs_collection_id = $va_collection['ref'];
@@ -2770,9 +2769,8 @@ function caFileIsIncludable($ps_file) {
                     $vs_query = 'user='.$ps_user.'&function=add_resource_to_collection&param1='.$vn_rs_id.'&param2='.$vs_collection_id;
                     $vs_hash = hash('sha256', $ps_key.$vs_query);
 
-                    $vs_data_request = $o_client->get('?'.$vs_query.'&sign='.$vs_hash);
-                    $va_response = $vs_data_request->send();
-                    $vb_success = $va_response->json();
+                    $va_response = $o_client->request('GET', '?'.$vs_query.'&sign='.$vs_hash);
+                    $vb_success = json_decode($va_response->getBody(), true);
                 }
             } catch (Exception $e){
                 caLogEvent('ERR', "Could not export data to ResourceSpace with error: ".$e->getMessage()." - Code was: ".$e->getCode(), 'caExportDataToResourceSpace');
@@ -3247,14 +3245,14 @@ function caFileIsIncludable($ps_file) {
             $vs_token = md5(uniqid(rand(), TRUE));   // this is not very good, and is only used if one of the more secure options above is available (one of them should be in almost all cases)
 	    }
 	    if ($po_request) {
-	        if (!is_array($va_tokens = $po_request->session->getVar('csrf_tokens'))) { $va_tokens = []; }
+	        if (!is_array($va_tokens = Session::getVar('csrf_tokens'))) { $va_tokens = []; }
 	        if (sizeof($va_tokens) > 300) { $va_tokens = array_slice($va_tokens, 50, 250, true); }
 	    
 	        if (!isset($va_tokens[$vs_token])) { $va_tokens[$vs_token] = 1; }
 	        
 	        
-	        $po_request->session->setVar('csrf_tokens', $va_tokens);
-	        $po_request->session->save();
+	        Session::setVar('csrf_tokens', $va_tokens);
+	        //$po_request->session->save();
 	    }
 	    return $vs_token;
 	}
@@ -3272,12 +3270,12 @@ function caFileIsIncludable($ps_file) {
 	 */
 	function caValidateCSRFToken($po_request, $ps_token=null, $pa_options=null){
 	    if(!$ps_token) { $ps_token = $po_request->getParameter('crsfToken', pString); }
-	    if (!is_array($va_tokens = $po_request->session->getVar('csrf_tokens'))) { $va_tokens = []; }
+	    if (!is_array($va_tokens = Session::getVar('csrf_tokens'))) { $va_tokens = []; }
 	    
 	    if (isset($va_tokens[$ps_token])) { 
 	        if (caGetOption('remove', $pa_options, false)) {
 	            unset($va_tokens[$ps_token]);
-	            $po_request->session->setVar('csrf_tokens', $va_tokens);
+	            Session::setVar('csrf_tokens', $va_tokens);
 	        }
 	        return true;
 	    }
@@ -3414,7 +3412,7 @@ function caFileIsIncludable($ps_file) {
 			||
 			($vn_setup_mtime != CompositeCache::fetch('setup_php_mtime'))
 		) {
-			CompositeCache::save('setup_php_mtime', $vn_setup_mtime, 'default', 0);
+			CompositeCache::save('setup_php_mtime', $vn_setup_mtime, 'default');
 			return true;
 		}
 
@@ -3615,9 +3613,10 @@ function caFileIsIncludable($ps_file) {
 	# ----------------------------------------
 	/**
 	 * Get list of (enabled) primary tables as table_num => table_name mappings
+	 * @param bool $pb_include_rel_tables Include relationship tables or not. Defaults to false
 	 * @return array
 	 */
-	function caGetPrimaryTables() {
+	function caGetPrimaryTables($pb_include_rel_tables=false) {
 		$o_conf = Configuration::load();
 		$va_ret = [];
 		foreach([
@@ -3639,19 +3638,30 @@ function caFileIsIncludable($ps_file) {
 				$va_ret[$vn_table_num] = $vs_table_name;
 			}
 		}
+
+		if($pb_include_rel_tables) {
+			require_once(__CA_MODELS_DIR__.'/ca_relationship_types.php');
+			$t_rel = new ca_relationship_types();
+			$va_rels = $t_rel->getRelationshipsUsingTypes();
+
+			foreach($va_rels as $vn_table_num => $va_rel_table_info) {
+				$va_ret[$vn_table_num] = $va_rel_table_info['table'];
+			}
+		}
+
 		return $va_ret;
 	}
 	# ----------------------------------------
 	/**
 	 * Get CA primary tables (objects, entities, etc.) for HTML select, i.e. as Display Name => Table Num mapping
+	 * @param bool $pb_include_rel_tables Include relationship tables or not. Defaults to false
 	 * @return array
 	 */
-	function caGetPrimaryTablesForHTMLSelect() {
-		$va_tables = caGetPrimaryTables();
-		$o_dm = Datamodel::load();
+	function caGetPrimaryTablesForHTMLSelect($pb_include_rel_tables=false) {
+		$va_tables = caGetPrimaryTables($pb_include_rel_tables);
 		$va_ret = [];
 		foreach($va_tables as $vn_table_num => $vs_table) {
-			$va_ret[$o_dm->getInstance($vn_table_num, true)->getProperty('NAME_PLURAL')] = $vn_table_num;
+			$va_ret[Datamodel::getInstance($vn_table_num, true)->getProperty('NAME_PLURAL')] = $vn_table_num;
 		}
 		return $va_ret;
 	}
@@ -3928,6 +3938,34 @@ function caFileIsIncludable($ps_file) {
 	        return array_map(function($v) { return trim(preg_replace_callback("!([A-Z]{1})!", function($m) { return strtolower($m[1]); }, $v), '_'); }, $pm_text);
 	    } else {
 	        return trim(preg_replace_callback("!([A-Z]{1})!", function($m) { return strtoupper($m[1]); }, $pm_text), '_');
+	    }
+	}
+	# ----------------------------------------
+	/**
+	 * Generate natural language string for list. Delimiters are used between all items in the list save 
+	 * for the last, where a conjunction is used. Ex. ['apples', 'oranges', 'pears'] => "apples, oranges and pears"
+	 *
+	 * @param array $pa_items
+	 * @param array $pa_options Options include:
+	 *		delimiter = Delimiter used in between all but last list item. [Default is ', ']
+	 *		conjunction = Delimiter used between second-to-last and last list item. [Default is localized test for 'and']
+	 *
+	 * @return string
+	 */
+	function caMakeCommaListWithConjunction($pa_items, $pa_options=null) {
+		if(!is_array($pa_items)) { return null; }
+	    switch(sizeof($pa_items)) {
+	    	case 0:
+	    		return '';
+	    		break;
+	    	case 1:
+	    		return join('', $pa_items);
+	    		break;
+	    	default:
+	    		$last_item = array_pop($pa_items);
+	    		$list = join(caGetOption('delimiter', $pa_options, ', '), $pa_items);
+	    		return  ' '.caGetOption('conjunction', $pa_options, _t('and')).' '.$last_item;
+	    		break;
 	    }
 	}
 	# ----------------------------------------

@@ -121,8 +121,8 @@ if($ps_mode != "remove"){
 <?php
 		}
 	}else{
-		if (!is_array($va_entity_list = $this->request->session->getVar('itinera_entity_list'))) { $va_entity_list = array(); }
- 		if (!is_array($va_object_list = $this->request->session->getVar('itinera_object_list'))) { $va_object_list = array(); }
+		if (!is_array($va_entity_list = Session::getVar('itinera_entity_list'))) { $va_entity_list = array(); }
+ 		if (!is_array($va_object_list = Session::getVar('itinera_object_list'))) { $va_object_list = array(); }
  			
 		if ((!sizeof($va_entity_list)) && !sizeof($va_object_list)){
  			

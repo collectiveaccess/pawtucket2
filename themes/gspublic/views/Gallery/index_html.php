@@ -30,7 +30,6 @@
 ?>
 		<div class="row">	
 <?php
-				$o_datamodel = Datamodel::load();
 				$i = 1;
 				$i_color = 1;
 				foreach($va_sets as $vn_set_id => $va_set){
@@ -38,7 +37,7 @@
 					$t_set = new ca_sets($vn_set_id);
 					# --- if there isn't a rep tag in $va_first_item["representation_tag"], and this isn't an object based set, get the first item from the set and try to get objects linked to it
 					if(!$va_first_item["representation_tag"] && ($t_set->get("table_num") != 57)){
-						$t_first_set_item = $o_datamodel->getInstanceByTableNum($t_set->get("table_num"), true);
+						$t_first_set_item = Datamodel::getInstance($t_set->get("table_num"), true);
 						$t_first_set_item->load($va_first_item["row_id"]);
 						$va_first_item["representation_tag"] = $t_first_set_item->getWithTemplate("<unit relativeTo='ca_objects.related' length='1'>^ca_object_representations.media.wideslide</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 					}

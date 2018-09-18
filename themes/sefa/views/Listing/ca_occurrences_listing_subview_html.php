@@ -117,13 +117,13 @@
 	</div><!--end row contentbody-->
 <?php
 	if(is_array($va_years)){
-		$vs_first_year = array_shift($va_years);
+		$vs_last_year = array_pop($va_years);
 ?>
 	<script type='text/javascript'>
 		jQuery(document).ready(function() {		
-			jQuery("#yearTab<?php print $vs_first_year; ?>").show();
+			jQuery("#yearTab<?php print $vs_last_year; ?>").show();
 			jQuery(".yearBar").removeClass("active");
-			jQuery(".yearBar<?php print $vs_first_year; ?>").addClass("active");
+			jQuery(".yearBar<?php print $vs_last_year; ?>").addClass("active");
 		});
 	</script>
 <?php

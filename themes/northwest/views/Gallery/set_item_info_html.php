@@ -1,5 +1,6 @@
 <?php print "(".$this->getVar("set_item_num")."/".$this->getVar("set_num_items").")<br/>"; ?>
 <H4><?php print $this->getVar("label"); ?></H4>
+{{{<ifcount min="1" code="ca_objects.date"><h6 style='padding:0px 0px 30px 0px; margin-top:5px;'><unit delimiter="<br/>">^ca_objects.date</unit></h6></ifcount>}}}
 
 {{{<ifdef code="ca_objects.description">^ca_objects.description<br/><br/></ifdef>}}}
 

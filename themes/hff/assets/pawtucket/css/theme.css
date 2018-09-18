@@ -1,0 +1,210 @@
+/* do this in main.css? */
+.yamm .nav.navbar-right .dropdown-menu {
+  left: auto;
+  right: auto;
+}
+
+@font-face {
+	font-family: 'Proximanova';
+	src: url('proximanova/proximanova-reg-webfont.eot');
+	src: url('proximanova/proximanova-reg-webfont.eot?#iefix') format('embedded-opentype'), url('proximanova/proximanova-reg-webfont.woff') format('woff'), url('proximanova/proximanova-reg-webfont.ttf') format('truetype');
+}
+
+@font-face {font-family: 'ProximanovaBold'; src: url('proximanova/proximanova-bold-webfont.eot');src: url('proximanova/proximanova-bold-webfont.eot?#iefix') format('embedded-opentype'),url('proximanova/proximanova-bold-webfont.woff') format('woff'),url('proximanova/proximanova-bold-webfont.ttf') format('truetype');}
+
+body{
+	font-family: Proximanova;
+	font-size: 14px;
+	line-height: 21px;
+	font-weight: normal;
+	
+	background-image: -webkit-gradient(linear, 50% 0%, 50% 100, color-stop(0%, #efefef),color-stop(100%, #ffffff));
+	background-image: -moz-linear-gradient(#efefef 0%,#ffffff 100px);
+	background-image: -webkit-linear-gradient(#efefef 0%,#ffffff 100px);
+	background-image: linear-gradient(#efefef 0%,#ffffff 100px);
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+	
+	margin-top:20px;
+	margin-bottom: 150px;
+}
+#footer {
+    min-height: 120px;
+    background-color: #444;
+    width: 100%;
+    color: #EDEDED;
+    padding: 45px 0px 0px 0px;
+	margin-top:30px;
+}
+@media (min-width: 768px) {
+	body{
+		margin-left:40px;
+		margin-right:40px;
+	}
+	#footer {
+		margin-left:-40px;
+		margin-right:-40px;
+		padding: 45px 40px 0px 40px;
+	}
+}
+a, a:hover {
+    color: #000;
+}
+b{
+	font-family: 'ProximanovaBold';
+}
+H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
+	font-family: Proximanova,Helvetica,Arial,sans-serif;
+	color:#000;
+	text-transform: none;
+}
+.btn-default{
+	background-color:#000;
+}
+.form-control:focus {
+    border-color: #000;
+}
+.navbar-brand {
+	width: 225px;
+	margin-top: 7px;
+}
+@media (min-width: 500px) {
+	.navbar-brand {
+		width: 300px;
+		margin-top: 7px;
+	}
+}
+@media (min-width: 768px) {
+	.navbar-brand {
+		width: 350px;
+		margin-top: 7px;
+	}
+}
+/* make nav bar fall under logo and searh */
+@media (min-width: 768px) {
+	ul.menuItems {
+		width:100%;
+		border-top:solid 1px #ddd;
+	}
+	.menuItems.navbar-nav > li > a {
+		padding-top:5px;
+		padding-bottom:5px;
+	}
+	.navbar-collapse .navbar-nav.navbar-right:last-child {
+		margin-right:0px;
+	}
+	.container.menuBar {
+		padding:0px;
+	}
+	.navbar > .container .navbar-brand {
+		margin-left:0px;
+	}
+}
+@media (max-width: 768px) {
+	ul.menuItems {
+		margin-left: 0px;
+	}
+}
+.yamm #user-navbar.nav.navbar-right .dropdown-menu{
+	right:0px;
+}
+.yamm #user-navbar.nav.navbar-right .dropdown-menu li{
+	text-align:right;
+}
+/* end */
+.navbar {
+    background-color: transparent;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    margin-bottom: 30px;
+}
+.navbar .formOutline {
+    background-color:#fff;
+    border:0px;
+    border-radius:0px;
+    box-shadow:none;
+}
+.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+    font-family: Proximanova;
+}
+.navbar-default .navbar-nav > li > a{
+	color: #858585;
+	-moz-transition-property: all;
+	-o-transition-property: all;
+	-webkit-transition-property: all;
+	transition-property: all;
+	-moz-transition-duration: 0.2s;
+	-o-transition-duration: 0.2s;
+	-webkit-transition-duration: 0.2s;
+	transition-duration: 0.2s;
+}
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus{
+	color: #000;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+    background-color: transparent;
+}
+.btn-search{
+	background-color:transparent;
+}
+
+/* front */
+.front .tileLinks img{
+	width:100%;
+	height:auto;
+	margin-bottom:3px;
+}
+.front .tileLinks a{
+	font-size:16px;
+}
+@media (max-width: 768px) {
+	.front .tileLinks .col-sm-4{
+		margin-bottom:30px;
+	}
+}
+.front a{
+	color: #858585;
+	font-size:16px;
+}
+.front a:hover{
+	color: #000;
+	text-decoration:none;
+	-moz-transition-property: all;
+	-o-transition-property: all;
+	-webkit-transition-property: all;
+	transition-property: all;
+	-moz-transition-duration: 0.2s;
+	-o-transition-duration: 0.2s;
+	-webkit-transition-duration: 0.2s;
+	transition-duration: 0.2s;
+}
+.front H2{
+	font-size:25px;
+	margin-top:50px;
+}
+.front H1{
+	text-align:center;
+	margin-top:70px;
+	margin-bottom:30px;
+	color:#000;
+	font-size:30px;
+	font-family: Proximanova;
+}
+
+/* browse */
+#bRefine H5 {
+    text-transform: none;
+}
+.browse .btn, .sets .btn {
+    background-color: #000;
+}
+
+/* gallery */
+.gallery .setDescription {
+    font-weight: normal;
+}
+
+/* detail */
+.detail .detailNavBgLeft, .detail .detailNavBgRight{
+	background-color: transparent;
+}

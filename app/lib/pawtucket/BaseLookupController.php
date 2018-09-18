@@ -53,7 +53,7 @@
  		protected $opa_filters = array(); 
  		# -------------------------------------------------------
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
-			if ($this->ops_search_class) { require_once(__CA_LIB_DIR__."/ca/Search/".$this->ops_search_class.".php"); }
+			if ($this->ops_search_class) { require_once(__CA_LIB_DIR__."/Search/".$this->ops_search_class.".php"); }
 			require_once(__CA_MODELS_DIR__."/".$this->ops_table_name.".php");
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			$this->opo_item_instance = new $this->ops_table_name();
@@ -360,7 +360,7 @@
 				//
 				// ... so the hierbrowser passes an extra 'init' parameters set to 1 if the GetHierarchyLevel() call
 				// is part of a browser initialization
-				$this->request->session->setVar($this->ops_table_name.'_'.$ps_bundle.'_browse_last_id', array_pop($pa_ids));
+				Session::setVar($this->ops_table_name.'_'.$ps_bundle.'_browse_last_id', array_pop($pa_ids));
 			}
 
 			$this->view->setVar(str_replace(' ', '_', $this->ops_name_singular).'_list', $va_level_data);

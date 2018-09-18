@@ -106,7 +106,7 @@
 					$vs_image = $vs_placeholder_tag;
 				}
 				if($vs_image){
-					$vs_rep_detail_link = caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id, array("subsite" => $this->request->session->getVar("coloradoSubSite")));	
+					$vs_rep_detail_link = caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id, array("subsite" => Session::getVar("coloradoSubSite")));	
 				}
 				print "<div class='bResultListItemCol col-xs-12 col-sm-12 col-md-12'>";
 				if($vs_rep_detail_link){
@@ -118,7 +118,7 @@
 //
 				if (in_array($vn_type_id, $va_eggshell_type_ids)) {										
 					if($vs_idno){
-						print "<div class='searchFullTitle'>".caDetailLink($this->request, $vs_idno, '', 'ca_objects', $vn_id, array("subsite" => $this->request->session->getVar("coloradoSubSite")), array(), array('action' => $this->request->getAction()))."</div>";
+						print "<div class='searchFullTitle'>".caDetailLink($this->request, $vs_idno, '', 'ca_objects', $vn_id, array("subsite" => Session::getVar("coloradoSubSite")), array(), array('action' => $this->request->getAction()))."</div>";
 					}
 					print "<div class='searchFullText'>";
 					print "<div><b>"._t("Specimen Type").":</b> ".caReturnDefaultIfBlank($qr_res->get('ca_objects.specimenType', array("convertCodesToDisplayText" => true, "delimiter" => ", ")))."</div>";
@@ -160,7 +160,7 @@
 //
 // Vertebrates
 //
-					print "<div class='searchFullTitle'>".caDetailLink($this->request, "UCM ".($vs_idno ? $vs_idno : 'not available'), '', 'ca_objects', $vn_id, array("subsite" => $this->request->session->getVar("coloradoSubSite")), array(), array('action' => $this->request->getAction()))."</div>";
+					print "<div class='searchFullTitle'>".caDetailLink($this->request, "UCM ".($vs_idno ? $vs_idno : 'not available'), '', 'ca_objects', $vn_id, array("subsite" => Session::getVar("coloradoSubSite")), array(), array('action' => $this->request->getAction()))."</div>";
 					
 					print "<div class='searchFullText".(($vs_image) ? "Small" : "")."'>";	
 					$vs_other = $qr_res->get("ca_objects.other_catalog_number");
@@ -246,7 +246,7 @@
 // Tracks
 //
 					if($vs_idno){
-						print "<div class='searchFullTitle'>".caDetailLink($this->request, "UCM ".$vs_idno, '', 'ca_objects', $vn_id, array("subsite" => $this->request->session->getVar("coloradoSubSite")), array(), array('action' => $this->request->getAction()))."</div>";
+						print "<div class='searchFullTitle'>".caDetailLink($this->request, "UCM ".$vs_idno, '', 'ca_objects', $vn_id, array("subsite" => Session::getVar("coloradoSubSite")), array(), array('action' => $this->request->getAction()))."</div>";
 					}
 					print "<div class='searchFullTextSmall'>";
 					print "<div class='searchFullTextTitle'>Taxonomy</div>";

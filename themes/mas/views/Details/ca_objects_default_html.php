@@ -45,7 +45,7 @@
 <div class="row">	
 	<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
-		$va_reps = $t_object->getRepresentations(array("original"), null, array('restrict_to_types' => 'panorama'));
+		$va_reps = $t_object->getRepresentations(array("original"), null, array('restrict_to_types' => array('panorama')));
 		if ($va_reps) {
 			foreach ($va_reps as $va_key => $va_rep) {
 				print "<div class='panoramaContainer'><a-scene>

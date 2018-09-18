@@ -2,7 +2,7 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$va_access_values = $this->getVar('access_values');
-	$this->request->session->setVar("repViewerResults", "");
+	Session::setVar("repViewerResults", "");
 	$va_object_results = array();
 ?>
 
@@ -74,7 +74,7 @@
 					print "</div></div>";
 			print "</div><!-- end mediaThumbs -->";
 		}
-		$this->request->session->setVar("repViewerResults", $va_object_results);
+		Session::setVar("repViewerResults", $va_object_results);
 ?>		
 		</div><!-- end mediaArea-->	
 		

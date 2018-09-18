@@ -7,9 +7,9 @@
 	$ps_sort = $this->request->getParameter('sort', pString);
 
 	if(!$ps_sort){
-		$ps_sort = $this->request->session->getVar("collection_section_sort");
+		$ps_sort = Session::getVar("collection_section_sort");
 	}elseif(in_array($ps_sort, $va_sorts)){
-		$this->request->session->setVar("collection_section_sort", $ps_sort);
+		Session::setVar("collection_section_sort", $ps_sort);
 	}
 	if(!$ps_sort){
 		$ps_sort = "title";
@@ -19,10 +19,6 @@
 	$va_sort_results = array();
 	if($qr_collections && $qr_collections->numHits()) {
 		while($qr_collections->nextHit()) {
-			/*******  REMOVE THIS HACK TO HIDE BY ACCESS WHEN START ENFORCING ACCESS *****/
-			if(!$qr_collections->get("access")){
-				continue;
-			}
 			switch($ps_sort){
 				case "date":
 					$va_date = array_pop(array_pop($qr_collections->get("ca_collections.collection_date2.collection_date_inclusive", array("returnWithStructure" => true, "rawDate" => true))));

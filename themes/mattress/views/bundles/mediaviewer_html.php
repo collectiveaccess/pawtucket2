@@ -39,7 +39,7 @@ if (!$t_object) { print caPrintStackTrace(); }
 $vn_object_id = $t_object->getPrimaryKey();
 
 # --- when linked to from authority detail pages, use session var to make next and previous nav between reps
-$va_authority_objects_results = $this->request->session->getVar("repViewerResults");
+$va_authority_objects_results = Session::getVar("repViewerResults");
 	
 if($vs_display_type == 'media_overlay'){
 	if(sizeof($va_reps) > 1){

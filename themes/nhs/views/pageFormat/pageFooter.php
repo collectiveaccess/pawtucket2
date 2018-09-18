@@ -32,10 +32,9 @@
 		<div>
 			<a href="http://newporthistory.org"><?php print caGetThemeGraphic($this->request, 'Stacked_NHS_Tag_White.png'); ?></a>
 			<ul class="list-inline pull-right social">
-				<li><a href="http://newporthistory.org/wp-content/themes/nevada/images/icons/social/white/facebook.png" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
+				<li><a href="https://www.facebook.com/NewportHistory" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
 				<li><a href="https://twitter.com/newporthistory" target="_blank"><i class="fa fa-twitter"></i></a></li>
 				<li><a href="http://instagram.com/newporthistory/" target="_blank"><i class="fa fa-instagram"></i></a></li>
-				<li><a href="http://newporthistory.tumblr.com/" target="_blank"><i class="fa fa-tumblr"></i></a></li>
 				<li><a href="https://www.youtube.com/user/NewportHistory" target="_blank"><i class="fa fa-youtube-play"></i></a></li>
 			</ul>
 			<div class="address">

@@ -75,7 +75,7 @@
 	jQuery("#siteBlock").css("display", "none");
 	jQuery(document).ready(function() {
 		// grab search results
-		jQuery.getJSON("http://stormking.org/wp-json/wp/v2/pages", <?php print json_encode(array('search' => $this->getVar('search'), 'per_page' => 100)); ?>, function(d) {
+		jQuery.getJSON("https://stormking.org/wp-json/wp/v2/pages", <?php print json_encode(array('search' => $this->getVar('search'), 'per_page' => 100)); ?>, function(d) {
 			
 			var hits = [];
 			var numHits = 0;
