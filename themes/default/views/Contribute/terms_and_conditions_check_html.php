@@ -46,7 +46,7 @@
 		</div>
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
-				jQuery('#ContributeForm').submit(function() {
+				jQuery('#ContributeForm').on('submit', function() {
 					if (jQuery('#iAgreeToTerms').length > 0) {
 						if (!jQuery('#iAgreeToTerms').attr('checked')) {
 							alert("<?php print _t("You must agree to the terms and conditions before proceeding."); ?>");

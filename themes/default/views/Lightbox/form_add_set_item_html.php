@@ -74,7 +74,7 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#AddItemForm').submit(function(e){		
+		jQuery('#AddItemForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddItem', null); ?>',
 				jQuery('#AddItemForm').serialize()

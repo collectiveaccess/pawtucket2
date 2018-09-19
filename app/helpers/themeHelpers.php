@@ -1135,11 +1135,11 @@
 		
 		if($vb_submit_or_reset_set) {
 			$vs_script = "<script type='text/javascript'>
-			jQuery('.caAdvancedSearchFormSubmit').bind('click', function() {
+			jQuery('.caAdvancedSearchFormSubmit').on('click', function() {
 				jQuery('#caAdvancedSearch').submit();
 				return false;
 			});
-			jQuery('.caAdvancedSearchFormReset').bind('click', function() {
+			jQuery('.caAdvancedSearchFormReset').on('click', function() {
 				jQuery('#caAdvancedSearch').find('input[type!=\"hidden\"],textarea').val('');
 				jQuery('#caAdvancedSearch').find('input.lookupBg').val('');
 				jQuery('#caAdvancedSearch').find('select.caAdvancedSearchBoolean').val('AND');

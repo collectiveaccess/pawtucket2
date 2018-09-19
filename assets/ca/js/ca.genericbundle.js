@@ -71,7 +71,7 @@ var caUI = caUI || {};
 		}, options);
 		
 		if (!that.readonly) {
-			jQuery(container + " ." + that.addButtonClassName).click(function() {
+			jQuery(container + " ." + that.addButtonClassName).on('click', function() {
 				that.addToBundle();
 				that.showUnsavedChangesWarning(true);	
 				
@@ -265,7 +265,7 @@ var caUI = caUI || {};
 		
 			// attach delete button
 			if (!this.readonly) {
-				jQuery(this.container + " #" +this.itemID + templateValues.n + " ." + this.deleteButtonClassName).click(function() { that.deleteFromBundle(templateValues.n); return false; });
+				jQuery(this.container + " #" +this.itemID + templateValues.n + " ." + this.deleteButtonClassName).on('click', function() { that.deleteFromBundle(templateValues.n); return false; });
 			} else {
 				jQuery(this.container + " #" +this.itemID + templateValues.n + " ." + this.deleteButtonClassName).css("display", "none");
 			}

@@ -89,7 +89,7 @@
 		</div><!-- end caFormOverlay -->
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#LoginForm').submit(function(e){		
+		jQuery('#LoginForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', 'LoginReg', 'login', null); ?>',
 				jQuery('#LoginForm').serialize()

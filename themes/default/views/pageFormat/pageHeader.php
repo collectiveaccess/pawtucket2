@@ -139,7 +139,7 @@
 				<script type="text/javascript">
 					$(document).ready(function(){
 						$('#headerSearchButton').prop('disabled',true);
-						$('#headerSearchInput').keyup(function(){
+						$('#headerSearchInput').on('keyup', function(){
 							$('#headerSearchButton').prop('disabled', this.value == "" ? true : false);     
 						})
 					});

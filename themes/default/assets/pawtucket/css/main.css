@@ -2767,6 +2767,7 @@ a.browseRemoveFacet .glyphicon {
 	margin: 0px;
 	padding: 0px;
 	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
+	background-color: rgba(255, 255, 255, 0.7);
 }
 #caMediaPanel #close{
 	float: right;

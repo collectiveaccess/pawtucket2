@@ -702,8 +702,8 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	 */
 	function caEditorFieldList($po_request, $pt_subject, $pa_bundle_list, $pa_options=null) {
 		$vs_buf = "<script type=\"text/javascript\">
-		jQuery(document).ready(function() {
-			jQuery(document).bind('keydown.ctrl_f', function() {
+		jQuery(document).on('ready', function() {
+			jQuery(document).on('keydown.ctrl_f', function() {
 				caHierarchyOverviewPanel.hidePanel({dontCloseMask:1});
 				caEditorFieldList.onOpenCallback = function(){
 					var selector = '#' + caEditorFieldList.panelID + ' a.editorFieldListLink:link';
@@ -744,8 +744,8 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	function caEditorHierarchyOverview($po_request, $ps_table, $pn_id, $pa_options=null) {
 		$t_subject = Datamodel::getInstanceByTableName($ps_table, true);
 		$vs_buf = "<script type=\"text/javascript\">
-		jQuery(document).ready(function() {
-			jQuery(document).bind('keydown.ctrl_h', function() {
+		jQuery(document).on('ready', function() {
+			jQuery(document).on('keydown.ctrl_h', function() {
 				caEditorFieldList.hidePanel({dontCloseMask:1});
 				
 				var url;

@@ -49,7 +49,7 @@
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>" id="securitySum"/>
 		<script type="text/javascript">
 			jQuery(document).ready(function() {
-				jQuery('#ContributeForm').submit(function() {
+				jQuery('#ContributeForm').on('submit', function() {
 					if (jQuery('#security').length > 0) {
 						if (jQuery('#security').val() != jQuery('#securitySum').val()) {
 							alert("<?php print _t("Please correctly answer the security question."); ?>");

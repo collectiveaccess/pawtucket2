@@ -66,7 +66,7 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#SetForm').submit(function(e){		
+		jQuery('#SetForm').on('submit', function(e){		
 			jQuery.getJSON(
 				'<?php print caNavUrl($this->request, '', 'Lightbox', 'ajaxSaveSetInfo', null); ?>',
 				jQuery('#SetForm').serializeObject(), function(data) {
