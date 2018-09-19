@@ -61,30 +61,29 @@
 				<div class='wop'>Works on Paper</div>
 				<div class='credit'>Produced by the <b>National Gallery of Art, Washington</b></div>
 			</div>
-			<div class='carouselDiv container'>
-				<div class="carousel slide row" data-ride="carousel" id="myCarousel" data-type="multi" data-interval="false" >
-					<div class="carousel-inner">
-	<?php
-						$vn_count = 1;
-						while ($qr_set_items->nextHit()) {
-							if ( $vn_count == 2 ) {
-								$vs_style = 'active';
-							} else {
-								$vs_style = null;
-							}
-							print '<div class="item '.$vs_style.'"><div class="col-sm-6 slide">';
-							print caDetailLink($this->request, $qr_set_items->get('ca_object_representations.media.large'), '', 'ca_objects', $qr_set_items->get('ca_objects.object_id'));
-							print '</div></div>';
-							$vn_count++;
+			<div class='carouselDiv'>
+				<div class="carousel slide" id="myCarousel" data-interval="false">
+				  <div class="carousel-inner">
+<?php
+					$vn_count = 1;
+					while ($qr_set_items->nextHit()) {
+						if ( $vn_count == 1 ) { $vn_count++; continue; }
+						if ( $vn_count == 2 ) {
+							$vs_style = 'active';
+						} else {
+							$vs_style = null;
 						}
-	?>
-					</div>
-
-					<a class="left carousel-control" href="#myCarousel" data-slide="prev"><i class="myleftarrow"></i></a>
-					<a class="right carousel-control" href="#myCarousel" data-slide="next"><i class="myrightarrow"></i></a> 
-				</div>
-			</div>
-			
+						print '<div class="item '.$vs_style.'"><div class="col-md-6 slide">';
+						print caDetailLink($this->request, $qr_set_items->get('ca_object_representations.media.large'), '', 'ca_objects', $qr_set_items->get('ca_objects.object_id'));
+						print '</div></div>';
+						$vn_count++;
+					}
+?>				  
+				  </div>
+				  <a class="left carousel-control" href="#myCarousel" data-slide="prev"><i class="myleftarrow"></i></a>
+				  <a class="right carousel-control" href="#myCarousel" data-slide="next"><i class="myrightarrow"></i></a>
+				</div>			
+			</div>			
 		</div><!--end col-sm-12-->
 	</div><!-- end row -->
 	<div class="row gray">
@@ -135,44 +134,8 @@
 		</div>
 	</div>				
 </div><!-- end container -->
+
 <script>
-jQuery(document).ready(function() {     
-  jQuery('.carousel[data-type="multi"] .item').each(function(){
-	var next = jQuery(this).next();
-	if (!next.length) {
-		next = jQuery(this).siblings(':first');
-	}
-	next.children(':first-child').clone().appendTo(jQuery(this)).addClass('second');
-  
-	for (var i=0;i<0;i++) {
-		next=next.next();
-		if (!next.length) {
-			next = jQuery(this).siblings(':first');
-		}
-		next.children(':first-child').clone().appendTo($(this));
-	}
-	$( ".right" ).click(function() {
-	  var activeSlide = $('.active');
-	  var nextImage = activeSlide.find('img').attr('src');
-	  var nextLink = activeSlide.find('a').attr('href');
-	  $('#focusImg').empty().append("<a href='" + nextLink + "'><img src='" + nextImage + "'/></a>").hide().fadeIn(200);
-	});
-	$( ".left" ).click(function() {
-	  var activeSlide = $('.active').prev().prev();
-	  	if (!$('.active').prev().prev().length) {
-	  		activeSlide = $('.active').siblings(':last-child');
-			if (!$('.active').prev().length) {
-				activeSlide = $('.active').siblings(':last-child').prev();
-			}
-		}			  
-	  var nextImage = activeSlide.find('img').attr('src');
-	  var nextLink = activeSlide.find('a').attr('href');
-	  $('#focusImg').empty().append( "<a href='" + nextLink + "'><img src='" + nextImage + "'/></a>").hide().fadeIn(200);
-	}); 		
-  });     
-});
-</script>
-<!--<script>
 	$('#myCarousel').carousel();
 
 	$('.carousel .item').each(function(){
@@ -181,6 +144,16 @@ jQuery(document).ready(function() {
 		next = $(this).siblings(':first');
 	  }
 	  next.children(':first-child').clone().appendTo($(this)).addClass('child');
- 
+	  $( ".right" ).click(function() {
+	  	<!--$('.active').children(':first-child').hide().show(1000);-->
+	  	var activeSlide = $('.active');
+	  	var nextImage = activeSlide.find('img').attr('src');
+		$('#focusImg').empty().append( "<img src='" + nextImage + "'>").hide().fadeIn(200);
+	  });
+	  $( ".left" ).click(function() {
+	  	var activeSlide = $('.active').prev().prev();
+	  	var nextImage = activeSlide.find('img').attr('src');
+		$('#focusImg').empty().append( "<img src='" + nextImage + "'>").hide().fadeIn(200);
+	  });  
 	});
-</script>	-->
+</script>	
