@@ -343,7 +343,7 @@
 				return null;		// not an error, just skip it
 			}
 			
-			if(sizeof(LCSHAttributeValue::$s_term_cache > LCSHAttributeValue::$s_term_cache_max_size)) {
+			if(is_array(LCSHAttributeValue::$s_term_cache ) && (sizeof(LCSHAttributeValue::$s_term_cache > LCSHAttributeValue::$s_term_cache_max_size))) {
 				LCSHAttributeValue::$s_term_cache = array($ps_value => LCSHAttributeValue::$s_term_cache[$ps_value]);
 			}
 			return LCSHAttributeValue::$s_term_cache[$ps_value];
