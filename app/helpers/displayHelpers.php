@@ -4161,6 +4161,8 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 					['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
 					['viewerWrapper' => 'viewerInline', 'context' => caGetOption('context', $pa_options, null)]
 				).$vs_tool_bar.$vs_caption."</div></div>";
+				
+				if (sizeof($va_reps) > 10) { break(2); }
 			}
  		}
  		return $va_reps;
