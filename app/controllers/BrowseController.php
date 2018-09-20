@@ -366,7 +366,7 @@
 			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);
 
-			$this->view->setVar('start', (int)$vn_start = $this->request->getParameter('s', pInteger));
+			$this->view->setVar('start', $vn_start = (int)$this->request->getParameter('s', pInteger));
 			
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
