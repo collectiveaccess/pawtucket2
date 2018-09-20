@@ -234,7 +234,7 @@
 			if (trim($ps_value)) {
 				// parse <text>|<url> format
 				$va_tmp = explode('|', $ps_value);
-				if (sizeof($va_tmp) > 1) {
+				if (is_array($va_tmp) && (sizeof($va_tmp) > 1)) {
 				
 					$vs_url = str_replace('info:lc/', 'http://id.loc.gov/authorities/', $va_tmp[1]);
 				
