@@ -433,6 +433,9 @@ p, .collectionsList p {
 .detail .zoomIcon.unit h6{
 	font-size:14px;
 }
+.detail .leaflet-control a {
+	text-decoration:none !important;
+}
 .artistName {
 	font-size:18px;
 	font-weight:bold;
