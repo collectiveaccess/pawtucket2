@@ -7,7 +7,7 @@
 <?php
 		if($this->request->isLoggedIn()){
 ?>
-			<H1><?php print _t("Heritage and Timeline"); ?></H1>
+			<H1><?php print _t("Learn from our past to innovate for the future"); ?></H1>
 <?php
 		}
 ?>
@@ -22,16 +22,15 @@
 
 ?>
 			<ul class="about">
-				<li><i class="fa fa-chevron-circle-right"></i> Our Timeline and Archives have merged into one site.</li>
-				<li><i class="fa fa-chevron-circle-right"></i> The Timeline can be browed by era or various relationship tags.</li>
-				<li><i class="fa fa-chevron-circle-right"></i> The archive entries are a small representation of physical items housed in the corporate archive stacks.</li>
-				<li><i class="fa fa-chevron-circle-right"></i> The majority of the material is brand related and dates from the early 1900s to the late 1990s.</li>
+				<li><i class="fa fa-chevron-circle-right"></i> The Steelcase digital archive provides online access to selected items from the corporate collection of images, documents, publications, video, speeches, and more.</li>
+				<li><i class="fa fa-chevron-circle-right"></i> Milestones curated here feed our public timeline; save your favorites to create your own custom timelines.</li>
+				<li><i class="fa fa-chevron-circle-right"></i> The items found here are a small representation of physical items housed in the corporate archive stacks.</li>
+				<li><i class="fa fa-chevron-circle-right"></i> The majority of the material is brand related and dates from the early 1900s to the late 1990s..</li>
 				<li><i class="fa fa-chevron-circle-right"></i> High-level <?php print caNavLink($this->request, "Finding aids", "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $vn_findging_aids_id)); ?> will give you a deeper dive of what's in the stacks.</li>
-				<li><i class="fa fa-chevron-circle-right"></i> The digital items are available only to Steelcase employees and select vendors and partners.</li>
 				<li><i class="fa fa-chevron-circle-right"></i> Downloading files to share outside of Steelcase is not permissible unless permission/clearance from the Archives, Corporate Communications, Brand team and/or Legal departments is obtained.</li>
 				<li><i class="fa fa-chevron-circle-right"></i> Hi-res tiff files exist for many of the jpg's; <a href="https://support.steelcase.com/ssp?id=sc_cat_item&sys_id=8d7a1e050fb63600423a590be1050e87" target="_blank">fill out a request form</a> if Tiff files or other records are needed</li>
 				<li><i class="fa fa-chevron-circle-right"></i> Please adhere to copyright laws (files with models from agencies; files not published by Steelcase; etc.)</li>
-				<li><i class="fa fa-chevron-circle-right"></i> Crowdsourcing encouraged.  If you know details about a specific file please share with us by adding Comments and Tags (identifying people, locations, year, product will help create a better experience for others)</li>
+				<li><i class="fa fa-chevron-circle-right"></i> Crowdsourcing encouraged. If you know details about a specific file please share with us by adding Comments and Tags (identifying people, locations, year, product will help create a better experience for others)</li>
 			</ul>
 <?php		
 		}else{
