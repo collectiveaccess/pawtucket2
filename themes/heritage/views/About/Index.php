@@ -9,10 +9,6 @@
 ?>
 			<H1><?php print _t("Heritage and Timeline"); ?></H1>
 <?php
-		}else{
-?>
-			<H1><?php print _t("Our Story"); ?></H1>
-<?php		
 		}
 ?>
 		</div>
@@ -41,10 +37,10 @@
 		}else{
 ?>
 			<p>
-				We opened our doors in 1912 after 11 business men agreed to invest in Peter M. Wege's dream of opening a steel office furniture company in a city renown for wood furniture. Since then we've experienced many changes, including our name, but our business vision of always looking toward the future has remained the same.
+				We opened our doors in 1912 after 11 business men agreed to invest in Peter M. Wege's dream of opening a steel office furniture company in a city renown for wood furniture. Since then we've experienced many changes, including our name, but our business vision of always looking toward the future has remained the same. 
  			</p>
  			<p>
-				Here we'd like to share with you a few hundred of the thousands of noteworthy historical moments from our 105-year plus legacy.  Steelcase employees and partners can access the full timeline and heritage archives using their existing login credentials.
+				Here we'd like to share with you a few hundred of thousands of noteworthy milestones from our 106-year plus legacy. Steelcase employees and partners can view additional milestones in the online archives.   
 			</p>
 <?php
 		}
@@ -72,6 +68,6 @@
 		
 			<address><b>Kathy Reagan, Program Manager</b>
 				<br><span class="info">Phone</span> — 616.437.2246<br>			
-				<span class="info">Email</span> — <a href="kreagan@steelcase.com">kreagan@steelcase.com</a></address>
+				<span class="info">Email</span> — <a href="mailto:kreagan@steelcase.com">kreagan@steelcase.com</a></address>
 		</div>
 	</div>
