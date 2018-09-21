@@ -366,12 +366,12 @@
 			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);
 
-			$this->view->setVar('start', $vn_start = $this->request->getParameter('s', pInteger));
+			$this->view->setVar('start', $vn_start = (int)$this->request->getParameter('s', pInteger));
 			
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
-				if (($vn_key_start = (int)$vn_start - 1000) < 0) { $vn_key_start = 0; }
+				if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
 				$qr_res->seek($vn_key_start);
 				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 				$qr_res->seek($vn_start);
