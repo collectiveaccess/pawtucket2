@@ -11,8 +11,8 @@
 ?>
 <div class="container">
 	<div class="row">
-		<div class="col-sm-1"><div class='previousLink'>{{{previousLink}}}</div></div>
-		<div class="col-sm-10">
+		<div class="col-xs-1"><div class='previousLink'>{{{previousLink}}}</div></div>
+		<div class="col-xs-10">
 
 
 <div class="container">
@@ -27,7 +27,7 @@
 		</div><!-- end col --> 
 	</div>
 <div class="row">
-	<div class='col-sm-7 col-md-7 col-lg-7' style="padding-right:30px;margin-bottom:40px;">
+	<div class='col-xs-7 col-md-7 col-lg-7' style="padding-right:30px;margin-bottom:40px;">
 		{{{representationViewer}}}
 <?php
 			if ($va_catalog_id = $t_item->get('ca_collections.institutional_id')) {
@@ -35,7 +35,7 @@
 			}	
 ?>		
 	</div>	
-	<div class='col-sm-5 col-md-5 col-lg-5'>
+	<div class='col-xs-5 col-md-5 col-lg-5'>
 <?php
 		$vn_label_col = "col-sm-4";
 		$vn_data_col = "col-sm-8";
@@ -92,7 +92,7 @@
 	</div><!-- end col -->
 </div><!-- end row -->
 <div class='row'>
-	<div class='col-sm-8 col-sm-offset-2'>
+	<div class='col-xs-8 col-sm-offset-2'>
 <?php
 		if ($vs_remarks = $t_item->get('ca_collections.remarks')) {
 			print "<div class='drawer'>";
@@ -189,6 +189,7 @@
 					nextSelector: 'a.jscroll-next'
 				});
 			});	
+		});
 	</script>
 </ifcount>}}}
 					
@@ -223,6 +224,6 @@
 </div><!-- end container -->
 
 		</div><!-- end col -->
-		<div class="col-sm-1"><div class='nextLink'>{{{nextLink}}}</div></div>
+		<div class="col-xs-1"><div class='nextLink'>{{{nextLink}}}</div></div>
 	</div>
 </div>

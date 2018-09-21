@@ -8,8 +8,8 @@
 
 <div class="container">
 	<div class="row">
-		<div class="col-sm-1"><div class='previousLink'>{{{previousLink}}}</div></div>
-		<div class="col-sm-10">
+		<div class="col-xs-1"><div class='previousLink'>{{{previousLink}}}</div></div>
+		<div class="col-xs-10">
 		
 		
 <div class="container">
@@ -140,6 +140,6 @@
 </div></div>
 
 
-			<div class="col-sm-1"><div class='nextLink'>{{{nextLink}}}</div></div>
+			<div class="col-xs-1"><div class='nextLink'>{{{nextLink}}}</div></div>
 		</div><!-- end row -->
 	</div><!-- end container -->

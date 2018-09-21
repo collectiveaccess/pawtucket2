@@ -99,6 +99,7 @@
 				</button>
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo-onwhite.png'), "navbar-brand", "", "","");
+
 ?>
 			</div>
 
@@ -125,11 +126,14 @@
 				<script type="text/javascript">
 					$('#searchToggle').click(function(){ 
 						if($('#searchDiv').css('display') === 'block') {
+							
 							$('#searchDiv').fadeOut(300);
 							$('.nav.navbar-nav').fadeIn(300);
 							$('#searchToggle').html("<?php print caGetThemeGraphic($this->request, 'search.png'); ?>");
 						} else {
-							$('.nav.navbar-nav').fadeOut(300);
+							if (window.innerWidth > 1126) {
+								$('.nav.navbar-nav').fadeOut(300);
+							}
 							$('#searchDiv').fadeIn(300);
 							$('#searchToggle').html("<?php print caGetThemeGraphic($this->request, 'close.png'); ?>");						
 						}
@@ -137,10 +141,22 @@
 
 				</script>
 				<ul class="nav navbar-nav">
-					<li <?php print ((($this->request->getController() == "Browse") | ($this->request->getController() == "Search")) && (($this->request->getAction() != "advanced"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Catalog"), "", "", "Browse", "artworks"); ?></li>				
+					<li <?php print ((($this->request->getController() == "Detail") | ($this->request->getController() == "Browse") | ($this->request->getController() == "Search")) && (($this->request->getAction() != "advanced"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Catalog"), "", "", "Browse", "artworks"); ?></li>				
 					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "Index")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artist"), "", "", "About", "Index"); ?></li>
 					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "commentary")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Essays"), "", "", "About", "commentary"); ?></li>
-				
+					<li class='collapseLink <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'active' : ''; ?>'><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/artworks"); ?></li>
+					<li class='collapseLink <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "notes")) ? 'active' : ''; ?>'><?php print caNavLink($this->request, _t("Guide to Entries"), "", "", "About", "notes"); ?></li>					
+					<li class='collapseSearch'>
+						<form class="navbar-form"  role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+							<div class="formOutline">
+								<div class="form-group">
+									<div class='leftGlass'><?php print caGetThemeGraphic($this->request, 'search.png'); ?></div>
+									<input type="text" class="form-control" placeholder="" name="search">
+								</div>
+								<button type="submit" class="btn-search">Search</button>
+							</div>
+						</form>
+					</li>		
 					<!--<li class="dropdown compare_menu_item" style='display: none;' >
 					  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Compare <span class="caret"></span></a>
 					  <ul class="dropdown-menu">
