@@ -231,7 +231,8 @@
 					case "alphabetical":
 					case "list":
 					default:
-						$this->view->setVar('facet_content', !$vb_search_was_replaced ? $o_browse->getFacetContent($vs_facet, array('checkAccess' => $this->opa_access_values, 'request' => $this->request)) : []);
+					    $content = !$vb_search_was_replaced ? $o_browse->getFacetContent($vs_facet, array('checkAccess' => $this->opa_access_values, 'request' => $this->request)) : [];
+						$this->view->setVar('facet_content', is_array($content) ? $content : []);
 						$this->render("Browse/list_facet_html.php");
 						break;
 					case "hierarchical":

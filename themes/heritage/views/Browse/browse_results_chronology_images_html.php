@@ -38,22 +38,25 @@
 	if(!$vn_row_id){
 		$vb_row_id_loaded = true;
 	}
-	
+		
 	$va_views			= $this->getVar('views');
 	$vs_current_view	= $this->getVar('view');
 	$va_view_icons		= $this->getVar('viewIcons');
 	$vs_current_sort	= $this->getVar('sort');
-	$vs_sort_dir		= $this->getVar('sort_direction');
 	
 	$t_instance			= $this->getVar('t_instance');
 	$vs_table 			= $this->getVar('table');
 	$vs_pk				= $this->getVar('primaryKey');
+	$va_access_values = caGetUserAccessValues($this->request);
 	$o_config = $this->getVar("config");	
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
+	
+
+	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
@@ -61,18 +64,16 @@
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
+		
 
-	
-	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-	if((($vs_table != 'ca_occurrences')) || ($vs_current_sort != "Date") || (($vs_current_sort == "Date") && !$vn_start)){
-		Session::setVar('lastYear', "");
-	}
-	$vs_last_pro_year = Session::getVar('lastYear');
-		$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 6;
+		$vn_col_span = 3;
+		$vn_col_span_sm = 4;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 6;
+			$vn_col_span = 3;
+			$vn_col_span_sm = 6;
+			$vn_col_span_xs = 6;
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
@@ -82,14 +83,15 @@
 			if ($vs_table != 'ca_objects') {
 				$va_ids = array();
 				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-					$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
+					$va_ids[] = $qr_res->get($vs_pk);
+					$vn_c++;
 				}
-			
-				$qr_res->seek($vn_start);
 				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
-			} else {
-				$va_images = null;
+			
+				$vn_c = 0;	
+				$qr_res->seek($vn_start);
 			}
+			
 			$t_list_item = new ca_list_items();
 			while($qr_res->nextHit()) {
 				if($vn_c == $vn_hits_per_block){
@@ -99,86 +101,69 @@
 						$vn_c = 0;
 					}
 				}
-				if ($vs_table == 'ca_occurrences') {
-					$vs_date = $qr_res->get("ca_occurrences.timeline_date");
-				}
-				# --- if sort is date, get the date as a year so you can display a year heading
-				$vs_start_year = "";
-				$vb_show_year = false;
-				if($vs_current_sort == "Date"){
-					$va_date_raw = $qr_res->get("ca_occurrences.timeline_date", array("returnWithStructure" => true, "rawDate" => true));
-					if(is_array($va_date_raw) && sizeof($va_date_raw)){
-						$va_date_raw = array_shift($va_date_raw[$qr_res->get("ca_occurrences.occurrence_id")]);
-						$vs_start_year = abs(floor($va_date_raw["timeline_date"]["start"]));
-						if($vs_start_year && ($vs_start_year != Session::getVar('lastYear')) && (!Session::getVar('lastYear') || ((($vs_sort_dir == 'asc') && ($vs_start_year > Session::getVar('lastYear'))) || (($vs_sort_dir == 'desc') && ($vs_start_year < Session::getVar('lastYear')))))){
-							Session::setVar('lastYear', $vs_start_year);
-							$vb_show_year = true;
-						}
-					}
-				}			
-				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
+				$vn_id = $qr_res->get("{$vs_table}.{$vs_pk}");
 				if($vn_id == $vn_row_id){
 					$vb_row_id_loaded = true;
 				}
-				if($vb_show_year){
-					print "<div class='col-xs-12' style='clear:left'><br/><H4>".Session::getVar('lastYear')."</H4></div>";
-				}
+				
 				# --- check if this result has been cached
-				# --- key is MD5 of table, id, view, refine(vb_refine)
-				$vs_cache_key = md5($vs_table.$vn_id."list".$vb_refine);
+				# --- key is MD5 of table, id, list, refine(vb_refine)
+				$vs_cache_key = md5($vs_table.$vn_id."images".$vb_refine);
 				if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
-				}else{
-				
+				}else{			
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
-				
-					if(!$vs_image){
-						if ($vs_table == 'ca_objects') {
+					if ($vs_table == 'ca_objects') {
+						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
 							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-								$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+								$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
 							}else{
-								$vs_image = $vs_default_placeholder_tag;
+								$vs_thumbnail = $vs_default_placeholder_tag;
 							}
-						}else{
-							$vs_image = $vs_default_placeholder_tag;
 						}
+						$vs_info = null;
+						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
+					} else {
+						if($va_images[$vn_id]){
+							$vs_thumbnail = $va_images[$vn_id];
+						}else{
+							$vs_thumbnail = $vs_default_placeholder_tag;
+						}
+						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 					}
-					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
-				
 					$vs_add_to_set_link = "";
-					if(($vs_table == 'ca_objects') &&is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+					if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
-				
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 					$vs_result_output = "
-		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-			<div class='bResultListItem' id='row{$vn_id}' >
-				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
-					<div class='bResultListItemText'>
-						<H6>{$vs_label_detail_link}</H6>{$vs_date}<br/>".$qr_res->get("excerpt")."
-					</div><!-- end bResultListItemText -->
-				</div><!-- end bResultListItemContent -->
-				
-			</div><!-- end bResultListItem -->
+		<div class='bResultItemCol'>
+			<div class='bResultItem' id='row{$vn_id}'>
+				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
+				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+					<div class='bResultItemText'>
+						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+					</div><!-- end bResultItemText -->
+				</div><!-- end bResultItemContent -->
+				<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
+					<hr>
+					{$vs_expanded_info}{$vs_add_to_set_link}
+				</div><!-- bResultItemExpandedInfo -->
+			</div><!-- end bResultItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');
 					print $vs_result_output;
 				}				
 				$vn_c++;
 				$vn_results_output++;
-			}
-			
-			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, 'direction' => $vs_sort_dir, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
+			}			
 		}
 ?>
 <script type="text/javascript">
