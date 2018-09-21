@@ -45,55 +45,45 @@
 
 ?>
 <div class="container">
-	<div class="row phoneOnly">
-		<div class='projectInfo'>
-			<div class='mr'>Mark Rothko</div>
-			<div class='wop'>Works on Paper</div>
-			<div class='credit'>Produced by the <b>National Gallery of Art, Washington</b></div>
-		</div>	
-	</div>
 	<div class="row">
-		<div class="col-sm-10 col-sm-offset-1">
-			<div class='homeLeft'>
-				<div id='focusImgWrapper'><div id='focusImg'>
-	<?php
-					$vn_main_id = $va_featured_ids[0];
-					$t_object = new ca_objects($vn_main_id);
-					print caDetailLink($this->request, $t_object->get('ca_object_representations.media.large'), '', 'ca_objects', $t_object->get('ca_objects.object_id'));		
-	?>			
-				</div></div><!-- end wrapper -->
-			</div><!-- end homeLeft -->
-			<div class='homeRight'>
-				<div class='projectInfo'>
-					<div class='mr'>Mark Rothko</div>
-					<div class='wop'>Works on Paper</div>
-					<div class='credit'>Produced by the <b>National Gallery of Art, Washington</b></div>
-				</div>
-				<div class='carouselDiv container'>
-					<div class="carousel slide row" data-ride="carousel" id="myCarousel" data-type="multi" data-interval="false" >
-						<div class="carousel-inner">
-		<?php
-							$vn_count = 1;
-							while ($qr_set_items->nextHit()) {
-								if ( $vn_count == 2 ) {
-									$vs_style = 'active';
-								} else {
-									$vs_style = null;
-								}
-								print '<div class="item '.$vs_style.'"><div class="col-sm-6 slide">';
-								print caDetailLink($this->request, $qr_set_items->get('ca_object_representations.media.large'), '', 'ca_objects', $qr_set_items->get('ca_objects.object_id'));
-								print '</div></div>';
-								$vn_count++;
-							}
-		?>
-						</div>
-
-						<a class="left carousel-control" href="#myCarousel" data-slide="prev"><i class="myleftarrow"></i></a>
-						<a class="right carousel-control" href="#myCarousel" data-slide="next"><i class="myrightarrow"></i></a> 
-					</div>
-				</div>
+		<div class="col-sm-5 col-sm-offset-1">
+			<div id='focusImgWrapper'><div id='focusImg'>
+<?php
+				$vn_main_id = $va_featured_ids[0];
+				$t_object = new ca_objects($vn_main_id);
+				print caDetailLink($this->request, $t_object->get('ca_object_representations.media.large'), '', 'ca_objects', $t_object->get('ca_objects.object_id'));		
+?>			
+			</div></div><!-- end wrapper -->
+		</div><!--end col-sm-12-->
+		<div class="col-sm-5">
+			<div class='projectInfo'>
+				<div class='mr'>Mark Rothko</div>
+				<div class='wop'>Works on Paper</div>
+				<div class='credit'>Produced by the <b>National Gallery of Art, Washington</b></div>
 			</div>
-			
+			<div class='carouselDiv'>
+				<div class="carousel slide" id="myCarousel" data-interval="false">
+				  <div class="carousel-inner">
+<?php
+					$vn_count = 1;
+					while ($qr_set_items->nextHit()) {
+						if ( $vn_count == 1 ) { $vn_count++; continue; }
+						if ( $vn_count == 2 ) {
+							$vs_style = 'active';
+						} else {
+							$vs_style = null;
+						}
+						print '<div class="item '.$vs_style.'"><div class="col-md-6 slide">';
+						print caDetailLink($this->request, $qr_set_items->get('ca_object_representations.media.large'), '', 'ca_objects', $qr_set_items->get('ca_objects.object_id'));
+						print '</div></div>';
+						$vn_count++;
+					}
+?>				  
+				  </div>
+				  <a class="left carousel-control" href="#myCarousel" data-slide="prev"><i class="myleftarrow"></i></a>
+				  <a class="right carousel-control" href="#myCarousel" data-slide="next"><i class="myrightarrow"></i></a>
+				</div>			
+			</div>			
 		</div><!--end col-sm-12-->
 	</div><!-- end row -->
 	<div class="row gray">
@@ -119,9 +109,9 @@
 	<div class="row ">	
 		<div class="col-sm-10 col-sm-offset-1 browseArea">
 <?php
-			print "<div class='browseFacetTile' style='margin-left:-32px;'><div class='browseHeader'>Browse Provenance</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'provenance-2x.png'), '', '', 'Browse', 'provenance')."</div>";
+			print "<div class='browseFacetTile'><div class='browseHeader'>Browse Provenance</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'provenance-2x.png'), '', '', 'Browse', 'provenance')."</div>";
 			print "<div class='browseFacetTile'><div class='browseHeader'>Browse Exhibitions</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'exhibitions-2x.png'), '', '', 'Browse', 'exhibitions')."</div>";
-			print "<div class='browseFacetTile' style='margin-right:-32px;'><div class='browseHeader'>Browse References</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'references-2x.png'), '', '', 'Browse', 'references')."</div>";
+			print "<div class='browseFacetTile'><div class='browseHeader'>Browse References</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'references-2x.png'), '', '', 'Browse', 'references')."</div>";
 
 ?>			
 		</div><!--end col-sm-12 textArea-->		
@@ -138,52 +128,14 @@
 	</div>	
 	<div class="row footer">
 		<div class="col-sm-12">
-			<div class='betaFooter'><?php print caGetThemeGraphic($this->request, 'beta-footer.png');?></div>
 			<div>© 2018 National Gallery of Art, Washington</div>
 			<div><?php print caNavLink($this->request, 'About the Project', '', '', 'About', 'project'); ?> | <?php print caNavLink($this->request, 'Credits', '', '', 'About', 'credits'); ?> | <?php print caNavLink($this->request, 'Notices', '', '', 'About', 'notices'); ?> | <?php print caNavLink($this->request, 'Contact', '', '', 'About', 'contact'); ?></div>
 			<div><a href='#' class='socialLink'><i class='fab fa-facebook-f'></i></a><a href='#' class='socialLink'><i class='fab fa-twitter'></i></a></div>
 		</div>
 	</div>				
 </div><!-- end container -->
+
 <script>
-jQuery(document).ready(function() {     
-  jQuery('.carousel[data-type="multi"] .item').each(function(){
-	var next = jQuery(this).next();
-	if (!next.length) {
-		next = jQuery(this).siblings(':first');
-	}
-	next.children(':first-child').clone().appendTo(jQuery(this)).addClass('second');
-  
-	for (var i=0;i<0;i++) {
-		next=next.next();
-		if (!next.length) {
-			next = jQuery(this).siblings(':first');
-		}
-		next.children(':first-child').clone().appendTo($(this));
-	}
-	$( ".right" ).unbind("click").click(function() {
-	  var activeSlide = $('.active');
-	  var nextImage = activeSlide.find('img').attr('src');
-	  var nextLink = activeSlide.find('a').attr('href');
-	  $('#focusImg').empty().append("<a href='" + nextLink + "'><img src='" + nextImage + "'/></a>").hide().toggle("slide", { direction: "right" }, 600);
-<!-- 	  $('#focusImg').empty().append("<a href='" + nextLink + "'><img src='" + nextImage + "'/></a>").hide().fadeIn(200); -->	
-	});
-	$( ".left" ).unbind("click").click(function() {
-	  var activeSlide = $('.active').prev().prev();
-	  	if (!$('.active').prev().prev().length) {
-	  		activeSlide = $('.active').siblings(':last-child');
-			if (!$('.active').prev().length) {
-				activeSlide = $('.active').siblings(':last-child').prev();
-			}
-		}			  
-	  var nextImage = activeSlide.find('img').attr('src');
-	  var nextLink = activeSlide.find('a').attr('href');
-	  $('#focusImg').empty().append( "<a href='" + nextLink + "'><img src='" + nextImage + "'/></a>").hide().toggle("slide", { direction: "left" }, 600);
-	}); 		
-  });     
-});
-</script>
-<!--<script>
 	$('#myCarousel').carousel();
 
 	$('.carousel .item').each(function(){
@@ -192,6 +144,16 @@ jQuery(document).ready(function() {
 		next = $(this).siblings(':first');
 	  }
 	  next.children(':first-child').clone().appendTo($(this)).addClass('child');
- 
+	  $( ".right" ).click(function() {
+	  	<!--$('.active').children(':first-child').hide().show(1000);-->
+	  	var activeSlide = $('.active');
+	  	var nextImage = activeSlide.find('img').attr('src');
+		$('#focusImg').empty().append( "<img src='" + nextImage + "'>").hide().fadeIn(200);
+	  });
+	  $( ".left" ).click(function() {
+	  	var activeSlide = $('.active').prev().prev();
+	  	var nextImage = activeSlide.find('img').attr('src');
+		$('#focusImg').empty().append( "<img src='" + nextImage + "'>").hide().fadeIn(200);
+	  });  
 	});
-</script>	-->
+</script>	

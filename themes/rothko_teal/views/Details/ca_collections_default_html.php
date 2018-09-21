@@ -14,17 +14,17 @@
 
 <div class="container">
 	<div class="row">
-		<div class="col-sm-1"><div class='previousLink'>{{{previousLink}}}</div></div>
-		<div class="col-sm-10">
+		<div class="col-xs-1"><div class='previousLink'>{{{previousLink}}}</div></div>
+		<div class="col-xs-10">
 
 <div class="container">
 	<div class="row detailHead">
-		<div class='col-xs-6 objNav'><!--- only shown at small screen size -->
+		<div class='col-xs-10 objNav'><!--- only shown at small screen size -->
 			<div class='resultsLink'>{{{resultsLink}}}</div>
 		</div>
 	</div>
 <div class="row">
-	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' style='padding-bottom:35px;'>
 <?php
 		print "<h6 class='leader'>Provenance</h6>";
 		print "<h1>".$t_item->get('ca_collections.preferred_labels')."</h1>";
@@ -78,7 +78,7 @@
 
 </div><!-- end container -->
 			</div>
-			<div class="col-sm-1"><div class='nextLink'>{{{nextLink}}}</div></div>
+			<div class="col-xs-1"><div class='nextLink'>{{{nextLink}}}</div></div>
 		</div><!-- end row -->
 	</div><!-- end container -->
 	
