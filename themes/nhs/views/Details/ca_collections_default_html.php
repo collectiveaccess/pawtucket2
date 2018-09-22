@@ -51,8 +51,8 @@
 ?>
 					{{{<ifdef code="ca_collections.idno"><div class="unit">^ca_collections.idno</div></ifdef>}}}
 					
-					{{{<ifdef code="ca_collections.historical_note"><div class="unit"><H6>Historical Note</H6><span class="trimText">^ca_collections.historical_note</span></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.scope_content"><div class="unit"><H6>Scope and Content</H6><span class="trimText">^ca_collections.scope_content</span></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.historical_note"><div class="unit"><H6>Historical Note</H6><div class="trimText">^ca_collections.historical_note</div></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.scope_content"><div class="unit"><H6>Scope and Content</H6><div class="trimText">^ca_collections.scope_content</div></div></ifdef>}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
 <?php
