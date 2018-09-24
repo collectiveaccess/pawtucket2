@@ -45,7 +45,7 @@
 		}		
 		
 		if ($vs_remarks = $t_item->get('ca_collections.collection_notes')) {
-			print "<div class='col-sm-6 collectionText'>";
+			print "<div class='col-sm-12 col-md-6 collectionText'>";
 			#print "<h6><a href='#' onclick='$(\"#remarksDiv\").toggle(400);return false;'>Remarks <i class='fa fa-chevron-down'></i></a></h6>";
 			print "<div class='trimText'>{$vs_remarks}</div>";
 			print "</div>";

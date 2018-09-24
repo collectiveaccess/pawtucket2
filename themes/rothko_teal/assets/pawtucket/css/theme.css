@@ -476,7 +476,7 @@ a, a:hover, a:focus {
 	margin-left:-10px;
 }
 .carouselDiv .item {
-	height:470px;
+	height:470px; 
 }
 .carouselDiv .item img {
 	height:100%;
@@ -1021,7 +1021,7 @@ a, a:hover, a:focus {
 		font-size:22px;
 	}
 }
-@media (max-width:768px) {
+@media (max-width:767px) {
 	.browseTargets {
 		margin-bottom:50px;
 	}
@@ -1150,6 +1150,10 @@ a, a:hover, a:focus {
     top: -5px;
     z-index:10000;
 }*/
+.searchCrit {
+	color:#757575;
+	font-style:italic;
+}
 button.refine {
 	cursor:default;
 }
@@ -1792,6 +1796,12 @@ a .svg-inline--fa.clearFacet {
 	margin-left:-10px;
 	margin-right:-10px;
 }
+.titleCol {
+	padding-left:40px;
+}
+.imageCol {
+	padding-right:30px;
+}
 .objNav {
 	text-align:left;
 	font-size:15px !important;
@@ -1954,6 +1964,8 @@ a .svg-inline--fa.clearFacet {
 .detailDivider {
 	height:1px;
 	border-top:1px solid #d6d6d6;
+	margin-left: -15px;
+    margin-right: -5px;
 }
 .detail .objNav a:hover {
 	text-decoration:none;
@@ -2460,6 +2472,9 @@ a .svg-inline--fa.clearFacet {
 	width:18px;
 	height:18px;
 }
+.detail .artworkInfo {
+	padding-left:40px;
+}
 
 
 .detail #detailRepNav a{ 
@@ -2702,4 +2717,35 @@ div.caMediaOverlayControlsMinimal .svg-inline--fa {
 
 .mirador-manipulation-controls {
 	display: none !important;
+}
+
+/* ipad styles */
+
+@media (min-width:768px) and (max-width:1024px){
+	.detail .unit .label {
+		white-space:normal;
+	}
+	.titleCol {
+		padding-left:20px;
+	}
+	.imageCol {
+		padding-right:0px;
+	}
+	.viewAll {
+		display
+	}
+	.detail.collection .sortResults, .detail.sketchbook .sortResults {
+		margin-bottom: 20px;
+		float: right;
+		clear: both;	
+	}
+	.detail.collection .viewAll {
+		margin-bottom:20px;
+	}
+	.compareDrawer {
+		width:35%;
+	}
+	.detail .artworkInfo {
+		padding-left:25px;
+	}
 }

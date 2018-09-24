@@ -56,14 +56,14 @@
 		</div><!-- end col --> 
 	</div>
 	<div class="row">
-		<div class='col-sm-6 col-md-6 col-lg-6'>
+		<div class='col-sm-12 col-md-6 col-lg-6'>
 		</div>
-		<div class='col-sm-6 col-md-6 col-lg-6' style="padding-left:40px;">
+		<div class='col-sm-12 col-md-6 col-lg-6 titleCol' >
 			<H1>{{{ca_objects.preferred_labels.name}}}</H1>
 		</div>
 	</div>
 	<div class="row">
-		<div class='col-sm-6 col-md-6 col-lg-6' style="padding-right:30px;margin-bottom:40px;">
+		<div class='col-sm-10 col-sm-offset-1 col-md-offset-0 col-md-6 col-lg-6 imageCol' style="margin-bottom:40px;">
 			{{{representationViewer}}} 
 						
 			<?php #print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "version" => "iconlarge")); ?>
@@ -73,7 +73,7 @@
 			}	
 	?>	
 		</div><!-- end col -->		
-		<div class='col-sm-6 col-md-6 col-lg-6 artworkInfo' style="padding-left:40px;">
+		<div class='col-sm-10 col-sm-offset-1 col-md-offset-0 col-md-6 col-lg-6 artworkInfo'>
 	<?php
 			$vn_label_col = "col-sm-4";
 			$vn_data_col = "col-sm-8";
@@ -257,8 +257,7 @@
 	if ($vn_verso_id) {	
 ?>
 	<div class='row'>
-		<div class='col-sm-2'></div>
-		<div class='col-sm-8'>
+		<div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'>
 			<div class='container versoInfo'>
 				<div class='row'>
 	<?php
@@ -301,7 +300,7 @@
 	}
 	if ($va_related_sketchbook_id = $t_parent->get('ca_collections.related.collection_id', array('restrictToTypes' => array('sketchbook')))) {
 		$t_sketchbook = new ca_collections($va_related_sketchbook_id);
-		print "<div class='row'><div class='col-sm-2'></div><div class='col-sm-8'>";
+		print "<div class='row'><div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'>";
 		print "<div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
 		print "<h6><a href='#' onclick='$(\"#sketchDiv\").toggle(400);return false;'>Sketchbook <i class='fa fa-window-minimize'></i></a></h6>";
 		print "<div id='sketchDiv'>";
@@ -382,7 +381,7 @@
 		}
 	}
 	if ($vs_provenance != "") {
-		print "<div class='row'><div class='col-sm-8  col-sm-offset-2  '><div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
+		print "<div class='row'><div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'><div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
 		print "<h6><a href='#' data-toggleDiv='provenanceDiv' class='togglertronic'>Provenance <i class='fa fa-minus drawerToggle'></i></a></h6>";
 		print "<div id='provenanceDiv'>";
 		print $vs_provenance;
@@ -392,7 +391,7 @@
 	}
 ?>		
 	<div class='row'>
-		<div class='col-sm-8  col-sm-offset-2  '>
+		<div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'>
 <?php
 			if ($vs_exhibition = $t_object->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_objects_x_occurrences" sort="ca_occurrences.occurrence_dates"><l><i>^ca_occurrences.preferred_labels</i><unit relativeTo="ca_occurrences"><ifcount min="1" code="ca_entities.preferred_labels">, <unit relativeTo="ca_entities" restrictToRelationshipTypes="venue" delimiter=", "> ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit></ifcount></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef><if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</if><ifdef code="ca_objects_x_occurrences.exhibition_remarks">, ^ca_objects_x_occurrences.exhibition_remarks</ifdef>.<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <span class="rollover" data-toggle="popover" data-trigger="hover" data-content="uncertain"><i class="fa fa-question-circle" ></i></span></if><i class="fa fa-chevron-right"></i></l></unit>')) {
 				print "<div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
@@ -405,7 +404,7 @@
 		</div>
 	</div><!-- end row -->
 	<div class='row'>
-		<div class='col-sm-8  col-sm-offset-2  '>
+		<div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'>
 <?php
 			if ($vs_reference = $t_object->getWithTemplate('<unit restrictToTypes="reference" sort="ca_occurrences.occurrence_dates" delimiter="<br/>" relativeTo="ca_objects_x_occurrences" skipWhen=\'^ca_occurrences.preferred_labels.name = ""\'><l>^ca_occurrences.preferred_labels<ifdef code="ca_objects_x_occurrences.reference_remarks">: ^ca_objects_x_occurrences.reference_remarks</ifdef>.<if rule="^ca_objects_x_occurrences.uncertain =~ /yes/"> <span class="rollover" data-toggle="popover" data-trigger="hover" data-content="uncertain"><i class="fa fa-question-circle" ></i></span></if><i class="fa fa-chevron-right"></i></l></unit>')) { 
 				print "<div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
@@ -418,7 +417,7 @@
 		</div>
 	</div><!-- end row -->
 	<div class='row'>
-		<div class='col-sm-8  col-sm-offset-2  '>
+		<div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'>
 <?php
 			if ($vs_rel_works = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 				$vs_buf = null;
@@ -457,7 +456,7 @@
 		</div>
 	</div><!-- end row -->	
 	<div class='row'>
-		<div class='col-sm-8  col-sm-offset-2  '>
+		<div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'>
 <?php
 			if ($vs_remarks = $t_object->get('ca_objects.remarks')) {
 				print "<div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
@@ -468,7 +467,7 @@
 					print "<div class='row'>";
 					foreach ($va_remarks_images as $vn_attribute_id => $va_remarks_image_info) {
 						foreach ($va_remarks_image_info as $vn_value_id => $va_remarks_image) {
-							print "<div class='col-xs-6 col-sm-12 col-md-6 '><div class='container remarksImg'><div class='row'>"; 
+							print "<div class='col-xs-6 col-sm-6 col-md-6 '><div class='container remarksImg'><div class='row'>"; 
 							print "<div class='col-sm-5'>";
 							print $va_remarks_image['remark_media'];
 

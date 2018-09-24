@@ -19,7 +19,7 @@
 		</div>
 	</div>
 <div class="row">
-	<div class='col-xs-6'>
+	<div class='col-sm-12 col-md-6'>
 <?php
 		if ($vs_type = $t_item->get('ca_occurrences.type_id', array('convertCodesToDisplayText' => true))) {
 			print "<h6 class='leader'>".$vs_type."</h6>";
@@ -90,7 +90,7 @@
 
 ?>
 	</div>
-	<div class='col-xs-6'>
+	<div class='col-sm-12 col-md-6'>
 		{{{representationViewer}}}
 	</div>
 </div><!-- end row -->	
@@ -99,14 +99,14 @@
 	$vs_first = true;
 	$vs_no_border = "style=border-top:0px;";
 	if ($vs_exhibitions = $t_item->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_occurrences.related"><l><i>^ca_occurrences.preferred_labels</i><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue">, ^ca_entities.preferred_labels</unit><unit relativeTo="ca_places">, ^ca_places.hierarchy.preferred_labels%delimiter=,_%hierarchyDirection=desc</unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef>. <i class="fa fa-chevron-right"></i></l></unit>')) {
-		print "<div class='row'><div class='col-sm-8 col-sm-offset-2'><div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
+		print "<div class='row'><div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'><div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
 		print "<h6><a href='#' data-toggleDiv='exhibitionDiv' class='togglertronic''>Related Exhibitions <i class='fa fa-minus drawerToggle'></i></a></h6>";
 		print "<div id='exhibitionDiv'>".$vs_exhibitions."</div>";
 		print "</div></div></div>";
 		$vs_first = false;
 	}
 	if ($vs_reference = $t_item->getWithTemplate('<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences.related"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels">: ^ca_occurrences.nonpreferred_labels</ifdef>. <i class="fa fa-chevron-right"></i></l></unit>')) {
-		print "<div class='row'><div class='col-sm-8 col-sm-offset-2'><div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
+		print "<div class='row'><div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'><div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
 		print "<h6><a href='#' data-toggleDiv='referenceDiv' class='togglertronic'>Related References <i class='fa fa-minus drawerToggle'></i></a></h6>";
 		print "<div id='referenceDiv'>".$vs_reference."</div>";
 		print "</div></div></div><!-- end row -->";
