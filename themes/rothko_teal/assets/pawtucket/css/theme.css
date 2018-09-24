@@ -476,11 +476,13 @@ a, a:hover, a:focus {
 	margin-left:-10px;
 }
 .carouselDiv .item {
-	height:405px;
+	height:470px;
 }
 .carouselDiv .item img {
 	height:100%;
 	width:calc(100% - 55px);
+	max-height:100%;
+	max-width:100%;
 }
 .slide {
 	text-align:left;
@@ -602,7 +604,7 @@ a, a:hover, a:focus {
     	margin-bottom:40px;
     }
     .carouselDiv .item {
-    	height: 298px;
+    	height: 350px;
 	}
 	#focusImgWrapper, #focusImg {
 		height:570px;
@@ -2549,7 +2551,7 @@ div.advancedSearchField {
 	text-transform:none;
 }
 .advancedFormSubmit .btn-default a, .advancedFormSubmit .btn-default a:hover {
-    color: #ccc;
+    color: #fff;
     font-size: 12px;
 	text-decoration:none;
 	font-weight:200;

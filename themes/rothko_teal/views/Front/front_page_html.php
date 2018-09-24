@@ -74,16 +74,18 @@
 						<div class="carousel-inner">
 		<?php
 							$vn_count = 1;
-							while ($qr_set_items->nextHit()) {
-								if ( $vn_count == 2 ) {
-									$vs_style = 'active';
-								} else {
-									$vs_style = null;
+							if ($qr_set_items) {
+								while ($qr_set_items->nextHit()) {
+									if ( $vn_count == 2 ) {
+										$vs_style = 'active';
+									} else {
+										$vs_style = null;
+									}
+									print '<div class="item '.$vs_style.'"><div class="col-sm-6 slide">';
+									print caDetailLink($this->request, $qr_set_items->get('ca_object_representations.media.large'), '', 'ca_objects', $qr_set_items->get('ca_objects.object_id'));
+									print '</div></div>';
+									$vn_count++;
 								}
-								print '<div class="item '.$vs_style.'"><div class="col-sm-6 slide">';
-								print caDetailLink($this->request, $qr_set_items->get('ca_object_representations.media.large'), '', 'ca_objects', $qr_set_items->get('ca_objects.object_id'));
-								print '</div></div>';
-								$vn_count++;
 							}
 		?>
 						</div>
