@@ -132,7 +132,7 @@
 					}
 				}
 				if (sizeof($va_mount_links) > 0) {
-					print "<div class='unit row'><div class='{$vn_label_col} label'>Mount</div><div class='$vn_data_col'>".join(', ', $va_mount_links)."</div></div>";
+					print "<div class='unit row'><div class='{$vn_label_col} label'>Mount</div><div class='{$vn_data_col} mount'>".join(', ', $va_mount_links)."</div></div>";
 				}
 			}						
 			if ($vs_dimensions = $t_object->getWithTemplate('<ifcount code="ca_objects.dimensions.display_dimensions" min="1"><unit delimiter="<br/>"><ifdef code="ca_objects.dimensions.display_dimensions">^ca_objects.dimensions.display_dimensions</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"> (^ca_objects.dimensions.dimensions_notes)</ifdef><if rule="^ca_objects.dimensions.dimensions_uncertain =~ /yes/"> <span class="rollover" data-toggle="popover" data-trigger="hover" data-content="sight dimensions"><i class="fa fa-question-circle" ></i></span></if></unit></ifcount>')) {

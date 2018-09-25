@@ -1952,6 +1952,9 @@ a .svg-inline--fa.clearFacet {
 	padding-left:0px;
 	padding-top:4px;
 }
+.detail .unit .mount {
+	text-transform:capitalize;
+}
 .detail .unit a {
 	text-decoration:underline;
 	color: #757575;
