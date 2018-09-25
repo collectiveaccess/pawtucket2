@@ -1053,7 +1053,7 @@ a, a:hover, a:focus {
 #bRefine H5 {
 	color: #161616;
 	font-family:hkgrotesque;
-	text-transform:capitalize;
+	text-transform:none;
 	margin-bottom: 0px;
     margin-top: 0px;
     font-weight:800;

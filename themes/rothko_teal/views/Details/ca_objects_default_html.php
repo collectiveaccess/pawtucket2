@@ -267,7 +267,7 @@
 			$t_verso = new ca_objects($vn_verso_id);
 			print "<div class='row'>";
 			print "<div class='col-xs-4 col-sm-3' style='min-height:140px;'>".caNavLink($this->request, $t_verso->get('ca_object_representations.media.medium', array('checkAccess' => $va_access_values)), '', '', 'Detail', 'objects/'.$vn_verso_id)."</div>";
-			print "<div class='col-xs-8 col-sm-9'>";
+			print "<div class='col-xs-8 col-sm-9' style='min-height:180px;'>";
 
 			print "<div class='versoTitle'>".caNavLink($this->request, $t_verso->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$vn_verso_id)."</div>";
 			if ($vn_date = $t_verso->get('ca_objects.display_date')) {
@@ -306,7 +306,7 @@
 		print "<div id='sketchDiv'>";
 		print "<div class='container versoInfo'><div class='row'>";	
 		print "<div class='col-sm-4' style='padding-left:0px;'>";
-		if ($va_sk_rep = $t_sketchbook->get('ca_object_representations.media.small', array("checkAccess" => $va_access_values, "limit" => 1))) {
+		if ($va_sk_rep = $t_sketchbook->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "limit" => 1))) {
 			print "<div class='text-center bResultItemImg'>".caNavLink($this->request, $va_sk_rep, '', '', 'Detail', 'collections/'.$va_related_sketchbook_id)."</div>";
 		} else {
 			$vs_buf.= '<div class="bResultItemImgPlaceholder"><i class="fa fa-picture-o fa-2x"></i></div>';
