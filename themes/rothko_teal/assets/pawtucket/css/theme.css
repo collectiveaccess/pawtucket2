@@ -1096,6 +1096,7 @@ a, a:hover, a:focus {
 	padding-top:0px;
 	color:#161616;
 	padding-right:0px;
+	text-transform:capitalize;
 }
 #bRefine .dropdown.open.button h5 .caret {
     display: inline-block;
