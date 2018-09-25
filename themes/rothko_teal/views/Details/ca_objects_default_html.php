@@ -259,7 +259,7 @@
 	<div class='row'>
 		<div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'>
 			<div class='container versoInfo'>
-				<div class='row'>
+				<div class='row' style='margin-left:-10px;margin-right:-10px;'>
 	<?php
 			$vs_first = true;
 			$vs_no_border = "style=border-top:0px;";
