@@ -1349,13 +1349,13 @@ p, .collectionsList p {
 		width: auto;
 	}
 }
-.detail .repViewerCont div {
+.detail .repViewerCont div, .detail .exhibitionRep {
 	display:table;
 	width:100%;
 	max-height: 500px;
 	text-align:center;
 }
-.detail .repViewerCont img {
+.detail .repViewerCont img, .detail .exhibitionRep img {
 	width: auto;
     height: auto;
     max-width:100%;
