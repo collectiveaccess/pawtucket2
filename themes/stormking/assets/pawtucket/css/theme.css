@@ -1349,3 +1349,20 @@ p, .collectionsList p {
 		width: auto;
 	}
 }
+.detail .repViewerCont div {
+	display:table;
+	width:100%;
+	max-height: 500px;
+	text-align:center;
+}
+.detail .repViewerCont img {
+	width: auto;
+    height: auto;
+    max-width:100%;
+    margin-right:auto;
+    margin-left:auto;
+}
+.detail .repViewerCont .detailMediaToolbar, .gallery .repViewerCont .detailMediaToolbar {
+	width:auto;
+	display:none;
+}
