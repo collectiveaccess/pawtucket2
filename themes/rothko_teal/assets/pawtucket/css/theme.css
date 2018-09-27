@@ -190,12 +190,18 @@ a, a:hover, a:focus {
 	text-align:center;
 }
 
-@media (min-width: 768px) and (max-width: 1120px){
+@media (min-width: 768px) and (max-width: 1126px){
 	.navbar-nav {
 		float:left;
 	}
 	.front .navbar-nav {
 		float:none;
+		display:inline;
+	}
+	.front #searchDiv {
+		width: calc(100% - 200px);
+    	left: 115px;
+    	
 	}	
 }
 .navbar .form-control, .navbar .btn-search {
@@ -304,7 +310,7 @@ a, a:hover, a:focus {
 	}
 	.navbar-nav {
 		margin: 0;
-		display: inline-block;
+		display:inline-block;
 	}
 }
 @media (max-width: 767px){
@@ -337,7 +343,7 @@ a, a:hover, a:focus {
 		right:0px;
 	}
 	.navbar .collapseSearch .formOutline {
-		height:33px;
+		height:43px;
 	}
 	.collapseSearch .navbar-form {
 		margin-left:0px;
@@ -537,9 +543,21 @@ a, a:hover, a:focus {
 	font-size:18px;
 }
 .browseFacetTile {
-	width:30%;
 	float:left;
-	padding:32px;
+}
+.browseFacetTile.one{
+	padding-right:35px;
+	padding-left:35px;
+	margin-left:-25px;
+}
+.browseFacetTile.two{
+	padding-right:35px;
+	padding-left:35px;
+}
+.browseFacetTile.three{
+	padding-left:35px;
+	padding-right:35px;
+	margin-right:-35px;
 }
 .browseFacetTile img {
 	width:100%;
@@ -547,6 +565,7 @@ a, a:hover, a:focus {
 }
 .bioPic {
 	padding:25px;
+	padding-left:10px;
 	width:40%;
 	float:left;
 }
@@ -662,14 +681,38 @@ a, a:hover, a:focus {
 		height:375px;
 	}
 	.carousel-control.left {
-		left:-30px;
+		left:-10px;
 	}
 	.carousel-control.right {
-		right:-10px;
+		right:0px;
+		left:10px;
 	}	
 	.projectInfo {
 		text-align:center;
 		padding-top:0px;
+	}
+	.credit b {
+		clear:none;
+		display:inline;
+	}
+	.projectInfo .wop {
+		margin-bottom:15px;
+	}
+	.projectInfo .credit {
+		margin-bottom:40px;
+	}
+	.browseFacetTile.one, .browseFacetTile.two, .browseFacetTile.three {
+		padding-left:10px;
+		padding-right:10px;
+	}
+	.browseFacetTile.one {
+		margin-left:-5px;
+	}
+	.browseFacetTile.three {
+		margin-right:-10px;
+	}
+	#bRefineButton {
+		display:none;
 	}
 }
 @media (max-width:565px) {
@@ -1029,10 +1072,10 @@ a, a:hover, a:focus {
 @media (max-width:690px) {
 	.browseTargetLink {
 		display: block;
-    	float: left;
-   		width: 50%;
-   		padding-top:20px;
-   		padding-bottom:20px;
+    	float: none;
+   		width: 100%;
+   		padding-top:0px;
+   		padding-bottom:15px;
 	}
 	.browseTargets {
 		border-bottom: 1px solid #ccc;
@@ -1813,6 +1856,7 @@ a .svg-inline--fa.clearFacet {
     font-weight:bold;
     vertical-align:middle;
     padding-left:0px;
+    white-space:nowrap;
 }
 .objNav a{
 	color:#161616;
@@ -2425,6 +2469,11 @@ a .svg-inline--fa.clearFacet {
 	color: #df7354;
 	text-decoration:underline;
 }
+@media (max-width:768px) { 
+	.detail .sortResults {
+		display:none;
+	}
+}
 /* Rep viewer changes */
 
 .detail #detailRepNav {
@@ -2641,6 +2690,7 @@ div.caMediaOverlayControls .close {
 	display:none;
 	background-color:#161616;
 	width:22%;
+	min-width:210px;
 	position:absolute;
 	bottom:160px;
 	right:100px;
@@ -2751,5 +2801,16 @@ div.caMediaOverlayControlsMinimal .svg-inline--fa {
 	}
 	.detail .artworkInfo {
 		padding-left:25px;
+	}
+	
+}
+@media (min-width:768px) and (max-width:966px){
+	#searchDiv {
+		display: none;
+		position: absolute;
+		width: calc(100% - 290px);
+		left: 20px;
+		z-index: 2;
+		margin-top:3px;
 	}
 }

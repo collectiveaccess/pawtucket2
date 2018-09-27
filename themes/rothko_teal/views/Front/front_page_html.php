@@ -99,7 +99,7 @@
 		</div><!--end col-sm-12-->
 	</div><!-- end row -->
 	<div class="row gray">
-		<div class="col-sm-8 col-sm-offset-1 textArea">
+		<div class="col-sm-10 col-sm-offset-1 col-lg-8 col-lg-offset-1 textArea">
 			{{{homeText}}}
 		</div><!--end col-sm-12 textArea-->
 		<div class="col-sm-10 col-sm-offset-1 ">
@@ -119,13 +119,14 @@
 		</div><!--end col-sm-12 browseArea-->
 	</div><!-- end row -->
 	<div class="row ">	
-		<div class="col-sm-10 col-sm-offset-1 browseArea">
+		<div class="col-xs-12 col-sm-10 col-sm-offset-1 browseArea">
+			<div class='container'><div class='row'>
 <?php
-			print "<div class='browseFacetTile' style='margin-left:-32px;'><div class='browseHeader'>Browse Provenance</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'provenance-2x.png'), '', '', 'Browse', 'provenance')."</div>";
-			print "<div class='browseFacetTile'><div class='browseHeader'>Browse Exhibitions</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'exhibitions-2x.png'), '', '', 'Browse', 'exhibitions')."</div>";
-			print "<div class='browseFacetTile' style='margin-right:-32px;'><div class='browseHeader'>Browse References</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'references-2x.png'), '', '', 'Browse', 'references')."</div>";
+			print "<div class='browseFacetTile col-xs-4 one' ><div class='browseHeader'>Browse Provenance</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'provenance-2x.png'), '', '', 'Browse', 'provenance')."</div>";
+			print "<div class='browseFacetTile col-xs-4 two'><div class='browseHeader'>Browse Exhibitions</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'exhibitions-2x.png'), '', '', 'Browse', 'exhibitions')."</div>";
+			print "<div class='browseFacetTile col-xs-4 three' ><div class='browseHeader'>Browse References</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'references-2x.png'), '', '', 'Browse', 'references')."</div>";
 
-?>			
+?>			</div></div>		
 		</div><!--end col-sm-12 textArea-->		
 	</div><!-- end row -->
 	<div class="row gray">
@@ -141,9 +142,9 @@
 	<div class="row footer">
 		<div class="col-sm-12">
 			<div class='betaFooter'><?php print caGetThemeGraphic($this->request, 'beta-footer.png');?></div>
-			<div>Artworks by Mark Rothko</div>
-			<div>Copyright © 2018 Kate Rothko Prizel and Christopher Rothko</div>
+			
 			<div>© 2018 National Gallery of Art, Washington</div>
+			<div>Artworks by Mark Rothko Copyright © 2018 Kate Rothko Prizel and Christopher Rothko</div>
 			<div><?php print caNavLink($this->request, 'About the Project', '', '', 'About', 'project'); ?> | <?php print caNavLink($this->request, 'Credits', '', '', 'About', 'credits'); ?> | <?php print caNavLink($this->request, 'Notices', '', '', 'About', 'notices'); ?> | <?php print caNavLink($this->request, 'Contact', '', '', 'About', 'contact'); ?></div>
 			<div><a href='#' class='socialLink'><i class='fab fa-facebook-f'></i></a><a href='#' class='socialLink'><i class='fab fa-twitter'></i></a></div>
 		</div>
