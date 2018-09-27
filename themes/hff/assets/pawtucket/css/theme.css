@@ -26,10 +26,10 @@ body{
 	background-attachment: fixed;
 	
 	margin-top:20px;
-	margin-bottom: 150px;
+	margin-bottom: 290px;
 }
 #footer {
-    min-height: 120px;
+    min-height: 200px;
     background-color: #444;
     width: 100%;
     color: #EDEDED;
@@ -47,6 +47,18 @@ body{
 		padding: 45px 40px 0px 40px;
 	}
 }
+#footer a{
+	color:#FFF;
+	text-decoration:none;
+}
+#footer .fa{
+	font-size:14px;
+}
+@media (max-width: 768px) {
+	#footer .text-right{
+		text-align:left;
+	}
+}
 a, a:hover {
     color: #000;
 }
@@ -60,6 +72,9 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 }
 .btn-default{
 	background-color:#000;
+}
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
+	background-color:#333;
 }
 .form-control:focus {
     border-color: #000;
@@ -149,6 +164,7 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 }
 
 /* front */
+
 .front .tileLinks img{
 	width:100%;
 	height:auto;
@@ -198,6 +214,47 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 .browse .btn, .sets .btn {
     background-color: #000;
 }
+.results .bSearchWithinContainer{
+	clear:both;
+	margin-top:15px;
+	margin-bottom:10px;
+}
+.results .btn-search-refine{	
+	float: left;
+	font-size: 14px;
+	padding-top: 0px 0px 0px 0px;
+	width: 26px;
+	text-align: left;
+	background-color: transparent;
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	background-image: none;
+	outline: 0;
+	border: 0px;
+}
+.results .btn-search-refine .glyphicon{
+	margin-top:8px;
+	color:#ababab;
+}
+.bSearchWithin, .bSearchWithin:focus {
+    float: left;
+    width: auto;
+    box-shadow: none;
+    border: 0px;
+    border-bottom: 1px solid #ababab;
+    border-radius: 0px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    padding-left: 0px;
+    height: 30px;
+    font-size: 14px;
+    line-height: 26px;
+    background-color: transparent;
+    margin: 0px 0px 0px 10px;
+    font-size: 12px;
+    width:80%;
+}
 
 /* gallery */
 .gallery .setDescription {
@@ -207,4 +264,7 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 /* detail */
 .detail .detailNavBgLeft, .detail .detailNavBgRight{
 	background-color: transparent;
+}
+.detail.chronology H5{
+	margin-top:25px;
 }
