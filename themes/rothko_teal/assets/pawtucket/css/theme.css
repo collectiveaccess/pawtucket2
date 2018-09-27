@@ -631,7 +631,7 @@ a, a:hover, a:focus {
 } 
 @media (min-width:1024px) and (max-width:1195px){ 
 	.carouselDiv .item {
-    	height: 260px;
+    	height: 285px;
 	}	
 }
 @media (min-width:768px) and (max-width:1024px) {
