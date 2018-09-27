@@ -116,6 +116,7 @@
 						
 						scrollPreviousControlSelector: '#{{{block}}}scrollButtonPrevious',
 						scrollNextControlSelector: '#{{{block}}}scrollButtonNext',
+						scrollControlDisabledOpacity: 0,
 						cacheKey: '{{{cacheKey}}}'
 					});
 				});

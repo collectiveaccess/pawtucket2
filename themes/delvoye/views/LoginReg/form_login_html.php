@@ -18,6 +18,7 @@
 	}
 ?>
 			<form id="LoginForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "login"); ?>" class="form-horizontal" role="form" method="POST">
+				<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 				<div class="form-group">
 					<label for="username" class="col-sm-<?php print $vn_label_col; ?> col-sm-offset-<?php print $vn_label_col_offset; ?> control-label"><?php print _t("Username"); ?></label>
 					<div class="col-sm-<?php print $vn_input_col; ?>">

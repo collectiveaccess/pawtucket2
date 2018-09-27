@@ -219,7 +219,7 @@
 		}	
 		
 		#Related Catalogue
-		if ($va_related_catalogue = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('catalogue'), 'sort' => 'ca_object_labels.name'))) {
+/*		if ($va_related_catalogue = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('catalogue'), 'sort' => 'ca_object_labels.name'))) {
 			print '<div class="row objInfo">';
 
 			print '	<div class="col-sm-12"><hr><h6 class="header">Catalogue</h6></div>';
@@ -234,7 +234,8 @@
 				print "</div><!-- end col -->";
 			}
 			print "</div><!-- end row -->";			
-		}							
+		}	
+*/								
 ?>				
 		
 		</div><!-- end container -->

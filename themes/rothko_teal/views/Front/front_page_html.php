@@ -29,47 +29,171 @@
  *
  * ----------------------------------------------------------------------
  */
- 		$o_config = $this->getVar("config");
-		$vs_set_code = $o_config->get("front_page_set_code");
+ 	$va_access_values = caGetUserAccessValues($this->request);
+ 	$o_config 	= $this->getVar("config");
+ 	
+	if($vs_set_code = $o_config->get("front_page_set_code")){
 		$t_set = new ca_sets();
- 		$t_set->load(array('set_code' => 'homepage'));
- 		$va_access_values = caGetUserAccessValues($this->request);
- 		$vn_homepage_ids = array_keys($t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1)));
-		$t_home_object = new ca_objects($vn_homepage_ids[0]);
-?>
-<div class="frontBanner">
-<?php
-	if ($t_home_object) {
-		print $t_home_object->get('ca_objects.homepage_media', array('version' => 'original'));
-		print "<div class='pageTitle'><div class='lineOne'>Mark Rothko</div>";
-		print "<div class='lineTwo'>Works on Paper</div>";
-		print "<div class='lineThree'>National Gallery of Art, Washington</div></div>";
-		print "<div class='workCaption'>Detail, ".caNavLink($this->request, $t_home_object->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$t_home_object->get('ca_objects.object_id'))."<br/>".$t_home_object->get('ca_objects.display_date')."</div>";
-		print "<div class='moreInfo'><a href='#' onclick='$(\".expandedFrontBanner\").slideDown(300);$(\"html, body\").animate({ scrollTop: $(document).height() }, \"slow\"); return false;'>".caGetThemeGraphic($this->request, 'arrow-bottom.png')."</a></div>";
+		$t_set->load(array('set_code' => $vs_set_code));
+		
+		if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+			$vn_set_id = $t_set->get("set_id");
+			$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());
+			$qr_set_items = caMakeSearchResult('ca_objects', $va_featured_ids);
+		}		
 	}
+
 ?>
-</div> <!--end frontBanner-->
-<div class="expandedFrontBanner">
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-3">
-				<?php print caGetThemeGraphic($this->request, 'canvas.jpg'); ?>
-			</div>
-			<div class="col-sm-6">
-				The National Gallery of Art maintains the largest public collection of work by the American artist Mark Rothko (1903-1970).  Beginning with the nation's collection, Mark Rothko: Works on Paper will document some 2,600 drawings, watercolors, and paintings on paper in public and private collections worldwide.
-			</div>
-			<div class="col-sm-3">
-				<div class='homeTitle'>National Gallery of Art</div>
-				<div class='copyright'>© 2018 National Gallery of Art, Washington</div>
-				<div class="homeLinks">
-					<div class="footerLink"><?php print caNavLink($this->request, 'About', '', '', 'About', 'project');?></div> | 
-					<div class="footerLink space"><?php print caNavLink($this->request, ' Credits', '', '', 'About', 'credits'); ?></div> | 
-					<div class="footerLink space"><?php print caNavLink($this->request, ' Notices', '', '', 'About', 'notices'); ?></div> | 
-					<div class="footerLink space"><?php print caNavLink($this->request, ' Contact', '', '', 'About', 'contact'); ?></div><br/>
-					<!--<div class="socialLink"><a href="http://www.facebook.com"><i class="fab fa-facebook-f"></i></a></div>
-					<div class="socialLink"><a href="http://www.twitter.com"><i class="fab fa-twitter"></i></a></div>-->
-				</div>				
-			</div>
-		</div>
+<div class="container">
+	<div class="row phoneOnly">
+		<div class='projectInfo'>
+			<div class='mr'>Mark Rothko</div>
+			<div class='wop'>Works on Paper</div>
+			<div class='credit'>Produced by the <b>National Gallery of Art, Washington</b></div>
+		</div>	
 	</div>
-</div>
+	<div class="row">
+		<div class="col-sm-10 col-sm-offset-1">
+			<div class='homeLeft'>
+				<div id='focusImgWrapper'><div id='focusImg'>
+	<?php
+					$vn_main_id = $va_featured_ids[0];
+					$t_object = new ca_objects($vn_main_id);
+					print caDetailLink($this->request, $t_object->get('ca_object_representations.media.large'), '', 'ca_objects', $t_object->get('ca_objects.object_id'));		
+	?>			
+				</div></div><!-- end wrapper -->
+			</div><!-- end homeLeft -->
+			<div class='homeRight'>
+				<div class='projectInfo'>
+					<div class='mr'>Mark Rothko</div>
+					<div class='wop'>Works on Paper</div>
+					<div class='credit'>Produced by the <b>National Gallery of Art, Washington</b></div>
+				</div>
+				<div class='carouselDiv container'>
+					<div class="carousel slide row" data-ride="carousel" id="myCarousel" data-type="multi" data-interval="false" >
+						<div class="carousel-inner">
+		<?php
+							$vn_count = 1;
+							if ($qr_set_items) {
+								while ($qr_set_items->nextHit()) {
+									if ( $vn_count == 2 ) {
+										$vs_style = 'active';
+									} else {
+										$vs_style = null;
+									}
+									print '<div class="item '.$vs_style.'"><div class="col-sm-6 slide">';
+									print caDetailLink($this->request, $qr_set_items->get('ca_object_representations.media.large'), '', 'ca_objects', $qr_set_items->get('ca_objects.object_id'));
+									print '</div></div>';
+									$vn_count++;
+								}
+							}
+		?>
+						</div>
+
+						<a class="left carousel-control" href="#myCarousel" data-slide="prev"><i class="myleftarrow"></i></a>
+						<a class="right carousel-control" href="#myCarousel" data-slide="next"><i class="myrightarrow"></i></a> 
+					</div>
+				</div>
+			</div>
+			
+		</div><!--end col-sm-12-->
+	</div><!-- end row -->
+	<div class="row gray">
+		<div class="col-sm-8 col-sm-offset-1 textArea">
+			{{{homeText}}}
+		</div><!--end col-sm-12 textArea-->
+		<div class="col-sm-10 col-sm-offset-1 ">
+			<div class='browseHeader'>Browse Works</div>
+		</div><!--end col-sm-12 textArea-->		
+		<div class="col-sm-12 decadesArea" style='padding-left:0px;padding-right:0px;'>
+			
+<?php
+			print "<div class='browseTile'>".caNavLink($this->request, caGetThemeGraphic($this->request, '1920s-2x.png').'<div class="dateLabel">1920s</div>', '', 'Browse', 'artworks', 'facets/decade_facet:1920s')."</div>";
+			print "<div class='browseTile'>".caNavLink($this->request, caGetThemeGraphic($this->request, '1930s-2x.png').'<div class="dateLabel">1930s</div>', '', 'Browse', 'artworks', 'facets/decade_facet:1930s')."</div>";
+			print "<div class='browseTile'>".caNavLink($this->request, caGetThemeGraphic($this->request, '1940s-2x.png').'<div class="dateLabel">1940s</div>', '', 'Browse', 'artworks', 'facets/decade_facet:1940s')."</div>";
+			print "<div class='browseTile'>".caNavLink($this->request, caGetThemeGraphic($this->request, '1950s-2x.png').'<div class="dateLabel">1950s</div>', '', 'Browse', 'artworks', 'facets/decade_facet:1950s')."</div>";
+			print "<div class='browseTile'>".caNavLink($this->request, caGetThemeGraphic($this->request, '1960s-2x.png').'<div class="dateLabel">1960s</div>', '', 'Browse', 'artworks', 'facets/decade_facet:1960s')."</div>";
+
+?>	
+			<div style='clear:both;width:100%;'></div>		
+		</div><!--end col-sm-12 browseArea-->
+	</div><!-- end row -->
+	<div class="row ">	
+		<div class="col-sm-10 col-sm-offset-1 browseArea">
+<?php
+			print "<div class='browseFacetTile' style='margin-left:-32px;'><div class='browseHeader'>Browse Provenance</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'provenance-2x.png'), '', '', 'Browse', 'provenance')."</div>";
+			print "<div class='browseFacetTile'><div class='browseHeader'>Browse Exhibitions</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'exhibitions-2x.png'), '', '', 'Browse', 'exhibitions')."</div>";
+			print "<div class='browseFacetTile' style='margin-right:-32px;'><div class='browseHeader'>Browse References</div>".caNavLink($this->request, caGetThemeGraphic($this->request, 'references-2x.png'), '', '', 'Browse', 'references')."</div>";
+
+?>			
+		</div><!--end col-sm-12 textArea-->		
+	</div><!-- end row -->
+	<div class="row gray">
+		<div class="col-sm-10 col-sm-offset-1 textArea">
+<?php
+			print "<div class='bioPic'>".caGetThemeGraphic($this->request, 'rothko-bioPic-2x.png')."</div>";
+			print "<div class='bioText'>I'm interested only in expressing basic human emotions &mdash; tragedy, ectasy, doom and so on...";
+			print "<small>&mdash;Mark Rothko, 1956</small></div>";
+
+?>		
+		</div>
+	</div>	
+	<div class="row footer">
+		<div class="col-sm-12">
+			<div class='betaFooter'><?php print caGetThemeGraphic($this->request, 'beta-footer.png');?></div>
+			<div>© 2018 National Gallery of Art, Washington</div>
+			<div><?php print caNavLink($this->request, 'About the Project', '', '', 'About', 'project'); ?> | <?php print caNavLink($this->request, 'Credits', '', '', 'About', 'credits'); ?> | <?php print caNavLink($this->request, 'Notices', '', '', 'About', 'notices'); ?> | <?php print caNavLink($this->request, 'Contact', '', '', 'About', 'contact'); ?></div>
+			<div><a href='#' class='socialLink'><i class='fab fa-facebook-f'></i></a><a href='#' class='socialLink'><i class='fab fa-twitter'></i></a></div>
+		</div>
+	</div>				
+</div><!-- end container -->
+<script>
+jQuery(document).ready(function() {     
+  jQuery('.carousel[data-type="multi"] .item').each(function(){
+	var next = jQuery(this).next();
+	if (!next.length) {
+		next = jQuery(this).siblings(':first');
+	}
+	next.children(':first-child').clone().appendTo(jQuery(this)).addClass('second');
+  
+	for (var i=0;i<0;i++) {
+		next=next.next();
+		if (!next.length) {
+			next = jQuery(this).siblings(':first');
+		}
+		next.children(':first-child').clone().appendTo($(this));
+	}
+	$( ".right" ).unbind("click").click(function() {
+	  var activeSlide = $('.active');
+	  var nextImage = activeSlide.find('img').attr('src');
+	  var nextLink = activeSlide.find('a').attr('href');
+	  $('#focusImg').empty().append("<a href='" + nextLink + "'><img src='" + nextImage + "'/></a>").hide().toggle("slide", { direction: "right" }, 600);
+<!-- 	  $('#focusImg').empty().append("<a href='" + nextLink + "'><img src='" + nextImage + "'/></a>").hide().fadeIn(200); -->	
+	});
+	$( ".left" ).unbind("click").click(function() {
+	  var activeSlide = $('.active').prev().prev();
+	  	if (!$('.active').prev().prev().length) {
+	  		activeSlide = $('.active').siblings(':last-child');
+			if (!$('.active').prev().length) {
+				activeSlide = $('.active').siblings(':last-child').prev();
+			}
+		}			  
+	  var nextImage = activeSlide.find('img').attr('src');
+	  var nextLink = activeSlide.find('a').attr('href');
+	  $('#focusImg').empty().append( "<a href='" + nextLink + "'><img src='" + nextImage + "'/></a>").hide().toggle("slide", { direction: "left" }, 600);
+	}); 		
+  });     
+});
+</script>
+<!--<script>
+	$('#myCarousel').carousel();
+
+	$('.carousel .item').each(function(){
+	  var next = $(this).next();
+	  if (!next.length) {
+		next = $(this).siblings(':first');
+	  }
+	  next.children(':first-child').clone().appendTo($(this)).addClass('child');
+ 
+	});
+</script>	-->

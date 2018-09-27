@@ -32,21 +32,41 @@
 	$va_access_values = $this->getVar("access_values");
 	# --- check if there is a current exhibition
 	$o_occ_search = caGetSearchInstance("ca_occurrences");
-	$qr_current_exhibitions = $o_occ_search->search("ca_occurrences.on_view:yes", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.exhibition_dates", "sortDirection" => "desc"));
+	$qr_current_exhibitions = $o_occ_search->search("ca_occurrences.on_view:yes", array("checkAccess" => $va_access_values, "sort" => "ca_occurrences.first_exhibition", "sortDirection" => "asc"));
 	$va_current_exhibition_info = array();
 	if($qr_current_exhibitions->numHits()){
 		$t_exhibit = new ca_occurrences();
 		while($qr_current_exhibitions->nextHit()){
+			$va_images_tmp = array();
 			$t_exhibit->load($qr_current_exhibitions->get("occurrence_id"));
 			# --- we need to get the exhibit or exhibits info and images to show
 			$va_current_exhibition_info["name"][] = $qr_current_exhibitions->getWithTemplate("<l>^ca_occurrences.preferred_labels.name</l>");
 			$va_reps = $t_exhibit->getRepresentations(array("large"), null, array("restrictToTypes" => array("installation", "artwork"), "checkAccess" => $va_access_values));
 			foreach($va_reps as $va_rep){
-				$va_current_exhibition_info["images"][]	= caDetailLink($this->request, $va_rep["tags"]["large"], '', 'ca_occurrences', $qr_current_exhibitions->get("occurrence_id"));
+				$va_images_tmp[]	= caDetailLink($this->request, $va_rep["tags"]["large"], '', 'ca_occurrences', $qr_current_exhibitions->get("occurrence_id"));
+			}
+			# --- are there object artworks related to the exhibit
+			$va_object_ids = $t_exhibit->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_entities.preferred_labels.surname"));
+			$q_artworks = caMakeSearchResult("ca_objects", $va_object_ids);
+			if($q_artworks->numHits()){
+				while($q_artworks->nextHit()){
+					$vs_image = "";
+					$vs_image = $q_artworks->get('ca_object_representations.media.large', array("checkAccess" => $va_access_values));
+					if($vs_image){
+						$va_images_tmp[]	= caDetailLink($this->request, $vs_image, '', 'ca_occurrences', $qr_current_exhibitions->get("occurrence_id"));
+					}
+				}
+			}
+			if(is_array($va_images_tmp) && sizeof($va_images_tmp)){
+				shuffle($va_images_tmp);
+				$va_images_tmp = array_slice($va_images_tmp, 0, 5);
+				foreach($va_images_tmp as $va_image_tmp){
+					$va_current_exhibition_info["images"][] = $va_image_tmp;
+				}
 			}
 		}
 	}
-	if(is_array($va_current_exhibition_info) && is_array($va_current_exhibition_info["images"]) && sizeof($va_current_exhibition_info["images"])){
+	if(is_array($va_current_exhibition_info) && sizeof($va_current_exhibition_info["images"])){
 ?>   
 			<div class="jcarousel-wrapper" style="overflow:hidden;">
 <?php
