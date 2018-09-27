@@ -132,7 +132,7 @@
 		<div class="col-sm-10 col-sm-offset-1 textArea">
 <?php
 			print "<div class='bioPic'>".caGetThemeGraphic($this->request, 'rothko-bioPic-2x.png')."</div>";
-			print "<div class='bioText'>I'm interested only in expressing basic human emotions &mdash; tragedy, ectasy, doom and so on...";
+			print "<div class='bioText'>I'm interested only in expressing basic human emotions &mdash; tragedy, ecstasy, doom and so on...";
 			print "<small>&mdash;Mark Rothko, 1956</small></div>";
 
 ?>		
@@ -141,6 +141,8 @@
 	<div class="row footer">
 		<div class="col-sm-12">
 			<div class='betaFooter'><?php print caGetThemeGraphic($this->request, 'beta-footer.png');?></div>
+			<div>Artworks by Mark Rothko</div>
+			<div>Copyright © 2018 Kate Rothko Prizel and Christopher Rothko</div>
 			<div>© 2018 National Gallery of Art, Washington</div>
 			<div><?php print caNavLink($this->request, 'About the Project', '', '', 'About', 'project'); ?> | <?php print caNavLink($this->request, 'Credits', '', '', 'About', 'credits'); ?> | <?php print caNavLink($this->request, 'Notices', '', '', 'About', 'notices'); ?> | <?php print caNavLink($this->request, 'Contact', '', '', 'About', 'contact'); ?></div>
 			<div><a href='#' class='socialLink'><i class='fab fa-facebook-f'></i></a><a href='#' class='socialLink'><i class='fab fa-twitter'></i></a></div>
