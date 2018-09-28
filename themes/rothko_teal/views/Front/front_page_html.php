@@ -132,7 +132,7 @@
 	<div class="row gray">
 		<div class="col-sm-10 col-sm-offset-1 textArea">
 <?php
-			print "<div class='bioPic'>".caGetThemeGraphic($this->request, 'rothko-bioPic-2x.png')."</div>";
+			print "<div class='bioPic'>".caGetThemeGraphic($this->request, 'biopic.jpg')."</div>";
 			print "<div class='bioText'>I'm interested only in expressing basic human emotions &mdash; tragedy, ecstasy, doom and so on...";
 			print "<small>&mdash;Mark Rothko, 1956</small></div>";
 
