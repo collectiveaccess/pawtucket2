@@ -1995,6 +1995,7 @@ a .svg-inline--fa.clearFacet {
 	font-size:15px;
 	padding-left:0px;
 	padding-top:4px;
+	white-space:normal;
 }
 .detail .unit .mount {
 	text-transform:capitalize;
