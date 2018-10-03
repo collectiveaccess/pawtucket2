@@ -146,7 +146,7 @@
 </div><!-- end caFormOverlay -->
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#RegForm').submit(function(e){		
+		jQuery('#RegForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', 'LoginReg', 'register', null); ?>',
 				jQuery('#RegForm').serializeObject()
