@@ -1,9 +1,12 @@
+Options -Indexes
 <IfModule mod_rewrite.c> 
 	RewriteEngine on
 	
 	<IfModule mod_env.c>
 		SetEnv HTTP_MOD_REWRITE On
 	</IfModule>
+	
+	RewriteRule "(^|/)\.(?!well-known\/)" - [F]
 	
 	# Pass all requests not referring directly 
 	# to files in the filesystem to index.php.

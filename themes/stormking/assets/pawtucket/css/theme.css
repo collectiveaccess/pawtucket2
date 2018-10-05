@@ -433,6 +433,9 @@ p, .collectionsList p {
 .detail .zoomIcon.unit h6{
 	font-size:14px;
 }
+.detail .leaflet-control a {
+	text-decoration:none !important;
+}
 .artistName {
 	font-size:18px;
 	font-weight:bold;
@@ -1345,4 +1348,21 @@ p, .collectionsList p {
 	#header-mobile-content .container{
 		width: auto;
 	}
+}
+.detail .repViewerCont div, .detail .exhibitionRep {
+	display:table;
+	width:100%;
+	max-height: 500px;
+	text-align:center;
+}
+.detail .repViewerCont img, .detail .exhibitionRep img {
+	width: auto;
+    height: auto;
+    max-width:100%;
+    margin-right:auto;
+    margin-left:auto;
+}
+.detail .repViewerCont .detailMediaToolbar, .gallery .repViewerCont .detailMediaToolbar {
+	width:auto;
+	display:none;
 }

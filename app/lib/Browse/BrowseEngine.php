@@ -351,7 +351,10 @@
 			$va_criteria = $this->opo_ca_browse_cache->getParameter('criteria');
 			$va_criteria_display_strings = $this->opo_ca_browse_cache->getParameter('criteria_display_strings');
 			if (!is_array($pa_row_ids)) { $pa_row_ids = array($pa_row_ids); }
+			
+			$purifier = new HTMLPurifier();
 			foreach($pa_row_ids as $vn_i => $vn_row_id) {
+			    $vn_row_id = $purifier->purify(urldecode($vn_row_id)); // sanitize facet values
 				$va_criteria[$ps_facet_name][urldecode($vn_row_id)] = true;
 				
 				if (isset($pa_display_strings[$vn_i])) { $va_criteria_display_strings[$ps_facet_name][urldecode($vn_row_id)] = $pa_display_strings[$vn_i]; }
@@ -584,10 +587,9 @@
 								return ($t_rel_item->load($pn_row_id)) ? $t_rel_item->getLabelForDisplay() : "???";
 							}
 							break;
-						case __CA_ATTRIBUTE_VALUE_LCSH__:
-							return preg_replace('![ ]*\[[^\]]*\]!', '', $pn_row_id);
 						default:
-							return urldecode($pn_row_id);
+						    $value = ca_attribute_values::getValuesFor($pn_row_id);
+							return $value['value_longtext1'];
 							break;
 					}
 
@@ -732,7 +734,8 @@
 					if($va_facet_info['table'] && ($t_browse_table = Datamodel::getInstanceByTableName($vs_facet_table = $va_facet_info['table'], true))) {
 						if (!($app = AppController::getInstance())) { return '???'; }
 						if ($t_browse_table->load($pn_row_id) && $t_browse_table->isReadable($app->getRequest(), 'preferred_labels')) {
-							return $t_browse_table->get("{$vs_facet_table}.preferred_labels");
+							
+							return $t_browse_table->getWithTemplate(isset($va_facet_info['display']) ? $va_facet_info['display'] : "^".$t_browse_table->tableName().".preferred_labels");
 						}
 					}
 					return '???';
@@ -1359,9 +1362,14 @@
 									foreach($va_row_ids as $vn_row_id) {
 										$vn_row_id = urldecode($vn_row_id);
 										$vn_row_id = str_replace('&#47;', '/', $vn_row_id);
-										$va_value = $o_attr->parseValue($vn_row_id, $t_element->getFieldValuesArray());
-										$va_attr_sql = array();
-										$va_attr_values = array(intval($vs_target_browse_table_num), $vn_element_id);
+										
+										if (in_array($vn_datatype, [__CA_ATTRIBUTE_VALUE_OBJECTS__, __CA_ATTRIBUTE_VALUE_OBJECTS__, __CA_ATTRIBUTE_VALUE_PLACES__, __CA_ATTRIBUTE_VALUE_OCCURRENCES__, __CA_ATTRIBUTE_VALUE_COLLECTIONS__, __CA_ATTRIBUTE_VALUE_LOANS__, __CA_ATTRIBUTE_VALUE_MOVEMENTS__, __CA_ATTRIBUTE_VALUE_MOVEMENTS__, __CA_ATTRIBUTE_VALUE_OBJECTLOTS__, __CA_ATTRIBUTE_VALUE_LIST__])) {
+										    $va_value = $o_attr->parseValue($vn_row_id, $t_element->getFieldValuesArray());
+										} else {
+										    $va_value = ca_attribute_values::getValuesFor($vn_row_id);
+										}
+										$va_attr_sql = [];
+										$va_attr_values = [intval($vs_target_browse_table_num), $vn_element_id];
 
 										if (is_array($va_restrict_to_types) && (sizeof($va_restrict_to_types) > 0) && method_exists($t_item, "getTypeList")) {
 											$va_attr_sql[] = "(".$this->ops_browse_table_name.".type_id IN (".join(", ", $va_restrict_to_types)."))";
@@ -1369,7 +1377,7 @@
 										
 										if (is_array($va_value)) {
 											foreach($va_value as $vs_f => $vs_v) {
-												switch($vn_datatype) {
+												switch($vn_datatype) {			
 													case __CA_ATTRIBUTE_VALUE_LIST__:
 														if ($vs_f != 'item_id') { continue; }
 
@@ -1380,19 +1388,6 @@
 														$va_item_ids[] = (int)$vs_v;
 														$va_attr_sql[] = "(ca_attribute_values.{$vs_f} IN (?))";
 														$va_attr_values[] = array_map(function($v) { return (int)$v; }, array_unique($va_item_ids));
-														break;
-													case __CA_ATTRIBUTE_VALUE_INFORMATIONSERVICE__:
-														if($vs_f == '_dont_save') {
-															$va_attr_sql[] = "(ca_attribute_values.value_longtext1 = ?)";
-															$va_attr_values[] = $vn_row_id;
-															break(2);
-														}
-														break;
-													case __CA_ATTRIBUTE_VALUE_LCSH__:
-														if ($vs_f == 'value_longtext2') {
-															$va_attr_sql[] = "(ca_attribute_values.value_longtext2 = ?)";
-															$va_attr_values[] = $va_value['value_longtext2'];
-														}
 														break;
 													default:
 														$va_attr_sql[] = "(ca_attribute_values.{$vs_f} ".(is_null($vs_v) ? " IS " : " = ")." ?)";
@@ -3324,7 +3319,7 @@
 					        $va_params[] = $va_container_ids[$vs_container_code];
 					    }
 						$vs_sql = "
-							SELECT COUNT(*) as _count, ca_attribute_values.value_longtext1, ca_attribute_values.value_decimal1, ca_attribute_values.value_longtext2, ca_attribute_values.value_integer1
+							SELECT COUNT(*) as _count, ca_attribute_values.value_longtext1, ca_attribute_values.value_decimal1, ca_attribute_values.value_longtext2, ca_attribute_values.value_integer1, ca_attribute_values.element_id
 							FROM ca_attributes
 
 							{$vs_join_sql}
@@ -3478,11 +3473,11 @@
 								            return caSortArrayByKeyInValue($va_facet_list, array('item_value')); 
 								            break;
 								        default:
-								            return caSortArrayByKeyInValue($va_facet_list, array('label')); 
+								            return caSortArrayByKeyInValue($va_facet_list, ['label'], 'ASC', ['naturalSort' => true]); 
 								            break;
 								    }
 								} else {
-								    return caSortArrayByKeyInValue($va_facet_list, array('label')); 
+								    return caSortArrayByKeyInValue($va_facet_list, ['label'], 'ASC', ['naturalSort' => true]); 
 								}
 								break;
 							case __CA_ATTRIBUTE_VALUE_OBJECTS__:
@@ -3520,8 +3515,9 @@
 									if ($va_list_parent_ids[$vs_val]) {
 										 $vn_child_count++;
 									}
+									$vn_id = $qr_res->get('value_integer1');
 									$va_values[strToLower($vs_val)] = array(
-										'id' => str_replace('/', '&#47;', $vs_val),
+										'id' => $vn_id, 
 										'label' => html_entity_decode($va_list_items[$vs_val]['name_plural'] ? $va_list_items[$vs_val]['name_plural'] : $va_list_items[$vs_val]['item_value']),
 										'parent_id' => $va_list_items[$vs_val]['parent_id'],
 										'child_count' => $vn_child_count,
@@ -3545,22 +3541,25 @@
 									);
 									break;
 								case __CA_ATTRIBUTE_VALUE_LCSH__:
+								    $value_id = ca_attribute_values::getValueIDFor($o_attr->getElementID(), $vs_val);
 									$va_values[strToLower($vs_val)] = array(
-										'id' => str_replace('/', '&#47;', $vs_val),
+										'id' => $value_id,
 										'label' => preg_replace('![ ]*\[[^\]]*\]!', '', $vs_val),
 										'content_count' => $qr_res->get('_count')
 									);
 									break;
 								case __CA_ATTRIBUTE_VALUE_CURRENCY__:
+								    $value_id = ca_attribute_values::getValueIDFor($o_attr->getElementID(), $vs_val);
 									$va_values[sprintf("%014.2f", preg_replace("![\D]+!", "", $vs_val))] = array(
-										'id' => str_replace('/', '&#47;', $vs_val),
+										'id' => $value_id, 
 										'label' => $vs_val,
 										'content_count' => $qr_res->get('_count')
 									);
 									break;
 								default:
+								    $value_id = ca_attribute_values::getValueIDFor($o_attr->getElementID(), $vs_val);
 									$va_values[strToLower($vs_val)] = array(
-										'id' => str_replace('/', '&#47;', $vs_val),
+										'id' => $value_id,
 										'label' => $vs_val,
 										'content_count' => $qr_res->get('_count')
 									);
@@ -4063,10 +4062,9 @@
 								);
 
 
-								$vs_display_field_name = null;
+								$vs_display = caGetOption('display', $va_facet_info, "^".$t_browse_table->tableName().".preferred_labels");
 								if (method_exists($t_browse_table, 'getLabelTableInstance')) {
 									$t_label_instance = $t_browse_table->getLabelTableInstance();
-									$vs_display_field_name = (isset($va_facet_info['display']) && $va_facet_info['display']) ? $va_facet_info['display'] : $t_label_instance->getDisplayField();
 									$va_joins[] = 'INNER JOIN '.$t_label_instance->tableName()." AS lab ON lab.".$t_browse_table->primaryKey().' = '.$t_browse_table->tableName().'.'.$t_browse_table->primaryKey();
 								}
 
@@ -4132,25 +4130,29 @@
 									return ((int)$qr_res->numRows() > 0) ? true : false;
 								} else {
 									$vs_sql = "
-										SELECT COUNT(*) _count,  *
+										SELECT COUNT(*) _count, ".$t_browse_table->primaryKey(true)."
 										FROM {$vs_facet_table}
 
 										{$vs_join_sql}
 										{$vs_where_sql}
-									    GROUP BY {$vs_facet_table}.{$vs_display_field_name}
+									    GROUP BY ".$t_browse_table->primaryKey(true)."
 									";
 									//print $vs_sql;
 									$qr_res = $this->opo_db->query($vs_sql);
 
 									$va_values = array();
 									$vs_pk = $t_browse_table->primaryKey();
+									
+									$values = caProcessTemplateForIDs($vs_display, $t_browse_table->tableName(), $qr_res->getAllFieldValues($vs_pk), ['returnAsArray' => true, 'indexWithIDs' => true]);
+									
+									$qr_res->seek(0);
 									while($qr_res->nextRow()) {
 										$vn_id = $qr_res->get($vs_pk);
 										if ($va_criteria[$vn_id]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 
 										$va_values[$vn_id][$qr_res->get('locale_id')] = array(
 											'id' => $vn_id,
-											'label' => $qr_res->get($vs_display_field_name),
+											'label' => isset($values[$vn_id]) ? $values[$vn_id] : "???", //$qr_res->get($vs_display_field_name),
 									        'content_count' => $qr_res->get('_count')
 										);
 										if (!is_null($vs_single_value) && ($vn_id == $vs_single_value)) {
@@ -5829,7 +5831,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 			$vs_pk = $t_item->primaryKey();
 			$vs_label_display_field = null;
 
-			if(sizeof($va_results =  $this->opo_ca_browse_cache->getResults())) {
+			if(is_array($va_results =  $this->opo_ca_browse_cache->getResults()) && sizeof($va_results)) {
 				if ($vb_will_sort) {
 					$va_results = $this->sortHits($va_results, $this->ops_browse_table_name, $vs_sort, $vs_sort_direction);
 
