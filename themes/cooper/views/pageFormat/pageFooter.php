@@ -32,16 +32,17 @@
 			<div class="container"><div class="row">
 				<div class="col-sm-12">
 					<div class="footerLogo pull-right">
-						<?php print caGetThemeGraphic($this->request, 'IMLS_Logo.png'); ?><?php print caGetThemeGraphic($this->request, 'levyLogo2.jpg'); ?>
+						<?php print caGetThemeGraphic($this->request, 'IMLS_Logo.png'); ?><?php print caGetThemeGraphic($this->request, 'levyLogo2.jpg'); ?><?php print caGetThemeGraphic($this->request, 'metro_logo.png'); ?><?php print caGetThemeGraphic($this->request, 'nhprc-logo.jpg'); ?>
 					</div>
 					<ul class="list-inline pull-right">
+						<li><a href="#">About</a></li>
 						<li><a href="#">Help</a></li>
 						<li><a href="#">Contact</a></li>
 						<li><a href="#">Privacy</a></li>
 						<li class="last"><a href="#">Terms</a></li>
 					</ul>
 					<div class="footerText">
-						THE COOPER UNION, 2017 &copy; ALL RIGHTS RESERVED
+						THE COOPER UNION, <?php print date("Y"); ?> &copy; ALL RIGHTS RESERVED
 					</div>
 					
 				</div>
@@ -88,7 +89,7 @@
 		<script type="text/javascript" language="javascript">
 			jQuery(document).ready(function() {
 				$('html').on('contextmenu', 'img', function(e){ return false; });
-				$('img').on('dragstart', function(event) { event.preventDefault(); });
+				$('html').on('dragstart', false);
 			});
 		</script>
  

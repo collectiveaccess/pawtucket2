@@ -15,7 +15,13 @@
 					<p>{{{^ca_occurrences.course_description}}}</p>
 				</div><!-- end col -->
 				<div class="col-lg-7 col-sm-7 col-xs-12">
-					<?php print caGetThemeGraphic($this->request, 'frontImage.jpg'); ?>
+<?php
+					#if($vs_hero = $t_item->get("ca_object_representations.media.page")){
+					#	print $vs_hero;
+					#}else{
+					#	print caGetThemeGraphic($this->request, 'frontImage.jpg');
+					#}
+?>
 				</div><!-- end col -->
 			</div><!-- end row -->
 		</div><!-- end container -->

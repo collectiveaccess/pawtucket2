@@ -221,7 +221,7 @@ H6, h6{
 	color:#FFF;
 	font-family: gotham;
 	font-size:10.75px;
-	text-transform:uppercase;
+	text-transform:none;
 	line-height:1.4em !important;
 }
 .navbar-header a:hover{
@@ -376,8 +376,14 @@ body.initial .navbar-form {
 	height:50px;
 	width:auto;
 }
-#footer .footerLogo img:first-child {
+/*#footer .footerLogo img:first-child {
 	margin-right:20px;
+}*/
+#footer .footerLogo img{
+	margin-right:20px;
+}
+#footer .footerLogo img:last-child {
+	margin-right:0px;
 }
 
 /* front page */
@@ -457,12 +463,29 @@ body.initial .navbar-form {
 .slide{
 	margin-right:20px;
 }
-.front .slide{
+.front .slide, .detail.student_project .slide{
 	width:330px;
+	position:relative;
 }
 .slide img{
 	width:100%;
 	height:auto;
+}
+.front .slideCaption, .detail.student_project .slideCaption{
+	position:absolute;
+	z-index:10;
+	background-color: rgba(0,0,0,.5);
+	display:none;
+	bottom:0px;
+	width:100%;
+	padding-bottom:10px;
+	padding-top:10px;
+}
+.front .slideCaption a, .front .slideCaption a:hover, .detail.student_project .slideCaption a, .detail.student_project .slideCaption a:hover{
+	color:#FFF;
+}
+.front .slide:hover .slideCaption, .detail.student_project .slide:hover .slideCaption{
+	display:block;
 }
 #browseResultsContainer .slideCaption{
 	margin-bottom: 30px;
@@ -484,6 +507,7 @@ body.initial .navbar-form {
 .slideCaption a:hover{
 	color:#000;
 }
+/* front galleries are also used on project detail page */
 .frontGalleries .jcarousel-wrapper {
     margin-bottom: 65px;
     margin-top: 0px;
@@ -526,14 +550,49 @@ body.initial .navbar-form {
 	margin-bottom:50px;
 }
 .detail .detailImagesThumbs img{
-	width:100%;
-	height:auto;
-	cursor: pointer;
+	height:72px;
+	width:auto;
+}
+.detail .detailImagesThumbs a{
+	display:inline;
+	padding-right:15px;
 }
 .detail .detailImagesThumbs{
-	max-height:630px;
-	overflow-y:scroll;
+	height:72px;
+	overflow-y:hidden;
+	overflow-x:scroll;
+	white-space: nowrap;
+	margin-bottom:15px;
 }
+
+@media (min-width: 768px) {
+	.detail .detailImagesThumbs img{
+		width:100%;
+		height:auto;
+	}
+	.detail .detailImagesThumbs a{
+		display:block;
+		margin-bottom:15px;
+		padding-right:0px;
+	}
+	.detail .detailImagesThumbs{
+		height:auto;
+		max-height:520px;
+		overflow-y:scroll;
+		white-space: normal;
+		margin-bottom:none;
+	}
+}
+.detail .detailImagesThumbs a img{
+	border-left:2px solid #ffffff;
+}
+.detail .detailImagesThumbs a:hover img{
+	border-left:2px solid #858585;
+}
+.detail .detailImagesThumbs a.active img{
+	border-left:2px solid #858585;
+}
+
 .detail .detailImagesMain{
 	display:none;
 	height:630px;
@@ -543,6 +602,70 @@ body.initial .navbar-form {
 	width:670px;
 	height:600px;
 	object-fit:contain;
+}
+.detail .navTop {
+	text-align:center;
+	display:block;
+}
+@media (min-width: 768px) {
+	.detail .navTop {
+		text-align:right;
+	}
+}
+.detail .navTop a{
+	background-color:#FFF;
+}
+.detail .navTop a:hover{
+	background-color:#ebebeb;
+	text-decoration:none;
+}
+.detail .detailMediaToolbar{
+	width:100%;
+	height:100%;
+	text-align:center;
+	padding-top:30%;
+	background:transparent;
+	font-size:60px;
+}
+.detail .detailMediaToolbar a .glyphicon{
+	text-shadow: 5px 5px 10px #FFFFFF;
+	color:#000;
+}
+.detail .repViewerContCont img{
+	border:#DEDEDE;
+}
+.detail .repViewerContCont .small{
+	text-align:center;
+	padding-top: 8px;
+}
+.detail .detailImageNav{
+	position:relative;
+	z-index:500;
+}
+@media (min-width: 768px) {
+	.detail .detailImageNav{
+		top:-22px;
+		padding-left:30px;
+		padding-right:30px;
+	}
+}
+.detail .detailImageNav a{
+	font-size:20px;
+	text-transform: uppercase;
+	font-size: 12px;
+	padding:5px;
+}
+.detail .detailImageNav a:hover{
+	color:#737373;
+	background-color: #ebebeb;
+	text-decoration: none;
+}
+.detail .detailImageNav .detailPreviousImageLink{
+	float:left;
+}
+
+.detail .detailImageNav .detailNextImageLink{
+	float:right;
 }
 /*
 .detailImagesMain img.horizontal{
@@ -554,11 +677,11 @@ body.initial .navbar-form {
 	height:100%;
 }
 */
-.detailCaption{
+/*.detailCaption{
 	padding-top:3px;
 	text-align:right;
 	width:700px;
-}
+}*/
 .detail H6{
 	font-weight:bold;
 	font-size:14px;
@@ -575,7 +698,7 @@ body.initial .navbar-form {
 }
 .detail .unitTop{
 	font-family:Gotham-light;
-	font-size:20px;
+	font-size:18px;
 	padding-bottom:25px;
 }
 .detail .unitBottom{
@@ -585,6 +708,8 @@ body.initial .navbar-form {
 .detail .unitAbstract{
 	font-size:15px;
 	padding-bottom:20px;
+	max-height:300px;
+	overflow-y:scroll;
 }
 .detail .bottomRow{
 	margin-top:30px;
@@ -657,7 +782,6 @@ body.initial .navbar-form {
 	font-size:22px;
 	color:#000;
 	line-height:1.1em;
-	text-transform:uppercase;
 }
 .listingSubtitle, .listingSubtitle a{
 	font-family: 'Gotham-medium';
@@ -746,7 +870,7 @@ body.initial .navbar-form {
 .bRefineFacet > div a, .bRefineFacet > div a span{
 	line-height:1.2em !important;
 }
-.browse .btn, .sets .btn {
+.search .btn, .browse .btn, .sets .btn {
     background-color: #000;
     color: #fff !important;
     margin-left: 0px;
@@ -761,10 +885,10 @@ body.initial .navbar-form {
     text-align:left;
     border:0px;
 }
-.browse .btn:hover, .sets .btn:hover {
+.search .btn:hover, .browse .btn:hover, .sets .btn:hover {
     border:0px;
 }
-.browse .btn span, .sets .btn span{
+.search .btn span, .browse .btn span, .sets .btn span{
 	float:right;
 }
 .bFacetContextHeader{
@@ -817,6 +941,9 @@ body.initial .navbar-form {
 	left:0px;
 	width:100%;
 	text-align:center;
+}
+.resultCount .btn-group{ /* hide gear */
+	display:none;
 }
 /* course detail */
 .courseEntityList{
