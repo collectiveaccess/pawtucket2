@@ -46,9 +46,23 @@
 								$('.gallery<?php print $i; ?>')
 									.jcarousel({
 										// Options go here
-										wrap:'circular'
+										auto: 1,
+										wrap: "circular",
+										animation:"slow"
+									}).jcarouselAutoscroll({
+										interval: 0,
+										target: '+=1',
+										autostart: false
 									});
-
+									
+									$('.gallery<?php print $i; ?>').jcarousel({
+										animation: {
+											duration: 1500, /* lower = faster animation */
+											easing:   'linear',
+											complete: function() {
+											}
+										}
+									});
 								/*
 								 Prev control initialization
 								 */
@@ -78,6 +92,28 @@
 										// Options go here
 										target: '+=1'
 									});
+							
+$(".previous<?php print $i; ?>").hover(function () {
+    $('.gallery<?php print $i; ?>').jcarouselAutoscroll('reload', {
+		interval: 0,
+		target: '-=1',
+		autostart: false
+	});
+    $(".gallery<?php print $i; ?>").jcarouselAutoscroll('start');
+},function () {
+    $(".gallery<?php print $i; ?>").jcarouselAutoscroll('stop');
+});
+$(".next<?php print $i; ?>").hover(function () {
+    $('.gallery<?php print $i; ?>').jcarouselAutoscroll('reload', {
+		interval: 0,
+		target: '+=1',
+		autostart: false
+	});
+    $(".gallery<?php print $i; ?>").jcarouselAutoscroll('start');
+},function () {
+    $(".gallery<?php print $i; ?>").jcarouselAutoscroll('stop');
+});
+					
 							});
 						</script>
 		<?php

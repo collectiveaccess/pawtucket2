@@ -33,6 +33,7 @@
  	$va_lists = $this->getVar('lists');
  	$va_type_info = $this->getVar('typeInfo');
  	$va_listing_info = $this->getVar('listingInfo');
+ 	$va_access_values = caGetUserAccessValues($this->request);
  
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
@@ -46,7 +47,7 @@
 			# --- show related item with "featured" rel type or default to icon
 			#$vs_icon = $qr_list->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' restrictToTypes='item' length='1'>^ca_object_representations.media.iconlarge</unit>");
 			# --- get primary rep to show as icon
-			$vs_icon = $qr_list->get("ca_object_representations.media.iconlarge", array("limit" => 1));
+			$vs_icon = $qr_list->get("ca_object_representations.media.iconlarge", array(array("checkAccess" => $va_access_values)));
 			
 			if(!$vs_icon){
 				$vs_icon = caGetThemeGraphic($this->request, 'courseIcon.jpg');
