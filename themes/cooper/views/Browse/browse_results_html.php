@@ -50,7 +50,7 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	$vn_result_size 	= $qr_res->numHits();
 	
 	
 	$va_options			= $this->getVar('options');
@@ -65,6 +65,15 @@
 	$va_browse_type_info = $o_config->get($va_browse_info["table"]);
 	$va_all_facets = $va_browse_type_info["facets"];	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
+	
+	
+	//
+	// GET RELATIONSHIP TYPES FOR TABS
+	//
+	//print_R($va_criteria);
+	$entity_id = array_shift(array_map(function($x) { return $x['id']; }, array_filter($va_criteria, function($v) { return (in_array($v['facet_name'], ['entity_facet', 'faculty_facet'])); })));
+	if ($entity_id) { print_r($this->getVar('browse')->getAvailableRelationshipTypesForCurrentResult('ca_entities', [$entity_id])); }
+	
 	
 if (!$vb_ajax) {	// !ajax
 ?>

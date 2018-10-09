@@ -57,7 +57,7 @@ if($vb_ajax){
 		<div class="container">
 			<div class="row">
 				<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+					{{{resultsLink}}}{{{previousLink}}}{{{nextLink}}}
 				</div><!-- end detailTop -->
 			</div>
 			<div class="row">
@@ -119,8 +119,8 @@ if($vb_ajax){
 							if(is_array($va_children) && (sizeof($va_children) > 1)){
 ?>
 								<div class="detailImageNav">
-									<a href="#" class="detailPreviousImageLink" onClick="showNextPreviousImg('p'); return false;"><i class="fa fa-angle-left"></i> Prev</a>
-									<a href="#" class="detailNextImageLink" onClick="showNextPreviousImg('n'); return false;">Next <i class="fa fa-angle-right"></i></i></a>
+									<a href="#" class="detailPreviousImageLink" onClick="showNextPreviousImg('p'); return false;"><span class="glyphicon glyphicon-arrow-left"></span></a>
+									<a href="#" class="detailNextImageLink" onClick="showNextPreviousImg('n'); return false;"><span class="glyphicon glyphicon-arrow-right"></span></i></a>
 								</div>
 <?php
 							}
@@ -138,7 +138,9 @@ if($vb_ajax){
 									$("#iconLink" + childID).addClass("active");
 							
 								}
+<?php
 								if(is_array($va_children) && (sizeof($va_children) > 1)){
+?>
 									function showNextPreviousImg(direction){
 										var currentId = parseInt($(".detailImagesThumbs a.active").attr('id').replace('iconLink', ''));
 									
@@ -169,8 +171,9 @@ if($vb_ajax){
 										//  console.log( attr + ' == ' + value );
 									   //});
 									}
-								}
 <?php
+								}
+
 							}
 ?>							
 
@@ -275,8 +278,20 @@ if($vb_ajax){
 								<li role="presentation"><a href="#author" aria-controls="author" role="tab" data-toggle="tab">Author Text</a></li>
 <?php
 							}
+							$va_faculty_text_object_ids = $t_object->get("ca_objects.related.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true, "restrictToTypes" => array("faculty_course_document")));
+							if(is_array($va_faculty_text_object_ids) && sizeof($va_faculty_text_object_ids)){
+								$qr_faculty_texts = caMakeSearchResult('ca_objects', $va_faculty_text_object_ids);
 ?>
 								<li role="presentation"><a href="#faculty" aria-controls="faculty" role="tab" data-toggle="tab">Faculty Text</a></li>
+<?php
+							}
+							$vs_rights = $t_object->get("ca_objects.rights");
+							if($vs_rights){
+?>
+								<li role="presentation"><a href="#rights" aria-controls="rights" role="tab" data-toggle="tab">Rights</a></li>
+<?php								
+							}
+?>
 							</ul>
 
 							<!-- Tab panes -->
@@ -371,11 +386,36 @@ if($vb_ajax){
 									</div>
 								</div>
 								<div role="tabpanel" class="tab-pane" id="faculty">
+									<div class='unitBottom'>
 		<?php
-									$vs_faculty_bio = $t_object->get("ca_entities.biography", array("restrictToRelationshipTypes" => array("faculty"), "checkAccess" => $va_access_values));
+									
+									if(is_array($va_faculty_text_object_ids) && sizeof($va_faculty_text_object_ids)){
+										if($qr_faculty_texts->numHits()){
+											while($qr_faculty_texts->nextHit()){
+												$vs_tmp = $vs_year = $vs_semester = $vs_course = "";
+												$vs_year = $qr_faculty_texts->get("ca_occurrences.preferred_labels", array("delimiter" => "; ", "checkAccess" => $va_access_values, "restrictToTypes" => array("academic_year")));
+												$vs_semester = $qr_faculty_texts->get("ca_objects.semester", array("delimiter" => "; "));
+												$vs_tmp = $vs_year;
+												if($vs_tmp && $vs_semester){
+													$vs_tmp = ", ";
+												}
+												$vs_tmp .= $vs_year;
+												$vs_course = $qr_faculty_texts->get("ca_occurrences.preferred_labels", array("delimiter" => "; ", "checkAccess" => $va_access_values, "restrictToTypes" => array("course")));
+												if($vs_tmp && $vs_course){
+													$vs_tmp = " | ";
+												}
+												$vs_tmp .= $vs_course;
+												print '<a href="#" onclick="caMediaPanel.showPanel(\''.caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $qr_faculty_texts->get("ca_objects.object_id"), 'context' => 'objects', 'overlay' => 1, 'representation_id' => $qr_faculty_texts->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)))).'\'); return false;" title="View Document">'.$vs_tmp.'</a><br/>';
+										
+											}
+										}
+									}										
 		?>
-									<div class='unitBottom'><?php print ($vs_faculty_bio) ? $vs_faculty_bio : "N/A"; ?></div>
-
+									
+									</div>
+								</div>
+								<div role="tabpanel" class="tab-pane" id="rights">
+									<div class='unitBottom'><?php print ($vs_rights) ? $vs_rights : "N/A"; ?></div>
 								</div>
 							</div><!-- end tab-content -->
 					

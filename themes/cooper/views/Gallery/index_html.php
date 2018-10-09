@@ -3,6 +3,7 @@
 	$va_first_items_from_set = $this->getVar("first_items_from_sets");
 	$va_access_values = $this->getVar('access_values');
 	if(is_array($va_sets) && sizeof($va_sets)){
+		$va_all_ids = array();
 ?>
 <div class="container">
 	<div class="row">
@@ -22,6 +23,7 @@
 								<ul>
 <?php
 									while($qr_set_items->nextHit()){
+										$va_all_ids[] = $qr_set_items->get("ca_objects.object_id");
 										$vs_image = $qr_set_items->getWithTemplate("<unit relativeTo='ca_objects.children'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 										if($vn_c = strpos($vs_image, ";")){
 											$vs_image = substr($vs_image, 0, $vn_c);
@@ -127,5 +129,10 @@ $(".next<?php print $i; ?>").hover(function () {
 	</div><!-- end row -->
 </div> <!--end container-->
 <?php
+	
+		$o_context = new ResultContext($this->request, 'ca_objects', 'front');
+		$o_context->setAsLastFind();
+		$o_context->setResultList($va_all_ids);
+		$o_context->saveContext();
 	}
 ?>

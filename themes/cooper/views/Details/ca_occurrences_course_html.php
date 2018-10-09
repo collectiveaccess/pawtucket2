@@ -4,35 +4,35 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	$va_access_values = 	$this->getVar("access_values");
+	$va_hero_images = $t_item->get("ca_object_representations.media.hero", array("checkAccess" => $va_access_values, "returnAsArray" => true))
 ?>
 <div class="frontTopContainer">
 	<div class="frontTop">
 		<div class="container">
 			<div class="row">
-				<div class="col-lg-5 col-sm-5 col-xs-12">
+				<div class="col-lg-5 col-md-7 col-sm-12 col-xs-12">
 					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
 					<H2>{{{^ca_occurrences.idno}}}</H2>
 					<p>{{{^ca_occurrences.course_description}}}</p>
-				</div><!-- end col -->
-				<div class="col-lg-7 col-sm-7 col-xs-12">
 <?php
-					#if($vs_hero = $t_item->get("ca_object_representations.media.page")){
-					#	print $vs_hero;
-					#}else{
-					#	print caGetThemeGraphic($this->request, 'frontImage.jpg');
-					#}
+					if(is_array($va_hero_images) && (sizeof($va_hero_images) > 1)){
+						# --- hero slideshow nav
+?>
+						<div class="jcarousel-paginationHero jcarousel-pagination"><!-- Pagination items will be generated in here --></div>
+<?php
+					}
+?>				
+				</div><!-- end col -->
+				<div class="col-lg-7 col-md-5 col-sm-12 col-xs-12">
+<?php
+					if(is_array($va_hero_images) && (sizeof($va_hero_images) == 0)){
+						print caGetThemeGraphic($this->request, 'frontImage.jpg');
+					}
 ?>
 				</div><!-- end col -->
 			</div><!-- end row -->
 		</div><!-- end container -->
 	</div>
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-12 frontTopSlideCaption">
-				Project title: caption
-			</div><!-- end col -->
-		</div><!-- end row -->
-	</div><!-- end container -->
 </div><!-- end frontTopContainer -->
 <div class="container"><div class="row"><div class="col-xs-12">
 	<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

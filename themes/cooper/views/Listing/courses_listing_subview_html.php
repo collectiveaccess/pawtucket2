@@ -47,7 +47,7 @@
 			# --- show related item with "featured" rel type or default to icon
 			#$vs_icon = $qr_list->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' restrictToTypes='item' length='1'>^ca_object_representations.media.iconlarge</unit>");
 			# --- get primary rep to show as icon
-			$vs_icon = $qr_list->get("ca_object_representations.media.iconlarge", array(array("checkAccess" => $va_access_values)));
+			$vs_icon = $qr_list->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values, "primaryOnly" => 1));
 			
 			if(!$vs_icon){
 				$vs_icon = caGetThemeGraphic($this->request, 'courseIcon.jpg');
