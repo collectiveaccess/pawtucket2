@@ -25,7 +25,7 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#CommentForm').submit(function(e){		
+		jQuery('#CommentForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', 'Detail', 'saveCommentTagging'); ?>',
 				jQuery('#CommentForm').serialize()

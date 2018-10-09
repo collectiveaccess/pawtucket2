@@ -84,7 +84,7 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#ShareSetForm').submit(function(e){		
+		jQuery('#ShareSetForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', '*', 'saveShareSet', null); ?>',
 				jQuery('#ShareSetForm').serialize()
