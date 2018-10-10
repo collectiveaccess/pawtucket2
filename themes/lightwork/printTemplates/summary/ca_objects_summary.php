@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -51,7 +51,7 @@
 	<div class="representationList">
 		
 <?php
-	$va_reps = $t_item->getRepresentations(array("thumbnail", "medium"));
+	$va_reps = $t_item->getRepresentations(array("thumbnail", "medium"), [], ['usePath' => true]);
 
 	foreach($va_reps as $va_rep) {
 		if(sizeof($va_reps) > 1){
