@@ -51,7 +51,7 @@
 	<div class="representationList">
 		
 <?php
-	$va_reps = $t_item->getRepresentations(array("thumbnail", "medium"));
+	$va_reps = $t_item->getRepresentations(array("thumbnail", "medium"), [], ['usePath' => true]);
 
 	foreach($va_reps as $va_rep) {
 		if(sizeof($va_reps) > 1){
