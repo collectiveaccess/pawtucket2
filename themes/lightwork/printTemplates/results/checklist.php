@@ -68,7 +68,7 @@
 			<tr>
 				<td>
 <?php 
-					if ($vs_path = $vo_result->get('ca_object_representations.media.preview170')) {
+					if ($vs_path = $vo_result->get('ca_object_representations.media.preview170', ['usePath' => 'true'])) {
 						print "<div class=\"imageTiny\">".$vs_path."</div>";
 					} else {
 ?>
