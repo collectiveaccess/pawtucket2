@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2018 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -51,7 +51,7 @@
 	<div class="representationList">
 		
 <?php
-	$va_reps = $t_item->getRepresentations(array("thumbnail", "medium"), [], ['usePath' => true]);
+	$va_reps = $t_item->getRepresentations(array("thumbnail", "medium"));
 
 	foreach($va_reps as $va_rep) {
 		if(sizeof($va_reps) > 1){
@@ -176,9 +176,12 @@
 #							print "<a href='".$vs_website."' target='_blank'>".$vs_website."</a><br/>";
 #						}				
 #						print "</span></div>";
-#					}
+#	
+		if ($vs_bio = $t_entity->get('ca_entities.biography', array('delimiter' => '<hr class="dark">'))) {
+			print "<div class='unit'><h6>Biography</h6>".$vs_bio."</div>";
+		}				
 		if ($vs_essay = $t_entity->get('ca_entities.essays', array('delimiter' => '<hr>'))) {
-			print "<div class='unit'>".$vs_essay."</div>";
+			print "<div class='unit'><h6>Essays</h6>".strip_tags($vs_essay)."</div>";
 		}																																					
 	}
 		
