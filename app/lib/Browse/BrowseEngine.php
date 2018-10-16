@@ -6533,7 +6533,6 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
                     INNER JOIN {$va_path[0]} ON {$va_path[0]}.{$vs_item_pk} = {$va_path[1]}.{$vs_item_pk} 
                     WHERE
                         {$va_path[1]}.{$vs_rel_pk} IN (?) {$vs_deleted_sql}
-                    GROUP BY ca_relationship_types.type_id
                 ", [$pa_rel_ids]);
                 
                 $result = [];
