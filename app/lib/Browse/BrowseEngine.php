@@ -1766,6 +1766,10 @@
 
                                         if ($va_facet_info['type'] == 'relationship_types') {
                                             $vs_get_item_sql = "(".$t_item_rel->tableName().".type_id = ".(int)$vn_row_id.")";
+											
+											if ($t_rel_item->hasField('deleted')) { 
+												$vs_get_item_sql .= " AND ({$vs_rel_table_name}.deleted = 0)";
+											}
 										} elseif ((!isset($va_facet_info['dont_expand_hierarchically']) || !$va_facet_info['dont_expand_hierarchically']) && $t_rel_item->isHierarchical() && $t_rel_item->load((int)$vn_row_id)) {
 											$vs_hier_left_fld = $t_rel_item->getProperty('HIERARCHY_LEFT_INDEX_FLD');
 											$vs_hier_right_fld = $t_rel_item->getProperty('HIERARCHY_RIGHT_INDEX_FLD');
@@ -6506,8 +6510,11 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 	        if(is_array($va_results =  $this->opo_ca_browse_cache->getResults()) && sizeof($va_results)) {
 	            switch(sizeof($va_path = array_keys(Datamodel::getPath($this->ops_browse_table_name, $ps_rel_table)))) {
                     case 3:
+                        $t_item = Datamodel::getInstanceByTableName($va_path[0], true);
                         $t_item_rel = Datamodel::getInstanceByTableName($va_path[1], true);
                         $t_rel_item = Datamodel::getInstanceByTableName($va_path[2], true);
+                        
+                        $vs_deleted_sql = ($t_item->hasField('deleted')) ? " AND {$va_path[0]}.deleted = 0 " : ""; 
                         $vs_key = 'relation_id';
                         break;
                     default:
@@ -6516,13 +6523,16 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
                         break;
                 }
                 
+                $vs_rel_pk = $t_rel_item->primaryKey();
+                $vs_item_pk = $t_item->primaryKey();
                 $qr = $this->opo_db->query("
                     SELECT DISTINCT ca_relationship_types.*, ca_relationship_type_labels.*
                     FROM {$va_path[1]}
                     INNER JOIN ca_relationship_types ON ca_relationship_types.type_id = {$va_path[1]}.type_id
                     INNER JOIN ca_relationship_type_labels ON ca_relationship_types.type_id = ca_relationship_type_labels.type_id
+                    INNER JOIN {$va_path[0]} ON {$va_path[0]}.{$vs_item_pk} = {$va_path[1]}.{$vs_item_pk} 
                     WHERE
-                        {$va_path[1]}.".$t_rel_item->primaryKey()." IN (?)
+                        {$va_path[1]}.{$vs_rel_pk} IN (?) {$vs_deleted_sql}
                     GROUP BY ca_relationship_types.type_id
                 ", [$pa_rel_ids]);
                 
@@ -6530,7 +6540,6 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
                 while($qr->nextRow()) {
                     $result[] = $qr->getRow();
                 }
-                
                 return $result;
 	        }
 	            
