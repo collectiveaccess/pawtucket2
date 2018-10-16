@@ -28,7 +28,7 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
-		<footer id="footer" <?php print ((strToLower($this->request->getController()) == "browse") || (strToLower($this->request->getController()) == "search")) ? "style='position:fixed; bottom:0px; z-index:5000;'" : ""; ?>>
+		<footer id="footer">
 			<div class="container"><div class="row">
 				<div class="col-sm-12">
 					<div class="footerLogo pull-right">

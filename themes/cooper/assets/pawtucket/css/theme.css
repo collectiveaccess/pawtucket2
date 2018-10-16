@@ -46,6 +46,7 @@ body {
 	color:#000;
  	padding-top: 103px;
  	font-size:12px;
+ 	margon-bottom:100px;
 }
 body.initial{
  	padding-top: 119px !important;
@@ -414,6 +415,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 	font-family:Gotham;
 	text-transform:uppercase;
 	font-size:9px;
+	position:fixed;
+	bottom:0px;
+	z-index:5000
 }
 #footer li a{
 	color:#000;
@@ -717,11 +721,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 }
 .detail .detailMediaToolbar{
 	width:100%;
-	height:100%;
 	text-align:center;
-	padding-top:30%;
 	background:transparent;
-	font-size:40px;
+	font-size:30px;
+	top: 45%;
+	padding: 0px;
+	margin: 0px;
 }
 .detail .detailMediaToolbar a .glyphicon{
 	text-shadow: 5px 5px 10px #FFFFFF;
@@ -731,15 +736,16 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 	border:#DEDEDE;
 }
 .detail .repViewerContCont .small{
-	text-align:left;
+	text-align:center;
 	padding-top: 8px;
 	max-width: 90%;
+    padding-left: 10%;
 }
-@media (min-width: 768px) {
+/*@media (min-width: 768px) {
 	.detail .repViewerContCont .small{
 		padding-left:21%;
 	}
-}
+}*/
 .detail .detailImageNav{
 	position:relative;
 	z-index:500;
@@ -748,13 +754,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 }
 @media (min-width: 768px) {
 	.detail .detailImageNav{
-		top:-16px;
+		top:-22px;
 	}
 }
 .detail .detailImageNav a{
 	font-size:20px;
 	text-transform: uppercase;
-	font-size: 12px;
 	padding:5px;
 }
 .detail .detailImageNav a:hover{
@@ -818,10 +823,17 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 .nav-tabs {
     border-bottom:1px solid #000;
 }
-.detail .nav-tabs > li{
+.browse .nav-tabs {
+    border-bottom:1px solid #939598;
+    margin-right:15px;
+}
+.nav-tabs > li{
 	border-left: 1px solid #000;
 }
-.detail .nav-tabs > li > a{
+.nav-tabs > li{
+	border-left: 1px solid #939598;
+}
+.detail .nav-tabs > li > a, .browse .nav-tabs > li > a{
 	font-size:14px;
 	color:#000;
 	text-transform:none;
@@ -830,20 +842,25 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 	border-top:0px;
 	border-radius:0px;
 	padding: 0px 10px 5px 10px;
+	text-transform:capitalize;
 }
-.detail .nav-tabs > li > a:hover, .detail .nav-tabs > li > a:focus{
+.detail .nav-tabs > li > a:hover, .detail .nav-tabs > li > a:focus,
+.browse .nav-tabs > li > a:hover, .browse .nav-tabs > li > a:focus{
 	background-color:#FFF;
 	border-left: 0px;
 	border-right:0px;
 	border-top:0px;
 }
-.detail .nav-tabs > li a:hover{
+.detail .nav-tabs > li a:hover,
+.browse .nav-tabs > li a:hover{
 	border-bottom:0px;
 }
-.detail .nav-tabs > li.active, .detail .nav-tabs > li.active:hover{
+.detail .nav-tabs > li.active, .detail .nav-tabs > li.active:hover,
+.browse .nav-tabs > li.active, .browse .nav-tabs > li.active:hover{
 	background-color:#FFF !important;
 }
-.detail .nav-tabs > li.active > a, .detail .nav-tabs > li.active > a:hover{
+.detail .nav-tabs > li.active > a, .detail .nav-tabs > li.active > a:hover,
+.browse .nav-tabs > li.active > a, .browse .nav-tabs > li.active > a:hover{
 	font-weight:bold;
 	color:#000;
 	text-transform:none;
@@ -853,15 +870,19 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 	border-radius:0px;
 	background-color:#FFF;
 	border-bottom:1px solid #FFF;
+	text-transform:capitalize;
 }
-.detail .tab-content{
+.detail .tab-content, .browse .tab-content{
 	padding-top:30px;
 }
-.detail .nav-tabs li:first-child{
+.nav-tabs li:first-child{
 	border-left: 0px solid #fff !important;
 }
-.detail .nav-tabs li:first-child a{
+.nav-tabs li:first-child a{
 	padding-left:0px !important;
+}
+.browse .nav-tabs{
+	margin-top:50px;
 }
 .listing H2{
 	margin-bottom:55px;
@@ -992,6 +1013,14 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 	padding-bottom:25px;
 	margin-bottom:25px;
 	border-bottom:1px solid #939598;
+	margin-right: 15px;
+}
+.bFacetDescription{
+	max-height:290px;
+}
+.facultyTextScroll{
+	max-height:200px;
+	overflow-y:scroll;
 }
 .bResultList{
 	font-size:15px;
@@ -1062,19 +1091,33 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 #map_map{
 	margin-left:15px;
 }
+.detail #map_map{
+	margin-left:0px;
+}
 
 /* course detail */
-.courseEntityList{
+.courseEntityList, .textsList{
 	padding:30px 30px 50px 30px;
 }
-.courseEntityList a{
+.detail .textsList{
+	padding:0px 30px 50px 30px;
+}
+.browse .textsList {
+    border-bottom: 1px solid #939598;
+    margin-right: 15px;
+}
+.courseEntityListScroll, .textsListScroll{
+	max-height:110px;
+	overflow-y:scroll;
+}
+.courseEntityList a, .textsList a, .textsListScroll a{
 	font-size:15px;
 	font-family: 'Gotham-light';
 	padding-top:15px;
 	color:#000;
 }
 .detail .border{
-	margin:0px 15px 50px 15px;
+	margin:0px 0px 50px 0px;
 }
 .detail H5 grey{
 	text-transform: none;

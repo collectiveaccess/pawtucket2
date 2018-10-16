@@ -69,10 +69,60 @@
 			}
 ?>					
 			</div><!-- end row -->
-			<div class="row">
+			<div class="container"><div class="row">
 				<div class="col-xs-12 border"></div>
-			</div>
+			</div></div>
 <?php
+		}
+		$va_faculty_text_object_ids = $t_item->get("ca_objects.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true, "restrictToTypes" => array("faculty_course_document")));
+		if(is_array($va_faculty_text_object_ids) && sizeof($va_faculty_text_object_ids)){
+			$qr_faculty_texts = caMakeSearchResult('ca_objects', $va_faculty_text_object_ids);
+			if($qr_faculty_texts->numHits()){
+
+				$vs_texts_output = "";
+				$vn_texts_c = 0;
+				while($qr_faculty_texts->nextHit()){
+					$vs_tmp = $vs_year = $vs_semester = $vs_course = $vn_rep_id = "";
+					$vs_year = $qr_faculty_texts->get("ca_occurrences.preferred_labels", array("delimiter" => "; ", "checkAccess" => $va_access_values, "restrictToTypes" => array("academic_year")));
+					$vs_semester = $qr_faculty_texts->get("ca_objects.semester", array("delimiter" => "; ", "convertCodesToDisplayText" => true));
+					$vs_tmp .= $vs_year;
+					if($vs_tmp && $vs_semester){
+						$vs_tmp .= ", ";
+					}
+					$vs_tmp .= $vs_semester;
+					$vs_course = $qr_faculty_texts->get("ca_occurrences.preferred_labels", array("delimiter" => "; ", "checkAccess" => $va_access_values, "restrictToTypes" => array("course")));
+					if($vs_tmp && $vs_course){
+						$vs_tmp .= " | ";
+					}
+					$vs_tmp .= $vs_course;
+					
+					if($vn_rep_id = $qr_faculty_texts->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values))){
+						$vs_texts_output .= "<div class='col-sm-6 col-md-3'>";
+						$vs_texts_output .= '<a href="#" onclick="caMediaPanel.showPanel(\''.caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $qr_faculty_texts->get("ca_objects.object_id"), 'context' => 'objects', 'overlay' => 1, 'representation_id' => $qr_faculty_texts->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)))).'\'); return false;" title="View Document">'.$vs_tmp.'</a>';
+						$vs_texts_output .= "</div>";
+						$vn_texts_c++;
+					}
+					
+				}
+				if($vs_texts_output){
+?>
+					<div class="row textsList display-flex">
+						<div class='col-sm-12'>
+							<H5>Faculty Course Documents <span class="grey"> / <?php print $vn_texts_c." ".(($vn_texts_c == 1) ? "document" : "documents"); ?></span></H5>
+						</div>
+						<div class='col-sm-12'>
+							<div class="row textsListScroll display-flex">
+								<?php print $vs_texts_output; ?>
+							</div>				
+						</div>			
+					</div><!-- end row -->
+					<div class="container"><div class="row">
+						<div class="col-xs-12 border"></div>
+					</div></div>
+<?php				
+				}
+			}
+		
 		}
 		$va_rel_projects = $t_item->get("ca_objects", array("checkAccess" => $va_access_values, "restrictToTypes" => array("student_project"), "returnAsArray" => true));
 		$vs_title = $t_item->get("ca_occurrences.preferred_labels.name");

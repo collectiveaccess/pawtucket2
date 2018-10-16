@@ -119,7 +119,7 @@
 		
 		}
 		if(is_array($va_hero_images)){
-			if(sizeof($va_hero_images) > 1){
+			if(sizeof($va_hero_images) > 0){
 ?>
 				<div class='container heroContainerContainer'>
 					<div class='row'>
@@ -132,9 +132,7 @@
 <?php					
 										foreach($va_hero_images as $vn_key => $vs_hero){
 											print "<li>".$vs_hero;
-											if($va_captions[$vn_key]){
-												print "<div class='frontTopSlideCaption'>".$va_captions[$vn_key]."</div>";
-											}
+											print "<div class='frontTopSlideCaption'>".(($va_captions[$vn_key]) ? $va_captions[$vn_key] : "&nbsp;")."</div>";
 											print "</li>";
 										}						
 ?>
@@ -155,15 +153,21 @@
 							/*
 							Carousel initialization
 							*/
+<?php
+							$vs_auto_start = "false";
+							if(sizeof($va_hero_images) > 1){
+								$vs_auto_start = "true";
+							}
+?>
 							$('.heroSlideshow')
 								.jcarousel({
 									// Options go here
 									wrap:'circular',
 									auto: 1
 								}).jcarouselAutoscroll({
-									interval: 5000,
+									interval: 10000,
 									target: '+=1',
-									autostart: true
+									autostart: <?php print $vs_auto_start; ?>
 								});
 
 							/*
@@ -196,8 +200,6 @@
 				</script>
 
 <?php
-			}elseif(sizeof($va_hero_images) == 1){
-				print "<div class='container heroContainerContainer'><div class='row'><div class='heroContainer'><div class='heroGradient'></div>".$va_hero_images[0]."</div></div></div>";
 			}
 		}
 ?>
