@@ -110,7 +110,6 @@
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
-
 					<li><?php print caNavLink($this->request, _t("Museum Guide"), '', '', 'About', 'museum_guide'); ?></li>
 <?php
 						print $this->render("pageFormat/browseMenu.php");

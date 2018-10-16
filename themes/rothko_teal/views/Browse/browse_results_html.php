@@ -106,12 +106,12 @@ if($this->request->getParameter("detailNav", pInteger)){
 				$vs_string = null;
 				
 				if (in_array($va_criteria[0]['facet_name'], ['collection', 'past_collection', 'current_collection']))  {
-					print caNavLink($this->request, 'View All', '', '', 'Browse', 'worksInCollection/facet/collection/id/'.$this->request->getParameter('id', pInteger)); 
+					print caNavLink($this->request, 'Filter Works', '', '', 'Browse', 'worksInCollection/facet/collection/id/'.$this->request->getParameter('id', pInteger)); 
 				} else if (($va_criteria[0]['facet_name'] == '_search') && (preg_match("!^occurrence_id:([\d]+)$!", $vs_search_value, $va_matches))) {
 				    if($this->request->getParameter('type', pString) == 'reference') {
-				        print caNavLink($this->request, 'View All', '', '', 'Browse', 'worksInOccurrence/facet/reference/id/'.$va_matches[1]); 
+				        print caNavLink($this->request, 'Filter Works', '', '', 'Browse', 'worksInOccurrence/facet/reference/id/'.$va_matches[1]); 
 				    } else {
-					    print caNavLink($this->request, 'View All', '', '', 'Browse', 'worksInOccurrence/facet/exhibition/id/'.$va_matches[1]); 
+					    print caNavLink($this->request, 'Filter Works', '', '', 'Browse', 'worksInOccurrence/facet/exhibition/id/'.$va_matches[1]); 
 					}
 				}	
 ?>		
@@ -238,7 +238,7 @@ if (!$vb_ajax) {	// !ajax
 	print "<div class='col-xs-12 col-md-12 col-lg-12'>";
 	foreach ($va_browse_types as $va_browse_type => $va_browse_info_list) {
 		$vs_browse_target_active = $vs_current_browse;
-		if (($vs_current_browse == "worksInCollection") | ($vs_current_browse == "worksInOccurrence")){
+		if ((strtolower($vs_current_browse) == "worksincollection") | (strtolower($vs_current_browse) == "worksinoccurrence")){
 			$vs_browse_target_active = "artworks";
 		}
 		if (in_array($va_browse_type, ['worksInCollection', 'worksInOccurrence'])) { continue; }
@@ -356,9 +356,9 @@ if (!$vb_ajax) {	// !ajax
 				foreach($va_criteria as $va_criterion) {
 					#print "<strong class='criterion'>".strtolower($va_criterion['facet']).':</strong>';
 					if ($va_criterion['facet_name'] != '_search') {
-						print '<button type="button" class="btn btn-default btn-sm refine">'.ucfirst($va_criterion['value']).caNavLink($this->request, caGetThemeGraphic($this->request, 'rothko-close.svg', array('class' => 'clearFacet')), 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key)).'</button>';
+						print '<div class="criteria"><button type="button" class="btn btn-default btn-sm refine">'.ucfirst($va_criterion['value'])."</button>".caNavLink($this->request, caGetThemeGraphic($this->request, 'rothko-close.svg', array('class' => 'clearFacet')), 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key)).'</div>';
 					}else{
-						print ' <button type="button" class="btn btn-default btn-sm refine">'.ucfirst($va_criterion['value']).'</button>';
+						print ' <button type="button" class="btn btn-default btn-sm refine">Search results for <span class="searchCrit">'.ucfirst($va_criterion['value']).'</span></button>';
 						$vs_search = $va_criterion['value'];
 					}
 					$i++;

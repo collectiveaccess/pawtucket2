@@ -4,29 +4,35 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	$va_access_values = 	$this->getVar("access_values");
+	$va_hero_images = $t_item->get("ca_object_representations.media.hero", array("checkAccess" => $va_access_values, "returnAsArray" => true))
 ?>
 <div class="frontTopContainer">
 	<div class="frontTop">
 		<div class="container">
 			<div class="row">
-				<div class="col-lg-5 col-sm-5 col-xs-12">
+				<div class="col-lg-5 col-md-7 col-sm-12 col-xs-12">
 					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
 					<H2>{{{^ca_occurrences.idno}}}</H2>
 					<p>{{{^ca_occurrences.course_description}}}</p>
+<?php
+					if(is_array($va_hero_images) && (sizeof($va_hero_images) > 1)){
+						# --- hero slideshow nav
+?>
+						<div class="jcarousel-paginationHero jcarousel-pagination"><!-- Pagination items will be generated in here --></div>
+<?php
+					}
+?>				
 				</div><!-- end col -->
-				<div class="col-lg-7 col-sm-7 col-xs-12">
-					<?php print caGetThemeGraphic($this->request, 'frontImage.jpg'); ?>
+				<div class="col-lg-7 col-md-5 col-sm-12 col-xs-12">
+<?php
+					if(is_array($va_hero_images) && (sizeof($va_hero_images) == 0)){
+						print caGetThemeGraphic($this->request, 'frontImage.jpg');
+					}
+?>
 				</div><!-- end col -->
 			</div><!-- end row -->
 		</div><!-- end container -->
 	</div>
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-12 frontTopSlideCaption">
-				Project title: caption
-			</div><!-- end col -->
-		</div><!-- end row -->
-	</div><!-- end container -->
 </div><!-- end frontTopContainer -->
 <div class="container"><div class="row"><div class="col-xs-12">
 	<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
@@ -63,10 +69,60 @@
 			}
 ?>					
 			</div><!-- end row -->
-			<div class="row">
+			<div class="container"><div class="row">
 				<div class="col-xs-12 border"></div>
-			</div>
+			</div></div>
 <?php
+		}
+		$va_faculty_text_object_ids = $t_item->get("ca_objects.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true, "restrictToTypes" => array("faculty_course_document")));
+		if(is_array($va_faculty_text_object_ids) && sizeof($va_faculty_text_object_ids)){
+			$qr_faculty_texts = caMakeSearchResult('ca_objects', $va_faculty_text_object_ids);
+			if($qr_faculty_texts->numHits()){
+
+				$vs_texts_output = "";
+				$vn_texts_c = 0;
+				while($qr_faculty_texts->nextHit()){
+					$vs_tmp = $vs_year = $vs_semester = $vs_course = $vn_rep_id = "";
+					$vs_year = $qr_faculty_texts->get("ca_occurrences.preferred_labels", array("delimiter" => "; ", "checkAccess" => $va_access_values, "restrictToTypes" => array("academic_year")));
+					$vs_semester = $qr_faculty_texts->get("ca_objects.semester", array("delimiter" => "; ", "convertCodesToDisplayText" => true));
+					$vs_tmp .= $vs_year;
+					if($vs_tmp && $vs_semester){
+						$vs_tmp .= ", ";
+					}
+					$vs_tmp .= $vs_semester;
+					$vs_course = $qr_faculty_texts->get("ca_occurrences.preferred_labels", array("delimiter" => "; ", "checkAccess" => $va_access_values, "restrictToTypes" => array("course")));
+					if($vs_tmp && $vs_course){
+						$vs_tmp .= " | ";
+					}
+					$vs_tmp .= $vs_course;
+					
+					if($vn_rep_id = $qr_faculty_texts->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values))){
+						$vs_texts_output .= "<div class='col-sm-6 col-md-3'>";
+						$vs_texts_output .= '<a href="#" onclick="caMediaPanel.showPanel(\''.caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $qr_faculty_texts->get("ca_objects.object_id"), 'context' => 'objects', 'overlay' => 1, 'representation_id' => $qr_faculty_texts->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)))).'\'); return false;" title="View Document">'.$vs_tmp.'</a>';
+						$vs_texts_output .= "</div>";
+						$vn_texts_c++;
+					}
+					
+				}
+				if($vs_texts_output){
+?>
+					<div class="row textsList display-flex">
+						<div class='col-sm-12'>
+							<H5>Faculty Course Documents <span class="grey"> / <?php print $vn_texts_c." ".(($vn_texts_c == 1) ? "document" : "documents"); ?></span></H5>
+						</div>
+						<div class='col-sm-12'>
+							<div class="row textsListScroll display-flex">
+								<?php print $vs_texts_output; ?>
+							</div>				
+						</div>			
+					</div><!-- end row -->
+					<div class="container"><div class="row">
+						<div class="col-xs-12 border"></div>
+					</div></div>
+<?php				
+				}
+			}
+		
 		}
 		$va_rel_projects = $t_item->get("ca_objects", array("checkAccess" => $va_access_values, "restrictToTypes" => array("student_project"), "returnAsArray" => true));
 		$vs_title = $t_item->get("ca_occurrences.preferred_labels.name");

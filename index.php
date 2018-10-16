@@ -112,6 +112,12 @@
 		// Prevent caching
 		$resp->addHeader("Cache-Control", "no-cache, must-revalidate");
 		$resp->addHeader("Expires", "Mon, 26 Jul 1997 05:00:00 GMT");
+		
+		// Security headers
+		$resp->addHeader("X-XSS-Protection", "1; mode=block");
+		$resp->addHeader("X-Frame-Options", "SAMEORIGIN");
+		$resp->addHeader("Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com ajax.googleapis.com 'unsafe-inline' 'unsafe-eval';"); 
+		$resp->addHeader("X-Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com ajax.googleapis.com 'unsafe-inline' 'unsafe-eval';"); 
 	
 		//
 		// Dispatch the request

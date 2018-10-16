@@ -11,8 +11,8 @@
 ?>
 <div class="container">
 	<div class="row">
-		<div class="col-sm-1"><div class='previousLink'>{{{previousLink}}}</div></div>
-		<div class="col-sm-10">
+		<div class="col-xs-1"><div class='previousLink'>{{{previousLink}}}</div></div>
+		<div class="col-xs-10">
 
 
 <div class="container">
@@ -27,7 +27,7 @@
 		</div><!-- end col --> 
 	</div>
 <div class="row">
-	<div class='col-sm-7 col-md-7 col-lg-7' style="padding-right:30px;margin-bottom:40px;">
+	<div class='col-xs-12 col-md-7 col-lg-7' style="padding-right:30px;margin-bottom:40px;">
 		{{{representationViewer}}}
 <?php
 			if ($va_catalog_id = $t_item->get('ca_collections.institutional_id')) {
@@ -35,7 +35,7 @@
 			}	
 ?>		
 	</div>	
-	<div class='col-sm-5 col-md-5 col-lg-5'>
+	<div class='col-xs-12 col-sm-10 col-sm-offset-1 col-md-offset-0 col-md-5 col-lg-5 artworkInfo'>
 <?php
 		$vn_label_col = "col-sm-4";
 		$vn_data_col = "col-sm-8";
@@ -87,12 +87,13 @@
 				$va_keyword_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_keyword_id), '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
 			}
 			print "<div class='unit row'><div class='{$vn_label_col} label'>Keywords</div><div class='$vn_data_col'>".join(', ', $va_keyword_links)."</div></div>";
-		}							
+		}
+		print "<div class='detailDivider row' style='margin-bottom:60px;'></div>";							
 ?>			
 	</div><!-- end col -->
 </div><!-- end row -->
 <div class='row'>
-	<div class='col-sm-8 col-sm-offset-2'>
+	<div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'>
 <?php
 		if ($vs_remarks = $t_item->get('ca_collections.remarks')) {
 			print "<div class='drawer'>";
@@ -162,7 +163,7 @@
 		}
 	}
 	if ($vs_provenance != "") {
-		print "<div class='row'><div class='col-sm-8 col-sm-offset-2'><div class='drawer'>";
+		print "<div class='row'><div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'><div class='drawer'>";
 		print "<h6><a href='#' data-toggleDiv='provenanceDiv' class='togglertronic'>Provenance <i class='fa fa-minus drawerToggle'></i></a></h6>";
 		print "<div id='provenanceDiv'>";
 		print $vs_provenance;
@@ -189,6 +190,7 @@
 					nextSelector: 'a.jscroll-next'
 				});
 			});	
+		});
 	</script>
 </ifcount>}}}
 					
@@ -223,6 +225,6 @@
 </div><!-- end container -->
 
 		</div><!-- end col -->
-		<div class="col-sm-1"><div class='nextLink'>{{{nextLink}}}</div></div>
+		<div class="col-xs-1"><div class='nextLink'>{{{nextLink}}}</div></div>
 	</div>
 </div>
