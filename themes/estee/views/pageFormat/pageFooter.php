@@ -107,5 +107,9 @@ $vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]
 				}
 			});
 		</script>
+		<script type="text/javascript">
+			$( ".front .notificationMessage" ).delay(1500).fadeOut("slow");
+		</script>
 	</body>
 </html>
+

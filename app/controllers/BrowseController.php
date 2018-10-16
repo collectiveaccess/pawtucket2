@@ -85,11 +85,14 @@
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Browse %1", $va_browse_info["displayName"]));
  			$this->view->setVar("browse_type", $ps_function);
  			$vs_class = $this->ops_tablename = $va_browse_info['table'];
+			$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
  			
  			// Now that table name is known we can set standard view vars
  			parent::setTableSpecificViewVars();
  			
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
+ 			$vb_root_records_only = caGetOption('omitChildRecords', $va_browse_info, array(), array('castTo' => 'bool'));
+ 			
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
 			
@@ -97,7 +100,9 @@
 			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable{$vs_type_key}")) {
 				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable{$vs_type_key}"));
 			} else {
-				ExternalCache::save("{$vs_class}totalRecordsAvailable{$vs_type_key}", $vn_count = $vs_class::find(['deleted' => 0], ['checkAccess' => $this->opa_access_values, 'returnAs' => 'count', 'restrictToTypes' => (sizeof($va_types)) ? $va_types : null]));
+			    $params = ['deleted' => 0];
+			    if ($vb_root_records_only && ($f = $t_instance->getProperty('HIERARCHY_PARENT_ID_FLD'))) { $params[$f] = null; }
+				ExternalCache::save("{$vs_class}totalRecordsAvailable{$vs_type_key}", $vn_count = $vs_class::find($params, ['checkAccess' => $this->opa_access_values, 'returnAs' => 'count', 'restrictToTypes' => (sizeof($va_types)) ? $va_types : null]));
 				$this->view->setVar('totalRecordsAvailable', $vn_count);
 			}
 			
@@ -143,7 +148,6 @@
 
  			caAddPageCSSClasses(array($vs_class, $ps_function));
 
-			$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
 			$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
 			
 			$this->view->setVar('t_instance', $t_instance);
@@ -266,7 +270,7 @@
 
  			$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
  			
-			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically));
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'rootRecordsOnly' => $vb_root_records_only));
 			
 			//
 			// Facets
@@ -314,6 +318,7 @@
 				$ps_sort_direction = 'asc';
 			}
 			$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
+			
 			$va_show_letter_bar_sorts = caGetOption('showLetterBarSorts', $va_browse_info, null);
 			if(is_array($va_show_letter_bar_sorts) && in_array($vs_sort_fld, $va_show_letter_bar_sorts)){
 				if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar

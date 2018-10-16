@@ -44,6 +44,9 @@
 				case "digitizationRequest":
 					print "Item Inquiry";
 				break;
+				case "transfer":
+					print "Transfer";
+				break;
 				default:
 					print "Contact or Tour Request";
 				break;
@@ -152,6 +155,44 @@
 <?php		
 		break;
 		# -----------------------------
+		case "transfer":
+?>
+			<div class="row">
+				<div class="col-sm-12">
+					<p>Collecting scope and instructions on transfering physical material to the Archives.....text to come.</p>
+					<hr/>
+					
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+					<div class="row">
+						<div class="col-sm-6">
+							<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
+								<label for="name">Your Name</label>
+								<input type="text" class="form-control input-sm" id="email" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+							</div>
+						</div><!-- end col -->
+						<div class="col-sm-6">
+							<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
+								<label for="email">Your Email address</label>
+								<input type="text" class="form-control input-sm" id="email" placeholder="Enter your email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $this->request->user->get("email"); ?>">
+							</div>
+						</div><!-- end col -->
+					</div><!-- end row -->
+				</div><!-- end col -->
+			</div><!-- end row -->
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
+						<label for="message">Message</label>
+						<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
+					</div>
+				</div><!-- end col -->
+			</div><!-- end row -->
+<?php
+		break;
+		# -----------------------------
 		default:
 ?>
 			<div class="row">
@@ -197,7 +238,7 @@
 					<p>Tours of Mrs. Estée Lauder’s office require approval from Executive Management and are considered based on availability and scheduling in the executive suite.</p>
 
 					
-					<p>If you would like to attend an Archives Gallery tour you may sign-up for upcoming dates below.</p>
+					<p>If you would like to attend an Archives Gallery tour you may sign-up for upcoming dates: Monday 10/15 1:00pm; Thursday 11/15 1:00pm; Friday 12/14 1:00pm.</p>
 					<p>Or provide the following information: </p>
 				</div>
 			</div>

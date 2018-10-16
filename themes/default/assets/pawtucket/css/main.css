@@ -1087,7 +1087,7 @@ a.browseRemoveFacet img {
 	width:100%;
 	height:auto;
 }
-.lbSetThumbPlaceholder i{
+.lbSetThumbPlaceholder i, .lbSetThumbPlaceholder .glyphicon{
 	position:absolute;
 	top:35%;
 	left:0px;

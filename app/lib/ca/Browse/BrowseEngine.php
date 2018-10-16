@@ -2105,8 +2105,7 @@
 						if (sizeof($va_hits) < sizeof($va_acc[$vn_smallest_list_index])) { $vn_smallest_list_index = $vn_i; }
 					}
 					
-					if (caGetOption('expandResultsHierarchically', $pa_options, false) && ($vs_hier_id_fld = $this->opo_datamodel->getTableProperty($this->ops_browse_table_name, 'HIERARCHY_ID_FLD'))) { 
-
+					if ((!isset($pa_options['rootRecordsOnly']) || !$pa_options['rootRecordsOnly']) && caGetOption('expandResultsHierarchically', $pa_options, false) && ($vs_hier_id_fld = $this->opo_datamodel->getTableProperty($this->ops_browse_table_name, 'HIERARCHY_ID_FLD'))) { 
                        foreach($va_acc as $vn_i => $va_acc_content) {
                             if(!sizeof($va_acc_content)) { continue; }
                             $qr_expand =  $this->opo_db->query("
@@ -3277,7 +3276,7 @@
 							{$vs_join_sql}
 							WHERE
 								ca_attribute_values.element_id = ? {$vs_where_sql} {$vs_container_sql}
-						    GROUP BY value_longtext1, value_decimal1, value_longtext2, value_integer1, ca_attributes.attribute_id
+						    GROUP BY value_longtext1, value_decimal1, value_longtext2, value_integer1
 						";
 						$qr_res = $this->opo_db->query($vs_sql, $va_params);
 
