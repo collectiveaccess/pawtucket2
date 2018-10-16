@@ -452,7 +452,7 @@ if (!$vb_ajax) {    // !ajax
 ?>
     var pageLoadList = [];
     var dataLoading = false;
-    jQuery(window).bind("scroll", function(e) {
+    jQuery(window).on("scroll", function(e) {
         var $e = jQuery("#lbSetResultLoadContainer");
         var _$scroll = jQuery(window),
             borderTopWidth = parseInt($e.css('borderTopWidth')),

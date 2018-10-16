@@ -52,9 +52,9 @@
 
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	if(($vs_current_sort != "Date") || (($vs_current_sort == "Date") && !$vn_start)){
-		$this->request->session->setVar('lastProYear', "");
+		Session::setVar('lastProYear', "");
 	}
-	$vs_last_pro_year = $this->request->session->getVar('lastProYear');
+	$vs_last_pro_year = Session::getVar('lastProYear');
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
 			$qr_res->seek($vn_start);
@@ -116,8 +116,8 @@
 						if(is_array($va_pro_date_raw) && sizeof($va_pro_date_raw)){
 							$va_pro_date_raw = array_shift($va_pro_date_raw[$qr_res->get("ca_occurrences.occurrence_id")]);
 							$vs_start_year = floor($va_pro_date_raw["productionDate"]["start"]);
-							if($vs_start_year && ($vs_start_year != $this->request->session->getVar('lastProYear')) && (!$this->request->session->getVar('lastProYear') || ((($vs_sort_dir == 'asc') && ($vs_start_year > $this->request->session->getVar('lastProYear'))) || (($vs_sort_dir == 'desc') && ($vs_start_year < $this->request->session->getVar('lastProYear')))))){
-								$this->request->session->setVar('lastProYear', $vs_start_year);
+							if($vs_start_year && ($vs_start_year != Session::getVar('lastProYear')) && (!Session::getVar('lastProYear') || ((($vs_sort_dir == 'asc') && ($vs_start_year > Session::getVar('lastProYear'))) || (($vs_sort_dir == 'desc') && ($vs_start_year < Session::getVar('lastProYear')))))){
+								Session::setVar('lastProYear', $vs_start_year);
 								$vb_show_year = true;
 							}
 						}
@@ -154,7 +154,7 @@
 					$vs_cols = 6;
 				}
 				if($vb_show_year){
-					print "<div class='col-xs-12' style='clear:left'><br/><H4>".$this->request->session->getVar('lastProYear')."</H4></div>";
+					print "<div class='col-xs-12' style='clear:left'><br/><H4>".Session::getVar('lastProYear')."</H4></div>";
 				}
 				print "
 	<div class='col-xs-12 col-sm-".$vs_cols."'>

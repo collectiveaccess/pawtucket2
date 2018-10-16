@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 	require_once(__CA_LIB_DIR__.'/ca/ApplicationPluginManager.php');
+ 	require_once(__CA_LIB_DIR__.'/ApplicationPluginManager.php');
  	require_once(__CA_MODELS_DIR__."/ca_bundle_displays.php");
  	require_once(__CA_APP_DIR__."/helpers/searchHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/browseHelpers.php");
@@ -124,7 +124,8 @@
 				case "alphabetical":
 				case "list":
 				default:
-					$this->view->setVar('facet_content', $po_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values, 'start' => $vn_s, 'limit' => $vn_limit)));
+				    $content = $po_browse->getFacet($vs_facet, ["checkAccess" => $this->opa_access_values, 'start' => $vn_s, 'limit' => $vn_limit]);
+					$this->view->setVar('facet_content', is_array($content) ? $content : []);
 					if($vb_is_nav && $vn_limit){
 						$this->view->setVar('facet_size', sizeof($po_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values))));					
 					}
@@ -213,7 +214,7 @@
 						break;
 					case 'fieldList':
 					    if (!$vn_id) {
-                            $t_item = $this->request->datamodel->getInstanceByTableName($vs_class);
+                            $t_item = Datamodel::getInstance($vs_class);
                             $vs_list_code = $t_item->getFieldInfo($va_facet_info['field'], 'LIST_CODE');
                             $t_list = new ca_lists(['list_code' => $vs_list_code]);
 					        $vn_id = $t_list->getRootItemIDForList();
@@ -237,7 +238,7 @@
 					default:
 						if(!$vn_id) {
 							$va_hier_ids = $o_browse->getHierarchyIDsForFacet($ps_facet_name, array('checkAccess' => $va_access_values));
-							$t_item = $this->request->datamodel->getInstanceByTableName($va_facet_info['table']);
+							$t_item = Datamodel::getInstance($va_facet_info['table']);
 							if($t_item->getHierarchyType() == __CA_HIER_TYPE_ADHOC_MONO__){
 								# --- there are no roots in adhoc hierarchies
 								# --- get all the top level records available in the facet
@@ -388,7 +389,7 @@
  					}
  					break;
  				case 'fieldList':
-					$t_item = $this->request->datamodel->getInstanceByTableName($vs_class);
+					$t_item = Datamodel::getInstance($vs_class);
 					$vs_list_code = $t_item->getFieldInfo($va_facet_info['field'], 'LIST_CODE');
 					$t_list = new ca_lists(['list_code' => $vs_list_code]);
 					$t_list_item = new ca_list_items();
@@ -409,7 +410,7 @@
  					$va_facet_info['table'] = $this->ops_tablename;
  					// fall through to default case
  				default:
-					$t_item = $this->request->datamodel->getInstanceByTableName($va_facet_info['table']);
+					$t_item = Datamodel::getInstance($va_facet_info['table']);
 					$t_item->load($pn_id);
 					
 					if (method_exists($t_item, "getHierarchyList")) { 

@@ -44,8 +44,8 @@
 
 	<!-- Prev/next controls  -->
 	<div id='detailRepNav'>
-        <a href='#' class='zoomButton' id='detailRepNavZoom' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => $vs_context, 'id' => $vn_subject_id, 'overlay' => 1)); ?>/representation_id/" + $(".jcarousel").data("current_id")); return false;' title='<?php print _t("Zoom"); ?>'><span class='glyphicon glyphicon-zoom-in'></span></a>
-        <a href='#' class='compare_link' id='detailRepNavCompare' title='Compare' data-id_selector='.jcarousel'><i class='fa fa-clone' aria-hidden='true'></i></a>
+        <a href='#' class='zoomButton' id='detailRepNavZoom' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => $vs_context, 'id' => $vn_subject_id, 'overlay' => 1)); ?>/representation_id/" + $(".jcarousel").data("current_id")); return false;' title='<?php print _t("Zoom"); ?>'><?php print caGetThemeGraphic($this->request, 'magnify.svg'); ?></a>
+        <a href='#' class='compare_link' id='detailRepNavCompare' title='Compare' data-id_selector='.jcarousel'><?php print caGetThemeGraphic($this->request, 'rothko-compare.svg'); ?></a>
 		
 	   <a href='#' id='detailRepNavPrev' title='<?php print _t("Previous"); ?>'><span class='fa fa-chevron-left'></span></a> 
 		
@@ -156,8 +156,8 @@
 		{{{slides}}}
 		
 		<div id='detailRepNav'>
-            <a href='#' class='zoomButton' id='detailRepNavZoom' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => $va_representation_ids[0], 'overlay' => 1)); ?>"); return false;' title='<?php print _t("Zoom"); ?>'><span class='glyphicon glyphicon-zoom-in'></span></a>
-            <a href='#' class='compare_link' id='detailRepNavCompare' title='Compare' data-id='representation:<?php print $va_representation_ids[0]; ?>'><i class='fa fa-clone' aria-hidden='true'></i></a>
+            <a href='#' class='zoomButton' id='detailRepNavZoom' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => $va_representation_ids[0], 'overlay' => 1)); ?>"); return false;' title='<?php print _t("Zoom"); ?>'><?php print caGetThemeGraphic($this->request, 'magnify.svg'); ?></a>
+            <a href='#' class='compare_link' id='detailRepNavCompare' title='Compare' data-id='representation:<?php print $va_representation_ids[0]; ?>'><?php print caGetThemeGraphic($this->request, 'rothko-compare.svg'); ?></a>
 		    <div style='clear:both;'></div>
 	    </div> 
 <?php

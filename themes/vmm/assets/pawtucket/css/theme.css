@@ -1,0 +1,253 @@
+/* blue: #0e4c71; */
+body{
+	margin-top:120px;
+	margin-bottom:180px;
+}
+a{
+	color: #0e4c71;
+}
+a:hover{
+	color: #333;
+	text-decoration:underline;
+}
+H1, h1 {
+    font-size: 20px;
+    color: #0e4c71;
+    text-transform: none;
+}
+.btn-default, .browse .btn, .sets .btn {
+    background-color: #0e4c71;
+}
+.btn-default:hover, .browse .btn:hover, .sets .btn:hover {
+    background-color: #333;
+}
+.bgGray{
+	background-color:#333;
+}
+.bgLtGray{
+	background-color:#F1F1F1;
+}
+.bgBlue{
+	background-color:#0e4c71;
+}
+#pageArea{
+	padding-top:20px;
+	padding-bottom:75px;
+}
+#pageArea.front{
+	padding-top:0px;
+	padding-bottom:0px;
+}
+.navbar-header{
+	padding-left:15px;
+	padding-right:15px;
+}
+.navbar{
+	position: fixed;
+	width: 100%;
+	height: 105px;
+	top: 0px;
+}
+.navbar-toggle{
+	display:block;
+}
+.navbar-collapse {
+    padding-right:0px;
+    padding-left:0px;
+}
+
+.navbar-collapse.in {
+	overflow-y: scroll;
+}
+.navbar-collapse.collapse {
+   display: none !important;
+}
+ul.menuItems {
+    width: 100%;
+    border-top: solid 1px #ddd;
+    background-color:rgba(14, 76, 113, 0.9);
+	padding-top:10px;
+	margin-left: 0px;
+	margin-top:0px;
+}
+.menuItems.navbar-nav > li > a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    color:#FFF;
+    padding-left:50px;
+}
+.menuItems.navbar-nav > li > a:hover {
+    color:#FFF;
+    background-color:#333;
+}
+.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+    color:#FFF;
+    background-color:#333;
+}
+.navbar-nav > li{
+	float:none;
+}
+.navbar-collapse {
+    width: 100%;
+    clear:both;
+}
+.navbar-header{
+	width:100%;
+	text-align:center;
+}
+.navbar-brand{
+	float:right;
+	width:150px;
+	display:inline-block;
+}
+@media(min-width: 768px) {
+	.navbar-brand{
+		float:none;
+	}
+}
+.navbar-toggle{
+	float:left;
+}
+.navbar-collapse {
+    max-height: 550px;
+    overflow-y:scroll;
+}
+#topSearch{
+	display:none;
+	margin-top:30px;
+}
+#navSearch{
+	display:block;
+	background-color: #FFF;
+	padding-top:8px;
+	padding-bottom:8px;
+}
+#navSearch .navbar-form{
+	margin-left:0px;
+	margin-right:0px;
+	margin-top:0px;
+	margin-bottom:0px;
+}
+#headerSearchButton{
+	color:#0e4c71;
+}
+@media(min-width: 768px) {
+	#topSearch{
+		display:block;
+	}
+	#navSearch{
+		display:none;
+	}
+	.navbar-default .navbar-toggle{
+		margin-right: 100px;
+	}
+}
+.navbar-default .navbar-toggle{
+	border:0px;
+	color:#0e4c71;
+	font-size:16px;
+	margin-top: 30px;
+}
+.navbar-default .navbar-toggle .glyphicon{
+	font-size:14px;
+	margin-right:5px;
+}
+.navbar-default .navbar-toggle:hover{
+	background-color:#f1f1f1;
+}
+.navbar-collapse .navbar-nav.navbar-right:last-child {
+    margin-right: inherit;
+}
+
+
+/* front */
+.front{
+	margin-top:-15px;
+}
+.jcarousel-pagination{
+	display:none;
+}
+.front .jcarousel-pagination{
+	width:80%;
+}
+.front .jcarousel-wrapper{
+	margin-top:0px;
+}
+.front H1{
+	text-align:center;
+	color:#0e4c71;
+	font-weight:bold;
+}
+.front H2, .front .frontGallerySlideCaption a{
+	color: #0e4c71;
+}
+.front .bgLtGray{
+	padding-left:30px;
+	padding-right:30px;
+}
+.front p{
+	font-size:14px;
+	line-height:2em;
+}
+.front .tileLinks{
+	margin-bottom:75px;
+}
+.front .tileLinks img{
+	width:100%;
+	height:auto;
+	margin-bottom:3px;
+}
+.front .tileLinks a{
+	font-size:16px;
+	color:#0e4c71;
+	font-weight:bold;
+}
+@media (max-width: 768px) {
+	.front .tileLinks .col-sm-4{
+		margin-bottom:30px;
+	}
+}
+
+/* footer */
+#footer{
+	background-color:#0e4c71;
+	color:#FFF;
+	padding-top:30px;
+	height:180px;
+}
+#footer a{
+	color:#FFF;
+	font-weight:bold;
+	font-size:14px;
+	text-decoration:none;
+}
+@media(max-width: 768px) {
+	#footer .text-right{
+		text-align:left;
+	}
+}
+
+/* detail */
+.detail H6 a, .detail a {
+    color: #0e4c71;
+}
+.detail .detailNavBgLeft, .detail .detailNavBgRight{
+	margin-top:-35px;
+}
+@media(min-width: 768px) {
+	.detail .exportCollection{
+		float:right;
+		margin-top:5px;
+	}
+}
+.detail .exportCollection a, .detail .exportCollection span.glyphicon{
+	color: #0e4c71 !important;
+}
+a.readmore-js-toggle {
+    padding-top: 10px;
+    color: #0e4c71;
+    font-weight:bold
+}
+.detail .unit b, .detail .unit strong {
+    font-weight: 300;
+}

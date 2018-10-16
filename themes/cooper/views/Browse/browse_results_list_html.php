@@ -55,9 +55,9 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
 	if((($vs_table != 'ca_entities')) || ($vs_current_sort != "Name") || (($vs_current_sort == "Name") && !$vn_start)){
-		$this->request->session->setVar('lastLetter', "");
+		Session::setVar('lastLetter', "");
 	}
-	$vs_last_letter = $this->request->session->getVar('lastLetter');
+	$vs_last_letter = Session::getVar('lastLetter');
 	
 		$vn_col_span = 3;
 		$vn_col_span_sm = 6;
@@ -96,8 +96,8 @@
 				$vb_show_letter = false;
 				if(($vs_current_sort == "Name") && ($vs_table == 'ca_entities')){
 					$vs_letter = strToUpper(mb_substr($qr_res->get("ca_entities.preferred_labels.surname"), 0 , 1));
-					if($vs_letter && ($vs_letter != $this->request->session->getVar('lastLetter'))){
-						$this->request->session->setVar('lastLetter', $vs_letter);
+					if($vs_letter && ($vs_letter != Session::getVar('lastLetter'))){
+						Session::setVar('lastLetter', $vs_letter);
 						$vb_show_letter = true;
 					}
 				}			
@@ -106,7 +106,7 @@
 					$vb_row_id_loaded = true;
 				}
 				if($vb_show_letter){
-					print "<div class='col-xs-12' style='clear:left'><br/><div class='bResultLetterDivide'>".$this->request->session->getVar('lastLetter')."</div></div>";
+					print "<div class='col-xs-12' style='clear:left'><br/><div class='bResultLetterDivide'>".Session::getVar('lastLetter')."</div></div>";
 				}
 				
 				

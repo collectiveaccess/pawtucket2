@@ -51,7 +51,7 @@
 				<div class="form-group">
 					<label for="password" class="col-sm-<?php print $vn_label_col; ?> control-label"><?php print _t("Password"); ?></label>
 					<div class="col-sm-7">
-						<input type="password" name="password" class="form-control" id="password" />
+						<input type="password" name="password" class="form-control" id="password" autocomplete="off"/>
 					</div><!-- end col-sm-7 -->
 				</div><!-- end form-group -->
 				<div class="form-group">
@@ -64,7 +64,7 @@
 <?php
 				if($this->request->isAjax()){
 				
-					if (!$this->request->config->get('dont_allow_registration_and_login')) {
+					if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) {
 ?>
 					<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'registerForm', null); ?>');"><?php print _t("Click here to register"); ?></a>
 					<br/>
@@ -74,7 +74,7 @@
 					<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'resetForm', null); ?>');"><?php print _t("Forgot your password?"); ?></a>
 <?php
 				}else{
-					if (!$this->request->config->get('dont_allow_registration_and_login')) {
+					if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
 						print caNavLink($this->request, _t("Click here to register"), "", "", "LoginReg", "registerForm", array());
 					}
 					print "<br/>".caNavLink($this->request, _t("Forgot your password?"), "", "", "LoginReg", "resetForm", array());
@@ -89,7 +89,7 @@
 		</div><!-- end caFormOverlay -->
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#LoginForm').submit(function(e){		
+		jQuery('#LoginForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', 'LoginReg', 'login', null); ?>',
 				jQuery('#LoginForm').serialize()

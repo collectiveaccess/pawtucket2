@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
 
-	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
+	require_once(__CA_LIB_DIR__."/ApplicationError.php");
 	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
 	require_once(__CA_MODELS_DIR__."/ca_users.php");
 	require_once(__CA_MODELS_DIR__."/ca_user_groups.php");
@@ -37,7 +37,7 @@
 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
 			parent::__construct($po_request, $po_response, $pa_view_paths);
 
-			if ($po_request->getAppConfig()->get('dont_allow_registration_and_login')) {
+			if ($po_request->getAppConfig()->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
 				throw new ApplicationException('Login/registration not allowed');
 			}
 			caSetPageCSSClasses(array("loginreg"));
@@ -49,7 +49,11 @@
 		}
 		# ------------------------------------------------------
 		function registerForm($t_user = "") {
-			if ($this->request->config->get('dont_allow_registration_and_login')) {
+			if (
+			    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
+			    ||
+			    $this->request->config->get('dontAllowRegistration')
+			) {
 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
@@ -80,7 +84,11 @@
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
 			}
-			if ($this->request->config->get('dont_allow_registration_and_login')) {
+			if (
+			    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
+			    ||
+			    $this->request->config->get('dontAllowRegistration')
+			) {
 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
@@ -112,7 +120,11 @@
                     $this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
                     return;
                 }
-                if ($this->request->config->get('dont_allow_registration_and_login')) {
+                if (
+                    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
+                    ||
+                    $this->request->config->get('dontAllowRegistration')
+                ) {
                     $this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
                     $this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
                     return;
@@ -226,23 +238,18 @@
 		}
 		# ------------------------------------------------------
 		function login() {
-		    if (!caValidateCSRFToken($this->request, null, ['notifications' => $this->notification])) {
-		        $this->view->setVar("message", _t("CSRF token is invalid"));
-				$this->loginForm();
-				return;
-		    }
 			if (!$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $this->request->getParameter('username', pString), 'password' => $this->request->getParameter('password', pString)))) {
 				$this->view->setVar("message", _t("Login failed"));
 				$this->loginForm();
 			} else {
 				# --- user is joining a user group from a supplied link
-				if($this->request->session->getVar("join_user_group_id")){
-					if(!$this->request->user->inGroup($this->request->session->getVar("join_user_group_id"))){
-						$this->request->user->addToGroups($this->request->session->getVar("join_user_group_id"));
-						$this->request->session->setVar("join_user_group_id", "");
+				if(Session::getVar("join_user_group_id")){
+					if(!$this->request->user->inGroup(Session::getVar("join_user_group_id"))){
+						$this->request->user->addToGroups(Session::getVar("join_user_group_id"));
+						Session::setVar("join_user_group_id", "");
 						$vs_group_message = _t(" and added to the group");
 					}else{
-						$this->request->session->setVar("join_user_group_id", "");
+						Session::setVar("join_user_group_id", "");
 						$vs_group_message = _t(" you are already a member of the group");
 					}
 				}
@@ -291,7 +298,11 @@
 				$this->register();
 				return;
 		    }
-			if ($this->request->config->get('dont_allow_registration_and_login')) {
+			if (
+			    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
+			    ||
+			    $this->request->config->get('dontAllowRegistration')
+			) {
 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
@@ -472,13 +483,13 @@
 						$t_user->addRoles($va_default_roles);
 					}
 					# --- user is joining a user group from a supplied link
-					if($this->request->session->getVar("join_user_group_id")){
-						if(!$t_user->inGroup($this->request->session->getVar("join_user_group_id"))){
-							$t_user->addToGroups($this->request->session->getVar("join_user_group_id"));
-							$this->request->session->setVar("join_user_group_id", "");
+					if(Session::getVar("join_user_group_id")){
+						if(!$t_user->inGroup(Session::getVar("join_user_group_id"))){
+							$t_user->addToGroups(Session::getVar("join_user_group_id"));
+							Session::setVar("join_user_group_id", "");
 							$vs_group_message = _t(" You were added to the group");
 						}else{
-							$this->request->session->setVar("join_user_group_id", "");
+							Session::setVar("join_user_group_id", "");
 							$vs_group_message = _t(" You are already a member of the group");
 						}
 					}
@@ -564,10 +575,10 @@
 				if($this->request->isLoggedIn()){
 					if(!$this->request->user->inGroup($pn_group_id)){
 						$this->request->user->addToGroups($pn_group_id);
-						$this->request->session->setVar("join_user_group_id", "");
+						Session::setVar("join_user_group_id", "");
 						$vs_group_message = _t("You were added to the group");
 					}else{
-						$this->request->session->setVar("join_user_group_id", "");
+						Session::setVar("join_user_group_id", "");
 						$vs_group_message = _t("You are already a member of the group");
 					}
 					$this->notification->addNotification($vs_group_message, __NOTIFICATION_TYPE_INFO__);
@@ -577,7 +588,7 @@
 					$this->response->setRedirect(caNavUrl($this->request, "", $vs_controller, "Index"));
 				}else{
 					$t_user_group->load($pn_group_id);
-					$this->request->session->setVar("join_user_group_id", $pn_group_id);
+					Session::setVar("join_user_group_id", $pn_group_id);
 					$this->view->setVar("message", _t("Login/Register to join \"%1\"", $t_user_group->get("name")));
 					$this->loginForm();
 				}

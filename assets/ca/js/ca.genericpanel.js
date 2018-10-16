@@ -35,9 +35,6 @@ var caUI = caUI || {};
 			panelID: 'caPanel',							/* id of enclosing panel div */
 			panelContentID: 'caPanelContent',			/* id of div within enclosing panel div that contains content */
 	
-			useExpose: true,
-			exposeBackgroundColor: '#000000',
-			exposeBackgroundOpacity: 0.5,
 			panelTransitionSpeed: 200,
 			allowMobileSafariZooming: false,
 			mobileSafariViewportTagID: '_msafari_viewport',
@@ -80,10 +77,6 @@ var caUI = caUI || {};
 			
 			jQuery('#' + that.panelID).fadeIn(that.panelTransitionSpeed, function() { that.isChanging = false; });
 			
-			if (that.useExpose) { 
-				jQuery('#' + that.panelID).expose({api: true, color: that.exposeBackgroundColor , opacity: that.exposeBackgroundOpacity, closeOnClick : false, closeOnEsc: true}).load(); 
-			}
-			
 			that.callbackData = callbackData;
 			if (onCloseCallback) {
 				that.onCloseCallback = onCloseCallback;
@@ -93,7 +86,7 @@ var caUI = caUI || {};
 			if (!postData) { postData = {}; }
 			if (url) {
 				jQuery('#' + that.panelContentID).load(url, postData, that.closeButtonSelector ? function() {			
-					jQuery(that.closeButtonSelector).click(function() {
+					jQuery(that.closeButtonSelector).on('click', function() {
 						that.hidePanel();
 					})
 				} : null);
@@ -114,10 +107,6 @@ var caUI = caUI || {};
 			that.setZoom(false);
 			that.isChanging = true;
 			jQuery('#' + that.panelID).fadeOut(that.panelTransitionSpeed, function() { that.isChanging = false; });
-			
-			if (that.useExpose && (!opts || !opts.dontCloseMask)) {
-				jQuery.mask.close();
-			}
 			
 			if (that.clearOnClose) {
 				jQuery('#' + that.panelContentID).empty();
@@ -153,7 +142,7 @@ var caUI = caUI || {};
 		// --------------------------------------------------------------------------------
 		jQuery(document).ready(function() {
 			// hide panel if click is outside of panel
-			//jQuery(document).click(function(event) {
+			//jQuery(document).on('click', function(event) {
 			//	var p = jQuery(event.target).parents().map(function() { return this.id; }).get();
 			//	if (!that.isChanging && that.panelIsVisible() && (jQuery.inArray(that.panelID, p) == -1)) {
 				//	that.hidePanel();
@@ -161,7 +150,7 @@ var caUI = caUI || {};
 			//});
 			
 			// hide panel if escape key is clicked
-			jQuery(document).keyup(function(event) {
+			jQuery(document).on('keyup', function(event) {
 				if ((event.keyCode == 27) && !that.isChanging && that.panelIsVisible()) {
 					that.hidePanel();
 				}

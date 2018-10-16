@@ -91,7 +91,7 @@
 </div><!-- end caFormOverlay -->
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#ProfileForm').submit(function(e){		
+		jQuery('#ProfileForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', 'LoginReg', 'profileSave', null); ?>',
 				jQuery('#ProfileForm').serialize()

@@ -28,7 +28,7 @@
  
  	require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
 	require_once(__CA_APP_DIR__."/helpers/contributeHelpers.php");
-	require_once(__CA_LIB_DIR__."/ca/Utils/DataMigrationUtils.php");
+	require_once(__CA_LIB_DIR__."/Utils/DataMigrationUtils.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  
  	class ContributeController extends BasePawtucketController {
@@ -204,7 +204,6 @@
  		 */
  		public function Send() {
  			global $g_ui_locale_id;
- 			$o_dm = Datamodel::load();
  			$ps_function = $this->request->getParameter('_contributeFormName', pString);
  			
  			$va_response_data = array('errors' => array(), 'numErrors' => 0, 'status' => 'OK');
@@ -342,7 +341,7 @@
           			switch(sizeof($va_fld_bits)) {
           				case 2:
           				case 3:
-          					if (($t_instance = $o_dm->getInstanceByTableName($vs_table, true))) { 
+          					if (($t_instance = Datamodel::getInstance($vs_table, true))) { 
 								if ($t_instance->hasField($va_fld_bits[1])) {		// intrinsic
 								
 									if($t_instance->getFieldInfo($va_fld_bits[1], 'FIELD_TYPE') == FT_MEDIA) {
@@ -619,7 +618,7 @@
  				throw new ApplicationException("Invalid contribute form type");
  			}
  			
- 			if (!($this->pt_subject = $this->request->datamodel->getInstanceByTableName($va_form_info['table']))) {
+ 			if (!($this->pt_subject = Datamodel::getInstance($va_form_info['table']))) {
  				// invalid form table (shouldn't happen unless misconfigured)
  				throw new ApplicationException("Invalid contribute table setting");
  			}

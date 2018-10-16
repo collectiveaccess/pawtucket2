@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2016 Whirl-i-Gig
+ * Copyright 2013-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  	require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
- 	require_once(__CA_LIB_DIR__.'/ca/ResultContext.php');
+ 	require_once(__CA_LIB_DIR__.'/ResultContext.php');
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  
  	abstract class BaseMultiSearchController extends BasePawtucketController {
@@ -121,8 +121,11 @@
  			
  			$vn_result_count = 0;
  			$vs_redirect_to_only_result = null;
+ 			
+ 			$va_context_list = [];
  			foreach($this->opa_result_contexts as $vs_block => $o_context) {
  				$o_context->setParameter('search', $vs_search);
+ 				$va_context_list[$o_context->tableName()][$o_context->findType()] = $vs_search;
  				if (!isset($va_results[$vs_block]['ids']) || !is_array($va_results[$vs_block]['ids'])) { continue; }
  				$o_context->setResultList(is_array($va_results[$vs_block]['ids']) ? $va_results[$vs_block]['ids'] : array());
  				if($va_results[$vs_block]['sort']) { $o_context->setCurrentSort($va_results[$vs_block]['sort']); }
@@ -134,6 +137,14 @@
  				if ((sizeof($va_results[$vs_block]['ids']) == 1) && ($vn_result_count == 1) && (!$this->config->get('dont_redirect_to_single_search_result'))) {
  					$vs_redirect_to_only_result = caDetailUrl($this->request, $va_results[$vs_block]['table'], $va_results[$vs_block]['ids'][0], false);
  				}
+ 			}
+ 			
+ 			foreach($va_context_list as $table => $l) {
+ 			    foreach($l as $type => $s) {
+ 			        $o_context = new ResultContext($this->request, $table, $type);
+ 			        $o_context->setParameter('search', $s);
+ 			        $o_context->saveContext();
+ 			    }
  			}
  			
  			if (($vn_result_count == 1) && ($vs_redirect_to_only_result)) {

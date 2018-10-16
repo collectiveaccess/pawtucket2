@@ -42,8 +42,6 @@
 	
 	$va_user_groups						= $this->getvar("user_groups");
 	
-	$o_dm = Datamodel::load();
-	
 	$vs_user_role						= $this->getVar("user_role");
 ?>
 	<h1>

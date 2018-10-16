@@ -182,15 +182,13 @@
 							$vs_label_detail_link = "<span class='listTitle'>".caDetailLink($this->request, $vs_title, '', $vs_table, $vn_id)."</span>";
 						}	
 					} elseif ($vs_table === 'ca_collections') {
-						if ($vs_location) {
-							$vs_info.= $vs_location;
-						}
+						$vs_label_detail_link 	= "<span class='listTitle'>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels").'<i class="fa fa-chevron-right"></i>', '', $vs_table, $vn_id)."</span>";
 					}
-					if (($vs_table != 'ca_objects') && ($vs_table != 'ca_occurrences')) {
-						$vs_chevron = "<i class='fa fa-chevron-right'></i>";
-					} else {
-						$vs_chevron = null;
-					}
+					#if (($vs_table != 'ca_objects') && ($vs_table != 'ca_occurrences')) {
+					#	$vs_chevron = "<i class='fa fa-chevron-right'></i>";
+					#} else {
+					#	$vs_chevron = null;
+					#}
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 				
 					
