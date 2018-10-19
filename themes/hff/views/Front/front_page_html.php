@@ -51,6 +51,11 @@
 ?>			
 		</div> <!--end col-sm-4-->	
 	</div><!-- end row -->
+	<div class="row">
+		<div class="col-sm-12">
+			<br/><br/><br/><HR>
+		</div>
+	</div>
 <?php
 		print $this->render("Front/gallery_slideshow_html.php");
 ?>
