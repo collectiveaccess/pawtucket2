@@ -1132,3 +1132,21 @@ H1.courseProjects .grey{
 	float:right;
 	overflow:visible;
 }
+#caMediaPanel {
+	background-color: rgba(0, 0, 0, 0.7);
+}
+div.caMediaOverlayControls .close {
+    margin: 0px 10px 0px 20px;
+    position: fixed;
+    top: 5px;
+    left: 25px;
+}
+div.caMediaOverlayControls .close a .caIcon{
+    font-size: 30px !important;
+}
+div.caMediaOverlayControls{
+	 opacity: .8;
+}
+#app{
+	background-color: #211f1f !important;
+}
