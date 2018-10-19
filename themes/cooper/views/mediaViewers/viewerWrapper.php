@@ -47,12 +47,15 @@
 	$vs_context = $this->request->getParameter('context', pString);
 	$t_object = new ca_objects($vn_object_id);
 	$va_siblings = $t_object->get("ca_objects.siblings.object_id", array("returnAsArray" => true));
-	$vn_previous_id = $vn_next_id = null;
+	$vn_previous_id = $vn_next_id = $vn_current_id = null;
 	if(is_array($va_siblings) && sizeof($va_siblings)){
 		foreach($va_siblings as $vn_sib_obj_id){
-			if($vn_sib_obj_id == $vn_object_id){
-				$vn_next_id = next($va_siblings);
+			if($vn_current){
+				$vn_next_id = $vn_sib_obj_id;
 				break;
+			}
+			if($vn_sib_obj_id == $vn_object_id){
+				$vn_current = $vn_sib_obj_id;
 			}else{
 				$vn_previous_id = $vn_sib_obj_id;
 			}
