@@ -51,7 +51,7 @@
 	if(is_array($va_siblings) && sizeof($va_siblings)){
 		foreach($va_siblings as $vn_sib_obj_id){
 			if($vn_sib_obj_id == $vn_object_id){
-				$vn_next_id = current($va_siblings);
+				$vn_next_id = next($va_siblings);
 				break;
 			}else{
 				$vn_previous_id = $vn_sib_obj_id;
