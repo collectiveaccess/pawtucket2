@@ -73,7 +73,7 @@
 	</div>
 	<script type='text/javascript'>
 		jQuery(document).ready(function() {
-			jQuery('#addComment{{{item_id}}}').submit(function(e){
+			jQuery('#addComment{{{item_id}}}').on('submit', function(e){
 				jQuery.getJSON(
 					'<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment', null); ?>',
 					jQuery('#addComment{{{item_id}}}').serialize(), function(data) {

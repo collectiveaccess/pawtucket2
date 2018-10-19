@@ -241,9 +241,9 @@
             $pa_ids = explode(";",$this->request->getParameter('id', pString)); 
             $va_views_info = $this->config->get('views');
             $va_view_info = $va_views_info["map"][$vs_table];
-            $vs_content_template = $va_view_info['display']['icon'].$va_view_info['display']['title_template'].$va_view_info['display']['description_template'];
+            $vs_content_template = $va_view_info['display']['labelTemplate'].$va_view_info['display']['contentTemplate'];
 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, $vs_table, $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br style='clear:both;'/>")));
-			
+							
 			$this->view->setVar('heading', trim($va_view_info['display']['heading']) ? caProcessTemplateForIDs($va_view_info['display']['heading'], $vs_table, [$pa_ids[0]], array('checkAccess' => $this->opa_access_values)) : "");
 			$this->view->setVar('table', $vs_table);
 			$this->view->setVar('ids', $pa_ids);

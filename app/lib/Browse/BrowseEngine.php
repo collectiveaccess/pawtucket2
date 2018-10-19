@@ -558,6 +558,13 @@
 					return $t_table->getLabelForDisplay();
 					break;
 				# -----------------------------------------------------
+			    case 'relationship_types':  
+			        if (!($t_rel = Datamodel::getInstanceByTableName($va_facet_info['relationship_table'], true))) { break; }
+			        $t_rel_type = new ca_relationship_types();
+			        $info = $t_rel_type->getRelationshipInfo($va_facet_info['relationship_table']);
+			        return isset($info[(int)$pn_row_id]) ? $info[(int)$pn_row_id]['typename'] : "???";
+			        break;
+				# -----------------------------------------------------
 				case 'attribute':
 					$t_element = new ca_metadata_elements();
 					if (!$t_element->load(array('element_code' => array_pop(explode(".", $va_facet_info['element_code']))))) {
@@ -1674,6 +1681,7 @@
 									break;
 								# -----------------------------------------------------
 								case 'authority':
+								case 'relationship_types':  
 									$vs_rel_table_name = $va_facet_info['table'];
 									if (!is_array($va_restrict_to_relationship_types = $va_facet_info['restrict_to_relationship_types'])) { $va_restrict_to_relationship_types = array(); }
 									$va_restrict_to_relationship_types = $this->_getRelationshipTypeIDs($va_restrict_to_relationship_types, $va_facet_info['relationship_table']);
@@ -1756,7 +1764,9 @@
 											$vs_where_sql = ' AND '.join(' AND ', $va_wheres);
 										}
 
-										if ((!isset($va_facet_info['dont_expand_hierarchically']) || !$va_facet_info['dont_expand_hierarchically']) && $t_rel_item->isHierarchical() && $t_rel_item->load((int)$vn_row_id)) {
+                                        if ($va_facet_info['type'] == 'relationship_types') {
+                                            $vs_get_item_sql = "(".$t_item_rel->tableName().".type_id = ".(int)$vn_row_id.")";
+										} elseif ((!isset($va_facet_info['dont_expand_hierarchically']) || !$va_facet_info['dont_expand_hierarchically']) && $t_rel_item->isHierarchical() && $t_rel_item->load((int)$vn_row_id)) {
 											$vs_hier_left_fld = $t_rel_item->getProperty('HIERARCHY_LEFT_INDEX_FLD');
 											$vs_hier_right_fld = $t_rel_item->getProperty('HIERARCHY_RIGHT_INDEX_FLD');
 
@@ -3045,6 +3055,11 @@
 					if(is_array($va_label_ui_fields) && sizeof($va_label_ui_fields)) {
 					    $va_label_ui_fields = array_map(function($v) { return "l.{$v}"; }, $va_label_ui_fields);
 					}
+					
+					foreach($va_label_ui_fields as $x) {
+					    if (!in_array($x, $va_label_order_by_fields)) { $va_label_order_by_fields[] = $x; }
+					}
+					
 
 					$vs_where_sql = $vs_join_sql = '';
 					$vb_needs_join = false;
@@ -3473,11 +3488,11 @@
 								            return caSortArrayByKeyInValue($va_facet_list, array('item_value')); 
 								            break;
 								        default:
-								            return caSortArrayByKeyInValue($va_facet_list, array('label')); 
+								            return caSortArrayByKeyInValue($va_facet_list, ['label'], 'ASC', ['naturalSort' => true]); 
 								            break;
 								    }
 								} else {
-								    return caSortArrayByKeyInValue($va_facet_list, array('label')); 
+								    return caSortArrayByKeyInValue($va_facet_list, ['label'], 'ASC', ['naturalSort' => true]); 
 								}
 								break;
 							case __CA_ATTRIBUTE_VALUE_OBJECTS__:
@@ -5203,6 +5218,7 @@
 					break;
 				# -----------------------------------------------------
 				case 'authority':
+			    case 'relationship_types':  
 					$vs_rel_table_name = $va_facet_info['table'];
 					$va_params = $this->opo_ca_browse_cache->getParameters();
 
@@ -5230,12 +5246,12 @@
 						break;
 					} else {
 						switch(sizeof($va_path = array_keys(Datamodel::getPath($vs_browse_table_name, $vs_rel_table_name)))) {
-							case __CA_ATTRIBUTE_VALUE_LIST__:
+							case 3:
 								$t_item_rel = Datamodel::getInstanceByTableName($va_path[1], true);
 								$t_rel_item = Datamodel::getInstanceByTableName($va_path[2], true);
 								$vs_key = 'relation_id';
 								break;
-							case __CA_ATTRIBUTE_VALUE_DATERANGE__:
+							case 2:
 								$t_item_rel = null;
 								$t_rel_item = Datamodel::getInstanceByTableName($va_path[1], true);
 								$vs_key = $t_rel_item->primaryKey();
@@ -5307,7 +5323,18 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 
 					if (is_array($va_restrict_to_types) && (sizeof($va_restrict_to_types) > 0) && method_exists($t_rel_item, "getTypeList")) {
 						$va_wheres[] = "{$vs_rel_table_name}.type_id IN (".join(',', caGetOption('dont_include_subtypes', $va_facet_info, false) ? $va_restrict_to_types : $va_restrict_to_types_expanded).")".($t_rel_item->getFieldInfo('type_id', 'IS_NULL') ? " OR ({$vs_rel_table_name}.type_id IS NULL)" : '');
-						$va_selects[] = "{$vs_rel_table_name}.type_id";
+						
+						if($va_facet_info['type'] !== 'relationship_types') {
+						    $va_selects[] = "{$vs_rel_table_name}.type_id";
+						}
+					}
+					
+					if($va_facet_info['type'] == 'relationship_types') {
+					    $va_selects[] = "ca_relationship_types.type_id rel_type_id";
+					    $va_selects[] = "ca_relationship_types.type_code";
+					    $va_selects[] = "ca_relationship_type_labels.typename";
+					    $va_joins[] = "INNER JOIN ca_relationship_types ON ".$t_item_rel->tableName().".type_id = ca_relationship_types.type_id";
+					    $va_joins[] = "INNER JOIN ca_relationship_type_labels ON ca_relationship_type_labels.type_id = ca_relationship_types.type_id";
 					}
 
 					if (is_array($va_exclude_types) && (sizeof($va_exclude_types) > 0) && method_exists($t_rel_item, "getTypeList")) {
@@ -5350,23 +5377,27 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 					$va_rel_attr_elements = $t_rel_item->getApplicableElementCodes(null, true, false);
 
 					$va_attrs_to_fetch = array();
-//if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) {
-					//$va_selects[] = $t_item->tableName().'.'.$t_item->primaryKey();			// get primary key of subject
-//}
-					$va_selects[] = $t_rel_item->tableName().'.'.$vs_rel_pk;				// get primary key of related
 
-
-					$vs_hier_parent_id_fld = $vs_hier_id_fld = null;
-					if ($vb_rel_is_hierarchical) {
-						$vs_hier_parent_id_fld = $t_rel_item->getProperty('HIERARCHY_PARENT_ID_FLD');
-						$va_selects[] = $t_rel_item->tableName().'.'.$vs_hier_parent_id_fld;
-
-						if ($vs_hier_id_fld = $t_rel_item->getProperty('HIERARCHY_ID_FLD')) {
-							$va_selects[] = $t_rel_item->tableName().'.'.$vs_hier_id_fld;
-						}
-					}
+					$vs_hier_parent_id_fld = $vs_hier_id_fld = null;	
 					
-					$va_select_flds = $va_selects;
+					if($va_facet_info['type'] !== 'relationship_types') {		
+					    $va_selects[] = $t_rel_item->tableName().'.'.$vs_rel_pk;				// get primary key of related
+                    }
+                    
+                    if ($vb_rel_is_hierarchical) {
+                        $vs_hier_parent_id_fld = $t_rel_item->getProperty('HIERARCHY_PARENT_ID_FLD');
+                        $vs_hier_id_fld = $t_rel_item->getProperty('HIERARCHY_ID_FLD');
+                        
+                        if($va_facet_info['type'] !== 'relationship_types') {
+                            $va_selects[] = $t_rel_item->tableName().'.'.$vs_hier_parent_id_fld;
+
+                            if ($vs_hier_id_fld) {
+                                $va_selects[] = $t_rel_item->tableName().'.'.$vs_hier_id_fld;
+                            }
+                        }
+                    }
+                    
+					$va_select_flds = array_map(function($v) { return array_shift(explode(' ', $v)); } , $va_selects);
 
 					// analyze group_fields (if defined) and add them to the query
 					$va_groupings_to_fetch = array();
@@ -5515,6 +5546,16 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							//if (isset($va_facet_items[$vn_id])) { continue; } --- we can't do this as then we don't detect items that have multiple rel_type_ids... argh.
 							if (isset($va_criteria[$vn_id])) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 
+                            if($va_facet_info['type'] === 'relationship_types') {
+                                if(sizeof($va_restrict_to_relationship_types) && !in_array($va_fetched_row['rel_type_id'], $va_restrict_to_relationship_types)) { continue; }
+                                if(sizeof($va_exclude_relationship_types) && in_array($va_fetched_row['rel_type_id'], $va_exclude_relationship_types)) { continue; }
+                                $va_facet_items[$va_fetched_row['rel_type_id']] = [
+                                    'label' => $va_fetched_row['typename'],
+                                    'id' => $va_fetched_row['rel_type_id']
+                                ];
+                                continue;
+                            }
+
 							if (!$va_facet_items[$va_fetched_row[$vs_rel_pk]]) {
 
 								if (is_array($va_restrict_to_types) && sizeof($va_restrict_to_types) && $va_fetched_row['type_id'] && !in_array($va_fetched_row['type_id'], $va_restrict_to_types)) {
@@ -5541,6 +5582,10 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							if ($va_fetched_row['rel_type_id']) {
 								$va_facet_items[$va_fetched_row[$vs_rel_pk]]['rel_type_id'][] = $va_fetched_row['rel_type_id'];
 							}
+						}
+						
+						if($va_facet_info['type'] === 'relationship_types') {
+						    return $va_facet_items;
 						}
 
 		if (!isset($va_facet_info['dont_expand_hierarchically']) || !$va_facet_info['dont_expand_hierarchically']) {
@@ -6314,12 +6359,12 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 				return array('joins' => $va_joins, 'wheres' => $va_wheres);
 			} 
 			switch(sizeof($va_path = array_keys(Datamodel::getPath($ps_relative_to_table, $this->ops_browse_table_name)))) {
-				case __CA_ATTRIBUTE_VALUE_LIST__:
+				case 3:
 					$t_item_rel = Datamodel::getInstanceByTableName($va_path[1], true);
 					$t_rel_item = Datamodel::getInstanceByTableName($va_path[2], true);
 					$vs_key = 'relation_id';
 					break;
-				case __CA_ATTRIBUTE_VALUE_DATERANGE__:
+				case 2:
 					$t_item_rel = null;
 					$t_rel_item = Datamodel::getInstanceByTableName($va_path[1], true);
 					$vs_key = $t_rel_item->primaryKey();
@@ -6372,12 +6417,12 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 			$t_item = Datamodel::getInstanceByTableName($this->ops_browse_table_name, true);
 
 			switch(sizeof($va_path = array_keys(Datamodel::getPath($ps_relative_to_table, $this->ops_browse_table_name)))) {
-				case __CA_ATTRIBUTE_VALUE_LIST__:
+				case 3:
 					$t_item_rel = Datamodel::getInstanceByTableName($va_path[1], true);
 					$t_rel_item = Datamodel::getInstanceByTableName($va_path[2], true);
 					$vs_key = 'relation_id';
 					break;
-				case __CA_ATTRIBUTE_VALUE_DATERANGE__:
+				case 2:
 					$t_item_rel = null;
 					$t_rel_item = Datamodel::getInstanceByTableName($va_path[1], true);
 					$vs_key = $t_rel_item->primaryKey();
@@ -6448,5 +6493,48 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 			}
 			return $va_collapse_map;
 		}
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+	    public function getAvailableRelationshipTypesForCurrentResult($ps_rel_table, $pa_rel_ids, $pa_options=null) {
+	        if(!$pa_rel_ids) { return null; }
+	        if(!is_array($pa_rel_ids)) { $pa_rel_ids = [$pa_rel_ids]; }
+	        
+	        $pa_rel_ids = array_map(function($v) { return (int)$v; }, $pa_rel_ids);
+	        
+	        if(is_array($va_results =  $this->opo_ca_browse_cache->getResults()) && sizeof($va_results)) {
+	            switch(sizeof($va_path = array_keys(Datamodel::getPath($this->ops_browse_table_name, $ps_rel_table)))) {
+                    case 3:
+                        $t_item_rel = Datamodel::getInstanceByTableName($va_path[1], true);
+                        $t_rel_item = Datamodel::getInstanceByTableName($va_path[2], true);
+                        $vs_key = 'relation_id';
+                        break;
+                    default:
+                        // bad related table
+                        return null;
+                        break;
+                }
+                
+                $qr = $this->opo_db->query("
+                    SELECT DISTINCT ca_relationship_types.*, ca_relationship_type_labels.*
+                    FROM {$va_path[1]}
+                    INNER JOIN ca_relationship_types ON ca_relationship_types.type_id = {$va_path[1]}.type_id
+                    INNER JOIN ca_relationship_type_labels ON ca_relationship_types.type_id = ca_relationship_type_labels.type_id
+                    WHERE
+                        {$va_path[1]}.".$t_rel_item->primaryKey()." IN (?)
+                    GROUP BY ca_relationship_types.type_id
+                ", [$pa_rel_ids]);
+                
+                $result = [];
+                while($qr->nextRow()) {
+                    $result[] = $qr->getRow();
+                }
+                
+                return $result;
+	        }
+	            
+	        return null;
+	    }
 		# ------------------------------------------------------
 	}

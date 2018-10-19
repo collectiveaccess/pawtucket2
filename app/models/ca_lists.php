@@ -1508,7 +1508,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 					
 					$va_item_ids = array();
 					while($qr_collections->nextHit()) {
-						$va_list_items = $qr_collections->get('ca_list_items', array('returnAsArray' => true, 'checkAccess' => caGetOption('checkAccess', $pa_options, null)));
+						$va_list_items = $qr_collections->get('ca_list_items', array('returnAsArray' => true, 'returnWithStructure' => true, 'checkAccess' => caGetOption('checkAccess', $pa_options, null)));
 						foreach($va_list_items as $vn_rel_id => $va_list_item) {
 							$va_item_ids[$vn_rel_id] = $va_list_item['item_id'];
 						}
@@ -1748,8 +1748,8 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 						$vs_hidden_value = $vs_val_id;
 					}
 				} else {
-					$vs_value = "{".$pa_options['element_id']."_label}";
-					$vs_hidden_value = "{".$pa_options['element_id']."}";
+					$vs_value = "{{".$pa_options['element_id']."_label}}";
+					$vs_hidden_value = "{{".$pa_options['element_id']."}}";
 				}
 				$vs_buf =
  				caHTMLTextInput(
@@ -1935,8 +1935,10 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 		$t_items->load(array('list_id' => $vn_list_id, 'parent_id' => null));
 		$vn_id = $t_items->getPrimaryKey();
 		
-		ExternalCache::save($pm_list_name_or_id, $vn_id, 'listRootIDs');
-		ExternalCache::save($vn_list_id, $vn_id, 'listRootIDs');
+		if ($pm_list_name_or_id && $vn_list_id) {
+			ExternalCache::save($pm_list_name_or_id, $vn_id, 'listRootIDs');
+			ExternalCache::save($vn_list_id, $vn_id, 'listRootIDs');
+		}
 		
 		return $vn_id;
 	}
