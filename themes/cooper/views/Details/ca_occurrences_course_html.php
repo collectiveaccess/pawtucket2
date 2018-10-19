@@ -41,7 +41,7 @@
 
 <?php
 		#$va_faculty = $t_item->get("ca_entities", array("restrictToRelationshipTypes" => array("faculty"), "checkAccess" => $va_access_values, "returnWithStructure" => true));
-		$vs_faculty_ids = $t_item->getWithTemplate("<unit relativeTo='ca_objects' delimiter=';'>^ca_entities.entity_id%restrictToRelationshipTypes=faculty</unit>");
+		$vs_faculty_ids = $t_item->getWithTemplate("<unit relativeTo='ca_objects' delimiter=';'><unit relativeTo='ca_entities' restrictToRelationshipTypes='faculty' delimiter=';'>^ca_entities.entity_id</unit></unit>");
 		$va_faculty_ids = array_unique(explode(";", $vs_faculty_ids));
 		$qr_faculty = caMakeSearchResult("ca_entities", $va_faculty_ids, array("sort" => "ca_entities.preferred_labels.surname"));
 		if($qr_faculty->numHits()){
