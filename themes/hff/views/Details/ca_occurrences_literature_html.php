@@ -17,7 +17,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H4><?php print italicizeTitle($t_item->get("ca_occurrences.preferred_labels.name")); ?></H4>
+					<H4><?php print $t_item->get("ca_occurrences.lit_citation"); ?></H4>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
@@ -39,38 +39,15 @@
 					print '</div><!-- end detailTools -->';
 				}				
 ?>
-					{{{<ifdef code="ca_occurrences.solo_group"><div class="unit"><H6>Exhibition Type</H6>^ca_occurrences.solo_group</div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.exhibition_dates_display"><div class="unit"><H6>Dates</H6><unit relativeTo="ca_occurrences" delimiter="<br/>">^ca_occurrences.exhibition_dates_display</unit></div></ifdef>}}}
-					{{{<ifnotdef code="ca_occurrences.exhibition_dates_display"><ifdef code="ca_occurrences.common_date"><div class="unit"><H6>Dates</H6>^ca_occurrences.common_date</div></ifdef></ifnotdef>}}}
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="originator" min="1"><div class="unit"><H6>Organizing Venue</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="originator" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
-					{{{<ifdef code="ca_occurrences.venuse.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates">
-						<div class="unit"><H6>Traveled To</H6>
-						<unit relativeTo="ca_occurrences.venues" delimiter="<br/>">
-							<ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef>
-							<ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address, </ifdef>
-							<ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display </ifdef>
-						</unit>
-						</div>
-					</ifdef>}}}
+					{{{<ifdef code="ca_occurrences.idno"><div class="unit"><H6>Identifier</H6>^ca_occurrences.idno</div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.pubType"><div class="unit"><H6>Type</H6>^ca_occurrences.pubType</div></ifdef>}}}
 					
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>					
 					
-					{{{<ifcount code="ca_occurrences.related" restrictToTypes="chronology" min="1"><H6>Chronology Links</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToTypes="chronology"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
+					{{{<ifcount code="ca_occurrences.related" restrictToTypes="exhibition" min="1"><H6>Related Exhibitons</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToTypes="exhibition"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
 
-					{{{<ifcount code="ca_occurrences.related" min="1" restrictToTypes="literature"><div class='unit'><H6>Literature References</H6><unit relativeTo="ca_occurrences.related" restrictToTypes="literature" delimiter="<br/>"><ifdef code="ca_occurrences.lit_citation"><l>^ca_occurrences.lit_citation</l></ifdef><ifnotdef code="ca_occurrences.lit_citation">^ca_occurrences.preferred_labels</ifnotdef></unit></div></ifcount>}}}
-					
-					{{{<ifcount code="ca_objects" min="1" restrictToTypes="archival"><div class='unit'><H6>Related Digital Items</H6><unit relativeTo="ca_objects" restrictToTypes="archival" delimiter="<br/>"><l>^ca_objects.preferred_labels<ifdef code="ca_objects.unitdate.dacs_date_text">, ^ca_objects.unitdate.dacs_date_text</ifdef></l></unit></div></ifcount>}}}
-					
-					{{{<ifcount code="ca_objects" min="1" restrictToTypes="library">
-						<div class='unit'><H6>Related Library Items</H6>
-							<unit relativeTo="ca_objects" restrictToTypes="library" delimiter="<br/>">
-								<l>^ca_objects.preferred_labels</l>
-								
-							</unit>
-						</div>
-					</ifcount>}}}
 				
 				</div><!-- end col -->
 			</div><!-- end row -->
@@ -83,7 +60,7 @@
 ?>
 					<div class="row">
 						<div class="col-sm-12">
-							<br/><hr/><br/><H5>Works Exhibited</H5>
+							<br/><hr/><br/><H5>Works Referenced</H5>
 						</div>
 					</div>
 					<div class='row'>
@@ -108,20 +85,9 @@
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', 'ca_objects', $vn_id);				
 
 						$va_interstitial = array();
-						if($vs_tmp = $t_objects_x_occurrences->get("checklist_number")){
-							$va_interstitial[] = "Checklist number: ".$vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("exhibition_title")){
-							$va_interstitial[] = "Exhibition title: ".$vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("citation")){
-							$va_interstitial[] = "Citation: ".$vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("exh_remarks")){
-							$va_interstitial[] = "Remarks: ".$vs_tmp;
-						}
+						# --- note label on backend is citation even though the field is called source
 						if($vs_tmp = $t_objects_x_occurrences->get("source")){
-							$va_interstitial[] = "Source: ".$vs_tmp;
+							$va_interstitial[] = "Citation: ".$vs_tmp;
 						}
 						print "<div class='bResultItemCol col-xs-12 col-sm-6 col-md-3'>
 			<div class='bResultItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>

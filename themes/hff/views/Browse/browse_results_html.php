@@ -255,6 +255,12 @@ if (!$vb_ajax) {	// !ajax
 			<div style="clear:both"></div>
 		</div>
 <?php
+		if($vs_table == "ca_collections"){
+			print '<div class="bAdvancedLinkContainer">'.caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/collections")."</div>";
+		}
+		if(($vs_table == "ca_objects") && (strToLower($this->request->getAction()) == "library")){
+			print '<div class="bAdvancedLinkContainer">'.caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/library")."</div>";
+		}
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->
