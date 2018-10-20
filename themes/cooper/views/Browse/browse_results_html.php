@@ -120,6 +120,7 @@ if (!$vb_ajax) {	// !ajax
 
 								$vs_faculty_texts_output = "";
 								$vn_texts_c = 0;
+								$va_faculty_texts_by_year = array();
 								while($qr_faculty_texts->nextHit()){
 									$vs_tmp = $vs_year = $vs_semester = $vs_course = $vn_rep_id = "";
 									$vs_year = $qr_faculty_texts->get("ca_occurrences.preferred_labels", array("delimiter" => "; ", "checkAccess" => $va_access_values, "restrictToTypes" => array("academic_year")));
@@ -134,14 +135,22 @@ if (!$vb_ajax) {	// !ajax
 										$vs_tmp .= " | ";
 									}
 									$vs_tmp .= $vs_course;
-					
+									$vs_faculty_texts_output = "";
 									if($vn_rep_id = $qr_faculty_texts->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values))){
 										$vs_faculty_texts_output .= "<div class='col-sm-6 col-md-4'>";
 										$vs_faculty_texts_output .= '<a href="#" onclick="caMediaPanel.showPanel(\''.caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $qr_faculty_texts->get("ca_objects.object_id"), 'context' => 'objects', 'overlay' => 1, 'representation_id' => $qr_faculty_texts->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)))).'\'); return false;" title="View Document">'.$vs_tmp.'</a>';
 										$vs_faculty_texts_output .= "</div>";
+										if(!$vs_year){
+											$vs_year = "NA";
+										}
+										$va_faculty_texts_by_year[$vs_year][] = $vs_faculty_texts_output;
 										$vn_texts_c++;
 									}
-					
+								}
+								$vs_faculty_text = "";
+								ksort($va_faculty_texts_by_year);
+								foreach($va_faculty_texts_by_year as $va_year_texts){
+									$vs_faculty_text .= join($va_year_texts, "\n");
 								}
 							}
 		
@@ -293,7 +302,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		</H1>
 <?php
-		if($vs_facet_description || $vs_fact_img || $vs_faculty_texts_output || (is_array($va_rel_types) && (sizeof($va_rel_types) > 1))){
+		if($vs_facet_description || $vs_fact_img || $vs_faculty_text || (is_array($va_rel_types) && (sizeof($va_rel_types) > 1))){
 			if($vs_facet_description || $vs_fact_img){
 				print "<div class='row bFacetContextHeader'>";
 				if($vs_facet_img){
@@ -304,7 +313,7 @@ if (!$vb_ajax) {	// !ajax
 				print "<div class='bFacetDescription'>".$vs_facet_description."</div></div></div>";
 			}
 			
-			if($vs_faculty_texts_output){
+			if($vs_faculty_text){
 ?>
 				<div class="row textsList display-flex">
 					<div class='col-sm-12'>
@@ -312,7 +321,7 @@ if (!$vb_ajax) {	// !ajax
 					</div>
 					<div class='col-sm-12'>
 						<div class="row textsListScroll display-flex">
-							<?php print $vs_faculty_texts_output; ?>
+							<?php print $vs_faculty_text; ?>
 						</div>				
 					</div>
 				</div><!-- end row -->

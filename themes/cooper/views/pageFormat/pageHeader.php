@@ -132,7 +132,11 @@
 <?php					
 										foreach($va_hero_images as $vn_key => $vs_hero){
 											print "<li>".$vs_hero;
-											print "<div class='frontTopSlideCaption'>".(($va_captions[$vn_key]) ? $va_captions[$vn_key] : "&nbsp;")."</div>";
+											$vs_caption = "";
+											if($va_captions[$vn_key] && (strToLower($va_captions[$vn_key]) != "[blank]")){
+												$vs_caption = $va_captions[$vn_key];
+											}
+											print "<div class='frontTopSlideCaption'>".(($vs_caption) ? $vs_caption : "&nbsp;")."</div>";
 											print "</li>";
 										}						
 ?>
