@@ -92,7 +92,7 @@
 	print "<div class='row' id='lbSetListPlaceholder'".((sizeof($va_set_ids) > 0) ? " style='display: none;'" : '')."><div class='col-sm-6 col-md-6'>\n".$this->render("Lightbox/set_list_item_placeholder_html.php", true)."\n</div><!-- end col --></div><!-- end row -->\n";
 ?>
 		</div><!-- end col 1-->
-		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setListRightColClass")) ? $vs_right_col_class : "col-sm-2 col-md-3 col-lg-3 col-lg-offset-2"; ?>">
+		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setListRightColClass")) ? $vs_right_col_class : "col-sm-2 col-md-3 col-lg-3 col-lg-offset-2"; ?> linkUnderline">
 			{{{lightbox_help_text}}}
 		</div><!-- end col -->
 	</div><!-- end row -->

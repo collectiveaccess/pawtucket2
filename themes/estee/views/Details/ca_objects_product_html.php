@@ -55,6 +55,7 @@
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
 						print $vs_rep_viewer;
+						print "<H6>Media may not be used, published or distributed without prior authorization.</H6>";
 					}else{
 						print "<div class='detailProductPlaceholder'><span class='glyphicon glyphicon-picture'></span></div>";
 						#print "<br/><div class='detailTool text-center'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Scan or Image", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'digitizationRequest'))."</div>";
@@ -63,7 +64,7 @@
 					<div id="detailAnnotations"></div>
 				
 					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-				
+			
 				</div><!-- end col -->
 			
 				<div class='col-sm-6 col-md-6'>
@@ -125,7 +126,8 @@
 					if(is_array($va_notes) && sizeof($va_notes)){
 						$va_notes = array_pop($va_notes);
 						foreach($va_notes as $va_note){
-							if(strToLower($va_note["object_note_status"]) == "unrestricted"){
+							$va_note["object_note_value"] = trim($va_note["object_note_value"]);
+							if($va_note["object_note_value"] && strToLower($va_note["object_note_status"]) == "unrestricted"){
 								$va_notes_filtered[] = $va_note["object_note_value"];
 							}
 						}
