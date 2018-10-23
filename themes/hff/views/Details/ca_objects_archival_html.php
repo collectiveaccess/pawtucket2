@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/bundles/ca_objects_default_html.php : 
+ * themes/default/views/bundles/ca_objects_artwork_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -33,6 +33,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -78,50 +79,41 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6'>
-				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
-				<HR>
+							<H4>{{{ca_objects.preferred_labels.name}}}</H4>
+				{{{<ifdef code="ca_objects.unitdate.dacs_date_text"><div class="unit"><H6>Date</H6>^ca_objects.unitdate.dacs_date_text</div></ifdef>}}}
+				{{{<ifnotdef code="ca_objects.unitdate.dacs_date_text"><ifdef code="ca_objects.unitdate.dacs_date_value"><div class="unit"><H6>Date</H6>^ca_objects.unitdate.dacs_date_value</div></ifdef></ifnotdef>}}}
+				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Identifier</H6>^ca_objects.idno</div></ifdef>}}}
+				{{{<ifdef code="ca_object_representations.media_types"><div class="unit"><H6>Media Type</H6>^ca_object_representations.media_types%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_object_representations.caption"><div class="unit"><H6>Preferred Caption</H6>^ca_object_representations.caption</div></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.idno"><H6>Identifier:</H6>^ca_objects.idno<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.classification"><H6>Classification:</H6>^ca_objects.classification<br/></ifdef>}}}				
-				{{{<ifdef code="ca_objects.common_date"><H6>Date:</H6>^ca_objects.common_date<br/></ifdef>}}}				
-				{{{<ifdef code="ca_objects.dacs_date_value"><H6>Date:</H6>^ca_objects.dacs_date_value<br/></ifdef>}}}				
-				{{{<ifdef code="ca_objects.library"><H6>Library:</H6>^ca_objects.library<br/></ifdef>}}}				
-				{{{<ifdef code="ca_objects.language"><H6>Language:</H6>^ca_objects.language<br/></ifdef>}}}				
-				
-				{{{<ifdef code="ca_objects.description">
-					<div class='unit'><h6>Description</h6>
-						<span class="trimText">^ca_objects.description</span>
+				{{{<ifdef code="ca_objects.extentDACS.extent_number|ca_objects.extentDACS.extent_type|ca_objects.extentDACS.physical_details|ca_objects.extentDACS.extent_dimensions">
+					<div class="unit"><H6>Extent & Medium</H6>
+						<unit relativeTo="ca_objects.extentDACS" delimiter="<br/>">
+							<ifdef code="ca_objects.extentDACS.extent_number">^ca_objects.extentDACS.extent_number </ifdef>
+							<ifdef code="ca_objects.extentDACS.extent_type">^ca_objects.extentDACS.extent_type: </ifdef>
+							<ifdef code="ca_objects.extentDACS.physical_details">^ca_objects.extentDACS.physical_details; </ifdef>
+							<ifdef code="ca_objects.extentDACS.extent_dimensions">^ca_objects.extentDACS.extent_dimensions </ifdef>
+						</unit>
 					</div>
 				</ifdef>}}}
 				
 				
+				{{{<ifdef code="ca_object_representations.copyright_statement"><div class="unit"><H6>Rights</H6>^ca_object_representations.copyright_statement</div></ifdef>}}}
 				
-				<hr></hr>
-					<div class="row">
-						<div class="col-sm-6">		
-							{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-							{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_collections" delimiter="<br/>"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit></unit>}}}
-							
-							{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-							{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities">^ca_entities.preferred_labels</unit> (^relationship_typename)</unit>}}}
-							
-							
-							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
-							
-							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
-							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter="<br/>"><unit relativeTo="ca_list_items"><l>^ca_list_items.preferred_labels.name_plural</l></unit> (^relationship_typename)</unit>}}}
-							
-						</div><!-- end col -->				
-						<div class="col-sm-6 colBorderLeft">
-							{{{map}}}
-						</div>
-					</div><!-- end row -->
+<?php
+				if($va_rel_entities = $t_object->get("ca_entities", array("checkAccess" => $va_access_values, "returnWithStructure" => true))){
+					$va_entities_by_type = array();
+					foreach($va_rel_entities as $va_rel_entity){
+						$va_entities_by_type[$va_rel_entity["relationship_typename"]][] = $va_rel_entity["displayname"];
+					}
+					foreach($va_entities_by_type as $vs_rel_type => $va_ents){
+						print "<div class='unit'><H6>".ucfirst($vs_rel_type)."</H6>".join("<br/>", $va_ents)."</div>";
+					}
+				}
+?>				
+					{{{<ifcount code="ca_collections" min="1"><div class="unit"><H6>Location in Archives Collection</H6><unit relativeTo="ca_collections" delimiter=" > "><l>^ca_collections.hierarchy.preferred_labels</l></unit></div></ifcount>}}}
+
+				
 						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
