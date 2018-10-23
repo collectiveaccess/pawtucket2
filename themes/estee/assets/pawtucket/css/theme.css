@@ -31,6 +31,7 @@ src:url("webFonts/HelveticaLT/05598d95Updated.eot?#iefix") format("eot"),url("we
 body {
     text-rendering: auto;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
     font-family: 'SangBleuSerif-Light';
     color:#000;
     margin-bottom:131px;
@@ -274,7 +275,7 @@ navbar-nav > li > a {
 	position:fixed;
 	width:100%;
 	background-color: rgba(0, 0, 0, 0.8);
-	padding-bottom:4px;
+	padding-bottom:5px;
 }
 .fixedHeader nav:hover{
 	background-color:#000;
@@ -294,6 +295,7 @@ navbar-nav > li > a {
 .fixedHeader .navbar-brand{
 	padding-left:0px;
 }
+
 .fixedHeader nav:hover .navbar-brand, .fixedHeader .navbar.opaque .navbar-brand{
 	padding-left:18px;
 }
@@ -369,7 +371,7 @@ nav .menuItems.show{
 .exploreBrandContainer a{
 	color:#000;
 	font-family: sangbleusanslight;
-	font-size: 2.5rem;
+	font-size: 2.0rem;
     transition: all 0.4s ease 0s;
     -webkit-transition: all 0.4s ease 0s;
     -moz-transition: all 0.4s ease 0s;
@@ -382,7 +384,11 @@ nav .menuItems.show{
 .exploreBrand{
 	padding-top:20px;
 }
-
+@media (min-width: 768px) {
+	.exploreBrandGrid .col-sm-3{
+		width:20%;
+	}
+}
 /* browse */
 #pageArea.results{
 	margin-top:36px;
@@ -728,9 +734,64 @@ h1.primaryLandingBannerTitle {
     z-index: 1000;
     top: -33px;
 }
+.collectionsList{
+	margin-top:30px;
+}
+.collectionsList .collectionBlock{
+	margin-bottom:0px;
+}
+@media (max-width: 768px) {
+	.collectionsList .collectionTitle{
+		text-align:center;
+	}
+}
+@media (min-width: 768px) {
+	.collectionsList .collectionTitle{
+		line-height: 100px;
+		height: 100px;
+	}
+
+
+	/* If the text has multiple lines, add the following: */
+	.collectionTitle a {
+		line-height: 1.5;
+		display: inline-block;
+		vertical-align: middle;
+	}
+}
+.collectionsList .collectionTitle a{
+	font-family: SangBleuSansLight;
+	color: #000;
+	text-transform: none;
+	text-decoration:none;
+	font-size: 2rem;
+	line-height: 3rem;
+	vertical-align:middle;
+}
+.collectionGraphic {
+	text-align:center;
+	width: 100px;
+	height: 100px;
+	overflow:hidden;
+	border-radius:100px;
+	padding-left:0px;
+	padding-right:0px;
+	margin:0px auto 0px auto;
+}
+.collectionTile{
+	margin-bottom:30px;
+}
+.collectionGraphic img {	
+	height:auto;
+	width:110px;
+}
 /* gallery */
 .gallery h6{
 	font-size: 14px;
+}
+.setItemDescription{
+	max-height: 190px;
+	overflow-y: scroll;
 }
 /* forms */
 .form-control:focus {
@@ -739,4 +800,11 @@ h1.primaryLandingBannerTitle {
 
 .contact p{
 	margin-bottom:25px;
+}
+.staticPage a, .contact a, .linkUnderline a, .linkUnderline p a{
+	text-decoration:underline !important;
+}
+.staticPage h4{
+	margin-top:30px;
+	font-weight:bold;
 }
