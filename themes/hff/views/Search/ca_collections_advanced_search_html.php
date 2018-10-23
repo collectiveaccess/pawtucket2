@@ -11,9 +11,15 @@ print "<p>Enter your search terms in the fields below.</p>";
 
 <div class='advancedContainer'>
 	<div class='row'>
-		<div class="advancedSearchField col-sm-6">
+		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the database.">Keyword</span>
 			{{{_fulltext%width=200px&height=1}}}
+		</div>			
+	</div>	
+	<div class='row'>
+		<div class="advancedSearchField col-sm-6">
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search collection titles.">Title</span>
+			{{{ca_collections.preferred_labels%width=200px&height=30px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Collection Types.">Type</span>
