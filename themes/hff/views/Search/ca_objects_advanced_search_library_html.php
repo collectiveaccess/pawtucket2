@@ -41,7 +41,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by Publication.">Publication</span>
-			
+			{{{ca_objects.publisher%width=220px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by Publication Date.">Publication Date (Year)</span>
@@ -65,7 +65,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 		</div>
 		<div class="advancedSearchField col-sm-6">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search by Category.">Category</span>
-			{{{ca_objects.book_category%width=220px}}}
+			{{{ca_objects.book_category%width=220px&nullOption=-}}}
 		</div>
 	</div>
 

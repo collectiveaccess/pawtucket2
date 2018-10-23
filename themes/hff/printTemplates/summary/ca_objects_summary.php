@@ -195,6 +195,7 @@
 				if($va_exhibitions = $t_item->get("ca_occurrences", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("exhibition")))){
 					$t_occ = new ca_occurrences();
 					print "<div class='unit'><H6>Exhibition History</H6>";
+					$t_objects_x_occurrences = new ca_objects_x_occurrences();
 					foreach($va_exhibitions as $va_exhibition){
 						$t_occ->load($va_exhibition["occurrence_id"]);
 						$vs_originating_venue 	= $t_occ->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='originator' delimiter=', '>^ca_entities.preferred_labels</unit>", array("checkAccess" => $va_access_values));
@@ -203,13 +204,66 @@
 						if(!$vs_date){
 							$vs_date = $t_occ->get("ca_occurrences.common_date");
 						}
-						print (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "")."<br/>";
+						# --- interstitial
+						$va_relations = $t_occ->get("ca_objects_x_occurrences.relation_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+						foreach($va_relations as $vn_relationship_id){
+							$t_objects_x_occurrences->load($vn_relationship_id);
+							if($t_objects_x_occurrences->get("object_id") == $t_item->get("ca_objects.object_id")){
+								break;
+							}
+						}
+						$va_interstitial = array();
+						$vs_interstitial = "";
+						if($vs_tmp = $t_objects_x_occurrences->get("checklist_number")){
+							$va_interstitial[] = $vs_tmp;
+						}
+						if($vs_tmp = $t_objects_x_occurrences->get("exhibition_title")){
+							$va_interstitial[] = $vs_tmp;
+						}
+						if($vs_tmp = $t_objects_x_occurrences->get("citation")){
+							$va_interstitial[] = $vs_tmp;
+						}
+						if($vs_tmp = $t_objects_x_occurrences->get("exh_remarks")){
+							$va_interstitial[] = $vs_tmp;
+						}
+						if($vs_tmp = $t_objects_x_occurrences->get("source")){
+							$va_interstitial[] = $vs_tmp;
+						}
+						if(sizeof($va_interstitial)){
+							$vs_interstitial = ", ".join(", ", $va_interstitial);
+						}
+						print (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "").$vs_interstitial."<br/>";
 					}
 					print "</div>";
 				}
-
-				print $t_item->getWithTemplate('<ifcount code="ca_occurrences" min="1" restrictToTypes="literature"><div class="unit"><H6>Literature References</H6><unit relativeTo="ca_occurrences" restrictToTypes="literature" delimiter="<br/>"><ifdef code="lit_citation">^ca_occurrences.lit_citation</ifdef><ifnotdef code="lit_citation">^ca_occurrences.preferred_labels</ifnotdef></unit></div></ifcount>');
-							
+				if($va_literatures = $t_item->get("ca_occurrences", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("literature")))){
+					$t_occ = new ca_occurrences();
+					print "<div class='unit'><H6>Literature References</H6>";
+					$t_objects_x_occurrences = new ca_objects_x_occurrences();
+					foreach($va_literatures as $va_literature){
+						$t_occ->load($va_literature["occurrence_id"]);
+						$vs_title = "";
+						if($vs_tmp = $t_occ->get("ca_occurrences.lit_citation")){
+							$vs_title = $vs_tmp;
+						}else{
+							$vs_title = $t_occ->get("ca_occurrences.preferred_labels");
+						}
+						# --- interstitial
+						$va_relations = $t_occ->get("ca_objects_x_occurrences.relation_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+						foreach($va_relations as $vn_relationship_id){
+							$t_objects_x_occurrences->load($vn_relationship_id);
+							if($t_objects_x_occurrences->get("object_id") == $t_item->get("ca_objects.object_id")){
+								break;
+							}
+						}
+						$vs_interstitial = "";
+						if($vs_tmp = $t_objects_x_occurrences->get("source")){
+							$vs_interstitial = ", ".$vs_tmp;
+						}
+						print $vs_title.$vs_interstitial."<br/>";
+					}
+					print "</div>";
+				}			
 				print $t_item->getWithTemplate('<ifdef code="ca_objects.remarks"><div class="unit"><h6>Remarks</h6>^ca_objects.remarks</div></ifdef>');
 				
 

@@ -75,7 +75,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 				$vs_output .= "</span>";
 			}
 			if($vn_rel_object_count){
-				$vs_output .= " <small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+				$vs_output .= " <small>(".$vn_rel_object_count." digital item".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 			}
 			if($vn_level == 1){
 				$vs_output .= "</div>";
