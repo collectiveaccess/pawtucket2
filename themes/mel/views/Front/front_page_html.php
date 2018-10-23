@@ -43,7 +43,7 @@
                 <div class="col-sm-4">
                     <div class="front-feature-box">
                         <a href="/Gallery/Index">
-                        <?php print caGetThemeGraphic($this->request, 'exhibition_front.jpg'); ?>
+                        <?php print caGetThemeGraphic($this->request, 'collection_front.jpg'); ?>
                         <div class="front-feature-title">
                             <h3>Exhibitions</h3>
                         </div>
@@ -63,7 +63,7 @@
                 <div class="col-sm-4">
                     <div class="front-feature-box">
                         <a href="/Browse/Objects">
-                        <?php print caGetThemeGraphic($this->request, 'collection_front.jpg'); ?>
+                        <?php print caGetThemeGraphic($this->request, 'exhibition_front.jpg'); ?>
                         <div class="front-feature-title">
                             <h3>Database</h3>
                         </div>
