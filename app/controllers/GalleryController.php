@@ -299,6 +299,7 @@
  			$this->view->setVar("set_num_items", sizeof($va_set_item_ids));
  			$this->view->setVar("set_item_num", (array_search($pn_item_id, $va_set_item_ids) + 1));
  			
+ 			$this->view->setVar("set_item", $t_set_item);
  			$this->view->setVar("object", $t_instance);
  			$this->view->setVar("instance", $t_instance);
  			$this->view->setVar("object_id", $t_set_item->get("row_id"));

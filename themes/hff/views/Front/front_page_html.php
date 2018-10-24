@@ -34,26 +34,26 @@
 	<div class="row tileLinks">
 		<div class="col-sm-4">
 <?php
-			print caNavLink($this->request, caGetThemeGraphic($this->request, 'paper_1958_Frankenthaler_Untitled_copy0.jpg'), "", "", "Browse", "artworks");
+			print caNavLink($this->request, caGetThemeGraphic($this->request, 'hpArtwork2.jpg'), "", "", "Browse", "artworks");
 			print "<br/>".caNavLink($this->request, "Artworks", "", "", "Browse", "artworks");
 ?>
 		</div><!--end col-sm-4-->
 		<div class="col-sm-4">
 <?php
-			print caNavLink($this->request, caGetThemeGraphic($this->request, 'frankenthaler_archival.jpg'), "", "", "Browse", "archival");
-			print "<br/>".caNavLink($this->request, "Archival Items", "", "", "Browse", "archival");
+			print caNavLink($this->request, caGetThemeGraphic($this->request, 'hpArchives.jpg'), "", "", "Browse", "digital_items");
+			print "<br/>".caNavLink($this->request, "Digital Items", "", "", "Browse", "digital_items");
 ?>
 		</div> <!--end col-sm-4-->
 		<div class="col-sm-4">
 <?php
-			print caNavLink($this->request, caGetThemeGraphic($this->request, '1969_Kongresshalle_Berlin.jpg'), "", "", "Browse", "exhibitions");
+			print caNavLink($this->request, caGetThemeGraphic($this->request, 'hpExhibitions.jpg'), "", "", "Browse", "exhibitions");
 			print "<br/>".caNavLink($this->request, "Exhibitions", "", "", "Browse", "exhibitions");
 ?>			
 		</div> <!--end col-sm-4-->	
 	</div><!-- end row -->
-	<div class="row tileLinks">
+	<div class="row">
 		<div class="col-sm-12">
-			<H1>{{{home_page_tagline}}}</H1>
+			<br/><br/><br/><HR>
 		</div>
 	</div>
 <?php
