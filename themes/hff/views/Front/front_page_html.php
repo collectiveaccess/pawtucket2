@@ -40,8 +40,8 @@
 		</div><!--end col-sm-4-->
 		<div class="col-sm-4">
 <?php
-			print caNavLink($this->request, caGetThemeGraphic($this->request, 'hpArchives.jpg'), "", "", "Browse", "archival");
-			print "<br/>".caNavLink($this->request, "Archival Items", "", "", "Browse", "archival");
+			print caNavLink($this->request, caGetThemeGraphic($this->request, 'hpArchives.jpg'), "", "", "Browse", "digital_items");
+			print "<br/>".caNavLink($this->request, "Digital Items", "", "", "Browse", "digital_items");
 ?>
 		</div> <!--end col-sm-4-->
 		<div class="col-sm-4">
