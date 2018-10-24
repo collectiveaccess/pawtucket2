@@ -70,7 +70,7 @@
 					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
 					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).load('<?php print caNavUrl($this->request, '*', '*', 'GetMediaInline', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[i] + '/display/detail', function(e) {
 						// update carousel height with current slide height after ajax load
-						jQuery(this).find('img').bind('load', function() {
+						jQuery(this).find('img').on('load', function() {
 							jQuery('.jcarousel').height($('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height());
 						});
 					});

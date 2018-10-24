@@ -3,9 +3,7 @@
 		<div class="col-sm-10 col-sm-offset-1 " >
 			<h1>Advanced Exhibition Search <small>or search <?php print caNavLink($this->request, 'provenance', '', 'Search', 'advanced', 'provenance');?>, <?php print caNavLink($this->request, 'references', '', 'Search', 'advanced', 'references');?>, or <?php print caNavLink($this->request, 'works', '', 'Search', 'advanced', 'artworks');?></small></h1>
 
-<?php			
-	print "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc pharetra venenatis lorem, sit amet ornare tortor molestie quis. Ut commodo in elit sit amet lacinia. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla facilisi. Proin iaculis at nisl nec ultricies. Vivamus commodo commodo dui nec efficitur. </p>";
-?>
+<p>{{{advText}}}</p>
 
 {{{form}}}
 	

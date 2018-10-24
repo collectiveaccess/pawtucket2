@@ -213,10 +213,14 @@
 					$('#searchToggle').click(function(){ 
 						if($('#searchDiv').css('display') === 'block') {
 							$('#searchDiv').fadeOut(300);
-							$('.nav.navbar-nav').fadeIn(300);
+							if (window.innerWidth > 1120) {
+								$('.nav.navbar-nav').fadeIn(300);
+							}
 							$('#searchToggle').html("<?php print caGetThemeGraphic($this->request, 'search.png'); ?>");
 						} else {
-							$('.nav.navbar-nav').fadeOut(300);
+							if (window.innerWidth > 1120) {
+								$('.nav.navbar-nav').fadeOut(300);
+							}
 							$('#searchDiv').fadeIn(300);
 							$('#searchToggle').html("<?php print caGetThemeGraphic($this->request, 'close.png'); ?>");						
 						}

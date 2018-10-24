@@ -36,7 +36,6 @@
 	
 	$vn_facet_display_length_initial = 7;
 	$vn_facet_display_length_maximum = 60;
-	
 	if(is_array($va_facets) && sizeof($va_facets)){
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			

@@ -48,7 +48,7 @@
  		}
  		# -------------------------------------------------------
  		public function products(){		
-			# --- brand landing page
+			# --- products landing page - shows brands
 			$t_list = new ca_lists();
 			$va_brands = $t_list->getItemsForList("brand", array("extractValuesByUserLocale" => true, "checkAccess" => $this->opa_access_values, "sort" => __CA_LISTS_SORT_BY_RANK__));
 			if(is_array($va_brands) && sizeof($va_brands)){
@@ -72,6 +72,20 @@
 			$this->view->setVar("archival_types", $va_archival_types);
 		
 			$this->render("Explore/archival_html.php");
+
+ 		}
+ 		# -------------------------------------------------------
+ 		public function brands(){		
+			# --- all objects landing page - shows brands
+			$t_list = new ca_lists();
+			$va_brands = $t_list->getItemsForList("brand", array("extractValuesByUserLocale" => true, "checkAccess" => $this->opa_access_values, "sort" => __CA_LISTS_SORT_BY_RANK__));
+			if(is_array($va_brands) && sizeof($va_brands)){
+				$qr_brands = caMakeSearchResult('ca_list_items', array_keys($va_brands));
+				$this->view->setVar("brands_search", $qr_brands);
+			}
+			$this->view->setVar("brands", $va_brands);
+		
+			$this->render("Explore/brands_html.php");
 
  		}
  		# -------------------------------------------------------

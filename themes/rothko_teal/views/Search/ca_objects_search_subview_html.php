@@ -53,7 +53,7 @@
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, ''._t('Full Results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, ''._t('Filter results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> 
 <?php
 				}
 ?>

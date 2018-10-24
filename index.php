@@ -116,8 +116,8 @@
 		// Security headers
 		$resp->addHeader("X-XSS-Protection", "1; mode=block");
 		$resp->addHeader("X-Frame-Options", "SAMEORIGIN");
-		$resp->addHeader("Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com 'unsafe-inline' 'unsafe-eval';"); 
-		$resp->addHeader("X-Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com 'unsafe-inline' 'unsafe-eval';"); 
+		$resp->addHeader("Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com ajax.googleapis.com 'unsafe-inline' 'unsafe-eval';"); 
+		$resp->addHeader("X-Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com ajax.googleapis.com 'unsafe-inline' 'unsafe-eval';"); 
 	
 		//
 		// Dispatch the request

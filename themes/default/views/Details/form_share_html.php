@@ -83,7 +83,7 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#shareForm').submit(function(e){		
+		jQuery('#shareForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', 'Detail', 'sendShare'); ?>',
 				jQuery('#shareForm').serialize()

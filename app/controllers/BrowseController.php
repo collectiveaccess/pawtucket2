@@ -318,6 +318,7 @@
 				$ps_sort_direction = 'asc';
 			}
 			$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
+			
 			$va_show_letter_bar_sorts = caGetOption('showLetterBarSorts', $va_browse_info, null);
 			if(is_array($va_show_letter_bar_sorts) && in_array($vs_sort_fld, $va_show_letter_bar_sorts)){
 				if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar

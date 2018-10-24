@@ -82,7 +82,7 @@
 ?>
 			<div class='{{{block}}}Result multisearchResult'>
 <?php 
-				$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
+				$vs_image = $qr_results->get('ca_object_representations.media.small', array("checkAccess" => $va_access_values));
 				if(!$vs_image){
 					$t_list_item->load($qr_results->get("type_id"));
 					$vs_typecode = $t_list_item->get("idno");
@@ -92,7 +92,7 @@
 						$vs_image = $vs_default_placeholder_tag;
 					}
 				}
-				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
+				print $qr_results->getWithTemplate('<div class="sImageWrapper"><l>'.$vs_image.'</l></div>', array("checkAccess" => $va_access_values));
 
 				if ($vs_block == "objects") {				
 					print "<p><b>".$qr_results->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'delimiter' => ', '))."</b></p>";
