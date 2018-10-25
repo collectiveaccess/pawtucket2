@@ -123,7 +123,7 @@
 					switch($vs_typecode){
 						case "literature":
 							$vs_tmp = $qr_res->get("{$vs_table}.lit_citation");
-							$vs_label_detail_link 	= caDetailLink($this->request, ($vs_tmp) ? $vs_tmp : "No citation available.  Title:".$qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+							$vs_label_detail_link 	= caDetailLink($this->request, ($vs_tmp) ? $vs_tmp : "No citation available.  Title: ".$qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 							
 						break;
 						# ------------------------
@@ -257,10 +257,7 @@
 						{$vs_idno_detail_link}{$vs_label_detail_link}
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
-				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
-					<hr>
-					{$vs_expanded_info}{$vs_add_to_set_link}
-				</div><!-- bResultListItemExpandedInfo -->
+				".(($vs_expanded_info || $vs_add_to_set_link) ? "<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'><hr>{$vs_expanded_info}{$vs_add_to_set_link}</div><!-- bResultListItemExpandedInfo -->" : "")."
 			</div><!-- end bResultListItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');

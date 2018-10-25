@@ -80,7 +80,7 @@
 				print "<div class='authorityResultLong'>";
 				
 				$vs_tmp = $qr_results->get("ca_occurrences.lit_citation");
-				print caDetailLink($this->request, ($vs_tmp) ? $vs_tmp : "No citation available.  Title:".$qr_results->get("{$vs_table}.preferred_labels"), '', "ca_occurrences", $qr_results->get("ca_occurrences.occurrence_id"));
+				print caDetailLink($this->request, ($vs_tmp) ? $vs_tmp : "No citation available.  Title :".$qr_results->get("{$vs_table}.preferred_labels"), '', "ca_occurrences", $qr_results->get("ca_occurrences.occurrence_id"));
 				
 				print "</div>";
 			$vn_count++;

@@ -106,7 +106,7 @@
 					switch($vs_typecode){
 						case "literature":
 							$vs_tmp = $vo_result->get("{$vs_table}.lit_citation");
-							$vs_label 	= ($vs_tmp) ? $vs_tmp : "No citation available.  Title:".$vo_result->get("{$vs_table}.preferred_labels");
+							$vs_label 	= ($vs_tmp) ? $vs_tmp : "No citation available.  Title: ".$vo_result->get("{$vs_table}.preferred_labels");
 							
 						break;
 						# ------------------------

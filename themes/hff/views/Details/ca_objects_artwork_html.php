@@ -91,7 +91,7 @@
 					if(is_array($va_artists) && sizeof($va_artists)){
 						$va_tmp = array();
 						foreach($va_artists as $va_artist){
-							$va_tmp[] = caNavLink($this->request, $va_artist["displayname"], "", "", "MultiSearch", "Index", array("search" => "ca_entities.entity_id:".$va_artist["entity_id"]));
+							$va_tmp[] = caNavLink($this->request, $va_artist["displayname"], "", "", "MultiSearch", "Index", array("search" => $va_artist["displayname"]));
 						}
 						print join(", ",$va_tmp)."<br/>";
 					}
