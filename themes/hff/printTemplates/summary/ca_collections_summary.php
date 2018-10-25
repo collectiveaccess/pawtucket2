@@ -42,6 +42,7 @@
  	$t_item = $this->getVar('t_subject');
 	$t_display = $this->getVar('t_display');
 	$va_placements = $this->getVar("placements");
+	$va_access_values = caGetUserAccessValues($this->request);	
 
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
@@ -105,7 +106,7 @@
 	
 <?php
 
-	if ($t_item->get("ca_collections.children.collection_id") || $t_item->get("ca_objects.object_id")){
+	if ($t_item->get("ca_collections.children.collection_id", array("checkAccess" => $va_access_values)) || $t_item->get("ca_objects.object_id", array("checkAccess" => $va_access_values))){
 		print "<hr/><br/>Collection Inventory";
 		if ($t_item->get('ca_collections.collection_id')) {
 			print caGetCollectionLevelSummary($this->request, array($t_item->get('ca_collections.collection_id')), 1);

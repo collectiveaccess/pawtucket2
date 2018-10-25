@@ -46,6 +46,7 @@
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
 	print $this->render("footer.php");	
+	$va_access_values 	= $this->getVar('access_values');
 
 ?>
 	<div class="representationList">
@@ -85,8 +86,8 @@
 							print $t_item->getWithTemplate('<ifdef code="ca_objects.unitdate.dacs_date_text"><div class="unit"><H6>Date</H6>^ca_objects.unitdate.dacs_date_text</div></ifdef>');
 							print $t_item->getWithTemplate('<ifnotdef code="ca_objects.unitdate.dacs_date_text"><ifdef code="ca_objects.unitdate.dacs_date_value"><div class="unit"><H6>Date</H6>^ca_objects.unitdate.dacs_date_value</div></ifdef></ifnotdef>');
 							print $t_item->getWithTemplate('<ifdef code="ca_objects.idno"><div class="unit"><H6>Identifier</H6>^ca_objects.idno</div></ifdef>');
-							print $t_item->getWithTemplate('<ifdef code="ca_object_representations.media_types"><div class="unit"><H6>Media Type</H6>^ca_object_representations.media_types%delimiter=,_</div></ifdef>');
-							print $t_item->getWithTemplate('<ifdef code="ca_object_representations.caption"><div class="unit"><H6>Preferred Caption</H6>^ca_object_representations.caption</div></ifdef>');
+							print $t_item->getWithTemplate('<ifdef code="ca_object_representations.media_types"><div class="unit"><H6>Media Type</H6>^ca_object_representations.media_types%delimiter=,_</div></ifdef>', array("checkAccess" => $va_access_values));
+							print $t_item->getWithTemplate('<ifdef code="ca_object_representations.caption"><div class="unit"><H6>Preferred Caption</H6>^ca_object_representations.caption</div></ifdef>', array("checkAccess" => $va_access_values));
 				
 							print $t_item->getWithTemplate('<ifdef code="ca_objects.extentDACS.extent_number|ca_objects.extentDACS.extent_type|ca_objects.extentDACS.physical_details|ca_objects.extentDACS.extent_dimensions">
 								<div class="unit"><H6>Extent & Medium</H6>
@@ -100,7 +101,7 @@
 							</ifdef>');
 				
 				
-							print $t_item->getWithTemplate('<ifdef code="ca_object_representations.copyright_statement"><div class="unit"><H6>Rights</H6>^ca_object_representations.copyright_statement</div></ifdef>');
+							print $t_item->getWithTemplate('<ifdef code="ca_object_representations.copyright_statement"><div class="unit"><H6>Rights</H6>^ca_object_representations.copyright_statement</div></ifdef>', array("checkAccess" => $va_access_values));
 				
 							if($va_rel_entities = $t_item->get("ca_entities", array("checkAccess" => $va_access_values, "returnWithStructure" => true))){
 								$va_entities_by_type = array();
@@ -112,7 +113,7 @@
 								}
 							}
 				
-							print $t_item->getWithTemplate('<ifcount code="ca_collections" min="1"><div class="unit"><H6>Location in Archives Collection</H6><unit relativeTo="ca_collections" delimiter=" > ">^ca_collections.hierarchy.preferred_labels</unit></div></ifcount>');
+							print $t_item->getWithTemplate('<ifcount code="ca_collections" min="1"><div class="unit"><H6>Location in Archives Collection</H6><unit relativeTo="ca_collections" delimiter=" > ">^ca_collections.hierarchy.preferred_labels</unit></div></ifcount>', array("checkAccess" => $va_access_values));
 							
 						break;
 						# ------------------------

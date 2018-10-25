@@ -1,4 +1,5 @@
 <?php
+	$va_access_values = caGetUserAccessValues($this->request);	
 	$t_item = $this->getVar("instance");
 	$t_list_item = new ca_list_items();
 
