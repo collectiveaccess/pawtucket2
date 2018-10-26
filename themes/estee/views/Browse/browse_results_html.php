@@ -254,6 +254,11 @@ if (!$vb_ajax) {	// !ajax
 			</form>
 			<div style="clear:both"></div>
 		</div>
+<?php
+		if(in_array(strToLower($this->request->getAction()), array("objects", "archival"))){
+			print caNavLink($this->request, _t("Browse All Products"), "btn-default browseProducts", "", "Browse", "products");
+		}
+?>
 		
 <?php
 		print $this->render("Browse/browse_refine_subview_html.php");

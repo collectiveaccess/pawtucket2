@@ -99,7 +99,7 @@
 		</div><!-- end caFormOverlay -->
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#ResetForm').submit(function(e){		
+		jQuery('#ResetForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', 'LoginReg', ($this->getVar("action")) ? $ps_action : 'resetSend', null); ?>',
 				jQuery('#ResetForm').serialize()
