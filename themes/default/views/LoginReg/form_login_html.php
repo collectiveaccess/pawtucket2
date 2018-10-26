@@ -45,13 +45,13 @@
 				<div class="form-group">
 					<label for="username" class="col-sm-<?php print $vn_label_col; ?> control-label"><?php print _t("Username"); ?></label>
 					<div class="col-sm-7">
-						<input type="text" class="form-control" id="username" name="username">
+						<input type="text" class="form-control" id="username" name="username" autocomplete="off" />
 					</div><!-- end col-sm-7 -->
 				</div><!-- end form-group -->
 				<div class="form-group">
 					<label for="password" class="col-sm-<?php print $vn_label_col; ?> control-label"><?php print _t("Password"); ?></label>
 					<div class="col-sm-7">
-						<input type="password" name="password" class="form-control" id="password" />
+						<input type="password" name="password" class="form-control" id="password" autocomplete="off" />
 					</div><!-- end col-sm-7 -->
 				</div><!-- end form-group -->
 				<div class="form-group">
