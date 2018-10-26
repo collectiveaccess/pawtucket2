@@ -72,7 +72,7 @@
 ?>
 		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
 			<label for='password' class='col-sm-4 control-label'><?php print _t('Reset Password'); ?></label>
-			<div class="col-sm-7"><p class="help-block"><?php print _t("Only enter if you would like to change your current password"); ?></p><input type="password" name="password" size="40" class="form-control" /></div><!-- end col-sm-7 -->
+			<div class="col-sm-7"><p class="help-block"><?php print _t("Only enter if you would like to change your current password"); ?></p><input type="password" name="password" size="40" class="form-control"  autocomplete="off" /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
 			<label for='password2' class='col-sm-4 control-label'><?php print _t('Re-Type password'); ?></label>
