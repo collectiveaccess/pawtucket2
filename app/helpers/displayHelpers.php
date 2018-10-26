@@ -702,8 +702,8 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	 */
 	function caEditorFieldList($po_request, $pt_subject, $pa_bundle_list, $pa_options=null) {
 		$vs_buf = "<script type=\"text/javascript\">
-		jQuery(document).ready(function() {
-			jQuery(document).bind('keydown.ctrl_f', function() {
+		jQuery(document).on('ready', function() {
+			jQuery(document).on('keydown.ctrl_f', function() {
 				caHierarchyOverviewPanel.hidePanel({dontCloseMask:1});
 				caEditorFieldList.onOpenCallback = function(){
 					var selector = '#' + caEditorFieldList.panelID + ' a.editorFieldListLink:link';
@@ -744,8 +744,8 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	function caEditorHierarchyOverview($po_request, $ps_table, $pn_id, $pa_options=null) {
 		$t_subject = Datamodel::getInstanceByTableName($ps_table, true);
 		$vs_buf = "<script type=\"text/javascript\">
-		jQuery(document).ready(function() {
-			jQuery(document).bind('keydown.ctrl_h', function() {
+		jQuery(document).on('ready', function() {
+			jQuery(document).on('keydown.ctrl_h', function() {
 				caEditorFieldList.hidePanel({dontCloseMask:1});
 				
 				var url;
@@ -849,7 +849,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 							// Output current "location" of object in life cycle. Configuration is taken from a ca_objects_history bundle configured for the current editor
 							//
 							$va_placement = array_shift($va_placements);
-							$va_bundle_settings = $va_placement['settings'];
+							$va_bundle_settings = caConvertCurrentLocationCriteriaToBundleSettings(); //$va_placement['settings'];
 							if (is_array($va_history = $t_item->getObjectHistory($va_bundle_settings, array('limit' => 1, 'currentOnly' => true))) && (sizeof($va_history) > 0)) {
 								$va_current_location = array_shift(array_shift($va_history));
 
@@ -2731,8 +2731,8 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		if(!$po_request) { global $g_request; $po_request = $g_request; }
 		
 	
-		$va_display_format = $o_config->getList("{$vs_rel_table}_lookup_settings");
-		$vs_display_delimiter = $o_config->get("{$vs_rel_table}_lookup_delimiter");
+		if (!is_array($va_display_format = $o_config->getList("{$vs_rel_table}_lookup_settings"))) { $va_display_format = ['^label']; }
+		if (!($vs_display_delimiter = $o_config->get("{$vs_rel_table}_lookup_delimiter"))) { $vs_display_delimiter = ''; }
 		if (!$vs_template) { $vs_template = join($vs_display_delimiter, $va_display_format); }
 		
 		$va_related_item_info = $va_parent_ids = $va_hierarchy_ids = array();
@@ -2933,7 +2933,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	 *
 	 */
 	function caObjectsDisplayDownloadLink($po_request, $pn_object_id = null) {
-		$o_config = Configuration::load();
+		$o_config = caGetDetailConfig();
 		$vn_can_download = false;
 		if($vs_allow = $o_config->get(['allowObjectRepresentationDownload', 'allow_ca_objects_representation_download'])){
 			switch($vs_allow){
@@ -2962,7 +2962,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		}
 		
 		$va_types = $o_config->get(['restrictObjectRepresentationDownloadToObjectTypes', 'allow_ca_objects_representation_download_types']);
-		if($pn_object_id && $vn_can_download && is_array() && sizeof($va_types)){
+		if($pn_object_id && $vn_can_download && is_array($va_types) && sizeof($va_types)){
 			# --- see if current object's type is in the confirgured array
 			$t_object = new ca_objects($pn_object_id);
 			$t_list_item = new ca_list_items($t_object->get("type_id"));
@@ -4161,6 +4161,8 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 					['t_instance' => $t_instance, 't_subject' => $pt_subject, 'display' => $va_display_info, 'display_type' => $ps_display_type],
 					['viewerWrapper' => 'viewerInline', 'context' => caGetOption('context', $pa_options, null)]
 				).$vs_tool_bar.$vs_caption."</div></div>";
+				
+				if (sizeof($va_reps) > 10) { break(2); }
 			}
  		}
  		return $va_reps;
@@ -4485,4 +4487,40 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
         }
         return $va_lookup_urls;
 	}
+	# ------------------------------------------------------------------
+	/**
+	 *
+	 */
+	function caConvertCurrentLocationCriteriaToBundleSettings() {
+	    require_once(__CA_MODELS_DIR__."/ca_relationship_types.php");
+	    
+	    $o_config = Configuration::load();
+	    $va_bundle_settings = array();
+ 		$t_rel_type = new ca_relationship_types();
+ 		
+	    $va_map = $o_config->getAssoc('current_location_criteria');
+ 		if(!is_array($va_map)){
+		    $va_map = array();
+	    }
+	 
+ 		foreach($va_map as $vs_table => $va_types) {
+ 			$va_bundle_settings["{$vs_table}_showTypes"] = array();
+ 			if(is_array($va_types)) {
+				foreach($va_types as $vs_type => $va_config) {
+					switch($vs_table) {
+						case 'ca_storage_locations':
+						case 'ca_objects_x_storage_locations':
+							$va_bundle_settings["{$vs_table}_showRelationshipTypes"][] = $t_rel_type->getRelationshipTypeID('ca_objects_x_storage_locations', $vs_type);
+							break;
+						default:
+							if(!is_array($va_config)) { break; }
+							$va_bundle_settings["{$vs_table}_showTypes"][] = array_shift(caMakeTypeIDList($vs_table, array($vs_type)));
+							$va_bundle_settings["{$vs_table}_{$vs_type}_dateElement"] = $va_config['date'];
+							break;
+					}
+				}
+			}
+ 		}
+ 		return $va_bundle_settings;
+ 	}
 	# ------------------------------------------------------------------

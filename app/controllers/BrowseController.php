@@ -318,6 +318,7 @@
 				$ps_sort_direction = 'asc';
 			}
 			$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
+			
 			$va_show_letter_bar_sorts = caGetOption('showLetterBarSorts', $va_browse_info, null);
 			if(is_array($va_show_letter_bar_sorts) && in_array($vs_sort_fld, $va_show_letter_bar_sorts)){
 				if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
@@ -366,12 +367,12 @@
 			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);
 
-			$this->view->setVar('start', $vn_start = $this->request->getParameter('s', pInteger));
+			$this->view->setVar('start', $vn_start = (int)$this->request->getParameter('s', pInteger));
 			
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
-				if (($vn_key_start = (int)$vn_start - 1000) < 0) { $vn_key_start = 0; }
+				if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
 				$qr_res->seek($vn_key_start);
 				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 				$qr_res->seek($vn_start);

@@ -59,7 +59,7 @@
 					<p>© <?php print date('Y');?> National Gallery of Art, Washington</p>
 				</div>
 				<div class="col-sm-6">
-					<div style="margin-bottom:15px;"><i>Mark Rothko: Works on Paper</i> will ultimately document approximately 2,600 works from public and private collections worldwide.  Cataloguing is ongoing, and works and information will be added to the site continuously during the coming years.</div>
+					<div style="margin-bottom:15px;">{{{footerText}}}</div>
 					<div class="footerLinks">
 						<div class="footerLink"><?php print caNavLink($this->request, 'About', '', '', 'About', 'project');?></div> | 
 						<div class="footerLink space"><?php print caNavLink($this->request, ' Credits', '', '', 'About', 'credits'); ?></div> | 

@@ -7,6 +7,8 @@
 	if(is_array($va_rep_ids) && (sizeof($va_rep_ids) > 1)){
 		$vb_multiple_reps = true;
 	}
+	$t_item->get("ca_collections.collection_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("featured"), "checkAccess" => $va_access_values));
+	$va_detail_collections = $t_item->get("ca_collections.collection_id", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("history"), "checkAccess" => $va_access_values));
 ?>
 <div class="row">
 	<div class='col-xs-12'>
@@ -28,6 +30,11 @@
 <div class='col-sm-<?php print ($vb_multiple_reps) ? "7" : "8"; ?>'>
 	<div class="detailTitleSmall">{{{ca_objects.preferred_labels.name}}}</div>
 	{{{representationViewer}}}
+	<div class="row">
+		<div class="col-xs-12">
+			{{{<ifdef code="ca_object_representations.media"><p><em>To display in FULL SCREEN hover the cursor over the image above ​and click the top left <span class="glyphicon glyphicon-zoom-in" aria-hidden="true"></span> zoom button</em></p></ifdef>}}}
+		</div>
+	</div>
 	{{{<ifdef code="ca_objects.description"><br/><p>^ca_objects.description</p></ifdef>}}}
 	{{{<ifdef code="ca_objects.additional_info">
 			<div class="detailMoreInfo" id="additional_info_link"><a href="#" onClick="jQuery('#additional_info').toggle(); jQuery('#additional_info_link').toggle(); return false;">Read More <span class="glyphicon glyphicon-arrow-down small"></span></a></div>
@@ -78,9 +85,61 @@
 			$i++;
 		}
 	}
-	$va_collections = $t_item->get("ca_collections", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+	#featured collections
+	if(is_array($va_featured_collections) && sizeof($va_featured_collections)){
+		$q_featured_collections = caMakeSearchResult('ca_collections', $va_featured_collections);
+		if($q_featured_collections->numHits()){
+			print "<div class='btn btn-default'>Featured Collection".((sizeof($va_featured_collections) > 1) ? "s" : "")."</div>";
+			$i = 0;
+			while($q_featured_collections->nextHit()){
+				if($i > 0){
+					print "<HR/>";
+				}
+				if(!($vs_thumb = $q_featured_collections->getWithTemplate("<unit relativeTo='ca_objects' length='1'><unit relativeTo='ca_object_representations' length='1'>^ca_object_representations.media.resultcrop</unit></unit>", array("checkAccess" => $va_access_values)))){
+					$vs_thumb = caGetThemeGraphic($this->request, 'placeholder.jpg');
+				}
+				$vs_caption = $q_featured_collections->getWithTemplate('<l>^ca_collections.preferred_labels.name</l>');
+				print "<div class='row'><div class='col-sm-4 col-md-4 col-lg-4 detailRelatedThumb'>".$vs_thumb."</div>\n";
+				print "<div class='col-sm-8 col-md-8 col-lg-8'>\n";
+				print $q_featured_collections->getWithTemplate("<div class='detailRelatedTitle'><l>^ca_collections.preferred_labels.name</l></div>");
+				if($vs_brief_description = $q_featured_collections->get("ca_collections.brief_description")){
+					print $vs_brief_description;
+				}
+				print "</div></div><!-- end row -->";
+				$i++;
+			}
+		}
+	}
+	# Detail collections
+	if(is_array($va_detail_collections) && sizeof($va_detail_collections)){
+		$q_detail_collections = caMakeSearchResult('ca_collections', $va_detail_collections);
+		if($q_detail_collections->numHits()){
+			print "<div class='btn btn-default'>Detailed Histor".((sizeof($va_detail_collections) > 1) ? "ies" : "y")."</div>";
+			$i = 0;
+			while($q_detail_collections->nextHit()){
+				if($i > 0){
+					print "<HR/>";
+				}
+				if(!($vs_thumb = $q_detail_collections->getWithTemplate("<unit relativeTo='ca_objects' length='1'><unit relativeTo='ca_object_representations' length='1'>^ca_object_representations.media.resultcrop</unit></unit>", array("checkAccess" => $va_access_values)))){
+					$vs_thumb = caGetThemeGraphic($this->request, 'placeholder.jpg');
+				}
+				$vs_caption = $q_detail_collections->getWithTemplate('<l>^ca_collections.preferred_labels.name</l>');
+				print "<div class='row'><div class='col-sm-4 col-md-4 col-lg-4 detailRelatedThumb'>".$vs_thumb."</div>\n";
+				print "<div class='col-sm-8 col-md-8 col-lg-8'>\n";
+				print $q_detail_collections->getWithTemplate("<div class='detailRelatedTitle'><l>^ca_collections.preferred_labels.name</l></div>");
+				if($vs_brief_description = $q_detail_collections->get("ca_collections.brief_description")){
+					print $vs_brief_description;
+				}
+				print "</div></div><!-- end row -->";
+				$i++;
+			}
+		}
+	}
+	$t_object_thumb = new ca_objects();
+	# Related Collections
+	$va_collections = $t_item->get("ca_collections", array("returnWithStructure" => true, 'excludeRelationshipTypes' => array('featured', 'history'),"checkAccess" => $va_access_values));
 	if(sizeof($va_collections)){
-		print "<div class='btn btn-default'>Related collection".((sizeof($va_collections) > 1) ? "s" : "")."</div>";
+		print "<div class='btn btn-default'>Related Collection".((sizeof($va_collections) > 1) ? "s" : "")."</div>";
 		$t_rel_collection = new ca_collections();
 		$i = 0;
 		foreach($va_collections as $va_collection){

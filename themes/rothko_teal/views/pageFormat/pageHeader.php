@@ -99,6 +99,7 @@
 				</button>
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo-onwhite.png'), "navbar-brand", "", "","");
+
 ?>
 			</div>
 
@@ -109,6 +110,92 @@
 				<div class="navbar-right">
 					<div class="menuRight"><?php print caNavLink($this->request, _t("Guide to Entries"), "", "", "About", "notes"); ?></div>									
 					<div class="menuRight"><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/artworks"); ?></div>
+					<div id="searchDiv">
+						<form class="navbar-form"  role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+							<div class="formOutline">
+								<div class="form-group">
+									<div class='leftGlass'><?php print caGetThemeGraphic($this->request, 'search.png'); ?></div>
+									<input type="text" class="form-control" placeholder="" name="search" autocomplete="off" />
+								</div>
+								<button type="submit" class="btn-search">Search</button>
+							</div>
+						</form>
+					</div>
+					<div id="searchToggle"><?php print caGetThemeGraphic($this->request, 'search.png');?></div>
+				</div>
+				<script type="text/javascript">
+					$('#searchToggle').click(function(){ 
+						if($('#searchDiv').css('display') === 'block') {
+							
+							$('#searchDiv').fadeOut(300);
+							$('.nav.navbar-nav').fadeIn(300);
+							$('#searchToggle').html("<?php print caGetThemeGraphic($this->request, 'search.png'); ?>");
+						} else {
+							if (window.innerWidth > 1126) {
+								$('.nav.navbar-nav').fadeOut(300);
+							}
+							$('#searchDiv').fadeIn(300);
+							$('#searchToggle').html("<?php print caGetThemeGraphic($this->request, 'close.png'); ?>");						
+						}
+					});
+
+				</script>
+				<ul class="nav navbar-nav">
+					<li <?php print ((($this->request->getController() == "Detail") | ($this->request->getController() == "Browse") | ($this->request->getController() == "Search")) && (($this->request->getAction() != "advanced"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Catalog"), "", "", "Browse", "artworks"); ?></li>				
+					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "Index")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artist"), "", "", "About", "Index"); ?></li>
+					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "commentary")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Essays"), "", "", "About", "commentary"); ?></li>
+					<li class='collapseLink <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'active' : ''; ?>'><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/artworks"); ?></li>
+					<li class='collapseLink <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "notes")) ? 'active' : ''; ?>'><?php print caNavLink($this->request, _t("Guide to Entries"), "", "", "About", "notes"); ?></li>					
+					<li class='collapseSearch'>
+						<form class="navbar-form"  role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+							<div class="formOutline">
+								<div class="form-group">
+									<div class='leftGlass'><?php print caGetThemeGraphic($this->request, 'search.png'); ?></div>
+									<input type="text" class="form-control" placeholder="" name="search">
+								</div>
+								<button type="submit" class="btn-search">Search</button>
+							</div>
+						</form>
+					</li>		
+					<!--<li class="dropdown compare_menu_item" style='display: none;' >
+					  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Compare <span class="caret"></span></a>
+					  <ul class="dropdown-menu">
+						
+					  </ul>
+					</li> -->
+					
+					
+				</ul>
+			</div><!-- /.navbar-collapse -->
+			</div>
+			<div class="col-sm-1"></div>
+			</div>
+		</div><!-- end container -->
+	</nav>
+<?php
+	} else {
+?>		
+	<nav class="navbar front navbar-default" role="navigation">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-1"></div>
+				<div class="col-sm-10">
+			<!-- Brand and toggle get grouped for better mobile display -->
+			<div class="navbar-header">
+
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
+
+			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
+				<div class="navbar-right">
 					<div id="searchDiv">
 						<form class="navbar-form"  role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 							<div class="formOutline">
@@ -126,10 +213,14 @@
 					$('#searchToggle').click(function(){ 
 						if($('#searchDiv').css('display') === 'block') {
 							$('#searchDiv').fadeOut(300);
-							$('.nav.navbar-nav').fadeIn(300);
+							if (window.innerWidth > 1120) {
+								$('.nav.navbar-nav').fadeIn(300);
+							}
 							$('#searchToggle').html("<?php print caGetThemeGraphic($this->request, 'search.png'); ?>");
 						} else {
-							$('.nav.navbar-nav').fadeOut(300);
+							if (window.innerWidth > 1120) {
+								$('.nav.navbar-nav').fadeOut(300);
+							}
 							$('#searchDiv').fadeIn(300);
 							$('#searchToggle').html("<?php print caGetThemeGraphic($this->request, 'close.png'); ?>");						
 						}
@@ -156,13 +247,7 @@
 			</div>
 		</div><!-- end container -->
 	</nav>
-<?php
-	} else {	
-		print '<div class="frontNavBar"><ul>';
-		print '<li>'.caNavLink($this->request, _t("Catalog"), "", "", "Browse", "artworks").'</li>';			
-		print '<li>'.caNavLink($this->request, _t("Artist"), "", "", "About", "Index").'</li>';
-		print '<li>'.caNavLink($this->request, _t("Essays"), "", "", "About", "commentary").'</li>';					
-		print '</ul></div>';
+<?php	
 	}
 ?>	
 	<div class="container first"><div class="row first"><div class="col-xs-12 first">
