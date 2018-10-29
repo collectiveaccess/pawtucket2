@@ -63,7 +63,7 @@ if($vb_ajax){
 			<div class="row">
 				<div class='col-sm-12 col-md-offset-2 col-md-8'>
 <?php
-				$va_child_ids = $t_object->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+				$va_child_ids = $t_object->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true, "sort" => "ca_objects.idno"));
 				if(is_array($va_child_ids) && sizeof($va_child_ids)){
 					$qr_children = caMakeSearchResult("ca_objects", $va_child_ids);
 					$va_children = array();
@@ -81,6 +81,9 @@ if($vb_ajax){
 									$va_children_author_texts[$qr_children->get("object_id")] = array("icon" => $vs_icon, "label" => $qr_children->get("ca_objects.preferred_labels.name"), "representation_id" => $qr_children->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)));
 								}else{
 									$va_children[$qr_children->get("object_id")] = array("icon" => $vs_icon, "large" => $qr_children->get("ca_object_representations.media.page", array("checkAccess" => $va_access_values)));
+									if(!$vn_first_img_id){
+										$vn_first_img_id = $qr_children->get("object_id");
+									}
 								}
 	
 //								$vs_photographer = "";
@@ -98,9 +101,7 @@ if($vb_ajax){
 // 									}	
 // 								}
 //								$va_children_captions[$qr_children->get("object_id")] = ((!in_array($qr_children->get("ca_objects.preferred_labels.name"), array("[BLANK]", "[]"))) ? $qr_children->get("ca_objects.preferred_labels.name") : "").$vs_photographer;
-								if(!$vn_first_img_id){
-									$vn_first_img_id = $qr_children->get("object_id");
-								}
+								
 							}
 						}
 					}
@@ -455,7 +456,10 @@ if($vb_ajax){
 <?php
 									while($qr_res->nextHit()){
 										if($qr_res->get("ca_objects.object_id") != $t_object->get("object_id")){
-											$vs_image = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+											$vs_image = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit>", array("checkAccess" => $va_access_values));
+											if(!$vs_image){
+												$vs_image = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno' limit='1'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values));
+											}
 											if($vn_c = strpos($vs_image, ";")){
 												$vs_image = substr($vs_image, 0, $vn_c);
 											}

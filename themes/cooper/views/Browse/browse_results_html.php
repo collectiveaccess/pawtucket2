@@ -110,7 +110,7 @@ if (!$vb_ajax) {	// !ajax
 						$t_authority_table = new $va_current_facet["table"];
 						$t_authority_table->load($va_criterion['id']);
 						$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
-						$vs_facet_img = $t_authority_table->get("ca_object_representations.media.medium", array("limit" => 1, "checkAccess" => $va_access_values));
+						$vs_facet_img = $t_authority_table->get("ca_object_representations.media.large", array("limit" => 1, "checkAccess" => $va_access_values));
 						$vs_facet_based_title = $t_authority_table->get("preferred_labels");
 						# --- look for faculty texts
 						$va_faculty_text_object_ids = $t_authority_table->get("ca_objects.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true, "restrictToTypes" => array("faculty_course_document")));
