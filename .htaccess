@@ -6,6 +6,10 @@ Options -Indexes
 		SetEnv HTTP_MOD_REWRITE On
 	</IfModule>
 	
+    RewriteRule ^archives /About/archives [R,L]
+    RewriteRule ^oralhistory /Listing/oralhistory [R,L]
+    RewriteRule ^specialcollections /Collections/index [R,L]
+
 	RewriteRule "(^|/)\.(?!well-known\/)" - [F]
 	
 	# Pass all requests not referring directly 
