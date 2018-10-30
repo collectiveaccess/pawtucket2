@@ -91,7 +91,7 @@
 						<unit relativeTo="ca_objects.extentDACS" delimiter="<br/>">
 							<ifdef code="ca_objects.extentDACS.extent_number">^ca_objects.extentDACS.extent_number </ifdef>
 							<ifdef code="ca_objects.extentDACS.extent_type">^ca_objects.extentDACS.extent_type: </ifdef>
-							<ifdef code="ca_objects.extentDACS.physical_details">^ca_objects.extentDACS.physical_details; </ifdef>
+							<ifdef code="ca_objects.extentDACS.physical_details">^ca_objects.extentDACS.physical_details</ifdef><ifdef code="ca_objects.extentDACS.physical_details,ca_objects.extentDACS.extent_dimensions">; </ifdef>
 							<ifdef code="ca_objects.extentDACS.extent_dimensions">^ca_objects.extentDACS.extent_dimensions </ifdef>
 						</unit>
 					</div>

@@ -100,7 +100,7 @@
 						case "archival":
 							# --- no idno link
 							$vs_label 	= $vo_result->get("{$vs_table}.preferred_labels").(($vo_result->get("{$vs_table}.unitdate.dacs_date_text")) ? ", ".$vo_result->get("{$vs_table}.unitdate.dacs_date_text") : "");
-							$vs_tmp = $vo_result->getWithTemplate("<unit relativeTo='ca_collections' delimiter=', '><l>^ca_collections.preferred_labels</l></unit>", array("checkAccess" => $va_access_values));				
+							$vs_tmp = $vo_result->getWithTemplate("<unit relativeTo='ca_collections' delimiter=', '>^ca_collections.preferred_labels</unit>", array("checkAccess" => $va_access_values));				
 							if($vs_tmp){
 								$vs_label .= "<br/>Part of: ".$vs_tmp;
 							}

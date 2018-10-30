@@ -19,7 +19,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Object Titles only.">Title</span>
-			{{{ca_objects.preferred_labels.name%width=220px}}}
+			{{{ca_objects.preferred_labels%width=220px}}}
 		</div>
 	</div>
 	<div class='row'>

@@ -160,12 +160,12 @@
 </script>
 				<div class='menuContainer'><ul class="nav navbar-nav navbar-right menuItems">
 					<li><a href="http://www.hollandmuseum.org" target="_blank">Museum Home</a></li>
-					<li <?php print ($this->request->getController() == "Explore") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Explore"), "", "", "Explore", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", ""); ?></li>
+					<li <?php print ($this->request->getController() == "Explore") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Explore the Collection"), "", "", "Explore", "Index"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>
 					<li class="browseAltLink <?php print (strToLower($this->request->getController()) == "browse") ? '' : ''; ?>"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>	
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "ContactUs") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "ContactUs", ""); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Featured Galleries"), "", "", "Gallery", "Index"); ?></li>
+					<!--<li <?php print ($this->request->getController() == "ContactUs") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "ContactUs", ""); ?></li>-->
 				</ul></div>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
