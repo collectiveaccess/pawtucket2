@@ -67,6 +67,7 @@
 			<div class="jcarousel galleryItems">
 				<ul>
 <?php
+					$vb_item_output = 0;
 					foreach($va_sets as $vn_set_id => $va_set){
 						$va_first_item = array_shift($va_set_first_items[$vn_set_id]);
 						print "<li>";
@@ -75,13 +76,13 @@
 							print "<div class='frontGallerySlideCaption'>".caNavLink($this->request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</div>"; 
 						}
 						print "</li>";
-						$vb_item_output = 1;
+						$vb_item_output++;
 					}
 ?>
 				</ul>
 			</div><!-- end jcarousel -->
 <?php
-			if($vb_item_output){
+			if($vb_item_output > 1){
 ?>
 			<!-- Prev/next controls -->
 			<a href="#" class="jcarousel-control-prev galleryItemsNav"><i class="fa fa-angle-left"></i></a>

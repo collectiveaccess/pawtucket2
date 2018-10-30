@@ -1934,7 +1934,7 @@ a.browseRemoveFacet .glyphicon {
 	position:absolute;
 	right:20px;
 	top:0px;
-	z-index:100;
+	z-index:10;
 }
 .bResultItem:hover .bSetsSelectMultiple{
 	right:13px;

@@ -115,7 +115,7 @@
 							<div class="formOutline">
 								<div class="form-group">
 									<div class='leftGlass'><?php print caGetThemeGraphic($this->request, 'search.png'); ?></div>
-									<input type="text" class="form-control" placeholder="" name="search">
+									<input type="text" class="form-control" placeholder="" name="search" autocomplete="off" />
 								</div>
 								<button type="submit" class="btn-search">Search</button>
 							</div>

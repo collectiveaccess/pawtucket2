@@ -208,10 +208,7 @@
 						{$vs_idno_detail_link}{$vs_label_detail_link}
 					</div><!-- end bResultItemText -->
 				</div><!-- end bResultItemContent -->
-				<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
-					<hr>
-					{$vs_expanded_info}{$vs_add_to_set_link}
-				</div><!-- bResultItemExpandedInfo -->
+				".(($vs_expanded_info || $vs_add_to_set_link) ? "<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'><hr>{$vs_expanded_info}{$vs_add_to_set_link}</div><!-- bResultItemExpandedInfo -->" : "")."
 			</div><!-- end bResultItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');
