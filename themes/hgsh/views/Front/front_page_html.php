@@ -41,7 +41,7 @@
 			</div>			
 			<div class="col-xs-6">
 				<div class="hpBrowseImage">
-					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/ww1homepageimage.jpg')."<div class='hpBrowseTitle'>Remembering World War I</div>", "", "", "Detail", "collections/WW1-1"); ?>
+					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/ww1homepageimage.jpg')."<div class='hpBrowseTitle'>WW1 Armistice Centenary</div>", "", "", "Detail", "collections/WW1-1"); ?>
 				</div>
 			</div>
 		</div>
