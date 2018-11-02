@@ -84,7 +84,7 @@
 				{{{<ifdef code="ca_objects.continue_title"><div class="unit"><H6>Continuation of title</H6>...^ca_objects.continue_title</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.suptitlnote"><div class="unit"><H6>Supplied title note</H6>^ca_objects.suptitlnote</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.alt_title_note"><div class="unit"><H6>Parallel title note</H6>^ca_objects.alt_title_note</div></ifdef>}}}
-				{{{<ifcount min="1" code="ca_collections"><div class="unit"><H6>Part of</H6>^ca_collections.hierarchy.preferred_labels%delimiter=_»_</div></ifcount>}}}
+				{{{<ifcount min="1" code="ca_collections"><div class="unit"><H6>Part of</H6><unit relativeTo="ca_collections"><l>^ca_collections.hierarchy.preferred_labels%delimiter=_»_</l></unit></div></ifcount>}}}
 				{{{<if rule='^ca_objects.type_id IN ["Archival Item", "Ship plan"]'><ifdef code="ca_objects.pub"><div class="unit"><H6>Publisher</H6>^ca_objects.pub</div></ifdef></if>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Item number</H6>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.previous_number"><div class="unit"><H6>Previous number(s)</H6>^ca_objects.previous_number%delimeter=,_</div></ifdef>}}}

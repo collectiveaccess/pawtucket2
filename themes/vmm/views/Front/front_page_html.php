@@ -47,19 +47,19 @@
 			<div class="row tileLinks">
 				<div class="col-sm-4">
 		<?php
-					print caNavLink($this->request, caGetThemeGraphic($this->request, 'compass.jpg'), "", "", "Browse", "artworks");
+					print caNavLink($this->request, caGetThemeGraphic($this->request, 'compass.jpg'), "", "", "Browse", "collection_objects");
 					print "<br/>".caNavLink($this->request, "Collection Objects", "", "", "Browse", "collection_objects");
 		?>
 				</div><!--end col-sm-4-->
 				<div class="col-sm-4">
 		<?php
-					print caNavLink($this->request, caGetThemeGraphic($this->request, 'ship.jpeg'), "", "", "Browse", "archival");
+					print caNavLink($this->request, caGetThemeGraphic($this->request, 'ship.jpeg'), "", "", "Browse", "archival_items");
 					print "<br/>".caNavLink($this->request, "Archival Items", "", "", "Browse", "archival_items");
 		?>
 				</div> <!--end col-sm-4-->
 				<div class="col-sm-4">
 		<?php
-					print caNavLink($this->request, caGetThemeGraphic($this->request, 'shipinterior_web.png'), "", "", "Browse", "exhibitions");
+					print caNavLink($this->request, caGetThemeGraphic($this->request, 'shipinterior_web.png'), "", "", "Collections", "Index");
 					print "<br/>".caNavLink($this->request, "Collections", "", "", "Collections", "Index");
 		?>			
 				</div> <!--end col-sm-4-->	
