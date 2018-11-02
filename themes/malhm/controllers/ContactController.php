@@ -26,8 +26,10 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
+	require_once(__CA_LIB_DIR__."/ApplicationError.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
+ 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_entities.php");
  
  	class ContactController extends BasePawtucketController {
  		# -------------------------------------------------------

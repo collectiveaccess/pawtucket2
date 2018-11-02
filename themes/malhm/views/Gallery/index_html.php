@@ -7,6 +7,7 @@
 	<p class="text-center"><?php print caNavLink($this->request, '<span class="btn-default">Create My Gallery</span>', '', '', 'Lightbox', 'Index');?></p>
 	<hr>
 <?php
+	$va_access_values = caGetUserAccessValues($this->request);
 	$va_sets = $this->getVar("sets");
 	$va_sets_by_type = $this->getVar("sets_by_type");
 	$va_first_items_from_set = $this->getVar("first_items_from_sets");
@@ -41,7 +42,7 @@
 										if ($r_sets->get('ca_sets.hide', array('convertCodesToDisplayText' => true)) != "No") {					
 											$vn_set_id = $r_sets->get("set_id");
 											$t_set = new ca_sets($vn_set_id);
-											$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("iconlarge", "icon"), "checkAccess" => $va_check_access, "limit" => 3)));
+											$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("iconlarge", "icon"), "checkAccess" => $va_access_values, "limit" => 3)));
 											#$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
 											$va_set_info = $va_sets[$vn_set_id];
 											if (sizeof($va_set_items) == 1 ) { $vs_one_image = "oneItem";} else { $vs_one_image = "";}
@@ -141,7 +142,7 @@
 							$va_set_ids = array_keys($va_sets);
 							$r_sets = caMakeSearchResult("ca_sets", $va_set_ids, array("sort" => array("ca_sets.set_rank"), "sortDirection" => "asc"));
 							$t_set = new ca_sets();
-							$va_first_items_from_set = $t_set->getPrimaryItemsFromSets($va_set_ids, array("version" => "medium", "checkAccess" => $this->opa_access_values));
+							$va_first_items_from_set = $t_set->getPrimaryItemsFromSets($va_set_ids, array("version" => "medium", "checkAccess" => $va_access_values));
 							$vn_col_no = 1;
 							$vn_rule_no = 1;
 							$va_layout = array();

@@ -292,6 +292,11 @@ ul.socialRow li .connect{
 		padding-bottom: 5px;
 	}
 }
+@media (min-width:768px) {
+	.yamm .nav.navbar-right .dropdown-menu li{
+		text-align:right;
+	}
+}
 .navbar-default .navbar-form {
 	margin-top:20px;
 }
@@ -682,7 +687,7 @@ ul.socialRow li .connect{
 .detail .detailMediaToolbar, .gallery .detailMediaToolbar {
 	padding-right:10px;
 }
-.detail #map{
+.detail #map_map{
 	margin-bottom:15px;
 }
 /* Search */
@@ -904,7 +909,7 @@ ul.socialRow li .connect{
 }
 
 /* contributor map + mapped results */
-#pageArea.results #browseResultsContainer #map {
+#pageArea.results #browseResultsContainer #map_map {
     margin-left: 15px;
 }
 .mapText{

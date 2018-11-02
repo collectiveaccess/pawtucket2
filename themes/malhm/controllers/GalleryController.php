@@ -151,13 +151,15 @@
 			$pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
 			$t_set = new ca_sets($pn_set_id);
 			$this->getView()->setVar('set', $t_set);
-
-			$this->getView()->setVar('views', $this->config->get('views'));
+			$vs_table = Datamodel::getTableName($t_set->get('table_num'));
+			$va_views = $this->config->get('views');
+			$this->getView()->setVar('table', $vs_table);
+			$this->getView()->setVar('views', $va_views);
 
 			$o_res = caMakeSearchResult(
 				$t_set->get('table_num'),
-				array_keys($t_set->getItemRowIDs()),
-				['checkAccess' => caGetUserAccessValues($this->getRequest())]
+				array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))),
+				['checkAccess' => $this->opa_access_values]
 			);
 
 			$this->getView()->setVar('result', $o_res);
@@ -174,8 +176,7 @@
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set->load($pn_set_id);
- 			$o_dm = $this->getAppDatamodel();
-			$vs_table = $o_dm->getTableName($t_set->get('table_num'));
+			$vs_table = Datamodel::getTableName($t_set->get('table_num'));
 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values)));
  			$this->view->setVar("set_id", $pn_set_id);
  			

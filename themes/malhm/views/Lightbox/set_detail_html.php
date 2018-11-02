@@ -355,7 +355,7 @@ if (!$vb_ajax) {    // !ajax
 ?>
 		</div><!-- end col -->
 	</div><!-- end row -->
-</div></div>
+</div></div></div>
 <script type="text/javascript">
 <?php
 	if (in_array($vs_current_view, array('list', 'thumbnail'))) {
