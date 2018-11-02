@@ -133,7 +133,7 @@
  			$this->opo_result_context->setAsLastFind(true);
  			
  			
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search %1", $va_browse_info["displayName"]).$this->request->config->get("page_title_delimiter").$this->opo_result_context->getSearchExpression());
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search %1", $va_browse_info["displayName"]).$this->request->config->get("page_title_delimiter").$this->opo_result_context->getSearchExpressionForDisplay());
  			
  			//
  			// Handle advanced search form submissions
@@ -178,7 +178,7 @@
  			
  			$this->view->setVar('isNav', (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
  			
-			$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
+			$t_instance = Datamodel::getInstance($vs_class, true);
 			$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
 			
 			$this->view->setVar('t_instance', $t_instance);
@@ -231,7 +231,8 @@
 					case "alphabetical":
 					case "list":
 					default:
-						$this->view->setVar('facet_content', !$vb_search_was_replaced ? $o_browse->getFacetContent($vs_facet, array('checkAccess' => $this->opa_access_values, 'request' => $this->request)) : []);
+					    $content = !$vb_search_was_replaced ? $o_browse->getFacetContent($vs_facet, array('checkAccess' => $this->opa_access_values, 'request' => $this->request)) : [];
+						$this->view->setVar('facet_content', is_array($content) ? $content : []);
 						$this->render("Browse/list_facet_html.php");
 						break;
 					case "hierarchical":
@@ -335,8 +336,10 @@
 				$o_browse->addResultFilter('ca_objects.parent_id', 'is', 'null');	
 			}
 			
-			
-			if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced))); }
+			$vb_root_records_only = caGetOption('omitChildRecords', $va_browse_info, array(), array('castTo' => 'bool'));
+ 			
+ 			$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
+			if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced, 'rootRecordsOnly' => $vb_root_records_only))); }
 		
 			//
 			// Facets
@@ -363,7 +366,7 @@
 			$this->view->setVar('facets', $va_facets);
 		
 			$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
-			$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
+			Session::setVar($ps_function.'_last_browse_id', $vs_key);
 			
 		
 			//
@@ -417,9 +420,14 @@
  			
  			// map
 			if ($ps_view === 'map') {
-				$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000');
-		
-				$va_opts['ajaxContentUrl'] = caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view));
+				$va_opts = array(
+				    'renderLabelAsLink' => false, 
+				    'request' => $this->request, 
+				    'color' => '#cc0000', 
+				    'labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null),
+				    'contentTemplate' => caGetOption('contentTemplate', $va_view_info['display'], null),
+				    //'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view))
+				);
 	
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
 				$qr_res->seek(0);

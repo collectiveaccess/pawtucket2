@@ -14,17 +14,17 @@
 
 <div class="container">
 	<div class="row">
-		<div class="col-sm-1"><div class='previousLink'>{{{previousLink}}}</div></div>
-		<div class="col-sm-10">
+		<div class="col-xs-1"><div class='previousLink'>{{{previousLink}}}</div></div>
+		<div class="col-xs-10">
 
 <div class="container">
 	<div class="row detailHead">
-		<div class='col-xs-6 objNav'><!--- only shown at small screen size -->
+		<div class='col-xs-10 objNav'><!--- only shown at small screen size -->
 			<div class='resultsLink'>{{{resultsLink}}}</div>
 		</div>
 	</div>
 <div class="row">
-	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+	<div class='col-xs-12 col-sm-12 col-md-12 col-lg-12' style='padding-bottom:35px;'>
 <?php
 		print "<h6 class='leader'>Provenance</h6>";
 		print "<h1>".$t_item->get('ca_collections.preferred_labels')."</h1>";
@@ -45,7 +45,7 @@
 		}		
 		
 		if ($vs_remarks = $t_item->get('ca_collections.collection_notes')) {
-			print "<div class='col-sm-6 collectionText'>";
+			print "<div class='col-sm-12 col-md-6 collectionText'>";
 			#print "<h6><a href='#' onclick='$(\"#remarksDiv\").toggle(400);return false;'>Remarks <i class='fa fa-chevron-down'></i></a></h6>";
 			print "<div class='trimText'>{$vs_remarks}</div>";
 			print "</div>";
@@ -57,14 +57,14 @@
 {{{<ifcount code="ca_objects" relativeTo="ca_objects"  min="1">
 	
 	<div class="row"><div class='col-sm-12'>
-	<hr>
+	<hr style='margin-left:-5x;margin-right:-5px;'>
 		<div id="browseResultsContainer">
 			<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 		</div><!-- end browseResultsContainer -->
 	</div><!-- end col --></div><!-- end row -->
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'works_in_collection', array('facet' => 'collection', 'id' => '^ca_collections.collection_id', 'detailNav' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'worksInCollection', array('facet' => 'collection', 'id' => '^ca_collections.collection_id', 'detailNav' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 				jQuery('#browseResultsContainer').jscroll({
 					autoTrigger: true,
 					loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -78,7 +78,7 @@
 
 </div><!-- end container -->
 			</div>
-			<div class="col-sm-1"><div class='nextLink'>{{{nextLink}}}</div></div>
+			<div class="col-xs-1"><div class='nextLink'>{{{nextLink}}}</div></div>
 		</div><!-- end row -->
 	</div><!-- end container -->
 	
@@ -87,7 +87,8 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 320
+		  maxHeight: 318,
+		  moreLink: '<a href="#">More</a>',
 		});
 
         tronicTheToggles();

@@ -96,7 +96,7 @@
 				if ($va_mediums = $t_object->get('ca_objects.medium', array('returnAsArray' => true))) {
 					print "<div class='unit'><h6>Medium</h6>";
 					foreach ($va_mediums as $va_key => $va_medium) {
-						print caNavLink($this->request, caGetListItemByIDForDisplay($va_medium, false), '', 'Browse', 'objects', 'facet/material_facet/id/'.$va_medium)."<br/>";
+						print caNavLink($this->request, caGetListItemByIDForDisplay($va_medium, false), '', 'Browse', 'artworks', 'facet/material_facet/id/'.$va_medium)."<br/>";
 					}
 					print "</div>";
 				}	

@@ -30,14 +30,14 @@
 			<!--begin footer-->
 			<div class="row footer">
 				<div class="col-sm-12 col-md-10 ">
-					46 West 90th Street, 2nd floor, New York, NY 10024, between Central Park West and Columbus Avenue<br />
-					Gallery Hours: Tuesday, Wednesday and Thursday, 11am-5pm and by appointment.
+					46 West 90th Street, 2nd floor, New York, NY 10024<br />
+					Gallery Hours: Monday-Thursday, 11am-5pm and by appointment
 				</div>
 				<div class="col-sm-12 col-md-2 socialright footernav">
 					<?php print caNavLink($this->request, _t("Newsletter Signup"), "footerButton", "", "About", "MailingList"); ?><br/>
 					<a href="https://www.facebook.com/pages/Susan-Eley-Fine-Art/137980986325025" class="socialicon"><?php print caGetThemeGraphic($this->request, 'fbook.png'); ?></a>
-					<a href="https://www.facebook.com/pages/Susan-Eley-Fine-Art/137980986325025" class="socialicon"><?php print caGetThemeGraphic($this->request, 'fbook.png'); ?></a>
 					<a href="https://twitter.com/EleyFineArt" class="socialicon"><?php print caGetThemeGraphic($this->request, 'twitter.png'); ?></a>
+					<a href="https://instagram.com/sefa_gallery" class="socialicon darker"><?php print caGetThemeGraphic($this->request, 'instagram.png'); ?></a>
 					<a href="https://artsy.net/susan-eley-fine-art?utm_source=follow_badge" class="socialicon"><?php print caGetThemeGraphic($this->request, 'artsy.png'); ?></a>
 					<a href="https://www.1stdibs.com/dealers/susan-eley-fine-art/?utm_source=susaneleyfineart.com&utm_medium=referral&utm_campaign=dealer&utm_content=dealer_badge_1stdibs_gray" target="_blank" class="socialiconDibs"><?php print caGetThemeGraphic($this->request, '1stdibs.png', array("title" => "Shop Susan Eley Fine Art's fine art on 1stdibs")); ?></a>
 					<a href="mailto:susie@susaneleyfineart.com" class="socialicon"><?php print caGetThemeGraphic($this->request, 'envelope.png'); ?></a>
@@ -46,6 +46,7 @@
 					<?php print caNavLink($this->request, _t("Newsletter Signup"), "footerButton", "", "About", "MailingList"); ?><br/><br/>
 					<a href="https://www.facebook.com/pages/Susan-Eley-Fine-Art/137980986325025" class="socialicon"><?php print caGetThemeGraphic($this->request, 'fbook.png'); ?></a>
 					<a href="https://twitter.com/EleyFineArt" class="socialicon"><?php print caGetThemeGraphic($this->request, 'twitter.png'); ?></a>
+					<a href="https://instagram.com/sefa_gallery" class="socialicon darker"><?php print caGetThemeGraphic($this->request, 'instagram.png'); ?></a>
 					<a href="https://artsy.net/susan-eley-fine-art?utm_source=follow_badge" class="socialicon"><?php print caGetThemeGraphic($this->request, 'artsy.png'); ?></a>
 					<a href="https://www.1stdibs.com/dealers/susan-eley-fine-art/?utm_source=susaneleyfineart.com&utm_medium=referral&utm_campaign=dealer&utm_content=dealer_badge_1stdibs_gray" target="_blank" class="socialiconDibs"><?php print caGetThemeGraphic($this->request, '1stdibs.png', array("title" => "Shop Susan Eley Fine Art's fine art on 1stdibs")); ?></a>
 					<a href="mailto:susie@susaneleyfineart.com" class="socialicon"><?php print caGetThemeGraphic($this->request, 'envelope.png'); ?></a>

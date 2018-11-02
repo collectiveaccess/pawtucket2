@@ -86,12 +86,5 @@
 <?php
 			break;
 			# -----------------------------
-			default:
-?>
-				<div id='footerdompdf'>
-					<?php print $vs_footer; ?>
-				</div>
-<?php
-				break;
 		}
 	}

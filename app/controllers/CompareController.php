@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
+	require_once(__CA_LIB_DIR__."/ApplicationError.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  
  	class CompareController extends BasePawtucketController {
@@ -49,8 +49,9 @@
  		 *
  		 */
  		public function View() {
- 			if (!is_array($va_item_ids = $this->request->session->getVar("comparison_list"))) { $va_item_ids = []; }
+ 			if (!is_array($va_item_ids = Session::getVar("comparison_list"))) { $va_item_ids = []; }
  			
+ 			if($u = str_replace('|', '/', $this->request->getParameter('url', pString))) { Session::setVar('compare_last_page', $u); }
  			$this->view->setVar('items', $va_item_ids);
  			$this->render("Compare/view_html.php");
  		}
@@ -59,7 +60,7 @@
  		 *
  		 */
  		public function Manifest() {
- 			if(!is_array($va_comparison_list = $this->request->session->getVar("comparison_list"))) { $va_comparison_list = []; }
+ 			if(!is_array($va_comparison_list = Session::getVar("comparison_list"))) { $va_comparison_list = []; }
  			$ps_id = $this->request->getParameter('id', pString);
  			
  			if (!is_array($va_ids = array_filter($va_comparison_list, function($v) use ($ps_id) { return $v['resolved_id'] === $ps_id; })) || !sizeof($va_ids)) {
@@ -82,7 +83,7 @@
  		 *
  		 */
  		public function AddToList() {
- 			if(!is_array($va_comparison_list = $this->request->session->getVar("comparison_list"))) { $va_comparison_list = []; }
+ 			if(!is_array($va_comparison_list = Session::getVar("comparison_list"))) { $va_comparison_list = []; }
  			
  			if ($ps_remove_id = $this->request->getParameter('remove_id', pString)) {
  				foreach($va_comparison_list as $vn_i => $va_item) {
@@ -130,8 +131,8 @@
 			
 			$va_comparison_list = array_values($va_comparison_list);
 			
-			$this->request->session->setVar("comparison_list", $va_comparison_list);
-			$this->request->session->save();
+			Session::setVar("comparison_list", $va_comparison_list);
+			Session::save();
 			
  			$this->view->setVar('result', ['ok' => 1, 'comparison_list' => $va_comparison_list]);
  			$this->render("Compare/add_to_list_result_json.php");

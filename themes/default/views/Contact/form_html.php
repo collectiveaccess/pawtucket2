@@ -7,7 +7,7 @@
 <div class="row"><div class="col-sm-12">
 <H1><?php print _t("Contact"); ?></H1>
 <?php
-	if(sizeof($va_errors["display_errors"])){
+	if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
 ?>

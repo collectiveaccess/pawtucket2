@@ -25,16 +25,16 @@
  *
  * ----------------------------------------------------------------------
  */
- 	require_once(__CA_LIB_DIR__."/ca/BaseSearchController.php");
- 	require_once(__CA_LIB_DIR__."/ca/MediaContentLocationIndexer.php");
- 	require_once(__CA_LIB_DIR__.'/core/Media/MediaViewerManager.php');
+ 	require_once(__CA_LIB_DIR__."/BaseSearchController.php");
+ 	require_once(__CA_LIB_DIR__."/MediaContentLocationIndexer.php");
+ 	require_once(__CA_LIB_DIR__.'/Media/MediaViewerManager.php');
  	
- 	require_once(__CA_LIB_DIR__.'/ca/ApplicationPluginManager.php');
+ 	require_once(__CA_LIB_DIR__.'/ApplicationPluginManager.php');
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
  	require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
  	require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
-	require_once(__CA_LIB_DIR__.'/core/Logging/Downloadlog.php');
+	require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
  	
  	class DetailController extends FindController {
  		# -------------------------------------------------------
@@ -167,7 +167,7 @@
  				throw new ApplicationException("Invalid detail type");
  			}
  			
- 			$t_subject = $this->getAppDatamodel()->getInstanceByTableName($vs_table, true);
+ 			$t_subject = Datamodel::getInstance($vs_table, true);
  			$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls($vs_table);
  			if ((($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) || ($vs_use_alt_identifier_in_urls)) && (substr($ps_id, 0, 3) == "id:")) {
  				$va_tmp = explode(":", $ps_id);
@@ -261,7 +261,7 @@
  			//
  			if (method_exists($t_subject, 'getPrimaryRepresentationInstance')) {
  				if($pn_representation_id = $this->request->getParameter('representation_id', pInteger)){
- 					$t_representation = $this->getAppDatamodel()->getInstanceByTableName("ca_object_representations", true);
+ 					$t_representation = Datamodel::getInstance("ca_object_representations", true);
  					$t_representation->load($pn_representation_id);
  				}else{
  					$t_representation = $t_subject->getPrimaryRepresentationInstance(array("checkAccess" => $this->opa_access_values));
@@ -270,7 +270,7 @@
 					$this->view->setVar("t_representation", $t_representation);
 					$this->view->setVar("representation_id", $t_representation->get("representation_id"));
 				}else{
-					$t_representation = $this->getAppDatamodel()->getInstanceByTableName("ca_object_representations", true);
+					$t_representation = Datamodel::getInstance("ca_object_representations", true);
 					$this->view->setVar("representation_id", null);
 				}
 				if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
@@ -297,13 +297,13 @@
 			//
 			// map
 			//
-			if (!is_array($va_map_attributes = caGetOption('map_attributes', $va_options, array())) || !sizeof($va_map_attributes)) {
-				if ($vs_map_attribute = caGetOption('map_attribute', $va_options, false)) { $va_map_attributes = array($vs_map_attribute); }
+			if (!is_array($va_map_attributes = caGetOption(['mapAttributes', 'map_attributes'], $va_options, array())) || !sizeof($va_map_attributes)) {
+				if ($vs_map_attribute = caGetOption(['mapAttribute', 'map_attribute'], $va_options, false)) { $va_map_attributes = array($vs_map_attribute); }
 			}
 			
 			$this->view->setVar("map", "");
 			if(is_array($va_map_attributes) && sizeof($va_map_attributes)) {
-				$o_map = new GeographicMap((($vn_width = caGetOption('map_width', $va_options, false)) ? $vn_width : 285), (($vn_height = caGetOption('map_height', $va_options, false)) ? $vn_height : 200), 'map');
+				$o_map = new GeographicMap((($vn_width = caGetOption(['mapWidth', 'map_width'], $va_options, false)) ? $vn_width : 285), (($vn_height = caGetOption(['mapHeight', 'map_height'], $va_options, false)) ? $vn_height : 200), 'map');
 					
 				$vn_mapped_count = 0;	
 				foreach($va_map_attributes as $vs_map_attribute) {
@@ -314,7 +314,7 @@
 				}
 				
 				if ($vn_mapped_count > 0) { 
-					$this->view->setVar("map", $o_map->render('HTML', array('zoomLevel' => caGetOption('zoom_level', $va_options, 12))));
+					$this->view->setVar("map", $o_map->render('HTML', array('zoomLevel' => caGetOption(['mapZoomLevel', 'zoom_level'], $va_options, 12))));
 				}
 			}
 			
@@ -350,7 +350,7 @@
 		
 				$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
 			
-				$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
+				Session::setVar($ps_function.'_last_browse_id', $vs_key);
 			
 			
 				// remove base criteria from display list
@@ -714,8 +714,7 @@
 				throw new ApplicationException(_t('Invalid context'));
 			}
 			
-			$o_dm = Datamodel::load();
-			if (!($t_instance = $o_dm->getInstanceByTableName($va_context['table'], true))) {
+			if (!($t_instance = Datamodel::getInstance($va_context['table'], true))) {
 			    throw new ApplicationException(_t('Invalid context'));
 			}
 			
@@ -819,7 +818,7 @@
  		public function SaveCommentTagging() {
  			# --- inline is passed to indicate form appears embedded in detail page, not in overlay
 			$vn_inline_form = $this->request->getParameter("inline", pInteger);
-			if(!$t_item = $this->getAppDatamodel()->getInstanceByTableName($this->request->getParameter("tablename", pString), true)) {
+			if(!$t_item = Datamodel::getInstance($this->request->getParameter("tablename", pString), true)) {
  				throw new ApplicationException("Invalid table name ".$this->request->getParameter("tablename", pString)." for saving comment");
  			}
 			$ps_table = $this->request->getParameter("tablename", pString);
@@ -971,7 +970,7 @@
  		function ShareForm() {
  			$ps_tablename = $this->request->getParameter('tablename', pString);
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
-			if(!$t_item = $this->getAppDatamodel()->getInstanceByTableName($ps_tablename, true)) {
+			if(!$t_item = Datamodel::getInstance($ps_tablename, true)) {
  				throw new ApplicationException("Invalid table name ".$ps_tablename." for detail");		// shouldn't happen
  			}
 			if(!$t_item->load($pn_item_id)){
@@ -991,7 +990,7 @@
  			$va_errors = array();
  			$ps_tablename = $this->request->getParameter('tablename', pString);
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
-			if(!$t_item = $this->getAppDatamodel()->getInstanceByTableName($ps_tablename, true)) {
+			if(!$t_item = Datamodel::getInstance($ps_tablename, true)) {
  				throw new ApplicationException("Invalid table name ".$ps_tablename." for detail");		// shouldn't happen
  			}
 			if(!$t_item->load($pn_item_id)){
@@ -1138,13 +1137,13 @@
  			if (!$t_attr_val->getPrimaryKey()) { return; }
  			$t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
  		
- 			$vn_table_num = $this->getAppDatamodel()->getTableNum($this->ops_table_name);
+ 			$vn_table_num = Datamodel::getTableNum($this->ops_table_name);
  			if ($t_attr->get('table_num') !=  $vn_table_num) { 
  				$this->response->setRedirect($this->request->config->get('error_display_url').'/n/2580?r='.urlencode($this->request->getFullUrlPath()));
  				return;
  			}
  			$t_element = new ca_metadata_elements($t_attr->get('element_id'));
- 			$this->request->setParameter($this->getAppDatamodel()->getTablePrimaryKeyName($vn_table_num), $t_attr->get('row_id'));
+ 			$this->request->setParameter(Datamodel::primaryKey($vn_table_num), $t_attr->get('row_id'));
  			
  			list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
  			$ps_version = $this->request->getParameter('version', pString);
@@ -1192,7 +1191,7 @@
  			$t_attr = new ca_attributes($t_attr_val->get('attribute_id'));
  		
  			$t_element = new ca_metadata_elements($t_attr->get('element_id'));
- 			$this->request->setParameter($this->getAppDatamodel()->getTablePrimaryKeyName($vn_table_num), $t_attr->get('row_id'));
+ 			$this->request->setParameter(Datamodel::primaryKey($vn_table_num), $t_attr->get('row_id'));
  			
  			$vn_subject_id = $this->request->getParameter("subject_id", pInteger);
  			//list($vn_subject_id, $t_subject) = $this->_initView($pa_options);
@@ -1385,8 +1384,6 @@
 		 *		display = The type of media_display.conf display configuration to be used (Eg. "detail", "media_overlay"). [Default is "media_overlay"]
 		 */
 		public function GetMediaOverlay($pa_options=null) {
-			$o_dm = Datamodel::load();
-			
 			$ps_context = $this->request->getParameter('context', pString);
 			
 			if ($ps_context == 'gallery') {
@@ -1397,7 +1394,7 @@
 				throw new ApplicationException(_t('Invalid context'));
 			}
 			
-			if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {
+			if (!($pt_subject = Datamodel::getInstance($vs_subject = $va_context['table']))) {
 				throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
 			}
 			if (!($pn_subject_id = $this->request->getParameter('id', pInteger))) { $pn_subject_id = $this->request->getParameter($pt_subject->primaryKey(), pInteger); }
@@ -1437,7 +1434,6 @@
 		public function GetMediaData() {
 			$ps_context = $this->request->getParameter('context', pString);
 			
-			$o_dm = Datamodel::load();
 			if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
 		
 			switch($ps_context) {
@@ -1453,7 +1449,7 @@
 					break;
 			}
 			
-			if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {
+			if (!($pt_subject = Datamodel::getInstance($vs_subject = $va_context['table']))) {
 				throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
 			}
 			
@@ -1475,7 +1471,6 @@
         public function SearchMediaData() {
            $ps_context = $this->request->getParameter('context', pString);
             
-            $o_dm = Datamodel::load();
             if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
     
             switch($ps_context) {
@@ -1491,7 +1486,7 @@
                     break;
             }
         
-            if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {
+            if (!($pt_subject = Datamodel::getInstance($vs_subject = $va_context['table']))) {
                 throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
             }
         
@@ -1513,7 +1508,6 @@
         public function MediaDataAutocomplete() {
            $ps_context = $this->request->getParameter('context', pString);
             
-            $o_dm = Datamodel::load();
             if (!($ps_display_type = $this->request->getParameter('display', pString))) { $ps_display_type = 'media_overlay'; }
     
             switch($ps_context) {
@@ -1529,7 +1523,7 @@
                     break;
             }
         
-            if (!($pt_subject = $o_dm->getInstanceByTableName($vs_subject = $va_context['table']))) {
+            if (!($pt_subject = Datamodel::getInstance($vs_subject = $va_context['table']))) {
                 throw new ApplicationException(_t('Invalid detail type %1', $this->request->getAction()));
             }
         

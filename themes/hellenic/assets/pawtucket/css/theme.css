@@ -1,0 +1,6 @@
+.navbar-brand {
+	width:80px;
+}
+.disabled {
+    pointer-events: auto !important;
+}

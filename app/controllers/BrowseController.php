@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2016 Whirl-i-Gig
+ * Copyright 2013-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -85,11 +85,14 @@
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Browse %1", $va_browse_info["displayName"]));
  			$this->view->setVar("browse_type", $ps_function);
  			$vs_class = $this->ops_tablename = $va_browse_info['table'];
+			$t_instance = Datamodel::getInstance($vs_class, true);
  			
  			// Now that table name is known we can set standard view vars
  			parent::setTableSpecificViewVars();
  			
  			$va_types = caGetOption('restrictToTypes', $va_browse_info, array(), array('castTo' => 'array'));
+ 			$vb_root_records_only = caGetOption('omitChildRecords', $va_browse_info, array(), array('castTo' => 'bool'));
+ 			
  			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
 			
@@ -97,7 +100,9 @@
 			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable{$vs_type_key}")) {
 				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable{$vs_type_key}"));
 			} else {
-				ExternalCache::save("{$vs_class}totalRecordsAvailable{$vs_type_key}", $vn_count = $vs_class::find(['deleted' => 0], ['checkAccess' => $this->opa_access_values, 'returnAs' => 'count', 'restrictToTypes' => (sizeof($va_types)) ? $va_types : null]));
+			    $params = ['deleted' => 0];
+			    if ($vb_root_records_only && ($f = $t_instance->getProperty('HIERARCHY_PARENT_ID_FLD'))) { $params[$f] = null; }
+				ExternalCache::save("{$vs_class}totalRecordsAvailable{$vs_type_key}", $vn_count = $vs_class::find($params, ['checkAccess' => $this->opa_access_values, 'returnAs' => 'count', 'restrictToTypes' => (sizeof($va_types)) ? $va_types : null]));
 				$this->view->setVar('totalRecordsAvailable', $vn_count);
 			}
 			
@@ -121,9 +126,9 @@
  			
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
- 				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
+ 				$va_views = array('list' => array(), 'images' => array(), 'chronology' => array(), 'chronology_images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
  			} else {
-				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = array();
+				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = $va_views['chronology_images'] = array();
 			}
 			
 			if (!($ps_view = $this->request->getParameter("view", pString))) {
@@ -133,7 +138,7 @@
  				$ps_view = array_shift(array_keys($va_views));
  			}
  			# --- only set the current view if it's not an export format
- 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx", "timelineData"))){
+ 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx", "timelineData", "chronology_images"))){
  				$this->opo_result_context->setCurrentView($ps_view);
  			}
  			
@@ -143,7 +148,6 @@
 
  			caAddPageCSSClasses(array($vs_class, $ps_function));
 
-			$t_instance = $this->getAppDatamodel()->getInstanceByTableName($vs_class, true);
 			$vn_type_id = $t_instance->getTypeIDForCode($ps_type);
 			
 			$this->view->setVar('t_instance', $t_instance);
@@ -266,7 +270,7 @@
 
  			$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
  			
-			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically));
+			$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'rootRecordsOnly' => $vb_root_records_only));
 			
 			//
 			// Facets
@@ -285,7 +289,7 @@
 		
 			$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
 			
-			$this->request->session->setVar($ps_function.'_last_browse_id', $vs_key);
+			Session::setVar($ps_function.'_last_browse_id', $vs_key);
 			
 			
 			// remove base criteria from display list
@@ -314,6 +318,7 @@
 				$ps_sort_direction = 'asc';
 			}
 			$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
+			
 			$va_show_letter_bar_sorts = caGetOption('showLetterBarSorts', $va_browse_info, null);
 			if(is_array($va_show_letter_bar_sorts) && in_array($vs_sort_fld, $va_show_letter_bar_sorts)){
 				if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
@@ -362,12 +367,12 @@
 			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);
 
-			$this->view->setVar('start', $vn_start = $this->request->getParameter('s', pInteger));
+			$this->view->setVar('start', $vn_start = (int)$this->request->getParameter('s', pInteger));
 			
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
-				if (($vn_key_start = (int)$vn_start - 1000) < 0) { $vn_key_start = 0; }
+				if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
 				$qr_res->seek($vn_key_start);
 				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 				$qr_res->seek($vn_start);
@@ -381,14 +386,19 @@
  			
  			// map
 			if ($ps_view === 'map') {
-				$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000', 'label' => 'ca_places.preferred_labels.name', 'content' => 'ca_places.preferred_labels.name');
-		
-				$va_opts['ajaxContentUrl'] = caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view));
-			
+				$va_opts = array(
+				    'renderLabelAsLink' => false, 
+				    'request' => $this->request, 
+				    'color' => '#cc0000', 
+				    'labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null),
+				    'contentTemplate' => caGetOption('contentTemplate', $va_view_info['display'], null),
+				    //'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view))
+				);
+				
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
 				$qr_res->seek(0);
 				$o_map->mapFrom($qr_res, $va_view_info['data'], $va_opts);
-				$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_view_info, 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_view_info, 12), 'request' => $this->request)));
+				$this->view->setVar('map', $o_map->render('HTML', array('labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null), 'circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_view_info, 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_view_info, 12), 'request' => $this->request)));
 			}
  			
  			switch($ps_view) {
