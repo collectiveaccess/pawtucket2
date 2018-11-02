@@ -52,14 +52,14 @@
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
-	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-142371-37"></script>
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125575750-1"></script>
 	<script>
 	  window.dataLayer = window.dataLayer || [];
 	  function gtag(){dataLayer.push(arguments);}
 	  gtag('js', new Date());
-
-	  gtag('config', 'UA-142371-37');
-	</script>
+ 
+	  gtag('config', 'UA-125575750-1');
+	</script>	
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
@@ -166,6 +166,7 @@
 							<ul class='subMenu'>
 								<li style="padding-top:6px;" <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art"), "", "", "Browse", "objects"); ?></li>					
 								<li <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "entities")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "entities"); ?></li>					
+								<!--<li><a href="https://stormking.org/sarah-sze/">Commissions</a></li>-->
 							</ul>												
 <?php						
 						} 

@@ -38,7 +38,6 @@
  	$t_set = new ca_sets();
 	$va_sets = array();
 	if($vn_gallery_set_type_id){
-		$o_dm = $this->request->getAppDatamodel();
 		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id, 'table' => "ca_objects");
 		$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
 		$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "widepreview", "checkAccess" => $va_access_values));

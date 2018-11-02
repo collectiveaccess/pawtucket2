@@ -68,11 +68,11 @@
 		Session::setVar('lastYear', "");
 	}
 	$vs_last_pro_year = Session::getVar('lastYear');
-		$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 12;
+		$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 6;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 12;
+			$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 6;
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;

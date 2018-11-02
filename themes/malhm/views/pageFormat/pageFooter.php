@@ -30,38 +30,36 @@
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
 			<div class="containerWrapper">
-				<div class='row'><div class='col-sm-12'>
-					<div><h2>Minnesota Alliance of Local History Museums: Peers Helping Peers Since 1991</h2></div>
-				</div></div>
-				<div class='row' style='margin-left:-25px;margin-right:-25px;'>
-					<div class='col-xs-6 col-sm-4 logo'>
-						<?php print caGetThemeGraphic($this->request, 'malhm.jpg'); ?>
-					</div>
-					<div class='col-xs-6 col-sm-4'>
-						<div class="paragraph" style="text-align:left;">
-							General contact:<br>
-							Dustin Heckman, Alliance Coordinator<br>
-							612-500-7460<br>
-							<a href="mailto:mnhistoryalliance@gmail.com">Contact</a><br><br>
-							Financial office:<br>
-							Jill Wohnoutka, Treasurer<br>
-							Kandiyohi County Historical Society<br>
-							610 NE Hwy 71<br>
-							Willmar, MN 56201<br>
-							320-235-1881
+				<div class='row'>
+					<div class='col-sm-12 col-md-9 col-lg-9'>
+						<div><h2>Minnesota Alliance of Local History Museums: Peers Helping Peers Since 1991</h2></div>
+						<div class='row' >
+							<div class='col-xs-12 col-sm-2 logo'>
+								<a href="http://www.mnhistoryalliance.org" target="_blank"><?php print caGetThemeGraphic($this->request, 'malhm.jpg'); ?></a>
+							</div>
+							<div class='col-xs-12 col-sm-10'>
+								<div class="paragraph" style="text-align:left;">
+									General contact:<br>
+									Dustin Heckman, Alliance Coordinator<br>
+									612-500-7460<br>
+									<a href="mailto:staff@mnhistoryalliance.org">Contact</a>
+									<br/><a href="http://www.mnhistoryalliance.org">http://www.mnhistoryalliance.org</a>
+								</div>					
+							</div>
 						</div>					
 					</div>
-					<div class='col-xs-12 col-sm-4'> 
+					<div class='col-sm-12 col-md-3 col-lg-3'> 
 						<div class='pull-right social'>
 							<span class='socialFooter'><a href='https://www.facebook.com/MNHistoryAlliance/' target='_blank'><i class='fa fa-facebook'></i></a></span>
 							<span class='socialFooter'><a href='https://twitter.com/MNlocalhistory' target='_blank'><i class='fa fa-twitter'></i></a></span>
 							<span class='socialFooter'><a href='https://www.linkedin.com/company/28123620/' target='_blank'><i class='fa fa-linkedin'></i></a></span>
-							<span class='socialFooter'><a href='mailTo:mnhistoryalliance@gmail.com' target='_blank'><i class='fa fa-envelope-o'></i></a></span>
+							<span class='socialFooter'><a href='mailTo:staff@mnhistoryalliance.org' target='_blank'><i class='fa fa-envelope-o'></i></a></span>
 							<span class='socialFooter'><a href='https://www.instagram.com/mnhistoryalliance/' target='_blank'><i class='fa fa-instagram'></i></a></span>
 							<div class='copy'>© COPYRIGHT 2018. ALL RIGHTS RESERVED.</div>
 							<div class='clean'>
 								<?php print caGetThemeGraphic($this->request, 'clean.jpg'); ?>
 							</div>
+							<div><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "Help", "terms"); ?></div>
 							<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess <?php print date("Y"); ?></a></small></div>
 						</div>
 					</div>

@@ -47,7 +47,7 @@
 <body>
 
 <!-- GVSU Top Banner Code - Version 1.0, September 2009 --> 
-<script type="text/javascript" src="http://www.gvsu.edu/includes/topbanner/external.js"></script>
+<script type="text/javascript" src="https://www.gvsu.edu/includes/topbanner/external.js"></script>
 
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container">

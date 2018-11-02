@@ -230,6 +230,8 @@ ini_set("display_errors", "on");
 					if ($vn_pdf_enabled) {
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask A Curator", "", "", "Contact",  "form", array('object_id' => $vn_id))."</div><!-- end detailTool -->";
+
 					print '</div><!-- end detailTools -->';
 				}				
 

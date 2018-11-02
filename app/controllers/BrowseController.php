@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2016 Whirl-i-Gig
+ * Copyright 2013-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -126,9 +126,9 @@
  			
  			$va_views = caGetOption('views', $va_browse_info, array(), array('castTo' => 'array'));
  			if(!is_array($va_views) || (sizeof($va_views) == 0)){
- 				$va_views = array('list' => array(), 'images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
+ 				$va_views = array('list' => array(), 'images' => array(), 'chronology' => array(), 'chronology_images' => array(), 'timeline' => array(), 'map' => array(), 'timelineData' => array(), 'pdf' => array(), 'xlsx' => array(), 'pptx' => array());
  			} else {
-				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = array();
+				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = $va_views['chronology_images'] = array();
 			}
 			
 			if (!($ps_view = $this->request->getParameter("view", pString))) {
@@ -138,7 +138,7 @@
  				$ps_view = array_shift(array_keys($va_views));
  			}
  			# --- only set the current view if it's not an export format
- 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx", "timelineData"))){
+ 			if(!in_array($ps_view, array("pdf", "xlsx", "pptx", "timelineData", "chronology_images"))){
  				$this->opo_result_context->setCurrentView($ps_view);
  			}
  			
@@ -318,6 +318,7 @@
 				$ps_sort_direction = 'asc';
 			}
 			$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
+			
 			$va_show_letter_bar_sorts = caGetOption('showLetterBarSorts', $va_browse_info, null);
 			if(is_array($va_show_letter_bar_sorts) && in_array($vs_sort_fld, $va_show_letter_bar_sorts)){
 				if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
@@ -366,12 +367,12 @@
 			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);
 
-			$this->view->setVar('start', $vn_start = $this->request->getParameter('s', pInteger));
+			$this->view->setVar('start', $vn_start = (int)$this->request->getParameter('s', pInteger));
 			
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
 			if (!$this->request->isAjax()) {
-				if (($vn_key_start = (int)$vn_start - 1000) < 0) { $vn_key_start = 0; }
+				if (($vn_key_start = $vn_start - 1000) < 0) { $vn_key_start = 0; }
 				$qr_res->seek($vn_key_start);
 				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 				$qr_res->seek($vn_start);

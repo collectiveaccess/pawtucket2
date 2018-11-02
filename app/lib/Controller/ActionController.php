@@ -199,7 +199,6 @@ class ActionController extends BaseObject {
 	# -------------------------------------------------------
 	public function __call($ps_methodname, $pa_params) {
 		$this->clearErrors();
-		
 		if (file_exists(__CA_APP_DIR__."/controllers/DefaultController.php")) {
 			require_once(__CA_APP_DIR__."/controllers/DefaultController.php");
 			$o_default_controller = new DefaultController($this->opo_request, $this->opo_response, $this->opa_view_paths);
@@ -212,8 +211,9 @@ class ActionController extends BaseObject {
 				if (!$vs_param) { $va_params[] = $vs_param; }
 				if (!$vs_value) { $va_params[] = $vs_value; }
 			}
-			//print_R($va_params);die;
-			return $o_default_controller->{$this->opo_request->getController()}($va_params);
+			if (method_exists($o_default_controller, $this->opo_request->getController())) { 
+			    return $o_default_controller->{$this->opo_request->getController()}($va_params);
+			}
 		}
 		$this->postError(2310, _t("Action '%1' in class '%2' is invalid", $ps_methodname, get_class($this)), "ActionController->__call()");
 		return false;

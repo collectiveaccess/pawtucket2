@@ -64,6 +64,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
+	<meta name="description" content="Search the collections of dozens of Minnesota's Historical Societies and History Organizations through one site.">
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
 	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
@@ -86,13 +87,14 @@
 	<link href="//fonts.googleapis.com/css?family=Merriweather:400,300,300italic,700,400italic,700italic&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
 	<link href="//fonts.googleapis.com/css?family=Montserrat:400,700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
 	<link href="//fonts.googleapis.com/css?family=Josefin+Sans:700&amp;subset=latin,latin-ext" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Goudy+Bookletter+1911" rel="stylesheet"> 
 </head>
 <body>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container" style='max-width:none;'><div class="row grayBack"><div class="col-sm-12">
 			<ul class='socialRow'>
 				<li><span class="connect">Connect with us!</span></li>
-				<li><a href='mailto:mnhistoryalliance@gmail.com' target='_blank'><i class='fa fa-envelope-o'></i></a></li>
+				<li><a href='mailto:staff@mnhistoryalliance.org' target='_blank'><i class='fa fa-envelope-o'></i></a></li>
 				<li><a href='https://www.linkedin.com/company/minnesota-alliance-of-local-history-museums/' target='_blank'><i class='fa fa-linkedin'></i></a></li>
 				<li><a href='https://www.instagram.com/mnhistoryalliance/' target='_blank'><i class='fa fa-instagram'></i></a></li>
 				<li><a href='https://twitter.com/MNlocalhistory' target='_blank'><i class='fa fa-twitter'></i></a></li>
@@ -120,7 +122,7 @@
 					<span class="icon-bar"></span>
 				</button>
 
-				<div id="wsite-title"><?php print caNavLink($this->request, 'MN alliance of local<br/>history museums', '', '', '', '');?></div>
+				<div id="wsite-title"><?php print caNavLink($this->request, 'MN Collections', '', '', '', '');?></div>
 
 			</div>
 
@@ -143,7 +145,7 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
 						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
@@ -159,10 +161,26 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Find"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Featured"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") &&  (strToLower($this->request->getAction()) == "contributors")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contributors"), "", "", "Browse", "Contributors"); ?></li>
+					<li class="dropdown <?php print ((strToLower($this->request->getController()) == "collections") || ((strToLower($this->request->getController()) == "search") && (strToLower($this->request->getAction()) == "advanced")) || ((strToLower($this->request->getController()) == "browse") &&  (strToLower($this->request->getAction()) == "objects"))) ? 'active"' : ''; ?>" style="position:relative;">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Explore</a>
+						<ul class="dropdown-menu">
+							<li <?php print ((strToLower($this->request->getController()) == "browse") &&  (strToLower($this->request->getAction()) == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
+							<li <?php print ((strToLower($this->request->getController()) == "search") && (strToLower($this->request->getAction()) == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
+						</ul>
+					</li>
+							
+					<li <?php print (strToLower($this->request->getController()) == "gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Featured"), "", "", "Gallery", "Index"); ?></li>
+					<li class="dropdown <?php print (strToLower($this->request->getController()) == "help") ? 'active"' : ''; ?>" style="position:relative;">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Help</a>
+						<ul class="dropdown-menu">
+							<li <?php print ((strToLower($this->request->getController()) == "help") &&  (strToLower($this->request->getAction()) == "guide")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Guide"), "", "", "Help", "guide"); ?></li>
+							<li <?php print ((strToLower($this->request->getController()) == "help") && (strToLower($this->request->getAction()) == "faq")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("FAQ"), "", "", "Help", "faq"); ?></li>
+							<li <?php print ((strToLower($this->request->getController()) == "help") && (strToLower($this->request->getAction()) == "terms")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "Help", "terms"); ?></li>
+							<li <?php print ((strToLower($this->request->getController()) == "help") && (strToLower($this->request->getAction()) == "visit")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Plan Your Visit"), "", "", "Help", "visit"); ?></li>
+						</ul>
+					</li>					
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

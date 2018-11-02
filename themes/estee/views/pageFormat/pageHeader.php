@@ -55,6 +55,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
+    <meta name="pinterest" content="nopin" />
     <link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
@@ -79,7 +80,7 @@
 <body>
 <?php
 	if(strtoLower($this->request->getController()) == "front"){
-		print "<div class='heroFixed'><div class='container'><div class='row'><div class='col-sm-12'>".caGetThemeGraphic($this->request, 'hero_2.jpg')."</div></div></div></div>";
+		print "<div class='heroFixed'><div class='container'><div class='row'><div class='col-sm-12'>".caGetThemeGraphic($this->request, 'hero_5.jpg')."</div></div></div></div>";
 	}
 ?>
 	<nav class="navbar navbar-default yamm" role="navigation">
@@ -156,19 +157,22 @@
 	}
 ?>
 				<ul class="nav navbar-nav menuItems">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
-					<li <?php print (strToLower($this->request->getAction()) == "products") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Products"), "", "", "Explore", "products"); ?></li>
-					<li <?php print (strToLower($this->request->getAction()) == "archival") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archival Items"), "", "", "Explore", "archival"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features"), "", "", "Gallery", "Index"); ?></li>					
+					<li <?php print (strToLower($this->request->getController()) == "about") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
+					<li <?php print (strToLower($this->request->getController()) == "gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Galleries"), "", "", "Gallery", "Index"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") || (strToLower($this->request->getController()) == "explore")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Explore", "Brands"); ?></li>
+					<li <?php print (strToLower($this->request->getController()) == "faq") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("FAQ"), "", "", "Faq", ""); ?></li>
+<?php
+	$ps_contactType = $this->request->getParameter("contactType", pString);
+?>
+					<li <?php print ((strToLower($this->request->getController()) == "contact") && $ps_contactType == "transfer") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Transfer"), "", "", "Contact", "Form", array("contactType" => "transfer")); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "contact") && !$ps_contactType) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 <?php
 					if($this->request->isLoggedIn()){
 						if(caDisplayLightbox($this->request)){
-							print "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
+							print "<li ".((strToLower($this->request->getController()) == "lightbox") ? 'class="active"' : '').">".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 						}		
 					}
 ?>
-
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

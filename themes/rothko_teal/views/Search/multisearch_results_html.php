@@ -22,7 +22,7 @@
 		} */
 ?>
 		</small>
-		<h2><?php print _t("Search Results for %1", caUcFirstUTF8Safe($this->getVar('searchForDisplay'))); ?></h2>
+		<h2><?php print _t("Search results for <span class='searchCrit'>%1</span>", caUcFirstUTF8Safe($this->getVar('searchForDisplay'))); ?></h2>
 		<hr>
 <?php
 		// 

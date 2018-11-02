@@ -1,7 +1,7 @@
 <?php
     require_once(__CA_MODELS_DIR__.'/ca_site_pages.php');
     require_once(__CA_MODELS_DIR__.'/ca_occurrences.php');
-    require_once(__CA_LIB_DIR__.'/core/Media/MediaViewerManager.php');
+    require_once(__CA_LIB_DIR__.'/Media/MediaViewerManager.php');
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Contact");
 ?>
     <div class="row">

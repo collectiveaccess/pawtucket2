@@ -133,7 +133,7 @@
  			$this->opo_result_context->setAsLastFind(true);
  			
  			
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search %1", $va_browse_info["displayName"]).$this->request->config->get("page_title_delimiter").$this->opo_result_context->getSearchExpression());
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search %1", $va_browse_info["displayName"]).$this->request->config->get("page_title_delimiter").$this->opo_result_context->getSearchExpressionForDisplay());
  			
  			//
  			// Handle advanced search form submissions
@@ -231,7 +231,8 @@
 					case "alphabetical":
 					case "list":
 					default:
-						$this->view->setVar('facet_content', !$vb_search_was_replaced ? $o_browse->getFacetContent($vs_facet, array('checkAccess' => $this->opa_access_values, 'request' => $this->request)) : []);
+					    $content = !$vb_search_was_replaced ? $o_browse->getFacetContent($vs_facet, array('checkAccess' => $this->opa_access_values, 'request' => $this->request)) : [];
+						$this->view->setVar('facet_content', is_array($content) ? $content : []);
 						$this->render("Browse/list_facet_html.php");
 						break;
 					case "hierarchical":
@@ -337,7 +338,8 @@
 			
 			$vb_root_records_only = caGetOption('omitChildRecords', $va_browse_info, array(), array('castTo' => 'bool'));
  			
-			if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced, 'rootRecordsOnly' => $vb_root_records_only))); }
+ 			$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
+			if (!$vb_search_was_replaced) { $o_browse->execute(array_merge($va_options, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'expandToIncludeParents' => caGetOption('expandToIncludeParents', $va_browse_info, false), 'strictPhraseSearching' => !$vb_is_advanced, 'rootRecordsOnly' => $vb_root_records_only))); }
 		
 			//
 			// Facets
