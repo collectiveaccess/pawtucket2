@@ -652,6 +652,18 @@
 		$va_for_display = array();
 	 	$va_default_values = $va_values = $va_booleans = array();
 	 	
+	 	if ($purifier = RequestHTTP::getPurifier()) {
+	 	    foreach($pa_form_values as $k => $v) {
+	 	        if (is_array($v)) {
+	 	            foreach($v as $x => $y) {
+	 	                $pa_form_values[$k][$x] = $purifier->purify($y);
+	 	            }
+	 	        } else {
+	 	            $pa_form_values[$k] = $purifier->purify($v);
+	 	        }
+	 	    }
+	 	}
+	 	
 	 	foreach($va_form_contents as $vn_i => $vs_element) {
 			$vs_dotless_element = str_replace('.', '_', $vs_element);
 			
