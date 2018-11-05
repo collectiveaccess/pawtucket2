@@ -273,7 +273,7 @@ if (!$vb_ajax) {	// !ajax
 		}
 		if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 ?>
-		jQuery('#setsSelectMultiple').submit(function(e){		
+		jQuery('#setsSelectMultiple').on('submit', function(e){		
 			objIDs = [];
 			jQuery('#setsSelectMultiple input:checkbox:checked').each(function() {
 			   objIDs.push($(this).val());

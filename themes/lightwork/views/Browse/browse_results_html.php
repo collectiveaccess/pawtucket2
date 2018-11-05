@@ -76,7 +76,7 @@ if (!$vb_ajax) {	// !ajax
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("result") : _t("results"));	
 ?>		
 			<div class="btn-group">
-				<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
+				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear"></i></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if($vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){

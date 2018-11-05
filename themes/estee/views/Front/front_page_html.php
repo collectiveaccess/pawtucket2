@@ -35,10 +35,10 @@
 	<div class="row bgWhite">
 		<div class="col-sm-12"><br/></div>
 	</div>
-	<div class="row">
-		<div class="col-xs-offset-1 col-md-7 col-md-offset-1 col-xs-10 col-sm-10 primaryLandingBannerContent">
-			<?php print caGetThemeGraphic($this->request, 'hero_spacer.png'); ?>
-			<H1 class='primaryLandingBannerTitle'>Digital Archives</H1>
+	<div class="row primaryLandingBannerContentGradient">
+		<div class="col-xs-offset-1 col-xs-10 col-md-9 col-md-offset-1 col-sm-10 primaryLandingBannerContent">
+			<?php print caGetThemeGraphic($this->request, 'hero_spacer_short.png'); ?>
+			<H1 class='primaryLandingBannerTitle'>Explore<br/>the Archives</H1>
 		</div>
 	</div>
 	<div class="row bgWhite">
@@ -49,37 +49,31 @@
 			<H2>{{{home_intro_text}}}</H2>
 		</div><!--end col-sm-8-->		
 	</div><!-- end row -->	
-	<div class="row">
-		<div class="col-sm-12"><H3 class="text-center">Explore the Collection</H3></div>
-	</div>
-	<div class="row bgWhite">
-		<div class="col-sm-12"><br/><br/><br/><br/></div>
-	</div>
 	<div class="row bgWhite">
 		<div class="col-sm-12 col-md-10 col-md-offset-1">
 			<div class="row">
 				<div class="col-sm-4">
 					<div class="hpFeatured">
-						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'gallery.jpg'), "", "", "Gallery", "Index"); ?>
+						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'gallery'.rand(1,2).'.jpg'), "", "", "Gallery", "Index"); ?>
 						<?php print caNavLink($this->request, "Featured Galleries", "hpFeaturedTitle", "", "Gallery", "Index"); ?>
-						<div class="hpFeaturedText">Explore curated selections from the Archive</div>
+						<div class="hpFeaturedText">Explore curated selections from the Archives</div>
 						<?php print caNavLink($this->request, "MORE", "hpFeaturedLink", "", "Gallery", "Index"); ?>				
 					</div>
 				</div>
 				<div class="col-sm-4">
 					<div class="hpFeatured">
-						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'product2.jpg'), "", "", "Explore", "products"); ?>
-						<?php print caNavLink($this->request, "Products", "hpFeaturedTitle", "", "Explore", "products"); ?>
-						<div class="hpFeaturedText">Discover products by Estée Lauder's exceptional portfolio of brands</div>
-						<?php print caNavLink($this->request, "MORE", "hpFeaturedLink", "", "Explore", "products"); ?>	
+						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'browse'.rand(1,4).'.jpg'), "", "", "Explore", "Brands"); ?>
+						<?php print caNavLink($this->request, "Browse", "hpFeaturedTitle", "", "Explore", "Brands"); ?>
+						<div class="hpFeaturedText">Discover products and archival items by Estée Lauder Companies' exceptional portfolio of brands</div>
+						<?php print caNavLink($this->request, "MORE", "hpFeaturedLink", "", "Explore", "Brands"); ?>	
 					</div>
 				</div>
 				<div class="col-sm-4">
 					<div class="hpFeatured">
-						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'archival.jpg'), "", "", "Explore", "archival"); ?>
-						<?php print caNavLink($this->request, "Archival Items", "hpFeaturedTitle", "", "Explore", "archival"); ?>
-						<div class="hpFeaturedText">Experience the history of Estée Lauder's iconic designs by exploring Archival Items</div>
-						<?php print caNavLink($this->request, "MORE", "hpFeaturedLink", "", "Explore", "archival"); ?>	
+						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'contact.jpg'), "", "", "Contact", "form"); ?>
+						<?php print caNavLink($this->request, "Contact Us", "hpFeaturedTitle", "", "Contact", "Form"); ?>
+						<div class="hpFeaturedText">Inquire about heritage tours, ask a question, schedule a research appointment.</div>
+						<?php print caNavLink($this->request, "MORE", "hpFeaturedLink", "", "Contact", "Form"); ?>	
 					</div>
 				</div>
 			</div>

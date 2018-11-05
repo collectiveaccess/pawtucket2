@@ -124,7 +124,8 @@
 				case "alphabetical":
 				case "list":
 				default:
-					$this->view->setVar('facet_content', $po_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values, 'start' => $vn_s, 'limit' => $vn_limit)));
+				    $content = $po_browse->getFacet($vs_facet, ["checkAccess" => $this->opa_access_values, 'start' => $vn_s, 'limit' => $vn_limit]);
+					$this->view->setVar('facet_content', is_array($content) ? $content : []);
 					if($vb_is_nav && $vn_limit){
 						$this->view->setVar('facet_size', sizeof($po_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values))));					
 					}

@@ -36,7 +36,7 @@
 			<div class="row">
 			<div class="col-xs-6">
 				<div class="hpBrowseImage">
-					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/history.jpg')."<div class='hpBrowseTitle'>History</div>", "", "", "Detail", "collections/64"); ?>
+					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/history.jpg')."<div class='hpBrowseTitle'>History of the Suburb</div>", "", "", "Detail", "collections/64"); ?>
 				</div>
 			</div>			
 			<div class="col-xs-6">
@@ -53,7 +53,7 @@
 					<?php print caGetThemeGraphic($this->request, 'spacer.png'); ?>
 				</div>
 				<div class="hpText">
-					Welcome to Hampstead Garden Suburb Heritage.  This site is currently under development and you may find that some links are not working and the information shown may change frequently.
+					Hampstead Garden Suburb, near London’s Hampstead Heath, is a vibrant community set within a unique mix of open spaces, planned street scene, and internationally recognised architecture. Welcome to our Virtual Museum.<br/><?php print caNavLink($this->request, 'See Guide', '', '', 'About', 'museum_guide'); ?>
 				</div>
 			</div><!--end col-sm-8-->
 			</div>
@@ -77,6 +77,11 @@
 			</div>
 		</div>
 -->		
+		<div class="col-xs-6 col-sm-3">
+			<div class="hpBrowseImage">
+				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/suburb_news.png')."<div class='hpBrowseTitle'>Suburb News</div>", "", "", "Browse", "newspapers"); ?>
+			</div>
+		</div>
 		<div class="col-xs-6 col-sm-3">
 			<div class="hpBrowseImage">
 				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/collections.jpg')."<div class='hpBrowseTitle'>Collections</div>", "", "", "Browse", "collections"); ?>

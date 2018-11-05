@@ -26,10 +26,10 @@ body{
 	background-attachment: fixed;
 	
 	margin-top:20px;
-	margin-bottom: 150px;
+	margin-bottom: 290px;
 }
 #footer {
-    min-height: 120px;
+    min-height: 200px;
     background-color: #444;
     width: 100%;
     color: #EDEDED;
@@ -47,11 +47,27 @@ body{
 		padding: 45px 40px 0px 40px;
 	}
 }
+#footer a{
+	color:#FFF;
+	text-decoration:none;
+}
+#footer .fa{
+	font-size:14px;
+}
+@media (max-width: 768px) {
+	#footer .text-right{
+		text-align:left;
+	}
+}
 a, a:hover {
     color: #000;
 }
 b{
 	font-family: 'ProximanovaBold';
+}
+.scaleImage img{
+	width:100%;
+	height:auto;
 }
 H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 	font-family: Proximanova,Helvetica,Arial,sans-serif;
@@ -61,12 +77,31 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 .btn-default{
 	background-color:#000;
 }
+.btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
+	background-color:#333;
+}
 .form-control:focus {
     border-color: #000;
 }
 .navbar-brand {
 	width: 225px;
 	margin-top: 7px;
+}
+@media (max-width: 499px){
+	.navbar-brand {
+		width: 100%;
+		margin-top: 0px;
+		border-bottom: 1px solid #dddddd;
+		text-align: center;
+		padding-left: 15px !Important;
+		padding-right: 15px !Important;
+	}
+	.navbar-header{
+		margin-top:-20px;
+	}
+	.navbar-header button{
+		margin-bottom:0px;
+	}
 }
 @media (min-width: 500px) {
 	.navbar-brand {
@@ -148,7 +183,9 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 	background-color:transparent;
 }
 
+
 /* front */
+
 .front .tileLinks img{
 	width:100%;
 	height:auto;
@@ -198,13 +235,224 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 .browse .btn, .sets .btn {
     background-color: #000;
 }
+.results H1{
+	text-transform:capitalize;
+}
+.results .bSearchWithinContainer{
+	clear:both;
+	margin-top:15px;
+	margin-bottom:10px;
+	border:2px solid #f5f5f5;
+}
+.results .btn-search-refine{	
+	float: right;
+	font-size: 14px;
+	padding-top: 0px 0px 0px 0px;
+	width: 26px;
+	text-align: left;
+	background-color: transparent;
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	background-image: none;
+	outline: 0;
+	border: 0px;
+}
+.results .btn-search-refine .glyphicon{
+	margin-top:8px;
+	color: #858585;
+}
+.bSearchWithin, .bSearchWithin:focus {
+    float: left;
+    width: auto;
+    box-shadow: none;
+    border: 0px;
+    border-radius: 0px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    padding-left: 0px;
+    height: 33px;
+    font-size: 14px;
+    line-height: 26px;
+    background-color: transparent;
+    margin: 0px 0px 0px 10px;
+    font-size: 12px;
+    width:80%;
+}
+.bAdvancedLinkContainer{
+	clear:both;
+	text-align:right;
+	padding-left:35px;
+	margin-bottom:5px;
+}
+.bAdvancedLinkContainer a{
+	color:#ababab;
+	font-size:12px;
+}
+.results.library .bResultListItemCol, .results.library .bResultListItem, .results.library .bResultListItemContent{
+	height:auto;
+}
+.results.library .bResultListItemCol{
+	margin-bottom:30px;
+}
+/* advanced search */
 
+.advancedContainer .attributeListItem{
+	width:100%;
+}
+.collectionsAdvancedSearch{
+	text-align:left;
+	margin-bottom:10px;
+}
+@media (min-width: 768px) {
+	.collectionsAdvancedSearch{
+		margin-top:-30px;
+		text-align:right;
+	}
+}
+.collectionsAdvancedSearch a.btn-default{
+	color:#FFF;
+	text-decoration:None;
+	font-size:12px;
+	background-color:#858585;
+}
 /* gallery */
 .gallery .setDescription {
     font-weight: normal;
+}
+.gallery H4, .gallery H4 a{
+	text-transform:none;
 }
 
 /* detail */
 .detail .detailNavBgLeft, .detail .detailNavBgRight{
 	background-color: transparent;
+}
+.detail.chronology H5{
+	margin-top:25px;
+}
+.detail{
+	font-size:13px;
+	line-height: 1.3em;
+}
+.detail H6{
+	font-size:14px;
+}
+.detail .unit {
+    margin-bottom: 20px;
+}
+.detail .unit br {
+    margin-bottom: 10px;
+}
+.detail HR {
+    margin: 10px 0px 20px 0px;
+}
+.detail H6 a {
+    color: #000;
+}
+@media (min-width:768px) {
+	.exportCollection{
+		float:right;
+	}
+}
+
+/* multisearch */
+.multisearch .authoritySetLong {
+	float:left;
+	width:500px;
+	height:170px;
+	margin-right:20px;
+	overflow:hidden;
+	padding-top:10px;
+}
+
+.multisearch .authoritySetLong a, .multisearch .authoritySetLong {
+	font-size:12px;
+	color:#454545;
+}
+.multisearch .authorityResultLong{
+	margin-bottom:5px;
+	height:70px;
+	line-height:1.1em;
+	background-color:#f5f5f5;
+	padding:5px 10px 5px 10px;
+	overflow:hidden;
+}
+.multisearch .authorityResultLong:hover{
+	background-color:#ebebeb;
+}
+@media (max-width:500px) {
+	.multisearch .authoritySetLOng {
+		width:100%;
+		max-width:470px;
+		float:none;
+		margin-right:0px;
+		height:auto;
+	}
+	.authorityBlockLong .scrollButtonPrevious,
+	.authorityBlockLong .scrollButtonNext{
+		display:none;
+	}
+	.multisearch .authorityBlockLong .blockResultsScroller {
+		width:100% !important;
+		height:auto;
+	}
+	.multisearch .authorityBlockLong {
+		height:auto;
+		max-height:170px;
+	}
+}
+/* chronology */
+.tl-text .tl-headline-date, .tl-text h3.tl-headline-date, .tl-timeline{
+	font-family: Proximanova !important;
+}
+.tl-timeline a{
+	color:#454545 !important;
+}
+.tl-text .tl-headline-date{
+	display:none !important;
+	font-size:30px !important;
+	line-height:30px !important;
+}
+.tl-headline-date a{
+	font-size:30px;
+	text-decoration:none;
+}
+.tl-headline a:hover{
+	text-decoration:underline;
+}
+.tl-timeline h2 a {
+    font-size: 30px !important;
+    line-height: 30px !important;
+}
+.tl-slide .tl-slide-scrollable-container{
+	width:100%;
+}
+.tl-slide-content{
+	width:100% !Important;
+}
+.tl-media-content-container{
+	text-align:right;
+}
+.tl-desc-scroll{
+	max-height:210px;
+	overflow-y:scroll;
+	margin-bottom:20px;
+}
+.tl-timeline a.btn-default{
+	color:#FFF !important;
+	text-decoration:none !important;
+}
+.tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-media-container{
+	float:none !important;
+	max-height:50px !important;
+	max-width:100% !important;
+	text-align:center !important;
+	margin-right:0px !important;
+	margin-bottom:5px !important;
+	
+}
+.tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-media-container .tl-timemarker-media {
+    max-width: 100% !important;
+    max-height: 50px !important;
 }

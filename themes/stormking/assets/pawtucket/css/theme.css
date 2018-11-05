@@ -17,23 +17,18 @@
 	format("opentype");font-weight:900;font-style:normal;}
  */	
 	
-@font-face{font-family:neuzeit;src:url(https://use.typekit.net/af/2db03d/0000000000000000000178a5/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
-	format("woff2"),url(https://use.typekit.net/af/2db03d/0000000000000000000178a5/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
-	format("woff"),url(https://use.typekit.net/af/2db03d/0000000000000000000178a5/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
-	format("opentype");font-weight:300;font-style:normal;}
-@font-face{font-family:neuzeit;src:url(https://use.typekit.net/af/342b40/0000000000000000000178a6/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) 
-	format("woff2"),url(https://use.typekit.net/af/342b40/0000000000000000000178a6/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) 
-	format("woff"),url(https://use.typekit.net/af/342b40/0000000000000000000178a6/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) 
-	format("opentype");font-weight:400;font-style:normal;}
-@font-face{font-family:neuzeit;src:url(https://use.typekit.net/af/ae9007/0000000000000000000178a7/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) 
-	format("woff2"),url(https://use.typekit.net/af/ae9007/0000000000000000000178a7/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) 
-	format("woff"),url(https://use.typekit.net/af/ae9007/0000000000000000000178a7/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) 
-	format("opentype");font-weight:700;font-style:normal;}
-@font-face{font-family:neuzeit;src:url(https://use.typekit.net/af/394058/0000000000000000000178a8/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
-	format("woff2"),url(https://use.typekit.net/af/394058/0000000000000000000178a8/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
-	format("woff"),url(https://use.typekit.net/af/394058/0000000000000000000178a8/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
-	format("opentype");font-weight:900;font-style:normal;}
-
+@font-face{
+	font-family:neuzeit;
+	src:url('fonts/neuzeit.ttf'); 
+	font-weight:normal;
+	font-style:normal;
+}
+@font-face{
+	font-family:neuzeit;
+	src:url('fonts/neuzeit-bold.ttf'); 
+	font-weight:bold;
+	font-style:normal;
+}
 
 /*Left Column Responsive Styles */
 .page {
@@ -1348,4 +1343,21 @@ p, .collectionsList p {
 	#header-mobile-content .container{
 		width: auto;
 	}
+}
+.detail .repViewerCont div, .detail .exhibitionRep {
+	display:table;
+	width:100%;
+	max-height: 500px;
+	text-align:center;
+}
+.detail .repViewerCont img, .detail .exhibitionRep img {
+	width: auto;
+    height: auto;
+    max-width:100%;
+    margin-right:auto;
+    margin-left:auto;
+}
+.detail .repViewerCont .detailMediaToolbar, .gallery .repViewerCont .detailMediaToolbar {
+	width:auto;
+	display:none;
 }
