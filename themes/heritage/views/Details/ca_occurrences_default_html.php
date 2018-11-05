@@ -64,8 +64,7 @@
 					}
 
 ?>							
-					{{{<ifdef code="ca_occurrences.source_urls"><H6>External Source Links</H6><a href="^ca_occurrences.source_urls" target="_blank">^ca_occurrences.source_urls</a><br/></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.related_urls"><H6>External Related Links</H6><a href="^ca_occurrences.related_urls" target="_blank">^ca_occurrences.related_urls</a><br/></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.external_link"><H6>External Related Links</H6><a href="^ca_occurrences.external_link.url_entry" target="_blank">^ca_occurrences.external_link.url_source</a><br/></ifdef>}}}
 					<br/><br/>
 					
 					
