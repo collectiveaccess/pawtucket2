@@ -96,6 +96,8 @@
 			<button type="submit" class="btn btn-default">Send</button>
 		</div><!-- end form-group -->
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
+		
+		<div style="height:220px"></div>
 	</form>
 	
 </div><!-- end col --></div><!-- end row -->
