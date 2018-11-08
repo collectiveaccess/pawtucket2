@@ -29,9 +29,28 @@
  *
  * ----------------------------------------------------------------------
  */
-		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
+<div class="heroSearch">
+	<?php print caGetThemeGraphic($this->request, 'hpHero1.jpg'); ?>
+	<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+		<div class="formOutline">
+			<div class="form-group">
+				<input type="text" class="form-control" id="heroSearchInput" placeholder="Search" name="search" autocomplete="off" />
+			</div>
+			<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search"></span></button>
+		</div>
+	</form>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('#heroSearchButton').prop('disabled',true);
+			$('#heroSearchButton').on('keyup', function(){
+				$('#heroSearchButton').prop('disabled', this.value == "" ? true : false);     
+			})
+		});
+	</script>
+</div>
 <div class="container">
+
 	<div class="row">
 		<div class="col-sm-12 col-md-6 col-md-offset-3 text-center">
 			<br/><H1>{{{home_page_tagline}}}</H1>
@@ -44,25 +63,25 @@
 	<div class="row">
 		<div class="col-sm-12 col-md-8 col-md-offset-2 text-center">
 			<H2>Explore the Collection</H2>
-			<div class="row tileLinks">
+			<div class="row tileLinks">				
 				<div class="col-sm-4">
 		<?php
-					print caNavLink($this->request, caGetThemeGraphic($this->request, 'compass.jpg'), "", "", "Browse", "collection_objects");
-					print "<br/>".caNavLink($this->request, "Collection Objects", "", "", "Browse", "collection_objects");
-		?>
-				</div><!--end col-sm-4-->
-				<div class="col-sm-4">
-		<?php
-					print caNavLink($this->request, caGetThemeGraphic($this->request, 'ship.jpeg'), "", "", "Browse", "archival_items");
-					print "<br/>".caNavLink($this->request, "Archival Items", "", "", "Browse", "archival_items");
+					print caNavLink($this->request, caGetThemeGraphic($this->request, 'compass.jpg'), "", "", "Browse", "artefacts");
+					print "<br/>".caNavLink($this->request, "Artefacts", "", "", "Browse", "artefacts");
 		?>
 				</div> <!--end col-sm-4-->
 				<div class="col-sm-4">
 		<?php
-					print caNavLink($this->request, caGetThemeGraphic($this->request, 'shipinterior_web.png'), "", "", "Collections", "Index");
-					print "<br/>".caNavLink($this->request, "Collections", "", "", "Collections", "Index");
+					print caNavLink($this->request, caGetThemeGraphic($this->request, 'archives.jpg'), "", "", "Collections", "index");
+					print "<br/>".caNavLink($this->request, "Archives", "", "", "Collections", "index");
+		?>
+				</div><!--end col-sm-4-->
+				<div class="col-sm-4">
+		<?php
+					print caNavLink($this->request, caGetThemeGraphic($this->request, 'vessels.jpg'), "", "", "Browse", "vessels");
+					print "<br/>".caNavLink($this->request, "Vessels", "", "", "Browse", "vessels");
 		?>			
-				</div> <!--end col-sm-4-->	
+				</div> <!--end col-sm-4-->
 			</div><!-- end row -->	
 		</div>
 	</div>

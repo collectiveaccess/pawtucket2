@@ -37,12 +37,19 @@
 			<div class="row">
 				<div class="col-sm-12 col-md-6 text-left">
 					&copy; Vancouver Maritime Museum <?php print date("Y"); ?>
+					<br/>
+					<ul class="list-inline social">
+						<li><a href="https://www.facebook.com/vanmaritime" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
+						<li><a href="https://twitter.com/vanmaritime" target="_blank"><i class="fa fa-twitter"></i></a></li>
+						<li><a href="https://www.instagram.com/vanmaritime/" target="_blank"><i class="fa fa-instagram"></i></a></li>
+					</ul>
 				</div>
 				<div class="col-sm-12 col-md-6 text-right">
 				
 					<a href="https://vancouvermaritimemuseum.com/">Vancouver Maritime Museum</a>
 					<br/>1905 Ogden Avenue in Vanier Park
 					<br/>Vancouver, BC V6J 1A3
+					
 				</div>
 			</div>
 		</footer><!-- end footer -->
