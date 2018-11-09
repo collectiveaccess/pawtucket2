@@ -46,6 +46,7 @@
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
 	print $this->render("footer.php");	
+	$va_access_values 	= $this->getVar('access_values');
 
 ?>
 	<div class="representationList">
@@ -85,22 +86,22 @@
 							print $t_item->getWithTemplate('<ifdef code="ca_objects.unitdate.dacs_date_text"><div class="unit"><H6>Date</H6>^ca_objects.unitdate.dacs_date_text</div></ifdef>');
 							print $t_item->getWithTemplate('<ifnotdef code="ca_objects.unitdate.dacs_date_text"><ifdef code="ca_objects.unitdate.dacs_date_value"><div class="unit"><H6>Date</H6>^ca_objects.unitdate.dacs_date_value</div></ifdef></ifnotdef>');
 							print $t_item->getWithTemplate('<ifdef code="ca_objects.idno"><div class="unit"><H6>Identifier</H6>^ca_objects.idno</div></ifdef>');
-							print $t_item->getWithTemplate('<ifdef code="ca_object_representations.media_types"><div class="unit"><H6>Media Type</H6>^ca_object_representations.media_types%delimiter=,_</div></ifdef>');
-							print $t_item->getWithTemplate('<ifdef code="ca_object_representations.caption"><div class="unit"><H6>Preferred Caption</H6>^ca_object_representations.caption</div></ifdef>');
+							print $t_item->getWithTemplate('<ifdef code="ca_object_representations.media_types"><div class="unit"><H6>Media Type</H6>^ca_object_representations.media_types%delimiter=,_</div></ifdef>', array("checkAccess" => $va_access_values));
+							print $t_item->getWithTemplate('<ifdef code="ca_object_representations.caption"><div class="unit"><H6>Preferred Caption</H6>^ca_object_representations.caption</div></ifdef>', array("checkAccess" => $va_access_values));
 				
 							print $t_item->getWithTemplate('<ifdef code="ca_objects.extentDACS.extent_number|ca_objects.extentDACS.extent_type|ca_objects.extentDACS.physical_details|ca_objects.extentDACS.extent_dimensions">
 								<div class="unit"><H6>Extent & Medium</H6>
 									<unit relativeTo="ca_objects.extentDACS" delimiter="<br/>">
 										<ifdef code="ca_objects.extentDACS.extent_number">^ca_objects.extentDACS.extent_number </ifdef>
 										<ifdef code="ca_objects.extentDACS.extent_type">^ca_objects.extentDACS.extent_type: </ifdef>
-										<ifdef code="ca_objects.extentDACS.physical_details">^ca_objects.extentDACS.physical_details; </ifdef>
+										<ifdef code="ca_objects.extentDACS.physical_details">^ca_objects.extentDACS.physical_details</ifdef><ifdef code="ca_objects.extentDACS.physical_details,ca_objects.extentDACS.extent_dimensions">; </ifdef>
 										<ifdef code="ca_objects.extentDACS.extent_dimensions">^ca_objects.extentDACS.extent_dimensions </ifdef>
 									</unit>
 								</div>
 							</ifdef>');
 				
 				
-							print $t_item->getWithTemplate('<ifdef code="ca_object_representations.copyright_statement"><div class="unit"><H6>Rights</H6>^ca_object_representations.copyright_statement</div></ifdef>');
+							print $t_item->getWithTemplate('<ifdef code="ca_object_representations.copyright_statement"><div class="unit"><H6>Rights</H6>^ca_object_representations.copyright_statement</div></ifdef>', array("checkAccess" => $va_access_values));
 				
 							if($va_rel_entities = $t_item->get("ca_entities", array("checkAccess" => $va_access_values, "returnWithStructure" => true))){
 								$va_entities_by_type = array();
@@ -112,7 +113,7 @@
 								}
 							}
 				
-							print $t_item->getWithTemplate('<ifcount code="ca_collections" min="1"><div class="unit"><H6>Location in Archives Collection</H6><unit relativeTo="ca_collections" delimiter=" > ">^ca_collections.hierarchy.preferred_labels</unit></div></ifcount>');
+							print $t_item->getWithTemplate('<ifcount code="ca_collections" min="1"><div class="unit"><H6>Location in Archives Collection</H6><unit relativeTo="ca_collections" delimiter=" > ">^ca_collections.hierarchy.preferred_labels</unit></div></ifcount>', array("checkAccess" => $va_access_values));
 							
 						break;
 						# ------------------------
@@ -195,6 +196,7 @@
 				if($va_exhibitions = $t_item->get("ca_occurrences", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("exhibition")))){
 					$t_occ = new ca_occurrences();
 					print "<div class='unit'><H6>Exhibition History</H6>";
+					$t_objects_x_occurrences = new ca_objects_x_occurrences();
 					foreach($va_exhibitions as $va_exhibition){
 						$t_occ->load($va_exhibition["occurrence_id"]);
 						$vs_originating_venue 	= $t_occ->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='originator' delimiter=', '>^ca_entities.preferred_labels</unit>", array("checkAccess" => $va_access_values));
@@ -203,13 +205,66 @@
 						if(!$vs_date){
 							$vs_date = $t_occ->get("ca_occurrences.common_date");
 						}
-						print (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "")."<br/>";
+						# --- interstitial
+						$va_relations = $t_occ->get("ca_objects_x_occurrences.relation_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+						foreach($va_relations as $vn_relationship_id){
+							$t_objects_x_occurrences->load($vn_relationship_id);
+							if($t_objects_x_occurrences->get("object_id") == $t_item->get("ca_objects.object_id")){
+								break;
+							}
+						}
+						$va_interstitial = array();
+						$vs_interstitial = "";
+						if($vs_tmp = $t_objects_x_occurrences->get("checklist_number")){
+							$va_interstitial[] = $vs_tmp;
+						}
+						if($vs_tmp = $t_objects_x_occurrences->get("exhibition_title")){
+							$va_interstitial[] = $vs_tmp;
+						}
+						if($vs_tmp = $t_objects_x_occurrences->get("citation")){
+							$va_interstitial[] = $vs_tmp;
+						}
+						if($vs_tmp = $t_objects_x_occurrences->get("exh_remarks")){
+							$va_interstitial[] = $vs_tmp;
+						}
+						if($vs_tmp = $t_objects_x_occurrences->get("source")){
+							$va_interstitial[] = $vs_tmp;
+						}
+						if(sizeof($va_interstitial)){
+							$vs_interstitial = ", ".join(", ", $va_interstitial);
+						}
+						print (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "").$vs_interstitial."<br/>";
 					}
 					print "</div>";
 				}
-
-				print $t_item->getWithTemplate('<ifcount code="ca_occurrences" min="1" restrictToTypes="literature"><div class="unit"><H6>Literature References</H6><unit relativeTo="ca_occurrences" restrictToTypes="literature" delimiter="<br/>"><ifdef code="lit_citation">^ca_occurrences.lit_citation</ifdef><ifnotdef code="lit_citation">^ca_occurrences.preferred_labels</ifnotdef></unit></div></ifcount>');
-							
+				if($va_literatures = $t_item->get("ca_occurrences", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("literature")))){
+					$t_occ = new ca_occurrences();
+					print "<div class='unit'><H6>Literature References</H6>";
+					$t_objects_x_occurrences = new ca_objects_x_occurrences();
+					foreach($va_literatures as $va_literature){
+						$t_occ->load($va_literature["occurrence_id"]);
+						$vs_title = "";
+						if($vs_tmp = $t_occ->get("ca_occurrences.lit_citation")){
+							$vs_title = $vs_tmp;
+						}else{
+							$vs_title = $t_occ->get("ca_occurrences.preferred_labels");
+						}
+						# --- interstitial
+						$va_relations = $t_occ->get("ca_objects_x_occurrences.relation_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+						foreach($va_relations as $vn_relationship_id){
+							$t_objects_x_occurrences->load($vn_relationship_id);
+							if($t_objects_x_occurrences->get("object_id") == $t_item->get("ca_objects.object_id")){
+								break;
+							}
+						}
+						$vs_interstitial = "";
+						if($vs_tmp = $t_objects_x_occurrences->get("source")){
+							$vs_interstitial = ", ".$vs_tmp;
+						}
+						print $vs_title.$vs_interstitial."<br/>";
+					}
+					print "</div>";
+				}			
 				print $t_item->getWithTemplate('<ifdef code="ca_objects.remarks"><div class="unit"><h6>Remarks</h6>^ca_objects.remarks</div></ifdef>');
 				
 

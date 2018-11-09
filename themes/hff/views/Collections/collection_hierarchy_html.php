@@ -60,7 +60,7 @@
 							$vn_rel_object_count = sizeof($qr_collection_children->get("ca_objects.object_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values)));
 							$vs_record_count = "";
 							if($vn_rel_object_count){
-								$vs_record_count = "<br/><small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+								$vs_record_count = "<br/><small>(".$vn_rel_object_count." digital item".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 							}
 							$vs_coll_date = $qr_collection_children->get('ca_collections.unitdate.dacs_date_text');
 								

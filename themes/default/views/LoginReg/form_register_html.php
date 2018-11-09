@@ -131,7 +131,7 @@
 ?>
 		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
 			<label for='password2' class='col-sm-4 control-label'><?php print _t('Re-Type password'); ?></label>
-			<div class="col-sm-7"><input type="password" name="password2" size="40" class="form-control" /></div><!-- end col-sm-7 -->
+			<div class="col-sm-7"><input type="password" name="password2" size="40" class="form-control"  autocomplete="off" /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">

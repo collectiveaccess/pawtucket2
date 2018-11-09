@@ -52,13 +52,13 @@
 						<div class="form-group">
 							<label for="password" class="col-sm-2 control-label"><?php print _t("New password"); ?></label>
 							<div class="col-sm-7">
-								<input type="password" name="password" class="form-control" id="password" />
+								<input type="password" name="password" class="form-control" id="password" autocomplete="off" />
 							</div><!-- end col-sm-7 -->
 						</div><!-- end form-group -->
 						<div class="form-group">
 							<label for="password" class="col-sm-2 control-label"><?php print _t("Confirm new password"); ?></label>
 							<div class="col-sm-7">
-								<input type="password" name="password_confirm" class="form-control" id="password_confirm" />
+								<input type="password" name="password_confirm" class="form-control" id="password_confirm" autocomplete="off" />
 							</div><!-- end col-sm-7 -->
 						</div><!-- end form-group -->
 						<div class="form-group">
@@ -80,7 +80,7 @@
 						<div class="form-group">
 							<label for="reset_email" class="col-sm-4 control-label"><?php print _t("E-mail"); ?></label>
 							<div class="col-sm-7">
-								<input type="test" name="reset_email" class="form-control" id="reset_email" />
+								<input type="test" name="reset_email" class="form-control" id="reset_email" autocomplete="off" />
 							</div><!-- end col-sm-7 -->
 						</div><!-- end form-group -->
 						<div class="form-group">
@@ -111,4 +111,3 @@
 </script>
 <?php
 	}
-?>

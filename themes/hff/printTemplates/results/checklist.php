@@ -100,7 +100,7 @@
 						case "archival":
 							# --- no idno link
 							$vs_label 	= $vo_result->get("{$vs_table}.preferred_labels").(($vo_result->get("{$vs_table}.unitdate.dacs_date_text")) ? ", ".$vo_result->get("{$vs_table}.unitdate.dacs_date_text") : "");
-							$vs_tmp = $vo_result->getWithTemplate("<unit relativeTo='ca_collections' delimiter=', '><l>^ca_collections.preferred_labels</l></unit>", array("checkAccess" => $va_access_values));				
+							$vs_tmp = $vo_result->getWithTemplate("<unit relativeTo='ca_collections' delimiter=', '>^ca_collections.preferred_labels</unit>", array("checkAccess" => $va_access_values));				
 							if($vs_tmp){
 								$vs_label .= "<br/>Part of: ".$vs_tmp;
 							}
@@ -112,8 +112,48 @@
 						case "edition":
 						case "edition_HFF":
 						case "edition_nonHFF":
-							$vs_idno 	= "<small>".$vo_result->get("{$vs_table}.idno")."</small><br/>";
-							$vs_label 	= italicizeTitle($vo_result->get("{$vs_table}.preferred_labels")).(($vo_result->get("{$vs_table}.common_date")) ? ", ".$vo_result->get("{$vs_table}.common_date") : "");
+							#Identifier, Type, Artist, Title, Date, Medium, Dimensions, and Current Collection
+							$vs_idno 	= $vo_result->get("{$vs_table}.idno").", ";
+							$va_label_tmp = array();
+							if($vs_tmp = $vo_result->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))){
+								$va_label_tmp[] = $vs_tmp;
+							}
+							$va_artists = $vo_result->get("ca_entities", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToRelationshipTypes" => array("artist")));
+							if(is_array($va_artists) && sizeof($va_artists)){
+								$va_tmp = array();
+								foreach($va_artists as $va_artist){
+									$va_tmp[] = $va_artist["displayname"];
+								}
+								$va_label_tmp[] = join(", ",$va_tmp);
+							}
+							$va_label_tmp[] = italicizeTitle($vo_result->get("{$vs_table}.preferred_labels"));
+							if($vs_tmp = $vo_result->get("{$vs_table}.common_date")){
+								$va_label_tmp[] = $vs_tmp;
+							}
+							if($vs_medium = $vo_result->getWithTemplate('<ifdef code="ca_objects.medium_notes.medium_notes_text">^ca_objects.medium_notes.medium_notes_text</ifdef>')){
+								$va_label_tmp[] = $vs_medium;
+							}				
+							if($vs_dimensions = trim(str_replace("artwork", "", $vo_result->get("ca_objects.dimensions.display_dimensions")))){
+								$va_label_tmp[] = $vs_dimensions;
+							}
+							if($va_provenance = $vo_result->get("ca_occurrences", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("provenance")))){
+								$t_obj_x_occ = new ca_objects_x_occurrences();
+								$va_current_collection = array();
+								foreach($va_provenance as $va_provenance_info){
+									$t_obj_x_occ->load($va_provenance_info["relation_id"]);
+									$vs_date = $t_obj_x_occ->get("effective_date");
+									# --- yes no values are switched in this list
+									if(strToLower($t_obj_x_occ->get("ca_objects_x_occurrences.current_collection", array("convertCodesToDisplayText" => true))) == "no"){
+										$va_current_collection[] = $va_provenance_info["name"].(($vs_date) ? ", ".$vs_date : "");
+							
+									}
+								}
+								if(sizeof($va_current_collection)){
+									$va_label_tmp[] = join("; ", $va_current_collection);
+								}
+							}
+							
+							$vs_label = join(", ", $va_label_tmp);
 						break;
 						# ------------------------
 						case "library":
