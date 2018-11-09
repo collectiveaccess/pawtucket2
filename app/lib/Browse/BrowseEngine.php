@@ -989,7 +989,9 @@
 		 *		limitToModifiedOn = if set returned results will be limited to rows modified within the specified date range. The value should be a date/time expression parse-able by TimeExpressionParser
 		 *		user_id = If set item level access control is performed relative to specified user_id, otherwise defaults to logged in user
 		 *		expandResultsHierarchically = expand result set items that are hierarchy roots to include their entire hierarchy. [Default is false]
-		 *		rootRecordsOnly = only return records that are the root of whatever hierarchy they are in. [Default is false]
+		 *		omitChildRecords = only return records that are the root of whatever hierarchy they are in. [Default is false]
+		 *		rootRecordsOnly = Synonym for omitChildRecords.
+		 *		omitChildRecordsForTypes = List of types for which to return only records that are not children [Default is null]
 		 *
 		 * @return bool True on success, null if the browse could not be executed (Eg. no settings), false no error
 		 */
@@ -997,7 +999,16 @@
 			global $AUTH_CURRENT_USER_ID;
 			if (!is_array($this->opa_browse_settings)) { return null; }
 			if (!is_array($pa_options)) { $pa_options = array(); }
-
+			
+			if ((!isset($pa_options['omitChildRecords'])) && isset($pa_options['rootRecordsOnly'])) { 
+			    $pa_options['omitChildRecords'] = $pa_options['rootRecordsOnly'];
+			}
+			
+			if (is_array($omit_child_records_for_types = caGetOption('omitChildRecordsForTypes', $pa_options, null)) && sizeof($omit_child_records_for_types)) {
+			    $omit_child_records_for_types = caMakeTypeIDList($this->opn_browse_table_num, $omit_child_records_for_types);
+			    $pa_options['omitChildRecords'] = false;        // omitChildRecordsForTypes supercedes omitChildRecords
+			}
+			
 			$vn_user_id = caGetOption('user_id', $pa_options, $AUTH_CURRENT_USER_ID, array('castTo' => 'int'));
 			$vb_no_cache = caGetOption('noCache', $pa_options, caGetOption('no_cache', $pa_options, false, array('castTo' => 'bool')), array('castTo' => 'bool'));
 
@@ -2163,7 +2174,16 @@
 						if (sizeof($va_hits) < sizeof($va_acc[$vn_smallest_list_index])) { $vn_smallest_list_index = $vn_i; }
 					}
 					
-					if ((!isset($pa_options['rootRecordsOnly']) || !$pa_options['rootRecordsOnly']) && caGetOption('expandResultsHierarchically', $pa_options, false) && ($vs_hier_id_fld = Datamodel::getTableProperty($this->ops_browse_table_name, 'HIERARCHY_ID_FLD'))) {
+					if ((!isset($pa_options['omitChildRecords']) || !$pa_options['omitChildRecords']) && caGetOption('expandResultsHierarchically', $pa_options, false) && ($vs_hier_id_fld = Datamodel::getTableProperty($this->ops_browse_table_name, 'HIERARCHY_ID_FLD'))) {
+                       $vs_parent_id_fld = Datamodel::getTableProperty($this->ops_browse_table_name, 'PARENT_ID_FLD');
+                       $omit_child_records_for_type_sql = '';
+                       $params = [array_keys($va_acc_content)];
+                       
+                       if(is_array($omit_child_records_for_types) && sizeof($omit_child_records_for_types)) {
+                            $omit_child_records_for_type_sql = "AND (({$vs_parent_id_fld} IS NULL) OR ({$vs_parent_id_fld} IS NOT NULL AND type_id NOT IN (?)))";
+                            $params[] = $omit_child_records_for_types;
+                       }
+                       
                        foreach($va_acc as $vn_i => $va_acc_content) {
                             if(!sizeof($va_acc_content)) { continue; }
                             $qr_expand =  $this->opo_db->query("
@@ -2171,7 +2191,8 @@
                                 FROM ".$this->ops_browse_table_name."
                                 WHERE
                                     {$vs_hier_id_fld} IN (?)
-                            ",[array_keys($va_acc_content)]);
+                                    {$omit_child_records_for_type_sql}
+                            ",$params);
 
                             if(is_array($va_expanded_res = $qr_expand->getAllFieldValues($t_item->primaryKey())) && sizeof($va_expanded_res)) {
                                 $va_acc[$vn_i] = array_flip($va_expanded_res);
@@ -2222,9 +2243,14 @@
 							$va_wheres[] = "(".$this->ops_browse_table_name.".deleted = 0)";
 						}
 						
-						if ((isset($pa_options['rootRecordsOnly']) && $pa_options['rootRecordsOnly']) && $t_item->hasField('parent_id')) {
+						if ((isset($pa_options['omitChildRecords']) && $pa_options['omitChildRecords']) && $t_item->hasField('parent_id')) {
 							$va_wheres[] = "(".$this->ops_browse_table_name.".parent_id IS NULL)";
 						}
+						
+						if (is_array($omit_child_records_for_types) && sizeof($omit_child_records_for_types) && $t_item->hasField('parent_id')) {
+							$va_wheres[] = "(({$this->ops_browse_table_name}.parent_id IS NULL) OR ({$this->ops_browse_table_name}.parent_id IS NOT NULL AND {$this->ops_browse_table_name}.type_id NOT IN (".join(",", $omit_child_records_for_types).")))";
+						}
+
 
 						if ((isset($pa_options['limitToModifiedOn']) && $pa_options['limitToModifiedOn'])) {
 							$o_tep = new TimeExpressionParser();
@@ -2297,9 +2323,13 @@
 					if ((!isset($pa_options['showDeleted']) || !$pa_options['showDeleted']) && $t_item->hasField('deleted')) {
 						$va_wheres[] = "(".$this->ops_browse_table_name.".deleted = 0)";
 					}
-					if ((isset($pa_options['rootRecordsOnly']) && $pa_options['rootRecordsOnly']) && $t_item->hasField('parent_id')) {
+					if ((isset($pa_options['omitChildRecords']) && $pa_options['omitChildRecords']) && $t_item->hasField('parent_id')) {
 						$va_wheres[] = "(".$this->ops_browse_table_name.".parent_id IS NULL)";
-					}
+					}					
+        
+                    if (is_array($omit_child_records_for_types) && sizeof($omit_child_records_for_types) && $t_item->hasField('parent_id')) {
+                        $va_wheres[] = "(({$this->ops_browse_table_name}.parent_id IS NULL) OR ({$this->ops_browse_table_name}.parent_id IS NOT NULL AND {$this->ops_browse_table_name}.type_id NOT IN (".join(",", $omit_child_records_for_types).")))";
+                    }
 
 					if ((isset($pa_options['limitToModifiedOn']) && $pa_options['limitToModifiedOn'])) {
 						$o_tep = new TimeExpressionParser();
