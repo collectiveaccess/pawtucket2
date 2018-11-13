@@ -121,21 +121,27 @@
 					if($vs_table == "ca_objects"){
 						# --- caption info
 						# --- Object Type - Archival Material Type if folder/item, line break,  Brand, Sub Brand / Collection if one, line break, Object Name, (Manufacture Season (if one) and Manufacture Date) or folder/item (Date)
-						$vs_caption = "";
-						$vs_caption .= $qr_res->get('ca_objects.type_id', array('returnAsLink' => true, 'convertCodesToDisplayText' => true));
-						if($vs_tmp = $qr_res->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true))){
-							$vs_caption .= " - ".$vs_tmp;
+						
+						$vs_caption = "<div class='resultType'>";
+						$vs_caption .= $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))." &rsaquo; ";
+						if($vs_tmp = $qr_res->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
+							$vs_caption .= $vs_tmp;
+							if($qr_res->get("ca_objects.brand")){
+								$vs_caption .= "<br/>";
+							}
 						}
-						$vs_caption .= "<br/>";
-						if(($vs_brand = $qr_res->get("ca_objects.brand", array("convertCodesToDisplayText" => true))) || ($vs_subbrand = $qr_res->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true)))){
-							$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
+						if(($vs_brand = $qr_res->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))) | ($vs_subbrand = $qr_res->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true, "delimiter" => ", ")))){
+							$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? " &rsaquo; " : "").$vs_subbrand;
 						}
-						$vs_caption .= "<b>".$qr_res->get('ca_objects.preferred_labels')."</b>";
+						$vs_caption .= "</div>";
 						if($vs_tmp = $qr_res->getWithTemplate('<ifdef code="ca_objects.manufacture_display_date|ca_objects.manufacture_date">^ca_objects.manufacture_display_date<ifdef code="ca_objects.manufacture_display_date,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+							$vs_caption .= $vs_tmp.", ";
+						}
+						$vs_caption .= $qr_res->get('ca_objects.preferred_labels');
+						if($vs_tmp = $qr_res->get("ca_objects.codes.product_code")){
 							$vs_caption .= " (".$vs_tmp.")";
 						}
 						$vs_label_detail_link = caDetailLink($this->request, $vs_caption, '', $vs_table, $vn_id);
-					
 					}
 					if(!$vs_image){
 						if ($vs_table == 'ca_objects') {

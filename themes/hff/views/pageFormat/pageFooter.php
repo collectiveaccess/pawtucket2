@@ -31,8 +31,14 @@
 		<footer id="footer">
 			<div class="container">
 				<div class="row">
-					<div class="col-sm-12">
+					<div class="col-sm-12 col-md-6">
 						&copy; <?php print date("Y"); ?> Helen Frankenthaler Foundation, Inc. 
+						<br/>134 West 26th Street, 5th Floor
+						<br/>New York, NY 10001
+						<br/>212-268-4937
+					</div>
+					<div class="col-sm-12 col-md-6 text-right">
+						<?php print caNavLink($this->request, _t("<i class='fa fa-question-circle' aria-hidden='true'></i> Help"), "", "", "Help", ""); ?>
 					</div>
 				</div>
 			</div>
@@ -73,6 +79,9 @@
 				}
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
+		</script>
+		<script type="text/javascript">
+			$( ".front .notificationMessage" ).delay(1500).fadeOut("slow");
 		</script>
 	</body>
 </html>

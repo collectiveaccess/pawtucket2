@@ -31,6 +31,7 @@ src:url("webFonts/HelveticaLT/05598d95Updated.eot?#iefix") format("eot"),url("we
 body {
     text-rendering: auto;
     -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
     font-family: 'SangBleuSerif-Light';
     color:#000;
     margin-bottom:131px;
@@ -109,6 +110,9 @@ b, strong {
 }
 #pageArea{
 	padding-bottom:75px;
+}
+.notificationMessage{
+	margin-top:20px;
 }
 .navbar{
 	-webkit-box-shadow: none;
@@ -271,7 +275,7 @@ navbar-nav > li > a {
 	position:fixed;
 	width:100%;
 	background-color: rgba(0, 0, 0, 0.8);
-	padding-bottom:4px;
+	padding-bottom:5px;
 }
 .fixedHeader nav:hover{
 	background-color:#000;
@@ -291,6 +295,7 @@ navbar-nav > li > a {
 .fixedHeader .navbar-brand{
 	padding-left:0px;
 }
+
 .fixedHeader nav:hover .navbar-brand, .fixedHeader .navbar.opaque .navbar-brand{
 	padding-left:18px;
 }
@@ -317,7 +322,7 @@ nav .menuItems.show{
 }
 .heroFixed .row{
 	height:1000px;
-	background-color:#000;
+	/*background-color:#000;*/
 }
 .heroFixed img{
 	width:100%;
@@ -366,7 +371,7 @@ nav .menuItems.show{
 .exploreBrandContainer a{
 	color:#000;
 	font-family: sangbleusanslight;
-	font-size: 2.5rem;
+	font-size: 2.0rem;
     transition: all 0.4s ease 0s;
     -webkit-transition: all 0.4s ease 0s;
     -moz-transition: all 0.4s ease 0s;
@@ -379,7 +384,11 @@ nav .menuItems.show{
 .exploreBrand{
 	padding-top:20px;
 }
-
+@media (min-width: 768px) {
+	.exploreBrandGrid .col-sm-3{
+		width:20%;
+	}
+}
 /* browse */
 #pageArea.results{
 	margin-top:36px;
@@ -418,7 +427,7 @@ nav .menuItems.show{
 	border: 0px;
 }
 .results .btn-search-refine .glyphicon{
-	margin-top:8px;
+	margin-top:5px;
 }
 .bSearchWithin, .bSearchWithin:focus {
     float: left;
@@ -435,20 +444,79 @@ nav .menuItems.show{
     line-height: 26px;
     background-color: transparent;
     margin: 0px 0px 0px 10px;
-    font-size: 12px;
+    font-size: 15px;
 }
 
+.bSearchWithin::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+	color: #000;
+	font-style:italic;
+}
+.bSearchWithin::-moz-placeholder { /* Firefox 19+ */
+	color: #000;
+	font-style:italic;
+}
+.bSearchWithin:-ms-input-placeholder { /* IE 10+ */
+	color: #000;
+	font-style:italic;
+}
+.bSearchWithin:-moz-placeholder { /* Firefox 18- */
+	color: #000;
+	font-style:italic;
+}
+.btn-default.browseProducts{
+	width:100%;
+	text-align:center;
+	margin-bottom:10px;
+	display:inline-block;
+	background-color:#f5f5f5;
+	color:#000;
+}
+.bResultItemText, .bResultListItemText{
+	color:#000;
+	font-weight:bold;
+}
+.resultType{
+	color: #015f9c !important;
+	font-family: 'Helvetica LT W01 Roman';
+	font-size: 1.1rem;
+	line-height: 1.2rem;
+	padding: 0px 0px 5px 0px;
+	text-transform: uppercase;
+	font-weight:normal;
+}
+.bResultItem .bResultItemText {
+    line-height: 1.3em;
+    margin-top:5px;
+    font-family: SangBleuSansLight;
+}
+.bResultItemContent {
+    height: 245px;
+}
+.bResultItem .bResultItemImg{
+	margin-bottom:0px;
+}
+.bResultItem .bResultItemText a:hover{
+	text-decoration:none;
+}
+.bResultItemImgPlaceholder{
+	margin-bottom:0px;
+}
 /* front */
 #pageArea.front{
 	padding-bottom:0px;
 	background-color:transparent;
 }
 h1.primaryLandingBannerTitle {
-    font-size: 9rem;
+    /*font-size: 8rem;*/
+    font-size: 7.5rem;
     line-height: 9rem;
     letter-spacing: 0px;
     margin-bottom: 20px;
-    color:#FFF;
+    /*color:#FFF;*/
+    color:#000;
+}
+.primaryLandingBannerContentGradient{
+	background-image: linear-gradient(to right, rgba(255,255,255,.5), rgba(255,255,255,0));
 }
 .primaryLandingBannerContent{
 	position:relative;
@@ -459,11 +527,13 @@ h1.primaryLandingBannerTitle {
 }
 .primaryLandingBannerContent H1 {
     position: absolute;
-    bottom: 100px;
+    /*bottom: 135px;*/
+    bottom:110px;
     left:0px;
 }
 .front h2{
 	margin:40px 0px 60px 0px;
+	font-size:4.6rem;
 }
 .front h3{
 	color:#FFF;
@@ -475,6 +545,7 @@ h1.primaryLandingBannerTitle {
 .hpFeatured img{
 	width:100%;
 	height:auto;
+	border:1px solid #858585;
 }
 .hpFeatured a{
     transition: all 0.4s ease 0s;
@@ -555,8 +626,22 @@ h1.primaryLandingBannerTitle {
 .detail h6{
 	font-size:16px;
 }
+.detail h4.mainTitle{
+	margin-bottom:20px;
+	padding-left:10px;
+	padding-right:10px;
+}
 .detail h6.objectType{
 	text-transform:uppercase;
+	line-height:1.3em;
+	font-family: 'Helvetica LT W01 Roman';
+	font-size: 12px;
+	font-weight:normal;
+}
+.unit.productInfo{
+	background-color:#f1f1f1;
+	padding: 1px 10px 4px 10px;
+	margin-bottom:20px;
 }
 .detail {
     color: #000;
@@ -564,12 +649,15 @@ h1.primaryLandingBannerTitle {
 .detail a, .detail H6 a {
     color: #131522;
 }
-.detail #detailTools {
+.detail #detailTools, .detail .detailTools {
     clear: both;
     padding-top: 0px;
     margin-top: 0px;
     font-family: HelveticaLTPro-Light;
     text-align:center;
+}
+.detail .detailTools{
+	text-align:left;
 }
 .detail #detailTools .detailTool, .detail .detailTool span, .detail .detailTool i, .detail .detailTool a {
     color:#015f9c;
@@ -619,9 +707,91 @@ h1.primaryLandingBannerTitle {
 .detail .detailArchivalPlaceholder small{
 	font-size:10px;
 }
+
+.repViewerContCont{
+	padding-bottom:38px;
+}
+.detail .detailMediaToolbar/*, .gallery .detailMediaToolbar*/ {
+    background-color: #fff;
+    padding: 2px 5px 7px 5px;
+    font-size: 16px;
+    position: absolute;
+    display: block;
+    top: auto;
+    bottom: -43px;
+    left:30%;
+    right:30%;
+    text-align: center;
+    z-index:1500;
+}
+.detail .detailMediaToolbar a{
+	color: #858585;
+}
+.detail #detailRepNav {
+    padding: 0px 0px 7px 0px;
+    font-size: 12px;
+    position: relative;
+    z-index: 1000;
+    top: -33px;
+}
+.collectionsList{
+	margin-top:30px;
+}
+.collectionsList .collectionBlock{
+	margin-bottom:0px;
+}
+@media (max-width: 768px) {
+	.collectionsList .collectionTitle{
+		text-align:center;
+	}
+}
+@media (min-width: 768px) {
+	.collectionsList .collectionTitle{
+		line-height: 100px;
+		height: 100px;
+	}
+
+
+	/* If the text has multiple lines, add the following: */
+	.collectionTitle a {
+		line-height: 1.5;
+		display: inline-block;
+		vertical-align: middle;
+	}
+}
+.collectionsList .collectionTitle a{
+	font-family: SangBleuSansLight;
+	color: #000;
+	text-transform: none;
+	text-decoration:none;
+	font-size: 2rem;
+	line-height: 3rem;
+	vertical-align:middle;
+}
+.collectionGraphic {
+	text-align:center;
+	width: 100px;
+	height: 100px;
+	overflow:hidden;
+	border-radius:100px;
+	padding-left:0px;
+	padding-right:0px;
+	margin:0px auto 0px auto;
+}
+.collectionTile{
+	margin-bottom:30px;
+}
+.collectionGraphic img {	
+	height:auto;
+	width:110px;
+}
 /* gallery */
 .gallery h6{
 	font-size: 14px;
+}
+.setItemDescription{
+	max-height: 190px;
+	overflow-y: scroll;
 }
 /* forms */
 .form-control:focus {
@@ -630,4 +800,11 @@ h1.primaryLandingBannerTitle {
 
 .contact p{
 	margin-bottom:25px;
+}
+.staticPage a, .contact a, .linkUnderline a, .linkUnderline p a{
+	text-decoration:underline !important;
+}
+.staticPage h4{
+	margin-top:30px;
+	font-weight:bold;
 }

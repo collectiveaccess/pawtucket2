@@ -46,27 +46,18 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-sm-12 text-center'>
-					{{{<ifdef code="ca_objects.type_id"><div class="unit"><H6 class="objectType">^ca_objects.type_id<ifdef code="ca_objects.archival_types"> - ^ca_objects.archival_types</ifdef></H6></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.brand"><div class="unit"><H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.brand</unit></H6></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.preferred_labels.name"><H4>^ca_objects.preferred_labels.name</H4></ifdef>}}}
-					<HR>
-				</div>
-			</div>
-			<div class="row">
 				<div class='col-sm-6 col-md-6'>
 <?php
 					print '<div id="detailTools">';
-					if ($vn_pdf_enabled) {
-						print "<div class='detailTool'><span class='glyphicon glyphicon-download'></span>".caDetailLink($this->request, "Download Tear Sheet", "", "ca_objects", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
-					}
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About this Item", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'inquiry'))."</div>";
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
 				
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
 						print $vs_rep_viewer;
+						print "<H6>Media may not be used, published or distributed without prior authorization.</H6>";
 					}else{
-						if(strToLower($t_object->get("type_id", array("convertCodesToDisplayText" => true))) == "folder"){
+						if(strToLower($t_object->get("type_id", array("convertCodesToDisplayText" => true))) == "archival folder"){
 							# --- folder
 							# -- yes no values are switched in this configuration :(
 							if(strToLower($t_object->get("completely_digitized", array("convertCodesToDisplayText" => true))) != "no"){
@@ -76,7 +67,7 @@
 							}
 						}else{
 							print "<div class='detailArchivalPlaceholder'><span class='glyphicon glyphicon-file'></span></div>";
-							print "<br/><div class='detailTool text-center'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Scan or Image", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'digitizationRequest'))."</div>";
+							#print "<br/><div class='detailTool text-center'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Scan or Image", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'digitizationRequest'))."</div>";
 						}
 						
 					}	
@@ -84,10 +75,22 @@
 					<div id="detailAnnotations"></div>
 				
 					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-				
+
 				</div><!-- end col -->
 			
 				<div class='col-sm-6 col-md-6'>
+					<!--{{{<ifdef code="ca_objects.type_id"><div class="unit"><H6 class="objectType">^ca_objects.type_id<ifdef code="ca_objects.archival_types"> - ^ca_objects.archival_types%delimiter=;_</ifdef></H6></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.brand"><div class="unit"><H6 class="objectType"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.brand</unit></H6></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.sub_brand"><div class="unit"><H6 class="objectType"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.sub_brand</H6></unit></div></ifdef>}}}-->
+					
+					
+					{{{<ifdef code="ca_objects.idno"><div class="unit text-center">Object ID: ^ca_objects.idno</div></ifdef>}}}
+					
+					{{{<ifdef code="ca_objects.type_id|ca_objects.archival_types|ca_objects.brand|ca_objects.sub_brand"><div class="unit productInfo"><H6 class="objectType">^ca_objects.type_id<ifdef code="ca_objects.archival_types"> &rsaquo; ^ca_objects.archival_types%delimiter=,_</ifdef><ifdef code="ca_objects.brand"><br/><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.brand</unit></ifdef><ifdef code="ca_objects.sub_brand"> &rsaquo; <unit relativeTo="ca_objects" delimiter=", ">^ca_objects.sub_brand</unit></ifdef></H6></div></ifdef>}}}
+					
+					
+					{{{<ifdef code="ca_objects.preferred_labels.name"><H4 class="mainTitle">^ca_objects.preferred_labels.name</H4></ifdef>}}}
+					<HR>
 					{{{<ifdef code="ca_objects.manufacture_date"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></div></ifdef>}}}
 <?php
 					$vb_notes_output = false;
@@ -96,7 +99,8 @@
 					if(is_array($va_notes) && sizeof($va_notes)){
 						$va_notes = array_pop($va_notes);
 						foreach($va_notes as $va_note){
-							if(strToLower($va_note["internal_external"]) == "unrestricted"){
+							$va_note["general_notes_text"] = trim($va_note["object_note_value"]);
+							if($va_note["general_notes_text"] && strToLower($va_note["internal_external"]) == "unrestricted"){
 								$va_notes_filtered[] = $va_note["general_notes_text"];
 							}
 						}
@@ -123,7 +127,7 @@
 						$vs_parent_folder = caDetailLink($this->request, $vs_caption, '', 'ca_objects', $t_parent->get('ca_objects.object_id'));
 					}
 					if($vs_collection_hier || $vs_parent_folder){
-						print "<div class='parentObject'><h4>This ".$t_object->get('ca_objects.type_id', array("convertCodesToDisplayText" => true))." Is Part Of</h4><br/>";
+						print "<div class='parentObject'><h6>This ".$t_object->get('ca_objects.type_id', array("convertCodesToDisplayText" => true))." Is Part Of</h6>";
 						print $vs_collection_hier;
 						if($vs_parent_folder && $vs_collection_hier){
 							print " > "; 
@@ -140,7 +144,7 @@
 				
 					if ($va_child_object_ids = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						$qr_children = caMakeSearchResult('ca_objects', $va_child_object_ids);
-						print "<div class='childObjects'><h4>Component".((sizeof($va_child_object_ids) > 1) ? "s" : "")."</h4><br/>";
+						print "<div class='childObjects'><h4>Folder Contents</h4><br/>";
 						$va_child_info_fields = array("shade", "fragrance", "codes.product_code");
 						if($qr_children->numHits()){
 							while ($qr_children->nextHit()) {
@@ -167,6 +171,9 @@
 							}
 						}
 						print "</div>";
+					}
+					if ($vn_pdf_enabled) {
+						print "<hr/><div class='detailTools'><div class='detailTool'><span class='glyphicon glyphicon-download'></span>".caDetailLink($this->request, "Download Summary", "", "ca_objects", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div></div>";
 					}
 	?>
 				</div><!-- end col -->

@@ -6,6 +6,10 @@ Options -Indexes
 		SetEnv HTTP_MOD_REWRITE On
 	</IfModule>
 	
+    RewriteRule ^archives /About/archives [R,L]
+    RewriteRule ^oralhistory /Listing/oralhistory [R,L]
+    RewriteRule ^specialcollections /Collections/index [R,L]
+
 	RewriteRule "(^|/)\.(?!well-known\/)" - [F]
 	
 	# Pass all requests not referring directly 
@@ -16,4 +20,10 @@ Options -Indexes
 	RewriteCond %{REQUEST_URI} !=/server-status
 	RewriteCond %{REQUEST_URI} !=/robots.txt
 	RewriteRule ^ index.php%{REQUEST_URI} [L]	
+
+	# Block all TRACE/TRACK requests
+	RewriteCond %{REQUEST_METHOD} ^TRAC[EK]
+	RewriteRule .* - [F]
+
+
 </IfModule>

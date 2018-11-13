@@ -40,7 +40,7 @@
 	if($qr_res && $qr_res->numHits()){
 ?>
 <div class="row skewed-title-bar">
-	<div class="col-xs-12 col-sm-offset-1 col-sm-10"><H4><span>Highlights</span></H4></div>	
+	<div class="col-xs-12 col-sm-offset-1 col-sm-10"><H4><span>Holland Museum Collection Highlights</span></H4></div>	
 </div>
 <div class="row">
 	<div class="col-sm-12"> 

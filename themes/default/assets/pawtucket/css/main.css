@@ -120,6 +120,10 @@ h1 i {
 	padding:6px;
 }
 
+.bViewButtons .disabled {
+    pointer-events:all;
+}
+ 
 /* --------------------------------------------------------- */
 /* ALERTS */
 /* --------------------------------------------------------- */
@@ -1087,7 +1091,7 @@ a.browseRemoveFacet img {
 	width:100%;
 	height:auto;
 }
-.lbSetThumbPlaceholder i{
+.lbSetThumbPlaceholder i, .lbSetThumbPlaceholder .glyphicon{
 	position:absolute;
 	top:35%;
 	left:0px;
@@ -1930,7 +1934,7 @@ a.browseRemoveFacet .glyphicon {
 	position:absolute;
 	right:20px;
 	top:0px;
-	z-index:100;
+	z-index:10;
 }
 .bResultItem:hover .bSetsSelectMultiple{
 	right:13px;
@@ -2767,6 +2771,7 @@ a.browseRemoveFacet .glyphicon {
 	margin: 0px;
 	padding: 0px;
 	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
+	background-color: rgba(255, 255, 255, 0.7);
 }
 #caMediaPanel #close{
 	float: right;

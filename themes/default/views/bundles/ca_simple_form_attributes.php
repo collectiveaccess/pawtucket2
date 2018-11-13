@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2009-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -37,13 +37,11 @@
 				if ($vn_container_id === '_locale_id') { continue; }
 ?>
 				<table class="attributeListItem" cellpadding="0px" cellspacing="0px">
-					<tr>
 <?php
 						foreach($va_element_list as $vs_element) {
 							print '<tr><td class="attributeListItem"><div class="searchFormLineModeElementSubLabel">'.$vs_element."</div></td></tr>\n";
 						}
 ?>
-					</tr>
 				</table>
 <?php
 			}

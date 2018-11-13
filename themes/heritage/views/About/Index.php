@@ -39,7 +39,7 @@
 				We opened our doors in 1912 after 11 business men agreed to invest in Peter M. Wege's dream of opening a steel office furniture company in a city renown for wood furniture. Since then we've experienced many changes, including our name, but our business vision of always looking toward the future has remained the same. 
  			</p>
  			<p>
-				Here we'd like to share with you a few hundred of thousands of noteworthy milestones from our 106-year plus legacy. Steelcase employees and partners can view additional milestones in the online archives.   
+				Here we'd like to share with you a few hundred of thousands of noteworthy milestones from our 106-year plus legacy. Steelcase employees and partners can view additional milestones and access the digital archives when logged in.   
 			</p>
 <?php
 		}

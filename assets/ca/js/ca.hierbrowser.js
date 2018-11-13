@@ -424,12 +424,12 @@ if (that.uiStyle == 'horizontal') {
 									editUrl = that.editUrl;
 								}
 								if (editUrl) {
-									jQuery('#' + newLevelListID + " li:last a:last").click(function() { 
+									jQuery('#' + newLevelListID + " li:last a:last").on('click', function() { 
 										jQuery(document).attr('location', editUrl + jQuery(this).data(editData));
 										return false;
 									});
 								} else {
-									jQuery('#' + newLevelListID + " li:last a:last").click(function() { 						
+									jQuery('#' + newLevelListID + " li:last a:last").on('click', function() { 						
 										var l = jQuery(this).parent().parent().parent().data('level');
 										var item_id = jQuery(this).data('item_id');
 										var has_children = jQuery(this).data('has_children');
@@ -441,7 +441,7 @@ if (that.uiStyle == 'horizontal') {
 							
 							// hierarchy forward navigation
 							if (!that.readOnly) {
-								jQuery('#' + newLevelListID + " li:last a:first").click(function() { 								
+								jQuery('#' + newLevelListID + " li:last a:first").on('click', function() { 								
 									var l = jQuery(this).parent().parent().parent().parent().data('level');
 									var item_id = jQuery(this).data('item_id');
 									var has_children = jQuery(this).data('has_children');
@@ -456,13 +456,13 @@ if (that.uiStyle == 'horizontal') {
 							}
 							
 							if (that.readOnly) {
-								jQuery('#' + newLevelListID + " li:first a").click(function() { 
+								jQuery('#' + newLevelListID + " li:first a").on('click', function() { 
 									return false;
 								});
 							}
 											
 							if ((that.allowExtractionFromHierarchy) && (that.extractFromHierarchyButtonIcon)) {
-								jQuery('#' + newLevelListID + ' #hierBrowser_' + that.name + '_extract').unbind('click.extract').bind('click.extract', function() {
+								jQuery('#' + newLevelListID + ' #hierBrowser_' + that.name + '_extract').off('click.extract').on('click.extract', function() {
 									that.extractItemFromHierarchy(item['item_id'], item);
 								});
 							}

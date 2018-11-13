@@ -1205,7 +1205,7 @@
             // Paging
             $vn_primary_id = 0;
             $va_initial_values = array();
-            if (sizeof($va_reps)) {
+            if (is_array($va_reps) && sizeof($va_reps)) {
                 $o_type_config = Configuration::load($t_item->getAppConfig()->get('annotation_type_config'));
                 $va_annotation_type_mappings = $o_type_config->getAssoc('mappings');
 
