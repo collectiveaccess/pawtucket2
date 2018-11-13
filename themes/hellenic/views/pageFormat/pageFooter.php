@@ -28,21 +28,37 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+		<div class="container bottom">
+			
+		</div>
 		<footer id="footer">
-			<ul class="list-inline pull-right social">
-				<li><i class="fa fa-twitter"></i></li>
-				<li><i class="fa fa-facebook-square"></i></li>
-				<li><i class="fa fa-youtube-play"></i></li>
-			</ul>
-			<div>
-				Footer text here
+			<div class="container" style="padding:0px;">
+				<div style="width:47%;float:left;">
+					<div class="footer_left_top">
+						© 2015 National Hellenic Museum
+					<!---->
+					</div>
+					<div class="footer_left_bottom">
+						© 2017 National Hellenic Museum, Chicago  
+						333 South Halsted Street, Chicago IL, 60661, Phone: (312) 655-1234, Fax: (312) 655-1221
+						All text and images on this site are protected by the U.S. and International copyright laws. 
+						Unauthorized use is prohibited.                
+					</div>
+				</div>
+				<div style="width:47%;float:right;">
+					<div class="social-icons icon_28">
+						<a class="ttip" href="https://www.facebook.com/NationalHellenicMuseum" target="_blank" original-title="Facebook"><img src="https://www.nationalhellenicmuseum.org/wp-content/themes/zwordpress_theme/images/socialicons/facebook.png" alt="Facebook"></a><a class="ttip" href="https://twitter.com/Hellenicmuseum" target="_blank" original-title="Twitter"><img src="https://www.nationalhellenicmuseum.org/wp-content/themes/zwordpress_theme/images/socialicons/twitter.png" alt="Twitter"></a><a class="ttip" href="https://www.linkedin.com/company/national-hellenic-museum" target="_blank" original-title="LinkedIn"><img src="https://www.nationalhellenicmuseum.org/wp-content/themes/zwordpress_theme/images/socialicons/linkedin.png" alt="LinkedIn"></a><a class="ttip" href="https://www.flickr.com/photos/124882725@N04" target="_blank" original-title="Flickr"><img src="https://www.nationalhellenicmuseum.org/wp-content/themes/zwordpress_theme/images/socialicons/flickr.png" alt="Flickr"></a><a class="ttip" href="https://www.youtube.com/user/NatlHellenicMuseum" target="_blank" original-title="Youtube"><img src="https://www.nationalhellenicmuseum.org/wp-content/themes/zwordpress_theme/images/socialicons/youtube.png" alt="YouTube"></a><a class="ttip" href="https://www.instagram.com/hellenicmuseum" target="_blank" original-title="instagram"><img src="https://www.nationalhellenicmuseum.org/wp-content/themes/zwordpress_theme/images/socialicons/instagram.png" alt="instagram"></a>	
+					</div>
+					<div class="footer-menu">
+						<ul id="menu-footer-menu" class="menu"><li id="menu-item-124" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-124"><a href="https://www.nationalhellenicmuseum.org/terms-conditions/">Terms &amp; Conditions</a></li>
+							<li id="menu-item-125" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-125"><a href="https://www.nationalhellenicmuseum.org/privacy-policy/">Privacy Policy</a></li>
+							<li id="menu-item-986" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-986"><a>#0 (no title)</a></li>
+						</ul>
+					</div>									
+					<div style="text-align:right;margin-top:15px;"><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2017</a></small></div>
+				
+				</div>					
 			</div>
-			<ul class="list-inline">
-				<li><a href="#">Link 1</a></li>
-				<li><a href="#">Link 2</a></li>
-				<li><a href="#">Link 3</a></li>
-			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2017</a></small></div>
 		</footer><!-- end footer -->
 <?php
 	//
