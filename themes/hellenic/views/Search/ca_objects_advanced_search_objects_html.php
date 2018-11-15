@@ -18,13 +18,13 @@ print "<p>Enter your search terms in the fields below.</p>";
 	</div>	
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Object Titles only.">Object Name</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search by Object Name.">Object Name</span>
 			{{{ca_objects.preferred_labels.name%width=220px}}}
 		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Object Titles only.">Alternative Object Name</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records by Alternate Object Name, often this field is used for Greek artifacts.">Alternative Object Name</span>
 			{{{ca_objects.alternate_object_name%width=220px}}}
 		</div>
 	</div>	
@@ -42,7 +42,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 	</div>	
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records related to an organization.">Individuals </span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records related to an individual.">Individuals </span>
 			{{{ca_entities.preferred_labels%restrictToTypes=ind%width=200px&height=40px}}}
 		</div>
 	</div>		
@@ -55,7 +55,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object types.">Access Points</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search Across Subject Headings.">Access Points</span>
 			{{{ca_list_items.preferred_labels%height=30px}}}
 		</div>
 	</div>
@@ -73,7 +73,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search object types.">Object Type</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit Search by Object Type.">Object Type</span>
 			{{{ca_objects.type_id%width=210px}}}
 		</div>
 	</div>

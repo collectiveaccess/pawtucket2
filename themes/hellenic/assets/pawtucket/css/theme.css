@@ -51,8 +51,15 @@ Collections purple #4e2f91
 }
 body {
 	font-family:Futura;
-	margin-bottom:210px;
+	margin-bottom:310px;
 	color:#000;
+	font-size:18px;
+	line-height: 24px;
+	font-weight:300;
+}
+.clearfix {
+	width:100%;
+	clear:both;
 }
 .container {
 	max-width:968px;
@@ -62,10 +69,10 @@ h1, h2 h3, h4, h5, h6 {
 	font-weight:700;
 	color:#4e2f91;
 }
-.browse .btn, .sets .btn, .btn-default {
+.browse .btn, .sets .btn, .btn-default, .btn-default:hover {
 	background-color:#4e2f91;
 }
-a, a:hover {
+a, a:hover, a.readmore-js-toggle, a.readmore-js-toggle:hover {
 	color:#4e2f91;
 }
 a:hover {
@@ -78,13 +85,14 @@ a:hover {
 .navbar {
     -webkit-box-shadow: none;
     box-shadow: none;
-    border-top: solid 7px #FFEC4F;
-    background: none repeat scroll 0 0 #DBDBDB;
+    background: none repeat scroll 0 0 #e3e3e3;
+    margin-bottom:55px;
+    min-height:478px;
 }
 .navbar-header {
-	background-color:#eee;
+	background-color:#f2f2f2;
 	float:none;
-	margin-top:40px;
+	margin-top:47px;
 }
 .navbar-brand {
 	width:95px;
@@ -92,7 +100,7 @@ a:hover {
 	padding:0px 14px 0px 0px;
 }
 .navbar-default .navbar-nav > li > a {
-    font-size: 16px;
+    font-size: 18px;
     position: relative;
     display: inline-block;
     float: left;
@@ -179,10 +187,21 @@ a:hover {
 	font-weight:700;
 	clear:both;
 	width:100%;
-	padding-top:35px;
-	padding-bottom:35px;
-	font-size:36px;
-	line-height:34px;
+	padding-top:40px;
+	padding-bottom:40px;
+	font-size:40px;
+	line-height:28px;
+}
+.bannerImg {
+	background-image:url('../graphics/bannerimg.png');  
+	background-repeat: no-repeat;
+    background-size: cover;
+	height:275px;
+	overflow:hidden;
+}
+.bannerImg img{
+	width:100%;
+	height:auto;
 }
 .btn-search {
 	background-color:transparent;
@@ -193,55 +212,27 @@ a:hover {
     pointer-events: auto !important;
 }
 #footer {
-	background-color:#333;
+	background-color:#0072C6;
 	color:#fff;
-	height:140px;
-	font-size:11px;
-	padding-bottom: 50px;
-	line-height:12px;
+	height:280px;
+	font-size:16px;
+	padding:50px;
 	font-family: Futura;
 	margin-top:20px;
+	text-align:center;
+	font-weight:300;
+	line-height:28px;
 }
-.footer_left_top {
-    border-bottom: 1px solid #000000;
-    height: 31px;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    font-weight:bold;
+#footer a {
+	color:#fff;
 }
-#footer ul li {
-    padding: 0px;
+#footer .socialLinks i {
+	padding: 0px 15px 15px 15px;
+	font-size:20px;
 }
-#footer .social-icons {
-    height: 28px;
-    margin: 5px 0px 0 5px;
-    text-align: right;
-    line-height: 0;
-}
-#footer .social-icons a, #footer .social-icons a {
-    margin: 2px 5px 0 0;
-}
-#footer .social-icons img {
-    width: 28px;
-    height: 25px;
-}
-.footer-menu {
-    border-top: 1px solid #000000;
-    margin-top: 10px;
-    padding-top: 10px;
-    text-align: right;
-}
-.footer-menu li {
-    display: inline-block;
-    list-style-type:none;
-}
-#footer .footer-menu ul li a {
-    font-weight: bold;
-    color: #0099FF;
-    font-size: 12px;
-    margin-left: 7px;
-    margin-right: 7px;
-    text-decoration: underline;
+#footer .tp div {
+	display:inline-block;
+	padding:0px 10px;
 }
 .container.bottom {
 	border-bottom: 3px solid #FFEC4F;
@@ -288,7 +279,8 @@ a:hover {
 	font-weight:bold;
 	padding-top:10px;
 	letter-spacing:1px;
-	font-size:20px;
+	font-size:24px;
+	line-height:28px;
 }
 .featured a{
 	color:#000;
@@ -335,9 +327,9 @@ a:hover {
 	margin-bottom:20px;
 	font-family:nunito;
 	font-size:18px;
+	line-height:24px;
 }
 .homeText {
-	margin-top:35px;
 	margin-bottom:35px;
 }
 .homeIcon {
@@ -349,8 +341,8 @@ a:hover {
 	display:inline-block;
 	text-transform:uppercase;
 	font-weight:bold;
-	padding:8px 12px 7px 12px;
-	font-size:11px;
+	padding:8px 12px 6px 12px;
+	font-size:13px;
 	margin-top:20px;
 }
 .homeLink a {
@@ -377,8 +369,9 @@ a:hover {
 .detail h6 {
 	line-height: 1.5;
     color: #333333;
-    font-family: 'Futura',sans-serif;
+    font-family: Nunito;
     font-size: 16px;
+    font-weight:600;
 }
 .detail, .detail .detailTool {
     text-align: justify;
@@ -402,17 +395,20 @@ a:hover {
 .detail .unit {
 	border-bottom:1px solid #eeeeee;
 	margin-bottom:0px;
+	padding-top:10px;
+	padding-bottom:4px;
 }
 .unit h6 {
 	display:inline-block;
 	width:40%;
 	vertical-align:top;
 	text-align:left;
+	margin-top:0px;
 }
 .unit .data {
 	display:inline-block;
 	width:60%;
-	margin-top:10px;
+	margin-top:0px;
 }
 .unit.text h6 {
 	display:block;
@@ -464,10 +460,99 @@ a:hover {
 .bResultItemImgPlaceholder {
 	border:0;
 }	
+.advancedSearchField .formLabel {
+	color:#000;
+	font-size:14px;
+}
+
+.bResultItem .bResultItemText, .multisearch .multisearchResult, .multisearch .authorityResult a {
+	font-size:15px;
+	line-height:20px;
+}
+.bResultItem .bResultItemText .browseTitle a{
+	color:#4e2f91;
+	font-family:Nunito;
+	font-weight:600;
+}
+#bRefine a {
+	font-size:15px;
+	color:#000;
+}
+#bRefine H3 {
+	color:#000;
+}
+#bRefine H5 {
+	font-size:15px;
+	text-transform:capitalize;
+}
+
+
 
 /* Collection */
 
 .collectionsContainer .label, #collectionLoad .label {
-	white-space:normal !important;
+	white-space:nowrap !important;
 	text-align:left !important;
+}
+.collectionsContainer a, .collectionsContainer .listItem {
+    font-size: 16px;
+    color: #000;
+    font-weight: 300;
+}
+#collectionLoad .label a {
+	font-weight:400;
+	color:#000;
+}
+#collectionLoad div a, #collectionLoad div .nonLinkedCollection {
+    font-size: 15px;
+    color:#000;
+}
+.detail a, .detail a:hover {
+    color:#000;
+}
+#collectionsWrapper .unit {
+	border:0px;
+}
+.dlButton {
+	display:none;
+}
+
+/* Gallery */
+
+.gallery {
+	font-size:18px;
+}
+.gallery h1 {
+	text-transform:none;
+    letter-spacing: 1px;
+    font-size: 24px;
+    line-height: 28px;	
+}
+.gallery h6 {
+	font-size:15px;
+	text-transform:none;
+}
+.galleryArea {
+	margin-top:30px;
+}
+.galleryTile {
+	font-size:15px;
+	line-height:20px;
+	margin-bottom:20px;
+    border: 1px solid #ccc;
+    padding: 15px;	
+}
+.galleryTile img {
+	width:100%;
+	height:auto;
+}
+.gallery .tileText {
+	max-height:100px;
+	overflow:hidden;
+}
+.readMore {
+	font-weight:500;
+	text-transform:uppercase;
+	font-size:12px;
+	margin-top:10px;
 }

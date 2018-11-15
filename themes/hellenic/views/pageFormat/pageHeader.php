@@ -167,6 +167,7 @@
 					</li>										
 				</ul>
 				<div class="banner"><div class="container" style="padding:0px;">NHM COLLECTION & ARCHIVES</div></div>
+				<div class="bannerImg"></div>
 			</div><!-- end container -->	
 			</div><!-- /.navbar-collapse -->
 	</nav>
@@ -175,5 +176,5 @@
 		$vs_style = "nomax";
 	} 
 ?>	
-	<div class="container <?php print $vs_style;?> "><div class="row"><div class="col-xs-12">
+	<div class="container <?php print $vs_style;?> " style="padding:0px;"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

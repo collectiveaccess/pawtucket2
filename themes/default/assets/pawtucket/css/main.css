@@ -1685,7 +1685,7 @@ a.browseRemoveFacet img {
 	text-decoration:none;
 }
 .jcarousel-wrapper, .jcarousel {
-	width:100% !important;
+	width:600px !important;
 }
 #detailComments{
 	display:none;

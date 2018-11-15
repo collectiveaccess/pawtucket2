@@ -30,19 +30,19 @@
  * ----------------------------------------------------------------------
  */
  		
-		print $this->render("Front/featured_set_slideshow_html.php");
+		#print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 	<div class="container ">
 		<div class="row">
-			<div class="col-sm-10 col-sm-offset-1 homeText">
+			<div class="col-sm-12 homeText">
 				<div class='homeHeader'>NATIONAL HELLENIC MUSEUM COLLECTIONS & ARCHIVES</div>
 				{{{hometext}}}
 			</div>
 		</div>
 	</div>
-	<div class="container nomax">
-		<div class="row featured ">
-			<div class="col-sm-10 col-sm-offset-1 gray">
+	<div class="container">
+		<div class="row featured gray">
+			<div class="col-sm-12 ">
 				<div class="col-sm-4 homeIcon">
 <?php
 					$t_list = new ca_lists();
@@ -59,8 +59,8 @@
 				
 			</div><!--end col-sm-6-->
 		</div>
-		<div class="row featured">
-			<div class="col-sm-10 col-sm-offset-1 white">
+		<div class="row featured white">
+			<div class="col-sm-12 ">
 				<div class="col-sm-4 homeIcon">
 <?php
 					$vn_book_type = $t_list->getItemIDFromList("object_types", "book");
@@ -76,8 +76,8 @@
 				
 			</div><!--end col-sm-6-->
 		</div>
-		<div class="row featured ">				
-			<div class="col-sm-10 col-sm-offset-1 gray">
+		<div class="row featured gray">				
+			<div class="col-sm-12 ">
 				<div class="col-sm-4 homeIcon">
 <?php
 					$vn_oral_history_type = $t_list->getItemIDFromList("object_types", "oral_history");
@@ -93,8 +93,8 @@
 
 			</div><!--end col-sm-6-->
 		</div>
-		<div class="row featured">				
-			<div class="col-sm-10 col-sm-offset-1 white">
+		<div class="row featured white">				
+			<div class="col-sm-12 ">
 				<div class="col-sm-4 homeIcon">
 <?php
 					$vn_still_image_type = $t_list->getItemIDFromList("object_types", "still_image");
@@ -110,8 +110,8 @@
 
 			</div><!--end col-sm-6-->
 		</div>
-		<div class="row featured ">	
-			<div class="col-sm-10 col-sm-offset-1 gray">
+		<div class="row featured gray">	
+			<div class="col-sm-12 ">
 				<div class="col-sm-4 homeIcon">
 <?php
 					$vn_document_type = $t_list->getItemIDFromList("object_types", "document");

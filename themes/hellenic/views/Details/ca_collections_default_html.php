@@ -19,9 +19,7 @@
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 
 ?>
-<div class="row">
-	<div class='col-xs-12'>
-		<div class="container">
+
 			<div class="row">
 				<div class='col-sm-12'>
 <?php
@@ -150,6 +148,4 @@
 				});
 			</script>
 </ifcount>}}}
-		</div><!-- end container -->
-	</div><!-- end col -->
-</div><!-- end row -->
+
