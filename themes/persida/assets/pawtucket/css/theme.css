@@ -1,0 +1,11 @@
+.pageName {
+	text-transform:uppercase;
+	font-weight:bold;
+	font-size:20px;
+	padding-top:15px;
+}
+@media (max-width: 1010px) {
+	.pageName {
+		padding-left: 15px;
+	}
+}
