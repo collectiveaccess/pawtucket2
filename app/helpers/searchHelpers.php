@@ -407,14 +407,10 @@
 			$vb_sort_changed = false;
  			if (!($ps_sort = $po_request->getParameter("{$vs_block}Sort", pString))) {
  				if (isset($va_contexts[$vs_block])) {
- 					if(!($ps_sort = $va_contexts[$vs_block]->getCurrentSort()) && ($va_sorts) && sizeof($va_sorts)) { 
+ 					if((!($ps_sort = $va_contexts[$vs_block]->getCurrentSort()) && ($va_sorts) && sizeof($va_sorts)) || (!in_array($ps_sort, array_keys($va_sorts)))) { 
 						$ps_sort = array_shift(array_keys($va_sorts));
 						$va_contexts[$vs_block]->setCurrentSort($ps_sort); 
 						$vb_sort_changed = true;
-					//} else {
-					//	if (isset($va_sorts[$ps_sort])) { 
-					//		$ps_sort = $va_sorts[$ps_sort];
-					//	}
 					}
  				}
  			}else{
@@ -433,6 +429,8 @@
  					$ps_sort_direction = 'asc';
  				}
  			}
+ 			if(!in_array($ps_sort_direction, ['asc', 'desc'])) {  $ps_sort_direction = 'asc'; }
+ 			
  			$va_contexts[$vs_block]->setCurrentSortDirection($ps_sort_direction); 
  			
  			$va_options['sort'] = $va_sorts[$ps_sort];

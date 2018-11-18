@@ -94,7 +94,7 @@
  			$vb_root_records_only = caGetOption('omitChildRecords', $va_browse_info, array(), array('castTo' => 'bool'));
  			
  			
-			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
+			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString, ['forcePurify' => true]);
 			
 			$vs_type_key = caMakeCacheKeyFromOptions($va_types);
 			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable{$vs_type_key}")) {
@@ -131,7 +131,7 @@
 				$va_views['pdf'] = $va_views['timelineData'] = $va_views['xlsx'] = $va_views['pptx'] = $va_views['chronology_images'] = array();
 			}
 			
-			if (!($ps_view = $this->request->getParameter("view", pString))) {
+			if (!($ps_view = $this->request->getParameter("view", pString, ['forcePurify' => true]))) {
  				$ps_view = $this->opo_result_context->getCurrentView();
  			}
  			if(!in_array($ps_view, array_keys($va_views))) {
@@ -162,7 +162,7 @@
 			//
 			// Load existing browse if key is specified
 			//
-			if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+			if ($ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true])) {
 				$o_browse->reload($ps_cache_key);
 			}
 		
@@ -172,8 +172,8 @@
 			// Clear criteria if required
 			//
 			
-			if ($vs_remove_criterion = $this->request->getParameter('removeCriterion', pString)) {
-				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString)));
+			if ($vs_remove_criterion = $this->request->getParameter('removeCriterion', pString, ['forcePurify' => true])) {
+				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString, ['forcePurify' => true])));
 			}
 			
 			if ((bool)$this->request->getParameter('clear', pInteger)) {
@@ -194,14 +194,14 @@
 			// Get any preset-criteria
 			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 			
-			if (($vs_facets = $this->request->getParameter('facets', pString)) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
+			if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
 			    foreach ($va_facets as $vs_facet_spec) {
 			        if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) { continue; }
 			        $vs_facet = array_shift($va_tmp);
 			        $o_browse->addCriteria($vs_facet, explode("|", join(":", $va_tmp))); 
 			    }
 			
-			} elseif (($vs_facet = $this->request->getParameter('facet', pString)) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString))), function($v) { return strlen($v); })) && sizeof($p)) {
+			} elseif (($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {
 				$o_browse->addCriteria($vs_facet, $p);
 			} else { 
 				if ($o_browse->numCriteria() == 0) {
@@ -219,19 +219,17 @@
 			// Sorting
 			//
 			$vb_sort_changed = false;
- 			if (!($ps_sort = urldecode($this->request->getParameter("sort", pString)))) {
+ 			if (!($ps_sort = urldecode($this->request->getParameter("sort", pString, ['forcePurify' => true])))) {
  				$ps_sort = $this->opo_result_context->getCurrentSort();
- 				if(is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
- 					if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
- 						$ps_sort = array_shift(array_keys($va_sorts));
- 						$vb_sort_changed = true;
- 					}
- 				}
- 			}else{
- 				if($ps_sort != $this->opo_result_context->getCurrentSort()){
- 					$vb_sort_changed = true;
- 				}
+ 			}elseif($ps_sort != $this->opo_result_context->getCurrentSort()){ 
+ 			    $vb_sort_changed = true; 
  			}
+ 			if(is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
+                if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
+                    $ps_sort = array_shift(array_keys($va_sorts));
+                    $vb_sort_changed = true;
+                }
+            }
  			if($vb_sort_changed){
 				# --- set the default sortDirection if available
 				$va_sort_direction = caGetOption('sortDirection', $va_browse_info, null);
@@ -239,11 +237,12 @@
 					$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
 				} 			
  			}
-  			if (!($ps_sort_direction = $this->request->getParameter("direction", pString))) {
+  			if (!($ps_sort_direction = strtolower($this->request->getParameter("direction", pString, ['forcePurify' => true])))) {
  				if (!($ps_sort_direction = $this->opo_result_context->getCurrentSortDirection())) {
  					$ps_sort_direction = 'asc';
  				}
  			}
+ 			if(!in_array($ps_sort_direction, ['asc', 'desc'])) {  $ps_sort_direction = 'asc'; }
  			
  			$this->opo_result_context->setCurrentSort($ps_sort);
  			$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
@@ -332,8 +331,8 @@
 				}
 			}
 			$this->view->setVar('showLetterBar', (bool)$vs_letter_bar_field);
-			if($this->request->getParameter('l', pString)){
-				$ps_l = trim(mb_strtolower($this->request->getParameter('l', pString)));
+			if($this->request->getParameter('l', pString, ['forcePurify' => true])){
+				$ps_l = trim(mb_strtolower($this->request->getParameter('l', pString, ['forcePurify' => true])));
 				if($ps_l == "all"){
 					$ps_l = "";
 				}
@@ -358,7 +357,7 @@
 			
 			$this->view->setVar('result', $qr_res);
 				
-			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {
+			if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
  				if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
  					$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
  				}
@@ -405,7 +404,7 @@
  				case 'xlsx':
  				case 'pptx':
  				case 'pdf':
- 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $ps_search_expression)), $this->getCriteriaForDisplay($o_browse));
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString, ['forcePurify' => true]), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $ps_search_expression)), $this->getCriteriaForDisplay($o_browse));
  					break;
  				case 'timelineData':
  					$this->view->setVar('view', 'timeline');
@@ -437,7 +436,7 @@
 		 * return nav bar code for specified browse target
 		 */
  		public function getBrowseNavBarByTarget() {
- 			$ps_target = $this->request->getParameter('target', pString);
+ 			$ps_target = $this->request->getParameter('target', pString, ['forcePurify' => true]);
  			$this->view->setVar("target", $ps_target);
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_target))) {
  				// invalid browse type – throw error
