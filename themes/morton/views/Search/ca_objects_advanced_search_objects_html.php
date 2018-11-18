@@ -32,7 +32,7 @@
 		<div class='col-sm-12 col-md-12 col-lg-12'>
 			<div class="advancedSearchField">
 				Collection <br/>
-				{{{ca_collections.preferred_labels%width=380px&height=40px}}}
+				{{{ca_collections.preferred_labels%width=380px&height=1}}}
 				<!--{{{ca_collections.preferred_labels:boolean}}}-->
 			</div>
 		</div>				
@@ -44,7 +44,7 @@
 			</div>
 		</div>	
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
-			<div class="advancedSearchField">
+			<div class="advancedSearchField searchField">
 				Date range <i>(e.g. 1970-1979)</i><br/>
 				{{{ca_objects.date.date_value%width=380px&height=40px&useDatePicker=0}}}
 				<!--{{{ca_objects.date.date_value:boolean}}}-->
@@ -55,7 +55,7 @@
 				Has Media (image, video, audio, etc.)<br/>
 				{{{ca_object_representations.md5%render=is_set&label=Has+media}}}
 			</div>
-		</div>
+		</div>		
 		<div class='col-sm-12 col-md-12 col-lg-12'>	
 			<div class="advancedSearchFieldTall">
 				Entity <br/>

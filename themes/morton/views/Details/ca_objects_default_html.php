@@ -2,6 +2,8 @@
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$va_access_values = caGetUserAccessValues($this->request);
+	$t_lists = new ca_lists();
+	$va_publication_types = array($t_lists->getItemIDFromList("object_types", "article"), $t_lists->getItemIDFromList("object_types", "book"), $t_lists->getItemIDFromList("object_types", "serial"), $t_lists->getItemIDFromList("object_types", "catalog"));
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -28,6 +30,12 @@
 <?php } ?>
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 				</div><!-- end detailTools -->
+				
+<?php
+				if ($vs_copyright_statement = $t_object->get('ca_objects.rights.copyrightStatement')){
+					print "<div class='unit'><h6>Copyright</h6>{$vs_copyright_statement}</div>";
+				}
+?>
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
@@ -56,10 +64,11 @@
 					$va_dims_buf = null;
 					if ($t_object->get('ca_objects.dimensions')) {
 						$va_dimensions_list = $t_object->get('ca_objects.dimensions', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true));
-						$va_dims = array();
+						
 						foreach ($va_dimensions_list as $va_dims_key => $va_dimensions) {
 							foreach ($va_dimensions as $va_dim => $va_dimension) {
 								#if ($va_dimension['is_primary'] == 'yes'){
+									$va_dims = array();
 									if ($va_dimension['dimensions_length']) {
 										$va_dims[] = $va_dimension['dimensions_length']." L";
 									}
@@ -108,6 +117,66 @@
 					}
 					if ($vs_appeared = $t_object->get('ca_objects.appeared_in')){
 						print "<div class='unit'><h6>Appeared In</h6>".$vs_appeared."</div>";
+					}
+					if($va_links = $t_object->get('ca_objects.external_link', array("returnWithStructure" => true))){
+						$va_formatted_links = array();
+						foreach(array_pop($va_links) as $va_link){
+							$vs_link_text = $va_link["url_source"];
+							$vs_link = $va_link["url_entry"];
+							if(!$vs_link_text){
+								$vs_link_text = $vs_link;
+							}
+							if($vs_link){
+								$va_formatted_links[] = "<a href='".$vs_link."' target='_blank'>".$vs_link_text."</a>";
+							}
+						}
+						if(sizeof($va_formatted_links)){
+							print "<div class='unit'><h6>URL".((sizeof($va_formatted_links) > 1) ? "s" : "")."</h6>".join(", ", $va_formatted_links)."</div>";
+						}
+					}
+					if(in_array($t_object->get("type_id"), $va_publication_types)){
+						if($vs_tmp = $t_object->get('ca_objects.abstract')){
+							print "<div class='unit'><h6>Abstract</h6>".$vs_tmp."</div>";
+						}
+						if($va_other_identifiers = $t_object->get('ca_objects.other_identifiers', array("returnWithStructure" => true, "convertCodesToDisplayText" => true))){
+							$va_issn = array();
+							$va_isbn = array();
+							foreach(array_pop($va_other_identifiers) as $va_other_identifier){
+								if($va_other_identifier["other_identifier_type"] == "ISBN number"){
+									$va_isbn[] = $va_other_identifier["legacy_identifier"];
+								}
+								if($va_other_identifier["other_identifier_type"] == "ISSN number"){
+									$va_issn[] = $va_other_identifier["legacy_identifier"];
+								}
+							}
+							if(sizeof($va_isbn)){
+								print "<div class='unit'><h6>ISBN</h6>".join(", ", $va_isbn)."</div>";
+							}
+							if(sizeof($va_issn)){
+								print "<div class='unit'><h6>ISSN</h6>".join(", ", $va_issn)."</div>";
+							}
+						}			
+						if($vs_tmp = $t_object->get("ca_objects.alternate_titles.altTitle", array("delimiter" => "<br/>"))){
+							print "<div class='unit'><h6>Alternate Title</h6>".$vs_tmp."</div>";
+						}
+						$va_tmp = array();
+						$va_tmp_title = array();
+						if($vs_tmp = $t_object->get('ca_objects.volume')){
+							$va_tmp[] = $vs_tmp;
+							$va_tmp_title[] = "Volume";
+						}
+						if($vs_tmp = $t_object->get('ca_objects.issue')){
+							$va_tmp[] = $vs_tmp;
+							$va_tmp_title[] = "Issue";
+						}
+						if($vs_tmp = $t_object->get('ca_objects.page_number')){
+							$va_tmp[] = $vs_tmp;
+							$va_tmp_title[] = "Page Number";
+						}
+						if(sizeof($va_tmp)){
+							print "<div class='unit'><H6>".join(", ", $va_tmp_title)."</H6>".join(", ", $va_tmp)."</div>";
+						}
+
 					}
 					$va_subjects_list = array();
 					if ($va_subject_terms = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {

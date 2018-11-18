@@ -217,7 +217,7 @@
 					</div><!-- end detailTools -->				
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
 					<h3>Loading</h3>
