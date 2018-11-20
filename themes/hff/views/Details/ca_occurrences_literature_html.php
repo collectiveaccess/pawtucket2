@@ -47,7 +47,7 @@
 				<div class='col-md-6 col-lg-6'>					
 					
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="exhibition" min="1"><H6>Related Exhibitons</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToTypes="exhibition"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
+					{{{<unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToTypes="exhibition" sort="ca_occurrences.common_date"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
 
 				
 				</div><!-- end col -->

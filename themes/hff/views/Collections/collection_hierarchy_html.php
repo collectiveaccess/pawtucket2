@@ -60,12 +60,12 @@
 							$vn_rel_object_count = sizeof($qr_collection_children->get("ca_objects.object_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values)));
 							$vs_record_count = "";
 							if($vn_rel_object_count){
-								$vs_record_count = "<br/><small>(".$vn_rel_object_count." digital item".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+								$vs_record_count = "<small>(".$vn_rel_object_count." digital item".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 							}
 							$vs_coll_date = $qr_collection_children->get('ca_collections.unitdate.dacs_date_text');
-								
+							$vs_location = $qr_collection_children->getWithTemplate('<ifcount code="ca_storage_locations"><small><unit relativeTo="ca_storage_locations.related" delimiter="<br/>"><unit relativeTo="ca_storage_locations.hierarchy" delimiter=" &gt; ">^ca_storage_locations.preferred_labels</unit></unit></small></ifcount>');
 							if($vb_link_sublist){
-								print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').(($vs_coll_date) ? ", ".$vs_coll_date : "").$vs_record_count."</a>";
+								print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').(($vs_coll_date) ? ", ".$vs_coll_date : "").$vs_location.$vs_record_count."</a>";
 							}else{
 								# --- there are no grandchildren to show in browser, so check if we should link to detail page instead
 								$vb_link_to_detail = true;
@@ -78,9 +78,9 @@
 									}
 								}
 								if($vb_link_to_detail){
-									print caDetailLink($this->request, $vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').(($vs_coll_date) ? ", ".$vs_coll_date : "")." ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : ""), '', 'ca_collections',  $qr_collection_children->get("ca_collections.collection_id")).$vs_record_count;
+									print caDetailLink($this->request, $vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').(($vs_coll_date) ? ", ".$vs_coll_date : "")." ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : ""), '', 'ca_collections',  $qr_collection_children->get("ca_collections.collection_id")).$vs_location.$vs_record_count;
 								}else{
-									print "<div class='listItem'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').(($vs_coll_date) ? ", ".$vs_coll_date : "").$vs_record_count."</div>";
+									print "<div class='listItem'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').(($vs_coll_date) ? ", ".$vs_coll_date : "").$vs_location.$vs_record_count."</div>";
 								}
 							}
 							print "</div>";	
