@@ -97,7 +97,9 @@
 						
 						if (!$vb_show_only_is_open) {
 							print '<div class="dropdown button" style="width:'.$vs_menu_item_width.'%;">';
-							print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>".$va_facet_info['label_singular']."<span class='caret'></span></H5><ul class='facetGroup panel dropdown-menu ' id='facetGroup{$vs_facet_name}' style='width:".$va_facet_info['width']."%;".(($va_facet_info['left'] == 1) ? 'left:-'.($va_facet_info['width'] - 100).'%;' : '')."'>"; 
+							$w = (int)caGetOption('width', $va_facet_info, 100);
+							$l = (int)caGetOption('left', $va_facet_info, 0);
+							print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>".$va_facet_info['label_singular']."<span class='caret'></span></H5><ul class='facetGroup panel dropdown-menu ' id='facetGroup{$vs_facet_name}' style='width:".$w."%;".(($l == 1) ? 'left:-'.($w - 100).'%;' : '')."'>"; 
 							print "<li><div class='container' id='{$vs_facet_name}_facet_container'><div class='row'>";
 						} elseif ($vb_show_only_open) {
 							print '<div class="dropdown button showOnly" style="width:'.$vs_menu_item_width.'%;">'; 

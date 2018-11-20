@@ -376,6 +376,9 @@
 		$va_contexts = caGetOption('contexts', $pa_options, array(), array('castTo' => 'array'));
 		unset($pa_options['contexts']);
 		
+		
+		if ($purifier = RequestHTTP::getPurifier()) { $ps_search_expression = $purifier->purify($ps_search_expression); }
+		
 		//
 		// Block are lazy-loaded using Ajax requests with additional items as they are scrolled.
 		// "Ajax mode" is used by caPuppySearch to render a single block when it is scrolled
@@ -652,17 +655,7 @@
 		$va_for_display = array();
 	 	$va_default_values = $va_values = $va_booleans = array();
 	 	
-	 	if ($purifier = RequestHTTP::getPurifier()) {
-	 	    foreach($pa_form_values as $k => $v) {
-	 	        if (is_array($v)) {
-	 	            foreach($v as $x => $y) {
-	 	                $pa_form_values[$k][$x] = $purifier->purify($y);
-	 	            }
-	 	        } else {
-	 	            $pa_form_values[$k] = $purifier->purify($v);
-	 	        }
-	 	    }
-	 	}
+	 	$pa_form_values = caPurifyArray($pa_form_values);
 	 	
 	 	foreach($va_form_contents as $vn_i => $vs_element) {
 			$vs_dotless_element = str_replace('.', '_', $vs_element);
@@ -774,9 +767,9 @@
 	function caGetDisplayStringForHTMLFormInput($po_result_context, $pa_options=null) {
 		$pa_form_values = caGetOption('formValues', $pa_options, $_REQUEST);
 		$va_form_contents = explode('|', caGetOption('_formElements', $pa_form_values, ''));
-
 		
-	 	$va_display_string = array();
+	 	$va_display_string = [];
+	 	$pa_form_values = caPurifyArray($pa_form_values);
 	 	
 	 	foreach($va_form_contents as $vn_i => $vs_element) {
 			$vs_dotless_element = str_replace('.', '_', $vs_element);
@@ -862,6 +855,8 @@
 		$o_query_parser = new LuceneSyntaxParser();
 		$o_query_parser->setEncoding($o_config->get('character_set'));
 		$o_query_parser->setDefaultOperator(LuceneSyntaxParser::B_AND);
+		
+		if ($purifier = RequestHTTP::getPurifier()) { $ps_search = $purifier->purify($ps_search); }
 		
 		$pb_omit_field_names = caGetOption(['omitFieldNames', 'omitQualifiers'], $pa_options, false);
 		
@@ -983,7 +978,9 @@
 		
 		$va_values = [];
 		$i = 1;
+		$purifier = RequestHTTP::getPurifier();
 		foreach(array_values($pa_values) as $vs_val) {
+		    if ($purifier) { $vs_val = $purifier->purify($vs_val); }
 			$va_values[$i] = $vs_val;
 			$i++;
 		}

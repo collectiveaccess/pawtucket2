@@ -103,11 +103,11 @@
  			
  			$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $vs_find_type, $ps_function);
  			
+ 			$vs_search_expression = $this->opo_result_context->getSearchExpression();
  			if ($ps_label = $this->request->getParameter('label', pString)) {
 				$this->opo_result_context->setSearchExpressionForDisplay("{$ps_label}: {$vs_search_expression}"); 
  			    $vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
- 			} elseif($vs_named_search=caGetNamedSearch($vs_search_expression = $this->opo_result_context->getSearchExpression(), $this->request->getParameter('values', pString))) {
- 		
+ 			} elseif($vs_named_search=caGetNamedSearch($vs_search_expression, $this->request->getParameter('values', pString))) {
  				$vs_search_expression_for_display = caGetNamedSearchForDisplay($vs_search_expression, $this->request->getParameter('values', pString));
  				$this->opo_result_context->setSearchExpression($vs_named_search);
  				$this->opo_result_context->setSearchExpressionForDisplay($vs_search_expression_for_display);
@@ -115,8 +115,6 @@
  			} else {
 				$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
 			}
-		//	$vs_search_expression = $this->opo_result_context->getSearchExpression();
-		//	$vs_search_expression_for_display = $this->opo_result_context->getSearchExpressionForDisplay($vs_search_expression); 
 			
 			// Allow plugins to rewrite search prior to execution
  			$qr_res = null;

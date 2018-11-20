@@ -1300,7 +1300,7 @@ jQuery(document).ready(function() {
 			$vs_sub_collection_sort = "ca_collections.idno_sort";
 		}
 		$vb_dont_show_top_level_description = false;
-		if($o_collections_config->get("dont_show_top_level_description")){
+		if($o_collections_config->get("dont_show_top_level_description") && ($vn_level == 1)){
 			$vb_dont_show_top_level_description = true;
 		}
 		$vs_object_template = $o_collections_config->get("export_object_label_template");
