@@ -340,27 +340,27 @@ if($vb_ajax){
 												$va_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("student_project_subjects")));
 												$va_lcsh_terms = $t_object->get("lcsh", array("returnWithStructure" => true));
 												$va_aat_terms = $t_object->get("aat", array("returnWithStructure" => true));
-	#print_r($va_aat_terms);
+	
 									
 												if((is_array($va_list_items) && sizeof($va_list_items)) || (is_array($va_lcsh_terms) && sizeof($va_lcsh_terms))){
 													$va_terms = array();
 		 											if(is_array($va_list_items) && sizeof($va_list_items)){
 														foreach($va_list_items as $va_list_item){
-															$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Browse", "projects", array("facet" => "student_project_subjects_facet", "id" => urlencode($va_list_item["item_id"])));
+															$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Search", "projects", array("search" => $va_list_item["name_singular"]));
 														}
 													}
 													if(is_array($va_lcsh_terms) && sizeof($va_lcsh_terms)){
 														$va_lcsh_terms = array_pop($va_lcsh_terms);
 														foreach($va_lcsh_terms as $vn_term_id => $va_lcsh_term){
 															$vs_tmp = substr($va_lcsh_term["lcsh"], 0, strpos($va_lcsh_term["lcsh"], " ["));
-															$va_terms[] = caNavLink($this->request, $vs_tmp, "", "", "Browse", "projects", array("facet" => "lcsh_facet", "id" => urlencode($va_lcsh_term["lcsh"])));
+															$va_terms[] = caNavLink($this->request, $vs_tmp, "", "", "Search", "projects", array("search" => $vs_tmp));
 														}
 													}
 													if(is_array($va_aat_terms) && sizeof($va_aat_terms)){
 														$va_aat_terms = array_pop($va_aat_terms);
 														foreach($va_aat_terms as $vn_term_id => $va_aat_term){
 															$vs_tmp = substr($va_aat_term["aat"], 0, strpos($va_aat_term["aat"], " ["));
-															$va_terms[] = caNavLink($this->request, $va_aat_term["aat"], "", "", "Browse", "projects", array("facet" => "aat_facet", "id" => urlencode($va_aat_term["aat"])));
+															$va_terms[] = caNavLink($this->request, $va_aat_term["aat"], "", "", "Search", "projects", array("search" => $va_aat_term["aat"]));
 														}
 													}
 													
