@@ -52,6 +52,8 @@
 
 	$vs_idno_detail_link = "";
 	$vs_label_detail_link = "";
+	
+	$va_access_values = caGetUserAccessValues($this->request);
 
 	switch($vs_typecode){
 		case "product":
@@ -79,7 +81,7 @@
 	<div class="representationList">
 		
 <?php
-	$va_reps = $t_item->getRepresentations(array("thumbnail", "small"));
+	$va_reps = $t_item->getRepresentations(array("thumbnail", "small"), array("checkAccess" => $va_access_values));
 
 	foreach($va_reps as $va_rep) {
 		if(sizeof($va_reps) > 1){
@@ -119,12 +121,14 @@
 					</if>');
 					print $t_item->getWithTemplate('<ifdef code="ca_objects.marketing"><div class="unit"><H6>Marketing Category</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.marketing</unit></div></ifdef>');
 					
-					print $t_item->getWithTemplate('<ifdef code="ca_objects.manufacture_display_date|ca_objects.manufacture_date"><div class="unit"><H6>Date</H6>^ca_objects.manufacture_display_date<ifdef code="ca_objects.manufacture_display_date,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</div></ifdef>');
+					print $t_item->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date"><div class="unit"><H6>Date</H6>^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</div></ifdef>');
 					print $t_item->getWithTemplate('<ifdef code="ca_objects.launch_display_date|ca_objects.launch_date.launch_date_value"><div class="unit"><H6>Launch Date</H6>^ca_objects.launch_display_date<ifdef code="ca_objects.launch_display_date,ca_objects.launch_date.launch_date_value"> </ifdef>^ca_objects.launch_date.launch_date_value</div></ifdef>');
 					print $t_item->getWithTemplate('<if rule="^ca_objects.type_id !~ /Component/">
 						<ifdef code="ca_objects.price"><div class="unit"><H6>Sold for</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.price</unit></div></ifdef>
 						<ifdef code="ca_objects.packaging"><div class="unit"><H6>Packaging Note</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.packaging</unit></div></ifdef>
 					</if>');
+
+					print $t_item->getWithTemplate('<ifcount code="ca_entities" restrictToRelationshipTypes="photographer" min="1"><div class="unit"><H6>Photographer</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="designer" min="1"><div class="unit"><H6>Designer</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="designer" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>', array("checkAccess" => $va_access_values));
 
 					$vb_notes_output = false;
 					$va_notes_filtered = array();
@@ -155,7 +159,7 @@
 						if(strToLower($t_item->get("ca_objects.type_id")) != "component"){
 							$vs_part_label = "Part";
 						}
-						print "<div class='parentObject'><h6>Is A ".$vs_part_label." Of</h6>";
+						print "<div class='unit'><h6>Is A ".$vs_part_label." Of</h6>";
 						$vs_caption = "";
 						$vs_caption .= $t_parent->get("ca_objects.preferred_labels").". ";
 						if($vs_shade = $t_parent->get("ca_objects.shade")){
@@ -170,7 +174,7 @@
 						if($vs_shade || $vs_fragrance){
 							$vs_caption .= ". ";
 						}
-						if($vs_man_date = trim($t_parent->get("ca_objects.manufacture_display_date")." ".$t_parent->get("ca_objects.manufacture_date"))){
+						if($vs_man_date = trim($t_parent->get("ca_objects.season_list")." ".$t_parent->get("ca_objects.manufacture_date"))){
 							$vs_caption .= $vs_man_date." ";
 						}
 						if($vs_product_code = $t_parent->get("ca_objects.codes.product_code")){
@@ -256,7 +260,7 @@
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
 							}
 							$vs_caption .= $qr_related->get('ca_objects.preferred_labels');
-							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.manufacture_display_date|ca_objects.manufacture_date">^ca_objects.manufacture_display_date<ifdef code="ca_objects.manufacture_display_date,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
 								$vs_caption .= " (".$vs_tmp.")";
 							}
 							print $vs_caption;
@@ -292,6 +296,8 @@
 			
 			
 					print $t_item->getWithTemplate('<ifdef code="ca_objects.manufacture_date"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></div></ifdef>');
+					
+					print $t_item->getWithTemplate('<ifcount code="ca_entities" restrictToRelationshipTypes="photographer" min="1"><div class="unit"><H6>Photographer</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="designer" min="1"><div class="unit"><H6>Designer</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="designer" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>', array("checkAccess" => $va_access_values));
 
 					$vb_notes_output = false;
 					$va_notes_filtered = array();
@@ -314,8 +320,8 @@
 					
 
 					#  parent - displayed as collection hierarchy and folder if available
-					$vs_collection_hier = $t_item->getWithTemplate('<ifcount min="1" code="ca_collections.related"><unit relativeTo="ca_collections.related"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></unit></ifcount>');	
-					if ($vn_parent_object_id = $t_item->get('ca_objects.parent_id')) {
+					$vs_collection_hier = $t_item->getWithTemplate('<ifcount min="1" code="ca_collections.related"><unit relativeTo="ca_collections.related"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></unit></ifcount>', array("checkAccess" => $va_access_values));	
+					if ($vn_parent_object_id = $t_item->get('ca_objects.parent_id', array("checkAccess" => $va_access_values))) {
 						$t_parent = new ca_objects($vn_parent_object_id);
 						$vs_caption = "";
 						$vs_caption .= $t_parent->get("ca_objects.preferred_labels");
@@ -394,7 +400,7 @@
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
 							}
 							$vs_caption .= $qr_related->get('ca_objects.preferred_labels');
-							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.manufacture_display_date|ca_objects.manufacture_date">^ca_objects.manufacture_display_date<ifdef code="ca_objects.manufacture_display_date,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
 								$vs_caption .= " (".$vs_tmp.")";
 							}
 							print $vs_caption;

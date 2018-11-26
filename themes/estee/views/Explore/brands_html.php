@@ -10,8 +10,8 @@
 ?>
 	<div class='row'>
 		<div class="col-sm-12 col-md-8 col-md-offset-1">
-			<H1>Browse and Explore the Archives</H1>
-			<div class="linkUnderline">{{{browse_intro_text}}}</div>
+			<H1>Browse the Archives</H1>
+			<p class="linkUnderline">{{{browse_intro_text}}}</p>
 			<br/>
 		</div>
 	</div>
@@ -19,7 +19,7 @@
 		<div class="col-sm-12">
 			<div class="text-center">
 <?php
-				print "<p>".caNavLink($this->request, _t("Browse All"), "btn-default", "", "Browse", "objects")."&nbsp;&nbsp;&nbsp;&nbsp;".caNavLink($this->request, _t("Browse Products"), "btn-default", "", "Browse", "products")."&nbsp;&nbsp;&nbsp;&nbsp;".caNavLink($this->request, _t("Browse Archival Items"), "btn-default", "", "Browse", "archival")."</p><br/>";
+				print "<p><div class='exploreBrowseLink'>".caNavLink($this->request, _t("Browse All"), "btn-default", "", "Browse", "objects")."</div><div class='exploreBrowseLink'>".caNavLink($this->request, _t("Browse Products"), "btn-default", "", "Browse", "products")."</div><div class='exploreBrowseLink'>".caNavLink($this->request, _t("Browse Archival Items"), "btn-default", "", "Browse", "archival")."</div></p><br/>";
 ?>
 			</div>
 		</div>
@@ -38,6 +38,9 @@
 				continue;
 			}
 			$vs_img = $qr_brands->get("ca_list_items.icon.square400");
+			if($vs_img == "No media available"){
+				$vs_img = $qr_brands->get("ca_list_items.icon.original");
+			}
 			if(!$vs_img){
 				$vs_img = caGetThemeGraphic($this->request, 'logoPlaceholder.png');
 			}
@@ -48,7 +51,7 @@
 			if($vn_i == 0){
 				print "<div class='row exploreBrandGrid'>";
 			}
-			print "<div class='col-sm-3 col-xs-6'><div class='exploreBrandContainer'>".
+			print "<div class='col-sm-3 col-xs-12'><div class='exploreBrandContainer'>".
 						"<div class='exploreImgContainer'>".caNavLink($this->request, $vs_img."<br/>".$vs_logo, "", "", "browse", "objects", array("facet" => "brand_facet", "id" => $qr_brands->get("ca_list_items.item_id")))."</div>
 						</div></div>";
 			$vn_i++;
