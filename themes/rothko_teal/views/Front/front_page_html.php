@@ -146,7 +146,7 @@
 			<div>© 2018 National Gallery of Art, Washington</div>
 			<div>Works of art by Mark Rothko © 2018 Kate Rothko Prizel and Christopher Rothko</div>
 			<div><?php print caNavLink($this->request, 'About the Project', '', '', 'About', 'project'); ?> | <?php print caNavLink($this->request, 'Credits', '', '', 'About', 'credits'); ?> | <?php print caNavLink($this->request, 'Notices', '', '', 'About', 'notices'); ?> | <?php print caNavLink($this->request, 'Contact', '', '', 'About', 'contact'); ?></div>
-			<div><a href='#' class='socialLink'><i class='fab fa-facebook-f'></i></a><a href='#' class='socialLink'><i class='fab fa-twitter'></i></a></div>
+			<div><a href='https://www.facebook.com/nationalgalleryofart' target='_blank' class='socialLink'><i class='fa fa-facebook-f'></i></a><a href='https://twitter.com/ngadc' class='socialLink' target='_blank'><i class='fa fa-twitter'></i></a></div>
 		</div>
 	</div>				
 </div><!-- end container -->

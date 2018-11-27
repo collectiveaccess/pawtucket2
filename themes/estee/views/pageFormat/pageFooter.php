@@ -50,8 +50,6 @@ $vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]
 ?>
 			</ul>
 			<ul class="list-inline secondary">
-				<li><a href="#">Privacy Policy</a></li>
-				<li><a href="#">Terms and Conditions</a></li>
 				<li>&copy; Copyright <?php print date("Y"); ?></li>
 			</ul>
 		</footer><!-- end footer -->
@@ -109,11 +107,11 @@ $vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]
 		</script>
 		<script type="text/javascript">
 			$( ".front .notificationMessage" ).delay(1500).fadeOut("slow");
-			$(document).ready(function(){
-				$(document).bind("contextmenu",function(e){
-					return false;
-				});
-			});
+			//$(document).ready(function(){
+			//	$(document).bind("contextmenu",function(e){
+			//		return false;
+			//	});
+			//});
 		</script>
 	</body>
 </html>

@@ -1,7 +1,7 @@
 <?php
 	$va_access_values = $this->getVar("access_values");
 	$o_collections_config = $this->getVar("collections_config");
-	$vs_desc_template = $o_collections_config->get("description_template_children");
+	$vs_desc_template = $o_collections_config->get("description_template");
 	$t_item = $this->getVar("item");
 	$vn_collection_id = $this->getVar("collection_id");
 	$va_exclude_collection_type_ids = $this->getVar("exclude_collection_type_ids");
@@ -15,7 +15,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 	}
 	$va_access_values = caGetUserAccessValues($po_request);
 	$vs_output = "";
-	$vs_desc_template = $o_config->get("description_template_children");
+	$vs_desc_template = $o_config->get("description_template");
 	$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
 	
 	if($qr_collections->numHits()){
@@ -55,27 +55,25 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 			if($vn_level == 1){
 				$vs_output .= "<div class='label'>";
 			}
-			$vs_coll_date = $qr_collections->get('ca_collections.unitdate.dacs_date_text');
-
 			if($vb_link){
 				$vs_output .= $vs_icon." ";
 				if($vb_collapse_link){
-					$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels').(($vs_coll_date) ? ", ".$vs_coll_date : "")."</a>";
+					$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels')."</a>";
 				}else{
-					$vs_output .= caDetailLink($po_request, $qr_collections->get('ca_collections.preferred_labels').(($vs_coll_date) ? ", ".$vs_coll_date : ""), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
+					$vs_output .= caDetailLink($po_request, $qr_collections->get('ca_collections.preferred_labels'), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
 				}
 				$vs_output .= " ".caDetailLink($po_request, (($o_config->get("link_out_icon")) ? $o_config->get("link_out_icon") : ""), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
 			}else{
 				$vs_output .= "<span class='nonLinkedCollection'>".$vs_icon." ";
 				if($vb_collapse_link){
-					$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels').(($vs_coll_date) ? ", ".$vs_coll_date : "")."</a>";
+					$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels')."</a>";
 				}else{
-					$vs_output .= $qr_collections->get("ca_collections.preferred_labels").(($vs_coll_date) ? ", ".$vs_coll_date : "");
+					$vs_output .= $qr_collections->get("ca_collections.preferred_labels");
 				}
 				$vs_output .= "</span>";
 			}
 			if($vn_rel_object_count){
-				$vs_output .= " <small>(".$vn_rel_object_count." digital item".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+				$vs_output .= " <small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 			}
 			if($vn_level == 1){
 				$vs_output .= "</div>";
@@ -84,9 +82,6 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 			if($vs_desc_template && ($vs_desc = $qr_collections->getWithTemplate($vs_desc_template))){
 				$vs_output .= "<p>".$vs_desc."</p>";
 			}
-			#if($vs_location = $qr_collections->getWithTemplate('<ifcount code="ca_storage_locations"><unit relativeTo="ca_storage_locations.related" delimiter="<br/>"><unit relativeTo="ca_storage_locations.hierarchy" delimiter=" &gt; ">^ca_storage_locations.preferred_labels</unit></unit></ifcount>')){
-			#	$vs_output .= "<p>".$vs_location."</p>";
-			#}
 			$vs_output .= "</div>";
 			if(sizeof($va_child_ids)) {
 				if($vb_collapse_link){

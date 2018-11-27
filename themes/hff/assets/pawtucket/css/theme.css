@@ -456,3 +456,10 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
     max-width: 100% !important;
     max-height: 50px !important;
 }
+
+/* collections */
+.collectionsContainer small{
+	padding-left:10px;
+	line-height: 1.3em;
+	display: block;
+}

@@ -255,6 +255,10 @@ if (!$vb_ajax) {	// !ajax
 			<div style="clear:both"></div>
 		</div>
 <?php
+
+		if(in_array(strToLower($this->request->getAction()), array("objects", "products"))){
+			print "<div class='productCodeHelp'>End product code searches with an asterisk (*)</div>";
+		}
 		if(in_array(strToLower($this->request->getAction()), array("objects", "archival"))){
 			print caNavLink($this->request, _t("Browse All Products"), "btn-default browseProducts", "", "Browse", "products");
 		}

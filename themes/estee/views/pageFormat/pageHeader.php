@@ -109,22 +109,8 @@
 						}); 
 					}
 				</script>
-<?php
-	if ($x && $vb_has_user_links) {
-?>
-				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
-					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
-				</button>
-<?php
-	}
-?>
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
+					<?php print "<div class='hamburgerCollapseMenu pull-left' data-toggle='collapse' data-target='#bs-main-navbar-collapse-1'>".caGetThemeGraphic($this->request, 'hamburger.png')."</div>"; ?>
+				 
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'estee_lauder-logo-white-thick-660.png'), "navbar-brand", "", "","");
 ?>
@@ -132,17 +118,6 @@
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
-<?php
-	if ($x && $vb_has_user_links) {
-?>
-			<div class="collapse navbar-collapse" id="user-navbar-toggle">
-				<ul class="nav navbar-nav">
-					<?php print join("\n", $va_user_links); ?>
-				</ul>
-			</div>
-<?php
-	}
-?>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 <?php
 	if ($x && $vb_has_user_links) {
@@ -160,6 +135,7 @@
 					<li <?php print (strToLower($this->request->getController()) == "about") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 					<li <?php print (strToLower($this->request->getController()) == "gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Galleries"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ((strToLower($this->request->getController()) == "browse") || (strToLower($this->request->getController()) == "explore")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Explore", "Brands"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "collections") || ((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "collections"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Guides"), "", "", "Collections", "Index"); ?></li>
 					<li <?php print (strToLower($this->request->getController()) == "faq") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("FAQ"), "", "", "Faq", ""); ?></li>
 <?php
 	$ps_contactType = $this->request->getParameter("contactType", pString);
@@ -202,7 +178,13 @@
 						</div>
 					</div>
 				</div>
-				<div class="navSearchDimOverlay"></div>
+				<div class="navSearchDimOverlay">
+					<div class="container">
+						<div class="row">
+							<div class="col-sm-12"><div class="quickSearchHelp">End product code searches with an asterisk (*)</div></div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		
