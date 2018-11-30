@@ -37,10 +37,10 @@
 		<p>The Manuscript Cookbook Survey is the first ever search portal for unpublished cookbooks and recipes as well as kitchen utensil collections from institutions across the United States. By providing access to these historical documents and artifacts here, we can trace the development of techniques, recipes, ideas, ingredients and more all at once, instead of piecemeal across dozens of individual collections.</p>
 		<div class="row frontSpacingBox">
 			<div class="col-sm-6 frontPageBorder text-center">
-				<h2>Kitchen Artifacts<br/><?php print caNavLink($this->request, _("Search Kitchen Artifacts"), '', 'Search', 'advanced', 'utensils'); ?></h2>
+				<h2>Kitchen Artifacts<br/><?php print caNavLink($this->request, _t("Search Kitchen Artifacts"), '', 'Search', 'advanced', 'utensils'); ?></h2>
 			</div><!--end col-sm-6-->
 			<div class="col-sm-6 text-center">
-				<h2>Manuscripts<br/><?php print caNavLink($this->request, _("Search Manuscripts"), '', 'Search', 'advanced', 'manuscripts'); ?></h2>
+				<h2>Manuscripts<br/><?php print caNavLink($this->request, _t("Search Manuscripts"), '', 'Search', 'advanced', 'manuscripts'); ?></h2>
 			</div> <!--end col-sm-4-->	
 		</div>
 		</div>
