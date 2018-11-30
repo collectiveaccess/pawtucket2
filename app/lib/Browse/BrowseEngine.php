@@ -2177,14 +2177,14 @@
 					if ((!isset($pa_options['omitChildRecords']) || !$pa_options['omitChildRecords']) && caGetOption('expandResultsHierarchically', $pa_options, false) && ($vs_hier_id_fld = Datamodel::getTableProperty($this->ops_browse_table_name, 'HIERARCHY_ID_FLD'))) {
                        $vs_parent_id_fld = Datamodel::getTableProperty($this->ops_browse_table_name, 'PARENT_ID_FLD');
                        $omit_child_records_for_type_sql = '';
-                       $params = [array_keys($va_acc_content)];
-                       
-                       if(is_array($omit_child_records_for_types) && sizeof($omit_child_records_for_types)) {
-                            $omit_child_records_for_type_sql = "AND (({$vs_parent_id_fld} IS NULL) OR ({$vs_parent_id_fld} IS NOT NULL AND type_id NOT IN (?)))";
-                            $params[] = $omit_child_records_for_types;
-                       }
                        
                        foreach($va_acc as $vn_i => $va_acc_content) {
+                            $params = [array_keys($va_acc_content)];
+
+                            if(is_array($omit_child_records_for_types) && sizeof($omit_child_records_for_types)) {
+                                $omit_child_records_for_type_sql = "AND (({$vs_parent_id_fld} IS NULL) OR ({$vs_parent_id_fld} IS NOT NULL AND type_id NOT IN (?)))";
+                                $params[] = $omit_child_records_for_types;
+                            }
                             if(!sizeof($va_acc_content)) { continue; }
                             $qr_expand =  $this->opo_db->query("
                                 SELECT ".$this->ops_browse_table_name.".".$t_item->primaryKey()." 
