@@ -74,6 +74,9 @@
 			$vn_col_span = 3;
 			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 6;
+			if($this->request->getAction() == "collection_objects"){
+				$vn_col_span = 4;
+			}
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;

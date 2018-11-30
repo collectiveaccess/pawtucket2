@@ -78,7 +78,7 @@
  		public function brands(){		
 			# --- all objects landing page - shows brands
 			$t_list = new ca_lists();
-			$va_brands = $t_list->getItemsForList("brand", array("extractValuesByUserLocale" => true, "checkAccess" => $this->opa_access_values, "sort" => __CA_LISTS_SORT_BY_RANK__));
+			$va_brands = $t_list->getItemsForList("brand", array("dontCache" => true, "extractValuesByUserLocale" => true, "checkAccess" => $this->opa_access_values, "sort" => __CA_LISTS_SORT_BY_RANK__));
 			if(is_array($va_brands) && sizeof($va_brands)){
 				$qr_brands = caMakeSearchResult('ca_list_items', array_keys($va_brands));
 				$this->view->setVar("brands_search", $qr_brands);
