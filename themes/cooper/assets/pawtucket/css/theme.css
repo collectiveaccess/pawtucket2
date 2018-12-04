@@ -171,6 +171,7 @@ H6, h6{
 .navbar .navbar-nav > .active > a {
   	background-color: #000;
     color: #FFF;
+    text-shadow: 0px 0px 4px #888;
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus,
 .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
@@ -179,6 +180,7 @@ H6, h6{
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 	font-family: gotham;
 	color:#fff;
+	text-shadow: 0px 0px 4px #888;
 	text-transform:uppercase;
 	font-size:12px;
 }
@@ -201,6 +203,7 @@ H6, h6{
 }
 .navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
   color: #fff !important;
+  text-shadow: 0px 0px 4px #888;
 }
 
 .navbar-right{
@@ -346,6 +349,7 @@ body.initial .navbar-form {
 	color:#fff !important;
 	padding-right:0px;
 	font-size:12px;
+	text-shadow: 0px 0px 6px #888;
 }
 
 
@@ -372,16 +376,22 @@ body.initial .navbar-form {
 	position:absolute;
 	width:100%;
 	height:600px;
-background: -moz-linear-gradient(-45deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.65) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,0) 100%); /* FF3.6-15 */
-background: -webkit-linear-gradient(-45deg, rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.65) 30%,rgba(0,0,0,0) 60%,rgba(0,0,0,0) 100%); /* Chrome10-25,Safari5.1-6 */
-background: linear-gradient(135deg, rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.65) 30%,rgba(0,0,0,0) 60%,rgba(0,0,0,0) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+/*background: -moz-linear-gradient(-45deg, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.65) 30%, rgba(0,0,0,0) 60%, rgba(0,0,0,0) 100%);
+background: -webkit-linear-gradient(-45deg, rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.65) 30%,rgba(0,0,0,0) 60%,rgba(0,0,0,0) 100%);
+background: linear-gradient(135deg, rgba(0,0,0,0.95) 0%,rgba(0,0,0,0.65) 30%,rgba(0,0,0,0) 60%,rgba(0,0,0,0) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', endColorstr='#00000000',GradientType=1 );
+*/
+background: -moz-linear-gradient(-90deg, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0) 60%); /* FF3.6-15 */
+background: -webkit-linear-gradient(-90deg, rgba(0,0,0,0.9) 0%,rgba(0,0,0,0) 60%); /* Chrome10-25,Safari5.1-6 */
+background: linear-gradient(90deg, rgba(0,0,0,0.9) 0%,rgba(0,0,0,0) 60%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', endColorstr='#00000000',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+
 	z-index:2;
 }
 .initial .navbar.transparent{
-	background: -moz-linear-gradient(top, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0) 75%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(top, rgba(0,0,0,0.1) 0%,rgba(0,0,0,0) 75%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to bottom, rgba(0,0,0,0.1) 0%,rgba(0,0,0,0) 75%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	background: -moz-linear-gradient(top, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0) 75%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 75%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom, rgba(0,0,0,0.15) 0%,rgba(0,0,0,0) 75%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1a000000', endColorstr='#00000000',GradientType=0 ); /* IE6-9 */
 }
 
@@ -1080,6 +1090,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 .leaflet-popup-content{
 	max-height:300px;
 	overflow-y:scroll;
+	padding:10px;
 }
 .leaflet-popup-content a{
 	font-size: 13px;
@@ -1098,6 +1109,18 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 }
 .detail #map_map{
 	margin-left:0px;
+}
+.mapImage{
+	margin-top:5px;
+}
+.mapImage img{
+	width:100%;
+	height:auto;
+}
+
+.leaflet-marker-icon{
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
 }
 
 /* course detail */
@@ -1155,4 +1178,7 @@ div.caMediaOverlayControls{
 }
 #app{
 	background-color: #211f1f !important;
+}
+.staticPage {
+	font-size:14px;
 }

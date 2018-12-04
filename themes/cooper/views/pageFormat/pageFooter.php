@@ -37,9 +37,9 @@
 					<ul class="list-inline pull-right">
 						<li><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 						<li><?php print caNavLink($this->request, _t("Help"), "", "", "Help", ""); ?></li>
-						<li><a href="#">Contact</a></li>
-						<li><a href="#">Privacy</a></li>
-						<li class="last"><a href="#">Terms</a></li>
+						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", ""); ?></li>
+						<li><?php print caNavLink($this->request, _t("Privacy"), "", "", "Privacy", ""); ?></li>
+						<li class="last"><?php print caNavLink($this->request, _t("Terms"), "", "", "Terms", ""); ?></li>
 					</ul>
 					<div class="footerText">
 						THE COOPER UNION, <?php print date("Y"); ?> &copy; ALL RIGHTS RESERVED

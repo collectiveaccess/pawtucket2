@@ -72,7 +72,9 @@ if($vb_ajax){
 					$vn_first_img_id = null;
 					if($qr_children->numHits()){
 						while($qr_children->nextHit()){
-							if($vs_icon = $qr_children->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values))){
+							$vs_icon = "";
+							if($va_icon = $qr_children->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values, "returnAsArray" => true))){
+								$vs_icon = $va_icon[0];
 								$va_content_cat = $qr_children->get("content_category", array("returnAsArray" => true));
 								if(!is_array($va_content_cat)){
 									$va_content_cat = array();
@@ -80,7 +82,7 @@ if($vb_ajax){
 								if(in_array($vn_content_category_text, $va_content_cat) || in_array($vn_content_category_transcript, $va_content_cat)){
 									$va_children_author_texts[$qr_children->get("object_id")] = array("icon" => $vs_icon, "label" => $qr_children->get("ca_objects.preferred_labels.name"), "representation_id" => $qr_children->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)));
 								}else{
-									$va_children[$qr_children->get("object_id")] = array("icon" => $vs_icon, "large" => $qr_children->get("ca_object_representations.media.page", array("checkAccess" => $va_access_values)));
+									$va_children[$qr_children->get("object_id")] = array("icon" => $vs_icon);
 									if(!$vn_first_img_id){
 										$vn_first_img_id = $qr_children->get("object_id");
 									}
@@ -105,6 +107,7 @@ if($vb_ajax){
 							}
 						}
 					}
+					if(is_array($va_children) && (sizeof($va_children) > 1)){
 ?>
 					<div class="row detailImages">
 						<div class="col-sm-2 detailImagesThumbs">
@@ -116,70 +119,60 @@ if($vb_ajax){
 						</div>
 						<div class="col-sm-10">
 							<div id="detailObjectImageLarge"></div>
-<?php
-							if(is_array($va_children) && (sizeof($va_children) > 1)){
-?>
 								<div class="detailImageNav">
 									<a href="#" class="detailPreviousImageLink" onClick="showNextPreviousImg('p'); return false;"><i class='fa fa-angle-left'></i></a>
 									<a href="#" class="detailNextImageLink" onClick="showNextPreviousImg('n'); return false;"><i class='fa fa-angle-right'></i></i></a>
 								</div>
-<?php
-							}
-?>							
 						</div>
 					</div>
 					<script type="text/javascript">
+						showMainImg(<?php print $vn_first_img_id; ?>);
+						function showMainImg(childID){
+							$("#detailObjectImageLarge").load("<?php print caNavUrl($this->request, '', 'Detail', 'objects'); ?>/" + childID);
+							$(".detailImagesThumbs a").removeClass("active");
+							$("#iconLink" + childID).addClass("active");
+					
+						}
 <?php
-							if(is_array($va_children) && sizeof($va_children)){
+						if(is_array($va_children) && (sizeof($va_children) > 1)){
 ?>
-								showMainImg(<?php print $vn_first_img_id; ?>);
-								function showMainImg(childID){
-									$("#detailObjectImageLarge").load("<?php print caNavUrl($this->request, '', 'Detail', 'objects'); ?>/" + childID);
-									$(".detailImagesThumbs a").removeClass("active");
-									$("#iconLink" + childID).addClass("active");
+							function showNextPreviousImg(direction){
+								var currentId = parseInt($(".detailImagesThumbs a.active").attr('id').replace('iconLink', ''));
 							
-								}
-<?php
-								if(is_array($va_children) && (sizeof($va_children) > 1)){
-?>
-									function showNextPreviousImg(direction){
-										var currentId = parseInt($(".detailImagesThumbs a.active").attr('id').replace('iconLink', ''));
-									
-										//var allIds = <?php print json_encode(array_keys($va_children))?>;
-										var allIds = [<?php print join(", ", array_keys($va_children))?>];
-									
-										var arrayLength = allIds.length;
-										for (var i = 0; i < arrayLength; i++) {
-											if(allIds[i] == currentId){
-												if(direction == "p"){
-													if(i > 0){
-														showMainImg(allIds[i-1]);
-													}else{
-														showMainImg(allIds[arrayLength-1]);
-													}
-												}else{
-													if(i < (arrayLength - 1)){
-														showMainImg(allIds[i+1]);
-													}else{
-														showMainImg(allIds[0]);
-													}
-												}
+								//var allIds = <?php print json_encode(array_keys($va_children))?>;
+								var allIds = [<?php print join(", ", array_keys($va_children))?>];
+							
+								var arrayLength = allIds.length;
+								for (var i = 0; i < arrayLength; i++) {
+									if(allIds[i] == currentId){
+										if(direction == "p"){
+											if(i > 0){
+												showMainImg(allIds[i-1]);
+											}else{
+												showMainImg(allIds[arrayLength-1]);
+											}
+										}else{
+											if(i < (arrayLength - 1)){
+												showMainImg(allIds[i+1]);
+											}else{
+												showMainImg(allIds[0]);
 											}
 										}
-									
-										//var allIds = <?php print json_encode(array_keys($va_children))?>;
-										//$.each(allIds, function(attr, value) {
-										//  console.log( attr + ' == ' + value );
-									   //});
 									}
-<?php
 								}
-
+							
+								//var allIds = <?php print json_encode(array_keys($va_children))?>;
+								//$.each(allIds, function(attr, value) {
+								//  console.log( attr + ' == ' + value );
+							   //});
 							}
+<?php
+						}
 ?>							
 
 					</script>
 <?php
+					}
 				}
 										
 ?>
