@@ -858,6 +858,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 	border-radius:0px;
 	padding: 0px 10px 5px 10px;
 	text-transform:capitalize;
+	text-shadow: none;
 }
 .detail .nav-tabs > li > a:hover, .detail .nav-tabs > li > a:focus,
 .browse .nav-tabs > li > a:hover, .browse .nav-tabs > li > a:focus{
@@ -865,10 +866,12 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 	border-left: 0px;
 	border-right:0px;
 	border-top:0px;
+	text-shadow: none;
 }
 .detail .nav-tabs > li a:hover,
 .browse .nav-tabs > li a:hover{
 	border-bottom:0px;
+	text-shadow: none;
 }
 .detail .nav-tabs > li.active, .detail .nav-tabs > li.active:hover,
 .browse .nav-tabs > li.active, .browse .nav-tabs > li.active:hover{
