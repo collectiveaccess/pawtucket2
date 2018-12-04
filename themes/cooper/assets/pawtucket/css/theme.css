@@ -1112,6 +1112,7 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 }
 .mapImage{
 	margin-top:5px;
+	min-width:250px;
 }
 .mapImage img{
 	width:100%;
