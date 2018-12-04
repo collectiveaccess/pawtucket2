@@ -110,7 +110,7 @@ if (!$vb_ajax) {	// !ajax
 						$t_authority_table = new $va_current_facet["table"];
 						$t_authority_table->load($va_criterion['id']);
 						$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
-						$vs_facet_img = $t_authority_table->get("ca_object_representations.media.large", array("limit" => 1, "checkAccess" => $va_access_values));
+						$vs_facet_img = $t_authority_table->get("ca_object_representations.media.largesquare", array("limit" => 1, "checkAccess" => $va_access_values));
 						$vs_facet_based_title = $t_authority_table->get("preferred_labels");
 						# --- look for faculty texts
 						$va_faculty_text_object_ids = $t_authority_table->get("ca_objects.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true, "restrictToTypes" => array("faculty_course_document")));
@@ -306,7 +306,7 @@ if (!$vb_ajax) {	// !ajax
 			if($vs_facet_description || $vs_fact_img){
 				print "<div class='row bFacetContextHeader'>";
 				if($vs_facet_img){
-					print "<div class='col-md-4 scaleimg'>".$vs_facet_img."</div><div class='col-md-8'>";
+					print "<div class='col-md-4 scaleimg circleImg'>".$vs_facet_img."</div><div class='col-md-8'>";
 				}else{
 					print "<div class='col-md-12'>";
 				}

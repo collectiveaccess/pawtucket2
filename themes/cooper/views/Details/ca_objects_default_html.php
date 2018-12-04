@@ -316,6 +316,9 @@ if($vb_ajax){
 												}
 												print "</div>";						
 											}
+											if($vs_site_text = $t_object->get("ca_objects.site_text")){
+												print "<H7>Site</H7><div class='unitBottom'>".$vs_site_text."</div>";
+											}
 		?>
 										</div>
 										<div class="col-sm-7">

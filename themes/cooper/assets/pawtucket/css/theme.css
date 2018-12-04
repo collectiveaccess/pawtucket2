@@ -65,6 +65,9 @@ a, a:active, a:focus {
 	width:100%;
 	height:auto;
 }
+.circleImg img{
+	border-radius:50%;
+}
 H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 	font-family: 'Gotham';
 	font-weight: normal;
@@ -701,6 +704,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f2000000', e
 	width:670px;
 	height:600px;
 	object-fit:contain;
+}
+.detail #detailObjectImageLarge{
+	height:526px;
 }
 .detail .navTop {
 	text-align:center;

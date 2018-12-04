@@ -35,8 +35,8 @@
 						<?php print caGetThemeGraphic($this->request, 'IMLS_Logo.png'); ?><?php print caGetThemeGraphic($this->request, 'levyLogo2.jpg'); ?><?php print caGetThemeGraphic($this->request, 'metro_logo.png'); ?><?php print caGetThemeGraphic($this->request, 'nhprc-logo.jpg'); ?>
 					</div>
 					<ul class="list-inline pull-right">
-						<li><a href="#">About</a></li>
-						<li><a href="#">Help</a></li>
+						<li><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
+						<li><?php print caNavLink($this->request, _t("Help"), "", "", "Help", ""); ?></li>
 						<li><a href="#">Contact</a></li>
 						<li><a href="#">Privacy</a></li>
 						<li class="last"><a href="#">Terms</a></li>
