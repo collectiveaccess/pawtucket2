@@ -29,6 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
+	$va_access_values = $this->getVar('access_values');
 	$qr_res = $this->getVar('featured_set_items_as_search_result');
 	
 	$o_galleryConfig = caGetGalleryConfig();
@@ -36,9 +37,9 @@
 	$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_galleryConfig->get('gallery_set_type')); 			
  	$t_set = new ca_sets();
 	if($vn_gallery_set_type_id){
-		$va_tmp = array('checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id);
+		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id);
 		$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
-		$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
+		$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "icon", "checkAccess" => $va_access_values));
 		
 		$o_front_config = caGetFrontConfig();
 		$vs_front_page_set = $o_front_config->get('front_page_set_code');
@@ -81,7 +82,6 @@
 <?php
 	#$va_sets = $this->getVar("sets");
 	#$va_first_items_from_set = $this->getVar("first_items_from_sets");
-	$va_access_values = $this->getVar('access_values');
 	if(is_array($va_sets) && sizeof($va_sets)){
 		$va_all_ids = array();
 ?>
