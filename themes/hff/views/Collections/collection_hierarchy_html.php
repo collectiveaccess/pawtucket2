@@ -63,7 +63,7 @@
 								$vs_record_count = "<small>(".$vn_rel_object_count." digital item".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
 							}
 							$vs_coll_date = $qr_collection_children->get('ca_collections.unitdate.dacs_date_text');
-							$vs_location = $qr_collection_children->getWithTemplate('<ifcount code="ca_storage_locations"><small><unit relativeTo="ca_storage_locations.related" delimiter="<br/>"><unit relativeTo="ca_storage_locations.hierarchy" delimiter=" &gt; ">^ca_storage_locations.preferred_labels</unit></unit></small></ifcount>');
+							#$vs_location = $qr_collection_children->getWithTemplate('<ifcount code="ca_storage_locations"><small><unit relativeTo="ca_storage_locations.related" delimiter="<br/>"><unit relativeTo="ca_storage_locations.hierarchy" delimiter=" &gt; ">^ca_storage_locations.preferred_labels</unit></unit></small></ifcount>');
 							if($vb_link_sublist){
 								print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').(($vs_coll_date) ? ", ".$vs_coll_date : "").$vs_location.$vs_record_count."</a>";
 							}else{

@@ -507,6 +507,9 @@ ul.menuItems{
 #bRefine a {
     color: #000;
 }
+#bRefine.fixed{
+	padding-top:75px;
+}
 .bResultItemImgPlaceholder .glyphicon {
     color: #ababab !important;
     font-size: 30px;

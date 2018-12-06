@@ -578,7 +578,7 @@
 					$this->view->setVar('message', _t("Removed group access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _("invalid group/set id"));
+				$this->view->setVar('errors', _t("invalid group/set id"));
 			}
 			$this->setAccess();
  		}
@@ -603,7 +603,7 @@
 					$this->view->setVar('message', _t("Removed user access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _("invalid user/set id"));
+				$this->view->setVar('errors', _t("invalid user/set id"));
 			}
  			$this->setAccess();
  		}
@@ -630,7 +630,7 @@
 					$this->view->setVar('message', _t("Changed group access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _("invalid group/set id or access"));
+				$this->view->setVar('errors', _t("invalid group/set id or access"));
 			}
 			$this->setAccess();
  		}
@@ -657,7 +657,7 @@
 					$this->view->setVar('message', _t("Changed user access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _("invalid user/set id or access"));
+				$this->view->setVar('errors', _t("invalid user/set id or access"));
 			}
 			$this->setAccess();
  		}

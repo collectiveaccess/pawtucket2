@@ -32,7 +32,7 @@
 					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
 
 					{{{<ifdef code="ca_collections.public_notes"><div class="unit"><br/><p>^ca_collections.public_notes</p></div></ifdef>}}}
-					{{{<ifdef code="ca_collections.scopecontent"><div class="unit"><br/><p>^ca_collections.public_notes</p></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.scopecontent"><div class="unit"><br/><p>^ca_collections.scopecontent</p></div></ifdef>}}}
 					
 <?php					
 					if ($vn_pdf_enabled) {
@@ -58,23 +58,23 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
-				<div id="browseResultsContainer">
+				<br/>
+				<div id="browseResultsDetailContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-				</div><!-- end browseResultsContainer -->
+				</div><!-- end browseResultsDetailContainer -->
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collection_objects', array('search' => 'collection_id:^ca_collections.collection_id', 'sort' => 'Rank', 'direction' => 'asc'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
+					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collection_objects', array('search' => 'collection_id:^ca_collections.collection_id', 'sort' => 'Rank', 'direction' => 'asc', 'showFilterPanel' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+//						jQuery('#browseResultsDetailContainer').jscroll({
+//							autoTrigger: true,
+//							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+//							padding: 20,
+//							nextSelector: 'a.jscroll-next'
+//						});
 					});
-					
 					
 				});
 			</script>
