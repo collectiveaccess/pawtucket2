@@ -2559,9 +2559,6 @@ div.advancedSearchField {
 .advancedSearchField {
 	margin-bottom:10px;
 }
-.advancedSearchField select {
-	text-transform:capitalize !important;
-}
 .advancedSearchField .formLabel {
 	text-transform:none;
 	color:#454545;
