@@ -37,7 +37,7 @@
 					<ul class="list-inline pull-right">
 						<li><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 						<li><?php print caNavLink($this->request, _t("Help"), "", "", "Help", ""); ?></li>
-						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", ""); ?></li>
+						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "ContactUs", ""); ?></li>
 						<li><?php print caNavLink($this->request, _t("Privacy"), "", "", "Privacy", ""); ?></li>
 						<li class="last"><?php print caNavLink($this->request, _t("Terms"), "", "", "Terms", ""); ?></li>
 					</ul>
