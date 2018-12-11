@@ -370,7 +370,7 @@ if($vb_ajax){
 									</div><!-- end row -->
 								</div>
 								<div role="tabpanel" class="tab-pane" id="author">
-									<div class='unitBottom'>
+									<H7 class='responsiveLabel'>Author Text</H7><div class='unitBottom'>
 		<?php
 									if(is_array($va_children_author_texts) && sizeof($va_children_author_texts)){
 										foreach($va_children_author_texts as $vn_child_text_id => $va_child){
@@ -383,7 +383,7 @@ if($vb_ajax){
 									</div>
 								</div>
 								<div role="tabpanel" class="tab-pane" id="faculty">
-									<div class='unitBottom'>
+									<H7 class='responsiveLabel'>Faculty Text</H7><div class='unitBottom'>
 		<?php
 									
 									if(is_array($va_faculty_text_object_ids) && sizeof($va_faculty_text_object_ids)){
@@ -418,7 +418,7 @@ if($vb_ajax){
 									</div>
 								</div>
 								<div role="tabpanel" class="tab-pane" id="rights">
-									<div class='unitBottom'><?php print ($vs_rights) ? $vs_rights : "N/A"; ?></div>
+									<H7 class='responsiveLabel'>Rights</H7><div class='unitBottom'><?php print ($vs_rights) ? $vs_rights : "N/A"; ?></div>
 								</div>
 							</div><!-- end tab-content -->
 					

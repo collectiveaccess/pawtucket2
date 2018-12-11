@@ -60,7 +60,7 @@
 			<div class="container">
 				<div class="row">
 					<div class="col-lg-5 col-md-7 col-sm-12 col-xs-12">
-						<H1>The Student<br/>Work Collection</H1>
+						<H1>The Student <br/>Work Collection</H1>
 						<p>An archive of student design projects dating from the 1930’s through the present. This material documents over 4,000 student projects spanning more than eight decades of architectural pedagogy at The Cooper Union. As a whole, these records provide a comprehensive narrative of the School’s evolving, radical and influential approach to architectural education.</p>
 						<div class="jcarousel-paginationHero jcarousel-pagination"><!-- Pagination items will be generated in here --></div>
 
