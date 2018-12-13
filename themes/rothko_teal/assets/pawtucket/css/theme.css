@@ -1461,7 +1461,7 @@ button.refine:focus, button.refine:active {
 }
 .dropdown .hierarchicalList .fa-chevron-right {
 	color:#161616 !important;
-	font-size: 20px;
+	font-size: 14px;
     padding-left: 5px;
     vertical-align:bottom;
 }
@@ -1697,7 +1697,7 @@ a .svg-inline--fa.clearFacet {
 }
 #bRefine .row {
 	max-height:280px;
-	overflow-y:auto;
+	/*overflow-y:auto;*/
 	margin-bottom:50px;
 	margin-left:0px;
 	margin-right:0px;
@@ -1735,6 +1735,7 @@ a .svg-inline--fa.clearFacet {
 }
 #bRefine .row.hierarchicalList {
 	margin-bottom:0px;
+	overflow-y:auto;
 }
 #bRefine  .hierarchicalList .facetItem a {
 	float:none;
@@ -2557,6 +2558,9 @@ div.advancedSearchField {
 }
 .advancedSearchField {
 	margin-bottom:10px;
+}
+.advancedSearchField select {
+	text-transform:capitalize !important;
 }
 .advancedSearchField .formLabel {
 	text-transform:none;

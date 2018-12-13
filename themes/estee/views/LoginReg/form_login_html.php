@@ -79,7 +79,7 @@
 					print "<br/>".caNavLink($this->request, _t("Forgot your password?"), "", "", "LoginReg", "resetForm", array());
 				}
 ?>
-					<br/>{{{login_intro}}}
+					<br/><br/>{{{login_intro}}}
 					</div>
 				</div><!-- end form-group -->
 			</form>
