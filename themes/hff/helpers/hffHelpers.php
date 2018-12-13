@@ -29,15 +29,18 @@ function italicizeTitle($vs_title){
 		}
 		$vs_output = "";
 		$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
-		
+		$t_list = new ca_lists();
+		$vn_folder_type_id = $t_list->getItemIDFromList("collection_types", "folder");
+
 		#$vs_sub_collection_label_template = $o_collections_config->get("export_sub_collection_label_template");
 		# --- all levels other than folder
 		$vs_sub_collection_desc_template = '<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type|ca_collections.extentDACS.container_summary|ca_collections.extentDACS.physical_details">
 												<div class="unit">
-													<unit relativeTo="ca_collections" delimiter="<br/><br/>">
+													<unit relativeTo="ca_collections" delimiter=" ">
 													<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type"><div>Extent: ^ca_collections.extentDACS.extent_number <ifdef code="ca_collections.extentDACS.extent_type">^ca_collections.extentDACS.extent_type</ifdef></div></ifdef>
 													<ifdef code="ca_collections.extentDACS.container_summary"><div>Container Summary: ^ca_collections.extentDACS.container_summary</div></ifdef>
 													<ifdef code="ca_collections.extentDACS.physical_details"><div>Physical Details: ^ca_collections.extentDACS.physical_details</div></ifdef>
+													</unit>
 												</div>
 											</ifdef>
 											<ifdef code="ca_collections.scopecontent">
@@ -63,10 +66,11 @@ function italicizeTitle($vs_title){
 										</div>
 										<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type|ca_collections.extentDACS.container_summary|ca_collections.extentDACS.physical_details">
 											<div class="unit">
-												<unit relativeTo="ca_collections" delimiter="<br/><br/>">
+												<unit relativeTo="ca_collections" delimiter=" ">
 												<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type"><div>Extent: ^ca_collections.extentDACS.extent_number <ifdef code="ca_collections.extentDACS.extent_type">^ca_collections.extentDACS.extent_type</ifdef></div></ifdef>
 												<ifdef code="ca_collections.extentDACS.container_summary"><div>Container Summary: ^ca_collections.extentDACS.container_summary</div></ifdef>
 												<ifdef code="ca_collections.extentDACS.physical_details"><div>Physical Details: ^ca_collections.extentDACS.physical_details</div></ifdef>
+												</unit>
 											</div>
 										</ifdef>
 										<ifdef code="ca_collections.scopecontent">
@@ -108,23 +112,35 @@ function italicizeTitle($vs_title){
 				$va_collection_type_icons[$t_list->getItemId("collection_types", $vs_idno)] = $vs_icon;
 			}
 		}
+		$vs_exclude_objects_from_finding_aid = "";
+		$vn_top_level_collection_id = "";
 		if($qr_collections->numHits()){
 			while($qr_collections->nextHit()) {
 				if($va_exclude_collection_type_ids && is_array($va_exclude_collection_type_ids) && (in_array($qr_collections->get("ca_collections.type_id"), $va_exclude_collection_type_ids))){
 					continue;
 				}
-		
 				$vs_icon = "";
 				if(is_array($va_collection_type_icons) && $va_collection_type_icons[$qr_collections->get("ca_collections.type_id")]){
 					$vs_icon = $va_collection_type_icons[$qr_collections->get("ca_collections.type_id")];
-				}			
-				# --- related objects?
-				$va_object_ids = $qr_collections->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values));
+				}
+				# --- do not show related objects if top level collection has fa_exclude_objects checkbox selected
+				if(!$vn_top_level_collection_id){
+					$vn_top_level_collection_id = array_shift($qr_collections->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
+					$t_parent_collection = new ca_collections($vn_top_level_collection_id);
+					$vs_exclude_objects_from_finding_aid = $t_parent_collection->get("fa_exclude_objects", array("convertCodesToDisplayText" => true));				
+				}
+				# yes no values switched
+				if($vs_exclude_objects_from_finding_aid == "no"){
+					$va_object_ids= array();
+				}else{
+					# --- related objects?
+					$va_object_ids = $qr_collections->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values));
+				}
 				$vn_rel_object_count = sizeof($va_object_ids);
 				$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.rank"));
 				if(!$vb_dont_show_top_level_description){
 					$vs_output .= "<div class='unit' style='margin-left:".(40*($vn_level - 2))."px;'>";
-					if($qr_collections->get("ca_collections.type_id") != 124){
+					if($qr_collections->get("ca_collections.type_id") != $vn_folder_type_id){
 						if($vs_icon){
 							$vs_output .= $vs_icon." ";
 						}				
@@ -138,7 +154,7 @@ function italicizeTitle($vs_title){
 						$vs_output .= "</br>";
 					}				
 					$vs_desc = "";
-					if($qr_collections->get("ca_collections.type_id") == 124){
+					if($qr_collections->get("ca_collections.type_id") == $vn_folder_type_id){
 						$vs_desc = $qr_collections->getWithTemplate($vs_folder_desc_template);
 						if(trim($vs_desc)){
 							$vs_output .= "<p>".$vs_desc."</p>";
@@ -154,13 +170,22 @@ function italicizeTitle($vs_title){
 				# --- objects
 				if(sizeof($va_object_ids)){
 					$qr_objects = caMakeSearchResult("ca_objects", $va_object_ids);
-					$vs_output .= "<div class='unit'><div style='margin-left:25%'><H6>Related Items</H6>";
+					$vs_output .= "<div class='unit'><div style='margin-left:25%'><H6>Digital Items</H6>";
+					$t_object = new ca_objects();
 					while($qr_objects->nextHit()){
 						$vs_output .= "<div>";
+						$vs_rep_type = "";
+						$t_object->load($qr_objects->get("ca_objects.object_id"));
+						if($va_rep = $t_object->getPrimaryRepresentation(array('original'), null, array('return_with_access' => $va_access_values))){
+							$vs_rep_type = " (".$va_rep['mimetype'].")";
+						}
+						
+						
+	
 						if($vs_object_template){
-							$vs_output .= $qr_objects->getWithTemplate($vs_object_template);
+							$vs_output .= $qr_objects->getWithTemplate($vs_object_template).$vs_rep_type;
 						}else{
-							$vs_output .= $qr_objects->get("ca_objects.preferred_labels.name");
+							$vs_output .= $qr_objects->get("ca_objects.preferred_labels.name").$vs_rep_type;
 						}
 						$vs_output .= "</div>";
 					}
