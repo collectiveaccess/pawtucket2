@@ -14,7 +14,15 @@
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true, "checkAccess" => $va_access_values)));
 
+	$vs_back_url = $this->getVar("resultsURL");
+	
+	$va_breadcrumb = array(caNavLink($this->request, _t("Home"), "", "", "", ""));
+	if(strpos(strToLower($vs_back_url), "detail") === false){
+		$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Archival Fonds and Collections</a>";
+		$va_breadcrumb[] = $t_item->get('ca_collections.preferred_labels');
+	}
 ?>
+
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
@@ -25,13 +33,19 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+<?php
+	if(sizeof($va_breadcrumb) > 1){
+		print "<div class='breadcrumb'>".join(" > ", $va_breadcrumb)."</div>";
+	}
+?>
+
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 <?php					
-					if ($vn_pdf_enabled) {
-						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
-					}
+					print "<div class='exportCollection'>
+								<span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))
+								."<br/><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask An Archivist", "", "", "Contact",  "form", array('id' => $t_item->get("collection_id"), 'table' => 'ca_collections'))."</div>";
 ?>
 
 					{{{<H4>^ca_collections.preferred_labels <ifdef code="ca_collections.GMD">[<unit realtiveTo="ca_collections.GMD" delimiter=", ">^ca_collections.GMD</unit>]</ifdef><ifdef code="ca_collections.OtherTitle">: ^ca_collections.OtherTitle </ifdef><ifdef code="ca_collections.nonpreferred_labels"> = ^ca_collections.nonpreferred_labels </ifdef><ifdef code="creator_name"> / ^ca_collections.creator_name</ifdef></H4>
