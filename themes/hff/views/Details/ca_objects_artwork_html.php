@@ -125,12 +125,13 @@
 					foreach($va_provenance as $va_provenance_info){
 						$t_obj_x_occ->load($va_provenance_info["relation_id"]);
 						$vs_date = $t_obj_x_occ->get("effective_date");
+						$vs_credit_accession = $t_obj_x_occ->get("interstitial_notes");
 						# --- yes no values are switched in this list
 						if(strToLower($t_obj_x_occ->get("ca_objects_x_occurrences.current_collection", array("convertCodesToDisplayText" => true))) == "no"){
-							$va_current_collection[] = $va_provenance_info["name"].(($vs_date) ? ", ".$vs_date : "");
+							$va_current_collection[] = $va_provenance_info["name"].(($vs_date) ? ", ".$vs_date : "").(($vs_credit_accession) ? ", ".$vs_credit_accession : "");
 							
 						}else{
-							$va_provenance_display[] = $va_provenance_info["name"].(($vs_date) ? ", ".$vs_date : "");
+							$va_provenance_display[] = $va_provenance_info["name"].(($vs_date) ? ", ".$vs_date : "").(($vs_credit_accession) ? ", ".$vs_credit_accession : "");
 							#$va_provenance_display[] = $va_provenance_info["name"].(($vs_date) ? ", ".$vs_date : "")." (".$va_provenance_info["relationship_typename"].")";
 						}
 					}
@@ -141,7 +142,7 @@
 						print "<div class='unit'><H6>Provenance</H6>".join("<br/>", $va_provenance_display)."</div>";
 					}
 				}
-				if($va_exhibitions = $t_object->get("ca_occurrences", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("exhibition")))){
+				if($va_exhibitions = $t_object->get("ca_occurrences", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("exhibition"), "sort" => "ca_occurrences.common_date"))){
 					$t_occ = new ca_occurrences();
 					print "<div class='unit'><H6>Exhibition History</H6>";
 					$t_objects_x_occurrences = new ca_objects_x_occurrences();

@@ -30,7 +30,7 @@ body{
 #footerdompdf .footerText { position:relative; font-size: 11px; padding-right:40px;  } 
 
 /* summary styles */
-.title { font-family: 'Proximanova'; font-size: 18px; width:100%; margin-top:10px; text-align: center;}
+.title { font-family: 'Proximanova'; font-weight:normal; line-height:1.2em; font-size: 18px; width:100%; margin-top:10px; text-align: center;}
 .representationList { width: 100%; margin-top:10px; text-align: center; }
 .unit {font-size:12px;margin-bottom:12px;}
 h6 {font-size:12px; font-weight:normal; margin:0px 0px 5px 0px; padding:0px;}
@@ -84,4 +84,31 @@ H6 a {
 }
 .bResultItemText{
 	font-size:11px;
+}
+
+H7{
+	font-size:14px;
+	padding-top:20px;
+	padding-bottom:5px;
+	text-decoration:underline;
+	display:block;
+}
+.findingAid H6{
+	font-size:13px;
+	margin-bottom:0px;
+}
+.findingAid .unit {
+    margin-bottom: 10px;
+    clear:left;
+}
+.folder{
+	margin-bottom:20px;
+}
+.folder .unit {
+    margin-bottom: 5px;
+    clear:left;
+}
+.folder  H6{
+	font-size:12px;
+	margin-bottom:0px;
 }

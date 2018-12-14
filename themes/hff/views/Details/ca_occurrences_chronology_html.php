@@ -24,7 +24,10 @@
 			</div><!-- end row -->
 			<div class="row">			
 <?php
-				if($vs_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='featured_simple' limit='1'>^ca_object_representations.media.large</unit>")){
+				#if($vs_image = $t_item->getWithTemplate("^ca_object_representations.media.large%limit=1", array("checkAccess" => $va_access_values))){
+				#	print "<div class='col-xs-12 col-sm-4 col-md-4 col-lg-4 scaleImage'>".$vs_image."</div>";
+				#}
+				if($vs_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='featured_simple' length='1'><l>^ca_object_representations.media.large</l></unit>")){
 					print "<div class='col-xs-12 col-sm-4 col-md-4 col-lg-4 scaleImage'>".$vs_image."</div>";
 				}
 ?>
@@ -38,10 +41,12 @@
 			$va_chron_text_grouped_by_date[$va_chron_info["chronology_date_sort_"]][] = "<div class='unit'><H6>".$va_chron_info["chronology_date"]."</H6>".$va_chron_info["chronology_text"]."</div>";
 			ksort($va_chron_text_grouped_by_date);
 		}
-		print "<H6>Events</H6>";
 		foreach($va_chron_text_grouped_by_date as $vn_sort_date => $va_chron_text_by_date){
 			print join("\n", $va_chron_text_by_date);
 		}
+	}
+	if($vs_source = $t_item->get("ca_occurrences.source")){
+		print "<div class='unit'>".$vs_source."</div>";
 	}
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
@@ -92,16 +97,21 @@
 						}
 					}
 ?>
-					{{{<ifcount code="ca_places" min="1" max="1"><H5>Location</H5></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><H5>Locations</H5></ifcount>}}}
-					{{{<ifcount code="ca_places" min="1" restrictToRelationshipTypes="home"><div class="unit"><h6>Home</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="home">^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></unit></div></ifcount>}}}
-					{{{<ifcount code="ca_places" min="1" restrictToRelationshipTypes="studio"><div class="unit"><h6>Studio</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="studio">^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></unit></div></ifcount>}}}					
-					{{{<ifcount code="ca_places" min="1" restrictToRelationshipTypes="travel"><div class="unit"><h6>Travel</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="travel">^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></unit></div></ifcount>}}}					
+					{{{<ifcount code="ca_places" min="1">
+							<div class="row">
+								<div class="col-sm-12">
+									<ifcount code="ca_places" min="1" max="1"><H5>Location</H5></ifcount>
+									<ifcount code="ca_places" min="2"><H5>Locations</H5></ifcount>
+								</div>
+							</div>
+							<div class="row">
+								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="home"><div class="col-sm-12 col-md-4"><div class="unit"><h6>Home</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="home"><ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name > </ifdef>^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></unit></div></div></ifcount>
+								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="studio"><div class="col-sm-12 col-md-4"><div class="unit"><h6>Studio</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="studio"><ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name > </ifdef>^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></unit></div></div></ifcount>
+								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="travel"><div class="col-sm-12 col-md-4"><div class="unit"><h6>Travel</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="travel"><ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name > </ifdef>^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></unit></div></div></ifcount>
+							</div>
+						</ifcount>
+					}}}					
 				
-					{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related Individual/Organization</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><H6>Related Individuals/Organizations</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="1"><div class="unit"><unit relativeTo="ca_entities" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
-										
 					{{{<ifcount code="ca_objects" min="1" restrictToTypes="archival"><div class='unit'><H6>Related Digital Items</H6><unit relativeTo="ca_objects" restrictToTypes="archival" delimiter="<br/>"><l>^ca_objects.preferred_labels<ifdef code="ca_objects.unitdate.dacs_date_text">, ^ca_objects.unitdate.dacs_date_text</ifdef></l></unit></div></ifcount>}}}
 					
 				</div><!-- end col -->
