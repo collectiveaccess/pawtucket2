@@ -67,6 +67,8 @@
 	$va_all_facets = $va_browse_type_info["facets"];	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
+	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
+	
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
@@ -214,8 +216,38 @@ if (!$vb_ajax) {	// !ajax
 				}
 			}
 		}
-} // !ajax
+}else{ // !ajax
+	if($vb_show_filter_panel){
+		# show filter panel and any chosen filters on collection detail
+?>
+		<div class="row" style="clear:both;">
+			<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
+			<H5 class="catchLinks">
+	<?php
+			if (sizeof($va_criteria) > 0) {
+				$i = 0;
+				foreach($va_criteria as $va_criterion) {
+					if ($va_criterion['facet_name'] != '_search') {
+						print "<strong>".$va_criterion['facet'].': </strong>';		
+						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+				
+						$i++;
+						if($i < sizeof($va_criteria)){
+							print " ";
+						}
+					}
+				}
+			}
+	?>		
+			</H5>
+			
+			<div class="row">
+			<div id="browseResultsContainer">
 
+
+<?php
+	}
+}
 # --- check if this result page has been cached
 # --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
 $vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id);
@@ -233,7 +265,7 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end row -->
 		</form>
 	</div><!-- end col-8 -->
-	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
+	<div class="col-sm-3">
 		<div id="bViewButtons">
 <?php
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
@@ -251,10 +283,15 @@ if (!$vb_ajax) {	// !ajax
 			<form role="search" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
 				<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine">
 				<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+				<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
 			</form>
 			<div style="clear:both"></div>
 		</div>
 <?php
+
+		if(in_array(strToLower($this->request->getAction()), array("objects", "products"))){
+			print "<div class='productCodeHelp'>End product code searches with an asterisk (*)</div>";
+		}
 		if(in_array(strToLower($this->request->getAction()), array("objects", "archival"))){
 			print caNavLink($this->request, _t("Browse All Products"), "btn-default browseProducts", "", "Browse", "products");
 		}
@@ -304,5 +341,42 @@ if (!$vb_ajax) {	// !ajax
 </script>
 <?php
 		print $this->render('Browse/browse_panel_subview_html.php');
-} //!ajax
+}else{ //!ajax
+	if($vb_show_filter_panel){
+		# --- show filter panel on collection detail page
+?>
+					</div><!-- end browseResultsContainer -->
+				</div><!-- end row -->
+			</div><!-- end col-8 -->
+			<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?> catchLinks">
+				<H5>&nbsp;</H5>
+<?php
+			print $this->render("Browse/browse_refine_subview_html.php");
+?>			
+			</div><!-- end col -->
+		</div><!-- end row -->	
+		<script type="text/javascript">
+			jQuery(document).ready(function() {
+				jQuery('#browseResultsContainer').jscroll({
+					autoTrigger: true,
+					loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+					padding: 800,
+					nextSelector: 'a.jscroll-next'
+				});
+
+				$(".catchLinks").on("click", "a", function(event){
+					event.preventDefault();
+					var url = $(this).attr('href') + "/showFilterPanel/1";
+					$('#browseResultsDetailContainer').load(url);					
+				});
+				
+			});
+
+		</script>
+
+<?php
+		print $this->render('Browse/browse_panel_subview_html.php');
+
+	}
+}
 ?>

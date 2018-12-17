@@ -66,7 +66,7 @@ h7 {
 	margin-bottom:8px;
 	display:inline-block;
 }
-a {
+a, a:hover {
 	color: #77a22f;
 }
 .container{
@@ -264,6 +264,8 @@ h4.entity {
 	margin:0px;
 	height:200px;
 	border-top: solid 2px #026127;
+	
+	bottom:-100px;
 }
 #footer, #footer a {
 	text-align:center;
@@ -325,7 +327,7 @@ h4.entity {
 	padding-top:100px;
 }
 #objectsBlock .multisearchImgPlaceholder {
-	padding: 40px 20px 40px 20px;
+	padding: 8px 20px 10px 20px;
 }
 .multisearch .authorityResult {
 	background-color:#fff;
@@ -443,6 +445,9 @@ h4.entity {
     display:inline-block;
     text-align:left;
 }
+.btn-default, .btn-default:hover {
+	background-color:#77a22f;
+}
 .browse #searchOptions .btn, .sets #searchOptions .btn, .search #searchOptions .btn {
 	display:block;
 	margin-top:5px;
@@ -464,6 +469,18 @@ h4.entity {
     margin-left: 10px;
     font-size: 12px;	
 }
+.filterMenuResults {
+	overflow:hidden;
+}
+.filterMenuFacetList li.active a {
+    color: #666;
+}
+div.browseFacetItem a:hover {
+	color: #666;
+}
+a.browseRemoveFacet .glyphicon {
+	color: #666!important;
+}
 
 /* Advanced Search */
 
@@ -481,8 +498,10 @@ input[type='text'], input[type='password'], textarea, select {
 }
 div.advancedSearchField {
 	width:auto;
-	height:60px;
+	min-height:60px;
 	float:none;
+	padding-bottom:10px;
+	clear:both;
 }
 div.advancedSearchFieldTall {
 	width:auto;
@@ -507,6 +526,12 @@ div.advancedSearchFieldTall {
 }
 .advancedSearchField textarea {
 	resize: none !important;
+}
+.advancedSearchField input, .advancedSearchField textarea, .advancedSearchField select {
+
+}
+.searchField .attributeListItem {
+	width:100% !important;
 }
 
 /* Search Options */
@@ -651,3 +676,91 @@ a.faDownload:hover {
 .detail .detailMediaToolbar, .gallery .detailMediaToolbar{
 	right: 0;
 }
+
+/* LIghtbox */
+
+.lbSetThumbPlaceholder .mortonIcon {
+	display:none;
+}
+.lbSetImgPlaceholder {
+	padding: 40px 5px 32px 5px;
+}
+
+/* Icons */
+
+.bResultItemImgPlaceholder {
+	padding-top:20px;
+	padding-bottom:25px;
+}
+.mortonIcon {
+	background-size: contain;
+    height: 100px;
+    width: 100px;
+    z-index: 10000;
+    margin-left: auto;
+    margin-right: auto;
+    opacity:.5;
+}
+.m-article {
+	background-image:url('../graphics/icons/Icon_Article_Gray.png');
+}
+.m-artifact {
+	background-image:url('../graphics/icons/Icon_Artifact_Gray.png'); 
+}
+.m-audio {
+	background-image:url('../graphics/icons/Icon_AudioFiles_Gray.png');
+}
+.m-book {
+	background-image:url('../graphics/icons/Icon_Book_Gray.png');
+}
+.m-catalog {
+	background-image:url('../graphics/icons/Icon_Catalogs_Gray.png');
+}
+.m-ceramic {
+	background-image:url('../graphics/icons/Icon_Ceramics_Gray.png');
+}
+.m-paper {
+	background-image:url('../graphics/icons/Icon_Documents_Gray.png');
+}
+.m-drawing {
+	background-image:url('../graphics/icons/Icon_Drawing_Gray.png');
+}
+.m-map {
+	background-image:url('../graphics/icons/Icon_Maps_Gray.png');
+}
+.m-painting {
+	background-image:url('../graphics/icons/Icon_Painting_Gray.png');
+}
+.m-photo {
+	background-image:url('../graphics/icons/Icon_PhotographicImage_Gray.png');
+}
+.m-plan {
+	background-image:url('../graphics/icons/Icon_Plan_Gray.png');
+}
+.m-print {
+	background-image:url('../graphics/icons/Icon_Print_Gray.png');
+}
+.m-sculpture {
+	background-image:url('../graphics/icons/Icon_Sculpture_Gray.png');
+}
+.m-serial {
+	background-image:url('../graphics/icons/Icon_Serials_Gray.png');
+}
+.m-sketchbook {
+	background-image:url('../graphics/icons/Icon_Sketchbook_Gray.png');
+}
+.m-specimen {
+	background-image:url('../graphics/icons/Icon_Specimen_Gray.png');
+}
+.m-video {
+	background-image:url('../graphics/icons/Icon_Video_Gray.png');
+}
+.m-dataset {
+	background-image:url('../graphics/icons/Icon_Dataset_Gray.png');
+}
+
+
+
+
+
+

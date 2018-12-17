@@ -74,6 +74,9 @@
 			$vn_col_span = 3;
 			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 6;
+			if($this->request->getAction() == "collection_objects"){
+				$vn_col_span = 4;
+			}
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
@@ -144,7 +147,7 @@
 							$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? " &rsaquo; " : "").$vs_subbrand;
 						}
 						$vs_caption .= "</div>";
-						if($vs_tmp = $qr_res->getWithTemplate('<ifdef code="ca_objects.manufacture_display_date|ca_objects.manufacture_date">^ca_objects.manufacture_display_date<ifdef code="ca_objects.manufacture_display_date,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+						if($vs_tmp = $qr_res->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
 							$vs_caption .= $vs_tmp.", ";
 						}
 						$vs_caption .= $qr_res->get('ca_objects.preferred_labels');
