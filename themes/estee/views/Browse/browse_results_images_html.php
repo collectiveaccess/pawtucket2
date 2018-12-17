@@ -74,9 +74,10 @@
 			$vn_col_span = 3;
 			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 6;
-			if($this->request->getAction() == "collection_objects"){
-				$vn_col_span = 4;
-			}
+		}
+		if($this->request->getAction() == "collection_objects"){
+			# --- collection detail page
+			$vn_col_span = 4;
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
@@ -120,12 +121,17 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
+					$vs_folder_class = "";
 					if ($vs_table == 'ca_objects') {
 						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
 							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-								$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+								if(($vs_typecode == "folder") && !($qr_res->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values)))){
+									$vs_folder_class = " iconFolderEmpty";
+								}
+								$vs_thumbnail = "<div class='bResultItemImgPlaceholder".$vs_folder_class."'>".$vs_type_placeholder."</div>";
+								
 							}else{
 								$vs_thumbnail = $vs_default_placeholder_tag;
 							}

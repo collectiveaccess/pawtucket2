@@ -183,7 +183,7 @@
 		break;
 		# ------------------------------
 	}
-
+set_time_limit(360);
 	if ($t_item->get("ca_collections.children.collection_id", array("checkAccess" => $va_access_values)) || $t_item->get("ca_objects.object_id", array("checkAccess" => $va_access_values))){
 		print "<hr/><br/><H7>Collection Inventory</H7>";
 		if ($t_item->get('ca_collections.collection_id')) {
