@@ -37,11 +37,18 @@
 	$vs_representationViewer = trim($this->getVar("representationViewer"));
 	
 	$vs_detail_tools = "<div id='detailTools'>
-						<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask A Curator", "", "", "Contact",  "form", array('object_id' => $vn_id))."</div><!-- end detailTool -->
+						<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask A Curator", "", "", "Contact",  "form", array('id' => $vn_id, 'table' => 'ca_objects'))."</div><!-- end detailTool -->
 						<div class='detailTool'><a href='#' onclick='jQuery(\"#detailComments\").slideToggle(); return false;'><span class='glyphicon glyphicon-comment'></span>Comments and Tags (".(sizeof($va_comments) + sizeof($va_tags)).")</a></div><!-- end detailTool -->
 						<div id='detailComments'>".$this->getVar("itemComments")."</div><!-- end itemComments -->
 					</div><!-- end detailTools -->";
 
+	$vs_back_url = $this->getVar("resultsURL");
+	
+	$va_breadcrumb = array(caNavLink($this->request, _t("Home"), "", "", "", ""));
+	if(strpos(strToLower($vs_back_url), "detail") === false){
+		$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Artefacts</a>";
+		$va_breadcrumb[] = $t_object->get("ca_objects.preferred_labels");
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -53,6 +60,12 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+<?php
+	if(sizeof($va_breadcrumb) > 1){
+		print "<div class='breadcrumb'>".join(" > ", $va_breadcrumb)."</div>";
+	}
+?>
+
 		<div class="container"><div class="row">
 <?php
 		if($vs_representationViewer){
