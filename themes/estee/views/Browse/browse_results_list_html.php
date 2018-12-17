@@ -116,6 +116,7 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
+					$vs_folder_class = "";
 					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
 					if($vs_table == "ca_objects"){
@@ -148,7 +149,10 @@
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
 							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-								$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+								if(($vs_typecode == "folder") && (!$qr_res->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values)))){
+									$vs_folder_class = " iconFolderEmpty";
+								}
+								$vs_image = "<div class='bResultItemImgPlaceholder".$vs_folder_class."'>".$vs_type_placeholder."</div>";
 							}else{
 								$vs_image = $vs_default_placeholder_tag;
 							}

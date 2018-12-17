@@ -134,10 +134,21 @@
 						<ifdef code="ca_objects.packaging"><div class="unit"><H6>Packaging Note</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.packaging</unit></div></ifdef>
 					</if>}}}
 					
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="photographer" min="1"><div class="unit"><H6>Photographer</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="designer" min="1"><div class="unit"><H6>Designer</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="designer" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="photographer,designer" min="1"><hr/></ifcount>}}}
 <?php
+					$va_entities = $t_object->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					if(is_array($va_entities) && sizeof($va_entities)){
+						$va_entities_by_type = array();
+						$va_entities_sort = array();
+						foreach($va_entities as $va_entity){
+							$va_entities_sort[$va_entity["relationship_typename"]][] = $va_entity["displayname"];	
+						}
+						foreach($va_entities_sort as $vs_entity_type => $va_entities_by_type){
+							print "<div class='unit'><H6>".ucfirst($vs_entity_type)."</H6>";
+							print join(", ", $va_entities_by_type);
+							print "</div>";
+						}					
+						print "<hr/>";
+					}
 					$vb_notes_output = false;
 					$va_notes_filtered = array();
 					$va_notes = $t_object->get("ca_objects.object_notes", array("returnWithStructure" => true, "convertCodesToDisplayText" => true));
