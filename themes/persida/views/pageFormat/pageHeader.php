@@ -64,6 +64,7 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
+	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300i,400,400i" rel="stylesheet">
 <?php
 	if(Debug::isEnabled()) {		
 		//
@@ -96,8 +97,6 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-
-				<div class='pageName'>Persida Foundation</div>
 
 			</div>
 
@@ -144,16 +143,17 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
+					<li><?php print caNavLink($this->request, 'Home', '', '', '', '');?></li>
 					<li class="dropdown" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Browse</a>
-						<ul class="dropdown-menu">
+						<ul class="dropdown-menu">	
 							<li><?php print caNavLink($this->request, 'Artworks', '', '', 'Browse', 'objects');?></li>
 							<li><?php print caNavLink($this->request, 'People & Organizations', '', '', 'Browse', 'entities');?></li>
 							<li><?php print caNavLink($this->request, 'Exhibitions', '', '', 'Browse', 'exhibitions');?></li>
 							<li><?php print caNavLink($this->request, 'Bibliography', '', '', 'Browse', 'bibliography');?></li>
 						</ul>
-					</li>					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
+					</li>					
+					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
