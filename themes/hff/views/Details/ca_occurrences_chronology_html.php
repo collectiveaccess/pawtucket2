@@ -4,6 +4,14 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$va_access_values = caGetUserAccessValues($this->request);	
+	
+	$o_icons_conf = caGetIconsConfig();
+	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
+	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	}
+	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
+	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -18,7 +26,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
+					<H1 class="chronologyTitle">{{{^ca_occurrences.preferred_labels.name}}}</H1>
 					<HR/>
 				</div><!-- end col -->
 			</div><!-- end row -->
@@ -62,12 +70,26 @@
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
 					print '</div><!-- end detailTools -->';
-				}				
+				}
+?>
+					
+				</div><!-- end col -->
+			</div><!-- end row -->
+<?php				
 					$o_search = caGetSearchInstance("ca_occurrences");
 					$o_search->setTypeRestrictions(array("exhibition"));
 					$qr_res = $o_search->search("ca_occurrences.common_date:".$t_item->get("ca_occurrences.common_date"), array("checkAccess" => $va_access_values, 'sort' => 'ca_occurrences.common_date', 'sort_direction' => 'asc'));
  					if($qr_res->numHits()){
-						print "<H5>Exhibition".((sizeof($va_exhibitions) > 1) ? "s" : "")."</H5>";
+?>
+						<div class="row">
+							<div class="col-sm-12">
+								<br/><hr/><br/><H4><?php print "Exhibition".(($qr_res->numHits() > 1) ? "s" : ""); ?></H4>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-sm-12">
+<?php
+						
 						$va_solo = array();
 						$va_group = array();
 						$t_occ = new ca_occurrences();
@@ -89,6 +111,7 @@
 								$va_group[] = $vs_exhibition;
 							}
 						}
+						
 						if(sizeof($va_solo)){
 							print "<div class='unit'><H6>Solo</H6>".join("<br/>", $va_solo)."</div>";
 						}
@@ -96,26 +119,82 @@
 							print "<div class='unit'><H6>Group</H6>".join("<br/>", $va_group)."</div>";
 						}
 					}
-?>
+?>						</div>
+					</div>
 					{{{<ifcount code="ca_places" min="1">
 							<div class="row">
 								<div class="col-sm-12">
-									<ifcount code="ca_places" min="1" max="1"><H5>Location</H5></ifcount>
-									<ifcount code="ca_places" min="2"><H5>Locations</H5></ifcount>
+									<br/><hr/><br/><H4><ifcount code="ca_places" min="1" max="1">Location</ifcount><ifcount code="ca_places" min="2">Locations</ifcount></H4>
 								</div>
 							</div>
 							<div class="row">
-								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="home"><div class="col-sm-12 col-md-4"><div class="unit"><h6>Home</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="home"><ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name > </ifdef>^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></unit></div></div></ifcount>
-								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="studio"><div class="col-sm-12 col-md-4"><div class="unit"><h6>Studio</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="studio"><ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name > </ifdef>^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></unit></div></div></ifcount>
-								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="travel"><div class="col-sm-12 col-md-4"><div class="unit"><h6>Travel</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="travel"><ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name > </ifdef>^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></unit></div></div></ifcount>
+								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="home"><div class="col-sm-12 col-md-4"><div class="unit"><h6>Home</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="home"><div><ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name > </ifdef>^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></div></unit></div></div></ifcount>
+								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="studio"><div class="col-sm-12 col-md-4"><div class="unit"><h6>Studio</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="studio"><div><ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name > </ifdef>^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></div></unit></div></div></ifcount>
+								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="travel"><div class="col-sm-12 col-md-4"><div class="unit"><h6>Travel</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="travel"><div><ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name > </ifdef>^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></div></unit></div></div></ifcount>
 							</div>
 						</ifcount>
 					}}}					
 				
-					{{{<ifcount code="ca_objects" min="1" restrictToTypes="archival"><div class='unit'><H6>Related Digital Items</H6><unit relativeTo="ca_objects" restrictToTypes="archival" delimiter="<br/>"><l>^ca_objects.preferred_labels<ifdef code="ca_objects.unitdate.dacs_date_text">, ^ca_objects.unitdate.dacs_date_text</ifdef></l></unit></div></ifcount>}}}
+<?php
+	$va_archival_items = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("archival"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+	if($va_archival_items && sizeof($va_archival_items)){
+		$qr_archival_items = caMakeSearchResult('ca_objects', $va_archival_items);
+?>
+			<div class="row">
+				<div class="col-sm-12">
+					<br/><hr/><br/><H4>Related Digital Item<?php print ($qr_archival_items->numHits() > 1) ? "s" : ""; ?></H4><br/>
+				</div>
+			</div>
+			<div class="row">
+<?php
+				while($qr_archival_items->nextHit()){
+					$vn_id = $qr_archival_items->get("ca_objects.object_id");
 					
-				</div><!-- end col -->
-			</div><!-- end row -->
+					$vs_label_detail_link = "";
+					# --- no idno link
+					$vs_label_detail_link 	= caDetailLink($this->request, $qr_archival_items->get("ca_objects.preferred_labels"), '', 'ca_objects', $vn_id).(($qr_archival_items->get("ca_objects.unitdate.dacs_date_text")) ? ", ".$qr_archival_items->get("ca_objects.unitdate.dacs_date_text") : "");
+					$vs_tmp = $qr_archival_items->getWithTemplate("<unit relativeTo='ca_collections' delimiter=', '><l>^ca_collections.preferred_labels</l></unit>", array("checkAccess" => $va_access_values));				
+					if($vs_tmp){
+						$vs_label_detail_link .= "<br/>Part of: ".$vs_tmp;
+					}
+						
+					$vs_thumbnail = "";
+					$vs_type_placeholder = "";
+					if(!($vs_thumbnail = $qr_archival_items->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
+						if($vs_type_placeholder = caGetPlaceholder("archival", "placeholder_media_icon")){
+							$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+						}else{
+							$vs_thumbnail = $vs_default_placeholder_tag;
+						}
+					}
+					$vs_info = null;
+					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', 'ca_objects', $vn_id);				
+				
+					$vs_add_to_set_link = "";
+					if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array("object_id" => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+					}
+					
+					print "
+		<div class='bResultItemCol col-xs-6 col-sm-6 col-md-3'>
+			<div class='bResultItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
+				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
+					<div class='bResultItemText'>
+						{$vs_label_detail_link}
+					</div><!-- end bResultItemText -->
+				</div><!-- end bResultItemContent -->
+				".(($vs_add_to_set_link) ? "<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'><hr>{$vs_expanded_info}{$vs_add_to_set_link}</div><!-- bResultItemExpandedInfo -->" : "")."
+			</div><!-- end bResultItem -->
+		</div><!-- end col -->";
+				
+				
+			}
+?>
+			</div>
+<?php
+	}
+?>
+
 			<div class="row">
 				<div class="col-sm-12">
 					<br/><hr/><br/><H4>Related Artworks</H4>
@@ -128,7 +207,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'artworks', array('search' => 'ca_objects.common_date:'.$t_item->get('ca_occurrences.common_date').' and ca_entities.entity_id:1', 'view' => 'images'), array('dontURLEncodeParameters' => false)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'artworks', array('search' => 'ca_objects.common_date:'.$t_item->get('ca_occurrences.common_date').' and ca_entities.entity_id:2558', 'view' => 'images'), array('dontURLEncodeParameters' => false)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
