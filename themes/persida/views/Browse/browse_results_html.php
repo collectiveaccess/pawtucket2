@@ -130,7 +130,7 @@ if (!$vb_ajax) {	// !ajax
 					if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
 						print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
 					}
-/*					if(is_array($va_export_formats) && sizeof($va_export_formats)){
+					if(is_array($va_export_formats) && sizeof($va_export_formats)){
 #						// Export as PDF links
 						print "<li class='divider'></li>\n";
 						print "<li class='dropdown-header'>"._t("Download results as:")."</li>\n";
@@ -138,7 +138,7 @@ if (!$vb_ajax) {	// !ajax
 							print "<li class='".$va_export_format["code"]."'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
 						}
 					}
-*/					
+					
 ?>
 				</ul>
 			</div><!-- end btn-group -->
