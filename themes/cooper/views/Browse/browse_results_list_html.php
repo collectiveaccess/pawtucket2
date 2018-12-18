@@ -88,9 +88,7 @@
 					$vb_row_id_loaded = true;
 				}
 				
-				if($vn_col == 0){
-					print "<div class='row display-flex'>";
-				}
+				
 				
 				
 				# --- if sort is date, get the date as a year so you can display a year heading
@@ -101,6 +99,10 @@
 					if($vs_letter && ($vs_letter != Session::getVar('lastLetter'))){
 						Session::setVar('lastLetter', $vs_letter);
 						$vb_show_letter = true;
+						if($vn_col > 0){
+							print "</div></div>";
+						}
+						$vn_col = 0;
 					}
 				}			
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
@@ -111,7 +113,9 @@
 					print "<div class='col-xs-12' style='clear:left'><br/><div class='bResultLetterDivide'>".Session::getVar('lastLetter')."</div></div>";
 				}
 				
-				
+				if($vn_col == 0){
+					print "<div class='container'><div class='row display-flex'>";
+				}
 				
 				
 				# --- check if this result has been cached
@@ -138,12 +142,12 @@
 				$vn_col++;
 				$vn_results_output++;
 				if($vn_col == 4){
-					print "</div><!-- end row -->";
+					print "</div><!-- end row --></div><!-- end container -->";
 					$vn_col = 0;
 				}
 			}
 			if($vn_col > 0){
-				print "</div><!-- end row -->";
+				print "</div><!-- end row --></div><!-- end container -->";
 			}
 			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
 		}
