@@ -29,16 +29,20 @@
  *
  * ----------------------------------------------------------------------
  */
-		print $this->render("Front/featured_set_slideshow_html.php");
-		$va_access_values = caGetUserAccessValues($this->request);
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
-	<div class="row purple">
-		<div class="containerWrapper">
-			<div class="col-sm-10 col-sm-offset-1">
-				<H1>{{{homepage_text}}}</H1>
-			</div><!--end col-sm-8-->	
+	<div class="row">
+		<div class="col-sm-12 frontSearchCollage">
+			<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+				<div class="frontSearchCollageOutline">
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="Search" name="search">
+					</div>
+					<button type="submit"><span class="glyphicon glyphicon-search"></span></button>
+				</div>
+			</form>
 		</div>
-	</div><!-- end row -->
+	</div>
 <?php
 	$qr_members = ca_entities::find(["type_id" => "member"], ["returnAs" => "searchResult"]);
 	if ($qr_members) {
@@ -129,11 +133,23 @@
 						// Options go here
 					});
 			});
-		</script>
-	<div class="row grayBg">
+		</script>	
+	
+	<div class="row purple">
 		<div class="containerWrapper">
 			<div class="col-sm-10 col-sm-offset-1">
-				<H1>SUPPORT THE MUSEUMS<br/><br/>{{{homepage_support_text}}}</H1>
+				<H1>{{{homepage_text}}}</H1>
 			</div><!--end col-sm-8-->	
+		</div>
+	</div><!-- end row -->
+
+	<div class="row hpAboutText">
+		<div class="containerWrapper">
+			<div class="col-sm-12 col-md-6 col-lg-6 col-left">
+				<br/><br/><br/><H2>SUPPORT OUR MUSEUMS</H2><p>{{{homepage_support_text}}}</p><br/>
+			</div><!--end col-sm-6-->
+			<div class="col-sm-12 col-md-6 col-lg-6 col-right">
+				<br/><br/><br/><H2>WHO WE ARE</H2><p>{{{homepage_who_text}}}</p><br/>
+			</div><!--end col-sm-6-->	
 		</div>
 	</div><!-- end row -->

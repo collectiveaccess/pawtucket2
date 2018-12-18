@@ -92,6 +92,7 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+     <link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css"/>
 </head>
 <body>
 	<nav id="mainNav" class="navbar navbar-default yamm" role="navigation">

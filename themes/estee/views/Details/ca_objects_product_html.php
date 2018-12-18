@@ -33,6 +33,8 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -55,10 +57,22 @@
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
 						print $vs_rep_viewer;
-						print "<H6>Media may not be used, published or distributed without prior authorization.</H6>";
+						$vs_use_statement = trim($t_object->get("ca_objects.use_statement"));
+						if(!$vs_use_statement){
+							$vs_use_statement = $this->getVar("use_statement");
+						}
+						print "<H6>".$vs_use_statement."</H6>";
+?>
+						<script type="text/javascript">
+							jQuery(document).ready(function() {
+								$('.dlButton').on('click', function () {
+									return confirm('<?php print $vs_use_statement; ?>');
+								});
+							});
+						</script>
+<?php
 					}else{
 						print "<div class='detailProductPlaceholder'><span class='glyphicon glyphicon-picture'></span></div>";
-						#print "<br/><div class='detailTool text-center'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Scan or Image", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'digitizationRequest'))."</div>";
 					}	
 ?>				
 					<div id="detailAnnotations"></div>
@@ -102,24 +116,39 @@
 					
 <?php
 					$vb_close_row = false;
-					if($t_object->get("ca_objects.manufacture_display_date") || $t_object->get("ca_objects.manufacture_date") || $t_object->get("ca_objects.launch_display_date") || $t_object->get("ca_objects.launch_date.launch_date_value")){
+					if($t_object->get("ca_objects.season_list") || $t_object->get("ca_objects.manufacture_date") || $t_object->get("ca_objects.launch_display_date") || $t_object->get("ca_objects.launch_date.launch_date_value")){
 						print "<div class='row'>";
 						$vb_close_row = true;
 					}
 ?>
-					{{{<ifdef code="ca_objects.manufacture_display_date|ca_objects.manufacture_date"><div class="col-sm-6"><div class="unit"><H6>Date</H6>^ca_objects.manufacture_display_date<ifdef code="ca_objects.manufacture_display_date,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</div></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.season_list|ca_objects.manufacture_date"><div class="col-sm-6"><div class="unit"><H6>Date</H6>^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</div></div></ifdef>}}}
 					{{{<ifdef code="ca_objects.launch_display_date|ca_objects.launch_date.launch_date_value"><div class="col-sm-6"><div class="unit"><H6>Launch Date</H6>^ca_objects.launch_display_date<ifdef code="ca_objects.launch_display_date,ca_objects.launch_date.launch_date_value"> </ifdef>^ca_objects.launch_date.launch_date_value</div></div></ifdef>}}}
 <?php
 					if($vb_close_row){
 						print "</div>";
 					}
 ?>
-					{{{<ifdef code="ca_objects.marketing|ca_objects.manufacture_display_date|ca_objects.manufacture_date|ca_objects.launch_display_date|ca_objects.launch_date.launch_date_value"><HR></ifdef>}}}
+					{{{<ifdef code="ca_objects.marketing|ca_objects.season_list|ca_objects.manufacture_date|ca_objects.launch_display_date|ca_objects.launch_date.launch_date_value"><HR></ifdef>}}}
 					{{{<if rule="^ca_objects.type_id !~ /Component/">
 						<ifdef code="ca_objects.price"><div class="unit"><H6>Sold for</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.price</unit></div></ifdef>
 						<ifdef code="ca_objects.packaging"><div class="unit"><H6>Packaging Note</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.packaging</unit></div></ifdef>
 					</if>}}}
+					
 <?php
+					$va_entities = $t_object->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					if(is_array($va_entities) && sizeof($va_entities)){
+						$va_entities_by_type = array();
+						$va_entities_sort = array();
+						foreach($va_entities as $va_entity){
+							$va_entities_sort[$va_entity["relationship_typename"]][] = $va_entity["displayname"];	
+						}
+						foreach($va_entities_sort as $vs_entity_type => $va_entities_by_type){
+							print "<div class='unit'><H6>".ucfirst($vs_entity_type)."</H6>";
+							print join(", ", $va_entities_by_type);
+							print "</div>";
+						}					
+						print "<hr/>";
+					}
 					$vb_notes_output = false;
 					$va_notes_filtered = array();
 					$va_notes = $t_object->get("ca_objects.object_notes", array("returnWithStructure" => true, "convertCodesToDisplayText" => true));
@@ -172,7 +201,7 @@
 						if($vs_shade || $vs_fragrance){
 							$vs_caption .= ". ";
 						}
-						if($vs_man_date = trim($t_parent->get("ca_objects.manufacture_display_date")." ".$t_parent->get("ca_objects.manufacture_date"))){
+						if($vs_man_date = trim($t_parent->get("ca_objects.season_list")." ".$t_parent->get("ca_objects.manufacture_date"))){
 							$vs_caption .= $vs_man_date." ";
 						}
 						if($vs_product_code = $t_parent->get("ca_objects.codes.product_code")){
@@ -269,7 +298,7 @@
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
 							}
 							$vs_caption .= "<b>".$qr_related->get('ca_objects.preferred_labels')."</b>";
-							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.manufacture_display_date|ca_objects.manufacture_date">^ca_objects.manufacture_display_date<ifdef code="ca_objects.manufacture_display_date,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
 								$vs_caption .= " (".$vs_tmp.")";
 							}
 							print caDetailLink($this->request, $vs_caption, '', 'ca_objects', $qr_related->get('ca_objects.object_id'));

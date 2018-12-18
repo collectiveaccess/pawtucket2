@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-1 " >
-			<h1>Advanced Reference Search <small>or search <?php print caNavLink($this->request, 'provenance', '', 'Search', 'advanced', 'provenance');?>, <?php print caNavLink($this->request, 'exhibitions', '', 'Search', 'advanced', 'exhibitions');?>, or <?php print caNavLink($this->request, 'works', '', 'Search', 'advanced', 'artworks');?></small></h1>
+			<h1>Advanced Search–References <small>or search <?php print caNavLink($this->request, 'Works', '', 'Search', 'advanced', 'artworks');?>, <?php print caNavLink($this->request, 'Provenance', '', 'Search', 'advanced', 'provenance');?>, or <?php print caNavLink($this->request, 'Exhibitions', '', 'Search', 'advanced', 'exhibitions');?></small></h1>
 
 <p>{{{advText}}}</p>
 

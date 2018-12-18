@@ -66,7 +66,9 @@
 	$va_browse_type_info = $o_config->get($va_browse_info["table"]);
 	$va_all_facets = $va_browse_type_info["facets"];	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-	
+	if($vs_table == "ca_entities"){	
+		$vs_result_col_class = "col-sm-12";
+	}
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class='containerWrapper'>
@@ -92,6 +94,7 @@ if (!$vb_ajax) {	// !ajax
 					print "</ul></H5>\n";
 				}
 			}
+		if($vs_table != "ca_entities"){
 ?>
 		<H1>
 <?php
@@ -153,6 +156,14 @@ if (!$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
+<?php
+	}else{
+		print "<H1>Contributor Map</H1>";
+		if($vs_contributor_map_intro = $this->getVar("contributor_map_intro")){
+			print "<p>".$vs_contributor_map_intro."</p>";
+		}
+	}
+?>
 		<H5>
 <?php
 		if (sizeof($va_criteria) > 0) {
@@ -234,6 +245,9 @@ if (!$vb_ajax) {	// !ajax
 		</div><!-- end row -->
 		</form>
 	</div><!-- end col-8 -->
+<?php
+	if($vs_table != "ca_entities"){
+?>
 	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
 		<div id="bViewButtons">
 <?php
@@ -252,7 +266,9 @@ if (!$vb_ajax) {	// !ajax
 		print $this->render("Browse/browse_refine_subview_html.php");
 ?>			
 	</div><!-- end col-2 -->
-	
+<?php
+	}
+?>	
 	
 </div><!-- end row -->	
 </div>

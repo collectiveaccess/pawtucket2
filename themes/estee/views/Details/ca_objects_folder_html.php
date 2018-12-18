@@ -33,6 +33,8 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -55,15 +57,37 @@
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
 						print $vs_rep_viewer;
-						print "<H6>Media may not be used, published or distributed without prior authorization.</H6>";
+						$vs_use_statement = trim($t_object->get("ca_objects.use_statement"));
+						if(!$vs_use_statement){
+							$vs_use_statement = $this->getVar("use_statement");
+						}
+						print "<H6>".$vs_use_statement."</H6>";
+?>
+						<script type="text/javascript">
+							jQuery(document).ready(function() {
+								$('.dlButton').on('click', function () {
+									return confirm('<?php print $vs_use_statement; ?>');
+								});
+							});
+						</script>
+<?php
 					}else{
 						if(strToLower($t_object->get("type_id", array("convertCodesToDisplayText" => true))) == "archival folder"){
 							# --- folder
 							# -- yes no values are switched in this configuration :(
+							$vs_folder_icon = "";
+							if($t_object->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values))){
+								$vs_folder_icon = "<span class='glyphicon glyphicon-folder-open'>";
+							}else{
+								$vs_folder_icon = "<span class='glyphicon glyphicon-folder-close'>";
+							}
 							if(strToLower($t_object->get("completely_digitized", array("convertCodesToDisplayText" => true))) != "no"){
-								print "<div class='detailArchivalPlaceholder'><span class='glyphicon glyphicon-folder-open'></span>";
-								print "<br/><small>The contents of this folder are not fully digitized</small></div>";
-								print "<br/><div class='detailTool text-center'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Scan Of Full Contents of Folder", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'digitizationRequest'))."</div>";
+								print "<div class='detailArchivalPlaceholder'>".$vs_folder_icon."</span>";
+								print "<br/><small>The full contents of this folder have not been digitized</small></div>";
+								print "<br/><div class='detailTool text-center'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Scan Of Full Contents of Folder", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'folderScanRequest'))."</div>";
+							}else{
+								print "<div class='detailArchivalPlaceholder'>".$vs_folder_icon."</span>";
+								print "<br/><small>The full contents of this folder have been digitized</small></div>";
 							}
 						}else{
 							print "<div class='detailArchivalPlaceholder'><span class='glyphicon glyphicon-file'></span></div>";
@@ -92,7 +116,23 @@
 					{{{<ifdef code="ca_objects.preferred_labels.name"><H4 class="mainTitle">^ca_objects.preferred_labels.name</H4></ifdef>}}}
 					<HR>
 					{{{<ifdef code="ca_objects.manufacture_date"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></div></ifdef>}}}
+
 <?php
+					$va_entities = $t_object->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					if(is_array($va_entities) && sizeof($va_entities)){
+						$va_entities_by_type = array();
+						$va_entities_sort = array();
+						foreach($va_entities as $va_entity){
+							$va_entities_sort[$va_entity["relationship_typename"]][] = $va_entity["displayname"];	
+						}
+						foreach($va_entities_sort as $vs_entity_type => $va_entities_by_type){
+							print "<div class='unit'><H6>".ucfirst($vs_entity_type)."</H6>";
+							print join(", ", $va_entities_by_type);
+							print "</div>";
+						}					
+						print "<hr/>";
+					}
+					
 					$vb_notes_output = false;
 					$va_notes_filtered = array();
 					$va_notes = $t_object->get("ca_objects.general_notes", array("returnWithStructure" => true, "convertCodesToDisplayText" => true));
@@ -111,13 +151,13 @@
 							$vb_notes_output = true;
 						}
 					}
-					if($vb_notes_output || $t_object->get("ca_objects.manufacture_date")){
+					if($vb_notes_output){
 						print "<HR/>";
 					}
 
 					#  parent - displayed as collection hierarchy and folder if available
-					$vs_collection_hier = $t_object->getWithTemplate('<ifcount min="1" code="ca_collections.related"><unit relativeTo="ca_collections.related"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></unit></ifcount>');	
-					if ($vn_parent_object_id = $t_object->get('ca_objects.parent_id')) {
+					$vs_collection_hier = $t_object->getWithTemplate('<ifcount min="1" code="ca_collections.related"><unit relativeTo="ca_collections.related"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></unit></ifcount>', array("checkAccess" => $va_access_values));	
+					if ($vn_parent_object_id = $t_object->get('ca_objects.parent_id', array("checkAccess" => $va_access_values))) {
 						$t_parent = new ca_objects($vn_parent_object_id);
 						$vs_caption = "";
 						$vs_caption .= $t_parent->get("ca_objects.preferred_labels");
@@ -127,13 +167,13 @@
 						$vs_parent_folder = caDetailLink($this->request, $vs_caption, '', 'ca_objects', $t_parent->get('ca_objects.object_id'));
 					}
 					if($vs_collection_hier || $vs_parent_folder){
-						print "<div class='parentObject'><h6>This ".$t_object->get('ca_objects.type_id', array("convertCodesToDisplayText" => true))." Is Part Of</h6>";
+						print "<div class='unit parentObject'><h6>This ".$t_object->get('ca_objects.type_id', array("convertCodesToDisplayText" => true))." Is Part Of</h6>";
 						print $vs_collection_hier;
 						if($vs_parent_folder && $vs_collection_hier){
 							print " > "; 
 						}
 						print $vs_parent_folder;
-						print "</div>";
+						print "</div><HR/>";
 					}
 					
 					# --- collection parent display
@@ -144,7 +184,7 @@
 				
 					if ($va_child_object_ids = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						$qr_children = caMakeSearchResult('ca_objects', $va_child_object_ids);
-						print "<div class='childObjects'><h4>Folder Contents</h4><br/>";
+						print "<div class='unit childObjects'><h4>Folder Contents</h4><br/>";
 						$va_child_info_fields = array("shade", "fragrance", "codes.product_code");
 						if($qr_children->numHits()){
 							while ($qr_children->nextHit()) {
@@ -170,10 +210,10 @@
 								print "</div></div>";
 							}
 						}
-						print "</div>";
+						print "</div><hr/>";
 					}
 					if ($vn_pdf_enabled) {
-						print "<hr/><div class='detailTools'><div class='detailTool'><span class='glyphicon glyphicon-download'></span>".caDetailLink($this->request, "Download Summary", "", "ca_objects", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div></div>";
+						print "<div class='detailTools'><div class='detailTool'><span class='glyphicon glyphicon-download'></span>".caDetailLink($this->request, "Download Summary", "", "ca_objects", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div></div>";
 					}
 	?>
 				</div><!-- end col -->
@@ -209,7 +249,7 @@
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
 							}
 							$vs_caption .= "<b>".$qr_related->get('ca_objects.preferred_labels')."</b>";
-							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.manufacture_display_date|ca_objects.manufacture_date">^ca_objects.manufacture_display_date<ifdef code="ca_objects.manufacture_display_date,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
 								$vs_caption .= " (".$vs_tmp.")";
 							}
 							print caDetailLink($this->request, $vs_caption, '', 'ca_objects', $qr_related->get('ca_objects.object_id'));

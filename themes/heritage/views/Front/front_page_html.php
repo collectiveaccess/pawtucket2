@@ -142,7 +142,7 @@
 				}(document, 'script', 'facebook-jssdk'));</script>
 
 			 <div class="pull-right">
-			 	&nbsp;&nbsp;<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+			 	&nbsp;&nbsp;<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false"><i class="fa fa-twitter fa-3x" aria-hidden="true"></i></a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 			 </div>
 			 <div class="pull-right">
 				  <div class="fb-share-button" 
@@ -227,7 +227,7 @@
 							}else{
 								$vs_card_buf.= "<div class='frontTimelineCardFullCol'>".$va_event["medium"][0]."</div>";
 							}
-							$vs_card_buf.= "<div class='frontTimelineCardFullCol'><div class='frontTimelineCardFullDesc'>".htmlentities($va_event["public_description"])."</div><!-- end desc--></div><!-- end fullcol -->";
+							$vs_card_buf.= "<div class='frontTimelineCardFullCol'><div class='frontTimelineCardFullDesc'>".htmlentities(strip_tags($va_event["public_description"]))."</div><!-- end desc--></div><!-- end fullcol -->";
 							$vs_card_buf.= "</div><!-- end frontTimelineCardFull -->";
 ?>						
 							<div class="frontTimelineCard" data-toggle="popover"  tabindex="0" data-trigger="click" data-html="true" <?php print ( $i > 3 ? 'data-placement="left"' : 'data-placement="right"') ;?>data-content="<?php print htmlentities($vs_card_buf);?>">
@@ -325,6 +325,8 @@
 	}
 	Session::setVar('visited', true);
 ?>
+
+		<div style="height:200px"></div>
 <script>
 	jQuery(document).ready(function() { 		
 		$('#welcomeMessage').fadeIn(1000);
