@@ -73,13 +73,14 @@
 			$vn_c = 0;
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
-			
+			$vn_col = 0;
 			while($qr_res->nextHit()) {
 				if($vn_c == $vn_hits_per_block){
 					if($vb_row_id_loaded){
 						break;
 					}else{
 						$vn_c = 0;
+						$vn_col = 0;
 					}
 				}
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
@@ -87,8 +88,9 @@
 					$vb_row_id_loaded = true;
 				}
 				
-				
-				
+				if($vn_col == 0){
+					print "<div class='row display-flex'>";
+				}
 				
 				
 				# --- if sort is date, get the date as a year so you can display a year heading
@@ -133,9 +135,16 @@
 					print $vs_result_output;
 				}				
 				$vn_c++;
+				$vn_col++;
 				$vn_results_output++;
+				if($vn_col == 4){
+					print "</div><!-- end row -->";
+					$vn_col = 0;
+				}
 			}
-			
+			if($vn_col > 0){
+				print "</div><!-- end row -->";
+			}
 			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
 		}
 ?>

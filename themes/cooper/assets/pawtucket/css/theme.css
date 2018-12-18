@@ -893,9 +893,24 @@ body.initial .navbar-form {
 	height:600px;
 	object-fit:contain;
 }
+/*
+.detail #detailObjectImageLarge{
+	display:table-cell;
+	width:100%;
+	vertical-align:middle;
+	text-align:center;
+}*/
+.detail #detailObjectImageLarge{
+	text-align:center;
+}
 @media(min-width:768px){
 	.detail #detailObjectImageLarge{
 		height:526px;
+	}
+	#detailObjectImageLarge img{
+		width:100%;
+		height:526px;
+		object-fit:contain;
 	}
 }
 .detail .navTop {
@@ -941,6 +956,15 @@ body.initial .navbar-form {
 		padding-left:21%;
 	}
 }*/
+@media (max-width: 768px) {
+	.detail .zoomButton{
+		pointer-events: none;
+		cursor: default;
+	}
+	.detail .zoomButton .glyphicon{
+		display:none;
+	}
+}
 .detail .detailImageNav{
 	position:relative;
 	z-index:500;
@@ -1234,6 +1258,10 @@ body.initial .navbar-form {
     text-align:left;
     border:0px;
 }
+.browse .btn.responsiveFilter, .search .btn.responsiveFilter{
+	width:auto;
+	margin-top:-10px;
+}
 .search .btn:hover, .browse .btn:hover, .sets .btn:hover {
     border:0px;
 }
@@ -1269,6 +1297,8 @@ body.initial .navbar-form {
 	font-size:15px;
 	font-family: 'Gotham-light';
 	line-height:1.8em;
+/*	max-height: 1.8em;
+	overflow: hidden; */
 }
 .bResultLetterDivide{
 	font-size:22px;
