@@ -1394,6 +1394,10 @@ body.initial .navbar-form {
     border-bottom: 1px solid #939598;
     margin-right: 15px;
 }
+.courseEntityListOverflow{
+	max-height:600px;
+	overflow-y:auto;
+}
 @media(max-width:768px){
 	.browse .textsList {
 		margin-right: 0px;
@@ -1402,6 +1406,12 @@ body.initial .navbar-form {
 	.textsList .grey{
 		display:block;
 		line-height:1.3em;
+	}
+}
+@media(max-width:992px){
+	.courseEntityListOverflow{
+		max-height:400px;
+		overflow-y:auto;
 	}
 }
 .courseEntityListScroll, .textsListScroll{
@@ -1464,6 +1474,9 @@ div.caMediaOverlayControls{
 }
 #app{
 	background-color: #211f1f !important;
+}
+.tileviewerControlZoomOut, .tileviewerControlZoomIn, .tileviewerControlZoomOut:hover, .tileviewerControlZoomIn:hover{
+	color:#FFF;
 }
 .staticPage {
 	font-size:14px;

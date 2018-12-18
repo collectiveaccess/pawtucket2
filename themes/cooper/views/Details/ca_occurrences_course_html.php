@@ -49,7 +49,9 @@
 			<div class="row courseEntityList">
 				<div class='col-sm-12'>
 					<H5>Faculty <span class="grey"> / <?php print $qr_faculty->numHits()." ".(($qr_faculty->numHits() == 1) ? "person" : "people"); ?></span></H5>
-				</div>	
+				</div>
+				<div class="col-sm-12">
+					<div class="row courseEntityListOverflow">
 <?php
 			// foreach($va_faculty as $va_entity){
 // 				$vs_surname = $va_entity["surname"];
@@ -68,6 +70,8 @@
 				print "</div>";
 			}
 ?>					
+					</div>
+				</div>
 			</div><!-- end row -->
 			<div class="container"><div class="row">
 				<div class="col-xs-12 border"></div>
