@@ -97,9 +97,17 @@
                 #if ($vs_library_title = $t_object->get('ca_objects.nonpreferred_labels')){
                 #    print "<div class='unit'><h5>Library Title</h5>".$vs_library_title."</div>";
                 #}
-
-				if ($va_place = $t_object->get('ca_places.hierarchy.preferred_labels', array('delimiter' => ' ➔ ', 'returnAsArray' => true))) {
-					print "<div class='unit'><h5>Place of Origin</h5>".join(" and ", $va_place)."</div>";
+				if ($va_places = $t_object->get('ca_places.hierarchy.preferred_labels', array('returnWithStructure' => true))) {
+					$va_place_hiers = array();
+					foreach($va_places as $va_place){
+						$va_tmp = array();
+						foreach($va_place as $va_place_info){
+							$va_place_info = array_pop($va_place_info);
+							$va_tmp[] = $va_place_info["name"];
+						}
+						$va_place_hiers[] = join(" ➔ ", $va_tmp);
+					}
+					print "<div class='unit'><h5>Place of Origin</h5>".join("<br/>", $va_place_hiers)."</div>";
 				}
 				if ($va_date = $t_object->get('ca_objects.date_composition')) {
 					print "<div class='unit'><h5>Date of Composition</h5>".$va_date."</div>";

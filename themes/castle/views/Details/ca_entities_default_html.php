@@ -3,6 +3,8 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -32,7 +34,7 @@
 				if ($va_dates = $t_item->get('ca_entities.dates_active')) {
 					print "<div class='unit'><h6>Dates Active</h6>".$va_dates."</div>";
 				}
-				if ($va_lifetime = $t_item->get('ca_entities.lifespan')) {
+				if ($va_lifetime = $t_item->get('ca_entities.life_dates')) {
 					print "<div class='unit'><h6>Lifetime</h6>".$va_lifetime."</div>";
 				}
 				if ($va_address = $t_item->getWithTemplate('<ifcount min="1" code="ca_entities.address"><ifdef code="ca_entities.address.address1">^ca_entities.address.address1<br/></ifdef><ifdef code="ca_entities.address.address2">^ca_entities.address.address2<br/></ifdef><ifdef code="ca_entities.address.city">^ca_entities.address.city, </ifdef><ifdef code="ca_entities.address.stateprovince">^ca_entities.address.stateprovince </ifdef><ifdef code="ca_entities.address.country">^ca_entities.address.country</ifdef></ifcount>')) {
@@ -57,6 +59,7 @@
 					
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
+					{{{representationViewer}}}
 					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
 					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
@@ -74,7 +77,7 @@
 					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}				
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>

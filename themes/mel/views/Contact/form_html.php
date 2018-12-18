@@ -16,7 +16,7 @@
     </div>
     <hr/>
 <?php
-	if(sizeof($va_errors["display_errors"])){
+	if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
 ?>

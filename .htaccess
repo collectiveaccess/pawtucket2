@@ -4,6 +4,10 @@
 	<IfModule mod_env.c>
 		SetEnv HTTP_MOD_REWRITE On
 	</IfModule>
+
+    RewriteRule ^archives /About/archives [R,L]
+    RewriteRule ^oralhistory /Listing/oralhistory [R,L]
+    RewriteRule ^specialcollections /Collections/index [R,L]
 	
 	# Pass all requests not referring directly 
 	# to files in the filesystem to index.php.

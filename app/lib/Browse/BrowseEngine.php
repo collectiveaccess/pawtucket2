@@ -3050,6 +3050,11 @@
 					if(is_array($va_label_ui_fields) && sizeof($va_label_ui_fields)) {
 					    $va_label_ui_fields = array_map(function($v) { return "l.{$v}"; }, $va_label_ui_fields);
 					}
+					
+					foreach($va_label_ui_fields as $x) {
+					    if (!in_array($x, $va_label_order_by_fields)) { $va_label_order_by_fields[] = $x; }
+					}
+					
 
 					$vs_where_sql = $vs_join_sql = '';
 					$vb_needs_join = false;
@@ -3154,13 +3159,15 @@
 
 						return ((int)$qr_res->numRows() > 0) ? true : false;
 					} else {
-						$vs_parent_fld_select = (($vs_parent_fld = $t_item->getProperty('HIERARCHY_PARENT_ID_FLD')) ? ", ".$vs_browse_table_name.".".$vs_parent_fld : '');
+						$vs_parent_fld_select = (($vs_parent_fld = $t_item->getProperty('HIERARCHY_PARENT_ID_FLD')) ? $vs_browse_table_name.".".$vs_parent_fld : '');
+						
+						$group_by_fields = array_unique(array_merge($va_label_order_by_fields, $va_label_ui_fields, ["l.{$vs_label_display_field}", $vs_parent_fld_select, "l.locale_id", "l.{$vs_item_pk}"]));
 						$vs_sql = "
-							SELECT COUNT(*) as _count, l.locale_id, l.{$vs_label_display_field} {$vs_parent_fld_select}, l.{$vs_item_pk}".((sizeof($va_label_ui_fields) > 0) ? ", ".join(", ", $va_label_ui_fields) : "")."
+							SELECT COUNT(*) as _count, l.locale_id, l.{$vs_label_display_field} ".($vs_parent_fld_select ? ", {$vs_parent_fld_select}" : "").", l.{$vs_item_pk}".((sizeof($va_label_ui_fields) > 0) ? ", ".join(", ", $va_label_ui_fields) : "")."
 							FROM {$vs_label_table_name} l
 								{$vs_join_sql}
 								{$vs_where_sql}
-							GROUP BY l.{$vs_label_display_field} {$vs_parent_fld_select}, l.locale_id, l.{$vs_item_pk}".((sizeof($va_label_order_by_fields) > 0) ? ", ".join(", ", $va_label_order_by_fields) : "")."
+							GROUP BY ".join(", ", $group_by_fields)."
 							ORDER BY ".((sizeof($va_label_order_by_fields) > 0) ? join(", ", $va_label_order_by_fields) : "l.{$vs_label_display_field}")."
 						";
 
@@ -4063,10 +4070,9 @@
 								);
 
 
-								$vs_display_field_name = null;
+								$vs_display = caGetOption('display', $va_facet_info, "^".$t_browse_table->tableName().".preferred_labels");
 								if (method_exists($t_browse_table, 'getLabelTableInstance')) {
 									$t_label_instance = $t_browse_table->getLabelTableInstance();
-									$vs_display_field_name = (isset($va_facet_info['display']) && $va_facet_info['display']) ? $va_facet_info['display'] : $t_label_instance->getDisplayField();
 									$va_joins[] = 'INNER JOIN '.$t_label_instance->tableName()." AS lab ON lab.".$t_browse_table->primaryKey().' = '.$t_browse_table->tableName().'.'.$t_browse_table->primaryKey();
 								}
 
@@ -4132,25 +4138,29 @@
 									return ((int)$qr_res->numRows() > 0) ? true : false;
 								} else {
 									$vs_sql = "
-										SELECT COUNT(*) _count,  *
+										SELECT COUNT(*) _count, ".$t_browse_table->primaryKey(true)."
 										FROM {$vs_facet_table}
 
 										{$vs_join_sql}
 										{$vs_where_sql}
-									    GROUP BY {$vs_facet_table}.{$vs_display_field_name}
+									    GROUP BY ".$t_browse_table->primaryKey(true)."
 									";
 									//print $vs_sql;
 									$qr_res = $this->opo_db->query($vs_sql);
 
 									$va_values = array();
 									$vs_pk = $t_browse_table->primaryKey();
+									
+									$values = caProcessTemplateForIDs($vs_display, $t_browse_table->tableName(), $qr_res->getAllFieldValues($vs_pk), ['returnAsArray' => true, 'indexWithIDs' => true]);
+									
+									$qr_res->seek(0);
 									while($qr_res->nextRow()) {
 										$vn_id = $qr_res->get($vs_pk);
 										if ($va_criteria[$vn_id]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 
 										$va_values[$vn_id][$qr_res->get('locale_id')] = array(
 											'id' => $vn_id,
-											'label' => $qr_res->get($vs_display_field_name),
+											'label' => isset($values[$vn_id]) ? $values[$vn_id] : "???", //$qr_res->get($vs_display_field_name),
 									        'content_count' => $qr_res->get('_count')
 										);
 										if (!is_null($vs_single_value) && ($vn_id == $vs_single_value)) {
@@ -4289,7 +4299,7 @@
 							{$vs_join_sql}
 							WHERE
 								{$vs_where_sql}
-						    GROUP BY {$vs_browse_table_name}.{$vs_field_name}
+						    GROUP BY {$vs_browse_table_name}.{$vs_field_name}".($vs_sort_field ? ", {$vs_sort_field}" : "")."
 						";
 						if($vs_sort_field) {
 							$vs_sql .= " ORDER BY {$vs_sort_field}";
@@ -5829,7 +5839,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 			$vs_pk = $t_item->primaryKey();
 			$vs_label_display_field = null;
 
-			if(sizeof($va_results =  $this->opo_ca_browse_cache->getResults())) {
+			if(is_array($va_results =  $this->opo_ca_browse_cache->getResults()) && sizeof($va_results)) {
 				if ($vb_will_sort) {
 					$va_results = $this->sortHits($va_results, $this->ops_browse_table_name, $vs_sort, $vs_sort_direction);
 
