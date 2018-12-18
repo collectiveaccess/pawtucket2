@@ -73,20 +73,20 @@
 			$vn_c = 0;
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
-			$vn_col = 0;
+			
 			while($qr_res->nextHit()) {
 				if($vn_c == $vn_hits_per_block){
 					if($vb_row_id_loaded){
 						break;
 					}else{
 						$vn_c = 0;
-						$vn_col = 0;
 					}
 				}
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				if($vn_id == $vn_row_id){
 					$vb_row_id_loaded = true;
 				}
+				
 				
 				
 				
@@ -99,10 +99,6 @@
 					if($vs_letter && ($vs_letter != Session::getVar('lastLetter'))){
 						Session::setVar('lastLetter', $vs_letter);
 						$vb_show_letter = true;
-						if($vn_col > 0){
-							print "</div></div>";
-						}
-						$vn_col = 0;
 					}
 				}			
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
@@ -113,9 +109,7 @@
 					print "<div class='col-xs-12' style='clear:left'><br/><div class='bResultLetterDivide'>".Session::getVar('lastLetter')."</div></div>";
 				}
 				
-				if($vn_col == 0){
-					print "<div class='container'><div class='row display-flex'>";
-				}
+				
 				
 				
 				# --- check if this result has been cached
@@ -139,16 +133,11 @@
 					print $vs_result_output;
 				}				
 				$vn_c++;
-				$vn_col++;
 				$vn_results_output++;
-				if($vn_col == 4){
-					print "</div><!-- end row --></div><!-- end container -->";
-					$vn_col = 0;
-				}
 			}
-			if($vn_col > 0){
-				print "</div><!-- end row --></div><!-- end container -->";
-			}
-			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
+			
+			#print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
+			print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
+		
 		}
 ?>
