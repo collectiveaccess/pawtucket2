@@ -37,6 +37,11 @@
 	$t_list = new ca_lists();
 	$vs_yes = $t_list->getItemIDFromList("yn", "yes");
 	$vs_no = $t_list->getItemIDFromList("yn", "no");
+	
+	$vs_can_see_financials = false;
+	if ($this->request->user->hasUserRole("dj") | $this->request->user->hasUserRole("purchasing")) {
+		$vs_can_see_financials = true;
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
