@@ -57,7 +57,6 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_collections.parent_id"><div class='unit'><H6>Location in Collection</H6><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
 				
 <?php				
 					if ($va_dates = $t_item->get('ca_collections.unitdate', array('convertCodesToDisplayText' => true, 'returnWithStructure' => true))) {

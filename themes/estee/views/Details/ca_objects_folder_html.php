@@ -75,10 +75,19 @@
 						if(strToLower($t_object->get("type_id", array("convertCodesToDisplayText" => true))) == "archival folder"){
 							# --- folder
 							# -- yes no values are switched in this configuration :(
+							$vs_folder_icon = "";
+							if($t_object->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values))){
+								$vs_folder_icon = "<span class='glyphicon glyphicon-folder-open'>";
+							}else{
+								$vs_folder_icon = "<span class='glyphicon glyphicon-folder-close'>";
+							}
 							if(strToLower($t_object->get("completely_digitized", array("convertCodesToDisplayText" => true))) != "no"){
-								print "<div class='detailArchivalPlaceholder'><span class='glyphicon glyphicon-folder-open'></span>";
+								print "<div class='detailArchivalPlaceholder'>".$vs_folder_icon."</span>";
 								print "<br/><small>The full contents of this folder have not been digitized</small></div>";
 								print "<br/><div class='detailTool text-center'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Scan Of Full Contents of Folder", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'folderScanRequest'))."</div>";
+							}else{
+								print "<div class='detailArchivalPlaceholder'>".$vs_folder_icon."</span>";
+								print "<br/><small>The full contents of this folder have been digitized</small></div>";
 							}
 						}else{
 							print "<div class='detailArchivalPlaceholder'><span class='glyphicon glyphicon-file'></span></div>";

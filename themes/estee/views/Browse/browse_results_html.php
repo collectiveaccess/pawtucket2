@@ -72,7 +72,7 @@
 	
 if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
-<div class="row <?php print ($vb_show_filter_panel) ? "catchLinks" : ""; ?>" style="clear:both;">
+<div class="row" style="clear:both;">
 	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 <?php 
 			if($vs_sort_control_type == 'list'){
@@ -101,7 +101,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>		
 			<div class="btn-group">
 				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear"></i></a>
-				<ul class="dropdown-menu" role="menu">
+				<ul class="dropdown-menu <?php print ($vb_show_filter_panel) ? "catchLinks" : ""; ?>" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
 						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
@@ -155,7 +155,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
-		<H5>
+		<H5 <?php print ($vb_show_filter_panel) ? "class=' catchLinks'" : ""; ?>>
 <?php
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
@@ -238,7 +238,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 		</div><!-- end row -->
 		</form>
 	</div><!-- end col-8 -->
-	<div class="col-sm-3">
+	<div class="col-sm-3 <?php print ($vb_show_filter_panel) ? "catchLinks" : ""; ?>">
 		<div id="bViewButtons">
 <?php
 		if(!$vb_show_filter_panel){
