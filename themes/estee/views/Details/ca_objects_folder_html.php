@@ -52,7 +52,7 @@
 <?php
 					print '<div id="detailTools">';
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About this Item", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'inquiry'))."</div>";
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
+					print "<div class='detailTool'><span class='glyphicon glyphicon-bookmark'></span><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
 				
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
@@ -77,9 +77,9 @@
 							# -- yes no values are switched in this configuration :(
 							$vs_folder_icon = "";
 							if($t_object->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values))){
-								$vs_folder_icon = "<span class='glyphicon glyphicon-folder-open'>";
+								$vs_folder_icon = "<i class='fa fa-files-o'></i><span class='glyphicon glyphicon-folder-open'></span>";
 							}else{
-								$vs_folder_icon = "<span class='glyphicon glyphicon-folder-close'>";
+								$vs_folder_icon = "<span class='glyphicon glyphicon-folder-open'></span>";
 							}
 							if(strToLower($t_object->get("completely_digitized", array("convertCodesToDisplayText" => true))) != "no"){
 								print "<div class='detailArchivalPlaceholder'>".$vs_folder_icon."</span>";
