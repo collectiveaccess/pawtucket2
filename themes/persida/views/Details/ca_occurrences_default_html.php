@@ -3,6 +3,7 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$vn_id = $t_item->get('ca_occurrences.occurrence_id');
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -39,7 +40,7 @@
 					if ($vs_venue = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue'), 'returnAsLink' => true))) {
 						print "<div class='unit'><h6>Venue</h6>".$vs_venue."</div>";
 					}
-					if ($vs_entities = $t_item->get('ca_entities.preferred_labels', array('excludeRelationshipTypes' => array('venue'), 'returnAsLink' => true))) {
+					if ($vs_entities = $t_item->get('ca_entities.preferred_labels', array('excludeRelationshipTypes' => array('venue'), 'returnAsLink' => true, 'delimiter' => ', '))) {
 						print "<div class='unit'><h6>Related People & Organizations</h6>".$vs_entities."</div>";
 					}					
 					if ($vs_travel = $t_item->get('ca_occurrences.traveling_yn', array('convertCodesToDisplayText' => true))) {
@@ -66,6 +67,9 @@
 ?>	
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
+<?php
+					print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_occurrences",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
+?>				
 					{{{representationViewer}}}
 				</div><!-- end col -->
 			</div><!-- end row -->

@@ -65,7 +65,11 @@
 				if ($va_related_object = $t_object->get('ca_objects.related.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Related Artworks</h6>".$va_related_object."</div>";
 				}							
-?>
+
+				if ($vn_pdf_enabled) {
+					print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
+				}
+?>					
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
