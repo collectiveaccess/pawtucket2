@@ -37,6 +37,11 @@
 	$t_list = new ca_lists();
 	$vs_yes = $t_list->getItemIDFromList("yn", "yes");
 	$vs_no = $t_list->getItemIDFromList("yn", "no");
+	
+	$vs_can_see_financials = false;
+	if ($this->request->user->hasUserRole("dj") | $this->request->user->hasUserRole("purchasing")) {
+		$vs_can_see_financials = true;
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -60,7 +65,11 @@
 				if ($va_related_object = $t_object->get('ca_objects.related.preferred_labels', array('returnAsLink' => true, 'delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Related Artworks</h6>".$va_related_object."</div>";
 				}							
-?>
+
+				if ($vn_pdf_enabled) {
+					print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
+				}
+?>					
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>

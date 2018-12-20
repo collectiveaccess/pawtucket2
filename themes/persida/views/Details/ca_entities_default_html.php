@@ -2,7 +2,8 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$vn_share_enabled = 	$this->getVar("shareEnabled");
+	$vn_id = $t_item->get('ca_entities.entity_id');	
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -41,7 +42,7 @@
 				</div><!-- end col -->
 				<div class='col-sm-6 col-md-6 col-lg-6'>
 <?php
-
+					print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_entities",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_entities_summary'))."</div>";
 ?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
