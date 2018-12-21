@@ -71,7 +71,7 @@
 
 						<ul class="list footerList">
 							<li>Project of the Pine Needles Foundation of New York </li>
-							<li>Copyright © 2017 Manuscript Cookbooks Survey</li>
+							<li>Copyright © <?php print date("Y"); ?> Manuscript Cookbooks Survey</li>
 							<li>All Rights Reserved</li>
 							<li>Library Website Design by Acorn Digital Marketing</li>
 							<li>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2017</a></li>
