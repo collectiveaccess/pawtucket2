@@ -46,10 +46,12 @@
 		$qr_faculty = caMakeSearchResult("ca_entities", $va_faculty_ids, array("sort" => "ca_entities.preferred_labels.surname"));
 		if($qr_faculty->numHits()){
 ?>
-			<div class="row courseEntityList display-flex">
+			<div class="row courseEntityList">
 				<div class='col-sm-12'>
 					<H5>Faculty <span class="grey"> / <?php print $qr_faculty->numHits()." ".(($qr_faculty->numHits() == 1) ? "person" : "people"); ?></span></H5>
-				</div>	
+				</div>
+				<div class="col-sm-12">
+					<div class="row courseEntityListOverflow">
 <?php
 			// foreach($va_faculty as $va_entity){
 // 				$vs_surname = $va_entity["surname"];
@@ -68,6 +70,8 @@
 				print "</div>";
 			}
 ?>					
+					</div>
+				</div>
 			</div><!-- end row -->
 			<div class="container"><div class="row">
 				<div class="col-xs-12 border"></div>
@@ -106,7 +110,7 @@
 				}
 				if($vs_texts_output){
 ?>
-					<div class="row textsList display-flex">
+					<div class="row textsList">
 						<div class='col-sm-12'>
 							<H5>Faculty Course Documents <span class="grey"> / <?php print $vn_texts_c." ".(($vn_texts_c == 1) ? "document" : "documents"); ?></span></H5>
 						</div>
@@ -129,10 +133,10 @@
 		if(sizeof($va_rel_projects)){
 ?>
 			<div class="row">
-				<div class="col-sm-10">
+				<div class="col-md-10 col-sm-10">
 					<H1 class="courseProjects">All <?php print $vs_title; ?> <span class='grey'>/ <?php print sizeof($va_rel_projects)." ".((sizeof($va_rel_projects) == 1) ? "project" : "projects"); ?></span></H1>
 				</div>
-				<div class="col-sm-2 text-right">
+				<div class="col-md-2 col-sm-12 text-right">
 					<?php print caNavLink($this->request, _t("See All")." <i class='fa fa-caret-down'></i>", "btn-default", "", "Browse", "projects", array("facet" => "course_facet", "id" => $t_item->get("occurrence_id"))); ?>
 				</div>
 			</div>

@@ -46,7 +46,6 @@
 	<div class="row">
 		<div class='col-md-12'>
 			<h1><?php print $this->getVar("section_name"); ?></h1>
-			<p>{{{collections_intro_text}}}</p>
 <?php
 			#print "<p>Click here for the ".caNavLink($this->request, _t("Manuscript Collections Advanced Search"), "", "Search", "Advanced", "collections").".</p>";
 			if($vs_inventory_text){
@@ -56,6 +55,7 @@
 <?php
 			}
 ?>
+			<p>{{{collections_intro_text}}}</p>
 		</div>
 	</div>
 	<div class="row">

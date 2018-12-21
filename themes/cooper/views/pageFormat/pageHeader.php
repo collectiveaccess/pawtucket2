@@ -195,11 +195,32 @@
 							},function () {
 								$('.heroSlideshow').jcarouselAutoscroll('start');
 							});
+							
+							$(".frontTopSlideCaption").width($(".heroSlideshow").width() - 30);
+							$(".heroSlideshow li").width($(".heroSlideshow").width());
+							if($(".heroSlideshow img").height() > 400){
+								$(".heroContainer").height($(".heroSlideshow img").height() + 45);
+								$(".heroContainer .heroGradient").height($(".heroSlideshow img").height());
+								$(".frontTopContainer").height($(".heroSlideshow img").height() + 45);
+							}else{
+								$(".heroContainer").height(445);
+								$(".heroContainer .heroGradient").height(400);
+								$(".frontTopContainer").height(445);
+						  }
 						});
-						$(".frontTopSlideCaption").width($(".heroSlideshow").width() - 30);
 					}
 					$( window ).resize(function() {
 					  $(".frontTopSlideCaption").width($(".heroSlideshow").width() - 30);
+					  $(".heroSlideshow li").width($(".heroSlideshow").width());
+					  if($(".heroSlideshow img").height() > 400){
+							$(".heroContainer").height($(".heroSlideshow img").height() + 45);
+					  		$(".heroContainer .heroGradient").height($(".heroSlideshow img").height());
+					  		$(".frontTopContainer").height($(".heroSlideshow img").height() + 45);
+					  }else{
+					  		$(".heroContainer").height(445);
+					  		$(".heroContainer .heroGradient").height(400);
+					  		$(".frontTopContainer").height(445);
+					  }
 					});
 				</script>
 
@@ -272,10 +293,10 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print (strToLower($this->request->getAction()) == "courses") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Course"), "", "", "Listing", "Courses"); ?></li>
+					<li <?php print (strToLower($this->request->getAction()) == "courses") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Courses"), "", "", "Listing", "Courses"); ?></li>
 					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "projects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Projects"), "", "", "Browse", "projects"); ?></li>
 					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "people")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people"); ?></li>
-					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "location")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Location"), "", "", "Browse", "location"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "location")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Locations"), "", "", "Browse", "location"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
@@ -287,14 +308,14 @@
 			if(pos > scrollLimit) {
 				$("body").removeClass("initial");
 				$(".navbar-brand").removeClass("initialLogo");
-				$(".headerText").hide();
+				//$(".headerText").hide();
 			}else {
 				if(!$("body").hasClass("initial")){
 					$("body").addClass("initial");
 				}
 				if(!$(".navbar-brand").hasClass("initialLogo")){
 					$(".navbar-brand").addClass("initialLogo");
-					$(".headerText").show();
+					//$(".headerText").show();
 				}
 			}
 		});

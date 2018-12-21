@@ -71,7 +71,7 @@
 if (!$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
-	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
+	<div class="refineCol <?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
 		<div id="bViewButtons">
 <?php
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
@@ -87,6 +87,7 @@ if (!$vb_ajax) {	// !ajax
 		</div>
 		<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>
 		<div id='bRefine'>
+			<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery("#bRefine").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>
 			<H3>Filter Results By:
 <?php
 			if (sizeof($va_criteria) > 0) {
@@ -110,7 +111,7 @@ if (!$vb_ajax) {	// !ajax
 						$t_authority_table = new $va_current_facet["table"];
 						$t_authority_table->load($va_criterion['id']);
 						$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
-						$vs_facet_img = $t_authority_table->get("ca_object_representations.media.large", array("limit" => 1, "checkAccess" => $va_access_values));
+						$vs_facet_img = $t_authority_table->get("ca_object_representations.media.largesquare", array("limit" => 1, "checkAccess" => $va_access_values));
 						$vs_facet_based_title = $t_authority_table->get("preferred_labels");
 						# --- look for faculty texts
 						$va_faculty_text_object_ids = $t_authority_table->get("ca_objects.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true, "restrictToTypes" => array("faculty_course_document")));
@@ -198,16 +199,23 @@ if (!$vb_ajax) {	// !ajax
 				});
 				//if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
 					var offset = jQuery('#bRefine').height(jQuery(window).height() - 190).offset();   // 0px top + (2 * 15px padding) + 80 (fixed header) + 80 (fixed footer) = 190px
-					var panelWidth = jQuery('#bRefine').width();
+					
 					jQuery(window).scroll(function () {
+						var panelWidth = jQuery('#bRefine').width();
 						var scrollTop = $(window).scrollTop();
 						// check the visible top of the browser
 						if (offset.top<scrollTop && ((offset.top + jQuery('#pageArea').height() - jQuery('#bRefine').height()) > scrollTop)) {
 							jQuery('#bRefine').addClass('fixed');
 							jQuery('#bRefine').width(panelWidth);
 						} else {
-							jQuery('#bRefine').removeClass('fixed');
+							if(jQuery('#bRefine').hasClass('fixed')){
+								jQuery('#bRefine').removeClass('fixed');
+								jQuery('#bRefine').width(jQuery('.refineCol').width() - 30);
+							}
 						}
+					});
+					$( window ).resize(function() {
+						jQuery('#bRefine').width(jQuery('.refineCol').width() - 30);
 					});
 				//}
 			});
@@ -293,20 +301,32 @@ if (!$vb_ajax) {	// !ajax
 <?php
 			if(is_array($va_facets) && sizeof($va_facets)){
 ?>
-			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
+			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><button type="button" class="btn btn-default btn-sm responsiveFilter">Filter By</button></a>
 <?php
 			}
 			if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
 			}
+		if (sizeof($va_criteria) > 0) {
+			$i = 0;
+			print "<div class='responsiveFacetCriteria'>";
+			foreach($va_criteria as $va_criterion) {
+				#print "<strong>".$va_criterion['facet'].':</strong>';
+				print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-remove"></span>'.$va_criterion['value'].' &nbsp;</button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key))." ";
+				$i++;
+			}
+			print "</div>";
+		}
+
 ?>
+		
 		</H1>
 <?php
 		if($vs_facet_description || $vs_fact_img || $vs_faculty_text || (is_array($va_rel_types) && (sizeof($va_rel_types) > 1))){
 			if($vs_facet_description || $vs_fact_img){
 				print "<div class='row bFacetContextHeader'>";
 				if($vs_facet_img){
-					print "<div class='col-md-4 scaleimg'>".$vs_facet_img."</div><div class='col-md-8'>";
+					print "<div class='col-md-4 scaleimg circleImg'>".$vs_facet_img."</div><div class='col-md-8'>";
 				}else{
 					print "<div class='col-md-12'>";
 				}
@@ -315,12 +335,12 @@ if (!$vb_ajax) {	// !ajax
 			
 			if($vs_faculty_text){
 ?>
-				<div class="row textsList display-flex">
+				<div class="row textsList">
 					<div class='col-sm-12'>
 						<H5>Faculty Course Documents <span class="grey"> / <?php print $vn_texts_c." ".(($vn_texts_c == 1) ? "document" : "documents"); ?></span></H5>
 					</div>
 					<div class='col-sm-12'>
-						<div class="row textsListScroll display-flex">
+						<div class="row textsListScroll">
 							<?php print $vs_faculty_text; ?>
 						</div>				
 					</div>
@@ -398,7 +418,7 @@ if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_ke
 	print ExternalCache::fetch($vs_cache_key, 'browse_results');
 }else{
 	$vs_result_page = $this->render("Browse/browse_results_{$vs_current_view}_html.php");
-	ExternalCache::save($vs_cache_key, $vs_result_page, 'browse_results');
+	ExternalCache::save($vs_cache_key, $vs_result_page, 'browse_results', $o_config->get("cache_timeout"));
 	print $vs_result_page;
 }		
 
