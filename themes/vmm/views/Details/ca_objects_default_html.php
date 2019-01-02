@@ -45,7 +45,11 @@
 	
 	$va_breadcrumb = array(caNavLink($this->request, _t("Home"), "", "", "", ""));
 	if(strpos(strToLower($vs_back_url), "detail") === false){
-		$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Archival Items</a>";
+		if(strpos(strToLower($vs_back_url), "gallery") !== false){
+			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Highlights</a>";
+		}else{
+			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Archival Items</a>";
+		}
 		$va_breadcrumb[] = $t_object->get("ca_objects.preferred_labels");
 	}
 ?>
