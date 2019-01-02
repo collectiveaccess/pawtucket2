@@ -223,7 +223,7 @@ if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_ke
 	print ExternalCache::fetch($vs_cache_key, 'browse_results');
 }else{
 	$vs_result_page = $this->render("Browse/browse_results_{$vs_current_view}_html.php");
-	ExternalCache::save($vs_cache_key, $vs_result_page, 'browse_results');
+	ExternalCache::save($vs_cache_key, $vs_result_page, 'browse_results', $o_config->get("cache_timeout"));
 	print $vs_result_page;
 }		
 

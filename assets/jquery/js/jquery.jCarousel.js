@@ -1,12 +1,12 @@
-/*! jCarousel - v0.3.3 - 2015-02-28
+/*! jCarousel - v0.3.9 - 2018-07-30
 * http://sorgalla.com/jcarousel/
-* Copyright (c) 2006-2015 Jan Sorgalla; Licensed MIT */
+* Copyright (c) 2006-2018 Jan Sorgalla; Licensed MIT */
 (function($) {
     'use strict';
 
     var jCarousel = $.jCarousel = {};
 
-    jCarousel.version = '0.3.3';
+    jCarousel.version = '0.3.9';
 
     var rRelativeTarget = /^([+\-]=)?(.+)$/;
 
@@ -231,6 +231,8 @@
 (function($, window) {
     'use strict';
 
+    var $window = $(window);
+
     var toFloat = function(val) {
         return parseFloat(val) || 0;
     };
@@ -239,6 +241,7 @@
         animating:   false,
         tail:        0,
         inTail:      false,
+        resizeState: null,
         resizeTimer: null,
         lt:          null,
         vertical:    false,
@@ -273,12 +276,23 @@
         _init: function() {
             var self = this;
 
+            self.resizeState = $window.width() + 'x' + $window.height();
+
             this.onWindowResize = function() {
                 if (self.resizeTimer) {
                     clearTimeout(self.resizeTimer);
                 }
 
                 self.resizeTimer = setTimeout(function() {
+                    var currentResizeState = $window.width() + 'x' + $window.height();
+
+                    // Check if the window size actually changed.
+                    // iOS might trigger resize events on page scroll.
+                    if (currentResizeState === self.resizeState) {
+                        return;
+                    }
+
+                    self.resizeState = currentResizeState;
                     self.reload();
                 }, 100);
             };
@@ -288,16 +302,16 @@
         _create: function() {
             this._reload();
 
-            $(window).on('resize.jcarousel', this.onWindowResize);
+            $window.on('resize.jcarousel', this.onWindowResize);
         },
         _destroy: function() {
-            $(window).off('resize.jcarousel', this.onWindowResize);
+            $window.off('resize.jcarousel', this.onWindowResize);
         },
         _reload: function() {
             this.vertical = this.options('vertical');
 
             if (this.vertical == null) {
-                this.vertical = this.list().height() > this.list().width();
+                this.vertical = toFloat(this.list().height()) > toFloat(this.list().width());
             }
 
             this.rtl = this.options('rtl');
@@ -385,7 +399,7 @@
                 width;
 
             if (this.rtl && this.relative && !this.vertical) {
-                pos += this.list().width() - this.clipping();
+                pos += toFloat(this.list().width()) - this.clipping();
             }
 
             this.items().each(function() {
@@ -455,10 +469,10 @@
                     (this.tail && this.inTail)) ? true : false;
         },
         clipping: function() {
-            return this._element['inner' + (this.vertical ? 'Height' : 'Width')]();
+            return toFloat(this._element['inner' + (this.vertical ? 'Height' : 'Width')]());
         },
         dimension: function(element) {
-            return element['outer' + (this.vertical ? 'Height' : 'Width')](true);
+            return toFloat(element['outer' + (this.vertical ? 'Height' : 'Width')](true));
         },
         scroll: function(target, animate, callback) {
             if (this.animating) {
@@ -485,9 +499,7 @@
                     index,
                     start,
                     curr,
-                    curr2,
                     isVisible,
-                    isVisible2,
                     props,
                     i;
 
@@ -557,22 +569,21 @@
                         if (start <= 0 && ((this.underflow && wrap === 'circular') || wrap === 'both' || wrap === 'first')) {
                             this._scroll(end, animate, callback);
                         } else {
-                            if (this.circular && index <= 0) {
-
+                            if (this.circular && index < 0) {
                                 i    = index;
                                 curr = this.items().get(0);
 
-                                while (i++ < 2) {
+                                while (i++ < 0) {
                                     curr = this.items().eq(-1);
                                     isVisible = this._visible.index(curr) >= 0;
-									
-									if (isVisible) {
+
+                                    if (isVisible) {
                                         curr.after(curr.clone(true).attr('data-jcarousel-clone', true));
                                     }
-                                    
+
                                     this.list().prepend(curr);
-									
-									// Force items reload
+
+                                    // Force items reload
                                     this._items = null;
 
                                     var dim = this.dimension(curr);
@@ -583,7 +594,7 @@
 
                                 }
 
-                                this._scroll(2, animate, callback);
+                                this._scroll(curr, animate, callback);
                             } else {
                                 this._scroll(Math.max(index, 0), animate, callback);
                             }
@@ -607,16 +618,16 @@
                 multiplier = -1;
 
                 if (this.relative) {
-                    correction = this.list().width() - this.clipping();
+                    correction = toFloat(this.list().width()) - this.clipping();
                 }
             }
 
             if (properties.left) {
-                properties.left = (position.left + correction + toFloat(properties.left) * multiplier) + 'px';
+                properties.left = (toFloat(position.left) + correction + toFloat(properties.left) * multiplier) + 'px';
             }
 
             if (properties.top) {
-                properties.top = (position.top + correction + toFloat(properties.top) * multiplier) + 'px';
+                properties.top = (toFloat(position.top) + correction + toFloat(properties.top) * multiplier) + 'px';
             }
 
             return this.move(properties, opts);
@@ -715,7 +726,7 @@
             this._prepare(item);
 
             var pos     = this._position(item),
-                currPos = this.list().position()[this.lt];
+                currPos = toFloat(this.list().position()[this.lt]);
 
             if (pos === currPos) {
                 if ($.isFunction(callback)) {
@@ -744,7 +755,7 @@
             var pos = this.list().position()[this.lt];
 
             if (this.rtl && this.relative && !this.vertical) {
-                pos += this.list().width() - this.clipping();
+                pos += toFloat(this.list().width()) - this.clipping();
             }
 
             if (this.rtl && !this.vertical) {
@@ -953,13 +964,13 @@
         },
         _position: function(item) {
             var first  = this._first,
-                pos    = first.position()[this.lt],
+                pos    = toFloat(first.position()[this.lt]),
                 center = this.options('center'),
                 centerOffset = center ? (this.clipping() / 2) - (this.dimension(first) / 2) : 0;
 
             if (this.rtl && !this.vertical) {
                 if (this.relative) {
-                    pos -= this.list().width() - this.dimension(first);
+                    pos -= toFloat(this.list().width()) - this.dimension(first);
                 } else {
                     pos -= this.clipping() - this.dimension(first);
                 }
@@ -1364,16 +1375,36 @@
     });
 }(jQuery));
 
-(function($) {
+(function($, document) {
     'use strict';
+
+    var hiddenProp,
+        visibilityChangeEvent,
+        visibilityChangeEventNames = {
+            hidden: 'visibilitychange',
+            mozHidden: 'mozvisibilitychange',
+            msHidden: 'msvisibilitychange',
+            webkitHidden: 'webkitvisibilitychange'
+        }
+    ;
+
+    $.each(visibilityChangeEventNames, function(key, val) {
+        if (typeof document[key] !== 'undefined') {
+            hiddenProp = key;
+            visibilityChangeEvent = val;
+            return false;
+        }
+    });
 
     $.jCarousel.plugin('jcarouselAutoscroll', {
         _options: {
             target:    '+=1',
             interval:  3000,
-            autostart: true
+            autostart: true,
+            method: 'scroll'
         },
         _timer: null,
+        _started: false,
         _init: function () {
             this.onDestroy = $.proxy(function() {
                 this._destroy();
@@ -1381,34 +1412,53 @@
                     .one('jcarousel:createend', $.proxy(this._create, this));
             }, this);
 
-            this.onAnimateEnd = $.proxy(this.start, this);
+            this.onAnimateEnd = $.proxy(this._start, this);
+
+            this.onVisibilityChange = $.proxy(function() {
+                if (document[hiddenProp]) {
+                    this._stop();
+                } else {
+                    this._start();
+                }
+            }, this);
         },
         _create: function() {
             this.carousel()
                 .one('jcarousel:destroy', this.onDestroy);
+
+            $(document)
+                .on(visibilityChangeEvent, this.onVisibilityChange);
 
             if (this.options('autostart')) {
                 this.start();
             }
         },
         _destroy: function() {
-            this.stop();
+            this._stop();
+
             this.carousel()
                 .off('jcarousel:destroy', this.onDestroy);
+
+            $(document)
+                .off(visibilityChangeEvent, this.onVisibilityChange);
         },
-        start: function() {
-            this.stop();
+        _start: function() {
+            this._stop();
+
+            if (!this._started) {
+                return;
+            }
 
             this.carousel()
                 .one('jcarousel:animateend', this.onAnimateEnd);
 
             this._timer = setTimeout($.proxy(function() {
-                this.carousel().jcarousel('scroll', this.options('target'));
+                this.carousel().jcarousel(this.options('method'), this.options('target'));
             }, this), this.options('interval'));
 
             return this;
         },
-        stop: function() {
+        _stop: function() {
             if (this._timer) {
                 this._timer = clearTimeout(this._timer);
             }
@@ -1417,6 +1467,18 @@
                 .off('jcarousel:animateend', this.onAnimateEnd);
 
             return this;
+        },
+        start: function() {
+            this._started = true;
+            this._start();
+
+            return this;
+        },
+        stop: function() {
+            this._started = false;
+            this._stop();
+
+            return this;
         }
     });
-}(jQuery));
+}(jQuery, document));

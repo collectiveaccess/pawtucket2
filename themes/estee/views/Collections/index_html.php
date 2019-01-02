@@ -17,11 +17,9 @@
 	
 	<div class='row'>
 		<div class="col-sm-12 col-md-8 col-md-offset-1">
-			<h1>Collection Guides</h1>
+			<h1>Guides to the Archives</h1>
 			<p class="linkUnderline">{{{collections_intro_text}}}</p>
 			<br/>
-			
-			<p class="linkUnderline">{{{archival_collections_intro_text}}}</p>
 		</div>
 	</div>
 
@@ -31,8 +29,8 @@
 ?>
 		<div class="row">
 		<div class='col-md-12 col-lg-12 collectionsList'>
-			<br/><H2>Featured Digital Collections</H2>
-			<p class="linkUnderline">{{{featured_collections_intro_text}}}</p>
+			<br/><H2>{{{curated_collections_heading}}}</H2>
+			<p class="linkUnderline">{{{curated_collections_intro_text}}}</p>
 
 <?php
 		foreach($va_featured as $vn_collection_id => $va_collection_info) {
@@ -69,7 +67,7 @@
 
 	<div class="row">
 		<div class='col-md-12 col-lg-12 collectionsList'>
-			<H2>Archival Collection Guides</H2>
+			<H2>{{{archival_collections_heading}}}</H2>
 			<p class="linkUnderline">{{{archival_collections_intro_text}}}</p>
 <?php	
 

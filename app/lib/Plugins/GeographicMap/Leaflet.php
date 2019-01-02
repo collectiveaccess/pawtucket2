@@ -61,6 +61,7 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 	 *		delimiter = Delimiter to use to separate content for different items being plotted in the same location (and therefore being put in the same marker detail balloon); default is an HTML line break tag ("<br/>")
 	 *		minZoomLevel = Minimum zoom level to allow; leave null if you don't want to enforce a limit
 	 *		maxZoomLevel = Maximum zoom level to allow; leave null if you don't want to enforce a limit
+	 *		noWrap = Prevent wrapping of map tile background when pan; leave null to allow wrapping
 	 *		zoomLevel = Zoom map to specified level rather than fitting all markers into view; leave null if you don't want to specify a zoom level. IF this option is set minZoomLevel and maxZoomLevel will be ignored.
 	 *		pathColor = used for paths and circles; default is to use 'leaflet_maps_path_color' setting in app.conf
 	 *		pathWeight = used for paths and circles; default is to use 'leaflet_maps_path_weight' setting in app.conf
@@ -97,6 +98,7 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 		
 		$vn_min_zoom_level = caGetOption('minZoomLevel', $pa_options, 0);
 		$vn_max_zoom_level = caGetOption('maxZoomLevel', $pa_options, 18);
+		$vb_no_wrap = (bool)caGetOption('noWrap', $pa_options, null);
 		
 		if (!($vs_path_color = caGetOption('pathColor', $pa_options, $this->opo_config->get('leaflet_maps_path_color')))) { $vs_path_color = '#ff0000'; }
 		if (($vn_path_weight = caGetOption('pathWeight', $pa_options, $this->opo_config->get('leaflet_maps_path_weight'))) < 1) { $vn_path_weight = 1; }
@@ -222,7 +224,7 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 		var circleList{$vs_id} = ".json_encode($circleList).";
 		var pathList{$vs_id} = ".json_encode($paths).";
 		var map = L.map('map_{$vs_id}', { zoomControl: ".($vb_show_scale_controls ? "true" : "false").", attributionControl: false, minZoom: {$vn_min_zoom_level}, maxZoom: {$vn_max_zoom_level} }).setView([0, 0], {$vn_zoom_level});
-		var b = L.tileLayer('{$base_map_url}').addTo(map);	
+		var b = L.tileLayer('{$base_map_url}', {noWrap: ".($vb_no_wrap ? "true" : "false")."}).addTo(map);	
 		var g = new L.featureGroup();
 		g.addTo(map);
 		

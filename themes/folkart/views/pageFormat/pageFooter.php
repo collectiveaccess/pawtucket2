@@ -42,7 +42,6 @@
 					<p>
 						706 Camino Lejo, on Museum Hill<br/>
 						Santa Fe, New Mexico 87505<br/>
-						Mailing: PO Box 2087, Santa Fe, NM 87504<br/>
 						Phone: (505) 476-1200 
 					</p>
 					<p class="directions">

@@ -115,9 +115,9 @@ if (!$vb_ajax) {	// !ajax
 			<small>	
 <?php 
 			if($vs_table == 'ca_collections'){
-				print caNavLink($this->request, _("View all Manuscripts"), '', '', 'Browse', 'manuscripts');
+				print caNavLink($this->request, _t("View all Manuscripts"), '', '', 'Browse', 'manuscripts');
 				print " | ";
-				print caNavLink($this->request, _("View all Utensils"), '', '', 'Browse', 'utensils');
+				print caNavLink($this->request, _t("View all Utensils"), '', '', 'Browse', 'utensils');
 			}
 ?>
 			</small>
