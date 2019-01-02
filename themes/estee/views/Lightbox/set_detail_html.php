@@ -238,7 +238,8 @@ if (!$vb_ajax) {	// !ajax
 										$va_items[$va_item_info['item_id']] = array(
 											'object_id' => $vn_object_id,
 											'type_id' => $vn_type_id = $qr_set_items->get('ca_objects.type_id'),
-											'type' => $vs_type_idno = caGetListItemIdno($vn_type_id)
+											'type' => $vs_type_idno = caGetListItemIdno($vn_type_id),
+											'has_children' => $qr_set_items->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values))
 										);
 									}
 								}
@@ -267,8 +268,11 @@ if (!$vb_ajax) {	// !ajax
 									
 									$vs_representation = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => caGetDetailForType('ca_objects', null, array('request' => $this->request)), 'id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;'><div class='lbItemImg'>{$vs_tag}</div></a>";
 								} else {
-									if (!isset($va_placeholders[$vs_type_idno])) { $va_placeholders[$vs_type_idno] = caGetPlaceholder($vs_type_idno, 'placeholder_media_icon'); }
-									$vs_representation = "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div>";
+									if(($va_items[$vn_item_id]['type'] == "folder") && !($va_items[$vn_item_id]["has_children"])){
+										$va_items[$vn_item_id]["type"] = "folder_empty";
+									}
+									if (!isset($va_placeholders[$va_items[$vn_item_id]['type']])) { $va_placeholders[$va_items[$vn_item_id]['type']] = caGetPlaceholder($va_items[$vn_item_id]['type'], 'placeholder_media_icon'); }
+									$vs_representation = "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$va_items[$vn_item_id]['type']]."</div>";
 								}
 								$this->setVar('representation', $vs_representation);
 								$this->setVar('representation_id', $vn_representation_id);
