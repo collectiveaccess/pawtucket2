@@ -9,8 +9,8 @@
 	<div class='row'>
 		<div class="col-sm-6">
 			<div class='menuLink first'><?php print caNavLink($this->request, 'Browse', '', '', 'Browse', 'attica'); ?></div> | 
-			<div class='menuLink'><?php print caNavLink($this->request, 'Timeline', '', '', 'About', 'timeline'); ?></div> | 
-			<div class='menuLink'><?php print caNavLink($this->request, 'Related Records in the State Archives', '', '', 'About', 'relatedrecords'); ?></div>
+			<div class='menuLink'><?php print caNavLink($this->request, 'Timeline', '', '', 'Search', 'advanced/attica_timeline'); ?></div> | 
+			<div class='menuLink'><?php print caNavLink($this->request, 'Related Records in the State Archives', '', '', 'Search', 'advanced/attica_related'); ?></div>
 		</div>
 		<div class="advancedSearchField col-sm-6">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the database.">Search Selected Attica Litigation Documents</span>

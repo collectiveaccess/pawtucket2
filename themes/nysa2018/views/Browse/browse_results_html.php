@@ -179,8 +179,12 @@ if (!$vb_ajax) {	// !ajax
 ?>		
 		</H5>
 <?php
-		if($vs_facet_description){
-			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
+		if ($vs_table == "ca_occurrences") {
+			print "<div class='bFacetDescription'>
+				<p>The New York State Archives presents historical records (1630-present) and standards-based learning activities selected and developed by New York teachers.</p>
+				<p>Search for documents and lessons by using the Search Box above or select a Browse option.</p>
+				<p>Using the Archives' lesson format, all learning activities may be customized online, then downloaded or printed.</p>
+				<p>If you have questions about this resource, please contact us at <a href='mailto:ARCHEDU@nysed.gov'>ARCHEDU@nysed.gov</a>.</p></div>";
 		}
 
 		if($vb_showLetterBar){

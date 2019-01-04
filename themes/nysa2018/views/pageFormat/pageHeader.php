@@ -110,11 +110,56 @@
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li class="list-item-one"><a href="http://digitalcollections.archives.nysed.gov/">Digital Collections</a></li>	
-					<li><a href="http://www.archives.nysed.gov/education/index.shtml">Education</a></li>
-					<li><a href="http://www.archives.nysed.gov/grants">Grants & Awards</a></li>
-					<li><a href="http://www.archives.nysed.gov/records/index.shtml">Managing Records</a></li>					
-					<li><a href="http://www.archives.nysed.gov/research/index.shtml">Research</a></li>
+					<li class="list-item-one"><?php print caNavLink($this->request, 'Digital Collections', '', '', '', '');?></a></li>	
+					<li class="dropdown" style="position:relative;">
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><a href="http://www.archives.nysed.gov/education/index.shtml">Education</a>
+						<ul class="dropdown-menu">
+							<li><a href='http://www.archives.nysed.gov/education/index.shtml'>Overview</a></li>
+							<li><?php print caNavLink($this->request, 'Documents and Learning Activities', '', '', 'Browse', 'occurrences');?></a></li>
+							<li><a href='http://www.archives.nysed.gov/education/video'>Instructional Videos</a></li>
+							<li><a href='http://www.archives.nysed.gov/education/publications'>Publications</a></li>
+							<li><a href='https://www.nysarchivestrust.org/education/student-research-awards'>Student Research Award</a></li>
+						</ul>
+					</li>
+					<li class="dropdown" style="position:relative;">
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><a href="http://www.archives.nysed.gov/grants">Grants & Awards</a>
+						<ul class="dropdown-menu" style='width:432px;'>
+							<li><a href='http://www.archives.nysed.gov/grants'>Overview</a></li>
+							<li><a href='http://www.archives.nysed.gov/grants/grants_dhp.shtml'>Documentary Heritage Program</a></li>							
+							<li><a href='http://www.archives.nysed.gov/research/hackman-research-residency'>Larry J. Hackman Research Residency</a></li>
+							<li><a href='http://www.archives.nysed.gov/grants/grants_lgrmif.shtml'>Local Government Records Management Improvement Fund</a></li>
+							<li><a href='https://www.nysarchivestrust.org/education/student-research-awards'>Student Research Award</a></li>
+						</ul>
+					</li>					
+					<li class="dropdown" style="position:relative;">
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><a href="http://www.archives.nysed.gov/records/index.shtml">Managing Records</a>
+						<ul class="dropdown-menu" style='width:432px;'>
+							<li><a href='http://www.archives.nysed.gov/records/managing-records-overview'>Overview</a></li>
+							<li><a href='http://www.archives.nysed.gov/records/our-services'>Our Services</a></li>							
+							<li><a href='http://www.archives.nysed.gov/records/retention-scheduling-and-appraisal'>Retention and Disposition Schedules</a></li>
+							<li><a href='http://www.archives.nysed.gov/records/disaster-assistance'>Disaster Assistance</a></li>
+							<li><a href='http://www.archives.nysed.gov/records/ny-state-records-center-2'>State Records Center</a></li>
+							<li><a href='http://www.archives.nysed.gov/publications?field_topics_value=Managing%20Records'>Publications</a></li>
+							<li><a href='http://www.archives.nysed.gov/records/records-management-topics'>Featured Topics</a></li>
+							<li><a href='http://www.archives.nysed.gov/records/laws-and-regulations'>Laws and Regulations</a></li>
+							<li><a href='http://www.archives.nysed.gov/records/dhpsny'>DHPSNY</a></li>
+						</ul>
+					</li>										
+					<li class="dropdown" style="position:relative;">
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><a href="http://www.archives.nysed.gov/research/index.shtml">Research</a>
+						<ul class="dropdown-menu" style='width:432px;'>
+							<li><a href='http://www.archives.nysed.gov/research/researcher-services-overview'>Overview</a></li>
+							<li><a href='http://www.archives.nysed.gov/research/about-our-records'>About our Records</a></li>							
+							<li><a href='http://www.archives.nysed.gov/research/researcher-services'>Researcher Services</a></li>
+							<li><a href='http://www.archives.nysed.gov/research/search-for-records'>Search for Records</a></li>
+							<li><?php print caNavLink($this->request, 'Digital Collections', '', '', '', '');?></li>
+							<li><a href='http://www.archives.nysed.gov/research/featured-topics'>Research Topics</a></li>
+							<li><a href='http://www.archives.nysed.gov/research/visit-the-archives'>Visit the Archives</a></li>
+							<li><a href='http://www.archives.nysed.gov/research/hackman-research-residency'>Research Residency</a></li>
+							<li><a href='http://www.archives.nysed.gov/research/research-assistance'>FAQs</a></li>
+							<li><a href='http://www.archives.nysed.gov/research/research-contact-us'>Contact Us</a></li>
+						</ul>
+					</li>					
 					<li><a href="http://www.archives.nysed.gov/workshops">Workshops</a></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->

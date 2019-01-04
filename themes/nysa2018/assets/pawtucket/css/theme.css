@@ -19,7 +19,7 @@ body {
     filter: progid:DXImageTransform.Microsoft.Shadow(Strength=6, Direction=135, Color='#000000');
     w: 2px 2px 6px #444;
 }
-a {
+a, a:hover, .detail a, .detail a:hover {
     color: #006794;
     text-decoration: underline;
 }
@@ -31,7 +31,7 @@ p, .title, .caption, .card-body, .bodytext {
     font-family: Raleway, sans-serif;
 }
 .bodytext {
-	padding-left:10px;
+	padding-left:20px;
 	padding-right:20px;
 	padding-bottom:50px;
 }
@@ -148,7 +148,8 @@ form {
     float: left;
     background-image: url('../graphics/dotted-border.jpg');
     background-repeat: repeat-x;
-    padding: 12px 0 14px;
+    padding: 0;
+    padding-top:12px;
     min-height:0;
     margin-bottom:0px;
     box-shadow:none;
@@ -162,7 +163,7 @@ form {
 }
 .navbar ul li {
     background-image: url(../graphics/li-bg.jpg);
-    background-position: center left;
+    background-position: top left;
     background-repeat: no-repeat;
     padding: 0 29px;
     margin: 0;
@@ -171,6 +172,12 @@ form {
     line-height: 16px;
     font-family: 'Raleway',�sans-serif;
     float: left;
+    height:24px;
+}
+.navbar ul li li {
+	height:auto;
+	float:left;
+	clear:both;
 }
 .navbar ul li.list-item-one {
     background-image: none;
@@ -199,6 +206,34 @@ form {
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 	font-family: 'Raleway', sans-serif;
+}
+@media (min-width: 979px) {
+  ul.nav li.dropdown:hover > ul.dropdown-menu {
+    display: block;
+  }
+}
+.navbar ul.dropdown-menu {
+	width:277px;
+	left:0px;
+	border: 1px solid #7e7569;
+}
+.yamm .nav.navbar-right .dropdown-menu {
+	left:0px;
+}
+.navbar ul.dropdown-menu li {
+    background-image:none;
+    margin:0;
+    padding:0;
+}
+.navbar ul.dropdown-menu li a {
+    background: #fff;
+    padding: 10px 23px;
+    color: #006794;
+    font-weight: 700;
+    line-height: 16px;
+    font-size: 0.8125em;
+    text-transform:none;
+    font-size:13px;
 }
 #TopicBar h1 {
     font-family: 'Crimson Text',�serif;
@@ -399,6 +434,9 @@ form {
 .front .jcarousel-wrapper {
 	margin-top:0px;
 }
+#footer ul li li.advisory-board {
+    text-indent: 10px;
+}
 
 /* Homepage */
 
@@ -436,6 +474,29 @@ form {
 	font-size:14px;
 	color: #1b7a96;
 	line-height:4em;
+}
+
+/* Search */
+
+.multisearch .authoritySet a, .multisearch .multisearchResult a, .bResultItem .bResultItemText a {
+	text-decoration:none;
+	font-size:13px;
+}
+.multisearch .pull-right {
+	padding-top:15px;
+	font-size:13px;
+}
+.multisearch .pull-right a {
+	text-decoration:none;
+}
+.bFacetDescription {
+	max-height:none;
+}
+.results .related strong {
+    color: #000;
+    text-transform: none;
+    font-size: 14px;
+    font-weight: bold;
 }
 
 /*Attica */
@@ -562,3 +623,48 @@ form {
 .dutch.advancedSearchField input {
 	width:230px !important;
 } 
+.results td {
+	border:1px solid #000;
+}
+.accordion.dutch td {
+	padding:5px;
+}
+.accordion.dutch .card-body {
+	font-size:14px;
+	padding:15px;
+}
+
+/* Detail */
+
+.unit {
+	font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    color: rgb(46, 34, 31);
+    font-family: Raleway, sans-serif;
+}
+.pageNav {
+	float: right;
+    margin: 0px;
+    text-align: right;
+    width: 250px;
+    padding: 5px 0px 0px 20px;
+    font-size: 14px;
+    color: rgb(230, 229, 220);
+    font-weight: bold;
+    clear:both;
+}
+.pageNav a {
+	display:inline-block;
+	padding-right:15px;
+	color: rgb(76, 63, 54);
+}
+.pageNav .small {
+	display:inline-block;
+	padding-right:5px;
+	padding-left:5px;
+}
+.rightCol {
+    background-image: url('../graphics/right-sidebar-bg.jpg');
+    background-repeat: repeat-y;
+}
