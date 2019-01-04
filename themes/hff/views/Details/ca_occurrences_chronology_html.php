@@ -118,9 +118,12 @@
 						if(sizeof($va_group)){
 							print "<div class='unit'><H6>Group</H6>".join("<br/>", $va_group)."</div>";
 						}
+?>
+							</div>
+						</div>
+<?php
 					}
-?>						</div>
-					</div>
+?>						
 					{{{<ifcount code="ca_places" min="1">
 							<div class="row">
 								<div class="col-sm-12">
