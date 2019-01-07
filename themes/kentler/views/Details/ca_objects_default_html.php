@@ -73,7 +73,7 @@
 				{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
 <?php
 				if(!$vb_removed && $t_object->get("price")){
-					print "<HR/><H6>Price</H6>".$t_object->get("price")."<br/>";
+					#print "<HR/><H6>Price</H6>".$t_object->get("price")."<br/>";
 				}
 ?>
 			</div><!-- end col -->
