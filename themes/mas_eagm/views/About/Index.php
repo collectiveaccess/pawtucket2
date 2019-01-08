@@ -16,16 +16,16 @@
 			<address>Estevan Art Gallery and Museum<br>			
 			118 4th Street<br>			
 			Estevan, SK<br/>
-			S4A0T4<br/><br/>
-			306-634-7644
+			S4A0T4<br/>
+			306-634-7644<br/><br/>
 			Amber Andersen<br/>
 			Director/Curator</br>	
-			<span class="info">Email</span> — <a href="mailto:director@eagm.ca">director@eagm.ca</a>
+			<span class="info"><a href="mailto:director@eagm.ca">director@eagm.ca</a>
 			</address>		
 			<address>
 				Raven Broster-Paradis<br>Education, Outreach, and Programming Coordinator<br/>
-				<span class="info">Email</span> — <a href="mailto:educator@eagm.ca">educator@eagm.ca</a>
-				<span class="info">Website</span> — <a href="http://www. www.estevanartgallery.org">www.estevanartgallery.org</a>
+				<span class="info"><a href="mailto:educator@eagm.ca">educator@eagm.ca</a>
+				<span class="info"><a href="http://www. www.estevanartgallery.org">www.estevanartgallery.org</a>
 			</address>
 		</div>
 	</div>
