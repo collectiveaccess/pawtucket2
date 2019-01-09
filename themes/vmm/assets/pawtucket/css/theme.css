@@ -208,6 +208,7 @@ body.initial .navbar-form {
 	margin-top: 25px;
 }
 @media(max-width: 1072px) {
+	/*
 	ul.menuItems {
 		width:100%;
 		border-top:solid 1px #ddd;
@@ -225,7 +226,36 @@ body.initial .navbar-form {
 	.navbar > .container .navbar-brand {
 		margin-left:0px;
 	}
+	*/
+	
+	
+	ul.menuItems {
+		width:auto;
+		border-top:0px;
+	}
+	.menuItems.navbar-nav > li > a {
+		padding-top: 22px;
+    	padding-bottom: 23px;
+	}
+	body.initial .menuItems.navbar-nav > li > a {
+		padding-top: 31px;
+		padding-bottom: 32px;
+	}
+	.navbar-collapse .navbar-nav.navbar-right:last-child {
+		margin-right:0px;
+	}
+	/*.container.menuBar {
+		padding:0px;
+	}*/
+	.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
+		font-size: 15px !important;
+	}
 }
+
+
+
+
+
 .menuItems.navbar-nav > li > a:hover {
     color: #999;
     /*text-shadow: 0px 0px 3px #222;*/
@@ -314,6 +344,15 @@ body.initial .navbar{
 body.initial .navbar > .container .navbar-brand{
 	width:175px;
 	margin-left:20px;
+}
+@media(max-width: 1080px) {
+	body.initial .navbar > .container .navbar-brand{
+		width:110px;
+		margin-left:0px;
+	}
+	.navbar-brand{
+		padding-left:0px;
+	}
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 /* body.initial .nav > li > a, body.initial .nav > li > a:hover, body.initial .nav > li > a:focus { */

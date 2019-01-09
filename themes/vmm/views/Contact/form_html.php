@@ -56,7 +56,7 @@
 <div class="row"><div class="col-sm-12 col-lg-8 col-lg-offset-2">
 			<H1><?php print ($vs_typecode == "collection_object") ? _t("Ask a Curator") : _t("Ask an Archivist"); ?></H1>
 		<?php
-			if(sizeof($va_errors["display_errors"])){
+			if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
 				print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 			}
 		?>

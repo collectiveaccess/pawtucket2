@@ -70,8 +70,8 @@
 						<ifdef code="ca_collections.language"><div class="unit"><H6>Languages</H6>^ca_collections.language%delimiter=,_</div></ifdef>
 						<ifdef code="ca_collections.related_material"><div class="unit"><H6>Related materials</H6>^ca_collections.related_material</div></ifdef>
 						<ifdef code="ca_collections.reproRestrictions.reproduction|ca_collections.reproRestrictions.access_restrictions"><div class="unit"><H6>Restrictions</H6><ifdef code="ca_collections.reproRestrictions.reproduction"><b>Reproductions: </b>^ca_collections.reproRestrictions.reproduction<br/></ifdef><ifdef code="ca_collections.reproRestrictions.access_restrictions"><b>Access: </b>^ca_collections.reproRestrictions.access_restrictions</ifdef></div></ifdef>
-						<ifcount code="ca_entities" min="1"><H6>Related people</H6><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></ifcount>
-						<ifcount code="ca_occurrences" min="1" restrictToTypes="vessel"><H6>Related vessels</H6><unit relativeTo="ca_occurrences" restrictToTypes="vessel"><ifdef code="ca_occurrences.vesprefix">^ca_occurrences.vesprefix </ifdef><l><i>^ca_occurrences.preferred_labels</i></l>  ^ca_occurrences.vessuffix</unit></ifcount>
+						<ifcount code="ca_entities" min="1"><div class="unit"><H6>Related people</H6><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>
+						<ifcount code="ca_occurrences" min="1" restrictToTypes="vessel"><div class="unit"><H6>Related vessels</H6><unit relativeTo="ca_occurrences" restrictToTypes="vessel"><ifdef code="ca_occurrences.vesprefix">^ca_occurrences.vesprefix </ifdef><l><i>^ca_occurrences.preferred_labels</i></l>  ^ca_occurrences.vessuffix</unit></div></ifcount>
 					}}}
 <?php
 				$va_lcsh = $t_item->get("ca_collections.lcsh_terms", array("returnAsArray" => true));
