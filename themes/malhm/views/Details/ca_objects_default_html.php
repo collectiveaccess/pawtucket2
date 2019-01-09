@@ -182,25 +182,49 @@ ini_set("display_errors", "on");
 				if ($vs_description = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
 				}
-				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'excludeRelationship' => array('authorizer', 'approved', 'inventory', 'tribal_contact')))) {
-					$va_entities_by_type = array();
-					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
-						$t_rel = new ca_objects_x_entities($va_entity_rel);
-						if ($t_rel->get('ca_objects.access') != 0){ continue;}
-						$vn_type_id = $t_rel->get('ca_relationship_types.preferred_labels');
-						$va_entities_by_type[$vn_type_id][] = $t_rel->get('ca_entities.preferred_labels');
-					}
-					print "<div class='unit'>";
-					print "<hr>";
-					print "<h6>Related People and Organizations</h6>";
-					foreach ($va_entities_by_type as $va_type => $va_entity_id) {
-						print "<div><b>".ucfirst($va_type)."</b></div>";
-						foreach ($va_entity_id as $va_key => $va_entity_link) {
-							print "<div>".$va_entity_link."</div>";
-						} 
+				#if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'excludeRelationship' => array('authorizer', 'approved', 'inventory', 'tribal_contact')))) {
+				#	$va_entities_by_type = array();
+				#	foreach ($va_entity_rels as $va_key => $va_entity_rel) {
+				#		$t_rel = new ca_objects_x_entities($va_entity_rel);
+						#if ($t_rel->get('ca_objects.access') != 0){ continue;}
+				#		$vn_type_id = $t_rel->get('ca_relationship_types.preferred_labels');
+				#		$va_entities_by_type[$vn_type_id][] = $t_rel->get('ca_entities.preferred_labels');
+				#	}
+				#	print "<div class='unit'>";
+				#	print "<hr>";
+				#	print "<h6>Related People and Organizations</h6>";
+				#	foreach ($va_entities_by_type as $va_type => $va_entity_id) {
+				#		print "<div><b>".ucfirst($va_type)."</b></div>";
+				#		foreach ($va_entity_id as $va_key => $va_entity_link) {
+				#			print "<div>".$va_entity_link."</div>";
+				#		} 
+				#	}
+				#	print "</div>";
+				#} 
+				# --- entities
+				$va_entities = $t_object->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values, 'excludeRelationships' => array('authorizer', 'approved', 'inventory', 'tribal_contact')));
+				if(is_array($va_entities) && sizeof($va_entities)){
+					print "<div class='unit'><hr><h6>Related People and Organizations</h6>";
+					$va_entity_ids = array();
+					foreach($va_entities as $va_entity){
+						if(!in_array($va_entity["entity_id"], $va_entity_ids)){
+							$va_entity_ids[] = $va_entity["entity_id"];
+							print "<div>".$va_entity["displayname"]."</div>";
+						}
 					}
 					print "</div>";
-				} 
+					#$va_entities_by_type = array();
+					#$va_entities_sort = array();
+					#foreach($va_entities as $va_entity){
+					#	$va_entities_sort[$va_entity["relationship_typename"]][] = $va_entity["displayname"];	
+					#}
+					#print "<div class='unit'><hr><h6>Related People and Organizations</h6>";
+					#foreach($va_entities_sort as $vs_entity_type => $va_entities_by_type){
+					#	print "<div><b>".ucfirst($vs_entity_type)."</b></div>";
+					#	print "<div>".join(", ", $va_entities_by_type)."</div>";
+					#}					
+					#print "</div>";
+				}
 				if ($vn_arch_record_id != $vn_type_id) { // No places on archeology records
 					if ($va_rel_places = $t_object->get('ca_places.preferred_labels', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><h6>Related Places</h6>".$va_rel_places."</div>";
