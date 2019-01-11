@@ -50,7 +50,7 @@
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
 ?><!DOCTYPE html>
-<html lang="en">
+<html lang="en"  <?php print ((strtoLower($this->request->getController()) == "front") || (strtoLower($this->request->getAction()) == "parallax")) ? "class='frontContainer animatedParallaxContainer'" : ""; ?>>
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
@@ -75,7 +75,7 @@
 	}
 ?>
 </head>
-<body>
+<body class='initial <?php print (strtoLower($this->request->getController()) == "front") ? "frontContainer" : ""; ?>'>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -97,12 +97,14 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'VMM_Logo_Navy.jpg'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'VMM_Logo_'.((strtoLower($this->request->getController()) == "front") ? "Red" : "Navy").'.png'), "navbar-brand initialLogo", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'VMM_Circle_Logo_small.jpg'), "navbar-brand scrollLogo", "", "","");
 ?>
 			</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
+			<div class="navbar-collapse-container">
 <?php
 	if ($vb_has_user_links) {
 ?>
@@ -145,7 +147,6 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li><a href="https://www.vancouvermaritimemuseum.com/" target="_blank">Museum Home</a></li>
 					
 					<li <?php print ((strtoLower($this->request->getController()) == "browse") && (strtoLower($this->request->getAction()) == "artefacts")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artefacts"), "", "", "Browse", "artefacts"); ?></li>
 					
@@ -162,35 +163,33 @@
 					<li <?php print (strtoLower($this->request->getController()) == "gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Highlights"), "", "", "Gallery", "Index"); ?></li>
 					
 					
-					<li class="dropdown <?php print (in_array(strToLower($this->request->getController()), array("about", "contact"))) ? 'active"' : ''; ?>" style="position:relative;">
+					<li class="dropdown <?php print (in_array(strToLower($this->request->getController()), array("about"))) ? 'active"' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">About</a>
 						<ul class="dropdown-menu">
 							<li <?php print ((strToLower($this->request->getController()) == "about") &&  (strToLower($this->request->getAction()) == "museum")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Museum"), "", "", "About", "Museum"); ?></li>
 							<li <?php print ((strToLower($this->request->getController()) == "about") &&  (strToLower($this->request->getAction()) == "collection")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "Collection"); ?></li>
 							<li <?php print ((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "faq")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("FAQ"), "", "", "About", "FAQ"); ?></li>
 							<li <?php print ((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "contact")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "Contact"); ?></li>
+							<li><a href="https://www.vancouvermaritimemuseum.com/" target="_blank">Museum Home</a></li>
 						</ul>
 					</li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
+		</div><!-- relative -->
 		</div><!-- end container -->
 	</nav>
 <?php
 	if(strToLower($this->request->getController()) != "front"){
 		print '<div class="container"><div class="row"><div class="col-xs-12">';
 	}
-?>
-		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
-<?php
-if($xx_bread){
+
+
 	$va_breadcrumb = array(caNavLink($this->request, _t("Home"), "", "", "", ""));
 	
 	switch(strToLower($this->request->getController())){
 		case "gallery":
 			# --- detail done in that view
-			if(strToLower($this->request->getAction()) == "index"){
-				$va_breadcrumb[] = caNavLink($this->request, _t("Highlights"), "", "", "Gallery", "Index");
-			}
+			$va_breadcrumb[] = caNavLink($this->request, _t("Highlights"), "", "", "Gallery", "Index");
 			
 		break;
 		# -----------------------------------------------------
@@ -233,6 +232,10 @@ if($xx_bread){
 					$vs_section = "Find: Archival Fonds and Collections";
 				break;
 				# ---------------------------
+				case "vessels":
+					$vs_section = "Find: Vessels";
+				break;
+				# ---------------------------
 				case "advanced":
 					switch(strToLower($this->request->getActionExtra())){
 						case "archival_items":
@@ -251,7 +254,13 @@ if($xx_bread){
 				break;
 				# ---------------------------
 			}
-			$va_breadcrumb[] = caNavLink($this->request, $vs_section, "", "", $this->request->getController(), $this->request->getAction());			
+			$va_breadcrumb[] = $vs_section;			
+		break;
+		# -----------------------------------------------------
+		case "collections":
+			# --- detail done in that view
+			$va_breadcrumb[] = caNavLink($this->request, _t("Archival Fonds and Collections"), "", "", "Collections", "Index");
+			
 		break;
 		# -----------------------------------------------------
 		
@@ -259,5 +268,5 @@ if($xx_bread){
 	if(sizeof($va_breadcrumb) > 1){
 		print "<div class='breadcrumb'>".join(" > ", $va_breadcrumb)."</div>";
 	}
-}
 ?>
+		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

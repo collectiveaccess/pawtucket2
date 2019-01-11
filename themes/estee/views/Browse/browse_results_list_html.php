@@ -116,6 +116,7 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
+					$vs_folder_class = "";
 					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
 					if($vs_table == "ca_objects"){
@@ -124,17 +125,17 @@
 						
 						$vs_caption = "<div class='resultType'>";
 						$vs_caption .= $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))." &rsaquo; ";
-						if($vs_tmp = $qr_res->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
-							$vs_caption .= $vs_tmp;
-							if($qr_res->get("ca_objects.brand")){
-								$vs_caption .= "<br/>";
-							}
-						}
+						#if($vs_tmp = $qr_res->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
+						#	$vs_caption .= $vs_tmp;
+						#	if($qr_res->get("ca_objects.brand")){
+						#		$vs_caption .= "<br/>";
+						#	}
+						#}
 						if(($vs_brand = $qr_res->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))) | ($vs_subbrand = $qr_res->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true, "delimiter" => ", ")))){
 							$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? " &rsaquo; " : "").$vs_subbrand;
 						}
 						$vs_caption .= "</div>";
-						if($vs_tmp = $qr_res->getWithTemplate('<ifdef code="ca_objects.manufacture_display_date|ca_objects.manufacture_date">^ca_objects.manufacture_display_date<ifdef code="ca_objects.manufacture_display_date,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+						if($vs_tmp = $qr_res->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
 							$vs_caption .= $vs_tmp.", ";
 						}
 						$vs_caption .= $qr_res->get('ca_objects.preferred_labels');
@@ -147,8 +148,11 @@
 						if ($vs_table == 'ca_objects') {
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
+							if(($vs_typecode == "folder") && !($qr_res->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values)))){
+								$vs_typecode = "folder_empty";
+							}
 							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-								$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+								$vs_image = "<div class='bResultItemImgPlaceholder".$vs_folder_class."'>".$vs_type_placeholder."</div>";
 							}else{
 								$vs_image = $vs_default_placeholder_tag;
 							}

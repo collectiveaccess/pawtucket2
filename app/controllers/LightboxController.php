@@ -446,7 +446,7 @@
  			
  			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
  			// set_id is passed through form, otherwise we're saving a new set
- 			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_EDIT_READ_ACCESS__) : new ca_sets();
+ 			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_SET_EDIT__) : new ca_sets();
  			
  			if(!$t_set->get("set_id") && ($pn_parent_id = $this->request->getParameter('parent_id', pInteger))){
  				# --- if making a new reponse set, check there isn't already one for the user
@@ -578,7 +578,7 @@
 					$this->view->setVar('message', _t("Removed group access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _("invalid group/set id"));
+				$this->view->setVar('errors', _t("invalid group/set id"));
 			}
 			$this->setAccess();
  		}
@@ -603,7 +603,7 @@
 					$this->view->setVar('message', _t("Removed user access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _("invalid user/set id"));
+				$this->view->setVar('errors', _t("invalid user/set id"));
 			}
  			$this->setAccess();
  		}
@@ -630,7 +630,7 @@
 					$this->view->setVar('message', _t("Changed group access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _("invalid group/set id or access"));
+				$this->view->setVar('errors', _t("invalid group/set id or access"));
 			}
 			$this->setAccess();
  		}
@@ -657,7 +657,7 @@
 					$this->view->setVar('message', _t("Changed user access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _("invalid user/set id or access"));
+				$this->view->setVar('errors', _t("invalid user/set id or access"));
 			}
 			$this->setAccess();
  		}
@@ -1137,7 +1137,7 @@
             
  			// set_id is passed through form, otherwise we're saving a new set, and adding the item to it
  			if($this->request->getParameter('set_id', pInteger)){
- 				$t_set = $this->_getSet(__CA_EDIT_READ_ACCESS__);
+ 				$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
  				if(!$t_set && $t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
  					$va_errors["general"] = _t("You can not add items to this %1.  You have read only access.", $vs_display_name);
  					$this->view->setVar('errors', $va_errors);

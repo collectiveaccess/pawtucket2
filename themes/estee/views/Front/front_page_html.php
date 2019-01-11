@@ -36,7 +36,7 @@
 		<div class="col-sm-12"><br/></div>
 	</div>
 	<div class="row primaryLandingBannerContentGradient">
-		<div class="col-xs-offset-1 col-xs-10 col-md-9 col-md-offset-1 col-sm-10 primaryLandingBannerContent">
+		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-9 col-md-offset-1 col-sm-10 primaryLandingBannerContent">
 			<?php print caGetThemeGraphic($this->request, 'hero_spacer_short.png'); ?>
 			<H1 class='primaryLandingBannerTitle'>Explore<br/>the Archives</H1>
 		</div>
@@ -56,24 +56,21 @@
 					<div class="hpFeatured">
 						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'gallery'.rand(1,2).'.jpg'), "", "", "Gallery", "Index"); ?>
 						<?php print caNavLink($this->request, "Featured Galleries", "hpFeaturedTitle", "", "Gallery", "Index"); ?>
-						<div class="hpFeaturedText">Explore curated selections from the Archives</div>
-						<?php print caNavLink($this->request, "MORE", "hpFeaturedLink", "", "Gallery", "Index"); ?>				
+						<div class="hpFeaturedText">Explore curated selections from the Archives</div>			
 					</div>
 				</div>
 				<div class="col-sm-4">
 					<div class="hpFeatured">
 						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'browse'.rand(1,4).'.jpg'), "", "", "Explore", "Brands"); ?>
 						<?php print caNavLink($this->request, "Browse", "hpFeaturedTitle", "", "Explore", "Brands"); ?>
-						<div class="hpFeaturedText">Discover products and archival items by Estée Lauder Companies' exceptional portfolio of brands</div>
-						<?php print caNavLink($this->request, "MORE", "hpFeaturedLink", "", "Explore", "Brands"); ?>	
+						<div class="hpFeaturedText">Discover products and archival items by Estée Lauder Companies' exceptional portfolio of brands</div>	
 					</div>
 				</div>
 				<div class="col-sm-4">
 					<div class="hpFeatured">
 						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'contact.jpg'), "", "", "Contact", "form"); ?>
 						<?php print caNavLink($this->request, "Contact Us", "hpFeaturedTitle", "", "Contact", "Form"); ?>
-						<div class="hpFeaturedText">Inquire about heritage tours, ask a question, schedule a research appointment.</div>
-						<?php print caNavLink($this->request, "MORE", "hpFeaturedLink", "", "Contact", "Form"); ?>	
+						<div class="hpFeaturedText">Inquire about heritage tours, ask a question, schedule a research appointment</div>
 					</div>
 				</div>
 			</div>

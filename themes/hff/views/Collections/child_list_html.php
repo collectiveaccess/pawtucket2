@@ -84,6 +84,9 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 			if($vs_desc_template && ($vs_desc = $qr_collections->getWithTemplate($vs_desc_template))){
 				$vs_output .= "<p>".$vs_desc."</p>";
 			}
+			#if($vs_location = $qr_collections->getWithTemplate('<ifcount code="ca_storage_locations"><unit relativeTo="ca_storage_locations.related" delimiter="<br/>"><unit relativeTo="ca_storage_locations.hierarchy" delimiter=" &gt; ">^ca_storage_locations.preferred_labels</unit></unit></ifcount>')){
+			#	$vs_output .= "<p>".$vs_location."</p>";
+			#}
 			$vs_output .= "</div>";
 			if(sizeof($va_child_ids)) {
 				if($vb_collapse_link){

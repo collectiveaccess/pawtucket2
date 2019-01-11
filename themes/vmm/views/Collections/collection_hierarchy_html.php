@@ -34,7 +34,8 @@
 							</div>
 						</div>
 						<div class='unit row'>
-							<div class='col-xs-12<?php print ($vb_has_grandchildren) ? "col-sm-4 col-md-4 col-lg-4" : ""; ?>'>
+							<!--<div class='col-xs-12<?php print ($vb_has_grandchildren) ? "col-sm-4 col-md-4 col-lg-4" : ""; ?>'>-->
+							<div class='col-xs-12 col-sm-4 col-md-4 col-lg-4'>
 								<div class='collectionsContainer'><div class='label'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
 <?php
 					if($qr_collection_children->numHits()){
@@ -97,13 +98,13 @@
 								</div><!-- end findingAidContainer -->
 							</div><!-- end col -->
 <?php
-					if($vb_has_grandchildren){
+					#if($vb_has_grandchildren){
 ?>
 							<div id='collectionLoad' class='col-xs-12 col-sm-8 col-md-8 col-lg-8'>
 								<i class='fa fa-arrow-left'></i> Click a <?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> container to the left to see its contents.
 							</div>
 <?php
-					}
+					#}
 ?>
 						</div><!--end row -->	
 						<div class='unit row'>

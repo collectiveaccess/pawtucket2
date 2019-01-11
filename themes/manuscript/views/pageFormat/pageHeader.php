@@ -44,8 +44,8 @@
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
@@ -116,14 +116,14 @@
 				</form>-->
 				<ul class="nav navbar-nav navbar-left">
 					<!--<li><a href="http://manuscript_cookbook.whirl-i-gig.com/">Home</a></li>-->
-					<li class='active dropdown'><a href="#">Database</a>
+					<li class='active dropdown'><a href="#">Databases</a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item"><?php print caNavLink($this->request, 'Manuscripts', '', 'Search', 'advanced', 'manuscripts'); ?></li>
 							<li class="dropdown-item"><?php print caNavLink($this->request, 'Kitchen Artifacts', '', 'Search', 'advanced', 'utensils'); ?></li>
 						</ul>
 					</li>
-					<li><a href="/?post_type=adapted_recipes">Adapted Recipes</a></li>
 					<li><a href="/blog">Blog</a></li>
+					<li><a href="/?post_type=adapted_recipes">Adapted Recipes</a></li>
 					<li><a href="/?post_type=essays">History</a></li>
 					<li><a href="/glossary/">Glossary</a></li>
 					<li class='dropdown'><a href="/about-us/">About</a>

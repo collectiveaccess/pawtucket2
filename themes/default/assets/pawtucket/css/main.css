@@ -3341,3 +3341,6 @@ input[type='text'].ui-autocomplete-loading {
     background: white url('../graphics/indicator.gif') right center no-repeat;
 }
 
+.video-js{
+	min-height:300px;
+}

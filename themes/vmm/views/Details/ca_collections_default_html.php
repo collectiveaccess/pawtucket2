@@ -14,7 +14,15 @@
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true, "checkAccess" => $va_access_values)));
 
+	$vs_back_url = $this->getVar("resultsURL");
+	
+	$va_breadcrumb = array(caNavLink($this->request, _t("Home"), "", "", "", ""));
+	if(strpos(strToLower($vs_back_url), "detail") === false){
+		$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Archival Fonds and Collections</a>";
+		$va_breadcrumb[] = $t_item->get('ca_collections.preferred_labels');
+	}
 ?>
+
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
@@ -25,13 +33,19 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+<?php
+	if(sizeof($va_breadcrumb) > 1){
+		print "<div class='breadcrumb'>".join(" > ", $va_breadcrumb)."</div>";
+	}
+?>
+
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 <?php					
-					if ($vn_pdf_enabled) {
-						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
-					}
+					print "<div class='exportCollection'>
+								<span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))
+								."<br/><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask An Archivist", "", "", "Contact",  "form", array('id' => $t_item->get("collection_id"), 'table' => 'ca_collections'))."</div>";
 ?>
 
 					{{{<H4>^ca_collections.preferred_labels <ifdef code="ca_collections.GMD">[<unit realtiveTo="ca_collections.GMD" delimiter=", ">^ca_collections.GMD</unit>]</ifdef><ifdef code="ca_collections.OtherTitle">: ^ca_collections.OtherTitle </ifdef><ifdef code="ca_collections.nonpreferred_labels"> = ^ca_collections.nonpreferred_labels </ifdef><ifdef code="creator_name"> / ^ca_collections.creator_name</ifdef></H4>
@@ -56,8 +70,8 @@
 						<ifdef code="ca_collections.language"><div class="unit"><H6>Languages</H6>^ca_collections.language%delimiter=,_</div></ifdef>
 						<ifdef code="ca_collections.related_material"><div class="unit"><H6>Related materials</H6>^ca_collections.related_material</div></ifdef>
 						<ifdef code="ca_collections.reproRestrictions.reproduction|ca_collections.reproRestrictions.access_restrictions"><div class="unit"><H6>Restrictions</H6><ifdef code="ca_collections.reproRestrictions.reproduction"><b>Reproductions: </b>^ca_collections.reproRestrictions.reproduction<br/></ifdef><ifdef code="ca_collections.reproRestrictions.access_restrictions"><b>Access: </b>^ca_collections.reproRestrictions.access_restrictions</ifdef></div></ifdef>
-						<ifcount code="ca_entities" min="1"><H6>Related people</H6><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></ifcount>
-						<ifcount code="ca_occurrences" min="1" restrictToTypes="vessel"><H6>Related vessels</H6><unit relativeTo="ca_occurrences" restrictToTypes="vessel"><ifdef code="ca_occurrences.vesprefix">^ca_occurrences.vesprefix </ifdef><l><i>^ca_occurrences.preferred_labels</i></l>  ^ca_occurrences.vessuffix</unit></ifcount>
+						<ifcount code="ca_entities" min="1"><div class="unit"><H6>Related people</H6><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>
+						<ifcount code="ca_occurrences" min="1" restrictToTypes="vessel"><div class="unit"><H6>Related vessels</H6><unit relativeTo="ca_occurrences" restrictToTypes="vessel"><ifdef code="ca_occurrences.vesprefix">^ca_occurrences.vesprefix </ifdef><l><i>^ca_occurrences.preferred_labels</i></l>  ^ca_occurrences.vessuffix</unit></div></ifcount>
 					}}}
 <?php
 				$va_lcsh = $t_item->get("ca_collections.lcsh_terms", array("returnAsArray" => true));

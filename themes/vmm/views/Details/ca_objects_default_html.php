@@ -36,10 +36,22 @@
 	$vs_representationViewer = trim($this->getVar("representationViewer"));
 	
 	$vs_detail_tools = "<div id='detailTools'>
-						<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask An Archivist", "", "", "Contact",  "form", array('object_id' => $vn_id))."</div><!-- end detailTool -->
+						<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask An Archivist", "", "", "Contact",  "form", array('id' => $vn_id, 'table' => 'ca_objects'))."</div><!-- end detailTool -->
 						<div class='detailTool'><a href='#' onclick='jQuery(\"#detailComments\").slideToggle(); return false;'><span class='glyphicon glyphicon-comment'></span>Comments and Tags (".(sizeof($va_comments) + sizeof($va_tags)).")</a></div><!-- end detailTool -->
 						<div id='detailComments'>".$this->getVar("itemComments")."</div><!-- end itemComments -->
 					</div><!-- end detailTools -->";
+	
+	$vs_back_url = $this->getVar("resultsURL");
+	
+	$va_breadcrumb = array(caNavLink($this->request, _t("Home"), "", "", "", ""));
+	if(strpos(strToLower($vs_back_url), "detail") === false){
+		if(strpos(strToLower($vs_back_url), "gallery") !== false){
+			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Highlights</a>";
+		}else{
+			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Archival Items</a>";
+		}
+		$va_breadcrumb[] = $t_object->get("ca_objects.preferred_labels");
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -51,6 +63,12 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+<?php
+	if(sizeof($va_breadcrumb) > 1){
+		print "<div class='breadcrumb'>".join(" > ", $va_breadcrumb)."</div>";
+	}
+?>
+
 		<div class="container"><div class="row">
 <?php
 		if($vs_representationViewer){
@@ -123,7 +141,7 @@
 ?>
 				
 				{{{<if rule='^ca_objects.type_id IN ["Map", "Chart", "Ship plan"]'>
-					<ifdef code="ca_objects.scale"><div class="unit"<H6>Scale</H6>^ca_objects.scale</div></ifdef.
+					<ifdef code="ca_objects.scale"><div class="unit"><H6>Scale</H6>^ca_objects.scale</div></ifdef>
 				</if>}}}
 				{{{<if rule='^ca_objects.type_id IN ["Map", "Chart"]'>
 					<ifdef code="ca_objects.correct">
@@ -185,10 +203,10 @@
 					<ifdef code="ca_objects.hullyard_no"><div class="unit"><H6>Hull yard number</H6>^ca_objects.hullyard_no</div></ifdef>
 					<ifdef code="ca_objects.measurements.dimension_remarks"><div class="unit"><H6>Physical description note</H6>^ca_objects.measurements.dimension_remarks</div></ifdef>
 					<ifdef code="ca_objects.archtechnote"><div class="unit"><H6>Notes</H6>
-						<ifdef code="ca_objects.archtechnote.staterespship"><b>Statement of responsibility: </b>^ca_objects.archtechnote.staterespship</ifdef>
-						<ifdef code="ca_objects.archtechnote.sigsship"><b>Signatures: </b>^ca_objects.archtechnote.sigsship</ifdef>
-						<ifdef code="ca_objects.archtechnote.edition_note_ship"><b>Edition note: </b>^ca_objects.chartnote.edition_note_ship</ifdef>
-						<ifdef code="ca_objects.archtechnote.date_note_ship"><b>Date note: </b>^ca_objects.archtechnote.date_note_ship</ifdef>
+						<ifdef code="ca_objects.archtechnote.staterespship"><b>Statement of responsibility: </b>^ca_objects.archtechnote.staterespship<br/></ifdef>
+						<ifdef code="ca_objects.archtechnote.sigsship"><b>Signatures: </b>^ca_objects.archtechnote.sigsship<br/></ifdef>
+						<ifdef code="ca_objects.archtechnote.edition_note_ship"><b>Edition note: </b>^ca_objects.chartnote.edition_note_ship<br/></ifdef>
+						<ifdef code="ca_objects.archtechnote.date_note_ship"><b>Date note: </b>^ca_objects.archtechnote.date_note_ship<br/></ifdef>
 					</div></ifdef>
 					<ifcount code="ca_entities" min="1">
 						<div class="unit">

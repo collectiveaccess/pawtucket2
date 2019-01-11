@@ -109,9 +109,9 @@
 			//	
 			$this->view->setVar('browse', $po_browse);
 			
-			$vb_is_nav = (bool)$this->request->getParameter('isNav', pString);
+			$vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger);
 			$this->view->setVar('isNav', $vb_is_nav);
-			$vs_facet = $this->request->getParameter('facet', pString);
+			$vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true]);
 			$vn_s = $vb_is_nav ? $this->request->getParameter('s', pInteger) : 0;	// start menu-based browse menu facet data at page boundary; all others get the full facet
 			$this->view->setVar('start', $vn_s);
 			$this->view->setVar('limit', $vn_limit = ($vb_is_nav ? 500 : null));	// break facet into pages for menu-based browse menu
@@ -144,9 +144,9 @@
  		 */
  		public function getFacetHierarchyLevel() {
  			$va_access_values = caGetUserAccessValues($this->request);
- 			$ps_facet_name = $this->request->getParameter('facet', pString);
- 			$ps_cache_key = $this->request->getParameter('key', pString);
- 			$ps_browse_type = $this->request->getParameter('browseType', pString);
+ 			$ps_facet_name = $this->request->getParameter('facet', pString, ['forcePurify' => true]);
+ 			$ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true]);
+ 			$ps_browse_type = $this->request->getParameter('browseType', pString, ['forcePurify' => true]);
  			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
 			
  			if($ps_browse_type == "caLightbox"){
@@ -171,7 +171,7 @@
 			
  			$va_facet = $o_browse->getFacet($ps_facet_name, array('checkAccess' => $va_access_values));
  			
-			$pa_ids = explode(";", $ps_ids = $this->request->getParameter('id', pString));
+			$pa_ids = explode(";", $ps_ids = $this->request->getParameter('id', pString, ['forcePurify' => true]));
 			if (!sizeof($pa_ids)) { $pa_ids = array(null); }
  			
 			$va_level_data = array();
@@ -314,7 +314,7 @@
 				}
 				$va_level_data[$pn_id] = $va_json_data;
 			}
- 			if (!trim($this->request->getParameter('init', pString))) {
+ 			if (!trim($this->request->getParameter('init', pString, ['forcePurify' => true]))) {
 				$this->opo_result_context = new ResultContext($this->request, $va_browse_info['table'], $this->ops_find_type);
 				$this->opo_result_context->setParameter($ps_facet_name.'_browse_last_id', $pn_id);
 				$this->opo_result_context->saveContext();
@@ -322,7 +322,7 @@
  			
  			$this->view->setVar('facet_list', $va_level_data);
  			
- 			switch($this->request->getParameter('returnAs', pString)){
+ 			switch($this->request->getParameter('returnAs', pString, ['forcePurify' => true])){
  				case "json":
  					return $this->render('Browse/facet_hierarchy_level_json.php');
  					break;
@@ -341,10 +341,10 @@
  			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
 			$pn_id = $this->request->getParameter('id', pInteger);
  			$va_access_values = caGetUserAccessValues($this->request);
- 			$ps_facet_name = $this->request->getParameter('facet', pString);
+ 			$ps_facet_name = $this->request->getParameter('facet', pString, ['forcePurify' => true]);
  			$this->view->setVar("facet_name", $ps_facet_name);
- 			$this->view->setVar("key", $this->request->getParameter('key', pString));
- 			$ps_browse_type = $this->request->getParameter('browseType', pString);
+ 			$this->view->setVar("key", $this->request->getParameter('key', pString, ['forcePurify' => true]));
+ 			$ps_browse_type = $this->request->getParameter('browseType', pString, ['forcePurify' => true]);
  			if (!($va_browse_info = caGetInfoForBrowseType($ps_browse_type))) {
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type");
@@ -353,7 +353,7 @@
  			$vs_class = $va_browse_info['table'];
 			$o_browse = caGetBrowseInstance($vs_class);
  			if(!is_array($va_facet_info = $o_browse->getInfoForFacet($ps_facet_name))) { return null; }
- 			if ($ps_cache_key = $this->request->getParameter('key', pString)) {
+ 			if ($ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true])) {
 				$o_browse->reload($ps_cache_key);
 			}
  			
@@ -449,7 +449,7 @@
 			
  			$this->view->setVar('ancestors', $va_ancestors);
  			
- 			switch($this->request->getParameter('returnAs', pString)){
+ 			switch($this->request->getParameter('returnAs', pString, ['forcePurify' => true])){
  				case "json":
  					return $this->render('Browse/facet_hierarchy_ancestors_json.php');
  					break;
@@ -491,9 +491,9 @@
  		public function ajaxGetMapItem() {
             if($this->opb_is_login_redirect) { return; }
             
-            $pa_ids = explode(";",$this->request->getParameter('id', pString)); 
-            $ps_view = $this->request->getParameter('view', pString);
-            $ps_browse = $this->request->getParameter('browse', pString);
+            $pa_ids = explode(";",$this->request->getParameter('id', pString, ['forcePurify' => true])); 
+            $ps_view = $this->request->getParameter('view', pString, ['forcePurify' => true]);
+            $ps_browse = $this->request->getParameter('browse', pString, ['forcePurify' => true]);
             if (!($va_browse_info = caGetInfoForBrowseType($ps_browse))) {
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type");
