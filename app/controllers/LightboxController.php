@@ -446,7 +446,7 @@
  			
  			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
  			// set_id is passed through form, otherwise we're saving a new set
- 			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_SET_EDIT__) : new ca_sets();
+ 			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_SET_EDIT_ACCESS__) : new ca_sets();
  			
  			if(!$t_set->get("set_id") && ($pn_parent_id = $this->request->getParameter('parent_id', pInteger))){
  				# --- if making a new reponse set, check there isn't already one for the user
