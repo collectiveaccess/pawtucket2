@@ -184,7 +184,7 @@ body.initial #user-navbar > li > a{
 		background-color:#FFF;
 	}
 }
-.dropdown-menu > li > a {
+nav .dropdown-menu > li > a {
     padding: 7px 20px;
     text-transform: uppercase;
     font-size: 15px;
@@ -192,7 +192,7 @@ body.initial #user-navbar > li > a{
     text-align: right;
 
 }
-.dropdown-menu{
+nav .dropdown-menu{
 	border:0px;
 	margin-top: 0px !important;
 	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.176);
