@@ -53,7 +53,9 @@
 							$va_dates_array = array();
 							foreach ($vs_dates as $va_key => $vs_date_info) {
 								foreach ($vs_date_info as $va_key => $vs_date) {
-									$va_dates_array[$vs_date['dacs_dates_types']][] = $vs_date['dacs_date_value'];
+									if ($vs_date['dacs_date_value']) {
+										$va_dates_array[$vs_date['dacs_dates_types']][] = $vs_date['dacs_date_value'];
+									}
 								}
 							}
 							if ($va_dates_array) {
@@ -108,24 +110,15 @@
 							print "<div class='unit'><h6>Related Entities</h6>".$vs_rel_ent."</div>";
 						}	
 																																																																																																
-					}						
-?>
-					
+					}
+				
+					if ($vn_pdf_enabled) {
+						print "<div id='detailTools'><div class='detailTool'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div></div>";
+					}
+											
+?>					
 				</div><!-- end col -->
-				<div class='col-sm-12'>
 
-					{{{<ifcount code="ca_entities" min="1" max="1"><div class='unit'><H6>Related entities</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><div class='unit'><H6>Related entity</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_collections"><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit> (^relationship_typename)</unit></div>}}}
-					
-					{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="2"><H6>Related occurrences</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences_x_collections"><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places_x_collections"><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}					
-				</div><!-- end col -->
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">

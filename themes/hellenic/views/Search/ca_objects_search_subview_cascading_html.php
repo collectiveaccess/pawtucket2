@@ -70,7 +70,9 @@
 		$t_list_item = new ca_list_items();
 		while($qr_results->nextHit()) {
 				$vn_id 					= $qr_results->get("ca_objects.object_id");
-				$vs_label_detail_link 	= caDetailLink($this->request, $qr_results->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id);
+				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_results->get("ca_objects.idno"), '', 'ca_objects', $vn_id);
+
+				$vs_label_detail_link 	= "<div class='browseTitle'>".caDetailLink($this->request, $qr_results->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id)."</div>";
 				$vs_link_text = ($qr_results->get("ca_objects.preferred_labels")) ? "<b>Title: </b>".$qr_results->get("ca_objects.preferred_labels") : $qr_results->get("ca_objects.idno");
 
 				$vs_thumbnail = "";
@@ -86,7 +88,16 @@
 						$vs_thumbnail = $vs_default_placeholder_tag;
 					}
 				}
-				
+				if ($vs_description = $qr_results->get("ca_objects.date_created", array('delimiter' => ', '))){
+					$vs_description = "<div>".$vs_description."</div>";
+				} else {
+					$vs_description = null;
+				}
+				if ($vs_collection = $qr_results->get("ca_collections.preferred_labels", array('delimiter' => ', '))){
+					$vs_collection = "<div>".$vs_collection."</div>";
+				} else {
+					$vs_collection = null;
+				}					
 				if(!$this->request->getParameter("openResultsInOverlay", pInteger)){
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', 'ca_objects', $vn_id);
 				}else{
@@ -109,7 +120,7 @@
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+					<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_description}{$vs_collection}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>

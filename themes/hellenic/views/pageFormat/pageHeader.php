@@ -151,18 +151,18 @@
 					<li >
 						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown">Resources</a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Bibliography and links"), "", "", "About", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Rights and Reproduction"), "", "", "About", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Plan a Visit"), "", "", "About", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "collection"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Citation Guide and Links"), "", "", "About", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Rights and Reproduction"), "", "", "About", "reproduction"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Schedule a Research Visit"), "", "", "About", "research"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>				
 						</ul>
 					</li>
 					<li >
 						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown">Contribute</a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("Support the NHM"), "", "", "About", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Donate Materials (FAQ)"), "", "", "About", "Index"); ?></li>				
+							<li><?php print "<a href='https://www.nationalhellenicmuseum.org/support/'>Support our Work</a>";?></li>
+							<li><?php print caNavLink($this->request, _t("Grow the Collection"), "", "", "About", "donate"); ?></li>				
 						</ul>
 					</li>										
 				</ul>

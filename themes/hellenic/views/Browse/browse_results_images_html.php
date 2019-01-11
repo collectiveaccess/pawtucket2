@@ -114,11 +114,16 @@
 				}else{			
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 					$vs_label_detail_link 	= "<div class='browseTitle'>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id)."</div>";
-					if ($vs_description = $qr_res->get("ca_objects.description")){
+					if ($vs_description = $qr_res->get("ca_objects.date_created", array('delimiter' => ', '))){
 						$vs_description = $vs_description;
 					} else {
 						$vs_description = null;
 					}
+					if ($vs_collection = $qr_res->get("ca_collections.preferred_labels", array('delimiter' => ', '))){
+						$vs_collection = "<div>".$vs_collection."</div>";
+					} else {
+						$vs_collection = null;
+					}					
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
@@ -154,7 +159,7 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_description}
+						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}{$vs_description}{$vs_collection}
 					</div><!-- end bResultItemText -->
 				</div><!-- end bResultItemContent -->
 				<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
