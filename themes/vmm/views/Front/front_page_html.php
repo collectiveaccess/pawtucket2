@@ -35,7 +35,7 @@
 <div class="parallax">
 	<div class="container">
 		<div class="row">
-			<div class="col-sm-12 col-md-6 col-md-offset-3">
+			<div class="col-xs-12 col-sm-6 col-sm-offset-3">
 				
 				<div class="heroSearch">
 					<H2>Welcome To</H2>
@@ -108,7 +108,7 @@
 	if($vn_gallery_set_type_id){
 		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id, 'table' => "ca_objects");
 		$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
-		$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
+		$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconExtralarge", "checkAccess" => $va_access_values));
 		
 		$o_front_config = caGetFrontConfig();
 		$vs_front_page_set = $o_front_config->get('front_page_set_code');
