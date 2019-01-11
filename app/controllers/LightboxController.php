@@ -1137,7 +1137,7 @@
             
  			// set_id is passed through form, otherwise we're saving a new set, and adding the item to it
  			if($this->request->getParameter('set_id', pInteger)){
- 				$t_set = $this->_getSet(__CA_SET_EDIT__);
+ 				$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
  				if(!$t_set && $t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
  					$va_errors["general"] = _t("You can not add items to this %1.  You have read only access.", $vs_display_name);
  					$this->view->setVar('errors', $va_errors);
