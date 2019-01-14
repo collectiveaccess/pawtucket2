@@ -1092,9 +1092,10 @@
 				$va_row_ids = array();
 				$va_row_ids_raw = explode('&', $this->request->getParameter('row_ids', pString));
 				foreach($va_row_ids_raw as $vn_row_id_raw){
+					$vn_row_id_raw = str_replace('amp;', '', $vn_row_id_raw);
 					$va_row_ids[] = str_replace('row[]=', '', $vn_row_id_raw);
 				}
-				$va_errors = $t_set->reorderItems($va_row_ids);
+				$va_errors = $t_set->reorderItems($va_row_ids, ['user_id' => $this->request->getUserID()]);
 			}else{
 				throw new ApplicationException(_t("You do not have access to this lightbox"));
 			}
@@ -1233,6 +1234,7 @@
 							$va_object_ids = $o_context->getResultList();
 						} elseif($pn_object_id) {
 							$va_object_ids = [$pn_object_id];
+							$this->view->setVar("row_id", $pn_object_id);
 						}else{
 							$va_object_ids = explode(";", $ps_object_ids);
 						}

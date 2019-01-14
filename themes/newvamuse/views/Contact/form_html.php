@@ -6,6 +6,8 @@
 
 	$vn_object_id = $this->request->getParameter("object_id", pString);
 	$t_object = new ca_objects($vn_object_id);
+	$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "objects", $t_object->get("ca_objects.object_id"));
+
 ?>
 <div id="askACurator"><div class='inside'>
 <div class="row"><div class="col-sm-12">
@@ -18,6 +20,10 @@
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
 		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
+		<input type="hidden" name="itemId" value="<?php print $t_object->get("ca_objects.idno"); ?>">
+		<input type="hidden" name="itemTitle" value="<?php print $t_object->get("ca_objects.preferred_labels.name"); ?>">
+		<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
+		<input type="hidden" name="object_id" value="<?php print $vn_object_id; ?>">
 		<div class="row">
 		<div class="col-md-12">
 			<div class="row">

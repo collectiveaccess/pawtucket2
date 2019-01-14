@@ -79,10 +79,10 @@
 					$vs_label = join("; ", $va_labels);
 					$va_media_info = array();
 					#$va_media_info = $qr_sim_items->getMediaInfo('ca_object_representations.media', 'iconlarge', null, array('checkAccess' => $va_access_values));
-					$va_media_info = $qr_sim_items->getMediaInfo('ca_object_representations.media', 'icon', null, array('checkAccess' => $va_access_values));
+					$va_media_info = $qr_sim_items->getMediaInfo('ca_object_representations.media', 'widepreview', null, array('checkAccess' => $va_access_values));
 					$vn_padding_top_bottom =  ((120 - $va_media_info["HEIGHT"]) / 2);
 					#$va_sim_items[] = array("object_id" => $qr_sim_items->get("ca_objects.object_id"), "label" => $vs_label, "media" => $qr_sim_items->getMediaTag('ca_object_representations.media', 'iconlarge', array('checkAccess' => $va_access_values)), "idno" => $qr_sim_items->get("ca_objects.idno"), "padding" => $vn_padding_top_bottom);	
-					$va_sim_items[] = array("object_id" => $qr_sim_items->get("ca_objects.object_id"), "label" => $vs_label, "media" => $qr_sim_items->get('ca_object_representations.media.icon', array('checkAccess' => $va_access_values)), "idno" => $qr_sim_items->get("ca_objects.idno"));	
+					$va_sim_items[] = array("object_id" => $qr_sim_items->get("ca_objects.object_id"), "label" => $vs_label, "media" => $qr_sim_items->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values)), "idno" => $qr_sim_items->get("ca_objects.idno"));	
 					$i++;
 				}				
 			}
