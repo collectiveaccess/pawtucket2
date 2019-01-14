@@ -44,7 +44,6 @@
             }
             
  			$this->config = caGetGalleryConfig();
- 			$this->opo_datamodel = Datamodel::load();
  			$va_access_values = caGetUserAccessValues($this->request);
  		 	$this->opa_access_values = $va_access_values;
  		 	# --- what is the section called - title of page
@@ -146,7 +145,7 @@
  			$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
  			$this->view->setVar("rep_object", $t_rep);
  			$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
- 			$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"]));
+ 			$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"], ['context' => 'gallery']));
  			$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
  			$this->view->setVar("object_id", $va_set_items[$pn_item_id]["row_id"]);
  			$pn_previous_id = 0;

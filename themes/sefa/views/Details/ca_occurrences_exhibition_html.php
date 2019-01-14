@@ -58,7 +58,7 @@
 						if(is_object($o_representations) && $o_representations->numHits()){
 							print "<li".((in_array($ps_view, array("installations", "installationThumbnails"))) ? " class='active'" : "").">".caDetailLink($this->request, _t("installation views"), '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" => "installations"), null, array("type_id" => $t_item->get("type_id")))."</li>";
 						}
-						if($vs_pr_link = $t_item->get("press_release", array("version" => "original", "return" => "url"))){
+						if($vs_pr_link = $t_item->get("ca_occurrences.press_release.original.url")){
 ?>
 							<li><a href="<?php print $vs_pr_link; ?>">press release</a></li>	
 <?php

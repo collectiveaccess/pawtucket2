@@ -35,7 +35,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records created by a person or organization.">Creator </span>
-			{{{ca_entities.preferred_labels%restrictToRelationshipTypes=creator%width=200px&height=1}}}
+			{{{ca_entities.preferred_labels%width=200px&height=1}}}
 		</div>
 	</div>	
 	<div class='row'>

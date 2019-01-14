@@ -41,7 +41,7 @@
 					print "<div class='loanImg'>".caNavLink($this->request, $va_reps['tags']['medium'], '', '', 'Detail', 'artworks/'.$va_related_artwork)."</div>";
 					print "<div class='lotCaption'>";
 					print "<p>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'))), '', '', 'Detail', 'artworks/'.$va_related_artwork)."</p>";
-					print "<p>".caNavLink($this->request, "<i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'artworks/'.$va_related_artwork)."</p>";
+					print "<p>".caNavLink($this->request, "<i>".$t_object->get('ca_objects.preferred_labels')."</i>, ".$t_object->get('ca_objects.creation_date_display'), '', '', 'Detail', 'artworks/'.$va_related_artwork)."</p>";
 					print "<p>".$t_object->get('ca_objects.medium')."</p>";
 					print "<p>".$t_object->get('ca_objects.dimensions.display_dimensions', array('delimiter' => '<br/>'))."</p>";
 					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){

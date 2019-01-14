@@ -40,19 +40,19 @@
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12 col-md-8">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search Collections currently holding Kitchen Artifacts.">Institutions</span>
-				{{{ca_collections.preferred_labels%width=220px}}}
-				<select name="ca_collections.preferred_labels" id="ca_collections_preferred_labels_2">
+				{{{ca_collections.collection_id%width=220px}}}
+				<select name="ca_collections.collection_id" id="ca_collections_collection_id_2">
 					<option value="">-</option>
 <?php
 				#require_once(__CA_APP_DIR__.'/helpers/themeHelpers.php');
 				$o_dm = Datamodel::load();
-				$t_instance = $o_dm->getInstanceByTableName('ca_collection_labels', true);
+				$t_instance = Datamodel::getInstance('ca_collection_labels', true);
 				$o_db = $t_instance->getDb();
-				$qr_res = $o_db->query("SELECT DISTINCT name FROM ca_collection_labels INNER JOIN ca_collections ON ca_collections.collection_id = ca_collection_labels.collection_id INNER JOIN ca_objects_x_collections ON ca_collections.collection_id = ca_objects_x_collections.collection_id INNER JOIN ca_objects ON ca_objects_x_collections.object_id = ca_objects.object_id WHERE is_preferred = 1 AND ca_objects.type_id = 24 AND ca_objects.access = 1 ORDER BY name;");
+				$qr_res = $o_db->query("SELECT DISTINCT ca_collection_labels.name, ca_collection_labels.collection_id FROM ca_collection_labels INNER JOIN ca_collections ON ca_collections.collection_id = ca_collection_labels.collection_id INNER JOIN ca_objects_x_collections ON ca_collections.collection_id = ca_objects_x_collections.collection_id INNER JOIN ca_objects ON ca_objects_x_collections.object_id = ca_objects.object_id WHERE is_preferred = 1 AND ca_objects.type_id = 24 AND ca_objects.access = 1 ORDER BY name;");
 				#print_r($qr_res);
 				while($qr_res->nextRow()) {
 					$vs_coll_name = $qr_res->get("name");
-					print '<option value="'.$vs_coll_name.'">'.$vs_coll_name.'</option>';
+					print '<option value="'.$qr_res->get("collection_id").'">'.$vs_coll_name.'</option>';
 				}
 ?>
 				</select>
@@ -96,7 +96,7 @@
 <script>
 	jQuery(document).ready(function() {
 		$('.advancedSearchField .formLabel').popover();
-		$('#ca_collections_preferred_labels').attr('type', 'hidden');
+		//$('#ca_collections_preferred_labels').attr('type', 'hidden');
 	});
 
 </script>

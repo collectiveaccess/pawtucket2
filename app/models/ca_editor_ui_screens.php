@@ -34,7 +34,7 @@
    *
    */
 
-require_once(__CA_LIB_DIR__.'/ca/BundlableLabelableBaseModelWithAttributes.php');
+require_once(__CA_LIB_DIR__.'/BundlableLabelableBaseModelWithAttributes.php');
 require_once(__CA_MODELS_DIR__.'/ca_metadata_elements.php');
 require_once(__CA_MODELS_DIR__.'/ca_editor_uis.php');
 require_once(__CA_MODELS_DIR__.'/ca_editor_ui_bundle_placements.php');
@@ -235,11 +235,11 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 	# Display settings
 	# ------------------------------------------------------
 	/**
-	 * Add bundle placement to currently loaded display
+	 * Add bundle placement to currently loaded screen
 	 *
 	 * @param string $ps_bundle_name Name of bundle to add (eg. ca_objects.idno, ca_objects.preferred_labels.name)
 	 * @param array $pa_settings Placement settings array; keys should be valid setting names
-	 * @param int $pn_rank Optional value that determines sort order of bundles in the display. If omitted, placement is added to the end of the display.
+	 * @param int $pn_rank Optional value that determines sort order of bundles in the screen. If omitted, placement is added to the end of the screen.
 	 * @param array $pa_options Optional array of options. Supports the following options:
 	 * 		user_id = if specified then add will fail if specified user does not have edit access for the display
 	 * @return int Returns placement_id of newly created placement on success, false on error
@@ -247,9 +247,6 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 	public function addPlacement($ps_bundle_name, $ps_placement_code, $pa_settings, $pn_rank=null, $pa_options=null) {
 		if (!($vn_screen_id = $this->getPrimaryKey())) { return null; }
 		$pn_user_id = isset($pa_options['user_id']) ? $pa_options['user_id'] : null;
-		//if ($pn_user_id && !$this->haveAccessToDisplay($pn_user_id, __CA_BUNDLE_DISPLAY_EDIT_ACCESS__)) {
-		//	return null;
-		//}
 		
 		unset(ca_editor_ui_screens::$s_placement_list_cache[$vn_screen_id]);
 		
@@ -279,11 +276,14 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 			$this->errors = array_merge($this->errors, $t_placement->errors);
 			return false;
 		}
+		
+		// Dependent field visibility config relies on UI config
+		if ($this->getAppConfig()->get('enable_dependent_field_visibility')) { CompositeCache::flush('ca_metadata_elements_available_settings'); }
 		return $t_placement->getPrimaryKey();
 	}
 	# ------------------------------------------------------
 	/**
-	 * Removes bundle placement from display
+	 * Removes bundle placement from screen
 	 *
 	 * @param int $pn_placement_id Placement_id of placement to remove
 	 * @param array $pa_options Optional array of options. Supports the following options:
@@ -293,9 +293,6 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 	public function removePlacement($pn_placement_id, $pa_options=null) {
 		if (!($vn_screen_id = $this->getPrimaryKey())) { return null; }
 		$pn_user_id = isset($pa_options['user_id']) ? $pa_options['user_id'] : null;
-		//if ($pn_user_id && !$this->haveAccessToDisplay($pn_user_id, __CA_BUNDLE_DISPLAY_EDIT_ACCESS__)) {
-		//	return null;
-		//}
 		
 		$t_placement = new ca_editor_ui_bundle_placements($pn_placement_id);
 		if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
@@ -309,6 +306,31 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 			}
 			
 			unset(ca_editor_ui_screens::$s_placement_list_cache[$vn_screen_id]);
+			
+			// Dependent field visibility config relies on UI config
+			if ($this->getAppConfig()->get('enable_dependent_field_visibility')) { CompositeCache::flush('ca_metadata_elements_available_settings'); }
+			return true;
+		}
+		return false;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Removes all bundle placements from screen
+	 *
+	 * @param array $pa_options Optional array of options. Supports the following options:
+	 * 		user_id = if specified then remove will fail if specified user does not have edit access for the display
+	 * @return bool Returns true on success, false on error
+	 */
+	public function removeAllPlacements($pa_options=null) {
+		if (is_array($va_placements = $this->getPlacements($pa_options))) {
+			foreach($va_placements as $va_placement) {
+				if (!($this->removePlacement($va_placement['placement_id'], $pa_options))) {
+					return false;
+				}
+			}
+			
+			// Dependent field visibility config relies on UI config
+			if ($this->getAppConfig()->get('enable_dependent_field_visibility')) { CompositeCache::flush('ca_metadata_elements_available_settings'); }
 			return true;
 		}
 		return false;
@@ -377,7 +399,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 					$va_placements[$vn_placement_id]['settingsForm'] = $t_placement->getHTMLSettingForm(array('id' => $vs_bundle_name.'_'.$vn_placement_id, 'settings' => $va_settings));
 				} else {
 					$va_tmp = explode('.', $vs_bundle_name);
-					$t_instance = $this->_DATAMODEL->getInstanceByTableName($va_tmp[0], true);
+					$t_instance = Datamodel::getInstanceByTableName($va_tmp[0], true);
 					$va_placements[$vn_placement_id]['display'] = ($t_instance ? $t_instance->getDisplayLabel($vs_bundle_name) : "???");
 				}
 			}
@@ -415,8 +437,8 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 			return MemoryCache::fetch($vs_cache_key, 'UiScreensAvailableBundles');
 		}
 		
-		if (!is_numeric($pm_table_name_or_num)) { $pm_table_name_or_num = $this->_DATAMODEL->getTableNum($pm_table_name_or_num); }
-		if (!($t_instance = $this->getAppDatamodel()->getInstanceByTableNum($pm_table_name_or_num, false))) { return null; }
+		if (!is_numeric($pm_table_name_or_num)) { $pm_table_name_or_num = Datamodel::getTableNum($pm_table_name_or_num); }
+		if (!($t_instance = Datamodel::getInstanceByTableNum($pm_table_name_or_num, false))) { return null; }
 		$vs_table = $t_instance->tableName();
 
 		// if cache is disabled, make sure bundle definitions are up-to-date for this instance. they are usually cached.
@@ -600,8 +622,8 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 				case 'related_table':
 					if(preg_match("/^([a-z_]+)_(related_list|table)$/", $vs_bundle, $va_matches)) {
 						$vs_rel_table = $va_matches[1];
-						$t_rel = $this->_DATAMODEL->getInstanceByTableName($vs_rel_table, true);
-						$va_path = array_keys($this->_DATAMODEL->getPath($t_instance->tableName(), $vs_rel_table));
+						$t_rel = Datamodel::getInstanceByTableName($vs_rel_table, true);
+						$va_path = array_keys(Datamodel::getPath($t_instance->tableName(), $vs_rel_table));
 						if(!is_array($va_path)) { continue 2; }
 
 						$va_additional_settings = array(
@@ -672,8 +694,8 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 						
 						break;
 					} else {
-						if (!($t_rel = $this->_DATAMODEL->getInstanceByTableName($vs_bundle, true))) { continue; }
-						$va_path = array_keys($this->_DATAMODEL->getPath($t_instance->tableName(), $vs_bundle));
+						if (!($t_rel = Datamodel::getInstanceByTableName($vs_bundle, true))) { continue; }
+						$va_path = array_keys(Datamodel::getPath($t_instance->tableName(), $vs_bundle));
 						$va_additional_settings = array(
 							'restrict_to_relationship_types' => array(
 								'formatType' => FT_TEXT,
@@ -968,7 +990,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 					}
 					if (!$t_rel->hasField('type_id')) { unset($va_additional_settings['restrict_to_types']); }
 					if (sizeof($va_path) == 3) {
-						if ($t_link = $this->_DATAMODEL->getInstanceByTableName($va_path[1], true)) {
+						if ($t_link = Datamodel::getInstanceByTableName($va_path[1], true)) {
 							if (!$t_link->hasField('type_id')) {
 								unset($va_additional_settings['restrict_to_relationship_types']);
 								unset($va_additional_settings['useFixedRelationshipType']);
@@ -1168,6 +1190,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'formatType' => FT_TEXT,
 										'displayType' => DT_FIELD,
 										'default' => '',
+										'takesLocale' => true,
 										'width' => "275px", 'height' => 4,
 										'label' => _t('Object location display template'),
 										'description' => _t('Layout for current location of object when displayed in list (can include HTML). The template is evaluated relative to the object-movement or object-storage location relationship that is current. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_movements.idno</i>.')
@@ -1176,6 +1199,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'formatType' => FT_TEXT,
 										'displayType' => DT_FIELD,
 										'default' => '',
+										'takesLocale' => true,
 										'width' => "275px", 'height' => 4,
 										'label' => _t('Object location history template'),
 										'description' => _t('Layout for each previous location of object when displayed in history list (can include HTML). The template is evaluated relative to the object-movement or object-storage location relationship. Element code tags prefixed with the ^ character can be used to represent the value in the template. For example: <i>^ca_movements.idno</i>.')
@@ -1686,7 +1710,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 								
 								$va_additional_settings = array();
 								foreach($t_set->getFieldInfo('table_num', 'BOUNDS_CHOICE_LIST') as $vs_table_display_name => $vn_table_num) {
-									$va_additional_settings[$this->_DATAMODEL->getTableName($vn_table_num).'_display_template'] = array(
+									$va_additional_settings[Datamodel::getTableName($vn_table_num).'_display_template'] = array(
 											'formatType' => FT_TEXT,
 											'displayType' => DT_FIELD,
 											'default' => '',
@@ -1695,6 +1719,9 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 											'description' => _t('Layout for %1 set item information when used in a display list. For example: <i>^ca_objects.deaccession_notes</i>.', $vs_table_display_name)
 									);
 								}
+								break;
+							case 'ca_metadata_alert_rule_type_restrictions':
+								$va_additional_settings = [];
 								break;
 						}
 						$va_additional_settings['documentation_url'] = array(
@@ -1724,7 +1751,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 					'multiple' => true,
 					'showTypesForTable' => $vs_table,
 					'width' => "275px", 'height' => 4,
-					'label' => _t('Display bundle for types: %1', $this->_DATAMODEL->getTableProperty($vs_table, 'NAME_PLURAL')),
+					'label' => _t('Display bundle for types: %1', Datamodel::getTableProperty($vs_table, 'NAME_PLURAL')),
 					'description' => _t('Restrict which types this bundle is displayed for. If no types are selected the bundle will be displayed for <strong>all</strong> types.')	
 				];
 				$va_additional_settings['bundleTypeRestrictionsIncludeSubtypes'] = [
@@ -1790,7 +1817,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 		if (!is_array($pa_settings)) { $pa_settings = array(); }
 		
 		$t_ui = new ca_editor_uis();
-		if (!($t_instance = $this->_DATAMODEL->getInstanceByTableNum($this->getTableNum()))) { return false; }
+		if (!($t_instance = Datamodel::getInstanceByTableNum($this->getTableNum()))) { return false; }
 		
 		if ($this->inTransaction()) { 
 			$t_instance->setTransaction($this->getTransaction()); 
@@ -1869,7 +1896,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 		}
 		
 		$t_ui = new ca_editor_uis();
-		if (!($t_instance = $this->_DATAMODEL->getInstanceByTableNum($this->getTableNum()))) { return false; }
+		if (!($t_instance = Datamodel::getInstanceByTableNum($this->getTableNum()))) { return false; }
 
 		if ($this->inTransaction()) { 
 			$t_instance->setTransaction($this->getTransaction()); 
@@ -1976,7 +2003,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 		
 		if (!($pn_table_num = $this->getTableNum())) { return null; }
 		
-		if (!($t_instance = $this->_DATAMODEL->getInstanceByTableNum($pn_table_num, true))) { return null; }
+		if (!($t_instance = Datamodel::getInstanceByTableNum($pn_table_num, true))) { return null; }
 		
 		if(!is_array($va_placements = $this->getPlacements($pa_options))) { $va_placements = array(); }
 		
@@ -2168,7 +2195,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 			if ($va_restriction['include_subtypes'] && !$vb_include_subtypes) { $vb_include_subtypes = true; }
 		}
 		
-		if (!($t_instance = $this->_DATAMODEL->getInstanceByTableNum($vn_table_num = $this->getTableNum()))) { return null; }
+		if (!($t_instance = Datamodel::getInstanceByTableNum($vn_table_num = $this->getTableNum()))) { return null; }
 		$vs_subtype_element = caProcessTemplate($this->getAppConfig()->get('form_element_display_format_without_label'), [
 			'ELEMENT' => _t('Include subtypes?').' '.caHTMLCheckboxInput('type_restriction_include_subtypes', ['value' => '1', 'checked' => $vb_include_subtypes])
 		]);

@@ -33,6 +33,7 @@
 	$va_write_sets = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 2));
  	$va_errors = $this->getVar("errors");
 	$vs_display_name = $this->getVar("display_name");
+	$vs_description_attribute 		= $this->getVar("description_attribute");
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
 <H1><?php print _t("Add item to %1", $vs_display_name); ?></H1>
@@ -57,7 +58,7 @@
 		}
 		print "<div class='form-group'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' placeholder='"._t("Your %1", $vs_display_name)."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		#print $t_set->htmlFormElement("access","<div class='form-group'><label for='access' class='col-sm-4 control-label'>"._t("Display Option")."</label><div class='col-sm-7' class='form-control'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
-		print "<div class='form-group'><label for='description' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='description' class='form-control' rows='3'></textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print "<div class='form-group'><label for='description' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='".$vs_description_attribute."' class='form-control' rows='3'></textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 
 ?>
 		<div class="form-group">
@@ -73,7 +74,7 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#AddItemForm').submit(function(e){		
+		jQuery('#AddItemForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddItem', null); ?>',
 				jQuery('#AddItemForm').serialize()

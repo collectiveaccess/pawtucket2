@@ -253,6 +253,10 @@ ul.list {
 .unit{
 	font-size: 14px;
 }
+blockquote, blockquote p{
+	font-family: "Times new Roman";
+	font-size: 14px;
+}
 
 .mediaPlaceholder{
 	width: 100%;

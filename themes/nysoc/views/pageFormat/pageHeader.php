@@ -33,8 +33,8 @@
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('Lightbox'), '', '', 'Lightbox', 'Index', array())."</li>";
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get('dont_allow_registration_and_login')) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 
 ?><!DOCTYPE html>
@@ -43,7 +43,7 @@
 	<meta charset="utf-8">
 	<link rel="icon" href="<?php print caGetThemeGraphicURL($this->request, 'favicon.png'); ?>">
 	<script type="text/javascript">window.caBasePath = '<?php print $this->request->getBaseUrlPath(); ?>';</script>
-	<link href='http://fonts.googleapis.com/css?family=Gudea:400,700,400italic' rel='stylesheet' type='text/css'>
+	<link href='https://fonts.googleapis.com/css?family=Gudea:400,700,400italic' rel='stylesheet' type='text/css'>
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
@@ -78,7 +78,7 @@
 			<div id="site-filagree"></div>
 			<div id="site-logo">
 				<div id="logo1"></div>
-				<div id="logoMain"><a href="http://www.nysoclib.org">The New York Society Library</a></div>
+				<div id="logoMain"><a href="https://www.nysoclib.org">The New York Society Library</a></div>
 			</div>
 			<form class="navbar-form navbar-right" id="colSearch" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 				<div class="formOutline">
@@ -93,7 +93,7 @@
 		<div id="columnRight">
 			<div class="topMain">
 				<div id="searchArea" class="searchArea" style="display: block;">
-					<div class="globalLinks"><a href="http://nysoclib.org/about/join-mailing-list">Join the Mailing List</a> | Find us on <a href="http://www.facebook.com/nysoclib" class="sbIcon facebook" target="_blank">Facebook</a> <a href="http://twitter.com/#!/nysoclib" class="sbIcon twitter" target="_blank">Twitter</a></div>
+					<div class="globalLinks"><a href="https://nysoclib.org/about/join-mailing-list">Join the Mailing List</a> | Find us on <a href="https://www.facebook.com/nysoclib" class="sbIcon facebook" target="_blank">Facebook</a> <a href="https://twitter.com/#!/nysoclib" class="sbIcon twitter" target="_blank">Twitter</a></div>
 					<div id="globalSearch">
 						<!--<form class="navbar-form navbar-right" id="colSearch" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 							<div class="formOutline">

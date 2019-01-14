@@ -65,11 +65,11 @@
 		if($va_errors["subject"]){
 			print "<div class='alert alert-danger'>".$va_errors["subject"]."</div>";
 		}
-		print "<div class='form-group".(($va_errors["subject"]) ? " has-error" : "")."'><label for='subject' class='col-sm-4 control-label'>"._t("Subject")."</label><div class='col-sm-7'><input type='text' name='subject' id='subject' value='".$vs_subject."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print "<div class='form-group".(($va_errors["subject"]) ? " has-error" : "")."'><label for='subject' class='col-sm-4 control-label'>"._t("Subject")."</label><div class='col-sm-7'><input type='text' name='subject' id='subject' value='".htmlspecialchars(strip_tags($vs_subject))."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		if($va_errors["message"]){
 			print "<div class='alert alert-danger'>".$va_errors["message"]."</div>";
 		}
-		print "<div class='form-group".(($va_errors["message"]) ? " has-error" : "")."'><label for='message' class='col-sm-4 control-label'>"._t("Message")."</label><div class='col-sm-7'><textarea name='message' id='message' class='form-control' rows='3'>".$vs_message."</textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print "<div class='form-group".(($va_errors["message"]) ? " has-error" : "")."'><label for='message' class='col-sm-4 control-label'>"._t("Message")."</label><div class='col-sm-7'><textarea name='message' id='message' class='form-control' rows='3'>".htmlspecialchars(strip_tags($vs_message))."</textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 ?>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
@@ -83,7 +83,7 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#shareForm').submit(function(e){		
+		jQuery('#shareForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', 'Detail', 'sendShare'); ?>',
 				jQuery('#shareForm').serialize()

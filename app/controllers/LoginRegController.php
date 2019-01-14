@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
 
-	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
+	require_once(__CA_LIB_DIR__."/ApplicationError.php");
 	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
 	require_once(__CA_MODELS_DIR__."/ca_users.php");
 	require_once(__CA_MODELS_DIR__."/ca_user_groups.php");
@@ -37,24 +37,28 @@
 		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
 			parent::__construct($po_request, $po_response, $pa_view_paths);
 
-			if ($po_request->getAppConfig()->get('dont_allow_registration_and_login')) {
+			if ($po_request->getAppConfig()->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
 				throw new ApplicationException('Login/registration not allowed');
 			}
 			caSetPageCSSClasses(array("loginreg"));
 		}
 		# -------------------------------------------------------
 		function loginForm() {
-			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Login"));
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Login"));
 			$this->render("LoginReg/form_login_html.php");
 		}
 		# ------------------------------------------------------
 		function registerForm($t_user = "") {
-			if ($this->request->config->get('dont_allow_registration_and_login')) {
+			if (
+			    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
+			    ||
+			    $this->request->config->get('dontAllowRegistration')
+			) {
 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
 			}
-			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Register"));
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Register"));
 			if(!is_object($t_user)){
 				$t_user = new ca_users();
 			}
@@ -80,7 +84,11 @@
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
 			}
-			if ($this->request->config->get('dont_allow_registration_and_login')) {
+			if (
+			    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
+			    ||
+			    $this->request->config->get('dontAllowRegistration')
+			) {
 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
@@ -106,138 +114,142 @@
 		}
 		# ------------------------------------------------------
 		function profileSave() {
-		    caValidateCSRFToken($this->request);
-			if(!$this->request->isLoggedIn()){
-				$this->notification->addNotification(_t("User is not logged in"), __NOTIFICATION_TYPE_ERROR__);
-				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
-				return;
-			}
-			if ($this->request->config->get('dont_allow_registration_and_login')) {
-				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
-				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
-				return;
-			}
-			MetaTagManager::setWindowTitle(_t("User Profile"));
-			$t_user = $this->request->user;
-			$t_user->purify(true);
-		
-			$ps_email = $this->request->getParameter("email", pString);
-			$ps_fname = $this->request->getParameter("fname", pString);
-			$ps_lname = $this->request->getParameter("lname", pString);
-			$ps_password = $this->request->getParameter("password", pString);
-			$ps_password2 = $this->request->getParameter("password2", pString);
-			$ps_security = $this->request->getParameter("security", pString);
-			$va_errors = array();
+		    if (caValidateCSRFToken($this->request, null, ['notifications' => $this->notification])) {
+                if(!$this->request->isLoggedIn()){
+                    $this->notification->addNotification(_t("User is not logged in"), __NOTIFICATION_TYPE_ERROR__);
+                    $this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+                    return;
+                }
+                if (
+                    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
+                    ||
+                    $this->request->config->get('dontAllowRegistration')
+                ) {
+                    $this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
+                    $this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+                    return;
+                }
+                MetaTagManager::setWindowTitle(_t("User Profile"));
+                $t_user = $this->request->user;
+                $t_user->purify(true);
+        
+                $ps_email = $this->request->getParameter("email", pString);
+                $ps_fname = $this->request->getParameter("fname", pString);
+                $ps_lname = $this->request->getParameter("lname", pString);
+                $ps_password = $this->request->getParameter("password", pString);
+                $ps_password2 = $this->request->getParameter("password2", pString);
+                $ps_security = $this->request->getParameter("security", pString);
+                $va_errors = array();
 
-			if (!caCheckEmailAddress($ps_email)) {
-				$va_errors["email"] = _t("E-mail address is not valid.");
-			}else{
-				# --- if the username is changing, make sure there isn't an account uwith the same user name already
-				if($ps_email != $t_user->get("user_name")){
-					# --- does deleted user login record for this user already exist?
-					# --- (look for active records only; inactive records will effectively block reregistration)
-					$t_user_check = new ca_users();
-					$vb_user_exists_but_is_deleted = false;
-					if ($t_user_check->load(array('user_name' => $ps_email))) {
-						if ((int)$t_user_check->get('userclass') == 255) {
-							if ($t_user_check->get('active') == 1) {
-								// yeah... so allow registration
-								$vb_user_exists_but_is_deleted = true;
-							} else {
-								// existing inactive user record blocks registration
-								$va_errors["email"] = _t("User cannot register");
-							}
-						} else {
-							// already valid login with this user name
-							$va_errors["email"] = _t("A user has already registered with this email address");
-						}
-					}
-				}
-				if(!$va_errors["email"]){
-					$t_user->set("user_name",$ps_email);
-					$t_user->set("email", $ps_email);
-				}
-			}
-			if (!$ps_fname) {
-				$va_errors["fname"] = _t("Please enter your first name");
-			}else{
-				$t_user->set("fname", $ps_fname);
-			}
-			if (!$ps_lname) {
-				$va_errors["lname"] = _t("Please enter your last name");
-			}else{
-				$t_user->set("lname", $ps_lname);
-			}
-			if ($ps_password) {
-				if($ps_password != $ps_password2){
-					$va_errors["password"] = _t("Passwords do not match");
-				}
-				if(strlen($ps_password) < 4){
-					$va_errors["password"] = _t("Password must be at least 4 characters long");
-				}
-				if(!$va_errors["password"]){
-					$t_user->set("password", $ps_password);
-				}
-			}
-			// Check user profile responses
-			$va_profile_prefs = $t_user->getValidPreferences('profile');
-			if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
-				foreach($va_profile_prefs as $vs_pref) {
-					$vs_pref_value = $this->request->getParameter('pref_'.$vs_pref, pString);
-					if (!$t_user->isValidPreferenceValue($vs_pref, $vs_pref_value)) {
-						$va_errors[$vs_pref] = join("; ", $t_user->getErrors());
+                if (!caCheckEmailAddress($ps_email)) {
+                    $va_errors["email"] = _t("E-mail address is not valid.");
+                }else{
+                    # --- if the username is changing, make sure there isn't an account uwith the same user name already
+                    if($ps_email != $t_user->get("user_name")){
+                        # --- does deleted user login record for this user already exist?
+                        # --- (look for active records only; inactive records will effectively block reregistration)
+                        $t_user_check = new ca_users();
+                        $vb_user_exists_but_is_deleted = false;
+                        if ($t_user_check->load(array('user_name' => $ps_email))) {
+                            if ((int)$t_user_check->get('userclass') == 255) {
+                                if ($t_user_check->get('active') == 1) {
+                                    // yeah... so allow registration
+                                    $vb_user_exists_but_is_deleted = true;
+                                } else {
+                                    // existing inactive user record blocks registration
+                                    $va_errors["email"] = _t("User cannot register");
+                                }
+                            } else {
+                                // already valid login with this user name
+                                $va_errors["email"] = _t("A user has already registered with this email address");
+                            }
+                        }
+                    }
+                    if(!$va_errors["email"]){
+                        $t_user->set("user_name",$ps_email);
+                        $t_user->set("email", $ps_email);
+                    }
+                }
+                if (!$ps_fname) {
+                    $va_errors["fname"] = _t("Please enter your first name");
+                }else{
+                    $t_user->set("fname", $ps_fname);
+                }
+                if (!$ps_lname) {
+                    $va_errors["lname"] = _t("Please enter your last name");
+                }else{
+                    $t_user->set("lname", $ps_lname);
+                }
+                if ($ps_password) {
+                    if($ps_password != $ps_password2){
+                        $va_errors["password"] = _t("Passwords do not match");
+                    }
+                    if(strlen($ps_password) < 4){
+                        $va_errors["password"] = _t("Password must be at least 4 characters long");
+                    }
+                    if(!$va_errors["password"]){
+                        $t_user->set("password", $ps_password);
+                    }
+                }
+                // Check user profile responses
+                $va_profile_prefs = $t_user->getValidPreferences('profile');
+                if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
+                    foreach($va_profile_prefs as $vs_pref) {
+                        $vs_pref_value = $this->request->getParameter('pref_'.$vs_pref, pString);
+                        if (!$t_user->isValidPreferenceValue($vs_pref, $vs_pref_value)) {
+                            $va_errors[$vs_pref] = join("; ", $t_user->getErrors());
 
-						$t_user->clearErrors();
-					}else{
-						$t_user->setPreference($vs_pref, $this->request->getParameter('pref_'.$vs_pref, pString));
-					}
-				}
-			}		
-		
-			if(sizeof($va_errors) == 0){
-				# --- there are no errors so update new user record
-				$t_user->setMode(ACCESS_WRITE);
-				$t_user->update();
-				if($t_user->numErrors()) {
-					$va_errors["general"] = join("; ", $t_user->getErrors());
-				}else{
-					#success
-					$this->notification->addNotification(_t("Updated profile"), __NOTIFICATION_TYPE_INFO__);
-					// If we are editing the user record of the currently logged in user
-					// we have a problem: the request object flushes out changes to its own user object
-					// for the logged-in user at the end of the request overwriting any changes we've made.
-					//
-					// To avoid this we check here to see if we're editing the currently logged-in
-					// user and reload the request's copy if needed.
-					$this->request->user->load($t_user->getPrimaryKey());
-				}
-			}
-			if(sizeof($va_errors)){
-				$this->notification->addNotification(_t("There were errors, your profile could not be updated"), __NOTIFICATION_TYPE_ERROR__);
-				$this->view->setVar("errors", $va_errors);
-			}
+                            $t_user->clearErrors();
+                        }else{
+                            $t_user->setPreference($vs_pref, $this->request->getParameter('pref_'.$vs_pref, pString));
+                        }
+                    }
+                }		
+        
+                if(sizeof($va_errors) == 0){
+                    # --- there are no errors so update new user record
+                    $t_user->setMode(ACCESS_WRITE);
+                    $t_user->update();
+                    if($t_user->numErrors()) {
+                        $va_errors["general"] = join("; ", $t_user->getErrors());
+                    }else{
+                        #success
+                        $this->notification->addNotification(_t("Updated profile"), __NOTIFICATION_TYPE_INFO__);
+                        // If we are editing the user record of the currently logged in user
+                        // we have a problem: the request object flushes out changes to its own user object
+                        // for the logged-in user at the end of the request overwriting any changes we've made.
+                        //
+                        // To avoid this we check here to see if we're editing the currently logged-in
+                        // user and reload the request's copy if needed.
+                        $this->request->user->load($t_user->getPrimaryKey());
+                    }
+                }
+                if(sizeof($va_errors)){
+                    $this->notification->addNotification(_t("There were errors, your profile could not be updated"), __NOTIFICATION_TYPE_ERROR__);
+                    $this->view->setVar("errors", $va_errors);
+                }
+            }
 			$this->profileForm();
 		}
 		# ------------------------------------------------------
 		function resetForm() {
-			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Reset Password"));
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Reset Password"));
 			$this->render("LoginReg/form_reset_html.php");
 		}
 		# ------------------------------------------------------
 		function login() {
-		    caValidateCSRFToken($this->request);
 			if (!$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $this->request->getParameter('username', pString), 'password' => $this->request->getParameter('password', pString)))) {
 				$this->view->setVar("message", _t("Login failed"));
 				$this->loginForm();
 			} else {
 				# --- user is joining a user group from a supplied link
-				if($this->request->session->getVar("join_user_group_id")){
-					if(!$this->request->user->inGroup($this->request->session->getVar("join_user_group_id"))){
-						$this->request->user->addToGroups($this->request->session->getVar("join_user_group_id"));
-						$this->request->session->setVar("join_user_group_id", "");
+				if(Session::getVar("join_user_group_id")){
+					if(!$this->request->user->inGroup(Session::getVar("join_user_group_id"))){
+						$this->request->user->addToGroups(Session::getVar("join_user_group_id"));
+						Session::setVar("join_user_group_id", "");
 						$vs_group_message = _t(" and added to the group");
 					}else{
-						$this->request->session->setVar("join_user_group_id", "");
+						Session::setVar("join_user_group_id", "");
 						$vs_group_message = _t(" you are already a member of the group");
 					}
 				}
@@ -282,13 +294,20 @@
 		}
 		# -------------------------------------------------------
 		function register() {
-		    caValidateCSRFToken($this->request);
-			if ($this->request->config->get('dont_allow_registration_and_login')) {
+			if (!caValidateCSRFToken($this->request, null, ['notifications' => $this->notification])) {
+				$this->register();
+				return;
+		    }
+			if (
+			    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
+			    ||
+			    $this->request->config->get('dontAllowRegistration')
+			) {
 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
 			}
-			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Register"));
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Register"));
 			# logout user in case is already logged in
 			$this->request->deauthenticate();
 
@@ -464,13 +483,13 @@
 						$t_user->addRoles($va_default_roles);
 					}
 					# --- user is joining a user group from a supplied link
-					if($this->request->session->getVar("join_user_group_id")){
-						if(!$t_user->inGroup($this->request->session->getVar("join_user_group_id"))){
-							$t_user->addToGroups($this->request->session->getVar("join_user_group_id"));
-							$this->request->session->setVar("join_user_group_id", "");
+					if(Session::getVar("join_user_group_id")){
+						if(!$t_user->inGroup(Session::getVar("join_user_group_id"))){
+							$t_user->addToGroups(Session::getVar("join_user_group_id"));
+							Session::setVar("join_user_group_id", "");
 							$vs_group_message = _t(" You were added to the group");
 						}else{
-							$this->request->session->setVar("join_user_group_id", "");
+							Session::setVar("join_user_group_id", "");
 							$vs_group_message = _t(" You are already a member of the group");
 						}
 					}
@@ -556,10 +575,10 @@
 				if($this->request->isLoggedIn()){
 					if(!$this->request->user->inGroup($pn_group_id)){
 						$this->request->user->addToGroups($pn_group_id);
-						$this->request->session->setVar("join_user_group_id", "");
+						Session::setVar("join_user_group_id", "");
 						$vs_group_message = _t("You were added to the group");
 					}else{
-						$this->request->session->setVar("join_user_group_id", "");
+						Session::setVar("join_user_group_id", "");
 						$vs_group_message = _t("You are already a member of the group");
 					}
 					$this->notification->addNotification($vs_group_message, __NOTIFICATION_TYPE_INFO__);
@@ -569,7 +588,7 @@
 					$this->response->setRedirect(caNavUrl($this->request, "", $vs_controller, "Index"));
 				}else{
 					$t_user_group->load($pn_group_id);
-					$this->request->session->setVar("join_user_group_id", $pn_group_id);
+					Session::setVar("join_user_group_id", $pn_group_id);
 					$this->view->setVar("message", _t("Login/Register to join \"%1\"", $t_user_group->get("name")));
 					$this->loginForm();
 				}
@@ -579,7 +598,7 @@
 		}
 		# -------------------------------------------------------
 		function resetSend(){
-			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Reset Password"));
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Reset Password"));
 			$t_user = new ca_users();
 
 			$vs_message = "";
@@ -624,7 +643,7 @@
 		}
 		# ------------------------------------------------------
 		function resetSave(){
-			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Reset Password"));
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Reset Password"));
 			$ps_action = $this->request->getParameter('action', pString);
 			if(!$ps_action){
 				$ps_action = "reset";

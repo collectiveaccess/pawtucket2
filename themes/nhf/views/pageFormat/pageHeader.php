@@ -50,8 +50,8 @@
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
@@ -238,6 +238,7 @@
 	# --- get the section to highlight nav
 	$vs_section = "";
 	switch($this->request->getController()){
+		case "About":
 		case "Browse":
 			$vs_section = $this->request->getAction();
 		break;
@@ -248,31 +249,34 @@
 		# ----------------
 	}
 ?>
-	<li class="leaf first <?php print ($vs_section == "Splash") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Overview'), ($vs_section == "Splash") ? "active" : "", '', '', ''); ?></li>
-	<li class="leaf <?php print ($vs_section == "CollectionsList") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Collections'), ($vs_section == "CollectionsList") ? "active" : "", '', 'Browse', 'Collections'); ?></li>
-<?php
-if($x){
-?>
-	<li class="leaf <?php print ($vs_section == "PlaceList") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Places'), ($vs_section == "PlaceList") ? "active" : "", '', 'Browse', 'PlaceList', array('target' => 'ca_collections')); ?></li>
-	<li class="leaf <?php print ($vs_section == "GenreList") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Genres'), ($vs_section == "GenreList") ? "active" : "", '', 'Browse', 'GenreList', array('target' => 'ca_collections')); ?></li>
-	<li class="leaf <?php print ($vs_section == "SubjectList") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Subjects'), ($vs_section == "SubjectList") ? "active" : "", '', 'Browse', 'SubjectList', array('target' => 'ca_collections')); ?></li>
-	<li class="leaf <?php print ($vs_section == "DecadeList") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Decades'), ($vs_section == "DecadeList") ? "active" : "", '', 'Browse', 'DecadeList', array('target' => 'ca_collections')); ?></li>
-	<li class="leaf <?php print ($vs_section == "PeopleList") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('People and Organizations'), ($vs_section == "PeopleList") ? "active" : "", '', 'Browse', 'PeopleList', array('target' => 'ca_collections')); ?></li>
-<?php
-}
-?>
+	<li class="leaf first <?php print ($vs_section == "Front") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Overview'), ($vs_section == "front") ? "active" : "", '', '', ''); ?></li>
+	<li class="leaf <?php print ($vs_section == "Collections") ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Collections'), ($vs_section == "Collections") ? "active" : "", '', 'Browse', 'Collections'); ?></li>
+	<li class="leaf <?php print (in_array($vs_section, array("FeaturedCollections", "FeaturedCollectionsList"))) ? "active-trail" : ""; ?>"><?php print caNavLink($this->request, _t('Highlighted Films'), (in_array($vs_section, array("FeaturedCollections", "FeaturedCollectionsList"))) ? "active" : "", '', 'About', 'FeaturedCollections'); ?></li>
 	<li class="leaf"><a href="/node/26" title="">Archival Moments</a></li>
 	<li class="collapsed"><a href="/content/exhibits" title="">Exhibits</a></li>
 
 	<li class="leaf"><a href="/node/13" title="" class="">Donate Film or Equipment</a></li>
-	<li class="leaf last"><a href="/node/23" title="">Collecting Policy</a></li>
+	<li class="leaf"><a href="/node/23" title="">Collecting Policy</a></li>
+	<li class="leaf"><a href="/content/stock-footage-or-research-request-form" title="">Request Footage or Research</a></li>
 <?php
 	if($vs_section != "Front"){
 ?>
 	<li class="leaf last">
 		<div id="navSearch"><form name="hp_search2" action="<?php print caNavUrl($this->request, '', 'Search', 'Occurrences'); ?>" method="get">
-			Search Works: <input type="text" name="search" value="<?php print $vs_last_search; ?>" autocomplete="off" size="100"/><input type="submit" name="op" id="edit-submit" value="GO"  class="form-submit" />
+			Search Works: <input type="text" name="search" value="<?php print $vs_last_search; ?>" autocomplete="off" size="100"/><input type="submit" name="op" id="edit-submit" value="GO"  class="form-submit" /> <span class="searchHelpLink"><?php print caGetThemeGraphic($this->request, 'b_info.gif'); ?><div class="searchHelp"><div class="searchHelpTitle">Search Tips</div><b>Boolean combination:</b> Search expressions can be combined using the standard boolean "AND" and "OR" operators.<br/><br/><b>Exact phase matching:</b> Surround a search term in quotes to find exact matches.<br/><br/><b>Wildcard matching:</b> Use an asterisk (*) as a wildcard character to match any text. Wildcards may only be used at the end of a word, to match words that start your search term.</div></span>
 	</form></div><!-- end hpSearch --></li>
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			$(function () {
+			  $('[data-toggle="popover"]').popover({
+				trigger: 'hover',
+				title: ''
+			  })
+			})
+		
+		});
+	</script>
+
 <?php
 	}
 ?>

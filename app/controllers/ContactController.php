@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
+	require_once(__CA_LIB_DIR__."/ApplicationError.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  
  	class ContactController extends BasePawtucketController {
@@ -40,7 +40,7 @@
  				$this->notification->addNotification(_t("Contact form is not configured properly"), __NOTIFICATION_TYPE_ERROR__);
  				$this->response->setRedirect(caNavUrl($this->request, '', '', ''));
  			}
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Contact"));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Contact"));
  			caSetPageCSSClasses(array("contact"));
  		}
  		# -------------------------------------------------------

@@ -284,7 +284,7 @@
 				$va_rep = $t_artwork->getPrimaryRepresentation(array('widepreview'), null, array('return_with_access' => caGetUserAccessValues($this->request)));
 				print "<div class='resultImg'>".caNavLink($this->request, $va_rep['tags']['widepreview'], '', '', 'Detail', 'artworks/'.$va_object_id)."</div>";
 				print "<p class='artist'>".$t_artwork->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => 'artist'))."</p>";				
-				print "<p>".caNavLink($this->request, "<i>".$t_artwork->get('ca_objects.preferred_labels.name')."</i>", '', '', 'Detail', 'artworks/'.$va_object_id).", ".$t_artwork->get('ca_objects.creation_date')."</p>";
+				print "<p>".caNavLink($this->request, "<i>".$t_artwork->get('ca_objects.preferred_labels.name')."</i>", '', '', 'Detail', 'artworks/'.$va_object_id).", ".$t_artwork->get('ca_objects.creation_date_display')."</p>";
 				print "</div><!-- artworksResult -->";
 			}
 ?>	

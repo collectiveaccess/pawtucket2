@@ -58,8 +58,8 @@
 	$vs_result_col_class = $o_config->get('result_col_class');
 	$vs_refine_col_class = $o_config->get('refine_col_class');
 	$va_export_formats = $this->getVar('export_formats');
- 	$o_result_context = new ResultContext($this->request, 'ca_objects', 'multisearch');
-	$o_result_context->setAsLastFind();	
+ 	$o_result_context = ResultContext::getResultContextForLastFind($this->request, 'ca_objects'); //new ResultContext($this->request, 'ca_objects', 'multisearch');
+	//$o_result_context->setAsLastFind();	
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
@@ -96,7 +96,7 @@ if (!$vb_ajax) {	// !ajax
 ?>
 				<div class='row'>	
 					<div class='col-sm-3 col-md-3 col-lg-3 btn-group'>
-					<a href='#' data-toggle="dropdown">Sort By: <span class='btn'><?php print $vs_current_sort;?><b class="caret"></b></span></a>
+					<a href='#' data-toggle="dropdown">Sort By: <span class='btn'><b class="caret"></b><?php print $vs_current_sort;?></span></a>
 					<ul class="dropdown-menu" role="menu">
 	<?php				
 						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -119,7 +119,7 @@ if (!$vb_ajax) {	// !ajax
 							$vs_sort_label = "descending";
 						}
 	?>				
-						<a href='#' data-toggle="dropdown">Sort Order: <span class='btn'><?php print ucfirst($vs_sort_label);?><b class="caret"></b></span></a>
+						<a href='#' data-toggle="dropdown">Sort Order: <span class='btn'><b class="caret"></b><?php print ucfirst($vs_sort_label);?></span></a>
 						<ul class="dropdown-menu" role="menu">
 	<?php	
 							if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
@@ -129,29 +129,33 @@ if (!$vb_ajax) {	// !ajax
 	?>										
 						</ul>
 					</div><!-- end buttongrp -->
-					<div class='col-sm-4 col-md-4 col-lg-4 btn-group'>
 	<?php	
 						$vs_buf = "";		
 						
-						$va_recent_searches = $o_result_context->getSearchHistory(array('findTypes' => array('search_advanced', 'search_basic', 'multisearch'))); 
-						if (is_array($va_recent_searches) && sizeof($va_recent_searches)) {
-							$v_i = 0;
-							foreach($va_recent_searches as $vs_search => $va_search_info) {
-								$vs_buf.= "<li>".caNavLink($this->request, $va_search_info['display'], '', '', 'Search', 'objects', array('search' => $vs_search))."</li>";
-								$v_i++;
-								if ($v_i == 10) {
-									break;
-								}
-							}
-						}
-	?>			
-						<a href='#' data-toggle="dropdown">Recent Searches <span class='btn'><?php print $va_search_info['display'];?><b class='caret'></b></span></a>
-						<ul class="dropdown-menu" role="menu">
-	<?php	
-							print $vs_buf;
-	?>										
-						</ul>
-					</div><!-- end buttongrp -->
+						if ($o_result_context) {
+                            $va_recent_searches = $o_result_context->getSearchHistory(array('findTypes' => array('search_advanced', 'search_basic', 'multisearch'))); 
+                            if (is_array($va_recent_searches) && sizeof($va_recent_searches)) {
+                                $v_i = 0;
+                                foreach($va_recent_searches as $vs_search => $va_search_info) {
+                                    $vs_buf.= "<li>".caNavLink($this->request, $va_search_info['display'], '', '', 'Search', 'objects', array('search' => $vs_search))."</li>";
+                                    $v_i++;
+                                    if ($v_i == 10) {
+                                        break;
+                                    }
+                                }
+        ?>			
+                                <div class='col-sm-4 col-md-4 col-lg-4 btn-group'>
+                                    <a href='#' data-toggle="dropdown">Recent Searches <span class='btn'><b class='caret'></b><?php print $va_search_info['display'];?></span></a>
+                                    <ul class="dropdown-menu" role="menu">
+        <?php	
+                                        print $vs_buf;
+        ?>										
+                                    </ul>
+                                </div><!-- end buttongrp -->
+    <?php
+                            }
+                        }
+?>
 					<div class='col-sm-2 col-md-2 col-lg-2 btn-group'>
 		<?php
 				
@@ -164,7 +168,7 @@ if (!$vb_ajax) {	// !ajax
 								$vs_views[] = "<li>".caNavLink($this->request, $vs_view, 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).'</li>';
 							}
 						}
-						print "<a href='#' data-toggle='dropdown'>View: <span class='btn'>".$vs_current_view."<b class='caret'></b></span></a>";
+						print "<a href='#' data-toggle='dropdown'>View: <span class='btn'><b class='caret'></b>".$vs_current_view."</span></a>";
 						print "<ul class='dropdown-menu' role='menu'>";
 						print join('',$vs_views);
 						print "</ul>";
@@ -188,7 +192,7 @@ if (!$vb_ajax) {	// !ajax
 				if ($va_criterion['facet_name'] != '_search') {
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
-					print ' '.$va_criterion['value'];
+					print "<strong class='facetName'> ".$va_criterion['value']."</strong>";
 				}
 				$i++;
 				if($i < sizeof($va_criteria)){

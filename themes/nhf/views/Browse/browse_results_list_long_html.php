@@ -109,7 +109,7 @@
 				}
 				# --- check if this result has been cached
 				# --- key is MD5 of table, id, view, refine(vb_refine)
-				$vs_cache_key = md5($vs_table.$vn_id."list".$vb_refine);
+				$vs_cache_key = md5($vs_table.$vn_id."list_long".$vb_refine);
 				if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{

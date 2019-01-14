@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2016 Whirl-i-Gig
+ * Copyright 2008-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,15 +33,15 @@
  /**
    *
    */
-require_once(__CA_LIB_DIR__."/core/AccessRestrictions.php");
-require_once(__CA_LIB_DIR__."/core/Logging/Eventlog.php");
+require_once(__CA_LIB_DIR__."/AccessRestrictions.php");
+require_once(__CA_LIB_DIR__."/Logging/Eventlog.php");
 require_once(__CA_APP_DIR__.'/models/ca_user_roles.php');
 include_once(__CA_APP_DIR__."/helpers/utilityHelpers.php");
 require_once(__CA_APP_DIR__.'/models/ca_user_groups.php');
 require_once(__CA_APP_DIR__.'/models/ca_locales.php');
-require_once(__CA_LIB_DIR__.'/core/Zend/Currency.php');
-require_once(__CA_LIB_DIR__ . '/core/Auth/AuthenticationManager.php');
-require_once(__CA_LIB_DIR__."/ca/SyncableBaseModel.php");
+require_once(__CA_LIB_DIR__.'/Zend/Currency.php');
+require_once(__CA_LIB_DIR__ . '/Auth/AuthenticationManager.php');
+require_once(__CA_LIB_DIR__."/SyncableBaseModel.php");
 
 
 BaseModel::$s_ca_models_definitions['ca_users'] = array(
@@ -1750,7 +1750,7 @@ class ca_users extends BaseModel {
 				case 'FT_IMPORT_EXPORT_MAPPING_GROUP_EDITOR_UI':
 					$vn_table_num = $this->_editorPrefFormatTypeToTableNum($va_pref_info["formatType"]);
 					
-					$t_instance = $this->getAppDatamodel()->getInstanceByTableNum($vn_table_num, true);
+					$t_instance = Datamodel::getInstanceByTableNum($vn_table_num, true);
 					
 					$va_valid_uis = $this->_getUIListByType($vn_table_num);
 					if (is_array($ps_value)) {
@@ -1922,7 +1922,7 @@ class ca_users extends BaseModel {
 						case 'FT_IMPORT_EXPORT_MAPPING_GROUP_EDITOR_UI':
 						
 							$vn_table_num = $this->_editorPrefFormatTypeToTableNum($va_pref_info['formatType']);
-							$t_instance = $this->getAppDatamodel()->getInstanceByTableNum($vn_table_num, true);
+							$t_instance = Datamodel::getInstanceByTableNum($vn_table_num, true);
 							
 							$va_values = $this->getPreference($ps_pref);
 							if (!is_array($va_values)) { $va_values = array(); }
@@ -2390,8 +2390,7 @@ class ca_users extends BaseModel {
 			$va_saved_searches = array();
 		}
 		
-		$o_dm = Datamodel::load();
-		if (!($vn_table_num = $o_dm->getTableNum($pm_table_name_or_num))) { return false; }
+		if (!($vn_table_num = Datamodel::getTableNum($pm_table_name_or_num))) { return false; }
 		
 		if(!is_array($va_searches = $this->getVar('saved_searches'))) { $va_searches = array(); }
 		
@@ -2417,8 +2416,7 @@ class ca_users extends BaseModel {
 	 * @return boolean Returns true if specified search was cleared, false if not
 	 */
 	public function removeSavedSearch($pm_table_name_or_num, $ps_type, $ps_key) {
-		$o_dm = Datamodel::load();
-		if (!($vn_table_num = $o_dm->getTableNum($pm_table_name_or_num))) { return false; }
+		if (!($vn_table_num = Datamodel::getTableNum($pm_table_name_or_num))) { return false; }
 		
 		if(!is_array($va_searches = $this->getVar('saved_searches'))) { return false; }
 		unset($va_searches[$vn_table_num][strtolower($ps_type)][$ps_key]);
@@ -2435,9 +2433,8 @@ class ca_users extends BaseModel {
 	 * @return boolean True if searches were cleared, false if the operation failed
 	 */
 	public function clearSavedSearches($pm_table_name_or_num=null, $ps_type=null) {
-		$o_dm = Datamodel::load();
 		if ($pm_table_name_or_num) {
-			$vn_table_num = $o_dm->getTableNum($pm_table_name_or_num);
+			$vn_table_num = Datamodel::getTableNum($pm_table_name_or_num);
 		}
 		
 		if(!is_array($va_searches = $this->getVar('saved_searches'))) { $va_searches = array(); }
@@ -2471,8 +2468,7 @@ class ca_users extends BaseModel {
 	 * @return array An array containing the search parameters + 2 special entries: (1) _label is a display label for the search (2) _form_id is the ca_search_forms.form_id for the search, if the search was form-based. _form_id will be undefined if the search was basic (eg. simple one-entry text search)
 	 */
 	public function getSavedSearchByKey($pm_table_name_or_num, $ps_type, $ps_key) {
-		$o_dm = Datamodel::load();
-		if (!($vn_table_num = $o_dm->getTableNum($pm_table_name_or_num))) { return false; }
+		if (!($vn_table_num = Datamodel::getTableNum($pm_table_name_or_num))) { return false; }
 		if(!is_array($va_searches = $this->getVar('saved_searches'))) { $va_searches = array(); }
 		
 		return is_array($va_searches[$vn_table_num][strtolower($ps_type)][$ps_key]) ? $va_searches[$vn_table_num][strtolower($ps_type)][$ps_key] : array();
@@ -2486,8 +2482,7 @@ class ca_users extends BaseModel {
 	 * @return array An array of saved searches, or an empty array if no searches have been saved. The array's keys are 32 character md5 saved search keys. The values are arrays with the search parameters + 2 special entries: (1) _label is a display label for the search (2) _form_id is the ca_search_forms.form_id for the search, if the search was form-based. _form_id will be undefined if the search was basic (eg. simple one-entry text search)
 	 */
 	public function getSavedSearches($pm_table_name_or_num, $ps_type) {
-		$o_dm = Datamodel::load();
-		if (!($vn_table_num = $o_dm->getTableNum($pm_table_name_or_num))) { return false; }
+		if (!($vn_table_num = Datamodel::getTableNum($pm_table_name_or_num))) { return false; }
 		if(!is_array($va_searches = $this->getVar('saved_searches'))) { $va_searches = array(); }
 	
 		return is_array($va_searches[$vn_table_num][strtolower($ps_type)]) ? $va_searches[$vn_table_num][strtolower($ps_type)] : array();
@@ -2764,12 +2759,13 @@ class ca_users extends BaseModel {
 		));
 
 		global $g_request;
-		caSendMessageUsingView($g_request,
+		caSendMessageUsingView(
+			$g_request,
 			$this->get('email'),
 			__CA_ADMIN_EMAIL__,
 			"[{$vs_app_name}] "._t("Information regarding your account"),
 			'account_deactivated.tpl',
-			array()
+			[], null, null, ['source' => 'Account deactivation']
 		);
 	}
 	# ----------------------------------------
@@ -2792,16 +2788,17 @@ class ca_users extends BaseModel {
 		$vs_user_email = $this->get('email');
 		$vs_app_name = $this->getAppConfig()->get("app_name");
 
-		return caSendMessageUsingView($g_request,
+		return caSendMessageUsingView(
+			$g_request,
 			$vs_user_email,
 			__CA_ADMIN_EMAIL__,
 			"[{$vs_app_name}] "._t("Information regarding your password"),
 			'forgot_password.tpl',
-			array(
+			[
 				'password_reset_token' => $ps_password_reset_token,
 				'user_name' => $this->get('user_name'),
 				'site_host' => $this->getAppConfig()->get('site_host'),
-			)
+			], null, null, ['source' => 'Password reset']
 		);
 	}
 	# ----------------------------------------
@@ -2874,12 +2871,22 @@ class ca_users extends BaseModel {
 	 * keys and values that can contain such information
 	 */
 	public function authenticate(&$ps_username, $ps_password="", $pa_options=null) {
+		$vs_username = $ps_username;
+		if ($vs_rewrite_username_with_regex = $this->opo_auth_config->get('rewrite_username_with_regex')) {
+			$vs_rewrite_username_to_regex = $this->opo_auth_config->get('rewrite_username_to_regex');
+			$vs_username = preg_replace("!".preg_quote($vs_rewrite_username_with_regex, "!")."!", $vs_rewrite_username_to_regex, $vs_username);
+		}
+		
+		 if (!$vs_username && AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__)) { 
+            $va_info = AuthenticationManager::getUserInfo($vs_username, $ps_password, ['minimal' => true]); 
+            $vs_username = $va_info['user_name'];
+        }
 
 		// if user doesn't exist, try creating it through the authentication backend, if the backend supports it
-		if (strlen($ps_username) > 0 && !$this->load($ps_username)) {
+		if (strlen($vs_username) > 0 && !$this->load($vs_username)) {
 			if(AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_AUTOCREATE_USERS__)) {
 				try{
-					$va_values = AuthenticationManager::getUserInfo($ps_username, $ps_password);
+					$va_values = AuthenticationManager::getUserInfo($vs_username, $ps_password);
 				} catch (Exception $e) {
 					$this->opo_log->log(array(
 						'CODE' => 'SYS', 'SOURCE' => 'ca_users/authenticate',
@@ -2930,19 +2937,20 @@ class ca_users extends BaseModel {
 			}
 		}
 
-		try {
-			if(AuthenticationManager::authenticate($ps_username, $ps_password, $pa_options)) {
-				$this->load($ps_username);
-				return true;
-			}
-		}  catch (Exception $e) {
-			$this->opo_log->log(array(
-				'CODE' => 'SYS', 'SOURCE' => 'ca_users/authenticate',
-				'MESSAGE' => _t('There was an error while trying to authenticate user %1: The message was %2 : %3', $ps_username, get_class($e), $e->getMessage())
-			));
-			return false;
-		}
-		
+        if ($vs_username) {
+            try {
+                if(AuthenticationManager::authenticate($vs_username, $ps_password, $pa_options)) {
+                    $this->load($vs_username);
+                    return true;
+                }
+            }  catch (Exception $e) {
+                $this->opo_log->log(array(
+                    'CODE' => 'SYS', 'SOURCE' => 'ca_users/authenticate',
+                    'MESSAGE' => _t('There was an error while trying to authenticate user %1: The message was %2 : %3', $ps_username, get_class($e), $e->getMessage())
+                ));
+                return false;
+            }
+        }
 		// check ips
 		if (!isset($pa_options["dont_check_ips"]) || !$pa_options["dont_check_ips"]) {
 			if ($vn_user_id = $this->ipAuthenticate()) {
@@ -3215,7 +3223,7 @@ class ca_users extends BaseModel {
 				$vn_type_id = (int)$pm_type_code_or_id; 
 			} else {
 				$t_list = new ca_lists();
-				$t_instance = $this->getAppDatamodel()->getInstanceByTableName($ps_table_name, true);
+				$t_instance = Datamodel::getInstanceByTableName($ps_table_name, true);
 				if(!($vs_type_list_code = $t_instance->getTypeListCode())) { return __CA_BUNDLE_ACCESS_EDIT__; } // no type-level acces control for tables without type lists (like ca_lists)
 				$vn_type_id = (int)$t_list->getItemIDFromList($vs_type_list_code, $pm_type_code_or_id);
 			}
@@ -3267,8 +3275,7 @@ class ca_users extends BaseModel {
 		
 		$vn_default_access = (int)$this->getAppConfig()->get('default_type_access_level');
 		
-		$o_dm = Datamodel::load();
-		$t_instance = $o_dm->getInstanceByTableName($ps_table_name, true);
+		$t_instance = Datamodel::getInstanceByTableName($ps_table_name, true);
 		$vs_table = $t_instance->tableName();
 		if (!method_exists($t_instance, "getTypeList")) { return null; }
 		$va_available_types = $t_instance->getTypeList(array('idsOnly' => true));
@@ -3316,7 +3323,7 @@ class ca_users extends BaseModel {
 				$vn_source_id = (int)$pm_source_code_or_id; 
 			} else {
 				$t_list = new ca_lists();
-				$t_instance = $this->getAppDatamodel()->getInstanceByTableName($ps_table_name, true);
+				$t_instance = Datamodel::getInstanceByTableName($ps_table_name, true);
 				$vn_source_id = (int)$t_list->getItemIDFromList($t_instance->getSourceListCode(), $pm_source_code_or_id);
 			}
 			$vn_access = -1;
@@ -3367,8 +3374,7 @@ class ca_users extends BaseModel {
 		
 		$vn_default_access = (int)$this->getAppConfig()->get('default_source_access_level');
 		
-		$o_dm = Datamodel::load();
-		$t_instance = $o_dm->getInstanceByTableName($ps_table_name, true);
+		$t_instance = Datamodel::getInstanceByTableName($ps_table_name, true);
 		$vs_table = $t_instance->tableName();
 		
 		if (!method_exists($t_instance, "getSourceList")) { return null; }

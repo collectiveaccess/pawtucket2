@@ -34,10 +34,10 @@
    *
    */
 
-require_once(__CA_LIB_DIR__.'/core/ModelSettings.php');
+require_once(__CA_LIB_DIR__.'/ModelSettings.php');
 require_once(__CA_MODELS_DIR__."/ca_data_importers.php");
 require_once(__CA_MODELS_DIR__."/ca_data_importer_groups.php");
-require_once(__CA_LIB_DIR__."/ca/Import/RefineryManager.php");
+require_once(__CA_LIB_DIR__."/Import/RefineryManager.php");
 
 define("__CA_DATA_IMPORTER_DESTINATION_INTRINSIC__", 0);
 define("__CA_DATA_IMPORTER_DESTINATION_ATTRIBUTE__", 1);
@@ -221,6 +221,19 @@ class ca_data_importer_items extends BaseModel {
 			'default' => '',
 			'label' => _t('Replacement values'),
 			'description' => _t('Return-separated list of CollectiveAccess list item idnos that correspond to the mapped values from the original data source.  For example sound recording (entered in the Original values column) maps to audio_digital, which is entered here in the Replacement values column.')
+		);
+		$va_settings['filterEmptyValues'] = array(
+			'formatType' => FT_TEXT,
+			'displayType' => DT_FIELD,
+			'width' => 40, 'height' => 10,
+			'takesLocale' => false,
+			'default' => 0,
+			'options' => array(
+				_t('yes') => 1,
+				_t('no') => 0
+			),
+			'label' => _t('Filter empty values'),
+			'description' => _t('Remove empty values from values before attempting to import.')
 		);
 		$va_settings['skipIfEmpty'] = array(
 			'formatType' => FT_TEXT,
@@ -541,11 +554,10 @@ class ca_data_importer_items extends BaseModel {
 	}
 	# ------------------------------------------------------
 	public function getDestinationType() {
-		$vo_dm = Datamodel::load();
 		$vs_destination = $this->get("destination");
 		
 		$t_importer = new ca_data_importers($this->get("importer_id"));
-		$t_instance = $vo_dm->getInstanceByTableNum($t_importer->get("table_num"));
+		$t_instance = Datamodel::getInstanceByTableNum($t_importer->get("table_num"));
 		
 		$va_split = explode(".",$vs_destination);
 		

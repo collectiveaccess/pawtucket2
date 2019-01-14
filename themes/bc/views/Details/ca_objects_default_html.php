@@ -56,8 +56,8 @@
 					print "<div class='unit row' style='border-top:1px solid #e6e6e6; margin-top:70px;padding-top:15px;'>";
 					print "<div class='relObj'>Similar Items</div>";
 					foreach ($va_related_objects as $va_key => $va_related_object) {
-						$t_object = new ca_objects($va_related_object);
-						print "<div class='col-sm-4 relatedObjects' data-toggle='popover' data-trigger='hover' data-content='".$t_object->get('ca_objects.preferred_labels')."'>".caNavLink($this->request, $t_object->get('ca_object_representations.media.iconlarge'), '', '', 'Detail', 'objects/'.$va_related_object)."</div>";	
+						$t_rel_object = new ca_objects($va_related_object);
+						print "<div class='col-sm-4 relatedObjects' data-toggle='popover' data-trigger='hover' data-content='".$t_rel_object->get('ca_objects.preferred_labels')."'>".caNavLink($this->request, $t_rel_object->get('ca_object_representations.media.iconlarge'), '', '', 'Detail', 'objects/'.$va_related_object)."</div>";	
 					}
 					print "</div>";
 				}
@@ -73,10 +73,14 @@
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 				<table class='objectBanner'><tr>
 <?php
-					if ($va_institution = $t_object->getWithTemplate('<unit relativeTo="ca_entities" restrictToTypes="member_inst"><td class="instName"><l>^ca_entities.preferred_labels </l></td><td class="instLogo"><l>^ca_entities.inst_images</l></td></unit>')) {
-						$vs_inst_id = $t_object->get('ca_entities.entity_id', array('restrictToTypes' => array('member_inst')));
-						print caNavLink($this->request, $va_institution, '', '', 'Detail', 'entities/'.$vs_inst_id );
-					}		
+                    if($vs_institution_code = caGetListItemIdno($t_object->get('source_id'))) {    
+                        $t_member = ca_entities::find(['idno' => $vs_institution_code, 'type_id' => 'member_inst'], ['returnAs' => 'firstModelInstance']);
+                        if ($t_member) {
+                            $vs_institution_banner = $t_member->getWithTemplate('<td class="instName"><span class="fromThe">from the collection of</span> <l>^ca_entities.preferred_labels </l></td><td class="instLogo"><l>^ca_entities.inst_images</l></td>');
+                            $vs_inst_id = $t_member->get('ca_entities.entity_id');
+                            print caNavLink($this->request, $vs_institution_banner, '', '', 'Detail', 'entities/'.$vs_inst_id );
+                        }
+                    }		
 ?>				
 					<div class="width:100%;clear:both;"></div>
 				</tr></table>
@@ -103,7 +107,10 @@
 					}					
 					if ($vs_desc = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><span class='data'>Description</span><span class='meta'>".$vs_desc."</span></div>";
-					}	
+					}
+					if ($vs_date = $t_object->get('ca_objects.date', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><span class='data'>Date</span><span class='meta'>".$vs_date."</span></div>";
+					}						
 					if ($vs_history_use = $t_object->get('ca_objects.historyUse', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><span class='data'>History of Use</span><span class='meta'>".$vs_history_use."</span></div>";
 					}

@@ -34,7 +34,7 @@
    *
    */
  
-require_once(__CA_LIB_DIR__.'/core/BaseModel.php');
+require_once(__CA_LIB_DIR__.'/BaseModel.php');
 require_once(__CA_MODELS_DIR__.'/ca_site_templates.php');
 require_once(__CA_MODELS_DIR__.'/ca_site_page_media.php');
 
@@ -48,7 +48,7 @@ BaseModel::$s_ca_models_definitions['ca_site_pages'] = array(
 				'IDENTITY' => true, 'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => _t('CollectiveAccess id'), 'DESCRIPTION' => _t('Unique numeric identifier used by CollectiveAccess internally to identify this item')
+				'LABEL' => _t('CollectiveAccess ID'), 'DESCRIPTION' => _t('Unique numeric identifier used by CollectiveAccess internally to identify this item')
 		),
 		'title' => array(
 				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
@@ -318,7 +318,12 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 	 * @return string Returns null if page cannot be rendered
 	 */
 	public static function renderPageForPath($po_controller, $ps_path, $pa_options=null) {
-		if (($t_page = ca_site_pages::find(['path' => $ps_path], ['returnAs' => 'firstModelInstance', 'checkAccess' => caGetOption('checkAccess', $pa_options, null)])) && ($t_template = ca_site_templates::find(['template_id' => $t_page->get('template_id')], ['returnAs' => 'firstModelInstance']))) {
+
+		if (
+			($t_page = ca_site_pages::find(['path' => $ps_path], ['returnAs' => 'firstModelInstance', 'checkAccess' => caGetOption('checkAccess', $pa_options, null)])) && ($t_template = ca_site_templates::find(['template_id' => $t_page->get('template_id')], ['returnAs' => 'firstModelInstance']))
+			||
+			($t_page = ca_site_pages::find(['path' => $ps_path."/"], ['returnAs' => 'firstModelInstance', 'checkAccess' => caGetOption('checkAccess', $pa_options, null)])) && ($t_template = ca_site_templates::find(['template_id' => $t_page->get('template_id')], ['returnAs' => 'firstModelInstance']))
+		) {
 			$o_content_view = new View($po_controller->request, $po_controller->request->getViewsDirectoryPath());
 	
 			if (is_array($va_content = caUnserializeForDatabase($t_page->get('content')))) {
@@ -350,7 +355,7 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 			        if ($vn_index > sizeof($va_media_list) - 1) { $vn_index = sizeof($va_media_list) - 1; }
 			        
 			        if (!isset($va_media_list[$vn_index])) { continue; }
-			        if (is_array($va_access_values) && !in_array($va_media_list[$vn_index]['access'], $va_access_values)) { print "x=".$va_media_list[$vn_index]['access'];continue; }
+			        if (is_array($va_access_values) && !in_array($va_media_list[$vn_index]['access'], $va_access_values)) { continue; }
 			        
 			        $vs_media_tag = null;
 			        switch($vs_version = caGetOption('version', $va_media, 'small')) {
@@ -447,6 +452,8 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 		$o_view = new View($po_request, $po_request->getViewsDirectoryPath().'/bundles/');
 		
 		if(!is_array($pa_options)) { $pa_options = array(); }
+		
+        $o_view->setVar('lookup_urls', caGetLookupUrlsForTables($po_request));
 		
 		$o_view->setVar('id_prefix', $ps_form_name);
 		$o_view->setVar('placement_code', $ps_placement_code);		// pass placement code

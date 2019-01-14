@@ -1,11 +1,9 @@
 
 <div class="row">
 	<div class="col-sm-12 " >
-		<h1>Objects Advanced Search</h1>
+		<h1>Artwork Search</h1>
 
-<?php			
-print "<p>Enter your search terms in the fields below.</p>";
-?>
+<div>{{{search_text}}}</div>
 
 {{{form}}}
 
@@ -19,20 +17,26 @@ print "<p>Enter your search terms in the fields below.</p>";
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records made by a particular artist.">Artist </span>
-			{{{ca_entities.entity_id%restrictToRelationshipTypes=artist%width=200px&height=40px&select=1&sort=ca_entities.preferred_labels.surname}}}
+			{{{ca_entities.entity_id%restrictToRelationshipTypes=artist&width=200px&height=40px&select=1&sort=ca_entities.preferred_labels.surname}}}
 
 		</div>
-	</div>				
+	</div>
+	<div class='row'>
+		<div class="advancedSearchField col-sm-12">
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Artist biographies.">Artist Biography</span>
+			{{{ca_entities.biography%width=220px&height=1}}}
+		</div>
+	</div>	
+	<div class='row'>
+		<div class="advancedSearchField col-sm-12">
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Artist essays.">Artist Essay</span>
+			{{{ca_entities.essays%width=220px&height=1}}}
+		</div>
+	</div>						
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Object Titles only.">Artwork Title</span>
 			{{{ca_objects.preferred_labels.name%width=220px&height=1}}}
-		</div>
-	</div>
-	<div class='row'>
-		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object types.">Type</span>
-			{{{ca_objects.type_id%height=1}}}
 		</div>
 	</div>
 	<div class='row'>
@@ -49,8 +53,8 @@ print "<p>Enter your search terms in the fields below.</p>";
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records related to a specific publication.">Related Publication </span>
-			{{{ca_objects.preferred_labels%restrictToTypes=publication%width=200px&height=1}}}
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records related to a specific publication.">Light Work Publication </span>
+			{{{ca_objects.related.idno%restrictToTypes=publication&width=200px&height=1&select=1}}}
 		</div>
 	</div>	
 	<div class='row'>

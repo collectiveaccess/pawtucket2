@@ -14,6 +14,7 @@
 <div class="col-sm-1"></div>
 <div class="col-sm-10 staticPageArea">
 	<h4><?php print $vs_page_title; ?></h4>
+	<div style="clear:both;width:100%"></div>
 	<div class='findingIntro'><?php print $vs_intro_text; ?></div>
 	<div id='findingAidCont'>
 <?php	

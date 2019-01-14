@@ -10,6 +10,9 @@
 	if($o_collections_config->get("do_not_display_collection_browser")){
 		$vb_show_hierarchy_viewer = false;	
 	}
+	# --- get the collection hierarchy parent to use for exportin finding aid
+	#$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -26,7 +29,11 @@
 					<H6 style="margin-top:-10px;">{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6>
 					{{{<ifdef code="ca_collections.parent_id"><H4>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H4></ifdef>}}}
 <?php
-					print '<div class="detailTool"><span class="glyphicon glyphicon-book"></span>'.caNavLink($this->request, _t("Ask an Archivist"), "", "", "Contact", "Form", array("collection_id" => $t_item->get("collection_id"), "contactType" => "askArchivist")).'</div><!-- end detailTool -->';					
+					print '<div class="detailTool"><span class="glyphicon glyphicon-book"></span>'.caNavLink($this->request, _t("Ask an Archivist"), "", "", "Contact", "Form", array("collection_id" => $t_item->get("collection_id"), "contactType" => "askArchivist"));					
+					if(strToLower($t_item->get("ca_collections.type_id", array("convertCodesToDisplayText" => true))) != 'collection'){
+						print "&nbsp;&nbsp;&nbsp;&nbsp;<span class='glyphicon glyphicon-download'></span>".caDetailLink($this->request, "Download Finding Aid", "", "ca_collections",  $t_item->get("collection_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
+					}
+					print "</div><!-- end detailTool -->"
 ?>
 				</div><!-- end col -->
 			</div><!-- end row -->
@@ -55,8 +62,8 @@
 							$vs_tmp .= "<div class='unit'><h6>Repository</h6>".$vs_repository."</div>";
 						}
 					}
-					if ($vs_date = $t_item->getWithTemplate('<ifcount code="ca_collections.unitdate.dacs_date_value" min="1"><unit>^ca_collections.unitdate.dacs_date_value (^ca_collections.unitdate.dacs_dates_types)</unit></ifcount>')) {
-						if ($vs_date != " ()") {
+					if ($vs_date = trim($t_item->getWithTemplate('<ifcount code="ca_collections.unitdate.dacs_date_value" min="1"><unit>^ca_collections.unitdate.dacs_date_value <ifdef code="ca_collections.unitdate.dacs_dates_types">(^ca_collections.unitdate.dacs_dates_types)</ifdef></unit></ifcount>'))) {
+						if (($vs_date != " ()") && ($vs_date != " (-)")) {
 							$vs_tmp .= "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
 						}
 					}	
@@ -137,6 +144,12 @@
 				</div>
 			</div>
 {{{<ifcount code="ca_objects" min="2">
+			<hr style='margin-top:30px;'>
+			<div class="row">
+				<div class="col-sm-12">
+					<h4>Related Items</h4>
+				</div>
+			</div>
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>

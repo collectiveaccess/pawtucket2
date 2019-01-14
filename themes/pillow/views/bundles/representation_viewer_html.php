@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/bundles/representation_viewer_html.php : 
+ * themes/pillow/views/bundles/representation_viewer_html.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2012 Whirl-i-Gig
+ * Copyright 2015-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,232 +25,133 @@
  *
  * ----------------------------------------------------------------------
  */
-	$t_object 					= $this->getVar('t_object');
-	$t_rep 						= $this->getVar('t_object_representation');
-	$vn_representation_id 		= $t_rep->getPrimaryKey();
-	$va_reps 					= $this->getVar('reps');
+	$vn_representation_count 			= $this->getVar('representation_count');
+	$va_representation_ids				= $this->getVar('representation_ids');
+	$vs_show_annotations_mode			= $this->getVar('display_annotations');
+	$vs_context							= $this->getVar('context');
 	
-	$vs_display_type		 	= $this->getVar('display_type');
-	$va_display_options		 	= $this->getVar('display_options');
+	$t_subject							= $this->getVar('t_subject');
+	$vn_subject_id						= $t_subject->getPrimaryKey();
+	
+	if ($vn_representation_count > 1) {
+?>
+<div class="jcarousel-wrapper">
+	<div class="jcarousel" id="repViewerCarousel">
+		<ul>
+			{{{slides}}}
+		</ul>
+	</div><!-- end jcarousel -->
 
-	$va_pages = $va_sections = array();
-	$vb_use_book_reader = false;
-	$vn_open_to_page = 1;
-	$va_access_values = caGetUserAccessValues($this->request);
+	<!-- Prev/next controls -->
+	<div id='detailRepNav'>
+		<a href='#' id='detailRepNavPrev' title='<?php print _t("Previous"); ?>'><span class='glyphicon glyphicon-arrow-left'></span></a> 
+		<a href='#' id='detailRepNavNext' title='<?php print _t("Next"); ?>'><span class='glyphicon glyphicon-arrow-right'></span></a>
+		<div style='clear:both;'></div>
+	</div><!-- end detailRepNav -->
+</div><!-- end jcarousel-wrapper -->
 
-	$vb_should_use_book_viewer = isset($va_display_options['use_book_viewer']) && (bool)$va_display_options['use_book_viewer'];
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		var caSliderepresentation_ids = <?php print json_encode($va_representation_ids); ?>;
+		/* width of li */
+		$('.jcarousel, .jcarousel li').width($('.jcarousel').width());	// don't ask
+		$( window ).resize(function() { $('.jcarousel li').width($('.jcarousel').width()); });
 
-	$vs_book_viewer_content_mode = null;
-	$vn_object_id = $vn_rep_id = null;
-	if (
-		$vb_should_use_book_viewer 
-		&&
-		isset($va_display_options['use_book_viewer_when_number_of_representations_exceeds']) 
-		&& 
-		((int)$va_display_options['use_book_viewer_when_number_of_representations_exceeds'] < sizeof($va_reps))
-	) {
-		// Create book viewer from multiple representations
-		$va_reps = $t_object->getRepresentations(array('thumbnail', 'large', 'page'), null, array('return_with_access' => caGetUserAccessValues($this->request)));
-		$vn_object_id = $t_object->getPrimaryKey();
-		
-		$vn_c = 1;
-		foreach($va_reps as $vn_id => $va_file) {
-			$va_pages[] = array(
-				'object_id' => $vn_object_id, 'representation_id' => $vn_id,
-				'thumbnail_url' => $va_file['urls']['thumbnail'], 'thumbnail_path' => $va_file['paths']['thumbnail'], 'thumbnail_width' => $va_file['info']['thumbnail']['WIDTH'], 'thumbnail_height' => $va_file['info']['thumbnail']['HEIGHT'], 'thumbnail_mimetype' => $va_file['info']['thumbnail']['MIMETYPE'],
-				'normal_url' => $va_file['urls']['large'], 'normal_path' => $va_file['paths']['large'], 'normal_width' => $va_file['info']['large']['WIDTH'], 'normal_height' => $va_file['info']['large']['HEIGHT'], 'normal_mimetype' => $va_file['info']['large']['MIMETYPE'],
-				'large_url' => $va_file['urls']['page'], 'large_path' => $va_file['paths']['page'], 'large_width' => $va_file['info']['page']['WIDTH'], 'large_height' => $va_file['info']['page']['HEIGHT'], 'large_mimetype' => $va_file['info']['page']['MIMETYPE']
-			);
-			
-			$vs_title = (isset($va_file['label']) && trim($va_file['label'])) ? $va_file['label'] : _t('Page %1', $vn_c);
-			
-			$va_sections[] = array(
-				'title' => $vs_title, 
-				'page' => $vn_c, 
-				'object_id' => $vn_object_id, 'representation_id' => $vn_id, 
-				'editUrl' => null, 
-				'downloadUrl' => caObjectsDisplayDownloadLink($this->request, $vn_object_id) ? caNavUrl($this->request, '', 'Detail', 'DownloadRepresentation', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'version' => 'original')) : ""
-			);
-			$vn_c++;
-		}
+		/* Carousel initialization */
+		$('.jcarousel').on('jcarousel:animate', function (event, carousel) {
+			$(carousel._element.context).find('li').hide().fadeIn(500);
+		}).on('jcarousel:createend jcarousel:animateend', function(event, carousel) {
+			var current_rep_id = parseInt($('.jcarousel').jcarousel('first').attr('id').replace('slide', ''));
+			var i = caSliderepresentation_ids.indexOf(current_rep_id);
 
-		$vn_object_id = $t_object->getPrimaryKey();
-		$vs_book_viewer_content_mode = 'multiple_representations';
-		$vb_use_book_reader = true;
-	} else {
-		if (
-			$vb_should_use_book_viewer
-			&& 
-			(sizeof($va_reps) == 1)
-			&&
-			(
-				((isset($va_display_options['show_hierarchy_in_book_viewer'])
-				&& 
-				(bool)$va_display_options['show_hierarchy_in_book_viewer']))
-				||
-				((isset($va_display_options['show_subhierarchy_in_book_viewer'])
-				&& 
-				(bool)$va_display_options['show_subhierarchy_in_book_viewer']))
-			)
-			&&
-			($va_ancestor_ids = $t_object->getHierarchyAncestors(null, array('idsOnly' => true)))
-		) {
-			$vn_parent_id = array_pop($va_ancestor_ids);
-			
-			$vn_page_id = $t_object->getPrimaryKey();
-			$t_object->load($vn_parent_id);
-			$va_child_ids = $t_object->getHierarchyChildren(null, array('idsOnly' => true));
-			
-			foreach($va_ancestor_ids as $vn_id) {
-				array_unshift($va_child_ids, $vn_id);
-			}
-			$o_children = $t_object->makeSearchResult('ca_objects', $va_child_ids);
-			
-			$vn_c = 1;
-			while($o_children->nextHit()) {
-				$vs_thumbnail_url = $o_children->getMediaUrl('ca_object_representations.media', 'thumbnail');
-				$vs_thumbnail_path = $o_children->getMediaPath('ca_object_representations.media', 'thumbnail');
-				$va_thumbnail_info = $o_children->getMediaInfo('ca_object_representations.media', 'thumbnail');
-				$vs_large_url = $o_children->getMediaUrl('ca_object_representations.media', 'large');
-				$vs_large_path = $o_children->getMediaPath('ca_object_representations.media', 'large');
-				$va_large_info = $o_children->getMediaInfo('ca_object_representations.media', 'large');
-				$vs_page_url = $o_children->getMediaUrl('ca_object_representations.media', 'page');
-				$vs_page_path = $o_children->getMediaPath('ca_object_representations.media', 'page');
-				$va_page_info = $o_children->getMediaInfo('ca_object_representations.media', 'page');
-				
-				$vn_object_id = (int)$o_children->get('ca_objects.object_id');
-				$va_pages[$vn_object_id] = array(
-					'title' => $vs_title = $o_children->get('ca_objects.preferred_labels.name'),
-					'object_id' => $vn_object_id, 'representation_id' => $vn_representation_id = (int)$o_children->get('ca_object_representations.representation_id'),
-					'thumbnail_url' => $vs_thumbnail_url, 'thumbnail_path' => $vs_thumbnail_path, 'thumbnail_width' => $va_thumbnail_info['WIDTH'], 'thumbnail_height' => $va_thumbnail_info['HEIGHT'], 'thumbnail_mimetype' => $va_thumbnail_info['MIMETYPE'],
-					'normal_url' => $vs_large_url, 'normal_path' => $vs_large_path, 'normal_width' => $va_large_info['WIDTH'], 'normal_height' => $va_large_info['HEIGHT'], 'normal_mimetype' => $va_large_info['MIMETYPE'],
-					'large_url' => $vs_page_url, 'large_path' => $vs_page_path, 'large_width' => $va_page_info['WIDTH'], 'large_height' => $va_page_info['HEIGHT'], 'large_mimetype' => $va_page_info['MIMETYPE']
-				);
-				$va_sections[$vn_object_id] = array(
-					'title' => $vs_title, 'page' => $vn_c, 
-					'object_id' => $vn_object_id, 
-					'representation_id' => $vn_representation_id, 
-					'editUrl' => caNavUrl($this->request, '', 'Detail', 'Objects', array('object_id' => $vn_object_id)), 
-					'downloadUrl' => caObjectsDisplayDownloadLink($this->request, $vn_object_id) ? caNavUrl($this->request, '', 'Detail', 'DownloadRepresentation', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'version' => 'original')) : "");
-				if ($o_children->get('ca_objects.object_id') == $vn_page_id) { $vn_open_to_page = $vn_c; }
-				
-				$vn_c++;
-			}
-			ksort($va_pages);
-			$va_pages = array_values($va_pages);
-			
-			ksort($va_sections);
-			$va_sections = array_values($va_sections);
-			$vn_c = 1;
-			foreach($va_sections as $vn_i => $va_section) {
-				$va_sections[$vn_i]['page'] = $vn_c;
-				$vn_c++;
-			}
-			
-			$vn_object_id = $t_object->getPrimaryKey();
-			
-			$vs_book_viewer_content_mode = 'hierarchy_of_representations';
-			$vb_use_book_reader = true;
-		} else {
-			if (
-				$vb_should_use_book_viewer
-				&&
-				(sizeof($va_reps) == 1)
-				&&
-				isset($va_display_options['show_hierarchy_in_book_viewer'])
-				&& 
-				(bool)$va_display_options['show_hierarchy_in_book_viewer']
-				&&
-				($va_child_ids = $t_object->getHierarchyChildren(null, array('idsOnly' => true)))
-			) {
-				array_unshift($va_child_ids, $t_object->getPrimaryKey());
-				// Create book viewer from hierarchical objects
-				$o_children = $t_object->makeSearchResult('ca_objects', $va_child_ids);
-				$vn_object_id = $t_object->getPrimaryKey();
-				
-				$vn_c = 1;
-				while($o_children->nextHit()) {
-					$vs_preview_url = $o_children->getMediaUrl('ca_object_representations.media', 'preview');
-					$vs_preview_path = $o_children->getMediaPath('ca_object_representations.media', 'preview');
-					$va_preview_info = $o_children->getMediaInfo('ca_object_representations.media', 'preview');
-					$vs_large_url = $o_children->getMediaUrl('ca_object_representations.media', 'large');
-					$vs_large_path = $o_children->getMediaPath('ca_object_representations.media', 'large');
-					$va_large_info = $o_children->getMediaInfo('ca_object_representations.media', 'large');
-					$vs_page_url = $o_children->getMediaUrl('ca_object_representations.media', 'page');
-					$vs_page_path = $o_children->getMediaPath('ca_object_representations.media', 'page');
-					$va_page_info = $o_children->getMediaInfo('ca_object_representations.media', 'page');
-					
-					$va_pages[] = array(
-						'title' => $vs_title = $o_children->get('ca_objects.preferred_labels.name'),
-						'object_id' => $vn_object_id, 'representation_id' => $vn_representation_id = (int)$o_children->get('ca_object_representations.representation_id'),
-						'thumbnail_url' => $vs_preview_url, 'thumbnail_path' => $vs_preview_path, 'thumbnail_width' => $va_preview_info['WIDTH'], 'thumbnail_height' => $va_preview_info['HEIGHT'], 'thumbnail_mimetype' => $va_preview_info['MIMETYPE'],
-						'normal_url' => $vs_large_url, 'normal_path' => $vs_large_path, 'normal_width' => $va_large_info['WIDTH'], 'normal_height' => $va_large_info['HEIGHT'], 'normal_mimetype' => $va_large_info['MIMETYPE'],
-						'large_url' => $vs_page_url, 'large_path' => $vs_page_path, 'large_width' => $va_page_info['WIDTH'], 'large_height' => $va_page_info['HEIGHT'], 'large_mimetype' => $va_page_info['MIMETYPE']
-					);
-					$va_sections[] = array(
-						'title' => $vs_title, 
-						'page' => $vn_c, 
-						'object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 
-						'editUrl' => caNavUrl($this->request, '', 'Detail', 'Objects', array('object_id' => $vn_object_id)), 
-						'downloadUrl' => caObjectsDisplayDownloadLink($this->request, $vn_object_id) ? caNavUrl($this->request, '', 'Detail', 'DownloadRepresentation', array('object_id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'version' => 'original')) : "");
-				
-					$vn_c++;
-				}
-				
-				$vs_book_viewer_content_mode = 'hierarchy_of_representations';
-				$vb_use_book_reader = true;
-			} else {
-				if (
-					$vb_should_use_book_viewer
-					&&
-					($this->getVar('num_multifiles') > 0)
-				) {
-					// Create book viewer from single representation with multifiles
-					$vb_use_book_reader = true;
-			
-					$vn_object_id = $t_object->getPrimaryKey();
-					$vn_representation_id = $t_rep->getPrimaryKey();
-					
-					foreach($t_rep->getFileList(null, 0, null, array('preview', 'large_preview', 'page_preview')) as $vn_id => $va_file) {
-						$va_pages[] = array(
-							'object_id' => $vn_object_id, 'representation_id' => $t_rep->getPrimaryKey(),
-							'thumbnail_url' => $va_file['preview_url'], 'thumbnail_path' => $va_file['preview_path'], 'thumbnail_width' => $va_file['preview_width'], 'thumbnail_height' => $va_file['preview_height'], 'thumbnail_mimetype' => $va_file['preview_mimetype'],
-							'normal_url' => $va_file['large_preview_url'], 'normal_path' => $va_file['large_preview_path'], 'normal_width' => $va_file['large_preview_width'], 'normal_height' => $va_file['large_preview_height'], 'normal_mimetype' => $va_file['large_preview_mimetype'],
-							'large_url' => $va_file['page_preview_url'], 'large_path' => $va_file['page_preview_path'], 'large_width' => $va_file['page_preview_width'], 'large_height' => $va_file['page_preview_height'], 'large_mimetype' => $va_file['page_preview_mimetype'],
-						);
-					}
-					
-					
-					$vs_book_viewer_content_mode = 'multifiles';
+			if (event.type == 'jcarousel:animateend') {
+				if (!jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html()) {
+					// load media via ajax
+					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
+					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).load('<?php print caNavUrl($this->request, '*', '*', 'GetMediaInline', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[i] + '/display/detail', function(e) {
+						// update carousel height with current slide height after ajax load
+						jQuery(this).find('img').bind('load', function() {
+							jQuery('.jcarousel').height($('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height());
+						});
+					});
+				} else {
+					// update carousel height with current slide height
+					var h = $('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height();
+					if (h > 0) $('.jcarousel').height(h);
 				}
 			}
-		}
+<?php
+	if ($vs_show_annotations_mode == 'div') {
+?>
+			// load annotation list via ajax
+			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[0]); }
+<?php
 	}
-			
+?>
+		}).jcarousel({
+			animation: {
+				duration: 0 // make changing image immediate
+			},
+			wrap: 'both'
+		});
 
-	
-	if ($vb_use_book_reader) {
-		$o_view = new View($this->request, $this->request->getViewsDirectoryPath().'/bundles/');
-		$o_view->setVar('pages', $va_pages);
-		$o_view->setVar('sections', $va_sections);
-		$o_view->setVar('object_id', $vn_object_id);
-		$o_view->setVar('representation_id', $vn_representation_id);
-		$o_view->setVar('content_mode', $vs_book_viewer_content_mode);
-		$o_view->setVar('initial_page', $vn_open_to_page);
-		$o_view->setVar('display_type', $vs_display_type);
-		$o_view->setVar('display_options', $va_display_options);
-		$o_view->setVar('t_subject', $t_object);
-		$o_view->setVar('t_representation', $t_rep);
-		
-		$va_page_cache = $this->request->session->getVar('caDocumentViewerPageListCache');
-		$va_page_cache[md5($c=$vn_object_id.'/'.$vn_representation_id.'/'.null)] = $va_pages;
-		$this->request->session->setVar('caDocumentViewerPageListCache', $va_page_cache);
-	
-		$va_section_cache = $this->request->session->getVar('caDocumentViewerSectionCache');
-		$va_section_cache[md5($vn_object_id.'/'.$vn_representation_id.'/'.null)] = $va_sections;
-		$this->request->session->setVar('caDocumentViewerSectionCache', $va_section_cache);
-		
-		print $o_view->render('bookviewer_html.php');
+		/* Prev control initialization */
+		$('#detailRepNavPrev')
+			.on('jcarouselcontrol:active', function() { $(this).removeClass('inactive'); })
+			.on('jcarouselcontrol:inactive', function() { $(this).addClass('inactive'); })
+			.jcarouselControl({
+				target: '-=1',
+				method: function() {
+					$('.jcarousel').jcarousel('scroll', '-=1', true, function() {
+						var id = $('.jcarousel').jcarousel('target').attr('class');
+						$('#detailRepresentationThumbnails .{{{active_representation_class}}}').removeClass('{{{active_representation_class}}}');
+						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('{{{active_representation_class}}}');
+						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('{{{active_representation_class}}}');
+					});
+				}
+			});
+
+		/* Next control initialization */
+		$('#detailRepNavNext')
+			.on('jcarouselcontrol:active', function() { $(this).removeClass('inactive'); })
+			.on('jcarouselcontrol:inactive', function() { $(this).addClass('inactive'); })
+			.jcarouselControl({
+				target: '+=1',
+				method: function() {
+					$('.jcarousel').jcarousel('scroll', '+=1', true, function() {
+						var id = $('.jcarousel').jcarousel('target').attr('class');
+						$('#detailRepresentationThumbnails .{{{active_representation_class}}}').removeClass('{{{active_representation_class}}}');
+						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('{{{active_representation_class}}}');
+						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('{{{active_representation_class}}}');
+					});
+					
+					
+				}
+			});
+			
+		if({{{representation_id}}} > 0){
+			$('.jcarousel').jcarousel('scroll', $('#slide{{{representation_id}}}'));
+		}
+	});
+</script>
+<?php
+	} elseif($vn_representation_count == 1) {
+		// Just dump the slide list without controls when there is only one representation
+?>
+		{{{slides}}}
+<?php
+		if ($vs_show_annotations_mode == 'div') {
+?>	
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+			if (jQuery('#detailAnnotations').length) { jQuery('#detailAnnotations').load('<?php print caNavUrl($this->request, '*', '*', 'GetTimebasedRepresentationAnnotationList', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + "{{{representation_id}}}"); }
+	});
+</script>
+<?php
+		}
 	} else {
-		print $this->render('mediaviewer_html.php');
+		// Use placeholder graphic when no representations are available
+?>
+		{{{placeholder}}}
+<?php
 	}

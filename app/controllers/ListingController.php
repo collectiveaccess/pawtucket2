@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2016 Whirl-i-Gig
+ * Copyright 2013-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -67,10 +67,8 @@
  				// invalid listing type – throw error
  				throw new ApplicationException("Invalid listing type");
  			}
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".$va_listing_info["displayName"]);
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$va_listing_info["displayName"]);
  			
- 			$o_dm = Datamodel::load();
- 		
  			$ps_function = strtolower($ps_function);
  			
  			$vs_table = $va_listing_info['table'];
@@ -80,7 +78,7 @@
  			$this->opo_result_context = new ResultContext($this->request, $vs_table, $this->ops_find_type);
  			$this->opo_result_context->setAsLastFind();
  			
- 			if (!($t_instance = $o_dm->getInstanceByTableName($vs_table, true))) {
+ 			if (!($t_instance = Datamodel::getInstance($vs_table, true))) {
  				throw new ApplicationException("Invalid table");
  			}
  			
@@ -149,17 +147,14 @@
  			}else{
  				$vb_sort_changed = true;
  			}
- 			if($vb_sort_changed){
-				# --- set the default sortDirection if available
-				$va_sort_direction = caGetOption('sortDirection', $va_listing_info, null);
-				if($ps_sort_direction = $va_sort_direction[$ps_sort]){
-					$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
-				} 			
- 			}
-  			if (!($ps_sort_direction = $this->request->getParameter("direction", pString))) {
- 				if (!($ps_sort_direction = $this->opo_result_context->getCurrentSortDirection())) {
- 					$ps_sort_direction = 'asc';
- 				}
+ 			$va_sort_direction = caGetOption('sortDirection', $va_listing_info, null);
+ 			
+  			if (!($ps_sort_direction = $this->request->getParameter("direction", pString))) {  			    
+                # --- set the default sortDirection if available
+                if(!($ps_sort_direction = $va_sort_direction[$ps_sort])){
+                    $ps_sort_direction = 'asc';
+                } 
+                $this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
  			}
  			
  			$this->opo_result_context->setCurrentSort($ps_sort);
@@ -173,12 +168,6 @@
 			$this->view->setVar('sort_direction', $ps_sort_direction);
 
 
-
-
-
-
-			
- 			
  			$va_lists = array();
  			$va_res_list = array();
  			

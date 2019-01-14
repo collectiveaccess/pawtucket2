@@ -34,10 +34,10 @@
    *
    */
 
-require_once(__CA_LIB_DIR__."/ca/IBundleProvider.php");
-require_once(__CA_LIB_DIR__."/ca/RepresentableBaseModel.php");
-require_once(__CA_LIB_DIR__.'/ca/IHierarchy.php');
-require_once(__CA_LIB_DIR__."/ca/BaseObjectLocationModel.php");
+require_once(__CA_LIB_DIR__."/IBundleProvider.php");
+require_once(__CA_LIB_DIR__."/RepresentableBaseModel.php");
+require_once(__CA_LIB_DIR__.'/IHierarchy.php');
+require_once(__CA_LIB_DIR__."/BaseObjectLocationModel.php");
 
 
 BaseModel::$s_ca_models_definitions['ca_storage_locations'] = array(
@@ -572,8 +572,8 @@ class ca_storage_locations extends BaseObjectLocationModel implements IBundlePro
 					$va_current_locations_ids = $t_object->getRelatedItems('ca_storage_locations', array('idsOnly' => false, 'showCurrentOnly' => true, 'row_ids' => $va_object_ids));
 					
 					$va_object_rels = array(); 
-					foreach($va_current_locations_ids as $vn_relation_id => $va_location_info) {
-						if ($va_location_info['location_id'] == $this->getPrimaryKey()) { $va_object_rels[] = $vn_relation_id; }
+					foreach($va_current_locations_ids as $va_location_info) {
+						if ($va_location_info['location_id'] == $this->getPrimaryKey()) { $va_object_rels[] = $va_location_info['relation_id']; }
 					}
 					
 					return sizeof($va_object_rels) ? caMakeSearchResult('ca_objects_x_storage_locations', $va_object_rels) : null;
@@ -588,7 +588,7 @@ class ca_storage_locations extends BaseObjectLocationModel implements IBundlePro
 				if (is_array($va_movement_ids) && sizeof($va_movement_ids)) {
 					// get list of objects on these movements...
 					$t_movement = new ca_movements();
-					$va_object_ids = $t_movement->getRelatedItems('ca_objects', array('idsOnly' => true, 'showCurrentOnly' => true, 'row_ids' => $va_movement_ids));
+					$va_object_ids = $t_movement->getRelatedItems('ca_objects', array('idsOnly' => true,'row_ids' => $va_movement_ids));
 					
 					// ... then get the list of objects for which the *current* movement is one of ours
 					$t_object = new ca_objects();

@@ -41,7 +41,19 @@
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
-
+?>
+			<small class="pull-right sortValues">
+<?php
+				if(in_array($vs_block, $va_browse_types)){
+?>
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search), [], ['useQueryString' => true]); ?></span> | 
+<?php
+				}
+?>
+				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
+				{{{sortDirectionControl}}}
+			</small>
+<?php
 ?>
 				<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits()." Results)"; ?></H3>
 

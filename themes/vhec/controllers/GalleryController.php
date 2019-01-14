@@ -45,7 +45,6 @@
             }
             
  			$this->config = caGetGalleryConfig();
- 			$this->opo_datamodel = Datamodel::load();
  			$va_access_values = caGetUserAccessValues($this->getRequest());
  		 	$this->opa_access_values = $va_access_values;
  		 	# --- what is the section called - title of page

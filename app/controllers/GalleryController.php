@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2016 Whirl-i-Gig
+ * Copyright 2013-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -44,7 +44,6 @@
             }
             
  			$this->config = caGetGalleryConfig();
- 			$this->opo_datamodel = Datamodel::load();
  			
  		 	# --- what is the section called - title of page
  			if(!$vs_section_name = $this->config->get('gallery_section_name')){
@@ -87,11 +86,24 @@
 						if ($vb_omit_front_page_set && $va_set['set_code'] == $vs_front_page_set) { 
 							unset($va_sets[$vn_set_id]); 
 						}
+						$va_first_item = $va_set_first_items[$vn_set_id];
+						$va_first_item = array_shift($va_first_item);
+						$vn_item_id = $va_first_item["item_id"];
+						# --- it there isn't a rep and this is not a set of objects, try to get a related object to show something
+						if(!$va_set_first_items[$vn_set_id][$vn_item_id]["representation_tag"]){
+							if(Datamodel::getTableName($va_set['table_num']) != "ca_objects"){
+								$t_instance = Datamodel::getInstanceByTableNum($va_set['table_num']);
+								$t_instance->load($va_first_item["row_id"]);
+								if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.iconlarge</unit>', array("checkAccess" => $this->opa_access_values))){
+ 									$va_set_first_items[$vn_set_id][$vn_item_id] = array("representation_tag" => $vs_thumbnail);
+ 								}
+							}
+						}
 					}
 					$this->view->setVar('sets', $va_sets);
 					$this->view->setVar('first_items_from_sets', $va_set_first_items);
 				}
-				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")));
+				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")));
  				$this->render("Gallery/index_html.php");
  			}else{
  				$ps_set_id = $ps_function;
@@ -99,23 +111,23 @@
  				$t_set->load($ps_set_id);
  				$this->view->setVar("set", $t_set);
  				
- 				$o_dm = $this->getAppDatamodel();
-				$vs_table = $o_dm->getTableName($t_set->get('table_num'));
-			
- 				$o_context = new ResultContext($this->request, $vs_table, 'gallery');
- 				$o_context->setAsLastFind();
- 				$o_context->setResultList(array_keys($t_set->getItemRowIDs()));
- 				$o_context->saveContext();
- 				 				
+				$vs_table = Datamodel::getTableName($t_set->get('table_num'));
+				# --- don't save the gallery context when loaded via ajax
+				if (!$this->request->isAjax()){
+					$o_context = new ResultContext($this->request, $vs_table, 'gallery');
+					$o_context->setAsLastFind();
+					$o_context->setResultList(array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))));
+					$o_context->saveContext();
+				} 				 				
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
  				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
  				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
  				$pn_set_item_id = $this->request->getParameter('set_item_id', pInteger);
- 				if(!in_array($pn_set_item_id, array_keys($t_set->getItemIDs()))){
+ 				if(!in_array($pn_set_item_id, array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values))))){
  					$pn_set_item_id = "";	
  				}
  				$this->view->setVar("set_item_id", $pn_set_item_id);
- 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).": ".$t_set->getLabelForDisplay());
+ 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")).$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
  				$vs_display_attribute = $this->config->get('gallery_set_presentation_element_code');
  				$vs_display = "";
  				if($vs_display_attribute){
@@ -128,11 +140,12 @@
 						break;
 					case 'map':
 						AssetLoadManager::register("maps");
-						$va_views_info = $this->config->get('views');
-						if($va_views_info['map']['data']){
+						$va_views = $this->config->get('views');
+						$va_views_info = $va_views['map'][$vs_table];
+						if($va_views_info['data']){
 							$o_res = caMakeSearchResult(
 								$t_set->get('table_num'),
-								array_keys($t_set->getItemRowIDs()),
+								array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))),
 								['checkAccess' => $this->opa_access_values]
 							);
 
@@ -140,9 +153,9 @@
 		
 							$va_opts['ajaxContentUrl'] = caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('set_id' => $ps_set_id));
 			
-							$o_map = new GeographicMap(caGetOption("width", $va_views_info['map'], "100%"), caGetOption("height", $va_views_info['map'], "600px"));
-							$o_map->mapFrom($o_res, $va_views_info['map']['data'], $va_opts);
-							$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_views_info['map'], 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_views_info['map'], 12), 'request' => $this->request)));
+							$o_map = new GeographicMap(caGetOption("width", $va_views_info, "100%"), caGetOption("height", $va_views_info, "600px"));
+							$o_map->mapFrom($o_res, $va_views_info['data'], $va_opts);
+							$this->view->setVar('map', $o_map->render('HTML', array('circle' => 0, 'minZoomLevel' => caGetOption("minZoomLevel", $va_views_info, 2), 'maxZoomLevel' => caGetOption("maxZoomLevel", $va_views_info, 12), 'request' => $this->request)));
 							$this->render("Gallery/set_detail_map_html.php");
 						}else{
 							$this->render("Gallery/detail_html.php");
@@ -174,6 +187,16 @@
  			if(!$va_set_item){
  				$va_set_item = array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));
  			}
+ 			if(is_array($va_set_item) && !$va_set_item["representation_tag"]){
+				if(Datamodel::getTableName($t_set->get('table_num')) != "ca_objects"){
+					$t_instance = Datamodel::getInstanceByTableNum($t_set->get('table_num'));
+					$t_instance->load($va_set_item["row_id"]);
+						if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.large</unit>', array("checkAccess" => $this->opa_access_values))){
+							$va_set_item["representation_tag"] = $vs_thumbnail;
+							$va_set_item["representation_id"] = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.representation_id</unit>', array("checkAccess" => $this->opa_access_values));
+						}
+					}
+ 			}
  			$this->view->setVar("set_item", $va_set_item);
  			$this->render("Gallery/set_info_html.php");
  		}
@@ -185,13 +208,15 @@
 			$pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
 			$t_set = new ca_sets($pn_set_id);
 			$this->getView()->setVar('set', $t_set);
-
-			$this->getView()->setVar('views', $this->config->get('views'));
+			$vs_table = Datamodel::getTableName($t_set->get('table_num'));
+			$va_views = $this->config->get('views');
+			$this->getView()->setVar('table', $vs_table);
+			$this->getView()->setVar('views', $va_views);
 
 			$o_res = caMakeSearchResult(
 				$t_set->get('table_num'),
-				array_keys($t_set->getItemRowIDs()),
-				['checkAccess' => caGetUserAccessValues($this->getRequest())]
+				array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))),
+				['checkAccess' => $this->opa_access_values]
 			);
 
 			$this->getView()->setVar('result', $o_res);
@@ -211,15 +236,14 @@
             if($this->opb_is_login_redirect) { return; }
             $pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
 			$t_set = new ca_sets($pn_set_id);
+			$vs_table = Datamodel::getTableName($t_set->get('table_num'));
 			
             $pa_ids = explode(";",$this->request->getParameter('id', pString)); 
             $va_views_info = $this->config->get('views');
-            $va_view_info = $va_views_info["map"];
-            $vs_content_template = $va_view_info['display']['icon'].$va_view_info['display']['title_template'].$va_view_info['display']['description_template'];
-			$o_dm = $this->getAppDatamodel();
-			$vs_table = $o_dm->getTableName($t_set->get('table_num'));
+            $va_view_info = $va_views_info["map"][$vs_table];
+            $vs_content_template = $va_view_info['display']['labelTemplate'].$va_view_info['display']['contentTemplate'];
 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, $vs_table, $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br style='clear:both;'/>")));
-			
+							
 			$this->view->setVar('heading', trim($va_view_info['display']['heading']) ? caProcessTemplateForIDs($va_view_info['display']['heading'], $vs_table, [$pa_ids[0]], array('checkAccess' => $this->opa_access_values)) : "");
 			$this->view->setVar('table', $vs_table);
 			$this->view->setVar('ids', $pa_ids);
@@ -230,18 +254,23 @@
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set->load($pn_set_id);
- 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values)));
+			$vs_table = Datamodel::getTableName($t_set->get('table_num'));
+			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values)));
  			$this->view->setVar("set_id", $pn_set_id);
  			
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
  			$this->view->setVar("set_item_id", $pn_item_id); 
  			$t_rep = new ca_object_representations($va_set_items[$pn_item_id]["representation_id"]);
- 			$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
- 			$this->view->setVar("rep_object", $t_rep);
- 			$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
- 			$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"], ['context' => 'gallery']));
- 			$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
+			if(!(is_array($this->opa_access_values) && sizeof($this->opa_access_values) && !in_array($t_rep->get("access"), $this->opa_access_values))){
+				$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
+				$this->view->setVar("rep_object", $t_rep);
+				$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
+				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"], ['context' => 'gallery']));
+				$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
+			}
  			$this->view->setVar("object_id", $va_set_items[$pn_item_id]["row_id"]);
+ 			$this->view->setVar("row_id", $va_set_items[$pn_item_id]["row_id"]);
+ 			$this->view->setVar("table", $vs_table);
  			$pn_previous_id = 0;
  			$pn_next_id = 0;
  			$va_set_item_ids = array_keys($va_set_items);
@@ -262,17 +291,21 @@
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set_item = new ca_set_items($pn_item_id);
- 			$o_dm = $this->getAppDatamodel();
-			$t_instance = $o_dm->getInstanceByTableNum($t_set_item->get("table_num"));
- 			$t_instance = new ca_objects($t_set_item->get("row_id"));
+			$t_instance = Datamodel::getInstanceByTableNum($t_set->get("table_num"));
+			$vs_table = Datamodel::getTableName($t_set_item->get('table_num'));
+			$t_instance->load($t_set_item->get("row_id"));
  			$va_set_item_ids = array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values)));
  			$this->view->setVar("item_id", $pn_item_id);
  			$this->view->setVar("set_num_items", sizeof($va_set_item_ids));
  			$this->view->setVar("set_item_num", (array_search($pn_item_id, $va_set_item_ids) + 1));
  			
+ 			$this->view->setVar("set_item", $t_set_item);
  			$this->view->setVar("object", $t_instance);
+ 			$this->view->setVar("instance", $t_instance);
  			$this->view->setVar("object_id", $t_set_item->get("row_id"));
+ 			$this->view->setVar("row_id", $t_set_item->get("row_id"));
  			$this->view->setVar("label", $t_instance->getLabelForDisplay());
+ 			$this->view->setVar("table", $vs_table);
  			
  			//
  			// Tag substitution

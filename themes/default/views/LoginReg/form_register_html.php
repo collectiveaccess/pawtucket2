@@ -38,7 +38,7 @@
 	}
 	if($this->request->isAjax()){
 ?>
-<div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+<div id="caFormOverlay">
 <?php
 	}
 ?>
@@ -60,8 +60,21 @@
 ?>
 	<form id="RegForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
 	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
+<?php
+	if($this->request->isAjax()){
+?>
+		<div class="row">
+			<div class="col-sm-12">
+				<div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+				<H1><?php print _t("Register"); ?></H1>
+			</div>
+		</div>
+<?php
+	}else{
+?>
 	    <div class="row"><div class="col-sm-4"><H1><?php print _t("Register"); ?></H1></div></div>
 <?php
+	}
 	if($va_errors["register"]){
 		print "<div class='alert alert-danger'>".$va_errors["register"]."</div>";
 	}
@@ -118,7 +131,7 @@
 ?>
 		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
 			<label for='password2' class='col-sm-4 control-label'><?php print _t('Re-Type password'); ?></label>
-			<div class="col-sm-7"><input type="password" name="password2" size="40" class="form-control" /></div><!-- end col-sm-7 -->
+			<div class="col-sm-7"><input type="password" name="password2" size="40" class="form-control"  autocomplete="off" /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
@@ -133,7 +146,7 @@
 </div><!-- end caFormOverlay -->
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#RegForm').submit(function(e){		
+		jQuery('#RegForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', 'LoginReg', 'register', null); ?>',
 				jQuery('#RegForm').serializeObject()

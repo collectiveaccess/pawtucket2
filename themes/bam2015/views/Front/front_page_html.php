@@ -29,7 +29,6 @@
  *
  * ----------------------------------------------------------------------
  */
-		$o_datamodel = Datamodel::load();
 		$t_set = new ca_sets();
 		$va_access_values = $this->getVar("access_values");
 		if($vn_set_id = $this->request->getParameter("featured_set_id", pInteger)){
@@ -69,7 +68,7 @@
 		$t_list = new ca_lists();
  		$vn_template_over = $t_list->getItemIDFromList('hp_template', 'title_over_white'); 			
  				
-	if ($this->request->session->getVar('visited') != 'has_visited') {		
+	if (Session::getVar('visited') != 'has_visited') {		
 ?>	
 		<div id="homePanel">
 			<div class="container">
@@ -188,7 +187,7 @@
 		# --- check access/ valid set
 		if($t_occ_set->get("set_id") && ((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_occ_set->get("access"), $va_access_values)))){
 			# --- make sure this is a set of occurrences and it actually has records in it
-			$vs_set_type = $o_datamodel->getTableName($t_occ_set->get("table_num"));
+			$vs_set_type = Datamodel::getTableName($t_occ_set->get("table_num"));
 			$va_occ_set_item_ids = array_keys(is_array($va_tmp = $t_occ_set->getItemRowIDs(array('checkAccess' => $va_access_values))) ? $va_tmp : array());
 			if(($vs_set_type = "ca_occurrences") && (is_array($va_occ_set_item_ids) && sizeof($va_occ_set_item_ids))){
 ?>

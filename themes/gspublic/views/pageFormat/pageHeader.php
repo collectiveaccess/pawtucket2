@@ -35,6 +35,7 @@
 	if($this->request->isLoggedIn()){
 		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$va_user_links[] = '<li class="divider nav-divider"></li>';
+		$va_user_links[] = "<li>".caNavLink($this->request, _t('Contribute'), '', '', 'contribute', 'objects', array())."</li>";
 		if(caDisplayLightbox($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
@@ -44,8 +45,8 @@
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
@@ -75,14 +76,14 @@
 	}
 ?>
 </head>
-<body>
-	<div class="container" style="max-width:none;">
+<body class="initial">
+	<div class="container headerContainer" style="max-width:none;">
 		<div class="row topHeader">
 			<div class="container">
 				<div class="col-xs-12 col-sm-6">
 			
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'gsusaLogo.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'gsusaLogo.png'), "navbar-brand initialLogo", "", "","");
 ?>					
 					<div style="clear:both;"></div>
 				</div>
@@ -98,73 +99,74 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<nav class="navbar navbar-default yamm" role="navigation">
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-<?php
-	if ($vb_has_user_links) {
-?>
-				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
-					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
-				</button>
-<?php
-	}
-?>
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-			</div>
+		<nav class="navbar navbar-default yamm main-nav row" role="navigation">
+				<!-- Brand and toggle get grouped for better mobile display -->
+				<div class="navbar-header">
+	<?php
+		if ($vb_has_user_links) {
+	?>
+					<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
+						<span class="sr-only">User Options</span>
+						<span class="glyphicon glyphicon-user"></span>
+					</button>
+	<?php
+		}
+	?>
+					<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+				</div>
 
-		<!-- Collect the nav links, forms, and other content for toggling -->
-			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
-<?php
-	if ($vb_has_user_links) {
-?>
-			<div class="collapse navbar-collapse" id="user-navbar-toggle">
-				<ul class="nav navbar-nav">
-					<?php print join("\n", $va_user_links); ?>
-				</ul>
-			</div>
-<?php
-	}
-?>
-			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
+			<!-- Collect the nav links, forms, and other content for toggling -->
+				<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
+	<?php
+		if ($vb_has_user_links) {
+	?>
+				<div class="collapse navbar-collapse" id="user-navbar-toggle">
+					<ul class="nav navbar-nav">
+						<?php print join("\n", $va_user_links); ?>
+					</ul>
+				</div>
+	<?php
+		}
+	?>
+				<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 
-				<form class="navbar-form  navbarForm" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
-					<div class="formOutline">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search">
+					<form class="navbar-form  navbarForm" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+						<div class="formOutline">
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="Search" name="search">
+							</div>
+							<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 						</div>
-						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
-					</div>
-				</form>
-				<ul class="nav navbar-nav ">
-					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "Index")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "browse")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "About", "browse"); ?></li>	
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), '', '', 'Collections', 'Index'); ?></li>
-					<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "project")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("News"), "", "", "About", "project"); ?></li>
-
-<?php
-	if ($vb_has_user_links) {
-?>
-				<ul class="nav navbar-nav " id="user-navbar">
-					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><?php print caGetThemeGraphic($this->request, 'GS_OutlinedTrefoil_RGB_white_fill_small.png'); ?></a>
-						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
-					</li>
-				</ul>
-<?php
-	}
-?>				
-				</ul>
-			</div><!-- /.navbar-collapse -->
-	</nav>
+					</form>
+					<ul class="nav navbar-nav ">
+						<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() != "browse")) ? "class='active'" : ""; ?>'><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+						<li <?php print (($this->request->getController() == "About")&&($this->request->getAction() == "browse")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Discover"), "", "", "About", "browse"); ?></li>	
+						<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
+						<li <?php print ($this->request->getController() == "Interactive") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Interactive"), "", "", "Interactive", "Index"); ?></li>
+						<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Research"), '', '', 'Collections', 'Index'); ?></li>
+						<li <?php print ($this->request->getController() == "News") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("News"), "", "", "News", ""); ?></li>
+						<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+						
+	<?php
+		if ($vb_has_user_links) {
+	?>
+					<ul class="nav navbar-nav " id="user-navbar">
+						<li class="dropdown" style="position:relative;">
+							<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><?php print caGetThemeGraphic($this->request, 'GS_OutlinedTrefoil_RGB_white_fill_small.png'); ?></a>
+							<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
+						</li>
+					</ul>
+	<?php
+		}
+	?>				
+					</ul>
+				</div><!-- /.navbar-collapse -->
+		</nav>
+	</div>
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

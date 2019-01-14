@@ -64,9 +64,8 @@
 					}
 
 ?>							
-					{{{<ifdef code="ca_occurrences.source_urls"><H6>External Source Links</H6><a href="^ca_occurrences.source_urls" target="_blank">^ca_occurrences.source_urls</a><br/></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.related_urls"><H6>External Related Links</H6><a href="^ca_occurrences.related_urls" target="_blank">^ca_occurrences.related_urls</a><br/></ifdef>}}}
-					<br/><br/>{{{map}}}
+					{{{<ifdef code="ca_occurrences.external_link"><H6>External Related Links</H6><a href="^ca_occurrences.external_link.url_entry" target="_blank">^ca_occurrences.external_link.url_source</a><br/></ifdef>}}}
+					<br/><br/>
 					
 					
 					{{{<ifdef code="ca_occurrences.physical_objects"><H6>Physical objects</H6>^ca_occurrences.physical_objects<br/></ifdef>}}}
@@ -120,9 +119,15 @@
 </ifcount>}}}		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
+		
+<?php
+			if ($this->getVar("nextLink")) {
+				print '<div class="detailNavBgRight">';
+				print $this->getVar("nextLink");
+				print '</div><!-- end detailNavBgLeft -->';
+			}
+?>		
+
 	</div><!-- end col -->
 </div><!-- end row -->
 <script type='text/javascript'>
