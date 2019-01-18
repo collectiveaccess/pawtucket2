@@ -121,6 +121,18 @@ body.initial .navbar{
     background-size: cover;
 	min-height: 150px;
 }
+/*body.initial .navbar{
+	margin-bottom:0px;
+	background-color: rgb(255, 255, 255, .95);
+	transition: background-color .25s;
+	-webkit-transition: background-color 0s;
+	
+	background: linear-gradient(rgba(255,255,255,.6), rgba(255,255,255,.6)), url("../graphics/sled_dogs.jpg");
+	background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+	min-height: 150px;
+}*/
 body.frontContainer .navbar{
 	background-image: none;
 }
