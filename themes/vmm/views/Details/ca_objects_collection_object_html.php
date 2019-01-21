@@ -109,7 +109,7 @@
 				</ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1">
 						<div class="unit">
-							<H6>Related people</H6>
+							<H6><ifcount code="ca_entities" min="1" max="1">Related person/organization</ifcount><ifcount code="ca_entities" min="2">Related people/organizations</ifcount></H6>
 							<unit relativeTo="ca_entities" delimiter="<br/>"><b>^relationship_typename</b>: <l>^ca_entities.preferred_labels</l></unit>
 						</div>
 				</ifcount>}}}

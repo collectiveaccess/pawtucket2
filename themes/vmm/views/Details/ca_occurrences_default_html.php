@@ -1,6 +1,7 @@
 <?php
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$va_tags = $this->getVar("tags_array");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$va_access_values = caGetUserAccessValues($this->request);	
@@ -32,7 +33,7 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 <?php
-	if(sizeof($va_breadcrumb) > 1){
+	if(is_array($va_breadcrumb) && (sizeof($va_breadcrumb) > 1)){
 		print "<div class='breadcrumb'>".join(" > ", $va_breadcrumb)."</div>";
 	}
 ?>

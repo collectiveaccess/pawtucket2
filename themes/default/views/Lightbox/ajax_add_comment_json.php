@@ -32,7 +32,7 @@
     $vs_comment_count_display = $this->getVar('comment_count_display');
     $vn_set_id = $this->getVar('set_id');
 	
-	if (sizeof($va_errors)) {
+	if (is_array($va_errors) && sizeof($va_errors)) {
 			print json_encode(array('status' => 'error', 'errors' => $va_errors));
 	} else {
 			print json_encode(array('status' => 'ok', 'message' => $vs_message, 'comment' => $vs_comment, 'set_id' => $vn_set_id, 'count' => $vn_comment_count, 'displayCount' => $vs_comment_count_display));

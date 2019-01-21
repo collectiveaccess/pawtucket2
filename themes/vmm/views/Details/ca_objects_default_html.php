@@ -110,7 +110,7 @@
 				{{{<ifdef code="ca_objects.reproRestrictions.reproduction|ca_objects.reproRestrictions.access_restrictions"><div class="unit"><H6>Restrictions</H6><ifdef code="ca_objects.reproRestrictions.reproduction"><b>Reproduction</b>: ^ca_objects.reproRestrictions.reproduction<br/></ifdef><ifdef code="ca_objects.reproRestrictions.access_restrictions"><b>Access: </b>^ca_objects.reproRestrictions.access_restrictions</ifdef></div></ifdef>}}}
 				{{{<if rule='^ca_objects.type_id IN ["Archival Item"]'><ifcount code="ca_entities" min="1">
 						<div class="unit">
-							<H6>Related people</H6>
+							<H6><ifcount code="ca_entities" min="1" max="1">Related person/organization</ifcount><ifcount code="ca_entities" min="2">Related people/organizations</ifcount></H6>
 							<unit relativeTo="ca_entities" delimiter="<br/>"><b>^relationship_typename</b>: <l>^ca_entities.preferred_labels</l></unit>
 						</div>
 					</ifcount>
@@ -185,7 +185,7 @@
 					</ifcount>
 					<ifcount code="ca_entities" excludeRelationshipTypes="publish" min="1">
 						<div class="unit">
-							<H6>Related people</H6>
+							<H6><ifcount code="ca_entities" min="1" max="1" excludeRelationshipTypes="publish">Related person/organization</ifcount><ifcount code="ca_entities" min="2" excludeRelationshipTypes="publish">Related people/organizations</ifcount></H6>
 							<unit relativeTo="ca_entities" excludeRelationshipTypes="publish" delimiter="<br/>"><b>^relationship_typename</b>: <l>^ca_entities.preferred_labels</l></unit>
 						</div>
 					</ifcount>
@@ -210,7 +210,7 @@
 					</div></ifdef>
 					<ifcount code="ca_entities" min="1">
 						<div class="unit">
-							<H6>Related people</H6>
+							<H6><ifcount code="ca_entities" min="1" max="1">Related person/organization</ifcount><ifcount code="ca_entities" min="2">Related people/organizations</ifcount></H6>
 							<unit relativeTo="ca_entities" delimiter="<br/>"><b>^relationship_typename</b>: <l>^ca_entities.preferred_labels</l></unit>
 						</div>
 					</ifcount>
