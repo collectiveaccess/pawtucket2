@@ -26,11 +26,11 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Checklist
+ * @name Artworks (simple)
  * @type page
  * @pageSize letter
  * @pageOrientation portrait
- * @tables ca_occurrences
+ * @tables ca_objects
  *
  * @marginTop 0.75in
  * @marginLeft 0.25in
@@ -58,9 +58,9 @@
 	
 	$va_result_ids = array();
 	while($vo_result_int->nextHit()) {
-		$va_result_ids[] = $vo_result_int->get('ca_occurrences.occurrence_id');
+		$va_result_ids[] = $vo_result_int->get('ca_objects.object_id');
 	}
-	$vo_result = caMakeSearchResult('ca_occurrences', $va_result_ids, array('sort' => 'ca_occurrences.occurrence_dates'));
+	$vo_result = caMakeSearchResult('ca_objects', $va_result_ids, array('sort' => 'ca_objects.idno;ca_entities.preferred_labels.surname;ca_objects.creation_date'));
 ?>
 		<div id='body large'>
 <?php
@@ -82,18 +82,15 @@
 				<td>
 					<div class="metaBlock">
 <?php		
-					print "<div class='data'>".$vo_result->getWithTemplate('^ca_occurrences.preferred_labels.name')."</div>";
-					if ($vs_venue = $vo_result->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue')))) {
-						print "<div class='data'>".$vs_venue."</div>";
-					} else {
-						$vs_venue = null;
+					print "<div class='data'>".$vo_result->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes'=> array('artist')))."</div>"; 		
+					print "<div class='data'>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name')."</div>"; 
+					print "<div class='data'>".$vo_result->getWithTemplate('^ca_objects.creation_date')."</div>";	
+					print "<div class='data'>".$vo_result->getWithTemplate('^ca_objects.medium')."</div>";					
+					if ($vs_dimensions = $vo_result->getWithTemplate('<ifcount code="ca_objects.dimensions" min="1"><unit><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height H</ifdef><ifdef code="ca_objects.dimensions.dimensions_width"> x ^ca_objects.dimensions.dimensions_width W</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth"> x ^ca_objects.dimensions.dimensions_depth D</ifdef> <ifdef code="ca_objects.dimensions.height_in|ca_objects.dimensions.width_in|ca_objects.dimensions.depth_in">(</ifdef><ifdef code="ca_objects.dimensions.height_in">^ca_objects.dimensions.height_in H</ifdef><ifdef code="ca_objects.dimensions.width_in"> x ^ca_objects.dimensions.width_in W</ifdef><ifdef code="ca_objects.dimensions.depth_in"> x ^ca_objects.dimensions.depth_in D</ifdef><ifdef code="ca_objects.dimensions.height_in|ca_objects.dimensions.width_in|ca_objects.dimensions.depth_in">)</ifdef><ifdef code="ca_objects.dimensions.dimensions_weight">, ^ca_objects.dimensions.dimensions_weight Weight</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"><br/>^ca_objects.dimensions.dimensions_notes</ifdef></unit></ifcount>')) {
+						print "<div class='data'>".$vs_dimensions."</div>";
+					} elseif ($vs_dimensions = $vo_result->get('ca_objects.dimensions_readOnly')) {
+						print "<div class='data'>".$vs_dimensions."</div>";
 					}
-					if ($va_edition = $vo_result->get('ca_occurrences.edition_bib', array('delimiter' => ', '))) {
-						print "<div class='data'>".$va_edition."</div>";
-					} else {
-						$va_edition = null;
-					}				
-					print "<div class='data'>".$vo_result->get('ca_occurrences.occurrence_dates')."</div>";	
 ?>
 					</div>				
 				</td>
@@ -103,7 +100,7 @@
 						print "<div class=\"imageTiny\" style='display:inline-block;'><img src='{$vs_path}' style='max-width:200px;height:auto;'/></div>";
 					} else { 
 ?>
-						<!--<div class="imageTinyPlaceholder">&nbsp;</div>-->
+						<div class="imageTinyPlaceholder">&nbsp;</div>
 <?php					
 					}	
 ?>								
