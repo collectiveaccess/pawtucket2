@@ -46,7 +46,11 @@
 	
 	$va_breadcrumb = array(caNavLink($this->request, _t("Home"), "", "", "", ""));
 	if(strpos(strToLower($vs_back_url), "detail") === false){
-		$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Artefacts</a>";
+		if(strpos(strToLower($vs_back_url), "gallery") !== false){
+			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Highlights</a>";
+		}else{
+			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Artefacts</a>";
+		}
 		$va_breadcrumb[] = $t_object->get("ca_objects.preferred_labels");
 	}
 ?>
@@ -105,7 +109,7 @@
 				</ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1">
 						<div class="unit">
-							<H6>Related people</H6>
+							<H6><ifcount code="ca_entities" min="1" max="1">Related person/organization</ifcount><ifcount code="ca_entities" min="2">Related people/organizations</ifcount></H6>
 							<unit relativeTo="ca_entities" delimiter="<br/>"><b>^relationship_typename</b>: <l>^ca_entities.preferred_labels</l></unit>
 						</div>
 				</ifcount>}}}

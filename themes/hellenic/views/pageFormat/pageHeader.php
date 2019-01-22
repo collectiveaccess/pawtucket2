@@ -55,7 +55,7 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
-
+	<link href="https://fonts.googleapis.com/css?family=Nunito:400,700" rel="stylesheet">
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
@@ -79,9 +79,9 @@
 </head>
 <body>
 	<nav class="navbar navbar-default yamm" role="navigation">
-		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
+				<div class="container" style='padding-left:0px;height:0px;'>
 <?php
 	if ($vb_has_user_links) {
 ?>
@@ -132,20 +132,49 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search">
+							<input type="text" class="form-control" placeholder="Search..." name="search">
 						</div>
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Finding Aids"), "", "", "Collections", "index"); ?></li>					
+					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Themes"), "", "", "Gallery", "Index"); ?></li>					
+					<li >
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown">Search</a>
+						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, _t("Browse All"), "", "", "Browse", "objects"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>	
+							<li><?php print caNavLink($this->request, _t("Finding Aids"), "", "", "Collections", "Index"); ?></li>		
+						</ul>
+					</li>
+					<li >
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown">Resources</a>
+						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "collection"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Citation Guide and Links"), "", "", "About", "Index"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Rights and Reproduction"), "", "", "About", "reproduction"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Schedule a Research Visit"), "", "", "About", "research"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>				
+						</ul>
+					</li>
+					<li >
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown">Contribute</a>
+						<ul class="dropdown-menu">
+							<li><?php print "<a href='https://www.nationalhellenicmuseum.org/support/'>Support our Work</a>";?></li>
+							<li><?php print caNavLink($this->request, _t("Grow the Collection"), "", "", "About", "donate"); ?></li>				
+						</ul>
+					</li>										
 				</ul>
+				<div class="banner"><div class="container" style="padding:0px;">NHM COLLECTION & ARCHIVES</div></div>
+				<div class="bannerImg"></div>
+			</div><!-- end container -->	
 			</div><!-- /.navbar-collapse -->
-		</div><!-- end container -->
 	</nav>
-	<div class="container"><div class="row"><div class="col-xs-12">
+<?php
+	if ($this->request->getController() == "Front") {
+		$vs_style = "nomax";
+	} 
+?>	
+	<div class="container <?php print $vs_style;?> " style="padding:0px;"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

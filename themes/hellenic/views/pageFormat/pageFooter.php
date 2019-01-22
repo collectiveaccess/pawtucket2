@@ -28,21 +28,19 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+		<!-- <div class="container bottom"></div> -->
 		<footer id="footer">
-			<ul class="list-inline pull-right social">
-				<li><i class="fa fa-twitter"></i></li>
-				<li><i class="fa fa-facebook-square"></i></li>
-				<li><i class="fa fa-youtube-play"></i></li>
-			</ul>
-			<div>
-				Footer text here
+			<div class="container" >
+				<div class="row">
+					<div class='col-sm-12'>
+						<div class='socialLinks'><i class="fa fa-facebook-square"></i><i class="fa fa-twitter"></i><i class="fa fa-linkedin-square"></i><i class="fa fa-flickr"></i><i class="fa fa-youtube-play"></i><i class="fa fa-instagram"></i></div>
+						<div>Chicago 333 South Halsted Street, Chicago IL, 60661, Phone: (312) 655-1234</div>
+						<div>©2018 National Hellenic Museum, All text and images on this site are protected by the U.S. and <br/>International copyright laws.  Unauthorized use is prohibited.</div>
+						<div class='tp'><div>Terms & Conditions</div><div>Privacy Policy</div></div>
+						<div>Powered by <a href="http://www.collectiveaccess.org" target="_blank">CollectiveAccess</a></div> 
+					</div>
+				</div>					
 			</div>
-			<ul class="list-inline">
-				<li><a href="#">Link 1</a></li>
-				<li><a href="#">Link 2</a></li>
-				<li><a href="#">Link 3</a></li>
-			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2017</a></small></div>
 		</footer><!-- end footer -->
 <?php
 	//

@@ -177,7 +177,7 @@ function italicizeTitle($vs_title){
 						$vs_rep_type = "";
 						$t_object->load($qr_objects->get("ca_objects.object_id"));
 						if($va_rep = $t_object->getPrimaryRepresentation(array('original'), null, array('return_with_access' => $va_access_values))){
-							$vs_rep_type = " (".str_replace("application/", "", $va_rep['mimetype']).")";
+							$vs_rep_type = " (".str_replace(array("application/", "image/", "video/", "audio/"), "", $va_rep['mimetype']).")";
 						}
 						
 						

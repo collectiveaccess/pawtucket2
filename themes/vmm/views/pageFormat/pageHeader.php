@@ -104,6 +104,7 @@
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
+			<div class="navbar-collapse-container">
 <?php
 	if ($vb_has_user_links) {
 ?>
@@ -174,6 +175,7 @@
 					</li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
+		</div><!-- relative -->
 		</div><!-- end container -->
 	</nav>
 <?php

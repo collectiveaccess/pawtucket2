@@ -52,7 +52,7 @@
 <?php
 					print '<div id="detailTools">';
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About this Item", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'inquiry'))."</div>";
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
+					print "<div class='detailTool'><span class='glyphicon glyphicon-bookmark'></span><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
 				
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){

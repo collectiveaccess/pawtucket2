@@ -512,9 +512,16 @@ ul.menuItems{
 #bRefine.fixed{
 	padding-top:75px;
 }
-.bResultItemImgPlaceholder .glyphicon {
+.bResultItemImgPlaceholder .glyphicon, .lbSetImgPlaceholder  .glyphicon{
     color: #ababab !important;
     font-size: 30px;
+}
+.bResultItemImgPlaceholder .fa, .lbSetImgPlaceholder  .fa {
+    color: #ababab !important;
+    font-size: 14px;
+    position:relative;
+    top:-28px;
+    left:-5px;
 }
 .bResultItemImgPlaceholder.iconFolderEmpty .glyphicon {
     color: #dddddd !important;
@@ -837,6 +844,7 @@ h1.primaryLandingBannerTitle {
 	display: inline-block;
 	padding: 5px 10px 15px 10px;
 }
+.glyphicon-bookmark:before{content:"\e044"}
 .detail .detailPlaceholder{
 	text-align:center;
 }
@@ -882,6 +890,13 @@ h1.primaryLandingBannerTitle {
 	font-size:100px;
 	color:#dedede;
 }
+.detail .detailArchivalPlaceholder .fa{
+	color:#dedede;
+	font-size:25px;
+	position:relative;
+	top:-80px;
+	left:-10px;
+}
 .detail .detailArchivalPlaceholder small{
 	font-size:10px;
 }
@@ -904,6 +919,9 @@ h1.primaryLandingBannerTitle {
 }
 .detail .detailMediaToolbar a{
 	color: #858585;
+}
+.detail .detailMediaToolbar .setsButton{
+	display:none;
 }
 .detail #detailRepNav {
     padding: 0px 0px 7px 0px;
