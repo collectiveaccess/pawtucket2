@@ -61,7 +61,7 @@
 			<hr/>
 			<div class="row homeSubRow">
 				<div class="col-sm-12 text-center">
-					<h2><?php print caNavLink($this->request, _("Browse the Manuscript Collection"), '', '', 'Browse', 'manuscripts', array('view' => 'list')); ?></h2>
+					<h2><?php print caNavLink($this->request, _t("Browse the Manuscript Collection"), '', '', 'Browse', 'manuscripts', array('view' => 'list')); ?></h2>
 					<h2>OR</h2>
 				</div>
 			</div>

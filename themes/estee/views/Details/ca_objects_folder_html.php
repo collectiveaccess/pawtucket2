@@ -52,7 +52,7 @@
 <?php
 					print '<div id="detailTools">';
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About this Item", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'inquiry'))."</div>";
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
+					print "<div class='detailTool'><span class='glyphicon glyphicon-bookmark'></span><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
 				
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
@@ -75,10 +75,19 @@
 						if(strToLower($t_object->get("type_id", array("convertCodesToDisplayText" => true))) == "archival folder"){
 							# --- folder
 							# -- yes no values are switched in this configuration :(
+							$vs_folder_icon = "";
+							if($t_object->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values))){
+								$vs_folder_icon = "<i class='fa fa-files-o'></i><span class='glyphicon glyphicon-folder-open'></span>";
+							}else{
+								$vs_folder_icon = "<span class='glyphicon glyphicon-folder-open'></span>";
+							}
 							if(strToLower($t_object->get("completely_digitized", array("convertCodesToDisplayText" => true))) != "no"){
-								print "<div class='detailArchivalPlaceholder'><span class='glyphicon glyphicon-folder-open'></span>";
+								print "<div class='detailArchivalPlaceholder'>".$vs_folder_icon."</span>";
 								print "<br/><small>The full contents of this folder have not been digitized</small></div>";
 								print "<br/><div class='detailTool text-center'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Scan Of Full Contents of Folder", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'folderScanRequest'))."</div>";
+							}else{
+								print "<div class='detailArchivalPlaceholder'>".$vs_folder_icon."</span>";
+								print "<br/><small>The full contents of this folder have been digitized</small></div>";
 							}
 						}else{
 							print "<div class='detailArchivalPlaceholder'><span class='glyphicon glyphicon-file'></span></div>";
@@ -108,11 +117,22 @@
 					<HR>
 					{{{<ifdef code="ca_objects.manufacture_date"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></div></ifdef>}}}
 
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="photographer" min="1"><div class="unit"><H6>Photographer</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="designer" min="1"><div class="unit"><H6>Designer</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="designer" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="photographer,designer" min="1"><hr/></ifcount>}}}
-
 <?php
+					$va_entities = $t_object->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					if(is_array($va_entities) && sizeof($va_entities)){
+						$va_entities_by_type = array();
+						$va_entities_sort = array();
+						foreach($va_entities as $va_entity){
+							$va_entities_sort[$va_entity["relationship_typename"]][] = $va_entity["displayname"];	
+						}
+						foreach($va_entities_sort as $vs_entity_type => $va_entities_by_type){
+							print "<div class='unit'><H6>".ucfirst($vs_entity_type)."</H6>";
+							print join(", ", $va_entities_by_type);
+							print "</div>";
+						}					
+						print "<hr/>";
+					}
+					
 					$vb_notes_output = false;
 					$va_notes_filtered = array();
 					$va_notes = $t_object->get("ca_objects.general_notes", array("returnWithStructure" => true, "convertCodesToDisplayText" => true));

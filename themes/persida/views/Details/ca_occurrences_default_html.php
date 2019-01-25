@@ -3,6 +3,7 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$vn_id = $t_item->get('ca_occurrences.occurrence_id');
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -23,48 +24,59 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_occurrences.description"><H6>About</H6>^ca_occurrences.description<br/></ifdef>}}}
-					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
-
 <?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled) {
-						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
+					if ($vs_pub_type = $t_item->get('ca_occurrences.bib_types', array('convertCodesToDisplayText' => true))) {
+						print "<div class='unit'><h6>Type of Material</h6>".$vs_pub_type."</div>";
 					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
+					if ($vs_title = $t_item->get('ca_occurrences.preferred_labels')) {
+						print "<div class='unit'><h6>Title</h6>".$vs_title."</div>";
+					}	
+					if ($vs_author = $t_item->get('ca_occurrences.author', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Author</h6>".$vs_author."</div>";
 					}
-					print '</div><!-- end detailTools -->';
-				}				
-?>
-					
+					if ($vs_date = $t_item->get('ca_occurrences.occurrence_dates')) {
+						print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
+					}
+					if ($vs_venue = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue'), 'returnAsLink' => true))) {
+						print "<div class='unit'><h6>Venue</h6>".$vs_venue."</div>";
+					}
+					if ($vs_entities = $t_item->get('ca_entities.preferred_labels', array('excludeRelationshipTypes' => array('venue'), 'returnAsLink' => true, 'delimiter' => ', '))) {
+						print "<div class='unit'><h6>Related People & Organizations</h6>".$vs_entities."</div>";
+					}					
+					if ($vs_travel = $t_item->get('ca_occurrences.traveling_yn', array('convertCodesToDisplayText' => true))) {
+						print "<div class='unit'><h6>Traveling Exhibition?</h6>".$vs_travel."</div>";
+					}						
+					if ($vs_edition = $t_item->get('ca_occurrences.edition_bib', array('delimiter' => '<br/>'))) {
+						print "<div class='unit'><h6>Edition</h6>".$vs_edition."</div>";
+					}
+					if ($vs_volume = $t_item->get('ca_occurrences.volume')) {
+						print "<div class='unit'><h6>Volume</h6>".$vs_volume."</div>";
+					}
+					if ($vs_number = $t_item->get('ca_occurrences.number')) {
+						print "<div class='unit'><h6>Number</h6>".$vs_number."</div>";
+					}
+					if ($vs_pages = $t_item->get('ca_occurrences.pages')) {
+						print "<div class='unit'><h6>Pages</h6>".$vs_pages."</div>";
+					}
+					if ($vs_isbn = $t_item->get('ca_occurrences.isbn')) {
+						print "<div class='unit'><h6>ISBN</h6>".$vs_isbn."</div>";
+					}
+					if ($vs_notes = $t_item->get('ca_occurrences.notes')) {
+						print "<div class='unit'><h6>Notes</h6>".$vs_notes."</div>";
+					}																																								
+?>	
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
-					
-					{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
-					
-					{{{<ifcount code="ca_occurrences.related" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
-					{{{<ifcount code="ca_occurrences.related" min="2"><H6>Related occurrences</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.related.preferred_labels.name</l></unit>}}}
-					
-					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}					
+<?php
+					print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_occurrences",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
+?>				
+					{{{representationViewer}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
+				<hr>
+				<h4>Related Artworks</h4>
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->

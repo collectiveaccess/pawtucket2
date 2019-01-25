@@ -3,24 +3,60 @@
 	$vn_num1 = rand(1,10);
 	$vn_num2 = rand(1,10);
 	$vn_sum = $vn_num1 + $vn_num2;
+	$o_config = caGetContactConfig();
 
-	$pn_object_id = $this->request->getParameter("object_id", pInteger);
+	$pn_id = $this->request->getParameter("id", pInteger);
+	$ps_table = $this->request->getParameter("table", pString);
+	$vs_typecode = "";
+	switch($ps_table){
+		case "ca_objects":
+			require_once(__CA_MODELS_DIR__."/ca_objects.php");
+			$t_item = new ca_objects($pn_id);
+			$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "objects", $pn_id);
+			$t_list_item = new ca_list_items();
+			$t_list_item->load($t_item->get("type_id"));
+			$vs_typecode = $t_list_item->get("idno");
+		break;
+		# ---------------------------
+		case "ca_collections":
+			require_once(__CA_MODELS_DIR__."/ca_collections.php");
+			$t_item = new ca_collections($pn_id);
+			$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "collections", $pn_id);
+			
+			# --- default to ask archivist
+		break;
+		# ---------------------------
+		case "ca_occurrences":
+			require_once(__CA_MODELS_DIR__."/ca_occurrences.php");
+			$t_item = new ca_occurrences($pn_id);
+			$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "occurrences", $pn_id);
+			
+			# --- default to ask archivist
+		break;
+		# ---------------------------
+		case "ca_sets":
+			require_once(__CA_MODELS_DIR__."/ca_sets.php");
+			$t_item = new ca_sets($pn_id);
+			$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Lightbox", "setDetail", $pn_id);
+			$vs_admin_url = $o_config->get("admin_url")."/admin/index.php/manage/sets/SetEditor/Edit/set_id/".$pn_id;
+			$vs_name = $t_item->getLabelForDisplay();
+			# --- default to ask archivist
+		break;
+		# ---------------------------
+	}
+	if(!$vs_name){
+		$vs_name = $t_item->get($ps_table.".preferred_labels.name");
+	}
+	$vs_idno = $t_item->get($ps_table.".idno");
+			
 	if($pn_object_id){
-		require_once(__CA_MODELS_DIR__."/ca_objects.php");
-		$t_item = new ca_objects($pn_object_id);
-		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "objects", $t_item->get("ca_objects.object_id"));
-		$vs_name = $t_item->get("ca_objects.preferred_labels.name");
-		$vs_idno = $t_item->get("ca_objects.idno");
-		$vs_typecode = "";
-		$t_list_item = new ca_list_items();
-		$t_list_item->load($t_item->get("type_id"));
-		$vs_typecode = $t_list_item->get("idno");
+		
 	}
 ?>
 <div class="row"><div class="col-sm-12 col-lg-8 col-lg-offset-2">
 			<H1><?php print ($vs_typecode == "collection_object") ? _t("Ask a Curator") : _t("Ask an Archivist"); ?></H1>
 		<?php
-			if(sizeof($va_errors["display_errors"])){
+			if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
 				print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 			}
 		?>
@@ -30,16 +66,16 @@
 				<div class="col-md-12">
 					<div class="row">
 						<div class="col-sm-12">
-							<h2>Do you have a question about this item or wish to request an image?<br/>
-							Complete this form, and MNcollections staff will follow up with you by email.</h2>
+							<p>{{{ask_contact_intro}}}</p>
 							<br/>
-							<p><b>Item title: </b><?php print $vs_name; ?>
+							<p><b>Title: </b><?php print $vs_name; ?>
 							<br/><b>Regarding this URL: </b><a href="<?php print $vs_url; ?>" class="purpleLink"><?php print $vs_url; ?></a>
 							</p>
 							<input type="hidden" name="itemId" value="<?php print $vs_idno; ?>">
 							<input type="hidden" name="itemTitle" value="<?php print $vs_name; ?>">
-							<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
-							<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
+							<input type="hidden" name="itemURL" value="<?php print ($vs_admin_url) ? $vs_admin_url : $vs_url; ?>">
+							<input type="hidden" name="id" value="<?php print $pn_id; ?>">
+							<input type="hidden" name="table" value="<?php print $ps_table; ?>">
 				<hr/><br/><br/>
 				
 						</div>

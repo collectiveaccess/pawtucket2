@@ -141,7 +141,7 @@
 					<div class="form-group<?php print (($va_errors["request_type"]) ? " has-error" : ""); ?>">
 						<label for="name">I would like</label>
 						<select class="form-control input-sm" id="request_type" name="request_type">
-							<option value=''>Please choose and option</option>
+							<option value=''>Please choose an option</option>
 <?php
 					if($ps_contactType == "inquiry"){
 ?>
@@ -424,6 +424,14 @@
 								</div><!-- end col -->
 							</div><!-- end row -->					
 							<div class="row">
+								<div class="col-md-12">
+									<div class="form-group<?php print (($va_errors["tour_reason"]) ? " has-error" : ""); ?>">
+										<label for="email">Reason For Tour</label>
+										<input type="text" class="form-control input-sm" id="tour_reason" placeholder="Enter the reason for the tour (e.g. Company orientation, visiting NY offices from out of town. . .)" name="tour_reason" value="<?php print ($this->getVar("tour_reason")) ? $this->getVar("tour_reason") : ""; ?>">
+									</div>
+								</div><!-- end col -->
+							</div><!-- end row -->
+							<div class="row">
 								<div class="col-sm-6">
 									<div class="form-group<?php print (($va_errors["tour_date"]) ? " has-error" : ""); ?>">
 										<label for="email">Requested Date Of Tour</label>
@@ -442,7 +450,7 @@
 									<div class="form-group<?php print (($va_errors["elc_employee"]) ? " has-error" : ""); ?>">
 										<label for="name">The Tour Is For</label>
 										<select class="form-control input-sm" id="elc_employee" name="elc_employee">
-											<option value=''>Please choose and option</option>
+											<option value=''>Please choose an option</option>
 											<option value='ELC employee(s)' <?php print ($this->getVar("elc_employee") == "ELC employee(s)") ? "selected" : ""; ?>>ELC employee(s)</option>
 											<option value='Non ELC employee(s)' <?php print ($this->getVar("elc_employee") == "Non ELC employee(s)") ? "selected" : ""; ?>>Non ELC employee(s)</option>
 										</select>
@@ -528,9 +536,9 @@
 					</div><!-- end row -->
 					<div class="row">
 						<div class="col-md-12">
-							<div class="form-group<?php print (($va_errors["office_reason"]) ? " has-error" : ""); ?>">
+							<div class="form-group<?php print (($va_errors["tour_reason"]) ? " has-error" : ""); ?>">
 								<label for="email">Reason For Tour</label>
-								<input type="text" class="form-control input-sm" id="office_reason" placeholder="Enter the reason for the tour" name="office_reason" value="<?php print ($this->getVar("office_reason")) ? $this->getVar("office_reason") : ""; ?>">
+								<input type="text" class="form-control input-sm" id="tour_reason" placeholder="Enter the reason for the tour" name="tour_reason" value="<?php print ($this->getVar("tour_reason")) ? $this->getVar("tour_reason") : ""; ?>">
 							</div>
 						</div><!-- end col -->
 					</div><!-- end row -->
@@ -553,7 +561,7 @@
 							<div class="form-group<?php print (($va_errors["elc_employee"]) ? " has-error" : ""); ?>">
 								<label for="name">The Tour Is For</label>
 								<select class="form-control input-sm" id="elc_employee" name="elc_employee">
-									<option value=''>Please choose and option</option>
+									<option value=''>Please choose an option</option>
 									<option value='ELC employee(s)' <?php print ($this->getVar("elc_employee") == "ELC employee(s)") ? "selected" : ""; ?>>ELC employee(s)</option>
 									<option value='Non ELC employee(s)' <?php print ($this->getVar("elc_employee") == "Non ELC employee(s)") ? "selected" : ""; ?>>Non ELC employee(s)</option>
 								</select>
@@ -644,6 +652,14 @@
 					</div>
 					<div class="row">
 						<div class="col-md-12">
+							<div class="form-group<?php print (($va_errors["research_reason"]) ? " has-error" : ""); ?>">
+								<label for="email">Reason for Research Appointment</label>
+								<input type="text" class="form-control input-sm" id="research_reason" placeholder="Enter the reason for the research appointment" name="research_reason" value="<?php print ($this->getVar("research_reason")) ? $this->getVar("research_reason") : ""; ?>">
+							</div>
+						</div><!-- end col -->
+					</div><!-- end row -->
+					<div class="row">
+						<div class="col-md-12">
 							<div class="form-group<?php print (($va_errors["materials_requested"]) ? " has-error" : ""); ?>">
 								<label for="email">Materials Requested</label>
 								<input type="text" class="form-control input-sm" id="materials_requested" placeholder="Enter the materials requested" name="materials_requested" value="<?php print ($this->getVar("materials_requested")) ? $this->getVar("materials_requested") : ""; ?>">
@@ -672,14 +688,26 @@
 							</div>
 						</div><!-- end col -->
 						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["num_attendees"]) ? " has-error" : ""); ?>">
-								<label for="email">Number of Attendees</label>
-								<input type="text" class="form-control input-sm" id="num_attendees" placeholder="Enter the number of guests" name="num_attendees" value="<?php print ($this->getVar("num_attendees")) ? $this->getVar("num_attendees") : ""; ?>">
+							<div class="form-group<?php print (($va_errors["office_contact"]) ? " has-error" : ""); ?>">
+								<label for="email">Contact</label>
+								<input type="text" class="form-control input-sm" id="office_contact" placeholder="Enter the primary contact person for the appointment" name="office_contact" value="<?php print ($this->getVar("office_contact")) ? $this->getVar("office_contact") : ""; ?>">
 							</div>
 						</div><!-- end col -->
 					</div><!-- end row -->
 					<div class="row">
-						<div class="col-sm-12">
+						<div class="col-sm-6">
+							<div class="form-group<?php print (($va_errors["num_attendees"]) ? " has-error" : ""); ?>">
+								<label for="email">Number of Attendees</label>
+								<select class="form-control input-sm" id="num_attendees" name="num_attendees">
+									<option value=''>Please choose an option</option>
+									<option value='1' <?php print ($this->getVar("num_attendees") == "1") ? "selected" : ""; ?>>1</option>
+									<option value='2' <?php print ($this->getVar("num_attendees") == "2") ? "selected" : ""; ?>>2</option>
+									<option value='3' <?php print ($this->getVar("num_attendees") == "3") ? "selected" : ""; ?>>3</option>
+									<option value='4' <?php print ($this->getVar("num_attendees") == "4") ? "selected" : ""; ?>>4</option>
+								</select>
+							</div>
+						</div><!-- end col -->
+						<div class="col-sm-6">
 							<div class="form-group<?php print (($va_errors["guest_names"]) ? " has-error" : ""); ?>">
 								<label for="email">Names & Titles Of Attendees</label>
 								<input type="text" class="form-control input-sm" id="guest_names" placeholder="Enter the names & titles of guests attending the tour" name="guest_names" value="<?php print ($this->getVar("guest_names")) ? $this->getVar("guest_names") : ""; ?>">

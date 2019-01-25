@@ -157,7 +157,7 @@ navbar-nav > li > a {
     color: #FFF;
     background-color: transparent;
     font-family: SangBleuSansLight;
-    font-size: 1.6rem;
+    font-size: 1.5rem;
 	letter-spacing: 0.6px;
 	line-height: 22px;
 	padding-bottom: 0px;
@@ -167,6 +167,7 @@ navbar-nav > li > a {
 @media (max-width: 768px){
 	.navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
 		display:inline;
+		font-size: 1.3rem;
 	}
 }
 @media (min-width: 768px) and (max-width: 1010px) {
@@ -288,6 +289,7 @@ navbar-nav > li > a {
 	padding: 18px 0;
 	font-family: SangBleuSansLight;
 	font-size:16px;
+	width:80%;
 }
 .navSearchDimOverlay{
 	width:100%;
@@ -501,15 +503,28 @@ ul.menuItems{
 #pageArea.results{
 	margin-top:36px;
 }
-.results H1 {
+.results H1, #browseResultsDetailContainer H1 {
 	font-size:3rem;
 }
 #bRefine a {
     color: #000;
 }
-.bResultItemImgPlaceholder .glyphicon {
+#bRefine.fixed{
+	padding-top:75px;
+}
+.bResultItemImgPlaceholder .glyphicon, .lbSetImgPlaceholder  .glyphicon{
     color: #ababab !important;
     font-size: 30px;
+}
+.bResultItemImgPlaceholder .fa, .lbSetImgPlaceholder  .fa {
+    color: #ababab !important;
+    font-size: 14px;
+    position:relative;
+    top:-28px;
+    left:-5px;
+}
+.bResultItemImgPlaceholder.iconFolderEmpty .glyphicon {
+    color: #dddddd !important;
 }
 .bResultListItemImg .bResultItemImgPlaceholder {
     padding: 18px;
@@ -524,6 +539,11 @@ ul.menuItems{
 	margin-top:15px;
 	margin-bottom:10px;
 }
+#browseResultsDetailContainer .bSearchWithinContainer{
+	clear:both;
+	margin-top:40px;
+	margin-bottom:10px;
+}
 .results .productCodeHelp{
 	font-size:11px;
 	font-family:"Helvetica LT W01 Roman";
@@ -531,7 +551,7 @@ ul.menuItems{
 	padding:0px 0px 5px 0px;
 	color:#999;
 }
-.results .btn-search-refine{	
+.results .btn-search-refine, #browseResultsDetailContainer .btn-search-refine{	
 	float: left;
 	font-size: 18px;
 	padding-top: 0px 0px 0px 0px;
@@ -545,7 +565,7 @@ ul.menuItems{
 	outline: 0;
 	border: 0px;
 }
-.results .btn-search-refine .glyphicon{
+.results .btn-search-refine .glyphicon, #browseResultsDetailContainer .btn-search-refine .glyphicon{
 	margin-top:5px;
 }
 .bSearchWithin, .bSearchWithin:focus {
@@ -824,6 +844,7 @@ h1.primaryLandingBannerTitle {
 	display: inline-block;
 	padding: 5px 10px 15px 10px;
 }
+.glyphicon-bookmark:before{content:"\e044"}
 .detail .detailPlaceholder{
 	text-align:center;
 }
@@ -869,6 +890,13 @@ h1.primaryLandingBannerTitle {
 	font-size:100px;
 	color:#dedede;
 }
+.detail .detailArchivalPlaceholder .fa{
+	color:#dedede;
+	font-size:25px;
+	position:relative;
+	top:-80px;
+	left:-10px;
+}
 .detail .detailArchivalPlaceholder small{
 	font-size:10px;
 }
@@ -891,6 +919,9 @@ h1.primaryLandingBannerTitle {
 }
 .detail .detailMediaToolbar a{
 	color: #858585;
+}
+.detail .detailMediaToolbar .setsButton{
+	display:none;
 }
 .detail #detailRepNav {
     padding: 0px 0px 7px 0px;

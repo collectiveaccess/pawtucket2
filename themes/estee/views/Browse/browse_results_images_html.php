@@ -75,6 +75,10 @@
 			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 6;
 		}
+		if($this->request->getAction() == "collection_objects"){
+			# --- collection detail page
+			$vn_col_span = 4;
+		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
 			$vn_results_output = 0;
@@ -121,8 +125,12 @@
 						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
+							if(($vs_typecode == "folder") && !($qr_res->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values)))){
+								$vs_typecode = "folder_empty";
+							}
 							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 								$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+								
 							}else{
 								$vs_thumbnail = $vs_default_placeholder_tag;
 							}
@@ -134,12 +142,12 @@
 						# --- Object Type - Archival Material Type if folder/item, line break,  Brand, Sub Brand / Collection if one, line break, Object Name, (Manufacture Season (if one) and Manufacture Date) or folder/item (Date)
 						$vs_caption = "<div class='resultType'>";
 						$vs_caption .= $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))." &rsaquo; ";
-						if($vs_tmp = $qr_res->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
-							$vs_caption .= $vs_tmp;
-							if($qr_res->get("ca_objects.brand")){
-								$vs_caption .= "<br/>";
-							}
-						}
+						#if($vs_tmp = $qr_res->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
+						#	$vs_caption .= $vs_tmp;
+						#	if($qr_res->get("ca_objects.brand")){
+						#		$vs_caption .= "<br/>";
+						#	}
+						#}
 						if(($vs_brand = $qr_res->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))) | ($vs_subbrand = $qr_res->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true, "delimiter" => ", ")))){
 							$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? " &rsaquo; " : "").$vs_subbrand;
 						}

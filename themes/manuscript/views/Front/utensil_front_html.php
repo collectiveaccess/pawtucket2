@@ -62,7 +62,7 @@
 			<hr/>
 			<div class="row homeSubRow">
 				<div class="col-sm-12 text-center">
-					<h2><?php print caNavLink($this->request, _("Browse the Utensil Collection"), '', '', 'Browse', 'utensils', array('view' => 'images')); ?></h2>
+					<h2><?php print caNavLink($this->request, _t("Browse the Utensil Collection"), '', '', 'Browse', 'utensils', array('view' => 'images')); ?></h2>
 				</div>
 			</div>
 			<hr/>

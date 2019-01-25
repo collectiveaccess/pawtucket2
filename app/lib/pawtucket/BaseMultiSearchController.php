@@ -89,7 +89,7 @@
  			
  			$vs_search = $o_first_result_context->getSearchExpression();
  			
- 			if ($ps_label = $this->request->getParameter('label', pString)) {
+ 			if ($ps_label = $this->request->getParameter('label', pString, ['forcePurify' => true])) {
 				$o_first_result_context->setSearchExpressionForDisplay("{$ps_label}: ".caGetDisplayStringForSearch($vs_search, ['omitFieldNames' => true]));
  			} else {
  			    $o_first_result_context->setSearchExpressionForDisplay(caGetDisplayStringForSearch($vs_search)); 
@@ -103,7 +103,7 @@
  			$this->view->setVar('blockNames', array_keys($this->opa_search_blocks));
  			$this->view->setVar('results', $va_results = caPuppySearch($this->request, $vs_search, $this->opa_search_blocks, array('access' => $this->opa_access_values, 'contexts' => $this->opa_result_contexts, 'matchOnStem' => (bool)$this->config->get('matchOnStem'))));
  			
- 			if ($this->request->isAjax() && ($vs_block = $this->request->getParameter('block', pString))) { 
+ 			if ($this->request->isAjax() && ($vs_block = $this->request->getParameter('block', pString, ['forcePurify' => true]))) { 
  				if (!isset($va_results[$vs_block]['html'])) {
  					// TODO: throw error - no results
  					return false;

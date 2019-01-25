@@ -730,8 +730,35 @@
 			$va_nav = $va_find_nav[$va_tmp[0]];
 			if (!$va_nav) { return false; }
 			
-			if (!($vs_action = ResultContextStorage::getVar('result_last_context_'.$vs_table_name.'_action'))) {
+			if (__CA_APP_TYPE__ == 'PAWTUCKET') {
+				// Pawtucket-specific navigation rewriting
+				if (
+					!file_exists($vs_path = __CA_THEME_DIR__."/controllers/".(trim($va_nav['module_path']) ? trim($va_nav['module_path'])."/" : "").$va_nav['controller']."Controller.php")
+					&&
+					!file_exists($vs_path = __CA_APP_DIR__."/controllers/".(trim($va_nav['module_path']) ? trim($va_nav['module_path'])."/" : "").$va_nav['controller']."Controller.php")
+				) { return false; }
+				include_once($vs_path);
+				$vs_controller_class = $va_nav['controller']."Controller";
+				$va_nav = call_user_func_array( "{$vs_controller_class}::".$va_nav['action'] , array($po_request, $vs_table_name) );
+			
+				if (!($vs_action = ResultContextStorage::getVar('result_last_context_'.$vs_table_name.'_action'))) {
+					$vs_action = $va_nav['action'];
+				}
+			} else {
 				$vs_action = $va_nav['action'];
+			}
+			$va_params = array();
+			if (is_array($va_nav['params'])) {
+				$o_context = new ResultContext($po_request, $pm_table_name_or_num, $va_tmp[0], isset($va_tmp[1]) ? $va_tmp[1] : null);
+				foreach ($va_nav['params'] as $vs_param) {
+					if (!($vs_param = trim($vs_param))) { continue; }
+					if(!trim($va_params[$vs_param] = $po_request->getParameter($vs_param, pString))) {
+						$va_params[$vs_param] = trim($o_context->getParameter($vs_param));
+					}
+				}
+				
+				if (!is_array($pa_params)) { $pa_params = array(); }
+				$pa_params = array_merge($pa_params, $va_params);
 			}
 			
 			return caNavUrl($po_request, trim($va_nav['module_path']), trim($va_nav['controller']), trim($vs_action), $pa_params);
