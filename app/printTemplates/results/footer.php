@@ -66,6 +66,9 @@
 				<body onLoad="subst()">
 					<div id='footer'>
 				<?php
+					if($this->request->config->get('report_show_search_term')){
+						print "<div class='searchTermText' id='searchTermText'>".str_replace("Search: * / ", "", $this->getVar('criteria_summary'))."</div>";
+					}
 					print "<div class='pagingText' id='pagingText'>"._t('Page')." <span class='page'></span> "._t('of')." <span class='topage'></span></div>";
 				?>
 					</div>
@@ -78,6 +81,11 @@
 			default:
 ?>
 				<div id='footerdompdf'>
+<?php
+					if($this->request->config->get('report_show_search_term')){
+						print "<div class='searchTermText' id='searchTermText'>".str_replace("Search: * / ", "", $this->getVar('criteria_summary'))."</div>";
+					}
+?>
 					<div class='pagingText' id='pagingText'><?php print _t('Page'); ?> </div>
 				</div>
 <?php

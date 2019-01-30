@@ -330,6 +330,7 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 }
 .detail.chronology H5{
 	margin-top:25px;
+	margin-bottom: 0px;
 }
 .detail{
 	font-size:13px;
@@ -355,7 +356,11 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 		float:right;
 	}
 }
-
+#browseResultsContainer2 {
+	margin-top: 20px;
+    height: 100%;
+    position: relative;
+}
 /* multisearch */
 .multisearch .authoritySetLong {
 	float:left;
@@ -456,7 +461,9 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
     max-width: 100% !important;
     max-height: 50px !important;
 }
-
+H1.chronologyTitle{
+	font-size:25px;
+}
 /* collections */
 .collectionsContainer small{
 	padding-left:10px;

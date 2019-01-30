@@ -115,6 +115,8 @@
 					if($vs_table == "ca_occurrences"){
 						$vs_idno_detail_link = "";
 						$vs_label_detail_link 	= caDetailLink($this->request, trim($qr_res->get("ca_occurrences.vesprefix", array("convertCodesToDisplayText" => true))." <i>".$qr_res->get("{$vs_table}.preferred_labels")."</i> ".$qr_res->get("ca_occurrences.vessuffix", array("convertCodesToDisplayText" => true))), '', $vs_table, $vn_id);
+					}elseif($vs_table == "ca_collections"){
+						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.type_id", array("convertCodesToDisplayText" => true)).": ".$qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					}else{
 						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					}
