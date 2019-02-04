@@ -1238,7 +1238,6 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
 					} else {
 						$vs_query_element = $vs_value;
 					}
-
 					switch($vs_element){
 						case '_fulltext':		// don't qualify special "fulltext" element
 							$va_query_elements[] = $vs_query_element;
@@ -1247,6 +1246,12 @@ class ca_search_forms extends BundlableLabelableBaseModelWithAttributes {
 							$va_tmp = explode(".", $vs_element);
 							$t_element = ca_metadata_elements::getInstance($vs_element_code = array_pop($va_tmp));
 							switch(ca_metadata_elements::getDataTypeForElementCode($vs_element_code)) {
+								case __CA_ATTRIBUTE_VALUE_CURRENCY__:
+								    // convert bare ranges to Lucene range syntax
+									if (preg_match("!^([A-Z\$£¥€]+[ ]*[\d\.]+)[ ]*([-–]{1}|to)[ ]*([A-Z\$£¥€]+[ ]*[\d\.]+)$!", trim(str_replace('"', '', $vs_query_element)), $m)) {
+									    $vs_query_element = "[".$m[1]." to ".$m[3]."]";
+									}
+									break;
 								case __CA_ATTRIBUTE_VALUE_INFORMATIONSERVICE__:
 									$o_value = new InformationServiceAttributeValue();
 									$va_data = $o_value->parseValue($vs_query_element, ['settings' => $t_element->getSettings()]);

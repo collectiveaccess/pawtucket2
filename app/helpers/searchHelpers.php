@@ -1577,8 +1577,6 @@
 			foreach($va_sortable_elements as $vn_element_id => $va_sortable_element) {
 				$va_base_fields[$ps_table.'.'.$va_sortable_element['element_code']] = $va_sortable_element['display_label'];
 			}
-			
-			
 		
 			// Add interstitial sorts
 			if ($t_rel) {
@@ -1588,6 +1586,12 @@
 				foreach($va_sortable_elements as $vn_element_id => $va_sortable_element) {
 					$va_base_fields[$vs_relation_table.'.'.$va_sortable_element['element_code']] = $va_sortable_element['display_label'].($pb_distinguish_interstitials ? " ("._t('Interstitial').")" : "");
 				}
+			}
+			
+			// Add additional sorts specified in app.conf in <table>_include_result_sorts directives
+			if (is_array($config_sorts = $o_config->get("{$ps_table}_include_result_sorts")) && sizeof($config_sorts)) {
+			    $config_sorts = array_filter($config_sorts, function($v) { return is_string($v); });
+		        $va_base_fields = array_merge($va_base_fields, $config_sorts);
 			}
 
 			if(caGetOption('distinguishNonUniqueNames', $pa_options, true)) {
@@ -1631,7 +1635,7 @@
 		
 		if(is_array($pa_allowed_sorts) && sizeof($pa_allowed_sorts) > 0) {
 			foreach($va_base_fields as $vs_k => $vs_v) {
-				if (!in_array($vs_k, $pa_allowed_sorts)) { unset($va_base_fields[$vs_k]); }
+				if (!in_array($vs_k, $pa_allowed_sorts) && !isset($config_sorts[$vs_k])) { unset($va_base_fields[$vs_k]); }
 			}
 		}
 		
@@ -1647,8 +1651,9 @@
 		if ($pn_display_id > 0) {
             $t_display =  new ca_bundle_displays($pn_display_id); 
             $va_display_bundles = array_map(function ($v) { return $v['bundle_name']; }, $t_display->getPlacements());	
-   
-			$va_base_fields = array_filter($va_base_fields, function($v, $k) use ($va_display_bundles) { 
+			$va_base_fields = array_filter($va_base_fields, function($v, $k) use ($va_display_bundles, $config_sorts) { 
+				
+				if (isset($config_sorts[$k])) { return true; }
 				foreach($va_display_bundles as $b) {
 					if (preg_match("!^{$b}!", $k) || preg_match("!^{$k}!", $b)) { return true; }
 				}

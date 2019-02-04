@@ -6,7 +6,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2015 Whirl-i-Gig
+ * Copyright 2010-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -27,6 +27,9 @@
  
 var caUI = caUI || {};
 
+// Global panel count; provides for control of mask when nested panels are opened
+caUI.panelCount = 0;
+
 (function ($) {
 	caUI.initPanel = function(options) {
 		// --------------------------------------------------------------------------------
@@ -35,6 +38,9 @@ var caUI = caUI || {};
 			panelID: 'caPanel',							/* id of enclosing panel div */
 			panelContentID: 'caPanelContent',			/* id of div within enclosing panel div that contains content */
 	
+			useExpose: true,
+			exposeBackgroundColor: '#000000',
+			exposeBackgroundOpacity: 0.5,
 			panelTransitionSpeed: 200,
 			allowMobileSafariZooming: false,
 			mobileSafariViewportTagID: '_msafari_viewport',
@@ -53,7 +59,8 @@ var caUI = caUI || {};
 			centerVertical : false,
 			
 			isChanging: false,
-			clearOnClose: false
+			clearOnClose: false,
+			closeOnEsc: true
 		}, options);
 		
 		
@@ -63,6 +70,8 @@ var caUI = caUI || {};
 		that.showPanel = function(url, onCloseCallback, clearOnClose, postData, callbackData) {
 			that.setZoom(that.allowMobileSafariZooming);
 			that.isChanging = true;
+			
+			caUI.panelCount++;
 			
 			// Set reference to panel in <div> being used
 			jQuery('#' + that.panelID).data("panel", that);
@@ -77,6 +86,10 @@ var caUI = caUI || {};
 			
 			jQuery('#' + that.panelID).fadeIn(that.panelTransitionSpeed, function() { that.isChanging = false; });
 			
+			if (that.useExpose) { 
+				jQuery('#' + that.panelID).expose({api: true, color: that.exposeBackgroundColor , opacity: that.exposeBackgroundOpacity, closeOnClick : false, closeOnEsc: that.closeOnEsc}).load(); 
+			}
+			
 			that.callbackData = callbackData;
 			if (onCloseCallback) {
 				that.onCloseCallback = onCloseCallback;
@@ -86,7 +99,7 @@ var caUI = caUI || {};
 			if (!postData) { postData = {}; }
 			if (url) {
 				jQuery('#' + that.panelContentID).load(url, postData, that.closeButtonSelector ? function() {			
-					jQuery(that.closeButtonSelector).on('click', function() {
+					jQuery(that.closeButtonSelector).click(function() {
 						that.hidePanel();
 					})
 				} : null);
@@ -101,12 +114,17 @@ var caUI = caUI || {};
 		}
 		
 		that.hidePanel = function(opts) {
+			caUI.panelCount--;
 			if (that.onCloseCallback) {
 				that.onCloseCallback(that.callbackData);
 			}
 			that.setZoom(false);
 			that.isChanging = true;
 			jQuery('#' + that.panelID).fadeOut(that.panelTransitionSpeed, function() { that.isChanging = false; });
+			
+			if (that.useExpose && (!opts || !opts.dontCloseMask) && (caUI.panelCount < 1)) {
+				jQuery.mask.close();
+			}
 			
 			if (that.clearOnClose) {
 				jQuery('#' + that.panelContentID).empty();
@@ -141,17 +159,9 @@ var caUI = caUI || {};
 		// Set up handler to trigger appearance of panel
 		// --------------------------------------------------------------------------------
 		jQuery(document).ready(function() {
-			// hide panel if click is outside of panel
-			//jQuery(document).on('click', function(event) {
-			//	var p = jQuery(event.target).parents().map(function() { return this.id; }).get();
-			//	if (!that.isChanging && that.panelIsVisible() && (jQuery.inArray(that.panelID, p) == -1)) {
-				//	that.hidePanel();
-			//	}
-			//});
-			
 			// hide panel if escape key is clicked
-			jQuery(document).on('keyup', function(event) {
-				if ((event.keyCode == 27) && !that.isChanging && that.panelIsVisible()) {
+			jQuery(document).keyup(function(event) {
+				if (that.closeOnEsc && (event.keyCode == 27) && !that.isChanging && that.panelIsVisible()) {
 					that.hidePanel();
 				}
 			});

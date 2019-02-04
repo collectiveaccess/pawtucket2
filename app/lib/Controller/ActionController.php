@@ -199,6 +199,7 @@ class ActionController extends BaseObject {
 	# -------------------------------------------------------
 	public function __call($ps_methodname, $pa_params) {
 		$this->clearErrors();
+		
 		if (file_exists(__CA_APP_DIR__."/controllers/DefaultController.php")) {
 			require_once(__CA_APP_DIR__."/controllers/DefaultController.php");
 			$o_default_controller = new DefaultController($this->opo_request, $this->opo_response, $this->opa_view_paths);
