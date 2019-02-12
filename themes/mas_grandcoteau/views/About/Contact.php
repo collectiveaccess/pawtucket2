@@ -4,15 +4,11 @@
 
 	<div class="row">
 		<div class="col-sm-12">
-			<H1><?php print _t("About"); ?></H1>
+			<H1><?php print _t("Contact"); ?></H1>
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-7">
-			{{{about_text}}}
-			<br/><br/>
-		</div>
-		<div class="col-sm-4 col-sm-offset-1">
+		<div class="col-sm-12">
 			<b>Hours of Operation:</b><br/>
 			<b>May 1 to September 30:</b> Monday to Saturday 9:00a.m. - 5:00p.m.<br/>
 			<b>October 1 to April 30:</b> Tuesday to Friday 9:00 a.m. - 5:00p.m.<br/>
