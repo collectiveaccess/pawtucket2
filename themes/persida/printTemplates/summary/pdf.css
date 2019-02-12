@@ -35,3 +35,7 @@ h6 {font-size:12px; font-weight:bold;text-transform:uppercase; margin:0px 0px 5p
 .metaData {
 	font-size:12px;
 }
+.media img {
+	width:100%;
+	height:auto;
+}

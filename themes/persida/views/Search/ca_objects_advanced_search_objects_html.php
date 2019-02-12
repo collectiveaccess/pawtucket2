@@ -56,12 +56,18 @@ print "<p>Enter your search terms in the fields below.</p>";
 			{{{ca_objects.medium%width=200px&height=1}}}
 		</div>
 	</div>
+<?php
+	if($this->request->user->hasRole("admin") || $this->request->user->hasRole("dj") || $this->request->user->hasRole("purchasing")){
+?>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records of a range of insurance values.">Insurance Value</span>
 			{{{ca_objects.value_insurance%width=200px&height=1}}}
 		</div>
-	</div>		
+	</div>
+<?php
+	}
+?>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search artworks within an exhibition.">Related Exhibition </span>
