@@ -44,7 +44,8 @@
 				<ul>
 <?php
 					while($qr_res->nextHit()){
-						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
+						if($qr_res->get('ca_object_representations.media.large', array("checkAccess" => $va_access_values))){
+							$vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values));
 							print "<li><div class='frontSlide'>".$vs_media;
 							$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
 							if($vs_caption){

@@ -170,7 +170,7 @@ a.ss-icon  {
 	border-width: 2px 0;
 }
 .navbar-collapse .navbar-nav{
-	background-color:#1C8A39;
+	background-color:#f38000;
 }
 .navbar-collapse .navbar-nav > li > a {
 	color: #FFF;
@@ -225,6 +225,9 @@ a.ss-icon  {
 	padding-top:21px;
 	padding-bottom:21px;
 	background-color:#27529a;
+}
+.nav > li.dropdown.open > a.icon {
+	background-color:#f38000;
 }
 @media (min-width: 768px) and (max-width: 1010px) {
 	.nav > li.dropdown > a.icon {
@@ -543,4 +546,12 @@ a-scene.fullscreen .a-canvas {
 }
 .homeLogo {
 	margin-bottom:15px;
+}
+.social {
+	display:inline-block;
+	padding-right:25px;
+	float:left;
+}
+.jcarousel-wrapper, .jcarousel {
+	width:auto !important;
 }
