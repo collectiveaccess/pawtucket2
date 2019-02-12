@@ -91,7 +91,7 @@
 				}
 			}
 		}
-		print "<div><hr/>".caNavLink($this->request, 'Is Deaccessioned', '', 'Browse', 'objects', 'facet/deaccession_facet/id/1')."</div>";
+		print "<div><hr/>".caNavLink($this->request, 'Is Deaccessioned', '', 'Browse', 'objects_deaccessioned', '')."</div>";
 		print "</div><!-- end bRefine -->\n";
 ?>
 	<script type="text/javascript">

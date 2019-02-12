@@ -84,9 +84,9 @@
 		if ($va_keywords = $t_item->get('ca_list_items.item_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 			$va_keyword_links = array();
 			foreach ($va_keywords as $va_key => $va_keyword_id) {
-				$va_keyword_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_keyword_id), '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
+				$va_keyword_links[] = caNavLink($this->request, ucFirst(caGetListItemByIDForDisplay($va_keyword_id)), '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
 			}
-			print "<div class='unit row'><div class='{$vn_label_col} label'>Keywords</div><div class='$vn_data_col'>".join(', ', $va_keyword_links)."</div></div>";
+			print "<div class='unit row'><div class='{$vn_label_col} label'>Tags</div><div class='$vn_data_col'>".join(', ', $va_keyword_links)."</div></div>";
 		}
 		print "<div class='detailDivider row' style='margin-bottom:60px;'></div>";							
 ?>			

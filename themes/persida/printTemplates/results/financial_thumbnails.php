@@ -42,13 +42,13 @@
 
 	$t_display				= $this->getVar('t_display');
 	$va_display_list 		= $this->getVar('display_list');
-	$vo_result 				= $this->getVar('result');
+	$vo_result_int 				= $this->getVar('result');
 	$vn_items_per_page 		= $this->getVar('current_items_per_page');
 	$vs_current_sort 		= $this->getVar('current_sort');
 	$vs_default_action		= $this->getVar('default_action');
 	$vo_ar					= $this->getVar('access_restrictions');
 	$vo_result_context 		= $this->getVar('result_context');
-	$vn_num_items			= (int)$vo_result->numHits();
+	$vn_num_items			= (int)$vo_result_int->numHits();
 	$vs_color 				= ($this->request->config->get('report_text_color')) ? $this->request->config->get('report_text_color') : "FFFFFF";;
 	
 	$vn_start 				= 0;
@@ -61,7 +61,13 @@
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
 	print $this->render("footer.php");
-?>
+	
+	$va_result_ids = array();
+	while($vo_result_int->nextHit()) {
+		$va_result_ids[] = $vo_result_int->get('ca_objects.object_id');
+	}
+	$vo_result = caMakeSearchResult('ca_objects', $va_result_ids, array('sort' => 'ca_entities.preferred_labels.surname;ca_objects.idno;ca_objects.creation_date'));
+?>	
 		<div id='body'>
 <?php
 

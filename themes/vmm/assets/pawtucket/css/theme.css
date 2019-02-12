@@ -121,6 +121,18 @@ body.initial .navbar{
     background-size: cover;
 	min-height: 150px;
 }
+/*body.initial .navbar{
+	margin-bottom:0px;
+	background-color: rgb(255, 255, 255, .95);
+	transition: background-color .25s;
+	-webkit-transition: background-color 0s;
+	
+	background: linear-gradient(rgba(255,255,255,.6), rgba(255,255,255,.6)), url("../graphics/sled_dogs.jpg");
+	background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+	min-height: 150px;
+}*/
 body.frontContainer .navbar{
 	background-image: none;
 }
@@ -184,7 +196,7 @@ body.initial #user-navbar > li > a{
 		background-color:#FFF;
 	}
 }
-.dropdown-menu > li > a {
+nav .dropdown-menu > li > a {
     padding: 7px 20px;
     text-transform: uppercase;
     font-size: 15px;
@@ -192,7 +204,7 @@ body.initial #user-navbar > li > a{
     text-align: right;
 
 }
-.dropdown-menu{
+nav .dropdown-menu{
 	border:0px;
 	margin-top: 0px !important;
 	box-shadow: 0 3px 3px rgba(0, 0, 0, 0.176);

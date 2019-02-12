@@ -117,6 +117,7 @@
 		<script type="text/javascript" language="javascript">
 			jQuery(document).ready(function() {
 				$('html').on('contextmenu', 'img', function(e){ return false; });
+				$('html').on('contextmenu', 'canvas', function(e){ return false; });
 				$('html').on('dragstart', false);
 			});
 		</script>
