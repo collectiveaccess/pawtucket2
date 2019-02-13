@@ -1619,7 +1619,7 @@ a .svg-inline--fa.clearFacet {
 }
 .detail.collection .viewAll { 
 	margin-right:15px;
-	padding-top:7px;
+	/* padding-top:7px; */
 }
 .detail.sketchbook .viewAll { 
 	padding-top:7px;
