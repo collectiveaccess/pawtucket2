@@ -31,11 +31,16 @@
 		$vn_label_col = 4;
 ?>
 		<div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
-<?php
-	}
-?>
 			<H1><?php print _t("Login"); ?></H1>
 <?php
+	}else{
+?>
+		<div class="row">
+			<div class="col-sm-12 col-md-8 col-md-offset-2">
+				<div class="row"><div class="col-sm-10 col-sm-offset-2"><br/><br/><H1><?php print _t("Login"); ?></H1></div></div>
+<?php
+	}
+
 	if($this->getVar("message")){
 		print "<div class='alert alert-danger'>".$this->getVar("message")."</div>";
 	}
@@ -99,6 +104,11 @@
 		});
 	});
 </script>
+<?php
+	}else{
+?>
+			</div>
+		</div>
 <?php
 	}
 ?>
