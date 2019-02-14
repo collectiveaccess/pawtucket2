@@ -97,10 +97,6 @@
 				{{{<ifdef code="ca_objects.continue_title"><div class="unit"><H6>Continuation of title</H6>...^ca_objects.continue_title</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.suptitlnote"><div class="unit"><H6>Supplied title note</H6>^ca_objects.suptitlnote</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.alt_title_note"><div class="unit"><H6>Parallel title note</H6>^ca_objects.alt_title_note</div></ifdef>}}}
-				
-				<?php
-					print_r($t_object->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true, "checkAccess" => $va_access_values)));
-				?>
 				{{{<ifcount min="1" code="ca_collections"><div class="unit"><H6>Part of</H6><unit relativeTo="ca_collections"><l>^ca_collections.hierarchy.preferred_labels%delimiter=_»_</l></unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Item number</H6>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.previous_number"><div class="unit"><H6>Previous number(s)</H6>^ca_objects.previous_number%delimeter=,_</div></ifdef>}}}
