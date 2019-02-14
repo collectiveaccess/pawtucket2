@@ -33,7 +33,7 @@
 			<div class="container" >
 				<div class="row">
 					<div class='col-sm-12'>
-						<div class='socialLinks'><i class="fa fa-facebook-square"></i><i class="fa fa-twitter"></i><i class="fa fa-linkedin-square"></i><i class="fa fa-flickr"></i><i class="fa fa-youtube-play"></i><i class="fa fa-instagram"></i></div>
+						<div class='socialLinks'><a href="https://www.facebook.com/NationalHellenicMuseum" target="_blank"><i class="fa fa-facebook-square"></i></a><a href="https://twitter.com/Hellenicmuseum" target="_blank"><i class="fa fa-twitter"></i></a><a href="https://www.linkedin.com/company/national-hellenic-museum/" target="_blank"><i class="fa fa-linkedin-square"></i></a><a href="https://www.youtube.com/user/NatlHellenicMuseum" target="_blank"><i class="fa fa-youtube-play"></i></a><a href="https://www.instagram.com/hellenicmuseum/" target="_blank"><i class="fa fa-instagram"></i></a></div>
 						<div>Chicago 333 South Halsted Street, Chicago IL, 60661, Phone: (312) 655-1234</div>
 						<div>©2018 National Hellenic Museum, All text and images on this site are protected by the U.S. and <br/>International copyright laws.  Unauthorized use is prohibited.</div>
 						<div class='tp'><div>Terms & Conditions</div><div>Privacy Policy</div></div>

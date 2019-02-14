@@ -106,15 +106,17 @@
 						if ($vs_preferCite = $t_item->get('ca_collections.preferCite', array('delimiter' => '<br/>'))) {
 							print "<div class='unit'><h6>Preferred Citation</h6>".$vs_preferCite."</div>";
 						}
-						if ($vs_rel_ent = $t_item->get('ca_entities.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
-							print "<div class='unit'><h6>Related Entities</h6>".$vs_rel_ent."</div>";
-						}	
 																																																																																																
 					}
-				
+					if ($vs_rel_ent = $t_item->get('ca_entities.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
+						print "<div class='unit'><h6>Related Entities</h6>".$vs_rel_ent."</div>";
+					}	
+					print "<div id='detailTools'>";
 					if ($vn_pdf_enabled) {
-						print "<div id='detailTools'><div class='detailTool'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div></div>";
+						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
 					}
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About This Item", "", "", "Contact",  "form", array('table' => 'ca_collections', 'id' => $t_item->get('ca_collections.collection_id')))."</div>";
+					print "</div>";
 											
 ?>					
 				</div><!-- end col -->

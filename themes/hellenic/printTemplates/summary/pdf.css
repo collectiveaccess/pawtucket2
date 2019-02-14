@@ -1,4 +1,13 @@
-
+@font-face {
+	font-family: Futura;
+	src: url('../../assets/pawtucket/css/fonts/FuturaPTBook.ttf') format('truetype');
+}
+@font-face {
+	font-family: Nunito;
+	src: url('../../assets/pawtucket/css/fonts/Nunito-SemiBold.ttf') format('truetype');
+}				
+.tombstone {font-family:Futura;}
+h6 { font-family: Nunito; }
 
 /* universal header/footer styles */
 #header { padding:0px; margin:0px;}

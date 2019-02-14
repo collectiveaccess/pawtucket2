@@ -67,10 +67,11 @@
 ?>	
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
+					{{{representationViewer}}}
+
 <?php
 					print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_occurrences",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
 ?>				
-					{{{representationViewer}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">

@@ -29,11 +29,11 @@
  *
  * ----------------------------------------------------------------------
  */
-		print $this->render("Front/featured_set_slideshow_html.php");
 ?>
-	<div class="row">
-		<div class="col-sm-8">
-			<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
-			<div>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque condimentum sit amet lectus at pulvinar. Donec a ex nibh. Mauris et dui at sem tempus semper. In dictum mi a ullamcorper rutrum. Vivamus id dapibus quam. Curabitur consequat eros quis erat pretium, in posuere sem tristique. Fusce placerat convallis dui, id porta leo malesuada ut. Nullam laoreet euismod eros, eu consectetur mauris euismod id. </div>
-		</div><!--end col-sm-8-->
-	</div><!-- end row -->
+<div id="homeSearch">
+
+</div>
+
+<script>
+	$("#homeSearch").load('<?php print caNavUrl($this->request, '', 'Search', 'advanced/objects'); ?>');
+</script>

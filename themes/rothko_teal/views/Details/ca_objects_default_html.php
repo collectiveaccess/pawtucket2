@@ -320,7 +320,9 @@
 		if ($va_collection = $t_sketchbook->getWithTemplate('<unit relativeTo="ca_collections_x_collections" restrictToTypes="collection,other"><if rule="^ca_collections_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections" >^ca_collections.preferred_labels</unit></if></unit>')) {
 			print "<div>".$va_collection."</div>";
 		}	
-		print "<a href='#' onclick='caMediaPanel.showPanel(\"/index.php/Detail/GetMediaOverlay/context/collections/id/".$va_related_sketchbook_id."/representation_id/".$t_sketchbook->get('ca_object_representations.representation_id')."/overlay/1\"); return false;'>View Sketchbook Pages</a>";
+		//print "<a href='#' onclick='caMediaPanel.showPanel(\"/index.php/Detail/GetMediaOverlay/context/collections/id/".$va_related_sketchbook_id."/representation_id/".$t_sketchbook->get('ca_object_representations.representation_id')."/overlay/1\"); return false;'>View Sketchbook Pages</a>";
+		print caNavLink($this->request, 'View Sketchbook Pages', '', '', 'Detail', 'collections/'.$va_related_sketchbook_id);
+		
 		print "</div><!-- end col --></div><!-- end row --></div><!-- end container -->";
 		print "</div><!-- end sketchdiv --></div><!-- end drawer -->";
 		print "</div><div class='col-sm-2'></div></div><!-- end col end row -->";

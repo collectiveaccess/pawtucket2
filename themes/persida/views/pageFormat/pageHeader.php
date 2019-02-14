@@ -146,12 +146,18 @@
 					<li><?php print caNavLink($this->request, 'Home', '', '', '', '');?></li>
 					<li class="dropdown" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Browse</a>
+<?php
+					if($this->request->isLoggedIn()){
+?>
 						<ul class="dropdown-menu">	
 							<li><?php print caNavLink($this->request, 'Artworks', '', '', 'Browse', 'objects');?></li>
 							<li><?php print caNavLink($this->request, 'People & Organizations', '', '', 'Browse', 'entities');?></li>
 							<li><?php print caNavLink($this->request, 'Exhibitions', '', '', 'Browse', 'exhibitions');?></li>
 							<li><?php print caNavLink($this->request, 'Bibliography', '', '', 'Browse', 'bibliography');?></li>
 						</ul>
+<?php
+					}
+?>
 					</li>					
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 				</ul>
