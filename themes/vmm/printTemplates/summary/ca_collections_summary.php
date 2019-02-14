@@ -48,12 +48,7 @@
 	print $this->render("footer.php");	
 
 ?>
-	<div class="title">
-		<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
-	</div>
-
-
-					{{{<div class="title"><h1 class="title">^ca_collections.preferred_labels <ifdef code="ca_collections.GMD">[<unit realtiveTo="ca_collections.GMD" delimiter=", ">^ca_collections.GMD</unit>]</ifdef><ifdef code="ca_collections.OtherTitle">: ^ca_collections.OtherTitle </ifdef><ifdef code="ca_collections.nonpreferred_labels"> = ^ca_collections.nonpreferred_labels </ifdef><ifdef code="creator_name"> / ^ca_collections.creator_name</ifdef></H1></div>
+					{{{<div class="title"><h1 class="title">^ca_collections.preferred_labels <ifdef code="ca_collections.GMD">[<unit relativeTo="ca_collections.GMD" delimiter=", ">^ca_collections.GMD</unit>]</ifdef><ifdef code="ca_collections.OtherTitle">: ^ca_collections.OtherTitle </ifdef><ifdef code="ca_collections.nonpreferred_labels"> = ^ca_collections.nonpreferred_labels </ifdef><ifdef code="creator_name"> / ^ca_collections.creator_name</ifdef></H1></div>
 						<ifdef code="ca_collections.suptitlnote"><div class="unit"><H6>Supplied title note</H6>^ca_collections.suptitlnote</div></ifdef>
 					}}}
 <?php					

@@ -1,7 +1,7 @@
 
 <div class="row">
 	<div class="col-sm-8 " style='border-right:1px solid #ddd;'>
-		<h1>Artefacts Advanced Search</h1>
+		<h1>Artifacts Advanced Search</h1>
 
 <?php			
 print "<p>Enter your search terms in the fields below.</p>";
@@ -22,11 +22,11 @@ print "<p>Enter your search terms in the fields below.</p>";
 	</div>		
 	<div class='row'>	
 		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to name only.">Artefact / Item name</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to name only.">Artifact / Item name</span>
 			{{{ca_objects.preferred_labels.name%width=220px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search item identifier.">Artefact / Item number</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search item identifier.">Artifact / Item number</span>
 			{{{ca_objects.idno%width=210px}}}
 		</div>
 	</div>
@@ -51,7 +51,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 		<ul>
 			<li><?php print caNavLink($this->request, _t("Archival Items Advanced Search"), "", "", "Search", "advanced/archival_items"); ?></li>
 			<li><?php print caNavLink($this->request, _t("Archival Fonds and Collections Advanced Search"), "", "", "Search", "advanced/archives"); ?></li>
-			<li><?php print caNavLink($this->request, _t("Artefact Advanced Search"), "", "", "Search", "advanced/artefacts"); ?></li>
+			<li><?php print caNavLink($this->request, _t("Artifact Advanced Search"), "", "", "Search", "advanced/artifacts"); ?></li>
 		</ul>
 	</div><!-- end col -->
 </div><!-- end row -->

@@ -1,12 +1,11 @@
 <?php
+	$va_access_values = caGetUserAccessValues($this->request);
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$va_tags = $this->getVar("tags_array");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
-	$va_access_values = caGetUserAccessValues($this->request);	
-	$vs_representationViewer = trim($this->getVar("representationViewer"));
-	
+	$va_access_values = caGetUserAccessValues($this->request);
 	$vs_detail_tools = "<div id='detailTools'>
 					<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask An Archivist", "", "", "Contact",  "form", array('id' => $t_item->get("occurrence_id"), 'table' => 'ca_occurrences'))."</div><!-- end detailTool -->
 					<div class='detailTool'><a href='#' onclick='jQuery(\"#detailComments\").slideToggle(); return false;'><span class='glyphicon glyphicon-comment'></span>Comments and Tags (".(sizeof($va_comments) + sizeof($va_tags)).")</a></div><!-- end detailTool -->
@@ -40,15 +39,11 @@
 		<div class="container">
 			<div class="row">
 <?php
-			if($vs_representationViewer){
+			$vs_featured_object = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='featured' length='1'><div class='featuredVesselObject'><l>^ca_object_representations.media.mediumlarge</l><ifdef code='ca_objects.preferred_labels.name'><div class='small'>^ca_objects.preferred_labels.name</div></ifdef></div></unit>");
+			if($vs_featured_object){
 ?>
 				<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
-					<?php print $vs_representationViewer; ?>
-				
-				
-					<div id="detailAnnotations"></div>
-				
-					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+					<?php print $vs_featured_object; ?>
 					<?php print $vs_detail_tools; ?>
 				</div><!-- end col -->
 			
@@ -80,12 +75,12 @@
 					{{{<ifdef code="ca_occurrences.vessel_description"><div class="unit"><H6>Vessel Description</H6>^ca_occurrences.vessel_description</div></ifdef>}}}
 					{{{<ifcount min="1" code="ca_collections"><div class="unit"><H6>Related Collections</H6><unit relativeTo="ca_collections" delimiter="<br/>"><b>^ca_collections.type_id</b>: <l>^ca_collections.hierarchy.preferred_labels%delimiter=_»_</l></unit></div></ifcount>}}}
 				
-					{{{<ifcount code="ca_objects" restrictToTypes="collection_object" min="1"><div class="unit"><H6>Related Artefact<ifcount code="ca_objects" restrictToTypes="collection_object" min="2">s</ifcount></H6><unit relativeTo="ca_objects" restrictToTypes="collection_object" sort="ca_objects.preferred_labels" sortDirection="ASC" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l> (^ca_objects.idno)</unit></div></ifcount>}}}
+					{{{<ifcount code="ca_objects" restrictToTypes="collection_object" min="1"><div class="unit"><H6>Related Artifact<ifcount code="ca_objects" restrictToTypes="collection_object" min="2">s</ifcount></H6><unit relativeTo="ca_objects" restrictToTypes="collection_object" sort="ca_objects.preferred_labels" sortDirection="ASC" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l> (^ca_objects.idno)</unit></div></ifcount>}}}
 					{{{<ifcount code="ca_objects" restrictToTypes="archival_object, charts, maps, ship_plans" min="1"><div class="unit"><H6>Related Archival Item<ifcount code="ca_objects" restrictToTypes="archival_object, charts, maps, ship_plans" min="2">s</ifcount></H6><unit relativeTo="ca_objects" restrictToTypes="archival_object, charts, maps, ship_plans" sort="ca_objects.GMD" sortDirection="ASC" delimiter="<br/>"><ifdef code="ca_objects.GMD"><b>^ca_objects.GMD</b>: </ifdef><l>^ca_objects.preferred_labels.name</l> (^ca_objects.idno)</unit></div></ifcount>}}}
 				
 <?php
 				# Comment and Ask archivist if no rep
-				if (!$vs_representationViewer) {
+				if (!$vs_featured_object) {
 						
 					print $vs_detail_tools;
 				}				

@@ -58,11 +58,11 @@
 	<div class="row">
 		<div class="col-sm-12 col-md-6 col-md-offset-3">
 
-			<H1>The Vancouver Maritime Museum’s<br/><b>Open Collections</b><br/>is an online catalogue of<br/><i>Artefacts</i> and <i>Archival Material</i><br/>held at the museum.</H1>
+			<H1>The Vancouver Maritime Museum’s<br/><b>Open Collections</b><br/>is an online catalogue of<br/><i>Artifacts</i> and <i>Archival Material</i><br/>held at the museum.</H1>
 
-			<p>Search both our Artefact and Archival collections using key words, dates, or places.</p>
+			<p>Search both our Artifact and Archival collections using key words, dates, or places.</p>
 
-			<p>Browse the holdings using the <?php print caNavLink($this->request, "Artefacts", "", "", "Browse", "artefacts"); ?>, <?php print caNavLink($this->request, "Archives", "", "", "Collections", "index"); ?>, and <?php print caNavLink($this->request, "Vessels", "", "", "Browse", "vessels"); ?> portals below.</p>
+			<p>Browse the holdings using the <?php print caNavLink($this->request, "Artifacts", "", "", "Browse", "artifacts"); ?>, <?php print caNavLink($this->request, "Archives", "", "", "Collections", "index"); ?>, and <?php print caNavLink($this->request, "Vessels", "", "", "Browse", "vessels"); ?> portals below.</p>
 		</div>
 	</div>
 </div>
@@ -75,8 +75,8 @@
 			<div class="row tileLinks">				
 				<div class="col-sm-4">
 		<?php
-					print caNavLink($this->request, caGetThemeGraphic($this->request, 'divers_helmet.jpg'), "", "", "Browse", "artefacts");
-					print "<div class='sectionLink'>".caNavLink($this->request, "Artefacts", "", "", "Browse", "artefacts")."</div>";
+					print caNavLink($this->request, caGetThemeGraphic($this->request, 'divers_helmet.jpg'), "", "", "Browse", "artifacts");
+					print "<div class='sectionLink'>".caNavLink($this->request, "Artifacts", "", "", "Browse", "artifacts")."</div>";
 		?>
 				</div> <!--end col-sm-4-->
 				<div class="col-sm-4">
