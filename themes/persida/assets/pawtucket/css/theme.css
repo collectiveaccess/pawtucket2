@@ -222,6 +222,9 @@ a, a:hover, a:active, a:focus {
 	padding:0px;
 	border:0px;
 }
+.detail .navLeftRight{
+	line-height:1.2em;
+}
 
 /* Lightbox */
 
