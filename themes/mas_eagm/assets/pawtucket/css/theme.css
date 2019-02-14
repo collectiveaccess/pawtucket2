@@ -526,3 +526,6 @@ a-scene.fullscreen .a-canvas {
 .homeLogo {
 	margin-bottom:15px;
 }
+.jcarousel-wrapper, .jcarousel {
+	width:auto !important;
+}

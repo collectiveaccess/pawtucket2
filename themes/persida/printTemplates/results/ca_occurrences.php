@@ -89,7 +89,7 @@
 						$vs_venue = null;
 					}
 					if ($va_edition = $vo_result->get('ca_occurrences.edition_bib', array('delimiter' => ', '))) {
-						print $va_edition;
+						print "<div class='data'>".$va_edition."</div>";
 					} else {
 						$va_edition = null;
 					}				
