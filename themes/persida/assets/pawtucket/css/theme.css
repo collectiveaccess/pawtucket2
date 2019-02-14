@@ -57,6 +57,12 @@ a, a:hover, a:active, a:focus {
 .navbar-form {
 	margin-bottom:6px;
 }
+.navbar-toggle-user {
+    padding: 2px 10px 3px 10px;
+}
+#headerSearchButton{
+	padding:3px 6px 0px 0px;
+}
 .pageName {
 	text-transform:uppercase;
 	font-weight:bold;
@@ -86,9 +92,12 @@ a, a:hover, a:active, a:focus {
 	height:290px;
 }
 .objects .multisearchResult {
-	height:260px;
+	height:255px;
 	width:240px;
 	line-height:1.4em;
+}
+.multisearch .objects .scrollButtonPrevious {
+    height: 260px;
 }
 .objects .multisearchResult small {
 	color:#ababab;
@@ -168,7 +177,7 @@ a, a:hover, a:active, a:focus {
 	font-size:24px;
 }
 .bResultListItemContent {
-	height:100px;
+	height:105px;
 }
 .bResultListItem:hover {
 	height:150px;
@@ -179,6 +188,9 @@ a, a:hover, a:active, a:focus {
 @media (min-width: 768px) {
 	.objects .multisearchResult div, .bResultItemText div {
 		margin-bottom: 2px;
+		line-height:1.2em;
+	}
+	.objects .multisearchResult div a{
 		line-height:1.2em;
 	}
 }
@@ -223,4 +235,8 @@ a, a:hover, a:active, a:focus {
 }
 .bResultItemContent {
 	height:290px;
+}
+
+.form-control:focus {
+    border-color: #000;
 }

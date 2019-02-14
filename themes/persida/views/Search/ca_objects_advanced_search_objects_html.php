@@ -1,6 +1,13 @@
 
 <div class="row">
-	<div class="col-sm-8 " style='border-right:1px solid #ddd;'>
+<?php
+	$vs_guide_text = $this->getVar("guide_to_use_text");
+	if($vs_guide_text){
+		print '<div class="col-sm-8 " style="border-right:1px solid #ddd;">';
+	}else{
+		print '<div class="col-sm-8 col-sm-offset-2">';
+	}
+?>
 		<h1>Artwork Advanced Search</h1>
 
 <?php			
@@ -90,10 +97,16 @@ print "<p>Enter your search terms in the fields below.</p>";
 {{{/form}}}
 
 	</div>
-	<div class="col-sm-4" >
-		<h1>Guide to Use</h1>
-		<p>Lorem Ipsum.</p>
-	</div><!-- end col -->
+	
+<?php 
+		if($vs_guide_text){
+			print "<div class='col-sm-4'>";
+			print "<h1>Guide to Use</h1>";
+			print "<p>{{{guide_to_use_text}}}</p>";
+			print "</div><!-- end col -->";
+		}
+?>
+		
 </div><!-- end row -->
 
 <script>

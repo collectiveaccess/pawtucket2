@@ -31,11 +31,14 @@
 		$vn_label_col = 4;
 ?>
 		<div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+		<H1><?php print _t("Login"); ?></H1>
+<?php
+	}else{
+?>
+		<div class="row"><div class="col-xs-12 col-sm-8 col-sm-offset-2">
+			<div class="row"><div class="col-sm-10 col-sm-offset-2"><H1><?php print _t("Login"); ?></H1></div></div>
 <?php
 	}
-?>
-			<H1><?php print _t("Login"); ?></H1>
-<?php
 	if($this->getVar("message")){
 		print "<div class='alert alert-danger'>".$this->getVar("message")."</div>";
 	}
@@ -70,14 +73,16 @@
 					<br/>
 <?php
 					}
+					if($show_forgot_pw){
 ?>
 					<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'resetForm', null); ?>');"><?php print _t("Forgot your password?"); ?></a>
 <?php
+					}
 				}else{
 					if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) {
 						print caNavLink($this->request, _t("Click here to register"), "", "", "LoginReg", "registerForm", array());
 					}
-					print "<br/>".caNavLink($this->request, _t("Forgot your password?"), "", "", "LoginReg", "resetForm", array());
+					#print "<br/>".caNavLink($this->request, _t("Forgot your password?"), "", "", "LoginReg", "resetForm", array());
 				}
 ?>
 					</div>
@@ -99,6 +104,10 @@
 		});
 	});
 </script>
+<?php
+	}else{
+?>
+	</div></div>
 <?php
 	}
 ?>

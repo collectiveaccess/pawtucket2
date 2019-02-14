@@ -86,10 +86,8 @@
 			}
 			if (
 			    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
-			    ||
-			    $this->request->config->get('dontAllowRegistration')
 			) {
-				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
+				$this->notification->addNotification(_t("Login/registration not allowed"), __NOTIFICATION_TYPE_ERROR__);
 				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
 				return;
 			}
@@ -122,10 +120,8 @@
                 }
                 if (
                     $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
-                    ||
-                    $this->request->config->get('dontAllowRegistration')
                 ) {
-                    $this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
+                    $this->notification->addNotification(_t("Login/registration not allowed"), __NOTIFICATION_TYPE_ERROR__);
                     $this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
                     return;
                 }
