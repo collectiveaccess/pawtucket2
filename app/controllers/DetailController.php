@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2018 Whirl-i-Gig
+ * Copyright 2013-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -760,8 +760,13 @@
 			$va_info = $t_rep->getMediaInfo('media');
 			$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $t_instance->get('idno'));
 			
-			if (!($vs_mode = $this->request->user->getPreference('downloaded_file_naming'))) {
-				$vs_mode = $this->request->config->get('downloaded_file_naming');
+			$vs_mode = $this->request->config->get('downloaded_file_naming');
+			
+			$vals = ['idno' => $vs_idno_proc];
+			foreach(array_merge($va_rep_info, $va_info) as $k => $v) {
+			    if (is_array($v)) { continue; }
+				if (strtolower($k) == 'original_filename') { $v = pathinfo($v, PATHINFO_FILENAME); }
+			    $vals[strtolower($k)] = preg_replace('![^A-Za-z0-9_\-]+!', '_', $v);
 			}
 			
 			switch($vs_mode) {
@@ -776,7 +781,9 @@
 					break;
 				case 'original_name':
 				default:
-					if ($va_info['ORIGINAL_FILENAME']) {
+				    if (strpos($vs_mode, "^") !== false) { // template
+				       $this->view->setVar('version_download_name', caProcessTemplate($vs_mode, $vals).'.'.$va_rep_info['EXTENSION']);
+				    } elseif ($va_info['ORIGINAL_FILENAME']) {
 						$va_tmp = explode('.', $va_info['ORIGINAL_FILENAME']);
 						if (sizeof($va_tmp) > 1) { 
 							if (strlen($vs_ext = array_pop($va_tmp)) < 3) {

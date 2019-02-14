@@ -1,4 +1,5 @@
 <?php
+	$va_access_values = caGetUserAccessValues($this->request);
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
@@ -44,7 +45,7 @@
 				<div class='col-md-12 col-lg-12'>
 <?php					
 					print "<div class='exportCollection'>
-								<span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))
+								<span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $t_item->get("ca_collections.collection_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))
 								."<br/><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask An Archivist", "", "", "Contact",  "form", array('id' => $t_item->get("collection_id"), 'table' => 'ca_collections'))."</div>";
 ?>
 
@@ -53,7 +54,7 @@
 					}}}
 <?php					
 					if($t_item->get("ca_collections.parent_id")){
-						$va_path = explode(";", $t_item->getWithTemplate('<unit relativeTo="ca_collections.hierarchy" delimiter=";"><l>^ca_collections.preferred_labels.name</l></unit>'));
+						$va_path = explode("*", $t_item->getWithTemplate('<unit relativeTo="ca_collections.hierarchy" delimiter="*"><l>^ca_collections.preferred_labels.name</l></unit>'));
 						$va_path = array_slice($va_path, 0, (sizeof($va_path)-1));
 						if(is_array($va_path) && sizeof($va_path)){
 							print '<div class="unit"><H6>Part of</H6>'.implode(" > ", $va_path).'</div>';

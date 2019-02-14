@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+ 	$va_access_values = caGetUserAccessValues($this->request);
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
@@ -38,6 +38,7 @@
 	
 	$vs_detail_tools = "<div id='detailTools'>
 						<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask A Curator", "", "", "Contact",  "form", array('id' => $vn_id, 'table' => 'ca_objects'))."</div><!-- end detailTool -->
+						<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Order Reproduction", "", "", "ImageLicensing",  "form", array('id' => $vn_id, 'table' => 'ca_objects'))."</div><!-- end detailTool -->
 						<div class='detailTool'><a href='#' onclick='jQuery(\"#detailComments\").slideToggle(); return false;'><span class='glyphicon glyphicon-comment'></span>Comments and Tags (".(sizeof($va_comments) + sizeof($va_tags)).")</a></div><!-- end detailTool -->
 						<div id='detailComments'>".$this->getVar("itemComments")."</div><!-- end itemComments -->
 					</div><!-- end detailTools -->";
@@ -49,7 +50,7 @@
 		if(strpos(strToLower($vs_back_url), "gallery") !== false){
 			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Highlights</a>";
 		}else{
-			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Artefacts</a>";
+			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Artifacts</a>";
 		}
 		$va_breadcrumb[] = $t_object->get("ca_objects.preferred_labels");
 	}
@@ -109,7 +110,7 @@
 				</ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1">
 						<div class="unit">
-							<H6>Related people</H6>
+							<H6><ifcount code="ca_entities" min="1" max="1">Related person/organization</ifcount><ifcount code="ca_entities" min="2">Related people/organizations</ifcount></H6>
 							<unit relativeTo="ca_entities" delimiter="<br/>"><b>^relationship_typename</b>: <l>^ca_entities.preferred_labels</l></unit>
 						</div>
 				</ifcount>}}}

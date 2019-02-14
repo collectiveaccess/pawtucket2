@@ -116,7 +116,7 @@
 		</script>
 		<script type="text/javascript" language="javascript">
 			jQuery(document).ready(function() {
-				$('html').on('contextmenu', 'img', function(e){ return false; });
+				$('html').on('contextmenu', 'body', function(e){ return false; });
 				$('html').on('dragstart', false);
 			});
 		</script>
