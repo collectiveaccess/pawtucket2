@@ -1253,6 +1253,9 @@ a.browseRemoveFacet img {
 #lbTimelineContainer{
 	height:500px;
 }
+#confirm-delete .glyphicon{
+	color:#FFF !important;
+}
 /* --------------------------------- */
 /* classroom */
 /* --------------------------------- */

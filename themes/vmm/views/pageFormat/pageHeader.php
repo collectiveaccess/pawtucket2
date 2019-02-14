@@ -148,7 +148,7 @@
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
 					
-					<li <?php print ((strtoLower($this->request->getController()) == "browse") && (strtoLower($this->request->getAction()) == "artefacts")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artefacts"), "", "", "Browse", "artefacts"); ?></li>
+					<li <?php print ((strtoLower($this->request->getController()) == "browse") && (strtoLower($this->request->getAction()) == "artifacts")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artifacts"), "", "", "Browse", "artifacts"); ?></li>
 					
 					<li class="dropdown <?php print ((strtoLower($this->request->getController()) == "browse") && (strtoLower($this->request->getAction()) == "archival_items") || (strtoLower($this->request->getController()) == "collections")) ? 'active' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Archives</a>
@@ -212,6 +212,10 @@
 					$vs_section = "Contact";
 				break;
 				# ---------------------------
+				case "repoductionservicesfees":
+					$vs_section = "Schedule of Fees for Reproduction Services";
+				break;
+				# ---------------------------
 			}
 			$va_breadcrumb[] = caNavLink($this->request, "About: ".$vs_section, "", "", "About", $this->request->getAction());			
 		break;
@@ -220,8 +224,8 @@
 		case "search":
 			$vs_section = "";
 			switch(strToLower($this->request->getAction())){
-				case "artefacts":
-					$vs_section = "Find: Artefacts";
+				case "artifacts":
+					$vs_section = "Find: Artifacts";
 				break;
 				# ---------------------------
 				case "archival_items":
@@ -242,8 +246,8 @@
 							$vs_section = "Advanced Search: Archival Items";
 						break;
 						# ---------------------------
-						case "artefacts":
-							$vs_section = "Advanced Search: Artefacts";
+						case "artifacts":
+							$vs_section = "Advanced Search: Artifacts";
 						break;
 						# ---------------------------
 						case "archives":
