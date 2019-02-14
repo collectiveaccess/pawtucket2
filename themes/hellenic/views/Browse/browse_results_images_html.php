@@ -119,7 +119,7 @@
 					} else {
 						$vs_description = null;
 					}
-					if ($vs_collection = $qr_res->get("ca_collections.preferred_labels", array('delimiter' => ', '))){
+					if ($vs_collection = $qr_res->get("ca_collections.preferred_labels", array('delimiter' => ', ', 'checkAccess' => $va_access_values))){
 						$vs_collection = "<div>".$vs_collection."</div>";
 					} else {
 						$vs_collection = null;

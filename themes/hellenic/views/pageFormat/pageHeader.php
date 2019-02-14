@@ -152,9 +152,9 @@
 						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown">Resources</a>
 						<ul class="dropdown-menu">
 							<li><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "collection"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Citation Guide and Links"), "", "", "About", "Index"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Rights and Reproduction"), "", "", "About", "reproduction"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Schedule a Research Visit"), "", "", "About", "research"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Citation Guide and Links"), "", "", "About", "Citation"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Rights and Reproduction"), "", "", "About", "Rights"); ?></li>
+							<li><?php print caNavLink($this->request, _t("Schedule a Research Visit"), "", "", "About", "ResearchVisit"); ?></li>
 							<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>				
 						</ul>
 					</li>
@@ -166,15 +166,16 @@
 						</ul>
 					</li>										
 				</ul>
-				<div class="banner"><div class="container" style="padding:0px;">NHM COLLECTION & ARCHIVES</div></div>
+				<div class="banner"><div class="container" style="padding:0px;">NHM COLLECTIONS & ARCHIVES</div></div>
 				<div class="bannerImg"></div>
 			</div><!-- end container -->	
 			</div><!-- /.navbar-collapse -->
 	</nav>
 <?php
-	if ($this->request->getController() == "Front") {
-		$vs_style = "nomax";
-	} 
+	#if (strToLower($this->request->getController()) == "front") {
+	#	$vs_style = "nomax";
+	#} 
+	# print '<div class="container '.$vs_style.'" style="padding:0px;"><div class="row"><div class="col-xs-12">';
 ?>	
-	<div class="container <?php print $vs_style;?> " style="padding:0px;"><div class="row"><div class="col-xs-12">
+	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
