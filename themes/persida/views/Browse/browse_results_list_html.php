@@ -134,16 +134,27 @@
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 					if ($vs_table == 'ca_occurrences') {
-						$vs_info = null;
-						if ($va_venue = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue'), 'delimiter' => '<br/>'))) {
-							$vs_info.= "<br/>".$va_venue;
-						}
-						if ($va_edition = $qr_res->get('ca_occurrences.edition_bib', array('delimiter' => ', '))) {
-							$vs_info.= "<br/>".$va_edition;
-						}						
-						if ($va_dates = $qr_res->get('ca_occurrences.occurrence_dates', array('delimiter' => ', '))) {
-							$vs_info.= "<br/>".$va_dates;
-						}						
+						$t_list = new ca_lists();
+						$vs_exhibition_type = $t_list->getItemIDFromList("occurrence_types", "exhibition");
+						if ($qr_res->get('ca_occurrences.type_id') == $vs_exhibition_type) {
+							if ($va_venue = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue'), 'delimiter' => '<br/>'))) {
+								$vs_label_detail_link = $va_venue;
+							}
+							if ($va_dates = $qr_res->get('ca_occurrences.occurrence_dates', array('delimiter' => ', '))) {
+								$vs_label_detail_link.= "<br/>".$va_dates;
+							}
+							$vs_label_detail_link.= "<br/>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+							$vs_rep_detail_link = null;
+						} else {
+							$vs_info = null;
+
+							if ($va_edition = $qr_res->get('ca_occurrences.edition_bib', array('delimiter' => ', '))) {
+								$vs_info.= "<br/>".$va_edition;
+							}						
+							if ($va_dates = $qr_res->get('ca_occurrences.occurrence_dates', array('delimiter' => ', '))) {
+								$vs_info.= "<br/>".$va_dates;
+							}	
+						}					
 					}
 					if ($vs_table == 'ca_objects') {
 						if ($vs_artist = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'delimiter' => ', '))) {

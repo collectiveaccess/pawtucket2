@@ -50,6 +50,7 @@
 ?>
 
 	<div class='tombstone'>
+		<div style='width:400px;float:left;'>
 <?php
 		if ($vs_pub_type = $t_item->get('ca_occurrences.bib_types', array('convertCodesToDisplayText' => true))) {
 			print "<div class='unit'><h6>Type of Material</h6>".$vs_pub_type."</div>";
@@ -89,8 +90,12 @@
 		}
 		if ($vs_notes = $t_item->get('ca_occurrences.notes')) {
 			print "<div class='unit'><h6>Notes</h6>".$vs_notes."</div>";
+		}
+		print "</div>";
+		if ($vs_media = $t_item->get('ca_object_representations.media.medium')) {
+			print "<div class='media' style='width:250px;float:right;'>".$vs_media."</div>";
 		}																																								
-
+		print "<div style='width:100%;clear:both;'></div>";
 		$va_object_ids = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'sort' => 'ca_entities.preferred_labels.surname;ca_objects.object_id'));
 		if ($va_object_ids) {	
 			print "<hr/ style='border:0px;border-top:solid 1px #ccc;height:1px;'>";

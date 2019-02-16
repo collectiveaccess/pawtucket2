@@ -35,8 +35,7 @@
 	<div class="container ">
 		<div class="row">
 			<div class="col-sm-12 homeText">
-				<div class='homeHeader'>NATIONAL HELLENIC MUSEUM COLLECTIONS & ARCHIVES</div>
-				{{{hometext}}}
+				<div class='homeHeader'>{{{hometext}}}</div>
 			</div>
 		</div>
 	</div>

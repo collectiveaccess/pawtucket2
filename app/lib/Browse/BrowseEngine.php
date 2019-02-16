@@ -3422,10 +3422,10 @@
 									if ($va_list_item_cache[$vn_val]['deleted'] > 0) { continue; }
 									if (is_array($va_suppress_values) && (in_array($vn_val, $va_suppress_values))) { continue; }
 									if (is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && !in_array($va_list_item_cache[$vn_val]['access'], $pa_options['checkAccess'])) { continue; }
-
+                            
 									if (is_array($va_restrict_to_types) && sizeof($va_restrict_to_types) && !in_array($va_list_item_cache[$vn_val]['type_id'], $va_restrict_to_types)) { continue; } 
 									
-									if ($va_criteria[$vn_val]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
+									if ($va_criteria[$vn_val]) { unset($va_values[$i]); continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 									$vn_child_count = isset($va_list_child_count_cache[$vn_val]) ? $va_list_child_count_cache[$vn_val] : 0;
 									
 									if (!($vs_label = html_entity_decode($va_list_label_cache[$vn_val]))) { $vs_label = '['._t('BLANK').']'; }
@@ -3448,7 +3448,6 @@
 								if (!isset($va_facet_info['dont_expand_hierarchically']) || !$va_facet_info['dont_expand_hierarchically']) {
 									$t_rel_item = new ca_list_items();
 									$qr_res->seek(0);
-									$va_ids = $qr_res->getAllFieldValues($vs_rel_pk);
 									$qr_ancestors = call_user_func($t_rel_item->tableName().'::getHierarchyAncestorsForIDs', $va_values, array('returnAs' => 'SearchResult'));
 
 									$vs_rel_table = $t_rel_item->tableName();
