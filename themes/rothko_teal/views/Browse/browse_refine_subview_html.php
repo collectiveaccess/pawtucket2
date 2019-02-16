@@ -131,13 +131,13 @@
 									##	}
 									#} else {
 										$vs_facet_label = $va_item['label'];
-										if (strtolower($vs_facet_label) == "current") {
-											$vs_facet_label = "Double-sided";
-										}
-										if (strtolower($vs_facet_label) == "previous") {
-											$vs_facet_label = "Not double-sided";
-										}
-										$vs_show_only .= "<div class='col-sm-".$va_facet_info['column']." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'><div class='checkArea'></div>".caNavLink($this->request, ucfirst($vs_facet_label), '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+										// if (strtolower($vs_facet_label) == "yes") {
+// 											$vs_facet_label = "Double-sided";
+// 										}
+// 										if (strtolower($vs_facet_label) == "no") {
+// 											$vs_facet_label = "Not double-sided";
+// 										}
+										$vs_show_only .= "<div class='col-sm-".$va_facet_info['column']." facetItem facetItem{$vs_facet_name}' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'><div class='checkArea'></div>".caNavLink($this->request, ucfirst($vs_facet_label), '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 										
 					                    if ($vb_show_only_is_open) {  $va_show_only_facets[$vs_facet_name] = true; }
 									#}
@@ -196,14 +196,14 @@
             var multiple_selection_facet_list = <?php print json_encode($va_multiple_selection_facet_list); ?>;
             
             jQuery(".facetItem").on('click', function(e) { 
-            	if (!multiple_selection_facet_list[jQuery(this).data('facet')]) { return; }
+                var f = jQuery(this).data('facet');
+            	if (!multiple_selection_facet_list[f]) { return; }
             	if (jQuery(this).attr('facet_item_selected') == '1') {
             		jQuery(this).attr('facet_item_selected', '');
             	} else {
+            	    jQuery(".facetItem" + f).attr('facet_item_selected', '');
             		jQuery(this).attr('facet_item_selected', '1');
             	}
-            	
-
             	
             	e.preventDefault();
             	return false;
