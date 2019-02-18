@@ -2485,7 +2485,7 @@ class SearchIndexer extends SearchBase {
 				array_push($va_linking_tables, $vs_related_table);
 				$vs_left_table = $vs_subject_tablename;
 
-				$va_joins = array();
+				$va_joins = [];
 				$vs_rel_type_id_fld = $vs_type_id_fld = null;
 			
 				$vn_t = 1;
@@ -2539,7 +2539,7 @@ class SearchIndexer extends SearchBase {
 						if (($pt_rel_instance = Datamodel::getInstanceByTableName($vs_right_table, true)) && method_exists($pt_rel_instance, "isRelationship") && $pt_rel_instance->isRelationship() && $pt_rel_instance->hasField('type_id')) {
 							$vs_rel_type_id_fld = "{$va_alias}.type_id";
 						}
-						$va_joins[] = $vs_join;
+						$va_joins[] = [$vs_join];
 					} else {
 						if ($va_rel = Datamodel::getOneToManyRelations($vs_left_table, $vs_right_table)) {
 							$vs_alias = $va_aliases[$vs_right_table][] = $va_alias_stack[] = "t{$vn_t}";
@@ -2552,10 +2552,10 @@ class SearchIndexer extends SearchBase {
 							if(Datamodel::isSelfRelationship($va_rel['many_table'])) {
 								$t_self_rel = Datamodel::getInstanceByTableName($va_rel['many_table'], true);
 							
-								$va_joins[] = array(
+								$va_joins[] = [
 												"INNER JOIN {$va_rel['many_table']} AS {$vs_alias} ON {$vs_prev_alias}.{$va_rel['one_table_field']} = {$vs_alias}.".$t_self_rel->getLeftTableFieldName().$vs_rel_type_res_sql,
 												"INNER JOIN {$va_rel['many_table']} AS {$vs_alias} ON {$vs_prev_alias}.{$va_rel['one_table_field']} = {$vs_alias}.".$t_self_rel->getRightTableFieldName().$vs_rel_type_res_sql
-											);
+											];
 										
 								if ($t_self_rel->hasField('type_id')) {
 									$vs_rel_type_id_fld = "{$vs_alias}.type_id";
@@ -2568,7 +2568,7 @@ class SearchIndexer extends SearchBase {
 								    $vs_type_id_fld = "{$vs_alias}.type_id";
 								    $vs_rel_type_res_sql .= " AND {$vs_type_id_fld} IN (".join(',', $pa_restrict_to_types).")";
 								}
-								$va_joins[] = "INNER JOIN {$va_rel['many_table']} AS {$vs_alias} ON {$vs_prev_alias}.{$va_rel['one_table_field']} = {$vs_alias}.{$va_rel['many_table_field']}".$vs_rel_type_res_sql;
+								$va_joins[] = ["INNER JOIN {$va_rel['many_table']} AS {$vs_alias} ON {$vs_prev_alias}.{$va_rel['one_table_field']} = {$vs_alias}.{$va_rel['many_table_field']}".$vs_rel_type_res_sql];
 							}
 						} elseif ($va_rel = Datamodel::getOneToManyRelations($vs_right_table, $vs_left_table)) {
 							$vs_alias = $va_aliases[$vs_right_table][] = $va_alias_stack[] = "t{$vn_t}";
@@ -2581,10 +2581,10 @@ class SearchIndexer extends SearchBase {
 							if(Datamodel::isSelfRelationship($va_rel['many_table'])) {
 								$t_self_rel = Datamodel::getInstanceByTableName($va_rel['many_table'], true);
 							
-								$va_joins[] = array(
+								$va_joins[] = [
 												"INNER JOIN {$va_rel['one_table']} AS {$vs_alias} ON {$vs_alias}.{$va_rel['one_table_field']} = {$vs_prev_alias}.".$t_self_rel->getRightTableFieldName().$vs_rel_type_res_sql,
 												"INNER JOIN {$va_rel['one_table']} AS {$vs_alias} ON {$vs_alias}.{$va_rel['one_table_field']} = {$vs_prev_alias}.".$t_self_rel->getLeftTableFieldName().$vs_rel_type_res_sql
-											);
+											];
 										
 								if ($t_self_rel->hasField('type_id')) {
 									$vs_rel_type_id_fld = "{$vs_alias}.type_id";
@@ -2596,7 +2596,7 @@ class SearchIndexer extends SearchBase {
 								    $vs_type_id_fld = "{$vs_alias}.type_id";
 								    $vs_rel_type_res_sql .= " AND {$vs_type_id_fld} IN (".join(',', $pa_restrict_to_types).")";
 								}
-								$va_joins[] = "INNER JOIN {$va_rel['one_table']} AS {$vs_alias} ON {$vs_alias}.{$va_rel['one_table_field']} = {$vs_prev_alias}.{$va_rel['many_table_field']}".$vs_rel_type_res_sql;
+								$va_joins[] = ["INNER JOIN {$va_rel['one_table']} AS {$vs_alias} ON {$vs_alias}.{$va_rel['one_table_field']} = {$vs_prev_alias}.{$va_rel['many_table_field']}".$vs_rel_type_res_sql];
 								
 							}
 						}
