@@ -42,7 +42,8 @@
  	$t_item = $this->getVar('t_subject');
 	$t_display = $this->getVar('t_display');
 	$va_placements = $this->getVar("placements");
-
+	$va_access_values = caGetUserAccessValues($this->request);
+	
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
 	print $this->render("footer.php");	
@@ -175,12 +176,12 @@
 					print "<div class='unit'><h6>Getty AAT</h6><div class='data'>".$vs_getty."</div></div>";
 				}												
 				if ($vs_description = $t_item->get('ca_objects.description', array('delimiter' => '<br/>'))) {
-					print "<div class='unit text'><h6>Object Description</h6><div class=''>".$vs_description."</div></div>";
+					print "<div class='unit'><h6>Object Description</h6><div class=''>".$vs_description."</div></div>";
 				}
 				if ($vs_prov = $t_item->get('ca_objects.provenance', array('delimiter' => '<br/>'))) {
-					print "<div class='unit text'><h6>Origin</h6><div class=''>".$vs_prov."</div></div>";
+					print "<div class='unit'><h6>Origin</h6><div class=''>".$vs_prov."</div></div>";
 				}
-?>					
+?>				
 	</div>
 <?php	
 	print $this->render("pdfEnd.php");

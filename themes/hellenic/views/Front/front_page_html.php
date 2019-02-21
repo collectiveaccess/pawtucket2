@@ -52,7 +52,7 @@
 				</div>
 				<div class="col-sm-8">
 					<H1><?php print caNavLink($this->request, 'Artifacts', '', 'Browse', 'objects', 'facet/type_facet/id/24');?></H1>
-					<p>Explore the NHM’s artifact collection contains a wide variety of three-dimensional items including, but not limited to, religious artifacts, furniture, textiles, paintings, and ephemera.</p>
+					<p>{{{homeartifacts}}}</p>
 					<div class='homeLink'><?php print caNavLink($this->request, 'See Collection <i class="fa fa-arrow-right"></i>', '', 'Browse', 'objects', 'facet/type_facet/id/24');?></div>
 				</div>
 				
@@ -68,8 +68,8 @@
 ?>				
 				</div>
 				<div class="col-sm-8">
-					<H1><?php print caNavLink($this->request, 'Books/Library', '', 'Browse', 'objects', 'facet/type_facet/id/28');?></H1>
-					<p>View finding aids for our processed archival collections donated by Greek American businesses, organizations, churches, and families.</p>
+					<H1><?php print caNavLink($this->request, 'Library', '', 'Browse', 'objects', 'facet/type_facet/id/28');?></H1>
+					<p>{{{homebooks}}}</p>
 					<div class='homeLink'><?php print caNavLink($this->request, 'See Collection <i class="fa fa-arrow-right"></i>', '', 'Browse', 'objects', 'facet/type_facet/id/28');?></div>
 				</div>
 				
@@ -86,7 +86,7 @@
 				</div>
 				<div class="col-sm-8">
 					<H1><?php print caNavLink($this->request, 'Oral Histories', '', 'Browse', 'objects', 'facet/type_facet/id/29');?></H1>
-					<p>Search through a selection of our onsite library comprised of books in both Greek and English.</p>
+					<p>{{{homeoralhistories}}}</p>
 					<div class='homeLink'><?php print caNavLink($this->request, 'See Collection <i class="fa fa-arrow-right"></i>', '', 'Browse', 'objects', 'facet/type_facet/id/29');?></div>	
 				</div>
 
@@ -103,7 +103,7 @@
 				</div>
 				<div class="col-sm-8">
 					<H1><?php print caNavLink($this->request, 'Images', '', 'Browse', 'objects', 'facet/type_facet/id/26');?></H1>
-					<p>The NHM’s oral history collection contains hundreds of interviews with Greek Americans. Full-length interviews are available onsite only.</p>
+					<p>{{{homeimages}}}</p>
 					<div class='homeLink'><?php print caNavLink($this->request, 'See Collection <i class="fa fa-arrow-right"></i>', '', 'Browse', 'objects', 'facet/type_facet/id/26');?></div>					
 				</div>
 
@@ -120,7 +120,7 @@
 				</div>
 				<div class="col-sm-8">
 					<H1><?php print caNavLink($this->request, 'Archives', '', '', 'Collections', 'Index');?></H1>
-					<p>Browse the NHM’s sizeable collection of historic photographs representing Greek American life throughout the 20th century.</p>
+					<p>{{{homearchives}}}</p>
 					<div class='homeLink'><?php print caNavLink($this->request, 'See Collection <i class="fa fa-arrow-right"></i>', '', '', 'Collections', 'Index');?></div>
 				</div>
 

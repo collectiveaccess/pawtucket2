@@ -78,10 +78,32 @@
 ?>
 </head>
 <body>
+	<div class="verytop">
+		<div class="container">
+			<div class="menu-top-menu-container">
+				<ul id="menu-top-menu" class="menu">
+					<li class="menu-item"><a href="https://www.nationalhellenicmuseum.org">NHM Home</a></li>
+					<li class="menu-item"><a href="https://www.nationalhellenicmuseum.org/visit/">Visit</a></li>
+					<li class="menu-item"><a href="https://www.nationalhellenicmuseum.org/support/become-a-member/">Become a Member</a></li>
+					<li class="menu-item"><a href="https://www.nationalhellenicmuseum.org/visit/tours/">Tours</a></li>
+				</ul>
+			</div>	
+		</div>
+	</div>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	<nav class="navbar navbar-default yamm" role="navigation">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
-				<div class="container" style='padding-left:0px;height:0px;'>
+				<div class="container">
 <?php
 	if ($vb_has_user_links) {
 ?>
@@ -99,9 +121,9 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'NHM14_logo.jpg'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo.jpg'), "navbar-brand", "", "","");
 ?>
-			</div>
+
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
@@ -116,61 +138,61 @@
 <?php
 	}
 ?>
-			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
+				<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 <?php
 	if ($vb_has_user_links) {
 ?>
-				<ul class="nav navbar-nav navbar-right" id="user-navbar">
-					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
-						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
-					</li>
-				</ul>
+					<ul class="nav navbar-nav navbar-right" id="user-navbar">
+						<li class="dropdown" style="position:relative;">
+							<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
+							<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
+						</li>
+					</ul>
 <?php
 	}
 ?>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
-					<div class="formOutline">
-						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search..." name="search">
+					<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+						<div class="formOutline">
+							<div class="form-group">
+								<input type="text" class="form-control" placeholder="Search..." name="search">
+							</div>
+							<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 						</div>
-						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
-					</div>
-				</form>
-				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Themes"), "", "", "Gallery", "Index"); ?></li>					
-					<li >
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown">Search</a>
-						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("Browse All"), "", "", "Browse", "objects"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>	
-							<li><?php print caNavLink($this->request, _t("Finding Aids"), "", "", "Collections", "Index"); ?></li>		
-						</ul>
-					</li>
-					<li >
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown">Resources</a>
-						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "collection"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Citation Guide and Links"), "", "", "About", "Citation"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Rights and Reproduction"), "", "", "About", "Rights"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Schedule a Research Visit"), "", "", "About", "ResearchVisit"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>				
-						</ul>
-					</li>
-					<li >
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown">Contribute</a>
-						<ul class="dropdown-menu">
-							<li><?php print "<a href='https://www.nationalhellenicmuseum.org/support/'>Support our Work</a>";?></li>
-							<li><?php print caNavLink($this->request, _t("Grow the Collection"), "", "", "About", "donate"); ?></li>				
-						</ul>
-					</li>										
-				</ul>
-				<div class="banner"><div class="container" style="padding:0px;">NHM COLLECTIONS & ARCHIVES</div></div>
-				<div class="bannerImg"></div>
-			</div><!-- end container -->	
-			</div><!-- /.navbar-collapse -->
+					</form>
+					<ul class="nav navbar-nav navbar-right menuItems">
+						<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Themes"), "", "", "Gallery", "Index"); ?></li>					
+						<li>
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Search <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><?php print caNavLink($this->request, _t("Browse All"), "", "", "Browse", "objects"); ?></li>
+								<li><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>	
+								<li><?php print caNavLink($this->request, _t("Finding Aids"), "", "", "Collections", "Index"); ?></li>		
+							</ul>
+						</li>
+						<li >
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Resources <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "collection"); ?></li>
+								<li><?php print caNavLink($this->request, _t("Schedule a Research Visit"), "", "", "Contact", "form", array("mode" => "research")); ?></li>
+								<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>
+								<li><?php print caNavLink($this->request, _t("Helpful Links"), "", "", "About", "links"); ?></li>			
+							</ul>
+						</li>
+						<li >
+							<a href="#" class="dropdown-toggle" data-toggle="dropdown">Contribute <span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li><?php print "<a href='https://www.nationalhellenicmuseum.org/support/'>Support our Work</a>";?></li>
+								<li><?php print caNavLink($this->request, _t("Grow the Collection"), "", "", "About", "donate"); ?></li>				
+							</ul>
+						</li>										
+					</ul>
+				
+				</div><!-- /.navbar-collapse -->
+			</div><!-- end container -->
+		</div>
 	</nav>
+	<div class="banner"><div class="container">NHM COLLECTIONS & ARCHIVES</div></div>
+	<div class="bannerImg"></div>
 <?php
 	#if (strToLower($this->request->getController()) == "front") {
 	#	$vs_style = "nomax";
