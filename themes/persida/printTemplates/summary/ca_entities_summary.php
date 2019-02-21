@@ -52,7 +52,7 @@
 	<div class='tombstone'>
 <?php
 		if ($va_name = $t_item->get('ca_entities.preferred_labels')) {
-			print "<div class='unit'>".$va_name."</div>";
+			print "<div class='unit'><H2>".$va_name."</H2></div>";
 		}	
 		if ($va_lifespan = $t_item->get('ca_entities.lifespan')) {
 			print "<div class='unit'>".$va_lifespan."</div>";
