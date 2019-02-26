@@ -166,14 +166,30 @@
 				if ($va_object = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_objects.related">^ca_objects.preferred_labels, ^ca_objects.idno</unit></unit>')) {
 					print "<div class='unit'><h6>Related Items</h6><div class='data'>".$va_object."</div></div>";
 				}
-				if ($vs_subjects = $t_item->get('ca_list_items.preferred_labels', array('delimiter' => '; '))) {
-					print "<div class='unit'><h6>Access Points</h6><div class='data'>".$vs_subjects."</div></div>";
-				}
-				if ($vs_lcsh = $t_item->get('ca_objects.lcsh_terms', array('delimiter' => '; '))) {
-					print "<div class='unit'><h6>Library of Congress Subject Headings</h6><div class='data'>".$vs_lcsh."</div></div>";
-				}
-				if ($vs_getty = $t_item->get('ca_objects.aat', array('delimiter' => '; '))) {
-					print "<div class='unit'><h6>Getty AAT</h6><div class='data'>".$vs_getty."</div></div>";
+				#if ($vs_subjects = $t_item->get('ca_list_items.preferred_labels', array('delimiter' => '; '))) {
+				#	print "<div class='unit'><h6>Access Points</h6><div class='data'>".$vs_subjects."</div></div>";
+				#}
+				#if ($vs_lcsh = $t_item->get('ca_objects.lcsh_terms', array('delimiter' => '; '))) {
+				#	print "<div class='unit'><h6>Library of Congress Subject Headings</h6><div class='data'>".$vs_lcsh."</div></div>";
+				#}
+				#if ($vs_getty = $t_item->get('ca_objects.aat', array('delimiter' => '; '))) {
+				#	print "<div class='unit'><h6>Getty AAT</h6><div class='data'>".$vs_getty."</div></div>";
+				#}
+				# --- access points
+				$va_access_points = array();
+				$va_subjects = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true));
+				$va_getty = $t_object->get('ca_objects.aat', array('returnAsArray' => true));
+				$va_lcsh = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true));
+				$va_access_points = array_merge($va_subjects, $va_getty, $va_lcsh);
+				if (sizeof($va_access_points)) {
+					$va_access_points_sorted = array();
+					foreach($va_access_points as $vs_access_point){
+						$va_access_points_sorted[$vs_access_point] = $vs_access_point;
+					}
+					ksort($va_access_points_sorted);
+					print "<div class='unit'><h6>Access Points</h6><div class='data'>";
+					print join("<br/>", $va_access_points_sorted);
+					print "</div></div>";
 				}												
 				if ($vs_description = $t_item->get('ca_objects.description', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Object Description</h6><div class=''>".$vs_description."</div></div>";

@@ -91,21 +91,25 @@
 				print "<div class='unit'><h6>Related Collections</h6><div class='data'>".$vs_rel_collections."</div></div>";
 			}
 			# --- access points
-			if ($vs_subjects = $t_item->get('ca_list_items.preferred_labels', array('delimiter' => '<br/>'))) {
-				print "<div class='unit'><h6>Access Points</h6><div class='data'>".$vs_subjects."</div></div>";
+			# --- access points
+			$va_access_points = array();
+			$va_subjects = $t_item->get('ca_list_items.preferred_labels', array('returnAsArray' => true));
+			$va_getty = $t_item->get('ca_collections.aat', array('returnAsArray' => true));
+			$va_ulan = $t_item->get('ca_collections.ulan', array('returnAsArray' => true));
+			$va_lcsh = $t_item->get('ca_collections.lcsh_terms', array('returnAsArray' => true));
+			$va_tgn = $t_item->get('ca_collections.tgn', array('returnAsArray' => true));
+			$va_access_points = array_merge($va_subjects, $va_getty, $va_ulan, $va_lcsh, $va_tgn);
+			if (sizeof($va_access_points)) {
+				$va_access_points_sorted = array();
+				foreach($va_access_points as $vs_access_point){
+					$va_access_points_sorted[$vs_access_point] = $vs_access_point;
+				}
+				ksort($va_access_points_sorted);
+				print "<div class='unit'><h6>Access Points</h6><div class='data'>";
+				print join("<br/>", $va_access_points_sorted);
+				print "</div></div>";
 			}
-			if ($vs_getty = $t_item->get('ca_collections.aat', array('delimiter' => '<br/>'))) {
-				print "<div class='unit'><h6>Getty AAT</h6><div class='data'>".$vs_getty."</div></div>";
-			}
-			if ($vs_ulan = $t_item->get('ca_collections.ulan', array('delimiter' => '<br/>'))) {
-				print "<div class='unit'><h6>Getty ULAN</h6><div class='data'>".$vs_ulan."</div></div>";
-			}
-			if ($vs_tgn = $t_item->get('ca_collections.tgn', array('delimiter' => '<br/>'))) {
-				print "<div class='unit'><h6>Getty TGN</h6><div class='data'>".$vs_tgn."</div></div>";
-			}
-			if ($vs_lcsh = $t_item->get('ca_collections.lcsh_terms', array('delimiter' => '<br/>'))) {
-				print "<div class='unit'><h6>LOC Subject Headings</h6><div class='data'>".$vs_lcsh."</div></div>";
-			}
+			
 			if ($vs_admin = $t_item->get('ca_collections.adminbiohist', array('delimiter' => '<br/>'))) {
 				print "<div class='unit'><h6>Biographical Note</h6><div>".$vs_admin."</div></div>";
 			}
