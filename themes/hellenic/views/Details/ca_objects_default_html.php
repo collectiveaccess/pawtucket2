@@ -169,6 +169,7 @@
 				if (sizeof($va_access_points)) {
 					$va_access_points_sorted = array();
 					foreach($va_access_points as $vs_access_point){
+						$vs_access_point = trim(preg_replace("/\[[^\]]*\]/", "", $vs_access_point));
 						$va_access_points_sorted[$vs_access_point] = caNavLink($this->request, $vs_access_point, "", "", "MultiSearch",  "Index", array('search' => urlencode($vs_access_point)));
 					}
 					ksort($va_access_points_sorted);
