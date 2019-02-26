@@ -170,9 +170,11 @@
 					$va_access_points_sorted = array();
 					foreach($va_access_points as $vs_access_point){
 						$vs_access_point = trim(preg_replace("/\[[^\]]*\]/", "", $vs_access_point));
-						$va_access_points_sorted[$vs_access_point] = caNavLink($this->request, $vs_access_point, "", "", "MultiSearch",  "Index", array('search' => urlencode($vs_access_point)));
+						if($vs_access_point){
+							$va_access_points_sorted[$vs_access_point] = caNavLink($this->request, $vs_access_point, "", "", "MultiSearch",  "Index", array('search' => $vs_access_point));
+						}
 					}
-					ksort($va_access_points_sorted);
+					ksort($va_access_points_sorted, SORT_NATURAL | SORT_FLAG_CASE);
 					print "<div class='unit'><h6>Access Points</h6><div class='data'>";
 					print join("<br/>", $va_access_points_sorted);
 					print "</div></div>";

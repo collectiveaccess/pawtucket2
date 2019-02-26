@@ -185,12 +185,16 @@
 					$va_access_points_sorted = array();
 					foreach($va_access_points as $vs_access_point){
 						$vs_access_point = trim(preg_replace("/\[[^\]]*\]/", "", $vs_access_point));
-						$va_access_points_sorted[$vs_access_point] = $vs_access_point;
+						if($vs_access_point){
+							$va_access_points_sorted[$vs_access_point] = $vs_access_point;
+						}
 					}
-					ksort($va_access_points_sorted);
-					print "<div class='unit'><h6>Access Points</h6><div class='data'>";
-					print join("<br/>", $va_access_points_sorted);
-					print "</div></div>";
+					ksort($va_access_points_sorted, SORT_NATURAL | SORT_FLAG_CASE);
+					if(sizeof($va_access_points_sorted)){
+						print "<div class='unit'><h6>Access Points</h6><div class='data'>";
+						print join("<br/>", $va_access_points_sorted);
+						print "</div></div>";
+					}
 				}												
 				if ($vs_description = $t_item->get('ca_objects.description', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Object Description</h6><div class=''>".$vs_description."</div></div>";
