@@ -491,7 +491,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 		if (strtolower($vs_field) == 'count') {
 			$vs_rel_type = null;
 			
-			if (sizeof($va_rel_type_ids) > 0) {
+			if (is_array($va_rel_type_ids) && (sizeof($va_rel_type_ids) > 0)) {
 				$vn_rel_type = $va_rel_type_ids[0];
 			} else {
 				$va_rel_type_ids = [0];
@@ -1014,7 +1014,11 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 							if ($vs_field = trim($vs_field)) {
 								if (!is_int($vs_field)) {
 									$t_user = new ca_users();
-									if ($t_user->load(array("user_name" => $vs_field))) {
+									if (
+									    $t_user->load(array("user_name" => $vs_field))
+									    ||
+									    ((strpos($vs_field, "_") !== false) && $t_user->load(array("user_name" => str_replace("_", " ", $vs_field))))
+									) {
 										$vn_user_id = (int)$t_user->getPrimaryKey();
 									}
 								} else {

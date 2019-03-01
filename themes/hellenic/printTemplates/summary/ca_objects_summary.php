@@ -42,27 +42,13 @@
  	$t_item = $this->getVar('t_subject');
 	$t_display = $this->getVar('t_display');
 	$va_placements = $this->getVar("placements");
-
+	$va_access_values = caGetUserAccessValues($this->request);
+	
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
 	print $this->render("footer.php");	
 
 ?>
-	<style>
-	
-		@font-face {
-			font-family: Futura;
-			src: url('<?php print $this->request->getThemeDirectoryPath()."/assets/pawtucket/css/fonts/";?>FuturaPTBook.ttf') format('truetype');
-		}
-		@font-face {
-			font-family: Nunito;
-			src: url('<?php print $this->request->getThemeDirectoryPath()."/assets/pawtucket/css/fonts/";?>Nunito-SemiBold.ttf') format('truetype');
-		}				
-		.tombstone {font-family:Futura;}
-		h6 { font-family: Nunito; }
-		
-	</style>
-	
 	<div class="representationList">
 		
 <?php
@@ -100,7 +86,7 @@
 				if ($vs_language = $t_item->get('ca_objects.language', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Language</h6><div class='data'>".$vs_language."</div></div>";
 				}					
-				if ($va_collection = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l> (^relationship_typename)</unit></unit>')) {
+				if ($va_collection = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_collections">^ca_collections.preferred_labels (^relationship_typename)</unit></unit>')) {
 					print "<div class='unit'><h6>Object Collection</h6><div class='data'>".$va_collection."</div></div>";
 				}
 				if ($vs_date = $t_item->get('ca_objects.date_created', array('delimiter' => '; '))) {
@@ -165,37 +151,58 @@
 				if ($vs_material = $t_item->get('ca_objects.material', array('delimiter' => '; '))) {
 					print "<div class='unit'><h6>Material</h6><div class='data'>".$vs_material."</div></div>";
 				}
-				if ($va_entities = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</l> (^relationship_typename)</unit></unit>')) {
+				if ($va_entities = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_entities">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename (^relationship_typename)</unit></unit>')) {
 					print "<div class='unit'><h6>Object Entities</h6><div class='data'>".$va_entities."</div></div>";
 				}
-				if ($va_interviewer = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="interviewer"><l>^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</l></unit>')) {
+				if ($va_interviewer = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="interviewer">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
 					print "<div class='unit'><h6>Interviewer</h6><div class='data'>".$va_interviewer."</div></div>";
 				}
-				if ($va_interviewee = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="interviewee"><l>^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</l></unit>')) {
+				if ($va_interviewee = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="interviewee">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
 					print "<div class='unit'><h6>Interviewee</h6><div class='data'>".$va_interviewee."</div></div>";
 				}								
-				if ($va_collection = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l> (^relationship_typename)</unit></unit>')) {
+				if ($va_collection = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_collections">^ca_collections.preferred_labels (^relationship_typename)</unit></unit>')) {
 					print "<div class='unit'><h6>Related Collections</h6><div class='data'>".$va_collection."</div></div>";
 				}	
-				if ($va_object = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_objects.related"><l>^ca_objects.preferred_labels, ^ca_objects.idno</l></unit></unit>')) {
+				if ($va_object = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_objects.related">^ca_objects.preferred_labels, ^ca_objects.idno</unit></unit>')) {
 					print "<div class='unit'><h6>Related Items</h6><div class='data'>".$va_object."</div></div>";
 				}
-				if ($vs_subjects = $t_item->get('ca_list_items.preferred_labels', array('delimiter' => '; '))) {
-					print "<div class='unit'><h6>Access Points</h6><div class='data'>".$vs_subjects."</div></div>";
-				}
-				if ($vs_lcsh = $t_item->get('ca_objects.lcsh_terms', array('delimiter' => '; '))) {
-					print "<div class='unit'><h6>Library of Congress Subject Headings</h6><div class='data'>".$vs_lcsh."</div></div>";
-				}
-				if ($vs_getty = $t_item->get('ca_objects.aat', array('delimiter' => '; '))) {
-					print "<div class='unit'><h6>Getty AAT</h6><div class='data'>".$vs_getty."</div></div>";
+				#if ($vs_subjects = $t_item->get('ca_list_items.preferred_labels', array('delimiter' => '; '))) {
+				#	print "<div class='unit'><h6>Access Points</h6><div class='data'>".$vs_subjects."</div></div>";
+				#}
+				#if ($vs_lcsh = $t_item->get('ca_objects.lcsh_terms', array('delimiter' => '; '))) {
+				#	print "<div class='unit'><h6>Library of Congress Subject Headings</h6><div class='data'>".$vs_lcsh."</div></div>";
+				#}
+				#if ($vs_getty = $t_item->get('ca_objects.aat', array('delimiter' => '; '))) {
+				#	print "<div class='unit'><h6>Getty AAT</h6><div class='data'>".$vs_getty."</div></div>";
+				#}
+				# --- access points
+				$va_access_points = array();
+				$va_subjects = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true));
+				$va_getty = $t_object->get('ca_objects.aat', array('returnAsArray' => true));
+				$va_lcsh = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true));
+				$va_access_points = array_merge($va_subjects, $va_getty, $va_lcsh);
+				if (sizeof($va_access_points)) {
+					$va_access_points_sorted = array();
+					foreach($va_access_points as $vs_access_point){
+						$vs_access_point = trim(preg_replace("/\[[^\]]*\]/", "", $vs_access_point));
+						if($vs_access_point){
+							$va_access_points_sorted[$vs_access_point] = $vs_access_point;
+						}
+					}
+					ksort($va_access_points_sorted, SORT_NATURAL | SORT_FLAG_CASE);
+					if(sizeof($va_access_points_sorted)){
+						print "<div class='unit'><h6>Access Points</h6><div class='data'>";
+						print join("<br/>", $va_access_points_sorted);
+						print "</div></div>";
+					}
 				}												
 				if ($vs_description = $t_item->get('ca_objects.description', array('delimiter' => '<br/>'))) {
-					print "<div class='unit text'><h6>Object Description</h6><div class=''>".$vs_description."</div></div>";
+					print "<div class='unit'><h6>Object Description</h6><div class=''>".$vs_description."</div></div>";
 				}
 				if ($vs_prov = $t_item->get('ca_objects.provenance', array('delimiter' => '<br/>'))) {
-					print "<div class='unit text'><h6>Origin</h6><div class=''>".$vs_prov."</div></div>";
+					print "<div class='unit'><h6>Origin</h6><div class=''>".$vs_prov."</div></div>";
 				}
-?>					
+?>				
 	</div>
 <?php	
 	print $this->render("pdfEnd.php");
