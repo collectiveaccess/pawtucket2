@@ -94,9 +94,9 @@
 //                 print caNavLink($this->request, "<i class='fa fa-envelope'></i> Contact", '', '', 'Contact', 'form');
 //                 print "</div>";
 
-                //if(!$this->getVar('representationViewer')) {
+                if(!$t_object->getRepresentationCount(['checkAccess' => $va_access_values])) {
                     print $placeholder;
-                //}
+                }
 ?>
 				{{{representationViewer}}}
 				
