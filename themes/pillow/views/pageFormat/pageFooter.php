@@ -42,10 +42,7 @@
 			<div class='row'>
 				<div class='col-sm-6'>
 					<div>
-						©1933-2017 Jacob's Pillow Dance Festival, Inc. All rights reserved. <br/>358 George Carter Road, Becket MA, 01223 USA 413.243.9919 x154
-					</div>
-					<div>
-						<a href="mailto:INFO@JACOBSPILLOW.ORG">info@jacobspillow.org</a>
+						©1933-2019 Jacob's Pillow Dance Festival, Inc. All rights reserved. <br/>358 George Carter Road, Becket, MA 01223 USA 413.243.9919 x154
 					</div>
 				</div>
 				<div class='col-sm-6'>

@@ -32,6 +32,7 @@
 	}
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 		<div class="row">
 		<div class="col-md-9">
 			<div class="row">

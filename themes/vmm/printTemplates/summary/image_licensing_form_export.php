@@ -62,7 +62,7 @@
 ?>
 		<br/><div class="unit"><?php print date("n/j/Y"); ?></div>
 				
-		<br><p>This agreement licenses the user for one time use of the film(s) or image(s) below, user agrees to the conditions listed on last page.</p>
+		<br><p>This agreement licenses the user for one time use of the video, audio recordings, or images below. User agrees to the conditions listed on the last page</p>
 		
 		<div class="unit"><H2>User Information</H2></div>
 		<table border="0" width="100%">
@@ -81,6 +81,9 @@
 		</table>
 		
 		<div class="unit"><H2>Intended Use</H2></div>
+		<p>
+			License fees are assessed according to the intended use of the video, audio, or image.<br/><b>License fees are not charged for materials in the public domain.</b>
+		</p>
 		<table border="0" width="100%">
 			<tr>
 				<td style="width:50%;" valign="middle">	
@@ -156,7 +159,7 @@
 <ol>
 	<li>
 		<div class="unit">
-			Permission is for <b><i>one-time use only</i></b>, as described on this form, with no other rights. Any subsequent use (including subsequent editions, paperback editions, foreign language editions etc.) constitutes re-usage and must be applied for in writing to the Vancouver Maritime Museum. An additional fee will be charged for re-use of an image or film.
+			Permission is for <b><i>one-time use only</i></b>, as described on this form, with no other rights. Any subsequent use (including subsequent editions, paperback editions, foreign language editions, etc.) constitutes re-usage and must be applied for in writing to the Vancouver Maritime Museum. An additional fee will be charged for re-use of a video, audio recording, or image.
 		</div>
 	</li>
 	<li>
@@ -166,12 +169,12 @@
 	</li>
 	<li>
 		<div class="unit">
-			Credits (VMM and item number if available) should appear in close proximity to the image or in a special section devoted to credits. When known, the photographer should be credited. Crediting of each individual item is mandatory in all cases.
+			Credits (VMM and item number if available) should appear in close proximity to the reproduced item or in a special section devoted to credits. When known, the creator (photographer, filmmaker, etc.) should be credited. Crediting of each individual item is mandatory in all cases.
 		</div>
 	</li>
 	<li>
 		<div class="unit">
-			With films, filmstrips, or video productions, credit for the images must appear with other credits at the beginning or the end of the production.
+			With films, filmstrips, or video productions, credit for the materials must appear with other credits at the beginning or the end of the production.
 		</div>
 	</li>
 	<li>
@@ -181,22 +184,22 @@
 	</li>
 	<li>
 		<div class="unit">
-			Any alterations to an image or film must first be approved by the Museum. Accompanying captions must indicate all changes made to the original copy, such as significant cropping, tinting superimposing etc.
+			Any alterations to an image, audio recording, or video must first be approved by the Museum. Accompanying captions must indicate all changes made to the original copy, such as significant cropping, tinting, superimposing, etc.
 		</div>
 	</li>
 	<li>
 		<div class="unit">
-			One complimentary copy of each publication (including film and videotape) in which a photographic copy appears must be sent to the Vancouver Maritime Museum. Please send to the attention of the Librarian.
+			One complimentary copy of each publication (including film and videotape) in which a reproduction appears must be sent to the Vancouver Maritime Museum. Please send to the attention of the Librarian.
 		</div>
 	</li>
 	<li>
 		<div class="unit">
-			The user may not reproduce or permit others to reproduce the photographic copy or any facsimile of it. Additional copies must be purchased from the Vancouver Maritime Museum.
+			The user may not reproduce or permit others to reproduce the reproduction or any facsimile of it. Additional copies must be purchased from the Vancouver Maritime Museum.
 		</div>
 	</li>
 	<li>
 		<div class="unit">
-			In authorizing the publication of a photographic copy, the Vancouver Maritime Museum does not surrender its own right to publish it, or grant permission to others to do so.
+			In authorizing the publication of a reproduction, the Vancouver Maritime Museum does not surrender its own right to publish it, or grant permission to others to do so.
 		</div>
 	</li>
 	<li>

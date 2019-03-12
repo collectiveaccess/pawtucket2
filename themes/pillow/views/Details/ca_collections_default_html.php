@@ -63,6 +63,10 @@
 						$va_anchors[] = "<a href='#history'>Agency History</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a href='agency'>Agency History</a></h3>".$vs_agency."</div>";
 					}
+					if ($vs_adminbiohist = $t_item->get('ca_collections.adminbiohist')) {
+						$va_anchors[] = "<a href='#adminbiohist'>Administrative/Biographical History</a>";
+						$vs_finding_aid.= "<div class='unit'><h3><a href='adminbiohist'>Administrative/Biographical History</a></h3>{$vs_adminbiohist}</div>";
+					}
 					if ($vs_abstract = $t_item->get('ca_collections.abstract')) {
 						$va_anchors[] = "<a href='#abstract'>Abstract</a>";
 						$vs_finding_aid.= "<div class='unit'><h3><a name='abstract'>Abstract</a></h3>".$vs_abstract."</div>";
