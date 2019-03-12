@@ -177,9 +177,9 @@
 				#}
 				# --- access points
 				$va_access_points = array();
-				$va_subjects = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true));
-				$va_getty = $t_object->get('ca_objects.aat', array('returnAsArray' => true));
-				$va_lcsh = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true));
+				$va_subjects = $t_item->get('ca_list_items.preferred_labels', array('returnAsArray' => true));
+				$va_getty = $t_item->get('ca_objects.aat', array('returnAsArray' => true));
+				$va_lcsh = $t_item->get('ca_objects.lcsh_terms', array('returnAsArray' => true));
 				$va_access_points = array_merge($va_subjects, $va_getty, $va_lcsh);
 				if (sizeof($va_access_points)) {
 					$va_access_points_sorted = array();
@@ -203,6 +203,69 @@
 					print "<div class='unit'><h6>Origin</h6><div class=''>".$vs_prov."</div></div>";
 				}
 ?>				
+				<div class='unit'><h6>Rights and Reproduction</h6><div><?php print $this->getVar("rightsrepro"); ?></div></div>
+				<div class='unit'><h6>Citation</h6><div>
+<?php
+					$va_citation_parts = array();
+					if($vn_type_id == $vn_book_id){
+						#Book citation: Last Name, First Name. Title of Book. Publisher City: Publisher Name, Year Published.
+						if ($vs_author = $t_item->getWithTemplate('<unit delimiter="; " relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="author" delimiter="; ">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
+							$va_citation_parts[] = $vs_author;
+						}
+						if($vs_tmp = $t_item->get('ca_objects.title')){
+							$va_citation_parts[] = $vs_tmp;
+						}
+						$vs_tmp = "";
+						if($vs_tmp = $t_item->get('ca_objects.pubplace')){
+							$vs_tmp = $vs_tmp.": ";
+						}
+						if ($vs_publisher = $t_item->getWithTemplate('<unit delimiter="; " relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="publisher" delimiter="; ">^ca_entities.preferred_labels.displayname</unit>')) {
+							$vs_tmp .= $vs_publisher;
+						}
+						if($vs_date = $t_item->get('ca_objects.date_created', array('delimiter' => ', '))){
+							if($vs_publisher){
+								$vs_tmp .= ", ";
+							}
+							$vs_tmp .= $vs_date;
+						}
+						if($vs_tmp){
+							$va_citation_parts[] = $vs_tmp;
+						}
+						$vs_citation_part1 = join(". ", $va_citation_parts).". ";
+					}else{
+						#Artifacts/Photos
+						#Object Name, Date, Collection Title (if applicable), National Hellenic Museum, Link to object. Accessed [Today’s date].
+ 
+						#Oral Histories:
+						#Oral History interview with First name Last name, Date of interview, Collection Title (if applicable), National Hellenic Museum, Link to oral history. Accessed [Today’s date].
+ 
+						switch($vn_type_id){
+							case $vn_oh_id:
+								if ($vs_interviewee = $t_item->getWithTemplate('<unit delimiter="; " relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="interviewee">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
+									$va_citation_parts[] = "Oral History interview with ".$vs_interviewee;
+								}
+							break;
+							# --------------------
+							default:
+					
+								if($vs_tmp = $t_item->get('ca_objects.preferred_labels')){
+									$va_citation_parts[] = $vs_tmp;
+								}
+							break;
+							# --------------------
+						}
+						if($vs_tmp = $t_item->get('ca_objects.date_created', array('delimiter' => ', '))){
+							$va_citation_parts[] = $vs_tmp;
+						}
+						if($vs_tmp = $t_item->getWithTemplate('<ifcount code="ca_collections" min="1"><unit delimiter=". "><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></unit></ifcount>')){
+							$va_citation_parts[] = $vs_tmp;
+						}
+						$vs_citation_part1 = join(", ", $va_citation_parts).", ";
+					}
+					print $vs_citation_part1."<i>National Hellenic Museum</i>, <small>".$this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $vn_id)."</small>. Accessed ".date("m/d/y").".";
+?>
+				</div></div>
+
 	</div>
 <?php	
 	print $this->render("pdfEnd.php");
