@@ -80,7 +80,7 @@
 				if ($vs_title = $t_item->get('ca_objects.title')) {
 					print "<div class='unit'><h6>Title</h6><div class='data'>".$vs_title."</div></div>";
 				}				
-				if ($vs_author = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', ', 'returnAsLink' => true))) {
+				if ($vs_author = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))) {
 					print "<div class='unit'><h6>Author</h6><div class='data'>".$vs_author."</div></div>";
 				}
 				if ($vs_language = $t_item->get('ca_objects.language', array('delimiter' => '<br/>'))) {
@@ -151,18 +151,15 @@
 				if ($vs_material = $t_item->get('ca_objects.material', array('delimiter' => '; '))) {
 					print "<div class='unit'><h6>Material</h6><div class='data'>".$vs_material."</div></div>";
 				}
-				if ($va_entities = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_entities">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename (^relationship_typename)</unit></unit>')) {
+				if ($va_entities = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_entities" excludeRelationshipTypes="interviewer,interviewee,author">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename (^relationship_typename)</unit></unit>')) {
 					print "<div class='unit'><h6>Object Entities</h6><div class='data'>".$va_entities."</div></div>";
 				}
-				if ($va_interviewer = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="interviewer">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
+				if ($va_interviewer = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_entities" restrictToRelationshipTypes="interviewer">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
 					print "<div class='unit'><h6>Interviewer</h6><div class='data'>".$va_interviewer."</div></div>";
 				}
-				if ($va_interviewee = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="interviewee">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
+				if ($va_interviewee = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_entities" restrictToRelationshipTypes="interviewee">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
 					print "<div class='unit'><h6>Interviewee</h6><div class='data'>".$va_interviewee."</div></div>";
 				}								
-				if ($va_collection = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_collections">^ca_collections.preferred_labels (^relationship_typename)</unit></unit>')) {
-					print "<div class='unit'><h6>Related Collections</h6><div class='data'>".$va_collection."</div></div>";
-				}	
 				if ($va_object = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_objects.related">^ca_objects.preferred_labels, ^ca_objects.idno</unit></unit>')) {
 					print "<div class='unit'><h6>Related Items</h6><div class='data'>".$va_object."</div></div>";
 				}
@@ -203,7 +200,6 @@
 					print "<div class='unit'><h6>Origin</h6><div class=''>".$vs_prov."</div></div>";
 				}
 ?>				
-				<div class='unit'><h6>Rights and Reproduction</h6><div><?php print $this->getVar("rightsrepro"); ?></div></div>
 				<div class='unit'><h6>Citation</h6><div>
 <?php
 					$va_citation_parts = array();
