@@ -26,7 +26,7 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Artworks (restricted financial)
+ * @name Artworks (simple with location)
  * @type page
  * @pageSize A4
  * @pageOrientation portrait
@@ -34,7 +34,7 @@
  *
  * @marginTop 0.75in
  * @marginLeft 0.25in
- * @marginBottom 0.5in
+ * @marginBottom 0.75in
  * @marginRight 0.25in
  *
  * ----------------------------------------------------------------------
@@ -56,21 +56,14 @@
 	print $this->render("header.php");
 	print $this->render("footer.php");
 	
-	$vs_can_see_financials = false;
-	if ($this->request->user->hasUserRole("dj") | $this->request->user->hasUserRole("purchasing") | $this->request->user->hasUserRole("admin")) {
-		$vs_can_see_financials = true;
-	}
-		
 	$va_result_ids = array();
 	while($vo_result_int->nextHit()) {
 		$va_result_ids[] = $vo_result_int->get('ca_objects.object_id');
 	}
-	
 	$vo_result = caMakeSearchResult('ca_objects', $va_result_ids, array('sort' => 'ca_objects.idno;ca_entities.preferred_labels.surname;ca_objects.creation_date'));
 ?>
 		<div id='body large'>
 <?php
-
 		$vo_result->seek(0);
 		
 		$vn_line_count = 0;
@@ -98,15 +91,8 @@
 						print "<div class='data'>".$vs_dimensions."</div>";
 					}
 					print "<div class='data'>".$vo_result->getWithTemplate('^ca_objects.edition')."</div>";					
-				
-					if ($vs_can_see_financials == true) {
-						if ($vs_purchase = $vo_result->getWithTemplate('^ca_objects.value_purchase_USD')) {
-							print "<div class='data'>Purchase value: ".$vs_purchase."</div>";
-						}
-						if ($vs_purchase = $vo_result->getWithTemplate('^ca_objects.value_insurance')) {
-							print "<div class='data'>Insurance value: ".$vs_purchase."</div>";
-						}
-					}
+						
+					print "<div class='data'>".$vo_result->get('ca_objects.ca_objects_location')."</div>";					
 ?>
 					</div>				
 				</td>

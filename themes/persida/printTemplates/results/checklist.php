@@ -28,13 +28,13 @@
  *
  * @name Artworks (simple)
  * @type page
- * @pageSize letter
+ * @pageSize A4
  * @pageOrientation portrait
  * @tables ca_objects
  *
  * @marginTop 0.75in
  * @marginLeft 0.25in
- * @marginBottom 0.5in
+ * @marginBottom 0.75in
  * @marginRight 0.25in
  *
  * ----------------------------------------------------------------------
@@ -64,7 +64,6 @@
 ?>
 		<div id='body large'>
 <?php
-
 		$vo_result->seek(0);
 		
 		$vn_line_count = 0;
@@ -91,6 +90,8 @@
 					} elseif ($vs_dimensions = $vo_result->get('ca_objects.dimensions_readOnly')) {
 						print "<div class='data'>".$vs_dimensions."</div>";
 					}
+					print "<div class='data'>".$vo_result->getWithTemplate('^ca_objects.edition')."</div>";					
+					
 ?>
 					</div>				
 				</td>

@@ -26,7 +26,7 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Artworks (restricted financial)
+ * @name Artworks (restricted financial with location)
  * @type page
  * @pageSize A4
  * @pageOrientation portrait
@@ -107,6 +107,7 @@
 							print "<div class='data'>Insurance value: ".$vs_purchase."</div>";
 						}
 					}
+					print "<div class='data'>".$vo_result->get('ca_objects.ca_objects_location')."</div>";
 ?>
 					</div>				
 				</td>
