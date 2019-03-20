@@ -332,7 +332,7 @@ a:hover {
 #footer {
 	background-color:#0072C6;
 	color:#fff;
-	height:320px;
+	height:420px;
 	font-size:16px;
 	padding:50px 0px 75px 0px;
 	font-family: Futura;
@@ -343,14 +343,14 @@ a:hover {
 	border:0px;
 }
 body {
-	margin-bottom:360px;
+	margin-bottom:460px;
 }
 @media(max-width:600px){
 	#footer {
-		height:400px;
+		height:600px;
 	}
 	body{
-		margin-bottom:460px;
+		margin-bottom:660px;
 	}
 }
 #footer a {
@@ -378,7 +378,28 @@ body {
     padding: 0 20px 24px 20px;
     margin: 0 auto;	
 }
-
+#footer .acknowledgement{
+	padding-top:40px;
+}
+#footer .acknowledgement img{
+	width:200px;
+	height:auto;
+	display:block;
+	margin-bottom:10px;
+	margin-left:auto;
+	margin-right:auto;
+}
+@media(min-width:600px){
+	#footer .acknowledgement{
+		text-align:left;
+	}
+	#footer .acknowledgement img{
+		float:left;
+		margin-right:25px;
+		margin-bottom:0px;
+		display:inline;
+	}
+}
 /* Front */
 
 .front .jcarousel {

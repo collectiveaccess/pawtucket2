@@ -252,7 +252,7 @@
 						}
 						$vs_citation_part1 = join(", ", $va_citation_parts).", ";
 					}
-					print $vs_citation_part1."<i>National Hellenic Museum</i>, <small>".$this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $vn_id)."</small>. Accessed ".date("m/d/y").".";
+					print $vs_citation_part1."<i>National Hellenic Museum</i>, ".$this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $vn_id).". Accessed ".date("m/d/y").".";
 ?>
 				</div></div>
 				{{{map}}}
