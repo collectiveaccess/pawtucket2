@@ -89,7 +89,7 @@
 				if ($va_collection = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_collections">^ca_collections.preferred_labels (^relationship_typename)</unit></unit>')) {
 					print "<div class='unit'><h6>Object Collection</h6><div class='data'>".$va_collection."</div></div>";
 				}
-				if ($vs_date = $t_item->get('ca_objects.date_created', array('returnAsArray' => true))) {
+				if ($va_date = $t_item->get('ca_objects.date_created', array('returnAsArray' => true))) {
 					# --- clear out empty values
 					$va_date_clean = array();
 					foreach($va_date as $vs_date){
