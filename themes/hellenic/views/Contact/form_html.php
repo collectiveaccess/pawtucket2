@@ -118,7 +118,7 @@
 			<div class="col-md-12">
 				<div class="form-group<?php print (($va_errors["research"]) ? " has-error" : ""); ?>">
 					<label for="research">Research Area</label>
-					<input type="text" class="form-control input-sm" id="email" placeholder="Enter your research area" name="research" value="{{{research}}}">
+					<input type="text" class="form-control input-sm" id="researchArea" placeholder="Enter your research area" name="researchArea" value="{{{research}}}">
 				</div>
 			</div><!-- end col -->
 		</div>
@@ -147,6 +147,7 @@
 		</div><!-- end form-group -->
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 		<input type="hidden" name="mode" value="<?php print $ps_mode; ?>">
+		<input type="hidden" name="contactType" value="<?php print $vs_page_title; ?>">
 	</form>
 	
 </div><!-- end col --></div><!-- end row --></div><!-- end container -->
