@@ -56,16 +56,15 @@
 	<div class="representationList">
 		
 <?php
-	$va_reps = $t_item->getRepresentations(array("thumbnail", "medium"));
-
-	foreach($va_reps as $va_rep) {
-		if(sizeof($va_reps) > 1){
-			# --- more than one rep show thumbnails
-			$vn_padding_top = ((120 - $va_rep["info"]["thumbnail"]["HEIGHT"])/2) + 5;
-			print $va_rep['tags']['thumbnail']."\n";
-		}else{
-			# --- one rep - show medium rep
-			print $va_rep['tags']['medium']."\n";
+	$va_paths_small = $t_item->get("ca_object_representations.media.small.path", array("returnAsArray" => true, "checkAccess" => $va_access_values, "filterNonPrimaryRepresentations" => false));
+	$va_paths_medium = $t_item->get("ca_object_representations.media.medium.path", array("returnAsArray" => true, "checkAccess" => $va_access_values, "filterNonPrimaryRepresentations" => false));
+	if(is_array($va_paths_small) && sizeof($va_paths_small)){
+		$va_paths = $va_paths_medium;
+		if(sizeof($va_paths_small) > 1){
+			$va_paths = $va_paths_small;
+		}
+		foreach($va_paths as $vs_path){
+			print "<img src='{$vs_path}'/>&nbsp;";
 		}
 	}
 ?>

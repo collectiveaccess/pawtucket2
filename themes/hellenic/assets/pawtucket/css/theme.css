@@ -335,7 +335,7 @@ a:hover {
 #footer {
 	background-color:#0072C6;
 	color:#fff;
-	height:420px;
+	height:320px;
 	font-size:16px;
 	padding:50px 0px 75px 0px;
 	font-family: Futura;
@@ -346,14 +346,14 @@ a:hover {
 	border:0px;
 }
 body {
-	margin-bottom:460px;
+	margin-bottom:360px;
 }
-@media(max-width:600px){
+@media(max-width:500px){
 	#footer {
-		height:600px;
+		height:500px;
 	}
 	body{
-		margin-bottom:660px;
+		margin-bottom:560px;
 	}
 }
 #footer a {
@@ -870,4 +870,15 @@ label {
 
 .form-control:focus {
     border-color: #000;
+}
+
+/* static pages */
+.bodytextImg{
+	text-align:center;
+	margin-top:30px;
+}
+.bodytextImg img{
+	width:100%;
+	height:auto;
+	max-width:300px;
 }
