@@ -36,6 +36,7 @@
 					<li class="menu-item"><?php print caNavLink($this->request, _t("Schedule a Research Visit"), "", "", "Contact", "form", array("mode" => "research")); ?></li>
 					<li class="menu-item"><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>
 					<li class="menu-item"><?php print caNavLink($this->request, _t("Helpful Links"), "", "", "About", "links"); ?></li>
+					<li class="menu-item"><?php print caNavLink($this->request, _t("Acknowledgements"), "", "", "About", "acknowledgements"); ?></li>
 				</ul>
 			</div>
 		</div>

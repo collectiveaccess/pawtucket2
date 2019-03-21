@@ -34,7 +34,7 @@
 	$va_user_links = array();
 	if($this->request->isLoggedIn()){
 		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
-		$va_user_links[] = '<li class="divider nav-divider"></li>';
+		#$va_user_links[] = '<li class="divider nav-divider"></li>';
 		if(caDisplayLightbox($this->request)){
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 		}
@@ -77,6 +77,15 @@
 	}
 ?>
 </head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-135762716-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+ 
+  gtag('config', 'UA-135762716-2');
+</script>
 <body>
 	<div class="verytop">
 		<div class="container">
@@ -175,7 +184,8 @@
 								<li><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "collection"); ?></li>
 								<li><?php print caNavLink($this->request, _t("Schedule a Research Visit"), "", "", "Contact", "form", array("mode" => "research")); ?></li>
 								<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>
-								<li><?php print caNavLink($this->request, _t("Helpful Links"), "", "", "About", "links"); ?></li>			
+								<li><?php print caNavLink($this->request, _t("Helpful Links"), "", "", "About", "links"); ?></li>
+								<li><?php print caNavLink($this->request, _t("Acknowledgements"), "", "", "About", "acknowledgements"); ?></li>			
 							</ul>
 						</li>
 						<li >

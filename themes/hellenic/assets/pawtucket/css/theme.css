@@ -272,7 +272,10 @@ a:hover {
     letter-spacing: 0px;   
 }
 .nav .dropdown-menu > li:hover {
-	background-color:#d6d6d6 ;
+	background-color:#d6d6d6;
+}
+.nav .dropdown-menu .dropdown-header, .nav .dropdown-menu .nav-divider{
+	background-color:#ffffff;
 }
 .navbar .dropdown-menu > li > a:hover, .navbar .dropdown-menu > li > a:focus, .navbar .dropdown-menu > .active > a, .navbar .dropdown-menu > .active > a:hover, .navbar .dropdown-menu > .active > a:focus {
 	background-color:#ddd;
@@ -496,6 +499,7 @@ body {
 	margin-bottom:35px;
 }
 .homeIcon {
+	text-align:center;
 	margin-bottom:10px;
 }
 .homeLink {
@@ -555,6 +559,7 @@ body {
 	padding-bottom:50px;
 }
 .homeIcon img {
+	max-width:400px;
 	width:100%;
 	height:auto;
 }
