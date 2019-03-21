@@ -43,6 +43,10 @@
 	$t_display = $this->getVar('t_display');
 	$va_placements = $this->getVar("placements");
 	$va_access_values = caGetUserAccessValues($this->request);
+	$vn_type_id = 			$t_item->get('ca_objects.type_id');
+	$t_list = new ca_lists();
+	$vn_oh_id = $t_list->getItemIDFromList("object_types", "oral_history");
+	$vn_book_id = $t_list->getItemIDFromList("object_types", "book");
 	
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
@@ -52,13 +56,13 @@
 	<div class="representationList">
 		
 <?php
-	$va_reps = $t_item->getRepresentations(array("small", "medium"));
+	$va_reps = $t_item->getRepresentations(array("thumbnail", "medium"));
 
 	foreach($va_reps as $va_rep) {
 		if(sizeof($va_reps) > 1){
 			# --- more than one rep show thumbnails
 			$vn_padding_top = ((120 - $va_rep["info"]["thumbnail"]["HEIGHT"])/2) + 5;
-			print $va_rep['tags']['small']."\n";
+			print $va_rep['tags']['thumbnail']."\n";
 		}else{
 			# --- one rep - show medium rep
 			print $va_rep['tags']['medium']."\n";
@@ -98,10 +102,12 @@
 						}
 					}
 					$vs_date = join(", ", $va_date_clean);
-					if ($vs_type_id == $vs_oh_id) {
-						print "<div class='unit'><h6>Date of Interview</h6><div class='data'>".$vs_date."</div></div>";
-					} else {
-						print "<div class='unit'><h6>Date Created</h6><div class='data'>".$vs_date."</div></div>";
+					if($vs_date){
+						if ($vs_type_id == $vn_oh_id) {
+							print "<div class='unit'><h6>Date of Interview</h6><div class='data'>".$vs_date."</div></div>";
+						} else {
+							print "<div class='unit'><h6>Date Created</h6><div class='data'>".$vs_date."</div></div>";
+						}
 					}
 				}
 				if ($vs_alt_name = $t_item->get('ca_objects.alternate_object_name', array('delimiter' => '<br/>'))) {
@@ -226,7 +232,7 @@
 						if ($vs_publisher = $t_item->getWithTemplate('<unit delimiter="; " relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="publisher" delimiter="; ">^ca_entities.preferred_labels.displayname</unit>')) {
 							$vs_tmp .= $vs_publisher;
 						}
-						if($vs_date = $t_item->get('ca_objects.date_created', array('returnAsArray' => true))){
+						if($va_date = $t_item->get('ca_objects.date_created', array('returnAsArray' => true))){
 							# --- clear out empty values
 							$va_date_clean = array();
 							foreach($va_date as $vs_date){

@@ -93,10 +93,12 @@
 						}
 					}
 					$vs_date = join(", ", $va_date_clean);
-					if ($vn_type_id == $vn_oh_id) {
-						print "<div class='unit'><h6>Date of Interview</h6><div class='data'>".$vs_date."</div></div>";
-					} else {
-						print "<div class='unit'><h6>Date Created</h6><div class='data'>".$vs_date."</div></div>";
+					if($vs_date){
+						if ($vn_type_id == $vn_oh_id) {
+							print "<div class='unit'><h6>Date of Interview</h6><div class='data'>".$vs_date."</div></div>";
+						} else {
+							print "<div class='unit'><h6>Date Created</h6><div class='data'>".$vs_date."</div></div>";
+						}
 					}
 				}
 				if ($vs_alt_name = $t_object->get('ca_objects.alternate_object_name', array('delimiter' => '<br/>'))) {

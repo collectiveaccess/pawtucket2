@@ -37,10 +37,6 @@
 						<div>333 South Halsted Street, Chicago, IL 60661, Phone: (312) 655-1234</div>
 						<div>Copyright &copy; <?php print date("Y"); ?> National Hellenic Museam. All text and images on this site are protected by the U.S. and International copyright laws. Unauthorized use is prohibited.</div>
 						<div class='tp'><div><a href="https://www.nationalhellenicmuseum.org/terms-conditions/">Terms & Conditions</a></div></div>
-						<div class="acknowledgement">
-							<?php print caGetThemeGraphic($this->request, 'StathisFamilyLogo.jpg'); ?>The National Hellenic Museum's Collections Portal has been made possible thanks to a generous donation from the Stathis Family Limited Partnerships
-							
-						</div>
 					</div>
 				</div>					
 			</div>
