@@ -1,0 +1,10 @@
+viewIcons = {
+	images = glyphicon-th, 
+	list = glyphicon-th-list, 
+	timeline = glyphicon-time,
+	map = glyphicon-globe
+}
+
+site_protocol = https
+site_hostname = archives.jacobspillow.org
+site_host = <site_protocol>://<site_hostame>

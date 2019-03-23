@@ -61,7 +61,7 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#UserGroupForm').submit(function(e){		
+		jQuery('#UserGroupForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', '*', 'saveUserGroup', null); ?>',
 				jQuery('#UserGroupForm').serialize()

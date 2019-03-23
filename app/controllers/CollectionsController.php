@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2017 Whirl-i-Gig
+ * Copyright 2013-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -48,7 +48,6 @@
             
  			$this->opo_config = caGetCollectionsConfig();
  			$this->view->setVar("collections_config", $this->opo_config);
- 			$this->opo_datamodel = Datamodel::load();
  			$this->opa_access_values = caGetUserAccessValues($this->request);
  		 	$this->view->setVar("access_values", $this->opa_access_values);
  		 	# --- what is the section called - title of page

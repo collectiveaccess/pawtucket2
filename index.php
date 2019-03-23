@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2017 Whirl-i-Gig
+ * Copyright 2008-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -28,6 +28,8 @@
 	define("__CA_APP_TYPE__", "PAWTUCKET");
 	define("__CA_MICROTIME_START_OF_REQUEST__", microtime());
 	define("__CA_SEARCH_IS_FOR_PUBLIC_DISPLAY__", 1);
+	define("__CA_BASE_MEMORY_USAGE__", memory_get_usage(true));
+	
 	require("./app/helpers/errorHelpers.php");
 	
 	if (!file_exists('./setup.php')) {
@@ -37,8 +39,6 @@
 	require_once('./setup.php');
 	
 	try {
-		define("__CA_BASE_MEMORY_USAGE__", memory_get_usage(true));
-	
 		// connect to database
 		$o_db = new Db(null, null, false);
 		if (!$o_db->connected()) {
@@ -49,7 +49,6 @@
 		//
 		// do a sanity check on application and server configuration before servicing a request
 		//
-	
 		require_once(__CA_APP_DIR__.'/lib/pawtucket/ConfigurationCheck.php');
 		ConfigurationCheck::performQuick();
 		if(ConfigurationCheck::foundErrors()){
@@ -59,7 +58,7 @@
 
 		// run garbage collector
 		GarbageCollection::gc();
-	
+
 		$app = AppController::getInstance();
 	
 		$g_request = $app->getRequest();
@@ -70,10 +69,10 @@
 		$va_ui_locales = $g_request->config->getList('ui_locales');
 		if ($vs_lang = $g_request->getParameter('lang', pString)) {
 			if (in_array($vs_lang, $va_ui_locales)) {
-				$g_request->session->setVar('lang', $vs_lang);
+				Session::setVar('lang', $vs_lang);
 			}
 		}
-		if (!($g_ui_locale = $g_request->session->getVar('lang'))) {
+		if (!($g_ui_locale = Session::getVar('lang'))) {
 			$g_ui_locale = $va_ui_locales[0];
 		}
 	
@@ -100,7 +99,7 @@
 		//
 		// ContentCaching plug-in caches output of selected pages for performance
 		//
-		require_once(__CA_LIB_DIR__.'/ca/ContentCaching.php');
+		require_once(__CA_LIB_DIR__.'/ContentCaching.php');
 		$app->registerPlugin(new ContentCaching());
 	
 		//
@@ -111,11 +110,17 @@
 		// Prevent caching
 		$resp->addHeader("Cache-Control", "no-cache, must-revalidate");
 		$resp->addHeader("Expires", "Mon, 26 Jul 1997 05:00:00 GMT");
+		
+		// Security headers
+		$resp->addHeader("X-XSS-Protection", "1; mode=block");
+		$resp->addHeader("X-Frame-Options", "SAMEORIGIN");
+		$resp->addHeader("Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com ajax.googleapis.com 'unsafe-inline' 'unsafe-eval';"); 
+		$resp->addHeader("X-Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com ajax.googleapis.com 'unsafe-inline' 'unsafe-eval';"); 
 	
 		//
 		// Dispatch the request
 		//
-		$vb_auth_success = $g_request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false));
+		$vb_auth_success = $g_request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false, 'allow_external_auth' => ($g_request->getController() == 'LoginReg')));
 		$app->dispatch(true);
 
 		//
@@ -125,10 +130,9 @@
 	
 		// Note url of this page as "last page"
 		if (($g_request->getController() != 'LoginReg') && (!$g_request->isAjax()) && (!$g_request->getParameter('dont_set_pawtucket2_last_page', pInteger))) {	// the 'dont_set_pawtucket2_last_page' is a lame-but-effective way of suppressing recording of something we don't want to be a "last page" (and potentially redirected to)
-			$g_request->session->setVar('pawtucket2_last_page', $g_request->getFullUrlPath());
+			Session::setVar('pawtucket2_last_page', $g_request->getFullUrlPath());
 		}
 		$g_request->close();
 	} catch (Exception $e) {
 		caDisplayException($e);
-	}	
-	
+	}
