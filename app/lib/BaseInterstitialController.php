@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -102,8 +102,8 @@
 				}
 
 				$va_nav = $t_ui->getScreensAsNavConfigFragment($this->request, null, $this->request->getModulePath(), $this->request->getController(), $this->request->getAction(),
-					array(),
-					array(),
+					[],
+					[],
 					false,
 					$va_options
 				);
@@ -165,7 +165,7 @@
  			$pn_primary_id = 			$this->request->getParameter('primary_id', pInteger);	
  			
  			// Make sure request isn't empty
- 			if(!sizeof($_POST)) {
+ 			if(!is_array($_POST) || !sizeof($_POST)) {
  				$va_response = array(
 					'status' => 20,
 					'id' => null,
@@ -202,7 +202,8 @@
  			//
  			// Regenerate display template for bundle that launched the interstitial editor so it will reflect any changes
  			//
- 			$vs_related_table = $t_placement->getEditorType();
+ 			$vs_editor_table = $t_placement->getEditorType();
+ 			$vs_related_table = $t_subject->getOppositeTableName($t_placement->getEditorType());
  			$vs_template = caGetBundleDisplayTemplate($t_subject, $vs_related_table, $pa_bundle_settings);
 		
  			$qr_rel_items = caMakeSearchResult($t_subject->tableName(), array($t_subject->getPrimaryKey()));
@@ -219,7 +220,7 @@
 					
 					$va_bundle_values['relationship_typename'] = $t_subject->getRelationshipTypename(($vn_left_id == $pn_primary_id) ? 'ltol' : 'rtol');
 				} else {
-					$va_bundle_values['relationship_typename'] = $t_subject->getRelationshipTypename(($t_subject->getLeftTableFieldName() == $vs_related_table) ? 'rtol' : 'ltor');
+					$va_bundle_values['relationship_typename'] = $t_subject->getRelationshipTypename(($t_subject->getLeftTableFieldName() == $vs_editor_table) ? 'rtol' : 'ltor');
 				}
 				$va_bundle_values['relationship_type_code'] = $t_subject->getRelationshipTypeCode();
 			}
@@ -229,9 +230,11 @@
  			//
  			$va_errors = $this->request->getActionErrors();							// all errors from all sources
  			$va_general_errors = $this->request->getActionErrors('general');		// just "general" errors - ones that are not attached to a specific part of the form
+ 			if (!is_array($va_errors)) { $va_errors = []; }
+ 			if (!is_array($va_general_errors)) { $va_general_errors = []; }
  			
+ 			$va_error_list = array();
  			if(sizeof($va_errors) - sizeof($va_general_errors) > 0) {
- 				$va_error_list = array();
  				$vb_no_save_error = false;
  				foreach($va_errors as $o_e) {
  					$va_error_list[$o_e->getErrorDescription()] = $o_e->getErrorDescription()."\n";
@@ -336,4 +339,3 @@
 		}
 		# ------------------------------------------------------------------
  	}
- ?>

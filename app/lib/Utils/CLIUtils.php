@@ -416,7 +416,7 @@
 			print CLIProgressBar::finish();
 
 			print CLIProgressBar::start(1, _t('Reading file list'));
-			$va_contents = caGetDirectoryContentsAsList(__CA_BASE_DIR__.'/media', true, false);
+			$va_contents = caGetDirectoryContentsAsList(__CA_BASE_DIR__.'/media/'.__CA_APP_NAME__, true, false);
 			print CLIProgressBar::next();
 			print CLIProgressBar::finish();
 
@@ -781,7 +781,7 @@
 			$quiet = $po_opts->getOption('quiet');
 			$pa_mimetypes = caGetOption('mimetypes', $po_opts, null, ['delimiter' => [',', ';']]);
 			$pa_versions = caGetOption('versions', $po_opts, null, ['delimiter' => [',', ';']]);
-			$pa_kinds = caGetOption('kinds', $po_opts, 'all', ['forceLowercase' => true, 'validValues' => ['all', 'ca_object_representations', 'ca_attributes'], 'delimiter' => [',', ';']]);
+			$pa_kinds = caGetOption('kinds', $po_opts, 'all', ['forceLowercase' => true, 'validValues' => ['all', 'ca_object_representations', 'ca_attributes', 'icons'], 'delimiter' => [',', ';']]);
 			
 			if (in_array('all', $pa_kinds) || in_array('ca_object_representations', $pa_kinds)) {
 				if (!($vn_start = (int)$po_opts->getOption('start_id'))) { $vn_start = null; }
@@ -836,7 +836,7 @@
 				}
 
 				$qr_reps = $o_db->query("
-					SELECT *
+					SELECT representation_id, media
 					FROM ca_object_representations
 					{$vs_sql_joins}
 					{$vs_sql_where}
@@ -850,7 +850,7 @@
 
 					if (!$quiet) { print CLIProgressBar::next(1, _t("Re-processing %1", ($vs_original_filename ? $vs_original_filename." (".$qr_reps->get('representation_id').")" : $qr_reps->get('representation_id')))); }
 					$vs_mimetype = $qr_reps->getMediaInfo('media', 'original', 'MIMETYPE');
-					if(sizeof($pa_mimetypes)) {
+					if(is_array($pa_mimetypes) && sizeof($pa_mimetypes)) {
 						$vb_mimetype_match = false;
 						foreach($pa_mimetypes as $vs_mimetype_pattern) {
 							if(!preg_match("!^".preg_quote($vs_mimetype_pattern)."!", $vs_mimetype)) {
@@ -865,7 +865,7 @@
 					$t_rep->load($qr_reps->get('representation_id'));
 					$t_rep->set('media', $qr_reps->getMediaPath('media', 'original'), array('original_filename' => $vs_original_filename));
 
-					if (sizeof($pa_versions)) {
+					if (is_array($pa_versions) && sizeof($pa_versions)) {
 						$t_rep->update(array('updateOnlyMediaVersions' =>$pa_versions));
 					} else {
 						$t_rep->update();
@@ -921,6 +921,35 @@
 					}
 				}
 			}
+			
+			if ((in_array('all', $pa_kinds)  || in_array('icons', $pa_kinds)) && (!$vn_start && !$vn_end)) {
+				$icon_tables = ['ca_list_items', 'ca_storage_locations', 'ca_editor_uis', 'ca_editor_ui_screens', 'ca_tours', 'ca_tour_stops'];
+				
+				foreach($icon_tables as $icon_table) {
+					if (!($t_instance = Datamodel::getInstance($icon_table, true))) { continue; }
+					if (!$quiet) { print CLIProgressBar::start($icon_table::find('*', ['returnAs' => 'count']), _t('Re-processing icons')); }
+					$qr_vals = $o_db->query("SELECT ".($pk = $t_instance->primaryKey())." FROM {$icon_table}");
+					$ids = $qr_vals->getAllFieldValues($pk);
+					foreach($ids as $id) {
+						if ($t_instance->load($id)) {
+							$t_instance->setMode(ACCESS_WRITE);
+
+							$media_info = $t_instance->getMediaInfo($pk);
+
+							if (!$quiet) { print CLIProgressBar::next(1, _t("Re-processing %1 from %2", $id, $icon_table)); }
+
+
+							$t_instance->set('icon', ($p = $t_instance->getMediaPath('icon', 'original')) ? $p : $t_instance->getMediaPath('icon', 'iconlarge'));
+
+							$t_instance->update();
+							if ($t_instance->numErrors()) {
+								CLIUtils::addError(_t("Error processing icon media: %1", join('; ', $t_instance->getErrors())));
+							}
+						}	
+					}
+					if (!$quiet) { print CLIProgressBar::finish(); }
+				}
+			}
 
 
 			return true;
@@ -939,7 +968,7 @@
 				"id|i-n" => _t('Representation id to reload'),
 				"ids|l-s" => _t('Comma separated list of representation ids to reload'),
 				"object_ids|o-s" => _t('Comma separated list of object ids to reload'),
-				"kinds|k-s" => _t('Comma separated list of kind of media to reprocess. Valid kinds are ca_object_representations (object representations), and ca_attributes (metadata elements). You may also specify "all" to reprocess both kinds of media. Default is "all"')
+				"kinds|k-s" => _t('Comma separated list of kind of media to reprocess. Valid kinds are ca_object_representations (object representations), ca_attributes (metadata elements) and icons (icon graphics on list items, storage locations, editors, editor screens, tours and tour stops). You may also specify "all" to reprocess all kinds of media. Default is "all"')
 			);
 		}
 		# -------------------------------------------------------
@@ -1305,6 +1334,7 @@
 				return false;
 			}
 
+			$vb_import_all_datasets = (bool)$po_opts->getOption('import-all-datasets');
 			$vb_direct = (bool)$po_opts->getOption('direct');
 			$vb_no_search_indexing = (bool)$po_opts->getOption('no-search-indexing');
 			$vb_use_temp_directory_for_logs_as_fallback = (bool)$po_opts->getOption('log-to-tmp-directory-as-fallback'); 
@@ -1317,7 +1347,7 @@
 				define("__CA_DONT_DO_SEARCH_INDEXING__", true);
 			}
 
-			if (!ca_data_importers::importDataFromSource($vs_data_source, $vs_mapping, array('noTransaction' => $vb_direct, 'format' => $vs_format, 'showCLIProgressBar' => true, 'logDirectory' => $vs_log_dir, 'logLevel' => $vn_log_level, 'logToTempDirectoryIfLogDirectoryIsNotWritable' => $vb_use_temp_directory_for_logs_as_fallback, 'addToSet' => $vs_add_to_set))) {
+			if (!ca_data_importers::importDataFromSource($vs_data_source, $vs_mapping, array('noTransaction' => $vb_direct, 'format' => $vs_format, 'showCLIProgressBar' => true, 'logDirectory' => $vs_log_dir, 'logLevel' => $vn_log_level, 'logToTempDirectoryIfLogDirectoryIsNotWritable' => $vb_use_temp_directory_for_logs_as_fallback, 'addToSet' => $vs_add_to_set, 'importAllDatasets' => $vb_import_all_datasets))) {
 				CLIUtils::addError(_t("Could not import source %1: %2", $vs_data_source, join("; ", ca_data_importers::getErrorList())));
 				return false;
 			} else {
@@ -1370,6 +1400,7 @@
 				"add-to-set|t-s" => _t('Optional identifier of set to add all imported items to.'),
 				"dryrun" => _t('If set import is performed without data actually being saved to the database. This is useful for previewing an import for errors.'),
 				"direct" => _t('If set import is performed without a transaction. This allows viewing of imported data during the import, which may be useful during debugging/development. It may also lead to data corruption and should only be used for testing.'),
+				"import-all-datasets" => _t('When importing an Excel .xslx file, if set import will be performed on all worksheets in the file. By default, only the first worksheet is imported.'),
 				"no-search-indexing" => _t('If set indexing of changes made during import is not done. This may significantly reduce import time, but will neccessitate a reindex of the entire database after the import.'),
 				"log-to-tmp-directory-as-fallback" => _t('Use the system temporary directory for the import log if the application logging directory is not writable. Default report an error if the application log directory is not writeable.')
 			);
@@ -2305,6 +2336,7 @@
 
 			$vs_report_output = join(($ps_format == 'tab') ? "\t" : ",", array(_t('Type'), _t('Error'), _t('Name'), _t('ID'), _t('Version'), _t('File path'), _t('Expected MD5'), _t('Actual MD5')))."\n";
 
+			$counts = [];
 
 			if (in_array('all', $pa_kinds) || in_array('ca_object_representations', $pa_kinds)) {
 				if (!($vn_start = (int)$po_opts->getOption('start_id'))) { $vn_start = null; }
@@ -2370,37 +2402,41 @@
 				
 				if (!$quiet) { print CLIProgressBar::start($vn_rep_count = $qr_reps->numRows(), _t('Checking object representations'))."\n"; }
 				$vn_errors = 0;
-				while($qr_reps->nextRow()) {
-					$vn_representation_id = $qr_reps->get('representation_id');
-					if (!$quiet) { print CLIProgressBar::next(1, _t("Checking representation media %1", $vn_representation_id)); }
+				
+				if ($qr_reps->numRows() > 0) {
+                    $counts[] = _t('%1 media representations', $qr_reps->numRows());
+                    while($qr_reps->nextRow()) {
+                        $vn_representation_id = $qr_reps->get('representation_id');
+                        if (!$quiet) { print CLIProgressBar::next(1, _t("Checking representation media %1", $vn_representation_id)); }
 
-					$va_media_versions = (is_array($pa_versions) && sizeof($pa_versions) > 0) ? $pa_versions : $qr_reps->getMediaVersions('media');
-					foreach($va_media_versions as $vs_version) {
-						if (!($vs_path = $qr_reps->getMediaPath('media', $vs_version))) { continue; }
-						if (!($vs_database_md5 = $qr_reps->getMediaInfo('media', $vs_version, 'MD5'))) { continue; }		// skip missing MD5s - indicates empty file
-						$vs_file_md5 = md5_file($vs_path);
+                        $va_media_versions = (is_array($pa_versions) && sizeof($pa_versions) > 0) ? $pa_versions : $qr_reps->getMediaVersions('media');
+                        foreach($va_media_versions as $vs_version) {
+                            if (!($vs_path = $qr_reps->getMediaPath('media', $vs_version))) { continue; }
+                            if (!($vs_database_md5 = $qr_reps->getMediaInfo('media', $vs_version, 'MD5'))) { continue; }		// skip missing MD5s - indicates empty file
+                            $vs_file_md5 = md5_file($vs_path);
 
-						if ($vs_database_md5 !== $vs_file_md5) {
-							$t_rep->load($vn_representation_id);
+                            if ($vs_database_md5 !== $vs_file_md5) {
+                                $t_rep->load($vn_representation_id);
 
-							$vs_message = _t("[Object representation][MD5 mismatch] %1; version %2 [%3]", $t_rep->get("ca_objects.preferred_labels.name")." (". $t_rep->get("ca_objects.idno")."); representation_id={$vn_representation_id}", $vs_version, $vs_path);
-							switch($ps_format) {
-								case 'text':
-								default:
-									$vs_report_output .= "{$vs_message}\n";
-									break;
-								case 'tab':
-								case 'csv':
-									$va_log = array(_t('Object representation'), ("MD5 mismatch"), '"'.caEscapeForDelimitedOutput($t_rep->get("ca_objects.preferred_labels.name")." (". $t_rep->get("ca_objects.idno").")").'"', $vn_representation_id, $vs_version, $vs_path, $vs_database_md5, $vs_file_md5);
-									$vs_report_output .= join(($ps_format == 'tab') ? "\t" : ",", $va_log)."\n";
-									break;
-							}
+                                $vs_message = _t("[Object representation][MD5 mismatch] %1; version %2 [%3]", $t_rep->get("ca_objects.preferred_labels.name")." (". $t_rep->get("ca_objects.idno")."); representation_id={$vn_representation_id}", $vs_version, $vs_path);
+                                switch($ps_format) {
+                                    case 'text':
+                                    default:
+                                        $vs_report_output .= "{$vs_message}\n";
+                                        break;
+                                    case 'tab':
+                                    case 'csv':
+                                        $va_log = array(_t('Object representation'), ("MD5 mismatch"), '"'.caEscapeForDelimitedOutput($t_rep->get("ca_objects.preferred_labels.name")." (". $t_rep->get("ca_objects.idno").")").'"', $vn_representation_id, $vs_version, $vs_path, $vs_database_md5, $vs_file_md5);
+                                        $vs_report_output .= join(($ps_format == 'tab') ? "\t" : ",", $va_log)."\n";
+                                        break;
+                                }
 
-							CLIUtils::addError($vs_message);
-							$vn_errors++;
-						}
-					}
-				}
+                                CLIUtils::addError($vs_message);
+                                $vn_errors++;
+                            }
+                        }
+                    }
+                }
 
 				if (!$quiet) { 
 					print CLIProgressBar::finish(); 				
@@ -2430,12 +2466,14 @@
 						if (!$quiet) { print CLIProgressBar::start($vn_count, _t('Checking attribute media')); }
 
 						$vn_errors = 0;
+						$c = 0;
 						foreach($va_elements as $vs_element_code => $va_element_info) {
 							$qr_vals = $o_db->query("SELECT value_id FROM ca_attribute_values WHERE element_id = ?", (int)$va_element_info['element_id']);
 							$va_vals = $qr_vals->getAllFieldValues('value_id');
 							foreach($va_vals as $vn_value_id) {
 								$t_attr_val = new ca_attribute_values($vn_value_id);
 								if ($t_attr_val->getPrimaryKey()) {
+									$c++;
 									$t_attr_val->setMode(ACCESS_WRITE);
 									$t_attr_val->useBlobAsMediaField(true);
 
@@ -2484,6 +2522,10 @@
 								}
 							}
 						}
+						
+						if ((sizeof($va_elements) > 0) && ($c > 0)) {
+						    $counts[] = _t('%1 media in %2 metadata elements', sizeof($va_elements), $c);
+						}
 						if (!$quiet) { 
 							print CLIProgressBar::finish(); 
 							if($vn_errors == 1) {
@@ -2511,12 +2553,15 @@
 						if (!$quiet) { print CLIProgressBar::start($vn_count, _t('Checking attribute files')); }
 
 						$vn_errors = 0;
+						$c = 0;
 						foreach($va_elements as $vs_element_code => $va_element_info) {
 							$qr_vals = $o_db->query("SELECT value_id FROM ca_attribute_values WHERE element_id = ?", (int)$va_element_info['element_id']);
 							$va_vals = $qr_vals->getAllFieldValues('value_id');
 							foreach($va_vals as $vn_value_id) {
 								$t_attr_val = new ca_attribute_values($vn_value_id);
 								if ($t_attr_val->getPrimaryKey()) {
+									$c++;
+									
 									$t_attr_val->setMode(ACCESS_WRITE);
 									$t_attr_val->useBlobAsFileField(true);
 
@@ -2562,7 +2607,10 @@
 								}
 							}
 						}
-
+						
+						if((sizeof($va_elements) > 0) && ($c > 0)) {
+						    $counts[] = _t('%1 files in %2 metadata elements', $c, sizeof($va_elements));
+						}
 						if (!$quiet) { 
 							print CLIProgressBar::finish();
 							if ($vn_errors == 1) {
@@ -2574,7 +2622,7 @@
 					}
 				}
 			}
-
+			
 			if ($ps_file_path) {
 				file_put_contents($ps_file_path, $vs_report_output);
 			}
@@ -2604,10 +2652,21 @@
 					];
 				}
 				
-				if (!caSendMessageUsingView($o_request, [$ps_email], [__CA_ADMIN_EMAIL__], _t('[%1] Media fixity report for %2', $a, $d = caGetLocalizedDate()), 'check_media_fixity_report.tpl', ['date' => $d, 'app_name' => $a, 'num_errors' => $vn_errors], null, null, ['attachment' => $attachment])) {
-					global $g_last_email_error;
-					CLIUtils::addError(_t("Could not send email to %1: %2", $ps_email, $g_last_email_error));
-				}
+				if (sizeof($counts) > 0) {
+                    if (!caSendMessageUsingView(
+                        $o_request, 
+                        [$ps_email], 
+                        [__CA_ADMIN_EMAIL__], 
+                        _t('[%1] Media fixity report for %2', $a, $d = caGetLocalizedDate()), 
+                        'check_media_fixity_report.tpl', 
+                        ['date' => $d, 'app_name' => $a, 'num_errors' => $vn_errors, 'counts' => caMakeCommaListWithConjunction($counts)], 
+                        null, null, 
+                        ['attachment' => $attachment])
+                    ) {
+                        global $g_last_email_error;
+                        CLIUtils::addError(_t("Could not send email to %1: %2", $ps_email, $g_last_email_error));
+                    }
+                }
 				if ($vb_delete_file) { @unlink($ps_file_path); }
 			}
 			return true;
@@ -3163,6 +3222,7 @@
 			require_once(__CA_MODELS_DIR__."/ca_movements.php");
 			require_once(__CA_MODELS_DIR__."/ca_movements_x_objects.php");
 			require_once(__CA_MODELS_DIR__."/ca_movements_x_storage_locations.php");
+			require_once(__CA_MODELS_DIR__."/ca_objects_x_storage_locations.php");
 			
 			$o_config = Configuration::load();
 			$o_db = new Db();
@@ -3213,6 +3273,24 @@
 				
 				print CLIProgressBar::finish();
 			}
+            
+            $qr_loc_rels = ca_objects_x_storage_locations::find('*', ['returnAs' => 'searchResult']);
+            print CLIProgressBar::start($qr_loc_rels->numHits(), "Reloading location dates");
+            while($qr_loc_rels->nextHit()) {
+                if (!$qr_loc_rels->get('ca_objects_x_storage_locations.effective_date')) {
+                    if (($ts = $qr_loc_rels->get('ca_objects_x_storage_locations.lastModified')) && ($start_end = caDateToHistoricTimestamps($ts))) {
+                        try {
+                           $qr_res = $o_db->query(
+                                "UPDATE ca_objects_x_storage_locations SET sdatetime = ?, edatetime = ? WHERE relation_id = ?", 
+                                [$start_end[0], $start_end[1], $qr_loc_rels->get('ca_objects_x_storage_locations.relation_id')]
+                            );
+                        } catch (Exception $e) {
+                            // noop
+                        }
+                    }
+                }
+                print CLIProgressBar::next();
+            }
 	
 			return true;
 		}
@@ -4722,6 +4800,50 @@
 		 */
 		public static function check_relationship_type_rootsHelp() {
 			return _t('Each relationship has a hierarchy of relationship types defined. Each type hierarchy must have a root record. Root records are normally created during system installation, but may be missing due to accidental deletion or failure to create during system updates. This command will check for presence of require root records and recreate missing roots as required.');
+        }
+        # -------------------------------------------------------
+		/**
+		 * @param Zend_Console_Getopt|null $po_opts
+		 * @return bool
+		 */
+		public static function clear_search_indexing_queue_lock_file($po_opts=null) {
+            require_once(__CA_MODELS_DIR__."/ca_search_indexing_queue.php");
+			
+			if (ca_search_indexing_queue::lockExists()) {
+			    if (ca_search_indexing_queue::lockCanBeRemoved()) {
+			        ca_search_indexing_queue::lockRelease();
+			        CLIUtils::addMessage(_t("Removed search indexing queue lock"));
+			    } else {
+			        CLIUtils::addMessage(_t("Insufficient privileges to remove search indexing queue. Try running caUtils under a user with privileges"));
+			    }
+			} else {
+			    CLIUtils::addMessage(_t("Search indexing queue lock is not present"));
+			}
+		}
+		# -------------------------------------------------------
+		public static function clear_search_indexing_queue_lock_fileParamList() {
+			return [];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function clear_search_indexing_queue_lock_fileUtilityClass() {
+            return _t('Maintenance');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function clear_search_indexing_queue_lock_fileShortHelp() {
+			return _t('Remove search indexing queue lock file if present.');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function clear_search_indexing_queue_lock_fileHelp() {
+			return _t('The search indexing queue is a task run periodically, usually via cron, to process pending indexing tasks. Simultaneous instances of the queue processor are prevented by means of a lock file. The lock file is created when the queue starts and deleted when it completed. While it is present new queue processing instances will refuse to start. In some cases, when a queue processing instance is killed or crashes, the lock file may not be removed and the queue will refuse to re-start. Lingering lock files may be removed using this command. Note that you must run caUtils under a user with privileges to delete the lock file.');
         }
 		# -------------------------------------------------------
 	}

@@ -714,7 +714,9 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 			$va_items = $pa_sorted_items;
 		}
 		
-		ExternalCache::save($vs_cache_key, $va_items, 'listItems');
+		if (is_array($va_items) && (sizeof($va_items) < 1000)) {
+			ExternalCache::save($vs_cache_key, $va_items, 'listItems');
+		}
 		return $va_items;
 	}
 	# ------------------------------------------------------
@@ -1849,7 +1851,7 @@ class ca_lists extends BundlableLabelableBaseModelWithAttributes {
 				initItemID: '{".$pa_options['element_id']."}',
 				defaultItemID: '".$t_list->getDefaultItemID()."',
 				useAsRootID: '".$t_root_item->getPrimaryKey()."',
-				indicator: \"".caNavIcon(__CA_NAV_ICON_SPINNER__, 1)."\",
+				indicatorUrl: \"".caNavIcon(__CA_NAV_ICON_SPINNER__, 1)."\",
 				autoShrink: '".(caGetOption('auto_shrink', $pa_options, false) ? 'true' : 'false')."',
 				autoShrinkAnimateID: '{$ps_name}_hierarchyBrowser{n}',
 				autoShrinkMaxHeightPx: {$vn_autoshrink_height},
