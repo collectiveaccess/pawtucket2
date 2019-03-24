@@ -420,7 +420,7 @@
                             if ($vb_match) {  $va_matched_files[] = $vs_file; }
                             
                         } else {
-           x                 if ($o_log) $o_log->logDebug(_t("Couldn't match name %1 on regex %2",$vs_match_name,$vs_regex));
+							if ($o_log) $o_log->logDebug(_t("Couldn't match name %1 on regex %2",$vs_match_name,$vs_regex));
                         }
                     }
                 }
