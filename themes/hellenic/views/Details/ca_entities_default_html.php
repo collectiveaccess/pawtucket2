@@ -27,7 +27,7 @@
 					print "<div class='unit'><h6>Life Dates</h6>".$vs_life_dates."</div>";
 				}
 				if($vs_founding_dates = $t_item->get('ca_entities.founding_dates')) {
-					print "<div class='unit'><h6>Founding Dates</h6>".$vs_founding_dates."</div>";
+					print "<div class='unit'><h6>Organization Dates</h6>".$vs_founding_dates."</div>";
 				}	
 				if($vs_biography = $t_item->get('ca_entities.biography')) {
 					print "<div class='unit'><h6>Biography</h6>".$vs_biography."</div>";

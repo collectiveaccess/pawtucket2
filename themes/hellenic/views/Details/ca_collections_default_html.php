@@ -5,6 +5,10 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	
+	$vs_type_id = 			$t_item->get('ca_collections.type_id');
+	$t_list = new ca_lists();
+	$vs_museum_id = $t_list->getItemIDFromList("collection_types", "museum_collection");	
+	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
 	$vb_show_hierarchy_viewer = true;
@@ -14,30 +18,9 @@
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
-<div class="row">
-	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-		<div class="container">
-			<div class="row">
-				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
-					<H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6>
-					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
-<?php					
-					if ($vn_pdf_enabled) {
-						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
-					}
-?>
-				</div><!-- end col -->
-			</div><!-- end row -->
+
 			<div class="row">
 				<div class='col-sm-12'>
 <?php
@@ -55,47 +38,121 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
-				<div class='col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_collections.description"><H6>About</H6>^ca_collections.description<br/></ifdef>}}}
-					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
+				<div class='col-sm-12'>
 <?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled) {
-						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
+					if ($vs_type_id == $vs_museum_id) {
+						print "<div class='unit'><h6>Collection Name</h6><div class='data'>".$t_item->get('ca_collections.preferred_labels')."</div></div>";
+						if ($vs_description = $t_item->get('ca_collections.description')) {
+							print "<div class='unit'><h6>Collection Description</h6>".$vs_description."</div>";
+						}
+						if ($vs_rel_ent = $t_item->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+							print "<div class='unit'><h6>Related Entities</h6><div class='data'>".$vs_rel_ent."</div></div>";
+						}
+					} else {
+						print "<div class='unit'><h6>Collection Title</h6>".$t_item->get('ca_collections.preferred_labels')."</div>";
+						if ($vs_idno = $t_item->get('ca_collections.idno')) {
+							print "<div class='unit'><h6>Collection Identifier</h6>".$vs_idno."</div>";
+						}
+						if ($vs_dates = $t_item->get('ca_collections.unitdate', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
+							$va_dates_array = array();
+							foreach ($vs_dates as $va_key => $vs_date_info) {
+								foreach ($vs_date_info as $va_key => $vs_date) {
+									if ($vs_date['dacs_date_value']) {
+										$va_dates_array[$vs_date['dacs_dates_types']][] = $vs_date['dacs_date_value'];
+									}
+								}
+							}
+							if ($va_dates_array) {
+								foreach ($va_dates_array as $va_date_type => $va_date) {
+									print "<div class='unit'><h6>".$va_date_type."</h6>".join('<br/>',$va_date)."</div>";
+								}
+							}
+						}
+						if ($vs_extent = $t_item->get('ca_collections.extentDACS', array('delimiter' => '<br/>'))) {
+							print "<div class='unit'><h6>Extent</h6><div class='data'>".$vs_extent."</div></div>";
+						}
+						if ($vs_creator = $t_item->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array("creator"), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+							print "<div class='unit'><h6>Creator</h6><div class='data'>".$vs_creator."</div></div>";
+						}
+						if ($vs_rel_ent = $t_item->get('ca_entities.preferred_labels', array('excludeRelationshipTypes' => array("creator"), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+							print "<div class='unit'><h6>Related Entities</h6><div class='data'>".$vs_rel_ent."</div></div>";
+						}
+						if ($vs_rel_collections = $t_item->get('ca_collections.preferred_labels', array('checkAccess' => $va_access_values, 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+							print "<div class='unit'><h6>Related Collections</h6><div class='data'>".$vs_rel_collections."</div></div>";
+						}
+						# --- access points
+						$va_access_points = array();
+						$va_subjects = $t_item->get('ca_list_items.preferred_labels', array('returnAsArray' => true));
+						$va_getty = $t_item->get('ca_collections.aat', array('returnAsArray' => true));
+						$va_ulan = $t_item->get('ca_collections.ulan', array('returnAsArray' => true));
+						$va_lcsh = $t_item->get('ca_collections.lcsh_terms', array('returnAsArray' => true));
+						$va_tgn = $t_item->get('ca_collections.tgn', array('returnAsArray' => true));
+						$va_access_points = array_merge($va_subjects, $va_getty, $va_ulan, $va_lcsh, $va_tgn);
+						if (sizeof($va_access_points)) {
+							$va_access_points_sorted = array();
+							foreach($va_access_points as $vs_access_point){
+								$vs_access_point = trim(preg_replace("/\[[^\]]*\]/", "", $vs_access_point));
+								if($vs_access_point){
+									$va_access_points_sorted[$vs_access_point] = caNavLink($this->request, $vs_access_point, "", "", "MultiSearch",  "Index", array('search' => $vs_access_point));
+								}
+							}
+							ksort($va_access_points_sorted, SORT_NATURAL | SORT_FLAG_CASE);
+							if(sizeof($va_access_points_sorted)){
+								print "<div class='unit'><h6>Access Points</h6><div class='data'>";
+								print join("<br/>", $va_access_points_sorted);
+								print "</div></div>";
+							}
+						}
+						if ($vs_admin = $t_item->get('ca_collections.adminbiohist', array('delimiter' => '<br/>'))) {
+							print "<div class='unit text'><h6>Biographical Note</h6><div>".$vs_admin."</div></div>";
+						}
+						if ($vs_scope = $t_item->get('ca_collections.scopecontent', array('delimiter' => '<br/>'))) {
+							print "<div class='unit text'><h6>Scope and Content Note</h6><div>".$vs_scope."</div></div>";
+						}	
+						if ($vs_arrangement = $t_item->get('ca_collections.arrangement', array('delimiter' => '<br/>'))) {
+							print "<div class='unit text'><h6>Arrangement</h6><div>".$vs_arrangement."</div></div>";
+						}	
+						if ($vs_accessrestrict = $t_item->get('ca_collections.accessrestrict', array('delimiter' => '<br/>'))) {
+							print "<div class='unit text'><h6>Access Restrictions</h6><div>".$vs_accessrestrict."</div></div>";
+						}
+						if ($vs_langmaterial = $t_item->get('ca_collections.langmaterial', array('delimiter' => '<br/>'))) {
+							print "<div class='unit text'><h6>Language Note</h6><div>".$vs_langmaterial."</div></div>";
+						}
+						if ($vs_custodhist = $t_item->get('ca_collections.custodhist', array('delimiter' => '<br/>'))) {
+							print "<div class='unit text'><h6>Custodial History Note</h6><div>".$vs_custodhist."</div></div>";
+						}	
+						if ($vs_acqinfo = $t_item->get('ca_collections.acqinfo', array('delimiter' => '<br/>'))) {
+							print "<div class='unit text'><h6>Source of Acquisition</h6><div>".$vs_acqinfo."</div></div>";
+						}	
+						if ($vs_relation = $t_item->get('ca_collections.relation', array('delimiter' => '<br/>'))) {
+							print "<div class='unit text'><h6>Related Archival Materials</h6><div>".$vs_relation."</div></div>";
+						}
+						if ($vs_originalsloc = $t_item->get('ca_collections.originalsloc', array('delimiter' => '<br/>'))) {
+							print "<div class='unit text'><h6>Existence and Location of Orginals</h6><div>".$vs_originalsloc."</div></div>";
+						}
+						if ($vs_altformavail = $t_item->get('ca_collections.altformavail', array('delimiter' => '<br/>'))) {
+							print "<div class='unit text'><h6>Existence and Location of Copies</h6><div>".$vs_altformavail."</div></div>";
+						}
+						if ($vs_processInfo = $t_item->get('ca_collections.processInfo', array('delimiter' => '<br/>'))) {
+							print "<div class='unit text'><h6>Processing Information</h6><div>".$vs_processInfo."</div></div>";
+						}	
+						if ($vs_preferCite = $t_item->get('ca_collections.preferCite', array('delimiter' => '<br/>'))) {
+							print "<div class='unit text'><h6>Preferred Citation</h6><div>".$vs_preferCite."</div></div>";
+						}
+																																																																																																
+					}	
+					print "<div id='detailTools'>";
+					if ($vn_pdf_enabled) {
+						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
 					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-					}
-					print '</div><!-- end detailTools -->';
-				}				
-?>
-					
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About This Item", "", "", "Contact",  "form", array('table' => 'ca_collections', 'id' => $t_item->get('ca_collections.collection_id')))."</div>";
+					print "</div>";
+											
+?>					
 				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_collections.related" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-					{{{<ifcount code="ca_collections.related" min="2"><H6>Related collections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_collections_x_collections"><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.related.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_collections"><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="2"><H6>Related occurrences</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences_x_collections"><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places_x_collections"><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}					
-				</div><!-- end col -->
+
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
@@ -116,11 +173,4 @@
 				});
 			</script>
 </ifcount>}}}
-		</div><!-- end container -->
-	</div><!-- end col -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-</div><!-- end row -->
+
