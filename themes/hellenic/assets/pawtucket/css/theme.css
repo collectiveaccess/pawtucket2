@@ -311,6 +311,14 @@ a:hover {
 	font: bold 32px 'Nunito', 'futura-pt', sans-serif;
 	text-transform: uppercase;
 }
+.banner a, .banner a:hover{
+	color:#fff;
+	font-size:32px;
+	line-height:1em;
+	font: bold 32px 'Nunito', 'futura-pt', sans-serif;
+	text-transform: uppercase;
+	text-decoration:none;
+}
 .bannerImg {
 	background-image:url('../graphics/collections-museum.jpg');  
 	min-height: 270px;
