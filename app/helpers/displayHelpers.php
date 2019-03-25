@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2017 Whirl-i-Gig
+ * Copyright 2009-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -253,7 +253,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		}
 		
 		$vs_remapping_controls = caDeleteRemapper($po_request, $t_instance);
-		$vs_output = caFormTag($po_request, 'Delete', 'caDeleteForm', null, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
+		$vs_output = caFormTag($po_request, 'Delete', 'caDeleteForm', null, 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true,'disableUnsavedChangesWarning' => true));
 		$vs_output .= "<div class='delete-control-box'>".caFormControlBox(
 			"<div class='delete_warning_box'>"._t('Really delete "%1"?', $ps_item_name)."</div>".
 			($vs_remapping_controls ? "<div class='delete_remapping_controls'>{$vs_remapping_controls}</div>" : ''),
@@ -1133,7 +1133,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 			if($po_view->request->user->canDoAction('can_duplicate_'.$vs_table_name) && $t_item->getPrimaryKey()) {
 				$vs_buf .= '<div id="caDuplicateItemButton">';
 			
-				$vs_buf .= caFormTag($po_view->request, 'Edit', 'DuplicateItemForm', $po_view->request->getModulePath().'/'.$po_view->request->getController(), 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true, 'noTimestamp' => true));
+				$vs_buf .= caFormTag($po_view->request, 'Edit', 'DuplicateItemForm', $po_view->request->getModulePath().'/'.$po_view->request->getController(), 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true, 'disableUnsavedChangesWarning' => true, 'noTimestamp' => true));
 				$vs_buf .= "<div>".caFormSubmitLink($po_view->request, caNavIcon(__CA_NAV_ICON_DUPLICATE__, '20px'), '', 'DuplicateItemForm')."</div>";
 				
 				$vs_buf .= caHTMLHiddenInput($t_item->primaryKey(), array('value' => $t_item->getPrimaryKey()));
@@ -1175,7 +1175,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 			
 			// export options		
 			if ($vn_item_id && $vs_select = $po_view->getVar('available_mappings_as_html_select')) {
-				$vs_more_info .= "<div class='inspectorExportControls'>".caFormTag($po_view->request, 'exportItem', 'caExportForm', null, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
+				$vs_more_info .= "<div class='inspectorExportControls'>".caFormTag($po_view->request, 'exportItem', 'caExportForm', null, 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true, 'disableUnsavedChangesWarning' => true));
 				$vs_more_info .= $vs_select;
 				$vs_more_info .= caHTMLHiddenInput($t_item->primaryKey(), array('value' => $t_item->getPrimaryKey()));
 				$vs_more_info .= caHTMLHiddenInput('download', array('value' => 1));
@@ -1440,7 +1440,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 
 					if(!(bool)$po_view->request->config->get('ca_sets_disable_duplication_of_items') && $po_view->request->user->canDoAction('can_duplicate_items_in_sets') && $po_view->request->user->canDoAction('can_duplicate_' . $vs_set_table_name)) {
 						$vs_buf .= '<div style="border-top: 1px solid #aaaaaa; margin-top: 5px; font-size: 10px; text-align: right;" ></div>';
-						$vs_buf .= caFormTag($po_view->request, 'DuplicateItems', 'caDupeSetItemsForm', 'manage/sets/SetEditor', 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
+						$vs_buf .= caFormTag($po_view->request, 'DuplicateItems', 'caDupeSetItemsForm', 'manage/sets/SetEditor', 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true, 'disableUnsavedChangesWarning' => true));
 						$vs_buf .= _t("Duplicate items in this set and add to") . " ";
 						$vs_buf .= caHTMLSelect('setForDupes', array(
 							_t('current set') => 'current',
@@ -1469,7 +1469,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 					$vs_buf .= _t('Export this set of records')."&nbsp; ";
 					$vs_buf .= "<a class='button' onclick='jQuery(\"#exporterFormList\").show();' style='text-align:right;' href='#'>".caNavIcon(__CA_NAV_ICON_EXPORT_SMALL__, '16px')."</a>";
 
-					$vs_buf .= caFormTag($po_view->request, 'ExportData', 'caExportForm', 'manage/MetadataExport', 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
+					$vs_buf .= caFormTag($po_view->request, 'ExportData', 'caExportForm', 'manage/MetadataExport', 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true, 'disableUnsavedChangesWarning' => true));
 					$vs_buf .= "<div id='exporterFormList'>";
 					$vs_buf .= ca_data_exporters::getExporterListAsHTMLFormElement('exporter_id', $vn_set_table_num, array('id' => 'caExporterList'),array('width' => '135px'));
 					$vs_buf .= caHTMLHiddenInput('set_id', array('value' => $t_item->getPrimaryKey()));
@@ -1534,7 +1534,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 					
 					if ($vs_type_list) {
 						$vs_buf .= '<div style="border-top: 1px solid #aaaaaa; margin-top: 5px; font-size: 10px;">';
-						$vs_buf .= caFormTag($po_view->request, 'Edit', 'NewChildForm', 'administrate/setup/list_item_editor/ListItemEditor', 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
+						$vs_buf .= caFormTag($po_view->request, 'Edit', 'NewChildForm', 'administrate/setup/list_item_editor/ListItemEditor', 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true, 'disableUnsavedChangesWarning' => true));
 						$vs_buf .= _t('Add a %1 to this list', $vs_type_list).caHTMLHiddenInput($t_list_item->primaryKey(), array('value' => '0')).caHTMLHiddenInput('parent_id', array('value' => $t_list_item->getPrimaryKey()));
 						$vs_buf .= caFormSubmitLink($po_view->request, caNavIcon(__CA_NAV_ICON_ADD__, '18px'), '', 'NewChildForm');
 						$vs_buf .= "</form></div>\n";
@@ -1725,7 +1725,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 			$vs_buf .= _t('Export this %1', mb_strtolower($vs_type_name, 'UTF-8'))." ";
 			$vs_buf .= "<a class='button' onclick='jQuery(\"#exporterFormList\").show();' style='text-align:right;' href='#'>".caNavIcon(__CA_NAV_ICON_EXPORT_SMALL__, '16px')."</a>";
 
-			$vs_buf .= caFormTag($po_view->request, 'ExportSingleData', 'caExportForm', 'manage/MetadataExport', 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
+			$vs_buf .= caFormTag($po_view->request, 'ExportSingleData', 'caExportForm', 'manage/MetadataExport', 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true, 'disableUnsavedChangesWarning' => true));
 			$vs_buf .= "<div id='exporterFormList'>";
 			$vs_buf .= ca_data_exporters::getExporterListAsHTMLFormElement('exporter_id', $t_item->tableNum(), array('id' => 'caExporterList'), array('width' => '120px', 'recordType' => $t_item->getTypeCode()));
 			$vs_buf .= caHTMLHiddenInput('item_id', array('value' => $t_item->getPrimaryKey()));
@@ -2226,7 +2226,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	function caProcessTemplateTagDirectives($ps_value, $pa_directives, $pa_options=null) {
 	    global $g_ui_locale;
 		if (!is_array($pa_directives) || !sizeof($pa_directives)) { return $ps_value; }
-		
+
 		$pb_omit_units = caGetOption('omitUnits', $pa_options, false);
 		
 		$o_dimensions_config = Configuration::load(__CA_APP_DIR__."/conf/dimensions.conf");
@@ -2782,7 +2782,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 						$va_item['type_id'] = $qr_rel_items->get("{$vs_rel_table}.{$vs_type_id_fld}");
 					}
 					
-					$va_item['_display'] = caProcessTemplateForIDs($vs_template, $vs_table, array($qr_rel_items->get("{$vs_table}.{$vs_pk}")), array('returnAsArray' => false, 'returnAsLink' => false, 'delimiter' => caGetOption('delimiter', $pa_options, $vs_display_delimiter), 'resolveLinksUsing' => $vs_rel_table, 'primaryIDs' => $va_primary_ids));
+					$va_item['_display'] = caProcessTemplateForIDs("<span>{$vs_template}</span>", $vs_table, array($qr_rel_items->get("{$vs_table}.{$vs_pk}")), array('returnAsArray' => false, 'returnAsLink' => false, 'delimiter' => caGetOption('delimiter', $pa_options, $vs_display_delimiter), 'resolveLinksUsing' => $vs_rel_table, 'primaryIDs' => $va_primary_ids));
 					$va_item['label'] = mb_strtolower($qr_rel_items->get("{$vs_table}.preferred_labels"));
 					if ($vs_idno_fld) { $va_item['idno'] = mb_strtolower($qr_rel_items->get("{$vs_table}.{$vs_idno_fld}")); }
 					
@@ -2932,7 +2932,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	/**
 	 *
 	 */
-	function caObjectsDisplayDownloadLink($po_request, $pn_object_id = null, $pt_representation = null) {
+	function caObjectsDisplayDownloadLink($po_request, $pn_object_id = null) {
 		$o_config = caGetDetailConfig();
 		$vn_can_download = false;
 		if($vs_allow = $o_config->get(['allowObjectRepresentationDownload', 'allow_ca_objects_representation_download'])){
@@ -2968,13 +2968,6 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 			$t_list_item = new ca_list_items($t_object->get("type_id"));
 			$va_object_type_code = $t_list_item->get("idno");
 			if(!in_array($va_object_type_code, $va_types)){
-				$vn_can_download = false;
-			}
-		}	
-		$va_download_access_settings = $po_request->config->get("download_access_settings");
-		if((!$po_request->config->get("dont_enforce_access_settings")) && $pt_representation && is_array($va_download_access_settings) && sizeof($va_download_access_settings)){
-			$vn_rep_access = $pt_representation->get("access");
-			if($vn_rep_access && !in_array($vn_rep_access, $va_download_access_settings)){
 				$vn_can_download = false;
 			}
 		}
@@ -3242,7 +3235,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 						$va_placements[] = $va_bundles_by_code[$vs_field];
 					}
 					
-					$vs_val = caProcessBottomLineTemplateForPlacement($po_request, $va_placements , $pr_res, ['template' => '^SUM'.(isset($va_tag_bits[1]) ? ":{$va_tag_bits[1]}" : ""), 'multiple' => true]);
+					$vs_val = caProcessBottomLineTemplateForPlacement($po_request, $va_placements, $pr_res, ['template' => '^SUM'.(isset($va_tag_bits[1]) ? ":{$va_tag_bits[1]}" : ""), 'multiple' => true]);
 					
 					$vs_template = str_replace("^".$va_tag['originalTag'], $vs_val, $vs_template);
 					
@@ -3272,8 +3265,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		$pn_page_start = caGetOption('pageStart', $pa_options, 0);
 		$pn_page_end = caGetOption('pageEnd', $pa_options, $pr_res->numHits());
 		
-		$va_tags_to_process = array();
-		$va_subelements_to_process = array();
+		$va_tags_to_process = $va_subelements_to_process = $va_tag_values = [];
 		
 		foreach($pa_placements as $pa_placement) {
 			if (!$pr_res) { return null; }
@@ -3743,7 +3735,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		if(($ps_table == "ca_objects") && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 			$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array('context' => $ps_context, (is_object($pt_subject) && $pt_subject->primaryKey()) ? $pt_subject->primaryKey() : "object_id" => $pn_subject_id))."\"); return false;' title='".$va_add_to_set_link_info['link_text']."'>".$va_add_to_set_link_info['icon']."</a>\n";
 		}
-		if(caObjectsDisplayDownloadLink($po_request, $pn_subject_id, $pt_representation)){
+		if(caObjectsDisplayDownloadLink($po_request, $pn_subject_id)){
 			# -- get version to download configured in media_display.conf
 			$va_download_display_info = caGetMediaDisplayInfo('download', $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 			$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);

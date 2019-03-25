@@ -42,6 +42,7 @@ meridianTable = {
 }
 
 dateCircaIndicator = [circa, hacia, c, c., ca, ca.]
+dateProbablyIndicator = [probablemente]
 dateUncertaintyIndicator = [~]
 dateUncertaintyYearIndicator = [a,y]
 dateUncertaintyDayIndicator = [d]
@@ -67,6 +68,9 @@ undatedDate = [undated, unknown]
 
 presentDate = [presente, ?, ??, ???, ????]
 beforeQualifier = [antes]
+earlyQualifier = [early]
+midQualifier = [mid, middle]
+lateQualifier = [late]
 diedQualifier = [morir, d, d.]
 afterQualifier = [después]
 bornQualifier = [nació, b, b.]

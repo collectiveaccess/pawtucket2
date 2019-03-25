@@ -1055,6 +1055,8 @@ class BaseModel extends BaseObject {
 				$vn_end_date = isset($this->_FIELD_VALUES[$vs_end_field_name]) ? $this->_FIELD_VALUES[$vs_end_field_name] : null;
 				if ($vb_return_with_structure) {
 					$vs_prop = array('start' => $vn_start_date, 'end' => $vn_end_date);
+				} elseif ((isset($pa_options['sortable']) && $pa_options['sortable'])) {
+					$vs_prop = $vn_start_date."/".$vn_end_date;
 				} elseif (!caGetOption('GET_DIRECT_DATE', $pa_options, false) && !caGetOption('getDirectDate', $pa_options, false) && !caGetOption('rawDate', $pa_options, false)) {
 					$o_tep = new TimeExpressionParser();
 					if ($ps_field_type == FT_HISTORIC_DATERANGE) {
@@ -1063,8 +1065,6 @@ class BaseModel extends BaseObject {
 						$o_tep->setUnixTimestamps($vn_start_date, $vn_end_date);
 					}
 					$vs_prop = $o_tep->getText($pa_options);
-				} elseif ((isset($pa_options['sortable']) && $pa_options['sortable'])) {
-					$vs_prop = $vn_start_date; //."/".$vn_timestamp;
 				} else {
 					$vs_prop = $vn_start_date; //array($vn_start_date, $vn_end_date);
 				}
@@ -1351,7 +1351,7 @@ class BaseModel extends BaseObject {
 									}
 								} else {
 									$vm_orig_value = $vm_value;
-									$vm_value = preg_replace("/[^\d-.]+/", "", $vm_value); # strip non-numeric characters
+									$vm_value = preg_replace("/[^\d\-\.]+/", "", $vm_value); # strip non-numeric characters
 									if (!preg_match("/^[\-]{0,1}[\d.]+$/", $vm_value)) {
 										$this->postError(1100,_t("'%1' for %2 is not numeric", $vm_orig_value, $vs_field),"BaseModel->set()", $this->tableName().'.'.$vs_field);
 										return false;
@@ -1636,6 +1636,7 @@ class BaseModel extends BaseObject {
 						
 						$va_matches = null;
 						
+						$vm_value = html_entity_decode($vm_value);
 						if (
 							is_string($vm_value) 
 							&& 
@@ -7885,9 +7886,9 @@ class BaseModel extends BaseObject {
 			while($qr_sort_res->nextHit()) {
 				$va_key = array();
 				foreach($pa_sort as $vs_sort) {
-					$va_key[] = $qr_sort_res->get($vs_sort);
+					$va_key[] = str_pad(substr($qr_sort_res->get($vs_sort), 10), 10, " ", STR_PAD_LEFT);
 				}
-				$va_sort_keys[$vn_i] = join("_", $va_key)."_{$vn_i}";
+				$va_sort_keys[$vn_i] = join("", $va_key)."".str_pad("{$vn_i}", 7, " ", STR_PAD_LEFT);
 				$vn_i++;
 			}
 			
@@ -8264,7 +8265,7 @@ class BaseModel extends BaseObject {
 				'select_item_text', 'hide_select_if_only_one_option', 'field_errors', 'display_form_field_tips', 'form_name',
 				'no_tooltips', 'tooltip_namespace', 'extraLabelText', 'width', 'height', 'label', 'list_code', 'hide_select_if_no_options', 'id',
 				'lookup_url', 'progress_indicator', 'error_icon', 'maxPixelWidth', 'displayMediaVersion', 'FIELD_TYPE', 'DISPLAY_TYPE', 'choiceList',
-				'readonly', 'description', 'hidden', 'checkAccess', 'usewysiwygeditor'
+				'readonly', 'description', 'hidden', 'checkAccess', 'usewysiwygeditor', 'placeholder'
 			) 
 			as $vs_key) {
 			if(!isset($pa_options[$vs_key])) { $pa_options[$vs_key] = null; }
@@ -8824,7 +8825,7 @@ $pa_options["display_form_field_tips"] = true;
 							if ($vn_display_height > 1) {
 								$vs_element = '<'.$vs_text_area_tag_name.' name="'.$pa_options["name"].'" rows="'.$vn_display_height.'" cols="'.$vn_display_width.'"'.($pa_options['readonly'] ? ' readonly="readonly" disabled="disabled"' : '').' wrap="soft" '.$vs_js.' id=\''.$pa_options["id"]."' style='{$vs_dim_style}' ".$vs_css_class_attr.">".$this->escapeHTML($vm_field_value).'</'.$vs_text_area_tag_name.'>'."\n";
 							} else {
-								$vs_element = '<input name="'.$pa_options["name"].'" type="text" size="'.($pa_options['size'] ? $pa_options['size'] : $vn_display_width).'"'.($pa_options['readonly'] ? ' readonly="readonly" ' : '').' value="'.$this->escapeHTML($vm_field_value).'" '.$vs_js.' id=\''.$pa_options["id"]."' {$vs_css_class_attr} style='{$vs_dim_style}' autocomplete='off' />\n";
+								$vs_element = '<input name="'.$pa_options["name"].'" type="text" size="'.($pa_options['size'] ? $pa_options['size'] : $vn_display_width).'"'.($pa_options['readonly'] ? ' readonly="readonly" ' : '').' value="'.$this->escapeHTML($vm_field_value).'" '.$vs_js.' id=\''.$pa_options["id"]."' {$vs_css_class_attr} style='{$vs_dim_style}'/>\n";
 							}
 							
 							if (isset($va_attr['UNIQUE_WITHIN']) && is_array($va_attr['UNIQUE_WITHIN'])) {
@@ -9020,7 +9021,7 @@ $pa_options["display_form_field_tips"] = true;
 					$vn_max_length = $va_attr["BOUNDS_LENGTH"][1];
 					$vs_max_length = '';
 					if ($vn_max_length > 0) $vs_max_length = 'maxlength="'.$vn_max_length.'"';
-					$vs_element = '<input type="password" name="'.$pa_options["name"].'" id="'.$pa_options["id"].'" value="'.$this->escapeHTML($vm_field_value).'" size="'.$vn_display_width.'" '.$vs_max_length.' '.$vs_js.' autocomplete="off" '.$vs_css_class_attr." style='{$vs_dim_style}'".($pa_options['readonly'] ? ' readonly="readonly" ' : '')."/>";
+					$vs_element = '<input type="password" name="'.$pa_options["name"].'" id="'.$pa_options["id"].'" value="'.$this->escapeHTML($vm_field_value).'" size="'.$vn_display_width.'" '.$vs_max_length.' '.$vs_js.' autocomplete="off" '.$vs_css_class_attr." style='{$vs_dim_style}'".($pa_options['readonly'] ? ' readonly="readonly" ' : '')." ".($pa_options['placeholder'] ? "placeholder='".htmlentities($pa_options['placeholder'])."'" : "")."/>";
 					break;
 				# ----------------------------
 				case(FT_BIT):
@@ -9884,6 +9885,7 @@ $pa_options["display_form_field_tips"] = true;
 				$t_item_rel->clear();
 				$t_item_rel->setMode(ACCESS_WRITE);
 				unset($va_row[$vs_rel_pk]);
+				$va_row['source_info'] = '';
 				$va_row[$vs_item_pk] = $pn_to_id;
 				 
 				$t_item_rel->set($va_row);

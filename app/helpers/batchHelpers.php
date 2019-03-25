@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2012-2018 Whirl-i-Gig
+ * Copyright 2012-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -310,7 +310,7 @@
         $ps_match_type = caGetOption('matchType', $pa_options, null);
         
         // if value is a path rather than a simple file name add the path onto the existing directory path
-        if (sizeof(($va_file_bits = preg_split("![\/\\\\]+!", $ps_value)) > 1)) {
+        if (sizeof(($va_file_bits = preg_split("![\/\\\\]+!", $ps_value))) > 1) {
             $ps_value = array_pop($va_file_bits);
             $ps_directory .= "/".join("/", $va_file_bits);
         }
@@ -420,7 +420,7 @@
                             if ($vb_match) {  $va_matched_files[] = $vs_file; }
                             
                         } else {
-                            if ($o_log) $o_log->logDebug(_t("Couldn't match name %1 on regex %2",$vs_match_name,$vs_regex));
+							if ($o_log) $o_log->logDebug(_t("Couldn't match name %1 on regex %2",$vs_match_name,$vs_regex));
                         }
                     }
                 }

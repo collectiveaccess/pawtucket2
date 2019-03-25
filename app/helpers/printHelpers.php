@@ -621,7 +621,7 @@
 	    
 	    $vn_item_id = $t_item->getPrimaryKey();
 	    
-        $vs_buf = $po_view->render($request->getViewsDirectoryPath().'/bundles/summary_download_options_html.php');
+        $vs_buf = $po_view->render($request->getViewsDirectoryPath(true).'/bundles/summary_download_options_html.php');
     
         if ($vs_display_select_html = $t_display->getBundleDisplaysAsHTMLSelect('display_id', array('onchange' => 'jQuery("#caSummaryDisplaySelectorForm").submit();',  'class' => 'searchFormSelector'), array('table' => $t_item->tableNum(), 'value' => $t_display->getPrimaryKey(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'user_id' => $request->getUserID(), 'restrictToTypes' => array($t_item->getTypeID()), 'context' => 'editor_summary'))) {
 
@@ -634,7 +634,7 @@
                             }
                     </script>
  </div>\n";
-            $vs_buf .= caFormTag($request, 'Summary', 'caSummaryDisplaySelectorForm').
+            $vs_buf .= caFormTag($request, 'Summary', 'caSummaryDisplaySelectorForm', null, 'post', 'multipart/form-data', '_top', ['noCSRFToken' => true, 'disableUnsavedChangesWarning' => true]).
             "<div class='searchFormSelector' style='float:right;'>". _t('Display').": {$vs_display_select_html}</div>
             <input type='hidden' name='".$t_item->primaryKey()."' value='{$vn_item_id}'/>
             </form>\n";
