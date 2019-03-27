@@ -52,6 +52,7 @@
 ?><!DOCTYPE html>
 <html lang="en"  <?php print ((strtoLower($this->request->getController()) == "front") || (strtoLower($this->request->getAction()) == "parallax")) ? "class='frontContainer animatedParallaxContainer'" : ""; ?>>
 	<head>
+	<link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
