@@ -1253,6 +1253,9 @@ a.browseRemoveFacet img {
 #lbTimelineContainer{
 	height:500px;
 }
+#confirm-delete .glyphicon{
+	color:#FFF !important;
+}
 /* --------------------------------- */
 /* classroom */
 /* --------------------------------- */
@@ -1685,6 +1688,7 @@ a.browseRemoveFacet img {
 	text-decoration:none;
 }
 .jcarousel-wrapper, .jcarousel {
+	/*width:600px !important;*/
 	width:100% !important;
 }
 #detailComments{

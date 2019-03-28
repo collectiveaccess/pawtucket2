@@ -33,7 +33,7 @@
 	$vs_view			= $this->getVar('view');
 	$vs_browse_type		= $this->getVar('browse_type');
 	$o_browse			= $this->getVar('browse');
-	
+	$vs_table 			= $this->getVar('table');	
 	$vn_facet_display_length_initial = 7;
 	$vn_facet_display_length_maximum = 60;
 	
@@ -91,7 +91,9 @@
 				}
 			}
 		}
-		print "<div><hr/>".caNavLink($this->request, 'Is Deaccessioned', '', 'Browse', 'objects', 'facet/deaccession_facet/id/1')."</div>";
+		if($vs_table == "ca_objects"){
+			print "<div><hr/>".caNavLink($this->request, 'Is Deaccessioned', '', 'Browse', 'objects_deaccessioned', '')."<br/><br/></div>";
+		}
 		print "</div><!-- end bRefine -->\n";
 ?>
 	<script type="text/javascript">

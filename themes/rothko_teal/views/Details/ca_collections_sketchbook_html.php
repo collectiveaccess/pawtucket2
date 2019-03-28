@@ -6,7 +6,8 @@
 	$vn_id = $t_item->get('ca_collections.collection_id');
 	
 	$t_list = new ca_lists();
-	$vs_list_value =  $t_list->getItemIDFromList('yes_no', 'yes');
+	$yes_list_value_id =  $t_list->getItemIDFromList('yes_no', 'yes');
+	$current_list_value_id =  $t_list->getItemIDFromList('current_previous', 'current');
 
 ?>
 <div class="container">
@@ -49,7 +50,7 @@
 			while($qr_collections->nextHit()) {
 				if ($qr_collections->get('ca_collections.deleted') === null) { continue; } // you check for null because get() won't return info about deleted items
 				
-				if ($qr_collections->get('ca_collections_x_collections.current_collection') == $vs_list_value) {
+				if ($qr_collections->get('ca_collections_x_collections.current_collection') == $current_list_value_id) {
 					$vn_current_collection_id = $qr_collections->get('ca_collections_x_collections.collection_id');
 					$t_collection = new ca_collections($vn_current_collection_id);
 					if ($t_collection->get('ca_collections.public_private', array('convertCodesToDisplayText' => true)) != 'private'){
@@ -62,7 +63,7 @@
 					if ($vs_credit_line = $qr_collections->get('ca_collections_x_collections.collection_line', array('restrictToTypes' => array('collection', 'other')))) {
 						print ", ".$vs_credit_line;
 					}
-					if ($qr_collections->get('ca_collections_x_collections.uncertain') == $vs_list_value){
+					if ($qr_collections->get('ca_collections_x_collections.uncertain') == $yes_list_value_id){
 						"<span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>";
 					}
 					print "</div></div><!-- end unit -->";							
@@ -73,7 +74,7 @@
 			print "<div class='unit row'><div class='{$vn_label_col} label'>Credit</div><div class='$vn_data_col'>".$vs_credit."</div></div>";
 		}
 		if ($vs_inst = $t_item->get('ca_collections.institutional_id')) {
-			print "<div class='unit row'><div class='{$vn_label_col} label'>Institutional id</div><div class='$vn_data_col'>".$vs_inst."</div></div>";
+			print "<div class='unit row'><div class='{$vn_label_col} label'>Institution Identifier</div><div class='$vn_data_col'>".$vs_inst."</div></div>";
 		}				
 		if ($vs_provenance_note = $t_item->get('ca_collections.provenance_note')) {
 			print "<div class='unit row'><div class='{$vn_label_col} label'>Provenance Notes</div><div class='$vn_data_col'>".$vs_provenance_note."</div></div>";
@@ -84,9 +85,9 @@
 		if ($va_keywords = $t_item->get('ca_list_items.item_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 			$va_keyword_links = array();
 			foreach ($va_keywords as $va_key => $va_keyword_id) {
-				$va_keyword_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_keyword_id), '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
+				$va_keyword_links[] = caNavLink($this->request, ucFirst(caGetListItemByIDForDisplay($va_keyword_id)), '', '', 'Browse', 'artworks/facet/term_facet/id/'.$va_keyword_id);	
 			}
-			print "<div class='unit row'><div class='{$vn_label_col} label'>Keywords</div><div class='$vn_data_col'>".join(', ', $va_keyword_links)."</div></div>";
+			print "<div class='unit row'><div class='{$vn_label_col} label'>Tags</div><div class='$vn_data_col'>".join(', ', $va_keyword_links)."</div></div>";
 		}
 		print "<div class='detailDivider row' style='margin-bottom:60px;'></div>";							
 ?>			
@@ -141,7 +142,7 @@
 					if ($vs_lot_number = $t_prov_rel->get('ca_collections_x_collections.lot_number')) {
 						$vs_buf[]= "Lot number ".$vs_lot_number;
 					}
-					if ($t_prov_rel->get('ca_collections_x_collections.gift_artist') == $vs_list_value) {
+					if ($t_prov_rel->get('ca_collections_x_collections.gift_artist') == $yes_list_value_id) {
 						$vs_buf[] = "gift of the artist";
 					}
 					if ($t_prov_rel->get('ca_collections_x_collections.sold_yn') == 163) { 
@@ -154,7 +155,7 @@
 						$vs_provenance_line.= ", ".$vs_remark;
 					}
 				}
-				if ($t_prov_rel->get('ca_collections_x_collections.uncertain') == $vs_list_value) {
+				if ($t_prov_rel->get('ca_collections_x_collections.uncertain') == $yes_list_value_id) {
 					$vs_provenance_line.= " <span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>";
 				}
 				$vs_provenance_line.= "<i class='fa fa-chevron-right'></i><!-- end prov entry -->";

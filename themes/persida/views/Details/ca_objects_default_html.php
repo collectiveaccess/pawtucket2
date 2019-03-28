@@ -108,6 +108,7 @@
 				if ($vs_crates = $t_object->get('ca_objects.crate_number')) {
 					print "<div class='unit'><h6>Number of Crates</h6>".$vs_crates."</div>"; 
 				}
+				$vb_crate_dim = false;
 				if ($va_crate_dimensions = $t_object->get('ca_objects.crate_dimensions', array('returnWithStructure' => true))) {
 					$vs_buf = "";
 					foreach ($va_crate_dimensions as $va_t => $va_crate_dimensions_array) {
@@ -147,6 +148,7 @@
 							print "<div class='unit'><h6>Crate Dimensions</h6>";
 							print $vs_buf;
 							print "</div>";
+							$vb_crate_dim = true;
 						}	
 					}
 				}
@@ -156,7 +158,9 @@
 				
 				# current location goes here
 				
-				print "<hr/>";
+				if($vs_crates || $vb_crate_dim || $vs_notes){
+					print "<hr/>";
+				}
 				
 				$vs_buf_install = "";
 				if ($vs_installation = $t_object->get('ca_objects.install_instructions_text')) {

@@ -46,7 +46,7 @@
 	if(is_array($va_chron_entry)){
 		$va_chron_text_grouped_by_date = array();
 		foreach($va_chron_entry as $k => $va_chron_info){
-			$va_chron_text_grouped_by_date[$va_chron_info["chronology_date_sort_"]][] = "<div class='unit'><H6>".$va_chron_info["chronology_date"]."</H6>".$va_chron_info["chronology_text"]."</div>";
+			$va_chron_text_grouped_by_date[$va_chron_info["chronology_date_sort_"]][] = "<div class='unit'><H6>".(($va_chron_info["chronology_date_display"]) ? $va_chron_info["chronology_date_display"] : $va_chron_info["chronology_date"])."</H6>".$va_chron_info["chronology_text"]."</div>";
 			ksort($va_chron_text_grouped_by_date);
 		}
 		foreach($va_chron_text_grouped_by_date as $vn_sort_date => $va_chron_text_by_date){

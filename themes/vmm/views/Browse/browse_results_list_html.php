@@ -60,7 +60,7 @@
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
-
+	$vs_action = $this->request->getAction();
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
@@ -86,7 +86,7 @@
 				}
 			
 				$qr_res->seek($vn_start);
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'useRelatedObjectRepresentations' => true, 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			} else {
 				$va_images = null;
 			}
@@ -115,8 +115,15 @@
 					if($vs_table == "ca_occurrences"){
 						$vs_idno_detail_link = "";
 						$vs_label_detail_link 	= caDetailLink($this->request, trim($qr_res->get("ca_occurrences.vesprefix", array("convertCodesToDisplayText" => true))." <i>".$qr_res->get("{$vs_table}.preferred_labels")."</i> ".$qr_res->get("ca_occurrences.vessuffix", array("convertCodesToDisplayText" => true))), '', $vs_table, $vn_id);
+					}elseif($vs_table == "ca_collections"){
+						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.type_id", array("convertCodesToDisplayText" => true)).": ".$qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					}else{
-						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+						$vs_non_preferred_label = $vs_tmp_npl = "";
+						if(($vs_action == "artifacts") && ($vs_tmp_npl = $qr_res->get("{$vs_table}.nonpreferred_labels", array("delimiter" => ", ")))){
+							$vs_non_preferred_label = "<br/>".$vs_tmp_npl;
+						}
+						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels").$vs_non_preferred_label, '', $vs_table, $vn_id);
+						
 					}
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";

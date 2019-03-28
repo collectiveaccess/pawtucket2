@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2018 Whirl-i-Gig
+ * Copyright 2007-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -955,7 +955,7 @@ function caFileIsIncludable($ps_file) {
 			} else {
 				$vn_val = '';
 			}
-			$vn_val = sprintf("%4.4f", ((float)$va_matches[1] + $vn_val));
+			$vn_val = sprintf("%4.4f", ((float)$va_matches[1] + (float)$vn_val));
 
 			$vn_val = caConvertFloatToLocale($vn_val, $locale);
 			$ps_fractional_expression = str_replace($va_matches[0], $vn_val, $ps_fractional_expression);
@@ -1608,14 +1608,35 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ---------------------------------------
 	/**
-	  * Converts Unix timestamp to historic date timestamp
+	  * Synonym for caUnixTimestampToHistoricTimestamp
 	  *
 	  * @param int $pn_timestamp A Unix-format timestamp
 	  * @return float Equivalent value as floating point historic timestamp value, or null if Unix timestamp was not valid.
 	  */
 	function caUnixTimestampToHistoricTimestamps($pn_timestamp) {
+		return caUnixTimestampToHistoricTimestamp($pn_timestamp);
+	}
+	# ---------------------------------------
+	/**
+	  * Converts Unix timestamp to historic date timestamp
+	  *
+	  * @param int $pn_timestamp A Unix-format timestamp
+	  * @return float Equivalent value as floating point historic timestamp value, or null if Unix timestamp was not valid.
+	  */
+	function caUnixTimestampToHistoricTimestamp($pn_timestamp) {
 		$o_tep = new TimeExpressionParser();
 		return $o_tep->unixToHistoricTimestamp($pn_timestamp);
+	}
+	# ---------------------------------------
+	/**
+	  * Converts historic date timestamp Unix timestamp
+	  *
+	  * @param int $pn_timestamp A Unix-format timestamp
+	  * @return float Equivalent value as Unix timestamp or null if historic timestamp was not valid or is before 1970.
+	  */
+	function caHistoricTimestampToUnixTimestamp($pn_timestamp) {
+		$o_tep = new TimeExpressionParser();
+		return $o_tep->historicToUnixTimestamp($pn_timestamp);
 	}
 	# ---------------------------------------
 	/**
@@ -2619,6 +2640,49 @@ function caFileIsIncludable($ps_file) {
 		return false;
 	}
 	# ----------------------------------------
+	/** 
+	 *
+	 */
+	function caGetDirectoryTotalSize($path, $recursive=true) {
+		$total = 0;
+		$files = scandir($path);
+
+		foreach($files as $t) {
+			if (is_dir(rtrim($path, '/') . '/' . $t)) {
+				if (!$recursive) { continue; }
+				if (($t !== ".") && ($t !== "..")) {
+					$total += caGetDirectoryTotalSize(rtrim($path, '/') . '/' . $t);
+				}
+			} else {
+				$total += filesize(rtrim($path, '/') . '/' . $t);
+			}
+		}
+		return $total;
+	}
+	# ----------------------------------------
+	/** 
+	 *
+	 */
+	function caGetFileCountForDirectory($path, $recursive=true) {
+		$total = 0;
+		$files = scandir($path);
+
+		foreach($files as $t) {
+			if (($t === ".") || ($t === "..")) { continue; }
+		
+			if (is_dir(rtrim($path, '/') . '/' . $t)) {
+				if (!$recursive) { continue; }
+				$total += caGetFileCountForDirectory(rtrim($path, '/') . '/' . $t);
+			} else {
+				$total++;
+			}
+		}
+		return $total;
+	}
+	# ----------------------------------------
+	/** 
+	 *
+	 */
 	function caHumanFilesize($bytes, $decimals = 2) {
 		$size = array('B','KiB','MiB','GiB','TiB');
 		$factor = floor((strlen($bytes) - 1) / 3);
@@ -2710,36 +2774,43 @@ function caFileIsIncludable($ps_file) {
 		    caLogEvent('DEBG', "Invalid parameters for ResourceSpace export. Check your configuration!", 'caExportDataToResourceSpace');
 			return false;
 		}
+		if (!file_exists($ps_local_filepath)) { 
+		    return null; 
+		}
         $vs_content = file_get_contents($ps_local_filepath);
         $va_records = json_decode($vs_content, true);
-	foreach($va_records as $vs_key => $va_value){
-	    if($vs_key !== 0){
-	        $va_records = [$va_records];
-	    }
-	    break;
-	}
+       
+        foreach($va_records as $vs_key => $va_value){
+            if($vs_key !== 0){
+                $va_records = [$va_records];
+            }
+            break;
+        }
+        
         $o_client = new \GuzzleHttp\Client(['base_uri' => $ps_base_url]);
         foreach($va_records as $va_record){
             if(!($vs_media_url = $va_record['media_url'])){
                 $vs_media_url = '';
-            } else {
-                unset($va_record['media_url']);
             }
             if(!($vs_collection_name = $va_record['collection_name'])){
                 $vs_collection_name = '';
-            } else {
-                unset($va_record['collection_name']);
+            } 
+            if (!preg_match("!^http!", $vs_media_url)) { 
+                $vs_media_url = __CA_SITE_PROTOCOL__."://{$vs_media_url}";
             }
-	    if((!$vs_resource_type = $va_record['type'])){
-		$vs_resource_type = 0;
-	    } else {
-		unset($va_record['type']);
-	    }
-            $o_temp = array();
+            if((!$vs_resource_type = $va_record['type'])){
+                $vs_resource_type = 0;
+            }
+            
+            foreach($va_record as $k => $v) {
+                if (!is_numeric($k)) { unset($va_record[$k]);}    
+            }
+            
             try{
                 $vs_query = 'user='.$ps_user.'&function=create_resource&param1='.$vs_resource_type.'&param2=0&param3='.rawurlencode($vs_media_url).'&param4=&param5=&param6=&param7='.rawurlencode(json_encode($va_record));
                 $vs_hash = hash('sha256', $ps_key.$vs_query);
                 $va_response = $o_client->request('GET', '?'.$vs_query.'&sign='.$vs_hash);
+                
                 $vn_rs_id = json_decode($va_response->getBody(), true);
                 if(!$vn_rs_id){
                     caLogEvent('ERR', "Could not create Resource. Check your ResourceSpace configuration", 'caExportDataToResourceSpace');
@@ -2764,7 +2835,8 @@ function caFileIsIncludable($ps_file) {
                         $va_response = $o_client->request('GET', '?'.$vs_query.'&sign='.$vs_hash);
                         $vb_success = json_decode($va_response->getBody(), true);
                         if($vb_success){
-                            $vs_query = 'user='.$va_api['user'].'&function=search_public_collections&param1='.rawurlencode($vs_collection_name).'&param2=name&param3=ASC&param4=0&param5=0';
+                            #$vs_query = 'user='.$va_api['user'].'&function=search_public_collections&param1='.rawurlencode($vs_collection_name).'&param2=name&param3=ASC&param4=0&param5=0';
+                            $vs_query = 'user='.$va_api['user'].'&function=get_user_collections';
                             $vs_hash = hash('sha256', $ps_key.$vs_query);
 
                             $va_response = $o_client->request('GET', '?'.$vs_query.'&sign='.$vs_hash);
@@ -3241,12 +3313,24 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
+	 * Test a GUID
+	 *
+	 * @param string $guid
+	 * 
+	 * @return bool True if $guid is a valid guid
+	 */
+	function caIsGUID($guid){
+		return preg_match("/^(\{)?[a-f\d]{8}(-[a-f\d]{4}){4}[a-f\d]{8}(?(1)\})$/i", $guid);
+	}
+	# ----------------------------------------
+	/**
 	 * Generate a CSRF token and add to session CSRF store
 	 *
 	 * @param RequestHTTP $po_request Current request
 	 * @return string
 	 */
 	function caGenerateCSRFToken($po_request=null){
+		$session_id = $po_request ? $po_request->getSessionID() : 'none';
 	    if(function_exists("random_bytes")) {           // PHP 7
 	        $vs_token = bin2hex(random_bytes(32));
 	    } elseif (function_exists("openssl_random_pseudo_bytes")) {     // PHP 5.x with OpenSSL
@@ -3257,7 +3341,7 @@ function caFileIsIncludable($ps_file) {
             $vs_token = md5(uniqid(rand(), TRUE));   // this is not very good, and is only used if one of the more secure options above is available (one of them should be in almost all cases)
 	    }
 	    if ($po_request) {
-	        if (!is_array($va_tokens = Session::getVar('csrf_tokens'))) { $va_tokens = []; }
+	        if (!is_array($va_tokens = PersistentCache::fetch("csrf_tokens_{$session_id}", "csrf_tokens"))) { $va_tokens = []; }
 	        if (sizeof($va_tokens) > 300) { 
 	        	$va_tokens = array_filter($va_tokens, function($v) { return ($v > (time() - 28800)); });	// delete any token older than eight hours
 	    	}
@@ -3267,7 +3351,7 @@ function caFileIsIncludable($ps_file) {
 	    
 	        if (!isset($va_tokens[$vs_token])) { $va_tokens[$vs_token] = time(); }
 	        
-	        Session::setVar('csrf_tokens', $va_tokens);
+	        PersistentCache::save("csrf_tokens_{$session_id}", $va_tokens, "csrf_tokens");
 	    }
 	    return $vs_token;
 	}
@@ -3284,13 +3368,15 @@ function caFileIsIncludable($ps_file) {
 	 * @throws ApplicationException
 	 */
 	function caValidateCSRFToken($po_request, $ps_token=null, $pa_options=null){
+		$session_id = $po_request ? $po_request->getSessionID() : 'none';
+		
 	    if(!$ps_token) { $ps_token = $po_request->getParameter('crsfToken', pString); }
-	    if (!is_array($va_tokens = Session::getVar('csrf_tokens'))) { $va_tokens = []; }
+	    if (!is_array($va_tokens = PersistentCache::fetch("csrf_tokens_{$session_id}", "csrf_tokens"))) { $va_tokens = []; }
 	    
 	    if (isset($va_tokens[$ps_token])) { 
 	        if (caGetOption('remove', $pa_options, true)) {
 	            unset($va_tokens[$ps_token]);
-	            Session::setVar('csrf_tokens', $va_tokens);
+	        	PersistentCache::save("csrf_tokens_{$session_id}", $va_tokens, "csrf_tokens");
 	        }
 	        return true;
 	    }
@@ -3792,6 +3878,11 @@ function caFileIsIncludable($ps_file) {
 
 		for($i=0; $i < mb_strlen($ps_template); $i++) {
 			switch($vs_char = mb_substr($ps_template, $i, 1)) {
+				case '{':
+				    if (!$vb_in_tag && !$vb_in_single_quote && $vb_in_single_quote && (mb_substr($ps_template, $i+1, 1) === '^')) {
+				        continue;
+				    }
+				    break;
 				case '^':
 					if ($vb_in_tag) {
 					    if ($vs_last_char === '^') {
@@ -3811,6 +3902,7 @@ function caFileIsIncludable($ps_file) {
 						$vs_tag .= $vs_char;
 					}
 					break;
+				case '}':
 				case ' ':
 				case ',':
 				case '<':
@@ -3979,8 +4071,36 @@ function caFileIsIncludable($ps_file) {
 	    	default:
 	    		$last_item = array_pop($pa_items);
 	    		$list = join(caGetOption('delimiter', $pa_options, ', '), $pa_items);
-	    		return  ' '.caGetOption('conjunction', $pa_options, _t('and')).' '.$last_item;
+	    		return  $list.' '.caGetOption('conjunction', $pa_options, _t('and')).' '.$last_item;
 	    		break;
 	    }
+	}
+	# ----------------------------------------
+	/**
+	 * Return common root for a set of delimited strings, such as file paths.
+	 *
+	 * @param array $strings
+	 * @param string $delimiter
+	 * @param array $options No options are currently supported.
+	 *
+	 * @param string
+	 */
+	function caFindCommonRootForDelimitedStrings($strings, $delimiter='/', $options=null) {
+	    $acc = null;
+	    foreach($strings as $s) {
+	        $pieces = explode($delimiter, $s);
+	        if(!is_array($acc)) { $acc = $pieces; continue; }
+	        
+	        foreach($pieces as $i => $p) {
+	            if (!isset($acc[$i]) || ($acc[$i] !== $p)) {
+	                $acc = array_slice($acc, 0, $i);
+	            }
+	            
+	            if (sizeof($acc) == 0) {
+	                return null;
+	            }
+	        }
+	    }
+	    return join($delimiter, $acc);
 	}
 	# ----------------------------------------

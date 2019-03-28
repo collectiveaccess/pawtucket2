@@ -1,4 +1,5 @@
 <?php
+	$va_access_values = caGetUserAccessValues($this->request);
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
@@ -44,7 +45,7 @@
 				<div class='col-md-12 col-lg-12'>
 <?php					
 					print "<div class='exportCollection'>
-								<span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))
+								<span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $t_item->get("ca_collections.collection_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))
 								."<br/><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask An Archivist", "", "", "Contact",  "form", array('id' => $t_item->get("collection_id"), 'table' => 'ca_collections'))."</div>";
 ?>
 
@@ -53,7 +54,7 @@
 					}}}
 <?php					
 					if($t_item->get("ca_collections.parent_id")){
-						$va_path = explode(";", $t_item->getWithTemplate('<unit relativeTo="ca_collections.hierarchy" delimiter=";"><l>^ca_collections.preferred_labels.name</l></unit>'));
+						$va_path = explode("*", $t_item->getWithTemplate('<unit relativeTo="ca_collections.hierarchy" delimiter="*"><l>^ca_collections.preferred_labels.name</l></unit>'));
 						$va_path = array_slice($va_path, 0, (sizeof($va_path)-1));
 						if(is_array($va_path) && sizeof($va_path)){
 							print '<div class="unit"><H6>Part of</H6>'.implode(" > ", $va_path).'</div>';
@@ -70,8 +71,8 @@
 						<ifdef code="ca_collections.language"><div class="unit"><H6>Languages</H6>^ca_collections.language%delimiter=,_</div></ifdef>
 						<ifdef code="ca_collections.related_material"><div class="unit"><H6>Related materials</H6>^ca_collections.related_material</div></ifdef>
 						<ifdef code="ca_collections.reproRestrictions.reproduction|ca_collections.reproRestrictions.access_restrictions"><div class="unit"><H6>Restrictions</H6><ifdef code="ca_collections.reproRestrictions.reproduction"><b>Reproductions: </b>^ca_collections.reproRestrictions.reproduction<br/></ifdef><ifdef code="ca_collections.reproRestrictions.access_restrictions"><b>Access: </b>^ca_collections.reproRestrictions.access_restrictions</ifdef></div></ifdef>
-						<ifcount code="ca_entities" min="1"><H6>Related people</H6><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></ifcount>
-						<ifcount code="ca_occurrences" min="1" restrictToTypes="vessel"><H6>Related vessels</H6><unit relativeTo="ca_occurrences" restrictToTypes="vessel"><ifdef code="ca_occurrences.vesprefix">^ca_occurrences.vesprefix </ifdef><l><i>^ca_occurrences.preferred_labels</i></l>  ^ca_occurrences.vessuffix</unit></ifcount>
+						<ifcount code="ca_entities" min="1"><div class="unit"><H6>Related people</H6><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>
+						<ifcount code="ca_occurrences" min="1" restrictToTypes="vessel"><div class="unit"><H6>Related vessels</H6><unit relativeTo="ca_occurrences" restrictToTypes="vessel"><ifdef code="ca_occurrences.vesprefix">^ca_occurrences.vesprefix </ifdef><l><i>^ca_occurrences.preferred_labels</i></l>  ^ca_occurrences.vessuffix</unit></div></ifcount>
 					}}}
 <?php
 				$va_lcsh = $t_item->get("ca_collections.lcsh_terms", array("returnAsArray" => true));

@@ -54,7 +54,8 @@
 	jQuery(document).ready(function() {
 		var caSliderepresentation_ids = <?php print json_encode($va_representation_ids); ?>;
 		/* width of li */
-		$('.jcarousel, .jcarousel li').width($('.jcarousel').width());	// don't ask
+		$('.jcarousel, .jcarousel li, .jcarousel .video-js').width($('.jcarousel').width());	// don't ask
+		$('.jcarousel .video-js').height($('.jcarousel .video-js').width() * .5);
 		$( window ).resize(function() { $('.jcarousel li').width($('.jcarousel').width()); });
 
 		/* Carousel initialization */
@@ -63,6 +64,7 @@
 		}).on('jcarousel:createend jcarousel:animateend', function(event, carousel) {
 			var current_rep_id = parseInt($('.jcarousel').jcarousel('last').attr('id').replace('slide', ''));
 			var i = caSliderepresentation_ids.indexOf(current_rep_id);
+			console.log("current", current_rep_id, i, jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html());
 
 			if (event.type == 'jcarousel:animateend') {
 				if (!jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html()) {
@@ -70,7 +72,7 @@
 					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html('<div style=\'margin-top: 120px; text-align: center; width: 100%;\'>Loading...</div>');
 					jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).load('<?php print caNavUrl($this->request, '*', '*', 'GetMediaInline', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => '')); ?>' + caSliderepresentation_ids[i] + '/display/detail', function(e) {
 						// update carousel height with current slide height after ajax load
-						jQuery(this).find('img').on('load', function() {
+						jQuery(this).find('img').bind('load', function() {
 							jQuery('.jcarousel').height($('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).height());
 						});
 					});
@@ -129,9 +131,9 @@
 				}
 			});
 			
-		if({{{representation_id}}} > 0){
-			$('.jcarousel').jcarousel('scroll', $('#slide{{{representation_id}}}'));
-		}
+		//if({{{representation_id}}} > 0){
+		//	$('.jcarousel').jcarousel('scroll', $('#slide{{{representation_id}}}'));
+		//}
 	});
 </script>
 <?php

@@ -116,10 +116,10 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+					$vs_image = (($vs_table === 'ca_objects')||($vs_table === 'ca_occurrences')) ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
 					if(!$vs_image){
-						if ($vs_table == 'ca_objects') {
+						if (($vs_table === 'ca_objects')||($vs_table === 'ca_occurrences')) {
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
 							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
@@ -134,16 +134,27 @@
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 					if ($vs_table == 'ca_occurrences') {
-						$vs_info = null;
-						if ($va_venue = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue'), 'delimiter' => '<br/>'))) {
-							$vs_info.= "<br/>".$va_venue;
-						}
-						if ($va_edition = $qr_res->get('ca_occurrences.edition_bib', array('delimiter' => ', '))) {
-							$vs_info.= "<br/>".$va_edition;
-						}						
-						if ($va_dates = $qr_res->get('ca_occurrences.occurrence_dates', array('delimiter' => ', '))) {
-							$vs_info.= "<br/>".$va_dates;
-						}						
+						$t_list = new ca_lists();
+						$vs_exhibition_type = $t_list->getItemIDFromList("occurrence_types", "exhibition");
+						if ($qr_res->get('ca_occurrences.type_id') == $vs_exhibition_type) {
+							if ($va_venue = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('venue'), 'delimiter' => '<br/>'))) {
+								$vs_label_detail_link = $va_venue;
+							}
+							if ($va_dates = $qr_res->get('ca_occurrences.occurrence_dates', array('delimiter' => ', '))) {
+								$vs_label_detail_link.= "<br/>".$va_dates;
+							}
+							$vs_label_detail_link.= "<br/>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+							$vs_rep_detail_link = null;
+						} else {
+							$vs_info = null;
+
+							if ($va_edition = $qr_res->get('ca_occurrences.edition_bib', array('delimiter' => ', '))) {
+								$vs_info.= "<br/>".$va_edition;
+							}						
+							if ($va_dates = $qr_res->get('ca_occurrences.occurrence_dates', array('delimiter' => ', '))) {
+								$vs_info.= "<br/>".$va_dates;
+							}	
+						}					
 					}
 					if ($vs_table == 'ca_objects') {
 						if ($vs_artist = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'delimiter' => ', '))) {
@@ -156,6 +167,13 @@
 						} else {
 							$vs_date = null;
 						}
+						if ($vs_dimensions = $qr_res->getWithTemplate('<ifcount code="ca_objects.dimensions" min="1"><unit><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height H</ifdef><ifdef code="ca_objects.dimensions.dimensions_width"> x ^ca_objects.dimensions.dimensions_width W</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth"> x ^ca_objects.dimensions.dimensions_depth D</ifdef> <ifdef code="ca_objects.dimensions.height_in|ca_objects.dimensions.width_in|ca_objects.dimensions.depth_in">(</ifdef><ifdef code="ca_objects.dimensions.height_in">^ca_objects.dimensions.height_in H</ifdef><ifdef code="ca_objects.dimensions.width_in"> x ^ca_objects.dimensions.width_in W</ifdef><ifdef code="ca_objects.dimensions.depth_in"> x ^ca_objects.dimensions.depth_in D</ifdef><ifdef code="ca_objects.dimensions.height_in|ca_objects.dimensions.width_in|ca_objects.dimensions.depth_in">)</ifdef><ifdef code="ca_objects.dimensions.dimensions_weight">, ^ca_objects.dimensions.dimensions_weight Weight</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"><br/>^ca_objects.dimensions.dimensions_notes</ifdef></unit></ifcount>')) {
+							$vs_label_detail_link.= "<br/>".$vs_dimensions;
+						} elseif ($vs_dimensions = $qr_res->get('ca_objects.dimensions_readOnly')) {
+							$vs_label_detail_link.= "<br/>".$vs_dimensions;
+						} else {
+							$vs_dimensions = null;
+						}					
 					}
 					$vs_add_to_set_link = "";
 					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
@@ -169,6 +187,7 @@
 			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 				<div class='bResultListItemContent'>
+					<div class='listImage'>{$vs_rep_detail_link}</div>
 					<div class='bResultListItemText'>
 						<small>{$vs_idno_detail_link}</small><br/>{$vs_artist}{$vs_label_detail_link}{$vs_info}
 					</div><!-- end bResultListItemText -->

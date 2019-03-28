@@ -89,13 +89,13 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 				if($vb_collapse_link){
 					$vs_output .= "<div id='level".$qr_collections->get("ca_collections.collection_id")."' style='display:none;'>";
 				}
+				if(sizeof($va_child_ids)) {
+					$vs_output .=  printLevel($po_request, $va_child_ids, $o_config, $vn_level + 1, $va_options);
+				}
 				if($vn_rel_object_count){
 					$vs_output .= "<div style='margin-left:".(20*($vn_level))."px;'>";
 					$vs_output .= $qr_collections->getWithTemplate("<unit relativeTo='ca_objects' delimiter='<br/>'><l>^ca_objects.preferred_labels</l></unit>", array("checkAccess" => $va_access_values));
 					$vs_output .= "</div>";
-				}
-				if(sizeof($va_child_ids)) {
-					$vs_output .=  printLevel($po_request, $va_child_ids, $o_config, $vn_level + 1, $va_options);
 				}
 				if($vb_collapse_link){
 					$vs_output .= "</div>";

@@ -73,7 +73,7 @@ class DisplayTemplateParser {
 						$va_get_options['excludeTypes'] = DisplayTemplateParser::_getCodesFromAttribute($o_node, ['attribute' => 'excludeTypes']); 
 						$va_get_options['restrictToRelationshipTypes'] = DisplayTemplateParser::_getCodesFromAttribute($o_node, ['attribute' => 'restrictToRelationshipTypes']);
 						$va_get_options['excludeRelationshipTypes'] = DisplayTemplateParser::_getCodesFromAttribute($o_node, ['attribute' => 'excludeRelationshipTypes']);
-
+						$va_get_options['allDescendants'] = (int) $o_node->allDescendants ?: null;
 						if ($o_node->sort) {
 							$va_get_options['sort'] = preg_split('![ ,;]+!', $o_node->sort);
 							$va_get_options['sortDirection'] = $o_node->sortDirection;
@@ -83,7 +83,7 @@ class DisplayTemplateParser {
 							$va_row_ids = DisplayTemplateParser::_getRelativeIDsForRowIDs($ps_tablename, $vs_relative_to, $pa_row_ids, 'related', $va_get_options);
 				
 							if (!is_array($va_row_ids) || !sizeof($va_row_ids)) { return; }
-							$qr_res = caMakeSearchResult($ps_tablename, $va_row_ids, $va_search_result_opts);
+							$qr_res = caMakeSearchResult($ps_tablename, $va_row_ids, $pa_options);
 							if (!$qr_res) { return; }
 
 							/** @var HTML_Node $o_node */
@@ -569,6 +569,7 @@ class DisplayTemplateParser {
 					$va_get_options['hierarchyDirection'] = (string)$o_node->hierarchyDirection ?: null;
 					$va_get_options['maxLevelsFromTop'] = (int)$o_node->maxLevelsFromTop ?: null;
 					$va_get_options['maxLevelsFromBottom'] = (int)$o_node->maxLevelsFromBottom ?: null;
+					$va_get_options['allDescendants'] = (int)$o_node->allDescendants ?: null;
 					
 					if ($o_node->sort) {
 						$va_get_options['sort'] = preg_split('![ ,;]+!', $o_node->sort);
@@ -741,7 +742,8 @@ class DisplayTemplateParser {
                                         if (!is_array($va_relative_ids = $pr_res->get($t_rel_instance->tableName().".related.".$t_rel_instance->primaryKey(), $va_get_options))) { $va_relative_ids = []; }
 								        $va_relative_ids = array_values($va_relative_ids);
                                         
-								        $va_relation_ids = array_keys($t_instance->getRelatedItems($t_rel_instance->tableName(), array_merge($va_get_options, array('returnAs' => 'data', 'row_ids' => [$pr_res->getPrimaryKey()]))));
+                                        $rels = $t_instance->getRelatedItems($t_rel_instance->tableName(), array_merge($va_get_options, array('returnAs' => 'data', 'row_ids' => [$pr_res->getPrimaryKey()])));
+								        $va_relation_ids = is_array($rels) ? array_keys($rels) : [];
 								    }
 									$va_relationship_type_ids = array();
 									if (is_array($va_relation_ids) && sizeof($va_relation_ids)) {
@@ -804,8 +806,8 @@ class DisplayTemplateParser {
 							array_merge(
 								$pa_options,
 								[
-									'sort' => $va_unit['sort'],
-									'sortDirection' => $va_unit['sortDirection'],
+									'sort' => $va_get_options['sort'],
+									'sortDirection' => $va_get_options['sortDirection'],
 									'delimiter' => $vs_unit_delimiter,
 									'returnAsArray' => true,
 									'skipIfExpression' => $vs_unit_skip_if_expression,
@@ -1334,12 +1336,20 @@ class DisplayTemplateParser {
 		            if ($v) { 
 		                // If one not the other...
 		                $va_tag_opts['convertCodesToIdno'] = false;
+		                $va_tag_opts['convertCodesToValue'] = false;
 		            }
 		            break;
 		        case 'convertCodesToIdno':
 		            if ($v) { 
 		                // If one not the other...
 		                $va_tag_opts['convertCodesToDisplayText'] = false;
+		                $va_tag_opts['convertCodesToValue'] = false;
+		            }
+		        case 'convertCodesToValue':
+		            if ($v) { 
+		                // If one not the other...
+		                $va_tag_opts['convertCodesToDisplayText'] = false;
+		                $va_tag_opts['convertCodesToIdno'] = false;
 		            }
 		            break;
 		    }
@@ -1532,8 +1542,22 @@ class DisplayTemplateParser {
 		
 		$o_doc = str_get_dom($ps_template);	
 		$ps_template = str_replace("<~root~>", "", str_replace("</~root~>", "", $o_doc->html()));	// replace template with parsed version; this allows us to do text find/replace later
-		
+    
+        $o_dim_config = Configuration::load(__CA_APP_DIR__."/conf/dimensions.conf");
+        if($o_dim_config->get('omit_repeating_units_for_measurements_in_templates')) {
+		    $pa_options['dimensionsUnitMap'] = self::createDimensionsUnitMap($ps_template);    // list of dimensional units used by tags; needed to support convoluted function to omit repeating units on quantities
+		}
 		return DisplayTemplateParser::_processTemplateSubTemplates($o_doc->children, $pa_values, $pa_options);
+	}
+	# -------------------------------------------------------------------
+	/**
+	 *
+	 */
+	static private function createDimensionsUnitMap($ps_template, $pa_options=null) {
+	    $tags = array_map(function($v) { return array_shift(explode("~", $v)); }, $full_tags = caGetTemplateTags($ps_template));
+	    $units = array_map(function($v) { return preg_replace("!^units:!i", "", array_shift(array_filter(array_slice(explode("~", $v), 1), function($x) { $t=explode(":", $x); return ($t[0] == 'units');}))); }, array_filter($full_tags, function($v) { return strpos($v, "~") !== false; }));
+	
+	    return ['tags' => $tags, 'units' => $units];
 	}
 	# -------------------------------------------------------------------
 	/**
@@ -1666,11 +1690,26 @@ class DisplayTemplateParser {
 					$vs_val = join(" ", $vs_val);
 				}
 				
-				$vs_val = caProcessTemplateTagDirectives($vs_val, $va_tmp, []);
+				if (isset($pa_options['dimensionsUnitMap'])) {
+                    $t = array_slice($pa_options['dimensionsUnitMap']['tags'], $pa_options['tagIndex']+1);
+                
+                    $cur_unit = $pa_options['dimensionsUnitMap']['units'][$pa_options['tagIndex']];
+                    $next_unit = null;
+                
+                    $i = $pa_options['tagIndex'] + 1;
+                    foreach($t as $z) {
+                        if ($pa_values[$z]) { 
+                            $next_unit = $pa_options['dimensionsUnitMap']['units'][$i];  
+                            break;
+                        } 
+                        $i++;
+                    }
+                }
+				$vs_val = caProcessTemplateTagDirectives($vs_val, $va_tmp, ['omitUnits' => (isset($pa_options['dimensionsUnitMap']) && ($cur_unit == $next_unit))]);
 				
 				if ($pb_quote) { $vs_val = '"'.addslashes($vs_val).'"'; }
 				$vs_tag_proc = preg_quote($vs_tag, '/');
-				$ps_template = preg_replace("/\^(?={$vs_tag_proc}[^A-Za-z0-9_]+|{$vs_tag_proc}$){$vs_tag_proc}/", str_replace("$", "\\$", $vs_val), $ps_template);	// escape "$" to prevent interpretation as backreferences
+				$ps_template = preg_replace("/[\{]{0,1}\^(?={$vs_tag_proc}[^A-Za-z0-9_]+|{$vs_tag_proc}$){$vs_tag_proc}[\}]{0,1}/", str_replace("$", "\\$", $vs_val), $ps_template);	// escape "$" to prevent interpretation as backreferences
 			}
 			$pa_options['tagIndex']++;
 		}

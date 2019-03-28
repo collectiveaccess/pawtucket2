@@ -87,7 +87,7 @@
 
 ?>
 	</div>
-	<div class="col-sm-6 col-md-6 col-lg-6">{{{representationViewer}}}</div>
+	<div class="col-sm-6 col-md-6 col-lg-6" style="width: 580px;">{{{representationViewer}}}</div>
 </div><!-- end row -->
 <div class="row " style="border-bottom: 1px solid #d6d6d6;margin:40px -10px 10px -10px;"></div>	
 <?php

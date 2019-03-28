@@ -44,11 +44,12 @@
 		break;
 		# ---------------------------
 	}
-	if(!$vs_name){
+	if(!$vs_name && $t_item){
 		$vs_name = $t_item->get($ps_table.".preferred_labels.name");
 	}
-	$vs_idno = $t_item->get($ps_table.".idno");
-			
+	if($t_item && $ps_table){
+		$vs_idno = $t_item->get($ps_table.".idno");
+	}	
 	if($pn_object_id){
 		
 	}
@@ -56,7 +57,7 @@
 <div class="row"><div class="col-sm-12 col-lg-8 col-lg-offset-2">
 			<H1><?php print ($vs_typecode == "collection_object") ? _t("Ask a Curator") : _t("Ask an Archivist"); ?></H1>
 		<?php
-			if(sizeof($va_errors["display_errors"])){
+			if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
 				print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 			}
 		?>
@@ -68,6 +69,9 @@
 						<div class="col-sm-12">
 							<p>{{{ask_contact_intro}}}</p>
 							<br/>
+<?php
+						if($t_item && $ps_table){
+?>
 							<p><b>Title: </b><?php print $vs_name; ?>
 							<br/><b>Regarding this URL: </b><a href="<?php print $vs_url; ?>" class="purpleLink"><?php print $vs_url; ?></a>
 							</p>
@@ -76,6 +80,9 @@
 							<input type="hidden" name="itemURL" value="<?php print ($vs_admin_url) ? $vs_admin_url : $vs_url; ?>">
 							<input type="hidden" name="id" value="<?php print $pn_id; ?>">
 							<input type="hidden" name="table" value="<?php print $ps_table; ?>">
+<?php
+						}
+?>
 				<hr/><br/><br/>
 				
 						</div>
@@ -83,7 +90,6 @@
 					<div class="row">
 						<div class="col-sm-4">
 				
-							<input style='display:none;' type="text" class="" id="item"  name="item" value="<?php print $vs_request; ?>">
 							<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 								<label for="name">Your Name</label>
 								<input type="text" class="form-control input-sm" id="email" placeholder="Enter name" name="name" value="{{{name}}}">

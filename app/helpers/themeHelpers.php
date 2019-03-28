@@ -1164,7 +1164,7 @@
 			</script>\n";
 		}
 		
-		$po_view->setVar("form", caFormTag($po_request, "{$ps_function}", $ps_form_name, $ps_controller, 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true, 'submitOnReturn' => true)));
+		$po_view->setVar("form", caFormTag($po_request, "{$ps_function}", $ps_form_name, $ps_controller, 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true, 'disableUnsavedChangesWarning' => true, 'submitOnReturn' => true)));
  		$po_view->setVar("/form", $vs_script.caHTMLHiddenInput("_advancedFormName", array("value" => $ps_function)).caHTMLHiddenInput("_formElements", array("value" => join('|', $va_form_elements))).caHTMLHiddenInput("_advanced", array("value" => 1))."</form>");
  			
 		return $va_form_elements;
@@ -1295,14 +1295,6 @@ jQuery(document).ready(function() {
 		
 		$vs_sub_collection_label_template = $o_collections_config->get("export_sub_collection_label_template");
 		$vs_sub_collection_desc_template = $o_collections_config->get("export_sub_collection_description_template");
-		$vs_sub_collection_sort = $o_collections_config->get("export_sub_collection_sort");
-		if(!$vs_sub_collection_sort){
-			$vs_sub_collection_sort = "ca_collections.idno_sort";
-		}
-		$vb_dont_show_top_level_description = false;
-		if($o_collections_config->get("dont_show_top_level_description") && ($vn_level == 1)){
-			$vb_dont_show_top_level_description = true;
-		}
 		$vs_object_template = $o_collections_config->get("export_object_label_template");
 		$va_collection_type_icons = array();
 		$va_collection_type_icons_by_idnos = $o_collections_config->get("export_collection_type_icons");
@@ -1324,7 +1316,7 @@ jQuery(document).ready(function() {
 				# --- related objects?
 				$va_object_ids = $qr_collections->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values));
 				$vn_rel_object_count = sizeof($va_object_ids);
-				$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => $vs_sub_collection_sort));
+				$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.idno_sort"));
 				$vs_output .= "<div class='unit' style='margin-left:".(40*($vn_level - 1))."px;'>";
 				if($vs_icon){
 					$vs_output .= $vs_icon." ";
@@ -1341,11 +1333,9 @@ jQuery(document).ready(function() {
 					$vs_output .= " <span class='small'>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</span>";
 				}
 				$vs_output .= "<br/>";
-				if(!$vb_dont_show_top_level_description){
-					$vs_desc = "";
-					if($vs_sub_collection_desc_template && ($vs_desc = $qr_collections->getWithTemplate($vs_sub_collection_desc_template))){
-						$vs_output .= "<p>".$vs_desc."</p>";
-					}
+				$vs_desc = "";
+				if($vs_sub_collection_desc_template && ($vs_desc = $qr_collections->getWithTemplate($vs_sub_collection_desc_template))){
+					$vs_output .= "<p>".$vs_desc."</p>";
 				}
 				# --- objects
 				if(sizeof($va_object_ids)){

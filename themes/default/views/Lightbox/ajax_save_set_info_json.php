@@ -33,7 +33,7 @@
     $vb_is_insert			= $this->getVar('is_insert');
     $vs_block 				= $this->getVar('block');
 	
-	if (sizeof($va_errors)) {
+	if (is_array($va_errors) && sizeof($va_errors)) {
 		print json_encode(array('status' => 'error', 'errors' => $va_errors));
 	} else {
 		print json_encode(array('status' => 'ok', 'message' => $vs_message, 'set_id' => $vn_set_id, 'name' => $vs_name, 'description' => $vs_description, 'is_insert' => $vb_is_insert, 'block' => $vs_block));

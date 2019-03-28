@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+ 	$va_access_values = caGetUserAccessValues($this->request);
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
@@ -37,6 +37,7 @@
 	
 	$vs_detail_tools = "<div id='detailTools'>
 						<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask An Archivist", "", "", "Contact",  "form", array('id' => $vn_id, 'table' => 'ca_objects'))."</div><!-- end detailTool -->
+						<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Order Reproduction", "", "", "ImageLicensing",  "form", array('id' => $vn_id, 'table' => 'ca_objects'))."</div><!-- end detailTool -->
 						<div class='detailTool'><a href='#' onclick='jQuery(\"#detailComments\").slideToggle(); return false;'><span class='glyphicon glyphicon-comment'></span>Comments and Tags (".(sizeof($va_comments) + sizeof($va_tags)).")</a></div><!-- end detailTool -->
 						<div id='detailComments'>".$this->getVar("itemComments")."</div><!-- end itemComments -->
 					</div><!-- end detailTools -->";
@@ -45,7 +46,11 @@
 	
 	$va_breadcrumb = array(caNavLink($this->request, _t("Home"), "", "", "", ""));
 	if(strpos(strToLower($vs_back_url), "detail") === false){
-		$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Archival Items</a>";
+		if(strpos(strToLower($vs_back_url), "gallery") !== false){
+			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Highlights</a>";
+		}else{
+			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Archival Items</a>";
+		}
 		$va_breadcrumb[] = $t_object->get("ca_objects.preferred_labels");
 	}
 ?>
@@ -106,7 +111,7 @@
 				{{{<ifdef code="ca_objects.reproRestrictions.reproduction|ca_objects.reproRestrictions.access_restrictions"><div class="unit"><H6>Restrictions</H6><ifdef code="ca_objects.reproRestrictions.reproduction"><b>Reproduction</b>: ^ca_objects.reproRestrictions.reproduction<br/></ifdef><ifdef code="ca_objects.reproRestrictions.access_restrictions"><b>Access: </b>^ca_objects.reproRestrictions.access_restrictions</ifdef></div></ifdef>}}}
 				{{{<if rule='^ca_objects.type_id IN ["Archival Item"]'><ifcount code="ca_entities" min="1">
 						<div class="unit">
-							<H6>Related people</H6>
+							<H6><ifcount code="ca_entities" min="1" max="1">Related person/organization</ifcount><ifcount code="ca_entities" min="2">Related people/organizations</ifcount></H6>
 							<unit relativeTo="ca_entities" delimiter="<br/>"><b>^relationship_typename</b>: <l>^ca_entities.preferred_labels</l></unit>
 						</div>
 					</ifcount>
@@ -181,7 +186,7 @@
 					</ifcount>
 					<ifcount code="ca_entities" excludeRelationshipTypes="publish" min="1">
 						<div class="unit">
-							<H6>Related people</H6>
+							<H6><ifcount code="ca_entities" min="1" max="1" excludeRelationshipTypes="publish">Related person/organization</ifcount><ifcount code="ca_entities" min="2" excludeRelationshipTypes="publish">Related people/organizations</ifcount></H6>
 							<unit relativeTo="ca_entities" excludeRelationshipTypes="publish" delimiter="<br/>"><b>^relationship_typename</b>: <l>^ca_entities.preferred_labels</l></unit>
 						</div>
 					</ifcount>
@@ -198,15 +203,15 @@
 					<ifdef code="ca_objects.drawing_no"><div class="unit"><H6>Drawing number</H6>^ca_objects.drawing_no</div></ifdef>
 					<ifdef code="ca_objects.hullyard_no"><div class="unit"><H6>Hull yard number</H6>^ca_objects.hullyard_no</div></ifdef>
 					<ifdef code="ca_objects.measurements.dimension_remarks"><div class="unit"><H6>Physical description note</H6>^ca_objects.measurements.dimension_remarks</div></ifdef>
-					<ifdef code="ca_objects.archtechnote"><div class="unit"><H6>Notes</H6>
-						<ifdef code="ca_objects.archtechnote.staterespship"><b>Statement of responsibility: </b>^ca_objects.archtechnote.staterespship</ifdef>
-						<ifdef code="ca_objects.archtechnote.sigsship"><b>Signatures: </b>^ca_objects.archtechnote.sigsship</ifdef>
-						<ifdef code="ca_objects.archtechnote.edition_note_ship"><b>Edition note: </b>^ca_objects.chartnote.edition_note_ship</ifdef>
-						<ifdef code="ca_objects.archtechnote.date_note_ship"><b>Date note: </b>^ca_objects.archtechnote.date_note_ship</ifdef>
+					<ifdef code="ca_objects.archtechnote.staterespship|ca_objects.archtechnote.sigsship|ca_objects.archtechnote.edition_note_ship|ca_objects.archtechnote.date_note_ship"><div class="unit"><H6>Notes</H6>
+						<ifdef code="ca_objects.archtechnote.staterespship"><b>Statement of responsibility: </b>^ca_objects.archtechnote.staterespship<br/></ifdef>
+						<ifdef code="ca_objects.archtechnote.sigsship"><b>Signatures: </b>^ca_objects.archtechnote.sigsship<br/></ifdef>
+						<ifdef code="ca_objects.archtechnote.edition_note_ship"><b>Edition note: </b>^ca_objects.archtechnote.edition_note_ship<br/></ifdef>
+						<ifdef code="ca_objects.archtechnote.date_note_ship"><b>Date note: </b>^ca_objects.archtechnote.date_note_ship<br/></ifdef>
 					</div></ifdef>
 					<ifcount code="ca_entities" min="1">
 						<div class="unit">
-							<H6>Related people</H6>
+							<H6><ifcount code="ca_entities" min="1" max="1">Related person/organization</ifcount><ifcount code="ca_entities" min="2">Related people/organizations</ifcount></H6>
 							<unit relativeTo="ca_entities" delimiter="<br/>"><b>^relationship_typename</b>: <l>^ca_entities.preferred_labels</l></unit>
 						</div>
 					</ifcount>

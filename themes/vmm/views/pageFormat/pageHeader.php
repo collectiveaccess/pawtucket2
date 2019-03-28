@@ -104,6 +104,7 @@
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
+			<div class="navbar-collapse-container">
 <?php
 	if ($vb_has_user_links) {
 ?>
@@ -147,7 +148,7 @@
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
 					
-					<li <?php print ((strtoLower($this->request->getController()) == "browse") && (strtoLower($this->request->getAction()) == "artefacts")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artefacts"), "", "", "Browse", "artefacts"); ?></li>
+					<li <?php print ((strtoLower($this->request->getController()) == "browse") && (strtoLower($this->request->getAction()) == "artifacts")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artifacts"), "", "", "Browse", "artifacts"); ?></li>
 					
 					<li class="dropdown <?php print ((strtoLower($this->request->getController()) == "browse") && (strtoLower($this->request->getAction()) == "archival_items") || (strtoLower($this->request->getController()) == "collections")) ? 'active' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Archives</a>
@@ -167,6 +168,7 @@
 						<ul class="dropdown-menu">
 							<li <?php print ((strToLower($this->request->getController()) == "about") &&  (strToLower($this->request->getAction()) == "museum")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Museum"), "", "", "About", "Museum"); ?></li>
 							<li <?php print ((strToLower($this->request->getController()) == "about") &&  (strToLower($this->request->getAction()) == "collection")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "Collection"); ?></li>
+							<li <?php print ((strToLower($this->request->getController()) == "about") &&  (strToLower($this->request->getAction()) == "ReproLicenseFees")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Reproduction Services"), "", "", "About", "ReproLicenseFees"); ?></li>
 							<li <?php print ((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "faq")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("FAQ"), "", "", "About", "FAQ"); ?></li>
 							<li <?php print ((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "contact")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "Contact"); ?></li>
 							<li><a href="https://www.vancouvermaritimemuseum.com/" target="_blank">Museum Home</a></li>
@@ -174,6 +176,7 @@
 					</li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
+		</div><!-- relative -->
 		</div><!-- end container -->
 	</nav>
 <?php
@@ -210,6 +213,10 @@
 					$vs_section = "Contact";
 				break;
 				# ---------------------------
+				case "repoductionservicesfees":
+					$vs_section = "Schedule of Fees for Reproduction Services";
+				break;
+				# ---------------------------
 			}
 			$va_breadcrumb[] = caNavLink($this->request, "About: ".$vs_section, "", "", "About", $this->request->getAction());			
 		break;
@@ -218,8 +225,8 @@
 		case "search":
 			$vs_section = "";
 			switch(strToLower($this->request->getAction())){
-				case "artefacts":
-					$vs_section = "Find: Artefacts";
+				case "artifacts":
+					$vs_section = "Find: Artifacts";
 				break;
 				# ---------------------------
 				case "archival_items":
@@ -240,8 +247,8 @@
 							$vs_section = "Advanced Search: Archival Items";
 						break;
 						# ---------------------------
-						case "artefacts":
-							$vs_section = "Advanced Search: Artefacts";
+						case "artifacts":
+							$vs_section = "Advanced Search: Artifacts";
 						break;
 						# ---------------------------
 						case "archives":

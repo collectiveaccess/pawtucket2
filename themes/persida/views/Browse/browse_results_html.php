@@ -51,13 +51,13 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	$va_browse_info = $this->getVar("browseInfo");
+	$vn_result_size 	= ((sizeof($va_criteria) > 0) || isset($va_browse_info['baseCriteria'])) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
 	
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 	$vb_ajax			= (bool)$this->request->isAjax();
-	$va_browse_info = $this->getVar("browseInfo");
 	$vs_sort_control_type = caGetOption('sortControlType', $va_browse_info, 'dropdown');
 	$o_config = $this->getVar("config");
 	$vs_result_col_class = $o_config->get('result_col_class');
@@ -135,7 +135,9 @@ if (!$vb_ajax) {	// !ajax
 						print "<li class='divider'></li>\n";
 						print "<li class='dropdown-header'>"._t("Download results as:")."</li>\n";
 						foreach($va_export_formats as $va_export_format){
-							print "<li class='".$va_export_format["code"]."'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+							if((strpos($va_export_format["code"], "financial") === false) || ((strpos($va_export_format["code"], "financial") !== false) && !$this->request->user->hasRole("no_financials"))){
+								print "<li class='".$va_export_format["code"]."'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+							}
 						}
 					}
 					
