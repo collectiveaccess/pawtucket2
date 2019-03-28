@@ -8,9 +8,14 @@
 
 
 body{
-	margin-bottom:330px;
+	margin-bottom:380px;
 	font-size: 16px;
 	color:#000;
+}
+@media(max-width:480px){
+	body{
+		margin-bottom:480px;
+	}
 }
 
 .container, .heroSearch{
@@ -888,7 +893,7 @@ body.frontContainer #footer{
 	background-color: #f7f7f7;
 	color:#000;
 	padding-top:50px;
-	height: 280px;
+	height: 330px;
 	border:0px;
 	font-size:14px;
 	font-weight:normal;
@@ -896,7 +901,7 @@ body.frontContainer #footer{
 }
 @media(max-width:480px){
 	#footer{
-		height:380px;
+		height:430px;
 	}
 }
 #footer a{
@@ -933,6 +938,15 @@ body.frontContainer #footer{
 }
 #footer ul {
     margin-top: 25px;
+}
+#footer .funder{
+	text-align:center;
+	margin-top:25px;
+}
+#footer .funder img{
+	width:100%;
+	height:auto;
+	max-width:250px;
 }
 /* detail */
 .detail {
