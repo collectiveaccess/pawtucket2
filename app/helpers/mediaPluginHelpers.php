@@ -1052,9 +1052,7 @@
 					'width' => $o_page->getWidth(),
 					'height' => $o_page->getHeight()
 				];
-			} else {
-				return null;
-			}
+			} 
 		}
 		
 		// try graphicsmagick
@@ -1074,9 +1072,7 @@
 						);
 					}
 				} while((sizeof($va_output) > 0) && ($va_tmp[0] !== 'PDF'));
-			} else {
-				return null;
-			}
+			} 
 		}
 		
 		// try imagemagick
@@ -1096,9 +1092,7 @@
 						);
 					}
 				} while((sizeof($va_output) > 0) && ($va_tmp[0] !== 'PDF'));
-			} else {
-				return null;
-			}
+			} 
 		}
 		
 		// try pdfinfo

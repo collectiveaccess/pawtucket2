@@ -539,6 +539,7 @@
 				}
 				
 				if ($vb_we_set_transaction) { $this->removeTransaction(true); }
+				
 				return $vn_id;
 			} else {
 				// push all attributes onto errored list
@@ -568,11 +569,6 @@
 			$va_fields_changed_array = $this->_FIELD_VALUE_CHANGED;
 			if(parent::update($pa_options)) {
 				$this->_commitAttributes($this->getTransaction());
-				
-			//	$va_field_values_with_updated_attributes = $this->addAttributesToFieldValuesArray();	// copy committed attribute values to field values array
-				
-				// set the field values array for this instance
-				//$this->setFieldValuesArray($va_field_values_with_updated_attributes);
 
 				$va_index_options = array();
 				if(caGetOption('queueIndexing', $pa_options, true)) {
@@ -603,6 +599,7 @@
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			
 			$vn_id = $this->getPrimaryKey();
+			
 			if(($vn_rc = parent::delete($pb_delete_related, $pa_options, $pa_fields, $pa_table_list)) && (!$this->hasField('deleted') || caGetOption('hard', $pa_options, false))) {
 				// Delete any associated attributes and attribute_values
 				if (!($qr_res = $this->getDb()->query("
@@ -667,10 +664,11 @@
 				if ($o_trans) { $o_trans->commit(); }
 					
 				if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+				
 				return $vn_rc;
 			}
-			
 			if ($o_trans) { $vn_rc ? $o_trans->commit() : $o_trans->rollback(); }
+			
 			if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			return $vn_rc;
 		}
@@ -1129,6 +1127,28 @@
 		}
 		# ------------------------------------------------------------------
 		/**
+		 * Return the type_id for the row with a given id.
+		 *
+		 * @param $pn_id Row_id
+		 * @return int 
+		 */
+		public static function typeIDForRowID($pn_id) {
+			$t = Datamodel::getInstance(get_called_class(), true);
+			return $t->getTypeID($pn_id);
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Return the type_code for the row with a given id.
+		 *
+		 * @param $pn_id Row_id
+		 * @return string 
+		 */
+		public static function typeCodeForRowID($pn_id) {
+			$t = Datamodel::getInstance(get_called_class(), true);
+			return $t->getTypeCode($t->getTypeID($pn_id));
+		}
+		# ------------------------------------------------------------------
+		/**
 		 * Field in this table that defines the type of the row; the type determines which attributes are applicable to the row
 		 */
 		public function getTypeFieldName() {
@@ -1201,6 +1221,20 @@
 		 */
 		public function getTypeCodeForID($pn_type_id) {
 			$va_types = $this->getTypeList();
+			return isset($va_types[$pn_type_id]) ? $va_types[$pn_type_id]['idno'] : null;
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Returns ca_list_items.idno (aka "type code") for $pn_type_id. Static version of getTypeCodeForID()
+		 *
+		 * @param int $pn_type_id Number id for the type
+		 * @return string idno (aka "type code") for specified list item id (aka "type id")
+		 *
+		 * @see BaseModelWithAttributes::getTypeCodeForID()
+		 */
+		public static function typeCodeForID($pn_type_id) {
+			$t = Datamodel::getInstance(get_called_class(), true);
+			$va_types = $t->getTypeList();
 			return isset($va_types[$pn_type_id]) ? $va_types[$pn_type_id]['idno'] : null;
 		}
 		# ------------------------------------------------------------------
@@ -1688,6 +1722,7 @@
 				return false;
 			}
 			
+			$policy = caGetOption('policy', $pa_options, null);     // current value policy
 			$vb_is_sub_element = (bool)($t_element->get('parent_id'));
 			$t_parent = $vb_is_sub_element ? ca_metadata_elements::getInstance($t_element->get('parent_id')) : null;
 			while($vb_is_sub_element && ($t_parent->get('datatype') == 0) && ($t_parent->get('parent_id') > 0)) {
@@ -1728,7 +1763,8 @@
 				
 				$va_label = $this->getAttributeLabelAndDescription($va_element['element_id']);
 				
-				$vs_subelement_code = $this->tableName().'.'.($vb_is_sub_element ? $t_parent->get('element_code').'.' : '').(($vs_element_code !== $va_element['element_code']) ? "{$vs_element_code}." : "").$va_element['element_code'];
+				// Include "current_value" syntax if policy is set
+				$vs_subelement_code = $this->tableName().'.'.($policy ? "current_value.{$policy}." : '').($vb_is_sub_element ? $t_parent->get('element_code').'.' : '').(($vs_element_code !== $va_element['element_code']) ? "{$vs_element_code}." : "").$va_element['element_code'];
 				
 				$vs_value = (isset($pa_options['values']) && isset($pa_options['values'][$vs_subelement_code])) ? $pa_options['values'][$vs_subelement_code] : '';
 
@@ -2323,7 +2359,6 @@
 				}
 			}
 
-			$t_dupe->setMode(ACCESS_WRITE);
 			$t_dupe->update();
 
 			if($t_dupe->numErrors()) {
@@ -2373,7 +2408,6 @@
 				return false;
 			}
 			$t_restriction = new ca_metadata_type_restrictions();
-			$t_restriction->setMode(ACCESS_WRITE);
 			$t_restriction->set('table_num', $this->tableNum());
 			$t_restriction->set('element_id', $t_element->getPrimaryKey());
 			$t_restriction->set('type_id', $pn_type_id);	// TODO: validate $pn_type_id
@@ -2396,7 +2430,6 @@
 			}
 			$t_restriction = new ca_metadata_type_restrictions();
 			if ($t_restriction->load(array('element_id' => $t_element->getPrimaryKey(), 'type_id' => $pn_type_id, 'table_num' => $this->tableNum()))) {
-				$t_restriction->setMode(ACCESS_WRITE);
 				$t_restriction->delete();
 				if ($t_restriction->numErrors()) {
 					$this->postError(1981, _t("Couldn't remove element from restriction list: %1",join('; ', $t_restriction->getErrors())), 'BaseModelWithAttributes->addMetadataElementToType()');

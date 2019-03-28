@@ -28,7 +28,7 @@
  *
  * @name Artworks (simple)
  * @type page
- * @pageSize letter
+ * @pageSize A4
  * @pageOrientation portrait
  * @tables ca_objects
  *
@@ -91,6 +91,8 @@
 					} elseif ($vs_dimensions = $vo_result->get('ca_objects.dimensions_readOnly')) {
 						print "<div class='data'>".$vs_dimensions."</div>";
 					}
+					print "<div class='data'>".$vo_result->getWithTemplate('^ca_objects.edition')."</div>";					
+					
 ?>
 					</div>				
 				</td>
