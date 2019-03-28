@@ -92,7 +92,10 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 		
 		$vb_show_scale_controls = (bool)caGetOption('showScaleControls', $pa_options, (bool)$this->opo_config->get('leaflet_maps_show_scale_controls'));
 		$vs_delimiter = caGetOption('delimiter', $pa_options, '<br/>');
-		$vn_zoom_level = caGetOption('zoomLevel', $pa_options, 8);
+		$vn_zoom_level = caGetOption('zoomLevel', $pa_options, null);
+		$we_set_zoom = false;
+		if (!$vn_zoom_level) { $vn_zoom_level = 8; $we_set_zoom = true; }
+		
 		$vn_min_zoom_level = caGetOption('minZoomLevel', $pa_options, 0);
 		$vn_max_zoom_level = caGetOption('maxZoomLevel', $pa_options, 18);
 		$vb_no_wrap = (bool)caGetOption('noWrap', $pa_options, null);
@@ -146,6 +149,9 @@ class WLPlugGeographicMapLeaflet Extends BaseGeographicMapPlugIn Implements IWLP
 				}	
 				
 				if (!($lat && $lng)) { continue; }
+				if (($lat < -90) || ($lat > 90)) { continue; }
+				if (($lng < -180) || ($lng > 180)) { continue; }
+				
 				$vn_angle = isset($content_item['angle']) ? (float)$content_item['angle'] : null;
 				$vs_label = preg_replace("![\n\r]+!", " ", $vs_label);
 				$vs_content = preg_replace("![\n\r]+!", " ", join($vs_delimiter, $va_buf));
