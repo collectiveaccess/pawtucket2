@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/bundles/ca_objects_default_html.php : 
+ * app/templates/summary/summary.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2018 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,82 +23,58 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
+ * Template configuration:
+ *
+ * @name Object tear sheet
+ * @type page
+ * @pageSize letter
+ * @pageOrientation portrait
+ * @tables ca_objects
+ * @marginTop 0.75in
+ * @marginLeft 0.5in
+ * @marginRight 0.5in
+ * @marginBottom 0.75in
+ *
  * ----------------------------------------------------------------------
  */
  
-	$t_object = 			$this->getVar("item");
-	$va_comments = 			$this->getVar("comments");
-	$va_tags = 				$this->getVar("tags_array");
-	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");
-	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
-	$vn_id =				$t_object->get('ca_objects.object_id');
-?>
-<div class="row">
-	<div class='col-xs-12 '><!--- only shown at small screen size -->
-		<div class='pageNav'>
-			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-		</div>
-	</div><!-- end detailTop -->
-</div>
-<div class="row">	
-	<div class='col-xs-12'>
-		<div class="container"><div class="row">
-			<div class='col-sm-12'>
-<?php
-				print "<h2>".$t_object->get('ca_objects.preferred_labels')."</h2>";
-?>
-			</div>
-			<div class='col-sm-7'>
-				{{{representationViewer}}}
-				
-				
-				<div id="detailAnnotations"></div>
-				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-				
-<?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
-						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
-					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-					}
-					if ($vn_pdf_enabled) {
-						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
-					}
-					print '</div><!-- end detailTools -->';
-				}				
+ 	$t_object = $this->getVar('t_subject');
+	$t_display = $this->getVar('t_display');
+	$va_placements = $this->getVar("placements");
+
+	print $this->render("pdfStart.php");
+	print $this->render("header.php");
+	print $this->render("footer.php");	
 
 ?>
+	<div class="title">
+		<h1 class="title"><?php print $t_object->getLabelForDisplay();?></h1>
+	</div>
+	<div class="representationList">
+		
+<?php
+	$va_reps = $t_object->getRepresentations(array("thumbnail", "medium"));
 
-			</div><!-- end col -->
-			
-			<div class='col-sm-5 rightCol'>
+	foreach($va_reps as $va_rep) {
+		if(sizeof($va_reps) > 1){
+			# --- more than one rep show thumbnails
+			$vn_padding_top = ((120 - $va_rep["info"]["thumbnail"]["HEIGHT"])/2) + 5;
+			print $va_rep['tags']['thumbnail']."\n";
+		}else{
+			# --- one rep - show medium rep
+			print $va_rep['tags']['medium']."\n";
+		}
+	}
+?>
+	</div>
+	<div class='tombstone'>
 <?php
 			if ($vs_description = $t_object->get('ca_objects.description')) {
 				print "<div class='unit'>".$vs_description."</div>";
 			}			
 			# --- identifier
 
-			if($vs_collection_idno = $t_object->get('ca_collections.idno')){
-				#print_r(@get_headers("http://iarchives.nysed.gov/xtf/view?docId=tei/".$vs_collection_idno."/".$t_object->get('idno').".xml"));
-				# get transcript y/n
-				$t_list = new ca_lists();
-				$vn_yes_value = $t_list->getItemIDFromList("transcript", "transcript_yes");
-					
-				if($t_object->get('ca_objects.transcript') == $vn_yes_value) {
-					print "<div class='unit'><a href='http://iarchives.nysed.gov/xtf/view?docId=tei/".$vs_collection_idno."/".$t_object->get('idno').".xml' target='_blank' class='btn btn-default'>"._t("Transcript / Translation")."</a></div>";
-				}
-						
-			}
 			if($vs_idno = $t_object->get('idno')){
 				print "<div class='unit'><b>"._t("Identifier")."</b><br/>".$vs_idno."</div><!-- end unit -->";
 			}
@@ -178,20 +154,20 @@
 			}					
 			# --- parent hierarchy info
 			if($t_object->get('parent_id')){
-				print "<div class='unit'><b>"._t("Part Of")."</b><br/>".caNavLink($this->request, $t_object->get("ca_objects.parent.preferred_labels.name"), '', 'Detail', 'Object', 'Show', array('object_id' => $t_object->get('parent_id')))."</div>";
+				print "<div class='unit'><b>"._t("Part Of")."</b><br/>".$t_object->get("ca_objects.parent.preferred_labels.name")."</div>";
 			}
 
 			# --- Relation
 				
 			# --- collections
-			if ($vs_collections = $t_object->getWithTemplate("<ifcount code='ca_collections' min='1'><unit relativeTo='ca_collections'><l>^ca_collections.preferred_labels</l></unit></ifcount>")){	
-				print "<div class='unit'><h3>"._t("Related collections")."</h3>";
+			if ($vs_collections = $t_object->getWithTemplate("<ifcount code='ca_collections' min='1'><unit relativeTo='ca_collections'>^ca_collections.preferred_labels</unit></ifcount>")){	
+				print "<div class='unit'><b>"._t("Related collections")."</b><br/>";
 				print $vs_collections;
 				print "</div><!-- end unit -->";
 			}			
 			# --- entities
-			if ($vs_entities = $t_object->getWithTemplate("<ifcount code='ca_entities' min='1'><unit relativeTo='ca_entities'><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></ifcount>")){	
-				print "<div class='unit'><h3>"._t("Related entities")."</h3>";
+			if ($vs_entities = $t_object->getWithTemplate("<ifcount code='ca_entities' min='1'><unit relativeTo='ca_entities'>^ca_entities.preferred_labels.displayname (^relationship_typename)</unit></ifcount>")){	
+				print "<div class='unit'><b>"._t("Related entities")."</b><br/>";
 				print $vs_entities;
 				print "</div><!-- end unit -->";
 			}
@@ -202,10 +178,10 @@
 				foreach ($va_occurrences as $va_key => $va_occurrence_id) {
 					$t_occ = new ca_occurrences($va_occurrence_id);
 					$vn_type_id = $t_occ->get('ca_occurrences.type_id');
-					$va_occ_array[$vn_type_id][$va_occurrence_id] = caDetailLink($this->request, $t_occ->get('ca_occurrences.preferred_labels'), '', 'ca_occurrences', $va_occurrence_id);
+					$va_occ_array[$vn_type_id][$va_occurrence_id] = $t_occ->get('ca_occurrences.preferred_labels');
 				}
 				foreach ($va_occ_array as $va_type => $va_occ) {
-					print "<div class='unit'><h3>Related ".caGetListItemByIDForDisplay($va_type, true)."</h3>";
+					print "<div class='unit'><b>Related ".caGetListItemByIDForDisplay($va_type, true)."</b><br/>";
 					foreach ($va_occ as $va_key => $va_occ_link) {
 						print "<div>".$va_occ_link."</div>";
 					}
@@ -214,10 +190,10 @@
 			}
 			
 			# --- places
-			$vs_places = $t_object->getWithTemplate("<unit relativeTo='ca_places' delimiter='<br/>'><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>");
+			$vs_places = $t_object->getWithTemplate("<unit relativeTo='ca_places' delimiter='<br/>'>^ca_places.preferred_labels.name (^relationship_typename)</unit>");
 			
 			if($vs_places){
-				print "<div class='unit'><h3>"._t("Related places")."</h3>";
+				print "<div class='unit'><b>"._t("Related places")."</b><br/>";
 				print $vs_places;
 				print "</div><!-- end unit -->";
 			}
@@ -225,7 +201,7 @@
 			# --- lots
 			$vs_object_lots = $t_object->getWithTemplate("<ifcount code='ca_lots' min='1'><unit relativeTo='ca_lots'>^ca_lots.preferred_labels.name (^ca_lots.idno_stub)</unit></ifcount>");
 			if($vs_object_lots){
-				print "<div class='unit'><h3>"._t("Related lot")."</h3>";
+				print "<div class='unit'><b>"._t("Related lot")."</b><br/>";
 				print $vs_object_lots;
 				print "</div><!-- end unit -->";
 			}
@@ -233,28 +209,17 @@
 			# --- vocabulary terms
 			$vs_terms = $t_object->getWithTemplate("<ifcount code='ca_list_items' min='1'><unit relativeTo='ca_list_items'>^ca_list_items.preferred_labels.name_plural (^relationship_typename)</unit></ifcount>");
 			if($vs_terms){
-				print "<div class='unit'><h3>"._t("Subjects")."</h3>";
+				print "<div class='unit'><b>"._t("Subjects")."</b><br/>";
 				print $vs_terms;
 				print "</div><!-- end unit -->";
 			}
 			
 					
 			# --- output related object images as links
-			if ($va_related_objects = $t_object->get("ca_objects.related.preferred_labels", array("returnAsLink" => true, 'checkAccess' => $va_access_values, 'delimiter' => '<br/>'))){
-				print "<div class='unit'><h3>Related Objects</h3>".$va_related_objects."</div>";
+			if ($va_related_objects = $t_object->get("ca_objects.related.preferred_labels", array('checkAccess' => $va_access_values, 'delimiter' => '<br/>'))){
+				print "<div class='unit'><b>Related Objects</b><br/>".$va_related_objects."</div>";
 			}
 ?>
-				
-			</div><!-- end col -->
-		</div><!-- end row --></div><!-- end container -->
-	</div><!-- end col -->
-</div><!-- end row -->
-
-<script type='text/javascript'>
-	jQuery(document).ready(function() {
-		$('.trimText').readmore({
-		  speed: 75,
-		  maxHeight: 120
-		});
-	});
-</script>
+	</div>
+<?php	
+	print $this->render("pdfEnd.php");

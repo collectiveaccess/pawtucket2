@@ -1,3 +1,4 @@
+/* blue #006794; */
 body {
     font-family: Helvetica, sans-serif;
     font-size: 12px;
@@ -23,9 +24,12 @@ a, a:hover, .detail a, .detail a:hover {
     color: #006794;
     text-decoration: underline;
 }
+b {
+	font-family:Raleway;
+}
 p, .title, .caption, .card-body, .bodytext {
 	font-size: 14px;
-    font-weight: 500;
+    font-weight: 400;
     line-height: 20px;
     color: rgb(46, 34, 31);
     font-family: Raleway, sans-serif;
@@ -36,11 +40,11 @@ p, .title, .caption, .card-body, .bodytext {
 	padding-bottom:50px;
 }
 h1 {
-    font-family: "Crimson Text", �serif;
+    font-family: "Crimson Text", serif;
     font-weight: normal;
     font-size: 34px;
     line-height: 40px;
-    color: rgb(0, 103, 148);
+    color: #006794;
     text-transform:none;
 }
 .results h1 {
@@ -50,14 +54,14 @@ h1 {
 	line-height:30px;
 	padding-top:50px;
 	padding-bottom:15px;
-	padding-left:5px;
+	padding-left:20px;
 }
 h2 {
     font-family: "Crimson Text", serif;
     font-weight: normal;
     font-size: 26px;
     line-height: 30px;
-    color: rgb(0, 103, 148);
+    color: #006794;
     clear: both;
     padding: 0px;
 }
@@ -67,9 +71,18 @@ h3 {
     text-transform:none;
     font-size:20px;
 }
+h6 {
+	margin-bottom:15px;
+	font-size:14px;
+	font-weight:bold;
+}
 button, .btn, button:focus, button:active, .btn:focus, .btn:active {
 	outline:0;
 	border:0;
+}
+a.btn-default, .btn-default a, a.btn-default:hover, .btn-default a:hover{
+	color:#FFF;
+	text-decoration:none;
 }
 #header {
     width: 980px;
@@ -89,7 +102,7 @@ button, .btn, button:focus, button:active, .btn:focus, .btn:active {
     float: right;
     width: 313px;
     font-size: 12px;
-    font-family: Muli, �sans-serif;
+    font-family: Muli, sans-serif;
     padding: 22px 30px 0px;
 }
 #header .right-box ul {
@@ -142,7 +155,7 @@ form {
     padding: 0;
     cursor: pointer;
 }
-.navbar {
+.navbar .menuBar {
     clear: both;
     width: 980px;
     float: left;
@@ -154,14 +167,14 @@ form {
     margin-bottom:0px;
     box-shadow:none;
 }
-.navbar ul {
+.navbar .menuBar ul {
     width: 980px;
     float: left;
     list-style: none;
     padding: 0;
     margin: 0;
 }
-.navbar ul li {
+.navbar .menuBar ul li {
     background-image: url(../graphics/li-bg.jpg);
     background-position: top left;
     background-repeat: no-repeat;
@@ -174,16 +187,16 @@ form {
     float: left;
     height:24px;
 }
-.navbar ul li li {
+.navbar .menuBar ul li li {
 	height:auto;
 	float:left;
 	clear:both;
 }
-.navbar ul li.list-item-one {
+.navbar .menuBar ul li.list-item-one {
     background-image: none;
     padding: 0 29px 0 17px;
 }
-.navbar-default .navbar-nav > li > a {
+.navbar-default .menuBar .navbar-nav > li > a {
     color: rgb(0,103,148);
     float: left;
     text-decoration: none;
@@ -191,41 +204,42 @@ form {
     font-size: 13px;
     line-height: 16px;
 }
-.navbar-nav > li > a {
+.menuBar .navbar-nav > li > a {
 	padding-top:0px;
 	padding-bottom:0px;
 }
-.navbar ul li a {
+.navbar .menuBar ul li a {
     color: rgb(0,103,148);
     float: left;
     text-decoration: none;
     text-transform:uppercase;
 }
-.navbar ul li:hover a {
+.navbar .menuBar ul li:hover a {
     color: rgb(76,63,54);
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 	font-family: 'Raleway', sans-serif;
+	text-decoration:none;
 }
 @media (min-width: 979px) {
   ul.nav li.dropdown:hover > ul.dropdown-menu {
     display: block;
   }
 }
-.navbar ul.dropdown-menu {
+.nysa.navbar ul.dropdown-menu {
 	width:277px;
 	left:0px;
 	border: 1px solid #7e7569;
 }
-.yamm .nav.navbar-right .dropdown-menu {
+.nysa .yamm .nav.navbar-right .dropdown-menu {
 	left:0px;
 }
-.navbar ul.dropdown-menu li {
+.nysa.navbar ul.dropdown-menu li {
     background-image:none;
     margin:0;
     padding:0;
 }
-.navbar ul.dropdown-menu li a {
+.nysa.navbar ul.dropdown-menu li a {
     background: #fff;
     padding: 10px 23px;
     color: #006794;
@@ -234,6 +248,15 @@ form {
     font-size: 0.8125em;
     text-transform:none;
     font-size:13px;
+}
+.navbar {
+	z-index:2;
+}
+.navbar.nysa {
+	box-shadow:none;
+	margin-bottom:0px;
+	min-height:38px;
+	z-index:1000;
 }
 #TopicBar h1 {
     font-family: 'Crimson Text',�serif;
@@ -288,7 +311,7 @@ form {
     outline: 0;
     color: rgb(46, 34, 31);
 }
-#TopicBar #objectSearch #search input.submit, .btn-search {
+/*#TopicBar #objectSearch #search input.submit, .btn-search {
     width: 23px;
     height: 24px;
     background-image: url('../graphics/submit-blue.jpg');
@@ -297,7 +320,7 @@ form {
     cursor: pointer;
     border-radius:0;
     margin-right:-1px;
-}
+}*/
 #TopicBar .navbar-form .form-group {
 	width:226px;
 }
@@ -339,6 +362,7 @@ form {
     clear: both;
     background-color: rgb(230, 229, 220);
     padding: 10px 0 0 18px;
+    margin-bottom:30px;
 }
 #menuBar a {
     text-decoration: none;
@@ -351,6 +375,31 @@ form {
     font-family: 'Raleway',�sans-serif;
     font-weight:600;
 }
+#browse-menu {
+	z-index:10000;
+}
+#browse-menu a {
+	text-decoration:none;
+}
+#browse-menu a:hover {
+	color:#006794;
+}
+.filterMenuFacetList li.active {
+	background-color:#e28c2b;
+}
+#browse-menu .filterMenuFacetList li.active:hover,
+#browse-menu .filterMenuFacetList li.active a:hover {
+	color:#fff; 
+}
+#browse-menu .browseMenuBrowseAll a:hover {
+	color:#fff;
+}
+#browse-menu .browseHeadernav a:hover {
+	color:#666;
+}
+#browse-menu .browseHeadernav.active a:hover {
+	color:#fff;
+}
 #footer {
     width: 980px;
     font-family: Muli, sans-serif;
@@ -362,6 +411,7 @@ form {
     position:relative;
     margin:0px;
     height:auto;
+    margin-top:30px;
 }
 #footer .left-box {
     width: 296px;
@@ -375,7 +425,7 @@ form {
     line-height: 14px;
     font-size: 12px;
     font-weight: 400;
-    font-family: Muli, �sans-serif;
+    font-family: Muli, sans-serif;
     color: rgb(76, 63, 54);
     margin: 0px;
 }
@@ -392,7 +442,7 @@ form {
     clear: left;
     font-size: 12px;
     font-weight: 400;
-    font-family: Muli, �sans-serif;
+    font-family: Muli, sans-serif;
     color: rgb(76, 63, 54);
     padding: 25px 0px 0px 3px;
     margin: 0px;
@@ -414,7 +464,7 @@ form {
 #footer ul li {
     float: left;
     background-image: url(../graphics/dotted-footer.jpg);
-    font-family: Muli, �sans-serif;
+    font-family: Muli, sans-serif;
     background-repeat: no-repeat;
     padding: 0px 0px 0px 19px;
 }
@@ -498,6 +548,9 @@ form {
     font-size: 14px;
     font-weight: bold;
 }
+#bRefine a {
+	text-decoration:none;
+}
 
 /*Attica */
 
@@ -546,10 +599,8 @@ form {
  	line-height:1.8em;
  	font-weight:400;
 }
-.advancedSearchField input {
-	width:350px !important;
-}
-.btn-default, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
+
+.btn-default, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default, .browse .btn, .sets .btn {
     background-color: #e28c2b;
     color:#fff;
 	padding: 5px 10px;
@@ -565,6 +616,13 @@ form {
     font-weight:300;
 }
 .btn-default a {
+	text-decoration:none;
+}
+.btn a {
+	color:#fff;
+}
+.btn a:hover {
+	color:#fff;
 	text-decoration:none;
 }
 .carousel {
@@ -589,7 +647,7 @@ form {
 .carousel-caption {
     background-color: rgb(59, 117, 147);
     box-shadow: rgba(95, 95, 95, 0.35) 14px 14px 14px;
-    font-family: "Crimson Text", �serif;
+    font-family: "Crimson Text", serif;
     bottom: 20px;
     left:0px;
     top:0px;
@@ -605,6 +663,7 @@ form {
     margin-bottom: 1.25em;
     text-rendering: optimizeLegibility;    
     text-align:left;
+    z-index: 1;
 }
 .carousel-caption a {
 	color:#fff;
@@ -623,8 +682,8 @@ form {
 .dutch.advancedSearchField input {
 	width:230px !important;
 } 
-.results td {
-	border:1px solid #000;
+.attributeListItem {
+	width:100% !important;
 }
 .accordion.dutch td {
 	padding:5px;
@@ -632,6 +691,62 @@ form {
 .accordion.dutch .card-body {
 	font-size:14px;
 	padding:15px;
+}
+.results .image img {
+	width:70px;
+	height:70px;
+}
+.bodytext ul {
+	margin-top:20px;
+	margin-left:0px;
+	padding-left:15px;
+}
+.bodytext li {
+	margin-bottom:8px;
+}
+.linktext td, .modal-dialog {
+	padding:10px;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: rgb(46, 34, 31);
+    font-family: Raleway, sans-serif;
+}
+.modal-dialog {
+	font-size:16px;
+}
+.modal-dialog .close {
+	font-size:40px;
+	color:#000;
+}
+h4.modal-title {
+	text-align:center;
+	font-size:28px;
+}
+.linktext img {
+	width:43px;
+	height:auto;
+}
+.modal-header {
+	border-bottom:0px;
+}
+.modal-footer, .modal-body {
+	border-top:0px;
+	text-align:center;
+}
+.modal-dialog-centered {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    min-height: calc(100% - (.5rem * 2));
+}
+@media (min-width: 576px) {
+	.modal-dialog-centered {
+		min-height: calc(100% - (1.75rem * 2));
+	}
 }
 
 /* Detail */
@@ -667,4 +782,58 @@ form {
 .rightCol {
     background-image: url('../graphics/right-sidebar-bg.jpg');
     background-repeat: repeat-y;
+    margin-bottom:30px;
+}
+.bResultItemText {
+	font-family: Raleway, sans-serif;
+}
+.bResultItemText small {
+	display:block;
+}
+b.gray {
+	color:#666666;
+}
+.detail .detailTool {
+	font-size:15px;
+	color:#333;
+	font-family:Raleway;
+	text-transform:none;
+	font-weight:bold;
+}
+.detail .detailTool span {
+	color:#333;
+}
+.unit H3 {
+    margin-top: 0px;
+    margin-bottom: 5px;
+}
+
+/*Browse */
+
+#bRefine {
+	z-index:0;
+}
+div.browseFacetItem {
+	z-index:10000000;
+}
+.results .browseMenuBrowseAll a .glyphicon {
+	color:#fff !important;
+}
+#bScrollListLabel{
+	text-transform:capitalize;
+}
+.results H1 {
+    text-transform: capitalize;
+}
+/* Collection landing page */
+
+.collectionTile .title a{
+	font-size:20px;
+	color: #006794;
+	font-family: "Crimson Text", serif;
+	
+}
+.collectionTile img{
+	width:100%;
+	height:auto;
 }

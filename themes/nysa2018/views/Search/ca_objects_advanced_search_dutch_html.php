@@ -8,7 +8,7 @@
 <div class='advancedContainer'>
 	<div class='row'>
 		<div class="col-sm-6">
-			<div class='menuLink first'><?php print caNavLink($this->request, 'Browse', '', '', 'Browse', 'attica'); ?></div> | 
+			<div class='menuLink first'><?php print 'Browse'; ?></div> | 
 			<div class='menuLink'><?php print caNavLink($this->request, 'About the Project', '', '', 'Search', 'advanced/dutch_about'); ?></div> | 
 			<div class='menuLink'><?php print caNavLink($this->request, 'Related Resources', '', '', 'Search', 'advanced/dutch_related'); ?></div>
 		</div>
@@ -56,7 +56,7 @@
 				  <td></td>
 				  <td></td>
 				  <td></td>
-				  <td></td>
+				  <td class='image'><a href='http://www.newnetherlandinstitute.org/research/online-publications' target='_blank'><?php print caGetThemeGraphic($this->request, 'published-translation---example.jpg');?></a></td>
 				  <td>This volume was burned in the 1911 fire. Vol. 1 was translated before the 1911 Capitol fire; a transcription of the Dutch text is available.</td>
 			    </tr>
 				<tr id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
@@ -69,10 +69,10 @@
 				  <td class="card-header-dutch" id="headingTwo"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo"><i class="fa fa-chevron-down"></i></button>A0270</td>
 				  <td>New Netherland Provincial Secretary Register of the Provincial Secretary of the Colony of New York, 1642-1660</td>
 				  <td>2-3</td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/view?docId=ead/findingaids/A0270.xml' target='_blank'><?php print caGetThemeGraphic($this->request, 'findingaid-example_0.jpg');?></a></td>
+				  <td class="image"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'document-example-200-x-200.jpg'), '', 'Detail', 'collections', 5504);?></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/search?documenttype=translation&seriesnum=A0270%20'><?php print caGetThemeGraphic($this->request, 'translation-example.jpg');?></a></td>
+				  <td class='image'><a href='http://www.newnetherlandinstitute.org/research/online-publications' target='_blank'><?php print caGetThemeGraphic($this->request, 'published-translation---example.jpg');?></a></td>
 				  <td></td>
 			    </tr>
 				<tr id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
@@ -85,10 +85,10 @@
 				  <td class="card-header-dutch" id="headingThree"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="true" aria-controls="collapseThree"><i class="fa fa-chevron-down"></i></button>A1809</td>
 				  <td>New Netherland Council Dutch Colonial Council Minutes, 1638-1665</td>
 				  <td>4-10</td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/view?docId=ead/findingaids/A1809.xml' target='_blank'><?php print caGetThemeGraphic($this->request, 'findingaid-example_0.jpg');?></a></td>
+				  <td class="image"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'document-example-200-x-200.jpg'), '', 'Detail', 'collections', 5511);?></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/search?documenttype=translation&seriesnum=A1809%20'><?php print caGetThemeGraphic($this->request, 'translation-example.jpg');?></a></td>
+				  <td class='image'><a href='http://www.newnetherlandinstitute.org/research/online-publications' target='_blank'><?php print caGetThemeGraphic($this->request, 'published-translation---example.jpg');?></a></td>
 				  <td>Translations for Volumes 7-10 are not yet available online.</td>
 			    </tr>
 				<tr id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
@@ -101,10 +101,10 @@
 				  <td class="card-header-dutch" id="headingFour"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="true" aria-controls="collapseFour"><i class="fa fa-chevron-down"></i></button>A1810</td>
 				  <td>New Netherland Council Dutch Colonial Administrative Correspondence, 1646-1664</td>
 				  <td>11-15</td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/view?docId=ead/findingaids/A1810.xml' target='_blank'><?php print caGetThemeGraphic($this->request, 'findingaid-example_0.jpg');?></a></td>
+				  <td class="image"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'document-example-200-x-200.jpg'), '', 'Detail', 'collections', 299);?></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/search?documenttype=translation&seriesnum=A1810%20'><?php print caGetThemeGraphic($this->request, 'translation-example.jpg');?></a></td>
+				  <td class='image'><a href='http://www.newnetherlandinstitute.org/research/online-publications' target='_blank'><?php print caGetThemeGraphic($this->request, 'published-translation---example.jpg');?></a></td>
 				  <td>Translations for Volumes 13-15 are not yet available online.</td>
 			    </tr>
 				<tr id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
@@ -117,10 +117,10 @@
 				  <td class="card-header-dutch" id="headingFive"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="true" aria-controls="collapseFive"><i class="fa fa-chevron-down"></i></button>A1875</td>
 				  <td>New Netherland Council Dutch Colonial Ordinances, 1647-1658</td>
 				  <td>Volume 16, pt. 1</td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/view?docId=ead/findingaids/A1875.xml' target='_blank'><?php print caGetThemeGraphic($this->request, 'findingaid-example_0.jpg');?></a></td>
+				  <td class="image"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'document-example-200-x-200.jpg'), '', 'Detail', 'collections', 5501);?></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/search?documenttype=translation&seriesnum=A1875%20'><?php print caGetThemeGraphic($this->request, 'translation-example.jpg');?></a></td>
+				  <td class='image'><a href='http://www.newnetherlandinstitute.org/research/online-publications' target='_blank'><?php print caGetThemeGraphic($this->request, 'published-translation---example.jpg');?></a></td>
 				  <td></td>
 			    </tr>
 				<tr id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionExample">
@@ -133,10 +133,10 @@
 				  <td class="card-header-dutch" id="headingSix"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="true" aria-controls="collapseSix"><i class="fa fa-chevron-down"></i></button>A1876</td>
 				  <td>Fort Orange Settlement Administrative Records, 1656-1660</td>
 				  <td>Volume 16, pt. 2 and pt. 3</td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/view?docId=ead/findingaids/A1876.xml' target='_blank'><?php print caGetThemeGraphic($this->request, 'findingaid-example_0.jpg');?></a></td>
+				  <td class="image"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'document-example-200-x-200.jpg'), '', 'Detail', 'collections', 5495);?></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/search?documenttype=translation&seriesnum=A1876%20'><?php print caGetThemeGraphic($this->request, 'translation-example.jpg');?></a></td>
+				  <td class='image'><a href='http://www.newnetherlandinstitute.org/research/online-publications' target='_blank'><?php print caGetThemeGraphic($this->request, 'published-translation---example.jpg');?></a></td>
 				  <td></td>
 			    </tr>
 				<tr id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordionExample">
@@ -149,10 +149,10 @@
 				  <td class="card-header-dutch" id="headingSeven"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseSeven" aria-expanded="true" aria-controls="collapseSeven"><i class="fa fa-chevron-down"></i></button>A1877</td>
 				  <td>New Netherland Council Writs of Appeal, 1658-1663</td>
 				  <td>Volume 16, pt. 4</td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/view?docId=ead/findingaids/A1877.xml' target='_blank'><?php print caGetThemeGraphic($this->request, 'findingaid-example_0.jpg');?></a></td>
+				  <td class="image"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'document-example-200-x-200.jpg'), '', 'Detail', 'collections', 5493);?></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/search?documenttype=translation&seriesnum=A1877%20'><?php print caGetThemeGraphic($this->request, 'translation-example.jpg');?></a></td>
+				  <td class='image'><a href='http://www.newnetherlandinstitute.org/research/online-publications' target='_blank'><?php print caGetThemeGraphic($this->request, 'published-translation---example.jpg');?></a></td>
 				  <td></td>
 			    </tr>
 				<tr id="collapseSeven" class="collapse" aria-labelledby="headingSeven" data-parent="#accordionExample">
@@ -165,10 +165,10 @@
 				  <td class="card-header-dutch" id="headingEight"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseEight" aria-expanded="true" aria-controls="collapseEight"><i class="fa fa-chevron-down"></i></button>A1883</td>
 				  <td>New Netherland Council Curacao Records, 1640-1665</td>
 				  <td>Volume 17</td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/view?docId=ead/findingaids/A1883.xml' target='_blank'><?php print caGetThemeGraphic($this->request, 'findingaid-example_0.jpg');?></a></td>
+				  <td class="image"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'document-example-200-x-200.jpg'), '', 'Detail', 'collections', 5507);?></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/search?documenttype=translation&seriesnum=A1883%20'><?php print caGetThemeGraphic($this->request, 'translation-example.jpg');?></a></td>
+				  <td class='image'><a href='http://www.newnetherlandinstitute.org/research/online-publications' target='_blank'><?php print caGetThemeGraphic($this->request, 'published-translation---example.jpg');?></a></td>
 				  <td></td>
 			    </tr>
 				<tr id="collapseEight" class="collapse" aria-labelledby="headingEight" data-parent="#accordionExample">
@@ -181,10 +181,10 @@
 				  <td class="card-header-dutch" id="headingNine"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseNine" aria-expanded="true" aria-controls="collapseNine"><i class="fa fa-chevron-down"></i></button>A1878</td>
 				  <td>New Netherland Council Dutch Delaware River Settlement Administrative Records, 1646-1664</td>
 				  <td>Volumes 18 and 19</td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/view?docId=ead/findingaids/A1878.xml' target='_blank'><?php print caGetThemeGraphic($this->request, 'findingaid-example_0.jpg');?></a></td>
+				  <td class="image"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'document-example-200-x-200.jpg'), '', 'Detail', 'collections', 5502);?></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/search?documenttype=translation&seriesnum=A1878%20'><?php print caGetThemeGraphic($this->request, 'translation-example.jpg');?></a></td>
+				  <td class='image'><a href='http://www.newnetherlandinstitute.org/research/online-publications' target='_blank'><?php print caGetThemeGraphic($this->request, 'published-translation---example.jpg');?></a></td>
 				  <td></td>
 			    </tr>
 				<tr id="collapseNine" class="collapse" aria-labelledby="headingNine" data-parent="#accordionExample">
@@ -197,10 +197,10 @@
 				  <td class="card-header-dutch" id="headingTen"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTen" aria-expanded="true" aria-controls="collapseTen"><i class="fa fa-chevron-down"></i></button>A1879</td>
 				  <td>New York Colony Council British Delaware River Settlement Administrative Records, 1664-1682</td>
 				  <td>Volumes 20 and 21</td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/view?docId=ead/findingaids/A1879.xml' target='_blank'><?php print caGetThemeGraphic($this->request, 'findingaid-example_0.jpg');?></a></td>
+				  <td class="image"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'document-example-200-x-200.jpg'), '', 'Detail', 'collections', 5487);?></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/search?documenttype=translation&seriesnum=A1879%20'><?php print caGetThemeGraphic($this->request, 'translation-example.jpg');?></a></td>
+				  <td class='image'><a href='http://www.newnetherlandinstitute.org/research/online-publications' target='_blank'><?php print caGetThemeGraphic($this->request, 'published-translation---example.jpg');?></a></td>
 				  <td>The individual transcripts for documents written in English are not yet available online.</td>
 			    </tr>
 				<tr id="collapseTen" class="collapse" aria-labelledby="headingTen" data-parent="#accordionExample">
@@ -213,10 +213,10 @@
 				  <td class="card-header-dutch" id="headingEleven"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseEleven" aria-expanded="true" aria-controls="collapseEleven"><i class="fa fa-chevron-down"></i></button>A1880</td>
 				  <td>New Netherland Council Dutch Colonial Patents and Deeds, 1630-1664</td>
 				  <td>Volumes GG and HH, pt. 2</td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/view?docId=ead/findingaids/A1880.xml' target='_blank'><?php print caGetThemeGraphic($this->request, 'findingaid-example_0.jpg');?></a></td>
+				  <td class="image"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'document-example-200-x-200.jpg'), '', 'Detail', 'collections', 5513);?></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/search?documenttype=translation&seriesnum=A1880%20'><?php print caGetThemeGraphic($this->request, 'translation-example.jpg');?></a></td>
+				  <td class='image'><a href='http://www.newnetherlandinstitute.org/research/online-publications' target='_blank'><?php print caGetThemeGraphic($this->request, 'published-translation---example.jpg');?></a></td>
 				  <td></td>
 			    </tr>
 				<tr id="collapseEleven" class="collapse" aria-labelledby="headingEleven" data-parent="#accordionExample">
@@ -229,10 +229,10 @@
 				  <td class="card-header-dutch" id="headingTwelve"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwelve" aria-expanded="true" aria-controls="collapseTwelve"><i class="fa fa-chevron-down"></i></button>A1882</td>
 				  <td>New Netherland Council Dutch Colonial Land Deeds, 1652-1653</td>
 				  <td>Volume HH, pt 1</td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/view?docId=ead/findingaids/A1882.xml' target='_blank'><?php print caGetThemeGraphic($this->request, 'findingaid-example_0.jpg');?></a></td>
+				  <td class="image"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'document-example-200-x-200.jpg'), '', 'Detail', 'collections', 5498);?></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/search?documenttype=translation&seriesnum=A1882%20'><?php print caGetThemeGraphic($this->request, 'translation-example.jpg');?></a></td>
+				  <td class='image'><a href='http://www.newnetherlandinstitute.org/research/online-publications' target='_blank'><?php print caGetThemeGraphic($this->request, 'published-translation---example.jpg');?></a></td>
 				  <td></td>
 			    </tr>
 				<tr id="collapseTwelve" class="collapse" aria-labelledby="headingTwelve" data-parent="#accordionExample">
@@ -245,10 +245,10 @@
 				  <td class="card-header-dutch" id="headingTwelve"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseTwelve" aria-expanded="true" aria-controls="collapseTwelve"><i class="fa fa-chevron-down"></i></button>A1881</td>
 				  <td>Dutch colonial administrative records, 1673-1674</td>
 				  <td>Volume 23</td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
-				  <td></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/view?docId=ead/findingaids/A1881.xml' target='_blank'><?php print caGetThemeGraphic($this->request, 'findingaid-example_0.jpg');?></a></td>
+				  <td class="image"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'document-example-200-x-200.jpg'), '', 'Detail', 'collections', 5468);?></td>
+				  <td class="image"><a href='http://iarchives.nysed.gov/xtf/search?documenttype=translation&seriesnum=A1881%20'><?php print caGetThemeGraphic($this->request, 'translation-example.jpg');?></a></td>
+				  <td class='image'><a href='http://www.newnetherlandinstitute.org/research/online-publications' target='_blank'><?php print caGetThemeGraphic($this->request, 'published-translation---example.jpg');?></a></td> 
 				  <td></td>
 			    </tr>
 				<tr id="collapseTwelve" class="collapse" aria-labelledby="headingTwelve" data-parent="#accordionExample">

@@ -219,7 +219,9 @@ if (!$vb_ajax) {	// !ajax
 			}
 		}
 } // !ajax
-
+if ($vb_ajax && ($vs_table == "ca_objects") && ($this->request->getController() == "Search") && ($vn_start == 0)) {
+	print "<div class='col-sm-12' style='margin-bottom:30px;'><h3>Related Objects (".$vn_result_size.")</h3></div>";
+}
 # --- check if this result page has been cached
 # --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
 $vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id);

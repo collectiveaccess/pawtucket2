@@ -44,8 +44,7 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<h2>Welcome to the Digital Collections!</h2>
-				<p>The New York State Archives' Digital Collections provides access to photographs, textual records, artifacts, government documents, manuscripts, and other materials. Most items come from the holdings of the New York State Archives, but this collection also includes material from the New York State Museum, State Library, and project partners across New York State.</p>
-				<p>If you have questions about our holdings, or if you would like to request copies of State Archives materials, please contact our reference desk at <a href='mailto:ARCHREF@nysed.gov'>ARCHREF@nysed.gov</a> or 518-474-8955.</p>
+				<p>{{{homePageText}}}</p>
 			</div><!--end col-sm-8-->	
 		</div><!-- end row -->
 		<hr>
@@ -55,13 +54,13 @@
 		<div class="row">
 			<div class="col-sm-6">
 				<div class="homeTile attica">				
-					<div class="img"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'attica.png'), '', 'Search', 'advanced', 'attica');?><div class="title"><?php print caNavLink($this->request, 'The Attica Uprising and Aftermath', '', 'Search', 'advanced', 'attica');?></div></div>
+					<div class="img"><?php print caDetailLink($this->request, caGetThemeGraphic($this->request, 'attica.png'), "", "ca_collections",  7390);?><div class="title"><?php print caDetailLink($this->request, "The Attica Uprising and Aftermath", "", "ca_collections",  7390);?></div></div>
 					<div class="caption">This collection represents a collaborative effort between the New York State Office of the Attorney General and New York State Archives to provide access to materials related to one of the most infamous prison riots in American history, the 1971 uprising at Attica Correctional Facility in Western New York.</div>
 				</div>
 			</div>
 			<div class="col-sm-6">
 				<div class="homeTile dutch">
-					<div class="img"><?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'dutch.png'), '', 'Search', 'advanced', 'dutch');?><div class="title"><?php print caNavLink($this->request, 'Researching New York’s Dutch Heritage', '', 'Search', 'advanced', 'dutch');?></div></div>
+					<div class="img"><?php print caDetailLink($this->request, caGetThemeGraphic($this->request, 'dutch.png'), "", "ca_collections",  7391);?><div class="title"><?php print caDetailLink($this->request, "Researching New York's Dutch Heritage", "", "ca_collections",  7391);?></div></div>
 					<div class="caption">The New York State Archives holds the surviving records of the Dutch colony of New Netherland, which encompassed the earliest European settlements that became the states of New York, New Jersey, Pennsylvania, and Delaware. These 17th-century records concern the full range of government functions including relations with native inhabitants, particularly the Mohawks, Mahicans, and various groups around New Amsterdam and the Delaware River.</div>
 				</div>
 			</div>

@@ -13,27 +13,25 @@
 	}
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
+	
+	$t_list = new ca_lists();
+	$vn_yes = $t_list->getItemIDFromList("findingaid", "findingaid_yes");	
 
 ?>
 <div class="row">
-	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
+	<div class='col-xs-12 '><div class='pageNav'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
+	</div></div><!-- end detailTop -->
+</div>
+<div class="row">	
+	<div class='col-xs-12 '>
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
-					<H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6>
-					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
+					<H2>{{{^ca_collections.preferred_labels.name}}}</H2>
 <?php					
-					if ($vn_pdf_enabled) {
-						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
+					if (($t_item->get('ca_collections.findingaid1') == $vn_yes) && ($vs_idno = $t_item->get('ca_collections.idno'))) {
+						print "<div class='unit'><a href='http://iarchives.nysed.gov/xtf/view?docId=ead/findingaids/".$vs_idno.".xml' target='_blank' class='btn btn-default'>"._t("Finding Aid")."</a></div>";	
 					}
 ?>
 				</div><!-- end col -->
@@ -56,47 +54,86 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_collections.description"><H6>About</H6>^ca_collections.description<br/></ifdef>}}}
-					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
 <?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled) {
-						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
-					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-					}
-					print '</div><!-- end detailTools -->';
-				}				
 ?>
-					
+					{{{<ifdef code="ca_collections.parent_id"><div class='unit'><b>Part of:<b/> <unit relativeTo="ca_collections.parent" ><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
+<?php
+
+					if ($vs_idno = $t_item->get('ca_collections.idno')) {
+						print "<div class='unit'><b>Identifier</b><br/>".$vs_idno."</div>";
+					}
+					if ($vs_altID_array = $t_item->get('ca_collections.alternateID', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
+						print "<div class='unit'><b>Alternate Identifier</b><br/>";
+						$i = 1;
+						foreach ($vs_altID_array as $va_key => $va_altID_t) {
+							foreach ($va_altID_t as $va_key => $vs_altID) {
+								print "<b class='gray'>".$vs_altID['alternateIDdescription']."</b>: ".$vs_altID['alternateID'];
+								if($i < sizeof($va_altID_t)){
+									print "<br/>";
+								}
+								$i++;
+							}
+						}
+
+						print "</div>";
+					}
+					if ($vs_repo = $t_item->get('ca_collections.repository', array('convertCodesToDisplayText' => true))) {
+						print "<div class='unit'><b>Repository</b><br/>".$vs_repo."</div>";
+					}	
+					if ($vs_description = $t_item->get('ca_collections.description')) {
+						print "<div class='unit trimText'><b>Description</b><br/>".$vs_description."</div>";
+					}		
+					if ($va_relation = $t_item->get('ca_collections.relation', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
+						$va_relation = array_pop($va_relation);
+						print "<div class='unit trimText'><b>Related Archival Materials</b><br/>";
+						$i = 1;
+						foreach($va_relation as $va_relation_info){
+							if($va_relation_info["relationQualifier"]){
+								print $va_relation_info["relationQualifier"].": ";
+							}
+							print $va_relation_info["relation"];
+							if($i < sizeof($va_relation)){
+								print "<br/><br/>";
+							}
+							$i++;
+						}
+						print "</div>";
+					}													
+?>					
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_collections.related" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-					{{{<ifcount code="ca_collections.related" min="2"><H6>Related collections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_collections_x_collections"><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.related.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_collections"><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="2"><H6>Related occurrences</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences_x_collections"><unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places_x_collections"><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}					
+<?php
+					# --- collections
+					if ($vs_collections = $t_item->getWithTemplate("<ifcount code='ca_collections.related' min='1'><unit relativeTo='ca_collections'><l>^ca_collections.preferred_labels</l> (^relationship_typename)</unit></ifcount>")){	
+						print "<div class='unit'><H3>"._t("Related Collections")."</H3>";
+						print $vs_collections;
+						print "</div><!-- end unit -->";
+					}			
+					# --- entities
+					if ($vs_entities = $t_item->getWithTemplate("<ifcount code='ca_entities' min='1'><unit relativeTo='ca_entities'><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></ifcount>")){	
+						print "<div class='unit'><H3>"._t("Related Entities")."</H3>";
+						print $vs_entities;
+						print "</div><!-- end unit -->";
+					}
+					# --- places
+					if ($vs_places = $t_item->getWithTemplate("<ifcount code='ca_places' min='1'><unit relativeTo='ca_places'><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit></ifcount>")){	
+						print "<div class='unit'><H3>"._t("Related Places")."</H3>";
+						print $vs_places;
+						print "</div><!-- end unit -->";
+					}
+					# --- occ
+					if ($vs_occ = $t_item->getWithTemplate("<ifcount code='ca_occurrences' min='1'><unit relativeTo='ca_occurrences'><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</unit></ifcount>")){	
+						print "<div class='unit'><H3>"._t("Related Events")."</H3>";
+						print $vs_occ;
+						print "</div><!-- end unit -->";
+					}					
+?>			
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
+			<hr>
 			<div class="row">
+
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
@@ -118,9 +155,13 @@
 </ifcount>}}}
 		</div><!-- end container -->
 	</div><!-- end col -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
 </div><!-- end row -->
+
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 120
+		});
+	});
+</script>
