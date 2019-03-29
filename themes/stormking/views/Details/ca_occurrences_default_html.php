@@ -220,15 +220,17 @@
 							$va_past_events = array();
 							$vn_now = date("Y.md");
 							foreach($va_event_links as $va_event_info){
-								$vs_tmp = "<h6><i class='fa fa-external-link-square'></i> <a href='".$va_event_info["event_link"]."' target='_blank'>".$va_event_info["event_name"]."</a>";
-								if($va_event_info["event_date"]){
-									$vs_tmp .= "<div class='eventLinkDate'>".$va_event_info["event_date"]."</div>";
-								}
-								$vs_tmp .= "</h6>";
-								if($va_event_info["event_date_sort_"] > $vn_now){
-									$va_future_events[] = $vs_tmp;
-								}else{
-									$va_past_events[] = $vs_tmp;
+								if($va_event_info["event_link"]){
+									$vs_tmp = "<h6><i class='fa fa-external-link-square'></i> <a href='".$va_event_info["event_link"]."' target='_blank'>".(($va_event_info["event_name"]) ? $va_event_info["event_name"] : $va_event_info["event_link"])."</a>";
+									if($va_event_info["event_date"]){
+										$vs_tmp .= "<div class='eventLinkDate'>".$va_event_info["event_date"]."</div>";
+									}
+									$vs_tmp .= "</h6>";
+									if($va_event_info["event_date_sort_"] > $vn_now){
+										$va_future_events[] = $vs_tmp;
+									}else{
+										$va_past_events[] = $vs_tmp;
+									}
 								}
 							}
 							if(is_array($va_future_events) && sizeof($va_future_events)){
