@@ -385,10 +385,10 @@
 	});
 	function resizer() {
 		if($(window).width() > 992){
-			$('.exhibitionInfoCol').height('auto');
-			$('.exhibitionInfoCol').height($('.exhibitionInfoRow').height() + "px");
+			$('.exhibitionInfoCol').css('min-height', 'auto');
+			$('.exhibitionInfoCol').css('min-height', $('.exhibitionInfoRow').height() + 'px');
 		}else{
-			$('.exhibitionInfoCol').height('auto');
+			$('.exhibitionInfoCol').css('min-height', 'auto');
 		}
 	}
 </script>
