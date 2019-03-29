@@ -54,11 +54,11 @@
 	<head>
 	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125575750-1"></script>
 	<script>
-	  window.dataLayer = window.dataLayer || [];
-	  function gtag(){dataLayer.push(arguments);}
-	  gtag('js', new Date());
+//	  window.dataLayer = window.dataLayer || [];
+//	  function gtag(){dataLayer.push(arguments);}
+//	  gtag('js', new Date());
  
-	  gtag('config', 'UA-125575750-1');
+//	  gtag('config', 'UA-125575750-1');
 	</script>	
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
@@ -173,9 +173,11 @@
 ?>							
 						</li>					
 						<li>
-							<?php print caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "exhibitions", array("sort" => "default", "direction" => "desc")); ?>
-<?php
-							if ((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) | (($this->request->getController() == "Listing") && ($this->request->getAction() == "currentexhibitions"))  | (($this->request->getController() == "Listing") && ($this->request->getAction() == "exhibitions")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "occurrences"))) {
+<?php 
+							#print caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "exhibitions", array("sort" => "default", "direction" => "desc"));
+							print caNavLink($this->request, _t("Exhibitions"), "", "", "About", "exhibitions");
+
+							if (((strtolower($this->request->getController()) == "about") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "browse") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "listing") && ($this->request->getAction() == "currentexhibitions"))  | ((strtolower($this->request->getController()) == "listing") && ($this->request->getAction() == "exhibitions")) | ((strtolower($this->request->getController()) == "detail") && ($this->request->getAction() == "occurrences"))) {
 ?>							
 								<ul class='subMenu'>
 									<li style="padding-top:6px;" <?php print ((($this->request->getAction() == "currentexhibitions") ) ? 'class="active"' : ''); ?>><?php print caNavLink($this->request, _t("Current & Upcoming"), "", "", "Listing", "currentexhibitions", array("sort" => "default", "direction" => "desc")); ?></li>					
