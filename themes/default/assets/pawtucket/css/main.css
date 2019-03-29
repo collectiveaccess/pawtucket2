@@ -716,7 +716,10 @@ a.browseRemoveFacet img {
 	overflow-y: auto;
 	display: none;
 }
-
+.results .leaflet-popup-content{
+	max-height:300px;
+	overflow-y: auto;
+}
 
 /*!
  * Yamm!3
