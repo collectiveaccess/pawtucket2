@@ -1072,7 +1072,7 @@
 						);
 					}
 				} while((sizeof($va_output) > 0) && ($va_tmp[0] !== 'PDF'));
-			} 
+			}
 		}
 		
 		// try imagemagick
@@ -1092,7 +1092,7 @@
 						);
 					}
 				} while((sizeof($va_output) > 0) && ($va_tmp[0] !== 'PDF'));
-			} 
+			}
 		}
 		
 		// try pdfinfo
