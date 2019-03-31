@@ -53,8 +53,8 @@
 				<div class='col-xs-2 col-sm-1'><?php print caGetThemeGraphic($this->request, 'ORF-resized.jpg'); ?></div>
 				<div class='col-xs-2 col-sm-1'><?php print caGetThemeGraphic($this->request, 'canada-research-chairs-logo-EN-BW.jpg'); ?></div>
 				<div class='col-xs-2 col-sm-1'><?php print caGetThemeGraphic($this->request, 'UOIT_RGB_lowres.jpg'); ?></div>
-				<div class='col-xs-1 col-sm-1'><?php print caGetThemeGraphic($this->request, 'ATT00001.jpg'); ?></div>
 				<div class='col-xs-8 col-xs-offset-1 col-sm-4'><?php print caGetThemeGraphic($this->request, 'SSHRC-CRSH_FIP.jpg'); ?></div>
+				<div class='col-xs-1 col-sm-1'><?php print caGetThemeGraphic($this->request, 'ATT00001.jpg'); ?></div>
 			</div>
 			<div class="row">
 				<div class='col-sm-3'></div>

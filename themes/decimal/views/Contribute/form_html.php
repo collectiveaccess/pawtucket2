@@ -35,6 +35,11 @@
 	<div id="contentArea" class="contribute">	
 		<div class="contributeForm">
 			<div class='container'>
+			<div class="pull-right detailTool generalToolSocial">
+				<a href='https://twitter.com/home?status=http%3A//fabricofdigitallife.com<?php print caNavUrl($this->request, '', 'Contribute', 'materials'); ?>'><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+				<a href='https://www.facebook.com/sharer/sharer.php?u=http%3A//fabricofdigitallife.com<?php print caNavUrl($this->request, '', 'Contribute', 'materials'); ?>'><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+				<a href='https://plus.google.com/share?url=http%3A//fabricofdigitallife.com<?php print caNavUrl($this->request, '', 'Contribute', 'materials'); ?>'><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+			</div><!-- end detailTool -->
 			<h1>Contribute</h1>
 			<p>Submit Materials The Fabric of Digital Life Archive. Your media will be cataloged and added to the archive once reviewed. The content you submit will be viewable on the site in the near future.  Please contact us at <a href='mailto:decimal.lab.uoit@gmail.com'>decimal.lab.uoit@gmail.com</a> for assistance if needed.</p>
 			
