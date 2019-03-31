@@ -43,7 +43,7 @@
 			<h1>Contribute</h1>
 			<p>Submit Materials The Fabric of Digital Life Archive. Your media will be cataloged and added to the archive once reviewed. The content you submit will be viewable on the site in the near future.  Please contact us at <a href='mailto:decimal.lab.uoit@gmail.com'>decimal.lab.uoit@gmail.com</a> for assistance if needed.</p>
 			
-			<div class="notificationMessage">{{{errors}}}</div>
+			{{{<ifdef code="errors"><div class="notificationMessage">^errors</div></ifdef>}}}
 			
 			{{{form}}}
 				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>
