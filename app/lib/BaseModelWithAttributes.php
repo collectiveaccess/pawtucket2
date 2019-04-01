@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2016 Whirl-i-Gig
+ * Copyright 2008-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -495,7 +495,7 @@
 				$this->setTransaction(new Transaction($this->getDb()));
 				$vb_we_set_transaction = true;
 			}
-			$vb_web_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
+			$we_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			$pa_options['dont_do_search_indexing'] = true;
 			
@@ -529,9 +529,13 @@
 				if(caGetOption('queueIndexing', $pa_options, true)) {
 					$va_index_options['queueIndexing'] = true;
 				}
+				if (method_exists($this, "deriveHistoryTrackingCurrentValue")) {
+                    $table = $this->tableName();
+                    if ($table::isHistoryTrackingCriterion($table)) { $this->updateDependentHistoryTrackingCurrentValues(); }
+                }
 				$this->doSearchIndexing(array_merge($this->getFieldValuesArray(true), $va_fields_changed_array), false, $va_index_options);
 				
-				if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+				if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 				if ($this->numErrors() > 0) {
 					if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 					$this->_FIELD_VALUES[$this->primaryKey()] = null;		// clear primary key set by BaseModel::insert()
@@ -552,14 +556,14 @@
 				}
 			}
 		
-			if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+			if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			if ($vb_we_set_transaction) { $this->removeTransaction(false); }
 			$this->_FIELD_VALUES[$this->primaryKey()] = null;		// clear primary key set by BaseModel::insert()
 			return false;
 		}
 		# ------------------------------------------------------------------
 		public function update($pa_options=null) {
-			$vb_web_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
+			$we_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
 			
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			$pa_options['dont_do_search_indexing'] = true;
@@ -575,21 +579,25 @@
 					$va_index_options['queueIndexing'] = true;
 				}
 				
+				if (method_exists($this, "deriveHistoryTrackingCurrentValue")) {
+                    $table = $this->tableName();
+                    if ($table::isHistoryTrackingCriterion($table)) { $this->updateDependentHistoryTrackingCurrentValues(); }
+                }
 				$this->doSearchIndexing($va_fields_changed_array, false, $va_index_options);
 				
-				if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+				if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 				if ($this->numErrors() > 0) {
 					return false;
 				}
 				return true;
 			}
 			
-			if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+			if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			return false;
 		}
 		# ------------------------------------------------------------------
 		public function delete($pb_delete_related=false, $pa_options=null, $pa_fields=null, $pa_table_list=null) {
-			$vb_web_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
+			$we_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
 			
 			$o_trans = null;
 			if (!$this->inTransaction()) {
@@ -611,7 +619,7 @@
 					$this->errors = $this->getDb()->errors();
 					if ($o_trans) { $o_trans->rollback(); }
 					
-					if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+					if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 					return false; 
 				}
 				
@@ -623,7 +631,7 @@
 					$this->errors = $this->getDb()->errors();
 					if ($o_trans) { $o_trans->rollback(); }
 					
-					if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+					if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 					return false;
 				}
 				
@@ -650,7 +658,7 @@
 							$this->errors = $this->getDb()->errors();
 							if ($o_trans) { $o_trans->rollback(); }
 					
-							if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false; 
 						} else {
 							$o_indexer = new SearchIndexer($this->getDb());
@@ -663,13 +671,13 @@
 				
 				if ($o_trans) { $o_trans->commit(); }
 					
-				if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+				if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 				
 				return $vn_rc;
 			}
 			if ($o_trans) { $vn_rc ? $o_trans->commit() : $o_trans->rollback(); }
 			
-			if ($vb_web_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
+			if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			return $vn_rc;
 		}
 		# ------------------------------------------------------------------
