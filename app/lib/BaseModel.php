@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2000-2018 Whirl-i-Gig
+ * Copyright 2000-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -119,7 +119,6 @@ require_once(__CA_APP_DIR__."/helpers/gisHelpers.php");
 require_once(__CA_APP_DIR__."/helpers/printHelpers.php");
 require_once(__CA_LIB_DIR__."/ApplicationPluginManager.php");
 require_once(__CA_LIB_DIR__."/MediaContentLocationIndexer.php");
-require_once(__CA_LIB_DIR__.'/MediaReplicator.php');
 require_once(__CA_LIB_DIR__.'/Media/Remote/Base.php');
 
 /**
@@ -2157,8 +2156,10 @@ class BaseModel extends BaseObject {
 	public function insert ($pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
 	
+		$we_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
+		
 		$vb_we_set_transaction = false;
-	$this->clearErrors();
+		$this->clearErrors();
 		if (!$this->inTransaction()) {
 			$this->setTransaction(new Transaction($this->getDb()));
 			$vb_we_set_transaction = true;
@@ -2318,11 +2319,13 @@ class BaseModel extends BaseObject {
 						if ((($v == '') || is_null($v)) && !$va_attr["IS_NULL"]) {
 							$this->postError(1805, _t("Date is undefined but field %1 does not support NULL values", $vs_field),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (!is_numeric($v) && !(is_null($v) && $va_attr["IS_NULL"])) {
 							$this->postError(1100, _t("Date is invalid for %1", $vs_field),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (is_null($v)) { $v = 'null'; }
@@ -2336,11 +2339,13 @@ class BaseModel extends BaseObject {
 						if ((($v == '') || is_null($v)) && !$va_attr["IS_NULL"]) {
 							$this->postError(1805, _t("Time is undefined but field %1 does not support NULL values", $vs_field),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (!is_numeric($v) && !(is_null($v) && $va_attr["IS_NULL"])) {
 							$this->postError(1100, _t("Time is invalid for ", $vs_field),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (is_null($v)) { $v = 'null'; }
@@ -2370,11 +2375,13 @@ class BaseModel extends BaseObject {
 						) {
 							$this->postError(1805, _t("Daterange is undefined but field does not support NULL values"),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (!is_numeric($this->_FIELD_VALUES[$start_field_name]) && !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$start_field_name]))) {
 							$this->postError(1100, _t("Starting date is invalid"),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (is_null($this->_FIELD_VALUES[$start_field_name])) { $vm_start_val = 'null'; } else { $vm_start_val = $this->_FIELD_VALUES[$start_field_name]; }
@@ -2382,6 +2389,7 @@ class BaseModel extends BaseObject {
 						if (!is_numeric($this->_FIELD_VALUES[$end_field_name]) && !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$end_field_name]))) {
 							$this->postError(1100,_t("Ending date is invalid"),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (is_null($this->_FIELD_VALUES[$end_field_name])) { $vm_end_val = 'null'; } else { $vm_end_val = $this->_FIELD_VALUES[$end_field_name]; }
@@ -2405,11 +2413,13 @@ class BaseModel extends BaseObject {
 						) {
 							$this->postError(1805,_t("Time range is undefined but field does not support NULL values"),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (!is_numeric($this->_FIELD_VALUES[$start_field_name])&& !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$start_field_name]))) {
 							$this->postError(1100,_t("Starting time is invalid"),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (is_null($this->_FIELD_VALUES[$start_field_name])) { $vm_start_val = 'null'; } else { $vm_start_val = $this->_FIELD_VALUES[$start_field_name]; }
@@ -2417,6 +2427,7 @@ class BaseModel extends BaseObject {
 						if (!is_numeric($this->_FIELD_VALUES[$end_field_name])&& !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$end_field_name]))) {
 							$this->postError(1100,_t("Ending time is invalid"),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (is_null($this->_FIELD_VALUES[$end_field_name])) { $vm_end_val = 'null'; } else { $end_field_name = $this->_FIELD_VALUES[$end_field_name]; }
@@ -2444,6 +2455,7 @@ class BaseModel extends BaseObject {
 						if (!is_numeric($v)) {
 							$this->postError(1100,_t("Number is invalid for %1 [%2]", $vs_field, $v),"BaseModel->insert()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						$vs_values .= $v.",";
@@ -2457,6 +2469,7 @@ class BaseModel extends BaseObject {
 						if (!is_numeric($v)) {
 							$this->postError(1100, _t("Timecode is invalid"),"BaseModel->insert()", $vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						$vs_values .= $v.",";
@@ -2570,6 +2583,7 @@ class BaseModel extends BaseObject {
 						$o_db->query("DELETE FROM ".$this->tableName()." WHERE ".$this->primaryKey()." = ?", $this->getPrimaryKey(1));
 						$this->_FIELD_VALUES[$this->primaryKey()] = "";
 						if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+						if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 						return false;
 					}
 				}
@@ -2602,6 +2616,7 @@ class BaseModel extends BaseObject {
 				if (($vn_fields_that_have_been_set > 0) && !caGetOption('dontLogChange', $pa_options, false)) { $this->logChange("I", null, ['log_id' => $vn_log_id = caGetOption('log_id', $pa_options, null)]); }
 
 				if ($vb_we_set_transaction) { $this->removeTransaction(true); }
+				if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 				
 				$this->_FIELD_VALUE_DID_CHANGE = $this->_FIELD_VALUE_CHANGED;
 				$this->_FIELD_VALUE_CHANGED = array();					
@@ -2618,6 +2633,7 @@ class BaseModel extends BaseObject {
 					$this->postError($o_e->getErrorNumber(), $o_e->getErrorDescription().' ['.$o_e->getErrorNumber().']', "BaseModel->insert()", $this->tableName().'.'.$vs_field);
 				}
 				if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+				if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 				return false;
 			}
 		} else {
@@ -2651,6 +2667,7 @@ class BaseModel extends BaseObject {
 
 			}
 			if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+			if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			return false;
 		}
 	}
@@ -2670,6 +2687,8 @@ class BaseModel extends BaseObject {
 	 */
 	public function update($pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
+		
+		$we_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
 		
 		$this->field_conflicts = array();
 		$this->clearErrors();
@@ -2754,6 +2773,7 @@ class BaseModel extends BaseObject {
 					if (in_array($this->get($vs_parent_id_fld), $va_ids)) {
 						$this->postError(2010,_t("Cannot move %1 under its sub-record", $this->getProperty('NAME_SINGULAR')),"BaseModel->update()", $this->tableName().'.'.$vs_parent_id_fld);
 						if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+						if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 						return false;
 					}
 				}
@@ -2770,6 +2790,7 @@ class BaseModel extends BaseObject {
 						if (!($vn_hierarchy_id = $this->get($vs_hier_id_fld))) {
 							$this->postError(2030, _t("Hierarchy ID must be specified for this update"), "BaseModel->update()", $this->tableName().'.'.$vs_hier_id_fld);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							
 							return false;
 						}
@@ -2898,6 +2919,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						if (!is_numeric($vm_val)) {
 							$this->postError(1100,_t("Number is invalid for %1", $vs_field),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						$vs_sql .= "{$vs_field} = {$vm_val},";
@@ -2925,11 +2947,13 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						if ((($vm_val == '') || is_null($vm_val)) && !$va_attr["IS_NULL"]) {
 							$this->postError(1805,_t("Date is undefined but field does not support NULL values"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (!is_numeric($vm_val) && !(is_null($vm_val) && $va_attr["IS_NULL"])) {
 							$this->postError(1100,_t("Date is invalid for %1", $vs_field),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (is_null($vm_val)) { $vm_val = 'null'; }
@@ -2943,11 +2967,13 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						if ((($vm_val == '') || is_null($vm_val)) && !$va_attr["IS_NULL"]) {
 							$this->postError(1805, _t("Time is undefined but field does not support NULL values"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (!is_numeric($vm_val) && !(is_null($vm_val) && $va_attr["IS_NULL"])) {
 							$this->postError(1100, _t("Time is invalid for %1", $vs_field),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (is_null($vm_val)) { $vm_val = 'null'; }
@@ -2977,11 +3003,13 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						) {
 							$this->postError(1805,_t("Daterange is undefined but field does not support NULL values"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (!is_numeric($this->_FIELD_VALUES[$start_field_name]) && !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$start_field_name]))) {
 							$this->postError(1100,_t("Starting date is invalid"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (is_null($this->_FIELD_VALUES[$start_field_name])) { $vm_start_val = 'null'; } else { $vm_start_val = $this->_FIELD_VALUES[$start_field_name]; }
@@ -2989,6 +3017,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						if (!is_numeric($this->_FIELD_VALUES[$end_field_name]) && !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$end_field_name]))) {
 							$this->postError(1100,_t("Ending date is invalid"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (is_null($this->_FIELD_VALUES[$end_field_name])) { $vm_end_val = 'null'; } else { $vm_end_val = $this->_FIELD_VALUES[$end_field_name]; }
@@ -3010,11 +3039,13 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						) {
 							$this->postError(1805,_t("Time range is undefined but field does not support NULL values"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (!is_numeric($this->_FIELD_VALUES[$start_field_name]) && !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$start_field_name]))) {
 							$this->postError(1100,_t("Starting time is invalid"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (is_null($this->_FIELD_VALUES[$start_field_name])) { $vm_start_val = 'null'; } else { $vm_start_val = $this->_FIELD_VALUES[$start_field_name]; }
@@ -3022,6 +3053,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						if (!is_numeric($this->_FIELD_VALUES[$end_field_name]) && !($va_attr["IS_NULL"] && is_null($this->_FIELD_VALUES[$end_field_name]))) {
 							$this->postError(1100,_t("Ending time is invalid"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						if (is_null($this->_FIELD_VALUES[$end_field_name])) { $vm_end_val = 'null'; } else { $vm_end_val = $this->_FIELD_VALUES[$end_field_name]; }
@@ -3036,6 +3068,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						if (!is_numeric($vm_val)) {
 							$this->postError(1100,_t("Timecode is invalid"),"BaseModel->update()", $this->tableName().'.'.$vs_field);
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 						$vs_sql .= "{$vs_field} = {$vm_val},";
@@ -3051,6 +3084,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						} else {
 							if ($this->numErrors() > 0) {
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+								if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 								return false;
 							}
 						}
@@ -3063,6 +3097,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						} else {
 							if ($this->numErrors() > 0) {
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+								if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 								return false;
 							}
 						}
@@ -3110,6 +3145,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						}
 					}
 					if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+					if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 					return false;
 				} 
 				
@@ -3157,6 +3193,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 			}
 
 			if ($vb_we_set_transaction) { $this->removeTransaction(true); }
+			if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			
 			$this->_FIELD_VALUE_DID_CHANGE = $this->_FIELD_VALUE_CHANGED;
 			$this->_FIELD_VALUE_CHANGED = array();
@@ -3169,6 +3206,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 			return true;
 		} else {
 			if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+			if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			return false;
 		}
 	}
@@ -3236,6 +3274,9 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 	 */
 	public function delete ($pb_delete_related=false, $pa_options=null, $pa_fields=null, $pa_table_list=null) {
 		if(!is_array($pa_options)) { $pa_options = array(); }
+		
+		$we_set_change_log_unit_id = BaseModel::setChangeLogUnitID();
+		
 		$pb_queue_indexing = caGetOption('queueIndexing', $pa_options, true);
 		
 		$vn_id = $this->getPrimaryKey();
@@ -3266,6 +3307,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 			if (!caGetOption('dontLogChange', $pa_options, false)) { $this->logChange("D", null, ['log_id' => caGetOption('log_id', $pa_options, null)]); }
 			
 			if ($vb_we_set_transaction) { $this->removeTransaction(true); }
+			if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			return $vn_rc;
 		}
 		$this->clearErrors();
@@ -3329,6 +3371,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 			if ($qr_res->nextRow()) {
 				$this->postError(780, _t("Can't delete item because it has sub-records"),"BaseModel->delete()");
 				if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+				if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 				return false;	
 			}
 		}
@@ -3380,6 +3423,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 									if ($t_related->numErrors()) {
 										$this->postError(790, _t("Can't delete item because items related to it have sub-records (%1)", $vs_many_table),"BaseModel->delete()");
 										if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+										if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 										return false;
 									}
 								}
@@ -3387,6 +3431,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						} else {
 							$this->postError(780, _t("Can't delete item because it is in use (%1)", $vs_many_table),"BaseModel->delete()");
 							if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+							if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 							return false;
 						}
 					}
@@ -3400,6 +3445,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 		if ($o_db->numErrors() > 0) {
 			$this->errors = $o_db->errors();
 			if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+			if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			return false;
 		}
 		
@@ -3451,10 +3497,12 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 			$this->clear();
 		} else {
 			if ($vb_we_set_transaction) { $this->removeTransaction(false); }
+			if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 			return false;
 		}
 
 		if ($vb_we_set_transaction) { $this->removeTransaction(true); }
+		if ($we_set_change_log_unit_id) { BaseModel::unsetChangeLogUnitID(); }
 		return true;
 	}
 
@@ -4576,6 +4624,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 							$magic = rand(0,99999);
 							$filepath = $vi["absolutePath"]."/".$dirhash."/".$magic."_".$this->_genMediaName($ps_field)."_".$v;
 
+                            $m->set('colorspace', 'RGB');
 							if (!($vs_output_file = $m->write($filepath, $output_mimetype, $va_media_write_options))) {
 								$this->postError(1600,_t("Couldn't write file: %1", join("; ", $m->getErrors())),"BaseModel->_processMedia()", $this->tableName().'.'.$ps_field);
 								$m->cleanup();
@@ -5093,365 +5142,6 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 		}
 
 		return join("/", $dirs);
-	}
-	# --------------------------------------------------------------------------------
-	# --- Media replication
-	# --------------------------------------------------------------------------------
-	/**
-	 * Returns a list of all media replication targets defined for the media loaded into the specified FT_MEDIA field $ps_field
-	 *
-	 * @param string $ps_field
-	 * @param 
-	 */
-	public function getMediaReplicationTargets($ps_field, $ps_version='original', $pa_options=null) {
-		$va_media_info = $this->getMediaInfo($ps_field, $ps_version);
-		if (!$va_media_info) { return null; }
-		
-		$vs_trigger = caGetOption('trigger', $pa_options, null);
-		$vn_access = caGetOption('access', $pa_options, null);
-		
-		$va_volume_info = $this->_MEDIA_VOLUMES->getVolumeInformation($va_media_info['VOLUME']);
-		if(isset($va_volume_info['replication']) && is_array($va_volume_info['replication'])) {
-			if ($vs_trigger || (!is_null($vn_access))) {
-				$va_tmp = array();
-				foreach($va_volume_info['replication'] as $vs_target => $va_target_info) {
-					if (
-						($va_target_info['trigger'] == $vs_trigger)
-						&&
-						(
-							(is_null($vn_access) || !is_array($va_target_info['access']))
-							||
-							(in_array($vn_access, $va_target_info['access']))
-						)
-					) {
-						$va_tmp[$vs_target] = $va_target_info;
-					}
-				}
-				return $va_tmp;
-			}
-			
-			return $va_volume_info['replication'];
-		}
-		return array();
-	}
-	# --------------------------------------------------------------------------------
-	/**
-	 * Returns a list of media replication targets for the which the media loaded into the specified FT_MEDIA field $ps_field has not already been replicated
-	 *
-	 * @param string $ps_field
-	 * @param 
-	 */
-	public function getAvailableMediaReplicationTargets($ps_field, $ps_version='original', $pa_options=null) {
-		if (!($va_targets = $this->getMediaReplicationTargets($ps_field, $ps_version, $pa_options))) { return null; }
-		
-	
-		$va_used_targets = array_keys($this->getUsedMediaReplicationTargets($ps_field, $ps_version, $pa_options));
-	
-		foreach($va_used_targets as $vs_used_target) {
-			unset($va_targets[$vs_used_target]);
-		}
-		return $va_targets;
-	}
-	# --------------------------------------------------------------------------------
-	/**
-	 * Returns a list of media replication targets for the which the media loaded into the specified FT_MEDIA field $ps_field has not already been replicated
-	 *
-	 * @param string $ps_field
-	 * @param 
-	 */
-	public function getAvailableMediaReplicationTargetsAsHTMLFormElement($ps_name, $ps_field, $ps_version='original', $pa_attributes=null, $pa_options=null) {
-		if (!($va_targets = $this->getAvailableMediaReplicationTargets($ps_field, $ps_version))) { return null; }
-		if (sizeof($va_targets) == 0) { return ''; }
-		
-		$va_opts = array();
-		foreach($va_targets as $vs_target_code => $va_target_info) {
-			$va_opts[$va_target_info['name']] = $vs_target_code;
-		}
-		return caHTMLSelect($ps_name, $va_opts, $pa_attributes, $pa_options);
-	}
-	# --------------------------------------------------------------------------------
-	/**
-	 * Returns a list of media replication targets for the which the media loaded into the specified FT_MEDIA field $ps_field has already been replicated
-	 *
-	 * @param string $ps_field
-	 * @param 
-	 */
-	public function getUsedMediaReplicationTargets($ps_field, $ps_version='original', $pa_options=null) {
-		if (!($va_targets = $this->getMediaReplicationTargets($ps_field, $ps_version, $pa_options))) { return null; }
-		
-		$va_media_info = $this->getMediaInfo($ps_field);
-		$va_used_targets = array();
-		if (is_array($va_media_info['REPLICATION_STATUS'])) {
-			foreach($va_media_info['REPLICATION_STATUS'] as $vs_used_target => $vn_target_status) {
-				if ($vn_target_status != __CA_MEDIA_REPLICATION_STATE_ERROR__) { $va_used_targets[] = $vs_used_target; }
-			}
-		}
-		
-		foreach($va_targets as $vs_target => $va_target_info) {
-			if (!in_array($vs_target, $va_used_targets)) { unset($va_targets[$vs_target]); }
-		}
-		return $va_targets;
-	}
-	# --------------------------------------------------------------------------------
-	/**
-	 * 
-	 *
-	 * @param string $ps_field
-	 * @param string $ps_target
-	 * @return bool
-	 */
-	public function replicateMedia($ps_field, $ps_target) {
-		global $AUTH_CURRENT_USER_ID;
-		
-		$va_targets = $this->getMediaReplicationTargets($ps_field, 'original');
-		$va_target_info = $va_targets[$ps_target];
-		
-		// TODO: generalize this metadata? Perhaps let the plugin deal with it?
-		$pa_data = array(
-			'title' => $va_target_info['options']['title'] ? caProcessTemplateForIDs($va_target_info['options']['title'], $this->tableNum(), array($this->getPrimaryKey()), array('requireLinkTags' => true)) : "",
-			'description' => $va_target_info['options']['description'] ? caProcessTemplateForIDs($va_target_info['options']['description'], $this->tableNum(), array($this->getPrimaryKey()), array('requireLinkTags' => true)) : "",
-			'tags' => $va_target_info['options']['tags'] ? caProcessTemplateForIDs($va_target_info['options']['tags'], $this->tableNum(), array($this->getPrimaryKey()), array('requireLinkTags' => true)) : "",
-			'category' => $va_target_info['options']['category']
-		);
-		
-		$vs_version = $va_target_info['version'];
-		if (!in_array($vs_version, $this->getMediaVersions($ps_field))) {
-			$vs_version = 'original';
-		}
-	
-		$o_replicator = new MediaReplicator();
-		
-		if ($this->getAppConfig()->get('queue_enabled')) {
-			// Queue replication
-			$o_tq = new TaskQueue();
-			$vs_row_key = join("/", array($this->tableName(), $this->getPrimaryKey()));
-			$vs_entity_key = join("/", array($this->tableName(), $ps_field, $this->getPrimaryKey(), $vs_version));
-
-			if (!($o_tq->cancelPendingTasksForEntity($vs_entity_key))) {
-				//$this->postError(560, _t("Could not cancel pending tasks: %1", $this->error),"BaseModel->replicateMedia()");
-				//return false;
-			}
-
-			if ($o_tq->addTask(
-				'mediaReplication',
-				array(
-					"FIELD" => $ps_field,
-					"TARGET" => $ps_target,
-					"TABLE" => $this->tableName(),
-					"VERSION" => $vs_version,
-
-					"TARGET_INFO" => $va_target_info,
-					"DATA" => $pa_data,
-
-					"PK" => $this->primaryKey(),
-					"PK_VAL" => $this->getPrimaryKey()
-				),
-				array("priority" => 100, "entity_key" => $vs_entity_key, "row_key" => $vs_row_key, 'user_id' => $AUTH_CURRENT_USER_ID)))
-			{
-				
-				$va_media_info = $this->getMediaInfo($ps_field);
-				$va_media_info['REPLICATION_STATUS'][$ps_target] = __CA_MEDIA_REPLICATION_STATE_PENDING__;	// pending means it's queued
-				$va_media_info['REPLICATION_LOG'][$ps_target][] = array('STATUS' => __CA_MEDIA_REPLICATION_STATE_PENDING__, 'DATETIME' => time());
-				$va_media_info['REPLICATION_KEYS'][$ps_target] = null;
-				
-				$this->setMediaInfo($ps_field, $va_media_info);
-				$this->update();
-				return null;
-			} else {
-				$this->postError(100, _t("Couldn't queue mirror using '%1' for version '%2'", 'mediaReplication', $vs_version),"BaseModel->replicateMedia()");
-			}
-			
-			$vs_key = null;
-		} else {		
-			// Do replication right now, in-process
-			// (mark replication as started)
-				
-			$va_media_info = $this->getMediaInfo($ps_field);
-			$va_media_info['REPLICATION_STATUS'][$ps_target] = __CA_MEDIA_REPLICATION_STATE_UPLOADING__;
-			$va_media_info['REPLICATION_LOG'][$ps_target][] = array('STATUS' => __CA_MEDIA_REPLICATION_STATE_UPLOADING__, 'DATETIME' => time());
-			$va_media_info['REPLICATION_KEYS'][$ps_target] = null;
-			
-			$this->setMediaInfo($ps_field, $va_media_info);
-			$this->update(array('processingMediaForReplication' => true));
-			
-			if (!is_array($va_media_desc = $this->_FIELD_VALUES[$ps_field])) {
-				throw new Exception(_t("Could not record replication status: %1 has no media description data", $ps_field));
-			}
-			
-			try {
-				if ($vs_key = $o_replicator->replicateMedia($this->getMediaPath($ps_field, $vs_version), $va_target_info, $pa_data)) {
-					$vn_status = $o_replicator->getReplicationStatus($va_target_info, $vs_key);
-					
-					$va_media_info['REPLICATION_STATUS'][$ps_target] = $vn_status;
-					$va_media_info['REPLICATION_LOG'][$ps_target][] = array('STATUS' => $vn_status, 'DATETIME' => time());
-					$va_media_info['REPLICATION_KEYS'][$ps_target] = $vs_key;
-					$this->setMediaInfo($ps_field, $va_media_info);
-					$this->update(array('processingMediaForReplication' => true));
-				
-				} else {
-					$va_media_info['REPLICATION_STATUS'][$ps_target] = __CA_MEDIA_REPLICATION_STATE_ERROR__;
-					$va_media_info['REPLICATION_LOG'][$ps_target][] = array('STATUS' => __CA_MEDIA_REPLICATION_STATE_ERROR__, 'DATETIME' => time());
-					$va_media_info['REPLICATION_KEYS'][$ps_target] = null;
-					$this->setMediaInfo($ps_field, $va_media_info);
-					$this->update(array('processingMediaForReplication' => true));
-					
-					$this->postError(3300, _t('Media replication for %1 failed', $va_target_info['name']), 'BaseModel->replicateMedia', $this->tableName().'.'.$ps_field);
-					
-					return null;
-				}
-			} catch (Exception $e) {
-				$va_media_info['REPLICATION_STATUS'][$ps_target] = __CA_MEDIA_REPLICATION_STATE_ERROR__;
-				$va_media_info['REPLICATION_LOG'][$ps_target][] = array('STATUS' => __CA_MEDIA_REPLICATION_STATE_ERROR__, 'DATETIME' => time());
-				$va_media_info['REPLICATION_KEYS'][$ps_target] = null;
-				$this->setMediaInfo($ps_field, $va_media_info);
-				$this->update(array('processingMediaForReplication' => true));
-				
-				$this->postError(3300, _t('Media replication for %1 failed: %2', $va_target_info['name'], $e->getMessage()), 'BaseModel->replicateMedia', $this->tableName().'.'.$ps_field);
-					
-				return null;
-			}
-		}
-		return $vs_key;
-	}
-	# --------------------------------------------------------------------------------
-	/**
-	 * 
-	 *
-	 * @param string $ps_field
-	 * @param 
-	 */
-	public function getReplicatedMediaUrl($ps_field, $ps_target, $pa_options=null) {
-		$va_media_info = $this->getMediaInfo($ps_field); 
-		if (!isset($va_media_info['REPLICATION_STATUS'][$ps_target])) { return null; }
-		if ($va_media_info['REPLICATION_STATUS'][$ps_target] != __CA_MEDIA_REPLICATION_STATE_COMPLETE__) { return false; }
-		
-		$va_targets = $this->getMediaReplicationTargets($ps_field, 'original');
-		$va_target_info = $va_targets[$ps_target];
-		
-		if ($vs_replication_key = $va_media_info['REPLICATION_KEYS'][$ps_target]) {
-			$o_replicator = new MediaReplicator();
-			return $o_replicator->getUrl($vs_replication_key, $va_target_info, $pa_options);
-		}
-		return null;
-	}
-	# --------------------------------------------------------------------------------
-	/**
-	 * 
-	 *
-	 * @param string $ps_field
-	 * @param 
-	 */
-	public function removeMediaReplication($ps_field, $ps_target, $ps_replication_key, $pa_options=null) {
-		$va_media_info = $this->getMediaInfo($ps_field); 
-		if (!caGetOption('force', $pa_options, false) && !isset($va_media_info['REPLICATION_STATUS'][$ps_target])) { return null; }	
-		
-		$va_targets = $this->getMediaReplicationTargets($ps_field, 'original');
-		$va_target_info = $va_targets[$ps_target];
-		
-		$o_replicator = new MediaReplicator();
-		try {
-			$o_replicator->removeMediaReplication($ps_replication_key, $va_target_info, array());
-			unset($va_media_info['REPLICATION_STATUS'][$ps_target]);
-			$this->setMediaInfo($ps_field, $va_media_info);
-			$this->update(array('processingMediaForReplication' => true));
-		} catch(Exception $e) {
-			unset($va_media_info['REPLICATION_STATUS'][$ps_target]);
-			$this->setMediaInfo($ps_field, $va_media_info);
-			$this->update(array('processingMediaForReplication' => true));
-			
-			$this->postError(3310, _t('Deletion of replicated media for %1 failed: %2', $va_target_info['name'], $e->getMessage()), 'BaseModel->removeMediaReplication', $this->tableName().'.'.$ps_field);
-				
-			return false;
-		}
-		return true;
-	}
-	# --------------------------------------------------------------------------------
-	/**
-	 * 
-	 *
-	 * @param string $ps_field
-	 * @param 
-	 */
-	public function getMediaReplicationKey($ps_field, $ps_target) {
-		$va_media_info = $this->getMediaInfo($ps_field); 
-		if (!isset($va_media_info['REPLICATION_STATUS'][$ps_target])) { return null; }
-		
-		return (isset($va_media_info['REPLICATION_KEYS']) && isset($va_media_info['REPLICATION_KEYS'][$ps_target])) ? $va_media_info['REPLICATION_KEYS'][$ps_target] : "";
-	}
-	# --------------------------------------------------------------------------------
-	/**
-	 * 
-	 *
-	 * @param string $ps_field
-	 * @param 
-	 */
-	public function getMediaReplicationStatus($ps_field, $ps_target) {
-		$va_media_info = $this->getMediaInfo($ps_field); 
-		if (!isset($va_media_info['REPLICATION_STATUS'][$ps_target])) { return null; }
-		
-		$va_targets = $this->getMediaReplicationTargets($ps_field, 'original');
-		$va_target_info = $va_targets[$ps_target];
-		
-		$vn_current_status = $va_media_info['REPLICATION_STATUS'][$ps_target];
-		
-		$vs_repl_key = (isset($va_media_info['REPLICATION_KEYS']) && isset($va_media_info['REPLICATION_KEYS'][$ps_target])) ? $va_media_info['REPLICATION_KEYS'][$ps_target] : "";
-		
-		switch($vn_current_status) {
-			case __CA_MEDIA_REPLICATION_STATE_PENDING__:
-				$va_status_info = array(
-					'code' => __CA_MEDIA_REPLICATION_STATE_PENDING__,
-					'key' => $vs_repl_key,
-					'status' => _t('Replication pending')
-				);
-				break;
-			case __CA_MEDIA_REPLICATION_STATE_UPLOADING__:
-				$va_status_info = array(
-					'code' => __CA_MEDIA_REPLICATION_STATE_UPLOADING__,
-					'key' => $vs_repl_key,
-					'status' => _t('Uploading media')
-				);
-				break;
-			case __CA_MEDIA_REPLICATION_STATE_PROCESSING__:
-				$o_replicator = new MediaReplicator();
-				if (($vn_status = $o_replicator->getReplicationStatus($va_target_info, $va_media_info['REPLICATION_KEYS'][$ps_target])) != __CA_MEDIA_REPLICATION_STATE_PROCESSING__) {
-					// set to new status
-					
-					$va_media_info = $this->getMediaInfo($ps_field);
-					$va_media_info['REPLICATION_STATUS'][$ps_target] = $vn_status;
-					$va_media_info['REPLICATION_LOG'][$ps_target][] = array('STATUS' => $vn_status, 'DATETIME' => time());
-					$this->setMediaInfo($ps_field, $va_media_info);
-					$this->update();
-					return $this->getMediaReplicationStatus($ps_field, $ps_target);
-				}
-				$va_status_info = array(
-					'code' => __CA_MEDIA_REPLICATION_STATE_PROCESSING__,
-					'key' => $vs_repl_key,
-					'status' => _t('Media is being processed by replication target')
-				);
-				break;
-			case __CA_MEDIA_REPLICATION_STATE_COMPLETE__:
-				$va_status_info = array(
-					'code' => __CA_MEDIA_REPLICATION_STATE_COMPLETE__,
-					'key' => $vs_repl_key,
-					'status' => _t('Replication complete')
-				);
-				break;
-			case __CA_MEDIA_REPLICATION_STATE_ERROR__:
-				$va_status_info = array(
-					'code' => __CA_MEDIA_REPLICATION_STATE_ERROR__,
-					'key' => $vs_repl_key,
-					'status' => _t('Replication failed')
-				);
-				break;
-			default:
-				$va_status_info = array(
-					'code' => 0,
-					'key' => $vs_repl_key,
-					'status' => _t('Status unknown')
-				);
-				break;
-		}
-		return $va_status_info;
 	}
 	# --------------------------------------------------------------------------------
 	# --- Uploaded file handling
