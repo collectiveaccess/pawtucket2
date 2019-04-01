@@ -53,8 +53,21 @@
 <html lang="en"  <?php print ((strtoLower($this->request->getController()) == "front") || (strtoLower($this->request->getAction()) == "parallax")) ? "class='frontContainer animatedParallaxContainer'" : ""; ?>>
 	<head>
 	<link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
+	<link rel="shortcut icon" type="image/png" href="<?php print caGetThemeGraphicUrl($this->request, 'favicon.png'); ?>"/>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	<meta property="og:url" content="<?php print $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" />
+	<meta property="og:type" content="website" />
+	<meta property="og:description" content="The Vancouver Maritime Museum's Open Collections is an online catalogue of Artifacts and Archival Material held at the museum." />
+	<meta property="og:title" content="Vancouver Maritime Museum's Open Collections" />
+	<meta property="og:image" content="<?php print $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'shipShare.jpg'); ?>" />
+
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:site" content="@vanmaritime">
+	<meta name="twitter:title" content="Vancouver Maritime Museum's Open Collections">
+	<meta name="twitter:description" content="The Vancouver Maritime Museum's Open Collections is an online catalogue of Artifacts and Archival Material held at the museum.">
+	<meta name="twitter:image" content="<?php print $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'shipShare.jpg'); ?>">	
+
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
