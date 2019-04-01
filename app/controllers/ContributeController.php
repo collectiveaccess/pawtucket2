@@ -72,7 +72,22 @@
  		 *
  		 */ 
  		public function List() {
+ 		    if (!$this->request->config->get('use_submission_interface')) {
+ 		        $this->notification->addNotification(_t('Not available'), __NOTIFICATION_TYPE_ERROR__);
+				$this->response->setRedirect(caNavUrl($this->request, "", "Front", "Index"));
+				return;
+ 		    }
+ 		    if (!$this->request->isLoggedIn()) { 
+            	$this->notification->addNotification(_t('You are not logged in'), __NOTIFICATION_TYPE_ERROR__);
+				$this->response->setRedirect(caNavUrl($this->request, "", "Front", "Index"));
+				return;
+            }
  			$forms = $this->config->getAssoc('formTypes');
+ 			if (!$this->request->isLoggedIn()) { 
+            	$this->notification->addNotification(_t('No forms are configured'), __NOTIFICATION_TYPE_ERROR__);
+				$this->response->setRedirect(caNavUrl($this->request, "", "Front", "Index"));
+				return;
+            }
  			$submissions_by_form = [];
  			foreach($forms as $form_code => $form_info) {
  				$t = $form_info['table'];
@@ -480,7 +495,7 @@
             	if (is_array($groups = $this->request->user->getUserGroups()) && sizeof($groups)) {
             		$t_subject->set('submission_group_id', array_shift(array_values($groups)));
             	}
-            	$t_subject->set('submission_status_id', 'submitted');
+            	$t_subject->set('submission_status_id', $this->config->get('initial_status'));
             	
             }
             
@@ -715,6 +730,7 @@
  			
  			// Does form require login?
  			if ($va_form_info['require_login'] && !($this->request->isLoggedIn())) {
+ 			    $this->notification->addNotification(_t('Login is required'), __NOTIFICATION_TYPE_ERROR__);
                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
                 return null;
             }

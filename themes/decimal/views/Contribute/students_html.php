@@ -166,13 +166,13 @@
 						 <br/>
 					</div>
 				</div><!-- end row -->
-				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>
+				<!--<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>
 					<div class="contributeField col-sm-12">
 						{{{ca_objects.transcript:error}}}
 						<span class='title'>Transcript</span><br/>
 						{{{ca_objects.transcript%width=900px&height=120px}}}  
 					</div>				
-				</div>
+				</div>-->
 				
 				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>
 					<div class='col-sm-12'>
