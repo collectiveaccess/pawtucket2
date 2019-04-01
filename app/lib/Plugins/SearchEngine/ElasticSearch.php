@@ -154,7 +154,7 @@ class WLPlugSearchEngineElasticSearch extends BaseSearchPlugin implements IWLPlu
 	 *		BOOST = Indexing boost to apply
 	 *		PRIVATE = Set indexing to private
 	 */
-	public function updateIndexingInPlace($pn_subject_tablenum, $pa_subject_row_ids, $pn_content_tablenum, $ps_content_fieldnum, $pn_content_row_id, $ps_content, $pa_options=null) {
+	public function updateIndexingInPlace($pn_subject_tablenum, $pa_subject_row_ids, $pn_content_tablenum, $ps_content_fieldnum, $pn_content_container_id, $pn_content_row_id, $ps_content, $pa_options=null) {
 		$vs_table_name = Datamodel::getTableName($pn_subject_tablenum);
 
 		$o_field = new ElasticSearch\Field($pn_content_tablenum, $ps_content_fieldnum);
@@ -267,16 +267,18 @@ class WLPlugSearchEngineElasticSearch extends BaseSearchPlugin implements IWLPlu
 			if(!$vs_table_name = Datamodel::getTableName($pn_table_num)) { return false; }
 
 			$va_search_params = array(
-				'search_type' => 'scan',    // use search_type=scan
 				'scroll' => '1m',          // how long between scroll requests. should be small!
 				'index' => $this->getIndexName(),
 				'type' => $vs_table_name,
 				'body' => array(
 					'query' => array(
-						'match_all' => array()
+						'match_all' => $this->version >= 5 ? new \stdClass() : []
 					)
 				)
 			);
+			if ($this->version < 5){
+				$va_search_params['search_type'] = 'scan';
+			}
 
 			$va_tmp = $this->getClient()->search($va_search_params);   // Execute the search
 			$vs_scroll_id = $va_tmp['_scroll_id'];   // The response will contain no results, just a _scroll_id

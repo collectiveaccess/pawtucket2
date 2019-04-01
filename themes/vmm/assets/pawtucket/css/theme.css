@@ -74,7 +74,6 @@ H5, h5 {
 }
 .breadcrumb{
 	padding:0px;
-	margin-top:-25px;
 	font-size: 12px;
 	background-color:#FFF;
 	margin-bottom:30px;
@@ -85,8 +84,15 @@ H5, h5 {
 	color:#828282;
 }
 .detail .breadcrumb{
-	margin-top: -45px;
 	margin-bottom: 50px;
+}
+@media(min-width:992px){
+	.breadcrumb{
+		margin-top:-25px;
+	}
+	.detail .breadcrumb{
+		margin-top: -45px;
+	}
 }
 #pageArea{
 	padding-top:20px;
@@ -650,7 +656,11 @@ body.initial.frontContainer .nav > li > a:hover, body.initial.frontContainer .na
 @media (max-device-width:1024px){
 	/* touch screens */
 	.front .tileLinks img{
-		opacity:.75;
+		opacity:.8;
+	}
+	.front .tileLinks .sectionLink a{
+		color:#FFF;
+		text-shadow: 1px 1px 4px #000;
 	}
 }
 @media (max-width: 768px) {
@@ -942,9 +952,6 @@ body.frontContainer #footer{
     color: #104d73;
     text-decoration:underline;
 }
-.detail .detailNavBgLeft, .detail .detailNavBgRight{
-	margin-top:-35px;
-}
 @media(min-width: 768px) {
 	.detail .exportCollection{
 		float:right;
@@ -978,8 +985,21 @@ a.readmore-js-toggle {
 .detail .unit b, .detail .unit strong {
     font-weight: 300;
 }
-.detail .detailNavBgLeft, .detail .detailNavBgRight {
-    margin-top: -55px;
+
+.detail .detailNavBgLeft, .detail .detailNavBgRight{
+	margin-top:-25px;
+}
+@media(min-width:992px){
+	.detail .detailNavBgLeft, .detail .detailNavBgRight {
+		margin-top: -55px;
+	}
+}
+.detail .navTop a{
+	color: #8e8985;
+}
+.detail .featuredVesselObject img{
+	width:100%;
+	height:auto;
 }
 
 /* collections */
@@ -1018,6 +1038,9 @@ a.readmore-js-toggle {
 	font-weight: 400 !important;
 }
 /* results */
+.results.ca_occurrences H5 {
+    margin-bottom: 10px;
+}
 .bResultItemImgPlaceholder {
     background-color: #FFFFFF;
     border: 2px solid #EDEDED;
@@ -1081,9 +1104,20 @@ a.readmore-js-toggle {
 		float:right;
 		width:50%;
 	}
-	.bodytext img{
+	.bodytextImg{
 		padding-left:30px;
 	}
+}
+.bodytextImg .video-js{
+	width: 100%;
+    height: 350px;
+}
+.bodytext ul{
+	padding-left: 40px;
+	padding-bottom:10px;
+}
+.bodytext ul > li{
+	list-style-type: square;
 }
 /* advanced search */
 #pageArea.advancedSearch li a{
@@ -1105,6 +1139,9 @@ a.readmore-js-toggle {
 .multisearchImgPlaceholder .vmmPlaceholder {
     min-height: 100px;
 }
+.multisearchResult{
+	line-height:1.1em !important;
+}
 
 /* galleries */
 .gallery #gallerySetInfo {
@@ -1115,4 +1152,13 @@ a.readmore-js-toggle {
 }
 .gallery .setDescription {
     font-size: 14px;
+}
+
+/* licensing form */
+#licensingForm H2{
+	margin-top:40px;
+}
+.licensingFormItem img{
+	height:100px;
+	width:auto;
 }

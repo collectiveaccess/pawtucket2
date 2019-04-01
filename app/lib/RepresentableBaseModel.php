@@ -241,7 +241,7 @@
 			$va_reps = $this->getRepresentations(array('original'));
 			$va_found_reps = array();
 			foreach($va_reps as $vn_i => $va_rep) {
-				if((sizeof($va_mimetypes)) && isset($va_mimetypes[$va_rep['info']['original']['MIMETYPE']])) {
+				if(is_array($va_mimetypes) && (sizeof($va_mimetypes)) && isset($va_mimetypes[$va_rep['info']['original']['MIMETYPE']])) {
 					switch($vs_sortby) {
 						case 'filesize':
 							$va_found_reps[$va_rep['info']['original']['FILESIZE']][] = $va_rep;

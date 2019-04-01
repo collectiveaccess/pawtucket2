@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+ 	$va_access_values = caGetUserAccessValues($this->request);
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
@@ -37,6 +37,7 @@
 	
 	$vs_detail_tools = "<div id='detailTools'>
 						<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask An Archivist", "", "", "Contact",  "form", array('id' => $vn_id, 'table' => 'ca_objects'))."</div><!-- end detailTool -->
+						<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Order Reproduction", "", "", "ImageLicensing",  "form", array('id' => $vn_id, 'table' => 'ca_objects'))."</div><!-- end detailTool -->
 						<div class='detailTool'><a href='#' onclick='jQuery(\"#detailComments\").slideToggle(); return false;'><span class='glyphicon glyphicon-comment'></span>Comments and Tags (".(sizeof($va_comments) + sizeof($va_tags)).")</a></div><!-- end detailTool -->
 						<div id='detailComments'>".$this->getVar("itemComments")."</div><!-- end itemComments -->
 					</div><!-- end detailTools -->";
@@ -202,10 +203,10 @@
 					<ifdef code="ca_objects.drawing_no"><div class="unit"><H6>Drawing number</H6>^ca_objects.drawing_no</div></ifdef>
 					<ifdef code="ca_objects.hullyard_no"><div class="unit"><H6>Hull yard number</H6>^ca_objects.hullyard_no</div></ifdef>
 					<ifdef code="ca_objects.measurements.dimension_remarks"><div class="unit"><H6>Physical description note</H6>^ca_objects.measurements.dimension_remarks</div></ifdef>
-					<ifdef code="ca_objects.archtechnote"><div class="unit"><H6>Notes</H6>
+					<ifdef code="ca_objects.archtechnote.staterespship|ca_objects.archtechnote.sigsship|ca_objects.archtechnote.edition_note_ship|ca_objects.archtechnote.date_note_ship"><div class="unit"><H6>Notes</H6>
 						<ifdef code="ca_objects.archtechnote.staterespship"><b>Statement of responsibility: </b>^ca_objects.archtechnote.staterespship<br/></ifdef>
 						<ifdef code="ca_objects.archtechnote.sigsship"><b>Signatures: </b>^ca_objects.archtechnote.sigsship<br/></ifdef>
-						<ifdef code="ca_objects.archtechnote.edition_note_ship"><b>Edition note: </b>^ca_objects.chartnote.edition_note_ship<br/></ifdef>
+						<ifdef code="ca_objects.archtechnote.edition_note_ship"><b>Edition note: </b>^ca_objects.archtechnote.edition_note_ship<br/></ifdef>
 						<ifdef code="ca_objects.archtechnote.date_note_ship"><b>Date note: </b>^ca_objects.archtechnote.date_note_ship<br/></ifdef>
 					</div></ifdef>
 					<ifcount code="ca_entities" min="1">

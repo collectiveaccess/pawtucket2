@@ -110,6 +110,7 @@
 			
 			$va_attributes['idno'] = $vs_idno;
 			$va_attributes['parent_id'] = $vn_id;
+			$va_attributes['_treatNumericValueAsID'] = true;
 			
 			if (isset($va_parent['rules']) && is_array($va_parent['rules'])) {
 				foreach($va_parent['rules'] as $va_rule) {
@@ -303,6 +304,8 @@
 					// multiple mappings
 					$vn_offset = 0;
 					foreach($va_attrs as $va_attrs_i) {
+						if (!$va_attrs_i) { continue; }
+                        if (!is_array($va_attrs_i)) { $va_attrs_i = [$va_attrs_i]; }
 						foreach($va_attrs_i as $vs_k => $vs_v) {
 							// BaseRefinery::parsePlaceholder may return an array if the input format supports repeated values (as XML does)
 						

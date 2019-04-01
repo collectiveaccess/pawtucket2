@@ -41,6 +41,7 @@ meridianTable = {
 }
 
 dateCircaIndicator = [ około, ok. ]
+dateProbablyIndicator = [probably, possibly]
 dateUncertaintyIndicator = [ ~ ]
 dateUncertaintyYearIndicator = [ r ]
 dateUncertaintyDayIndicator = [ d ]
@@ -66,6 +67,9 @@ undatedDate = [undated, unknown]
 
 presentDate = [ obecnie, ?, ??, ???, ???? ]
 beforeQualifier = [ przed, poprzedza, wcześniej niż ]
+earlyQualifier = [early]
+midQualifier = [mid, middle]
+lateQualifier = [late]
 diedQualifier = [ zm., zmarły, zmarła]
 afterQualifier = [ po, później niż, następuje po]
 bornQualifier = [ ur., urodzony, urodzona]
