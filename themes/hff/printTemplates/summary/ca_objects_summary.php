@@ -227,13 +227,22 @@
 						if($vs_tmp = $t_objects_x_occurrences->get("exh_remarks")){
 							$va_interstitial[] = $vs_tmp;
 						}
-						if($vs_tmp = $t_objects_x_occurrences->get("source")){
-							$va_interstitial[] = $vs_tmp;
-						}
+						#if($vs_tmp = $t_objects_x_occurrences->get("source")){
+						#	$va_interstitial[] = $vs_tmp;
+						#}
 						if(sizeof($va_interstitial)){
 							$vs_interstitial = ", ".join(", ", $va_interstitial);
 						}
-						print (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "").$vs_interstitial."<br/>";
+						$vs_travel_venues = $t_occ->getWithTemplate('<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
+						<div class="travelVenue"><div>Traveled To</div>
+						<unit relativeTo="ca_occurrences.venues" delimiter="<br/><br/>">
+								<ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef>
+								<ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address, </ifdef>
+								<ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display </ifdef>
+						</unit>
+						</div>
+					</ifdef>');
+						print (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "").$vs_interstitial.$vs_travel_venues.(($vs_travel_venues) ? "" : "<br/><br/>");
 					}
 					print "</div>";
 				}
@@ -261,7 +270,7 @@
 						if($vs_tmp = $t_objects_x_occurrences->get("source")){
 							$vs_interstitial = ", ".$vs_tmp;
 						}
-						print $vs_title.$vs_interstitial."<br/>";
+						print $vs_title.$vs_interstitial."<br/><br/>";
 					}
 					print "</div>";
 				}			

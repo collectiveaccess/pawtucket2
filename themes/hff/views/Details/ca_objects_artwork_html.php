@@ -144,7 +144,7 @@
 				}
 				if($va_exhibitions = $t_object->get("ca_occurrences", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("exhibition"), "sort" => "ca_occurrences.common_date"))){
 					$t_occ = new ca_occurrences();
-					print "<div class='unit'><H6>Exhibition History</H6>";
+					print "<div class='unit moreSpace'><H6>Exhibition History</H6>";
 					$t_objects_x_occurrences = new ca_objects_x_occurrences();
 					foreach($va_exhibitions as $va_exhibition){
 						$t_occ->load($va_exhibition["occurrence_id"]);
@@ -176,19 +176,28 @@
 						if($vs_tmp = $t_objects_x_occurrences->get("exh_remarks")){
 							$va_interstitial[] = $vs_tmp;
 						}
-						if($vs_tmp = $t_objects_x_occurrences->get("source")){
-							$va_interstitial[] = $vs_tmp;
-						}
+						#if($vs_tmp = $t_objects_x_occurrences->get("source")){
+						#	$va_interstitial[] = $vs_tmp;
+						#}
 						if(sizeof($va_interstitial)){
 							$vs_interstitial = ", ".join(", ", $va_interstitial);
 						}
-						print caDetailLink($this->request, (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : ""), '', 'ca_occurrences', $va_exhibition["occurrence_id"]).$vs_interstitial."<br/>";
+						$vs_travel_venues = $t_occ->getWithTemplate('<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
+						<div class="travelVenue"><div>Traveled To</div>
+						<unit relativeTo="ca_occurrences.venues" delimiter="<br/>">
+								<ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef>
+								<ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address, </ifdef>
+								<ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display </ifdef>
+						</unit>
+						</div>
+					</ifdef>');
+						print caDetailLink($this->request, (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : ""), '', 'ca_occurrences', $va_exhibition["occurrence_id"]).$vs_interstitial.$vs_travel_venues.(($vs_travel_venues) ? "" : "<br/>");
 					}
 					print "</div>";
 				}
 				if($va_literatures = $t_object->get("ca_occurrences", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("literature")))){
 					$t_occ = new ca_occurrences();
-					print "<div class='unit'><H6>Literature References</H6>";
+					print "<div class='unit moreSpace'><H6>Literature References</H6>";
 					$t_objects_x_occurrences = new ca_objects_x_occurrences();
 					foreach($va_literatures as $va_literature){
 						$t_occ->load($va_literature["occurrence_id"]);

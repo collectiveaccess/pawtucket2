@@ -345,6 +345,12 @@ H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 .detail .unit br {
     margin-bottom: 10px;
 }
+.detail .unit.moreSpace br {
+    margin-bottom: 18px;
+}
+.travelVenue{
+	margin:5px 0px 18px 15px;
+}
 .detail HR {
     margin: 10px 0px 20px 0px;
 }

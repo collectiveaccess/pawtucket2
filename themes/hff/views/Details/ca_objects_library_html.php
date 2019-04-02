@@ -46,7 +46,42 @@
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
+<?php
+		$vs_rep_viewer = trim($this->getvar("representationViewer"));
+
+		$vs_tools = "";
+		# Comment and Share Tools
+		if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
+				
+			$vs_tools .= '<div id="detailTools">';
+			if ($vn_pdf_enabled) {
+				$vs_tools .= "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download Printable PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
+			}
+			$vs_tools .= '</div><!-- end detailTools -->';
+		}				
+
+		if($vs_rep_viewer){
+?>
+
+			<div class='col-sm-6'>
+				<?php print $vs_rep_viewer; ?>
+				
+				
+				<div id="detailAnnotations"></div>
+				
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>				
+<?php
+				print $vs_tools;
+?>				
+			</div>
+			<div class='col-sm-6'>
+<?php
+		}else{
+?>
 			<div class='col-sm-12'>
+<?php
+		}
+?>
 				{{{<ifdef code="ca_objects.preferred_labels"><div class="unit"><H6>Title</H6>^ca_objects.preferred_labels</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.author.author_name"><div class="unit"><H6>Author</H6>^ca_objects.author.author_name</div></ifdef>}}}
 <?php
@@ -65,30 +100,11 @@
 				{{{<ifdef code="ca_objects.artwork_status"><div class="unit"><H6>Tags</H6>^ca_objects.artwork_status%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.remarks"><div class="unit"><H6>Notes</H6>^ca_objects.remarks%delimiter=,_</div></ifdef>}}}
 				
-				
 <?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
-						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
-					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-					}
-					if ($vn_pdf_enabled) {
-						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download Printable PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
-					}
-					print '</div><!-- end detailTools -->';
-				}				
-
-?>
-				
-						
+				if(!$vs_rep_viewer){
+					print $vs_tools;
+				}
+?>						
 			</div><!-- end col -->
 		</div><!-- end row -->
 		

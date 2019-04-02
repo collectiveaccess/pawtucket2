@@ -97,6 +97,11 @@
 								<ifdef code="ca_collections.separated_materials"><div class="unit"><H6>Separated Materials</H6>^ca_collections.separated_materials</div></ifdef>
 								<ifdef code="ca_collections.otherfindingaid"><div class="unit"><H6>Other Finding Aids</H6>^ca_collections.otherfindingaid</div></ifdef>
 								<ifdef code="ca_collections.publication_note"><div class="unit"><H6>Publication Note</H6>^ca_collections.publication_note</div></ifdef>
+								
+								<ifdef code="ca_collections.physfacet"><div class="unit"><H6>Physical Facet</H6><unit delimiter="<br/>">^ca_collections.physfacet</unit></div></ifdef>
+								<ifdef code="ca_collections.separated_materials"><div class="unit"><H6>Separated Materials</H6><unit delimiter="<br/>">^ca_collections.separated_materials</unit></div></ifdef>
+								<ifdef code="ca_collections.general_notes"><div class="unit"><H6>General Note</H6><unit delimiter="<br/>">^ca_collections.general_notes</unit></div></ifdef>
+					
 								<ifdef code="ca_collections.preferCite"><div class="unit"><H6>Preferred Citation</H6>^ca_collections.preferCite</div></ifdef>
 								<ifdef code="ca_collections.fa_date|ca_collections.fa_author"><div class="unit"><H6>Finding Aid Created</H6>^ca_collections.fa_author<ifdef code="ca_collections.fa_date,ca_collections.fa_author">, ^ca_collections.fa_date</ifdef></div></ifdef>
 								<ifdef code="ca_collections.fa_description_rules"><div class="unit"><H6>Description Rules</H6>^ca_collections.fa_description_rules</div></ifdef>
