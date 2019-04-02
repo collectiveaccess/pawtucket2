@@ -35,7 +35,8 @@
 ?>
 
 		<footer id="footer">
-			<H2>Phanes</H2>
+			<!--<H2>Phanes</H2>-->
+			<H2>Eudora</H2>
 			<div class="userLinks">
 <?php
 				if($this->request->isLoggedIn()){

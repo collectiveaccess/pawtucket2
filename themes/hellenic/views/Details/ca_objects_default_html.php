@@ -204,6 +204,10 @@
 					print "<div class='unit text'><h6>Origin</h6><div class=''>".$vs_prov."</div></div>";
 				}																																																					
 ?>
+				
+				<div class='unit text'><a href="#" onclick="$('#rightsRepro').slideToggle(); return false;"><H6>Rights and Reproduction <i class="fa fa-chevron-down" aria-hidden="true"></i></H6></a>
+					<div style="display:none;" id="rightsRepro">{{{rightsrepro}}}</div>
+				</div>
 				<div class='unit'><h6>Citation</h6><div>
 <?php
 					$va_citation_parts = array();

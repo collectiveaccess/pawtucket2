@@ -130,7 +130,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo.jpg'), "navbar-brand", "", "","");
+				print "<a href='https://www.nationalhellenicmuseum.org' class='navbar-brand'>".caGetThemeGraphic($this->request, 'logo.jpg')."</a>";
 ?>
 
 
@@ -201,7 +201,7 @@
 			</div><!-- end container -->
 		</div>
 	</nav>
-	<div class="banner"><div class="container">NHM COLLECTIONS & ARCHIVES</div></div>
+	<div class="banner"><div class="container"><?php print caNavLink($this->request, "NHM COLLECTIONS & ARCHIVES", "", "", "",""); ?></div></div>
 	<div class="bannerImg"></div>
 <?php
 	#if (strToLower($this->request->getController()) == "front") {
