@@ -65,16 +65,16 @@
 					</ifdef>
 					
 					<ifcount code="ca_occurrences.related" restrictToTypes="chronology" min="1"><H6>Chronology Links</H6></ifcount>
-					<unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToTypes="chronology"><l>^ca_occurrences.preferred_labels.name</l></unit>
+					<unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToTypes="chronology">^ca_occurrences.preferred_labels.name</unit>
 
-					<ifcount code="ca_occurrences.related" min="1" restrictToTypes="literature"><div class="unit"><H6>Literature References</H6><unit relativeTo="ca_occurrences.related" restrictToTypes="literature" delimiter="<br/>"><ifdef code="ca_occurrences.lit_citation"><l>^ca_occurrences.lit_citation</l></ifdef><ifnotdef code="ca_occurrences.lit_citation">^ca_occurrences.preferred_labels</ifnotdef></unit></div></ifcount>
+					<ifcount code="ca_occurrences.related" min="1" restrictToTypes="literature"><div class="unit"><H6>Literature References</H6><unit relativeTo="ca_occurrences.related" restrictToTypes="literature" delimiter="<br/>"><ifdef code="ca_occurrences.lit_citation">^ca_occurrences.lit_citation</ifdef><ifnotdef code="ca_occurrences.lit_citation">^ca_occurrences.preferred_labels</ifnotdef></unit></div></ifcount>
 					
-					<ifcount code="ca_objects" min="1" restrictToTypes="archival"><div class="unit"><H6>Related Digital Items</H6><unit relativeTo="ca_objects" restrictToTypes="archival" delimiter="<br/>"><l>^ca_objects.preferred_labels<ifdef code="ca_objects.unitdate.dacs_date_text">, ^ca_objects.unitdate.dacs_date_text</ifdef></l></unit></div></ifcount>
+					<ifcount code="ca_objects" min="1" restrictToTypes="archival"><div class="unit"><H6>Related Digital Items</H6><unit relativeTo="ca_objects" restrictToTypes="archival" delimiter="<br/>">^ca_objects.preferred_labels<ifdef code="ca_objects.unitdate.dacs_date_text">, ^ca_objects.unitdate.dacs_date_text</ifdef></unit></div></ifcount>
 					
 					<ifcount code="ca_objects" min="1" restrictToTypes="library">
 						<div class="unit"><H6>Related Library Items</H6>
 							<unit relativeTo="ca_objects" restrictToTypes="library" delimiter="<br/>">
-								<l>^ca_objects.preferred_labels</l>
+								^ca_objects.preferred_labels
 								
 							</unit>
 						</div>
