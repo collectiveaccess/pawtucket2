@@ -52,6 +52,15 @@
 ?><!DOCTYPE html>
 <html lang="en"  <?php print ((strtoLower($this->request->getController()) == "front") || (strtoLower($this->request->getAction()) == "parallax")) ? "class='frontContainer animatedParallaxContainer'" : ""; ?>>
 	<head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-121899338-2"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-121899338-2');
+	</script>
 	<link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
 	<link rel="shortcut icon" type="image/png" href="<?php print caGetThemeGraphicUrl($this->request, 'favicon.png'); ?>"/>
 	<meta charset="utf-8">
@@ -89,15 +98,6 @@
 	}
 ?>
 </head>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-121899338-2"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'UA-121899338-2');
-</script>
 <body class='initial <?php print (strtoLower($this->request->getController()) == "front") ? "frontContainer" : ""; ?>'>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
