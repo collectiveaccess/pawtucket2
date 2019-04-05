@@ -32,7 +32,8 @@
  
  $img = '';
  if($t_obj = ca_objects::find(['idno' => 'WHATSNEW'], ['returnAs' => 'firstModelInstance'])) {
-    $img = $t_obj->get('ca_object_representations.media.homepage');
+        $hp_image = $t_obj->getPrimaryRepresentation(['homepage']);
+        $img = $hp_image['tags']['homepage'];
  }
 ?>
 
