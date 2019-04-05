@@ -29,6 +29,11 @@
  *
  * ----------------------------------------------------------------------
  */
+ 
+ $img = '';
+ if($t_obj = ca_objects::find(['idno' => 'WHATSNEW'], ['returnAs' => 'firstModelInstance'])) {
+    $img = $t_obj->get('ca_object_representations.media.homepage');
+ }
 ?>
 
 	<div class="row">
@@ -41,7 +46,7 @@
 			</div>			
 			<div class="col-xs-6">
 				<div class="hpBrowseImage">
-					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/ww1homepageimage.jpg')."<div class='hpBrowseTitle'>WW1 Armistice Centenary</div>", "", "", "Detail", "collections/WW1-1"); ?>
+					<?php print caNavLink($this->request, $img."<div class='hpBrowseTitle'>What's New</div>", "", "", "Detail", "objects/WHATSNEW"); ?>
 				</div>
 			</div>
 		</div>
