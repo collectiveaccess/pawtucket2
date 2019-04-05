@@ -23,8 +23,7 @@
 	}
 	if($vb_has_children){
 ?>					
-			<div class='text-right'><a href='#' onclick='$("#collectionsWrapper").toggle(300);return false;' class='showHide'>Show/Hide Collection Browser</a></div>
-				<div class="row" id="collectionsWrapper" <?php print ($o_collections_config->get("browser_closed")) ? "style='display:none;'" : ""; ?>>			
+				<div class="row" id="collectionsWrapper">			
 					<div class='col-sm-12'>
 					
 					
@@ -35,7 +34,7 @@
 						</div>
 						<div class='unit row'>
 							<div class='col-xs-12<?php print ($vb_has_grandchildren) ? "col-sm-4 col-md-4 col-lg-4" : ""; ?>'>
-								<div class='collectionsContainer'><div class='label'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
+								<div class='collectionsContainer'><div class='label'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Overview</div>
 <?php
 					if($qr_collection_children->numHits()){
 						while($qr_collection_children->nextHit()) {
@@ -52,9 +51,9 @@
 							}
 							$vn_rel_object_count = sizeof($qr_collection_children->get("ca_objects.object_id", array('returnAsArray' => true, 'checkAccess' => $va_access_values)));
 							$vs_record_count = "";
-							if($vn_rel_object_count){
-								$vs_record_count = "<br/><small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
-							}
+							#if($vn_rel_object_count){
+							#	$vs_record_count = "<br/><small>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</small>";
+							#}
 							if($vb_link_sublist){
 								print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</a>";
 							}else{

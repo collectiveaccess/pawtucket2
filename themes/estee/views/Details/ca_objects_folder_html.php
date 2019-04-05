@@ -72,8 +72,8 @@
 						</script>
 <?php
 					}else{
-						if(strToLower($t_object->get("type_id", array("convertCodesToDisplayText" => true))) == "archival folder"){
-							# --- folder
+						if(strToLower($t_object->get("type_id", array("convertCodesToDisplayText" => true))) == "archival container"){
+							# --- folder/container
 							# -- yes no values are switched in this configuration :(
 							$vs_folder_icon = "";
 							if($t_object->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values))){
@@ -84,10 +84,10 @@
 							if(strToLower($t_object->get("completely_digitized", array("convertCodesToDisplayText" => true))) != "no"){
 								print "<div class='detailArchivalPlaceholder'>".$vs_folder_icon."</span>";
 								print "<br/><small>The full contents of this folder have not been digitized</small></div>";
-								print "<br/><div class='detailTool text-center'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Scan Of Full Contents of Folder", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'folderScanRequest'))."</div>";
+								print "<br/><div class='detailTool text-center'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request Scan Of Full Contents of Container", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'folderScanRequest'))."</div>";
 							}else{
 								print "<div class='detailArchivalPlaceholder'>".$vs_folder_icon."</span>";
-								print "<br/><small>The full contents of this folder have been digitized</small></div>";
+								print "<br/><small>The full contents of this container have been digitized</small></div>";
 							}
 						}else{
 							print "<div class='detailArchivalPlaceholder'><span class='glyphicon glyphicon-file'></span></div>";
@@ -110,8 +110,27 @@
 					
 					{{{<ifdef code="ca_objects.idno"><div class="unit text-center">Object ID: ^ca_objects.idno</div></ifdef>}}}
 					
-					{{{<ifdef code="ca_objects.type_id|ca_objects.archival_types|ca_objects.brand|ca_objects.sub_brand"><div class="unit productInfo"><H6 class="objectType">^ca_objects.type_id<ifdef code="ca_objects.archival_types"> &rsaquo; ^ca_objects.archival_types%delimiter=,_</ifdef><ifdef code="ca_objects.brand"><br/><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.brand</unit></ifdef><ifdef code="ca_objects.sub_brand"> &rsaquo; <unit relativeTo="ca_objects" delimiter=", ">^ca_objects.sub_brand</unit></ifdef></H6></div></ifdef>}}}
-					
+<?php
+					$va_product_info = array();
+					if($vs_type = $t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))){
+						$va_product_info[] = $vs_type;
+					}
+					if($vs_archival_type = $t_object->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
+						$va_product_info[] = $vs_archival_type;
+					}
+					if($vs_brand = $t_object->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
+						$va_product_info[] = $vs_brand;
+					}
+					if($vs_sub_brand = $t_object->get("ca_objects.sub_brand", array("delimiter" => ", "))){
+						$vs_sub_brand = "<span class='notransform'>".ucwords(strtolower($vs_sub_brand))."</span>";
+						$va_product_info[] = $vs_sub_brand;
+					}
+					if(sizeof($va_product_info)){
+						print "<div class='unit productInfo'><H6 class='objectType'>";
+						print join(" &rsaquo; ", $va_product_info);
+						print "</H6></div>";
+					}
+?>					
 					
 					{{{<ifdef code="ca_objects.preferred_labels.name"><H4 class="mainTitle">^ca_objects.preferred_labels.name</H4></ifdef>}}}
 					<HR>
@@ -141,7 +160,7 @@
 						foreach($va_notes as $va_note){
 							$va_note["general_notes_text"] = trim($va_note["object_note_value"]);
 							if($va_note["general_notes_text"] && strToLower($va_note["internal_external"]) == "unrestricted"){
-								$va_notes_filtered[] = $va_note["general_notes_text"];
+								$va_notes_filtered[] = ucfirst(strtolower($va_note["general_notes_text"]));
 							}
 						}
 						if(sizeof($va_notes_filtered)){
@@ -156,7 +175,11 @@
 					}
 
 					#  parent - displayed as collection hierarchy and folder if available
-					$vs_collection_hier = $t_object->getWithTemplate('<ifcount min="1" code="ca_collections.related"><unit relativeTo="ca_collections.related"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></unit></ifcount>', array("checkAccess" => $va_access_values));	
+					$va_collection_hier_ids = array_pop($t_object->get("ca_collections.hierarchy.collection_id", array("returnAsArray" => true)));
+					$vs_collection_hier = "";
+					if($vs_tmp = $t_object->getWithTemplate('<ifcount min="1" code="ca_collections.related"><unit relativeTo="ca_collections.related"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></unit></ifcount>', array("checkAccess" => $va_access_values))){
+						$vs_collection_hier = caDetailLink($this->request, $vs_tmp, '', 'ca_collections', $va_collection_hier_ids[0]);	
+					}
 					if ($vn_parent_object_id = $t_object->get('ca_objects.parent_id', array("checkAccess" => $va_access_values))) {
 						$t_parent = new ca_objects($vn_parent_object_id);
 						$vs_caption = "";
@@ -167,7 +190,7 @@
 						$vs_parent_folder = caDetailLink($this->request, $vs_caption, '', 'ca_objects', $t_parent->get('ca_objects.object_id'));
 					}
 					if($vs_collection_hier || $vs_parent_folder){
-						print "<div class='unit parentObject'><h6>This ".$t_object->get('ca_objects.type_id', array("convertCodesToDisplayText" => true))." Is Part Of</h6>";
+						print "<div class='unit parentObject'><h6>This ".strToLower($t_object->get('ca_objects.type_id', array("convertCodesToDisplayText" => true)))." is part of</h6>";
 						print $vs_collection_hier;
 						if($vs_parent_folder && $vs_collection_hier){
 							print " > "; 
@@ -184,7 +207,7 @@
 				
 					if ($va_child_object_ids = $t_object->get('ca_objects.children.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						$qr_children = caMakeSearchResult('ca_objects', $va_child_object_ids);
-						print "<div class='unit childObjects'><h4>Folder Contents</h4><br/>";
+						print "<div class='unit childObjects'><h4>Container Contents</h4><br/>";
 						$va_child_info_fields = array("shade", "fragrance", "codes.product_code");
 						if($qr_children->numHits()){
 							while ($qr_children->nextHit()) {
@@ -201,7 +224,11 @@
 								$va_child_info = array();
 								foreach($va_child_info_fields as $vs_child_info_field){
 									if($vs_tmp = $qr_children->get("ca_objects.".$vs_child_info_field, array("delimiter" => ", ")) ){
-										$va_child_info[] = $vs_tmp;
+										if(in_array($vs_child_info_field, array("fragrance", "shade"))){
+											$va_child_info[] = ucwords(strtolower($vs_tmp));
+										}else{
+											$va_child_info[] = $vs_tmp;
+										}
 									}
 								}
 								if(sizeof($va_child_info)){

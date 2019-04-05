@@ -1,4 +1,4 @@
-/* dark blue #131522; link: #015f9c; */
+/* dark blue #131522; link: #015f9c; elc blue: #00305e;*/
 /*---- webFonts-----*/
 @font-face {
 font-family: 'SangBleuSansLight';
@@ -474,8 +474,6 @@ ul.menuItems{
 }
 .exploreBrandContainer{
 	margin-bottom:70px;
-}
-.exploreBrandContainer{
 	text-align:center;
 }
 .exploreBrandContainer a{
@@ -499,12 +497,53 @@ ul.menuItems{
 		width:20%;
 	}
 }
+.exploreBrandGrid .browseAllBox{
+	background-color: #000;
+	position:relative;	
+	margin-left:auto;
+	margin-right:auto;
+}
+@media (max-width: 768px) {
+	.exploreBrandGrid .browseAllBox{
+		max-width:250px;
+	}
+}
+.browseAllBox span{
+	position:absolute;
+	display:block;
+	top:25%;
+	width:100%;
+	text-align:center;
+}
+.exploreBrandGrid .browseAllBox a{
+	color:#FFF;
+	font-size: 3.5rem;
+}
+@media (min-width: 768px) and (max-width: 992px) {
+	.exploreBrandGrid .browseAllBox a{
+		font-size: 2.5rem;
+	}
+}
 /* browse */
 #pageArea.results{
 	margin-top:36px;
 }
 .results H1, #browseResultsDetailContainer H1 {
-	font-size:3rem;
+	font-size:2rem;
+}
+.results H1 a .glyphicon, #browseResultsDetailContainer H1 a .glyphicon{
+	font-size: 14px;
+	top: 0px;
+	color:#000 !important;
+	top:2px;
+}
+#showMediaEye, #showMediaEye:hover{
+	display:block;
+	color:#000;
+	font-size: 14px;
+	line-height: 1rem;
+	padding-bottom: 5px;
+	text-decoration:none;
 }
 #bRefine a {
     color: #000;
@@ -609,6 +648,33 @@ ul.menuItems{
 	display:inline-block;
 	background-color:#f5f5f5;
 	color:#000;
+}
+.browseTypeButtons{
+	padding-top:5px;
+	padding-bottom:5px;
+}
+.browseTypeButtons a{
+	color:#FFF;
+	background-color: #000000;
+	display:block;
+	float:left;
+	width:37%;
+	margin-right:3%;
+	text-align:center;
+	padding-top:5px;
+	padding-bottom:5px;
+}
+.browseTypeButtons a.browseTypeButtonAll{	
+	width:20%;
+	margin-right:0%
+}
+.browseTypeButtons a, .browseTypeButtons a:hover{	
+	text-decoration:none;
+}
+.browseTypeButtons a:hover, .browseTypeButtons a.currentBrowse{
+	background-color:#FFF;
+	color:#000;
+	box-shadow: inset 0 0 0 1px #000;
 }
 .bResultItemText, .bResultListItemText{
 	color:#000;
@@ -813,6 +879,16 @@ h1.primaryLandingBannerTitle {
 	padding: 1px 10px 4px 10px;
 	margin-bottom:20px;
 }
+.unit.collectionChronology{
+	font-size:12px;
+	padding-bottom:30px;
+}
+.capitalize {
+	text-transform: capitalize;
+}
+.notransform {
+	text-transform: none;
+}
 .detail {
     color: #000;
 } 
@@ -986,6 +1062,44 @@ h1.primaryLandingBannerTitle {
     font-family: HelveticaLTPro-Light;
     line-height: 1.5;
 }
+.collectionOverviewContainer{
+	background-color:#F2F2F2;
+}
+.collectionOverviewContainer a, .collectionsContentsContainer a{
+	color: #015f9c;
+	font-weight:bold;
+}
+.collectionsContainer .label, #collectionLoad .label, .collectionsContentsContainer .label {
+    font-size: 17px;
+    color: #000;
+    padding-left: 0px;
+    white-space: normal !important;
+    text-align:left;
+    display:block;
+}
+.collectionsContentsContainer{
+	padding-left:0px;
+	padding-top:20px;
+}
+.collectionsContentsContainer #collectionLoad{
+	border-left:none;
+	height:auto;
+	padding-top:5px;
+	padding-left:0px;
+	float:none;
+}
+#collectionLoad .collectionObjectsList{
+	padding-left:20px;
+	max-height:400px;
+	overflow-y:auto;
+	overflow-x:hidden;
+}
+#collectionLoad .collectionObjectsList a{
+	text-decoration:underline;
+	color:#000;
+	font-size:12px;
+	font-weight:normal;
+}
 /* gallery */
 .gallery h6{
 	font-size: 14px;
@@ -1012,26 +1126,33 @@ h1.primaryLandingBannerTitle {
 	margin-top:30px;
 	font-weight:bold;
 }
-#contactTabs.nav-tabs > li{
+#contactTabs.nav-tabs > li, #collectionTabs.nav-tabs > li{
 	float:none;
 }
 @media (max-width:525px){
-	#contactTabs.nav-tabs > li.active a{
+	#contactTabs.nav-tabs > li.active a, #collectionTabs.nav-tabs > li.active a{
 		border:0px;
 		background-color:#EDEDED;
 	}
 }
 @media (min-width:525px){
-	#contactTabs.nav-tabs > li{
+	#contactTabs.nav-tabs > li, #collectionTabs.nav-tabs > li{
 		float:left;
 	}
 }
-#contactTabs li{
+#contactTabs li, #collectionTabs li{
 	padding:0px;
 }
-#contactTabs li a{
+#contactTabs li a, #collectionTabs li a{
 	text-decoration:none !important;
 	padding: 10px 15px !important;
+}
+.tab-content.collectionTabs{
+	padding-left:20px;
+	padding-right:20px;
+}
+.collectionTabs #guide{
+	padding-top:10px;
 }
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus{
 	font-family: 'Helvetica LT W01 Roman';
