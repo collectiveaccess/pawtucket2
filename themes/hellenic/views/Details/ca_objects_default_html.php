@@ -84,11 +84,21 @@
 				if ($va_collection = $t_object->getWithTemplate('<ifcount code="ca_collections" min="1"><unit delimiter="<br/>"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l> (^relationship_typename)</unit></unit></ifcount>')) {
 					print "<div class='unit'><h6>Object Collection</h6><div class='data'>".$va_collection."</div></div>";
 				}
-				if ($vs_date = $t_object->get('ca_objects.date_created', array('delimiter' => '; '))) {
-					if ($vn_type_id == $vn_oh_id) {
-						print "<div class='unit'><h6>Date of Interview</h6><div class='data'>".$vs_date."</div></div>";
-					} else {
-						print "<div class='unit'><h6>Date Created</h6><div class='data'>".$vs_date."</div></div>";
+				if ($va_date = $t_object->get('ca_objects.date_created', array('returnAsArray' => true))) {
+					# --- clear out empty values
+					$va_date_clean = array();
+					foreach($va_date as $vs_date){
+						if(trim($vs_date)){
+							$va_date_clean[] = trim($vs_date); 
+						}
+					}
+					$vs_date = join(", ", $va_date_clean);
+					if($vs_date){
+						if ($vn_type_id == $vn_oh_id) {
+							print "<div class='unit'><h6>Date of Interview</h6><div class='data'>".$vs_date."</div></div>";
+						} else {
+							print "<div class='unit'><h6>Date Created</h6><div class='data'>".$vs_date."</div></div>";
+						}
 					}
 				}
 				if ($vs_alt_name = $t_object->get('ca_objects.alternate_object_name', array('delimiter' => '<br/>'))) {
@@ -194,6 +204,10 @@
 					print "<div class='unit text'><h6>Origin</h6><div class=''>".$vs_prov."</div></div>";
 				}																																																					
 ?>
+				
+				<div class='unit text'><a href="#" onclick="$('#rightsRepro').slideToggle(); return false;"><H6>Rights and Reproduction <i class="fa fa-chevron-down" aria-hidden="true"></i></H6></a>
+					<div style="display:none;" id="rightsRepro">{{{rightsrepro}}}</div>
+				</div>
 				<div class='unit'><h6>Citation</h6><div>
 <?php
 					$va_citation_parts = array();
@@ -212,11 +226,18 @@
 						if ($vs_publisher = $t_object->getWithTemplate('<unit delimiter="; " relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="publisher" delimiter="; ">^ca_entities.preferred_labels.displayname</unit>')) {
 							$vs_tmp .= $vs_publisher;
 						}
-						if($vs_date = $t_object->get('ca_objects.date_created', array('delimiter' => ', '))){
+						if($va_date = $t_object->get('ca_objects.date_created', array('returnAsArray' => true))){
+							# --- clear out empty values
+							$va_date_clean = array();
+							foreach($va_date as $vs_date){
+								if(trim($vs_date)){
+									$va_date_clean[] = trim($vs_date); 
+								}
+							}
 							if($vs_publisher){
 								$vs_tmp .= ", ";
 							}
-							$vs_tmp .= $vs_date;
+							$vs_tmp .= join($va_date_clean, ", ");
 						}
 						if($vs_tmp){
 							$va_citation_parts[] = $vs_tmp;
@@ -244,15 +265,19 @@
 							break;
 							# --------------------
 						}
-						if($vs_tmp = $t_object->get('ca_objects.date_created', array('delimiter' => ', '))){
-							$va_citation_parts[] = $vs_tmp;
+						if($va_tmp = $t_object->get('ca_objects.date_created', array('returnAsArray' => true))){
+							foreach($va_tmp as $vs_date){
+								if(trim($vs_date)){
+									$va_citation_parts[] = trim($vs_date); 
+								}
+							}
 						}
 						if($vs_tmp = trim($t_object->getWithTemplate('<ifcount code="ca_collections" min="1"><unit delimiter=". "><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></unit></ifcount>'))){
 							$va_citation_parts[] = $vs_tmp;
 						}
 						$vs_citation_part1 = join(", ", $va_citation_parts).", ";
 					}
-					print $vs_citation_part1."<i>National Hellenic Museum</i>, <small>".$this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $vn_id)."</small>. Accessed ".date("m/d/y").".";
+					print $vs_citation_part1."<i>National Hellenic Museum</i>, ".$this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $vn_id).". Accessed ".date("m/d/y").".";
 ?>
 				</div></div>
 				{{{map}}}

@@ -3,6 +3,8 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
+	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$vn_id =				$t_item->get('ca_occurrences.occurrence_id');
 	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
@@ -23,23 +25,6 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-<?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled) {
-						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
-					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-					}
-					print '</div><!-- end detailTools -->';
-				}				
-?>
 					{{{<ifdef code="ca_occurrences.solo_group"><div class="unit"><H6>Exhibition Type</H6>^ca_occurrences.solo_group</div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.exhibition_dates_display"><div class="unit"><H6>Dates</H6><unit relativeTo="ca_occurrences" delimiter="<br/>">^ca_occurrences.exhibition_dates_display</unit></div></ifdef>}}}
 					{{{<ifnotdef code="ca_occurrences.exhibition_dates_display"><ifdef code="ca_occurrences.common_date"><div class="unit"><H6>Dates</H6>^ca_occurrences.common_date</div></ifdef></ifnotdef>}}}
@@ -53,6 +38,26 @@
 						</unit>
 						</div>
 					</ifdef>}}}
+<?php
+				# Comment and Share Tools
+				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
+						
+					print '<div id="detailTools">';
+					if ($vn_comments_enabled) {
+?>				
+						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
+<?php				
+					}
+					if ($vn_share_enabled) {
+						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
+					}
+					if ($vn_pdf_enabled) {
+						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download Printable PDF", "faDownload", "ca_occurrences",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
+					}
+					print '</div><!-- end detailTools -->';
+				}				
+?>
 					
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>					
@@ -121,9 +126,9 @@
 						if($vs_tmp = $t_objects_x_occurrences->get("exh_remarks")){
 							$va_interstitial[] = "Remarks: ".$vs_tmp;
 						}
-						if($vs_tmp = $t_objects_x_occurrences->get("source")){
-							$va_interstitial[] = "Source: ".$vs_tmp;
-						}
+						#if($vs_tmp = $t_objects_x_occurrences->get("source")){
+						#	$va_interstitial[] = "Source: ".$vs_tmp;
+						#}
 						print "<div class='bResultItemCol col-xs-12 col-sm-6 col-md-3'>
 			<div class='bResultItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>

@@ -1,6 +1,6 @@
 
 <div class="row">
-	<div class="col-sm-8 " style='border-right:1px solid #ddd;'>
+	<div class="col-sm-8 col-sm-offset-2">
 		<h1>Objects Advanced Search</h1>
 
 <?php			
@@ -93,10 +93,6 @@ print "<p>Enter your search terms in the fields below.</p>";
 {{{/form}}}
 
 	</div>
-	<div class="col-sm-4" >
-		<h1>How to build a search</h1>
-		<div>{{{searchtext}}}</div>
-	</div><!-- end col -->
 </div><!-- end row -->
 
 <script>

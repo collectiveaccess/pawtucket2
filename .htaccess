@@ -1,5 +1,22 @@
 Options -Indexes
-<IfModule mod_rewrite.c> 
+Order allow,deny
+Allow from all
+
+<FilesMatch ".*\.[A-Za-z0-9]+">
+	Deny from all
+</FilesMatch>
+<FilesMatch "^(index\.php)?$">
+        Allow from all
+</FilesMatch>
+<FilesMatch "^(index|service|tilepic)\.php$">
+        Allow from all
+</FilesMatch>
+<FilesMatch "^.*\.(css|gif|jpg|png|js|woff|woff2|ttf|swf|map|tif|tiff|m4v|xml|ply|stl|html|json|mp3|wav|aiff|tiff|obj|bmp|mp4|pdf|svg)$">
+        Allow from all
+</FilesMatch>
+
+
+<IfModule mod_rewrite.c>
 	RewriteEngine on
 	
 	<IfModule mod_env.c>

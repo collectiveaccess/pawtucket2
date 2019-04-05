@@ -97,7 +97,8 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, "Phanes", "navbar-brand", "", "","");
+				#print caNavLink($this->request, "Phanes", "navbar-brand", "", "","");
+				print caNavLink($this->request, "Eudora", "navbar-brand", "", "","");
 ?>
 			</div>
 

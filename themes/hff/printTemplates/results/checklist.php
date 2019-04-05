@@ -99,11 +99,30 @@
 						# ------------------------
 						case "archival":
 							# --- no idno link
-							$vs_label 	= $vo_result->get("{$vs_table}.preferred_labels").(($vo_result->get("{$vs_table}.unitdate.dacs_date_text")) ? ", ".$vo_result->get("{$vs_table}.unitdate.dacs_date_text") : "");
-							$vs_tmp = $vo_result->getWithTemplate("<unit relativeTo='ca_collections' delimiter=', '>^ca_collections.preferred_labels</unit>", array("checkAccess" => $va_access_values));				
-							if($vs_tmp){
-								$vs_label .= "<br/>Part of: ".$vs_tmp;
+							#title, display date, DB#, Extent and Medium, Caption, Rights, and location (including the collection level)
+							$va_parts = array();
+							if($vs_tmp = $vo_result->get("ca_objects.preferred_labels")){
+								$va_parts[] = $vs_tmp;
 							}
+							if($vs_tmp = $vo_result->get("ca_objects.unitdate.dacs_date_text", array("delimiter" => ", "))){
+								$va_parts[] = $vs_tmp;
+							}
+							if($vs_tmp = $vo_result->get("ca_objects.idno", array("delimiter" => ", "))){
+								$va_parts[] = $vs_tmp;
+							}
+							if($vs_tmp = $vo_result->get("<unit relativeTo='ca_objects.extentDACS' delimiter='<br/>'><ifdef code='ca_objects.extentDACS.extent_number'>^ca_objects.extentDACS.extent_number </ifdef><ifdef code='ca_objects.extentDACS.extent_type'>^ca_objects.extentDACS.extent_type: </ifdef><ifdef code='ca_objects.extentDACS.physical_details'>^ca_objects.extentDACS.physical_details</ifdef><ifdef code='ca_objects.extentDACS.physical_details,ca_objects.extentDACS.extent_dimensions'>; </ifdef><ifdef code='ca_objects.extentDACS.extent_dimensions'>^ca_objects.extentDACS.extent_dimensions </ifdef></unit>", array("delimiter" => ", "))){
+								$va_parts[] = $vs_tmp;
+							}
+							if($vs_tmp = $vo_result->get("ca_object_representations.caption", array("delimiter" => ", "))){
+								$va_parts[] = $vs_tmp;
+							}
+							if($vs_tmp = $vo_result->get("ca_object_representations.copyright_statement", array("delimiter" => ", "))){
+								$va_parts[] = $vs_tmp;
+							}
+							if($vs_tmp = $vo_result->get("<unit relativeTo='ca_collections' delimiter=' > '>^ca_collections.hierarchy.preferred_labels</unit>", array("delimiter" => ", "))){
+								$va_parts[] = $vs_tmp;
+							}
+							print join("<br/><br/>", $va_parts);
 						break;
 						# ------------------------
 						case "artwork":

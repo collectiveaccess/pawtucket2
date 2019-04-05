@@ -35,7 +35,7 @@
 		<div class="row">
 			<div class="col-sm-12 col-md-6 col-md-offset-1">
 				<div class="hpIntro">
-					The Phanes Collection is, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.
+					The Eudora Collection is, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.
 					<p class="text-center">
 						<?php print caNavLink($this->request, _t("Browse the Collection"), "btn btn-default", "", "Browse", "coins"); ?>
 					</p>
