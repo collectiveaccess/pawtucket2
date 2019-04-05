@@ -39,9 +39,6 @@
 				<div class='col-md-12 col-lg-12'>
 					<H2>{{{^ca_collections.preferred_labels.name}}}</H2>
 					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6><br/></ifdef>}}}
-<?php
-					print caNavLink($this->request, '<span class="glyphicon glyphicon-eye-open"></span> &nbsp;View all available digital archival media in this collection', '', '', 'Search','objects', array('search' => 'ca_collections.collection_id:'.$t_item->get("ca_collections.collection_id").' and ca_object_representations.mimetype:*'));
-?>					
 				</div><!-- end col -->
 			</div><!-- end row -->
 <?php
@@ -96,6 +93,9 @@
 ?>
 <?php
 		}else{
+
+			print "<div class='unit'>".caNavLink($this->request, '<span class="glyphicon glyphicon-eye-open"></span> &nbsp;View all available digital archival media in this collection', '', '', 'Search','objects', array('search' => 'ca_collections.collection_id:'.$t_item->get("ca_collections.collection_id").' and ca_object_representations.mimetype:*'))."</div>";
+
 			# --- is there a collection chronology to show?
 			$vb_show_collection_chronology = false;
 			$va_chronology = array_pop($t_item->get("ca_collections.collection_chronology", array("returnWithStructure" => true, "convertCodesToDisplayText" => true)));
