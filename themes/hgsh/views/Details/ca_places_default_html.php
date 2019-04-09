@@ -61,32 +61,7 @@
 <?php
 	# related objects
 	$t_object_thumb = new ca_objects();
-	if(sizeof($va_related_objects)){
-		print '<div class="row"><div class="col-xs-12">';
-		if(sizeof($va_related_objects) == 1){
-			print "<div class='btn btn-default'>Related Object</div>";
-		}else{
-			print "<div class='btn btn-default'>Related Objects</div>";
-		}
-		print '</div></div>';
-		$t_rel_object = new ca_objects();
-		$i = 0;
-		foreach($va_related_objects as $vn_object_id){
-			if($i > 0){
-				print "<HR/>";
-			}
-			$t_rel_object->load($vn_object_id);
-			$vs_thumb = $t_rel_object->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values, "limit" => 1));
-			print "<div class='row'><div class='col-sm-4 col-md-4 col-lg-4 detailRelatedThumb'>".$vs_thumb."</div>";
-			print "<div class='col-sm-8 col-md-8 col-lg-8'>";
-			print $t_rel_object->getWithTemplate("<div class='detailRelatedTitle'><l>^ca_objects.preferred_labels</l></div>");
-			if($vs_brief_description = $t_rel_object->get("ca_entities.brief_description")){
-				print $vs_brief_description;
-			}
-			print "</div></div><!-- end row -->";
-			$i++;
-		}
-	}
+	
 	if(is_array($va_related_objects) && sizeof($va_related_objects)){
 			$q_related_objects = caMakeSearchResult('ca_objects', $va_related_objects);
 			if($q_related_objects->numHits()){
