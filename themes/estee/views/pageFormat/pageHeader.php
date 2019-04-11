@@ -162,7 +162,7 @@
 								<form role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>">				
 									<div class="form-group">
 										<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search"></span></button>
-										<input type="text" class="form-control" id="headerSearchInput" placeholder="Keyword Search" name="search">
+										<input type="text" class="form-control" id="headerSearchInput" placeholder="Search All" name="search">
 									</div>
 						
 								</form>
