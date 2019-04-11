@@ -29,7 +29,8 @@
 					{{{<ifdef code="ca_occurrences.exhibition_dates_display"><div class="unit"><H6>Dates</H6><unit relativeTo="ca_occurrences" delimiter="<br/>">^ca_occurrences.exhibition_dates_display</unit></div></ifdef>}}}
 					{{{<ifnotdef code="ca_occurrences.exhibition_dates_display"><ifdef code="ca_occurrences.common_date"><div class="unit"><H6>Dates</H6>^ca_occurrences.common_date</div></ifdef></ifnotdef>}}}
 					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="originator" min="1"><div class="unit"><H6>Organizing Venue</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="originator" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
-					{{{<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
+<?php
+					print $t_item->getWithTemplate('<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
 						<div class="unit"><H6>Traveled To</H6>
 						<unit relativeTo="ca_occurrences.venues" delimiter="<br/>">
 							<ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef>
@@ -37,8 +38,8 @@
 							<ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display </ifdef>
 						</unit>
 						</div>
-					</ifdef>}}}
-<?php
+					</ifdef>');
+
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						
@@ -113,28 +114,13 @@
 						$vs_info = null;
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', 'ca_objects', $vn_id);				
 
-						$va_interstitial = array();
-						if($vs_tmp = $t_objects_x_occurrences->get("checklist_number")){
-							$va_interstitial[] = "Checklist number: ".$vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("exhibition_title")){
-							$va_interstitial[] = "Exhibition title: ".$vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("citation")){
-							$va_interstitial[] = "Citation: ".$vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("exh_remarks")){
-							$va_interstitial[] = "Remarks: ".$vs_tmp;
-						}
-						#if($vs_tmp = $t_objects_x_occurrences->get("source")){
-						#	$va_interstitial[] = "Source: ".$vs_tmp;
-						#}
+						
 						print "<div class='bResultItemCol col-xs-12 col-sm-6 col-md-3'>
 			<div class='bResultItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultItemText'>
-						{$vs_idno_detail_link}{$vs_label_detail_link}".((is_array($va_interstitial) && sizeof($va_interstitial)) ? "<br/>".join("<br/>", $va_interstitial) : "")."
+						{$vs_idno_detail_link}{$vs_label_detail_link}".(($vs_citation = $t_objects_x_occurrences->get("checklist_number")) ? "<br/>".$vs_citation : "")."
 					</div><!-- end bResultItemText -->
 				</div><!-- end bResultItemContent -->
 			</div><!-- end bResultItem -->

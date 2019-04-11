@@ -128,11 +128,10 @@
 						$vs_credit_accession = $t_obj_x_occ->get("interstitial_notes");
 						# --- yes no values are switched in this list
 						if(strToLower($t_obj_x_occ->get("ca_objects_x_occurrences.current_collection", array("convertCodesToDisplayText" => true))) == "no"){
-							$va_current_collection[] = $va_provenance_info["name"].(($vs_date) ? ", ".$vs_date : "").(($vs_credit_accession) ? ", ".$vs_credit_accession : "");
+							$va_current_collection[] = $vs_date.(($vs_credit_accession) ? ", ".$vs_credit_accession : "");
 							
 						}else{
-							$va_provenance_display[] = $va_provenance_info["name"].(($vs_date) ? ", ".$vs_date : "").(($vs_credit_accession) ? ", ".$vs_credit_accession : "");
-							#$va_provenance_display[] = $va_provenance_info["name"].(($vs_date) ? ", ".$vs_date : "")." (".$va_provenance_info["relationship_typename"].")";
+							$va_provenance_display[] = $vs_date.(($vs_credit_accession) ? ", ".$vs_credit_accession : "");
 						}
 					}
 					if(sizeof($va_current_collection)){
@@ -162,26 +161,11 @@
 								break;
 							}
 						}
-						$va_interstitial = array();
-						$vs_interstitial = "";
-						if($vs_tmp = $t_objects_x_occurrences->get("checklist_number")){
-							$va_interstitial[] = $vs_tmp;
+						$vs_citation = "";
+						if($vs_citation = $t_objects_x_occurrences->get("checklist_number")){
+							$vs_citation = ", ".$vs_citation;
 						}
-						if($vs_tmp = $t_objects_x_occurrences->get("exhibition_title")){
-							$va_interstitial[] = $vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("citation")){
-							$va_interstitial[] = $vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("exh_remarks")){
-							$va_interstitial[] = $vs_tmp;
-						}
-						#if($vs_tmp = $t_objects_x_occurrences->get("source")){
-						#	$va_interstitial[] = $vs_tmp;
-						#}
-						if(sizeof($va_interstitial)){
-							$vs_interstitial = ", ".join(", ", $va_interstitial);
-						}
+						
 						$vs_travel_venues = $t_occ->getWithTemplate('<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
 						<div class="travelVenue"><div>Traveled To</div>
 						<unit relativeTo="ca_occurrences.venues" delimiter="<br/>">
@@ -191,7 +175,7 @@
 						</unit>
 						</div>
 					</ifdef>');
-						print caDetailLink($this->request, (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : ""), '', 'ca_occurrences', $va_exhibition["occurrence_id"]).$vs_interstitial.$vs_travel_venues.(($vs_travel_venues) ? "" : "<br/>");
+						print caDetailLink($this->request, (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : ""), '', 'ca_occurrences', $va_exhibition["occurrence_id"]).$vs_citation.$vs_travel_venues.(($vs_travel_venues) ? "" : "<br/>");
 					}
 					print "</div>";
 				}

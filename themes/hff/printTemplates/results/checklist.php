@@ -74,7 +74,7 @@
 <?php
 				if(!in_array($vs_typecode, array("library"	))){
 ?>
-				<td>
+				<td class="imageTinyCol">
 <?php 
 					if ($vs_path = $vo_result->getMediaPath('ca_object_representations.media', 'thumbnail')) {
 						print "<div class=\"imageTiny\"><img src='{$vs_path}'/></div>";
@@ -110,7 +110,7 @@
 							if($vs_tmp = $vo_result->get("ca_objects.idno", array("delimiter" => ", "))){
 								$va_parts[] = $vs_tmp;
 							}
-							if($vs_tmp = $vo_result->get("<unit relativeTo='ca_objects.extentDACS' delimiter='<br/>'><ifdef code='ca_objects.extentDACS.extent_number'>^ca_objects.extentDACS.extent_number </ifdef><ifdef code='ca_objects.extentDACS.extent_type'>^ca_objects.extentDACS.extent_type: </ifdef><ifdef code='ca_objects.extentDACS.physical_details'>^ca_objects.extentDACS.physical_details</ifdef><ifdef code='ca_objects.extentDACS.physical_details,ca_objects.extentDACS.extent_dimensions'>; </ifdef><ifdef code='ca_objects.extentDACS.extent_dimensions'>^ca_objects.extentDACS.extent_dimensions </ifdef></unit>", array("delimiter" => ", "))){
+							if($vs_tmp = $vo_result->getWithTemplate("<unit relativeTo='ca_objects.extentDACS' delimiter='<br/>'><ifdef code='ca_objects.extentDACS.extent_number'>^ca_objects.extentDACS.extent_number </ifdef><ifdef code='ca_objects.extentDACS.extent_type'>^ca_objects.extentDACS.extent_type: </ifdef><ifdef code='ca_objects.extentDACS.physical_details'>^ca_objects.extentDACS.physical_details</ifdef><ifdef code='ca_objects.extentDACS.physical_details,ca_objects.extentDACS.extent_dimensions'>; </ifdef><ifdef code='ca_objects.extentDACS.extent_dimensions'>^ca_objects.extentDACS.extent_dimensions </ifdef></unit>", array("delimiter" => ", "))){
 								$va_parts[] = $vs_tmp;
 							}
 							if($vs_tmp = $vo_result->get("ca_object_representations.caption", array("delimiter" => ", "))){
@@ -119,7 +119,7 @@
 							if($vs_tmp = $vo_result->get("ca_object_representations.copyright_statement", array("delimiter" => ", "))){
 								$va_parts[] = $vs_tmp;
 							}
-							if($vs_tmp = $vo_result->get("<unit relativeTo='ca_collections' delimiter=' > '>^ca_collections.hierarchy.preferred_labels</unit>", array("delimiter" => ", "))){
+							if($vs_tmp = $vo_result->getWithTemplate("<unit relativeTo='ca_collections' delimiter=' > '>^ca_collections.hierarchy.preferred_labels</unit>", array("delimiter" => ", "))){
 								$va_parts[] = $vs_tmp;
 							}
 							print join("<br/><br/>", $va_parts);
@@ -141,7 +141,7 @@
 							if(is_array($va_artists) && sizeof($va_artists)){
 								$va_tmp = array();
 								foreach($va_artists as $va_artist){
-									$va_tmp[] = $va_artist["displayname"];
+									$va_tmp[] = trim($va_artist["displayname"]);
 								}
 								$va_label_tmp[] = join(", ",$va_tmp);
 							}
@@ -172,7 +172,7 @@
 								}
 							}
 							
-							$vs_label = join(", ", $va_label_tmp);
+							$vs_label = join("<br/>", $va_label_tmp);
 						break;
 						# ------------------------
 						case "library":
