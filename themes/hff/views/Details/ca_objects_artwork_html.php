@@ -126,7 +126,7 @@
 						$t_obj_x_occ->load($va_provenance_info["relation_id"]);
 						$vs_date = $t_obj_x_occ->get("effective_date");
 						$vs_credit_accession = $t_obj_x_occ->get("interstitial_notes");
-						$vs_tmp = trim($vs_date.(($vs_date && $vs_credit_accession) ? ", ".$vs_credit_accession : ""));
+						$vs_tmp = trim($vs_date.(($vs_date && $vs_credit_accession) ? ", " : "")).$vs_credit_accession;
 						# --- yes no values are switched in this list
 						if($vs_tmp){
 							if(strToLower($t_obj_x_occ->get("ca_objects_x_occurrences.current_collection", array("convertCodesToDisplayText" => true))) == "no"){
