@@ -144,8 +144,8 @@
 
 <div class="container">
 	<div class="row">
-		<div class="col-sm-8">
-			<H1>Welcome to Glenstone.  To begin, enter a term into the search bar.</H1>
+		<div class="col-sm-12">
+			<H1>Welcome to Glenstone.  To begin, enter a term into the search bar or consult the <a href='/themes/glenstone/assets/pawtucket/graphics/userguide.pdf' target='_blank'>user guide</a>.</H1>
 		</div><!--end col-sm-8-->
 
 <?php
@@ -154,7 +154,7 @@
 	
 	if (is_array($va_recent_searches) && sizeof($va_recent_searches)) {
 ?>	
-		<div class="col-sm-4">
+		<div class="col-sm-12">
 			<h1>Recent Searches</h1>
 			<ul class='recentSearch'> 
 <?php

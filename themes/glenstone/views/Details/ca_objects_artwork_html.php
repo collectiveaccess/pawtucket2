@@ -38,7 +38,7 @@
 <div class="row">
 	<div class="container">
 <?php
-if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")) {
+if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")) {
 	// Export as PDF
 	print "<div id='bViewButtons'>";
 	print "<div class='reportTools'>";
@@ -167,7 +167,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					if ($t_object->get('ca_objects.signed.signed_yn') == "No") {
 						print "Signed, ".$t_object->get('ca_objects.signed.signature_details');
 					}
-					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
+					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("library_new")){
 						if ($va_idno = $t_object->get('ca_objects.idno')) {
 								print "<div class='unit wide'>".$va_idno."</div>";
 						}
@@ -199,7 +199,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					
 
 ?>										
-					{{{<ifdef code="ca_objects.literature"><div class='unit wide'><span class='metaHeader'>Literature </span><span >^ca_objects.literature</span></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.literature"><div class='unit wide'><span class='metaHeader'>Literature </span><span ><unit delimiter="<br/><br/>">^ca_objects.literature</unit></span></div></ifdef>}}}
 				</div>
 				
 				<div id="Location" class="infoBlock">
@@ -260,8 +260,31 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 						}											
 						print "</span></div>";
 					}
-					
-					
+					$vs_complex_buf = "";
+					if ($vs_complex_assessor = $t_object->get('ca_objects.installation_complexity.installation_assessor', array('convertCodesToDisplayText' => true))) {
+						$vs_complex_buf.= "<br/>".$vs_complex_assessor;
+					}
+					if ($vs_complex_date = $t_object->get('ca_objects.installation_complexity.installation_assessed', array('convertCodesToDisplayText' => true))) {
+						$vs_complex_buf.= ", ".$vs_complex_date;
+					}
+					if ($vs_complex_desc = $t_object->get('ca_objects.installation_complexity.installation_comments', array('convertCodesToDisplayText' => true))) {
+						$vs_complex_buf.= "<br/>".$vs_complex_desc;
+					}										
+					if ($t_object->get('ca_objects.installation_complexity.installation_complexity_status', array('convertCodesToDisplayText' => true)) == "Low") {
+						print "<div class='unit'><span class='metaTitle'>Installation Complexity: </span><span class='meta'><i style='color:#80E680;' class='fa fa-circle'></i> Low".$vs_complex_buf."</span></div>";
+					}
+					if ($t_object->get('ca_objects.installation_complexity.installation_complexity_status', array('convertCodesToDisplayText' => true)) == "High") {
+						print "<div class='unit'><span class='metaTitle'>Installation Complexity: </span><span class='meta'><i style='color:#FF4D4D;' class='fa fa-circle'></i> High".$vs_complex_buf."</span></div>";
+					}
+					if ($t_object->get('ca_objects.installation_complexity.installation_complexity_status', array('convertCodesToDisplayText' => true)) == "Medium") {
+						print "<div class='unit'><span class='metaTitle'>Installation Complexity: </span><span class='meta'><i style='color:#FFFF66;' class='fa fa-circle'></i> Medium".$vs_complex_buf."</span></div>";
+					}					
+					if ($va_prev_displayed = $t_object->get('ca_objects.installation_complexity.installation_previously')) {
+						print "<div class='unit'><span class='metaTitle'>Previously Displayed through Glenstone?: </span><span class='meta'>".$va_prev_displayed."</span></div>";
+					}
+					if ($va_prep = $t_object->get('ca_objects.installation_complexity.installation_prep')) {
+						print "<div class='unit'><span class='metaTitle'>Advanced Prep Time: </span><span class='meta'>".$va_prep."</span></div>";					
+					}					
 				} else {
 					print "access restricted";
 				}
@@ -349,12 +372,12 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					if ($va_detailed_condition = $t_object->get('ca_objects.detailed_condition', array('returnWithStructure' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true, 'showHierarchy' => true))) {
 						foreach ($va_detailed_condition as $va_det_key => $va_detailed_t) {
 							foreach ($va_detailed_t as $va_det_key => $va_detailed) {
-								if ($va_detailed['is_primary_detailed'][0] == "Yes") {
+								if ($va_detailed['is_primary_detailed'] == "Yes") {
 									$va_condition_array[$va_detailed['detailed_date']['start']][] = $va_detailed;
 								}
 							}
 						}
-					}					
+					}				
 #					if ($va_surface_condition = $t_object->get('ca_objects.surface_condition', array('returnAsArray' => true, 'returnWithStructure' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
 #						foreach ($va_surface_condition as $va_sur_key => $va_surface) {
 #							$va_condition_array[$va_surface['surface_date']['start']][] = $va_surface;
@@ -465,7 +488,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 									print "<div class='clearfix'></div>";
 								}
 								if (($va_condition['detailed_value']) || ($va_condition['detailed_notes'])) {
-									print " <u>Detailed Condition:</u> ".($va_condition['detailed_value'] ? $va_condition['detailed_value'][1].": ".$va_condition['detailed_value'][0].". " : "").preg_replace('![\.\,\;\:]+$!', '', $va_condition['detailed_notes']).($va_condition['detailed_notes'] ? ", " : "").($va_condition['detailed_assessor'] ? "assessed by ".$va_condition['detailed_assessor'] : "");
+									print " <u>Detailed Condition:</u> ".($va_condition['detailed_value'] ? $va_condition['detailed_value']."<br/>" : "").preg_replace('![\.\,\;\:]+$!', '', $va_condition['detailed_notes']).($va_condition['detailed_notes'] ? ", " : "").($va_condition['detailed_assessor'] ? "assessed by ".$va_condition['detailed_assessor'] : "");
 									print "<div class='clearfix'></div>";
 								}								
 								/*if ($va_condition['frame_value'] || ($va_condition['frame_notes'])) {
