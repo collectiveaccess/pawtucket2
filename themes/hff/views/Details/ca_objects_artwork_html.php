@@ -124,15 +124,13 @@
 					$va_provenance_display = array();
 					foreach($va_provenance as $va_provenance_info){
 						$t_obj_x_occ->load($va_provenance_info["relation_id"]);
-						$vs_date = $t_obj_x_occ->get("effective_date");
 						$vs_credit_accession = $t_obj_x_occ->get("interstitial_notes");
-						$vs_tmp = trim($vs_date.(($vs_date && $vs_credit_accession) ? ", " : "")).$vs_credit_accession;
-						if($vs_tmp){
+						if($vs_credit_accession){
 							if(strToLower($t_obj_x_occ->get("ca_objects_x_occurrences.current_collection", array("convertCodesToDisplayText" => true))) == "yes"){
-								$va_current_collection[] = $vs_tmp;
+								$va_current_collection[] = $vs_credit_accession;
 							
 							}else{
-								$va_provenance_display[] = $vs_tmp;
+								$va_provenance_display[] = $vs_credit_accession;
 							}
 						}
 					}
