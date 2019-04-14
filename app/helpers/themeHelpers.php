@@ -1175,37 +1175,56 @@
 	 */
 	function caGetAdvancedSearchFormAutocompleteJS($po_request, $ps_field, $pt_instance, $pa_options=null) {
 		$vs_field_proc = preg_replace("![\.]+!", "_", $ps_field);
-		if ($vs_rel_types = join(";", caGetOption('restrictToRelationshipTypes', $pa_options, []))) { $vs_rel_types_proc = "_{$vs_rel_types}"; $vs_rel_types = "/{$vs_rel_types}";  }
-	
-		$vs_buf = $pt_instance->htmlFormElementForSearch($po_request, $ps_field, array_merge($pa_options, ['class'=> 'lookupBg', 'name' => "{$ps_field}", 'id' => "{$vs_field_proc}{$vs_rel_types_proc}", 'autocomplete' => 1, 'nojs' => 1]));
-		$vs_buf .= "<input type=\"hidden\" name=\"{$ps_field}{$vs_rel_types}\" id=\"{$vs_field_proc}{$vs_rel_types_proc}\" value=\"\" class=\"lookupBg\"/>";
+		if ($vs_rel_types = join("_", caGetOption(['restrictToRelationshipTypes', 'relationshipType'], $pa_options, []))) { $vs_rel_types_proc = "_{$vs_rel_types}"; $vs_rel_types = "/{$vs_rel_types}";  }
+
+		//$vs_buf = $pt_instance->htmlFormElementForSearch($po_request, $ps_field, array_merge($pa_options, ['class'=> 'lookupBg', 'name' => "{$ps_field}", 'id' => "{$vs_field_proc}{$vs_rel_types_proc}", 'autocomplete' => 1, 'nojs' => 1]));
+		
+		if (!is_array($pa_options)) { $pa_options = array(); }
+        if (!isset($pa_options['width'])) { $pa_options['width'] = 30; }
+        if (!isset($pa_options['values'])) { $pa_options['values'] = array(); }
+        if (!isset($pa_options['values'][$ps_field])) { $pa_options['values'][$ps_field] = ''; }
+        $index = caGetOption('index', $pa_options, null);
+        
+        $array_suffix = caGetOption('asArrayElement', $pa_options, false) ? "[]" : "";
+        
+        $vs_buf = caHTMLTextInput("{$vs_field_proc}_autocomplete{$index}", array('value' => (isset($pa_options['value']) ? $pa_options['value'] : $pa_options['values'][$ps_field]), 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => "{$vs_field_proc}_autocomplete{$index}"));
+		
+		$vs_buf .= "<input type=\"hidden\" name=\"{$ps_field}{$array_suffix}\" id=\"{$vs_field_proc}{$index}\" value=\"".(isset($pa_options['id_value']) ? (int)$pa_options['id_value'] : '')."\" class=\"lookupBg\"/>";
 									
 		if (!is_array($va_json_lookup_info = caJSONLookupServiceUrl($po_request, $pt_instance->tableName()))) { return null; }
 		$vs_buf .= "<script type=\"text/javascript\">
-jQuery(document).ready(function() {
-	jQuery('#{$vs_field_proc}{$vs_rel_types_proc}_autocomplete').autocomplete({ minLength: 3, delay: 800, html: true,
-					source: function( request, response ) {
-						$.ajax({
-							url: '".$va_json_lookup_info['search']."',
-							dataType: \"json\",
-							data: { term: '{$ps_field}:' + request.term },
-							success: function( data ) {
-								response(data);
-							}
-						});
-					},
-					select: function( event, ui ) {
-						if(!parseInt(ui.item.id) || (ui.item.id <= 0)) {
-							jQuery('#{$vs_field_proc}{$vs_rel_types_proc}').val('');  // no matches so clear text input
-							event.preventDefault();
-							return;
-						}
-						jQuery('#{$vs_field_proc}{$vs_rel_types_proc}_autocomplete').val(jQuery.trim(ui.item.label.replace(/<\/?[^>]+>/gi, '')));
-						jQuery('#{$vs_field_proc}{$vs_rel_types_proc}').val(ui.item.id);
-						event.preventDefault();
-					}
-			})});
-										
+    jQuery(document).ready(function() {
+        jQuery('#{$vs_field_proc}_autocomplete{$index}').autocomplete({ minLength: 3, delay: 800, html: true,
+                source: function( request, response ) {
+                    $.ajax({
+                        url: '{$va_json_lookup_info['search']}',
+                        dataType: \"json\",
+                        data: { term: '{$ps_field}:' + request.term },
+                        success: function( data ) {
+                            response(data);
+                        }
+                    });
+                },
+                response: function ( event, ui ) {
+                    if (ui && ui.content && ui.content.length == 1 && (ui.content[0].id == -1)) {
+                        jQuery('#{$vs_field_proc}{$index}').val(jQuery('#{$vs_field_proc}_autocomplete{$index}').val());
+                    }
+                },
+                select: function( event, ui ) {
+                    if(!parseInt(ui.item.id) || (ui.item.id <= 0)) {
+                        jQuery('#{$vs_field_proc}_autocomplete{$index}').val('');  // no matches so clear text input
+                        jQuery('#{$vs_field_proc}{$index}').val('xx');
+                        event.preventDefault();
+                        return;
+                    }
+                    jQuery('#{$vs_field_proc}_autocomplete{$index}').val(jQuery.trim(ui.item.label.replace(/<\/?[^>]+>/gi, '')));
+                    jQuery('#{$vs_field_proc}{$index}').val(ui.item.id);
+                    event.preventDefault();
+                }
+        }).autocomplete('instance')._renderItem = function(ul, item) {
+                return $('<li>').append(item.label).appendTo(ul);
+        };
+    });								
 </script>";
 
 		return $vs_buf;

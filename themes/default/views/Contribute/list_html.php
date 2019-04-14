@@ -16,9 +16,11 @@
 				<div class="pull-right">
 <?php
 	foreach($available_forms as $form_code => $form_info) {
+	    if (caGetOption('showInUserSubmissionList', $form_info, true)) {
 ?>
-		<div class='contributeSubmit' style="margin-left: 20px;"><?php print caNavLink($this->request, _t('New %1', caGetOption('shortNameSingular', $form_info, $form_code)), '', '*', '*', $form_code);?></div>
+		    <div class='contributeSubmit' style="margin-left: 20px;"><?php print caNavLink($this->request, _t('New %1', caGetOption('shortNameSingular', $form_info, $form_code)), '', '*', '*', $form_code);?></div>
 <?php
+        }
 	}
 ?>
 				</div><!-- end addNew -->

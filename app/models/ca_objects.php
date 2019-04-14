@@ -974,14 +974,7 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
  	 * @return BaseRelationshipModel
  	 */
  	public function addRelationship($pm_rel_table_name_or_num, $pn_rel_id, $pm_type_id=null, $ps_effective_date=null, $ps_source_info=null, $ps_direction=null, $pn_rank=null, $pa_options=null) {
- 		if ($vn_rc = parent::addRelationship($pm_rel_table_name_or_num, $pn_rel_id, $pm_type_id, $ps_effective_date, $ps_source_info, $ps_direction, $pn_rank, $pa_options)) {
- 			
- 			// if ($this->relationshipChangeMayAffectCurrentLocation($pm_rel_table_name_or_num, $pn_rel_id, $pm_type_id)) {
-//  				$this->deriveCurrentLocationForBrowse();
-//  			}
- 		}
- 		
- 		return $vn_rc;
+ 		return parent::addRelationship($pm_rel_table_name_or_num, $pn_rel_id, $pm_type_id, $ps_effective_date, $ps_source_info, $ps_direction, $pn_rank, $pa_options);
  	}
  	# ------------------------------------------------------
  	/**
@@ -999,14 +992,7 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
  	 * @return int
  	 */
  	public function editRelationship($pm_rel_table_name_or_num, $pn_relation_id, $pn_rel_id, $pm_type_id=null, $ps_effective_date=null, $ps_source_info=null, $ps_direction=null, $pn_rank=null, $pa_options=null) {
- 		if ($vn_rc = parent::editRelationship($pm_rel_table_name_or_num, $pn_relation_id, $pn_rel_id, $pm_type_id, $ps_effective_date, $ps_source_info, $ps_direction, $pn_rank, $pa_options)) {
- 			
- 		//	if ($this->relationshipChangeMayAffectCurrentLocation($pm_rel_table_name_or_num, $pn_rel_id, $pm_type_id)) {
- 		//		$this->deriveCurrentLocationForBrowse();
- 		//	}
- 		}
- 		
- 		return $vn_rc;
+ 	    return parent::editRelationship($pm_rel_table_name_or_num, $pn_relation_id, $pn_rel_id, $pm_type_id, $ps_effective_date, $ps_source_info, $ps_direction, $pn_rank, $pa_options);
  	}
  	# ------------------------------------------------------
  	/**
@@ -1018,14 +1004,7 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
  	 * @return int
  	 */
  	public function removeRelationship($pm_rel_table_name_or_num, $pn_relation_id) {
- 		if ($vn_rc = parent::removeRelationship($pm_rel_table_name_or_num, $pn_relation_id)) {
- 			
- 			// if ($this->relationshipChangeMayAffectCurrentLocation($pm_rel_table_name_or_num, null, null)) {
-//  				$this->deriveCurrentLocationForBrowse();
-//  			}
- 		}
- 		
- 		return $vn_rc;
+ 		return parent::removeRelationship($pm_rel_table_name_or_num, $pn_relation_id);
  	}
  	# ------------------------------------------------------
  	/**
@@ -1037,14 +1016,7 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
  	 * @return int
  	 */
  	public function removeRelationships($pm_rel_table_name_or_num, $pm_type_id=null, $pa_options=null) {
- 		if ($vn_rc = parent::removeRelationships($pm_rel_table_name_or_num, $pm_type_id, $pa_options)) {
- 			
- 			if ($this->relationshipChangeMayAffectCurrentLocation($pm_rel_table_name_or_num, null, $pm_type_id)) {
- 				$this->deriveCurrentLocationForBrowse();
- 			}
- 		}
- 		
- 		return $vn_rc;
+ 		return parent::removeRelationships($pm_rel_table_name_or_num, $pm_type_id, $pa_options);
  	}
  	# ------------------------------------------------------
  	# Object checkout 
