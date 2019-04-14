@@ -71,7 +71,7 @@
  		/**
  		 *
  		 */ 
- 		public function List() {
+ 		public function Index() {
  		    if (!$this->request->config->get('use_submission_interface')) {
  		        $this->notification->addNotification(_t('Not available'), __NOTIFICATION_TYPE_ERROR__);
 				$this->response->setRedirect(caNavUrl($this->request, "", "Front", "Index"));

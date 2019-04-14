@@ -36,7 +36,7 @@
 		<div class="contributeForm">
 			<div class='container'>
 			<div class="pull-right">
-				<div class='contributeSubmit' style="margin-left: 20px;"><?php print caNavLink($this->request, 'Back to list', '', '*', '*', 'List');?></div>
+				<div class='contributeSubmit' style="margin-left: 20px;"><?php print caNavLink($this->request, 'Back to list', '', '*', '*', 'Index');?></div>
 			</div><!-- end detailTool -->
 			<h1>Contribute</h1>
 			<p>Submit Materials The Fabric of Digital Life Archive. Your media will be cataloged and added to the archive once reviewed. The content you submit will be viewable on the site in the near future.  Please contact us at <a href='mailto:decimal.lab.uoit@gmail.com'>decimal.lab.uoit@gmail.com</a> for assistance if needed.</p>
