@@ -222,7 +222,11 @@ $vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_vie
 if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_results')){
 	print ExternalCache::fetch($vs_cache_key, 'browse_results');
 }else{
-	$vs_result_page = $this->render("Browse/browse_results_{$vs_current_view}_html.php");
+	if(in_array($vs_current_view, array("map_mint", "map_hoard"))){
+		$vs_result_page = $this->render("Browse/browse_results_map_html.php");
+	}else{
+		$vs_result_page = $this->render("Browse/browse_results_{$vs_current_view}_html.php");
+	}
 	ExternalCache::save($vs_cache_key, $vs_result_page, 'browse_results', $o_config->get("cache_timeout"));
 	print $vs_result_page;
 }		
