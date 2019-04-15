@@ -102,23 +102,8 @@
 						$vs_label_detail_link 	= italicizeTitle($qr_res->get("ca_objects.preferred_labels")).(($qr_res->get("ca_objects.common_date")) ? ", ".$qr_res->get("ca_objects.common_date") : "");
 						$vs_rep_detail_link = $qr_res->get('ca_object_representations.media.thumbnail', array("checkAccess" => $va_access_values));
 						
-						$va_interstitial = array();
-						if($vs_tmp = $t_objects_x_occurrences->get("checklist_number")){
-							$va_interstitial[] = "Checklist number: ".$vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("exhibition_title")){
-							$va_interstitial[] = "Exhibition title: ".$vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("citation")){
-							$va_interstitial[] = "Citation: ".$vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("exh_remarks")){
-							$va_interstitial[] = "Remarks: ".$vs_tmp;
-						}
-						#if($vs_tmp = $t_objects_x_occurrences->get("source")){
-						#	$va_interstitial[] = "Source: ".$vs_tmp;
-						#}
-						print "<div class='relArtwork'>{$vs_rep_detail_link}<div class='relArtworkCaption'>{$vs_idno_detail_link}{$vs_label_detail_link}".((is_array($va_interstitial) && sizeof($va_interstitial)) ? "<br/>".join("<br/>", $va_interstitial) : "")."</div></div>";
+						
+						print "<div class='relArtwork'>{$vs_rep_detail_link}<div class='relArtworkCaption'>{$vs_idno_detail_link}{$vs_label_detail_link}".(($vs_citation = $t_objects_x_occurrences->get("checklist_number")) ? "<br/>".$vs_citation : "")."</div></div>";
 
 						
 					}

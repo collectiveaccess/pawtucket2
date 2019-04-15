@@ -37,6 +37,7 @@ body{
 
 /* checklist template */
 .row { font-family: 'Proximanova'; font-size: 11px; border-bottom: 1px solid #eee; width: 100%; height: auto; margin: 5px 0 0 0; padding: 3px 0px 5px 0px; overflow: none}	
+.imageTinyCol { width:225px; text-align:center; }
 .imageTiny { width: 120px; margin: 0 5px 0 0; border-radius: 5px; text-align:center;}
 .imageTinyPlaceholder { width: 120px; height: 100px; border: 1px solid #eee; background-color: #eee; margin: 0 5px 0 0; border-radius: 5px;}
 .displayHeader {border-bottom:1px solid #666; color:#666; font-weight:bold;}

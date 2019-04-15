@@ -136,7 +136,7 @@
 										<div class="unit"><h6>Home</h6>
 											<unit relativeTo="ca_places_x_occurrences" delimiter="<br/>" restrictToRelationshipTypes="home">
 												<div>
-													<ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name &gt; </ifdef>^ca_places.preferred_labels.name<ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef>
+													<ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name &gt; </ifdef>^ca_places.preferred_labels.name<case><ifdef code="ca_places_x_occurrences.display_date">, ^ca_places_x_occurrences.display_date</ifdef><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef></case><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef>
 												</div>
 											</unit>
 										</div>
@@ -147,7 +147,7 @@
 										<div class="unit"><h6>Studio</h6>
 											<unit relativeTo="ca_places_x_occurrences" delimiter="<br/>" restrictToRelationshipTypes="studio">
 												<div>
-													<ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name &gt; </ifdef>^ca_places.preferred_labels.name<ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef>
+													<ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name &gt; </ifdef>^ca_places.preferred_labels.name<case><ifdef code="ca_places_x_occurrences.display_date">, ^ca_places_x_occurrences.display_date</ifdef><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef></case><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef>
 												</div>
 											</unit>
 										</div>
@@ -158,7 +158,7 @@
 										<div class="unit"><h6>Travel</h6>
 											<unit relativeTo="ca_places_x_occurrences" delimiter="<br/>" restrictToRelationshipTypes="travel">
 												<div>
-													<ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name &gt; </ifdef>^ca_places.preferred_labels.name<ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef>
+													<ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name &gt; </ifdef>^ca_places.preferred_labels.name<case><ifdef code="ca_places_x_occurrences.display_date">, ^ca_places_x_occurrences.display_date</ifdef><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef></case><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef>
 												</div>
 											</unit>
 										</div>
