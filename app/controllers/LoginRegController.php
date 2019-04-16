@@ -46,6 +46,29 @@
 		function loginForm() {
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Login"));
 			$this->render("LoginReg/form_login_html.php");
+			
+			$o_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
+			if($o_auth_config->get("auth_adapter") == "HTTPHeader") {
+				$vs_httpheader_username  = $o_auth_config->get("httpheader_username");
+				if($this->request->doAuthentication(array(
+					"dont_redirect" => 1, 
+					"user_name" => $_SERVER[$vs_httpheader_username], 
+					"password" => ""
+				))) {
+					// redirect user to page they were last on
+					$redirect = '/';
+					if($opa_session_vars = ExternalCache::fetch($this->request->session->getSessionID(), 'SessionVars')){
+						if(isset($opa_session_vars['pawtucket2_last_page'])){
+							$redirect = $opa_session_vars['pawtucket2_last_page'];
+						}
+					}
+					$this->response->setRedirect($redirect);	
+				} else {
+					// auth failed...
+					$this->notification->addNotification(_t("Error: Unable to you in to this site. Please contact a site administrator."), __NOTIFICATION_TYPE_INFO__);
+				}
+			}
+
 		}
 		# ------------------------------------------------------
 		function registerForm($t_user = "") {
