@@ -49,17 +49,31 @@
 				print "<h2>".$t_object->get('ca_objects.preferred_labels')."</h2>";
 ?>
 			</div>
-			<div class='col-sm-7'>
+			<div class='col-sm-7 detailMediaCol'>
+				<div class="btn-group" id="detailDD">
+					<a href="#" data-toggle="dropdown" class="detailDDLink">Download <i class="fa fa-download"></i></a>
+					<ul class="dropdown-menu" role="menu">
+<?php
+					$vs_download_label = "Download Description";
+					if(trim($this->getVar("representationViewer"))){
+						print "<li>".caNavLink($this->request, "Download Image", "", "", "Detail", "DownloadMedia", array('object_id' => $vn_id, 'download' => 1))."</li>";
+						$vs_download_label = "Download Image and Description";
+					}
+					print "<li>".caDetailLink($this->request, $vs_download_label, "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</li>";
+?>					
+					</ul>
+				</div>
+				
 				{{{representationViewer}}}
 				
 				
 				<div id="detailAnnotations"></div>
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding  col-xs-4 col-sm-3 col-md-2", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 				
 <?php
 				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
+				if ($vn_comments_enabled | $vn_share_enabled) {
 						
 					print '<div id="detailTools">';
 					if ($vn_comments_enabled) {
@@ -70,9 +84,6 @@
 					}
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-					}
-					if ($vn_pdf_enabled) {
-						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
 					print '</div><!-- end detailTools -->';
 				}				
@@ -165,7 +176,7 @@
 				foreach ($va_rights_array as $va_key => $va_rights_array_t) {
 					foreach ($va_rights_array_t as $va_key => $va_rights_array) {
 						if ($va_rights_array['rightsList'] == $vn_nysa_id) {
-							print "<div class='unit'><b>Rights</b><br/>This image is provided for education and research purposes. Rights may be reserved. Responsibility for securing permissions to distribute, publish, reproduce or other use rest with the user. For additional information see our <a href='/index.php/About/Copyright'>Copyright and Use Statement</a></div>";
+							print "<div class='unit'><b>Rights</b><br/>This image is provided for education and research purposes. Rights may be reserved. Responsibility for securing permissions to distribute, publish, reproduce or other use rest with the user. For additional information see our ".caNavLink($this->request, "Copyright and Use Statement", "", "", "About", "Copyright")."</div>";
 						} else if ($va_rights_array['rightsList'] == $vn_nonnysa_id) {
 							print "<div class='unit'><b>Rights</b><br/>This record is not part of the New York State Archives' collection and is presented on our project partner's behalf for educational use only.  Please contact the home repository for information on copyright and reproductions.</div>";
 						}
@@ -185,7 +196,7 @@
 				
 			# --- collections
 			if ($vs_collections = $t_object->getWithTemplate("<ifcount code='ca_collections' min='1'><unit relativeTo='ca_collections'><l>^ca_collections.preferred_labels</l></unit></ifcount>")){	
-				print "<div class='unit'><h3>"._t("Related collections")."</h3>";
+				print "<div class='unit'><h3>"._t("More From This Series")."</h3>";
 				print $vs_collections;
 				print "</div><!-- end unit -->";
 			}			
@@ -197,27 +208,27 @@
 			}
 			
 			# --- occurrences
-			$va_occ_array = array();
-			if ($va_occurrences = $t_object->get("ca_occurrences.occurrence_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values))){
-				foreach ($va_occurrences as $va_key => $va_occurrence_id) {
-					$t_occ = new ca_occurrences($va_occurrence_id);
-					$vn_type_id = $t_occ->get('ca_occurrences.type_id');
-					$va_occ_array[$vn_type_id][$va_occurrence_id] = caDetailLink($this->request, $t_occ->get('ca_occurrences.preferred_labels'), '', 'ca_occurrences', $va_occurrence_id);
-				}
-				foreach ($va_occ_array as $va_type => $va_occ) {
-					print "<div class='unit'><h3>Related ".caGetListItemByIDForDisplay($va_type, true)."</h3>";
-					foreach ($va_occ as $va_key => $va_occ_link) {
-						print "<div>".$va_occ_link."</div>";
-					}
-					print "</div>";
-				}
-			}
+			#$va_occ_array = array();
+			#if ($va_occurrences = $t_object->get("ca_occurrences.occurrence_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values))){
+			#	foreach ($va_occurrences as $va_key => $va_occurrence_id) {
+			#		$t_occ = new ca_occurrences($va_occurrence_id);
+			#		$vn_type_id = $t_occ->get('ca_occurrences.type_id');
+			#		$va_occ_array[$vn_type_id][$va_occurrence_id] = caDetailLink($this->request, $t_occ->get('ca_occurrences.preferred_labels'), '', 'ca_occurrences', $va_occurrence_id);
+			#	}
+			#	foreach ($va_occ_array as $va_type => $va_occ) {
+			#		print "<div class='unit'><h3>Related ".caGetListItemByIDForDisplay($va_type, true)."</h3>";
+			#		foreach ($va_occ as $va_key => $va_occ_link) {
+			#			print "<div>".$va_occ_link."</div>";
+			#		}
+			#		print "</div>";
+			#	}
+			#}
 			
 			# --- places
 			$vs_places = $t_object->getWithTemplate("<unit relativeTo='ca_places' delimiter='<br/>'><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>");
 			
 			if($vs_places){
-				print "<div class='unit'><h3>"._t("Related places")."</h3>";
+				print "<div class='unit'><h3>"._t("Geographic Locations")."</h3>";
 				print $vs_places;
 				print "</div><!-- end unit -->";
 			}

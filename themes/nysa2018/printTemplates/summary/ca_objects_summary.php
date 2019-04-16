@@ -161,7 +161,7 @@
 				
 			# --- collections
 			if ($vs_collections = $t_object->getWithTemplate("<ifcount code='ca_collections' min='1'><unit relativeTo='ca_collections'>^ca_collections.preferred_labels</unit></ifcount>")){	
-				print "<div class='unit'><b>"._t("Related collections")."</b><br/>";
+				print "<div class='unit'><b>"._t("More From This Series")."</b><br/>";
 				print $vs_collections;
 				print "</div><!-- end unit -->";
 			}			
@@ -173,27 +173,27 @@
 			}
 			
 			# --- occurrences
-			$va_occ_array = array();
-			if ($va_occurrences = $t_object->get("ca_occurrences.occurrence_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values))){
-				foreach ($va_occurrences as $va_key => $va_occurrence_id) {
-					$t_occ = new ca_occurrences($va_occurrence_id);
-					$vn_type_id = $t_occ->get('ca_occurrences.type_id');
-					$va_occ_array[$vn_type_id][$va_occurrence_id] = $t_occ->get('ca_occurrences.preferred_labels');
-				}
-				foreach ($va_occ_array as $va_type => $va_occ) {
-					print "<div class='unit'><b>Related ".caGetListItemByIDForDisplay($va_type, true)."</b><br/>";
-					foreach ($va_occ as $va_key => $va_occ_link) {
-						print "<div>".$va_occ_link."</div>";
-					}
-					print "</div>";
-				}
-			}
+			#$va_occ_array = array();
+			#if ($va_occurrences = $t_object->get("ca_occurrences.occurrence_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values))){
+			#	foreach ($va_occurrences as $va_key => $va_occurrence_id) {
+			#		$t_occ = new ca_occurrences($va_occurrence_id);
+			#		$vn_type_id = $t_occ->get('ca_occurrences.type_id');
+			#		$va_occ_array[$vn_type_id][$va_occurrence_id] = $t_occ->get('ca_occurrences.preferred_labels');
+			#	}
+			#	foreach ($va_occ_array as $va_type => $va_occ) {
+			#		print "<div class='unit'><b>Related ".caGetListItemByIDForDisplay($va_type, true)."</b><br/>";
+			#		foreach ($va_occ as $va_key => $va_occ_link) {
+			#			print "<div>".$va_occ_link."</div>";
+			#		}
+			#		print "</div>";
+			#	}
+			#}
 			
 			# --- places
 			$vs_places = $t_object->getWithTemplate("<unit relativeTo='ca_places' delimiter='<br/>'>^ca_places.preferred_labels.name (^relationship_typename)</unit>");
 			
 			if($vs_places){
-				print "<div class='unit'><b>"._t("Related places")."</b><br/>";
+				print "<div class='unit'><b>"._t("Geographic Locations")."</b><br/>";
 				print $vs_places;
 				print "</div><!-- end unit -->";
 			}

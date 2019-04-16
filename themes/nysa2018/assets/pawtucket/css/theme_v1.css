@@ -1,4 +1,4 @@
-/* blue #006794; logo gray: #e7e4dd; logo gray light #e6e5dc */
+/* blue #006794; */
 body {
     font-family: Helvetica, sans-serif;
     font-size: 12px;
@@ -8,7 +8,7 @@ body {
     padding: 0px;
 }
 #pageArea {
-    max-width: 1500px;
+    width: 982px;
     margin: 0px auto 40px;
     background-color: #FFFFFF;
     min-height: 500px;
@@ -19,11 +19,6 @@ body {
     -ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=6, Direction=135, Color='#000000')";
     filter: progid:DXImageTransform.Microsoft.Shadow(Strength=6, Direction=135, Color='#000000');
     w: 2px 2px 6px #444;
-}
-@media(min-width:992px){
-	#pageArea {
-		margin: 0px 30px 40px 30px;
-	}
 }
 a, a:hover, .detail a, .detail a:hover {
     color: #006794;
@@ -55,7 +50,7 @@ h1 {
 .results h1 {
     padding-top:20px;
 }
-.advancedSearch h1 {
+.advancedSearch h1, .staticPage h1 {
 	line-height:30px;
 	padding-top:50px;
 	padding-bottom:15px;
@@ -90,6 +85,7 @@ a.btn-default, .btn-default a, a.btn-default:hover, .btn-default a:hover{
 	text-decoration:none;
 }
 #header {
+    width: 980px;
     text-align: left;
     padding: 0px 0px 0px 0px;
     height:131px;
@@ -98,17 +94,13 @@ a.btn-default, .btn-default a, a.btn-default:hover, .btn-default a:hover{
     width: 186px;
     float: left;
 }
-@media(max-width:768px){
-	#header .logo {
-		display:none;
-	}
-}
 #header #logotext {
     padding: 76px 0 0 33px;
     float: left;
 }
 #header .right-box {
     float: right;
+    width: 313px;
     font-size: 12px;
     font-family: Muli, sans-serif;
     padding: 22px 30px 0px;
@@ -163,64 +155,77 @@ form {
     padding: 0;
     cursor: pointer;
 }
-
-
-.navbar-brand {
-    font-family: 'Crimson Text', serif;
-    font-weight: normal;
-    font-size: 28px;
-    line-height: 44px;
-    color: #FFF !important;
-    text-decoration:none !important;
-    padding: 0 0 0 18px;
-    margin: 0;
-    width:auto;
-}
-#TopicBar {
-    height: 44px;
+.navbar .menuBar {
     clear: both;
+    width: 980px;
+    float: left;
+    background-image: url('../graphics/dotted-border.jpg');
+    background-repeat: repeat-x;
+    padding: 0;
+    padding-top:12px;
+    min-height:0;
+    margin-bottom:0px;
+    box-shadow:none;
 }
-.navbar-default{
-	background-color: #e28c2b;
-	-webkit-box-shadow:none;
-	box-shadow:none;
-	min-height:auto;
+.navbar .menuBar ul {
+    width: 980px;
+    float: left;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
-.navbar .formOutline {
-	background-color:#FFF;
-	border:0px;
+.navbar .menuBar ul li {
+    background-image: url(../graphics/li-bg.jpg);
+    background-position: top left;
+    background-repeat: no-repeat;
+    padding: 0 29px;
+    margin: 0;
+    font-weight: 700;
+    font-size: 13px;
+    line-height: 16px;
+    font-family: 'Raleway',�sans-serif;
+    float: left;
+    height:24px;
 }
-.navbar .formOutline .form-control{
+.navbar .menuBar ul li li {
 	height:auto;
+	float:left;
+	clear:both;
 }
-.navbar-form{
-	margin-top:6px;
+.navbar .menuBar ul li.list-item-one {
+    background-image: none;
+    padding: 0 29px 0 17px;
 }
-.navbar-nav > li > a{
-	line-height:1.1em;
-	color:#FFF !important;
+.navbar-default .menuBar .navbar-nav > li > a {
+    color: rgb(0,103,148);
+    float: left;
+    text-decoration: none;
+    padding:0px;
+    font-size: 13px;
+    line-height: 16px;
 }
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus{
-	color:#FFF;
+.menuBar .navbar-nav > li > a {
+	padding-top:0px;
+	padding-bottom:0px;
 }
-.navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-    background-color: #e28c2b;
-    color:#FFF;
+.navbar .menuBar ul li a {
+    color: rgb(0,103,148);
+    float: left;
+    text-decoration: none;
+    text-transform:uppercase;
 }
-.nav > li > a, .nav > li > a:hover, .nav > li > a:focus, .nav .dropdown-menu a {
+.navbar .menuBar ul li:hover a {
+    color: rgb(76,63,54);
+}
+.nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 	font-family: 'Raleway', sans-serif;
 	text-decoration:none;
 }
-.nav .dropdown-menu a {
-	font-size: 14px;
-}
-
 @media (min-width: 979px) {
   ul.nav li.dropdown:hover > ul.dropdown-menu {
     display: block;
   }
 }
-/*
 .nysa.navbar ul.dropdown-menu {
 	width:277px;
 	left:0px;
@@ -254,7 +259,7 @@ form {
 	z-index:1000;
 }
 #TopicBar h1 {
-    font-family: 'Crimson Text', serif;
+    font-family: 'Crimson Text',�serif;
     font-weight: normal;
     font-size: 28px;
     line-height: 44px;
@@ -264,6 +269,7 @@ form {
     margin: 0;
 }
 #TopicBar {
+    width: 980px;
     height: 44px;
     clear: both;
 }
@@ -305,7 +311,7 @@ form {
     outline: 0;
     color: rgb(46, 34, 31);
 }
-#TopicBar #objectSearch #search input.submit, .btn-search {
+/*#TopicBar #objectSearch #search input.submit, .btn-search {
     width: 23px;
     height: 24px;
     background-image: url('../graphics/submit-blue.jpg');
@@ -314,7 +320,7 @@ form {
     cursor: pointer;
     border-radius:0;
     margin-right:-1px;
-}
+}*/
 #TopicBar .navbar-form .form-group {
 	width:226px;
 }
@@ -339,20 +345,19 @@ form {
 	margin:0px;
 	padding:0px;
 }
-
-#TopicBar #objectSearch #search input::placeholder {
+#TopicBar #objectSearch #search input::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
 	color:#000;
 }
 
-#TopicBar #objectSearch #search input:-ms-input-placeholder {
+#TopicBar #objectSearch #search input:-ms-input-placeholder { /* Internet Explorer 10-11 */
     color:#000;
 }
 
-#TopicBar #objectSearch #search input::-ms-input-placeholder {
+#TopicBar #objectSearch #search input::-ms-input-placeholder { /* Microsoft Edge */
     color:#000;
 }
-*/
 #menuBar {
+    width: 980px;
     height: 38px;
     clear: both;
     background-color: rgb(230, 229, 220);
@@ -367,7 +372,7 @@ form {
     text-transform: uppercase;
     font-size: 13px;
     line-height:21px;
-    font-family: 'Raleway', sans-serif;
+    font-family: 'Raleway',�sans-serif;
     font-weight:600;
 }
 #browse-menu {
@@ -396,6 +401,7 @@ form {
 	color:#fff;
 }
 #footer {
+    width: 980px;
     font-family: Muli, sans-serif;
     font-weight: normal;
     font-size: 12px;
@@ -432,6 +438,7 @@ form {
     vertical-align: baseline;
 }
 #footer .bottom-paragraph {
+    width: 957px;
     clear: left;
     font-size: 12px;
     font-weight: 400;
@@ -482,12 +489,7 @@ form {
 }
 
 /* Homepage */
-.frontIntro{
-	background-color:#e6e5dc;
-	padding-top:25px;
-	padding-bottom:35px;
-	margin-bottom:20px;
-}
+
 .homeTile {
 	margin-bottom:25px;
 }
@@ -572,7 +574,7 @@ form {
 .accordion h4 {
 	clear: both;
     color: #006794;
-    font-family: 'Crimson Text', serif;
+    font-family: 'Crimson Text',�serif;
     font-size: 18px;
     font-weight: normal;
     line-height: 30px;
@@ -805,148 +807,12 @@ b.gray {
     margin-top: 0px;
     margin-bottom: 5px;
 }
-.detail #detailRepNav a{
-	color:#333333;
-	font-size:20px;
-}
-.detail .detailMediaCol{
-	padding-top:35px;
-	position:relative;
-}
-.detail #detailRepNav {
-	font-size: 20px;
-    position: absolute;
-    top: -35px;
-    width:100%;
-    text-align:center;
-}
-.detail #detailRepNavNext, .detail #detailRepNavPrev{
-	float:none;
-}
-#caMediaPanel {
-    background-color: rgba(255, 255, 255, 0.95);
-}
-.tileviewerToolbarZoom a{
-	opacity:1 !important;
-}
-div.caMediaOverlayControls .close a, div.caMediaOverlayControls .close a i{
-	color:red !important;
-	text-shadow: none;
-	opacity:1 !Important;
-	background-color:#FFF;
-	padding:1px;
-}
-div.caMediaOverlayControls{
-	opacity:1 !Important;
-	background-color: rgba(0,0,0,0.5);
-}
-#detailDD{
-	position:absolute;
-	z-index:15;
-	top:5px;
-	right:15px;
-	padding: 5px;
-	background-color: #EDEDED;
-}
-#detailDD .detailDDLink{
-	color:#333;
-	text-decoration:none;
-	font-size:12px;
-	text-transform:uppercase;
-}
-.detailMediaToolbar .dlButton{
-	display:none;
-}
-/* topic collection */
-.topicRelatedObjects{
-	background-color: #e6e5dc;
-	margin-bottom:25px;
-}
-.topicRelatedObjects H2{
-	margin-top:0px;
-}
-@media(min-width:500px){
-	.topicCollectionFunder{
-		float:right;
-		padding:0px 0px 15px 15px;
-	}
-}
-.topicCollectionFunder{
-	width:100%;
-	height:auto;
-	max-width:250px;
-	text-align:center;
-	padding-bottom:15px;
-}
+
 /*Browse */
-#exportDD{
-	float: right;
-	margin-top: 30px;
-	padding-left:30px;
-}
-#exportDD a.labelDDLink{
-	color: #000;
-	text-transform: uppercase;
-	font-weight: normal;
-	text-decoration:none;
-	font-size:12px;
-}
-#exportDD .dropdown-menu a{
-	text-decoration:none;
-}
+
 #bRefine {
 	z-index:0;
 }
-@media(max-width:768px){
-	.results .bSearchWithinContainer, .results .productCodeHelp, .results .btn-default.browseProducts{
-		display:none;
-	}
-}
-.results .bSearchWithinContainer{
-	clear:both;
-	margin-top:15px;
-	margin-bottom:10px;
-}
-#browseResultsDetailContainer .bSearchWithinContainer{
-	clear:both;
-	margin-top:40px;
-	margin-bottom:10px;
-}
-.results .btn-search-refine{	
-	float: left;
-	font-size: 18px;
-	padding-top: 0px 0px 0px 0px;
-	width: 26px;
-	text-align: left;
-	background-color: transparent;
-	display: inline-block;
-	vertical-align: middle;
-	cursor: pointer;
-	background-image: none;
-	outline: 0;
-	border: 0px;
-}
-.results .btn-search-refine .glyphicon{
-	margin-top:5px;
-}
-.bSearchWithin, .bSearchWithin:focus {
-    float: left;
-    width: 80%;
-    box-shadow: none;
-    border: 0px;
-    border-bottom: 1px solid #989697;
-    border-radius: 0px;
-    padding-bottom: 2px;
-    padding-top: 2px;
-    padding-left: 0px;
-    height: 30px;
-    font-size: 14px;
-    line-height: 26px;
-    background-color: transparent;
-    margin: 0px 0px 0px 10px;
-    font-size: 15px;
-}
-
 div.browseFacetItem {
 	z-index:10000000;
 }
@@ -959,23 +825,6 @@ div.browseFacetItem {
 .results H1 {
     text-transform: capitalize;
 }
-#bSortByList {
-    float: right;
-    margin-top: 30px;
-}
-#bViewButtons {
-    float: right;
-    padding-left:20px;
-}
-#bViewButtons a.active .glyphicon {
-    color: #454545 !important;
-}
-#bViewButtons .glyphicon {
-    top: 4px;
-}
-#bViewButtons {
-    margin-top: -6px;
-}
 /* Collection landing page */
 
 .collectionTile .title a{
@@ -987,10 +836,4 @@ div.browseFacetItem {
 .collectionTile img{
 	width:100%;
 	height:auto;
-	max-width:350px;
-}
-
-.staticPage h1 {
-	line-height:30px;
-	padding-bottom:15px;
 }
