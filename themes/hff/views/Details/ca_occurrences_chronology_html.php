@@ -131,9 +131,39 @@
 								</div>
 							</div>
 							<div class="row">
-								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="home"><div class="col-sm-12 col-md-4"><div class="unit"><h6>Home</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="home"><div><ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name > </ifdef>^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></div></unit></div></div></ifcount>
-								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="studio"><div class="col-sm-12 col-md-4"><div class="unit"><h6>Studio</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="studio"><div><ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name > </ifdef>^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></div></unit></div></div></ifcount>
-								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="travel"><div class="col-sm-12 col-md-4"><div class="unit"><h6>Travel</h6><unit relativeTo="ca_places" delimiter="<br/>" restrictToRelationshipTypes="travel"><div><ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name > </ifdef>^ca_places.preferred_labels.name<unit relativeTo="ca_places_x_occurrences"><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef></unit></div></unit></div></div></ifcount>
+								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="home">
+									<div class="col-sm-12 col-md-4">
+										<div class="unit"><h6>Home</h6>
+											<unit relativeTo="ca_places_x_occurrences" delimiter="<br/>" restrictToRelationshipTypes="home">
+												<div>
+													<ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name &gt; </ifdef>^ca_places.preferred_labels.name<case><ifdef code="ca_places_x_occurrences.display_date">, ^ca_places_x_occurrences.display_date</ifdef><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef></case><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef>
+												</div>
+											</unit>
+										</div>
+									</div>
+								</ifcount>
+								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="studio">
+									<div class="col-sm-12 col-md-4">
+										<div class="unit"><h6>Studio</h6>
+											<unit relativeTo="ca_places_x_occurrences" delimiter="<br/>" restrictToRelationshipTypes="studio">
+												<div>
+													<ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name &gt; </ifdef>^ca_places.preferred_labels.name<case><ifdef code="ca_places_x_occurrences.display_date">, ^ca_places_x_occurrences.display_date</ifdef><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef></case><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef>
+												</div>
+											</unit>
+										</div>
+									</div>
+								</ifcount>
+								<ifcount code="ca_places" min="1" restrictToRelationshipTypes="travel">
+									<div class="col-sm-12 col-md-4">
+										<div class="unit"><h6>Travel</h6>
+											<unit relativeTo="ca_places_x_occurrences" delimiter="<br/>" restrictToRelationshipTypes="travel">
+												<div>
+													<ifdef code="ca_places.parent.preferred_labels.name">^ca_places.parent.preferred_labels.name &gt; </ifdef>^ca_places.preferred_labels.name<case><ifdef code="ca_places_x_occurrences.display_date">, ^ca_places_x_occurrences.display_date</ifdef><ifdef code="ca_places_x_occurrences.effective_date">, ^ca_places_x_occurrences.effective_date</ifdef></case><ifdef code="ca_places_x_occurrences.interstitial_notes"><div>^ca_places_x_occurrences.interstitial_notes</div></ifdef>
+												</div>
+											</unit>
+										</div>
+									</div>
+								</ifcount>
 							</div>
 						</ifcount>
 					}}}					
@@ -200,7 +230,7 @@
 
 			<div class="row">
 				<div class="col-sm-12">
-					<br/><hr/><br/><H4>Related Artworks</H4>
+					<br/><hr/><br/><H4 id="relArtworkHeading" style="display:none;">Related Artworks</H4>
 				</div>
 			</div>
 			<div class="row">
@@ -211,6 +241,9 @@
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'artworks', array('search' => 'ca_objects.common_date:'.$t_item->get('ca_occurrences.common_date').' and ca_entities.entity_id:2558', 'view' => 'images'), array('dontURLEncodeParameters' => false)); ?>", function() {
+						if ($("#browseResultsContainer .bResultItemCol").text().length > 0) {
+							$('#relArtworkHeading').show();
+						}
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",

@@ -67,7 +67,16 @@
 		<div class="container detailMainArea">
 			<div class="row">
 				<div class='col-sm-12 col-md-8 col-lg-7 col-lg-offset-1'>
-					<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
+<?php
+			$va_title_fields = array("mint", "authority", "denomination", "date");
+			$va_title_parts = array();
+			foreach($va_title_fields as $vs_title_field){
+				if($vs_tmp = $t_object->get("ca_objects.".$vs_title_field)){
+					$va_title_parts[] = $vs_tmp;
+				}
+			}
+			print "<H4>".join(", ", $va_title_parts)."</H4>";
+?>
 				</div>
 				<div class='col-sm-12 col-md-4 col-lg-3'>
 <?php
@@ -128,36 +137,182 @@
 <?php
 		}
 ?>
+
 			<div class="row">
 				<div class='col-sm-12 col-md-12 col-lg-10 col-lg-offset-1'>
 					<div class="row">
-						<div class="col-sm-6">
-							{{{<ifdef code="ca_objects.idno"><H6>Identifier</H6>^ca_objects.idno<br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.material"><H6>Material</H6>^ca_objects.material<br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.weight"><H6>Weight</H6>^ca_objects.weight<br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.diameter"><H6>Diameter</H6>^ca_objects.diameter<br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.measurements"><H6>Measurements</H6>^ca_objects.measurements<br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.axis"><H6>Axis</H6>^ca_objects.axis<br/></ifdef>}}}
+						<div class="col-sm-4">
+<?php
+							$va_materiality_fields = array(
+								#"Identifier" => "idno",
+								"Weight" => "weight",
+								"Material" => "material",
+								"Diameter" => "diameter",
+								"Measurements" => "measurements",
+								"Axis" => "axis",
+								"Object Attributes" => "object_attributes",
+								"Original Intended Use" => "original_intended_use",
+								"authenticity" => "Authenticity",
+								"Post Manufacture Alterations" => "post_manufacture_alterations",
+						/*		"Countermarks" => "ca_list_items", */
+								"Materiality notes" => "materiality_notes",
+							);
+							$va_descriptive_fields = array(	
+								"Obverse" => "obverse",
+								"Reverse" => "reverse",
+								"Obverse Inscription" => "obverse_inscription",
+								"Reverse Inscription" => "reverse_inscription",
+								"Obverse Symbol" => "obverse_symbol",
+								"Reverse Symbol" => "reverse_symbol",
+								"Inscriptions" => "inscriptions",
+								"Monograms" => "monograms",
+						/*		"Iconographic Classifications" => "ca_list_items", */
+								"Mint" => "mint",
+								"Region" => "region",
+								"Denomination" => "denomination",
+								"Weight" => "weight",
+								"Weight Standard" => "weight_standard",
+								"Authority" => "authority",
+								"Dynasty" => "dynasty",
+								"Person" => "person",
+								"Magistrate" => "magistrate",
+							);
+							$va_classification_fields = array(	
+								"Date" => "date",
+								"Dtae On Object" => "dob",
+								"Period" => "period",
+								"Type (PELLA)" => "type",
+								"Type (SCO)" => "type_sco",
+								"Type" => "type_text",
+								"Type URL" => "type_url",
+							);
+							$va_provenance_fields = array(	
+								"Hoard" => "hoard",
+								"Findspot" => "findspot",
+								"Previous Collection" => "previous_collection",
+								"Published Auction URL" => "published_auction",
+								"Published Auction" => "published_auction_text",
+								"Other Provenance" => "other_provenance",
+							);
+							$va_literature_fields = array(	
+								"Published Literature" => "published_literatue",
+								"Published Literature Text" => "published_literatue_text",
+								"Cross-reference" => "crossreference",
+								"Cross-reference Text" => "crossreference_text"
+							);
+	
+							print "<div class='unit'><H6>Identifier</H6>".$t_object->get("idno")."</div>";
+							$vs_materiality = "";
+							foreach($va_materiality_fields as $vs_label => $vs_field){
+								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
+									$vs_materiality .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
+								}
+							}
+							if($vs_tmp = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter=", " restrictToRelationshipTypes="obverse_countermark"><unit relativeTo="ca_list_items">^ca_list_items.preferred_labels.name_plural</unit></unit>')){
+								$vs_materiality .= "<div class='unit'><H6>Countermarks</H6>".$vs_tmp."</div>";							
+							}
+							if($vs_materiality){
+								print "<h4>Materiality</h4>".$vs_materiality;
+							}
+
+	
+							$vs_classification = "";
+							foreach($va_classification_fields as $vs_label => $vs_field){
+								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
+									$vs_classification .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
+								}
+							}
+							if($vs_classification){
+								print "<h4>Classification</h4>".$vs_classification;
+							}
+	
+							$vs_provenance = "";
+							foreach($va_provenance_fields as $vs_label => $vs_field){
+								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
+									$vs_provenance .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
+								}
+							}
+							if($vs_provenance){
+								print "<h4>Provenance</h4>".$vs_provenance;
+							}	
+	
+							$vs_literature = "";
+							foreach($va_literature_fields as $vs_label => $vs_field){
+								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
+									$vs_literature .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
+								}
+							}
+							if($vs_literature){
+								print "<h4>Literature</h4>".$vs_literature;
+							}
+?>
 						</div>
-						<div class="col-sm-6">
-							{{{<ifdef code="ca_objects.region"><H6>Region</H6>^ca_objects.region<br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.denomination"><H6>Denomination</H6>^ca_objects.denomination<br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.obverse"><H6>Obverse</H6>^ca_objects.obverse<br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.obverse_inscription"><H6>Obverse Inscription</H6>^ca_objects.obverse_inscription<br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.obverse_symbol"><H6>Obverse Symbol</H6>^ca_objects.obverse_symbol<br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.reverse"><H6>Reverse</H6>^ca_objects.reverse<br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.reverse_inscription"><H6>Reverse Inscription</H6>^ca_objects.reverse_inscription<br/></ifdef>}}}
-							{{{<ifdef code="ca_objects.reverse_symbol"><H6>Reverse Symbol</H6>^ca_objects.reverse_symbol<br/></ifdef>}}}
-							{{{<ifcount code="ca_list_items" min="1"><H6>Iconographic Classification</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter=", "><unit relativeTo="ca_list_items">^ca_list_items.preferred_labels.name_plural</unit></unit>}}}
+						<div class="col-sm-4">
+<?php
+	
+							$vs_descriptive = "";
+							foreach($va_descriptive_fields as $vs_label => $vs_field){
+								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
+									$vs_descriptive .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
+								}
+							}
+							if($vs_tmp = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter=", "><unit relativeTo="ca_list_items">^ca_list_items.preferred_labels.name_plural</unit></unit>')){
+								$vs_descriptive .= "<div class='unit'><H6>Iconographic Classification</H6>".$vs_tmp."</div>";							
+							}
+							if($vs_descriptive){
+								print "<h4>Descriptive</h4>".$vs_descriptive;
+							}
+?>
+
+						</div>
+						<div class="col-sm-4">
+<?php
+							$va_fields_authorities = array(
+								"Material" => "material_link",
+								"Mint" => "mint_link",
+								"Region" => "region_link",
+								"Denomination" => "denomination_link",
+								"Authority" => "authority_link",
+								"Person" => "person_link",
+								"Magistrate" => "magistrate_link",
+								"Series" => "series",
+								"Hoard" => "hoard_link"
+							);
+														
+							$vs_authority = "";
+							foreach($va_fields_authorities as $vs_label => $vs_field){
+								$vs_nomisma_id = "";
+								$vs_tmp = "";
+								if($va_authority_terms = $t_object->get($vs_field, array("returnAsArray" => true))){
+									$va_tmp = array();
+									foreach($va_authority_terms as $vs_term){
+										$vn_start = strpos($vs_term, "[");
+										if($vn_start !== false){
+											$vs_nomisma_id = substr($vs_term, $vn_start + 1);
+											$vs_nomisma_id = str_replace("]", "", $vs_nomisma_id);
+											if($vs_nomisma_id){
+												$va_tmp[] = "<a href='http://www.nomisma.org/id/".$vs_nomisma_id."' target='_blank'>".$vs_term." <span class='glyphicon glyphicon-new-window'></span></a>";
+											}
+										}else{
+											$va_tmp[] = $vs_term;
+										}
+										$vs_authority .= "<div class='unit'><H6>".$vs_label."</H6>".join("<br/>",$va_tmp)."</div>";
+									}
+								}
+							}
+							if($vs_authority){
+								print "<div class='authoritySection'><h4>Nomisma Authority Links</h4>".$vs_authority."</div>";
+							}
+							
+?>							
+							
 							
 						</div>
 					</div>
 					
 					
 				
-					{{{<ifdef code="ca_objects.dateSet.setDisplayValue"><H6>Date:</H6>^ca_objects.dateSet.setDisplayValue<br/></ifdef>}}}
-			
+					
 					
 						<div class="row">
 							<div class="col-sm-6">		

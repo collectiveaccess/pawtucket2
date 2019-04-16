@@ -95,7 +95,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 				}
 			}
 ?>
-		<H1>
+		<H1 <?php print (($vb_show_filter_panel) ? "class='catchLinks'" : ""); ?>>
 <?php
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 ?>		
@@ -153,17 +153,39 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
 			}
+			print caNavLink($this->request, '<span class="glyphicon glyphicon-eye-open"></span> &nbsp;View all available digital media', '', '*', '*','*', array('key' => $vs_browse_key, 'facet' => 'has_media_facet', 'id' => 1, 'view' => $vs_current_view), array("id" => "showMediaEye"));
+
 ?>
+			
 		</H1>
 		<H5 <?php print ($vb_show_filter_panel) ? "class=' catchLinks'" : ""; ?>>
 <?php
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
-				
+					if($va_criterion["facet_name"] == "has_media_facet"){
+?>
+						<script type="text/javascript">
+							jQuery(document).ready(function() {
+								jQuery("#showMediaEye").hide();
+							});
+						</script>
+<?php
+					}
 					if(!$vb_show_filter_panel){
+						$vs_display_value = $va_criterion['value'];
+						if(strpos($va_criterion["value"], "ca_object_representations.mimetype:*") !== false){
+							$vs_display_value = "Digital archival media";
+?>
+							<script type="text/javascript">
+								jQuery(document).ready(function() {
+									jQuery("#showMediaEye").hide();
+								});
+							</script>
+<?php
+						}
 						print "<strong>".$va_criterion['facet'].': </strong>';
-						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_display_value.' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 					}else{
 						if(strpos($va_criterion["value"], "collection_id") === false){
 							print "<strong>".$va_criterion['facet'].': </strong>';
@@ -267,9 +289,18 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 		if(in_array(strToLower($this->request->getAction()), array("objects", "products"))){
 			print "<div class='productCodeHelp'>End product code searches with an asterisk (*)</div>";
 		}
-		if(in_array(strToLower($this->request->getAction()), array("objects", "archival"))){
-			print caNavLink($this->request, _t("Browse All Products"), "btn-default browseProducts", "", "Browse", "products");
+		# --- objects, archival, products
+		$vs_browse_type = strToLower($this->request->getAction());
+		if(in_array($vs_browse_type, array("objects", "archival", "products"))){
+			print "<div class='browseTypeButtons'>";
+			print caNavLink($this->request, _t("Products"), (($vs_browse_type == "products") ? " currentBrowse" : ""), "", "Browse", "products");
+			print caNavLink($this->request, _t("Items"), (($vs_browse_type == "archival") ? " currentBrowse" : ""), "", "Browse", "archival");
+			print caNavLink($this->request, _t("All"), "browseTypeButtonAll ".(($vs_browse_type == "objects") ? " currentBrowse" : ""), "", "Browse", "objects");
+			print "<div style='clear:both;'></div></div>";
 		}
+		#if(in_array(strToLower($this->request->getAction()), array("objects", "archival"))){
+		#	print caNavLink($this->request, _t("Browse All Products"), "btn-default browseProducts", "", "Browse", "products");
+		#}
 ?>
 		
 <?php

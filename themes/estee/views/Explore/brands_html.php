@@ -9,24 +9,19 @@
  				
 ?>
 	<div class='row'>
-		<div class="col-sm-12 col-md-8 col-md-offset-1">
+		<div class="col-sm-12 col-md-10 col-md-offset-1">
 			<H1>Browse the Archives</H1>
 			<p class="linkUnderline">{{{browse_intro_text}}}</p>
 			<br/>
 		</div>
 	</div>
-	<div class="row">
-		<div class="col-sm-12">
-			<div class="text-center">
 <?php
-				print "<p><div class='exploreBrowseLink'>".caNavLink($this->request, _t("Browse All"), "btn-default", "", "Browse", "objects")."</div><div class='exploreBrowseLink'>".caNavLink($this->request, _t("Browse Products"), "btn-default", "", "Browse", "products")."</div><div class='exploreBrowseLink'>".caNavLink($this->request, _t("Browse Archival Items"), "btn-default", "", "Browse", "archival")."</div></p><br/>";
-?>
-			</div>
-		</div>
-	</div>
-<?php
+	print "<div class='row exploreBrandGrid'>";
+	print "<div class='col-sm-3 col-xs-12'><div class='exploreBrandContainer'>".
+			"<div class='exploreImgContainer browseAllBox'>".caNavLink($this->request, caGetThemeGraphic($this->request, 'spacer.png')."<span>"._t("Browse All Brands")."</span>", "", "", "Browse", "objects")."</div>
+			</div></div>";
 	if($qr_brands && $qr_brands->numHits()){
-		$vn_i = 0;
+		$vn_i = 1;
 		$vn_cols = 5;
 		while($qr_brands->nextHit()){
 			if(!in_array($qr_brands->get("ca_list_items.item_id"), $va_available_ids)){
