@@ -774,6 +774,19 @@ class RequestHTTP extends Request {
 					$vb_login_successful = true;
 				}
 				
+				$o_auth_config = Configuration::load(__CA_CONF_DIR__.'/authentication.conf');
+				if($o_auth_config->get("auth_adapter") == "HTTPHeader") {
+					$vs_httpheader_username  = $o_auth_config->get("httpheader_username");
+					if($thisUserName = $this->user->getFieldValuesArray()['user_name'] && ($thisUserName!=$_SERVER[$vs_httpheader_username])){
+						$this->doAuthentication(array(
+							"dont_redirect" => 1, 
+							"user_name" => $_SERVER[$vs_httpheader_username], 
+							"password" => "")
+						);
+						return false;
+					}
+				}
+
 				if ($vb_login_successful) {																	// Login was successful
 					Session::setVar($vs_app_name."_lastping",time());					// set last time we heard from client in session
 					$this->user->setLastPing(time());	
