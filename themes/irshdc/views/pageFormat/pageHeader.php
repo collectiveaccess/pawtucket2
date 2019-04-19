@@ -61,6 +61,7 @@
 
 	  gtag('config', 'UA-116910619-1');
 	</script>
+	<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
