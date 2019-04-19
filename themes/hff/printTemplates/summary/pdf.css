@@ -112,3 +112,21 @@ H7{
 	font-size:12px;
 	margin-bottom:0px;
 }
+.relArtwork{
+	width:20%;
+	padding-left:2%;
+	padding-right:2%;
+	margin-bottom:10px;
+	float:left;
+	text-align:center;
+	height:190px;
+}
+.relArtwork .relArtworkCaption{
+	text-align:center;
+	font-size:10px;
+	height:50px;
+}
+
+.travelVenue{
+	margin:5px 0px 18px 15px;
+}

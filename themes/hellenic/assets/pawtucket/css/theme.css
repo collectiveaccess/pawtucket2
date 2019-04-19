@@ -272,7 +272,10 @@ a:hover {
     letter-spacing: 0px;   
 }
 .nav .dropdown-menu > li:hover {
-	background-color:#d6d6d6 ;
+	background-color:#d6d6d6;
+}
+.nav .dropdown-menu .dropdown-header, .nav .dropdown-menu .nav-divider{
+	background-color:#ffffff;
 }
 .navbar .dropdown-menu > li > a:hover, .navbar .dropdown-menu > li > a:focus, .navbar .dropdown-menu > .active > a, .navbar .dropdown-menu > .active > a:hover, .navbar .dropdown-menu > .active > a:focus {
 	background-color:#ddd;
@@ -307,6 +310,14 @@ a:hover {
 	line-height:1em;
 	font: bold 32px 'Nunito', 'futura-pt', sans-serif;
 	text-transform: uppercase;
+}
+.banner a, .banner a:hover{
+	color:#fff;
+	font-size:32px;
+	line-height:1em;
+	font: bold 32px 'Nunito', 'futura-pt', sans-serif;
+	text-transform: uppercase;
+	text-decoration:none;
 }
 .bannerImg {
 	background-image:url('../graphics/collections-museum.jpg');  
@@ -345,12 +356,12 @@ a:hover {
 body {
 	margin-bottom:360px;
 }
-@media(max-width:600px){
+@media(max-width:500px){
 	#footer {
-		height:400px;
+		height:500px;
 	}
 	body{
-		margin-bottom:460px;
+		margin-bottom:560px;
 	}
 }
 #footer a {
@@ -378,7 +389,28 @@ body {
     padding: 0 20px 24px 20px;
     margin: 0 auto;	
 }
-
+#footer .acknowledgement{
+	padding-top:40px;
+}
+#footer .acknowledgement img{
+	width:200px;
+	height:auto;
+	display:block;
+	margin-bottom:10px;
+	margin-left:auto;
+	margin-right:auto;
+}
+@media(min-width:600px){
+	#footer .acknowledgement{
+		text-align:left;
+	}
+	#footer .acknowledgement img{
+		float:left;
+		margin-right:25px;
+		margin-bottom:0px;
+		display:inline;
+	}
+}
 /* Front */
 
 .front .jcarousel {
@@ -475,6 +507,7 @@ body {
 	margin-bottom:35px;
 }
 .homeIcon {
+	text-align:center;
 	margin-bottom:10px;
 }
 .homeLink {
@@ -534,6 +567,7 @@ body {
 	padding-bottom:50px;
 }
 .homeIcon img {
+	max-width:400px;
 	width:100%;
 	height:auto;
 }
@@ -844,4 +878,15 @@ label {
 
 .form-control:focus {
     border-color: #000;
+}
+
+/* static pages */
+.bodytextImg{
+	text-align:center;
+	margin-top:30px;
+}
+.bodytextImg img{
+	width:100%;
+	height:auto;
+	max-width:300px;
 }

@@ -59,7 +59,23 @@
 		case "product":
 		case "component":			
 			print $t_item->getWithTemplate('<ifdef code="ca_objects.idno"><div class="unit text-center"><H6 class="text-center">Object ID: ^ca_objects.idno</H6></div></ifdef>');
-			print $t_item->getWithTemplate('<ifdef code="ca_objects.type_id|ca_objects.brand|ca_objects.sub_brand"><div class="unit"><H6 class="text-center">^ca_objects.type_id<ifdef code="ca_objects.brand"> &rsaquo; <unit relativeTo="ca_objects" delimiter=", ">^ca_objects.brand</unit></ifdef><ifdef code="ca_objects.sub_brand"> &rsaquo; <unit relativeTo="ca_objects" delimiter=", ">^ca_objects.sub_brand</unit></ifdef></H6></div></ifdef>');
+			
+			$va_product_info = array();
+			if($vs_type = $t_item->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))){
+				$va_product_info[] = $vs_type;
+			}
+			if($vs_brand = $t_item->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
+				$va_product_info[] = $vs_brand;
+			}
+			if($vs_sub_brand = $t_item->get("ca_objects.sub_brand", array("delimiter" => ", "))){
+				$vs_sub_brand = "<span style='text-transform:none;'>".ucwords(strtolower($vs_sub_brand))."</span>";
+				$va_product_info[] = $vs_sub_brand;
+			}
+			if(sizeof($va_product_info)){
+				print "<div class='unit'><H6 class='text-center'>";
+				print join(" &rsaquo; ", $va_product_info);
+				print "</H6></div>";
+			}
 			
 			print $t_item->getWithTemplate('<ifdef code="ca_objects.preferred_labels.name"><H6 class="text-center">^ca_objects.preferred_labels.name</H6></ifdef>');
 		break;
@@ -70,7 +86,25 @@
 			
 			print $t_item->getWithTemplate('<ifdef code="ca_objects.idno"><div class="unit text-center"><H6 class="text-center">Object ID: ^ca_objects.idno</H6></div></ifdef>');
 			
-			print $t_item->getWithTemplate('<ifdef code="ca_objects.type_id|ca_objects.archival_types|ca_objects.brand|ca_objects.sub_brand"><div class="unit"><H6 class="text-center">^ca_objects.type_id<ifdef code="ca_objects.archival_types"> &rsaquo; ^ca_objects.archival_types%delimiter=,_</ifdef><ifdef code="ca_objects.brand"><br/><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.brand</unit></ifdef><ifdef code="ca_objects.sub_brand"> &rsaquo; <unit relativeTo="ca_objects" delimiter=", ">^ca_objects.sub_brand</unit></ifdef></H6></div></ifdef>');
+			$va_product_info = array();
+			if($vs_type = $t_item->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))){
+				$va_product_info[] = $vs_type;
+			}
+			if($vs_archival_type = $t_item->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
+				$va_product_info[] = $vs_archival_type;
+			}
+			if($vs_brand = $t_item->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
+				$va_product_info[] = $vs_brand;
+			}
+			if($vs_sub_brand = $t_item->get("ca_objects.sub_brand", array("delimiter" => ", "))){
+				$vs_sub_brand = "<span style='text-transform:none;'>".ucwords(strtolower($vs_sub_brand))."</span>";
+				$va_product_info[] = $vs_sub_brand;
+			}
+			if(sizeof($va_product_info)){
+				print "<div class='unit'><H6 class='text-center'>";
+				print join(" &rsaquo; ", $va_product_info);
+				print "</H6></div>";
+			}
 			
 			
 			print $t_item->getWithTemplate('<ifdef code="ca_objects.preferred_labels.name"><H6 class="text-center">^ca_objects.preferred_labels.name</H6></ifdef>');
@@ -108,12 +142,18 @@
 							<ifdef code="ca_objects.codes.product_code"><div class="unit"><H6>Product Code</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.codes.product_code</unit></div></ifdef>
 							<ifnotdef code="ca_objects.codes.product_code"><div class="unit"><H6>Product Code</H6>Not Available</div></ifnotdef>
 							<ifdef code="ca_objects.codes.batch_code"><div class="unit"><H6>Batch Code</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.codes.batch_code</unit></div></ifdef>
-							<ifdef code="ca_objects.codes.packaging_code"><div class="unit"><H6>Packaging Code</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.codes.product_code</unit></div></ifdef>
+							<ifdef code="ca_objects.codes.packaging_code"><div class="unit"><H6>Packaging Code</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.codes.product_code</unit></div></ifdef></if>');
 						
+					if($t_item->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)) != "Component"){
+						if($vs_tmp = $t_item->get("ca_objects.shade", array("delimiter" => "<br/>"))){
+							print "<div class='unit'><H6>Shade</H6>".ucwords(strtolower($vs_tmp))."</div>";
+						}
+						if($vs_tmp = $t_item->get("ca_objects.fragrance", array("delimiter" => "<br/>"))){
+							print "<div class='unit'><H6>Fragrance</H6>".ucwords(strtolower($vs_tmp))."</div>";
+						}
+					}
 					
-						<ifdef code="ca_objects.shade"><div class="unit"><H6>Shade</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.shade</unit></div></ifdef>
-						<ifdef code="ca_objects.fragrance"><div class="unit"><H6>Fragrance</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.fragrance</unit></div></ifdef>
-						
+					print $t_item->getWithTemplate('<if rule="^ca_objects.type_id !~ /Component/">	
 						<ifdef code="ca_objects.size"><div class="unit"><H6>Size/Weight</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.size</unit></div></ifdef>
 						<ifdef code="ca_objects.application"><div class="unit"><H6>Application</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.application</unit></div></ifdef>
 						
@@ -138,7 +178,7 @@
 						foreach($va_notes as $va_note){
 							$va_note["object_note_value"] = trim($va_note["object_note_value"]);
 							if($va_note["object_note_value"] && strToLower($va_note["object_note_status"]) == "unrestricted"){
-								$va_notes_filtered[] = $va_note["object_note_value"];
+								$va_notes_filtered[] = ucfirst(strtolower($va_note["object_note_value"]));
 							}
 						}
 						if(sizeof($va_notes_filtered)){
@@ -162,10 +202,10 @@
 						print "<div class='unit'><h6>Is A ".$vs_part_label." Of</h6>";
 						$vs_caption = "";
 						$vs_caption .= $t_parent->get("ca_objects.preferred_labels").". ";
-						if($vs_shade = $t_parent->get("ca_objects.shade")){
+						if($vs_shade = ucwords(strtolower($t_parent->get("ca_objects.shade")))){
 							$vs_caption .= $vs_shade;
 						}
-						if($vs_fragrance = $t_parent->get("ca_objects.fragrance")){
+						if($vs_fragrance = ucwords(strtolower($t_parent->get("ca_objects.fragrance")))){
 							if($vs_shade){
 								$vs_caption .= "; ";
 							}
@@ -221,7 +261,11 @@
 								$va_child_info = array();
 								foreach($va_child_info_fields as $vs_child_info_field){
 									if($vs_tmp = $qr_children->get("ca_objects.".$vs_child_info_field, array("delimiter" => ", ")) ){
-										$va_child_info[] = $vs_tmp;
+										if(in_array($vs_child_info_field, array("fragrance", "shade"))){
+											$va_child_info[] = ucwords(strtolower($vs_tmp));
+										}else{
+											$va_child_info[] = $vs_tmp;
+										}
 									}
 								}
 								if(sizeof($va_child_info)){
@@ -256,7 +300,7 @@
 								$vs_caption .= " - ".$vs_tmp;
 							}
 							$vs_caption .= "<br/>";
-							if(($vs_brand = $qr_related->get("ca_objects.brand", array("convertCodesToDisplayText" => true))) || ($vs_subbrand = $qr_related->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true)))){
+							if(($vs_brand = $qr_related->get("ca_objects.brand", array("convertCodesToDisplayText" => true))) || ($vs_subbrand = ucwords(strtolower($qr_related->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true)))))){
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
 							}
 							$vs_caption .= $qr_related->get('ca_objects.preferred_labels');
@@ -307,7 +351,7 @@
 						foreach($va_notes as $va_note){
 							$va_note["general_notes_text"] = trim($va_note["general_notes_text"]);
 							if($va_note["general_notes_text"] && strToLower($va_note["internal_external"]) == "unrestricted"){
-								$va_notes_filtered[] = $va_note["general_notes_text"];
+								$va_notes_filtered[] = ucfirst(strtolower($va_note["general_notes_text"]));
 							}
 						}
 						if(sizeof($va_notes_filtered)){
@@ -345,7 +389,7 @@
 				
 					if ($va_child_object_ids = $t_item->get('ca_objects.children.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						$qr_children = caMakeSearchResult('ca_objects', $va_child_object_ids);
-						print "<div class='childObjects'><h6>Folder Contents</h6><br/>";
+						print "<div class='childObjects'><h6>Container Contents</h6><br/>";
 						$va_child_info_fields = array("shade", "fragrance", "codes.product_code");
 						if($qr_children->numHits()){
 							while ($qr_children->nextHit()) {
@@ -396,7 +440,7 @@
 								$vs_caption .= " - ".$vs_tmp;
 							}
 							$vs_caption .= "<br/>";
-							if(($vs_brand = $qr_related->get("ca_objects.brand", array("convertCodesToDisplayText" => true))) || ($vs_subbrand = $qr_related->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true)))){
+							if(($vs_brand = $qr_related->get("ca_objects.brand", array("convertCodesToDisplayText" => true))) || ($vs_subbrand = ucwords(strtolower($qr_related->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true)))))){
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
 							}
 							$vs_caption .= $qr_related->get('ca_objects.preferred_labels');

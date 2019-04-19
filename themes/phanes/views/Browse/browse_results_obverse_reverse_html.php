@@ -114,7 +114,15 @@
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{			
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					$va_title_fields = array("mint", "authority", "denomination", "date");
+					$va_title_parts = array();
+					foreach($va_title_fields as $vs_title_field){
+						if($vs_tmp = $qr_res->get("ca_objects.".$vs_title_field)){
+							$va_title_parts[] = $vs_tmp;
+						}
+					}
+					$vs_title = join(", ", $va_title_parts);
+					$vs_label_detail_link 	= caDetailLink($this->request, $vs_title, '', $vs_table, $vn_id);
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";

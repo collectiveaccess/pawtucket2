@@ -43,6 +43,10 @@
 	$t_display = $this->getVar('t_display');
 	$va_placements = $this->getVar("placements");
 	$va_access_values = caGetUserAccessValues($this->request);
+	$vn_type_id = 			$t_item->get('ca_objects.type_id');
+	$t_list = new ca_lists();
+	$vn_oh_id = $t_list->getItemIDFromList("object_types", "oral_history");
+	$vn_book_id = $t_list->getItemIDFromList("object_types", "book");
 	
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
@@ -52,16 +56,15 @@
 	<div class="representationList">
 		
 <?php
-	$va_reps = $t_item->getRepresentations(array("small", "medium"));
-
-	foreach($va_reps as $va_rep) {
-		if(sizeof($va_reps) > 1){
-			# --- more than one rep show thumbnails
-			$vn_padding_top = ((120 - $va_rep["info"]["thumbnail"]["HEIGHT"])/2) + 5;
-			print $va_rep['tags']['small']."\n";
-		}else{
-			# --- one rep - show medium rep
-			print $va_rep['tags']['medium']."\n";
+	$va_paths_small = $t_item->get("ca_object_representations.media.small.path", array("returnAsArray" => true, "checkAccess" => $va_access_values, "filterNonPrimaryRepresentations" => false));
+	$va_paths_medium = $t_item->get("ca_object_representations.media.medium.path", array("returnAsArray" => true, "checkAccess" => $va_access_values, "filterNonPrimaryRepresentations" => false));
+	if(is_array($va_paths_small) && sizeof($va_paths_small)){
+		$va_paths = $va_paths_medium;
+		if(sizeof($va_paths_small) > 1){
+			$va_paths = $va_paths_small;
+		}
+		foreach($va_paths as $vs_path){
+			print "<img src='{$vs_path}'/>&nbsp;";
 		}
 	}
 ?>
@@ -80,7 +83,7 @@
 				if ($vs_title = $t_item->get('ca_objects.title')) {
 					print "<div class='unit'><h6>Title</h6><div class='data'>".$vs_title."</div></div>";
 				}				
-				if ($vs_author = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', ', 'returnAsLink' => true))) {
+				if ($vs_author = $t_item->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '))) {
 					print "<div class='unit'><h6>Author</h6><div class='data'>".$vs_author."</div></div>";
 				}
 				if ($vs_language = $t_item->get('ca_objects.language', array('delimiter' => '<br/>'))) {
@@ -89,11 +92,21 @@
 				if ($va_collection = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_collections">^ca_collections.preferred_labels (^relationship_typename)</unit></unit>')) {
 					print "<div class='unit'><h6>Object Collection</h6><div class='data'>".$va_collection."</div></div>";
 				}
-				if ($vs_date = $t_item->get('ca_objects.date_created', array('delimiter' => '; '))) {
-					if ($vs_type_id == $vs_oh_id) {
-						print "<div class='unit'><h6>Date of Interview</h6><div class='data'>".$vs_date."</div></div>";
-					} else {
-						print "<div class='unit'><h6>Date Created</h6><div class='data'>".$vs_date."</div></div>";
+				if ($va_date = $t_item->get('ca_objects.date_created', array('returnAsArray' => true))) {
+					# --- clear out empty values
+					$va_date_clean = array();
+					foreach($va_date as $vs_date){
+						if(trim($vs_date)){
+							$va_date_clean[] = trim($vs_date); 
+						}
+					}
+					$vs_date = join(", ", $va_date_clean);
+					if($vs_date){
+						if ($vs_type_id == $vn_oh_id) {
+							print "<div class='unit'><h6>Date of Interview</h6><div class='data'>".$vs_date."</div></div>";
+						} else {
+							print "<div class='unit'><h6>Date Created</h6><div class='data'>".$vs_date."</div></div>";
+						}
 					}
 				}
 				if ($vs_alt_name = $t_item->get('ca_objects.alternate_object_name', array('delimiter' => '<br/>'))) {
@@ -151,18 +164,15 @@
 				if ($vs_material = $t_item->get('ca_objects.material', array('delimiter' => '; '))) {
 					print "<div class='unit'><h6>Material</h6><div class='data'>".$vs_material."</div></div>";
 				}
-				if ($va_entities = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_entities">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename (^relationship_typename)</unit></unit>')) {
+				if ($va_entities = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_entities" excludeRelationshipTypes="interviewer,interviewee,author">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename (^relationship_typename)</unit></unit>')) {
 					print "<div class='unit'><h6>Object Entities</h6><div class='data'>".$va_entities."</div></div>";
 				}
-				if ($va_interviewer = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="interviewer">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
+				if ($va_interviewer = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_entities" restrictToRelationshipTypes="interviewer">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
 					print "<div class='unit'><h6>Interviewer</h6><div class='data'>".$va_interviewer."</div></div>";
 				}
-				if ($va_interviewee = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="interviewee">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
+				if ($va_interviewee = $t_item->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_entities" restrictToRelationshipTypes="interviewee">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
 					print "<div class='unit'><h6>Interviewee</h6><div class='data'>".$va_interviewee."</div></div>";
 				}								
-				if ($va_collection = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_collections">^ca_collections.preferred_labels (^relationship_typename)</unit></unit>')) {
-					print "<div class='unit'><h6>Related Collections</h6><div class='data'>".$va_collection."</div></div>";
-				}	
 				if ($va_object = $t_item->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_objects.related">^ca_objects.preferred_labels, ^ca_objects.idno</unit></unit>')) {
 					print "<div class='unit'><h6>Related Items</h6><div class='data'>".$va_object."</div></div>";
 				}
@@ -177,9 +187,9 @@
 				#}
 				# --- access points
 				$va_access_points = array();
-				$va_subjects = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true));
-				$va_getty = $t_object->get('ca_objects.aat', array('returnAsArray' => true));
-				$va_lcsh = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true));
+				$va_subjects = $t_item->get('ca_list_items.preferred_labels', array('returnAsArray' => true));
+				$va_getty = $t_item->get('ca_objects.aat', array('returnAsArray' => true));
+				$va_lcsh = $t_item->get('ca_objects.lcsh_terms', array('returnAsArray' => true));
 				$va_access_points = array_merge($va_subjects, $va_getty, $va_lcsh);
 				if (sizeof($va_access_points)) {
 					$va_access_points_sorted = array();
@@ -203,6 +213,79 @@
 					print "<div class='unit'><h6>Origin</h6><div class=''>".$vs_prov."</div></div>";
 				}
 ?>				
+				<div class='unit'><h6>Citation</h6><div>
+<?php
+					$va_citation_parts = array();
+					if($vn_type_id == $vn_book_id){
+						#Book citation: Last Name, First Name. Title of Book. Publisher City: Publisher Name, Year Published.
+						if ($vs_author = $t_item->getWithTemplate('<unit delimiter="; " relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="author" delimiter="; ">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
+							$va_citation_parts[] = $vs_author;
+						}
+						if($vs_tmp = $t_item->get('ca_objects.title')){
+							$va_citation_parts[] = $vs_tmp;
+						}
+						$vs_tmp = "";
+						if($vs_tmp = $t_item->get('ca_objects.pubplace')){
+							$vs_tmp = $vs_tmp.": ";
+						}
+						if ($vs_publisher = $t_item->getWithTemplate('<unit delimiter="; " relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="publisher" delimiter="; ">^ca_entities.preferred_labels.displayname</unit>')) {
+							$vs_tmp .= $vs_publisher;
+						}
+						if($va_date = $t_item->get('ca_objects.date_created', array('returnAsArray' => true))){
+							# --- clear out empty values
+							$va_date_clean = array();
+							foreach($va_date as $vs_date){
+								if(trim($vs_date)){
+									$va_date_clean[] = trim($vs_date); 
+								}
+							}
+							if($vs_publisher){
+								$vs_tmp .= ", ";
+							}
+							$vs_tmp .= join($va_date_clean, ", ");
+						}
+						if($vs_tmp){
+							$va_citation_parts[] = $vs_tmp;
+						}
+						$vs_citation_part1 = join(". ", $va_citation_parts).". ";
+					}else{
+						#Artifacts/Photos
+						#Object Name, Date, Collection Title (if applicable), National Hellenic Museum, Link to object. Accessed [Today’s date].
+ 
+						#Oral Histories:
+						#Oral History interview with First name Last name, Date of interview, Collection Title (if applicable), National Hellenic Museum, Link to oral history. Accessed [Today’s date].
+ 
+						switch($vn_type_id){
+							case $vn_oh_id:
+								if ($vs_interviewee = $t_item->getWithTemplate('<unit delimiter="; " relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="interviewee">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
+									$va_citation_parts[] = "Oral History interview with ".$vs_interviewee;
+								}
+							break;
+							# --------------------
+							default:
+					
+								if($vs_tmp = $t_item->get('ca_objects.preferred_labels')){
+									$va_citation_parts[] = $vs_tmp;
+								}
+							break;
+							# --------------------
+						}
+						if($va_tmp = $t_item->get('ca_objects.date_created', array('returnAsArray' => true))){
+							foreach($va_tmp as $vs_date){
+								if(trim($vs_date)){
+									$va_citation_parts[] = trim($vs_date); 
+								}
+							}
+						}
+						if($vs_tmp = $t_item->getWithTemplate('<ifcount code="ca_collections" min="1"><unit delimiter=". "><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></unit></ifcount>')){
+							$va_citation_parts[] = $vs_tmp;
+						}
+						$vs_citation_part1 = join(", ", $va_citation_parts).", ";
+					}
+					print $vs_citation_part1."<i>National Hellenic Museum</i>, ".$this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $vn_id).". Accessed ".date("m/d/y").".";
+?>
+				</div></div>
+
 	</div>
 <?php	
 	print $this->render("pdfEnd.php");

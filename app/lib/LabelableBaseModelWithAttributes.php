@@ -253,7 +253,7 @@
 				$this->setAsChanged($pb_is_preferred ? 'preferred_labels' : 'nonpreferred_labels');
 				return $t_label->getPrimaryKey();
 			} catch (DatabaseException $e) {
-				$this->postError($e->getNumber(), $e->getMessage());
+				$this->postError($e->getNumber(), $e->getMessage(), "LabelableBaseModelWithAttributes::editLabel");
 				return false;
 			}
 			
@@ -1938,7 +1938,7 @@
 				
 				if (!(bool)$this->getAppConfig()->get('require_preferred_label_for_'.$this->tableName())) {		// only try to add a default when a label is not mandatory
 					return $this->addLabel(
-						array($this->getLabelDisplayField() => '['._t('BLANK').']'),
+						array($this->getLabelDisplayField() => '['.caGetBlankLabelText().']'),
 						$vn_locale_id,
 						null,
 						true
