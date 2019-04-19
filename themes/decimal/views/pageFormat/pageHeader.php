@@ -46,7 +46,7 @@
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		
 		if ($this->request->config->get('use_submission_interface')) {
-			$va_user_links[] = "<li>".caNavLink($this->request, _t('Submit content'), '', '', 'Contribute', 'List', array())."</li>";
+			$va_user_links[] = "<li>".caNavLink($this->request, _t('Submit content'), '', '', 'Contribute', 'Index', array())."</li>";
 		}
 		
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
@@ -159,7 +159,7 @@
 
 					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "Index")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>
-					<li <?php print (($this->request->getController() == "Contribute")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contribute"), "", "", "Contribute", "materials"); ?></li>
+					<!--<li <?php print (($this->request->getController() == "Contribute")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contribute"), "", "", "Contribute", "materials"); ?></li>-->
 					<li <?php print (($this->request->getController() == "Analytics")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Analytics"), "", "", "Analytics", "Index"); ?></li>
 					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "contact")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "contact"); ?></li>
 					<li><a href='http://www.decimallab.ca/'>Decimal</a></li>

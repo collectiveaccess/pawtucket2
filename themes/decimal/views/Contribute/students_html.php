@@ -36,7 +36,7 @@
 		<div class="contributeForm">
 			<div class='container'>
 			<div class="pull-right">
-				<div class='contributeSubmit' style="margin-left: 20px;"><?php print caNavLink($this->request, 'Back to list', '', '*', '*', 'List');?></div>
+				<div class='contributeSubmit' style="margin-left: 20px;"><?php print caNavLink($this->request, 'Back to list', '', '*', '*', 'Index');?></div>
 			</div><!-- end detailTool -->
 			<h1>Contribute</h1>
 			<p>Submit Materials The Fabric of Digital Life Archive. Your media will be cataloged and added to the archive once reviewed. The content you submit will be viewable on the site in the near future.  Please contact us at <a href='mailto:decimal.lab.uoit@gmail.com'>decimal.lab.uoit@gmail.com</a> for assistance if needed.</p>
@@ -46,24 +46,24 @@
 			{{{form}}}
 				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>
 					<div class='col-sm-12'><h4>Submission Information</h4></div>
+					
 					<div class="contributeField col-sm-6">
-						{{{ca_objects.date:error}}}
-						<span class='title'>Date</span><br/>
-						{{{ca_objects.date.dates_value%width=350px}}}   
-						{{{ca_objects.date.dc_dates_types%force=created}}}
+						{{{ca_objects.type_id:error}}}
+						<span class='title'>Artifact type</span><br/>
+						{{{ca_objects.type_id%width=350px&restrictToTypes=image,moving_image,text}}}  
 					</div>										
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.preferred_labels:error}}}
-						<span class='title'>Title of Submission</span><br/>
+						<span class='title'>Name of artifact</span><br/>
 						{{{ca_objects.preferred_labels.name%width=350px}}}
-					</div>				
+					</div>	
 				</div>
-				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>			
+				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>	
 					<div class="contributeField col-sm-6">
-						{{{ca_objects.locationOnBody:error}}}
-						<span class='title'>Location on body</span><br/>
-						{{{ca_objects.locationOnBody%width=350px}}}   
-					</div>							
+						{{{ca_objects.persuasive_intention:error}}}
+						<span class='title'>Persuasive intention</span><br/>
+						{{{ca_objects.persuasive_intention%width=350px}}}   
+					</div>										
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.media_type:error}}}
 						<span class='title'>Media type</span><br/>
@@ -96,83 +96,125 @@
 				</div>
 				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>
 					<div class="contributeField col-sm-6">
+						{{{ca_objects.description:error}}}
+						<span class='title' data-toggle="tooltip" title="Please provide how the following submission contributes to the archive, is related to current artifacts within the archive, or is related to the research focus of the archive along with a general description of the artifact.">Description</span><br/>
+						{{{ca_objects.description%width=350px&height=120px}}}  
+					</div>
+					<div class="contributeField col-sm-6">
 						{{{ca_objects.technology:error}}}
 						<span class='title'>Technology related keywords</span><br/>
-						{{{ca_objects.technology%width=350px&useTextDelimiters=keywords}}}   
-					</div>										
+						<p>{{{ca_objects.technology%width=350px&useTextDelimiters=keywords&autocomplete=1&index=0}}}</p>
+						<p>{{{ca_objects.technology%width=350px&useTextDelimiters=keywords&autocomplete=1&index=1}}}</p>
+						<p>{{{ca_objects.technology%width=350px&useTextDelimiters=keywords&autocomplete=1&index=2}}}</p>
+						<p>{{{ca_objects.technology%width=350px&useTextDelimiters=keywords&autocomplete=1&index=3}}}</p>
+						<p>{{{ca_objects.technology%width=350px&useTextDelimiters=keywords&autocomplete=1&index=4}}}</p>
+					</div>				
+				</div>
+				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>									
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.created:error}}}
 						<span class='title'>Marketing related keywords</span><br/>
-						{{{ca_objects.marketing%width=350px&useTextDelimiters=keywords}}}
-					</div>				
-				</div>
-				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>
+						<p>{{{ca_objects.marketing%width=350px&useTextDelimiters=keywords&autocomplete=1&index=0}}}</p>
+						<p>{{{ca_objects.marketing%width=350px&useTextDelimiters=keywords&autocomplete=1&index=1}}}</p>
+						<p>{{{ca_objects.marketing%width=350px&useTextDelimiters=keywords&autocomplete=1&index=2}}}</p>
+						<p>{{{ca_objects.marketing%width=350px&useTextDelimiters=keywords&autocomplete=1&index=3}}}</p>
+						<p>{{{ca_objects.marketing%width=350px&useTextDelimiters=keywords&autocomplete=1&index=4}}}</p>
+					</div>	
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.keywords:error}}}
 						<span class='title'>Keywords</span><br/>
-						{{{ca_objects.keywords%width=350px}}}   
-					</div>										
+						<p>{{{ca_objects.keywords%width=350px&useTextDelimiters=keywords&autocomplete=1&index=0}}}</p>
+						<p>{{{ca_objects.keywords%width=350px&useTextDelimiters=keywords&autocomplete=1&index=1}}}</p>
+						<p>{{{ca_objects.keywords%width=350px&useTextDelimiters=keywords&autocomplete=1&index=2}}}</p>
+						<p>{{{ca_objects.keywords%width=350px&useTextDelimiters=keywords&autocomplete=1&index=3}}}</p>
+						<p>{{{ca_objects.keywords%width=350px&useTextDelimiters=keywords&autocomplete=1&index=4}}}</p>
+					</div>				
+				</div>
+				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>										
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.classification:error}}}
 						<span class='title'>Classification</span><br/>
 						{{{ca_objects.classification%width=350px}}}
+					</div>									
+					<div class="contributeField col-sm-6">
+						{{{ca_objects.ca_objects.related:error}}}
+						<span class='title'>Allusions and responses (optional)</span><br/>
+						<p></p>
+						<p>{{{ca_objects.related%autocomplete=1&width=350px&relationshipType=allusion&index=0}}}</p>
+						
+						<p>{{{ca_objects.related%autocomplete=1&width=350px&relationshipType=allusion&index=1}}}</p>
 					</div>				
 				</div>
-				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>
+				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>								
 					<div class="contributeField col-sm-6">
-						{{{ca_objects.persuasive_intention:error}}}
-						<span class='title'>Persuasive intention</span><br/>
-						{{{ca_objects.persuasive_intention%width=350px}}}   
-					</div>										
+						{{{ca_entities:error}}}
+						<span class='title'>Author(s)</span><br/>
+						<p></p>
+						<p>{{{ca_entities%autocomplete=1&width=350px&relationshipType=creator&type=ind&index=0}}}</p>
+						
+						<p>{{{ca_entities%autocomplete=1&width=350px&relationshipType=creator&type=ind&index=1}}}</p>
+						
+						<p>{{{ca_entities%autocomplete=1&width=350px&relationshipType=creator&type=ind&index=2}}}</p>
+						
+						<div style="margin-top: 15px;">
+                            <span class='title'>Contributor(s)</span><br/>
+                            <p></p>
+                            <p>{{{ca_entities%autocomplete=1&width=350px&relationshipType=contributor&type=ind&index=0}}}</p>
+                        
+                            <p>{{{ca_entities%autocomplete=1&width=350px&relationshipType=contributor&type=ind&index=1}}}</p>
+                        
+                            <p>{{{ca_entities%autocomplete=1&width=350px&relationshipType=contributor&type=ind&index=2}}}</p>
+                        </div>
+						
+						<div style="margin-top: 15px;">
+                            <span class='title'>Publisher(s)</span><br/>
+                            <p></p>
+                            <p>{{{ca_entities%autocomplete=1&width=350px&relationshipType=publisher&type=ind&index=0}}}</p>
+                        
+                            <p>{{{ca_entities%autocomplete=1&width=350px&relationshipType=publisher&type=ind&index=1}}}</p>
+                        
+                            <p>{{{ca_entities%autocomplete=1&width=350px&relationshipType=publisher&type=ind&index=2}}}</p>
+                        </div>
+					</div>
+					<div class="contributeField col-sm-6">
+						{{{ca_objects.locationOnBody:error}}}
+						<span class='title'>Location on body</span><br/>
+						{{{ca_objects.locationOnBody%width=350px}}}
+					</div>				
+				</div>
+				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>		
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.augments:error}}}
-						<span class='title'>Augments</span><br/>
-						<p>Describe what aspect of being human the device augments, and write it as a verb ending in -ing.  For example, "seeing," "hearing," "communicating," "moving," etc.</p>
-						{{{ca_objects.augments%width=350px}}}
-					</div>				
-				</div>
-				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>
+						<span class='title' data-toggle="tooltip" title='Describe what aspect of being human the device augments, and write it as a verb ending in -ing.  For example, "seeing," "hearing," "communicating," "moving," etc.'>Augments</span><br/>
+						<p>{{{ca_objects.augments%width=350px&index=0}}}</p>
+						
+						<p>{{{ca_objects.augments%width=350px&index=1}}}</p>
+						
+						<p>{{{ca_objects.augments%width=350px&index=2}}}</p>
+						
+						<p>{{{ca_objects.augments%width=350px&index=3}}}</p>
+						
+						<p>{{{ca_objects.augments%width=350px&index=4}}}</p>
+					</div>		
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.use:error}}}
 						<span class='title'>Use</span><br/>
 						{{{ca_objects.use%width=350px}}}   
-					</div>										
-					<div class="contributeField col-sm-6">
-						{{{ca_objects.bibliographicCitation:error}}}
-						<span class='title'>Citation</span><br/>
-						{{{ca_objects.bibliographicCitation%width=350px}}}
-					</div>				
+					</div>	
 				</div>
-				<div class='row' >
-					<div class="contributeField col-sm-6">
-						{{{ca_objects.description:error}}}
-						<span class='title'>Description</span><br/>
-						<p>Please provide how the following submission contributes to the archive, is related to current artifacts within the archive, or is related to the research focus of the archive along with a general description of the artifact. </p>
-						{{{ca_objects.description%width=350px&height=120px}}}  
-					</div>
+				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>
+				    <div class="contributeField col-sm-6">
+						{{{ca_objects.source:error}}}
+						<span class='title'>Source</span><br/>
+						{{{ca_objects.source%width=350px}}}   
+					</div>	
 					<div class="contributeField col-sm-6">
 						{{{ca_object_representations.media:error}}}
 						
 						{{{<ifcount code='ca_object_representations.media' min='1'><div>^ca_object_representations.media%previewExistingValues=1&delimiter=-</div></ifcount>}}}
-						<span class='title'>Media (1)</span>{{{ca_object_representations.media}}} 
-						<br/>
-					
-						{{{ca_object_representations.media:error}}}
-						<span class='title'>Media (2)</span>{{{ca_object_representations.media}}}
-						 <br/>
-					
-						{{{ca_object_representations.media:error}}}
-						<span class='title'>Media (3)</span>{{{ca_object_representations.media}}}
-						 <br/>
+						<span class='title'>Media</span>{{{ca_object_representations.media%autocomplete=0}}} 
 					</div>
 				</div><!-- end row -->
-				<!--<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>
-					<div class="contributeField col-sm-12">
-						{{{ca_objects.transcript:error}}}
-						<span class='title'>Transcript</span><br/>
-						{{{ca_objects.transcript%width=900px&height=120px}}}  
-					</div>				
-				</div>-->
 				
 				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>
 					<div class='col-sm-12'>
@@ -191,3 +233,9 @@
 	
 	<div class="col-sm-1"></div>
 	</div><!-- end row --></div><!-- end container -->
+	
+	<script>
+	    $(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip();   
+});
+	</script>
