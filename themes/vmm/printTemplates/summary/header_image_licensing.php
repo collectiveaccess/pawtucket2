@@ -45,7 +45,7 @@
 				</head>
 				<body><div id='header'>
 				<div class="headerText">W.B. & M.H. Chung Library & Leonard G. McCann Archives
-					<div class="headerTextLarge">FILM & PHOTOGRAPHIC LICENSE AGREEMENT</div>
+					<div class="headerTextLarge">Audiovisual & Image License Agreement</div>
 				</div>
 
 			<?php

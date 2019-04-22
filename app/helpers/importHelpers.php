@@ -110,6 +110,7 @@
 			
 			$va_attributes['idno'] = $vs_idno;
 			$va_attributes['parent_id'] = $vn_id;
+			$va_attributes['_treatNumericValueAsID'] = true;
 			
 			if (isset($va_parent['rules']) && is_array($va_parent['rules'])) {
 				foreach($va_parent['rules'] as $va_rule) {
@@ -303,6 +304,8 @@
 					// multiple mappings
 					$vn_offset = 0;
 					foreach($va_attrs as $va_attrs_i) {
+						if (!$va_attrs_i) { continue; }
+                        if (!is_array($va_attrs_i)) { $va_attrs_i = [$va_attrs_i]; }
 						foreach($va_attrs_i as $vs_k => $vs_v) {
 							// BaseRefinery::parsePlaceholder may return an array if the input format supports repeated values (as XML does)
 						
@@ -1009,7 +1012,7 @@
 							        $vs_name = pathinfo($vs_item, PATHINFO_FILENAME);
 							    }
 							    
-								if(!isset($va_val['preferred_labels']) || !strlen($va_val['preferred_labels'])) { $va_val['preferred_labels'] = $vs_name ? $vs_name : '['._t('BLANK').']'; }
+								if(!isset($va_val['preferred_labels']) || !strlen($va_val['preferred_labels'])) { $va_val['preferred_labels'] = $vs_name ? $vs_name : '['.caGetBlankLabelText().']'; }
 					
 								if (isset($pa_item['settings']['objectRepresentationSplitter_mediaPrefix']) && $pa_item['settings']['objectRepresentationSplitter_mediaPrefix'] && ((isset($va_val['media']['media']) && ($va_val['media']['media'])) || $vs_item)) {
 									$vs_media_dir_prefix = isset($pa_item['settings']['objectRepresentationSplitter_mediaPrefix']) ? '/'.$pa_item['settings']['objectRepresentationSplitter_mediaPrefix'] : '';

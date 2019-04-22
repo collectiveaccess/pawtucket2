@@ -18,6 +18,7 @@
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 
 			<div class="row">
@@ -44,6 +45,9 @@
 						if ($vs_description = $t_item->get('ca_collections.description')) {
 							print "<div class='unit'><h6>Collection Description</h6>".$vs_description."</div>";
 						}
+						if ($vs_rel_ent = $t_item->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+							print "<div class='unit'><h6>Related Entities</h6><div class='data'>".$vs_rel_ent."</div></div>";
+						}
 					} else {
 						print "<div class='unit'><h6>Collection Title</h6>".$t_item->get('ca_collections.preferred_labels')."</div>";
 						if ($vs_idno = $t_item->get('ca_collections.idno')) {
@@ -65,51 +69,77 @@
 							}
 						}
 						if ($vs_extent = $t_item->get('ca_collections.extentDACS', array('delimiter' => '<br/>'))) {
-							print "<div class='unit'><h6>Extent</h6>".$vs_extent."</div>";
+							print "<div class='unit'><h6>Extent</h6><div class='data'>".$vs_extent."</div></div>";
 						}
-						if ($vs_creator = $t_item->get('ca_entities.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
-							print "<div class='unit'><h6>Creator</h6>".$vs_creator."</div>";
+						if ($vs_creator = $t_item->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array("creator"), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+							print "<div class='unit'><h6>Creator</h6><div class='data'>".$vs_creator."</div></div>";
+						}
+						if ($vs_rel_ent = $t_item->get('ca_entities.preferred_labels', array('excludeRelationshipTypes' => array("creator"), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+							print "<div class='unit'><h6>Related Entities</h6><div class='data'>".$vs_rel_ent."</div></div>";
+						}
+						if ($vs_rel_collections = $t_item->get('ca_collections.preferred_labels', array('checkAccess' => $va_access_values, 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+							print "<div class='unit'><h6>Related Collections</h6><div class='data'>".$vs_rel_collections."</div></div>";
+						}
+						# --- access points
+						$va_access_points = array();
+						$va_subjects = $t_item->get('ca_list_items.preferred_labels', array('returnAsArray' => true));
+						$va_getty = $t_item->get('ca_collections.aat', array('returnAsArray' => true));
+						$va_ulan = $t_item->get('ca_collections.ulan', array('returnAsArray' => true));
+						$va_lcsh = $t_item->get('ca_collections.lcsh_terms', array('returnAsArray' => true));
+						$va_tgn = $t_item->get('ca_collections.tgn', array('returnAsArray' => true));
+						$va_access_points = array_merge($va_subjects, $va_getty, $va_ulan, $va_lcsh, $va_tgn);
+						if (sizeof($va_access_points)) {
+							$va_access_points_sorted = array();
+							foreach($va_access_points as $vs_access_point){
+								$vs_access_point = trim(preg_replace("/\[[^\]]*\]/", "", $vs_access_point));
+								if($vs_access_point){
+									$va_access_points_sorted[$vs_access_point] = caNavLink($this->request, $vs_access_point, "", "", "MultiSearch",  "Index", array('search' => $vs_access_point));
+								}
+							}
+							ksort($va_access_points_sorted, SORT_NATURAL | SORT_FLAG_CASE);
+							if(sizeof($va_access_points_sorted)){
+								print "<div class='unit'><h6>Access Points</h6><div class='data'>";
+								print join("<br/>", $va_access_points_sorted);
+								print "</div></div>";
+							}
 						}
 						if ($vs_admin = $t_item->get('ca_collections.adminbiohist', array('delimiter' => '<br/>'))) {
-							print "<div class='unit'><h6>Biographical Note</h6>".$vs_admin."</div>";
+							print "<div class='unit text'><h6>Biographical Note</h6><div>".$vs_admin."</div></div>";
 						}
 						if ($vs_scope = $t_item->get('ca_collections.scopecontent', array('delimiter' => '<br/>'))) {
-							print "<div class='unit'><h6>Scope and Content Note</h6>".$vs_scope."</div>";
+							print "<div class='unit text'><h6>Scope and Content Note</h6><div>".$vs_scope."</div></div>";
 						}	
 						if ($vs_arrangement = $t_item->get('ca_collections.arrangement', array('delimiter' => '<br/>'))) {
-							print "<div class='unit'><h6>Arrangement</h6>".$vs_arrangement."</div>";
+							print "<div class='unit text'><h6>Arrangement</h6><div>".$vs_arrangement."</div></div>";
 						}	
 						if ($vs_accessrestrict = $t_item->get('ca_collections.accessrestrict', array('delimiter' => '<br/>'))) {
-							print "<div class='unit'><h6>Access Restrictions</h6>".$vs_accessrestrict."</div>";
+							print "<div class='unit text'><h6>Access Restrictions</h6><div>".$vs_accessrestrict."</div></div>";
 						}
 						if ($vs_langmaterial = $t_item->get('ca_collections.langmaterial', array('delimiter' => '<br/>'))) {
-							print "<div class='unit'><h6>Language Note</h6>".$vs_langmaterial."</div>";
+							print "<div class='unit text'><h6>Language Note</h6><div>".$vs_langmaterial."</div></div>";
 						}
 						if ($vs_custodhist = $t_item->get('ca_collections.custodhist', array('delimiter' => '<br/>'))) {
-							print "<div class='unit'><h6>Custodial History Note</h6>".$vs_custodhist."</div>";
+							print "<div class='unit text'><h6>Custodial History Note</h6><div>".$vs_custodhist."</div></div>";
 						}	
 						if ($vs_acqinfo = $t_item->get('ca_collections.acqinfo', array('delimiter' => '<br/>'))) {
-							print "<div class='unit'><h6>Source of Acquisition</h6>".$vs_acqinfo."</div>";
+							print "<div class='unit text'><h6>Source of Acquisition</h6><div>".$vs_acqinfo."</div></div>";
 						}	
 						if ($vs_relation = $t_item->get('ca_collections.relation', array('delimiter' => '<br/>'))) {
-							print "<div class='unit'><h6>Related Archival Materials</h6>".$vs_relation."</div>";
+							print "<div class='unit text'><h6>Related Archival Materials</h6><div>".$vs_relation."</div></div>";
 						}
 						if ($vs_originalsloc = $t_item->get('ca_collections.originalsloc', array('delimiter' => '<br/>'))) {
-							print "<div class='unit'><h6>Existence and Location of Orginals</h6>".$vs_originalsloc."</div>";
+							print "<div class='unit text'><h6>Existence and Location of Orginals</h6><div>".$vs_originalsloc."</div></div>";
 						}
 						if ($vs_altformavail = $t_item->get('ca_collections.altformavail', array('delimiter' => '<br/>'))) {
-							print "<div class='unit'><h6>Existence and Location of Copies</h6>".$vs_altformavail."</div>";
+							print "<div class='unit text'><h6>Existence and Location of Copies</h6><div>".$vs_altformavail."</div></div>";
 						}
 						if ($vs_processInfo = $t_item->get('ca_collections.processInfo', array('delimiter' => '<br/>'))) {
-							print "<div class='unit'><h6>Processing Information</h6>".$vs_processInfo."</div>";
+							print "<div class='unit text'><h6>Processing Information</h6><div>".$vs_processInfo."</div></div>";
 						}	
 						if ($vs_preferCite = $t_item->get('ca_collections.preferCite', array('delimiter' => '<br/>'))) {
-							print "<div class='unit'><h6>Preferred Citation</h6>".$vs_preferCite."</div>";
+							print "<div class='unit text'><h6>Preferred Citation</h6><div>".$vs_preferCite."</div></div>";
 						}
 																																																																																																
-					}
-					if ($vs_rel_ent = $t_item->get('ca_entities.preferred_labels', array('delimiter' => '<br/>', 'returnAsLink' => true))) {
-						print "<div class='unit'><h6>Related Entities</h6>".$vs_rel_ent."</div>";
 					}	
 					print "<div id='detailTools'>";
 					if ($vn_pdf_enabled) {

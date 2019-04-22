@@ -60,7 +60,7 @@
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
-
+	$vs_action = $this->request->getAction();
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
@@ -118,7 +118,12 @@
 					}elseif($vs_table == "ca_collections"){
 						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.type_id", array("convertCodesToDisplayText" => true)).": ".$qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					}else{
-						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+						$vs_non_preferred_label = $vs_tmp_npl = "";
+						if(($vs_action == "artifacts") && ($vs_tmp_npl = $qr_res->get("{$vs_table}.nonpreferred_labels", array("delimiter" => ", ")))){
+							$vs_non_preferred_label = "<br/>".$vs_tmp_npl;
+						}
+						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels").$vs_non_preferred_label, '', $vs_table, $vn_id);
+						
 					}
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";

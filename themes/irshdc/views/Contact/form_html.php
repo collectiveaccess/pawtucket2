@@ -1,4 +1,5 @@
 <?php
+	$o_config = caGetContactConfig();
 	# --- ask an archivist, takedown
 	$ps_contactType = $this->request->getParameter("contactType", pString);
 	if(!$ps_contactType){
@@ -7,8 +8,7 @@
 	$ps_table = $this->request->getParameter("table", pString);
 	$pn_row_id = $this->request->getParameter("row_id", pInteger);
 	if($pn_row_id && $ps_table){
-		$o_dm = $this->request->getAppDatamodel();
-		$t_instance = $o_dm->getInstanceByTableNum($ps_table);
+		$t_instance = Datamodel::getInstanceByTableNum($ps_table);
 		$t_instance->load($pn_row_id);
 		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", str_replace("ca_", "", $ps_table), $pn_row_id);
 		$vs_name = $t_instance->get("preferred_labels");
@@ -33,7 +33,7 @@
 			print "<H1>"._t("Contact")."</H1>";
 		break;
 	}
-	if(sizeof($va_errors["display_errors"])){
+	if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
 ?>
@@ -102,10 +102,8 @@
 					<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
 						<label for="security">Security Question</label>
 						<div class='row'>
-							<div class='col-sm-4'>
-								<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
-							</div>
-							<div class='col-sm-4'>
+							<div class='col-sm-12 col-md-2'>
+								<p class="form-control-static securityQuestion"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
 								<input name="security" value="" id="security" type="text" class="form-control input-sm" />
 							</div>
 						</div><!-- end row -->

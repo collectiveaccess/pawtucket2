@@ -48,7 +48,8 @@
 					<ul class="list-inline">
 						<li><a href="https://vancouvermaritimemuseum.com/" target="_blank">Museum Home</a></li>
 						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "Contact"); ?></li>
-						<li><a href="#" target="_blank">Terms of Use</a></li>
+						<li><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "About", "TermsOfUse"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Privacy Policy"), "", "", "About", "PrivacyPolicy"); ?></li>
 					</ul>
 				</div>
 			</div>

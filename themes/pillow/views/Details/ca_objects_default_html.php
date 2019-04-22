@@ -30,6 +30,15 @@
 	$va_comments = 			$this->getVar("comments");
 	$va_options = 			$this->getVar("config_options");
 	$va_access_values = caGetUserAccessValues($this->request);
+	
+	$type_code = $t_object->get('type_id', ['convertCodesToIdno' => true]);
+	
+	$o_icons_conf = caGetIconsConfig();
+	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
+	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	}
+	$placeholder = isset($va_object_type_specific_icons[$type_code]) ? $va_object_type_specific_icons[$type_code]['placeholder_media_icon'] : $vs_default_placeholder;
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -84,6 +93,10 @@
 //                 }
 //                 print caNavLink($this->request, "<i class='fa fa-envelope'></i> Contact", '', '', 'Contact', 'form');
 //                 print "</div>";
+
+                if(!$t_object->getRepresentationCount(['checkAccess' => $va_access_values])) {
+                    print $placeholder;
+                }
 ?>
 				{{{representationViewer}}}
 				
@@ -99,7 +112,7 @@
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				<HR>				
 <?php
-				if(($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'Moving image') | ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'Photograph')) {
+                if(in_array($type_code, ['moving_image', 'photograph', 'costume', 'set_piece'])) {
 					print "<div class='unit'><h6>Identifier</h6>".$t_object->get('ca_objects.idno')."</div>";
 				}
 				if ($va_author = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {

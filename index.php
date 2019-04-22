@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2017 Whirl-i-Gig
+ * Copyright 2008-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -28,6 +28,7 @@
 	define("__CA_APP_TYPE__", "PAWTUCKET");
 	define("__CA_MICROTIME_START_OF_REQUEST__", microtime());
 	define("__CA_SEARCH_IS_FOR_PUBLIC_DISPLAY__", 1);
+	define("__CA_BASE_MEMORY_USAGE__", memory_get_usage(true));
 	
 	require("./app/helpers/errorHelpers.php");
 	
@@ -38,8 +39,6 @@
 	require_once('./setup.php');
 	
 	try {
-		define("__CA_BASE_MEMORY_USAGE__", memory_get_usage(true));
-	
 		// connect to database
 		$o_db = new Db(null, null, false);
 		if (!$o_db->connected()) {
@@ -50,7 +49,6 @@
 		//
 		// do a sanity check on application and server configuration before servicing a request
 		//
-	
 		require_once(__CA_APP_DIR__.'/lib/pawtucket/ConfigurationCheck.php');
 		ConfigurationCheck::performQuick();
 		if(ConfigurationCheck::foundErrors()){
@@ -60,7 +58,7 @@
 
 		// run garbage collector
 		GarbageCollection::gc();
-	
+
 		$app = AppController::getInstance();
 	
 		$g_request = $app->getRequest();
@@ -137,5 +135,4 @@
 		$g_request->close();
 	} catch (Exception $e) {
 		caDisplayException($e);
-	}	
-	
+	}

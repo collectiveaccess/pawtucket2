@@ -428,22 +428,22 @@
 			// when applying unsaved change warning event handlers
 			$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(
 				function() {
-					jQuery('#{$ps_id} select, #{$ps_id} input, #{$ps_id} textarea').not('.dontTriggerUnsavedChangeWarning').on('change', function() { caUI.utils.showUnsavedChangesWarning(true); });
-					jQuery('#{$ps_id}').on('submit', function() { caUI.utils.disableUnsavedChangesWarning(true); });
+					jQuery('#{$ps_id} select, #{$ps_id} input, #{$ps_id} textarea').not('.dontTriggerUnsavedChangeWarning').change(function() { caUI.utils.showUnsavedChangesWarning(true); });
+					jQuery('#{$ps_id}').submit(function() { caUI.utils.disableUnsavedChangesWarning(true); });
 				}
 			);</script>";
 		}
 		if (caGetOption('disableSubmit', $pa_options, false)) { 
 			$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(
 				function() {
-					jQuery('#{$ps_id}').on('submit', function() { return false; });
+					jQuery('#{$ps_id}').submit(function() { return false; });
 				}
 			);</script>";
 		}
 		if (caGetOption('submitOnReturn', $pa_options, false)) { 
 			$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(
 				function() {
-					jQuery('#{$ps_id}').on('keydown', function(e) { 
+					jQuery('#{$ps_id}').keydown(function(e) { 
 					   if(e && e.keyCode == 13)
 					   {
 						  jQuery('#{$ps_id}').submit();
