@@ -191,6 +191,10 @@
 						<p>{{{ca_objects.augments%width=350px&index=1}}}</p>
 						
 						<p>{{{ca_objects.augments%width=350px&index=2}}}</p>
+						
+						<p>{{{ca_objects.augments%width=350px&index=3}}}</p>
+						
+						<p>{{{ca_objects.augments%width=350px&index=4}}}</p>
 					</div>		
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.use:error}}}
