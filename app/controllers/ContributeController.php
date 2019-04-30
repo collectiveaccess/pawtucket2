@@ -520,8 +520,10 @@
             if ($this->request->isLoggedIn()) {
             	$t_subject->set('submission_user_id', $submission_values['submission_user_id'] = $this->request->getUserID());
             	$t_subject->set('submission_via_form', $submission_values['submission_via_form'] = $ps_function);
+            	
             	if (is_array($groups = $this->request->user->getUserGroups()) && sizeof($groups)) {
-            		$t_subject->set('submission_group_id', $submission_values['submission_group_id'] = array_shift(array_values($groups)));
+            	    $group = array_shift(array_values($groups));
+            		$t_subject->set('submission_group_id', $submission_values['submission_group_id'] = $group['group_id']);
             	}
             	$t_subject->set('submission_status_id', $submission_values['submission_status_id'] = $this->config->get('initial_status'));
             	
