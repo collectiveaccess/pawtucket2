@@ -53,7 +53,7 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
-				<div class='col-md-6 col-lg-6'>
+				<div class='col-md-12'>
 <?php
 ?>
 					{{{<ifdef code="ca_collections.parent_id"><div class='unit'><b>Part of:<b/> <unit relativeTo="ca_collections.parent" ><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
@@ -79,54 +79,48 @@
 					}
 					if ($vs_repo = $t_item->get('ca_collections.repository', array('convertCodesToDisplayText' => true))) {
 						print "<div class='unit'><b>Repository</b><br/>".$vs_repo."</div>";
-					}	
-					if ($vs_description = $t_item->get('ca_collections.description')) {
-						print "<div class='unit trimText'><b>Description</b><br/>".$vs_description."</div>";
 					}		
 					if ($va_relation = $t_item->get('ca_collections.relation', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 						$va_relation = array_pop($va_relation);
-						print "<div class='unit trimText'><b>Related Archival Materials</b><br/>";
 						$i = 1;
+						$va_tmp = array();
 						foreach($va_relation as $va_relation_info){
+							$vs_tmp = "";
 							if($va_relation_info["relationQualifier"]){
-								print $va_relation_info["relationQualifier"].": ";
+								$vs_tmp .= $va_relation_info["relationQualifier"].": ";
 							}
-							print $va_relation_info["relation"];
-							if($i < sizeof($va_relation)){
-								print "<br/><br/>";
+							if($va_relation_info["relation"]){
+								$vs_tmp .= $va_relation_info["relation"];
 							}
-							$i++;
+							$va_tmp[] = $vs_tmp;
 						}
-						print "</div>";
+						if(sizeof($va_tmp)){
+							print "<div class='unit trimText'><b>Related Archival Materials</b><br/>";
+							print join($va_tmp, "<br/><br/>");
+							print "</div>";
+						}
 					}													
-?>					
-				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6'>
-<?php
 					# --- collections
 					if ($vs_collections = $t_item->getWithTemplate("<ifcount code='ca_collections.related' min='1'><unit relativeTo='ca_collections'><l>^ca_collections.preferred_labels</l> (^relationship_typename)</unit></ifcount>")){	
-						print "<div class='unit'><H3>"._t("Related Collections")."</H3>";
+						print "<div class='unit'><H3>"._t("Related Series")."</H3>";
 						print $vs_collections;
 						print "</div><!-- end unit -->";
 					}			
 					# --- entities
-					if ($vs_entities = $t_item->getWithTemplate("<ifcount code='ca_entities' min='1'><unit relativeTo='ca_entities'><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></ifcount>")){	
-						print "<div class='unit'><H3>"._t("Related Entities")."</H3>";
+					if ($vs_entities = $t_item->getWithTemplate("<ifcount code='ca_entities' min='1'><unit relativeTo='ca_entities'><l>^ca_entities.preferred_labels.displayname</l></unit></ifcount>")){	
+						print "<div class='unit'><H3>"._t("Creator")."</H3>";
 						print $vs_entities;
 						print "</div><!-- end unit -->";
 					}
 					# --- places
 					if ($vs_places = $t_item->getWithTemplate("<ifcount code='ca_places' min='1'><unit relativeTo='ca_places'><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit></ifcount>")){	
-						print "<div class='unit'><H3>"._t("Related Places")."</H3>";
+						print "<div class='unit'><H3>"._t("Geographic Locations")."</H3>";
 						print $vs_places;
 						print "</div><!-- end unit -->";
-					}
-					# --- occ
-					if ($vs_occ = $t_item->getWithTemplate("<ifcount code='ca_occurrences' min='1'><unit relativeTo='ca_occurrences'><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</unit></ifcount>")){	
-						print "<div class='unit'><H3>"._t("Related Events")."</H3>";
-						print $vs_occ;
-						print "</div><!-- end unit -->";
-					}					
+					}	
+					if ($vs_description = $t_item->get('ca_collections.description')) {
+						print "<div class='unit trimText'><b>Description</b><br/>".$vs_description."</div>";
+					}				
 ?>			
 				</div><!-- end col -->
 			</div><!-- end row -->
@@ -140,7 +134,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id', 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

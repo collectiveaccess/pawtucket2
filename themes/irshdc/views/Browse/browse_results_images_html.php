@@ -87,6 +87,9 @@
 					$vn_c++;
 				}
 				$va_tmp_options = array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values);
+				if ($vs_table == 'ca_occurrences') {
+					$va_tmp_options['useRelatedObjectRepresentations'] = true;
+				}
 				if($vs_table == 'ca_entities'){
 					$va_tmp_options["useRelatedObjectRepresentations"] = true;
 				}
@@ -137,12 +140,18 @@
 						if($va_images[$vn_id]){
 							$vs_thumbnail = $va_images[$vn_id];
 						}else{
-							$t_list_item->load($qr_res->get("type_id"));
-							$vs_typecode = $t_list_item->get("idno");
-							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-								$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-							}else{
-								$vs_thumbnail = $vs_default_placeholder_tag;
+							if ($vs_table == 'ca_occurrences') {
+								# is there a rep on the occurrence to fall back to if not a related featured object?
+								$vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values));
+							}
+							if(!$vs_thumbnail){							
+								$t_list_item->load($qr_res->get("type_id"));
+								$vs_typecode = $t_list_item->get("idno");
+								if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+									$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+								}else{
+									$vs_thumbnail = $vs_default_placeholder_tag;
+								}
 							}
 						}
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			

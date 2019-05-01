@@ -27,9 +27,10 @@
  */
  	require_once(__CA_MODELS_DIR__."/ca_sets.php");
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
+ 	require_once(__CA_MODELS_DIR__."/ca_entities.php");
  	require_once(__CA_MODELS_DIR__."/ca_object_representations.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
- 	require_once(__CA_LIB_DIR__.'/ca/Search/EntitySearch.php');
+ 	require_once(__CA_LIB_DIR__.'/Search/EntitySearch.php');
  	
  	class ExploreController extends BasePawtucketController {
  		# -------------------------------------------------------
@@ -114,13 +115,14 @@
 				
 				$t_set = new ca_sets();
 				$t_set->load(array('set_code' => $vs_timeline_set_code));
-				$vn_timeline_set_id = $t_set->get("set_id");
+				if($t_set->get("set_id")){
+					$vn_timeline_set_id = $t_set->get("set_id");
 				
-				$o_occ_context = new ResultContext($this->request, 'ca_occurrences', 'exploreSchools');
- 				$o_occ_context->setAsLastFind();
- 				$o_occ_context->setResultList(array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))));
- 				$o_occ_context->saveContext();
- 			
+					$o_occ_context = new ResultContext($this->request, 'ca_occurrences', 'exploreSchools');
+					$o_occ_context->setAsLastFind();
+					$o_occ_context->setResultList(array_keys($t_set->getItemRowIDs(array("checkAccess" => $this->opa_access_values))));
+					$o_occ_context->saveContext();
+				}
 			}
 			$this->view->setVar("timeline_set_id", $vn_timeline_set_id);
 			

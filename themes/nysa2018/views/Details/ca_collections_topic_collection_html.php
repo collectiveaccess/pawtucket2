@@ -26,13 +26,36 @@
 	<div class="row">
 		<div class="col-sm-12">
 			{{{<ifdef code="ca_collections.preferred_labels.name|ca_collections.collection_subtitle"><H2>^ca_collections.preferred_labels.name<ifdef code="ca_collections.collection_subtitle,ca_collections.preferred_labels.name">: </ifdef>^ca_collections.collection_subtitle</H2></ifdef>}}}
-			{{{<ifdef code="ca_collections.collection_subtitle"><H2>^ca_collections.collection_subtitle</H2></ifdef>}}}
 		</div>
 	</div>
 
-		
+	<div class="row topicRelatedObjects">
+		<div id="browseResultsContainer">
+			<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+		</div><!-- end browseResultsContainer -->
+		<p class="text-center">
+			<?php print caNavLink($this->request, 'View All', 'btn btn-default', '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => $t_item->get("ca_collections.collection_id"), 'view' => 'images'));?>
+		</p>
+	</div><!-- end row -->
+	<script type="text/javascript">
+		jQuery(document).ready(function() {
+			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => $t_item->get("ca_collections.collection_id"), 'limit_num_results' => 8, 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
+				/*
+				Only want to show a few with link to all so just don't jscroll the results
+				jQuery("#browseResultsContainer").jscroll({
+					autoTrigger: true,
+					loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+					padding: 20,
+					nextSelector: "a.jscroll-next"
+				});*/
+				jQuery('.jscroll-next').hide();
+			});
+			
+			
+		});
+	</script>		
 <?php
-	if($va_rep_ids = $t_item->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values, "returnAsArray" => true))){
+	if($vs_show_slideshow && ($va_rep_ids = $t_item->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values, "returnAsArray" => true)))){
 ?>		
 			<div class="row">
 				<div class="col-sm-12">
@@ -91,6 +114,7 @@
 ?>		
 			<div class="row">
 				<div class='col-sm-12'>
+					{{{<ifdef code="ca_collections.funder_logo"><div class="topicCollectionFunder">^ca_collections.funder_logo.small</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.about_objects"><div class="unit"><b>About the Objects</b><br/>^ca_collections.about_objects</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.topic_overview"><div class="unit"><b>Overview</b><br/>^ca_collections.topic_overview</ifdef></ifdef>}}}
 					{{{<ifdef code="ca_collections.topic_related_resources"><div class="unit"><b>Related Resources</b><br/>^ca_collections.topic_related_resources</ifdef></ifdef>}}}
@@ -98,25 +122,6 @@
 					
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
-			<div class="row">
-				<div id="browseResultsContainer">
-					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
-						jQuery('#browseResultsContainer').jscroll({
-							autoTrigger: true,
-							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
-							nextSelector: 'a.jscroll-next'
-						});
-					});
-					
-					
-				});
-			</script>
-</ifcount>}}}
+
+
 		</div><!-- end container -->

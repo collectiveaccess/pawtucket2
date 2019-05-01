@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 	require_once(__CA_LIB_DIR__.'/ca/Search/EntitySearch.php');
+ 	require_once(__CA_LIB_DIR__.'/Search/EntitySearch.php');
  	$this->config = caGetFrontConfig();
  	AssetLoadManager::register('timeline');
  	$va_access_values = $this->getVar("access_values");

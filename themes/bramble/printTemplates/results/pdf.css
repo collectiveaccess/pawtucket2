@@ -1,12 +1,12 @@
 /* universal header/footer styles */
 #header { height: 90px; position:relative; margin-top:-20px; border-bottom: 1px solid #dedede; }
 img.headerImg {height:35px; width:auto; position:absolute; left:0px; top:50px; }
-.pagingText { position: absolute; top: 30px; right: 30px; font: "helvetica"; font-size: 11px; text-align: right;  margin: 0px 0px 10px 25px;}
+.pagingText { position: absolute; top: 30px; right: 30px; font: "helvetica, sans-serif"; color:#858585; font-size: 10px; text-align: right;  margin: 0px 0px 10px 25px;}
 #footer .pagingText{ top:20px; }
 body, #body{ font: "helvetica, sans-serif"; }
 
 .title { color:#858585; font-weight:bold; font-size: 12px; text-align:left; padding-bottom:5px; margin-bottom:20px; border-bottom:1px solid #EDEDED;}
-
+.projectPaletteTitle{ color:#000; font-weight:normal; font-size: 12px; text-align:left; padding-left:5px; padding-bottom:10px; margin-bottom:20px; border-bottom:1px solid #dedede;}
 /* dompdf */
 /*@page { margin: 65px 56px 65px 56px; }
 
@@ -18,8 +18,9 @@ body, #body{ font: "helvetica, sans-serif"; }
 
 /* thumbnails template */
 .pageContainer{position:relative;}
-.thumbnail { font: "helvetica, sans-serif"; font-size: 11px; width: 200px; height: 205px; position: absolute; text-align: center; margin: 10px 10px 10px 10px; padding: 3px; overflow: hidden; border-radius:4px;}	
+.thumbnail { font: "helvetica, sans-serif"; font-size: 11px; width: 250px; height: 330px; position: absolute; text-align: center;}	
 .imgThumb {text-align:center;}
+.imgThumb img { max-width:230px; height:auto;}
 .caption {font-size:10px; color:#333; display:block; line-height:1.1em; padding-top:3px;}
 .pageBreak { page-break-before: always; height:1px; }
 .clear { clear: both; height: 1px; }
@@ -53,6 +54,12 @@ body, #body{ font: "helvetica, sans-serif"; }
 }
 .btccRow{
 	text-align:center;
+	clear:both;
+}
+.btccRow.border{
+	border: 1px solid #ededed;
+	display:inline-block;
+	width:auto;
 }
 .btccLabelCol{
 	height:49px;
@@ -100,6 +107,9 @@ body, #body{ font: "helvetica, sans-serif"; }
 	margin-left:300px;
 	clear:both;
 }
+.btccSeasonRow.noBtccLabel{
+	margin-left:0px;
+}
 .btccSeasonRow > div{
 	border-right:1px solid #dedede;
 	padding-top:5px;
@@ -125,7 +135,10 @@ body, #body{ font: "helvetica, sans-serif"; }
 	border-bottom: 1px solid #dedede;
 	padding-bottom:5px;
 }
-
+.centerChart{
+	display:inline-block;
+	width:auto;
+}
 
 @font-face {
   font-family: "Flaticon";

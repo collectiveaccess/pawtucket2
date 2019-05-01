@@ -33,37 +33,48 @@
  	//MetaTagManager::setWindowTitle("");
 
 ?>
-	<div class="container">
-		<div class="row">
-			<div class="col-sm-12" style='padding-left:0px; padding-right:0px;'>
+
+	<div class="row">
+		<div class="col-sm-12" style='padding-left:0px; padding-right:0px;'>
 <?php
-			print $this->render("Front/featured_set_slideshow_html.php");
+		print $this->render("Front/featured_set_slideshow_html.php");
 ?>		
-			</div>
-		</div>	
-		<div class="row">
-			<div class="col-sm-12">
-				<h2>Welcome to the Digital Collections!</h2>
-				<p>{{{homePageText}}}</p>
-			</div><!--end col-sm-8-->	
-		</div><!-- end row -->
-		<hr>
-		<div class="row">
-			<div class="col-sm-12"><h2>Research</h2></div>
 		</div>
-		<div class="row">
-			<div class="col-sm-6">
-				<div class="homeTile attica">				
-					<div class="img"><?php print caDetailLink($this->request, caGetThemeGraphic($this->request, 'attica.png'), "", "ca_collections",  7390);?><div class="title"><?php print caDetailLink($this->request, "The Attica Uprising and Aftermath", "", "ca_collections",  7390);?></div></div>
-					<div class="caption">This collection represents a collaborative effort between the New York State Office of the Attorney General and New York State Archives to provide access to materials related to one of the most infamous prison riots in American history, the 1971 uprising at Attica Correctional Facility in Western New York.</div>
-				</div>
-			</div>
-			<div class="col-sm-6">
-				<div class="homeTile dutch">
-					<div class="img"><?php print caDetailLink($this->request, caGetThemeGraphic($this->request, 'dutch.png'), "", "ca_collections",  7391);?><div class="title"><?php print caDetailLink($this->request, "Researching New York's Dutch Heritage", "", "ca_collections",  7391);?></div></div>
-					<div class="caption">The New York State Archives holds the surviving records of the Dutch colony of New Netherland, which encompassed the earliest European settlements that became the states of New York, New Jersey, Pennsylvania, and Delaware. These 17th-century records concern the full range of government functions including relations with native inhabitants, particularly the Mohawks, Mahicans, and various groups around New Amsterdam and the Delaware River.</div>
-				</div>
-			</div>
-		</div>
-	</div> <!--end container-->
+	</div>
+	<div class="row">
+		<div class="col-sm-8">
+			<h2>Welcome to the Digital Collections!</h2>
+			<p>{{{homePageText}}}</p>
+		</div><!--end col-sm-8-->
+		<div class="col-sm-4">
 			
+<?php
+	$o_collection_config = caGetCollectionsConfig();
+	$va_access_values = caGetUserAccessValues($this->request);
+
+	$t_list = new ca_lists();
+	$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", ($o_collection_config->get("landing_page_collection_type")) ? $o_collection_config->get("landing_page_collection_type") : "topic_collection");
+	$vs_sort = ($o_collection_config->get("landing_page_sort")) ? $o_collection_config->get("landing_page_sort") : "ca_collections.preferred_labels.name";
+	$qr_collections = ca_collections::find(array('type_id' => $vn_collection_type_id, 'preferred_labels' => ['is_preferred' => 1]), array('returnAs' => 'searchResult', 'checkAccess' => $va_access_values, 'sort' => $vs_sort));
+	
+	$vn_i = 0;
+	if($qr_collections && $qr_collections->numHits()) {
+?>
+		<H2>Featured Topics</H2>
+		<ul class="nav nav-pills nav-stacked">
+<?php
+		while($qr_collections->nextHit()) {
+
+			print "<li>".caDetailLink($this->request, $qr_collections->get("ca_collections.preferred_labels"), "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</li>";
+			$vn_i++;
+			if($vn_i == 5){
+				break;
+			}
+		}
+?>
+		</ul>
+<?php
+	}
+?>
+		</div> <!--end col-sm-4-->	
+	</div><!-- end row -->
