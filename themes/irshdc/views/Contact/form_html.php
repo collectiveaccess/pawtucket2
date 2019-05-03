@@ -92,13 +92,13 @@
 			</div><!-- end col -->
 		</div><!-- end row -->
 <?php
-	if(!$this->request->isLoggedIn()){
+	if(!$this->request->isLoggedIn() && __CA_GOOGLE_RECAPTCHA_KEY__){
 
 		# --- only show captcha
 ?>
 		<script type="text/javascript">
 			var gCaptchaRender = function(){
-                grecaptcha.render('regCaptcha', {'sitekey': '<?php print $o_config->get('google_recaptcha_sitekey'); ?>'});
+                grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
         	};
 		</script>
 		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>

@@ -66,7 +66,7 @@
 					$va_errors["display_errors"]["security_error"] = _t("Please answer the security question");
 				}
  			}
- 			if(!$this->request->isLoggedIn() && $this->config->get("check_security_recaptcha")){
+ 			if(!$this->request->isLoggedIn() && $this->config->get("check_security_recaptcha") && __CA_GOOGLE_RECAPTCHA_SECTRET_KEY__){
  				$ps_captcha = $this->request->getParameter("g-recaptcha-response", pString);
  				if(!$ps_captcha){
 						$va_errors["recaptcha"] = $va_errors["display_errors"]["recaptcha"] = _t("Please complete the captcha");
@@ -76,7 +76,7 @@
 					curl_setopt($va_request, CURLOPT_HEADER, 0);
 					curl_setopt($va_request, CURLOPT_RETURNTRANSFER, 1);
 					curl_setopt($va_request, CURLOPT_POST, 1);
-					$va_request_params = ['secret'=>$this->config->get('google_recaptcha_secretkey'), 'response'=>$ps_captcha];
+					$va_request_params = ['secret'=>__CA_GOOGLE_RECAPTCHA_SECTRET_KEY__, 'response'=>$ps_captcha];
 					curl_setopt($va_request, CURLOPT_POSTFIELDS, $va_request_params);
 					$va_captcha_resp = curl_exec($va_request);
 					$captcha_json = json_decode($va_captcha_resp, true);
