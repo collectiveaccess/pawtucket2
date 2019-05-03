@@ -81,7 +81,7 @@
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
 <?php
-	if ($vb_has_user_links) {
+	if ($x && $vb_has_user_links) {
 ?>
 				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
 					<span class="sr-only">User Options</span>
@@ -144,14 +144,14 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "", ""); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 <?php
 	if($this->request->isLoggedIn()){
-		if(caDisplayLightbox($this->request)){
-			print "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
-		}
+		print "<li>".caNavLink($this->request, 'My Projects', '', '', 'Lightbox', 'Projects', array())."</li>";
+		#if(caDisplayLightbox($this->request)){
+			#print "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
+		#}
 	} else {	
 		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) {
 			print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>";
@@ -161,6 +161,7 @@
 		}
 	}
 ?>
+					<li <?php print (strToLower($this->request->getAction()) == "help") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Help"), "", "", "About", "help"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
