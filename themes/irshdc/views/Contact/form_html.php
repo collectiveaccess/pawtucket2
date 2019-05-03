@@ -14,9 +14,9 @@
 		$vs_name = $t_instance->get("preferred_labels");
 	}
 	$va_errors = $this->getVar("errors");
-	$vn_num1 = rand(1,10);
-	$vn_num2 = rand(1,10);
-	$vn_sum = $vn_num1 + $vn_num2;
+	#$vn_num1 = rand(1,10);
+	#$vn_num2 = rand(1,10);
+	#$vn_sum = $vn_num1 + $vn_num2;
 ?>
 	<div class="row">
 		<div class="col-sm-12 col-md-offset-1 col-md-10">
@@ -92,21 +92,22 @@
 			</div><!-- end col -->
 		</div><!-- end row -->
 <?php
-	if($this->request->isLoggedIn()){
-		print '<input type="hidden" name="security" value="'.$vn_sum.'">';
-	}else{
-		# --- only show security question if not logged in
+	if(!$this->request->isLoggedIn()){
+
+		# --- only show captcha
 ?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+                grecaptcha.render('regCaptcha', {'sitekey': '<?php print $o_config->get('google_recaptcha_sitekey'); ?>'});
+        	};
+		</script>
+		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+
+
 			<div class="row">
 				<div class="col-sm-12 col-md-offset-1 col-md-10">
-					<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
-						<label for="security">Security Question</label>
-						<div class='row'>
-							<div class='col-sm-12 col-md-2'>
-								<p class="form-control-static securityQuestion"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
-								<input name="security" value="" id="security" type="text" class="form-control input-sm" />
-							</div>
-						</div><!-- end row -->
+					<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
 					</div>
 				</div>
 			</div><!-- end row -->
