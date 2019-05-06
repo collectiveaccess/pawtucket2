@@ -27,17 +27,17 @@
  */
 	# --- session vars for persistent browse filters
 	$pn_user_category = $this->request->getParameter('user_category', pInteger);
-	if($pn_user_category && ($pn_user_category != $this->request->session->getVar("bokUserCategory"))){
-		$this->request->session->setVar("bokUserCategory", $pn_user_category);
+	if($pn_user_category && ($pn_user_category != Session::getVar("bokUserCategory"))){
+		Session::setVar("bokUserCategory", $pn_user_category);
 		require_once(__CA_MODELS_DIR__."/ca_occurrences.php");
 		$t_occurrence = new ca_occurrences();
 		$t_occurrence->load($pn_user_category);
-		$this->request->session->setVar("bokUserCategoryLabel", strtolower($t_occurrence->get("ca_occurrences.preferred_labels.name")));
-		$this->request->session->setVar("bokUserCategoryIdno", strtolower($t_occurrence->get("ca_occurrences.idno")));
+		Session::setVar("bokUserCategoryLabel", strtolower($t_occurrence->get("ca_occurrences.preferred_labels.name")));
+		Session::setVar("bokUserCategoryIdno", strtolower($t_occurrence->get("ca_occurrences.idno")));
 	}
-	$pn_user_category = $this->request->session->getVar("bokUserCategory");
-	$ps_user_category = $this->request->session->getVar("bokUserCategoryLabel");
-	$ps_user_category_idno = $this->request->session->getVar("bokUserCategoryIdno");
+	$pn_user_category = Session::getVar("bokUserCategory");
+	$ps_user_category = Session::getVar("bokUserCategoryLabel");
+	$ps_user_category_idno = Session::getVar("bokUserCategoryIdno");
 	
 	# --- collect the user links - they are output twice - once for toggle menu and once for nav
 	$vs_user_links = "";

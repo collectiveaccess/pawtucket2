@@ -37,8 +37,7 @@
 				</div>
 				<div class="col-sm-3">
 					<p>
-						<b>Add your favorite Girl Scout place to the map!</b><br/><br/>
-						Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+						<b>Add your favorite Girl Scout place to the map!</b>
 					</p>
 					<p><?php print caNavLink($this->request, "Submit Your Idea!", "btn btn-default btn-sm", "", "Contribute", "objects", array()); ?></p>
 					

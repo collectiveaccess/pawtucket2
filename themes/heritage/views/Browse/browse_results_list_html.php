@@ -65,14 +65,14 @@
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	if((($vs_table != 'ca_occurrences')) || ($vs_current_sort != "Date") || (($vs_current_sort == "Date") && !$vn_start)){
-		$this->request->session->setVar('lastYear', "");
+		Session::setVar('lastYear', "");
 	}
-	$vs_last_pro_year = $this->request->session->getVar('lastYear');
-		$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 12;
+	$vs_last_pro_year = Session::getVar('lastYear');
+		$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 6;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 12;
+			$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 6;
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
@@ -110,8 +110,8 @@
 					if(is_array($va_date_raw) && sizeof($va_date_raw)){
 						$va_date_raw = array_shift($va_date_raw[$qr_res->get("ca_occurrences.occurrence_id")]);
 						$vs_start_year = abs(floor($va_date_raw["timeline_date"]["start"]));
-						if($vs_start_year && ($vs_start_year != $this->request->session->getVar('lastYear')) && (!$this->request->session->getVar('lastYear') || ((($vs_sort_dir == 'asc') && ($vs_start_year > $this->request->session->getVar('lastYear'))) || (($vs_sort_dir == 'desc') && ($vs_start_year < $this->request->session->getVar('lastYear')))))){
-							$this->request->session->setVar('lastYear', $vs_start_year);
+						if($vs_start_year && ($vs_start_year != Session::getVar('lastYear')) && (!Session::getVar('lastYear') || ((($vs_sort_dir == 'asc') && ($vs_start_year > Session::getVar('lastYear'))) || (($vs_sort_dir == 'desc') && ($vs_start_year < Session::getVar('lastYear')))))){
+							Session::setVar('lastYear', $vs_start_year);
 							$vb_show_year = true;
 						}
 					}
@@ -121,7 +121,7 @@
 					$vb_row_id_loaded = true;
 				}
 				if($vb_show_year){
-					print "<div class='col-xs-12' style='clear:left'><br/><H4>".$this->request->session->getVar('lastYear')."</H4></div>";
+					print "<div class='col-xs-12' style='clear:left'><br/><H4>".Session::getVar('lastYear')."</H4></div>";
 				}
 				# --- check if this result has been cached
 				# --- key is MD5 of table, id, view, refine(vb_refine)

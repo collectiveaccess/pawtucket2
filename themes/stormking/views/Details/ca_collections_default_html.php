@@ -25,11 +25,13 @@
 					<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
 					<H6>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</H6>
 <?php					
-					if ($va_media_upload = $t_item->get('ca_collections.finding_aid_upload.url', array('returnWithStructure' => true, 'returnUrls' => true, 'version' => 'original'))) {
-						foreach ($va_media_upload as $va_key => $va_media_upload_t) {
-							foreach ($va_media_upload_t as $va_ket => $va_media_upload_url) {
-								print "<div class='exportCollection'><a href='".$va_media_upload_url['finding_aid_upload']."'><span class='glyphicon glyphicon-file'></span> Download PDF</a></div>";
-							}
+					if ($va_media = $t_item->get('ca_collections.finding_aid_upload', array('returnWithStructure' => true))) {
+						$va_media = array_pop($va_media);
+						foreach ($va_media as $vn_attribute_id => $va_media_info) {
+							$t_attribute_values = new ca_attribute_values(array("attribute_id" => $vn_attribute_id));
+							$vn_value_id = $t_attribute_values->get("value_id");
+							print "<div class='exportCollection'>".caNavLink($this->request, "<span class='glyphicon glyphicon-file'></span> Download PDF", '', 'Detail', 'DownloadAttributeMedia', '', array('value_id' => $vn_value_id, "collection_id" => $vn_id, "id" => $vn_id, "subject_id" => $vn_id, "download" => 1, "version" => "original"));
+							
 						}
 					} elseif ($vn_pdf_enabled) {
 						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
@@ -55,7 +57,6 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_collections.parent_id"><div class='unit'><H6>Location in Collection</H6><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></div></ifdef>}}}
 				
 <?php				
 					if ($va_dates = $t_item->get('ca_collections.unitdate', array('convertCodesToDisplayText' => true, 'returnWithStructure' => true))) {
@@ -135,7 +136,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'archival', array('search' => 'collection_id:^ca_collections.collection_id', 'sort' => 'ca_objects.idno'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'archival', array('search' => 'collection_id:^ca_collections.collection_id', 'sort' => 'Relevance'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -151,8 +152,3 @@
 		</div><!-- end container -->
 	</div><!-- end col -->
 </div><!-- end row -->
-<?php
-		#if($this->request->isLoggedIn()){
-			print "<a href='http://stormking.collectihost.com/admin/index.php/editor/collections/CollectionEditor/Edit/collection_id/".$vn_id."'>Edit This Record</a>";
-		#}
-?>	

@@ -128,11 +128,11 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'allworks', array('search' => 'ca_occurrences.occurrence_id/describes,part,reference:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'allworks', array('search' => 'ca_occurrences.occurrence_id|describes,part,reference:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() { 
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-							padding: 20,
+							padding: 20, 
 							nextSelector: 'a.jscroll-next'
 						});
 					});

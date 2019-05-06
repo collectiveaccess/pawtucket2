@@ -36,7 +36,7 @@
 	if ($vn_representation_count > 1) {
 ?>
 <div class="jcarousel-wrapper">
-	<div class="jcarousel" id="repViewerCarousel">
+	<div class="jcarousel" id="repViewerCarousel" data-current_id="<?php print $va_representation_ids[0]; ?>">
 		<ul>
 			{{{slides}}}
 		</ul>
@@ -44,7 +44,10 @@
 
 	<!-- Prev/next controls  -->
 	<div id='detailRepNav'>
-		<a href='#' id='detailRepNavPrev' title='<?php print _t("Previous"); ?>'><span class='fa fa-chevron-left'></span></a> 
+        <a href='#' class='zoomButton' id='detailRepNavZoom' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => $vs_context, 'id' => $vn_subject_id, 'overlay' => 1)); ?>/representation_id/" + $(".jcarousel").data("current_id")); return false;' title='<?php print _t("Zoom"); ?>'><?php print caGetThemeGraphic($this->request, 'magnify.svg'); ?></a>
+        <a href='#' class='compare_link' id='detailRepNavCompare' title='Compare' data-id_selector='.jcarousel'><?php print caGetThemeGraphic($this->request, 'rothko-compare.svg'); ?></a>
+		
+	   <a href='#' id='detailRepNavPrev' title='<?php print _t("Previous"); ?>'><span class='fa fa-chevron-left'></span></a> 
 		
 	    <span id="detailRepNavStart"></span>/<span id="detailRepNavCount"></span>
 		<a href='#' id='detailRepNavNext' title='<?php print _t("Next"); ?>'><span class='fa fa-chevron-right'></span></a>
@@ -117,6 +120,9 @@
 						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('{{{active_representation_class}}}');
 						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('{{{active_representation_class}}}');
 					});
+					
+					var v = $('.jcarousel').jcarousel('fullyvisible');
+					$('.jcarousel').data('current_id', jQuery(v[0]).attr('id').replace("slide", ""));
 				}
 			});
 
@@ -133,7 +139,8 @@
 						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id).addClass('{{{active_representation_class}}}');
 						$('#detailRepresentationThumbnails #detailRepresentationThumbnail' + id + ' a').addClass('{{{active_representation_class}}}');
 					});
-					
+					var v = $('.jcarousel').jcarousel('fullyvisible');
+					$('.jcarousel').data('current_id', jQuery(v[0]).attr('id').replace("slide", ""));
 					
 				}
 			});	
@@ -147,6 +154,12 @@
 		// Just dump the slide list without controls when there is only one representation
 ?>
 		{{{slides}}}
+		
+		<div id='detailRepNav'>
+            <a href='#' class='zoomButton' id='detailRepNavZoom' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => $vs_context, 'id' => $vn_subject_id, 'representation_id' => $va_representation_ids[0], 'overlay' => 1)); ?>"); return false;' title='<?php print _t("Zoom"); ?>'><?php print caGetThemeGraphic($this->request, 'magnify.svg'); ?></a>
+            <a href='#' class='compare_link' id='detailRepNavCompare' title='Compare' data-id='representation:<?php print $va_representation_ids[0]; ?>'><?php print caGetThemeGraphic($this->request, 'rothko-compare.svg'); ?></a>
+		    <div style='clear:both;'></div>
+	    </div> 
 <?php
 		if ($vs_show_annotations_mode == 'div') {
 ?>	

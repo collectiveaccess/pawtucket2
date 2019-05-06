@@ -30,8 +30,10 @@
 					{{{<ifdef code="ca_collections.parent_id"><H4>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H4></ifdef>}}}
 <?php
 					print '<div class="detailTool"><span class="glyphicon glyphicon-book"></span>'.caNavLink($this->request, _t("Ask an Archivist"), "", "", "Contact", "Form", array("collection_id" => $t_item->get("collection_id"), "contactType" => "askArchivist"));					
-					print "&nbsp;&nbsp;&nbsp;&nbsp;<span class='glyphicon glyphicon-download'></span>".caDetailLink($this->request, "Download Finding Aid", "", "ca_collections",  $t_item->get("collection_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div><!-- end detailTool -->";
-
+					if(strToLower($t_item->get("ca_collections.type_id", array("convertCodesToDisplayText" => true))) != 'collection'){
+						print "&nbsp;&nbsp;&nbsp;&nbsp;<span class='glyphicon glyphicon-download'></span>".caDetailLink($this->request, "Download Finding Aid", "", "ca_collections",  $t_item->get("collection_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
+					}
+					print "</div><!-- end detailTool -->"
 ?>
 				</div><!-- end col -->
 			</div><!-- end row -->

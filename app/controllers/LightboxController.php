@@ -26,8 +26,8 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
-	require_once(__CA_LIB_DIR__."/core/Datamodel.php");
+	require_once(__CA_LIB_DIR__."/ApplicationError.php");
+	require_once(__CA_LIB_DIR__."/Datamodel.php");
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets.php");
@@ -35,9 +35,9 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_user_groups.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_users.php");
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
- 	require_once(__CA_LIB_DIR__."/core/GeographicMap.php");
-	require_once(__CA_LIB_DIR__.'/core/Parsers/ZipStream.php');
-	require_once(__CA_LIB_DIR__.'/core/Logging/Downloadlog.php');
+ 	require_once(__CA_LIB_DIR__."/GeographicMap.php");
+	require_once(__CA_LIB_DIR__.'/Parsers/ZipStream.php');
+	require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
  
  	class LightboxController extends FindController {
  		# -------------------------------------------------------
@@ -303,7 +303,7 @@
 			
 			$va_browse_options = array('checkAccess' => $this->opa_access_values, 'no_cache' => true);
 
-            $o_browse->execute(array_merge($va_browse_options, array('strictPhraseSearching' => true)));
+            $o_browse->execute(array_merge($va_browse_options, array('strictPhraseSearching' => true, 'checkAccess' => $this->opa_access_values, 'request' => $this->request)));
 
 		if ($ps_view !== 'timelineData') {
 			//
@@ -313,7 +313,7 @@
 				$o_browse->setFacetGroup($vs_facet_group);
 			}
 			$va_available_facet_list = $this->opo_config->get("availableFacets");
-			$va_facets = $o_browse->getInfoForAvailableFacets();
+			$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request,]);
 			if(is_array($va_available_facet_list) && sizeof($va_available_facet_list)) {
 				foreach($va_facets as $vs_facet_name => $va_facet_info) {
 					if (!in_array($vs_facet_name, $va_available_facet_list)) {
@@ -323,13 +323,13 @@
 			} 
 		
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
-				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, array("checkAccess" => $this->opa_access_values));
+				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacetContent($vs_facet_name, ['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
 			}
 		
 			$this->view->setVar('facets', $va_facets);
 		
 			$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
-			$this->request->session->setVar('lightbox_last_browse_id', $vs_key);
+			Session::setVar('lightbox_last_browse_id', $vs_key);
 			
 			//
 			// Current criteria
@@ -446,7 +446,7 @@
  			
  			$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
  			// set_id is passed through form, otherwise we're saving a new set
- 			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_EDIT_READ_ACCESS__) : new ca_sets();
+ 			$t_set = ($this->request->getParameter('set_id', pInteger)) ? $this->_getSet(__CA_SET_EDIT_ACCESS__) : new ca_sets();
  			
  			if(!$t_set->get("set_id") && ($pn_parent_id = $this->request->getParameter('parent_id', pInteger))){
  				# --- if making a new reponse set, check there isn't already one for the user
@@ -578,7 +578,7 @@
 					$this->view->setVar('message', _t("Removed group access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _("invalid group/set id"));
+				$this->view->setVar('errors', _t("invalid group/set id"));
 			}
 			$this->setAccess();
  		}
@@ -603,7 +603,7 @@
 					$this->view->setVar('message', _t("Removed user access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _("invalid user/set id"));
+				$this->view->setVar('errors', _t("invalid user/set id"));
 			}
  			$this->setAccess();
  		}
@@ -630,7 +630,7 @@
 					$this->view->setVar('message', _t("Changed group access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _("invalid group/set id or access"));
+				$this->view->setVar('errors', _t("invalid group/set id or access"));
 			}
 			$this->setAccess();
  		}
@@ -657,7 +657,7 @@
 					$this->view->setVar('message', _t("Changed user access to %1", $this->ops_lightbox_display_name));
 				}
 			}else{
-				$this->view->setVar('errors', _("invalid user/set id or access"));
+				$this->view->setVar('errors', _t("invalid user/set id or access"));
 			}
 			$this->setAccess();
  		}
@@ -911,7 +911,6 @@
  		function ajaxListComments() {
             if($this->opb_is_login_redirect) { return; }
 
- 			$o_datamodel = Datamodel::load();
  			if (!$t_set = $this->_getSet(__CA_SET_READ_ACCESS__)) {
                 throw new ApplicationException(_t("You do not have access to this lightbox"));
             }
@@ -924,7 +923,7 @@
             }
 
  			// load table
- 			if (!($t_item = $o_datamodel->getTableInstance($ps_tablename))) {
+ 			if (!($t_item = Datamodel::getInstance($ps_tablename))) {
                 throw new ApplicationException(_t("Invalid type"));
             }
  			$pn_item_id = $this->request->getParameter($t_item->primaryKey(), pInteger);
@@ -948,8 +947,6 @@
 
  			// when close is set to true, will make the form view disappear after saving form
 
- 			$o_datamodel = Datamodel::load();
-
             $va_errors = array();
             $vn_count = null;
             $vs_message = null;
@@ -964,7 +961,7 @@
                     $va_errors[] = _t("Invalid type: %1", $ps_comment_type);
                 } else {
                     // load table
-                    $t_item = $o_datamodel->getInstanceByTableName($ps_comment_type, true);
+                    $t_item = Datamodel::getInstance($ps_comment_type, true);
                     $pn_id = $this->request->getParameter('id', pInteger);
                     if (!$t_item->load($pn_id)) {
                         $va_errors[] = _t("Invalid id: %1", $pn_id);
@@ -1140,7 +1137,7 @@
             
  			// set_id is passed through form, otherwise we're saving a new set, and adding the item to it
  			if($this->request->getParameter('set_id', pInteger)){
- 				$t_set = $this->_getSet(__CA_EDIT_READ_ACCESS__);
+ 				$t_set = $this->_getSet(__CA_SET_EDIT_ACCESS__);
  				if(!$t_set && $t_set = $this->_getSet(__CA_SET_READ_ACCESS__)){
  					$va_errors["general"] = _t("You can not add items to this %1.  You have read only access.", $vs_display_name);
  					$this->view->setVar('errors', $va_errors);
@@ -1316,7 +1313,6 @@
 		 */
 		public function getLightboxMedia() {
 			set_time_limit(600); // allow a lot of time for this because the sets can be potentially large
-			$o_dm = Datamodel::load();
 			$t_set = new ca_sets($this->request->getParameter('set_id', pInteger));
 			if (!$t_set->getPrimaryKey()) {
 				$this->notification->addNotification(_t('No set defined'), __NOTIFICATION_TYPE_ERROR__);
@@ -1331,8 +1327,8 @@
 				return false;
 			}
 
-			$vs_subject_table = $o_dm->getTableName($t_set->get('table_num'));
-			$t_instance = $o_dm->getInstanceByTableName($vs_subject_table);
+			$vs_subject_table = Datamodel::getTableName($t_set->get('table_num'));
+			$t_instance = Datamodel::getInstance($vs_subject_table);
 
 			$qr_res = $vs_subject_table::createResultSet($va_record_ids);
 			$qr_res->filterNonPrimaryRepresentations(false);

@@ -34,7 +34,7 @@
    *
    */
  
-require_once(__CA_LIB_DIR__.'/core/BaseModel.php');
+require_once(__CA_LIB_DIR__.'/BaseModel.php');
 require_once(__CA_MODELS_DIR__.'/ca_site_templates.php');
 require_once(__CA_MODELS_DIR__.'/ca_site_page_media.php');
 
@@ -48,7 +48,7 @@ BaseModel::$s_ca_models_definitions['ca_site_pages'] = array(
 				'IDENTITY' => true, 'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => _t('CollectiveAccess id'), 'DESCRIPTION' => _t('Unique numeric identifier used by CollectiveAccess internally to identify this item')
+				'LABEL' => _t('CollectiveAccess ID'), 'DESCRIPTION' => _t('Unique numeric identifier used by CollectiveAccess internally to identify this item')
 		),
 		'title' => array(
 				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
@@ -355,7 +355,7 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 			        if ($vn_index > sizeof($va_media_list) - 1) { $vn_index = sizeof($va_media_list) - 1; }
 			        
 			        if (!isset($va_media_list[$vn_index])) { continue; }
-			        if (is_array($va_access_values) && !in_array($va_media_list[$vn_index]['access'], $va_access_values)) { print "x=".$va_media_list[$vn_index]['access'];continue; }
+			        if (is_array($va_access_values) && !in_array($va_media_list[$vn_index]['access'], $va_access_values)) { continue; }
 			        
 			        $vs_media_tag = null;
 			        switch($vs_version = caGetOption('version', $va_media, 'small')) {

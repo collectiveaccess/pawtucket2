@@ -39,7 +39,7 @@
 	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 <?php
 	if ((strtolower($this->request->getController()) !== "front")) {	
-		print '<div id="backToTop"><a href="#"><i class="fa fa-arrow-up"></i>Top</a></div>';
+		print '<div id="backToTop"><a href="#">'.caGetThemeGraphic($this->request, 'rothko-back-to-top.svg').'Top</a></div>';
 	}
 ?>	
 	<div id="comparison_list" class="compareDrawer compare_menu_item">
@@ -59,7 +59,7 @@
 					<p>© <?php print date('Y');?> National Gallery of Art, Washington</p>
 				</div>
 				<div class="col-sm-6">
-					<div style="margin-bottom:15px;"><i>Mark Rothko: Works on Paper</i> will ultimately document approximately 2,600 works from public and private collections worldwide.  Cataloguing is ongoing, and works and information will be added to the site continuously during the coming years.</div>
+					<div style="margin-bottom:15px;">{{{footerText}}}</div>
 					<div class="footerLinks">
 						<div class="footerLink"><?php print caNavLink($this->request, 'About', '', '', 'About', 'project');?></div> | 
 						<div class="footerLink space"><?php print caNavLink($this->request, ' Credits', '', '', 'About', 'credits'); ?></div> | 
@@ -105,20 +105,20 @@
 				var loadComparisonListSummary;
 				$('#comparison_list, #pageArea').on('click', '.compare_link, .comparison_list_remove', loadComparisonListSummary = function(e) {
 					var id = this ? $(this).data('id') : null;
+					var id_selector = this ? $(this).data('id_selector') : null;
 					var remove_id = this ? $(this).data('remove_id') : null;
+					
+					if (id_selector) {
+					    if (id = jQuery(id_selector).data('current_id')) { id = "representation:" + id; }
+					}
 		
 					$.getJSON('<?php print caNavUrl($this->request, '', 'Compare', 'AddToList'); ?>', {id: id, remove_id: remove_id}, function(d) {
 						if (parseInt(d.ok) == 1) {
-							var l = '';
+							var l = '', im = '';
 							
 							if (d.comparison_list && (d.comparison_list.length > 0)) {
-								if ( d.comparison_list.length > 1) {
-									var im = " images";
-								} else {
-									var im = " image";
-								}
-								l += "<p class='listTitle'><?php print caNavLink($this->request, _t("<i class='fa fa-clone'></i> Compare "), "", "", "Compare", "View", []); ?> " + d.comparison_list.length + im + "</p>\n";
-								l += "<a href='#' class='openItems' onClick=\"$('.compareDrawer .items').toggle(100); return false;\"><i class='fa fa-chevron-down'></i></a>\n"; 
+								l += "<p class='listTitle'><?php print caNavLink($this->request, _t("<span class='compareImg'></span> <span id='compare_count_display'>Compare images</span>"), "", "", "Compare", "View", ['url' => str_replace('/', '|', $this->request->getFullUrlPath())]); ?></p>\n";
+								l += "<a href='#' class='openItems' onClick=\"$('.compareDrawer .items').toggle(100); $('.compareDrawer').data('open', !$('.compareDrawer').data('open')); return false;\"><i class='fa fa-chevron-down'></i></a>\n"; 
 								
 								l += "<div class='items'>";
 								jQuery.each(d.comparison_list, function(i, item) {
@@ -126,19 +126,23 @@
 								});
 								l += "</div>";
 								
+								im = "Compare " + d.comparison_list.length + ((d.comparison_list.length > 1) ? " images" : " image"); 
 								jQuery("#comparison_list").fadeIn(100);
 
 							} else {
 								jQuery("#comparison_list").fadeOut(100);
+								jQuery(".compareDrawer").data('open', false);
 							}
-							jQuery("p.listTitle a").html("Compare (" + d.comparison_list.length + ")");
 							jQuery("#comparison_list ul").html(l);
+							jQuery('#compare_count_display').html(im);
 							
 							// Reload page when removing from within "Compare" view
 							if (remove_id && <?php print ($this->request->getController() == 'Compare') ? "true" : "false"; ?>) {
-								window.location = '<?php print caNavUrl($this->request, '', 'Compare', 'View', []); ?>';
+								window.location = '<?php print caNavUrl($this->request, '', 'Compare', 'View', ['url' => str_replace('/', '|', $this->request->getFullUrlPath())]); ?>';
 								return;
-							}
+							} else if($(".compareDrawer").data('open')){
+							    jQuery(".compareDrawer .items").toggle(0);
+						    }
 						}
 					});
 					

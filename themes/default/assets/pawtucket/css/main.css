@@ -120,6 +120,10 @@ h1 i {
 	padding:6px;
 }
 
+.bViewButtons .disabled {
+    pointer-events:all;
+}
+ 
 /* --------------------------------------------------------- */
 /* ALERTS */
 /* --------------------------------------------------------- */
@@ -1087,7 +1091,7 @@ a.browseRemoveFacet img {
 	width:100%;
 	height:auto;
 }
-.lbSetThumbPlaceholder i{
+.lbSetThumbPlaceholder i, .lbSetThumbPlaceholder .glyphicon{
 	position:absolute;
 	top:35%;
 	left:0px;
@@ -1131,8 +1135,7 @@ a.browseRemoveFacet img {
 }
 .lbSetItemComment .btn-xs, .lbSetComment .btn-xs{
 	padding:5px !important;
-	font-size:10px;
-	margin-top:-10px;
+	font-size:10px !important;
 }
 .lbItemContainerList .lbSetItemComment{
 	left:0px;
@@ -1152,7 +1155,6 @@ a.browseRemoveFacet img {
 }
 .lbSetCommentHeader {
 	font-size:11px;
-	padding-bottom:5px;
 }
 
 .lbItemContainer .lbSetItemComment{
@@ -1224,8 +1226,7 @@ a.browseRemoveFacet img {
 }*/
 .activitycol .lbSetCommentHeader, .lbSetCommentHeader {
 	font-weight:bold;
-	padding-top:10px;
-	margin-top:10px;
+	padding-top:5px;
 	border-top:1px solid #e3e3e3;	
 }
 .lbSetCommentHeader a{
@@ -1251,6 +1252,9 @@ a.browseRemoveFacet img {
 }	
 #lbTimelineContainer{
 	height:500px;
+}
+#confirm-delete .glyphicon{
+	color:#FFF !important;
 }
 /* --------------------------------- */
 /* classroom */
@@ -1367,7 +1371,7 @@ a.browseRemoveFacet img {
     left: 0px !important;
 }
 .front .jcarousel-control-next {
-    right:0px; !important;
+    right:0px !important;
 }
 .front .jcarousel-control-next,
 .front .jcarousel-control-prev {
@@ -1475,6 +1479,27 @@ a.browseRemoveFacet img {
 }
 .frontSlideCaption a{
 	color:#FFF;
+}
+
+.frontGrid img{
+	width:100%;
+	height:auto;
+}
+.frontGridCaption{
+	padding-top:5px;
+	margin-bottom:30px;	
+}
+.frontGallerySlideCaption{
+	padding-top:5px;
+}
+.front .galleryItems li{
+	padding-right:30px;
+}
+.front .galleryItems-wrapper{
+	margin-top:0px;
+}
+.front .galleryItems-wrapper .jcarousel-control-prev, .front .galleryItems-wrapper .jcarousel-control-next {
+    top: 40%;
 }
 
 /* --------------------------------- */
@@ -1663,6 +1688,7 @@ a.browseRemoveFacet img {
 	text-decoration:none;
 }
 .jcarousel-wrapper, .jcarousel {
+	/*width:600px !important;*/
 	width:100% !important;
 }
 #detailComments{
@@ -1873,6 +1899,9 @@ a.browseRemoveFacet .glyphicon {
 	font-size:18px;
 	padding-bottom:5px;
 }
+#bViewButtons .disabled, #lbViewButtons .disabled{
+    pointer-events: all;
+}
 #bLetterBar a{
 	padding:3px;
 	text-transform:uppercase;
@@ -1909,7 +1938,7 @@ a.browseRemoveFacet .glyphicon {
 	position:absolute;
 	right:20px;
 	top:0px;
-	z-index:100;
+	z-index:10;
 }
 .bResultItem:hover .bSetsSelectMultiple{
 	right:13px;
@@ -2503,6 +2532,9 @@ a.browseRemoveFacet .glyphicon {
 	color:#fff;
 	background-color: #858585;
 }
+.collectionsContainer a.openCollection.active small {
+    color: #fff;
+}
 .collectionsContainer a .fa, .collectionsContainer .fa, #collectionLoad a .fa, #collectionLoad .fa{
 	color: #858585;
 }
@@ -2516,12 +2548,22 @@ a.browseRemoveFacet .glyphicon {
 .collectionsContainer p{
 	font-size:12px;
 }
+
 #collectionLoad {
 	float:left;	
 	padding:20px 20px 10px 20px;
 	height: 500px;
 	overflow-y: scroll;
-	border-left:2px solid #454545;
+}
+@media (max-width: 768px) {
+	#collectionLoad {	
+		border-top:2px solid #454545;
+	}
+}
+@media (min-width: 768px) {
+	#collectionLoad {	
+		border-left:2px solid #454545;
+	}
 }
 #collectionLoad p{
 	font-size:12px;
@@ -2707,7 +2749,10 @@ a.browseRemoveFacet .glyphicon {
 	padding-bottom:10px; 
 	margin-bottom:15px;
 }	
- 
+ /* Universal viewer */
+.detail .repViewerCont .uv{
+	min-height:500px;
+}
    
 
 /* bookreader */
@@ -2730,6 +2775,7 @@ a.browseRemoveFacet .glyphicon {
 	margin: 0px;
 	padding: 0px;
 	z-index: 31000;			/* needs to be on top of menu bar, which has z-index=30000 */
+	background-color: rgba(255, 255, 255, 0.7);
 }
 #caMediaPanel #close{
 	float: right;
@@ -3171,7 +3217,7 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	padding: 5px;
 	/* min-width: 120px; */
 	max-width: 300px;
-	*/ min-height: 50px; */
+	/* min-height: 50px; */
 }
 
 /* ----------------- print specific styles ----------------------*/
@@ -3299,3 +3345,6 @@ input[type='text'].ui-autocomplete-loading {
     background: white url('../graphics/indicator.gif') right center no-repeat;
 }
 
+.video-js{
+	min-height:300px;
+}

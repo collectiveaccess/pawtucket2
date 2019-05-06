@@ -98,7 +98,7 @@ if (!$vb_ajax) {	// !ajax
     //
 ?>
 				<div class="btn-group">
-					<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
+					<span class="glyphicon glyphicon-cog bGear" data-toggle="dropdown"></span>
 					<ul class="dropdown-menu" role="menu">
 <?php
 						if(($vs_sort_control_type == "dropdown") && is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
@@ -267,8 +267,8 @@ if (!$vb_ajax) {	// !ajax
 									
 									$vs_representation = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => caGetDetailForType('ca_objects', null, array('request' => $this->request)), 'id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;'><div class='lbItemImg'>{$vs_tag}</div></a>";
 								} else {
-									if (!isset($va_placeholders[$vs_type_idno])) { $va_placeholders[$vs_type_idno] = caGetPlaceholder($vs_type_idno, 'placeholder_media_icon'); }
-									$vs_representation = "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$vs_type_idno]."</div>";
+									if (!isset($va_placeholders[$va_items[$vn_item_id]['type']])) { $va_placeholders[$va_items[$vn_item_id]['type']] = caGetPlaceholder($va_items[$vn_item_id]['type'], 'placeholder_media_icon'); }
+									$vs_representation = "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$va_items[$vn_item_id]['type']]."</div>";
 								}
 								$this->setVar('representation', $vs_representation);
 								$this->setVar('representation_id', $vn_representation_id);
@@ -359,7 +359,7 @@ if (!$vb_ajax) {    // !ajax
 ?>
     var pageLoadList = [];
     var dataLoading = false;
-    jQuery(window).bind("scroll", function(e) {
+    jQuery(window).on("scroll", function(e) {
         var $e = jQuery("#lbSetResultLoadContainer");
         var _$scroll = jQuery(window),
             borderTopWidth = parseInt($e.css('borderTopWidth')),

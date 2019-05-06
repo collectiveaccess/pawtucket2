@@ -352,6 +352,9 @@ a:hover .frontIconButton{
 .front .tl-timeline h2{
 	padding-top:15px !Important;
 }
+.front .tl-timemarker-content-small h2{
+	padding-top:0px !Important;
+}
 
 .tl-media-content img{
 	max-height:auto !important;
@@ -544,7 +547,7 @@ div.browseFacetItem a:hover {
 .detail .block a.moreLess{
 	padding-left:10px;
 }
-.detail .relatedBlock .relatedBlockContent a{
+.detail .relatedBlock .relatedBlockContent a, .detail .relatedBlock .relatedBlockContent .placePlaceholder{
 	display:inline-block;
 	background-color:#f0ede4;
 	font-size:11px;
@@ -1114,6 +1117,12 @@ a.readmore-js-toggle {
 #exploreMapBalloonContainer h6{
 	margin-bottom:0px;
 }
+.leaflet-container a{
+	color:#d20000;
+}
+.leaflet-container a.btn-default{
+	color:#FFF;
+}
 
 /* listing */
 .exploreResourcesRow{
@@ -1203,4 +1212,15 @@ a.readmore-js-toggle {
 .aboutLogo img{
 	width:100%;
 	height:auto;
+}
+
+/* contact form */
+.form-control-static.securityQuestion{
+	color:#000;
+}
+
+/* overlay */
+#caFormOverlay {
+    width: 500px;
+    margin: 10% auto 0px auto;
 }

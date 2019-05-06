@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2016 Whirl-i-Gig
+ * Copyright 2016-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,13 +33,7 @@
  /**
    *
    */
-	require_once(__CA_LIB_DIR__."/core/Print/PDFRenderer.php");
- 	require_once(__CA_LIB_DIR__.'/core/Parsers/dompdf/dompdf_config.inc.php');
-   
-	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel.php');
-	require_once(__CA_LIB_DIR__.'/core/Parsers/PHPExcel/PHPExcel/IOFactory.php');
-	
-	//\PhpOffice\PhpPresentation\Autoloader::register();
+	require_once(__CA_LIB_DIR__."/Print/PDFRenderer.php");
 	
    # ----------------------------------------
 	/**
@@ -427,7 +421,7 @@
 				//
 				// PDF output
 				//
-				caExportViewAsPDF($o_view, $va_template_info, caGetOption('filename', $va_template_info, 'export_results.pdf'), []);
+				caExportViewAsPDF($o_view, $va_template_info, ($vs_filename = $o_view->getVar('filename')) ? $vs_filename : caGetOption('filename', $va_template_info, 'export_results.pdf'), []);
 				$o_controller = AppController::getInstance();
 				$o_controller->removeAllPlugins();
 		
@@ -442,7 +436,8 @@
 	 * @param View $po_view
 	 * @param string $ps_template_identifier
 	 * @param string $ps_output_filename
-	 * @param array $pa_options
+	 * @param array $pa_options Options include:
+	 * 		returnFile = return file content instead of streaming to browser -> passed through to caExportContentAsPDF
 	 * @return bool
 	 *
 	 * @throws ApplicationException
@@ -475,7 +470,7 @@
 			$po_view->addViewPath($vs_base_path);
 			$vs_content = $po_view->render($pa_template_info['path']);
 			
-			$vb_printed_properly = caExportContentAsPDF($vs_content, $pa_template_info, $ps_output_filename, $pa_options=null);
+			$vb_printed_properly = caExportContentAsPDF($vs_content, $pa_template_info, $ps_output_filename, $pa_options);
 		} catch (Exception $e) {
 			$vb_printed_properly = false;
 			throw new ApplicationException(_t("Could not generate PDF"));
@@ -490,7 +485,8 @@
 	 * @param string $ps_content
 	 * @param array $pa_template_info
 	 * @param string $ps_output_filename
-	 * @param array $pa_options
+	 * @param array $pa_options Options include:
+	 * 		returnFile = return file content instead of streaming to browser
 	 * @return bool
 	 *
 	 * @throws ApplicationException
@@ -509,9 +505,12 @@
 		
 			$ps_output_filename = ($ps_output_filename) ? preg_replace('![^A-Za-z0-9_\-\.]+!', '_', $ps_output_filename) : 'export';
 
-			$o_pdf->render($ps_content, array('stream'=> true, 'filename' => $ps_output_filename));
-
-			$vb_printed_properly = true;
+			if(caGetOption('returnFile', $pa_options, null)){
+				return $o_pdf->render($ps_content);
+			}else{
+				$o_pdf->render($ps_content, array('stream'=> true, 'filename' => $ps_output_filename));
+				$vb_printed_properly = true;
+			}
 		} catch (Exception $e) {
 			$vb_printed_properly = false;
 			throw new ApplicationException(_t("Could not generate PDF: ".$e->getMessage()));

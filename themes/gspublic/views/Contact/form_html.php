@@ -26,28 +26,26 @@
 	$vn_sum = $vn_num1 + $vn_num2;
 
 
-		$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/contact/";
-		$vn_filecount = 0;
-		$va_files = glob($vs_directory . "*");
-		if ($va_files){
-		 $vn_filecount = count($va_files);
-		}
-
-		print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'contact/'.rand(1,$vn_filecount).'.jpg')."</div>";
-	?>
-		<div class="quote">
-			<div class="quoteText">
-				"This hunger to grow is the real YOU. It is the real ME. However much we laugh at other things, we must take seriously the thing inside which pushes us to build our lives."
-			</div>
-			<div class="quoteCredit">&mdash; Jane Deeter Rippin, Girl Scout National Executive Director, 1919-1930</div>
-<?php
-			if($ps_contactType == "contact"){
-				print "<H1>"._t("Contact")."</H1>";
-			}else{
-				print "<H1>"._t("Ask An Archivist")."</H1>";	
-			}
+	$vs_directory = __CA_THEME_DIR__."/assets/pawtucket/graphics/contact/";
+	$vn_filecount = 0;
+	$va_files = glob($vs_directory . "*");
+	if ($va_files){
+	 $vn_filecount = count($va_files);
+	}
+#	if($ps_contactType == "contact"){
+#		print "<H1>"._t("Contact")."</H1>";
+#	}else{
+#		print "<H1>"._t("Ask An Archivist")."</H1>";	
+#	}
+	print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'contact/'.rand(1,$vn_filecount).'.jpg')."</div>";
 ?>
+	<div class="row">
+		<div class="col-sm-12 ">
+			<div class="band">
+				<div>Email the Cultural & Property Assets Department</div>
+			</div>
 		</div>
+	</div>
 <?php
 	if(sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";

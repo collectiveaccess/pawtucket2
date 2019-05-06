@@ -54,6 +54,14 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-108626782-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-108626782-1');
+</script>
 </head>
 <body>
 	<div class="headerContainer">
@@ -102,13 +110,12 @@
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li <?php print ($this->request->getController() == "Front") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Home"), "", "", "", ""); ?></li>
-					<li><a href="<?php print $this->request->config->get("site_host"); ?>/wordpress/index.php/about/"><?php print _t("About"); ?></a></li>
+					<li><?php print caNavLink($this->request, _t("Museum Guide"), '', '', 'About', 'museum_guide'); ?></li>
 <?php
 						print $this->render("pageFormat/browseMenu.php");
 ?>
-					<li><a href="<?php print $this->request->config->get("site_host"); ?>/wordpress/index.php/links/"><?php print _t("Links"); ?></a></li>
-					<li><a href="<?php print $this->request->config->get("site_host"); ?>/wordpress/index.php/help/"><?php print _t("Help"); ?></a></li>
-					<li><a href="<?php print $this->request->config->get("site_host"); ?>/wordpress/index.php/contact-us/"><?php print _t("Contact Us"); ?></a></li>
+					<li><?php print caNavLink($this->request, _t("About HGS Heritage"), '', '', 'About', 'HGSH'); ?></li>
+					<li><?php print caNavLink($this->request, _t("Contact Details"), '', '', 'About', 'contact_details'); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

@@ -72,6 +72,8 @@
 	
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,400i,700,700i" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Chivo:400" rel="stylesheet" type="text/css">
+	<link rel="icon" href="<?php print $this->request->getThemeUrlPath();?>/assets/pawtucket/graphics/favicon.ico" type="image/x-icon"  sizes="16x16">
+
 <?php
 	if(Debug::isEnabled()) {		
 		//
@@ -105,7 +107,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'lightwork.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'lw_newlogo.jpg'), "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -127,17 +129,18 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="search" name="search">
+							<input type="text" class="form-control" placeholder="search site" name="search">
 						</div>
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "first", "", "About", "Index"); ?></li> 
-					<li <?php print (($this->request->getController() == "artists") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "artists"); ?></li>											
-					<li <?php print (($this->request->getController() == "objects") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artworks"), "", "", "Browse", "objects"); ?></li>	
-					<li <?php print (($this->request->getController() == "objects") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Publications"), "", "", "Browse", "contact"); ?></li>						
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Find"), "", "", "Search", "advanced/objects"); ?></li>	
+					<li><a href='http://www.lightwork.org' class='first' target='_blank'>lightwork.org</a></li>
+					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li> 
+					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "artists")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "artists"); ?></li>											
+					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artworks"), "", "", "Browse", "artworks"); ?></li>	
+					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "contact")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Publications"), "", "", "Browse", "publications"); ?></li>						
+					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Find"), "", "", "Search", "advanced/artworks"); ?></li>	
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>				
 									
 								
@@ -146,7 +149,7 @@
 ?>
 
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown">Lightbox</a>
+						<a href="#" class="dropdown-toggle icon <?php print (($this->request->getController() == "Lightbox") ? 'active' : ''); ?>" data-toggle="dropdown">Lightbox</a>
 						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 

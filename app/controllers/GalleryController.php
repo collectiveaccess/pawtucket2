@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2016 Whirl-i-Gig
+ * Copyright 2013-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -44,7 +44,6 @@
             }
             
  			$this->config = caGetGalleryConfig();
- 			$this->opo_datamodel = Datamodel::load();
  			
  		 	# --- what is the section called - title of page
  			if(!$vs_section_name = $this->config->get('gallery_section_name')){
@@ -73,7 +72,6 @@
  			$t_set = new ca_sets();
  			if($ps_function == "index"){
  				if($vn_gallery_set_type_id){
- 					$o_dm = $this->getAppDatamodel();
 					$va_tmp = array('checkAccess' => $this->opa_access_values, 'setType' => $vn_gallery_set_type_id);
 					if(!$this->config->get("gallery_include_all_tables")){
 						$va_tmp["table"] = "ca_objects";
@@ -93,8 +91,8 @@
 						$vn_item_id = $va_first_item["item_id"];
 						# --- it there isn't a rep and this is not a set of objects, try to get a related object to show something
 						if(!$va_set_first_items[$vn_set_id][$vn_item_id]["representation_tag"]){
-							if($o_dm->getTableName($va_set['table_num']) != "ca_objects"){
-								$t_instance = $o_dm->getInstanceByTableNum($va_set['table_num']);
+							if(Datamodel::getTableName($va_set['table_num']) != "ca_objects"){
+								$t_instance = Datamodel::getInstanceByTableNum($va_set['table_num']);
 								$t_instance->load($va_first_item["row_id"]);
 								if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.iconlarge</unit>', array("checkAccess" => $this->opa_access_values))){
  									$va_set_first_items[$vn_set_id][$vn_item_id] = array("representation_tag" => $vs_thumbnail);
@@ -113,8 +111,7 @@
  				$t_set->load($ps_set_id);
  				$this->view->setVar("set", $t_set);
  				
- 				$o_dm = $this->getAppDatamodel();
-				$vs_table = $o_dm->getTableName($t_set->get('table_num'));
+				$vs_table = Datamodel::getTableName($t_set->get('table_num'));
 				# --- don't save the gallery context when loaded via ajax
 				if (!$this->request->isAjax()){
 					$o_context = new ResultContext($this->request, $vs_table, 'gallery');
@@ -191,9 +188,8 @@
  				$va_set_item = array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "large", "checkAccess" => $this->opa_access_values))));
  			}
  			if(is_array($va_set_item) && !$va_set_item["representation_tag"]){
- 				$o_dm = $this->getAppDatamodel();
-				if($o_dm->getTableName($t_set->get('table_num')) != "ca_objects"){
-					$t_instance = $o_dm->getInstanceByTableNum($t_set->get('table_num'));
+				if(Datamodel::getTableName($t_set->get('table_num')) != "ca_objects"){
+					$t_instance = Datamodel::getInstanceByTableNum($t_set->get('table_num'));
 					$t_instance->load($va_set_item["row_id"]);
 						if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.large</unit>', array("checkAccess" => $this->opa_access_values))){
 							$va_set_item["representation_tag"] = $vs_thumbnail;
@@ -212,8 +208,7 @@
 			$pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
 			$t_set = new ca_sets($pn_set_id);
 			$this->getView()->setVar('set', $t_set);
-			$o_dm = $this->getAppDatamodel();
-			$vs_table = $o_dm->getTableName($t_set->get('table_num'));
+			$vs_table = Datamodel::getTableName($t_set->get('table_num'));
 			$va_views = $this->config->get('views');
 			$this->getView()->setVar('table', $vs_table);
 			$this->getView()->setVar('views', $va_views);
@@ -241,15 +236,14 @@
             if($this->opb_is_login_redirect) { return; }
             $pn_set_id = $this->getRequest()->getParameter('set_id', pInteger);
 			$t_set = new ca_sets($pn_set_id);
-			$o_dm = $this->getAppDatamodel();
-			$vs_table = $o_dm->getTableName($t_set->get('table_num'));
+			$vs_table = Datamodel::getTableName($t_set->get('table_num'));
 			
             $pa_ids = explode(";",$this->request->getParameter('id', pString)); 
             $va_views_info = $this->config->get('views');
             $va_view_info = $va_views_info["map"][$vs_table];
-            $vs_content_template = $va_view_info['display']['icon'].$va_view_info['display']['title_template'].$va_view_info['display']['description_template'];
+            $vs_content_template = $va_view_info['display']['labelTemplate'].$va_view_info['display']['contentTemplate'];
 			$this->view->setVar('contentTemplate', caProcessTemplateForIDs($vs_content_template, $vs_table, $pa_ids, array('checkAccess' => $this->opa_access_values, 'delimiter' => "<br style='clear:both;'/>")));
-			
+							
 			$this->view->setVar('heading', trim($va_view_info['display']['heading']) ? caProcessTemplateForIDs($va_view_info['display']['heading'], $vs_table, [$pa_ids[0]], array('checkAccess' => $this->opa_access_values)) : "");
 			$this->view->setVar('table', $vs_table);
 			$this->view->setVar('ids', $pa_ids);
@@ -260,15 +254,14 @@
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set->load($pn_set_id);
- 			$o_dm = $this->getAppDatamodel();
-			$vs_table = $o_dm->getTableName($t_set->get('table_num'));
+			$vs_table = Datamodel::getTableName($t_set->get('table_num'));
 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values)));
  			$this->view->setVar("set_id", $pn_set_id);
  			
  			$pn_item_id = $this->request->getParameter('item_id', pInteger);
  			$this->view->setVar("set_item_id", $pn_item_id); 
  			$t_rep = new ca_object_representations($va_set_items[$pn_item_id]["representation_id"]);
-			if(is_array($this->opa_access_values) && sizeof($this->opa_access_values) && in_array($t_rep->get("access"), $this->opa_access_values)){
+			if(!(is_array($this->opa_access_values) && sizeof($this->opa_access_values) && !in_array($t_rep->get("access"), $this->opa_access_values))){
 				$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
 				$this->view->setVar("rep_object", $t_rep);
 				$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
@@ -298,15 +291,15 @@
  			$pn_set_id = $this->request->getParameter('set_id', pInteger);
  			$t_set = new ca_sets($pn_set_id);
  			$t_set_item = new ca_set_items($pn_item_id);
- 			$o_dm = $this->getAppDatamodel();
-			$t_instance = $o_dm->getInstanceByTableNum($t_set->get("table_num"));
-			$vs_table = $o_dm->getTableName($t_set_item->get('table_num'));
+			$t_instance = Datamodel::getInstanceByTableNum($t_set->get("table_num"));
+			$vs_table = Datamodel::getTableName($t_set_item->get('table_num'));
 			$t_instance->load($t_set_item->get("row_id"));
  			$va_set_item_ids = array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values)));
  			$this->view->setVar("item_id", $pn_item_id);
  			$this->view->setVar("set_num_items", sizeof($va_set_item_ids));
  			$this->view->setVar("set_item_num", (array_search($pn_item_id, $va_set_item_ids) + 1));
  			
+ 			$this->view->setVar("set_item", $t_set_item);
  			$this->view->setVar("object", $t_instance);
  			$this->view->setVar("instance", $t_instance);
  			$this->view->setVar("object_id", $t_set_item->get("row_id"));

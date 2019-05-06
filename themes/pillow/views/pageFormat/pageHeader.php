@@ -74,6 +74,8 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+    <link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
+
 </head>
 <body  >
 <!--oncontextmenu="return false"-->

@@ -34,7 +34,7 @@
 	<div id="main-background" style="background-image:url(<?php  print $vs_image_url; ?>)"></div>
 
 	<div class="content-narrow">
-		<h1>Collection</h1>
+		<h1>No longer used --- now content managed --- Collection</h1>
 		<p>Storm King collects, exhibits, and conserves modern and contemporary art—from large-scale sculpture situated in Storm King’s expansive landscape, to site-specific earthworks, to related drawings and photographs—to create a dynamic and unique place to explore art in nature.</p>
 		<p>The artworks in this section represent a selection from Storm King's permanent collection as well as long-term loans.</p>
 	</div><!--end col-sm-8--> 

@@ -83,6 +83,7 @@
 				jQuery('#LoginForm').serialize()
 			);
 			e.preventDefault();
+			window.location.replace('<?php print caNavUrl($this->request, '', 'Browse', 'occurrences'); ?>');
 			return false;
 		});
 	});

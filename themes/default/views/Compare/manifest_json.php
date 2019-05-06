@@ -43,7 +43,7 @@
   "@type": "sc:Manifest", 
   "attribution": "", 
   "description": "", 
-  "label": <?php print json_encode($pa_info['display']); ?>, 
+  "label": <?php print json_encode(strip_tags($pa_info['display'])); ?>, 
   "license": "", 
   "logo": "", 
   "sequences": [

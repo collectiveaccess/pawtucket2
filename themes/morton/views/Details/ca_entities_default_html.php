@@ -38,7 +38,7 @@
 					if ($vs_gender = $t_item->get('ca_entities.genderCreator', array('delimiter' => ', '))) {
 						print "<div class='unit'><h6>Gender</h6>".$vs_gender."</unit></div>";
 					}
-					if ($vs_role = $t_item->get('ca_entities.roleCreator', array('delimiter' => ', '))) {
+					if ($vs_role = $t_item->get('ca_entities.roleCreator', array('delimiter' => '<br/>'))) {
 						print "<div class='unit'><h6>Role</h6>".$vs_role."</unit></div>";
 					}	
 					if ($vs_bio = $t_item->get('ca_entities.biography')) {

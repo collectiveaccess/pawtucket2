@@ -47,15 +47,15 @@
 		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
         
 		foreach ($va_browse_types as $vs_browse_id => $va_browse_type) {
-			if($vs_browse_id == 'works_in_collection') { continue; }    // Never show "works in collection", which is a browse type uses only to filter objects on collection details
+			//if(strtolower($vs_browse_id) == 'worksincollection') { continue; }    // Never show "works in collection", which is a browse type uses only to filter objects on collection details
 			$vs_menu_item_width = $va_browse_type['menuWidth'];
-			// When browse type is "works_in_collection" we don't want to show the browse title but we DO want to show the facet
+			// When browse type is "worksInCollection" we don't want to show the browse title but we DO want to show the facet
 			// so we force the browse type to "artworks", which will have the same facets but be labelled as NGA requests
-			if (($vs_browse_type == 'works_in_collection') && ($vs_browse_id == 'artworks')) {
+			if (($vs_browse_type == 'worksInCollection') && ($vs_browse_id == 'artworks')) {
 			    $vs_browse_type = 'artworks';
 			}
 			#print "<div class='browseTarget'>".caNavLink($this->request, $va_browse_type['displayName'], ($vs_browse_type == $vs_browse_id ? 'activeBrowse' : ''), '', 'Browse', $vs_browse_id)."</div>";
-			if ($vs_browse_type == $vs_browse_id) {
+			if (strtolower($vs_browse_type) == strtolower($vs_browse_id)) {
 				if(is_array($va_facets) && sizeof($va_facets)) {
 					print "<H5 >"._t("Filter by")."</H5>";
 				}
@@ -97,11 +97,13 @@
 						
 						if (!$vb_show_only_is_open) {
 							print '<div class="dropdown button" style="width:'.$vs_menu_item_width.'%;">';
-							print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>".$va_facet_info['label_singular']."<span class='caret'></span></H5><ul class='facetGroup panel dropdown-menu ' id='facetGroup{$vs_facet_name}' style='width:".$va_facet_info['width']."%;".(($va_facet_info['left'] == 1) ? 'left:-'.($va_facet_info['width'] - 100).'%;' : '')."'>"; 
+							$w = (int)caGetOption('width', $va_facet_info, 100);
+							$l = (int)caGetOption('left', $va_facet_info, 0);
+							print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>".$va_facet_info['label_singular']."<span class='caret'></span></H5><ul class='facetGroup panel dropdown-menu ' id='facetGroup{$vs_facet_name}' style='width:".$w."%;".(($l == 1) ? 'left:-'.($w - 100).'%;' : '')."'>"; 
 							print "<li><div class='container' id='{$vs_facet_name}_facet_container'><div class='row'>";
 						} elseif ($vb_show_only_open) {
 							print '<div class="dropdown button showOnly" style="width:'.$vs_menu_item_width.'%;">'; 
-							print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>Show Only<span class='caret'></span></H5><ul class='facetGroup panel dropdown-menu ' id='facetGroupShowOnly' style='width:150%;left:-90%'>"; 
+							print "<h5  class='btn btn-default dropdown-toggle' type='button' data-toggle='dropdown'>Show Only<span class='caret'></span></H5><ul class='facetGroup panel dropdown-menu dropdown-menu-right' id='facetGroupShowOnly' style='right:-21px;left:inherit;'>"; 
 							print "<li><div class='container' id='ShowOnly_facet_container'><div class='row'>";
 			
 						}
@@ -120,18 +122,25 @@
 								$vn_c = 0;
 								$vs_show_only = "";
 								foreach($va_facet_info['content'] as $va_item) {
-									if (!$vb_show_only_is_open) {
-										print "<div class='col-sm-".$va_facet_info['column']." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'><div class='checkArea'></div>".caNavLink($this->request, ucfirst($va_item['label']), '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
-										$vn_c++;
-										if ($vn_c == 3) {
-											print "<div style='clear:both;width:100%;margin-bottom:10px;'></div>";
-											$vn_c = 0;
-										}
-									} else {
-										$vs_show_only .= "<div class='col-sm-".$va_facet_info['column']." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'><div class='checkArea'></div>".caNavLink($this->request, ucfirst($va_item['label']), '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+									#if (!$vb_show_only_is_open) {
+									#	print "<div class='col-sm-".$va_facet_info['column']." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'><div class='checkArea'></div>".caNavLink($this->request, ucfirst($va_item['label']), '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+									#	$vn_c++;
+									#	if ($vn_c == 3) {
+									#		print "<div style='clear:both;width:100%;margin-bottom:10px;'></div>";
+									#		$vn_c = 0;
+									##	}
+									#} else {
+										$vs_facet_label = $va_item['label'];
+										// if (strtolower($vs_facet_label) == "yes") {
+// 											$vs_facet_label = "Double-sided";
+// 										}
+// 										if (strtolower($vs_facet_label) == "no") {
+// 											$vs_facet_label = "Not double-sided";
+// 										}
+										$vs_show_only .= "<div class='col-sm-".$va_facet_info['column']." facetItem facetItem{$vs_facet_name}' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'><div class='checkArea'></div>".caNavLink($this->request, ucfirst($vs_facet_label), '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 										
 					                    if ($vb_show_only_is_open) {  $va_show_only_facets[$vs_facet_name] = true; }
-									}
+									#}
 						
 									#if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
 									#	print "<div id='{$vs_facet_name}_more' style='display: none;'>";
@@ -187,14 +196,14 @@
             var multiple_selection_facet_list = <?php print json_encode($va_multiple_selection_facet_list); ?>;
             
             jQuery(".facetItem").on('click', function(e) { 
-            	if (!multiple_selection_facet_list[jQuery(this).data('facet')]) { return; }
+                var f = jQuery(this).data('facet');
+            	if (!multiple_selection_facet_list[f]) { return; }
             	if (jQuery(this).attr('facet_item_selected') == '1') {
             		jQuery(this).attr('facet_item_selected', '');
             	} else {
+            	    jQuery(".facetItem" + f).attr('facet_item_selected', '');
             		jQuery(this).attr('facet_item_selected', '1');
             	}
-            	
-
             	
             	e.preventDefault();
             	return false;

@@ -5,10 +5,16 @@
 		if ($va_files){
 		 $vn_filecount = count($va_files);
 		}
-		
 		print "<div class='bannerImg'><img src='".__CA_THEME_URL__."/assets/pawtucket/graphics/about/".rand(1,$vn_filecount).".jpg'></div>";
 ?>
-<H1>{{{title}}}</H1>
+	<div class="row">
+		<div class="col-sm-12 ">
+			<div class="band">
+				<div>{{{title}}}</div>
+			</div>
+		</div>
+	</div>
+
 <div class="row">
 	<div class="col-sm-12">
 		{{{bodytext}}}

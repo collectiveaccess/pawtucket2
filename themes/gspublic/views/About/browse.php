@@ -7,18 +7,10 @@
 	 $vn_filecount = count($va_files);
 	}
 ?>
-	<H1 class='discover'><?php print _t("Discover"); ?></H1>
+	<!--<H1 class='discover'><?php print _t("Discover"); ?></H1>-->
 <?php
 	print "<div class='bannerImg'>".caGetThemeGraphic($this->request, 'discover/'.rand(1,$vn_filecount).'.jpg')."</div>";
 ?>
-<div class="row">
-	<div class="col-sm-12">
-		<div class="quote">
-			<div class="quoteText">"To put yourself in another's place requires real imagination, but by doing so each Girl Scout will be able to live among others happily."</div>
-			<div class="quoteCredit">&mdash; Juliette Gordon Low, A Message from the Founder of the Girl Scouts, American Girl Magazine October 1923</div>
-		</div>
-	</div>
-</div>
 <div class="row">
 	<div class="col-sm-12 ">
 		<div class="band">

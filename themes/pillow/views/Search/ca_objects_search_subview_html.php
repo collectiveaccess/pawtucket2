@@ -58,7 +58,7 @@
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> | 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search), [], ['useQueryString' => true]); ?></span> | 
 <?php
 				}
 ?>
@@ -149,11 +149,12 @@
 				jQuery(document).ready(function() {
 					jQuery('#{{{block}}}Results').hscroll({
 						name: '{{{block}}}',
-						itemCount: <?php print ceil($qr_results->numHits()/2); ?>,
-						preloadCount: <?php print $vn_count/2; ?>,
+						itemCount: <?php print $qr_results->numHits(); ?>,
+						preloadCount: <?php print $vn_count; ?>,
 						
 						itemWidth: jQuery('.{{{block}}}Result').outerWidth(true),
-						itemsPerLoad: <?php print $vn_hits_per_block/2; ?>,
+						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
+						itemsPerColumn: 2,
 						itemLoadURL: '<?php print caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)); ?>',
 						itemContainerSelector: '.blockResultsScroller',
 						

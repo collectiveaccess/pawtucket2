@@ -22,3 +22,12 @@ body{ font: "helvetica, sans-serif"; margin:0px; padding:0px;}
 h6 {font-size:12px; font-weight:bold;text-transform:uppercase; margin:0px 0px 5px 0px; padding:0px;}
 .tombstone { margin-top:20px;}
 .clear { clear: both; }
+
+.fileIcon{
+	background-image: url("folder.jpg");
+	background-size: cover;
+	background-repeat: no-repeat;
+	width:17px;
+	height:14px;
+	display:inline-block;
+}

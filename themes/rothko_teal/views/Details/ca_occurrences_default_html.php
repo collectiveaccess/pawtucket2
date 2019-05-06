@@ -10,8 +10,8 @@
 ?>
 <div class="container">
 	<div class="row">
-		<div class="col-sm-1"><div class='previousLink'>{{{previousLink}}}</div></div>
-		<div class="col-sm-10">
+		<div class="col-xs-1"><div class='previousLink'>{{{previousLink}}}</div></div>
+		<div class="col-xs-10">
 
 <div class="container">
 	<div class="row detailHead">
@@ -20,7 +20,7 @@
 		</div>
 		<div class='col-xs-5 pdfLink'>
 <?php		
-			print caNavLink($this->request, caGetThemeGraphic($this->request, 'pdf.png'), 'faDownload', 'Detail', 'occurrences', $vn_id.'/view/pdf/export_format/_pdf_ca_occurrences_summary');
+			#print caNavLink($this->request, caGetThemeGraphic($this->request, 'pdf.png'), 'faDownload', 'Detail', 'occurrences', $vn_id.'/view/pdf/export_format/_pdf_ca_occurrences_summary');
 ?>	
 		</div><!-- end col --> 		
 	</div>
@@ -69,6 +69,15 @@
 				}
 			}
 		} */
+		$vs_solo_type =  $t_list->getItemIDFromList('exhibition_type', 'solo');
+		$vs_group_type =  $t_list->getItemIDFromList('exhibition_type', 'group');
+		if ($vs_ex_type = $t_item->get('ca_occurrences.exhibition_type')) {
+			if ( $vs_ex_type == $vs_solo_type ) {
+				print "<div class='unit borderless'>".caNavLink($this->request, 'Solo exhibition', '', 'Browse', 'exhibitions', 'facet/group_facet/id/'.$vs_ex_type)."</div>";
+			} elseif ( $vs_ex_type == $vs_group_type ) {
+				print "<div class='unit borderless'>".caNavLink($this->request, 'Group exhibition', '', 'Browse', 'exhibitions', 'facet/group_facet/id/'.$vs_ex_type)."</div>"; 
+			}
+		}
 		if ($t_item->get('ca_occurrences.exhibition_origination') == $vs_yes_value) {
 			print "<div class='unit borderless'>Originating venue</div>";
 		}
@@ -78,29 +87,38 @@
 
 ?>
 	</div>
-	<div class="col-sm-6 col-md-6 col-lg-6">{{{representationViewer}}}</div>
+	<div class="col-sm-6 col-md-6 col-lg-6" style="width: 580px;">{{{representationViewer}}}</div>
 </div><!-- end row -->
-<div class="row " style="border-bottom: 1px solid #d6d6d6;margin:40px -15px 0px -15px;"></div>	
+<div class="row " style="border-bottom: 1px solid #d6d6d6;margin:40px -10px 10px -10px;"></div>	
 <?php
 		$vs_first = true;
+		$vs_contextual_info = false;
 		$vs_no_border = "style=border-top:0px;";
 		if ($vs_exhibitions = $t_item->getWithTemplate('<unit restrictToTypes="exhibition" delimiter="<br/>" relativeTo="ca_occurrences.related" sort="ca_occurrences.occurrence_dates"><l><i>^ca_occurrences.preferred_labels</i><unit relativeTo="ca_entities" restrictToRelationshipTypes="venue">, ^ca_entities.preferred_labels<ifdef code="ca_entities.address.city">, ^ca_entities.address.city</ifdef><ifdef code="ca_entities.address.state">, ^ca_entities.address.state</ifdef><ifdef code="ca_entities.address.country">, ^ca_entities.address.country</ifdef></unit><ifdef code="ca_occurrences.occurrence_dates">, ^ca_occurrences.occurrence_dates</ifdef><if rule="^ca_occurrences.exhibition_origination =~ /yes/"> (originating institution)</if>. <i class="fa fa-chevron-right"></i></l></unit>')) {
-			print "<div class='row'><div class='col-sm-8  col-sm-offset-2  '><div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
-			print "<h6><a href='#'  data-toggleDiv='exhibitionDiv' class='togglertronic'>Venues <i class='fa fa-".( $vs_first == true ? "minus" : "plus")." drawerToggle'></i></a></h6>";
+			print "<div class='row'><div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'><div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
+			print "<h6><a href='#'  data-toggleDiv='exhibitionDiv' class='togglertronic'>Venues <i class='fa fa-minus drawerToggle'></i></a></h6>";
 			print "<div id='exhibitionDiv'>".$vs_exhibitions."</div>";
 			print "</div></div></div>";
 			$vs_first = false;
+			$vs_contextual_info = true;
 		}
 		if ($vs_reference = $t_item->getWithTemplate('<unit restrictToTypes="reference" delimiter="<br/>" relativeTo="ca_occurrences.related"><l>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.nonpreferred_labels">: ^ca_occurrences.nonpreferred_labels</ifdef>. <i class="fa fa-chevron-right"></i></l></unit>')) {
-			print "<div class='row'><div class='col-sm-8  col-sm-offset-2  '><div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
-			print "<h6><a href='#' data-toggleDiv='referenceDiv' class='togglertronic'>Exhibition Catalog <i class='fa fa-".( $vs_first == true ? "minus" : "plus")." drawerToggle'></i></a></h6>";
+			print "<div class='row'><div class='col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2'><div class='drawer' ".( $vs_first == true ? $vs_no_border : "").">";
+			print "<h6><a href='#' data-toggleDiv='referenceDiv' class='togglertronic'>Exhibition Catalog <i class='fa fa-minus drawerToggle'></i></a></h6>";
 			print "<div id='referenceDiv'>".$vs_reference."</div>";
 			print "</div></div></div><!-- end row -->";
+			$vs_contextual_info = true;
 		}
 ?>		
 
 {{{<ifcount code="ca_objects" relativeTo="ca_objects" restrictToTypes="side" min="1">
-	<div class="row " style="border-bottom: 1px solid #d6d6d6;margin:5px -15px 0px -15px;"></div>
+<?php
+	if ($vs_contextual_info == true) {
+?>	
+	<div class="row " style="border-bottom: 1px solid #d6d6d6;margin:10px -10px 10px -10px;"></div>
+<?php
+	}
+?>
 	<div class="row"><div class='col-sm-12'>
 	
 		<div id="browseResultsContainer">
@@ -124,7 +142,7 @@
 </div>
 
 			</div>
-			<div class="col-sm-1"><div class='nextLink'>{{{nextLink}}}</div></div>
+			<div class="col-xs-1"><div class='nextLink'>{{{nextLink}}}</div></div>
 		</div><!-- end row -->
 	</div><!-- end container -->
 	

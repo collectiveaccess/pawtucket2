@@ -101,7 +101,7 @@
 			
 				{{{<ifdef code="ca_objects.abstract">
 					<div class='unit'><h6>Abstract</h6>
-						<span class="trimText">^ca_objects.abstract</span>
+						<span class="text">^ca_objects.abstract</span>
 					</div>
 				</ifdef>}}}
 				

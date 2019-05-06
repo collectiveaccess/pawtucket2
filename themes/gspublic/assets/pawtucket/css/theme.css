@@ -1,5 +1,5 @@
 /* green #00AE58, dark green #009447 green link: #00964c; very light green #C1EAD4; */
-/* magenta: #ec008b; navy: #004e9a; blue (daisies): #00abe6; gsgreen: #00ae58, purple (junior cookie) #6e298d, red: #ee3124 */
+/* magenta: #ec008b; navy: #004e9a; blue (daisies): #00abe6; gsgreen: #00ae58, purple (junior cookie) #6e298d, red: #ee3124, orange ambassador: #faa61a */
 @font-face {
  font-family: Trefoil;
  src: url("fonts/TrefoilSans-Regular.eot") format("embedded-opentype"),
@@ -67,11 +67,14 @@ body {
 	padding-top:190px;
 }
 .initial #pageArea{
-	padding-top:20px;
+	padding-top:0px;
+}
+.initial #pageArea.detail, .initial #pageArea.results, .initial #pageArea.front{
+	padding-top:40px;
 }
 @media (max-width: 768px) {
 	#pageArea, .initial #pageArea{
-		padding-top:30px;
+		padding-top:0px;
 	}
 }
 .clearfix {
@@ -106,7 +109,24 @@ body {
 .green{
 	color:#00AE58;
 }
-
+.bgRed{
+	background-color: #ee3124;
+}
+.bgGreen{
+	background-color: #00ae58;
+}
+.bgDarkBlue{
+	background-color: #004e9a;
+}
+.bgLightBlue{
+	background-color: #00abe6;
+}
+.bgPurple{
+	background-color: #6e298d;
+}
+.bgPink{
+	background-color: #ec008b;
+}
 
 .navbar{
 	box-shadow:none;
@@ -126,10 +146,14 @@ body {
 	background-color:#2fb56a;
     -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
 	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	padding-left:0px;
+	padding-right:0px;
 }
 .initial .headerContainer{
 	position:relative;	
 	-webkit-box-shadow:none;
+	padding-left:15px;
+	padding-right:15px;
 }
 .topHeader{
 	background-color:#2fb56a;
@@ -217,11 +241,7 @@ h1 {
     font-size: 2rem;
     font-weight:200;
 }
-.staticPage h1 {
-    font-size: 2rem;
-    font-weight:500;
-}
-.gallery h1, .contact h1, .sets h1, .collections.landing h1, h1.discover {
+.gallery h1, .contact h1, .sets h1, .collections.landing h1, h1.discover, .staticPage h1 {
     font-size: 3rem;
     font-weight:500;
 }
@@ -230,7 +250,7 @@ h1 {
 		font-size: 1rem;
 		font-weight:200;
 	}
-	.staticPage h1, .gallery h1, .contact h1, .sets h1, .collections.landing h1 {
+	.staticPage h1, .gallery h1, .contact h1, .sets h1, .collections.landing h1, .staticPage h1 {
 		font-size: 1.5rem;
 		font-weight:500;
 	}
@@ -252,9 +272,12 @@ h1 {
 /* links */
 .nav > li > a, .nav > li > a:hover, .nav > li > a:focus {
 	font-family: Trefoil, Arial, sans-serif;
-    font-size:1rem;
+    font-size:.9rem;
 	color:#C1EAD4;
 	text-transform:uppercase;
+}
+.initial .nav > li > a, .initial .nav > li > a:hover, .initial .nav > li > a:focus {
+	font-size:1rem;
 }
 .nav > li > a:hover, .nav > li > a:focus{
 	color:#FFFFFF !important;
@@ -573,7 +596,7 @@ nav{
 
 .front H1{
 	font-family: Trefoil, Arial, sans-serif;
-	font-size: 1.6rem;
+	font-size: 1.5rem;
 	padding:0px !important;
 	font-weight: 500;
 }
@@ -640,7 +663,8 @@ nav{
 	background-color:#6e298d;
 }
 .frontBand.collections {
-	background-color:#c7c8ca;
+	/*background-color:#c7c8ca;*/
+	background-color:#faa61a;
 }
 .frontBand.about, .frontBand.galleryFront, .frontBand.browse, .frontBand.collections{
 	color:#fff;
@@ -774,14 +798,35 @@ a.readmore-js-toggle{
 	padding-top:0px;
 }
 /* Collections/Finding Aid */
-.collectionsList a{
-	font-size:18px;
-    font-weight: normal;
-    color: #00AE58;
-    text-decoration: none;
+.collections.landing h2{
+	font-size:20px;
+	font-weight: 500;
 }
-.collectionsList{
-	font-size:13px;
+.collectionsLeftCol .collectionBlock{
+	background-color: #00ae58;
+}
+.collectionsRightCol .collectionBlock{
+	background-color: #00abe6;
+}
+.collectionsRightCol .collectionBlock, .collectionsLeftCol .collectionBlock{
+	color:#FFF;
+	padding:25px 20px 5px 20px;
+	margin-bottom:25px;
+}
+.collectionsRightCol .collectionBlock a, .collectionsLeftCol .collectionBlock a{
+	font-size:1.2rem;
+	color:#FFF;
+	font-weight: 500;
+    text-decoration: none;
+    line-height:1.1rem;
+}
+.collectionBlock p{
+	line-height: 1.1rem;
+	padding-bottom:20px;
+	margin-bottom:0px;
+}
+.collectionBlock div{
+	padding-bottom:20px;
 }
 #collectionLoad div a, #collectionLoad div .nonLinkedCollection{
 	font-size:16px;
@@ -802,57 +847,92 @@ a.readmore-js-toggle{
 	padding-left:0px;
 }
 
-/* About */
+/* browse landing */
 
-.browseTile {
-	background-color: #daeddd;
+.browseTile, .collectionLandingTile {
+	background-color: #efecdf;
 	margin-bottom:25px;
 }
-.browseText {
+.browseText, .collectionText {
 	float:left;
 	font-size:14px;
 }
-@media (min-width: 1000px) {
+@media (min-width: 992px) {
 	.browseText, .browseImg {
 		width:50%;
 		float:left;
 	}
 }
+@media (min-width: 992px) {
+	.collectionText, .collectionImg {
+		width:50%;
+		float:left;
+	}
+}
+@media (max-width: 768px) {
+	.collectionText, .collectionImg {
+		width:50%;
+		float:left;
+	}
+}
 @media (min-width: 768px) and (max-width: 1000px) {
-	.browseText {
+	.browseText, .collectionText {
 		height:150px;
 	}
 }
-.browseImg img {
+
+.browseImg img, .collectionImg img {
 	width:100%;
 	height:auto;
 }
-.browseText h3 {
+.browseText h3, .collectionText h3 {
 	font-weight:bold;
 	font-size:18px;
 	padding-bottom:0px;
 	color:#fff;
 	margin-bottom:5px;
 }
-.browseText {
+.browseText, .collectionText {
 	padding-bottom:50px;
     padding: 15px;
     color:#fff;
 }
+@media (max-width: 992px) {
+	.browseText h3, .collectionText h3 {
+		font-size:14px;
+	}
+}
 .browseText a{
 	color:#fff;
 }
+.collectionText a{
+	color:#000;
+	font-weight: 500;
+}
+.collectionLink{
+	background-color:#009447;
+	color:#fff;
+	text-align:right;
+	padding:5px 10px 5px 0px;
+}
+.collectionLink a{
+	color:#FFF;
+	text-transform:uppercase;
+}
+.collectionLink a .fa{
+	font-size:12px;
+}
 .band {
-	background-color:#6e298d;
+	background-color:#004e9a;
 	color:#fff;
 	padding:10px;
 	font-size:22px;
-	margin-top:30px;
-	margin-bottom:30px;
+	margin-top:0px;
+	margin-bottom:45px;
 }
-.bannerImg {
-	margin-bottom:25px;
-}
+/*.bannerImg {
+	margin-bottom:60px;
+}*/
 .bannerImg img{
 	width:100%;
 	height:auto;
@@ -889,7 +969,7 @@ a.readmore-js-toggle{
 	.quote .quoteCredit{
 		margin-left:45%;
 	}
-	.gallery .quote .quoteText {
+	.quote .quoteText .quoteTextCenter {
 		font-size:16px;
 		width:50%;
 		margin-left:auto;
@@ -1204,4 +1284,32 @@ i.trefoilPlaceholder.smallPlaceholder{
 }
 .multisearch H1{
 	clear:right;
+}
+.aboutLandingBlocks{
+	padding:10px 15px 20px 15px;
+}
+.aboutLandingBlocks a{
+	font-size: 1.25rem;
+	font-weight:bold;
+	color:#000;
+}
+.aboutLandingBlocks .fa{
+	color:#00AE58;
+	margin-right:15px;
+}
+.aboutSideNav{
+	line-height:1.1rem;
+}
+.aboutSideNav a{
+	color:#000;
+	font-weight: 500;
+}
+.aboutSideNav div{
+	padding-bottom:15px;
+	text-indent: -10px;
+	margin-left: 25px;
+}
+.aboutSideNav .fa{
+	color:#00AE58;
+	margin-right:5px;
 }

@@ -64,8 +64,8 @@
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
-		$vn_col_span = 4;
-		$vn_col_span_sm = 4;
+		$vn_col_span = 6;
+		$vn_col_span_sm = 6;
 		$vn_col_span_xs = 12;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
@@ -155,7 +155,7 @@
 				</div><!-- bResultListItemExpandedInfo -->
 			</div><!-- end bResultListItem -->
 		</div><!-- end col -->";
-					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');
+					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				
 				$vn_c++;
