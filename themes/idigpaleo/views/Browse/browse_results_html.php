@@ -48,11 +48,11 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 	
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	$va_browse_info = $this->getVar("browseInfo");
+	$vn_result_size 	= (sizeof($va_criteria) > 0 || count($va_browse_info['baseCriteria']) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 	$vb_ajax			= (bool)$this->request->isAjax();
-	$va_browse_info = $this->getVar("browseInfo");
 	$vs_sort_control_type = caGetOption('sortControlType', $va_browse_info, 'dropdown');
 	$o_config = $this->getVar("config");
 	$vs_result_col_class = $o_config->get('result_col_class');
