@@ -35,7 +35,7 @@
 		<div class="row">
 			<div class="col-sm-12 col-md-6 col-md-offset-1">
 				<div class="hpIntro">
-					The Eudora Collection is, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.
+					{{{frontWelcomeMessage}}}
 					<p class="text-center">
 						<?php print caNavLink($this->request, _t("Browse the Collection"), "btn btn-default", "", "Browse", "coins"); ?>
 					</p>
@@ -47,9 +47,15 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-8 col-sm-offset-2 text-center">
-			<br/><br/><br/><H1>Welcome to dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1><br/><br/><br/>
-		</div><!--end col-sm-8-->
-	</div><!-- end row -->
+<?php
+			if($this->getVar("frontTagLine")){
+				print "<br/><br/><br/><H1>".$this->getVar("frontTagLine")."</H1><br/><br/><br/>";
+			}else{
+				print "<br/><br/><br/>";
+			}
+?>			
+		</div>
+	</div>
 </div>
 
 <div class="container">
