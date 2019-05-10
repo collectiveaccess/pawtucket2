@@ -117,11 +117,12 @@
 						print "<div class='detailMediaCaption'>".$va_rep["type"]."</div>";
 						print caRepToolbar($this->request, $t_rep, $t_object, array("display" => "detail", "context" => "coins"));
 						print "</div>\n";
-						if($vn_col == 2){
+						if($vn_col == 1){
 							$vn_col = 0;
 							print "</div><!-- end row-->\n";
+						}else{
+							$vn_col++;
 						}
-						$vn_col++;
 					}
 					if($vn_col > 0){
 						print "</div><!-- end row-->\n";
@@ -188,15 +189,7 @@
 								"Hoard" => "hoard",
 								"Findspot" => "findspot"
 							);
-							#$va_provenance_fields = array(	
-							#	"Previous Collection" => "previous_collection",
-							#	"Published Auction URL" => "published_auction",
-							#	"Published Auction" => "published_auction_text",
-							#	"Other Provenance" => "other_provenance",
-							#);
 							$va_literature_fields = array(	
-								#"Published Literature" => "published_literatue",
-								#"Published Literature Text" => "published_literature_text",
 								"Cross-reference" => "crossreference",
 								"Cross-reference Text" => "crossreference_text"
 							);
@@ -208,8 +201,13 @@
 									$vs_materiality .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
 								}
 							}
-							if($vs_tmp = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter=", " restrictToRelationshipTypes="obverse_countermark"><unit relativeTo="ca_list_items">^ca_list_items.preferred_labels.name_plural</unit></unit>')){
-								$vs_materiality .= "<div class='unit'><H6>Countermarks</H6>".$vs_tmp."</div>";							
+							$va_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("obverse_countermark")));
+							if(is_array($va_list_items) && sizeof($va_list_items)){
+								$va_terms = array();
+								foreach($va_list_items as $va_list_item){
+									$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Browse", "coins", array("facet" => "icon_facet", "id" => $va_list_item["item_id"]));
+								}
+								$vs_materiality .= "<div class='unit'><H6>Countermarks</H6>".join($va_terms, ", ")."</div>";	
 							}
 							if($vs_materiality){
 								print "<h4>Materiality</h4>".$vs_materiality;
@@ -232,22 +230,17 @@
 									$vs_descriptive .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
 								}
 							}
-							if($vs_tmp = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter=", "><unit relativeTo="ca_list_items">^ca_list_items.preferred_labels.name_plural</unit></unit>')){
-								$vs_descriptive .= "<div class='unit'><H6>Iconographic Classification</H6>".$vs_tmp."</div>";							
+							$va_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true));
+							if(is_array($va_list_items) && sizeof($va_list_items)){
+								$va_terms = array();
+								foreach($va_list_items as $va_list_item){
+									$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Browse", "coins", array("facet" => "icon_facet", "id" => $va_list_item["item_id"]));
+								}
+								$vs_descriptive .= "<div class='unit'><H6>Iconographic Classification</H6>".join($va_terms, ", ")."</div>";	
 							}
 							if($vs_descriptive){
 								print "<h4>Descriptive</h4>".$vs_descriptive;
 							}
-							
-							#$vs_provenance = "";
-							#foreach($va_provenance_fields as $vs_label => $vs_field){
-							#	if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
-							#		$vs_provenance .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
-							#	}
-							#}
-							#if($vs_provenance){
-							#	print "<h4>Provenance</h4>".$vs_provenance;
-							#}	
 	
 	
 							
@@ -267,22 +260,10 @@
 							if($vs_literature || $vs_rel_lit){
 								print "<h4>Literature</h4>".$vs_rel_lit.$vs_literature;
 							}
-							#$va_histories = $t_object->getHistory(['policy' => "__default__", 'limit' => 1, 'currentOnly' => true]);
-							$va_histories = $t_object->getHistory(['policy' => "provenance", 'currentOnly' => false]);
-							if(is_array($va_histories) && sizeof($va_histories)){
-								print "<H4>Chronology</H4>";
-								foreach($va_histories as $vs_date => $va_history){
-									$va_tmp = array();
-									foreach($va_history as $vs_location){
-										$va_tmp[] = $vs_location["display"]; 
-									}
-									print "<div class='unit'><h6>".$vs_location["typename_singular"]."</h6>";
-									print join(", ", $va_tmp);
-									print "</div>"; 
-								}
-							}
-
 ?>
+							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale,collection"><H4>Collection History</H4></ifcount>}}}
+							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale"><div class='unit'><h6>Auction<ifcount min="2" code="ca_occurrences" restrictToTypes="sale">s</ifcount></h6><unit relativeTo='ca_occurrences' delimiter=' ' restrictToTypes='sale' sort='ca_occurrences.date' sortDirection='DESC'><div class='unitSub'>^ca_occurrences.preferred_labels<ifdef code='ca_occurrences.date'>, ^ca_occurrences.date</ifdef><ifdef code='ca_occurrences.sale_number'>, ^ca_occurrences.sale_number</ifdef></div></unit></ifcount>}}}
+							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="collection"><div class='unit'><h6>Former Collection<ifcount min="2" code="ca_occurrences" restrictToTypes="collection">s</ifcount></h6><unit relativeTo='ca_occurrences' delimiter=' ' restrictToTypes='collection'><div class='unitSub'>^ca_occurrences.preferred_labels</div></unit></ifcount>}}}
 
 						</div>
 						<div class="col-sm-4">

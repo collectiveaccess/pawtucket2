@@ -68,12 +68,12 @@
 			<tr>
 				<td>
 <?php 
-					if ($vs_path = $vo_result->getMediaPath('ca_object_representations.media', 'thumbnail')) {
-						print "<div class=\"imageTiny\"><img src='{$vs_path}'/></div>";
-					} else {
-?>
-						<div class="imageTinyPlaceholder">&nbsp;</div>
-<?php					
+					$t_object = new ca_objects($vn_object_id);
+					
+					$va_reps = $t_object->getRepresentations(array("thumbnail"));
+
+					foreach($va_reps as $va_rep) {
+						print $va_rep['tags']['thumbnail']."\n";
 					}	
 ?>								
 

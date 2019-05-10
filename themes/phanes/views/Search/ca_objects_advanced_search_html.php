@@ -64,7 +64,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 		<span class='btn btn-default' style="margin-left: 20px;">{{{submit%label=Search}}}</span>
 	</div>
 </div>	
-<input type="hidden" name="view" value="obverse">
+<input type="hidden" name="view" value="obverse_reverse">
 {{{/form}}}
 
 	</div>

@@ -52,7 +52,7 @@
 			
 			</div>
 			<div class="footerLinks">
-				<a href="#">About</a>&nbsp;&nbsp;&middot;&nbsp;&nbsp;<?php print caNavLink($this->request, "Contact", "", "", "Contact","form"); ?>
+				<?php print caNavLink($this->request, "About", "", "", "About","AboutCollection"); ?>&nbsp;&nbsp;&middot;&nbsp;&nbsp;<?php print caNavLink($this->request, "Contact", "", "", "Contact","form"); ?>
 			</div>
 		</footer><!-- end footer -->
 <?php

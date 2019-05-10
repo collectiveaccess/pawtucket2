@@ -80,14 +80,24 @@
 
 ?>
 			<div class="thumbnail" style="left: <?php print $vn_left; ?>px; top: <?php print $vn_top; ?>px;">
-				<?php print "<div class='imgThumb'><img src='".$vo_result->getMediaPath('ca_object_representations.media', 'preview170')."'/></div>"; ?>
+				<div class='imgThumb'>
+<?php
+					$t_object = new ca_objects($vn_object_id);
+					
+					$va_reps = $t_object->getRepresentations(array("thumbnail"));
+
+					foreach($va_reps as $va_rep) {
+						print $va_rep['tags']['thumbnail']."\n";
+					}	
+?>
+				</div>
 				<?php print "<div class='caption'>".join(", ", $va_title_parts)."</div>"; ?>
 			</div>
 <?php
 
 			$vn_items_in_line++;
-			$vn_left += 220;
-			if ($vn_items_in_line >= 4) {
+			$vn_left += 440;
+			if ($vn_items_in_line >= 2) {
 				$vn_items_in_line = 0;
 				$vn_left = 0;
 				$vn_top += 225;

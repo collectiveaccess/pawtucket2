@@ -178,21 +178,11 @@
 			if($vs_literature || $vs_rel_lit){
 				print "<h4>Literature</h4>".$vs_rel_lit.$vs_literature;
 			}
-			$va_histories = $t_object->getHistory(['policy' => "provenance", 'currentOnly' => false]);
-			if(is_array($va_histories) && sizeof($va_histories)){
-				print "<H4>Chronology</H4>";
-				foreach($va_histories as $vs_date => $va_history){
-					$va_tmp = array();
-					foreach($va_history as $vs_location){
-						$va_tmp[] = $vs_location["display"]; 
-					}
-					print "<div class='unit'><h6>".$vs_location["typename_singular"]."</h6>";
-					print join(", ", $va_tmp);
-					print "</div>"; 
-				}
-			}
+?>
+			{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale,collection"><H4>Collection History</H4></ifcount>}}}
+			{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale"><div class='unit'><h6>Auction<ifcount min="2" code="ca_occurrences" restrictToTypes="sale">s</ifcount></h6><unit relativeTo='ca_occurrences' delimiter=' ' restrictToTypes='sale' sort='ca_occurrences.date' sortDirection='DESC'><div class='unitSub'>^ca_occurrences.preferred_labels<ifdef code='ca_occurrences.date'>, ^ca_occurrences.date</ifdef><ifdef code='ca_occurrences.sale_number'>, ^ca_occurrences.sale_number</ifdef></div></unit></ifcount>}}}
+			{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="collection"><div class='unit'><h6>Former Collection<ifcount min="2" code="ca_occurrences" restrictToTypes="collection">s</ifcount></h6><unit relativeTo='ca_occurrences' delimiter=' ' restrictToTypes='collection'><div class='unitSub'>^ca_occurrences.preferred_labels</div></unit></ifcount>}}}
 
-?>			
 		</div>
 		<div class="column">
 <?php
