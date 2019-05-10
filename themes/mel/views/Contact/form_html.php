@@ -62,7 +62,7 @@
 			</div><!-- end col -->
 		</div><!-- end row -->
 <?php
-	if(!$this->request->isLoggedIn() && __CA_GOOGLE_RECAPTCHA_KEY__){
+	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
 
 		# --- only show captcha
 ?>
