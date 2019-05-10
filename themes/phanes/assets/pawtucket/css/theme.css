@@ -83,6 +83,23 @@ a.navbar-brand, a.navbar-brand:hover {
 	color:#FFF;
     font-family:LatoLight;
 }
+@media(max-width:768px){
+	.navbar-form{
+		margin-left:5px;
+		margin-right:5px;
+	}
+	.navbar-nav {
+		margin: 7.5px 0px 7.5px 0px;
+	}
+	.container > .navbar-collapse {
+		margin-right: -30px;
+		margin-left: -30px;
+	}
+}
+.navbar-form{
+	-webkit-box-shadow:none;
+	box-shadow:none;
+}
 H1, h1, h2, H2, H3, h3{
 	color:#333;
 /*    font-family: Cinzel;
