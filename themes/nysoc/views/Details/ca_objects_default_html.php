@@ -67,7 +67,7 @@
 			}
 		}
 		
-		if(sizeof($va_page_ids)) { 
+		if(is_array($va_page_ids) && sizeof($va_page_ids)) { 
 			$qr_pages = caMakeSearchResult('ca_objects', $va_page_ids);
 	
 			while($qr_pages->nextHit()) {
@@ -219,13 +219,16 @@
 		# Occupation Pie Chart data
 		$vn_all_professions = 0;
 		foreach ($va_occupations as $va_occupation_name => $va_occupation_count) {
-			$vn_all_professions = $vn_all_professions+sizeof($va_occupation_count);
+			$c = is_array($va_occupation_count) ? sizeof($va_occupation_count) : 0;
+			$vn_all_professions = $vn_all_professions+$c;
 		}
 		$va_js_stuff = array();
 		$va_labels = array();
 		$va_class_count = 1;
 		foreach ($va_occupations as $va_occupation_name => $va_occupation_count) {
-			$vn_fraction = round((sizeof($va_occupation_count) / $vn_all_professions)*100);
+			
+			$c = is_array($va_occupation_count) ? sizeof($va_occupation_count) : 0;
+			$vn_fraction = round(($c / $vn_all_professions)*100);
 			$va_labels[$va_class_count] = "'$va_occupation_name'";
 			$va_js_stuff[$va_class_count] = "{data: ".$vn_fraction.", className: 'color".$va_class_count."'}";
 			$va_class_count++;
@@ -413,11 +416,13 @@
 							print "<div id='volumes' style='display:none;'>";					
 							$va_volumes = array();
 							
-							if (sizeof($va_children) && ($qr_children = caMakeSearchResult('ca_objects', $va_children, array('sort' => 'ca_objects.preferred_labels.name_sort')))) {
+							if (is_array($va_children) && sizeof($va_children) && ($qr_children = caMakeSearchResult('ca_objects', $va_children, array('sort' => 'ca_objects.preferred_labels.name_sort')))) {
 								//foreach ($va_children as $va_key => $vs_child) {
 								while($qr_children->nextHit()) {
 									//$t_child = new ca_objects($vs_child);
-									$va_volumes[] = $qr_children->get('ca_objects.preferred_labels.name')." (".sizeof($qr_children->get('ca_entities', array('returnAsArray' => true)))." checkouts) ";
+									$q = $qr_children->get('ca_entities', array('returnAsArray' => true));
+									$qc = is_array($q) ? sizeof($q) : 0;
+									$va_volumes[] = $qr_children->get('ca_objects.preferred_labels.name')." (".$qc." checkouts) ";
 								}
 								print join('<br/>', $va_volumes);
 							}
@@ -851,7 +856,7 @@
 										$vs_i_have_docs = true;
 									}
 								}
-								if (sizeof($va_ledger_links) > 0) {
+								if (is_array($va_ledger_links) && sizeof($va_ledger_links) > 0) {
 									foreach ($va_ledger_links as $vn_ledger_id => $vs_ledger_link) {
 										$t_ledger = new ca_objects($vn_ledger_id);
 										$vs_ledger_type = $t_ledger->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
