@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  
- 	require_once(__CA_THEME_DIR__."/plugins/NYSocStatisticsGenerator/controllers/_root_/BaseNYSocFeaturesController.php");
+ 	require_once(__CA_THEME_DIR__."/controllers/BaseNYSocFeaturesController.php");
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  
  	class MapController extends BaseNYSocFeaturesController {
