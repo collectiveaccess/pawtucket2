@@ -12,8 +12,8 @@
 	$va_removed_object_ids = $this->getVar('removed_object_ids');
 	
 	// Get cached stats per-reader (object)
-	$stat_object_checkout_distribution = CompositeCache::fetch('stat_bib_checkout_distribution', 'vizData');
-	$stat_avg_object_checkout_distribution = CompositeCache::fetch('stat_avg_checkout_distribution', 'vizData');
+	$stat_object_checkout_distribution = PersistentCache::fetch('stat_bib_checkout_distribution', 'vizData');
+	$stat_avg_object_checkout_distribution = PersistentCache::fetch('stat_avg_checkout_distribution', 'vizData');
 	
 	// Generate data to pass to Chartist
 	$va_payload = [];

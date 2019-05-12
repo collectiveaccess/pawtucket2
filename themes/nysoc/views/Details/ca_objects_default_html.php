@@ -530,7 +530,7 @@
 							</div>
 						</div>												
 <?php
-	$stat_bib_readers_by_occupation = CompositeCache::fetch('stat_bib_readers_by_occupation', 'vizData');
+	$stat_bib_readers_by_occupation = PersistentCache::fetch('stat_bib_readers_by_occupation', 'vizData');
 
 	$vn_bib_id = $t_object->getPrimaryKey();
 	if ($stat_bib_readers_by_occupation[$vn_bib_id]) {
@@ -539,7 +539,7 @@
 ?>
 						
 		<script type="text/javascript">
-			var occupationIDs = <?php print json_encode(CompositeCache::fetch('stat_bib_occupation_ids', 'vizData')); ?>;
+			var occupationIDs = <?php print json_encode(PersistentCache::fetch('stat_bib_occupation_ids', 'vizData')); ?>;
 			var dataForReadersByOccupation = {
 			  labels: <?php print json_encode($va_series_labels); ?>,
 			  series: <?php print json_encode($va_series); ?>
@@ -614,7 +614,7 @@
 <?php
 	}
 
-	$stat_bib_checkout_durations = CompositeCache::fetch('stat_bib_checkout_durations', 'vizData');
+	$stat_bib_checkout_durations = PersistentCache::fetch('stat_bib_checkout_durations', 'vizData');
 	
 	if ($stat_bib_checkout_durations[$vn_bib_id]) {
 		$va_series_labels = array_keys($stat_bib_checkout_durations[$vn_bib_id]);
@@ -684,8 +684,8 @@
 <?php
 	}
 	
-	$stat_bib_checkout_distribution = CompositeCache::fetch('stat_bib_checkout_distribution', 'vizData');
-	$stat_avg_checkout_distribution = CompositeCache::fetch('stat_avg_checkout_distribution', 'vizData');
+	$stat_bib_checkout_distribution = PersistentCache::fetch('stat_bib_checkout_distribution', 'vizData');
+	$stat_avg_checkout_distribution = PersistentCache::fetch('stat_avg_checkout_distribution', 'vizData');
 	if(is_array($stat_bib_checkout_distribution) && is_array($stat_avg_checkout_distribution)) {
 ?>
 		<script type="text/javascript">

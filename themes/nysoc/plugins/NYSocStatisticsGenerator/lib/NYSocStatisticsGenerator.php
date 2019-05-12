@@ -105,8 +105,8 @@ if(true) {
 				$c++;
 			}
 			print CLIProgressBar::finish();
-			CompositeCache::save('stat_bib_readers_by_occupation', $stat_bib_readers_by_occupation, 'vizData');
-			CompositeCache::save('stat_bib_occupation_ids', $stat_occupation_ids, 'vizData');
+			PersistentCache::save('stat_bib_readers_by_occupation', $stat_bib_readers_by_occupation, 'vizData');
+			PersistentCache::save('stat_bib_occupation_ids', $stat_occupation_ids, 'vizData');
 }	
 
 if(true) {			
@@ -236,11 +236,11 @@ if(true) {
 			
 			print CLIProgressBar::finish();
 			
-			CompositeCache::save('stat_bib_checkout_durations', $stat_bib_checkout_durations, 'vizData');
-			CompositeCache::save('stat_avg_checkout_distribution', $stat_avg_checkout_distribution, 'vizData');
-			CompositeCache::save('stat_overall_bib_checkout_durations', $stat_overall_bib_checkout_durations, 'vizData');
-			CompositeCache::save('stat_bib_checkout_distribution', $stat_bib_checkout_distribution, 'vizData');
-			CompositeCache::save('stat_overall_checkout_distribution', $stat_overall_checkout_distribution, 'vizData');
+			PersistentCache::save('stat_bib_checkout_durations', $stat_bib_checkout_durations, 'vizData');
+			PersistentCache::save('stat_avg_checkout_distribution', $stat_avg_checkout_distribution, 'vizData');
+			PersistentCache::save('stat_overall_bib_checkout_durations', $stat_overall_bib_checkout_durations, 'vizData');
+			PersistentCache::save('stat_bib_checkout_distribution', $stat_bib_checkout_distribution, 'vizData');
+			PersistentCache::save('stat_overall_checkout_distribution', $stat_overall_checkout_distribution, 'vizData');
 }
 		}
 		# -------------------------------------------------------
@@ -325,8 +325,8 @@ if (true) {
 			}
 			print CLIProgressBar::finish();
 			
-			CompositeCache::save('stat_bib_books_by_subject_area', $stat_bib_books_by_subject_area, 'vizData');
-			CompositeCache::save('stat_bib_subject_area_ids', $stat_subject_ids, 'vizData');
+			PersistentCache::save('stat_bib_books_by_subject_area', $stat_bib_books_by_subject_area, 'vizData');
+			PersistentCache::save('stat_bib_subject_area_ids', $stat_subject_ids, 'vizData');
 }
 
 if(true) {			
@@ -439,9 +439,9 @@ if(true) {
 			}
 			print CLIProgressBar::finish();
 			
-			CompositeCache::save('stat_entity_checkout_durations', $stat_entity_checkout_durations, 'vizData');
-			CompositeCache::save('stat_entity_checkout_distribution', $stat_entity_checkout_distribution, 'vizData');
-			CompositeCache::save('stat_avg_entity_checkout_distribution', $stat_avg_entity_checkout_distribution, 'vizData');
+			PersistentCache::save('stat_entity_checkout_durations', $stat_entity_checkout_durations, 'vizData');
+			PersistentCache::save('stat_entity_checkout_distribution', $stat_entity_checkout_distribution, 'vizData');
+			PersistentCache::save('stat_avg_entity_checkout_distribution', $stat_avg_entity_checkout_distribution, 'vizData');
 }
 		}
 		# -------------------------------------------------------

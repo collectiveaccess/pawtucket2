@@ -405,8 +405,8 @@
 												</div>																				
 											</div>										
 	<?php	
-									$stat_entity_checkout_distribution = CompositeCache::fetch('stat_entity_checkout_distribution', 'vizData');
-									$stat_avg_entity_checkout_distribution = CompositeCache::fetch('stat_avg_entity_checkout_distribution', 'vizData');
+									$stat_entity_checkout_distribution = PersistentCache::fetch('stat_entity_checkout_distribution', 'vizData');
+									$stat_avg_entity_checkout_distribution = PersistentCache::fetch('stat_avg_entity_checkout_distribution', 'vizData');
 									if(is_array($stat_entity_checkout_distribution) && is_array($stat_avg_entity_checkout_distribution)) {
 	?>
 
@@ -506,14 +506,14 @@
 									<div class="row">	
 										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 <?php
-									$stat_bib_books_by_subject_area = CompositeCache::fetch('stat_bib_books_by_subject_area', 'vizData');
+									$stat_bib_books_by_subject_area = PersistentCache::fetch('stat_bib_books_by_subject_area', 'vizData');
 
 									$vn_entity_id = $t_item->getPrimaryKey();
 									if ($stat_bib_books_by_subject_area[$vn_entity_id]) {
 ?>
 
 										<script type="text/javascript">
-											var subjectIDs = <?php print json_encode(CompositeCache::fetch('stat_bib_subject_area_ids', 'vizData')); ?>;
+											var subjectIDs = <?php print json_encode(PersistentCache::fetch('stat_bib_subject_area_ids', 'vizData')); ?>;
 											var dataForSubjectAreas = {
 											  labels: <?php print json_encode(array_keys($stat_bib_books_by_subject_area[$vn_entity_id])); ?>,
 											  series: <?php print json_encode(array_values($stat_bib_books_by_subject_area[$vn_entity_id])); ?>
@@ -591,7 +591,7 @@
 										</div><!-- end col-->
 										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 <?php
-										$stat_entity_checkout_durations = CompositeCache::fetch('stat_entity_checkout_durations', 'vizData');
+										$stat_entity_checkout_durations = PersistentCache::fetch('stat_entity_checkout_durations', 'vizData');
 
 										if ($stat_entity_checkout_durations[$vn_entity_id]) {
 ?>
