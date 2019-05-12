@@ -27,7 +27,7 @@
  */
  
  	require_once(__CA_LIB_DIR__.'/BaseToolsPlugin.php');
- 	require_once(__CA_APP_DIR__.'/plugins/NYSocStatisticsGenerator/lib/NYSocStatisticsGeneratorTool.php');
+ 	require_once(__CA_THEME_DIR__.'/plugins/NYSocStatisticsGenerator/lib/NYSocStatisticsGeneratorTool.php');
  
 	class NYSocStatisticsGeneratorPlugin extends BaseToolsPlugin {
 		# -------------------------------------------------------
