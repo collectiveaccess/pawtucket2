@@ -56,14 +56,14 @@
  		 *
  		 */
  		function Readers() {
- 			if (!is_array($va_entity_list = $this->request->session->getVar('entity_list'))) { $va_entity_list = array(); }
+ 			if (!is_array($va_entity_list = Session::getVar('entity_list'))) { $va_entity_list = array(); }
  			
 			$pn_entity_id = $this->request->getParameter('id', pInteger);
 			
 			if ($pn_entity_id && !in_array($pn_entity_id, $va_entity_list)) { 
 				$va_entity_list[] = $pn_entity_id; 
 				
- 				$this->request->session->setVar('entity_list', $va_entity_list);
+ 				Session::setVar('entity_list', $va_entity_list);
 			}
  			
  			$this->view->setVar('entity_list', $va_entity_list);
@@ -75,14 +75,14 @@
  		 *
  		 */
  		function Books() {
- 			if (!is_array($va_object_list = $this->request->session->getVar('object_list'))) { $va_object_list = array(); }
+ 			if (!is_array($va_object_list = Session::getVar('object_list'))) { $va_object_list = array(); }
  			
 			$pn_object_id = $this->request->getParameter('id', pInteger);
 			
 			if ($pn_object_id && !in_array($pn_object_id, $va_object_list)) { 
 				$va_object_list[] = $pn_object_id; 
 				
- 				$this->request->session->setVar('object_list', $va_object_list);
+ 				Session::setVar('object_list', $va_object_list);
 			}
  			
  			$this->view->setVar('object_list', $va_object_list);
@@ -94,7 +94,7 @@
  		 *
  		 */
  		function GetReaders() {
- 			if (!is_array($va_entity_list = $this->request->session->getVar('entity_list'))) { $va_entity_list = array(); }
+ 			if (!is_array($va_entity_list = Session::getVar('entity_list'))) { $va_entity_list = array(); }
  			
  			$ps_mode = $this->request->getParameter('m', pString);
  			
@@ -117,7 +117,7 @@
  						break;	
  				}
  				
- 				$this->request->session->setVar('entity_list', $va_entity_list);
+ 				Session::setVar('entity_list', $va_entity_list);
  				 				
 				$this->view->setVar('added_entity_ids', $va_added_entity_ids);
 				$this->view->setVar('removed_entity_ids', $va_removed_entity_ids);
@@ -133,7 +133,7 @@
  		 *
  		 */
  		function GetBooks() {
- 			if (!is_array($va_object_list = $this->request->session->getVar('object_list'))) { $va_object_list = array(); }
+ 			if (!is_array($va_object_list = Session::getVar('object_list'))) { $va_object_list = array(); }
  			
  			$ps_mode = $this->request->getParameter('m', pString);
  			
@@ -156,7 +156,7 @@
  						break;	
  				}
  				
- 				$this->request->session->setVar('object_list', $va_object_list);
+ 				Session::setVar('object_list', $va_object_list);
  				 				
 				$this->view->setVar('added_object_ids', $va_added_object_ids);
 				$this->view->setVar('removed_object_ids', $va_removed_object_ids);

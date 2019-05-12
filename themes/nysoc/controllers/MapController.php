@@ -41,7 +41,7 @@
  		 *
  		 */
  		function Index() {
- 			if (!is_array($va_catalogue_list = $this->request->session->getVar('catalog_list'))) { $va_catalogue_list = array(); }
+ 			if (!is_array($va_catalogue_list = Session::getVar('catalog_list'))) { $va_catalogue_list = array(); }
  			
 			$pn_catalogue_id = $this->request->getParameter('id', pInteger);
 			
@@ -49,7 +49,7 @@
 				if ($t_cat = ca_objects::find(['object_id' => $pn_catalogue_id, 'type_id' => 'catalogue'], ['returnAs' => 'firstModelInstance'])) {
 					$va_catalogue_list[$pn_catalogue_id] = $pn_catalogue_id; 
 				}
- 				$this->request->session->setVar('catalog_list', $va_catalogue_list);
+ 				Session::setVar('catalog_list', $va_catalogue_list);
 			}
 			
  			
@@ -60,7 +60,7 @@
  		 *
  		 */
  		function GetMapData() {
- 			if (!is_array($va_catalogue_list = $this->request->session->getVar('catalog_list'))) { $va_catalogue_list = array(); }
+ 			if (!is_array($va_catalogue_list = Session::getVar('catalog_list'))) { $va_catalogue_list = array(); }
  			
  			$va_map_data = array();
  			$va_object_ids = ca_objects::find(['type_id' => 'bib'], ['returnAs' => 'ids']);
