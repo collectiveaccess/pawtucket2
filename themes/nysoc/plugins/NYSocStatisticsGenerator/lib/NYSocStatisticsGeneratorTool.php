@@ -36,7 +36,7 @@
  
 require_once(__CA_LIB_DIR__.'/Utils/BaseApplicationTool.php');
 require_once(__CA_LIB_DIR__.'/ModelSettings.php');
-require_once(__CA_THEMES_DIR__.'/plugins/NYSocStatisticsGenerator/lib/NYSocStatisticsGenerator.php');
+require_once(__CA_THEME_DIR__.'/plugins/NYSocStatisticsGenerator/lib/NYSocStatisticsGenerator.php');
 require_once(__CA_MODELS_DIR__.'/ca_locales.php');
 require_once(__CA_MODELS_DIR__.'/ca_objects.php');
  
