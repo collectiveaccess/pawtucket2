@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 	require_once(__CA_APP_DIR__."/plugins/NYSocStatisticsGenerator/controllers/_root_/BaseNYSocFeaturesController.php");
+ 	require_once(__CA_THEME_DIR__."/plugins/NYSocStatisticsGenerator/controllers/_root_/BaseNYSocFeaturesController.php");
  	require_once(__CA_MODELS_DIR__."/ca_objects.php");
  	require_once(__CA_MODELS_DIR__."/ca_entities.php");
  
