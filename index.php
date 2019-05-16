@@ -65,6 +65,10 @@
 	
 		$g_request = $app->getRequest();
 		$resp = $app->getResponse();
+		
+		if (!BanHammer::verdict($g_request)) {
+			die("Connection refused");
+		}
 
 		// TODO: move this into a library so $_, $g_ui_locale_id and $g_ui_locale gets set up automatically
 		require_once(__CA_APP_DIR__."/helpers/initializeLocale.php");
