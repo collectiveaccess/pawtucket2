@@ -213,7 +213,7 @@
 						#if ($vs_ext_link = $t_item->getWithTemplate('<ifcount min="1" code="ca_occurrences.external_link.url_entry"><unit relativeTo="ca_occurrences.external_link" delimiter=" "><ifdef code="ca_occurrences.external_link.url_entry"><div class="unit zoomIcon"><h6><i class="fa fa-external-link-square"></i> <a href="^ca_occurrences.external_link.url_entry">^ca_occurrences.external_link.url_source</a></h6></div></ifdef></unit></ifcount>')) {
 						#	print $vs_ext_link;
 						#}
-						$va_event_links = $t_item->get("ca_occurrences.event_calendar_link", array("returnWithStructure" => true));
+						$va_event_links = $t_item->get("ca_occurrences.event_calendar_link", array("returnWithStructure" => true, "sort" => "ca_occurrences.event_calendar_link.event_link"));
 						if(is_array($va_event_links) && sizeof($va_event_links)){
 							$va_event_links = array_pop($va_event_links);
 							$va_future_events = array();
@@ -237,6 +237,7 @@
 								print "<div class='unit'><H6>Upcoming Event".((sizeof($va_future_events) > 1) ? "s" : "")."</H6>".join($va_future_events, " ")."</div>";
 							}
 							if(is_array($va_past_events) && sizeof($va_past_events)){
+								$va_past_events = array_reverse($va_past_events);
 								print "<div class='unit'><H6>Past Event".((sizeof($va_past_events) > 1) ? "s" : "")."</H6>".join($va_past_events, " ")."</div>";
 							}
 						}
