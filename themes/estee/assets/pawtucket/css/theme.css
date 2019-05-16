@@ -676,6 +676,60 @@ ul.menuItems{
 	color:#000;
 	box-shadow: inset 0 0 0 1px #000;
 }
+@media (min-width: 768px) {
+	.bChronologyHeading{
+		margin-top:15px;
+		margin-bottom:50px;
+	}
+}
+.filterChronologyButtons{
+	padding-top:5px;
+	padding-bottom:5px;
+}
+.filterChronologyButtons a{
+	color:#000;
+	background-color: #FFF;
+	margin-right:10px;
+	text-align:center;
+	padding:5px;
+	font-size:12px;
+	-webkit-box-shadow: 1px 1px 3px 0px rgba(130,130,130,1);
+	-moz-box-shadow: 1px 1px 3px 0px rgba(130,130,130,1);
+	box-shadow: 1px 1px 3px 0px rgba(130,130,130,1);
+}
+.filterChronologyButtons a.selected{
+	color:#FFF;
+	background-color: #000000;
+}
+.filterChronologyButtons a:hover{
+	opacity:.8;
+	text-decoration:none;
+}
+.filterChronologyButtons H4{
+	margin-bottom:10px;
+}
+@media (min-width: 768px) {
+	.filterChronologyButtons H4{
+		display:inline;
+		margin-bottom:0px;
+	}
+}
+#bChronoDownloadDD{
+	padding:10px;
+}
+.bChronoDownloadCol{
+	margin-top:10px;
+	margin-bottom:10px;
+}
+@media (min-width: 768px) {
+	.bChronoDownloadCol{
+		text-align:right;
+		margin-top:0px;
+		margin-bottom:0px;
+	}
+}
+
+
 .bResultItemText, .bResultListItemText{
 	color:#000;
 	font-weight:bold;
@@ -880,7 +934,7 @@ h1.primaryLandingBannerTitle {
 	margin-bottom:20px;
 }
 .unit.collectionChronology{
-	font-size:12px;
+	font-size:14px;
 	padding-bottom:30px;
 }
 .capitalize {
