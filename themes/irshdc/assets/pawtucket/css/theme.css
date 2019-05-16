@@ -583,6 +583,13 @@ div.browseFacetItem a:hover {
 	margin-bottom:15px;
 	color:#000;
 }
+.detail .detailMap{
+	text-align:right;
+	font-size:12px;
+}
+.detail .detailMap .glyphicon{
+	padding-top: 5px;
+}
 .relTabButton{
 	display:inline-block;
 	padding-right:30px;
@@ -1223,4 +1230,18 @@ a.readmore-js-toggle {
 #caFormOverlay {
     width: 500px;
     margin: 10% auto 0px auto;
+}
+
+#caMediaPanelContentArea{
+	padding-top:40px;
+}
+div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
+	top:0px;
+	bottom:auto;
+	background-color:#000;
+	opacity:1;
+}
+.caMediaOverlayControls div.close {
+	background-color:red;
+	padding:0px 3px 3px 3px;
 }
