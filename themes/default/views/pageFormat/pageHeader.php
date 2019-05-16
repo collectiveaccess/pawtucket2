@@ -58,26 +58,14 @@
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	
+    <script src="<?php print $this->request->getAssetsUrlPath(); ?>/css.js"></script>
+    
 	<?php print MetaTagManager::getHTML(); ?>
-	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
-
+	
 	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
 	
-	<script type="text/javascript">
-		jQuery(document).ready(function() {
-    		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
-    	});
-	</script>
-<?php
-	if(Debug::isEnabled()) {		
-		//
-		// Pull in JS and CSS for debug bar
-		// 
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
-?>
+
 </head>
 <body>
 	<nav class="navbar navbar-default yamm" role="navigation">
@@ -139,14 +127,6 @@
 						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 				</form>
-				<script type="text/javascript">
-					$(document).ready(function(){
-						$('#headerSearchButton').prop('disabled',true);
-						$('#headerSearchInput').on('keyup', function(){
-							$('#headerSearchButton').prop('disabled', this.value == "" ? true : false);     
-						})
-					});
-				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	

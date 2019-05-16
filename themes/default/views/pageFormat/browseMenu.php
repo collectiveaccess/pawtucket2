@@ -90,10 +90,10 @@
 					</ul> <!--end dropdown-browse-menu -->	
 				 </li><!-- end dropdown -->
 					<script type="text/javascript">
-						jQuery('.dropdown-toggle').dropdown()
-						jQuery(document).ready(function() {		
-							jQuery("#browseMenuTypeFacet").load("<?php print caNavUrl($this->request, '', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_first_browse)); ?>");
-						});
+						// jQuery('.dropdown-toggle').dropdown()
+// 						jQuery(document).ready(function() {		
+// 							jQuery("#browseMenuTypeFacet").load("<?php print caNavUrl($this->request, '', 'Browse', 'getBrowseNavBarByTarget', array('target' => $vs_first_browse)); ?>");
+// 						});
 					</script>
 <?php
 				break;

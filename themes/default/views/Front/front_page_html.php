@@ -29,15 +29,26 @@
  *
  * ----------------------------------------------------------------------
  */
-		print $this->render("Front/featured_set_slideshow_html.php");
+		//print $this->render("Front/featured_set_slideshow_html.php");
 ?>
 	<div class="row">
-		<div class="col-sm-8">
+		<div class="col-sm-12">
 			<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
-		</div><!--end col-sm-8-->
-		<div class="col-sm-4">
-<?php
-		print $this->render("Front/gallery_set_links_html.php");
-?>
+		
+			<div id="react">
+			
+			</div>
+			
+			<div class='demo-carousel'>carousel here</div
+
 		</div> <!--end col-sm-4-->	
 	</div><!-- end row -->
+
+
+
+<script>	
+	myApp = {
+		'selector': '#react',
+		'sound': 'arf'
+	}; 
+</script>
