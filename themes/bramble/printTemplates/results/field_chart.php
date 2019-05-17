@@ -27,6 +27,7 @@
  * Template configuration:
  *
  * @name Field Chart
+ * @filename Field_Chart.pdf
  * @type page
  * @pageSize letter
  * @pageOrientation landscape
@@ -54,7 +55,26 @@
 	print $this->render("header.php");
 	print $this->render("footer.php");
 	
-	
+	$vn_set_id = $this->request->getParameter('set_id', pInteger);
+	$vs_set_name = $vs_project_name = "";
+	if($vn_set_id){
+		$t_set = new ca_sets($vn_set_id);
+		$vs_set_name = $t_set->getLabelForDisplay();
+		if($t_set->get("parent_id")){
+			$t_parent_set = new ca_sets($t_set->get("parent_id"));
+			$vs_project_name = $t_parent_set->getLabelForDisplay();
+		}
+	}	
+	if($vs_set_name || $vs_project_name){
+		print "<div class='projectPaletteTitle'>";
+		if($vs_project_name){
+			print "<b>Project:</b> ".$vs_project_name."<br/>";
+		}
+		if($vs_set_name){
+			print "<b>Palette:</b> ".$vs_set_name."<br/>";
+		}
+		print "</div>";
+	}
 ?>
 		<div id='body'>
 			<table border="0">
@@ -77,7 +97,7 @@
 				
 			$vs_name = "<b><i>".$vs_label.(($vs_variety) ? " ".$vs_variety." " : "")."</i></b>";	
 			
-			$va_plants_by_type[$vo_result->get("ca_objects.plant_type", array("convertCodesToDisplayText" => true))][$vo_result->get("ca_objects.object_id")] = array(
+			$va_plants_by_type[$vo_result->get("ca_objects.plant_type", array("convertCodesToDisplayText" => true))][$vs_name." ".$vo_result->get("ca_objects.object_id")] = array(
 				"name" => $vs_name,
 				"height" => $vo_result->get("ca_objects.height", array("delimiter" => ", ")),
 				"width" => $vo_result->get("ca_objects.width", array("delimiter" => ", ")),
@@ -89,6 +109,7 @@
 			);
 		}
 	foreach($va_plants_by_type as $vs_type => $va_plants){
+		ksort($va_plants);
 ?>
 			<tr class="fcRow"><td class="fcColRule" colspan="8"><b><?php print $vs_type; ?></b></td></tr>
 <?php

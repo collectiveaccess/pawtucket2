@@ -547,7 +547,7 @@ div.browseFacetItem a:hover {
 .detail .block a.moreLess{
 	padding-left:10px;
 }
-.detail .relatedBlock .relatedBlockContent a{
+.detail .relatedBlock .relatedBlockContent a, .detail .relatedBlock .relatedBlockContent .placePlaceholder{
 	display:inline-block;
 	background-color:#f0ede4;
 	font-size:11px;
@@ -582,6 +582,13 @@ div.browseFacetItem a:hover {
 .detail .relatedBlock .relatedBlockContent a{
 	margin-bottom:15px;
 	color:#000;
+}
+.detail .detailMap{
+	text-align:right;
+	font-size:12px;
+}
+.detail .detailMap .glyphicon{
+	padding-top: 5px;
 }
 .relTabButton{
 	display:inline-block;
@@ -1117,6 +1124,12 @@ a.readmore-js-toggle {
 #exploreMapBalloonContainer h6{
 	margin-bottom:0px;
 }
+.leaflet-container a{
+	color:#d20000;
+}
+.leaflet-container a.btn-default{
+	color:#FFF;
+}
 
 /* listing */
 .exploreResourcesRow{
@@ -1206,4 +1219,29 @@ a.readmore-js-toggle {
 .aboutLogo img{
 	width:100%;
 	height:auto;
+}
+
+/* contact form */
+.form-control-static.securityQuestion{
+	color:#000;
+}
+
+/* overlay */
+#caFormOverlay {
+    width: 500px;
+    margin: 10% auto 0px auto;
+}
+
+#caMediaPanelContentArea{
+	padding-top:40px;
+}
+div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
+	top:0px;
+	bottom:auto;
+	background-color:#000;
+	opacity:1;
+}
+.caMediaOverlayControls div.close {
+	background-color:red;
+	padding:0px 3px 3px 3px;
 }

@@ -54,6 +54,27 @@
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
 	print $this->render("footer.php");
+	
+	$vn_set_id = $this->request->getParameter('set_id', pInteger);
+	$vs_set_name = $vs_project_name = "";
+	if($vn_set_id){
+		$t_set = new ca_sets($vn_set_id);
+		$vs_set_name = $t_set->getLabelForDisplay();
+		if($t_set->get("parent_id")){
+			$t_parent_set = new ca_sets($t_set->get("parent_id"));
+			$vs_project_name = $t_parent_set->getLabelForDisplay();
+		}
+	}	
+	if($vs_set_name || $vs_project_name){
+		print "<div class='projectPaletteTitle'>";
+		if($vs_project_name){
+			print "<b>Project:</b> ".$vs_project_name."<br/>";
+		}
+		if($vs_set_name){
+			print "<b>Palette:</b> ".$vs_set_name."<br/>";
+		}
+		print "</div>";
+	}
 ?>
 		<div id='body'>
 <?php

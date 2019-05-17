@@ -864,6 +864,11 @@
  		$t_list = new ca_lists();
  		$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type'));
  		$vs_set_list = "";
+		$vb_omit_front_page_set = $o_config->get('omit_front_page_set_from_gallery');
+		if($vb_omit_front_page_set){
+			$o_config_front = caGetFrontConfig();
+			$vs_front_page_set_code = $o_config_front->get('front_page_set_code');
+		}
 		if($vn_gallery_set_type_id){
 			$t_set = new ca_sets();
 			$va_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id)));
@@ -875,6 +880,9 @@
 
 				$vn_c = 0;
 				foreach($va_sets as $vn_set_id => $va_set){
+					if($vb_omit_front_page_set && $vs_front_page_set_code && ($va_set["set_code"] == $vs_front_page_set_code)){
+						continue;
+					}
 					$vs_set_list .= "<li>".caNavLink($po_request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</li>\n";
 					$vn_c++;
 

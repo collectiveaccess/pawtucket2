@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  	$va_access_values = caGetUserAccessValues($this->request);
- 	print_r($va_entity_ids);
+ 	#print_r($va_entity_ids);
  	$va_entity_ids		= $this->getVar("entity_ids");
 	$t_entity = new ca_entities();
 ?>
