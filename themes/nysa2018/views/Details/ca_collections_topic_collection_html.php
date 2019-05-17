@@ -18,12 +18,6 @@
 ?>
 <div class="container">
 	<div class="row">
-		<div class='col-xs-12 '><div class='pageNav'><!--- only shown at small screen size -->
-			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-		</div></div><!-- end detailTop -->
-	</div>
-		
-	<div class="row">
 		<div class="col-sm-12">
 			{{{<ifdef code="ca_collections.preferred_labels.name|ca_collections.collection_subtitle"><H2>^ca_collections.preferred_labels.name<ifdef code="ca_collections.collection_subtitle,ca_collections.preferred_labels.name">: </ifdef>^ca_collections.collection_subtitle</H2></ifdef>}}}
 		</div>
@@ -34,12 +28,12 @@
 			<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 		</div><!-- end browseResultsContainer -->
 		<p class="text-center">
-			<?php print caNavLink($this->request, 'View All', 'btn btn-default', '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => $t_item->get("ca_collections.collection_id"), 'view' => 'images'));?>
+			<?php print caNavLink($this->request, 'View All', 'btn btn-default', '', 'Browse', 'topicObjects', array('facet' => 'topic_collection_facet', 'id' => $t_item->get("ca_collections.collection_id"), 'view' => 'images'));?>
 		</p>
 	</div><!-- end row -->
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
-			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => $t_item->get("ca_collections.collection_id"), 'limit_num_results' => 8, 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
+			jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'topicObjects', array('facet' => 'topic_collection_facet', 'id' => $t_item->get("ca_collections.collection_id"), 'limit_num_results' => 8, 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
 				/*
 				Only want to show a few with link to all so just don't jscroll the results
 				jQuery("#browseResultsContainer").jscroll({
@@ -118,7 +112,7 @@
 					{{{<ifdef code="ca_collections.about_objects"><div class="unit"><b>About the Objects</b><br/>^ca_collections.about_objects</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.topic_overview"><div class="unit"><b>Overview</b><br/>^ca_collections.topic_overview</ifdef></ifdef>}}}
 					{{{<ifdef code="ca_collections.topic_related_resources"><div class="unit"><b>Related Resources</b><br/>^ca_collections.topic_related_resources</ifdef></ifdef>}}}
-					{{{<ifcount code="ca_collections.children" min="1"><div class="unit"><H3>Collections</H3><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></ifdef></ifcount>}}}
+					{{{<ifcount code="ca_collections.children" min="1"><div class="unit"><H3>Related Series</H3><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></ifdef></ifcount>}}}
 					
 				</div><!-- end col -->
 			</div><!-- end row -->
