@@ -69,7 +69,7 @@
 		# --- passed from topic collection page to make it only show 8 results on page
 		$vn_hits_per_block = $vn_limit_num_results;
 		
-		print "<div class='container'><div class='row'><div class='col-sm-6'><H2>".$qr_res->numHits()." Objects ".caNavLink($this->request, 'View All', 'btn btn-default topicViewAll', '*', '*', '*', array('key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort))."</H2></div><div class='col-sm-6 text-right'>";
+		print "<div class='container'><div class='row'><div class='col-sm-6'><H2>".$qr_res->numHits()." Objects ".caNavLink($this->request, 'View All', 'btn btn-default topicViewAll', '*', '*', '*', array('key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort))."</H2></div><div class='col-sm-6 topicSearchWithinCol'>";
 ?>
 			<form role="search" id="topicSearch" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
 				<input type="text" class="form-control topicSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine"><button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search"></span></button>

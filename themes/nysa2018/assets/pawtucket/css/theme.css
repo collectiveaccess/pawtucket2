@@ -878,6 +878,15 @@ div.caMediaOverlayControls{
 .browseRemoveFacet{
 	margin-left:3px;
 }
+.topicSearchWithinCol{
+	text-align:right;
+}
+@media(max-width:768px){
+	.topicSearchWithinCol{
+		text-align:left;
+		padding-bottom:15px;
+	}
+}
 #topicSearch{
 	top: -3px;
 	position: relative;
