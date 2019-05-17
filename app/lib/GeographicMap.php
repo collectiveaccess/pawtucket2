@@ -161,8 +161,10 @@
 						} else {
 							if (!is_null($pa_options['label'])) {
 								$vs_label = $po_data_object->get($pa_options['label'], array('returnAsLink' => $vb_render_label_as_link || (strpos($pa_options['contentTemplate'], "<l>") !== false)));
-							} else {
+							} elseif($va_coordinate['label']) {
 								$vs_label = $va_coordinate['label'];
+							} else {
+								$vs_label = $va_coordinate['path'];
 							}
 						} 
 					
@@ -263,8 +265,10 @@
 								} else {
 									if (!is_null($pa_options['label'])) {
 										$vs_label = $po_data_object->get($pa_options['label'], array('returnAsLink' => $vb_render_label_as_link || (strpos($pa_options['contentTemplate'], "<l>") !== false)));
-									} else {
+									} elseif($va_coordinate['label']) {
 										$vs_label = $va_coordinate['label'];
+									} else {
+										$vs_label = $va_coordinate['path'];
 									}
 								} 
 								
