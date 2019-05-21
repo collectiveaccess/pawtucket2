@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013 Whirl-i-Gig
+ * Copyright 2013-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -29,26 +29,36 @@
  *
  * ----------------------------------------------------------------------
  */
-		//print $this->render("Front/featured_set_slideshow_html.php");
+
+	$set = ca_sets::find(['set_code' => 'whittier'], ['returnAs' => 'firstModelInstance']);
+	$reps = array_values(caExtractValuesByUserLocale($set->getItems(['thumbnailVersions' => ['large']])));
+	$carousel_images = array_map(function($r) { return ['key' => md5($r['representation_url_large']), 'url' => $r['representation_url_large'], 'caption' => $r['set_item_label']]; }, $reps);
 ?>
+
+
 	<div class="row">
 		<div class="col-sm-12">
-			<H1>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis vulputate, orci quis vehicula eleifend, metus elit laoreet elit.</H1>
-		
-			<div id="react">
-			
-			</div>
-			
-			<div class='demo-carousel'>carousel here</div
-
+			<div id="clock"></div>
+			<div id="carousel"></div>
 		</div> <!--end col-sm-4-->	
 	</div><!-- end row -->
 
 
 
 <script>	
-	myApp = {
-		'selector': '#react',
-		'sound': 'arf'
+	let pawtucketUIApps = {
+		'carousel': {
+			'selector': '#carousel',
+			'data': {
+				'images': <?php print json_encode($carousel_images); ?>,
+				'width': "600px",
+			}
+		},
+		'clock': {
+			'selector': '#clock',
+			'data': {
+				'message': "This is a clock!"
+			}
+		}
 	}; 
 </script>

@@ -67,7 +67,7 @@
 	
 
 </head>
-<body>
+<body id="pawtucketApp">
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
