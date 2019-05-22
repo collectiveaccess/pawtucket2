@@ -58,12 +58,12 @@
 	
 	<meta property="og:url" content="<?php print $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" />
 	<meta property="og:type" content="website" />
-	<meta property="og:description" content="<?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?>" />
+	<meta property="og:description" content="<?php print htmlspecialchars((MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name")); ?>" />
 	<meta property="og:title" content="<?php print $this->request->config->get("app_display_name"); ?>" />
 <?php
 	# --- what should the image to share be?
 	# --- default to logo --- use image from detail page if on object page
-	$vs_og_image = caGetThemeGraphic($this->request, 'ca_nav_logo300.png'); # --- replace this with logos for institutions
+	$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'ca_nav_logo300.png'); # --- replace this with logos for institutions
 	if((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "objects")){
 		$ps_id = urldecode($this->request->getActionExtra());
 		$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls("ca_objects");
@@ -87,7 +87,7 @@
 			throw new ApplicationException("Invalid id");
 		}else{
 			if($vs_rep = $t_subject->get("ca_object_representations.media.medium.url", array("checkAccess" => $va_access_values))){
-				$vs_og_image = $vs_rep;
+				$vs_og_image = $this->request->config->get("site_host").$vs_rep;
 			}
 			
 		}
@@ -199,7 +199,6 @@
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

@@ -53,6 +53,7 @@ a, a:hover{
 }
 body{
 	margin-bottom:280px;
+	color:#000
 }
 
 #footer .footerLinks a{
@@ -83,6 +84,13 @@ body{
 	margin-top:5px;
 }
 /* detail page */
+.detail{
+	color:#000;
+}
+.detail .unit a{
+	color:#000;
+	text-decoration:underline;
+}
 .detailFbShare{
 	float:right;
 	padding-top:12px;
@@ -102,4 +110,15 @@ body{
 }
 .lightboxAsk span.glyphicon{
 	margin-right: 5px;
+}
+
+/* advanced search */
+
+table.attributeListItem{
+	width:100%;
+}
+
+/* gallery */
+.gallery .unit {
+    margin-bottom: 12px;
 }

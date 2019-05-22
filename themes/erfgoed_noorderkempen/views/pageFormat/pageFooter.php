@@ -31,14 +31,11 @@
 		<footer id="footer">
 			<ul class="list-inline footerLinks">
 				<li><a href="http://www.erfgoednoorderkempen.be/" target="_blank">www.erfgoednoorderkempen.be</a></li>
-				<li><a href="#">Link 2</a></li>
-				<li><a href="#">Link 3</a></li>
 			</ul>
 			<div class="funder">
 				Met steun van<br/>
 				<a href="http://www.vlaanderen.be"><?php print caGetThemeGraphic($this->request, 'Vlaanderen-verbeelding-werkt_vol.png'); ?></a>
-			</div>	
-			<div class="text-center caLink"><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2019</a></small></div>
+			</div>
 		
 		</footer><!-- end footer -->
 <?php
