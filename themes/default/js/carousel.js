@@ -6,7 +6,6 @@ const selector = pawtucketUIApps.carousel.selector;
 const appData = pawtucketUIApps.carousel.data;
 const imageList = appData.images;
 const width = appData.width;
-const height = appData.height;
 
 var Carousel = require('react-responsive-carousel').Carousel;
 class DemoCarousel  extends React.Component {

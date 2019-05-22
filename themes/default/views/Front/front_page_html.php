@@ -30,7 +30,7 @@
  * ----------------------------------------------------------------------
  */
 
-	$set = ca_sets::find(['set_code' => 'whittier'], ['returnAs' => 'firstModelInstance']);
+	$set = ca_sets::find(['set_code' => 'yacht_club'], ['returnAs' => 'firstModelInstance']);
 	$reps = array_values(caExtractValuesByUserLocale($set->getItems(['thumbnailVersions' => ['large']])));
 	$carousel_images = array_map(function($r) { return ['key' => md5($r['representation_url_large']), 'url' => $r['representation_url_large'], 'caption' => $r['set_item_label']]; }, $reps);
 ?>
