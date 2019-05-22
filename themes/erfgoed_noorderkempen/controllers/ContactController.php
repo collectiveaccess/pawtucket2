@@ -112,7 +112,6 @@
 							$t_collection->load($pn_id);
 						}
 						$vs_manager_admin = $t_collection->get("ca_collections.email");
-						print "here: ".$vs_manager_admin;
 						if($vs_manager_admin){
 							$va_emails[] = $vs_manager_admin;
 						}
