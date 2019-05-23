@@ -105,7 +105,7 @@
 							$t_item->load($pn_id);
 							# --- get the item's collection
 							$vn_collection_id = $t_item->get("ca_objects.object_collection.collection_id");
-							$t_collection = Datamodel::getInstanceByTableName("ca_collection");
+							$t_collection = Datamodel::getInstanceByTableName("ca_collections");
 							$t_collection->load($vn_collection_id);						
 						}else{
 							$t_collection = Datamodel::getInstanceByTableName($ps_table);
