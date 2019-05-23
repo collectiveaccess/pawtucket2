@@ -10,12 +10,12 @@
 
 <div class='advancedContainer'>
 	
-	<!--<div class='row'>
+	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover">Collectie</span>
-			{{{ca_objects.object_collection%width=200px&height=40px}}}
+			{{{ca_objects.object_collection%width=200px}}}
 		</div>
-	</div>-->			
+	</div>			
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover">Titel</span>
@@ -40,12 +40,12 @@
 			{{{ca_places.preferred_labels.name%width=220px}}}
 		</div>
 	</div>		
-	<!--<div class='row'>
+	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover">Vervaardigers</span>
 			{{{ca_objects.maker%width=220px}}}
 		</div>
-	</div>-->		
+	</div>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover">Periode</span>
