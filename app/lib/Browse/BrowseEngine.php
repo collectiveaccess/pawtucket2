@@ -222,7 +222,7 @@
 						$va_facet_info['label_plural'] = $va_facet_info['label_plural'][$g_ui_locale];
 					}
 				}
-
+				
 				// group_mode = hierarchical is only supported for location facets when current location criteria is storage locations-only
 				if ((in_array($va_facet_info['type'], ['location', 'current_value'])) && (caGetOption('group_mode', $va_facet_info, null) == 'hierarchical')) {
 					$subject_table = $this->ops_browse_table_name;
@@ -635,7 +635,7 @@
 				case 'violations':
 					if (!($t_rule = Datamodel::getInstanceByTableName('ca_metadata_dictionary_rules', true))) { break; }
 					if ($t_rule->load(array('rule_code' => $pn_row_id))) {
-						return $t_rule->getSetting('label');
+						return caExtractSettingsValueByUserLocale('label', $t_rule->getSettings());
 					}
 					return urldecode($pn_row_id);
 					break;
@@ -697,7 +697,6 @@
 						//
 						// We prepend those values below, allowing the criterion value to behave as a standard location value/
 						//
-
 						$t_loc = Datamodel::getInstance('ca_storage_locations');
 						if(!$t_loc->load($pn_row_id)) { break; }
 						$va_row_tmp = [$t_loc->tableNum(), $t_loc->get('ca_storage_locations.type_id'), $pn_row_id];
@@ -1293,20 +1292,31 @@
 
 											$qr_res = $this->opo_db->query($vs_sql, $va_sql_params);
 										} else {
-											$this->_createTempTable("_browseTmp");
-											$vs_sql = "
-												INSERT IGNORE INTO _browseTmp
-												SELECT ".$this->ops_browse_table_name.'.'.$t_item->primaryKey()."
-												FROM ".$this->ops_browse_table_name."
-												{$vs_relative_to_join}
-												{$vs_join_sql}
-												{$vs_where_sql}";
+											if ($va_facet_info['element_code']) {
+											    $vs_sql = "
+                                                    SELECT ".$this->ops_browse_table_name.'.'.$t_item->primaryKey()."
+                                                    FROM ".$this->ops_browse_table_name."
+                                                    {$vs_relative_to_join}
+                                                    {$vs_join_sql}
+                                                    {$vs_where_sql}";
 
-											$this->opo_db->query($vs_sql, $va_sql_params);
-											
-											$qr_res = $this->opo_db->query("SELECT t.".$t_item->primaryKey()." FROM ".$this->ops_browse_table_name." t LEFT JOIN _browseTmp AS b ON ".$t_item->primaryKey()." = b.row_id WHERE b.row_id IS NULL");
-											
-											$this->_dropTempTable("_browseTmp");
+                                                $qr_res = $this->opo_db->query($vs_sql, $va_sql_params);
+											} else {
+											    $this->_createTempTable("_browseTmp");
+                                                $vs_sql = "
+                                                    INSERT IGNORE INTO _browseTmp
+                                                    SELECT ".$this->ops_browse_table_name.'.'.$t_item->primaryKey()."
+                                                    FROM ".$this->ops_browse_table_name."
+                                                    {$vs_relative_to_join}
+                                                    {$vs_join_sql}
+                                                    {$vs_where_sql}";
+
+                                                $this->opo_db->query($vs_sql, $va_sql_params);
+                                            
+                                                $qr_res = $this->opo_db->query("SELECT t.".$t_item->primaryKey()." FROM ".$this->ops_browse_table_name." t LEFT JOIN _browseTmp AS b ON ".$t_item->primaryKey()." = b.row_id WHERE b.row_id IS NULL");
+                                            
+                                                $this->_dropTempTable("_browseTmp");
+                                            }
 										}
 										
 										$va_acc[$vn_i] = $qr_res->getAllFieldValues($this->ops_browse_table_name.'.'.$t_item->primaryKey());
@@ -2033,7 +2043,7 @@
 												SELECT cv.row_id
 												FROM ca_history_tracking_current_values cv
 												WHERE
-													(cv.current_table_num = ?)"
+													(cv.is_future IS NULL) AND (cv.current_table_num = ?)"
 														.((sizeof($va_row_tmp) == 2) ? " AND (cv.current_type_id IN (?))" : "")
 														.((sizeof($va_row_tmp) > 2) ? " AND (((cv.current_type_id = ?) AND (cv.current_row_id = ?)) OR (cv.current_row_id IN (?)))" : "");
 			
@@ -2043,7 +2053,7 @@
 												SELECT cv.row_id
 												FROM ca_history_tracking_current_values cv
 												WHERE
-													(cv.current_table_num = ?)"
+													(cv.is_future IS NULL) AND (cv.current_table_num = ?)"
 														.((sizeof($va_row_tmp) > 1) ? " AND (cv.current_type_id = ?)" : "")
 														.((sizeof($va_row_tmp) > 2) ? " AND (cv.current_row_id = ?)" : "");
 											$qr_res = $this->opo_db->query($vs_sql, $va_row_tmp);
@@ -2279,20 +2289,23 @@
 
 								$qr_res = $this->opo_db->query($vs_sql, [$va_row_ids]);
 							
-								$va_wheres[] = "{$vs_browse_table_name}.{$idno_fld} IN (?)";
-								$vs_sql = "
-										SELECT {$vs_browse_table_name}.".$t_item->primaryKey()."
-										FROM {$vs_browse_table_name}
-										{$vs_relative_to_join}
-										".((sizeof($va_wheres) > 0) ? " WHERE ".join(" AND ", $va_wheres) : "")."
-										";
+							    if(is_array($idno_list = $qr_res->getAllFieldValues($idno_fld)) && (sizeof($idno_list) > 0)) {
+							
+                                    $va_wheres[] = "{$vs_browse_table_name}.{$idno_fld} IN (?)";
+                                    $vs_sql = "
+                                            SELECT {$vs_browse_table_name}.".$t_item->primaryKey()."
+                                            FROM {$vs_browse_table_name}
+                                            {$vs_relative_to_join}
+                                            ".((sizeof($va_wheres) > 0) ? " WHERE ".join(" AND ", $va_wheres) : "")."
+                                            ";
 
-								$qr_res = $this->opo_db->query($vs_sql, [$qr_res->getAllFieldValues($idno_fld)]);
-								
-								if(!is_array($va_acc[$vn_i])) { $va_acc[$vn_i] = []; }
-								$va_acc[$vn_i] = array_merge($va_acc[$vn_i], $qr_res->getAllFieldValues($vs_browse_table_name.'.'.$t_item->primaryKey()));
-
-								$vn_i++;
+                                    $qr_res = $this->opo_db->query($vs_sql, [$idno_list]);
+                                
+                                    if(!is_array($va_acc[$vn_i])) { $va_acc[$vn_i] = []; }
+                                    $va_acc[$vn_i] = array_merge($va_acc[$vn_i], $qr_res->getAllFieldValues($vs_browse_table_name.'.'.$t_item->primaryKey()));
+                                    
+								    $vn_i++;
+                                }
 								break;
 							# -----------------------------------------------------
 							default:
@@ -2733,18 +2746,18 @@
 							case 'relationship_types':
 								foreach($va_item['rel_type_id'] as $vs_g) {
 									if (isset($va_relationship_types[$vs_g]['typename'])) {
-										$va_groups[] = $va_relationship_types[$vs_g]['typename'];
+										$va_groups[$vs_g] = $va_relationship_types[$vs_g]['typename'];
 									} else {
-										$va_groups[] = $vs_g;
+										$va_groups[$vs_g] = $vs_g;
 									}
 								}
 								break;
 							case 'type':
 								foreach($va_item['type_id'] as $vs_g) {
 									if (isset($va_types[$vs_g]['name_plural'])) {
-										$va_groups[] = $va_types[$vs_g]['name_plural'];
+										$va_groups[$vs_g] = $va_types[$vs_g]['name_plural'];
 									} else {
-										$va_groups[] = _t('Type ').$vs_g;
+										$va_groups[$vs_g] = _t('Type ').$vs_g;
 									}
 								}
 								break;
@@ -2776,9 +2789,20 @@
 								break;
 						}
 
-						foreach($va_groups as $vs_group) {
+						foreach($va_groups as $vs_g => $vs_group) {
 							$vs_group = caUcFirstUTF8Safe($vs_group);
 							$vs_alpha_key = '';
+							
+							switch($ps_grouping_field) {
+							    case 'type':
+							        $va_item['content_count'] = $va_item['counts_by_type'][$vs_g];
+							        break;
+							    case 'relationship_types':
+							        $va_item['content_count'] = $va_item['counts_by_rel_type'][$vs_g];
+							        break;
+							}
+									
+							
 							foreach($va_label_order_by_fields as $vs_f) {
 								$vs_alpha_key .= $va_item[$vs_f];
 							}
@@ -3842,7 +3866,7 @@
 				case 'current_value':
 					$t_item = Datamodel::getInstanceByTableName($vs_browse_table_name, true);
 					if ($t_user && $t_user->isLoaded() && ($t_user->getBundleAccessLevel($vs_browse_table_name, 'ca_objects_location') < __CA_BUNDLE_ACCESS_READONLY__)) { return []; }
-
+		
 					$policy = caGetOption('policy', $va_facet_info, $t_item->getDefaultHistoryTrackingCurrentValuePolicy());
 
 					$vs_sort_field = null;
@@ -3853,7 +3877,7 @@
 					$vs_where_sql = '';
 					
 					$va_joins = ["INNER JOIN ca_history_tracking_current_values AS cv ON cv.row_id = {$vs_browse_table_name}.".$t_item->primaryKey()." AND cv.table_num = {$vs_browse_table_num}"];
-					$va_wheres = ['(cv.policy = ?)']; 
+					$va_wheres = ['(cv.policy = ?)', '(cv.is_future IS NULL)']; 
 					$params = [$policy];
 					
 					if (is_array($va_results) && sizeof($va_results) && ($this->numCriteria() > 0)) {
@@ -4700,7 +4724,7 @@
 						$t_rule = new ca_metadata_dictionary_rules();
 						while($qr_res->nextRow()) {
 							if ($t_rule->load($qr_res->get('rule_id'))) {
-								if (!($vs_val = trim($t_rule->getSetting('label')))) { continue; }
+								if (!($vs_val = trim(caExtractSettingsValueByUserLocale('label', $t_rule->getSettings())))) { continue; }
 								$vs_code = $t_rule->get('rule_code');
 								if ($va_criteria[$vs_val]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 
@@ -5138,6 +5162,8 @@
 								$va_normalized_values = $o_tep->normalizeDateRange($vn_start, $vn_end, $vs_normalization);
 								foreach($va_normalized_values as $vn_sort_value => $vs_normalized_value) {
 									if ($va_criteria[$vs_normalized_value]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
+
+
 									if (is_numeric($vs_normalized_value) && (int)$vs_normalized_value === 0) { continue; }		// don't include year=0
 									
 									if (!isset($va_values[$vn_sort_value][$vs_normalized_value])) {
@@ -5262,8 +5288,6 @@
 								$vn_end = $qr_res->get($vs_browse_end_fld);
 
 								if (!($vn_start && $vn_end)) { continue; }
-								
-								
 								$va_normalized_values = $o_tep->normalizeDateRange($vn_start, $vn_end, $vs_normalization);
 								foreach($va_normalized_values as $vn_sort_value => $vs_normalized_value) {
 									if ($va_criteria[$vs_normalized_value]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
@@ -5473,7 +5497,7 @@
 							if (!is_null($vs_single_value) && ($vn_normalized == $vs_single_value)) {
 								$vb_single_value_is_present = true;
 							}
-						}	
+						}
 
 						if (!is_null($vs_single_value) && !$vb_single_value_is_present) {
 							return array();
@@ -5647,12 +5671,10 @@
 							$vo_dim = new Zend_Measure_Weight($vn_kg, Zend_Measure_Weight::KILOGRAM, 'en_US');
 							$vs_dim = $vo_dim->convertTo($vs_output_units, 6, 'en_US');
 							$vn_dim = (float)$vs_dim;
-							
 
 							$vn_normalized = (floor($vn_dim/$vn_increment_in_current_units) * $vn_increment_in_current_units);
 							if (isset($va_criteria[$vn_normalized])) { continue; }
 							$vs_normalized_range_with_units = "{$vn_normalized} {$vs_units} - ".($vn_normalized + $vn_increment_in_current_units)." {$vs_units}";
-							
 							$va_values[$vn_normalized][$vn_normalized] = array(
 								'id' => $vn_normalized,
 								'label' => $vs_normalized_range_with_units,
@@ -5664,7 +5686,7 @@
 								$vb_single_value_is_present = true;
 							}
 						}
-											
+
 						if (!is_null($vs_single_value) && !$vb_single_value_is_present) {
 							return array();
 						}
@@ -5977,14 +5999,14 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 
 	if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) {
 						$vs_sql = "
-							SELECT COUNT(*) _count, ".join(', ', $va_selects)."
+							SELECT COUNT(DISTINCT ".$t_item->primaryKey(true).") _count, ".join(', ', $va_selects)."
 							FROM {$vs_browse_table_name}
 							{$vs_join_sql}
 								".(sizeof($va_wheres) ? ' WHERE ' : '').join(" AND ", $va_wheres)."
 								".(sizeof($va_orderbys) ? "ORDER BY ".join(', ', $va_orderbys) : '');
 	} else {
 						$vs_sql = "
-							SELECT COUNT(*) _count, ".join(', ', $va_selects)."
+							SELECT COUNT(DISTINCT ".$t_item->primaryKey(true).") _count, ".join(', ', $va_selects)."
 							FROM ".$t_rel_item->tableName()."
 							{$vs_join_sql}
 								".(sizeof($va_wheres) ? ' WHERE ' : '').join(" AND ", $va_wheres)."
@@ -6038,12 +6060,16 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 								if (!is_null($vs_single_value) && ($va_fetched_row[$vs_rel_pk] == $vs_single_value)) {
 									$vb_single_value_is_present = true;
 								}
+							} else {
+							    $va_facet_items[$va_fetched_row[$vs_rel_pk]]['content_count'] += $va_fetched_row['_count'];
 							}
 							if ($va_fetched_row['type_id']) {
 								$va_facet_items[$va_fetched_row[$vs_rel_pk]]['type_id'][] = $va_fetched_row['type_id'];
+							    $va_facet_items[$va_fetched_row[$vs_rel_pk]]['counts_by_type'][$va_fetched_row['type_id']] += $va_fetched_row['_count'];
 							}
 							if ($va_fetched_row['rel_type_id']) {
 								$va_facet_items[$va_fetched_row[$vs_rel_pk]]['rel_type_id'][] = $va_fetched_row['rel_type_id'];
+							    $va_facet_items[$va_fetched_row[$vs_rel_pk]]['counts_by_rel_type'][$va_fetched_row['rel_type_id']] += $va_fetched_row['_count'];
 							}
 						}
 						
