@@ -5789,7 +5789,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 					}
 
 					if (is_array($va_restrict_to_types) && (sizeof($va_restrict_to_types) > 0) && method_exists($t_rel_item, "getTypeList")) {
-						$va_wheres[] = "{$vs_rel_table_name}.type_id IN (".join(',', caGetOption('dont_include_subtypes', $va_facet_info, false) ? $va_restrict_to_types : $va_restrict_to_types_expanded).")".($t_rel_item->getFieldInfo('type_id', 'IS_NULL') ? " OR ({$vs_rel_table_name}.type_id IS NULL)" : '');
+						//$va_wheres[] = "{$vs_rel_table_name}.type_id IN (".join(',', caGetOption('dont_include_subtypes', $va_facet_info, false) ? $va_restrict_to_types : $va_restrict_to_types_expanded).")".($t_rel_item->getFieldInfo('type_id', 'IS_NULL') ? " OR ({$vs_rel_table_name}.type_id IS NULL)" : '');
 						
 						if($va_facet_info['type'] !== 'relationship_types') {
 						    $va_selects[] = "{$vs_rel_table_name}.type_id";
@@ -6021,9 +6021,9 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 
 							if (!$va_facet_items[$va_fetched_row[$vs_rel_pk]]) {
 
-								if (is_array($va_restrict_to_types) && sizeof($va_restrict_to_types) && $va_fetched_row['type_id'] && !in_array($va_fetched_row['type_id'], $va_restrict_to_types)) {
-									continue;
-								}
+								// if (is_array($va_restrict_to_types) && sizeof($va_restrict_to_types) && $va_fetched_row['type_id'] && !in_array($va_fetched_row['type_id'], $va_restrict_to_types)) {
+// 									continue;
+// 								}
 
 								$va_facet_items[$va_fetched_row[$vs_rel_pk]] = array(
 									'id' => $va_fetched_row[$vs_rel_pk],
@@ -6062,6 +6062,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 						$vb_check_ancestor_access = (bool)(isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_item->hasField('access'));
 
 						if($qr_ancestors) {
+						    $va_facet_items_ancestors = [];
 							while($qr_ancestors->nextHit()) {
 								if ($qr_ancestors->get("{$vs_rel_table}.deleted")) { continue; }
 								if (!($vn_parent_type_id = $qr_ancestors->get('type_id'))) { continue; }
@@ -6073,15 +6074,21 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 								if (is_array($va_restrict_to_types) && (sizeof($va_restrict_to_types) > 0) && !in_array($vn_parent_type_id, $va_restrict_to_types)) { continue; }
 								if ($vb_check_ancestor_access && !in_array($qr_ancestors->get('access'), $pa_options['checkAccess'])) { continue; }
 
-								$va_facet_items[$vn_ancestor_id] = array(
+                                $children = $t_rel_item->getHierarchy($vn_ancestor_id, ['idsOnly' => true]); 
+            
+                                $ancestor_count = array_reduce($children, function($c, $i) use ($va_facet_items) {return isset($va_facet_items[$i]) ? $c + $va_facet_items[$i]['content_count'] : $c; }, 0);
+						
+								$va_facet_items_ancestors[$vn_ancestor_id] = array(
 									'id' => $vn_ancestor_id,
-									'type_id' => array(),
+									'type_id' => array($vn_parent_type_id),
 									'parent_id' => $vb_rel_is_hierarchical ? $qr_ancestors->get("{$vs_hier_parent_id_fld}") : null,
 									'hierarchy_id' => ($vb_rel_is_hierarchical && $vs_hier_id_fld) ? $qr_ancestors->get($vs_hier_id_fld) : null,
 									'rel_type_id' => array(),
-									'child_count' => 0
+									'child_count' => sizeof($children),
+									'content_count' => $ancestor_count
 								);
 							}
+							$va_facet_items = $va_facet_items_ancestors + $va_facet_items;
 						}
 		}
 
@@ -6091,6 +6098,12 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							if ($va_item['parent_id'] && isset($va_facet_items[$va_item['parent_id']])) {
 								$va_facet_items[$va_item['parent_id']]['child_count']++;
 							}
+						    if ($va_restrict_to_types) {
+						        if (!sizeof(array_intersect($va_restrict_to_types, $va_item['type_id']))) {
+						            unset($va_facet_items[$vn_i]);
+						            continue;
+						        }
+						    }
 						}
 
                         $natural_sort = caGetOption('natural_sort', $va_facet_info, false);
