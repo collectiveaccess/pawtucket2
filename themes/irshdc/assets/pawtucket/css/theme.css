@@ -1253,7 +1253,13 @@ a.readmore-js-toggle {
 /* overlay */
 #caFormOverlay {
     width: 500px;
-    margin: 10% auto 0px auto;
+    margin: 50px auto 0px auto;
+}
+@media (max-width: 767px) {
+	#caFormOverlay {
+		 margin: 0px auto 0px auto;
+		 width: 100%;
+	}
 }
 
 #caMediaPanelContentArea{
