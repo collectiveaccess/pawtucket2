@@ -349,9 +349,9 @@ a:hover .frontIconButton{
 .front .tl-timeline h2.tl-headline-title{
 	color:#d20000;
 }
-.front .tl-timeline h2{
+/*.front .tl-timeline h2{
 	padding-top:15px !Important;
-}
+}*/
 .front .tl-timemarker-content-small h2{
 	padding-top:0px !Important;
 }
@@ -360,6 +360,30 @@ a:hover .frontIconButton{
 	max-height:auto !important;
 	height:auto !important;
 	width:auto !important;
+}
+.galleryTimelineDate{
+	font-size:.5em;
+	color:#b3b3b3;
+}
+.tl-slidenav-content-container .galleryTimelineDate{
+	font-size:1em;
+}
+/* replaceing the default date with one in the label template so can format date */
+.tl-headline-date{
+	display:none;
+}
+.tl-slidenav-description{
+	display:none;
+}
+/* hide the date in the marker */
+.tl-timemarker-text .galleryTimelineDate{
+	display:none;
+}
+.tl-timemarker-text .tl-headline{
+	padding-top:0px;
+}
+h2.tl-headline{
+	padding-top:0px;
 }
 /*@media (max-width: 767px) {
 	.frontSearchCol .btn-search {
