@@ -33,13 +33,18 @@
 						print $vs_collections;
 						print "</div><!-- end unit -->";
 					}
-					# --- places
-					$vs_places = $t_item->getWithTemplate("<unit relativeTo='ca_places' delimiter='<br/>'><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>");
-			
-					if($vs_places){
-						print "<div class='unit'><h3>"._t("Related places")."</h3>";
-						print $vs_places;
-						print "</div><!-- end unit -->";
+					$va_places = $t_item->get("ca_places", array("checkAccess" => $va_access_values, "returnWithStructure" => true));
+					if(is_array($va_places)){
+						$va_place_links = array();
+						foreach($va_places as $va_place){
+							$va_place_links[] = caNavLink($this->request, $va_place['name'], '', '', 'Browse', 'objects', array('facet' => 'place_facet', 'id' => $va_place['place_id']));
+						}
+				
+						if(sizeof($va_place_links)){
+							print "<div class='unit'><h3>"._t("Geographic Locations")."</h3>";
+							print join($va_place_links, "<br/>");
+							print "</div><!-- end unit -->";
+						}
 					}
 ?>										
 				</div><!-- end col -->

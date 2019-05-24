@@ -65,8 +65,12 @@
 						$vn_facet_size = sizeof($va_facet_info['content']);
 						$vn_c = 0;
 						foreach($va_facet_info['content'] as $va_item) {
+						   $vs_label = $va_item['label'];
+						   if(($vs_browse_type == "collections") && ($vs_facet_name == "type_facet") && (strToLower($va_item['label']) == "external collections")){
+								$vs_label = "Series";
+						   }
 						   # $vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-							print "<div>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+							print "<div>".caNavLink($this->request, $vs_label.$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 							$vn_c++;
 						
 							if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {

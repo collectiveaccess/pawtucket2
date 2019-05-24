@@ -62,24 +62,21 @@
 					if ($vs_idno = $t_item->get('ca_collections.idno')) {
 						print "<div class='unit'><b>Identifier</b><br/>".$vs_idno."</div>";
 					}
-					if ($vs_altID_array = $t_item->get('ca_collections.alternateID', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
-						print "<div class='unit'><b>Alternate Identifier</b><br/>";
-						$i = 1;
-						foreach ($vs_altID_array as $va_key => $va_altID_t) {
-							foreach ($va_altID_t as $va_key => $vs_altID) {
-								print "<b class='gray'>".$vs_altID['alternateIDdescription']."</b>: ".$vs_altID['alternateID'];
-								if($i < sizeof($va_altID_t)){
-									print "<br/>";
-								}
-								$i++;
-							}
-						}
+					#if ($vs_altID_array = $t_item->get('ca_collections.alternateID', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
+					#	print "<div class='unit'><b>Alternate Identifier</b><br/>";
+					#	$i = 1;
+					#	foreach ($vs_altID_array as $va_key => $va_altID_t) {
+					#		foreach ($va_altID_t as $va_key => $vs_altID) {
+					#			print "<b class='gray'>".$vs_altID['alternateIDdescription']."</b>: ".$vs_altID['alternateID'];
+					#			if($i < sizeof($va_altID_t)){
+					#				print "<br/>";
+					#			}
+					#			$i++;
+					#		}
+					#	}
 
-						print "</div>";
-					}
-					if ($vs_repo = $t_item->get('ca_collections.repository', array('convertCodesToDisplayText' => true))) {
-						print "<div class='unit'><b>Repository</b><br/>".$vs_repo."</div>";
-					}		
+					#	print "</div>";
+					#}
 					if ($va_relation = $t_item->get('ca_collections.relation', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 						$va_relation = array_pop($va_relation);
 						$i = 1;
@@ -101,7 +98,7 @@
 						}
 					}													
 					# --- collections
-					if ($vs_collections = $t_item->getWithTemplate("<ifcount code='ca_collections.related' min='1'><unit relativeTo='ca_collections'><l>^ca_collections.preferred_labels</l> (^relationship_typename)</unit></ifcount>")){	
+					if ($vs_collections = $t_item->getWithTemplate("<ifcount code='ca_collections.related' min='1'><unit relativeTo='ca_collections.related' delimiter='<br/>'><l>^ca_collections.preferred_labels</l></unit></ifcount>")){	
 						print "<div class='unit'><H3>"._t("Related Series")."</H3>";
 						print $vs_collections;
 						print "</div><!-- end unit -->";
@@ -113,7 +110,7 @@
 						print "</div><!-- end unit -->";
 					}
 					# --- places
-					if ($vs_places = $t_item->getWithTemplate("<ifcount code='ca_places' min='1'><unit relativeTo='ca_places'><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit></ifcount>")){	
+					if ($vs_places = $t_item->getWithTemplate("<ifcount code='ca_places' min='1'><unit relativeTo='ca_places'><l>^ca_places.preferred_labels</l></unit></ifcount>")){	
 						print "<div class='unit'><H3>"._t("Geographic Locations")."</H3>";
 						print $vs_places;
 						print "</div><!-- end unit -->";

@@ -39,7 +39,7 @@
 		<ul>
 			<li class="list-item-one">
 				<ul>
-					<li><a href="http://www.archives.nysed.gov/about/index.shtml">About Us</a></li>
+					<li><a href="http://www.archives.nysed.gov/about/about-nysa">About Us</a></li>
 					<li><a href="http://www.archives.nysed.gov/directories/index.shtml">Contact Us</a></li>
 					<li><a href="http://iarchives.nysed.gov/xtf/search?">Finding Aids</a></li>
 					<li><a href="http://www.archives.nysed.gov/news">News</a></li>
@@ -49,10 +49,10 @@
 			</li>
 			<li class="list-item-two">
 				<ul>
-					<li><a href="http://www.archives.nysed.gov/apt/magazine/index.shtml">New York Archives Magazine</a></li>
-					<li><a href="http://www.nysarchivestrust.org/">Archives Partnership Trust</a></li>
-					<li><a href="http://www.nyshrab.org/">New York State Historical Records</a></li>
-					<li class="advisory-board"><a href="http://www.nyshrab.org/">Advisory Board</a></li>
+					<li><a href="https://www.nysarchivestrust.org/new-york-archives-magazine">New York Archives Magazine</a></li>
+					<li><a href="https://www.nysarchivestrust.org/">Archives Partnership Trust</a></li>
+					<li><a href="http://www.archives.nysed.gov/shrab">New York State Historical Records</a></li>
+					<li class="advisory-board"><a href="http://www.archives.nysed.gov/shrab">Advisory Board</a></li>
 					<li><a href="http://www.oce.nysed.gov/">Office of Cultural Education</a></li>
 				</ul>
 			</li>
@@ -62,6 +62,7 @@
 					<li><a href="http://www.ny.gov/">New York State</a></li>
 					<li><a href="http://www.nysed.gov/privacy-policy">Privacy Policy</a></li>
 					<li><a href="http://www.nysed.gov/terms-of-use">Terms of Use</a></li>
+					<li><a href="http://www.nysed.gov/terms-of-use#Accessibility">Accessibility</a></li>
 				</ul>
 			</li>
 		</ul>

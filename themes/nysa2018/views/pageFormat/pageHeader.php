@@ -62,42 +62,27 @@
 <body>
 	<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
 		<div id="header">
+			<div class="right-box">
+				<div class="social">
+					<ul>
+						<li>
+							<a href="https://www.facebook.com/nysarchives"><?php print caGetThemeGraphic($this->request, 'Facebook_icon.png', array ('width' => '27px', 'height' => '27px'));?></a>
+						</li>
+						<li>
+							<a href="https://twitter.com/nysarchives"><?php print caGetThemeGraphic($this->request, 'twitter_icon.png', array ('width' => '27px', 'height' => '27px'));?></a>
+						</li>
+						<li>
+							<a href="https://www.youtube.com/user/nysarchives"><?php print caGetThemeGraphic($this->request, 'YouTubeIcon.png', array ('width' => '27px', 'height' => '27px'));?></a>
+						</li>
+					</ul>
+				</div>
+			</div>
 			<div class="logo"><a href="http://www.archives.nysed.gov"><?php print caGetThemeGraphic($this->request, 'NYSA_Logo.jpg', array('alt' => 'New York State Archives'));?></a></div>			
 			<div id="logotext"><a href="http://www.archives.nysed.gov"><?php print caGetThemeGraphic($this->request, 'NYSA_HeaderType.png', array('alt' => 'New York State Archives'));?></a></div>	
 				
-			<div class="right-box">
-			<div class="social">
-				<ul>
-					<li>
-						<a href="https://www.facebook.com/nysarchives"><?php print caGetThemeGraphic($this->request, 'Facebook_icon.png', array ('width' => '27px', 'height' => '27px'));?></a>
-					</li>
-					<li>
-						<a href="https://twitter.com/nysarchives"><?php print caGetThemeGraphic($this->request, 'twitter_icon.png', array ('width' => '27px', 'height' => '27px'));?></a>
-					</li>
-					<li>
-						<a href="https://www.youtube.com/user/nysarchives"><?php print caGetThemeGraphic($this->request, 'YouTubeIcon.png', array ('width' => '27px', 'height' => '27px'));?></a>
-					</li>
-				</ul>
-			</div>
+			
+			<div style="clear:both;"></div>
 		</div>
-	</div>
-<?php /*
-	if (($this->request->getController() == "Browse") && ($this->request->getAction() == "occurrences")) {
-	print '<div id="menuBar">';
-		print caNavLink($this->request, _t("About"), "", "", "About", "education"); 
-		print caNavLink($this->request, _t("Browse Documents/Lessions"), "", "", "Browse", "occurrences"); 
-		print caNavLink($this->request, _t("Copyright"), "", "", "About", "copyright"); 
-	print "</div>";
-	} elseif ($this->request->getActionExtra() == "dutch"){
-		print "";
-	} else {	
-	print '<div id="menuBar">';
-		print caNavLink($this->request, _t("Browse The Collection"), "", "", "Browse", "objects"); 
-		print caNavLink($this->request, _t("Copyright"), "", "", "About", "copyright"); 
-		print caNavLink($this->request, _t("Learning Activities"), "", "", "Browse", "occurrences"); 
-	print '</div>';
-	} */
-?>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container caMenu">
 			<!-- Brand and toggle get grouped for better mobile display -->
@@ -166,11 +151,15 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
+					<li class="dropdown<?php print ($this->request->getController() == "Browse") ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Browse"); ?></a>
+						<ul class="dropdown-menu">
+							<li><?php print caNavLink($this->request, _t("Objects"), '', '', 'Browse', 'objects', ''); ?></li>
+							<li><?php print caNavLink($this->request, _t("Series"), '', '', 'Browse', 'collections', ''); ?></li>
+						</ul>	
+					</li>
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Topics"), "", "", "Collections", "index"); ?></li>										
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Exhibits"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact Us"), "", "", "Contact", "Form"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
