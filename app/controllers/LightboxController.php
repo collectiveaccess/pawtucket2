@@ -754,8 +754,8 @@
 					$t_user = new ca_users();
 					foreach($va_users as $vs_user){
 						// lookup the user/users
-						$t_user->load(array("email" => $vs_user));
-						if($vn_user_id = $t_user->get("user_id")){
+						$t_user = ca_users::find(["email" => $vs_user, 'userclass' => ['<', 255] ], ['returnAs' => 'firstModelInstance']);
+						if($t_user && ($vn_user_id = $t_user->get("user_id"))){
 							$t_sets_x_users = new ca_sets_x_users();
 							if(($vn_user_id == $t_set->get("user_id")) || ($t_sets_x_users->load(array("set_id" => $t_set->get("set_id"), "user_id" => $vn_user_id)))){
 								$va_error_emails_has_access[] = $vs_user;
