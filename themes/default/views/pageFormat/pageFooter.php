@@ -58,7 +58,7 @@
 			
 			</div>
 		</div>
-    <script src="<?php print $this->request->getAssetsUrlPath(); ?>/main.js"></script>
+    <script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>
 		<script type="text/javascript">
 			
 			/*

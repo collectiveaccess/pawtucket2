@@ -6,8 +6,8 @@ module.exports = {
 	watch: true,
 	
 	entry: { 
-	  main: './themes/default/js/main.js' ,
-	  css: './themes/default/css/main.scss'
+	  main: './js/main.js' ,
+	  css: './css/main.scss'
 	},
 	output: {
 	  path: path.resolve(__dirname, 'assets'),
@@ -33,7 +33,8 @@ module.exports = {
         test: /\.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
-          loader: "babel-loader"
+          loader: "babel-loader",
+          options: { "presets": ["@babel/preset-env", "@babel/preset-react"] }
         }
       },
       {
