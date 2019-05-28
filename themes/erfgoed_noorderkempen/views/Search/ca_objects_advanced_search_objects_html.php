@@ -48,8 +48,8 @@
 	</div>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover">Periode</span>
-			{{{ca_objects.content_date%width=220px}}}
+			<span class='formLabel' data-toggle="popover" data-trigger="hover">Datum</span>
+			{{{ca_objects.production_dating.earliest_date%width=220px}}}
 		</div>
 	</div>
 	<br style="clear: both;"/>
