@@ -23,7 +23,7 @@
 					# --- default to ask archivist
 				break;
 				# ---------------------------
-				case "ca_objects":
+				default:
 					$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
 					$vs_name = $t_item->get($ps_table.".preferred_labels.name");
 					$vs_idno = $t_item->get($ps_table.".idno");
@@ -47,6 +47,8 @@
 ?>
 		<div class="row">
 			<div class="col-sm-12">
+				<p>{{{inquire_form}}}</p>
+				<HR/>
 				<p><b>Title: </b><?php print $vs_name; ?>
 <?php 
 					if($vs_idno){

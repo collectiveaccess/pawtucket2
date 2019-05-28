@@ -91,10 +91,17 @@
 ?>
 
 			</div><!-- end col -->
-			
+
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
-				{{{<ifcount code="ca_collections" min="1"><div class="unit"><H6>Collectie</H6><unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
+<?php
+				if($vn_collection_id = $t_object->get("ca_objects.object_collection.collection_id")){
+					print "<div class='unit'><H6>Collectie</H6>";
+					print caDetailLink($this->request, $t_object->get("ca_objects.object_collection.preferred_labels.name"), '', 'ca_collections', $vn_collection_id);
+					print "</div>";
+				}
+				
+?>
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Inventarisnummer</H6>^ca_objects.idno</div></ifdef>}}}
 				<HR>
 				{{{<ifdef code="ca_objects.content_description">
@@ -107,12 +114,12 @@
 				
 				{{{<ifdef code="ca_objects.dimensions"><div class="unit"><H6>Afmetingen</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.dimensions.dimensions_name">^ca_objects.dimensions.dimensions_name: </ifdef><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height</ifdef><ifdef code="ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth</ifdef><ifdef code="ca_objects.dimensions.dimensions_unit"> ^ca_objects.dimensions.dimensions_unit</ifdef><ifdef code="ca_objects.dimensions.weight"> ^ca_objects.dimensions.weight</ifdef><ifdef code="ca_objects.dimensions.weight,ca_objects.dimensions.weight_unit"> ^ca_objects.dimensions.weight_unit</ifdef></unit></div></ifdef>}}}
 				{{{<ifcount code="ca_places" min="1"><div class="unit"><H6>Plaatsen</H6><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels</unit></div></ifcount>}}}
-				{{{<ifdef code="ca_objects.production_dating"><div class="unit"><H6>Datering</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.production_dating.Style">^ca_objects.production_dating.Style </ifdef><ifdef code="ca_objects.production_dating.earliest_date">^ca_objects.production_dating.earliest_date </ifdef><ifdef code="ca_objects.production_dating.production_period">^ca_objects.production_dating.production_period </ifdef></unit></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.production_dating.Style|ca_objects.production_dating.earliest_date|ca_objects.production_dating.production_period"><div class="unit"><H6>Datering</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.production_dating.Style">^ca_objects.production_dating.Style </ifdef><ifdef code="ca_objects.production_dating.earliest_date">^ca_objects.production_dating.earliest_date </ifdef><ifdef code="ca_objects.production_dating.production_period">^ca_objects.production_dating.production_period </ifdef></unit></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.object_keywords"><div class="unit"><H6>Trefwoord</H6>^ca_objects.object_keywords%delimiter=,_</div></ifdef>}}}
 				
 <?php
-				print $t_object->getWithTemplate('<ifdef code="ca_objects.production_maker.maker"><div class="unit"><H6>Vervaardiger</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.production_maker.maker">^ca_objects.production_maker.maker </ifdef><ifdef code="ca_objects.production_maker.maker_role">^ca_objects.production_maker.maker_role </ifdef><ifdef code="ca_objects.production_maker.maker_sureness">^ca_objects.production_maker.maker_sureness</ifdef></unit></div></ifdef>');
-				print $t_object->getWithTemplate('<ifdef code="ca_objects.management_acquisition.acquisition_source|ca_objects.management_acquisition.acquisition_method_type|ca_objects.management_acquisition.acquisition_date|ca_objects.management_acquisition.acquisition_note"><div class="unit"><H6>Verwerving</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.management_acquisition.acquisition_source">^ca_objects.management_acquisition.acquisition_source </ifdef><ifdef code="ca_objects.management_acquisition.acquisition_method_type">^ca_objects.management_acquisition.acquisition_method_type </ifdef><ifdef code="ca_objects.management_acquisition.acquisition_date">^ca_objects.management_acquisition.acquisition_date </ifdef><ifdef code="ca_objects.management_acquisition.acquisition_note">^ca_objects.management_acquisition.acquisition_note </ifdef></unit></div></ifdef>');
+				print $t_object->getWithTemplate('<ifdef code="ca_objects.production_maker.maker"><div class="unit"><H6>Vervaardiger</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.production_maker.maker">^ca_objects.production_maker.maker</ifdef><ifdef code="ca_objects.production_maker.maker_role">, ^ca_objects.production_maker.maker_role</ifdef><ifdef code="ca_objects.production_maker.maker_sureness">, ^ca_objects.production_maker.maker_sureness</ifdef></unit></div></ifdef>');
+				print $t_object->getWithTemplate('<ifdef code="ca_objects.management_acquisition.acquisition_source|ca_objects.management_acquisition.acquisition_method_type|ca_objects.management_acquisition.acquisition_date|ca_objects.management_acquisition.acquisition_note"><div class="unit"><H6>Verwerving</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.management_acquisition.acquisition_source">^ca_objects.management_acquisition.acquisition_source</ifdef><ifdef code="ca_objects.management_acquisition.acquisition_method_type">, ^ca_objects.management_acquisition.acquisition_method_type</ifdef><ifdef code="ca_objects.management_acquisition.acquisition_date">, ^ca_objects.management_acquisition.acquisition_date</ifdef><ifdef code="ca_objects.management_acquisition.acquisition_note">, ^ca_objects.management_acquisition.acquisition_note</ifdef></unit></div></ifdef>');
 	if($vs_map = $this->getVar("map")){								
 		print "<hr></hr><div class='unit'>".$vs_map."</div><br/>";
 	}
