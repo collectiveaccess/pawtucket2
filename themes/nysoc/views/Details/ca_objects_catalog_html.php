@@ -273,8 +273,10 @@
 					}
 				}
 			}				
-			if ($vs_digilink = $t_object->get('ca_objects.Digital_link')) {
-				$vs_learn_even.=  "<div class='unit'><a href='".$vs_digilink."' target='_blank'>Digital Copy</a></div>";
+			if ($vs_digilinks = $t_object->get('ca_objects.Digital_link', array('returnAsArray' => true))) {
+				foreach ($vs_digilinks as $va_key => $vs_digilink) { 
+					$vs_learn_even.=  "<div class='unit'><a href='".$vs_digilink."' target='_blank'>Digital Copy</a></div>";
+				}
 			}				
 			if ($vs_learn_even != "") {
 				print "<h6 style='margin-top:30px;'>Learn Even More</h6>";	

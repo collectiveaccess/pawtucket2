@@ -35,14 +35,25 @@
 ?>
 		<footer id="footer" class="text-center">
 			<div class="row">
-				<div class="col-sm-12 col-md-6 text-left">
-					&copy; Vancouver Maritime Museum <?php print date("Y"); ?>
-				</div>
-				<div class="col-sm-12 col-md-6 text-right">
-				
-					<a href="https://vancouvermaritimemuseum.com/">Vancouver Maritime Museum</a>
-					<br/>1905 Ogden Avenue in Vanier Park
-					<br/>Vancouver, BC V6J 1A3
+				<div class="col-sm-12 text-center">
+					<p>
+						<a href="https://vancouvermaritimemuseum.com/" class="museumLink">Vancouver Maritime Museum</a>
+						<div class="address">1905 Ogden Avenue in Vanier Park, Vancouver, BC V6J 1A3</div>
+					</p>
+					<ul class="list-inline social">
+						<li><a href="https://www.facebook.com/vanmaritime" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
+						<li><a href="https://www.instagram.com/vanmaritime/" target="_blank"><i class="fa fa-instagram"></i></a></li>
+						<li><a href="https://twitter.com/vanmaritime" target="_blank"><i class="fa fa-twitter-square"></i></a></li>
+					</ul>
+					<ul class="list-inline">
+						<li><a href="https://vancouvermaritimemuseum.com/" target="_blank">Museum Home</a></li>
+						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "Contact"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "About", "TermsOfUse"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Privacy Policy"), "", "", "About", "PrivacyPolicy"); ?></li>
+					</ul>
+					<p class="funder">
+						<a href="https://www.canada.ca/en/canadian-heritage.html" target="_blank"><?php print caGetThemeGraphic($this->request, '3li_EnFr_Wordmark_C.png'); ?></a>
+					</p>
 				</div>
 			</div>
 		</footer><!-- end footer -->
@@ -80,8 +91,38 @@
 						closeButtonSelector: '.close'					/* anything with the CSS classname "close" will trigger the panel to close */
 					});
 				}
+			
+				$(function() {
+					//caches a jQuery object containing the header element
+					var body = $("body");
+					
+						$(window).scroll(function() {
+							if ($(window).width() > 992) {
+								var scroll = $(window).scrollTop();
+
+								if (scroll >= 125) {
+									body.removeClass('initial', 1400, 'linear');
+								} else {
+									body.addClass('initial', 1400, 'linear');
+								}
+							}else{
+								if(!body.hasClass('initial')){
+									body.addClass('initial');
+								}
+							}
+						});
+					
+				});
+				
+			
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
+		</script>
+		<script type="text/javascript" language="javascript">
+			jQuery(document).ready(function() {
+				$('html').on('contextmenu', 'body', function(e){ return false; });
+				$('html').on('dragstart', false);
+			});
 		</script>
 	</body>
 </html>

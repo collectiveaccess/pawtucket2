@@ -8,6 +8,9 @@
     RewriteRule ^archives /About/archives [R,L]
     RewriteRule ^oralhistory /Listing/oralhistory [R,L]
     RewriteRule ^specialcollections /Collections/index [R,L]
+    
+    RewriteCond   %{HTTP_HOST}   ^exhibitions\.stormking\.org$
+    RewriteRule   ^(.*)$          https://collections.stormking.org/Listing/exhibitions     [R,L]
 	
 	# Pass all requests not referring directly 
 	# to files in the filesystem to index.php.

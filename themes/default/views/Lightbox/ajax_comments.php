@@ -44,7 +44,7 @@
     <div class="lbSetCommentHeader" id="lbSetCommentHeader{{{item_id}}}" <?php print ($vn_num_comments == 0 ? 'style="display: none;"' : ''); ?>><span class="lbSetCommentsCount" id="lbSetCommentHeader{{{item_id}}}Count"><?php print $vn_num_comments." ".(($vn_num_comments == 1) ? _t("comment") : _t("comments")); ?></span></div>
     <div class="lbComments" id="lbSetComments{{{item_id}}}">
 <?php
-		if(sizeof($qr_comments)){
+		if($qr_comments->numHits()){
                 while ($qr_comments->nextHit()) {
                     $this->setVar('comment_id', $qr_comments->get('ca_item_comments.comment_id'));
                     $this->setVar('comment', $qr_comments->get('ca_item_comments.comment'));

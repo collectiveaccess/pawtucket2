@@ -1,8 +1,8 @@
 <?php
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
-	include_once(__CA_LIB_DIR__."/ca/Search/InterstitialSearch.php");
-	include_once(__CA_LIB_DIR__."/ca/Search/EntitySearch.php");
+	include_once(__CA_LIB_DIR__."/Search/InterstitialSearch.php");
+	include_once(__CA_LIB_DIR__."/Search/EntitySearch.php");
 
 	
 	$va_type = "Historic Events";
