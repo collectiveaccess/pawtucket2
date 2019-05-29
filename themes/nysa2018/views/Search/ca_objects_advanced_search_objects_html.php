@@ -33,13 +33,13 @@ print "<p>Enter your search terms in the fields below to search objects in the N
 			<div class='row'>
 				<div class="advancedSearchField col-sm-12">
 					<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to format.">Format</span>
-					{{{ca_objects.type_id%height=30px}}}
+					{{{ca_objects.type_id%height=30px&inUse=1}}}
 				</div>	
 			</div>
 			<div class='row'>
 				<div class="advancedSearchField col-sm-12">
 					<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records of a particular date or date range.">Date range <i>(e.g. 1970-1979)</i></span>
-					{{{ca_objects.date.dates_value%width=200px&height=40px&useDatePicker=0}}}
+					{{{ca_objects.date_original%width=200px&height=40px&useDatePicker=0}}}
 				</div>
 			</div>		
 			<div class='row'>
@@ -56,8 +56,8 @@ print "<p>Enter your search terms in the fields below to search objects in the N
 			</div>
 			<br style="clear: both;"/>
 			<div class='advancedFormSubmit'>
-				<span class='btn btn-default'>{{{reset%label=Reset}}}</span>
-				<span class='btn btn-default' style="margin-left: 20px;">{{{submit%label=Search}}}</span>
+				<span class='btn btn-default' style="margin-right: 20px;">{{{submit%label=Search}}}</span>
+				<span class='btn btn-default'>{{{reset%label=Clear}}}</span>
 			</div>
 		</div>
 	</div>

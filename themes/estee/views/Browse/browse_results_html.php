@@ -69,6 +69,7 @@
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
 	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
+	$vb_show_chronology_filters = $this->request->getParameter("showChronologyFilters", pInteger);
 	
 if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
@@ -243,6 +244,92 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			}
 		}
 }
+if($vb_ajax && $vb_show_chronology_filters){
+	# --- merge applied and available chronology type facets to display as buttons at top of chronology browse embedded in collection detail page
+	$va_chrono_types_process = array();
+	$t_list = new ca_lists();
+	$va_chronology_types = $t_list->getItemsForList("chronology_types");
+	if(is_array($va_chronology_types) && sizeof($va_chronology_types)){
+		foreach($va_chronology_types as $va_chrono_type){
+			$va_chrono_type = array_pop($va_chrono_type);
+			$va_chrono_types_process[$va_chrono_type["name_singular"]] = array("id" => $va_chrono_type["item_id"], "label" => $va_chrono_type["name_singular"], "selected" => "");
+		}
+	}
+	if (sizeof($va_criteria) > 0) {
+		foreach($va_criteria as $va_criterion) {
+			if($va_criterion["facet_name"] == "chronology_type_facet"){
+				$va_chrono_types_process[$va_criterion['value']]["selected"] = 1;
+			}
+		}
+	}
+#	if (sizeof($va_criteria) > 0) {
+#		foreach($va_criteria as $va_criterion) {
+#			if($va_criterion["facet_name"] == "chronology_type_facet"){
+#				$va_chrono_types_process[$va_criterion['value']] = array("id" => $va_criterion['id'], "label" => $va_criterion['value'], "selected" => "1");
+#			}
+#		}
+#	}
+#	if(is_array($va_facets["chronology_type_facet"]) && sizeof($va_facets["chronology_type_facet"])){
+#		$va_chrono_types_facet = $va_facets["chronology_type_facet"];
+#		if(is_array($va_chrono_types_facet["content"]) && sizeof($va_chrono_types_facet["content"])){
+#			foreach($va_chrono_types_facet["content"] as $va_chrono_types){
+#				$va_chrono_types_process[$va_chrono_types["label"]] = array("id" => $va_chrono_types["id"], "label" => $va_chrono_types["label"], "selected" => "");
+#			}
+#		}
+#	}
+	ksort($va_chrono_types_process);
+?>
+	
+	<div class="row bChronologyHeading">
+		<div class="col-sm-9">
+			<div class='filterChronologyButtons'><H4>Filter By: </H4>
+<?php
+				foreach($va_chrono_types_process as $va_chrono_type){
+					if($va_chrono_type["selected"]){
+						print "<a href='#' class='selected' onClick='removeFacet(".$va_chrono_type["id"]."); return false;'>".$va_chrono_type["label"]."</a>";
+					}else{	
+						print "<a href='#' onClick='applyFacet(".$va_chrono_type["id"]."); return false;'>".$va_chrono_type["label"]."</a>";
+					}
+				}
+?>
+			</div><!-- end filterChronologyButtons -->
+		</div>
+		<div class="col-sm-3 bChronoDownloadCol">
+				<div class="btn-group" id="bChronoDownloadDD">
+					<a href="#" data-toggle="dropdown" class="bChronoDownloadDDLink"><span class='glyphicon glyphicon-download'></span> Download</i></a>
+					<ul class="dropdown-menu" role="menu">
+<?php
+						print "<li>".caNavLink($this->request, "PDF", "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => "_pdf_chronology", "key" => $vs_browse_key))."</li>";
+						print "<li>".caNavLink($this->request, "Excel", "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => "chronology_excel", "key" => $vs_browse_key))."</li>";
+
+?>		
+					</ul>
+				</div>
+
+
+		</div>
+	</div>
+	
+	<script type='text/javascript'>
+		function applyFacet(id){
+			jQuery("#browseCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'key' => $vs_browse_key, 'facet' => 'chronology_type_facet')); ?>/id/" + id);
+		}
+		function removeFacet(id){
+			jQuery("#browseCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'key' => $vs_browse_key, 'removeCriterion' => 'chronology_type_facet')); ?>/removeID/" + id);
+		}
+		jQuery(document).ready(function() {
+			jQuery('#browseResultsCollectionContainer').jscroll({
+				autoTrigger: true,
+				loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+				padding: 800,
+				nextSelector: 'a.jscroll-next'
+			});
+		});
+
+	</script>
+	<div id="browseResultsCollectionContainer">
+<?php
+}
 # --- check if this result page has been cached
 # --- key is MD5 of browse key, sort, sort direction, view, page/start, items per page, row_id
 $vs_cache_key = md5($vs_browse_key.$vs_current_sort.$vs_sort_dir.$vs_current_view.$vn_start.$vn_hits_per_block.$vn_row_id);
@@ -253,7 +340,11 @@ if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_ke
 	ExternalCache::save($vs_cache_key, $vs_result_page, 'browse_results');
 	print $vs_result_page;
 }		
-
+if($vb_show_chronology_filters){
+?>
+	</div>
+<?php
+}
 if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
 			</div><!-- end browseResultsContainer -->

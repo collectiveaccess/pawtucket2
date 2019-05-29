@@ -2608,6 +2608,9 @@ a.browseRemoveFacet .glyphicon {
 	text-transform:uppercase;
 	font-size:12px;
 }
+.gallery #gallerySetInfo a.btn {
+	color: #FFF;
+}
 .gallery .galleryItem{
 	padding:10px;
 	-webkit-box-shadow:0 1px 3px rgba(0, 0, 0, 0.3);
