@@ -2,9 +2,6 @@
 /* ----------------------------------------------------------------------
  * themes/default/views/LoginReg/form_profile_html.php
  * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
  * Copyright 2013-2019 Whirl-i-Gig

@@ -2,9 +2,6 @@
 /* ----------------------------------------------------------------------
  * themes/default/views/Contribute/terms_and_conditions_check_html.php : simple terms and conditions click-through sub-view
  * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
  * Copyright 2014 Whirl-i-Gig

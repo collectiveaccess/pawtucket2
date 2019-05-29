@@ -2,9 +2,6 @@
 /* ----------------------------------------------------------------------
  * themes/default/views/Contribute/form_html.php : sample Contribute form
  * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
  * Copyright 2014-2019 Whirl-i-Gig

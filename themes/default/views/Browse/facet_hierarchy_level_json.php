@@ -2,9 +2,6 @@
 /* ----------------------------------------------------------------------
  * Browse/facet_hierarchy_level_json.php : 
  * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
  * Copyright 2011 Whirl-i-Gig

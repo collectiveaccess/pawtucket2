@@ -2,9 +2,6 @@
 /* ----------------------------------------------------------------------
  * themes/default/views/Gallery/set_detail_timeline_html.php :
  * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
  * Copyright 2016 Whirl-i-Gig

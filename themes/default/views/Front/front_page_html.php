@@ -1,10 +1,5 @@
 <?php
-/** ---------------------------------------------------------------------
- * themes/default/Front/front_page_html : Front page of site 
- * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
+/** ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
  * Copyright 2013-2019 Whirl-i-Gig
@@ -29,35 +24,21 @@
  *
  * ----------------------------------------------------------------------
  */
-
-	$set = ca_sets::find(['set_code' => 'yacht_club'], ['returnAs' => 'firstModelInstance']);
-	$reps = array_values(caExtractValuesByUserLocale($set->getItems(['thumbnailVersions' => ['large']])));
-	$carousel_images = array_map(function($r) { return ['key' => md5($r['representation_url_large']), 'url' => $r['representation_url_large'], 'caption' => $r['set_item_label']]; }, $reps);
 ?>
+<div class="row">
+	<div class="col-sm-12">
+		<div id="carousel"></div>
+	</div> <!--end col-sm-4-->	
+</div><!-- end row -->
 
-
-	<div class="row">
-		<div class="col-sm-12">
-			<div id="clock"></div>
-			<div id="carousel"></div>
-		</div> <!--end col-sm-4-->	
-	</div><!-- end row -->
-
-
-
-<script>	
+<script type="text/javascript">	
 	let pawtucketUIApps = {
 		'carousel': {
 			'selector': '#carousel',
 			'data': {
-				'images': <?php print json_encode($carousel_images); ?>,
-				'width': "600px",
-			}
-		},
-		'clock': {
-			'selector': '#clock',
-			'data': {
-				'message': "This is a clock!"
+				'images': <?php print ca_sets::setContentsAsJSON('yacht_club', ['template' => '<l>^ca_objects.preferred_labels.name (^ca_objects.idno)</l>']); ?>,
+				'width': "100%",
+				'showThumbnails': false
 			}
 		}
 	}; 

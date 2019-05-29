@@ -2,9 +2,6 @@
 /* ----------------------------------------------------------------------
  * app/views/objects/object_download_media_binary.php : 
  * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
  * Copyright 2012-2016 Whirl-i-Gig

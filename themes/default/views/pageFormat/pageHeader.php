@@ -1,10 +1,5 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/pageFormat/pageHeader.php : 
- * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
  * Copyright 2014-2017 Whirl-i-Gig
@@ -25,7 +20,8 @@
  *
  * ----------------------------------------------------------------------
  */
-	$va_lightboxDisplayName = caGetLightboxDisplayName();
+ 
+ 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
 	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
@@ -48,6 +44,7 @@
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
+ 
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -58,80 +55,31 @@
     
 	<?php print MetaTagManager::getHTML(); ?>
 	
-	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
-	
-
+	<title><?php print MetaTagManager::getWindowTitle(); ?></title>
 </head>
 <body id="pawtucketApp">
-	<nav class="navbar navbar-default yamm" role="navigation">
-		<div class="container menuBar">
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-<?php
-	if ($vb_has_user_links) {
-?>
-				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
-					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
-				</button>
-<?php
-	}
-?>
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-<?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'ca_nav_logo300.png'), "navbar-brand", "", "","");
-?>
-			</div>
-
-		<!-- Collect the nav links, forms, and other content for toggling -->
-			<!-- bs-user-navbar-collapse is the user menu that shows up in the toggle menu - hidden at larger size -->
-<?php
-	if ($vb_has_user_links) {
-?>
-			<div class="collapse navbar-collapse" id="user-navbar-toggle">
-				<ul class="nav navbar-nav">
-					<?php print join("\n", $va_user_links); ?>
-				</ul>
-			</div>
-<?php
-	}
-?>
-			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
-<?php
-	if ($vb_has_user_links) {
-?>
-				<ul class="nav navbar-nav navbar-right" id="user-navbar">
-					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
-						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
-					</li>
-				</ul>
-<?php
-	}
-?>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
-					<div class="formOutline">
-						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" />
-						</div>
-						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search"></span></button>
-					</div>
-				</form>
-				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-				</ul>
-			</div><!-- /.navbar-collapse -->
-		</div><!-- end container -->
+	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+		<?php print caNavLink($this->request, "CollectiveAccess", "navbar-brand", "", "Front", "Index"); ?>
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav mr-auto">
+          <?php print join("\n", caGetNavItemsForBootstrap($this->request, [
+          	_t('About') => ['controller' => 'About', 'action' => 'Index'],
+          	_t('Advanced Search') => ['controller' => 'Search', 'action' => 'advanced/objects'],
+          	_t('Gallery') => ['controller' => 'Gallery', 'action' => 'Index'],
+          	_t('Collections') => ['controller' => 'Collections', 'action' => 'Index'],
+          	_t('Contact') => ['controller' => 'Contact', 'action' => 'Form']
+          ])); ?>
+        </ul>
+        <form class="form-inline my-2 my-lg-0" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+          <input type="text" class="form-control mr-sm-2" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" placeholder="Search" aria-label="Search" />
+          <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
+        </form>
+      </div>
 	</nav>
+	
+
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

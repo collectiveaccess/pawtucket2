@@ -1,10 +1,5 @@
 <?php
-/** ---------------------------------------------------------------------
- * themes/default/Lightbox/form_set_info_html.php :
- * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
+/** ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
  * Copyright 2015 Whirl-i-Gig

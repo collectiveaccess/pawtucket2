@@ -2,9 +2,6 @@
 /* ----------------------------------------------------------------------
  * lookup/ajax_occurrence_list_html.php : 
  * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
  * Copyright 2009-2012 Whirl-i-Gig

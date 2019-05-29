@@ -2,9 +2,6 @@
 /* ----------------------------------------------------------------------
  * default/views/mailTemplates/reg_admin_notification_subject.tpl
  * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
  * Copyright 2009-2011 Whirl-i-Gig

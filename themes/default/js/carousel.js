@@ -6,9 +6,10 @@ const selector = pawtucketUIApps.carousel.selector;
 const appData = pawtucketUIApps.carousel.data;
 const imageList = appData.images;
 const width = appData.width;
+const showThumbnails = appData.showThumbnails;
 
 var Carousel = require('react-responsive-carousel').Carousel;
-class DemoCarousel  extends React.Component {
+class MediaCarousel  extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -17,16 +18,16 @@ class DemoCarousel  extends React.Component {
 	}
     render() {
         return (
-            <Carousel autoPlay={true} stopOnHover={false} showThumbs={true} thumbWidth={100} width={width} dynamicHeight={true} showArrows={true}>
+            <Carousel autoPlay={true} stopOnHover={false} showThumbs={showThumbnails} thumbWidth={100} width={width} dynamicHeight={true} showArrows={true}>
 			{this.state.images.map(function(image, i) { return <div key={i}>
 				<img src={image.url} />
-				<p className="legend">{image.caption}</p>
+				<p className="legend" dangerouslySetInnerHTML={{ __html : image.caption }} />
 			</div>})}
             </Carousel>
         );
     }
 };
 
-ReactDOM.render(<DemoCarousel images={imageList}/>, document.querySelector(selector));
+ReactDOM.render(<MediaCarousel images={imageList}/>, document.querySelector(selector));
 
 

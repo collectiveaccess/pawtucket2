@@ -7,8 +7,6 @@ const domContainer = document.querySelector("#pawtucketApp");
 
 // Loop through configured page apps
 Object.entries(pawtucketUIApps).forEach(([key, value]) => {
-   console.log(`key= ${key} value = ${value}`);
-   
    try {
    	require("./" + key + ".js");
    } catch (e) {

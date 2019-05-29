@@ -2,9 +2,6 @@
 /* ----------------------------------------------------------------------
  * views/Browse/list_facet_html.php : 
  * ----------------------------------------------------------------------
- * CollectiveAccess
- * Open-source collections management software
- * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
  * Copyright 2014-2015 Whirl-i-Gig
