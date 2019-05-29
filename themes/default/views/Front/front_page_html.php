@@ -27,19 +27,25 @@
 ?>
 <div class="row">
 	<div class="col-sm-12">
-		<div id="carousel"></div>
+		<div id="carousel">
+			Hello there
+		
+		</div>
 	</div> <!--end col-sm-4-->	
 </div><!-- end row -->
 
 <script type="text/javascript">	
-	let pawtucketUIApps = {
-		'carousel': {
-			'selector': '#carousel',
-			'data': {
-				'images': <?php print ca_sets::setContentsAsJSON('yacht_club', ['template' => '<l>^ca_objects.preferred_labels.name (^ca_objects.idno)</l>']); ?>,
-				'width': "100%",
-				'showThumbnails': false
-			}
-		}
-	}; 
+// 	let pawtucketUIApps = {
+// 		'carousel': {
+// 			'selector': '#carousel',
+// 			'data': {
+// 				'images': <?php print ca_sets::setContentsAsJSON('yacht_club', ['template' => '<l>^ca_objects.preferred_labels.name (^ca_objects.idno)</l>']); ?>,
+// 				'width': "100%",
+// 				'showThumbnails': false
+// 			}
+// 		}
+// 	}; 
+
+
+	$("#carousel").html("Meow");
 </script>

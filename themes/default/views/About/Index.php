@@ -27,7 +27,7 @@
 		'clock': {
 			'selector': '#anotherClock',
 			'data': {
-				'message': "This is an about page clock"
+				'message': "This is an about page clock!!!!!"
 			}
 		}
 	}; 

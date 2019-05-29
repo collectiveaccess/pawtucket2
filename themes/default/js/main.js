@@ -1,6 +1,7 @@
 'use strict';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import 'bootstrap';
 
 const domContainer = document.querySelector("#pawtucketApp");
 

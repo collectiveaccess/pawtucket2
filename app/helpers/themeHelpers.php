@@ -1232,3 +1232,68 @@
 		}
 		return $vs_output;
 	}
+	# ---------------------------------------
+	# NEW HELPERS: React rewrite, May 2019
+	# ---------------------------------------
+	/**
+	 * Return menu bar list suitable for inclusion in a Bootstrap 4.1 layout.
+	 * Will set "active" style on a menu item if the current request routes to that item.
+	 * 
+	 * @param RequestHTTP $request
+	 * @param array $items A dictionary of menu items. Keys are menu titles, values are dictionarys with route elements: module, controller and action
+	 * @param array $options No options are currently supported
+	 *
+	 * @return array
+	 */	
+	function caGetNavItemsForBootstrap($request, $items, $options=null) {
+		$current_module_path = $request->getModulePath();
+		$current_controller = $request->getController();
+		$current_action = $request->getAction();
+		$buf = [];
+		foreach($items as $name => $info) {
+			$action_bits = explode('/', $info['action']);
+			$active = (($action_bits[0] === $current_action) && ($info['controller'] === $current_controller) && ($info['module'] == $current_module_path)) ? "active" : "";
+			$buf[] = "<li class=\"nav-item {$active}\">".caNavLink($request, $name, "nav-link", $info['module'], $info['controller'], $info['action'])."</li>";
+		}
+		return $buf;
+	}
+	# ---------------------------------------
+	/**
+	 * Return "user" menu for nav bar, suitable for display in a Bootstrap 4.1 layout.
+	 *
+	 * @param RequestHTTP $request
+	 * @param string $title
+	 * @param array $options No options are currently supported
+	 *
+	 * @return array
+	 */	
+	function caGetNavUserItemsForBootstrap($request, $title, $options=null) {
+		$lightbox_display_name = caGetLightboxDisplayName();
+		$lightbox_section_heading = caUcFirstUTF8Safe($lightbox_display_name["section_heading"]);
+	
+		# Collect the user links: they are output twice, once for toggle menu and once for nav
+		$user_links = [];
+		if($request->isLoggedIn()){
+			$user_links[] = '<a role="presentation" class="dropdown-item">'.trim($request->user->get("fname")." ".$request->user->get("lname")).', '.$request->user->get("email").'</a>';
+			$user_links[] = '<a class="divider nav-divider"></a>';
+			if(caDisplayLightbox($request)){
+				$user_links[] = caNavLink($request, $lightbox_section_heading, '', '', 'Lightbox', 'Index', array());
+			}
+			$user_links[] = caNavLink($request, _t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array());
+		
+			if ($request->config->get('use_submission_interface')) {
+				$user_links[] = caNavLink($request, _t('Submit content'), 'dropdown-item', '', 'Contribute', 'List', array());
+			}
+			$user_links[] = caNavLink($request, _t('Logout'), '', '', 'LoginReg', 'Logout', array());
+		} else {	
+			if (!$request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $request->config->get('pawtucket_requires_login')) { $user_links[] = "<a href='#' class=\"dropdown-item\" onclick='caMediaPanel.showPanel(\"".caNavUrl($request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a>"; }
+			if (!$request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$request->config->get('dontAllowRegistration')) { $user_links[] = "<a href='#' class=\"dropdown-item\" onclick='caMediaPanel.showPanel(\"".caNavUrl($request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a>"; }
+		}
+		if (sizeof($user_links)) { 
+			array_unshift($user_links, "<li class=\"nav-item dropdown\"><a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"userDropdown\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">{$title}</a><div class=\"dropdown-menu\" aria-labelledby=\"userDropdown\">");
+			array_push($user_links, "</div></li>");    
+		}
+		//print_r($user_links);
+		return $user_links;
+	}
+	# ---------------------------------------

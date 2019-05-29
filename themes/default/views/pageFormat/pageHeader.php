@@ -20,31 +20,6 @@
  *
  * ----------------------------------------------------------------------
  */
- 
- 	$va_lightboxDisplayName = caGetLightboxDisplayName();
-	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
-	
-	# Collect the user links: they are output twice, once for toggle menu and once for nav
-	$va_user_links = array();
-	if($this->request->isLoggedIn()){
-		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
-		$va_user_links[] = '<li class="divider nav-divider"></li>';
-		if(caDisplayLightbox($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
-		}
-		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
-		
-		if ($this->request->config->get('use_submission_interface')) {
-			$va_user_links[] = "<li>".caNavLink($this->request, _t('Submit content'), '', '', 'Contribute', 'List', array())."</li>";
-		}
-		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
-	} else {	
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
-	}
-	$vb_has_user_links = (sizeof($va_user_links) > 0);
-
- 
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -72,6 +47,8 @@
           	_t('Collections') => ['controller' => 'Collections', 'action' => 'Index'],
           	_t('Contact') => ['controller' => 'Contact', 'action' => 'Form']
           ])); ?>
+          
+          <?php print join("\n", caGetNavUserItemsForBootstrap($this->request, _t('User'))); ?>
         </ul>
         <form class="form-inline my-2 my-lg-0" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
           <input type="text" class="form-control mr-sm-2" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" placeholder="Search" aria-label="Search" />
