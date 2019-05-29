@@ -31,7 +31,7 @@
 			<div class="row footer">
 				<div class="col-sm-12 col-md-10 ">
 					46 West 90th Street, 2nd floor, New York, NY 10024<br />
-					Gallery Hours: Monday-Thursday, 11am-5pm and by appointment
+					Gallery Hours: Monday-Friday, 11am-5pm and by appointment
 				</div>
 				<div class="col-sm-12 col-md-2 socialright footernav">
 					<?php print caNavLink($this->request, _t("Newsletter Signup"), "footerButton", "", "About", "MailingList"); ?><br/>
