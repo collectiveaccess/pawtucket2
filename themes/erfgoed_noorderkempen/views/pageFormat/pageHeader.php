@@ -191,14 +191,14 @@
 					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Over ons"); ?></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("Over deze website"), "", "", "About", "About"); ?></li>
-							<li><?php print caNavLink($this->request, _t("Handleiding"), "", "", "About", "Guide"); ?></li>
+							<li><?php print caNavLink($this->request, "Over deze website", "", "", "About", "About"); ?></li>
+							<li><?php print caNavLink($this->request, "Handleiding", "", "", "About", "Guide"); ?></li>
 						</ul>
 					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Uitgebreid zoeken"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Tento"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collecties"), "", "", "Collections", "index"); ?></li>					
+					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Uitgebreid zoeken", "", "", "Search", "advanced/objects"); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Tento", "", "", "Gallery", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Collecties", "", "", "Collections", "index"); ?></li>					
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
