@@ -74,12 +74,26 @@
 			<div class="row">
 <?php
 				$vs_featured_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'><ifdef code='ca_object_representations.media.large'><l>^ca_object_representations.media.large</l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></ifdef></unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+				$vs_representationViewer = trim($this->getVar("representationViewer"));
+					
 				if($vs_featured_image){
 ?>
 				<div class='col-sm-12 col-md-5 fullWidth'>
 					<?php print $vs_featured_image; ?>
 				</div><!-- end col -->
 <?php
+				}else{
+					if($vs_representationViewer){
+?>
+					<div class='col-sm-12 col-md-5'>
+						<?php print $vs_representationViewer; ?>				
+						<div id="detailAnnotations"></div>
+<?php				
+						print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
+?>
+					</div><!-- end col -->
+<?php
+					}
 				}
 ?>
 				<div class='col-sm-12 col-md-<?php print ($vs_featured_image) ? "5" : "7"; ?>'>

@@ -140,7 +140,7 @@
 						if($va_images[$vn_id]){
 							$vs_thumbnail = $va_images[$vn_id];
 						}else{
-							if ($vs_table == 'ca_occurrences') {
+							if (in_array($vs_table, array('ca_occurrences', 'ca_entities'))) {
 								# is there a rep on the occurrence to fall back to if not a related featured object?
 								$vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values));
 							}

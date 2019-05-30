@@ -40,6 +40,9 @@
 									print "<div class='col-xs-6 col-sm-3 col-md-2'>";
 									$vs_image = $qr_schools->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 									if(!$vs_image){
+										$vs_image = $qr_schools->get('ca_object_representations.media.iconlarge', array("checkAccess" => $va_access_values));
+									}
+									if(!$vs_image){
 										$vs_image = caGetThemeGraphic($this->request, 'spacer.png');
 									}
 									if($vs_image){
