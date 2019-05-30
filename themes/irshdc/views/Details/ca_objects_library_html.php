@@ -120,7 +120,7 @@
 						<H6>
 							{{{<ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef>}}}
 						</H6>
-						{{{<ifcount code="ca_entities.related" restrictToTypes="school" restrictToRelationshipTypes="related" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" restrictToRelationshipTypes="related" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" restrictToRelationshipTypes="related" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
+						{{{<ifcount code="ca_entities.related" restrictToTypes="school" restrictToRelationshipTypes="related" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" restrictToRelationshipTypes="related" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" restrictToRelationshipTypes="related" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 						{{{<ifdef code="ca_objects.record_type"><div class="unit"><H6>Record type</H6>^ca_objects.record_type%=_</div></ifdef>}}}
 						{{{<ifdef code="ca_objects.creators"><div class="unit"><H6>Creators</H6><div class="trimTextShort"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.creators</unit></div></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.contributors"><div class="unit"><H6>Contributors</H6><div class="trimTextShort"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.contributors</unit></div></div></ifdef>}}}
@@ -161,22 +161,32 @@
 									$va_loc[] = caNavLink($this->request, $vs_tgn_term, "", "", "Search", "objects", array("search" => "ca_objects.tgn:".$vs_tgn_term));
 								}
 							}
+							
+							if($va_local_subject = $t_object->get("ca_objects.local_subject", array("returnAsArray" => true, "convertCodesToDisplayText" => true))){
+								foreach($va_local_subject as $vs_local_subject_term){
+									$va_loc[] = caNavLink($this->request, $vs_local_subject_term, "", "", "Search", "objects", array("search" => "ca_objects.local_subject:".$vs_local_subject_term));
+								}
+							}
+							#if(sizeof($va_loc)){
+							#	$vs_loc = "<div class='unit'><H6>Library of Congress</H6><div class='trimTextSubjects'>".join("<br/>", $va_loc)."</div></div>";
+							#}
+							
+							#if($vs_tmp = $t_object->get("ca_objects.local_subject", array("delimiter" => "<br/>", "convertCodesToDisplayText" => true))){
+							#	$vs_local_subjects = "<div class='unit'><H6>Holding Libraries</H6><div class='trimTextSubjects'>".$vs_tmp."</div></div>";
+							#}
+							
 							if(sizeof($va_loc)){
-								$vs_loc = "<div class='unit'><H6>Library of Congress</H6><div class='trimTextSubjects'>".join("<br/>", $va_loc)."</div></div>";
+								$vs_loc = join("<br/>", $va_loc);
 							}
 							
-							if($vs_tmp = $t_object->get("ca_objects.local_subject", array("delimiter" => "<br/>", "convertCodesToDisplayText" => true))){
-								$vs_local_subjects = "<div class='unit'><H6>Holding Libraries</H6><div class='trimTextSubjects'>".$vs_tmp."</div></div>";
-							}
-							
-							if($vs_loc || $vs_local_subjects){
+							if($vs_loc){
 ?>							
 								<div class="collapseBlock">
 									<h3>Subjects <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 									<div class="collapseContent">
 										<div class="unit">
 <?php
-											print $vs_loc.$vs_local_subjects; 											
+											print $vs_loc; 											
 ?>
 										</div>									
 									</div>
