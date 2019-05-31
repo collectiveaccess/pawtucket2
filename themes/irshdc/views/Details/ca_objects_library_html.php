@@ -184,7 +184,7 @@
 								<div class="collapseBlock">
 									<h3>Subjects <i class="fa fa-toggle-down" aria-hidden="true"></i></H3>
 									<div class="collapseContent">
-										<div class="unit">
+										<div class="unit unitTopPadding">
 <?php
 											print $vs_loc; 											
 ?>
