@@ -158,7 +158,7 @@
  		        $rel_ids = [];
  		        while($po_data_object->nextHit()) {
                     if(is_array($rel_ids_for_row = $po_data_object->get($path[1].".relation_id", ['returnAsArray' => true]))) {
-                       $rel_ids += $rel_ids_for_row;
+                       $rel_ids = array_merge($rel_ids, $rel_ids_for_row);
                     }
                 }
                 if (sizeof($rel_ids)) {
