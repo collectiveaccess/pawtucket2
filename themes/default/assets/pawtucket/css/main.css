@@ -3356,8 +3356,7 @@ input[type='text'].ui-autocomplete-loading {
 }
 .detail .repViewerCont img.vjs-poster {
     width: 100%;
-    height: auto;
-    max-height: 100%;
+    height: 100%;
     object-fit: contain;
     background-color: #000;
 }
