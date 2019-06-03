@@ -34,13 +34,13 @@
 </head>
 <body id="pawtucketApp">
 	<nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
-		<?php print caNavLink($this->request, "CollectiveAccess", "navbar-brand", "", "Front", "Index"); ?>
+		<?php print caNavLink("CollectiveAccess", "navbar-brand", "", "Front", "Index"); ?>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<div class="collapse navbar-collapse" id="navbarsExampleDefault">
         <ul class="navbar-nav mr-auto">
-          <?php print join("\n", caGetNavItemsForBootstrap($this->request, [
+          <?php print join("\n", caGetNavItemsForBootstrap([
           	_t('About') => ['controller' => 'About', 'action' => 'Index'],
           	_t('Advanced Search') => ['controller' => 'Search', 'action' => 'advanced/objects'],
           	_t('Gallery') => ['controller' => 'Gallery', 'action' => 'Index'],
@@ -48,9 +48,9 @@
           	_t('Contact') => ['controller' => 'Contact', 'action' => 'Form']
           ])); ?>
           
-          <?php print join("\n", caGetNavUserItemsForBootstrap($this->request, _t('User'))); ?>
+          <?php print join("\n", caGetNavUserItemsForBootstrap(_t('User'))); ?>
         </ul>
-        <form class="form-inline my-2 my-lg-0" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+        <form class="form-inline my-2 my-lg-0" action="<?php print caNavUrl('', 'MultiSearch', 'Index'); ?>">
           <input type="text" class="form-control mr-sm-2" id="headerSearchInput" placeholder="Search" name="search" autocomplete="off" placeholder="Search" aria-label="Search" />
           <button class="btn btn-outline-light my-2 my-sm-0" type="submit">Search</button>
         </form>

@@ -27,7 +27,7 @@
  
     $va_matches = $this->getVar('matches');
     
-    $vs_url = caNavUrl($this->request, '*', '*', '*', ['q' => $this->request->getParameter('q', pString)]);
+    $vs_url = caNavUrl('*', '*', '*', ['q' => $this->request->getParameter('q', pString)]);
     if (is_array($va_matches)) {
         $va_matches = array_map(function($v) use ($vs_url) {
             return [

@@ -47,7 +47,7 @@
 		</div> <!--end browseMenuSearch-->
 		<div class='browseMenuBrowseAll'>
 <?php
-		print caNavLink($this->request, _t('Browse all %1 &nbsp;<span class="glyphicon glyphicon-arrow-right"></span>', $vs_name), 'browseMenuBrowseAll btn btn-default btn-sm', '', 'Browse', $vs_target, '');
+		print caNavLink(_t('Browse all %1 &nbsp;<span class="glyphicon glyphicon-arrow-right"></span>', $vs_name), 'browseMenuBrowseAll btn btn-default btn-sm', '', 'Browse', $vs_target, '');
 ?>
 		</div> <!--end browseMenuAll-->
 	</div><!--end container-->	

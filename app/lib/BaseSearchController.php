@@ -69,7 +69,7 @@
  			AssetLoadManager::register('hierBrowser');
  			AssetLoadManager::register('browsable');	// need this to support browse panel when filtering/refining search results
  			$t_model = Datamodel::getInstanceByTableName($this->ops_tablename, true);
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			
  			// Get elements of result context
  			$vn_page_num 			= $this->opo_result_context->getCurrentResultsPageNumber();
@@ -401,7 +401,7 @@
  			$t_list = new ca_lists();
  			$va_data = array();
  			
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			
  			#
  			# Do "quicksearches" on so-configured tables

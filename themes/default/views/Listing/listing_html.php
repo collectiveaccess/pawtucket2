@@ -44,7 +44,7 @@
 					if ($vs_current_sort === $vs_sort) {
 						print "<li><a href='#'><em>{$vs_sort}</em></a></li>\n";
 					} else {
-						print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('sort' => $vs_sort, 'facet' => $this->getVar('facet'), 'id' => $this->getVar('facet_id')))."</li>\n";
+						print "<li>".caNavLink($vs_sort, '', '*', '*', '*', array('sort' => $vs_sort, 'facet' => $this->getVar('facet'), 'id' => $this->getVar('facet_id')))."</li>\n";
 					}
 				}			
 ?>

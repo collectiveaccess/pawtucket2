@@ -14,7 +14,7 @@
 		$t_item = Datamodel::getInstanceByTableName($ps_table);
 		if($t_item){
 			$t_item->load($pn_id);
-			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, $ps_table, $pn_id);
+			$vs_url = $this->request->config->get("site_host").caDetailUrl($ps_table, $pn_id);
 			$vs_name = $t_item->get($ps_table.".preferred_labels.name");
 			$vs_idno = $t_item->get($ps_table.".idno");
 			$vs_page_title = ($o_config->get("item_inquiry_page_title")) ? $o_config->get("item_inquiry_page_title") : _t("Item Inquiry");
@@ -28,7 +28,7 @@
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
 ?>
-	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+	<form id="contactForm" action="<?php print caNavUrl("", "Contact", "send"); ?>" role="form" method="post">
 	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 <?php
 	if($pn_id && $t_item->getPrimaryKey()){

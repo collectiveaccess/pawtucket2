@@ -170,7 +170,7 @@
 					$vs_search = trim($ps_query).(intval($pb_exact) ? '' : '*');
 				}
 				
-				$qr_res = $o_search->search($vs_search, ['checkAccess' => caGetUserAccessValues($this->request)]);
+				$qr_res = $o_search->search($vs_search, ['checkAccess' => caGetUserAccessValues()]);
 				
 				
 				$qr_res->setOption('prefetch', $pn_limit);

@@ -27,7 +27,7 @@
 	jQuery(document).ready(function() {
 		jQuery('#CommentForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl($this->request, '', 'Detail', 'saveCommentTagging'); ?>',
+				'<?php print caNavUrl('', 'Detail', 'saveCommentTagging'); ?>',
 				jQuery('#CommentForm').serialize()
 			);
 			e.preventDefault();

@@ -28,7 +28,7 @@
 		?>
 					<div class='alert alert-success'><?php print _t("Your password has been reset!"); ?></div>
 					<p align="center">
-						<?php print _t("You may now"); ?> <?php print caNavLink($this->request, _t("login"), "", "", "LoginReg", "loginForm"); ?>.
+						<?php print _t("You may now"); ?> <?php print caNavLink(_t("login"), "", "", "LoginReg", "loginForm"); ?>.
 					</p>
 		<?php
 					break;
@@ -46,7 +46,7 @@
 				case 'reset':
 		?>
 					<p><?php print _t("Please enter your new password."); ?></p>
-					<form id="ResetForm" action="<?php print caNavUrl($this->request, '', 'LoginReg', 'resetSave'); ?>" method="post" class="form-horizontal" role="form" method="POST">
+					<form id="ResetForm" action="<?php print caNavUrl('', 'LoginReg', 'resetSave'); ?>" method="post" class="form-horizontal" role="form" method="POST">
 
 
 						<div class="form-group">
@@ -76,7 +76,7 @@
 				default:
 ?>
 					<p><?php print _t("To reset your password enter the e-mail address you used to register below. A message will be sent to the address with instructions on how to reset your password."); ?></p>
-					<form id="ResetForm" action="<?php print caNavUrl($this->request, '', 'LoginReg', 'resetSend'); ?>" method="post" class="form-horizontal" role="form">
+					<form id="ResetForm" action="<?php print caNavUrl('', 'LoginReg', 'resetSend'); ?>" method="post" class="form-horizontal" role="form">
 						<div class="form-group">
 							<label for="reset_email" class="col-sm-4 control-label"><?php print _t("E-mail"); ?></label>
 							<div class="col-sm-7">
@@ -101,7 +101,7 @@
 	jQuery(document).ready(function() {
 		jQuery('#ResetForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl($this->request, '', 'LoginReg', ($this->getVar("action")) ? $ps_action : 'resetSend', null); ?>',
+				'<?php print caNavUrl('', 'LoginReg', ($this->getVar("action")) ? $ps_action : 'resetSend', null); ?>',
 				jQuery('#ResetForm').serialize()
 			);
 			e.preventDefault();

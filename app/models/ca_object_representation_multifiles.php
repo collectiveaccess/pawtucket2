@@ -240,7 +240,7 @@ class ca_object_representation_multifiles extends BaseModel {
 		}
 		
 		if ((defined("__CA_APP_TYPE__") && (__CA_APP_TYPE__ == "PAWTUCKET"))) {
-			$va_access = caGetUserAccessValues($po_request);
+			$va_access = caGetUserAccessValues();
 			if (is_array($va_access) && sizeof($va_access) && !in_array($t_rep->get('access'), $va_access)) { return false; }
 		}
 		

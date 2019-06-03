@@ -97,7 +97,7 @@
  				throw new ApplicationException('Lightbox is not enabled');
  			}
  			if (!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+                $this->response->setRedirect(caNavUrl("", "LoginReg", "LoginForm"));
                 $this->opb_is_login_redirect = true;
                 return;
             }
@@ -388,7 +388,7 @@
 			if ($ps_view === 'map') {
 				$va_opts = array('renderLabelAsLink' => false, 'request' => $this->request, 'color' => '#cc0000');
 		
-				$va_opts['ajaxContentUrl'] = caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('view' => $ps_view));
+				$va_opts['ajaxContentUrl'] = caNavUrl('*', '*', 'AjaxGetMapItem', array('view' => $ps_view));
 			
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));
 				$o_map->mapFrom($qr_res, $va_view_info['data'], $va_opts);
@@ -439,7 +439,7 @@
          */
  		function ajaxSaveSetInfo($pa_options = null) {
             if($this->opb_is_login_redirect) { return; }
-            if (!$this->request->isAjax()) { $this->response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index')); return; }
+            if (!$this->request->isAjax()) { $this->response->setRedirect(caNavUrl('', 'Lightbox', 'Index')); return; }
  			
  			global $g_ui_locale_id; // current locale_id for user
  			$va_errors = array();
@@ -1316,14 +1316,14 @@
 			$t_set = new ca_sets($this->request->getParameter('set_id', pInteger));
 			if (!$t_set->getPrimaryKey()) {
 				$this->notification->addNotification(_t('No set defined'), __NOTIFICATION_TYPE_ERROR__);
-				$this->opo_response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index'));
+				$this->opo_response->setRedirect(caNavUrl('', 'Lightbox', 'Index'));
 				return false;
 			}
 
 			$va_record_ids = array_keys($t_set->getItemRowIDs(array('checkAccess' => $this->opa_access_values, 'limit' => 100000)));
 			if(!is_array($va_record_ids) || !sizeof($va_record_ids)) {
 				$this->notification->addNotification(_t('No media is available for download'), __NOTIFICATION_TYPE_ERROR__);
-				$this->opo_response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index'));
+				$this->opo_response->setRedirect(caNavUrl('', 'Lightbox', 'Index'));
 				return false;
 			}
 
@@ -1431,7 +1431,7 @@
 				return;
 			} else {
 				$this->notification->addNotification(_t('No files to download'), __NOTIFICATION_TYPE_ERROR__);
-				$this->opo_response->setRedirect(caNavUrl($this->request, '', 'Lightbox', 'Index'));
+				$this->opo_response->setRedirect(caNavUrl('', 'Lightbox', 'Index'));
 				return;
 			}
 

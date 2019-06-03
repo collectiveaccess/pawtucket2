@@ -95,7 +95,7 @@
 								foreach($va_labels as $vs_label){
 									print "<a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'>".$vs_label."</a><br/>";
 								}
-								print "<div class='annotationControls'><a href='#' onclick='$(\"#detailAnnotationMoreInfo\").load(\"".caDetailUrl($this->request, "ca_representation_annotations", $va_annotation["annotation_id"])."\")'><span class='glyphicon glyphicon-info-sign'></span></a> <a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'><span class='glyphicon glyphicon-play-circle'></span></a></div>";
+								print "<div class='annotationControls'><a href='#' onclick='$(\"#detailAnnotationMoreInfo\").load(\"".caDetailUrl("ca_representation_annotations", $va_annotation["annotation_id"])."\")'><span class='glyphicon glyphicon-info-sign'></span></a> <a href='#' onclick='caAnnoEditorPlayerPlay(".$va_annotation["startTimecode_raw"]."); return false;'><span class='glyphicon glyphicon-play-circle'></span></a></div>";
 								print "</div><!-- end detailAnnotation --></li>";
 							}
 ?>	

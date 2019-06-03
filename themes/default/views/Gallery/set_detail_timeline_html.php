@@ -45,7 +45,7 @@
 				type:       'timeline',
 				width:      '100%',
 				height:     '100%',
-				source:     '<?php print caNavUrl($this->request, '', '*', 'getSetInfoAsJSON', array('mode' => 'timeline', 'set_id' => $t_set->get("set_id"))); ?>',
+				source:     '<?php print caNavUrl('', '*', 'getSetInfoAsJSON', array('mode' => 'timeline', 'set_id' => $t_set->get("set_id"))); ?>',
 				embed_id:   'timeline-embed'
 			});
 		});

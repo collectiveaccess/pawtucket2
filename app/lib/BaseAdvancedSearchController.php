@@ -126,7 +126,7 @@ class BaseAdvancedSearchController extends BaseRefineableSearchController {
 			$vb_is_new_search = true;
 		}
 
-		$va_access_values = caGetUserAccessValues($this->request);
+		$va_access_values = caGetUserAccessValues();
 
 		if($vs_search && ($vs_search != "")){ /* any request? */
 			$va_search_opts = array(

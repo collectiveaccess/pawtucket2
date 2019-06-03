@@ -70,7 +70,7 @@
 		jQuery(document).ready(function() {
 			jQuery('#addComment{{{item_id}}}').on('submit', function(e){
 				jQuery.getJSON(
-					'<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxAddComment', null); ?>',
+					'<?php print caNavUrl('', 'Lightbox', 'AjaxAddComment', null); ?>',
 					jQuery('#addComment{{{item_id}}}').serialize(), function(data) {
                         if(data.status == 'ok') {
                             jQuery("#lbSetCommentErrors{{{item_id}}}").hide();
@@ -91,7 +91,7 @@
             jQuery("#lbSetComments{{{item_id}}}").on('click', '.lbCommentRemove', function(e) {
                 var comment_id = jQuery(this).data("comment_id");
                 if(comment_id) {
-                    jQuery.getJSON('<?php print caNavUrl($this->request, '', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id }, function(data) {
+                    jQuery.getJSON('<?php print caNavUrl('', 'Lightbox', 'AjaxDeleteComment'); ?>', {'comment_id': comment_id }, function(data) {
                         if(data.status == 'ok') {
                             jQuery("#lbSetCommentErrors{{{item_id}}}").hide();
                             jQuery("#lbComments" + data.comment_id).remove();

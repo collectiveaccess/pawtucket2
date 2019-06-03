@@ -761,7 +761,7 @@
 				$pa_params = array_merge($pa_params, $va_params);
 			}
 			
-			return caNavUrl($po_request, trim($va_nav['module_path']), trim($va_nav['controller']), trim($vs_action), $pa_params);
+			return caNavUrl(trim($va_nav['module_path']), trim($va_nav['controller']), trim($vs_action), $pa_params);
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -820,7 +820,7 @@
 			}
 			
 			
-			return caNavLink($po_request, $ps_content, $ps_class, trim($va_nav['module_path']), trim($va_nav['controller']), trim($vs_action), $pa_params, $pa_attributes);
+			return caNavLink($ps_content, $ps_class, trim($va_nav['module_path']), trim($va_nav['controller']), trim($vs_action), $pa_params, $pa_attributes);
 		}
 		# ------------------------------------------------------------------
 		# Find history

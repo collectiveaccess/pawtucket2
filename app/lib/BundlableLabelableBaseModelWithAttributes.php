@@ -1012,7 +1012,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 		}
 		
 		if ((defined("__CA_APP_TYPE__") && (__CA_APP_TYPE__ == "PAWTUCKET") && ($this->hasField('access')))) {
-			$va_access = caGetUserAccessValues($po_request);
+			$va_access = caGetUserAccessValues();
 			if (is_array($va_access) && sizeof($va_access) && !in_array($this->get('access'), $va_access)) { return false; }
 		}
 		
@@ -7725,7 +7725,7 @@ side. For many self-relations the direction determines the nature and display te
 		$o_view->setVar('settings', $pa_bundle_settings);
 		
 		
-		$o_view->setVar('lookup_urls', caJSONLookupServiceUrl($po_request, Datamodel::getTableName($this->get('table_num'))));
+		$o_view->setVar('lookup_urls', caJSONLookupServiceUrl(Datamodel::getTableName($this->get('table_num'))));
 		
 		return $o_view->render('ca_item_tags.php');
 	}

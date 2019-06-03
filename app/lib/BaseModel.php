@@ -6095,7 +6095,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 			
 			if ($this->getProperty('ID_NUMBERING_ID_FIELD') == $va_tmp[1]) {
 				
-				$va_lookup_url_info = caJSONLookupServiceUrl($po_request, $this->tableName());
+				$va_lookup_url_info = caJSONLookupServiceUrl($this->tableName());
 				return $this->htmlFormElement($va_tmp[1], $this->getAppConfig()->get('idno_element_display_format_without_label'), array_merge($pa_options, array(
 						'name' => $ps_field,
 						'error_icon' 				=> caNavIcon(__CA_NAV_ICON_ALERT__, 1),

@@ -299,7 +299,7 @@
 		} else {
 			if (!is_array($pa_additional_parameters)) { $pa_additional_parameters = array(); }
 			$pa_additional_parameters = array_merge(array('search' => $ps_search), $pa_additional_parameters);
-			return caNavUrl($po_request, $vs_module, $vs_controller, $vs_action, $pa_additional_parameters);
+			return caNavUrl($vs_module, $vs_controller, $vs_action, $pa_additional_parameters);
 		}
 	}
 	# ---------------------------------------
@@ -365,7 +365,7 @@
 	 */
 	function caPuppySearch($po_request, $ps_search_expression, $pa_blocks, $pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
-		$va_access_values = caGetUserAccessValues($po_request);
+		$va_access_values = caGetUserAccessValues();
  		if(is_array($va_access_values) && sizeof($va_access_values)){
  			$pa_options["checkAccess"] = $va_access_values;
  		}	

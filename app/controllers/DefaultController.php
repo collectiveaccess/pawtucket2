@@ -46,7 +46,7 @@
  			
  			array_unshift($pa_path[0], $ps_method);
  			
- 			if ($vs_content = ca_site_pages::renderPageForPath($this, $vs_path = "/".trim(join("/", $pa_path[0]), "/"), ['incrementViewCount' => true, 'checkAccess' => caGetUserAccessValues($this->request)])) {
+ 			if ($vs_content = ca_site_pages::renderPageForPath($this, $vs_path = "/".trim(join("/", $pa_path[0]), "/"), ['incrementViewCount' => true, 'checkAccess' => caGetUserAccessValues()])) {
  				$this->response->addContent($vs_content);
  				return;
  			}

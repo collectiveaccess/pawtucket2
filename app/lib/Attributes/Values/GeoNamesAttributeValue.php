@@ -327,7 +327,7 @@ class GeoNamesAttributeValue extends AttributeValue implements IAttributeValue {
  		$vs_gn_delimiter = $va_settings['gnDelimiter'];
 
  		if ($pa_options['request']) {
-			$vs_url = caNavUrl($pa_options['request'], 'lookup', 'GeoNames', 'Get', array('maxRows' => $vn_max_results, 'gnElements' => urlencode($vs_gn_elements), 'gnDelimiter' => urlencode($vs_gn_delimiter)));
+			$vs_url = caNavUrl('lookup', 'GeoNames', 'Get', array('maxRows' => $vn_max_results, 'gnElements' => urlencode($vs_gn_elements), 'gnDelimiter' => urlencode($vs_gn_delimiter)));
 		}
 
  		$vs_element = '<div id="geonames_'.$pa_element_info['element_id'].'_input{n}">'.

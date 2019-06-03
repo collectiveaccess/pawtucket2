@@ -44,7 +44,7 @@
  
 	 foreach($va_items as $va_item) {
 		$va_data[] = [
-			'manifestUri' =>  $vs_url = caNavUrl($this->request, '', 'Compare', 'Manifest', ['id' => $va_item['resolved_id']])
+			'manifestUri' =>  $vs_url = caNavUrl('', 'Compare', 'Manifest', ['id' => $va_item['resolved_id']])
 		];
 		$va_windows[] = [
 			'loadedManifest' => $vs_url,

@@ -2025,7 +2025,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			$o_view->setVar('type_plural', $t_row->getProperty('NAME_PLURAL'));
 		}
 		
-		$o_view->setVar('lookup_urls', caJSONLookupServiceUrl($po_request, Datamodel::getTableName($this->get('table_num'))));
+		$o_view->setVar('lookup_urls', caJSONLookupServiceUrl(Datamodel::getTableName($this->get('table_num'))));
 		
 		return $o_view->render('ca_set_items.php');
 	}

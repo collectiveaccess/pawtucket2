@@ -36,10 +36,10 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			if (($this->request->getController() !== 'LoginReg') && $this->request->config->get('pawtucket_requires_login') && !($this->request->isLoggedIn())) {
-				$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+				$this->response->setRedirect(caNavUrl("", "LoginReg", "LoginForm"));
             }
             
- 			$this->opa_access_values = caGetUserAccessValues($po_request);
+ 			$this->opa_access_values = caGetUserAccessValues();
  		 	$this->view->setVar("access_values", $this->opa_access_values);
  		}
  		# -------------------------------------------------------

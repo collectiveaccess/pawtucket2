@@ -44,12 +44,12 @@
 					if((int)$va_children["children"] > 0){
 						$vs_buf .= "<a href='#' data-item_id='{$vn_id}' class='caSubItems caSubItem{$vs_facet_name}' title='".addslashes(_t('View sub-items'))."'>{$vs_name}</a>";
 					}else{
-						$vs_buf .= caNavLink($this->request, $vs_name.$vs_content_count, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0));
+						$vs_buf .= caNavLink($vs_name.$vs_content_count, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0));
 					}
 				}else{
-					$vs_buf .= caNavLink($this->request, $vs_name.$vs_content_count, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0));
+					$vs_buf .= caNavLink($vs_name.$vs_content_count, '', '*', '*', $vs_browse_type, array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0));
 					if((int)$va_children["children"] > 0){
-						$vs_buf .= ' <a href="#" title="'._t('View sub-items').'" onClick=\'jQuery("#bHierarchyList'.(($vs_link_to) ? '' : 'MorePanel').'_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'key' => $vs_key, 'browseType' => $vs_browse_type, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0)).'"); jQuery(".bAncestorList_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl($this->request, '*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0)).'"); return false;\'><span class="glyphicon glyphicon-chevron-down"></span></a>';
+						$vs_buf .= ' <a href="#" title="'._t('View sub-items').'" onClick=\'jQuery("#bHierarchyList'.(($vs_link_to) ? '' : 'MorePanel').'_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl('*', '*', 'getFacetHierarchyLevel', array('facet' => $vs_facet_name, 'key' => $vs_key, 'browseType' => $vs_browse_type, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0)).'"); jQuery(".bAncestorList_'.$vs_facet_name.(($vb_is_nav) ? "Nav" : "").'").load("'.caNavUrl('*', '*', 'getFacetHierarchyAncestorList', array('facet' => $vs_facet_name, 'browseType' => $vs_browse_type, 'key' => $vs_key, 'id' => $vn_id, 'isNav' => $vb_is_nav ? 1 : 0)).'"); return false;\'><span class="glyphicon glyphicon-chevron-down"></span></a>';
 					}
 				}
 				$vs_buf .= "</div>";
@@ -69,7 +69,7 @@
 <script type="text/javascript">
 	jQuery(document).ready(function() {
 		jQuery(".caSubItem<?php print $vs_facet_name; ?>").on('click', function(e) {
-			jQuery('#bMorePanel').load('<?php print caNavUrl($this->request, '*', '*', $vs_browse_type); ?>', { getFacet: 1, facet: '<?php print $vs_facet_name; ?>', view: '<?php print $vs_view; ?>', key: '<?php print $vs_key; ?>', browseType: '<?php print $vs_browse_type; ?>', id: jQuery(this).data('item_id'), isNav: <?php print $vb_is_nav ? 1 : 0; ?>}, 
+			jQuery('#bMorePanel').load('<?php print caNavUrl('*', '*', $vs_browse_type); ?>', { getFacet: 1, facet: '<?php print $vs_facet_name; ?>', view: '<?php print $vs_view; ?>', key: '<?php print $vs_key; ?>', browseType: '<?php print $vs_browse_type; ?>', id: jQuery(this).data('item_id'), isNav: <?php print $vb_is_nav ? 1 : 0; ?>}, 
 				function(){jQuery("#bMorePanel").show(); 
 				jQuery("#bMorePanel").mouseleave(function(){
 					jQuery("#bMorePanel").hide();

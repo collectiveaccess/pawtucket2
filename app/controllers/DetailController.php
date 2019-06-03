@@ -63,7 +63,7 @@
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  		 	
  		 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+                $this->response->setRedirect(caNavUrl("", "LoginReg", "LoginForm"));
             }
             if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
             	if (!($ps_id = urldecode($this->request->getActionExtra()))) { $ps_id = $this->request->getParameter('id', pInteger); }
@@ -207,7 +207,7 @@
 				}
 				// Get current display list
 				$t_display = new ca_bundle_displays();
-				foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues($this->request)))) as $va_display) {
+				foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues()))) as $va_display) {
 					$va_export_options[$va_display['name']] = "_display_".$va_display['display_id'];
 				}
 				ksort($va_export_options);
@@ -219,7 +219,7 @@
  			#
  			if(sizeof($this->opa_access_values) && ($t_subject->hasField('access')) && (!in_array($t_subject->get("access"), $this->opa_access_values))){
   				$this->notification->addNotification(_t("This item is not available for view"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			
@@ -248,11 +248,11 @@
  			
  			$this->view->setVar('previousID', $vn_previous_id = $o_context->getPreviousID($t_subject->getPrimaryKey()));
  			$this->view->setVar('nextID', $vn_next_id = $o_context->getNextID($t_subject->getPrimaryKey()));
- 			$this->view->setVar('previousURL', caDetailUrl($this->request, $vs_table, $vn_previous_id));
- 			$this->view->setVar('nextURL', caDetailUrl($this->request, $vs_table, $vn_next_id));
+ 			$this->view->setVar('previousURL', caDetailUrl($vs_table, $vn_previous_id));
+ 			$this->view->setVar('nextURL', caDetailUrl($vs_table, $vn_next_id));
  			
- 			$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $va_options, _t('Previous')), '', $vs_table, $vn_previous_id) : '');
- 			$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $va_options, _t('Next')), '', $vs_table, $vn_next_id) : '');
+ 			$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink(caGetOption('previousLink', $va_options, _t('Previous')), '', $vs_table, $vn_previous_id) : '');
+ 			$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink(caGetOption('nextLink', $va_options, _t('Next')), '', $vs_table, $vn_next_id) : '');
  			$va_params = array();
  			$va_params["row_id"] = $t_subject->getPrimaryKey(); # --- used to jump to the last viewed item in the search/browse results
  			$this->view->setVar('resultsLink', ResultContext::getResultsLinkForLastFind($this->request, $vs_table, caGetOption('resultsLink', $va_options, _t('Back')), null, $va_params));
@@ -449,7 +449,7 @@
  			
 			$va_options['shareLabel'] ? $ps_label = $va_options['shareLabel'] : $ps_label = 'Share';
 	
- 			$this->view->setVar("shareLink", "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'ShareForm', array("tablename" => $t_subject->tableName(), "item_id" => $t_subject->getPrimaryKey()))."\"); return false;'>".$ps_label."</a>");
+ 			$this->view->setVar("shareLink", "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl('', 'Detail', 'ShareForm', array("tablename" => $t_subject->tableName(), "item_id" => $t_subject->getPrimaryKey()))."\"); return false;'>".$ps_label."</a>");
 
  			// find view
  			//		first look for type-specific view
@@ -816,7 +816,7 @@
  		 *
  		 */
  		public function CommentForm(){
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl($this->request, '', 'LoginReg', 'loginForm')); return; }
+ 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl('', 'LoginReg', 'loginForm')); return; }
  			$this->view->setVar("item_id", $this->request->getParameter('item_id', pInteger));
  			$this->view->setVar("tablename", $this->request->getParameter('tablename', pString));
  			$this->render('Details/form_comments_html.php');
@@ -835,7 +835,7 @@
 			if(!($vn_item_id = $this->request->getParameter("item_id", pInteger))){
  				if($vn_inline_form){
  					$this->notification->addNotification(_t("Invalid ID"), __NOTIFICATION_TYPE_ERROR__);
- 					$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
+ 					$this->response->setRedirect(caDetailUrl($ps_table, $vn_item_id));
  				}else{
  					$this->view->setVar("message", _t("Invalid ID"));
  					$this->render("Form/reload_html.php");
@@ -845,7 +845,7 @@
  			if(!$t_item->load($vn_item_id)){
   				if($vn_inline_form){
  					$this->notification->addNotification(_t("ID does not exist"), __NOTIFICATION_TYPE_ERROR__);
- 					$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
+ 					$this->response->setRedirect(caDetailUrl($ps_table, $vn_item_id));
  				}else{
  					$this->view->setVar("message", _t("ID does not exist"));
  					$this->render("Form/reload_html.php");
@@ -883,7 +883,7 @@
 					$this->notification->addNotification($va_errors["general"], __NOTIFICATION_TYPE_ERROR__);
 					$this->request->setActionExtra($vn_item_id);
 					$this->__call(caGetDetailForType($ps_table), null);
-					#$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
+					#$this->response->setRedirect(caDetailUrl($ps_table, $vn_item_id));
 				}else{
 					$this->view->setVar("errors", $va_errors);
 					$this->render('Details/form_comments_html.php');
@@ -943,7 +943,7 @@
  					if($this->request->config->get("dont_moderate_comments")){
  						if($vn_inline_form){
 							$this->notification->addNotification(_t("Thank you for contributing.").$vs_dup_rank_message, __NOTIFICATION_TYPE_INFO__);
- 							$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
+ 							$this->response->setRedirect(caDetailUrl($ps_table, $vn_item_id));
 							return;
 						}else{
 							$this->view->setVar("message", _t("Thank you for contributing.").$vs_dup_rank_message);
@@ -952,7 +952,7 @@
  					}else{
  						if($vn_inline_form){
 							$this->notification->addNotification(_t("Thank you for contributing.  Your comments will be posted on this page after review by site staff.").$vs_dup_rank_message, __NOTIFICATION_TYPE_INFO__);
- 							$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
+ 							$this->response->setRedirect(caDetailUrl($ps_table, $vn_item_id));
 							return;
 						}else{
 							$this->view->setVar("message", _t("Thank you for contributing.  Your comments will be posted on this page after review by site staff.").$vs_dup_rank_message);
@@ -962,7 +962,7 @@
  				}else{
  					if($vn_inline_form){
 						$this->notification->addNotification(_t("Thank you for your contribution.").$vs_dup_rank_message, __NOTIFICATION_TYPE_INFO__);
- 						$this->response->setRedirect(caDetailUrl($this->request, $ps_table, $vn_item_id));
+ 						$this->response->setRedirect(caDetailUrl($ps_table, $vn_item_id));
 						return;
 					}else{
 						$this->view->setVar("message", _t("Thank you for your contribution.").$vs_dup_rank_message);

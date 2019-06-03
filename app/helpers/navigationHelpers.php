@@ -115,7 +115,6 @@
 	/**
 	 * Return URL for given module/controller/action
 	 *
-	 * @param RequestHTTP $po_request
 	 * @param string $ps_module_path
 	 * @param string $ps_controller
 	 * @param string $ps_action
@@ -127,18 +126,18 @@
 	 *
 	 * @return string
 	 */
-	function caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_options=null) {
-
+	function caNavUrl($ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_options=null) {
+		global $g_request;
 		if(caUseCleanUrls()) {
-			$vs_url = $po_request->getBaseUrlPath();
+			$vs_url = $g_request->getBaseUrlPath();
 		} else {
-			$vs_url = $po_request->getBaseUrlPath().'/'.$po_request->getScriptName();
+			$vs_url = $g_request->getBaseUrlPath().'/'.$g_request->getScriptName();
 		}
-		if ($ps_module_path == '*') { $ps_module_path = $po_request->getModulePath(); }
-		if ($ps_controller == '*') { $ps_controller = $po_request->getController(); }
+		if ($ps_module_path == '*') { $ps_module_path = $g_request->getModulePath(); }
+		if ($ps_controller == '*') { $ps_controller = $g_request->getController(); }
 		if ($ps_action == '*') { 
-			$ps_action = $po_request->getAction(); 
-			if ($vs_action_extra =  $po_request->getActionExtra()) { 
+			$ps_action = $g_request->getAction(); 
+			if ($vs_action_extra =  $g_request->getActionExtra()) { 
 				$ps_action .= "/{$vs_action_extra}";
 			}
 		}
@@ -191,7 +190,6 @@
 	/**
 	 * Return HTML link for given module/controller/action
 	 *
-	 * @param RequestHTTP $po_request
 	 * @param string $ps_content Link display content
 	 * @param string $ps_classname CSS class to apply to link
 	 * @param string $ps_module_path
@@ -203,8 +201,10 @@
 	 *
 	 * @return string
 	 */
-	function caNavLink($po_request, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
-		if (!($vs_url = caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params, $pa_options))) {
+	function caNavLink($ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
+		global $g_request;
+		if (is_object($ps_content)) { print caPrintStackTrace(); }
+		if (!($vs_url = caNavUrl($ps_module_path, $ps_controller, $ps_action, $pa_other_params, $pa_options))) {
 			//return "<strong>Error: no url for navigation</strong>";
 			$vs_url = '/';
 		}
@@ -224,9 +224,9 @@
 	/**
 	 *
 	 */
-	function caFormNavButton($po_request, $pn_type, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
+	function caFormNavButton($pn_type, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
 		if(!is_array($pa_options)) { $pa_options = array(); }
-		return caNavButton($po_request, $pn_type, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params, $pa_attributes, array_merge($pa_options, array('size' => '30px')));
+		return caNavButton($pn_type, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params, $pa_attributes, array_merge($pa_options, array('size' => '30px')));
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -240,9 +240,11 @@
 	 *		graphicsPath =
 	 *		size =
 	 */
-	function caNavButton($po_request, $pn_type, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
+	function caNavButton($pn_type, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
+		global $g_request;
+		
 		if ($ps_module_path && $ps_controller && $ps_action) {
-			if (!($vs_url = caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params))) {
+			if (!($vs_url = caNavUrl($ps_module_path, $ps_controller, $ps_action, $pa_other_params))) {
 				return '';//<strong>Error: no url for navigation</strong>";
 			}
 		} else {
@@ -317,8 +319,8 @@
 	 *		size = 
 	 *		iconMargin =
 	 */
-	function caNavHeaderButton($po_request, $pn_type, $ps_content, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
-		if (!($vs_url = caNavUrl($po_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params))) {
+	function caNavHeaderButton($pn_type, $ps_content, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
+		if (!($vs_url = caNavUrl($ps_module_path, $ps_controller, $ps_action, $pa_other_params))) {
 			return ''; //<strong>Error: no url for navigation</strong>";
 		}
 		
@@ -387,7 +389,9 @@
 	 *	disableSubmit = don't allow form to be submitted. [Default is false]
 	 *	submitOnReturn = submit form if user hits return in any form element. [Default is false]
 	 */
-	function caFormTag($po_request, $ps_action, $ps_id, $ps_module_and_controller_path=null, $ps_method='post', $ps_enctype='multipart/form-data', $ps_target='_top', $pa_options=null) {
+	function caFormTag($ps_action, $ps_id, $ps_module_and_controller_path=null, $ps_method='post', $ps_enctype='multipart/form-data', $ps_target='_top', $pa_options=null) {
+		global $g_request;
+		
 		if ($ps_target) {
 			$vs_target = "target='".$ps_target."'";
 		} else {
@@ -395,8 +399,8 @@
 		}
 		
 		if ($ps_action == '*') { 
-			$ps_action = $po_request->getAction(); 
-			if ($vs_action_extra =  $po_request->getActionExtra()) { 
+			$ps_action = $g_request->getAction(); 
+			if ($vs_action_extra =  $g_request->getActionExtra()) { 
 				$ps_action .= "/{$vs_action_extra}";
 			}
 		}
@@ -404,14 +408,14 @@
 		
 		if ($ps_module_and_controller_path) {
 			$vs_action = (caUseCleanUrls()) ?
-				$po_request->getBaseUrlPath().'/'.$ps_module_and_controller_path.'/'.$ps_action
+				$g_request->getBaseUrlPath().'/'.$ps_module_and_controller_path.'/'.$ps_action
 				:					
-				$po_request->getBaseUrlPath().'/'.$po_request->getScriptName().'/'.$ps_module_and_controller_path.'/'.$ps_action;
+				$g_request->getBaseUrlPath().'/'.$g_request->getScriptName().'/'.$ps_module_and_controller_path.'/'.$ps_action;
 		} else {
 			$vs_action = (caUseCleanUrls()) ?
-				str_replace("/".$po_request->getScriptName(), "", $po_request->getControllerUrl()).'/'.$ps_action
+				str_replace("/".$g_request->getScriptName(), "", $g_request->getControllerUrl()).'/'.$ps_action
 				:
-				$po_request->getControllerUrl().'/'.$ps_action;
+				$g_request->getControllerUrl().'/'.$ps_action;
 		}
 		
 		$vs_buf = "<form action='".$vs_action."' method='".$ps_method."' id='".$ps_id."' $vs_target enctype='".$ps_enctype."'>\n<input type='hidden' name='_formName' value='{$ps_id}'/>\n";
@@ -420,7 +424,7 @@
 			$vs_buf .= caHTMLHiddenInput('form_timestamp', array('value' => time()));
 		}
 		if (!caGetOption('noCSRFToken', $pa_options, false)) {
-			$vs_buf .= caHTMLHiddenInput('crsfToken', array('value' => caGenerateCSRFToken($po_request)));
+			$vs_buf .= caHTMLHiddenInput('crsfToken', array('value' => caGenerateCSRFToken($g_request)));
 		}
 		
 		if (!caGetOption('disableUnsavedChangesWarning', $pa_options, false)) { 
@@ -458,7 +462,7 @@
 	/**
 	 *
 	 */
-	function caFormSubmitLink($po_request, $ps_content, $ps_classname, $ps_form_id, $ps_id=null) {
+	function caFormSubmitLink($ps_content, $ps_classname, $ps_form_id, $ps_id=null) {
 		return "<a href='#' onclick='document.getElementById(\"{$ps_form_id}\").submit();' class='{$ps_classname}' ".($ps_id ? "id='{$ps_id}'" : '').">".$ps_content."</a>";
 	}
 	# ------------------------------------------------------------------------------------------------
@@ -473,7 +477,9 @@
 	 *		iconMargin = 
 	 *		size = 
 	 */
-	function caFormSubmitButton($po_request, $pn_type, $ps_content, $ps_id, $pa_options=null) {
+	function caFormSubmitButton($pn_type, $ps_content, $ps_id, $pa_options=null) {
+		global $g_request;
+		
 		$ps_icon_pos = isset($pa_options['icon_position']) ? $pa_options['icon_position'] : __CA_NAV_ICON_ICON_POS_LEFT__;
 		$ps_use_classname = isset($pa_options['class']) ? $pa_options['class'] : '';
 		$pb_no_background = (isset($pa_options['no_background']) && $pa_options['no_background']) ? true : false;
@@ -532,9 +538,9 @@
 	/**
 	 *
 	 */
-	function caFormSearchButton($po_request, $pn_type, $ps_content, $ps_id, $pa_options=null) {
+	function caFormSearchButton($pn_type, $ps_content, $ps_id, $pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
-		return caFormSubmitButton($po_request, $pn_type, $ps_content, $ps_id, array_merge($pa_options, array('size' => 2)));
+		return caFormSubmitButton($pn_type, $ps_content, $ps_id, array_merge($pa_options, array('size' => 2)));
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -547,7 +553,7 @@
 	 *		iconMargin = 
 	 *		size =
 	 */
-	function caJSButton($po_request, $pn_type, $ps_content, $ps_id, $pa_attributes=null, $pa_options=null) {
+	function caJSButton($pn_type, $ps_content, $ps_id, $pa_attributes=null, $pa_options=null) {
 		$ps_icon_pos = isset($pa_options['icon_position']) ? $pa_options['icon_position'] : __CA_NAV_ICON_ICON_POS_LEFT__;
 		$ps_use_classname = isset($pa_options['class']) ? $pa_options['class'] : '';
 		$pb_no_background = (isset($pa_options['no_background']) && $pa_options['no_background']) ? true : false;
@@ -597,9 +603,9 @@
 	/**
 	 *
 	 */
-	function caFormJSButton($po_request, $pn_type, $ps_content, $ps_id, $pa_attributes=null, $pa_options=null) {
+	function caFormJSButton($pn_type, $ps_content, $ps_id, $pa_attributes=null, $pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
-		return caJSButton($po_request, $pn_type, $ps_content, $ps_id, $pa_attributes, array_merge($pa_options, array('size' => '30px')));
+		return caJSButton($pn_type, $ps_content, $ps_id, $pa_attributes, array_merge($pa_options, array('size' => '30px')));
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -889,7 +895,6 @@
 	 * Returns an HTML to edit an item in the appropriate bundle-based editor. If no specified item is specified (eg. no id value is set)
 	 * the a link to create a new item of the specfied type is returned.
 	 *
-	 * @param RequestHTTP $po_request The current request object
 	 * @param string $ps_content The displayed content of the link
 	 * @param string $ps_classname CSS classname(s) to apply to the link
 	 * @param string $ps_table The name or table_num of the edited items table
@@ -900,8 +905,8 @@
 	 * 		verifyLink - if true and $pn_id is set, then existence of record with specified id is verified before link is returned. If the id does not exist then null is returned. Default is false - no verification performed.
 	 * @return string The <a> tag as string
 	 */
-	function caEditorLink($po_request, $ps_content, $ps_classname, $ps_table, $pn_id, $pa_additional_parameters=null, $pa_attributes=null, $pa_options=null) {
-		if (!($vs_url = caEditorUrl($po_request, $ps_table, $pn_id, false, $pa_additional_parameters, $pa_options))) {
+	function caEditorLink($ps_content, $ps_classname, $ps_table, $pn_id, $pa_additional_parameters=null, $pa_attributes=null, $pa_options=null) {
+		if (!($vs_url = caEditorUrl($ps_table, $pn_id, false, $pa_additional_parameters, $pa_options))) {
 			return null;
 		}
 		
@@ -923,7 +928,6 @@
 	 * Returns an HTML to edit an item in the appropriate bundle-based editor. If no specified item is specified (eg. no id value is set)
 	 * the a link to create a new item of the specfied type is returned.
 	 *
-	 * @param HTTPRequest $po_request The current request object
 	 * @param string $ps_content The displayed content of the link
 	 * @param string $ps_classname CSS classname(s) to apply to the link
 	 * @param string $ps_table The name or table_num of the edited items table
@@ -934,8 +938,8 @@
 	 * 		verifyLink - if true and $pn_id is set, then existence of record with specified id is verified before link is returned. If the id does not exist then null is returned. Default is false - no verification performed.
 	 *		preferredDetail = 
 	 */
-	function caDetailLink($po_request, $ps_content, $ps_classname, $ps_table, $pn_id, $pa_additional_parameters=null, $pa_attributes=null, $pa_options=null) {
-		if (!($vs_url = caDetailUrl($po_request, $ps_table, $pn_id, false, $pa_additional_parameters, $pa_options))) {
+	function caDetailLink($ps_content, $ps_classname, $ps_table, $pn_id, $pa_additional_parameters=null, $pa_attributes=null, $pa_options=null) {
+		if (!($vs_url = caDetailUrl($ps_table, $pn_id, false, $pa_additional_parameters, $pa_options))) {
 			return null;
 		}
 		
@@ -957,7 +961,6 @@
 	 * Returns url to edit an item in the appropriate bundle-based editor. If no specified item is specified (eg. no id value is set)
 	 * the a link to create a new item of the specfied type is returned.
 	 *
-	 * @param HTTPRequest $po_request The current request object
 	 * @param string $ps_table The name or table_num of the edited items table
 	 * @param int $pn_id Optional row_id for edited item. If omitted a link will be returned to create a new item record. Note that unless the verifyLink option is set, the link will be returned with the specified id whether or not it actually exists.
 	 * @param boolean $pb_return_url_as_pieces If true an array is returned with the various components of the editor URL as separate keys. The keys will be 'module', 'controller', 'action' and '_pk' (the name of the primary key for the item); the primary key value itself is returned as both 'id' and whatever the primary key name is (eg. named whatever the value of _pk is). Default is false - return as a string rather than array.
@@ -968,7 +971,8 @@
 	 *      quick_add - if set to true, returned link will point to the QuickAdd controller instead
 	 * @return string
 	 */
-	function caEditorUrl($po_request, $ps_table, $pn_id=null, $pb_return_url_as_pieces=false, $pa_additional_parameters=null, $pa_options=null) {
+	function caEditorUrl($ps_table, $pn_id=null, $pb_return_url_as_pieces=false, $pa_additional_parameters=null, $pa_options=null) {
+		global $g_request;
 		if (is_numeric($ps_table)) {
 			if (!($t_table = Datamodel::getInstanceByTableNum($ps_table, true))) { return null; }
 		} else {
@@ -1088,7 +1092,7 @@
 
 		switch($vs_table) {
 			case 'ca_relationship_types':
-				$vs_action = isset($pa_options['action']) ? $pa_options['action'] : (($po_request->isLoggedIn() && $po_request->user->canDoAction('can_configure_relationship_types')) ? 'Edit' : 'Summary'); 
+				$vs_action = isset($pa_options['action']) ? $pa_options['action'] : (($g_request->isLoggedIn() && $g_request->user->canDoAction('can_configure_relationship_types')) ? 'Edit' : 'Summary'); 
 				break;
 			default:
 				if(isset($pa_options['action'])){
@@ -1096,9 +1100,9 @@
 				} elseif($pb_quick_add) {
 					$vs_action = 'Form';
 				} elseif(
-					$po_request->isLoggedIn() &&
-					$po_request->user->canAccess($vs_module,$vs_controller,"Edit",array($vs_pk => $pn_id)) &&
-					!((bool)$po_request->config->get($vs_table.'_editor_defaults_to_summary_view') && $pn_id) // when the id is null/0, we go to the Edit action, even when *_editor_defaults_to_summary_view is set
+					$g_request->isLoggedIn() &&
+					$g_request->user->canAccess($vs_module,$vs_controller,"Edit",array($vs_pk => $pn_id)) &&
+					!((bool)$g_request->config->get($vs_table.'_editor_defaults_to_summary_view') && $pn_id) // when the id is null/0, we go to the Edit action, even when *_editor_defaults_to_summary_view is set
 				) {
 					$vs_action = 'Edit';
 				} else {
@@ -1126,14 +1130,13 @@
 		} else {
 			if (!is_array($pa_additional_parameters)) { $pa_additional_parameters = array(); }
 			$pa_additional_parameters = array_merge(array($vs_pk => $pn_id), $pa_additional_parameters);
-			return caNavUrl($po_request, $vs_module, $vs_controller, $vs_action, $pa_additional_parameters, $pa_options);
+			return caNavUrl($vs_module, $vs_controller, $vs_action, $pa_additional_parameters, $pa_options);
 		}
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
 	 * Returns url to display a detail for an item. 
 	 *
-	 * @param HTTPRequest $po_request The current request object
 	 * @param string $ps_table The name or table_num of the edited items table
 	 * @param int $pn_id Optional row_id for edited item. If omitted a link will be returned to create a new item record. Note that unless the verifyLink option is set, the link will be returned with the specified id whether or not it actually exists.
 	 * @param boolean $pb_return_url_as_pieces If true an array is returned with the various components of the editor URL as separate keys. The keys will be 'module', 'controller', 'action' and '_pk' (the name of the primary key for the item); the primary key value itself is returned as both 'id' and whatever the primary key name is (eg. named whatever the value of _pk is). Default is false - return as a string rather than array.
@@ -1144,7 +1147,7 @@
 	 *		preferredDetail = 
 	 *		type_id = type_id of item to get detail for
 	 */
-	function caDetailUrl($po_request, $ps_table, $pn_id=null, $pb_return_url_as_pieces=false, $pa_additional_parameters=null, $pa_options=null) {
+	function caDetailUrl($ps_table, $pn_id=null, $pb_return_url_as_pieces=false, $pa_additional_parameters=null, $pa_options=null) {
 		if (is_numeric($ps_table)) {
 			if (!($t_table = Datamodel::getInstanceByTableNum($ps_table, true))) { return null; }
 		} else {
@@ -1162,7 +1165,7 @@
 			if ($pn_id && !($vn_type_id = caGetOption('type_id', $pa_options, null))) {
 				$vn_type_id = $t_table->getTypeID($pn_id);
 			}
-			$vs_action = caGetDetailForType($ps_table, $vn_type_id, array('request' => $po_request, 'preferredDetail' => caGetOption('preferredDetail', $pa_options, null)));
+			$vs_action = caGetDetailForType($ps_table, $vn_type_id, array('preferredDetail' => caGetOption('preferredDetail', $pa_options, null)));
 		}
 		
 		$vn_id_for_idno = null;
@@ -1200,14 +1203,13 @@
 		} else {
 			if (!is_array($pa_additional_parameters)) { $pa_additional_parameters = array(); }
 			//$pa_additional_parameters = array_merge(array('id' => $pn_id), $pa_additional_parameters);
-			return caNavUrl($po_request, $vs_module, $vs_controller, $vs_action, $pa_additional_parameters);
+			return caNavUrl($vs_module, $vs_controller, $vs_action, $pa_additional_parameters);
 		}
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
 	 * Returns urls for JSON lookup services
 	 *
-	 * @param RequestHTTP $po_request
 	 * @param string $ps_table The database table name or number for which you want to perform lookups
 	 * @param array $pa_attributes Optional array of attributes to add to the lookup url
 	 * @return array An array of lookup urls key'ed by use. Keys are:
@@ -1217,7 +1219,7 @@
 	 *		idno = Duplicate idno lookup
 	 *		intrinsic = Checks value of instrinsic field and return list of primary keys that use the specified value
 	 */
-	function caJSONLookupServiceUrl($po_request, $ps_table, $pa_attributes=null) {
+	function caJSONLookupServiceUrl($ps_table, $pa_attributes=null) {
 		
 		if (is_numeric($ps_table)) {
 			if (!($t_table = Datamodel::getInstanceByTableNum($ps_table, true))) { return null; }
@@ -1337,13 +1339,13 @@
 				break;
 		}
 		return array(
-			'ancestorList' => caNavUrl($po_request, $vs_module, $vs_controller, 'GetHierarchyAncestorList', $pa_attributes),
-			'levelList' => caNavUrl($po_request, $vs_module, $vs_controller, 'GetHierarchyLevel', $pa_attributes),
-			'search' => caNavUrl($po_request, $vs_module, $vs_controller, 'Get', $pa_attributes),
-			'idno' => caNavUrl($po_request, $vs_module, $vs_controller, 'IDNo', $pa_attributes),
-			'intrinsic' => caNavUrl($po_request, $vs_module, $vs_controller, 'intrinsic', $pa_attributes),
-			'attribute' => caNavUrl($po_request, $vs_module, $vs_controller, 'Attribute', $pa_attributes),
-			'sortSave' => caNavUrl($po_request, $vs_module, $vs_controller, 'SetSortOrder'),
+			'ancestorList' => caNavUrl($vs_module, $vs_controller, 'GetHierarchyAncestorList', $pa_attributes),
+			'levelList' => caNavUrl($vs_module, $vs_controller, 'GetHierarchyLevel', $pa_attributes),
+			'search' => caNavUrl($vs_module, $vs_controller, 'Get', $pa_attributes),
+			'idno' => caNavUrl($vs_module, $vs_controller, 'IDNo', $pa_attributes),
+			'intrinsic' => caNavUrl($vs_module, $vs_controller, 'intrinsic', $pa_attributes),
+			'attribute' => caNavUrl($vs_module, $vs_controller, 'Attribute', $pa_attributes),
+			'sortSave' => caNavUrl($vs_module, $vs_controller, 'SetSortOrder'),
 		);
 	}
 	# ------------------------------------------------------------------------------------------------

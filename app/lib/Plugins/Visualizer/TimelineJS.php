@@ -90,7 +90,7 @@ class WLPlugVisualizerTimelineJS Extends BaseVisualizerPlugIn Implements IWLPlug
 				type:       'timeline',
 				width:      '{$vs_width}',
 				height:     '{$vs_height}',
-				source:     '".caNavUrl($po_request, '*', '*', '*', array('renderData' => '1', 'viz' => $pa_viz_settings['code']))."',
+				source:     '".caNavUrl('*', '*', '*', array('renderData' => '1', 'viz' => $pa_viz_settings['code']))."',
 				embed_id:   'timeline-embed'
 			});
 		});
@@ -148,7 +148,7 @@ class WLPlugVisualizerTimelineJS Extends BaseVisualizerPlugIn Implements IWLPlug
 
 				$va_data['events'][] = [
 					'text' => [
-						'headline' => $po_request ? caEditorLink($po_request, $vs_title, '', $vs_table_name, $vn_row_id) : $vs_title,
+						'headline' => $po_request ? caEditorLink($vs_title, '', $vs_table_name, $vn_row_id) : $vs_title,
 						'text' => $qr_res->getWithTemplate($va_source['display']['description_template']),
 					],
 					'media' => [

@@ -85,7 +85,7 @@
 	jQuery(document).ready(function() {
 		jQuery('#shareForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl($this->request, '', 'Detail', 'sendShare'); ?>',
+				'<?php print caNavUrl('', 'Detail', 'sendShare'); ?>',
 				jQuery('#shareForm').serialize()
 			);
 			e.preventDefault();

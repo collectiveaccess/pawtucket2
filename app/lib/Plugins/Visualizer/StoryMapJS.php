@@ -86,7 +86,7 @@ class WLPlugVisualizerStoryMapJS Extends BaseVisualizerPlugIn Implements IWLPlug
 		$vs_buf = $this->getLocaleJSSrc($po_request)."
 	<div id=\"storymap\" style=\"width: {$vs_width}; height: {$vs_height};\"></div>
     <script type='text/javascript'>
-    	var storymap_data = '".caNavUrl($po_request, '*', '*', '*', array('renderData' => '1', 'viz' => $pa_viz_settings['code']))."';
+    	var storymap_data = '".caNavUrl('*', '*', '*', array('renderData' => '1', 'viz' => $pa_viz_settings['code']))."';
     	var storymap_options = {};
 
 		jQuery(document).ready(function() {
@@ -153,7 +153,7 @@ class WLPlugVisualizerStoryMapJS Extends BaseVisualizerPlugIn Implements IWLPlug
 
 				$va_data['storymap']['slides'][] = [
 					'text' => [
-						'headline' => $po_request ? caEditorLink($po_request, $vs_title, '', $vs_table_name, $vn_row_id) : $vs_title,
+						'headline' => $po_request ? caEditorLink($vs_title, '', $vs_table_name, $vn_row_id) : $vs_title,
 						'text' => $qr_res->getWithTemplate($va_source['display']['description_template']),
 					],
 					'media' => [

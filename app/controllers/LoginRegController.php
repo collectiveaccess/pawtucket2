@@ -55,7 +55,7 @@
 			    $this->request->config->get('dontAllowRegistration')
 			) {
 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
-				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+				$this->redirect(caNavUrl('', 'Front', 'Index'));
 				return;
 			}
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Register"));
@@ -81,14 +81,14 @@
 		function profileForm($t_user = "") {
 			if(!$this->request->isLoggedIn()){
 				$this->notification->addNotification(_t("User is not logged in"), __NOTIFICATION_TYPE_ERROR__);
-				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+				$this->redirect(caNavUrl('', 'Front', 'Index'));
 				return;
 			}
 			if (
 			    $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
 			) {
 				$this->notification->addNotification(_t("Login/registration not allowed"), __NOTIFICATION_TYPE_ERROR__);
-				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+				$this->redirect(caNavUrl('', 'Front', 'Index'));
 				return;
 			}
 			MetaTagManager::setWindowTitle(_t("User Profile"));
@@ -115,14 +115,14 @@
 		    if (caValidateCSRFToken($this->request, null, ['notifications' => $this->notification])) {
                 if(!$this->request->isLoggedIn()){
                     $this->notification->addNotification(_t("User is not logged in"), __NOTIFICATION_TYPE_ERROR__);
-                    $this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+                    $this->redirect(caNavUrl('', 'Front', 'Index'));
                     return;
                 }
                 if (
                     $this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])
                 ) {
                     $this->notification->addNotification(_t("Login/registration not allowed"), __NOTIFICATION_TYPE_ERROR__);
-                    $this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+                    $this->redirect(caNavUrl('', 'Front', 'Index'));
                     return;
                 }
                 MetaTagManager::setWindowTitle(_t("User Profile"));
@@ -283,7 +283,7 @@
 						$vs_controller = 'Splash';
 						$vs_action = 'Index';
 					}
-					$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
+					$vs_url = caNavUrl($vs_module_path, $vs_controller, $vs_action);
 					$this->notification->addNotification(_t("You have been logged in").($vs_group_message ? "<br/>{$vs_group_message}" : ""), __NOTIFICATION_TYPE_INFO__);
 					$this->response->setRedirect($vs_url);
 				}
@@ -300,7 +300,7 @@
 				$vs_controller = 'Splash';
 				$vs_action = 'Index';
 			}
-			$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
+			$vs_url = caNavUrl($vs_module_path, $vs_controller, $vs_action);
 
 			$this->request->deauthenticate();
 			$this->notification->addNotification(_t("You have been logged out"), __NOTIFICATION_TYPE_INFO__);
@@ -320,7 +320,7 @@
 			    $this->request->config->get('dontAllowRegistration')
 			) {
 				$this->notification->addNotification(_t("Registration is not enabled"), __NOTIFICATION_TYPE_ERROR__);
-				$this->redirect(caNavUrl($this->request, '', 'Front', 'Index'));
+				$this->redirect(caNavUrl('', 'Front', 'Index'));
 				return;
 			}
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Register"));
@@ -564,7 +564,7 @@
 						$vs_controller = 'Splash';
 						$vs_action = 'Index';
 					}
-					$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
+					$vs_url = caNavUrl($vs_module_path, $vs_controller, $vs_action);
 					if($t_user->get("active")){
 						# log in the new user
 						$this->request->doAuthentication(array('dont_redirect' => true, 'user_name' => $ps_email, 'password' => $ps_password));
@@ -618,7 +618,7 @@
 					if(!$vs_controller = $this->request->getParameter("section", pString)){
 						$vs_controller = "Lightbox";
 					}
-					$this->response->setRedirect(caNavUrl($this->request, "", $vs_controller, "Index"));
+					$this->response->setRedirect(caNavUrl("", $vs_controller, "Index"));
 				}else{
 					$t_user_group->load($pn_group_id);
 					Session::setVar("join_user_group_id", $pn_group_id);
@@ -656,7 +656,7 @@
 						$vs_subject_line = $o_view->render('mailTemplates/instructions_subject.tpl');
 
 						# -- generate mail text from template - get both the text and html versions
-						$vs_password_reset_url = $this->request->config->get("site_host").caNavUrl($this->request, '', 'LoginReg', 'resetSave', array('key' => $vs_reset_key));
+						$vs_password_reset_url = $this->request->config->get("site_host").caNavUrl('', 'LoginReg', 'resetSave', array('key' => $vs_reset_key));
 						$o_view->setVar("password_reset_url", $vs_password_reset_url);
 						$vs_mail_message_text = $o_view->render('mailTemplates/instructions.tpl');
 						$vs_mail_message_html = $o_view->render('mailTemplates/instructions_html.tpl');

@@ -47,7 +47,7 @@
  		 */ 
  		public function __call($ps_function, $pa_args) {
  			AssetLoadManager::register("carousel");
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			$this->view->setVar('access_values', $va_access_values);
 
  			#

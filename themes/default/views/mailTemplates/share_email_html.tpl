@@ -4,7 +4,7 @@
 	$ps_from_name = $this->getVar("from_name");
 	$ps_message = $this->getVar("message");
 	
-	print "<p>"._t("%1 has shared a record from %2 with you.  To view the record online visit %3.", $ps_from_name, $this->request->config->get("site_host"), $this->request->config->get("site_host").caDetailUrl($this->request, $t_item->tableName(), $pn_item_id))."</p>";
+	print "<p>"._t("%1 has shared a record from %2 with you.  To view the record online visit %3.", $ps_from_name, $this->request->config->get("site_host"), $this->request->config->get("site_host").caDetailUrl($t_item->tableName(), $pn_item_id))."</p>";
 	print "<hr/>";
 	if($ps_message){
 		print "<p><b>"._t("%1 wrote", $ps_from_name).":</b>";
@@ -15,6 +15,6 @@
 	print "<p><b>"._t("Record Summary").":</b><blockquote>";
 	print "<b>"._t("Title").":</b> ".$t_item->getLabelForDisplay()."<br/>";
 	print "<b>"._t("Identifier").":</b> ".$t_item->get("idno")."<br/>";
-	print "<b>"._t("URL").":</b> ".caDetailLink($this->request, $this->request->config->get("site_host").caDetailUrl($this->request, $t_item->tableName(), $pn_item_id), "", $t_item->tableName(), $pn_item_id);
+	print "<b>"._t("URL").":</b> ".caDetailLink($this->request->config->get("site_host").caDetailUrl($t_item->tableName(), $pn_item_id), "", $t_item->tableName(), $pn_item_id);
 	print "</blockquote></p>";
 ?>

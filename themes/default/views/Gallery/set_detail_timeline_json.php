@@ -35,7 +35,7 @@ $vs_set_description				= $this->getVar('description');
 $vs_table						= $this->getVar('table');
 
 $va_view_info 					= $va_views[$vs_current_view][$vs_table];
-$va_access_values = caGetUserAccessValues($this->request);
+$va_access_values = caGetUserAccessValues();
 
 // title slide
 $va_data = [

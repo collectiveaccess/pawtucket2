@@ -232,7 +232,7 @@
 				$vs_tag = $this->opo_media_info_coder->getMediaTag($vs_version, $pa_options);
 				
 				if (is_object($pa_options['request'])) {
-					$vs_view_url = urldecode(caNavUrl($pa_options['request'], $pa_options['request']->getModulePath(), $pa_options['request']->getController(), 'GetMediaOverlay', array('value_id' => $this->opn_value_id)));
+					$vs_view_url = urldecode(caNavUrl($pa_options['request']->getModulePath(), $pa_options['request']->getController(), 'GetMediaOverlay', array('value_id' => $this->opn_value_id)));
 					$vs_val = "<div id='caMediaAttribute".$this->opn_value_id."' class='attributeMediaInfoContainer'>";
 
 					$vs_val .= "<div class='attributeMediaThumbnail'>";

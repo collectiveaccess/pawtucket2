@@ -63,7 +63,7 @@
 	jQuery(document).ready(function() {
 		jQuery('#SetForm').on('submit', function(e){		
 			jQuery.getJSON(
-				'<?php print caNavUrl($this->request, '', 'Lightbox', 'ajaxSaveSetInfo', null); ?>',
+				'<?php print caNavUrl('', 'Lightbox', 'ajaxSaveSetInfo', null); ?>',
 				jQuery('#SetForm').serializeObject(), function(data) {
 					jQuery("#lbSetName" + data.set_id).html(data.name);
 					jQuery("#lbSetDescription" + data.set_id).html(data.description);

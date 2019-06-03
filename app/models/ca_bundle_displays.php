@@ -961,7 +961,7 @@ if (!$pb_omit_editing_info) {
 		
 		$o_view = new View($po_request, $po_request->getViewsDirectoryPath().'/bundles/');	
 		
-		$o_view->setVar('lookup_urls', caJSONLookupServiceUrl($po_request, Datamodel::getTableName($this->get('table_num'))));
+		$o_view->setVar('lookup_urls', caJSONLookupServiceUrl(Datamodel::getTableName($this->get('table_num'))));
 		$o_view->setVar('t_display', $this);
 		$o_view->setVar('placement_code', $ps_placement_code);	
 		$o_view->setVar('id_prefix', $ps_form_name);		
@@ -2813,7 +2813,7 @@ if (!$pb_omit_editing_info) {
 					break;
 				case DT_LOOKUP:
 					if ($po_request) {
-						$va_urls = caJSONLookupServiceUrl($po_request, 'ca_list_items');
+						$va_urls = caJSONLookupServiceUrl('ca_list_items');
 						$va_column_spec[] = array(
 							'data' => str_replace(".", ",", $vs_bundle_name), 
 							'readOnly' => false,

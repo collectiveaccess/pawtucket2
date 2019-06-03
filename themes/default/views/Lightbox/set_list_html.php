@@ -42,13 +42,13 @@
 		<div class="btn-group">
 			<span class="glyphicon glyphicon-cog bGear" data-toggle="dropdown"></span>
 			<ul class="dropdown-menu" role="menu">
-				<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
+				<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl('', '*', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
 				<li class="divider"></li>
-				<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'userGroupForm', array()); ?>"); return false;' ><?php print _t("New User Group"); ?></a></li>
+				<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl('', '*', 'userGroupForm', array()); ?>"); return false;' ><?php print _t("New User Group"); ?></a></li>
 <?php
 				if(is_array($this->getVar("user_groups")) && sizeof($this->getVar("user_groups"))){
 ?>
-				<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'userGroupList', array()); ?>"); return false;' ><?php print _t("Manage Your User Groups"); ?></a></li>
+				<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl('', '*', 'userGroupList', array()); ?>"); return false;' ><?php print _t("Manage Your User Groups"); ?></a></li>
 <?php
 				}
 ?>
@@ -102,15 +102,15 @@
 						case Datamodel::getTableNum("ca_set_items"):
 							switch($va_activity["changetype"]){
 								case "I":
-									print _t("added an item to %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
+									print _t("added an item to %1", caNavLink($va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
 									break;
 								# ----------------------------------------
 								case "U":
-									print _t("changed an item in %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
+									print _t("changed an item in %1", caNavLink($va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
 									break;
 								# ----------------------------------------
 								case "D":
-									print _t("removed and item from %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
+									print _t("removed and item from %1", caNavLink($va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
 									break;
 								# ----------------------------------------
 							}
@@ -120,15 +120,15 @@
 							$t_group->load($va_activity["snapshot"]["group_id"]);
 							switch($va_activity["changetype"]){
 								case "I":
-									print _t("shared %1 with %2", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])), $t_group->get("name"));
+									print _t("shared %1 with %2", caNavLink($va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])), $t_group->get("name"));
 									break;
 								# ----------------------------------------
 								case "U":
-									print _t("changed how they share %1 with %2", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])), $t_group->get("name"));
+									print _t("changed how they share %1 with %2", caNavLink($va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])), $t_group->get("name"));
 									break;
 								# ----------------------------------------
 								case "D":
-									print _t("unshared %1 with %2", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])), $t_group->get("name"));
+									print _t("unshared %1 with %2", caNavLink($va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])), $t_group->get("name"));
 									break;
 								# ----------------------------------------
 							}
@@ -136,9 +136,9 @@
 						# ----------------------------------------
 						case Datamodel::getTableNum("ca_item_comments"):
 							if($va_activity["table_num"] == Datamodel::getTableNum("ca_sets")){
-								print _t("commented on %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
+								print _t("commented on %1", caNavLink($va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
 							}elseif($va_activity["table_num"] == Datamodel::getTableNum("ca_set_items")){
-								print _t("commented on an item in %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
+								print _t("commented on an item in %1", caNavLink($va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
 							}
 							print ": <i>".((mb_strlen($va_activity["comment"]) > 38) ? mb_substr($va_activity["comment"], 0, 38)."..." : $va_activity["comment"])."</i>";
 							break;
@@ -146,15 +146,15 @@
 						case Datamodel::getTableNum("ca_sets"):
 							switch($va_activity["changetype"]){
 								case "I":
-									print _t("made %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
+									print _t("made %1", caNavLink($va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
 									break;
 								# ----------------------------------------
 								case "U":
-									print _t("edited %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
+									print _t("edited %1", caNavLink($va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
 									break;
 								# ----------------------------------------
 								case "D":
-									print _t("deleted %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
+									print _t("deleted %1", caNavLink($va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
 									break;
 								# ----------------------------------------
 							}
@@ -200,7 +200,7 @@
 			jQuery('#confirm-delete .btn-delete').data('set_id', set_id);
 		}).find('.btn-delete').on('click', function(e) {
 			var set_id = jQuery(this).data('set_id');
-			jQuery.getJSON('<?php print caNavUrl($this->request, '*', '*', 'DeleteLightbox'); ?>', {'set_id': set_id }, function(data) {
+			jQuery.getJSON('<?php print caNavUrl('*', '*', 'DeleteLightbox'); ?>', {'set_id': set_id }, function(data) {
 				if(data.status == 'ok') {
 					jQuery("#lbSetContainer" + set_id).parent().remove();
 					if (jQuery('.lbSetContainer').length == 0) { jQuery('#lbSetListPlaceholder').show(); } else { jQuery('#lbSetListPlaceholder').hide(); }

@@ -54,7 +54,7 @@
 <?php
 	}
 ?>
-	<form id="RegForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
+	<form id="RegForm" action="<?php print caNavUrl("", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
 	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 <?php
 	if($this->request->isAjax()){
@@ -149,7 +149,7 @@
 	jQuery(document).ready(function() {
 		jQuery('#RegForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl($this->request, '', 'LoginReg', 'register', null); ?>',
+				'<?php print caNavUrl('', 'LoginReg', 'register', null); ?>',
 				jQuery('#RegForm').serializeObject()
 			);
 			e.preventDefault();

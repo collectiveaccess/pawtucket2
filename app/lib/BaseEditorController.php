@@ -114,7 +114,7 @@ class BaseEditorController extends ActionController {
 				$this->opo_app_plugin_manager->hookDuplicateItem(array('id' => $vn_subject_id, 'table_num' => $t_subject->tableNum(), 'table_name' => $t_subject->tableName(), 'instance' => $t_subject, 'duplicate' => $t_dupe));
 
 				// redirect to edit newly created dupe.
-				$this->response->setRedirect(caNavUrl($this->request, $this->request->getModulePath(), $this->request->getController(), $this->request->getAction(), array($t_subject->primaryKey() => $t_dupe->getPrimaryKey())));
+				$this->response->setRedirect(caNavUrl($this->request->getModulePath(), $this->request->getController(), $this->request->getAction(), array($t_subject->primaryKey() => $t_dupe->getPrimaryKey())));
 				return;
 			} else {
 				$this->notification->addNotification(_t('Could not duplicate %1: %2', $vs_type_name, join('; ', $t_subject->getErrors())), __NOTIFICATION_TYPE_ERROR__);
@@ -414,7 +414,7 @@ class BaseEditorController extends ActionController {
 					if(isset($va_pop['url_path']) && (strlen($va_pop['url_path']) > 0)) {
 						$this->getResponse()->setRedirect($va_pop['url_path']);
 					} else {
-						$this->getResponse()->setRedirect(caEditorUrl($this->getRequest(), $va_pop['table'], $va_pop['key']));
+						$this->getResponse()->setRedirect(caEditorUrl($va_pop['table'], $va_pop['key']));
 					}
 				}
 			}

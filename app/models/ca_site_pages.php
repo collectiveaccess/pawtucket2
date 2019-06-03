@@ -371,7 +371,7 @@ class ca_site_pages extends BundlableLabelableBaseModelWithAttributes {
 			if (sizeof($va_media_to_render) > 0) {
 			    $va_media_list = array_values($t_page->getPageMedia(array_unique(array_map(function($v) { return $v['version']; }, $va_media_to_render))));
 
-                if (!is_array($va_access_values = caGetUserAccessValues($po_controller->request)) || !sizeof($va_access_values)) { $va_access_values = null; }
+                if (!is_array($va_access_values = caGetUserAccessValues()) || !sizeof($va_access_values)) { $va_access_values = null; }
 			    foreach($va_media_to_render as $va_media) {
 			        $vn_index = (int)caGetOption('index', $va_media, 0) - 1;
 			        if ($vn_index < 0) { $vn_index = 0; }

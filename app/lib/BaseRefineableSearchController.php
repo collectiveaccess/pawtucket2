@@ -68,7 +68,7 @@
  		 *
  		 */
  		public function Facets() {
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			$this->opo_browse->loadFacetContent(array('checkAccess' => $va_access_values));
 			$this->view->setVar('browse', $this->opo_browse);
 			
@@ -76,7 +76,7 @@
  		}
 		# -------------------------------------------------------
  		public function getFacet() {
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			$ps_facet_name = $this->request->getParameter('facet', pString);
  			
  			if ($this->request->getParameter('clear', pInteger)) {
@@ -127,7 +127,7 @@
  		 * Returned data is JSON format
  		 */
  		public function getFacetHierarchyLevel() {
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			$ps_facet_name = $this->request->getParameter('facet', pString);
  			
  			$this->opo_browse->setTypeRestrictions(array($this->opn_type_restriction_id));

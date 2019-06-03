@@ -38,7 +38,7 @@
             $this->config = caGetContactConfig();
  			if(!$this->config->get("contact_email") && !$this->config->get("contact_form_elements")){
  				$this->notification->addNotification(_t("Contact form is not configured properly"), __NOTIFICATION_TYPE_ERROR__);
- 				$this->response->setRedirect(caNavUrl($this->request, '', '', ''));
+ 				$this->response->setRedirect(caNavUrl('', '', ''));
  			}
  			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Contact"));
  			caSetPageCSSClasses(array("contact"));

@@ -89,7 +89,7 @@
 			}
 			// Get current display list
 			$t_display = new ca_bundle_displays();
- 			foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues($this->request)))) as $va_display) {
+ 			foreach(caExtractValuesByUserLocale($t_display->getBundleDisplays(array('table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__, 'checkAccess' => caGetUserAccessValues()))) as $va_display) {
  				$va_options[$va_display['name']] = "_display_".$va_display['display_id'];
  			}
  			ksort($va_options);
@@ -143,7 +143,7 @@
  		 * Returned data is JSON format
  		 */
  		public function getFacetHierarchyLevel() {
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			$ps_facet_name = $this->request->getParameter('facet', pString, ['forcePurify' => true]);
  			$ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true]);
  			$ps_browse_type = $this->request->getParameter('browseType', pString, ['forcePurify' => true]);
@@ -340,7 +340,7 @@
  		public function getFacetHierarchyAncestorList() {
  			$this->view->setVar('isNav', $vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger));	// flag for browses that originate from nav bar
 			$pn_id = $this->request->getParameter('id', pInteger);
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			$ps_facet_name = $this->request->getParameter('facet', pString, ['forcePurify' => true]);
  			$this->view->setVar("facet_name", $ps_facet_name);
  			$this->view->setVar("key", $this->request->getParameter('key', pString, ['forcePurify' => true]));
@@ -414,7 +414,7 @@
 					$t_item->load($pn_id);
 					
 					if (method_exists($t_item, "getHierarchyList")) { 
-						$va_access_values = caGetUserAccessValues($this->request);
+						$va_access_values = caGetUserAccessValues();
 						$va_facet = $o_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values));
 						$va_hierarchy_list = $t_item->getHierarchyList(true);
 						

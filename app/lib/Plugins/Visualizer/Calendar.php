@@ -108,7 +108,7 @@ class WLPlugVisualizerCalendar Extends BaseVisualizerPlugIn Implements IWLPlugVi
 						defaultDate: '2014-06-12',
 						editable: true,
 						lang: 'fr',
-						events: '".caNavUrl($po_request, '*', '*', '*', array('renderData' => '1', 'viz' => $pa_viz_settings['code']))."',
+						events: '".caNavUrl('*', '*', '*', array('renderData' => '1', 'viz' => $pa_viz_settings['code']))."',
 						eventRender: function (event, element) {
 				            element.attr('href', 'javascript:void(0);');
 				            element.attr('onclick', 'openModal(\"' + event.title + '\",\"' + event.description + '\",\"' + event.url + '\",\"' + event.display_date + '\",\"' + event.end + '\");');
@@ -163,7 +163,7 @@ class WLPlugVisualizerCalendar Extends BaseVisualizerPlugIn Implements IWLPlugVi
 						"start" => $va_calendar_dates['start_iso'],
 						"end" => $va_calendar_dates['end_iso'],
 						"display_date" => $vs_display_date,
-						"url" => $po_request ? caEditorUrl($po_request, $vs_table_name, $vn_row_id) : "#",
+						"url" => $po_request ? caEditorUrl($vs_table_name, $vn_row_id) : "#",
 						"description" => $qr_res->getWithTemplate($va_source['display']['description_template']),
 						"title" => $qr_res->getWithTemplate($va_source['display']['title_template']),
 						"color" => "darkblue", //default color
@@ -181,7 +181,7 @@ class WLPlugVisualizerCalendar Extends BaseVisualizerPlugIn Implements IWLPlugVi
 							"start" => $start_date->modify($va_source["before"])->format('c'),
 							"end" => $va_calendar_dates['start_iso'],
 							"display_date" => $start_date->format('d-m-Y'),
-							"url" => $po_request ? caEditorUrl($po_request, $vs_table_name, $vn_row_id) : "#",
+							"url" => $po_request ? caEditorUrl($vs_table_name, $vn_row_id) : "#",
 							"description" => $qr_res->getWithTemplate($va_source['display_before']['description_template']),
 							"title" => $qr_res->getWithTemplate($va_source['display_before']['title_template']),
 							"color" => "darkblue", //default color
@@ -197,7 +197,7 @@ class WLPlugVisualizerCalendar Extends BaseVisualizerPlugIn Implements IWLPlugVi
 							"start" => $start_date->modify("+1 days")->setTime(0,0)->format('c'),
 							"end" => $start_date->modify($va_source["after"])->format('c'),
 							"display_date" => $start_date->format('d-m-Y'),
-							"url" => $po_request ? caEditorUrl($po_request, $vs_table_name, $vn_row_id) : "#",
+							"url" => $po_request ? caEditorUrl($vs_table_name, $vn_row_id) : "#",
 							"description" => $qr_res->getWithTemplate($va_source['display_after']['description_template']),
 							"title" => $qr_res->getWithTemplate($va_source['display_after']['title_template']),
 							"color" => "darkblue", //default color

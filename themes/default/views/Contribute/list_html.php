@@ -18,7 +18,7 @@
 	foreach($available_forms as $form_code => $form_info) {
 	    if (caGetOption('showInUserSubmissionList', $form_info, true)) {
 ?>
-		    <div class='contributeSubmit' style="margin-left: 20px;"><?php print caNavLink($this->request, _t('New %1', caGetOption('shortNameSingular', $form_info, $form_code)), '', '*', '*', $form_code);?></div>
+		    <div class='contributeSubmit' style="margin-left: 20px;"><?php print caNavLink(_t('New %1', caGetOption('shortNameSingular', $form_info, $form_code)), '', '*', '*', $form_code);?></div>
 <?php
         }
 	}
@@ -56,13 +56,13 @@
 				if (!$is_editable) {
 					print '<td>'.$qr->get("{$t}.preferred_labels")."</td>";
 				} else {
-					print '<td>'.caNavLink($this->request, $qr->get("{$t}.preferred_labels"), '', '*', '*', 'students', ['id' => $id = $qr->get("{$t}.object_id")])."</td>";
+					print '<td>'.caNavLink($qr->get("{$t}.preferred_labels"), '', '*', '*', 'students', ['id' => $id = $qr->get("{$t}.object_id")])."</td>";
 				}
 				print "<td>{$status}</td>";
 				print "<td>{$created}</td>";
 				print "<td>{$modified}</td>";
 			
-				print "<td class='contributeSubmit'>".($is_editable ? caNavLink($this->request, _t('Edit'), '', '*', '*', 'students', ['id' => $id]) : '')."</td>";
+				print "<td class='contributeSubmit'>".($is_editable ? caNavLink(_t('Edit'), '', '*', '*', 'students', ['id' => $id]) : '')."</td>";
 ?>
 				</tr>
 <?php

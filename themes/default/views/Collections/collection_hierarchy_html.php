@@ -70,7 +70,7 @@
 								}
 			
 								if($vb_link_to_detail){
-									print caDetailLink($this->request, $vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels')." ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : ""), '', 'ca_collections',  $qr_collection_children->get("ca_collections.collection_id")).$vs_record_count;
+									print caDetailLink($vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels')." ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : ""), '', 'ca_collections',  $qr_collection_children->get("ca_collections.collection_id")).$vs_record_count;
 								}else{
 									print "<div class='listItem'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</div>";
 								}
@@ -82,7 +82,7 @@
 									$(document).ready(function(){
 										$('.openCollection<?php print $qr_collection_children->get("ca_collections.collection_id");?>').click(function(){
 											$('#collectionLoad').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
-											$('#collectionLoad').load("<?php print caNavUrl($this->request, '', 'Collections', 'childList', array('collection_id' => $qr_collection_children->get("ca_collections.collection_id"))); ?>");
+											$('#collectionLoad').load("<?php print caNavUrl('', 'Collections', 'childList', array('collection_id' => $qr_collection_children->get("ca_collections.collection_id"))); ?>");
 											$('.openCollection').removeClass('active');
 											$('.openCollection<?php print $qr_collection_children->get("ca_collections.collection_id");?>').addClass('active');
 											return false;

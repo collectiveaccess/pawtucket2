@@ -58,7 +58,7 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+                $this->response->setRedirect(caNavUrl("", "LoginReg", "LoginForm"));
             }
             if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
             	print "You do not have access to view this page.";
@@ -391,7 +391,7 @@
 				    'color' => '#cc0000', 
 				    'labelTemplate' => caGetOption('labelTemplate', $va_view_info['display'], null),
 				    'contentTemplate' => caGetOption('contentTemplate', $va_view_info['display'], null),
-				    //'ajaxContentUrl' => caNavUrl($this->request, '*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view))
+				    //'ajaxContentUrl' => caNavUrl('*', '*', 'AjaxGetMapItem', array('browse' => $ps_function,'view' => $ps_view))
 				);
 				
 				$o_map = new GeographicMap(caGetOption("width", $va_view_info, "100%"), caGetOption("height", $va_view_info, "600px"));

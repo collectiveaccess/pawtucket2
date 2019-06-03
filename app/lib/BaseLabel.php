@@ -197,7 +197,7 @@
 			if (($ps_field == $this->getDisplayField()) && (is_array($va_use_list = caGetOption('use_list', $pa_options, false))) && ($po_request = caGetOption('request', $pa_options, null))) {
 				$vn_list_id = array_shift($va_use_list);
 				if ($vn_list_id > 0) {
-                    $va_urls = caJSONLookupServiceUrl($po_request, 'ca_list_items', ['list' => caGetListCode($vn_list_id)]);
+                    $va_urls = caJSONLookupServiceUrl('ca_list_items', ['list' => caGetListCode($vn_list_id)]);
                 
                     $pa_options['height'] = 1;
                     $pa_options['usewysiwygeditor'] = false;

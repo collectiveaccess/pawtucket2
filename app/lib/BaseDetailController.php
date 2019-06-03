@@ -108,7 +108,7 @@
  			AssetLoadManager::register('maps3');
  			AssetLoadManager::register('jquery', 'expander');
  			
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			$this->view->setVar('access_values', $va_access_values);
  			
  			if(!$t_item = Datamodel::getInstanceByTableName($this->ops_tablename, true)) {
@@ -117,12 +117,12 @@
 
  			if(!($vn_item_id = $this->request->getParameter($t_item->primaryKey(), pInteger))){
   				$this->notification->addNotification(_t("Invalid ID"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			if(!$t_item->load($vn_item_id)){
   				$this->notification->addNotification(_t("ID does not exist"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			
@@ -132,7 +132,7 @@
  			#
  			if(sizeof($va_access_values) && !in_array($t_item->get("access"), $va_access_values)){
   				$this->notification->addNotification(_t("This item is not available for view"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			
@@ -356,12 +356,12 @@
 
  			if(!($vn_item_id = $this->request->getParameter($t_item->primaryKey(), pInteger))){
   				$this->notification->addNotification(_t("Invalid ID"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			if(!$t_item->load($vn_item_id)){
   				$this->notification->addNotification(_t("ID does not exist"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			# --- get params from form

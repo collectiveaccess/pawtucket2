@@ -338,7 +338,7 @@ class OAIPMHService extends BaseService {
 			return;
 		}
 
-		$va_access_values = caGetUserAccessValues($this->opo_request, array_merge($this->opa_provider_info, array('ignoreProvidence' => true)));
+		$va_access_values = caGetUserAccessValues(array_merge($this->opa_provider_info, array('ignoreProvidence' => true)));
 		$vb_show_deleted = (bool)$this->opa_provider_info['show_deleted'];
 		$vb_dont_enforce_access_settings = (bool)$this->opa_provider_info['dont_enforce_access_settings'];
 
@@ -381,7 +381,7 @@ class OAIPMHService extends BaseService {
 	 * Responds to ListSets OAI verb
 	 */
 	private function listSets($oaiData) {
-		$va_access_values = caGetUserAccessValues($this->opo_request, array_merge($this->opa_provider_info, ['ignoreProvidence' => true]));
+		$va_access_values = caGetUserAccessValues(array_merge($this->opa_provider_info, ['ignoreProvidence' => true]));
 		$vb_show_deleted = (bool)$this->opa_provider_info['show_deleted'];
 		$vb_dont_enforce_access_settings = (bool)$this->opa_provider_info['dont_enforce_access_settings'];
 		$vb_dont_cache = (bool)$this->opa_provider_info['dont_cache'];
@@ -479,7 +479,7 @@ class OAIPMHService extends BaseService {
 		// by this point, the mapping code was checked to be valid
 		$t_instance = Datamodel::getInstanceByTableName($this->table, true);
 		$vs_pk = $t_instance->primaryKey();
-		$va_access_values = caGetUserAccessValues($this->opo_request, array_merge($this->opa_provider_info, ['ignoreProvidence' => true]));
+		$va_access_values = caGetUserAccessValues(array_merge($this->opa_provider_info, ['ignoreProvidence' => true]));
 
 		$vb_show_deleted = (bool)$this->opa_provider_info['show_deleted'];
 		$vb_dont_enforce_access_settings = (bool)$this->opa_provider_info['dont_enforce_access_settings'];

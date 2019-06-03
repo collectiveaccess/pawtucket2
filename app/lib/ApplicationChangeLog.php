@@ -247,7 +247,7 @@ require_once(__CA_LIB_DIR__."/Db.php");
 					}
 					
 					if (isset($pa_options['request']) && $pa_options['request']) {
-						$vs_output .= "<td><a href='".caEditorUrl($pa_options['request'], $va_log_entries[0]['subject_table_num'] , $va_log_entries[0]['subject_id'])."'>".$va_log_entries[0]['subject']."</a></td>";
+						$vs_output .= "<td><a href='".caEditorUrl($va_log_entries[0]['subject_table_num'] , $va_log_entries[0]['subject_id'])."'>".$va_log_entries[0]['subject']."</a></td>";
 					} else {
 						$vs_output .= "<td>".$va_log_entries[0]['subject']."</td>";
 					}

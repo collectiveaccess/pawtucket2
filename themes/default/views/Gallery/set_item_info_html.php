@@ -10,4 +10,4 @@
 {{{<unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
 
 
-<?php print caDetailLink($this->request, _t("VIEW RECORD"), '', $this->getVar("table"),  $this->getVar("row_id")); ?>
+<?php print caDetailLink(_t("VIEW RECORD"), '', $this->getVar("table"),  $this->getVar("row_id")); ?>

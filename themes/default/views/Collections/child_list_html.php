@@ -13,7 +13,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 	if($o_config->get("max_levels") && ($vn_level > $o_config->get("max_levels"))){
 		return;
 	}
-	$va_access_values = caGetUserAccessValues($po_request);
+	$va_access_values = caGetUserAccessValues();
 	$vs_output = "";
 	$vs_desc_template = $o_config->get("description_template");
 	$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
@@ -60,9 +60,9 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 				if($vb_collapse_link){
 					$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels')."</a>";
 				}else{
-					$vs_output .= caDetailLink($po_request, $qr_collections->get('ca_collections.preferred_labels'), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
+					$vs_output .= caDetailLink($qr_collections->get('ca_collections.preferred_labels'), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
 				}
-				$vs_output .= " ".caDetailLink($po_request, (($o_config->get("link_out_icon")) ? $o_config->get("link_out_icon") : ""), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
+				$vs_output .= " ".caDetailLink((($o_config->get("link_out_icon")) ? $o_config->get("link_out_icon") : ""), '', 'ca_collections',  $qr_collections->get("ca_collections.collection_id"));
 			}else{
 				$vs_output .= "<span class='nonLinkedCollection'>".$vs_icon." ";
 				if($vb_collapse_link){

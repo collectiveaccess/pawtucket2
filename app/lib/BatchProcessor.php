@@ -732,7 +732,7 @@
  					$va_notices[$vs_relative_directory.'/'.$f] = array(
 						'idno' => '',
 						'label' => $f,
-						'message' =>  $vs_msg = _t('Skipped %1 from %2 because it already exists %3', $f, $vs_relative_directory, $po_request ? caEditorLink($po_request, _t('(view)'), 'button', 'ca_object_representations', $t_dupe->getPrimaryKey()) : ''),
+						'message' =>  $vs_msg = _t('Skipped %1 from %2 because it already exists %3', $f, $vs_relative_directory, $po_request ? caEditorLink(_t('(view)'), 'button', 'ca_object_representations', $t_dupe->getPrimaryKey()) : ''),
 						'status' => 'SKIPPED'
 					);
 					$o_log->logInfo($vs_msg);

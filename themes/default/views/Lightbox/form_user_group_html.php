@@ -58,7 +58,7 @@
 	jQuery(document).ready(function() {
 		jQuery('#UserGroupForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl($this->request, '', '*', 'saveUserGroup', null); ?>',
+				'<?php print caNavUrl('', '*', 'saveUserGroup', null); ?>',
 				jQuery('#UserGroupForm').serialize()
 			);
 			e.preventDefault();

@@ -45,29 +45,30 @@
 	  * are enabled (via the 'dont_enforce_access_settings' configuration directive) and whether the user
 	  * is considered privileged.
 	  *
-	  * @param RequestHTTP $po_request The current request
 	  * @param array $pa_options Optional options. If omitted settings are taken application configuration file is used. Any array passed to this function should include the following keys: "dont_enforce_access_settings", "public_access_settings", "privileged_access_settings", "privileged_networks"
 	  * @return array An array of integer values that, if present in a record, indicate that the record should be displayed to the current user
 	  */
-	function caGetUserAccessValues($po_request, $pa_options=null) {
+	function caGetUserAccessValues($pa_options=null) {
+		global $g_request;
+		
 		if(!caGetOption('ignoreProvidence', $pa_options, false)) {
 			if (defined("__CA_APP_TYPE__") && (__CA_APP_TYPE__ == 'PROVIDENCE')) { return null; }
 		}
-		$vb_dont_enforce_access_settings = isset($pa_options['dont_enforce_access_settings']) ? (bool)$pa_options['dont_enforce_access_settings'] : $po_request->config->get('dont_enforce_access_settings');
-		$va_privileged_access_settings = isset($pa_options['privileged_access_settings']) && is_array($pa_options['privileged_access_settings']) ? (bool)$pa_options['privileged_access_settings'] : (array)$po_request->config->getList('privileged_access_settings');
-		$va_public_access_settings = isset($pa_options['public_access_settings']) && is_array($pa_options['public_access_settings']) ? $pa_options['public_access_settings'] : (array)$po_request->config->getList('public_access_settings');
+		$vb_dont_enforce_access_settings = isset($pa_options['dont_enforce_access_settings']) ? (bool)$pa_options['dont_enforce_access_settings'] : $g_request->config->get('dont_enforce_access_settings');
+		$va_privileged_access_settings = isset($pa_options['privileged_access_settings']) && is_array($pa_options['privileged_access_settings']) ? (bool)$pa_options['privileged_access_settings'] : (array)$g_request->config->getList('privileged_access_settings');
+		$va_public_access_settings = isset($pa_options['public_access_settings']) && is_array($pa_options['public_access_settings']) ? $pa_options['public_access_settings'] : (array)$g_request->config->getList('public_access_settings');
 	
 		if (!$vb_dont_enforce_access_settings) {
 			$va_access = array();
-			$vb_is_privileged = caUserIsPrivileged($po_request, $pa_options);
+			$vb_is_privileged = caUserIsPrivileged($pa_options);
 			if($vb_is_privileged) {
 				$va_access = $va_privileged_access_settings;
 			} else {
 				$va_access = $va_public_access_settings;
 			}
 			
-			if ($po_request->isLoggedIn()) {
-				$va_user_access = $po_request->user->getAccessStatuses(1);
+			if ($g_request->isLoggedIn()) {
+				$va_user_access = $g_request->user->getAccessStatuses(1);
 				if(is_array($va_user_access)) {
 					$va_access = array_unique(array_merge($va_access, $va_user_access));
 				}
@@ -82,18 +83,18 @@
 	  * a privileged network, as defined by the 'privileged_networks' configuration directive. May 
 	  * be expanded in the future to consider user's access rights and/or other parameters.
 	  *
-	  * @param RequestHTTP $po_request The current request
 	  * @param array $pa_options Optional options. If omitted settings are taken application configuration file is used. Any array passed to this function should include "privileged_networks" as a key with a value listing all privileged networks
 	  * @return boolean True if user is privileged, false if not
 	  */
-	function caUserIsPrivileged($po_request, $pa_options=null) {
-		$va_privileged_networks = isset($pa_options['privileged_networks']) && is_array($pa_options['privileged_networks']) ? $pa_options['privileged_networks'] : (array)$po_request->config->getList('privileged_networks');
+	function caUserIsPrivileged($pa_options=null) {
+		global $g_request;
+		$va_privileged_networks = isset($pa_options['privileged_networks']) && is_array($pa_options['privileged_networks']) ? $pa_options['privileged_networks'] : (array)$g_request->config->getList('privileged_networks');
 		
 		if (!($va_priv_ips = $va_privileged_networks)) {
 			$va_priv_ips = array();
 		}
 		
-		$va_user_ip = explode('.', $po_request->getClientIP());
+		$va_user_ip = explode('.', $g_request->getClientIP());
 		
 		if (is_array($va_priv_ips)) {
 			foreach($va_priv_ips as $vs_priv_ip) {

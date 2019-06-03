@@ -50,7 +50,7 @@
         currentFrame: 1, 
         imgList: '#<?php print $vs_id; ?>_images', // selector for image list
         progress: '#<?php print $vs_id; ?> .spinner', // selector to show the loading progress
-        imagePath:'<?php print caNavUrl($this->request, '*', '*', 'GetMediaData', ['context' => $this->request->getAction(), 'id' => $t_subject->getPrimaryKey(), 'identifier' => $vs_identifier]); ?>:', 
+        imagePath:'<?php print caNavUrl('*', '*', 'GetMediaData', ['context' => $this->request->getAction(), 'id' => $t_subject->getPrimaryKey(), 'identifier' => $vs_identifier]); ?>:', 
         filePrefix: '',
         ext: '',
         width: "<?php print caGetOption('viewer_width', $va_data['display'], '800'); ?>",

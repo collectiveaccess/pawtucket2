@@ -40,7 +40,7 @@
 				type:       'timeline',
 				width:      '100%',
 				height:     '100%',
-				source:     '<?php print caNavUrl($this->request, '', '*', 'setDetail', array('key' => $vs_browse_key, 'download' => 1, 'view' => 'timelineData', 'set_id' => $t_set->get("set_id"))); ?>',
+				source:     '<?php print caNavUrl('', '*', 'setDetail', array('key' => $vs_browse_key, 'download' => 1, 'view' => 'timelineData', 'set_id' => $t_set->get("set_id"))); ?>',
 				embed_id:   'timeline-embed'
 			});
 		});

@@ -86,7 +86,7 @@
  			AssetLoadManager::register('browsable');
 			AssetLoadManager::register('hierBrowser');
  			
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			
  			
  			
@@ -164,13 +164,13 @@
  								if (sizeof($va_objects = $t_table->getRelatedItems('ca_objects'))) {
  									$va_object = array_shift($va_objects);
  									$vn_object_id = $va_object['object_id'];
- 									$this->response->setRedirect(caNavUrl($this->request, 'Detail', 'Object', 'Show', array('object_id' => $vn_object_id)));
+ 									$this->response->setRedirect(caNavUrl('Detail', 'Object', 'Show', array('object_id' => $vn_object_id)));
  									return;
  								}
  							}
  						}
  					}
- 					$this->response->setRedirect(caNavUrl($this->request, 'Detail', ucfirst($t_table->getProperty('NAME_SINGULAR')), 'Show', array($t_table->primaryKey() => $va_tmp1[0])));
+ 					$this->response->setRedirect(caNavUrl('Detail', ucfirst($t_table->getProperty('NAME_SINGULAR')), 'Show', array($t_table->primaryKey() => $va_tmp1[0])));
  					return;
  				}
  			}
@@ -315,7 +315,7 @@
 	
 						$vn_item_count++;
 	
-						$va_row_headers[] = ($vn_item_count)." ".caEditorLink($this->request, caNavIcon(__CA_NAV_ICON_EDIT__, 2), 'caResultsEditorEditLink', $this->ops_tablename, $vn_id);
+						$va_row_headers[] = ($vn_item_count)." ".caEditorLink(caNavIcon(__CA_NAV_ICON_EDIT__, 2), 'caResultsEditorEditLink', $this->ops_tablename, $vn_id);
 	
 					}
 				}
@@ -358,7 +358,7 @@
  		}
  		# -------------------------------------------------------
  		public function getFacet($pa_options=null) {
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			$ps_facet_name = $this->request->getParameter('facet', pString);
  			
  			$this->view->setVar('only_show_group', $vs_show_group = $this->request->getParameter('show_group', pString));
@@ -453,7 +453,7 @@
  		 * children for use in the hierarchy browser. Returned data is JSON format.
  		 */
  		public function getFacetHierarchyLevel() {
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			$ps_facet_name = $this->request->getParameter('facet', pString);
  			
  			$this->opo_browse->setTypeRestrictions(array($this->opn_type_restriction_id));
@@ -722,7 +722,7 @@
 					$t_item->load($pn_id);
 					
 					if (method_exists($t_item, "getHierarchyList")) { 
-						$va_access_values = caGetUserAccessValues($this->request);
+						$va_access_values = caGetUserAccessValues();
 						$va_facet = $this->opo_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values));
 						$va_hierarchy_list = $t_item->getHierarchyList(true);
 						

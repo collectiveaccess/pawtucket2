@@ -110,7 +110,7 @@
  			AssetLoadManager::register('imageScroller');
  			AssetLoadManager::register('jquery', 'expander');
  			
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			$this->view->setVar('access_values', $va_access_values);
  			
  			if(!$t_item = Datamodel::getInstance($this->ops_tablename, true)) {
@@ -119,18 +119,18 @@
 
  			if(!($vn_item_id = $this->request->getParameter($t_item->primaryKey(), pInteger))){
   				$this->notification->addNotification(_t("Invalid ID"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			if(!$t_item->load($vn_item_id)){
   				$this->notification->addNotification(_t("ID does not exist"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			
  			if($t_item->hasField('deleted') && $t_item->get('deleted')){
   				$this->notification->addNotification(_t("ID has been deleted"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			
@@ -140,7 +140,7 @@
  				
  				if (is_array($va_types) && sizeof($va_types) && !in_array($t_item->getTypeID(), $va_types)) {
 					$this->notification->addNotification(_t("This item is not viewable"), "message");
-					$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+					$this->response->setRedirect(caNavUrl("", "", "", ""));
 					return;
 				}
  			}
@@ -150,7 +150,7 @@
  			#
  			if(sizeof($va_access_values) && !in_array($t_item->get("access"), $va_access_values)){
   				$this->notification->addNotification(_t("This item is not available for view"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			
@@ -371,12 +371,12 @@
 
  			if(!($vn_item_id = $this->request->getParameter($t_item->primaryKey(), pInteger))){
   				$this->notification->addNotification(_t("Invalid ID"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			if(!$t_item->load($vn_item_id)){
   				$this->notification->addNotification(_t("ID does not exist"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			# --- get params from form
@@ -514,12 +514,12 @@
 
  			if(!($vn_item_id = $this->request->getParameter($t_item->primaryKey(), pInteger))){
   				$this->notification->addNotification(_t("Invalid ID"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			if(!$t_item->load($vn_item_id)){
   				$this->notification->addNotification(_t("ID does not exist"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
 			$ps_mapping = $this->request->getParameter('mapping', pString);
@@ -527,12 +527,12 @@
 			// $t_mapping = new ca_bundle_mappings();
 // 			if(!$t_mapping->load(array('mapping_code' => $ps_mapping))) {
 // 				$this->notification->addNotification(_t("Mapping does not exist"), "message");
-//  				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+//  				$this->response->setRedirect(caNavUrl("", "", "", ""));
 //  				return;
 // 			}
 			if(!$t_mapping->get('access')) {
 				$this->notification->addNotification(_t("Export format cannot be used"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
 			}
 			$vn_mapping_id = $t_mapping->getPrimaryKey();
@@ -556,12 +556,12 @@
  			}
 			if(!($vn_item_id = $this->request->getParameter($t_item->primaryKey(), pInteger))){
   				$this->notification->addNotification(_t("Invalid ID"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
  			if(!$t_item->load($vn_item_id)){
   				$this->notification->addNotification(_t("ID does not exist"), "message");
- 				$this->response->setRedirect(caNavUrl($this->request, "", "", "", ""));
+ 				$this->response->setRedirect(caNavUrl("", "", "", ""));
  				return;
  			}
 			
@@ -569,7 +569,7 @@
  			if($this->request->config->get("dont_enforce_access_settings")){
  				$va_access_values = array();
  			}else{
- 				$va_access_values = caGetUserAccessValues($this->request);
+ 				$va_access_values = caGetUserAccessValues();
  			}
  			$this->view->setVar('access_values', $va_access_values);
  			
@@ -820,7 +820,7 @@
  		 *
  		 */
  		public function GetRelatedObjectsAsJSON() {
- 			$va_access_values = caGetUserAccessValues($this->request);
+ 			$va_access_values = caGetUserAccessValues();
  			$pn_collection_id = $this->request->getParameter('collection_id', pInteger);
  			$pn_start = $this->request->getParameter('s', pInteger);
  			$pn_num_items = $this->request->getParameter('n', pInteger);

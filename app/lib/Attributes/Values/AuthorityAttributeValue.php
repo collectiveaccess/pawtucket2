@@ -228,13 +228,13 @@ abstract class AuthorityAttributeValue extends AttributeValue {
 			} else {
 				$va_params = array('max' => 50);
 			}
-			$vs_url = caNavUrl($pa_options['request'], 'lookup', $this->ops_name_singular, 'Get', $va_params);
+			$vs_url = caNavUrl('lookup', $this->ops_name_singular, 'Get', $va_params);
 		} else {
 			// no lookup is possible
 			return $this->getDisplayValue();
 		}
 
-		$va_pieces = caEditorUrl($pa_options['request'], $t_instance->tableName(), 0, true);
+		$va_pieces = caEditorUrl($t_instance->tableName(), 0, true);
 		$va_pieces['controller'] = str_replace('Editor', 'QuickAdd', $va_pieces['controller']);
 		$va_pieces['action'] = 'Form';
 

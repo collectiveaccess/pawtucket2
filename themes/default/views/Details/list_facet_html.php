@@ -46,13 +46,13 @@
 	$vn_c = 0;
 	foreach($va_facet_content as $vn_id => $va_item) {
 		print "<div class='browseFacetItem col-sm-4 col-md-3'>";
-		print caNavLink($this->request, $va_item['label'], '', '*', '*', $this->request->getAction().'/'.$this->request->getActionExtra(), array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view, 'key' => $vs_key, 'browseType' => 'objects'));
+		print caNavLink($va_item['label'], '', '*', '*', $this->request->getAction().'/'.$this->request->getActionExtra(), array('facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view, 'key' => $vs_key, 'browseType' => 'objects'));
 		print "</div>";
 		$vn_c++;
 		
 		if (($vn_items_per_page > 0) && ($vn_c >= $vn_items_per_page)) { break; }
 	}
-	print caNavLink($this->request, caBusyIndicatorIcon($this->request).' '._t('Loading'), '', '*', '*', '*', array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'view' => $vs_view, 'isNav' => $vb_is_nav ? 1 : 0, 's' => $vn_start + $vn_items_per_page, 'browseType' => 'objects'));
+	print caNavLink(caBusyIndicatorIcon($this->request).' '._t('Loading'), '', '*', '*', '*', array('facet' => $vs_facet_name, 'getFacet' => 1, 'key' => $vs_key, 'view' => $vs_view, 'isNav' => $vb_is_nav ? 1 : 0, 's' => $vn_start + $vn_items_per_page, 'browseType' => 'objects'));
 	if ($vn_start == 0) {
 ?>
 		</div>

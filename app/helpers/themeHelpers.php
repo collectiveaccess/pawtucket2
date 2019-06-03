@@ -38,15 +38,15 @@
 	/**
 	 * Generate HTML <img> tag for graphic in current theme; if graphic is not available the graphic in the default theme will be returned.
 	 *
-	 * @param RequestHTTP $po_request
 	 * @param string $ps_file_path
 	 * @param array $pa_attributes
 	 * @param array $pa_options
 	 * @return string
 	 */
-	function caGetThemeGraphic($po_request, $ps_file_path, $pa_attributes=null, $pa_options=null) {
-		$vs_base_url_path = $po_request->getThemeUrlPath();
-		$vs_base_path = $po_request->getThemeDirectoryPath();
+	function caGetThemeGraphic($ps_file_path, $pa_attributes=null, $pa_options=null) {
+		global $g_request;
+		$vs_base_url_path = $g_request->getThemeUrlPath();
+		$vs_base_path = $g_request->getThemeDirectoryPath();
 		$vs_file_path = "/assets/pawtucket/graphics/{$ps_file_path}";
 
         if (file_exists($vs_base_path.$vs_file_path)) {
@@ -71,23 +71,23 @@
         }
 
         // Fall back to default theme
-		return caHTMLImage($po_request->getDefaultThemeUrlPath().$vs_file_path, $pa_attributes, $pa_options);
+		return caHTMLImage($g_request->getDefaultThemeUrlPath().$vs_file_path, $pa_attributes, $pa_options);
 	}
 	# ---------------------------------------
 	/**
 	 * Generate URL tag for graphic in current theme; if graphic is not available the graphic in the default theme will be returned.
 	 *
-	 * @param RequestHTTP $po_request
 	 * @param string $ps_file_path
 	 * @param array $pa_options
 	 * @return string
 	 */
-	function caGetThemeGraphicURL($po_request, $ps_file_path, $pa_options=null) {
-		$vs_base_path = $po_request->getThemeUrlPath();
+	function caGetThemeGraphicURL($ps_file_path, $pa_options=null) {
+		global $g_request;
+		$vs_base_path = $g_request->getThemeUrlPath();
 		$vs_file_path = '/assets/pawtucket/graphics/'.$ps_file_path;
 
-		if (!file_exists($po_request->getThemeDirectoryPath().$vs_file_path)) {
-			$vs_base_path = $po_request->getDefaultThemeUrlPath();
+		if (!file_exists($g_request->getThemeDirectoryPath().$vs_file_path)) {
+			$vs_base_path = $g_request->getDefaultThemeUrlPath();
 		}
 		return $vs_base_path.$vs_file_path;
 	}
@@ -96,7 +96,6 @@
 	 * Set CSS classes to add the "pageArea" page content <div>, overwriting any previous setting.
 	 * Use to set classes specific to each page type and context.
 	 *
-	 * @param RequestHTTP $po_request
 	 * @param mixed $pa_page_classes A class (string) or list of classes (array) to set
 	 * @return bool Always returns true
 	 */
@@ -115,7 +114,6 @@
 	 * Adds CSS classes to the "pageArea" page content <div>. Use to set classes specific to each
 	 * page type and context.
 	 *
-	 * @param RequestHTTP $po_request
 	 * @param mixed $pa_page_classes A class (string) or list of classes (array) to add
 	 * @return bool Returns true if classes were added, false if class list is empty
 	 */
@@ -135,7 +133,6 @@
 	/**
 	 * Get CSS class attribute ready for including in a <div> tag. Used to add classes to the "pageArea" page content <div>
 	 *
-	 * @param RequestHTTP $po_request
 	 * @return string The "class" attribute with set classes or an empty string if no classes are set
 	 */
 	function caGetPageCSSClasses() {
@@ -150,15 +147,13 @@
 	 * @param string $ps_path
 	 * @param array $pa_options Options include:
 	 *		dontPrint = Don't print URL to output. Default is false.
-	 *		request = The current request object (RequestHTTP). Default is to use globally set request object.
 	 *
 	 * @return string the URL
 	 */
 	function caStaticPageUrl($ps_path, $pa_options=null) {
 		global $g_request;
 
-		if (!($po_request = caGetOption('request', $pa_options, null))) { $po_request = $g_request; }
-		$vs_url = $po_request->getBaseUrlPath().'/'.$po_request->getScriptName().$ps_path;
+		$vs_url = $g_request->getBaseUrlPath().'/'.$g_request->getScriptName().$ps_path;
 
 		if (!caGetOption('dontPrint', $pa_options, false)) {
 			print $vs_url;
@@ -384,7 +379,6 @@
 	# ---------------------------------------
 	/*
 	 *
-	 * @param RequestHTTP $po_request
 	 * @param int $pn_representation_id
 	 * @param ca_objects $pt_object
 	 * @param array $pa_options Options include:
@@ -397,7 +391,9 @@
 	 *      primaryOnly = Only show primary representations. [Default is false]
 	 * @return string HTML output
 	 */
-	function caObjectRepresentationThumbnails($po_request, $pn_representation_id, $pt_object, $pa_options){
+	function caObjectRepresentationThumbnails($pn_representation_id, $pt_object, $pa_options){
+		global $g_request;
+		
 		if(!$pt_object || !$pt_object->getPrimaryKey()){
 			return false;
 		}
@@ -415,7 +411,7 @@
 		if(!$pa_options["currentRepClass"]){ $pa_options["currentRepClass"] = "active"; }
 		
 		# --- get reps as thumbnails
-		$va_reps = $pt_object->getRepresentations(array($ps_version), null, array("checkAccess" => caGetUserAccessValues($po_request), 'primaryOnly' => $pb_primary_only));
+		$va_reps = $pt_object->getRepresentations(array($ps_version), null, array("checkAccess" => caGetUserAccessValues(), 'primaryOnly' => $pb_primary_only));
 		if(sizeof($va_reps) < 2){
 			return;
 		}
@@ -436,7 +432,7 @@
 			switch($ps_link_to){
 				# -------------------------------
 				case "viewer":
-					$va_links[$vn_rep_id] = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array($pt_object->primaryKey() => $pt_object->getPrimaryKey(), 'representation_id' => $vn_rep_id, 'overlay' => 1, 'context' => $po_request->getAction()))."\"); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
+					$va_links[$vn_rep_id] = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl('', 'Detail', 'GetMediaOverlay', array($pt_object->primaryKey() => $pt_object->getPrimaryKey(), 'representation_id' => $vn_rep_id, 'overlay' => 1, 'context' => $g_request->getAction()))."\"); return false;' ".(($vs_class) ? "class='".$vs_class."'" : "").">".$vs_thumb."</a>\n";
 					break;
 				# -------------------------------
 				case "carousel":
@@ -445,7 +441,7 @@
 				# -------------------------------
 				default:
 				case "detail":
-					$va_links[$vn_rep_id] = caDetailLink($po_request, $vs_thumb, $vs_class, $pt_object->tableName(), $pt_object->getPrimaryKey(), array("representation_id" => $vn_rep_id));
+					$va_links[$vn_rep_id] = caDetailLink($vs_thumb, $vs_class, $pt_object->tableName(), $pt_object->getPrimaryKey(), array("representation_id" => $vn_rep_id));
 					break;
 				# -------------------------------
 			}
@@ -490,7 +486,9 @@
 	 * comment form for all detail pages
 	 *
 	 */
-	function caDetailItemComments($po_request, $pn_item_id, $t_item, $va_comments, $va_tags){
+	function caDetailItemComments($pn_item_id, $t_item, $va_comments, $va_tags){
+		global $g_request;
+		
 		$vs_tmp = "";
 		if(is_array($va_comments) && (sizeof($va_comments) > 0)){
 			foreach($va_comments as $va_comment){
@@ -512,15 +510,15 @@
 		if(is_array($va_tags) && sizeof($va_tags) > 0){
 			$va_tag_links = array();
 			foreach($va_tags as $vs_tag){
-				$va_tag_links[] = caNavLink($po_request, $vs_tag, '', '', 'MultiSearch', 'Index', array('search' => $vs_tag));
+				$va_tag_links[] = caNavLink($g_request, $vs_tag, '', '', 'MultiSearch', 'Index', array('search' => $vs_tag));
 			}
 			$vs_tmp .= "<h2>"._t("Tags")."</h2>\n
 				<div id='tags'>".implode($va_tag_links, ", ")."</div>";
 		}
-		if($po_request->isLoggedIn()){
-			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'CommentForm', array("tablename" => $t_item->tableName(), "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your tags and comment")."</button>";
+		if($g_request->isLoggedIn()){
+			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl('', 'Detail', 'CommentForm', array("tablename" => $t_item->tableName(), "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your tags and comment")."</button>";
 		}else{
-			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment on this object")."</button>";
+			$vs_tmp .= "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl('', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment on this object")."</button>";
 		}
 		return $vs_tmp;
 	}
@@ -531,7 +529,9 @@
 	 * options: "write_access" = false
 	 *
 	 */
-	function caLightboxSetListItem($po_request, $t_set, $va_check_access = array(), $pa_options = array()) {
+	function caLightboxSetListItem($t_set, $va_check_access = array(), $pa_options = array()) {
+		global $g_request;
+		
 		if(!($vn_set_id = $t_set->get("set_id"))) {
 			return false;
 		}
@@ -539,13 +539,13 @@
 		if($pa_options["write_access"]){
 			$vb_write_access = true;
 		}
-		$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $po_request->user->get("user_id"), "thumbnailVersions" => array("iconlarge", "icon"), "checkAccess" => $va_check_access, "limit" => 5)));
+		$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("user_id" => $g_request->user->get("user_id"), "thumbnailVersions" => array("iconlarge", "icon"), "checkAccess" => $va_check_access, "limit" => 5)));
 		
 		$vs_set_display = "<div class='lbSetContainer' id='lbSetContainer{$vn_set_id}'><div class='lbSet ".(($vb_write_access) ? "" : "readSet" )."'><div class='lbSetContent'>\n";
 		if(!$vb_write_access){
 			$vs_set_display .= "<div class='pull-right caption'>Read Only</div>";
 		}
-		$vs_set_display .= "<H5>".caNavLink($po_request, $t_set->getLabelForDisplay(), "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id), array('id' => "lbSetName{$vn_set_id}"))."</H5>";
+		$vs_set_display .= "<H5>".caNavLink($g_request, $t_set->getLabelForDisplay(), "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id), array('id' => "lbSetName{$vn_set_id}"))."</H5>";
 
         $va_lightboxDisplayName = caGetLightboxDisplayName();
 		$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
@@ -565,41 +565,41 @@
 						$vs_large_icon = "iconlarge";
 					}
 					if($va_set_item["representation_tag_".$vs_large_icon]){
-						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($po_request, $va_set_item["representation_tag_".$vs_large_icon], "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div><!-- end lbSetImg --></div>\n";
+						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($g_request, $va_set_item["representation_tag_".$vs_large_icon], "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div><!-- end lbSetImg --></div>\n";
 					}else{
-						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($po_request, "<div class='lbSetImgPlaceholder'>".$vs_placeholder."</div><!-- end lbSetImgPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div><!-- end lbSetImg --></div>\n";
+						$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'>".caNavLink($g_request, "<div class='lbSetImgPlaceholder'>".$vs_placeholder."</div><!-- end lbSetImgPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div><!-- end lbSetImg --></div>\n";
 					}
 				}else{
 					if($va_set_item["representation_tag_icon"]){
-						$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumb'>".caNavLink($po_request, $va_set_item["representation_tag_icon"], "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div><!-- end lbSetThumb --></div>\n";
+						$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumb'>".caNavLink($g_request, $va_set_item["representation_tag_icon"], "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div><!-- end lbSetThumb --></div>\n";
 					}else{
-						$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($po_request, "<div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png').$vs_placeholder."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div>\n";
+						$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($g_request, "<div class='lbSetThumbPlaceholder'>".caGetThemeGraphic('spacer.png').$vs_placeholder."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div>\n";
 					}
 				}
 				$vn_i++;
 			}
 			while($vn_i < 6){
-				$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($po_request, "<div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png')."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div>";
+				$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($g_request, "<div class='lbSetThumbPlaceholder'>".caGetThemeGraphic('spacer.png')."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div>";
 				$vn_i++;
 			}
 		}else{
 			$vs_primary_image_block .= "<div class='col-sm-6'><div class='lbSetImg'><div class='lbSetImgPlaceholder'>"._t("this %1 contains no items", $vs_lightbox_displayname)."</div><!-- end lbSetImgPlaceholder --></div><!-- end lbSetImg --></div>\n";
 			$i = 1;
 			while($vn_i < 4){
-				$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png')."</div><!-- end lbSetThumbPlaceholder --></div>";
+				$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'>".caGetThemeGraphic('spacer.png')."</div><!-- end lbSetThumbPlaceholder --></div>";
 				$vn_i++;
 			}
 		}
 		$vs_set_display .= "<div class='row'>".$vs_primary_image_block."<div class='col-sm-6'><div id='comment{$vn_set_id}' class='lbSetComment'><!-- load comments here --></div>\n<div class='lbSetThumbRowContainer'><div class='row lbSetThumbRow' id='lbSetThumbRow{$vn_set_id}'>".$vs_secondary_image_block."</div><!-- end row --></div><!-- end lbSetThumbRowContainer --></div><!-- end col --></div><!-- end row -->";
 		$vs_set_display .= "</div><!-- end lbSetContent -->\n";
 		$vs_set_display .= "<div class='lbSetExpandedInfo' id='lbExpandedInfo{$vn_set_id}'>\n<hr><div>created by: ".trim($t_set->get("ca_users.fname")." ".$t_set->get("ca_users.lname"))."</div>\n";
-		$vs_set_display .= "<div>"._t("Items: %1", $t_set->getItemCount(array("user_id" => $po_request->user->get("user_id"), "checkAccess" => $va_check_access)))."</div>\n";
+		$vs_set_display .= "<div>"._t("Items: %1", $t_set->getItemCount(array("user_id" => $g_request->user->get("user_id"), "checkAccess" => $va_check_access)))."</div>\n";
 		if($vb_write_access){
 			$vs_set_display .= "<div class='pull-right'><a href='#' data-set_id=\"".(int)$t_set->get('set_id')."\" data-set_name=\"".addslashes($t_set->get('ca_sets.preferred_labels.name'))."\" data-toggle='modal' data-target='#confirm-delete'><span class='glyphicon glyphicon-trash'></span></a></div>\n";
 		}
-		$vs_set_display .= "<div><a href='#' onclick='jQuery(\"#comment{$vn_set_id}\").load(\"".caNavUrl($po_request, '', 'Lightbox', 'AjaxListComments', array('type' => 'ca_sets', 'set_id' => $vn_set_id))."\", function(){jQuery(\"#lbSetThumbRow{$vn_set_id}\").hide(); jQuery(\"#comment{$vn_set_id}\").show();}); return false;' title='"._t("Comments")."'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set->getNumComments()."</small></a>";
+		$vs_set_display .= "<div><a href='#' onclick='jQuery(\"#comment{$vn_set_id}\").load(\"".caNavUrl('', 'Lightbox', 'AjaxListComments', array('type' => 'ca_sets', 'set_id' => $vn_set_id))."\", function(){jQuery(\"#lbSetThumbRow{$vn_set_id}\").hide(); jQuery(\"#comment{$vn_set_id}\").show();}); return false;' title='"._t("Comments")."'><span class='glyphicon glyphicon-comment'></span> <small>".$t_set->getNumComments()."</small></a>";
 		if($vb_write_access){
-			$vs_set_display .= "&nbsp;&nbsp;&nbsp;<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Lightbox', 'setForm', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Edit Name/Description")."'><span class='glyphicon glyphicon-edit'></span></a>";
+			$vs_set_display .= "&nbsp;&nbsp;&nbsp;<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl('', 'Lightbox', 'setForm', array("set_id" => $vn_set_id))."\"); return false;' title='"._t("Edit Name/Description")."'><span class='glyphicon glyphicon-edit'></span></a>";
 		}
 		$vs_set_display .= "</div>\n";
 		$vs_set_display .= "</div><!-- end lbSetExpandedInfo --></div><!-- end lbSet --></div><!-- end lbSetContainer -->\n";
@@ -613,8 +613,9 @@
 	 */
 	$g_theme_detail_for_type_cache = array();
 	function caGetDetailForType($pm_table, $pm_type=null, $pa_options=null) {
-		global $g_theme_detail_for_type_cache;
-		$vs_current_action = ($po_request = caGetOption('request', $pa_options, null)) ? $po_request->getAction() : null;
+		global $g_request, $g_theme_detail_for_type_cache;
+		
+		$vs_current_action = $g_request->getAction();
 		if (isset($g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type])) { return $g_theme_detail_for_type_cache[$pm_table.'/'.$pm_type.'/'.$vs_current_action]; }
 		$o_config = caGetDetailConfig();
 		$vs_preferred_detail = caGetOption('preferredDetail', $pa_options, null);
@@ -750,9 +751,11 @@
 	 * class -> class name of <ul>
 	 * options -> limit -> limit number of sets returned, role -> role in <ul> tag
 	 */
-	function caGetGallerySetsAsList($po_request, $vs_class, $pa_options=null){
+	function caGetGallerySetsAsList($vs_class, $pa_options=null){
+		global $g_request;
+		
 		$o_config = caGetGalleryConfig();
-		$va_access_values = caGetUserAccessValues($po_request);
+		$va_access_values = caGetUserAccessValues();
  		$t_list = new ca_lists();
  		$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type'));
  		$vs_set_list = "";
@@ -767,7 +770,7 @@
 
 				$vn_c = 0;
 				foreach($va_sets as $vn_set_id => $va_set){
-					$vs_set_list .= "<li>".caNavLink($po_request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</li>\n";
+					$vs_set_list .= "<li>".caNavLink($g_request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</li>\n";
 					$vn_c++;
 
 					if ($vn_c >= $vn_limit) { break; }
@@ -818,17 +821,21 @@
 		return array("singular" => $vs_lightbox_displayname, "plural" => $vs_lightbox_displayname_plural, "section_heading" => $vs_lightbox_section_heading);
 	}
 	# ---------------------------------------
-	function caDisplayLightbox($po_request){
-		if($po_request->isLoggedIn() && !$po_request->config->get("disable_lightbox")){
+	function caDisplayLightbox(){
+		global $g_request;
+		
+		if($g_request->isLoggedIn() && !$g_request->config->get("disable_lightbox")){
 			return true;
 		}else{
 			return false;
 		}
 	}
 	# ---------------------------------------
-	function caGetAddToSetInfo($po_request){
+	function caGetAddToSetInfo(){
+		global $g_request;
+		
 		$va_link_info = array();
-		if(!$po_request->isLoggedIn() && !$po_request->config->get("disable_lightbox")){
+		if(!$g_request->isLoggedIn() && !$g_request->config->get("disable_lightbox")){
 			$o_lightbox_config = caGetLightboxConfig();
 			$va_link_info["controller"] = "Lightbox";
 			$va_link_info["icon"] = $o_lightbox_config->get("addToLightboxIcon");
@@ -843,7 +850,7 @@
 			$va_link_info["link_text"] = _t("Login to add to %1", $va_link_info["name_singular"]);
 			return $va_link_info;
 		}
-		if(caDisplayLightbox($po_request)){
+		if(caDisplayLightbox($g_request)){
 			$o_lightbox_config = caGetLightboxConfig();
 			$va_link_info["controller"] = "Lightbox";
 			$va_link_info["icon"] = $o_lightbox_config->get("addToLightboxIcon");
@@ -865,6 +872,8 @@
 	 *
 	 */
 	function caSetAdvancedSearchFormInView($po_view, $ps_function, $ps_view, $pa_options=null) {
+		global $g_request;
+		
 		require_once(__CA_MODELS_DIR__."/ca_metadata_elements.php");
 		
 		if (!($va_search_info = caGetInfoForAdvancedSearchType($ps_function))) { return null; }
@@ -873,7 +882,6 @@
  		
  		$va_globals = $pt_subject->getAppConfig()->getAssoc('global_template_values');
  		
-		$po_request = caGetOption('request', $pa_options, null);
 		$ps_controller = caGetOption('controller', $pa_options, null);
 		$ps_form_name = caGetOption('formName', $pa_options, 'caAdvancedSearch');
 		
@@ -891,7 +899,7 @@
 			$va_parse = caParseTagOptions($vs_tag);
 			$vs_tag_proc = $va_parse['tag'];
 			$va_opts = $va_parse['options'];
-			$va_opts['checkAccess'] = $po_request ? caGetUserAccessValues($po_request) : null;
+			$va_opts['checkAccess'] = $g_request ? caGetUserAccessValues() : null;
 			
 			if (($vs_default_value = caGetOption('default', $va_opts, null)) || ($vs_default_value = caGetOption($vs_tag_proc, $va_default_form_values, null))) { 
 				$va_default_form_values[$vs_tag_proc] = $vs_default_value;
@@ -951,7 +959,7 @@
 						
 						if ($vs_rel_types = join(";", caGetOption('restrictToRelationshipTypes', $va_opts, array()))) { $vs_rel_types = "/{$vs_rel_types}"; }
 			
-						if ($vs_tag_val = $pt_subject->htmlFormElementForSearch($po_request, $vs_tag_proc, $va_opts)) {
+						if ($vs_tag_val = $pt_subject->htmlFormElementForSearch($g_request, $vs_tag_proc, $va_opts)) {
 							switch(strtolower($vs_tag_proc)) {
 								case '_fulltext':		// Set default label for _fulltext if needed
 									if(!isset($va_opts['label'])) { $va_opts['label'] = _t('Keywords'); }
@@ -1009,7 +1017,7 @@
 			</script>\n";
 		}
 		
-		$po_view->setVar("form", caFormTag($po_request, "{$ps_function}", $ps_form_name, $ps_controller, 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true, 'disableUnsavedChangesWarning' => true, 'submitOnReturn' => true)));
+		$po_view->setVar("form", caFormTag("{$ps_function}", $ps_form_name, $ps_controller, 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true, 'disableUnsavedChangesWarning' => true, 'submitOnReturn' => true)));
  		$po_view->setVar("/form", $vs_script.caHTMLHiddenInput("_advancedFormName", array("value" => $ps_function)).caHTMLHiddenInput("_formElements", array("value" => join('|', $va_form_elements))).caHTMLHiddenInput("_advanced", array("value" => 1))."</form>");
  			
 		return $va_form_elements;
@@ -1018,11 +1026,10 @@
 	/**
 	 *
 	 */
-	function caGetAdvancedSearchFormAutocompleteJS($po_request, $ps_field, $pt_instance, $pa_options=null) {
+	function caGetAdvancedSearchFormAutocompleteJS($ps_field, $pt_instance, $pa_options=null) {
 		$vs_field_proc = preg_replace("![\.]+!", "_", $ps_field);
 		if ($vs_rel_types = join("_", caGetOption(['restrictToRelationshipTypes', 'relationshipType'], $pa_options, []))) { $vs_rel_types_proc = "_{$vs_rel_types}"; $vs_rel_types = "/{$vs_rel_types}";  }
 
-		//$vs_buf = $pt_instance->htmlFormElementForSearch($po_request, $ps_field, array_merge($pa_options, ['class'=> 'lookupBg', 'name' => "{$ps_field}", 'id' => "{$vs_field_proc}{$vs_rel_types_proc}", 'autocomplete' => 1, 'nojs' => 1]));
 		
 		if (!is_array($pa_options)) { $pa_options = array(); }
         if (!isset($pa_options['width'])) { $pa_options['width'] = 30; }
@@ -1036,7 +1043,7 @@
 		
 		$vs_buf .= "<input type=\"hidden\" name=\"{$ps_field}{$array_suffix}\" id=\"{$vs_field_proc}{$index}\" value=\"".(isset($pa_options['id_value']) ? (int)$pa_options['id_value'] : '')."\" class=\"lookupBg\"/>";
 									
-		if (!is_array($va_json_lookup_info = caJSONLookupServiceUrl($po_request, $pt_instance->tableName()))) { return null; }
+		if (!is_array($va_json_lookup_info = caJSONLookupServiceUrl($pt_instance->tableName()))) { return null; }
 		$vs_buf .= "<script type=\"text/javascript\">
     jQuery(document).ready(function() {
         jQuery('#{$vs_field_proc}_autocomplete{$index}').autocomplete({ minLength: 3, delay: 800, html: true,
@@ -1079,7 +1086,9 @@
 	 *
 	 */
 	function caCheckLightboxView($pa_options = null){
-		if (!($ps_view = caGetOption('view', $pa_options, null)) && ($o_request = caGetOption('request', $pa_options, null))) { $ps_view = $o_request->getParameter('view', pString); }
+		global $g_request;
+		
+		if (!($ps_view = caGetOption('view', $pa_options, null)) && $g_request) { $ps_view = $g_request->getParameter('view', pString); }
 		if(!in_array($ps_view, array('thumbnail', 'map', 'timeline', 'timelineData', 'pdf', 'list', 'xlsx', 'pptx'))) {
 			$ps_view = caGetOption('default', $pa_options, 'thumbnail');
 		}
@@ -1089,7 +1098,6 @@
 	/**
 	 * Generate link to change current locale.
 	 *
-	 * @param RequestHTTP $po_request The current request.
 	 * @param string $ps_locale ISO locale code (Ex. en_US) to change to.
 	 * @param string $ps_classname CSS class name(s) to include in <a> tag.
 	 * @param array $pa_attributes Optional attributes to include in <a> tag. [Default is null]
@@ -1098,10 +1106,12 @@
 	 *
 	 * @seealso caNavLink()
 	 */
-	function caChangeLocaleLink($po_request, $ps_locale, $ps_content, $ps_classname, $pa_attributes=null, $pa_options=null) {
-		$va_params = $po_request->getParameters(['GET', 'REQUEST', 'PATH']);
+	function caChangeLocaleLink($ps_locale, $ps_content, $ps_classname, $pa_attributes=null, $pa_options=null) {
+		global $g_request;
+		
+		$va_params = $g_request->getParameters(['GET', 'REQUEST', 'PATH']);
 		$va_params['lang'] = $ps_locale;
-		return caNavLink($po_request, $ps_content, $ps_classname, '*', '*', '*', $va_params, $pa_attributes, $pa_options);
+		return caNavLink($ps_content, $ps_classname, '*', '*', '*', $va_params, $pa_attributes, $pa_options);
 	}
 	# ---------------------------------------
 	/** 
@@ -1120,11 +1130,13 @@
 	 *
 	 * 
 	 */
-	function caGetComparisonList($po_request, $ps_table, $pa_options=null) {
+	function caGetComparisonList($ps_table, $pa_options=null) {
+		global $g_request;
+		
 		if (!is_array($va_comparison_list = Session::getVar("{$ps_table}_comparison_list"))) { $va_comparison_list = []; }
 		
 		// Get title template from config
-		$va_compare_config = $po_request->config->get('compare_images');
+		$va_compare_config = $g_request->config->get('compare_images');
 		if (!is_array($va_compare_config = $va_compare_config[$ps_table])) { $va_compare_config = []; }
 		$va_display_list = caProcessTemplateForIDs(caGetOption('title_template', $va_compare_config, "^{$ps_table}.preferred_labels"), $ps_table, $va_comparison_list, ['returnAsArray' => true]);
 		
@@ -1141,8 +1153,10 @@
 	 * recursive loop to display all collection children and objects
 	 * 
 	 */	
-	function caGetCollectionLevelSummary($po_request, $va_collection_ids, $vn_level) {
-		$va_access_values = caGetUserAccessValues($po_request);
+	function caGetCollectionLevelSummary($va_collection_ids, $vn_level) {
+		global $g_request;
+		
+		$va_access_values = caGetUserAccessValues();
 		# --- get collections configuration
 		$o_collections_config = caGetCollectionsConfig();
 		if($o_collections_config->get("export_max_levels") && ($vn_level > $o_collections_config->get("export_max_levels"))){
@@ -1226,7 +1240,7 @@
 				}
 				$vs_output .= "</div>";
 				if(sizeof($va_child_ids)) {
-					$vs_output .=  caGetCollectionLevelSummary($po_request, $va_child_ids, $vn_level + 1);
+					$vs_output .=  caGetCollectionLevelSummary($va_child_ids, $vn_level + 1);
 				}
 			}
 		}
@@ -1239,21 +1253,22 @@
 	 * Return menu bar list suitable for inclusion in a Bootstrap 4.1 layout.
 	 * Will set "active" style on a menu item if the current request routes to that item.
 	 * 
-	 * @param RequestHTTP $request
 	 * @param array $items A dictionary of menu items. Keys are menu titles, values are dictionarys with route elements: module, controller and action
 	 * @param array $options No options are currently supported
 	 *
 	 * @return array
 	 */	
-	function caGetNavItemsForBootstrap($request, $items, $options=null) {
-		$current_module_path = $request->getModulePath();
-		$current_controller = $request->getController();
-		$current_action = $request->getAction();
+	function caGetNavItemsForBootstrap($items, $options=null) {
+		global $g_request;
+
+		$current_module_path = $g_request->getModulePath();
+		$current_controller = $g_request->getController();
+		$current_action = $g_request->getAction();
 		$buf = [];
 		foreach($items as $name => $info) {
 			$action_bits = explode('/', $info['action']);
 			$active = (($action_bits[0] === $current_action) && ($info['controller'] === $current_controller) && ($info['module'] == $current_module_path)) ? "active" : "";
-			$buf[] = "<li class=\"nav-item {$active}\">".caNavLink($request, $name, "nav-link", $info['module'], $info['controller'], $info['action'])."</li>";
+			$buf[] = "<li class=\"nav-item {$active}\">".caNavLink($name, "nav-link", $info['module'], $info['controller'], $info['action'])."</li>";
 		}
 		return $buf;
 	}
@@ -1261,33 +1276,34 @@
 	/**
 	 * Return "user" menu for nav bar, suitable for display in a Bootstrap 4.1 layout.
 	 *
-	 * @param RequestHTTP $request
 	 * @param string $title
 	 * @param array $options No options are currently supported
 	 *
 	 * @return array
 	 */	
-	function caGetNavUserItemsForBootstrap($request, $title, $options=null) {
+	function caGetNavUserItemsForBootstrap($title, $options=null) {
+		global $g_request;
+		
 		$lightbox_display_name = caGetLightboxDisplayName();
 		$lightbox_section_heading = caUcFirstUTF8Safe($lightbox_display_name["section_heading"]);
 	
 		# Collect the user links: they are output twice, once for toggle menu and once for nav
 		$user_links = [];
-		if($request->isLoggedIn()){
-			$user_links[] = '<a role="presentation" class="dropdown-item">'.trim($request->user->get("fname")." ".$request->user->get("lname")).', '.$request->user->get("email").'</a>';
+		if($g_request->isLoggedIn()){
+			$user_links[] = '<a role="presentation" class="dropdown-item">'.trim($g_request->user->get("fname")." ".$g_request->user->get("lname")).', '.$g_request->user->get("email").'</a>';
 			$user_links[] = '<a class="divider nav-divider"></a>';
-			if(caDisplayLightbox($request)){
-				$user_links[] = caNavLink($request, $lightbox_section_heading, '', '', 'Lightbox', 'Index', array());
+			if(caDisplayLightbox($g_request)){
+				$user_links[] = caNavLink($g_request, $lightbox_section_heading, '', '', 'Lightbox', 'Index', array());
 			}
-			$user_links[] = caNavLink($request, _t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array());
+			$user_links[] = caNavLink($g_request, _t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array());
 		
-			if ($request->config->get('use_submission_interface')) {
-				$user_links[] = caNavLink($request, _t('Submit content'), 'dropdown-item', '', 'Contribute', 'List', array());
+			if ($g_request->config->get('use_submission_interface')) {
+				$user_links[] = caNavLink($g_request, _t('Submit content'), 'dropdown-item', '', 'Contribute', 'List', array());
 			}
-			$user_links[] = caNavLink($request, _t('Logout'), '', '', 'LoginReg', 'Logout', array());
+			$user_links[] = caNavLink($g_request, _t('Logout'), '', '', 'LoginReg', 'Logout', array());
 		} else {	
-			if (!$request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $request->config->get('pawtucket_requires_login')) { $user_links[] = "<a href='#' class=\"dropdown-item\" onclick='caMediaPanel.showPanel(\"".caNavUrl($request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a>"; }
-			if (!$request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$request->config->get('dontAllowRegistration')) { $user_links[] = "<a href='#' class=\"dropdown-item\" onclick='caMediaPanel.showPanel(\"".caNavUrl($request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a>"; }
+			if (!$g_request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $g_request->config->get('pawtucket_requires_login')) { $user_links[] = "<a href='#' class=\"dropdown-item\" onclick='caMediaPanel.showPanel(\"".caNavUrl('', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a>"; }
+			if (!$g_request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$g_request->config->get('dontAllowRegistration')) { $user_links[] = "<a href='#' class=\"dropdown-item\" onclick='caMediaPanel.showPanel(\"".caNavUrl('', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a>"; }
 		}
 		if (sizeof($user_links)) { 
 			array_unshift($user_links, "<li class=\"nav-item dropdown\"><a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"userDropdown\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">{$title}</a><div class=\"dropdown-menu\" aria-labelledby=\"userDropdown\">");

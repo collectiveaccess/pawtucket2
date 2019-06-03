@@ -205,7 +205,7 @@
 				);
 
 			if ($pa_options['request']) {
-				$vs_url = caNavUrl($pa_options['request'], 'lookup', 'Taxonomy', 'Get', array('max' => 100));
+				$vs_url = caNavUrl('lookup', 'Taxonomy', 'Get', array('max' => 100));
 			} else {
 				// hardcoded default for testing.
 				$vs_url = '/index.php/lookup/Taxonomy/Get';

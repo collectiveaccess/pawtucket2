@@ -326,8 +326,8 @@ class InformationServiceAttributeValue extends AttributeValue implements IAttrib
                 );
 
             if ($pa_options['request']) {
-                $vs_url = caNavUrl($pa_options['request'], 'lookup', 'InformationService', 'Get', array('max' => 100, 'element_id' => $pa_element_info['element_id']));
-                $vs_detail_url = caNavUrl($pa_options['request'], 'lookup', 'InformationService', 'GetDetail', array('element_id' => $pa_element_info['element_id']));
+                $vs_url = caNavUrl('lookup', 'InformationService', 'Get', array('max' => 100, 'element_id' => $pa_element_info['element_id']));
+                $vs_detail_url = caNavUrl('lookup', 'InformationService', 'GetDetail', array('element_id' => $pa_element_info['element_id']));
             } else {
                 // hardcoded default for testing.
                 $vs_url = '/index.php/lookup/InformationService/Get';

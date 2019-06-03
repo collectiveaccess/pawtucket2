@@ -432,7 +432,7 @@
  					if (isset($pa_options['lookupUrl']) && $pa_options['lookupUrl']) {
  						$vs_lookup_url = $pa_options['lookupUrl'];
  					} else {
- 						$vs_lookup_url	= caNavUrl($pa_options['request'], 'lookup', 'AttributeValue', 'Get', array('max' => 500, 'bundle' => $vs_bundle_name));
+ 						$vs_lookup_url	= caNavUrl('lookup', 'AttributeValue', 'Get', array('max' => 500, 'bundle' => $vs_bundle_name));
  					}
  				}
  			}
@@ -449,7 +449,7 @@
  			}
 
 			if (isset($va_settings['mustBeUnique']) && $va_settings['mustBeUnique']) {
-				$vs_unique_lookup_url = caNavUrl($pa_options['request'], 'lookup', 'AttributeValue', 'ValueExists', array('bundle' => $vs_bundle_name));
+				$vs_unique_lookup_url = caNavUrl('lookup', 'AttributeValue', 'ValueExists', array('bundle' => $vs_bundle_name));
 				$vs_element .= "<script type='text/javascript'>
 					var warnSpan = jQuery('#{fieldNamePrefix}{$pa_element_info['element_id']}_{n}_uniquenessWarning');
  					jQuery('#{fieldNamePrefix}".$pa_element_info['element_id']."_{n}').keyup(function() {
