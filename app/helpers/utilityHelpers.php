@@ -1860,7 +1860,8 @@ function caFileIsIncludable($ps_file) {
 	 * @return string escaped parameter value, surrounded with single quotes and ready for use
 	 */
 	function caEscapeShellArg($ps_text) {
-		return escapeshellarg($ps_text);
+		// Don't escape on Windows as many of our exec()'s rely upon sending "%" characters...
+		return caIsWindows() ? $ps_text : escapeshellarg($ps_text);
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
@@ -4102,5 +4103,20 @@ function caFileIsIncludable($ps_file) {
 	        }
 	    }
 	    return join($delimiter, $acc);
+	}
+	# ----------------------------------------
+	/**
+	 * Generate random-ish text for password
+	 *
+	 * @param int $length Length of generated password
+	 * @param array $options Options include:
+	 *		uppercase = force password to use all uppercase characters. [Default is false]
+	 *
+	 * @return string
+	 */
+	function caGenerateRandomPassword($length=6, $options=null) {
+		$pw = substr(md5(uniqid(microtime())), rand(0, (31 - $length)), $length);
+		if (caGetOption('uppercase', $options, false)) { $pw = strtoupper($pw); }
+		return $pw;
 	}
 	# ----------------------------------------

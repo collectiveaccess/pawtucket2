@@ -176,9 +176,9 @@ section button, div.button a, div.button a:hover {
 	position: fixed;
 	width: 100%;
 	height: 100%;
-	top: 0;
+	top: 40px;
 	left: 0;
-	background: #fff;
+	background: #000;
 }
 
 /* Overlay closing cross */

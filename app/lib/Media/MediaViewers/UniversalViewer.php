@@ -72,6 +72,7 @@
 		 *
 		 */
 		public static function getViewerData($po_request, $ps_identifier, $pa_data=null, $pa_options=null) {
+		    $access_values = caGetUserAccessValues($po_request);
 			if ($o_view = BaseMediaViewer::getView($po_request)) {
 				if ($t_instance = caGetOption('t_instance', $pa_data, null)) {
 				
@@ -100,8 +101,9 @@
 						$va_labels = $t_rep->getPreferredDisplayLabelsForIDs(caExtractArrayValuesFromArrayOfArrays($va_reps, 'representation_id'));
 		
 						foreach($va_reps as $va_rep) {
+						    if (is_array($access_values) && sizeof($access_values) && !in_array($va_rep['access'], $access_values)) { continue; }
 							$pa_data['resources'][] = [
-								'title' => str_replace("["._t('BLANK')."]", "", $va_labels[$va_rep['representation_id']]),
+								'title' => str_replace("[".caGetBlankLabelText()."]", "", $va_labels[$va_rep['representation_id']]),
 								'representation_id' => $va_rep['representation_id'],
 								'preview_url' => $va_rep['urls']['small'],
 								'url' => $va_rep['urls'][$vs_display_version],

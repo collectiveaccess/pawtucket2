@@ -11,19 +11,19 @@
 	if($qr_collections && $qr_collections->numHits()) {
 		while($qr_collections->nextHit()) {
 			if ( $vn_i == 0) { print "<div class='row'>"; } 
-			print "<div class='col-sm-4'><div class='collectionTile'><div class='title'>".caDetailLink($this->request, $qr_collections->get("ca_collections.preferred_labels"), "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";	
+			print "<div class='col-xs-12 col-sm-3 text-center'><div class='collectionTile'><div class='title'>".caDetailLink($this->request, $qr_collections->get("ca_collections.preferred_labels"), "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";	
 			if($vs_img = $qr_collections->get("ca_object_representations.media.iconlarge", array("primaryOnly" => 1))){
 				print caDetailLink($this->request, $vs_img, "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"));
 			}
 			
 			print "</div></div>";
 			$vn_i++;
-			if ($vn_i == 3) {
+			if ($vn_i == 4) {
 				print "</div><!-- end row -->\n";
 				$vn_i = 0;
 			}
 		}
-		if (($vn_i < 3) && ($vn_i != 0) ) {
+		if (($vn_i < 4) && ($vn_i != 0) ) {
 			print "</div><!-- end row -->\n";
 		}
 	} else {

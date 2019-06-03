@@ -33,6 +33,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -55,9 +56,10 @@
 				
 <?php
 				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
+				#if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						
 					print '<div id="detailTools">';
+					print "<div class='detailTool'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array('object_id' => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]." Add to Palette</a></div>";
 					if ($vn_comments_enabled) {
 ?>				
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
@@ -71,7 +73,7 @@
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
 					print '</div><!-- end detailTools -->';
-				}				
+				#}				
 				$vs_variety = $t_object->get("ca_objects.variety");
 ?>
 
@@ -115,6 +117,7 @@
 						{{{<ifdef code="ca_objects.distribution_state"><div class="unit"><b>Distribution State: </b><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.distribution_state</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.wetland_indicator_status"><div class="unit"><b>Wetland Indicator Status: </b><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.wetland_indicator_status</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.native_habitat_type"><div class="unit"><b>Native Habitat Type: </b><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.native_habitat_type</unit></div></ifdef>}}}
+						{{{<ifdef code="ca_objects.nativar"><div class="unit"><b>Nativar (Native cultivar): </b><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.nativar</unit></div></ifdef>}}}
 						{{{<ifdef code="ca_objects.found"><div class="unit"><b>Plant Community: </b><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.found</unit></div></ifdef>}}}
 						
 					</div>
@@ -176,7 +179,7 @@
 ?>
 
 				<div class="row">
-					<div class="col-sm-12"><hr/><br/><div class="unit"><H2 class="text-center">Bloomtime Color Chart</H2>
+					<div class="col-sm-12"><hr/><br/><div class="unit"><H2 class="text-center">Color Chart</H2>
 						<div class="row"><div class="col-sm-12">
 							<div class="container">
 								
@@ -187,6 +190,8 @@
 								<div class="col-sm-1 btccCol" style="background-color:<?php print "#".$t_object->get("ca_objects.".$vs_bloomtime_color_field.".".$va_bloomtime_color_subfields["color"]); ?>;">
 				<?php 
 									$vs_part = $t_object->get("ca_objects.".$vs_bloomtime_color_field.".".$va_bloomtime_color_subfields["part"], array("convertCodesToDisplayText" => true));
+									$va_part = explode(";", $vs_part);
+									$vs_part = $va_part[0];
 									switch($vs_part){
 										case "Bare/Nothing/Gone":
 											# --- nothing

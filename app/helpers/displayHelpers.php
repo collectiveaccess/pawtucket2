@@ -253,7 +253,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		}
 		
 		$vs_remapping_controls = caDeleteRemapper($po_request, $t_instance);
-		$vs_output = caFormTag($po_request, 'Delete', 'caDeleteForm', null, 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true,'disableUnsavedChangesWarning' => true));
+		$vs_output = caFormTag($po_request, 'Delete', 'caDeleteForm', null, 'post', 'multipart/form-data', '_top', array('noCSRFToken' => false,'disableUnsavedChangesWarning' => true));
 		$vs_output .= "<div class='delete-control-box'>".caFormControlBox(
 			"<div class='delete_warning_box'>"._t('Really delete "%1"?', $ps_item_name)."</div>".
 			($vs_remapping_controls ? "<div class='delete_remapping_controls'>{$vs_remapping_controls}</div>" : ''),
@@ -947,7 +947,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 								$vs_label = $vs_idno;
 								$vb_show_idno = false;
 							} else {
-								$vs_label =  '['._t('BLANK').']'; 
+								$vs_label =  '['.caGetBlankLabelText().']'; 
 							}
 							break;
 					}
@@ -1885,7 +1885,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		
 		if (!($vs_label = $t_set->getLabelForDisplay())) {
 			if (!($vs_label = $t_set->get('set_code'))) {
-				$vs_label = '['._t('BLANK').']'; 
+				$vs_label = '['.caGetBlankLabelText().']'; 
 			}
 		}
 		
@@ -2932,7 +2932,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	/**
 	 *
 	 */
-	function caObjectsDisplayDownloadLink($po_request, $pn_object_id = null) {
+	function caObjectsDisplayDownloadLink($po_request, $pn_object_id = null, $pt_representation = null) {
 		$o_config = caGetDetailConfig();
 		$vn_can_download = false;
 		if($vs_allow = $o_config->get(['allowObjectRepresentationDownload', 'allow_ca_objects_representation_download'])){
@@ -2968,6 +2968,13 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 			$t_list_item = new ca_list_items($t_object->get("type_id"));
 			$va_object_type_code = $t_list_item->get("idno");
 			if(!in_array($va_object_type_code, $va_types)){
+				$vn_can_download = false;
+			}
+		}
+		$va_download_access_settings = $po_request->config->get("download_access_settings");
+		if((!$po_request->config->get("dont_enforce_access_settings")) && $pt_representation && is_array($va_download_access_settings) && sizeof($va_download_access_settings)){
+			$vn_rep_access = $pt_representation->get("access");
+			if($vn_rep_access && !in_array($vn_rep_access, $va_download_access_settings)){
 				$vn_can_download = false;
 			}
 		}
@@ -3735,7 +3742,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		if(($ps_table == "ca_objects") && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 			$vs_tool_bar .= " <a href='#' class='setsButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array('context' => $ps_context, (is_object($pt_subject) && $pt_subject->primaryKey()) ? $pt_subject->primaryKey() : "object_id" => $pn_subject_id))."\"); return false;' title='".$va_add_to_set_link_info['link_text']."'>".$va_add_to_set_link_info['icon']."</a>\n";
 		}
-		if(caObjectsDisplayDownloadLink($po_request, $pn_subject_id)){
+		if(caObjectsDisplayDownloadLink($po_request, $pn_subject_id, $pt_representation)){
 			# -- get version to download configured in media_display.conf
 			$va_download_display_info = caGetMediaDisplayInfo('download', $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
 			$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);
@@ -4522,4 +4529,26 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
  		}
  		return $va_bundle_settings;
  	}
+	# ------------------------------------------------------------------
+	/**
+	 * Return currently set blank preferred label placeholder text. This text
+	 * is used to set labels that are saved with no value set.
+	 *
+	 * The returned value will be the placeholder as configured via the app.conf
+	 * "blank_label_text" option. If the option is not set the default value of 
+	 * "[BLANK]" will be returned.
+	 *
+	 * @return string
+	 */
+	$g_blank_label_text = null;
+	function caGetBlankLabelText() {
+		global $g_blank_label_text;
+		if ($g_blank_label_text) { return $g_blank_label_text; }
+		$config = Configuration::load();
+		if ($label_text = $config->get('blank_label_text')) {
+		    if(is_array($label_text)) { $label_text = join(' ', $label_text); }
+			return $g_blank_label_text = _t($label_text);
+		}
+		return $g_blank_label_text = _t('BLANK');
+	}
 	# ------------------------------------------------------------------

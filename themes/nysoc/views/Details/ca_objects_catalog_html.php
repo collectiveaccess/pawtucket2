@@ -4,6 +4,7 @@
 	
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$comment_count = is_array($va_comments) ? sizeof($va_comments) : 0;
 	
 	$va_type = caNavLink($this->request, 'Digital Collections', '', '', 'Browse', 'objects');
 	$va_docs = caNavLink($this->request, 'Catalogs', '', '', 'Browse', 'docs/facet/document_type/id/650');
@@ -19,7 +20,7 @@
 			foreach ($va_children_ids as $va_id => $va_children_id) {
 				$t_child = new ca_objects($va_children_id);
 				$va_child_rel_ids = $t_child->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true));
-				if (sizeof($va_child_rel_ids) > 0) {
+				if (is_array($va_child_rel_ids) && (sizeof($va_child_rel_ids) > 0)) {
 					foreach ($va_child_rel_ids as $vn_id => $va_children_rel_id) {
 						$va_obj_ids[] = $va_children_rel_id;
 					}
@@ -152,13 +153,15 @@
 		# Occupation Pie Chart data
 		$vn_all_professions = 0;
 		foreach ($va_occupations as $va_occupation_name => $va_occupation_count) {
-			$vn_all_professions = $vn_all_professions+sizeof($va_occupation_count);
+			$c = is_array($va_occupation_count) ? sizeof($va_occupation_count) : 0;
+			$vn_all_professions = $vn_all_professions+$c;
 		}
 		$va_js_stuff = array();
 		$va_labels = array();
 		$va_class_count = 1;
 		foreach ($va_occupations as $va_occupation_name => $va_occupation_count) {
-			$vn_fraction = round((sizeof($va_occupation_count) / $vn_all_professions)*100);
+			$c = is_array($va_occupation_count) ? sizeof($va_occupation_count) : 0;
+			$vn_fraction = round(($c / $vn_all_professions)*100);
 			$va_labels[$va_class_count] = "'$va_occupation_name'";
 			$va_js_stuff[$va_class_count] = "{data: ".$vn_fraction.", className: 'color".$va_class_count."'}";
 			$va_class_count++;
@@ -273,8 +276,10 @@
 					}
 				}
 			}				
-			if ($vs_digilink = $t_object->get('ca_objects.Digital_link')) {
-				$vs_learn_even.=  "<div class='unit'><a href='".$vs_digilink."' target='_blank'>Digital Copy</a></div>";
+			if ($vs_digilinks = $t_object->get('ca_objects.Digital_link', array('returnAsArray' => true))) {
+				foreach ($vs_digilinks as $va_key => $vs_digilink) { 
+					$vs_learn_even.=  "<div class='unit'><a href='".$vs_digilink."' target='_blank'>Digital Copy</a></div>";
+				}
 			}				
 			if ($vs_learn_even != "") {
 				print "<h6 style='margin-top:30px;'>Learn Even More</h6>";	
@@ -357,7 +362,9 @@
 							$va_volumes = array();
 							foreach ($vs_children as $va_key => $vs_child) {
 								$t_child = new ca_objects($vs_child);
-								$va_volumes[] = $t_child->get('ca_objects.preferred_labels')." (".sizeof($t_child->get('ca_entities', array('returnAsArray' => true)))." checkouts) ";
+								$q = $t_child->get('ca_entities', array('returnAsArray' => true));
+								$qc = is_array($q) ? sizeof($q) : 0;
+								$va_volumes[] = $t_child->get('ca_objects.preferred_labels')." (".$qc." checkouts) ";
 							}
 							sort($va_volumes);
 							print join('<br/>', $va_volumes);
@@ -393,7 +400,7 @@
 							<div class="detailTool"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><span class="glyphicon glyphicon-share-alt"></span> Share</a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end detailTool -->
 							<!-- AddThis Button END -->
 							<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='mailto:ledger@nysoclib.org?subject=CR%20User%20Contribution:%20<?php print $t_object->get('ca_objects.idno'); ?>&body='>Contribute</a></div><!-- end detailTool -->
-							<!-- <div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
+							<!-- <div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print ($comment_count > 0 ? $comment_count : ""); ?></a></div> -->
 						</div><!-- end detailTools -->																			
 					</div><!-- end col -->
 					<div class='col-sm-6 col-md-6 col-lg-6'>					
@@ -490,7 +497,7 @@
 										$vs_i_have_docs = true;
 									}
 								}
-								if (sizeof($va_ledger_links) > 0) {
+								if (is_array($va_ledger_links) && sizeof($va_ledger_links) > 0) {
 									foreach ($va_ledger_links as $vn_ledger_id => $vs_ledger_link) {
 										$t_ledger = new ca_objects($vn_ledger_id);
 										$vs_ledger_type = $t_ledger->get('ca_objects.document_type', array('convertCodesToDisplayText' => true));
