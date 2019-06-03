@@ -1,7 +1,7 @@
 
 <div class="row">
 	<div class="col-sm-12 col-md-8">
-		<h1>Objects Advanced Search</h1>
+		<h1>Zoeken</h1>
 
 <p>{{{advanced_search_intro}}}</p>
 
