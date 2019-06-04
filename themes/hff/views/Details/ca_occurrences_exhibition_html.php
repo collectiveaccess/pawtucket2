@@ -28,7 +28,7 @@
 					{{{<ifdef code="ca_occurrences.solo_group"><div class="unit"><H6>Exhibition Type</H6>^ca_occurrences.solo_group</div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.exhibition_dates_display"><div class="unit"><H6>Dates</H6><unit relativeTo="ca_occurrences" delimiter="<br/>">^ca_occurrences.exhibition_dates_display</unit></div></ifdef>}}}
 					{{{<ifnotdef code="ca_occurrences.exhibition_dates_display"><ifdef code="ca_occurrences.common_date"><div class="unit"><H6>Dates</H6>^ca_occurrences.common_date</div></ifdef></ifnotdef>}}}
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="originator" min="1"><div class="unit"><H6>Organizing Venue</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="originator" delimiter="<br/>">^ca_entities.preferred_labels.displayname<ifdef code="ca_occurrences.venue_location">, ^ca_occurrences.venue_location</ifdef></unit></div></ifcount>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="originator" min="1"><div class="unit"><H6>Organizing Venue</H6><unit relativeTo="ca_entities_x_occurrences" restrictToRelationshipTypes="originator" delimiter="<br/>">^ca_entities.preferred_labels.displayname<unit relativeTo="ca_occurrences"><ifdef code="ca_occurrences.venue_location">, ^ca_occurrences.venue_location</ifdef></unit></unit></div></ifcount>}}}
 <?php
 					print $t_item->getWithTemplate('<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
 						<div class="unit"><H6>Traveled To</H6>
