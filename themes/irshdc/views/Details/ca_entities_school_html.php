@@ -96,7 +96,7 @@
 					}
 				}
 ?>
-				<div class='col-sm-12 col-md-<?php print ($vs_featured_image) ? "5" : "7"; ?>'>
+				<div class='col-sm-12 col-md-<?php print ($vs_featured_image || $vs_representationViewer) ? "5" : "7"; ?>'>
 					<div class="stoneBg">	
 						{{{<ifdef code="ca_entities.preferred_labels.displayname">
 							<H4><span data-toggle="popover" title="Source" data-content="^ca_entities.school_name_source">^ca_entities.preferred_labels.displayname</span>
@@ -153,7 +153,7 @@
 						</div>
 					</div>
 				</div>
-				<div class='col-sm-12 col-md-<?php print ($vs_featured_image) ? "2" : "5"; ?>'>
+				<div class='col-sm-12 col-md-<?php print ($vs_featured_image || $vs_representationViewer) ? "2" : "5"; ?>'>
 	<?php
 					# Comment and Share Tools
 						
@@ -272,7 +272,7 @@
 		var options = {
 			placement: function () {
 <?php
-			if($vs_featured_image){
+			if($vs_featured_image || $vs_representationViewer){
 ?>
 				if ($(window).width() > 992) {
 					return "left";
