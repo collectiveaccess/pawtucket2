@@ -33,6 +33,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 '><!--- only shown at small screen size -->
@@ -42,7 +43,7 @@
 	</div><!-- end detailTop -->
 </div>
 <div class="row">	
-	<div class='col-xs-12'>
+	<div class='col-xs-12 col-lg-10 col-lg-offset-1'>
 		<div class="container"><div class="row">
 			<div class='col-sm-12'>
 <?php
@@ -68,10 +69,26 @@
 				
 				
 				<div id="detailAnnotations"></div>
-				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding  col-xs-4 col-sm-3 col-md-2", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
-				
 <?php
+				$vb_show_thumbs_paging = true;
+				$vn_image_count = $t_object->numberOfRepresentationsOfClass('image');
+				$vn_rep_count = $t_object->getRepresentationCount();
+				#$va_object_ids = $t_object->getRepresentationIDs(array("checkAccess" => $va_access_values));
+				if(($vn_rep_count > 6) && ($vn_image_count == $vn_rep_count)){
+					$vb_show_thumbs_paging = false;
+				}
+				if($vb_show_thumbs_paging){
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding  col-xs-4 col-sm-3 col-md-2", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0));
+				}else{
+?>
+					<script type='text/javascript'>
+						jQuery(document).ready(function() {
+							$("#detailRepNav").hide();
+						});
+						
+					</script>
+<?php					
+				}
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
 						
@@ -113,32 +130,20 @@
 			if($vs_idno = $t_object->get('idno')){
 				print "<div class='unit'><b>"._t("Identifier")."</b><br/>".$vs_idno."</div><!-- end unit -->";
 			}
-			if ($vs_altID_array = $t_object->get('ca_objects.alternateID', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
-				print "<div class='unit'><b>Alternate Identifier</b><br/>";
-				$i = 1;
-				foreach ($vs_altID_array as $va_key => $va_altID_t) {
-					foreach ($va_altID_t as $va_key => $vs_altID) {
-						print "<b class='gray'>".$vs_altID['alternateIDdescription'].":</b> ".$vs_altID['alternateID'];
-						if($i < sizeof($va_altID_t)){
-							print "<br/>";
-						}
-						$i++;
-					}
-				}
-
-				print "</div>";
-			}
-			if ($va_date_array = $t_object->get('ca_objects.date', array('returnWithStructure' => true))) {
-				$t_list = new ca_lists();
-				$vn_original_date_id = $t_list->getItemIDFromList("date_types", "dateOriginal");
-				foreach ($va_date_array as $va_key => $va_date_array_t) {
-					foreach ($va_date_array_t as $va_key => $va_date_array) {
-						if ($va_date_array['dc_dates_types'] == $vn_original_date_id) {
-							print "<div class='unit'><b>Date</b><br/>".$va_date_array['dates_value']."</div>";
-						}
-					}
-				}
+			#if ($va_date_array = $t_object->get('ca_objects.date', array('returnWithStructure' => true))) {
+			#	$t_list = new ca_lists();
+			#	$vn_original_date_id = $t_list->getItemIDFromList("date_types", "dateOriginal");
+			#	foreach ($va_date_array as $va_key => $va_date_array_t) {
+			#		foreach ($va_date_array_t as $va_key => $va_date_array) {
+			#			if ($va_date_array['dc_dates_types'] == $vn_original_date_id) {
+			#				print "<div class='unit'><b>Date</b><br/>".$va_date_array['dates_value']."</div>";
+			#			}
+			#		}
+			#	}
 				
+			#}
+			if($vs_tmp = $t_object->get('date_original')){
+				print "<div class='unit'><b>"._t("Date")."</b><br/>".$vs_tmp."</div><!-- end unit -->";
 			}
 			if ($va_contributor = $t_object->get('ca_objects.contributor', array('convertCodesToDisplayText' => true, 'returnWithStructure' => 'true'))) {
 				$va_contributor = array_pop($va_contributor);
@@ -159,12 +164,12 @@
 					print "</div>";
 				}
 			}
-			#if ($vs_language = $t_object->get('ca_objects.language', array('convertCodesToDisplayText' => true))) {
-			#	print "<div class='unit'><b>Language</b><br/>".$vs_language."</div>";
-			#}			
-			if ($vs_repository = $t_object->get('ca_objects.repository', array('convertCodesToDisplayText' => true))) {
-				print "<div class='unit'><b>Repository</b><br/>".$vs_repository."</div>";
-			}
+			if ($vs_language = $t_object->get('ca_objects.language', array('convertCodesToDisplayText' => true))) {
+				print "<div class='unit'><b>Language</b><br/>".$vs_language."</div>";
+			}			
+			#if ($vs_repository = $t_object->get('ca_objects.repository', array('convertCodesToDisplayText' => true))) {
+			#	print "<div class='unit'><b>Repository</b><br/>".$vs_repository."</div>";
+			#}
 			
 			if ($vs_source = $t_object->get('ca_objects.source')) {
 				print "<div class='unit'><b>Source</b><br/>".$vs_source."</div>";
@@ -201,37 +206,33 @@
 				print "</div><!-- end unit -->";
 			}			
 			# --- entities
-			if ($vs_entities = $t_object->getWithTemplate("<ifcount code='ca_entities' min='1'><unit relativeTo='ca_entities'><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></ifcount>")){	
+			if ($vs_entities = $t_object->getWithTemplate("<ifcount code='ca_entities' min='1'><unit relativeTo='ca_entities'><l>^ca_entities.preferred_labels.displayname</l></unit></ifcount>")){	
 				print "<div class='unit'><h3>"._t("Related entities")."</h3>";
 				print $vs_entities;
 				print "</div><!-- end unit -->";
 			}
 			
-			# --- occurrences
-			#$va_occ_array = array();
-			#if ($va_occurrences = $t_object->get("ca_occurrences.occurrence_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values))){
-			#	foreach ($va_occurrences as $va_key => $va_occurrence_id) {
-			#		$t_occ = new ca_occurrences($va_occurrence_id);
-			#		$vn_type_id = $t_occ->get('ca_occurrences.type_id');
-			#		$va_occ_array[$vn_type_id][$va_occurrence_id] = caDetailLink($this->request, $t_occ->get('ca_occurrences.preferred_labels'), '', 'ca_occurrences', $va_occurrence_id);
-			#	}
-			#	foreach ($va_occ_array as $va_type => $va_occ) {
-			#		print "<div class='unit'><h3>Related ".caGetListItemByIDForDisplay($va_type, true)."</h3>";
-			#		foreach ($va_occ as $va_key => $va_occ_link) {
-			#			print "<div>".$va_occ_link."</div>";
-			#		}
-			#		print "</div>";
-			#	}
-			#}
-			
 			# --- places
-			$vs_places = $t_object->getWithTemplate("<unit relativeTo='ca_places' delimiter='<br/>'><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>");
-			
-			if($vs_places){
-				print "<div class='unit'><h3>"._t("Geographic Locations")."</h3>";
-				print $vs_places;
-				print "</div><!-- end unit -->";
+			$va_places = $t_object->get("ca_places", array("checkAccess" => $va_access_values, "returnWithStructure" => true));
+			if(is_array($va_places)){
+				$va_place_links = array();
+				foreach($va_places as $va_place){
+					$va_place_links[] = caNavLink($this->request, $va_place['name'], '', '', 'Browse', 'objects', array('facet' => 'place_facet', 'id' => $va_place['place_id']));
+				}
+				
+				if(sizeof($va_place_links)){
+					print "<div class='unit'><h3>"._t("Geographic Locations")."</h3>";
+					print join($va_place_links, "<br/>");
+					print "</div><!-- end unit -->";
+				}
 			}
+			
+			#$vs_places = $t_object->getWithTemplate("<unit relativeTo='ca_places' delimiter='<br/>'><l>^ca_places.preferred_labels.name</l></unit>");
+			#if($vs_places){
+			#	print "<div class='unit'><h3>"._t("Geographic Locations")."</h3>";
+			#	print $vs_places;
+			#	print "</div><!-- end unit -->";
+			#}
 			
 			# --- lots
 			$vs_object_lots = $t_object->getWithTemplate("<ifcount code='ca_lots' min='1'><unit relativeTo='ca_lots'>^ca_lots.preferred_labels.name (^ca_lots.idno_stub)</unit></ifcount>");
@@ -242,7 +243,7 @@
 			}
 			
 			# --- vocabulary terms
-			$vs_terms = $t_object->getWithTemplate("<ifcount code='ca_list_items' min='1'><unit relativeTo='ca_list_items'>^ca_list_items.preferred_labels.name_plural (^relationship_typename)</unit></ifcount>");
+			$vs_terms = $t_object->getWithTemplate("<ifcount code='ca_list_items' min='1'><unit relativeTo='ca_list_items'>^ca_list_items.preferred_labels.name_plural</unit></ifcount>");
 			if($vs_terms){
 				print "<div class='unit'><h3>"._t("Subjects")."</h3>";
 				print $vs_terms;

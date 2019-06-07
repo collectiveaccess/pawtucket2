@@ -35,7 +35,7 @@
 ?>
 
 	<div class="row">
-		<div class="col-sm-12" style='padding-left:0px; padding-right:0px;'>
+		<div class="col-sm-12 frontSlideshow">
 <?php
 		print $this->render("Front/featured_set_slideshow_html.php");
 ?>		

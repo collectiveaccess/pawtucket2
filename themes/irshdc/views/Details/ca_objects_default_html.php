@@ -112,7 +112,7 @@
 						</H4>
 						{{{<ifdef code="ca_objects.language"><div class='unit'><h6>Language</h6><unit delimiter=", ">^ca_objects.language</unit></div></ifdef>}}}
 						
-						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
+						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 						{{{<ifdef code="ca_objects.description"><div class='unit'>^ca_objects.description</div></ifdef>}}}
 					</div><!-- end stoneBg -->
 <?php
@@ -175,9 +175,7 @@
 ?>
 
 <?php
-					if($vs_map = $this->getVar("map")){
-						print "<div class='unit'>".$vs_map."</div>";
-					}
+					include("map_html.php");
 ?>
 				</div>
 			</div>

@@ -64,8 +64,8 @@
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
-		$vn_col_span = 4;
-		$vn_col_span_sm = 4;
+		$vn_col_span = 6;
+		$vn_col_span_sm = 6;
 		$vn_col_span_xs = 12;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
@@ -86,11 +86,8 @@
 				}
 			
 				$qr_res->seek($vn_start);
-				$va_tmp_options = array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values);
-				if($vs_table == 'ca_entities'){
-					$va_tmp_options["useRelatedObjectRepresentations"] = true;
-				}
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, $va_tmp_options);
+				# --- get the related object media for collections and over-ride later if there is collection media
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('useRelatedObjectRepresentations' => true, 'version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			} else {
 				$va_images = null;
 			}
@@ -115,16 +112,23 @@
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
 				
-					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					$vs_idno_detail_link 	= $qr_res->get("{$vs_table}.idno");
+					$vs_label_detail_link 	= $qr_res->get("{$vs_table}.preferred_labels");
+				
+					#$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
+					#$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
-				
+					$vs_image = $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values));
+					if(!$vs_image && ($vs_table === 'ca_collections')){
+						$vs_image = $va_images[$vn_id];
+					}
+					
 					if(!$vs_image){
 						if ($vs_table == 'ca_objects') {
-							$t_list_item->load($qr_res->get("resource_type"));
+							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
 							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 								$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
@@ -132,23 +136,9 @@
 								$vs_image = $vs_default_placeholder_tag;
 							}
 						}else{
-							if (in_array($vs_table, array('ca_occurrences', 'ca_entities'))) {
-								# is there a rep on the occurrence to fall back to if not a related featured object?
-								$vs_image = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values));
-							}
-							if(!$vs_image){
-								$t_list_item->load($qr_res->get("type_id"));
-								$vs_typecode = $t_list_item->get("idno");
-								if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-									$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-								}else{
-									$vs_image = $vs_default_placeholder_tag;
-								}
-							}
+							$vs_image = $vs_default_placeholder_tag;
 						}
 					}
-					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
-				
 					$vs_add_to_set_link = "";
 					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
@@ -160,9 +150,9 @@
 		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
+				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_image}</div>
 					<div class='bResultListItemText'>
-						{$vs_label_detail_link}
+						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
 				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
@@ -171,7 +161,9 @@
 				</div><!-- bResultListItemExpandedInfo -->
 			</div><!-- end bResultListItem -->
 		</div><!-- end col -->";
-					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');
+					$vs_result_output = caDetailLink($this->request, $vs_result_output, 'bListResultLink', $vs_table, $vn_id);
+					
+					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				
 				$vn_c++;

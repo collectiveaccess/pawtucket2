@@ -72,10 +72,41 @@
 ?>
 			<div class="row">
 <?php
-				$vs_featured_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'><ifdef code='ca_object_representations.media.large'><l>^ca_object_representations.media.large</l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></ifdef></unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+				#$vs_featured_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'><ifdef code='ca_object_representations.media.large'><l>^ca_object_representations.media.large</l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></ifdef></unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+				$vs_featured_image = "";
+				$vn_featured_object_id = $t_item->get("ca_objects.object_id", array("restrictToRelationshipTypes" => array("featured"), "checkAccess" => $va_access_values, "limit" => 1));
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
 					
-				if($vs_featured_image){
+				if($vn_featured_object_id){
+					# --- display the rep viewer for the featured object so if it's video, it will play
+ 					$t_featured_object = new ca_objects($vn_featured_object_id);
+ 					$t_representation = $t_featured_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
+ 					$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
+ 					$vs_version = $va_media_display_info["display_version"];
+ 					if($vs_version == "large"){
+ 						$vs_featured_image = $t_representation->get("ca_object_representations.media.".$vs_version);
+ 						$vs_featured_image = caDetailLink($this->request, $vs_featured_image, '', "ca_objects", $vn_featured_object_id);
+ 						if($vs_caption = $t_representation->get("ca_object_representations.preferred_labels.name")){
+							$vs_featured_image .= "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_featured_object_id)."</div>";
+						};
+ 					}else{
+ 						$vs_featured_image =  caRepresentationViewer(
+													$this->request, 
+													$t_featured_object, 
+													$t_featured_object,
+													array(
+														'display' => 'detail',
+														'showAnnotations' => true, 
+														'primaryOnly' => true, 
+														'dontShowPlaceholder' => true, 
+														'captionTemplate' => "<unit relativeTo='ca_objects'><l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></l></unit>"
+													)
+												);
+ 					}
+ 					
+				
+				}
+				if($vs_featured_image){								
 ?>
 				<div class='col-sm-12 col-md-5 fullWidth'>
 					<?php print $vs_featured_image; ?>
@@ -168,9 +199,7 @@
 ?>
 
 <?php
-					if($vs_map = $this->getVar("map")){
-						print "<div class='unit'>".$vs_map."</div>";
-					}
+					include("map_html.php");
 ?>
 				</div>
 			</div>

@@ -69,7 +69,15 @@
 		# --- passed from topic collection page to make it only show 8 results on page
 		$vn_hits_per_block = $vn_limit_num_results;
 		
-		print "<div class='container'><div class='row'><div class='col-sm-6'><H2>".$qr_res->numHits()." Items</H2></div><div class='col-sm-6 text-right'>".caNavLink($this->request, 'View All', 'btn btn-default', '*', '*', '*', array('key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort))."</div></div></div>";
+		print "<div class='container'><div class='row'><div class='col-sm-6'><H2>".$qr_res->numHits()." Objects ".caNavLink($this->request, 'View All', 'btn btn-default topicViewAll', '*', '*', '*', array('key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort))."</H2></div><div class='col-sm-6 topicSearchWithinCol'>";
+?>
+			<form role="search" id="topicSearch" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+				<input type="text" class="form-control topicSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine"><button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search"></span></button>
+				<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+				<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
+			</form>
+<?php
+		print "</div></div></div>";
 	}
 	
 		$vn_col_span = 3;

@@ -5,7 +5,7 @@
 ?>
 	<div class="row tanBg exploreRow exploreSchoolsRow">
 		<div class="col-sm-12">
-			<H1>Explore Schools</H1>
+			<H1>Explore BC Schools</H1>
 			<p>
 				Records and stories of Indian Residential Schools in British Columbia reveal a great deal about our history of BC and our histories of Canada. These collections provide a window into a way of knowing how the schools shaped the lives of Survivors, their families and communities. Here you can see the operation of these schools as a nation-wide system as well as very individual and distinct functions of community life in BC. Each school has a distinct set of histories and meaning to these communities. Survivor stories, documents, images, records and objects on the schools provide us a way of knowing stories so integral to the shape of our histories as Canadians and as Indigenous peoples.
 			</p>
@@ -39,6 +39,9 @@
 								if(is_array($va_place_hier) && in_array(37, $va_place_hier)){
 									print "<div class='col-xs-6 col-sm-3 col-md-2'>";
 									$vs_image = $qr_schools->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+									if(!$vs_image){
+										$vs_image = $qr_schools->get('ca_object_representations.media.iconlarge', array("checkAccess" => $va_access_values));
+									}
 									if(!$vs_image){
 										$vs_image = caGetThemeGraphic($this->request, 'spacer.png');
 									}

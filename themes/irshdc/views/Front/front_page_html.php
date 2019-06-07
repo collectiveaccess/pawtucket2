@@ -108,7 +108,8 @@
 						width:      '100%',
 						height:     '100%',
 						source:     '<?php print caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'timeline', 'set_id' => $vn_timeline_set_id)); ?>',
-						embed_id:   'timeline-embed'
+						embed_id:   'timeline-embed',
+						initial_zoom: '5'
 					});
 				});
 			</script>
