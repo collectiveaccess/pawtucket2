@@ -82,6 +82,7 @@
 		# ------------------------
 		case "folder":
 		case "item":
+		case "av_item":
 			
 			
 			print $t_item->getWithTemplate('<ifdef code="ca_objects.idno"><div class="unit text-center"><H6 class="text-center">Object ID: ^ca_objects.idno</H6></div></ifdef>');
@@ -341,8 +342,20 @@
 			
 					print $t_item->getWithTemplate('<ifdef code="ca_objects.manufacture_date"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></div></ifdef>');
 					
-					print $t_item->getWithTemplate('<ifcount code="ca_entities" restrictToRelationshipTypes="photographer" min="1"><div class="unit"><H6>Photographer</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount><ifcount code="ca_entities" restrictToRelationshipTypes="designer" min="1"><div class="unit"><H6>Designer</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="designer" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>', array("checkAccess" => $va_access_values));
-
+					$va_entities = $t_item->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					if(is_array($va_entities) && sizeof($va_entities)){
+						$va_entities_by_type = array();
+						$va_entities_sort = array();
+						foreach($va_entities as $va_entity){
+							$va_entities_sort[$va_entity["relationship_typename"]][] = $va_entity["displayname"];	
+						}
+						foreach($va_entities_sort as $vs_entity_type => $va_entities_by_type){
+							print "<div class='unit'><H6>".ucfirst($vs_entity_type)."</H6>";
+							print join(", ", $va_entities_by_type);
+							print "</div>";
+						}				
+					}
+					
 					$vb_notes_output = false;
 					$va_notes_filtered = array();
 					$va_notes = $t_item->get("ca_objects.general_notes", array("returnWithStructure" => true, "convertCodesToDisplayText" => true));
@@ -383,6 +396,15 @@
 						print $vs_parent_folder;
 						print "</div>";
 					}
+					if($vs_tmp = $t_item->get("ca_objects.box_folder")){
+						print '<div class="unit"><H6>Container</H6>'.$vs_tmp.'</div>';
+					}
+					$va_bulk_items = $t_item->get("ca_objects.related.object_id", array("checkAccess" => $va_access_values, "restrictToTypes" => array("bulk"), "returnAsArray" => true));
+					$vs_bulk_items = "";
+					if(is_array($va_bulk_items) && sizeof($va_bulk_items)){
+						$vs_bulk_items = sizeof($va_bulk_items)." file".((sizeof($va_bulk_items) > 1) ? "s" : "");
+						print '<div class="unit"><H6>Contents</H6>'.$vs_bulk_items.'</div>';
+					}
 					
 					# --- collection parent display
 					#  child archival items if this is a folder
@@ -415,6 +437,157 @@
 						}
 						print "</div>";
 					}
+
+				#  related objects
+				
+				if ($va_related_object_ids = $t_item->get('ca_objects.related.object_id', array('excludeTypes' => array('bulk'), 'returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+					$qr_related = caMakeSearchResult('ca_objects', $va_related_object_ids);
+					print "<br/><hr></hr><div class='relatedObjects'><h6>Related Item".((sizeof($va_related_object_ids) > 1) ? "s" : "")."</h6><br/>";
+					$va_related_info_fields = array("shade", "fragrance", "codes.product_code");
+					if($qr_related->numHits()){
+						$vn_c = 0;
+						while ($qr_related->nextHit()) {
+							$vn_c++;
+							if($vn_c == 1){
+								print "<div class='unit'>";
+							}
+							print "<div class='relatedIcon'>";
+							if($vs_icon = $qr_related->get('ca_object_representations.media.iconlarge', array('checkAccess' => $va_access_values))){
+								print $qr_related->get('ca_object_representations.media.iconlarge');
+								print "<br/><br/>";
+							}
+							$vs_caption = "";
+							$vs_caption .= $qr_related->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
+							if($vs_tmp = $qr_related->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true))){
+								$vs_caption .= " - ".$vs_tmp;
+							}
+							$vs_caption .= "<br/>";
+							if(($vs_brand = $qr_related->get("ca_objects.brand", array("convertCodesToDisplayText" => true))) || ($vs_subbrand = ucwords(strtolower($qr_related->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true)))))){
+								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
+							}
+							$vs_caption .= $qr_related->get('ca_objects.preferred_labels');
+							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+								$vs_caption .= " (".$vs_tmp.")";
+							}
+							print $vs_caption;
+							
+							
+							print "</div>";
+							
+							
+							if($vn_c == 4){
+								print "</div><!-- end unit -->";
+								$vn_c = 0;
+							}
+						}
+						if($vn_c > 0){
+							print "</div><!-- end unit -->";
+						}
+					}
+					print "</div>";
+				}
+				
+				# --- bulk media
+				if(is_array($va_bulk_items) && sizeof($va_bulk_items)){
+					$qr_res = caMakeSearchResult('ca_objects', $va_bulk_items);	
+					if($qr_res->numHits()){
+						while ($qr_res->nextHit()) {
+							print "<div style='clear:both; padding-top:15px; margin-bottom:15px; padding-bottom:15px; border-top:1px solid #DEDEDE;'>";
+							$vs_image = "";
+							if($vs_image = $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values))){
+								print "<div style='float:left; width:300px; text-align:center;'>".$vs_image."</div>";	
+							}
+							
+							print "<div style='float:left;'>";
+							print "<h6>".$qr_res->get('ca_objects.preferred_labels')."</h6>";
+							if(($vs_brand = $qr_res->get("ca_objects.brand", array("convertCodesToDisplayText" => true))) || ($vs_subbrand = $qr_res->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true)))){
+								print "<div class='unitSmall'><b>Brand: </b>".$vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."</div>";
+							}
+							if(($vs_tmp = $qr_res->get("ca_objects.season_list", array("convertCodesToDisplayText" => true, "delimiter" => ", ")))){
+								print "<div class='unitSmall'><b>Season: </b>".$vs_tmp."</div>";
+							}
+							if($vs_tmp = $qr_res->get('ca_objects.transferred_date', array("delimeter" => ", "))){
+								print "<div class='unitSmall'><b>Publication Date: </b>".$vs_tmp."</div>";
+							}
+							$va_entities = $qr_res->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));
+							if(is_array($va_entities) && sizeof($va_entities)){
+								$va_entities_by_type = array();
+								$va_entities_sort = array();
+								foreach($va_entities as $va_entity){
+									$va_entities_sort[$va_entity["relationship_typename"]][] = $va_entity["displayname"];	
+								}
+								foreach($va_entities_sort as $vs_entity_type => $va_entities_by_type){
+									print "<div class='unitSmall'><b>".ucfirst($vs_entity_type).": </b>";
+									print join(", ", $va_entities_by_type);
+									print "</div>";
+								}
+							}
+							if($vs_tmp = $qr_res->get('ca_objects.page_number', array("delimeter" => ", "))){
+								print "<div class='unitSmall'><b>Page Number: </b>".$vs_tmp."</div>";
+							}
+							if($vs_tmp = $qr_res->get('ca_objects.page_count', array("delimeter" => ", "))){
+								print "<div class='unitSmall'><b>Page Count: </b>".$vs_tmp."</div>";
+							}
+							if($vs_tmp = $qr_res->getMediaInfo("ca_object_representations.media", 'ORIGINAL_FILENAME')){
+								print "<div class='unitSmall'><b>File Name: </b>".$vs_tmp."</div>";
+							}
+							print "</div>";
+							print "<div style='clear:both;'></div></div>";
+						}
+					}
+				}
+
+			
+			
+			
+		break;
+		# ------------------------
+		case "av_item":
+			
+					print $t_item->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date"><div class="unit"><H6>Date</H6>^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</div></ifdef>');
+					print $t_item->getWithTemplate('<ifdef code="ca_objects.run_time"><div class="unit"><H6>Run Time</H6>^ca_objects.run_time</div></ifdef>');
+					
+					$va_entities = $t_item->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));
+					if(is_array($va_entities) && sizeof($va_entities)){
+						$va_entities_by_type = array();
+						$va_entities_sort = array();
+						foreach($va_entities as $va_entity){
+							$va_entities_sort[$va_entity["relationship_typename"]][] = $va_entity["displayname"];	
+						}
+						foreach($va_entities_sort as $vs_entity_type => $va_entities_by_type){
+							print "<div class='unit'><H6>".ucfirst($vs_entity_type)."</H6>";
+							print join(", ", $va_entities_by_type);
+							print "</div>";
+						}					
+					}
+					$vb_notes_output = false;
+					$va_notes_filtered = array();
+					$va_notes = $t_item->get("ca_objects.general_notes", array("returnWithStructure" => true, "convertCodesToDisplayText" => true));
+					if(is_array($va_notes) && sizeof($va_notes)){
+						$va_notes = array_pop($va_notes);
+						foreach($va_notes as $va_note){
+							$va_note["general_notes_text"] = trim($va_note["general_notes_text"]);
+							if($va_note["general_notes_text"] && strToLower($va_note["internal_external"]) == "unrestricted"){
+								$va_notes_filtered[] = ucfirst(strtolower($va_note["general_notes_text"]));
+							}
+						}
+						if(sizeof($va_notes_filtered)){
+							print '<div class="unit"><H6>Notes</H6>';
+							print join("<br/>", $va_notes_filtered);
+							print '</div>';
+							$vb_notes_output = true;
+						}
+					}
+					
+
+					#  parent - displayed as collection hierarchy and folder if available
+					$vs_collection_hier = $t_item->getWithTemplate('<ifcount min="1" code="ca_collections.related"><unit relativeTo="ca_collections.related"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></unit></ifcount>', array("checkAccess" => $va_access_values));	
+					if($vs_collection_hier){
+						print "<div class='unit'><h6>This ".$t_item->get('ca_objects.type_id', array("convertCodesToDisplayText" => true))." Is Part Of</h6>";
+						print $vs_collection_hier;
+						print "</div>";
+					}
+					
 
 				#  related objects
 				

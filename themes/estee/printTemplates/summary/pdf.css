@@ -46,6 +46,7 @@ body{
 .title { font-family: 'SangBleuSerif-Light'; font-size: 18px; width:100%; margin-top:10px; text-align: center; font-weight: normal;}
 .representationList { width: 100%; margin-top:20px; margin-bottom:20px; padding-top:20px; border-top:1px solid #dedede; text-align: center; }
 .unit {font-size:11px;margin-bottom:12px; text-align:left; clear:left;}
+.unitSmall {font-size:10px;margin-bottom:10px; text-align:left;}
 h6 {margin:0px 0px 5px 0px; padding:0px; font-weight:normal;}
 .tombstone { margin-top:20px;}
 .clear { clear: both; }

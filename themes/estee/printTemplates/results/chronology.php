@@ -51,12 +51,20 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 	
 	$vn_start 				= 0;
+	
+	$vs_brand = urldecode($this->request->getParameter('brand', pString));
 
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
 	print $this->render("footer.php");
 ?>
 		<div id='body'>
+			<div class="chronologyTitle">
+				<?php print $vs_brand; ?> Chronology
+			</div>
+			<div>
+				Exported on: <?php print date("d/m/Y"); ?>
+			</div><br/>
 <?php
 
 		$vo_result->seek(0);
