@@ -189,16 +189,16 @@
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
 					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("About"); ?></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Over ons"); ?></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "About"); ?></li>
-							<li><?php print caNavLink($this->request, _t("User Guide"), "", "", "About", "Guide"); ?></li>
+							<li><?php print caNavLink($this->request, "Over deze website", "", "", "About", "About"); ?></li>
+							<li><?php print caNavLink($this->request, "Handleiding", "", "", "About", "Guide"); ?></li>
 						</ul>
 					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
+					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Zoeken", "", "", "Search", "advanced/objects"); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "THEMA'S", "", "", "Gallery", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Collecties", "", "", "Collections", "index"); ?></li>					
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

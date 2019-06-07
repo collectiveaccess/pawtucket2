@@ -1,7 +1,7 @@
 
 <div class="row">
 	<div class="col-sm-12 col-md-8">
-		<h1>Objects Advanced Search</h1>
+		<h1>Zoeken</h1>
 
 <p>{{{advanced_search_intro}}}</p>
 
@@ -48,8 +48,8 @@
 	</div>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover">Periode</span>
-			{{{ca_objects.content_date%width=220px}}}
+			<span class='formLabel' data-toggle="popover" data-trigger="hover">Datum</span>
+			{{{ca_objects.production_dating.earliest_date%width=220px}}}
 		</div>
 	</div>
 	<br style="clear: both;"/>

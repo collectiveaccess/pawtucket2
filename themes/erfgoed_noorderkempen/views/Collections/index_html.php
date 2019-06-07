@@ -19,8 +19,11 @@
 	<div class="row">
 		<div class='col-md-12 col-lg-12 collectionsList'>
 			<h1><?php print $this->getVar("section_name"); ?></h1>
-			<p><?php print $o_collections_config->get("collections_intro_text"); ?></p>
-<?php	
+<?php
+	if($vs_intro = $this->getVar("collections_intro_text")){
+		print "<p>".$vs_intro."</p>";
+	}
+		
 	$vn_i = 0;
 	if($qr_collections && $qr_collections->numHits()) {
 		while($qr_collections->nextHit()) {

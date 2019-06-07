@@ -39,7 +39,7 @@
 					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
 <?php					
 					if ($vn_pdf_enabled) {
-						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
+						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, _t("Download as PDF"), "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
 					}
 ?>
 					{{{<ifdef code="ca_collections.external_link.url_entry"><unit relativeTo="ca_collections" delimiter="<br/>"><div class="unit"><a href="^ca_collections.external_link.url_entry"><ifdef code="ca_collections.external_link.url_source">^ca_collections.external_link.url_source</ifdef><ifnotdef code="ca_collections.external_link.url_source">^ca_collections.external_link.url_entry</ifnotdef></a> <i class="fa fa-external-link"></i></div></unit></ifdef>}}}
@@ -51,13 +51,9 @@
 					
 					
 					
-					{{{<ifcount code="ca_collections.related" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-					{{{<ifcount code="ca_collections.related" min="2"><H6>Related collections</H6></ifcount>}}}
+					{{{<ifcount code="ca_collections.related" min="1" max="1"><H6>Collectie</H6></ifcount>}}}
+					{{{<ifcount code="ca_collections.related" min="2"><H6>Collecties</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_collections_x_collections"><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.related.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
-					
-					{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_collections"><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit> (^relationship_typename)</unit>}}}
 					
 <?php
 				print '<div id="detailTools">';
@@ -68,7 +64,7 @@
 						
 					if ($vn_comments_enabled) {
 ?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span><?php print _t("Comments"); ?> (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
 						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
 <?php				
 					}

@@ -1,0 +1,169 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: CollectiveAccess Pawtucket2 Default Theme\n"
+"POT-Creation-Date: 2019-05-30 20:57-0400\n"
+"PO-Revision-Date: 2019-05-30 20:57-0400\n"
+"Last-Translator: Seth <Seth@collectiveacess.org>\n"
+"Language-Team: CollectiveAccess <info@collectiveaccess.org>\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.3\n"
+"X-Poedit-Basepath: ../..\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Poedit-KeywordsList: _t;_\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPath-1: .\n"
+
+#: controllers/ContactController.php:40
+msgid "Contact form is not configured properly"
+msgstr ""
+
+#: controllers/ContactController.php:43 views/Contact/form_html.php:7
+msgid "Contact"
+msgstr ""
+
+#: controllers/ContactController.php:66
+msgid "Please answer the security question"
+msgstr ""
+
+#: controllers/ContactController.php:76
+msgid "Please enter the required information in the highlighted fields"
+msgstr ""
+
+#: controllers/ContactController.php:81
+msgid "Please enter a valid e-mail address"
+msgstr ""
+
+#: controllers/ContactController.php:122
+msgid "Your email could not be sent"
+msgstr ""
+
+#: printTemplates/summary/footer.php:42 printTemplates/summary/footer.php:45
+msgid "Page"
+msgstr ""
+
+#: printTemplates/summary/footer.php:42
+msgid "of"
+msgstr ""
+
+#: printTemplates/summary/pdfStart.php:40
+msgid "Summary for %1 (%2)"
+msgstr ""
+
+#: views/Browse/browse_results_images_html.php:175
+#: views/Browse/browse_results_list_html.php:172
+msgid "Next %1"
+msgstr ""
+
+#: views/Collections/index_html.php:43
+msgid "No collections available"
+msgstr ""
+
+#: views/Contact/form_html.php:17
+msgid "Item Inquiry"
+msgstr ""
+
+#: views/Contact/form_html.php:52
+msgid "Title"
+msgstr ""
+
+#: views/Contact/form_html.php:55
+msgid "ID"
+msgstr ""
+
+#: views/Contact/form_html.php:58
+msgid "Regarding this URL"
+msgstr ""
+
+#: views/Contact/form_html.php:77
+msgid "Name"
+msgstr ""
+
+#: views/Contact/form_html.php:78
+msgid "Enter name"
+msgstr ""
+
+#: views/Contact/form_html.php:83
+msgid "Email address"
+msgstr ""
+
+#: views/Contact/form_html.php:84
+msgid "Enter email"
+msgstr ""
+
+#: views/Contact/form_html.php:89
+msgid "Security Question"
+msgstr ""
+
+#: views/Contact/form_html.php:106
+msgid "Message"
+msgstr ""
+
+#: views/Contact/form_html.php:112
+msgid "Send"
+msgstr ""
+
+#: views/Details/ca_collections_default_html.php:42
+#: views/Details/ca_objects_default_html.php:86
+msgid "Download as PDF"
+msgstr ""
+
+#: views/Details/ca_collections_default_html.php:60
+msgid "Inquire About This Collection"
+msgstr ""
+
+#: views/Details/ca_collections_default_html.php:67
+msgid "Comments"
+msgstr ""
+
+#: views/Details/ca_collections_default_html.php:92
+#: views/Details/ca_collections_default_html.php:106
+#: views/Details/ca_collections_default_html.php:114
+msgid "Loading..."
+msgstr ""
+
+#: views/Details/ca_objects_default_html.php:75
+msgid "Inquire About This Item"
+msgstr ""
+
+#: views/Details/ca_objects_default_html.php:78
+msgid "Comments and Tags"
+msgstr ""
+
+#: views/Gallery/set_item_info_html.php:23
+msgid "VIEW RECORD"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:44
+msgid "User Profile"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:45
+msgid "Logout"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:47
+msgid "Login"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:48
+msgid "Register"
+msgstr ""
+
+#: views/pageFormat/pageHeader.php:192
+msgid "Over ons"
+msgstr ""
+
+#: views/system/configuration_error_install_html.php:36
+msgid ""
+"<div class='error'>An error in your system configuration has been detected</"
+"div>\n"
+"\t    General installation instructions can be found\n"
+"\t    <a href='http://wiki.collectiveaccess.org/index.php?"
+"title=Installation_(Pawtucket)' target='_blank'>here</a>.\n"
+"\t    For more specific hints on the existing issues please have a look at "
+"the messages below."
+msgstr ""

@@ -128,7 +128,7 @@
 				$vs_location = caConvertLineBreaks($qr_fairs->get("ca_occurrences.art_fair_location"));
 			}
 			$vs_date = $qr_fairs->get("ca_occurrences.opening_closing");
-			$vs_image = $qr_fairs->get("ca_object_representations.media.large", array("checkAccess" => $va_access_values));
+			$vs_image = $qr_fairs->get("ca_object_representations.media.large", array("checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("logo")));
 			if($vs_image){
 				print "<div class='col-xs-12 col-sm-3 col-sm-offset-3'>".$vs_image."</div>";
 			}

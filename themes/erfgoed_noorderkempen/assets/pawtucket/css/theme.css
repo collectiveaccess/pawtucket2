@@ -122,3 +122,10 @@ table.attributeListItem{
 .gallery .unit {
     margin-bottom: 12px;
 }
+
+.bResultItemText a, .bResultListItemText a{
+	text-decoration:underline;
+}
+.bResultItemText small a, .bResultListItemText small a{
+	text-decoration:none;
+}

@@ -49,13 +49,13 @@
 			<div class="col-sm-12">
 				<p>{{{inquire_form}}}</p>
 				<HR/>
-				<p><b>Title: </b><?php print $vs_name; ?>
+				<p><b><?php print _t("Title"); ?>: </b><?php print $vs_name; ?>
 <?php 
 					if($vs_idno){
-						print "<br/><b>ID: </b>".$vs_idno;
+						print "<br/><b>"._t("ID").": </b>".$vs_idno;
 					}
 ?>
-				<br/><b>Regarding this URL: </b><a href="<?php print $vs_url; ?>" class="purpleLink"><?php print $vs_url; ?></a>
+				<br/><b><?php print _t("Regarding this URL"); ?>: </b><a href="<?php print $vs_url; ?>" class="purpleLink"><?php print $vs_url; ?></a>
 				</p>
 				<input type="hidden" name="itemId" value="<?php print $vs_idno; ?>">
 				<input type="hidden" name="itemTitle" value="<?php print $vs_name; ?>">
@@ -74,19 +74,19 @@
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
-							<label for="name">Name</label>
-							<input type="text" class="form-control input-sm" id="email" placeholder="Enter name" name="name" value="{{{name}}}">
+							<label for="name"><?php print _t("Name"); ?></label>
+							<input type="text" class="form-control input-sm" id="email" placeholder="<?php print _t("Enter name"); ?>" name="name" value="{{{name}}}">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
-							<label for="email">Email address</label>
-							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
+							<label for="email"><?php print _t("Email address"); ?></label>
+							<input type="text" class="form-control input-sm" id="email" placeholder="<?php print _t("Enter email"); ?>" name="email" value="{{{email}}}">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
-							<label for="security">Security Question</label>
+							<label for="security"><?php print _t("Security Question"); ?></label>
 							<div class='row'>
 								<div class='col-sm-6'>
 									<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
@@ -103,13 +103,13 @@
 		<div class="row">
 			<div class="col-md-9">
 				<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
-					<label for="message">Message</label>
+					<label for="message"><?php print _t("Message"); ?></label>
 					<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->
 		<div class="form-group">
-			<button type="submit" class="btn btn-default">Send</button>
+			<button type="submit" class="btn btn-default"><?php print _t("Send"); ?></button>
 		</div><!-- end form-group -->
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 	</form>
