@@ -1207,6 +1207,13 @@ h1.primaryLandingBannerTitle {
 	font-size:12px;
 	font-weight:normal;
 }
+#collectionLoad .glyphicon-eye-open{
+	display:none;
+}
+.showEye > .glyphicon-eye-open, .showEye > div > .glyphicon-eye-open{
+	display:inline !important;
+	margin-right:5px;
+}
 /* gallery */
 .gallery h6{
 	font-size: 14px;
