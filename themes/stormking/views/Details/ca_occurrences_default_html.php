@@ -155,7 +155,7 @@
 			<div class='col-sm-12 col-md-6 col-lg-6 exhibitionInfoCol'><div class="videoCol">
 <?php
 				$va_vimeos = $t_item->get('ca_occurrences.vimeo', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true));
-				if(is_array($va_vimeos)){
+				if(is_array($va_vimeos) && sizeof($va_vimeos)){
 					$va_vimeos = array_pop($va_vimeos);
 					foreach($va_vimeos as $va_vimeo){
 						if(($va_vimeo["vimeo_publish"] == "yes") && ($va_vimeo["vimeo_id_exhibition"])){
