@@ -2,6 +2,7 @@
 	<div class="col-sm-12 col-md-10 col-md-offset-1">
 
 <?php
+	$va_access_values = caGetUserAccessValues($this->request);
 	# --- inquire about item/ contact form / digitization request
 	# inquiry/contact/digitizationRequest
 	$ps_contactType = $this->request->getParameter("contactType", pString);
@@ -12,9 +13,19 @@
 	if($pn_object_id){
 		require_once(__CA_MODELS_DIR__."/ca_objects.php");
 		$t_item = new ca_objects($pn_object_id);
-		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "objects", $t_item->get("ca_objects.object_id"));
+		# --- is this bulk media?  We need to use the url of the container the bulk media is linked to
+		$t_list_item = new ca_list_items();
+		$t_list_item->load($t_item->get("type_id"));
+		$vs_typecode = $t_list_item->get("idno");
+		if($vs_typecode == "bulk"){
+			$vn_container_id = $t_item->get("ca_objects.related.object_id", array("checkAccess" => $va_access_values, "restrictToTypes" => array("folder"), "limit" => 1));
+			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $vn_container_id);
+		}else{
+			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $t_item->get("ca_objects.object_id"));
+		}
 		$vs_name = $t_item->get("ca_objects.preferred_labels.name");
 		$vs_idno = $t_item->get("ca_objects.idno");
+		
 	}
 	$pn_collection_id = $this->request->getParameter("collection_id", pInteger);
 	if($pn_collection_id){
@@ -61,6 +72,9 @@
 				break;
 				case "folderScanRequest":
 					print "<H1>Folder Scan Request</H1>";
+				break;
+				case "avScanRequest":
+					print "<H1>Audiovisual Digitization Request</H1>";
 				break;
 				default:
 					print "<H1>Contact the Archives</H1>";
@@ -201,6 +215,7 @@
 		break;
 		# -----------------------------
 		case "folderScanRequest":
+		case "avScanRequest":
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
 		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
@@ -242,7 +257,17 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
+<?php
+						if($ps_contactType == "folderScanRequest"){
+?>
 						<label for="message">I WOULD LIKE THE FULL CONTENTS OF THIS FOLDER TO BE SCANNED</label>
+<?php
+						}else{
+?>
+						<label for="message">I WOULD LIKE THIS AUDIOVISUAL ITEM TO BE DIGITIZED</label>
+<?php						
+						}
+?>
 						<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
 					</div>
 				</div><!-- end col -->

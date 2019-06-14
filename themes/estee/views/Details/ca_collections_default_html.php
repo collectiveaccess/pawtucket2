@@ -126,7 +126,7 @@
 							<div class="col-sm-12">
 								<div class='collectionsContentsContainer'>
 									<div class='label'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
-									<div id="collectionLoad"></div>
+									<div id="collectionLoad"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 								</div>
 			<script>
 				$(document).ready(function(){
@@ -148,7 +148,7 @@
 						</div><!-- end row -->
 						<script type="text/javascript">
 							jQuery(document).ready(function() {
-								jQuery("#browseCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'facet' => 'collection_facet', 'value' => $t_item->get("ca_collections.collection_id"))); ?>");
+								jQuery("#browseCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'facet' => 'collection_facet', 'id' => $t_item->get("ca_collections.collection_id"))); ?>");
 					
 					
 							});

@@ -590,7 +590,7 @@ ul.menuItems{
 	padding:0px 0px 5px 0px;
 	color:#999;
 }
-.results .btn-search-refine, #browseResultsDetailContainer .btn-search-refine{	
+.results .btn-search-refine, #browseResultsDetailContainer .btn-search-refine, #browseCollectionContainer .btn-search-refine{	
 	float: left;
 	font-size: 18px;
 	padding-top: 0px 0px 0px 0px;
@@ -604,7 +604,7 @@ ul.menuItems{
 	outline: 0;
 	border: 0px;
 }
-.results .btn-search-refine .glyphicon, #browseResultsDetailContainer .btn-search-refine .glyphicon{
+.results .btn-search-refine .glyphicon, #browseResultsDetailContainer .btn-search-refine .glyphicon, #browseCollectionContainer .btn-search-refine .glyphicon{
 	margin-top:5px;
 }
 .bSearchWithin, .bSearchWithin:focus {
@@ -715,20 +715,59 @@ ul.menuItems{
 	}
 }
 #bChronoDownloadDD{
-	padding:10px;
+	padding:10px 0px 10px 0px;
 }
-.bChronoDownloadCol{
+.bChronoDownloadCol, .bChronoSearchCriteria{
 	margin-top:10px;
 	margin-bottom:10px;
 }
 @media (min-width: 768px) {
 	.bChronoDownloadCol{
 		text-align:right;
+		margin-top:20px;
+		margin-bottom:0px;
+	}
+	.bChronoSearchCriteria{
+		margin-top:20px;
+		margin-bottom:0px;
+	}
+}
+.bChronoDownloadCol .dropdown-menu{
+	min-width: 40px;
+}
+
+.bChronoSearchWithin{
+	text-align:left;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+@media (min-width: 768px) {
+	.bChronoSearchWithin{
+		text-align:right;
 		margin-top:0px;
 		margin-bottom:0px;
 	}
 }
-
+.bChronoSearchWithin .bSearchWithin{
+    float: none;
+    width: 80%;
+    margin:0px;
+    display: inline;
+}
+#browseCollectionContainer .btn-search-refine{	
+	float: none;
+	font-size: 18px;
+	padding-top: 0px 0px 0px 0px;
+	width: 26px;
+	text-align: left;
+	background-color: transparent;
+	display: inline;
+	vertical-align: middle;
+	cursor: pointer;
+	background-image: none;
+	outline: 0;
+	border: 0px;
+}
 
 .bResultItemText, .bResultListItemText{
 	color:#000;
@@ -759,6 +798,20 @@ ul.menuItems{
 }
 .bResultItemImgPlaceholder{
 	margin-bottom:0px;
+}
+.bBulkMediaResult{
+}
+.bBulkMediaResult .bBulkMediaImage{
+	text-align:center;
+}
+.bBulkMediaResult .bBulkMediaImage img{
+	width:100%;
+	height:auto;
+	max-height: 400px;
+    object-fit: contain;
+}
+.bBulkMediaResult .detailTool {
+    font-family: HelveticaLTPro-Light;
 }
 /* front */
 #pageArea.front{
@@ -935,7 +988,7 @@ h1.primaryLandingBannerTitle {
 }
 .unit.collectionChronology{
 	font-size:14px;
-	padding-bottom:30px;
+	padding-bottom:15px;
 }
 .capitalize {
 	text-transform: capitalize;
@@ -1153,6 +1206,13 @@ h1.primaryLandingBannerTitle {
 	color:#000;
 	font-size:12px;
 	font-weight:normal;
+}
+#collectionLoad .glyphicon-eye-open{
+	display:none;
+}
+.showEye > .glyphicon-eye-open, .showEye > div > .glyphicon-eye-open{
+	display:inline !important;
+	margin-right:5px;
 }
 /* gallery */
 .gallery h6{

@@ -239,7 +239,8 @@ if (!$vb_ajax) {	// !ajax
 											'object_id' => $vn_object_id,
 											'type_id' => $vn_type_id = $qr_set_items->get('ca_objects.type_id'),
 											'type' => $vs_type_idno = caGetListItemIdno($vn_type_id),
-											'has_children' => $qr_set_items->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values))
+											'has_children' => $qr_set_items->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values)),
+											'container_id' => $qr_set_items->get("ca_objects.related.object_id", array("checkAccess" => $va_access_values, "restrictToTypes" => array("folder"), "limit" => 1))
 										);
 									}
 								}
@@ -261,6 +262,7 @@ if (!$vb_ajax) {	// !ajax
 								$this->setVar('object_id', $vn_object_id = $va_items[$vn_item_id]['object_id']);
 								$this->setVar('caption', $va_captions[$vn_i]);
 								$this->setVar('commentCount', (int)$va_comment_counts[$vn_item_id]);
+								$this->setVar('container_id', $va_items[$vn_item_id]['container_id']);
 			
 								$vn_representation_id = null;
 								if ($vs_tag = $va_representations[$vn_object_id]['tags'][$vs_media_version]) {

@@ -39,7 +39,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 			}
 			if(is_array($va_options["skip_collection_type_ids"]) && !in_array($qr_collections->get("ca_collections.type_id"), $va_options["skip_collection_type_ids"])){
 				
-				$vs_output .= "<div style='margin-left:".(20*($vn_level - 1))."px;'><div id='collectionLevel".$qr_collections->get("ca_collections.collection_id")."'></div>";
+				$vs_output .= "<div class='collectionLevelContainer'><div style='margin-left:".(20*($vn_level - 1))."px;'><div id='collectionLevel".$qr_collections->get("ca_collections.collection_id")."'></div><span class='glyphicon glyphicon-eye-open'></span>";
 				# --- should collection record link to detail?
 				#$vb_link = true;
 				# --- check if collection record type has been configured to not be a link to detail page
@@ -104,11 +104,22 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 							# --- does this item have media or it's children have media?
 							$vs_eye = "";
 							$vs_grandies = $qr_objects->getWithTemplate("<unit relativeTo='ca_objects.children'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values));
+							$vs_bulk_ids = $qr_objects->getWithTemplate("<unit relativeTo='ca_objects.related' restrictToTypes='bulk' delimiter=','>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values));
 							
-							if($qr_objects->get("ca_object_representations.representation_id") || $vs_grandies){
-								$vs_eye = "<span class='glyphicon glyphicon-eye-open'></span>&nbsp;&nbsp;";
+							$vb_show_eye = false;
+							if($qr_objects->get("ca_object_representations.representation_id") || $vs_grandies || $vs_bulk_ids){
+								$vb_show_eye = true;
+?>
+								<script>
+									$(document).ready(function(){
+										$("#<?php print "level".$qr_collections->get("ca_collections.collection_id"); ?>").parents(".collectionLevelContainer").addClass("showEye");
+										 
+									})
+								</script>
+<?php
+								#$vs_eye = "<span class='glyphicon glyphicon-eye-open'></span>&nbsp;&nbsp;";
 							}
-							$vs_output .= "<div class='row'><div class='col-xs-9'>".$vs_eye.caDetailLink($po_request, $qr_objects->get("ca_objects.preferred_labels"), '', 'ca_objects', $qr_objects->get("ca_objects.object_id"))."</div><div class='col-xs-3'>".((strpos(strtolower($qr_objects->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))), "container") !== false) ? $qr_objects->get("ca_objects.box_folder") : "Item")."</div></div>";
+							$vs_output .= "<div class='row'><div class='col-xs-9".(($vb_show_eye) ? " showEye" : "")."'><span class='glyphicon glyphicon-eye-open'></span>".caDetailLink($po_request, $qr_objects->get("ca_objects.preferred_labels"), '', 'ca_objects', $qr_objects->get("ca_objects.object_id"))."</div><div class='col-xs-3'>".$qr_objects->get("ca_objects.box_folder")."</div></div>";
 						}
 						$vs_output .= "</div>";
 					}
@@ -118,6 +129,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 					$vs_output .= "</div>";
 				}
 			}
+			$vs_output .= "</div><!-- end collectionLevelContainer -->";
 		}
 	}
 	
