@@ -129,3 +129,8 @@ table.attributeListItem{
 .bResultItemText small a, .bResultListItemText small a{
 	text-decoration:none;
 }
+
+/* forms */
+.form-control:focus {
+    border-color: #000000;
+}

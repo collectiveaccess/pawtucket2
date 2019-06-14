@@ -85,7 +85,7 @@
 						</div><!-- end form-group -->
 						<div class="form-group">
 							<div class="col-sm-offset-4 col-sm-7">
-								<button type="submit" class="btn btn-default">send</button>
+								<button type="submit" class="btn btn-default"><?php print _t("Send"); ?></button>
 							</div>
 						</div><!-- end form-group -->
 					</form>
