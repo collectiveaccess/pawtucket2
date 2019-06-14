@@ -189,7 +189,7 @@
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
 					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("Over ons"); ?></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Over ons</a>
 						<ul class="dropdown-menu">
 							<li><?php print caNavLink($this->request, "Over deze website", "", "", "About", "About"); ?></li>
 							<li><?php print caNavLink($this->request, "Handleiding", "", "", "About", "Guide"); ?></li>
