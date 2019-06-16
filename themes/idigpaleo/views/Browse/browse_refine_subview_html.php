@@ -41,11 +41,11 @@
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
 		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
-		print "<H3>"._t("Filter by")."</H3>";
+		print "<H1>"._t("Filter by")."</H1>";
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			$vb_open_in_panel = caGetOption('open_in_panel', $va_facet_info, false, ['castTo' => 'boolean']);
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-				print "<H5>".$va_facet_info['label_singular']." <i class='fa fa-info-circle facetPopoverTrigger' data-content='".$va_facet_info['description']."'></i></H5>"; 
+				print "<H2>".$va_facet_info['label_singular']." <i class='fa fa-info-circle facetPopoverTrigger' data-content='".$va_facet_info['description']."'></i></H2>"; 
 				# print "<p>Hello: ".$vs_facet_info['description']."</p>";
 ?>
 					<script type="text/javascript">
@@ -58,9 +58,9 @@
 			} else {				
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 				if($vb_open_in_panel){
-					print "<H5><a href='#' onclick='jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'>".$va_facet_info['label_singular']."</a> <i class='fa fa-info-circle facetPopoverTrigger' data-content='".$va_facet_info['description']."'></i></H5>"; 
+					print "<H2><a href='#' onclick='jQuery(\"#bMorePanel\").load(\"".caNavUrl($this->request, '*', '*', '*', array('getFacet' => 1, 'facet' => $vs_facet_name, 'view' => $vs_view, 'key' => $vs_key))."\", function(){jQuery(\"#bMorePanel\").show(); jQuery(\"#bMorePanel\").mouseleave(function(){jQuery(\"#bMorePanel\").hide();});}); return false;'>".$va_facet_info['label_singular']."</a> <i class='fa fa-info-circle facetPopoverTrigger' data-content='".$va_facet_info['description']."'></i></H2>"; 
 				}else{
-					print "<H5><a href='#' onclick='jQuery(\"#".$vs_facet_name."_RefineFacetGroup\").toggle(); return false;'>".$va_facet_info['label_singular']."</a> <i class='fa fa-info-circle facetPopoverTrigger' data-content='".$va_facet_info['description']."'></i></H5>"; 
+					print "<H2><a href='#' onclick='jQuery(\"#".$vs_facet_name."_RefineFacetGroup\").toggle(); return false;'>".$va_facet_info['label_singular']."</a> <i class='fa fa-info-circle facetPopoverTrigger' data-content='".$va_facet_info['description']."'></i></H2>"; 
 				}
 				# print "<p>".$va_facet_info['description']."</p>";
 				if(!$vb_open_in_panel){

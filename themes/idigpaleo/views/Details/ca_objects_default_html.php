@@ -48,6 +48,7 @@
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
 </script>
+<div role="main">
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
@@ -81,7 +82,7 @@
 						<div class="col-sm-4">
 							<div class="detailTool">
 								Share<br/>
-								{{{shareLink}}} <a href="https://twitter.com/intent/tweet?text=<?php print $og_title; ?>&url=<?php print urlencode($vs_share_link); ?>"><i class="fa fa-twitter fa-2x"></i></a> <a href="https://www.facebook.com/dialog/share?app_id=1818796581723078&quote=<?php print $vs_subject; ?>&href=<?php print urlencode($vs_share_link); ?>&href=<?php print $vs_share_link; ?>&display=iframe"><i class="fa fa-facebook fa-2x"></i></a> 
+								{{{shareLink}}} <a href="https://twitter.com/intent/tweet?text=<?php print $og_title; ?>&url=<?php print urlencode($vs_share_link); ?>"><i class="fa fa-twitter fa-2x" aria-label="twitter"></i></a> <a href="https://www.facebook.com/dialog/share?app_id=1818796581723078&quote=<?php print $vs_subject; ?>&href=<?php print urlencode($vs_share_link); ?>&href=<?php print $vs_share_link; ?>&display=iframe"><i class="fa fa-facebook fa-2x" aria-label="facebook"></i></a> 
 							</div><!-- end detailTool -->
 						<?php } ?>
 						</div>
@@ -188,7 +189,7 @@
 							}
 						}
 						if(sizeof($va_tmp) > 0){
-							print "<h5>Geologic Time Period</h5>";
+							print "<h4>Geologic Time Period</h4>";
 							#print join(", ", $va_tmp)."<br/><br/>";
 							$indent = 0;
 							foreach($va_tmp as $level){
@@ -270,3 +271,4 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
+</div>

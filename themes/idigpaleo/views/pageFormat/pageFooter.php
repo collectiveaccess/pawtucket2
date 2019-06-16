@@ -28,15 +28,15 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 	</div><!-- end pageArea -->
-	<div id="footer">
+	<div id="footer" role="complementary">
 		<ul class="list-inline pull-right social">
-			<li><a href="https://twitter.com/FossilInsectTCN" target="_blank"><i class="fa fa-twitter"></i></a></li>
-			<li><a href="https://www.facebook.com/FossilInsectCollaborativeDigitizationProject/" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
-			<li><a href="https://www.instagram.com/fossilinsectcollaborativetcn/" target="_blank"><i class="fa fa-instagram"></i></a></li>
+			<li><a href="https://twitter.com/FossilInsectTCN" target="_blank"><i class="fa fa-twitter" aria-label="twitter"></i></a></li>
+			<li><a href="https://www.facebook.com/FossilInsectCollaborativeDigitizationProject/" target="_blank"><i class="fa fa-facebook-square" aria-label="facebook"></i></a></li>
+			<li><a href="https://www.instagram.com/fossilinsectcollaborativetcn/" target="_blank"><i class="fa fa-instagram" aria-label="instagram"></i></a></li>
 			<!--<li><i class="fa fa-youtube-play"></i></li>-->
 		</ul>
 		<div class="footer-logo">
-			<?php print caGetThemeGraphic($this->request, 'nsf_logo.jpg'); ?>	
+			<?php print caGetThemeGraphic($this->request, 'nsf_logo.jpg', array("alt" => "National Science Foundation Logo")); ?>	
 		</div>
 		<!--<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2015</a></small></div>-->
 	</div><!-- end footer -->

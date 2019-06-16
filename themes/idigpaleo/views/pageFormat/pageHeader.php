@@ -31,7 +31,7 @@
 	$va_classroomDisplayName = caGetClassroomDisplayName();
 	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
 	# --- collect the user links - they are output twice - once for toggle menu and once for nav
-	$va_user_links = array();
+	$va_user_links = $va_responsive_login_form = array();
 	if($this->request->isLoggedIn()){
 		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$va_user_links[] = '<li class="divider nav-divider"></li>';
@@ -43,10 +43,11 @@
 		}
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
+	    $va_responsive_login_form = null;
 	} else {	
 		$va_user_links[] = "<li><form id='LoginFormMenu' action='".caNavUrl($this->request, "", "LoginReg", "login")."' class='form-vertical' role='form' method='POST'><H1>Login</H1><div class='form-group'><label for='username' class='control-label'>Username</label><input type='text' class='form-control input-sm' id='username' name='username'></div><div class='form-group'><label for='password' class='control-label'>Password</label><input type='password' name='password' class='form-control input-sm' id='password' /></div><div class='form-group'><button type='submit' class='btn btn-default'>login</button></div></form></li>";
-		#$va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>";	
-		$va_user_links[] = "<li>".caNavLink($this->request, _t('Forgot Password?'), '', '', 'LoginReg', 'resetForm')."</li>";
+		$va_responsive_login_form[] = "<li><form id='LoginFormMenu' action='".caNavUrl($this->request, "", "LoginReg", "login")."' class='form-vertical' role='form' method='POST'><H1>Login</H1><div class='form-group'><label for='username_resp' class='control-label'>Username</label><input type='text' class='form-control input-sm' id='username_resp' name='username'></div><div class='form-group'><label for='password_resp' class='control-label'>Password</label><input type='password' name='password' class='form-control input-sm' id='password_resp' /></div><div class='form-group'><button type='submit' class='btn btn-default'>login</button></div></form></li>";
+		$va_responsive_login_form[] = $va_user_links[] = "<li>".caNavLink($this->request, _t('Forgot Password?'), '', '', 'LoginReg', 'resetForm')."</li>";
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
@@ -94,25 +95,29 @@
 ?>
 </head>
 <body>
-	<div class="container-fluid">
+	<div class="container-fluid" role="navigation">
+	<div class="collapse navbar-collapse" id="header-nav-collapse">
 		<div id="headerbar" class="yamm">
 			<div class="navbar navbar-default">
-				<ul class="nav navbar-nav">
-				<li><a href="/?current_theme=idigpaleo" id="idp-header"><?php print caGetThemeGraphic($this->request, 'idp_logo_header_gold.png'); ?> <span class="header_text">iDigPaleo</span></a></li>
-				<li><a href="/?current_theme=cw_idigpaleo" id="cw-header"><?php print caGetThemeGraphic($this->request, 'cw_logo_header.png'); ?> <span class="header_text">Cretaceous World</span></a></li>
-				<li><a href="/?current_theme=cw_florissant" id="flfo-header"><?php print caGetThemeGraphic($this->request, 'flfo_logo_header.png'); ?> <span class="header_text">Florissant Fossil Beds</span></a></li>
+				<ul class="nav navbar-nav">			    
+				  <li><span class="skip"><a href="#main">Skip to main content</a></span></li>
+				  <li><a href="/?current_theme=fic" id="fic-header" alt="Dragonfly Logo"><?php print caGetThemeGraphic($this->request, 'idp_logo_header.png', array("alt" => "DragonFly Logo")); ?> <span class="header_text">Fossil Insect Collaborative</span></a></li>
+				  <li><a href="/?current_theme=idigpaleo" id="idp-header" alt="Bird Fossil Logo"><?php print caGetThemeGraphic($this->request, 'idp_logo_header_alt_gold.png',  array("alt" => "Bird Fossil Logo")); ?> <span class="header_text">iDigPaleo</span></a></li>
+				  <li><a href="/?current_theme=cretaceous_world" id="cw-header" alt="Cretacean Fossil Logo"><?php print caGetThemeGraphic($this->request, 'cw_logo_header.png',  array("alt" => "Cretacean Fossil Logo")); ?> <span class="header_text">Cretaceous World</span></a></li>
+				  <li><a href="/?current_theme=florissant" id="flfo-header" alt="Plant Fossil Logo"><?php print caGetThemeGraphic($this->request, 'flfo_logo_header.png',  array("alt" => "Plant Fossil Logo")); ?> <span class="header_text">Florissant Fossil Beds</span></a></li>
 				</ul>
 			</div>
 		</div>
+	</div>
 		<script>
 			$('#headerbar > .navbar-collapse > .nav > li').hover(function(){
 				$(this).html();
 			});
 		</script>
 	</div>
-	<div class="container"><div class="navHeader">
+	<div class="container"><div class="navHeader" role="banner">
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'idigpaleo_header_new_ver4.png'), "header-img", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'idigpaleo_header_new_ver4.png', array("alt" => "I Dig Paleo")), "header-img", "", "", "", "", array("alt" => "I Dig Paleo")) ;
 ?>		
 	</div><!-- end navHeader --></div><!-- end container -->
 	<div class="container">
@@ -128,6 +133,10 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
+				</button>
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#header-nav-collapse">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="fa fa-university" aria-label="other sites"></span>
 				</button>
 			</div>
 
@@ -152,10 +161,10 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown" aria-label="User Login"><span class="glyphicon glyphicon-user"></span></a>
 						<ul class="dropdown-menu">
 <?php
-							print join("\n", $va_user_links);
+							print join("\n", is_array($va_responsive_login_form) ? $va_responsive_login_form : $va_user_links);
 ?>
 						</ul>
 					</li>
@@ -166,9 +175,9 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'objects'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="Search" name="search">
+							<input type="text" class="form-control" placeholder="Search" aria-label="Search" name="search">
 						</div>
-						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+						<button type="submit" aria-label="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 				</form>
 				<ul class="nav navbar-nav">
