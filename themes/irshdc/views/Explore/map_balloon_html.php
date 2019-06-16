@@ -37,10 +37,10 @@
 		$t_entity->load($vn_entity_id);
 		$vs_image = $t_entity->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 								
-		#$vs_image = $t_entity->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values, "limit" => 1));
-		#if(!$vs_image){
-		#	$vs_image = $t_entity->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.iconlarge</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
-		#}
+		
+		if(!$vs_image){
+			$vs_image = $t_entity->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values, "limit" => 1));
+		}
 		if($vs_image){
 			print "<div class='mapImage'>".caDetailLink($this->request, $vs_image, '', 'ca_entities', $t_entity->get("entity_id"))."</div>";
 		}

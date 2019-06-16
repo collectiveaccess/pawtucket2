@@ -22,7 +22,7 @@ src: local("SangBleuSerif-Light"), local("SangBleuSerif-Light"), url("../../asse
 }
 img.headerImg {height:25px; width:auto; margin-top:20px; margin-bottom:10px;}
 .pagingText { position: absolute; top: 30px; right: 30px; font: "helvetica"; font-size: 11px; text-align: right;  margin: 0px 0px 10px 25px;}
-#footer .pagingText{ top:20px; }
+#footer .pagingText{ top:20px; width:200px;}
 body{
 	text-rendering: auto;
     -moz-osx-font-smoothing: grayscale;
@@ -61,4 +61,6 @@ body{
 .title {font-weight:bold; font-size: 12px;}
 .metadata {line-height:1.1em;}
 .metaBlock {margin-left:0px; margin-left:0px; height:auto; width:400px; font-size:11px;}
+
+.chronologyTitle{font-weight:bold; font-size: 14px;font: "helvetica, sans-serif"; margin-bottom:5px;}
 

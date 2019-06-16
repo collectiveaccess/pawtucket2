@@ -98,16 +98,9 @@
 
 			# --- is there a collection chronology to show?
 			$vb_show_collection_chronology = false;
-			$va_chronology = array_pop($t_item->get("ca_collections.collection_chronology", array("returnWithStructure" => true, "convertCodesToDisplayText" => true)));
-			$va_chronology_processed = array();
-			if(is_array($va_chronology) && sizeof($va_chronology)){
-				foreach($va_chronology as $va_entry){
-					if($va_entry["chronology_public"] == "yes"){
-						$va_tmp = explode("/", $va_entry["chronology_date_sort_"]);
-						$va_chronology_processed[$va_tmp[0]] = array("date" => $va_entry["chronology_date"], "season" => $va_entry["chronology_season"], "text" => $va_entry["chronology_text"], "source" => $va_entry["chronology_source"]);
-						$vb_show_collection_chronology = true;
-					}
-				}
+			
+			if($va_chronology = $t_item->get("ca_occurrences", array("restrictToTypes" => array("chronology"), "checkAccess" => $va_access_values))){
+				$vb_show_collection_chronology = true;
 			}
 			if($vb_show_collection_chronology){
 ?>
@@ -133,7 +126,7 @@
 							<div class="col-sm-12">
 								<div class='collectionsContentsContainer'>
 									<div class='label'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
-									<div id="collectionLoad"></div>
+									<div id="collectionLoad"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 								</div>
 			<script>
 				$(document).ready(function(){
@@ -147,6 +140,24 @@
 ?>
 					</div><!-- end tabpanel guide -->
 					<div role="tabpanel" class="tab-pane" id="chronology">
+						
+						<div class="row">
+							<div id="browseCollectionContainer">
+								<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+							</div><!-- end browseResultsContainer -->
+						</div><!-- end row -->
+						<script type="text/javascript">
+							jQuery(document).ready(function() {
+								jQuery("#browseCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'facet' => 'collection_facet', 'id' => $t_item->get("ca_collections.collection_id"))); ?>");
+					
+					
+							});
+						</script>
+						
+						
+						
+						
+						
 						<div class="row">
 							<div class="col-sm-12">
 <?php

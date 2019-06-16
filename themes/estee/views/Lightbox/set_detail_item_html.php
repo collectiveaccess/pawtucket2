@@ -35,6 +35,8 @@
     $vn_item_id = $this->getVar('item_id');
     $vn_set_id = $this->getVar('set_id');
     $vn_object_id = $this->getVar('object_id');
+    $t_item = $this->getVar('item');
+    $vn_container_id = $this->getVar('container_id');
 
     $vs_caption = $this->getVar('caption');
     $vn_representation_id = $this->getVar('representation_id');
@@ -56,8 +58,14 @@
 		}
 ?>
 		<div>
-			<?php print caDetailLink($this->request, "<span class='glyphicon glyphicon-file'></span>", '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail"))); ?>
-<?php
+<?php 
+			# --- is this bulk media?  We need to use the url of the container the bulk media is linked to
+			if($vn_container_id){
+				print caDetailLink($this->request, "<span class='glyphicon glyphicon-file'></span>", '', 'ca_objects', $vn_container_id, "", array("title" => _t("View Item Detail")));
+			}else{
+				print caDetailLink($this->request, "<span class='glyphicon glyphicon-file'></span>", '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail")));
+			}
+			
 			if($vn_representation_id){
 				print "&nbsp;&nbsp;<a href='#' title='"._t("Enlarge Image")."' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;' ><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
 			}

@@ -12,7 +12,7 @@
 		
 		$o_db = new Db();
 		$qr_res = $o_db->query("
-			SELECT DISTINCT ctsxe.entity_id 
+			SELECT DISTINCT ctsxe.entity_id, el.surname, el.forename
 			FROM ca_objects_x_entities ctsxe
 			INNER JOIN ca_entities AS e ON e.entity_id = ctsxe.entity_id
 			INNER JOIN ca_entity_labels AS el ON e.entity_id = el.entity_id
@@ -40,7 +40,7 @@
 		
 		$o_db = new Db();
 		$qr_res = $o_db->query("
-			SELECT DISTINCT ctsxo.object_id 
+			SELECT DISTINCT ctsxo.object_id, ol.name_sort
 			FROM ca_objects_x_entities ctsxo
 			INNER JOIN ca_objects AS o ON o.object_id = ctsxo.object_id
 			INNER JOIN ca_object_labels AS ol ON o.object_id = ol.object_id
