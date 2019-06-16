@@ -21,6 +21,7 @@
 		}
 	}
 ?>
+<div role="main" id="main">
 <div class="row"><div class="col-sm-12">
 	<H1><?php print $vs_page_title; ?></H1>
 <?php
@@ -56,7 +57,7 @@
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 							<label for="name">Name</label>
-							<input type="text" class="form-control input-sm" id="email" placeholder="Enter name" name="name" value="{{{name}}}">
+							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
@@ -96,3 +97,4 @@
 	</form>
 	
 </div><!-- end col --></div><!-- end row -->
+</div>
