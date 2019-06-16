@@ -38,6 +38,7 @@
 	}
 	if($this->request->isAjax()){
 ?>
+<div id="main">
 <div id="caFormOverlay">
 <?php
 	}
@@ -89,7 +90,7 @@
 				if($va_errors[$vs_field]){
 					print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
 				}
-				print "<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'>";
+				print "<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'><label for='".$vs_field."' class='col-sm-4 control-label'>";
 				print $va_profile_element["bs_formatted_element"];
 				print "</div><!-- end form-group -->";
 			}
@@ -148,6 +149,7 @@
 	if($this->request->isAjax()){
 ?>
 </div><!-- end caFormOverlay -->
+</div>
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		jQuery('#RegForm').on('submit', function(e){		
