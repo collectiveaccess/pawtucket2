@@ -31,6 +31,7 @@
 		<footer id="footer">
 			<ul class="list-inline footerLinks">
 				<li><a href="http://www.erfgoednoorderkempen.be/" target="_blank">www.erfgoednoorderkempen.be</a></li>
+				</li><a href="http://www.erfgoednoorderkempen.be/erfgoedbank/" target="_blank">Disclaimer</a></li>
 			</ul>
 			<div class="funder">
 				Met steun van<br/>
