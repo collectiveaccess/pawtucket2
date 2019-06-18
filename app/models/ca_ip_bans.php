@@ -1,13 +1,13 @@
 <?php
 /** ---------------------------------------------------------------------
- * app/models/ca_items_x_tags.php : table access class for table ca_items_x_tags
+ * app/models/ca_ip_bans.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2018 Whirl-i-Gig
+ * Copyright 2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -33,102 +33,51 @@
  /**
    *
    */
-require_once(__CA_LIB_DIR__.'/BaseModel.php');
 
-
-BaseModel::$s_ca_models_definitions['ca_items_x_tags'] = array(
- 	'NAME_SINGULAR' 	=> _t('item ⇔ tag relationship'),
- 	'NAME_PLURAL' 		=> _t('item ⇔ tag relationships'),
+BaseModel::$s_ca_models_definitions['ca_ip_bans'] = array(
+ 	'NAME_SINGULAR' 	=> _t('IP-based authentication block'),
+ 	'NAME_PLURAL' 		=> _t('IP-based authentication blocks'),
  	'FIELDS' 			=> array(
- 		'relation_id' => array(
+ 		'ban_id' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_HIDDEN, 
 				'IDENTITY' => true, 'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
-				'DEFAULT' => '',
-				'LABEL' => 'Relation id', 'DESCRIPTION' => 'Identifier for Relation'
+				'DEFAULT' => '','LABEL' => _t('CollectiveAccess id'), 'DESCRIPTION' => _t('Unique numeric identifier used by CollectiveAccess internally to identify this IP address block')
 		),
-		'table_num' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => false, 
-				'DEFAULT' => '',
-				'LABEL' => 'Table tag applies to', 'DESCRIPTION' => 'The table number of the table this tag is applied to.',
-				'BOUNDS_LENGTH' => array(1,100)
-		),
-		'row_id' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => false, 
-				'DEFAULT' => '',
-				'LABEL' => 'Row ID', 'DESCRIPTION' => 'Primary key value of the row in the table specified by table_num that this tag applies to.'
-		),
-		'user_id' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
-				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => true, 
-				'DISPLAY_FIELD' => array('ca_users.lname', 'ca_users.fname'),
-				'DEFAULT' => '',
-				'LABEL' => _t('User'), 'DESCRIPTION' => _t('The user who applied the tag.')
-		),
-		'tag_id' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => false, 
-				'DEFAULT' => '',
-				'LABEL' => 'Tag id', 'DESCRIPTION' => 'ID of referenced tag.'
-		),
-		'access' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
+		'ip_addr' => array(
+				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
 				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
-				'DEFAULT' => 0,
-				'BOUNDS_CHOICE_LIST' => array(
-					_t('Not accessible to public') => 0,
-					_t('Accessible to public') => 1
-				),
-				'LABEL' => _t('Access'), 'DESCRIPTION' => _t('Indicates if the comment is accessible to the public or not.')
+				'DEFAULT' => '',
+				'LABEL' => _t('IP address of commenter'), 'DESCRIPTION' => _t('The IP address of the commenter.'),
+				'BOUNDS_LENGTH' => array(0,39)
+		),
+		'reason' => array(
+				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
+				'DISPLAY_WIDTH' => 88, 'DISPLAY_HEIGHT' => 15,
+				'IS_NULL' => false, 
+				'DEFAULT' => '',
+				'LABEL' => _t('Reason'), 'DESCRIPTION' => _t('Reason for ban'),
+				'BOUNDS_LENGTH' => array(0,255)
 		),
 		'created_on' => array(
 				'FIELD_TYPE' => FT_TIMESTAMP, 'DISPLAY_TYPE' => DT_FIELD, 
 				'DISPLAY_WIDTH' => 20, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => _t('Tagging date'), 'DESCRIPTION' => _t('The date and time the tag was applied.')
+				'LABEL' => _t('Ban creation date'), 'DESCRIPTION' => _t('The date and time the ban was created.')
 		),
-		'ip_addr' => array(
-				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
-				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => true, 
-				'DEFAULT' => '',
-				'LABEL' => _t('IP address of commenter'), 'DESCRIPTION' => _t('The IP address of the commenter.'),
-				'BOUNDS_LENGTH' => array(0,39)
-		),
-		'moderated_by_user_id' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
-				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => true, 
-				'DISPLAY_FIELD' => array('ca_users.lname', 'ca_users.fname'),
-				'DEFAULT' => null,
-				'LABEL' => _t('Moderator'), 'DESCRIPTION' => _t('The user who examined the tag for validity and applicability.')
-		),
-		'moderated_on' => array(
-				'FIELD_TYPE' => FT_DATETIME, 'DISPLAY_TYPE' => DT_OMIT, 
+		'expires_on' => array(
+				'FIELD_TYPE' => FT_DATETIME, 'DISPLAY_TYPE' => DT_FIELD, 
 				'DISPLAY_WIDTH' => 20, 'DISPLAY_HEIGHT' => 1,
 				'IS_NULL' => true, 
-				'DEFAULT' => null,
-				'LABEL' => _t('Moderation date'), 'DESCRIPTION' => _t('The date and time the tag was examined for validity and applicability.')
-		),
-		'rank' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
-				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => false, 
 				'DEFAULT' => '',
-				'LABEL' => _t('Sort order'), 'DESCRIPTION' => _t('The relative priority of the tag when displayed in a list with other tags. Lower numbers indicate higher priority.')
-		)
+				'LABEL' => _t('Ban expiration date'), 'DESCRIPTION' => _t('The date and time the ban expires on. An empty value indicates an indefinite ban.')
+		),
  	)
 );
 
-class ca_items_x_tags extends BaseModel {
+class ca_ip_bans extends BaseModel {
 	# ---------------------------------
 	# --- Object attribute properties
 	# ---------------------------------
@@ -140,10 +89,10 @@ class ca_items_x_tags extends BaseModel {
 	# --- Basic object parameters
 	# ------------------------------------------------------
 	# what table does this class represent?
-	protected $TABLE = 'ca_items_x_tags';
+	protected $TABLE = 'ca_ip_bans';
 	      
 	# what is the primary key of the table?
-	protected $PRIMARY_KEY = 'relation_id';
+	protected $PRIMARY_KEY = 'ban_id';
 
 	# ------------------------------------------------------
 	# --- Properties used by standard editing scripts
@@ -154,7 +103,7 @@ class ca_items_x_tags extends BaseModel {
 	# ------------------------------------------------------
 
 	# Array of fields to display in a listing of records from this table
-	protected $LIST_FIELDS = array('relation_id');
+	protected $LIST_FIELDS = array('ip_addr');
 
 	# When the list of "list fields" above contains more than one field,
 	# the LIST_DELIMITER text is displayed between fields as a delimiter.
@@ -170,7 +119,7 @@ class ca_items_x_tags extends BaseModel {
 
 	# List of fields to sort listing of records by; you can use 
 	# SQL 'ASC' and 'DESC' here if you like.
-	protected $ORDER_BY = array('relation_id');
+	protected $ORDER_BY = array('ip_addr');
 
 	# Maximum number of record to display per page in a listing
 	protected $MAX_RECORDS_PER_PAGE = 20; 
@@ -182,7 +131,7 @@ class ca_items_x_tags extends BaseModel {
 
 	# If you want to order records arbitrarily, add a numeric field to the table and place
 	# its name here. The generic list scripts can then use it to order table records.
-	protected $RANK = 'rank';
+	protected $RANK = '';
 	
 	
 	# ------------------------------------------------------
@@ -200,35 +149,15 @@ class ca_items_x_tags extends BaseModel {
 	# Change logging
 	# ------------------------------------------------------
 	protected $UNIT_ID_FIELD = null;
-	protected $LOG_CHANGES_TO_SELF = true;
+	protected $LOG_CHANGES_TO_SELF = false;
 	protected $LOG_CHANGES_USING_AS_SUBJECT = array(
-		"FOREIGN_KEYS" => array(
-		
-		),
-		"RELATED_TABLES" => array(
-		
-		)
+		"FOREIGN_KEYS" => [],
+		"RELATED_TABLES" => []
 	);
-	
-	
-	# ------------------------------------------------------
-	# Search
-	# ------------------------------------------------------
-	//
-	// We use a single search class for all relationship tables
-	//
-	protected $SEARCH_CLASSNAME = 'InterstitialSearch';
-	protected $SEARCH_RESULT_CLASSNAME = 'InterstitialSearchResult';
-	
 	# ------------------------------------------------------
 	# $FIELDS contains information about each field in the table. The order in which the fields
 	# are listed here is the order in which they will be returned using getFields()
-	#
-	# There are number of types of information that can be set here, some having to do with the 
-	# underlying specifics of the field (eg. is it NULL?) and others having to do with input 
-	# validation (eg. must be between 50 and 100) or presentation in an HTML form (eg. show it as 
-	# a text field 30 characters wide). See the documentation for BaseRelationshipModel.php for a complete list
-	# of field specifiers.
+
 	protected $FIELDS;
 	
 	# ------------------------------------------------------
@@ -246,24 +175,64 @@ class ca_items_x_tags extends BaseModel {
 		parent::__construct($pn_id);	# call superclass constructor
 	}
 	# ------------------------------------------------------
-	public function insert($pa_options=null) {
-		$this->set('ip_addr', RequestHTTP::ip());
-		return parent::insert($pa_options);
+	/**
+	 *
+	 */
+	static public function ban($request, $ttl=null, $reason=null) {
+		if (!($ip = RequestHTTP::ip())) { return false; }
+		if (self::isWhitelisted()) { return false; } 
+		
+		if (self::isBanned($request)) { return true; }
+		$ban = new ca_ip_bans();
+		$ban->setMode(ACCESS_WRITE);
+		$ban->set('ip_addr', $ip);
+		$ban->set('reason', $reason);
+		$ban->set('expires_on', $ttl ? date('c', time() + $ttl) : null);
+		return $ban->insert();
 	}
 	# ------------------------------------------------------
 	/**
-	 * Marks the currently loaded row as moderated, setting the moderator as the $pn_user_id parameter and the moderated time as the current time.
-	 * "Moderated" status indicates that the comment has been reviewed for content; it does *not* indicate that the comment is ok for publication only
-	 * that is has been reviewed. The publication status is indicated by the value of the 'access' field.
 	 *
-	 * @param $pn_user_id [integer] Valid ca_users.user_id value indicating the user who moderated the comment.
 	 */
-	public function moderate($pn_user_id) {
-		if (!$this->getPrimaryKey()) { return null; }
-		$this->setMode(ACCESS_WRITE);
-		$this->set('moderated_by_user_id', $pn_user_id);
-		$this->set('moderated_on', 'now');
-		return $this->update();
+	static public function isBanned($request) {
+		$ip = RequestHTTP::ip();
+		if(!($entries = self::find(['ip_addr' => $ip, 'expires_on' => null], ['returnAs' => 'count']))) {
+			$entries = self::find(['ip_addr' => $ip, 'expires_on' => ['>', time()]], ['returnAs' => 'count']);
+		}
+		if($entries > 0) {
+			return true;
+		}
+		return false;
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function clean($options=null) {
+		$db = new Db();
+		if (caGetOption('all', $options, false)) {
+			return $db->query("TRUNCATE TABLE ca_ip_bans");
+		}
+		return $db->query("DELETE FROM ca_ip_bans WHERE expired_on <= ?", [time()]);
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	static public function isWhitelisted($options=null) {
+		if (!is_array($whitelist = self::$config->get('ip_whitelist')) || !sizeof($whitelist)) { return false; }
+		
+		$request_ip = RequestHTTP::ip();
+		$request_ip_long = ip2long($request_ip);
+		
+		foreach($whitelist as $ip) {
+			$ip_s = ip2long(str_replace("*", "0", $ip));
+			$ip_e = ip2long(str_replace("*", "255", $ip));
+			if (($request_ip_long >= $ip_s) && ($request_ip_long <= $ip_e)) {
+				return true;
+			}
+		}
+		return false;
 	}
 	# ------------------------------------------------------
 }
