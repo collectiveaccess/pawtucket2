@@ -65,7 +65,7 @@
 	# --- default to logo --- use image from detail page if on object page
 	$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'ca_nav_logo300.png'); # --- replace this with logos for institutions
 	if((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "objects")){
-		$ps_id = urldecode($this->request->getActionExtra());
+		$ps_id = str_replace("~", "/", urldecode($this->request->getActionExtra()));
 		$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls("ca_objects");
 		$t_subject = new ca_objects();
 		if ((($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) || ($vs_use_alt_identifier_in_urls)) && (substr($ps_id, 0, 3) == "id:")) {
