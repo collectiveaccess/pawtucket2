@@ -73,6 +73,7 @@
 <?php
 					}else{
 						print "<div class='detailProductPlaceholder'><i class='material-icons inline'>photo</i></div>";
+						print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request Digitiztion", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'digitizationRequest'))."</div>";
 					}	
 ?>				
 					<div id="detailAnnotations"></div>

@@ -74,7 +74,7 @@
 <?php
 					}else{
 						print "<div class='detailArchivalPlaceholder'><i class='material-icons inline'>file_copy</i></div>";
-						print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request digitization of audiovisual item", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'avScanRequest'))."</div>";
+						print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request digitization", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'avScanRequest'))."</div>";
 
 					}	
 ?>				
