@@ -80,7 +80,7 @@
 							if($t_object->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values))){
 								$vs_folder_icon = "<i class='material-icons fileIcon inline'>file_copy</i><i class='material-icons inline'>folder</i>";
 							}else{
-								$vs_folder_icon = "<i class='material-icons inline'>file_copy</i>";
+								$vs_folder_icon = "<i class='material-icons inline'>folder</i>";
 							}
 							print "<div class='detailArchivalPlaceholder'>".$vs_folder_icon."</span>";
 							print "<br/><small>".$t_object->get("completely_digitized", array("convertCodesToDisplayText" => true))."</small></div>";
