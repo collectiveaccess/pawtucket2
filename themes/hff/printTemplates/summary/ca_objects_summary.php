@@ -200,6 +200,9 @@
 					foreach($va_exhibitions as $va_exhibition){
 						$t_occ->load($va_exhibition["occurrence_id"]);
 						$vs_originating_venue 	= $t_occ->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='originator' delimiter=', '>^ca_entities.preferred_labels</unit>", array("checkAccess" => $va_access_values));
+						if($vs_venue_location = $t_occ->get("ca_occurrences.venue_location", array("delimiter" => ", "))){
+							$vs_originating_venue .= ", ".$vs_venue_location;
+						}
 						$vs_title = italicizeTitle($va_exhibition["name"]);
 						$vs_date = $t_occ->get("ca_occurrences.exhibition_dates_display", array("delimiter" => "<br/>"));
 						if(!$vs_date){

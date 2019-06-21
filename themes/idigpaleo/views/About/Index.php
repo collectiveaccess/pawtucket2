@@ -1,6 +1,7 @@
 <?php
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About");
 ?>
+<div role="main" id="main">
 <H1><?php print _t("About"); ?></H1>
 <div class="row">
 	<div class="col-sm-6 col-md-5">
@@ -12,6 +13,7 @@
 		<p>
 			The digitized fossil insect collections will be made broadly accessible to the research community, K-16 education, government and industry, the general public, and the media through the project website and a central site integrating all the paleobiological Thematic Collections Networks called iDigPaleo. Mobile apps and activities that allow a wide variety of users to experience and interact directly with the collections data will be developed. This award is made as part of the National Resource for Digitization of Biological Collections through the Advancing Digitization of Biological Collections program and all data resulting from this award will be available through the national resource (iDigBio.org).
 		</p>
-		<p>Please contact <a href="mailto:susan.butts@yale.edu">Susan Butts</a> and <a href="mailto:christopher.norris@yale.edu">Chris Norris</a> to discuss collaborations.</p>
+		<p>Please contact <a href="mailto:susan.butts@yale.edu">Susan Butts</a> and <a href="mailto:talia.karim@colorado.edu">Talia Karim</a> to discuss collaborations.</p>
 	</div>
+</div>
 </div>
