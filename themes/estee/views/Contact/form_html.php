@@ -71,10 +71,9 @@
 				#	print "<H1>Transfer to the Archives</H1>";
 				#break;
 				case "folderScanRequest":
-					print "<H1>Folder Scan Request</H1>";
-				break;
 				case "avScanRequest":
-					print "<H1>Audiovisual Digitization Request</H1>";
+				case "digitizationRequest":
+					print "<H1>Digitization Request</H1>";
 				break;
 				default:
 					print "<H1>Contact the Archives</H1>";
@@ -216,6 +215,7 @@
 		# -----------------------------
 		case "folderScanRequest":
 		case "avScanRequest":
+		case "digitizationRequest":
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
 		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
@@ -258,14 +258,22 @@
 				<div class="col-sm-12">
 					<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
 <?php
-						if($ps_contactType == "folderScanRequest"){
+						switch($ps_contactType){
+							case "folderScanRequest":
 ?>
-						<label for="message">I WOULD LIKE THE FULL CONTENTS OF THIS FOLDER TO BE SCANNED</label>
+								<label for="message">I would like the full contents of this folder to be scanned</label>
 <?php
-						}else{
+							break;
+							case "avScanRequest":
 ?>
-						<label for="message">I WOULD LIKE THIS AUDIOVISUAL ITEM TO BE DIGITIZED</label>
-<?php						
+								<label for="message">I would like this audiovisual item to be digitized</label>
+<?php
+							break;
+							case "digitizationRequest":
+?>
+								<label for="message">I would like this item to be digitized</label>
+<?php							
+							break;						
 						}
 ?>
 						<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>

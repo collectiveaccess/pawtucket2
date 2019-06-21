@@ -87,7 +87,7 @@
 						
 							if(sizeof($va_bulk_items) == 0){
 								if(!in_array(strToLower($t_object->get("completely_digitized", array("convertCodesToDisplayText" => true))), array("yes", "contents completely digitized"))){
-									print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request Scan Of Full Contents of Container", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'folderScanRequest'))."</div>";
+									print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request Digitiztion", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'folderScanRequest'))."</div>";
 								}
 							}
 						}else{
