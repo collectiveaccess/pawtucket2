@@ -144,7 +144,7 @@
 						foreach($va_notes as $va_note){
 							$va_note["general_notes_text"] = trim($va_note["general_notes_text"]);
 							if($va_note["general_notes_text"] && strToLower($va_note["internal_external"]) == "unrestricted"){
-								$va_notes_filtered[] = ucfirst(strtolower($va_note["general_notes_text"]));
+								$va_notes_filtered[] = $va_note["general_notes_text"];
 							}
 						}
 						if(sizeof($va_notes_filtered)){
