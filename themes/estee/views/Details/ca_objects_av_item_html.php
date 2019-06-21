@@ -52,8 +52,8 @@
 				<div class='col-sm-6 col-md-6'>
 <?php
 					print '<div id="detailTools">';
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About this Item", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'inquiry'))."</div>";
-					print "<div class='detailTool'><span class='glyphicon glyphicon-bookmark'></span><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
+					print "<div class='detailTool'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Inquire About this Item", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'inquiry'))."</div>";
+					print "<div class='detailTool'><i class='material-icons inline'>bookmark</i><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
 				
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
@@ -73,8 +73,8 @@
 						</script>
 <?php
 					}else{
-						print "<div class='detailArchivalPlaceholder'><span class='glyphicon glyphicon-file'></span></div>";
-						print "<br/><div class='detailTool text-center'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Request digitization of audiovisual item", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'avScanRequest'))."</div>";
+						print "<div class='detailArchivalPlaceholder'><i class='material-icons inline'>file_copy</i></div>";
+						print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request digitization of audiovisual item", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'avScanRequest'))."</div>";
 
 					}	
 ?>				
@@ -170,7 +170,7 @@
 					}
 					
 					if ($vn_pdf_enabled) {
-						print "<div class='detailTools'><div class='detailTool'><span class='glyphicon glyphicon-download'></span>".caDetailLink($this->request, "Download Summary", "", "ca_objects", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div></div>";
+						print "<div class='detailTools'><div class='detailTool'><i class='material-icons inline'>save_alt</i>".caDetailLink($this->request, "Download Summary", "", "ca_objects", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div></div>";
 					}
 	?>
 				</div><!-- end col -->

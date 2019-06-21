@@ -411,7 +411,7 @@
 				
 					if ($va_child_object_ids = $t_item->get('ca_objects.children.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 						$qr_children = caMakeSearchResult('ca_objects', $va_child_object_ids);
-						print "<div class='childObjects'><h6>Container Contents</h6><br/>";
+						print "<div class='childObjects'><h6>Container Contents</h6>";
 						$va_child_info_fields = array("shade", "fragrance", "codes.product_code");
 						if($qr_children->numHits()){
 							while ($qr_children->nextHit()) {
