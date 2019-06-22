@@ -65,7 +65,7 @@
 					{{{<ifcount restrictToRelationshipTypes="department" code="ca_entities" min="2"><H2>Departments</H2></ifcount>}}}
 					{{{<unit relativeTo="ca_entities.related" delimiter="<br/>" restrictToRelationshipTypes="department"><p>^ca_entities.preferred_labels</p></unit>}}}					
 				
-					{{{<ifdef code="ca_occurrences.external_link"><H2>Links</H2>^ca_occurrences.external_link</ifdef>}}}
+					{{{<ifdef code="ca_occurrences.external_link.url_entry"><H2>Links</H2>^ca_occurrences.external_link.url_entry</ifdef>}}}
 									
 				</div><!-- end col -->
 				<div class='col-sm'>		
