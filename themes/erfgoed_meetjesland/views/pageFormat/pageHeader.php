@@ -63,7 +63,7 @@
 <?php
 	# --- what should the image to share be?
 	# --- default to logo --- use image from detail page if on object page
-	$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'NOORDERKEMPEN_logo.jpg'); # --- replace this with logos for institutions
+	$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'meetjeslandLogo.jpg'); # --- replace this with logos for institutions
 	if((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "objects")){
 		$ps_id = str_replace("~", "/", urldecode($this->request->getActionExtra()));
 		$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls("ca_objects");
@@ -140,7 +140,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'NOORDERKEMPEN_logo.jpg'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'meetjeslandLogo.jpg'), "navbar-brand", "", "","");
 				#print caNavLink($this->request, _t("Erfgoed Noorderkempen"), "navbar-brand", "", "","");
 ?>
 			</div>
