@@ -74,7 +74,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 				#}else{
 					$vs_output .= $vs_icon." ";
 					if($vb_collapse_link){
-						$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels')."<span class='glyphicon glyphicon-resize-vertical'></span></a>";
+						$vs_output .= "<a href='#' onClick='jQuery(\"#level".$qr_collections->get('ca_collections.collection_id')."\").toggle(); return false;'>".$qr_collections->get('ca_collections.preferred_labels')."<i class='material-icons inline'>unfold_more</i></a>";
 					}else{
 						$vs_output .= $qr_collections->get("ca_collections.preferred_labels");
 					}

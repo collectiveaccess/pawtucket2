@@ -175,8 +175,8 @@
 								</div>
 								<div class="col-sm-3">
 <?php
-									print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About this Item", "", "", "contact", "form", array('object_id' => $qr_res->get('ca_objects.object_id'), 'contactType' => 'inquiry'))."</div>";
-									print "<div class='detailTool'><span class='glyphicon glyphicon-bookmark'></span><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $qr_res->get('ca_objects.object_id')))."\"); return false;'> Add to My Projects</a></div>";
+									print "<div class='detailTool'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Inquire About this Item", "", "", "contact", "form", array('object_id' => $qr_res->get('ca_objects.object_id'), 'contactType' => 'inquiry'))."</div>";
+									print "<div class='detailTool'><i class='material-icons inline'>bookmark</i><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $qr_res->get('ca_objects.object_id')))."\"); return false;'> Add to My Projects</a></div>";
 ?>				
 								</div>
 							</div>
@@ -259,9 +259,7 @@
 										<div class='col-sm-3 col-md-2'>
 											<b>".(($qr_res->get("ca_occurrences.display_date")) ? $qr_res->get("ca_occurrences.display_date") : $qr_res->get("ca_occurrences.manufacture_date")).(($vs_season = $qr_res->get("ca_occurrences.season_list", array("convertCodesToDisplayText" => true))) ? ", ".$vs_season : "")."</b>
 										</div>
-										<div class='col-sm-8 col-sm-offset-1 col-md-9 col-md-offset-1'>
-											{$vs_label_detail_link}
-										</div>
+										<div class='col-sm-8 col-sm-offset-1 col-md-9 col-md-offset-1'>".$qr_res->get("{$vs_table}.preferred_labels")."</div>
 									</div>
 								</div>
 								
