@@ -32,5 +32,5 @@
 ?>
 			<h2>Thema's</h2>
 <?php
-			print caGetGallerySetsAsList($this->request, "nav nav-pills nav-stacked");
+			print caGetGallerySetsAsList($this->request, "nav nav-pills nav-stacked", array("limit" => 7));
 ?>

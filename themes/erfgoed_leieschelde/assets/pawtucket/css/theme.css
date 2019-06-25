@@ -89,7 +89,7 @@ body{
 	color:#000;
 }
 .detail .unit a{
-	color:#000;
+	color:#828282;
 	text-decoration:underline;
 }
 .detailFbShare{
@@ -98,6 +98,9 @@ body{
 }
 .detail #detailTools{
 	clear:left;
+}
+.detail H6 a {
+	color: #828282;
 }
 
 /* lightbox */
