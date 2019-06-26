@@ -63,7 +63,7 @@
 						</div><!-- end form-group -->
 						<div class="form-group">
 							<div class="col-sm-offset-4 col-sm-7">
-								<button type="submit" class="btn btn-default">save</button>
+								<button type="submit" class="btn btn-default"><?php print _t("Save"); ?></button>
 							</div>
 						</div><!-- end form-group -->
 						<input type="hidden" name="key" value="<?php print $this->getVar("key"); ?>">
