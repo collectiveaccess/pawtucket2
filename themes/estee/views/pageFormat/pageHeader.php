@@ -98,7 +98,7 @@
 			</div>
 <?php
 			if($this->request->isLoggedIn()){
-				print caNavLink($this->request, "<i class='material-icons'>input</i>", 'logout', '', 'LoginReg', 'Logout', array());
+				print caNavLink($this->request, "<i class='material-icons'>input</i>", 'logout', '', 'LoginReg', 'Logout', array(), array('title' => 'Logout'));
 			}
 ?>		
 			<button type="button" class="navbar-toggle navbar-toggle-search" data-toggle="collapse" data-target=".bs-main-navbar-collapse-2">

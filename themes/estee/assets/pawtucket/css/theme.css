@@ -307,10 +307,12 @@ hr {
 	font-weight: 300;
 	font-style: normal;
 	font-stretch: normal;
-	line-height: 1.3;
+	line-height: 1.7;
 	color:#00305e;
 	background-color:#fafafa;
 	box-shadow:none;
+	-webkit-box-shadow:none;
+	-webkit-appearance: none;
 }
 .form-control::placeholder {
     color: #595959;
@@ -552,7 +554,7 @@ navbar-nav > li > a {
 		border-bottom: 0px;
 	}
 }
-@media(max-width: 768px) {
+@media(max-width: 767px) {
 	.navbar-brand{
 		display:none;
 	}
@@ -971,7 +973,7 @@ ul.menuItems{
 .bResultListItemImg .bResultItemImgPlaceholder {
     padding: 18px;
 }
-@media(max-width:768px){
+@media(max-width:767px){
 	.results .bSearchWithinContainer, .results .productCodeHelp, .results .btn-default.browseProducts{
 		display:none;
 	}
@@ -995,8 +997,7 @@ ul.menuItems{
 }
 .results .btn-search-refine, #browseResultsDetailContainer .btn-search-refine, #browseCollectionContainer .btn-search-refine{	
 	font-size: 18px;
-	padding-top: 0px 0px 0px 0px;
-	width: 26px;
+	padding: 0px 0px 0px 0px;
 	text-align: left;
 	background-color: transparent;
 	display: inline-block;
@@ -1007,7 +1008,7 @@ ul.menuItems{
 	border: 0px;
 	margin-top:8px;
 	color: #00305e;
-    margin-left: -40px;
+    margin-left: -32px;
 }
 .results .btn-search-refine .glyphicon, #browseResultsDetailContainer .btn-search-refine .glyphicon, #browseCollectionContainer .btn-search-refine .glyphicon{
 	margin-top:5px;
@@ -1020,7 +1021,7 @@ ul.menuItems{
 }
 .bSearchWithin, .bSearchWithin:focus {
     float: left;
-    padding-right:40px;
+    padding-right:42px;
 }
 .browse .btn, .sets .btn {
     margin-left: 3px;
@@ -1155,12 +1156,18 @@ ul.menuItems{
 	color:#000;
 	font-weight:bold;
 }
+.bResultListItem .bResultListItemText a:hover{
+	text-decoration:none;
+}
+.bResultListItemImg a:hover{
+	text-decoration:none;
+}
 .resultType{
 	color: #015f9c !important;
 	font-family: 'Noto Sans Light';
 	font-size: 12px;
 	line-height: 1.1;
-	padding: 0px 0px 5px 0px;
+	padding: 0px 0px 3px 0px;
 	text-transform: uppercase;
 	font-weight:normal;
 }
@@ -1192,6 +1199,7 @@ ul.menuItems{
 }
 .bBulkMediaResult .bBulkMediaImage{
 	text-align:center;
+	margin-bottom:15px;
 }
 .bBulkMediaResult .bBulkMediaImage img{
 	width:100%;
@@ -1591,6 +1599,11 @@ h1.primaryLandingBannerTitle {
 	font-weight:normal;
 	font-family: "Optima LT Std";
 	font-size:18px !important;
+	text-decoration:none;
+}
+.collectionsContentsContainer a:focus, .collectionsContentsContainer a:visited, .collectionsContentsContainer a:active, .collectionsContentsContainer a:hover{
+	text-decoration:none !important;
+	color: #004065;
 }
 .collectionsContainer .label, #collectionLoad .label, .collectionsContentsContainer .label {
     font-size: 17px;
