@@ -54,16 +54,16 @@
 	<div class="representationList">
 		
 <?php
-	$va_reps = $t_item->getRepresentations(array("thumbnail", "medium"));
+	$va_reps = $t_item->getRepresentations(array("thumbnail", "small"));
 
 	foreach($va_reps as $va_rep) {
 		if(sizeof($va_reps) > 1){
 			# --- more than one rep show thumbnails
 			$vn_padding_top = ((120 - $va_rep["info"]["thumbnail"]["HEIGHT"])/2) + 5;
-			print $va_rep['tags']['thumbnail']."\n";
+			print "<img src='".$va_rep['paths']['thumbnail']."'>\n";
 		}else{
 			# --- one rep - show medium rep
-			print $va_rep['tags']['medium']."\n";
+			print "<img src='".$va_rep['paths']['small']."'>\n";
 		}
 	}
 ?>
