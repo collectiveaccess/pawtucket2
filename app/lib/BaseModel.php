@@ -11053,7 +11053,8 @@ $pa_options["display_form_field_tips"] = true;
 	 *		restrictToTypes = array of type names or type_ids to restrict to. Only items with a type_id in the list will be returned.
 	 *		hasRepresentations = if set when model is for ca_objects views are only returned when the object has at least one representation.
 	 *		checkAccess = an array of access values to filter only. Items will only be returned if the item's access setting is in the array.
-	 * @return bool True on success, false on error
+	 *      idsOnly = return primary keys only. [Default is false]
+	 * @return array 
 	 */
 	public function getMostViewedItems($pn_limit=10, $pa_options=null) {
 		$o_db = $this->getDb();
@@ -11107,6 +11108,10 @@ $pa_options["display_form_field_tips"] = true;
 			{$vs_limit_sql}
 		");
 		
+		if ($ids_only = caGetOption('idsOnly', $pa_options, false)) {
+		    return $qr_res->getAllFieldValues($this->primaryKey());
+		}
+		
 		$va_most_viewed_items = array();
 		
 		while($qr_res->nextRow()) {
@@ -11153,7 +11158,7 @@ $pa_options["display_form_field_tips"] = true;
 							continue;
 						}
 					}
-					if (is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && ($this->hasField('access')) && !in_array($pa_options['checkAccess'], $qr_res->get("{$vs_table_name}.access"))) {
+					if (is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && ($this->hasField('access')) && !in_array($qr_res->get("{$vs_table_name}.access"), $pa_options['checkAccess'])) {
 						continue;
 					}
 					if (($vs_type_field_name) && (is_array($va_type_ids) && sizeof($va_type_ids))){
@@ -11176,10 +11181,6 @@ $pa_options["display_form_field_tips"] = true;
 		}
 		
 		return $va_ids;
-		
-		
-		
-		return array_keys($va_recently_viewed_items);
 	}
 	# --------------------------------------------------------------------------------------------
 	/**
@@ -11190,6 +11191,7 @@ $pa_options["display_form_field_tips"] = true;
 	 *		restrictToTypes = array of type names or type_ids to restrict to. Only items with a type_id in the list will be returned.
 	 *		hasRepresentations = if set when model is for ca_objects views are only returned when the object has at least one representation.
 	 *		checkAccess = an array of access values to filter only. Items will only be returned if the item's access setting is in the array.
+	 *      idsOnly = return primary keys only. [Default is false]
 	 * @return array List on success, false on error
 	 */
 	public function getRecentlyAddedItems($pn_limit=10, $pa_options=null) {
@@ -11246,6 +11248,9 @@ $pa_options["display_form_field_tips"] = true;
 				ORDER BY
 					t.".$vs_primary_key." DESC";
 		
+		
+		$ids_only = caGetOption('idsOnly', $pa_options, false);
+		
 		$vn_index = 0;
 		$va_recently_added_items = array();
 		while(sizeof($va_recently_added_items) < $pn_limit) {
@@ -11256,8 +11261,12 @@ $pa_options["display_form_field_tips"] = true;
 			$va_recently_added_items = array();
 			
 			while($qr_res->nextRow()) {
-				$va_row = $qr_res->getRow();
-				$va_recently_added_items[$va_row[$vs_primary_key]] = $va_row;
+                $va_row = $qr_res->getRow();
+			    if($ids_only) {
+			         $va_recently_added_items[] = $va_row[$vs_primary_key];
+			    } else {
+                    $va_recently_added_items[$va_row[$vs_primary_key]] = $va_row;
+                }
 			}
 			$vn_index += $pn_limit;
 		}
