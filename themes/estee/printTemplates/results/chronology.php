@@ -27,6 +27,7 @@
  * Template configuration:
  *
  * @name Chronology
+ * @filename Brand Chronology
  * @type page
  * @pageSize letter
  * @pageOrientation portrait
