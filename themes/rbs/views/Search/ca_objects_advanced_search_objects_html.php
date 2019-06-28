@@ -43,7 +43,7 @@
 		<div class='row'>
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records with a controlled vocabulary term.">Controlled Vocabulary Term </span>
-				{{{ca_list_items.preferred_labels%width=200px&height=1&autocomplete=1}}}
+				{{{vocabulary_terms%width=200px&height=1&autocomplete=1&label=Vocabulary}}}
 			</div>
 		</div>
 		<div class='row'>
