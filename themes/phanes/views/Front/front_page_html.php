@@ -30,7 +30,7 @@
  * ----------------------------------------------------------------------
  */
 ?>
-<div class="parallax" style="background-image: url('<?php print caGetThemeGraphicUrl($this->request, rand(1,3).'.jpg'); ?>');">
+<div class="parallax" style="background-image: url('<?php print caGetThemeGraphicUrl($this->request, 'hero.jpg'); ?>');">
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-12 col-md-6 col-md-offset-1">
@@ -44,7 +44,7 @@
 		</div>
 	</div>
 </div>
-<div class="container">
+<!--<div class="container">
 	<div class="row">
 		<div class="col-sm-8 col-sm-offset-2 text-center">
 <?php
@@ -82,4 +82,4 @@
 			<?php print caNavLink($this->request, "Gold", "hpBrowseTextLink", "", "Browse", "coins", array("facet" => "material_link_facet", "id" => 172)); ?>
 		</div>
 	</div>
-</div>
+</div>-->

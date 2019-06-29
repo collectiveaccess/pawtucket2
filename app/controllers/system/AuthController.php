@@ -55,6 +55,24 @@
  			
  			$this->notification->addNotification(_t("You are now logged out"), __NOTIFICATION_TYPE_INFO__);
  		}
+ 		
+		# -------------------------------------------------------
+		# Authentication callback handler
+		# 	Passes control to authentication manager callback handler
+		#	Authentication adapters for schemes like Okta can use this to 
+		#	implement required control flow elements
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public function callback() {
+			try {
+				AuthenticationManager::callback();
+			} catch (Exception $e) {
+				$this->notification->addNotification($e->getMessage(), __NOTIFICATION_TYPE_ERROR__);
+				$this->view->setVar('notifications', $this->notification->getNotifications());
+				$this->render('auth_error_html.php');
+			}
+		}
  		# -------------------------------------------------------
  	}
- ?>

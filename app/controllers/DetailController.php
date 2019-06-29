@@ -161,7 +161,8 @@
 			}
 			
  			$ps_function = strtolower($ps_function);
- 			$ps_id = urldecode($this->request->getActionExtra()); 
+ 			$ps_id = str_replace("~", "/", urldecode($this->request->getActionExtra())); 
+ 		
  			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
  				// invalid detail type – throw error
  				throw new ApplicationException("Invalid detail type");
@@ -611,7 +612,7 @@
 				
 				$t_download_log->log(array(
 						"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
-						"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+						"ip_addr" => RequestHTTP::ip(), 
 						"table_num" => $t_object->TableNum(), 
 						"row_id" => $vn_object_id, 
 						"representation_id" => null, 

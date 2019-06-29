@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/templates/pdfStart.php : top-matter prepended to PDF templates
+ * app/lib/Plugins/BaseBanHammerPlugin.php : 
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2019 Whirl-i-Gig
+ * Copyright 2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,25 +23,50 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
- * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
- * Template configuration:
- *
- * @name PDF start
- * @type pageStart
- *
  * ----------------------------------------------------------------------
  */
- 
- $t_item = $this->getVar('t_subject');
- 
-?><!DOCTYPE html>
-<html>
-	<head>
-		<title><?php print _t('Summary for %1 (%2)', $t_item->getLabelForDisplay(), $t_item->get($t_item->getProperty('ID_NUMBERING_ID_FIELD'))); ?></title>
-				
-		<link type="text/css" href="<?php print $this->getVar('base_path'); ?>/pdf.css" rel="stylesheet" />
-		<style type="text/css">
-			@page { margin: {{{marginTop}}} {{{marginRight}}} {{{marginBottom}}} {{{marginLeft}}}; }
-		</style>
-	</head>
-	<body>
+
+
+	class BaseBanHammerPlugin {
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		static $priority = 10;
+		
+		/**
+		 *
+		 */
+		static $config;
+		
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		static public function init($request, $options=null) {
+			if(!self::$config) { self::$config = Configuration::load(__CA_CONF_DIR__.'/ban_hammer.conf'); }
+			return true;
+		}
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		static public function evaluate($request, $options=null) {
+			return 0;	// default is pass everything (zero probability of attack)
+		}
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		static public function shouldBanIP() {
+			return true;	// default is to ban IP on failure
+		}
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		static public function banTTL() {
+			return null;	// default is to ban ip forever
+		}
+		# ------------------------------------------------------
+	}
