@@ -26,6 +26,8 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
     <script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
     
 	<?php print MetaTagManager::getHTML(); ?>
 	
@@ -41,4 +43,4 @@
     };
 </script>
 	<div id="pageNav">Nav goes here</div>
-	<div id="pageArea" id="main" <?php print caGetPageCSSClasses(); ?> >
+	<div id="pageArea" role="main" id="main" <?php print caGetPageCSSClasses(); ?> >

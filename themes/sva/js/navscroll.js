@@ -44,15 +44,16 @@ class Navscroll extends React.Component {
  
    render() {
     return (<nav className="navbar navbar-expand-md navbar-light bg-light fixed-top" role="navigation" ref={this.navbar}>
-		<a href="#">School of Visual Arts Archives</a>
+		<a class="navlogo" href="#">School of Visual Arts Archives</a>
 		<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainnavbar" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
 			<span className="navbar-toggler-icon"></span>
 		</button>
 		<div className="collapse navbar-collapse" id="mainnavbar">
         	<ul className="navbar-nav ml-auto">
-         		<li><a id="search-button" href="#">Search</a></li>
+        		<li><span class="skip"><a href="#main">Skip to main content</a></span></li>
+         		<li><a id="search-button" href="#">Search Exhibitions</a></li>
 				<li><a href="/glaser-archives?autoscroll=0">Glaser Archives</a></li>
-                <li><a href="/sva-archives">Collections</a></li>
+                <li><a href="/sva-archives">SVA Archives</a></li>
                 <li><a href="/page/about?autoscroll=0">About</a></li>
                 <li><a href="/visit-us">Visit</a></li>
                 <li><a href="/blog/?autoscroll=0">Blog</a></li>

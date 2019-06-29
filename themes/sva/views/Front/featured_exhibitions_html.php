@@ -21,7 +21,7 @@
 						if($vn_col == 0){
 							print "<div class='row'>";
 						}
-						print "<div class='col-sm-4 col-xs-6'>".$q_featured_exhibitions->getWithTemplate("<unit relativeTo='ca_occurrences'><l><ifcount code='ca_objects' min='1'><unit relativeTo='ca_objects' length='1'><ifcount code='ca_object_representations' min='1'>^ca_object_representations.media.medium%length=1</ifcount></unit></ifcount></l></unit>");
+						print "<div class='col-sm-4 col-xs-6'>".$q_featured_exhibitions->getWithTemplate("<unit relativeTo='ca_occurrences'><l><ifcount code='ca_objects' min='1'><unit relativeTo='ca_objects' length='1'><ifcount code='ca_object_representations' min='1'>^ca_object_representations.media.large%length=1</ifcount></unit></ifcount></l></unit>");
 						print "<div class='masonry-title'>".$q_featured_exhibitions->getWithTemplate("<l>^ca_occurrences.preferred_labels.name</l>")."</div>";
 						print "</div>";
 						$vb_item_output = true;

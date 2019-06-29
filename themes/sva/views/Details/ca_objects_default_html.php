@@ -35,7 +35,7 @@
 <div class="row" id="sec2">
 	<div class="container-fluid">
 	<br/>
-		<H1--smaller>{{{ca_objects.preferred_labels.name}}}</H1--smaller>			
+		<H1 class="h1smaller">{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno"> ^ca_occurrences.idno</ifdef>}}}:{{{^ca_occurrences.preferred_labels.name}}}</H1>			
 		<div class="row">
 			<div class='col-sm-12'>		 
 		  	  <ul class="breadcrumbs--nav">
@@ -55,54 +55,46 @@
 				</ul>
 			</div> 
 			<div class="col-sm-12">
-            	{{{<ifdef code="ca_objects.description_public"><h2 class="exhibit-about">About the Item</h2><hr><p>^ca_objects.description_public</p></ifdef>}}}		
-            </div>				
-			<div class="col-sm-12"><hr>
-				<ul class="nav nav-pills nav-justified">
-					<li class="nav-item breadcrumbs--tab first-tab">
-					<a class="nav-link active" id="depictions-tab" data-toggle="pill" href="#depictions" role="tab" aria-controls="depictions" aria-selected="true">Depictions</a>
-					</li>
-					<li class="nav-item breadcrumbs--tab">
-					<a class="nav-link" id="metadata-tab" data-toggle="pill" href="#metadata" role="tab" aria-controls="metadata" aria-selected="false">Metadata</a>
-					</li>
-				</ul>
-			<hr></div>
+            	<h2 class="exhibit-about">Item: {{{^ca_objects.preferred_labels.name}}}</h2><hr>	
+            </div>		
+            <div class="col-sm-12">
+            	{{{<ifdef code="ca_objects.description_public"><p>^ca_objects.description_public</p></ifdef>}}}		
+            </div>			
 		</div>	
-<div class="tab-content">
-	<div class="tab-pane" id="metadata" role="tabpanel" aria-labelledby="metadata-tab">		
-		<div class="container">
 		<div class="row">	   
+			 {{{<ifdef code="ca_objects.idno"><div class="col-sm-4"><h3>Identifier</h3><p>^ca_objects.idno</p></div></ifdef>}}}		   			
+			
 			<div class="col-sm-4">
-			    {{{<ifdef code="ca_objects.idno"><h2>Identifier</h2><p>^ca_objects.idno</p></ifdef>}}}		   			
-			</div>
-			<div class="col-sm-4">
-				{{{<ifcount code="ca_objects.dates" min="1" max="1"><h2>Date</h2></ifdef>}}}
-				{{{<ifcount code="ca_objects.dates" min="2"><h2>Dates</h2></ifdef>}}}
+				{{{<ifcount code="ca_objects.dates" min="1" max="1"><h3>Date</h3></ifcount>}}}
+				{{{<ifcount code="ca_objects.dates" min="2"><h3>Dates</h3></ifcount>}}}
 				{{{<unit relativeTo="ca_objects" delimiter="<br/>"><p>^ca_objects.dates.dates_value</p><br/></unit>}}}
 			</div>	
-			<div class="col-sm-4">
-				 {{{<ifdef code="ca_objects.type_id"><h2>Format</h2><p>^ca_objects.type_id</p></ifdef>}}}	
-			</div>	
+			
+			 {{{<ifdef code="ca_objects.type_id"><div class="col-sm-4"><h3>Format</h3><p>^ca_objects.type_id</p></div></ifdef>}}}	
+	
 			<div class="col-sm-4">
 				{{{<ifdef code="ca_objects.measurementSet.measurements">^ca_objects.measurementSet.measurements (^ca_objects.measurementSet.measurementsType)</ifdef><ifdef code="ca_objects.measurementSet.measurements,ca_objects.measurementSet.measurements"> x </ifdef><ifdef code="ca_objects.measurementSet.measurements2">^ca_objects.measurementSet.measurements2 (^ca_objects.measurementSet.measurementsType2)</ifdef>}}}																					
-			    {{{<ifdef code="ca_objects.dimensions.dimensions_width"><h2>Measurements<h2></ifdef>
+			    {{{<ifdef code="ca_objects.dimensions.dimensions_width"><h3>Measurements<h3></ifdef>
 			    <p><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width (W)  </ifdef><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height (H)  </ifdef><ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth (D)  </ifdef><p/>}}}																					
 			</div>		
-			<div class="col-sm-4">
-			    {{{<ifdef code="ca_objects.materials"><h2>Materials</h2><p>^ca_objects.materials</p></ifdef>}}}
-			</div>			
+		
+			{{{<ifdef code="ca_objects.materials"><div class="col-sm-4"><h3>Materials</h3><p>^ca_objects.materials</p></div></ifdef>}}}
+			
 		</div>
-		</div>		
-	</div> <!--end metadata tab-->
-	<div class="tab-pane active" id="depictions" role="tabpanel" aria-labelledby="depictions-tab">
-		<div class="row">		
-				{{{<unit relativeTo="ca_objects.representations" filterNonPrimaryRepresentations="0" delimiter=" "><div class='col-sm-6 mx-auto'>^ca_object_representations.media.large</div></unit>}}}
-			<!-- end col -->	
+		<div class="row">	
+					<div class="col-sm-12">
+            	<hr>	
+            </div>		
+				{{{<unit relativeTo="ca_object_representations" filterNonPrimaryRepresentations="0" delimiter=" "><div class="col-sm-6 mx-auto"><l>^ca_object_representations.media.large</l><div class='masonry-title'>^ca_object_representations.preferred_labels.name</div></div></unit>}}}	
 		</div>
-	</div><!-- end tab -->
-</div><!-- end tabs -->
+	<!--	<div class="row container-fluid">
+			    <div class="card-columns">
+				{{{<unit relativeTo="ca_object_representations" filterNonPrimaryRepresentations="0" min="3" delimiter=" "><div class="card mx-auto"><l>^ca_object_representations.media.large</l><div class='masonry-title'>^ca_object_representations.preferred_labels.name</div></div></unit>}}}
+                </div>
+		</div>		-->
 </div><!-- end container -->
 </div><!-- end row -->
+</div>
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {

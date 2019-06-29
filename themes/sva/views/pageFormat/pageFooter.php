@@ -64,7 +64,7 @@
 				</div>
 			</div>
 			<div class="row justify-content-center footer-row--bottom">
-				<div class="col-md-10 text-center">
+				<div class="col-md-10 text-center notice">
 					<small>{{{footerlegal}}}</small>
 				</div>
 			</div>

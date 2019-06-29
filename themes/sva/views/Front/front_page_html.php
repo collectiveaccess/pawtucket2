@@ -28,29 +28,30 @@
 <div class="hpHero" >
 	<?php print caGetThemeGraphic('SVA_Exhibitions_Archives.jpg', array("alt" => "Rising Sun Graphic Image")); ?>
 			<div class= "wrapper" id="sec2">
-					<h1>SVA Exhibitions Archives</h1>
+					<h1>SVA Exhibitions Archives<br><a href="#breadcrumbs"><i class="material-icons">expand_more</i></a></h1>
 			</div>		
 </div>
 <div class="container-fluid p-3">
 	<div class="row" >
 		<div class="col-sm-12">
-			<ul class="breadcrumbs--nav">
+			<ul class="breadcrumbs--nav" id="breadcrumbs">
 				<li><a href="#">School of Visual Arts Archives</a><span></li>
 				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
 				</span></li>
 				<li>SVA Exhibitions Archives<span></li>
 			</ul>
+
 			<h2>About the Collection</h2><hr>
 			<div class="col-sm-10">
 				<p class="frontpara">{{{exhibitions}}}</p>
 			</div>
 		</div>
 		<div class="col-sm-12"><hr>
-		<ul class="nav nav-pills nav-justified">
-			<li class="nav-item breadcrumbs--tab first-tab">
+		<ul class="nav nav-pills nav-justified" role="tablist" role="list">
+			<li class="nav-item breadcrumbs--tab first-tab" role="listitem">
 				<a class="nav-link active" id="featured-tab" data-toggle="pill" href="#featured" role="tab" aria-controls="featured" aria-selected="true">Featured Exhibitions</a>
 			</li>
-			<li class="nav-item breadcrumbs--tab">
+			<li class="nav-item breadcrumbs--tab" role="listitem">
 				<a class="nav-link" id="browse-tab" data-toggle="pill" href="#browse" role="tab" aria-controls="browse" aria-selected="false">Browse All</a>
 			</li>
 		</ul>
