@@ -169,6 +169,9 @@ a, a:hover{
 	max-width:1156px;
 	z-index:1;
 }
+.menuBar.container{
+	max-width:1920px;
+}
 .material-icons.inline{
 	display: inline-flex;
     vertical-align: middle;
@@ -1216,12 +1219,10 @@ ul.menuItems{
 	background-color:transparent;
 }
 h1.primaryLandingBannerTitle {
-    /*font-size: 8rem;*/
-    font-size: 7.5rem;
-    line-height: 9rem;
+    font-size: 7rem;
+    line-height: 8rem;
     letter-spacing: 0px;
     margin-bottom: 20px;
-    /*color:#FFF;*/
 }
 .primaryLandingBannerContentGradient{
 	background-image: linear-gradient(to right, rgba(255,255,255,.5), rgba(255,255,255,0));
@@ -1236,12 +1237,12 @@ h1.primaryLandingBannerTitle {
 .primaryLandingBannerContent H1 {
     position: absolute;
     /*bottom: 135px;*/
-    bottom:110px;
+    bottom:130px;
     left:0px;
 }
 .front h2{
 	margin:40px 0px 60px 0px;
-	font-size:4.6rem;
+	font-size:42px;
 }
 .front h3{
 	color:#FFF;
@@ -1256,7 +1257,7 @@ h1.primaryLandingBannerTitle {
 		left:30px;
 	}
     .front h2{
-    	font-size: 3rem;
+    	font-size: 32px;
     }
 }
 @media (max-width: 600px) {
