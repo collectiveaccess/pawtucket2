@@ -62,6 +62,7 @@
 			<p class="jcarousel-pagination">
 			<!-- Pagination items will be generated in here -->
 			</p>
+			
 <?php
 			}
 ?>
