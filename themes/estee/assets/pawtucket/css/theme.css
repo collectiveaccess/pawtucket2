@@ -179,7 +179,8 @@ a, a:hover{
 h1{
 	color: #000;
 	font-family: "Optima LT Std";
-	font-size: 42px;
+	/*font-size: 42px; */
+	font-size: 38px;
 	font-weight: normal;
 	font-style: normal;
 	font-stretch: normal;
