@@ -87,7 +87,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, "Eudora", "navbar-brand", "", "","");
+				print caNavLink($this->request, "Amastris Collection", "navbar-brand", "", "","");
 ?>
 			</div>
 
