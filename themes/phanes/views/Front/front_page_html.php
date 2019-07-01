@@ -44,7 +44,7 @@
 		</div>
 	</div>
 </div>
-<!--<div class="container">
+<div class="container">
 	<div class="row">
 		<div class="col-sm-8 col-sm-offset-2 text-center">
 <?php
@@ -57,29 +57,19 @@
 		</div>
 	</div>
 </div>
-
-<div class="container">
-	<div class="row">
-		<H2>Explore Materials</H2>
-	</div>
-</div>
 <div class="container">
 	<div class="row hpBrowseLinks">
 		<div class="col-sm-3">
-			<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'bronze.jpg'), "", "", "Browse", "coins", array("facet" => "material_link_facet", "id" => 1023)); ?>
-			<?php print caNavLink($this->request, "Bronze", "hpBrowseTextLink", "", "Browse", "coins", array("facet" => "material_link_facet", "id" => 1023)); ?>		
+			<?php print caGetThemeGraphic($this->request, '1.jpg'); ?>
 		</div>
 		<div class="col-sm-3">
-			<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'electrum.jpg'), "", "", "Browse", "coins", array("facet" => "material_link_facet", "id" => 156)); ?>
-			<?php print caNavLink($this->request, "Electrum", "hpBrowseTextLink", "", "Browse", "coins", array("facet" => "material_link_facet", "id" => 156)); ?>
+			<?php print caGetThemeGraphic($this->request, '2.jpg'); ?>
 		</div>
 		<div class="col-sm-3">
-			<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'silver.jpg'), "", "", "Browse", "coins", array("facet" => "material_link_facet", "id" => 94)); ?>
-			<?php print caNavLink($this->request, "Silver", "hpBrowseTextLink", "", "Browse", "coins", array("facet" => "material_link_facet", "id" => 94)); ?>
+			<?php print caGetThemeGraphic($this->request, '3.jpg'); ?>
 		</div>
 		<div class="col-sm-3">
-			<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'gold.jpg'), "", "", "Browse", "coins", array("facet" => "material_link_facet", "id" => 172)); ?>
-			<?php print caNavLink($this->request, "Gold", "hpBrowseTextLink", "", "Browse", "coins", array("facet" => "material_link_facet", "id" => 172)); ?>
+			<?php print caGetThemeGraphic($this->request, '4.jpg'); ?>
 		</div>
 	</div>
-</div>-->
+</div>

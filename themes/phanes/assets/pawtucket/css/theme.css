@@ -215,11 +215,11 @@ body{
 	text-align:center;
 	position:relative;
 }
-.front .hpBrowseLinks > div:hover img{
+/*.front .hpBrowseLinks > div:hover img{
 	opacity: .8;
 	-webkit-transition: opacity .5s;
     transition:opacity .5s;
-}
+}*/
 .front .hpBrowseLinks > div a.hpBrowseTextLink, .front .hpBrowseLinks > div a.hpBrowseTextLink:hover{
 	opacity: 0;
 	color:#FFF;
