@@ -13,6 +13,15 @@
 		$va_skip_collection_type_ids = $t_list->getItemIDsFromList("collection_types", $va_skip_collection_type_idnos, array("dontIncludeSubItems" => true));
 	}
 	$vb_show_objects = $this->request->getParameter('show_objects', pInteger);	
+	$vn_collection_caching = $this->request->config->get("do_collection_caching");
+
+# --- check if this page has been cached
+$vs_cache_key = md5($vn_collection_id);
+if(($vn_collection_caching > 0) && ExternalCache::contains($vs_cache_key,'collection_detail_child_list')){
+	print ExternalCache::fetch($vs_cache_key, 'collection_detail_child_list');
+}else{
+
+
 	
 function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_options = array()) {
 	if($o_config->get("max_levels") && ($vn_level > $o_config->get("max_levels"))){
@@ -109,14 +118,14 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 							$vb_show_eye = false;
 							if($qr_objects->get("ca_object_representations.representation_id") || $vs_grandies || $vs_bulk_ids){
 								$vb_show_eye = true;
-?>
-								<script>
+
+								$vs_output .= "<script>
 									$(document).ready(function(){
-										$("#<?php print "level".$qr_collections->get("ca_collections.collection_id"); ?>").parents(".collectionLevelContainer").addClass("showEye");
+										$(\"#level".$qr_collections->get("ca_collections.collection_id")."\").parents(\".collectionLevelContainer\").addClass(\"showEye\");
 										 
 									})
-								</script>
-<?php
+								</script>";
+
 								#$vs_eye = "<span class='glyphicon glyphicon-eye-open'></span>&nbsp;&nbsp;";
 							}
 							$vs_output .= "<div class='row'><div class='col-xs-9".(($vb_show_eye) ? " showEye" : "")."'><span class='glyphicon glyphicon-eye-open'></span>".caDetailLink($po_request, $qr_objects->get("ca_objects.preferred_labels"), '', 'ca_objects', $qr_objects->get("ca_objects.object_id"))."</div><div class='col-xs-3'>".$qr_objects->get("ca_objects.box_folder")."</div></div>";
@@ -136,13 +145,17 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 	return $vs_output;
 }
 
+$vs_output = "";
 if ($vn_collection_id) {
-	print printLevel($this->request, array($vn_collection_id), $o_collections_config, 1, array("show_object" => $vb_show_objects, "skip_collection_type_ids" => $va_skip_collection_type_ids, "exclude_collection_type_ids" => $va_exclude_collection_type_ids, "non_linkable_collection_type_ids" => $va_non_linkable_collection_type_ids, "collection_type_icons" => $va_collection_type_icons, "collapse_levels" => $vb_collapse_levels));
+	$vs_output .= printLevel($this->request, array($vn_collection_id), $o_collections_config, 1, array("show_object" => $vb_show_objects, "skip_collection_type_ids" => $va_skip_collection_type_ids, "exclude_collection_type_ids" => $va_exclude_collection_type_ids, "non_linkable_collection_type_ids" => $va_non_linkable_collection_type_ids, "collection_type_icons" => $va_collection_type_icons, "collapse_levels" => $vb_collapse_levels));
 
 	if($va_brand = $t_item->get('ca_collections.brand', array("returnAsArray" => true))){
 		$vn_brand = $va_brand[0];
-		print "<div style='margin-left:20px;'>".caNavLink($this->request, "Products", "", "", "Browse", "Products", array("facet" => "brand_facet", "id" => $vn_brand))."</div>";
+		$vs_output .= "<div style='margin-left:20px;'>".caNavLink($this->request, "Products", "", "", "Browse", "Products", array("facet" => "brand_facet", "id" => $vn_brand))."</div>";
 	}
+	print $vs_output;
+}
+	ExternalCache::save($vs_cache_key, $vs_output, 'collection_detail_child_list', $vn_colleciton_caching);
 }
 ?>
 

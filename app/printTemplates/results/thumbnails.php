@@ -27,6 +27,7 @@
  * Template configuration:
  *
  * @name PDF (thumbnails)
+ * @filename Thumbnails
  * @type page
  * @pageSize letter
  * @pageOrientation landscape

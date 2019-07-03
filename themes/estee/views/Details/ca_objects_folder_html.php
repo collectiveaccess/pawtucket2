@@ -83,16 +83,20 @@
 								$vs_folder_icon = "<i class='material-icons inline'>folder</i>";
 							}
 							print "<div class='detailArchivalPlaceholder'>".$vs_folder_icon."</span>";
-							print "<br/><small>".$t_object->get("completely_digitized", array("convertCodesToDisplayText" => true))."</small></div>";
-						
+							$vs_dig_status = $t_object->get("completely_digitized", array("convertCodesToDisplayText" => true));
+							if($vs_dig_status && in_array($vs_dig_status, array("yes", "no"))){
+								$vs_dig_status = "The full contents of this folder have not been digitized";
+							}
+							print "<br/><small>".$vs_dig_status."</small>";
+							print "</div>";
 							if(sizeof($va_bulk_items) == 0){
-								if(!in_array(strToLower($t_object->get("completely_digitized", array("convertCodesToDisplayText" => true))), array("yes", "contents completely digitized"))){
-									print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request Digitiztion", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'folderScanRequest'))."</div>";
+								if(!in_array(strToLower($t_object->get("completely_digitized", array("convertCodesToDisplayText" => true))), array("contents completely digitized"))){
+									print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request Digitization", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'folderScanRequest'))."</div>";
 								}
 							}
 						}else{
 							print "<div class='detailArchivalPlaceholder'><i class='material-icons inline'>file_copy</i></div>";
-							print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request Digitiztion", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'digitizationRequest'))."</div>";
+							print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request Digitization", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'digitizationRequest'))."</div>";
 						}
 						
 					}	

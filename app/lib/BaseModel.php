@@ -3717,7 +3717,7 @@ class BaseModel extends BaseObject {
 	 * @param int $align align attribute of the img tag - note: deprecated in HTML 4.01, not supported in XHTML 1.0 Strict
 	 * @return string html tag
 	 */
-	public function getMediaTag($ps_field, $ps_version, $pa_options=null) {
+	public function getMediaTag($ps_field, $ps_version, $pa_options=array()) {
 		if (!is_array($va_media_info = $this->getMediaInfo($ps_field))) { return null; }
 		if (!is_array($va_media_info[$ps_version])) { return null; }
 

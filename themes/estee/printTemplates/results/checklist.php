@@ -27,6 +27,7 @@
  * Template configuration:
  *
  * @name Checklist
+ * @filename Checklist
  * @type page
  * @pageSize letter
  * @pageOrientation portrait
