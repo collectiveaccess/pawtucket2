@@ -171,7 +171,6 @@
 								"Mint" => "mint",
 								"Region" => "region",
 								"Denomination" => "denomination",
-								"Weight" => "weight",
 								"Weight Standard" => "weight_standard",
 								"Authority" => "authority",
 								"Dynasty" => "dynasty",
