@@ -171,7 +171,6 @@
 								"Mint" => "mint",
 								"Region" => "region",
 								"Denomination" => "denomination",
-								"Weight" => "weight",
 								"Weight Standard" => "weight_standard",
 								"Authority" => "authority",
 								"Dynasty" => "dynasty",
@@ -314,11 +313,14 @@
 							if($vs_authority){
 								print "<div class='authoritySection'><h4>Nomisma Authority Links</h4>".$vs_authority."</div>";
 							}
+
+?>
 							
-							
-?>							
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12">
 							{{{map}}}
-							
 						</div>
 					</div>
 				</div>
