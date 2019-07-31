@@ -1099,9 +1099,11 @@
             
 			$va_media = [];
 			while($qr_res->nextRow()) {
-				$va_media_tags = array();
-				$va_media_tags['representation_id'] = $qr_res->get('ca_object_representations.representation_id');
-				$va_media_tags['access'] = $qr_res->get('ca_object_representations.access');
+				$va_media_tags[
+					'representation_id' => $qr_res->get('ca_object_representations.representation_id');
+					'access' => $qr_res->get('ca_object_representations.access')
+				];
+				
 				foreach($pa_versions as $vs_version) {
 					$va_media_tags['tags'][$vs_version] = $qr_res->getMediaTag('ca_object_representations.media', $vs_version);
 					$va_media_tags['info'][$vs_version] = $qr_res->getMediaInfo('ca_object_representations.media', $vs_version);
