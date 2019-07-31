@@ -1099,7 +1099,7 @@
             
 			$va_media = [];
 			while($qr_res->nextRow()) {
-				$va_media_tags[
+				$va_media_tags = [
 					'representation_id' => $qr_res->get('ca_object_representations.representation_id');
 					'access' => $qr_res->get('ca_object_representations.access')
 				];
