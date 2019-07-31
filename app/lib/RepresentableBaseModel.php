@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2018 Whirl-i-Gig
+ * Copyright 2013-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -1084,8 +1084,9 @@
 			$va_media = array();
 			while($qr_res->nextRow()) {
 				$va_media_tags = array();
+				$va_media_tags['representation_id'] = $qr_res->get('ca_object_representations.representation_id');
+				$va_media_tags['access'] = $qr_res->get('ca_object_representations.access');
 				foreach($pa_versions as $vs_version) {
-					$va_media_tags['representation_id'] = $qr_res->get('ca_object_representations.representation_id');
 					$va_media_tags['tags'][$vs_version] = $qr_res->getMediaTag('ca_object_representations.media', $vs_version);
 					$va_media_tags['info'][$vs_version] = $qr_res->getMediaInfo('ca_object_representations.media', $vs_version);
 					$va_media_tags['urls'][$vs_version] = $qr_res->getMediaUrl('ca_object_representations.media', $vs_version);
