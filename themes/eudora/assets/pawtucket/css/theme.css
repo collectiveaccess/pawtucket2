@@ -1,4 +1,4 @@
-/* header gray: 4d4a47; offwhite: efebe7; yellow ochre: AA8A00; */
+/* header gray: 4d4a47; offwhite: efebe7 or f1f1e9; yellow ochre: AA8A00; */
 
 @import url('https://fonts.googleapis.com/css?family=Cinzel');
 /*
@@ -124,7 +124,7 @@ a, a:hover{
 /* footer */
 
 #footer{
-	background-color: #efebe7;
+	background-color: #f1f1e9;
 	color: #4d4a47;
 	padding-top:25px;
 	padding-bottom:25px;
@@ -581,6 +581,11 @@ a.facetApply, button.facetApplySlider {
 
 .detail .authoritySection{
 	background-color: #f1f1f1;
+	padding:10px;
+	margin-bottom:20px;
+}
+.detail .notesSection{
+	background-color: #f8f8f2;
 	padding:10px;
 	margin-bottom:20px;
 }
