@@ -277,7 +277,6 @@
 							}
 ?>
 							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale,collection"><H4>Collection History</H4></ifcount>}}}
-							# name of the sale, sale number, date and lot number
 							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale"><div class='unit'><h6>Auction<ifcount min="2" code="ca_occurrences" restrictToTypes="sale">s</ifcount></h6>
 									<unit relativeTo='ca_objects_x_occurrences' delimiter=' ' restrictToTypes='sale' sort='ca_occurrences.date' sortDirection='DESC'>
 										<div class='unitSub'>^ca_occurrences.preferred_labels<ifdef code='ca_occurrences.sale_number'>, ^ca_occurrences.sale_number<ifdef code='ca_occurrences.date'>, ^ca_occurrences.date</ifdef><ifdef code='ca_objects_x_occurrences.lot_number'>, ^ca_objects_x_occurrences.lot_number</ifdef></ifdef>
