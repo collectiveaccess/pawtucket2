@@ -78,6 +78,7 @@
 					}
 					$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
 					$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
+					$va_set_first_items_iconlarge = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $this->opa_access_values));
 					
 					$o_front_config = caGetFrontConfig();
 					$vs_front_page_set = $o_front_config->get('front_page_set_code');
@@ -102,6 +103,7 @@
 					}
 					$this->view->setVar('sets', $va_sets);
 					$this->view->setVar('first_items_from_sets', $va_set_first_items);
+					$this->view->setVar('first_items_from_sets_iconlarge', $va_set_first_items_iconlarge);
 				}
 				MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('gallery_section_name')) ? $this->config->get('gallery_section_name') : _t("Gallery")));
  				$this->render("Gallery/index_html.php");
