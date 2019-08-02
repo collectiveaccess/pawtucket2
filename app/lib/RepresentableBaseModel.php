@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2018 Whirl-i-Gig
+ * Copyright 2013-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -72,8 +72,10 @@
 			
 			if ($alt_text_template = Configuration::load()->get($this->tableName()."_alt_text_template")) { 
                 $alt_text = $this->getWithTemplate($alt_text_template);
-            } else {
+            } elseif(is_a($this, "LabelableBaseModelWithAttributes")) {
                 $alt_text = $this->get($this->tableName().".preferred_labels");
+            } else {
+                $alt_text = null;
             }
 		
 			if (!is_array($pa_versions)) { 
@@ -1061,10 +1063,13 @@
             
 			$va_media = [];
 			while($qr_res->nextRow()) {
-				$va_media_tags = [];
+				$va_media_tags = [
+					'representation_id' => $qr_res->get('ca_object_representations.representation_id'),
+					'access' => $qr_res->get('ca_object_representations.access')
+				];
+				
 				foreach($pa_versions as $vs_version) {
-					$va_media_tags['representation_id'] = $qr_res->get('ca_object_representations.representation_id');
-					$va_media_tags['tags'][$vs_version] = $qr_res->getMediaTag('ca_object_representations.media', $vs_version, ['alt' => $alt_texts[$qr_res->get($vs_pk)]]);
+					$va_media_tags['tags'][$vs_version] = $qr_res->getMediaTag('ca_object_representations.media', $vs_version);
 					$va_media_tags['info'][$vs_version] = $qr_res->getMediaInfo('ca_object_representations.media', $vs_version);
 					$va_media_tags['urls'][$vs_version] = $qr_res->getMediaUrl('ca_object_representations.media', $vs_version);
 				}
