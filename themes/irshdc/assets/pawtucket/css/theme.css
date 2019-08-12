@@ -553,6 +553,9 @@ div.browseFacetItem a:hover {
 	padding-left:0px;
 	padding-right:0px;
 }
+.detail .collapseBlock .unitTopPadding{
+	padding-top:10px;
+}
 .detail .blockContent{
 	margin:8px 10px 0px 10px;
 }

@@ -2,7 +2,33 @@
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
+	#
+	# Sharing/Social Information
+	#
 	$vn_share_enabled = $this->getVar("shareEnabled");
+	$og_title = $t_object->get('ca_objects.idno');
+	if($t_object->get('ca_objects.taxonomy_specimen.scientific_name')){
+		$og_title = $t_object->get('ca_objects.taxonomy_specimen.scientific_name').' ('.$og_title.')';
+	}
+	$va_primaryMedia = $t_object->getPrimaryRepresentationInstance();
+	$vs_share_link = "https://idigpaleo.org".caDetailUrl($this->request, 'ca_objects', $t_object->get('object_id'), '', '', array('absolute' => true));
+	if($va_primaryMedia){
+		$va_repInfo = $va_primaryMedia->getMediaInfo('media', 'large');
+		$vs_repLink = 'https://idigpaleo.org/media/idigpaleo/images/'.$va_repInfo['HASH'].'/'.$va_repInfo['MAGIC'].'_'.$va_repInfo['FILENAME'];
+	}
+	#Facebook and Twitter Tags
+	MetaTagManager::addMeta('og:url', $vs_share_link);
+	if($va_primaryMedia){
+		MetaTagManager::addMeta('og:image', $vs_repLink);
+		MetaTagManager::addMeta('og:image:width', $va_repInfo['WIDTH']);
+		MetaTagManager::addMeta('og:image:height', $va_repInfo['HEIGHT']);
+	}
+	MetaTagManager::addMeta('og:title', $og_title);
+	MetaTagManager::addMeta('fb:app_id', '1818796581723078');
+	MetaTagManager::addMeta('og:description', 'A fossil from the Cretaceous World project');
+	MetaTagManager::addMeta('twitter:card', 'summary_large_image');
+	MetaTagManager::addMeta('twitter:site', '@FossilInsectTCN');
+	MetaTagManager::addMeta('twitter:image:alt', 'Image of '.$va_voucher);
 ?>
 <script>
   window.fbAsyncInit = function() {
@@ -22,6 +48,7 @@
      fjs.parentNode.insertBefore(js, fjs);
    }(document, 'script', 'facebook-jssdk'));
 </script>
+<div role="main">
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
@@ -51,12 +78,11 @@
 						<?php 
 							if($vn_share_enabled > 0){
 								$vs_subject = $t_object->getLabelForDisplay();
-								$vs_share_link = "https://idigpaleo.org".caDetailUrl($this->request, 'ca_objects', $t_object->get('object_id'), '', '', array('absolute' => true));
 						?>
 						<div class="col-sm-4">
 							<div class="detailTool">
 								Share<br/>
-								{{{shareLink}}} <a href="https://twitter.com/intent/tweet?text=<?php print $vs_subject; ?>&url=<?php print urlencode($vs_share_link); ?>"><i class="fa fa-twitter fa-2x"></i></a> <a href="https://www.facebook.com/dialog/share?app_id=1818796581723078&quote=<?php print $vs_subject; ?>&href=<?php print urlencode($vs_share_link); ?>&href=<?php print $vs_share_link; ?>&display=iframe"><i class="fa fa-facebook fa-2x"></i></a> 
+								{{{shareLink}}} <a href="https://twitter.com/intent/tweet?text=<?php print $og_title; ?>&url=<?php print urlencode($vs_share_link); ?>"><i class="fa fa-twitter fa-2x" aria-label="twitter"></i></a> <a href="https://www.facebook.com/dialog/share?app_id=1818796581723078&quote=<?php print $vs_subject; ?>&href=<?php print urlencode($vs_share_link); ?>&href=<?php print $vs_share_link; ?>&display=iframe"><i class="fa fa-facebook fa-2x" aria-label="facebook"></i></a> 
 							</div><!-- end detailTool -->
 						<?php } ?>
 						</div>
@@ -80,7 +106,7 @@
 					</div>
 				</div>
 <!--idno/catalog no-->
-				{{{<ifdef code="ca_objects.idno"><h6>^ca_objects.idno</h6></ifdef>}}}
+				{{{<ifdef code="ca_objects.preferred_labels"><h6>^ca_objects.preferred_labels</h6></ifdef>}}}
 <!--Source Institutions-->
 				{{{<ifdef code="ca_objects.source_id"><h6>^ca_objects.source_id</h6></ifdef>}}}
 <br/><br/>
@@ -163,7 +189,7 @@
 							}
 						}
 						if(sizeof($va_tmp) > 0){
-							print "<h5>Geologic Time Period</h5>";
+							print "<h4>Geologic Time Period</h4>";
 							#print join(", ", $va_tmp)."<br/><br/>";
 							$indent = 0;
 							foreach($va_tmp as $level){
@@ -245,3 +271,4 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
+</div>

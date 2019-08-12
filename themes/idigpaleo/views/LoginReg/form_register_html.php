@@ -1,3 +1,4 @@
+<div role="main" id="main">
 <?php
 	$va_errors = $this->getVar("errors");
 	$t_user = $this->getVar("t_user");
@@ -11,6 +12,7 @@
 	}
 	if($this->request->isAjax()){
 ?>
+
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
 <?php
 	}
@@ -40,7 +42,7 @@
 ?>
 		<div class="col-sm-7">
 			<p>Are you interested in contributing collections data to iDigPaleo or developing educational activities and tools for iDigPaleo?</p>
-			<p>Please contact <a href="mailto:susan.butts@yale.edu">Susan Butts</a> and <a href="mailto:christopher.norris@yale.edu">Chris Norris</a> to discuss collaborations.</p>
+			<p>Please contact <a href="mailto:susan.butts@yale.edu">Susan Butts</a> and <a href="mailto:talia.karim@colorado.edu">Talia Karim</a> to discuss collaborations.</p>
 		</div>
 <?php
 		}
@@ -91,7 +93,7 @@
 					<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
 				</div>
 				<div class='col-sm-5'>
-					<input name="security" value="" id="security" type="text" class="form-control" />
+					<input name="security" value="" id="security" type="text" class="form-control"/>
 				</div>
 			</div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
@@ -100,12 +102,12 @@
 		if($va_errors["password"]){
 			print "<div class='alert alert-danger'>".$va_errors["password"]."</div>";
 		}
-		print $t_user->htmlFormElement("password","<div class='form-group".(($va_errors["password"]) ? " has-error" : "")."'><label for='password' class='col-sm-4 control-label'>^LABEL</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
+		print $t_user->htmlFormElement("password","<div class='form-group" .(($va_errors["password"]) ? " has-error" : "")."'><label class='col-sm-4 control-label' for='password'>^LABEL</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
 		
 ?>
 		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
 			<label for='password2' class='col-sm-4 control-label'><?php print _t('Re-Type password'); ?></label>
-			<div class="col-sm-7"><input type="password" name="password2" size="40" class="form-control" /></div><!-- end col-sm-7 -->
+			<div class="col-sm-7"><input type="password" name="password2" size="40" class="form-control" aria-label='password 2' /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
@@ -124,6 +126,7 @@
 	if($this->request->isAjax()){
 ?>
 </div><!-- end caFormOverlay -->
+</div>
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		jQuery('#RegForm').submit(function(e){		

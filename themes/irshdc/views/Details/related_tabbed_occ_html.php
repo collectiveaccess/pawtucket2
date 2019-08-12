@@ -68,7 +68,7 @@
 									}
 								}
 								if($vs_rel_sets){
-									print "<div id='relSetsButton' class='relTabButton' onClick='toggleTag(\"relSets\");'>Features</div>";
+									print "<div id='relSetsButton' class='relTabButton' onClick='toggleTag(\"relSets\");'>Featured Collections</div>";
 									if(!$vs_firstTab){
 										$vs_firstTab = "relSets";
 									}
