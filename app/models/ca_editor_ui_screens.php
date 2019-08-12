@@ -232,12 +232,38 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 		$this->BUNDLES['ca_editor_ui_screen_type_restrictions'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Type restrictions'));
 	}
 	# ------------------------------------------------------
+	/**
+	 * Get an ca_editor_ui_screens instance for a given screen within a UI.
+	 *
+	 * @param mixed $pm_ui The ui_id, idno or preferred label for the user interface
+	 * @param mixed $pm_screen The screen_id, idno or preferred label for the screen
+	 * @param array $pa_options Optional array of options. No options are currently implemented.
+	 * 		
+	 * @return ca_editor_ui_screens instance or null if the ui/screen combination does not exist.
+	 */
+	static public function loadScreen($pm_ui, $pm_screen, $pa_options=null) {
+	    $t_ui = new ca_editor_uis();
+	    if(is_numeric($pm_ui)) { $t_ui->load($pm_ui); }
+	    if(!$t_ui->isLoaded()) { $t_ui->load(['idno' => $pm_ui]); }
+	    if(!$t_ui->isLoaded()) { $t_ui = ca_editor_uis::find(['preferred_labels' => ['name' => $pm_ui]], ['returnAs' => 'firstModelInstance']); }
+	    if(!$t_ui->isLoaded()) { return null; }
+	
+	    $t_screen = new ca_editor_ui_screens();
+	    if (is_numeric($pm_screen)) { 
+	        if ($t_screen->load(['ui_id' => $t_ui->getPrimaryKey(), 'screen_id' => $pm_screen])) { return $t_screen; }
+	    }
+	    if ($t_screen->load(['ui_id' => $t_ui->getPrimaryKey(), 'idno' => $pm_screen])) { return $t_screen; }
+	    if (ca_editor_ui_screens::find(['ui_id' => $t_ui->getPrimaryKey(), 'preferred_labels' => ['name' => $pm_screen]])) { return $t_screen; }
+	    
+	    return null;
+	}
+	# ------------------------------------------------------
 	# Display settings
 	# ------------------------------------------------------
 	/**
 	 * Add bundle placement to currently loaded screen
 	 *
-	 * @param string $ps_bundle_name Name of bundle to add (eg. ca_objects.idno, ca_objects.preferred_labels.name)
+	 * @param string $ps_bundle_name Name of bundle to add (eg. ca_objects.idno, ca_objects.preferred_labels.name). Until version 1.7.9 metadata element codes had to be prefixed with "ca_attribute_"; as of version 1.7.9 the prefix is no longer required.
 	 * @param array $pa_settings Placement settings array; keys should be valid setting names
 	 * @param int $pn_rank Optional value that determines sort order of bundles in the screen. If omitted, placement is added to the end of the screen.
 	 * @param array $pa_options Optional array of options. Supports the following options:
@@ -250,6 +276,26 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 		
 		unset(ca_editor_ui_screens::$s_placement_list_cache[$vn_screen_id]);
 		
+		$table_name = Datamodel::getTableName($table_num = $this->getTableNum());
+		if (!($t_instance = Datamodel::getInstance($table_name, true))) { 
+			$this->postError(1100, _t("Could not created user interface placement: user interface table '%1' is not valid", $table_name), "ca_editor_ui_screens::addPlacement");
+			return false;
+		}
+		
+		if ((substr($ps_bundle_name, 0, 13) === 'ca_attribute_') && ca_metadata_elements::getElementID(substr($ps_bundle_name, 13))) {
+			$ps_bundle_name = substr($ps_bundle_name, 13);
+		}
+		if (ca_metadata_elements::getElementID($ps_bundle_name)) {
+			$ps_bundle_name =  "{$table_name}.{$ps_bundle_name}";
+		}
+		
+		if(defined("__CollectiveAccess_Installer__") && __CollectiveAccess_Installer__) {
+			$t_instance->reloadLabelDefinitions();	// force refresh of cache when installing, otherwise we'll get false failures for getBundleInfo()
+		}
+		if (!$t_instance->getBundleInfo($ps_bundle_name)) { 
+			$this->postError(1100, $c=_t("Could not create user interface placement: bundle '%1' is not valid", $ps_bundle_name), "ca_editor_ui_screens::addPlacement");
+			return false;
+		}
 		
 		$t_placement = new ca_editor_ui_bundle_placements(null, is_array($pa_options['additional_settings']) ? $pa_options['additional_settings'] : null);
 		if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
@@ -280,6 +326,105 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 		// Dependent field visibility config relies on UI config
 		if ($this->getAppConfig()->get('enable_dependent_field_visibility')) { CompositeCache::flush('ca_metadata_elements_available_settings'); }
 		return $t_placement->getPrimaryKey();
+	}
+	# ------------------------------------------------------
+	/**
+	 * Add bundle placement to currently loaded screen before a specified bundle
+	 *
+	 * @param string $ps_bundle_name Name of bundle to add (eg. ca_objects.idno, ca_objects.preferred_labels.name)
+	 * @param string $ps_placement_code Placement code
+	 * @param array $pa_settings Placement settings array; keys should be valid setting names
+	 * @param string $ps_relative_to_bundle_name_or_placement_code Bundle name or placement code of placement to insert new placement before.
+	 * @param array $pa_options Optional array of options. Supports the following options:
+	 * 		user_id = if specified then add will fail if specified user does not have edit access for the display
+	 * @return int Returns placement_id of newly created placement on success, false on error
+	 */
+	public function addPlacementBefore($ps_bundle_name, $ps_placement_code, $pa_settings, $ps_relative_to_bundle_name_or_placement_code, $pa_options=null) {
+	    if ($t_placement = $this->findPlacement($ps_relative_to_bundle_name_or_placement_code)) {
+	        $rank = $t_placement->get('rank');
+	        $placements = $this->getPlacements();
+	        
+	        $inc_rank = false;
+	        $rc = null;
+	        foreach($placements as $placement_id => $placement) {
+	            if ($placement['rank'] == $rank) {
+	                $inc_rank = true;   
+	            }
+	            if ($inc_rank) {
+	                $t_p = new ca_editor_ui_bundle_placements($placement_id);
+	                $t_p->set('rank', $old_rank = $t_p->get('rank') + 1);
+	                if (!$t_p->update()) {
+	                    $this->errors = $t_o->errors;
+	                    return false;
+	                }
+	            }
+	            if ($placement['rank'] == $rank) {
+	                if(!($rc = $this->addPlacement($ps_bundle_name, $ps_placement_code, $pa_settings, $old_rank, $pa_options))) {
+	                    return false;
+	                }
+	            }
+	        }
+	        return $rc;
+	    }
+	    return null;
+	}
+	# ------------------------------------------------------
+	/**
+	 * Add bundle placement to currently loaded screen after a specified bundle
+	 *
+	 * @param string $ps_bundle_name Name of bundle to add (eg. ca_objects.idno, ca_objects.preferred_labels.name)
+	 * @param string $ps_placement_code Placement code
+	 * @param array $pa_settings Placement settings array; keys should be valid setting names
+	 * @param string $ps_relative_to_bundle_name_or_placement_code Bundle name or placement code of placement to insert new placement after.
+	 * @param array $pa_options Optional array of options. Supports the following options:
+	 * 		user_id = if specified then add will fail if specified user does not have edit access for the display
+	 * @return int Returns placement_id of newly created placement on success, false on error
+	 */
+	public function addPlacementAfter($ps_bundle_name, $ps_placement_code, $pa_settings, $ps_relative_to_bundle_name_or_placement_code, $pa_options=null) {
+	    if ($t_placement = $this->findPlacement($ps_relative_to_bundle_name_or_placement_code)) {
+	        $rank = $t_placement->get('rank');
+	        $placements = $this->getPlacements();
+	        
+	        $inc_rank = false;
+	        $rc = null;
+	        foreach($placements as $placement_id => $placement) {
+	            if ($placement['rank'] == $rank) {
+	                if(!($rc = $this->addPlacement($ps_bundle_name, $ps_placement_code, $pa_settings, $rank + 1, $pa_options))) {
+	                    return false;
+	                }
+	                $inc_rank = true;   
+	            }
+	            if ($inc_rank) {
+	                $t_p = new ca_editor_ui_bundle_placements($placement_id);
+	                $t_p->set('rank', $t_p->get('rank') + 2);
+	                if (!$t_p->update()) {
+	                    $this->errors = $t_o->errors;
+	                    return false;
+	                }
+	            }
+	        }
+	        return $rc;
+	    }
+	    return null;
+	}
+	# ------------------------------------------------------
+	/**
+	 * 
+	 *
+	 * @param string $ps_bundle_name Name of bundle to add (eg. ca_objects.idno, ca_objects.preferred_labels.name)
+	 * @param array $pa_options Optional array of options. Supports the following options:
+	 * 		
+	 * @return int 
+	 */
+	public function findPlacement($ps_bundle_name_or_placement_code, $pa_options=null) {
+	    $placements = $this->getPlacements();
+	    
+	    foreach($placements as $placement_id => $placement) {
+	        if (($placement['bundle_name'] === $ps_bundle_name_or_placement_code) || ($placement['placement_code'] === $ps_bundle_name_or_placement_code)) {
+	            return new ca_editor_ui_bundle_placements($placement_id);
+	        }
+	    }
+	    return null;
 	}
 	# ------------------------------------------------------
 	/**
@@ -380,7 +525,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 		$o_db = $this->getDb();
 		
 		$qr_res = $o_db->query("
-			SELECT placement_id, bundle_name, placement_code, settings
+			SELECT placement_id, bundle_name, placement_code, settings, rank
 			FROM ca_editor_ui_bundle_placements
 			WHERE
 				screen_id = ?
@@ -545,8 +690,24 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 							'allowNull' => true,
 							'allowAll' => true,
 							'multiple' => true,
-							'label' => _t('Look up values using list'),
+							'label' => _t('Use list to suggest values'),
 							'description' => _t('Suggest values using a specific list. Select <em>All lists</em> to suggest any configured list value.')
+						);
+						$va_additional_settings['use_list_format'] = array(
+							'formatType' => FT_TEXT,
+							'displayType' => DT_SELECT,
+							'width' => "275px", 'height' => "1",
+							'takesLocale' => false,
+							'default' => null,
+							'options' => array(
+								_t('Lookup') => 'lookup',
+								_t('Drop-down') => 'select'
+							),
+							'allowNull' => false,
+							'allowAll' => false,
+							'multiple' => false,
+							'label' => _t('Suggest value via'),
+							'description' => _t('Suggest values with the selected list as either a type-ahead lookup or a drop-down menu.')
 						);
 					}
 					break;
@@ -702,7 +863,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 						
 						break;
 					} else {
-						if (!($t_rel = Datamodel::getInstanceByTableName($vs_bundle, true))) { continue; }
+						if (!($t_rel = Datamodel::getInstanceByTableName($vs_bundle, true))) { continue(2); }
 						$va_path = array_keys(Datamodel::getPath($t_instance->tableName(), $vs_bundle));
 						$va_additional_settings = array(
 							'restrict_to_relationship_types' => array(
@@ -1214,6 +1375,19 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 										'label' => _t('Display'),
 										'description' => _t('Display format for chronology.')
 									),
+									'dateMode' => array(
+										'formatType' => FT_TEXT,
+										'displayType' => DT_SELECT,
+										'options' => array(
+											_t("Order by dates") => 'use_dates', // current default mode
+											_t('Ignore dates and use entry order') => 'dateless'
+										),
+										'takesLocale' => false,
+										'default' => 'use_dates',
+										'width' => "200px", 'height' => 1,
+										'label' => _t('Date mode'),
+										'description' => _t('Order chronology items by date or by entry order.')
+									),
 									'useAppConfDefaults' => array(
 										'formatType' => FT_TEXT,
 										'displayType' => DT_CHECKBOXES,
@@ -1414,7 +1588,7 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 								
 								$va_additional_settings = array_merge($va_additional_settings, ca_objects::getHistoryTrackingEditorBundleSettingsData($vs_table));
 								
-								$va_to_hide_when_using_defaults = array_values(array_filter(array_keys($va_additional_settings), function($v) { return preg_match("!^(ca_|showDeaccessionInformation|deaccession_)!", $v); }));
+								$va_to_hide_when_using_defaults = array_values(array_filter(array_keys($va_additional_settings), function($v) { return preg_match("!^(ca_|showDeaccessionInformation|deaccession_|dateMode)!", $v); }));
 								$va_additional_settings['useAppConfDefaults']['hideOnSelect'] = $va_to_hide_when_using_defaults;
 								break;
 							case 'ca_storage_locations_contents':
@@ -1818,6 +1992,16 @@ class ca_editor_ui_screens extends BundlableLabelableBaseModelWithAttributes {
 		$t_ui = new ca_editor_uis($vn_ui_id);
 		
 		return ca_editor_ui_screens::$s_table_num_cache[$vn_ui_id] = $t_ui->get('editor_type');
+	}
+	# ------------------------------------------------------
+	/** 
+	 *
+	 */
+	public function getUI() {
+		if (!($vn_ui_id = $this->get('ui_id'))) { return null; }
+		$t_ui = new ca_editor_uis($vn_ui_id);
+		
+		return $t_ui->isLoaded() ? $t_ui : null;
 	}
 	# ------------------------------------------------------
 	# Bundles
