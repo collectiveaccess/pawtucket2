@@ -3506,7 +3506,6 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 							switch($vs_batch_mode) {
 								case '_disabled_':		// skip
 									continue(2);
-									break;
 								case '_add_':			// just try to add attribute as in normal non-batch save
 									// noop
 									break;
@@ -3809,7 +3808,6 @@ if (!$vb_batch) {
 						switch($vs_batch_mode) {
 							case '_disabled_':		// skip
 								continue(2);
-								break;
 							case '_replace_':		// remove all existing preferred labels before trying to save
 								$this->removeAllLabels(__CA_LABEL_TYPE_PREFERRED__);
 								break;
