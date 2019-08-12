@@ -40,7 +40,7 @@
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  			
  			 if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+                $this->response->setRedirect(caNavUrl("", "LoginReg", "LoginForm"));
             }
  			
  			caSetPageCSSClasses(array("findingaid"));
@@ -58,7 +58,7 @@
  			$this->view->setVar('open_by_default', $this->config->get('open_by_default'));
  			
  			
-			$va_user_access = caGetUserAccessValues($this->request);
+			$va_user_access = caGetUserAccessValues();
 			$t_parent = new ca_collections();
  			if (!($pn_parent_id = $this->request->getParameter('id', pInteger))) { 
 				$pn_parent_id = null; 
