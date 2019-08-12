@@ -1,3 +1,8 @@
+<?php
+	require_once(__CA_LIB_DIR__."/Browse/BrowseEngine.php");
+	$browse = new BrowseEngine("ca_occurrences");
+?> 
+
 <div class="tab-pane" id="browse" role="tabpanel" aria-labelledby="browse-tab">
 		<ul class="nav nav-pills nav justify-content-center">
 			<li class="nav-item breadcrumbs--tab">
@@ -13,41 +18,9 @@
 		<br/><br/>
 	<div class="tab-content">
 		<div class="tab-pane active" id="bydate" role="tabpanel" aria-labelledby="bydate-tab">
-		<div class="row justify-content-center">
-		<!--	<div class="col-md-2 d-flex align-items-center">
-            	<span class="breadcrumbs">Filter by decade</span>
-        	</div> -->
-        	<div class="col-md-7">        	
-           		<ul class="sortby">
-           			<li><a href="#1940s">1940s</a></li>
-           			<li><a href="#1950s">1950s</a></li>
-           			<li><a href="#1960s">1960s</a></li>
-           			<li><a href="#1970s">1970s</a></li>
-           			<li><a href="#1980s">1980s</a></li>
-           			<li><a href="#1990s">1990s</a></li>
-           			<li><a href="#2000s">2000s</a></li>
-           			<li><a href="#2010s">2010s</a></li>
-           		</ul>
-       	 	</div>
-       	 </div>
-       	 <br/><br/>
-       	 <div class="row">
-       	 <div class="col-sm-1">
-       	 	<img src="/themes/sva/assets/pawtucket/graphics/sharp-arrow_drop_down-24px.svg">
-       	 </div>
-				<ul class="select-list">
-					<li><h2--list>1941</h2--list></li>
-					<li class="masonry-title--list">1941-01-01 - 1940-03-01 | Here is the name of an Exhibit, Which Is Even Longer</li>
-					<li class="masonry-title--list">1941-01-01 - 1940-03-01 | Here is the name of an Exhibit, Which Is Even Longer</li>
-					<li class="masonry-title--list">1942-01-01 - 1940-03-01 | Here is the name of an Exhibit, Which Is So Long, Why?</li>
-					<li class="masonry-title--list">1943-10-14 - 1940-12-03 | Here is the name of an Exhibit, Shorter</li>
-					<li class="masonry-title--list">1944-11-01 - 1940-12-14 | Here is the name of an Exhibit With Many Many Names Attached, Group Group</li>
-					<li><h2--list>1942</h2--list></li>
-					<li class="masonry-title--list">1945-01-01 - 1940-03-01 | Here is the name of an Exhibit</li>
-					<li class="masonry-title--list">1946-01-01 - 1940-03-01 | I suppose if there is no date, the exhibit just won't show?</li>
-					<li class="masonry-title--list">1947-01-01 - 1940-03-01 | Here is the name of an Exhibit, Which Is Long</li>
-					<li class="masonry-title--list">1948-01-01 - 1940-03-01 | Here is the name of an Exhibit, Which Is Long</li>
-				</ul>
+		
+			<div id="dateBrowse">
+				
 			</div>
 		</div>
 		<div class="tab-pane" id="alpha" role="tabpanel" aria-labelledby="alpha-tab">
@@ -146,3 +119,12 @@
 	</div>
 </div>
 </div>
+
+<script type="text/javascript">
+	pawtucketUIApps['exhbrowse'] = {
+		'#dateBrowse': {
+			'facetUrl': '<?php print caNavUrl('', 'FrontBrowse', 'occurrences', ['getFacet' => 'decade', 'download' => 1]); ?>',
+			'browseUrl': '<?php print caNavUrl('', 'FrontBrowse', 'occurrences', ['facets' => 'decade:%value']); ?>'
+		}
+	};
+</script>
