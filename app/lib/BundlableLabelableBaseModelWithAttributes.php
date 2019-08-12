@@ -3511,7 +3511,7 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 									break;
 								case '_replace_':		// remove all existing attributes before trying to save
 									$this->removeAttributes($vn_element_id, array('force' => true));
-									continue;
+									break;
 							}
 						}
 						
@@ -3810,7 +3810,7 @@ if (!$vb_batch) {
 								continue(2);
 							case '_replace_':		// remove all existing preferred labels before trying to save
 								$this->removeAllLabels(__CA_LABEL_TYPE_PREFERRED__);
-								continue;
+								break;
 							case '_delete_':		// remove all existing preferred labels
 								$this->removeAllLabels(__CA_LABEL_TYPE_PREFERRED__);
 								continue(2);
@@ -3953,7 +3953,7 @@ if (!$vb_batch) {
 							break;
 						case '_replace_':		// remove all existing nonpreferred labels before trying to save
 							$this->removeAllLabels(__CA_LABEL_TYPE_NONPREFERRED__);
-							continue;
+							break;
 						case '_delete_':		// remove all existing nonpreferred labels
 							$this->removeAllLabels(__CA_LABEL_TYPE_NONPREFERRED__);
 							continue(2);
