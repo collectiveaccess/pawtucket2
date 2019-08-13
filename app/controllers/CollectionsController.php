@@ -87,7 +87,7 @@
  		 *
  		 */ 
  		public function Index() {
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("section_title"));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("collections_section_name"));
  			
  			$this->opo_result_context = new ResultContext($this->request, "ca_collections", "collections");
  			$this->opo_result_context->setAsLastFind();
