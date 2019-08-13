@@ -53,19 +53,28 @@
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-19709178-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+
+	  gtag('config', 'UA-19709178-1');
+	</script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	
 	<meta property="og:url" content="<?php print $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" />
 	<meta property="og:type" content="website" />
-	<meta property="og:description" content="<?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?>" />
+	<meta property="og:description" content="<?php print htmlspecialchars((MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name")); ?>" />
 	<meta property="og:title" content="<?php print $this->request->config->get("app_display_name"); ?>" />
 <?php
 	# --- what should the image to share be?
 	# --- default to logo --- use image from detail page if on object page
-	$vs_og_image = caGetThemeGraphic($this->request, 'ca_nav_logo300.png'); # --- replace this with logos for institutions
+	$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'NOORDERKEMPEN_logo.jpg'); # --- replace this with logos for institutions
 	if((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "objects")){
-		$ps_id = urldecode($this->request->getActionExtra());
+		$ps_id = str_replace("~", "/", urldecode($this->request->getActionExtra()));
 		$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls("ca_objects");
 		$t_subject = new ca_objects();
 		if ((($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) || ($vs_use_alt_identifier_in_urls)) && (substr($ps_id, 0, 3) == "id:")) {
@@ -87,7 +96,7 @@
 			throw new ApplicationException("Invalid id");
 		}else{
 			if($vs_rep = $t_subject->get("ca_object_representations.media.medium.url", array("checkAccess" => $va_access_values))){
-				$vs_og_image = $vs_rep;
+				$vs_og_image = $this->request->config->get("site_host").$vs_rep;
 			}
 			
 		}
@@ -174,7 +183,7 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search">
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="Zoek" name="search">
 						</div>
 						<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
@@ -189,17 +198,16 @@
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems">
 					<li class="dropdown<?php print ($this->request->getController() == "About") ? ' active' : ''; ?>" style="position:relative;">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><?php print _t("About"); ?></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Over ons</a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "About"); ?></li>
-							<li><?php print caNavLink($this->request, _t("User Guide"), "", "", "About", "Guide"); ?></li>
+							<li><?php print caNavLink($this->request, "Over deze website", "", "", "About", "About"); ?></li>
+							<li><?php print caNavLink($this->request, "Handleiding", "", "", "About", "Guide"); ?></li>
 						</ul>
 					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Zoeken", "", "", "Search", "advanced/objects"); ?></li>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "THEMA'S", "", "", "Gallery", "Index"); ?></li>
+					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, "Collecties", "", "", "Collections", "index"); ?></li>					
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

@@ -70,8 +70,9 @@
 	</script>
 </head>
 <body>
+	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
 	<div class="container">	
-		<nav class="navbar navbar-default" role="navigation">
+		<nav class="navbar navbar-default" role="navigation" aria-label="main navigation">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
@@ -81,7 +82,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'SusanEleyFineArt.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'SusanEleyFineArt.png', array("alt" => "Susan Eley Fine Art")), "navbar-brand", "", "","", "", array("aria-label" => "Susan Eley Fine Art"));
 				#print caNavLink($this->request, caGetThemeGraphic($this->request, 'sefaLogo10Years.png'), "navbar-brand", "", "","");
 ?>
 			</div>
@@ -101,4 +102,4 @@
 		</nav>
 	</div><!-- end container -->
 	<div class="container">
-		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
+		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>><div id="main" role="main">

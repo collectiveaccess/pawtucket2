@@ -97,7 +97,7 @@
 				}
 				print "<div class='row'>";
 				print "<div class='col-sm-4 exhibitionListing'>".caDetailLink($this->request, $va_images[$qr_list->get("occurrence_id")], '', 'ca_occurrences', $qr_list->get("occurrence_id"), null, null, array("type_id" => $qr_list->get("type_id")))."</div>\n";
-				print "<div class='col-sm-8 exhibitionListing'><h2><strong>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</strong></h2>".$qr_list->get("ca_occurrences.opening_closing")."</div>";
+				print "<div class='col-sm-8 exhibitionListing'><h1><strong>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</strong></h1>".$qr_list->get("ca_occurrences.opening_closing")."</div>";
 				print "</div><!-- end row -->\n";
 			}
 			print "</div><!-- end last yearTab -->";

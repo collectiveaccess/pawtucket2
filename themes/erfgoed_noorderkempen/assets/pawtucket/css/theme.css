@@ -53,6 +53,7 @@ a, a:hover{
 }
 body{
 	margin-bottom:280px;
+	color:#000
 }
 
 #footer .footerLinks a{
@@ -83,12 +84,22 @@ body{
 	margin-top:5px;
 }
 /* detail page */
+.detail{
+	color:#000;
+}
+.detail .unit a{
+	color:#828282;
+	text-decoration:underline;
+}
 .detailFbShare{
 	float:right;
 	padding-top:12px;
 }
 .detail #detailTools{
 	clear:left;
+}
+.detail H6 a {
+	color: #828282;
 }
 
 /* lightbox */
@@ -102,4 +113,53 @@ body{
 }
 .lightboxAsk span.glyphicon{
 	margin-right: 5px;
+}
+
+/* advanced search */
+
+table.attributeListItem{
+	width:100%;
+}
+
+/* gallery */
+.gallery .unit {
+    margin-bottom: 12px;
+}
+
+.bResultItemText a, .bResultListItemText a{
+	text-decoration:underline;
+}
+.bResultItemText small a, .bResultListItemText small a{
+	text-decoration:none;
+}
+
+/* forms */
+.form-control:focus {
+    border-color: #000000;
+}
+
+/* cookie notice */
+#cookieNotice{
+	position: fixed;
+	bottom: 0px;
+	width: 100%;
+	text-align: center;
+	color: #000;
+	background-color: #FFF;
+	padding: 30px 0px 30px 0px;
+	font-size: 16px;
+	z-index: 9999;
+	box-shadow: rgba(0,0,0,.5) 0px 5px 50px;
+}
+#cookieNotice .acceptCookie{
+	display:inline-block;
+	background-color:#000;
+	color:#FFF;
+	padding:10px;
+	cursor: pointer;
+	font-size:14px;
+}
+#cookieNotice a{
+	font-weight:bold;
+	text-decoration:underline;
 }

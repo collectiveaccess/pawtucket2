@@ -823,9 +823,9 @@
 			$va_params[] = $pa_ids;
 		}
 
-		$vs_sql = "SELECT DISTINCT ca_object_representations.media, {$vs_table}.{$vs_pk}
+		$vs_sql = "SELECT DISTINCT ca_object_representations.representation_id, {$vs_table}.{$vs_pk}
 			FROM {$vs_table}
-			INNER JOIN {$vs_linking_table} ON {$vs_linking_table}.{$vs_pk} = {$vs_table}.{$vs_pk}
+			INNER JOIN {$vs_linking_table} ON {$vs_linking_table}.{$vs_pk} ={$vs_table}.{$vs_pk}
 			INNER JOIN ca_objects ON ca_objects.object_id = {$vs_linking_table}.object_id
 			INNER JOIN ca_objects_x_object_representations ON ca_objects_x_object_representations.object_id = ca_objects.object_id
 			INNER JOIN ca_object_representations ON ca_object_representations.representation_id = ca_objects_x_object_representations.representation_id
@@ -836,21 +836,33 @@
 		$o_db = $t_instance->getDb();
 
 		$qr_res = $o_db->query($vs_sql, $va_params);
-		$va_res = array();
+		
+		$acc = [];
 		while($qr_res->nextRow()) {
+		    $acc[$qr_res->get("{$vs_table}.{$vs_pk}")] = $qr_res->get("ca_object_representations.representation_id");
+		}
+		
+		if (!$qr = caMakeSearchResult($vs_table, array_keys($acc))) { return []; }
+		if (!$reps = caMakeSearchResult('ca_object_representations', array_values($acc))) { return []; }
+		
+		$va_res = [];
+		
+		while($qr->nextHit()) {
+		    $reps->nextHit();
 		    switch($ps_return) {
 		        case 'urls':
-			        $va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaUrl("media", caGetOption('version', $pa_options, 'icon'));
+			        $va_res[$qr->get("{$vs_table}.{$vs_pk}")] = $reps->getMediaUrl("ca_object_representations.media", caGetOption('version', $pa_options, 'icon'), ['alt' => $qr->get("{$vs_table}_alt_text_template")]);
 			        break;
 		        case 'paths':
-			        $va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaPath("media", caGetOption('version', $pa_options, 'icon'));
+			        $va_res[$qr->get("{$vs_table}.{$vs_pk}")] = $reps->getMediaPath("ca_object_representations.media", caGetOption('version', $pa_options, 'icon'), ['alt' => $qr->get("{$vs_table}_alt_text_template")]);
 			        break;
 		        case 'tags':
 		        default:
-			        $va_res[$qr_res->get($vs_pk)] = $qr_res->getMediaTag("media", caGetOption('version', $pa_options, 'icon'));
+			        $va_res[$qr->get("{$vs_table}.{$vs_pk}")] = $reps->getMediaTag("ca_object_representations.media", caGetOption('version', $pa_options, 'icon'), ['alt' => $qr->get("{$vs_table}_alt_text_template")]);
 			        break;
 			}
 		}
+		
 		return $va_res;
 	}
 	# ---------------------------------------

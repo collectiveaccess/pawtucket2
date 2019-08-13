@@ -15,7 +15,7 @@
 ?>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
-				<button type="submit" class="btn btn-default">Save</button>
+				<button type="submit" class="btn btn-default"><?php print _t("Save"); ?></button>
 			</div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<input type="hidden" name="item_id" value="<?php print $this->getVar("item_id"); ?>">

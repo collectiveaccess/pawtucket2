@@ -38,6 +38,7 @@
 	}
 	if($this->request->isAjax()){
 ?>
+<div id="main">
 <div id="caFormOverlay">
 <?php
 	}
@@ -90,7 +91,7 @@
 				if($va_errors[$vs_field]){
 					print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
 				}
-				print "<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'>";
+				print "<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'><label for='".$vs_field."' class='col-sm-4 control-label'>";
 				print $va_profile_element["bs_formatted_element"];
 				print "</div><!-- end form-group -->";
 			}
@@ -135,7 +136,7 @@
 		</div><!-- end form-group -->
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
-				<button type="submit" class="btn btn-default">Register</button>
+				<button type="submit" class="btn btn-default"><?php print _t("Register"); ?></button>
 			</div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
@@ -144,6 +145,7 @@
 	if($this->request->isAjax()){
 ?>
 </div><!-- end caFormOverlay -->
+</div>
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		jQuery('#RegForm').submit(function(e){		
