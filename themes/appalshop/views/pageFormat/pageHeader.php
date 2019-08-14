@@ -54,6 +54,9 @@
 	<head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	<link rel='stylesheet' href='/assets/fontawesome/css/font-awesome.min.css' type='text/css' media='all'/>
+
+
 	<link href="https://fonts.googleapis.com/css?family=Oswald:300,400" rel="stylesheet"> 
 	<link href="https://fonts.googleapis.com/css?family=Cabin:400,400i,600,600i" rel="stylesheet"> 
 	<link href="https://fonts.googleapis.com/css?family=Francois+One" rel="stylesheet">
