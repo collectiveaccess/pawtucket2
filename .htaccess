@@ -5,6 +5,12 @@
 		SetEnv HTTP_MOD_REWRITE On
 	</IfModule>
 
+RewriteBase /news/
+RewriteRule ^index\.php$ - [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /news/index.php [L]
+
     RewriteRule ^archives /About/archives [R,L]
     RewriteRule ^oralhistory /Listing/oralhistory [R,L]
     RewriteRule ^specialcollections /Collections/index [R,L]
