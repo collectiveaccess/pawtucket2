@@ -20,7 +20,7 @@
 	<div class="row contentbody_sub">
 
 		<div class="col-sm-3 subnav">
-			<H5><?php print $t_item->get("ca_entities.preferred_labels.displayname"); ?></H5>	
+			<H1><?php print $t_item->get("ca_entities.preferred_labels.displayname"); ?></H1>	
 			<ul>
 				<li<?php print ($ps_view == "works") ? " class='active'" : ""; ?>><?php print caDetailLink($this->request, _t("Selected Works"), '', 'ca_entities', $t_item->get("entity_id"), null, null, array("type_id" => $t_item->get("type_id"))); ?></li>
 				<li<?php print ($ps_view == "exhibitions") ? " class='active'" : ""; ?>><?php print caDetailLink($this->request, _t("Exhibitions"), '', 'ca_entities', $t_item->get("entity_id"), array("view" => "exhibitions"), null, array("type_id" => $t_item->get("type_id"))); ?></li>
@@ -68,8 +68,10 @@
 					foreach($va_exhibitions as $va_exhibition){
 						$t_occurrence->load($va_exhibition["occurrence_id"]);
 						print "<h2>".caDetailLink($this->request, $t_occurrence->get("ca_occurrences.preferred_labels.name"), '', 'ca_occurrences', $va_exhibition["occurrence_id"], null, null, array("type_id" => $t_occurrence->get("ca_occurrences.type_id")))."</h2>";
-						print "<h2>".$t_occurrence->get("ca_occurrences.exhibition_subtitle")."</h2>";
-						print "<h4>".$t_occurrence->get("ca_occurrences.opening_closing")."</h4>";
+						if($t_occurrence->get("ca_occurrences.exhibition_subtitle")){
+							print "<h3>".$t_occurrence->get("ca_occurrences.exhibition_subtitle")."</h3>";
+						}
+						print "<div class='date'>".$t_occurrence->get("ca_occurrences.opening_closing")."</div>";
 						print "<br/>";
 					}
 				}else{
@@ -130,8 +132,8 @@
 <?php
 					if($q_objects->numHits() > 1){
 ?>
-						<a href="#" class="jcarousel-control-prev"><i class="fa fa-long-arrow-left"></i></a>
-						<a href="#" class="jcarousel-control-next"><i class="fa fa-long-arrow-right"></i></a>
+						<a href="#" class="jcarousel-control-prev"><i class="fa fa-long-arrow-left" aria-label="previous"></i></a>
+						<a href="#" class="jcarousel-control-next"><i class="fa fa-long-arrow-right" aria-label="next"></i></a>
 <?php
 					}
 ?>
