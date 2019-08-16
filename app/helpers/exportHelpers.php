@@ -290,8 +290,15 @@
 									$drawing->setOffsetY(10);
 								}
 
-								$vn_width = floor(intval($va_info['PROPERTIES']['width']) * $vn_ratio_pixels_to_excel_width);
-								$vn_height = floor(intval($va_info['PROPERTIES']['height']) * $vn_ratio_pixels_to_excel_height);
+								if(!($vn_width = $va_info['PROPERTIES']['width'])){
+									# --- AV icons have different format for media info
+									$vn_width = $va_info['WIDTH'];
+								}
+								if(!($vn_height = $va_info['PROPERTIES']['height'])){
+									$vn_height = $va_info['HEIGHT'];
+								}
+								$vn_width = floor(intval($vn_width) * $vn_ratio_pixels_to_excel_width);
+								$vn_height = floor(intval($vn_height) * $vn_ratio_pixels_to_excel_height);
 
 								// set the calculated withs for the current row and column,
 								// but make sure we don't make either smaller than they already are

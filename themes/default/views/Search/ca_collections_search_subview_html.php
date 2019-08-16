@@ -114,7 +114,6 @@
 				</div>
 			</div><!-- end blockResults -->
 		
-			<div class='allLink'><?php print caNavLink($this->request, 'all '.$va_block_info['displayName'].' results', '', '', 'Search', '{{{block}}}', array('search' => $vs_search));?></div>
 			
 			<script type="text/javascript">
 				jQuery(document).ready(function() {

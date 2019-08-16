@@ -6,7 +6,7 @@
 ?>
 <div class="row contentbody_sub aboutPages">
 	<div class="col-sm-8">
-		<h5><?php print _t("Contact"); ?></h5>
+		<h1><?php print _t("Contact"); ?></h1>
 		<p>
 			The gallery is located at 46 West 90th Street, 2nd floor, New York, NY 10024, between Central Park West and Columbus Avenue.
 		</p>
@@ -28,7 +28,7 @@
 				<div class="col-sm-4">
 					<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 						<label for="name">Name</label>
-						<input type="text" class="form-control input-sm" id="email" placeholder="Enter name" name="name" value="{{{name}}}">
+						<input type="text" class="form-control input-sm" id="name" placeholder="Enter name" name="name" value="{{{name}}}">
 					</div>
 				</div><!-- end col -->
 				<div class="col-sm-4">
@@ -70,9 +70,8 @@
 		</form>
 	</div>	
 	<div class="col-sm-4 col-md-3 col-md-offset-1">
-	 	<H5>&nbsp;</H5>
 	 	<div class="thumbnail">
-	 		<?php print caGetThemeGraphic($this->request, 'contact.jpg'); ?>
+	 		<?php print caGetThemeGraphic($this->request, 'contact.jpg', array('alt' => 'Exterior of Susan Eley Fine Art')); ?>
 	 	</div>
 	</div>
 </div>

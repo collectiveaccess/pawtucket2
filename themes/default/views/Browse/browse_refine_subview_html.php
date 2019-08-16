@@ -57,7 +57,7 @@
 <?php
 			} else {				
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-				print "<H5>".$va_facet_info['label_singular']."</H5>"; 
+				print "<h4>".$va_facet_info['label_singular']."</h4>"; 
 				switch($va_facet_info["group_mode"]){
 					case "alphabetical":
 					case "list":

@@ -30,7 +30,7 @@
 	if(in_array($ps_view, array("installations", "installationThumbnails"))){
 		if(is_object($o_representations) && $o_representations->numHits()){
 			while($o_representations->nextHit()){
-				$va_images[$o_representations->get("representation_id")] = array("image" => $o_representations->get("ca_object_representations.media.mediumlarge"), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => ($o_representations->get("ca_object_representations.preferred_labels.name") == "[BLANK]") ? "" : $o_representations->get("ca_object_representations.preferred_labels.name"));
+				$va_images[$o_representations->get("representation_id")] = array("image" => $o_representations->get("ca_object_representations.media.mediumlarge", array("alt" => "Installation View of ".$t_item->get("ca_occurrences.preferred_labels.name"))), "thumbnail" => $o_representations->get("ca_object_representations.media.thumbnail300square"), "id" => $o_representations->get("representation_id"), "label" => ($o_representations->get("ca_object_representations.preferred_labels.name") == "[BLANK]") ? "" : $o_representations->get("ca_object_representations.preferred_labels.name"));
 			}
 		}
 	}
@@ -40,7 +40,7 @@
 ?>	
 	<div class="row contentbody_sub">
 
-		<div class="col-sm-3 subnav">
+		<div class="col-sm-3 subnav" role="navigation" aria-label="Secondary navigation">
 <?php 
 			print $this->render("SubNav/exhibitions_html.inc");
 ?>
@@ -48,7 +48,7 @@
 			
 		<div class="col-sm-9">			
 			<div class="row">
-				<div class="col-sm-12">
+				<div class="col-sm-12" role="navigation" aria-label="Exhibit navigation">
 					<ul class="nav nav-pills">
 <?php
 						print "<li".(($ps_view == "info") ? " class='active'" : "").">".caDetailLink($this->request, _t("exhibition main"), '', 'ca_occurrences', $t_item->get("occurrence_id"), null, null, array("type_id" => $t_item->get("type_id")))."</li>";
@@ -96,20 +96,15 @@
 					{{{<ifdef code="ca_occurrences.exhibition_subtitle">
 						<h2>^ca_occurrences.exhibition_subtitle</h2>
 					</ifdef>}}}
-					<h4>{{{^ca_occurrences.opening_closing}}}{{{<ifdef code="ca_occurrences.opening_reception"> | Opening Reception: ^ca_occurrences.opening_reception</ifdef>}}}</h4>
+					<div class='date'>{{{^ca_occurrences.opening_closing}}}{{{<ifdef code="ca_occurrences.opening_reception"> | Opening Reception: ^ca_occurrences.opening_reception</ifdef>}}}</div>
 					{{{^ca_occurrences.description}}}
 				</p>
-				<br/><strong>
-				{{{<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="exhibited">
-					Artists: 
-				</ifcount>}}}
-				{{{<ifcount code="ca_entities" min="1" max="1" restrictToRelationshipTypes="exhibited">
-					Artist: 
-				</ifcount>}}}
+				<br/>
+				<div class="exhibitArtists">{{{<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="exhibited">Artists: </ifcount>}}}
+				{{{<ifcount code="ca_entities" min="1" max="1" restrictToRelationshipTypes="exhibited">Artist: </ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="exhibited">
 					<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="exhibited"><l>^ca_entities.preferred_labels.displayname</l></unit>
-				</ifcount>}}}
-				</strong>
+				</ifcount>}}}</div>
 <?php
 			break;
 			# ----------------------------------------------
@@ -140,8 +135,8 @@
 <?php
 					if(sizeof($va_images) > 1){
 ?>
-						<a href="#" class="jcarousel-control-prev"><i class="fa fa-long-arrow-left"></i></a>
-						<a href="#" class="jcarousel-control-next"><i class="fa fa-long-arrow-right"></i></a>
+						<a href="#" class="jcarousel-control-prev"><i class="fa fa-long-arrow-left" aria-label="previous"></i></a>
+						<a href="#" class="jcarousel-control-next"><i class="fa fa-long-arrow-right" aria-label="next"></i></a>
 <?php
 					}
 ?>
@@ -250,13 +245,13 @@
 ?>
 				</div><!--end col-sm-12-->
 			</div><!--end row-->
-		</div><!--end col-sm-9-->
-		<div class="row">
-			<div class="col-sm-3 btmsubnav">
-<?php 
-			print $this->render("SubNav/exhibitions_html.inc");
-?>			
-			</div><!-- end col -->
-		</div><!-- end row -->				
+		</div><!--end col-sm-9-->				
 	</div><!--end row contentbody-->
+	<div class="row">
+		<div class="col-sm-3 btmsubnav">
+<?php 
+		print $this->render("SubNav/exhibitions_html.inc");
+?>			
+		</div><!-- end col -->
+	</div><!-- end row -->
 	

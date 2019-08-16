@@ -3,6 +3,7 @@
 <?php
 	$va_sets = $this->getVar("sets");
 	$va_first_items_from_set = $this->getVar("first_items_from_sets");
+	$va_first_items_from_set_iconlarge = $this->getVar("first_items_from_sets_iconlarge");
 	if(is_array($va_sets) && sizeof($va_sets)){
 		# --- main area with info about selected set loaded via Ajax
 ?>
@@ -30,9 +31,14 @@
 									print "<li>";
 								}
 								$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
+								$va_first_item_iconlarge = array_shift($va_first_items_from_set_iconlarge[$vn_set_id]);
+								$vs_rep = "";
+								if(!($vs_rep = $va_first_item_iconlarge["representation_tag"])){
+									$vs_rep = $va_first_item["representation_tag"];	
+								}
 								print "<div class='galleryItem'>
 											<a href='#' onclick='jQuery(\"#gallerySetInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetInfo', array('set_id' => $vn_set_id))."\"); return false;'>
-												<div class='galleryItemImg'>".$va_first_item["representation_tag"]."</div>
+												<div class='galleryItemImg'>".$vs_rep."</div>
 												<h5>".$va_set["name"]."</h5>
 												<p><small class='uppercase'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</small></p>
 											</a>
