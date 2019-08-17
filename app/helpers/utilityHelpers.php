@@ -3922,7 +3922,7 @@ function caFileIsIncludable($ps_file) {
 			switch($vs_char = mb_substr($ps_template, $i, 1)) {
 				case '{':
 				    if (!$vb_in_tag && !$vb_in_single_quote && $vb_in_single_quote && (mb_substr($ps_template, $i+1, 1) === '^')) {
-				        continue;
+				        continue(2);
 				    }
 				    break;
 				case '^':
