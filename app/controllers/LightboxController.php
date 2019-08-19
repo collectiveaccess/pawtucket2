@@ -737,7 +737,7 @@
 								foreach($va_group_users as $va_user_info){
 									// don't send notification to self
 									if($this->request->user->get("user_id") != $va_user_info["user_id"]){
-										caSendmail($va_user_info["email"], array($this->request->user->get("email") => trim($this->request->user->get("fname")." ".$this->request->user->get("lname"))), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+										caSendmail($va_user_info["email"], $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 									}
 								}
 							}							
@@ -814,7 +814,7 @@
 						$vs_mail_message_html = $o_view->render("mailTemplates/share_set_notification_html.tpl");
 					
 						foreach($va_success_emails as $vs_email){
-							caSendmail($vs_email, array($this->request->user->get("email") => trim($this->request->user->get("fname")." ".$this->request->user->get("lname"))), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+							caSendmail($vs_email, $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 						}
 					}
 				}
