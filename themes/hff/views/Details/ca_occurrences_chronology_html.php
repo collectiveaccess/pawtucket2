@@ -97,6 +97,10 @@
 							$vs_exhibition = $vs_title = $vs_date = $vs_originating_venue = "";
 							
 							$vs_originating_venue 	= $qr_res->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='originator' delimiter=', '>^ca_entities.preferred_labels</unit>", array("checkAccess" => $va_access_values));
+							if($vs_venue_location = $qr_res->get("ca_occurrences.venue_location", array("delimiter" => ", "))){
+								$vs_originating_venue .= ", ".$vs_venue_location;
+							}
+							
 							$vs_title = $qr_res->get("ca_occurrences.preferred_labels");
 							# --- add closing & opening <i> tags to un-italicize andy brackets
 							$vs_title = italicizeTitle($vs_title);

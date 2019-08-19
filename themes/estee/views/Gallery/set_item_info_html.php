@@ -14,4 +14,4 @@
 	}
 ?>
 
-<br/><br/><div class="text-center"><?php print caDetailLink($this->request, _t("VIEW RECORD"), 'btn-default', $this->getVar("table"),  $this->getVar("row_id")); ?></div>
+<br/><br/><div class="text-center"><?php print caDetailLink($this->request, _t("View Record"), 'btn-default', $this->getVar("table"),  $this->getVar("row_id")); ?></div>

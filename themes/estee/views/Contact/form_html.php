@@ -2,6 +2,7 @@
 	<div class="col-sm-12 col-md-10 col-md-offset-1">
 
 <?php
+	$va_access_values = caGetUserAccessValues($this->request);
 	# --- inquire about item/ contact form / digitization request
 	# inquiry/contact/digitizationRequest
 	$ps_contactType = $this->request->getParameter("contactType", pString);
@@ -12,9 +13,19 @@
 	if($pn_object_id){
 		require_once(__CA_MODELS_DIR__."/ca_objects.php");
 		$t_item = new ca_objects($pn_object_id);
-		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "objects", $t_item->get("ca_objects.object_id"));
+		# --- is this bulk media?  We need to use the url of the container the bulk media is linked to
+		$t_list_item = new ca_list_items();
+		$t_list_item->load($t_item->get("type_id"));
+		$vs_typecode = $t_list_item->get("idno");
+		if($vs_typecode == "bulk"){
+			$vn_container_id = $t_item->get("ca_objects.related.object_id", array("checkAccess" => $va_access_values, "restrictToTypes" => array("folder"), "limit" => 1));
+			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $vn_container_id);
+		}else{
+			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $t_item->get("ca_objects.object_id"));
+		}
 		$vs_name = $t_item->get("ca_objects.preferred_labels.name");
 		$vs_idno = $t_item->get("ca_objects.idno");
+		
 	}
 	$pn_collection_id = $this->request->getParameter("collection_id", pInteger);
 	if($pn_collection_id){
@@ -56,11 +67,13 @@
 				case "projectInquiry":
 					print "<H1>Project Inquiry</H1>";
 				break;
-				case "transfer":
-					print "<H1>Transfer to the Archives</H1>";
-				break;
+				#case "transfer":
+				#	print "<H1>Transfer to the Archives</H1>";
+				#break;
 				case "folderScanRequest":
-					print "<H1>Folder Scan Request</H1>";
+				case "avScanRequest":
+				case "digitizationRequest":
+					print "<H1>Digitization Request</H1>";
 				break;
 				default:
 					print "<H1>Contact the Archives</H1>";
@@ -201,6 +214,8 @@
 		break;
 		# -----------------------------
 		case "folderScanRequest":
+		case "avScanRequest":
+		case "digitizationRequest":
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
 		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
@@ -242,7 +257,25 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
-						<label for="message">I WOULD LIKE THE FULL CONTENTS OF THIS FOLDER TO BE SCANNED</label>
+<?php
+						switch($ps_contactType){
+							case "folderScanRequest":
+?>
+								<label for="message">I would like the full contents of this folder to be scanned</label>
+<?php
+							break;
+							case "avScanRequest":
+?>
+								<label for="message">I would like this audiovisual item to be digitized</label>
+<?php
+							break;
+							case "digitizationRequest":
+?>
+								<label for="message">I would like this item to be digitized</label>
+<?php							
+							break;						
+						}
+?>
 						<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
 					</div>
 				</div><!-- end col -->
@@ -268,7 +301,7 @@
 <?php		
 		break;
 		# -----------------------------
-		case "transfer":
+		case "transferOLD":
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
 		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
@@ -328,6 +361,7 @@
 		<li role="presentation" class="active"><a href="#general" aria-controls="General Questions" role="tab" data-toggle="tab">General Questions</a></li>
 		<li role="presentation"><a href="#tours" aria-controls="profile" role="tab" data-toggle="tab">Tours</a></li>
 		<li role="presentation"><a href="#research" aria-controls="settings" role="tab" data-toggle="tab">Research Appointments</a></li>
+		<li role="presentation"><a href="#transfer" aria-controls="settings" role="tab" data-toggle="tab">Transfer</a></li>
 	</ul>
 
 	<!-- Tab panes -->
@@ -735,6 +769,58 @@
 				<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
 				<input type="hidden" name="contactType" value="Research Appointments">
 			</form>
+		</div>
+		<div role="tabpanel" class="tab-pane" id="transfer">
+			<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+				<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
+
+					<div class="row">
+						<div class="col-sm-12">
+							<H2>Transfer</H2>
+							<p>{{{transfer_text}}}</p>
+							<hr/>
+					
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
+										<label for="name">Your Name</label>
+										<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+									</div>
+								</div><!-- end col -->
+								<div class="col-sm-6">
+									<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
+										<label for="email">Your Email address</label>
+										<input type="text" class="form-control input-sm" id="email" placeholder="Enter your email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $this->request->user->get("email"); ?>">
+									</div>
+								</div><!-- end col -->
+							</div><!-- end row -->
+						</div><!-- end col -->
+					</div><!-- end row -->
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
+								<label for="message">I am interested in transfering the following material</label>
+								<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
+							</div>
+						</div><!-- end col -->
+					</div><!-- end row -->
+					<div class="row">
+						<div class="col-sm-12">
+							<div class="form-group">
+								<br/><button type="submit" class="btn btn-default">Send</button>
+							</div><!-- end form-group -->
+						</div>
+					</div>
+				<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
+				<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
+				<input type="hidden" name="contactType" value="Transfer Request">
+
+			</form>
+
 		</div>
 	</div>
 	<script type='text/javascript'>

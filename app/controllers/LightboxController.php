@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2017 Whirl-i-Gig
+ * Copyright 2013-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -699,7 +699,7 @@
  			if(!$pn_access){
  				$va_errors["access"] = _t("Please select an access level");
  			}
- 			if(sizeof($va_errors) == 0){
+ 			if(!is_array($va_errors) || (sizeof($va_errors) == 0)){
 				if($pn_group_id){
 					$t_sets_x_user_groups = new ca_sets_x_user_groups();
 					if($t_sets_x_user_groups->load(array("set_id" => $t_set->get("set_id"), "group_id" => $pn_group_id))){
@@ -751,11 +751,11 @@
 					$va_error_emails = array();
 					$va_success_emails = array();
 					$va_error_emails_has_access = array();
-					$t_user = new ca_users();
+					
 					foreach($va_users as $vs_user){
 						// lookup the user/users
-						$t_user->load(array("email" => $vs_user));
-						if($vn_user_id = $t_user->get("user_id")){
+						$t_user = ca_users::find(['email' => $vs_user, 'active' => 1, 'userclass' => ['<', 255]], ['returnAs' => 'firstModelInstance']);
+						if($t_user && ($vn_user_id = $t_user->get("user_id"))){
 							$t_sets_x_users = new ca_sets_x_users();
 							if(($vn_user_id == $t_set->get("user_id")) || ($t_sets_x_users->load(array("set_id" => $t_set->get("set_id"), "user_id" => $vn_user_id)))){
 								$va_error_emails_has_access[] = $vs_user;

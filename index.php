@@ -114,13 +114,18 @@
 		// Security headers
 		$resp->addHeader("X-XSS-Protection", "1; mode=block");
 		$resp->addHeader("X-Frame-Options", "SAMEORIGIN");
-		$resp->addHeader("Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com nominatim.openstreetmap.org  ajax.googleapis.com tagmanager.google.com www.googletagmanager.com www.google-analytics.com www.google.com/recaptcha/ www.gstatic.com 'unsafe-inline' 'unsafe-eval';"); 
-		$resp->addHeader("X-Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com nominatim.openstreetmap.org  ajax.googleapis.com  tagmanager.google.com www.googletagmanager.com www.google-analytics.com www.google.com/recaptcha/ www.gstatic.com 'unsafe-inline' 'unsafe-eval';"); 
+		$resp->addHeader("Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com nominatim.openstreetmap.org  ajax.googleapis.com tagmanager.google.com www.googletagmanager.com www.google-analytics.com www.google.com/recaptcha/ www.gstatic.com ".$g_request->config->get('content_security_policy_include')." 'unsafe-inline' 'unsafe-eval';"); 
+		$resp->addHeader("X-Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com nominatim.openstreetmap.org  ajax.googleapis.com  tagmanager.google.com www.googletagmanager.com www.google-analytics.com www.google.com/recaptcha/ www.gstatic.com ".$g_request->config->get('content_security_policy_include')." 'unsafe-inline' 'unsafe-eval';"); 
 	
 		//
 		// Dispatch the request
 		//
-		$vb_auth_success = $g_request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false, 'allow_external_auth' => ($g_request->getController() == 'LoginReg')));
+		//
+		// Don't try to authenticate when doing a login attempt or trying to access the 'forgot password' feature
+		//
+		if ((AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__) && !preg_match("/^[\/]{0,1}system\/auth\/callback/", strtolower($g_request->getPathInfo()))) || !preg_match("/^[\/]{0,1}system\/auth\/(dologin|login|forgot|requestpassword|initreset|doreset|callback)/", strtolower($g_request->getPathInfo()))) {
+		    $vb_auth_success = $g_request->doAuthentication(array('dont_redirect' => true, 'noPublicUsers' => false, 'allow_external_auth' => ($g_request->getController() == 'LoginReg')));
+		}
 		$app->dispatch(true);
 
 		//

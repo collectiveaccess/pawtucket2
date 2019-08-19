@@ -27,6 +27,7 @@
  * Template configuration:
  *
  * @name Checklist
+ * @filename Checklist
  * @type page
  * @pageSize letter
  * @pageOrientation portrait
@@ -91,7 +92,9 @@
 								$vs_caption .= "<br/>";
 							}
 						}
-						if(($vs_brand = $vo_result->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))) | ($vs_subbrand = $vo_result->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true, "delimiter" => ", ")))){
+						$vs_brand = $vo_result->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "));
+						$vs_subbrand = $vo_result->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "));
+						if($vs_brand || $vs_subbrand){
 							$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? " &rsaquo; " : "").$vs_subbrand;
 						}
 						$vs_caption .= "</div>";

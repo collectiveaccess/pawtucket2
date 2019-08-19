@@ -37,7 +37,7 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H2>{{{^ca_collections.preferred_labels.name}}}</H2>
+					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
 					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6><br/></ifdef>}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
@@ -125,8 +125,8 @@
 						<div class="row">
 							<div class="col-sm-12">
 								<div class='collectionsContentsContainer'>
-									<div class='label'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
-									<div id="collectionLoad"></div>
+									<H2><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</H2>
+									<div id="collectionLoad"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 								</div>
 			<script>
 				$(document).ready(function(){
@@ -148,7 +148,7 @@
 						</div><!-- end row -->
 						<script type="text/javascript">
 							jQuery(document).ready(function() {
-								jQuery("#browseCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'facet' => 'collection_facet', 'value' => $t_item->get("ca_collections.collection_id"))); ?>");
+								jQuery("#browseCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'facet' => 'collection_facet', 'id' => $t_item->get("ca_collections.collection_id"))); ?>");
 					
 					
 							});
