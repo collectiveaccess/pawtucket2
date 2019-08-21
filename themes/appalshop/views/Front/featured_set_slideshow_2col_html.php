@@ -127,6 +127,18 @@
 							wrap:'circular'
 						});
 		
+		             $(function() {
+   					 $('.jcarousel')
+      				  .jcarousel({
+     			       // Core configuration goes here
+   					     })
+   					     .jcarouselAutoscroll({
+   				         interval: 4000,
+       				     target: '+=1',
+     				       autostart: true
+       					 })
+ 						   ;
+							});
 					/*
 					 Prev control initialization
 					 */
