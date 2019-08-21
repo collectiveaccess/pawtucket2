@@ -88,6 +88,9 @@
 				if ($vs_description = $t_object->get('ca_objects.description')) {
 					print "<div class='unit'><h6>Physical Description</h6>".$vs_description."</div>";
 				}
+				if ($vs_phys_attributes = $t_object->get('ca_objects.phys_attributes')) {
+					print "<div class='unit'><h6>Physical attributes</h6>".$vs_phys_attributes."</div>";
+				}
 				if ($vs_edition_note = $t_object->get('ca_objects.edition_note')) {
 					print "<div class='unit'><h6>Edition Note</h6>".$vs_edition_note."</div>";
 				}
@@ -245,6 +248,9 @@
 				}	
 				if ($vs_genre = $t_object->get('ca_list_items.preferred_labels', array('convertCodesToDisplayText' => true, 'list' => 'genres', 'delimiter' => '; '))) {
 					$vs_vocab.= "<div class='unit'><h6>Genre</h6>".$vs_genre."</div>";
+				}	
+				if ($vs_genre_forms = $t_object->get('ca_objects.lc_genres', array('delimiter' => '; '))) {
+					$vs_vocab.= "<div class='unit'><h6>Library of Congress Genre/Form Terms</h6>".$vs_genre_forms."</div>";
 				}	
 				if ($vs_paper = $t_object->get('ca_list_items.preferred_labels', array('convertCodesToDisplayText' => true, 'list' => 'paper', 'delimiter' => '; '))) {
 					$vs_vocab.= "<div class='unit'><h6>Paper</h6>".$vs_paper."</div>";

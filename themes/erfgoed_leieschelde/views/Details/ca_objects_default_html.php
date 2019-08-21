@@ -116,16 +116,46 @@
 						<span class="trimText">^ca_objects.content_description</span>
 					</div>
 				</ifdef>}}}
-				{{{<ifcount code="ca_list_items" min="1"><div class="unit"><H6>Objecttype</H6><unit relativeTo="ca_list_items" delimiter=", ">^ca_list_items.preferred_labels.name_plural</unit></div></ifcount>}}}
-								
+<?php
+				if($va_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true))){
+					print '<div class="unit"><H6>Objecttype</H6>';
+					$va_tmp = array();
+					foreach($va_list_items as $va_list_item){
+						$va_tmp[] = caNavLink($this->request, $va_list_item["label"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_list_item["item_id"]));
+					}
+					print join(", ", $va_tmp);
+					print '</div>';
+				}
+?>				
 				
 				{{{<ifdef code="ca_objects.dimensions"><div class="unit"><H6>Afmetingen</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.dimensions.dimensions_name">^ca_objects.dimensions.dimensions_name: </ifdef><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height</ifdef><ifdef code="ca_objects.dimensions.dimensions_width|ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_width">^ca_objects.dimensions.dimensions_width</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth"> X </ifdef><ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth</ifdef><ifdef code="ca_objects.dimensions.dimensions_unit"> ^ca_objects.dimensions.dimensions_unit</ifdef><ifdef code="ca_objects.dimensions.weight"> ^ca_objects.dimensions.weight</ifdef><ifdef code="ca_objects.dimensions.weight,ca_objects.dimensions.weight_unit"> ^ca_objects.dimensions.weight_unit</ifdef></unit></div></ifdef>}}}
 				{{{<ifcount code="ca_places" min="1"><div class="unit"><H6>Plaatsen</H6><unit relativeTo="ca_places" delimiter=", ">^ca_places.preferred_labels</unit></div></ifcount>}}}
-				{{{<ifdef code="ca_objects.production_dating.Style|ca_objects.production_dating.earliest_date|ca_objects.production_dating.production_period"><div class="unit"><H6>Datering</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.production_dating.Style">^ca_objects.production_dating.Style </ifdef><ifdef code="ca_objects.production_dating.earliest_date">^ca_objects.production_dating.earliest_date </ifdef><ifdef code="ca_objects.production_dating.production_period">^ca_objects.production_dating.production_period </ifdef></unit></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.object_keywords"><div class="unit"><H6>Trefwoord</H6>^ca_objects.object_keywords%delimiter=,_</div></ifdef>}}}
 				
 <?php
-				print $t_object->getWithTemplate('<ifdef code="ca_objects.production_maker.maker"><div class="unit"><H6>Vervaardiger</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.production_maker.maker">^ca_objects.production_maker.maker</ifdef><ifdef code="ca_objects.production_maker.maker_role">, ^ca_objects.production_maker.maker_role</ifdef><ifdef code="ca_objects.production_maker.maker_sureness">, ^ca_objects.production_maker.maker_sureness</ifdef></unit></div></ifdef>');
+				if($vs_date = $t_object->getWithTemplate('<ifdef code="ca_objects.production_dating.Style|ca_objects.production_dating.earliest_date|ca_objects.production_dating.production_period"><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.production_dating.Style">^ca_objects.production_dating.Style </ifdef><ifdef code="ca_objects.production_dating.earliest_date">^ca_objects.production_dating.earliest_date </ifdef><ifdef code="ca_objects.production_dating.production_period">^ca_objects.production_dating.production_period </ifdef></unit></ifdef>')){
+					print '<div class="unit"><H6>Datering</H6>';
+					print caNavLink($this->request, $vs_date, "", "", "Search", "objects", array("search" => "'".$vs_date."'"));
+					print '</div>';
+				}
+				if($va_object_keywords = $t_object->get("ca_objects.object_keywords", array("returnWithStructure" => true))){
+					$va_object_keywords = array_pop($va_object_keywords);
+					$va_tmp = array();
+					foreach($va_object_keywords as $va_object_keyword){
+						$va_tmp[] = caNavLink($this->request, $va_object_keyword["object_keywords"], "", "", "Browse", "objects", array("facet" => "trefwoorden_facet", "id" => $va_object_keyword["object_keywords"]));
+					}
+						print '<div class="unit"><H6>Trefwoord</H6>';
+						print join(", ", $va_tmp);
+						print "</div>";
+				}
+				if($va_makers = $t_object->get("ca_objects.production_maker.maker", array("returnAsArray" => true, "convertCodesToDisplayText" => true))){
+					$va_makers_ids = $t_object->get("ca_objects.production_maker.maker", array("returnAsArray" => true));
+					print '<div class="unit"><H6>Vervaardiger</H6>';
+					foreach($va_makers as $vn_i => $vs_maker){
+						print caNavLink($this->request, $vs_maker, "", "", "Search", "objects", array("search" => "ca_entities.entity_id:".$va_makers_ids[$vn_i]));
+					}
+					print '</div>';
+				}
+				#print $t_object->getWithTemplate('<ifdef code="ca_objects.production_maker.maker"><div class="unit"><H6>Vervaardiger</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.production_maker.maker">^ca_objects.production_maker.maker</ifdef><ifdef code="ca_objects.production_maker.maker_role">, ^ca_objects.production_maker.maker_role</ifdef><ifdef code="ca_objects.production_maker.maker_sureness">, ^ca_objects.production_maker.maker_sureness</ifdef></unit></div></ifdef>');
 				print $t_object->getWithTemplate('<ifdef code="ca_objects.management_acquisition.acquisition_source|ca_objects.management_acquisition.acquisition_method_type|ca_objects.management_acquisition.acquisition_date|ca_objects.management_acquisition.acquisition_note"><div class="unit"><H6>Verwerving</H6><unit relativeTo="ca_objects" delimiter="<br/>"><ifdef code="ca_objects.management_acquisition.acquisition_source">^ca_objects.management_acquisition.acquisition_source</ifdef><ifdef code="ca_objects.management_acquisition.acquisition_method_type">, ^ca_objects.management_acquisition.acquisition_method_type</ifdef><ifdef code="ca_objects.management_acquisition.acquisition_date">, ^ca_objects.management_acquisition.acquisition_date</ifdef><ifdef code="ca_objects.management_acquisition.acquisition_note">, ^ca_objects.management_acquisition.acquisition_note</ifdef></unit></div></ifdef>');
 	if($vs_map = $this->getVar("map")){								
 		print "<hr></hr><div class='unit'>".$vs_map."</div><br/>";
