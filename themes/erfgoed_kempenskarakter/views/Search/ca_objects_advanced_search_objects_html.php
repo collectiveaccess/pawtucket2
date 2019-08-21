@@ -54,8 +54,14 @@
 	</div>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
+			<span class='formLabel' data-toggle="popover" data-trigger="hover">Objecttype</span>
+			{{{ca_list_items.preferred_labels%width=220px}}}
+		</div>
+	</div>		
+	<div class='row'>
+		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover">Trefwoord</span>
-			{{{ca_list_items.preferred_labels.name%width=220px}}}
+			{{{ca_objects.object_keywords%width=220px}}}
 		</div>
 	</div>
 	<br style="clear: both;"/>
