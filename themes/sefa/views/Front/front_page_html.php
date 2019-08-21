@@ -76,7 +76,7 @@
 		if($t_exhibition->get("ca_occurrences.exhibition_subtitle")){
 			print "<h2>".caDetailLink($this->request, $t_exhibition->get("ca_occurrences.exhibition_subtitle"), '', 'ca_occurrences', $t_exhibition->get("ca_occurrences.occurrence_id"), null, null, array("type_id" => $t_exhibition->get("ca_occurrences.type_id")))."</h2>";
 		}
-		print "<h4>".$t_exhibition->get("ca_occurrences.opening_closing").(($t_exhibition->get("ca_occurrences.opening_reception")) ? " | Opening Reception: ".$t_exhibition->get("ca_occurrences.opening_reception") : "")."</h4>";
+		print "<div class='date'>".$t_exhibition->get("ca_occurrences.opening_closing").(($t_exhibition->get("ca_occurrences.opening_reception")) ? " | Opening Reception: ".$t_exhibition->get("ca_occurrences.opening_reception") : "")."</div>";
 	}
 ?>
 	</div><!--end col-sm-12-->
@@ -102,7 +102,7 @@
 				print "<H1>".$vs_event_title."</H1>";
 			}
 			if($vs_date){
-				print "<H4>".$vs_date."</H4>";
+				print "<div class='date'>".$vs_date."</div>";
 			}
 			if($vs_description){
 				print "<p>".$vs_description."</p>";
@@ -141,7 +141,7 @@
 				print "<H1>".caDetailLink($this->request, $vs_fair_title, '', 'ca_occurrences', $qr_fairs->get("occurrence_id"), null, null)."</H1>";
 			}
 			if($vs_date){
-				print "<H4>".$vs_date."</H4>";
+				print "<div class='date'>".$vs_date."</div>";
 			}
 			if($vs_location){
 				print "<p>".$vs_location."</p>";

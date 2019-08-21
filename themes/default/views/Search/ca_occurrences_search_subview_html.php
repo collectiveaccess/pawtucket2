@@ -96,7 +96,6 @@
 <?php
 			if ($qr_results->numHits() > 3) {
 ?>			
-				<div class='allLink'><?php print caNavLink($this->request, 'See '.($qr_results->numHits() - 3)." more ".$va_block_info['displayName'].($qr_results->numHits() == 4 ? ' result' : ' results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search));?></div>
 <?php
 			}
 ?>
