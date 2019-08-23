@@ -51,9 +51,7 @@
             			<div class="block">
                 			<h2 class="subheadline-bold">Submit Information</h2>
                 			<div class="body-text">With over 2,000 extant works in hundreds of collections around the world, The Isamu Noguchi Catalogue Raisonné project relies on the knowledge of collectors to keep current each artwork’s history, attributes, and location. To provide additional information to the archive, please fill out the information below.</div>
-                          
-                            <?php include('includes/general-form.php'); ?>
-
+							<div id="contactForm"></div>                          
                         </div>
             		</div>
             	</div>
@@ -61,3 +59,11 @@
         </section>
 
     </main>
+<script type="text/javascript">	
+	pawtucketUIApps['contact'] = {
+        'selector': '#contactForm',
+        'data': {
+            'sectionName': 'Test'
+        }
+    };
+</script>

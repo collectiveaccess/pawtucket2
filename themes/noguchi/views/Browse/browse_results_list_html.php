@@ -22,6 +22,8 @@
  *
  * ----------------------------------------------------------------------
  */
+
+# --- used with bibliography results only 
  
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
@@ -61,35 +63,16 @@
 
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-	
-		$vn_col_span = 4;
-		$vn_col_span_sm = 4;
-		$vn_col_span_xs = 12;
+
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = 6;
-			$vn_col_span_sm = 6;
-			$vn_col_span_xs = 12;
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
 			
-			if ($vs_table != 'ca_objects') {
-				$va_ids = array();
-				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-					$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
-				}
-			
-				$qr_res->seek($vn_start);
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
-			} else {
-				$va_images = null;
-			}
-			
-			$t_list_item = new ca_list_items();
 			while($qr_res->nextHit()) {
 				if($vn_c == $vn_hits_per_block){
 					if($vb_row_id_loaded){
@@ -98,7 +81,7 @@
 						$vn_c = 0;
 					}
 				}
-				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
+				$vn_id = $qr_res->get("{$vs_table}.{$vs_pk}");
 				if($vn_id == $vn_row_id){
 					$vb_row_id_loaded = true;
 				}
@@ -108,60 +91,16 @@
 				if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
-					$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
-					$vs_thumbnail = "";
-					$vs_type_placeholder = "";
-					$vs_typecode = "";
-					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
-				
-					if(!$vs_image){
-						if ($vs_table == 'ca_objects') {
-							$t_list_item->load($qr_res->get("type_id"));
-							$vs_typecode = $t_list_item->get("idno");
-							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-								$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-							}else{
-								$vs_image = $vs_default_placeholder_tag;
-							}
-						}else{
-							$vs_image = $vs_default_placeholder_tag;
-						}
-					}
-					$vs_rep_detail_link 	= caDetailLink($vs_image, '', $vs_table, $vn_id);	
-				
-					$vs_add_to_set_link = "";
-					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl('', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
-					}
-				
-					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
-
 					$vs_result_output = "		
-						<div class='col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span} mb-4'>
-							<div class='row pb-4 bResultList'>
-								<div class='col-md-3'>
-									{$vs_rep_detail_link}
-								</div>
-								<div class='col-md-9'>
-									{$vs_caption}
-									<div class='bSetsSelectMultiple collapse text-right'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-								</div>
-							</div>
-							<HR/>
-						</div>";
+						<div class='block-half'>".caDetailLink("<div class='col title clamp' data-lines='2'>".$qr_res->get("ca_occurrences.bib_full_citation")."</div>
+								<div class='col type text-gray'>".$qr_res->get("ca_occurrences.citation_format", array("convertCodesToDisplayText" => true))."</div>", "columns", $vs_table, $vn_id)."</div>";
+						
+						
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				
 				$vn_c++;
 				$vn_results_output++;
 			}		
-			print "<div style='clear:both'></div>".caNavLink(_t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
 		}
 ?>
-<script type="text/javascript">
-	jQuery(document).ready(function() {
-		if($("#bSetsSelectMultipleButton").is(":visible")){
-			$(".bSetsSelectMultiple").show();
-		}
-	});
-</script>

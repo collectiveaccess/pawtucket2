@@ -5,7 +5,7 @@
     <nav class="hide-for-mobile">
         <div class="wrap text-gray">
             <form action="cr_browse.php" method="post">
-                <div class="cell text"><a href="cr_browse.php">Browse</a></div>
+                <div class="cell text"><?php print caNavLink("Browse", "", "", "Browse", "CR"); ?></div>
                 <div class="cell"><input name="search" type="text" placeholder="Search the Catalogue" class="search" /></div>
                 <div class="misc">
                     <div class="cell text"><?php print caNavLink("Foreword", "", "", "CR", "Foreword"); ?></div>

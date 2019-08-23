@@ -23,9 +23,9 @@
             </div>
 <?php
  			}
- 			$va_rep_ids = array_reverse($t_item->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => false, "sort" => "ca_objects_x_object_representations.is_primary")));
+ 			$vs_reps = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='describes'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values));
+ 			$va_rep_ids = explode(";", $vs_reps);
  			if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
- 				
 ?>  
 
             <div class="ca-object-viewer">
@@ -36,12 +36,14 @@
 						$va_thumbs = array();
 						foreach($va_rep_ids as $vn_rep_id){
 							$vs_display_version = "";
-							$t_rep = new ca_object_representations($vn_rep_id);
+							$t_rep = new ca_object_representations();
+							$t_rep->load($vn_rep_id);
 							$va_media_display_info = caGetMediaDisplayInfo('detail', $t_rep->getMediaInfo('media', 'original', 'MIMETYPE'));
 							if($va_media_display_info && sizeof($va_media_display_info)){
 								($va_media_display_info["display_version"]) ? $vs_display_version = $va_media_display_info["display_version"] : "small";
 							}
 							$va_thumbs[] = $t_rep->get("ca_object_representations.media.icon.url");
+							
 ?>
 							<div class="slick-slide">
 								<div class="img-container">
@@ -147,7 +149,7 @@
 
             </div>
         </section>
-{{{<ifcount code="ca_objects.related" min="1">
+{{{<ifcount code="ca_objects" restrictToRelationshipTypes="part" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" min="1">
         <section class="block border">
             <div class="wrap">
                 <div class="block-half text-align-center">
@@ -156,7 +158,7 @@
             </div>
             <div class="module_carousel archive_related" data-prevnext="false">
 				<div class="carousel-main">
-					<unit relativeTo="ca_objects.related" delimiter=" ">
+					<unit relativeTo="ca_objects" restrictToRelationshipTypes="part" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" delimiter=" ">
 						<div class="carousel-cell">
 
 							<l>
@@ -166,6 +168,7 @@
 								<div class="text block-quarter">
 									<div class="ca-identifier text-gray">^ca_objects.idno</div>
 									<div class="more">                                
+										<div class="ca-identifier text-gray">^ca_objects.idno</div>
 										<div class="thumb-text clamp" data-lines="2">^ca_objects.preferred_labels.name</div>
 										<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date</div></ifdef>
 										<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>

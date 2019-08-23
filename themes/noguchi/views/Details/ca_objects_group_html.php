@@ -34,8 +34,9 @@
 	$vn_previous_id = $this->getVar("previousID");
 	$vn_next_id = $this->getVar("nextID");			
 	
-	$vs_status = $t_object->get("ca_objects.status", array("convertCodesToDisplayText" => true));
 	$va_access_values = caGetUserAccessValues();
+	
+	$vs_status = $t_object->get("ca_objects.status", array("convertCodesToDisplayText" => true));
 
 ?>
     <main class="ca cr cr_detail">
@@ -56,10 +57,10 @@
  			}
  			
  			if(strtoLower($t_object->get("ca_objects.status", array("convertCodesToDisplayText" => true))) == "research pending"){
- 				$va_rep_ids = $t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => true, "checkAccess" => $va_access_values));
+ 				$va_rep_ids = $t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => true));
  			
  			}else{
- 				$va_rep_ids = array_reverse($t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => false, "sort" => "ca_objects_x_object_representations.is_primary", "checkAccess" => $va_access_values)));
+ 				$va_rep_ids = array_reverse($t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => false, "sort" => "ca_objects_x_object_representations.is_primary")));
  			}
  			if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
  				
@@ -73,8 +74,7 @@
 						$va_thumbs = array();
 						foreach($va_rep_ids as $vn_rep_id){
 							$vs_display_version = "";
-							$t_rep = new ca_object_representations();
-							$t_rep->load($vn_rep_id);
+							$t_rep = new ca_object_representations($vn_rep_id);
 							$va_media_display_info = caGetMediaDisplayInfo('detail', $t_rep->getMediaInfo('media', 'original', 'MIMETYPE'));
 							if($va_media_display_info && sizeof($va_media_display_info)){
 								($va_media_display_info["display_version"]) ? $vs_display_version = $va_media_display_info["display_version"] : "small";
@@ -122,13 +122,6 @@
 
             <div class="wrap-text text-align-center">
 
-                
-
-<?php
-		switch(strToLower($vs_status)){
-			case "published":
-			case "research suspended":
-?>
                 <div class="block">
                     <div class="block-quarter">
 						<div class="eyebrow text-gray">{{{^ca_objects.idno}}}</div>
@@ -152,175 +145,77 @@
 							<div class="subheadline text-gray">^ca_objects.date.parsed_date</div>
 						</div>
                     </ifdef></ifnotdef>}}}
-                    {{{<ifdef code="ca_objects.technique">
+					{{{<ifdef code="ca_objects.extent">
 						<div class="block-quarter">
-							<div class="ca-data"><ifdef code="ca_objects.technique">^ca_objects.technique%delimiter=,_ </ifdef></div>
+							<div class="ca-data">^ca_objects.extent examples</div>
 						</div>
 					</ifdef>}}}
-<?php
-				if($t_object->get("ca_objects.display_dimensions") || $t_object->get("ca_objects.base") || $t_object->get("ca_objects.num_of_elements") || $t_object->get("ca_objects.inscriptions") || $t_object->get("ca_objects.edition")){
-					print '<div class="block-quarter">';
-				}
-?>
-							{{{<ifdef code="ca_objects.display_dimensions"><div class="ca-data"><unit relativeTo="ca_objects.display_dimensions" delimiter="<br/>">^ca_objects.display_dimensions</unit></div></ifdef>}}}
-							{{{<ifdef code="ca_objects.base"><div class="ca-data">^ca_objects.base</div></ifdef>}}}
-							{{{<ifdef code="ca_objects.num_of_elements"><div class="ca-data">^ca_objects.num_of_elements</div></ifdef>}}}
-<?php
-							if($vs_inscription = $t_object->get("ca_objects.inscriptions")){
-								// replace symbol codes with graphics
-								$vs_circle = caGetThemeGraphic("bisected_circle_24_gray.png");
-								$vs_hiragana_no = caGetThemeGraphic("hiragana_no_24_gray.png");
-								$vs_inscription = preg_replace('!\[c\]!i', $vs_circle, $vs_inscription);
-								$vs_inscription = preg_replace('!\[circle/line\]!i', $vs_circle, $vs_inscription);
-								$vs_inscription = preg_replace('!\[no\]!i', $vs_hiragana_no, $vs_inscription);
-								$vs_inscription = preg_replace('!\[Hiragana no\]!i', $vs_hiragana_no, $vs_inscription);
 					
-								print '<div class="ca-data">'.$vs_inscription."</div>";
-							}
-?>						
-							{{{<ifdef code="ca_objects.edition"><div class="ca-data">^ca_objects.edition</div></ifdef>}}}
-
+					
 <?php
-				if($t_object->get("ca_objects.display_dimensions") || $t_object->get("ca_objects.base") || $t_object->get("ca_objects.num_of_elements") || $t_object->get("ca_objects.inscriptions") || $t_object->get("ca_objects.edition")){
-					print '</div> <!-- end block-quarter-->';
-				}
+					if($va_child_statuses = $t_object->get("ca_objects.children.status", array("convertCodesToDisplayText" => true, "returnAsArray" => true))){
+						if(in_array("research pending", $va_child_statuses)){
 ?>
-                  	{{{<ifcount code="ca_entities" excludeRelationshipTypes="sitter" min="1">
-						<div class="block-quarter">
-							<div class="ca-data"><unit relativeTo="ca_objects_x_entities" excludeRelationshipTypes="sitter" delimiter="<br/>">^relationship_typename ^ca_entities.preferred_labels.displayname</unit></div>
-						</div>
-                    </ifcount>}}}
-					{{{<ifdef code="ca_objects.current_collection">
-						<div class="block-quarter">
-							<div class="eyebrow text-gray">Current Collection</div>
-							<div class="ca-data">^ca_objects.current_collection</div>
-						</div>
-					</ifdef>}}}
-					<?php
-						if($vs_provenance = $t_object->get("ca_objects.provenance")){
-							print '<div class="block-quarter">
-										<div class="eyebrow text-gray">Provenance</div>
-										<div class="ca-data">'.caConvertLineBreaks($vs_provenance).'</div>
-									</div>';
+							<div class="block-quarter">
+								<div class="eyebrow text-gray">Status</div>
+								<div class="ca-data">research pending</div>
+							</div>
+<?php
 						}
-					?>
-  
-					{{{<ifdef code="ca_objects.published_on_text">
-						<div class="block-quarter">
-							<div class="eyebrow text-gray">Published On</div>
-							<div class="ca-data">^ca_objects.published_on_text</div>
-						</div>
-                    </ifdef>}}}
-                    {{{<ifdef code="ca_objects.suspended">
-						<div class="block-quarter">
-							<div class="eyebrow text-gray">Research Suspended On</div>
-							<div class="ca-data">^ca_objects.suspended_text</div>
-						</div>
-                    </ifdef>}}}
-                    {{{<ifdef code="ca_objects.last_updated_on_text">
-						<div class="block-quarter">
-							<div class="eyebrow text-gray">Last Update</div>
-							<div class="ca-data">^ca_objects.last_updated_on_text</div>
-						</div>
-                    </ifdef>}}}
-                    {{{<ifdef code="ca_objects.status">
-						<div class="block-quarter">
-							<div class="eyebrow text-gray">Status</div>
-							<div class="ca-data">^ca_objects.status</div>
-						</div>
-					</ifdef>}}}
-				</div><!-- end block -->
-	{{{<ifcount code="ca_occurrences" min="1">               
+					}
+?>
+                </div><!-- end block -->
+<?php
+	$va_exhibitions = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_objects.children'><unit relativeTo='ca_occurrences' restrictToTypes='exhibition'><li><l>^ca_occurrences.preferred_labels.name, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l></li></unit></unit>", array("checkAccess" => $va_access_values)));
+	$va_bibs = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_objects.children'><unit relativeTo='ca_occurrences' restrictToTypes='bibliography'><li><l>^ca_occurrences.bib_full_citation</l></li></unit></unit>", array("checkAccess" => $va_access_values)));
+
+	
+	if((is_array($va_exhibitions) && sizeof($va_exhibitions)) || (is_array($va_bibs) && sizeof($va_bibs))){
+?>
                 <div class="module_accordion">
                     <div class="items">
-	<ifcount code="ca_occurrences" min="1" restrictToTypes="exhibition">
-                        <div class="item">
+<?php
+					if(is_array($va_exhibitions) && sizeof($va_exhibitions)){
+?>
+						<div class="item">
                             <div class="trigger small">Related Exhibitions</div>            
                             <div class="details">
                                 <div class="inner">
                                     <ul class="list-sidebar ca-data text-align-left related">
-                                        <unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=" ">
-											<li>
-												<l>^ca_occurrences.preferred_labels.name, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l>
-											</li>
-                                        </unit>
+                                        <?php print join(" ", $va_exhibitions); ?>
                                     </ul>
                                 </div>
                             </div>
                         </div>
-	</ifcount>
-	<ifcount code="ca_occurrences" min="1" restrictToTypes="bibliography">
-                        <div class="item">
+<?php
+					}
+					if(is_array($va_bibs) && sizeof($va_bibs)){
+?>
+						<div class="item">
                             <div class="trigger small">Related Bibliography</div>            
                             <div class="details">
                                 <div class="inner">
                                     <ul class="list-sidebar ca-data text-align-left related">
-                                        <unit relativeTo="ca_occurrences" restrictToTypes="bibliography" delimiter=" ">
-											<li>
-												<l>^ca_occurrences.bib_full_citation</l>
-											</li>
-                                        </unit>
+                                        <?php print join(" ", $va_bibs); ?>
                                     </ul>
                                 </div>
                             </div>
                         </div>
-	</ifcount>
-                    </div>
-                </div>
-</ifcount>}}}
 <?php
-			break;
-			# ----------------------------------------------
-			case "research pending":
+					}
 ?>
-                <div class="block">
-                    <div class="block-quarter">
-						<div class="eyebrow text-gray">{{{^ca_objects.idno}}}</div>
+
 					</div>
-                    <div class="block-quarter">
-                        <h2 class="subheadline-l">{{{^ca_objects.preferred_labels.name}}}</h2>
-                    </div>
-                    {{{<ifdef code="ca_objects.nonpreferred_labels.name" restrictToTypes="secondary|tertiary">
-						<div class="block-quarter">
-							<div class="ca-data"><unit relativeTo="ca_objects.nonpreferred_labels" delimiter="<br/>" restrictToTypes="secondary">^ca_objects.nonpreferred_labels.name</unit></div>
-							<div class="ca-data"><unit relativeTo="ca_objects.nonpreferred_labels" delimiter="<br/>" restrictToTypes="tertiary">^ca_objects.nonpreferred_labels.name</unit></div>
-						</div>
-					</ifdef>}}}
-                    {{{<ifdef code="ca_objects.date.display_date">
-						<div class="block-quarter">
-							<div class="subheadline text-gray">^ca_objects.date.display_date</div>
-						</div>
-					</ifdef>}}}
-                    {{{<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date">
-						<div class="block-quarter">
-							<div class="subheadline text-gray">^ca_objects.date.parsed_date</div>
-						</div>
-                    </ifdef></ifnotdef>}}}
-                    {{{<ifdef code="ca_objects.technique">
-						<div class="block-quarter">
-							<div class="ca-data"><ifdef code="ca_objects.technique">^ca_objects.technique%delimiter=,_ </ifdef></div>
-						</div>
-					</ifdef>}}}
-						
-					{{{<ifdef code="ca_objects.status">
-						<div class="block-quarter">
-							<div class="eyebrow text-gray">Status</div>
-							<div class="ca-data">^ca_objects.status</div>
-						</div>
-					</ifdef>}}}
-				</div><!-- end block>
-<?php		
-			break;
-			# ----------------------------------------------
-}
+				</div>
+<?php	
+	}
 ?>
+
             </div> <!-- wrap-text -->
         </section>
 
-<?php
-	$vs_placeholder = caGetThemeGraphic("placeholder.png");
-?>
-{{{<ifcount code="ca_objects.related" excludeRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" min="1">
+
+{{{<ifcount code="ca_objects.children" min="1">
         <section class="wrap block border">
             <div class="block text-align-center">
                 <h4 class="subheadline-bold">Associated Artworks</h4>
@@ -329,10 +224,9 @@
 
             <div class="module_slideshow manual-init slideshow-related">
                 <div class="slick-slider">
-					<unit relativeTo="ca_objects_x_objects" excludeRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" delimiter=" ">
+					<unit relativeTo="ca_objects.children" delimiter=" ">
 						<div class="slick-slide">
 							<div class="item">
-								<unit relativeTo="ca_objects">
 									<l>
 										<div class="block-quarter">
 											<img nopin="nopin"  src="^ca_object_representations.media.medium.url" />
@@ -346,8 +240,6 @@
 											
 										</div>
 									</l>
-								</unit>
-								<unit relativeTo="ca_objects_x_objects"><div class="ca-identifier text-gray">^relationship_typename</div></unit>
 							</div>
 						</div>
                     </unit>
@@ -356,7 +248,7 @@
 
         </section>
 </ifcount>}}}
-{{{<ifcount code="ca_objects.related"  min="1">
+{{{<ifcount code="ca_objects.related" restrictToRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" min="1">
         <section class="wrap block border">
             <div class="block text-align-center">
                 <h4 class="subheadline-bold">Related Artworks</h4>
@@ -365,9 +257,10 @@
 
             <div class="module_slideshow manual-init slideshow-related">
                 <div class="slick-slider">
-					<unit relativeTo="ca_objects.related" restrictToRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" delimiter=" ">
+					<unit relativeTo="ca_objects_x_objects" restrictToRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" delimiter=" ">
 						<div class="slick-slide">
 							<div class="item">
+							<unit relativeTo="ca_objects">
 								<l>
 									<div class="block-quarter">
 										<img nopin="nopin"  src="^ca_object_representations.media.medium.url" />
@@ -379,6 +272,7 @@
 										<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>
 									</div>
 								</l>
+								</unit>
 								
 							</div>
 						</div>

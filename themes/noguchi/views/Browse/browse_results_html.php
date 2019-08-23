@@ -81,25 +81,48 @@
 				}
 			}
 		}
+	switch(strToLower($this->request->getAction())){
+		case "archive":
+			print '<main class="ca archive archive_landing '.((!$vs_facet_title && !$vs_facet_description) ? "nomargin" : "").'">';
+
+			if($vs_facet_description || $vs_facet_title){
+?>
+			<section class="intro">
+				<div class="wrap block-large">
+					<div class="wrap-max-content">
+						<div class="block-half subheadline-bold text-align-center"><?php print $vs_facet_title; ?></div>
+						<div class="block-half body-text-l"><?php print $vs_facet_description; ?></div>
+					</div>
+				</div>
+			</section>
+<?php
+			}	
+
+		break;
+		# -------------------------------------------------
+		case "cr":
+			print '<main class="ca cr cr_browse nomargin">';
+		break;
+		# -------------------------------------------------
+		case "bibliography":
+			print '<main class="ca bibliography bibliography_landing">';
+?>
+			<section class="intro">
+				<div class="wrap block-large">
+					<div class="wrap-max-content">
+						<div class="block-half body-text-l">Fusce vehicula dolor arcu, sit amet blandit dolor mollis nec. Donec viverra eleifend lacus, vitae ullamcorper metus. Sed sollicitudin ipsum quis nunc sollicitudin ultrices. Donec euismod scelerisque ligula. Maecenas eu varius risus, eu aliquet arcu. Curabitur fermentum suscipit est, tincidunt mattis lorem luctus id. Donec eget massa a diam condimentum pretium. Aliquam erat volutpat. Integer ut tincidunt orci. Etiam tristique, elit ut consectetur iaculis, metus lectus mattis justo, vel mollis eros neque quis augue. Sed lobortis ultrices lacus, a placerat metus rutrum sit amet. View a curated Selected Bibliography <a href="http://www.noguchi.org/bibliography">here</a>.</div>
+					</div>
+				</div>
+			</section>
+<?php
+		break;
+		# -------------------------------------------------
+	}
 ?>		
 		
 
 
-<main class="ca archive archive_landing <?php print ((!$vs_facet_title && !$vs_facet_description) ? "nomargin" : ""); ?>">
-<?php
-		if($vs_facet_description || $vs_facet_title){
-?>
-        <section class="intro">
-            <div class="wrap block-large">
-                <div class="wrap-max-content">
-                    <div class="block-half subheadline-bold text-align-center"><?php print $vs_facet_title; ?></div>
-                    <div class="block-half body-text-l"><?php print $vs_facet_description; ?></div>
-                </div>
-            </div>
-        </section>
-<?php
-		}	
-?>
+
 
 	<section class="ca_filters">
 		<div class="wrap">
@@ -239,6 +262,15 @@
 				<div class="wrap">
 					<div class="grid-flexbox-layout grid-ca-archive">
 <?php
+		break;
+		# ----------------------------------------
+		case "bibliography"
+?>
+	        <section class="block block-top">
+            <div class="wrap results">
+
+                <div class="block-half-top">
+<?php		
 		break;
 		# ----------------------------------------
 

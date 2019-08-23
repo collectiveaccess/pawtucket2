@@ -36,7 +36,9 @@
         <script type='text/javascript' src='<?php print $this->request->getThemeUrlPath(); ?>/jslib/libs-head-min.js?ver=<?= rand(); ?>'></script>
     </head>
     <body class="collective-access is-development" id="pawtucketApp" itemscope itemtype="http://schema.org/WebPage">
-        
+		<script type="text/javascript">
+			let pawtucketUIApps = {};
+		</script>
         <header class="placeholder">
             <div class="wrap">
                 <div class="subheadline-bold-s">HEADER PLACEHOLDER <span style="display: inline-block; margin-left: 10px; font-weight: normal;">(<a class="no-barba" href="index.php" style="text-decoration: underline;">View Index</a>)</span></div>
