@@ -128,7 +128,11 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 
 								#$vs_eye = "<span class='glyphicon glyphicon-eye-open'></span>&nbsp;&nbsp;";
 							}
-							$vs_output .= "<div class='row'><div class='col-xs-9".(($vb_show_eye) ? " showEye" : "")."'><span class='glyphicon glyphicon-eye-open'></span>".caDetailLink($po_request, $qr_objects->get("ca_objects.preferred_labels"), '', 'ca_objects', $qr_objects->get("ca_objects.object_id"))."</div><div class='col-xs-3'>".$qr_objects->get("ca_objects.box_folder")."</div></div>";
+							$vb_item = false;
+							if(strpos(strToLower($qr_objects->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))), "item")){
+								$vb_item = true;
+							}
+							$vs_output .= "<div class='row'><div class='col-xs-9".(($vb_show_eye) ? " showEye" : "")."'><span class='glyphicon glyphicon-eye-open'></span>".caDetailLink($po_request, trim($qr_objects->get("ca_objects.preferred_labels")).(($qr_objects->get("ca_objects.season_list") || $qr_objects->get("ca_objects.manufacture_date")) ? ", ".trim($qr_objects->get("ca_objects.season_list", array("convertCodesToDisplayText" => true))." ".$qr_objects->get("ca_objects.manufacture_date")): ""), '', 'ca_objects', $qr_objects->get("ca_objects.object_id"))."</div><div class='col-xs-3'>".(($vb_item) ? "Item" : $qr_objects->get("ca_objects.box_folder"))."</div></div>";
 						}
 						$vs_output .= "</div>";
 					}
