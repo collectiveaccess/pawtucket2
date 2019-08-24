@@ -26,6 +26,11 @@
  * ----------------------------------------------------------------------
  */
  
+$vs_mode = $this->request->getParameter("mode", pString);
+if($vs_mode == "map"){
+	include("map_large_html.php");
+}else{
+	$va_options = $this->getVar("config_options");
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
@@ -86,7 +91,9 @@
 					if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
 						print "<div id='transcriptLink' class='text-center'>";
 						foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
-							print caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")));
+							$t_rep = new ca_object_representations($vn_transcript_rep_id);
+							
+							print " ".caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> ".$t_rep->get("transcript_translation", array("convertCodesToDisplayText" => true))." Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")))." ";
 						}
 						print "</div>";
 					}
@@ -345,3 +352,6 @@
 		});
 	});
 </script>
+<?php
+}
+?>
