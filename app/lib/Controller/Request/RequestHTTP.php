@@ -240,7 +240,7 @@ class RequestHTTP extends Request {
 	}
 	# -------------------------------------------------------
 	function isAjax() {
-		return ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']=="XMLHttpRequest") || (isset($_REQUEST['_isFlex']) && $_REQUEST['_isFlex']));
+		return ((isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH']=="XMLHttpRequest"));
 	}
 	# -------------------------------------------------------
 	function isDownload($pb_set_download=null) {
@@ -525,16 +525,22 @@ class RequestHTTP extends Request {
 		return RequestHTTP::$html_purifier;
 	}
 	# -------------------------------------------------------
-	public function getParameter($ps_name, $pn_type, $ps_http_method=null, $pa_options=array()) {
-		if (in_array($ps_http_method, array('GET', 'POST', 'COOKIE', 'PATH', 'REQUEST'))) {
-			$vm_val = $this->opa_params[$ps_http_method][$ps_name];
-		} else {
-			foreach(array('GET', 'POST', 'PATH', 'COOKIE', 'REQUEST') as $vs_http_method) {
-				$vm_val = (isset($this->opa_params[$vs_http_method]) && isset($this->opa_params[$vs_http_method][$ps_name])) ? $this->opa_params[$vs_http_method][$ps_name] : null;
-				if (isset($vm_val)) {
-					break;
+	public function getParameter($pa_name, $pn_type, $ps_http_method=null, $pa_options=array()) {
+		if(!is_array($pa_name)) { $pa_name = [$pa_name]; }
+		
+		foreach($pa_name as $ps_name) {
+			if (in_array($ps_http_method, array('GET', 'POST', 'COOKIE', 'PATH', 'REQUEST'))) {
+				$vm_val = $this->opa_params[$ps_http_method][$ps_name];
+			} else {
+				foreach(array('GET', 'POST', 'PATH', 'COOKIE', 'REQUEST') as $vs_http_method) {
+					$vm_val = (isset($this->opa_params[$vs_http_method]) && isset($this->opa_params[$vs_http_method][$ps_name])) ? $this->opa_params[$vs_http_method][$ps_name] : null;
+					if (isset($vm_val)) {
+						break;
+					}
 				}
 			}
+			
+			if (strlen($vm_val) > 0) { break; } 
 		}
 		if (!isset($vm_val)) { return ""; }
 		
@@ -808,13 +814,22 @@ class RequestHTTP extends Request {
                             } else {
                                 $vs_redirect = '?redirect=' . urlencode($vs_redirect);
                             }
+                            if ($_REQUEST['local']) { 
+                            	$vs_redirect .= ($vs_redirect ? "&" : "?")."local=1";
+                            }
                             $this->opo_response->addHeader("Location", $this->getBaseUrlPath().'/'.$this->getScriptName().'/'.$this->config->get("auth_login_path") . $vs_redirect);
                         }
                         return false;
                     }
                 } else {
                 	// Redirect to external auth?
-                	return $this->user->authenticate($vs_tmp1, $vs_tmp2, $pa_options["options"]);
+                	try {
+                		return $this->user->authenticate($vs_tmp1, $vs_tmp2, $pa_options["options"]);
+                	} catch (Exception $e) {
+                		$o_event_log->log(array("CODE" => "LOGF", "SOURCE" => "Auth", "MESSAGE" => "Failed login with exception '".$e->getMessage()." (".$_SERVER['REQUEST_URI']."); IP=".$_SERVER["REMOTE_ADDR"]."; user agent='".$_SERVER["HTTP_USER_AGENT"]."'"));
+                		$this->opo_response->addHeader("Location", $vs_auth_login_url);
+                		return false;
+                	}
                 }
 			}
 		} 

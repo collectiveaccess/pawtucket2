@@ -111,7 +111,7 @@
 			
 			$vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger);
 			$this->view->setVar('isNav', $vb_is_nav);
-			$vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true]);
+			$vs_facet = $this->request->getParameter(['getFacet', 'facet'], pString, ['forcePurify' => true]);
 			$vn_s = $vb_is_nav ? $this->request->getParameter('s', pInteger) : 0;	// start menu-based browse menu facet data at page boundary; all others get the full facet
 			$this->view->setVar('start', $vn_s);
 			$this->view->setVar('limit', $vn_limit = ($vb_is_nav ? 500 : null));	// break facet into pages for menu-based browse menu

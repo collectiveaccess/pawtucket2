@@ -2682,6 +2682,7 @@ class BaseModel extends BaseObject {
 	 *		updateOnlyMediaVersions = when set to an array of valid media version names, media is only processed for the specified versions
 	 *		force = if set field values are not verified prior to performing the update
 	 *		dontLogChange = don't log change in change log. [Default is false]
+	 *      dontUpdateHistoryCurrentValueTracking = Skip updating current value tracking caches. Used internally when deleting rows. [Default is false]
 	 * @return bool success state
 	 */
 	public function update($pa_options=null) {
@@ -2846,7 +2847,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 		$vs_sql = "UPDATE ".$this->TABLE." SET ";
 		$va_many_to_one_relations = Datamodel::getManyToOneRelations($this->tableName());
 
-		$vn_fields_that_have_been_set = 0;
+		$vn_fields_that_have_been_set = 0; $fields_changed = 0;
 		foreach ($this->FIELDS as $vs_field => $va_attr) {
 			if (isset($va_attr['DONT_PROCESS_DURING_INSERT_UPDATE']) && (bool)$va_attr['DONT_PROCESS_DURING_INSERT_UPDATE']) { continue; }
 			if (isset($va_attr['IDENTITY']) && $va_attr['IDENTITY']) { continue; }	// never update identity fields
@@ -2922,20 +2923,20 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 							return false;
 						}
 						$vs_sql .= "{$vs_field} = {$vm_val},";
-						$vn_fields_that_have_been_set++;
+						$vn_fields_that_have_been_set++; $fields_changed++;
 						break;
 					# -----------------------------
 					case (FT_TEXT):
 					case (FT_PASSWORD):
 						$vm_val = isset($this->_FIELD_VALUES[$vs_field]) ? $this->_FIELD_VALUES[$vs_field] : null;
 						$vs_sql .= "{$vs_field} = ".$this->quote($vm_val).",";
-						$vn_fields_that_have_been_set++;
+						$vn_fields_that_have_been_set++; $fields_changed++;
 						break;
 					# -----------------------------
 					case (FT_VARS):
 						$vm_val = isset($this->_FIELD_VALUES[$vs_field]) ? $this->_FIELD_VALUES[$vs_field] : null;
 						$vs_sql .= "{$vs_field} = ".$this->quote(caSerializeForDatabase($vm_val, ((isset($va_attr['COMPRESS']) && $va_attr['COMPRESS']) ? true : false))).",";
-						$vn_fields_that_have_been_set++;
+						$vn_fields_that_have_been_set++; $fields_changed++;
 						break;
 					# -----------------------------
 					case (FT_DATETIME):
@@ -2958,7 +2959,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						if (is_null($vm_val)) { $vm_val = 'null'; }
 						
 						$vs_sql .= "{$vs_field} = {$vm_val},";		# output as is
-						$vn_fields_that_have_been_set++;
+						$vn_fields_that_have_been_set++; $fields_changed++;
 						break;
 					# -----------------------------
 					case (FT_TIME):
@@ -2978,13 +2979,13 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						if (is_null($vm_val)) { $vm_val = 'null'; }
 						
 						$vs_sql .= "{$vs_field} = {$vm_val},";		# output as is
-						$vn_fields_that_have_been_set++;
+						$vn_fields_that_have_been_set++; $fields_changed++;
 						break;
 					# -----------------------------
 					case (FT_TIMESTAMP):
 						if (isset($va_attr["UPDATE_ON_UPDATE"]) && $va_attr["UPDATE_ON_UPDATE"]) {
 							$vs_sql .= "{$vs_field} = ".time().",";
-							$vn_fields_that_have_been_set++;
+							$vn_fields_that_have_been_set++; $fields_changed++;
 						}
 						break;
 					# -----------------------------
@@ -3022,7 +3023,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						if (is_null($this->_FIELD_VALUES[$end_field_name])) { $vm_end_val = 'null'; } else { $vm_end_val = $this->_FIELD_VALUES[$end_field_name]; }
 						
 						$vs_sql .= "{$start_field_name} = {$vm_start_val}, {$end_field_name} = {$vm_end_val},";
-						$vn_fields_that_have_been_set++;
+						$vn_fields_that_have_been_set++; $fields_changed++;
 						break;
 					# -----------------------------
 					case (FT_TIMERANGE):
@@ -3058,7 +3059,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						if (is_null($this->_FIELD_VALUES[$end_field_name])) { $vm_end_val = 'null'; } else { $vm_end_val = $this->_FIELD_VALUES[$end_field_name]; }
 						
 						$vs_sql .= "{$start_field_name} = {$vm_start_val}, {$end_field_name} = {$vm_end_val},";
-						$vn_fields_that_have_been_set++;
+						$vn_fields_that_have_been_set++; $fields_changed++;
 						break;
 					# -----------------------------
 					case (FT_TIMECODE):
@@ -3071,7 +3072,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 							return false;
 						}
 						$vs_sql .= "{$vs_field} = {$vm_val},";
-						$vn_fields_that_have_been_set++;
+						$vn_fields_that_have_been_set++; $fields_changed++;
 						break;
 					# -----------------------------
 					case (FT_MEDIA):
@@ -3079,7 +3080,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						
 						if ($vs_media_sql = $this->_processMedia($vs_field, array('processingMediaForReplication' => caGetOption('processingMediaForReplication', $pa_options, false), 'these_versions_only' => $va_limit_to_versions, 'batch' => caGetOption('batch', $pa_options, false)))) {
 							$vs_sql .= $vs_media_sql;
-							$vn_fields_that_have_been_set++;
+							$vn_fields_that_have_been_set++; $fields_changed++;
 						} else {
 							if ($this->numErrors() > 0) {
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
@@ -3092,7 +3093,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 					case (FT_FILE):
 						if ($vs_file_sql = $this->_processFiles($vs_field)) {
 							$vs_sql .= $vs_file_sql;
-							$vn_fields_that_have_been_set++;
+							$vn_fields_that_have_been_set++; $fields_changed++;
 						} else {
 							if ($this->numErrors() > 0) {
 								if ($vb_we_set_transaction) { $this->removeTransaction(false); }
@@ -3149,7 +3150,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 				} 
 				
 				SearchResult::clearResultCacheForRow($this->tableName(), $this->getPrimaryKey());
-                if (method_exists($this, "deriveHistoryTrackingCurrentValue")) {
+                if (($fields_changed > 0) && method_exists($this, "deriveHistoryTrackingCurrentValue") && !caGetOption('dontUpdateHistoryCurrentValueTracking', $pa_options, false)) {
                     $table = $this->tableName();
                     $this->deriveHistoryTrackingCurrentValue();
                     if ($table::isHistoryTrackingCriterion($table)) { $this->updateDependentHistoryTrackingCurrentValues(); }
@@ -3296,7 +3297,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 				$vb_we_set_transaction = true;
 			}
 			$this->set('deleted', 1);
-			if ($vn_rc = self::update(array('force' => true))) {
+			if ($vn_rc = self::update(array('force' => true, 'dontUpdateHistoryCurrentValueTracking' => true))) {
 				if(!defined('__CA_DONT_DO_SEARCH_INDEXING__') || !__CA_DONT_DO_SEARCH_INDEXING__) {
 					$o_indexer = $this->getSearchIndexer();
 					$o_indexer->startRowUnIndexing($this->tableNum(), $vn_id);
@@ -3609,7 +3610,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						$va_media_info["MIRROR_STATUS"][$vs_mirror_code] = ""; // pending
 						$this->setMediaInfo($ps_field, $va_media_info);
 						$this->update();
-						continue;
+						continue(2);
 					} else {
 						$this->postError(100, _t("Couldn't queue mirror using '%1' for version '%2' (handler '%3')", $vs_mirror_method, $ps_version, $vs_queue),"BaseModel->retryMediaMirror()");
 					}
@@ -3754,9 +3755,15 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 	 * @return string html tag
 	 */
 	public function getMediaTag($ps_field, $ps_version, $pa_options=null) {
+        if(!$pa_options) { $pa_options = []; }
 		if (!is_array($va_media_info = $this->getMediaInfo($ps_field))) { return null; }
 		if (!is_array($va_media_info[$ps_version])) { return null; }
 
+        if ($alt_text_template = Configuration::load()->get($this->tableName()."_alt_text_template")) { 
+		    $alt_text = $this->getWithTemplate($alt_text_template);
+		} else {
+		    $alt_text = $this->get($this->tableName().".preferred_labels");
+		}
 		#
 		# Use icon
 		#
@@ -3777,7 +3784,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 		$o_vol = new MediaVolumes();
 		$va_volume = $o_vol->getVolumeInformation($va_media_info[$ps_version]['VOLUME']);
 
-		return $m->htmlTag($va_media_info[$ps_version]["MIMETYPE"], $url, $va_media_info[$ps_version]["PROPERTIES"], $pa_options, $va_volume);
+		return $m->htmlTag($va_media_info[$ps_version]["MIMETYPE"], $url, $va_media_info[$ps_version]["PROPERTIES"], array_merge($pa_options, ['alt' => $alt_text]), $va_volume);
 	}
 
 	/**
@@ -3932,6 +3939,8 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 				unset($va_media_desc["_CENTER"]);
 				unset($va_media_desc["_SCALE"]);
 				unset($va_media_desc["_SCALE_UNITS"]);
+				unset($va_media_desc["_START_AT_PAGE"]);
+				unset($va_media_desc["_START_AT_TIME"]);
 				return array_keys($va_media_desc);
 			}
 		} else {
@@ -4293,6 +4302,8 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						"_CENTER" => $va_center,
 						"_SCALE" => caGetOption('_SCALE', $va_tmp, array()),
 						"_SCALE_UNITS" => caGetOption('_SCALE_UNITS', $va_tmp, array()),
+						"_START_AT_TIME" => caGetOption('startAtTime', $pa_options, null),
+						"_START_AT_PAGE" => caGetOption('startAtPage', $pa_options, null),
 						"INPUT" => array(
 							"MIMETYPE" => $m->get("mimetype"),
 							"WIDTH" => $m->get("width"),
@@ -4364,7 +4375,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 						// Copy metadata for version we're not processing 
 						if (sizeof($va_process_these_versions_only)) {
 							foreach (array_keys($va_tmp) as $v) {
-								if (!in_array($v, $va_process_these_versions_only)) {
+								if (!in_array($v, $va_process_these_versions_only) && !in_array($v, ['_START_AT_PAGE', '_START_AT_TIME'])) {
 									$media_desc[$v] = $va_tmp[$v];
 								}
 							}
@@ -9126,15 +9137,18 @@ $pa_options["display_form_field_tips"] = true;
 					$t_item_rel->set($t_item_rel->getLeftTableFieldName(), $this->getPrimaryKey());
 					$t_item_rel->set($t_item_rel->getRightTableFieldName(), $pn_rel_id);
 				}
-				$t_item_rel->set('rank', $pn_rank);	
-				$t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id);		// TODO: verify type_id based upon type_id's of each end of the relationship
+				if (!is_null($pn_rank)) { $t_item_rel->set('rank', $pn_rank);	}
+				if (!is_null($pn_type_id)) { $t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id);}	// TODO: verify type_id based upon type_id's of each end of the relationship
 				if(!is_null($ps_effective_date)){ $t_item_rel->set('effective_date', $ps_effective_date); }
 				if(!is_null($pa_source_info)){ $t_item_rel->set("source_info",$pa_source_info); }
-				$t_item_rel->update();
-				if ($t_item_rel->numErrors()) {
-					$this->errors = $t_item_rel->errors;
-					return false;
-				}
+				
+				if (is_array($cf = $t_item_rel->getChangedFieldValuesArray()) && (sizeof($cf) > 0)) {
+                    $t_item_rel->update();
+                    if ($t_item_rel->numErrors()) {
+                        $this->errors = $t_item_rel->errors;
+                        return false;
+                    }
+                }
 				return $t_item_rel;
 			}
 		} else {
@@ -9153,49 +9167,61 @@ $pa_options["display_form_field_tips"] = true;
 							$t_item_rel->set($t_item_rel->getLeftTableFieldName(), $pn_rel_id);
 						}
 						
-						$t_item_rel->set('rank', $pn_rank);	
-						$t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id);		// TODO: verify type_id based upon type_id's of each end of the relationship
+						if (!is_null($pn_rank)) { $t_item_rel->set('rank', $pn_rank);	}
+						if (!is_null($pn_type_id)) { $t_item_rel->set($t_item_rel->getTypeFieldName(), $pn_type_id); }		// TODO: verify type_id based upon type_id's of each end of the relationship
 						if(!is_null($ps_effective_date)){ $t_item_rel->set('effective_date', $ps_effective_date); }
 						if(!is_null($pa_source_info)){ $t_item_rel->set("source_info",$pa_source_info); }
-						$t_item_rel->update();
 						
-						if ($t_item_rel->numErrors()) {
-							$this->errors = $t_item_rel->errors;
-							return false;
-						}
-						
+						if (is_array($cf = $t_item_rel->getChangedFieldValuesArray()) && (sizeof($cf) > 0)) {
+                            $t_item_rel->update();
+                    
+                            if ($t_item_rel->numErrors()) {
+                                $this->errors = $t_item_rel->errors;
+                                return false;
+                            }
+                        }
+                        
 						return $t_item_rel;
 					}
 				case 2:		// many-to-one relations
 					if ($this->tableName() == $va_rel_info['rel_keys']['one_table']) {
 						if ($t_item_rel->load($pn_relation_id)) {
 							$t_item_rel->set($va_rel_info['rel_keys']['many_table_field'], $this->getPrimaryKey());
-							$t_item_rel->update();
 							
-							if ($t_item_rel->numErrors()) {
-								$this->errors = $t_item_rel->errors;
-								return false;
-							}
+							if (is_array($cf = $t_item_rel->getChangedFieldValuesArray()) && (sizeof($cf) > 0)) {
+                                $t_item_rel->update();
+                            
+                                if ($t_item_rel->numErrors()) {
+                                    $this->errors = $t_item_rel->errors;
+                                    return false;
+                                }
+                            }
 							return $t_item_rel;
 						}
 						
 						if ($t_item_rel->load($pn_rel_id)) {
 							$t_item_rel->set($va_rel_info['rel_keys']['many_table_field'], $this->getPrimaryKey());
-							$t_item_rel->update();
 							
-							if ($t_item_rel->numErrors()) {
-								$this->errors = $t_item_rel->errors;
-								return false;
-							}
+							if (is_array($cf = $t_item_rel->getChangedFieldValuesArray()) && (sizeof($cf) > 0)) {
+                                $t_item_rel->update();
+                            
+                                if ($t_item_rel->numErrors()) {
+                                    $this->errors = $t_item_rel->errors;
+                                    return false;
+                                }
+                            }
 							return $t_item_rel;
 						}
 					} else {
 						$this->set($va_rel_info['rel_keys']['many_table_field'], $pn_rel_id);
-						$this->update();
 						
-						if ($this->numErrors()) {
-							return false;
-						}
+						if (is_array($cf = $t_item_rel->getChangedFieldValuesArray()) && (sizeof($cf) > 0)) {
+                            $this->update();
+                        
+                            if ($this->numErrors()) {
+                                return false;
+                            }
+                        }
 						return $this;
 					}
 					break;
@@ -10812,7 +10838,8 @@ $pa_options["display_form_field_tips"] = true;
 	 *		restrictToTypes = array of type names or type_ids to restrict to. Only items with a type_id in the list will be returned.
 	 *		hasRepresentations = if set when model is for ca_objects views are only returned when the object has at least one representation.
 	 *		checkAccess = an array of access values to filter only. Items will only be returned if the item's access setting is in the array.
-	 * @return bool True on success, false on error
+	 *      idsOnly = return primary keys only. [Default is false]
+	 * @return array 
 	 */
 	public function getMostViewedItems($pn_limit=10, $pa_options=null) {
 		$o_db = $this->getDb();
@@ -10866,6 +10893,10 @@ $pa_options["display_form_field_tips"] = true;
 			{$vs_limit_sql}
 		");
 		
+		if ($ids_only = caGetOption('idsOnly', $pa_options, false)) {
+		    return $qr_res->getAllFieldValues($this->primaryKey());
+		}
+		
 		$va_most_viewed_items = array();
 		
 		while($qr_res->nextRow()) {
@@ -10912,7 +10943,7 @@ $pa_options["display_form_field_tips"] = true;
 							continue;
 						}
 					}
-					if (is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && ($this->hasField('access')) && !in_array($pa_options['checkAccess'], $qr_res->get("{$vs_table_name}.access"))) {
+					if (is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && ($this->hasField('access')) && !in_array($qr_res->get("{$vs_table_name}.access"), $pa_options['checkAccess'])) {
 						continue;
 					}
 					if (($vs_type_field_name) && (is_array($va_type_ids) && sizeof($va_type_ids))){
@@ -10935,10 +10966,6 @@ $pa_options["display_form_field_tips"] = true;
 		}
 		
 		return $va_ids;
-		
-		
-		
-		return array_keys($va_recently_viewed_items);
 	}
 	# --------------------------------------------------------------------------------------------
 	/**
@@ -10949,6 +10976,7 @@ $pa_options["display_form_field_tips"] = true;
 	 *		restrictToTypes = array of type names or type_ids to restrict to. Only items with a type_id in the list will be returned.
 	 *		hasRepresentations = if set when model is for ca_objects views are only returned when the object has at least one representation.
 	 *		checkAccess = an array of access values to filter only. Items will only be returned if the item's access setting is in the array.
+	 *      idsOnly = return primary keys only. [Default is false]
 	 * @return array List on success, false on error
 	 */
 	public function getRecentlyAddedItems($pn_limit=10, $pa_options=null) {
@@ -11005,6 +11033,9 @@ $pa_options["display_form_field_tips"] = true;
 				ORDER BY
 					t.".$vs_primary_key." DESC";
 		
+		
+		$ids_only = caGetOption('idsOnly', $pa_options, false);
+		
 		$vn_index = 0;
 		$va_recently_added_items = array();
 		while(sizeof($va_recently_added_items) < $pn_limit) {
@@ -11015,8 +11046,12 @@ $pa_options["display_form_field_tips"] = true;
 			$va_recently_added_items = array();
 			
 			while($qr_res->nextRow()) {
-				$va_row = $qr_res->getRow();
-				$va_recently_added_items[$va_row[$vs_primary_key]] = $va_row;
+                $va_row = $qr_res->getRow();
+			    if($ids_only) {
+			         $va_recently_added_items[] = $va_row[$vs_primary_key];
+			    } else {
+                    $va_recently_added_items[$va_row[$vs_primary_key]] = $va_row;
+                }
 			}
 			$vn_index += $pn_limit;
 		}

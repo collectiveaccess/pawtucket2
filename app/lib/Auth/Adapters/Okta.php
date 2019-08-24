@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018 Whirl-i-Gig
+ * Copyright 2018-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -119,6 +119,17 @@ class OktaAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
 				);
 			} 
 			if (is_array($user_info)) {
+			    if (isset($user_info['errorCode'])) {
+			        return [
+                        'user_name' => $va_attrs['sub'],
+                        'email' => $va_attrs['sub'],
+                        'fname' => '',
+                        'lname' => $va_attrs['sub'],
+                        'active' => 1,
+                        'roles' => $va_default_roles,
+                        'groups' => $va_groups
+                    ];
+			    }
 				if ($user_info['status'] !== 'ACTIVE') {
 					throw new OktaException(_t("User is not active."));
 				}
@@ -224,7 +235,8 @@ class OktaAuthAdapter extends BaseAuthAdapter implements IAuthAdapter {
                 throw new OktaException(_t('Verification of Okta JWT failed'));
             }
             setcookie("access_token", $exchange['access_token'],time()+$exchange['expires_in'],"/",false);
-            header('Location: '.$this->config->get('auth_login_url'));
+            header('Location: /'.$this->config->get('default_action'));
+            return;
         }
         throw new OktaException(_t('An Okta error during login has occurred'));
     }

@@ -3506,13 +3506,11 @@ class BundlableLabelableBaseModelWithAttributes extends LabelableBaseModelWithAt
 							switch($vs_batch_mode) {
 								case '_disabled_':		// skip
 									continue(2);
-									break;
 								case '_add_':			// just try to add attribute as in normal non-batch save
 									// noop
 									break;
 								case '_replace_':		// remove all existing attributes before trying to save
 									$this->removeAttributes($vn_element_id, array('force' => true));
-									continue;
 									break;
 							}
 						}
@@ -3810,10 +3808,9 @@ if (!$vb_batch) {
 						switch($vs_batch_mode) {
 							case '_disabled_':		// skip
 								continue(2);
-								break;
 							case '_replace_':		// remove all existing preferred labels before trying to save
 								$this->removeAllLabels(__CA_LABEL_TYPE_PREFERRED__);
-								continue;
+								break;
 							case '_delete_':		// remove all existing preferred labels
 								$this->removeAllLabels(__CA_LABEL_TYPE_PREFERRED__);
 								continue(2);
@@ -3951,17 +3948,15 @@ if (!$vb_batch) {
 					switch($vs_batch_mode) {
 						case '_disabled_':		// skip
 							continue(2);
-							break;
 						case '_add_':			// just try to add attribute as in normal non-batch save
 							// noop
 							break;
 						case '_replace_':		// remove all existing nonpreferred labels before trying to save
 							$this->removeAllLabels(__CA_LABEL_TYPE_NONPREFERRED__);
-							continue;
+							break;
 						case '_delete_':		// remove all existing nonpreferred labels
 							$this->removeAllLabels(__CA_LABEL_TYPE_NONPREFERRED__);
 							continue(2);
-							break;
 					}
 				}
 				
@@ -5016,7 +5011,7 @@ if (!$vb_batch) {
 						if ($vb_batch) { 
 							$vs_batch_mode = $po_request->getParameter("{$vs_placement_code}{$vs_form_prefix}_batch_mode", pString);
 							
-							if($vs_batch_mode == '_disabled_') { continue; }
+							if($vs_batch_mode == '_disabled_') { continue(2); }
 							
 							if (in_array($vs_batch_mode, ['_replace_', '_delete_'])) {
 								$this->removeAllTags();

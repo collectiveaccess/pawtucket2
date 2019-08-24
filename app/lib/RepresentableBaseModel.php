@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2018 Whirl-i-Gig
+ * Copyright 2013-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -69,6 +69,14 @@
 			if (caGetBundleAccessLevel($this->tableName(), 'ca_object_representations') == __CA_BUNDLE_ACCESS_NONE__) {
 				return null;
 			}
+			
+			if ($alt_text_template = Configuration::load()->get($this->tableName()."_alt_text_template")) { 
+                $alt_text = $this->getWithTemplate($alt_text_template);
+            } elseif(is_a($this, "LabelableBaseModelWithAttributes")) {
+                $alt_text = $this->get($this->tableName().".preferred_labels");
+            } else {
+                $alt_text = null;
+            }
 		
 			if (!is_array($pa_versions)) { 
 				$pa_versions = array('preview170');
@@ -148,9 +156,9 @@
 					}
 				
 					if ($vn_width && $vn_height) {
-						$va_tmp['tags'][$vs_version] = $qr_reps->getMediaTag('media', $vs_version, array_merge($pa_options, array('viewer_width' => $vn_width, 'viewer_height' => $vn_height)));
+						$va_tmp['tags'][$vs_version] = $qr_reps->getMediaTag('media', $vs_version, array_merge($pa_options, array('alt' => $alt_text, 'viewer_width' => $vn_width, 'viewer_height' => $vn_height)));
 					} else {
-						$va_tmp['tags'][$vs_version] = $qr_reps->getMediaTag('media', $vs_version, $pa_options);
+						$va_tmp['tags'][$vs_version] = $qr_reps->getMediaTag('media', $vs_version, array_merge($pa_options, ['alt' => $alt_text]));
 					}
 					$va_tmp['urls'][$vs_version] = $qr_reps->getMediaUrl('media', $vs_version);
 					$va_tmp['paths'][$vs_version] = $qr_reps->getMediaPath('media', $vs_version);
@@ -378,7 +386,7 @@
 			$o_db = $this->getDb();
 		
 			$qr_reps = $o_db->query("
-				SELECT count(*) c
+				SELECT count(DISTINCT caor.representation_id) c
 				FROM ca_object_representations caor
 				INNER JOIN {$vs_linking_table} AS caoor ON caor.representation_id = caoor.representation_id
 				LEFT JOIN ca_locales AS l ON caor.locale_id = l.locale_id
@@ -508,11 +516,11 @@
 					switch($vs_match_on) {
 						case 'idno':
 							if (!trim($pa_values['idno'])) { break; }
-							$va_ids = ca_object_representations::find(array('idno' => trim($pa_values['idno'])), array('returnAs' => 'ids'));
+							$va_ids = ca_object_representations::find(array('idno' => trim($pa_values['idno'])), array('returnAs' => 'ids', 'transaction' => $this->getTransaction()));
 							break;
 						case 'label':
 							if (!trim($pa_values['preferred_labels']['name'])) { break; }
-							$va_ids = ca_object_representations::find(array('preferred_labels' => array('name' => trim($pa_values['preferred_labels']['name']))), array('returnAs' => 'ids'));
+							$va_ids = ca_object_representations::find(array('preferred_labels' => array('name' => trim($pa_values['preferred_labels']['name']))), array('returnAs' => 'ids', 'transaction' => $this->getTransaction()));
 							break;
 					}
 					if(is_array($va_ids) && sizeof($va_ids)) { 
@@ -557,7 +565,10 @@
 						}
 					}
 				}
-		
+				if(!isset($pa_values['idno'])) {
+					$t_rep->setIdnoWithTemplate('%', ['serialOnly' => true]);
+				}
+				
 				$t_rep->insert();
 		
 				if ($t_rep->numErrors()) {
@@ -627,7 +638,7 @@
 			if (!($t_oxor = $this->_getRepresentationRelationshipTableInstance())) { return null; }
 			$vs_pk = $this->primaryKey();
 			
-			if ($this->inTransaction()) { $t_oxor->setTransaction($this->getTransaction()); }
+			$t_oxor->setTransaction($this->getTransaction()); 
 			$t_oxor->setMode(ACCESS_WRITE);
 			$t_oxor->set($vs_pk, $vn_id);
 			$t_oxor->set('representation_id', $t_rep->getPrimaryKey());
@@ -1040,11 +1051,24 @@
 					(oxor.{$vs_pk} IN (".join(',', $pa_ids).")) AND oxor.is_primary = 1 AND orep.deleted = 0 {$vs_access_where}
 			");
 		
-			$va_media = array();
+		    $qr = caMakeSearchResult($this->tableName(), $pa_ids);
+		    $alt_texts = [];
+		    while($qr->nextHit()) {
+                if ($alt_text_template = Configuration::load()->get($this->tableName()."_alt_text_template")) { 
+                    $alt_texts[$qr->get($vs_pk)] = $qr->getWithTemplate($alt_text_template);
+                } else {
+                    $alt_texts[$qr->get($vs_pk)] = $qr->get($this->tableName().".preferred_labels");
+                }
+            }
+            
+			$va_media = [];
 			while($qr_res->nextRow()) {
-				$va_media_tags = array();
+				$va_media_tags = [
+					'representation_id' => $qr_res->get('ca_object_representations.representation_id'),
+					'access' => $qr_res->get('ca_object_representations.access')
+				];
+				
 				foreach($pa_versions as $vs_version) {
-					$va_media_tags['representation_id'] = $qr_res->get('ca_object_representations.representation_id');
 					$va_media_tags['tags'][$vs_version] = $qr_res->getMediaTag('ca_object_representations.media', $vs_version);
 					$va_media_tags['info'][$vs_version] = $qr_res->getMediaInfo('ca_object_representations.media', $vs_version);
 					$va_media_tags['urls'][$vs_version] = $qr_res->getMediaUrl('ca_object_representations.media', $vs_version);
@@ -1053,7 +1077,7 @@
 			}
 		
 			// Preserve order of input ids
-			$va_media_sorted = array();
+			$va_media_sorted = [];
 			foreach($pa_ids as $vn_id) {
 				$va_media_sorted[$vn_id] = $va_media[$vn_id];
 			} 
@@ -1143,7 +1167,7 @@
 			$va_path = Datamodel::getPath($this->tableName(), 'ca_object_representations');
 			if (!is_array($va_path) || (sizeof($va_path) != 3)) { return null; }
 			$va_path = array_keys($va_path);
-			return Datamodel::getInstanceByTableName($va_path[1], true);
+			return Datamodel::getInstanceByTableName($va_path[1]);
 		}
 		# ------------------------------------------------------
         /**

@@ -161,7 +161,8 @@
 			}
 			
  			$ps_function = strtolower($ps_function);
- 			$ps_id = urldecode($this->request->getActionExtra()); 
+ 			$ps_id = str_replace("~", "/", urldecode($this->request->getActionExtra())); 
+ 		
  			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
  				// invalid detail type – throw error
  				throw new ApplicationException("Invalid detail type");
@@ -276,25 +277,25 @@
 					$t_representation = Datamodel::getInstance("ca_object_representations", true);
 					$this->view->setVar("representation_id", null);
 				}
-				if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
-				
-				$this->view->setVar('representationViewerPrimaryOnly', caGetOption('representationViewerPrimaryOnly', $va_options, false));
-				$this->view->setVar('representationViewer', 
-					caRepresentationViewer(
-						$this->request, 
-						$t_subject, 
-						$t_subject,
-						array_merge($va_options, $va_media_display_info, 
-							array(
-								'display' => 'detail',
-								'showAnnotations' => true, 
-								'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $va_options, false), 
-								'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), 
-								'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $va_options, false)
-							)
-						)
-					)
-				);
+				//if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
+				// 
+// 				$this->view->setVar('representationViewerPrimaryOnly', caGetOption('representationViewerPrimaryOnly', $va_options, false));
+// 				$this->view->setVar('representationViewer', 
+// 					caRepresentationViewer(
+// 						$this->request, 
+// 						$t_subject, 
+// 						$t_subject,
+// 						array_merge($va_options, $va_media_display_info, 
+// 							array(
+// 								'display' => 'detail',
+// 								'showAnnotations' => true, 
+// 								'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $va_options, false), 
+// 								'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), 
+// 								'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $va_options, false)
+// 							)
+// 						)
+// 					)
+// 				);
 			}
 			
 			//
@@ -430,7 +431,7 @@
 				$this->view->setVar('tags_array', $va_tags);
 				$this->view->setVar('tags', implode(", ", $va_tags));
 			
-				$this->view->setVar("itemComments", caDetailItemComments($this->request, $t_subject->getPrimaryKey(), $t_subject, $va_comments, $va_tags));
+				$this->view->setVar("itemComments", caDetailItemComments($t_subject->getPrimaryKey(), $t_subject, $va_comments, $va_tags));
 			} else {
 				$this->view->setVar("itemComments", '');
 			}
