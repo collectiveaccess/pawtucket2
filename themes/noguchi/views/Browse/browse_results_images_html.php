@@ -111,13 +111,13 @@
                             </div>
                             <div class='text'>
                                 <div class='text_position'>
-                                    <div class='ca-identifier text-gray'>^ca_objects.idno</div>
+                                    <div class='ca-identifier text-gray'>^ca_objects.idno<if rule='^ca_objects.status =~ /pending/'>*</if></div>
                                     <div class='thumb-text clamp' data-lines='3'>^ca_objects.preferred_labels.name</div>
                                     <ifdef code='ca_objects.date.display_date'><div class='ca-identifier text-gray'>^ca_objects.date.display_date</div></ifdef>
                                     <ifnotdef code='ca_objects.date.display_date'><ifdef code='ca_objects.date.parsed_date'><div class='ca-identifier text-gray'>^ca_objects.date.parsed_date</div></ifdef></ifnotdef>
                                     <div class='text_full'>
                                         <!-- This duplicate content is required for interaction on long titles -->
-                                        <div class='ca-identifier text-gray'>^ca_objects.idno</div>
+                                        <div class='ca-identifier text-gray'>^ca_objects.idno<if rule='^ca_objects.status =~ /pending/'>*</if></div>
                                         <div class='thumb-text'>^ca_objects.preferred_labels.name</div>
                                         <ifdef code='ca_objects.date.display_date'><div class='ca-identifier text-gray'>^ca_objects.date.display_date</div></ifdef>
                                    		<ifnotdef code='ca_objects.date.display_date'><ifdef code='ca_objects.date.parsed_date'><div class='ca-identifier text-gray'>^ca_objects.date.parsed_date</div></ifdef></ifnotdef>                                    
