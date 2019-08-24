@@ -356,7 +356,7 @@
 
         </section>
 </ifcount>}}}
-{{{<ifcount code="ca_objects.related"  min="1">
+{{{<ifcount code="ca_objects.related" restrictToRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" min="1">
         <section class="wrap block border">
             <div class="block text-align-center">
                 <h4 class="subheadline-bold">Related Artworks</h4>
