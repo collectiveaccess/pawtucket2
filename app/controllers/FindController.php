@@ -95,7 +95,7 @@
  			ksort($va_options);
  			
  			// Set comparison list view vars
- 			$this->view->setVar('comparison_list', $va_comparison_list = caGetComparisonList($this->request, $this->ops_tablename));
+ 			$this->view->setVar('comparison_list', $va_comparison_list = caGetComparisonList($this->ops_tablename));
  			
 			$this->view->setVar('export_format_select', caHTMLSelect('export_format', $va_options, array('class' => 'searchToolsSelect'), array('value' => $this->view->getVar('current_export_format'), 'width' => '150px')));
  		}

@@ -464,6 +464,10 @@
                 }
             }
             
+ 			// inquire link
+ 			//
+ 			$this->view->setVar('inquireEnabled', (bool)$va_options['enableInquire']);
+ 			
  			//
  			// pdf link
  			//

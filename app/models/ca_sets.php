@@ -1811,6 +1811,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 				
 				if (isset($pa_options['thumbnailVersions']) && is_array($pa_options['thumbnailVersions'])) {
 					foreach($pa_options['thumbnailVersions'] as $vs_version) {
+						$va_row['representation_tag_'.$vs_version.'_as_link'] = caDetailLink($qr_res->getMediaTag('media', $vs_version), '', $t_rel_table->tableName(), $qr_res->get("ca_set_items.row_id"));
 						$va_row['representation_tag_'.$vs_version] = $qr_res->getMediaTag('media', $vs_version);
 						$va_row['representation_url_'.$vs_version] = $qr_res->getMediaUrl('media', $vs_version);
 						$va_row['representation_path_'.$vs_version] = $qr_res->getMediaPath('media', $vs_version);
@@ -2786,7 +2787,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 	 *		versions = Considers set existance subject to acccess the user. 
 	 *		access = Consider set to exist if user has at least the specified access level. If user_id is omitted then this option has no effect. If user_id is set and this option is omitted, then a set will be considered to exist if the user has at least read access. 
 	 *		checkAccess = Consider set to exist if it has a public access level with the specified values. Can be a single value or array if you wish to filter on multiple public access values.
-	 *		template = 
+	 *		template =
 	 *			
 	 * @return array
 	 */
@@ -2798,7 +2799,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 		}
 		
 		$reps = array_values(caExtractValuesByUserLocale($set->getItems(['thumbnailVersions' => caGetOption('versions', $options, ['large']), 'template' => caGetOption('template', $options, null)])));
-		return array_map(function($r) { return ['key' => md5($r['representation_url_large']), 'url' => $r['representation_url_large'], 'caption' => $r['displayTemplate']]; }, $reps);
+		return array_map(function($r) { return ['key' => md5($r['representation_url_large']), 'url' => $r['representation_url_large'], 'media_tag' => $r['representation_tag_large'], 'media_tag_link' => $r['representation_tag_large_as_link'], 'caption' => $r['displayTemplate']]; }, $reps);
 	}
 	# ---------------------------------------------------------------
 	/**
