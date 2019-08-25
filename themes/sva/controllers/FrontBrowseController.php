@@ -317,6 +317,7 @@
 				$vs_sort_fld = $va_browse_info['views']['timeline']['data'];
 				$ps_sort_direction = 'asc';
 			}
+			if (!$vs_sort_fld) { $vs_sort_fld = array_shift($va_sort_by); }
 			$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
 			
 			$va_show_letter_bar_sorts = caGetOption('showLetterBarSorts', $va_browse_info, null);
@@ -358,11 +359,14 @@
 			
 			$this->view->setVar('result', $qr_res);
 				
-			if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
- 				if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
- 					$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
- 				}
- 			}
+			// if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
+//  				if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
+//  					$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
+//  				}
+//  			}
+
+			$pn_hits_per_block = 1000;
+
  			$this->opo_result_context->setItemsPerPage($pn_hits_per_block);
 			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);

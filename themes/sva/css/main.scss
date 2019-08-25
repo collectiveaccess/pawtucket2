@@ -169,5 +169,15 @@ p.legend a {
     color: $ca-blue;
 }
 
+/* Date/artist/exhibition browse */
+.browseNavItemSelected {
+	font-weight: bold;
+	font-style: italic;
+}
+
+.browseResults {
+	width: 90%;
+}
+
 @import "/fonts";
 @import "/custom";
