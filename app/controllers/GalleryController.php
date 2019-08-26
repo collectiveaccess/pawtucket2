@@ -77,7 +77,7 @@
 						$va_tmp["table"] = "ca_objects";
 					}
 					$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
-					$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "icon", "checkAccess" => $this->opa_access_values));
+					$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "large", "checkAccess" => $this->opa_access_values));
 					
 					$o_front_config = caGetFrontConfig();
 					$vs_front_page_set = $o_front_config->get('front_page_set_code');
@@ -94,7 +94,7 @@
 							if(Datamodel::getTableName($va_set['table_num']) != "ca_objects"){
 								$t_instance = Datamodel::getInstanceByTableNum($va_set['table_num']);
 								$t_instance->load($va_first_item["row_id"]);
-								if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.iconlarge</unit>', array("checkAccess" => $this->opa_access_values))){
+								if($vs_thumbnail = $t_instance->getWithTemplate('<unit relativeTo="ca_objects.related" length="1">^ca_object_representations.media.large</unit>', array("checkAccess" => $this->opa_access_values))){
  									$va_set_first_items[$vn_set_id][$vn_item_id] = array("representation_tag" => $vs_thumbnail);
  								}
 							}
@@ -121,7 +121,7 @@
 				} 				 				
  				$this->view->setVar("label", $t_set->getLabelForDisplay());
  				$this->view->setVar("description", $t_set->get($this->config->get('gallery_set_description_element_code')));
- 				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values))));
+ 				$this->view->setVar("set_items", caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge", "large"), "checkAccess" => $this->opa_access_values))));
  				$pn_set_item_id = $this->request->getParameter('set_item_id', pInteger);
  				if(!in_array($pn_set_item_id, array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values))))){
  					$pn_set_item_id = "";	

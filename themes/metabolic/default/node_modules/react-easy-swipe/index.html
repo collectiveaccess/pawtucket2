@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>React easy swipe demo</title>
+    <style>
+
+      body {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  color: #333; }
+
+h1, h2, h3, h4 {
+  font-weight: 700;
+  margin: 20px 0; }
+
+h1 {
+  font-weight: 700;
+  font-size: 2.5em; }
+
+h2 {
+  border-top: 1px solid #999;
+  padding-top: 40px;
+  margin-top: 40px;
+  font-size: 2em; }
+
+h3 {
+  font-size: 1.4em; }
+
+h4 {
+  font-size: 1.1em;
+  margin-bottom: 10px; }
+
+code {
+  border-radius: 20px;
+  background: #f5f5f5;
+  padding: 20px;
+  text-indent: 0;
+  color: #333;
+  display: block;
+  margin: auto;
+  overflow: scroll;
+  width: 100%; }
+
+.wrapper {
+  padding: 30px; }
+  .wrapper .demo {
+    display: block;
+    margin: 30px 0;
+    padding-bottom: 30px;
+    border-bottom: 1px solid #333; }
+    .wrapper .demo:last-child {
+      border-bottom: 0; }
+
+.list-items, .summary {
+  margin-left: 50px; }
+  .list-items li, .summary li {
+    line-height: 2;
+    list-style-type: circle; }
+    .list-items li ul, .summary li ul {
+      margin-left: 30px; }
+
+footer {
+  text-align: center;
+}
+
+    </style>
+  </head>
+  <body>
+    <a href="https://github.com/leandrowd/react-responsive-carousel"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/365986a132ccd6a44c23a9169022c0b5c890c387/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f7265645f6161303030302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png"></a>
+    <div class="wrapper">
+      <h1>React Easy Swipe (WIP)</h1>
+
+      <h2>Summary</h2>
+      <ul class="summary">
+        <li><a href="#install">Installing</a></li>
+        <li><a href="#demo">Demo</a></li>
+        <li><a href="#usage">Usage</a></li>
+        <li><a href="#props">Properties</a></li>
+        <li><a href="#contribute">Contributing</a></li>
+      </ul>
+
+      <h2 id="install">Installing</h2>
+      <code>
+        npm install react-easy-swipe --save
+      </code>
+
+      <h2 id="demo">Demo</h2>
+      <div id="root"></div>
+
+      <h2 id="usage">Usage</h2>
+      <script src="https://gist.github.com/leandrowd/e9074b19b8dc23a8b471.js"></script>
+
+      <h2 id="props">Properties</h2>
+      <pre>
+        <code>
+{
+  tagName: PropTypes.string,
+  className: PropTypes.string,
+  style: PropTypes.object,
+  children: PropTypes.node,
+  onSwipeUp: PropTypes.func,
+  onSwipeDown: PropTypes.func,
+  onSwipeLeft: PropTypes.func,
+  onSwipeRight: PropTypes.func,
+  onSwipeStart: PropTypes.func,
+  onSwipeMove: PropTypes.func,
+  onSwipeEnd: PropTypes.func
+}
+        </code>
+      </pre>
+
+      <h2 id="contribute">Contributing</h2>
+      <p>Please, feel free to contribute. You may open a bug, request a feature, submit a pull request or whatever you want!</p>
+    </div>
+
+    <script src="./demo/vendor.bundle.js"></script>
+    <script src="./demo/demo.js"></script>
+</body>
+</html>

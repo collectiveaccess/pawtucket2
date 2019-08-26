@@ -205,22 +205,22 @@
 						}
 					?>
   
-					{{{<ifdef code="ca_objects.published_on_text">
+					{{{<ifdef code="ca_objects.published_on|ca_objects.published_on_text">
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Published On</div>
-							<div class="ca-data">^ca_objects.published_on_text</div>
+							<div class="ca-data">^ca_objects.published_on ^ca_objects.published_on_text</div>
 						</div>
                     </ifdef>}}}
-                    {{{<ifdef code="ca_objects.suspended">
+                    {{{<ifdef code="ca_objects.suspended|ca_objects.suspended_text">
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Research Suspended On</div>
-							<div class="ca-data">^ca_objects.suspended_text</div>
+							<div class="ca-data">^ca_objects.suspended ^ca_objects.suspended_text</div>
 						</div>
                     </ifdef>}}}
-                    {{{<ifdef code="ca_objects.last_updated_on_text">
+                    {{{<ifdef code="ca_objects.last_updated_on|ca_objects.last_updated_on_text">
 						<div class="block-quarter">
-							<div class="eyebrow text-gray">Last Update</div>
-							<div class="ca-data">^ca_objects.last_updated_on_text</div>
+							<div class="eyebrow text-gray">Last Updated On</div>
+							<div class="ca-data">^ca_objects.last_updated_on ^ca_objects.last_updated_on_text</div>
 						</div>
                     </ifdef>}}}
                     {{{<ifdef code="ca_objects.status">
@@ -338,7 +338,7 @@
 											<img nopin="nopin"  src="^ca_object_representations.media.medium.url" />
 										</div>
 										<div class="text block-quarter">
-											<div class="ca-identifier text-gray">^ca_objects.idno</div>
+											<div class="ca-identifier text-gray">^ca_objects.idno<if rule='^ca_objects.status =~ /pending/'>*</if></div>
 											<div class="thumb-text clamp" data-lines="4">^ca_objects.preferred_labels.name</div>
 											<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date</div></ifdef>
 											<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>
@@ -373,7 +373,7 @@
 										<img nopin="nopin"  src="^ca_object_representations.media.medium.url" />
 									</div>
 									<div class="text block-quarter">
-										<div class="ca-identifier text-gray">^ca_objects.idno</div>
+										<div class="ca-identifier text-gray">^ca_objects.idno<if rule='^ca_objects.status =~ /pending/'>*</if></div>
 										<div class="thumb-text clamp" data-lines="4">^ca_objects.preferred_labels.name</div>
 										<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date</div></ifdef>
 										<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>
