@@ -128,7 +128,7 @@ class ExhBrowseNavigationItem extends React.Component {
   	if (e !== null) { e.preventDefault(); }
 
   	let that = this;
-	axios.get(decodeURI(this.props.browseUrl).replace("%value", this.props.value))
+	axios.get(decodeURI(this.props.browseUrl).replace("%value", escape(this.props.value)))
 	.then(function (response) {
 		that.props.handleClick(that, response.data);
 	})

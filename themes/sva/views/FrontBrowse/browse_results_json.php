@@ -35,7 +35,6 @@
 	if(!$vn_row_id){
 		$vb_row_id_loaded = true;
 	}
-	
 	$va_views			= $this->getVar('views');
 	$vs_current_view	= $this->getVar('view');
 	$va_view_icons		= $this->getVar('viewIcons');
@@ -59,6 +58,10 @@
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
 
 	
+	$facet = $this->getVar('facet');
+	$facet_info = $this->getVar('facet_info');
+	
+	$letter = mb_strtolower($va_criteria[0]['id']);
 	
 		$vn_col_span = 4;
 		$vn_col_span_sm = 4;
@@ -75,20 +78,6 @@
 			$vn_c = 0;
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
-			
-			if ($vs_table != 'ca_objects') {
-				$va_ids = array();
-				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-					$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
-				}
-			
-				$qr_res->seek($vn_start);
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
-			} else {
-				$va_images = null;
-			}
-			
-			$t_list_item = new ca_list_items();
 			
 			while($qr_res->nextHit()) {
 				if($vn_c == $vn_hits_per_block){
@@ -108,27 +97,21 @@
 				if(false) { //($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
+					$label = $qr_res->get("{$vs_table}.preferred_labels");
+						
+					$entity_list = null;				
+					 if ($facet === 'exhibitor') {
+ 						$entities = $qr_res->get('ca_entities', ['returnWithStructure' => true]);
+ 						$entity_list = array_map(function($v) { return $v['displayname']; }, array_filter($entities, function($v) use ($letter) { return mb_strtolower(mb_substr($v['surname'], 0, 1)) === $letter; }));
+ 					}
 				
-					$vs_idno_detail_link 	= caDetailLink($idno = $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($label = $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					$vs_label_detail_link 	= caDetailLink((is_array($entity_list) && sizeof($entity_list)) ? join(", ", $entity_list)." : {$label}" : $label, '', $vs_table, $vn_id);
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
 					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
-					if(!$vs_image){
-						if ($vs_table == 'ca_objects') {
-							$t_list_item->load($qr_res->get("type_id"));
-							$vs_typecode = $t_list_item->get("idno");
-							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-								$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-							}else{
-								$vs_image = $vs_default_placeholder_tag;
-							}
-						}else{
-							$vs_image = $vs_default_placeholder_tag;
-						}
-					}
+					
 					$vs_rep_detail_link 	= caDetailLink($vs_image, '', $vs_table, $vn_id);	
 				
 				
