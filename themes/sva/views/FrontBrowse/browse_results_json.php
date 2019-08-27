@@ -91,6 +91,6 @@
 		}			
 	}
 	if ($facet === 'decade') {
-		$data = caSortArrayByKeyInValue($data, ['year']);
+		$data = array_values(caSortArrayByKeyInValue($data, ['year']));
 	}
 	print json_encode($data, true);
