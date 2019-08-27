@@ -28,7 +28,7 @@
 			</div>
 		</div>
 		<div class="tab-pane" id="exhibitor" role="tabpanel" aria-labelledby="exhibitor-tab">
-			<div id="exhibitorBrowser">
+			<div id="exhibitorBrowse">
 				
 			</div>
 		</div>
@@ -46,7 +46,7 @@
 			'facetUrl': '<?php print caNavUrl('', 'FrontBrowse', 'occurrences', ['getFacet' => 'exhibition', 'download' => 1]); ?>',
 			'browseUrl': '<?php print caNavUrl('', 'FrontBrowse', 'occurrences', ['facets' => 'exhibition:%value', 'sort' => 'Name']); ?>'
 		},
-		'#exhibitorBrowser': {
+		'#exhibitorBrowse': {
 			'facetUrl': '<?php print caNavUrl('', 'FrontBrowse', 'exhibitors', ['getFacet' => 'exhibitor', 'download' => 1]); ?>',
 			'browseUrl': '<?php print caNavUrl('', 'FrontBrowse', 'exhibitors', ['facets' => 'exhibitor:%value', 'sort' => 'Name']); ?>'
 		}

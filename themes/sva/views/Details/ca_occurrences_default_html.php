@@ -9,13 +9,13 @@
 <!-- <div class="hpHero" id="sec2">
 	{{{<ifdef code="ca_objects"><div class='unit'><unit relativeTo="ca_objects" delimiter=" " start="0" length="1">^ca_object_representations.media.large</unit></div></ifdef>}}}
 </div> -->
-<div class="hpHero">
+<!-- <div class="hpHero">
 	<?php print caGetThemeGraphic('SVA_Exhibitions_Archives.jpg', array("alt" => "Rising Sun Graphic Image")); ?>
 			<div class= "wrapper" id="sec2">
 					<h1>SVA Exhibitions Archives<br><a href="#breadcrumbs"><i class="material-icons">expand_more</i></a></h1>
-			</div>		
+			</div>		-->
 </div>
-<div class="container-fluid">
+<div class="container-fluid" id="sec2">
 	<div class="row">
         <div class='col-sm-12'>
 			<ul class="breadcrumbs--nav" id="breadcrumbs">

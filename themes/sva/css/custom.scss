@@ -39,6 +39,9 @@ p {
 	font-family: $serif;
 }
 
+.card img:hover {
+	opacity: 0.5;
+}
 .frontpara {
 	margin-left: -10px;
 }
@@ -53,7 +56,6 @@ p {
 
 .navlogo {
 	padding-left: 15px;
-	color: #fff;
 }
 
 #mainnavbar {
@@ -67,8 +69,6 @@ p {
     display: block;
     padding: 20px;
     padding-left: 23px;
-    color: #fff;
-
   }
 }
 
@@ -101,13 +101,6 @@ h1 {
 
 }
 
-.h1smaller {
-	font-size: 4rem;
-	text-transform: capitalize;
-	padding-top: 10px;
-	padding-bottom: 20px;
-
-}
 @media (min-width: $breakpoint-sm) and (max-width: $breakpoint-med) {
 	h1 {
 		font-size: 5rem;		
@@ -120,11 +113,6 @@ h1 {
 	h1 {
 		font-size: 3rem;
 		margin-top: -50px;
-		
-	&--smaller {
-		font-size: 2rem;
-		text-transform: capitalize;
-	}
 	}
 	h2 {
 		font-size: 1.5rem !important;
@@ -215,12 +203,13 @@ h3 {
 }
 
 .hpHero a {
-	color: #fff !important;
+	color: #000 !important;
 }
 
 .material-icons {
 	font-size: 100px !important;
 	padding-top:40px;
+	color: #000 !important;
 }
 
 .hpHero img {
@@ -232,7 +221,6 @@ h3 {
 	position: relative;
 	width: 60%;
 	text-align: center;
-	color: $very-light;
 	margin: 0 auto;
 	float:none;
 	transform: translateY(-120%);
@@ -323,49 +311,31 @@ small {
 
 /* FRONT BROWSE */
 
-.select-list {
-	list-style: none;
-}
-
-#dropdownMenuLink {
-	width: 500px;
-	height: 30px;
-	background-color: $bg-light;
-	color: $primary-color;
-	border-radius: 0 !important;
-	border-top: none !important;
-	border-left: none !important;
-	border-right: none !important;
-	border-bottom: 1px solid #000;
-	font-family: $sans-serif;
-	padding-left: 10px;
-	text-align: left;
-}
-
-.dropdown-menu {
-	background-color: $bg-light;
-	border-radius: 0;  
-	border: 1px solid #000;
-	max-height: 200px;
-	overflow-x:hidden;
-}
-
-.dropdown-item {
-	font-family: $sans-serif;
-	padding-left: 5px;
-	width: 500px;
-	background-color: $bg-light;
-	font-size: .9rem;
-}
-
 .sortby {
 	list-style: none;
 	display: inline-block;
+	text-transform: uppercase;
+}
+
+#dateBrowse .sortby {
+	text-transform: lowercase;
 }
 .sortby li {
 	display: inline-block;
 	padding-right: 10px;
 	font-size: 1.5rem;
+}
+
+.browseResults {
+	list-style: none;
+}
+
+#exhibitorBrowse h2 {
+	text-transform: uppercase;
+}
+
+#exhibitionBrowse h2 {
+	text-transform: uppercase;
 }
 .arrow {
 	padding-right: 10px;
