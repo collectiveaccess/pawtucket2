@@ -13,21 +13,37 @@ class ExhBrowse extends React.Component {
     this.state = {
     	'results': [], 
     	'navItem': null,
-		'value': ''
+		'value': '',
+		'sortDirection': 'ASC'
     };
 
     this.setBrowseResults = this.setBrowseResults.bind(this);
+    this.setSortDirection = this.setSortDirection.bind(this);
   }
   
   setBrowseResults(navItem, data) {
   	this.setState({'navItem': navItem , 'results': data, 'value': navItem.props.value});
   }
 
+  setSortDirection(s) {
+  	let state = this.state;
+  	state.sortDirection = (s === 'DESC') ? 'DESC' : 'ASC';
+  	this.setState(state);
+  }
+
   render() {
-  	let results = [];
-  	for(var k in this.state.results) {
-  		let result = this.state.results[k];
-  		results.push(<li class="masonry-title--list" dangerouslySetInnerHTML={{ __html : result.detail_link }}></li>);
+  	let results = [], lastYear = null;
+  	let hits = [...this.state.results];
+  	if (this.state.sortDirection === 'DESC') { hits = hits.reverse(); }
+  	for(var k in hits) {
+  		let result = hits[k];
+  		if(this.props.groupByYear) {
+			if (parseInt(result.year) !== lastYear) {
+				results.push(<li className="masonry-title--list browseYearHeader" dangerouslySetInnerHTML={{__html: result.year}}></li>);
+				lastYear = parseInt(result.year);
+			}
+		}
+  		results.push(<li className="masonry-title--list" dangerouslySetInnerHTML={{ __html : result.detail_link }}></li>);
   	}
 
     return (
@@ -40,7 +56,7 @@ class ExhBrowse extends React.Component {
 			<br/><br/>
 			<div className="row">
 				<div className="col-sm-1">
-					<img src="/themes/sva/assets/pawtucket/graphics/sharp-arrow_drop_down-24px.svg"/>
+					<ExhBrowseSortButton doSort={this.setSortDirection}/>
 				</div>
 				<ul className="select-list browseResults">
 					<li><h2--list>{this.state.value}</h2--list></li>
@@ -151,7 +167,35 @@ class ExhBrowseNavigationItem extends React.Component {
   }
 }
 
+class ExhBrowseSortButton extends React.Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			"sortDirection": 'ASC'
+		};
+
+		this.toggleSortDirection = this.toggleSortDirection.bind(this);
+	}
+
+	toggleSortDirection() {
+		if (this.state.sortDirection === 'ASC') {
+			this.setState({"sortDirection": 'DESC'});
+			this.props.doSort('DESC');
+		} else {
+			this.setState({"sortDirection": 'ASC'});
+			this.props.doSort('ASC');
+		}
+	}
+
+	render() {
+		let r = (this.state.sortDirection === 'DESC') ? "rotate(0deg)" : "rotate(180deg)";
+		return (
+			<img src="/themes/sva/assets/pawtucket/graphics/sharp-arrow_drop_down-24px.svg" style={{transform: r}} onClick={this.toggleSortDirection}/>
+		);
+	}
+}
+
 
 for(var k in selectors) {
-	ReactDOM.render(<ExhBrowse facetUrl={selectors[k].facetUrl} browseUrl={selectors[k].browseUrl}/>, document.querySelector(k));
+	ReactDOM.render(<ExhBrowse facetUrl={selectors[k].facetUrl} browseUrl={selectors[k].browseUrl} groupByYear={selectors[k].groupByYear}/>, document.querySelector(k));
 }

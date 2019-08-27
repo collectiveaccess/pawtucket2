@@ -38,7 +38,7 @@
     let pawtucketUIApps = {
         'navscroll': {
             'selector': '#pageNav',
-            'data': { 'sectionSelector': '#sec2'}
+            'data': { 'offset': '10'}
         }
     };
 </script>
