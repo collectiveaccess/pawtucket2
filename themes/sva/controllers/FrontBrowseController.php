@@ -193,7 +193,6 @@
 			//
 			
 			// Get any preset-criteria
-			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 			
 			if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
 			    foreach ($va_facets as $vs_facet_spec) {
@@ -204,16 +203,6 @@
 			
 			} elseif (($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {
 				$o_browse->addCriteria($vs_facet, $p);
-			} else { 
-				if ($o_browse->numCriteria() == 0) {
-					if (is_array($va_base_criteria)) {
-						foreach($va_base_criteria as $vs_facet => $vs_value) {
-							$o_browse->addCriteria($vs_facet, $vs_value);
-						}
-					} else {
-						$o_browse->addCriteria("_search", array("*"));
-					}
-				}
 			}
 			
 			//
@@ -282,7 +271,6 @@
 			$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
 			$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
-				if(isset($va_base_criteria[$vs_facet_name])) { continue; } // skip base criteria 
 				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacet($vs_facet_name, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'checkAvailabilityOnly' => caGetOption('deferred_load', $va_facet_info, false, array('castTo' => 'bool'))));
 			}
 			$this->view->setVar('facets', $va_facets);
@@ -291,13 +279,6 @@
 			
 			Session::setVar($ps_function.'_last_browse_id', $vs_key);
 			
-			
-			// remove base criteria from display list
-			if (is_array($va_base_criteria)) {
-				foreach($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
-					unset($va_criteria[$vs_base_facet]);
-				}
-			}
 			
 			$va_criteria_for_display = array();
 			foreach($va_criteria as $vs_facet_name => $va_criterion) {
@@ -332,7 +313,7 @@
 
 			$this->view->setVar('start', $vn_start = (int)$this->request->getParameter('s', pInteger));
 			$this->view->setVar('facet', $vs_facet);
-			$this->view->setVar('facet_info', $va_browse_info);
+			$this->view->setVar('facet_info', $va_browse_info[$vs_facet]);
 			
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
