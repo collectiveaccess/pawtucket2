@@ -48,7 +48,8 @@ p {
 
 .navbar {
 	font-family: $sans-serif;
-
+    margin-top:18px;
+    
  	a:hover {
  	text-decoration: none;
 	}
@@ -79,6 +80,7 @@ p {
 
 .navbar-fixed-top {
 	background-color: $bg-light !important;	
+	  margin-top: -5px;
 	border-bottom: 1px solid $primary-color;
 	color: $primary-color !important;
 
@@ -162,7 +164,7 @@ h3 {
 	&--nav {
 	@extend .breadcrumbs;
 	margin-bottom: 5rem;
-	margin-top: 1rem;
+	margin-top: 5rem;
 	list-style: none;
 	margin-left: -40px;
 	}
