@@ -15,6 +15,7 @@ body {
   	font: 100% $font-stack;
   	background-color: $bg-light;
   	scroll-behavior: smooth;
+	height: 100%;
 }
 
 a:hover {
@@ -355,3 +356,177 @@ small {
     top: -50px;
     visibility: hidden;
 }
+
+/* Search box */
+
+.search-wrapper {
+	display: none
+}
+
+.container {
+	padding-right: 15px;
+	padding-left: 15px;
+	margin-right: auto;
+	margin-left: auto;
+	height: 100%;
+}
+
+@media (min-width:768px) {
+	.container {
+		max-width: 750px
+	}
+}
+@media (min-width:992px) {
+	.container {
+		max-width: 970px
+	}
+}
+@media (min-width:1200px) {
+	.container {
+		max-width: 1170px
+	}
+}
+
+.search-wrapper.active {
+	display: block;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #eee7e4;
+	z-index: 1500
+}
+
+.icon-arrow-right, .icon-close, .scroll-up {
+	display: inline-block
+}
+
+.search-wrapper .container, .search-wrapper .row {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.search-wrapper .input-container {
+	float: none;
+	margin: 0 auto;
+	padding: 0 0 14px;
+	position: relative;
+	border-bottom: 1px solid #000;
+	height: 100%;
+}
+
+.search-wrapper .input-container .search-control {
+	width: 100%;
+	margin: 0;
+	padding: 0 34px 0 0;
+	border: none;
+	background-color: #eee7e4;
+	font-size: 60px;
+	line-height: 60px;
+	font-family: GT-Sectra-Display-Medium, sans-serif;
+	outline: 0;
+	box-shadow: none;
+	border-radius: 0;
+	color: #000
+}
+
+.search-wrapper .input-container .search-control::-webkit-input-placeholder {
+	font-size: 60px;
+	line-height: 60px;
+	font-family: GT-Sectra-Display-Medium, sans-serif;
+	color: #000
+}
+
+.search-wrapper .input-container .search-control::-moz-placeholder {
+	font-size: 60px;
+	line-height: 60px;
+	font-family: GT-Sectra-Display-Medium, sans-serif;
+	color: #000
+}
+
+.search-wrapper .input-container .search-control:-ms-input-placeholder {
+	font-size: 60px;
+	line-height: 60px;
+	font-family: GT-Sectra-Display-Medium, sans-serif;
+	color: #000
+}
+
+.search-wrapper .input-container .search-control:-moz-placeholder {
+	font-size: 60px;
+	line-height: 60px;
+	font-family: GT-Sectra-Display-Medium, sans-serif;
+	color: #000
+}
+
+.search-wrapper .input-container .search-control:focus {
+	outline: 0
+}
+
+.search-wrapper .input-container .icon-close {
+	position: absolute;
+	bottom: 28px;
+	right: 15px
+}
+
+@media (max-width:767px) {
+	.search-wrapper .input-container {
+		width: 90%
+	}
+
+	.search-wrapper .input-container .search-control {
+		font-size: 28px;
+		line-height: 28px
+	}
+
+	.search-wrapper .input-container .search-control::-webkit-input-placeholder {
+		font-size: 28px;
+		line-height: 28px;
+		font-family: GT-Sectra-Display-Medium, sans-serif;
+		color: #000
+	}
+
+	.search-wrapper .input-container .search-control::-moz-placeholder {
+		font-size: 28px;
+		line-height: 28px;
+		font-family: GT-Sectra-Display-Medium, sans-serif;
+		color: #000
+	}
+
+	.search-wrapper .input-container .search-control:-ms-input-placeholder {
+		font-size: 28px;
+		line-height: 28px;
+		font-family: GT-Sectra-Display-Medium, sans-serif;
+		color: #000
+	}
+
+	.search-wrapper .input-container .search-control:-moz-placeholder {
+		font-size: 28px;
+		line-height: 28px;
+		font-family: GT-Sectra-Display-Medium, sans-serif;
+		color: #000
+	}
+
+	.search-wrapper .input-container .icon-close {
+		width: 15px;
+		height: 15px;
+		bottom: 20px
+	}
+}
+
+.icon-close {
+	width: 30px;
+	height: 30px
+}
+
+@media (max-width:1250px) {
+	.scroll-up {
+		display: none !important
+	}
+}
+
+div.search-control {
+	width: 100% !important
+}
+

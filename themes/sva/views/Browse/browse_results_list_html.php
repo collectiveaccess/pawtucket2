@@ -38,6 +38,7 @@
 	
 	$va_views			= $this->getVar('views');
 	$vs_current_view	= $this->getVar('view');
+	$va_view_info = $va_views[$vs_current_view];
 	$va_view_icons		= $this->getVar('viewIcons');
 	$vs_current_sort	= $this->getVar('sort');
 	
@@ -47,7 +48,7 @@
 	$o_config = $this->getVar("config");	
 	
 	$va_options			= $this->getVar('options');
-	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
+	$vs_caption_template = caGetOption('captionTemplate', $va_view_info, null);
 
 	$vb_ajax			= (bool)$this->request->isAjax();
 
@@ -107,9 +108,7 @@
 				if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
-				
-					$vs_idno_detail_link 	= caDetailLink($qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
@@ -137,28 +136,25 @@
 				
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
-					$vs_result_output = "
-		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
-				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
-					<div class='bResultListItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
-					</div><!-- end bResultListItemText -->
-				</div><!-- end bResultListItemContent -->
-				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
-					<hr>
-					{$vs_expanded_info}{$vs_add_to_set_link}
-				</div><!-- bResultListItemExpandedInfo -->
-			</div><!-- end bResultListItem -->
-		</div><!-- end col -->";
+					$vs_result_output = "		
+						<div class='col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span} mb-4'>
+							<div class='row pb-4 bResultList'>
+								<div class='col-md-3'>
+									{$vs_rep_detail_link}
+								</div>
+								<div class='col-md-9'>
+									{$vs_caption}
+									<div class='bSetsSelectMultiple collapse text-right'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
+								</div>
+							</div>
+							<HR/>
+						</div>";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				
 				$vn_c++;
 				$vn_results_output++;
-			}
-			
+			}		
 			print "<div style='clear:both'></div>".caNavLink(_t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
 		}
 ?>

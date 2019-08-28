@@ -10,6 +10,21 @@ $font-stack: "Arial", serif;
 $serif: "Times", serif;
 $sans-serif: "Arial", sans-serif;
 
+$gray-1: #F2F2F0;
+$gray-2: #EDEDEB;
+$gray-3: #D8D7CE;
+$gray-4: #C1BFB9;
+$gray-5: #A09E97;
+$gray-6: #414141;
+
+$body-font: "Raleway", sans-serif;
+$body-font-size: 16px;
+$body-font-color: #414141;
+$body-margin-bottom: 340px;
+$body-margin-top: 90px;
+
+$headings-font: "Crimson Text", sans-serif;
+$headings-font-weight: 400;
 
 
 html {
@@ -123,14 +138,14 @@ img {
     		-webkit-appearance:none;
     		-webkit-box-shadow: none;
     		box-shadow: none;
-		}		
-		border:0px; 
+		}
+		border:0px;
 		background-color:transparent;
 		font-size: .9rem;
 		font-family:$font-stack;
 		color:$primary-color;
 		font-weight:300;
-	}	
+	}
 }
 
 #footer {
@@ -164,25 +179,184 @@ img {
 
 }
 
-/* Media carousel */
-p.legend a {
-    color: $ca-blue;
+/* search/browse full results */
+.search.results, .browse.results, .multiSearchObjectsCascading{
+	H1{
+		text-transform:capitalize;
+		display:inline-block;
+	}
+	.btn-group{
+		z-index:2000;
+		font-family:$body-font;
+		font-size:1.4rem;
+		ion-icon{
+			vertical-align:top;
+		}
+		.dropdown-item a{
+			text-decoration:none;
+			font-soze:.75rem;
+		}
+	}
+	.bResultItemImgPlaceholder{
+		font-size:5rem;
+		color:$gray-3;
+		background-color: $gray-1;
+		padding-top:3rem;
+		padding-bottom:3rem;
+		text-align:center;
+		line-height:1rem;
+	}
+	.bResultList{
+		.bResultItemImgPlaceholder{
+			padding-top:1rem;
+			padding-bottom:1rem;
+			font-size:4rem;
+		}
+	}
+	.card-columns {
+		@include media-breakpoint-only(lg) {
+			column-count: 3;
+		}
+		@include media-breakpoint-only(xl) {
+			column-count: 4;
+		}
+	}
+	.card{
+		border:0px;
+		text-align:center;
+		line-height: 1.2rem;
+		img{
+			border: 0px;
+		}
+		.card-body{
+			a{
+				text-decoration:none;
+			}
+			color:$gray-6;
+			padding:.25rem 1rem 1rem 1rem;
+			font-size: 1rem;
+			line-height: 1.2rem;
+			.card-title{
+				margin-bottom:0px;
+				font-family: $headings-font;
+				font-size: 1rem;
+			}
+			small{
+				height:1rem;
+				overflow:hidden;
+				display:inline-block;
+			}
+			.card-text{
+				font-size: .75rem;
+				line-height: 1rem;
+				max-height: 3rem;
+				overflow:hidden;
+			}
+		}
+	}
+	#bViewButtons{
+		font-size:1.5rem;
+		.active{
+			opacity:.5;
+		}
+	}
+	.bRightCol{
+		background-color:$gray-2;
+		.forceWidth{
+			color:$gray-2;
+			height:1px;
+			overflow:hidden;
+		}
+	}
+	.bSearchWithinContainer{
+		input.bSearchWithin{
+			width:100%;
+			border:0px;
+			padding-right:40px;
+		}
+		button{
+			position:absolute;
+			right:0px;
+		}
+	}
+	#bRefine{
+		button{
+			display:inline-block;
+			width:100%;
+			margin-bottom:2px;
+		}
+		label{
+			font-family: $headings-font;
+			font-size:1.2rem;
+			text-transform:capitalize;
+			display:block;
+		}
+		a{
+			font-size:.75rem;
+		}
+	}
 }
 
-/* Date/artist/exhibition browse */
-.browseNavItemSelected {
-	font-weight: bold;
-	font-style: italic;
+/* multisearch - card styles for .card-columns in object results asigned above with search/browse full results */
+.multisearch{
+	.btn-primary{
+		text-transform:uppercase;
+	}
+	.card-columns {
+		@include media-breakpoint-only(lg) {
+			column-count: 4;
+		}
+		@include media-breakpoint-only(xl) {
+			column-count: 6;
+		}
+	}
+	H2{
+		margin-bottom:0px;
+		a{
+			text-decoration:none;
+		}
+	}
+	.multiSearchList{
+		.card{
+			background-color:$gray-2;
+			border:0px;
+		}
+		.card:hover{
+			background-color:$gray-3;
+		}
+		a{
+			font-size:13px;
+			text-decoration:none;
+		}
+		.card.multisearchFullResultsCard{
+			background-color:$gray-5;
+			font-size:$body-font-size;
+			text-decoration:none;
+			color:#FFF;
+			text-transform:uppercase;
+		}
+		.card.multisearchFullResultsCard:hover{
+			background-color:$gray-6;
+		}
+	}
 }
 
-.browseResults {
-	width: 90%;
+/* card styles */
+.card, .card-img-top{
+	border-radius:0px !important;
 }
-
-.browseYearHeader {
-	font-size: 18px;
-	font-weight: bold;
-	text-decoration: underline;
+.card{
+	.card-title{
+		a{
+			text-decoration:none;
+		}
+	}
+	.card-footer {
+		padding: 0.75rem 1.25rem;
+		background-color: $gray-1;
+		border-top: 0px;
+		border-radius:0px;
+	}
 }
 
 @import "/fonts";

@@ -30,6 +30,8 @@
 	$vs_view			= $this->getVar('view');
 	$vs_browse_type		= $this->getVar('browse_type');
 	$o_browse			= $this->getVar('browse');
+	$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
+	$vs_current_view	= $this->getVar('view');
 	
 	$vn_facet_display_length_initial = 7;
 	$vn_facet_display_length_maximum = 60;
@@ -38,11 +40,18 @@
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
 		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
-		print "<H3>"._t("Filter by")."</H3>";
+		print "<H2>"._t("Filter by")."</H2>";
+		if (sizeof($va_criteria) > 0) {
+			$i = 0;
+			foreach($va_criteria as $va_criterion) {
+				print caNavLink('<button type="button" class="btn btn-primary btn-sm"><strong>'.$va_criterion['facet'].':</strong> '.$va_criterion['value'].' <ion-icon name="close-circle"></ion-icon></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+			}
+		}
+		print "<div class='bRefineFacets'>";
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-				print "<H5>".$va_facet_info['label_singular']."</H5>";
+				print "<label>".$va_facet_info['label_singular']."</label>";
 				print "<p>".$va_facet_info['description']."</p>";
 ?>
 					<script type="text/javascript">
@@ -54,7 +63,8 @@
 <?php
 			} else {				
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-				print "<H5>".$va_facet_info['label_singular']."</H5>"; 
+				print "<label class='my-2' data-toggle='collapse' href='#facet_".$vs_facet_name."' role='button' aria-expanded='false' aria-controls='collapseFacet'>".$va_facet_info['label_singular']."</label>";
+				print "<div class='collapse' id='facet_".$vs_facet_name."'>"; 
 				switch($va_facet_info["group_mode"]){
 					case "alphabetical":
 					case "list":
@@ -86,9 +96,10 @@
 					break;
 					# ---------------------------------------------
 				}
+				print "</div>";
 			}
 		}
-		print "</div><!-- end bRefine -->\n";
+		print "</div><!-- end bRefineFacets --></div><!-- end bRefine -->\n";
 ?>
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
