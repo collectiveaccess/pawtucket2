@@ -47,7 +47,7 @@
 			'facetUrl': '<?php print caNavUrl('', 'FrontBrowse', 'occurrences', ['getFacet' => 'exhibition', 'download' => 1]); ?>',
 			'browseUrl': '<?php print caNavUrl('', 'FrontBrowse', 'occurrences', ['facets' => 'exhibition:%value', 'sort' => 'Name']); ?>'
 		},
-		'#exhibitorBrowser': {
+		'#exhibitorBrowse': {
 			'facetUrl': '<?php print caNavUrl('', 'FrontBrowse', 'entities', ['getFacet' => 'exhibitor', 'download' => 1]); ?>',
 			'browseUrl': '<?php print caNavUrl('', 'FrontBrowse', 'entities', ['facets' => 'exhibitor:%value', 'sort' => 'Name']); ?>'
 		}

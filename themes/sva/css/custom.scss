@@ -337,6 +337,13 @@ small {
 #exhibitionBrowse h2 {
 	text-transform: uppercase;
 }
+
+.browseYearHeader {
+	text-decoration: none;
+	font-family: $font-stack;
+	font-size: 2rem;
+	}
+
 .arrow {
 	padding-right: 10px;
 	color: #666;
