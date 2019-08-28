@@ -21,55 +21,62 @@
  * ----------------------------------------------------------------------
  */
 ?>
-	<div style="clear:both; height:1px;"><!-- empty --></div>
-	</div><!-- end pageArea -->
-	<footer id="footer">
-		<div class="container-fluid">
-			<div class="row footer-row no-gutters">
-				<div class="col-sm align-self-center">School of Visual Arts Archives</div>
-				<div class="col-sm">
-				<ul>
-					<li><a href="#">About
-					<span class="pull-right--arrow">
-					<?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "Go")); ?>
-					</span>
-					</a></li>
-					<li><a href="#">Blog
-					<span class="pull-right--arrow">
-					<?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "Go")); ?>
-					</span>
-					</a></li>
-					<li><a href="#">Glaser Archives</a></li>
-					<li><a href="#">SVA Archives</a></li>
-				</ul>
+		<div style="clear:both; height:1px;"><!-- empty --></div>
+		</div><!-- end pageArea -->
+		<footer id="footer">
+			<div class="container-fluid">
+				<div class="row footer-row no-gutters">
+					<div class="col-sm align-self-center">School of Visual Arts Archives</div>
+					<div class="col-sm">
+					<ul>
+						<li><a href="#">About
+						<span class="pull-right--arrow">
+						<?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "Go")); ?>
+						</span>
+						</a></li>
+						<li><a href="#">Blog
+						<span class="pull-right--arrow">
+						<?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "Go")); ?>
+						</span>
+						</a></li>
+						<li><a href="#">Glaser Archives</a></li>
+						<li><a href="#">SVA Archives</a></li>
+					</ul>
+					</div>
+					<div class="col-sm">
+					<ul>
+						<li><a href="https://www.instagram.com/glaserarchives">Instagram
+						<span class="pull-right--icon">
+						<?php print caGetThemeGraphic('icon-instagram.svg', array("alt" => "Go")); ?>
+						</span>
+						</a></li>
+						<li><a href="https://twitter.com/glaserarchives">Twitter
+						<span class="pull-right--icon">
+						<?php print caGetThemeGraphic('icon-twitter.svg', array("alt" => "Go")); ?>
+						</span>
+						</a></li>
+						<li><a href="mailto:archives@visualartsfoundation.org">Email Us
+						<span class="pull-right--icon">
+						<?php print caGetThemeGraphic('icon-other.svg', array("alt" => "Go")); ?>
+						</span>
+						</a></li>
+					</ul>
+					</div>
 				</div>
-				<div class="col-sm">
-				<ul>
-					<li><a href="https://www.instagram.com/glaserarchives">Instagram
-					<span class="pull-right--icon">
-					<?php print caGetThemeGraphic('icon-instagram.svg', array("alt" => "Go")); ?>
-					</span>
-					</a></li>
-					<li><a href="https://twitter.com/glaserarchives">Twitter
-					<span class="pull-right--icon">
-					<?php print caGetThemeGraphic('icon-twitter.svg', array("alt" => "Go")); ?>
-					</span>
-					</a></li>
-					<li><a href="mailto:archives@visualartsfoundation.org">Email Us
-					<span class="pull-right--icon">
-					<?php print caGetThemeGraphic('icon-other.svg', array("alt" => "Go")); ?>
-					</span>
-					</a></li>
-				</ul>
+				<div class="row justify-content-center footer-row--bottom">
+					<div class="col-md-10 text-center notice">
+						<small>{{{footerlegal}}}</small>
+					</div>
 				</div>
 			</div>
-			<div class="row justify-content-center footer-row--bottom">
-				<div class="col-md-10 text-center notice">
-					<small>{{{footerlegal}}}</small>
-				</div>
-			</div>
-		</div>
-	</footer><!-- end footer -->
-    <script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>
+		</footer><!-- end footer -->
+		<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>
+	
+		<script type="text/javascript">	
+			$(document).ready(function() {
+				$('.search-wrapper-close').on('click', function(e) { $('.search-wrapper').removeClass('active'); });
+				$('body').on('click', '#search-button', function(e) { $('.search-wrapper').addClass('active'); });
+			});
+		</script>
 	</body>
 </html>

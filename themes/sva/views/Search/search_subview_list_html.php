@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/Search/ca_objects_search_cascading_html.php : 
+ * themes/default/views/Search/ca_collections_search_subview_html.php : 
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
@@ -37,12 +37,6 @@
 	$o_browse_config = caGetBrowseConfig();
 	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
 	$o_config = caGetSearchConfig();
-	$o_icons_conf = caGetIconsConfig();
-	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
-	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
-		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
-	}
-	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
 	
 	if ($qr_results->numHits() > 0) {
 ?>
@@ -59,52 +53,40 @@
 ?>
 					</div>
 					<div class="col-sm-12 col-md-6 text-right">
-<?php
-		$vs_full_results = "";
-		if(in_array($vs_block, $va_browse_types)){
-			print $vs_full_results = caNavLink(_t('Full results').'&nbsp;<ion-icon name="open"></ion-icon>', 'btn btn-primary', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); 
-		}
-?>
 					</div>
 				</div>
 <?php
 		$vn_count = 0;
 		$vn_col_count = 0;
 ?>
-	<div class="row {{{block}}}Set multiSearchObjectsCascading">
-		<div class='col-sm-12'><div class='card-columns'>
+<div class="row {{{block}}}Set multiSearchList h-100">
 <?php
 		$va_block_info["resultTemplate"];
-		$t_list_item = new ca_list_items();
+		$vs_full_link = caNavLink('<div class="card card-block d-flex h-100 multisearchFullResultsCard"><div class="card-body align-items-center d-flex justify-content-center text-center">'._t('Full results').'&nbsp;<ion-icon name="open"></ion-icon></div></div>', '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search)));
 		while($qr_results->nextHit()) {
 			$vn_count++;
-			if(!($vs_thumbnail = $qr_results->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => "card-img-top")))){
-				$t_list_item->load($qr_results->get("type_id"));
-				$vs_typecode = $t_list_item->get("idno");
-				if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-					$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-				}else{
-					$vs_thumbnail = $vs_default_placeholder_tag;
-				}
-			}
-			$vs_info = null;
-			$vs_rep_detail_link 	= caDetailLink($vs_thumbnail, '', $va_block_info["table"], $qr_results->getPrimaryKey());
 ?>
-			<div class='card mb-4'>
-				<?php print $vs_rep_detail_link; ?>
-				<div class='card-body mb-2'><?php print $qr_results->getWithTemplate($va_block_info["resultTemplate"]); ?></div>
+			<div class='col-sm-12 col-md-3 col-lg-2 mb-3'>
+<?php
+			if(($vn_count == $vn_hits_per_block) && (in_array($vs_block, $va_browse_types))){
+				print $vs_full_link;
+			}else{
+				print caDetailLink('<div class="card card-block d-flex h-100"><div class="card-body align-items-center d-flex justify-content-center text-center">'.$qr_results->getWithTemplate($va_block_info["resultTemplate"]).'</div></div>', "", $va_block_info["table"], $qr_results->getPrimaryKey());
+			}
+?>
+				
 			</div>
 <?php					
+
 			if ($vn_count == $vn_hits_per_block) {break;} 
+		}
+		if($vn_count < $vn_hits_per_block){
+?>
+			<div class='col-sm-12 col-md-3 col-lg-2 mb-3'><?php print $vs_full_link; ?></div>
+<?php
 		}		
 ?>
-		</div></div>
-	</div>
-	<div class="row">
-		<div class="col-12 text-center">
-			<?php print $vs_full_results; ?>
-		</div>
-	</div>
+				</div>
 <?php
 	}
 ?>
