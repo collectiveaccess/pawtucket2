@@ -96,7 +96,7 @@
 			throw new ApplicationException("Invalid id");
 		}else{
 			if($vs_rep = $t_subject->get("ca_object_representations.media.medium.url", array("checkAccess" => $va_access_values))){
-				$vs_og_image = $this->request->config->get("site_host").$vs_rep;
+				$vs_og_image = $vs_rep;
 			}
 			
 		}
