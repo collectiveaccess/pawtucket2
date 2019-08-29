@@ -15,6 +15,10 @@
 		<p>
 			Before establishing the Gallery, Eley was an editor and writer for national and regional publications featuring articles on fine art, dance and travel. (<a href="http://www.huffingtonpost.com/susan-eley" target="_blank">Author archive</a>) Eley worked in public relations and education at the Morgan Library & Museum, NY, the Mayor's Art Commission of the City of New York and interned at the Peggy Guggenheim Collection in Venice, Italy. She is also a former professional ballet dancer with the Feld Ballet, NY. Eley has a BA in Art History from Brown University and an MA in Visual Arts Administration from NYU.
 		</p>
+		<H1>Accessibility Statement</H1>
+		<p>
+			Susan Eley Fine Art is committed to ensuring digital accessibility for individuals with disabilities. We are continually working on our website to improve the user experience for everyone, and applying the relevant accessibility standards. For additional assistance or any accessibility concerns, please contact us at 917.952.7641 or email: <a href="mailto:susie@susaneleyfineart.com">susie@susaneleyfineart.com</a>.
+		</p>
 		
 		<div class="row" style="margin-top:50px;">
 			<div class="col-xs-6 col-md-3 col-md-offset-2 fullWidthImg">
