@@ -35,7 +35,6 @@
 <div class="row" id="sec2">
 	<div class="container-fluid">
 	<br/>
-		<H1 class="h1smaller">{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno"> ^ca_occurrences.idno</ifdef>}}}:{{{^ca_occurrences.preferred_labels.name}}}</H1>			
 		<div class="row">
 			<div class='col-sm-12'>		 
 		  	  <ul class="breadcrumbs--nav">
@@ -54,8 +53,10 @@
 
 				</ul>
 			</div> 
+
 			<div class="col-sm-12">
-            	<h2 class="exhibit-about">Item: {{{^ca_objects.preferred_labels.name}}}</h2><hr>	
+			  <!--   <H2>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno"> ^ca_occurrences.idno</ifdef>}}}: {{{^ca_occurrences.preferred_labels.name}}}</H2>	-->	
+            	<H2>{{{^ca_objects.preferred_labels.name}}}</h2><hr>	
             </div>		
             <div class="col-sm-12">
             	{{{<ifdef code="ca_objects.description_public"><p>^ca_objects.description_public</p></ifdef>}}}		

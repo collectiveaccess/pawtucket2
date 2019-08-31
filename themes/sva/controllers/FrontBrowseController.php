@@ -193,7 +193,6 @@
 			//
 			
 			// Get any preset-criteria
-			$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 			
 			if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
 			    foreach ($va_facets as $vs_facet_spec) {
@@ -204,16 +203,6 @@
 			
 			} elseif (($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function($v) { return strlen($v); })) && sizeof($p)) {
 				$o_browse->addCriteria($vs_facet, $p);
-			} else { 
-				if ($o_browse->numCriteria() == 0) {
-					if (is_array($va_base_criteria)) {
-						foreach($va_base_criteria as $vs_facet => $vs_value) {
-							$o_browse->addCriteria($vs_facet, $vs_value);
-						}
-					} else {
-						$o_browse->addCriteria("_search", array("*"));
-					}
-				}
 			}
 			
 			//
@@ -282,7 +271,6 @@
 			$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
 			$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
 			foreach($va_facets as $vs_facet_name => $va_facet_info) {
-				if(isset($va_base_criteria[$vs_facet_name])) { continue; } // skip base criteria 
 				$va_facets[$vs_facet_name]['content'] = $o_browse->getFacet($vs_facet_name, array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'checkAvailabilityOnly' => caGetOption('deferred_load', $va_facet_info, false, array('castTo' => 'bool'))));
 			}
 			$this->view->setVar('facets', $va_facets);
@@ -291,13 +279,6 @@
 			
 			Session::setVar($ps_function.'_last_browse_id', $vs_key);
 			
-			
-			// remove base criteria from display list
-			if (is_array($va_base_criteria)) {
-				foreach($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
-					unset($va_criteria[$vs_base_facet]);
-				}
-			}
 			
 			$va_criteria_for_display = array();
 			foreach($va_criteria as $vs_facet_name => $va_criterion) {
@@ -313,61 +294,26 @@
 			//
 			
 			$vs_sort_fld = $va_sort_by[$ps_sort];
-			if ($ps_view == 'timelineData') {
-				$vs_sort_fld = $va_browse_info['views']['timeline']['data'];
-				$ps_sort_direction = 'asc';
-			}
+			if (!$vs_sort_fld) { $vs_sort_fld = array_shift($va_sort_by); }
 			$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
-			
-			$va_show_letter_bar_sorts = caGetOption('showLetterBarSorts', $va_browse_info, null);
-			if(is_array($va_show_letter_bar_sorts) && in_array($vs_sort_fld, $va_show_letter_bar_sorts)){
-				if ($vs_letter_bar_field = caGetOption('showLetterBarFrom', $va_browse_info, null)) { // generate letter bar
-					$va_letters = array();
-					while($qr_res->nextHit()) {
-						$va_letters[caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($vs_letter_bar_field), "0")), 0, 1)))]++;
-					}
-					ksort($va_letters, SORT_STRING);
-					$this->view->setVar('letterBar', $va_letters);
-					$qr_res->seek(0);
-				}
-			}
-			$this->view->setVar('showLetterBar', (bool)$vs_letter_bar_field);
-			if($this->request->getParameter('l', pString, ['forcePurify' => true])){
-				$ps_l = trim(mb_strtolower($this->request->getParameter('l', pString, ['forcePurify' => true])));
-				if($ps_l == "all"){
-					$ps_l = "";
-				}
-			}else{
- 				$ps_l = $this->opo_result_context->getLetterBarPage();
- 			}
- 			$this->opo_result_context->setLetterBarPage($ps_l);
-			
-			$this->view->setVar('letter', $ps_l);			
-			
-			if ($vs_letter_bar_field && ($ps_l)) {
-				$va_filtered_ids = array();
-				while($qr_res->nextHit()) {
-					if (caRemoveAccents(mb_strtolower(mb_substr(trim(trim($qr_res->get($vs_letter_bar_field), "0")), 0, 1))) == $ps_l) {
-						$va_filtered_ids[] = $qr_res->getPrimaryKey();
-					}
-				}
-				if (sizeof($va_filtered_ids) > 0) {
-					$qr_res = caMakeSearchResult($vs_class, $va_filtered_ids);
-				}
-			}
 			
 			$this->view->setVar('result', $qr_res);
 				
-			if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
- 				if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
- 					$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
- 				}
- 			}
+			// if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
+//  				if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
+//  					$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
+//  				}
+//  			}
+
+			$pn_hits_per_block = 1000;
+
  			$this->opo_result_context->setItemsPerPage($pn_hits_per_block);
 			
 			$this->view->setVar('hits_per_block', $pn_hits_per_block);
 
 			$this->view->setVar('start', $vn_start = (int)$this->request->getParameter('s', pInteger));
+			$this->view->setVar('facet', $vs_facet);
+			$this->view->setVar('facet_info', $va_browse_info[$vs_facet]);
 			
 			$this->opo_result_context->setParameter('key', $vs_key);
 			
@@ -383,20 +329,7 @@
  			if ($ps_type) {
  				if ($this->render($this->ops_view_prefix."/{$vs_class}_{$ps_type}_{$ps_view}_{$vs_format}.php")) { return; }
  			} 
- 			switch($ps_view) {
- 				case 'xlsx':
- 				case 'pptx':
- 				case 'pdf':
- 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString, ['forcePurify' => true]), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $ps_search_expression)), $this->getCriteriaForDisplay($o_browse));
- 					break;
- 				case 'timelineData':
- 					$this->view->setVar('view', 'timeline');
- 					$this->render($this->ops_view_prefix."/browse_results_timelineData_json.php");
- 					break;
- 				default:
- 					$this->render($this->ops_view_prefix."/browse_results_json.php");
- 					break;
- 			}
+ 			$this->render($this->ops_view_prefix."/browse_results_json.php");
  		}
  		# -------------------------------------------------------
 		/** 

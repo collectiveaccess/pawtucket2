@@ -33,14 +33,30 @@
 	
 	<title><?php print MetaTagManager::getWindowTitle(); ?></title>
 </head>
-<body id="pawtucketApp">
-<script type="text/javascript">
-    let pawtucketUIApps = {
-        'navscroll': {
-            'selector': '#pageNav',
-            'data': { 'sectionSelector': '#sec2'}
-        }
-    };
-</script>
-	<div id="pageNav">Nav goes here</div>
+<body id="pawtucketApp" >
+	<script type="text/javascript">
+		let pawtucketUIApps = {
+			'navscroll': {
+				'selector': '#pageNav',
+				'data': { 'offset': '10'}
+			}
+		};
+	</script>
+	
+	<div class="search-wrapper">
+		<div class="container">
+			<div class="row">
+				<div class="input-container col-md-10">
+					<form action="/index.php/MultiSearch/Index">
+						<div class="search-control">
+							<input id="search-control" type="text" class="search-control" name="search" placeholder="Search the Archives" autocomplete="off">
+						</div>
+					</form>
+					<img src="/themes/sva/images/icon-close.svg" alt="Close" class="icon-close search-wrapper-close"/>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="pageNav"></div>
 	<div id="pageArea" role="main" id="main" <?php print caGetPageCSSClasses(); ?> >

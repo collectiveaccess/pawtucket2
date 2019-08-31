@@ -9,13 +9,13 @@
 <!-- <div class="hpHero" id="sec2">
 	{{{<ifdef code="ca_objects"><div class='unit'><unit relativeTo="ca_objects" delimiter=" " start="0" length="1">^ca_object_representations.media.large</unit></div></ifdef>}}}
 </div> -->
-<div class="hpHero">
+<!-- <div class="hpHero">
 	<?php print caGetThemeGraphic('SVA_Exhibitions_Archives.jpg', array("alt" => "Rising Sun Graphic Image")); ?>
 			<div class= "wrapper" id="sec2">
 					<h1>SVA Exhibitions Archives<br><a href="#breadcrumbs"><i class="material-icons">expand_more</i></a></h1>
 			</div>		
-</div>
-<div class="container-fluid">
+</div> -->
+<div class="container-fluid" id="sec2">
 	<div class="row">
         <div class='col-sm-12'>
 			<ul class="breadcrumbs--nav" id="breadcrumbs">
@@ -65,7 +65,7 @@
 
 			{{{<ifcount restrictToRelationshipTypes="exhibitor" code="ca_entities" min="1" max="1"><h3>Exhibitor</H3></ifcount>}}}
 			{{{<ifcount restrictToRelationshipTypes="exhibitor" code="ca_entities" min="2"><H3>Exhibitors</H3></ifcount>}}}
-			{{{<unit relativeTo="ca_entities.related" delimiter="<br/>" restrictToRelationshipTypes="exhibitor"><span class="p">^ca_entities.preferred_labels</span></unit><br/><br/>}}}					
+			{{{<unit relativeTo="ca_entities.related" delimiter="<br/>" restrictToRelationshipTypes="exhibitor"><span class="p"><l>^ca_entities.preferred_labels</l></span></unit><br/><br/>}}}					
 				
 			{{{<ifcount code="ca_entities" excludeRelationshipTypes="exhibitor, curator, department" min="1" max="1"><H3>Related Person</H3></ifcount>}}}
 			{{{<ifcount code="ca_entities" excludeRelationshipTypes="exhibitor, curator, department" min="2"><H3>Related People</H3></ifcount>}}}

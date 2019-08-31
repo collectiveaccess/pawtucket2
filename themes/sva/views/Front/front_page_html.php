@@ -34,13 +34,6 @@
 <div class="container-fluid p-3">
 	<div class="row" >
 		<div class="col-sm-12">
-			<ul class="breadcrumbs--nav" id="breadcrumbs">
-				<li><a href="#">School of Visual Arts Archives</a><span></li>
-				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
-				</span></li>
-				<li>SVA Exhibitions Archives<span></li>
-			</ul>
-
 			<h2>About the Collection</h2><hr>
 			<div class="col-sm-10">
 				<p class="frontpara">{{{exhibitions}}}</p>

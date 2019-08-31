@@ -1045,7 +1045,8 @@
 	 * Return "user" menu for nav bar, suitable for display in a Bootstrap 4.1 layout.
 	 *
 	 * @param string $title
-	 * @param array $options No options are currently supported
+	 * @param array $options
+	 * 				showLoginForm = true/false default to true - display login form in navbar dropdown
 	 *
 	 * @return array
 	 */	
@@ -1054,24 +1055,47 @@
 		
 		$lightbox_display_name = caGetLightboxDisplayName();
 		$lightbox_section_heading = caUcFirstUTF8Safe($lightbox_display_name["section_heading"]);
-	
-		# Collect the user links: they are output twice, once for toggle menu and once for nav
+
 		$user_links = [];
 		if($g_request->isLoggedIn()){
-			$user_links[] = '<a role="presentation" class="dropdown-item">'.trim($g_request->user->get("fname")." ".$g_request->user->get("lname")).', '.$g_request->user->get("email").'</a>';
-			$user_links[] = '<a class="divider nav-divider"></a>';
+			$user_links[] = '<div role="presentation" class="dropdown-item small text-muted">'.trim($g_request->user->get("fname")." ".$g_request->user->get("lname")).'<br/>'.$g_request->user->get("email").'</div>';
+			$user_links[] = "<div class='dropdown-divider mt-2 mb-2'></div>";
 			if(caDisplayLightbox($g_request)){
-				$user_links[] = caNavLink($g_request, $lightbox_section_heading, '', '', 'Lightbox', 'Index', array());
+				$user_links[] = caNavLink($lightbox_section_heading, 'dropdown-item', '', 'Lightbox', 'Index', array());
 			}
-			$user_links[] = caNavLink($g_request, _t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array());
+			$user_links[] = caNavLink(_t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array());
 		
 			if ($g_request->config->get('use_submission_interface')) {
-				$user_links[] = caNavLink($g_request, _t('Submit content'), 'dropdown-item', '', 'Contribute', 'List', array());
+				$user_links[] = caNavLink(_t('Submit content'), 'dropdown-item', '', 'Contribute', 'List', array());
 			}
-			$user_links[] = caNavLink($g_request, _t('Logout'), '', '', 'LoginReg', 'Logout', array());
+			$user_links[] = caNavLink(_t('Logout'), 'dropdown-item', '', 'LoginReg', 'Logout', array());
 		} else {	
-			if (!$g_request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $g_request->config->get('pawtucket_requires_login')) { $user_links[] = "<a href='#' class=\"dropdown-item\" onclick='caMediaPanel.showPanel(\"".caNavUrl('', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a>"; }
-			if (!$g_request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$g_request->config->get('dontAllowRegistration')) { $user_links[] = "<a href='#' class=\"dropdown-item\" onclick='caMediaPanel.showPanel(\"".caNavUrl('', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a>"; }
+			$showLoginForm = caGetOption("showLoginForm", $options, true);
+			if($showLoginForm){
+				$vs_tmp = "<div class='px-2 py-2'>";
+				if (!$g_request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $g_request->config->get('pawtucket_requires_login')) {
+					$vs_tmp .= "<form action='".caNavUrl('', 'LoginReg', 'Login')."'>
+			  				<div class='form-group mt-1'>
+			  					<input type='text' name='username' class='form-control form-control-sm' placeholder='Username' aria-label='Username' />
+			  				</div>
+			  				
+							<div class='input-group'>
+							  <input type='password' name='password' class='form-control form-control-sm' placeholder='"._t("Password")."' aria-label='"._t("Password")."'>
+							  <div class='input-group-append'>
+								<button class='btn btn-primary btn-sm' type='submit'>"._t("Login")."</button>
+							  </div>
+							</div>
+			  			</form>".caNavLink(_t('Forgot Password?'), 'dropdown-item mt-2 small text-muted text-center', '', 'LoginReg', 'resetForm');
+				}
+				if (!$g_request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$g_request->config->get('dontAllowRegistration')) {
+					$vs_tmp .= "<div class='dropdown-divider mt-2 mb-3'></div>".caNavLink(_t('Register'), 'dropdown-item btn btn-secondary btn-sm w-100 text-center mb-1', '', 'LoginReg', 'RegisterForm', array());
+				}
+				$vs_tmp .= "</div>";
+				$user_links[] = $vs_tmp;
+			}else{
+				if (!$g_request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $g_request->config->get('pawtucket_requires_login')) { $user_links[] = caNavLink(_t('Login'), 'dropdown-item', '', 'LoginReg', 'LoginForm', array()); }
+				if (!$g_request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$g_request->config->get('dontAllowRegistration')) { $user_links[] = caNavLink(_t('Register'), 'dropdown-item', '', 'LoginReg', 'RegisterForm', array()); }
+			}
 		}
 		if (sizeof($user_links)) { 
 			array_unshift($user_links, "<li class=\"nav-item dropdown\"><a class=\"nav-link dropdown-toggle\" href=\"#\" id=\"userDropdown\" data-toggle=\"dropdown\" aria-haspopup=\"true\" aria-expanded=\"false\">{$title}</a><div class=\"dropdown-menu\" aria-labelledby=\"userDropdown\">");

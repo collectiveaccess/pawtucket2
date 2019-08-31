@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 
 let selector = pawtucketUIApps.navscroll.selector;
 let sectionSelector = pawtucketUIApps.navscroll.data.sectionSelector;
+let offsetPx = pawtucketUIApps.navscroll.data.offset;
 
 class Navscroll extends React.Component {
     constructor(props) {
@@ -23,11 +24,11 @@ class Navscroll extends React.Component {
     }
 
     handleScroll(){
-       let navbar = this.navbar.current; //React.findDOMNode(this.refs.navbar);
-       let startElement = document.querySelector(sectionSelector); //React.findDOMNode(this.refs.sec2);
-       let offset = this.getOffset(startElement)    
+       let navbar = this.navbar.current;
+       let startElement = sectionSelector ? document.querySelector(sectionSelector): null;
+       let offset = startElement ? this.getOffset(startElement) : null;
        let windowsScrollTop  = window.pageYOffset;
-       if(windowsScrollTop >= offset.top){     
+       if (((offsetPx > 0) && windowsScrollTop >= offsetPx) || (offset && (windowsScrollTop >= offset.top))){
          navbar.classList.add("navbar-fixed-top");           
        }else{
          navbar.classList.remove("navbar-fixed-top");   
@@ -51,7 +52,7 @@ class Navscroll extends React.Component {
 		<div className="collapse navbar-collapse" id="mainnavbar">
         	<ul className="navbar-nav ml-auto">
         		<li><span className="skip"><a href="#main">Skip to main content</a></span></li>
-         		<li><a id="search-button" href="#">Search Exhibitions</a></li>
+         		<li><a id="search-button" href="#">Search</a></li>
 				<li><a href="/glaser-archives?autoscroll=0">Glaser Archives</a></li>
                 <li><a href="/sva-archives">SVA Archives</a></li>
                 <li><a href="/page/about?autoscroll=0">About</a></li>
