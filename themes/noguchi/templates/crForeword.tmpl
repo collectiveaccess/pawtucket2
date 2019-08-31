@@ -1,0 +1,30 @@
+    <main class="ca cr cr_text_based cr_foreword">
+
+<?php
+		print $this->render("pageFormat/cr_nav.php");
+?>
+            <section class="wrap block block-large-top">
+                <div class="wrap-text-large">
+                    <div class="block">    
+                        <h1 class="headline-s text-align-center">{{{title}}}</h1>
+                    </div>
+                    <div class="block-half body-text-l first-letter">
+                        {{{topContent}}}
+                        <p>
+							<div class="signs columns">
+								<div class="col half">
+									{{{media:1:original}}}
+									<br/>{{{byLine1}}}
+								</div>
+								<div class="col half">
+									{{{media:2:original}}}
+									<br/>{{{byLine2}}}
+								</div>
+							</div>
+						</p>
+
+					</div>
+                </div>
+            </section>
+
+    </main>

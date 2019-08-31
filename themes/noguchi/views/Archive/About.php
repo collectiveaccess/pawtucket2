@@ -9,7 +9,7 @@
             <section class="block block-large-top">
                 <div class="wrap-max-content">
                     <div class="block">    
-                        <h1 class="headline-s text-align-center">About the Archive</h1>
+                        <h1 class="headline-s text-align-center">About the Archive - NOT USED - site pages used instead</h1>
                     </div>
                     <div class="block-half body-text-l">
                         <p>The Noguchi Museum’s Archives on the life and work of Isamu Noguchi are comprised of Noguchi’s manuscripts, correspondence, exhibitions and project records, photography, sketchbooks, architectural drawings and plans, press records, business files, as well as the objects and artifacts that Noguchi collected during his travels throughout his lifetime. </p>

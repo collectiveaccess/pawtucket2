@@ -99,14 +99,6 @@
  			$this->render("Archive/Index.php");
  		}
  		# -------------------------------------------------------
- 		public function About(){
- 			$this->render("Archive/About.php");
- 		}
- 		# -------------------------------------------------------
- 		public function UserGuide(){
- 			$this->render("Archive/UserGuide.php");
- 		}
- 		# -------------------------------------------------------
 		/** 
 		 * Generate the URL for the "back to results" link from a browse result item
 		 * as an array of path components.

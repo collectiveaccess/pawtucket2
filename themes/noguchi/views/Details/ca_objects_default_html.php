@@ -205,22 +205,22 @@
 						}
 					?>
   
-					{{{<ifdef code="ca_objects.published_on|ca_objects.published_on_text">
+					{{{<ifdef code="ca_objects.published_on">
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Published On</div>
-							<div class="ca-data">^ca_objects.published_on ^ca_objects.published_on_text</div>
+							<div class="ca-data">^ca_objects.published_on</div>
 						</div>
                     </ifdef>}}}
-                    {{{<ifdef code="ca_objects.suspended|ca_objects.suspended_text">
+                    {{{<ifdef code="ca_objects.suspended">
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Research Suspended On</div>
-							<div class="ca-data">^ca_objects.suspended ^ca_objects.suspended_text</div>
+							<div class="ca-data">^ca_objects.suspended</div>
 						</div>
                     </ifdef>}}}
-                    {{{<ifdef code="ca_objects.last_updated_on|ca_objects.last_updated_on_text">
+                    {{{<ifdef code="ca_objects.last_updated_on">
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Last Updated On</div>
-							<div class="ca-data">^ca_objects.last_updated_on ^ca_objects.last_updated_on_text</div>
+							<div class="ca-data">^ca_objects.last_updated_on</div>
 						</div>
                     </ifdef>}}}
                     {{{<ifdef code="ca_objects.status">

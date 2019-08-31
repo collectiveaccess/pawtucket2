@@ -6,7 +6,7 @@
             <section class="wrap block block-large-top">
                 <div class="wrap-text-large">
                     <div class="block">    
-                        <h1 class="headline-s text-align-center">Foreword</h1>
+                        <h1 class="headline-s text-align-center">Foreword - NOT USED - Site Pages used instead</h1>
                     </div>
                     <div class="block-half body-text-l first-letter">
                         <p>The Board of Trustees and staff of The Noguchi Museum are pleased to present The Isamu Noguchi Catalogue Raisonné. This digital publication is an ongoing project of The Isamu Noguchi Foundation and Garden Museum, New 	York. The Isamu Noguchi Catalogue Raisonné is dedicated to documenting the artistic practice of Isamu Noguchi (1904–1988), and the Museum ensures its access is made freely available to scholars and the public.</p>
@@ -33,6 +33,3 @@
             </section>
 
     </main>
-
-
-<?php include('includes/footer.php'); ?>

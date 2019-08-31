@@ -46,8 +46,8 @@
 
                         </div>
                         <div class="misc">
-                            <div class="cell text"><?php print caNavLink("User Guide", "", "", "Archive", "UserGuide"); ?></div>
-                            <div class="cell text"><?php print caNavLink("About<span class='long'> The Archive</span>", "", "", "Archive", "About"); ?></div>
+                            <div class="cell text"><?php print caNavLink("User Guide", "", "", "ArchiveInfo", "UserGuide"); ?></div>
+                            <div class="cell text"><?php print caNavLink("About<span class='long'> The Archive</span>", "", "", "ArchiveInfo", "About"); ?></div>
                         </div>
                     </form>
                 </div>

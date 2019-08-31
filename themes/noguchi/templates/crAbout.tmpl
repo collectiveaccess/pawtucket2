@@ -1,0 +1,44 @@
+    <main class="ca cr cr_text_based">
+<?php
+		print $this->render("pageFormat/cr_nav.php");
+?>
+
+        <section class="wrap block block-large-top">
+            <div class="wrap-text-large">
+                <div class="block">    
+                    <h1 class="headline-s text-align-center">{{{title}}}</h1>
+                </div>
+                <div class="block-half body-text-l">
+                    {{{topContent}}}
+				</div>
+            </div>
+        </section>
+
+        <section class="wrap block border">
+            <div class="wrap-text-wide">
+            	<div class="columns">
+            		<div class="col thirds">
+            			{{{col1Content}}}
+            		</div>
+            		<div class="col thirds">
+            			{{{col2Content}}}
+            		</div>
+            		<div class="col thirds">
+            			{{{col3Content}}}
+            			<div class="block">
+                			<div id="contactForm"></div>                          
+                        </div>
+            		</div>
+            	</div>
+            </div>
+        </section>
+
+    </main>
+<script type="text/javascript">	
+	pawtucketUIApps['contact'] = {
+        'selector': '#contactForm',
+        'data': {
+            'sectionName': 'Test'
+        }
+    };
+</script>

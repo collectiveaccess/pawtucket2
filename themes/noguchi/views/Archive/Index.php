@@ -36,8 +36,8 @@
         <section class="intro">
             <div class="wrap block-large">
                 <div class="wrap-max-content">
-                    <div class="block-half body-text-l">The Noguchi Museum’s Archives contains the most comprehensive body of information on the life and work of Isamu Noguchi, consisting of manuscripts, correspondence, exhibitions and project records, sketchbooks, architectural drawings and plans, as well as objects and artifacts collected during Noguchi’s travels throughout his lifetime. </div>
-                    <div class="block-half body-text-l text-gray">Supported by a grant from <a href="https://www.hluce.org/">Luce Foundation</a>.</div>
+                    <div class="block-half body-text-l">{{{archiveIntro}}}</div>
+                    <div class="block-half body-text-l text-gray">{{{archiveSupport}}}</div>
                 </div>
             </div>
         </section>
@@ -205,7 +205,7 @@
                     <h3 class="subheadline">Isamu Noguchi Collection, Catalogue Raisonné, and Archive Terms & Conditions</h3>
                 </div>
                 <div class="block-half">
-                    <p class="body-text">Cras quis nulla commodo, aliquam lectus sed, blandit augue. Cras ullamcorper bibendum bibendum. Duis tincidunt urna non pretium porta. Nam condimentum vitae ligula vel ornare. Phasellus at semper turpis. Nunc eu tellus tortor. Etiam at condimentum nisl, vitae sagittis orci. Donec id dignissim nunc. Donec elit ante, eleifend a dolor et, venenatis facilisis dolor. In feugiat orci odio, sed lacinia sem elementum quis. Aliquam consectetur, eros et vulputate euismod, nunc leo tempor lacus.</p>
+                    <p class="body-text">{{{termsAndConditions}}}</p>
                 </div>
                 <div class="text-align-center">
                     <!-- If you want to disable the modal close callback and add your own onClick, just remove 'close' class -->

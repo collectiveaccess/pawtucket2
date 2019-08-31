@@ -1,0 +1,37 @@
+    <main class="ca archive archive_text_based nomargin">
+
+<?php
+		print $this->render("pageFormat/archive_nav.php");
+?>
+
+        <div class="wrap">
+
+            <section class="block block-large-top">
+                <div class="wrap-max-content">
+                    <div class="block">    
+                        <h1 class="headline-s text-align-center">{{{title}}}</h1>
+                    </div>
+                    <div class="block-half body-text-l">{{{topContent}}}</div>    
+                </div>
+            </section>
+
+            <section class="block border">
+                <div class="columns">
+
+                    <div class="col">
+
+                        {{{col1Content}}}
+
+                    </div>
+
+                    <div class="col">
+
+                        {{{col2Content}}}
+
+                    </div>
+
+                </div>
+            </section>
+
+        </div>
+    </main>
