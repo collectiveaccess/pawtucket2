@@ -34,6 +34,8 @@
 	$vn_previous_id = $this->getVar("previousID");
 	$vn_next_id = $this->getVar("nextID");
 	
+	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
+	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
 
 	$va_collection_hierarchy = array_shift($t_object->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 	$vb_photo_collection = false;
@@ -97,7 +99,6 @@
                 <div class="img-container dark">
 
                     <div class="actions">
-                        <a href="#" class="zoom"></a>
                         <a href="#" class="collection"></a>
 <?php
 						if($vs_download_link){
@@ -226,7 +227,8 @@
 
 							<l>
 								<div class="img-wrapper archive_thumb block-quarter">
-									<div class="bg-image" style="background-image: url(^ca_object_representations.media.medium.url)"></div>
+									<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+									<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 								</div>
 								<div class="text block-quarter">
 									<div class="ca-identifier text-gray">^ca_objects.idno</div>
@@ -257,7 +259,8 @@
 
 							<l>
 								<div class="img-wrapper archive_thumb block-quarter">
-									<div class="bg-image" style="background-image: url(^ca_object_representations.media.medium.url)"></div>
+									<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+									<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 								</div>
 								<div class="text block-quarter">
 									<div class="ca-identifier text-gray">^ca_objects.idno</div>

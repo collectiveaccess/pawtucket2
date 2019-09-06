@@ -9,6 +9,9 @@
 	
 	$vs_status = $t_item->get("ca_occurrences.status", array("convertCodesToDisplayText" => true));
 	$va_access_values = caGetUserAccessValues();
+	
+	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
+	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
 
 ?>
     <main class="ca bibliography bibliography_detail nomargin">
@@ -124,6 +127,12 @@
 							<div class="ca-data">^ca_occurrences.idno</div>
 						</div>
 					</ifdef>}}}
+					{{{<ifdef code="ca_occurrences.exhibition_comments">
+						<div class="block-quarter">
+							<div class="eyebrow text-gray">Comments</div>
+							<div class="ca-data">^ca_occurrences.exhibition_comments</div>
+						</div>
+					</ifdef>}}}
 					{{{<ifdef code="ca_occurrences.published_on">
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Published On</div>
@@ -155,7 +164,7 @@
                                     <ul class="list-sidebar ca-data text-align-left related">
                                         <unit relativeTo="ca_occurrences.related" restrictToTypes="exhibition" delimiter=" ">
 											<li>
-												<l>^ca_occurrences.preferred_labels.name</l>
+												<l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l>
 											</li>
                                         </unit>
                                     </ul>
@@ -187,7 +196,7 @@
 
             </div>
         </section>
-{{{<ifcount code="ca_objects" restrictToRelationshipTypes="part" min="1">
+{{{<ifcount code="ca_objects" restrictToRelationshipTypes="part" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version" min="1">
         <section class="block border">
             <div class="wrap">
                 <div class="block-half text-align-center">
@@ -196,17 +205,17 @@
             </div>
             <div class="module_carousel archive_related" data-prevnext="false">
 				<div class="carousel-main">
-					<unit relativeTo="ca_objects" restrictToRelationshipTypes="part" delimiter=" ">
+					<unit relativeTo="ca_objects" restrictToRelationshipTypes="part" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version" delimiter=" ">
 						<div class="carousel-cell">
 
 							<l>
 								<div class="img-wrapper archive_thumb block-quarter">
-									<div class="bg-image" style="background-image: url(^ca_object_representations.media.large.url)"></div>
+									<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+									<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 								</div>
 								<div class="text block-quarter">
 									<div class="ca-identifier text-gray">^ca_objects.idno</div>
 									<div class="more">                                
-										<div class="ca-identifier text-gray">^ca_objects.idno</div>
 										<div class="thumb-text clamp" data-lines="2">^ca_objects.preferred_labels.name</div>
 										<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date</div></ifdef>
 										<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>

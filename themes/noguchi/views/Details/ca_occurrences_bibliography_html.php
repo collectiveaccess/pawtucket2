@@ -7,6 +7,9 @@
 	$vn_previous_id = $this->getVar("previousID");
 	$vn_next_id = $this->getVar("nextID");
 	$va_access_values = caGetUserAccessValues();
+	
+	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
+	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
 ?>
     <main class="ca bibliography bibliography_detail nomargin">
 
@@ -23,7 +26,7 @@
             </div>
 <?php
  			}
-  			if($vs_reps = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='describes'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values))){
+ 			if($vs_reps = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='depicts'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values))){
  				$va_rep_ids = explode(";", $vs_reps);
  				if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
 ?>  
@@ -103,24 +106,6 @@
 							<div class="ca-data">^ca_occurrences.bib_full_citation</div>
 						</div>
 					</ifdef>}}}
-					{{{<ifdef code="ca_occurrences.published_on">
-						<div class="block-quarter">
-							<div class="eyebrow text-gray">Published On</div>
-							<div class="ca-data">^ca_occurrences.published_on</div>
-						</div>
-                    </ifdef>}}}
-                    {{{<ifdef code="ca_occurrences.suspended">
-						<div class="block-quarter">
-							<div class="eyebrow text-gray">Research Suspended On</div>
-							<div class="ca-data">^ca_occurrences.suspended</div>
-						</div>
-                    </ifdef>}}}
-                    {{{<ifdef code="ca_occurrences.last_updated_on">
-						<div class="block-quarter">
-							<div class="eyebrow text-gray">Last Updated On</div>
-							<div class="ca-data">^ca_occurrences.last_updated_on</div>
-						</div>
-                    </ifdef>}}}
                 </div>
 {{{<ifcount code="ca_occurrences.related" min="1">
                 <div class="module_accordion">
@@ -134,7 +119,7 @@
                                     <ul class="list-sidebar ca-data text-align-left related">
                                         <unit relativeTo="ca_occurrences.related" restrictToTypes="exhibition" delimiter=" ">
 											<li>
-												<l>^ca_occurrences.preferred_labels.name</l>
+												<l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l>
 											</li>
                                         </unit>
                                     </ul>
@@ -166,7 +151,7 @@
 
             </div>
         </section>
-{{{<ifcount code="ca_objects" restrictToRelationshipTypes="reference" min="1">
+{{{<ifcount code="ca_objects" restrictToRelationshipTypes="reference" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version" min="1">
         <section class="block border">
             <div class="wrap">
                 <div class="block-half text-align-center">
@@ -175,17 +160,17 @@
             </div>
             <div class="module_carousel archive_related" data-prevnext="false">
 				<div class="carousel-main">
-					<unit relativeTo="ca_objects" restrictToRelationshipTypes="reference" delimiter=" ">
+					<unit relativeTo="ca_objects" restrictToRelationshipTypes="reference" delimiter=" " restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version">
 						<div class="carousel-cell">
 
 							<l>
 								<div class="img-wrapper archive_thumb block-quarter">
-									<div class="bg-image" style="background-image: url(^ca_object_representations.media.large.url)"></div>
+									<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+									<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 								</div>
 								<div class="text block-quarter">
 									<div class="ca-identifier text-gray">^ca_objects.idno</div>
 									<div class="more">                                
-										<div class="ca-identifier text-gray">^ca_objects.idno</div>
 										<div class="thumb-text clamp" data-lines="2">^ca_objects.preferred_labels.name</div>
 										<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date</div></ifdef>
 										<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>

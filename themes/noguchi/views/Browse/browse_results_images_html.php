@@ -57,11 +57,9 @@
 
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
-	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
-		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
-	}
-	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
 		
+	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
+	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
 
 
 
@@ -107,7 +105,9 @@
 					<div class='item-grid'>
                         <l>
                             <div class='img-wrapper archive_thumb block-quarter'>
-                                <div class='bg-image' style='background-image: url(^ca_object_representations.media.medium.url)'></div>
+                                <ifdef code='ca_object_representations.media.medium.url'><div class='bg-image' style='background-image: url(^ca_object_representations.media.medium.url)'></div></ifdef>
+                                <ifnotdef code='ca_object_representations.media.medium.url'>".$vs_placeholder_tag."</ifnotdef>
+                                
                             </div>
                             <div class='text'>
                                 <div class='text_position'>

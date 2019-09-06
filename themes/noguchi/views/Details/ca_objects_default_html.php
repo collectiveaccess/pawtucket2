@@ -36,7 +36,8 @@
 	
 	$vs_status = $t_object->get("ca_objects.status", array("convertCodesToDisplayText" => true));
 	$va_access_values = caGetUserAccessValues();
-
+	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
+	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
 ?>
     <main class="ca cr cr_detail">
 <?php
@@ -229,6 +230,9 @@
 							<div class="ca-data">^ca_objects.status</div>
 						</div>
 					</ifdef>}}}
+					<div class="block-quarter">
+						<div class="eyebrow text-gray">{{{crCopyrightBoilerplate}}}</div>
+					</div>
 				</div><!-- end block -->
 	{{{<ifcount code="ca_occurrences" min="1">               
                 <div class="module_accordion">
@@ -241,7 +245,7 @@
                                     <ul class="list-sidebar ca-data text-align-left related">
                                         <unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=" ">
 											<li>
-												<l>^ca_occurrences.preferred_labels.name, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l>
+												<l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l>
 											</li>
                                         </unit>
                                     </ul>
@@ -308,6 +312,10 @@
 							<div class="ca-data">^ca_objects.status</div>
 						</div>
 					</ifdef>}}}
+					<div class="block-quarter">
+						<div class="eyebrow text-gray">{{{crCopyrightBoilerplate}}}</div>
+					</div>
+					
 				</div><!-- end block>
 <?php		
 			break;
@@ -317,9 +325,6 @@
             </div> <!-- wrap-text -->
         </section>
 
-<?php
-	$vs_placeholder = caGetThemeGraphic("placeholder.png");
-?>
 {{{<ifcount code="ca_objects.related" excludeRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" min="1">
         <section class="wrap block border">
             <div class="block text-align-center">
@@ -335,7 +340,8 @@
 								<unit relativeTo="ca_objects">
 									<l>
 										<div class="block-quarter">
-											<img nopin="nopin"  src="^ca_object_representations.media.medium.url" />
+											<ifdef code="ca_object_representations.media"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+											<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 										</div>
 										<div class="text block-quarter">
 											<div class="ca-identifier text-gray">^ca_objects.idno<if rule='^ca_objects.status =~ /pending/'>*</if></div>
@@ -370,7 +376,8 @@
 							<div class="item">
 								<l>
 									<div class="block-quarter">
-										<img nopin="nopin"  src="^ca_object_representations.media.medium.url" />
+										<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+										<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 									</div>
 									<div class="text block-quarter">
 										<div class="ca-identifier text-gray">^ca_objects.idno<if rule='^ca_objects.status =~ /pending/'>*</if></div>
