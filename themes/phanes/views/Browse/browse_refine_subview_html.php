@@ -41,12 +41,9 @@
 	
 	$va_multiple_selection_facet_list = [];
 
-<<<<<<< HEAD
-=======
 	$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
 	$vs_current_view	= $this->getVar('view');
 	
->>>>>>> dev/locMerge
 	#if(is_array($va_facets) && sizeof($va_facets)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
@@ -62,13 +59,9 @@
 					$va_multiple_selection_facet_list[$vs_facet_name] = caGetOption('multiple', $va_facet_info, false, ['castTo' => 'boolean']);
 			
 					if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-<<<<<<< HEAD
-						print "<h5 data-toggle='dropdown'>".$va_facet_info['label_singular']."</H5><div id='facetGroup{$vs_facet_name}'>"; 
-						print "<div class='container'><div class='row hierarchicalList'>"; 
-=======
+
 						print "<h5 type='button' onClick='jQuery(\"#facetGroup{$vs_facet_name}\").slideToggle(); return false;'>".$va_facet_info['label_singular']."</H5><div id='facetGroup{$vs_facet_name}' style='display:none;'>"; 
 						print "<div class='container facetContainer' id='{$vs_facet_name}_facet_container'><div class='row hierarchicalList'>"; 
->>>>>>> dev/locMerge
 ?>
 						
 							<script type="text/javascript">
@@ -78,22 +71,17 @@
 							</script>
 							<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 <?php
-<<<<<<< HEAD
-=======
 							if ($va_multiple_selection_facet_list[$vs_facet_name]) {
 ?>
 								<a href="#" id="<?php print $vs_facet_name; ?>_facet_apply" data-facet="<?php print $vs_facet_name; ?>" class="facetApply">Apply</a>
 <?php
 							}
->>>>>>> dev/locMerge
 						print "</div><!-- end row --></div><!-- end container --></div><!-- end facetGroup -->";
 					} else {				
 						if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 						print "<h5 type='button' onClick='jQuery(\"#facetGroup{$vs_facet_name}\").slideToggle(); return false;'>".$va_facet_info['label_singular']."</H5><div id='facetGroup{$vs_facet_name}' style='display:none;'>"; 
 						print "<div class='container facetContainer' id='{$vs_facet_name}_facet_container'><div class='row'>";
 						switch($va_facet_info["group_mode"]){
-<<<<<<< HEAD
-=======
 							case "slider":
 								if(is_array($va_facet_info['content']) && sizeof($va_facet_info['content'])){
 									$va_first_last = [];
@@ -151,7 +139,6 @@
 <?php
 								}
 							break;
->>>>>>> dev/locMerge
 							case "alphabetical":
 							case "list":
 							default:
@@ -203,8 +190,6 @@
 		print "</div><!-- end bRefine -->\n";
 ?>
 	<script type="text/javascript">
-<<<<<<< HEAD
-=======
 		function selectFacetMultiple(e){
 			if (e.attr('facet_item_selected') == '1') {
 				e.attr('facet_item_selected', '');
@@ -221,7 +206,6 @@
 			return false;
 	
 		}
->>>>>>> dev/locMerge
 		jQuery(document).ready(function() {
             if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
 				var offset = jQuery('#bRefine').height(jQuery(window).height() - 30).offset();   // 0px top + (2 * 15px padding) = 30px

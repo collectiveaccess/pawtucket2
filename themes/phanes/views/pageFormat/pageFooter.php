@@ -36,11 +36,7 @@
 
 		<footer id="footer">
 			<!--<H2>Phanes</H2>-->
-<<<<<<< HEAD
-			<H2>Eudora</H2>
-=======
 			<H2>Phanes</H2>
->>>>>>> dev/locMerge
 			<div class="userLinks">
 <?php
 				if($this->request->isLoggedIn()){

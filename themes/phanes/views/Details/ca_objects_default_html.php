@@ -171,10 +171,6 @@
 								"Mint" => "mint",
 								"Region" => "region",
 								"Denomination" => "denomination",
-<<<<<<< HEAD
-								"Weight" => "weight",
-=======
->>>>>>> dev/locMerge
 								"Weight Standard" => "weight_standard",
 								"Authority" => "authority",
 								"Dynasty" => "dynasty",
@@ -183,35 +179,14 @@
 							);
 							$va_classification_fields = array(	
 								"Date" => "date",
-<<<<<<< HEAD
-								"Dtae On Object" => "dob",
-=======
 								"Date On Object" => "dob",
->>>>>>> dev/locMerge
 								"Period" => "period",
 								"Type (PELLA)" => "type",
 								"Type (SCO)" => "type_sco",
 								"Type" => "type_text",
 								"Type URL" => "type_url",
-<<<<<<< HEAD
-							);
-							$va_provenance_fields = array(	
-								"Hoard" => "hoard",
-								"Findspot" => "findspot",
-								"Previous Collection" => "previous_collection",
-								"Published Auction URL" => "published_auction",
-								"Published Auction" => "published_auction_text",
-								"Other Provenance" => "other_provenance",
-							);
-							$va_literature_fields = array(	
-								"Published Literature" => "published_literatue",
-								"Published Literature Text" => "published_literatue_text",
-								"Cross-reference" => "crossreference",
-								"Cross-reference Text" => "crossreference_text"
-=======
 								"Hoard" => "hoard",
 								"Findspot" => "findspot"
->>>>>>> dev/locMerge
 							);
 	
 							print "<div class='unit'><H6>Identifier</H6>".$t_object->get("idno")."</div>";
@@ -221,10 +196,6 @@
 									$vs_materiality .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
 								}
 							}
-<<<<<<< HEAD
-							if($vs_tmp = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter=", " restrictToRelationshipTypes="obverse_countermark"><unit relativeTo="ca_list_items">^ca_list_items.preferred_labels.name_plural</unit></unit>')){
-								$vs_materiality .= "<div class='unit'><H6>Countermarks</H6>".$vs_tmp."</div>";							
-=======
 							$va_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("obverse_countermark")));
 							if(is_array($va_list_items) && sizeof($va_list_items)){
 								$va_terms = array();
@@ -232,7 +203,6 @@
 									$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Browse", "coins", array("facet" => "icon_facet", "id" => $va_list_item["item_id"]));
 								}
 								$vs_materiality .= "<div class='unit'><H6>Countermarks</H6>".join($va_terms, ", ")."</div>";	
->>>>>>> dev/locMerge
 							}
 							if($vs_materiality){
 								print "<h4>Materiality</h4>".$vs_materiality;
@@ -248,45 +218,12 @@
 							if($vs_classification){
 								print "<h4>Classification</h4>".$vs_classification;
 							}
-<<<<<<< HEAD
-	
-							$vs_provenance = "";
-							foreach($va_provenance_fields as $vs_label => $vs_field){
-								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
-									$vs_provenance .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
-								}
-							}
-							if($vs_provenance){
-								print "<h4>Provenance</h4>".$vs_provenance;
-							}	
-	
-							$vs_literature = "";
-							foreach($va_literature_fields as $vs_label => $vs_field){
-								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
-									$vs_literature .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
-								}
-							}
-							if($vs_literature){
-								print "<h4>Literature</h4>".$vs_literature;
-							}
-?>
-						</div>
-						<div class="col-sm-4">
-<?php
-	
-=======
-
->>>>>>> dev/locMerge
 							$vs_descriptive = "";
 							foreach($va_descriptive_fields as $vs_label => $vs_field){
 								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
 									$vs_descriptive .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
 								}
 							}
-<<<<<<< HEAD
-							if($vs_tmp = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter=", "><unit relativeTo="ca_list_items">^ca_list_items.preferred_labels.name_plural</unit></unit>')){
-								$vs_descriptive .= "<div class='unit'><H6>Iconographic Classification</H6>".$vs_tmp."</div>";							
-=======
 							$va_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true));
 							if(is_array($va_list_items) && sizeof($va_list_items)){
 								$va_terms = array();
@@ -294,60 +231,10 @@
 									$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Browse", "coins", array("facet" => "icon_facet", "id" => $va_list_item["item_id"]));
 								}
 								$vs_descriptive .= "<div class='unit'><H6>Iconographic Classification</H6>".join($va_terms, ", ")."</div>";	
->>>>>>> dev/locMerge
 							}
 							if($vs_descriptive){
 								print "<h4>Descriptive</h4>".$vs_descriptive;
 							}
-<<<<<<< HEAD
-?>
-
-						</div>
-						<div class="col-sm-4">
-<?php
-							$va_fields_authorities = array(
-								"Material" => "material_link",
-								"Mint" => "mint_link",
-								"Region" => "region_link",
-								"Denomination" => "denomination_link",
-								"Authority" => "authority_link",
-								"Person" => "person_link",
-								"Magistrate" => "magistrate_link",
-								"Series" => "series",
-								"Hoard" => "hoard_link"
-							);
-														
-							$vs_authority = "";
-							foreach($va_fields_authorities as $vs_label => $vs_field){
-								$vs_nomisma_id = "";
-								$vs_tmp = "";
-								if($va_authority_terms = $t_object->get($vs_field, array("returnAsArray" => true))){
-									$va_tmp = array();
-									foreach($va_authority_terms as $vs_term){
-										$vn_start = strpos($vs_term, "[");
-										if($vn_start !== false){
-											$vs_nomisma_id = substr($vs_term, $vn_start + 1);
-											$vs_nomisma_id = str_replace("]", "", $vs_nomisma_id);
-											if($vs_nomisma_id){
-												$va_tmp[] = "<a href='http://www.nomisma.org/id/".$vs_nomisma_id."' target='_blank'>".$vs_term." <span class='glyphicon glyphicon-new-window'></span></a>";
-											}
-										}else{
-											$va_tmp[] = $vs_term;
-										}
-										$vs_authority .= "<div class='unit'><H6>".$vs_label."</H6>".join("<br/>",$va_tmp)."</div>";
-									}
-								}
-							}
-							if($vs_authority){
-								print "<div class='authoritySection'><h4>Nomisma Authority Links</h4>".$vs_authority."</div>";
-							}
-							
-?>							
-							
-=======
-	
-	
->>>>>>> dev/locMerge
 							
 ?>	
 						</div>
@@ -455,31 +342,6 @@
 							{{{map}}}
 						</div>
 					</div>
-<<<<<<< HEAD
-					
-					
-				
-					
-					
-						<div class="row">
-							<div class="col-sm-6">		
-								{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-								{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-								{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
-							
-							
-								{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-								{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-								{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
-							
-								
-							</div><!-- end col -->				
-							<div class="col-sm-6 colBorderLeft">
-								{{{map}}}
-							</div>
-						</div><!-- end row -->
-=======
->>>>>>> dev/locMerge
 				</div>
 			</div>
 		</div><!-- end container -->
