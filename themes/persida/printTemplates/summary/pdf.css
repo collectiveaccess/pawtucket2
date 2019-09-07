@@ -1,8 +1,9 @@
 /* universal header/footer styles */
 #header { padding:0px; margin:0px;}
 img.headerImg {height:45px; width:auto; margin-top:20px; margin-bottom:10px;}
-.pagingText { position: absolute; top: 30px; right: 30px; font: "helvetica"; font-size: 11px; text-align: right;  margin: 0px 0px 10px 25px;}
-#footer .pagingText{ top:20px; }
+#footer { padding-top:20px;}
+.pagingText { float:right; font-size: 11px; text-align: right; }
+.footerDateText { float:left; font-size: 11px; text-align: left; }
 .footerText { position:relative; font-size: 11px;  top:13px; padding-right:40px;  }  
 body{ font: "helvetica, sans-serif"; margin:0px; padding:0px;}
 
@@ -21,6 +22,7 @@ body{ font: "helvetica, sans-serif"; margin:0px; padding:0px;}
 .unit {font-size:12px;margin-bottom:12px;}
 h6 {font-size:12px; font-weight:bold;text-transform:uppercase; margin:0px 0px 5px 0px; padding:0px;}
 .tombstone { margin-top:20px;}
+.tombstone .unit { text-align:center; margin-bottom:5px;}
 .clear { clear: both; }
 
 
@@ -38,4 +40,12 @@ h6 {font-size:12px; font-weight:bold;text-transform:uppercase; margin:0px 0px 5p
 .media img {
 	width:100%;
 	height:auto;
+}
+.relatedArtwork{
+	margin-top:20px;
+	page-break-inside: avoid;
+	width:100%;	
+}
+.objImage{
+	text-align:right;
 }

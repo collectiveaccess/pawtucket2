@@ -1,4 +1,4 @@
-/* header gray: 4d4a47; offwhite: efebe7; yellow ochre: AA8A00; */
+/* header gray: 4d4a47; offwhite: efebe7 or f1f1e9; yellow ochre: AA8A00; */
 
 @import url('https://fonts.googleapis.com/css?family=Cinzel');
 /*
@@ -83,6 +83,23 @@ a.navbar-brand, a.navbar-brand:hover {
 	color:#FFF;
     font-family:LatoLight;
 }
+@media(max-width:768px){
+	.navbar-form{
+		margin-left:5px;
+		margin-right:5px;
+	}
+	.navbar-nav {
+		margin: 7.5px 0px 7.5px 0px;
+	}
+	.container > .navbar-collapse {
+		margin-right: -30px;
+		margin-left: -30px;
+	}
+}
+.navbar-form{
+	-webkit-box-shadow:none;
+	box-shadow:none;
+}
 H1, h1, h2, H2, H3, h3{
 	color:#333;
 /*    font-family: Cinzel;
@@ -101,7 +118,7 @@ a, a:hover{
 /* footer */
 
 #footer{
-	background-color: #efebe7;
+	background-color: #f1f1e9;
 	color: #4d4a47;
 	padding-top:25px;
 	padding-bottom:25px;
@@ -198,11 +215,11 @@ body{
 	text-align:center;
 	position:relative;
 }
-.front .hpBrowseLinks > div:hover img{
+/*.front .hpBrowseLinks > div:hover img{
 	opacity: .8;
 	-webkit-transition: opacity .5s;
     transition:opacity .5s;
-}
+}*/
 .front .hpBrowseLinks > div a.hpBrowseTextLink, .front .hpBrowseLinks > div a.hpBrowseTextLink:hover{
 	opacity: 0;
 	color:#FFF;
@@ -228,6 +245,9 @@ body{
 	}
 }
 /* browse results */
+.browseRemoveFacet{
+	margin-left:5px;
+}
 .bResultItemBoxCol{
 	margin-bottom:25px;
 }
@@ -364,13 +384,21 @@ body{
 .bScrollListHierarchy {
 	clear:left;
 }
+<<<<<<< HEAD
 #bAncestorList {
+=======
+/*#bAncestorList {
+>>>>>>> dev/locMerge
 	position:absolute;
 	height:20px;
 	background-color:#fff;
 	width:100%;
 	top: 40px;
+<<<<<<< HEAD
 }
+=======
+}*/
+>>>>>>> dev/locMerge
 .facetItem .glyphicon-chevron-down {
 	font-size:10px;
 }
@@ -384,6 +412,16 @@ body{
 #bRefine .facetItem[facet_item_selected="1"] {
 	padding-left:20px;
 }
+<<<<<<< HEAD
+=======
+.facetItemHier{
+	padding-bottom:7px;
+	padding-top:2px;
+	color: #666666;
+	font-size: 12px;
+	cursor: pointer;
+}
+>>>>>>> dev/locMerge
 [facet_item_selected="1"]::before {
 	font-family: FontAwesome;
 	content: "\f067"; 
@@ -393,7 +431,11 @@ body{
 	top:4px;
 	font-size:11px;
 }
+<<<<<<< HEAD
 .facetApply {
+=======
+.facetApply, .facetApplySlider {
+>>>>>>> dev/locMerge
 	clear:both;
 	right:15px;
 	display:block;
@@ -401,10 +443,17 @@ body{
     margin-top: 20px;
 
 }
+<<<<<<< HEAD
 a.facetApply {
     background-color: #ddd;
     color: #333;
     font-size: 13px;
+=======
+a.facetApply, button.facetApplySlider {
+    background-color: #ddd;
+    color: #333 !important;
+    font-size: 13px !important;
+>>>>>>> dev/locMerge
     border-radius: 3px;
     width:50px;
     padding-top:4px;
@@ -414,8 +463,96 @@ a.facetApply {
     position:absolute;
     bottom:0px;
     left:0px;
+<<<<<<< HEAD
 }
 
+=======
+    border: 0px;
+    line-height: 1.5em !important;
+}
+.bFacetSliderWrapper{
+	padding:10px 10px 0px 10px;
+}
+.facetSliderRange{
+	border:0px;
+	width:100%;
+	text-align:center;
+	background:transparent;
+	font-size:12px;
+	padding-bottom:5px;
+}
+.btnSearchFacetSlider{
+	font-size: 18px;
+	padding-top: 0px 0px 0px 0px;
+	width: 26px;
+	text-align: left;
+	background-color: transparent;
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	background-image: none;
+	outline: 0;
+	border: 0px;
+}
+.results .bSearchWithinContainer{
+	clear:both;
+	margin-top:15px;
+	margin-bottom:10px;
+}
+#browseResultsDetailContainer .bSearchWithinContainer{
+	clear:both;
+	margin-top:40px;
+	margin-bottom:10px;
+}
+.results .btn-search-refine{	
+	float: left;
+	font-size: 18px;
+	padding-top: 0px 0px 0px 0px;
+	width: 26px;
+	text-align: left;
+	background-color: transparent;
+	display: inline-block;
+	vertical-align: middle;
+	cursor: pointer;
+	background-image: none;
+	outline: 0;
+	border: 0px;
+}
+.results .btn-search-refine .glyphicon{
+	margin-top:5px;
+}
+.bSearchWithin, .bSearchWithin:focus {
+    float: left;
+    width: 80%;
+    box-shadow: none;
+    border: 0px;
+    border-bottom: 1px solid #989697;
+    border-radius: 0px;
+    padding-bottom: 2px;
+    padding-top: 2px;
+    padding-left: 0px;
+    height: 30px;
+    font-size: 14px;
+    line-height: 26px;
+    background-color: transparent;
+    margin: 0px 0px 0px 10px;
+    font-size: 15px;
+}
+
+.results #map_map{
+	margin-left:15px;
+}
+.leaflet-popup-content {
+    min-width: 250px;
+}
+.leaflet-popup-content a{
+	color:#333;
+}
+.leaflet-popup-content-wrapper{
+	height:150px;
+	overflow-y:scroll;
+}
+>>>>>>> dev/locMerge
 
 /* detail */
 
@@ -466,14 +603,37 @@ a.facetApply {
 .detail .authoritySection{
 	background-color: #f1f1f1;
 	padding:10px;
+<<<<<<< HEAD
+=======
+	margin-bottom:20px;
+}
+.detail .notesSection{
+	background-color: #f8f8f2;
+	padding:10px;
+	margin-bottom:20px;
+>>>>>>> dev/locMerge
 }
 .detail a {
     color: #454545;
 }
+<<<<<<< HEAD
+=======
+.detail .unit a {
+    color: #454545;
+    text-decoration:underline;
+}
+>>>>>>> dev/locMerge
 .detail a .glyphicon {
     color: #999;
     font-size:10px
 }
+<<<<<<< HEAD
+=======
+
+.detail .unitSub{
+	padding-bottom:5px;
+}
+>>>>>>> dev/locMerge
 /* lightbox */
 #pageArea.lightbox{
 	padding-bottom: 250px;
@@ -483,4 +643,11 @@ a.facetApply {
 /* forms */
 .form-control:focus {
 	border-color: #000;
+}
+.attributeListItem{
+	width:100%;
+}
+
+#gallerySetInfo .caption{
+	display:none;
 }

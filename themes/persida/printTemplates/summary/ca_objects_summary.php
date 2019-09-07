@@ -28,7 +28,7 @@
  *
  * @name Object tear sheet
  * @type page
- * @pageSize letter
+ * @pageSize A4
  * @pageOrientation portrait
  * @tables ca_objects
  * @marginTop 0.75in
@@ -48,9 +48,6 @@
 	print $this->render("footer.php");	
 
 ?>
-	<div class="title">
-		<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
-	</div>
 	<div class="representationList">
 		
 <?php
@@ -69,9 +66,20 @@
 ?>
 	</div>
 	<div class='tombstone'>
-		{{{<ifdef code="ca_objects.idno"><div class='unit'><h6>Identifier</h6>^ca_objects.idno</div></ifdef>}}}
-		{{{<ifcount min="1" code="ca_objects.dates.dates_value"><div class='unit'><h6>Date</h6><unit delimiter="<br/>">^ca_objects.dates.dates_value</unit></div></ifcount>}}}
-		{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes='artist'><div class='unit'><h6>Artist</h6><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist'>^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
+		{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes='artist'><div class='unit'><h6><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist'>^ca_entities.preferred_labels.displayname</unit></h6></div></ifcount>}}}
+	
+	
+	{{{<ifdef code="ca_objects.preferred_labels.name|ca_objects.creation_date"><div class='unit'><i>^ca_objects.preferred_labels.name</i><ifdef code="ca_objects.preferred_labels.name,ca_objects.creation_date">, </ifdef>^ca_objects.creation_date</div></ifdef>}}}
+	{{{<ifdef code="ca_objects.medium"><div class='unit'><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.medium</unit></div></ifdef>}}}
+<?php		
+		if ($vs_dimensions = $t_item->getWithTemplate('<ifcount code="ca_objects.dimensions" min="1"><unit><ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height H</ifdef><ifdef code="ca_objects.dimensions.dimensions_width"> x ^ca_objects.dimensions.dimensions_width W</ifdef><ifdef code="ca_objects.dimensions.dimensions_depth"> x ^ca_objects.dimensions.dimensions_depth D</ifdef> <ifdef code="ca_objects.dimensions.height_in|ca_objects.dimensions.width_in|ca_objects.dimensions.depth_in">(</ifdef><ifdef code="ca_objects.dimensions.height_in">^ca_objects.dimensions.height_in H</ifdef><ifdef code="ca_objects.dimensions.width_in"> x ^ca_objects.dimensions.width_in W</ifdef><ifdef code="ca_objects.dimensions.depth_in"> x ^ca_objects.dimensions.depth_in D</ifdef><ifdef code="ca_objects.dimensions.height_in|ca_objects.dimensions.width_in|ca_objects.dimensions.depth_in">)</ifdef><ifdef code="ca_objects.dimensions.dimensions_weight">, ^ca_objects.dimensions.dimensions_weight Weight</ifdef><ifdef code="ca_objects.dimensions.dimensions_notes"><br/>^ca_objects.dimensions.dimensions_notes</ifdef></unit></ifcount>')) {
+			print "<div class='unit'>".$vs_dimensions."</div>";
+		} elseif ($vs_dimensions = $t_item->get('ca_objects.dimensions_readOnly')) {
+			print "<div class='unit'>".$vs_dimensions."</div>";
+		}
+?>
+	{{{<ifdef code="ca_objects.edition"><div class='unit'><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.edition</unit></div></ifdef>}}}
+	
 	</div>
 <?php	
 	print $this->render("pdfEnd.php");

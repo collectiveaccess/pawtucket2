@@ -28,11 +28,11 @@
  *
  * @name Thumbnails (restricted financial)
  * @type page
- * @pageSize letter
+ * @pageSize A4
  * @pageOrientation landscape
  * @tables ca_objects
  *
- * @marginTop 0.8in
+ * @marginTop 0.6in
  * @marginLeft 0.9in
  * @marginBottom 0.5in
  * @marginRight 0.25in
@@ -92,6 +92,8 @@
 	#			} elseif ($vs_dimensions = $vo_result->get('ca_objects.dimensions_readOnly')) {
 	#				print "<div class='caption'>".$vs_dimensions."</div>";
 	#			}
+				print "<div class='caption'>".$vo_result->getWithTemplate('^ca_objects.edition')."</div>";					
+					
 				if ($vs_can_see_financials == true) {
 					if ($vs_purchase = $vo_result->getWithTemplate('^ca_objects.value_purchase_USD')) {
 						print "<div class='caption'>Purchase value: ".$vs_purchase."</div>";

@@ -28,7 +28,7 @@
  *
  * @name Checklist
  * @type page
- * @pageSize letter
+ * @pageSize A4
  * @pageOrientation portrait
  * @tables ca_entities
  *

@@ -18,6 +18,8 @@
 	if(sizeof($va_lightbox_crumbs)){
 		$vs_lightbox_crumbs = join("<br/>", $va_lightbox_crumbs);
 	}
+	
+	$o_db = new Db();
 ?>
 <div class="row">
 	<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
@@ -38,7 +40,7 @@
 <div class="row">
 	<div class="container">
 <?php
-if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")) {
+if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")) {
 	// Export as PDF
 	print "<div id='bViewButtons'>";
 	print "<div class='reportTools'>";
@@ -167,7 +169,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					if ($t_object->get('ca_objects.signed.signed_yn') == "No") {
 						print "Signed, ".$t_object->get('ca_objects.signed.signature_details');
 					}
-					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
+					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("library_new")){
 						if ($va_idno = $t_object->get('ca_objects.idno')) {
 								print "<div class='unit wide'>".$va_idno."</div>";
 						}
@@ -199,7 +201,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					
 
 ?>										
-					{{{<ifdef code="ca_objects.literature"><div class='unit wide'><span class='metaHeader'>Literature </span><span >^ca_objects.literature</span></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.literature"><div class='unit wide'><span class='metaHeader'>Literature </span><span ><unit delimiter="<br/><br/>">^ca_objects.literature</unit></span></div></ifdef>}}}
 				</div>
 				
 				<div id="Location" class="infoBlock">
@@ -260,8 +262,31 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 						}											
 						print "</span></div>";
 					}
-					
-					
+					$vs_complex_buf = "";
+					if ($vs_complex_assessor = $t_object->get('ca_objects.installation_complexity.installation_assessor', array('convertCodesToDisplayText' => true))) {
+						$vs_complex_buf.= "<br/>".$vs_complex_assessor;
+					}
+					if ($vs_complex_date = $t_object->get('ca_objects.installation_complexity.installation_assessed', array('convertCodesToDisplayText' => true))) {
+						$vs_complex_buf.= ", ".$vs_complex_date;
+					}
+					if ($vs_complex_desc = $t_object->get('ca_objects.installation_complexity.installation_comments', array('convertCodesToDisplayText' => true))) {
+						$vs_complex_buf.= "<br/>".$vs_complex_desc;
+					}										
+					if ($t_object->get('ca_objects.installation_complexity.installation_complexity_status', array('convertCodesToDisplayText' => true)) == "Low") {
+						print "<div class='unit'><span class='metaTitle'>Installation Complexity: </span><span class='meta'><i style='color:#80E680;' class='fa fa-circle'></i> Low".$vs_complex_buf."</span></div>";
+					}
+					if ($t_object->get('ca_objects.installation_complexity.installation_complexity_status', array('convertCodesToDisplayText' => true)) == "High") {
+						print "<div class='unit'><span class='metaTitle'>Installation Complexity: </span><span class='meta'><i style='color:#FF4D4D;' class='fa fa-circle'></i> High".$vs_complex_buf."</span></div>";
+					}
+					if ($t_object->get('ca_objects.installation_complexity.installation_complexity_status', array('convertCodesToDisplayText' => true)) == "Medium") {
+						print "<div class='unit'><span class='metaTitle'>Installation Complexity: </span><span class='meta'><i style='color:#FFFF66;' class='fa fa-circle'></i> Medium".$vs_complex_buf."</span></div>";
+					}					
+					if ($va_prev_displayed = $t_object->get('ca_objects.installation_complexity.installation_previously')) {
+						print "<div class='unit'><span class='metaTitle'>Previously Displayed through Glenstone?: </span><span class='meta'>".$va_prev_displayed."</span></div>";
+					}
+					if ($va_prep = $t_object->get('ca_objects.installation_complexity.installation_prep')) {
+						print "<div class='unit'><span class='metaTitle'>Advanced Prep Time: </span><span class='meta'>".$va_prep."</span></div>";					
+					}					
 				} else {
 					print "access restricted";
 				}
@@ -349,12 +374,12 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					if ($va_detailed_condition = $t_object->get('ca_objects.detailed_condition', array('returnWithStructure' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true, 'showHierarchy' => true))) {
 						foreach ($va_detailed_condition as $va_det_key => $va_detailed_t) {
 							foreach ($va_detailed_t as $va_det_key => $va_detailed) {
-								if ($va_detailed['is_primary_detailed'][0] == "Yes") {
+								if ($va_detailed['is_primary_detailed'] == "Yes") {
 									$va_condition_array[$va_detailed['detailed_date']['start']][] = $va_detailed;
 								}
 							}
 						}
-					}					
+					}				
 #					if ($va_surface_condition = $t_object->get('ca_objects.surface_condition', array('returnAsArray' => true, 'returnWithStructure' => true, 'rawDate' => 1, 'convertCodesToDisplayText' => true))) {
 #						foreach ($va_surface_condition as $va_sur_key => $va_surface) {
 #							$va_condition_array[$va_surface['surface_date']['start']][] = $va_surface;
@@ -398,7 +423,6 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					if ($t_object->get('ca_objects.condition_images.condition_images_media')){
 						$va_condition_images = $t_object->get('ca_objects.condition_images', array('returnWithStructure' => true, 'ignoreLocale' => true, 'rawDate' => 1, 'version' => 'icon')); 
 
-						$o_db = new Db();
 						$vn_media_element_id = ca_metadata_elements::getElementID('condition_images_media');
 						foreach ($va_condition_images as $vn_condition_id => $va_condition_image_t) {
 							foreach ($va_condition_image_t as $vn_condition_id => $va_condition_image) {
@@ -415,8 +439,6 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					}	
 					if ($t_object->get('ca_objects.legacy_conservation_materials.legacy_conservation_media')){
 						$va_conservation_images = $t_object->get('ca_objects.legacy_conservation_materials', array('returnWithStructure' => true, 'ignoreLocale' => true, 'rawDate' => 1, 'version' => 'icon')); 
-						
-						$o_db = new Db();
 						$vn_media_element_id = ca_metadata_elements::getElementID('legacy_conservation_media');
 						foreach ($va_conservation_images as $vn_conservation_id => $va_conservation_image_t) {
 							foreach ($va_conservation_image_t as $vn_conservation_id => $va_conservation_image) {
@@ -434,7 +456,6 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					if ($t_object->get('ca_objects.conservation_reports.conservation_reports_media')){
 						$va_outside_images = $t_object->get('ca_objects.conservation_reports', array('returnWithStructure' => true, 'ignoreLocale' => true, 'rawDate' => 1, 'version' => 'icon')); 
 						
-						$o_db = new Db();
 						$vn_media_element_id = ca_metadata_elements::getElementID('conservation_reports_media');
 						foreach ($va_outside_images as $vn_outside_id => $va_outside_image_t) {
 							foreach ($va_outside_image_t as $vn_outside_id => $va_outside_image) {
@@ -465,7 +486,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 									print "<div class='clearfix'></div>";
 								}
 								if (($va_condition['detailed_value']) || ($va_condition['detailed_notes'])) {
-									print " <u>Detailed Condition:</u> ".($va_condition['detailed_value'] ? $va_condition['detailed_value'][1].": ".$va_condition['detailed_value'][0].". " : "").preg_replace('![\.\,\;\:]+$!', '', $va_condition['detailed_notes']).($va_condition['detailed_notes'] ? ", " : "").($va_condition['detailed_assessor'] ? "assessed by ".$va_condition['detailed_assessor'] : "");
+									print " <u>Detailed Condition:</u> ".($va_condition['detailed_value'] ? $va_condition['detailed_value']."<br/>" : "").preg_replace('![\.\,\;\:]+$!', '', $va_condition['detailed_notes']).($va_condition['detailed_notes'] ? ", " : "").($va_condition['detailed_assessor'] ? "assessed by ".$va_condition['detailed_assessor'] : "");
 									print "<div class='clearfix'></div>";
 								}								
 								/*if ($va_condition['frame_value'] || ($va_condition['frame_notes'])) {
@@ -554,9 +575,23 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					if ($t_object->get('ca_objects.dated') == "Yes") {
 						print "<div class='unit wide'><span class='metaHeader'>Dated: </span><span>Dated</span></div>";
 					}	
-					if ($va_item_weight = $t_object->get('ca_objects.dimensions.dimensions_weight', array('delimiter' => ''))) {
-						print "<div class='unit wide'><span class='metaHeader'>Weight: </span><span>".$va_item_weight."</span></div>";
-					}									
+				
+				    $va_item_weight = $t_object->get('ca_objects.dimensions.dimensions_weight', array('returnAsArray' => true));
+				    $va_item_weight_lbs = $t_object->get('ca_objects.dimensions.dimensions_weight', array('returnAsArray' => true, 'units' => 'english'));
+				    $va_item_weight_kg = $t_object->get('ca_objects.dimensions.dimensions_weight', array('returnAsArray' => true, 'units' => 'metric'));
+				    if(is_array($va_item_weight) && sizeof($va_item_weight)) {
+					    $dims = [];
+					    foreach($va_item_weight_lbs as $i => $w_lbs) {
+					        if(!$va_item_weight[$i]) { continue; }
+					        $dims[] = "{$w_lbs} ({$va_item_weight_kg[$i]})";
+					    }
+					    if(sizeof($dims)) {
+						    print "<div class='unit wide'><span class='metaHeader'>Weight: </span><span>".join("; ", $dims)."</span></div>";
+						}
+					}	
+					// if ($object_weight = $t_object->get('ca_objects.installation_weight.installation_weight_display', array('delimiter' => ''))) {
+// 						print "<div class='unit wide'><span class='metaHeader'>Object weight: </span><span>{$object_weight}</span></div>";
+// 					}								
 ?>
 					{{{<ifcount min="1" code="ca_objects.inscription"><div class='unit wide'><span class='metaHeader'>Inscription: </span><span><unit delimiter="<br/>">^ca_objects.inscription.inscription_position1 ^ca_objects.inscription.inscription_position2 ^ca_objects.inscription.inscription_position3 ^ca_objects.inscription.inscription_material - ^ca_objects.inscription.inscription_text</unit></span></div></ifcount>}}}
 					{{{<ifcount min="1" code="ca_objects.sticker_label"><ifdef code="ca_objects.sticker_label"><div class='unit wide'><span class='metaHeader'>Label Details </span><span><unit delimiter="<br/>">^ca_objects.sticker_label</unit></span></div></ifdef></ifcount>}}}
@@ -564,7 +599,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					if ($t_object->get('ca_objects.inscription_uploads.inscription_uploads_media')){
 						$va_inscription_images = $t_object->get('ca_objects.inscription_uploads', array('returnWithStructure' => true, 'ignoreLocale' => true, 'version' => 'icon')); 
 						$vs_media_buf = "";
-						$o_db = new Db();
+						
 						$vn_media_element_id = ca_metadata_elements::getElementID('inscription_uploads_media');
 						foreach ($va_inscription_images as $vn_inscription_id => $va_inscription_image_t) {
 							foreach ($va_inscription_image_t as $vn_inscription_id => $va_inscription_image) {
@@ -582,6 +617,28 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 							print "</span><div class='clearfix'></div></div>";
 						}	
 					}
+					
+					if(is_array($artwork_docs = $t_object->get('ca_objects.artwork_documents', ['returnWithStructure' => true])) && sizeof($artwork_docs)) {
+					   $artwork_docs = array_shift($artwork_docs);
+					   $artwork_docs = array_filter($artwork_docs, function($v) { return $v['artwork_documents_primary'] == 162; });
+					   
+					   if (sizeof($artwork_docs) > 0) {
+                           print '<div class="unit wide"><span class="metaHeader">Artwork Documents</span><span>';
+                           $vn_media_element_id = ca_metadata_elements::getElementID('artwork_documents_media');
+                           foreach($artwork_docs as $attr_id => $artwork_doc) {
+                            
+                                $qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($attr_id, $vn_media_element_id)) ;
+                                if ($qr_res->nextRow()) {
+                                    print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail/artworks', 'GetMediaOverlay', array('context' => 'artworks', 'overlay' => 1, 'overlay' => 1, 'id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$artwork_doc['artwork_documents_media']."</a>";
+                                }
+                            
+                                print ($artwork_doc['artwork_documents_date'] ? $artwork_doc['artwork_documents_date'].": " : "").$artwork_doc['description_document']."<br/>\n";
+                            
+                           }
+                             print "</span><div class='clearfix'></div></div>";
+					   }
+					}
+					
 ?>
 					{{{<ifcount min="1" code="ca_objects.nonpreferred_labels"><div class='unit wide'><span class='metaHeader'>Other Titles </span><span><unit delimiter="<br/>">^ca_objects.nonpreferred_labels</unit></span></div></ifcount>}}}
 					{{{<ifdef code="ca_objects.legacy_description"><div class='unit wide'><span class='metaHeader'>Description (Legacy): </span><span>^ca_objects.legacy_description</span></div></ifdef>}}}
@@ -651,42 +708,42 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 						foreach ($va_notes as $va_key => $va_note_t) {
 							foreach ($va_note_t as $va_key => $va_note) {					
 								if ($va_note['other_notes_content']) {
-									print "<div class='unit wide'><span class='metaHeader'>".$va_note['other_notes_type'].": </span><span >".$va_note['other_notes_content']."</span></div>";
+									print "<div class='unit wide'><span class='metaHeader'>".$va_note['other_notes_type'].": </span><span>".$va_note['other_notes_content']."</span></div>";
 								}
 							}
 						}
 					}
 
-					if ($t_object->get('ca_objects.artwork_documents.artwork_documents_media')){
-						if ($va_artwork_docs = $t_object->get('ca_objects.artwork_documents.artwork_documents_primary', array('returnWithStructure' => true))){
-						$va_doc_primary = false;
-							foreach($va_artwork_docs as $va_key => $va_docs_t) {
-								foreach($va_docs_t as $va_key => $va_docs) {
-									if ($va_docs['artwork_documents_primary'] == 162) {
-										$va_doc_primary = true;
-									}
-								}
-							}
-							if ($va_doc_primary == true) {
-								$va_artwork_docs = $t_object->get('ca_objects.artwork_documents', array('returnWithStructure' => true, 'ignoreLocale' => true, 'convertCodesToDisplayText' => true)); 
-								print '<div class="unit wide"><span class="metaHeader">Artwork Documents</span><span>';
-						
-								$o_db = new Db();
-								$vn_media_element_id = ca_metadata_elements::getElementID('artwork_documents_media');
-								foreach ($va_artwork_docs as $vn_doc_id => $va_artwork_doc_t) {
-									foreach ($va_artwork_doc_t as $vn_doc_id => $va_artwork_doc) {
-										if ($va_artwork_doc['artwork_documents_primary'] == "Yes") {
-											$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_doc_id, $vn_media_element_id)) ;
-											if ($qr_res->nextRow()) {
-												print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail/artworks', 'GetMediaOverlay', array('context' => 'artworks', 'overlay' => 1, 'overlay' => 1, 'id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_artwork_doc['artwork_documents_media']."</a>";
-											}
-										}
-									}
-								}
-								print "</span><div class='clearfix'></div></div>";
-							}
-						}
-					}
+				// 	if ($t_object->get('ca_objects.artwork_documents.artwork_documents_media')){
+// 						if ($va_artwork_docs = $t_object->get('ca_objects.artwork_documents.artwork_documents_primary', array('returnWithStructure' => true))){
+// 						$va_doc_primary = false;
+// 							foreach($va_artwork_docs as $va_key => $va_docs_t) {
+// 								foreach($va_docs_t as $va_key => $va_docs) {
+// 									if ($va_docs['artwork_documents_primary'] == 162) {
+// 										$va_doc_primary = true;
+// 									}
+// 								}
+// 							}
+// 							if ($va_doc_primary == true) {
+// 								$va_artwork_docs = $t_object->get('ca_objects.artwork_documents', array('returnWithStructure' => true, 'ignoreLocale' => true, 'convertCodesToDisplayText' => true)); 
+// 								print '<div class="unit wide"><span class="metaHeader">Artwork Documents</span><span>';
+// 						
+// 								$o_db = new Db();
+// 								$vn_media_element_id = ca_metadata_elements::getElementID('artwork_documents_media');
+// 								foreach ($va_artwork_docs as $vn_doc_id => $va_artwork_doc_t) {
+// 									foreach ($va_artwork_doc_t as $vn_doc_id => $va_artwork_doc) {
+// 										if ($va_artwork_doc['artwork_documents_primary'] == "Yes") {
+// 											$qr_res = $o_db->query('SELECT value_id FROM ca_attribute_values WHERE attribute_id = ? AND element_id = ?', array($vn_doc_id, $vn_media_element_id)) ;
+// 											if ($qr_res->nextRow()) {
+// 												print "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail/artworks', 'GetMediaOverlay', array('context' => 'artworks', 'overlay' => 1, 'overlay' => 1, 'id' => $vn_object_id, 'value_id' => $qr_res->get('value_id')))."\"); return false;'>".$va_artwork_doc['artwork_documents_media']."</a>";
+// 											}
+// 										}
+// 									}
+// 								}
+// 								print "</span><div class='clearfix'></div></div>";
+// 							}
+// 						}
+// 					}
 					
 ?>
 				</div>				
