@@ -74,17 +74,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 	</div>
 <?php
 	}
-	if($this->request->user->hasRole("admin") || $this->request->user->hasRole("purchasing")){
-?>
-	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records of a range of purchase values.">Value of Purchase</span>
-			{{{ca_objects.value_purchase_USD%width=200px&height=1}}}
-		</div>
-	</div>
-<?php
-	}
-?>
+?>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
 			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search artworks within an exhibition.">Related Exhibition </span>

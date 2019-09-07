@@ -105,18 +105,6 @@
 				#if ($vs_idno = $t_object->get('ca_objects.idno')) {
 				#	print "<div class='unit'><h6>Work Code</h6>".$vs_idno."</div>";
 				#}
-				$va_histories = $t_object->getHistory(['policy' => "__default__", 'limit' => 1, 'currentOnly' => true]);
-				if(is_array($va_histories) && sizeof($va_histories)){
-					foreach($va_histories as $vs_date => $va_history){
-						$va_tmp = array();
-						foreach($va_history as $vs_location){
-							$va_tmp[] = $vs_location["display"]; 
-						}
-						print "<div class='unit'><h6>Current Location</h6>";
-						print join(", ", $va_tmp);
-						print "</div>"; 
-					}
-				}
 				if ($vs_crates = $t_object->get('ca_objects.crate_number')) {
 					print "<div class='unit'><h6>Number of Crates</h6>".$vs_crates."</div>"; 
 				}

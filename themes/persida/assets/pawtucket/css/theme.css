@@ -96,7 +96,7 @@ a, a:hover, a:active, a:focus {
 	width:240px;
 	line-height:1.4em;
 }
-.multisearch .objects .scrollButtonPrevious, .multisearch .objects .scrollButtonNext {
+.multisearch .objects .scrollButtonPrevious {
     height: 260px;
 }
 .objects .multisearchResult small {

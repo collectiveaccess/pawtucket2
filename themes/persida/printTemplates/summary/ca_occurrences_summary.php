@@ -28,7 +28,7 @@
  *
  * @name Occurrences tear sheet
  * @type page
- * @pageSize A4
+ * @pageSize letter
  * @pageOrientation portrait
  * @tables ca_occurrences
  * @marginTop 0.75in

@@ -1,13 +1,12 @@
 @page { margin: 150px 66px; }
 #header { position: fixed; left: 0px; top: -35px; right: 0px; height: 55px;  text-align: left; vertical-align: top; margin: 0px 5px 10px 0px; padding: 0px 5px 2px 0px; }
-#footer { padding-top:20px;}
+#footer { position: fixed; left: 0px; bottom: -50px; right: 0px; height: 20px; text-align: center; vertical-align: bottom; margin: 0px 5px 10px 5px; padding: 3px 5px 2px 10px; }
 #header .pagingText:after { content: counter(page, decimal); }
 #body { z-index: 30000; position: relative; }
 
 img.headerImg {width:135px;}
 .headerText { font-family: "helvetica, sans-serif"; font-size: 10px; margin: 0px 0px 10px 25px; }
-.pagingText { float:right; font-size: 11px; text-align: right; }
-.footerDateText { float:left; font-size: 11px; text-align: left; }
+.pagingText { position: absolute; top: 0px; right: 10px; font-family: "helvetica, sans-serif"; font-size: 11px; text-align: right;  margin: 0px 0px 10px 25px; }
 
 table.footerText { width: 100%; }
 td.footerText { font-family: "helvetica, sans-serif"; font-size: 12px; text-align: center; }  
@@ -17,7 +16,7 @@ span.footerText { font-family: "helvetica, sans-serif"; font-size: 12px; margin-
 .imgThumb {width:194px; height:110px;text-align:center;}
 .caption {font-size:11px; color:#333; display:block;}
 
-.row { font-family: "helvetica, sans-serif"; font-size: 11px; border-bottom: 1px solid #eee; width: 100%; height: auto; margin: 5px 0 0 0; padding: 3px 0px 5px 0px; overflow: hidden; page-break-inside: avoid;}	
+.row { font-family: "helvetica, sans-serif"; font-size: 11px; border-bottom: 1px solid #eee; width: 100%; height: auto; margin: 5px 0 0 0; padding: 3px 0px 5px 0px; overflow: hidden}	
 .imageTiny { width: 120px; margin: 0 5px 0 0; border-radius: 5px; text-align:center;}
 .imageTinyPlaceholder { width: 200px; height: 100px; border: 1px solid #eee; background-color: #eee; margin: 0 5px 0 0; border-radius: 5px;}
 .imageTinyPlaceholder img {width:100%;height:auto;}
