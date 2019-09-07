@@ -41,9 +41,6 @@
 	
 	$va_multiple_selection_facet_list = [];
 
-	$vs_browse_key 		= $this->getVar('key');					// cache key for current browse
-	$vs_current_view	= $this->getVar('view');
-	
 	#if(is_array($va_facets) && sizeof($va_facets)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
@@ -59,9 +56,8 @@
 					$va_multiple_selection_facet_list[$vs_facet_name] = caGetOption('multiple', $va_facet_info, false, ['castTo' => 'boolean']);
 			
 					if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-
-						print "<h5 type='button' onClick='jQuery(\"#facetGroup{$vs_facet_name}\").slideToggle(); return false;'>".$va_facet_info['label_singular']."</H5><div id='facetGroup{$vs_facet_name}' style='display:none;'>"; 
-						print "<div class='container facetContainer' id='{$vs_facet_name}_facet_container'><div class='row hierarchicalList'>"; 
+						print "<h5 data-toggle='dropdown'>".$va_facet_info['label_singular']."</H5><div id='facetGroup{$vs_facet_name}'>"; 
+						print "<div class='container'><div class='row hierarchicalList'>"; 
 ?>
 						
 							<script type="text/javascript">
@@ -71,74 +67,12 @@
 							</script>
 							<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 <?php
-							if ($va_multiple_selection_facet_list[$vs_facet_name]) {
-?>
-								<a href="#" id="<?php print $vs_facet_name; ?>_facet_apply" data-facet="<?php print $vs_facet_name; ?>" class="facetApply">Apply</a>
-<?php
-							}
 						print "</div><!-- end row --></div><!-- end container --></div><!-- end facetGroup -->";
 					} else {				
 						if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 						print "<h5 type='button' onClick='jQuery(\"#facetGroup{$vs_facet_name}\").slideToggle(); return false;'>".$va_facet_info['label_singular']."</H5><div id='facetGroup{$vs_facet_name}' style='display:none;'>"; 
 						print "<div class='container facetContainer' id='{$vs_facet_name}_facet_container'><div class='row'>";
 						switch($va_facet_info["group_mode"]){
-							case "slider":
-								if(is_array($va_facet_info['content']) && sizeof($va_facet_info['content'])){
-									$va_first_last = [];
-									$va_first_value_info = array_shift($va_facet_info['content']);
-									$va_first_last[] = (float)$va_first_value_info['start'];
-									if($va_last_value_info = array_pop($va_facet_info['content'])) {
-									    $va_first_last[] = (float)$va_last_value_info['end'];
-									} else {
-									    $va_first_last[] = (float)$va_first_value_info['end'];
-									}
-									sort($va_first_last);
-									list($vn_min, $vn_max) = $va_first_last;
-?>
-									<script type="text/javascript">
-										jQuery(document).ready(function() {
-											$( "#slider<?php print $vs_facet_name; ?>" ).slider({
-											   range:true,
-											   min: <?php print $vn_min; ?>,
-											   max: <?php print $vn_max; ?>,
-											   values: [ <?php print $vn_min; ?>, <?php print $vn_max; ?> ],
-											   slide: function( event, ui ) {
-											        var s = ui.values[ 0 ], e = ui.values[ 1 ];
-											        if (s < 0) {  s = Math.abs(s) + " BCE"; }
-											        if (e < 0) {  e = Math.abs(e) + " BCE"; }
-											        
-											      Math.abs(ui.values[ 0 ])
-												  $("#range<?php print $vs_facet_name; ?>").val(s + " - " + e);
-												  $("#facetSliderApply<?php print $vs_facet_name; ?>").show();
-											   }
-											});
-											
-											var s = $( "#slider<?php print $vs_facet_name; ?>" ).slider("values", 0), e = $( "#slider<?php print $vs_facet_name; ?>" ).slider("values", 1);
-											if (s < 0) { s = Math.abs(s) + " BCE"; }
-											if (e < 0) { e = Math.abs(e) + " BCE"; }
-											$( "#range<?php print $vs_facet_name; ?>" ).val(s + " - " + e);
-										
-											$("#facetSearchWithin<?php print $vs_facet_name; ?>").submit(function( event ) {
-												$("#range<?php print $vs_facet_name; ?>").val($("#range<?php print $vs_facet_name; ?>").val());
-											});
-										});
-									</script>
-									<div class="bFacetSliderWrapper">
-										<form role="search" id="facetSearchWithin<?php print $vs_facet_name; ?>" action="<?php print caNavUrl($this->request, '*', 'Browse', '*'); ?>">
-											<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
-											<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
-											<input type="hidden" name="facet" value="<?php print $vs_facet_name; ?>">
-											<input type="text" name="id" id="range<?php print $vs_facet_name; ?>" class="facetSliderRange">
-										
-											<div id="slider<?php print $vs_facet_name; ?>"></div>
-											<button type="submit" id="facetSliderApply<?php print $vs_facet_name; ?>" class="facetApplySlider">Apply</button>
-										</form>
-										
-										
-									</div>
-<?php
-								}
-							break;
 							case "alphabetical":
 							case "list":
 							default:
@@ -190,22 +124,6 @@
 		print "</div><!-- end bRefine -->\n";
 ?>
 	<script type="text/javascript">
-		function selectFacetMultiple(e){
-			if (e.attr('facet_item_selected') == '1') {
-				e.attr('facet_item_selected', '');
-			} else {
-				e.attr('facet_item_selected', '1');
-			}
-		
-			if (jQuery("div.facetItem[facet_item_selected='1']").length > 0) {
-				jQuery("#" + e.data('facet') + "_facet_apply").show();
-			} else {
-				jQuery("#" + e.data('facet') + "_facet_apply").hide();
-			}
-		
-			return false;
-	
-		}
 		jQuery(document).ready(function() {
             if(jQuery('#browseResultsContainer').height() > jQuery(window).height()){
 				var offset = jQuery('#bRefine').height(jQuery(window).height() - 30).offset();   // 0px top + (2 * 15px padding) = 30px
