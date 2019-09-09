@@ -1,4 +1,5 @@
 <?php
+    require_once(__CA_MODELS_DIR__."/ca_objects.php");
 	$va_errors = $this->getVar("errors");
 	$vn_num1 = rand(1,10);
 	$vn_num2 = rand(1,10);
@@ -14,7 +15,7 @@
 	<a href='#' id='close' class='close'><i class='fa fa-close'></i></a>
 	<H1><?php print _t("Ask a Curator"); ?></H1>
 <?php
-	if(sizeof($va_errors["display_errors"])){
+	if(is_array($va_errors) && is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
 ?>

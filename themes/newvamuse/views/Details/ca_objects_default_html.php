@@ -62,7 +62,7 @@
 	
 	if(sizeof($va_categories)){
 		$vn_category = trim($va_categories[0]);
-		require_once(__CA_LIB_DIR__.'/ca/Browse/ObjectBrowse.php');
+		require_once(__CA_LIB_DIR__.'/Browse/ObjectBrowse.php');
 		$o_browse = new ObjectBrowse();
 		$o_browse->removeAllCriteria();
 		$o_browse->addCriteria("category_facet", $vn_category);
