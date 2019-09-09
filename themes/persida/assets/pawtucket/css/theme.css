@@ -57,6 +57,12 @@ a, a:hover, a:active, a:focus {
 .navbar-form {
 	margin-bottom:6px;
 }
+.navbar-toggle-user {
+    padding: 2px 10px 3px 10px;
+}
+#headerSearchButton{
+	padding:3px 6px 0px 0px;
+}
 .pageName {
 	text-transform:uppercase;
 	font-weight:bold;
@@ -83,11 +89,15 @@ a, a:hover, a:active, a:focus {
 }
 
 .multisearch .objects.blockResults {
-	height:250px;
+	height:290px;
 }
 .objects .multisearchResult {
-	height:220px;
+	height:255px;
+	width:240px;
 	line-height:1.4em;
+}
+.multisearch .objects .scrollButtonPrevious {
+    height: 260px;
 }
 .objects .multisearchResult small {
 	color:#ababab;
@@ -148,9 +158,39 @@ a, a:hover, a:active, a:focus {
 .advancedSearchField .formLabel {
 	font-size:13px;
 }
+.listImage {
+	max-width:100px;
+	float:left;
+	padding-right:10px;
+}
+.listImage img{
+	width:100%;
+	height:auto;
+}
+.listImage .bResultItemImgPlaceholder {
+	border:0px;
+	width:90px;
+	padding-top:20px;
+	padding-bottom:20px;
+}
+.listImage .bResultItemImgPlaceholder .fa-2x, .listImage .bResultItemImgPlaceholder .fa-2x:hover {
+	font-size:24px;
+}
+.bResultListItemContent {
+	height:105px;
+}
+.bResultListItem:hover {
+	height:150px;
+}
+.bResultListItemCol {
+	height:152px;
+}
 @media (min-width: 768px) {
 	.objects .multisearchResult div, .bResultItemText div {
 		margin-bottom: 2px;
+		line-height:1.2em;
+	}
+	.objects .multisearchResult div a{
 		line-height:1.2em;
 	}
 }
@@ -182,10 +222,24 @@ a, a:hover, a:active, a:focus {
 	padding:0px;
 	border:0px;
 }
+.detail .navLeftRight{
+	line-height:1.2em;
+}
 
 /* Lightbox */
 
 .lightbox .caption div, .lightbox .caption small {
 	margin-bottom:4px;
 	display:block;
+}
+
+.bResultItemCol {
+    height: 340px;
+}
+.bResultItemContent {
+	height:290px;
+}
+
+.form-control:focus {
+    border-color: #000;
 }

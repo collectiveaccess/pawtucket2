@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2018 Whirl-i-Gig
+ * Copyright 2008-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -81,7 +81,7 @@ BaseModel::$s_ca_models_definitions['ca_users'] = array(
 				'IS_NULL' => false, 
 				'DEFAULT' => '',
 				'LABEL' => _t('Password'), 'DESCRIPTION' => _t('The login password for this user. Passwords must be at least 4 characters and should ideally contain a combination of letters and numbers. Passwords are case-sensitive.'),
-				'BOUNDS_LENGTH' => array(4,100)
+				'BOUNDS_LENGTH' => array(1,100)
 		),
 		'fname' => array(
 				'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_FIELD, 
@@ -292,15 +292,15 @@ class ca_users extends BaseModel {
 	/**
 	 * User and group role caches
 	 */
-	static $s_user_role_cache = array();
-	static $s_user_group_cache = array();
-	static $s_group_role_cache = array();
-	static $s_user_type_access_cache = array();
-	static $s_user_source_access_cache = array();
-	static $s_user_bundle_access_cache = array();
-	static $s_user_action_access_cache = array();
-	static $s_user_type_with_access_cache = array();
-	static $s_user_source_with_access_cache = array();
+	static $s_user_role_cache = [];
+	static $s_user_group_cache = [];
+	static $s_group_role_cache = [];
+	static $s_user_type_access_cache = [];
+	static $s_user_source_access_cache = [];
+	static $s_user_bundle_access_cache = [];
+	static $s_user_action_access_cache = [];
+	static $s_user_type_with_access_cache = [];
+	static $s_user_source_with_access_cache = [];
 
 	/**
 	 * List of tables that can have bundle- or type-level access control
@@ -374,6 +374,13 @@ class ca_users extends BaseModel {
 			$this->postError(922, _t("Invalid email address"), 'ca_users->insert()');
 			return false;
 		}
+		
+		// check password policy	
+		if (!self::applyPasswordPolicy($this->get('password'))) {
+			$this->postError(922, _t("Password must %1", self::getPasswordPolicyAsText()), 'ca_users->insert()');
+			return false;
+		}
+		
 
 		# Confirmation key is an md5 hash than can be used as a confirmation token. The idea
 		# is that you create a new user record with the 'active' field set to false. You then
@@ -414,6 +421,104 @@ class ca_users extends BaseModel {
 	}
 	# ----------------------------------------
 	/**
+	 *
+	 */
+	static public function applyPasswordPolicy($password) {
+		$auth_config = Configuration::load(__CA_APP_DIR__."/conf/authentication.conf");
+		if(strtolower($auth_config->get('auth_adapter')) !== 'causers') { return true; }	// password policies only apply to integral auth system
+		
+		if (is_array($policies = $auth_config->get('password_policies')) && sizeof($policies)) {
+			// check password policy
+			$builder = new \PasswordPolicy\PolicyBuilder(new \PasswordPolicy\Policy);
+			foreach($policies as $p) {
+				if (is_array($rules = caGetOption('rules', $p, null))) {
+					$builder->minPassingRules(caGetOption('min_passing_rules', $p, 1), function($b) use ($rules) {
+						foreach($rules as $k => $v) {
+							$k = caSnakeToCamel($k);
+							if (in_array($k, ['minLength', 'maxLegth', 'upperCase', 'lowerCase', 'digits', 'specialCharacters', 'doesNotContain'])) {
+								$b->{$k}($v);
+							}
+						}
+					});
+				} else {
+					foreach($p as $k => $v) {
+						$k = caSnakeToCamel($k);
+						if (in_array($k, ['minLength', 'maxLegth', 'upperCase', 'lowerCase', 'digits', 'specialCharacters', 'doesNotContain'])) {
+							$builder->{$k}($v);
+						}
+					}
+				}
+			}
+			
+				
+			$validator = new \PasswordPolicy\Validator($builder->getPolicy());
+			if(!$validator->attempt($password)) {
+				return false;
+			}
+		}
+		return true;
+	}
+	# ----------------------------------------
+	/**
+	 *
+	 */
+	static public function getPasswordPolicyAsText() {
+		$auth_config = Configuration::load(__CA_APP_DIR__."/conf/authentication.conf");
+		if(strtolower($auth_config->get('auth_adapter')) !== 'causers') { return ''; }	// password policies only apply to integral auth system
+		
+		if (is_array($policies = $auth_config->get('password_policies')) && sizeof($policies)) {
+			$criteria = [];
+			foreach($policies as $p) {
+				if (is_array($rules = caGetOption('rules', $p, null))) {
+					foreach($rules as $k => $v) {
+						$group[] = self::_getPasswordPolicyRuleAsText($k, $v);
+					}
+					$criteria[] = _t('conform to at least %1 of the following: %2', caGetOption('min_passing_rules', $p, 1), join("; ", $group));
+				} else {
+					$group = [];
+					foreach($p as $k => $v) {
+						$criteria[] = self::_getPasswordPolicyRuleAsText($k, $v);
+					}
+				}
+			}
+	
+			return caMakeCommaListWithConjunction(array_filter($criteria, function($v) { return strlen($v); }));
+		}
+		return '';
+	}
+	# ----------------------------------------
+	/**
+	 *
+	 */
+	static private function _getPasswordPolicyRuleAsText($rule, $value) {
+		$v = (int)$value;
+		switch($rule) {
+			case 'min_length':
+				return ($v == 1) ? _t('be at least %1 character long', $v) : _t('be at least %1 characters long', $v);
+				break;
+			case 'max_length':
+				return ($v == 1) ? _t('be not longer than %1 character', $v) : _t('be not longer than %1 characters', $v);
+				break;
+			case 'upper_case':
+				return ($v == 1) ? _t('have at least %1 upper-case character', $v) : _t('have at least %1 upper-case character', $v);
+				break;
+			case 'lower_case':
+				return ($v == 1) ? _t('have at least %1 lower-case character', $v) : _t('have at least %1 lower-case characters', $v);
+				break;
+			case 'digits':
+				return ($v == 1) ? _t('have at least %1 digit', $v) : _t('have at least %1 digits', $v);
+				break;
+			case 'special_characters':
+				return ($v == 1) ? _t('have at least %1 non-alphanumeric character', $v) : _t('have at least %1 non-alphanumeric characters', $v);
+				break;
+			case 'dont_not_contain':
+				return _t('not contain any of the following: %1', is_array($value) ? join(", ", $value) : $value);
+				break;
+		}
+		return null;
+	}
+	# ----------------------------------------
+	/**
 	 * Saves changes to user record. You must make sure all required user fields are set before calling this method. If errors occur you can use the standard Table class error handling methods to figure out what went wrong.
 	 *
 	 * Required fields are user_name, password, fname and lname.
@@ -432,8 +537,13 @@ class ca_users extends BaseModel {
 				return false;
 			}
 		}
-
+	
 		if($this->changed('password')) {
+			if (!self::applyPasswordPolicy($this->get('password'))) {
+				$this->postError(922, _t("Password must %1", self::getPasswordPolicyAsText()), 'ca_users->update()');
+				return false;
+			}
+			
 			try {
 				$vs_backend_password = AuthenticationManager::updatePassword($this->get('user_name'), $this->get('password'));
 				$this->set('password', $vs_backend_password);
@@ -2877,9 +2987,11 @@ class ca_users extends BaseModel {
 			$vs_username = preg_replace("!".preg_quote($vs_rewrite_username_with_regex, "!")."!", $vs_rewrite_username_to_regex, $vs_username);
 		}
 		
-		 if (!$vs_username && AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__)) { 
-            $va_info = AuthenticationManager::getUserInfo($vs_username, $ps_password, ['minimal' => true]); 
-            $vs_username = $va_info['user_name'];
+		if (!$vs_username && AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__)) { 
+		    if (AuthenticationManager::authenticate($vs_username, $ps_password, $pa_options)) {
+                $va_info = AuthenticationManager::getUserInfo($vs_username, $ps_password, ['minimal' => true]); 
+                $vs_username = $va_info['user_name'];
+            }
         }
 
 		// if user doesn't exist, try creating it through the authentication backend, if the backend supports it
@@ -2892,7 +3004,7 @@ class ca_users extends BaseModel {
 						'CODE' => 'SYS', 'SOURCE' => 'ca_users/authenticate',
 						'MESSAGE' => _t('There was an error while trying to fetch information for a new user from the current authentication backend. The message was %1 : %2', get_class($e), $e->getMessage())
 					));
-					return false;
+					throw($e);
 				}
 
 				if(!is_array($va_values) || sizeof($va_values) < 1) { return false; }
@@ -2901,6 +3013,12 @@ class ca_users extends BaseModel {
 				foreach($va_values as $vs_k => $vs_v) {
 					if(in_array($vs_k, array('roles', 'groups'))) { continue; }
 					$this->set($vs_k, $vs_v);
+				}
+				
+				if (defined("__CA_APP_TYPE__") && (__CA_APP_TYPE__ === "PROVIDENCE")) {
+				    $this->set('userclass', 0);
+				} else {
+				    $this->set('userclass', 1);
 				}
 
 				$vn_mode = $this->getMode();
@@ -2913,7 +3031,7 @@ class ca_users extends BaseModel {
 						'CODE' => 'SYS', 'SOURCE' => 'ca_users/authenticate',
 						'MESSAGE' => _t('User could not be created after getting info from authentication adapter. API message was: %1', join(" ", $this->getErrors()))
 					));
-					return false;
+					throw($e);
 				}
 
 				if(is_array($va_values['groups']) && sizeof($va_values['groups'])>0) {

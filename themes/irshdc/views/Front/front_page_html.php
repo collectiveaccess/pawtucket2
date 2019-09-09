@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 	require_once(__CA_LIB_DIR__.'/ca/Search/EntitySearch.php');
+ 	require_once(__CA_LIB_DIR__.'/Search/EntitySearch.php');
  	$this->config = caGetFrontConfig();
  	AssetLoadManager::register('timeline');
  	$va_access_values = $this->getVar("access_values");
@@ -108,7 +108,8 @@
 						width:      '100%',
 						height:     '100%',
 						source:     '<?php print caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'timeline', 'set_id' => $vn_timeline_set_id)); ?>',
-						embed_id:   'timeline-embed'
+						embed_id:   'timeline-embed',
+						initial_zoom: '5'
 					});
 				});
 			</script>

@@ -56,7 +56,7 @@
 					}
 				}
 				$vs_buf .= "</div>";
-				$va_links[$va_children["name"]] = $vs_buf;
+				$va_links[mb_strtolower($va_children["name"])] = $vs_buf;
 			}
 		}
 	}

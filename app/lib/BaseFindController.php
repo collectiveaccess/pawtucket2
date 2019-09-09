@@ -83,18 +83,18 @@
  			if ($this->ops_tablename) {
 				$this->opo_result_context = new ResultContext($po_request, $this->ops_tablename, $this->ops_find_type);
 
-				if ($this->opn_type_restriction_id = $this->opo_result_context->getTypeRestriction($pb_type_restriction_has_changed)) {
-					
-					if ($pb_type_restriction_has_changed) {
-						Session::setVar($this->ops_tablename.'_type_id', $this->opn_type_restriction_id);
-					} elseif($vn_type_id = Session::getVar($this->ops_tablename.'_type_id')) {
-						$this->opn_type_restriction_id = $vn_type_id;
-					}
-					
-					$this->opb_type_restriction_has_changed =  $pb_type_restriction_has_changed;	// get change status
-					
-				}
-							
+                if($this->request->config->get($this->ops_tablename.'_breakout_find_by_type_in_submenu') || $this->request->config->get($this->ops_tablename.'_breakout_find_by_type_in_menu')) {                 
+                    if ($this->opn_type_restriction_id = $this->opo_result_context->getTypeRestriction($pb_type_restriction_has_changed)) {
+                    
+                        if ($pb_type_restriction_has_changed) {
+                            Session::setVar($this->ops_tablename.'_type_id', $this->opn_type_restriction_id);
+                        } elseif($vn_type_id = Session::getVar($this->ops_tablename.'_type_id')) {
+                            $this->opn_type_restriction_id = $vn_type_id;
+                        }
+                    
+                        $this->opb_type_restriction_has_changed =  $pb_type_restriction_has_changed;	// get change status
+                    }
+				}	
                 if ($vn_display_id = $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id)) {
                     $this->opa_sorts = caGetAvailableSortFields($this->ops_tablename, $this->opn_type_restriction_id, array('request' => $po_request, 'restrictToDisplay' => $this->request->config->get('restrict_find_result_sort_options_to_current_display') ? $vn_display_id : null));
 			    } else {
@@ -228,33 +228,25 @@
  			$this->view->setVar('display_list', $va_display_list);
  			
  			# --- print forms used for printing search results as labels - in tools show hide under page bar
- 			$this->view->setVar('label_formats', caGetAvailablePrintTemplates('labels', array('table' => $this->ops_tablename, 'type' => 'label')));
+ 			$this->view->setVar('label_formats', caGetAvailablePrintTemplates('labels', array('table' => $this->ops_tablename, 'type' => 'label', 'restrictToTypes' => $this->opn_type_restriction_id)));
  			
  			# --- export options used to export search results - in tools show hide under page bar
  			$vn_table_num = Datamodel::getTableNum($this->ops_tablename);
 
 			//default export formats, not configurable
-			$va_export_options = array(
-				array(
-					'name' => _t('Tab delimited'),
-					'code' => '_tab'
-				),
-				array(
-					'name' => _t('Comma delimited (CSV)'),
-					'code' => '_csv'
-				),
-				array(
-					'name' => _t('Spreadsheet with media icons (XLSX)'),
-					'code' => '_xlsx'
-				),
-                array(
-                    'name' => _t('Word processing (DOCX)'),
-                    'code' => '_docx'
-                )				
-			);
+			$va_export_options = [];
+			
+			$include_export_options = $this->request->config->getList($this->ops_tablename.'_standard_results_export_formats');
+			foreach(
+			    ['tab' => _t('Tab delimited'), 'csv' => _t('Comma delimited (CSV)'), 
+			    'xlsx' => _t('Spreadsheet (XLSX)'), 'docx' => _t('Word processing (DOCX)')] as $ext => $name) {
+			    if (!is_array($include_export_options) || in_array($ext, $include_export_options)) {
+			        $va_export_options[] = ['name' => $name, 'code' => "_{$ext}"];
+			    }
+			}
 			
 			// merge default formats with drop-in print templates
-			$va_export_options = array_merge($va_export_options, caGetAvailablePrintTemplates('results', array('showOnlyIn' => ['search_browse_'.$this->opo_result_context->getCurrentView()], 'table' => $this->ops_tablename)));
+			$va_export_options = array_merge($va_export_options, caGetAvailablePrintTemplates('results', array('showOnlyIn' => ['search_browse_'.$this->opo_result_context->getCurrentView()], 'table' => $this->ops_tablename, 'restrictToTypes' => $this->opn_type_restriction_id)));
 			
 			$this->view->setVar('export_formats', $va_export_options);
 			$this->view->setVar('current_export_format', $this->opo_result_context->getParameter('last_export_type'));
@@ -422,9 +414,8 @@
 						$vn_left = $vn_left_margin;
 							
 						switch($vs_renderer) {
-							case 'PhantomJS':
 							case 'wkhtmltopdf':
-								// WebKit based renderers (PhantomJS, wkhtmltopdf) want things numbered relative to the top of the document (Eg. the upper left hand corner of the first page is 0,0, the second page is 0,792, Etc.)
+								// WebKit based renderers (wkhtmltopdf) want things numbered relative to the top of the document (Eg. the upper left hand corner of the first page is 0,0, the second page is 0,792, Etc.)
 								$vn_page_count++;
 								$vn_top = ($vn_page_count * $vn_page_height) + $vn_top_margin;
 								break;
@@ -496,6 +487,15 @@
 						$vs_file_extension = 'txt';
 						$vs_mimetype = "text/plain";
 					default:
+					    if(substr($ps_output_type, 0, 5) === '_docx') {
+					        $va_template_info = caGetPrintTemplateDetails('results', substr($ps_output_type, 6));
+                            if (!is_array($va_template_info)) {
+                                $this->postError(3110, _t("Could not find view for PDF"),"BaseFindController->PrintSummary()");
+                                return;
+                            }
+                            $this->render($va_template_info['path']);
+                            return;	
+					    }
 						break;
 				}
 

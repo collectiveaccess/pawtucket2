@@ -1253,6 +1253,9 @@ a.browseRemoveFacet img {
 #lbTimelineContainer{
 	height:500px;
 }
+#confirm-delete .glyphicon{
+	color:#FFF !important;
+}
 /* --------------------------------- */
 /* classroom */
 /* --------------------------------- */
@@ -1685,7 +1688,8 @@ a.browseRemoveFacet img {
 	text-decoration:none;
 }
 .jcarousel-wrapper, .jcarousel {
-	width:600px !important;
+	/*width:600px !important;*/
+	width:100% !important;
 }
 #detailComments{
 	display:none;
@@ -2604,6 +2608,9 @@ a.browseRemoveFacet .glyphicon {
 	text-transform:uppercase;
 	font-size:12px;
 }
+.gallery #gallerySetInfo a.btn {
+	color: #FFF;
+}
 .gallery .galleryItem{
 	padding:10px;
 	-webkit-box-shadow:0 1px 3px rgba(0, 0, 0, 0.3);
@@ -3343,4 +3350,13 @@ input[type='text'].ui-autocomplete-loading {
 
 .video-js{
 	min-height:300px;
+}
+.video-js{
+	text-align:center;
+}
+.detail .repViewerCont img.vjs-poster {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background-color: #000;
 }

@@ -80,6 +80,9 @@
 				print "<div class='authorityResultLong'>";
 				# --- originating venue, exhibition title, date (display)
 				$vs_originating_venue 	= $qr_results->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='originator' delimiter=', '>^ca_entities.preferred_labels</unit>", array("checkAccess" => $va_access_values));
+				if($vs_venue_location = $qr_results->get("ca_occurrences.venue_location", array("delimiter" => ", "))){
+					$vs_originating_venue .= ", ".$vs_venue_location;
+				}
 				$vs_title = $qr_results->get("ca_occurrences.preferred_labels");
 				# --- add closing & opening <i> tags to un-italicize andy brackets
 				$vs_title = italicizeTitle($vs_title);

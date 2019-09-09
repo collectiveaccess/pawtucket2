@@ -393,15 +393,15 @@
  			
  			// Using the back-button can cause requests for facets that are no longer available
  			// In these cases we reset the browse.
- 			if (!($va_facet = $this->opo_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values)))) {
- 				 $this->opo_browse->removeAllCriteria();
- 				 $this->opo_browse->execute();
- 				 $va_facet = $this->opo_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values));
- 				 $va_facet_info = $this->opo_browse->getInfoForFacet($ps_facet_name);
- 				 
-				$this->opo_result_context->setSearchExpression($this->opo_browse->getBrowseID());
-				$this->opo_result_context->saveContext();
- 			}
+ 			// if (!($va_facet = $this->opo_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values)))) {
+//  				 $this->opo_browse->removeAllCriteria();
+//  				 $this->opo_browse->execute();
+//  				 $va_facet = $this->opo_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values));
+//  				 $va_facet_info = $this->opo_browse->getInfoForFacet($ps_facet_name);
+//  				 
+// 				$this->opo_result_context->setSearchExpression($this->opo_browse->getBrowseID());
+// 				$this->opo_result_context->saveContext();
+//  			}
  			
  			$this->view->setVar('browse_last_id', (int)$vm_id ? (int)$vm_id : (int)$this->opo_result_context->getParameter($ps_facet_name.'_browse_last_id'));
  			$this->view->setVar('facet', $va_facet);
@@ -460,10 +460,29 @@
  			if(!is_array($va_facet_info = $this->opo_browse->getInfoForFacet($ps_facet_name))) { return null; }
  			
  			$va_facet = $this->opo_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values));
+
+ 			if (in_array($va_facet_info['type'], ['current_value', 'location']) ){
+ 				//
+ 				// Hierarchical display of current location facets is only available when pure storage location tracking (ie. only 
+ 				// locations, not loans, occurrences etc.) is configured. The keys of the location facet array are in the 
+ 				// form <table num>:<type id>:<row id> but the hierarchy level code below expects keys to be pure row_ids. Since 
+ 				// can assume the last value in the colon-delimited key is the storage location_id we rewrite the facet keys here 
+ 				// to use these values.
+ 				//
+				$va_facet_proc = [];
+				foreach($va_facet as $k => $v) {
+					$t = explode(':', $k);
+					$id = array_pop($t);
+					$va_facet_proc[$id] = $v;
+				}
+ 				$va_facet = $va_facet_proc;
+ 			}
+ 			
  			$t_item = Datamodel::getInstanceByTableName($va_facet_info['table']);
  			
- 			// Get list of level parents to generate lists for (we 
+ 			// Get list of level parents to generate lists for 
 			$pa_ids = explode(";", $ps_ids = $this->request->getParameter('id', pString));
+			
 			if (!sizeof($pa_ids)) { $pa_ids = array(null); }
  			
 			$va_level_data = array();
@@ -721,7 +740,7 @@
 						if (!is_array($va_ancestors)) { $va_ancestors = array(); }
 						$va_ancestors = array_reverse($va_ancestors);
 					}
-					if ($vn_hierarchies_in_use <= 1) {
+					if (($vn_hierarchies_in_use <= 1) && ($t_item->getProperty('HIERARCHY_TYPE') !== __CA_HIER_TYPE_ADHOC_MONO__)) {
 						array_shift($va_ancestors);
 					}
 					break;

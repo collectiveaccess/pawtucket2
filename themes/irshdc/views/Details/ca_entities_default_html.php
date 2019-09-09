@@ -26,10 +26,15 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+$vs_mode = $this->request->getParameter("mode", pString);
+if($vs_mode == "map"){
+	include("map_large_html.php");
+}else{
+	$va_options = $this->getVar("config_options");
 	$t_item = 				$this->getVar("item");
 	$va_comments =			$this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+	$va_tags = 				$this->getVar("tags_array");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	$vn_id =				$t_item->get('ca_entities.entity_id');
 	
@@ -162,9 +167,7 @@
 						</div>
 <?php				
 					}
-					if($vs_map = $this->getVar("map")){
-						print "<div class='unit'>".$vs_map."</div>";
-					}
+					include("map_html.php");
 ?>
 				</div>
 			</div>
@@ -275,3 +278,6 @@
 		});
 	});
 </script>
+<?php
+}
+?>

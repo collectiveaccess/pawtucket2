@@ -33,9 +33,10 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
-	$vs_type_id = 			$t_object->get('ca_objects.type_id');
+	$vn_type_id = 			$t_object->get('ca_objects.type_id');
 	$t_list = new ca_lists();
-	$vs_oh_id = $t_list->getItemIDFromList("object_types", "oral_history");
+	$vn_oh_id = $t_list->getItemIDFromList("object_types", "oral_history");
+	$vn_book_id = $t_list->getItemIDFromList("object_types", "book");
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -80,14 +81,24 @@
 				if ($vs_language = $t_object->get('ca_objects.language', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Language</h6><div class='data'>".$vs_language."</div></div>";
 				}					
-				if ($va_collection = $t_object->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l> (^relationship_typename)</unit></unit>')) {
+				if ($va_collection = $t_object->getWithTemplate('<ifcount code="ca_collections" min="1"><unit delimiter="<br/>"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l> (^relationship_typename)</unit></unit></ifcount>')) {
 					print "<div class='unit'><h6>Object Collection</h6><div class='data'>".$va_collection."</div></div>";
 				}
-				if ($vs_date = $t_object->get('ca_objects.date_created', array('delimiter' => '; '))) {
-					if ($vs_type_id == $vs_oh_id) {
-						print "<div class='unit'><h6>Date of Interview</h6><div class='data'>".$vs_date."</div></div>";
-					} else {
-						print "<div class='unit'><h6>Date Created</h6><div class='data'>".$vs_date."</div></div>";
+				if ($va_date = $t_object->get('ca_objects.date_created', array('returnAsArray' => true))) {
+					# --- clear out empty values
+					$va_date_clean = array();
+					foreach($va_date as $vs_date){
+						if(trim($vs_date)){
+							$va_date_clean[] = trim($vs_date); 
+						}
+					}
+					$vs_date = join(", ", $va_date_clean);
+					if($vs_date){
+						if ($vn_type_id == $vn_oh_id) {
+							print "<div class='unit'><h6>Date of Interview</h6><div class='data'>".$vs_date."</div></div>";
+						} else {
+							print "<div class='unit'><h6>Date Created</h6><div class='data'>".$vs_date."</div></div>";
+						}
 					}
 				}
 				if ($vs_alt_name = $t_object->get('ca_objects.alternate_object_name', array('delimiter' => '<br/>'))) {
@@ -145,30 +156,47 @@
 				if ($vs_material = $t_object->get('ca_objects.material', array('delimiter' => '; '))) {
 					print "<div class='unit'><h6>Material</h6><div class='data'>".$vs_material."</div></div>";
 				}
-				if ($va_entities = $t_object->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</l> (^relationship_typename)</unit></unit>')) {
+				if ($va_entities = $t_object->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_entities" excludeRelationshipTypes="interviewer,interviewee,author"><l>^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</l> (^relationship_typename)</unit></unit>')) {
 					print "<div class='unit'><h6>Object Entities</h6><div class='data'>".$va_entities."</div></div>";
 				}
-				if ($va_interviewer = $t_object->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="interviewer"><l>^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</l></unit>')) {
+				if ($va_interviewer = $t_object->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_entities" restrictToRelationshipTypes="interviewer"><l>^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</l></unit>')) {
 					print "<div class='unit'><h6>Interviewer</h6><div class='data'>".$va_interviewer."</div></div>";
 				}
-				if ($va_interviewee = $t_object->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="interviewee"><l>^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</l></unit>')) {
+				if ($va_interviewee = $t_object->getWithTemplate('<unit delimiter="<br/>" relativeTo="ca_entities" restrictToRelationshipTypes="interviewee"><l>^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</l></unit>')) {
 					print "<div class='unit'><h6>Interviewee</h6><div class='data'>".$va_interviewee."</div></div>";
 				}								
-				if ($va_collection = $t_object->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l> (^relationship_typename)</unit></unit>')) {
-					print "<div class='unit'><h6>Related Collections</h6><div class='data'>".$va_collection."</div></div>";
-				}	
 				if ($va_object = $t_object->getWithTemplate('<unit delimiter="<br/>"><unit relativeTo="ca_objects.related"><l>^ca_objects.preferred_labels, ^ca_objects.idno</l></unit></unit>')) {
 					print "<div class='unit'><h6>Related Items</h6><div class='data'>".$va_object."</div></div>";
 				}
-				if ($vs_subjects = $t_object->get('ca_list_items.preferred_labels', array('delimiter' => '; '))) {
-					print "<div class='unit'><h6>Access Points</h6><div class='data'>".$vs_subjects."</div></div>";
+				# --- access points
+				$va_access_points = array();
+				$va_subjects = $t_object->get('ca_list_items.preferred_labels', array('returnAsArray' => true));
+				$va_getty = $t_object->get('ca_objects.aat', array('returnAsArray' => true));
+				$va_lcsh = $t_object->get('ca_objects.lcsh_terms', array('returnAsArray' => true));
+				$va_access_points = array_merge($va_subjects, $va_getty, $va_lcsh);
+				if (sizeof($va_access_points)) {
+					$va_access_points_sorted = array();
+					foreach($va_access_points as $vs_access_point){
+						$vs_access_point = trim(preg_replace("/\[[^\]]*\]/", "", $vs_access_point));
+						if($vs_access_point){
+							$va_access_points_sorted[$vs_access_point] = caNavLink($this->request, $vs_access_point, "", "", "MultiSearch",  "Index", array('search' => $vs_access_point));
+						}
+					}
+					ksort($va_access_points_sorted, SORT_NATURAL | SORT_FLAG_CASE);
+					print "<div class='unit'><h6>Access Points</h6><div class='data'>";
+					print join("<br/>", $va_access_points_sorted);
+					print "</div></div>";
 				}
-				if ($vs_lcsh = $t_object->get('ca_objects.lcsh_terms', array('delimiter' => '; '))) {
-					print "<div class='unit'><h6>Library of Congress Subject Headings</h6><div class='data'>".$vs_lcsh."</div></div>";
-				}
-				if ($vs_getty = $t_object->get('ca_objects.aat', array('delimiter' => '; '))) {
-					print "<div class='unit'><h6>Getty AAT</h6><div class='data'>".$vs_getty."</div></div>";
-				}												
+				
+				#if ($vs_subjects = $t_object->get('ca_list_items.preferred_labels', array('delimiter' => '; '))) {
+				#	print "<div class='unit'><h6>Access Points</h6><div class='data'>".$vs_subjects."</div></div>";
+				#}
+				#if ($vs_lcsh = $t_object->get('ca_objects.lcsh_terms', array('delimiter' => '; '))) {
+				#	print "<div class='unit'><h6>Library of Congress Subject Headings</h6><div class='data'>".$vs_lcsh."</div></div>";
+				#}
+				#if ($vs_getty = $t_object->get('ca_objects.aat', array('delimiter' => '; '))) {
+				#	print "<div class='unit'><h6>Getty AAT</h6><div class='data'>".$vs_getty."</div></div>";
+				#}												
 				if ($vs_description = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
 					print "<div class='unit text'><h6>Object Description</h6><div class=''>".$vs_description."</div></div>";
 				}
@@ -176,13 +204,90 @@
 					print "<div class='unit text'><h6>Origin</h6><div class=''>".$vs_prov."</div></div>";
 				}																																																					
 ?>
+				
+				<div class='unit text'><a href="#" onclick="$('#rightsRepro').slideToggle(); return false;"><H6>Rights and Reproduction <i class="fa fa-chevron-down" aria-hidden="true"></i></H6></a>
+					<div style="display:none;" id="rightsRepro">{{{rightsrepro}}}</div>
+				</div>
+				<div class='unit'><h6>Citation</h6><div>
+<?php
+					$va_citation_parts = array();
+					if($vn_type_id == $vn_book_id){
+						#Book citation: Last Name, First Name. Title of Book. Publisher City: Publisher Name, Year Published.
+						if ($vs_author = $t_object->getWithTemplate('<unit delimiter="; " relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="author" delimiter="; ">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
+							$va_citation_parts[] = $vs_author;
+						}
+						if($vs_tmp = $t_object->get('ca_objects.title')){
+							$va_citation_parts[] = $vs_tmp;
+						}
+						$vs_tmp = "";
+						if($vs_tmp = $t_object->get('ca_objects.pubplace')){
+							$vs_tmp = $vs_tmp.": ";
+						}
+						if ($vs_publisher = $t_object->getWithTemplate('<unit delimiter="; " relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="publisher" delimiter="; ">^ca_entities.preferred_labels.displayname</unit>')) {
+							$vs_tmp .= $vs_publisher;
+						}
+						if($va_date = $t_object->get('ca_objects.date_created', array('returnAsArray' => true))){
+							# --- clear out empty values
+							$va_date_clean = array();
+							foreach($va_date as $vs_date){
+								if(trim($vs_date)){
+									$va_date_clean[] = trim($vs_date); 
+								}
+							}
+							if($vs_publisher){
+								$vs_tmp .= ", ";
+							}
+							$vs_tmp .= join($va_date_clean, ", ");
+						}
+						if($vs_tmp){
+							$va_citation_parts[] = $vs_tmp;
+						}
+						$vs_citation_part1 = join(". ", $va_citation_parts).". ";
+					}else{
+						#Artifacts/Photos
+						#Object Name, Date, Collection Title (if applicable), National Hellenic Museum, Link to object. Accessed [Today’s date].
+ 
+						#Oral Histories:
+						#Oral History interview with First name Last name, Date of interview, Collection Title (if applicable), National Hellenic Museum, Link to oral history. Accessed [Today’s date].
+ 
+						switch($vn_type_id){
+							case $vn_oh_id:
+								if ($vs_interviewee = $t_object->getWithTemplate('<unit delimiter="; " relativeTo="ca_objects_x_entities" restrictToRelationshipTypes="interviewee">^ca_entities.preferred_labels.surname, ^ca_entities.preferred_labels.forename</unit>')) {
+									$va_citation_parts[] = "Oral History interview with ".$vs_interviewee;
+								}
+							break;
+							# --------------------
+							default:
+					
+								if($vs_tmp = trim($t_object->get('ca_objects.preferred_labels'))){
+									$va_citation_parts[] = $vs_tmp;
+								}
+							break;
+							# --------------------
+						}
+						if($va_tmp = $t_object->get('ca_objects.date_created', array('returnAsArray' => true))){
+							foreach($va_tmp as $vs_date){
+								if(trim($vs_date)){
+									$va_citation_parts[] = trim($vs_date); 
+								}
+							}
+						}
+						if($vs_tmp = trim($t_object->getWithTemplate('<ifcount code="ca_collections" min="1"><unit delimiter=". "><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></unit></ifcount>'))){
+							$va_citation_parts[] = $vs_tmp;
+						}
+						$vs_citation_part1 = join(", ", $va_citation_parts).", ";
+					}
+					print $vs_citation_part1."<i>National Hellenic Museum</i>, ".$this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $vn_id).". Accessed ".date("m/d/y").".";
+?>
+				</div></div>
 				{{{map}}}
 								
 <?php	
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
+				# Comment/ Share / pdf / ask archivist tools
 						
 					print '<div id="detailTools">';
+					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About This Item", "", "", "Contact",  "form", array('table' => 'ca_objects', 'id' => $vn_id))."</div>";
+					
 					if ($vn_comments_enabled) {
 ?>				
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</a></div><!-- end detailTool -->
@@ -197,8 +302,7 @@
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}					
 
-					print '</div><!-- end detailTools -->';
-				}				
+					print '</div><!-- end detailTools -->';				
 
 ?>										
 			</div><!-- end col -->

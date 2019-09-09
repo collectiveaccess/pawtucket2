@@ -46,10 +46,26 @@
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>					
 					
-					{{{<ifcount code="ca_occurrences.related" restrictToTypes="exhibition" min="1"><H6>Related Exhibitons</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToTypes="exhibition" sort="ca_occurrences.common_date"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
-
-				
+<?php
+				if($va_exhibitions = $t_item->get("ca_occurrences.related", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("exhibition"), "sort" => "ca_occurrences.common_date"))){
+					$t_occ = new ca_occurrences();
+					print "<div class='unit'><H6>Related Exhibitons</H6>";
+					foreach($va_exhibitions as $va_exhibition){
+						$t_occ->load($va_exhibition["occurrence_id"]);
+						$vs_originating_venue 	= $t_occ->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='originator' delimiter=', '>^ca_entities.preferred_labels</unit>", array("checkAccess" => $va_access_values));
+						if($vs_venue_location = $t_occ->get("ca_occurrences.venue_location", array("delimiter" => ", "))){
+							$vs_originating_venue .= ", ".$vs_venue_location;
+						}
+						$vs_title = italicizeTitle($va_exhibition["name"]);
+						$vs_date = $t_occ->get("ca_occurrences.exhibition_dates_display", array("delimiter" => "<br/>"));
+						if(!$vs_date){
+							$vs_date = $t_occ->get("ca_occurrences.common_date");
+						}
+						print caDetailLink($this->request, (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : ""), '', 'ca_occurrences', $va_exhibition["occurrence_id"]);
+					}
+					print "</div>";
+				}
+?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
 

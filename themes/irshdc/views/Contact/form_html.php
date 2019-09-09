@@ -1,4 +1,5 @@
 <?php
+	$o_config = caGetContactConfig();
 	# --- ask an archivist, takedown
 	$ps_contactType = $this->request->getParameter("contactType", pString);
 	if(!$ps_contactType){
@@ -7,16 +8,15 @@
 	$ps_table = $this->request->getParameter("table", pString);
 	$pn_row_id = $this->request->getParameter("row_id", pInteger);
 	if($pn_row_id && $ps_table){
-		$o_dm = $this->request->getAppDatamodel();
-		$t_instance = $o_dm->getInstanceByTableNum($ps_table);
+		$t_instance = Datamodel::getInstanceByTableNum($ps_table);
 		$t_instance->load($pn_row_id);
 		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", str_replace("ca_", "", $ps_table), $pn_row_id);
 		$vs_name = $t_instance->get("preferred_labels");
 	}
 	$va_errors = $this->getVar("errors");
-	$vn_num1 = rand(1,10);
-	$vn_num2 = rand(1,10);
-	$vn_sum = $vn_num1 + $vn_num2;
+	#$vn_num1 = rand(1,10);
+	#$vn_num2 = rand(1,10);
+	#$vn_sum = $vn_num1 + $vn_num2;
 ?>
 	<div class="row">
 		<div class="col-sm-12 col-md-offset-1 col-md-10">
@@ -33,7 +33,7 @@
 			print "<H1>"._t("Contact")."</H1>";
 		break;
 	}
-	if(sizeof($va_errors["display_errors"])){
+	if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
 ?>
@@ -92,23 +92,22 @@
 			</div><!-- end col -->
 		</div><!-- end row -->
 <?php
-	if($this->request->isLoggedIn()){
-		print '<input type="hidden" name="security" value="'.$vn_sum.'">';
-	}else{
-		# --- only show security question if not logged in
+	if(!$this->request->isLoggedIn() && __CA_GOOGLE_RECAPTCHA_KEY__){
+
+		# --- only show captcha
 ?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+                grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+        	};
+		</script>
+		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+
+
 			<div class="row">
 				<div class="col-sm-12 col-md-offset-1 col-md-10">
-					<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
-						<label for="security">Security Question</label>
-						<div class='row'>
-							<div class='col-sm-4'>
-								<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
-							</div>
-							<div class='col-sm-4'>
-								<input name="security" value="" id="security" type="text" class="form-control input-sm" />
-							</div>
-						</div><!-- end row -->
+					<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
 					</div>
 				</div>
 			</div><!-- end row -->

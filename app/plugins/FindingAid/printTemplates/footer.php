@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -55,20 +55,6 @@
 	print $vs_footer;
 ?>
 </div>
-<?php
-				break;
-			
-			case 'PhantomJS':
-?>
-			<script type="text/javascript">
-				// For PhantomJS
-				PhantomJSPrinting['footer'] = {
-					height: "50mm",
-					contents: function(pageNum, numPages) { 
-						return '<div style="position: relative;width: 100%; height: 100px; text-align: center;"><?php print addslashes($vs_footer); ?></div>';	
-					}
-				};
-			</script>
 <?php
 				break;
 			case 'wkhtmltopdf':

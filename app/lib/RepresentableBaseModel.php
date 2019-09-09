@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2018 Whirl-i-Gig
+ * Copyright 2013-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -69,6 +69,14 @@
 			if (caGetBundleAccessLevel($this->tableName(), 'ca_object_representations') == __CA_BUNDLE_ACCESS_NONE__) {
 				return null;
 			}
+			
+			if ($alt_text_template = Configuration::load()->get($this->tableName()."_alt_text_template")) { 
+                $alt_text = $this->getWithTemplate($alt_text_template);
+            } elseif(is_a($this, "LabelableBaseModelWithAttributes")) {
+                $alt_text = $this->get($this->tableName().".preferred_labels");
+            } else {
+                $alt_text = null;
+            }
 		
 			if (!is_array($pa_versions)) { 
 				$pa_versions = array('preview170');
@@ -148,9 +156,9 @@
 					}
 				
 					if ($vn_width && $vn_height) {
-						$va_tmp['tags'][$vs_version] = $qr_reps->getMediaTag('media', $vs_version, array_merge($pa_options, array('viewer_width' => $vn_width, 'viewer_height' => $vn_height)));
+						$va_tmp['tags'][$vs_version] = $qr_reps->getMediaTag('media', $vs_version, array_merge($pa_options, array('alt' => $alt_text, 'viewer_width' => $vn_width, 'viewer_height' => $vn_height)));
 					} else {
-						$va_tmp['tags'][$vs_version] = $qr_reps->getMediaTag('media', $vs_version, $pa_options);
+						$va_tmp['tags'][$vs_version] = $qr_reps->getMediaTag('media', $vs_version, array_merge($pa_options, ['alt' => $alt_text]));
 					}
 					$va_tmp['urls'][$vs_version] = $qr_reps->getMediaUrl('media', $vs_version);
 					$va_tmp['paths'][$vs_version] = $qr_reps->getMediaPath('media', $vs_version);
@@ -162,10 +170,6 @@
 				if (isset($va_info['INPUT']['FETCHED_FROM']) && ($vs_fetched_from_url = $va_info['INPUT']['FETCHED_FROM'])) {
 					$va_tmp['fetched_from'] = $vs_fetched_from_url;
 					$va_tmp['fetched_on'] = (int)$va_info['INPUT']['FETCHED_ON'];
-				}
-
-				if (isset($va_info['REPLICATION_KEYS'])) {
-					$va_tmp['REPLICATION_KEYS'] = $va_info['REPLICATION_KEYS'];
 				}
 			
 				$va_tmp['num_multifiles'] = $t_rep->numFiles($vn_rep_id);
@@ -241,7 +245,7 @@
 			$va_reps = $this->getRepresentations(array('original'));
 			$va_found_reps = array();
 			foreach($va_reps as $vn_i => $va_rep) {
-				if((sizeof($va_mimetypes)) && isset($va_mimetypes[$va_rep['info']['original']['MIMETYPE']])) {
+				if(is_array($va_mimetypes) && (sizeof($va_mimetypes)) && isset($va_mimetypes[$va_rep['info']['original']['MIMETYPE']])) {
 					switch($vs_sortby) {
 						case 'filesize':
 							$va_found_reps[$va_rep['info']['original']['FILESIZE']][] = $va_rep;
@@ -382,7 +386,7 @@
 			$o_db = $this->getDb();
 		
 			$qr_reps = $o_db->query("
-				SELECT count(*) c
+				SELECT count(DISTINCT caor.representation_id) c
 				FROM ca_object_representations caor
 				INNER JOIN {$vs_linking_table} AS caoor ON caor.representation_id = caoor.representation_id
 				LEFT JOIN ca_locales AS l ON caor.locale_id = l.locale_id
@@ -512,11 +516,11 @@
 					switch($vs_match_on) {
 						case 'idno':
 							if (!trim($pa_values['idno'])) { break; }
-							$va_ids = ca_object_representations::find(array('idno' => trim($pa_values['idno'])), array('returnAs' => 'ids'));
+							$va_ids = ca_object_representations::find(array('idno' => trim($pa_values['idno'])), array('returnAs' => 'ids', 'transaction' => $this->getTransaction()));
 							break;
 						case 'label':
 							if (!trim($pa_values['preferred_labels']['name'])) { break; }
-							$va_ids = ca_object_representations::find(array('preferred_labels' => array('name' => trim($pa_values['preferred_labels']['name']))), array('returnAs' => 'ids'));
+							$va_ids = ca_object_representations::find(array('preferred_labels' => array('name' => trim($pa_values['preferred_labels']['name']))), array('returnAs' => 'ids', 'transaction' => $this->getTransaction()));
 							break;
 					}
 					if(is_array($va_ids) && sizeof($va_ids)) { 
@@ -561,7 +565,10 @@
 						}
 					}
 				}
-		
+				if(!isset($pa_values['idno'])) {
+					$t_rep->setIdnoWithTemplate('%', ['serialOnly' => true]);
+				}
+				
 				$t_rep->insert();
 		
 				if ($t_rep->numErrors()) {
@@ -570,7 +577,7 @@
 				}
 			
 				if ($t_rep->getPreferredLabelCount() == 0) {
-					$vs_label = (isset($pa_values['name']) && $pa_values['name']) ? $pa_values['name'] : '['._t('BLANK').']';
+					$vs_label = (isset($pa_values['name']) && $pa_values['name']) ? $pa_values['name'] : '['.caGetBlankLabelText().']';
 			
 					$t_rep->addLabel(array('name' => $vs_label), $pn_locale_id, null, true);
 					if ($t_rep->numErrors()) {
@@ -631,7 +638,7 @@
 			if (!($t_oxor = $this->_getRepresentationRelationshipTableInstance())) { return null; }
 			$vs_pk = $this->primaryKey();
 			
-			if ($this->inTransaction()) { $t_oxor->setTransaction($this->getTransaction()); }
+			$t_oxor->setTransaction($this->getTransaction()); 
 			$t_oxor->setMode(ACCESS_WRITE);
 			$t_oxor->set($vs_pk, $vn_id);
 			$t_oxor->set('representation_id', $t_rep->getPrimaryKey());
@@ -657,15 +664,6 @@
 			$va_metadata = $t_rep->get('media_metadata', array('binary' => true));
 			if (caExtractEmbeddedMetadata($this, $va_metadata, $pn_locale_id)) {
 				$this->update();
-			}
-			
-			
-			// Trigger automatic replication
-			$va_auto_targets = $t_rep->getAvailableMediaReplicationTargets('media', 'original', array('trigger' => 'auto', 'access' => $t_rep->get('access')));
-			if(is_array($va_auto_targets)) {
-				foreach($va_auto_targets as $vs_target => $va_target_info) {
-					$t_rep->replicateMedia('media', $vs_target);
-				}
 			}
 		
 			if (isset($pa_options['returnRepresentation']) && (bool)$pa_options['returnRepresentation']) {
@@ -693,7 +691,6 @@
 		 */
 		public function editRepresentation($pn_representation_id, $ps_media_path, $pn_locale_id, $pn_status, $pn_access, $pb_is_primary=null, $pa_values=null, $pa_options=null) {
 			if (!($vn_id = $this->getPrimaryKey())) { return null; }
-			$va_old_replication_keys = array();
 			
 			$t_rep = new ca_object_representations();
 			if ($this->inTransaction()) { $t_rep->setTransaction($this->getTransaction());}
@@ -708,11 +705,6 @@
 				if ($pm_type_id = caGetOption('type_id', $pa_options, null)) {  $t_rep->set('type_id', $pm_type_id, ['allowSettingOfTypeID' => true]); }
 			
 				if ($ps_media_path) {
-					if(is_array($va_replication_targets = $t_rep->getUsedMediaReplicationTargets('media'))) {
-						foreach($va_replication_targets as $vs_target => $va_target_info) {
-							$va_old_replication_keys[$vs_target] = $t_rep->getMediaReplicationKey('media', $vs_target);
-						}
-					}
 					$t_rep->set('media', $ps_media_path, $pa_options);
 				}
 			
@@ -763,21 +755,6 @@
                         $this->errors = array_merge($this->errors, $t_rep->errors());
                         return false;
                     }
-				}
-					
-				if ($ps_media_path) {
-					// remove any replicated media
-					foreach($va_old_replication_keys as $vs_target => $vs_old_replication_key) {
-						$t_rep->removeMediaReplication('media', $vs_target, $vs_old_replication_key, array('force' => true));
-					}
-					
-					// Trigger automatic replication
-					$va_auto_targets = $t_rep->getAvailableMediaReplicationTargets('media', 'original', array('trigger' => 'auto', 'access' => $t_rep->get('access')));
-					if(is_array($va_auto_targets)) {
-						foreach($va_auto_targets as $vs_target => $va_target_info) {
-							$t_rep->replicateMedia('media', $vs_target);
-						}
-					}
 				}
 			
 				if (!($t_oxor = $this->_getRepresentationRelationshipTableInstance())) { return null; }
@@ -879,13 +856,6 @@
 					if ($t_rep->numErrors()) {
 						$this->errors = array_merge($this->errors, $t_rep->errors());
 						return false;
-					}
-				}
-						
-				// remove any replicated media
-				if(is_array($va_replication_targets = $t_rep->getUsedMediaReplicationTargets('media'))) {
-					foreach($va_replication_targets as $vs_target => $va_target_info) {
-						$t_rep->removeMediaReplication('media', $vs_target, $t_rep->getMediaReplicationKey('media', $vs_target));
 					}
 				}
 			
@@ -1081,11 +1051,24 @@
 					(oxor.{$vs_pk} IN (".join(',', $pa_ids).")) AND oxor.is_primary = 1 AND orep.deleted = 0 {$vs_access_where}
 			");
 		
-			$va_media = array();
+		    $qr = caMakeSearchResult($this->tableName(), $pa_ids);
+		    $alt_texts = [];
+		    while($qr->nextHit()) {
+                if ($alt_text_template = Configuration::load()->get($this->tableName()."_alt_text_template")) { 
+                    $alt_texts[$qr->get($vs_pk)] = $qr->getWithTemplate($alt_text_template);
+                } else {
+                    $alt_texts[$qr->get($vs_pk)] = $qr->get($this->tableName().".preferred_labels");
+                }
+            }
+            
+			$va_media = [];
 			while($qr_res->nextRow()) {
-				$va_media_tags = array();
+				$va_media_tags = [
+					'representation_id' => $qr_res->get('ca_object_representations.representation_id'),
+					'access' => $qr_res->get('ca_object_representations.access')
+				];
+				
 				foreach($pa_versions as $vs_version) {
-					$va_media_tags['representation_id'] = $qr_res->get('ca_object_representations.representation_id');
 					$va_media_tags['tags'][$vs_version] = $qr_res->getMediaTag('ca_object_representations.media', $vs_version);
 					$va_media_tags['info'][$vs_version] = $qr_res->getMediaInfo('ca_object_representations.media', $vs_version);
 					$va_media_tags['urls'][$vs_version] = $qr_res->getMediaUrl('ca_object_representations.media', $vs_version);
@@ -1094,7 +1077,7 @@
 			}
 		
 			// Preserve order of input ids
-			$va_media_sorted = array();
+			$va_media_sorted = [];
 			foreach($pa_ids as $vn_id) {
 				$va_media_sorted[$vn_id] = $va_media[$vn_id];
 			} 
@@ -1184,7 +1167,7 @@
 			$va_path = Datamodel::getPath($this->tableName(), 'ca_object_representations');
 			if (!is_array($va_path) || (sizeof($va_path) != 3)) { return null; }
 			$va_path = array_keys($va_path);
-			return Datamodel::getInstanceByTableName($va_path[1], true);
+			return Datamodel::getInstanceByTableName($va_path[1]);
 		}
 		# ------------------------------------------------------
         /**

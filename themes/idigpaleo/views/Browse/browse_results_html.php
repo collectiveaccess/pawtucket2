@@ -47,14 +47,12 @@
 	$t_instance			= $this->getVar('t_instance');
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
-
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
 	
-	
+	$va_browse_info = $this->getVar("browseInfo");
+	$vn_result_size 	= (sizeof($va_criteria) > 0 || count($va_browse_info['baseCriteria']) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);
 	$vb_ajax			= (bool)$this->request->isAjax();
-	$va_browse_info = $this->getVar("browseInfo");
 	$vs_sort_control_type = caGetOption('sortControlType', $va_browse_info, 'dropdown');
 	$o_config = $this->getVar("config");
 	$vs_result_col_class = $o_config->get('result_col_class');
@@ -66,6 +64,7 @@
 	
 if (!$vb_ajax) {	// !ajax
 ?>
+<div role="main" id="main">
 <div class="row" style="clear:both;">
 <?php
 	# Display Browse menu here if set to left or top
@@ -84,9 +83,9 @@ if (!$vb_ajax) {	// !ajax
 			if(is_array($va_views) && (sizeof($va_views) > 1)){
 				foreach($va_views as $vs_view => $va_view_info) {
 					if ($vs_current_view === $vs_view) {
-						print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
+						print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"  aria-label="selected view style"></span></a> ';
 					} else {
-						print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+						print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"  aria-label="other view style options"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 					}
 				}
 			}
@@ -129,42 +128,42 @@ if (!$vb_ajax) {	// !ajax
 				<i class="fa fa-gear bGear" data-toggle="dropdown"></i>
 				<ul class="dropdown-menu" role="menu">
 <?php
-					if($vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
-						print "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
-						print "<li><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
-						print "<li class='divider'></li>";
+					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
+						print "<li role='menuitem'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'>"._t("Add all results to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
+						print "<li role='menuitem'><a href='#' onclick='jQuery(\".bSetsSelectMultiple\").toggle(); return false;'>"._t("Select results to add to %1", $va_add_to_set_link_info['name_singular'])."</a></li>";
+						print "<li class='divider' role='menuitem'></li>";
 					}
 					if($vs_sort_control_type == 'dropdown'){
 						if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-							print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
+							print "<li class='dropdown-header' role='menuitem'>"._t("Sort by:")."</li>\n";
 							foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 								if ($vs_current_sort === $vs_sort) {
-									print "<li><a href='#'><em>{$vs_sort}</em></a></li>\n";
+									print "<li role='menuitem'><a href='#'><em>{$vs_sort}</em></a></li>\n";
 								} else {
-									print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
+									print "<li role='menuitem'>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
 								}
 							}
-							print "<li class='divider'></li>\n";
-							print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
-							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+							print "<li class='divider' role='menuitem'></li>\n";
+							print "<li class='dropdown-header' role='menuitem'>"._t("Sort order:")."</li>\n";
+							print "<li role='menuitem'>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+							print "<li role='menuitem'>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
 						}
 						
 						if ((sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) && is_array($va_sorts) && sizeof($va_sorts)) {
 ?>
-						<li class="divider"></li>
+						<li class="divider" role='menuitem'></li>
 <?php
 						}
 					}
 					if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
-						print "<li>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+						print "<li role='menuitem'>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
 					}
 					if(is_array($va_export_formats) && sizeof($va_export_formats)){
 						// Export as PDF links
-						print "<li class='divider'></li>\n";
-						print "<li class='dropdown-header'>"._t("Download results as:")."</li>\n";
+						print "<li class='divider' role='menuitem'></li>\n";
+						print "<li class='dropdown-header' role='menuitem'>"._t("Download results as:")."</li>\n";
 						foreach($va_export_formats as $va_export_format){
-							print "<li class='".$va_export_format["code"]."'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+							print "<li class='".$va_export_format["code"]."' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
 						}
 					}
 ?>
@@ -181,12 +180,21 @@ if (!$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
-		<H5>
 <?php
+		$s_config = caGetSearchConfig();
+		if($va_base_criteria = $s_config->get('baseCriteria')){
+			if(isset($va_base_criteria[$vs_table]) && count($va_base_criteria[$vs_table]) > 0){
+				$va_table_criteria = $va_base_criteria[$vs_table];
+			}
+		}
+		
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			$vs_last_facet = "";
 			foreach($va_criteria as $va_criterion) {
+				if(is_array($va_table_criteria)){
+					if(array_key_exists($va_criterion['facet_name'], $va_table_criteria)) { continue; }
+				}
 				if($va_criterion['facet'] != $vs_last_facet){
 					print "<strong>".$va_criterion['facet'].':</strong>';
 				}
@@ -210,7 +218,6 @@ if (!$vb_ajax) {	// !ajax
 			}
 		}
 ?>		
-		</H5>
 <?php
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
@@ -273,6 +280,7 @@ if (!$vb_ajax) {	// !ajax
 	
 </div><!-- end row -->	
 
+
 <script type="text/javascript">
 	jQuery(document).ready(function() {
 		jQuery('#browseResultsContainer').jscroll({
@@ -304,3 +312,4 @@ if (!$vb_ajax) {	// !ajax
 		print $this->render('Browse/browse_panel_subview_html.php');
 } //!ajax
 ?>
+</div>

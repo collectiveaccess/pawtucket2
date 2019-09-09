@@ -144,7 +144,7 @@ class SearchEngine extends SearchBase {
 		}
 		
 		$ps_search = preg_replace('![\|]([A-Za-z0-9_,;]+[:]{1})!', "/$1", $ps_search);	// allow | to be used in lieu of / as the relationship type separator, as "/" is problematic to encode in GET requests
-		$ps_search = preg_replace('/(?!")\['._t('BLANK').'\](?!")/i', '"['._t('BLANK').']"', $ps_search); // the special [BLANK] search term, which returns records that have *no* content in a specific fields, has to be quoted in order to protect the square brackets from the parser.
+		$ps_search = preg_replace('/(?!")\['.caGetBlankLabelText().'\](?!")/i', '"['.caGetBlankLabelText().']"', $ps_search); // the special [BLANK] search term, which returns records that have *no* content in a specific fields, has to be quoted in order to protect the square brackets from the parser.
 		$ps_search = preg_replace('/(?!")\['._t('SET').'\](?!")/i', '"['._t('SET').']"', $ps_search); // the special [SET] search term, which returns records that have *any* content in a specific fields, has to be quoted in order to protect the square brackets from the parser.
 		
 		if(!is_array($pa_options)) { $pa_options = array(); }
@@ -367,9 +367,9 @@ class SearchEngine extends SearchBase {
 				'search_expression' => $ps_search, 
 				'num_hits' => sizeof($va_hits),
 				'form_id' => $vn_search_form_id, 
-				'ip_addr' => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null,
+				'ip_addr' => RequestHTTP::ip(),
 				'details' => $vs_log_details,
-				'search_source' => $vs_search_source,
+				'search_source' => __CA_APP_TYPE__.($vs_search_source ? ":{$vs_search_source}" : ""),
 				'execution_time' => $vn_execution_time
 			));
 		}

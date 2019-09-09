@@ -51,8 +51,8 @@
 				<div class='col-sm-6 col-md-6'>
 <?php
 					print '<div id="detailTools">';
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Inquire About this Item", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'inquiry'))."</div>";
-					print "<div class='detailTool'><span class='glyphicon glyphicon-bookmark'></span><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
+					print "<div class='detailTool'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Inquire About this Item", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'inquiry'))."</div>";
+					print "<div class='detailTool'><i class='material-icons inline'>bookmark</i><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $vn_id))."\"); return false;'> Add to My Projects</a></div>";
 				
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
@@ -72,7 +72,8 @@
 						</script>
 <?php
 					}else{
-						print "<div class='detailProductPlaceholder'><span class='glyphicon glyphicon-picture'></span></div>";
+						print "<div class='detailProductPlaceholder'><i class='material-icons inline'>photo</i></div>";
+						print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request Digitization", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'digitizationRequest'))."</div>";
 					}	
 ?>				
 					<div id="detailAnnotations"></div>
@@ -88,7 +89,27 @@
 					
 					<HR>-->
 					{{{<ifdef code="ca_objects.idno"><div class="unit text-center">Object ID: ^ca_objects.idno</div></ifdef>}}}
-					{{{<ifdef code="ca_objects.type_id|ca_objects.brand|ca_objects.sub_brand"><div class="unit productInfo"><H6 class="objectType">^ca_objects.type_id<ifdef code="ca_objects.brand"> &rsaquo; <unit relativeTo="ca_objects" delimiter=", ">^ca_objects.brand</unit></ifdef><ifdef code="ca_objects.sub_brand"> &rsaquo; <unit relativeTo="ca_objects" delimiter=", ">^ca_objects.sub_brand</unit></ifdef></H6></div></ifdef>}}}
+<?php
+					$va_product_info = array();
+					if($vs_type = $t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))){
+						$va_product_info[] = $vs_type;
+					}
+					if($vs_brand = $t_object->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
+						$va_product_info[] = $vs_brand;
+					}
+					if($vs_sub_brand = $t_object->get("ca_objects.sub_brand", array("delimiter" => ", "))){
+						if(!preg_match("/[a-z]/", $vs_sub_brand)){
+							$vs_sub_brand = ucwords(strtolower($vs_sub_brand));
+						}
+						$vs_sub_brand = "<span class='notransform'>".$vs_sub_brand."</span>";
+						$va_product_info[] = $vs_sub_brand;
+					}
+					if(sizeof($va_product_info)){
+						print "<div class='unit productInfo'><H6 class='objectType'>";
+						print join(" &rsaquo; ", $va_product_info);
+						print "</H6></div>";
+					}
+?>
 					
 					{{{<ifdef code="ca_objects.preferred_labels.name"><H4 class="mainTitle">^ca_objects.preferred_labels.name</H4></ifdef>}}}
 					
@@ -103,9 +124,36 @@
 							<ifdef code="ca_objects.codes.packaging_code"><div class="col-sm-4"><div class="unit"><H6>Packaging Code</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.codes.product_code</unit></div></div></ifdef>
 						</div>
 						<ifdef code="ca_objects.codes.product_code|ca_objects.codes.batch_code|ca_objects.codes.packaging_code"><HR></ifdef>
-					
-						<ifdef code="ca_objects.shade"><div class="unit"><H6>Shade</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.shade</unit></div></ifdef>
-						<ifdef code="ca_objects.fragrance"><div class="unit"><H6>Fragrance</H6><unit relativeTo="ca_objects" delimiter="<br/>">^ca_objects.fragrance</unit></div></ifdef>
+					</if>}}}
+<?php
+					if($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)) != "Component"){
+						if($va_tmp = $t_object->get("ca_objects.shade", array("returnAsArray" => true))){
+							$va_tmp_formatted = array();
+							foreach($va_tmp as $vs_tmp){
+								if(!preg_match("/[a-z]/", $vs_tmp)){
+									$vs_tmp = ucwords(strtolower($vs_tmp));
+								}
+								$va_tmp_formatted[] = $vs_tmp;
+							}
+							print "<div class='unit'><H6>Shade</H6>".join("<br/>", $va_tmp_formatted)."</div>";
+						}
+						if($va_tmp = $t_object->get("ca_objects.fragrance", array("returnAsArray" => true))){
+							$va_tmp_formatted = array();
+							foreach($va_tmp as $vs_tmp){
+								if($vs_tmp){
+									if(!preg_match("/[a-z]/", $vs_tmp)){
+										$vs_tmp = ucwords(strtolower($vs_tmp));
+									}
+									$va_tmp_formatted[] = $vs_tmp;
+								}
+							}
+							if(sizeof($va_tmp_formatted)){
+								print "<div class='unit'><H6>Fragrance</H6>".join("<br/>", $va_tmp_formatted)."</div>";
+							}
+						}
+					}
+?>					
+					{{{<if rule="^ca_objects.type_id !~ /Component/">
 						<ifdef code="ca_objects.shade|ca_objects.fragrance"><HR></ifdef>
 						<ifdef code="ca_objects.size"><div class="unit"><H6>Size/Weight</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.size</unit></div></ifdef>
 						<ifdef code="ca_objects.application"><div class="unit"><H6>Application</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.application</unit></div></ifdef>
@@ -157,7 +205,7 @@
 						foreach($va_notes as $va_note){
 							$va_note["object_note_value"] = trim($va_note["object_note_value"]);
 							if($va_note["object_note_value"] && strToLower($va_note["object_note_status"]) == "unrestricted"){
-								$va_notes_filtered[] = $va_note["object_note_value"];
+								$va_notes_filtered[] = ucfirst(strtolower($va_note["object_note_value"]));
 							}
 						}
 						if(sizeof($va_notes_filtered)){
@@ -189,10 +237,18 @@
 						print "<div class='parentObject'><h6>Is A ".$vs_part_label." Of</h6>";
 						$vs_caption = "";
 						$vs_caption .= $t_parent->get("ca_objects.preferred_labels").". ";
-						if($vs_shade = $t_parent->get("ca_objects.shade")){
+						$vs_shade = $t_parent->get("ca_objects.shade");
+						if(!preg_match("/[a-z]/", $vs_shade)){
+							$vs_shade = ucwords(strtolower($vs_shade));
+						}
+						if($vs_shade){
 							$vs_caption .= $vs_shade;
 						}
-						if($vs_fragrance = $t_parent->get("ca_objects.fragrance")){
+						$vs_fragrance = $t_parent->get("ca_objects.fragrance");
+						if(!preg_match("/[a-z]/", $vs_fragrance)){
+							$vs_fragrance = ucwords(strtolower($vs_fragrance));
+						}
+						if($vs_fragrance){
 							if($vs_shade){
 								$vs_caption .= "; ";
 							}
@@ -250,7 +306,14 @@
 								$va_child_info = array();
 								foreach($va_child_info_fields as $vs_child_info_field){
 									if($vs_tmp = $qr_children->get("ca_objects.".$vs_child_info_field, array("delimiter" => ", ")) ){
-										$va_child_info[] = $vs_tmp;
+										if(in_array($vs_child_info_field, array("fragrance", "shade"))){
+											if(!preg_match("/[a-z]/", $vs_tmp)){
+												$vs_tmp = ucwords(strtolower($vs_tmp));
+											}
+											$va_child_info[] = $vs_tmp;
+										}else{
+											$va_child_info[] = $vs_tmp;
+										}
 									}
 								}
 								if(sizeof($va_child_info)){
@@ -262,7 +325,7 @@
 						print "</div><hr/>";
 					}
 					if ($vn_pdf_enabled) {
-						print "<div class='detailTools'><div class='detailTool'><span class='glyphicon glyphicon-download'></span>".caDetailLink($this->request, "Download Summary", "", "ca_objects", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div></div>";
+						print "<div class='detailTools'><div class='detailTool'><i class='material-icons inline'>save_alt</i>".caDetailLink($this->request, "Download Summary", "", "ca_objects", $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div></div>";
 					}
 	?>
 				</div><!-- end col -->
@@ -272,7 +335,7 @@
 <?php				
 				#  related objects
 				
-				if ($va_related_object_ids = $t_object->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values))) {
+				if ($va_related_object_ids = $t_object->get('ca_objects.related.object_id', array('excludeTypes' => array('bulk', 'digital_media'), 'returnAsArray' => true, 'checkAccess' => $va_access_values))) {
 					$qr_related = caMakeSearchResult('ca_objects', $va_related_object_ids);
 					print "<br/><hr></hr><div class='relatedObjects'><h4>Related Item".((sizeof($va_related_object_ids) > 1) ? "s" : "")."</h4><br/>";
 					$va_related_info_fields = array("shade", "fragrance", "codes.product_code");
@@ -294,7 +357,11 @@
 								$vs_caption .= " - ".$vs_tmp;
 							}
 							$vs_caption .= "<br/>";
-							if(($vs_brand = $qr_related->get("ca_objects.brand", array("convertCodesToDisplayText" => true))) || ($vs_subbrand = $qr_related->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true)))){
+							$vs_subbrand = $qr_related->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true));
+							if(!preg_match("/[a-z]/", $vs_subbrand)){
+								$vs_subbrand = ucwords(strtolower($vs_subbrand));
+							}
+							if(($vs_brand = $qr_related->get("ca_objects.brand", array("convertCodesToDisplayText" => true))) || $vs_subbrand){
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
 							}
 							$vs_caption .= "<b>".$qr_related->get('ca_objects.preferred_labels')."</b>";

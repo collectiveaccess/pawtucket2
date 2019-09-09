@@ -90,7 +90,7 @@
 								<div id="detailTools">
 									<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 									<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='#'>Contribute</a></div><!-- end detailTool -->
-									<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div><!-- end detailTool -->
+									<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (is_array($va_comments) && (sizeof($va_comments) > 0) ? sizeof($va_comments) : ""); ?></a></div><!-- end detailTool -->
 								</div><!-- end detailTools -->											
 							</div><!-- end col -->
 							<div class='col-sm-6 col-md-6 col-lg-6'>
