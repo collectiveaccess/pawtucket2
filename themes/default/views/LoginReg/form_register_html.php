@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2017 Whirl-i-Gig
+ * Copyright 2013-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -46,7 +46,6 @@
 <script type="text/javascript">
 	// initialize CA Utils
 	caUI.initUtils();
-
 </script>
 <?php
 	if($co_security == 'captcha'){
@@ -91,6 +90,7 @@
 				if($va_errors[$vs_field]){
 					print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
 				}
+				
 				print "<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'>"; 
 				print $va_profile_element["bs_formatted_element"];
 				print "</div><!-- end form-group -->";
@@ -109,7 +109,7 @@
 			$vn_num1 = rand(1,10);
 			$vn_num2 = rand(1,10);
 			$vn_sum = $vn_num1 + $vn_num2;
-	?>
+?>
 			<div class='form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>'>
 				<label for='security' class='col-sm-4 control-label'><?php print _t("Security Question"); ?></label>
 				<div class='col-sm-7'>
@@ -121,22 +121,27 @@
 					</div>
 				</div><!-- end col-sm-7 -->
 			</div><!-- end form-group -->
-		
 <?php
 		}
 		if($va_errors["password"]){
 			print "<div class='alert alert-danger'>".$va_errors["password"]."</div>";
 		}
-		print $t_user->htmlFormElement("password","<div class='form-group".(($va_errors["password"]) ? " has-error" : "")."'><label for='password' class='col-sm-4 control-label'>^LABEL</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
-		
+		print $t_user->htmlFormElement("password", "<div class='form-group".(($va_errors["password"]) ? " has-error" : "")."'><label for='password' class='col-sm-4 control-label'>^LABEL</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
 ?>
 		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
 			<label for='password2' class='col-sm-4 control-label'><?php print _t('Re-Type password'); ?></label>
 			<div class="col-sm-7"><input type="password" name="password2" size="40" class="form-control"  autocomplete="off" /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
+		
+<?php	
+		if($va_errors["group_code"]){
+			print "<div class='alert alert-danger'>".$va_errors["group_code"]."</div>";
+		}
+		print "<div class='form-group".(($va_errors["group_code"]) ? " has-error" : "")."'><label for='group' class='col-sm-4 control-label'>"._t("Group code (optional)")."</label><div class='col-sm-7'>".caHTMLTextInput("group_code", ['class' => 'form-control', 'id' => 'registrationGroupCode'], [])."</div></div>\n";
+?>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
-				<button type="submit" class="btn btn-default">Register</button>
+				<button type="submit" class="btn btn-default"><?php print _t('Register'); ?></button>
 			</div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
@@ -165,4 +170,3 @@
 ?>
 <?php
 	}
-?>

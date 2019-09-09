@@ -84,9 +84,10 @@
 							}
 							print "<div class='detailArchivalPlaceholder'>".$vs_folder_icon."</span>";
 							$vs_dig_status = $t_object->get("completely_digitized", array("convertCodesToDisplayText" => true));
-							if($vs_dig_status && !in_array($vs_dig_status, array("yes", "no"))){
-								print "<br/><small>".$t_object->get("completely_digitized", array("convertCodesToDisplayText" => true))."</small>";
+							if($vs_dig_status && in_array($vs_dig_status, array("yes", "no"))){
+								$vs_dig_status = "The full contents of this folder have not been digitized";
 							}
+							print "<br/><small>".$vs_dig_status."</small>";
 							print "</div>";
 							if(sizeof($va_bulk_items) == 0){
 								if(!in_array(strToLower($t_object->get("completely_digitized", array("convertCodesToDisplayText" => true))), array("contents completely digitized"))){
@@ -137,7 +138,7 @@
 					
 					{{{<ifdef code="ca_objects.preferred_labels.name"><H4 class="mainTitle">^ca_objects.preferred_labels.name</H4></ifdef>}}}
 					<HR>
-					{{{<ifdef code="ca_objects.manufacture_date"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.manufacture_date|ca_objects.season_list"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list</unit><ifdef code="ca_objects.manufacture_date,ca_objects.season_list"> </ifdef><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></div></ifdef>}}}
 
 <?php
 					$va_entities = $t_object->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));

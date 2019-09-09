@@ -25,6 +25,8 @@
  *
  * ----------------------------------------------------------------------
  */
+ 
+    require_once(__CA_MODELS_DIR__."/ca_objects.php");
 	$va_lightboxDisplayName = caGetLightboxDisplayName();
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
 	$va_classroomDisplayName = caGetClassroomDisplayName();
@@ -42,10 +44,15 @@
 			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
 		}
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
+		
+		if ($this->request->config->get('use_submission_interface')) {
+			$va_user_links[] = "<li>".caNavLink($this->request, _t('Submit content'), '', '', 'Contribute', 'Index', array())."</li>";
+		}
+		
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
@@ -147,12 +154,13 @@
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 				</form>
-				<ul class="nav navbar-nav navbar-right objCount"><li><?php print ca_objects::find(['deleted' => 0], ['returnAs' => 'count'])." Objects";?></li></ul>
+				<ul class="nav navbar-nav navbar-right objCount"><li><?php print ca_objects::find(['deleted' => 0, 'access' => 1], ['returnAs' => 'count'])." Objects";?></li></ul>
 				<ul class="nav navbar-nav navbar-left">
 
 					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "Index")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>
-					<li <?php print (($this->request->getController() == "Contribute")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contribute"), "", "", "Contribute", "materials"); ?></li>
+					<!--<li <?php print (($this->request->getController() == "Contribute")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contribute"), "", "", "Contribute", "materials"); ?></li>-->
+					<li <?php print (($this->request->getController() == "Analytics")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Analytics"), "", "", "Analytics", "Index"); ?></li>
 					<li <?php print (($this->request->getController() == "About") && ($this->request->getAction() == "contact")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "contact"); ?></li>
 					<li><a href='http://www.decimallab.ca/'>Decimal</a></li>
 				</ul>

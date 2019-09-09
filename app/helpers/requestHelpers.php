@@ -41,7 +41,7 @@ function caGetPreferredThemeForCurrentDevice($pa_theme_device_mappings) {
         $vs_theme = $_COOKIE['current_theme'];
     }
     
-    if(isset($vs_theme) && file_exists(__CA_THEMES_DIR__.'/'.$vs_theme)){
+    if(isset($vs_theme) && defined("__CA_THEMES_DIR__") && file_exists(__CA_THEMES_DIR__.'/'.$vs_theme)){
         return $vs_theme;
     }
     $vs_default_theme = 'default';

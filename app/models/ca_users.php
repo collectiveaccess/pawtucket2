@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2018 Whirl-i-Gig
+ * Copyright 2008-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -292,15 +292,15 @@ class ca_users extends BaseModel {
 	/**
 	 * User and group role caches
 	 */
-	static $s_user_role_cache = array();
-	static $s_user_group_cache = array();
-	static $s_group_role_cache = array();
-	static $s_user_type_access_cache = array();
-	static $s_user_source_access_cache = array();
-	static $s_user_bundle_access_cache = array();
-	static $s_user_action_access_cache = array();
-	static $s_user_type_with_access_cache = array();
-	static $s_user_source_with_access_cache = array();
+	static $s_user_role_cache = [];
+	static $s_user_group_cache = [];
+	static $s_group_role_cache = [];
+	static $s_user_type_access_cache = [];
+	static $s_user_source_access_cache = [];
+	static $s_user_bundle_access_cache = [];
+	static $s_user_action_access_cache = [];
+	static $s_user_type_with_access_cache = [];
+	static $s_user_source_with_access_cache = [];
 
 	/**
 	 * List of tables that can have bundle- or type-level access control
@@ -2987,9 +2987,11 @@ class ca_users extends BaseModel {
 			$vs_username = preg_replace("!".preg_quote($vs_rewrite_username_with_regex, "!")."!", $vs_rewrite_username_to_regex, $vs_username);
 		}
 		
-		 if (!$vs_username && AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__)) { 
-            $va_info = AuthenticationManager::getUserInfo($vs_username, $ps_password, ['minimal' => true]); 
-            $vs_username = $va_info['user_name'];
+		if (!$vs_username && AuthenticationManager::supports(__CA_AUTH_ADAPTER_FEATURE_USE_ADAPTER_LOGIN_FORM__)) { 
+		    if (AuthenticationManager::authenticate($vs_username, $ps_password, $pa_options)) {
+                $va_info = AuthenticationManager::getUserInfo($vs_username, $ps_password, ['minimal' => true]); 
+                $vs_username = $va_info['user_name'];
+            }
         }
 
 		// if user doesn't exist, try creating it through the authentication backend, if the backend supports it
@@ -3002,7 +3004,7 @@ class ca_users extends BaseModel {
 						'CODE' => 'SYS', 'SOURCE' => 'ca_users/authenticate',
 						'MESSAGE' => _t('There was an error while trying to fetch information for a new user from the current authentication backend. The message was %1 : %2', get_class($e), $e->getMessage())
 					));
-					return false;
+					throw($e);
 				}
 
 				if(!is_array($va_values) || sizeof($va_values) < 1) { return false; }
@@ -3011,6 +3013,12 @@ class ca_users extends BaseModel {
 				foreach($va_values as $vs_k => $vs_v) {
 					if(in_array($vs_k, array('roles', 'groups'))) { continue; }
 					$this->set($vs_k, $vs_v);
+				}
+				
+				if (defined("__CA_APP_TYPE__") && (__CA_APP_TYPE__ === "PROVIDENCE")) {
+				    $this->set('userclass', 0);
+				} else {
+				    $this->set('userclass', 1);
 				}
 
 				$vn_mode = $this->getMode();
@@ -3023,7 +3031,7 @@ class ca_users extends BaseModel {
 						'CODE' => 'SYS', 'SOURCE' => 'ca_users/authenticate',
 						'MESSAGE' => _t('User could not be created after getting info from authentication adapter. API message was: %1', join(" ", $this->getErrors()))
 					));
-					return false;
+					throw($e);
 				}
 
 				if(is_array($va_values['groups']) && sizeof($va_values['groups'])>0) {

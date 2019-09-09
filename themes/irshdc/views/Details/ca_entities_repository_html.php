@@ -25,7 +25,11 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+$vs_mode = $this->request->getParameter("mode", pString);
+if($vs_mode == "map"){
+	include("map_large_html.php");
+}else{
+	$va_options = $this->getVar("config_options"); 
 	$t_item = 				$this->getVar("item");
 	$va_comments =			$this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
@@ -265,3 +269,6 @@
 		});
 	});
 </script>
+<?php
+}
+?>

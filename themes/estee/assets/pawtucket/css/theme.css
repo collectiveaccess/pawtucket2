@@ -1589,7 +1589,7 @@ h1.primaryLandingBannerTitle {
 	width:110px;
 }
 #collectionLoad p {
-    font-size: 12px;
+    font-size: 16px;
     font-family: 'Noto Sans Light';
     line-height: 1.36;
 }
@@ -1635,7 +1635,7 @@ h1.primaryLandingBannerTitle {
 #collectionLoad .collectionObjectsList a{
 	text-decoration:underline;
 	color:#000;
-	font-size:14px;
+	font-size:14px !important;
 	font-weight:300;
 }
 #collectionLoad .glyphicon-eye-open{
