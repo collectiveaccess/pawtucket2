@@ -118,6 +118,16 @@
 				if ($vs_notes = $t_object->getWithTemplate('<unit delimiter="<br/>">^ca_objects.notes</unit>')) {
 					print "<div class='unit notes'><h6>Notes</h6><p>".$vs_notes."</p></div>";
 				}
+					
+				if ($vs_pub_freq = $t_object->getWithTemplate('<unit delimiter="<br/>">^ca_objects.pub_frequency</unit>')) {
+					print "<div class='unit notes'><h6>Publication Frequency</h6><p>".$vs_pub_freq."</p></div>";
+				}
+				if ($vs_sequential_designation = $t_object->getWithTemplate('<unit delimiter="<br/>">^ca_objects.sequential_designation</unit>')) {
+					print "<div class='unit notes'><h6>Sequential Designation/Dates of Publication</h6><p>".$vs_sequential_designation."</p></div>";
+				}
+				if ($vs_summary_holdings = $t_object->getWithTemplate('<unit delimiter="<br/>">^ca_objects.summary_holdings</unit>')) {
+					print "<div class='unit notes'><h6>Summary Holdings</h6><p>".$vs_summary_holdings."</p></div>";
+				}
 				$va_existing_teaching_points = $t_object->get('ca_objects.teaching_points', array('returnWithStructure' => true));
 
 				print "<div class='unit'><h6>Teaching Points";
