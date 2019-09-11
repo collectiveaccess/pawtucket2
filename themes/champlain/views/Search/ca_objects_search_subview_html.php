@@ -44,6 +44,7 @@
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
+	$va_collection_specific_icons = $o_icons_conf->getAssoc("collection_placeholders");
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -82,14 +83,21 @@
 ?>
 			<div class='{{{block}}}Result multisearchResult'>
 <?php 
-				$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
+				$vs_image = $qr_results->get('ca_object_representations.media.small', array("checkAccess" => $va_access_values));
 				if(!$vs_image){
 					$t_list_item->load($qr_results->get("type_id"));
 					$vs_typecode = $t_list_item->get("idno");
-					if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-						$vs_image = "<div class='multisearchImgPlaceholder'>".$vs_type_placeholder."</div>";
-					}else{
-						$vs_image = $vs_default_placeholder_tag;
+					if($vn_collection_idno = $qr_results->get('ca_collections.idno')){
+						if($vs_collection_placeholder_graphic = caGetOption($vn_collection_idno, $va_collection_specific_icons, null)){
+							$vs_image = "<div class='mutisearchCollectionPlaceholder'>".caGetThemeGraphic($this->request, $vs_collection_placeholder_graphic)."</div>";
+						}
+					}
+					if(!$vs_image){
+						if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+							$vs_image = "<div class='multisearchImgPlaceholder'>".$vs_type_placeholder."</div>";
+						}else{
+							$vs_image = $vs_default_placeholder_tag;
+						}
 					}
 				}
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));

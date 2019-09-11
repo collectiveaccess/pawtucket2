@@ -44,6 +44,7 @@
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
+	$va_collection_specific_icons = $o_icons_conf->getAssoc("collection_placeholders");
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
@@ -98,7 +99,14 @@
 				} 
 			}
 			if(!$vs_image_tag){
-				$vs_image_tag = $qr_results->getWithTemplate("<l>{$vs_placeholder_tag}</l>");
+				if($vn_collection_idno = $qr_results->get('ca_collections.idno')){
+					if($vs_collection_placeholder_graphic = caGetOption($vn_collection_idno, $va_collection_specific_icons, null)){
+						$vs_image_tag = "<div class='mutisearchCollectionPlaceholderSmall'>".caGetThemeGraphic($this->request, $vs_collection_placeholder_graphic)."</div>";
+					}
+				}
+				if(!$vs_image_tag){
+					$vs_image_tag = $qr_results->getWithTemplate("<l>{$vs_placeholder_tag}</l>");
+				}
 			}
 			print $vs_image_tag;
 ?>

@@ -2452,8 +2452,12 @@ a.browseRemoveFacet .glyphicon {
 	text-decoration: none;
 }
 .multisearch .multisearchResult img {
-	width:100%;
-	height:auto;
+	width: auto;
+	max-width: 180px;
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+	max-height: 125px;
 	margin-bottom:5px;
 }
 .multisearch .authoritySet {
@@ -2523,6 +2527,18 @@ a.browseRemoveFacet .glyphicon {
 	.allLink {
 		display:block;
 	}
+}
+
+.multisearch .multisearchResult .mutisearchCollectionPlaceholder, .multisearch .multisearchResult .mutisearchCollectionPlaceholderSmall{
+	text-align:center;
+}
+.multisearch .multisearchResult .mutisearchCollectionPlaceholder img{
+	height:100px;
+	width:auto;
+}
+.multisearch .multisearchResult .mutisearchCollectionPlaceholderSmall img{
+	height:75px;
+	width:auto;
 }
 /* ---------------------------- */
 /* Collections/Finding Aid */
