@@ -6,7 +6,7 @@
         <section class="wrap block block-large-top">
             <div class="wrap-text-large">
                 <div class="block">    
-                    <h1 class="headline-s text-align-center">About the Catalogue</h1>
+                    <h1 class="headline-s text-align-center">About the Catalogue - NOT USED - Site Pages used instead</h1>
                 </div>
                 <div class="block-half body-text-l">
                     <p>The Isamu Noguchi Catalogue Raisonné is an ongoing project of The Isamu Noguchi Foundation and Garden Museum, New York, committed to documenting the artistic practice of Isamu Noguchi (1904–1988). </p>

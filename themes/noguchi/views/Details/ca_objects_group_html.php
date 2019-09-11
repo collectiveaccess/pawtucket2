@@ -38,6 +38,8 @@
 	
 	$vs_status = $t_object->get("ca_objects.status", array("convertCodesToDisplayText" => true));
 
+	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
+	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
 ?>
     <main class="ca cr cr_detail">
 <?php
@@ -164,9 +166,13 @@
 						}
 					}
 ?>
+                	
+					<div class="block-quarter">
+						<div class="eyebrow text-gray">{{{crCopyrightBoilerplate}}}</div>
+					</div>
                 </div><!-- end block -->
 <?php
-	$va_exhibitions = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_objects.children'><unit relativeTo='ca_occurrences' restrictToTypes='exhibition'><li><l>^ca_occurrences.preferred_labels.name, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l></li></unit></unit>", array("checkAccess" => $va_access_values)));
+	$va_exhibitions = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_objects.children'><unit relativeTo='ca_occurrences' restrictToTypes='exhibition'><li><l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l></li></unit></unit>", array("checkAccess" => $va_access_values)));
 	$va_bibs = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_objects.children'><unit relativeTo='ca_occurrences' restrictToTypes='bibliography'><li><l>^ca_occurrences.bib_full_citation</l></li></unit></unit>", array("checkAccess" => $va_access_values)));
 
 	
@@ -229,7 +235,8 @@
 							<div class="item">
 									<l>
 										<div class="block-quarter">
-											<img nopin="nopin"  src="^ca_object_representations.media.medium.url" />
+											<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+											<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 										</div>
 										<div class="text block-quarter">
 											<div class="ca-identifier text-gray">^ca_objects.idno<if rule='^ca_objects.status =~ /pending/'>*</if></div>
@@ -263,7 +270,8 @@
 							<unit relativeTo="ca_objects">
 								<l>
 									<div class="block-quarter">
-										<img nopin="nopin"  src="^ca_object_representations.media.medium.url" />
+										<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+										<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 									</div>
 									<div class="text block-quarter">
 										<div class="ca-identifier text-gray">^ca_objects.idno<if rule='^ca_objects.status =~ /pending/'>*</if></div>

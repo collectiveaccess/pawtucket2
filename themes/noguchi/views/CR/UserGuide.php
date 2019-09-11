@@ -5,7 +5,7 @@
         <section class="wrap block block-large-top">
             <div class="wrap-text-wide">
                 <div class="block">    
-                    <h1 class="headline-s text-align-center">User Guide</h1>
+                    <h1 class="headline-s text-align-center">User Guide - NOT USED - Site Pages used instead</h1>
                 </div>
             	<div class="columns">
             		<div class="col half">

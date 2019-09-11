@@ -34,6 +34,27 @@
 	$vn_previous_id = $this->getVar("previousID");
 	$vn_next_id = $this->getVar("nextID");
 	
+	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
+	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
+
+	$va_collection_hierarchy = array_shift($t_object->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
+	$vb_photo_collection = false;
+	if(is_array($va_collection_hierarchy) && sizeof($va_collection_hierarchy)){
+		foreach($va_collection_hierarchy as $vn_collection_heirarchy_level_id){
+			$t_collections = new ca_collections($vn_collection_heirarchy_level_id);
+			switch(strToLower($t_collections->get("type_id", array("convertCodesToDisplayText" => true)))){
+				case "sub-series":
+					$vs_display_collection = $t_collections->get("ca_collections.preferred_labels.name");
+				break;
+				case "series":
+					if(strToLower($t_collections->get("ca_collections.preferred_labels.name")) == "photography collection"){
+						$vb_photo_collection = true;
+					}
+				break;
+			}
+		}
+	}
+	
 	$vs_display_version = $vs_media = $vs_media_url = $vs_download_link = "";
 	$t_representation = $this->getVar("t_representation");
 	if($t_representation){
@@ -78,7 +99,6 @@
                 <div class="img-container dark">
 
                     <div class="actions">
-                        <a href="#" class="zoom"></a>
                         <a href="#" class="collection"></a>
 <?php
 						if($vs_download_link){
@@ -131,41 +151,101 @@
 							<div class="ca-data">^ca_objects.idno</div>
 						</div>
 					</ifdef>}}}
-                    <div class="block-quarter">
-                        <div class="eyebrow text-gray">Object Type</div>
-                        <div class="ca-data">{{{^ca_objects.type_id}}}</div>
-                    </div>
-                    {{{<ifdef code="ca_objects.archive_category">
+<?php
+					if($vb_photo_collection){
+?>
 						<div class="block-quarter">
-							<div class="eyebrow text-gray">Archive Category</div>
-							<div class="ca-data">^ca_objects.archive_category%delimiter=,_</div>
+							<div class="eyebrow text-gray">Object Type</div>
+							<div class="ca-data">{{{^ca_objects.type_id}}}</div>
 						</div>
-					</ifdef>}}}
-					{{{<ifdef code="ca_objects.description">
-						<div class="block-quarter">
-							<div class="eyebrow text-gray">Description</div>
-							<div class="ca-data">^description</div>
-						</div>
-					</ifdef>}}}
-					{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="photographer">
-						<div class="block-quarter">
-							<div class="eyebrow text-gray">Photographer</div>
-							<div class="ca-data"><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div>
-						</div>
-                    </ifcount>}}}
-                    {{{<ifcount code="ca_collections" min="1" >
-						<div class="block-quarter">
-							<div class="eyebrow text-gray">PART OF COLLECTION</div>
-							<div class="ca-data"><unit relativeTo="ca_collections" delimiter="<br/>">^ca_collections.hierarchy.preferred_labels.name%delimiter=_>_</unit></div>
-						</div>
-                    </ifcount>}}}
+						{{{<ifdef code="ca_objects.archive_category">
+							<div class="block-quarter">
+								<div class="eyebrow text-gray">Archive Category</div>
+								<div class="ca-data">^ca_objects.archive_category%delimiter=,_</div>
+							</div>
+						</ifdef>}}}
+<?php
+					}
 
+					$va_entities = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("photographer"), "checkAccess" => $va_access_values, "returnWithStructure" => true));
+					if(is_array($va_entities) && sizeof($va_entities)){
+?>
+							<div class="block-quarter">
+								<div class="eyebrow text-gray">Photographer</div>
+
+<?php
+
+						foreach($va_entities as $va_entity){
+								print "<div class='ca-data'>".caNavLink($va_entity["displayname"], "", "", "Browse", "Archive", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]))."</div>";
+						}
+?>
+							</div>
+<?php
+
+					}
+					if($vs_display_collection){						
+?>
+						<div class="block-quarter">
+							<div class="eyebrow text-gray">Collection</div>
+							<div class="ca-data"><?php print $vs_display_collection; ?></div>
+						</div>
+<?php						
+					}
+					$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("photographer"), "checkAccess" => $va_access_values, "returnWithStructure" => true));
+					if(is_array($va_entities) && sizeof($va_entities)){
+?>
+							<div class="block-quarter">
+								<div class="eyebrow text-gray">Related Entities</div>
+
+<?php
+
+						foreach($va_entities as $va_entity){
+								print "<div class='ca-data'>".caNavLink($va_entity["displayname"], "", "", "Browse", "Archive", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]))."</div>";
+						}
+?>
+							</div>
+<?php
+
+					}
+?>
                 </div>
 
 
             </div>
         </section>
-{{{<ifcount code="ca_objects.related" min="1">
+{{{<ifcount code="ca_objects.related" min="1" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version">
+        <section class="block border">
+            <div class="wrap">
+                <div class="block-half text-align-center">
+                    <h4 class="subheadline-bold">Related Artwork</h4>
+                </div>
+            </div>
+            <div class="module_carousel archive_related" data-prevnext="false">
+				<div class="carousel-main">
+					<unit relativeTo="ca_objects.related" delimiter=" " restrictToRelationshipTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version">
+						<div class="carousel-cell">
+
+							<l>
+								<div class="img-wrapper archive_thumb block-quarter">
+									<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+									<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
+								</div>
+								<div class="text block-quarter">
+									<div class="ca-identifier text-gray">^ca_objects.idno</div>
+									<div class="more">                                
+										<div class="thumb-text clamp" data-lines="2">^ca_objects.preferred_labels.name</div>
+										<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date</div></ifdef>
+										<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>
+									</div>
+								</div>
+							</l>
+						</div>
+					</unit>
+				</div>
+			</div>
+        </section>
+</ifcount>}}}
+{{{<ifcount code="ca_objects.related" min="1" restrictToTypes="archival_item,document,objects,photographs,digital,print,strip,transparency,strip_image">
         <section class="block border">
             <div class="wrap">
                 <div class="block-half text-align-center">
@@ -174,12 +254,13 @@
             </div>
             <div class="module_carousel archive_related" data-prevnext="false">
 				<div class="carousel-main">
-					<unit relativeTo="ca_objects.related" delimiter=" ">
+					<unit relativeTo="ca_objects.related" delimiter=" " restrictToRelationshipTypes="archival_item,document,objects,photographs,digital,print,strip,transparency,strip_image">
 						<div class="carousel-cell">
 
 							<l>
 								<div class="img-wrapper archive_thumb block-quarter">
-									<div class="bg-image" style="background-image: url(^ca_object_representations.media.medium.url)"></div>
+									<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+									<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 								</div>
 								<div class="text block-quarter">
 									<div class="ca-identifier text-gray">^ca_objects.idno</div>
