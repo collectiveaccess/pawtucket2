@@ -46,23 +46,15 @@
 	
 	if ($qr_results->numHits() > 0) {
 ?>
-				<div class="row mb-2">
-					<div class="col-sm-12 col-md-6">
+				<div class="row">
+					<div class="col-sm-12 col-md-12">
 <?php
 		if(in_array($vs_block, $va_browse_types)){
-			print '<H2>'.caNavLink($va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H2>';
+			print '<H2>'.caNavLink($va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H2><hr>';
 		}else{
 ?>
 			<H2><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H2>
 <?php
-		}
-?>
-					</div>
-					<div class="col-sm-12 col-md-6 text-right">
-<?php
-		$vs_full_results = "";
-		if(in_array($vs_block, $va_browse_types)){
-			print $vs_full_results = caNavLink(_t('Full results').'&nbsp;<ion-icon name="open"></ion-icon>', 'btn btn-primary', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); 
 		}
 ?>
 					</div>
@@ -72,7 +64,7 @@
 		$vn_col_count = 0;
 ?>
 	<div class="row {{{block}}}Set multiSearchObjectsCascading">
-		<div class='col-sm-12'><div class='card-columns'>
+		<div class='col-sm-12'><div class='card-columns objects'>
 <?php
 		$va_block_info["resultTemplate"];
 		$t_list_item = new ca_list_items();
@@ -101,8 +93,13 @@
 		</div></div>
 	</div>
 	<div class="row">
-		<div class="col-12 text-center">
-			<?php print $vs_full_results; ?>
+		<div class="col-12 d-flex justify-content-end">
+			<?php
+		$vs_full_results = "";
+		if(in_array($vs_block, $va_browse_types)){
+			print $vs_full_results = caNavLink(_t('Full results').'&nbsp;<ion-icon name="open"></ion-icon>', 'btn btn-primary breadcrumbs align-items-center d-flex justify-content-center text-center', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); 
+		}
+?>
 		</div>
 	</div>
 <?php

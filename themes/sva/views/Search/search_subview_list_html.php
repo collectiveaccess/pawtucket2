@@ -41,18 +41,16 @@
 	if ($qr_results->numHits() > 0) {
 ?>
 				<div class="row mb-2">
-					<div class="col-sm-12 col-md-6">
+					<div class="col-sm-12 col-md-12">
 <?php
 		if(in_array($vs_block, $va_browse_types)){
-			print '<H2>'.caNavLink($va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H2>';
+			print '<H2>'.caNavLink($va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H2><hr>';
 		}else{
 ?>
 			<H2><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H2>
 <?php
 		}
 ?>
-					</div>
-					<div class="col-sm-12 col-md-6 text-right">
 					</div>
 				</div>
 <?php
@@ -62,16 +60,16 @@
 <div class="row {{{block}}}Set multiSearchList h-100">
 <?php
 		$va_block_info["resultTemplate"];
-		$vs_full_link = caNavLink('<div class="card card-block d-flex h-100 multisearchFullResultsCard"><div class="card-body align-items-center d-flex justify-content-center text-center">'._t('Full results').'&nbsp;<ion-icon name="open"></ion-icon></div></div>', '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search)));
+		$vs_full_link = caNavLink('<div class="card card-block d-flex h-100 multisearchFullResultsCard"><div class="card-body align-items-center d-flex justify-content-center text-center breadcrumbs">'._t('Full results').'&nbsp;<ion-icon name="open"></ion-icon></div></div>', '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search)));
 		while($qr_results->nextHit()) {
 			$vn_count++;
 ?>
-			<div class='col-sm-12 col-md-3 col-lg-2 mb-3'>
+			<div class='col-sm-12 col-md-3 col-lg-3 mb-3'>
 <?php
 			if(($vn_count == $vn_hits_per_block) && (in_array($vs_block, $va_browse_types))){
 				print $vs_full_link;
 			}else{
-				print caDetailLink('<div class="card card-block d-flex h-100"><div class="card-body align-items-center d-flex justify-content-center text-center">'.$qr_results->getWithTemplate($va_block_info["resultTemplate"]).'</div></div>', "", $va_block_info["table"], $qr_results->getPrimaryKey());
+				print caDetailLink('<div class="card card-block d-flex h-100 breadcrumbs"><div class="card-body align-items-center d-flex justify-content-center text-center">'.$qr_results->getWithTemplate($va_block_info["resultTemplate"]).'</div></div>', "", $va_block_info["table"], $qr_results->getPrimaryKey());
 			}
 ?>
 				
@@ -80,9 +78,9 @@
 
 			if ($vn_count == $vn_hits_per_block) {break;} 
 		}
-		if($vn_count < $vn_hits_per_block){
+		if($vn_count > $vn_hits_per_block){
 ?>
-			<div class='col-sm-12 col-md-3 col-lg-2 mb-3'><?php print $vs_full_link; ?></div>
+			<div class='col-sm-12 col-md-3 col-lg-3 mb-3'><?php print $vs_full_link; ?></div>
 <?php
 		}		
 ?>

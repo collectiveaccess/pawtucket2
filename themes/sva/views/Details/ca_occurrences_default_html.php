@@ -79,12 +79,12 @@
 			<hr>
 		</div>
 		<div class="col-sm-12">
-			{{{<ifcount code="ca_objects" min="1" max="2"><unit relativeTo="ca_objects" delimiter=" "><div class="col-sm-6 mx-auto"><l>^ca_object_representations.media.large</l><div class='masonry-title'>^ca_objects.preferred_labels.name</div></div></unit>
+			{{{<ifcount code="ca_objects" min="1" max="2"><unit relativeTo="ca_objects" delimiter=" "><div class="col-sm-6 mx-auto"><l>^ca_object_representations.media.large</l><div class='masonry-title'><l>^ca_objects.preferred_labels.name<l></div></div></unit>
 		</div><!-- end col -->
 			</ifcount>}}}	
 			{{{<ifcount code="ca_objects" min="3">
 			    <div class="card-columns">
-				<unit relativeTo="ca_objects" delimiter=" "><div class="card mx-auto"><l>^ca_object_representations.media.large</l><div class='masonry-title'>^ca_objects.preferred_labels.name</div></div></unit>
+				<unit relativeTo="ca_objects" delimiter=" "><div class="card mx-auto"><l>^ca_object_representations.media.large</l><div class='masonry-title'><l>^ca_objects.preferred_labels.name</l></div></div></unit>
                 </div>
 				</div><!-- end col -->
 			</ifcount>}}}						

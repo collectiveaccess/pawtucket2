@@ -140,6 +140,9 @@ h2 {
 		margin-top: 1rem;
 		}
 }
+h2 a:hover {
+	text-decoration: underline;
+}
 
 h3 {
 	font-size: 22px;
@@ -195,9 +198,10 @@ h3 {
 	text-decoration: underline;
 }
 
-.card {
+.objects .card {
 	display: inline-block;
 	border: none !important;
+	background-color: $bg-light !important;
 }
 
 .hpHero {
@@ -532,3 +536,37 @@ div.search-control {
 	width: 100% !important
 }
 
+/* SEARCH RESULTS */
+
+.jump {
+	font-size:1rem;
+	font-family: $sans-serif;	
+}
+.space {
+
+	margin-top: -5px;
+	margin-bottom: -5px;
+}
+.space a:hover {
+	text-decoration: none;
+}
+.space:hover {
+	border-bottom: 1px solid black;
+}
+.search {
+	padding-top:100px;
+}
+
+.multisearch .card-columns {
+    column-count: 4;
+}
+.multisearch .btn-primary {
+ background-color: #a09e97;
+ border-color: #a09e97;
+ width: 240px;
+ height: 64px;
+ border-radius: 0px !important;
+}
+.multisearch .btn-primary:hover {
+	background-color: #414141;
+}
