@@ -32,11 +32,7 @@
 					<H6>{{{<ifdef code="ca_collections.idno"> ^ca_collections.idno</ifdef>}}}</H6>
 					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
 <hr>
-<?php					
-					if ($vn_pdf_enabled) {
-						print "<div class='exportCollection'><span class='glyphicon glyphicon-file'></span> ".caDetailLink($this->request, "Download as PDF", "", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
-					}
-?>
+
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">

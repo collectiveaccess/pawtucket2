@@ -84,29 +84,20 @@
 		}
 		$qr_results->seek($vn_start);
 		
-		$va_images = caGetDisplayImagesForAuthorityItems('ca_collections', $va_collection_ids, array('version' => 'widepreview', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+		#$va_images = caGetDisplayImagesForAuthorityItems('ca_collections', $va_collection_ids, array('version' => 'widepreview', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			
 		$vn_count = 0;
 		while($qr_results->nextHit()) {
 ?>
 			<div class='{{{block}}}Result multisearchResult'>
 <?php
-			$vs_image_tag = "";
-			if (sizeof($va_images) > 0){
-				$vs_image = $va_images[$qr_results->get('ca_collections.collection_id')];
-				if($vs_image){
-					$vs_image_tag = $qr_results->getWithTemplate("<l>{$vs_image}</l>");
-				} 
+			if($vn_collection_idno = $qr_results->get('ca_collections.idno')){
+				if($vs_collection_placeholder_graphic = caGetOption($vn_collection_idno, $va_collection_specific_icons, null)){
+					$vs_image_tag = "<div class='mutisearchCollectionPlaceholderSmall'>".caGetThemeGraphic($this->request, $vs_collection_placeholder_graphic)."</div>";
+				}
 			}
 			if(!$vs_image_tag){
-				if($vn_collection_idno = $qr_results->get('ca_collections.idno')){
-					if($vs_collection_placeholder_graphic = caGetOption($vn_collection_idno, $va_collection_specific_icons, null)){
-						$vs_image_tag = "<div class='mutisearchCollectionPlaceholderSmall'>".caGetThemeGraphic($this->request, $vs_collection_placeholder_graphic)."</div>";
-					}
-				}
-				if(!$vs_image_tag){
-					$vs_image_tag = $qr_results->getWithTemplate("<l>{$vs_placeholder_tag}</l>");
-				}
+				$vs_image_tag = $qr_results->getWithTemplate("<l>{$vs_placeholder_tag}</l>");
 			}
 			print $vs_image_tag;
 ?>
