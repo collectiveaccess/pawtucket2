@@ -251,7 +251,7 @@ if (!$vb_ajax) {	// !ajax
 							$va_captions = caProcessTemplateForIDs($vs_caption_template, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
 
 							$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'small';
-							$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version));
+							$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version), array("checkAccess" => $va_access_values));
 
 							$va_comment_counts = ca_set_items::getNumCommentsForIDs($va_item_ids);
 
