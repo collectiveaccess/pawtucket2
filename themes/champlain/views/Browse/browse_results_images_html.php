@@ -137,10 +137,18 @@
 						$vs_info = null;
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 					} else {
-						if($va_images[$vn_id]){
-							$vs_thumbnail = $va_images[$vn_id];
+						if($vs_table == "ca_collections"){
+							if($vn_collection_idno = $qr_res->get('ca_collections.idno')){
+								if($vs_collection_placeholder_graphic = caGetOption($vn_collection_idno, $va_collection_specific_icons, null)){
+									$vs_thumbnail = caGetThemeGraphic($this->request, $vs_collection_placeholder_graphic);
+								}
+							}
 						}else{
-							$vs_thumbnail = $vs_default_placeholder_tag;
+							if($va_images[$vn_id]){
+								$vs_thumbnail = $va_images[$vn_id];
+							}else{
+								$vs_thumbnail = $vs_default_placeholder_tag;
+							}
 						}
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 					}
@@ -156,7 +164,7 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 				<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+						".((!in_array($vs_table, array("ca_entities", "ca_collections"))) ? "<small>{$vs_idno_detail_link}</small><br/>" : "")."{$vs_label_detail_link}
 					</div><!-- end bResultItemText -->
 				</div><!-- end bResultItemContent -->
 				<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
