@@ -24,6 +24,7 @@
  *
  * ----------------------------------------------------------------------
  */
+
 ?>
 <div class="hpHero" >
 	<?php print caGetThemeGraphic('SVA_Exhibitions_Archives.jpg', array("alt" => "Rising Sun Graphic Image")); ?>
