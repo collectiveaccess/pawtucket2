@@ -131,7 +131,7 @@
 							</ifdef>');
 							$vs_related_works = $vo_result->getWithTemplate('<unit relativeTo="ca_objects" restrictToTypes = "artwork,art_HFF,edition_HFF,art_nonHFF,edition_nonHFF" delimiter="; ">^ca_objects.preferred_labels.name<ifdef code="ca_objects.common_date">, ^ca_objects.common_date</ifdef></unit>');
 							if($vs_related_works){
-								$vs_related_works = '<div style="padding-left:20px;"><div>Works Exhibited</div>'.$vs_related_works.'.</div>';
+								$vs_related_works = '<div style="padding-left:20px;"><div>Works Exhibited</div>'.$vs_related_works.'</div>';
 							}
 							$vs_label 	.= (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "").$vs_travel_venues.(($vs_travel_venues && $vs_related_works) ? "<br/>" : "").$vs_related_works;
 						break;
