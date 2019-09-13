@@ -1041,7 +1041,7 @@ class DisplayTemplateParser {
                     }
                     if (!preg_match("!^{$vs_relative_to_container}!", $vs_get_spec)) { $vs_get_spec = $vs_relative_to_container.".".$vs_get_spec; }
 
-                    $va_vals = $pr_res->get($vs_get_spec, array_merge($pa_options, $va_parsed_tag_opts['options'], ['filters' => $va_parsed_tag_opts['filters'], 'returnAsArray' => true, 'returnBlankValues' => true], $va_get_specs[$vs_tag]['isRelated'] ? $va_remove_opts_for_related : []));
+                    $va_vals = $pr_res->get($vs_get_spec, array_merge($pa_options, $va_parsed_tag_opts['options'], ['sort' => '', 'filters' => $va_parsed_tag_opts['filters'], 'returnAsArray' => true, 'returnBlankValues' => true], $va_get_specs[$vs_tag]['isRelated'] ? $va_remove_opts_for_related : []));
         
                     if (is_array($va_vals)) {
                         foreach($va_vals as $vn_index => $vs_val) {
@@ -1054,7 +1054,7 @@ class DisplayTemplateParser {
                     $va_sortables = array();
                     if (!is_array($va_parsed_tag_opts['options'])) { $va_parsed_tag_opts['options'] = []; }
                     foreach($pa_options['sort'] as $vs_sort_spec) {
-                        $va_sortables[] = $pr_res->get($vs_sort_spec, array_merge($pa_options, $va_parsed_tag_opts['options'], ['filters' => $va_parsed_tag_opts['filters'], 'sortable' => true, 'returnAsArray' => true, 'returnBlankValues' => true], $va_get_specs[$vs_tag]['isRelated'] ? $va_remove_opts_for_related : []));
+                        $va_sortables[] = $pr_res->get($vs_sort_spec, array_merge($pa_options, $va_parsed_tag_opts['options'], ['sort' => '', 'filters' => $va_parsed_tag_opts['filters'], 'sortable' => true, 'returnAsArray' => true, 'returnBlankValues' => true], $va_get_specs[$vs_tag]['isRelated'] ? $va_remove_opts_for_related : []));
                     }
                 
                     if(is_array($va_sortables)) {
@@ -1786,8 +1786,12 @@ class DisplayTemplateParser {
             $vs_element = trim(str_replace($vs_relative_to_container, '', $vs_element), '.');
             $va_directives = explode('~', $vs_element);
             $vs_spec = array_shift($va_directives);
-	        $vo_measurement = caParseLengthDimension($pa_vals[$vs_spec]);
-	        
+            
+            try {
+	            $vo_measurement = caParseLengthDimension($pa_vals[$vs_spec]);
+	        } catch (Exception $e) {
+	            continue;
+	        }
 	        $in_inches = $vo_measurement->convertTo(Zend_Measure_Length::INCH, 15);
 	        $in_cm = $vo_measurement->convertTo(Zend_Measure_Length::CENTIMETER, 15);
 	        
