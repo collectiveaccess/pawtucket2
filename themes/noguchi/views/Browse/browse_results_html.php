@@ -110,7 +110,7 @@
 			<section class="intro">
 				<div class="wrap block-large">
 					<div class="wrap-max-content">
-						<div class="block-half body-text-l">Fusce vehicula dolor arcu, sit amet blandit dolor mollis nec. Donec viverra eleifend lacus, vitae ullamcorper metus. Sed sollicitudin ipsum quis nunc sollicitudin ultrices. Donec euismod scelerisque ligula. Maecenas eu varius risus, eu aliquet arcu. Curabitur fermentum suscipit est, tincidunt mattis lorem luctus id. Donec eget massa a diam condimentum pretium. Aliquam erat volutpat. Integer ut tincidunt orci. Etiam tristique, elit ut consectetur iaculis, metus lectus mattis justo, vel mollis eros neque quis augue. Sed lobortis ultrices lacus, a placerat metus rutrum sit amet. View a curated Selected Bibliography <a href="http://www.noguchi.org/bibliography">here</a>.</div>
+						<div class="block-half body-text-l">{{{bibliographyIntro}}}</div>
 					</div>
 				</div>
 			</section>

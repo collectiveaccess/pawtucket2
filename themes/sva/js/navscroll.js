@@ -52,7 +52,7 @@ class Navscroll extends React.Component {
 		<div className="collapse navbar-collapse" id="mainnavbar">
         	<ul className="navbar-nav ml-auto">
         		<li><span className="skip"><a href="#main">Skip to main content</a></span></li>
-         		<li><a id="search-button" href="#">Search Exhibitions</a></li>
+         		<li><a id="search-button" href="#">Search</a></li>
 				<li><a href="/glaser-archives?autoscroll=0">Glaser Archives</a></li>
                 <li><a href="/sva-archives">SVA Archives</a></li>
                 <li><a href="/page/about?autoscroll=0">About</a></li>

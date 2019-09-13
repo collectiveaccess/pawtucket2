@@ -5,40 +5,45 @@
 	if ($va_result_count > 0) {
 ?>
 		<div class="row">
-			<div class="col-sm-12 col-md-6">
-				<h1 class="my-4"><?php print _t("Search results for %1", caUcFirstUTF8Safe($this->getVar('searchForDisplay'))); ?></h1>
-			</div>
-			<div class="col-sm-12 col-md-6 text-right my-auto pt-3">
-				<small><?php print _t("Jump to"); ?>: 
+			<div class="col-sm-12 col-md-12 search">
+				<h2><?php print _t("Search Results: %1", caUcFirstUTF8Safe($this->getVar('searchForDisplay'))); ?></h2><hr>
+			</div>			
+		</div>
+		<div class="row">
+			<div class="col-sm-2">
+				<div class="jump">Showing results from:<br><br>
 <?php
 					$i = 0;
 					foreach($this->getVar('blockNames') as $vs_block) {
 						if ($va_results[$vs_block]['count'] == 0) { continue; }
 						$i++;
 						if($i > 1){
-							print " | ";
+							print " <br>";
 						}
-						print " <a href='#{$vs_block}' class='text-muted'>".$va_results[$vs_block]['displayName']." (".$va_results[$vs_block]['count'].")</a>";
+						print "<div class='space'><a href='#{$vs_block}'>".$va_results[$vs_block]['displayName']." (".$va_results[$vs_block]['count'].")</a></div>";
 					}
 ?>
-				</small>
-				
+				</div>
 			</div>
-		</div>
+			<div class="col-sm-10">
+		
 <?php
 		// 
 		// Print out block content (results for each type of search)
 		//
 		foreach($this->getVar('blockNames') as $vs_block) {
 ?>
-			<a name='<?php print $vs_block; ?>'></a>
-			<div id="<?php print $vs_block; ?>Block" class='resultBlock mb-4'>
+
+			<a name='<?php print $vs_block; ?>'></a><div></div>
+			<div id="<?php print $vs_block; ?>Block" class=' resultBlock mb-4'>
 				<?php print $va_results[$vs_block]['html']; ?>
 			</div>
+	
 <?php
 		} 
 	} else {
-		print "<H1>"._t("Your search for %1 returned no results", caUcFirstUTF8Safe($this->getVar('search')))."</H1>";
+		print "<div class='search'><H2>"._t("Your search for %1 returned no results", caUcFirstUTF8Safe($this->getVar('search')))."</H2></div>";
 	}
 ?>
+</div>
 </div>
