@@ -28,7 +28,13 @@
 				<li>{{{^ca_occurrences.preferred_labels.name}}}<span></li>
 				</li>
 			</ul>
-		</div>         			
+		</div>    
+		<div class="col-sm-12">
+			<?php print $this->getVar('previousLink'); ?> 
+			<?php print $this->getVar('resultsLink'); ?>
+			<?php print $this->getVar('nextLink'); ?>
+		</div>
+						
 		<div class="col-sm-12">
            	<H2>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno"> ^ca_occurrences.idno</ifdef>}}}: {{{^ca_occurrences.preferred_labels.name}}}</H2>
         <hr>
