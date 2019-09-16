@@ -84,7 +84,7 @@
 			</ifcount>}}}	
 			{{{<ifcount code="ca_objects" min="3">
 			    <div class="card-columns">
-				<unit relativeTo="ca_objects" delimiter=" "><div class="card mx-auto"><l>^ca_object_representations.media.large</l><div class='masonry-title'><l>^ca_objects.preferred_labels.name</l></div></div></unit>
+				<unit relativeTo="ca_objects" delimiter=" "><div class="card mx-auto"><div class="colorblock"><l>^ca_object_representations.media.large</l></div><div class='masonry-title'><l>^ca_objects.preferred_labels.name</l></div></div></unit>
                 </div>
 				</div><!-- end col -->
 			</ifcount>}}}						
