@@ -71,7 +71,14 @@ module.exports = {
             loader: "url-loader",
             options: { "limit": 100000 }
         }]
-       }
+       },
+       {
+        test: require.resolve('jquery'),
+        use: [{
+            loader: 'expose-loader',
+            options: '$'
+        }]
+    }
     ]
   },
   plugins: [
