@@ -13,6 +13,19 @@ module.exports = {
 	  path: path.resolve(__dirname, 'assets'),
 	  filename: '[name].js'
 	},
+	resolve: {
+		modules: [
+			path.resolve(__dirname, 'js').
+			path.resolve('css'),
+			path.resolve('./node_modules'),
+		],
+		alias: {
+			themeJS: path.resolve(__dirname, "js"),			// path to theme JS
+			defaultJS: path.resolve(__dirname, "js"),		// path to default JS
+			themeCSS: path.resolve(__dirname, "css"),		// path to theme CSS
+			defaultCSS: path.resolve(__dirname, "css")		// path to default CSS
+		}
+	},
   module: {
     rules: [
 	  {
