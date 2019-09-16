@@ -29,16 +29,21 @@
 				</li>
 			</ul>
 		</div>    
-		<div class="col-sm-12">
-			<?php print $this->getVar('previousLink'); ?> 
-			<?php print $this->getVar('resultsLink'); ?>
-			<?php print $this->getVar('nextLink'); ?>
-		</div>
-						
-		<div class="col-sm-12">
+	</div>
+	<div class="row">
+		<div class="col-sm-1 prevnext">
+			<?php print $this->getVar('resultsLink'); ?><br>
+			<?php print $this->getVar('previousLink'); ?> 		
+		</div>					
+		<div class="col-sm-10">
            	<H2>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno"> ^ca_occurrences.idno</ifdef>}}}: {{{^ca_occurrences.preferred_labels.name}}}</H2>
-        <hr>
-        </div>
+        </div>       
+        <div class="col-sm-1 prevnext">
+			<br><?php print $this->getVar('nextLink'); ?>
+		</div>
+		<div class="col-sm-12"><hr> </div>
+	</div>
+	<div class="row">
 		<div class="col-sm-12">
         	{{{<ifdef code="ca_occurrences.description_public"><p>^ca_occurrences.description_public</p></ifdef>}}}		
         </div>	
