@@ -234,6 +234,7 @@ if (!$vb_ajax) {	// !ajax
 											'object_id' => $vn_object_id,
 											'type_id' => $vn_type_id = $qr_set_items->get('ca_objects.type_id'),
 											'collection_idno' => $vn_type_id = $qr_set_items->get('ca_collections.idno'),
+											'collection_icon' => collectionIcon($this->request, $qr_set_items),
 											'type' => $vs_type_idno = caGetListItemIdno($vn_type_id)
 										);
 									}
@@ -263,11 +264,7 @@ if (!$vb_ajax) {	// !ajax
 									
 									$vs_representation = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => caGetDetailForType('ca_objects', null, array('request' => $this->request)), 'id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;'><div class='lbItemImg'>{$vs_tag}</div></a>";
 								} else {
-									if($vn_collection_idno = $va_items[$vn_item_id]["collection_idno"]){
-										if($vs_collection_placeholder_graphic = caGetOption($vn_collection_idno, $va_collection_specific_icons, null)){
-											$vs_thumbnail = caGetThemeGraphic($this->request, $vs_collection_placeholder_graphic);
-										}
-									}
+									$vs_thumbnail = $va_items[$vn_item_id]["collection_icon"];
 									if(!$vs_thumbnail){
 										$vs_thumbnail = "<div class='lbItemImg lbSetImgPlaceholder'>".$vs_default_placeholder_tag."</div>";
 									}

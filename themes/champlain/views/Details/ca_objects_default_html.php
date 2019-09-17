@@ -35,6 +35,7 @@
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	
 	$vs_rep_viewer = trim($this->getVar("representationViewer"));
+	
 	if(!$vs_rep_viewer){
 		$o_icons_conf = caGetIconsConfig();
 		$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
@@ -42,12 +43,8 @@
 			$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x' aria-label='placeholder image'></i>";
 		}
 		$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
-		$va_collection_specific_icons = $o_icons_conf->getAssoc("collection_placeholders");
-		
-		if($vn_collection_idno = $t_object->get('ca_collections.idno')){
-			if($vs_collection_placeholder_graphic = caGetOption($vn_collection_idno, $va_collection_specific_icons, null)){
-				$vs_placeholder = "<div class='detailPlaceholder'>".caGetThemeGraphic($this->request, $vs_collection_placeholder_graphic)."</div>";
-			}
+		if($vs_collection_graphic = collectionIcon($this->request, $t_object)){
+			$vs_placeholder = "<div class='detailPlaceholder'>".$vs_collection_graphic."</div>";
 		}
 		if(!$vs_placeholder){
 			$t_list_item = new ca_list_items();
@@ -114,7 +111,13 @@
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
-				{{{<unit relativeTo="ca_collections" delimiter="<br/>"><h3><l>^ca_collections.preferred_labels.name</l></h3></unit>}}}
+<?php
+				if($vs_collection = $t_object->get('ca_collections.hierarchy.preferred_labels.name', array("delimiter" => " &gt; "))){
+					# --- grab the top level collection to make link
+					$va_collection_ids = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_collections'>^ca_collections.hierarchy.collection_id", array("relativeTo" => "ca_collections", "delimiter" => ";")));
+					print "<h3>".caDetailLink($this->request, $vs_collection, "", "ca_collections", $va_collection_ids[0])."</h3>";
+				}
+?>
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				<HR>
 				{{{<ifdef code="ca_objects.idno"><H6>Identifier</H6>^ca_objects.idno<br/></ifdef>}}}
