@@ -32,7 +32,7 @@
 <?php
 					print $t_item->getWithTemplate('<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
 						<div class="unit"><H6>Traveled To</H6>
-						<unit relativeTo="ca_occurrences.venues" delimiter="<br/>">
+						<unit relativeTo="ca_occurrences.venues" delimiter="<br/>" sort="ca_occurrences.venues.venue_dates">
 							<ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef>
 							<ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address, </ifdef>
 							<ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display </ifdef>
