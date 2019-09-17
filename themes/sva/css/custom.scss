@@ -388,6 +388,12 @@ small {
     visibility: hidden;
 }
 
+@media screen and (max-width: 400px) {
+	.sortdir {
+		display: none;
+	}
+}
+
 /* Search box */
 
 .search-wrapper {
