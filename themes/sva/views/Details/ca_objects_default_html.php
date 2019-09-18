@@ -49,7 +49,7 @@
 					<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
 					</span>
 					</li>
-					{{{<unit relativeTo="ca_objects" delimiter="<br/>"><li>^ca_objects.preferred_labels.name</li></unit>}}} 
+					
 
 				</ul>
 			</div> 
@@ -59,7 +59,7 @@
 		     	<?php print $this->getVar('resultsLink'); ?><br>
 				<span class="flex align-items-start"><?php print $this->getVar('previousLink'); ?> </span>
 			</div>
-			<div class="col-sm-10">
+			<div class="col-sm-10 d-flex justify-content-center">
 			  <!--   <H2>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno"> ^ca_occurrences.idno</ifdef>}}}: {{{^ca_occurrences.preferred_labels.name}}}</H2>	-->	
             	<H2>{{{^ca_objects.preferred_labels.name}}}</h2>	
             </div>		

@@ -2,7 +2,7 @@ $font-stack: "GT-Sectra-Display-Medium", serif;
 $serif: "GT-Sectra-Regular", serif;
 $sans-serif: "FuturaLTPro-Heavy", sans-serif;
 $primary-color: #000;
-$lighter-color: #333;
+$lighter-color: #666;
 $very-light: #fff;
 $very-very-light: #f0f0f0;
 $ca-blue: #1ab3c8;
@@ -25,8 +25,8 @@ a:hover {
 
 hr {
 	border-top: 1px solid $primary-color;
-	padding-top: 10px;
-	padding-bottom: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
 }
 
 p {
@@ -141,6 +141,9 @@ h2 {
 		@extend h2;
 		margin-top: 1rem;
 		}
+		&--center {
+		text-align: center
+		}
 }
 
 h2 a:hover {
@@ -170,10 +173,16 @@ h3 {
 	}
 	&--nav {
 	@extend .breadcrumbs;
-	margin-bottom: 5rem;
-	margin-top: 5rem;
+	margin-bottom: 2rem;
+	margin-top: 2rem;
 	list-style: none;
-	margin-left: -40px;
+	color: $lighter-color;
+	margin-left: -25px;
+	font-size: .7rem;
+	}
+	
+	&--nav a {
+	color: $lighter-color!important;
 	}
 	
 	li {
@@ -185,6 +194,7 @@ h3 {
 	width: 11px;
 	height: 10px;
 	margin-bottom: 5px;
+	opacity: 0.7;
 	
 	}
 }
@@ -333,7 +343,7 @@ small {
 }
 
 .occurrence-metadata {
-	padding-top: 50px;
+	padding-top: 20px;
 }
 
 .colorblock {

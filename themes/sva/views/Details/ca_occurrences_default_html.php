@@ -25,7 +25,6 @@
 				<li><a href="/index.php/">SVA Exhibitions Archives</a><span></li>
 				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
 				</span></li>
-				<li>{{{^ca_occurrences.preferred_labels.name}}}<span></li>
 				</li>
 			</ul>
 		</div>    
@@ -35,8 +34,8 @@
 			<?php print $this->getVar('resultsLink'); ?><br>
 			<?php print $this->getVar('previousLink'); ?> 		
 		</div>					
-		<div class="col-sm-10">
-           	<H2>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno"> ^ca_occurrences.idno</ifdef>}}}: {{{^ca_occurrences.preferred_labels.name}}}</H2>
+		<div class="col-sm-10 d-flex justify-content-center">
+           	<H2>{{{^ca_occurrences.preferred_labels.name}}}</H2>
         </div>       
         <div class="col-sm-1 prevnext">
 			<br><?php print $this->getVar('nextLink'); ?>
@@ -50,41 +49,45 @@
 	</div>
 	<div class="row occurrence-metadata justify-content-center">			
 		<div class='col-sm'>			
+			
+			{{{<ifdef code="ca_occurrences.type_id"><h3>^ca_occurrences.type_id Identifier</h3>}}}
+			{{{<ifdef code="ca_occurrences.idno"><p>^ca_occurrences.idno</p></ifdef><br>}}} 
+			
 			{{{<ifcount code="ca_places" min="1" max="1"><H3>Location</H3></ifcount>}}}
 			{{{<ifcount code="ca_places" min="2"><H3>Locations</H3></ifcount>}}}
 			{{{<unit relativeTo="ca_places" delimiter="<br/>"><p>^ca_places.preferred_labels.name</p><br/></unit>}}}	
 					
 			{{{<ifcount restrictToRelationshipTypes="department" code="ca_entities" min="1" max="1"><h3>Department</H3></ifcount>}}}
 			{{{<ifcount restrictToRelationshipTypes="department" code="ca_entities" min="2"><H3>Departments</H3></ifcount>}}}
-			{{{<unit relativeTo="ca_entities.related" delimiter="<br/>" restrictToRelationshipTypes="department"><p>^ca_entities.preferred_labels</p></unit>}}}					
+			{{{<unit relativeTo="ca_entities.related" delimiter="<br/>" restrictToRelationshipTypes="department"><p><l>^ca_entities.preferred_labels</l></p></unit>}}}					
 				
 			{{{<ifdef code="ca_occurrences.external_link.url_source"><H2>Links</H2>^ca_occurrences.external_link.url_entry</ifdef>}}}									
 		</div><!-- end col -->
 		<div class='col-sm'>		
 			{{{<if rule="^ca_occurrences.dates.dates_type =~ /Exhibition dates/"><h3>Exhibition Dates</H3></if>}}}
-			{{{<unit relativeTo="ca_occurrences.dates" skipWhen="^ca_occurrences.dates.dates_type !~ /Exhibition dates/" delimiter="<br/>"><if rule="^ca_occurrences.dates.dates_type =~ /Exhibition dates/"><p>^ca_occurrences.dates.dates_value</p></if></unit><br/>}}}
+			{{{<unit relativeTo="ca_occurrences.dates" skipWhen="^ca_occurrences.dates.dates_type !~ /Exhibition dates/" delimiter="<br/>"><if rule="^ca_occurrences.dates.dates_type =~ /Exhibition dates/"><p>^ca_occurrences.dates.dates_value</p></if><br/></unit>}}}
 		
 			{{{<if rule="^ca_occurrences.dates.dates_type =~ /Reception dates/"><h3>Reception Date</H3></if>}}}
-			{{{<unit relativeTo="ca_occurrences.dates" skipWhen="^ca_occurrences.dates.dates_type !~ /Reception dates/" delimiter="<br/>"><p>^ca_occurrences.dates.dates_value</p><br/><br/>}}}
+			{{{<unit relativeTo="ca_occurrences.dates" skipWhen="^ca_occurrences.dates.dates_type !~ /Reception dates/" delimiter="<br/>"><p>^ca_occurrences.dates.dates_value</p><br/></unit>}}}
 					
 			{{{<ifnotdef code="ca_occurrences.dates"><h3>Dates</h3><p>^ca_occurrences.date_as_text</p></ifnotdef>}}}														
 		</div><!-- end col -->
 		<div class='col-sm'>				
 			{{{<ifcount restrictToRelationshipTypes="curator" code="ca_entities" min="1" max="1"><h3>Curator</H3></ifcount>}}}
 			{{{<ifcount restrictToRelationshipTypes="curator" code="ca_entities" min="2"><H3>Curators</H3></ifcount>}}}
-			{{{<unit relativeTo="ca_entities.related" delimiter="<br/>" restrictToRelationshipTypes="curator"><span class="p">^ca_entities.preferred_labels</span><br/><br/></unit>}}}
+			{{{<unit relativeTo="ca_entities.related" delimiter="<br/>" restrictToRelationshipTypes="curator"><span class="p"><l>^ca_entities.preferred_labels</l></span><br/><br/></unit>}}}
 
 			{{{<ifcount restrictToRelationshipTypes="exhibitor" code="ca_entities" min="1" max="1"><h3>Exhibitor</H3></ifcount>}}}
 			{{{<ifcount restrictToRelationshipTypes="exhibitor" code="ca_entities" min="2"><H3>Exhibitors</H3></ifcount>}}}
-			{{{<unit relativeTo="ca_entities.related" delimiter="<br/>" restrictToRelationshipTypes="exhibitor"><span class="p"><l>^ca_entities.preferred_labels</l></span></unit><br/><br/>}}}					
+			{{{<unit relativeTo="ca_entities.related" delimiter=", " restrictToRelationshipTypes="exhibitor"><span class="p"><l>^ca_entities.preferred_labels</l></span></unit><br>}}}					
 				
 			{{{<ifcount code="ca_entities" excludeRelationshipTypes="exhibitor, curator, department" min="1" max="1"><H3>Related Person</H3></ifcount>}}}
 			{{{<ifcount code="ca_entities" excludeRelationshipTypes="exhibitor, curator, department" min="2"><H3>Related People</H3></ifcount>}}}
-			{{{<unit relativeTo="ca_entities" excludeRelationshipTypes="exhibitor, curator, department" delimiter="<br/>"><span class="p">^ca_entities.preferred_labels (^relationship_typename)</span></unit><br/><br/>}}}									
+			{{{<unit relativeTo="ca_entities" excludeRelationshipTypes="exhibitor, curator, department" delimiter="<br/>"><span class="p"><l>^ca_entities.preferred_labels (^relationship_typename)</l></span><br/></unit>}}}									
 		</div>
 	</div>		
 	</div><!-- end row -->
-<div class="container-fluid p-3">
+<div class="container-fluid pr-3 pl-3">
 	<div class="row">
 		<div class="col-sm-12">
 			<hr>
@@ -102,10 +105,10 @@
 				</div>
 		</div>
 	</div>
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
+<!--	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">
 			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
+		</div> -->
 	</div><!-- end col -->
 </div><!-- end row -->
 <script type='text/javascript'>
