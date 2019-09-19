@@ -115,7 +115,7 @@
 				if($vs_collection = $t_object->get('ca_collections.hierarchy.preferred_labels.name', array("delimiter" => " &gt; "))){
 					# --- grab the top level collection to make link
 					$va_collection_ids = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_collections'>^ca_collections.hierarchy.collection_id", array("relativeTo" => "ca_collections", "delimiter" => ";")));
-					print "<h3>".caDetailLink($this->request, $vs_collection, "", "ca_collections", $va_collection_ids[0])."</h3>";
+					print "<p>".caDetailLink($this->request, $vs_collection, "", "ca_collections", $va_collection_ids[0])."</p>";
 				}
 ?>
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
