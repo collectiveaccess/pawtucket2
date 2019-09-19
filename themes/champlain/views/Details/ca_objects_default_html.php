@@ -35,6 +35,7 @@
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	
 	$vs_rep_viewer = trim($this->getVar("representationViewer"));
+	
 	if(!$vs_rep_viewer){
 		$o_icons_conf = caGetIconsConfig();
 		$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
@@ -42,12 +43,8 @@
 			$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x' aria-label='placeholder image'></i>";
 		}
 		$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
-		$va_collection_specific_icons = $o_icons_conf->getAssoc("collection_placeholders");
-		
-		if($vn_collection_idno = $t_object->get('ca_collections.idno')){
-			if($vs_collection_placeholder_graphic = caGetOption($vn_collection_idno, $va_collection_specific_icons, null)){
-				$vs_placeholder = "<div class='detailPlaceholder'>".caGetThemeGraphic($this->request, $vs_collection_placeholder_graphic)."</div>";
-			}
+		if($vs_collection_graphic = collectionIcon($this->request, $t_object)){
+			$vs_placeholder = "<div class='detailPlaceholder'>".$vs_collection_graphic."</div>";
 		}
 		if(!$vs_placeholder){
 			$t_list_item = new ca_list_items();
@@ -99,9 +96,6 @@
 <?php				
 					}
 
-					if ($vn_pdf_enabled) {
-						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
-					}
 					print '</div><!-- end detailTools -->';
 				}				
 
@@ -110,19 +104,25 @@
 					<div class="addthis_inline_share_toolbox"></div> 
 
 				<div><br>
-					{{{<ifdef code="ca_objects.georeference"><H6>Georeference</H6>^ca_objects.georeference<br/></ifdef>}}}<br>			
+					{{{<ifdef code="ca_objects.georeference"><H6>Georeference</H6><unit realtiveTo="ca_objects.georeference" delimiter="<br/>">^ca_objects.georeference</unit><br/></ifdef>}}}<br>			
 					{{{map}}}
 				</div><br>
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
 				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
-				{{{<unit relativeTo="ca_collections" delimiter="<br/>"><h3><l>^ca_collections.preferred_labels.name</l></h3></unit>}}}
+<?php
+				if($vs_collection = $t_object->get('ca_collections.hierarchy.preferred_labels.name', array("delimiter" => " &gt; "))){
+					# --- grab the top level collection to make link
+					$va_collection_ids = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_collections'>^ca_collections.hierarchy.collection_id", array("relativeTo" => "ca_collections", "delimiter" => ";")));
+					print "<h3>".caDetailLink($this->request, $vs_collection, "", "ca_collections", $va_collection_ids[0])."</h3>";
+				}
+?>
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				<HR>
 				{{{<ifdef code="ca_objects.idno"><H6>Identifier</H6>^ca_objects.idno<br/></ifdef>}}}
 				
-				{{{<ifcount min="1" code="ca_objects.date.dates_value"><h6>Date</h6></ifcount>}}}
+				{{{<ifcount min="1" code="ca_objects.date"><h6>Date</h6></ifcount>}}}
 				{{{<ifdef code="ca_objects.date.dates_value">^ca_objects.date.dates_value</ifdef><ifdef code="ca_objects.date.dates_types"> (^ca_objects.date.dates_types)</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.publication_place"><h6>Place of Publication</h6></ifdef>}}}
@@ -145,14 +145,14 @@
 				{{{<ifdef code="ca_objects.dimensions.dimensions_height">^ca_objects.dimensions.dimensions_height (H)</ifdef>}}}
 				{{{<ifdef code="ca_objects.dimensions.dimensions_depth">^ca_objects.dimensions.dimensions_depth (D)</ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.material"><H6>Material</H6>^ca_objects.material<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.material"><H6>Material</H6>^ca_objects.material%delimiter=,_<br/></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.public_notes"><H6>Notes</H6>^ca_objects.public_notes<br/></ifdef>}}}				
 				
 							
 				<hr></hr>
 					<div class="row">
-						<div class="col-sm-6">		
+						<div class="col-sm-12">		
 							{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
 							{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit></unit>}}}						
@@ -161,16 +161,16 @@
 							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit> (^relationship_typename)</unit>}}}						
 							
-							{{{<ifcount code="ca_objects.lcsh_terms" min="1" max="1"><H6>Library of Congress Subject Heading</H6></ifcount>}}}
-							{{{<ifcount code="ca_objects.lcsh_terms" min="2"><H6>Library of Congress Subject Headings</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_objects.lcsh_terms" delimiter="<br/>">^ca_objects.lcsh_terms</unit>}}}
+							{{{<ifdef code="ca_objects.lcsh_terms"><ifcount code="ca_objects.lcsh_terms" min="1" max="1"><H6>Library of Congress Subject Heading</H6></ifcount>
+							<ifcount code="ca_objects.lcsh_terms" min="2"><H6>Library of Congress Subject Headings</H6></ifcount>
+							<unit relativeTo="ca_objects.lcsh_terms" delimiter="<br/>">^ca_objects.lcsh_terms</unit></ifdef>}}}
 						
-							{{{<ifcount code="ca_objects.lcsh_names" min="1" max="1"><H6>Library of Congress Name Authority</H6></ifcount>}}}
-							{{{<ifcount code="ca_objects.lcsh_names" min="2"><H6>Library of Congress Name Authorities</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_objects.lcsh_names" delimiter="<br/>">^ca_objects.lcsh_names</unit>}}}		
+							{{{<ifdef code="ca_objects.lcsh_names"><ifcount code="ca_objects.lcsh_names" min="1" max="1"><H6>Library of Congress Name Authority</H6></ifcount>
+							<ifcount code="ca_objects.lcsh_names" min="2"><H6>Library of Congress Name Authorities</H6></ifcount>
+							<unit relativeTo="ca_objects.lcsh_names" delimiter="<br/>">^ca_objects.lcsh_names</unit></ifdef>}}}		
 		
 						</div><!-- end col -->				
-						<div class="col-sm-6 colBorderLeft">
+						<div class="col-sm-12">
 <?php
 							print $t_object->getWithTemplate('<ifcount code="ca_list_items" min="1" max="1"><H6>Subject</H6></ifcount><ifcount code="ca_list_items" min="2"><H6>Subjects</H6></ifcount><unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name_singular (^relationship_typename)</unit>', array("restrictToLists" => array("custom_subject_authority")));
 ?>

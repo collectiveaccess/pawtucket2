@@ -62,6 +62,10 @@
 	$qr_comments 					= $this->getVar("comments");
 	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
 	$vs_description_attribute 		= $this->getVar("description_attribute");
+	
+	$o_icons_conf = caGetIconsConfig();
+	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
+	$va_collection_specific_icons = $o_icons_conf->getAssoc("collection_placeholders");
 
 if (!$vb_ajax) {	// !ajax
 ?>
@@ -142,16 +146,7 @@ if (!$vb_ajax) {	// !ajax
 					}
 ?>
 						<li><?php print caNavLink($this->request, _t("Start presentation"), "", "", "Lightbox", "Present", array('set_id' => $t_set->getPrimaryKey())); ?></li>
-<?php
-						if(is_array($va_export_formats) && sizeof($va_export_formats)){
-							// Export as PDF links
-							print "<li class='divider'></li>\n";
-							print "<li class='dropdown-header'>"._t("Download as:")."</li>\n";
-							foreach($va_export_formats as $va_export_format){
-								print "<li>".caNavLink($this->request, $va_export_format["name"]." [".$va_export_format["type"]."]", "", "", "Lightbox", "setDetail", array("view" => $va_export_format['type'], "download" => true, "export_format" => $va_export_format["code"]))."</li>";
-							}
-						}
-?>
+
 						<li class="divider"></li>
 						<li><a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array()); ?>"); return false;' ><?php print _t("New %1", ucfirst($vs_lightbox_displayname)); ?></a></li>
 						<li class="divider"></li>
@@ -238,6 +233,8 @@ if (!$vb_ajax) {	// !ajax
 										$va_items[$va_item_info['item_id']] = array(
 											'object_id' => $vn_object_id,
 											'type_id' => $vn_type_id = $qr_set_items->get('ca_objects.type_id'),
+											'collection_idno' => $vn_type_id = $qr_set_items->get('ca_collections.idno'),
+											'collection_icon' => collectionIcon($this->request, $qr_set_items),
 											'type' => $vs_type_idno = caGetListItemIdno($vn_type_id)
 										);
 									}
@@ -267,8 +264,11 @@ if (!$vb_ajax) {	// !ajax
 									
 									$vs_representation = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => caGetDetailForType('ca_objects', null, array('request' => $this->request)), 'id' => $vn_object_id, 'representation_id' => $vn_representation_id, 'item_id' => $vn_item_id, 'overlay' => 1))."\"); return false;'><div class='lbItemImg'>{$vs_tag}</div></a>";
 								} else {
-									if (!isset($va_placeholders[$va_items[$vn_item_id]['type']])) { $va_placeholders[$va_items[$vn_item_id]['type']] = caGetPlaceholder($va_items[$vn_item_id]['type'], 'placeholder_media_icon'); }
-									$vs_representation = "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$va_items[$vn_item_id]['type']]."</div>";
+									$vs_thumbnail = $va_items[$vn_item_id]["collection_icon"];
+									if(!$vs_thumbnail){
+										$vs_thumbnail = "<div class='lbItemImg lbSetImgPlaceholder'>".$vs_default_placeholder_tag."</div>";
+									}
+									$vs_representation = "<div class='lbItemImg'>".$vs_thumbnail."</div>";
 								}
 								$this->setVar('representation', $vs_representation);
 								$this->setVar('representation_id', $vn_representation_id);

@@ -126,12 +126,12 @@
 							}
 							$vs_travel_venues = $vo_result->getWithTemplate('<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
 								<div style="padding-left:20px;"><div>Traveled To</div>
-								<unit relativeTo="ca_occurrences.venues" delimiter="<br/>"><ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef><ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address<ifdef code="ca_occurrences.venues.venue_dates_display">, </ifdef></ifdef><ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display</ifdef>.</unit>
+								<unit relativeTo="ca_occurrences.venues" delimiter="<br/>" sort="ca_occurrences.venues.venue_dates"><ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef><ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address<ifdef code="ca_occurrences.venues.venue_dates_display">, </ifdef></ifdef><ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display</ifdef>.</unit>
 								</div>
 							</ifdef>');
 							$vs_related_works = $vo_result->getWithTemplate('<unit relativeTo="ca_objects" restrictToTypes = "artwork,art_HFF,edition_HFF,art_nonHFF,edition_nonHFF" delimiter="; ">^ca_objects.preferred_labels.name<ifdef code="ca_objects.common_date">, ^ca_objects.common_date</ifdef></unit>');
 							if($vs_related_works){
-								$vs_related_works = '<div style="padding-left:20px;"><div>Works Exhibited</div>'.$vs_related_works.'.</div>';
+								$vs_related_works = '<div style="padding-left:20px;"><div>Works Exhibited</div>'.$vs_related_works.'</div>';
 							}
 							$vs_label 	.= (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "").$vs_travel_venues.(($vs_travel_venues && $vs_related_works) ? "<br/>" : "").$vs_related_works;
 						break;

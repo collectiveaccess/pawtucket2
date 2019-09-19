@@ -56,10 +56,8 @@
 
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
-	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
-		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
-	}
-	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
+
+
 	$va_collection_specific_icons = $o_icons_conf->getAssoc("collection_placeholders");
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
@@ -78,19 +76,15 @@
 			$vn_c = 0;
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
-			
-			if ($vs_table != 'ca_objects') {
-				$va_ids = array();
-				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
-					$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
-				}
-			
-				$qr_res->seek($vn_start);
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
-			} else {
-				$va_images = null;
-			}
-			
+						
+			#$va_ids = array();
+			#while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
+			#	$va_ids[] = $qr_res->get("{$vs_table}.{$vs_pk}");
+			#}
+		
+			#$qr_res->seek($vn_start);
+			#$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
+					
 			$t_list_item = new ca_list_items();
 			while($qr_res->nextHit()) {
 				if($vn_c == $vn_hits_per_block){
@@ -116,32 +110,31 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+					#$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : null;
 				
-					if(!$vs_image){
-						if ($vs_table == 'ca_objects') {
-							$t_list_item->load($qr_res->get("type_id"));
-							$vs_typecode = $t_list_item->get("idno");
-							if($vn_collection_idno = $qr_res->get('ca_collections.idno')){
-								if($vs_collection_placeholder_graphic = caGetOption($vn_collection_idno, $va_collection_specific_icons, null)){
-									$vs_image = caGetThemeGraphic($this->request, $vs_collection_placeholder_graphic);
-								}
-							}
+					switch($vs_table){
+						# --- objects show collection placeholder when no image - collections always show collection placeholder
+						case "ca_objects":
+						case "ca_collections":
 							if(!$vs_image){
-								if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-									$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
-								}else{
-									$vs_image = $vs_default_placeholder_tag;
+								$t_list_item->load($qr_res->get("type_id"));
+								$vs_typecode = $t_list_item->get("idno");
+								$vs_image = collectionIcon($this->request, $qr_res);
+								if(!$vs_image){
+									if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+										$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+									}else{
+										$vs_image = $vs_default_placeholder_tag;
+									}
 								}
 							}
-						}else{
-							$vs_image = $vs_default_placeholder_tag;
-						}
+						break;
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				
 					$vs_add_to_set_link = "";
-					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+					if(($vs_table !== 'ca_entities') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
 				
@@ -151,9 +144,9 @@
 		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
+				<div class='bResultListItemContent'>".((!in_array($vs_table, array("ca_entities"))) ? "<div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>" : "")."
 					<div class='bResultListItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+						".((!in_array($vs_table, array("ca_entities", "ca_collections"))) ? "<small>{$vs_idno_detail_link}</small><br/>" : "")."{$vs_label_detail_link}
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
 				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>

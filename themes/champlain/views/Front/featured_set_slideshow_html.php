@@ -39,7 +39,7 @@
 	if($qr_res && $qr_res->numHits()){
 ?>   
 <div class="row">
-<div class="col-sm-8">
+<div class="col-sm-8 carouselCol">
 		<div class="jcarousel-wrapper">
 			<!-- Carousel -->
 			<div class="jcarousel">
@@ -84,13 +84,14 @@
 </div>
 		<script type='text/javascript'>
 			jQuery(document).ready(function() {
+				$(".jcarousel-wrapper").width($(".carouselCol").width()); 
 				/*
 				Carousel initialization
 				*/
 				$('.jcarousel')
 					.jcarousel({
 						// Options go here
-						wrap:'circular'
+						//wrap:'circular'
 					});
 		
 				/*
@@ -135,7 +136,12 @@
 					})
 					.jcarouselPagination({
 						// Options go here
+						//'perPage': 2
 					});
+					
+				$(window).resize(function() { 
+                    $(".jcarousel-wrapper").width($(".carouselCol").width()); 
+                });
 			});
 		</script>
 <?php

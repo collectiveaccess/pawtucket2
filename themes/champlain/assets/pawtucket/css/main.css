@@ -1037,7 +1037,8 @@ a.browseRemoveFacet img {
 	margin-top:5px;
 }
 .lbItem a, .lbSet a{
-	color:#666;
+	color:#134959;
+	text-decoration: none;
 }
 .lbItemImg{
 	max-height:200px;
@@ -1397,6 +1398,7 @@ a.browseRemoveFacet img {
 .front .jcarousel-wrapper{
 	margin-bottom:20px;
 	margin-top:-20px;
+	position:relative;
 }
 .front .jcarousel-control-prev {
     left: 0px !important;
@@ -1671,6 +1673,10 @@ color: #ffa500
 	display:none;
 	top:0px;
 	z-index:200;
+
+}
+.detail .small {
+	text-align: center;
 }
 .detail .repViewerCont:hover .detailMediaToolbar{
 	display:block;
@@ -1956,10 +1962,10 @@ a.browseRemoveFacet .glyphicon {
 	position:relative;
 }
 .bResultItemCol{
-	height:290px;
+	height:220px;
 }
 .bResultItemContent {
-	height:240px;
+	height:190px;
 	overflow:hidden;
 }
 .bResultItem {
@@ -1988,9 +1994,20 @@ a.browseRemoveFacet .glyphicon {
     min-height: 100px;
     overflow: hidden;
 }
-.bResultItem img {
+/*.bResultItem img {
     height: auto;
     width: 100%;
+} */
+
+.bResultItem img {
+    width: auto;
+	max-width: 150px;
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: auto;
+	max-height: 110px;
+	margin-bottom:5px;
 }
 .bResultItem:hover {
     font-size: 12px;
@@ -2006,7 +2023,7 @@ a.browseRemoveFacet .glyphicon {
 .bResultItem:hover .bResultItemContent {
     height: auto;
     /*max-height: 600px;*/
-    min-height: 240px;
+    min-height: 220px;
 }
 .bResultItem:hover .bResultItemImg {
     height: auto;
@@ -2032,7 +2049,7 @@ a.browseRemoveFacet .glyphicon {
     line-height: 1.2em;
 }
 .bResultItem .bResultItemText {
-    font-size: 11px;
+    font-size: 12px;
 }
 .bResultItem .bResultItemText small, .bResultItem .bResultItemText small a {
     color: #ABABAB;
@@ -2247,7 +2264,9 @@ a.browseRemoveFacet .glyphicon {
 }
 .bResultListItem .bResultListItemText a{
 	line-height:1.2em;
-	color:#666;
+	color:#095a9f;
+	text-decoration: none;
+	font-size:15px;
 }
 .bResultListItem .bResultListItemText{
 	line-height:1.2em;
@@ -2255,6 +2274,7 @@ a.browseRemoveFacet .glyphicon {
 }
 .bResultListItem .bResultListItemText small, .bResultListItem .bResultListItemText small a{
 	color:#ababab;
+	font-size:11px;
 }
 .bResultListItemExpandedInfo{
 	display:none;
@@ -2452,8 +2472,12 @@ a.browseRemoveFacet .glyphicon {
 	text-decoration: none;
 }
 .multisearch .multisearchResult img {
-	width:100%;
-	height:auto;
+	width: auto;
+	max-width: 180px;
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+	max-height: 125px;
 	margin-bottom:5px;
 }
 .multisearch .authoritySet {
@@ -2523,6 +2547,18 @@ a.browseRemoveFacet .glyphicon {
 	.allLink {
 		display:block;
 	}
+}
+
+.multisearch .multisearchResult .mutisearchCollectionPlaceholder, .multisearch .multisearchResult .mutisearchCollectionPlaceholderSmall{
+	text-align:center;
+}
+.multisearch .multisearchResult .mutisearchCollectionPlaceholder img{
+	height:100px;
+	width:auto;
+}
+.multisearch .multisearchResult .mutisearchCollectionPlaceholderSmall img{
+	height:75px;
+	width:auto;
 }
 /* ---------------------------- */
 /* Collections/Finding Aid */
@@ -3212,7 +3248,9 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 .advancedSearchField select {
 	height:30px;
 }
-
+.advancedSearch table.attributeListItem{
+	width:100%;
+}
 /* Finding Aid */
 
 .findingaid H1 {
