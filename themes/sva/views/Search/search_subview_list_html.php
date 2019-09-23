@@ -1,10 +1,10 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/Search/ca_collections_search_subview_html.php : 
+ * themes/default/views/Search/search_subview_list_html.php : 
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2014 Whirl-i-Gig
+ * Copyright 2013-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -60,7 +60,7 @@
 <div class="row {{{block}}}Set multiSearchList h-100">
 <?php
 		$va_block_info["resultTemplate"];
-		$vs_full_link = caNavLink('<div class="card card-block d-flex h-100 multisearchFullResultsCard"><div class="card-body align-items-center d-flex justify-content-center text-center breadcrumbs">'._t('Full results').'&nbsp;<ion-icon name="open"></ion-icon></div></div>', '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search)));
+		$vs_full_link = caNavLink('<div class="card card-block d-flex h-100 multisearchFullResultsCard"><div class="card-body align-items-center d-flex justify-content-center text-center breadcrumbs">'._t('Full results').'&nbsp;<ion-icon name="open"></ion-icon></div></div>', '', '', 'Browse', '{{{block}}}', array('search' => str_replace("/", "", $vs_search)));
 		while($qr_results->nextHit()) {
 			$vn_count++;
 ?>
@@ -87,4 +87,3 @@
 				</div>
 <?php
 	}
-?>
