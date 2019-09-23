@@ -78,7 +78,7 @@
 		print "<div class='unit'>AP ".(count($t_item->get('ca_objects.edition.ap_total')) >= 2 ? $t_item->get('ca_objects.edition.ap_number') : "")." from an edition of ".$t_item->get('ca_objects.edition.edition_total')." + ".$t_item->get('ca_objects.edition.ap_total')." AP";
 		print "</div>";					
 	}
-	if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
+	if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
 		//print "<div>".$t_item->get('ca_objects.idno')."</div>"; 
 		if ($t_item->get('is_deaccessioned') && ($t_item->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
 			print "<div style='font-style:italic; font-size:10px; color:red;'>"._t('Deaccessioned %1', $t_item->get('deaccession_date'))."</div>\n";

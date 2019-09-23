@@ -188,10 +188,6 @@
 								"Hoard" => "hoard",
 								"Findspot" => "findspot"
 							);
-							$va_literature_fields = array(	
-								"Cross-reference" => "crossreference",
-								"Cross-reference Text" => "crossreference_text"
-							);
 	
 							print "<div class='unit'><H6>Identifier</H6>".$t_object->get("idno")."</div>";
 							$vs_materiality = "";
@@ -247,21 +243,46 @@
 						</div>
 						<div class="col-sm-4">
 <?php
-	
-
-							$vs_literature = "";
-							foreach($va_literature_fields as $vs_label => $vs_field){
-								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
-									$vs_literature .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
-								}
-							}
-							$vs_rel_lit = $t_object->getWithTemplate('<ifcount code="ca_occurrences" min="1" restrictToTypes="literature"><div class="unit"><H6>Related Literature</H6><unit relativeTo="ca_objects_x_occurrences" delimiter="<br/><br/>" restrictToTypes="literature">^ca_occurrences.preferred_labels.name</unit></div></ifcount>');
-							if($vs_literature || $vs_rel_lit){
-								print "<h4>Literature</h4>".$vs_rel_lit.$vs_literature;
+							# citation format: [Author].[Publicaton Date].[Publication Name], p.[Page Number(s)], [Item Number(s)]. Then, this is followed by the notes field from the edited coin Literature relationship
+							$vs_literature_template = '<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" restrictToRelationshipTypes="author" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>. </ifcount></unit>
+														<ifdef code="ca_occurrences.date">^ca_occurrences.date. </ifdef>
+														<ifdef code="ca_occurrences.preferred_labels.name">^ca_occurrences.preferred_labels.name</ifdef><unit relativeTo="ca_objects_x_occurrences"><ifdef code="ca_objects_x_occurrences.page_number">, ^ca_objects_x_occurrences.page_number</ifdef><ifdef code="ca_objects_x_occurrences.item_number">, ^ca_objects_x_occurrences.item_number</ifdef></unit><ifdef code="ca_occurrences.preferred_labels.name">. </ifdef>
+														<unit relativeTo="ca_objects_x_occurrences"><ifdef code="ca_objects_x_occurrences.comments"><p>^ca_objects_x_occurrences.comments</p></ifdef></unit>';
+							$vs_rel_publication = $t_object->getWithTemplate('<ifcount code="ca_occurrences" min="1" restrictToTypes="literature" restrictToRelationshipTypes="publication">
+																				<div class="unit">
+																					<H6>Publication<ifcount code="ca_occurrences" min="2" restrictToTypes="literature" restrictToRelationshipTypes="publication">s</ifcount></H6>
+																					<unit relativeTo="ca_objects_x_occurrences" delimiter="<br/><br/>" restrictToTypes="literature" restrictToRelationshipTypes="publication">
+																						'.$vs_literature_template.'
+																					</unit>
+																				</div>
+																			</ifcount>');
+							$vs_rel_crossreference = $t_object->getWithTemplate('<ifcount code="ca_occurrences" min="1" restrictToTypes="literature" restrictToRelationshipTypes="crossreference">
+																				<div class="unit">
+																					<H6>Cross-reference<ifcount code="ca_occurrences" min="2" restrictToTypes="literature" restrictToRelationshipTypes="crossreference">s</ifcount></H6>
+																					<unit relativeTo="ca_objects_x_occurrences" delimiter="<br/><br/>" restrictToTypes="literature" restrictToRelationshipTypes="crossreference">
+																						'.$vs_literature_template.'
+																					</unit>
+																				</div>
+																			</ifcount>');
+							$vs_rel_historical = $t_object->getWithTemplate('<ifcount code="ca_occurrences" min="1" restrictToTypes="literature" restrictToRelationshipTypes="reference">
+																				<div class="unit">
+																					<H6>Historical Literature</H6>
+																					<unit relativeTo="ca_objects_x_occurrences" delimiter="<br/><br/>" restrictToTypes="literature" restrictToRelationshipTypes="reference">
+																						'.$vs_literature_template.'
+																					</unit>
+																				</div>
+																			</ifcount>');
+							if($vs_rel_publication || $vs_rel_crossreference || $vs_rel_historical){
+								print "<h4>Literature</h4>".$vs_rel_publication.$vs_rel_crossreference.$vs_rel_historical;
 							}
 ?>
 							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale,collection"><H4>Collection History</H4></ifcount>}}}
-							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale"><div class='unit'><h6>Auction<ifcount min="2" code="ca_occurrences" restrictToTypes="sale">s</ifcount></h6><unit relativeTo='ca_occurrences' delimiter=' ' restrictToTypes='sale' sort='ca_occurrences.date' sortDirection='DESC'><div class='unitSub'>^ca_occurrences.preferred_labels<ifdef code='ca_occurrences.date'>, ^ca_occurrences.date</ifdef><ifdef code='ca_occurrences.sale_number'>, ^ca_occurrences.sale_number</ifdef></div></unit></ifcount>}}}
+							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale"><div class='unit'><h6>Auction<ifcount min="2" code="ca_occurrences" restrictToTypes="sale">s</ifcount></h6>
+									<unit relativeTo='ca_objects_x_occurrences' delimiter=' ' restrictToTypes='sale' sort='ca_occurrences.date' sortDirection='DESC'>
+										<div class='unitSub'>^ca_occurrences.preferred_labels<ifdef code='ca_occurrences.sale_number'>, ^ca_occurrences.sale_number</ifdef><ifdef code='ca_occurrences.date'>, ^ca_occurrences.date</ifdef><ifdef code='ca_objects_x_occurrences.lot_number'>, ^ca_objects_x_occurrences.lot_number</ifdef>
+										</div>
+									</unit>
+								</ifcount>}}}
 <?php
 							$va_collections = $t_object->get("ca_occurrences", array("returnWithStructure" => true, "restrictToTypes" => array("collection")));
 							if(is_array($va_collections) && sizeof($va_collections)){
@@ -315,7 +336,8 @@
 							}
 
 ?>
-							
+							{{{<ifdef code="ca_objects.historical_notes"><div class='notesSection'><h4>Historical Notes</h4>^ca_objects.historical_notes</div></ifdef>}}}	
+						
 						</div>
 					</div>
 					<div class="row">

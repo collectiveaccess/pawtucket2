@@ -1116,18 +1116,17 @@ class MultipartIDNumber extends IDNumber {
 		$vn_i = 0;
 		$vn_num_serial_elements_seen = 0;
 		foreach ($va_elements as $va_element_info) {
-			//if ($vn_i >= sizeof($va_values)) { break; }
 
 			switch($va_element_info['type']) {
 				case 'SERIAL':
 					$vn_num_serial_elements_seen++;
 
 					if ($pn_max_num_replacements <= 0) {	// replace all
-						if ($pb_no_placeholders) { unset($va_values[$vn_i]); $vn_i++; continue; }
+						if ($pb_no_placeholders) { unset($va_values[$vn_i]); $vn_i++; continue(2); }
 						$va_values[$vn_i] = '%';
 					} else {
 						if (($vn_num_serial_elements - $vn_num_serial_elements_seen) < $pn_max_num_replacements) {
-							if ($pb_no_placeholders) { unset($va_values[$vn_i]); $vn_i++; continue; }
+							if ($pb_no_placeholders) { unset($va_values[$vn_i]); $vn_i++; continue(2); }
 							$va_values[$vn_i] = '%';
 						}
 					}
