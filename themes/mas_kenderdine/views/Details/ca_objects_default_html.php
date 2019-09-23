@@ -98,9 +98,6 @@
 <?php
 		if ($vs_date = $t_object->get('ca_objects.date')) {
 			print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
-		}
-		if ($vs_description = $t_object->get('ca_objects.description')) {
-			print "<div class='unit'><h6>Description</h6>".$vs_description."</div>";
 		}		
 		if ($vs_use = $t_object->get('ca_objects.historyUse')) {
 			print "<div class='unit'><h6>History of Use</h6>".$vs_use."</div>";
