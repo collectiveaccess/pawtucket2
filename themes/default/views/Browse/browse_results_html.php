@@ -69,7 +69,6 @@
 	
 if (!$vb_ajax) {	// !ajax
 ?>
-<div role="main" id="main">
 <div class="row" style="clear:both;">
 	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 <?php 
@@ -98,7 +97,7 @@ if (!$vb_ajax) {	// !ajax
 			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
 ?>		
 			<div class="btn-group">
-				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear"></i></a>
+				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
@@ -153,14 +152,14 @@ if (!$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
-		<H5>
+		<div>
 <?php
 		if (sizeof($va_criteria) > 0) {
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
 				print "<strong>".$va_criterion['facet'].':</strong>';
 				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
 					print ' '.$va_criterion['value'];
 					$vs_search = $va_criterion['value'];
@@ -178,7 +177,7 @@ if (!$vb_ajax) {	// !ajax
 			}
 		}
 ?>		
-		</H5>
+		</div>
 <?php
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
@@ -240,9 +239,9 @@ if (!$vb_ajax) {	// !ajax
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
 			foreach($va_views as $vs_view => $va_view_info) {
 				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active"><span class="glyphicon"  '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
+					print '<a href="#" class="active"><span class="glyphicon"  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
 				} else {
-					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 				}
 			}
 		}
@@ -254,8 +253,7 @@ if (!$vb_ajax) {	// !ajax
 	</div><!-- end col-2 -->
 	
 	
-</div><!-- end row -->	
-</div>
+</div><!-- end row -->
 
 <script type="text/javascript">
 	jQuery(document).ready(function() {

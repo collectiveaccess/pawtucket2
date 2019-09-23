@@ -41,11 +41,11 @@
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
 		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
-		print "<H3>"._t("Filter by")."</H3>";
+		print "<H2>"._t("Filter by")."</H2>";
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			
 			if ((caGetOption('deferred_load', $va_facet_info, false) || ($va_facet_info["group_mode"] == 'hierarchical')) && ($o_browse->getFacet($vs_facet_name))) {
-				print "<H5>".$va_facet_info['label_singular']."</H5>";
+				print "<H3>".$va_facet_info['label_singular']."</H3>";
 				print "<p>".$va_facet_info['description']."</p>";
 ?>
 					<script type="text/javascript">
@@ -57,7 +57,7 @@
 <?php
 			} else {				
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
-				print "<h4>".$va_facet_info['label_singular']."</h4>"; 
+				print "<h3>".$va_facet_info['label_singular']."</h3>"; 
 				switch($va_facet_info["group_mode"]){
 					case "alphabetical":
 					case "list":

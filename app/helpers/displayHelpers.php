@@ -3729,14 +3729,14 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		$va_detail_type_config = caGetDetailTypeConfig($ps_context);
 		
 		if (!caGetOption(['no_overlay'], $va_rep_display_info, false)) {
-			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array('context' => $ps_context, 'id' => $pn_subject_id, 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in'></span></a>\n";
+			$vs_tool_bar .= "<a href='#' class='zoomButton' onclick='caMediaPanel.showPanel(\"".caNavUrl($po_request, '', 'Detail', 'GetMediaOverlay', array('context' => $ps_context, 'id' => $pn_subject_id, 'representation_id' => $vn_rep_id, 'overlay' => 1))."\"); return false;' title='"._t("Zoom")."'><span class='glyphicon glyphicon-zoom-in' aria-label='Zoom'></span></a>\n";
 		}
 		
 		if (is_null($vb_show_compare = caGetOption('compare', $va_detail_type_config['options'], null))) {
 		    $vb_show_compare = caGetOption('compare', $va_rep_display_info, false);
 		}
 		if ($vb_show_compare) {
-		   $vs_tool_bar .= "<a href='#' class='compare_link' title='Compare' data-id='representation:{$vn_rep_id}'><i class='fa fa-clone' aria-hidden='true'></i></a>";
+		   $vs_tool_bar .= "<a href='#' class='compare_link' title='Compare' data-id='representation:{$vn_rep_id}'><i class='fa fa-clone' aria-hidden='true' aria-label='Compare'></i></a>";
 		}
 		
 		if(($ps_table == "ca_objects") && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
