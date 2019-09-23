@@ -161,7 +161,8 @@
 			}
 			
  			$ps_function = strtolower($ps_function);
- 			$ps_id = urldecode($this->request->getActionExtra()); 
+ 			$ps_id = str_replace("~", "/", urldecode($this->request->getActionExtra())); 
+ 		
  			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
  				// invalid detail type – throw error
  				throw new ApplicationException("Invalid detail type");
@@ -223,8 +224,11 @@
  				return;
  			}
  			
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_subject->getTypeName().$this->request->config->get("page_title_delimiter").$t_subject->get('preferred_labels').(($vs_idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
- 			
+ 			if ($this->request->config->get("{$vs_table}_dont_use_labels")) { 
+ 			    MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_subject->getTypeName().$this->request->config->get("page_title_delimiter").(($vs_idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? "{$vs_idno}" : ""));
+ 			} else {
+ 			    MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_subject->getTypeName().$this->request->config->get("page_title_delimiter").$t_subject->get('preferred_labels').(($vs_idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
+ 			}
  			$vs_type = $t_subject->getTypeCode();
  			
  			$this->view->setVar('detailType', $vs_table);
@@ -308,13 +312,13 @@
 				$vn_mapped_count = 0;	
 				foreach($va_map_attributes as $vs_map_attribute) {
 					if ($t_subject->get($vs_map_attribute)){
-						$va_ret = $o_map->mapFrom($t_subject, $vs_map_attribute, array('contentTemplate' => caGetOption('mapContentTemplate', $va_options, false)));
+						$va_ret = $o_map->mapFrom($t_subject, $vs_map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $va_options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $va_options, false)));
 						$vn_mapped_count += $va_ret['items'];
 					}
 				}
 				
 				if ($vn_mapped_count > 0) { 
-					$this->view->setVar("map", $o_map->render('HTML', array('zoomLevel' => caGetOption(['mapZoomLevel', 'zoom_level'], $va_options, 12))));
+					$this->view->setVar("map", $o_map->render('HTML', array('maxZoomLevel' => caGetOption(['mapZoomLevel', 'zoom_level'], $va_options, 12))));
 				}
 			}
 			
@@ -608,7 +612,7 @@
 				
 				$t_download_log->log(array(
 						"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
-						"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+						"ip_addr" => RequestHTTP::ip(), 
 						"table_num" => $t_object->TableNum(), 
 						"row_id" => $vn_object_id, 
 						"representation_id" => null, 

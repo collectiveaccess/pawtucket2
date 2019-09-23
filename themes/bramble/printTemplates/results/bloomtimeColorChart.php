@@ -26,7 +26,8 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Bloomtime Color Chart
+ * @name Color Chart
+ * @filename Color_Chart.pdf
  * @type page
  * @pageSize letter
  * @pageOrientation landscape
@@ -54,9 +55,30 @@
 	print $this->render("pdfStart.php");
 	print $this->render("header.php");
 	print $this->render("footer.php");
+	
+	$vn_set_id = $this->request->getParameter('set_id', pInteger);
+	$vs_set_name = $vs_project_name = "";
+	if($vn_set_id){
+		$t_set = new ca_sets($vn_set_id);
+		$vs_set_name = $t_set->getLabelForDisplay();
+		if($t_set->get("parent_id")){
+			$t_parent_set = new ca_sets($t_set->get("parent_id"));
+			$vs_project_name = $t_parent_set->getLabelForDisplay();
+		}
+	}	
+	if($vs_set_name || $vs_project_name){
+		print "<div class='projectPaletteTitle'>";
+		if($vs_project_name){
+			print "<b>Project:</b> ".$vs_project_name."<br/>";
+		}
+		if($vs_set_name){
+			print "<b>Palette:</b> ".$vs_set_name."<br/>";
+		}
+		print "</div>";
+	}
 ?>
 		<div id='body'>
-			<div class="btccSeasonRow btccTitle">Bloomtime Color Chart</div>
+			<div class="btccSeasonRow btccTitle">Color Chart</div>
 			<div class="btccSeasonRow">
 				<div class="btccMonthCol">Dec</div>
 				<div class="btccMonthCol">Jan</div>
@@ -112,6 +134,8 @@
 								<div class="btccCol" style="background-color:<?php print "#".$vo_result->get("ca_objects.".$vs_bloomtime_color_field.".".$va_bloomtime_color_subfields["color"]); ?>;">
 <?php 
 									$vs_part = $vo_result->get("ca_objects.".$vs_bloomtime_color_field.".".$va_bloomtime_color_subfields["part"], array("convertCodesToDisplayText" => true));
+									$va_part = explode(";", $vs_part);
+									$vs_part = $va_part[0];
 									switch($vs_part){
 										case "Bare/Nothing/Gone":
 											# --- nothing

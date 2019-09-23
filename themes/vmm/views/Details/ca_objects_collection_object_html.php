@@ -25,7 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+ 	$va_access_values = caGetUserAccessValues($this->request);
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
@@ -38,6 +38,7 @@
 	
 	$vs_detail_tools = "<div id='detailTools'>
 						<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask A Curator", "", "", "Contact",  "form", array('id' => $vn_id, 'table' => 'ca_objects'))."</div><!-- end detailTool -->
+						<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Order Reproduction", "", "", "ImageLicensing",  "form", array('id' => $vn_id, 'table' => 'ca_objects'))."</div><!-- end detailTool -->
 						<div class='detailTool'><a href='#' onclick='jQuery(\"#detailComments\").slideToggle(); return false;'><span class='glyphicon glyphicon-comment'></span>Comments and Tags (".(sizeof($va_comments) + sizeof($va_tags)).")</a></div><!-- end detailTool -->
 						<div id='detailComments'>".$this->getVar("itemComments")."</div><!-- end itemComments -->
 					</div><!-- end detailTools -->";
@@ -49,7 +50,7 @@
 		if(strpos(strToLower($vs_back_url), "gallery") !== false){
 			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Highlights</a>";
 		}else{
-			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Artefacts</a>";
+			$va_breadcrumb[] = "<a href='".$vs_back_url."'>Find: Artifacts</a>";
 		}
 		$va_breadcrumb[] = $t_object->get("ca_objects.preferred_labels");
 	}
@@ -93,6 +94,7 @@
 		}
 ?>								
 				<H4>{{{^ca_objects.preferred_labels<ifdef code="ca_objects.object_type">, ^ca_objects.object_type</ifdef>}}}</H4>
+				{{{<ifdef code="ca_objects.nonpreferred_labels"><div class="unit"><H6>Title</H6><unit relatiecTo="ca_objects" delimiter="<br/>">^ca_objects.nonpreferred_labels</unit></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Object ID</H6>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.categories.main_categories|ca_objects.categories.subcategories"><div class="unit"><H6>Category</H6>^ca_objects.categories.main_categories<ifdef code="ca_objects.categories.subcategories">, ^ca_objects.categories.subcategories</ifdef></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.date.dates_value"><unit relativeTo="ca_objects.date"><if rule="^ca_objects.date.dc_dates_types =~ /Date made/"><div class="unit"><H6>Date Made</H6>^ca_objects.date.dates_value</div></if></unit></ifdef>}}}

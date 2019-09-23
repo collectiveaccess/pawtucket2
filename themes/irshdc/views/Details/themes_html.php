@@ -15,13 +15,15 @@
 					#$vs_theme_name = $t_list_item->get("ca_list_item_labels.name_singular");
 					$va_theme_hier = $t_list_item->get("ca_list_item_labels.hierarchy", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 					$va_theme_breadcrumb = array();
-					foreach($va_theme_hier as $va_theme){
-						foreach($va_theme as $vn_hier_theme_id => $va_theme_info){
-							$va_theme_info = array_pop($va_theme_info);
-							$va_theme_breadcrumb[] = caNavLink($this->request, $va_theme_info["name_singular"], "", "", "browse", "objects", array("facet" => $vs_facet, "id" => $vn_hier_theme_id));
+					if(is_array($va_theme_hier)){
+						foreach($va_theme_hier as $va_theme){
+							foreach($va_theme as $vn_hier_theme_id => $va_theme_info){
+								$va_theme_info = array_pop($va_theme_info);
+								$va_theme_breadcrumb[] = caNavLink($this->request, $va_theme_info["name_singular"], "", "", "browse", "objects", array("facet" => $vs_facet, "id" => $vn_hier_theme_id));
+							}
 						}
+						$vs_themes .= "<div><i class='fa fa-angle-right' aria-hidden='true'></i> ".join(" > ", $va_theme_breadcrumb)." <span>(".str_replace("_", " ", $vs_attribute).")</span></div>";
 					}
-					$vs_themes .= "<div><i class='fa fa-angle-right' aria-hidden='true'></i> ".join(" > ", $va_theme_breadcrumb)." <span>(".str_replace("_", " ", $vs_attribute).")</span></div>";
 				}
 			}
 		}

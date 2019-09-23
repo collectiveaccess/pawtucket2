@@ -5,7 +5,7 @@
 
 					# --- get all related authority records for tabbed presentation
 					$vs_rel_places = $vs_rel_entities = $vs_rel_events = $vs_rel_exhibitions = $vs_rel_sets;
-					$vs_rel_places = $t_item->getWithTemplate('<ifcount code="ca_places.related" min="1"><div class="row relTab" id="relPlaces"><unit relativeTo="ca_places" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_places.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
+					$vs_rel_places = $t_item->getWithTemplate('<ifcount code="ca_places.related" min="1"><div class="row relTab" id="relPlaces"><unit relativeTo="ca_places" delimiter=" "><div class="col-sm-12 col-md-3"><div class="placePlaceholder"><span>^ca_places.preferred_labels.name (^relationship_typename)</span></div></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
 					$vs_rel_entities = $t_item->getWithTemplate('<ifcount code="ca_entities.related" excludeTypes="school" min="1"><div class="row relTab" id="relEntities"><unit relativeTo="ca_entities" excludeTypes="school" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
 					$va_events = $t_item->get("ca_occurrences.related", array("returnWithStructure" => true, "restrictToTypes" => array("institutional"), "checkAccess" => $va_access_values));
 					$va_exhibitions = $t_item->get("ca_occurrences.related", array("returnWithStructure" => true, "restrictToTypes" => array("exhibitions"), "checkAccess" => $va_access_values));
@@ -68,7 +68,7 @@
 									}
 								}
 								if($vs_rel_sets){
-									print "<div id='relSetsButton' class='relTabButton' onClick='toggleTag(\"relSets\");'>Features</div>";
+									print "<div id='relSetsButton' class='relTabButton' onClick='toggleTag(\"relSets\");'>Featured Collections</div>";
 									if(!$vs_firstTab){
 										$vs_firstTab = "relSets";
 									}

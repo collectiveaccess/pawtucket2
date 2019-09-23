@@ -12,7 +12,7 @@
 	$va_removed_entity_ids = $this->getVar('removed_entity_ids');
 	
 	// Get cached stats per-reader (entity)
-	$stat_entity_checkout_distribution = CompositeCache::fetch('stat_entity_checkout_distribution', 'vizData');
+	$stat_entity_checkout_distribution = PersistentCache::fetch('stat_entity_checkout_distribution', 'vizData');
 	
 	// Generate data to pass to Chartist
 	$va_payload = [];

@@ -134,10 +134,19 @@ a.ss-icon  {
 	margin-left:10px;
 	margin-bottom:6px;	
 }
-.ss-icon .svg-inline--fa{
+/*.ss-icon .svg-inline--fa{
 	height:1.5em;
 	color: #b4c3dc;
     font-size: 22px;
+    line-height: 38px;
+    margin-left: 0px;
+    vertical-align: middle;	
+}*/
+.ss-icon .fa{
+	height:1.5em;
+	color: #b4c3dc;
+    font-size: 26px;
+    margin-top:-2px;
     line-height: 38px;
     margin-left: 0px;
     vertical-align: middle;	

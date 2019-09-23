@@ -188,6 +188,11 @@ if (!$vb_ajax) {	// !ajax
 		if($vs_facet_description){
 			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
 		}
+		if($vs_table == "ca_occurrences"){
+			if($vs_vessel_intro = $this->getVar("vessel_intro")){
+				print "<div>".$vs_vessel_intro."</div>";
+			}
+		}
 
 		if($vb_showLetterBar){
 			print "<div id='bLetterBar'>";

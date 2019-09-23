@@ -30,5 +30,9 @@
 				Collections Manager<br/>
 				<a href="mailto:heritageGCHCC@sasktel.net">heritageGCHCC@sasktel.net</a><br>		
 			</address>
+				<div class='social'><a href='https://shaunavon.com/?p=1736' target='_blank'><i class="fa fa-external-link"></i></a></div>
+				<div class='social'><a href='https://www.facebook.com/ShaunavonMuseum/' target='_blank'><i class="fa fa-facebook-f"></i></a></div>
+				<div class='social'><a href='https://www.instagram.com/shaunavon_gchcc/' target='_blank'><i class="fa fa-instagram"></i></a></div>
+				<div class='social'><a href='https://www.twitter.com/shaunavon_gchcc/' target='_blank'><i class="fa fa-twitter"></i></a></div>
 		</div>
 	</div>

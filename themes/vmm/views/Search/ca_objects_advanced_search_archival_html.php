@@ -65,7 +65,7 @@ print "<p>Enter your search terms in the fields below.</p>";
 		<ul>
 			<li><?php print caNavLink($this->request, _t("Archival Items Advanced Search"), "", "", "Search", "advanced/archival_items"); ?></li>
 			<li><?php print caNavLink($this->request, _t("Archival Fonds and Collections Advanced Search"), "", "", "Search", "advanced/archives"); ?></li>
-			<li><?php print caNavLink($this->request, _t("Artefact Advanced Search"), "", "", "Search", "advanced/artefacts"); ?></li>
+			<li><?php print caNavLink($this->request, _t("Artifact Advanced Search"), "", "", "Search", "advanced/artifacts"); ?></li>
 		</ul>
 	</div><!-- end col -->
 </div><!-- end row -->

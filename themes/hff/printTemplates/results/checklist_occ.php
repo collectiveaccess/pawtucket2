@@ -114,6 +114,9 @@
 							# --- no idno link
 							# --- originating venue, exhibition title, date (display)
 							$vs_originating_venue 	= $vo_result->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='originator' delimiter=', '>^ca_entities.preferred_labels</unit>", array("checkAccess" => $va_access_values));
+							if($vs_venue_location = $vo_result->get("ca_occurrences.venue_location", array("delimiter" => ", "))){
+								$vs_originating_venue .= ", ".$vs_venue_location;
+							}
 							$vs_title = $vo_result->get("{$vs_table}.preferred_labels");
 							# --- add closing & opening <i> tags to un-italicize andy brackets
 							$vs_title = italicizeTitle($vs_title);
@@ -121,7 +124,12 @@
 							if(!$vs_date){
 								$vs_date = $vo_result->get("ca_occurrences.common_date");
 							}
-							$vs_label 	.= (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "");
+							$vs_travel_venues = $vo_result->getWithTemplate('<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
+								<div style="padding-left:20px;"><div>Traveled To</div>
+								<unit relativeTo="ca_occurrences.venues" delimiter="<br/>" sort="ca_occurrences.venues.venue_dates"><ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef><ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address<ifdef code="ca_occurrences.venues.venue_dates_display">, </ifdef></ifdef><ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display</ifdef>.</unit>
+								</div>
+							</ifdef>');
+							$vs_label 	.= (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "").$vs_travel_venues;
 						break;
 						# ------------------------
 						default:

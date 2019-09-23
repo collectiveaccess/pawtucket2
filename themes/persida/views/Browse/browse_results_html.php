@@ -135,7 +135,9 @@ if (!$vb_ajax) {	// !ajax
 						print "<li class='divider'></li>\n";
 						print "<li class='dropdown-header'>"._t("Download results as:")."</li>\n";
 						foreach($va_export_formats as $va_export_format){
-							print "<li class='".$va_export_format["code"]."'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+							if((strpos($va_export_format["code"], "financial") === false) || ((strpos($va_export_format["code"], "financial") !== false) && !$this->request->user->hasRole("no_financials"))){
+								print "<li class='".$va_export_format["code"]."'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+							}
 						}
 					}
 					

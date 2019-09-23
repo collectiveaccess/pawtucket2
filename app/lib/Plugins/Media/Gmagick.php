@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2012-2018 Whirl-i-Gig
+ * Copyright 2012-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -61,7 +61,6 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 	var $opo_config;
 	var $opo_external_app_config;
 	
-	var $opa_faces;
 	var $filepath;
 	
 	var $info = array(
@@ -149,7 +148,6 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 			'reference-black'	=> 'W',
 			'reference-white'	=> 'W',
 			'no_upsampling'		=> 'W',
-			'faces'				=> 'W',
 			'version'			=> 'W'	// required of all plug-ins
 		),
 		
@@ -235,6 +233,7 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 	private $ops_dcraw_path;
 	private $ops_graphicsmagick_path;
 	private $ops_imagemagick_path;
+	private $opa_raw_list = [];
 	
 	/**
 	 * Per-request cache of extracted metadata from read files
@@ -287,6 +286,7 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 			exec($this->ops_dcraw_path." -i ".caEscapeShellArg($ps_filepath)." 2> /dev/null", $va_output, $vn_return);
 			if ($vn_return == 0) {
 				if ((!preg_match("/^Cannot decode/", $va_output[0])) && (!preg_match("/Master/i", $va_output[0]))) {
+					$this->opa_raw_list[$ps_filepath] = true;
 					return 'image/x-dcraw';
 				}
 			}
@@ -460,7 +460,7 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 				$this->metadata = array();
 
 				// convert to tiff with dcraw if necessary
-				if ($mimetype == 'image/x-dcraw') {
+				if (($mimetype == 'image/x-dcraw') || ($this->opa_raw_list[$ps_filepath])) {
 					$ps_filepath = $this->_dcrawConvertToTiff($ps_filepath);
 				}
 
@@ -484,11 +484,6 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 				if (!$this->handle->setimagecolorspace(Gmagick::COLORSPACE_RGB)) {
 					$this->postError(1610, _t("Error during RGB colorspace transformation operation"), "WLPlugGmagick->read()");
 					return false;
-				}
-
-
-				if (!$this->properties["faces"]) {
-					$this->properties["faces"] = $this->opa_faces = caDetectFaces($ps_filepath, $va_tmp['width'], $va_tmp['height']);
 				}
 
 				$this->properties["mimetype"] = $this->_getMagickImageMimeType($this->handle);
@@ -669,60 +664,45 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 								return false;
 						}
 						if ($do_fill_box_crop) {
-							// use face detection info to intelligently crop
-							if(is_array($this->properties['faces']) && sizeof($this->properties['faces'])) {
-								$va_info = array_shift($this->properties['faces']);
-								$crop_from_offset_x = ceil($va_info['x'] * (($scale_factor_w > $scale_factor_h) ? $scale_factor_w : $scale_factor_h));
-								$crop_from_offset_x -= ceil(0.15 * $parameters["width"]);	// since face will be tightly cropped give it some room
-								$crop_from_offset_y = ceil($va_info['y'] * (($scale_factor_w > $scale_factor_h) ? $scale_factor_w : $scale_factor_h));
-								$crop_from_offset_y -= ceil(0.15 * $parameters["height"]);	// since face will be tightly cropped give it some room
-								
-								// Don't try to crop beyond image boundaries, you just end up scaling the image, often awkwardly
-								if ($crop_from_offset_x > ($w - $parameters["width"])) { $crop_from_offset_x = 0; }
-								if ($crop_from_offset_y > ($h - $parameters["height"])) { $crop_from_offset_y = 0; }
-								if ($crop_from_offset_x < 0) { $crop_from_offset_x = 0; }
-								if ($crop_from_offset_y < 0) { $crop_from_offset_y = 0; }
-							} else {
-								switch($crop_from) {
-									case 'north_west':
-										$crop_from_offset_y = 0;
-										$crop_from_offset_x = $w - $parameters["width"];
-										break;
-									case 'south_east':
-										$crop_from_offset_x = 0;
-										$crop_from_offset_y = $h - $parameters["height"];
-										break;
-									case 'south_west':
-										$crop_from_offset_x = $w - $parameters["width"];
-										$crop_from_offset_y = $h - $parameters["height"];
-										break;
-									case 'random':
-										$crop_from_offset_x = rand(0, $w - $parameters["width"]);
-										$crop_from_offset_y = rand(0, $h - $parameters["height"]);
-										break;
-									case 'north_east':
-										$crop_from_offset_x = $crop_from_offset_y = 0;
-										break;
-									case 'center':
-									default:
-										$crop_from_offset_x = $crop_from_offset_y = 0;
-										
-										// Get image center
-										$vn_center_x = caGetOption('_centerX', $parameters, 0.5);
-										$vn_center_y = caGetOption('_centerY', $parameters, 0.5);
-										if ($w > $parameters["width"]) {
-											$crop_from_offset_x = ceil($w * $vn_center_x) - ($parameters["width"]/2);
-											if (($crop_from_offset_x + $parameters["width"]) > $w) { $crop_from_offset_x = $w - $parameters["width"]; }
-											if ($crop_from_offset_x < 0) { $crop_from_offset_x = 0; }
-										} else {
-											if ($h > $parameters["height"]) {
-												$crop_from_offset_y = ceil($h * $vn_center_y) - ($parameters["height"]/2);
-												if (($crop_from_offset_y + $parameters["height"]) > $h) { $crop_from_offset_y = $h - $parameters["height"]; }
-												if ($crop_from_offset_y < 0) { $crop_from_offset_y = 0; }
-											}
+							switch($crop_from) {
+								case 'north_west':
+									$crop_from_offset_y = 0;
+									$crop_from_offset_x = $w - $parameters["width"];
+									break;
+								case 'south_east':
+									$crop_from_offset_x = 0;
+									$crop_from_offset_y = $h - $parameters["height"];
+									break;
+								case 'south_west':
+									$crop_from_offset_x = $w - $parameters["width"];
+									$crop_from_offset_y = $h - $parameters["height"];
+									break;
+								case 'random':
+									$crop_from_offset_x = rand(0, $w - $parameters["width"]);
+									$crop_from_offset_y = rand(0, $h - $parameters["height"]);
+									break;
+								case 'north_east':
+									$crop_from_offset_x = $crop_from_offset_y = 0;
+									break;
+								case 'center':
+								default:
+									$crop_from_offset_x = $crop_from_offset_y = 0;
+									
+									// Get image center
+									$vn_center_x = caGetOption('_centerX', $parameters, 0.5);
+									$vn_center_y = caGetOption('_centerY', $parameters, 0.5);
+									if ($w > $parameters["width"]) {
+										$crop_from_offset_x = ceil($w * $vn_center_x) - ($parameters["width"]/2);
+										if (($crop_from_offset_x + $parameters["width"]) > $w) { $crop_from_offset_x = $w - $parameters["width"]; }
+										if ($crop_from_offset_x < 0) { $crop_from_offset_x = 0; }
+									} else {
+										if ($h > $parameters["height"]) {
+											$crop_from_offset_y = ceil($h * $vn_center_y) - ($parameters["height"]/2);
+											if (($crop_from_offset_y + $parameters["height"]) > $h) { $crop_from_offset_y = $h - $parameters["height"]; }
+											if ($crop_from_offset_y < 0) { $crop_from_offset_y = 0; }
 										}
-										break;
-								}
+									}
+									break;
 							}
 							
 							if (!$this->handle->cropimage($parameters["width"], $parameters["height"], $crop_w_edge + $crop_from_offset_x, $crop_h_edge + $crop_from_offset_y )) {
@@ -1112,7 +1092,6 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 			$this->properties["quality"] = "";
 			$this->properties["mimetype"] = $this->_getMagickImageMimeType($this->handle);
 			$this->properties["typename"] = $this->handle->getimageformat();
-			$this->properties["faces"] = $this->opa_faces;
 			return 1;
 		}
 		return false;
@@ -1126,15 +1105,15 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 		
 		$this->metadata = array();
 		$this->errors = array();
-		$this->opa_faces = null;
 	}
 	# ------------------------------------------------
 	private function setResourceLimits($po_handle) {
-		$po_handle->setResourceLimit(Gmagick::RESOURCETYPE_MEMORY, 1024*1024*1024);		// Set maximum amount of memory in bytes to allocate for the pixel cache from the heap.
-		$po_handle->setResourceLimit(Gmagick::RESOURCETYPE_MAP, 1024*1024*1024);		// Set maximum amount of memory map in bytes to allocate for the pixel cache.
-		$po_handle->setResourceLimit(Gmagick::RESOURCETYPE_AREA, 6144*6144);			// Set the maximum width * height of an image that can reside in the pixel cache memory.
-		$po_handle->setResourceLimit(Gmagick::RESOURCETYPE_FILE, 1024);					// Set maximum number of open pixel cache files.
-		$po_handle->setResourceLimit(Gmagick::RESOURCETYPE_DISK, 64*1024*1024*1024);					// Set maximum amount of disk space in bytes permitted for use by the pixel cache.	
+	    // As of GraphicMagick 1.3.32 setResourceLimit is broken
+		// $po_handle->setResourceLimit(Gmagick::RESOURCETYPE_MEMORY, 1024*1024*1024);		// Set maximum amount of memory in bytes to allocate for the pixel cache from the heap.
+        // $po_handle->setResourceLimit(Gmagick::RESOURCETYPE_MAP, 1024*1024*1024);		// Set maximum amount of memory map in bytes to allocate for the pixel cache.
+        // $po_handle->setResourceLimit(Gmagick::RESOURCETYPE_AREA, 6144*6144);			// Set the maximum width * height of an image that can reside in the pixel cache memory.
+        // $po_handle->setResourceLimit(Gmagick::RESOURCETYPE_FILE, 1024);					// Set maximum number of open pixel cache files.
+        // $po_handle->setResourceLimit(Gmagick::RESOURCETYPE_DISK, 64*1024*1024*1024);					// Set maximum amount of disk space in bytes permitted for use by the pixel cache.	
 
 		return true;
 	}
@@ -1231,14 +1210,6 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 						$vb_is_rotated = true;
 						break;
 				}
-
-				if ($vb_is_rotated) {
-					if ($this->handle->writeimage($vs_tmp_basename)) {
-						$va_tmp = $this->handle->getimagegeometry();
-						$this->properties["faces"] = $this->opa_faces = caDetectFaces($vs_tmp_basename, $va_tmp['width'], $va_tmp['height']);
-					}
-					@unlink($vs_tmp_basename);
-				}
 			}
 
 			// get XMP
@@ -1315,7 +1286,7 @@ class WLPlugMediaGmagick Extends BaseMediaPlugin Implements IWLPlugMedia {
 
 			return $handle;
 		} catch(Exception $e) {
-			$this->postError(1610, _t("Could not read image file"), "WLPlugGmagick->read()");
+			$this->postError(1610, _t("Could not read image file: ".$e->getMessage()), "WLPlugGmagick->read()");
 			return false; // gmagick couldn't read file, presumably
 		}
 	}

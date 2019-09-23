@@ -17,7 +17,7 @@
 			foreach ($va_children_ids as $va_id => $va_children_id) {
 				$t_child = new ca_objects($va_children_id);
 				$va_child_rel_ids = $t_child->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true));
-				if (sizeof($va_child_rel_ids) > 0) {
+				if (is_array($va_child_rel_ids) && (sizeof($va_child_rel_ids) > 0)) {
 					foreach ($va_child_rel_ids as $vn_id => $va_children_rel_id) {
 						$va_obj_ids[] = $va_children_rel_id;
 					}
@@ -150,13 +150,13 @@
 		# Occupation Pie Chart data
 		$vn_all_professions = 0;
 		foreach ($va_occupations as $va_occupation_name => $va_occupation_count) {
-			$vn_all_professions = $vn_all_professions+sizeof($va_occupation_count);
+			$vn_all_professions = $vn_all_professions + (is_array($va_occupation_count) ? sizeof($va_occupation_count) : 0);
 		}
 		$va_js_stuff = array();
 		$va_labels = array();
 		$va_class_count = 1;
 		foreach ($va_occupations as $va_occupation_name => $va_occupation_count) {
-			$vn_fraction = round((sizeof($va_occupation_count) / $vn_all_professions)*100);
+			$vn_fraction = round(is_array($va_occupation_count) ? (sizeof($va_occupation_count) / $vn_all_professions)*100 : 0);
 			$va_labels[$va_class_count] = "'$va_occupation_name'";
 			$va_js_stuff[$va_class_count] = "{data: ".$vn_fraction.", className: 'color".$va_class_count."'}";
 			$va_class_count++;

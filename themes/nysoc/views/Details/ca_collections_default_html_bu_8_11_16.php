@@ -114,6 +114,9 @@
 			$t_top_collection = new ca_collections($va_top_level_id);
 			
 			$va_series_level = $t_top_collection->get('ca_collections.children.collection_id', array('returnAsArray' => true));
+			
+			$series_count = is_array($va_series_level) ? sizeof($va_series_level) : 0;
+			
 			$top_scope = null;
 			if ($va_scope = $t_top_collection->get('ca_collections.scopecontent')) {
 				$top_scope = "<p class='label'>Scope and Content</p><p>".$va_scope."</p>";
@@ -121,7 +124,7 @@
 			if ($va_arrangement = $t_top_collection->get('ca_collections.arrangement')) {
 				$top_scope.= "<p class='label'>System of Arrangement</p><p>".$va_arrangement."</p>";
 			}
-			$vs_contents.= "<div>".(sizeof($va_series_level) > 0 ? "<a href='#' onclick='$(\".seriesLevel".$va_top_level_id."\").toggle(200);return false;'><i class='fa fa-chevron-down'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_top_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_top_collection->get('ca_collections.collection_id'))."</div>".$top_scope;
+			$vs_contents.= "<div>".($series_count > 0 ? "<a href='#' onclick='$(\".seriesLevel".$va_top_level_id."\").toggle(200);return false;'><i class='fa fa-chevron-down'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_top_collection->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_top_collection->get('ca_collections.collection_id'))."</div>".$top_scope;
 			$vs_contents.= "<div class='seriesLevel".$va_top_level_id."' style='margin-left:40px; display:none;'>";
 			
 			foreach($va_series_level as $vn_i2 => $va_series_level_id) {
@@ -136,7 +139,9 @@
 				if ($va_arrangement = $t_series_level->get('ca_collections.arrangement')) {
 					$vs_series_scope.= "<p class='label'>System of Arrangement</p><p>".$va_arrangement."</p>";
 				}				
-				$vs_contents.= "<div>".(sizeof($va_subseries_level) > 0 ? "<a href='#' onclick='$(\".subseriesLevel".$va_series_level_id."\").toggle(200);return false;'><i class='fa fa-chevron-down'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_series_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_series_level->get('ca_collections.collection_id'))."</div>".$vs_series_scope;
+				
+				$subseries_count = is_array($va_subseries_level) ? sizeof($va_subseries_level) : 0;
+				$vs_contents.= "<div>".($subseries_count > 0 ? "<a href='#' onclick='$(\".subseriesLevel".$va_series_level_id."\").toggle(200);return false;'><i class='fa fa-chevron-down'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_series_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_series_level->get('ca_collections.collection_id'))."</div>".$vs_series_scope;
 				$vs_contents.= "<div class='subseriesLevel".$va_series_level_id."' style='margin-left:40px; display:none;'>";
 				
 				foreach($va_subseries_level as $vn_i3 => $va_subseries_level_id) {
@@ -149,7 +154,9 @@
 					if ($va_arrangement = $t_subseries_level->get('ca_collections.arrangement')) {
 						$vs_subseries_scope.= "<p class='label'>System of Arrangement</p><p>".$va_arrangement."</p>";
 					}
-					$vs_contents.= "<div>".(sizeof($va_box_levels) > 0 ? "<a href='#' onclick='$(\".boxLevel".$va_subseries_level_id."\").toggle(200);return false;'><i class='fa fa-chevron-down'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_subseries_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_subseries_level->get('ca_collections.collection_id'))."</div>".$vs_subseries_scope;
+					
+					$box_count = is_array($va_box_levels) ? sizeof($va_box_levels) : 0;
+					$vs_contents.= "<div>".($box_count > 0 ? "<a href='#' onclick='$(\".boxLevel".$va_subseries_level_id."\").toggle(200);return false;'><i class='fa fa-chevron-down'></i> </a>" : "<span class='colspacer'></span>").caNavLink($this->request, $t_subseries_level->get('ca_collections.preferred_labels'), '', '', 'Detail', 'collections/'.$t_subseries_level->get('ca_collections.collection_id'))."</div>".$vs_subseries_scope;
 					$vs_contents.= "<div class='boxLevel".$va_subseries_level_id."' style='margin-left:40px; display:none;'>";
 					foreach ($va_box_levels as $vn_i4 => $va_box_level_id) {
 						$t_box_level = new ca_collections($va_box_level_id); 

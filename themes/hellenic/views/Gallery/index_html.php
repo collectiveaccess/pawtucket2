@@ -18,11 +18,10 @@
 								<div class='col-sm-8'><h1>".caNavLink($this->request, $va_set["name"], '', '', 'Gallery', $va_set['set_id'])."</h1>";
 								print "<p>".$t_set->get('ca_sets.set_description').'</p>';
 								print caNavLink($this->request, "<div class='homeLink'>View ".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))." <i class='fa fa-arrow-right'></i></div>", '', '', 'Gallery', $va_set['set_id']);
-							print "</div></div></div>\n";
+							print "</div></div>\n";
 					}
 				}
 ?>
-			</div><!-- end row -->
 		</div><!-- end container -->
 
 <?php

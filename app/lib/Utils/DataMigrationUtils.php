@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2017 Whirl-i-Gig
+ * Copyright 2010-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -698,7 +698,7 @@
 		/**
 		 *
 		 */
-		private static function _setAttributes($pt_instance, $pn_locale_id, $pa_values, $pa_options) {
+		private static function _setAttributes($pt_instance, $pn_locale_id, $pa_values, $pa_options=null) {
 			$o_log = (isset($pa_options['log']) && $pa_options['log'] instanceof KLogger) ? $pa_options['log'] : null;
 			$vb_attr_errors = false;
 			
@@ -729,13 +729,12 @@
 						    } else {
 						        $va_expanded_values = [$va_value];
 						    }
-						    
 							// array of values (complex multi-valued attribute)
 							foreach($va_expanded_values as $va_v) {
                                 $pt_instance->addAttribute(
                                     array_merge($va_v, array(
                                         'locale_id' => $pn_locale_id
-                                    )), $vs_element, null, ['skipExistingValues' => true, 'matchOn' => caGetOption('matchOn', $va_values, null)]);
+                                    )), $vs_element, null, ['skipExistingValues' => (caGetOption('skipExistingValues', $pa_options, false) || caGetOption('skipExistingValues', $va_values, false)), 'matchOn' => caGetOption('matchOn', $va_values, null)]);
                             }
 						} else {
 							// scalar value (simple single value attribute)
@@ -858,6 +857,17 @@
 		 *				  separateUpdatesForAttributes = Perform a separate update() for each attribute. This will ensure that an error triggered by any value will not affect setting on others, but is detrimental to performance. [Default is false]
 		 * @return bool|BaseModel|mixed|null
 		 */
+		static function getIDFor($ps_table, $pa_label, $pn_parent_id, $pn_type_id, $pn_locale_id, $pa_values=null, $pa_options=null) {
+			return self::_getID($ps_table, $pa_label, $pn_parent_id, $pn_type_id, $pn_locale_id, $pa_values, $pa_options);
+		}
+		# -------------------------------------------------------
+		/**
+		 * Returns id for the row with the specified name (and type) or idno (regardless of specified type.) If the row does not already
+		 * exist then it will be created with the specified name, type and locale, as well as with any specified values in the $pa_values array.
+		 * $pa_values keys should be either valid entity fields or attributes. 
+		 *
+		 * @see DataMigrationUtils::getIDFor()
+		 */
 		private static function _getID($ps_table, $pa_label, $pn_parent_id, $pn_type_id, $pn_locale_id, $pa_values=null, $pa_options=null) {
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			
@@ -896,7 +906,7 @@
 			
 			/** @var ca_data_import_events $o_event */
 			$o_event = (isset($pa_options['importEvent']) && $pa_options['importEvent'] instanceof ca_data_import_events) ? $pa_options['importEvent'] : null;
-	
+
 			if (isset($pa_options['transaction']) && $pa_options['transaction'] instanceof Transaction){
 				$t_instance->setTransaction($pa_options['transaction']);
 				if ($o_event) { $o_event->setTransaction($pa_options['transaction']); }
@@ -1083,15 +1093,21 @@
 				$t_instance->set('type_id', $pn_type_id);
 				
 				$va_intrinsics = array(
-					'source_id' => null, 'access' => 0, 'status' => 0, 'lifespan' => null, 'parent_id' => $vn_parent_id, 'lot_status_id' => null, '_interstitial' => null
+					'source_id' => null, 'access' => 0, 'status' => 0, 'lifespan' => null, 'parent_id' => $vn_parent_id, 'lot_status_id' => null, '_interstitial' => null,
+					'submission_user_id' => null, 'submission_group_id' => null, 'submission_status_id' => null, 'submission_via_form' => null
 				);
 				if ($vs_hier_id_fld = $t_instance->getProperty('HIERARCHY_ID_FLD')) { $va_intrinsics[$vs_hier_id_fld] = null;}
+				
+				if(isset($pa_options['generateIdnoWithTemplate']) && $pa_options['generateIdnoWithTemplate']) {
+					$pa_values[$vs_idno_fld] = $vs_idno = $t_instance->setIdnoWithTemplate($pa_options['generateIdnoWithTemplate'], array('dontSetValue' => true));
+				}
 				if ($vs_idno_fld) {$va_intrinsics[$vs_idno_fld] = $vs_idno ? $vs_idno : null; }
 			
 				foreach($va_intrinsics as $vs_fld => $vm_fld_default) {
 					if ($t_instance->hasField($vs_fld)) {
 						// Handle both straight key => value and key => key => value (attribute style); import helpers pass in attribute style
 						$vs_v = (isset($pa_values[$vs_fld]) && is_array($pa_values[$vs_fld])) ? caGetOption($vs_fld, $pa_values[$vs_fld], $vm_fld_default) : caGetOption($vs_fld, $pa_values, $vm_fld_default);
+						print "SET $vs_fld => $vs_v<br>\n";
 						$t_instance->set($vs_fld, $vs_v);
 					}
 					unset($pa_values[$vs_fld]);

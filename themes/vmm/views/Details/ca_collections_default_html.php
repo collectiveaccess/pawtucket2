@@ -1,4 +1,5 @@
 <?php
+	$va_access_values = caGetUserAccessValues($this->request);
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
@@ -53,7 +54,7 @@
 					}}}
 <?php					
 					if($t_item->get("ca_collections.parent_id")){
-						$va_path = explode(";", $t_item->getWithTemplate('<unit relativeTo="ca_collections.hierarchy" delimiter=";"><l>^ca_collections.preferred_labels.name</l></unit>'));
+						$va_path = explode("*", $t_item->getWithTemplate('<unit relativeTo="ca_collections.hierarchy" delimiter="*"><l>^ca_collections.preferred_labels.name</l></unit>'));
 						$va_path = array_slice($va_path, 0, (sizeof($va_path)-1));
 						if(is_array($va_path) && sizeof($va_path)){
 							print '<div class="unit"><H6>Part of</H6>'.implode(" > ", $va_path).'</div>';

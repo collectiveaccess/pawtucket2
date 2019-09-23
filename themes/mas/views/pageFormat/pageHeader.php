@@ -108,9 +108,9 @@
 				</div>
 				<div class="header-follow">
 					<span>Follow Us</span>
-					<a href="https://www.facebook.com/saskmuseums" class="ss-icon ss-social-circle" target="_blank"><i class="fab fa-facebook-f"></i></a>
-					<a href="https://www.twitter.com/saskmuseums" class="ss-icon ss-social-circle" target="_blank"><i class="fab fa-twitter"></i></a>
-					<a href="https://www.instagram.com/saskmuseums" class="ss-icon ss-social-circle" target="_blank"><i class="fab fa-instagram"></i></a>
+					<a href="https://www.facebook.com/saskmuseums" class="ss-icon ss-social-circle" target="_blank"><i class="fa fa-facebook"></i></a>
+					<a href="https://www.twitter.com/saskmuseums" class="ss-icon ss-social-circle" target="_blank"><i class="fa fa-twitter"></i></a>
+					<a href="https://www.instagram.com/saskmuseums" class="ss-icon ss-social-circle" target="_blank"><i class="fa fa-instagram"></i></a>
 				</div>
 
 			</div>
@@ -138,7 +138,7 @@
 				<li class="browse"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
 				<li class="advSearch"><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 				<li class="gallery"><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-				<li class="contact"><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+				<li class="contact"><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "Contact"); ?></li>
 <?php
 if ($vb_has_user_links) {
 ?>

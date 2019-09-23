@@ -63,7 +63,6 @@
 
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
-	
 		$vn_col_span = 4;
 		$vn_col_span_sm = 4;
 		$vn_col_span_xs = 12;
@@ -117,73 +116,155 @@
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
 					$vs_folder_class = "";
-					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+					
+					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'medium', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
-					if($vs_table == "ca_objects"){
-						# --- caption info
-						# --- Object Type - Archival Material Type if folder/item, line break,  Brand, Sub Brand / Collection if one, line break, Object Name, (Manufacture Season (if one) and Manufacture Date) or folder/item (Date)
-						
-						$vs_caption = "<div class='resultType'>";
-						$vs_caption .= $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))." &rsaquo; ";
-						#if($vs_tmp = $qr_res->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
-						#	$vs_caption .= $vs_tmp;
-						#	if($qr_res->get("ca_objects.brand")){
-						#		$vs_caption .= "<br/>";
-						#	}
-						#}
-						if(($vs_brand = $qr_res->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))) | ($vs_subbrand = $qr_res->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true, "delimiter" => ", ")))){
-							$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? " &rsaquo; " : "").$vs_subbrand;
-						}
-						$vs_caption .= "</div>";
-						if($vs_tmp = $qr_res->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
-							$vs_caption .= $vs_tmp.", ";
-						}
-						$vs_caption .= $qr_res->get('ca_objects.preferred_labels');
-						if($vs_tmp = $qr_res->get("ca_objects.codes.product_code")){
-							$vs_caption .= " (".$vs_tmp.")";
-						}
-						$vs_label_detail_link = caDetailLink($this->request, $vs_caption, '', $vs_table, $vn_id);
-					}
-					if(!$vs_image){
-						if ($vs_table == 'ca_objects') {
-							$t_list_item->load($qr_res->get("type_id"));
-							$vs_typecode = $t_list_item->get("idno");
-							if(($vs_typecode == "folder") && !($qr_res->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values)))){
-								$vs_typecode = "folder_empty";
-							}
-							if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-								$vs_image = "<div class='bResultItemImgPlaceholder".$vs_folder_class."'>".$vs_type_placeholder."</div>";
+					if($vs_table != "ca_occurrences"){
+						$t_list_item->load($qr_res->get("type_id"));
+						$vs_typecode = $t_list_item->get("idno");
+						if($vs_typecode == "bulk"){
+							if(!$vs_image){
+								if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+									$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+								}else{
+									$vs_image = $vs_default_placeholder_tag;
+								}
 							}else{
-								$vs_image = $vs_default_placeholder_tag;
+								$vs_image = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("id" => $qr_res->get("object_id"), "context" => "archival", "representation_id" => $qr_res->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values, "limit" => 1)), "overlay" => 1))."\"); return false;'>".$vs_image."</a>";
 							}
+?>
+							<div class="row bBulkMediaResult">
+								<div class="col-sm-6">
+									<div class="bBulkMediaImage"><?php print $vs_image; ?></div>
+								</div>
+								<div class="col-sm-3">
+<?php
+									print "<H4>".$qr_res->get('ca_objects.preferred_labels')."</H4>";
+									if(($vs_brand = $qr_res->get("ca_objects.brand", array("convertCodesToDisplayText" => true))) || ($vs_subbrand = $qr_res->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true)))){
+										print "<div class='unit'><H6>Brand</H6>".$vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."</div>";
+									}
+									if(($vs_tmp = $qr_res->get("ca_objects.season_list", array("convertCodesToDisplayText" => true, "delimiter" => ", ")))){
+										print "<div class='unit'><H6>Season</H6>".$vs_tmp."</div>";
+									}
+									if($vs_tmp = $qr_res->get('ca_objects.transferred_date', array("delimeter" => ", "))){
+										print "<div class='unit'><H6>Publication Date</H6>".$vs_tmp."</div>";
+									}
+									$va_entities = $qr_res->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));
+									if(is_array($va_entities) && sizeof($va_entities)){
+										$va_entities_by_type = array();
+										$va_entities_sort = array();
+										foreach($va_entities as $va_entity){
+											$va_entities_sort[$va_entity["relationship_typename"]][] = $va_entity["displayname"];	
+										}
+										foreach($va_entities_sort as $vs_entity_type => $va_entities_by_type){
+											print "<div class='unit'><H6>".ucfirst($vs_entity_type)."</H6>";
+											print join(", ", $va_entities_by_type);
+											print "</div>";
+										}
+									}
+									if($vs_tmp = $qr_res->get('ca_objects.page_number', array("delimeter" => ", "))){
+										print "<div class='unit'><H6>Page Number</H6>".$vs_tmp."</div>";
+									}
+									if($vs_tmp = $qr_res->get('ca_objects.page_count', array("delimeter" => ", "))){
+										print "<div class='unit'><H6>Page Count</H6>".$vs_tmp."</div>";
+									}
+									if($vs_tmp = $qr_res->getMediaInfo("ca_object_representations.media", 'ORIGINAL_FILENAME')){
+										print "<div class='unit'><H6>File Name</H6>".$vs_tmp."</div>";
+									}
+?>
+								</div>
+								<div class="col-sm-3">
+<?php
+									print "<div class='detailTool'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Inquire About this Item", "", "", "contact", "form", array('object_id' => $qr_res->get('ca_objects.object_id'), 'contactType' => 'inquiry'))."</div>";
+									print "<div class='detailTool'><i class='material-icons inline'>bookmark</i><a href='#' onClick='caMediaPanel.showPanel(\"".caNavUrl($this->request, "", "Lightbox", "addItemForm", array('context' => $this->request->getAction(), 'object_id' => $qr_res->get('ca_objects.object_id')))."\"); return false;'> Add to My Projects</a></div>";
+?>				
+								</div>
+							</div>
+							<div class="row"><div class="col-sm-12"><br/><br/><HR/><br/><br/></div></div>
+<?php
 						}else{
-							$vs_image = $vs_default_placeholder_tag;
-						}
-					}
-					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
+							if($vs_table == "ca_objects"){
+								# --- caption info
+								# --- Object Type - Archival Material Type if folder/item, line break,  Brand, Sub Brand / Collection if one, line break, Object Name, (Manufacture Season (if one) and Manufacture Date) or folder/item (Date)
+						
+								$vs_caption = "<div class='resultType'>";
+								$vs_caption .= $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))." &rsaquo; ";
+								#if($vs_tmp = $qr_res->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
+								#	$vs_caption .= $vs_tmp;
+								#	if($qr_res->get("ca_objects.brand")){
+								#		$vs_caption .= "<br/>";
+								#	}
+								#}
+								$vs_brand = $qr_res->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "));
+								$vs_subbrand = $qr_res->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "));
+								if($vs_brand || $vs_subbrand){
+									$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? " &rsaquo; " : "").$vs_subbrand;
+								}
+								$vs_caption .= "</div>";
+								if($vs_tmp = $qr_res->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+									$vs_caption .= $vs_tmp.", ";
+								}
+								$vs_caption .= $qr_res->get('ca_objects.preferred_labels');
+								if($vs_tmp = $qr_res->get("ca_objects.codes.product_code")){
+									$vs_caption .= " (".$vs_tmp.")";
+								}
+								$vs_label_detail_link = caDetailLink($this->request, $vs_caption, '', $vs_table, $vn_id);
+							}
+							if(!$vs_image){
+								if ($vs_table == 'ca_objects') {
+								
+									if(($vs_typecode == "folder") && !($qr_res->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values)))){
+										$vs_typecode = "folder_empty";
+									}
+									if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+										$vs_image = "<div class='bResultItemImgPlaceholder".$vs_folder_class."'>".$vs_type_placeholder."</div>";
+									}else{
+										$vs_image = $vs_default_placeholder_tag;
+									}
+								}else{
+									$vs_image = $vs_default_placeholder_tag;
+								}
+							}
+							$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				
-					$vs_add_to_set_link = "";
-					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
-					}
+							$vs_add_to_set_link = "";
+							if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+								$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+							}
 				
-					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
+							$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
-					$vs_result_output = "
-		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
-				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
-					<div class='bResultListItemText'>
-						{$vs_label_detail_link}
-					</div><!-- end bResultListItemText -->
-				</div><!-- end bResultListItemContent -->
-				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
-					<hr>
-					{$vs_expanded_info}{$vs_add_to_set_link}
-				</div><!-- bResultListItemExpandedInfo -->
-			</div><!-- end bResultListItem -->
-		</div><!-- end col -->";
+							$vs_result_output = "
+								<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+									<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
+										<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
+										<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
+											<div class='bResultListItemText'>
+												{$vs_label_detail_link}
+											</div><!-- end bResultListItemText -->
+										</div><!-- end bResultListItemContent -->
+										<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
+											<hr>
+											{$vs_expanded_info}{$vs_add_to_set_link}
+										</div><!-- bResultListItemExpandedInfo -->
+									</div><!-- end bResultListItem -->
+								</div><!-- end col -->";
+						}
+					}else{
+
+						$vs_result_output = "
+							<div class='row'><div class='col-sm-12'>
+								<div class='unit collectionChronology'>
+									<div class='row'>
+										<div class='col-sm-3 col-md-2'>
+											<b>".(($qr_res->get("ca_occurrences.display_date")) ? $qr_res->get("ca_occurrences.display_date") : $qr_res->get("ca_occurrences.manufacture_date")).(($vs_season = $qr_res->get("ca_occurrences.season_list", array("convertCodesToDisplayText" => true))) ? ", ".$vs_season : "")."</b>
+										</div>
+										<div class='col-sm-8 col-sm-offset-1 col-md-9 col-md-offset-1'>".$qr_res->get("{$vs_table}.preferred_labels")."</div>
+									</div>
+								</div>
+								
+							</div><!-- end col --></div><!-- end row -->";					
+					}
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');
 					print $vs_result_output;
 				}				

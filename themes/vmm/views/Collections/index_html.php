@@ -14,7 +14,7 @@
 			print "<div class='col-sm-6'><div class='collectionTile'><div class='title'>".caDetailLink($this->request, $qr_collections->get("ca_collections.preferred_labels"), "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";	
 			if (($o_collections_config->get("description_template")) && ($vs_scope = $qr_collections->getWithTemplate($o_collections_config->get("description_template")))) {
 				if(mb_strlen($vs_scope) > 300){
-					$vs_scope = mb_substr($vs_scope, 0, 300)."...";
+					$vs_scope = strip_tags(mb_substr($vs_scope, 0, 300))."...";
 				}
 				print "<div class='collectionLandingDesc'>".$vs_scope."</div>";
 			}

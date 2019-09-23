@@ -138,7 +138,7 @@
 				<li class="browse"><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects"); ?></li>
 				<li class="advSearch"><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 				<li class="gallery"><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-				<li class="contact"><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+				<li class="contact"><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "Contact"); ?></li>
 <?php
 if ($vb_has_user_links) {
 ?>

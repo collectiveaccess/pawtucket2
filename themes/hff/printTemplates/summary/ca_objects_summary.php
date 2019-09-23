@@ -176,14 +176,14 @@
 					$va_provenance_display = array();
 					foreach($va_provenance as $va_provenance_info){
 						$t_obj_x_occ->load($va_provenance_info["relation_id"]);
-						$vs_date = $t_obj_x_occ->get("effective_date");
-						# --- yes no values are switched in this list
-						if(strToLower($t_obj_x_occ->get("ca_objects_x_occurrences.current_collection", array("convertCodesToDisplayText" => true))) == "no"){
-							$va_current_collection[] = $va_provenance_info["name"].(($vs_date) ? ", ".$vs_date : "");
+						$vs_credit_accession = $t_obj_x_occ->get("interstitial_notes");
+						if($vs_credit_accession){
+							if(strToLower($t_obj_x_occ->get("ca_objects_x_occurrences.current_collection", array("convertCodesToDisplayText" => true))) == "yes"){
+								$va_current_collection[] = $vs_credit_accession;
 							
-						}else{
-							$va_provenance_display[] = $va_provenance_info["name"].(($vs_date) ? ", ".$vs_date : "");
-							#$va_provenance_display[] = $va_provenance_info["name"].(($vs_date) ? ", ".$vs_date : "")." (".$va_provenance_info["relationship_typename"].")";
+							}else{
+								$va_provenance_display[] = $vs_credit_accession;
+							}
 						}
 					}
 					if(sizeof($va_current_collection)){
@@ -200,6 +200,9 @@
 					foreach($va_exhibitions as $va_exhibition){
 						$t_occ->load($va_exhibition["occurrence_id"]);
 						$vs_originating_venue 	= $t_occ->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='originator' delimiter=', '>^ca_entities.preferred_labels</unit>", array("checkAccess" => $va_access_values));
+						if($vs_venue_location = $t_occ->get("ca_occurrences.venue_location", array("delimiter" => ", "))){
+							$vs_originating_venue .= ", ".$vs_venue_location;
+						}
 						$vs_title = italicizeTitle($va_exhibition["name"]);
 						$vs_date = $t_occ->get("ca_occurrences.exhibition_dates_display", array("delimiter" => "<br/>"));
 						if(!$vs_date){
@@ -213,27 +216,16 @@
 								break;
 							}
 						}
-						$va_interstitial = array();
-						$vs_interstitial = "";
-						if($vs_tmp = $t_objects_x_occurrences->get("checklist_number")){
-							$va_interstitial[] = $vs_tmp;
+						$vs_citation = "";
+						if($vs_citation = $t_objects_x_occurrences->get("checklist_number")){
+							$vs_citation = ", ".$vs_citation;
 						}
-						if($vs_tmp = $t_objects_x_occurrences->get("exhibition_title")){
-							$va_interstitial[] = $vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("citation")){
-							$va_interstitial[] = $vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("exh_remarks")){
-							$va_interstitial[] = $vs_tmp;
-						}
-						if($vs_tmp = $t_objects_x_occurrences->get("source")){
-							$va_interstitial[] = $vs_tmp;
-						}
-						if(sizeof($va_interstitial)){
-							$vs_interstitial = ", ".join(", ", $va_interstitial);
-						}
-						print (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "").$vs_interstitial."<br/>";
+						$vs_travel_venues = $t_occ->getWithTemplate('<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
+								<div class="travelVenue"><div>Traveled To</div>
+								<unit relativeTo="ca_occurrences.venues" delimiter="<br/>"><ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef><ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address<ifdef code="ca_occurrences.venues.venue_dates_display">, </ifdef></ifdef><ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display</ifdef>.</unit>
+								</div>
+							</ifdef>');
+						print (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "").$vs_citation.".".$vs_travel_venues.(($vs_travel_venues) ? "" : "<br/><br/>");
 					}
 					print "</div>";
 				}
@@ -261,7 +253,7 @@
 						if($vs_tmp = $t_objects_x_occurrences->get("source")){
 							$vs_interstitial = ", ".$vs_tmp;
 						}
-						print $vs_title.$vs_interstitial."<br/>";
+						print $vs_title.$vs_interstitial."<br/><br/>";
 					}
 					print "</div>";
 				}			
