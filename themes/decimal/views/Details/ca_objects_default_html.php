@@ -47,19 +47,26 @@
 			<div class='col-sm-6 col-md-6 col-lg-5 col-lg-offset-1'>
 				
 <?php		
-				if ($this->request->isLoggedIn()) {		
+				#if ($this->request->isLoggedIn()) {		
 					print $this->getVar("representationViewer");				
 				
 					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); 
-				} else {
-					print $t_object->get('ca_object_representations.media.medium');
-					print "<div class='detailMediaPlaceholderCaption'>Please <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a> or <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a> to view media</div>";
-				}	
+				#} else {
+				#	print $t_object->get('ca_object_representations.media.medium');
+				#	print "<div class='detailMediaPlaceholderCaption'>Please <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a> or <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a> to view media</div>";
+				#}	
 
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
-						
 					print '<div id="detailTools">';
+?>
+					<div class="detailTool detailToolSocial">
+						<a href='https://twitter.com/home?status=http%3A//fabricofdigitallife.com<?php print caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("ca_objects.object_id")); ?>'><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+						<a href='https://www.facebook.com/sharer/sharer.php?u=http%3A//fabricofdigitallife.com<?php print caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("ca_objects.object_id")); ?>'><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+						<a href='https://plus.google.com/share?url=http%3A//fabricofdigitallife.com<?php print caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("ca_objects.object_id")); ?>'><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+					</div><!-- end detailTool -->
+						
+<?php						
 					if ($vn_comments_enabled) {
 ?>				
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
@@ -79,11 +86,16 @@
 				<HR>
 <?php
 
-				if ($va_publication = $t_object->get('ca_objects.publication_title_name', array('delimiter' => ', '))) {
-					print "<div class='unit'><h6>Publication Title</h6>".$va_publication."</div>";
+				if ($va_publications = $t_object->get('ca_objects.publication_title_name', array('returnAsArray' => 'true'))) {
+					#print_r($va_publications);
+					print "<div class='unit'><h6>Publication Title</h6>";
+					foreach($va_publications as $vs_publication){
+						print caNavLink($this->request, $vs_publication, '', '', 'Browse', 'objects', array('facet' => 'analytics_pub_title_facet', 'id' => urlencode($vs_publication)));
+					}
+					print "</div>";
 				}
 				if ($va_issued = $t_object->get('ca_objects.issued', array('delimiter' => ', '))) {
-					print "<div class='unit'><h6>Publication Date</h6>".$va_issued."</div>";
+					print "<div class='unit'><h6>Publication/Creation Date</h6>".$va_issued."</div>";
 				}
 				#if ($va_creator = $t_object->getWithTemplate('<unit delimiter=", " restrictToRelationshipTypes="creator,contributor,rightsHolder" relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
 				#	print "<div class='unit'><h6>Creators/Contributors</h6>".$va_creator."</div>";
@@ -217,14 +229,24 @@
 								}					
 								print "</div>";
 							}
+							
+							print "<div class='unit'><h6>Date archived</h6>";
+							print $t_object->get('ca_objects.created', ['timeOmit' => true])."</div>";
+														
+							print "<div class='unit'><h6>Last edited</h6>";
+							print $t_object->get('ca_objects.lastModified', ['timeOmit' => true])."</div>";
+							
 							$vs_citation = "";
-							if ($vs_creator = $t_object->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('creator','rightsHolder','contributor'), 'delimiter' => ', '))) {
+							if ($vs_creator = $t_object->get('ca_entities.preferred_labels', array('checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('creator','rightsHolder'), 'delimiter' => ', '))) {
 								$vs_citation.= $vs_creator.". ";
 							}
 							if ($vs_date = $t_object->get('ca_objects.issued', array('delimiter' => ', '))) {
 								$vs_citation.= " (".$vs_date."). ";
 							}
 							$vs_citation.= ' "'.$t_object->get('ca_objects.preferred_labels').'". ';	
+							if ($vs_publication = $t_object->get('ca_objects.publication_title_name', array('delimiter' => ', '))) {
+								$vs_citation.= $vs_publication.". ";
+							}
 							if ($vs_publisher = $t_object->get('ca_entities', array('checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('publisher'), 'delimiter' => ', '))) {
 								$vs_citation.= $vs_publisher.". ";
 							}
@@ -234,7 +256,6 @@
 							$vs_citation.= "<a href='".$record_link."'>".$record_link."</a>";
 							print "<div class='unit' style='margin:12px 0px;'><h6>How to cite this entry</h6>".$vs_citation."</div>";
 ?>								
-
 
 						</div><!-- end col -->				
 

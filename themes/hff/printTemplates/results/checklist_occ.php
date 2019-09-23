@@ -124,7 +124,12 @@
 							if(!$vs_date){
 								$vs_date = $vo_result->get("ca_occurrences.common_date");
 							}
-							$vs_label 	.= (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "");
+							$vs_travel_venues = $vo_result->getWithTemplate('<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
+								<div style="padding-left:20px;"><div>Traveled To</div>
+								<unit relativeTo="ca_occurrences.venues" delimiter="<br/>" sort="ca_occurrences.venues.venue_dates"><ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef><ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address<ifdef code="ca_occurrences.venues.venue_dates_display">, </ifdef></ifdef><ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display</ifdef>.</unit>
+								</div>
+							</ifdef>');
+							$vs_label 	.= (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "").$vs_travel_venues;
 						break;
 						# ------------------------
 						default:

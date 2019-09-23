@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2018 Whirl-i-Gig
+ * Copyright 2008-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -292,15 +292,15 @@ class ca_users extends BaseModel {
 	/**
 	 * User and group role caches
 	 */
-	static $s_user_role_cache = array();
-	static $s_user_group_cache = array();
-	static $s_group_role_cache = array();
-	static $s_user_type_access_cache = array();
-	static $s_user_source_access_cache = array();
-	static $s_user_bundle_access_cache = array();
-	static $s_user_action_access_cache = array();
-	static $s_user_type_with_access_cache = array();
-	static $s_user_source_with_access_cache = array();
+	static $s_user_role_cache = [];
+	static $s_user_group_cache = [];
+	static $s_group_role_cache = [];
+	static $s_user_type_access_cache = [];
+	static $s_user_source_access_cache = [];
+	static $s_user_bundle_access_cache = [];
+	static $s_user_action_access_cache = [];
+	static $s_user_type_with_access_cache = [];
+	static $s_user_source_with_access_cache = [];
 
 	/**
 	 * List of tables that can have bundle- or type-level access control
@@ -3013,6 +3013,12 @@ class ca_users extends BaseModel {
 				foreach($va_values as $vs_k => $vs_v) {
 					if(in_array($vs_k, array('roles', 'groups'))) { continue; }
 					$this->set($vs_k, $vs_v);
+				}
+				
+				if (defined("__CA_APP_TYPE__") && (__CA_APP_TYPE__ === "PROVIDENCE")) {
+				    $this->set('userclass', 0);
+				} else {
+				    $this->set('userclass', 1);
 				}
 
 				$vn_mode = $this->getMode();

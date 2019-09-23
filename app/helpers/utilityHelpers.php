@@ -1427,6 +1427,23 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ---------------------------------------
 	/**
+	  * Determine if two mimetypes are equivalent. Mimetypes may be specific or include wildcards.
+	  *
+	  * @param string $mimetype1 A specific or wildcard mimetype. Eg. image/jpeg or image/*.
+	  * @param string $mimetype2 A specific or wildcard mimetype. Eg. image/jpeg or image/*.
+	  * @return bool
+	  */
+	function caCompareMimetypes($mimetype1, $mimetype2) {
+		$t1 = explode('/', $mimetype1);
+		$t2 = explode('/', $mimetype2);
+		
+		if ($t1[0] !== $t2[0]) { return false; }
+		if (($t1[1] === $t2[1]) || ($t1[1] === '*') || ($t2[1] === '*')) { return true; }
+		
+		return false;
+	}
+	# ---------------------------------------
+	/**
 	  * Creates an md5-based cached key from an array of options
 	  *
 	  * @param array $pa_options An options array
@@ -1993,6 +2010,7 @@ function caFileIsIncludable($ps_file) {
 	 *		caseSensitive = do case sensitive comparisons when checking the option value against the validValues list [default=false]
 	 *		castTo = array|int|string|float|bool
 	 *		delimiter = A delimiter, or array of delimiters, to break a string option value on. When this option is set an array will always be returned. [Default is null]
+	 *		defaultOnEmptyString = Force use of default value when option is set to an empty string). [Default is false]
 	 * @return mixed
 	 */
 	function caGetOption($pm_option, $pa_options, $pm_default=null, $pa_parse_options=null) {
@@ -2021,6 +2039,7 @@ function caFileIsIncludable($ps_file) {
 		} else {
 			$vm_val = (isset($pa_options[$pm_option]) && !is_null($pa_options[$pm_option])) ? $pa_options[$pm_option] : $pm_default;
 		}
+		if (isset($pa_parse_options['defaultOnEmptyString']) && $pa_parse_options['defaultOnEmptyString'] && is_string($vm_val) && (strlen($vm_val) === 0)) { $vm_val = $pm_default; }
 
 		if (
 			((is_string($vm_val) && !isset($pa_parse_options['castTo'])) || (isset($pa_parse_options['castTo']) && ($pa_parse_options['castTo'] == 'string')))
@@ -2328,11 +2347,14 @@ function caFileIsIncludable($ps_file) {
 	 * Return search result instance for given table and id list
 	 * @param string $ps_table the table name
 	 * @param array $pa_ids a list of primary key values
-	 * @param null|array $pa_options @see BundlableLabelableBaseModelWithAttributes::makeSearchResult
+	 * @param null|array $pa_options Options include and option from BundlableLabelableBaseModelWithAttributes::makeSearchResult as well as :
+	 *		transaction = transaction to execute queries within. [Default is null]
+	 * @see BundlableLabelableBaseModelWithAttributes::makeSearchResult
 	 * @return null|SearchResult
 	 */
 	function caMakeSearchResult($ps_table, $pa_ids, $pa_options=null) {
 		if ($t_instance = Datamodel::getInstanceByTableName('ca_objects', true)) {	// get an instance of a model inherits from BundlableLabelableBaseModelWithAttributes; doesn't matter which one
+			if ($trans = caGetOption('transaction', $pa_options, null)) { $t_instance->setTransaction($trans); }
 			return $t_instance->makeSearchResult($ps_table, $pa_ids, $pa_options);
 		}
 		return null;
@@ -3081,6 +3103,75 @@ function caFileIsIncludable($ps_file) {
 	}
 	# ----------------------------------------
 	/**
+	 * Get weight unit type as Zend constant, e.g. 'ft.' = Zend_Measure_Length::KILOGRAM
+	 * @param string $ps_unit
+	 * @param array $pa_options Options include:
+	 *		short = return short name for unit (ex. for kilograp, return "kg", for pounds return "lbs")
+	 * @return null|string
+	 */
+	function caGetWeightUnitType($ps_unit, $pa_options=null) {
+		$vb_return_short = caGetOption('short', $pa_options, false);
+		$vb_return_code = caGetOption('code', $pa_options, false);
+		
+		switch(strtolower(str_replace(".", "", $ps_unit))) {
+            case "lbs":
+            case 'lbs.':
+            case 'lb':
+            case 'lb.':
+            case 'pound':
+            case 'pounds':
+                return $vb_return_short ? 'lbs' :  Zend_Measure_Weight::POUND;
+                break;
+            case 'kg':
+            case 'kg.':
+            case 'kilo':
+            case 'kilos':
+            case 'kilogram':
+            case 'kilograms':
+                return $vb_return_short ? 'kg' : Zend_Measure_Weight::KILOGRAM;
+                break;
+            case 'g':
+            case 'g.':
+            case 'gram':
+            case 'grams':
+                return $vb_return_short ? 'g' : Zend_Measure_Weight::GRAM;
+                break;
+            case 'mg':
+            case 'mg.':
+            case 'milligram':
+            case 'milligrams':
+                return $vb_return_short ? 'mg' : Zend_Measure_Weight::MILLIGRAM;
+                break;
+            case 'oz':
+            case 'oz.':
+            case 'ounce':
+            case 'ounces':
+                return $vb_return_short ? 'oz' : Zend_Measure_Weight::OUNCE;
+                break;
+            case 'ton':
+            case 'tons':
+            case 'tonne':
+            case 'tonnes':
+            case 't':
+            case 't.':
+                return $vb_return_short ? 't' : Zend_Measure_Weight::TON;
+                break;
+            case 'stone':
+                return $vb_return_short ? 'stone' : Zend_Measure_Weight::STONE;
+                break;
+            case 'grain':
+            case 'gr':
+            case 'gr.':
+                return $vb_return_short ? 'gr' : Zend_Measure_Weight::GRAIN;
+                break;
+            default:
+                return null;
+                break;
+        }
+		
+	}
+	# ----------------------------------------
+	/**
 	 * Parse weight dimension
 	 * @param string $ps_value value to parse
 	 * @param null|array $pa_options options array
@@ -3108,58 +3199,9 @@ function caFileIsIncludable($ps_file) {
 					$vs_value += caConvertLocaleSpecificFloat(trim($vs_v), $vs_locale);
 				}
 
-				switch(strtolower($va_matches[2])) {
- 					case "lbs":
- 					case 'lbs.':
- 					case 'lb':
- 					case 'lb.':
- 					case 'pound':
- 					case 'pounds':
- 						$vs_units = Zend_Measure_Weight::POUND;
- 						break;
- 					case 'kg':
- 					case 'kg.':
- 					case 'kilo':
- 					case 'kilos':
- 					case 'kilogram':
- 					case 'kilograms':
- 						$vs_units = Zend_Measure_Weight::KILOGRAM;
- 						break;
- 					case 'g':
- 					case 'g.':
- 					case 'gr':
- 					case 'gr.':
- 					case 'gram':
- 					case 'grams':
- 						$vs_units = Zend_Measure_Weight::GRAM;
- 						break;
- 					case 'mg':
- 					case 'mg.':
- 					case 'milligram':
- 					case 'milligrams':
- 						$vs_units = Zend_Measure_Weight::MILLIGRAM;
- 						break;
- 					case 'oz':
- 					case 'oz.':
- 					case 'ounce':
- 					case 'ounces':
- 						$vs_units = Zend_Measure_Weight::OUNCE;
- 						break;
- 					case 'ton':
- 					case 'tons':
- 					case 'tonne':
- 					case 'tonnes':
- 					case 't':
- 					case 't.':
- 						$vs_units = Zend_Measure_Weight::TON;
- 						break;
- 					case 'stone':
- 						$vs_units = Zend_Measure_Weight::STONE;
- 						break;
- 					default:
- 						throw new Exception(_t('Not a valid unit of weight [%2]', $ps_value));
- 						break;
- 				}
+                if (!($vs_units = caGetWeightUnitType($va_matches[2]))) {
+                    throw new Exception(_t('Not a valid unit of weight [%2]', $ps_value, $va_matches[2]));
+                }
 
 				try {
 					$o_tmp = new Zend_Measure_Weight($vs_value, $vs_units, $vs_locale);
@@ -3432,9 +3474,9 @@ function caFileIsIncludable($ps_file) {
 				}
 			}
 		} elseif (preg_match("/Labels$/", $ps_id_prefix)) { // labels
-			return (sizeof($pa_initial_values) > 0);
+			return (is_array($pa_initial_values) && (sizeof($pa_initial_values) > 0));
 		} elseif (preg_match("/\_rel$/", $ps_id_prefix)) {
-			return (sizeof($pa_initial_values) > 0);
+			return (is_array($pa_initial_values) && (sizeof($pa_initial_values) > 0));
 		}
 
 		return false;
@@ -3618,10 +3660,6 @@ function caFileIsIncludable($ps_file) {
         if ($num < 0) {
             $num *= -1;
         }
-        
-       //  if (is_array($pa_allow_fractions_for) && !in_array("{$num}/{$pn_denom}", $pa_allow_fractions_for)) {
-//         
-//         }
         
         if(caGetOption('forceFractions', $pa_options, true)) {
             $v = $num/$pn_denom;
@@ -3857,6 +3895,9 @@ function caFileIsIncludable($ps_file) {
 			case 'in':
 				return ($pb_is_list) ? true : false;
 				break;
+			case 'not in':
+				return ($pb_is_list) ? true : false;
+				break;
 		}
 		return false;
 	}
@@ -3881,7 +3922,7 @@ function caFileIsIncludable($ps_file) {
 			switch($vs_char = mb_substr($ps_template, $i, 1)) {
 				case '{':
 				    if (!$vb_in_tag && !$vb_in_single_quote && $vb_in_single_quote && (mb_substr($ps_template, $i+1, 1) === '^')) {
-				        continue;
+				        continue(2);
 				    }
 				    break;
 				case '^':

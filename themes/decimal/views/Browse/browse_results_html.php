@@ -148,7 +148,11 @@ if (!$vb_ajax) {	// !ajax
 			foreach($va_criteria as $va_criterion) {
 				print "<strong>".$va_criterion['facet'].':</strong>';
 				if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+					$vs_criterion_value = $va_criterion['value'];
+					if(mb_strlen($vs_criterion_value) > 50){
+						$vs_criterion_value = mb_substr($vs_criterion_value, 0, 50)."...";
+					}
+					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_criterion_value.' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
 					$vs_search_trunc = explode(":", $va_criterion['value']); 
 					if ($vs_search_trunc[1]) {
