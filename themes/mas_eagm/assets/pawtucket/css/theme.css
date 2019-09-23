@@ -529,3 +529,11 @@ a-scene.fullscreen .a-canvas {
 .jcarousel-wrapper, .jcarousel {
 	width:auto !important;
 }
+#galleryDetailImageArea img {
+    max-width: 430px !important;
+    max-height: 430px !important;
+    height: auto !important;
+    width: auto !important;
+    margin-top: auto;
+    margin-bottom: auto;
+}
