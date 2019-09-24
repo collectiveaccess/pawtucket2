@@ -4,6 +4,7 @@
 {{{<ifdef code="ca_objects.idno"><H6>Accession Number:</H6>^ca_objects.idno<br/></ifdef>}}}
 
 {{{<ifdef code="ca_objects.description">^ca_objects.description<br/><br/></ifdef>}}}
+{{{<unit relativeTo="ca_entities"restrictToRelationshipTypes="artist"><ifdef code="ca_entities.preferred_labels" restrictToTypes="artist"><h6>Artist</h6><l>^ca_entities.preferred_labels</l><br></ifdef></unit>}}}
 
 
 <br>
