@@ -32,8 +32,10 @@
 	pawtucketUIApps['NoguchiBrowse'] = {
         'selector': '#browse',
         'data': {
-           "title": "Photgraphy browse",
-			"description": "A browse on Noguchi's photos"
+           title: "Photgraphy browse",
+			description: "A browse on Noguchi's photos",
+			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
+			endpoint: "objects"
         }
     };
 </script>

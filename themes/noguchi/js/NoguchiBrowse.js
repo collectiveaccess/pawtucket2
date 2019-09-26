@@ -259,4 +259,4 @@ class NoguchiBrowseResultItem extends React.Component {
 }
 
 ReactDOM.render(
-	<NoguchiBrowse title={appData.title} description={appData.description}/>, document.querySelector(selector));
+	<NoguchiBrowse baseUrl={appData.baseUrl} title={appData.title} description={appData.description}/>, document.querySelector(selector));
