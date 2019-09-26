@@ -1,5 +1,7 @@
 'use strict';
 import React from 'react';
+const axios = require('axios');
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 
 /**
@@ -10,7 +12,20 @@ export class BrowseUI extends React.Component {
 		super(props);
 		this.state = {
 
-		}
+		};
+	}
+
+	componentDidMount() {
+		let that = this;
+		console.log("URL", this.props.baseUrl);
+		// Fetch browse facet items
+		axios.get("index.php/Browse/objects/getFacet/1/facet/type_facet")
+			.then(function (response) {
+				console.log("xxx", response);
+			})
+			.catch(function (error) {
+				console.log("Error while loading browse navigation: ", error);
+			})
 	}
 }
 
