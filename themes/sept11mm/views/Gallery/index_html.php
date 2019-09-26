@@ -42,7 +42,7 @@
 						The feature galleries on this page bring together objects based on a variety of themes, material type, scale, and exhibition area. Click on the features to explore more about a topic and browse through related objects in the collection.
 					</p>
 					<p>
-						Features on this page are continually expanded to include a larger representation of the Museum’s holdings. Check back frequently for recently added content.</p> d
+						Features on this page are continually expanded to include a larger representation of the Museum’s holdings. Check back frequently for recently added content.</p> 
 					</p>
 				</div><!-- end col -->
 			</div><!-- end row -->
