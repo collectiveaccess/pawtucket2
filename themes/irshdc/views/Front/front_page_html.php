@@ -119,7 +119,7 @@
 	}
 ?>
 	
-	<div class="row tanBg">
+<!--	<div class="row tanBg">
 		<div class="col-md-12 col-lg-10 col-lg-offset-1">
 			<H2>Explore by Narrative Thread</H2>
 			<div class="row frontNarrativeThreads">
@@ -138,7 +138,7 @@
 
 			</div>
 		</div>
-	</div>
+	</div>-->
 <?php	
 	if($vs_partners_set_code = $this->config->get("front_page_partners_set_code")){
 		$t_partners_set = new ca_sets();
