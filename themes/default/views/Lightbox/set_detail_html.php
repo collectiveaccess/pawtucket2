@@ -70,7 +70,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
-					print "<H5 id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
+					print "<div id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
 					$i = 0;
 					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 						$i++;
@@ -83,12 +83,12 @@ if (!$vb_ajax) {	// !ajax
 							print "<li class='divide'>&nbsp;</li>";
 						}
 					}
-					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc"))))."</li>";
-					print "</ul></H5>\n";
+					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc"))))."</li>";
+					print "</ul></div>\n";
 				}
 			}
 ?>
-			<div class="setsBack"><?php print caNavLink($this->request, ($o_lightbox_config->get("backLink")) ? $o_lightbox_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
+			<div class="setsBack"><?php print caNavLink($this->request, ($o_lightbox_config->get("backLink")) ? $o_lightbox_config->get("backLink") : "<i class='fa fa-angle-double-left' aria-label='back'></i><div class='small'>Back</div>", "", "", "Lightbox", "Index"); ?></div><!-- end setsBack -->
 			<H1>
 				<?php print "<span id='lbSetName".$t_set->get("set_id")."'>".$t_set->getLabelForDisplay()."</span>"; ?>
 				<?php print "<span class='lbSetCount'>(<span class='lbSetCountInt'>".$qr_set_items->numHits()."</span> items)</span>"; ?>
@@ -166,9 +166,9 @@ if (!$vb_ajax) {	// !ajax
 					</ul>
 				</div><!-- end btn-group -->
 			</H1>
-			<H5>
 <?php
 				if (sizeof($va_criteria) > 1) {
+					print "<div class='bCriteria'>";
 					foreach($va_criteria as $va_criterion) {
 						if ($va_criterion['facet_name'] != '_search') {
 							print "<strong>".$va_criterion['facet'].':</strong> ';
@@ -177,9 +177,9 @@ if (!$vb_ajax) {	// !ajax
 						}
 					}
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'._t("Start Over").'</span></button>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1));
+					print "</div>";
 				}
 ?>
-			</H5>
 		</div><!-- end col -->
 		<div class="<?php print ($vs_right_col_class = $o_lightbox_config->get("setDetailRightColClass")) ? $vs_right_col_class : "col-sm-3 col-md-3 col-lg-3 col-lg-offset-1"; ?>">
 			<div id="lbViewButtons">
@@ -190,9 +190,9 @@ if (!$vb_ajax) {	// !ajax
 						if (!$qr_set_items->hasData($va_view_info['data'])) { continue; }	// don't show view options for which there is no data (eg. map requires mappable data)
 					}
 					if ($vs_current_view === $vs_view) {
-						print '<a href="#" class="active"><span class="glyphicon '.$va_view_info['icon'].'"></span></a> ';
+						print '<a href="#" class="active"><span class="glyphicon '.$va_view_info['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
 					} else {
-						print caNavLink($this->request, '<span class="glyphicon '.$va_view_info['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'set_id' => $t_set->get("set_id"), 'key' => $vs_browse_key)).' ';
+						print caNavLink($this->request, '<span class="glyphicon '.$va_view_info['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'set_id' => $t_set->get("set_id"), 'key' => $vs_browse_key)).' ';
 					}
 				}
 			}
@@ -318,6 +318,7 @@ if (!$vb_ajax) {    // !ajax
                 <div id="lbSetCommentErrors" style="display: none;" class='alert alert-danger'></div>
                 <form action="#" id="addComment" method="post">
                     <div class="form-group">
+                        <label for="addCommentTextArea">Comment</label>
                         <textarea id="addCommentTextArea" name="comment"
                                   placeholder="<?php print addslashes(_t("add your comment")); ?>"
                                   class="form-control"></textarea>
