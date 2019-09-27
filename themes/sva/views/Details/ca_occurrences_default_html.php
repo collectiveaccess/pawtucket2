@@ -28,11 +28,22 @@
 				<li>{{{^ca_occurrences.preferred_labels.name}}}<span></li>
 				</li>
 			</ul>
-		</div>         			
-		<div class="col-sm-12">
+		</div>   
+	</div>
+	<div class="row">
+		<div class="col-sm-1 prevnext">
+			<?php print $this->getVar('resultsLink'); ?><br>
+			<?php print $this->getVar('previousLink'); ?> 		
+		</div>					
+		<div class="col-sm-10">
            	<H2>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno"> ^ca_occurrences.idno</ifdef>}}}: {{{^ca_occurrences.preferred_labels.name}}}</H2>
-        <hr>
-        </div>
+        </div>       
+        <div class="col-sm-1 prevnext">
+			<br><?php print $this->getVar('nextLink'); ?>
+		</div>
+		<div class="col-sm-12"><hr> </div>
+	</div>
+	<div class="row">
 		<div class="col-sm-12">
         	{{{<ifdef code="ca_occurrences.description_public"><p>^ca_occurrences.description_public</p></ifdef>}}}		
         </div>	
@@ -84,7 +95,7 @@
 			</ifcount>}}}	
 			{{{<ifcount code="ca_objects" min="3">
 			    <div class="card-columns">
-				<unit relativeTo="ca_objects" delimiter=" "><div class="card mx-auto"><l>^ca_object_representations.media.large</l><div class='masonry-title'><l>^ca_objects.preferred_labels.name</l></div></div></unit>
+				<unit relativeTo="ca_objects" delimiter=" "><div class="card mx-auto"><div class="colorblock"><l>^ca_object_representations.media.large</l></div><div class='masonry-title'><l>^ca_objects.preferred_labels.name</l></div></div></unit>
                 </div>
 				</div><!-- end col -->
 			</ifcount>}}}						

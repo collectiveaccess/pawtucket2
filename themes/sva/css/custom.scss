@@ -43,6 +43,7 @@ p {
 .card img:hover {
 	opacity: 0.5;
 }
+
 .frontpara {
 	margin-left: -10px;
 }
@@ -88,20 +89,21 @@ p {
 }
 .navbar-fixed-top a {
 	color: $primary-color !important;
-	}
+}
+	
 .skip {
        position: absolute;
        left: -999em;
        width: 990em;
-   }
+}
+
 .skip a {
    color: #000000;
-   }
+}
 
 h1 {
 	font-size:6rem;
 	margin-bottom: 1rem;
-
 }
 
 @media (min-width: $breakpoint-sm) and (max-width: $breakpoint-med) {
@@ -140,6 +142,7 @@ h2 {
 		margin-top: 1rem;
 		}
 }
+
 h2 a:hover {
 	text-decoration: underline;
 }
@@ -248,7 +251,20 @@ h3 {
 	padding-top: 10px;
 	padding-bottom: 10px;
 	margin-left: 20px;
+	max-width: 600px;
 	}
+}
+
+.prevnext {
+ 	font-family: $sans-serif;
+ 	font-size: .8rem;
+ 	color: $lighter-color;
+}
+
+
+.prevnext-icon {
+	font-size: .8rem !important;
+	padding-top: 3px !important;
 }
 
 /* FOOTER */
@@ -302,6 +318,10 @@ footer {
 small {
 	text-transform: uppercase;
 	font-size: 10px;
+	padding-top: -3px;
+}
+.back {
+	padding-left: 16px;
 }
 .notice {
 	line-height: 15px;
@@ -314,6 +334,11 @@ small {
 
 .occurrence-metadata {
 	padding-top: 50px;
+}
+
+.colorblock {
+	background-color: #F2F2F0 !important;
+	min-height: 100px;
 }
 
 /* FRONT BROWSE */

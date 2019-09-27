@@ -53,25 +53,33 @@
 
 				</ul>
 			</div> 
-
-			<div class="col-sm-12">
+	</div>
+    <div class="row">
+			<div class="col-sm-1 prevnext">
+		     	<?php print $this->getVar('resultsLink'); ?><br>
+				<span class="flex align-items-start"><?php print $this->getVar('previousLink'); ?> </span>
+			</div>
+			<div class="col-sm-10">
 			  <!--   <H2>{{{^ca_occurrences.type_id}}}{{{<ifdef code="ca_occurrences.idno"> ^ca_occurrences.idno</ifdef>}}}: {{{^ca_occurrences.preferred_labels.name}}}</H2>	-->	
-            	<H2>{{{^ca_objects.preferred_labels.name}}}</h2><hr>	
+            	<H2>{{{^ca_objects.preferred_labels.name}}}</h2>	
             </div>		
+            <div class="col-sm-1 prevnext">
+				<br><?php print $this->getVar('nextLink'); ?>
+			</div>
+			<div class="col-sm-12"><hr></div>
+	</div>
+	<div class="row">
             <div class="col-sm-12">
-            	{{{<ifdef code="ca_objects.description_public"><p>^ca_objects.description_public</p></ifdef>}}}		
+            	{{{<ifdef code="ca_objects.description_public"><h3>Description</h3><p>^ca_objects.description_public</p></ifdef>}}}		
             </div>			
 		</div>	
 		<div class="row">	   
-			 {{{<ifdef code="ca_objects.idno"><div class="col-sm-4"><h3>Identifier</h3><p>^ca_objects.idno</p></div></ifdef>}}}		   			
+		    {{{<ifdef code="ca_objects.idno"><div class="col-sm-4"><h3>Identifier</h3><p>^ca_objects.idno</p></div></ifdef>}}}		   			
 			
-			<div class="col-sm-4">
-				{{{<ifcount code="ca_objects.dates" min="1" max="1"><h3>Date</h3></ifcount>}}}
-				{{{<ifcount code="ca_objects.dates" min="2"><h3>Dates</h3></ifcount>}}}
-				{{{<unit relativeTo="ca_objects" delimiter="<br/>"><p>^ca_objects.dates.dates_value</p><br/></unit>}}}
-			</div>	
-			
-			 {{{<ifdef code="ca_objects.type_id"><div class="col-sm-4"><h3>Format</h3><p>^ca_objects.type_id</p></div></ifdef>}}}	
+			{{{<ifcount code="ca_objects.dates" min="1" max="1"><div class="col-sm-4"><h3>Date</h3><unit relativeTo="ca_objects" delimiter="<br/>"><p>^ca_objects.dates.dates_value</p><br/></unit></div></ifcount>}}}
+			{{{<ifcount code="ca_objects.dates" min="2"><div class="col-sm-4"><h3>Dates</h3><unit relativeTo="ca_objects" delimiter="<br/>"><p>^ca_objects.dates.dates_value</p><br/></unit></div></ifcount>}}}
+	
+			{{{<ifdef code="ca_objects.type_id"><div class="col-sm-4"><h3>Format</h3><p>^ca_objects.type_id</p></div></ifdef>}}}	
 	
 			<div class="col-sm-4">
 				{{{<ifdef code="ca_objects.measurementSet.measurements">^ca_objects.measurementSet.measurements (^ca_objects.measurementSet.measurementsType)</ifdef><ifdef code="ca_objects.measurementSet.measurements,ca_objects.measurementSet.measurements"> x </ifdef><ifdef code="ca_objects.measurementSet.measurements2">^ca_objects.measurementSet.measurements2 (^ca_objects.measurementSet.measurementsType2)</ifdef>}}}																					
