@@ -319,7 +319,7 @@
 				}
 				
 				if ($vn_mapped_count > 0) { 
-					$this->view->setVar("map", $o_map->render('HTML', array('maxZoomLevel' => caGetOption(['mapZoomLevel', 'zoom_level'], $va_options, 12))));
+					$this->view->setVar("map", $o_map->render('HTML', array('zoomLevel' => caGetOption(['mapZoomLevel', 'zoom_level'], $va_options, null), 'minZoomLevel' => caGetOption(['mapMinZoomLevel'], $va_options, null), 'maxZoomLevel' => caGetOption(['mapMaxZoomLevel'], $va_options, null))));
 				}
 			}
 			
