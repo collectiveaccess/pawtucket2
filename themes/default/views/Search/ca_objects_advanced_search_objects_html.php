@@ -12,8 +12,8 @@ print "<p>Enter your search terms in the fields below.</p>";
 <div class='advancedContainer'>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<label for="" class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the database.">Keyword</label>
-			{{{_fulltext%width=200px&height=1&id=keyword}}}
+			<label for="_fulltext" class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the database.">Keyword</label>
+			{{{_fulltext%width=200px&height=1}}}
 		</div>			
 	</div>		
 	<div class='row'>
@@ -29,12 +29,12 @@ print "<p>Enter your search terms in the fields below.</p>";
 		</div>
 		<div class="advancedSearchField col-sm-6">
 			<label for='ca_objects_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object types.">Type</label>
-			{{{ca_objects.type_id%height=30px}}}
+			{{{ca_objects.type_id%height=30px&id=ca_objects_type_id}}}
 		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<label for='ca_objects.date.dates_value' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records of a particular date or date range.">Date range <i>(e.g. 1970-1979)</i></label>
+			<label for='ca_objects.date.dates_value[]' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records of a particular date or date range.">Date range <i>(e.g. 1970-1979)</i></label>
 			{{{ca_objects.dates.dates_value%width=200px&height=40px&useDatePicker=0}}}
 		</div>
 	</div>

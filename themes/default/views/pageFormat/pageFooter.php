@@ -54,7 +54,7 @@
 ?>
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
-		<div id="caMediaPanel"> 
+		<div id="caMediaPanel" role="complementary"> 
 			<div id="caMediaPanelContentArea">
 			
 			</div>

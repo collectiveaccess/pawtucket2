@@ -12,7 +12,7 @@ html {
 body {
 	font-family: LatoLight;
 	color:#454545;
-	margin-bottom:80px; 
+	margin-bottom:82px; 
 }
 #skipNavigation a{
 	position: absolute;
@@ -68,7 +68,7 @@ H4, h4{
 }
 H5, h5{
 	font-size: 14px;
-	color:#858585;
+	color:#757575;
 	text-transform:none;
 }
 H6, h6{
@@ -827,6 +827,7 @@ a.browseRemoveFacet img {
 	height:80px;
 	padding: 0px 15px 0px 15px;
 	font-family:lato;
+	background-color:#FFF;
 }
 @media (min-width: 768px) {
 	#footer {
@@ -858,13 +859,13 @@ a.browseRemoveFacet img {
 /* --------------------------------- */
 /* lightbox lb */
 /* --------------------------------- */
-.sets H1, .sets H1 .btn-group{
+.sets H1 .btn-group{
 	padding:0px;
 	margin:0px;
 }
 .sets H1 .btn-group {
 	font-size:16px;
-	padding-top: 5px;
+	padding-top: 0px;
     margin-bottom: 0px;
 }
 .sets .setsBack{
@@ -912,7 +913,7 @@ a.browseRemoveFacet img {
 }
 .lbSetCount {
 	font-size:13px;
-	color:#858585;
+	color:#757575;
 	text-transform:capitalize;
 	vertical-align:middle;
 }
@@ -934,18 +935,18 @@ a.browseRemoveFacet img {
 .lbSet.readSet  {
 	background-color:#fafafa;
 }
-.lbSet h5{
+.lbSet h5, .lbSet h2{
 	text-transform:uppercase;
 	font-size:13px;
 	margin-top:0px;
 	height:1em;
 	overflow:hidden;
 }
-.lbSet:hover H5{
+.lbSet:hover H5, .lbSet:hover H2{
 	height:auto;
 }
 @media (max-width: 767px) {
-	.lbSet h5{
+	.lbSet h5, .lbSet h2{
 		font-size:10px;
 		height:2em;
 		overflow:hidden;
@@ -1296,7 +1297,7 @@ a.browseRemoveFacet img {
 	margin-top:0px;
 }
 .crSet h5 a{
-	color:#858585;
+	color:#757575;
 }
 @media (max-width: 768px) {
 	.crSet .crSetImg{
@@ -1359,13 +1360,13 @@ a.browseRemoveFacet img {
 	font-weight:bold;
 }
 .crResponseHeader a{
- 	color:#858585;
+ 	color:#757575;
  }
 /* --------------------------------- */
 /* front page */
 /* --------------------------------- */
 .front H1{
-	color:#858585;
+	color:#757575;
 	line-height:1.3;
 	text-transform:none;
 }
@@ -1464,7 +1465,7 @@ a.browseRemoveFacet img {
 }
 .frontSlide .frontSlideCaption{
 	position:absolute;
-	background-color:rgba(0, 0, 0, 0.5);
+	background-color:rgba(0, 0, 0, 0.75);
 	background-color:#000;
 	padding:15px;
 	color:#FFF;
@@ -1483,7 +1484,7 @@ a.browseRemoveFacet img {
 .frontSlide:hover .frontSlideCaption{
 	opacity:1;
 	position:absolute;
-	background-color:rgba(0, 0, 0, 0.5);
+	background-color:rgba(0, 0, 0, 0.75);
 	padding:15px;
 	color:#FFF;
 	bottom:0px;
@@ -1865,12 +1866,16 @@ a.readmore-js-toggle{
 /* --------------------------------- */
 /* browse b */
 /* --------------------------------- */
-.results strong, .sets H5 strong {
+.results .bCriteria strong, .sets .bCriteria strong {
 	color:#000;
 	text-transform:uppercase;
 	font-size:12px;
 	font-weight:normal;
-}	
+}
+.sets .bCriteria{
+	padding-top:5px;
+	padding-bottom:5px;
+}
 .results a .glyphicon, .results a .fa {
 	color:#757575 !important;
 }
@@ -1916,7 +1921,7 @@ a.browseRemoveFacet .glyphicon {
 	margin:0px 5px 0px 0px;
 }
 #bSortByList ul li.divide{
-	border-left:1px solid #858585;
+	border-left:1px solid #757575;
 	width:3px;
 }
 #bSortByList ul li.selectedSort{
@@ -1924,7 +1929,7 @@ a.browseRemoveFacet .glyphicon {
 }
 #bSortByList li a{
 	text-decoration:underline;
-	color:#858585;
+	color:#757575;
 }
 #bSortByList ul li strong{
 	color:#000;
@@ -2312,14 +2317,14 @@ a.browseRemoveFacet .glyphicon {
 .multisearch {
 	/*padding:0px 30px 0px 25px;*/
 }
-.multisearch H3{
+.multisearch H3, .multisearch H2{
 	margin:0px;
 	padding:0px;
 	text-transform:none;
 }
-.multisearch H3 a, .multisearch H3 a:hover{
+.multisearch H3 a, .multisearch H3 a:hover, .multisearch H2 a, .multisearch H2 a:hover{
 	text-decoration:none;
-	color:#858585;
+	color:#757575;
 }
 .multisearch .blockResults {
 	height:170px;
@@ -2330,7 +2335,7 @@ a.browseRemoveFacet .glyphicon {
 .multisearchImgPlaceholder{
 	background-color: #F5F5F5;
 	border:2px solid #EDEDED;
-	color: #858585;
+	color: #757575;
 	padding:20px;
 	text-align:center;
 	width:100%;
@@ -2339,7 +2344,7 @@ a.browseRemoveFacet .glyphicon {
 }
 .multisearchFullResults a{
 	text-transform: uppercase;
-	color:#858585;
+	color:#757575;
 }
 .multisearchFullResults a:hover{
 	text-decoration: none;
@@ -2355,7 +2360,7 @@ a.browseRemoveFacet .glyphicon {
 }
 .multisearchSort ul li a{
 	text-decoration:underline;
-	color:#858585;
+	color:#757575;
 }
 .multisearchSort ul li.selectedSort a{
 	color:#454545;
@@ -2575,20 +2580,20 @@ a.browseRemoveFacet .glyphicon {
 }
 .collectionsContainer a.openCollection.active {
 	color:#fff;
-	background-color: #858585;
+	background-color: #757575;
 }
 .collectionsContainer a.openCollection.active small {
     color: #fff;
 }
 .collectionsContainer a .fa, .collectionsContainer .fa, #collectionLoad a .fa, #collectionLoad .fa{
-	color: #858585;
+	color: #757575;
 }
 .collectionsContainer a:hover {
 	text-decoration:none;
 	background-color: #f9f9f9;
 }
 .collectionsContainer small{
-	color:#858585;
+	color:#757575;
 }
 .collectionsContainer p{
 	font-size:12px;
@@ -3229,7 +3234,7 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 
 .findingaid H1 {
 	margin-bottom:20px;
-	color: #858585;
+	color: #757575;
 }
 #findingAidCont {
 	margin-top:20px;

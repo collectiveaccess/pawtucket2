@@ -112,7 +112,7 @@
 	if ($vb_has_user_links) {
 ?>
 			<div class="collapse navbar-collapse" id="user-navbar-toggle">
-				<ul class="nav navbar-nav" role="navigation" aria-label="<?php print _t("Mobile User Navigation"); ?>">
+				<ul class="nav navbar-nav" role="list" aria-label="<?php print _t("Mobile User Navigation"); ?>">
 					<?php print join("\n", $va_user_links); ?>
 				</ul>
 			</div>
@@ -123,10 +123,10 @@
 <?php
 	if ($vb_has_user_links) {
 ?>
-				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="navigation" aria-label="<?php print _t("User Navigation"); ?>">
+				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="list" aria-label="<?php print _t("User Navigation"); ?>">
 					<li class="dropdown" style="position:relative;">
 						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>"></span></a>
-						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
+						<ul class="dropdown-menu" role="list"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
 <?php
@@ -148,7 +148,7 @@
 						})
 					});
 				</script>
-				<ul class="nav navbar-nav navbar-right menuItems" role="navigation" aria-label="<?php print _t("Primary Navigation"); ?>">
+				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>

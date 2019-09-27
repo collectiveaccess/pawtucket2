@@ -44,14 +44,16 @@
 				<ul>
 <?php
 					while($qr_res->nextHit()){
-						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
-							print "<li><div class='frontSlide'>".$vs_media;
-							$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
-							if($vs_caption){
-								print "<div class='frontSlideCaption'>".$vs_caption."</div>";
+						if($qr_res->get("ca_object_representations.media.large")){
+							if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
+								print "<li><div class='frontSlide'>".$vs_media;
+								$vs_caption = $qr_res->getWithTemplate($vs_caption_template);
+								if($vs_caption){
+									#print "<div class='frontSlideCaption'>".$vs_caption."</div>";
+								}
+								print "</div></li>";
+								$vb_item_output = true;
 							}
-							print "</div></li>";
-							$vb_item_output = true;
 						}
 					}
 ?>
