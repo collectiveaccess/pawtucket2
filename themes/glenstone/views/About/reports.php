@@ -1,6 +1,6 @@
 <?php
 	require_once(__CA_MODELS_DIR__.'/ca_occurrences.php');
-	require_once(__CA_LIB_DIR__.'/ca/Search/OccurrenceSearch.php');
+	require_once(__CA_LIB_DIR__.'/Search/OccurrenceSearch.php');
 	$va_access_values = caGetUserAccessValues($this->request);
 	
 	$o_search = new OccurrenceSearch();

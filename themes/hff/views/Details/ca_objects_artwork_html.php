@@ -171,14 +171,10 @@
 						
 						$vs_travel_venues = $t_occ->getWithTemplate('<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
 						<div class="travelVenue"><div>Traveled To</div>
-						<unit relativeTo="ca_occurrences.venues" delimiter="<br/>">
-								<ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef>
-								<ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address, </ifdef>
-								<ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display </ifdef>
-						</unit>
+						<unit relativeTo="ca_occurrences.venues" delimiter="<br/>"><ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef><ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address<ifdef code="ca_occurrences.venues.venue_dates_display">, </ifdef></ifdef><ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display</ifdef>.</unit>
 						</div>
 					</ifdef>');
-						print caDetailLink($this->request, (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : ""), '', 'ca_occurrences', $va_exhibition["occurrence_id"]).$vs_citation.$vs_travel_venues.(($vs_travel_venues) ? "" : "<br/>");
+						print caDetailLink($this->request, (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : ""), '', 'ca_occurrences', $va_exhibition["occurrence_id"]).$vs_citation.".".$vs_travel_venues.(($vs_travel_venues) ? "" : "<br/>");
 					}
 					print "</div>";
 				}
