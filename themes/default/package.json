@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/collectiveaccess/pawtucket2#readme",
   "devDependencies": {
+    "axios": "^0.19.0",
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "babel-loader": "^8.0.6",
