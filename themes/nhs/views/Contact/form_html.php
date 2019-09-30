@@ -119,7 +119,7 @@
 ?>
 		<div class="row">
 			<div class="col-sm-12 text-center">
-				<a href="http://newporthistory.org/collections-resources/nhs-library/research-guidelines/#photography" target="_blank">NHS provides high-resolution digital images at a cost of $25 per image. For more details, read NHS’s reproduction and collections use policies.</a>
+				{{{request_image_link}}}
 			</div>
 		</div>
 
