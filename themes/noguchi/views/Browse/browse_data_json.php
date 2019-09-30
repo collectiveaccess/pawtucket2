@@ -1,10 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/Browse/browse_results_html.php :
+ * themes/noguchi/views/Browse.browse_data_json.php :
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -22,21 +25,5 @@
  *
  * ----------------------------------------------------------------------
  */
-?>
 
-<div id="browse">
-
-</div>
-
-<script type="text/javascript">	
-	pawtucketUIApps['NoguchiBrowse'] = {
-        'selector': '#browse',
-        'data': {
-           title: "Photography browse",
-			description: "A browse on Noguchi's photos",
-			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
-			endpoint: "objects"
-        }
-    };
-</script>
-
+print json_encode($this->getVar('data'));

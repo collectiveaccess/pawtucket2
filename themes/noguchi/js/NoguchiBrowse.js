@@ -1,14 +1,22 @@
 import React from "react"
 import ReactDOM from "react-dom";
-import * as Browse from "browse";
+import {initialState, fetchResults } from "../../default/js/browse";
+
 
 
 const selector = pawtucketUIApps.NoguchiBrowse.selector;
 const appData = pawtucketUIApps.NoguchiBrowse.data;
 
-class NoguchiBrowse extends Browse.BrowseUI{
+class NoguchiBrowse extends React.Component{
 	constructor(props) {
 		super(props);
+		let that = this;
+
+		this.state = initialState();
+		fetchResults("xxx", function(newState) {
+			console.log("!!!", newState);
+			that.setState(newState);
+		});
 	}
 
 	render() {
@@ -17,9 +25,9 @@ class NoguchiBrowse extends Browse.BrowseUI{
 				<NoguchiBrowseIntro headline={this.props.title} description={this.props.description}/>
 
 				<NoguchiBrowseFilters/>
-				<NoguchiBrowseStatistics/>
+				<NoguchiBrowseStatistics size={this.state.resultSize}/>
 
-				<NoguchiBrowseResults/>
+				<NoguchiBrowseResults results={this.state.resultList}/>
 			</main>
 		);
 	}
@@ -44,7 +52,7 @@ class NoguchiBrowseIntro extends React.Component {
 class NoguchiBrowseStatistics extends React.Component {
 	render() {
 		return(<div className="current">
-			<div className="body-sans">Showing 16,373 Results.</div>
+			<div className="body-sans">{(this.props.size > 0) ? ((this.props.size == 1) ? "Showing 1 Result" : "Showing " + this.props.size + " Results") : "Loading..."}.</div>
 
 			<NoguchiBrowseCurrentCriteriaList/>
 		</div>);
@@ -60,7 +68,7 @@ class NoguchiBrowseCurrentCriteriaList extends React.Component {
 	}
 }
 
-class NoguchiBrowseFilters extends Browse.BrowseFilters {
+class NoguchiBrowseFilters extends React.Component {
 	render() {
 		return(
 			<section className="ca_filters">
@@ -203,20 +211,19 @@ class NoguchiBrowseNavigation extends React.Component {
 	}
 }
 
-class NoguchiBrowseResults extends Browse.BrowseResults {
+class NoguchiBrowseResults extends React.Component {
 	render() {
+		let resultList = [];
+		for(let i in this.props.results) {
+			let r = this.props.results[i];
+			resultList.push(<NoguchiBrowseResultItem key={r.id} data={r}/>)
+		}
+
 		return(
 			<section className="block block-quarter-top">
 				<div className="wrap">
 					<div className="grid-flexbox-layout grid-ca-archive">
-						<NoguchiBrowseResultItem/>
-						<NoguchiBrowseResultItem/>
-						<NoguchiBrowseResultItem/>
-						<NoguchiBrowseResultItem/>
-						<NoguchiBrowseResultItem/>
-						<NoguchiBrowseResultItem/>
-						<NoguchiBrowseResultItem/>
-						<NoguchiBrowseResultItem/>
+						{resultList}
 					</div>
 				</div>
 			</section>
@@ -226,27 +233,27 @@ class NoguchiBrowseResults extends Browse.BrowseResults {
 
 class NoguchiBrowseResultItem extends React.Component {
 	render() {
+		let data = this.props.data;
 		let styles = {
-			"background-image": "url(http://noguchi.whirl-i-gig.com:8081/media/nogarchive/images/8/8/1/64478_ca_object_representations_media_88192_medium.jpg)"
+			"backgroundImage": "url(" + data.representation + ")"
 		};
+		let detail_url = "/index.php/Detail/archival/" + data.id;	// TODO: generalize
+
 		return (
 			<div className="item-grid">
-				<a href="/index.php/Detail/archival/72949">
+				<a href={detail_url}>
 					<div className="img-wrapper archive_thumb block-quarter">
 						<div className="bg-image"
 							 style={styles}></div>
 					</div>
 					<div className="text">
 						<div className="text_position">
-							<div className="ca-identifier text-gray">01</div>
-							<div className="thumb-text clamp" data-lines="3">Isamu Noguchi in Mure studio,
-								c.1980
-							</div>
-
+							<div className="ca-identifier text-gray">{data.idno}</div>
+							<div className="thumb-text clamp" data-lines="3">{data.label}</div>
 
 							<div className="text_full">
-								<div className="ca-identifier text-gray">01</div>
-								<div className="thumb-text">Isamu Noguchi in Mure studio, c.1980</div>
+								<div className="ca-identifier text-gray">{data.idno}</div>
+								<div className="thumb-text">{data.label}</div>
 
 
 							</div>
