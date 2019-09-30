@@ -46,10 +46,6 @@
 			$o_occ_context->saveContext();
 		}
 	}
-# --- get the narrative threads to link to browses
-	$t_list = new ca_lists();
-	$va_narrative_threads = $t_list->getItemsForList("narrative_thread", array("extractValuesByUserLocale" => true, "checkAccess" => $va_access_values));
-#print_r($va_narrative_threads);	
 ?>
 	<div class="row frontSearchRow">
 		<div class="col-sm-12 frontSearchCol">
@@ -117,9 +113,13 @@
 	</div>
 <?php
 	}
+	# --- get the narrative threads to link to browses
+#	$t_list = new ca_lists();
+#	$va_narrative_threads = $t_list->getItemsForList("narrative_thread", array("extractValuesByUserLocale" => true, "checkAccess" => $va_access_values));
+
 ?>
 	
-<!--	<div class="row tanBg">
+	<!--<div class="row tanBg">
 		<div class="col-md-12 col-lg-10 col-lg-offset-1">
 			<H2>Explore by Narrative Thread</H2>
 			<div class="row frontNarrativeThreads">
