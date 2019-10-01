@@ -9,15 +9,18 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-8">
-			<address>Location:<br>
-			107 Administration Pl<br>
-			University of Saskatchewan Campus<br/>
-			Saskatoon, SK S7N 5A2<br/>
-			(306) 966-4571</address>
+			<address><h3>Location</h3>
+			501 Railway Ave.<br>
+			Strasbourg, SK<br>
+			S0G4V0<br>
+			306-725-3443
+			</address>
 		
-			<address>Contact:<br/> Blair Barbeau<br>			<span class="info">Phone</span> — (306) 966 4571<br><a href="mailto:blair.barbeau@usask.ca">blair.barbeau@usask.ca</a></address>
-		</div>
+			<address><h3>Contact</h3>
+			 <a href="mailto:strasbourgmuseum@sasktel.net">strasbourgmuseum@sasktel.net</a><br/>
+			 <a href="www.townofstrasbourg.ca/museum">Website</a>
+			 </address>		
+	</div>
 		<div class="col-sm-3 col-sm-offset-1">
-			<?php print "<div class='logo'>".caGetThemeGraphic($this->request, 'logo 2013.jpg')."</div>"; ?>
 		</div>
 	</div>

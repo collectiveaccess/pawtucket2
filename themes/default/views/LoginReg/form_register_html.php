@@ -38,7 +38,6 @@
 	}
 	if($this->request->isAjax()){
 ?>
-<div id="main">
 <div id="caFormOverlay">
 <?php
 	}
@@ -130,14 +129,14 @@
 ?>
 		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
 			<label for='password2' class='col-sm-4 control-label'><?php print _t('Re-Type password'); ?></label>
-			<div class="col-sm-7"><input type="password" name="password2" size="40" class="form-control"  autocomplete="off" /></div><!-- end col-sm-7 -->
+			<div class="col-sm-7"><input type="password" name="password2" id="password2" size="40" class="form-control"  autocomplete="off" /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		
 <?php	
 		if($va_errors["group_code"]){
 			print "<div class='alert alert-danger'>".$va_errors["group_code"]."</div>";
 		}
-		print "<div class='form-group".(($va_errors["group_code"]) ? " has-error" : "")."'><label for='group' class='col-sm-4 control-label'>"._t("Group code (optional)")."</label><div class='col-sm-7'>".caHTMLTextInput("group_code", ['class' => 'form-control', 'id' => 'registrationGroupCode'], [])."</div></div>\n";
+		print "<div class='form-group".(($va_errors["group_code"]) ? " has-error" : "")."'><label for='registrationGroupCode' class='col-sm-4 control-label'>"._t("Group code (optional)")."</label><div class='col-sm-7'>".caHTMLTextInput("group_code", ['class' => 'form-control', 'id' => 'registrationGroupCode'], [])."</div></div>\n";
 ?>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
@@ -150,7 +149,6 @@
 	if($this->request->isAjax()){
 ?>
 </div><!-- end caFormOverlay -->
-</div>
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		jQuery('#RegForm').on('submit', function(e){		
