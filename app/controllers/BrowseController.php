@@ -86,6 +86,8 @@
  			$this->view->setVar("browse_type", $ps_function);
  			$vs_class = $this->ops_tablename = $va_browse_info['table'];
 			$t_instance = Datamodel::getInstance($vs_class, true);
+
+			$items_per_page = caGetOption('itemsPerPage', $va_browse_info, 60, ['castTo' => 'int']);
  			
  			// Now that table name is known we can set standard view vars
  			parent::setTableSpecificViewVars();
@@ -337,6 +339,8 @@
 
 				$data = [
 					'size' => $qr_res->numHits(),
+					'start' => $start,
+					'itemsPerPage' => $items_per_page,
 					'table' => $qr_res->tableName(),
 					'pk' => $qr_res->primaryKey(),
 					'hits' => []
@@ -347,6 +351,7 @@
 				$pk = $qr_res->primaryKey();
 				$idno_fld= $qr_res->getInstance(true)->getProperty('ID_NUMBERING_ID_FIELD');
 				while($qr_res->nextHit()) {
+					// TODO: add configurable keys using display templates in browse config
 					$data['hits'][] = [
 						'id' => $qr_res->getPrimaryKey(),
 						'label' => $qr_res->get('preferred_labels'),
@@ -354,7 +359,7 @@
 						'representation' => $qr_res->get('ca_object_representations.media.small.url')
 					];
 					$c++;
-					if ($c > 100) { break; }
+					if ($c >= $items_per_page) { break; }
 				}
 				$this->view->setVar('data', $data);
 
