@@ -60,6 +60,19 @@
 						<?php print caGetThemeGraphic('icon-other.svg', array("alt" => "Go")); ?>
 						</span>
 						</a></li>
+						<li>
+						    <div class="newsletter-widget footer-form">
+           					 <label for="sidebar-newsletter">Sign up for our newsletter?</label>
+       						 	<div class="input-wrapper">
+           					 	<form name="appbundle_subscriber" method="post" id="nwl_subscribe_form_footer"><input type="hidden" name="_method" value="PUT" /> 
+               				 	<input type="email" id="appbundle_subscriber_email" name="appbundle_subscriber[email]" required="required" maxlength="255" placeholder="name@email.com" />
+                					<button class="submit">
+                    					<?php print caGetThemeGraphic('icon-arrow-right-white.svg', array("alt" => "Go")); ?>
+                					</button>
+            					<input type="hidden" id="appbundle_subscriber__token" name="appbundle_subscriber[_token]" value="LQnBfX3cSwqMyancSvf0r8lCOxA4wqMc2mOxa3WBXPo" /></form>
+        						</div>
+    						</div>
+						</li>
 					</ul>
 					</div>
 				</div>

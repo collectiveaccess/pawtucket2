@@ -15,16 +15,15 @@
 					<h1>SVA Exhibitions Archives<br><a href="#breadcrumbs"><i class="material-icons">expand_more</i></a></h1>
 			</div>		
 </div> -->
-<div class="container-fluid" id="sec2">
+<div class="container-fluid">
 	<div class="row">
         <div class='col-sm-12'>
 			<ul class="breadcrumbs--nav" id="breadcrumbs">
-				<li><a href="#">School of Visual Arts Archives</a><span></li>
+				<li><a href="#">School of Visual Arts Archives</a></li>
 				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
-				</span></li>
-				<li><a href="/index.php/">SVA Exhibitions Archives</a><span></li>
+				</li>
+				<li><a href="/index.php/">SVA Exhibitions Archives</a></li>
 				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
-				</span></li>
 				</li>
 			</ul>
 		</div>    
@@ -47,70 +46,62 @@
         	{{{<ifdef code="ca_occurrences.description_public"><p>^ca_occurrences.description_public</p></ifdef>}}}		
         </div>	
 	</div>
-	<div class="row occurrence-metadata justify-content-center">			
-		<div class='col-sm'>			
+	<div class="row occurrence-metadata justify-content-center pl-4">	
+		<div class="col-sm-8">
+			<div class="row justify-content-center">
+				<div class="col-sm-10">
+				{{{<ifdef code="ca_objects"><div class='unit'><unit relativeTo="ca_objects" delimiter=" " start="0" length="1"><l><div class="colorblock">^ca_object_representations.media.large</div></l><div class='masonry-title'><l>^ca_objects.preferred_labels.name</l></div></unit></div></ifdef>}}}
+				</div>
+			</div> 		
+		</div>
+		<div class="col-sm-4" style='border-left:1px solid #666;'>							
+			{{{<ifdef code="ca_occurrences.type_id"><h3>^ca_occurrences.type_id ^ca_occurrences.idno</h3><hr></ifdef>}}}
+					
+			{{{<ifcount restrictToRelationshipTypes="curator" code="ca_entities" min="1" max="1"><h3>Curator</h3></ifcount>}}}
+			{{{<ifcount restrictToRelationshipTypes="curator" code="ca_entities" min="2"><H3>Curators</h3></ifcount>}}}
+			{{{<unit relativeTo="ca_entities.related" delimiter="<br/>" restrictToRelationshipTypes="curator"><span class="p"><l>^ca_entities.preferred_labels</l></span><br/><br/></unit>}}}
+
+			{{{<ifcount restrictToRelationshipTypes="exhibitor" code="ca_entities" min="1" max="1"><h3>Exhibitor</h3></ifcount>}}}
+			{{{<ifcount restrictToRelationshipTypes="exhibitor" code="ca_entities" min="2"><H3>Exhibitors</H3></ifcount>}}}
+			{{{<unit relativeTo="ca_entities.related" delimiter=", " restrictToRelationshipTypes="exhibitor"><span class="p"><l>^ca_entities.preferred_labels</l></span></unit><br><br>}}}				
+				
+			{{{<if rule="^ca_occurrences.dates.dates_type =~ /Exhibition dates/"><h3>Exhibition Dates</H3></if>}}}
+			{{{<unit relativeTo="ca_occurrences.dates" skipWhen="^ca_occurrences.dates.dates_type !~ /Exhibition dates/" delimiter="<br/>"><if rule="^ca_occurrences.dates.dates_type =~ /Exhibition dates/"><p>^ca_occurrences.dates.dates_value</p></if></unit>}}}
 			
-			{{{<ifdef code="ca_occurrences.type_id"><h3>^ca_occurrences.type_id Identifier</h3>}}}
-			{{{<ifdef code="ca_occurrences.idno"><p>^ca_occurrences.idno</p></ifdef><br>}}} 
+			{{{<ifnotdef code="ca_occurrences.dates"><h3>Dates</h3><p>^ca_occurrences.date_as_text</p></ifnotdef>}}}		
 			
 			{{{<ifcount code="ca_places" min="1" max="1"><H3>Location</H3></ifcount>}}}
 			{{{<ifcount code="ca_places" min="2"><H3>Locations</H3></ifcount>}}}
-			{{{<unit relativeTo="ca_places" delimiter="<br/>"><p>^ca_places.preferred_labels.name</p><br/></unit>}}}	
+			{{{<unit relativeTo="ca_places" delimiter="<br/>"><p>^ca_places.preferred_labels.name</p></unit>}}}	
 					
 			{{{<ifcount restrictToRelationshipTypes="department" code="ca_entities" min="1" max="1"><h3>Department</H3></ifcount>}}}
 			{{{<ifcount restrictToRelationshipTypes="department" code="ca_entities" min="2"><H3>Departments</H3></ifcount>}}}
-			{{{<unit relativeTo="ca_entities.related" delimiter="<br/>" restrictToRelationshipTypes="department"><p><l>^ca_entities.preferred_labels</l></p></unit>}}}					
+			{{{<unit relativeTo="ca_entities.related" delimiter=", " restrictToRelationshipTypes="department"><span class="p"><l>^ca_entities.preferred_labels</l></span></unit><br><br>}}}					
 				
-			{{{<ifdef code="ca_occurrences.external_link.url_source"><H2>Links</H2>^ca_occurrences.external_link.url_entry</ifdef>}}}									
-		</div><!-- end col -->
-		<div class='col-sm'>		
-			{{{<if rule="^ca_occurrences.dates.dates_type =~ /Exhibition dates/"><h3>Exhibition Dates</H3></if>}}}
-			{{{<unit relativeTo="ca_occurrences.dates" skipWhen="^ca_occurrences.dates.dates_type !~ /Exhibition dates/" delimiter="<br/>"><if rule="^ca_occurrences.dates.dates_type =~ /Exhibition dates/"><p>^ca_occurrences.dates.dates_value</p></if><br/></unit>}}}
-		
-			{{{<if rule="^ca_occurrences.dates.dates_type =~ /Reception dates/"><h3>Reception Date</H3></if>}}}
-			{{{<unit relativeTo="ca_occurrences.dates" skipWhen="^ca_occurrences.dates.dates_type !~ /Reception dates/" delimiter="<br/>"><p>^ca_occurrences.dates.dates_value</p><br/></unit>}}}
+			{{{<ifdef code="ca_occurrences.external_link.url_source"><H2>Links</H2>^ca_occurrences.external_link.url_entry</ifdef>}}}																				
 					
-			{{{<ifnotdef code="ca_occurrences.dates"><h3>Dates</h3><p>^ca_occurrences.date_as_text</p></ifnotdef>}}}														
-		</div><!-- end col -->
-		<div class='col-sm'>				
-			{{{<ifcount restrictToRelationshipTypes="curator" code="ca_entities" min="1" max="1"><h3>Curator</H3></ifcount>}}}
-			{{{<ifcount restrictToRelationshipTypes="curator" code="ca_entities" min="2"><H3>Curators</H3></ifcount>}}}
-			{{{<unit relativeTo="ca_entities.related" delimiter="<br/>" restrictToRelationshipTypes="curator"><span class="p"><l>^ca_entities.preferred_labels</l></span><br/><br/></unit>}}}
-
-			{{{<ifcount restrictToRelationshipTypes="exhibitor" code="ca_entities" min="1" max="1"><h3>Exhibitor</H3></ifcount>}}}
-			{{{<ifcount restrictToRelationshipTypes="exhibitor" code="ca_entities" min="2"><H3>Exhibitors</H3></ifcount>}}}
-			{{{<unit relativeTo="ca_entities.related" delimiter=", " restrictToRelationshipTypes="exhibitor"><span class="p"><l>^ca_entities.preferred_labels</l></span></unit><br>}}}					
-				
 			{{{<ifcount code="ca_entities" excludeRelationshipTypes="exhibitor, curator, department" min="1" max="1"><H3>Related Person</H3></ifcount>}}}
 			{{{<ifcount code="ca_entities" excludeRelationshipTypes="exhibitor, curator, department" min="2"><H3>Related People</H3></ifcount>}}}
-			{{{<unit relativeTo="ca_entities" excludeRelationshipTypes="exhibitor, curator, department" delimiter="<br/>"><span class="p"><l>^ca_entities.preferred_labels (^relationship_typename)</l></span><br/></unit>}}}									
-		</div>
-	</div>		
-	</div><!-- end row -->
-<div class="container-fluid pr-3 pl-3">
-	<div class="row">
-		<div class="col-sm-12">
-			<hr>
-		</div>
-		<div class="col-sm-12">
-			{{{<ifcount code="ca_objects" min="1" max="2"><unit relativeTo="ca_objects" delimiter=" "><div class="col-sm-6 mx-auto"><l>^ca_object_representations.media.large</l><div class='masonry-title'><l>^ca_objects.preferred_labels.name<l></div></div></unit>
-		</div><!-- end col -->
-			</ifcount>}}}	
-			{{{<ifcount code="ca_objects" min="3">
-			    <div class="card-columns">
-				<unit relativeTo="ca_objects" delimiter=" "><div class="card mx-auto"><div class="colorblock"><l>^ca_object_representations.media.large</l></div><div class='masonry-title'><l>^ca_objects.preferred_labels.name</l></div></div></unit>
-                </div>
-				</div><!-- end col -->
-			</ifcount>}}}						
-				</div>
+			{{{<unit relativeTo="ca_entities" excludeRelationshipTypes="exhibitor, curator, department" delimiter=", "><span class="p"><l>^ca_entities.preferred_labels (^relationship_typename)</l></span></unit><br>}}}									
 		</div>
 	</div>
-<!--	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div> -->
-	</div><!-- end col -->
-</div><!-- end row -->
+	<div class="row justify-content-center">
+		{{{<ifcount code="ca_objects" min="2">
+			<div class="col-sm-12"><hr>			
+				<div class="card-columns">
+				<unit relativeTo="ca_objects" delimiter=" " start="1">
+					<div class="card mx-auto">
+						<div class="colorblock"><l>^ca_object_representations.media.large</l>
+						</div>
+						<div class='masonry-title'><l>^ca_objects.preferred_labels.name</l>
+						</div>
+					</div>
+				</unit>
+            </div>
+            </div>
+		</ifcount>}}}						
+	</div>
+</div>
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
