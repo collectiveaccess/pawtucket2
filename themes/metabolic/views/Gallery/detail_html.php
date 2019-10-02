@@ -57,7 +57,7 @@
 					</div>
 					<div class="py-3">
 <?php
-					print caDetailLink("View <ion-icon name='ios-arrow-forward'></ion-icon>", "btn btn-primary", "ca_objects",  $va_set_ids[0]);
+					print caDetailLink("View <ion-icon name='ios-arrow-forward'></ion-icon>", "btn btn-primary", "ca_objects",  $t_object->get("ca_objects.object_id"));
 ?>
 					</div>
 				</div>
@@ -94,11 +94,11 @@
 			</div>
 		</div><!-- end col -->
 	</div><!-- end row -->	
-<script type="text/javascript">	
+<!--<script type="text/javascript">	
 	pawtucketUIApps['gallery'] = {
         'selector': '#galleryDetailReactComponent',
         'data': {
             'sectionName': 'Collections'
         }
     };
-</script>
+</script>-->
