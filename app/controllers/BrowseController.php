@@ -175,7 +175,7 @@
 			// Return list of available facets
 			//
 			if ($this->request->getParameter('getFacetList', pInteger)) {
-				$this->view->setVar('data', $this->getFacetList($o_browse));
+				$this->view->setVar('data', $o_browse->getFacetList());
 				return $this->render($this->ops_view_prefix."/browse_data_json.php");
 			}
 
@@ -187,6 +187,7 @@
 				$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 
 				if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
+
 					foreach ($va_facets as $vs_facet_spec) {
 						if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) {
 							continue;
@@ -264,7 +265,6 @@
 					unset($va_criteria['_search']);
 				}
 
-
 				$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
 
 				$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'omitChildRecords' => $vb_omit_child_records, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $va_browse_info, null)));
@@ -339,11 +339,15 @@
 
 				$data = [
 					'size' => $qr_res->numHits(),
+					'key' => $vs_key,
 					'start' => $start,
 					'itemsPerPage' => $items_per_page,
 					'table' => $qr_res->tableName(),
 					'pk' => $qr_res->primaryKey(),
-					'hits' => []
+					'hits' => [],
+					'facetList' => $o_browse->getInfoForAvailableFacets(),
+					'criteria' => $o_browse->getCriteria(),
+					'criteriaForDisplay' => $o_browse->getCriteriaWithLabels()
 				];
 
 				$c = 0;
