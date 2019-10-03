@@ -480,10 +480,6 @@ label {
 hr {
 	border-top:1px solid $gray-3;
 }
-input:focus, input:active, textarea:focus, textarea:active {
-	outline:none;
-	border:0px;
-}
 ::-webkit-input-placeholder, ::-moz-placeholder, :-ms-input-placeholder, :-moz-placeholder { /* Chrome/Opera/Safari */
 	font-family:$body-font;
 	color:$body-font-color;
@@ -766,7 +762,7 @@ p.legend a {
 }
 
 /* search/browse full results */
-.search.results, .browse.results, .multiSearchObjectsCascading{
+.search.results, .browse.results, .multiSearchObjectsCascading, .search.results, .browse.results, .multiSearchObjects{
 	H1{
 		text-transform:capitalize;
 		display:inline-block;

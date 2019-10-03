@@ -29,14 +29,13 @@
 <div class="hpHero" >
 	<?php print caGetThemeGraphic('SVA_Exhibitions_Archives.jpg', array("alt" => "Rising Sun Graphic Image")); ?>
 			<div class= "wrapper" id="sec2">
-					<h1>SVA Exhibitions Archives<br><a href="#breadcrumbs"><i class="material-icons">expand_more</i></a></h1>
+					<h1>SVA Exhibitions Archives<br></h1>
 			</div>		
 </div>
 <div class="container-fluid p-3">
 	<div class="row" >
 		<div class="col-sm-12">
-			<h2>About the Collection</h2><hr>
-			<div class="col-sm-10">
+			<div class="col-sm-11"><br>
 				<p class="frontpara">{{{exhibitions}}}</p>
 			</div>
 		</div>
@@ -45,14 +44,17 @@
 			<li class="nav-item breadcrumbs--tab first-tab" role="listitem">
 				<a class="nav-link active" id="featured-tab" data-toggle="pill" href="#featured" role="tab" aria-controls="featured" aria-selected="true">Featured Exhibitions</a>
 			</li>
-			<li class="nav-item breadcrumbs--tab" role="listitem">
+			<li class="nav-item breadcrumbs--tab first-tab" role="listitem">
 				<a class="nav-link" id="browse-tab" data-toggle="pill" href="#browse" role="tab" aria-controls="browse" aria-selected="false">Browse All</a>
+			</li>
+			<li class="nav-item breadcrumbs--tab" role="listitem">
+				<a class="nav-link" id="search-button" href="#" data-toggle="pill" role="tab" aria-controls="browse" aria-selected="false">Search</a>
 			</li>
 		</ul>
 		<hr></div>
 	</div>
 </div>
-<div class="container-fluid p-5">
+<div class="container-fluid p-2">
 	<div class="tab-content">
 <?php
 	 	print $this->render("Front/featured_exhibitions_masonrygrid_html.php");

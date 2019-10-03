@@ -158,7 +158,7 @@
 				if($q_objects->get("ca_object_representations.media.widepreview")){
 					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
 					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
-					print "<div class='pt-2'>".caDetailLink(substr(strip_tags($q_objects->get("ca_objects.preferred_labels")), 0, 30), '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
+					print "<div class='pt-2'>".caDetailLink(substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30), '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
 					print "</div>";
 					$i++;
 				}

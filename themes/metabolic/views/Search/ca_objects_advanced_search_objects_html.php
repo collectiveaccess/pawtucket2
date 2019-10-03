@@ -1,68 +1,126 @@
-
 <div class="row">
-	<div class="col-sm-8 " style='border-right:1px solid #ddd;'>
-		<h1>Objects Advanced Search</h1>
-
-<?php			
-print "<p>Enter your search terms in the fields below.</p>";
-?>
+	<div class="col-sm-12 col-md-8 offset-md-2">
+		<H1><?php print _t("Collections Search"); ?><small> <?php print caNavLink('or search optics division', '', 'Search', 'advanced', 'optics');?></small></H1>
 
 {{{form}}}
-
+	
 <div class='advancedContainer'>
-	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the database.">Keyword</span>
-			{{{_fulltext%width=200px&height=1}}}
-		</div>			
-	</div>		
-	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Object Titles only.">Title</span>
-			{{{ca_objects.preferred_labels.name%width=220px}}}
+		<div class='row form-group'>
+			<div class=" col-sm-6">
+				<label for="title" class="col-form-label">Title</span><br/>
+				{{{ca_objects.preferred_labels.name%width=350px&height=1}}}
+			</div>
+			<div class="advancedSearchField col-sm-6">
+				<label for="staticEmail" class="col-form-label">Alternate titles</span><br/>
+				{{{ca_objects.nonpreferred_labels%width=350px&height=1}}}
+			</div>
 		</div>
-	</div>
-	<div class='row'>
-		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search object identifiers.">Accession number</span>
-			{{{ca_objects.idno%width=210px}}}
+		<div class='row form-group'>
+			<div class="advancedSearchField col-sm-6">
+				<label for="staticEmail" class="col-form-label">Object identifier</span><br/>
+				{{{ca_objects.idno%width=350px&height=1}}}
+			</div>
+			<div class="advancedSearchField col-sm-6">
+				<label for="staticEmail" class="col-form-label">Optics Identifier (LCC*, LBD*, DES*)</span> <br/>
+				{{{ca_objects.altID%width=350px&height=1}}}
+			</div>			
 		</div>
-		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object types.">Type</span>
-			{{{ca_objects.type_id%height=30px}}}
+		<div class='row form-group'>
+			<div class="advancedSearchField col-sm-6">
+				<label for="staticEmail" class="col-form-label">People and Organizations</span> <br/>
+				{{{ca_entities.preferred_labels%width=350px&height=1}}}
+			</div>
+			<div class="advancedSearchField col-sm-6">
+				<label for="staticEmail" class="col-form-label">Keywords</span><br/>
+				{{{_fulltext%width=350px&height=25px}}}
+			</div>
+		</div>		
+		<div class='row form-group'>
+			<div class="advancedSearchField col-sm-6">
+				<label for="staticEmail" class="col-form-label">Type </span><br/>
+				{{{ca_objects.type_id%width=200px&height=1}}}
+			</div>
+			<div class="advancedSearchField col-sm-6">
+				<label for="staticEmail" class="col-form-label">Date</span><br/>
+				{{{ca_objects.date.dates_value}}}
+			</div>			
 		</div>
-	</div>
-	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records of a particular date or date range.">Date range <i>(e.g. 1970-1979)</i></span>
-			{{{ca_objects.dates.dates_value%width=200px&height=40px&useDatePicker=0}}}
+			
+		<div class='row form-group'>
+			<div class="advancedSearchField col-sm-4">
+				<div style="margin-bottom:25px;"><label for="staticEmail" class="col-form-label">Technique </span><br/>
+				{{{ca_objects.technique%width=200px&height=1}}}
+				</div>
+				<div style="margin-bottom:25px;"><label for="staticEmail" class="col-form-label">Optics Type </span><br/>
+				{{{ca_objects.optics_type%width=200px&height=1}}}
+				</div>				
+				<label for="staticEmail" class="col-form-label">Material/Medium</span><br/>
+				{{{ca_objects.materialMedium%width=200px&height=1}}}
+			</div>
+			<div class="advancedSearchField col-sm-4">
+				<label for="staticEmail" class="col-form-label">Description</span><br/>
+				{{{ca_objects.description%width=200px&height=5}}}
+				{{{ca_objects.type_id%width=350px&height=1}}}
+				{{{ca_objects.type_id:boolean}}}
+			</div>
+			<div class="advancedSearchField col-sm-4">
+				<label for="staticEmail" class="col-form-label">Type </span><br/>
+				{{{ca_objects.type_id%width=350px&height=1}}}
+			</div>		
 		</div>
-	</div>
-	<div class='row'>
-		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records within a particular collection.">Collection </span>
-			{{{ca_collections.preferred_labels%restrictToTypes=collection%width=200px&height=40px}}}
+		<div class='row form-group'>
+			<div class="advancedSearchField col-sm-6">
+				<label for="staticEmail" class="col-form-label">Technique </span><br/>
+				{{{ca_objects.technique%width=350px&height=1}}}
+				{{{ca_objects.technique:boolean}}}
+			</div>
+			<div class="advancedSearchField col-sm-6">
+				<label for="staticEmail" class="col-form-label">Technique </span><br/>
+				{{{ca_objects.technique%width=350px&height=1}}}
+			</div>						
+		</div>	
+		<div class='row form-group'>
+			<div class="advancedSearchField col-sm-6">
+				<label for="staticEmail" class="col-form-label">Material/Medium</span><br/>
+				{{{ca_objects.materialMedium%width=350px&height=1}}}
+				{{{ca_objects.materialMedium:boolean}}}
+			</div>
+			<div class="advancedSearchField col-sm-6"><label for="staticEmail" class="col-form-label">Material/Medium</span><br/>
+				{{{ca_objects.materialMedium%width=350px&height=1}}}
+			</div>						
+		</div>	
+		<div class='row form-group'>
+			<div class="advancedSearchField col-sm-6"><label for="staticEmail" class="col-form-label">Projects</span><br/>
+				{{{ca_collections.preferred_labels%width=350px&height=1}}}
+				{{{ca_collections.preferred_labels:boolean}}}
+			</div>
+			<div class="advancedSearchField col-sm-6"><label for="staticEmail" class="col-form-label">Projects</span><br/>
+				{{{ca_collections.preferred_labels%width=350px&height=1}}}
+			</div>					
+		</div>					
+		<div class='row form-group'>
+			<div class="advancedSearchField col-sm-6">
+				<label for="staticEmail" class="col-form-label">Date (<i>eg 2014-2016</i>)</span><br/>
+				{{{ca_objects.date.dates_value%width=350px&height=1}}}
+			</div>
+			<div class="advancedSearchField col-sm-6"><label for="staticEmail" class="col-form-label">Optics Type </span><br/>
+				{{{ca_objects.optics_type%width=350px&height=1}}}
+			</div>		
 		</div>
-	</div>
+		<div class='row form-group'>					
+			<div class="advancedSearchField col-sm-12">
+				<label for="staticEmail" class="col-form-label">Description</span><br/>
+				{{{ca_objects.description%width=350px&height=5}}}
+			</div>
+		</div>	
+	</div>	
+	
 	<br style="clear: both;"/>
-	<div class='advancedFormSubmit'>
-		<span class='btn btn-default'>{{{reset%label=Reset}}}</span>
-		<span class='btn btn-default' style="margin-left: 20px;">{{{submit%label=Search}}}</span>
-	</div>
-</div>	
-
+	
+	<div class="formLabelText submit" style="float: right; margin-right: 20px; margin-left: 20px;">{{{reset%label=Reset}}}</div>
+	<div class="formLabelText submit" style="float: right;">{{{submit%label=Search}}}</div>
 {{{/form}}}
 
-	</div>
-	<div class="col-sm-4" >
-		<h1>Helpful Links</h1>
-		<p>Include some helpful info for your users here.</p>
-	</div><!-- end col -->
-</div><!-- end row -->
 
-<script>
-	jQuery(document).ready(function() {
-		$('.advancedSearchField .formLabel').popover(); 
-	});
-	
-</script>
+	</div>
+</div>
