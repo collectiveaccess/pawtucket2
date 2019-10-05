@@ -7,6 +7,7 @@ import {initialState, fetchResults, fetchFacetValues} from "../../default/js/bro
 const selector = pawtucketUIApps.NoguchiBrowse.selector;
 const appData = pawtucketUIApps.NoguchiBrowse.data;
 
+const NoguchiBrowseContext = React.createContext();
 /**
  *
  */
@@ -20,7 +21,6 @@ class NoguchiBrowse extends React.Component{
 		if(props.initialCriteria) {
 			this.state.criteria = props.initialCriteria;
 		}
-		console.log(this.state);
 
 		this.loadResults(function(newState) {
 			that.setState(newState);
@@ -103,25 +103,20 @@ class NoguchiBrowse extends React.Component{
 	}
 
 	render() {
-		console.log("x1", this.state);
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 		return(
-			<main className="ca archive archive_landing">
-				<NoguchiBrowseIntro headline={this.props.title} description={this.props.description}/>
+			<NoguchiBrowseContext.Provider value={this}>
+				<main className="ca archive archive_landing">
+					<NoguchiBrowseIntro headline={this.props.title} description={this.props.description}/>
 
-				<NoguchiBrowseFilterList availableFacets={this.state.availableFacets}
-										 criteria={this.state.criteria}
-										 facetLoadUrl={facetLoadUrl}
-										 facetList={this.state.facetList}
-										 loadResultsCallback={this.reloadResults}/>
+					<NoguchiBrowseNavigation/>
+					<NoguchiBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
 
-				<NoguchiBrowseStatistics size={this.state.resultSize} criteria={this.state.criteria}
-										 loadResultsCallback={this.reloadResults}/>
-
-				<NoguchiBrowseResults results={this.state.resultList} start={this.state.start}
-									  size={this.state.resultSize} itemsPerPage={this.state.itemsPerPage}
-									  loadMoreHandler={this.loadMoreResults} loadMoreRef={this.loadMoreRef}/>
-			</main>
+					<NoguchiBrowseResults results={this.state.resultList} start={this.state.start}
+										  size={this.state.resultSize} itemsPerPage={this.state.itemsPerPage}
+										  loadMoreHandler={this.loadMoreResults} loadMoreRef={this.loadMoreRef}/>
+				</main>
+			</NoguchiBrowseContext.Provider>
 		);
 	}
 }
@@ -150,15 +145,20 @@ class NoguchiBrowseIntro extends React.Component {
  */
 class NoguchiBrowseStatistics extends React.Component {
 	render() {
-		console.log("xx", this.props);
 		return(<div className="current">
 			<div className="body-sans">{(this.props.size > 0) ? ((this.props.size == 1) ?
 				"Showing 1 Result"
 				:
 				"Showing " + this.props.size + " Results") : "Loading..."}.</div>
-		</div>);
+
+				<NoguchiBrowseCurrentCriteriaList criteria={this.context.state.criteria}
+												  facetList={this.context.state.facetList}
+												  loadResultsCallback={this.context.reloadResults}/>
+		</div>
+		);
 	}
 }
+NoguchiBrowseStatistics.contextType = NoguchiBrowseContext;
 
 /**
  *
@@ -175,17 +175,15 @@ class NoguchiBrowseCurrentCriteriaList extends React.Component {
 
 		let criteria = this.props.criteria;
 		if (criteria[targetFacet]) {
-			if(Array.isArray(criteria[targetFacet])) {
-				for (let k in criteria[targetFacet]) {
-					if(criteria[targetFacet][k] == targetValue) {
-						delete(criteria[targetFacet][k]);
-					}
+			for (let k in criteria[targetFacet]) {
+				if(k == targetValue) {
+					delete(criteria[targetFacet][k]);
 				}
-			} else if(criteria[targetFacet] == targetValue) {
-				delete(criteria[targetFacet]);
+				if(Object.keys(criteria[targetFacet]).length === 0) {
+					delete(criteria[targetFacet]);
+				}
 			}
 		}
-
 		this.props.loadResultsCallback(criteria);
 	}
 
@@ -201,15 +199,42 @@ class NoguchiBrowseCurrentCriteriaList extends React.Component {
 										  className='browseRemoveFacet'><span className="">{facetLabel}</span>: {label}
 						<span onClick={this.removeCriteria}
 							  data-facet={f}
-							  data-value={cv}>&times;</span></a>));
+							  data-value={c}>&times;</span></a>));
 				}
 			}
 		}
-		return(<div className="ca_filters"><div className="filters_bar"><div className="tags">
+		return(<div className="tags">
 			{criteriaList}
-		</div></div></div>);
+		</div>);
 	}
 }
+NoguchiBrowseCurrentCriteriaList.contextType = NoguchiBrowseContext;
+
+/**
+ *
+ */
+class NoguchiBrowseFilterControls extends React.Component {
+	render() {
+		return(
+				<section className="ca_filters">
+					<div className="wrap">
+						<div className="filters_bar">
+
+					<NoguchiBrowseStatistics size={this.context.state.resultSize} criteria={this.context.state.criteria}
+											 loadResultsCallback={this.context.reloadResults}/>
+
+					<NoguchiBrowseFilterList availableFacets={this.context.state.availableFacets}
+											 criteria={this.context.state.criteria}
+											 facetLoadUrl={this.props.facetLoadUrl}
+											 facetList={this.context.state.facetList}
+											 loadResultsCallback={this.context.reloadResults}/>
+						</div>
+					</div>
+				</section>);
+	}
+	
+}
+NoguchiBrowseFilterControls.contextType = NoguchiBrowseContext;
 
 /**
  *
@@ -264,22 +289,16 @@ class NoguchiBrowseFilterList extends React.Component {
 		let isOpen = (this.state.selected !== null) ? 'true' : 'false';
 
 		return(
-			<section className="ca_filters">
-				<NoguchiBrowseCurrentCriteriaList criteria={this.props.criteria}
-												  facetList={this.props.facetList}
-												  loadResultsCallback={this.props.loadResultsCallback}/>
-				<NoguchiBrowseNavigation/>
-				<div className="options-filter-widget">
-					<div className="options text-gray">
-						<span className="caption-text">{filterLabel}</span>
-						{facetButtons}
-					</div>
-					<NoguchiBrowseFilterPanel open={isOpen} facetName={this.state.selected}
-											  facetLoadUrl={this.props.facetLoadUrl} ref={this.filterPanelRef}
-											  loadResultsCallback={this.props.loadResultsCallback}
-											  closeFilterPanelCallback={this.closeFilterPanel}/>
+			<div className="options-filter-widget">
+				<div className="options text-gray">
+					<span className="caption-text">{filterLabel}</span>
+					{facetButtons}
 				</div>
-			</section>
+				<NoguchiBrowseFilterPanel open={isOpen} facetName={this.state.selected}
+										  facetLoadUrl={this.props.facetLoadUrl} ref={this.filterPanelRef}
+										  loadResultsCallback={this.props.loadResultsCallback}
+										  closeFilterPanelCallback={this.closeFilterPanel}/>
+			</div>
 		)
 	}
 }
