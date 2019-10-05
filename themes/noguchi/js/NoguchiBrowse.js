@@ -1,7 +1,7 @@
+/*jshint esversion: 6 */
 import React from "react"
 import ReactDOM from "react-dom";
 import {initialState, fetchResults, fetchFacetValues} from "../../default/js/browse";
-
 
 
 const selector = pawtucketUIApps.NoguchiBrowse.selector;
@@ -13,12 +13,14 @@ const appData = pawtucketUIApps.NoguchiBrowse.data;
 class NoguchiBrowse extends React.Component{
 	constructor(props) {
 		super(props);
+
 		let that = this;
 
 		this.state = initialState();
 		if(props.initialCriteria) {
 			this.state.criteria = props.initialCriteria;
 		}
+		console.log(this.state);
 
 		this.loadResults(function(newState) {
 			that.setState(newState);
@@ -28,7 +30,7 @@ class NoguchiBrowse extends React.Component{
 		this.loadMoreResults = this.loadMoreResults.bind(this);
 		this.reloadResults = this.reloadResults.bind(this);
 		this.loadMoreRef = React.createRef();
-	};
+	}
 
 	/**
 	 *
@@ -42,7 +44,7 @@ class NoguchiBrowse extends React.Component{
 				criteriaString : ''), function(newState) {
 			callback(newState);
 		});
-	};
+	}
 
 	/**
 	 *
@@ -63,11 +65,11 @@ class NoguchiBrowse extends React.Component{
 			that.loadMoreRef.current.innerHTML = that.loadMoreText;
 		});
 		e.preventDefault();
-	};
+	}
 
 	/**
 	 *
-	 * @param url
+	 * @param criteria
 	 */
 	reloadResults(criteria) {
 		let that = this;
@@ -82,7 +84,7 @@ class NoguchiBrowse extends React.Component{
 		this.loadResults(function(newState) {
 			that.setState(newState);
 		});
-	};
+	}
 
 	/**
 	 *
@@ -92,25 +94,28 @@ class NoguchiBrowse extends React.Component{
 	 */
 	_getCriteriaString(criteria) {
 		let acc = [];
-
 		for(let k in criteria) {
-			if(criteria[k] && (criteria[k].length > 0)) {
-				acc.push(k + ':' + (Array.isArray(criteria[k]) ? criteria[k].join('|') : criteria[k]));
+			if(criteria[k]) {
+				acc.push(k + ':' + (Object.keys(criteria[k]).join('|')));
 			}
 		}
 		return acc.join(';');
-	};
+	}
 
 	render() {
+		console.log("x1", this.state);
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 		return(
 			<main className="ca archive archive_landing">
 				<NoguchiBrowseIntro headline={this.props.title} description={this.props.description}/>
 
-				<NoguchiBrowseFilterList facetList={this.state.facetList} facetLoadUrl={facetLoadUrl}
+				<NoguchiBrowseFilterList availableFacets={this.state.availableFacets}
+										 criteria={this.state.criteria}
+										 facetLoadUrl={facetLoadUrl}
+										 facetList={this.state.facetList}
 										 loadResultsCallback={this.reloadResults}/>
+
 				<NoguchiBrowseStatistics size={this.state.resultSize} criteria={this.state.criteria}
-										 criteriaForDisplay={this.state.criteriaForDisplay}
 										 loadResultsCallback={this.reloadResults}/>
 
 				<NoguchiBrowseResults results={this.state.resultList} start={this.state.start}
@@ -125,9 +130,6 @@ class NoguchiBrowse extends React.Component{
  *
  */
 class NoguchiBrowseIntro extends React.Component {
-	constructor(props) {
-		super(props);
-	}
 	render() {
 		if (!this.props.headline || (this.props.headline.length === 0)) {
 			return (<section className="intro"></section>);
@@ -148,15 +150,12 @@ class NoguchiBrowseIntro extends React.Component {
  */
 class NoguchiBrowseStatistics extends React.Component {
 	render() {
+		console.log("xx", this.props);
 		return(<div className="current">
 			<div className="body-sans">{(this.props.size > 0) ? ((this.props.size == 1) ?
 				"Showing 1 Result"
 				:
 				"Showing " + this.props.size + " Results") : "Loading..."}.</div>
-
-			<NoguchiBrowseCurrentCriteriaList criteria={this.props.criteria}
-											  criteriaForDisplay={this.props.criteriaForDisplay}
-											  loadResultsCallback={this.props.loadResultsCallback}/>
 		</div>);
 	}
 }
@@ -193,18 +192,22 @@ class NoguchiBrowseCurrentCriteriaList extends React.Component {
 	render() {
 		let criteriaList = [];
 		if(this.props.criteria) {
-			for (let c in this.props.criteria) {
-				let label = this.props.criteria[c];
-				criteriaList.push((<a href='#'
-									  className='browseRemoveFacet'>{c}: {label}
-					<span onClick={this.removeCriteria}
-						  data-facet={c}
-						  data-value={this.props.criteria[c]}>&times;</span></a>));
+			for (let f in this.props.criteria) {
+				let cv =  this.props.criteria[f];
+				for(let c in cv) {
+					let label = cv[c];
+					let facetLabel = (this.props.facetList && this.props.facetList[f]) ? this.props.facetList[f]['label_singular'] : "";
+					criteriaList.push((<a href='#'
+										  className='browseRemoveFacet'><span className="">{facetLabel}</span>: {label}
+						<span onClick={this.removeCriteria}
+							  data-facet={f}
+							  data-value={cv}>&times;</span></a>));
+				}
 			}
 		}
-		return(<div className="tags">
+		return(<div className="ca_filters"><div className="filters_bar"><div className="tags">
 			{criteriaList}
-		</div>);
+		</div></div></div>);
 	}
 }
 
@@ -248,11 +251,11 @@ class NoguchiBrowseFilterList extends React.Component {
 
 	render() {
 		let facetButtons = [];
-		let filterLabel = this.props.facetList ?  "Filter by: " : "Loading...";
+		let filterLabel = this.props.availableFacets ?  "Filter by: " : "Loading...";
 
-		if(this.props.facetList) {
-			for (let n in this.props.facetList) {
-				facetButtons.push((<NoguchiBrowseFilterButton text={this.props.facetList[n].label_plural}
+		if(this.props.availableFacets) {
+			for (let n in this.props.availableFacets) {
+				facetButtons.push((<NoguchiBrowseFilterButton text={this.props.availableFacets[n].label_plural}
 															  name={n}
 															  callback={this.toggleFilterPanel}/>));
 			}
@@ -262,6 +265,9 @@ class NoguchiBrowseFilterList extends React.Component {
 
 		return(
 			<section className="ca_filters">
+				<NoguchiBrowseCurrentCriteriaList criteria={this.props.criteria}
+												  facetList={this.props.facetList}
+												  loadResultsCallback={this.props.loadResultsCallback}/>
 				<NoguchiBrowseNavigation/>
 				<div className="options-filter-widget">
 					<div className="options text-gray">
@@ -328,7 +334,11 @@ class NoguchiBrowseFilterPanel extends React.Component {
 		let isChecked = e.target.checked;
 
 		let state = this.state;
-		state.selectedFacetItems[targetItem] = isChecked;
+		if (isChecked) {
+			state.selectedFacetItems[targetItem] = e.target.attributes.getNamedItem('data-label').value;
+		} else {
+			delete(state.selectedFacetItems[targetItem]);
+		}
 		this.setState(state);
 	};
 
@@ -338,7 +348,7 @@ class NoguchiBrowseFilterPanel extends React.Component {
 	applyFilters(facet) {
 		let activeFilters = [];
 		for(let k in this.state.selectedFacetItems) {
-			if(this.state.selectedFacetItems[k]) { activeFilters.push(k); }
+			if(this.state.selectedFacetItems[k]) { activeFilters[k] = this.state.selectedFacetItems[k]; }
 		}
 		let filterBlock = {};
 		filterBlock[this.state.facet] = activeFilters;
@@ -367,11 +377,11 @@ class NoguchiBrowseFilterPanel extends React.Component {
 			// Render facet options when available
 			for (let i in this.state.facetContent) {
 				let item = this.state.facetContent[i];
-				let id = 'facetItem' + i ;
+				let id = 'facetItem' + i;
 				options.push((
 					<li>
 						<div className="checkbox">
-							<input id={id} value={item.id} className="option-input" type="checkbox" onClick={this.clickFilterItem}/>
+							<input id={id} value={item.id} data-label={item.label}  className="option-input" type="checkbox" onClick={this.clickFilterItem}/>
 							<label htmlFor={id}>
 								<span className="title">
 									<a href='#'>

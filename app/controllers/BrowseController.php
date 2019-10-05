@@ -345,9 +345,9 @@
 					'table' => $qr_res->tableName(),
 					'pk' => $qr_res->primaryKey(),
 					'hits' => [],
-					'facetList' => $o_browse->getInfoForAvailableFacets(),
-					'criteria' => $o_browse->getCriteria(),
-					'criteriaForDisplay' => $o_browse->getCriteriaWithLabels()
+					'availableFacets' => $o_browse->getInfoForAvailableFacets(),
+					'facetList' => $o_browse->getInfoForFacets(),
+					'criteria' => $o_browse->getCriteriaWithLabels()
 				];
 
 				$c = 0;

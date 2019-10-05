@@ -13,9 +13,9 @@ function initialState() {
 		key: null,
 		start: 0,
 		itemsPerPage: 60,
+		availableFacets: null,
 		facetList: null,
-		criteria: null,
-		criteriaForDisplay: null
+		criteria: null
 	};
 }
 
@@ -26,23 +26,19 @@ function initialState() {
  */
 function fetchResults(url, callback) {
 	// Fetch browse facet items
-	//console.log("get results", url);
 	axios.get(url + "/getResult/1")
 		.then(function (resp) {
 			let data = resp.data;
 			let state = initialState();
-			let criteria = {};
-			for(let k in data.criteria) {
-				criteria[k] = Object.keys(data.criteria[k]).join(";");
-			}
+
 			state.resultSize = data.size;
 			state.resultList = data.hits;
 			state.start = (data.start > 0) ? data.start : 0;
 			state.itemsPerPage = data.itemsPerPage;
+			state.availableFacets = data.availableFacets;
 			state.facetList = data.facetList;
 			state.key = data.key;
-			state.criteria = criteria;
-			state.criteriaForDisplay = data.criteriaForDisplay;
+			state.criteria = data.criteria;
 			callback(state);
 		})
 		.catch(function (error) {

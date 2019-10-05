@@ -27,10 +27,6 @@
 	$action = preg_replace("![^A-Za-z0-9_]+!", "", $this->request->getAction());
 	$params = $this->request->getParameters();
 
-	$initial_criteria = null;
-	if(isset($params['facet'])) {
-		$initial_criteria[$params['facet']] = $params['id'];
-	}
 
 	// Get info for collection
 	$collection_title = $collection_desc = null;
@@ -41,6 +37,11 @@
 			$collection_title = $t_collection->get('ca_collections.preferred_labels.name');
 			$collection_desc = $t_collection->get('ca_collections.general_notes');
 		}
+	}
+
+	$initial_criteria = null;
+	if(isset($params['facet'])) {
+		$initial_criteria[$params['facet']] = [$params['id'] => ($params['facet'] === 'collection_facet') ? $collection_title : ""];
 	}
 ?>
 
