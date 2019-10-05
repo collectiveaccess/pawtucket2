@@ -1,122 +1,44 @@
 /*jshint esversion: 6 */
 import React from "react"
 import ReactDOM from "react-dom";
-import {initialState, fetchResults, fetchFacetValues} from "../../default/js/browse";
+import {fetchFacetValues, initBrowseContainer} from "../../default/js/browse";
 
+const selector = pawtucketUIApps.NoguchiArchiveBrowse.selector;
+const appData = pawtucketUIApps.NoguchiArchiveBrowse.data;
 
-const selector = pawtucketUIApps.NoguchiBrowse.selector;
-const appData = pawtucketUIApps.NoguchiBrowse.data;
-
-const NoguchiBrowseContext = React.createContext();
 /**
+ * Component context making NoguchiArchiveBrowse internals accessible to all subcomponents
  *
+ * @type {React.Context}
  */
-class NoguchiBrowse extends React.Component{
+const NoguchiArchiveBrowseContext = React.createContext();
+
+/**
+ * Top-level container for browse interface
+ */
+class NoguchiArchiveBrowse extends React.Component{
 	constructor(props) {
 		super(props);
 
-		let that = this;
-
-		this.state = initialState();
-		if(props.initialCriteria) {
-			this.state.criteria = props.initialCriteria;
-		}
-
-		this.loadResults(function(newState) {
-			that.setState(newState);
-		});
-
-		this.loadResults = this.loadResults.bind(this);
-		this.loadMoreResults = this.loadMoreResults.bind(this);
-		this.reloadResults = this.reloadResults.bind(this);
-		this.loadMoreRef = React.createRef();
+		initBrowseContainer(this, props);
 	}
 
-	/**
-	 *
-	 * @param callback
-	 */
-	loadResults(callback) {
-		let offset = (this.state.start + this.state.itemsPerPage);
-		let criteriaString = this._getCriteriaString(this.state.criteria);
-		fetchResults(this.props.baseUrl + '/' + this.props.endpoint + '/s/' +
-				offset + (this.state.key ? '/key/' + this.state.key : '') + (criteriaString ? '/facets/' +
-				criteriaString : ''), function(newState) {
-			callback(newState);
-		});
-	}
-
-	/**
-	 *
-	 * @param e
-	 */
-	loadMoreResults(e) {
-		let that = this;
-		if(this.loadMoreRef && this.loadMoreRef.current) {
-			this.loadMoreText = this.loadMoreRef.current.innerHTML;
-			this.loadMoreRef.current.innerHTML = 'LOADING';
-		}
-
-		this.loadResults(function(newState) {
-			let state = that.state;
-			state.resultList.push(...newState.resultList);
-			state.start += state.itemsPerPage;
-			that.setState(state);
-			that.loadMoreRef.current.innerHTML = that.loadMoreText;
-		});
-		e.preventDefault();
-	}
-
-	/**
-	 *
-	 * @param criteria
-	 */
-	reloadResults(criteria) {
-		let that = this;
-		let state = this.state;
-
-		for(let k in criteria) {
-			state.criteria[k] = criteria[k];
-		}
-		state.key = null;
-		state.start = 0;
-		this.setState(state);
-		this.loadResults(function(newState) {
-			that.setState(newState);
-		});
-	}
-
-	/**
-	 *
-	 * @param criteria
-	 * @returns {string}
-	 * @private
-	 */
-	_getCriteriaString(criteria) {
-		let acc = [];
-		for(let k in criteria) {
-			if(criteria[k]) {
-				acc.push(k + ':' + (Object.keys(criteria[k]).join('|')));
-			}
-		}
-		return acc.join(';');
-	}
 
 	render() {
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 		return(
-			<NoguchiBrowseContext.Provider value={this}>
+			<NoguchiArchiveBrowseContext.Provider value={this}>
 				<main className="ca archive archive_landing">
-					<NoguchiBrowseIntro headline={this.props.title} description={this.props.description}/>
+					<NoguchiArchiveBrowseIntro headline={this.props.title} description={this.props.description}/>
 
-					<NoguchiBrowseNavigation/>
-					<NoguchiBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
+					<NoguchiArchiveBrowseNavigation/>
+					<NoguchiArchiveBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
 
-					<NoguchiBrowseResults results={this.state.resultList} start={this.state.start}
+					<NoguchiArchiveBrowseResults results={this.state.resultList} start={this.state.start}
 										  size={this.state.resultSize} itemsPerPage={this.state.itemsPerPage}
 										  loadMoreHandler={this.loadMoreResults} loadMoreRef={this.loadMoreRef}/>
 				</main>
-			</NoguchiBrowseContext.Provider>
+			</NoguchiArchiveBrowseContext.Provider>
 		);
 	}
 }
@@ -124,7 +46,7 @@ class NoguchiBrowse extends React.Component{
 /**
  *
  */
-class NoguchiBrowseIntro extends React.Component {
+class NoguchiArchiveBrowseIntro extends React.Component {
 	render() {
 		if (!this.props.headline || (this.props.headline.length === 0)) {
 			return (<section className="intro"></section>);
@@ -143,7 +65,7 @@ class NoguchiBrowseIntro extends React.Component {
 /**
  *
  */
-class NoguchiBrowseStatistics extends React.Component {
+class NoguchiArchiveBrowseStatistics extends React.Component {
 	render() {
 		return(<div className="current">
 			<div className="body-sans">{(this.props.size > 0) ? ((this.props.size == 1) ?
@@ -151,19 +73,19 @@ class NoguchiBrowseStatistics extends React.Component {
 				:
 				"Showing " + this.props.size + " Results") : "Loading..."}.</div>
 
-				<NoguchiBrowseCurrentCriteriaList criteria={this.context.state.criteria}
+				<NoguchiArchiveBrowseCurrentCriteriaList criteria={this.context.state.criteria}
 												  facetList={this.context.state.facetList}
 												  loadResultsCallback={this.context.reloadResults}/>
 		</div>
 		);
 	}
 }
-NoguchiBrowseStatistics.contextType = NoguchiBrowseContext;
+NoguchiArchiveBrowseStatistics.contextType = NoguchiArchiveBrowseContext;
 
 /**
  *
  */
-class NoguchiBrowseCurrentCriteriaList extends React.Component {
+class NoguchiArchiveBrowseCurrentCriteriaList extends React.Component {
 	constructor(props) {
 		super(props);
 		this.removeCriteria = this.removeCriteria.bind(this);
@@ -175,6 +97,7 @@ class NoguchiBrowseCurrentCriteriaList extends React.Component {
 
 		let criteria = this.props.criteria;
 		if (criteria[targetFacet]) {
+			NoguchiArchiveBrowseStatistics.contextType = NoguchiArchiveBrowseContext;
 			for (let k in criteria[targetFacet]) {
 				if(k == targetValue) {
 					delete(criteria[targetFacet][k]);
@@ -208,22 +131,22 @@ class NoguchiBrowseCurrentCriteriaList extends React.Component {
 		</div>);
 	}
 }
-NoguchiBrowseCurrentCriteriaList.contextType = NoguchiBrowseContext;
+NoguchiArchiveBrowseCurrentCriteriaList.contextType = NoguchiArchiveBrowseContext;
 
 /**
  *
  */
-class NoguchiBrowseFilterControls extends React.Component {
+class NoguchiArchiveBrowseFilterControls extends React.Component {
 	render() {
 		return(
 				<section className="ca_filters">
 					<div className="wrap">
 						<div className="filters_bar">
 
-					<NoguchiBrowseStatistics size={this.context.state.resultSize} criteria={this.context.state.criteria}
+					<NoguchiArchiveBrowseStatistics size={this.context.state.resultSize} criteria={this.context.state.criteria}
 											 loadResultsCallback={this.context.reloadResults}/>
 
-					<NoguchiBrowseFilterList availableFacets={this.context.state.availableFacets}
+					<NoguchiArchiveBrowseFilterList availableFacets={this.context.state.availableFacets}
 											 criteria={this.context.state.criteria}
 											 facetLoadUrl={this.props.facetLoadUrl}
 											 facetList={this.context.state.facetList}
@@ -234,12 +157,12 @@ class NoguchiBrowseFilterControls extends React.Component {
 	}
 	
 }
-NoguchiBrowseFilterControls.contextType = NoguchiBrowseContext;
+NoguchiArchiveBrowseFilterControls.contextType = NoguchiArchiveBrowseContext;
 
 /**
  *
  */
-class NoguchiBrowseFilterList extends React.Component {
+class NoguchiArchiveBrowseFilterList extends React.Component {
 	constructor(props) {
 		super(props);
 		this.filterPanelRef = React.createRef();
@@ -280,7 +203,7 @@ class NoguchiBrowseFilterList extends React.Component {
 
 		if(this.props.availableFacets) {
 			for (let n in this.props.availableFacets) {
-				facetButtons.push((<NoguchiBrowseFilterButton text={this.props.availableFacets[n].label_plural}
+				facetButtons.push((<NoguchiArchiveBrowseFilterButton text={this.props.availableFacets[n].label_plural}
 															  name={n}
 															  callback={this.toggleFilterPanel}/>));
 			}
@@ -294,7 +217,7 @@ class NoguchiBrowseFilterList extends React.Component {
 					<span className="caption-text">{filterLabel}</span>
 					{facetButtons}
 				</div>
-				<NoguchiBrowseFilterPanel open={isOpen} facetName={this.state.selected}
+				<NoguchiArchiveBrowseFilterPanel open={isOpen} facetName={this.state.selected}
 										  facetLoadUrl={this.props.facetLoadUrl} ref={this.filterPanelRef}
 										  loadResultsCallback={this.props.loadResultsCallback}
 										  closeFilterPanelCallback={this.closeFilterPanel}/>
@@ -306,7 +229,7 @@ class NoguchiBrowseFilterList extends React.Component {
 /**
  *
  */
-class NoguchiBrowseFilterButton extends React.Component {
+class NoguchiArchiveBrowseFilterButton extends React.Component {
 	render() {
 		return(<a href="#" data-option={this.props.name} onClick={this.props.callback}>{this.props.text}</a>);
 	}
@@ -315,7 +238,7 @@ class NoguchiBrowseFilterButton extends React.Component {
 /**
  *
  */
-class NoguchiBrowseFilterPanel extends React.Component {
+class NoguchiArchiveBrowseFilterPanel extends React.Component {
 	constructor(props) {
 		super(props);
 
@@ -434,8 +357,43 @@ class NoguchiBrowseFilterPanel extends React.Component {
 /**
  *
  */
-class NoguchiBrowseNavigation extends React.Component {
+class NoguchiArchiveBrowseNavigation extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.loadCollection = this.loadCollection.bind(this);
+
+		this.state = {
+			collections: [
+				{ name: "Photography Collection", id: 432 },
+				{ name: "Architectural Collection", id: 436 },
+				{ name: "Manuscript Collection", id: 434 },
+				{ name: "Business & Legal Collection", id: 437 },
+				{ name: "Noguchi Foundation & Plaza", id: 438 },
+				{ name: "Publication & Press Collection", id: 442 },
+			]
+		}
+	}
+
+	/**
+	 *
+	 * @returns {*}
+	 */
+	loadCollection(e) {
+		let collection_id = e.target.attributes.getNamedItem('data-id').value;
+		let collection_name = e.target.innerHTML;
+		let criteria = {
+			collection_facet: {}
+		};
+		criteria.collection_facet[collection_id] = collection_name;
+		this.context.reloadResults(criteria, true);
+	}
+
 	render() {
+		let collections = [];
+		for(let i in this.state.collections) {
+			collections.push((<a href='#' data-id={this.state.collections[i].id} onClick={this.loadCollection}>{this.state.collections[i].name}</a>));
+		}
 		return(
 			<section className="ca_nav">
 				<nav className="hide-for-mobile">
@@ -449,18 +407,7 @@ class NoguchiBrowseNavigation extends React.Component {
 									<div className="utility utility_menu">
 										<a href="#" className="trigger">All Archival Collections</a>
 										<div className="options">
-											<a href='/index.php/Browse/archive/facet/collection_facet/id/432'>Photography
-												Collection</a>
-											<a href='/index.php/Browse/archive/facet/collection_facet/id/434'>Manuscript
-												Collection</a>
-											<a href='/index.php/Browse/archive/facet/collection_facet/id/436'>Architectural
-												Collection</a>
-											<a href='/index.php/Browse/archive/facet/collection_facet/id/437'>Business &
-												Legal Collection</a>
-											<a href='/index.php/Browse/archive/facet/collection_facet/id/438'>Noguchi
-												Fountain & Plaza</a>
-											<a href='/index.php/Browse/archive/facet/collection_facet/id/442'>Publication
-												& Press Collection</a>
+											{collections}
 										</div>
 									</div>
 								</div>
@@ -479,16 +426,17 @@ class NoguchiBrowseNavigation extends React.Component {
 		);
 	}
 }
+NoguchiArchiveBrowseNavigation.contextType = NoguchiArchiveBrowseContext;
 
 /**
  *
  */
-class NoguchiBrowseResults extends React.Component {
+class NoguchiArchiveBrowseResults extends React.Component {
 	render() {
 		let resultList = [];
 		for (let i in this.props.results) {
 			let r = this.props.results[i];
-			resultList.push(<NoguchiBrowseResultItem key={r.id} data={r}/>)
+			resultList.push(<NoguchiArchiveBrowseResultItem key={r.id} data={r}/>)
 		}
 
 		return(
@@ -500,7 +448,7 @@ class NoguchiBrowseResults extends React.Component {
 						</div>
 					</div>
 				</section>
-				<NoguchiBrowseResultLoadMoreButton start={this.props.start} itemsPerPage={this.props.itemsPerPage}
+				<NoguchiArchiveBrowseResultLoadMoreButton start={this.props.start} itemsPerPage={this.props.itemsPerPage}
 												   size={this.props.size} loadMoreHandler={this.props.loadMoreHandler}
 												   loadMoreRef={this.props.loadMoreRef}/>
 			</div>
@@ -511,7 +459,7 @@ class NoguchiBrowseResults extends React.Component {
 /**
  *
  */
-class NoguchiBrowseResultLoadMoreButton extends React.Component {
+class NoguchiArchiveBrowseResultLoadMoreButton extends React.Component {
 	render() {
 		if ((this.props.start + this.props.itemsPerPage) < this.props.size) {
 			return (
@@ -527,7 +475,7 @@ class NoguchiBrowseResultLoadMoreButton extends React.Component {
 /**
  *
  */
-class NoguchiBrowseResultItem extends React.Component {
+class NoguchiArchiveBrowseResultItem extends React.Component {
 	render() {
 		let data = this.props.data;
 		let styles = {
@@ -561,4 +509,4 @@ class NoguchiBrowseResultItem extends React.Component {
 
 
 ReactDOM.render(
-	<NoguchiBrowse baseUrl={appData.baseUrl} endpoint={appData.endpoint} initialCriteria={appData.initialCriteria} title={appData.title} description={appData.description}/>, document.querySelector(selector));
+	<NoguchiArchiveBrowse baseUrl={appData.baseUrl} endpoint={appData.endpoint} initialCriteria={appData.initialCriteria} title={appData.title} description={appData.description}/>, document.querySelector(selector));

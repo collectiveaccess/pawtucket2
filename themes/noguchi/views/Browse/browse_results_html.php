@@ -48,7 +48,7 @@
 <div id="browse"></div>
 
 <script type="text/javascript">
-	pawtucketUIApps['NoguchiBrowse'] = {
+	pawtucketUIApps['NoguchiArchiveBrowse'] = {
         'selector': '#browse',
         'data': {
             title: <?php print json_encode($collection_title); ?>,
