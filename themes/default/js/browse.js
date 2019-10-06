@@ -160,5 +160,142 @@ function initBrowseContainer(instance, props) {
 	that.loadMoreRef = React.createRef();
 }
 
+/**
+ *
+ */
+function initBrowseCurrentCriteriaList(instance, props) {
+	let that = instance;
 
-export { initialState, fetchResults, fetchFacetValues, getCriteriaString, initBrowseContainer };
+	that.removeCriteria = function(e) {
+		let targetFacet = e.target.attributes.getNamedItem('data-facet').value;
+		let targetValue = e.target.attributes.getNamedItem('data-value').value;
+
+		let criteria = this.context.state.criteria;
+		if (criteria[targetFacet]) {
+			for (let k in criteria[targetFacet]) {
+				if(k == targetValue) {
+					delete(criteria[targetFacet][k]);
+				}
+				if(Object.keys(criteria[targetFacet]).length === 0) {
+					delete(criteria[targetFacet]);
+				}
+			}
+		}
+		this.context.reloadResults(criteria);
+	}
+
+	that.removeCriteria = that.removeCriteria.bind(that);
+}
+
+/**
+ *
+ */
+function initBrowseFilterList(instance, props) {
+	let that = instance;
+
+	/**
+	 *
+	 * @param e Event
+	 */
+	that.toggleFilterPanel = function(e) {
+		let targetOpt = e.target.attributes.getNamedItem('data-option').value;
+		let state = this.state;
+
+		if (targetOpt === state.selected) {
+			state.selected = null;			// toggle closed
+		} else {
+			state.selected = targetOpt;		// toggle open to new facet
+		}
+		this.setState(state);
+		e.preventDefault();
+	};
+
+	that.closeFilterPanel = function() {
+		let state = this.state;
+		state.selected = null;
+		this.setState(state);
+	};
+
+	that.toggleFilterPanel = that.toggleFilterPanel.bind(that);
+	that.closeFilterPanel = that.closeFilterPanel.bind(that);
+
+
+	that.filterPanelRef = React.createRef();
+	that.state = {
+		selected: null
+	};
+}
+
+/**
+ *
+ */
+function initBrowseFilterPanel(instance, props) {
+	let that = instance;
+	/**
+	 *
+	 * @param facet Name of facet to load
+	 */
+	that.loadFacetContent = function(facet) {
+		let that = this;
+		fetchFacetValues(this.props.facetLoadUrl + '/facet/' + facet, function(resp) {
+			let state = that.state;
+			state.facet = facet;
+			state.facetContent = resp.content;
+			state.selectedFacetItems = {};	// reset selected items
+			that.setState(state);
+		});
+	};
+
+	/**
+	 *
+	 */
+	that.clickFilterItem = function(e) {
+		let targetItem = e.target.attributes.getNamedItem('value').value;
+		let isChecked = e.target.checked;
+
+		let state = this.state;
+		if (isChecked) {
+			state.selectedFacetItems[targetItem] = e.target.attributes.getNamedItem('data-label').value;
+		} else {
+			delete(state.selectedFacetItems[targetItem]);
+		}
+		this.setState(state);
+	};
+
+	/**
+	 *
+	 */
+	that.applyFilters = function(facet) {
+		let activeFilters = [];
+		for(let k in this.state.selectedFacetItems) {
+			if(this.state.selectedFacetItems[k]) { activeFilters[k] = this.state.selectedFacetItems[k]; }
+		}
+		let filterBlock = {};
+		filterBlock[this.state.facet] = activeFilters;
+		this.context.reloadResults(filterBlock);
+		this.props.closeFilterPanelCallback();
+	};
+
+	/**
+	 *  Load facet content on change in facetName prop
+	 *
+	 * @param prevProps
+	 */
+	that.componentDidUpdate = function(prevProps) {
+		if(prevProps.facetName !== this.props.facetName) {	// trigger load of facet content
+			this.loadFacetContent(this.props.facetName);
+		}
+	};
+
+	that.state = {
+		facet: null,
+		facetContent: null,
+		selectedFacetItems: []
+	};
+
+	that.loadFacetContent = that.loadFacetContent.bind(that);
+	that.clickFilterItem = that.clickFilterItem.bind(that);
+	that.applyFilters = that.applyFilters.bind(that);
+}
+
+export { initBrowseContainer, initBrowseCurrentCriteriaList, initBrowseFilterList, initBrowseFilterPanel, fetchFacetValues};
