@@ -106,7 +106,7 @@ class NoguchiArchiveBrowseCurrentCriteriaList extends React.Component {
 				for(let c in cv) {
 					let label = cv[c];
 					let facetLabel = (this.context.state.facetList && this.context.state.facetList[f]) ? this.context.state.facetList[f]['label_singular'] : "";
-					criteriaList.push((<a href='#'
+					criteriaList.push((<a key={ f + '_' + c }href='#'
 										  className='browseRemoveFacet'><span className="">{facetLabel}</span>: {label}
 						<span onClick={this.removeCriteria}
 							  data-facet={f}
@@ -158,7 +158,7 @@ class NoguchiArchiveBrowseFilterList extends React.Component {
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
-				facetButtons.push((<NoguchiArchiveBrowseFilterButton text={this.context.state.availableFacets[n].label_plural}
+				facetButtons.push((<NoguchiArchiveBrowseFilterButton key={n} text={this.context.state.availableFacets[n].label_plural}
 															  name={n}
 															  callback={this.toggleFilterPanel}/>));
 			}
@@ -289,7 +289,7 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 	render() {
 		let collections = [];
 		for(let i in this.state.collections) {
-			collections.push((<a href='#' data-id={this.state.collections[i].id} onClick={this.loadCollection}>{this.state.collections[i].name}</a>));
+			collections.push((<a href='#' key={this.state.collections[i].id} data-id={this.state.collections[i].id} onClick={this.loadCollection}>{this.state.collections[i].name}</a>));
 		}
 		return(
 			<section className="ca_nav">
