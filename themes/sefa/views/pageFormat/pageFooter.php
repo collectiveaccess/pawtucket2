@@ -30,11 +30,11 @@
 			</div><!-- end main -->
 			<!--begin footer-->
 			<div class="row footer" role="contentinfo">
-				<div class="col-sm-12 col-md-10 ">
+				<div class="col-sm-12 col-md-9">
 					46 West 90th Street, 2nd floor, New York, NY 10024<br />
 					Gallery Hours: Monday-Friday, 11am-5pm and by appointment
 				</div>
-				<div class="col-sm-12 col-md-2 socialright footernav">
+				<div class="col-sm-12 col-md-3 socialright footernav">
 					<?php print caNavLink($this->request, _t("Newsletter Signup"), "footerButton", "", "About", "MailingList"); ?><br/>
 					<a href="https://www.facebook.com/pages/Susan-Eley-Fine-Art/137980986325025" class="socialicon"><?php print caGetThemeGraphic($this->request, 'fbook.png', array("alt" => "FaceBook")); ?></a>
 					<a href="https://twitter.com/EleyFineArt" class="socialicon"><?php print caGetThemeGraphic($this->request, 'twitter.png', array("alt" => "Twitter")); ?></a>
