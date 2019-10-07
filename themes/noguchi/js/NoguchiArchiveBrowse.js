@@ -404,7 +404,11 @@ class NoguchiArchiveBrowseResultItem extends React.Component {
 		);
 	}
 }
+console.log("render NoguchiArchiveBrowse");
 
-
-ReactDOM.render(
-	<NoguchiArchiveBrowse baseUrl={appData.baseUrl} endpoint={appData.endpoint} initialCriteria={appData.initialCriteria} title={appData.title} description={appData.description}/>, document.querySelector(selector));
+export default function _init() {
+	ReactDOM.render(
+		<NoguchiArchiveBrowse baseUrl={appData.baseUrl} endpoint={appData.endpoint}
+							  initialCriteria={appData.initialCriteria} title={appData.title}
+							  description={appData.description}/>, document.querySelector(selector));
+}

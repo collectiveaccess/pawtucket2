@@ -12,7 +12,9 @@ module.exports = {
 
 	output: {
 	  path: path.resolve(__dirname, 'assets'),
-	  filename: '[name].js'
+	  filename: '[name].js',
+		libraryTarget: 'var',
+		library: '_initPawtucketApps'
 	},
 	resolve: {
     	modules: [
