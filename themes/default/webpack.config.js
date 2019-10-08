@@ -6,26 +6,30 @@ module.exports = {
 	watch: true,
 	
 	entry: { 
-	  main: './js/main.js' ,
+	  main: 'main.js' ,
 	  css: './css/main.scss'
 	},
+
 	output: {
 	  path: path.resolve(__dirname, 'assets'),
-	  filename: '[name].js'
+	  filename: '[name].js',
+		libraryTarget: 'var',
+		library: '_initPawtucketApps'
 	},
 	resolve: {
-		modules: [
-			path.resolve(__dirname, 'js').
-			path.resolve('css'),
-			path.resolve('./node_modules'),
-		],
+    	modules: [
+    		path.resolve(__dirname, 'js'),
+    		path.resolve('../default/js'),	// include JS from default theme
+    		path.resolve('../default/css'),	// include CSS from default theme
+    		path.resolve('./node_modules'),
+    	],
 		alias: {
 			themeJS: path.resolve(__dirname, "js"),			// path to theme JS
-			defaultJS: path.resolve(__dirname, "js"),		// path to default JS
+			defaultJS: path.resolve(__dirname, "../default/js"),		// path to default JS
 			themeCSS: path.resolve(__dirname, "css"),		// path to theme CSS
-			defaultCSS: path.resolve(__dirname, "css")		// path to default CSS
+			defaultCSS: path.resolve(__dirname, "../default/css")		// path to default CSS
 		}
-	},
+  	},
   module: {
     rules: [
 	  {
