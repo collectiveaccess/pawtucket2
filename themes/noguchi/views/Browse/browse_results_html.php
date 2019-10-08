@@ -22,21 +22,40 @@
  *
  * ----------------------------------------------------------------------
  */
+
+	// TODO: move this out of view
+	$action = preg_replace("![^A-Za-z0-9_]+!", "", $this->request->getAction());
+	$params = $this->request->getParameters();
+
+
+	// Get info for collection
+	$collection_title = $collection_desc = null;
+	require_once(__CA_MODELS_DIR__."/ca_collections.php");
+	if ($this->request->getParameter('facet', pString) === 'collection_facet') {
+		$t_collection = new ca_collections($id = $this->request->getParameter('id', pInteger));
+		if ($t_collection->isLoaded() && ($t_collection->get('access') > 1)) {
+			$collection_title = $t_collection->get('ca_collections.preferred_labels.name');
+			$collection_desc = $t_collection->get('ca_collections.general_notes');
+		}
+	}
+
+	$initial_criteria = null;
+	if(isset($params['facet'])) {
+		$initial_criteria[$params['facet']] = [$params['id'] => ($params['facet'] === 'collection_facet') ? $collection_title : ""];
+	}
 ?>
 
-<div id="browse">
+<div id="browse"></div>
 
-</div>
-
-<script type="text/javascript">	
-	pawtucketUIApps['NoguchiBrowse'] = {
+<script type="text/javascript">
+	pawtucketUIApps['NoguchiArchiveBrowse'] = {
         'selector': '#browse',
         'data': {
-           title: "Photgraphy browse",
-			description: "A browse on Noguchi's photos",
+            title: <?php print json_encode($collection_title); ?>,
+			description: <?php print json_encode($collection_desc); ?>,
 			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
-			endpoint: "objects"
+			endpoint: "<?php print $action; ?>",
+			initialCriteria: <?php print json_encode($initial_criteria); ?>
         }
     };
 </script>
-

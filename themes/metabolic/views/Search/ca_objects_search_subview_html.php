@@ -1,10 +1,10 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/Search/ca_objects_search_subview_html.php : 
+ * themes/default/views/Search/ca_objects_search_cascading_html.php : 
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2015 Whirl-i-Gig
+ * Copyright 2013-2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,132 +25,86 @@
  
 	$qr_results 		= $this->getVar('result');
 	$va_block_info 		= $this->getVar('blockInfo');
+	$va_options 		= $va_block_info["options"];
 	$vs_block 			= $this->getVar('block');
 	$vn_start		 	= (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vn_hits_per_block 	= (int)$this->getVar('itemsPerPage');
+	$vn_items_per_column = (int)$this->getVar('itemsPerColumn');
 	$vb_has_more 		= (bool)$this->getVar('hasMore');
 	$vs_search 			= (string)$this->getVar('search');
 	$vn_init_with_start	= (int)$this->getVar('initializeWithStart');
 	$va_access_values = caGetUserAccessValues();
-	$o_config = caGetSearchConfig();
 	$o_browse_config = caGetBrowseConfig();
 	$va_browse_types = array_keys($o_browse_config->get("browseTypes"));
+	$o_config = caGetSearchConfig();
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
 	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	}
-	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
-
+	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
+	
 	if ($qr_results->numHits() > 0) {
-		if (!$this->request->isAjax()) {
 ?>
-			<small class="pull-right sortValues">
+				<div class="row mb-2">
+					<div class="col-sm-12 col-md-6">
 <?php
-				if(in_array($vs_block, $va_browse_types)){
+		if(in_array($vs_block, $va_browse_types)){
+			print '<H2>'.caNavLink($va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H2>';
+		}else{
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink('<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?></span> | 
-<?php
-				}
-?>
-				
-				<span class='multisearchSort'><?php print _t("sort by:"); ?> {{{sortByControl}}}</span>
-				{{{sortDirectionControl}}}
-			</small>
-<?php
-			if(in_array($vs_block, $va_browse_types)){
-?>
-				<?php print '<H3>'.caNavLink($va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H3>'; ?>
-<?php
-			}else{
-?>
-				<H3><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H3>
-<?php
-			}
-?>
-			<div class='blockResults objects'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
-				<div id='{{{block}}}Results' class='multiSearchResults'>
-					<div class='blockResultsScroller'>
+			<H2><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H2>
 <?php
 		}
+?>
+					</div>
+					<div class="col-sm-12 col-md-6 text-right">
+<?php
+		$vs_full_results = "";
+		if(in_array($vs_block, $va_browse_types)){
+			print $vs_full_results = caNavLink(_t('Full results').'&nbsp;<ion-icon name="open"></ion-icon>', 'btn btn-primary', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); 
+		}
+?>
+					</div>
+				</div>
+<?php
 		$vn_count = 0;
+		$vn_col_count = 0;
+?>
+	<div class="row {{{block}}}Set multiSearchObjects">
+<?php
+		$va_block_info["resultTemplate"];
 		$t_list_item = new ca_list_items();
 		while($qr_results->nextHit()) {
-?>
-			<div class='{{{block}}}Result multisearchResult'>
-<?php 
-				$vs_image = $qr_results->get('ca_object_representations.media.widepreview', array("checkAccess" => $va_access_values));
-				if(!$vs_image){
-					$t_list_item->load($qr_results->get("type_id"));
-					$vs_typecode = $t_list_item->get("idno");
-					if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
-						$vs_image = "<div class='multisearchImgPlaceholder'>".$vs_type_placeholder."</div>";
-					}else{
-						$vs_image = $vs_default_placeholder_tag;
-					}
-				}
-				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
-?>
-				<br/><?php print $qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)); ?>
-			</div><!-- end blockResult -->
-<?php
 			$vn_count++;
-			if ((!$vn_init_with_start && ($vn_count == $vn_hits_per_block)) || ($vn_init_with_start && ($vn_count >= $vn_init_with_start))) {break;} 
-		}
-?>
-<?php	
-		if (!$this->request->isAjax()) {
-?>
-					</div><!-- end blockResultsScroller -->
-				</div>
-			</div><!-- end blockResults -->
-		
-			<div class='allLink'><?php print caNavLink('all '.$va_block_info['displayName'].' results', '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search)));?></div>
-
-
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery('#{{{block}}}Results').hscroll({
-						name: '{{{block}}}',
-						itemCount: <?php print $qr_results->numHits(); ?>,
-						preloadCount: <?php print $vn_count; ?>,
-						
-						itemWidth: jQuery('.{{{block}}}Result').outerWidth(true),
-						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
-						itemLoadURL: '<?php print caNavUrl('*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)); ?>',
-						itemContainerSelector: '.blockResultsScroller',
-						
-						sortParameter: '{{{block}}}Sort',
-						sortControlSelector: '#{{{block}}}_sort',
-						
-						sortDirection: '{{{sortDirection}}}',
-						sortDirectionParameter: '{{{block}}}SortDirection',
-						sortDirectionSelector: '#{{{block}}}_sort_direction',
-						
-						scrollPreviousControlSelector: '#{{{block}}}scrollButtonPrevious',
-						scrollNextControlSelector: '#{{{block}}}scrollButtonNext',
-						cacheKey: '{{{cacheKey}}}'
-					});
-				});
-			</script>
-<?php
-		}else{
-			# --- need to change sort direction to catch default setting for direction when sort order has changed
-			if($this->getVar("sortDirection") == "desc"){
-?>
-				<script type="text/javascript">
-					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet').addClass('glyphicon-sort-by-alphabet-alt');
-				</script>
-<?php
-			}else{
-?>
-				<script type="text/javascript">
-					jQuery('#<?php print $vs_block; ?>_sort_direction').find('span').removeClass('glyphicon-sort-by-alphabet-alt').addClass('glyphicon-sort-by-alphabet');
-				</script>
-<?php
+			if(!($vs_thumbnail = $qr_results->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values, "class" => "card-img-top")))){
+				$t_list_item->load($qr_results->get("type_id"));
+				$vs_typecode = $t_list_item->get("idno");
+				if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+					$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+				}else{
+					$vs_thumbnail = $vs_default_placeholder_tag;
+				}
 			}
-		}
+			$vs_info = null;
+			$vs_rep_detail_link 	= caDetailLink($vs_thumbnail, '', $va_block_info["table"], $qr_results->getPrimaryKey());
+?>
+			<div class='col-sm-6 col-md-4 col-lg-3 col-xl-2'>
+				<div class='card mb-4'>
+					<?php print $vs_rep_detail_link; ?>
+					<div class='card-body mb-2'><?php print $qr_results->getWithTemplate($va_block_info["resultTemplate"]); ?></div>
+				</div>
+			</div>
+<?php					
+			if ($vn_count == $vn_hits_per_block) {break;} 
+		}		
+?>
+	</div>
+	<div class="row">
+		<div class="col-12 text-center">
+			<?php print $vs_full_results; ?>
+		</div>
+	</div>
+<?php
 	}
-	
-	TooltipManager::add('#caObjectsFullResults', 'Click here for full results');
 ?>

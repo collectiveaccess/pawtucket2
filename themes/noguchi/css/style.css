@@ -6166,6 +6166,11 @@ BODY.collective-access .ca_filters {
           padding-left: 4px; }
         BODY.collective-access .ca_filters .current .tags A:hover SPAN {
           color: #333230; }
+
+          BODY.collective-access .ca_filters .current .tags A SPAN:first-letter {
+            text-transform:capitalize;
+          }
+
   BODY.collective-access .ca_filters DIV.search {
     float: right;
     max-width: 400px;

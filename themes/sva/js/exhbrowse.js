@@ -49,15 +49,11 @@ class ExhBrowse extends React.Component {
     return (
     	<div>
 			<div className="row justify-content-center">
-				<div className="col-md-8">       	
+				<div className="col-sm-12 col-md-12 text-center">       	
 				<ul className="sortby"><ExhBrowseNavigation facetUrl={this.props.facetUrl} browseUrl={this.props.browseUrl} handleResults={this.setBrowseResults} /></ul>
 				</div>
 			</div>
-			<br/><br/>
 			<div className="row">
-				<div className="col-sm-1">
-					<ExhBrowseSortButton doSort={this.setSortDirection}/>
-				</div>
 				<ul className="select-list browseResults">
 					<li><h2--list>{this.state.value}</h2--list></li>
 					{results}
