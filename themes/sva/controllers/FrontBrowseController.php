@@ -331,6 +331,44 @@
  			} 
  			$this->render($this->ops_view_prefix."/browse_results_json.php");
  		}
+ 		# ------------------------------------------------------------------
+ 		/**
+ 		 * 
+ 		 */
+ 		protected function getFacet($po_browse) {
+ 			//
+			// Return facet content
+			//	
+			$this->view->setVar('browse', $po_browse);
+			
+			$vb_is_nav = (bool)$this->request->getParameter('isNav', pInteger);
+			$this->view->setVar('isNav', $vb_is_nav);
+			$vs_facet = $this->request->getParameter(['getFacet', 'facet'], pString, ['forcePurify' => true]);
+			$vn_s = $vb_is_nav ? $this->request->getParameter('s', pInteger) : 0;	// start menu-based browse menu facet data at page boundary; all others get the full facet
+			$this->view->setVar('start', $vn_s);
+			$this->view->setVar('limit', $vn_limit = ($vb_is_nav ? 500 : null));	// break facet into pages for menu-based browse menu
+			$this->view->setVar('facet_name', $vs_facet);
+			$this->view->setVar('key', $po_browse->getBrowseID());
+			$this->view->setVar('facet_info', $va_facet_info = $po_browse->getInfoForFacet($vs_facet));
+			
+			# --- pull in different views based on format for facet - alphabetical, list, hierarchy
+			switch($va_facet_info["group_mode"]){
+				case "alphabetical":
+				case "list":
+				default:
+				    $content = $po_browse->getFacet($vs_facet, ["checkAccess" => $this->opa_access_values, 'start' => $vn_s, 'limit' => $vn_limit]);
+					$this->view->setVar('facet_content', is_array($content) ? $content : []);
+					if($vb_is_nav && $vn_limit){
+						$this->view->setVar('facet_size', sizeof($po_browse->getFacet($vs_facet, array("checkAccess" => $this->opa_access_values))));					
+					}
+					$this->render($this->ops_view_prefix."/list_facet_html.php");
+					break;
+				case "hierarchical":
+					$this->render($this->ops_view_prefix."/hierarchy_facet_html.php");
+					break;
+			}
+			return;
+ 		}
  		# -------------------------------------------------------
 		/** 
 		 * Generate the URL for the "back to results" link from a browse result item
