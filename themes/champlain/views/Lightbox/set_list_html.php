@@ -256,10 +256,8 @@
 				$vn_collection_idno = "";
 				$t_list_items->load($va_set_item["type_id"]);
 				$t_object = new ca_objects($va_set_item["row_id"]);
-				if($vn_collection_idno = $t_object->get('ca_collections.idno')){
-					if($vs_collection_placeholder_graphic = caGetOption($vn_collection_idno, $va_collection_specific_icons, null)){
-						$vs_placeholder = "<div>".caGetThemeGraphic($po_request, $vs_collection_placeholder_graphic)."</div>";
-					}
+				if($vs_collection_icon = collectionIcon($po_request, $t_object, "collection_placeholders_square")){
+					$vs_placeholder = "<div>".$vs_collection_icon."</div>";
 				}
 				
 				if($vn_i == 1){

@@ -120,11 +120,7 @@
 							if(!$vs_image){
 								$t_list_item->load($qr_res->get("type_id"));
 								$vs_typecode = $t_list_item->get("idno");
-								if($vn_collection_idno = $qr_res->get('ca_collections.idno')){
-									if($vs_collection_placeholder_graphic = caGetOption($vn_collection_idno, $va_collection_specific_icons, null)){
-										$vs_image = caGetThemeGraphic($this->request, $vs_collection_placeholder_graphic);
-									}
-								}
+								$vs_image = collectionIcon($this->request, $qr_res);
 								if(!$vs_image){
 									if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 										$vs_image = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";

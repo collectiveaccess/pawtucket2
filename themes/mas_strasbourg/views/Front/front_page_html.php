@@ -34,11 +34,11 @@
 	<div class="row maxWrapper">
 		<div class="col-sm-4">
 <?php
-			print "<div class='logo'>".caGetThemeGraphic($this->request, 'logo 2013.jpg')."</div>";
+			print "<div class='logo'>".caGetThemeGraphic($this->request, 'strasbourg.jpg')."</div>";
 ?>
 		</div> <!--end col-sm-4-->	
-		<div class="col-sm-8">
-			The University of Saskatchewan Art Collection consists of art objects acquired over the last 100+ years.  The collection is quite varied, and represents the artistic work of many cultures and art movements throughout recent history.  Of note are important early Canadian works and modernist works from North America and Europe.  The collection is well represented by Saskatchewan based artists that include alumni, members of the academic community, and attendees of the Emma Lake / Kenderdine Campus.  There is a large prairie folk art collection, as well as a significant collection of Indigenous art objects.  
+		<div class="col-sm-8"><br><br>
+The Strasbourg and District Museum began in 1971 with the purchase of the CPR station and property, but it goes back much farther. The history of the organization is short compared to the history it houses, that of the district and its people. 
 		</div><!--end col-sm-8-->
 	
 	</div><!-- end row -->

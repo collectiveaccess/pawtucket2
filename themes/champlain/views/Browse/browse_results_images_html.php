@@ -64,7 +64,6 @@
 		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x' aria-label='placeholder image'></i>";
 	}
 	$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
-	$va_collection_specific_icons = $o_icons_conf->getAssoc("collection_placeholders");
 
 		$vn_col_span = 3;
 		$vn_col_span_sm = 4;
@@ -121,11 +120,7 @@
 						if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
 							$t_list_item->load($qr_res->get("type_id"));
 							$vs_typecode = $t_list_item->get("idno");
-							if($vn_collection_idno = $qr_res->get('ca_collections.idno')){
-								if($vs_collection_placeholder_graphic = caGetOption($vn_collection_idno, $va_collection_specific_icons, null)){
-									$vs_thumbnail = caGetThemeGraphic($this->request, $vs_collection_placeholder_graphic);
-								}
-							}
+							$vs_thumbnail = collectionIcon($this->request, $qr_res);
 							if(!$vs_thumbnail){
 								if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
 									$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
@@ -138,9 +133,12 @@
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 					} else {
 						if($vs_table == "ca_collections"){
-							if($vn_collection_idno = $qr_res->get('ca_collections.idno')){
-								if($vs_collection_placeholder_graphic = caGetOption($vn_collection_idno, $va_collection_specific_icons, null)){
-									$vs_thumbnail = caGetThemeGraphic($this->request, $vs_collection_placeholder_graphic);
+							$vs_thumbnail = collectionIcon($this->request, $qr_res);
+							if(!$vs_thumbnail){
+								if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon")){
+									$vs_thumbnail = "<div class='bResultItemImgPlaceholder'>".$vs_type_placeholder."</div>";
+								}else{
+									$vs_thumbnail = $vs_default_placeholder_tag;
 								}
 							}
 						}else{

@@ -46,7 +46,7 @@
 <?php
 		if(is_array($va_write_sets) && sizeof($va_write_sets)){
 			$t_write_set = new ca_sets();
-			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><select name='set_id' class='form-control'>";
+			print "<div class='form-group'><label for='set' class='col-sm-4 control-label'>".$vs_display_name."</label><div class='col-sm-7'><select name='set_id' id='set' class='form-control'>";
 			print "<option value=''>"._t("Select a %1", $vs_display_name)."</option>\n";
 			foreach($va_write_sets as $va_write_set){
 				$t_write_set->load($va_write_set["set_id"]);
@@ -54,11 +54,11 @@
 			}
 			print "</select>\n";
 			print "</div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
-			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><H3>"._t("OR<br/>Create a New %1", ucfirst($vs_display_name))."</H3></div></div><!-- end form-group -->\n";
+			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><H2 class='uppercase'>"._t("OR Create a New %1", ucfirst($vs_display_name))."</H2></div></div><!-- end form-group -->\n";
 		}
-		print "<div class='form-group'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' placeholder='"._t("Your %1", $vs_display_name)."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print "<div class='form-group'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' id='name' placeholder='"._t("Your %1", $vs_display_name)."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		#print $t_set->htmlFormElement("access","<div class='form-group'><label for='access' class='col-sm-4 control-label'>"._t("Display Option")."</label><div class='col-sm-7' class='form-control'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
-		print "<div class='form-group'><label for='description' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='".$vs_description_attribute."' class='form-control' rows='3'></textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print "<div class='form-group'><label for='description' class='col-sm-4 control-label'>"._t("Description")."</label><div class='col-sm-7'><textarea name='".$vs_description_attribute."' id='description' class='form-control' rows='3'></textarea></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 
 ?>
 		<div class="form-group">

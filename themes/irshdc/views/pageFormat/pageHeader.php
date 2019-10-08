@@ -149,7 +149,7 @@
 					<li class="dropdown <?php print ($this->request->getController() == "Explore") ? ' active"' : ''; ?>" style="position:relative;">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span>Explore</span></a>
 						<ul class="dropdown-menu">
-							<li><?php print caNavLink($this->request, "<span>"._t("Narrative Threads")."</span>", "", "", "Explore", "narrativethreads"); ?></li>
+							<!--<li><?php print caNavLink($this->request, "<span>"._t("Narrative Threads")."</span>", "", "", "Explore", "narrativethreads"); ?></li>-->
 							<li><?php print caNavLink($this->request, "<span>"._t("BC Schools")."</span>", "", "", "Explore", "schools"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Featured Collections")."</span>", "", "", "Gallery", "Index"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Resources")."</span>", "", "", "Listing", "Resources"); ?></li>

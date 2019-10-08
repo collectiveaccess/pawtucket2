@@ -458,10 +458,6 @@ padding-right: 10px;
 	height: 250px;
 
 }
-.recently:hover {
-	background-color: #f5f5f5;
-		color: #333;
-}
 .recently img {
 	width: auto;
 	height: 120px;
