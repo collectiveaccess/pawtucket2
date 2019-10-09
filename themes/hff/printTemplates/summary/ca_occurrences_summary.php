@@ -141,16 +141,13 @@
 						
 						$va_interstitial = array();
 						if(strToLower($t_item->get("ca_occurrences.type_id", array("convertCodesToDisplayText" => true))) == "literature"){
-							$va_relations = $qr_res->get("ca_objects_x_occurrences.relation_id", array("checkAccess" => $va_access_values, "restrictToTypes" => array("artwork", "art_HFF", "edition_HFF", "art_nonHFF", "edition_nonHFF"), "returnAsArray" => true));
-							foreach($va_relations as $vn_relationship_id){
-								$t_objects_x_occurrences->load($vn_relationship_id);
-								if($t_objects_x_occurrences->get("occurrence_id") == $t_item->get("ca_occurrences.occurrence_id")){
-									break;
-								}
-							}
-							# --- note label on backend is citation even though the field is called source
 							if($vs_tmp = $t_objects_x_occurrences->get("source")){
 								$va_interstitial[] = "Citation: ".$vs_tmp;
+							}
+						}
+						if(strToLower($t_item->get("ca_occurrences.type_id", array("convertCodesToDisplayText" => true))) == "exhibition"){
+							if($vs_tmp = $t_objects_x_occurrences->get("checklist_number")){
+								$va_interstitial[] = $vs_tmp;
 							}
 						}						
 						print "<div class='relArtwork'>{$vs_rep_detail_link}<div class='relArtworkCaption'>{$vs_idno_detail_link}{$vs_label_detail_link}".((is_array($va_interstitial) && sizeof($va_interstitial)) ? "<br/>".join("<br/>", $va_interstitial) : "")."</div></div>";
