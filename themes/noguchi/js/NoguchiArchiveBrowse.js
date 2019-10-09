@@ -1,11 +1,10 @@
 /*jshint esversion: 6 */
 import React from "react"
 import ReactDOM from "react-dom";
-import { initBrowseContainer, initBrowseCurrentCriteriaList, initBrowseFilterList, initBrowseFilterPanel, fetchFacetValues } from "../../default/js/browse";
+import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel } from "../../default/js/browse";
 
 const selector = pawtucketUIApps.NoguchiArchiveBrowse.selector;
 const appData = pawtucketUIApps.NoguchiArchiveBrowse.data;
-
 /**
  * Component context making NoguchiArchiveBrowse internals accessible to all subcomponents
  *
@@ -14,7 +13,16 @@ const appData = pawtucketUIApps.NoguchiArchiveBrowse.data;
 const NoguchiArchiveBrowseContext = React.createContext();
 
 /**
- * Top-level container for browse interface
+ * Top-level container for browse interface. Is values for context NoguchiArchiveBrowseContext.
+ *
+ * Props are:
+ * 		<NONE>
+ *
+ * Sub-components are:
+ * 		NoguchiArchiveBrowseIntro
+ * 		NoguchiArchiveBrowseNavigation
+ * 		NoguchiArchiveBrowseFilterControls
+ * 		NoguchiArchiveBrowseResults
  */
 class NoguchiArchiveBrowse extends React.Component{
 	constructor(props) {
@@ -43,8 +51,11 @@ class NoguchiArchiveBrowse extends React.Component{
  * Archive browse collection information panel
  *
  * Props are:
- * 		headline
- * 		description
+ * 		headline : browse inteface headline (Ex. "Photography Collection")
+ * 		description : descriptive text for the browse (Eg. text about the collection)
+ *
+ * Sub-components are:
+ * 		<NONE>
  */
 class NoguchiArchiveBrowseIntro extends React.Component {
 	render() {
@@ -64,10 +75,15 @@ class NoguchiArchiveBrowseIntro extends React.Component {
 
 /**
  * Browse result statistics display. Stats include a # results found indicator. May embed other
- * stats such as a list of currently applied browse criteria (via NoguchiArchiveBrowseCurrentCriteriaList)
+ * stats such as a list of currently applied browse filters (via NoguchiArchiveBrowseCurrentFilterList)
  *
  * Props are:
- * 		<NONE>>
+ * 		<NONE>
+ *
+ * Sub-components are:
+ * 		NoguchiArchiveBrowseCurrentFilterList
+ *
+ * Uses context: NoguchiArchiveBrowseContext
  */
 class NoguchiArchiveBrowseStatistics extends React.Component {
 	render() {
@@ -77,7 +93,7 @@ class NoguchiArchiveBrowseStatistics extends React.Component {
 				:
 				"Showing " + this.context.state.resultSize + " Results") : "Loading..."}.</div>
 
-				<NoguchiArchiveBrowseCurrentCriteriaList/>
+				<NoguchiArchiveBrowseCurrentFilterList/>
 		</div>
 		);
 	}
@@ -85,45 +101,62 @@ class NoguchiArchiveBrowseStatistics extends React.Component {
 NoguchiArchiveBrowseStatistics.contextType = NoguchiArchiveBrowseContext;
 
 /**
- * Display of current browse criteria. Each criterion includes a delete criterion button.
+ * Display of current browse filters. Each filter includes a delete-filter button.
  *
  * Props are:
- * 		criteria
- * 		facetList
+ * 		<NONE>
+ *
+ * Sub-components are:
+ * 		<NONE>
+ *
+ * Used by:
+ * 		NoguchiArchiveBrowseCurrentFilterList
+ *
+ * Uses context: NoguchiArchiveBrowseContext
  */
-class NoguchiArchiveBrowseCurrentCriteriaList extends React.Component {
+class NoguchiArchiveBrowseCurrentFilterList extends React.Component {
 	constructor(props) {
 		super(props);
 
-		initBrowseCurrentCriteriaList(this, props);
+		initBrowseCurrentFilterList(this);
 	}
 
 	render() {
-		let criteriaList = [];
-		if(this.context.state.criteria) {
-			for (let f in this.context.state.criteria) {
-				let cv =  this.context.state.criteria[f];
+		let filterList = [];
+		if(this.context.state.filters) {
+			for (let f in this.context.state.filters) {
+				let cv =  this.context.state.filters[f];
 				for(let c in cv) {
 					let label = cv[c];
 					let facetLabel = (this.context.state.facetList && this.context.state.facetList[f]) ? this.context.state.facetList[f]['label_singular'] : "";
-					criteriaList.push((<a key={ f + '_' + c }href='#'
+					filterList.push((<a key={ f + '_' + c }href='#'
 										  className='browseRemoveFacet'><span className="">{facetLabel}</span>: {label}
-						<span onClick={this.removeCriteria}
+						<span onClick={this.removeFilter}
 							  data-facet={f}
 							  data-value={c}>&times;</span></a>));
 				}
 			}
 		}
 		return(<div className="tags">
-			{criteriaList}
+			{filterList}
 		</div>);
 	}
 }
-NoguchiArchiveBrowseCurrentCriteriaList.contextType = NoguchiArchiveBrowseContext;
+NoguchiArchiveBrowseCurrentFilterList.contextType = NoguchiArchiveBrowseContext;
 
 /**
- * Container for display and editing of applied browse filters. This component provides markup to
+ * Container for display and editing of applied browse filters. This component provides
+ * markup wrapping both browse statistics (# of results found) (component <NoguchiArchiveBrowseStatistics>
+ * as well as the list of available browse facets (component <NoguchiArchiveBrowseFacetList>).
  *
+ * Props are:
+ * 		facetLoadUrl : URL to use to load facet content
+ *
+ * Sub-components are:
+ * 		NoguchiArchiveBrowseStatistics
+ * 		NoguchiArchiveBrowseFacetList
+ *
+ * Uses context: NoguchiArchiveBrowseContext
  */
 class NoguchiArchiveBrowseFilterControls extends React.Component {
 	render() {
@@ -132,7 +165,7 @@ class NoguchiArchiveBrowseFilterControls extends React.Component {
 					<div className="wrap">
 						<div className="filters_bar">
 							<NoguchiArchiveBrowseStatistics/>
-							<NoguchiArchiveBrowseFilterList facetLoadUrl={this.props.facetLoadUrl}/>
+							<NoguchiArchiveBrowseFacetList facetLoadUrl={this.props.facetLoadUrl}/>
 						</div>
 					</div>
 				</section>);
@@ -141,12 +174,20 @@ class NoguchiArchiveBrowseFilterControls extends React.Component {
 NoguchiArchiveBrowseFilterControls.contextType = NoguchiArchiveBrowseContext;
 
 /**
- *
+ * List of available facets. Wraps both facet buttons, and the panel allowing selection of facet values for
+ * application as browse filters. Each facet button is implemented using component <NoguchiArchiveBrowseFacetButton>.
+ * The facet panel is implemented using component <NoguchiArchiveBrowseFacetPanel>.
  *
  * Props are:
- * 		facetLoadUrl
+ * 		facetLoadUrl : URL to use to load facet content
+ *
+ * Sub-components are:
+ * 		NoguchiArchiveBrowseFacetButton
+ * 		NoguchiArchiveBrowseFacetPanel
+ *
+ * Uses context: NoguchiArchiveBrowseContext
  */
-class NoguchiArchiveBrowseFilterList extends React.Component {
+class NoguchiArchiveBrowseFacetList extends React.Component {
 	constructor(props) {
 		super(props);
 		initBrowseFilterList(this, props);
@@ -158,9 +199,9 @@ class NoguchiArchiveBrowseFilterList extends React.Component {
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
-				facetButtons.push((<NoguchiArchiveBrowseFilterButton key={n} text={this.context.state.availableFacets[n].label_plural}
+				facetButtons.push((<NoguchiArchiveBrowseFacetButton key={n} text={this.context.state.availableFacets[n].label_plural}
 															  name={n}
-															  callback={this.toggleFilterPanel}/>));
+															  callback={this.toggleFacetPanel}/>));
 			}
 		}
 
@@ -172,37 +213,55 @@ class NoguchiArchiveBrowseFilterList extends React.Component {
 					<span className="caption-text">{filterLabel}</span>
 					{facetButtons}
 				</div>
-				<NoguchiArchiveBrowseFilterPanel open={isOpen} facetName={this.state.selected}
-										  facetLoadUrl={this.props.facetLoadUrl} ref={this.filterPanelRef}
+				<NoguchiArchiveBrowseFacetPanel open={isOpen} facetName={this.state.selected}
+										  facetLoadUrl={this.props.facetLoadUrl} ref={this.facetPanelRef}
 										  loadResultsCallback={this.context.loadResultsCallback}
-										  closeFilterPanelCallback={this.closeFilterPanel}/>
+										  closeFacetPanelCallback={this.closeFacetPanel}/>
 			</div>
 		)
 	}
 }
-NoguchiArchiveBrowseFilterList.contextType = NoguchiArchiveBrowseContext;
+NoguchiArchiveBrowseFacetList.contextType = NoguchiArchiveBrowseContext;
 
 /**
- *
+ * Implements a facet button. Clicking on the button triggers an action for the represented facet (Eg. open
+ * a panel displaying all facet values)
  *
  * Props are:
- * 		name
- * 		text
- * 		callback
+ * 		name : Facet code; used when applying filter values from this facet.
+ * 		text : Display name for facet; used as text of button
+ * 		callback : Method to call when filter is clicked
+ *
+ * Sub-components are:
+ * 		<NONE>
+ *
+ * Used by:
+ *  	NoguchiArchiveBrowseFacetList
  */
-class NoguchiArchiveBrowseFilterButton extends React.Component {
+class NoguchiArchiveBrowseFacetButton extends React.Component {
 	render() {
 		return(<a href="#" data-option={this.props.name} onClick={this.props.callback}>{this.props.text}</a>);
 	}
 }
 
 /**
+ * Visible on-demand panel containing facet values and UI to select and apply values as browse filters.
  *
+ * Props are:
+ * 		open : controls visibility of panel; if set to a true value, or the string "true"  panel is visible.
+ *
+ * Sub-components are:
+ * 		<NONE>
+ *
+ * Used by:
+ *  	NoguchiArchiveBrowseFacetList
+ *
+ * Uses context: NoguchiArchiveBrowseContext
  */
-class NoguchiArchiveBrowseFilterPanel extends React.Component {
+class NoguchiArchiveBrowseFacetPanel extends React.Component {
 	constructor(props) {
 		super(props);
-		initBrowseFilterPanel(this, props);
+		initBrowseFacetPanel(this, props);
 	};
 
 	render() {
@@ -249,10 +308,22 @@ class NoguchiArchiveBrowseFilterPanel extends React.Component {
 			</div>);
 	}
 }
-NoguchiArchiveBrowseFilterPanel.contextType = NoguchiArchiveBrowseContext;
+NoguchiArchiveBrowseFacetPanel.contextType = NoguchiArchiveBrowseContext;
 
 /**
+ * Noguchi Archive section-specific navigation. Includes collection drop-down with hard-coded criteria, as well
+ * as a search box.
  *
+ * Props are:
+ * 		<NONE>
+ *
+ * Sub-components are:
+ * 		<NONE>
+ *
+ * Used by:
+ *  	NoguchiArchiveBrowse
+ *
+ * Uses context: NoguchiArchiveBrowseContext
  */
 class NoguchiArchiveBrowseNavigation extends React.Component {
 	constructor(props) {
@@ -279,11 +350,11 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 	loadCollection(e) {
 		let collection_id = e.target.attributes.getNamedItem('data-id').value;
 		let collection_name = e.target.innerHTML;
-		let criteria = {
+		let filters = {
 			collection_facet: {}
 		};
-		criteria.collection_facet[collection_id] = collection_name;
-		this.context.reloadResults(criteria, true);
+		filters.collection_facet[collection_id] = collection_name;
+		this.context.reloadResults(filters, true);
 	}
 
 	render() {
@@ -326,7 +397,20 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 NoguchiArchiveBrowseNavigation.contextType = NoguchiArchiveBrowseContext;
 
 /**
+ * Renders search results using a NoguchiArchiveBrowseResultItem component for each result.
+ * Includes navigation to load additional pages on-demand.
  *
+ * Sub-components are:
+ * 		NoguchiArchiveBrowseResultItem
+ * 		NoguchiArchiveBrowseResultLoadMoreButton
+ *
+ * Props are:
+ * 		<NONE>
+ *
+ * Used by:
+ *  	NoguchiArchiveBrowse
+ *
+ * Uses context: NoguchiArchiveBrowseContext
  */
 class NoguchiArchiveBrowseResults extends React.Component {
 	render() {
@@ -355,7 +439,20 @@ class NoguchiArchiveBrowseResults extends React.Component {
 NoguchiArchiveBrowseResults.contextType = NoguchiArchiveBrowseContext;
 
 /**
+ * Button triggering load of next page of results.
  *
+ * Props are:
+ * 		start : Offset in result set to begin display of results from. Defaults to 0 (start of result set).
+ * 		itemsPerPage : Maximum number of items to load.
+ * 		size : Total size of current result set.
+ * 		loadMoreHandler : Function to call when clicked. Function should trigger load of results page and alter browse results state.
+ * 		loadMoreRef : Ref to apply to load more button. Enables setting of "loading" text while results request is pending.
+ *
+ * Sub-components are:
+ * 		<NONE>
+ *
+ * Used by:
+ *  	NoguchiArchiveBrowseResults
  */
 class NoguchiArchiveBrowseResultLoadMoreButton extends React.Component {
 	render() {
@@ -369,9 +466,17 @@ class NoguchiArchiveBrowseResultLoadMoreButton extends React.Component {
 		}
 	}
 }
-
 /**
+ * Formats each item in the browse result using data passed in the "data" prop.
  *
+ * Props are:
+ * 		data : object containing data to display for result item
+ *
+ * Sub-components are:
+ * 		<NONE>
+ *
+ * Used by:
+ *  	NoguchiArchiveBrowseResults
  */
 class NoguchiArchiveBrowseResultItem extends React.Component {
 	render() {
@@ -404,11 +509,15 @@ class NoguchiArchiveBrowseResultItem extends React.Component {
 		);
 	}
 }
-console.log("render NoguchiArchiveBrowse");
 
+/**
+ * Initialize browse and render into DOM. This function is exported to allow the Pawtucket
+ * app loaders to insert this application into the current view.
+ */
 export default function _init() {
 	ReactDOM.render(
 		<NoguchiArchiveBrowse baseUrl={appData.baseUrl} endpoint={appData.endpoint}
-							  initialCriteria={appData.initialCriteria} title={appData.title}
+							  initialFilters={appData.initialFilters} title={appData.title}
+							  browseKey={appData.key}
 							  description={appData.description}/>, document.querySelector(selector));
 }

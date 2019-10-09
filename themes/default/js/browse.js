@@ -6,7 +6,7 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 
 /**
- *
+ * Initial browse state
  */
 function initialState() {
 	return {
@@ -14,17 +14,19 @@ function initialState() {
 		resultList: null,
 		key: null,
 		start: 0,
-		itemsPerPage: 60,
+		itemsPerPage: null,
 		availableFacets: null,
 		facetList: null,
-		criteria: null
+		filters: null
 	};
 }
 
 /**
+ * Fetch browse results and return new browse state via callback
  *
- * @param url
- * @param callback
+ * @param url URL to fetch results from. Browse parameters and filters are encoded in the URL.
+ * @param callback Function to call once results are received. The first parameter of the callback will be an object
+ * 			containing the new browse state, including results.
  */
 function fetchResults(url, callback) {
 	// Fetch browse facet items
@@ -40,7 +42,7 @@ function fetchResults(url, callback) {
 			state.availableFacets = data.availableFacets;
 			state.facetList = data.facetList;
 			state.key = data.key;
-			state.criteria = data.criteria;
+			state.filters = data.criteria;
 			callback(state);
 		})
 		.catch(function (error) {
@@ -49,15 +51,15 @@ function fetchResults(url, callback) {
 }
 
 /**
- *
- * @param url
- * @param callback
+ * Fetch browse facet values and return via callback
+ * @param url URL to fetch facet content from. Facet parameters are encoded in the URL.
+ * @param callback Function to call once facet values are received. The first parameter of the callback will be an object
+ * 			containing facet content.
  */
 function fetchFacetValues(url, callback) {
 	// Fetch browse facet items
 	axios.get(url + "/getFacet/1")
 		.then(function (resp) {
-			console.log("fetch facet", resp)
 			let data = resp.data;
 			callback(data);
 		})
@@ -67,23 +69,34 @@ function fetchFacetValues(url, callback) {
 }
 
 /**
+ * Helper function to format an object with filters into a string suitable for inclusion as a URL parameter.
+ * Filter objects are in the format:
+ *   {
+ *       filter_code : {
+ *           filter_value_1 : "Filter value 1 display text",
+ *           filter_value_2 : "Filter value 2 display text",
+ *           ...
+ *       }
+ *   }
  *
- * @param criteria
+ *   The display text is ignored.
+ *
+ * @param filters
  * @returns {string}
  * @private
  */
-function getCriteriaString(criteria) {
+function getFilterString(filters) {
 	let acc = [];
-	for(let k in criteria) {
-		if(criteria[k]) {
-			acc.push(k + ':' + (Object.keys(criteria[k]).join('|')));
+	for(let k in filters) {
+		if(filters[k]) {
+			acc.push(k + ':' + (Object.keys(filters[k]).join('|')));
 		}
 	}
 	return acc.join(';');
 }
 
 /**
- *
+ * Initializer for the *Browse component
  */
 function initBrowseContainer(instance, props) {
 	let that = instance;
@@ -91,16 +104,17 @@ function initBrowseContainer(instance, props) {
 
 	that.loadResults = function(callback) {
 		let that = this;
-		let offset = (that.state.start + that.state.itemsPerPage);
-		let criteriaString = getCriteriaString(that.state.criteria);
+		let offset = that.state.start;
+		let filterString = getFilterString(that.state.filters);
 		fetchResults(that.props.baseUrl + '/' + that.props.endpoint + '/s/' +
-			offset + (that.state.key ? '/key/' + that.state.key : '') + (criteriaString ? '/facets/' +
-				criteriaString : ''), function(newState) {
+			offset + (that.state.key ? '/key/' + that.state.key : '') + (filterString ? '/facets/' +
+				filterString : ''), function(newState) {
 			callback(newState);
 		});
 	};
 
 	/**
+	 * Loads additional results for the current browse
 	 *
 	 * @param e
 	 */
@@ -121,19 +135,22 @@ function initBrowseContainer(instance, props) {
 	};
 
 	/**
+	 * Reload results using provided filters.
 	 *
-	 * @param criteria
+	 * @param filters An object with filters to apply in the format described for the getFilterString() function.
+	 * @param clearFilters If clearFilters is set then the provided filters overwrite any
+	 * 		existing ones, otherwise they are added to existing filters.
 	 */
-	that.reloadResults = function(criteria, clearCriteria=false) {
+	that.reloadResults = function(filters, clearFilters=false) {
 		let that = this;
 		let state = that.state;
 
-		if (clearCriteria) {
-			state.criteria = {};
+		if (clearFilters) {
+			state.filters = {};
 		}
 
-		for(let k in criteria) {
-			state.criteria[k] = criteria[k];
+		for(let k in filters) {
+			state.filters[k] = filters[k];
 		}
 		state.key = null;
 		state.start = 0;
@@ -148,8 +165,10 @@ function initBrowseContainer(instance, props) {
 	that.loadMoreResults = that.loadMoreResults.bind(that);
 	that.reloadResults = that.reloadResults.bind(that);
 
-	if(props.initialCriteria) {
-		that.state.criteria = props.initialCriteria;
+	if(props.browseKey) {
+		that.state.key = props.browseKey;
+	}else if(props.initialFilters) {
+		that.state.filters = props.initialfilters;
 	}
 
 	that.loadResults(function(newState) {
@@ -161,43 +180,49 @@ function initBrowseContainer(instance, props) {
 }
 
 /**
- *
+ * Initializer for the *BrowseCurrentFilterList component
  */
-function initBrowseCurrentCriteriaList(instance, props) {
+function initBrowseCurrentFilterList(instance) {
 	let that = instance;
 
-	that.removeCriteria = function(e) {
+	/**
+	 * Remove filter from browse and reloads results
+	 *
+	 * @param e
+	 */
+	that.removeFilter = function(e) {
 		let targetFacet = e.target.attributes.getNamedItem('data-facet').value;
 		let targetValue = e.target.attributes.getNamedItem('data-value').value;
 
-		let criteria = this.context.state.criteria;
-		if (criteria[targetFacet]) {
-			for (let k in criteria[targetFacet]) {
+		let filters = this.context.state.filters;
+		if (filters[targetFacet]) {
+			for (let k in filtert[targetFacet]) {
 				if(k == targetValue) {
-					delete(criteria[targetFacet][k]);
+					delete(filters[targetFacet][k]);
 				}
-				if(Object.keys(criteria[targetFacet]).length === 0) {
-					delete(criteria[targetFacet]);
+				if(Object.keys(filters[targetFacet]).length === 0) {
+					delete(filters[targetFacet]);
 				}
 			}
 		}
-		this.context.reloadResults(criteria);
+		this.context.reloadResults(filters);
 	}
 
-	that.removeCriteria = that.removeCriteria.bind(that);
+	that.removeFilter = that.removeFilter.bind(that);
 }
 
 /**
- *
+ * Initializer for *BrowseFilterList component
  */
 function initBrowseFilterList(instance, props) {
 	let that = instance;
 
 	/**
+	 * Open or close facet panel
 	 *
 	 * @param e Event
 	 */
-	that.toggleFilterPanel = function(e) {
+	that.toggleFacetPanel = function(e) {
 		let targetOpt = e.target.attributes.getNamedItem('data-option').value;
 		let state = this.state;
 
@@ -210,28 +235,32 @@ function initBrowseFilterList(instance, props) {
 		e.preventDefault();
 	};
 
-	that.closeFilterPanel = function() {
+	/**
+	 * Force facet panel closed
+	 */
+	that.closeFacetPanel = function() {
 		let state = this.state;
 		state.selected = null;
 		this.setState(state);
 	};
 
-	that.toggleFilterPanel = that.toggleFilterPanel.bind(that);
-	that.closeFilterPanel = that.closeFilterPanel.bind(that);
+	that.toggleFacetPanel = that.toggleFacetPanel.bind(that);
+	that.closeFacetPanel = that.closeFacetPanel.bind(that);
 
 
-	that.filterPanelRef = React.createRef();
+	that.facetPanelRef = React.createRef();
 	that.state = {
 		selected: null
 	};
 }
 
 /**
- *
+ * Initializer for *BrowseFacetPanel compoenent
  */
-function initBrowseFilterPanel(instance, props) {
+function initBrowseFacetPanel(instance, props) {
 	let that = instance;
 	/**
+	 * Load facet content into facet panel
 	 *
 	 * @param facet Name of facet to load
 	 */
@@ -247,7 +276,9 @@ function initBrowseFilterPanel(instance, props) {
 	};
 
 	/**
+	 * Handle click on filter item, updating panel state
 	 *
+	 * @param e
 	 */
 	that.clickFilterItem = function(e) {
 		let targetItem = e.target.attributes.getNamedItem('value').value;
@@ -263,9 +294,9 @@ function initBrowseFilterPanel(instance, props) {
 	};
 
 	/**
-	 *
+	 * Reload browse results using selected facet values as filters
 	 */
-	that.applyFilters = function(facet) {
+	that.applyFilters = function() {
 		let activeFilters = [];
 		for(let k in this.state.selectedFacetItems) {
 			if(this.state.selectedFacetItems[k]) { activeFilters[k] = this.state.selectedFacetItems[k]; }
@@ -273,11 +304,11 @@ function initBrowseFilterPanel(instance, props) {
 		let filterBlock = {};
 		filterBlock[this.state.facet] = activeFilters;
 		this.context.reloadResults(filterBlock);
-		this.props.closeFilterPanelCallback();
+		this.props.closeFacetPanelCallback();
 	};
 
 	/**
-	 *  Load facet content on change in facetName prop
+	 * Load facet content on change in facetName prop
 	 *
 	 * @param prevProps
 	 */
@@ -298,4 +329,4 @@ function initBrowseFilterPanel(instance, props) {
 	that.applyFilters = that.applyFilters.bind(that);
 }
 
-export { initBrowseContainer, initBrowseCurrentCriteriaList, initBrowseFilterList, initBrowseFilterPanel, fetchFacetValues};
+export { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel, fetchFacetValues};
