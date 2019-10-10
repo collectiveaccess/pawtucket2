@@ -31,14 +31,13 @@
         </footer>
 
         <script type='text/javascript' src='<?php print $this->request->getThemeUrlPath(); ?>/jslib/libs-min.js?ver=<?= rand(); ?>'></script>
-
-		<!-- breaks React loading -->
         <script type='text/javascript' src='<?php print $this->request->getThemeUrlPath(); ?>/jslib/app-min.js?ver=<?= rand(); ?>'></script>
     	<script type='text/javascript' src="<?php print $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>
+
 		<script type='text/javascript' >
-				Barba.Dispatcher.on('newPageReady', function(currentStatus, oldStatus, container){
-					_initPawtucketApps.default();
-				});
+			Barba.Dispatcher.on('newPageReady', function(currentStatus, oldStatus, container){
+				_initPawtucketApps.default();
+			});
 		</script>
     </body>
 </html>

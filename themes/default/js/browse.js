@@ -30,7 +30,7 @@ function initialState() {
  */
 function fetchResults(url, callback) {
 	// Fetch browse facet items
-	axios.get(url + "/getResult/1")
+	axios.get(url + "/getResult/1/useDefaultKey/1")
 		.then(function (resp) {
 			let data = resp.data;
 			let state = initialState();
@@ -42,7 +42,13 @@ function fetchResults(url, callback) {
 			state.availableFacets = data.availableFacets;
 			state.facetList = data.facetList;
 			state.key = data.key;
-			state.filters = data.criteria;
+
+			state.filters = {};
+			for(let k in data.criteria) {
+				if ((k === '_search') && (data.criteria[k]['*'])) { continue; }	// don't allow * search as filter
+				state.filters[k] = data.criteria[k];
+			}
+
 			callback(state);
 		})
 		.catch(function (error) {
@@ -58,7 +64,7 @@ function fetchResults(url, callback) {
  */
 function fetchFacetValues(url, callback) {
 	// Fetch browse facet items
-	axios.get(url + "/getFacet/1")
+	axios.get(url + "/getFacet/1/useDefaultKey/1")
 		.then(function (resp) {
 			let data = resp.data;
 			callback(data);
@@ -124,10 +130,11 @@ function initBrowseContainer(instance, props) {
 			that.loadMoreRef.current.innerHTML = 'LOADING';
 		}
 
+		that.state.start += that.state.itemsPerPage;
+
 		that.loadResults(function(newState) {
 			let state = that.state;
 			state.resultList.push(...newState.resultList);
-			state.start += state.itemsPerPage;
 			that.setState(state);
 			that.loadMoreRef.current.innerHTML = that.loadMoreText;
 		});
@@ -196,7 +203,7 @@ function initBrowseCurrentFilterList(instance) {
 
 		let filters = this.context.state.filters;
 		if (filters[targetFacet]) {
-			for (let k in filtert[targetFacet]) {
+			for (let k in filters[targetFacet]) {
 				if(k == targetValue) {
 					delete(filters[targetFacet][k]);
 				}
@@ -217,6 +224,8 @@ function initBrowseCurrentFilterList(instance) {
 function initBrowseFilterList(instance, props) {
 	let that = instance;
 
+	that.panelArrowRef = React.createRef();
+
 	/**
 	 * Open or close facet panel
 	 *
@@ -231,6 +240,7 @@ function initBrowseFilterList(instance, props) {
 		} else {
 			state.selected = targetOpt;		// toggle open to new facet
 		}
+		state.arrowPosition = e.pageX;
 		this.setState(state);
 		e.preventDefault();
 	};
@@ -250,15 +260,17 @@ function initBrowseFilterList(instance, props) {
 
 	that.facetPanelRef = React.createRef();
 	that.state = {
-		selected: null
+		selected: null,
+		arrowPosition: 0
 	};
 }
 
 /**
- * Initializer for *BrowseFacetPanel compoenent
+ * Initializer for *BrowseFacetPanel component
  */
 function initBrowseFacetPanel(instance, props) {
 	let that = instance;
+
 	/**
 	 * Load facet content into facet panel
 	 *
@@ -271,6 +283,9 @@ function initBrowseFacetPanel(instance, props) {
 			state.facet = facet;
 			state.facetContent = resp.content;
 			state.selectedFacetItems = {};	// reset selected items
+			for(let k in state.facetContent) {
+				state.selectedFacetItems[state.facetContent[k].id] = false;
+			}
 			that.setState(state);
 		});
 	};
@@ -285,10 +300,19 @@ function initBrowseFacetPanel(instance, props) {
 		let isChecked = e.target.checked;
 
 		let state = this.state;
+
+		// single or multiple?
+		let facet = that.context.state.availableFacets ? that.context.state.availableFacets[that.props.facetName] : null;
+		let isMultiple = (facet && (facet.multiple !== undefined)) ? facet.multiple : false;
+		if(!isMultiple) {
+			for(let k in state.selectedFacetItems) {
+				state.selectedFacetItems[k] = false;
+			}
+		}
 		if (isChecked) {
 			state.selectedFacetItems[targetItem] = e.target.attributes.getNamedItem('data-label').value;
 		} else {
-			delete(state.selectedFacetItems[targetItem]);
+			state.selectedFacetItems[targetItem] = null;
 		}
 		this.setState(state);
 	};
@@ -299,7 +323,9 @@ function initBrowseFacetPanel(instance, props) {
 	that.applyFilters = function() {
 		let activeFilters = [];
 		for(let k in this.state.selectedFacetItems) {
-			if(this.state.selectedFacetItems[k]) { activeFilters[k] = this.state.selectedFacetItems[k]; }
+			if(this.state.selectedFacetItems[k]) {
+				activeFilters[k] = this.state.selectedFacetItems[k];
+			}
 		}
 		let filterBlock = {};
 		filterBlock[this.state.facet] = activeFilters;

@@ -45,6 +45,7 @@
   },
   "dependencies": {
     "@babel/preset-react": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
     "file-loader": "^4.2.0",
     "url-loader": "^2.1.0"
   }
