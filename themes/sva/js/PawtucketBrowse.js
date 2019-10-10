@@ -311,18 +311,21 @@ class PawtucketBrowseFacetPanel extends React.Component {
 }
 
 /**
- * 
+ * Renders an individual item
  *
  * Props are:
- * 		<NONE>
+ * 		id : item id; used as CSS id
+ * 		data : object containing data for item; must include values for "id" (used as item value), "label" (display label) and "content_count" (number of results returned by this item)
+ * 	    selected : render item as selected?
+ * 	    callback : function to check when item is selected or unselected
  *
  * Sub-components are:
  * 		<NONE>
  *
  * Used by:
- *  	PawtucketBrowse
+ *  	PawtucketBrowseFacetPanel
  *
- * Uses context: PawtucketBrowseContext
+ * Uses context: PawtucketBrowseFacetPanel
  */
 class PawtucketBrowseFacetPanelItem extends React.Component {
 	static contextType = PawtucketBrowseContext;

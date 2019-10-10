@@ -311,19 +311,21 @@ class NoguchiArchiveBrowseFacetPanel extends React.Component {
 }
 
 /**
- * Noguchi Archive section-specific navigation. Includes collection drop-down with hard-coded criteria, as well
- * as a search box.
+ * Renders an individual item
  *
  * Props are:
- * 		<NONE>
+ * 		id : item id; used as CSS id
+ * 		data : object containing data for item; must include values for "id" (used as item value), "label" (display label) and "content_count" (number of results returned by this item)
+ * 	    selected : render item as selected?
+ * 	    callback : function to check when item is selected or unselected
  *
  * Sub-components are:
  * 		<NONE>
  *
  * Used by:
- *  	NoguchiArchiveBrowse
+ *  	NoguchiArchiveBrowseFacetPanel
  *
- * Uses context: NoguchiArchiveBrowseContext
+ * Uses context: NoguchiArchiveBrowseFacetPanel
  */
 class NoguchiArchiveBrowseFacetPanelItem extends React.Component {
 	static contextType = NoguchiArchiveBrowseContext;
@@ -541,11 +543,10 @@ class NoguchiArchiveBrowseResultItem extends React.Component {
 		let styles = {
 			"backgroundImage": "url(" + data.representation + ")"
 		};
-		let detail_url = "/index.php/Detail/archival/" + data.id;	// TODO: generalize
 
 		return (
 			<div className="item-grid">
-				<a href={detail_url}>
+				<a href={data.detailUrl}>
 					<div className="img-wrapper archive_thumb block-quarter">
 						<div className="bg-image"
 							 style={styles}></div>
