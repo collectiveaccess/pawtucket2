@@ -21,7 +21,7 @@
  * ----------------------------------------------------------------------
  */
 ?><!DOCTYPE html>
-<html lang="en-US" class="collective-access is-development"> 
+<html lang="en-US" class="collective-access is-development" id="cahtmlWrapper"> 
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -60,6 +60,7 @@
 						switch(strToLower($this->request->getController())){
 							case "archive":
 							case "loginreg":
+							case "archiveinfo":
 								print caNavLink("Isamu Noguchi Archive", "", "", "Archive", "Index");
 							break;
 							# ---------------------------------------
