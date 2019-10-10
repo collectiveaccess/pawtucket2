@@ -175,7 +175,7 @@ function initBrowseContainer(instance, props) {
 	if(props.browseKey) {
 		that.state.key = props.browseKey;
 	}else if(props.initialFilters) {
-		that.state.filters = props.initialfilters;
+		that.state.filters = props.initialFilters;
 	}
 
 	that.loadResults(function(newState) {
