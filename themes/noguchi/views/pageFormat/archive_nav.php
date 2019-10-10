@@ -14,7 +14,7 @@
 
             <nav class="hide-for-mobile">
                 <div class="wrap text-gray">
-                    <form action="<?php print caNavUrl('', 'Search', 'archive'); ?>">
+                    <form action="<?php print caNavUrl('', 'Browse', 'archive'); ?>">
                         <div class="cell text"><?php print caNavLink("Browse", "", "", "Browse", "Archive"); ?></div>
                         <div class="cell"><input name="search" type="text" placeholder="Search the Archive" class="search" /></div>
                         <div class="cell">

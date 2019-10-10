@@ -166,7 +166,7 @@
 				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString, ['forcePurify' => true])));
 			}
 			
-			if ((bool)$this->request->getParameter('clear', pInteger) || $clear) {
+			if ((bool)$this->request->getParameter('clear', pInteger)) {
 				$o_browse->removeAllCriteria();
 			}
 			

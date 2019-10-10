@@ -44,6 +44,12 @@ var PAJX;
 			  if (!Barba.Pjax.originalPreventCheck(evt, element)) {
 			    return false;
 			  }
+			  
+			  // Don't cache php
+			  if ( $(element).attr( 'href' ).indexOf( 'index.php' ) >= 0 ){
+				  	return false;
+			  	} 
+			  
 			  // Add no-barba for links inside an iframe (Presentation)
 			  if ( PAJX._inIframe() ) {
 			  	if ( $(element).attr( 'href' ).indexOf( '?is_iframe' ) === -1 ){
