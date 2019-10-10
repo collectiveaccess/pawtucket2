@@ -46,7 +46,6 @@
 ?>
 
 <div id="browse"></div>
-
 <script type="text/javascript">
 	pawtucketUIApps['NoguchiArchiveBrowse'] = {
         'selector': '#browse',
@@ -55,7 +54,7 @@
 			description: <?php print json_encode($collection_desc); ?>,
 			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
 			endpoint: "<?php print $action; ?>",
-			initialCriteria: <?php print json_encode($initial_criteria); ?>
+			initialFilters: <?php print json_encode($initial_criteria); ?>
         }
     };
 </script>

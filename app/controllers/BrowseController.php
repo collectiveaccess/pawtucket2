@@ -141,14 +141,21 @@
 			$this->view->setVar('browse', $o_browse = caGetBrowseInstance($vs_class));
 			$this->view->setVar('views', caGetOption('views', $va_browse_info, array(), array('castTo' => 'array')));
 			$this->view->setVar('view', $ps_view);
-		
+
+			$use_default_key = false;
+			if (!($ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true]))) {
+				if($use_default_key = $this->request->getParameter('useDefaultKey', pInteger)) {
+					$ps_cache_key = Session::getVar("{$ps_function}_last_browse_id");
+				}
+			}
+
 			//
 			// Load existing browse if key is specified
 			//
-			if ($ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true])) {
+			if ($ps_cache_key) {
 				$o_browse->reload($ps_cache_key);
 			}
-		
+
 			if (is_array($va_types) && sizeof($va_types)) { $o_browse->setTypeRestrictions($va_types, array('dontExpandHierarchically' => caGetOption('dontExpandTypesHierarchically', $va_browse_info, false))); }
 		
 			//
@@ -159,7 +166,7 @@
 				$o_browse->removeCriteria($vs_remove_criterion, array($this->request->getParameter('removeID', pString, ['forcePurify' => true])));
 			}
 			
-			if ((bool)$this->request->getParameter('clear', pInteger)) {
+			if ((bool)$this->request->getParameter('clear', pInteger) || $clear) {
 				$o_browse->removeAllCriteria();
 			}
 			
@@ -187,7 +194,7 @@
 				$va_base_criteria = caGetOption('baseCriteria', $va_browse_info, null);
 
 				if (($vs_facets = $this->request->getParameter('facets', pString, ['forcePurify' => true])) && is_array($va_facets = explode(';', $vs_facets)) && sizeof($va_facets)) {
-
+					if($use_default_key) { $o_browse->removeAllCriteria(); }
 					foreach ($va_facets as $vs_facet_spec) {
 						if (!sizeof($va_tmp = explode(':', $vs_facet_spec))) {
 							continue;
@@ -195,10 +202,10 @@
 						$vs_facet = array_shift($va_tmp);
 						$o_browse->addCriteria($vs_facet, explode("|", join(":", $va_tmp)));
 					}
-
 				} elseif (($vs_facet = $this->request->getParameter('facet', pString, ['forcePurify' => true])) && is_array($p = array_filter(explode('|', trim($this->request->getParameter('id', pString, ['forcePurify' => true]))), function ($v) {
 						return strlen($v);
 					})) && sizeof($p)) {
+					if($use_default_key) { $o_browse->removeAllCriteria(); }
 					$o_browse->addCriteria($vs_facet, $p);
 				} else {
 					if ($o_browse->numCriteria() == 0) {
@@ -286,11 +293,6 @@
 				}
 				$this->view->setVar('facets', $va_facets);
 
-				$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
-
-				Session::setVar($ps_function . '_last_browse_id', $vs_key);
-
-
 				// remove base criteria from display list
 				if (is_array($va_base_criteria)) {
 					foreach ($va_base_criteria as $vs_base_facet => $vs_criteria_value) {
@@ -310,7 +312,6 @@
 				//
 				// Results
 				//
-
 				$vs_sort_fld = $va_sort_by[$ps_sort];
 				$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
 
@@ -326,7 +327,7 @@
 				$this->view->setVar('hits_per_block', $pn_hits_per_block);
 				$this->view->setVar('start', $start = (int)$this->request->getParameter('s', pInteger));
 
-				$this->opo_result_context->setParameter('key', $vs_key);
+				$vs_key = $o_browse->getBrowseID();
 
 				if (($vn_key_start = $start - 1000) < 0) {
 					$vn_key_start = 0;
@@ -334,8 +335,6 @@
 				$qr_res->seek($vn_key_start);
 				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 				$qr_res->seek($start);
-
-				$this->opo_result_context->saveContext();
 
 				$data = [
 					'size' => $qr_res->numHits(),
@@ -350,25 +349,42 @@
 					'criteria' => $o_browse->getCriteriaWithLabels()
 				];
 
+
 				$c = 0;
 
 				$pk = $qr_res->primaryKey();
 				$idno_fld= $qr_res->getInstance(true)->getProperty('ID_NUMBERING_ID_FIELD');
 				while($qr_res->nextHit()) {
-					// TODO: add configurable keys using display templates in browse config
-					$data['hits'][] = [
+
+					$d = [
 						'id' => $qr_res->getPrimaryKey(),
 						'label' => $qr_res->get('preferred_labels'),
-						'idno' => $qr_res->get($idno_fld),
-						'representation' => $qr_res->get('ca_object_representations.media.small.url')
+						'idno' => $qr_res->get($idno_fld)
 					];
+
+					// TODO: this is hardcoded to use view "images" until we add support for multiple view types
+					if(is_array($va_browse_info['views']['images'])) {
+						foreach($va_browse_info['views']['images'] as $k => $tmpl) {
+							$d[$k] = $qr_res->getWithTemplate($tmpl);
+						}
+					}
+
+					$data['hits'][] =$d;
 					$c++;
 					if ($c >= $items_per_page) { break; }
 				}
 				$this->view->setVar('data', $data);
 
+				Session::setVar("{$ps_function}_last_browse_id", $vs_key = $o_browse->getBrowseID());
+				Session::save();
+				$this->opo_result_context->setParameter('key', $vs_key);
+				$this->opo_result_context->saveContext();
 				return $this->render($this->ops_view_prefix."/browse_data_json.php");
 			}
+
+//			$this->view->setVar('key', $vs_key);
+//			$this->opo_result_context->setParameter('key', $vs_key);
+//			$this->opo_result_context->saveContext();
 
 			$this->render($this->ops_view_prefix."/browse_results_html.php");
  		}
