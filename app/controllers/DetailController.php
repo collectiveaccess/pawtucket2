@@ -147,8 +147,7 @@
 						$ps_cache_key = $o_browse->getBrowseID();
 						$this->request->setParameter('key', $ps_cache_key);
 					} else {
-						$vs_class = 'ca_objects';
-						$o_browse = caGetBrowseInstance($vs_class);
+						$o_browse = caGetBrowseInstance('ca_objects');
 						if ($ps_cache_key = $this->request->getParameter('key', pString)) {
 							$o_browse->reload($ps_cache_key);
 						} else {
@@ -324,12 +323,12 @@
 			
 			// Filtering of related items
 			if (($t_subject->tableName() != 'ca_objects') && (!$this->opa_detail_types[$ps_function]['disableRelatedItemsBrowse'])) {
-				$vs_class = 'ca_objects';
-				$o_browse = caGetBrowseInstance($vs_class);
+
+				$o_browse = caGetBrowseInstance('ca_objects');
 				if ($ps_cache_key = $this->request->getParameter('key', pString)) {
 					$o_browse->reload($ps_cache_key);
 				} else {
-					$o_browse->addCriteria("collection_facet", $t_subject->getPrimaryKey() ); 
+					$o_browse->addCriteria("collection_facet", $t_subject->getPrimaryKey() );
 					$ps_cache_key = $o_browse->getBrowseID();
 				}
 				$o_browse->execute();
@@ -354,7 +353,7 @@
 		
 				$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
 			
-				Session::setVar($ps_function.'_last_browse_id', $vs_key);
+				Session::setVar('ca_objects_last_browse_id', $vs_key);
 			
 			
 				// remove base criteria from display list

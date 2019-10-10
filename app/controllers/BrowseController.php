@@ -185,7 +185,6 @@
 				$this->view->setVar('data', $o_browse->getFacetList());
 				return $this->render($this->ops_view_prefix."/browse_data_json.php");
 			}
-
 			//
 			// Return browse result
 			//
@@ -349,17 +348,18 @@
 					'criteria' => $o_browse->getCriteriaWithLabels()
 				];
 
-
 				$c = 0;
 
+				$table = $qr_res->tableName();
 				$pk = $qr_res->primaryKey();
 				$idno_fld= $qr_res->getInstance(true)->getProperty('ID_NUMBERING_ID_FIELD');
 				while($qr_res->nextHit()) {
 
 					$d = [
-						'id' => $qr_res->getPrimaryKey(),
+						'id' => $id = $qr_res->getPrimaryKey(),
 						'label' => $qr_res->get('preferred_labels'),
-						'idno' => $qr_res->get($idno_fld)
+						'idno' => $qr_res->get($idno_fld),
+						'detailUrl' => caDetailUrl($table, $id)
 					];
 
 					// TODO: this is hardcoded to use view "images" until we add support for multiple view types

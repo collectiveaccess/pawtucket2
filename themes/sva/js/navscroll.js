@@ -63,4 +63,6 @@ class Navscroll extends React.Component {
    }
 }
 
-ReactDOM.render(<Navscroll/>, document.querySelector(selector));
+export default function _init() {
+	ReactDOM.render(<Navscroll/>, document.querySelector(selector));
+}

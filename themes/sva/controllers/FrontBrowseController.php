@@ -277,7 +277,7 @@
 		
 			$this->view->setVar('key', $vs_key = $o_browse->getBrowseID());
 			
-			Session::setVar($ps_function.'_last_browse_id', $vs_key);
+			Session::setVar($ps_function.'_sva_last_browse_id', $vs_key);
 			
 			
 			$va_criteria_for_display = array();

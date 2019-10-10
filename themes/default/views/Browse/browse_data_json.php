@@ -1,6 +1,9 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/Browse/browse_results_html.php :
+ * themes/noguchi/views/Browse.browse_data_json.php :
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
@@ -23,23 +26,4 @@
  * ----------------------------------------------------------------------
  */
 
-	$initial_criteria = null;
-	if ($search = $this->request->getParameter('search', pString)) {
-	    $initial_criteria['_search'] = [$search => $search];
-	}
-	
-	$action = $this->request->getAction();
-?>
-
-<div id="browse"></div>
-
-<script type="text/javascript">
-	pawtucketUIApps['PawtucketBrowse'] = {
-        'selector': '#browse',
-        'data': {
-			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
-			endpoint: "<?php print $action; ?>",
-			initialFilters: <?php print json_encode($initial_criteria); ?>
-        }
-    };
-</script>
+print json_encode($this->getVar('data'));

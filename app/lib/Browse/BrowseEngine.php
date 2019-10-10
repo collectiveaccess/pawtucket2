@@ -355,6 +355,7 @@
 		 * @return boolean - true on success, false on error
 		 */
 		public function addCriteria($ps_facet_name, $pa_row_ids, $pa_display_strings=null) {
+				//print "add to $ps_facet_name: "; print_R($pa_row_ids);
 			if (is_null($pa_row_ids)) { return null;}
 			if (!is_array($pa_row_ids)) { $pa_row_ids = array($pa_row_ids); }
 			if (!in_array($ps_facet_name, ['_search', '_reltypes'])) {
@@ -560,6 +561,7 @@
 				# -----------------------------------------------------
 				case 'label':
 					if (!($t_table = Datamodel::getInstanceByTableName((isset($va_facet_info['relative_to']) && $va_facet_info['relative_to']) ? $va_facet_info['relative_to'] : $this->ops_browse_table_name, true))) { break; }
+					if(isset($va_facet_info['browse_by_first_letter']) && $va_facet_info['browse_by_first_letter']) { return _t('Beginning with %1', $pn_row_id); }
 					if (!$t_table->load($pn_row_id)) { return '???'; }
 
 					return $t_table->getLabelForDisplay();

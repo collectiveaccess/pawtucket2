@@ -191,7 +191,8 @@ class ExhBrowseSortButton extends React.Component {
 	}
 }
 
-
-for(var k in selectors) {
-	ReactDOM.render(<ExhBrowse facetUrl={selectors[k].facetUrl} browseUrl={selectors[k].browseUrl} groupByYear={selectors[k].groupByYear}/>, document.querySelector(k));
+export default function _init() {
+	for(var k in selectors) {
+		ReactDOM.render(<ExhBrowse facetUrl={selectors[k].facetUrl} browseUrl={selectors[k].browseUrl} groupByYear={selectors[k].groupByYear}/>, document.querySelector(k));
+	}
 }
