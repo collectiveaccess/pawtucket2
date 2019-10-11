@@ -118,6 +118,7 @@
 		switch(strToLower($this->request->getController())){
 			case "archive":
 			case "loginreg":
+			case "archiveinfo":
 				$vb_show_user_menu = true;
 			break;
 			# -----------------------------------------

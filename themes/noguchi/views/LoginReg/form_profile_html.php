@@ -28,11 +28,11 @@
 
 ?>
 <main class="ca archive">
-
-        <section class="login">
-            <div class="wrap">
-                <div class="wrap-max-content">
-                	<h3 class="subheadline-bold text-align-center">Profile</h3>
+	<section>
+		<div class="wrap">
+            <div class="wrap-text-large">
+				<div class="block-quarter">
+					<H3 class="subheadline-bold text-align-center">Profile</h3>
 
 <?php
 	if($va_errors["general"]){
@@ -46,17 +46,18 @@
 			if($va_errors[$vs_field]){
 				print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
 			}	
-			print $t_user->htmlFormElement($vs_field,"<div class='block-half".(($va_errors[$vs_field]) ? " has-error" : "")."'><label for='".$vs_field."'>^LABEL</label><br/>^ELEMENT</div><!-- end block-half -->\n");
+			print $t_user->htmlFormElement($vs_field,"<div class='block-half".(($va_errors[$vs_field]) ? " has-error" : "")."'><label for='".$vs_field."' class='eyebrow'>^LABEL</label><br/>^ELEMENT</div><!-- end block-half -->\n");
 		}
 		$va_profile_settings = $this->getVar("profile_settings");
 		if(is_array($va_profile_settings) and sizeof($va_profile_settings)){
 			foreach($va_profile_settings as $vs_field => $va_profile_element){
+				print "<div class='block-half'>";
 				if($va_errors[$vs_field]){
 					print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
 				}
-				print "<div class='block-half".(($va_errors[$vs_field]) ? " has-error" : "")."'>";
-				print $va_profile_element["bs_formatted_element"];
-				print "</div><!-- end block-half -->";
+				print "<label for='".$vs_field."' class='eyebrow'>".$va_profile_element["label"]."</label><br/>";
+				print $va_profile_element["element"];
+				print "</div>";
 			}
 		}
 		if($va_errors["password"]){
@@ -64,15 +65,14 @@
 		}		
 ?>
 		<div class="block-half<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
-			<label for='password'><?php print _t('Reset Password'); ?></label>
+			<label for='password' class='eyebrow'><?php print _t('Reset Password'); ?></label>
 			<div class="caption-text"><?php print _t("Only enter if you would like to change your current password"); ?></div>
 			<input type="password" name="password" size="40" class="form-control"  autocomplete="off" />
 		</div><!-- end block-half -->
 		<div class="block-half<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
-			<label for='password2'><?php print _t('Re-Type password'); ?></label><br/>
+			<label for='password2' class='eyebrow'><?php print _t('Re-Type password'); ?></label><br/>
 			<input type="password" name="password2" size="40" class="form-control" />
 		</div><!-- end block-half -->
-		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 
 		<div class="block-half">
 			<button type="submit" class="btn btn-default"><?php print _t('Save'); ?></button>
@@ -84,6 +84,7 @@
 
 
 
+				</div>
 			</div>
 		</div>
 	</section>

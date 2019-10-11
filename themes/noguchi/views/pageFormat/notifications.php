@@ -26,20 +26,20 @@
 	if (sizeof($this->getVar('notifications'))) {
 		foreach($this->getVar('notifications') as $va_notification) {
 ?>
-			<div class="notificationMessage">
-				<div class="pull-right"><a href="#" onclick="jQuery('.notificationMessage').hide(); return false;"><span class="glyphicon glyphicon-remove"></span></a></div>
+			<div class="notificationMessage block text-align-center alert text">
+				<a href="#" onclick="jQuery('.notificationMessage').hide(); return false;" class="alertClose">x</a>
 <?php
-			switch($va_notification['type']) {
-				case __NOTIFICATION_TYPE_ERROR__:
-					print $va_notification['message'];
-					break;
-				case __NOTIFICATION_TYPE_WARNING__:
-					print $va_notification['message'];
-					break;
-				default:
-					print $va_notification['message'];
-					break;
-			}
+				switch($va_notification['type']) {
+					case __NOTIFICATION_TYPE_ERROR__:
+						print $va_notification['message'];
+						break;
+					case __NOTIFICATION_TYPE_WARNING__:
+						print $va_notification['message'];
+						break;
+					default:
+						print $va_notification['message'];
+						break;
+				}
 ?>
 			</div>
 <?php

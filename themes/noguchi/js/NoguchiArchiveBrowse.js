@@ -34,7 +34,7 @@ class NoguchiArchiveBrowse extends React.Component{
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 		return(
 			<NoguchiArchiveBrowseContext.Provider value={this}>
-				<main className="ca archive archive_landing">
+				<main className="ca archive archive_landing nomargin">
 					<NoguchiArchiveBrowseIntro headline={this.props.title} description={this.props.description}/>
 
 					<NoguchiArchiveBrowseNavigation/>
@@ -60,7 +60,7 @@ class NoguchiArchiveBrowse extends React.Component{
 class NoguchiArchiveBrowseIntro extends React.Component {
 	render() {
 		if (!this.props.headline || (this.props.headline.length === 0)) {
-			return (<section className="intro"></section>);
+			return (<section className=""></section>);
 		}
 		return (<section className="intro">
 			<div className="wrap block-large">
@@ -132,11 +132,7 @@ class NoguchiArchiveBrowseCurrentFilterList extends React.Component {
 				for(let c in cv) {
 					let label = cv[c];
 					let facetLabel = (this.context.state.facetList && this.context.state.facetList[f]) ? this.context.state.facetList[f]['label_singular'] : "";
-					filterList.push((<a key={ f + '_' + c }href='#'
-										  className='browseRemoveFacet'><span className="">{facetLabel}</span>: {label}
-						<span onClick={this.removeFilter}
-							  data-facet={f}
-							  data-value={c}>&times;</span></a>));
+					filterList.push((<a key={ f + '_' + c } href='#' className='browseRemoveFacet' onClick={this.removeFilter} data-facet={f} data-value={c}>{label} <span>&times;</span></a>));
 				}
 			}
 		}
