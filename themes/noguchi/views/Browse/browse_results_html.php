@@ -27,31 +27,38 @@
 	$action = preg_replace("![^A-Za-z0-9_]+!", "", $this->request->getAction());
 	$params = $this->request->getParameters();
 
-
-	// Get info for collection
-	$collection_title = $collection_desc = null;
-	require_once(__CA_MODELS_DIR__."/ca_collections.php");
-	if ($this->request->getParameter('facet', pString) === 'collection_facet') {
-		$t_collection = new ca_collections($id = $this->request->getParameter('id', pInteger));
-		if ($t_collection->isLoaded() && ($t_collection->get('access') > 0)) {
-			$collection_title = $t_collection->get('ca_collections.preferred_labels.name');
-			$collection_desc = $t_collection->get('ca_collections.scopecontent');
-		}
-	}
-			
 	$initial_criteria = null;
 	if(isset($params['facet'])) {
 		$initial_criteria[$params['facet']] = [$params['id'] => ($params['facet'] === 'collection_facet') ? $collection_title : ""];
+	}
+	switch(strToLower($action)){
+		case "bibliography":
+			$desc = $this->getVar('bibliographyIntro');
+		break;
+		# --------------------------------
+		case "archive":
+			// Get info for collection
+			$collection_title = $desc = null;
+			require_once(__CA_MODELS_DIR__."/ca_collections.php");
+			if ($this->request->getParameter('facet', pString) === 'collection_facet') {
+				$t_collection = new ca_collections($id = $this->request->getParameter('id', pInteger));
+				if ($t_collection->isLoaded() && ($t_collection->get('access') > 0)) {
+					$collection_title = $t_collection->get('ca_collections.preferred_labels.name');
+					$desc = $t_collection->get('ca_collections.scopecontent');
+				}
+			}
+		break;
+		# --------------------------------
 	}
 ?>
 
 <div id="browse"></div>
 <script type="text/javascript">
-	pawtucketUIApps['NoguchiArchiveBrowse'] = {
+	pawtucketUIApps['Noguchi<?php print ucfirst(strToLower($action)); ?>Browse'] = {
         'selector': '#browse',
         'data': {
             title: <?php print json_encode($collection_title); ?>,
-			description: <?php print json_encode($collection_desc); ?>,
+			description: <?php print json_encode($desc); ?>,
 			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
 			endpoint: "<?php print $action; ?>",
 			initialFilters: <?php print json_encode($initial_criteria); ?>
