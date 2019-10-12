@@ -58,15 +58,23 @@ class NoguchiArchiveBrowse extends React.Component{
  * 		<NONE>
  */
 class NoguchiArchiveBrowseIntro extends React.Component {
+	static contextType = NoguchiArchiveBrowseContext;
+	constructor(props) {
+		super(props);
+	}
+
 	render() {
 		if (!this.props.headline || (this.props.headline.length === 0)) {
 			return (<section className=""></section>);
+		}else{
+			this.context.state.headline = this.props.headline;
+			this.context.state.description = this.props.description;
 		}
 		return (<section className="intro">
 			<div className="wrap block-large">
 				<div className="wrap-max-content">
-					<div className="block-half subheadline-bold text-align-center">{this.props.headline}</div>
-					<div className="block-half body-text-l">{this.props.description}</div>
+					<div className="block-half subheadline-bold text-align-center">{this.context.state.headline}</div>
+					<div className="block-half body-text-l">{this.context.state.description}</div>
 				</div>
 			</div>
 		</section>)
@@ -132,7 +140,7 @@ class NoguchiArchiveBrowseCurrentFilterList extends React.Component {
 				for(let c in cv) {
 					let label = cv[c];
 					let facetLabel = (this.context.state.facetList && this.context.state.facetList[f]) ? this.context.state.facetList[f]['label_singular'] : "";
-					filterList.push((<a key={ f + '_' + c } href='#' className='browseRemoveFacet' onClick={this.removeFilter} data-facet={f} data-value={c}>{label} <span>&times;</span></a>));
+					filterList.push((<a key={ f + '_' + c } href='#' className='browseRemoveFacet' onClick={this.removeFilter} data-facet={f} data-value={c}>{label} <span onClick={this.removeFilter} data-facet={f} data-value={c}>&times;</span></a>));
 				}
 			}
 		}
@@ -197,12 +205,15 @@ class NoguchiArchiveBrowseFacetList extends React.Component {
 
 	render() {
 		let facetButtons = [];
-		let filterLabel = this.context.state.availableFacets ?  "Filter by: " : "Loading...";
+		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "Loading...";
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
 				facetButtons.push((<NoguchiArchiveBrowseFacetButton key={n} text={this.context.state.availableFacets[n].label_plural}
 															  name={n} callback={this.toggleFacetPanel}/>));
+			}
+			if(facetButtons.length == 0){
+				filterLabel = "";
 			}
 		}
 
@@ -298,7 +309,7 @@ class NoguchiArchiveBrowseFacetPanel extends React.Component {
 								<ul className="ul-options" data-values="type_facet">
 									{options}
 								</ul>
-								<a className="button load-more" href="#" onClick={this.applyFilters}>Apply</a>
+								<div className="text-align-center"><br/><a className="button load-more" href="#" onClick={this.applyFilters}>Apply</a></div>
 							</div>
 						</div>
 					</div>

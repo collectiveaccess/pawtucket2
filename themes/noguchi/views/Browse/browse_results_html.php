@@ -33,12 +33,12 @@
 	require_once(__CA_MODELS_DIR__."/ca_collections.php");
 	if ($this->request->getParameter('facet', pString) === 'collection_facet') {
 		$t_collection = new ca_collections($id = $this->request->getParameter('id', pInteger));
-		if ($t_collection->isLoaded() && ($t_collection->get('access') > 1)) {
+		if ($t_collection->isLoaded() && ($t_collection->get('access') > 0)) {
 			$collection_title = $t_collection->get('ca_collections.preferred_labels.name');
-			$collection_desc = $t_collection->get('ca_collections.general_notes');
+			$collection_desc = $t_collection->get('ca_collections.scopecontent');
 		}
 	}
-
+			
 	$initial_criteria = null;
 	if(isset($params['facet'])) {
 		$initial_criteria[$params['facet']] = [$params['id'] => ($params['facet'] === 'collection_facet') ? $collection_title : ""];

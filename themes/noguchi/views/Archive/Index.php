@@ -114,10 +114,10 @@
                                     <div class="trigger">More Resources</div>                
                                     <div class="details subheadline text-gray">
                                         <div class="inner">
-                                            <div class="block-quarter"><a href="cr_landing.php">Catalogue Raisonné</a></div>
+                                            <div class="block-quarter"><?php print caNavLink("Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index"); ?></div>
                                             <div class="block-quarter"><a href="#">Study Collection</a></div>
                                             <div class="block-quarter"><a href="#">Exhibition History</a></div>
-                                            <div class="block-quarter"><a href="#">Bibliography</a></div>
+                                            <div class="block-quarter"><?php print caNavLink("Bibliography", "", "", "Browse", "bibliography"); ?></div>
                                         </div>
                                     </div>
                                 </div>
@@ -195,7 +195,7 @@
 
     <!-- Start modal window, if present this will trigger JS to handle show/hide -->
 
-<div id="overlay-ca-terms" class="overlay-window">
+<div id="overlay-ca-terms" class="overlay-window" style="display:none;">
     <div class="bg"></div>
     <div class="overlay-content">
         <div class="content-scroll">
@@ -244,6 +244,8 @@
 			document.getElementById("overlay-ca-terms").style.display = "none";
 			document.getElementById("cahtmlWrapper").style.overflowY = "auto";
 			
+    	}else{
+    		document.getElementById("overlay-ca-terms").style.display = "block";
     	}
 	}
 	$(window).on("load", function(){
