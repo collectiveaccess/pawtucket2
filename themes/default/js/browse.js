@@ -108,13 +108,13 @@ function initBrowseContainer(instance, props) {
 	let that = instance;
 	that.state = initialState();
 
-	that.loadResults = function(callback) {
+	that.loadResults = function(callback, clearFilters=false) {
 		let that = this;
 		let offset = that.state.start;
 		let filterString = getFilterString(that.state.filters);
 		fetchResults(that.props.baseUrl + '/' + that.props.endpoint + '/s/' +
 			offset + (that.state.key ? '/key/' + that.state.key : '') + (filterString ? '/facets/' +
-				filterString : ''), function(newState) {
+				filterString : '') + (clearFilters ? '/clear/1' : ''), function(newState) {
 			callback(newState);
 		});
 	};
@@ -145,14 +145,14 @@ function initBrowseContainer(instance, props) {
 	 * Reload results using provided filters.
 	 *
 	 * @param filters An object with filters to apply in the format described for the getFilterString() function.
-	 * @param clearFilters If clearFilters is set then the provided filters overwrite any
+	 * @param replaceFilters If replaceFilters is set then the provided filters overwrite any
 	 * 		existing ones, otherwise they are added to existing filters.
 	 */
-	that.reloadResults = function(filters, clearFilters=false) {
+	that.reloadResults = function(filters, replaceFilters=false) {
 		let that = this;
 		let state = that.state;
 
-		if (clearFilters) {
+		if (replaceFilters) {
 			state.filters = {};
 		}
 
@@ -164,7 +164,7 @@ function initBrowseContainer(instance, props) {
 		that.setState(state);
 		that.loadResults(function(newState) {
 			that.setState(newState);
-		});
+		}, Object.keys(state.filters).length === 0);
 	};
 
 
