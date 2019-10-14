@@ -35,7 +35,7 @@ class NoguchiArchiveBrowse extends React.Component{
 		return(
 			<NoguchiArchiveBrowseContext.Provider value={this}>
 				<main className="ca archive archive_landing nomargin">
-					<NoguchiArchiveBrowseIntro headline={this.props.title} description={this.props.description}/>
+					<NoguchiArchiveBrowseIntro headline={this.state.introduction.title} description={this.state.introduction.description}/>
 
 					<NoguchiArchiveBrowseNavigation/>
 					<NoguchiArchiveBrowseFilterControls facetLoadUrl={facetLoadUrl}/>

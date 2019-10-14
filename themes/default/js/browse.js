@@ -17,7 +17,8 @@ function initialState() {
 		itemsPerPage: null,
 		availableFacets: null,
 		facetList: null,
-		filters: null
+		filters: null,
+		introduction: { title: null, description: null }
 	};
 }
 
@@ -42,6 +43,11 @@ function fetchResults(url, callback) {
 			state.availableFacets = data.availableFacets;
 			state.facetList = data.facetList;
 			state.key = data.key;
+			if (data.introduction && (data.introduction.title !== undefined) && (data.introduction.description !== undefined)) {
+				state.introduction = data.introduction;
+			} else {
+				state.introduction = { title: '', description: ''};
+			}
 
 			state.filters = {};
 			for(let k in data.criteria) {
@@ -108,6 +114,12 @@ function initBrowseContainer(instance, props) {
 	let that = instance;
 	that.state = initialState();
 
+	/**
+	 * Load browse results
+	 *
+	 * @param callback Function to call with results. Function receives a single parameter containing the new browse state.
+	 * @param clearFilters Remove any filters applied to the browse. Default is false.
+	 */
 	that.loadResults = function(callback, clearFilters=false) {
 		let that = this;
 		let offset = that.state.start;

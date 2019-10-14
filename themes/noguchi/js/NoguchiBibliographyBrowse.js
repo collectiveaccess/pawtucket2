@@ -35,7 +35,7 @@ class NoguchiBibliographyBrowse extends React.Component{
 		return(
 			<NoguchiBibliographyBrowseContext.Provider value={this}>
 				<main className="ca bibliography bibliography_landing">
-					<NoguchiBibliographyBrowseIntro description={this.props.description}/>
+					<NoguchiBibliographyBrowseIntro description={this.state.introduction.description}/>
 
 					<NoguchiBibliographyBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
 
