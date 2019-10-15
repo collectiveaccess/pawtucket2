@@ -64,12 +64,14 @@
 			$vs_media = $t_object->get("ca_object_representations.media.".$vs_display_version);
 			$vs_media_url = $t_object->get("ca_object_representations.media.".$vs_display_version.".url");
 		}
-		if(caObjectsDisplayDownloadLink($this->request, $vn_id, $t_representation)){
-			# -- get version to download configured in media_display.conf
-			$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-			$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);
-			if($vs_download_version){
-				$vs_download_link = caNavLink("", 'download', 'Detail', 'DownloadRepresentation', '', array('context' => 'archival', 'representation_id' => $t_representation->getPrimaryKey(), "id" => $vn_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
+		if($this->request->isLoggedIn()) { 
+			if(caObjectsDisplayDownloadLink($this->request, $vn_id, $t_representation)){
+				# -- get version to download configured in media_display.conf
+				$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+				$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);
+				if($vs_download_version){
+					$vs_download_link = caNavLink("", 'download', 'Detail', 'DownloadRepresentation', '', array('context' => 'archival', 'representation_id' => $t_representation->getPrimaryKey(), "id" => $vn_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
+				}
 			}
 		}
 	}			
@@ -99,8 +101,13 @@
                 <div class="img-container dark">
 
                     <div class="actions">
+<?php
+		if($this->request->isLoggedIn()) {
+?>                    
+
                         <a href="#" class="collection"></a>
 <?php
+		}
 						if($vs_download_link){
                         	print $vs_download_link;
                     	}
