@@ -11,9 +11,7 @@ const sectionName = appData.sectionName;
 	class ContactFormMessage extends React.Component {
 		render() {
 			return (
-			    <div>
-					{this.props.message}
-                </div>
+			    (this.props.message) ? <div className='alert alert-danger'>{this.props.message}</div> : null
 			);
 		}
 	}
@@ -103,15 +101,15 @@ const sectionName = appData.sectionName;
 					<ContactFormMessage message={this.state.statusMessage} />
 					<form className='ca-form'>
 						<ul className='form'>
-							<li><span className='error'>{this.state.errors.name}</span><input name='name' value={this.state.values.name} onChange={this.handleForm} type='text' placeholder='Name*' required /></li>
-							<li><span className='error'>{this.state.errors.email}</span><input name='email' value={this.state.values.email} onChange={this.handleForm} type='email' placeholder='Email*' required /></li>
+							<li>{(this.state.errors.name) ? <div className='alert alert-danger'>{this.state.errors.name}</div> : null}<input name='name' value={this.state.values.name} onChange={this.handleForm} type='text' placeholder='Name*' required /></li>
+							<li>{(this.state.errors.email) ? <div className='alert alert-danger'>{this.state.errors.email}</div> : null}<input name='email' value={this.state.values.email} onChange={this.handleForm} type='email' placeholder='Email*' required /></li>
 							<li>
 								<ul className='double-fields'>
-									<li><span className='error'>{this.state.errors.institution}</span><input name='institution' value={this.state.values.institution} onChange={this.handleForm} type='text' placeholder='Institution' /></li>
-									<li><span className='error'>{this.state.errors.idno}</span><input name='idno' value={this.state.values.idno} onChange={this.handleForm} type='text' placeholder='Object Identifier' /></li>
+									<li>{(this.state.errors.institution) ? <div className='alert alert-danger'>{this.state.errors.institution}</div> : null}<input name='institution' value={this.state.values.institution} onChange={this.handleForm} type='text' placeholder='Institution' /></li>
+									<li>{(this.state.errors.idno) ? <div className='alert alert-danger'>{this.state.errors.idno}</div> : null}<input name='idno' value={this.state.values.idno} onChange={this.handleForm} type='text' placeholder='Object Identifier' /></li>
 								</ul>
 							</li>
-							<li><span className='error'>{this.state.errors.description}</span><textarea name='description' value={this.state.values.description} onChange={this.handleForm} placeholder='Description*' required /></li>
+							<li>{(this.state.errors.description) ? <div className='alert alert-danger'>{this.state.errors.description}</div> : null}<textarea name='description' value={this.state.values.description} onChange={this.handleForm} placeholder='Description*' required /></li>
 							<li>
 								<div className='reCaptcha'></div>
 								<input type='submit' className='button' value='Submit' onClick={this.sendMessage} />

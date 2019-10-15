@@ -57,13 +57,13 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl("", "LoginReg", "LoginForm"));
-            }
-            if ($this->request->isLoggedIn()) {
-            	print "You do not have access to view this page.";
-            	die;
-            }
+ 			// if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+//                 $this->response->setRedirect(caNavUrl("", "LoginReg", "LoginForm"));
+//             }
+//             if ($this->request->isLoggedIn()) {
+//             	print "You do not have access to view this page.";
+//             	die;
+//             }
             $this->opo_config = caGetBrowseConfig();
             
  			$this->view->setVar("find_type", $this->ops_find_type);

@@ -524,8 +524,8 @@ class NoguchiBibliographyBrowseResultItem extends React.Component {
 		return (
 			<div className="block-half">
 				<a href={data.detailUrl} className="columns">
-					<div className="col title clamp" data-lines="2">needs to be ca_occurrences.bib_full_citation: {data.label}</div>
-					<div className="col type text-gray">Needs to be ca_occurrences.citation_format{data.type}</div>
+					<div className="col title clamp" data-lines="2">{data.citation}</div>
+					<div className="col type text-gray">{data.format}</div>
 				</a>
 			</div>
 		);

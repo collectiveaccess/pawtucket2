@@ -56,7 +56,7 @@ class NoguchiCrBrowse extends React.Component{
 
 		return(
 			<NoguchiCrBrowseContext.Provider value={this}>
-				<main className="ca archive archive_landing nomargin">
+				<main className="ca cr cr_browse nomargin">
 					<NoguchiCrBrowseIntro headline={this.state.introduction.title} description={this.state.introduction.description}/>
 
 					<NoguchiCrBrowseNavigation/>
@@ -501,16 +501,14 @@ class NoguchiCrBrowseResults extends React.Component {
 		let resultList = [];
 		for (let i in this.context.state.resultList) {
 			let r = this.context.state.resultList[i];
-			resultList.push(<NoguchiCrBrowseResultItem key={r.id} data={r}/>)
+			resultList.push(<NoguchiCrBrowseResultItem key={r.id} data={r} count={i}/>)
 		}
 
 		return(
 			<div>
-				<section className="block block-quarter-top">
-					<div className="wrap">
-						<div className="grid-flexbox-layout grid-ca-archive">
-							{resultList}
-						</div>
+				<section className="wrap block block-top grid">
+					<div className="grid-flex grid-cr-browse">
+						{resultList}
 					</div>
 				</section>
 				<NoguchiCrBrowseResultLoadMoreButton start={this.context.state.start} itemsPerPage={this.context.state.itemsPerPage}
@@ -565,27 +563,19 @@ class NoguchiCrBrowseResultLoadMoreButton extends React.Component {
 class NoguchiCrBrowseResultItem extends React.Component {
 	render() {
 		let data = this.props.data;
-		let styles = {
-			"backgroundImage": "url(" + data.representation + ")"
-		};
-
+		let count = this.props.count;
+		var remainder = count % 9;
+		var itemClass = "item-grid";
+		if(remainder == 0){
+			itemClass = "item-grid item-large"; 
+		}
 		return (
-			<div className="item-grid">
+			<div class={itemClass}>
 				<a href={data.detailUrl}>
-					<div className="img-wrapper archive_thumb block-quarter">
-						<div className="bg-image"
-							 style={styles}></div>
-					</div>
-					<div className="text">
-						<div className="text_position">
-							<div className="ca-identifier text-gray">{data.idno}</div>
-							<div className="thumb-text clamp" data-lines="3">{data.label}</div>
-
-							<div className="text_full">
-								<div className="ca-identifier text-gray">{data.idno}</div>
-								<div className="thumb-text">{data.label}</div>
-							</div>
-						</div>
+					<div className="block-quarter" dangerouslySetInnerHTML={{__html: data.representation}}></div>
+					<div className="text block-quarter">
+						<div className="thumb-text clamp" data-lines="2">{data.label}</div>
+	                    <div className="ca-identifier text-gray">{data.date}</div>
 					</div>
 				</a>
 			</div>
