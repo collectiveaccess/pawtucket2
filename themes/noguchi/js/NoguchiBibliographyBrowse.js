@@ -539,7 +539,6 @@ class NoguchiBibliographyBrowseResultItem extends React.Component {
 export default function _init() {
 	ReactDOM.render(
 		<NoguchiBibliographyBrowse baseUrl={appData.baseUrl} endpoint={appData.endpoint}
-							  initialFilters={appData.initialFilters} title={appData.title}
-							  browseKey={appData.key}
-							  description={appData.description}/>, document.querySelector(selector));
+							  initialFilters={appData.initialFilters}
+							  browseKey={appData.key}/>, document.querySelector(selector));
 }

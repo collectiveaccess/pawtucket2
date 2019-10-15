@@ -1,10 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/Browse/browse_results_html.php :
+ * themes/default/views/Contact/data_json.php :
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,17 +26,4 @@
  * ----------------------------------------------------------------------
  */
 
-	$action = preg_replace("![^A-Za-z0-9_]+!", "", $this->request->getAction());
-?>
-
-<div id="browse"></div>
-<script type="text/javascript">
-	pawtucketUIApps['Noguchi<?php print ucfirst(strToLower($action)); ?>Browse'] = {
-        'selector': '#browse',
-        'data': {
-			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
-			endpoint: "<?php print $action; ?>",
-			initialFilters: <?php print json_encode($initial_criteria); ?>
-        }
-    };
-</script>
+print json_encode($this->getVar('data'));

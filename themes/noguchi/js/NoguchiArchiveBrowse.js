@@ -447,9 +447,9 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 								</div>
 							</div>
 							<div className="misc">
-								<div className="cell text"><a href='/index.php/ArchiveInfo/UserGuide'>User Guide</a>
+								<div className="cell text"><a href='/index.php/Archive/UserGuide'>User Guide</a>
 								</div>
-								<div className="cell text"><a href='/index.php/ArchiveInfo/About'>About<span
+								<div className="cell text"><a href='/index.php/Archive/About'>About<span
 									className='long'> The Archive</span></a></div>
 							</div>
 						</form>
@@ -582,7 +582,6 @@ class NoguchiArchiveBrowseResultItem extends React.Component {
 export default function _init() {
 	ReactDOM.render(
 		<NoguchiArchiveBrowse baseUrl={appData.baseUrl} endpoint={appData.endpoint}
-							  initialFilters={appData.initialFilters} title={appData.title}
-							  browseKey={appData.key}
-							  description={appData.description}/>, document.querySelector(selector));
+							  initialFilters={appData.initialFilters}
+							  browseKey={appData.key}/>, document.querySelector(selector));
 }
