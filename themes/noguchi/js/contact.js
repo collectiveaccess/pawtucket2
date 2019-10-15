@@ -61,7 +61,7 @@ const sectionName = appData.sectionName;
 			for(let k in this.state.values) {
 				formData.append(k, this.state.values[k]);
 			}
-			axios.post("/Contact/Send",  formData)
+			axios.post("/index.php/Contact/Send",  formData)
 				.then(function (resp) {
 					let data = resp.data;
 
