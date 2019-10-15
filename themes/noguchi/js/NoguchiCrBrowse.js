@@ -39,14 +39,15 @@ class NoguchiCrBrowse extends React.Component{
 	componentDidMount() {
 		let that = this;
 		if(!this.state.decades) {
-			fetchFacetValues(this.props.facetLoadUrl + '/facet/decade_facet', function (resp) {
+			let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint;
+			fetchFacetValues(facetLoadUrl + '/facet/decade_facet', function (resp) {
 				let state = that.state;
 				state.decades = [];	// reset selected items
 				for (let k in resp.content) {
 					state.decades.push(resp.content[k].id);
 				}
 				that.setState(state);
-			});
+			}, false);
 		}
 	}
 

@@ -68,9 +68,9 @@ function fetchResults(url, callback) {
  * @param callback Function to call once facet values are received. The first parameter of the callback will be an object
  * 			containing facet content.
  */
-function fetchFacetValues(url, callback) {
+function fetchFacetValues(url, callback, useDefaultKey=true) {
 	// Fetch browse facet items
-	axios.get(url + "/getFacet/1/useDefaultKey/1")
+	axios.get(url + '/getFacet/1' + (useDefaultKey ? '/useDefaultKey/1' : ''))
 		.then(function (resp) {
 			let data = resp.data;
 			callback(data);
