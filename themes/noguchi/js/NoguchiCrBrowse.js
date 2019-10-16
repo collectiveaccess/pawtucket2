@@ -473,6 +473,35 @@ class NoguchiCrBrowseNavigation extends React.Component {
 						</form>
 					</div>
 				</nav>
+				<nav className="show-for-mobile wrap">
+					<div className="module_accordion">
+						<div className="items">
+							<div className="item">
+								<div className="trigger small">Catalogue Menu</div>
+								<div className="details">
+									<div className="inner">
+
+										<div className="module_filter_bar">
+											<div className="wrap text-gray">
+												<form action="#" onSubmit={this.loadSearch}>
+													<div className="cell"><input name="search" type="text" placeholder="Search the Catalogue" className="search" /></div>
+													<div class="misc">
+														<a href='/index.php/Browse/CR'>Browse</a>
+														<a href='/index.php/CR/Foreword'>Foreword</a>
+														<a href='/index.php/CR/UserGuide'>User Guide</a>
+														<a href='/index.php/CR/About'>About The Catalogue</a>
+													</div>
+												</form>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</nav>
+
 			</section>
 		);
 	}

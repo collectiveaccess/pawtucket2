@@ -55,7 +55,8 @@
 
             <!-- Mobile Nav -->
 
-            <nav class="show-for-mobile wrap archive-menu-mobile">
+            <!--<nav class="show-for-mobile wrap archive-menu-mobile">-->
+            <nav class="show-for-mobile wrap">
                 <div class="module_accordion">
                     <div class="items">
                         <div class="item">
@@ -64,26 +65,23 @@
                                 <div class="inner">
 
                                     <div class="module_filter_bar">
-                                        <div class="wrap text-gray">
-                                            <form action="archives_browse.php" method="post">
+                                		<div class="wrap text-gray">
+                                            <form action="<?php print caNavUrl('', 'Browse', 'archive'); ?>" method="post">
                                                 <div class="cell"><input name="search" type="text" placeholder="Search the Archive" class="search" /></div>
-
-                                                <div class="text-align-center">
-                                                    <select name="collection" class="url-select">
-                                                        <option disabled selected>All Archival Collections</option>
-                                                        <option value="archives_browse_collection.php">Photography Collection</option>
-                                                        <option value="archives_browse_collection.php">Manuscript Collection</option>
-                                                        <option value="archives_browse_collection.php">Architectural Collection</option>
-                                                        <option value="archives_browse_collection.php">Business & Legal Collection</option>
-                                                        <option value="archives_browse_collection.php">Noguchi Fountain & Plaza</option>
-                                                        <option value="archives_browse_collection.php">Publication & Press Collection</option>
-                                                    </select>
-                                                </div>
-
-                                                <div class="misc">
-                                                    <?php print caNavLink("User Guide", "", "", "Archive", "UserGuide"); ?>
-                                                    <?php print caNavLink("About The Archive", "", "", "Archive", "About"); ?>
-                                                    <a href="archives_login.php">Login</a>
+												<div class="misc">
+                                                    <?php print caNavLink("Browse", "", "", "Browse", "Archive"); ?>
+                                                    <?php print caNavLink("User Guide", "", "", "ArchiveInfo", "UserGuide"); ?>
+                                                    <?php print caNavLink("About The Archive", "", "", "ArchiveInfo", "About"); ?>
+<?php
+													if($this->request->isLoggedIn()) { 
+														print caNavLink("Profile", "", "", "LoginReg", "profileForm");
+														print "<a href='#'>My Documents</a>";
+														#print caNavLink("My Documents", "", "", "Lightbox", "Index");
+														print caNavLink("Logout", "", "", "LoginReg", "logout");
+													} else {
+														print caNavLink("Researcher Login", "", "", "LoginReg", "loginForm");
+													}
+?>
                                                 </div>
                                             </form>
                                         </div>

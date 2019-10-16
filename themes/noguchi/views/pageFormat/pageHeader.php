@@ -143,7 +143,8 @@
 						<div class="options">
 <?php
 							print caNavLink("Profile", "", "", "LoginReg", "profileForm");
-							print caNavLink("My Documents", "", "", "Lightbox", "Index");
+							print "<a href='#'>My Documents</a>";
+							#print caNavLink("My Documents", "", "", "Lightbox", "Index");
 							print caNavLink("Logout", "", "", "LoginReg", "logout");
 ?>
 						</div>

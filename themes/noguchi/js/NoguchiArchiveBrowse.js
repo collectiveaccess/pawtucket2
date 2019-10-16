@@ -455,6 +455,33 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 						</form>
 					</div>
 				</nav>
+				<nav className="show-for-mobile wrap">
+					<div className="module_accordion">
+						<div className="items">
+							<div className="item">
+								<div className="trigger small">Archive Menu</div>            
+								<div className="details">
+									<div className="inner">
+
+										<div className="module_filter_bar">
+											<div className="wrap text-gray">
+												<form action="#" onSubmit={this.loadSearch}>
+													<div className="cell"><input name="search" type="text" placeholder="Search the Archive" className="search"/></div>
+													<div className="misc">
+													   <a href='/index.php/Browse/Archive'>Browse</a>
+													   <a href='/index.php/ArchiveInfo/UserGuide'>User Guide</a>
+													   <a href='/index.php/ArchiveInfo/About'>About The Archive</a>
+													</div>
+												</form>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</nav>
 			</section>
 		);
 	}
