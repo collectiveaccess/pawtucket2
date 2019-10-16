@@ -142,7 +142,7 @@
 					<div style="clear:left;"></div>
 				</div>
 				
-				{{{<ifdef code="ca_objects.tier"><H6>Collection Tier:</H6>^ca_objects.tier<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.tier"><H6>Collection Tier:</H6>^ca_objects.tier<br/><br/></ifdef>}}}
 				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
 
 				{{{<ifdef code="ca_objects.taxonomy"><H6>Taxonomy:</H6>^ca_objects.taxonomy<br/></ifdef>}}}
@@ -159,7 +159,7 @@
 				{{{<ifdef code="ca_objects.Date"><H6>Date:</H6>^ca_objects.Date</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.Format"><H6>Materials:</H6>^ca_objects.Format%delimiter=,_</ifdef>}}}
-				{{{<ifdef code="ca_objects.Dimensions_Container"><H6>Dimensions:</H6><unit relativeTo="ca_objects.Dimensions_Container"><ifdef code="Height">^Height h </ifdef><ifdef code="Width">^Width w </ifdef><ifdef code="Depth">^Depth d</ifdef></unit></ifdef>}}}
+				{{{<ifdef code="ca_objects.Dimensions_Container"><H6>Dimensions:</H6><unit relativeTo="ca_objects.Dimensions_Container"><ifdef code="ca_objects.Dimensions_Container.Height">^ca_objects.Dimensions_Container.Height" h </ifdef><ifdef code="ca_objects.Dimensions_Container.Width">^Width" w </ifdef><ifdef code="ca_objects.Dimensions_Container.Depth">^Depth" d</ifdef></unit></ifdef>}}}
                 {{{<ifdef code="ca_objects.current_location_fld"><H6>Current Location Status:</H6>^ca_objects.current_location_fld</ifdef>}}}
 				
 
