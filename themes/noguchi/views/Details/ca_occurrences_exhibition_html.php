@@ -20,7 +20,8 @@
 
 
 <?php
- 			if($vs_back = ResultContext::getResultsLinkForLastFind($this->request, 'ca_occurrences', '< Back to Results', 'eyebrow', array())){
+ 			# --- not sure what the back nav would be here since there is no exhibitions browse
+ 			if($x && $vs_back = ResultContext::getResultsLinkForLastFind($this->request, 'ca_occurrences', '< Back to Results', 'eyebrow', array())){
 ?>           
             <div class="text-gray block-quarter back">
 <?php

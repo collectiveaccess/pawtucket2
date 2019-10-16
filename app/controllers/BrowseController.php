@@ -57,13 +57,13 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-                $this->response->setRedirect(caNavUrl("", "LoginReg", "LoginForm"));
-            }
-            if ($this->request->isLoggedIn()) {
-            	print "You do not have access to view this page.";
-            	die;
-            }
+ 			// if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
+//                 $this->response->setRedirect(caNavUrl("", "LoginReg", "LoginForm"));
+//             }
+//             if ($this->request->isLoggedIn()) {
+//             	print "You do not have access to view this page.";
+//             	die;
+//             }
             $this->opo_config = caGetBrowseConfig();
             
  			$this->view->setVar("find_type", $this->ops_find_type);
@@ -335,6 +335,8 @@
 				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
 				$qr_res->seek($start);
 
+				$criteria = $o_browse->getCriteriaWithLabels();
+				$facet_info = $o_browse->getInfoForFacets();
 				$data = [
 					'size' => $qr_res->numHits(),
 					'key' => $vs_key,
@@ -344,9 +346,32 @@
 					'pk' => $qr_res->primaryKey(),
 					'hits' => [],
 					'availableFacets' => $o_browse->getInfoForAvailableFacets(),
-					'facetList' => $o_browse->getInfoForFacets(),
-					'criteria' => $o_browse->getCriteriaWithLabels()
+					'facetList' => $facet_info,
+					'criteria' => $criteria
 				];
+
+				if (($intro = caGetOption('introduction', $va_browse_info, null)) && is_array($intro)) {
+					// Look for facets
+					$intro_set = false;
+					foreach($intro as $k => $v) {
+						if(!isset($criteria[$k])) { continue; }
+						if ($facet_info[$k]['type'] !== 'authority') { continue; }
+						if(!is_array($criteria[$k])) { continue; }
+						$id = array_pop(array_keys($criteria[$k]));
+
+						if (($t_instance = Datamodel::getInstance($facet_info[$k]['table'], true)) && ($t_instance->load($id)) && in_array($t_instance->get('access'), $this->opa_access_values)) {
+							$data['introduction']['title'] = $t_instance->getWithTemplate($intro[$k]['title']);
+							$data['introduction']['description'] = $t_instance->getWithTemplate($intro[$k]['description']);
+
+							$intro_set = true;
+							break;
+						}
+					}
+					if (!$intro_set) {
+						$data['introduction']['title'] = caGetOption('title', $intro, '');
+						$data['introduction']['description'] = caGetOption('description', $intro, '');
+					}
+				}
 
 				$c = 0;
 

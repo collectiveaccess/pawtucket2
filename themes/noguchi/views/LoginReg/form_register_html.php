@@ -26,143 +26,83 @@
 	$va_errors = $this->getVar("errors");
 	$t_user = $this->getVar("t_user");
 	$co_security = $this->request->config->get('registration_security');
-	if($co_security == 'captcha'){
-		if(strlen($this->request->config->get('google_recaptcha_sitekey')) != 40 || strlen($this->request->config->get('google_recaptcha_secretkey')) != 40){
-			//Then the captcha will not work and should not be implemenented. Alert the user in the console
-			print "<script>console.log('reCaptcha disabled, please provide a valid site_key and secret_key to enable it.');</script>";
-			$co_security = 'equation_sum';
-		}
-	}
-	if($this->request->isAjax()){
 ?>
-<div id="main">
-<div id="caFormOverlay">
-<?php
-	}
-?>
-<script type="text/javascript">
-	// initialize CA Utils
-	caUI.initUtils();
-</script>
-<?php
-	if($co_security == 'captcha'){
-?>
-		<script type="text/javascript">
-			var gCaptchaRender = function(){
-                grecaptcha.render('regCaptcha', {'sitekey': '<?php print $this->request->config->get('google_recaptcha_sitekey'); ?>'});
-        	};
-		</script>
-<?php
-	}
-?>
+<main class="ca archive">
+
+	<section>
+		<div class="wrap">
+            <div class="wrap-text-large">
+				<div class="block-quarter">
+					<H3 class="subheadline-bold text-align-center"><?php print _t("Request Login"); ?></H3>
+
 	<form id="RegForm" action="<?php print caNavUrl("", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
 	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
+
 <?php
-	if($this->request->isAjax()){
-?>
-		<div class="row">
-			<div class="col-sm-12">
-				<div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
-				<H1><?php print _t("Register"); ?></H1>
-			</div>
-		</div>
-<?php
-	}else{
-?>
-	    <div class="row"><div class="col-sm-4"><H1><?php print _t("Register"); ?></H1></div></div>
-<?php
-	}
 	if($va_errors["register"]){
 		print "<div class='alert alert-danger'>".$va_errors["register"]."</div>";
 	}
 		foreach(array("fname", "lname", "email") as $vs_field){
+			print "<div class='block-half'>";
 			if($va_errors[$vs_field]){
 				print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
 			}	
-			print $t_user->htmlFormElement($vs_field,"<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'><label for='".$vs_field."' class='col-sm-4 control-label'>^LABEL</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
+			print $t_user->htmlFormElement($vs_field,"<label for='".$vs_field."' class='eyebrow'>^LABEL</label><br/>^ELEMENT\n");
+			print "</div>";
 		}
 		$va_profile_settings = $this->getVar("profile_settings");
 		if(is_array($va_profile_settings) and sizeof($va_profile_settings)){
 			foreach($va_profile_settings as $vs_field => $va_profile_element){
+				print "<div class='block-half'>";
 				if($va_errors[$vs_field]){
 					print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
 				}
-				print "<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'><label for='".$vs_field."' class='col-sm-4 control-label'>";
-				print $va_profile_element["bs_formatted_element"];
-				print "</div><!-- end form-group -->";
+				print "<label for='".$vs_field."' class='eyebrow'>".$va_profile_element["label"]."</label><br/>";
+				print $va_profile_element["element"];
+				print "</div>";
 			}
 		}
-		if($co_security == 'captcha'){
-?>
-			<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
-        		<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
-        	</div>
-<?php		
-		} else {
-			if($va_errors["security"]){
-				print "<div class='alert alert-danger'>".$va_errors["security"]."</div>";
-			}
-			$vn_num1 = rand(1,10);
-			$vn_num2 = rand(1,10);
-			$vn_sum = $vn_num1 + $vn_num2;
-?>
-			<div class='form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>'>
-				<label for='security' class='col-sm-4 control-label'><?php print _t("Security Question"); ?></label>
-				<div class='col-sm-7'>
-					<div class='col-sm-5'>
-						<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
-					</div>
-					<div class='col-sm-5'>
-						<input name="security" value="" id="security" type="text" class="form-control" />
-					</div>
-				</div><!-- end col-sm-7 -->
-			</div><!-- end form-group -->
-<?php
-		}
+		print "<div class='block-half'>";
 		if($va_errors["password"]){
 			print "<div class='alert alert-danger'>".$va_errors["password"]."</div>";
 		}
-		print $t_user->htmlFormElement("password", "<div class='form-group".(($va_errors["password"]) ? " has-error" : "")."'><label for='password' class='col-sm-4 control-label'>^LABEL</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
+		print $t_user->htmlFormElement("password", "<label for='password' class='eyebrow'>^LABEL</label><br/>^ELEMENT\n", array("classname" => "form-control"));
+		print "</div>";
 ?>
-		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
-			<label for='password2' class='col-sm-4 control-label'><?php print _t('Re-Type password'); ?></label>
-			<div class="col-sm-7"><input type="password" name="password2" size="40" class="form-control"  autocomplete="off" /></div><!-- end col-sm-7 -->
-		</div><!-- end form-group -->
-		
-<?php	
-		if($va_errors["group_code"]){
-			print "<div class='alert alert-danger'>".$va_errors["group_code"]."</div>";
+		<div class='block-half'>
+			<label for='password2' class='eyebrow'><?php print _t('Re-Type password'); ?></label><br/>
+			<input type="password" name="password2" size="40" class="form-control"  autocomplete="off" />
+		</div>
+<?php
+		if(($co_security == 'captcha') && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+?>
+			<script type="text/javascript">
+				var gCaptchaRender = function(){
+					grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+				};
+			</script>
+			<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+
+			<div class='block-half'>
+<?php
+			if($va_errors["recaptcha"]){
+				print "<div class='alert alert-danger'>".$va_errors["recaptcha"]."</div>";
+			}	
+?>
+				<div id="regCaptcha"></div>
+        	</div>
+<?php		
 		}
-		print "<div class='form-group".(($va_errors["group_code"]) ? " has-error" : "")."'><label for='group' class='col-sm-4 control-label'>"._t("Group code (optional)")."</label><div class='col-sm-7'>".caHTMLTextInput("group_code", ['class' => 'form-control', 'id' => 'registrationGroupCode'], [])."</div></div>\n";
-?>
-		<div class="form-group">
-			<div class="col-sm-offset-4 col-sm-7">
-				<button type="submit" class="btn btn-default"><?php print _t('Register'); ?></button>
-			</div><!-- end col-sm-7 -->
-		</div><!-- end form-group -->
-		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
+?>		
+		<div class='block-half text-align-center'>
+			<button type="submit" class="button"><?php print _t('Send'); ?></button>
+		</div>
 	</form>
-<?php
-	if($this->request->isAjax()){
-?>
-</div><!-- end caFormOverlay -->
-</div>
-<script type='text/javascript'>
-	jQuery(document).ready(function() {
-		jQuery('#RegForm').on('submit', function(e){		
-			jQuery('#caMediaPanelContentArea').load(
-				'<?php print caNavUrl('', 'LoginReg', 'register', null); ?>',
-				jQuery('#RegForm').serializeObject()
-			);
-			e.preventDefault();
-			return false;
-		});
-	});
-</script>
-<?php
-	if($co_security == 'captcha'){
-		print "<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>";
-	}
-?>
-<?php
-	}
+				
+				
+				
+				</div>
+			</div>
+		</div>
+	</section>
+</main>

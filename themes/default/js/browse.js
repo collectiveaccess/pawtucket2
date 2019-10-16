@@ -17,7 +17,8 @@ function initialState() {
 		itemsPerPage: null,
 		availableFacets: null,
 		facetList: null,
-		filters: null
+		filters: null,
+		introduction: { title: null, description: null }
 	};
 }
 
@@ -42,6 +43,11 @@ function fetchResults(url, callback) {
 			state.availableFacets = data.availableFacets;
 			state.facetList = data.facetList;
 			state.key = data.key;
+			if (data.introduction && (data.introduction.title !== undefined) && (data.introduction.description !== undefined)) {
+				state.introduction = data.introduction;
+			} else {
+				state.introduction = { title: '', description: ''};
+			}
 
 			state.filters = {};
 			for(let k in data.criteria) {
@@ -62,9 +68,9 @@ function fetchResults(url, callback) {
  * @param callback Function to call once facet values are received. The first parameter of the callback will be an object
  * 			containing facet content.
  */
-function fetchFacetValues(url, callback) {
+function fetchFacetValues(url, callback, useDefaultKey=true) {
 	// Fetch browse facet items
-	axios.get(url + "/getFacet/1/useDefaultKey/1")
+	axios.get(url + '/getFacet/1' + (useDefaultKey ? '/useDefaultKey/1' : ''))
 		.then(function (resp) {
 			let data = resp.data;
 			callback(data);
@@ -108,13 +114,19 @@ function initBrowseContainer(instance, props) {
 	let that = instance;
 	that.state = initialState();
 
-	that.loadResults = function(callback) {
+	/**
+	 * Load browse results
+	 *
+	 * @param callback Function to call with results. Function receives a single parameter containing the new browse state.
+	 * @param clearFilters Remove any filters applied to the browse. Default is false.
+	 */
+	that.loadResults = function(callback, clearFilters=false) {
 		let that = this;
 		let offset = that.state.start;
 		let filterString = getFilterString(that.state.filters);
 		fetchResults(that.props.baseUrl + '/' + that.props.endpoint + '/s/' +
 			offset + (that.state.key ? '/key/' + that.state.key : '') + (filterString ? '/facets/' +
-				filterString : ''), function(newState) {
+				filterString : '') + (clearFilters ? '/clear/1' : ''), function(newState) {
 			callback(newState);
 		});
 	};
@@ -145,14 +157,14 @@ function initBrowseContainer(instance, props) {
 	 * Reload results using provided filters.
 	 *
 	 * @param filters An object with filters to apply in the format described for the getFilterString() function.
-	 * @param clearFilters If clearFilters is set then the provided filters overwrite any
+	 * @param replaceFilters If replaceFilters is set then the provided filters overwrite any
 	 * 		existing ones, otherwise they are added to existing filters.
 	 */
-	that.reloadResults = function(filters, clearFilters=false) {
+	that.reloadResults = function(filters, replaceFilters=false) {
 		let that = this;
 		let state = that.state;
 
-		if (clearFilters) {
+		if (replaceFilters) {
 			state.filters = {};
 		}
 
@@ -164,7 +176,7 @@ function initBrowseContainer(instance, props) {
 		that.setState(state);
 		that.loadResults(function(newState) {
 			that.setState(newState);
-		});
+		}, Object.keys(state.filters).length === 0);
 	};
 
 

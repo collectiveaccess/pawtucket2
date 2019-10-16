@@ -33,15 +33,16 @@
                     <div class="columns margin_xl">
 
                         <div class="col">
+                            <form action="<?php print caNavUrl("", "LoginReg", "login"); ?>" role="form" method="post">
+                                <div class="block-half">
+                                    <h3 class="subheadline-bold text-align-center">Researcher Login</h3>
+                                </div>
 <?php
     if($this->getVar("message")){
 		print "<div class='alert alert-danger'>".$this->getVar("message")."</div>";
 	}
 ?>
-                            <form action="<?php print caNavUrl("", "LoginReg", "login"); ?>" role="form" method="post">
-                                <div class="block-half">
-                                    <h3 class="subheadline-bold text-align-center">Researcher Login</h3>
-                                </div>
+
                                 <div class="block-half">
                                     <input type="text" name="username" id="username" placeholder="Username" />
                                 </div>
@@ -63,10 +64,10 @@
                                 <h3 class="subheadline-bold text-align-center">Create an Account</h3>
                             </div>
                             <div class="block-half">
-                                <p class="body-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut pretium pretium tempor. Ut eget imperdiet neque. In volutpat ante semper diam molestie, et aliquam erat laoreet. Sed sit amet arcu aliquet, molestie justo at, auctor nunc.</p>
+                                <p class="body-text">{{{createAccount}}}</p>
                             </div>
                             <div class="block-half text-align-center">
-                                <a href="#" class="button">Request Login</a>
+                                <?php print caNavLink(_t("Request Login"), "button", "", "LoginReg", "registerForm", array()); ?>
                             </div>
 
                         </div>

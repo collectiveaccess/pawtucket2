@@ -1,1 +1,36 @@
 @import "style";
+
+
+.alert {
+    position: relative;
+    padding: .75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    background-color: #f2f2f2;
+    border: 1px solid #F2F2F2;
+    text-transform: uppercase;
+	font-family: 'NH-Text-55', 'Helvetica', 'Arial', sans-serif;
+	letter-spacing: 1.25px;
+	font-size:14px
+}
+.alert .alertClose{
+	float:right;
+	text-transform:none;
+}
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+}
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+
+.archive_landing section.intro{
+	padding-top: 80px;
+}
+BODY.collective-access .ca_filters .options-filter-widget .option_values {
+	height: 250px;
+}

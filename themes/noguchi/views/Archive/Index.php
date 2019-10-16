@@ -114,10 +114,10 @@
                                     <div class="trigger">More Resources</div>                
                                     <div class="details subheadline text-gray">
                                         <div class="inner">
-                                            <div class="block-quarter"><a href="cr_landing.php">Catalogue Raisonné</a></div>
+                                            <div class="block-quarter"><?php print caNavLink("Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index"); ?></div>
                                             <div class="block-quarter"><a href="#">Study Collection</a></div>
                                             <div class="block-quarter"><a href="#">Exhibition History</a></div>
-                                            <div class="block-quarter"><a href="#">Bibliography</a></div>
+                                            <div class="block-quarter"><?php print caNavLink("Bibliography", "", "", "Browse", "bibliography"); ?></div>
                                         </div>
                                     </div>
                                 </div>
@@ -195,7 +195,7 @@
 
     <!-- Start modal window, if present this will trigger JS to handle show/hide -->
 
-<div id="overlay-ca-terms" class="overlay-window">
+<div id="overlay-ca-terms" class="overlay-window" style="display:none;">
     <div class="bg"></div>
     <div class="overlay-content">
         <div class="content-scroll">
@@ -209,10 +209,46 @@
                 </div>
                 <div class="text-align-center">
                     <!-- If you want to disable the modal close callback and add your own onClick, just remove 'close' class -->
-                    <a href="#" class="close button">Yes, I agree</a>
+                    <a href="#" onClick="setConditionsCookie();" class="close button">Yes, I agree</a>
                 </div>  
     
             </div>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+	function setConditionsCookie() {
+	  var d = new Date();
+	  d.setTime(d.getTime() + (365*24*60*60*1000));
+	  var expires = "expires="+ d.toUTCString();
+	  document.cookie = "nogArchiveConditions=accepted;" + expires + ";path=/";
+	}
+	function getCookie(cname) {
+		var name = cname + "=";
+		var decodedCookie = decodeURIComponent(document.cookie);
+		var ca = decodedCookie.split(';');
+		for(var i = 0; i <ca.length; i++) {
+			var c = ca[i];
+			while (c.charAt(0) == ' ') {
+				c = c.substring(1);
+			}
+			if (c.indexOf(name) == 0) {
+			  return c.substring(name.length, c.length);
+			}
+		}
+		return "";
+	}
+	function checkConditionsCookie() {
+		var condCookie = getCookie("nogArchiveConditions");
+		if (condCookie != "") {
+			document.getElementById("overlay-ca-terms").style.display = "none";
+			document.getElementById("cahtmlWrapper").style.overflowY = "auto";
+			
+    	}else{
+    		document.getElementById("overlay-ca-terms").style.display = "block";
+    	}
+	}
+	$(window).on("load", function(){
+		checkConditionsCookie();
+	});
+</script>
