@@ -193,7 +193,7 @@
 						print "<div class='unit'><H6>Provenance</H6>".join("<br/>", $va_provenance_display)."</div>";
 					}
 				}
-				if($va_exhibitions = $t_item->get("ca_occurrences", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("exhibition")))){
+				if($va_exhibitions = $t_item->get("ca_occurrences", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("exhibition"), "sort" => "ca_occurrences.common_date"))){
 					$t_occ = new ca_occurrences();
 					print "<div class='unit'><H6>Exhibition History</H6>";
 					$t_objects_x_occurrences = new ca_objects_x_occurrences();
