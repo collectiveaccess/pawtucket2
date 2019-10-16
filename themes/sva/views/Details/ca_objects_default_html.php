@@ -35,9 +35,6 @@
 	<div class="row">
 		<div class='col-sm-12'>		 
 		    <ul class="breadcrumbs--nav">
-				<li><a href="#">School of Visual Arts Archives</a></li>
-				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
-				</li>
 				<li><a href="/index.php/">SVA Exhibitions Archives</a></li>
 				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
 				</li>

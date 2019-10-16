@@ -8,13 +8,10 @@
 		<div class="row">
         <div class='col-sm-12'>
 			<ul class="breadcrumbs--nav" id="breadcrumbs">
-				<li><a href="#">School of Visual Arts Archives</a><span></li>
+				<li><a href="/index.php/">SVA Exhibitions Archives</a></li>
 				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
-				</span></li>
-				<li><a href="/index.php/">SVA Exhibitions Archives</a><span></li>
-				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
-				</span></li>
-				<li>Exhibitor {{{^ca_entities.preferred_labels.displayname}}}<span></li>
+				</li>
+				<li>Exhibitor {{{^ca_entities.preferred_labels.displayname}}}</li>
 				</li>
 			</ul>
 		</div>  

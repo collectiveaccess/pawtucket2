@@ -19,9 +19,6 @@
 	<div class="row">
         <div class='col-sm-12'>
 			<ul class="breadcrumbs--nav" id="breadcrumbs">
-				<li><a href="#">School of Visual Arts Archives</a></li>
-				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
-				</li>
 				<li><a href="/index.php/">SVA Exhibitions Archives</a></li>
 				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
 				</li>
@@ -46,7 +43,7 @@
         	{{{<ifdef code="ca_occurrences.description_public"><p>^ca_occurrences.description_public</p></ifdef>}}}		
         </div>	
 	</div>
-	<div class="row occurrence-metadata justify-content-center pl-4">	
+	<div class="row pt-2 justify-content-center pl-4">	
 		<div class="col-sm-8">
 			<div class="row justify-content-center">
 				<div class="col-sm-10">
