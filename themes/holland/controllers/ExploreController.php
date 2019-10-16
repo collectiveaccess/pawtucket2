@@ -50,7 +50,7 @@
  		public function index(){		
 			# --- category landing page
 			$t_list = new ca_lists();
-			$va_categories = $t_list->getItemsForList("categories", array("extractValuesByUserLocale" => true, "checkAccess" => $this->opa_access_values, "sort" => __CA_LISTS_SORT_BY_RANK__));
+			$va_categories = $t_list->getItemsForList("categories", array("extractValuesByUserLocale" => true, "checkAccess" => $this->opa_access_values, "sort" => __CA_LISTS_SORT_BY_LABEL__));
 			$qr_categories = caMakeSearchResult('ca_list_items', array_keys($va_categories));
 			$this->view->setVar("categories", $va_categories);
 			$this->view->setVar("categories_search", $qr_categories);
