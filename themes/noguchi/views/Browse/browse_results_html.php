@@ -4,7 +4,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -24,6 +24,18 @@
  */
 
 	$action = preg_replace("![^A-Za-z0-9_]+!", "", $this->request->getAction());
+	
+	$initial_criteria = [];
+	if($search = $this->request->getParameter('search', pString)) {
+	    $initial_criteria['_search'] = [$search => $search];
+	}
+	if($this->request->getParameter('facet', pString) == 'collection_facet') {
+	    $collection_facet_id = $this->request->getParameter('id', pInteger);
+	    $t_coll = new ca_collections($collection_facet_id);
+	    if($t_coll->isLoaded() && ($t_coll->get('access') == 1)) {
+	        $initial_criteria['collection_facet'] = [$collection_facet_id => $t_coll->get('ca_collections.preferred_labels.name')];
+	    }
+	}
 ?>
 
 <div id="browse"></div>
