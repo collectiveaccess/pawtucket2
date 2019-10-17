@@ -95,7 +95,7 @@ class NoguchiBibliographyBrowseStatistics extends React.Component {
 
 	render() {
 		return(<div className="current">
-			<div className="body-sans">{(this.context.state.resultSize > 0) ? ((this.context.state.resultSize== 1) ?
+			<div className="body-sans">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
 				"Showing 1 Result"
 				:
 				"Showing " + this.context.state.resultSize + " Results") : "Loading..."}.</div>
@@ -451,9 +451,13 @@ class NoguchiBibliographyBrowseResults extends React.Component {
 
 	render() {
 		let resultList = [];
-		for (let i in this.context.state.resultList) {
-			let r = this.context.state.resultList[i];
-			resultList.push(<NoguchiBibliographyBrowseResultItem key={r.id} data={r}/>)
+		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
+			for (let i in this.context.state.resultList) {
+				let r = this.context.state.resultList[i];
+				resultList.push(<NoguchiBibliographyBrowseResultItem key={r.id} data={r}/>)
+			}
+		} else if (this.context.state.resultSize === 0) {
+			resultList.push(<h2>No results found</h2>)
 		}
 
 		return(

@@ -69,7 +69,7 @@ class PawtucketBrowseStatistics extends React.Component {
 
 	render() {
 		return(
-			<div className="pb-4 d-flex justify-content-center"><h2>{(this.context.state.resultSize > 0) ? ((this.context.state.resultSize== 1) ?
+			<div className="pb-4 d-flex justify-content-center"><h2>{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
 				"1 Result"
 				:
 				"" + this.context.state.resultSize + " Results") : "Loading..."}</h2></div>
@@ -392,9 +392,13 @@ class PawtucketBrowseResults extends React.Component {
 
 	render() {
 		let resultList = [];
-		for (let i in this.context.state.resultList) {
-			let r = this.context.state.resultList[i];
-			resultList.push(<PawtucketBrowseResultItem key={r.id} data={r}/>)
+		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
+			for (let i in this.context.state.resultList) {
+				let r = this.context.state.resultList[i];
+				resultList.push(<PawtucketBrowseResultItem key={r.id} data={r}/>)
+			}
+		} else if (this.context.state.resultSize === 0) {
+			resultList.push(<h2>No results found</h2>)
 		}
 
 		return(

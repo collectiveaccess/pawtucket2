@@ -124,6 +124,10 @@ function initBrowseContainer(instance, props) {
 		let that = this;
 		let offset = that.state.start;
 		let filterString = getFilterString(that.state.filters);
+
+		let state = this.state;
+		state.resultSize = null;
+		this.setState(state);
 		fetchResults(that.props.baseUrl + '/' + that.props.endpoint + '/s/' +
 			offset + (that.state.key ? '/key/' + that.state.key : '') + (filterString ? '/facets/' +
 				filterString : '') + (clearFilters ? '/clear/1' : ''), function(newState) {
