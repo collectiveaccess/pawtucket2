@@ -33,7 +33,7 @@
 		<div class="wrap">
             <div class="wrap-text-large">
 				<div class="block-quarter">
-					<H3 class="subheadline-bold text-align-center"><?php print _t("Request Login"); ?></H3>
+					<H3 class="subheadline-bold text-align-center"><?php print _t("Register"); ?></H3>
 
 	<form id="RegForm" action="<?php print caNavUrl("", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
 	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
@@ -95,7 +95,7 @@
 		}
 ?>		
 		<div class='block-half text-align-center'>
-			<button type="submit" class="button"><?php print _t('Send'); ?></button>
+			<button type="submit" class="button"><?php print _t('Register'); ?></button>
 		</div>
 	</form>
 				

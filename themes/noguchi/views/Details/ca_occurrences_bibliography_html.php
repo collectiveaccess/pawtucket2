@@ -100,6 +100,12 @@
 							<div class="subheadline text-gray">^ca_occurrences.bib_year_published</div>
 						</div>
 					</ifdef>}}}
+                    {{{<ifdef code="ca_occurrences.idno">
+						<div class="block-quarter">
+							<div class="eyebrow text-gray">Identifier</div>
+							<div class="ca-data">^ca_occurrences.idno</div>
+						</div>
+					</ifdef>}}}
                     {{{<ifdef code="ca_occurrences.bib_full_citation">
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Citation</div>
