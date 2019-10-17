@@ -159,7 +159,7 @@
 				{{{<ifdef code="ca_objects.Date"><H6>Date:</H6>^ca_objects.Date</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.Format"><H6>Materials:</H6>^ca_objects.Format%delimiter=,_</ifdef>}}}
-				{{{<ifdef code="ca_objects.Dimensions_Container"><H6>Dimensions:</H6><unit relativeTo="ca_objects.Dimensions_Container"><ifdef code="ca_objects.Dimensions_Container.Height">^ca_objects.Dimensions_Container.Height" h </ifdef><ifdef code="ca_objects.Dimensions_Container.Width">^Width" w </ifdef><ifdef code="ca_objects.Dimensions_Container.Depth">^Depth" d</ifdef></unit></ifdef>}}}
+				{{{<ifdef code="ca_objects.Dimensions_Container.Height"><H6>Dimensions:</H6><unit relativeTo="ca_objects.Dimensions_Container"><ifdef code="ca_objects.Dimensions_Container.Height">^ca_objects.Dimensions_Container.Height" h </ifdef><ifdef code="ca_objects.Dimensions_Container.Width">^Width" w </ifdef><ifdef code="ca_objects.Dimensions_Container.Depth">^Depth" d</ifdef></unit></ifdef>}}}
                 {{{<ifdef code="ca_objects.current_location_fld"><H6>Current Location Status:</H6>^ca_objects.current_location_fld</ifdef>}}}
 				
 
