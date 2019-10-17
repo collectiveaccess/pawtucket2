@@ -39,7 +39,7 @@ class ExhBrowse extends React.Component {
   		let result = hits[k];
   		if(this.props.groupByYear) {
 			if (parseInt(result.year) !== lastYear) {
-				results.push(<li className="masonry-title--list browseYearHeader" dangerouslySetInnerHTML={{__html: result.year}}></li>);
+				results.push(<li className="masonry-title--list dateBrowseHeader" dangerouslySetInnerHTML={{__html: result.year}}></li>);
 				lastYear = parseInt(result.year);
 			}
 		}
@@ -53,11 +53,14 @@ class ExhBrowse extends React.Component {
 				<ul className="sortby"><ExhBrowseNavigation facetUrl={this.props.facetUrl} browseUrl={this.props.browseUrl} handleResults={this.setBrowseResults} /></ul>
 				</div>
 			</div>
-			<div className="row">
-				<ul className="select-list browseResults">
-					<li><h2--list>{this.state.value}</h2--list></li>
+				
+			<div className="nameBrowse">
+			<div className="row justify-content-center"><h2--list>{this.state.value}</h2--list></div>
+				<div className="card-columns">
+					<ul className="select-list browseResults">		
 					{results}
-				</ul>
+					</ul>
+				</div>
 			</div>
 		</div>
     );

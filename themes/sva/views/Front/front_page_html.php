@@ -26,10 +26,16 @@
  */
 
 ?>
-<div class="hpHero" >
+<!-- <div class="hpHero" >
 	<?php print caGetThemeGraphic('SVA_Exhibitions_Archives.jpg', array("alt" => "Rising Sun Graphic Image")); ?>
 			<div class= "wrapper" id="sec2">
 					<h1>SVA Exhibitions Archives<br></h1>
+			</div>		
+</div> -->
+<div class="headerimage" >
+	<?php print caGetThemeGraphic('Working-Drawings-poster2.jpg', array("alt" => "Working Drawings Exhibition Graphic Image")); ?>
+			<div class= "headerwrapper">
+					<h1>SVA Exhibitions Archives</h1>
 			</div>		
 </div>
 <div class="container-fluid p-3">
@@ -54,7 +60,7 @@
 		<hr></div>
 	</div>
 </div>
-<div class="container-fluid p-2">
+<div class="container-fluid">
 	<div class="tab-content">
 <?php
 	 	print $this->render("Front/featured_exhibitions_masonrygrid_html.php");

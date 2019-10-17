@@ -1,4 +1,13 @@
 <div class="container-fluid">
+	<div class="row">
+        <div class='col-sm-12'>
+			<ul class="breadcrumbs--nav" id="breadcrumbs">
+				<li><a href="/index.php/">SVA Exhibitions Archives</a></li>
+				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?></li>
+				<li>Search Results</li>
+			</ul>
+		</div>  	
+	</div>
 <?php
 	$va_results = $this->getVar('results');
 	$va_result_count = $va_results['_info_']['totalCount'];
@@ -11,7 +20,7 @@
 		</div>
 		<div class="row">
 			<div class="col-sm-2">
-				<div class="jump">Showing results from:<br><br>
+				<div class="jump pb-5">Showing results from:<br><br>
 <?php
 					$i = 0;
 					foreach($this->getVar('blockNames') as $vs_block) {
