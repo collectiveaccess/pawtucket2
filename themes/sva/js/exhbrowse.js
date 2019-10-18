@@ -43,7 +43,7 @@ class ExhBrowse extends React.Component {
 				lastYear = parseInt(result.year);
 			}
 		}
-  		results.push(<li className="masonry-title--list" dangerouslySetInnerHTML={{ __html : result.detail_link }}></li>);
+  		results.push(<li className=" masonry-title--list" dangerouslySetInnerHTML={{ __html : result.detail_link }}></li>);
   	}
 
     return (
@@ -159,7 +159,7 @@ class ExhBrowseNavigationItem extends React.Component {
 
   render() {
     return (
-      <li className="browseNavItem">
+     <li className="browseNavItem">
        	<a href="#" onClick={this.loadFacetResults} className={this.state["selected"] ? "browseNavItemSelected" : ""}>{this.props.label}</a>
       </li>
     );

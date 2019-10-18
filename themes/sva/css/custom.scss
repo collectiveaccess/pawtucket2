@@ -98,6 +98,7 @@ small {
 	margin-left: 20px;
 	max-width: 600px;
 	border-bottom: none !important;
+	display: block;
 	}
 	&--find {
 	@extend .masonry-title;
@@ -159,6 +160,7 @@ small {
 
 .card {
 	border: none !important;
+	display: block;
 	img:hover {
 		opacity: 0.5;
 	}
@@ -443,7 +445,7 @@ footer {
 }
 @media (min-width:1200px) {
 	.container {
-		max-width: 1170px
+		max-width: 1270px
 	}
 }
 
@@ -602,8 +604,9 @@ div.search-control {
 	padding-top:20px;
 }
 .inlinesearch {
-	width: 100%;
+	width: 150px;
 	background-color: $bg-light;
+	color: $primary-color;
 	margin-top: 10px;
 	margin-bottom: 10px;
 	position: relative;
@@ -613,6 +616,7 @@ div.search-control {
 	border-left: none;
 	font-family: $font-stack;
 	height: 100%;
+	font-size: 22px;
 }
 .inlinesearch:focus {
 	border-bottom: 1px solid #000;
@@ -637,6 +641,14 @@ div.search-control {
 .facet {
 	display: block;
 }
+.facetlabel {
+	font-size: 10pt;
+	color: #666;
+	text-transform: capitalize;
+}
+.facetname {
+	font-size: 10pt;
+}
 
 .button {
 	border: 1px solid $primary-color;
@@ -655,11 +667,13 @@ div.search-control {
 }
 
 .options-filter-widget {
-	font-size:1rem;
-	font-family: $sans-serif;	
-	text-transform: uppercase;
+	font-size: 22px;
+	padding-bottom: 10px;
 }
-
+.options-filters {
+	font-size: 12pt;
+	padding-top: 10px;
+}
 .filters {
 	list-style: none;
 	padding: 0px !important;
@@ -677,10 +691,9 @@ div.search-control {
 	 .number {
 		margin-left: -3px;
 	}
-}
-
-label {
-margin-bottom: 0;
+	label {
+		margin-bottom: 0;
+	}
 }
 
 /* MEDIA BREAKPOINT RESPONSIVE DESIGN */
@@ -691,6 +704,10 @@ margin-bottom: 0;
 	}
 	.headerwrapper {
 		padding-top: 90px;
+	}
+	.filters li {
+	display: inline-block;
+	padding-right: 10px;
 	}
 }
 @media (max-width: $breakpoint-sm) {
@@ -715,5 +732,9 @@ margin-bottom: 0;
 	}
 	.masonry-title {
 		border-bottom: 1px solid $primary-color;
+	}
+	.filters li {
+	display: inline-block;
+	padding-right: 5px;
 	}
 }
