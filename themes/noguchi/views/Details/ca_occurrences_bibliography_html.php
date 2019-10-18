@@ -26,7 +26,7 @@
             </div>
 <?php
  			}
- 			if($vs_reps = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='depicts'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values))){
+ 			if($vs_reps = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToTypes='archival_item,document,objects,photographs,digital,print,strip,transparency,strip_image'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values))){
  				$va_rep_ids = explode(";", $vs_reps);
  				if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
 ?>  
@@ -157,7 +157,7 @@
 
             </div>
         </section>
-{{{<ifcount code="ca_objects" restrictToRelationshipTypes="reference" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version" min="1">
+{{{<ifcount code="ca_objects" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version" min="1">
         <section class="block border">
             <div class="wrap">
                 <div class="block-half text-align-center">
@@ -166,7 +166,7 @@
             </div>
             <div class="module_carousel archive_related" data-prevnext="false">
 				<div class="carousel-main">
-					<unit relativeTo="ca_objects" restrictToRelationshipTypes="reference" delimiter=" " restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version">
+					<unit relativeTo="ca_objects" delimiter=" " restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version">
 						<div class="carousel-cell">
 
 							<l>
