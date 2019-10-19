@@ -71,6 +71,7 @@
 							case "detail":
 								switch(strToLower($this->request->getAction())){
 									case "archival":
+									case "library":
 										print caNavLink("Isamu Noguchi Archive", "", "", "Archive", "Index");
 									break;
 									# ---------------------------------------
