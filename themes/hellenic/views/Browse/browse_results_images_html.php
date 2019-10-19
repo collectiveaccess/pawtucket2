@@ -126,6 +126,11 @@
 						}
 						$vs_description = join($va_tmp, ", ");
 					}
+					
+					 if($e = $qr_res->get('ca_entities.preferred_labels.displayname', ['restrictToRelationshipType' => ['interviewee'], 'delimiter' => ', '])){
+                            $vs_description .= "<br/>{$e}";
+                    }
+					
 					if ($vs_collection = $qr_res->get("ca_collections.preferred_labels", array('delimiter' => ', ', 'checkAccess' => $va_access_values))){
 						$vs_collection = "<div>".$vs_collection."</div>";
 					} else {
