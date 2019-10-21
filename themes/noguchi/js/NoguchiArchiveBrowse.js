@@ -168,6 +168,7 @@ class NoguchiArchiveBrowseFilterControls extends React.Component {
 	static contextType = NoguchiArchiveBrowseContext;
 
 	render() {
+		let c  = (this.context.state.resultSize === null);
 		return(
 				<section className="ca_filters">
 					<div className="wrap">
@@ -201,23 +202,30 @@ class NoguchiArchiveBrowseFacetList extends React.Component {
 		super(props);
 
 		initBrowseFilterList(this, props);
-	};
+	}
 
 	render() {
-		let facetButtons = [];
+		let facetButtons = [], facetPanels = [];
 		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "Loading...";
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
 				facetButtons.push((<NoguchiArchiveBrowseFacetButton key={n} text={this.context.state.availableFacets[n].label_plural}
 															  name={n} callback={this.toggleFacetPanel}/>));
+
+				let isOpen = ((this.context.state.selectedFacet !== null) && (this.context.state.selectedFacet === n)) ? 'true' : 'false';
+				facetPanels.push((<NoguchiArchiveBrowseFacetPanel open={isOpen} facetName={n}
+																  facetLoadUrl={this.props.facetLoadUrl} ref={this.facetPanelRefs[n]}
+																  loadResultsCallback={this.context.loadResultsCallback}
+																  closeFacetPanelCallback={this.closeFacetPanel}
+																  arrowPosition={this.state.arrowPosition}
+				/>));
 			}
 			if(facetButtons.length == 0){
 				filterLabel = "";
 			}
 		}
 
-		let isOpen = (this.state.selected !== null) ? 'true' : 'false';
 
 		return(
 			<div className="options-filter-widget">
@@ -225,12 +233,7 @@ class NoguchiArchiveBrowseFacetList extends React.Component {
 					<span className="caption-text">{filterLabel}</span>
 					{facetButtons}
 				</div>
-				<NoguchiArchiveBrowseFacetPanel open={isOpen} facetName={this.state.selected}
-										  facetLoadUrl={this.props.facetLoadUrl} ref={this.facetPanelRef}
-										  loadResultsCallback={this.context.loadResultsCallback}
-										  closeFacetPanelCallback={this.closeFacetPanel}
-												arrowPosition={this.state.arrowPosition}
-				/>
+				{facetPanels}
 			</div>
 		)
 	}
@@ -262,7 +265,12 @@ class NoguchiArchiveBrowseFacetButton extends React.Component {
  *
  * Props are:
  * 		open : controls visibility of panel; if set to a true value, or the string "true"  panel is visible.
- * 	  	panelArrowRef :
+ * 	  	facetName :
+ * 	  	facetLoadUrl :
+ * 	  	ref :
+ * 	  	loadResultsCallback :
+ * 	  	closeFacetPanelCallback :
+ *		arrowPosition :
  *
  * Sub-components are:
  * 		<NONE>
@@ -306,6 +314,7 @@ class NoguchiArchiveBrowseFacetPanel extends React.Component {
 					<div className="inner">
 						<div className="inner-crop">
 							<div className="wrap">
+								{this.props.facetName}
 								<ul className="ul-options" data-values="type_facet">
 									{options}
 								</ul>
@@ -332,7 +341,7 @@ class NoguchiArchiveBrowseFacetPanel extends React.Component {
  * Used by:
  *  	NoguchiArchiveBrowseFacetPanel
  *
- * Uses context: NoguchiArchiveBrowseFacetPanel
+ * Uses context: NoguchiArchiveBrowseContext
  */
 class NoguchiArchiveBrowseFacetPanelItem extends React.Component {
 	static contextType = NoguchiArchiveBrowseContext;
@@ -405,6 +414,8 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 			collection_facet: {}
 		};
 		filters.collection_facet[collection_id] = collection_name;
+
+		this.context.closeFacetPanel();
 		this.context.reloadResults(filters, true);
 	}
 
@@ -418,6 +429,9 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 			_search: {}
 		};
 		filters._search[search] = search;
+		let state = this.context.state;
+		state.selectedFacet = null;
+		this.context.closeFacetPanel();
 		this.context.reloadResults(filters, true);
 
 		e.preventDefault();
@@ -514,7 +528,7 @@ class NoguchiArchiveBrowseResults extends React.Component {
 				resultList.push(<NoguchiArchiveBrowseResultItem key={r.id} data={r}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
-			resultList.push(<h2>No results found</h2>)
+			resultList.push(<h2 key='no_results'>No results found</h2>)
 		}
 
 		return(
@@ -527,7 +541,7 @@ class NoguchiArchiveBrowseResults extends React.Component {
 					</div>
 				</section>
 				<NoguchiArchiveBrowseResultLoadMoreButton start={this.context.state.start} itemsPerPage={this.context.state.itemsPerPage}
-												   size={this.context.state.resultSize} loadMoreHandler={this.context.loadMoreResults}
+												   size={this.context.state.totalSize} loadMoreHandler={this.context.loadMoreResults}
 												   loadMoreRef={this.context.loadMoreRef}/>
 			</div>
 		);
@@ -555,7 +569,7 @@ class NoguchiArchiveBrowseResultLoadMoreButton extends React.Component {
 		if ((this.props.start + this.props.itemsPerPage) < this.props.size) {
 			return (
 				<section className="block text-align-center">
-				<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>Load More +</a>
+					<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>Load More +</a>
 				</section>);
 		} else {
 			return(<span></span>)
