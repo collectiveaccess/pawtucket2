@@ -6,7 +6,7 @@
                 <div class="overlay">
                     <div class="inner">
                         <h1 class="headline-l">Isamu Noguchi Catalogue Raisonné</h1>
-                        <?php print caNavLink("Enter", "button white wide", "", "Browse", "CR"); ?>
+                        <?php print caNavLink("Enter", "button white wide", "", "Browse", "CR", array('facet' => 'has_media_facet', 'id' => 1)); ?>
                     </div>
                 </div>
             </a>
