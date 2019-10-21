@@ -98,13 +98,13 @@ class NoguchiLibraryBrowseStatistics extends React.Component {
 
 	render() {
 		return(<div className="current">
-			<div className="body-sans">{(this.context.state.resultSize > 0) ? ((this.context.state.resultSize== 1) ?
-				"Showing 1 Result"
-				:
-				"Showing " + this.context.state.resultSize + " Results") : "Loading..."}.</div>
+				<div className="body-sans">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
+					"Showing 1 Result"
+					:
+					"Showing " + this.context.state.resultSize + " Results") : "Loading..."}.</div>
 
 				<NoguchiLibraryBrowseCurrentFilterList/>
-		</div>
+			</div>
 		);
 	}
 }
@@ -204,13 +204,21 @@ class NoguchiLibraryBrowseFacetList extends React.Component {
 	};
 
 	render() {
-		let facetButtons = [];
+		let facetButtons = [], facetPanels = [];
 		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "Loading...";
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
 				facetButtons.push((<NoguchiLibraryBrowseFacetButton key={n} text={this.context.state.availableFacets[n].label_plural}
 															  name={n} callback={this.toggleFacetPanel}/>));
+
+				let isOpen = ((this.context.state.selectedFacet !== null) && (this.context.state.selectedFacet === n)) ? 'true' : 'false';
+				facetPanels.push((<NoguchiLibraryBrowseFacetPanel open={isOpen} facetName={n} key={n}
+																	   facetLoadUrl={this.props.facetLoadUrl} ref={this.facetPanelRefs[n]}
+																	   loadResultsCallback={this.context.loadResultsCallback}
+																	   closeFacetPanelCallback={this.closeFacetPanel}
+																	   arrowPosition={this.state.arrowPosition}
+				/>));
 			}
 			if(facetButtons.length == 0){
 				filterLabel = "";
@@ -225,12 +233,7 @@ class NoguchiLibraryBrowseFacetList extends React.Component {
 					<span className="caption-text">{filterLabel}</span>
 					{facetButtons}
 				</div>
-				<NoguchiLibraryBrowseFacetPanel open={isOpen} facetName={this.state.selected}
-										  facetLoadUrl={this.props.facetLoadUrl} ref={this.facetPanelRef}
-										  loadResultsCallback={this.context.loadResultsCallback}
-										  closeFacetPanelCallback={this.closeFacetPanel}
-												arrowPosition={this.state.arrowPosition}
-				/>
+				{facetPanels}
 			</div>
 		)
 	}
@@ -259,10 +262,16 @@ class NoguchiLibraryBrowseFacetButton extends React.Component {
 
 /**
  * Visible on-demand panel containing facet values and UI to select and apply values as browse filters.
+ * A panel is created for each available facet.
  *
  * Props are:
  * 		open : controls visibility of panel; if set to a true value, or the string "true"  panel is visible.
- * 	  	panelArrowRef :
+ * 	  	facetName : Name of facet this panel will display
+ * 	  	facetLoadUrl : URL used to load facet
+ * 	  	ref : A ref for this panel
+ * 	  	loadResultsCallback : Function to call when new filter are applied
+ * 	  	closeFacetPanelCallback : Function to call when panel is closed
+ *		arrowPosition : Horizontal coordinate to position facet arrow at. This will generally be at the point where the facet was clicked.
  *
  * Sub-components are:
  * 		<NONE>
@@ -483,11 +492,14 @@ class NoguchiLibraryBrowseResults extends React.Component {
 
 	render() {
 		let resultList = [];
-		for (let i in this.context.state.resultList) {
-			let r = this.context.state.resultList[i];
-			resultList.push(<NoguchiLibraryBrowseResultItem key={r.id} data={r}/>)
+		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
+			for (let i in this.context.state.resultList) {
+				let r = this.context.state.resultList[i];
+				resultList.push(<NoguchiLibraryBrowseResultItem key={r.id} data={r}/>)
+			}
+		} else if (this.context.state.resultSize === 0) {
+			resultList.push(<h2>No results found</h2>)
 		}
-
 		return(
 			<div>
 				<section className="block block-quarter-top">
@@ -498,7 +510,7 @@ class NoguchiLibraryBrowseResults extends React.Component {
 					</div>
 				</section>
 				<NoguchiLibraryBrowseResultLoadMoreButton start={this.context.state.start} itemsPerPage={this.context.state.itemsPerPage}
-												   size={this.context.state.resultSize} loadMoreHandler={this.context.loadMoreResults}
+												   size={this.context.state.totalSize} loadMoreHandler={this.context.loadMoreResults}
 												   loadMoreRef={this.context.loadMoreRef}/>
 			</div>
 		);

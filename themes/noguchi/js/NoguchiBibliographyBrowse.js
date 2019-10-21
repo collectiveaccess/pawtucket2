@@ -223,20 +223,26 @@ class NoguchiBibliographyBrowseFacetList extends React.Component {
 	};
 
 	render() {
-		let facetButtons = [];
+		let facetButtons = [], facetPanels = [];
 		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "Loading...";
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
 				facetButtons.push((<NoguchiBibliographyBrowseFacetButton key={n} text={this.context.state.availableFacets[n].label_plural}
 															  name={n} callback={this.toggleFacetPanel}/>));
+
+				let isOpen = ((this.context.state.selectedFacet !== null) && (this.context.state.selectedFacet === n)) ? 'true' : 'false';
+				facetPanels.push((<NoguchiBibliographyBrowseFacetPanel open={isOpen} facetName={n} key={n}
+																	   facetLoadUrl={this.props.facetLoadUrl} ref={this.facetPanelRefs[n]}
+																	   loadResultsCallback={this.context.loadResultsCallback}
+																	   closeFacetPanelCallback={this.closeFacetPanel}
+																	   arrowPosition={this.state.arrowPosition}
+				/>));
 			}
 			if(facetButtons.length == 0){
 				filterLabel = "";
 			}
 		}
-
-		let isOpen = (this.state.selected !== null) ? 'true' : 'false';
 
 		return(
 			<div className="options-filter-widget">
@@ -244,12 +250,7 @@ class NoguchiBibliographyBrowseFacetList extends React.Component {
 					<span className="caption-text">{filterLabel}</span>
 					{facetButtons}
 				</div>
-				<NoguchiBibliographyBrowseFacetPanel open={isOpen} facetName={this.state.selected}
-										  facetLoadUrl={this.props.facetLoadUrl} ref={this.facetPanelRef}
-										  loadResultsCallback={this.context.loadResultsCallback}
-										  closeFacetPanelCallback={this.closeFacetPanel}
-												arrowPosition={this.state.arrowPosition}
-				/>
+				{facetPanels}
 			</div>
 		)
 	}
@@ -278,10 +279,16 @@ class NoguchiBibliographyBrowseFacetButton extends React.Component {
 
 /**
  * Visible on-demand panel containing facet values and UI to select and apply values as browse filters.
+ * A panel is created for each available facet.
  *
  * Props are:
  * 		open : controls visibility of panel; if set to a true value, or the string "true"  panel is visible.
- * 	  	panelArrowRef :
+ * 	  	facetName : Name of facet this panel will display
+ * 	  	facetLoadUrl : URL used to load facet
+ * 	  	ref : A ref for this panel
+ * 	  	loadResultsCallback : Function to call when new filter are applied
+ * 	  	closeFacetPanelCallback : Function to call when panel is closed
+ *		arrowPosition : Horizontal coordinate to position facet arrow at. This will generally be at the point where the facet was clicked.
  *
  * Sub-components are:
  * 		<NONE>
@@ -470,7 +477,7 @@ class NoguchiBibliographyBrowseResults extends React.Component {
 					</div>
 				</section>
 				<NoguchiBibliographyBrowseResultLoadMoreButton start={this.context.state.start} itemsPerPage={this.context.state.itemsPerPage}
-												   size={this.context.state.resultSize} loadMoreHandler={this.context.loadMoreResults}
+												   size={this.context.state.totalSize} loadMoreHandler={this.context.loadMoreResults}
 												   loadMoreRef={this.context.loadMoreRef}/>
 			</div>
 		);

@@ -214,7 +214,7 @@ class NoguchiArchiveBrowseFacetList extends React.Component {
 															  name={n} callback={this.toggleFacetPanel}/>));
 
 				let isOpen = ((this.context.state.selectedFacet !== null) && (this.context.state.selectedFacet === n)) ? 'true' : 'false';
-				facetPanels.push((<NoguchiArchiveBrowseFacetPanel open={isOpen} facetName={n}
+				facetPanels.push((<NoguchiArchiveBrowseFacetPanel open={isOpen} facetName={n} key={n}
 																  facetLoadUrl={this.props.facetLoadUrl} ref={this.facetPanelRefs[n]}
 																  loadResultsCallback={this.context.loadResultsCallback}
 																  closeFacetPanelCallback={this.closeFacetPanel}
@@ -262,15 +262,16 @@ class NoguchiArchiveBrowseFacetButton extends React.Component {
 
 /**
  * Visible on-demand panel containing facet values and UI to select and apply values as browse filters.
+ * A panel is created for each available facet.
  *
  * Props are:
  * 		open : controls visibility of panel; if set to a true value, or the string "true"  panel is visible.
- * 	  	facetName :
- * 	  	facetLoadUrl :
- * 	  	ref :
- * 	  	loadResultsCallback :
- * 	  	closeFacetPanelCallback :
- *		arrowPosition :
+ * 	  	facetName : Name of facet this panel will display
+ * 	  	facetLoadUrl : URL used to load facet
+ * 	  	ref : A ref for this panel
+ * 	  	loadResultsCallback : Function to call when new filter are applied
+ * 	  	closeFacetPanelCallback : Function to call when panel is closed
+ *		arrowPosition : Horizontal coordinate to position facet arrow at. This will generally be at the point where the facet was clicked.
  *
  * Sub-components are:
  * 		<NONE>
