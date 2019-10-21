@@ -315,7 +315,6 @@ class NoguchiArchiveBrowseFacetPanel extends React.Component {
 					<div className="inner">
 						<div className="inner-crop">
 							<div className="wrap">
-								{this.props.facetName}
 								<ul className="ul-options" data-values="type_facet">
 									{options}
 								</ul>
