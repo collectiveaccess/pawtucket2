@@ -894,6 +894,24 @@
 	}
 	# ---------------------------------------
 	/**
+	 *
+	 *
+	 * @return array
+	 */
+	function caGetGlobalValuesAsArray() {
+		$o_config = Configuration::load();
+
+		$values = [];
+		if(is_array($template_values = $o_config->getAssoc('global_template_values'))) {
+			$o_appvars = new ApplicationVars();
+			foreach($template_values as $name => $info) {
+				$values[$name] = $o_appvars->getVar("pawtucket_global_{$name}");
+			}
+		}
+		return $values;
+	}
+	# ---------------------------------------
+	/**
 	 * 
 	 *
 	 * 

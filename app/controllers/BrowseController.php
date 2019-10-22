@@ -88,7 +88,7 @@
 			$t_instance = Datamodel::getInstance($vs_class, true);
 
 			$items_per_page = caGetOption('itemsPerPage', $va_browse_info, 60, ['castTo' => 'int']);
- 			
+
  			// Now that table name is known we can set standard view vars
  			parent::setTableSpecificViewVars();
  			
@@ -353,6 +353,13 @@
 				if (($intro = caGetOption('introduction', $va_browse_info, null)) && is_array($intro)) {
 					// Look for facets
 					$intro_set = false;
+
+					// Substitute global vars
+					$global_vars = caGetGlobalValuesAsArray();
+					foreach($global_vars as $k => $v) {
+						$global_vars["_global_var.{$k}"] = $v;
+					}
+
 					foreach($intro as $k => $v) {
 						if(!isset($criteria[$k])) { continue; }
 						if ($facet_info[$k]['type'] !== 'authority') { continue; }
@@ -360,16 +367,19 @@
 						$id = array_pop(array_keys($criteria[$k]));
 
 						if (($t_instance = Datamodel::getInstance($facet_info[$k]['table'], true)) && ($t_instance->load($id)) && in_array($t_instance->get('access'), $this->opa_access_values)) {
-							$data['introduction']['title'] = $t_instance->getWithTemplate($intro[$k]['title']);
-							$data['introduction']['description'] = $t_instance->getWithTemplate($intro[$k]['description']);
+							$title_template = caProcessTemplate($intro[$k]['title'], $global_vars);
+							$description_template = caProcessTemplate($intro[$k]['description'], $global_vars);
+
+							$data['introduction']['title'] = $t_instance->getWithTemplate($title_template);
+							$data['introduction']['description'] = $t_instance->getWithTemplate($description_template);
 
 							$intro_set = true;
 							break;
 						}
 					}
 					if (!$intro_set) {
-						$data['introduction']['title'] = caGetOption('title', $intro, '');
-						$data['introduction']['description'] = caGetOption('description', $intro, '');
+						$data['introduction']['title'] = caProcessTemplate(caGetOption('title', $intro, ''), $global_vars);
+						$data['introduction']['description'] = caProcessTemplate(caGetOption('description', $intro, ''), $global_vars);
 					}
 				}
 

@@ -71,7 +71,7 @@ class NoguchiBibliographyBrowseIntro extends React.Component {
 		return (<section className="intro">
 			<div className="wrap block-large">
 				<div className="wrap-max-content">
-					<div className="block-half body-text-l">{this.context.state.description}</div>
+					<div className="block-half body-text-l" dangerouslySetInnerHTML={{__html: this.context.state.description}}></div>
 				</div>
 			</div>
 		</section>)
