@@ -367,8 +367,8 @@
 						$id = array_pop(array_keys($criteria[$k]));
 
 						if (($t_instance = Datamodel::getInstance($facet_info[$k]['table'], true)) && ($t_instance->load($id)) && in_array($t_instance->get('access'), $this->opa_access_values)) {
-							$title_template = caProcessTemplate($intro[$k]['title'], $global_vars);
-							$description_template = caProcessTemplate($intro[$k]['description'], $global_vars);
+							$title_template = caProcessTemplate($intro[$k]['title'], $global_vars, ['skipTagsWithoutValues' => true]);
+							$description_template = caProcessTemplate($intro[$k]['description'], $global_vars, ['skipTagsWithoutValues' => true]);
 
 							$data['introduction']['title'] = $t_instance->getWithTemplate($title_template);
 							$data['introduction']['description'] = $t_instance->getWithTemplate($description_template);
