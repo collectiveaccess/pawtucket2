@@ -115,7 +115,7 @@
                     </div>
                     
                     <div class="img-wrapper archive_detail">
-                        <img nopin="nopin" src="<?php print $vs_media_url; ?>" />
+                       <?php print $this->getVar('mediaViewer'); ?>
                     </div>
 
                 </div>

@@ -34,6 +34,9 @@
         <script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
         <script type='text/javascript' src='<?php print $this->request->getThemeUrlPath(); ?>/jslib/jquery-3.4.0.min.js?ver=<?= rand(); ?>'></script>
         <script type='text/javascript' src='<?php print $this->request->getThemeUrlPath(); ?>/jslib/libs-head-min.js?ver=<?= rand(); ?>'></script>
+        
+<link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/diva/diva.css"/>	
+<script type="text/javascript" src="<?php print $this->request->getAssetsUrlPath(); ?>/diva/diva.js"></script>
     </head>
     <body class="collective-access is-development" id="pawtucketApp" itemscope itemtype="http://schema.org/WebPage">
 		<script type="text/javascript">
