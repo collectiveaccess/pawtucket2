@@ -49,7 +49,8 @@
         'data': {
 			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
 			endpoint: "<?php print $action; ?>",
-			initialFilters: <?php print json_encode($initial_criteria); ?>
+			initialFilters: <?php print json_encode($initial_criteria); ?>,
+			view: "thumbnails"
         }
     };
 </script>

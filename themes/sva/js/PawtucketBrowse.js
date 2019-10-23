@@ -16,7 +16,10 @@ const PawtucketBrowseContext = React.createContext();
  * Top-level container for browse interface. Is values for context PawtucketBrowseContext.
  *
  * Props are:
- * 		<NONE>
+ * 		baseUrl : Base Url to browse web service
+ *		initialFilters : Optional dictionary of filters to apply upon load
+ *		view : Optional results view specifier
+ * 		browseKey : Optional browse cache key. If supplied the initial load state will be the referenced browse criteria and result set.
  *
  * Sub-components are:
  * 		PawtucketBrowseNavigation
@@ -44,7 +47,7 @@ class PawtucketBrowse extends React.Component{
 					</div>  
 				</div>
 					<PawtucketBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
-					<PawtucketBrowseResults/>
+					<PawtucketBrowseResults view={this.state.view}/>
 				</main>
 			</PawtucketBrowseContext.Provider>
 		);
@@ -380,7 +383,7 @@ class PawtucketBrowseNavigation extends React.Component {
  * 		PawtucketBrowseResultLoadMoreButton
  *
  * Props are:
- * 		<NONE>
+ * 		view : view format to use for display of results
  *
  * Used by:
  *  	PawtucketBrowse
@@ -395,34 +398,40 @@ class PawtucketBrowseResults extends React.Component {
 		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
-				resultList.push(<PawtucketBrowseResultItem key={r.id} data={r}/>)
+				resultList.push(<PawtucketBrowseResultItem view={this.props.view} key={r.id} data={r}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
 			resultList.push(<h2>No results found</h2>)
 		}
 
-		return(
-			<div>
-				<section className="results">
-				<div className="row">
-					<div className="col-lg-2 pl-0">
-						<PawtucketBrowseNavigation/>
-						<PawtucketBrowseCurrentFilterList/> <br/>
-					    <PawtucketBrowseFacetList facetLoadUrl={this.props.facetLoadUrl}/>
+		switch(this.props.view) {
+			default:
+				return (
+					<div>
+						<section className="results">
+							<div className="row">
+								<div className="col-lg-2 pl-0">
+									<PawtucketBrowseNavigation/>
+									<PawtucketBrowseCurrentFilterList/> <br/>
+									<PawtucketBrowseFacetList facetLoadUrl={this.props.facetLoadUrl}/>
 
+								</div>
+								<div className="col-lg-10">
+									<div className="card-columns">
+										{resultList}
+									</div>
+								</div>
+							</div>
+						</section>
+						<PawtucketBrowseResultLoadMoreButton start={this.context.state.start}
+															 itemsPerPage={this.context.state.itemsPerPage}
+															 size={this.context.state.resultSize}
+															 loadMoreHandler={this.context.loadMoreResults}
+															 loadMoreRef={this.context.loadMoreRef}/>
 					</div>
-					<div className="col-lg-10">
-						<div className="card-columns">
-							{resultList}
-						</div>
-					</div>
-				</div>
-				</section>
-				<PawtucketBrowseResultLoadMoreButton start={this.context.state.start} itemsPerPage={this.context.state.itemsPerPage}
-												   size={this.context.state.resultSize} loadMoreHandler={this.context.loadMoreResults}
-												   loadMoreRef={this.context.loadMoreRef}/>
-			</div>
-		);
+				);
+				break;
+		}
 	}
 }
 
@@ -462,6 +471,7 @@ class PawtucketBrowseResultLoadMoreButton extends React.Component {
  *
  * Props are:
  * 		data : object containing data to display for result item
+ * 		view : view format to use for display of results
  *
  * Sub-components are:
  * 		<NONE>
@@ -475,17 +485,22 @@ class PawtucketBrowseResultItem extends React.Component {
 
 		let detail_url = data.detailUrl;	// TODO: generalize
 
-		return (
-			<div className="card mx-auto">
-				<a href={detail_url}>				
-				    <div className="colorblock">
-						<div dangerouslySetInnerHTML={{__html : data.representation }} />
+		switch(this.props.view) {
+			default:
+				return (
+					<div className="card mx-auto">
+						<a href={detail_url}>
+							<div className="colorblock">
+								<div dangerouslySetInnerHTML={{__html: data.representation}}/>
+							</div>
+						</a>
+						<div className="masonry-title"><a href={detail_url}>{data.label}</a><br/> {data.exhibitdate}
+						</div>
+
 					</div>
-				</a>
-						<div className="masonry-title"><a href={detail_url}>{data.label}</a><br/> {data.exhibitdate}</div>
-				
-			</div>
-		);
+				);
+				break;
+		}
 	}
 }
 
@@ -497,6 +512,6 @@ export default function _init() {
 	ReactDOM.render(
 		<PawtucketBrowse baseUrl={appData.baseUrl} endpoint={appData.endpoint}
 							  initialFilters={appData.initialFilters} title={appData.title}
-							  browseKey={appData.key}
+							  browseKey={appData.key} view={appData.view}
 							  description={appData.description}/>, document.querySelector(selector));
 }

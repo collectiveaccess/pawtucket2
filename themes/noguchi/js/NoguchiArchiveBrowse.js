@@ -16,7 +16,10 @@ const NoguchiArchiveBrowseContext = React.createContext();
  * Top-level container for browse interface. Is values for context NoguchiArchiveBrowseContext.
  *
  * Props are:
- * 		<NONE>
+ * 		baseUrl : Base Url to browse web service
+ *		initialFilters : Optional dictionary of filters to apply upon load
+ *		view : Optional results view specifier
+ * 		browseKey : Optional browse cache key. If supplied the initial load state will be the referenced browse criteria and result set.
  *
  * Sub-components are:
  * 		NoguchiArchiveBrowseIntro
@@ -31,6 +34,7 @@ class NoguchiArchiveBrowse extends React.Component{
 	}
 
 	render() {
+		console.log("view", this.state);
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 		return(
 			<NoguchiArchiveBrowseContext.Provider value={this}>
@@ -40,7 +44,7 @@ class NoguchiArchiveBrowse extends React.Component{
 					<NoguchiArchiveBrowseNavigation/>
 					<NoguchiArchiveBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
 
-					<NoguchiArchiveBrowseResults/>
+					<NoguchiArchiveBrowseResults view={this.state.view}/>
 				</main>
 			</NoguchiArchiveBrowseContext.Provider>
 		);
@@ -510,7 +514,7 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
  * 		NoguchiArchiveBrowseResultLoadMoreButton
  *
  * Props are:
- * 		<NONE>
+ * 		view : view format to use for display of results
  *
  * Used by:
  *  	NoguchiArchiveBrowse
@@ -525,26 +529,31 @@ class NoguchiArchiveBrowseResults extends React.Component {
 		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
-				resultList.push(<NoguchiArchiveBrowseResultItem key={r.id} data={r}/>)
+				resultList.push(<NoguchiArchiveBrowseResultItem view={this.props.view} key={r.id} data={r}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
 			resultList.push(<h2 key='no_results'>No results found</h2>)
 		}
 
-		return(
-			<div>
-				<section className="block block-quarter-top">
-					<div className="wrap">
-						<div className="grid-flexbox-layout grid-ca-archive">
-							{resultList}
-						</div>
-					</div>
-				</section>
-				<NoguchiArchiveBrowseResultLoadMoreButton start={this.context.state.start} itemsPerPage={this.context.state.itemsPerPage}
-												   size={this.context.state.totalSize} loadMoreHandler={this.context.loadMoreResults}
-												   loadMoreRef={this.context.loadMoreRef}/>
-			</div>
-		);
+		switch(this.props.view) {
+			default:
+				return (
+					<div>
+						<section className="block block-quarter-top">
+							<div className="wrap">
+								<div className="grid-flexbox-layout grid-ca-archive">
+									{resultList}
+								</div>
+							</div>
+						</section>
+						<NoguchiArchiveBrowseResultLoadMoreButton start={this.context.state.start}
+																  itemsPerPage={this.context.state.itemsPerPage}
+																  size={this.context.state.totalSize}
+																  loadMoreHandler={this.context.loadMoreResults}
+																  loadMoreRef={this.context.loadMoreRef}/>
+					</div>);
+				break;
+		}
 	}
 }
 
@@ -582,6 +591,7 @@ class NoguchiArchiveBrowseResultLoadMoreButton extends React.Component {
  *
  * Props are:
  * 		data : object containing data to display for result item
+ * 		view : view format to use for display of results
  *
  * Sub-components are:
  * 		<NONE>
@@ -596,27 +606,32 @@ class NoguchiArchiveBrowseResultItem extends React.Component {
 			"backgroundImage": "url(" + data.representation + ")"
 		};
 
-		return (
-			<div className="item-grid">
-				<a href={data.detailUrl}>
-					<div className="img-wrapper archive_thumb block-quarter">
-						<div className="bg-image"
-							 style={styles}></div>
-					</div>
-					<div className="text">
-						<div className="text_position">
-							<div className="ca-identifier text-gray">{data.idno}</div>
-							<div className="thumb-text clamp" data-lines="3">{data.label}</div>
+		switch(this.props.view) {
+			default:
+				return
+					(
+						<div className="item-grid">
+							<a href={data.detailUrl}>
+								<div className="img-wrapper archive_thumb block-quarter">
+									<div className="bg-image"
+										 style={styles}></div>
+								</div>
+								<div className="text">
+									<div className="text_position">
+										<div className="ca-identifier text-gray">{data.idno}</div>
+										<div className="thumb-text clamp" data-lines="3">{data.label}</div>
 
-							<div className="text_full">
-								<div className="ca-identifier text-gray">{data.idno}</div>
-								<div className="thumb-text">{data.label}</div>
-							</div>
+										<div className="text_full">
+											<div className="ca-identifier text-gray">{data.idno}</div>
+											<div className="thumb-text">{data.label}</div>
+										</div>
+									</div>
+								</div>
+							</a>
 						</div>
-					</div>
-				</a>
-			</div>
-		);
+					);
+				break;
+		}
 	}
 }
 
@@ -627,6 +642,6 @@ class NoguchiArchiveBrowseResultItem extends React.Component {
 export default function _init() {
 	ReactDOM.render(
 		<NoguchiArchiveBrowse baseUrl={appData.baseUrl} endpoint={appData.endpoint}
-							  initialFilters={appData.initialFilters}
+							  initialFilters={appData.initialFilters} view={appData.view}
 							  browseKey={appData.key}/>, document.querySelector(selector));
 }

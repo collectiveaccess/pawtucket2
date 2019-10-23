@@ -20,7 +20,8 @@ function initialState() {
 		facetList: null,
 		filters: null,
 		selectedFacet: null,
-		introduction: { title: null, description: null }
+		introduction: { title: null, description: null },
+		view: null
 	};
 }
 
@@ -115,6 +116,7 @@ function getFilterString(filters) {
 function initBrowseContainer(instance, props) {
 	let that = instance;
 	that.state = initialState();
+	that.state.view = props.view;
 
 	/**
 	 * Load browse results
@@ -181,6 +183,7 @@ function initBrowseContainer(instance, props) {
 		state.resultSize = null;
 		that.setState(state);
 		that.loadResults(function(newState) {
+			newState.view = that.state.view; // preserve view setting
 			that.setState(newState);
 		}, Object.keys(state.filters).length === 0);
 	};
@@ -203,6 +206,7 @@ function initBrowseContainer(instance, props) {
 	}
 
 	that.loadResults(function(newState) {
+		newState.view = that.state.view; // preserve view setting
 		that.setState(newState);
 	});
 

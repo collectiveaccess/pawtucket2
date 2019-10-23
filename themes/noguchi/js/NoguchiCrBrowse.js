@@ -22,7 +22,10 @@ const NoguchiCrBrowseContext = React.createContext();
  * Top-level container for browse interface. Is values for context NoguchiCrBrowseContext.
  *
  * Props are:
- * 		<NONE>
+ * 		baseUrl : Base Url to browse web service
+ *		initialFilters : Optional dictionary of filters to apply upon load
+ *		view : Optional results view specifier
+ * 		browseKey : Optional browse cache key. If supplied the initial load state will be the referenced browse criteria and result set.
  *
  * Sub-components are:
  * 		NoguchiCrBrowseIntro
@@ -62,7 +65,7 @@ class NoguchiCrBrowse extends React.Component{
 					<NoguchiCrBrowseNavigation/>
 					<NoguchiCrBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
 
-					<NoguchiCrBrowseResults/>
+					<NoguchiCrBrowseResults view={this.state.view}/>
 				</main>
 			</NoguchiCrBrowseContext.Provider>
 		);
@@ -524,7 +527,7 @@ class NoguchiCrBrowseNavigation extends React.Component {
  * 		NoguchiCrBrowseResultLoadMoreButton
  *
  * Props are:
- * 		<NONE>
+ * 		view : view format to use for display of results
  *
  * Used by:
  *  	NoguchiCrBrowse
@@ -539,24 +542,30 @@ class NoguchiCrBrowseResults extends React.Component {
 		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
-				resultList.push(<NoguchiCrBrowseResultItem key={r.id} data={r}/>)
+				resultList.push(<NoguchiCrBrowseResultItem view={this.props.view} key={r.id} data={r}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
 			resultList.push(<h2>No results found</h2>)
 		}
 
-		return(
-			<div>
-				<section className="wrap block block-top grid">
-					<div className="grid-flex grid-cr-browse">
-						{resultList}
+		switch(this.props.view) {
+			default:
+				return (
+					<div>
+						<section className="wrap block block-top grid">
+							<div className="grid-flex grid-cr-browse">
+								{resultList}
+							</div>
+						</section>
+						<NoguchiCrBrowseResultLoadMoreButton start={this.context.state.start}
+															 itemsPerPage={this.context.state.itemsPerPage}
+															 size={this.context.state.totalSize}
+															 loadMoreHandler={this.context.loadMoreResults}
+															 loadMoreRef={this.context.loadMoreRef}/>
 					</div>
-				</section>
-				<NoguchiCrBrowseResultLoadMoreButton start={this.context.state.start} itemsPerPage={this.context.state.itemsPerPage}
-												   size={this.context.state.totalSize} loadMoreHandler={this.context.loadMoreResults}
-												   loadMoreRef={this.context.loadMoreRef}/>
-			</div>
-		);
+				);
+				break;
+		}
 	}
 }
 
@@ -594,6 +603,7 @@ class NoguchiCrBrowseResultLoadMoreButton extends React.Component {
  *
  * Props are:
  * 		data : object containing data to display for result item
+ * 		view : view format to use for display of results
  *
  * Sub-components are:
  * 		<NONE>
@@ -610,17 +620,23 @@ class NoguchiCrBrowseResultItem extends React.Component {
 		if(remainder == 0){
 			itemClass = "item-grid item-large"; 
 		}
-		return (
-			<div class={itemClass}>
-				<a href={data.detailUrl}>
-					<div className="block-quarter" dangerouslySetInnerHTML={{__html: data.representation}}></div>
-					<div className="text block-quarter">
-						<div className="thumb-text clamp" data-lines="2">{data.label}</div>
-	                    <div className="ca-identifier text-gray">{data.date}</div>
+
+		switch(this.props.view) {
+			default:
+				return (
+					<div class={itemClass}>
+						<a href={data.detailUrl}>
+							<div className="block-quarter"
+								 dangerouslySetInnerHTML={{__html: data.representation}}></div>
+							<div className="text block-quarter">
+								<div className="thumb-text clamp" data-lines="2">{data.label}</div>
+								<div className="ca-identifier text-gray">{data.date}</div>
+							</div>
+						</a>
 					</div>
-				</a>
-			</div>
-		);
+				);
+				break;
+		}
 	}
 }
 
@@ -631,6 +647,6 @@ class NoguchiCrBrowseResultItem extends React.Component {
 export default function _init() {
 	ReactDOM.render(
 		<NoguchiCrBrowse baseUrl={appData.baseUrl} endpoint={appData.endpoint}
-							  initialFilters={appData.initialFilters}
+							  initialFilters={appData.initialFilters} view={appData.view}
 							  browseKey={appData.key}/>, document.querySelector(selector));
 }
