@@ -100,14 +100,7 @@
                                 </div>
 
                                 <div class="item">
-                                    <div class="trigger"><?php print caNavLink("Isamu Noguchi Personal Library", "", "", "Browse", "library"); ?></div>                
-                                    <div class="details subheadline text-gray">
-                                        <div class="inner">
-                                            <div class="block-quarter"><a href="archives_browse.php">One</a></div>
-                                            <div class="block-quarter"><a href="archives_browse.php">Two</a></div>
-                                            <div class="block-quarter"><a href="archives_browse.php">Three</a></div>
-                                        </div>
-                                    </div>
+                                    <div class="subheadline"><?php print caNavLink("Isamu Noguchi Personal Library", "", "", "Browse", "library"); ?></div>
                                 </div>
 
                                 <div class="item">
