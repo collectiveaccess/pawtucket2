@@ -55,14 +55,12 @@
 		}
 	}
 	
-	$vs_display_version = $vs_media = $vs_media_url = $vs_download_link = "";
+	$vs_display_version = $vs_download_link = "";
 	$t_representation = $this->getVar("t_representation");
 	if($t_representation){
 		$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
 		if($va_media_display_info && sizeof($va_media_display_info)){
 			($va_media_display_info["display_version"]) ? $vs_display_version = $va_media_display_info["display_version"] : "small";
-			$vs_media = $t_object->get("ca_object_representations.media.".$vs_display_version);
-			$vs_media_url = $t_object->get("ca_object_representations.media.".$vs_display_version.".url");
 		}
 		if($this->request->isLoggedIn()) { 
 			if(caObjectsDisplayDownloadLink($this->request, $vn_id, $t_representation)){
@@ -95,7 +93,6 @@
             </div>
 <?php
  			}
- 			if($vs_media_url){
 ?>  
             <div class="container-image-detail block">
                 <div class="img-container dark">
@@ -115,14 +112,11 @@
                     </div>
                     
                     <div class="img-wrapper archive_detail">
-                       <?php print $this->getVar('mediaViewer'); ?>
+                      <?php print $this->getVar('mediaViewer'); ?>
                     </div>
 
                 </div>
             </div>
-<?php
-			}
-?>
 
             <div class="pagination">
 <?php
