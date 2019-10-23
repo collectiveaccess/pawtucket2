@@ -608,8 +608,7 @@ class NoguchiArchiveBrowseResultItem extends React.Component {
 
 		switch(this.props.view) {
 			default:
-				return
-					(
+				return(
 						<div className="item-grid">
 							<a href={data.detailUrl}>
 								<div className="img-wrapper archive_thumb block-quarter">
