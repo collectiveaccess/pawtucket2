@@ -272,22 +272,24 @@
 				if ($t_representation) {
 					$this->view->setVar("t_representation", $t_representation);
 					$this->view->setVar("representation_id", $t_representation->get("representation_id"));
+					
+					if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("detail", $vs_mimetype = $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) {
+						throw new ApplicationException(_t('Invalid viewer'));
+					}
+					if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
+
+					$this->view->setVar('mediaViewer', $vs_viewer_name::getViewerHTML(
+						$this->request,
+						"representation:".$t_representation->getPrimaryKey(),
+						['context' => 'detail', 't_instance' => $t_representation, 't_subject' => $t_subject, 't_media' => $t_subject, 'display' => $va_media_display_info])
+					);
+
 				}else{
 					$t_representation = Datamodel::getInstance("ca_object_representations", true);
 					$this->view->setVar("representation_id", null);
 				}
 
 
-				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("detail", $vs_mimetype = $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) {
-					throw new ApplicationException(_t('Invalid viewer'));
-				}
-				if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
-
-				$this->view->setVar('mediaViewer', $vs_viewer_name::getViewerHTML(
-					$this->request,
-					"representation:".$t_representation->getPrimaryKey(),
-					['context' => 'detail', 't_instance' => $t_representation, 't_subject' => $t_subject, 't_media' => $t_subject, 'display' => $va_media_display_info])
-				);
 
 
 				// 
