@@ -41,10 +41,11 @@
 							$vs_display_version = "";
 							$t_rep = new ca_object_representations();
 							$t_rep->load($vn_rep_id);
-							$va_media_display_info = caGetMediaDisplayInfo('detail', $t_rep->getMediaInfo('media', 'original', 'MIMETYPE'));
-							if($va_media_display_info && sizeof($va_media_display_info)){
-								($va_media_display_info["display_version"]) ? $vs_display_version = $va_media_display_info["display_version"] : "small";
-							}
+							#$va_media_display_info = caGetMediaDisplayInfo('detail', $t_rep->getMediaInfo('media', 'original', 'MIMETYPE'));
+							#if($va_media_display_info && sizeof($va_media_display_info)){
+							#	($va_media_display_info["display_version"]) ? $vs_display_version = $va_media_display_info["display_version"] : "small";
+							#}
+							$vs_display_version = "page";
 							$va_thumbs[] = $t_rep->get("ca_object_representations.media.icon.url");
 							
 ?>

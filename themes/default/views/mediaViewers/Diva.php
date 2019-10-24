@@ -43,7 +43,8 @@
     	var diva = new Diva('diva-wrapper', {
 			objectData: "<?php print $vs_data_url; ?>/download/1",
 			fillParentHeight: true,
-			inBookLayout: true,
+			inGrid: false,
+			inBookLayout: false,
 			enableFullscreen: true,
 			zoomLevel: 2,
 			verticallyOriented: true

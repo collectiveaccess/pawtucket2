@@ -37,15 +37,13 @@
 	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
 	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
 
+	$vs_display_collection = str_replace("The Isamu Noguchi research collection > ", "", $t_object->get('ca_collections.hierarchy.preferred_labels', array("delimiter" => " > ")));
 	$va_collection_hierarchy = array_shift($t_object->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 	$vb_photo_collection = false;
 	if(is_array($va_collection_hierarchy) && sizeof($va_collection_hierarchy)){
 		foreach($va_collection_hierarchy as $vn_collection_heirarchy_level_id){
 			$t_collections = new ca_collections($vn_collection_heirarchy_level_id);
 			switch(strToLower($t_collections->get("type_id", array("convertCodesToDisplayText" => true)))){
-				case "sub-series":
-					$vs_display_collection = $t_collections->get("ca_collections.preferred_labels.name");
-				break;
 				case "series":
 					if(strToLower($t_collections->get("ca_collections.preferred_labels.name")) == "photography collection"){
 						$vb_photo_collection = true;
@@ -113,7 +111,7 @@
                     </div>
                     
                     <div class="<?php print ($vs_mimetype != "application/pdf") ? "img-wrapper " : ""; ?>archive_detail">
-                      <?php print $vs_mimetype."<br/>".$this->getVar('mediaViewer'); ?>
+                      <?php print $this->getVar('mediaViewer'); ?>
                     </div>
 
                 </div>
@@ -185,13 +183,22 @@
 <?php
 
 					}
-					if($vs_display_collection){						
+					if($vb_photo_collection){	
+?>
+						<div class="block-quarter">
+							<div class="eyebrow text-gray">Collection</div>
+							<div class="ca-data">Photography Collection</div>
+						</div>
+<?php
+					}else{
+						if($vs_display_collection){
 ?>
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Collection</div>
 							<div class="ca-data"><?php print $vs_display_collection; ?></div>
 						</div>
-<?php						
+<?php
+						}
 					}
 					$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("photographer"), "checkAccess" => $va_access_values, "returnWithStructure" => true));
 					if(is_array($va_entities) && sizeof($va_entities)){
@@ -224,7 +231,7 @@
             </div>
             <div class="module_carousel archive_related" data-prevnext="false">
 				<div class="carousel-main">
-					<unit relativeTo="ca_objects.related" delimiter=" " restrictToRelationshipTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version">
+					<unit relativeTo="ca_objects.related" delimiter=" " restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version">
 						<div class="carousel-cell">
 
 							<l>
@@ -256,7 +263,7 @@
             </div>
             <div class="module_carousel archive_related" data-prevnext="false">
 				<div class="carousel-main">
-					<unit relativeTo="ca_objects.related" delimiter=" " restrictToRelationshipTypes="archival_item,document,objects,photographs,digital,print,strip,transparency,strip_image">
+					<unit relativeTo="ca_objects.related" delimiter=" " restrictToTypes="archival_item,document,objects,photographs,digital,print,strip,transparency,strip_image">
 						<div class="carousel-cell">
 
 							<l>
