@@ -542,7 +542,7 @@ class NoguchiCrBrowseResults extends React.Component {
 		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
-				resultList.push(<NoguchiCrBrowseResultItem view={this.props.view} key={r.id} data={r}/>)
+				resultList.push(<NoguchiCrBrowseResultItem view={this.props.view} key={r.id} data={r} count={i} />)
 			}
 		} else if (this.context.state.resultSize === 0) {
 			resultList.push(<h2>No results found</h2>)
