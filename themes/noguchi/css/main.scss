@@ -38,3 +38,30 @@ BODY.collective-access .ca_filters .options-filter-widget .option_values {
 	margin-left:0px;
 	padding-left:20px;
 }
+.diva-button {
+	display: inline-block !important;
+	cursor: pointer !important;
+	height: 34px !important;
+	width: 34px !important;
+	line-height: 34px !important;
+	-webkit-appearance: none !important;
+	padding: 3px !important;
+	background-color: #F1F1F1 !important;
+	background-repeat: no-repeat !important;
+	background-position: center !important;
+	border: 1px solid #AAA !important;
+}
+#diva-1-goto-page-submit{
+	padding-top:0px !important;
+}
+.diva-input{
+    height: 34px !important;
+    border: 1px solid #AAA !important;
+    padding: 0 0.5em !important;
+}
+.diva-goto-page-input {
+    width: 4em !important;
+}
+.diva-1-current-page{
+	color:#FFF !important;
+}

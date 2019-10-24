@@ -58,7 +58,8 @@
 	$vs_display_version = $vs_download_link = "";
 	$t_representation = $this->getVar("t_representation");
 	if($t_representation){
-		$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
+		$vs_mimetype = $t_representation->getMediaInfo('media', 'original', 'MIMETYPE');
+		$va_media_display_info = caGetMediaDisplayInfo('detail', $vs_mimetype);
 		if($va_media_display_info && sizeof($va_media_display_info)){
 			($va_media_display_info["display_version"]) ? $vs_display_version = $va_media_display_info["display_version"] : "small";
 		}
@@ -111,8 +112,8 @@
 ?>
                     </div>
                     
-                    <div class="img-wrapper archive_detail">
-                      <?php print $this->getVar('mediaViewer'); ?>
+                    <div class="<?php print ($vs_mimetype != "application/pdf") ? "img-wrapper " : ""; ?>archive_detail">
+                      <?php print $vs_mimetype."<br/>".$this->getVar('mediaViewer'); ?>
                     </div>
 
                 </div>
