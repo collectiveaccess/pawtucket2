@@ -37,10 +37,12 @@
 	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
 	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
 
-	$vs_display_collection = str_replace("The Isamu Noguchi research collection > ", "", $t_object->get('ca_collections.hierarchy.preferred_labels', array("delimiter" => " > ")));
 	$va_collection_hierarchy = array_shift($t_object->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 	$vb_photo_collection = false;
+	$va_collection_path = array();
+	$vs_display_collection = "";
 	if(is_array($va_collection_hierarchy) && sizeof($va_collection_hierarchy)){
+		$vn_i = 0;
 		foreach($va_collection_hierarchy as $vn_collection_heirarchy_level_id){
 			$t_collections = new ca_collections($vn_collection_heirarchy_level_id);
 			switch(strToLower($t_collections->get("type_id", array("convertCodesToDisplayText" => true)))){
@@ -50,7 +52,16 @@
 					}
 				break;
 			}
+			if($vn_i > 0){
+				$va_collection_path[] = $t_collections->get("ca_collections.preferred_labels.name");
+			}
+			$vn_i++;
+			if($vn_i == 3){
+				# only show 2 levels after top we get rid of
+				break;
+			}
 		}
+		$vs_display_collection = join(" > ", $va_collection_path);
 	}
 	
 	$vs_display_version = $vs_download_link = "";

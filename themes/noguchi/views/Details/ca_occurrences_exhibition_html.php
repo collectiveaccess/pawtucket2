@@ -40,18 +40,24 @@
  				foreach($va_object_ids as $vn_object_id){
  					$t_object = new ca_objects($vn_object_id);
  					if($t_rep = $t_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
-// 						print "object_id: ".$t_object->get("object_id");
-// 						print " - representation_id: ".$t_rep->get("representation_id");
-						if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("detail", $vs_mimetype = $t_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) {
-							throw new ApplicationException(_t('Invalid viewer'));
+						$vs_mimetype = $t_rep->getMediaInfo('media', 'original', 'MIMETYPE');
+						#if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("detail", $vs_mimetype = $t_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) {
+						#	throw new ApplicationException(_t('Invalid viewer'));
+						#}
+						#if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
+						#$va_media[] = $vs_viewer_name::getViewerHTML(
+						#	$this->request,
+						#	"representation:".$t_rep->getPrimaryKey(),
+						#	['t_instance' => $t_rep, 't_subject' => $t_object, 't_media' => $t_object, 'display' => $va_media_display_info],
+						#	['context' => 'archival']);
+						
+						# --- only show images here, not pdf viewer.  link pdf's to archival detail page
+						$vs_media = $t_object->get("ca_object_representations.media.page", array("checkAccess" => $va_access_values));
+						if($vs_mimetype = "application/pdf"){
+							# --- link pdf's to archival detail page
+							$vs_media = caDetailLink($vs_media, '', 'ca_objects', $vn_object_id);
 						}
-						if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
-						$va_media[] = $vs_viewer_name::getViewerHTML(
-							$this->request,
-							"representation:".$t_rep->getPrimaryKey(),
-							['t_instance' => $t_rep, 't_subject' => $t_object, 't_media' => $t_object, 'display' => $va_media_display_info],
-							['context' => 'archival']);
-					
+						$va_media[] = $vs_media;
 						$va_thumbs[] = $t_rep->get("ca_object_representations.media.icon.url");
 					}					
  				}
@@ -76,7 +82,7 @@
                     </div>
                 </div>
 <?php
-					if(is_array($va_thumbs) && sizeof($va_thumbs)){
+					if(is_array($va_thumbs) && (sizeof($va_thumbs) > 1)){
 ?>
 					<ul class="slideshow-thumbnails" data-as-nav="slider-main" data-is-nav="true">
 <?php
@@ -86,6 +92,10 @@
 ?>
 					</ul>
 <?php
+					}else{
+?>
+						<div class="block-half"><br/></div>
+<?php						
 					}
 ?>
             </div>

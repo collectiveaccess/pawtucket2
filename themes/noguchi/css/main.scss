@@ -43,7 +43,9 @@ BODY.collective-access .ca_filters .options-filter-widget .option_values {
 	margin-bottom:0px !important;
 }
 
-
+.capitalize{
+	text-transform:capitalize;
+}
 
 .diva-button {
 	display: inline-block !important;
@@ -72,6 +74,15 @@ BODY.collective-access .ca_filters .options-filter-widget .option_values {
 .diva-1-current-page{
 	color:#FFF !important;
 }
-.diva-page-label{
+.diva-page-label, .diva-zoom-label{
 	color:#FFF !important;
+}
+.bibliography_detail .diva-1-current-page, .bibliography_detail .diva-page-label, .bibliography_detail .diva-zoom-label{
+	color:#333230 !important;
+}
+.diva-outer{
+	border:0px !important;
+}
+.caMediaOverlayControls{
+	display:none;
 }

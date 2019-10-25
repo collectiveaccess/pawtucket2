@@ -629,6 +629,7 @@ class NoguchiCrBrowseResultItem extends React.Component {
 							<div className="block-quarter"
 								 dangerouslySetInnerHTML={{__html: data.representation}}></div>
 							<div className="text block-quarter">
+								<div className="ca-identifier text-gray">{data.idnoStatus}</div>
 								<div className="thumb-text clamp" data-lines="2">{data.label}</div>
 								<div className="ca-identifier text-gray">{data.date}</div>
 							</div>
