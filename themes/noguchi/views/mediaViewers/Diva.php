@@ -38,7 +38,8 @@
 	$vs_height = caParseElementDimension($this->getVar('height') ? $this->getVar('height') : $this->getVar('viewer_height'), ['returnAsString' => true, 'default' => '100%']);
 ?>
 <script type="text/javascript">
-    jQuery(document).ready(function() {
+    //jQuery(document).ready(function() {
+    jQuery(window).on('pajax:init', function() {
     	var diva = new Diva('diva-wrapper', {
 			objectData: "<?php print $vs_data_url; ?>/download/1",
 			fillParentHeight: true,

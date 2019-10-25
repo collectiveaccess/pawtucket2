@@ -34,10 +34,17 @@
 BODY.collective-access .ca_filters .options-filter-widget .option_values {
 	height: 250px;
 }
-.archive_text_based ol, archive_text_based li{
+.archive_text_based ol, .archive_text_based ul, archive_text_based li,
+.cr_text_based ol, .cr_text_based ul, .cr_text_based li{
 	margin-left:0px;
 	padding-left:20px;
 }
+.cr_text_based .columns h2.subheadline-bold.terms {
+	margin-bottom:0px !important;
+}
+
+
+
 .diva-button {
 	display: inline-block !important;
 	cursor: pointer !important;
