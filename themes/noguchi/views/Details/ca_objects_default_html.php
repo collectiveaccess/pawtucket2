@@ -227,7 +227,7 @@
                     {{{<ifdef code="ca_objects.status">
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Status</div>
-							<div class="ca-data">^ca_objects.status</div>
+							<div class="ca-data capitalize">^ca_objects.status</div>
 						</div>
 					</ifdef>}}}
 					<div class="block-quarter">
@@ -309,7 +309,7 @@
 					{{{<ifdef code="ca_objects.status">
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Status</div>
-							<div class="ca-data">^ca_objects.status</div>
+							<div class="ca-data capitalize">^ca_objects.status</div>
 						</div>
 					</ifdef>}}}
 					<div class="block-quarter">

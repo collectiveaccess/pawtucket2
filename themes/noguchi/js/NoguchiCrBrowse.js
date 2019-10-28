@@ -22,7 +22,10 @@ const NoguchiCrBrowseContext = React.createContext();
  * Top-level container for browse interface. Is values for context NoguchiCrBrowseContext.
  *
  * Props are:
- * 		<NONE>
+ * 		baseUrl : Base Url to browse web service
+ *		initialFilters : Optional dictionary of filters to apply upon load
+ *		view : Optional results view specifier
+ * 		browseKey : Optional browse cache key. If supplied the initial load state will be the referenced browse criteria and result set.
  *
  * Sub-components are:
  * 		NoguchiCrBrowseIntro
@@ -62,7 +65,7 @@ class NoguchiCrBrowse extends React.Component{
 					<NoguchiCrBrowseNavigation/>
 					<NoguchiCrBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
 
-					<NoguchiCrBrowseResults/>
+					<NoguchiCrBrowseResults view={this.state.view}/>
 				</main>
 			</NoguchiCrBrowseContext.Provider>
 		);
@@ -120,7 +123,7 @@ class NoguchiCrBrowseStatistics extends React.Component {
 
 	render() {
 		return(<div className="current">
-			<div className="body-sans">{(this.context.state.resultSize > 0) ? ((this.context.state.resultSize== 1) ?
+			<div className="body-sans">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
 				"Showing 1 Result"
 				:
 				"Showing " + this.context.state.resultSize + " Results") : "Loading..."}.</div>
@@ -258,20 +261,27 @@ class NoguchiCrBrowseFacetList extends React.Component {
 	};
 
 	render() {
-		let facetButtons = [];
+		let facetButtons = [], facetPanels = [];
 		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "Loading...";
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
 				facetButtons.push((<NoguchiCrBrowseFacetButton key={n} text={this.context.state.availableFacets[n].label_plural}
 															  name={n} callback={this.toggleFacetPanel}/>));
+
+
+				let isOpen = ((this.context.state.selectedFacet !== null) && (this.context.state.selectedFacet === n)) ? 'true' : 'false';
+				facetPanels.push((<NoguchiCrBrowseFacetPanel open={isOpen} facetName={n} key={n}
+																  facetLoadUrl={this.props.facetLoadUrl} ref={this.facetPanelRefs[n]}
+																  loadResultsCallback={this.context.loadResultsCallback}
+																  closeFacetPanelCallback={this.closeFacetPanel}
+																  arrowPosition={this.state.arrowPosition}
+				/>));
 			}
 			if(facetButtons.length == 0){
 				filterLabel = "";
 			}
 		}
-
-		let isOpen = (this.state.selected !== null) ? 'true' : 'false';
 
 		return(
 			<div className="options-filter-widget">
@@ -279,12 +289,7 @@ class NoguchiCrBrowseFacetList extends React.Component {
 					<span className="caption-text">{filterLabel}</span>
 					{facetButtons}
 				</div>
-				<NoguchiCrBrowseFacetPanel open={isOpen} facetName={this.state.selected}
-										  facetLoadUrl={this.props.facetLoadUrl} ref={this.facetPanelRef}
-										  loadResultsCallback={this.context.loadResultsCallback}
-										  closeFacetPanelCallback={this.closeFacetPanel}
-												arrowPosition={this.state.arrowPosition}
-				/>
+				{facetPanels}
 			</div>
 		)
 	}
@@ -313,10 +318,16 @@ class NoguchiCrBrowseFacetButton extends React.Component {
 
 /**
  * Visible on-demand panel containing facet values and UI to select and apply values as browse filters.
+ * A panel is created for each available facet.
  *
  * Props are:
  * 		open : controls visibility of panel; if set to a true value, or the string "true"  panel is visible.
- * 	  	panelArrowRef :
+ * 	  	facetName : Name of facet this panel will display
+ * 	  	facetLoadUrl : URL used to load facet
+ * 	  	ref : A ref for this panel
+ * 	  	loadResultsCallback : Function to call when new filter are applied
+ * 	  	closeFacetPanelCallback : Function to call when panel is closed
+ *		arrowPosition : Horizontal coordinate to position facet arrow at. This will generally be at the point where the facet was clicked.
  *
  * Sub-components are:
  * 		<NONE>
@@ -516,7 +527,7 @@ class NoguchiCrBrowseNavigation extends React.Component {
  * 		NoguchiCrBrowseResultLoadMoreButton
  *
  * Props are:
- * 		<NONE>
+ * 		view : view format to use for display of results
  *
  * Used by:
  *  	NoguchiCrBrowse
@@ -528,23 +539,33 @@ class NoguchiCrBrowseResults extends React.Component {
 
 	render() {
 		let resultList = [];
-		for (let i in this.context.state.resultList) {
-			let r = this.context.state.resultList[i];
-			resultList.push(<NoguchiCrBrowseResultItem key={r.id} data={r} count={i}/>)
+		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
+			for (let i in this.context.state.resultList) {
+				let r = this.context.state.resultList[i];
+				resultList.push(<NoguchiCrBrowseResultItem view={this.props.view} key={r.id} data={r} count={i} />)
+			}
+		} else if (this.context.state.resultSize === 0) {
+			resultList.push(<h2>No results found</h2>)
 		}
 
-		return(
-			<div>
-				<section className="wrap block block-top grid">
-					<div className="grid-flex grid-cr-browse">
-						{resultList}
+		switch(this.props.view) {
+			default:
+				return (
+					<div>
+						<section className="wrap block block-top grid">
+							<div className="grid-flex grid-cr-browse">
+								{resultList}
+							</div>
+						</section>
+						<NoguchiCrBrowseResultLoadMoreButton start={this.context.state.start}
+															 itemsPerPage={this.context.state.itemsPerPage}
+															 size={this.context.state.totalSize}
+															 loadMoreHandler={this.context.loadMoreResults}
+															 loadMoreRef={this.context.loadMoreRef}/>
 					</div>
-				</section>
-				<NoguchiCrBrowseResultLoadMoreButton start={this.context.state.start} itemsPerPage={this.context.state.itemsPerPage}
-												   size={this.context.state.resultSize} loadMoreHandler={this.context.loadMoreResults}
-												   loadMoreRef={this.context.loadMoreRef}/>
-			</div>
-		);
+				);
+				break;
+		}
 	}
 }
 
@@ -582,6 +603,7 @@ class NoguchiCrBrowseResultLoadMoreButton extends React.Component {
  *
  * Props are:
  * 		data : object containing data to display for result item
+ * 		view : view format to use for display of results
  *
  * Sub-components are:
  * 		<NONE>
@@ -598,17 +620,24 @@ class NoguchiCrBrowseResultItem extends React.Component {
 		if(remainder == 0){
 			itemClass = "item-grid item-large"; 
 		}
-		return (
-			<div class={itemClass}>
-				<a href={data.detailUrl}>
-					<div className="block-quarter" dangerouslySetInnerHTML={{__html: data.representation}}></div>
-					<div className="text block-quarter">
-						<div className="thumb-text clamp" data-lines="2">{data.label}</div>
-	                    <div className="ca-identifier text-gray">{data.date}</div>
+
+		switch(this.props.view) {
+			default:
+				return (
+					<div class={itemClass}>
+						<a href={data.detailUrl}>
+							<div className="block-quarter"
+								 dangerouslySetInnerHTML={{__html: data.representation}}></div>
+							<div className="text block-quarter">
+								<div className="ca-identifier text-gray">{data.idnoStatus}</div>
+								<div className="thumb-text clamp" data-lines="2">{data.label}</div>
+								<div className="ca-identifier text-gray">{data.date}</div>
+							</div>
+						</a>
 					</div>
-				</a>
-			</div>
-		);
+				);
+				break;
+		}
 	}
 }
 
@@ -619,6 +648,6 @@ class NoguchiCrBrowseResultItem extends React.Component {
 export default function _init() {
 	ReactDOM.render(
 		<NoguchiCrBrowse baseUrl={appData.baseUrl} endpoint={appData.endpoint}
-							  initialFilters={appData.initialFilters}
+							  initialFilters={appData.initialFilters} view={appData.view}
 							  browseKey={appData.key}/>, document.querySelector(selector));
 }

@@ -36,6 +36,10 @@
 	        $initial_criteria['collection_facet'] = [$collection_facet_id => $t_coll->get('ca_collections.preferred_labels.name')];
 	    }
 	}
+	if($this->request->getParameter('facet', pString) == 'has_media_facet') {
+	    $has_media_value = $this->request->getParameter('id', pInteger);
+	    $initial_criteria['has_media_facet'] = [$has_media_value => 'Has media'];
+	}
 ?>
 
 <div id="browse"></div>
@@ -45,7 +49,8 @@
         'data': {
 			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
 			endpoint: "<?php print $action; ?>",
-			initialFilters: <?php print json_encode($initial_criteria); ?>
+			initialFilters: <?php print json_encode($initial_criteria); ?>,
+			view: "thumbnails"
         }
     };
 </script>

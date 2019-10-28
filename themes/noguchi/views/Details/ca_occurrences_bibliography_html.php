@@ -26,9 +26,34 @@
             </div>
 <?php
  			}
- 			if($vs_reps = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToRelationshipTypes='depicts'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values))){
- 				$va_rep_ids = explode(";", $vs_reps);
- 				if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
+ 			#if($vs_reps = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToTypes='archival_item,document,objects,photographs,digital,print,strip,transparency,strip_image'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values))){
+ 			#	$va_rep_ids = explode(";", $vs_reps);
+ 			#	if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
+ 			if($va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true,"restrictToTypes" => array("archival_item","document","objects","photographs","digital","print","strip","transparency","strip_image"), "checkAccess" => $va_access_values))){
+ 				$va_media = array();
+ 				$va_thumbs = array();
+ 				foreach($va_object_ids as $vn_object_id){
+ 					$t_object = new ca_objects($vn_object_id);
+ 					if($t_rep = $t_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
+// 						print "object_id: ".$t_object->get("object_id");
+// 						print " - representation_id: ".$t_rep->get("representation_id");
+						if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("detail", $vs_mimetype = $t_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) {
+							throw new ApplicationException(_t('Invalid viewer'));
+						}
+						if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
+						$vs_media = $vs_viewer_name::getViewerHTML(
+							$this->request,
+							"representation:".$t_rep->getPrimaryKey(),
+							['t_instance' => $t_rep, 't_subject' => $t_object, 't_media' => $t_object, 'display' => $va_media_display_info],
+							['context' => 'archival']);
+						if($vs_mimetype != "application/pdf"){
+							$vs_media = '<div class="img-wrapper contain">'.$vs_media.'</div>';
+						}
+						$va_media[] = $vs_media;
+						$va_thumbs[] = $t_rep->get("ca_object_representations.media.icon.url");
+					}					
+ 				}
+ 				if(sizeof($va_media)){
 ?>  
 
             <div class="ca-object-viewer">
@@ -36,21 +61,11 @@
                 <div class="module_slideshow slideshow-main no_dots" data-thumbnails="slideshow-thumbnails">
                     <div class="slick-slider slider-main">
 <?php
-						$va_thumbs = array();
-						foreach($va_rep_ids as $vn_rep_id){
-							$vs_display_version = "";
-							$t_rep = new ca_object_representations();
-							$t_rep->load($vn_rep_id);
-							$va_media_display_info = caGetMediaDisplayInfo('detail', $t_rep->getMediaInfo('media', 'original', 'MIMETYPE'));
-							if($va_media_display_info && sizeof($va_media_display_info)){
-								($va_media_display_info["display_version"]) ? $vs_display_version = $va_media_display_info["display_version"] : "small";
-							}
-							$va_thumbs[] = $t_rep->get("ca_object_representations.media.icon.url");
-							
+						foreach($va_media as $vs_media){
 ?>
 							<div class="slick-slide">
 								<div class="img-container">
-									<div class="img-wrapper contain"><img src="<?php print $t_rep->get("ca_object_representations.media.".$vs_display_version.".url"); ?>"></div>
+									<?php print $vs_media; ?>
 								</div>
 							</div>
 <?php
@@ -59,7 +74,7 @@
                     </div>
                 </div>
 <?php
-					if(is_array($va_thumbs) && sizeof($va_thumbs)){
+					if(is_array($va_thumbs) && (sizeof($va_thumbs) > 1)){
 ?>
 					<ul class="slideshow-thumbnails" data-as-nav="slider-main" data-is-nav="true">
 <?php
@@ -68,6 +83,10 @@
 						}
 ?>
 					</ul>
+<?php
+					}else{
+?>
+						<div class="block-half"><br/></div>
 <?php
 					}
 ?>
@@ -98,6 +117,12 @@
                     {{{<ifdef code="ca_occurrences.bib_year_published">
 						<div class="block-quarter">
 							<div class="subheadline text-gray">^ca_occurrences.bib_year_published</div>
+						</div>
+					</ifdef>}}}
+                    {{{<ifdef code="ca_occurrences.idno">
+						<div class="block-quarter">
+							<div class="eyebrow text-gray">Identifier</div>
+							<div class="ca-data">^ca_occurrences.idno</div>
 						</div>
 					</ifdef>}}}
                     {{{<ifdef code="ca_occurrences.bib_full_citation">
@@ -151,7 +176,7 @@
 
             </div>
         </section>
-{{{<ifcount code="ca_objects" restrictToRelationshipTypes="reference" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version" min="1">
+{{{<ifcount code="ca_objects" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version" min="1">
         <section class="block border">
             <div class="wrap">
                 <div class="block-half text-align-center">
@@ -160,7 +185,7 @@
             </div>
             <div class="module_carousel archive_related" data-prevnext="false">
 				<div class="carousel-main">
-					<unit relativeTo="ca_objects" restrictToRelationshipTypes="reference" delimiter=" " restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version">
+					<unit relativeTo="ca_objects" delimiter=" " restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version">
 						<div class="carousel-cell">
 
 							<l>

@@ -67,7 +67,7 @@
                                 <p class="body-text">{{{createAccount}}}</p>
                             </div>
                             <div class="block-half text-align-center">
-                                <?php print caNavLink(_t("Request Login"), "button", "", "LoginReg", "registerForm", array()); ?>
+                                <?php print caNavLink(_t("Register"), "button", "", "LoginReg", "registerForm", array()); ?>
                             </div>
 
                         </div>

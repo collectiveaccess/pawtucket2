@@ -104,6 +104,9 @@ var PAJX;
 			// BARBA INIT
 			Barba.Pjax.start();
 			Barba.Prefetch.init();
+			
+			// Added for CA
+			$window.trigger( 'pajax:init' );
 
 		    setTimeout( function(){
 		    	PAJX._cleanAdminURL();

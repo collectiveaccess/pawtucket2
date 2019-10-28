@@ -6054,11 +6054,16 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 					}
 
 					if (is_array($va_restrict_to_types) && (sizeof($va_restrict_to_types) > 0) && method_exists($t_rel_item, "getTypeList")) {
+						// Now checked in loop below
 						//$va_wheres[] = "{$vs_rel_table_name}.type_id IN (".join(',', caGetOption('dont_include_subtypes', $va_facet_info, false) ? $va_restrict_to_types : $va_restrict_to_types_expanded).")".($t_rel_item->getFieldInfo('type_id', 'IS_NULL') ? " OR ({$vs_rel_table_name}.type_id IS NULL)" : '');
 						
 						if($va_facet_info['type'] !== 'relationship_types') {
 						    $va_selects[] = "{$vs_rel_table_name}.type_id";
 						}
+					}
+					
+					if ($t_item_rel->hasField('access')) {
+					    $va_selects[] = "{$vs_rel_table_name}.access";
 					}
 					
 					if($va_facet_info['type'] == 'relationship_types') {
@@ -6074,7 +6079,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 					}
 
 					if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && $t_rel_item->hasField('access')) {
-						$va_wheres[] = "(".$t_rel_item->tableName().".access IN (".join(',', $pa_options['checkAccess'])."))";				// exclude non-accessible authority items
+						//$va_wheres[] = "(".$t_rel_item->tableName().".access IN (".join(',', $pa_options['checkAccess'])."))";				// exclude non-accessible authority items
 						if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) {
 							$va_wheres[] = "(".$vs_browse_table_name.".access IN (".join(',', $pa_options['checkAccess'])."))";		// exclude non-accessible browse items
 						}
@@ -6103,6 +6108,10 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 					}
 					if ($t_rel_item->hasField('deleted')) {
 						$va_wheres[] = "(".$t_rel_item->tableName().".deleted = 0)";
+					}
+					
+					if ($t_rel_item->hasField('access')) {
+						$va_selects[] = $t_rel_item->tableName().".access";
 					}
 
 					$vs_rel_pk = $t_rel_item->primaryKey();
@@ -6266,7 +6275,12 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 						// (You could get all of the data we need for the facet in a single query but it turns out to be faster for very large facets to
 						// do it in separate queries, one for the primary ids and another for the labels; a third is done if attributes need to be fetched.
 						// There appears to be a significant [~10%] performance for smaller facets and a larger one [~20-25%] for very large facets)
-
+    
+                        $checkAccess = null;
+                        if (isset($pa_options['checkAccess']) && is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess'])) {
+                            $checkAccess = array_map(function($v) { return intval($v); }, $pa_options['checkAccess']);
+                        }
+    
 						$vn_max_level = caGetOption('maximum_levels', $va_facet_info, null);
 						while($qr_res->nextRow()) {
 							$va_fetched_row = $qr_res->getRow();
@@ -6299,7 +6313,11 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 									'child_count' => 0,
 									'content_count' => $va_fetched_row['_count']
 								);
-
+								
+								if($checkAccess && isset($va_fetched_row['access']) && !in_array((int)$va_fetched_row['access'], $checkAccess, true)) { 
+								    $va_facet_items[$va_fetched_row[$vs_rel_pk]]['no_access'] = 1;
+								}
+								
 								if (!is_null($vs_single_value) && ($va_fetched_row[$vs_rel_pk] == $vs_single_value)) {
 									$vb_single_value_is_present = true;
 								}
@@ -6335,6 +6353,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							while($qr_ancestors->nextHit()) {
 								if ($qr_ancestors->get("{$vs_rel_table}.deleted")) { continue; }
 								if (!($vn_parent_type_id = $qr_ancestors->get('type_id'))) { continue; }
+                            
 								
 								$vn_ancestor_id = (int)$qr_ancestors->get("{$vs_rel_pk}");
 								if (isset($va_criteria[$vn_ancestor_id])) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
@@ -6369,6 +6388,12 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							}
 						    if ($va_restrict_to_types) {
 						        if (!sizeof(array_intersect($va_restrict_to_types, $va_item['type_id']))) {
+						            unset($va_facet_items[$vn_i]);
+						            continue;
+						        }
+						        
+						        // filter out facet items without access
+						        if (isset($va_item['no_access']) && $va_item['no_access']) {
 						            unset($va_facet_items[$vn_i]);
 						            continue;
 						        }

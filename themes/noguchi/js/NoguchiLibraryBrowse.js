@@ -3,17 +3,17 @@ import React from "react"
 import ReactDOM from "react-dom";
 import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel } from "../../default/js/browse";
 
-const selector = pawtucketUIApps.NoguchiBibliographyBrowse.selector;
-const appData = pawtucketUIApps.NoguchiBibliographyBrowse.data;
+const selector = pawtucketUIApps.NoguchiLibraryBrowse.selector;
+const appData = pawtucketUIApps.NoguchiLibraryBrowse.data;
 /**
- * Component context making NoguchiBibliographyBrowse internals accessible to all subcomponents
+ * Component context making NoguchiLibraryBrowse internals accessible to all subcomponents
  *
  * @type {React.Context}
  */
-const NoguchiBibliographyBrowseContext = React.createContext();
+const NoguchiLibraryBrowseContext = React.createContext();
 
 /**
- * Top-level container for browse interface. Is values for context NoguchiBibliographyBrowseContext.
+ * Top-level container for browse interface. Is values for context NoguchiLibraryBrowseContext.
  *
  * Props are:
  * 		baseUrl : Base Url to browse web service
@@ -22,12 +22,12 @@ const NoguchiBibliographyBrowseContext = React.createContext();
  * 		browseKey : Optional browse cache key. If supplied the initial load state will be the referenced browse criteria and result set.
  *
  * Sub-components are:
- * 		NoguchiBibliographyBrowseIntro
- * 		NoguchiBibliographySearch
- * 		NoguchiBibliographyBrowseFilterControls
- * 		NoguchiBibliographyBrowseResults
+ * 		NoguchiLibraryBrowseIntro
+ * 		NoguchiLibraryBrowseNavigation
+ * 		NoguchiLibraryBrowseFilterControls
+ * 		NoguchiLibraryBrowseResults
  */
-class NoguchiBibliographyBrowse extends React.Component{
+class NoguchiLibraryBrowse extends React.Component{
 	constructor(props) {
 		super(props);
 		initBrowseContainer(this, props);
@@ -36,44 +36,47 @@ class NoguchiBibliographyBrowse extends React.Component{
 	render() {
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 		return(
-			<NoguchiBibliographyBrowseContext.Provider value={this}>
-				<main className="ca bibliography bibliography_landing">
-					<NoguchiBibliographyBrowseIntro description={this.state.introduction.description}/>
+			<NoguchiLibraryBrowseContext.Provider value={this}>
+				<main className="ca archive archive_landing nomargin">
+					<NoguchiLibraryBrowseIntro headline={this.state.introduction.title} description={this.state.introduction.description}/>
 
-					<NoguchiBibliographyBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
+					<NoguchiLibraryBrowseNavigation/>
+					<NoguchiLibraryBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
 
-					<NoguchiBibliographyBrowseResults view={this.state.view}/>
+					<NoguchiLibraryBrowseResults view={this.state.view}/>
 				</main>
-			</NoguchiBibliographyBrowseContext.Provider>
+			</NoguchiLibraryBrowseContext.Provider>
 		);
 	}
 }
 
 /**
- * Bibliography browse collection information panel
+ * Archive browse collection information panel
  *
  * Props are:
- * 		
- * 		description : descriptive text for the browse (Eg. Bibliography intro comes from global value bibliographyIntro)
+ * 		headline : browse inteface headline (Ex. "Photography Collection")
+ * 		description : descriptive text for the browse (Eg. text about the collection)
  *
  * Sub-components are:
  * 		<NONE>
  */
-class NoguchiBibliographyBrowseIntro extends React.Component {
-	static contextType = NoguchiBibliographyBrowseContext;
+class NoguchiLibraryBrowseIntro extends React.Component {
+	static contextType = NoguchiLibraryBrowseContext;
 	constructor(props) {
 		super(props);
 	}
 
 	render() {
-		if (!this.props.description || (this.props.description.length === 0)) {
+		if (!this.props.headline || (this.props.headline.length === 0)) {
 			return (<section className=""></section>);
 		}else{
+			this.context.state.headline = this.props.headline;
 			this.context.state.description = this.props.description;
 		}
 		return (<section className="intro">
 			<div className="wrap block-large">
 				<div className="wrap-max-content">
+					<div className="block-half subheadline-bold text-align-center" ></div>
 					<div className="block-half body-text-l" dangerouslySetInnerHTML={{__html: this.context.state.description}}></div>
 				</div>
 			</div>
@@ -83,28 +86,28 @@ class NoguchiBibliographyBrowseIntro extends React.Component {
 
 /**
  * Browse result statistics display. Stats include a # results found indicator. May embed other
- * stats such as a list of currently applied browse filters (via NoguchiBibliographyBrowseCurrentFilterList)
+ * stats such as a list of currently applied browse filters (via NoguchiLibraryBrowseCurrentFilterList)
  *
  * Props are:
  * 		<NONE>
  *
  * Sub-components are:
- * 		NoguchiBibliographyBrowseCurrentFilterList
+ * 		NoguchiLibraryBrowseCurrentFilterList
  *
- * Uses context: NoguchiBibliographyBrowseContext
+ * Uses context: NoguchiLibraryBrowseContext
  */
-class NoguchiBibliographyBrowseStatistics extends React.Component {
-	static contextType = NoguchiBibliographyBrowseContext;
+class NoguchiLibraryBrowseStatistics extends React.Component {
+	static contextType = NoguchiLibraryBrowseContext;
 
 	render() {
 		return(<div className="current">
-			<div className="body-sans">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-				"Showing 1 Result"
-				:
-				"Showing " + this.context.state.resultSize + " Results") : "Loading..."}.</div>
+				<div className="body-sans">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
+					"Showing 1 Result"
+					:
+					"Showing " + this.context.state.resultSize + " Results") : "Loading..."}.</div>
 
-				<NoguchiBibliographyBrowseCurrentFilterList/>
-		</div>
+				<NoguchiLibraryBrowseCurrentFilterList/>
+			</div>
 		);
 	}
 }
@@ -119,12 +122,12 @@ class NoguchiBibliographyBrowseStatistics extends React.Component {
  * 		<NONE>
  *
  * Used by:
- * 		NoguchiBibliographyBrowseCurrentFilterList
+ * 		NoguchiLibraryBrowseCurrentFilterList
  *
- * Uses context: NoguchiBibliographyBrowseContext
+ * Uses context: NoguchiLibraryBrowseContext
  */
-class NoguchiBibliographyBrowseCurrentFilterList extends React.Component {
-	static contextType = NoguchiBibliographyBrowseContext;
+class NoguchiLibraryBrowseCurrentFilterList extends React.Component {
+	static contextType = NoguchiLibraryBrowseContext;
 
 	constructor(props) {
 		super(props);
@@ -152,50 +155,28 @@ class NoguchiBibliographyBrowseCurrentFilterList extends React.Component {
 
 /**
  * Container for display and editing of applied browse filters. This component provides
- * markup wrapping both browse statistics (# of results found) (component <NoguchiBibliographyBrowseStatistics>
- * as well as the list of available browse facets (component <NoguchiBibliographyBrowseFacetList>).
+ * markup wrapping both browse statistics (# of results found) (component <NoguchiLibraryBrowseStatistics>
+ * as well as the list of available browse facets (component <NoguchiLibraryBrowseFacetList>).
  *
  * Props are:
  * 		facetLoadUrl : URL to use to load facet content
  *
  * Sub-components are:
- * 		NoguchiBibliographyBrowseStatistics
- * 		NoguchiBibliographyBrowseFacetList
+ * 		NoguchiLibraryBrowseStatistics
+ * 		NoguchiLibraryBrowseFacetList
  *
- * Uses context: NoguchiBibliographyBrowseContext
+ * Uses context: NoguchiLibraryBrowseContext
  */
-class NoguchiBibliographyBrowseFilterControls extends React.Component {
-	static contextType = NoguchiBibliographyBrowseContext;
-	constructor(props) {
-		super(props);
+class NoguchiLibraryBrowseFilterControls extends React.Component {
+	static contextType = NoguchiLibraryBrowseContext;
 
-		this.searchRef = React.createRef();
-		this.loadSearch = this.loadSearch.bind(this);
-	}
-
-
-	/**
-	 *
-	 * @returns {*}
-	 */
-	loadSearch(e) {
-		let search = this.searchRef.current.value;
-		let filters = {
-			_search: {}
-		};
-		filters._search[search] = search;
-		this.context.reloadResults(filters, true);
-
-		e.preventDefault();
-	}
 	render() {
 		return(
 				<section className="ca_filters">
 					<div className="wrap">
 						<div className="filters_bar">
-							<NoguchiBibliographyBrowseStatistics/>
-							<NoguchiBibliographyBrowseFacetList facetLoadUrl={this.props.facetLoadUrl}/>
-							<NoguchiBibliographySearch/>
+							<NoguchiLibraryBrowseStatistics/>
+							<NoguchiLibraryBrowseFacetList facetLoadUrl={this.props.facetLoadUrl}/>
 						</div>
 					</div>
 				</section>);
@@ -204,20 +185,20 @@ class NoguchiBibliographyBrowseFilterControls extends React.Component {
 
 /**
  * List of available facets. Wraps both facet buttons, and the panel allowing selection of facet values for
- * application as browse filters. Each facet button is implemented using component <NoguchiBibliographyBrowseFacetButton>.
- * The facet panel is implemented using component <NoguchiBibliographyBrowseFacetPanel>.
+ * application as browse filters. Each facet button is implemented using component <NoguchiLibraryBrowseFacetButton>.
+ * The facet panel is implemented using component <NoguchiLibraryBrowseFacetPanel>.
  *
  * Props are:
  * 		facetLoadUrl : URL to use to load facet content
  *
  * Sub-components are:
- * 		NoguchiBibliographyBrowseFacetButton
- * 		NoguchiBibliographyBrowseFacetPanel
+ * 		NoguchiLibraryBrowseFacetButton
+ * 		NoguchiLibraryBrowseFacetPanel
  *
- * Uses context: NoguchiBibliographyBrowseContext
+ * Uses context: NoguchiLibraryBrowseContext
  */
-class NoguchiBibliographyBrowseFacetList extends React.Component {
-	static contextType = NoguchiBibliographyBrowseContext;
+class NoguchiLibraryBrowseFacetList extends React.Component {
+	static contextType = NoguchiLibraryBrowseContext;
 
 	constructor(props) {
 		super(props);
@@ -231,11 +212,11 @@ class NoguchiBibliographyBrowseFacetList extends React.Component {
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
-				facetButtons.push((<NoguchiBibliographyBrowseFacetButton key={n} text={this.context.state.availableFacets[n].label_plural}
+				facetButtons.push((<NoguchiLibraryBrowseFacetButton key={n} text={this.context.state.availableFacets[n].label_plural}
 															  name={n} callback={this.toggleFacetPanel}/>));
 
 				let isOpen = ((this.context.state.selectedFacet !== null) && (this.context.state.selectedFacet === n)) ? 'true' : 'false';
-				facetPanels.push((<NoguchiBibliographyBrowseFacetPanel open={isOpen} facetName={n} key={n}
+				facetPanels.push((<NoguchiLibraryBrowseFacetPanel open={isOpen} facetName={n} key={n}
 																	   facetLoadUrl={this.props.facetLoadUrl} ref={this.facetPanelRefs[n]}
 																	   loadResultsCallback={this.context.loadResultsCallback}
 																	   closeFacetPanelCallback={this.closeFacetPanel}
@@ -246,6 +227,8 @@ class NoguchiBibliographyBrowseFacetList extends React.Component {
 				filterLabel = "";
 			}
 		}
+
+		let isOpen = (this.state.selected !== null) ? 'true' : 'false';
 
 		return(
 			<div className="options-filter-widget">
@@ -272,9 +255,9 @@ class NoguchiBibliographyBrowseFacetList extends React.Component {
  * 		<NONE>
  *
  * Used by:
- *  	NoguchiBibliographyBrowseFacetList
+ *  	NoguchiLibraryBrowseFacetList
  */
-class NoguchiBibliographyBrowseFacetButton extends React.Component {
+class NoguchiLibraryBrowseFacetButton extends React.Component {
 	render() {
 		return(<a href="#" data-option={this.props.name} onClick={this.props.callback}>{this.props.text}</a>);
 	}
@@ -297,12 +280,12 @@ class NoguchiBibliographyBrowseFacetButton extends React.Component {
  * 		<NONE>
  *
  * Used by:
- *  	NoguchiBibliographyBrowseFacetList
+ *  	NoguchiLibraryBrowseFacetList
  *
- * Uses context: NoguchiBibliographyBrowseContext
+ * Uses context: NoguchiLibraryBrowseContext
  */
-class NoguchiBibliographyBrowseFacetPanel extends React.Component {
-	static contextType = NoguchiBibliographyBrowseContext;
+class NoguchiLibraryBrowseFacetPanel extends React.Component {
+	static contextType = NoguchiLibraryBrowseContext;
 	constructor(props) {
 		super(props);
 		initBrowseFacetPanel(this, props);
@@ -321,7 +304,7 @@ class NoguchiBibliographyBrowseFacetPanel extends React.Component {
 
 				options.push((
 					<li key={'facetItem' + i}>
-						<NoguchiBibliographyBrowseFacetPanelItem id={'facetItem' + i} data={item} callback={this.clickFilterItem} selected={this.state.selectedFacetItems[item.id]}/>
+						<NoguchiLibraryBrowseFacetPanelItem id={'facetItem' + i} data={item} callback={this.clickFilterItem} selected={this.state.selectedFacetItems[item.id]}/>
 					</li>
 				));
 			}
@@ -359,12 +342,12 @@ class NoguchiBibliographyBrowseFacetPanel extends React.Component {
  * 		<NONE>
  *
  * Used by:
- *  	NoguchiBibliographyBrowseFacetPanel
+ *  	NoguchiLibraryBrowseFacetPanel
  *
- * Uses context: NoguchiBibliographyBrowseFacetPanel
+ * Uses context: NoguchiLibraryBrowseFacetPanel
  */
-class NoguchiBibliographyBrowseFacetPanelItem extends React.Component {
-	static contextType = NoguchiBibliographyBrowseContext;
+class NoguchiLibraryBrowseFacetPanelItem extends React.Component {
+	static contextType = NoguchiLibraryBrowseContext;
 
 	constructor(props) {
 		super(props);
@@ -388,7 +371,7 @@ class NoguchiBibliographyBrowseFacetPanelItem extends React.Component {
 }
 
 /**
- * Noguchi Bibliography section-specific navigation. Includes collection drop-down with hard-coded criteria, as well
+ * Noguchi Archive section-specific navigation. Includes collection drop-down with hard-coded criteria, as well
  * as a search box.
  *
  * Props are:
@@ -398,12 +381,12 @@ class NoguchiBibliographyBrowseFacetPanelItem extends React.Component {
  * 		<NONE>
  *
  * Used by:
- *  	NoguchiBibliographyBrowse
+ *  	NoguchiLibraryBrowse
  *
- * Uses context: NoguchiBibliographyBrowseContext
+ * Uses context: NoguchiLibraryBrowseContext
  */
-class NoguchiBibliographySearch extends React.Component {
-	static contextType = NoguchiBibliographyBrowseContext;
+class NoguchiLibraryBrowseNavigation extends React.Component {
+	static contextType = NoguchiLibraryBrowseContext;
 
 	constructor(props) {
 		super(props);
@@ -412,6 +395,19 @@ class NoguchiBibliographySearch extends React.Component {
 		this.loadSearch = this.loadSearch.bind(this);
 	}
 
+	/**
+	 *
+	 * @returns {*}
+	 */
+	loadCollection(e) {
+		let collection_id = e.target.attributes.getNamedItem('data-id').value;
+		let collection_name = e.target.innerHTML;
+		let filters = {
+			collection_facet: {}
+		};
+		filters.collection_facet[collection_id] = collection_name;
+		this.context.reloadResults(filters, true);
+	}
 
 	/**
 	 *
@@ -430,41 +426,79 @@ class NoguchiBibliographySearch extends React.Component {
 
 	render() {
 		return(
-			<div className="search hide-for-mobile">
-					<form action="#" onSubmit={this.loadSearch}>
-							<input name="search" type="text" placeholder="Search the Bibliography" ref={this.searchRef}
-														 className="search"/>
+			<section className="ca_nav">
+				<nav className="hide-for-mobile">
+					<div className="wrap text-gray">
+						<form action="#" onSubmit={this.loadSearch}>
+							<div className="cell text"><a href='/index.php/Browse/Archive'>Browse</a></div>
+							<div className="cell"><input name="search" type="text" placeholder="Search the Library" ref={this.searchRef}
+														 className="search"/></div>
+							<div className="misc">
+								<div className="cell text"><a href='/index.php/ArchiveInfo/UserGuide'>User Guide</a>
+								</div>
+								<div className="cell text"><a href='/index.php/ArchiveInfo/About'>About<span
+									className='long'> The Archive</span></a></div>
+							</div>
 						</form>
-				</div>
+					</div>
+				</nav>
+				<nav className="show-for-mobile wrap">
+					<div className="module_accordion">
+						<div className="items">
+							<div className="item">
+								<div className="trigger small">Archive Menu</div>            
+								<div className="details">
+									<div className="inner">
+
+										<div className="module_filter_bar">
+											<div className="wrap text-gray">
+												<form action="#" onSubmit={this.loadSearch}>
+													<div className="cell"><input name="search" type="text" placeholder="Search the Library" className="search"/></div>
+													<div className="misc">
+													   <a href='/index.php/Browse/Archive'>Browse</a>
+													   <a href='/index.php/ArchiveInfo/UserGuide'>User Guide</a>
+													   <a href='/index.php/ArchiveInfo/About'>About The Archive</a>
+													</div>
+												</form>
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</nav>
+			</section>
 		);
 	}
 }
 
 /**
- * Renders search results using a NoguchiBibliographyBrowseResultItem component for each result.
+ * Renders search results using a NoguchiLibraryBrowseResultItem component for each result.
  * Includes navigation to load additional pages on-demand.
  *
  * Sub-components are:
- * 		NoguchiBibliographyBrowseResultItem
- * 		NoguchiBibliographyBrowseResultLoadMoreButton
+ * 		NoguchiLibraryBrowseResultItem
+ * 		NoguchiLibraryBrowseResultLoadMoreButton
  *
  * Props are:
  * 		view : view format to use for display of results
  *
  * Used by:
- *  	NoguchiBibliographyBrowse
+ *  	NoguchiLibraryBrowse
  *
- * Uses context: NoguchiBibliographyBrowseContext
+ * Uses context: NoguchiLibraryBrowseContext
  */
-class NoguchiBibliographyBrowseResults extends React.Component {
-	static contextType = NoguchiBibliographyBrowseContext;
+class NoguchiLibraryBrowseResults extends React.Component {
+	static contextType = NoguchiLibraryBrowseContext;
 
 	render() {
 		let resultList = [];
 		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
-				resultList.push(<NoguchiBibliographyBrowseResultItem view={this.props.view} key={r.id} data={r}/>)
+				resultList.push(<NoguchiLibraryBrowseResultItem view={this.props.view} key={r.id} data={r}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
 			resultList.push(<h2>No results found</h2>)
@@ -474,18 +508,18 @@ class NoguchiBibliographyBrowseResults extends React.Component {
 			default:
 				return (
 					<div>
-						<section className="block block-top">
-							<div className="wrap results">
-								<div className="block-half-top">
+						<section className="block block-quarter-top">
+							<div className="wrap">
+								<div className="grid-flexbox-layout grid-ca-archive">
 									{resultList}
 								</div>
 							</div>
 						</section>
-						<NoguchiBibliographyBrowseResultLoadMoreButton start={this.context.state.start}
-																	   itemsPerPage={this.context.state.itemsPerPage}
-																	   size={this.context.state.totalSize}
-																	   loadMoreHandler={this.context.loadMoreResults}
-																	   loadMoreRef={this.context.loadMoreRef}/>
+						<NoguchiLibraryBrowseResultLoadMoreButton start={this.context.state.start}
+																  itemsPerPage={this.context.state.itemsPerPage}
+																  size={this.context.state.totalSize}
+																  loadMoreHandler={this.context.loadMoreResults}
+																  loadMoreRef={this.context.loadMoreRef}/>
 					</div>
 				);
 				break;
@@ -507,9 +541,9 @@ class NoguchiBibliographyBrowseResults extends React.Component {
  * 		<NONE>
  *
  * Used by:
- *  	NoguchiBibliographyBrowseResults
+ *  	NoguchiLibraryBrowseResults
  */
-class NoguchiBibliographyBrowseResultLoadMoreButton extends React.Component {
+class NoguchiLibraryBrowseResultLoadMoreButton extends React.Component {
 	render() {
 		if ((this.props.start + this.props.itemsPerPage) < this.props.size) {
 			return (
@@ -533,9 +567,9 @@ class NoguchiBibliographyBrowseResultLoadMoreButton extends React.Component {
  * 		<NONE>
  *
  * Used by:
- *  	NoguchiBibliographyBrowseResults
+ *  	NoguchiLibraryBrowseResults
  */
-class NoguchiBibliographyBrowseResultItem extends React.Component {
+class NoguchiLibraryBrowseResultItem extends React.Component {
 	render() {
 		let data = this.props.data;
 		let styles = {
@@ -545,10 +579,23 @@ class NoguchiBibliographyBrowseResultItem extends React.Component {
 		switch(this.props.view) {
 			default:
 				return (
-					<div className="block-half">
-						<a href={data.detailUrl} className="columns">
-							<div className="col title clamp" data-lines="2">{data.citation}</div>
-							<div className="col type text-gray">{data.format}</div>
+					<div className="item-grid">
+						<a href={data.detailUrl}>
+							<div className="img-wrapper archive_thumb block-quarter">
+								<div className="bg-image"
+									 style={styles}></div>
+							</div>
+							<div className="text">
+								<div className="text_position">
+									<div className="ca-identifier text-gray">{data.idno}</div>
+									<div className="thumb-text clamp" data-lines="3">{data.label}</div>
+
+									<div className="text_full">
+										<div className="ca-identifier text-gray">{data.idno}</div>
+										<div className="thumb-text">{data.label}</div>
+									</div>
+								</div>
+							</div>
 						</a>
 					</div>
 				);
@@ -563,7 +610,7 @@ class NoguchiBibliographyBrowseResultItem extends React.Component {
  */
 export default function _init() {
 	ReactDOM.render(
-		<NoguchiBibliographyBrowse baseUrl={appData.baseUrl} endpoint={appData.endpoint}
+		<NoguchiLibraryBrowse baseUrl={appData.baseUrl} endpoint={appData.endpoint}
 							  initialFilters={appData.initialFilters} view={appData.view}
 							  browseKey={appData.key}/>, document.querySelector(selector));
 }

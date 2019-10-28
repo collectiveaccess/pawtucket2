@@ -40,7 +40,7 @@
 	pawtucketUIApps['exhbrowse'] = {
 		'#dateBrowse': {
 			'facetUrl': '<?php print caNavUrl('', 'FrontBrowse', 'occurrences', ['getFacet' => 'decade', 'download' => 1]); ?>',
-			'browseUrl': '<?php print caNavUrl('', 'FrontBrowse', 'occurrences', ['facets' => 'decade:%value']); ?>',
+			'browseUrl': '<?php print caNavUrl('', 'FrontBrowse', 'occurrences', ['facets' => 'decade:%value', 'sort' => 'Name']); ?>',
 			'groupByYear': true
 		},
 		'#exhibitionBrowse': {

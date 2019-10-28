@@ -99,11 +99,13 @@ small {
 	max-width: 600px;
 	border-bottom: none !important;
 	display: block;
+		break-inside: avoid;
 	}
 	&--find {
 	@extend .masonry-title;
 	min-height: 80px;
 	background-color: $color-block;
+		break-inside: avoid;
 	}
 }
 

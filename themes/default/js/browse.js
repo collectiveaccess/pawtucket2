@@ -10,6 +10,7 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  */
 function initialState() {
 	return {
+		totalSize: null,
 		resultSize: null,
 		resultList: null,
 		key: null,
@@ -18,7 +19,9 @@ function initialState() {
 		availableFacets: null,
 		facetList: null,
 		filters: null,
-		introduction: { title: null, description: null }
+		selectedFacet: null,
+		introduction: { title: null, description: null },
+		view: null
 	};
 }
 
@@ -36,7 +39,7 @@ function fetchResults(url, callback) {
 			let data = resp.data;
 			let state = initialState();
 
-			state.resultSize = data.size;
+			state.resultSize = state.totalSize = data.size;
 			state.resultList = data.hits;
 			state.start = (data.start > 0) ? data.start : 0;
 			state.itemsPerPage = data.itemsPerPage;
@@ -113,6 +116,7 @@ function getFilterString(filters) {
 function initBrowseContainer(instance, props) {
 	let that = instance;
 	that.state = initialState();
+	that.state.view = props.view;
 
 	/**
 	 * Load browse results
@@ -121,9 +125,9 @@ function initBrowseContainer(instance, props) {
 	 * @param clearFilters Remove any filters applied to the browse. Default is false.
 	 */
 	that.loadResults = function(callback, clearFilters=false) {
-		let that = this;
 		let offset = that.state.start;
 		let filterString = getFilterString(that.state.filters);
+
 		fetchResults(that.props.baseUrl + '/' + that.props.endpoint + '/s/' +
 			offset + (that.state.key ? '/key/' + that.state.key : '') + (filterString ? '/facets/' +
 				filterString : '') + (clearFilters ? '/clear/1' : ''), function(newState) {
@@ -144,6 +148,10 @@ function initBrowseContainer(instance, props) {
 
 		that.state.start += that.state.itemsPerPage;
 
+		let state = this.state;
+		state.resultSize = null;
+		that.setState(state);
+
 		that.loadResults(function(newState) {
 			let state = that.state;
 			state.resultList.push(...newState.resultList);
@@ -161,7 +169,6 @@ function initBrowseContainer(instance, props) {
 	 * 		existing ones, otherwise they are added to existing filters.
 	 */
 	that.reloadResults = function(filters, replaceFilters=false) {
-		let that = this;
 		let state = that.state;
 
 		if (replaceFilters) {
@@ -173,10 +180,18 @@ function initBrowseContainer(instance, props) {
 		}
 		state.key = null;
 		state.start = 0;
+		state.resultSize = null;
 		that.setState(state);
 		that.loadResults(function(newState) {
+			newState.view = that.state.view; // preserve view setting
 			that.setState(newState);
 		}, Object.keys(state.filters).length === 0);
+	};
+
+	that.closeFacetPanel = function() {
+		let state = that.state;
+		state.selectedFacet = null;
+		that.setState(state);
 	};
 
 
@@ -191,6 +206,7 @@ function initBrowseContainer(instance, props) {
 	}
 
 	that.loadResults(function(newState) {
+		newState.view = that.state.view; // preserve view setting
 		that.setState(newState);
 	});
 
@@ -224,6 +240,7 @@ function initBrowseCurrentFilterList(instance) {
 				}
 			}
 		}
+		this.context.closeFacetPanel();
 		this.context.reloadResults(filters);
 	}
 
@@ -245,15 +262,16 @@ function initBrowseFilterList(instance, props) {
 	 */
 	that.toggleFacetPanel = function(e) {
 		let targetOpt = e.target.attributes.getNamedItem('data-option').value;
-		let state = this.state;
-
-		if (targetOpt === state.selected) {
-			state.selected = null;			// toggle closed
+		let state = that.state;
+		let contextState = that.context.state;
+		if (targetOpt === that.context.state.selectedFacet) {
+			contextState.selectedFacet = null;			// toggle closed
 		} else {
-			state.selected = targetOpt;		// toggle open to new facet
+			contextState.selectedFacet = targetOpt;		// toggle open to new facet
 		}
 		state.arrowPosition = e.pageX;
-		this.setState(state);
+		that.setState(state);
+		that.context.setState(contextState);
 		e.preventDefault();
 	};
 
@@ -261,18 +279,24 @@ function initBrowseFilterList(instance, props) {
 	 * Force facet panel closed
 	 */
 	that.closeFacetPanel = function() {
-		let state = this.state;
-		state.selected = null;
-		this.setState(state);
+		let state = this.context.state;
+		state.selectedFacet = null;
+		this.context.setState(state);
 	};
 
 	that.toggleFacetPanel = that.toggleFacetPanel.bind(that);
 	that.closeFacetPanel = that.closeFacetPanel.bind(that);
 
+	that.componentDidMount = function(){
+		that.facetPanelRefs = {};
+		if (that.context.state.availableFacets) {
+			for (let n in this.context.state.availableFacets) {
+				that.facetPanelRefs[n] = React.createRef();
+			}
+		}
+	};
 
-	that.facetPanelRef = React.createRef();
 	that.state = {
-		selected: null,
 		arrowPosition: 0
 	};
 }
@@ -351,7 +375,7 @@ function initBrowseFacetPanel(instance, props) {
 	 * @param prevProps
 	 */
 	that.componentDidUpdate = function(prevProps) {
-		if(prevProps.facetName !== this.props.facetName) {	// trigger load of facet content
+		if((prevProps.open !== this.props.open) && this.props.open) {	// trigger load of facet content
 			this.loadFacetContent(this.props.facetName);
 		}
 	};
