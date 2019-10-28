@@ -14,7 +14,7 @@
 <?php
 	if($qr_categories->numHits()){
 		$vn_i = 0;
-		$vn_cols = 4;
+		$vn_cols = 6;
 		while($qr_categories->nextHit()){
 			if(!in_array($qr_categories->get("ca_list_items.item_id"), $va_available_ids)){
 				continue;
@@ -39,7 +39,7 @@
 			if($vn_i == 0){
 				print "<div class='row'>";
 			}
-			print "<div class='col-sm-3'><div class='exploreCategoryContainer'>".
+			print "<div class='col-sm-2'><div class='exploreCategoryContainer'>".
 						"<H2>".caNavLink($this->request, $qr_categories->get("ca_list_items.preferred_labels.name_plural"), "", "", "browse", "objects", array("facet" => "category_facet", "id" => $qr_categories->get("ca_list_items.item_id")))."</H2>".
 						"<div class='exploreImgContainer'>".caNavLink($this->request, $vs_img, "", "", "browse", "objects", array("facet" => "category_facet", "id" => $qr_categories->get("ca_list_items.item_id")))."</div>
 						<p class='text-center'>".caNavLink($this->request, "View Items", "btn-default btn-sm", "", "browse", "objects", array("facet" => "category_facet", "id" => $qr_categories->get("ca_list_items.item_id")))."</p>
