@@ -92,5 +92,7 @@
 	}
 	if ($facet === 'decade') {
 		$data = array_values(caSortArrayByKeyInValue($data, ['year']));
+	} elseif($facet === 'exhibition') {
+		$data = array_values(caSortArrayByKeyInValue($data, ['label']));
 	}
 	print json_encode($data, true);

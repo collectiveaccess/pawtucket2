@@ -32,19 +32,30 @@ class ExhBrowse extends React.Component {
   }
 
   render() {
-  	let results = [], lastYear = null;
+  	let results = [], resultsByYear = [], lastYear = null;
   	let hits = [...this.state.results];
   	if (this.state.sortDirection === 'DESC') { hits = hits.reverse(); }
+
+  	let isOpen = true;
   	for(var k in hits) {
   		let result = hits[k];
   		if(this.props.groupByYear) {
-			if (parseInt(result.year) !== lastYear) {
-				results.push(<li className="masonry-title--list dateBrowseHeader" dangerouslySetInnerHTML={{__html: result.year}}></li>);
-				lastYear = parseInt(result.year);
+  			let curYear = parseInt(result.year);
+  			if(lastYear === null) { lastYear = curYear; }
+
+			if (curYear !== lastYear) {
+				results.push(<ExhBrowseResultByYear key={lastYear} open={isOpen} results={resultsByYear} year={lastYear}/>);
+
+				resultsByYear = [];
+				lastYear = curYear;
+				isOpen = false;
 			}
+			resultsByYear.push(<ExhBrowseResultItem key={result.detail_link} detailLink={result.detail_link}/>);
 		}
-  		results.push(<li className="masonry-title--list" dangerouslySetInnerHTML={{ __html : result.detail_link }}></li>);
   	}
+	  if ((resultsByYear.length > 0) && (lastYear > 0)) {
+		  results.push(<ExhBrowseResultByYear open={isOpen} results={resultsByYear} year={lastYear}/>);
+	  }
 
     return (
     	<div>
@@ -65,6 +76,52 @@ class ExhBrowse extends React.Component {
 		</div>
     );
   }
+}
+
+class ExhBrowseResultByYear extends React.Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			open: this.props.open
+		}
+
+		this.doToggle = this.doToggle.bind(this);
+		this.componentDidUpdate = this.componentDidUpdate.bind(this);
+	}
+
+	doToggle(e) {
+		let state = this.state;
+		state.open = !state.open;
+		this.setState(state);
+		e.preventDefault();
+	}
+
+	componentDidUpdate(prevProps, prevState, snapshot) {
+		if(this.props.year !== prevProps.year) {
+			let state = this.state;
+			state.open =  this.props.open;
+			this.setState(state);
+		}
+	}
+
+	render() {
+		let styles = {
+			display: this.state.open ? 'block' : 'none'
+		};
+		let arrow = this.state.open ? "↑" : "↓";
+		return(<ul className="list-unstyled"><li className="masonry-title--list dateBrowseHeader">{this.props.year} <a href='#' onClick={this.doToggle}>{arrow}</a> <ul className="list-unstyled" style={styles}>{this.props.results}</ul></li></ul>);
+	}
+}
+
+class ExhBrowseResultItem extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		return(<li className="masonry-title--list" dangerouslySetInnerHTML={{ __html : this.props.detailLink }}></li>);
+	}
 }
 
 class ExhBrowseNavigation extends React.Component {
