@@ -421,6 +421,7 @@ class PawtucketBrowseResults extends React.Component {
 										{resultList}
 									</div>
 								</div>
+								</div>
 							</div>
 						</section>
 						<PawtucketBrowseResultLoadMoreButton start={this.context.state.start}
