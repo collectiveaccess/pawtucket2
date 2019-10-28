@@ -51,12 +51,15 @@ class ExhBrowse extends React.Component {
 				isOpen = false;
 			}
 			resultsByYear.push(<ExhBrowseResultItem key={result.detail_link} detailLink={result.detail_link}/>);
+		} else {
+			results.push(<ExhBrowseResultItem key={result.detail_link} detailLink={result.detail_link}/>);
 		}
   	}
-	  if ((resultsByYear.length > 0) && (lastYear > 0)) {
+
+	  if (this.props.groupByYear && (resultsByYear.length > 0) && (lastYear > 0)) {
 		  results.push(<ExhBrowseResultByYear open={isOpen} results={resultsByYear} year={lastYear}/>);
 	  }
-
+	  
     return (
     	<div>
 			<div className="row justify-content-center">
