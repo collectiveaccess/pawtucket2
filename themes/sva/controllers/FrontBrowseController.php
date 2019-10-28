@@ -160,6 +160,9 @@
 			$this->view->setVar('view', $ps_view);
 			$this->view->setVar('viewIcons', $this->opo_config->getAssoc("views"));
 		
+		
+ 			$o_browse->setFacetGroup('front');
+ 			
 			//
 			// Load existing browse if key is specified
 			//
@@ -294,7 +297,7 @@
 			//
 			
 			$vs_sort_fld = $va_sort_by[$ps_sort];
-			if (!$vs_sort_fld) { $vs_sort_fld = array_shift($va_sort_by); }
+			if (!$vs_sort_fld && is_array($va_sort_by)) { $vs_sort_fld = array_shift($va_sort_by); }
 			$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
 			
 			$this->view->setVar('result', $qr_res);

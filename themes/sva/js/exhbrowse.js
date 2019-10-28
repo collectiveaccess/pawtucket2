@@ -216,7 +216,7 @@ class ExhBrowseNavigationItem extends React.Component {
 
   render() {
     return (
-      <li className="browseNavItem">
+     <li className="browseNavItem">
        	<a href="#" onClick={this.loadFacetResults} className={this.state["selected"] ? "browseNavItemSelected" : ""}>{this.props.label}</a>
       </li>
     );
