@@ -19,7 +19,7 @@
 			</div>			
 		</div>
 		<div class="row">
-			<div class="col-sm-2">
+			<div class="col-sm-2"><div class="position-sticky">
 				<div class="jump pb-5">Showing results from:<br><br>
 <?php
 					$i = 0;
@@ -32,7 +32,7 @@
 						print "<div class='space'><a href='#{$vs_block}'>".$va_results[$vs_block]['displayName']." (".$va_results[$vs_block]['count'].")</a></div>";
 					}
 ?>
-				</div>
+				</div></div>
 			</div>
 			<div class="col-sm-10">
 		

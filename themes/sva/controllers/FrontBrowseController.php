@@ -160,6 +160,9 @@
 			$this->view->setVar('view', $ps_view);
 			$this->view->setVar('viewIcons', $this->opo_config->getAssoc("views"));
 		
+		
+ 			$o_browse->setFacetGroup('front');
+ 			
 			//
 			// Load existing browse if key is specified
 			//
@@ -212,7 +215,7 @@
  			if (!($ps_sort = urldecode($this->request->getParameter("sort", pString, ['forcePurify' => true])))) {
  				$ps_sort = $this->opo_result_context->getCurrentSort();
  			}elseif($ps_sort != $this->opo_result_context->getCurrentSort()){ 
- 			    $vb_sort_changed = true; 
+ 			    $vb_sort_changed = true;
  			}
  			if(is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
                 if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
@@ -237,7 +240,7 @@
  			$this->opo_result_context->setCurrentSort($ps_sort);
  			$this->opo_result_context->setCurrentSortDirection($ps_sort_direction);
  			
-			$va_sort_by = caGetOption('sortBy', $va_browse_info, null);
+			$va_sort_by = caGetOption('sortBy', $va_browse_info, []);
 			$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
 			$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $ps_sort)) : ''));
 			$this->view->setVar('sortControl', $vs_sort_by_select ? _t('Sort with %1', $vs_sort_by_select) : '');
@@ -294,16 +297,10 @@
 			//
 			
 			$vs_sort_fld = $va_sort_by[$ps_sort];
-			if (!$vs_sort_fld) { $vs_sort_fld = array_shift($va_sort_by); }
+			if (!$vs_sort_fld && is_array($va_sort_by)) { $vs_sort_fld = array_shift($va_sort_by); }
 			$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
 			
 			$this->view->setVar('result', $qr_res);
-				
-			// if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
-//  				if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
-//  					$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
-//  				}
-//  			}
 
 			$pn_hits_per_block = 1000;
 

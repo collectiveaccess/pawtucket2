@@ -112,7 +112,7 @@ class PawtucketBrowseCurrentFilterList extends React.Component {
 					let label = cv[c];
 					let facetLabel = (this.context.state.facetList && this.context.state.facetList[f]) ? this.context.state.facetList[f]['label_singular'] : "";
 					filterList.push((<a key={ f + '_' + c }href='#'
-										  className='browseRemoveFacet'><span className=""><br/>{facetLabel}</span>: {label}
+										  className='browseRemoveFacet'><br/><span className="facetlabel">{facetLabel}</span>: <span className="facetname"> {label} </span>
 						<span onClick={this.removeFilter}
 							  data-facet={f}
 							  data-value={c}>&nbsp;&times;</span></a>));
@@ -188,9 +188,9 @@ class PawtucketBrowseFacetList extends React.Component {
 		let isOpen = (this.state.selected !== null) ? 'true' : 'false';
 
 		return(
-			<div className="options-filter-widget">				
-					<span>{filterLabel}</span>
-					<br/><br/>{facetButtons}
+			<div >				
+					<span className="options-filter-widget">{filterLabel}</span>
+					<ul className="filters">{facetButtons}</ul>
 				<PawtucketBrowseFacetPanel open={isOpen} facetName={this.state.selected}
 										  facetLoadUrl={this.props.facetLoadUrl} ref={this.facetPanelRef}
 										  loadResultsCallback={this.context.loadResultsCallback}
@@ -219,9 +219,9 @@ class PawtucketBrowseFacetList extends React.Component {
  */
 class PawtucketBrowseFacetButton extends React.Component {
 	render() {
-		return(<p className="options-filter-widget">
+		return(<li className="options-filters">
 		<a href="#" data-option={this.props.name} onClick={this.props.callback}>{this.props.text}</a>
-		</p>);
+		</li>);
 	}
 }
 
@@ -270,7 +270,7 @@ class PawtucketBrowseFacetPanel extends React.Component {
 					<ul className="filters" data-values="type_facet">
 						{options}
 					</ul>
-					<div className="d-flex justify-content-center">
+					<div className="d-flex justify-content-left pb-5">
 						<a className="button" href="#" onClick={this.applyFilters}>Apply</a>
 					</div>
 
@@ -364,7 +364,7 @@ class PawtucketBrowseNavigation extends React.Component {
 			<section className="ca_nav">
 				<nav className="hide-for-mobile">
 						<form action="#" onSubmit={this.loadSearch}>
-							<div className="cell"><input name="search" type="text" placeholder="Search Within..." ref={this.searchRef}
+							<div className="cell"><input name="search" type="text" placeholder="Search within..." ref={this.searchRef}
 														 className="inlinesearch"/></div>
 						
 						</form>
@@ -410,16 +410,17 @@ class PawtucketBrowseResults extends React.Component {
 					<div>
 						<section className="results">
 							<div className="row">
-								<div className="col-lg-2 pl-0">
+								<div className="col-lg-2 no-gutters pl-3 p-1"><div className="position-sticky">
 									<PawtucketBrowseNavigation/>
 									<PawtucketBrowseCurrentFilterList/> <br/>
 									<PawtucketBrowseFacetList facetLoadUrl={this.props.facetLoadUrl}/>
 
 								</div>
-								<div className="col-lg-10">
+								<div className="col-lg-10 no-gutters p-1">
 									<div className="card-columns">
 										{resultList}
 									</div>
+								</div>
 								</div>
 							</div>
 						</section>
