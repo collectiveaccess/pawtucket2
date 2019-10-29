@@ -107,6 +107,16 @@ small {
 	background-color: $color-block;
 		break-inside: avoid;
 	}
+	&--byYear {
+		@extend .masonry-title;
+		text-align: left !important;
+		padding-top: 10px;
+		padding-bottom: 10px;
+		margin-left: 20px;
+		border-bottom: none !important;
+		display: block;
+		break-inside: avoid;
+	}
 }
 
 .prevnext {
