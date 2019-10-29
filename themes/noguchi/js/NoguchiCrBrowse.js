@@ -374,9 +374,9 @@ class NoguchiCrBrowseFacetPanel extends React.Component {
 								<ul className="ul-options" data-values="type_facet">
 									{options}
 								</ul>
-								<div className="text-align-center"><br/><a className="button load-more" href="#" onClick={this.applyFilters}>Apply</a></div>
 							</div>
 						</div>
+						<div className="filter-apply"><a className="button load-more" href="#" onClick={this.applyFilters}>Apply</a></div>
 					</div>
 			</div>);
 	}
@@ -482,34 +482,6 @@ class NoguchiCrBrowseNavigation extends React.Component {
 								<div className="cell text"><a href='/index.php/CR/About'>About<span className='long'> The Catalogue</span></a></div>
 							</div>
 						</form>
-					</div>
-				</nav>
-				<nav className="show-for-mobile wrap">
-					<div className="module_accordion">
-						<div className="items">
-							<div className="item">
-								<div className="trigger small">Catalogue Menu</div>
-								<div className="details">
-									<div className="inner">
-
-										<div className="module_filter_bar">
-											<div className="wrap text-gray">
-												<form action="#" onSubmit={this.loadSearch}>
-													<div className="cell"><input name="search" type="text" placeholder="Search the Catalogue" className="search" /></div>
-													<div class="misc">
-														<a href='/index.php/Browse/CR'>Browse</a>
-														<a href='/index.php/CR/Foreword'>Foreword</a>
-														<a href='/index.php/CR/UserGuide'>User Guide</a>
-														<a href='/index.php/CR/About'>About The Catalogue</a>
-													</div>
-												</form>
-											</div>
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
 					</div>
 				</nav>
 

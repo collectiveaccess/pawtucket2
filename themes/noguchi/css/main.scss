@@ -31,9 +31,6 @@
 .archive_landing section.intro{
 	padding-top: 80px;
 }
-BODY.collective-access .ca_filters .options-filter-widget .option_values {
-	height: 250px;
-}
 .archive_text_based ol, .archive_text_based ul, archive_text_based li,
 .cr_text_based ol, .cr_text_based ul, .cr_text_based li{
 	margin-left:0px;
@@ -85,4 +82,73 @@ BODY.collective-access .ca_filters .options-filter-widget .option_values {
 }
 .caMediaOverlayControls{
 	display:none;
+}
+
+/* apply filter button */
+BODY.collective-access .ca_filters .options-filter-widget .filter-apply{
+	margin-top:10px;
+	margin-bottom:10px;
+	text-align:center;
+}
+BODY.collective-access .ca_filters .options-filter-widget .option_values .inner{
+	padding-bottom:50px;
+}
+BODY.collective-access .ca_filters .options-filter-widget .option_values {
+	height: 300px;
+}
+/* responsive browse filters */
+BODY.collective-access .ca_filters .options-filter-widget {
+	display:block;
+}
+@media(max-width:768px){
+	BODY.collective-access .ca_filters .current{
+		float:none;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget .options SPAN {
+		float: none;
+		display: block;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget {
+		display:block;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget .options {
+		float: none;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget .options A{
+		display:block;
+		margin:0px;
+		float: left;
+		/*width: 33%;*/
+		padding: 9px 24px 7px 12px;
+		background-position: right 8px center;
+		margin-left:-1px;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget .options A:hover{
+		z-index:100;
+		position:relative;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget .options A:first{
+		margin-left:0px;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget .option_values .ul-options{
+		columns:1;
+	}
+	
+	BODY.collective-access .ca_filters .current .tags {
+		margin-top: 5px;
+    	margin-left: 0px;
+    }
+    BODY.collective-access .ca_filters .current > DIV{
+    	float:none;
+    }
+    BODY.collective-access .ca_filters .current .tags A{
+    	display:block;
+    	text-align: center;
+    	margin-top:-1px;
+    }
+}
+@media(max-width:1025px){
+	HEADER.placeholder{
+		height:60px;
+	}
 }

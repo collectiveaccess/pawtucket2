@@ -321,9 +321,9 @@ class NoguchiLibraryBrowseFacetPanel extends React.Component {
 								<ul className="ul-options" data-values="type_facet">
 									{options}
 								</ul>
-								<div className="text-align-center"><br/><a className="button load-more" href="#" onClick={this.applyFilters}>Apply</a></div>
 							</div>
 						</div>
+						<div className="filter-apply"><a className="button load-more" href="#" onClick={this.applyFilters}>Apply</a></div>
 					</div>
 			</div>);
 	}
@@ -440,33 +440,6 @@ class NoguchiLibraryBrowseNavigation extends React.Component {
 									className='long'> The Archive</span></a></div>
 							</div>
 						</form>
-					</div>
-				</nav>
-				<nav className="show-for-mobile wrap">
-					<div className="module_accordion">
-						<div className="items">
-							<div className="item">
-								<div className="trigger small">Archive Menu</div>            
-								<div className="details">
-									<div className="inner">
-
-										<div className="module_filter_bar">
-											<div className="wrap text-gray">
-												<form action="#" onSubmit={this.loadSearch}>
-													<div className="cell"><input name="search" type="text" placeholder="Search the Library" className="search"/></div>
-													<div className="misc">
-													   <a href='/index.php/Browse/Archive'>Browse</a>
-													   <a href='/index.php/ArchiveInfo/UserGuide'>User Guide</a>
-													   <a href='/index.php/ArchiveInfo/About'>About The Archive</a>
-													</div>
-												</form>
-											</div>
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
 					</div>
 				</nav>
 			</section>

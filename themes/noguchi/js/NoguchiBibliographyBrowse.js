@@ -338,9 +338,9 @@ class NoguchiBibliographyBrowseFacetPanel extends React.Component {
 								<ul className="ul-options" data-values="type_facet">
 									{options}
 								</ul>
-								<div className="text-align-center"><br/><a className="button load-more" href="#" onClick={this.applyFilters}>Apply</a></div>
 							</div>
 						</div>
+						<div className="filter-apply"><a className="button load-more" href="#" onClick={this.applyFilters}>Apply</a></div>
 					</div>
 			</div>);
 	}
