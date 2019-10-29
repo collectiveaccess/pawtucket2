@@ -59,18 +59,20 @@ class ExhBrowse extends React.Component {
 	  if (this.props.groupByYear && (resultsByYear.length > 0) && (lastYear > 0)) {
 		  results.push(<ExhBrowseResultByYear open={isOpen} results={resultsByYear} year={lastYear}/>);
 	  }
-	  
+
+	  let colClass = (this.props.groupByYear > 0) ? "xxx" : "card-columns";
+
     return (
     	<div>
 			<div className="row justify-content-center">
 				<div className="col-sm-12 col-md-12 text-center">       	
-				<ul className="sortby"><ExhBrowseNavigation facetUrl={this.props.facetUrl} browseUrl={this.props.browseUrl} handleResults={this.setBrowseResults} /></ul>
+					<ul className="sortby"><ExhBrowseNavigation facetUrl={this.props.facetUrl} browseUrl={this.props.browseUrl} handleResults={this.setBrowseResults} /></ul>
 				</div>
 			</div>
 				
 			<div className="nameBrowse">
-			<div className="row justify-content-center"><h2>{this.state.value}</h2></div>
-				<div className="card-columns">
+				<div className="row justify-content-center"><h2>{this.state.value}</h2></div>
+				<div className={colClass}>
 					<ul className="select-list browseResults">		
 					{results}
 					</ul>
@@ -113,7 +115,14 @@ class ExhBrowseResultByYear extends React.Component {
 			display: this.state.open ? 'block' : 'none'
 		};
 		let arrow = this.state.open ? "↑" : "↓";
-		return(<ul className="list-unstyled"><li className="masonry-title--list dateBrowseHeader">{this.props.year} <a href='#' onClick={this.doToggle}>{arrow}</a> <ul className="list-unstyled" style={styles}>{this.props.results}</ul></li></ul>);
+		return(<ul className="list-unstyled">
+			<li className="masonry-title--byYear dateBrowseHeader">
+				<a href='#' onClick={this.doToggle}>{this.props.year} {arrow}</a>
+				<div class="card-columns">
+					<ul className="list-unstyled" style={styles}>{this.props.results}</ul>
+				</div>
+			</li>
+		</ul>);
 	}
 }
 
@@ -123,7 +132,7 @@ class ExhBrowseResultItem extends React.Component {
 	}
 
 	render() {
-		return(<li className="masonry-title--list" dangerouslySetInnerHTML={{ __html : this.props.detailLink }}></li>);
+		return(<li className="masonry-title--byYear" dangerouslySetInnerHTML={{ __html : this.props.detailLink }}></li>);
 	}
 }
 
