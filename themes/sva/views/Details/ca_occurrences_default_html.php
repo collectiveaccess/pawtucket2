@@ -56,11 +56,11 @@
 					
 			{{{<ifcount restrictToRelationshipTypes="curator" code="ca_entities" min="1" max="1"><h3>Curator</h3></ifcount>}}}
 			{{{<ifcount restrictToRelationshipTypes="curator" code="ca_entities" min="2"><H3>Curators</h3></ifcount>}}}
-			{{{<unit relativeTo="ca_entities.related" delimiter="<br/>" restrictToRelationshipTypes="curator"><span class="p"><l>^ca_entities.preferred_labels</l></span><br/><br/></unit>}}}
+			{{{<unit relativeTo="ca_entities.related" delimiter=",  " restrictToRelationshipTypes="curator"><span class="p"> <l>^ca_entities.preferred_labels</l></span><br/><br/></unit>}}}
 
 			{{{<ifcount restrictToRelationshipTypes="exhibitor" code="ca_entities" min="1" max="1"><h3>Exhibitor</h3></ifcount>}}}
 			{{{<ifcount restrictToRelationshipTypes="exhibitor" code="ca_entities" min="2"><H3>Exhibitors</H3></ifcount>}}}
-			{{{<unit relativeTo="ca_entities.related" delimiter=", " restrictToRelationshipTypes="exhibitor"><span class="p"><l>^ca_entities.preferred_labels</l></span></unit><br><br>}}}				
+			{{{<unit relativeTo="ca_entities.related" delimiter=", &nbsp;" restrictToRelationshipTypes="exhibitor"><span class="p"><l>^ca_entities.preferred_labels</l></span></unit><br><br>}}}				
 				
 			{{{<if rule="^ca_occurrences.dates.dates_type =~ /Exhibition dates/"><h3>Exhibition Dates</H3></if>}}}
 			{{{<unit relativeTo="ca_occurrences.dates" skipWhen="^ca_occurrences.dates.dates_type !~ /Exhibition dates/" delimiter="<br/>"><if rule="^ca_occurrences.dates.dates_type =~ /Exhibition dates/"><p>^ca_occurrences.dates.dates_value</p></if></unit>}}}
@@ -73,7 +73,7 @@
 					
 			{{{<ifcount restrictToRelationshipTypes="department" code="ca_entities" min="1" max="1"><h3>Department</H3></ifcount>}}}
 			{{{<ifcount restrictToRelationshipTypes="department" code="ca_entities" min="2"><H3>Departments</H3></ifcount>}}}
-			{{{<unit relativeTo="ca_entities.related" delimiter=", " restrictToRelationshipTypes="department"><span class="p"><l>^ca_entities.preferred_labels</l></span></unit><br><br>}}}					
+			{{{<unit relativeTo="ca_entities.related" delimiter=",  " restrictToRelationshipTypes="department"><span class="p"><l>^ca_entities.preferred_labels</l></span></unit><br><br>}}}					
 				
 			{{{<ifdef code="ca_occurrences.external_link.url_source"><H2>Links</H2>^ca_occurrences.external_link.url_entry</ifdef>}}}																				
 					
