@@ -53,3 +53,9 @@
         }
     };
 </script>
+<script type="text/javascript">
+	var gCaptchaRender = function(){
+		grecaptcha.render('reCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+	};
+</script>
+<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>

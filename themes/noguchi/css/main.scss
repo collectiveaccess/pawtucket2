@@ -96,9 +96,20 @@ BODY.collective-access .ca_filters .options-filter-widget .option_values .inner{
 BODY.collective-access .ca_filters .options-filter-widget .option_values {
 	height: 300px;
 }
+/* contact form */
+#contactForm .ca-form{
+	width:100%;
+}
 /* responsive browse filters */
 BODY.collective-access .ca_filters .options-filter-widget {
 	display:block;
+}
+@media(min-width:769px) and (max-width:1024px){
+	BODY.collective-access .ca_filters .current .tags {
+		margin-top: 0px;
+		margin-left: 0px;
+		clear: left;
+	}
 }
 @media(max-width:768px){
 	BODY.collective-access .ca_filters .current{

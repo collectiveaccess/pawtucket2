@@ -64,22 +64,22 @@
 							case "archive":
 							case "loginreg":
 							case "archiveinfo":
-								print caNavLink("Isamu Noguchi Archive", "", "", "Archive", "Index");
+								print caNavLink("The Isamu Noguchi Archive", "", "", "Archive", "Index");
 							break;
 							# ---------------------------------------
 							case "cr":
-									print caNavLink("Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
+									print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
 							break;
 							# ---------------------------------------
 							case "detail":
 								switch(strToLower($this->request->getAction())){
 									case "archival":
 									case "library":
-										print caNavLink("Isamu Noguchi Archive", "", "", "Archive", "Index");
+										print caNavLink("The Isamu Noguchi Archive", "", "", "Archive", "Index");
 									break;
 									# ---------------------------------------
 									case "artwork":
-										print caNavLink("Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
+										print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
 									break;
 									# ---------------------------------------
 									case "exhibition":
@@ -97,11 +97,11 @@
 								switch(strToLower($this->request->getAction())){
 									case "archive":
 									case "library":
-										print caNavLink("Isamu Noguchi Archive", "", "", "Archive", "Index");
+										print caNavLink("The Isamu Noguchi Archive", "", "", "Archive", "Index");
 									break;
 									# ---------------------------------------
 									case "cr":
-										print caNavLink("Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
+										print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
 									break;
 									# ---------------------------------------
 									case "exhibitions":
