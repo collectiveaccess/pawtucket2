@@ -57,7 +57,7 @@
 				$t_list_item = new ca_list_items();
 				$t_list_item->load($pn_category_id);
 				$this->view->setVar("category_name", $t_list_item->get("ca_list_items.preferred_labels.name_plural"));
-				$va_categories = $t_list_item->get("ca_list_items.children.item_id", array("returnAsArray" => true, "checkAccess" => $this->opa_access_values));
+				$va_categories = $t_list_item->get("ca_list_items.children.item_id", array("returnAsArray" => true, "checkAccess" => $this->opa_access_values, "sort" => "ca_list_items.preferred_labels"));
 			}else{				
 				# --- category landing page
 				$va_categories = $t_list->getItemsForList("categories", array("extractValuesByUserLocale" => true, "checkAccess" => $this->opa_access_values, "sort" => __CA_LISTS_SORT_BY_LABEL__));				
