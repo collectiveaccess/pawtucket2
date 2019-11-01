@@ -210,7 +210,7 @@ class NoguchiArchiveBrowseFacetList extends React.Component {
 
 	render() {
 		let facetButtons = [], facetPanels = [];
-		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "Loading...";
+		let filterLabel = this.context.state.availableFacets ? "Filter by: " : <div className='spinner'><div className='bounce1'></div><div className='bounce2'></div><div className='bounce3'></div></div>;
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
@@ -361,10 +361,8 @@ class NoguchiArchiveBrowseFacetPanelItem extends React.Component {
 			<input id={id} value={data.id} data-label={data.label}  className="option-input" type="checkbox" checked={this.props.selected} onChange={this.props.callback}/>
 			<label htmlFor={id}>
 				<span className="title">
-					<a href='#'>
-						{data.label} &nbsp;
-						<span className="number">({data.content_count})</span>
-					</a>
+					{data.label} &nbsp;
+					<span className="number">({data.content_count})</span>
 				</span>
 			</label>
 		</div>);
@@ -447,8 +445,8 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 			collections.push((<a href='#' key={this.state.collections[i].id} data-id={this.state.collections[i].id} onClick={this.loadCollection}>{this.state.collections[i].name}</a>));
 		}
 		return(
-			<section className="ca_nav">
-				<nav className="hide-for-mobile">
+			<section className="ca_nav hide-for-mobile">
+				<nav>
 					<div className="wrap text-gray">
 						<form action="#" onSubmit={this.loadSearch}>
 							<div className="cell text"><a href='/index.php/Browse/Archive'>Browse</a></div>

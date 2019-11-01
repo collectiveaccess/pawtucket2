@@ -16,7 +16,7 @@
         </section>
 
         <section class="wrap block">
-            <div class="wrap-text text-align-center body-text-l">The Isamu Noguchi Catalogue Raisonné is an ongoing project of The Isamu Noguchi Foundation and Garden Museum, New York, committed to documenting the artistic practice of Isamu Noguchi (1904–1988).</div>
+            <div class="wrap-text-large text-align-center body-text-l">The Isamu Noguchi Catalogue Raisonné is an ongoing project of The Isamu Noguchi Foundation and Garden Museum, New York, committed to documenting the artistic practice of Isamu Noguchi (1904–1988).</div>
         </section>
 
     </main>

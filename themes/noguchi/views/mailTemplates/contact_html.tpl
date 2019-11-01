@@ -22,7 +22,9 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+
+include("email_header.tpl");
+
 print "<p>"._t("You have been sent a contact email from \"%1\", %2.", $this->request->config->get("app_display_name"), $this->request->config->get("site_host"))."</p>";
 $va_fields = $this->getVar("contact_form_elements");
 foreach($va_fields as $vs_element => $va_options){
@@ -30,5 +32,5 @@ foreach($va_fields as $vs_element => $va_options){
 		print "<p><b>".$va_options["label"].":</b> ".$this->request->getParameter($vs_element, pString)."</p>";
 	}
 }
-
+include("email_footer.tpl");
 ?>

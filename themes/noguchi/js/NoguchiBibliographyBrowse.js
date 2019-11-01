@@ -38,7 +38,7 @@ class NoguchiBibliographyBrowse extends React.Component{
 		return(
 			<NoguchiBibliographyBrowseContext.Provider value={this}>
 				<main className="ca bibliography bibliography_landing">
-					<NoguchiBibliographyBrowseIntro description={this.state.introduction.description}/>
+					<NoguchiBibliographyBrowseIntro headline={this.state.introduction.title} description={this.state.introduction.description}/>
 
 					<NoguchiBibliographyBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
 
@@ -54,6 +54,7 @@ class NoguchiBibliographyBrowse extends React.Component{
  *
  * Props are:
  * 		
+ * 		headline : browse inteface headline (Ex. "Bibliography")
  * 		description : descriptive text for the browse (Eg. Bibliography intro comes from global value bibliographyIntro)
  *
  * Sub-components are:
@@ -66,14 +67,16 @@ class NoguchiBibliographyBrowseIntro extends React.Component {
 	}
 
 	render() {
-		if (!this.props.description || (this.props.description.length === 0)) {
+		if (!this.props.headline || (this.props.headline.length === 0)) {
 			return (<section className=""></section>);
 		}else{
+			this.context.state.headline = this.props.headline;
 			this.context.state.description = this.props.description;
 		}
 		return (<section className="intro">
 			<div className="wrap block-large">
 				<div className="wrap-max-content">
+					<div className="block-half subheadline-bold text-align-center">{this.context.state.headline}</div>
 					<div className="block-half body-text-l" dangerouslySetInnerHTML={{__html: this.context.state.description}}></div>
 				</div>
 			</div>
@@ -377,10 +380,8 @@ class NoguchiBibliographyBrowseFacetPanelItem extends React.Component {
 			<input id={id} value={data.id} data-label={data.label}  className="option-input" type="checkbox" checked={this.props.selected} onChange={this.props.callback}/>
 			<label htmlFor={id}>
 				<span className="title">
-					<a href='#'>
-						{data.label} &nbsp;
-						<span className="number">({data.content_count})</span>
-					</a>
+					{data.label} &nbsp;
+					<span className="number">({data.content_count})</span>
 				</span>
 			</label>
 		</div>);

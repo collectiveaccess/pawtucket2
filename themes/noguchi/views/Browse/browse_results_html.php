@@ -45,7 +45,7 @@
 	    $initial_criteria['entity_facet'] = [$entity_value => 'Entity'];
 	}
 ?>
-	<section class="ca_nav">
+	<section class="ca_nav show-for-mobile">
 <?php
 	switch(strToLower($this->request->getAction())){
 		case "archive":
@@ -57,7 +57,7 @@
 				$vs_section_name = "Library";
 			}
 ?>			
-			<nav class="show-for-mobile wrap">
+			<nav class="wrap">
 				<div class="module_accordion">
 					<div class="items">
 						<div class="item">
@@ -99,7 +99,7 @@
 		# ---------------------------------------
 		case "cr":
 ?>
-			<nav class="show-for-mobile wrap">
+			<nav class="wrap">
 				<div class="module_accordion">
 					<div class="items">
 						<div class="item">
@@ -132,7 +132,7 @@
 		# ---------------------------------------
 		case "bibliography":
 ?>
-			<nav class="show-for-mobile wrap">
+			<nav class="wrap">
 				<div class="module_accordion">
 					<div class="items">
 						<div class="item">

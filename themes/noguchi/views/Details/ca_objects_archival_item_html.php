@@ -93,6 +93,7 @@
 ?>
 
         <section class="wrap block block-top">
+        <div class="spinner"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>
 <?php
  			if($vs_back = ResultContext::getResultsLinkForLastFind($this->request, 'ca_objects', '< Back to Results', 'eyebrow', array())){
 ?>           

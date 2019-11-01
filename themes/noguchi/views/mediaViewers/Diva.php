@@ -45,7 +45,8 @@
 			fillParentHeight: true,
 			inGrid: false,
 			inBookLayout: false,
-			enableFullscreen: true,
+			enableFullscreen: false,
+			enableGotoPage: false,
 			zoomLevel: 2,
 			verticallyOriented: true
 		});

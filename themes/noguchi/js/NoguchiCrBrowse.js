@@ -413,10 +413,8 @@ class NoguchiCrBrowseFacetPanelItem extends React.Component {
 			<input id={id} value={data.id} data-label={data.label}  className="option-input" type="checkbox" checked={this.props.selected} onChange={this.props.callback}/>
 			<label htmlFor={id}>
 				<span className="title">
-					<a href='#'>
-						{data.label} &nbsp;
-						<span className="number">({data.content_count})</span>
-					</a>
+					{data.label} &nbsp;
+					<span className="number">({data.content_count})</span>
 				</span>
 			</label>
 		</div>);
@@ -468,8 +466,8 @@ class NoguchiCrBrowseNavigation extends React.Component {
 	render() {
 
 		return(
-			<section className="ca_nav">
-				<nav className="hide-for-mobile">
+			<section className="ca_nav hide-for-mobile">
+				<nav>
 					<div className="wrap text-gray">
 						<form action="#" onSubmit={this.loadSearch}>
 							<div className="cell text"><a href='/index.php/Browse/CR'>Browse</a></div>

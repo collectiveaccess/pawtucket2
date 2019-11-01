@@ -94,7 +94,7 @@
                     </div>
                 </div>
 <?php
-				if(is_array($va_thumbs) && sizeof($va_thumbs)){
+				if(is_array($va_thumbs) && (sizeof($va_thumbs) > 1)){
 ?>
                 <ul class="slideshow-thumbnails" data-as-nav="slider-main" data-is-nav="true">
 <?php
@@ -103,6 +103,10 @@
 					}
 ?>
                 </ul>
+<?php
+				}else{
+?>
+					<div class="block-half"><br/></div>
 <?php
 				}
 ?>
@@ -187,7 +191,7 @@
                             <div class="trigger small">Related Exhibitions</div>            
                             <div class="details">
                                 <div class="inner">
-                                    <ul class="list-sidebar ca-data text-align-left related">
+                                    <ul class="ca-data text-align-left related">
                                         <?php print join(" ", $va_exhibitions); ?>
                                     </ul>
                                 </div>
@@ -201,7 +205,7 @@
                             <div class="trigger small">Related Bibliography</div>            
                             <div class="details">
                                 <div class="inner">
-                                    <ul class="list-sidebar ca-data text-align-left related">
+                                    <ul class="ca-data text-align-left related">
                                         <?php print join(" ", $va_bibs); ?>
                                     </ul>
                                 </div>

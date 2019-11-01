@@ -128,7 +128,7 @@
                             <div class="trigger small">Related Exhibitions</div>            
                             <div class="details">
                                 <div class="inner">
-                                    <ul class="list-sidebar ca-data text-align-left related">
+                                    <ul class="ca-data text-align-left related">
                                         <unit relativeTo="ca_occurrences.related" restrictToTypes="exhibition" delimiter=" ">
 											<li>
 												<l>^ca_occurrences.preferred_labels.name</l>

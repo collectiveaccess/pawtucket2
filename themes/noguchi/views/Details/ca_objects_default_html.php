@@ -93,7 +93,7 @@
                     </div>
                 </div>
 <?php
-				if(is_array($va_thumbs) && sizeof($va_thumbs)){
+				if(is_array($va_thumbs) && (sizeof($va_thumbs) > 1)){
 ?>
                 <ul class="slideshow-thumbnails" data-as-nav="slider-main" data-is-nav="true">
 <?php
@@ -102,6 +102,10 @@
 					}
 ?>
                 </ul>
+<?php
+				}else{
+?>
+					<div class="block-half"><br/></div>
 <?php
 				}
 ?>
@@ -242,7 +246,7 @@
                             <div class="trigger small">Related Exhibitions</div>            
                             <div class="details">
                                 <div class="inner">
-                                    <ul class="list-sidebar ca-data text-align-left related">
+                                    <ul class="ca-data text-align-left related">
                                         <unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=" ">
 											<li>
 												<l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l>
@@ -258,7 +262,7 @@
                             <div class="trigger small">Related Bibliography</div>            
                             <div class="details">
                                 <div class="inner">
-                                    <ul class="list-sidebar ca-data text-align-left related">
+                                    <ul class="ca-data text-align-left related">
                                         <unit relativeTo="ca_occurrences" restrictToTypes="bibliography" delimiter=" ">
 											<li>
 												<l>^ca_occurrences.bib_full_citation</l>
