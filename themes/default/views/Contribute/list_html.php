@@ -56,13 +56,13 @@
 				if (!$is_editable) {
 					print '<td>'.$qr->get("{$t}.preferred_labels")."</td>";
 				} else {
-					print '<td>'.caNavLink($this->request, $qr->get("{$t}.preferred_labels"), '', '*', '*', 'students', ['id' => $id = $qr->get("{$t}.object_id")])."</td>";
+					print '<td>'.caNavLink($this->request, $qr->get("{$t}.preferred_labels"), '', '*', '*', $form_code, ['id' => $id = $qr->get("{$t}.object_id")])."</td>";
 				}
 				print "<td>{$status}</td>";
 				print "<td>{$created}</td>";
 				print "<td>{$modified}</td>";
 			
-				print "<td class='contributeSubmit'>".($is_editable ? caNavLink($this->request, _t('Edit'), '', '*', '*', 'students', ['id' => $id]) : '')."</td>";
+				print "<td class='contributeSubmit'>".($is_editable ? caNavLink($this->request, _t('Edit'), '', '*', '*', $form_code, ['id' => $id]) : '')."</td>";
 ?>
 				</tr>
 <?php
