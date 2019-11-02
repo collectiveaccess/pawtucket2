@@ -131,11 +131,43 @@ BODY.collective-access .ca_filters .options-filter-widget {
     	margin-top:-1px;
     }
 }
-@media(max-width:1025px){
-	HEADER.placeholder{
-		height:60px;
+
+MAIN.my_documents_landing{
+	padding-top:0px;
+}
+
+MAIN.my_documents_landing .results .block-half {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #D8D8D8;
+}
+MAIN.my_documents_landing .results .columns > .col {
+    margin-bottom: 10px;
+}
+MAIN.my_documents_landing .results .columns > .col{
+	width:100%;
+}
+@media (min-width: 1025px) {
+    MAIN.my_documents_landing .results .columns > .col.title {
+    	width: 50%; 
+    }
+    MAIN.my_documents_landing .results .columns > .col.info {
+    	width: 35%;
+    	text-align:center;
+    }
+    MAIN.my_documents_landing .results .columns > .col.infoNarrow {
+    	width: 15%;
+    	text-align:center;
+    }
+    MAIN.my_documents_landing .results{
+		margin-left:15%;
+		margin-right:15%
 	}
 }
-.spinner > div{
-	background-color:#dedede;
+MAIN.my_documents_landing .results A:hover .title {
+    text-decoration: underline;
+}
+MAIN.my_documents_landing .results .button{
+	line-height: 39px;
+	height: 40px;
+	padding: 0px 20px;
 }

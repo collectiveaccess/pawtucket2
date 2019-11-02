@@ -124,6 +124,8 @@
 							case "archive":
 							case "loginreg":
 							case "archiveinfo":
+							case "lightbox":
+							case "mydocuments":
 								print caNavLink("The Isamu Noguchi Archive", "", "", "Archive", "Index");
 							break;
 							# ---------------------------------------
@@ -181,6 +183,8 @@
 			case "archive":
 			case "loginreg":
 			case "archiveinfo":
+			case "lightbox":
+			case "mydocuments":
 				$vb_show_user_menu = true;
 			break;
 			# -----------------------------------------
