@@ -1,7 +1,13 @@
 /*jshint esversion: 6 */
 import React from "react"
 import ReactDOM from "react-dom";
-import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel } from "../../default/js/browse";
+import {
+	initBrowseContainer,
+	initBrowseCurrentFilterList,
+	initBrowseFilterList,
+	initBrowseFacetPanel,
+	initBrowseResults,
+} from "../../default/js/browse";
 
 const selector = pawtucketUIApps.NoguchiBibliographyBrowse.selector;
 const appData = pawtucketUIApps.NoguchiBibliographyBrowse.data;
@@ -188,6 +194,8 @@ class NoguchiBibliographyBrowseFilterControls extends React.Component {
 		};
 		filters._search[search] = search;
 		this.context.reloadResults(filters, true);
+
+		this.searchRef.current.value = '';
 
 		e.preventDefault();
 	}
@@ -460,12 +468,20 @@ class NoguchiBibliographySearch extends React.Component {
 class NoguchiBibliographyBrowseResults extends React.Component {
 	static contextType = NoguchiBibliographyBrowseContext;
 
+	constructor(props) {
+		super(props);
+
+		initBrowseResults(this, props);
+	}
+
 	render() {
 		let resultList = [];
 		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
-				resultList.push(<NoguchiBibliographyBrowseResultItem view={this.props.view} key={r.id} data={r}/>)
+				let ref = (parseInt(r.id) === parseInt(this.context.state.scrollToResultID)) ? this.scrollToRef : null;
+
+				resultList.push(<NoguchiBibliographyBrowseResultItem view={this.props.view} key={r.id} data={r} scrollToRef={ref}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
 			resultList.push(<h2>No results found</h2>)
@@ -546,7 +562,7 @@ class NoguchiBibliographyBrowseResultItem extends React.Component {
 		switch(this.props.view) {
 			default:
 				return (
-					<div className="block-half">
+					<div className="block-half" ref={this.props.scrollToRef}>
 						<a href={data.detailUrl} className="columns">
 							<div className="col title clamp" data-lines="2">{data.citation}</div>
 							<div className="col type text-gray">{data.format}</div>

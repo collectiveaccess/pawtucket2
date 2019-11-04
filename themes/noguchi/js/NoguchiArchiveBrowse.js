@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 import React from "react"
 import ReactDOM from "react-dom";
-import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel } from "../../default/js/browse";
+import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel, initBrowseResults } from "../../default/js/browse";
 
 const selector = pawtucketUIApps.NoguchiArchiveBrowse.selector;
 const appData = pawtucketUIApps.NoguchiArchiveBrowse.data;
@@ -34,7 +34,6 @@ class NoguchiArchiveBrowse extends React.Component{
 	}
 
 	render() {
-		console.log("view", this.state);
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 		return(
 			<NoguchiArchiveBrowseContext.Provider value={this}>
@@ -144,7 +143,7 @@ class NoguchiArchiveBrowseCurrentFilterList extends React.Component {
 				for(let c in cv) {
 					let label = cv[c];
 					let facetLabel = (this.context.state.facetList && this.context.state.facetList[f]) ? this.context.state.facetList[f]['label_singular'] : "";
-					filterList.push((<a key={ f + '_' + c } href='#' className='browseRemoveFacet' onClick={this.removeFilter} data-facet={f} data-value={c}>{label} <span onClick={this.removeFilter} data-facet={f} data-value={c}>&times;</span></a>));
+					filterList.push((<a key={ f + '_' + c } href='#' className='browseRemoveFacet' onClick={this.removeFilter} data-facet={f} data-value={c}><span dangerouslySetInnerHTML={{__html: label}}></span> <span onClick={this.removeFilter} data-facet={f} data-value={c}>&times;</span></a>));
 				}
 			}
 		}
@@ -436,6 +435,8 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 		this.context.closeFacetPanel();
 		this.context.reloadResults(filters, true);
 
+		this.searchRef.current.value = '';
+
 		e.preventDefault();
 	}
 
@@ -495,12 +496,20 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 class NoguchiArchiveBrowseResults extends React.Component {
 	static contextType = NoguchiArchiveBrowseContext;
 
+	constructor(props) {
+		super(props);
+
+		initBrowseResults(this, props);
+	}
+
 	render() {
 		let resultList = [];
 		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
-				resultList.push(<NoguchiArchiveBrowseResultItem view={this.props.view} key={r.id} data={r}/>)
+				let ref = (parseInt(r.id) === parseInt(this.context.state.scrollToResultID)) ? this.scrollToRef : null;
+
+				resultList.push(<NoguchiArchiveBrowseResultItem view={this.props.view} key={r.id} data={r} scrollToRef={ref}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
 			resultList.push(<h2 key='no_results'>No results found</h2>)
@@ -580,7 +589,7 @@ class NoguchiArchiveBrowseResultItem extends React.Component {
 		switch(this.props.view) {
 			default:
 				return(
-						<div className="item-grid">
+						<div className="item-grid" ref={this.props.scrollToRef}>
 							<a href={data.detailUrl}>
 								<div className="img-wrapper archive_thumb block-quarter">
 									<div className="bg-image"

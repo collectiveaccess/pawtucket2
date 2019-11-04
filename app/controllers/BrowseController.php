@@ -57,13 +57,7 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			// if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-//                 $this->response->setRedirect(caNavUrl("", "LoginReg", "LoginForm"));
-//             }
-//             if ($this->request->isLoggedIn()) {
-//             	print "You do not have access to view this page.";
-//             	die;
-//             }
+
             $this->opo_config = caGetBrowseConfig();
             
  			$this->view->setVar("find_type", $this->ops_find_type);
@@ -143,6 +137,7 @@
 			$this->view->setVar('view', $ps_view);
 
 			$use_default_key = false;
+			$last_browse_start = 0;
 			if (!($ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true]))) {
 				if($use_default_key = $this->request->getParameter('useDefaultKey', pInteger)) {
 					$ps_cache_key = Session::getVar("{$ps_function}_last_browse_id");
@@ -328,6 +323,16 @@
 
 				$vs_key = $o_browse->getBrowseID();
 
+				$last_browse_start = $start;
+				if($vs_key === $ps_cache_key) {
+					$last_browse_start = Session::getVar("{$ps_function}_last_browse_start");
+					if ($start > $last_browse_start) {
+						Session::setVar("{$ps_function}_last_browse_start", $start);
+					}
+				} else{
+					Session::setVar("{$ps_function}_last_browse_start", 0);
+				}
+
 				if (($vn_key_start = $start - 1000) < 0) {
 					$vn_key_start = 0;
 				}
@@ -337,7 +342,11 @@
 
 				$criteria = $o_browse->getCriteriaWithLabels();
 				$facet_info = $o_browse->getInfoForFacets();
+
+				if ($last_browse_start >= $items_per_page) { $start = $last_browse_start; }
 				$data = [
+					'lastStart' => $last_browse_start,
+					'lastViewedID' => Session::getVar($qr_res->tableName().'_last_detail_id'),
 					'size' => $qr_res->numHits(),
 					'key' => $vs_key,
 					'start' => $start,
@@ -387,8 +396,9 @@
 
 				$table = $qr_res->tableName();
 				$idno_fld= $qr_res->getInstance(true)->getProperty('ID_NUMBERING_ID_FIELD');
-				while($qr_res->nextHit()) {
 
+				if ($last_browse_start > $items_per_page) { $items_per_page = $last_browse_start + $items_per_page; }
+				while($qr_res->nextHit()) {
 					$d = [
 						'id' => $id = $qr_res->getPrimaryKey(),
 						'label' => $qr_res->get('preferred_labels'),

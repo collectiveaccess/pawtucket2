@@ -6,7 +6,8 @@ import {
 	initBrowseCurrentFilterList,
 	initBrowseFilterList,
 	initBrowseFacetPanel,
-	fetchFacetValues
+	fetchFacetValues,
+	initBrowseResults
 } from "../../default/js/browse";
 
 const selector = pawtucketUIApps.NoguchiCrBrowse.selector;
@@ -460,6 +461,8 @@ class NoguchiCrBrowseNavigation extends React.Component {
 		filters._search[search] = search;
 		this.context.reloadResults(filters, true);
 
+		this.searchRef.current.value = '';
+
 		e.preventDefault();
 	}
 
@@ -507,12 +510,20 @@ class NoguchiCrBrowseNavigation extends React.Component {
 class NoguchiCrBrowseResults extends React.Component {
 	static contextType = NoguchiCrBrowseContext;
 
+	constructor(props) {
+		super(props);
+
+		initBrowseResults(this, props);
+	}
+
 	render() {
 		let resultList = [];
 		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
-				resultList.push(<NoguchiCrBrowseResultItem view={this.props.view} key={r.id} data={r} count={i} />)
+				let ref = (parseInt(r.id) === parseInt(this.context.state.scrollToResultID)) ? this.scrollToRef : null;
+
+				resultList.push(<NoguchiCrBrowseResultItem view={this.props.view} key={r.id} data={r} count={i} scrollToRef={ref}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
 			resultList.push(<h2>No results found</h2>)
@@ -594,7 +605,7 @@ class NoguchiCrBrowseResultItem extends React.Component {
 		switch(this.props.view) {
 			default:
 				return (
-					<div class={itemClass}>
+					<div className={itemClass} ref={this.props.scrollToRef}>
 						<a href={data.detailUrl}>
 							<div className="block-quarter"
 								 dangerouslySetInnerHTML={{__html: data.representation}}></div>

@@ -21,7 +21,8 @@ function initialState() {
 		filters: null,
 		selectedFacet: null,
 		introduction: { title: null, description: null },
-		view: null
+		view: null,
+		scrollToResultID: null
 	};
 }
 
@@ -46,6 +47,7 @@ function fetchResults(url, callback) {
 			state.availableFacets = data.availableFacets;
 			state.facetList = data.facetList;
 			state.key = data.key;
+			state.scrollToResultID = data.lastViewedID;
 			if (data.introduction && (data.introduction.title !== undefined) && (data.introduction.description !== undefined)) {
 				state.introduction = data.introduction;
 			} else {
@@ -391,4 +393,21 @@ function initBrowseFacetPanel(instance, props) {
 	that.applyFilters = that.applyFilters.bind(that);
 }
 
-export { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel, fetchFacetValues};
+
+/**
+ * Initializer for *BrowseResults component
+ */
+function initBrowseResults(instance, props) {
+	let that = instance;
+
+	that.scrollToRef = React.createRef();
+
+	that.componentDidUpdate = function() {
+		if (that.scrollToRef && that.scrollToRef.current) {
+			that.scrollToRef.current.scrollIntoView();
+		}
+	}
+	that.componentDidUpdate = that.componentDidUpdate.bind(this);
+};
+
+export { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel, fetchFacetValues, initBrowseResults};
