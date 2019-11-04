@@ -386,7 +386,6 @@
 				$c = 0;
 
 				$table = $qr_res->tableName();
-				$pk = $qr_res->primaryKey();
 				$idno_fld= $qr_res->getInstance(true)->getProperty('ID_NUMBERING_ID_FIELD');
 				while($qr_res->nextHit()) {
 
@@ -400,7 +399,7 @@
 					// TODO: this is hardcoded to use view "images" until we add support for multiple view types
 					if(is_array($va_browse_info['views']['images'])) {
 						foreach($va_browse_info['views']['images'] as $k => $tmpl) {
-							$d[$k] = $qr_res->getWithTemplate($tmpl);
+							$d[$k] = $qr_res->getWithTemplate($tmpl, ['checkAccess' => $this->opa_access_values]);
 						}
 					}
 
@@ -416,10 +415,6 @@
 				$this->opo_result_context->saveContext();
 				return $this->render($this->ops_view_prefix."/browse_data_json.php");
 			}
-
-//			$this->view->setVar('key', $vs_key);
-//			$this->opo_result_context->setParameter('key', $vs_key);
-//			$this->opo_result_context->saveContext();
 
 			$this->render($this->ops_view_prefix."/browse_results_html.php");
  		}
