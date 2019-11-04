@@ -98,6 +98,7 @@
 		break;
 		# ---------------------------------------
 		case "cr":
+			MetaTagManager::setWindowTitle("The Isamu Noguchi Catalogue Raisonné");
 ?>
 			<nav class="wrap">
 				<div class="module_accordion">

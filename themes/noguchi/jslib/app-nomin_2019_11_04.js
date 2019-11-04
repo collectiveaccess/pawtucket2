@@ -411,7 +411,7 @@ var EFFX;
 			//console.log( $frame.height() );
 
 			//d = 		$scroll.height() - ($win.height() - ($win.width() <= 1024 ? $('#header-mobile').outerHeight():$('#main-header').height()) ); //$col.height();
-			img_height 	= 	Math.max( parseInt( $frame.css( 'min-height' ) ), $frame.height() ); // min height is 900
+			img_height 	= 	Math.max( 900, $frame.height() ); // min height is 900
 			d 			=   $scroll.height() - img_height;
 			offset 		= 	img_height - $win.height();
 
@@ -3828,7 +3828,6 @@ load more
             callbacks: {
                 preSearch: function(query) { _this._doLoading(_this, true); return query; },
                 searchResult: function(query) { return _this._doResults(_this, query); },
-                searchCallback: function(query) { /* It looks like according to the docs that this must return true for GA tracking to work. */ return true; },
             },
         };
 
@@ -4575,7 +4574,7 @@ var MAIN, PAJX = window.PAJX, DV = window.DV, c = console.log;
             // $( '#search-layer' ).search_layer({
             //     $icon_open: $('.search, .search-mobile a'),
             // });            
-			$('HEADER .search, HEADER .search-mobile a').on( 'click', function(e){
+			$('.search, .search-mobile a').on( 'click', function(e){
 				e.preventDefault();
 				MAIN._toggleSearch();
 			} );

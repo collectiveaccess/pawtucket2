@@ -110,11 +110,10 @@
 
         <div id="barba-wrapper">
             <div class="barba-container">
-<!-- START From FOUO "logged in/out archive header" template -->
- <?php
+<?php
  		# --- no header on CR landing
  		if((strToLower($this->request->getController()) != "cr") || ((strToLower($this->request->getController()) == "cr") && (strToLower($this->request->getAction()) != "index"))){
- ?>
+?>
                 <section class="module_pageheader">
 
                     <div class="wrap text-align-center">
@@ -178,59 +177,58 @@
 ?>
                         </h3>
 <?php
-		$vb_show_user_menu = false;
-		switch(strToLower($this->request->getController())){
-			case "archive":
-			case "loginreg":
-			case "archiveinfo":
-			case "lightbox":
-			case "mydocuments":
-				$vb_show_user_menu = true;
-			break;
-			# -----------------------------------------
-			case "browse":
-				if(in_array(strToLower($this->request->getAction()), array('archive', 'library'))){
+			$vb_show_user_menu = false;
+			switch(strToLower($this->request->getController())){
+				case "archive":
+				case "loginreg":
+				case "archiveinfo":
+				case "lightbox":
+				case "mydocuments":
 					$vb_show_user_menu = true;
-				}
-			break;
-			# -----------------------------------------
-			case "detail":
-				if(in_array(strToLower($this->request->getAction()), array('archival', 'library'))){
-					$vb_show_user_menu = true;
-				}
-			break;
-			# -----------------------------------------
-		}
-		if($vb_show_user_menu){
-			if($this->request->isLoggedIn()) { 
+				break;
+				# -----------------------------------------
+				case "browse":
+					if(in_array(strToLower($this->request->getAction()), array('archive', 'library'))){
+						$vb_show_user_menu = true;
+					}
+				break;
+				# -----------------------------------------
+				case "detail":
+					if(in_array(strToLower($this->request->getAction()), array('archival', 'library'))){
+						$vb_show_user_menu = true;
+					}
+				break;
+				# -----------------------------------------
+			}
+			if($vb_show_user_menu){
+				if($this->request->isLoggedIn()) { 
 ?>
-					<div class="utility utility_menu hide-for-mobile">
-						<a href="#" class="trigger"><?php print $this->request->user->get("fname")." ".$this->request->user->get("lname"); ?></a>
-						<div class="options">
+						<div class="utility utility_menu hide-for-mobile">
+							<a href="#" class="trigger"><?php print $this->request->user->get("fname")." ".$this->request->user->get("lname"); ?></a>
+							<div class="options">
 <?php
-							print caNavLink("Profile", "", "", "LoginReg", "profileForm");
-							print "<a href='#'>My Documents</a>";
-							#print caNavLink("My Documents", "", "", "Lightbox", "Index");
-							print caNavLink("Logout", "", "", "LoginReg", "logout");
+								print caNavLink("Profile", "", "", "LoginReg", "profileForm");
+								print "<a href='#'>My Documents</a>";
+								#print caNavLink("My Documents", "", "", "Lightbox", "Index");
+								print caNavLink("Logout", "", "", "LoginReg", "logout");
+?>
+							</div>
+						</div>
+<?php
+				} else {
+?>
+						 <div class="utility hide-for-mobile">
+<?php
+							print caNavLink("Researcher Login", "trigger", "", "LoginReg", "loginForm");
 ?>
 						</div>
-					</div>
 <?php
-			} else {
-?>
-					 <div class="utility hide-for-mobile">
-<?php
-						print caNavLink("Researcher Login", "trigger", "", "LoginReg", "loginForm");
-?>
-					</div>
-<?php
-			}
+				}
 
-		}
+			}
 ?>                     
                     </div>
                 </section>
 <?php
 		}
-?>  
-<!-- END -->
+?>

@@ -38,6 +38,8 @@
 	$va_access_values = caGetUserAccessValues();
 	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
 	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
+	
+	MetaTagManager::setWindowTitle("The Isamu Noguchi Catalogue Raisonné: Artwork: ".$t_object->get("ca_objects.preferred_labels.name").": [".$t_object->get("ca_objects.idno")."]");
 ?>
     <main class="ca cr cr_detail nomargin">
 <?php
@@ -60,7 +62,10 @@
  				$va_rep_ids = $t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => true, "checkAccess" => $va_access_values));
  			
  			}else{
- 				$va_rep_ids = array_reverse($t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => false, "sort" => "ca_objects_x_object_representations.is_primary", "checkAccess" => $va_access_values)));
+ 				$va_rep_ids = $t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => false, "sort" => "ca_objects_x_object_representations.is_primary", "checkAccess" => $va_access_values));
+ 				if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
+ 					$va_rep_ids = array_reverse($va_rep_ids);
+ 				}
  			}
  			if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
  				
