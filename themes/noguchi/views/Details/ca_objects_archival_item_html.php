@@ -72,11 +72,15 @@
 		if($va_media_display_info && sizeof($va_media_display_info)){
 			($va_media_display_info["display_version"]) ? $vs_display_version = $va_media_display_info["display_version"] : "small";
 		}
-		if($this->request->isLoggedIn()) { 
+		if($this->request->isLoggedIn() && ($this->request->user->hasRole("public_download") || $this->request->user->hasRole("public_download_hr"))) { 
 			if(caObjectsDisplayDownloadLink($this->request, $vn_id, $t_representation)){
 				# -- get version to download configured in media_display.conf
 				$va_download_display_info = caGetMediaDisplayInfo('download', $t_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
-				$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);
+				if($this->request->user->hasRole("public_download_hr")){
+					$vs_download_version = caGetOption(['download_version_highres', 'display_version'], $va_download_display_info);
+				}else{
+					$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);
+				}
 				if($vs_download_version){
 					$vs_download_link = caNavLink("", 'download', 'Detail', 'DownloadRepresentation', '', array('context' => 'archival', 'representation_id' => $t_representation->getPrimaryKey(), "id" => $vn_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
 				}
@@ -106,20 +110,20 @@
 ?>  
             <div class="container-image-detail block">
                 <div class="img-container dark">
-
-                    <div class="actions">
 <?php
-		if($this->request->isLoggedIn()) {
+				if($this->request->isLoggedIn()) {
 ?>                    
-
-                        <a href="#" class="collection"></a>
+					<div class="actions">
+						<a href="#" class="collection"></a>
 <?php
-		}
 						if($vs_download_link){
-                        	print $vs_download_link;
-                    	}
+							print $vs_download_link;
+						}
 ?>
-                    </div>
+					</div>
+<?php
+				}
+?>
                     
                     <div class="<?php print ($vs_mimetype != "application/pdf") ? "img-wrapper " : ""; ?>archive_detail">
                       <?php print $this->getVar('mediaViewer'); ?>

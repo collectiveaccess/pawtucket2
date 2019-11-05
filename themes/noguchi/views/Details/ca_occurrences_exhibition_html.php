@@ -134,7 +134,7 @@
 							<div class="subheadline text-gray">^ca_occurrences.date.display_date</div>
 						</div>
 					</ifdef>}}}
-                    {{{<ifnotdef code="ca_occurrences.date.display_date"><ifdef code="ca_objects.date.parsed_date">
+                    {{{<ifnotdef code="ca_occurrences.date.display_date"><ifdef code="ca_occurrences.date.parsed_date">
 						<div class="block-quarter">
 							<div class="subheadline text-gray">^ca_occurrences.date.parsed_date</div>
 						</div>
@@ -202,7 +202,7 @@
                             <div class="details">
                                 <div class="inner">
                                     <ul class="ca-data text-align-left related">
-                                        <unit relativeTo="ca_occurrences.related" restrictToTypes="bibliography" delimiter=" ">
+                                        <unit relativeTo="ca_occurrences.related" restrictToTypes="bibliography" delimiter=" " sort="ca_occurrences.bib_year_published">
 											<li>
 												<l>^ca_occurrences.preferred_labels.name</l>
 											</li>

@@ -129,7 +129,7 @@
                             <div class="details">
                                 <div class="inner">
                                     <ul class="ca-data text-align-left related">
-                                        <unit relativeTo="ca_occurrences.related" restrictToTypes="exhibition" delimiter=" ">
+                                        <unit relativeTo="ca_occurrences.related" restrictToTypes="exhibition" delimiter=" " sort="ca_occurrences.date.parsed_date">
 											<li>
 												<l>^ca_occurrences.preferred_labels.name</l>
 											</li>

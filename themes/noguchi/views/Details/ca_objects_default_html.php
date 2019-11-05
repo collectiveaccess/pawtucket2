@@ -197,7 +197,7 @@
 ?>
                   	{{{<ifcount code="ca_entities" excludeRelationshipTypes="sitter" min="1">
 						<div class="block-quarter">
-							<div class="ca-data"><unit relativeTo="ca_objects_x_entities" excludeRelationshipTypes="sitter" delimiter="<br/>">^relationship_typename ^ca_entities.preferred_labels.displayname</unit></div>
+							<div class="ca-data"><unit relativeTo="ca_objects_x_entities" excludeRelationshipTypes="sitter" delimiter="<br/>"><span class="capitalize">^relationship_typename</span> ^ca_entities.preferred_labels.displayname</unit></div>
 						</div>
                     </ifcount>}}}
 					{{{<ifdef code="ca_objects.current_collection">
@@ -252,7 +252,7 @@
                             <div class="details">
                                 <div class="inner">
                                     <ul class="ca-data text-align-left related">
-                                        <unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=" ">
+                                        <unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=" " sort="ca_occurrences.date.parsed_date">
 											<li>
 												<l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l>
 											</li>
@@ -268,7 +268,7 @@
                             <div class="details">
                                 <div class="inner">
                                     <ul class="ca-data text-align-left related">
-                                        <unit relativeTo="ca_occurrences" restrictToTypes="bibliography" delimiter=" ">
+                                        <unit relativeTo="ca_occurrences" restrictToTypes="bibliography" delimiter=" " sort="ca_occurrences.bib_year_published">
 											<li>
 												<l>^ca_occurrences.bib_full_citation</l>
 											</li>
