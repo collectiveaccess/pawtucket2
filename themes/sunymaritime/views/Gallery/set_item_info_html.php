@@ -8,7 +8,6 @@
 {{{<ifdef code="ca_objects.idno"><H6>Identifer:</H6>^ca_objects.idno<br/><br/></ifdef>}}}
 
 {{{<ifdef code="ca_objects.description">^ca_objects.description<br/><br/></ifdef>}}}
-{{{^ca_set_items.set_item_description}}}
 
 {{{<ifcount code="ca_entities" min="1" max="1"><b>Related person: </b></ifcount>}}}
 {{{<ifcount code="ca_entities" min="2"><b>Related people: </b></ifcount>}}}
