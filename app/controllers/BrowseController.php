@@ -82,7 +82,7 @@
 			$t_instance = Datamodel::getInstance($vs_class, true);
 
 			$items_per_page = caGetOption('itemsPerPage', $va_browse_info, 60, ['castTo' => 'int']);
-$items_per_page = 10;
+
  			// Now that table name is known we can set standard view vars
  			parent::setTableSpecificViewVars();
  			
