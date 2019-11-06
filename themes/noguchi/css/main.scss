@@ -16,7 +16,12 @@
 .capitalize{
 	text-transform:capitalize;
 }
-
+.capitalizeFirst::first-letter{
+	text-transform:capitalize;
+}
+.img-wrapperPDF{
+	margin-top:15px;
+}
 .diva-button {
 	display: inline-block !important;
 	cursor: pointer !important;

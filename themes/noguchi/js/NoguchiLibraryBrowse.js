@@ -502,7 +502,7 @@ class NoguchiLibraryBrowseResults extends React.Component {
 			default:
 				return (
 					<div>
-						<section className="block block-quarter-top">
+						<section className="wrap block block-quarter-top">
 							<div className="wrap">
 								<div className="grid-flexbox-layout grid-ca-archive">
 									{resultList}
