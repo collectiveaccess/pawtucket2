@@ -1630,9 +1630,6 @@ a.browseRemoveFacet img {
 	padding:2px 5px 7px 5px;
 	font-size:12px;
 	position:absolute;
-	display:none;
-	top:0px;
-	z-index:200;
 }
 .detail .repViewerCont:hover .detailMediaToolbar{
 	display:block;
@@ -3134,7 +3131,6 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 .advancedFormSubmit {
 	margin-bottom:20px;
 	margin-right:20px;
-	text-align:right;
 }
 .advancedFormSubmit a:hover {
 	text-decoration:none;
@@ -3144,7 +3140,6 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	display: inline-block;
 }
 .advancedSearchField input, .advancedSearchField textarea, .advancedSearchField select {
-	width:100% !important;
 	resize:none;
 	line-height: 1.5;
     border-radius: 3px;
