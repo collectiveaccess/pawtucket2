@@ -379,8 +379,8 @@
 							$title_template = caProcessTemplate($intro[$k]['title'], $global_vars, ['skipTagsWithoutValues' => true]);
 							$description_template = caProcessTemplate($intro[$k]['description'], $global_vars, ['skipTagsWithoutValues' => true]);
 
-							$data['introduction']['title'] = $t_instance->getWithTemplate($title_template);
-							$data['introduction']['description'] = $t_instance->getWithTemplate($description_template);
+							$data['introduction']['title'] = $t_instance->getWithTemplate($title_template, ['checkAccess' => $this->opa_access_values]);
+							$data['introduction']['description'] = $t_instance->getWithTemplate($description_template, ['checkAccess' => $this->opa_access_values]);
 
 							$intro_set = true;
 							break;
