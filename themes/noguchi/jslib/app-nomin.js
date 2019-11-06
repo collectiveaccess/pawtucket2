@@ -46,7 +46,7 @@ var PAJX;
 			  }
 			  
 			  // Don't cache php
-			  if ( $(element).attr( 'href' ).indexOf( 'index.php' ) >= 0 ){
+			  if ( $(element).attr( 'href' ).indexOf( 'Browse' ) >= 0 ){
 				  	return false;
 			  	} 
 			  
