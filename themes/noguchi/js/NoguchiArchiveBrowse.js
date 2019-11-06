@@ -395,9 +395,9 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 				{ name: "Photography Collection", id: 432 },
 				{ name: "Architectural Collection", id: 436 },
 				{ name: "Manuscript Collection", id: 434 },
-				{ name: "Business & Legal Collection", id: 437 },
-				{ name: "Noguchi Fountain & Plaza", id: 438 },
-				{ name: "Publication & Press Collection", id: 442 },
+				{ name: "Business and Legal Collection", id: 437 },
+				{ name: "Noguchi Fountain and Plaza", id: 438 },
+				{ name: "Publication and Press Collection", id: 442 },
 			]
 		}
 		this.loadCollection = this.loadCollection.bind(this);
