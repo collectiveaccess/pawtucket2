@@ -6,13 +6,30 @@ module.exports = {
 	watch: true,
 	
 	entry: { 
-	  main: './js/main.js' ,
+	  main: 'main.js' ,
 	  css: './css/main.scss'
 	},
+
 	output: {
 	  path: path.resolve(__dirname, 'assets'),
-	  filename: '[name].js'
+	  filename: '[name].js',
+		libraryTarget: 'var',
+		library: '_initPawtucketApps'
 	},
+	resolve: {
+    	modules: [
+    		path.resolve(__dirname, 'js'),
+    		path.resolve('../default/js'),	// include JS from default theme
+    		path.resolve('../default/css'),	// include CSS from default theme
+    		path.resolve('./node_modules'),
+    	],
+		alias: {
+			themeJS: path.resolve(__dirname, "js"),			// path to theme JS
+			defaultJS: path.resolve(__dirname, "../default/js"),		// path to default JS
+			themeCSS: path.resolve(__dirname, "css"),		// path to theme CSS
+			defaultCSS: path.resolve(__dirname, "../default/css")		// path to default CSS
+		}
+  	},
   module: {
     rules: [
 	  {
@@ -34,7 +51,7 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
-          options: { "presets": ["@babel/preset-env", "@babel/preset-react"] }
+          options: { "presets": ["@babel/preset-env", "@babel/preset-react"], "plugins": ["@babel/plugin-proposal-class-properties"] }
         }
       },
       {
@@ -53,12 +70,19 @@ module.exports = {
         test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader']
       },
-       { test: /\.(png|woff|woff2|eot|ttf|svg|otf|gif)$/, 
+      { test: /\.(png|woff|woff2|eot|ttf|svg|otf)$/, 
         use: [{
             loader: "url-loader",
             options: { "limit": 100000 }
         }]
-       }
+       },
+       {
+        test: require.resolve('jquery'),
+        use: [{
+            loader: 'expose-loader',
+            options: '$'
+        }]
+    }
     ]
   },
   plugins: [
