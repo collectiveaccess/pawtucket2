@@ -8,7 +8,6 @@ import {
 	initBrowseFacetPanel,
 	initBrowseResults,
 } from "../../default/js/browse";
-import ClampLines from "react-clamp-lines";
 
 const selector = pawtucketUIApps.NoguchiBibliographyBrowse.selector;
 const appData = pawtucketUIApps.NoguchiBibliographyBrowse.data;
@@ -572,15 +571,7 @@ class NoguchiBibliographyBrowseResultItem extends React.Component {
 				return (
 					<div className="block-half" ref={this.props.scrollToRef}>
 						<a href={data.detailUrl} className="columns">
-							<ClampLines
-								text={data.citation}
-								id={"browse_label_" + data.id}
-								lines="2"
-								ellipsis="..."
-								buttons={false}
-								className="col title clamp"
-								innerElement="div"
-							/>
+							<div className="col title clamp" dangerouslySetInnerHTML={{__html: data.citation}}></div>
 							<div className="col type text-gray">{data.format}</div>
 						</a>
 					</div>
