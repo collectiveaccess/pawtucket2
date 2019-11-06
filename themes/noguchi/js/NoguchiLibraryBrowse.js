@@ -8,6 +8,7 @@ import {
 	initBrowseFacetPanel,
 	initBrowseResults
 } from "../../default/js/browse";
+import ClampLines from "react-clamp-lines";
 
 const selector = pawtucketUIApps.NoguchiLibraryBrowse.selector;
 const appData = pawtucketUIApps.NoguchiLibraryBrowse.data;
@@ -108,9 +109,9 @@ class NoguchiLibraryBrowseStatistics extends React.Component {
 	render() {
 		return(<div className="current">
 				<div className="body-sans">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-					"Showing 1 Result"
+					"Showing 1 Result."
 					:
-					"Showing " + this.context.state.resultSize + " Results") : "Loading..."}.</div>
+					"Showing " + this.context.state.resultSize + " Results.") : ""}</div>
 
 				<NoguchiLibraryBrowseCurrentFilterList/>
 			</div>
@@ -214,7 +215,7 @@ class NoguchiLibraryBrowseFacetList extends React.Component {
 
 	render() {
 		let facetButtons = [], facetPanels = [];
-		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "Loading...";
+		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "";
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
@@ -305,8 +306,8 @@ class NoguchiLibraryBrowseFacetPanel extends React.Component {
 		let options = [];
 		if(this.state.facetContent) {
 			// Render facet options when available
-			for (let i in this.state.facetContent) {
-				let item = this.state.facetContent[i];
+			for (let i in this.state.facetContentSort) {
+				let item = this.state.facetContent[this.state.facetContentSort[i]];
 
 				options.push((
 					<li key={'facetItem' + i}>
@@ -362,11 +363,11 @@ class NoguchiLibraryBrowseFacetPanelItem extends React.Component {
 	render() {
 		let { id, data } = this.props;
 
-		return(<div className="checkbox" ref={this.props.scrollToRef}>
+		return(<div className="checkbox">
 			<input id={id} value={data.id} data-label={data.label}  className="option-input" type="checkbox" checked={this.props.selected} onChange={this.props.callback}/>
 			<label htmlFor={id}>
 				<span className="title">
-					{data.label} &nbsp;
+					<span dangerouslySetInnerHTML={{__html: data.label}}></span> &nbsp;
 					<span className="number">({data.content_count})</span>
 				</span>
 			</label>
@@ -480,11 +481,17 @@ class NoguchiLibraryBrowseResults extends React.Component {
 
 	render() {
 		let resultList = [];
-		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
+
+		if((this.context.state.resultSize === null) && !this.context.state.loadingMore) {
+			resultList.push((<div className="spinner">
+				<div className="bounce1"></div>
+				<div className="bounce2"></div>
+				<div className="bounce3"></div>
+			</div>));
+		} else if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
 				let ref = (parseInt(r.id) === parseInt(this.context.state.scrollToResultID)) ? this.scrollToRef : null;
-
 				resultList.push(<NoguchiLibraryBrowseResultItem view={this.props.view} key={r.id} data={r} scrollToRef={ref}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
@@ -566,7 +573,7 @@ class NoguchiLibraryBrowseResultItem extends React.Component {
 		switch(this.props.view) {
 			default:
 				return (
-					<div className="item-grid">
+					<div className="item-grid" ref={this.props.scrollToRef}>
 						<a href={data.detailUrl}>
 							<div className="img-wrapper archive_thumb block-quarter">
 								<div className="bg-image"
@@ -575,7 +582,15 @@ class NoguchiLibraryBrowseResultItem extends React.Component {
 							<div className="text">
 								<div className="text_position">
 									<div className="ca-identifier text-gray">{data.idno}</div>
-									<div className="thumb-text clamp" data-lines="3">{data.label}</div>
+									<ClampLines
+										text={data.label}
+										id={"browse_label_" + data.id}
+										lines="3"
+										ellipsis="..."
+										buttons={false}
+										className="thumb-text clamp"
+										innerElement="div"
+									/>
 
 									<div className="text_full">
 										<div className="ca-identifier text-gray">{data.idno}</div>

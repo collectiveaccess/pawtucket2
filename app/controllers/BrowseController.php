@@ -82,7 +82,7 @@
 			$t_instance = Datamodel::getInstance($vs_class, true);
 
 			$items_per_page = caGetOption('itemsPerPage', $va_browse_info, 60, ['castTo' => 'int']);
-
+$items_per_page = 10;
  			// Now that table name is known we can set standard view vars
  			parent::setTableSpecificViewVars();
  			
@@ -169,7 +169,8 @@
 			// Return content for specific facet
 			//	
 			if ($this->request->getParameter('getFacet', pInteger)) {
-				$this->view->setVar('data', $this->getFacet($o_browse));
+				$f = $this->getFacet($o_browse);
+				$this->view->setVar('data', $f);
 				return $this->render($this->ops_view_prefix."/browse_data_json.php");
 			}
 
@@ -277,7 +278,6 @@
 					$o_browse->setFacetGroup($vs_facet_group);
 				}
 
-				$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
 				$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
 				foreach ($va_facets as $vs_facet_name => $va_facet_info) {
 					if (isset($va_base_criteria[$vs_facet_name])) {
@@ -330,6 +330,7 @@
 						Session::setVar("{$ps_function}_last_browse_start", $start);
 					}
 				} else{
+					Session::setVar($qr_res->tableName().'_last_detail_id', null);
 					Session::setVar("{$ps_function}_last_browse_start", 0);
 				}
 
@@ -343,13 +344,13 @@
 				$criteria = $o_browse->getCriteriaWithLabels();
 				$facet_info = $o_browse->getInfoForFacets();
 
-				if ($last_browse_start >= $items_per_page) { $start = $last_browse_start; }
 				$data = [
 					'lastStart' => $last_browse_start,
 					'lastViewedID' => Session::getVar($qr_res->tableName().'_last_detail_id'),
 					'size' => $qr_res->numHits(),
 					'key' => $vs_key,
-					'start' => $start,
+					'hitsStart' => $start,
+					'start' => ($last_browse_start >= $items_per_page) ? $last_browse_start + $items_per_page : $start,
 					'itemsPerPage' => $items_per_page,
 					'table' => $qr_res->tableName(),
 					'pk' => $qr_res->primaryKey(),
@@ -397,7 +398,7 @@
 				$table = $qr_res->tableName();
 				$idno_fld= $qr_res->getInstance(true)->getProperty('ID_NUMBERING_ID_FIELD');
 
-				if ($last_browse_start > $items_per_page) { $items_per_page = $last_browse_start + $items_per_page; }
+				if (($last_browse_start >= $items_per_page) && ($start == 0)) { $items_per_page = $last_browse_start + ($items_per_page * 2); }	// return all results up to and including currrent page
 				while($qr_res->nextHit()) {
 					$d = [
 						'id' => $id = $qr_res->getPrimaryKey(),

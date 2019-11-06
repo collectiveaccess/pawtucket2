@@ -9,6 +9,7 @@ import {
 	fetchFacetValues,
 	initBrowseResults
 } from "../../default/js/browse";
+import ClampLines from "react-clamp-lines";
 
 const selector = pawtucketUIApps.NoguchiCrBrowse.selector;
 const appData = pawtucketUIApps.NoguchiCrBrowse.data;
@@ -125,9 +126,9 @@ class NoguchiCrBrowseStatistics extends React.Component {
 	render() {
 		return(<div className="current">
 			<div className="body-sans">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-				"Showing 1 Result"
+				"Showing 1 Result."
 				:
-				"Showing " + this.context.state.resultSize + " Results") : "Loading..."}.</div>
+				"Showing " + this.context.state.resultSize + " Results.") : ""}</div>
 
 				<NoguchiCrBrowseCurrentFilterList/>
 		</div>
@@ -263,7 +264,7 @@ class NoguchiCrBrowseFacetList extends React.Component {
 
 	render() {
 		let facetButtons = [], facetPanels = [];
-		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "Loading...";
+		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "";
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
@@ -353,8 +354,8 @@ class NoguchiCrBrowseFacetPanel extends React.Component {
 		let options = [];
 		if(this.state.facetContent) {
 			// Render facet options when available
-			for (let i in this.state.facetContent) {
-				let item = this.state.facetContent[i];
+			for (let i in this.state.facetContentSort) {
+				let item = this.state.facetContent[this.state.facetContentSort[i]];
 
 				options.push((
 					<li key={'facetItem' + i}>
@@ -414,7 +415,7 @@ class NoguchiCrBrowseFacetPanelItem extends React.Component {
 			<input id={id} value={data.id} data-label={data.label}  className="option-input" type="checkbox" checked={this.props.selected} onChange={this.props.callback}/>
 			<label htmlFor={id}>
 				<span className="title">
-					{data.label} &nbsp;
+					<span dangerouslySetInnerHTML={{__html: data.label}}></span> &nbsp;
 					<span className="number">({data.content_count})</span>
 				</span>
 			</label>
@@ -518,7 +519,13 @@ class NoguchiCrBrowseResults extends React.Component {
 
 	render() {
 		let resultList = [];
-		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
+		if((this.context.state.resultSize === null) && !this.context.state.loadingMore) {
+			resultList.push((<div className="spinner">
+				<div className="bounce1"></div>
+				<div className="bounce2"></div>
+				<div className="bounce3"></div>
+			</div>));
+		} else if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
 				let ref = (parseInt(r.id) === parseInt(this.context.state.scrollToResultID)) ? this.scrollToRef : null;
@@ -565,13 +572,18 @@ class NoguchiCrBrowseResults extends React.Component {
  *
  * Used by:
  *  	NoguchiCrBrowseResults
+ *
+ * Uses context: NoguchiCrBrowseContext
  */
 class NoguchiCrBrowseResultLoadMoreButton extends React.Component {
+	static contextType = NoguchiCrBrowseContext;
+
 	render() {
 		if ((this.props.start + this.props.itemsPerPage) < this.props.size) {
+			let loadingText = (this.context.state.resultSize === null) ? "LOADING" : "Load More +";
 			return (
 				<section className="block text-align-center">
-				<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>Load More +</a>
+				<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>{loadingText}</a>
 				</section>);
 		} else {
 			return(<span></span>)
@@ -611,7 +623,15 @@ class NoguchiCrBrowseResultItem extends React.Component {
 								 dangerouslySetInnerHTML={{__html: data.representation}}></div>
 							<div className="text block-quarter">
 								<div className="ca-identifier text-gray">{data.idnoStatus}</div>
-								<div className="thumb-text clamp" data-lines="2">{data.label}</div>
+								<ClampLines
+									text={data.label}
+									id={"browse_label_" + data.id}
+									lines="2"
+									ellipsis="..."
+									buttons={false}
+									className="thumb-text clamp"
+									innerElement="div"
+								/>
 								<div className="ca-identifier text-gray">{data.date}</div>
 							</div>
 						</a>
