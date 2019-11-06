@@ -125,7 +125,7 @@
 				}
 ?>
                     
-                    <div class="<?php print ($vs_mimetype != "application/pdf") ? "img-wrapper " : ""; ?>archive_detail">
+                    <div class="<?php print ($vs_mimetype != "application/pdf") ? "img-wrapper " : "img-wrapperPDF "; ?>archive_detail">
                       <?php print $this->getVar('mediaViewer'); ?>
                     </div>
 

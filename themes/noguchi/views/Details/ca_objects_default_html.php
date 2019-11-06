@@ -195,9 +195,9 @@
 					print '</div> <!-- end block-quarter-->';
 				}
 ?>
-                  	{{{<ifcount code="ca_entities" excludeRelationshipTypes="sitter" min="1">
+                  	{{{<ifcount code="ca_entities" excludeRelationshipTypes="sitter,collection" min="1">
 						<div class="block-quarter">
-							<div class="ca-data"><unit relativeTo="ca_objects_x_entities" excludeRelationshipTypes="sitter" delimiter="<br/>"><span class="capitalize">^relationship_typename</span> ^ca_entities.preferred_labels.displayname</unit></div>
+							<div class="ca-data"><unit relativeTo="ca_objects_x_entities" excludeRelationshipTypes="sitter,collection" delimiter=" "><div class="capitalizeFirst">^relationship_typename ^ca_entities.preferred_labels.displayname</div></unit></div>
 						</div>
                     </ifcount>}}}
 					{{{<ifdef code="ca_objects.current_collection">
