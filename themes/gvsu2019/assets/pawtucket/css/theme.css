@@ -28,7 +28,9 @@ h2 a {
 h2 a:hover {
 	color: #0065A4;
 }
-
+.gallery h4 {
+	text-transform: capitalize;
+}
 h5 {
 	color: #000;
 }

@@ -28,8 +28,8 @@
 								print "<div class='galleryItem'>
 											<a href='".caNavUrl($this->request, '', 'Gallery', $vn_set_id)."'>
 												<div class='galleryItemImg'>".$va_first_item["representation_tag"]."</div>
-												<h5>".$va_set["name"]."</h5>
-												<p><small class='uppercase'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</small></p>
+												<h4>".$va_set["name"]."</h4>
+												<p>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</p>
 											</a>
 											<div style='clear:both;'><!-- empty --></div>
 										</div>\n";
