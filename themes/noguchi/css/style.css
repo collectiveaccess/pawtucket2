@@ -4535,8 +4535,7 @@ https://flickity.metafizzy.co
         bottom: 0;
         left: 0;
         right: 0;
-        top: 0;
-        padding-top: 0px;
+        padding-top: 5px;
         display: none; }
       .grid-flexbox-layout.grid-ca-archive > .item-grid .more {
         transition: opacity 0.4s ease-out;
@@ -6491,6 +6490,10 @@ BODY.collective-access .ca-form {
         width: auto;
         margin-top: 10px;
         float: right; } }
+
+MAIN.archive_landing .grid {
+  overflow: hidden;
+  min-height:100px; }
 
 @media (max-width: 767px) {
   MAIN.archive_detail .container-image-detail {

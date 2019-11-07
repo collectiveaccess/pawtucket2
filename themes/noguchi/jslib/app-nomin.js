@@ -41,23 +41,29 @@ var PAJX;
 			// Personalize the Barba Link Prevent check!
 			Barba.Pjax.originalPreventCheck = Barba.Pjax.preventCheck;
 			Barba.Pjax.preventCheck = function(evt, element) {
-			  if (!Barba.Pjax.originalPreventCheck(evt, element)) {
-			    return false;
-			  }
-			  
-			  // Don't cache php
-			  if (( $(element).attr( 'href' ).indexOf( 'Browse' ) >= 0) || ( $(element).attr( 'href' ).indexOf( 'Lightbox' ) >= 0) || ($(element).attr( 'href' ).indexOf( 'Detail' ) >= 0) || ($(element).attr( 'href' ).indexOf( 'Archive' ) >= 0) || ($(element).attr( 'href' ).indexOf( 'CR' ) >= 0) || ($(element).attr( 'href' ).indexOf( 'LoginReg' ) >= 0)){
-				  	return false;
-			  }
-			  
-			  // Add no-barba for links inside an iframe (Presentation)
-			  if ( PAJX._inIframe() ) {
-			  	if ( $(element).attr( 'href' ).indexOf( '?is_iframe' ) === -1 ){
-				  	$(element).attr( 'href' , $(element).attr( 'href' ) + '?is_iframe' );
-			  	} 
-			    return false;
-			  }
-			  return true;
+                if (!Barba.Pjax.originalPreventCheck(evt, element)) {
+                    return false;
+                }
+                // Don't cache PHP file links 
+                // if ( $(element).attr( 'href' ).indexOf( 'index.php' ) >= 0 ){
+                //     return false;
+                // } 
+                // Don't Collective Access links
+                if ((window.location.hostname == 'noguchi.whirl-i-gig.com') || (window.location.hostname == 'archive.noguchi.org')){
+                    return false;
+                }
+                // Don't cache PDF links
+                if (/.pdf/.test(element.href.toLowerCase())) {
+                    return false;
+                }
+                // Add no-barba for links inside an iframe (Presentation)
+                // if ( PAJX._inIframe() ) {
+                //     if ( $(element).attr( 'href' ).indexOf( '?is_iframe' ) === -1 ){
+                //         $(element).attr( 'href' , $(element).attr( 'href' ) + '?is_iframe' );
+                //     } 
+                //     return false;
+                // }
+                return true;
 			};
 
 
@@ -104,9 +110,10 @@ var PAJX;
 			// BARBA INIT
 			Barba.Pjax.start();
 			Barba.Prefetch.init();
-			
-			// Added for CA
-			$window.trigger( 'pajax:init' );
+
+            // Added for CA
+            // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            $window.trigger( 'pajax:init' );
 
 		    setTimeout( function(){
 		    	PAJX._cleanAdminURL();
@@ -4169,12 +4176,12 @@ var MAIN, PAJX = window.PAJX, DV = window.DV, c = console.log;
 			$html = $('html');
 			$body = $('body');
 			baseURL = window.location.origin;
-            
+
             // No Barba for Collective Access pages.
-            if ( $body.hasClass('collective-access') ){
-                is_ajax = false;
-            }
-            
+            // if ( $body.hasClass('collective-access') ){
+            //     is_ajax = false;
+            // }
+
 			if ( $html.hasClass('ie11') ){
 				//is_ajax = false;
 			}
@@ -5067,6 +5074,9 @@ return;
 	    		case 'PDF Download':
 	    			this.setGAEvent( 'Download', 'Exhibition PDF', label, true );
 	    		break;
+                case 'CA Account Registration':
+                    this.setGAEvent( 'CA Account Registration', 'Registration', 'Registration', false );
+                break;
 	    	}
 	    },
 
@@ -5166,6 +5176,10 @@ return;
 		                    	o.focusOnSelect = true;
 		                    }
 
+		                    if ( $s.hasClass( 'is-finite' ) ){
+		                    	o.infinite = false;
+		                    }
+
 		                    $s.slideshow_ctrl( o );
 
 		                    //-------------- object viewer : Sync Slideshow and Thumbnails ----------------//
@@ -5195,7 +5209,7 @@ return;
 	                    if ( $s.hasClass( 'slideshow-related' ) ){
 	                    	var args = {
 								dots: true,
-								infinite: true,
+								infinite: !$s.hasClass( 'is-finite' ),
 								slidesToShow: 9,
 								slidesToScroll: 1,
 								//centerMode: true,

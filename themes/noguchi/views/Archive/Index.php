@@ -134,7 +134,7 @@
 <?php
 		if($qr_highlights && $qr_highlights->numHits()){
 ?>
-			<div class="module_carousel archive_related" data-prevnext="false">
+			<div class="module_carousel archive_related" data-prevnext="false" data-pagedots="false">
 				<div class="carousel-main">
 <?php
 				while($qr_highlights->nextHit()){

@@ -238,31 +238,33 @@
             </div>
         </section>
 {{{<ifcount code="ca_objects.related" min="1" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version">
-        <section class="block border">
-            <div class="wrap">
-                <div class="block-half text-align-center">
-                    <h4 class="subheadline-bold">Related Artwork</h4>
-                </div>
+        <section class="wrap block border">
+            <div class="block text-align-center">
+                <h4 class="subheadline-bold">Related Artworks</h4>
             </div>
-            <div class="module_carousel archive_related" data-prevnext="false">
-				<div class="carousel-main">
-					<unit relativeTo="ca_objects.related" delimiter=" " restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version">
-						<div class="carousel-cell">
+            
 
-							<l>
-								<div class="img-wrapper archive_thumb block-quarter">
-									<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
-									<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
-								</div>
-								<div class="text block-quarter">
-									<div class="ca-identifier text-gray">^ca_objects.idno</div>
-									<div class="more">                                
-										<div class="thumb-text clamp" data-lines="2">^ca_objects.preferred_labels.name</div>
-										<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date</div></ifdef>
-										<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>
+            <div class="module_slideshow is-finite manual-init slideshow-related">
+                <div class="slick-slider">
+					<unit relativeTo="ca_objects.related" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version" delimiter=" " sort="ca_objects.idno_sort">
+						<div class="slick-slide">
+							<div class="item">
+
+								<l>
+									<div class="img-wrapper archive_thumb block-quarter">
+										<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+										<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 									</div>
-								</div>
-							</l>
+									<div class="text block-quarter">
+										<div class="ca-identifier text-gray">^ca_objects.idno</div>
+										                              
+											<div class="thumb-text clamp" data-lines="2">^ca_objects.preferred_labels.name</div>
+											<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date</div></ifdef>
+											<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>
+										
+									</div>
+								</l>
+							</div>
 						</div>
 					</unit>
 				</div>
@@ -270,31 +272,31 @@
         </section>
 </ifcount>}}}
 {{{<ifcount code="ca_objects.related" min="1" restrictToTypes="archival_item,document,objects,photographs,digital,print,strip,transparency,strip_image">
-        <section class="block border">
-            <div class="wrap">
-                <div class="block-half text-align-center">
-                    <h4 class="subheadline-bold">Related Archival Items</h4>
-                </div>
-            </div>
-            <div class="module_carousel archive_related" data-prevnext="false">
-				<div class="carousel-main">
+        <section class="wrap block border">
+            <div class="block text-align-center">
+				<h4 class="subheadline-bold">Related Archival Items</h4>
+			</div>
+            <div class="module_slideshow is-finite manual-init slideshow-related">
+                <div class="slick-slider">
 					<unit relativeTo="ca_objects.related" delimiter=" " restrictToTypes="archival_item,document,objects,photographs,digital,print,strip,transparency,strip_image">
-						<div class="carousel-cell">
+						<div class="slick-slide">
+							<div class="item">
 
-							<l>
-								<div class="img-wrapper archive_thumb block-quarter">
-									<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
-									<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
-								</div>
-								<div class="text block-quarter">
-									<div class="ca-identifier text-gray">^ca_objects.idno</div>
-									<div class="more">                                
-										<div class="thumb-text clamp" data-lines="2">^ca_objects.preferred_labels.name</div>
-										<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date</div></ifdef>
-										<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>
+								<l>
+									<div class="img-wrapper archive_thumb block-quarter">
+										<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+										<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 									</div>
-								</div>
-							</l>
+									<div class="text block-quarter">
+										<div class="ca-identifier text-gray">^ca_objects.idno</div>
+										<div class="more">                                
+											<div class="thumb-text clamp" data-lines="2">^ca_objects.preferred_labels.name</div>
+											<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date</div></ifdef>
+											<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>
+										</div>
+									</div>
+								</l>
+							</div>
 						</div>
 					</unit>
 				</div>
