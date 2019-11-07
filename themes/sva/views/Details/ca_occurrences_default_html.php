@@ -19,22 +19,23 @@
 	<div class="row">
         <div class='col-sm-12'>
 			<ul class="breadcrumbs--nav" id="breadcrumbs">
-				<li><a href="/index.php/">SVA Exhibitions Archives</a></li>
-				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
-				</li>
+				<li><a href="/">SVA Exhibitions Archives</a></li>
+				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?></li>
+				<li><?php print $this->getVar('resultsLink'); ?></li>
+				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?></li>
+				<li>{{{^ca_occurrences.preferred_labels.name}}}</li>
 			</ul>
-		</div>   
+		</div>
 	</div>
 	<div class="row">
 		<div class="col-sm-1 prevnext">
-			<?php print $this->getVar('resultsLink'); ?><br>
 			<?php print $this->getVar('previousLink'); ?> 		
 		</div>					
 		<div class="col-sm-10 d-flex justify-content-center">
            	<H2>{{{^ca_occurrences.preferred_labels.name}}}</H2>
         </div>       
         <div class="col-sm-1 prevnext">
-			<br><?php print $this->getVar('nextLink'); ?>
+			<?php print $this->getVar('nextLink'); ?>
 		</div>
 		<div class="col-sm-12"><hr> </div>
 	</div>
