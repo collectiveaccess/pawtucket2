@@ -574,7 +574,7 @@
 					return $t_table->getLabelForDisplay();
 					break;
 				# -----------------------------------------------------
-			    case 'relationship_types':  
+			    case 'relationship_types':
 			        if (!($t_rel = Datamodel::getInstanceByTableName($va_facet_info['relationship_table'], true))) { break; }
 			        $t_rel_type = new ca_relationship_types();
 			        $info = $t_rel_type->getRelationshipInfo($va_facet_info['relationship_table']);
@@ -2754,10 +2754,10 @@
 
 			// is facet cached?
 			$va_facet_content = null;
-			//if (!isset($va_facet_cache) || !is_array($va_facet_cache)) {
+			if (!isset($va_facet_cache) || !is_array($va_facet_cache)) {
 				$va_facet_content = $va_facet_cache = $this->getFacetContent($ps_facet_name, $pa_options);
 				$vb_needs_caching = true;
-			//}
+			}
 
 			if ($pn_limit > 0) {
 				$va_facet_cache = array_slice($va_facet_cache, (int)$pn_start, $pn_limit);
@@ -6070,7 +6070,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 					if ($t_item_rel->hasField('access')) {
 					    $va_selects[] = "{$vs_rel_table_name}.access";
 					}
-					
+
 					if($va_facet_info['type'] == 'relationship_types') {
 					    $va_selects[] = "ca_relationship_types.type_id rel_type_id";
 					    $va_selects[] = "ca_relationship_types.type_code";
@@ -6268,7 +6268,8 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							{$vs_join_sql}
 								".(sizeof($va_wheres) ? ' WHERE ' : '').join(" AND ", $va_wheres)."
 								".(sizeof($va_orderbys) ? "ORDER BY ".join(', ', $va_orderbys) : '');
-	}                  
+	}
+						$va_select_flds = array_map(function($v) { return str_replace(" rel_type_id", "", $v); }, $va_select_flds); // ick - clean up select list for use a group by clause
 	                    $vs_sql .= " GROUP BY ".join(', ', $va_select_flds);
 						//print "<hr>$vs_sql<hr>\n"; print_R($va_sql_params);
 						$qr_res = $this->opo_db->query($vs_sql, $va_sql_params);
@@ -6291,7 +6292,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							$va_fetched_row = $qr_res->getRow();
 							$vn_id = $va_fetched_row[$vs_rel_pk];
 							//if (isset($va_facet_items[$vn_id])) { continue; } --- we can't do this as then we don't detect items that have multiple rel_type_ids... argh.
-							if (isset($va_criteria[$vn_id])) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
+							if (isset($va_criteria[$vn_id])) { continue; }		// skip items that are used as browse criteria - don't want to browse on something you're already browsing on
 
                             if($va_facet_info['type'] === 'relationship_types') {
                                 if(sizeof($va_restrict_to_relationship_types) && !in_array($va_fetched_row['rel_type_id'], $va_restrict_to_relationship_types)) { continue; }

@@ -342,14 +342,14 @@ class PawtucketBrowseFacetPanelItem extends React.Component {
 
 	render() {
 		let { id, data } = this.props;
-
+		let count = (data.content_count > 0) ? '(' + data.content_count + ')' : '';
 		return(<div className="checkbox">
 			<input id={id} value={data.id} data-label={data.label}  className="option-input" type="checkbox" checked={this.props.selected} onChange={this.props.callback}/>
 			<label htmlFor={id}>
 				<span className="title">
 					<a href='#'>
 						{data.label} &nbsp;
-						<span className="number">({data.content_count})</span>
+						<span className="number">{count}</span>
 					</a>
 				</span>
 			</label>
