@@ -167,7 +167,7 @@
 ?>
 							<div class="block-quarter">
 								<div class="eyebrow text-gray">Status</div>
-								<div class="ca-data">research pending</div>
+								<div class="ca-data">Research Pending</div>
 							</div>
 <?php
 						}
