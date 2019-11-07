@@ -71,7 +71,7 @@ class ExhBrowse extends React.Component {
 			</div>
 				
 			<div className="nameBrowse">
-				<div className="row justify-content-center"><h2--list>{this.state.value}</h2--list></div>
+				<div className="row justify-content-center"><h2>{this.state.value}</h2></div>
 				<div className={colClass}>
 					<ul className="select-list browseResults">		
 					{results}

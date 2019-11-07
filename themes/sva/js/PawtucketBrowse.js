@@ -410,18 +410,16 @@ class PawtucketBrowseResults extends React.Component {
 					<div>
 						<section className="results">
 							<div className="row">
-								<div className="col-lg-2 no-gutters pl-3 p-1"><div className="position-sticky">
+								<div className="col-lg-2 no-gutters pl-3 p-1">
 									<PawtucketBrowseNavigation/>
 									<PawtucketBrowseCurrentFilterList/> <br/>
 									<PawtucketBrowseFacetList facetLoadUrl={this.props.facetLoadUrl}/>
-
 								</div>
 								<div className="col-lg-10 no-gutters p-1">
 									<div className="card-columns">
 										{resultList}
 									</div>
-								</div>
-								</div>
+								</div>	
 							</div>
 						</section>
 						<PawtucketBrowseResultLoadMoreButton start={this.context.state.start}
