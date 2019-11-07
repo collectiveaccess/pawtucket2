@@ -244,7 +244,7 @@
             </div>
             
 
-            <div class="module_slideshow manual-init slideshow-related">
+            <div class="module_slideshow is-finite manual-init slideshow-related">
                 <div class="slick-slider">
 					<unit relativeTo="ca_objects.related" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version" delimiter=" " sort="ca_objects.idno_sort">
 						<div class="slick-slide">
@@ -276,7 +276,7 @@
             <div class="block text-align-center">
 				<h4 class="subheadline-bold">Related Archival Items</h4>
 			</div>
-            <div class="module_slideshow manual-init slideshow-related">
+            <div class="module_slideshow is-finite manual-init slideshow-related">
                 <div class="slick-slider">
 					<unit relativeTo="ca_objects.related" delimiter=" " restrictToTypes="archival_item,document,objects,photographs,digital,print,strip,transparency,strip_image">
 						<div class="slick-slide">

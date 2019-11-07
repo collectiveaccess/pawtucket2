@@ -30,7 +30,7 @@
 
             <div class="ca-object-viewer">
 
-                <div class="module_slideshow slideshow-main no_dots" data-thumbnails="slideshow-thumbnails">
+                <div class="module_slideshow is-finite slideshow-main no_dots" data-thumbnails="slideshow-thumbnails">
                     <div class="slick-slider slider-main">
 <?php
 						$va_thumbs = array();
@@ -152,7 +152,7 @@
             <div class="block text-align-center">
                 <h4 class="subheadline-bold">Artworks Cited</h4>
             </div>
-            <div class="module_slideshow manual-init slideshow-related">
+            <div class="module_slideshow is-finite manual-init slideshow-related">
                 <div class="slick-slider">
 					<unit relativeTo="ca_objects.related" delimiter=" " sort="ca_objects.idno_sort">
 						<div class="slick-slide">

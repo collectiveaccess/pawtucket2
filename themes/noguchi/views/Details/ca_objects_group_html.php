@@ -73,7 +73,7 @@
 
             <div class="ca-object-viewer">
 
-                <div class="module_slideshow slideshow-main no_dots" data-thumbnails="slideshow-thumbnails">
+                <div class="module_slideshow is-finite slideshow-main no_dots" data-thumbnails="slideshow-thumbnails">
                     <div class="slick-slider slider-main">
 <?php
 						$va_thumbs = array();
@@ -235,7 +235,7 @@
             </div>
             
 
-            <div class="module_slideshow manual-init slideshow-related">
+            <div class="module_slideshow is-finite manual-init slideshow-related">
                 <div class="slick-slider">
 					<unit relativeTo="ca_objects.children" delimiter=" " sort="ca_objects.idno_sort">
 						<div class="slick-slide">
@@ -269,7 +269,7 @@
             </div>
             
 
-            <div class="module_slideshow manual-init slideshow-related">
+            <div class="module_slideshow is-finite manual-init slideshow-related">
                 <div class="slick-slider">
 					<unit relativeTo="ca_objects_x_objects" restrictToRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" delimiter=" " sort="ca_objects.idno_sort">
 						<div class="slick-slide">
