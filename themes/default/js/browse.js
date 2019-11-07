@@ -24,7 +24,8 @@ function initialState() {
 		view: null,
 		scrollToResultID: null,
 		loadingMore: false,
-		numLoads: 1	// total number of results sets we've fetched since loading
+		numLoads: 1,	// total number of results sets we've fetched since loading
+		hasAutoScrolled: false
 	};
 }
 
@@ -413,9 +414,12 @@ function initBrowseResults(instance, props) {
 	that.scrollToRef = React.createRef();
 
 	that.componentDidUpdate = function() {
-		if ((that.context.state.numLoads <= 1) && that.scrollToRef && that.scrollToRef.current) {
+		if (!that.context.state.hasAutoScrolled && that.scrollToRef && that.scrollToRef.current) {
+			let state = that.context.state;
 			that.scrollToRef.current.scrollIntoView();
 			window.scrollBy(0, -150);
+			state.hasAutoScrolled = true;
+			that.context.setState(state);
 		}
 	}
 	that.componentDidUpdate = that.componentDidUpdate.bind(this);
