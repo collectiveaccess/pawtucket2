@@ -520,11 +520,11 @@ class NoguchiCrBrowseResults extends React.Component {
 	render() {
 		let resultList = [];
 		if((this.context.state.resultSize === null) && !this.context.state.loadingMore) {
-			resultList.push((<div className="spinner">
+			resultList.push((<div className="crSpinner"><div className="spinner">
 				<div className="bounce1"></div>
 				<div className="bounce2"></div>
 				<div className="bounce3"></div>
-			</div>));
+			</div></div>));
 		} else if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];

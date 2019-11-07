@@ -4171,9 +4171,9 @@ var MAIN, PAJX = window.PAJX, DV = window.DV, c = console.log;
 			baseURL = window.location.origin;
             
             // No Barba for Collective Access pages.
-            if ( $body.hasClass('collective-access') ){
-                is_ajax = false;
-            }
+//            if ( $body.hasClass('collective-access') ){
+//               is_ajax = false;
+//          }
             
 			if ( $html.hasClass('ie11') ){
 				//is_ajax = false;

@@ -136,6 +136,7 @@
 								switch(strToLower($this->request->getAction())){
 									case "archival":
 									case "library":
+									case "bibliography":
 										print caNavLink("The Isamu Noguchi Archive", "", "", "Archive", "Index");
 									break;
 									# ---------------------------------------
@@ -145,10 +146,6 @@
 									# ---------------------------------------
 									case "exhibition":
 										print caNavLink("Exhibitions", "", "", "Browse", "exhibitions");
-									break;
-									# ---------------------------------------
-									case "bibliography":
-										print caNavLink("Bibliography", "", "", "Browse", "bibliography");
 									break;
 									# ---------------------------------------
 								}
