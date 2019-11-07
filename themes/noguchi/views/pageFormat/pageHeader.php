@@ -21,7 +21,7 @@
  * ----------------------------------------------------------------------
  */
 ?><!DOCTYPE html>
-<html lang="en-US" class="collective-access is-development" id="cahtmlWrapper"> 
+<html lang="en-US" class="collective-access" id="cahtmlWrapper"> 
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -100,7 +100,7 @@
 ?>
     
     </head>
-    <body class="collective-access is-development" id="pawtucketApp" itemscope itemtype="http://schema.org/WebPage">
+    <body class="collective-access" id="pawtucketApp" itemscope itemtype="http://schema.org/WebPage">
 		<script type="text/javascript">
 			let pawtucketUIApps = {};
 		</script>
