@@ -343,7 +343,7 @@
 
             <div class="module_slideshow manual-init slideshow-related">
                 <div class="slick-slider">
-					<unit relativeTo="ca_objects_x_objects" excludeRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" delimiter=" ">
+					<unit relativeTo="ca_objects_x_objects" excludeRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" delimiter=" " sort="ca_objects.idno_sort">
 						<div class="slick-slide">
 							<div class="item">
 								<unit relativeTo="ca_objects">
@@ -380,7 +380,7 @@
 
             <div class="module_slideshow manual-init slideshow-related">
                 <div class="slick-slider">
-					<unit relativeTo="ca_objects.related" restrictToRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" delimiter=" ">
+					<unit relativeTo="ca_objects.related" restrictToRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" delimiter=" " sort="ca_objects.idno_sort">
 						<div class="slick-slide">
 							<div class="item">
 								<l>

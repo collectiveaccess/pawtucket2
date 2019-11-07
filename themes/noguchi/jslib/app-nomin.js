@@ -46,7 +46,7 @@ var PAJX;
 			  }
 			  
 			  // Don't cache php
-			  if (( $(element).attr( 'href' ).indexOf( 'Browse' ) >= 0) || ( $(element).attr( 'href' ).indexOf( 'Lightbox' ) >= 0) || ($(element).attr( 'href' ).indexOf( 'Detail' ) >= 0) || ($(element).attr( 'href' ).indexOf( 'Archive' ) >= 0) || ($(element).attr( 'href' ).indexOf( 'CR' ) >= 0) || ($(element).attr( 'href' ).indexOf( 'LoginReg' ) >= 0)){
+			  if ((window.location.hostname == 'noguchi.whirl-i-gig.com') || (window.location.hostname == 'archive.noguchi.org')){
 				  	return false;
 			  }
 			  

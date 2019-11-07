@@ -154,11 +154,11 @@
 							<div class="subheadline text-gray">^ca_objects.date.parsed_date</div>
 						</div>
                     </ifdef></ifnotdef>}}}
-					{{{<ifdef code="ca_objects.extent">
+					{{{<ifcount code="ca_objects.children">
 						<div class="block-quarter">
-							<div class="ca-data">^ca_objects.extent examples</div>
+							<div class="ca-data">^ca_objects.children._count examples</div>
 						</div>
-					</ifdef>}}}
+					</ifcount>}}}
 					
 					
 <?php
@@ -237,7 +237,7 @@
 
             <div class="module_slideshow manual-init slideshow-related">
                 <div class="slick-slider">
-					<unit relativeTo="ca_objects.children" delimiter=" ">
+					<unit relativeTo="ca_objects.children" delimiter=" " sort="ca_objects.idno_sort">
 						<div class="slick-slide">
 							<div class="item">
 									<l>
@@ -271,7 +271,7 @@
 
             <div class="module_slideshow manual-init slideshow-related">
                 <div class="slick-slider">
-					<unit relativeTo="ca_objects_x_objects" restrictToRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" delimiter=" ">
+					<unit relativeTo="ca_objects_x_objects" restrictToRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" delimiter=" " sort="ca_objects.idno_sort">
 						<div class="slick-slide">
 							<div class="item">
 							<unit relativeTo="ca_objects">
