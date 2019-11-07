@@ -1,38 +1,8 @@
 @import "style";
 
 
-.alert {
-    position: relative;
-    padding: .75rem 1.25rem;
-    margin-bottom: 1rem;
-    border: 1px solid transparent;
-    background-color: #f2f2f2;
-    border: 1px solid #F2F2F2;
-    text-transform: uppercase;
-	font-family: 'NH-Text-55', 'Helvetica', 'Arial', sans-serif;
-	letter-spacing: 1.25px;
-	font-size:14px
-}
-.alert .alertClose{
-	float:right;
-	text-transform:none;
-}
-.alert-danger {
-    color: #721c24;
-    background-color: #f8d7da;
-    border-color: #f5c6cb;
-}
-.alert-success {
-    color: #155724;
-    background-color: #d4edda;
-    border-color: #c3e6cb;
-}
-
 .archive_landing section.intro{
 	padding-top: 80px;
-}
-BODY.collective-access .ca_filters .options-filter-widget .option_values {
-	height: 250px;
 }
 .archive_text_based ol, .archive_text_based ul, archive_text_based li,
 .cr_text_based ol, .cr_text_based ul, .cr_text_based li{
@@ -46,7 +16,12 @@ BODY.collective-access .ca_filters .options-filter-widget .option_values {
 .capitalize{
 	text-transform:capitalize;
 }
-
+.capitalizeFirst::first-letter{
+	text-transform:capitalize;
+}
+.img-wrapperPDF{
+	margin-top:15px;
+}
 .diva-button {
 	display: inline-block !important;
 	cursor: pointer !important;
@@ -85,4 +60,119 @@ BODY.collective-access .ca_filters .options-filter-widget .option_values {
 }
 .caMediaOverlayControls{
 	display:none;
+}
+
+/* apply filter button */
+BODY.collective-access .ca_filters .options-filter-widget .filter-apply{
+	margin-top:10px;
+	margin-bottom:10px;
+	text-align:center;
+}
+BODY.collective-access .ca_filters .options-filter-widget .option_values .inner{
+	padding-bottom:50px;
+}
+BODY.collective-access .ca_filters .options-filter-widget .option_values {
+	height: 300px;
+}
+/* contact form */
+#contactForm .ca-form{
+	width:100%;
+}
+/* responsive browse filters */
+BODY.collective-access .ca_filters .options-filter-widget {
+	display:block;
+}
+@media(min-width:769px) and (max-width:1024px){
+	BODY.collective-access .ca_filters .current .tags {
+		margin-top: 0px;
+		margin-left: 0px;
+		clear: left;
+	}
+}
+@media(max-width:768px){
+	BODY.collective-access .ca_filters .current{
+		float:none;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget .options SPAN {
+		float: none;
+		display: block;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget {
+		display:block;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget .options {
+		float: none;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget .options A{
+		display:block;
+		margin:0px;
+		float: left;
+		/*width: 33%;*/
+		padding: 9px 24px 7px 12px;
+		background-position: right 8px center;
+		margin-left:-1px;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget .options A:hover{
+		z-index:100;
+		position:relative;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget .options A:first{
+		margin-left:0px;
+	}
+	BODY.collective-access .ca_filters .options-filter-widget .option_values .ul-options{
+		columns:1;
+	}
+	
+	BODY.collective-access .ca_filters .current .tags {
+		margin-top: 5px;
+    	margin-left: 0px;
+    }
+    BODY.collective-access .ca_filters .current > DIV{
+    	float:none;
+    }
+    BODY.collective-access .ca_filters .current .tags A{
+    	display:block;
+    	text-align: center;
+    	margin-top:-1px;
+    }
+}
+
+MAIN.my_documents_landing{
+	padding-top:0px;
+}
+
+MAIN.my_documents_landing .results .block-half {
+    padding-bottom: 20px;
+    border-bottom: 1px solid #D8D8D8;
+}
+MAIN.my_documents_landing .results .columns > .col {
+    margin-bottom: 10px;
+}
+MAIN.my_documents_landing .results .columns > .col{
+	width:100%;
+}
+@media (min-width: 1025px) {
+    MAIN.my_documents_landing .results .columns > .col.title {
+    	width: 50%; 
+    }
+    MAIN.my_documents_landing .results .columns > .col.info {
+    	width: 35%;
+    	text-align:center;
+    }
+    MAIN.my_documents_landing .results .columns > .col.infoNarrow {
+    	width: 15%;
+    	text-align:center;
+    }
+    MAIN.my_documents_landing .results{
+		margin-left:15%;
+		margin-right:15%
+	}
+}
+MAIN.my_documents_landing .results A:hover .title {
+    text-decoration: underline;
+}
+MAIN.my_documents_landing .results .button{
+	line-height: 39px;
+	height: 40px;
+	padding: 0px 20px;
 }

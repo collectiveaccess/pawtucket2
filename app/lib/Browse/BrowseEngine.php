@@ -6400,7 +6400,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 						    }
 						}
 
-                        $natural_sort = caGetOption('natural_sort', $va_facet_info, false);
+                        $natural_sort = caGetOption('natural_sort', $va_facet_info, true);
                         
 						// Get labels for facet items
 						if (sizeof($va_row_ids = array_keys($va_facet_items))) {
@@ -6493,11 +6493,10 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 						}
 						
 						if ($natural_sort) {
-						    $va_facet =  caSortArrayByKeyInValue(caExtractValuesByUserLocale($va_facet), ['label']);
+						    $va_facet = caSortArrayByKeyInValue(caExtractValuesByUserLocale($va_facet), ['label'], 'asc', ['naturalSort' => true]);
 						} else {
 							$va_facet = caExtractValuesByUserLocale($va_facet);
 						}
-												
 						return $va_facet;
 					}
 					break;

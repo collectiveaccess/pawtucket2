@@ -21,7 +21,10 @@ function initialState() {
 		filters: null,
 		selectedFacet: null,
 		introduction: { title: null, description: null },
-		view: null
+		view: null,
+		scrollToResultID: null,
+		loadingMore: false,
+		numLoads: 1	// total number of results sets we've fetched since loading
 	};
 }
 
@@ -46,6 +49,7 @@ function fetchResults(url, callback) {
 			state.availableFacets = data.availableFacets;
 			state.facetList = data.facetList;
 			state.key = data.key;
+			state.scrollToResultID = data.lastViewedID;
 			if (data.introduction && (data.introduction.title !== undefined) && (data.introduction.description !== undefined)) {
 				state.introduction = data.introduction;
 			} else {
@@ -57,7 +61,6 @@ function fetchResults(url, callback) {
 				if ((k === '_search') && (data.criteria[k]['*'])) { continue; }	// don't allow * search as filter
 				state.filters[k] = data.criteria[k];
 			}
-
 			callback(state);
 		})
 		.catch(function (error) {
@@ -141,7 +144,7 @@ function initBrowseContainer(instance, props) {
 	 * @param e
 	 */
 	that.loadMoreResults = function(e) {
-		if(that.loadMoreRef && that.loadMoreRef.current) {
+		if(that.loadMoreRef && that.loadMoreRef.current ) {
 			that.loadMoreText = that.loadMoreRef.current.innerHTML;
 			that.loadMoreRef.current.innerHTML = 'LOADING';
 		}
@@ -150,13 +153,18 @@ function initBrowseContainer(instance, props) {
 
 		let state = this.state;
 		state.resultSize = null;
+		state.loadingMore = true;
+		state.numLoads++;
 		that.setState(state);
 
 		that.loadResults(function(newState) {
 			let state = that.state;
 			state.resultList.push(...newState.resultList);
 			that.setState(state);
-			that.loadMoreRef.current.innerHTML = that.loadMoreText;
+
+			if(that.loadMoreRef.current) {
+				that.loadMoreRef.current.innerHTML = that.loadMoreText;
+			}
 		});
 		e.preventDefault();
 	};
@@ -181,6 +189,9 @@ function initBrowseContainer(instance, props) {
 		state.key = null;
 		state.start = 0;
 		state.resultSize = null;
+		state.totalSize = null;
+		state.loadingMore = false;
+		state.numLoads++;
 		that.setState(state);
 		that.loadResults(function(newState) {
 			newState.view = that.state.view; // preserve view setting
@@ -318,6 +329,7 @@ function initBrowseFacetPanel(instance, props) {
 			let state = that.state;
 			state.facet = facet;
 			state.facetContent = resp.content;
+			state.facetContentSort = resp.contentSort;
 			state.selectedFacetItems = {};	// reset selected items
 			for(let k in state.facetContent) {
 				state.selectedFacetItems[state.facetContent[k].id] = false;
@@ -383,6 +395,7 @@ function initBrowseFacetPanel(instance, props) {
 	that.state = {
 		facet: null,
 		facetContent: null,
+		facetContentSort: null,
 		selectedFacetItems: []
 	};
 
@@ -391,4 +404,21 @@ function initBrowseFacetPanel(instance, props) {
 	that.applyFilters = that.applyFilters.bind(that);
 }
 
-export { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel, fetchFacetValues};
+
+/**
+ * Initializer for *BrowseResults component
+ */
+function initBrowseResults(instance, props) {
+	let that = instance;
+	that.scrollToRef = React.createRef();
+
+	that.componentDidUpdate = function() {
+		if ((that.context.state.numLoads <= 1) && that.scrollToRef && that.scrollToRef.current) {
+			that.scrollToRef.current.scrollIntoView();
+			window.scrollBy(0, -150);
+		}
+	}
+	that.componentDidUpdate = that.componentDidUpdate.bind(this);
+};
+
+export { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel, fetchFacetValues, initBrowseResults};

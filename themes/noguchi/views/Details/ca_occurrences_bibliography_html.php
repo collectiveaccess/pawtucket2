@@ -141,8 +141,8 @@
                             <div class="trigger small">Related Exhibitions</div>            
                             <div class="details">
                                 <div class="inner">
-                                    <ul class="list-sidebar ca-data text-align-left related">
-                                        <unit relativeTo="ca_occurrences.related" restrictToTypes="exhibition" delimiter=" ">
+                                    <ul class="ca-data text-align-left related">
+                                        <unit relativeTo="ca_occurrences.related" restrictToTypes="exhibition" delimiter=" " sort="ca_occurrences.date.parsed_date">
 											<li>
 												<l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l>
 											</li>
@@ -157,8 +157,8 @@
                             <div class="trigger small">Related Bibliography</div>            
                             <div class="details">
                                 <div class="inner">
-                                    <ul class="list-sidebar ca-data text-align-left related">
-                                        <unit relativeTo="ca_occurrences.related" restrictToTypes="bibliography" delimiter=" ">
+                                    <ul class="ca-data text-align-left related">
+                                        <unit relativeTo="ca_occurrences.related" restrictToTypes="bibliography" delimiter=" " sort="ca_occurrences.bib_year_published">
 											<li>
 												<l>^ca_occurrences.preferred_labels.name</l>
 											</li>

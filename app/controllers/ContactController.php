@@ -46,23 +46,23 @@
  		    caValidateCSRFToken($this->request);
  			$o_purifier = new HTMLPurifier();
  			# --- check for errors
-			$error = false;
+			#$error = false;
 
- 			if($this->config->get("check_security")){
- 				$ps_security = $this->request->getParameter("security", pString);
- 				if (!$ps_security || (($ps_security != $_REQUEST["sum"]))) {
-					$this->view->setVar('data', [
-						'status' => 'err', 'error' => _t("Please answer the security question")
-					]);
-					$error = true;
-				}
- 			}
- 			if(!$error && !$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_SECRET_KEY__") && __CA_GOOGLE_RECAPTCHA_SECRET_KEY__){
+ 			# --- not supporting sum check?
+ 			#if($this->config->get("check_security")){
+ 			#	$ps_security = $this->request->getParameter("security", pString);
+ 			#	if (!$ps_security || (($ps_security != $_REQUEST["sum"]))) {
+			#		$this->view->setVar('data', [
+			#			'status' => 'err', 'error' => _t("Please answer the security question")
+			#		]);
+			#		$error = true;
+			#	}
+ 			#}
+ 			$field_errors = [];
+ 			if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_SECRET_KEY__") && __CA_GOOGLE_RECAPTCHA_SECRET_KEY__){
  				$ps_captcha = $this->request->getParameter("g-recaptcha-response", pString);
  				if(!$ps_captcha){
-					$this->view->setVar('data', [
-						'status' => 'err', 'error' => _t("Please complete the captcha")
-					]);
+					$field_errors["captcha"] = _t("Please complete the captcha");
 				} else {
 					$va_request = curl_init();
 					curl_setopt($va_request, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
@@ -74,17 +74,13 @@
 					$va_captcha_resp = curl_exec($va_request);
 					$captcha_json = json_decode($va_captcha_resp, true);
 					if(!$captcha_json['success']){
-						$this->view->setVar('data', [
-							'status' => 'err', 'error' => _t("Your Captcha was rejected, please try again")
-						]);
-						$error = true;
+						$field_errors["captcha"] = _t("Your Captcha was rejected, please try again");
 					}
 				}
  			}
 
  			$fields = $this->config->get("contact_form_elements");
-			$field_errors = [];
- 			if(!$error && is_array($fields) && sizeof($fields)){
+			if(is_array($fields) && sizeof($fields)){
  				foreach($fields as $vs_element_name => $va_options){
  					$vs_element_value = $o_purifier->purify($this->request->getParameter($vs_element_name, pString));
  					if($va_options["required"] && !$vs_element_value){

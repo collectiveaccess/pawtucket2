@@ -24,11 +24,9 @@
             </div><!-- barba-container, Opened in header.php -->
         </div><!-- barba-wrapper, Opened in header.php -->
 
-        <footer class="placeholder">
-            <div class="wrap">
-                <div class="subheadline-bold-s">FOOTER PLACEHOLDER</div>
-            </div>
-        </footer>
+<?php
+		print $this->render("pageFormat/footer_include.php");
+?>
 
         <script type='text/javascript' src='<?php print $this->request->getThemeUrlPath(); ?>/jslib/libs-min.js?ver=<?= rand(); ?>'></script>
         <script type='text/javascript' src='<?php print $this->request->getThemeUrlPath(); ?>/jslib/app-nomin.js?ver=<?= rand(); ?>'></script>

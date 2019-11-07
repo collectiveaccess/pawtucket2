@@ -46,9 +46,9 @@ var PAJX;
 			  }
 			  
 			  // Don't cache php
-			  if (( $(element).attr( 'href' ).indexOf( 'Browse' ) >= 0) || ( $(element).attr( 'href' ).indexOf( 'Lightbox' ) >= 0) || ($(element).attr( 'href' ).indexOf( 'Detail' ) >= 0) || ($(element).attr( 'href' ).indexOf( 'Archive' ) >= 0) || ($(element).attr( 'href' ).indexOf( 'CR' ) >= 0) || ($(element).attr( 'href' ).indexOf( 'LoginReg' ) >= 0)){
+			  if ( $(element).attr( 'href' ).indexOf( 'index.php' ) >= 0 ){
 				  	return false;
-			  }
+			  	} 
 			  
 			  // Add no-barba for links inside an iframe (Presentation)
 			  if ( PAJX._inIframe() ) {
@@ -411,7 +411,7 @@ var EFFX;
 			//console.log( $frame.height() );
 
 			//d = 		$scroll.height() - ($win.height() - ($win.width() <= 1024 ? $('#header-mobile').outerHeight():$('#main-header').height()) ); //$col.height();
-			img_height 	= 	Math.max( parseInt( $frame.css( 'min-height' ) ), $frame.height() ); // min height is 900
+			img_height 	= 	Math.max( 900, $frame.height() ); // min height is 900
 			d 			=   $scroll.height() - img_height;
 			offset 		= 	img_height - $win.height();
 
@@ -3828,7 +3828,6 @@ load more
             callbacks: {
                 preSearch: function(query) { _this._doLoading(_this, true); return query; },
                 searchResult: function(query) { return _this._doResults(_this, query); },
-                searchCallback: function(query) { /* It looks like according to the docs that this must return true for GA tracking to work. */ return true; },
             },
         };
 
@@ -4169,12 +4168,7 @@ var MAIN, PAJX = window.PAJX, DV = window.DV, c = console.log;
 			$html = $('html');
 			$body = $('body');
 			baseURL = window.location.origin;
-            
-            // No Barba for Collective Access pages.
-            if ( $body.hasClass('collective-access') ){
-                is_ajax = false;
-            }
-            
+
 			if ( $html.hasClass('ie11') ){
 				//is_ajax = false;
 			}
@@ -4580,7 +4574,7 @@ var MAIN, PAJX = window.PAJX, DV = window.DV, c = console.log;
             // $( '#search-layer' ).search_layer({
             //     $icon_open: $('.search, .search-mobile a'),
             // });            
-			$('HEADER .search, HEADER .search-mobile a').on( 'click', function(e){
+			$('.search, .search-mobile a').on( 'click', function(e){
 				e.preventDefault();
 				MAIN._toggleSearch();
 			} );

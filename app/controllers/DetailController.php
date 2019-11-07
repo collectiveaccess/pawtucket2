@@ -188,7 +188,7 @@
  				throw new ApplicationException("Invalid id");
  			} 
  			
- 			// Record view
+ 			// Increment view counter
  			$t_subject->registerItemView();
  			
  			$va_options = (isset($this->opa_detail_types[$ps_function]['options']) && is_array($this->opa_detail_types[$ps_function]['options'])) ? $this->opa_detail_types[$ps_function]['options'] : array();
@@ -288,30 +288,8 @@
 					$t_representation = Datamodel::getInstance("ca_object_representations", true);
 					$this->view->setVar("representation_id", null);
 				}
-
-
-
-
-				// 
-// 				$this->view->setVar('representationViewerPrimaryOnly', caGetOption('representationViewerPrimaryOnly', $va_options, false));
-// 				$this->view->setVar('representationViewer', 
-// 					caRepresentationViewer(
-// 						$this->request, 
-// 						$t_subject, 
-// 						$t_subject,
-// 						array_merge($va_options, $va_media_display_info, 
-// 							array(
-// 								'display' => 'detail',
-// 								'showAnnotations' => true, 
-// 								'primaryOnly' => caGetOption('representationViewerPrimaryOnly', $va_options, false), 
-// 								'dontShowPlaceholder' => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), 
-// 								'captionTemplate' => caGetOption('representationViewerCaptionTemplate', $va_options, false)
-// 							)
-// 						)
-// 					)
-// 				);
 			}
-			
+
 			//
 			// map
 			//
@@ -495,6 +473,7 @@
  					caExportItemAsPDF($this->request, $t_subject, $this->request->getParameter("export_format", pString), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_options, null), ['t_subject' => $t_subject]), ['checkAccess' => $this->opa_access_values]);
  					break;
  				default:
+ 					Session::setVar($t_subject->tableName()."_last_detail_id", $t_subject->getPrimaryKey());
  					caDoTemplateTagSubstitution($this->view, $t_subject, $vs_path, ['checkAccess' => $this->opa_access_values]);
  					$this->render($vs_path);
  					break;

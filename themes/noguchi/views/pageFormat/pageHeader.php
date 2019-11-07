@@ -37,24 +37,83 @@
         
 <link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/diva/diva.css"/>	
 <script type="text/javascript" src="<?php print $this->request->getAssetsUrlPath(); ?>/diva/diva.js"></script>
+<?php
+		# --- set metatag for detail pages
+		if(strToLower($this->request->getController()) == "detail"){
+			$o_detail_config = caGetDetailConfig();
+			$va_detail_types = $o_detail_config->getAssoc('detailTypes');
+			
+			// expand to aliases
+			foreach($va_detail_types as $vs_code => $va_info) {
+				if(is_array($va_aliases = caGetOption('aliases', $va_info, null))) {
+					foreach($va_aliases as $vs_alias) {
+						$va_detail_types[$vs_alias] =& $va_detail_types[$vs_code];
+					}
+				}
+			}
+			$vs_action = strtolower($this->request->getAction());
+			$ps_id = str_replace("~", "/", urldecode($this->request->getActionExtra())); 
+			$vs_table = $va_detail_types[$vs_action]['table'];
+			if($vs_table){
+				$t_subject = Datamodel::getInstance($vs_table, true);
+ 				$vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls($vs_table);
+				if ((($vb_use_identifiers_in_urls = caUseIdentifiersInUrls()) || ($vs_use_alt_identifier_in_urls)) && (substr($ps_id, 0, 3) == "id:")) {
+					$va_tmp = explode(":", $ps_id);
+					$ps_id = (int)$va_tmp[1];
+					$vb_use_identifiers_in_urls = $vs_use_alt_identifier_in_urls = false;
+				}
+ 
+				if($vs_use_alt_identifier_in_urls && $t_subject->hasElement($vs_use_alt_identifier_in_urls)) {
+					$va_load_params = [$vs_use_alt_identifier_in_urls => $ps_id];
+				} elseif ($vb_use_identifiers_in_urls && $t_subject->getProperty('ID_NUMBERING_ID_FIELD')) {
+					$va_load_params = [$t_subject->getProperty('ID_NUMBERING_ID_FIELD') => $ps_id];
+				} else {
+					$va_load_params = [$t_subject->primaryKey() => (int)$ps_id];
+				}
+ 			
+				if ($t_subject = call_user_func_array($t_subject->tableName().'::find', array($va_load_params, ['returnAs' => 'firstModelInstance']))) {
+					$vs_meta_tag_date = "";
+					if($vs_action == "bibliography"){
+						$vs_meta_tag_date = $t_subject->get("ca_occurrences.bib_year_published");
+					}else{
+						$va_date = array_pop(array_pop($t_subject->get($vs_table.".date.parsed_date", array("returnWithStructure" => true))));
+						if(is_array($va_date) && $va_date["parsed_date_sort_"]){
+							$va_date_parts = explode("/", $va_date["parsed_date_sort_"]);
+							$va_date_parts_clean = array();
+							$vs_tmp = "";
+							foreach($va_date_parts as $va_date_part){
+								if($vs_tmp != round($va_date_part)){
+									$va_date_parts_clean[] = round($va_date_part);
+								}
+								$vs_tmp = round($va_date_part);
+							}
+							$vs_meta_tag_date = join("-", $va_date_parts_clean);
+						}			
+					}
+					
+					if($vs_meta_tag_date){
+						print "<meta name='search:subtitle' content='".$vs_meta_tag_date."' />";
+					}
+				}
+			}
+		}
+?>
+    
     </head>
     <body class="collective-access is-development" id="pawtucketApp" itemscope itemtype="http://schema.org/WebPage">
 		<script type="text/javascript">
 			let pawtucketUIApps = {};
 		</script>
-        <header class="placeholder">
-            <div class="wrap">
-                <div class="subheadline-bold-s">HEADER PLACEHOLDER <span style="display: inline-block; margin-left: 10px; font-weight: normal;">(<a class="no-barba" href="index.php" style="text-decoration: underline;">View Index</a>)</span></div>
-            </div>
-        </header>
+<?php
+		print $this->render("pageFormat/header_include.php");
+?>
 
         <div id="barba-wrapper">
             <div class="barba-container">
-<!-- START From FOUO "logged in/out archive header" template -->
- <?php
+<?php
  		# --- no header on CR landing
  		if((strToLower($this->request->getController()) != "cr") || ((strToLower($this->request->getController()) == "cr") && (strToLower($this->request->getAction()) != "index"))){
- ?>
+?>
                 <section class="module_pageheader">
 
                     <div class="wrap text-align-center">
@@ -64,22 +123,24 @@
 							case "archive":
 							case "loginreg":
 							case "archiveinfo":
-								print caNavLink("Isamu Noguchi Archive", "", "", "Archive", "Index");
+							case "lightbox":
+							case "mydocuments":
+								print caNavLink("The Isamu Noguchi Archive", "", "", "Archive", "Index");
 							break;
 							# ---------------------------------------
 							case "cr":
-									print caNavLink("Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
+									print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
 							break;
 							# ---------------------------------------
 							case "detail":
 								switch(strToLower($this->request->getAction())){
 									case "archival":
 									case "library":
-										print caNavLink("Isamu Noguchi Archive", "", "", "Archive", "Index");
+										print caNavLink("The Isamu Noguchi Archive", "", "", "Archive", "Index");
 									break;
 									# ---------------------------------------
 									case "artwork":
-										print caNavLink("Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
+										print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
 									break;
 									# ---------------------------------------
 									case "exhibition":
@@ -97,19 +158,16 @@
 								switch(strToLower($this->request->getAction())){
 									case "archive":
 									case "library":
-										print caNavLink("Isamu Noguchi Archive", "", "", "Archive", "Index");
+									case "bibliography":
+										print caNavLink("The Isamu Noguchi Archive", "", "", "Archive", "Index");
 									break;
 									# ---------------------------------------
 									case "cr":
-										print caNavLink("Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
+										print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
 									break;
 									# ---------------------------------------
 									case "exhibitions":
 											print caNavLink("Exhibitions", "", "", "Browse", "exhibitions");
-									break;
-									# ---------------------------------------
-									case "bibliography":
-											print caNavLink("Bibliography", "", "", "Browse", "bibliography");
 									break;
 									# ---------------------------------------
 								}
@@ -119,57 +177,58 @@
 ?>
                         </h3>
 <?php
-		$vb_show_user_menu = false;
-		switch(strToLower($this->request->getController())){
-			case "archive":
-			case "loginreg":
-			case "archiveinfo":
-				$vb_show_user_menu = true;
-			break;
-			# -----------------------------------------
-			case "browse":
-				if(strToLower($this->request->getAction()) == 'archive'){
+			$vb_show_user_menu = false;
+			switch(strToLower($this->request->getController())){
+				case "archive":
+				case "loginreg":
+				case "archiveinfo":
+				case "lightbox":
+				case "mydocuments":
 					$vb_show_user_menu = true;
-				}
-			break;
-			# -----------------------------------------
-			case "detail":
-				if(strToLower($this->request->getAction()) == 'archival'){
-					$vb_show_user_menu = true;
-				}
-			break;
-			# -----------------------------------------
-		}
-		if($vb_show_user_menu){
-			if($this->request->isLoggedIn()) { 
+				break;
+				# -----------------------------------------
+				case "browse":
+					if(in_array(strToLower($this->request->getAction()), array('archive', 'library'))){
+						$vb_show_user_menu = true;
+					}
+				break;
+				# -----------------------------------------
+				case "detail":
+					if(in_array(strToLower($this->request->getAction()), array('archival', 'library'))){
+						$vb_show_user_menu = true;
+					}
+				break;
+				# -----------------------------------------
+			}
+			if($vb_show_user_menu){
+				if($this->request->isLoggedIn()) { 
 ?>
-					<div class="utility utility_menu hide-for-mobile">
-						<a href="#" class="trigger"><?php print $this->request->user->get("fname")." ".$this->request->user->get("lname"); ?></a>
-						<div class="options">
+						<div class="utility utility_menu hide-for-mobile">
+							<a href="#" class="trigger"><?php print $this->request->user->get("fname")." ".$this->request->user->get("lname"); ?></a>
+							<div class="options">
 <?php
-							print caNavLink("Profile", "", "", "LoginReg", "profileForm");
-							print "<a href='#'>My Documents</a>";
-							#print caNavLink("My Documents", "", "", "Lightbox", "Index");
-							print caNavLink("Logout", "", "", "LoginReg", "logout");
+								print caNavLink("Profile", "", "", "LoginReg", "profileForm");
+								print "<a href='#'>My Documents</a>";
+								#print caNavLink("My Documents", "", "", "Lightbox", "Index");
+								print caNavLink("Logout", "", "", "LoginReg", "logout");
+?>
+							</div>
+						</div>
+<?php
+				} else {
+?>
+						 <div class="utility hide-for-mobile">
+<?php
+							print caNavLink("Researcher Login", "trigger", "", "LoginReg", "loginForm");
 ?>
 						</div>
-					</div>
 <?php
-			} else {
-?>
-					 <div class="utility hide-for-mobile">
-<?php
-						print caNavLink("Researcher Login", "trigger", "", "LoginReg", "loginForm");
-?>
-					</div>
-<?php
-			}
+				}
 
-		}
+			}
 ?>                     
                     </div>
                 </section>
 <?php
 		}
-?>  
-<!-- END -->
+?>

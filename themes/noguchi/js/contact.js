@@ -59,6 +59,7 @@ const sectionName = appData.sectionName;
 			for(let k in this.state.values) {
 				formData.append(k, this.state.values[k]);
 			}
+			formData.append('g-recaptcha-response', document.getElementById('g-recaptcha-response').value);
 			axios.post("/index.php/Contact/Send",  formData)
 				.then(function (resp) {
 					let data = resp.data;
@@ -74,11 +75,14 @@ const sectionName = appData.sectionName;
 								}
 							}
 						}
+						state.errors['captcha'] = data.fieldErrors['captcha'];
+						grecaptcha.reset();
 					} else {
 						// success
 						state.statusMessage = "Sent message";
 						state.values = that.initializeValues();	// Clear form elements
 						state.errors = that.initializeValues();	// Clear form errors
+						grecaptcha.reset(); // reload recaptcha
 					}
 					setTimeout(function() {
 						state.statusMessage = '';
@@ -103,15 +107,11 @@ const sectionName = appData.sectionName;
 						<ul className='form'>
 							<li>{(this.state.errors.name) ? <div className='alert alert-danger'>{this.state.errors.name}</div> : null}<input name='name' value={this.state.values.name} onChange={this.handleForm} type='text' placeholder='Name*' required /></li>
 							<li>{(this.state.errors.email) ? <div className='alert alert-danger'>{this.state.errors.email}</div> : null}<input name='email' value={this.state.values.email} onChange={this.handleForm} type='email' placeholder='Email*' required /></li>
-							<li>
-								<ul className='double-fields'>
-									<li>{(this.state.errors.institution) ? <div className='alert alert-danger'>{this.state.errors.institution}</div> : null}<input name='institution' value={this.state.values.institution} onChange={this.handleForm} type='text' placeholder='Institution' /></li>
-									<li>{(this.state.errors.idno) ? <div className='alert alert-danger'>{this.state.errors.idno}</div> : null}<input name='idno' value={this.state.values.idno} onChange={this.handleForm} type='text' placeholder='Object Identifier' /></li>
-								</ul>
-							</li>
+							<li>{(this.state.errors.institution) ? <div className='alert alert-danger'>{this.state.errors.institution}</div> : null}<input name='institution' value={this.state.values.institution} onChange={this.handleForm} type='text' placeholder='Institution' /></li>
+							<li>{(this.state.errors.idno) ? <div className='alert alert-danger'>{this.state.errors.idno}</div> : null}<input name='idno' value={this.state.values.idno} onChange={this.handleForm} type='text' placeholder='Object Identifier' /></li>
 							<li>{(this.state.errors.description) ? <div className='alert alert-danger'>{this.state.errors.description}</div> : null}<textarea name='description' value={this.state.values.description} onChange={this.handleForm} placeholder='Description*' required /></li>
-							<li>
-								<div className='reCaptcha'></div>
+							<li>{(this.state.errors.captcha) ? <div className='alert alert-danger'>{this.state.errors.captcha}</div> : null}
+								<div id="reCaptcha"></div>
 								<input type='submit' className='button' value='Submit' onClick={this.sendMessage} />
 							</li>
 						</ul>

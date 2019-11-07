@@ -107,7 +107,7 @@
                                     <div class="trigger">More Resources</div>                
                                     <div class="details subheadline text-gray">
                                         <div class="inner">
-                                            <div class="block-quarter"><?php print caNavLink("Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index"); ?></div>
+                                            <div class="block-quarter"><?php print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index"); ?></div>
                                             <div class="block-quarter"><?php print caNavLink('Study Collection', '', '', 'Browse','archive', array('facet' => 'collection_facet', 'id' => 2094)); ?></div>
                                             <div class="block-quarter"><a href="https://www.noguchi.org/isamu-noguchi/biography/exhibition-history/">Exhibition History</a></div>
                                             <div class="block-quarter"><?php print caNavLink("Bibliography", "", "", "Browse", "bibliography"); ?></div>

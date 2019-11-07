@@ -1,7 +1,8 @@
 /*jshint esversion: 6 */
 import React from "react"
 import ReactDOM from "react-dom";
-import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel } from "../../default/js/browse";
+import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel, initBrowseResults } from "../../default/js/browse";
+import ClampLines from 'react-clamp-lines';
 
 const selector = pawtucketUIApps.NoguchiArchiveBrowse.selector;
 const appData = pawtucketUIApps.NoguchiArchiveBrowse.data;
@@ -34,7 +35,6 @@ class NoguchiArchiveBrowse extends React.Component{
 	}
 
 	render() {
-		console.log("view", this.state);
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 		return(
 			<NoguchiArchiveBrowseContext.Provider value={this}>
@@ -103,9 +103,9 @@ class NoguchiArchiveBrowseStatistics extends React.Component {
 	render() {
 		return(<div className="current">
 			<div className="body-sans">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-				"Showing 1 Result"
+				"Showing 1 Result."
 				:
-				"Showing " + this.context.state.resultSize + " Results") : "Loading..."}.</div>
+				"Showing " + this.context.state.resultSize + " Results.") : ""}</div>
 
 				<NoguchiArchiveBrowseCurrentFilterList/>
 		</div>
@@ -144,7 +144,7 @@ class NoguchiArchiveBrowseCurrentFilterList extends React.Component {
 				for(let c in cv) {
 					let label = cv[c];
 					let facetLabel = (this.context.state.facetList && this.context.state.facetList[f]) ? this.context.state.facetList[f]['label_singular'] : "";
-					filterList.push((<a key={ f + '_' + c } href='#' className='browseRemoveFacet' onClick={this.removeFilter} data-facet={f} data-value={c}>{label} <span onClick={this.removeFilter} data-facet={f} data-value={c}>&times;</span></a>));
+					filterList.push((<a key={ f + '_' + c } href='#' className='browseRemoveFacet' onClick={this.removeFilter} data-facet={f} data-value={c}><span dangerouslySetInnerHTML={{__html: label}}></span> <span onClick={this.removeFilter} data-facet={f} data-value={c}>&times;</span></a>));
 				}
 			}
 		}
@@ -210,7 +210,7 @@ class NoguchiArchiveBrowseFacetList extends React.Component {
 
 	render() {
 		let facetButtons = [], facetPanels = [];
-		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "Loading...";
+		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "";
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
@@ -300,8 +300,8 @@ class NoguchiArchiveBrowseFacetPanel extends React.Component {
 		let options = [];
 		if(this.state.facetContent) {
 			// Render facet options when available
-			for (let i in this.state.facetContent) {
-				let item = this.state.facetContent[i];
+			for (let i in this.state.facetContentSort) {
+				let item = this.state.facetContent[this.state.facetContentSort[i]];
 
 				options.push((
 					<li key={'facetItem' + i}>
@@ -322,9 +322,9 @@ class NoguchiArchiveBrowseFacetPanel extends React.Component {
 								<ul className="ul-options" data-values="type_facet">
 									{options}
 								</ul>
-								<div className="text-align-center"><br/><a className="button load-more" href="#" onClick={this.applyFilters}>Apply</a></div>
-							</div>
+								</div>
 						</div>
+						<div className="filter-apply"><a className="button load-more" href="#" onClick={this.applyFilters}>Apply</a></div>
 					</div>
 			</div>);
 	}
@@ -361,10 +361,8 @@ class NoguchiArchiveBrowseFacetPanelItem extends React.Component {
 			<input id={id} value={data.id} data-label={data.label}  className="option-input" type="checkbox" checked={this.props.selected} onChange={this.props.callback}/>
 			<label htmlFor={id}>
 				<span className="title">
-					<a href='#'>
-						{data.label} &nbsp;
-						<span className="number">({data.content_count})</span>
-					</a>
+					<span dangerouslySetInnerHTML={{__html: data.label}}></span> &nbsp;
+					<span className="number">({data.content_count})</span>
 				</span>
 			</label>
 		</div>);
@@ -398,9 +396,9 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 				{ name: "Photography Collection", id: 432 },
 				{ name: "Architectural Collection", id: 436 },
 				{ name: "Manuscript Collection", id: 434 },
-				{ name: "Business & Legal Collection", id: 437 },
-				{ name: "Noguchi Fountain & Plaza", id: 438 },
-				{ name: "Publication & Press Collection", id: 442 },
+				{ name: "Business and Legal Collection", id: 437 },
+				{ name: "Noguchi Fountain and Plaza", id: 438 },
+				{ name: "Publication and Press Collection", id: 442 },
 			]
 		}
 		this.loadCollection = this.loadCollection.bind(this);
@@ -438,6 +436,8 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 		this.context.closeFacetPanel();
 		this.context.reloadResults(filters, true);
 
+		this.searchRef.current.value = '';
+
 		e.preventDefault();
 	}
 
@@ -447,8 +447,8 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 			collections.push((<a href='#' key={this.state.collections[i].id} data-id={this.state.collections[i].id} onClick={this.loadCollection}>{this.state.collections[i].name}</a>));
 		}
 		return(
-			<section className="ca_nav">
-				<nav className="hide-for-mobile">
+			<section className="ca_nav hide-for-mobile">
+				<nav>
 					<div className="wrap text-gray">
 						<form action="#" onSubmit={this.loadSearch}>
 							<div className="cell text"><a href='/index.php/Browse/Archive'>Browse</a></div>
@@ -471,33 +471,6 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 									className='long'> The Archive</span></a></div>
 							</div>
 						</form>
-					</div>
-				</nav>
-				<nav className="show-for-mobile wrap">
-					<div className="module_accordion">
-						<div className="items">
-							<div className="item">
-								<div className="trigger small">Archive Menu</div>            
-								<div className="details">
-									<div className="inner">
-
-										<div className="module_filter_bar">
-											<div className="wrap text-gray">
-												<form action="#" onSubmit={this.loadSearch}>
-													<div className="cell"><input name="search" type="text" placeholder="Search the Archive" className="search"/></div>
-													<div className="misc">
-													   <a href='/index.php/Browse/Archive'>Browse</a>
-													   <a href='/index.php/ArchiveInfo/UserGuide'>User Guide</a>
-													   <a href='/index.php/ArchiveInfo/About'>About The Archive</a>
-													</div>
-												</form>
-											</div>
-										</div>
-
-									</div>
-								</div>
-							</div>
-						</div>
 					</div>
 				</nav>
 			</section>
@@ -524,12 +497,26 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 class NoguchiArchiveBrowseResults extends React.Component {
 	static contextType = NoguchiArchiveBrowseContext;
 
+	constructor(props) {
+		super(props);
+
+		initBrowseResults(this, props);
+	}
+
 	render() {
 		let resultList = [];
-		if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
+		if((this.context.state.resultSize === null) && !this.context.state.loadingMore) {
+			resultList.push((<div className="spinner">
+				<div className="bounce1"></div>
+				<div className="bounce2"></div>
+				<div className="bounce3"></div>
+			</div>));
+		} else if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
-				resultList.push(<NoguchiArchiveBrowseResultItem view={this.props.view} key={r.id} data={r}/>)
+				let ref = (parseInt(r.id) === parseInt(this.context.state.scrollToResultID)) ? this.scrollToRef : null;
+
+				resultList.push(<NoguchiArchiveBrowseResultItem view={this.props.view} key={r.id} data={r} scrollToRef={ref}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
 			resultList.push(<h2 key='no_results'>No results found</h2>)
@@ -539,7 +526,7 @@ class NoguchiArchiveBrowseResults extends React.Component {
 			default:
 				return (
 					<div>
-						<section className="block block-quarter-top">
+						<section className="wrap block block-quarter-top grid">
 							<div className="wrap">
 								<div className="grid-flexbox-layout grid-ca-archive">
 									{resultList}
@@ -572,14 +559,19 @@ class NoguchiArchiveBrowseResults extends React.Component {
  *
  * Used by:
  *  	NoguchiArchiveBrowseResults
+ *
+ * Uses context: NoguchiArchiveBrowseContext
  */
 class NoguchiArchiveBrowseResultLoadMoreButton extends React.Component {
+	static contextType = NoguchiArchiveBrowseContext;
+
 	render() {
-		if ((this.props.start + this.props.itemsPerPage) < this.props.size) {
-			return (
-				<section className="block text-align-center">
-					<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>Load More +</a>
-				</section>);
+		if ((this.props.start + this.props.itemsPerPage) < this.props.size)  {
+			let loadingText = (this.context.state.resultSize === null) ? "LOADING" : "Load More +";
+
+			return (<section className="block text-align-center">
+				<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>{loadingText}</a>
+			</section>);
 		} else {
 			return(<span></span>)
 		}
@@ -609,7 +601,7 @@ class NoguchiArchiveBrowseResultItem extends React.Component {
 		switch(this.props.view) {
 			default:
 				return(
-						<div className="item-grid">
+						<div className="item-grid" ref={this.props.scrollToRef}>
 							<a href={data.detailUrl}>
 								<div className="img-wrapper archive_thumb block-quarter">
 									<div className="bg-image"
@@ -618,7 +610,15 @@ class NoguchiArchiveBrowseResultItem extends React.Component {
 								<div className="text">
 									<div className="text_position">
 										<div className="ca-identifier text-gray">{data.idno}</div>
-										<div className="thumb-text clamp" data-lines="3">{data.label}</div>
+										<ClampLines
+											text={data.label}
+											id={"browse_label_" + data.id}
+											lines="3"
+											ellipsis="..."
+											buttons={false}
+											className="thumb-text clamp"
+											innerElement="div"
+										/>
 
 										<div className="text_full">
 											<div className="ca-identifier text-gray">{data.idno}</div>

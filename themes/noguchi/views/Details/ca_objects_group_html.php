@@ -62,7 +62,10 @@
  				$va_rep_ids = $t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => true));
  			
  			}else{
- 				$va_rep_ids = array_reverse($t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => false, "sort" => "ca_objects_x_object_representations.is_primary")));
+ 				$va_rep_ids = $t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => false, "sort" => "ca_objects_x_object_representations.is_primary", "checkAccess" => $va_access_values));
+ 				if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
+ 					$va_rep_ids = array_reverse($va_rep_ids);
+ 				}
  			}
  			if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
  				
@@ -94,7 +97,7 @@
                     </div>
                 </div>
 <?php
-				if(is_array($va_thumbs) && sizeof($va_thumbs)){
+				if(is_array($va_thumbs) && (sizeof($va_thumbs) > 1)){
 ?>
                 <ul class="slideshow-thumbnails" data-as-nav="slider-main" data-is-nav="true">
 <?php
@@ -103,6 +106,10 @@
 					}
 ?>
                 </ul>
+<?php
+				}else{
+?>
+					<div class="block-half"><br/></div>
 <?php
 				}
 ?>
@@ -172,8 +179,8 @@
 					</div>
                 </div><!-- end block -->
 <?php
-	$va_exhibitions = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_objects.children'><unit relativeTo='ca_occurrences' restrictToTypes='exhibition'><li><l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l></li></unit></unit>", array("checkAccess" => $va_access_values)));
-	$va_bibs = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_objects.children'><unit relativeTo='ca_occurrences' restrictToTypes='bibliography'><li><l>^ca_occurrences.bib_full_citation</l></li></unit></unit>", array("checkAccess" => $va_access_values)));
+	$va_exhibitions = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_objects.children'><unit relativeTo='ca_occurrences' restrictToTypes='exhibition' sort='ca_occurrences.date.parsed_date'><li><l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l></li></unit></unit>", array("checkAccess" => $va_access_values)));
+	$va_bibs = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_objects.children'><unit relativeTo='ca_occurrences' restrictToTypes='bibliography' sort='ca_occurrences.bib_year_published'><li><l>^ca_occurrences.bib_full_citation</l></li></unit></unit>", array("checkAccess" => $va_access_values)));
 
 	
 	if((is_array($va_exhibitions) && sizeof($va_exhibitions)) || (is_array($va_bibs) && sizeof($va_bibs))){
@@ -187,7 +194,7 @@
                             <div class="trigger small">Related Exhibitions</div>            
                             <div class="details">
                                 <div class="inner">
-                                    <ul class="list-sidebar ca-data text-align-left related">
+                                    <ul class="ca-data text-align-left related">
                                         <?php print join(" ", $va_exhibitions); ?>
                                     </ul>
                                 </div>
@@ -201,7 +208,7 @@
                             <div class="trigger small">Related Bibliography</div>            
                             <div class="details">
                                 <div class="inner">
-                                    <ul class="list-sidebar ca-data text-align-left related">
+                                    <ul class="ca-data text-align-left related">
                                         <?php print join(" ", $va_bibs); ?>
                                     </ul>
                                 </div>

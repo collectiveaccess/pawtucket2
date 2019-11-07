@@ -22,12 +22,13 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	include("email_header.tpl");
+
  	$t_user = $this->getVar("t_user");
 	print _t("<p>A new user, %1, has registered for \"%2\".</p>", trim($t_user->get("fname")." ".$t_user->get("lname")).", ".$t_user->get("email"), $this->request->config->get("app_display_name"));
 	if($this->request->config->get("dont_approve_logins_on_registration")){
 		print _t("<p>Please login and navigate to Manage > Access Control to approve the registration.</p>");
 	}
-	print _t("<p>Regards,<br/>the Staff</p>");
+	include("email_footer.tpl");
 
-	print "<p>".$this->request->config->get("site_host")."</p>";
 ?>

@@ -38,6 +38,8 @@
 	$va_access_values = caGetUserAccessValues();
 	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
 	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
+	
+	MetaTagManager::setWindowTitle("The Isamu Noguchi Catalogue Raisonné: Artwork: ".$t_object->get("ca_objects.preferred_labels.name").": [".$t_object->get("ca_objects.idno")."]");
 ?>
     <main class="ca cr cr_detail nomargin">
 <?php
@@ -60,7 +62,10 @@
  				$va_rep_ids = $t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => true, "checkAccess" => $va_access_values));
  			
  			}else{
- 				$va_rep_ids = array_reverse($t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => false, "sort" => "ca_objects_x_object_representations.is_primary", "checkAccess" => $va_access_values)));
+ 				$va_rep_ids = $t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => false, "sort" => "ca_objects_x_object_representations.is_primary", "checkAccess" => $va_access_values));
+ 				if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
+ 					$va_rep_ids = array_reverse($va_rep_ids);
+ 				}
  			}
  			if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
  				
@@ -93,7 +98,7 @@
                     </div>
                 </div>
 <?php
-				if(is_array($va_thumbs) && sizeof($va_thumbs)){
+				if(is_array($va_thumbs) && (sizeof($va_thumbs) > 1)){
 ?>
                 <ul class="slideshow-thumbnails" data-as-nav="slider-main" data-is-nav="true">
 <?php
@@ -102,6 +107,10 @@
 					}
 ?>
                 </ul>
+<?php
+				}else{
+?>
+					<div class="block-half"><br/></div>
 <?php
 				}
 ?>
@@ -186,9 +195,9 @@
 					print '</div> <!-- end block-quarter-->';
 				}
 ?>
-                  	{{{<ifcount code="ca_entities" excludeRelationshipTypes="sitter" min="1">
+                  	{{{<ifcount code="ca_entities" excludeRelationshipTypes="sitter,collection" min="1">
 						<div class="block-quarter">
-							<div class="ca-data"><unit relativeTo="ca_objects_x_entities" excludeRelationshipTypes="sitter" delimiter="<br/>">^relationship_typename ^ca_entities.preferred_labels.displayname</unit></div>
+							<div class="ca-data"><unit relativeTo="ca_objects_x_entities" excludeRelationshipTypes="sitter,collection" delimiter=" "><div class="capitalizeFirst">^relationship_typename ^ca_entities.preferred_labels.displayname</div></unit></div>
 						</div>
                     </ifcount>}}}
 					{{{<ifdef code="ca_objects.current_collection">
@@ -242,8 +251,8 @@
                             <div class="trigger small">Related Exhibitions</div>            
                             <div class="details">
                                 <div class="inner">
-                                    <ul class="list-sidebar ca-data text-align-left related">
-                                        <unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=" ">
+                                    <ul class="ca-data text-align-left related">
+                                        <unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=" " sort="ca_occurrences.date.parsed_date">
 											<li>
 												<l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l>
 											</li>
@@ -258,8 +267,8 @@
                             <div class="trigger small">Related Bibliography</div>            
                             <div class="details">
                                 <div class="inner">
-                                    <ul class="list-sidebar ca-data text-align-left related">
-                                        <unit relativeTo="ca_occurrences" restrictToTypes="bibliography" delimiter=" ">
+                                    <ul class="ca-data text-align-left related">
+                                        <unit relativeTo="ca_occurrences" restrictToTypes="bibliography" delimiter=" " sort="ca_occurrences.bib_year_published">
 											<li>
 												<l>^ca_occurrences.bib_full_citation</l>
 											</li>

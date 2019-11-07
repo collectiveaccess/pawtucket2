@@ -57,13 +57,7 @@
  		 */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			parent::__construct($po_request, $po_response, $pa_view_paths);
- 			// if (!$this->request->isAjax() && $this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
-//                 $this->response->setRedirect(caNavUrl("", "LoginReg", "LoginForm"));
-//             }
-//             if ($this->request->isLoggedIn()) {
-//             	print "You do not have access to view this page.";
-//             	die;
-//             }
+
             $this->opo_config = caGetBrowseConfig();
             
  			$this->view->setVar("find_type", $this->ops_find_type);
@@ -143,6 +137,7 @@
 			$this->view->setVar('view', $ps_view);
 
 			$use_default_key = false;
+			$last_browse_start = 0;
 			if (!($ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true]))) {
 				if($use_default_key = $this->request->getParameter('useDefaultKey', pInteger)) {
 					$ps_cache_key = Session::getVar("{$ps_function}_last_browse_id");
@@ -174,7 +169,8 @@
 			// Return content for specific facet
 			//	
 			if ($this->request->getParameter('getFacet', pInteger)) {
-				$this->view->setVar('data', $this->getFacet($o_browse));
+				$f = $this->getFacet($o_browse);
+				$this->view->setVar('data', $f);
 				return $this->render($this->ops_view_prefix."/browse_data_json.php");
 			}
 
@@ -273,7 +269,7 @@
 
 				$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
 
-				$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'omitChildRecords' => $vb_omit_child_records, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $va_browse_info, null)));
+				$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'omitChildRecords' => $vb_omit_child_records, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $va_browse_info, null), 'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $va_browse_info, null)));
 
 				//
 				// Facets
@@ -282,7 +278,6 @@
 					$o_browse->setFacetGroup($vs_facet_group);
 				}
 
-				$va_available_facet_list = caGetOption('availableFacets', $va_browse_info, null);
 				$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request]);
 				foreach ($va_facets as $vs_facet_name => $va_facet_info) {
 					if (isset($va_base_criteria[$vs_facet_name])) {
@@ -328,6 +323,17 @@
 
 				$vs_key = $o_browse->getBrowseID();
 
+				$last_browse_start = $start;
+				if($vs_key === $ps_cache_key) {
+					$last_browse_start = Session::getVar("{$ps_function}_last_browse_start");
+					if ($start > $last_browse_start) {
+						Session::setVar("{$ps_function}_last_browse_start", $start);
+					}
+				} else{
+					Session::setVar($qr_res->tableName().'_last_detail_id', null);
+					Session::setVar("{$ps_function}_last_browse_start", 0);
+				}
+
 				if (($vn_key_start = $start - 1000) < 0) {
 					$vn_key_start = 0;
 				}
@@ -337,10 +343,14 @@
 
 				$criteria = $o_browse->getCriteriaWithLabels();
 				$facet_info = $o_browse->getInfoForFacets();
+
 				$data = [
+					'lastStart' => $last_browse_start,
+					'lastViewedID' => Session::getVar($qr_res->tableName().'_last_detail_id'),
 					'size' => $qr_res->numHits(),
 					'key' => $vs_key,
-					'start' => $start,
+					'hitsStart' => $start,
+					'start' => ($last_browse_start >= $items_per_page) ? $last_browse_start + $items_per_page : $start,
 					'itemsPerPage' => $items_per_page,
 					'table' => $qr_res->tableName(),
 					'pk' => $qr_res->primaryKey(),
@@ -370,8 +380,8 @@
 							$title_template = caProcessTemplate($intro[$k]['title'], $global_vars, ['skipTagsWithoutValues' => true]);
 							$description_template = caProcessTemplate($intro[$k]['description'], $global_vars, ['skipTagsWithoutValues' => true]);
 
-							$data['introduction']['title'] = $t_instance->getWithTemplate($title_template);
-							$data['introduction']['description'] = $t_instance->getWithTemplate($description_template);
+							$data['introduction']['title'] = $t_instance->getWithTemplate($title_template, ['checkAccess' => $this->opa_access_values]);
+							$data['introduction']['description'] = $t_instance->getWithTemplate($description_template, ['checkAccess' => $this->opa_access_values]);
 
 							$intro_set = true;
 							break;
@@ -386,10 +396,10 @@
 				$c = 0;
 
 				$table = $qr_res->tableName();
-				$pk = $qr_res->primaryKey();
 				$idno_fld= $qr_res->getInstance(true)->getProperty('ID_NUMBERING_ID_FIELD');
-				while($qr_res->nextHit()) {
 
+				if (($last_browse_start >= $items_per_page) && ($start == 0)) { $items_per_page = $last_browse_start + ($items_per_page * 2); }	// return all results up to and including currrent page
+				while($qr_res->nextHit()) {
 					$d = [
 						'id' => $id = $qr_res->getPrimaryKey(),
 						'label' => $qr_res->get('preferred_labels'),
@@ -400,7 +410,7 @@
 					// TODO: this is hardcoded to use view "images" until we add support for multiple view types
 					if(is_array($va_browse_info['views']['images'])) {
 						foreach($va_browse_info['views']['images'] as $k => $tmpl) {
-							$d[$k] = $qr_res->getWithTemplate($tmpl);
+							$d[$k] = $qr_res->getWithTemplate($tmpl, ['checkAccess' => $this->opa_access_values]);
 						}
 					}
 
@@ -416,10 +426,6 @@
 				$this->opo_result_context->saveContext();
 				return $this->render($this->ops_view_prefix."/browse_data_json.php");
 			}
-
-//			$this->view->setVar('key', $vs_key);
-//			$this->opo_result_context->setParameter('key', $vs_key);
-//			$this->opo_result_context->saveContext();
 
 			$this->render($this->ops_view_prefix."/browse_results_html.php");
  		}

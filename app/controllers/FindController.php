@@ -113,7 +113,13 @@
 
 			$content = $po_browse->getFacet($facet, ["checkAccess" => $this->opa_access_values, 'start' => $start, 'limit' => $limit]);
 
-			$size = $content ? 0 : (($limit > 0) ? (is_array($f = $po_browse->getFacet($facet, array("checkAccess" => $this->opa_access_values))) && sizeof($f)) : is_array($content) ? sizeof($content) : 0);
+			if ((($start > 0) || ($limit > 0)) && is_array($f = $po_browse->getFacet($facet, array("checkAccess" => $this->opa_access_values)))) {
+				$size = sizeof($f);
+			} elseif(is_array($content)) {
+				$size = sizeof($content);
+			} else {
+				$size = 0;
+			}
 
 			return [
 				'facet' => $facet,
@@ -121,7 +127,8 @@
 				'key' => $key,
 				'info' => $facet_info,
 				'size' => $size,
-				'content' => $content
+				'content' => $content,
+				'contentSort' => array_keys($content)
 			];
  		}
 		# ------------------------------------------------------------------
