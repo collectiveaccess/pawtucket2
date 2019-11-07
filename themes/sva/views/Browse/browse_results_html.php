@@ -29,6 +29,7 @@
 	}
 	
 	$action = $this->request->getAction();
+	$browse_info = $this->getVar('browseInfo');
 ?>
 
 <div id="browse"></div>
@@ -39,7 +40,8 @@
         'data': {
 			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
 			endpoint: "<?php print $action; ?>",
-			initialFilters: <?php print json_encode($initial_criteria); ?>
+			initialFilters: <?php print json_encode($initial_criteria); ?>,
+			view: "<?php print caGetOption('defaultView', $browse_info, 'images'); ?>"
         }
     };
 </script>

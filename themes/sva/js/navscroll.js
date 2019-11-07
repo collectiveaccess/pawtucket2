@@ -45,7 +45,7 @@ class Navscroll extends React.Component {
  
    render() {
     return (<nav className="navbar navbar-expand-md navbar-light bg-light fixed-top" role="navigation" ref={this.navbar}>
-		<a className="navlogo" href="#">School of Visual Arts Archives</a>
+		<a className="navlogo" href="/">School of Visual Arts Archives</a>
 		<button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainnavbar" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
 			<span className="navbar-toggler-icon"></span>
 		</button>

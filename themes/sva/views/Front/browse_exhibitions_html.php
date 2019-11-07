@@ -39,13 +39,13 @@
 <script type="text/javascript">
 	pawtucketUIApps['exhbrowse'] = {
 		'#dateBrowse': {
-			'facetUrl': '<?php print caNavUrl('', 'FrontBrowse', 'occurrences', ['getFacet' => 'decade', 'download' => 1]); ?>',
-			'browseUrl': '<?php print caNavUrl('', 'FrontBrowse', 'occurrences', ['facets' => 'decade:%value', 'sort' => 'Name']); ?>',
+			'facetUrl': '<?php print caNavUrl('', 'FrontBrowse', 'exhibitions', ['getFacet' => 'decade', 'download' => 1]); ?>',
+			'browseUrl': '<?php print caNavUrl('', 'FrontBrowse', 'exhibitions', ['facets' => 'decade:%value', 'sort' => 'Name']); ?>',
 			'groupByYear': true
 		},
 		'#exhibitionBrowse': {
-			'facetUrl': '<?php print caNavUrl('', 'FrontBrowse', 'occurrences', ['getFacet' => 'exhibition', 'download' => 1]); ?>',
-			'browseUrl': '<?php print caNavUrl('', 'FrontBrowse', 'occurrences', ['facets' => 'exhibition:%value', 'sort' => 'Name']); ?>'
+			'facetUrl': '<?php print caNavUrl('', 'FrontBrowse', 'exhibitions', ['getFacet' => 'exhibition', 'download' => 1]); ?>',
+			'browseUrl': '<?php print caNavUrl('', 'FrontBrowse', 'exhibitions', ['facets' => 'exhibition:%value', 'sort' => 'Name']); ?>'
 		},
 		'#exhibitorBrowse': {
 			'facetUrl': '<?php print caNavUrl('', 'FrontBrowse', 'entities', ['getFacet' => 'exhibitor', 'download' => 1]); ?>',
