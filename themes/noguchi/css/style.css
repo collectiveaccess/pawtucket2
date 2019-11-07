@@ -6491,6 +6491,10 @@ BODY.collective-access .ca-form {
         margin-top: 10px;
         float: right; } }
 
+MAIN.archive_landing .grid {
+  overflow: hidden;
+  min-height:100px; }
+
 @media (max-width: 767px) {
   MAIN.archive_detail .container-image-detail {
     margin-left: -20px;
