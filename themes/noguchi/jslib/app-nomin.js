@@ -44,12 +44,12 @@ var PAJX;
                 if (!Barba.Pjax.originalPreventCheck(evt, element)) {
                     return false;
                 }
-                // Don't cache PHP file links 
-                // if ( $(element).attr( 'href' ).indexOf( 'index.php' ) >= 0 ){
-                //     return false;
-                // } 
-                // Don't Collective Access links
-                if ((window.location.hostname == 'noguchi.whirl-i-gig.com') || (window.location.hostname == 'archive.noguchi.org')){
+                // Don't cache CollectiveAccess Lighbox links
+				if ( $(element).attr( 'href' ).indexOf( 'Lightbox' ) >= 0 ){
+					return false;
+				}
+                // Don't cache CollectiveAccess links
+                if ((window.location.hostname == 'noguchi.whirl-i-gig.com') || (window.location.hostname == 'archive.noguchi.org') || (window.location.hostname == 'noguchi')){
                     return false;
                 }
                 // Don't cache PDF links

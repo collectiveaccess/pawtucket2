@@ -2434,23 +2434,32 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			if($pa_options["parents_only"]){
 				$va_sql_wheres[] = "cs.parent_id IS NULL";
 			}
-			$qr_res = $o_db->query("SELECT cs.set_id, cs.user_id, type_id, cu.fname, cu.lname
+			$qr_res = $o_db->query("SELECT COUNT(*) c, cs.set_id, cs.user_id, cs.type_id, cs.table_num, cu.fname, cu.lname
 									FROM ca_sets cs
 									INNER JOIN ca_users AS cu ON cs.user_id = cu.user_id
+									LEFT JOIN ca_set_items AS csi ON cs.set_id = csi.set_id
 									".join("\n", $va_extra_joins)."
 									".(sizeof($va_sql_wheres) ? "WHERE " : "")." ".join(" AND ", $va_sql_wheres)."
+									
+									GROUP BY cs.set_id
 									", $va_sql_params);
-			$va_sets = array();
+			$va_sets = [];
 			$t_list = new ca_lists();
+			$set_ids = $qr_res->getAllFieldValues('set_id');
+			$labels = $this->getPreferredDisplayLabelsForIDs($set_ids);
+
+			$qr_res->seek(0);
 			while($qr_res->nextRow()) {
 				$vn_table_num = $qr_res->get('table_num');
-				if (!isset($va_type_name_cache[$vn_table_num]) || !($vs_set_type = $va_type_name_cache[$vn_table_num])) {
-					$vs_set_type = $va_type_name_cache[$vn_table_num] = $this->getSetContentTypeName($vn_table_num, array('number' => 'plural'));
-				}
+				$set_id = $qr_res->get('set_id');
 				
-				$vs_type = $t_list->getItemFromListForDisplayByItemID('set_types', $qr_res->get('type_id'));
+				$vs_type = $this->getTypeName($qr_res->get('type_id'));
 			
-				$va_sets[$qr_res->get('set_id')] = array_merge($qr_res->getRow(), array('set_content_type' => $vs_set_type, 'set_type' => $vs_type));
+				$va_sets[$qr_res->get('set_id')] = array_merge($qr_res->getRow(), [
+					'set_content_type' => $vs_set_type, 'set_type' => $vs_type,
+					'label' => $labels[$set_id], 'count' => $qr_res->get('c'),
+					'item_type_singular' => Datamodel::getTableProperty($vn_table_num, 'NAME_SINGULAR'), 'item_type_plural' => Datamodel::getTableProperty($vn_table_num, 'NAME_PLURAL')
+				]);
 			}
 			return $va_sets;
 		}else{
