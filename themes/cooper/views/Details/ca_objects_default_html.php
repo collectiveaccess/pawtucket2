@@ -107,9 +107,12 @@ if($vb_ajax){
 							}
 						}
 					}
-					if(is_array($va_children) && (sizeof($va_children) > 1)){
+					if(is_array($va_children) && (sizeof($va_children) > 0)){
 ?>
 					<div class="row detailImages">
+<?php
+						if(is_array($va_children) && (sizeof($va_children) > 1)){
+?>
 						<div class="col-sm-2 detailImagesThumbs">
 <?php
 							foreach($va_children as $vn_child_object_id => $va_child){
@@ -117,12 +120,22 @@ if($vb_ajax){
 							}
 ?>
 						</div>
-						<div class="col-sm-10">
+<?php
+						}
+?>
+						<div class="col-sm-<?php print (sizeof($va_children) > 1) ? "10" : "12"; ?>">
 							<div id="detailObjectImageLarge"></div>
+<?php
+						if(is_array($va_children) && (sizeof($va_children) > 1)){
+?>
+
 								<div class="detailImageNav">
 									<a href="#" class="detailPreviousImageLink" onClick="showNextPreviousImg('p'); return false;"><i class='fa fa-angle-left'></i></a>
 									<a href="#" class="detailNextImageLink" onClick="showNextPreviousImg('n'); return false;"><i class='fa fa-angle-right'></i></i></a>
 								</div>
+<?php
+}
+?>
 						</div>
 					</div>
 					<script type="text/javascript">
