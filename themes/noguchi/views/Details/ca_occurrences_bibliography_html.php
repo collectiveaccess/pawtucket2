@@ -195,8 +195,8 @@
 										<div class="ca-identifier text-gray">^ca_objects.idno</div>
 										<div class="more">                                
 											<div class="thumb-text clamp" data-lines="2">^ca_objects.preferred_labels.name</div>
-											<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date</div></ifdef>
-											<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>
+											<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date%delimiter=,_</div></ifdef>
+											<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date%delimiter=,_</div></ifdef></ifnotdef>
 										</div>
 									</div>
 								</l>

@@ -146,12 +146,12 @@
 					</ifdef>}}}
                     {{{<ifdef code="ca_objects.date.display_date">
 						<div class="block-quarter">
-							<div class="subheadline text-gray">^ca_objects.date.display_date</div>
+							<div class="subheadline text-gray">^ca_objects.date.display_date%delimiter=,_</div>
 						</div>
 					</ifdef>}}}
                     {{{<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date">
 						<div class="block-quarter">
-							<div class="subheadline text-gray">^ca_objects.date.parsed_date</div>
+							<div class="subheadline text-gray">^ca_objects.date.parsed_date%delimiter=,_</div>
 						</div>
                     </ifdef></ifnotdef>}}}
 					{{{<ifcount code="ca_objects.children">
@@ -248,8 +248,8 @@
 										<div class="text block-quarter">
 											<div class="ca-identifier text-gray">^ca_objects.idno<if rule='^ca_objects.status =~ /pending/'>*</if></div>
 											<div class="thumb-text clamp" data-lines="4">^ca_objects.preferred_labels.name</div>
-											<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date</div></ifdef>
-											<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>
+											<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date%delimiter=,_</div></ifdef>
+											<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date%delimiter=,_</div></ifdef></ifnotdef>
 											<ifdef code="ca_objects.technique"><div class="ca-identifier text-gray">^ca_objects.technique</div></ifdef>
 											
 										</div>
@@ -283,8 +283,8 @@
 									<div class="text block-quarter">
 										<div class="ca-identifier text-gray">^ca_objects.idno<if rule='^ca_objects.status =~ /pending/'>*</if></div>
 										<div class="thumb-text clamp" data-lines="4">^ca_objects.preferred_labels.name</div>
-										<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date</div></ifdef>
-										<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date</div></ifdef></ifnotdef>
+										<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date%delimiter=,_</div></ifdef>
+										<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date%delimiter=,_</div></ifdef></ifnotdef>
 									</div>
 								</l>
 								</unit>

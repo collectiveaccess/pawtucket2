@@ -129,12 +129,12 @@
                     </div>
                     {{{<ifdef code="ca_objects.date.display_date">
 						<div class="block-quarter">
-							<div class="subheadline text-gray">^ca_objects.date.display_date</div>
+							<div class="subheadline text-gray">^ca_objects.date.display_date%delimiter=,_</div>
 						</div>
 					</ifdef>}}}
                     {{{<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date">
 						<div class="block-quarter">
-							<div class="subheadline text-gray">^ca_objects.date.parsed_date</div>
+							<div class="subheadline text-gray">^ca_objects.date.parsed_date%delimiter=,_</div>
 						</div>
                     </ifdef></ifnotdef>}}}
 					{{{<ifdef code="ca_objects.subcategory">
