@@ -2,10 +2,44 @@
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$vn_share_enabled = 	$this->getVar("shareEnabled");
+
+	$access_values = $this->getVar('access_values');
+	$related_objects = $t_item->getRelatedItems('ca_objects', ['checkAccess' => $access_values, 'returnAs' => 'searchResult']);
+
+	$representations = [];
+	$representation_count = 0;
+	if($related_objects) {
+		while ($related_objects->nextHit()) {
+			$classification = $related_objects->get('ca_objects.series', ['convertCodesToIdno' => true]);
+			if ($tag = $related_objects->get('ca_object_representations.media.large.tag')) {
+				$representations[$classification][] = [
+					'large' => $tag,
+					'small' => $related_objects->get('ca_object_representations.media.small.tag'),
+					'label' => $related_objects->get('ca_objects.preferred_labels.name')
+				];
+				$representation_count++;
+			}
+		}
+	}
+
+	// Main image default to poster, then announcement, exhibition catalogue, then installation photo/slide, then press release
+	$main_representation = null;
+	foreach(['Posters', 'announcements', 'exhibition_catalogue', 'photographic materials', 'press release'] as $k) {
+		if(isset($representations[$k])) {
+			$main_representation = array_shift($representations[$k]);
+			$representation_count--;
+			break;
+		}
+	}
+	// If no preferred classification take the first representation found
+	if(!$main_representation) {
+		foreach($representations as $k => $reps) {
+			$main_representation = array_shift($representations[$k]);
+			$representation_count--;
+		}
+	}
 ?>
-
-
 <!-- <div class="hpHero" id="sec2">
 	{{{<ifdef code="ca_objects"><div class='unit'><unit relativeTo="ca_objects" delimiter=" " start="0" length="1">^ca_object_representations.media.large</unit></div></ifdef>}}}
 </div> -->
@@ -19,22 +53,23 @@
 	<div class="row">
         <div class='col-sm-12'>
 			<ul class="breadcrumbs--nav" id="breadcrumbs">
-				<li><a href="/index.php/">SVA Exhibitions Archives</a></li>
-				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
-				</li>
+				<li><a href="/">SVA Exhibitions Archives</a></li>
+				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?></li>
+				<li><?php print $this->getVar('resultsLink'); ?></li>
+				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?></li>
+				<li>{{{^ca_occurrences.preferred_labels.name}}}</li>
 			</ul>
-		</div>   
+		</div>
 	</div>
 	<div class="row">
 		<div class="col-sm-1 prevnext">
-			<?php print $this->getVar('resultsLink'); ?><br>
 			<?php print $this->getVar('previousLink'); ?> 		
 		</div>					
 		<div class="col-sm-10 d-flex justify-content-center">
            	<H2>{{{^ca_occurrences.preferred_labels.name}}}</H2>
         </div>       
         <div class="col-sm-1 prevnext">
-			<br><?php print $this->getVar('nextLink'); ?>
+			<?php print $this->getVar('nextLink'); ?>
 		</div>
 		<div class="col-sm-12"><hr> </div>
 	</div>
@@ -47,7 +82,7 @@
 		<div class="col-sm-8">
 			<div class="row justify-content-center">
 				<div class="col-sm-10">
-				{{{<ifdef code="ca_objects"><div class='unit'><unit relativeTo="ca_objects" delimiter=" " start="0" length="1"><l><div class="colorblock">^ca_object_representations.media.large</div></l><div class='masonry-title'><l>^ca_objects.preferred_labels.name</l></div></unit></div></ifdef>}}}
+				<div class='unit'><div class="colorblock"><?php print $main_representation['large']; ?></div><div class='masonry-title'><?php print $main_representation['label']; ?></div></div>
 				</div>
 			</div> 		
 		</div>
@@ -83,20 +118,28 @@
 		</div>
 	</div>
 	<div class="row justify-content-center">
-		{{{<ifcount code="ca_objects" min="2">
-			<div class="col-sm-12"><hr>			
-				<div class="card-columns">
-				<unit relativeTo="ca_objects" delimiter=" " start="1">
-					<div class="card mx-auto">
-						<div class="colorblock"><l>^ca_object_representations.media.large</l>
+		<?php
+			if($representation_count > 0) {
+				?>
+		<div class="col-sm-12"><hr>
+			<div class="card-columns">
+			<?php
+			foreach ($representations as $k => $representations_for_classification) {
+					foreach ($representations_for_classification as $rep) {
+	?>
+						<div class="card mx-auto">
+							<div class="colorblock"><?php print $rep['small']; ?></div>
+							<div class='masonry-title'><?php print $rep['label']; ?></div>
 						</div>
-						<div class='masonry-title'><l>^ca_objects.preferred_labels.name</l>
-						</div>
-					</div>
-				</unit>
-            </div>
-            </div>
-		</ifcount>}}}						
+			<?php
+					}
+				}
+			?>
+			</div>
+		</div>
+			<?php
+			}
+		?>
 	</div>
 </div>
 <script type='text/javascript'>

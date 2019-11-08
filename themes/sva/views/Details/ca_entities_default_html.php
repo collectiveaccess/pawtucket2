@@ -8,20 +8,27 @@
 		<div class="row">
         <div class='col-sm-12'>
 			<ul class="breadcrumbs--nav" id="breadcrumbs">
-				<li><a href="/index.php/">SVA Exhibitions Archives</a></li>
-				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?>
-				</li>
-				<li>Exhibitor {{{^ca_entities.preferred_labels.displayname}}}</li>
-				</li>
+				<li><a href="/">SVA Exhibitions Archives</a></li>
+				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?></li>
+				<li><?php print $this->getVar('resultsLink'); ?></li>
+				<li><?php print caGetThemeGraphic('icon-arrow-right.svg', array("alt" => "arrow")); ?></li>
+				<li>{{{^ca_entities.preferred_labels.displayname}}}</li>
 			</ul>
 		</div>  
 		
 		</div>
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
+				<div class="col-sm-1 prevnext">
+					<?php print $this->getVar('previousLink'); ?>
+				</div>
+				<div class='col-sm-10 d-flex justify-content-center'>
 					<H2>{{{^ca_entities.preferred_labels.displayname}}} Exhibitions</h2>
 					<hr>
 				</div><!-- end col -->
+				<div class="col-sm-1 prevnext">
+					<?php print $this->getVar('nextLink'); ?>
+				</div>
+				<div class="col-sm-12"><hr> </div>
 			</div><!-- end row -->
 				<div class="row">
 				<div class='col-sm-12 col-md-12 col-lg-12'>

@@ -12,6 +12,7 @@ const appData = pawtucketUIApps.PawtucketBrowse.data;
  */
 const PawtucketBrowseContext = React.createContext();
 
+
 /**
  * Top-level container for browse interface. Is values for context PawtucketBrowseContext.
  *
@@ -35,31 +36,12 @@ class PawtucketBrowse extends React.Component{
 	render() {
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 
-		let breadcrumbs = [
-			(<li key={"nav_1"}><a href="/">SVA Exhibitions Archives</a></li>),
-			(<li key={"nav_2"}><img src="/themes/sva/assets/pawtucket/graphics/icon-arrow-right.svg" /></li>)
-		];
-
-		if(this.state.filters && (this.state.filters['_search'] !== undefined)) {
-			let searchUrl = "/index.php/MultiSearch/Index?search=" + escape(Object.values(this.state.filters['_search']).pop());
-			breadcrumbs.push((<li key={"nav_3"}><a href={searchUrl}>Search Results</a></li>));
-			breadcrumbs.push((<li key={"nav_4"}><img src="/themes/sva/assets/pawtucket/graphics/icon-arrow-right.svg" /></li>));
-		}
-		breadcrumbs.push((<li key={"nav_5"}>Find and Filter</li>));
-
 		return(
-			<PawtucketBrowseContext.Provider value={this}>
-				<main className="container">
-				<div className="row">
-					<div className='col-sm-12'>
-						<ul className="breadcrumbs--nav">
-							{breadcrumbs}
-						</ul>
-					</div>  
-				</div>
-					<PawtucketBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
-					<PawtucketBrowseResults view={this.state.view} facetLoadUrl={facetLoadUrl}/>
-				</main>
+			<PawtucketBrowseContext.Provider value={this}>	
+                <main className="container">
+                    <PawtucketBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
+                    <PawtucketBrowseResults view={this.state.view} facetLoadUrl={facetLoadUrl}/>
+                </main>
 			</PawtucketBrowseContext.Provider>
 		);
 	}
@@ -83,19 +65,14 @@ class PawtucketBrowseStatistics extends React.Component {
 
 	render() {
 		return(
-			<div className="pb-4 d-flex justify-content-center"><h2>{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-				"1 Result"
-				:
-				"" + this.context.state.resultSize + " Results") : "Loading..."}</h2></div>
-		);
-		return(<div className="current">
-				<div className="body-sans">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-					"Showing 1 Result."
-					:
-					"Showing " + this.context.state.resultSize + " Results.") : ""}</div>
-
-				<NoguchiArchiveBrowseCurrentFilterList/>
-			</div>
+		<div class="row borderBottom">
+            <div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
+                <div className="pb-4 d-flex justify-content-center"><h2>{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
+                    "1 Result"
+                    :
+                    "" + this.context.state.resultSize + " Results") : "Loading..."}</h2></div>
+            </div>
+		</div>
 		);
 	}
 }
@@ -531,7 +508,9 @@ class PawtucketBrowseResultItem extends React.Component {
 			case 'list':
 				return(
 					<div className="card mx-auto" ref={this.props.scrollToRef}>
-						<div className="masonry-title"><a href={detail_url}>{data.label}</a></div>
+						<div className="masonry-title">
+							<a href={detail_url} dangerouslySetInnerHTML={{__html: data.label}}></a>
+						</div>
 					</div>);
 				break;
 			default:
@@ -542,7 +521,8 @@ class PawtucketBrowseResultItem extends React.Component {
 								<div dangerouslySetInnerHTML={{__html: data.representation}}/>
 							</div>
 						</a>
-						<div className="masonry-title"><a href={detail_url}>{data.label}</a><br/> {data.exhibitdate}
+						<div className="masonry-title">
+							<a href={detail_url} dangerouslySetInnerHTML={{__html: data.label}}></a>
 						</div>
 
 					</div>

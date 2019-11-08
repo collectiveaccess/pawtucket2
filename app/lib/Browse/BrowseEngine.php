@@ -574,7 +574,7 @@
 					return $t_table->getLabelForDisplay();
 					break;
 				# -----------------------------------------------------
-			    case 'relationship_types':  
+			    case 'relationship_types':
 			        if (!($t_rel = Datamodel::getInstanceByTableName($va_facet_info['relationship_table'], true))) { break; }
 			        $t_rel_type = new ca_relationship_types();
 			        $info = $t_rel_type->getRelationshipInfo($va_facet_info['relationship_table']);
@@ -1641,7 +1641,7 @@
                                                 $vs_container_sql = " AND ca_attributes.attribute_id IN (?)";
                                                 $va_attr_values = $va_container_ids[$va_element_code[0]];
                                             }
-                                            
+
 											if (is_null($va_dates)) {
 											    $va_params = [intval($vs_target_browse_table_num), $vn_element_id];
 											    if ($va_attr_values) { $va_params[] = $va_attr_values; }
@@ -1728,6 +1728,7 @@
 
 										if(!is_array($va_acc[$vn_i] )) { $va_acc[$vn_i] = []; }
 										$va_acc[$vn_i] = array_merge($va_acc[$vn_i], $qr_res->getAllFieldValues($this->ops_browse_table_name.'.'.$t_item->primaryKey()));
+
 										if ($vb_is_element && is_array($va_element_code) && (sizeof($va_element_code) == 1)) {
 										    // is sub-element in container
 										    $va_container_ids[$va_element_code[0]] = array_unique($qr_res->getAllFieldValues('attribute_id'));
@@ -2494,7 +2495,7 @@
 							$va_res[$vn_row_id] = true;
 						}
 					}
-					
+
 					if ($vb_preserve_order) {
 						$va_tmp = [];
 						foreach(array_keys($va_acc[0]) as $vn_x) {
@@ -2567,13 +2568,13 @@
 							$vs_filter_join_sql = join("\n", $va_joins);
 						}
 
-						$qr_res = $this->opo_db->query("
+						$qr_res = $this->opo_db->query($z="
 							SELECT {$vs_sql_distinct} ".$this->ops_browse_table_name.".".$t_item->primaryKey()."
 							FROM ".$this->ops_browse_table_name."
 							{$vs_filter_join_sql}
 							{$vs_filter_where_sql}
 						", array($va_possible_values = array_keys($va_res)));
-
+//print $z;die;
 						$va_results = $vb_preserve_order ? array_intersect($va_possible_values, $qr_res->getAllFieldValues($t_item->primaryKey())) : $qr_res->getAllFieldValues($t_item->primaryKey());
 
 						if ((!isset($pa_options['dontFilterByACL']) || !$pa_options['dontFilterByACL']) && $this->opo_config->get('perform_item_level_access_checking') && method_exists($t_item, "supportsACL") && $t_item->supportsACL()) {
@@ -5247,7 +5248,7 @@
 					}
 
 					if ($vs_browse_type_limit_sql) {
-						$va_wheres[] = $vs_browse_type_limit_sql;
+						//$va_wheres[] = $vs_browse_type_limit_sql;
 					}
 
 					if ($vs_browse_source_limit_sql) {
@@ -5364,7 +5365,7 @@
                                 $va_params[] = $va_container_ids[$vs_container_code];
                             }
 							$vs_sql = "
-								SELECT COUNT(*) _count, ca_attribute_values.value_decimal1, ca_attribute_values.value_decimal2
+								SELECT COUNT(*) _count, ca_attribute_values.value_decimal1, ca_attribute_values.value_decimal2, ca_attributes.row_id
 								FROM ca_attributes
 								{$vs_join_sql}
 								WHERE
@@ -5373,7 +5374,7 @@
 									{$vs_max_sql}
 									{$vs_where_sql}
 									{$vs_container_sql}
-								GROUP BY ca_attribute_values.value_decimal1, ca_attribute_values.value_decimal2
+								GROUP BY ca_attribute_values.value_decimal1, ca_attribute_values.value_decimal2, ca_attributes.row_id
 							";
 							//print $vs_sql;
 							$qr_res = $this->opo_db->query($vs_sql, $va_params);
@@ -5384,12 +5385,15 @@
 							$vb_include_unknown = (bool)caGetOption('include_unknown', $va_facet_info, false);
 							$vb_unknown_is_set = false;
 
+							$seen = [];
 							while($qr_res->nextRow()) {
 								$vn_start = $qr_res->get('value_decimal1');
 								$vn_end = $qr_res->get('value_decimal2');
-								
+								$row_id = $qr_res->get('row_id');
+
+
 								if (((int)$vn_start === -2000000000) && $va_facet_info['treat_before_dates_as_circa']) {
-								    $vn_start = (int)$vn_end;
+									$vn_start = (int)$vn_end;
 								}
 								if (((int)$vn_end === 2000000000) && $va_facet_info['treat_after_dates_as_circa']) {
 								    $vn_end = (int)$vn_start + .1231235959;
@@ -5401,11 +5405,14 @@
 									}
 									continue;
 								}
-								if ($vn_end > $vn_current_year + 50) { continue; } // bad years can make for large facets that cause timeouts so cut it off 50 years into the future
+								//if ($vn_end > $vn_current_year + 50) { continue; } // bad years can make for large facets that cause timeouts so cut it off 50 years into the future
 								$va_normalized_values = $o_tep->normalizeDateRange($vn_start, $vn_end, $vs_normalization);
 								foreach($va_normalized_values as $vn_sort_value => $vs_normalized_value) {
-									if ($va_criteria[$vs_normalized_value]) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
 
+									if ($va_criteria[$vs_normalized_value]) { continue; }		// skip items that are used as browse criteria - don't want to browse on something you're already browsing on
+
+									if($seen[$vs_normalized_value][$row_id]) { continue; }
+									$seen[$vs_normalized_value][$row_id] = true;
 
 									if (is_numeric($vs_normalized_value) && (int)$vs_normalized_value === 0) { continue; }		// don't include year=0
 									
@@ -5413,12 +5420,10 @@
                                         $va_values[$vn_sort_value][$vs_normalized_value] = array(
                                             'id' => $vs_normalized_value,
                                             'label' => $vs_normalized_value,
-                                            'start' => (int)$vn_start,
-                                            'end' => (int)$vn_end,
-                                            'content_count' => (int)$qr_res->get('_count')
+                                            'content_count' => 1
                                         );
                                     } else {
-                                         $va_values[$vn_sort_value][$vs_normalized_value]['content_count'] += $qr_res->get('_count');
+                                         $va_values[$vn_sort_value][$vs_normalized_value]['content_count'] += 1;
                                     }
 									if (!is_null($vs_single_value) && ($vs_normalized_value == $vs_single_value)) {
 										$vb_single_value_is_present = true;
@@ -6065,7 +6070,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 					if ($t_item_rel->hasField('access')) {
 					    $va_selects[] = "{$vs_rel_table_name}.access";
 					}
-					
+
 					if($va_facet_info['type'] == 'relationship_types') {
 					    $va_selects[] = "ca_relationship_types.type_id rel_type_id";
 					    $va_selects[] = "ca_relationship_types.type_code";
@@ -6263,7 +6268,8 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							{$vs_join_sql}
 								".(sizeof($va_wheres) ? ' WHERE ' : '').join(" AND ", $va_wheres)."
 								".(sizeof($va_orderbys) ? "ORDER BY ".join(', ', $va_orderbys) : '');
-	}                  
+	}
+						$va_select_flds = array_map(function($v) { return str_replace(" rel_type_id", "", $v); }, $va_select_flds); // ick - clean up select list for use a group by clause
 	                    $vs_sql .= " GROUP BY ".join(', ', $va_select_flds);
 						//print "<hr>$vs_sql<hr>\n"; print_R($va_sql_params);
 						$qr_res = $this->opo_db->query($vs_sql, $va_sql_params);
@@ -6286,7 +6292,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 							$va_fetched_row = $qr_res->getRow();
 							$vn_id = $va_fetched_row[$vs_rel_pk];
 							//if (isset($va_facet_items[$vn_id])) { continue; } --- we can't do this as then we don't detect items that have multiple rel_type_ids... argh.
-							if (isset($va_criteria[$vn_id])) { continue; }		// skip items that are used as browse critera - don't want to browse on something you're already browsing on
+							if (isset($va_criteria[$vn_id])) { continue; }		// skip items that are used as browse criteria - don't want to browse on something you're already browsing on
 
                             if($va_facet_info['type'] === 'relationship_types') {
                                 if(sizeof($va_restrict_to_relationship_types) && !in_array($va_fetched_row['rel_type_id'], $va_restrict_to_relationship_types)) { continue; }
