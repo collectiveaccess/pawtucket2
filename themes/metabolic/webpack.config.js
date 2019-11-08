@@ -70,7 +70,7 @@ module.exports = {
         test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader']
       },
-      { test: /\.(png|woff|woff2|eot|ttf|svg|otf)$/, 
+      { test: /\.(png|woff|woff2|eot|ttf|svg|otf|gif)$/, 
         use: [{
             loader: "url-loader",
             options: { "limit": 100000 }

@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/collectiveaccess/pawtucket2#readme",
   "devDependencies": {
+    "axios": "^0.19.0",
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "babel-loader": "^8.0.6",
@@ -26,6 +27,7 @@
     "css-loader": "^2.1.1",
     "es2016": "0.0.0",
     "expose-loader": "^0.7.5",
+    "file-loader": "^4.0.0",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
     "jquery": "^3.4.1",
@@ -35,18 +37,20 @@
     "popper.js": "^1.15.0",
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
+    "react-responsive-carousel": "^3.1.49",
     "react-slick": "^0.24.0",
     "sass-loader": "^7.1.0",
-    "sshpk": "^1.16.1",
     "style-loader": "^0.23.1",
-    "svg-inline-loader": "^0.8.0",
-    "url-loader": "^2.1.0",
+    "url-loader": "^2.0.0",
     "webpack": "^4.32.2",
     "webpack-cli": "^3.3.2"
   },
   "dependencies": {
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
-    "react-responsive-carousel": "^3.1.49",
+    "file-loader": "^4.2.0",
+    "react-clamp-lines": "^3.0.2",
+    "url-loader": "^2.1.0",
     "slick-carousel": "^1.8.1"
   }
 }
