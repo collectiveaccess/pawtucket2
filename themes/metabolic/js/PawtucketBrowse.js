@@ -37,11 +37,11 @@ class PawtucketBrowse extends React.Component{
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 
 		return(
-			<PawtucketBrowseContext.Provider value={this}>
-				<main className="container">
-					<PawtucketBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
-					<PawtucketBrowseResults view={this.state.view} facetLoadUrl={facetLoadUrl}/>
-				</main>
+			<PawtucketBrowseContext.Provider value={this}>	
+                <main className="container">
+                    <PawtucketBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
+                    <PawtucketBrowseResults view={this.state.view} facetLoadUrl={facetLoadUrl}/>
+                </main>
 			</PawtucketBrowseContext.Provider>
 		);
 	}
@@ -65,19 +65,14 @@ class PawtucketBrowseStatistics extends React.Component {
 
 	render() {
 		return(
-			<div className="pb-4 d-flex justify-content-center"><h2>{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-				"1 Result"
-				:
-				"" + this.context.state.resultSize + " Results") : "Loading..."}</h2></div>
-		);
-		return(<div className="current">
-				<div className="body-sans">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-					"Showing 1 Result."
-					:
-					"Showing " + this.context.state.resultSize + " Results.") : ""}</div>
-
-				<NoguchiArchiveBrowseCurrentFilterList/>
-			</div>
+		<div class="row borderBottom">
+            <div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
+                <div className="pb-4 d-flex justify-content-center"><h2>{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
+                    "1 Result"
+                    :
+                    "" + this.context.state.resultSize + " Results") : "Loading..."}</h2></div>
+            </div>
+		</div>
 		);
 	}
 }
