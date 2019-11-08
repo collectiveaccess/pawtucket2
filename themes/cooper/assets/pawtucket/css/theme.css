@@ -1297,7 +1297,8 @@ body.initial .navbar-form {
 	font-size:15px;
 	font-family: 'Gotham-light';
 	line-height:1.8em;
-	max-height: 1.8em;
+	/*max-height: 1.8em;*/
+	height: 1.8em;
 	overflow: hidden;
 }
 .bResultLetterDivide{
