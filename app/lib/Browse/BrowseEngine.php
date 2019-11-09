@@ -5248,7 +5248,7 @@
 					}
 
 					if ($vs_browse_type_limit_sql) {
-						//$va_wheres[] = $vs_browse_type_limit_sql;
+						$va_wheres[] = $vs_browse_type_limit_sql;
 					}
 
 					if ($vs_browse_source_limit_sql) {
