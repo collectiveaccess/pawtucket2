@@ -24,6 +24,9 @@
  */
  
 	$t_object = 			$this->getVar("item");
+	if($t_object->get("parent_id")){
+		$t_parent = new ca_objects($t_object->get("parent_id"));
+	}
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
@@ -334,44 +337,58 @@
             </div> <!-- wrap-text -->
         </section>
 
-{{{<ifcount code="ca_objects.related" excludeRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" min="1">
-        <section class="wrap block border">
-            <div class="block text-align-center">
-                <h4 class="subheadline-bold">Associated Artworks</h4>
-            </div>
-            
+<?php
+	# --- find siblings and children of the current item and sort by idno_sort
+	$va_tmp_ids = array($t_object->get("object_id"));
+	if($t_object->get("parent_id")){
+		$va_tmp_ids[] = $t_object->get("parent_id");
+	}
+	$qr_associated_artwork = ca_objects::find(array('parent_id' => ['IN', $va_tmp_ids]), array('returnAs' => 'searchResult', 'checkAccess' => $va_access_values, 'sort' => 'ca_objects.idno_sort'));
+	if($qr_associated_artwork->numHits()){
+?>
+		<section class="wrap block border">
+			<div class="block text-align-center">
+				<h4 class="subheadline-bold">Associated Artworks</h4>
+			</div>
+	
 
-            <div class="module_slideshow is-finite manual-init slideshow-related">
-                <div class="slick-slider">
-					<unit relativeTo="ca_objects_x_objects" excludeRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" delimiter=" " sort="ca_objects.idno_sort">
-						<div class="slick-slide">
-							<div class="item">
-								<unit relativeTo="ca_objects">
+			<div class="module_slideshow is-finite manual-init slideshow-related">
+				<div class="slick-slider">
+<?php
+				while($qr_associated_artwork->nextHit()){
+					if($qr_associated_artwork->get('object_id') != $t_object->get("object_id")){
+						print $qr_associated_artwork->getWithTemplate('
+							<div class="slick-slide">
+								<div class="item">
 									<l>
 										<div class="block-quarter">
 											<ifdef code="ca_object_representations.media"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
-											<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
+											<ifnotdef code="ca_object_representations.media.medium.url">'.$vs_placeholder_tag.'</ifnotdef>
 										</div>
 										<div class="text block-quarter">
-											<div class="ca-identifier text-gray">^ca_objects.idno<if rule='^ca_objects.status =~ /pending/'>*</if></div>
+											<div class="ca-identifier text-gray">^ca_objects.idno<if rule="^ca_objects.status =~ /pending/">*</if></div>
 											<div class="thumb-text clamp" data-lines="4">^ca_objects.preferred_labels.name</div>
 											<ifdef code="ca_objects.date.display_date"><div class="ca-identifier text-gray">^ca_objects.date.display_date%delimiter=,_</div></ifdef>
 											<ifnotdef code="ca_objects.date.display_date"><ifdef code="ca_objects.date.parsed_date"><div class="ca-identifier text-gray">^ca_objects.date.parsed_date%delimiter=,_</div></ifdef></ifnotdef>
 											<ifdef code="ca_objects.technique"><div class="ca-identifier text-gray">^ca_objects.technique</div></ifdef>
-											
+								
 										</div>
 									</l>
-								</unit>
-								<unit relativeTo="ca_objects_x_objects"><div class="ca-identifier text-gray">^relationship_typename</div></unit>
+									<div class="ca-identifier text-gray">^ca_objects.type_id</div>
+								</div>
 							</div>
-						</div>
-                    </unit>
-                </div>
-            </div>
+						');
+					}
+				}
+?>					
+				</div>
+			</div>
+		</section>
 
-        </section>
-</ifcount>}}}
-{{{<ifcount code="ca_objects.related" restrictToRelationshipTypes="related,related_edition,related_version,related_element" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" min="1">
+<?php
+	}
+?>
+{{{<ifcount code="ca_objects.related" restrictToRelationshipTypes="related" restrictToTypes="artwork,cast,edition,element,group,reproduction,study,version" min="1">
         <section class="wrap block border">
             <div class="block text-align-center">
                 <h4 class="subheadline-bold">Related Artworks</h4>
