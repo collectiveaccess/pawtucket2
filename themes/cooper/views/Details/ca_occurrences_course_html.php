@@ -26,7 +26,7 @@
 				<div class="col-lg-7 col-md-5 col-sm-12 col-xs-12">
 <?php
 					if(is_array($va_hero_images) && (sizeof($va_hero_images) == 0)){
-						print caGetThemeGraphic($this->request, 'frontImage.jpg');
+						print caGetThemeGraphic($this->request, 'placeholder.jpg');
 					}
 ?>
 				</div><!-- end col -->

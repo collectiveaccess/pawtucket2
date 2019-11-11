@@ -66,7 +66,7 @@
 
 					</div><!-- end col -->
 					<div class="col-lg-7 col-md-5 col-sm-7 col-xs-12">
-						<?php print ($qr_res->numHits() < 1) ? caGetThemeGraphic($this->request, 'frontImage.jpg') : ""; ?>
+						<?php print ($qr_res->numHits() < 1) ? caGetThemeGraphic($this->request, 'placeholder.jpg') : ""; ?>
 					</div><!-- end col -->
 				</div><!-- end row -->
 			</div><!-- end container -->
@@ -113,7 +113,7 @@
 											$vs_image = substr($vs_image, 0, $vn_c);
 										}
 										if(!$vs_image){
-											$vs_image = caGetThemeGraphic($this->request, 'frontImage.jpg', array("style" => "opacity:.5;"));
+											$vs_image = caGetThemeGraphic($this->request, 'placeholder.jpg', array("style" => "opacity:.5;"));
 										}
 										print "<li><div class='slide'>".caDetailLink($this->request, $vs_image, "", "ca_objects", $qr_set_items->get("ca_objects.object_id"))."<div class='slideCaption'>".caDetailLink($this->request, $qr_set_items->get("ca_objects.preferred_labels.name"), "", "ca_objects", $qr_set_items->get("ca_objects.object_id"))."</div></div></li>";
 										$c++;
