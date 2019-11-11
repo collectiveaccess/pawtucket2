@@ -34,12 +34,12 @@
  	require_once(__CA_MODELS_DIR__."/ca_user_groups.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_user_groups.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_users.php");
- 	require_once(__CA_APP_DIR__."/controllers/FindController.php");
+ 	require_once(__CA_APP_DIR__."/controllers/BrowseController.php");
  	require_once(__CA_LIB_DIR__."/GeographicMap.php");
 	require_once(__CA_LIB_DIR__.'/Parsers/ZipStream.php');
 	require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
  
- 	class LightboxController extends FindController {
+ 	class LightboxController extends BrowseController {
  		# -------------------------------------------------------
         /**
          * @var array
@@ -125,36 +125,71 @@
         /**
          *
          */
- 		function index($pa_options = null) {
+ 		function index($options = null) {
  			if($this->opb_is_login_redirect) { return; }
 
 			$va_lightbox_displayname = caGetLightboxDisplayName();
 			$this->view->setVar('lightbox_displayname', $va_lightbox_displayname["singular"]);
 			$this->view->setVar('lightbox_displayname_plural', $va_lightbox_displayname["plural"]);
 
-            # Get sets for display
-            $t_sets = new ca_sets();
- 			$va_read_sets = $t_sets->getSetsForUser(array("user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
- 			$va_write_sets = $t_sets->getSetsForUser(array("user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
-
- 			# Remove write sets from the read array
- 			$va_read_sets = array_diff_key($va_read_sets, $va_write_sets);
-
-            $this->view->setVar("read_sets", $va_read_sets);
- 			$this->view->setVar("write_sets", $va_write_sets);
-
-//            $va_set_ids = array_merge(array_keys($va_read_sets), array_keys($va_write_sets));
-// 			$this->view->setVar("set_ids", $va_set_ids);
-
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name));
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name));
  			
- 			$this->render(caGetOption("view", $pa_options, "Lightbox/list_html.php"));
+ 			$this->render(caGetOption("view", $pa_options, "Lightbox/index_html.php"));
  		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		function list($options = null) {
+			$this->view->setVar("write_sets", $va_write_sets);
+			$t_sets = new ca_sets();
+			$va_read_sets = $t_sets->getSetsForUser(array("user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
+			$va_write_sets = $t_sets->getSetsForUser(array("user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
+
+			$this->view->setVar("data", ['sets' => $va_write_sets]);
+			$this->render("Lightbox/browse_data_json.php");
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public function getContent() {
+			$browse_info = [
+				'displayName' => _('Archive'),
+				'labelSingular' => _("item"),
+ 				'labelPlural' =>  _("items"),
+				'table' => 'ca_objects',
+
+				'restrictToTypes' => [],
+				'availableFacets' => [],
+				'facetGroup' => 'archive',
+
+				'itemsPerPage' => 12,
+
+				'views' => [
+					'images' => [
+						'representation' => "<ifdef code='ca_object_representations.media.small.url'>^ca_object_representations.media.small.url</ifdef><ifnotdef code='ca_object_representations.media.small.url'>/themes/noguchi/assets/pawtucket/graphics/placeholder.png</ifnotdef>",
+			    		'caption' => "^ca_objects.preferred_labels.name",
+			    		'caption2' => " ^ca_objects.idno"
+						]
+					],
+				
+				'sortBy' => [
+					'Date' => 'ca_objects.date.parsed_date;ca_objects.idno'
+				],
+				'sortDirection' => [
+							'Date' => 'asc'
+				],
+				'introduction' => [],
+				'excludeFieldsFromSearch' => ['ca_objects.internal_notes']
+			];
+			parent::__call('getContent', ['browseInfo' => $browse_info]);
+		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function view($pa_options = null) {
+ 		function view($options = null) {
 			if ($this->opb_is_login_redirect) {
 				return;
 			}
