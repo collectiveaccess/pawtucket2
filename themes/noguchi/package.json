@@ -18,9 +18,9 @@
   },
   "homepage": "https://github.com/collectiveaccess/pawtucket2#readme",
   "devDependencies": {
-    "axios": "^0.19.0",
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
+    "axios": "^0.19.0",
     "babel-loader": "^8.0.6",
     "bootstrap": "^4.3.1",
     "create-react-class": "^15.6.3",
@@ -39,6 +39,7 @@
     "react-dom": "^16.8.6",
     "react-responsive-carousel": "^3.1.49",
     "react-slick": "^0.24.0",
+    "riek": "^1.1.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "url-loader": "^2.0.0",

@@ -72,7 +72,7 @@
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
  			
- 			if (!($va_browse_info = caGetInfoForBrowseType($ps_function))) {
+ 			if (!($va_browse_info = caGetOption('browseInfo', $pa_args, caGetInfoForBrowseType($ps_function)))) {
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type");
  			}
@@ -90,16 +90,6 @@
  			$vb_omit_child_records = caGetOption('omitChildRecords', $va_browse_info, [], array('castTo' => 'bool'));
 
 			$vs_type_key = caMakeCacheKeyFromOptions($va_types);
-
-			// TODO: do we need this?
-			if(ExternalCache::contains("{$vs_class}totalRecordsAvailable{$vs_type_key}")) {
-				$this->view->setVar('totalRecordsAvailable', ExternalCache::fetch("{$vs_class}totalRecordsAvailable{$vs_type_key}"));
-			} else {
-			    $params = ['deleted' => 0];
-			    if ($vb_omit_child_records && ($f = $t_instance->getProperty('HIERARCHY_PARENT_ID_FLD'))) { $params[$f] = null; }
-				ExternalCache::save("{$vs_class}totalRecordsAvailable{$vs_type_key}", $vn_count = $vs_class::find($params, ['checkAccess' => $this->opa_access_values, 'returnAs' => 'count', 'restrictToTypes' => (sizeof($va_types)) ? $va_types : null]));
-				$this->view->setVar('totalRecordsAvailable', $vn_count);
-			}
 			
 			# --- row id passed when click back button on detail page - used to load results to and jump to last viewed item
 			$this->view->setVar('row_id', $pn_row_id = $this->request->getParameter('row_id', pInteger));
