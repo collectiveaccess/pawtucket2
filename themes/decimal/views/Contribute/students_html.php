@@ -61,7 +61,7 @@
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.type_id:error}}}
 						<span class='title'>Artifact type</span><br/>
-						{{{ca_objects.type_id%width=350px&restrictToTypes=image,moving_image,text}}}  
+						{{{ca_objects.type_id%width=350px&limitToItemsWithID=image,moving_image,text}}}  
 					</div>										
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.preferred_labels:error}}}
@@ -190,7 +190,7 @@
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.locationOnBody:error}}}
 						<span class='title'>Location on body</span><br/>
-						{{{ca_objects.locationOnBody%width=350px}}}
+						{{{ca_objects.locationOnBody%width=350px&multiple=1}}}
 					</div>				
 				</div>
 				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>		

@@ -161,7 +161,8 @@
  				$vs_tag_proc = $va_parse['tag'];
  				$vs_tag_proc_with_opts = preg_replace("!index=[\d]+!", "", $vs_tag);
  				$va_opts = $va_parse['options'];
- 				
+
+ 				if (isset($va_opts['limitToItemsWithID'])) { $va_opts['limitToItemsWithID'] = preg_split("![,;]+!", $va_opts['limitToItemsWithID']); } 				
  				if (isset($va_opts['restrictToTypes'])) { $va_opts['restrictToTypes'] = preg_split("![,;]+!", $va_opts['restrictToTypes']); }
  				if (isset($va_opts['restrictToRelationshipTypes'])) { $va_opts['restrictToRelationshipTypes'] = preg_split("![,;]+!", $va_opts['restrictToRelationshipTypes']); }		
  				
@@ -248,7 +249,8 @@
 							if ($rel_type = caGetOption('relationshipType', $va_opts, null)) {
 							    $va_opts['restrictToRelationshipTypes'] = [$rel_type];
 							}
-							if ($vs_tag_val = $t_subject->htmlFormElementForSimpleForm($this->request, $vs_tag_proc, array_merge($va_opts, ['index' => $va_tag_counts[$vs_tag_proc], 'valueIndex' => $va_tag_counts[$vs_tag_proc_with_opts]]))) {
+							
+							if ($vs_tag_val = $t_subject->htmlFormElementForSimpleForm($this->request, $vs_tag_proc, array_merge($va_opts, caGetOption('multiple', $va_opts, null) ? [] : ['index' => $va_tag_counts[$vs_tag_proc], 'valueIndex' => $va_tag_counts[$vs_tag_proc_with_opts]]))) {
 								$this->view->setVar($vs_tag, $vs_tag_val);
 								$va_tag_counts[$vs_tag_proc]++;
 								$va_tag_counts[$vs_tag_proc_with_opts]++;
@@ -287,7 +289,6 @@
  			$this->view->setVar('t_subject', $t_subject = $this->subject);
  			$vs_idno_fld_name = $t_subject->getProperty('ID_NUMBERING_ID_FIELD');
             
-            //$t_subject->clear();
             $t_subject->setMode(ACCESS_WRITE);
             $t_subject->purify(true); // run all input through HTMLpurifier
             
