@@ -624,7 +624,7 @@ class NoguchiCrBrowseResultItem extends React.Component {
 							<div className="text block-quarter">
 								<div className="ca-identifier text-gray">{data.idnoStatus}</div>
 								<ClampLines
-									text={data.label}
+									text={(data.label) ? data.label : " "}
 									id={"browse_label_" + data.id}
 									lines="2"
 									ellipsis="..."
