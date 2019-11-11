@@ -167,7 +167,7 @@
 				
 				print "<br/><div class='unit text-center'>";
 				print "<div class='pull-right'><a href='#' class='btn btn-default btn-small' data-set_id=\"".$vn_set_id."\" data-set_name=\"".addslashes($t_set->get("ca_sets.preferred_labels"))."\" data-toggle='modal' data-target='#confirm-delete'><span class='glyphicon glyphicon-trash' style='color:#FFF'></span> Delete Project</a></div>\n";
-				print caNavLink($this->request, 'Browse Project Plants', 'btn btn-default btn-small', '', 'Search', 'Plants', array('search' => 'set_id:'.join($va_palette_ids, " or ")));
+				#print caNavLink($this->request, 'Browse Project Plants', 'btn btn-default btn-small', '', 'Search', 'Plants', array('search' => 'set_id:'.join($va_palette_ids, " or ")));
 				print "<a href='#' class='btn btn-default btn-small' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'setForm', array('set_id' => $vn_set_id, 'mode' => 'project'))."\"); return false;' >"._t("Edit Project")."</a>";
 				print "<a href='#' class='btn btn-default btn-small' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'setForm', array('parent_id' => $vn_set_id))."\"); return false;' >+ "._t("New Palette")."</a>";
 				
