@@ -26,66 +26,56 @@
 
 <?php
 		print $this->render("pageFormat/footer_include.php");
-?>
-    <!-- Start modal window, if present this will trigger JS to handle show/hide -->
+?>        
+<?php
+		if (Session::getVar('cookieAccepted') != 'accepted') {		
+?>	
+		<div id="overlay-ca-terms" class="overlay-window">
+			<div class="bg"></div>
+			<div class="overlay-content">
+				<div class="content-scroll">
+					<div class="inner">
 
-<div id="overlay-ca-terms" class="overlay-window" style="display:none;">
-    <div class="bg"></div>
-    <div class="overlay-content">
-        <div class="content-scroll">
-            <div class="inner">
+						<div class="block-half text-align-center">
+							<h3 class="subheadline">Isamu Noguchi Collection, Catalogue Raisonné, and Archive Terms & Conditions</h3>
+						</div>
+						<div class="block-half">
+							<p class="body-text">{{{termsAndConditions}}}</p>
+						</div>
+						<div class="text-align-center">
+							<a href="#" class="close button acceptCookie">Yes, I agree</a>
+						</div>  
+	
+					</div>
+				</div>
+			</div>
+		</div>		
+		
+				<script type="text/javascript">
+					$(document).ready(function() {
+						$('.acceptCookie').click(function(e){
+						  e.preventDefault();
+						  $.ajax({
+							   url: "<?php print caNavUrl("", "Archive", "CookieAccept"); ?>",
+							   type: "GET",
+							   success: function (data) {
+								 if(data == 'success'){
+									$('#overlay-ca-terms').hide();
+								 }
+							   },
+							   error: function(xhr, ajaxOptions, thrownError){
+								  alert("There was an error, please try again later.");
+							   }
+						  });
 
-                <div class="block-half text-align-center">
-                    <h3 class="subheadline">Isamu Noguchi Collection, Catalogue Raisonné, and Archive Terms & Conditions</h3>
-                </div>
-                <div class="block-half">
-                    <p class="body-text">{{{termsAndConditions}}}</p>
-                </div>
-                <div class="text-align-center">
-                    <!-- If you want to disable the modal close callback and add your own onClick, just remove 'close' class -->
-                    <a href="#" onClick="setConditionsCookie();" class="close button">Yes, I agree</a>
-                </div>  
-    
-            </div>
-        </div>
-    </div>
-</div>
-<script type="text/javascript">
-	function setConditionsCookie() {
-	  var d = new Date();
-	  d.setTime(d.getTime() + (365*24*60*60*1000));
-	  var expires = "expires="+ d.toUTCString();
-	  document.cookie = "nogArchiveConditions=accepted;" + expires + ";path=/";
-	}
-	function getCookie(cname) {
-		var name = cname + "=";
-		var decodedCookie = decodeURIComponent(document.cookie);
-		var ca = decodedCookie.split(';');
-		for(var i = 0; i <ca.length; i++) {
-			var c = ca[i];
-			while (c.charAt(0) == ' ') {
-				c = c.substring(1);
-			}
-			if (c.indexOf(name) == 0) {
-			  return c.substring(name.length, c.length);
-			}
+						});
+					});
+				</script>
+
+<?php
 		}
-		return "";
-	}
-	function checkConditionsCookie() {
-		var condCookie = getCookie("nogArchiveConditions");
-		if (condCookie != "") {
-			document.getElementById("overlay-ca-terms").style.display = "none";
-			document.getElementById("cahtmlWrapper").style.overflowY = "auto";
-			
-    	}else{
-    		document.getElementById("overlay-ca-terms").style.display = "block";
-    	}
-	}
-	$(window).on("load", function(){
-		checkConditionsCookie();
-	});
-</script>
+?>
+
         <script type='text/javascript' src='<?php print $this->request->getThemeUrlPath(); ?>/jslib/libs-min.js?ver=<?= rand(); ?>'></script>
         <script type='text/javascript' src='<?php print $this->request->getThemeUrlPath(); ?>/jslib/app-nomin.js?ver=<?= rand(); ?>'></script>
     	<script type='text/javascript' src="<?php print $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>
@@ -95,5 +85,6 @@
 				_initPawtucketApps.default();
 			});
 		</script>
+
     </body>
 </html>

@@ -98,6 +98,12 @@
 			$o_result_context->saveContext();
  			$this->render("Archive/Index.php");
  		}
+ 		
+ 		# -------------------------------------------------------
+ 		public function CookieAccept() {
+			Session::setVar('cookieAccepted', 'accepted');
+			return("success");  
+ 		}
  		# -------------------------------------------------------
 		/** 
 		 * Generate the URL for the "back to results" link from a browse result item
