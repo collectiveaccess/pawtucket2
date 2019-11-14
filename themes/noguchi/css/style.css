@@ -1,3 +1,5 @@
+/* stylelint-disable order/properties-alphabetical-order */
+/* stylelint-enable */
 /* --------------------------------------------------------------- */
 /* LAYOUT VARIABLES */
 /*
@@ -857,7 +859,7 @@ BODY.collective-access .utility-container .utility.utility_menu .options A,
   margin-top: 10px; }
 
 .eyebrow, .module_accordion .item .trigger.small, .module_page_section_nav UL, BODY.collective-access .notificationMessage, BODY.collective-access .module_pageheader .utility .trigger,
-BODY.collective-access .utility-container .utility .trigger, BODY.collective-access .ca_nav, BODY.collective-access .ca_filters .current .tags A, BODY.collective-access a.button.load-more {
+BODY.collective-access .utility-container .utility .trigger, BODY.collective-access .ca_nav, BODY.collective-access .ca_filters .current .tags A, BODY.collective-access a.button.load-more, MAIN.archive_detail .img-container .diva-label {
   text-transform: uppercase;
   font-family: 'NH-Text-55', 'Helvetica', 'Arial', sans-serif;
   letter-spacing: 1.25px;
@@ -866,23 +868,23 @@ BODY.collective-access .utility-container .utility .trigger, BODY.collective-acc
   line-height: 14px; }
   @media (min-width: 767px) {
     .eyebrow, .module_accordion .item .trigger.small, .module_page_section_nav UL, BODY.collective-access .notificationMessage, BODY.collective-access .module_pageheader .utility .trigger,
-    BODY.collective-access .utility-container .utility .trigger, BODY.collective-access .ca_nav, BODY.collective-access .ca_filters .current .tags A, BODY.collective-access a.button.load-more {
+    BODY.collective-access .utility-container .utility .trigger, BODY.collective-access .ca_nav, BODY.collective-access .ca_filters .current .tags A, BODY.collective-access a.button.load-more, MAIN.archive_detail .img-container .diva-label {
       font-size: calc(0.3875968992vw + 8.0271317829px); } }
   @media (min-width: 1025px) {
     .eyebrow, .module_accordion .item .trigger.small, .module_page_section_nav UL, BODY.collective-access .notificationMessage, BODY.collective-access .module_pageheader .utility .trigger,
-    BODY.collective-access .utility-container .utility .trigger, BODY.collective-access .ca_nav, BODY.collective-access .ca_filters .current .tags A, BODY.collective-access a.button.load-more {
+    BODY.collective-access .utility-container .utility .trigger, BODY.collective-access .ca_nav, BODY.collective-access .ca_filters .current .tags A, BODY.collective-access a.button.load-more, MAIN.archive_detail .img-container .diva-label {
       font-size: 12px; } }
   @media (min-width: 767px) {
     .eyebrow, .module_accordion .item .trigger.small, .module_page_section_nav UL, BODY.collective-access .notificationMessage, BODY.collective-access .module_pageheader .utility .trigger,
-    BODY.collective-access .utility-container .utility .trigger, BODY.collective-access .ca_nav, BODY.collective-access .ca_filters .current .tags A, BODY.collective-access a.button.load-more {
+    BODY.collective-access .utility-container .utility .trigger, BODY.collective-access .ca_nav, BODY.collective-access .ca_filters .current .tags A, BODY.collective-access a.button.load-more, MAIN.archive_detail .img-container .diva-label {
       line-height: calc(0.7751937984vw + 8.0542635659px); } }
   @media (min-width: 1025px) {
     .eyebrow, .module_accordion .item .trigger.small, .module_page_section_nav UL, BODY.collective-access .notificationMessage, BODY.collective-access .module_pageheader .utility .trigger,
-    BODY.collective-access .utility-container .utility .trigger, BODY.collective-access .ca_nav, BODY.collective-access .ca_filters .current .tags A, BODY.collective-access a.button.load-more {
+    BODY.collective-access .utility-container .utility .trigger, BODY.collective-access .ca_nav, BODY.collective-access .ca_filters .current .tags A, BODY.collective-access a.button.load-more, MAIN.archive_detail .img-container .diva-label {
       line-height: 16px; } }
-  .eyebrow a, .module_accordion .item .trigger.small a, .module_page_section_nav UL a, BODY.collective-access .notificationMessage a, BODY.collective-access .module_pageheader .utility .trigger a, BODY.collective-access .utility-container .utility .trigger a, BODY.collective-access .ca_nav a, BODY.collective-access .ca_filters .current .tags A a, BODY.collective-access a.button.load-more a {
+  .eyebrow a, .module_accordion .item .trigger.small a, .module_page_section_nav UL a, BODY.collective-access .notificationMessage a, BODY.collective-access .module_pageheader .utility .trigger a, BODY.collective-access .utility-container .utility .trigger a, BODY.collective-access .ca_nav a, BODY.collective-access .ca_filters .current .tags A a, BODY.collective-access a.button.load-more a, MAIN.archive_detail .img-container .diva-label a {
     color: #999; }
-    .eyebrow a:hover, .module_accordion .item .trigger.small a:hover, .module_page_section_nav UL a:hover, BODY.collective-access .notificationMessage a:hover, BODY.collective-access .module_pageheader .utility .trigger a:hover, BODY.collective-access .utility-container .utility .trigger a:hover, BODY.collective-access .ca_nav a:hover, BODY.collective-access .ca_filters .current .tags A a:hover, BODY.collective-access a.button.load-more a:hover {
+    .eyebrow a:hover, .module_accordion .item .trigger.small a:hover, .module_page_section_nav UL a:hover, BODY.collective-access .notificationMessage a:hover, BODY.collective-access .module_pageheader .utility .trigger a:hover, BODY.collective-access .utility-container .utility .trigger a:hover, BODY.collective-access .ca_nav a:hover, BODY.collective-access .ca_filters .current .tags A a:hover, BODY.collective-access a.button.load-more a:hover, MAIN.archive_detail .img-container .diva-label a:hover {
       color: #333230; }
 
 .sans-s, .sans-s-gray {
@@ -2733,10 +2735,9 @@ A:hover .img-wrapper, A:hover .image_wrapper.autosize {
 
 img.enlarge-gallery {
   cursor: pointer; }
-/*
+
 .ie11 div.bg-image {
   background-image: none !important; }
-*/
 
 .ie11 .img-wrapper.contain > DIV, .ie11 .contain.image_wrapper.autosize > DIV {
   background-size: contain; }
@@ -3886,7 +3887,7 @@ https://flickity.metafizzy.co
     min-height: 20px;
     margin-bottom: 1px; }
     .columns_wrap .item .eyebrow, .columns_wrap .module_accordion .item .trigger.small, .module_accordion .columns_wrap .item .trigger.small, .columns_wrap .item .module_page_section_nav UL, .module_page_section_nav .columns_wrap .item UL, .columns_wrap .item BODY.collective-access .notificationMessage, BODY.collective-access .columns_wrap .item .notificationMessage, .columns_wrap .item BODY.collective-access .module_pageheader .utility .trigger, BODY.collective-access .module_pageheader .utility .columns_wrap .item .trigger,
-    .columns_wrap .item BODY.collective-access .utility-container .utility .trigger, BODY.collective-access .utility-container .utility .columns_wrap .item .trigger, .columns_wrap .item BODY.collective-access .ca_nav, BODY.collective-access .columns_wrap .item .ca_nav, .columns_wrap .item BODY.collective-access .ca_filters .current .tags A, BODY.collective-access .ca_filters .current .tags .columns_wrap .item A, .columns_wrap .item BODY.collective-access a.button.load-more, BODY.collective-access .columns_wrap .item a.button.load-more {
+    .columns_wrap .item BODY.collective-access .utility-container .utility .trigger, BODY.collective-access .utility-container .utility .columns_wrap .item .trigger, .columns_wrap .item BODY.collective-access .ca_nav, BODY.collective-access .columns_wrap .item .ca_nav, .columns_wrap .item BODY.collective-access .ca_filters .current .tags A, BODY.collective-access .ca_filters .current .tags .columns_wrap .item A, .columns_wrap .item BODY.collective-access a.button.load-more, BODY.collective-access .columns_wrap .item a.button.load-more, .columns_wrap .item MAIN.archive_detail .img-container .diva-label, MAIN.archive_detail .img-container .columns_wrap .item .diva-label {
       margin-bottom: 2px;
       max-width: 310px; }
     .columns_wrap .item.long {
@@ -6420,36 +6421,40 @@ BODY.collective-access .first-letter:first-letter {
   margin: 0.3em 5px 0px 0px;
   first-line: 2; }
 
-BODY.collective-access .ca-object-viewer .slideshow-main {
+BODY.collective-access .ca-object-viewer {
   background-color: #F2F2F2; }
-  BODY.collective-access .ca-object-viewer .slideshow-main .slick-slide .img-wrapper, BODY.collective-access .ca-object-viewer .slideshow-main .slick-slide .image_wrapper.autosize {
-    padding-bottom: 52.6315789474%; }
-
-@media (max-width: 767px) {
-  BODY.collective-access .ca-object-viewer {
-    margin-left: -20px;
-    margin-right: -20px; }
+  BODY.collective-access .ca-object-viewer .img-container {
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto; }
+  BODY.collective-access .ca-object-viewer .slideshow-main {
+    background-color: #F2F2F2; }
     BODY.collective-access .ca-object-viewer .slideshow-main .slick-slide .img-wrapper, BODY.collective-access .ca-object-viewer .slideshow-main .slick-slide .image_wrapper.autosize {
-      padding-bottom: 89%; }
-    BODY.collective-access .ca-object-viewer .slideshow-main .slick-slide .img-container {
-      padding: 0px; } }
-
-BODY.collective-access .ca-object-viewer .slideshow-thumbnails {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-  margin: 40px 0px;
-  text-align: center; }
-  BODY.collective-access .ca-object-viewer .slideshow-thumbnails li {
-    display: inline-block;
-    margin-right: 20px; }
-    BODY.collective-access .ca-object-viewer .slideshow-thumbnails li:last-child {
-      margin-right: 0; }
-    BODY.collective-access .ca-object-viewer .slideshow-thumbnails li img {
-      opacity: 0.8;
-      transition: opacity 0.3s ease-out; }
-    BODY.collective-access .ca-object-viewer .slideshow-thumbnails li a.selected img, BODY.collective-access .ca-object-viewer .slideshow-thumbnails li a:hover img {
-      opacity: 1; }
+      padding-bottom: 52.6315789474%; }
+  @media (max-width: 767px) {
+    BODY.collective-access .ca-object-viewer {
+      margin-left: -20px;
+      margin-right: -20px; }
+      BODY.collective-access .ca-object-viewer .slideshow-main .slick-slide .img-wrapper, BODY.collective-access .ca-object-viewer .slideshow-main .slick-slide .image_wrapper.autosize {
+        padding-bottom: 89%; }
+      BODY.collective-access .ca-object-viewer .slideshow-main .slick-slide .img-container {
+        padding: 0px; } }
+  BODY.collective-access .ca-object-viewer .slideshow-thumbnails {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    margin: 40px 0px;
+    text-align: center; }
+    BODY.collective-access .ca-object-viewer .slideshow-thumbnails li {
+      display: inline-block;
+      margin-right: 20px; }
+      BODY.collective-access .ca-object-viewer .slideshow-thumbnails li:last-child {
+        margin-right: 0; }
+      BODY.collective-access .ca-object-viewer .slideshow-thumbnails li img {
+        opacity: 0.8;
+        transition: opacity 0.3s ease-out; }
+      BODY.collective-access .ca-object-viewer .slideshow-thumbnails li a.selected img, BODY.collective-access .ca-object-viewer .slideshow-thumbnails li a:hover img {
+        opacity: 1; }
 
 BODY.collective-access a.button.load-more {
   border: 1px solid #D8D8D8;
@@ -6494,44 +6499,48 @@ BODY.collective-access .ca-form {
 
 MAIN.archive_landing .grid {
   overflow: hidden;
-  min-height:100px; }
+  min-height: 100px; }
 
-@media (max-width: 767px) {
-  MAIN.archive_detail .container-image-detail {
-    margin-left: -20px;
-    margin-right: -20px; } }
+MAIN.archive_detail .container-image-detail {
+  background-color: #333230; }
+  @media (max-width: 767px) {
+    MAIN.archive_detail .container-image-detail {
+      margin-left: -20px;
+      margin-right: -20px; } }
 
-@media (max-width: 767px) {
-  MAIN.archive_detail .img-container {
-    padding-left: 0px;
-    padding-right: 0px; } }
-
-MAIN.archive_detail .img-container .img-wrapper, MAIN.archive_detail .img-container .image_wrapper.autosize {
-  padding-bottom: 125.3333333333%; }
-  @media (min-width: 768px) {
-    MAIN.archive_detail .img-container .img-wrapper, MAIN.archive_detail .img-container .image_wrapper.autosize {
-      padding-bottom: 48.7038491752%; } }
-
-MAIN.archive_detail .img-container .actions {
-  position: absolute;
-  top: 15px;
-  left: 10px; }
-  MAIN.archive_detail .img-container .actions A {
-    display: inline-block;
-    margin-left: 8px;
-    width: 21px;
-    height: 18px;
-    background-repeat: no-repeat;
-    opacity: 0.5;
-    transition: opacity 0.3s ease-out; }
-    MAIN.archive_detail .img-container .actions A.zoom {
-      background-image: url("../img/icon_image_zoom.svg"); }
-    MAIN.archive_detail .img-container .actions A.collection {
-      background-image: url("../img/icon_image_collection.svg"); }
-    MAIN.archive_detail .img-container .actions A.download {
-      background-image: url("../img/icon_image_download.svg"); }
-    MAIN.archive_detail .img-container .actions A:hover {
-      opacity: 1; }
+MAIN.archive_detail .img-container {
+  max-width: 1000px;
+  margin-left: auto;
+  margin-right: auto; }
+  MAIN.archive_detail .img-container .img-wrapper, MAIN.archive_detail .img-container .image_wrapper.autosize {
+    padding-bottom: 125.3333333333%; }
+    @media (min-width: 768px) {
+      MAIN.archive_detail .img-container .img-wrapper, MAIN.archive_detail .img-container .image_wrapper.autosize {
+        padding-bottom: 48.7038491752%; } }
+  MAIN.archive_detail .img-container .diva-outer {
+    background-color: transparent; }
+  MAIN.archive_detail .img-container .diva-label {
+    color: #6D6D6D; }
+  MAIN.archive_detail .img-container .actions {
+    position: absolute;
+    top: 15px;
+    left: 10px; }
+    MAIN.archive_detail .img-container .actions A {
+      display: inline-block;
+      margin-left: 8px;
+      width: 21px;
+      height: 18px;
+      background-repeat: no-repeat;
+      opacity: 0.5;
+      transition: opacity 0.3s ease-out; }
+      MAIN.archive_detail .img-container .actions A.zoom {
+        background-image: url("../img/icon_image_zoom.svg"); }
+      MAIN.archive_detail .img-container .actions A.collection {
+        background-image: url("../img/icon_image_collection.svg"); }
+      MAIN.archive_detail .img-container .actions A.download {
+        background-image: url("../img/icon_image_download.svg"); }
+      MAIN.archive_detail .img-container .actions A:hover {
+        opacity: 1; }
 
 @media (min-width: 1025px) {
   MAIN.archive_login {
