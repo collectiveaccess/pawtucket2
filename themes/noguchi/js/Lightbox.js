@@ -43,6 +43,7 @@ class Lightbox extends React.Component{
 
 		this.componentDidMount = this.componentDidMount.bind(this);
 		this.newLightbox = this.newLightbox.bind(this);
+		this.cancelNewLightbox = this.cancelNewLightbox.bind(this);
 		this.saveNewLightbox = this.saveNewLightbox.bind(this);
 		this.deleteLightbox = this.deleteLightbox.bind(this);
 	}
@@ -62,11 +63,15 @@ class Lightbox extends React.Component{
 		this.setState(state);
 	}
 
+	cancelNewLightbox(e) {
+		let state = this.state;
+		delete(state.lightboxList.sets[-1]);
+		this.setState(state);
+	}
+
 	saveNewLightbox(data, callback) {
 		let that = this;
 		addLightbox(this.props.baseUrl, {'name': data['name'], 'table': 'ca_objects'}, function(resp) {
-			console.log("got", resp);
-
 			if(resp['ok']) {
 				let state = that.state;
 				delete(state.lightboxList.sets[-1]);
@@ -747,6 +752,7 @@ class LightboxListItem extends React.Component {
 
 	saveLightboxEdit(name) {
 		editLightbox(this.context.props.baseUrl, {'name': name, set_id: this.props.data.set_id }, function(resp) {
+			// TODO: display potential errors
 			//console.log("got", resp);
 		});
 	}
@@ -829,6 +835,7 @@ class LightboxListItem extends React.Component {
 					<EasyEdit ref={this.props.newLightboxRef}
 							  type="text"
 							  onSave={this.saveNewLightbox}
+							  onCancel={this.context.cancelNewLightbox}
 							  saveButtonLabel="Save"
 							  cancelButtonLabel="Cancel"
 							  placeholder="Enter lightbox name"
