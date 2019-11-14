@@ -59,6 +59,7 @@
       </div>
 	</nav>
 	
-<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
-	<div class="container-fluid"><div class="row"><div class="col-sm-12">
+<div role="main" id="main">
+	<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
+		<div class="container-fluid"><div class="row"><div class="col-sm-12">
 		
