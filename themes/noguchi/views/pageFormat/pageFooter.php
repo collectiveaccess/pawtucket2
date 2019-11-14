@@ -26,6 +26,54 @@
 
 <?php
 		print $this->render("pageFormat/footer_include.php");
+?>        
+<?php
+		if (Session::getVar('cookieAccepted') != 'accepted') {		
+?>	
+		<div id="overlay-ca-terms" class="overlay-window">
+			<div class="bg"></div>
+			<div class="overlay-content">
+				<div class="content-scroll">
+					<div class="inner">
+
+						<div class="block-half text-align-center">
+							<h3 class="subheadline">Isamu Noguchi Collection, Catalogue Raisonné, and Archive Terms & Conditions</h3>
+						</div>
+						<div class="block-half">
+							<p class="body-text">{{{termsAndConditions}}}</p>
+						</div>
+						<div class="text-align-center">
+							<a href="#" class="close button acceptCookie">Yes, I agree</a>
+						</div>  
+	
+					</div>
+				</div>
+			</div>
+		</div>		
+		
+				<script type="text/javascript">
+					$(document).ready(function() {
+						$('.acceptCookie').click(function(e){
+						  e.preventDefault();
+						  $.ajax({
+							   url: "<?php print caNavUrl("", "Archive", "CookieAccept"); ?>",
+							   type: "GET",
+							   success: function (data) {
+								 if(data == 'success'){
+									$('#overlay-ca-terms').hide();
+								 }
+							   },
+							   error: function(xhr, ajaxOptions, thrownError){
+								  alert("There was an error, please try again later.");
+							   }
+						  });
+
+						});
+					});
+				</script>
+
+<?php
+		}
 ?>
 
         <script type='text/javascript' src='<?php print $this->request->getThemeUrlPath(); ?>/jslib/libs-min.js?ver=<?= rand(); ?>'></script>
@@ -37,5 +85,6 @@
 				_initPawtucketApps.default();
 			});
 		</script>
+
     </body>
 </html>

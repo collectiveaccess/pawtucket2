@@ -583,7 +583,7 @@ class NoguchiLibraryBrowseResultItem extends React.Component {
 								<div className="text_position">
 									<div className="ca-identifier text-gray">{data.idno}</div>
 									<ClampLines
-										text={data.label}
+										text={(data.label) ? data.label : " "}
 										id={"browse_label_" + data.id}
 										lines="3"
 										ellipsis="..."

@@ -2733,9 +2733,10 @@ A:hover .img-wrapper, A:hover .image_wrapper.autosize {
 
 img.enlarge-gallery {
   cursor: pointer; }
-
+/*
 .ie11 div.bg-image {
   background-image: none !important; }
+*/
 
 .ie11 .img-wrapper.contain > DIV, .ie11 .contain.image_wrapper.autosize > DIV {
   background-size: contain; }
