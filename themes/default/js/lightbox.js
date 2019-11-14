@@ -1,6 +1,7 @@
 /*jshint esversion: 6 */
 'use strict';
-import React from "react"
+import React from "react";
+import qs from 'qs';
 const axios = require('axios');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -23,4 +24,61 @@ function fetchLightboxList(url, callback) {
 		});
 }
 
-export { fetchLightboxList };
+/**
+ * Create a new lightbox
+ *
+ * @param url URL send lightbox data to.
+ * @param callback Function to call once lightbox is created. The first parameter of the callback will be an object
+ * 			containing the result of the action.
+ */
+function addLightbox(url, data, callback) {
+	axios.post(url + "/add", qs.stringify(data))
+		.then(function (resp) {
+			let data = resp.data;
+
+			callback(data);
+		})
+		.catch(function (error) {
+			console.log("Error while adding lightbox: ", error);
+		});
+}
+
+/**
+ * Edit lightbox information
+ *
+ * @param url URL send lightbox data to.
+ * @param callback Function to call once edit is made. The first parameter of the callback will be an object
+ * 			containing the result of the edit.
+ */
+function editLightbox(url, data, callback) {
+	axios.post(url + "/edit", qs.stringify(data))
+		.then(function (resp) {
+			let data = resp.data;
+
+			callback(data);
+		})
+		.catch(function (error) {
+			console.log("Error while editing lightbox: ", error);
+		});
+}
+
+/**
+ * Delete lightbox permanently
+ *
+ * @param url URL send lightbox delete request to.
+ * @param callback Function to call delete is completed. The first parameter of the callback will be an object
+ * 			containing the result of the deletion.
+ */
+function deleteLightbox(url, set_id, callback) {
+	axios.post(url + "/delete", qs.stringify({set_id: set_id }))
+		.then(function (resp) {
+			let data = resp.data;
+
+			callback(data);
+		})
+		.catch(function (error) {
+			console.log("Error while deleting lightbox: ", error);
+		});
+}
+
+export { fetchLightboxList, addLightbox, editLightbox, deleteLightbox };

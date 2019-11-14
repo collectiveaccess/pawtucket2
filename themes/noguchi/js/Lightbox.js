@@ -1,8 +1,12 @@
 /*jshint esversion: 6 */
 import React from "react"
 import ReactDOM from "react-dom";
+import EasyEdit from 'react-easy-edit';
+import { confirmAlert } from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css';
+
 import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel, initBrowseResults } from "../../default/js/browse";
-import { fetchLightboxList } from "../../default/js/lightbox";
+import { fetchLightboxList, addLightbox, editLightbox, deleteLightbox } from "../../default/js/lightbox";
 
 import ClampLines from 'react-clamp-lines';
 
@@ -26,7 +30,6 @@ const LightboxContext = React.createContext();
  *
  * Sub-components are:
  * 		LightboxIntro
- * 		LightboxNavigation
  * 		LightboxFilterControls
  * 		LightboxResults
  */
@@ -36,8 +39,15 @@ class Lightbox extends React.Component{
 		initBrowseContainer(this, props);
 
 		this.state['set_id'] = null;
+		this.state['filters'] = null;
 
 		this.componentDidMount = this.componentDidMount.bind(this);
+		this.newLightbox = this.newLightbox.bind(this);
+		this.cancelNewLightbox = this.cancelNewLightbox.bind(this);
+		this.saveNewLightbox = this.saveNewLightbox.bind(this);
+		this.deleteLightbox = this.deleteLightbox.bind(this);
+
+		this.dontUseDefaultKey = true;
 	}
 
 	componentDidMount() {
@@ -47,6 +57,47 @@ class Lightbox extends React.Component{
 			state.lightboxList = data;
 			that.setState(state);
 		});
+	}
+
+	newLightbox(e) {
+		let state = this.state;
+		state.lightboxList.sets[-1] = {"set_id": -1, "label": ""};
+		this.setState(state);
+	}
+
+	cancelNewLightbox(e) {
+		let state = this.state;
+		delete(state.lightboxList.sets[-1]);
+		this.setState(state);
+	}
+
+	saveNewLightbox(data, callback) {
+		let that = this;
+		addLightbox(this.props.baseUrl, {'name': data['name'], 'table': 'ca_objects'}, function(resp) {
+			if(resp['ok']) {
+				let state = that.state;
+				delete(state.lightboxList.sets[-1]);
+				state.lightboxList.sets[resp.set_id] = { set_id: resp.set_id, label: resp.name, count: 0, item_type_singular: resp.item_type_singular, item_type_plural: resp.item_type_plural };
+				that.setState(state);
+			}
+			callback(resp);
+		});
+	}
+
+	deleteLightbox(lightbox) {
+		let state = this.state;
+		let that = this;
+
+		if(state.lightboxList && state.lightboxList.sets) {
+			deleteLightbox(this.props.baseUrl, lightbox.set_id, function(resp) {
+				if(resp && resp.ok) {
+					delete(state.lightboxList.sets[lightbox.set_id]);
+					state.filters = null; // clear filters
+					that.setState(state);
+				}
+			});
+
+		}
 	}
 
 	render() {
@@ -65,6 +116,34 @@ class Lightbox extends React.Component{
 			<LightboxContext.Provider value={this}>
 					{content}
 			</LightboxContext.Provider>
+		);
+	}
+}
+
+/**
+ *
+ */
+class LightboxNavigation extends React.Component{
+	static contextType = LightboxContext;
+	constructor(props) {
+		super(props);
+
+		this.backToList = this.backToList.bind(this);
+	}
+
+	backToList(e) {
+		let state = this.context.state;
+
+		state.set_id = null; // clear set
+		state.filters = null; // clear filters
+
+		this.context.setState(state);
+	}
+	render() {
+		return(
+			<div className="current"><div className='wrap'>
+				<div className="body-sans"><a href='#' onClick={this.backToList}>Back to set list</a></div></div>
+			</div>
 		);
 	}
 }
@@ -117,6 +196,10 @@ class LightboxIntro extends React.Component {
  */
 class LightboxStatistics extends React.Component {
 	static contextType = LightboxContext;
+	constructor(props) {
+		super(props);
+
+	}
 
 	render() {
 		return(<div className="current">
@@ -389,115 +472,6 @@ class LightboxFacetPanelItem extends React.Component {
 }
 
 /**
- * Noguchi Archive section-specific navigation. Includes collection drop-down with hard-coded criteria, as well
- * as a search box.
- *
- * Props are:
- * 		<NONE>
- *
- * Sub-components are:
- * 		<NONE>
- *
- * Used by:
- *  	Lightbox
- *
- * Uses context: LightboxContext
- */
-class LightboxNavigation extends React.Component {
-	static contextType = LightboxContext;
-
-	constructor(props) {
-		super(props);
-
-		this.searchRef = React.createRef();
-		this.state = {
-			collections: [
-				{ name: "Photography Collection", id: 432 },
-				{ name: "Architectural Collection", id: 436 },
-				{ name: "Manuscript Collection", id: 434 },
-				{ name: "Business and Legal Collection", id: 437 },
-				{ name: "Noguchi Fountain and Plaza", id: 438 },
-				{ name: "Publication and Press Collection", id: 442 },
-			]
-		}
-		this.loadCollection = this.loadCollection.bind(this);
-		this.loadSearch = this.loadSearch.bind(this);
-	}
-
-	/**
-	 *
-	 * @returns {*}
-	 */
-	loadCollection(e) {
-		let collection_id = e.target.attributes.getNamedItem('data-id').value;
-		let collection_name = e.target.innerHTML;
-		let filters = {
-			collection_facet: {}
-		};
-		filters.collection_facet[collection_id] = collection_name;
-
-		this.context.closeFacetPanel();
-		this.context.reloadResults(filters, true);
-	}
-
-	/**
-	 *
-	 * @returns {*}
-	 */
-	loadSearch(e) {
-		let search = this.searchRef.current.value;
-		let filters = {
-			_search: {}
-		};
-		filters._search[search] = search;
-		let state = this.context.state;
-		state.selectedFacet = null;
-		this.context.closeFacetPanel();
-		this.context.reloadResults(filters, true);
-
-		this.searchRef.current.value = '';
-
-		e.preventDefault();
-	}
-
-	render() {
-		let collections = [];
-		for(let i in this.state.collections) {
-			collections.push((<a href='#' key={this.state.collections[i].id} data-id={this.state.collections[i].id} onClick={this.loadCollection}>{this.state.collections[i].name}</a>));
-		}
-		return(
-			<section className="ca_nav hide-for-mobile">
-				<nav>
-					<div className="wrap text-gray">
-						<form action="#" onSubmit={this.loadSearch}>
-							<div className="cell text"><a href='/index.php/Browse/Archive'>Browse</a></div>
-							<div className="cell"><input name="search" type="text" placeholder="Search the Archive" ref={this.searchRef}
-														 className="search"/></div>
-							<div className="cell">
-								<div className="utility-container">
-									<div className="utility utility_menu">
-										<a href="#" className="trigger">All Archival Collections</a>
-										<div className="options">
-											{collections}
-										</div>
-									</div>
-								</div>
-							</div>
-							<div className="misc">
-								<div className="cell text"><a href='/index.php/ArchiveInfo/UserGuide'>User Guide</a>
-								</div>
-								<div className="cell text"><a href='/index.php/ArchiveInfo/About'>About<span
-									className='long'> The Archive</span></a></div>
-							</div>
-						</form>
-					</div>
-				</nav>
-			</section>
-		);
-	}
-}
-
-/**
  * Renders search results using a LightboxResultItem component for each result.
  * Includes navigation to load openitional pages on-demand.
  *
@@ -674,18 +648,14 @@ class LightboxList extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.openLightbox = this.openLightbox.bind(this);
+		this.newLightboxRef = React.createRef();
+		this.componentDidUpdate = this.componentDidUpdate.bind(this);
 	}
 
-	openLightbox(e) {
-		let set_id = e.target.attributes.getNamedItem('data-set_id').value;
-		let state = this.context.state;
-		state.set_id = set_id;
-		if(!state.filters) { state.filters = {}; }
-		if(!state.filters['_search']) { state.filters = {'_search': {}}; }
-		state.filters['_search']['ca_sets.set_id:' + set_id] = 'Set ' + set_id;
-		this.context.setState(state);
-		this.context.reloadResults(state.filters, false);
+	componentDidUpdate(prevProps, prevState, snapshot) {
+		if (this.newLightboxRef && this.newLightboxRef.current) {
+			this.newLightboxRef.current.onClick();
+		}
 	}
 
 	render(){
@@ -693,17 +663,7 @@ class LightboxList extends React.Component {
 		if (this.props.lightboxes && this.props.lightboxes.sets) {
 			for(let k in this.props.lightboxes.sets) {
 				let l = this.props.lightboxes.sets[k];
-				let c = l.count;
-				let count_text = (c == 1) ? c + " " + l.item_type_singular : c + " " + l.item_type_plural;
-				lightboxes.push(<div className="block-half columns">
-					<div className="col title">{l.label}</div>
-					<div className="col infoNarrow text-gray">{count_text}</div>
-					<div className="col info text-gray">
-						<a href='#' data-set_id={l.set_id} className='button' onClick={this.openLightbox}>View</a>
-
-						<a href='#' data-set_id={l.set_id} className='button'>Delete</a>
-					</div>
-				</div>);
+				lightboxes.push(<LightboxListItem key={k} data={l} count={l.count} deleteCallback={this.context.deleteLightbox} newLightboxRef={this.newLightboxRef}/>);
 			}
 		}
 
@@ -721,17 +681,177 @@ class LightboxList extends React.Component {
 
 						<div className="block-half-top">
 							<div className="block-half columns text-align-right">
-								<a href='#' className='button'>New Collection +</a>
+								<a href='#' className='button' onClick={this.context.newLightbox}>New Collection +</a>
 							</div>
 
 							{lightboxes}
-
 						</div>
 
 					</div>
 				</section>
 			</main>
 		);
+	}
+}
+
+/**
+ * Formats each item in the browse result using data passed in the "data" prop.
+ *
+ * Props are:
+ * 		data : object containing data to display for result item
+ * 		view : view format to use for display of results
+ *
+ * Sub-components are:
+ * 		<NONE>
+ *
+ * Used by:
+ *  	Lightbox
+ *
+ * Uses context: LightboxContext
+ */
+class LightboxListItem extends React.Component {
+	static contextType = LightboxContext;
+
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			deleting: false
+		};
+
+		this.openLightbox = this.openLightbox.bind(this);
+		this.saveLightboxEdit = this.saveLightboxEdit.bind(this);
+		this.saveNewLightbox = this.saveNewLightbox.bind(this);
+		this.deleteLightboxConfirm = this.deleteLightboxConfirm.bind(this);
+	}
+
+	openLightbox(e) {
+		let set_id = e.target.attributes.getNamedItem('data-set_id').value;
+		let state = this.context.state;
+		state.set_id = set_id;
+		if(!state.filters) { state.filters = {}; }
+		if(!state.filters['_search']) { state.filters = {'_search': {}}; }
+		state.filters['_search']['ca_sets.set_id:' + set_id] = 'Set ' + set_id;
+		this.context.setState(state);
+		this.context.reloadResults(state.filters, false);
+	}
+
+	saveNewLightbox(name) {
+		let that = this;
+		this.context.saveNewLightbox({'name': name}, function(resp) {
+			let state = that.state;
+			if (resp && resp['err']) {
+				state['newLightboxError'] = resp['err'];
+				if(that.props.newLightboxRef && that.props.newLightboxRef.current) {
+					that.props.newLightboxRef.current.onClick();
+				}
+			} else {
+				state['newLightboxError'] = null;
+			}
+			that.setState(state);
+		});
+	}
+
+	saveLightboxEdit(name) {
+		editLightbox(this.context.props.baseUrl, {'name': name, set_id: this.props.data.set_id }, function(resp) {
+			// TODO: display potential errors
+			//console.log("got", resp);
+		});
+	}
+
+	deleteLightboxConfirm(e) {
+		let that = this;
+		confirmAlert({
+			customUI: ({ onClose }) => {
+				return (
+					<div className='col info text-gray'>
+						<p>Really delete lightbox <em>{this.props.data.label}</em>?</p>
+
+						<div className='button'
+							onClick={() => {
+								let state = that.state;
+								state.deleting = true;
+								that.setState(state);
+
+								that.props.deleteCallback(that.props.data);
+								onClose();
+							}}>
+							Yes
+						</div>
+						&nbsp;
+						<div className='button' onClick={onClose}>No</div>
+					</div>
+				);
+			}
+		});
+	}
+
+	render(){
+		let count_text = (this.props.count == 1) ? this.props.count + " " + this.props.data.item_type_singular : this.props.count + " " + this.props.data.item_type_plural;
+
+		if (this.state.deleting) {
+			return (<div className="block-half columns">
+				<div className="col title">
+					<EasyEdit
+						type="text"
+						onSave={this.saveLightboxEdit}
+						saveButtonLabel="Save"
+						cancelButtonLabel="Cancel"
+						attributes={{name: "name", id: "lightbox_name" + this.props.data.set_id}}
+						value={this.props.data.label}
+					/>
+				</div>
+				<div className="col infoNarrow text-gray">{count_text}</div>
+				<div className="col info text-gray">
+					<div className="spinner">
+						<div className="bounce1"></div>
+						<div className="bounce2"></div>
+						<div className="bounce3"></div>
+					</div>
+				</div>
+			</div>);
+		} else if(this.props.data.set_id > 0) {
+			return (<div className="block-half columns">
+				<div className="col title">
+					<EasyEdit
+						type="text"
+						onSave={this.saveLightboxEdit}
+						saveButtonLabel="Save"
+						cancelButtonLabel="Cancel"
+						attributes={{name: "name", id: "lightbox_name" + this.props.data.set_id}}
+						value={this.props.data.label}
+					/>
+				</div>
+				<div className="col infoNarrow text-gray">{count_text}</div>
+				<div className="col info text-gray">
+					<a href='#' data-set_id={this.props.data.set_id} className='button'
+					   onClick={this.openLightbox}>View</a>
+					&nbsp;
+					<a href='#' data-set_id={this.props.data.set_id} className='button'
+					   onClick={this.deleteLightboxConfirm}>Delete</a>
+				</div>
+			</div>);
+		} else{
+			return(<div className="block-half columns">
+				<div className="col title">
+					<EasyEdit ref={this.props.newLightboxRef}
+							  type="text"
+							  onSave={this.saveNewLightbox}
+							  onCancel={this.context.cancelNewLightbox}
+							  saveButtonLabel="Save"
+							  cancelButtonLabel="Cancel"
+							  placeholder="Enter lightbox name"
+							  attributes={{name: "name", id: "lightbox_name" + this.props.data.set_id}}
+							  value={this.props.data.label}
+					/>
+					<div>{this.state.newLightboxError}</div>
+				</div>
+				<div className="col infoNarrow text-gray"></div>
+				<div className="col info text-gray">
+
+				</div>
+			</div>);
+		}
 	}
 }
 

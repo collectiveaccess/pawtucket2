@@ -2444,9 +2444,21 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 									GROUP BY cs.set_id
 									", $va_sql_params);
 			$va_sets = [];
-			$t_list = new ca_lists();
+
 			$set_ids = $qr_res->getAllFieldValues('set_id');
 			$labels = $this->getPreferredDisplayLabelsForIDs($set_ids);
+
+			$qr_counts = $o_db->query("
+				SELECT COUNT(*) c, cs.set_id
+				FROM ca_sets cs
+				INNER JOIN ca_set_items AS csi ON cs.set_id = csi.set_id
+				WHERE cs.set_id IN (?)
+				GROUP BY cs.set_id
+			",[$set_ids]);
+			$counts = [];
+			while($qr_counts->nextRow()) {
+				$counts[$qr_counts->get('set_id')] = (int)$qr_counts->get('c');
+			}
 
 			$qr_res->seek(0);
 			while($qr_res->nextRow()) {
@@ -2455,9 +2467,9 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 				
 				$vs_type = $this->getTypeName($qr_res->get('type_id'));
 			
-				$va_sets[$qr_res->get('set_id')] = array_merge($qr_res->getRow(), [
+				$va_sets[$set_id = $qr_res->get('set_id')] = array_merge($qr_res->getRow(), [
 					'set_content_type' => $vs_set_type, 'set_type' => $vs_type,
-					'label' => $labels[$set_id], 'count' => $qr_res->get('c'),
+					'label' => $labels[$set_id], 'count' => isset($counts[$set_id]) ? $counts[$set_id] : 0,
 					'item_type_singular' => Datamodel::getTableProperty($vn_table_num, 'NAME_SINGULAR'), 'item_type_plural' => Datamodel::getTableProperty($vn_table_num, 'NAME_PLURAL')
 				]);
 			}

@@ -129,7 +129,7 @@
 							break;
 							# ---------------------------------------
 							case "cr":
-									print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
+									print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "Browse", "CR");
 							break;
 							# ---------------------------------------
 							case "detail":
@@ -141,7 +141,7 @@
 									break;
 									# ---------------------------------------
 									case "artwork":
-										print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
+										print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "Browse", "CR");
 									break;
 									# ---------------------------------------
 									case "exhibition":
@@ -160,7 +160,7 @@
 									break;
 									# ---------------------------------------
 									case "cr":
-										print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
+										print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "Browse", "CR");
 									break;
 									# ---------------------------------------
 									case "exhibitions":

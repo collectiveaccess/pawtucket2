@@ -3782,6 +3782,192 @@ load more
   };
 })(jQuery, window, document);
 
+//----------------------------------------- MAILCHIMP SIGNUP FORM  ----------------------------------//
+;(function ($, window, document, undefined) {
+  'use strict';
+  var pluginName = "mailchimp_signup_form";
+  var defaults = {
+  };
+
+  function Plugin(element, options) {
+      this.element = element;
+      this.options = $.extend({}, defaults, options);
+      this._defaults = defaults;
+      this._name = pluginName;
+      // init!!!!
+      this._init();
+  }
+  Plugin.prototype = {
+
+    // private methods //////////////////////////////////////////////////////////////////////////
+    _init: function (){
+      //console.log( '>>>>> mailchimp_signup_form' );
+
+      // vars
+      this.$el = $(this.element);
+      this.$win = $(window);
+      this.$doc = $(document);
+      this.$body = $( 'body' );
+      this.touch = !$('html').hasClass('no-touch');
+
+      this.state = '';
+      this._addEvents( true );
+
+    },
+    _addEvents: function( b ){
+      var _this = this;
+      if ( b ){
+        //this.$win.on( 'resize', {_this:this}, this._onResize );
+        this.$el.find( '.close' ).on( 'click', function(){
+          _this._openNewsletterWindow( false );
+        } );
+      }
+      else{
+        //this.$win.off( 'resize', this._onResize );
+        this.$el.find( '.close' ).off( 'click' );
+      }
+      this._ajaxifyForm( b );
+    },
+    _onResize: function( e ){
+       var _this = e ? e.data._this : this;
+    },
+    _openNewsletterWindow : function(b){
+      var _this = this, $response = this.$el.find( '.response' );
+      if ( b ){
+        $response.css({opacity:0}).addClass( 'active' );
+      }
+      TweenMax.to( $response, 0.4, { y:b?-10:0, opacity:b?1:0, onComplete: function(){
+        if ( !b ){
+          $response.removeClass( 'active' );
+          _this._cleanForm();
+        }
+      }});
+      this.$el.trigger( b ? 'newsletter:open' : 'newsletter:close' );
+    },
+    _cleanForm: function(){
+      // clean response
+      var $r = this.$el.find( '.response' );
+      $r.find( '.message' ).html( '' );
+      this.$el.find( 'input[ type="email" ]' ).val( '' );
+    },    
+    _ajaxifyForm: function(b){
+      var _this = this, $form = this.$el.find('form'), msg;
+      if ($form.length <= 0){
+        return
+      }
+      if ( b ){
+
+        // https://codepen.io/akashnimare/pen/XMozEo
+
+        $form.find('input[type="submit"]').on('click', function (event) {
+          if (event) event.preventDefault();
+          _this._setLoading(true);
+          $.ajax({
+            type: $form.attr('method'),
+            url: $form.attr('action'),  
+            dataType: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: $form.serialize(),
+            cache: false,
+            error: function (err) { 
+              //console.log( err );
+              //return;
+              _this._setResponse( 'Could not connect. Please try again later.' );
+              _this._setState( false );
+            },
+            success: function (data) {
+              
+              //console.log( data );
+
+              if (data.result === 'success') {
+                // Yeahhhh Success
+                $form.find('input[name="EMAIL"]').val('')
+                _this._setResponse( data.msg );
+                _this._setState( true );
+
+              } else {
+                // Something went wrong, do something to notify the user.
+                $form.find('input[name="EMAIL"]').val('');
+
+                msg = data.msg;
+                if ( msg.indexOf( ' - ' ) !== -1 ){
+                  msg = msg.substring(4);
+                }
+                _this._setResponse( msg );
+                _this._setState( false );
+              }
+            }
+          })
+        });
+        $form.find('input[name="EMAIL"]').on( 'focus', function(){
+        });
+      }
+      else{
+        $form.find('input[type="submit"]').off('click');
+      }
+    },
+    _setResponse: function( response ){
+      var $r = this.$el.find( '.response' );
+      $r.find( '.message' ).html( response );
+      this._openNewsletterWindow( true );
+      this._setLoading( false );
+    },
+    _setState: function( b ){
+      if ( b){
+        this.state = 'SUBSCRIBED';
+        // ok, subscribed. You get an email to confirm
+        // response:: Thank you. Please check your email to confirm your subscription.
+        this.$el.trigger( 'newsletter:subscribed' );
+      }
+      else{
+        this.state = 'ERROR';
+        // Given email address is already subscribed, thank you!
+        // Please provide a valid email address.
+        this.$el.trigger( 'newsletter:error' );
+      }
+      this.$el.trigger( 'newsletter:always' );
+    },  
+    _setLoading: function( b ){
+      TweenMax.to( this.$el.find( 'form' ) , 0.3, {opacity:b?0.4:1} );
+    },
+
+
+    // public methods //////////////////////////////////////////////////////////////////////////
+    getState: function(){
+      return this.state;
+    },
+    destroy: function(){
+      this._addEvents( false );
+      this.$el.removeData();
+      $.data(this, 'plugin_' + pluginName, null);
+    }
+
+  };
+
+  $.fn[pluginName] = function ( options ) {
+      var args = arguments;
+      if (options === undefined || typeof options === 'object') {
+          return this.each(function () {
+              if (!$.data(this, 'plugin_' + pluginName)) {
+                  $.data(this, 'plugin_' + pluginName, new Plugin( this, options ));
+              }
+          });
+      } else if (typeof options === 'string' && options[0] !== '_' && options !== 'init') {
+          var returns;
+          this.each(function () {
+              var instance = $.data(this, 'plugin_' + pluginName);
+              if (instance instanceof Plugin && typeof instance[options] === 'function') {
+                  returns = instance[options].apply( instance, Array.prototype.slice.call( args, 1 ) );
+              }
+              if (options === 'destroy') {
+                $.data(this, 'plugin_' + pluginName, null);
+              }
+          });
+          return returns !== undefined ? returns : this;
+      }
+  };
+
+})(jQuery, window, document);
 
 
 //****************** AJAX_SEARCH *****************************************************************
@@ -4543,30 +4729,49 @@ var MAIN, PAJX = window.PAJX, DV = window.DV, c = console.log;
 
 		//------------------------------------------- MAILCHIMP --------------------------------------------------//
 		_initMailChimp: function(b){
-	    	var $win = $('.mailchimp-newsletter-form');
-	    	if ( $win.length <= 0 ){
-	    		return;    		
-	    	}
-	    	if ( b ){
-		        $win.mailchimp_form();
+			var $win, $el;
+			if ( $body.hasClass( 'collective-access' ) ){
+				$els = $('.mailchimp-newsletter-form');
+				if ( $els.length <= 0 ){
+					return;
+				}
+				if ( b ){
+					$els.each( function(){
+						$el = $(this);
+						$el.mailchimp_signup_form();
+						$el.on( 'newsletter:subscribed', function(){
+							MAIN.setGAEventByName( 'Newsletter' )
+						} );					
+					});
+				}
+			}
+			else{
 
-		        // close the form if success
-		        $win.on( 'newsletter:subscribed', function(e){
-					MAIN.setGAEventByName( 'Newsletter' )
-		        });
+		    	$win = $('.mailchimp-newsletter-form');
+		    	if ( $win.length <= 0 ){
+		    		return;    		
+		    	}
+		    	if ( b ){
+			        $win.mailchimp_form();
 
-		        $win.on( 'newsletter:always', function(e){
-		        	//console.log( e )
-		        });
+			        // close the form if success
+			        $win.on( 'newsletter:subscribed', function(e){
+						MAIN.setGAEventByName( 'Newsletter' )
+			        });
 
-		        $win.on( 'newsletter:close', function(e){
-		        	//console.log( e )
-		          // set cookie
-		          //Cookies.set( cookie , 'active', { expires: 1 }); // cookie will expire in one day
-		        });
-	    	}
-	    	else{
-	    		$win.mailchimp_form( 'destroy' );
+			        $win.on( 'newsletter:always', function(e){
+			        	//console.log( e )
+			        });
+
+			        $win.on( 'newsletter:close', function(e){
+			        	//console.log( e )
+			          // set cookie
+			          //Cookies.set( cookie , 'active', { expires: 1 }); // cookie will expire in one day
+			        });
+		    	}
+		    	else{
+		    		$win.mailchimp_form( 'destroy' );
+		    	}
 	    	}
 		},
 

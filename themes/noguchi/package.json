@@ -39,7 +39,6 @@
     "react-dom": "^16.8.6",
     "react-responsive-carousel": "^3.1.49",
     "react-slick": "^0.24.0",
-    "riek": "^1.1.0",
     "sass-loader": "^7.1.0",
     "style-loader": "^0.23.1",
     "url-loader": "^2.0.0",
@@ -48,9 +47,13 @@
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/polyfill": "^7.7.0",
     "@babel/preset-react": "^7.0.0",
     "file-loader": "^4.2.0",
+    "qs": "^6.9.1",
     "react-clamp-lines": "^3.0.2",
+    "react-confirm-alert": "^2.4.1",
+    "react-easy-edit": "^1.4.2",
     "url-loader": "^2.1.0"
   }
 }
