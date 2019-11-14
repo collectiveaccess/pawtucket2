@@ -36,9 +36,9 @@ function initialState() {
  * @param callback Function to call once results are received. The first parameter of the callback will be an object
  * 			containing the new browse state, including results.
  */
-function fetchResults(url, callback) {
+function fetchResults(url, callback, useDefaultKey=true) {
 	// Fetch browse facet items
-	axios.get(url + "/getResult/1/useDefaultKey/1")
+	axios.get(url + "/getResult/1" + (useDefaultKey ? '/useDefaultKey/1' : ''))
 		.then(function (resp) {
 			let data = resp.data;
 			let state = initialState();
@@ -136,7 +136,7 @@ function initBrowseContainer(instance, props) {
 			offset + (that.state.key ? '/key/' + that.state.key : '') + (filterString ? '/facets/' +
 				filterString : '') + (clearFilters ? '/clear/1' : ''), function(newState) {
 			callback(newState);
-		});
+		}, !this.dontUseDefaultKey);
 	};
 
 	/**

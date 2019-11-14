@@ -6634,3 +6634,7 @@ MAIN.bibliography_landing .results {
       width: 25%; } }
   MAIN.bibliography_landing .results A:hover .title {
     text-decoration: underline; }
+
+.lightbox_list {
+  border: 1px #333 solid;
+}
