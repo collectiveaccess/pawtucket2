@@ -46,6 +46,8 @@ class Lightbox extends React.Component{
 		this.cancelNewLightbox = this.cancelNewLightbox.bind(this);
 		this.saveNewLightbox = this.saveNewLightbox.bind(this);
 		this.deleteLightbox = this.deleteLightbox.bind(this);
+
+		this.dontUseDefaultKey = true;
 	}
 
 	componentDidMount() {
