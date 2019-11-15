@@ -837,7 +837,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	public function getAvailableSetsForItem($pm_table_name_or_num, $pn_row_id, $pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		if (!($va_full_set_list = $this->getSets(array_merge(array('table' => $pm_table_name_or_num), $pa_options)))) { return null; }
-		if (!($va_current_set_list = $this->getSetsForItem($pm_table_name_or_num, $pn_row_id, $pa_options))) { return null; }
+		if (!($va_current_set_list = $this->getSetsForItem($pm_table_name_or_num, $pn_row_id, $pa_options))) { $va_current_set_list = []; }
 		
 		$va_available_sets = array();
 		foreach($va_full_set_list as $vn_set_id => $va_set_info_by_locale) {

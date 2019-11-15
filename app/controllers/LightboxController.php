@@ -186,13 +186,18 @@
 				],
 				'excludeFieldsFromSearch' => ['ca_objects.internal_notes']
 			];
+			if ($set_id = $this->request->getParameter('set_id', pInteger)) {
+				Session::setVar("lightbox_last_set_id", $set_id);
+			} else {
+				$set_id = Session::getVar("lightbox_last_set_id");
+			}
 
-			$t_set = new ca_sets($set_id = $this->request->getParameter('set_id', pInteger));
+			$t_set = new ca_sets($set_id);
 			$introduction = [
 				'title' => $t_set->get('ca_sets.preferred_labels.name')
 			];
 
-			parent::__call('getContent', ['browseInfo' => $browse_info, 'introduction' => $introduction, 'dontSetFind' => true]);
+			parent::__call('getContent', ['browseInfo' => $browse_info, 'introduction' => $introduction, 'dontSetFind' => true, 'noCache' => true]);
 		}
  		# ------------------------------------------------------
         /**
@@ -293,6 +298,42 @@
 				$data = ['err' => _t('Invalid set id')];
 			}
 
+			$this->view->setVar("data", $data);
+			$this->render("Lightbox/browse_data_json.php");
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public function addToLightbox() {
+			$set_id = $this->request->getParameter('set_id', pInteger);
+			$item_id = $this->request->getParameter('item_id', pInteger);
+
+			if (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+				$t_set->addItem($item_id);
+
+				$data = ['ok' => 1];
+			} else {
+				$data = ['err' => _t('Cannot add to this lightbox')];
+			}
+			$this->view->setVar("data", $data);
+			$this->render("Lightbox/browse_data_json.php");
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public function removeFromLightbox() {
+			$set_id = $this->request->getParameter('set_id', pInteger);
+			$item_id = $this->request->getParameter('item_id', pInteger);
+
+			if (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+				$t_set->removeItem($item_id);
+
+				$data = ['ok' => 1];
+			} else {
+				$data = ['err' => _t('Cannot remove from this lightbox')];
+			}
 			$this->view->setVar("data", $data);
 			$this->render("Lightbox/browse_data_json.php");
 		}

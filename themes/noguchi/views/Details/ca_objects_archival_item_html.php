@@ -232,6 +232,8 @@
 
 					}
 ?>
+
+						<div id="lightboxManagement"></div>
                 </div>
 
 
@@ -304,4 +306,16 @@
         </section>
 </ifcount>}}}
 
-    </main>
+	</main>
+
+<script type="text/javascript">
+    pawtucketUIApps['LightboxManagement'] = {
+        'selector': '#lightboxManagement',
+        'data': {
+            baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
+			lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
+			table: 'ca_objects',
+			id: <?php print (int)$vn_id; ?>
+        }
+    };
+</script>

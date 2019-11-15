@@ -65,26 +65,7 @@
  		 	if ($this->request->config->get('pawtucket_requires_login')&&!($this->request->isLoggedIn())) {
                 $this->response->setRedirect(caNavUrl("", "LoginReg", "LoginForm"));
             }
-            if (($this->request->config->get('deploy_bristol'))&&($this->request->isLoggedIn())) {
-            	if (!($ps_id = urldecode($this->request->getActionExtra()))) { $ps_id = $this->request->getParameter('id', pInteger); }
-            	
-            	$t_set_list = new ca_sets();
-            	$t_set = new ca_sets();
-            	$va_sets = $t_set_list->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values));
-				$va_user_has_access = false;
-				if (sizeof($va_sets) > 0) {
-					foreach ($va_sets as $va_key => $va_set) {
-						if($t_set->isInSet('ca_objects', $ps_id, $va_set['set_id'])) {
-							$va_user_has_access = true;
-						}
-					}
-				}
-				if ($va_user_has_access == false) {
-            		print "You do not have access to view this page.";
-            		die;
-            	}
-            }
-            
+
  			$this->config = caGetDetailConfig();
  			$this->opa_detail_types = $this->config->getAssoc('detailTypes');
  			
@@ -433,8 +414,26 @@
  			//
  			$this->view->setVar('id', $ps_id);
  			$this->view->setVar($t_subject->primaryKey(), $ps_id);
- 			
- 			
+
+ 			//
+			// Set membership
+			//
+ 			$t_set = new ca_sets();
+ 			$in_lightboxes = array_map(function($v) {
+ 				return [
+ 					'isMember' => 1, 'set_id' => $v['set_id'], 'label' => $v['name']
+				];
+			}, caExtractValuesByUserLocale($t_set->getSetsForItem($t_subject->tableName(), $t_subject->getPrimaryKey(), ['user_id' => $this->request->getUserID(), 'checkAccess' => $this->opa_access_values, 'access' => __CA_SET_EDIT_ACCESS__])));
+
+ 			$available_lightboxes = array_map(function($v) {
+				return [
+					'isMember' => 0, 'set_id' => $v['set_id'], 'label' => $v['name']
+				];
+			}, caExtractValuesByUserLocale($t_set->getAvailableSetsForItem($t_subject->tableName(), $t_subject->getPrimaryKey(), ['user_id' => $this->request->getUserID(), 'checkAccess' => $this->opa_access_values, 'access' => __CA_SET_EDIT_ACCESS__])));
+
+ 			$this->view->setVar('lightboxes', array_merge($in_lightboxes, $available_lightboxes));
+
+
  			//
  			// share link
  			//

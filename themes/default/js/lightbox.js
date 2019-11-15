@@ -81,4 +81,42 @@ function deleteLightbox(url, set_id, callback) {
 		});
 }
 
-export { fetchLightboxList, addLightbox, editLightbox, deleteLightbox };
+/**
+ * Add item to lightbox
+ *
+ * @param url URL to send lightbox add item request to.
+ * @param callback Function to call when add item request is completed. The first parameter of the callback will be an object
+ * 			containing the result of the action.
+ */
+function addItemToLightbox(url, set_id, item_id, callback) {
+	axios.post(url + "/addToLightbox", qs.stringify({set_id: set_id, item_id: item_id }))
+		.then(function (resp) {
+			let data = resp.data;
+
+			callback(data);
+		})
+		.catch(function (error) {
+			console.log("Error while adding item lightbox: ", error);
+		});
+}
+
+/**
+ * Remove item from lightbox
+ *
+ * @param url URL to send lightbox remove item request to.
+ * @param callback Function to call when add item request is completed. The first parameter of the callback will be an object
+ * 			containing the result of the action.
+ */
+function removeItemFromLightbox(url, set_id, item_id, callback) {
+	axios.post(url + "/removeFromLightbox", qs.stringify({set_id: set_id, item_id: item_id }))
+		.then(function (resp) {
+			let data = resp.data;
+
+			callback(data);
+		})
+		.catch(function (error) {
+			console.log("Error while removing item lightbox: ", error);
+		});
+}
+
+export { fetchLightboxList, addLightbox, editLightbox, deleteLightbox, addItemToLightbox, removeItemFromLightbox };
