@@ -6629,3 +6629,14 @@ MAIN.bibliography_landing .results {
 .lightbox_list {
   border: 1px #333 solid;
 }
+
+.back_to_lightbox {
+  margin-top: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+  position: relative;
+}
+
+.lightbox_headline {
+  margin-top: 20px;
+}

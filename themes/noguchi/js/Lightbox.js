@@ -36,7 +36,9 @@ const LightboxContext = React.createContext();
 class Lightbox extends React.Component{
 	constructor(props) {
 		super(props);
-		initBrowseContainer(this, props);
+		this.dontUseDefaultKey = true;
+
+		initBrowseContainer(this, props, false);
 
 		this.state['set_id'] = null;
 		this.state['filters'] = null;
@@ -47,7 +49,6 @@ class Lightbox extends React.Component{
 		this.saveNewLightbox = this.saveNewLightbox.bind(this);
 		this.deleteLightbox = this.deleteLightbox.bind(this);
 
-		this.dontUseDefaultKey = true;
 	}
 
 	componentDidMount() {
@@ -96,7 +97,6 @@ class Lightbox extends React.Component{
 					that.setState(state);
 				}
 			});
-
 		}
 	}
 
@@ -136,13 +136,14 @@ class LightboxNavigation extends React.Component{
 
 		state.set_id = null; // clear set
 		state.filters = null; // clear filters
+		state.introduction.title = null;
 
 		this.context.setState(state);
 	}
 	render() {
 		return(
-			<div className="current"><div className='wrap'>
-				<div className="body-sans"><a href='#' onClick={this.backToList}>Back to set list</a></div></div>
+			<div className="back_to_lightbox">
+				<div className="body-sans"><a href='#' onClick={this.backToList}>Back to lightbox list</a></div>
 			</div>
 		);
 	}
@@ -166,18 +167,13 @@ class LightboxIntro extends React.Component {
 
 	render() {
 		if (!this.props.headline || (this.props.headline.length === 0)) {
-			return (<section className=""></section>);
+			return (<section></section>);
 		}else{
 			this.context.state.headline = this.props.headline;
 			this.context.state.description = this.props.description;
 		}
-		return (<section className="intro">
-			<div className="wrap block-large">
-				<div className="wrap-max-content">
-					<div className="block-half subheadline-bold text-align-center">{this.context.state.headline}</div>
-					<div className="block-half body-text-l">{this.context.state.description}</div>
-				</div>
-			</div>
+		return (<section className='lightbox_headline'>
+			<h1 className="headline-s text-align-center">My Documents: {this.props.headline}</h1>
 		</section>)
 	}
 }
@@ -244,8 +240,16 @@ class LightboxCurrentFilterList extends React.Component {
 				let cv =  this.context.state.filters[f];
 				for(let c in cv) {
 					let label = cv[c];
-					let facetLabel = (this.context.state.facetList && this.context.state.facetList[f]) ? this.context.state.facetList[f]['label_singular'] : "";
-					filterList.push((<a key={ f + '_' + c } href='#' className='browseRemoveFacet' onClick={this.removeFilter} data-facet={f} data-value={c}><span dangerouslySetInnerHTML={{__html: label}}></span> <span onClick={this.removeFilter} data-facet={f} data-value={c}>&times;</span></a>));
+					let m = label.match(/^ca_sets\.set_id:([\d]+)$/);
+					if (m){
+						label = this.context.state.lightboxList.sets[m[1]]['label'];
+						filterList.push((<a key={ f + '_' + c } href='#' className='browseRemoveFacet'><span dangerouslySetInnerHTML={{__html: label}}></span></a>));
+					} else {
+						filterList.push((
+							<a key={f + '_' + c} href='#' className='browseRemoveFacet' onClick={this.removeFilter}
+							   data-facet={f} data-value={c}><span dangerouslySetInnerHTML={{__html: label}}></span>
+								<span onClick={this.removeFilter} data-facet={f} data-value={c}>&times;</span></a>));
+					}
 				}
 			}
 		}
@@ -731,7 +735,7 @@ class LightboxListItem extends React.Component {
 		state.set_id = set_id;
 		if(!state.filters) { state.filters = {}; }
 		if(!state.filters['_search']) { state.filters = {'_search': {}}; }
-		state.filters['_search']['ca_sets.set_id:' + set_id] = 'Set ' + set_id;
+		state.filters['_search']['ca_sets.set_id:' + set_id] = 'Lightbox: ' + state.lightboxList.sets[set_id].label;
 		this.context.setState(state);
 		this.context.reloadResults(state.filters, false);
 	}
@@ -753,9 +757,14 @@ class LightboxListItem extends React.Component {
 	}
 
 	saveLightboxEdit(name) {
+		let that = this;
 		editLightbox(this.context.props.baseUrl, {'name': name, set_id: this.props.data.set_id }, function(resp) {
 			// TODO: display potential errors
-			//console.log("got", resp);
+
+			// Update name is context state
+			let state = that.context.state;
+			state.lightboxList.sets[that.props.data.set_id]['label'] = name;
+			that.context.setState(state);
 		});
 	}
 

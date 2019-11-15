@@ -157,6 +157,7 @@
 		 *
 		 */
 		public function getContent() {
+			// TODO: generalize this
 			$browse_info = [
 				'displayName' => _('Archive'),
 				'labelSingular' => _("item"),
@@ -183,12 +184,15 @@
 				'sortDirection' => [
 							'Date' => 'asc'
 				],
-				'introduction' => [],
 				'excludeFieldsFromSearch' => ['ca_objects.internal_notes']
 			];
 
+			$t_set = new ca_sets($set_id = $this->request->getParameter('set_id', pInteger));
+			$introduction = [
+				'title' => $t_set->get('ca_sets.preferred_labels.name')
+			];
 
-			parent::__call('getContent', ['browseInfo' => $browse_info]);
+			parent::__call('getContent', ['browseInfo' => $browse_info, 'introduction' => $introduction]);
 		}
  		# ------------------------------------------------------
         /**

@@ -117,7 +117,7 @@ function getFilterString(filters) {
 /**
  * Initializer for the *Browse component
  */
-function initBrowseContainer(instance, props) {
+function initBrowseContainer(instance, props, loadResults=true) {
 	let that = instance;
 	that.state = initialState();
 	that.state.view = props.view;
@@ -134,7 +134,7 @@ function initBrowseContainer(instance, props) {
 
 		fetchResults(that.props.baseUrl + '/' + that.props.endpoint + '/s/' +
 			offset + (that.state.key ? '/key/' + that.state.key : '') + (filterString ? '/facets/' +
-				filterString : '') + (clearFilters ? '/clear/1' : ''), function(newState) {
+				filterString : '') + (clearFilters ? '/clear/1' : '') + (that.state.set_id ? '/set_id/' + that.state.set_id : ''), function(newState) {
 			callback(newState);
 		}, !this.dontUseDefaultKey);
 	};
@@ -161,6 +161,7 @@ function initBrowseContainer(instance, props) {
 		that.loadResults(function(newState) {
 			let state = that.state;
 			state.resultList.push(...newState.resultList);
+			state.resultSize = newState.resultSize;
 			that.setState(state);
 
 			if(that.loadMoreRef.current) {
@@ -217,11 +218,12 @@ function initBrowseContainer(instance, props) {
 		that.state.filters = props.initialFilters;
 	}
 
-	that.loadResults(function(newState) {
-		newState.view = that.state.view; // preserve view setting
-		that.setState(newState);
-	});
-
+	if (loadResults) {
+		that.loadResults(function (newState) {
+			newState.view = that.state.view; // preserve view setting
+			that.setState(newState);
+		});
+	}
 
 	that.loadMoreRef = React.createRef();
 }

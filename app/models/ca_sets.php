@@ -2452,7 +2452,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 				SELECT COUNT(*) c, cs.set_id
 				FROM ca_sets cs
 				INNER JOIN ca_set_items AS csi ON cs.set_id = csi.set_id
-				WHERE cs.set_id IN (?)
+				WHERE cs.set_id IN (?) 
 				GROUP BY cs.set_id
 			",[$set_ids]);
 			$counts = [];
