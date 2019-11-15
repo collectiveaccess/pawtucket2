@@ -158,7 +158,7 @@ class LightboxNavigation extends React.Component{
 	render() {
 		return(
 			<div className="back_to_lightbox">
-				<div className="body-sans"><a href='#' onClick={this.backToList}>Back to list</a></div>
+				<div className="text-gray block-quarter"><a href='#' className='eyebrow' onClick={this.backToList}>&lt; Back to list</a></div>
 			</div>
 		);
 	}
