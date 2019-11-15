@@ -72,7 +72,7 @@ class Lightbox extends React.Component{
 		let that = this;
 		fetchLightboxList(this.props.baseUrl, function(data) {
 			let state = that.state;
-			state.lightboxList = data;
+			state.lightboxList = data ? data : {};
 			that.setState(state);
 		});
 	}
@@ -97,7 +97,7 @@ class Lightbox extends React.Component{
 				}
 				return;
 			}
-			alert('Could not remove item from lightbox: ' + resp['err']);
+			alert('Could not remove item: ' + resp['err']);
 		});
 	}
 
@@ -214,7 +214,7 @@ class LightboxIntro extends React.Component {
 			this.context.state.description = this.props.description;
 		}
 		return (<section className='lightbox_headline'>
-			<h1 className="headline-s text-align-center">My Documents: {this.props.headline}</h1>
+			<h1 className="headline-s text-align-center">My Documents</h1><h2 className="subheadline-s text-align-center">{this.props.headline}</h2>
 		</section>)
 	}
 }
@@ -241,11 +241,10 @@ class LightboxStatistics extends React.Component {
 	render() {
 		return(<div className="current">
 			<div className="body-sans">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-				"Showing 1 Result."
+				"Showing 1 Item."
 				:
-				"Showing " + this.context.state.resultSize + " Results.") : ""}</div>
+				"Showing " + this.context.state.resultSize + " Items.") : ""}</div>
 
-				<LightboxCurrentFilterList/>
 		</div>
 		);
 	}
@@ -557,7 +556,7 @@ class LightboxResults extends React.Component {
 				resultList.push(<LightboxResultItem view={this.props.view} key={r.id} data={r} scrollToRef={ref}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
-			resultList.push(<h2 key='no_results'>No results found</h2>)
+			resultList.push(<h2 key='no_results' className='text-align-center noResults'>This collection has no items.<br/>Explore the archive and use the <span className="folderIcon"></span> icon<br/>to add items to your document collections.</h2>)
 		}
 
 		switch(this.props.view) {
@@ -566,7 +565,7 @@ class LightboxResults extends React.Component {
 					<div>
 						<section className="wrap block block-quarter-top grid">
 							<div className="wrap">
-								<div className="grid-flexbox-layout grid-ca-archive">
+								<div className="grid-flexbox-layout grid-ca-archive grid-ca-lightbox">
 									{resultList}
 								</div>
 							</div>
@@ -667,8 +666,7 @@ class LightboxResultItem extends React.Component {
 											<div className="ca-identifier text-gray"><a href={data.detailUrl}>{data.idno}</a></div>
 											<div className="thumb-text">
 												<a href={data.detailUrl}>{data.label}</a>
-												<br/>
-												<a className='eyebrow' data-item_id={data.id} onClick={this.context.removeItemFromLightbox}>(remove)</a>
+												<div className='smallButton text-align-center'><a data-item_id={data.id} onClick={this.context.removeItemFromLightbox}>Remove x</a></div>
 											</div>
 										</div>
 									</div>
@@ -823,7 +821,7 @@ class LightboxListItem extends React.Component {
 			customUI: ({ onClose }) => {
 				return (
 					<div className='col info text-gray'>
-						<p>Really delete lightbox <em>{this.props.data.label}</em>?</p>
+						<p>Really delete collection <em>{this.props.data.label}</em>?</p>
 
 						<div className='button'
 							onClick={() => {
@@ -898,7 +896,7 @@ class LightboxListItem extends React.Component {
 							  onCancel={this.context.cancelNewLightbox}
 							  saveButtonLabel="Save"
 							  cancelButtonLabel="Cancel"
-							  placeholder="Enter lightbox name"
+							  placeholder="Enter name"
 							  attributes={{name: "name", id: "lightbox_name" + this.props.data.set_id}}
 							  value={this.props.data.label}
 					/>

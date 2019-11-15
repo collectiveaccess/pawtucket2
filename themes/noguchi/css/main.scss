@@ -183,3 +183,65 @@ MAIN.my_documents_landing .results .button{
 	height: 40px;
 	padding: 0px 20px;
 }
+MAIN.my_documents_landing .easy-edit-button{
+	margin: 0 2px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid #999;
+    background-color: transparent;
+    border-radius: 0px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    transition: all 0.2s ease-out;
+    line-height: 39px;
+    height: 40px;
+    padding: 0px 20px;
+}
+MAIN.my_documents_landing .easy-edit-button:hover{
+	background-color: #999;
+    color: #fff;
+    border-color: #999;
+}
+MAIN.my_documents_landing .easy-edit-component-wrapper{
+	margin-right:10px;
+}
+.lightbox_headline H2{
+	margin-top:10px;
+}
+@media (min-width: 1025px) {
+	.lightbox_headline H2{
+		font-size:20px;
+	}
+}
+.smallButton a{
+	display: inline-block;
+	border: 1px solid #D8D8D8;
+	padding: 6px 6px 4px 7px;
+	text-transform: uppercase;
+	font-family: 'NH-Text-55', 'Helvetica', 'Arial', sans-serif;
+	letter-spacing: 1.25px;
+	color: #999; 
+	line-height: 14px;
+	font-size:10px;
+	cursor: pointer;
+}
+.grid-ca-lightbox .smallButton {
+	margin-top:25px;
+}
+.grid-ca-lightbox span.folderIcon {
+    background-image: url("../img/icon_image_collection.svg");
+    display:inline-block;
+    background-color: #828282;
+    padding: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 4px;
+    width: 28px;
+    height: 27px;
+}
+.grid-ca-lightbox h2.noResults{
+	line-height:1.5em;
+	margin-bottom:100px;
+}

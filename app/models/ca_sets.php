@@ -2446,19 +2446,24 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			$va_sets = [];
 
 			$set_ids = $qr_res->getAllFieldValues('set_id');
-			$labels = $this->getPreferredDisplayLabelsForIDs($set_ids);
+			
+			if (sizeof($set_ids) > 0) {
+                $labels = $this->getPreferredDisplayLabelsForIDs($set_ids);
 
-			$qr_counts = $o_db->query("
-				SELECT COUNT(*) c, cs.set_id
-				FROM ca_sets cs
-				INNER JOIN ca_set_items AS csi ON cs.set_id = csi.set_id
-				WHERE cs.set_id IN (?) 
-				GROUP BY cs.set_id
-			",[$set_ids]);
-			$counts = [];
-			while($qr_counts->nextRow()) {
-				$counts[$qr_counts->get('set_id')] = (int)$qr_counts->get('c');
-			}
+                $qr_counts = $o_db->query("
+                    SELECT COUNT(*) c, cs.set_id
+                    FROM ca_sets cs
+                    INNER JOIN ca_set_items AS csi ON cs.set_id = csi.set_id
+                    WHERE cs.set_id IN (?) 
+                    GROUP BY cs.set_id
+                ",[$set_ids]);
+                $counts = [];
+                while($qr_counts->nextRow()) {
+                    $counts[$qr_counts->get('set_id')] = (int)$qr_counts->get('c');
+                }
+            } else {
+                $labels = $counts = [];
+            }
 
 			$qr_res->seek(0);
 			while($qr_res->nextRow()) {
