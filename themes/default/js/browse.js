@@ -117,7 +117,7 @@ function getFilterString(filters) {
 /**
  * Initializer for the *Browse component
  */
-function initBrowseContainer(instance, props, loadResults=true) {
+function initBrowseContainer(instance, props, loadResults=true, callback=null) {
 	let that = instance;
 	that.state = initialState();
 	that.state.view = props.view;
@@ -222,6 +222,9 @@ function initBrowseContainer(instance, props, loadResults=true) {
 		that.loadResults(function (newState) {
 			newState.view = that.state.view; // preserve view setting
 			that.setState(newState);
+			if(callback) {
+				callback(newState);
+			}
 		});
 	}
 

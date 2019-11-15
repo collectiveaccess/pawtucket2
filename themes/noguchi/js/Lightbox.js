@@ -36,11 +36,26 @@ const LightboxContext = React.createContext();
 class Lightbox extends React.Component{
 	constructor(props) {
 		super(props);
-		this.dontUseDefaultKey = true;
+		let that = this;
 
-		initBrowseContainer(this, props, false);
+		this.dontUseDefaultKey =  !props.showLastLightboxOnLoad;	// try to display by default last lightbox on load?
 
-		this.state['set_id'] = null;
+		initBrowseContainer(this, props, !this.dontUseDefaultKey, function(d) {
+			// If loading with last lightbox visible by default then try to set set_id state after initial load
+			if (d.filters['_search']) {
+				let state = that.state;
+				let vals = Object.values(d.filters['_search']);
+				for(let i in vals) {
+					let m = vals[i].match(/^ca_sets\.set_id:([\d]+)$/);
+					if(m && (parseInt(m[1]) > 0)) {
+						state['set_id'] = parseInt(m[1]);
+					}
+				}
+				that.setState(state);
+			}
+		});
+
+		this.state['set_id'] = props.showLastLightboxOnLoad ? -1 : null;
 		this.state['filters'] = null;
 
 		this.componentDidMount = this.componentDidMount.bind(this);
@@ -503,7 +518,7 @@ class LightboxResults extends React.Component {
 	render() {
 		let resultList = [];
 		if((this.context.state.resultSize === null) && !this.context.state.loadingMore) {
-			resultList.push((<div className="spinner">
+			resultList.push((<div className="spinner" key='spinner'>
 				<div className="bounce1"></div>
 				<div className="bounce2"></div>
 				<div className="bounce3"></div>
@@ -871,6 +886,6 @@ class LightboxListItem extends React.Component {
 export default function _init() {
 	ReactDOM.render(
 		<Lightbox baseUrl={appData.baseUrl} endpoint='getContent'
-							  initialFilters={appData.initialFilters} view={appData.view}
+							  initialFilters={appData.initialFilters} view={appData.view} showLastLightboxOnLoad={appData.showLastLightboxOnLoad}
 							  browseKey={appData.key}/>, document.querySelector(selector));
 }

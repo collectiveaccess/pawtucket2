@@ -205,7 +205,7 @@
 							<div class="options">
 <?php
 								print caNavLink("Profile", "", "", "LoginReg", "profileForm");
-								print caNavLink("My Documents", "", "", "Lightbox", "Index");
+								print caNavLink("My Documents", "", "", "Lightbox", "Index", ['showList' => 1]);
 								print caNavLink("Logout", "", "", "LoginReg", "logout");
 ?>
 							</div>

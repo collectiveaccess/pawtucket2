@@ -99,7 +99,7 @@
  			// Don't set last find when loading facet (or when the 'dontSetFind' request param is explicitly set)
  			// as some other controllers use this action and setting last find will disrupt ResultContext navigation 
  			// by setting it to "browse" when in fact a search (or some other context) is still in effect.
- 			if (!$this->request->getParameter('getFacet', pInteger) && !$this->request->getParameter('dontSetFind', pInteger)) {
+ 			if (!$this->request->getParameter('getFacet', pInteger) && !$this->request->getParameter('dontSetFind', pInteger) && !caGetOption('dontSetFind', $pa_args, false)) {
  				$this->opo_result_context->setAsLastFind();
  			}
  			

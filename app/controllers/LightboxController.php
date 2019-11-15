@@ -192,7 +192,7 @@
 				'title' => $t_set->get('ca_sets.preferred_labels.name')
 			];
 
-			parent::__call('getContent', ['browseInfo' => $browse_info, 'introduction' => $introduction]);
+			parent::__call('getContent', ['browseInfo' => $browse_info, 'introduction' => $introduction, 'dontSetFind' => true]);
 		}
  		# ------------------------------------------------------
         /**
@@ -305,7 +305,7 @@
 			return [
 				'module_path' => '',
 				'controller' => 'Lightbox',
-				'action' => 'view',
+				'action' => 'index/last',
 				'params' => []
 			];
  		}
