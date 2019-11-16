@@ -307,6 +307,9 @@
 </ifcount>}}}
 
 	</main>
+<?php
+	if($this->request->isLoggedIn()) {
+?>                    
 
 <script type="text/javascript">
     pawtucketUIApps['LightboxManagement'] = {
@@ -319,3 +322,6 @@
         }
     };
 </script>
+<?php
+	}
+?>                    
