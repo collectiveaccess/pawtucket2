@@ -105,6 +105,8 @@ class Lightbox extends React.Component{
 		let state = this.state;
 		state.lightboxList.sets[-1] = {"set_id": -1, "label": ""};
 		this.setState(state);
+		
+		e.preventDefault();
 	}
 
 	cancelNewLightbox(e) {

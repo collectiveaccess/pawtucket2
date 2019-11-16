@@ -164,7 +164,11 @@ class NoguchiCrBrowseCurrentFilterList extends React.Component {
 		if(this.context.state.filters) {
 			for (let f in this.context.state.filters) {
 				let cv =  this.context.state.filters[f];
+				let currentDecade = "";
 				for(let c in cv) {
+					if(f == "decade_facet"){
+						currentDecade = c;	
+					}
 					let label = cv[c];
 					let facetLabel = (this.context.state.facetList && this.context.state.facetList[f]) ? this.context.state.facetList[f]['label_singular'] : "";
 					filterList.push((<a key={ f + '_' + c } href='#' className='browseRemoveFacet' onClick={this.removeFilter} data-facet={f} data-value={c}>{label} <span onClick={this.removeFilter} data-facet={f} data-value={c}>&times;</span></a>));
@@ -207,13 +211,29 @@ class NoguchiCrBrowseFilterControls extends React.Component {
 		} else {
 			this.context.reloadResults({}, true);
 		}
+//		this.context.state.currentDecade = targetDecade;
 		e.preventDefault();
 	}
 	render() {
 		let decades = [];
 		if (this.context.state && this.context.state.decades) {
+			let currentDecades = [];
+			if(this.context.state.filters) {
+				for (let f in this.context.state.filters) {
+					if(f == "decade_facet"){
+						let cv =  this.context.state.filters[f];
+						for(let c in cv) {	
+							currentDecades.push(c);	
+						}
+					}
+				}
+			}
 			for(let k in this.context.state.decades) {
-				decades.push(<li><a href='#' data-decade={this.context.state.decades[k]} onClick={this.loadDecade}>{this.context.state.decades[k]}</a></li>);
+				let selected = "";
+				if(currentDecades.includes(this.context.state.decades[k])){
+					selected = "selected";
+				}
+				decades.push(<li className={selected}><a href='#' data-decade={this.context.state.decades[k]} onClick={this.loadDecade}>{this.context.state.decades[k]}</a></li>);
 			}
 		}
 
