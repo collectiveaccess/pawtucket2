@@ -144,6 +144,9 @@
 		 *
 		 */
 		function list($options = null) {
+			if ($this->opb_is_login_redirect) {
+				return;
+			}
 			$this->view->setVar("write_sets", $va_write_sets);
 			$t_sets = new ca_sets();
 			$va_read_sets = $t_sets->getSetsForUser(array("user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
@@ -157,6 +160,9 @@
 		 *
 		 */
 		public function getContent() {
+			if ($this->opb_is_login_redirect) {
+				return;
+			}
 			// TODO: generalize this
 			$browse_info = [
 				'displayName' => _('Archive'),
@@ -306,10 +312,39 @@
 		 *
 		 */
 		public function addToLightbox() {
+			global $$g_ui_locale_id;
+			if ($this->opb_is_login_redirect) {
+				return;
+			}
 			$set_id = $this->request->getParameter('set_id', pInteger);
 			$item_id = $this->request->getParameter('item_id', pInteger);
 
-			if (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+			if ($set_id == null) {
+				$table = $this->request->getParameter('table', pString);
+				if ($table_num = Datamodel::getTableNum($table)) {
+					$name = "My documents";
+
+					$t_set = new ca_sets();
+					$t_set->set([
+						'type_id' => 'public_presentation',
+						'table_num' => $table_num,
+						'user_id' => $this->request->getUserID(),
+						'set_code' => mb_substr(preg_replace("![^A-Za-z0-9\-_]+!", "_", $name), 0, 30),
+						'access' => 1
+					]);
+					$t_set->insert();
+					if ($t_set->numErrors() > 0) {
+						$data = ['err' => _t('Could not create new lightbox: %1', join("; ", $t_set->getErrors()))];
+					} else {
+						$t_set->addLabel(['name' => $name], $g_ui_locale_id, null, true);
+						$t_set->addItem($item_id);
+						$data = ['ok' => 1, 'label' => $name, 'set_id' => $t_set->getPrimaryKey(), 'count' => 1, 'item_type_singular' => Datamodel::getTableProperty($table_num, 'NAME_SINGULAR'), 'item_type_plural' => Datamodel::getTableProperty($table_num, 'NAME_PLURAL')];
+
+					}
+				}else {
+					$data = ['err' => _t('Cannot add to this lightbox')];
+				}
+			}elseif (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
 				$t_set->addItem($item_id);
 
 				$data = ['ok' => 1];
@@ -324,6 +359,9 @@
 		 *
 		 */
 		public function removeFromLightbox() {
+			if ($this->opb_is_login_redirect) {
+				return;
+			}
 			$set_id = $this->request->getParameter('set_id', pInteger);
 			$item_id = $this->request->getParameter('item_id', pInteger);
 

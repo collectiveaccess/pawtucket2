@@ -88,8 +88,8 @@ function deleteLightbox(url, set_id, callback) {
  * @param callback Function to call when add item request is completed. The first parameter of the callback will be an object
  * 			containing the result of the action.
  */
-function addItemToLightbox(url, set_id, item_id, callback) {
-	axios.post(url + "/addToLightbox", qs.stringify({set_id: set_id, item_id: item_id }))
+function addItemToLightbox(url, set_id, item_id, table, callback) {
+	axios.post(url + "/addToLightbox", qs.stringify({set_id: set_id, item_id: item_id, table: table }))
 		.then(function (resp) {
 			let data = resp.data;
 

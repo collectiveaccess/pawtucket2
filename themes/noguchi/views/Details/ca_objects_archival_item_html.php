@@ -112,15 +112,8 @@
                 <div class="img-container dark">
 <?php
 				if($this->request->isLoggedIn()) {
-?>                    
-					<div class="actions">
-						<a href="#" class="collection"></a>
-<?php
-						if($vs_download_link){
-							print $vs_download_link;
-						}
 ?>
-					</div>
+					<div id="lightboxManagement" class="lightbox_management"></div>
 <?php
 				}
 ?>
@@ -233,7 +226,7 @@
 					}
 ?>
 
-						<div id="lightboxManagement"></div>
+
                 </div>
 
 
@@ -309,7 +302,7 @@
 	</main>
 <?php
 	if($this->request->isLoggedIn()) {
-?>                    
+?>
 
 <script type="text/javascript">
     pawtucketUIApps['LightboxManagement'] = {
@@ -324,4 +317,4 @@
 </script>
 <?php
 	}
-?>                    
+?>

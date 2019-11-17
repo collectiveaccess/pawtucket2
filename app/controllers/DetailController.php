@@ -415,24 +415,27 @@
  			$this->view->setVar('id', $ps_id);
  			$this->view->setVar($t_subject->primaryKey(), $ps_id);
 
- 			//
-			// Set membership
-			//
- 			$t_set = new ca_sets();
- 			$in_lightboxes = array_map(function($v) {
- 				return [
- 					'isMember' => 1, 'set_id' => $v['set_id'], 'label' => $v['name']
-				];
-			}, caExtractValuesByUserLocale($t_set->getSetsForItem($t_subject->tableName(), $t_subject->getPrimaryKey(), ['user_id' => $this->request->getUserID(), 'checkAccess' => $this->opa_access_values, 'access' => __CA_SET_EDIT_ACCESS__])));
+ 			if($this->request->isLoggedIn()) {
+				//
+				// Lightbox membership
+				//
+				$t_set = new ca_sets();
+				$in_lightboxes = array_map(function ($v) {
+					return [
+						'isMember' => 1, 'set_id' => $v['set_id'], 'label' => $v['name']
+					];
+				}, caExtractValuesByUserLocale($t_set->getSetsForItem($t_subject->tableName(), $t_subject->getPrimaryKey(), ['user_id' => $this->request->getUserID(), 'checkAccess' => $this->opa_access_values, 'access' => __CA_SET_EDIT_ACCESS__])));
 
- 			$available_lightboxes = array_map(function($v) {
-				return [
-					'isMember' => 0, 'set_id' => $v['set_id'], 'label' => $v['name']
-				];
-			}, caExtractValuesByUserLocale($t_set->getAvailableSetsForItem($t_subject->tableName(), $t_subject->getPrimaryKey(), ['user_id' => $this->request->getUserID(), 'checkAccess' => $this->opa_access_values, 'access' => __CA_SET_EDIT_ACCESS__])));
+				$available_lightboxes = array_map(function ($v) {
+					return [
+						'isMember' => 0, 'set_id' => $v['set_id'], 'label' => $v['name']
+					];
+				}, caExtractValuesByUserLocale($t_set->getAvailableSetsForItem($t_subject->tableName(), $t_subject->getPrimaryKey(), ['user_id' => $this->request->getUserID(), 'checkAccess' => $this->opa_access_values, 'access' => __CA_SET_EDIT_ACCESS__])));
 
- 			$this->view->setVar('lightboxes', array_merge($in_lightboxes, $available_lightboxes));
-
+				$this->view->setVar('lightboxes', array_merge($in_lightboxes, $available_lightboxes));
+			} else {
+				$this->view->setVar('lightboxes', []);
+			}
 
  			//
  			// share link

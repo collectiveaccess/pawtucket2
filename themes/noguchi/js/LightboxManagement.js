@@ -20,12 +20,17 @@ class LightboxManagement extends React.Component {
 		this.removeFromLightbox = this.removeFromLightbox.bind(this);
 	}
 
-
 	addToLightbox(set_id) {
 		let that = this;
-		addItemToLightbox(this.props.baseUrl, set_id, this.props.id, function(resp) {
+		addItemToLightbox(this.props.baseUrl, set_id, this.props.id, this.props.table, function(resp) {
 			if (resp && resp['ok']) {
 				let state = that.state;
+
+				if(set_id === null) {
+					state.lightboxList = [{'isMember':1, 'set_id':resp.set_id, 'label': resp.label}];
+					that.setState(state);
+				}
+
 				for(let i in state.lightboxList) {
 					if (state.lightboxList[i]['set_id'] == set_id) {
 						state.lightboxList[i]['isMember'] = true;
@@ -52,7 +57,6 @@ class LightboxManagement extends React.Component {
 						break;
 					}
 				}
-
 				return;
 			}
 			alert("Could not remove item from lightbox: " + resp['err']);
@@ -61,9 +65,10 @@ class LightboxManagement extends React.Component {
 
 	render() {
 		let lightboxList = this.state.lightboxList;
-		let lightboxEntries = [];
+		let inLightboxEntries = [], availableLightboxEntries = [];
+		console.log(lightboxList);
 		for(let i in lightboxList) {
-			lightboxEntries.push(<LightboxEntry
+			let entry = <LightboxEntry
 				key={lightboxList[i].set_id}
 				baseUrl={this.props.baseUrl}
 				label={lightboxList[i].label}
@@ -72,19 +77,52 @@ class LightboxManagement extends React.Component {
 				isMember={lightboxList[i].isMember}
 				addToLightboxCallback={this.addToLightbox}
 				removeFromLightboxCallback={this.removeFromLightbox}
-			/>);
+			/>;
+			if (lightboxList[i].isMember) {
+				inLightboxEntries.push(entry);
+			} else {
+				availableLightboxEntries.push(entry);
+			}
 		}
-		if (lightboxEntries.length > 0) {
+		if ((availableLightboxEntries.length > 0) || (inLightboxEntries.length > 0)) {
+			let availableLightboxList = null, inLightboxList = null;
+			if (availableLightboxEntries.length > 0) {
+				availableLightboxList = (<div class='lightbox_add_remove_list'><div className='eyebrow'>Add to document collection:</div>
+					{availableLightboxEntries}</div>);
+			}
+			if (inLightboxEntries.length > 0) {
+				inLightboxList = (<div class='lightbox_add_remove_list'><div className='eyebrow'>In document collection:</div>
+					{inLightboxEntries}</div>);
+			}
 			return (
-				<div className="block-quarter">
-					<div className="eyebrow text-gray">Lightboxes</div>
-					<div className="ca-data">
-					{lightboxEntries}
+					<div className="utility-container">
+						<div className="utility utility_menu">
+							<a href="#" className="trigger collection">&nbsp;</a>
+							<div className="options">
+								{availableLightboxList}
+								{inLightboxList}
+							</div>
+						</div>
 					</div>
-				</div>
 			);
 		} else {
-			return(<div></div>);
+			return(<div className="utility-container">
+				<div className="utility utility_menu">
+					<a href="#" className="trigger collection">&nbsp;</a>
+					<div className="options">
+						<LightboxEntry
+							key={"new_lightbox"}
+							baseUrl={this.props.baseUrl}
+							label={"Add to new collection"}
+							set_id={null}
+							item_id={this.props.id}
+							isMember={false}
+							addToLightboxCallback={this.addToLightbox}
+							removeFromLightboxCallback={this.removeFromLightbox}
+						/>
+					</div>
+				</div>
+			</div>);
 		}
 	}
 }
@@ -108,17 +146,17 @@ class LightboxEntry extends React.Component {
 	}
 
 	render() {
-		if(this.props.isMember) {
+		if(this.props.set_id === null) {
 			return (
-				<div>
-					{this.props.label} <a href='#' onClick={this.removeFromLightbox} className='eyebrow'>(Remove)</a>
-				</div>
+				<a href='#' onClick={this.addToLightbox}>{this.props.label}</a>
+			);
+		} else if(this.props.isMember) {
+			return (
+				<a href='#' onClick={this.removeFromLightbox}>{this.props.label} (remove)</a>
 			);
 		} else {
 			return (
-				<div>
-					{this.props.label} <a href='#' onClick={this.addToLightbox} className='eyebrow'>(Add)</a>
-				</div>
+				<a href='#' onClick={this.addToLightbox}>{this.props.label} (add)</a>
 			);
 		}
 	}
@@ -133,4 +171,3 @@ class LightboxEntry extends React.Component {
 export default function _init() {
 	ReactDOM.render(<LightboxManagement baseUrl={appData.baseUrl} lightboxes={appData.lightboxes} table={appData.table} id={appData.id}  />, document.querySelector(selector));
 }
-
