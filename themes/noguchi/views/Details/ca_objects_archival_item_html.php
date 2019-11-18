@@ -115,6 +115,9 @@
 ?>
 					<div id="lightboxManagement" class="lightbox_management"></div>
 <?php
+					if($vs_download_link){
+						print "<div class='actions'>".$vs_download_link."</div>";
+					}
 				}
 ?>
                     

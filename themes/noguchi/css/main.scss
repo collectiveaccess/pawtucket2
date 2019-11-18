@@ -259,7 +259,14 @@ MAIN.my_documents_landing .easy-edit-component-wrapper{
   margin-right: 20px;
   position: relative;
 }
-
+BODY.collective-access div.lightbox_management {
+	position: absolute;
+	top: 9px;
+	left: 10px;
+}
+MAIN.archive_detail .img-container .actions {
+	left:40px;
+}
 BODY.collective-access div.lightbox_management  .utility-container .utility {
   text-align: center;
   position: absolute;
@@ -286,12 +293,14 @@ BODY.collective-access div.lightbox_management .utility-container .utility .trig
   right: -20px;
   position: absolute;
   z-index: 100;
-  background-color: unset; }
+  background-color: unset;
+  opacity: 0.5;
+  transition: opacity 0.3s ease-out;
+  background-repeat: no-repeat; }
 
 A.lightbox_trigger {
   background-image: url("../img/icon_image_collection.svg");
 }
-
 div.lightbox_add_remove_list {
   margin-bottom: 15px;
   padding: 5px 15px 20px 15px;
