@@ -148,7 +148,7 @@ class LightboxEntry extends React.Component {
 	render() {
 		if(this.props.set_id === null) {
 			return (
-				<a href='#' onClick={this.addToLightbox}>{this.props.label}</a>
+				<a href='#' onClick={this.addToLightbox}>{this.props.label} <img src='/themes/noguchi/img/icon_plus_small.svg' alt='Add'/></a>
 			);
 		} else if(this.props.isMember) {
 			return (
