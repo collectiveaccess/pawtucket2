@@ -152,11 +152,11 @@ class LightboxEntry extends React.Component {
 			);
 		} else if(this.props.isMember) {
 			return (
-				<a href='#' onClick={this.removeFromLightbox}>{this.props.label} (remove)</a>
+				<a href='#' onClick={this.removeFromLightbox}>{this.props.label} <img src='/themes/noguchi/img/icon_close_small.svg' alt='Remove'/></a>
 			);
 		} else {
 			return (
-				<a href='#' onClick={this.addToLightbox}>{this.props.label} (add)</a>
+				<a href='#' onClick={this.addToLightbox}>{this.props.label} <img src='/themes/noguchi/img/icon_plus_small.svg' alt='Add'/></a>
 			);
 		}
 	}
