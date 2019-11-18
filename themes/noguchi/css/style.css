@@ -6660,7 +6660,7 @@ BODY.collective-access div.lightbox_management  .utility-container .utility {
   top: 0px;
   left: 0px;
   right: unset;
-  padding: 0px 39px 20px 0px; }
+  padding: 0px 39px 00px 0px; }
 
 BODY.collective-access div.lightbox_management .utility-container {
   border-bottom: 0px solid #D8D8D8;
@@ -6687,5 +6687,6 @@ A.lightbox_trigger {
 }
 
 div.lightbox_add_remove_list {
+  margin-top: -20px;
   margin-bottom: 15px;
 }
