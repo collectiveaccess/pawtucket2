@@ -566,7 +566,7 @@ class NoguchiArchiveBrowseResultLoadMoreButton extends React.Component {
 	static contextType = NoguchiArchiveBrowseContext;
 
 	render() {
-		if ((this.props.start + this.props.itemsPerPage) < this.props.size)  {
+		if (((this.props.start + this.props.itemsPerPage) < this.props.size) || (this.context.state.resultSize  === null))  {
 			let loadingText = (this.context.state.resultSize === null) ? "LOADING" : "Load More +";
 
 			return (<section className="block text-align-center">

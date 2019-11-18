@@ -539,7 +539,7 @@ class NoguchiLibraryBrowseResults extends React.Component {
  */
 class NoguchiLibraryBrowseResultLoadMoreButton extends React.Component {
 	render() {
-		if ((this.props.start + this.props.itemsPerPage) < this.props.size) {
+		if (((this.props.start + this.props.itemsPerPage) < this.props.size) || (this.context.state.resultSize  === null)) {
 			return (
 				<section className="block text-align-center">
 				<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>Load More +</a>
