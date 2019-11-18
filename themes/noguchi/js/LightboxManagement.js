@@ -66,7 +66,6 @@ class LightboxManagement extends React.Component {
 	render() {
 		let lightboxList = this.state.lightboxList;
 		let inLightboxEntries = [], availableLightboxEntries = [];
-		console.log(lightboxList);
 		for(let i in lightboxList) {
 			let entry = <LightboxEntry
 				key={lightboxList[i].set_id}
@@ -110,16 +109,19 @@ class LightboxManagement extends React.Component {
 				<div className="utility utility_menu">
 					<a href="#" className="trigger collection">&nbsp;</a>
 					<div className="options">
-						<LightboxEntry
-							key={"new_lightbox"}
-							baseUrl={this.props.baseUrl}
-							label={"Add to new collection"}
-							set_id={null}
-							item_id={this.props.id}
-							isMember={false}
-							addToLightboxCallback={this.addToLightbox}
-							removeFromLightboxCallback={this.removeFromLightbox}
-						/>
+						<div className='lightbox_add_remove_list'>
+							<div className='eyebrow'>Add to document collection:</div>
+							<LightboxEntry
+								key={"new_lightbox"}
+								baseUrl={this.props.baseUrl}
+								label={"My documents"}
+								set_id={null}
+								item_id={this.props.id}
+								isMember={false}
+								addToLightboxCallback={this.addToLightbox}
+								removeFromLightboxCallback={this.removeFromLightbox}
+							/>
+						</div>
 					</div>
 				</div>
 			</div>);
@@ -148,7 +150,7 @@ class LightboxEntry extends React.Component {
 	render() {
 		if(this.props.set_id === null) {
 			return (
-				<a href='#' onClick={this.addToLightbox}>{this.props.label} <img src='/themes/noguchi/img/icon_plus_small.svg' alt='Add'/></a>
+				<a href='#' onClick={this.addToLightbox}>{this.props.label} <img src='/themes/noguchi/img/icon_plus_small.svg' alt='Add to new collection'/></a>
 			);
 		} else if(this.props.isMember) {
 			return (
