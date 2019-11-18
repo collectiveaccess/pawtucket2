@@ -110,11 +110,11 @@ class LightboxManagement extends React.Component {
 					<a href="#" className="trigger collection">&nbsp;</a>
 					<div className="options">
 						<div className='lightbox_add_remove_list'>
-							<div className='eyebrow'>Add to document collection:</div>
+							<div className='eyebrow'>Add to My Documents:</div>
 							<LightboxEntry
 								key={"new_lightbox"}
 								baseUrl={this.props.baseUrl}
-								label={"My documents"}
+								label={"New collection"}
 								set_id={null}
 								item_id={this.props.id}
 								isMember={false}
@@ -150,15 +150,15 @@ class LightboxEntry extends React.Component {
 	render() {
 		if(this.props.set_id === null) {
 			return (
-				<a href='#' onClick={this.addToLightbox}>{this.props.label} <img src='/themes/noguchi/img/icon_plus_small.svg' alt='Add to new collection'/></a>
+				<a href='#' onClick={this.addToLightbox}><img src='/themes/noguchi/img/icon_plus_small.svg' alt='Add to new collection'/> {this.props.label}</a>
 			);
 		} else if(this.props.isMember) {
 			return (
-				<a href='#' onClick={this.removeFromLightbox}>{this.props.label} <img src='/themes/noguchi/img/icon_close_small.svg' alt='Remove'/></a>
+				<a href='#' onClick={this.removeFromLightbox}><img src='/themes/noguchi/img/icon_close_small.svg' alt='Remove'/> {this.props.label}</a>
 			);
 		} else {
 			return (
-				<a href='#' onClick={this.addToLightbox}>{this.props.label} <img src='/themes/noguchi/img/icon_plus_small.svg' alt='Add'/></a>
+				<a href='#' onClick={this.addToLightbox}><img src='/themes/noguchi/img/icon_plus_small.svg' alt='Add'/> {this.props.label}</a>
 			);
 		}
 	}
