@@ -90,6 +90,8 @@
          * @throws ApplicationException
          */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+ 			$this->ops_find_type = 'lightbox';
+
  			parent::__construct($po_request, $po_response, $pa_view_paths);
 
             // Catch disabled lightbox
