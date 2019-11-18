@@ -38,6 +38,14 @@
 						break;
 					default:
 						print $va_notification['message'];
+						if(strpos($va_notification['message'], 'registering') !== false){
+							# --- registration message - add google analytics code
+?>
+							<script type="text/javascript">
+								MAIN.setGAEventByName('CA Account Registration');
+							</script>
+<?php
+						}
 						break;
 				}
 ?>
