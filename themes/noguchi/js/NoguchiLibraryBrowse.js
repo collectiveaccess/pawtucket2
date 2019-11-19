@@ -536,8 +536,11 @@ class NoguchiLibraryBrowseResults extends React.Component {
  *
  * Used by:
  *  	NoguchiLibraryBrowseResults
+ *
+ * Uses context: NoguchiBibliographyBrowseContext
  */
 class NoguchiLibraryBrowseResultLoadMoreButton extends React.Component {
+	static contextType = NoguchiArchiveBrowseContext;
 	render() {
 		if (((this.props.start + this.props.itemsPerPage) < this.props.size) || (this.context.state.resultSize  === null)) {
 			return (
