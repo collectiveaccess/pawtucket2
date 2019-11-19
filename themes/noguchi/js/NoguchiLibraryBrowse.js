@@ -484,10 +484,10 @@ class NoguchiLibraryBrowseResults extends React.Component {
 
 		if((this.context.state.resultSize === null) && !this.context.state.loadingMore) {
 			resultList.push((<div className="spinner">
-				<div className="bounce1"></div>
-				<div className="bounce2"></div>
-				<div className="bounce3"></div>
-			</div>));
+				<div className='bounce1' key='bounce1'></div>
+				<div className='bounce2' key='bounce2'></div>
+				<div className='bounce3' key='bounce3'></div>
+			</div>))
 		} else if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
