@@ -153,7 +153,7 @@
 									break;
 									# ---------------------------------------
 									case "exhibition":
-										print caNavLink("Exhibitions", "", "", "Browse", "exhibitions");
+										print "<a href='https://www.noguchi.org/museum/exhibitions/'>Exhibitions</a>";
 									break;
 									# ---------------------------------------
 								}
@@ -172,7 +172,7 @@
 									break;
 									# ---------------------------------------
 									case "exhibitions":
-											print caNavLink("Exhibitions", "", "", "Browse", "exhibitions");
+										print "<a href='https://www.noguchi.org/museum/exhibitions/'>Exhibitions</a>";
 									break;
 									# ---------------------------------------
 								}
