@@ -121,7 +121,6 @@
 		switch(strToLower($vs_status)){
 			case "published":
 			case "research suspended":
-			default:
 ?>
             <div class="wrap-max-content text-align-center">
 
@@ -257,6 +256,7 @@
 			break;
 			# ----------------------------------------------------
 			case "research pending":
+			default:
 ?>
             <div class="wrap-max-content text-align-center">
 
