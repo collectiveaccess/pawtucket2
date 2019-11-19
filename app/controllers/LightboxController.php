@@ -240,7 +240,7 @@
 						'type_id' => 'public_presentation',
 						'table_num' => $table_num,
 						'user_id' => $this->request->getUserID(),
-						'set_code' => mb_substr(preg_replace("![^A-Za-z0-9\-_]+!", "_", $name), 0, 30),
+						'set_code' => caGenerateGUID(),
 						'access' => 1
 					]);
 					$t_set->insert();
@@ -331,7 +331,7 @@
 						'type_id' => 'public_presentation',
 						'table_num' => $table_num,
 						'user_id' => $this->request->getUserID(),
-						'set_code' => mb_substr(preg_replace("![^A-Za-z0-9\-_]+!", "_", $name), 0, 30),
+						'set_code' => caGenerateGUID(),
 						'access' => 1
 					]);
 					$t_set->insert();
