@@ -492,7 +492,7 @@ class NoguchiLibraryBrowseResults extends React.Component {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
 				let ref = (parseInt(r.id) === parseInt(this.context.state.scrollToResultID)) ? this.scrollToRef : null;
-				resultList.push(<NoguchiLibraryBrowseResultItem view={this.props.view} key={r.id} data={r} scrollToRef={ref}/>)
+				resultList.push(<NoguchiLibraryBrowseResultItem key={'result_' + r.id} view={this.props.view} key={r.id} data={r} scrollToRef={ref}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
 			resultList.push(<h2>No results found</h2>)
