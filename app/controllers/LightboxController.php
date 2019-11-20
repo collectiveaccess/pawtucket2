@@ -34,12 +34,12 @@
  	require_once(__CA_MODELS_DIR__."/ca_user_groups.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_user_groups.php");
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_users.php");
- 	require_once(__CA_APP_DIR__."/controllers/FindController.php");
+ 	require_once(__CA_APP_DIR__."/controllers/BrowseController.php");
  	require_once(__CA_LIB_DIR__."/GeographicMap.php");
 	require_once(__CA_LIB_DIR__.'/Parsers/ZipStream.php');
 	require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
  
- 	class LightboxController extends FindController {
+ 	class LightboxController extends BrowseController {
  		# -------------------------------------------------------
         /**
          * @var array
@@ -90,6 +90,8 @@
          * @throws ApplicationException
          */
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
+ 			$this->ops_find_type = 'lightbox';
+
  			parent::__construct($po_request, $po_response, $pa_view_paths);
 
             // Catch disabled lightbox
@@ -125,40 +127,255 @@
         /**
          *
          */
- 		function index($pa_options = null) {
+ 		function index($options = null) {
  			if($this->opb_is_login_redirect) { return; }
 
 			$va_lightbox_displayname = caGetLightboxDisplayName();
 			$this->view->setVar('lightbox_displayname', $va_lightbox_displayname["singular"]);
 			$this->view->setVar('lightbox_displayname_plural', $va_lightbox_displayname["plural"]);
 
-            # Get sets for display
-            $t_sets = new ca_sets();
- 			$va_read_sets = $t_sets->getSetsForUser(array("user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
- 			$va_write_sets = $t_sets->getSetsForUser(array("user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
+			$this->opo_result_context = new ResultContext($this->request, 'ca_objects', 'lightbox');
+			$this->opo_result_context->setAsLastFind();
 
- 			# Remove write sets from the read array
- 			$va_read_sets = array_diff_key($va_read_sets, $va_write_sets);
-
-            $this->view->setVar("read_sets", $va_read_sets);
- 			$this->view->setVar("write_sets", $va_write_sets);
-
-//            $va_set_ids = array_merge(array_keys($va_read_sets), array_keys($va_write_sets));
-// 			$this->view->setVar("set_ids", $va_set_ids);
-
-            MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name));
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name));
  			
- 			$this->render(caGetOption("view", $pa_options, "Lightbox/list_html.php"));
+ 			$this->render(caGetOption("view", $pa_options, "Lightbox/index_html.php"));
  		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		function list($options = null) {
+			if ($this->opb_is_login_redirect) {
+				return;
+			}
+			$this->view->setVar("write_sets", $va_write_sets);
+			$t_sets = new ca_sets();
+			$va_read_sets = $t_sets->getSetsForUser(array("user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "access" => (!is_null($vn_access = $this->request->config->get('lightbox_default_access'))) ? $vn_access : 1, "parents_only" => true));
+			$va_write_sets = $t_sets->getSetsForUser(array("user_id" => $this->request->getUserID(), "checkAccess" => $this->opa_access_values, "parents_only" => true));
+
+			$this->view->setVar("data", ['sets' => $va_write_sets]);
+			$this->render("Lightbox/browse_data_json.php");
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public function getContent() {
+			if ($this->opb_is_login_redirect) {
+				return;
+			}
+			// TODO: generalize this
+			$browse_info = [
+				'displayName' => _('Archive'),
+				'labelSingular' => _("item"),
+ 				'labelPlural' =>  _("items"),
+				'table' => 'ca_objects',
+
+				'restrictToTypes' => [],
+				'availableFacets' => [],
+				'facetGroup' => 'archive',
+
+				'itemsPerPage' => 12,
+
+				'views' => [
+					'images' => [
+						'representation' => "<ifdef code='ca_object_representations.media.small.url'>^ca_object_representations.media.small.url</ifdef><ifnotdef code='ca_object_representations.media.small.url'>/themes/noguchi/assets/pawtucket/graphics/placeholder.png</ifnotdef>",
+			    		'caption' => "^ca_objects.preferred_labels.name",
+			    		'caption2' => " ^ca_objects.idno"
+						]
+					],
+				
+				'sortBy' => [
+					'Date' => 'ca_objects.date.parsed_date;ca_objects.idno'
+				],
+				'sortDirection' => [
+							'Date' => 'asc'
+				],
+				'excludeFieldsFromSearch' => ['ca_objects.internal_notes']
+			];
+			if ($set_id = $this->request->getParameter('set_id', pInteger)) {
+				Session::setVar("lightbox_last_set_id", $set_id);
+			} else {
+				$set_id = Session::getVar("lightbox_last_set_id");
+			}
+
+			$t_set = new ca_sets($set_id);
+			$introduction = [
+				'title' => $t_set->get('ca_sets.preferred_labels.name')
+			];
+
+			parent::__call('getContent', ['browseInfo' => $browse_info, 'introduction' => $introduction, 'dontSetFind' => true, 'noCache' => true]);
+		}
  		# ------------------------------------------------------
         /**
          *
          */
- 		function view($pa_options = null) {
+ 		function view($options = null) {
 			if ($this->opb_is_login_redirect) {
 				return;
 			}
 			$this->render("Lightbox/contents_html.php");
+		}
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		function add($options = null) {
+			global $g_ui_locale_id;
+			if ($this->opb_is_login_redirect) {
+				return;
+			}
+
+			$name = $this->request->getParameter('name', pString);
+			$table = $this->request->getParameter('table', pString);
+			if ($table_num = Datamodel::getTableNum($table)) {
+				if (strlen($name) === 0) {
+					$data = ['err' => _t('Lightbox name must not be blank', $name)];
+				} elseif ($t_set = ca_sets::find(['name' => $name, 'table_num' => $table_num, 'user_id' => $this->request->getUserID()], ['returnAs' => 'firstModelInstance'])) {
+					$data = ['err' => _t('Lightbox with name %1 already exists', $name)];
+				} else {
+					$t_set = new ca_sets();
+					$t_set->set([
+						'type_id' => 'public_presentation',
+						'table_num' => $table_num,
+						'user_id' => $this->request->getUserID(),
+						'set_code' => caGenerateGUID(),
+						'access' => 1
+					]);
+					$t_set->insert();
+					if ($t_set->numErrors() > 0) {
+						$data = ['err' => _t('Could not create new lightbox: %1', join("; ", $t_set->getErrors()))];
+					} else {
+						$t_set->addLabel(['name' => $name], $g_ui_locale_id, null, true);
+						$data = ['ok' => 1, 'name' => $name, 'set_id' => $t_set->getPrimaryKey(), 'item_type_singular' => Datamodel::getTableProperty($table_num, 'NAME_SINGULAR'), 'item_type_plural' => Datamodel::getTableProperty($table_num, 'NAME_PLURAL')];
+					}
+
+				}
+			} else {
+				$data = ['err' => _t('Invalid light box type')];
+			}
+			$this->view->setVar("data", $data);
+			$this->render("Lightbox/browse_data_json.php");
+		}
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		function edit($options = null) {
+			global $g_ui_locale_id;
+			if ($this->opb_is_login_redirect) {
+				return;
+			}
+
+			$set_id = $this->request->getParameter('set_id', pInteger);
+			$name = $this->request->getParameter('name', pString);
+
+			if (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+				$t_set->replaceLabel(['name' => $name], $g_ui_locale_id, null, true);
+				if ($t_set->numErrors() > 0) {
+					$data = ['err' => _t('Could not save set title: %1', join("; ", $t_set->getErrors()))];
+				} else{
+					$data = ['ok' => 1, 'name' => $name];
+				}
+			} else {
+				$data = ['err' => _t('Invalid set id')];
+			}
+			$this->view->setVar("data", $data);
+			$this->render("Lightbox/browse_data_json.php");
+		}
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		function delete($options = null) {
+			global $g_ui_locale_id;
+			if ($this->opb_is_login_redirect) {
+				return;
+			}
+
+			$set_id = $this->request->getParameter('set_id', pInteger);
+			if (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+				$t_set->delete(true);
+				if ($t_set->numErrors() > 0) {
+					$data = ['err' => _t('Could not delete set: %1', join("; ", $t_set->getErrors()))];
+				} else{
+					$data = ['ok' => 1];
+				}
+			} else {
+				$data = ['err' => _t('Invalid set id')];
+			}
+
+			$this->view->setVar("data", $data);
+			$this->render("Lightbox/browse_data_json.php");
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public function addToLightbox() {
+			global $$g_ui_locale_id;
+			if ($this->opb_is_login_redirect) {
+				return;
+			}
+			$set_id = $this->request->getParameter('set_id', pInteger);
+			$item_id = $this->request->getParameter('item_id', pInteger);
+
+			if ($set_id == null) {
+				$table = $this->request->getParameter('table', pString);
+				if ($table_num = Datamodel::getTableNum($table)) {
+					$name = "My documents";
+
+					$t_set = new ca_sets();
+					$t_set->set([
+						'type_id' => 'public_presentation',
+						'table_num' => $table_num,
+						'user_id' => $this->request->getUserID(),
+						'set_code' => caGenerateGUID(),
+						'access' => 1
+					]);
+					$t_set->insert();
+					if ($t_set->numErrors() > 0) {
+						$data = ['err' => _t('Could not create new lightbox: %1', join("; ", $t_set->getErrors()))];
+					} else {
+						$t_set->addLabel(['name' => $name], $g_ui_locale_id, null, true);
+						$t_set->addItem($item_id);
+						$data = ['ok' => 1, 'label' => $name, 'set_id' => $t_set->getPrimaryKey(), 'count' => 1, 'item_type_singular' => Datamodel::getTableProperty($table_num, 'NAME_SINGULAR'), 'item_type_plural' => Datamodel::getTableProperty($table_num, 'NAME_PLURAL')];
+
+					}
+				}else {
+					$data = ['err' => _t('Cannot add to this lightbox')];
+				}
+			}elseif (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+				$t_set->addItem($item_id);
+
+				$data = ['ok' => 1];
+			} else {
+				$data = ['err' => _t('Cannot add to this lightbox')];
+			}
+			$this->view->setVar("data", $data);
+			$this->render("Lightbox/browse_data_json.php");
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public function removeFromLightbox() {
+			if ($this->opb_is_login_redirect) {
+				return;
+			}
+			$set_id = $this->request->getParameter('set_id', pInteger);
+			$item_id = $this->request->getParameter('item_id', pInteger);
+
+			if (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
+				$t_set->removeItem($item_id);
+
+				$data = ['ok' => 1];
+			} else {
+				$data = ['err' => _t('Cannot remove from this lightbox')];
+			}
+			$this->view->setVar("data", $data);
+			$this->render("Lightbox/browse_data_json.php");
 		}
  		# -------------------------------------------------------
 		/** 
@@ -169,7 +386,7 @@
 			return [
 				'module_path' => '',
 				'controller' => 'Lightbox',
-				'action' => 'view',
+				'action' => 'index/last',
 				'params' => []
 			];
  		}

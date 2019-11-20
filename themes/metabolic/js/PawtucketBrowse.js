@@ -38,10 +38,8 @@ class PawtucketBrowse extends React.Component{
 
 		return(
 			<PawtucketBrowseContext.Provider value={this}>	
-                <main className="container">
-                    <PawtucketBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
-                    <PawtucketBrowseResults view={this.state.view} facetLoadUrl={facetLoadUrl}/>
-                </main>
+                <PawtucketBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
+                <PawtucketBrowseResults view={this.state.view} facetLoadUrl={facetLoadUrl}/>
 			</PawtucketBrowseContext.Provider>
 		);
 	}
@@ -64,16 +62,14 @@ class PawtucketBrowseStatistics extends React.Component {
 	static contextType = PawtucketBrowseContext;
 
 	render() {
-		return(
-		<div class="row borderBottom">
-            <div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
-                <div className="pb-4 d-flex justify-content-center"><h2>{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-                    "1 Result"
-                    :
-                    "" + this.context.state.resultSize + " Results") : "Loading..."}</h2></div>
-            </div>
-		</div>
-		);
+		if (this.context.state.resultSize === 0) {
+			return(<h1 className="my-4">No results found</h1>);
+		}else{
+			return(
+				<h1 className="my-4">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
+					"1 Result" : this.context.state.resultSize + " Results") : <div className="text-center">Loading...</div>}</h1>
+			);
+		}
 	}
 }
 
@@ -108,17 +104,15 @@ class PawtucketBrowseCurrentFilterList extends React.Component {
 				for(let c in cv) {
 					let label = cv[c];
 					let facetLabel = (this.context.state.facetList && this.context.state.facetList[f]) ? this.context.state.facetList[f]['label_singular'] : "";
-					filterList.push((<a key={ f + '_' + c }href='#'
-										  className='browseRemoveFacet'><br/><span className="facetlabel">{facetLabel}</span>: <span className="facetname"> {label} </span>
-						<span onClick={this.removeFilter}
+					filterList.push(<a key={ f + '_' + c } href='#' onClick={this.removeFilter}
 							  data-facet={f}
-							  data-value={c}>&nbsp;&times;</span></a>));
+							  data-value={c}><button type='button' className='btn btn-primary btn-sm' data-facet={f} data-value={c}>{label} <ion-icon name='close-circle' data-facet={f} data-value={c}></ion-icon></button></a>);
 				}
 			}
 		}
-		return(<div className="tags">
-			{filterList}
-		</div>);
+		return(
+			<div>{filterList}</div>
+		);
 	}
 }
 
@@ -140,10 +134,18 @@ class PawtucketBrowseFilterControls extends React.Component {
 	static contextType = PawtucketBrowseContext;
 
 	render() {
-		return(
-				<section>
-					<PawtucketBrowseStatistics/>
-				</section>);
+		return(<div className="row">
+				<div className="col-md-8 bToolBar">
+					<div className="row">
+						<div className="col-md-6"><PawtucketBrowseStatistics/></div>
+						<div className="col-md-6">
+							<PawtucketBrowseViewList/>
+							<PawtucketBrowseDownloadOptions/>
+							<PawtucketBrowseSortOptions/>
+						</div>
+					</div>
+				</div>
+			</div>);
 	}
 }
 
@@ -172,14 +174,14 @@ class PawtucketBrowseFacetList extends React.Component {
 
 	render() {
 		let facetButtons = [];
-		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "";
+		let filterLabel = this.context.state.availableFacets ? "Filter By " : "";
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
 				let isOpen = ((this.context.state.selectedFacet !== null) && (this.context.state.selectedFacet === n)) ? 'true' : 'false';
 
 				// Facet button-and-panel assemblies. Each button is paired with a panel it controls
-				facetButtons.push((<li key={"facet_panel_container_" + n}>
+				facetButtons.push((<div key={"facet_panel_container_" + n}>
 					<PawtucketBrowseFacetButton key={"facet_panel_button_" + n} text={this.context.state.availableFacets[n].label_plural}
 																	name={n} callback={this.toggleFacetPanel}/>
 
@@ -188,7 +190,7 @@ class PawtucketBrowseFacetList extends React.Component {
 												   loadResultsCallback={this.context.loadResultsCallback}
 												   closeFacetPanelCallback={this.closeFacetPanel}
 												   arrowPosition={this.state.arrowPosition}/>
-					</li>
+					</div>
 				));
 			}
 			if(facetButtons.length == 0){
@@ -197,14 +199,18 @@ class PawtucketBrowseFacetList extends React.Component {
 		}
 
 
-		return(
-			<div className="options-filter-widget">
-				<div className="options text-gray">
-					<span className="caption-text">{filterLabel}</span>
-					<ul>{facetButtons}</ul>
+		if(this.context.state.availableFacets){
+			return(
+				<div>
+					<h2>{filterLabel}</h2>
+					<div className='bRefineFacets'>{facetButtons}</div>
 				</div>
-			</div>
-		)
+			)
+		}else{
+			return(
+				" "
+			)
+		}
 	}
 }
 
@@ -225,9 +231,9 @@ class PawtucketBrowseFacetList extends React.Component {
  */
 class PawtucketBrowseFacetButton extends React.Component {
 	render() {
-		return(<div className="options-filters">
-		<a href="#" data-option={this.props.name} onClick={this.props.callback}>{this.props.text}</a>
-		</div>);
+		return(
+			<label data-option={this.props.name} onClick={this.props.callback} role='button' aria-expanded='false' aria-controls='collapseFacet'>{this.props.text}</label>
+		);
 	}
 }
 
@@ -271,24 +277,28 @@ class PawtucketBrowseFacetPanel extends React.Component {
 				let item = this.state.facetContent[i];
 
 				options.push((
-					<li key={'facetItem' + i}>
+					<div className="col-sm-12 col-md-4 bRefineFacetItem py-2" key={'facetItem' + i}>
 						<PawtucketBrowseFacetPanelItem id={'facetItem' + i} data={item} callback={this.clickFilterItem} selected={this.state.selectedFacetItems[item.id]}/>
-					</li>
+					</div>
 				));
 			}
-			applyButton = (options.length > 0) ? (<div className="d-flex justify-content-left pb-5">
-				<a className="button" href="#" onClick={this.applyFilters}>Apply</a>
+			applyButton = (options.length > 0) ? (<div className="col-sm-12 text-center my-3">
+				<a className="btn btn-primary btn-sm" href="#" onClick={this.applyFilters}>Apply</a>
 			</div>) : "";
 		} else {
 			// Loading message while fetching facet
-			options.push(<li key={"facet_loading"}><h5>Loading...</h5></li>);
+			options.push(<div key={"facet_loading"} className="col-sm-12 text-center">Loading...</div>);
 		}
 
 		return(<div style={styles}>
-					<ul className="filters" data-values="type_facet">
-						{options}
-					</ul>
-					{applyButton}
+					<div className="container">
+						<div className="row bRefineFacet" data-values="type_facet">
+							{options}
+						</div>
+						<div className="row">
+							{applyButton}
+						</div>
+					</div>
 			</div>);
 	}
 }
@@ -320,17 +330,13 @@ class PawtucketBrowseFacetPanelItem extends React.Component {
 	render() {
 		let { id, data } = this.props;
 		let count = (data.content_count > 0) ? '(' + data.content_count + ')' : '';
-		return(<div className="checkbox">
-			<input id={id} value={data.id} data-label={data.label}  className="option-input" type="checkbox" checked={this.props.selected} onChange={this.props.callback}/>
+		return(<>
+			<input id={id} value={data.id} data-label={data.label} type="checkbox" name='facets[]' checked={this.props.selected} onChange={this.props.callback}/>
 			<label htmlFor={id}>
-				<span className="title">
-					<a href='#'>
-						{data.label} &nbsp;
-						<span className="number">{count}</span>
-					</a>
-				</span>
+				{data.label} &nbsp;
+				<span className="number">{count}</span>
 			</label>
-		</div>);
+		</>);
 	}
 }
 
@@ -375,16 +381,115 @@ class PawtucketBrowseNavigation extends React.Component {
 	}
 
 	render() {
-		return(
-			<section className="ca_nav">
-				<nav className="hide-for-mobile">
-						<form action="#" onSubmit={this.loadSearch}>
-							<div className="cell"><input name="search" type="text" placeholder="Search within..." ref={this.searchRef}
-														 className="inlinesearch"/></div>
-						
-						</form>
-				</nav>
-			</section>
+		if ((this.context.state.availableFacets !== null) || (this.context.state.resultSize !== null)){
+			return(
+				<div className="bSearchWithinContainer my-2">
+					<form className="form-inline my-2 my-lg-0" role="search" id="searchWithin" action="#" onSubmit={this.loadSearch}>
+						<input type="text" className="form-control bSearchWithin" placeholder="Search within results..." name="search" aria-label="Search"/>
+						<button className="btn" type="submit"><i className="material-icons">search</i></button>
+					</form>
+				</div>
+			);
+		}else{
+			return(
+				" "
+			);
+		}
+	}
+}
+/**
+ * Renders buttons to switch views cofigured in browse.conf
+ *
+ * Props are:
+ * 		view : view format to use for display of results
+ *
+ * Used by:
+ *  	PawtucketBrowse
+ *
+ * Uses context: PawtucketBrowseContext
+ */
+class PawtucketBrowseViewList extends React.Component {
+	static contextType = PawtucketBrowseContext;
+
+	render() {
+		let viewButtonOptions = ["images", "list"]; // make this come from browse.conf
+		let viewButtonIcons = {
+								"images" : "<ion-icon name='apps'></ion-icon>",
+								"list" : "<ion-icon name='ios-list-box'></ion-icon>"
+							}
+		let viewButtonList = [];
+		if(viewButtonIcons) {
+			for (let i in viewButtonIcons) {
+				let b = viewButtonIcons.i;
+				viewButtonList.push(<a href='#' className='disabled' dangerouslySetInnerHTML={{__html: viewButtonIcons[i]}}></a>);
+			}
+		}
+
+		return (
+			<div id="bViewButtons">{viewButtonList}</div>
+		);
+	}
+}
+
+/**
+ * Renders download options
+ *
+ * Props are:
+ * 		
+ *
+ * Used by:
+ *  	PawtucketBrowse
+ *
+ * Uses context: PawtucketBrowseContext
+ */
+class PawtucketBrowseDownloadOptions extends React.Component {
+	static contextType = PawtucketBrowseContext;
+
+	render() {
+		return (
+			<div id="bDownloadOptions">
+				<div className="dropdown show">
+					<a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<ion-icon name="download"></ion-icon>
+				  </a>
+
+				  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					<a class="dropdown-item" href="#">PDF</a>
+					<a class="dropdown-item" href="#">XCEL</a>
+				  </div>
+				</div>
+			</div>
+		);
+	}
+}
+/**
+ * Renders download options
+ *
+ * Props are:
+ * 		
+ *
+ * Used by:
+ *  	PawtucketBrowse
+ *
+ * Uses context: PawtucketBrowseContext
+ */
+class PawtucketBrowseSortOptions extends React.Component {
+	static contextType = PawtucketBrowseContext;
+
+	render() {
+		return (
+			<div id="bSortOptions">
+				<div className="dropdown show">
+					<a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<ion-icon name="funnel"></ion-icon>
+				  </a>
+
+				  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					<a class="dropdown-item" href="#">Identifier</a>
+					<a class="dropdown-item" href="#">Name</a>
+				  </div>
+				</div>
+			</div>
 		);
 	}
 }
@@ -415,33 +520,33 @@ class PawtucketBrowseResults extends React.Component {
 				let r = this.context.state.resultList[i];
 				resultList.push(<PawtucketBrowseResultItem view={this.props.view} key={r.id} data={r}/>)
 			}
-		} else if (this.context.state.resultSize === 0) {
-			resultList.push(<h2>No results found</h2>)
 		}
 
 		switch(this.props.view) {
 			default:
 				return (
-					<div>
-						<section className="results">
-							<div className="row">
-								<div className="col-lg-2 no-gutters pl-3 p-1">
-									<PawtucketBrowseNavigation/>
-									<PawtucketBrowseCurrentFilterList/> <br/>
-									<PawtucketBrowseFacetList facetLoadUrl={this.props.facetLoadUrl}/>
+					<div className="row"  id="browseResultsContainer">
+							<div className="col-md-8 bResultList">
+								<div className="card-columns">
+									{resultList}
 								</div>
-								<div className="col-lg-10 no-gutters p-1">
-									<div className="card-columns">
-										{resultList}
-									</div>
-								</div>	
-							</div>
-						</section>
-						<PawtucketBrowseResultLoadMoreButton start={this.context.state.start}
+								<PawtucketBrowseResultLoadMoreButton start={this.context.state.start}
 															 itemsPerPage={this.context.state.itemsPerPage}
 															 size={this.context.state.resultSize}
 															 loadMoreHandler={this.context.loadMoreResults}
-															 loadMoreRef={this.context.loadMoreRef}/>
+															 loadMoreRef={this.context.loadMoreRef}/>	
+							</div>
+							<div className="bRightCol col-md-4 col-lg-3 offset-lg-1">
+								<div className="position-fixed vh-100 mr-3 pt-3">
+									<PawtucketBrowseNavigation/>
+									<div id="bRefine">
+										<PawtucketBrowseCurrentFilterList/>
+										<PawtucketBrowseFacetList facetLoadUrl={this.props.facetLoadUrl}/>
+									</div>
+									<div className="forceWidth">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</div>
+								</div>
+							</div>
+						
 					</div>
 				);
 				break;
@@ -471,14 +576,12 @@ class PawtucketBrowseResultLoadMoreButton extends React.Component {
 	static contextType = PawtucketBrowseContext;
 
 	render() {
-		if ((this.props.start + this.props.itemsPerPage) < this.props.size)  {
-			let loadingText = (this.context.state.resultSize === null) ? "LOADING" : "Load More +";
+		if (((this.props.start + this.props.itemsPerPage) < this.props.size) || (this.context.state.resultSize  === null)) {
+			let loadingText = (this.context.state.resultSize === null) ? "LOADING" : "Load More";
 
-			return (<section className="block text-align-center">
-				<div className="row"><div className="col-lg-12 d-flex mx-auto justify-content-center">
-				<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>{loadingText}</a>
-				</div></div>
-				</section>);
+			return (<div className="row bLoadMore"><div className="col-sm-12 text-center my-3">
+				<a className="button btn btn-primary" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>{loadingText}</a>
+				</div></div>);
 		} else {
 			return(<span></span>)
 		}
@@ -515,16 +618,10 @@ class PawtucketBrowseResultItem extends React.Component {
 				break;
 			default:
 				return (
-					<div className="card mx-auto" ref={this.props.scrollToRef}>
-						<a href={detail_url}>
-							<div className="colorblock">
-								<div dangerouslySetInnerHTML={{__html: data.representation}}/>
-							</div>
-						</a>
-						<div className="masonry-title">
-							<a href={detail_url} dangerouslySetInnerHTML={{__html: data.label}}></a>
-						</div>
-
+					<div className='card mb-4 bResultImage' ref={this.props.scrollToRef}>
+						<a href={detail_url}><div dangerouslySetInnerHTML={{__html: data.representation}}/></a>
+						<div className='card-body mb-2'><a href={detail_url} dangerouslySetInnerHTML={{__html: data.caption}}></a></div>
+						<div className='card-footer bSetsSelectMultiple collapse text-right'><input type='checkbox' name='object_ids[]' value='{$vn_id}'/></div>
 					</div>
 				);
 				break;

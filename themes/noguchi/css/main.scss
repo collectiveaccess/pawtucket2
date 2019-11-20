@@ -1,5 +1,4 @@
 @import "style";
-
 .crSpinner{
 	position: absolute;
 	left: 50%;
@@ -23,7 +22,7 @@
 	text-transform:capitalize;
 }
 .img-wrapperPDF{
-	margin-top:15px;
+	margin-top:30px;
 }
 .diva-button {
 	display: inline-block !important;
@@ -80,6 +79,11 @@ BODY.collective-access .ca_filters .options-filter-widget .option_values {
 /* contact form */
 #contactForm .ca-form{
 	width:100%;
+}
+ul.form {
+	padding-left:0px;
+	margin-left:0px;
+	margin-top:30px;
 }
 /* responsive browse filters */
 BODY.collective-access .ca_filters .options-filter-widget {
@@ -178,4 +182,140 @@ MAIN.my_documents_landing .results .button{
 	line-height: 39px;
 	height: 40px;
 	padding: 0px 20px;
+}
+MAIN.my_documents_landing .easy-edit-button{
+	margin: 0 2px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    border: 1px solid #999;
+    background-color: transparent;
+    border-radius: 0px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    transition: all 0.2s ease-out;
+    line-height: 39px;
+    height: 40px;
+    padding: 0px 20px;
+}
+MAIN.my_documents_landing .easy-edit-button:hover{
+	background-color: #999;
+    color: #fff;
+    border-color: #999;
+}
+MAIN.my_documents_landing .easy-edit-component-wrapper{
+	margin-right:10px;
+}
+.lightbox_headline {
+  margin-top: 20px;
+}
+.lightbox_headline H2{
+	margin-top:10px;
+}
+@media (min-width: 1025px) {
+	.lightbox_headline H2{
+		font-size:20px;
+	}
+}
+.smallButton a{
+	display: inline-block;
+	border: 1px solid #D8D8D8;
+	padding: 6px 6px 4px 7px;
+	text-transform: uppercase;
+	font-family: 'NH-Text-55', 'Helvetica', 'Arial', sans-serif;
+	letter-spacing: 1.25px;
+	color: #999; 
+	line-height: 14px;
+	font-size:10px;
+	cursor: pointer;
+}
+.grid-ca-lightbox .smallButton {
+	margin-top:25px;
+}
+.grid-ca-lightbox span.folderIcon {
+    background-image: url("../img/icon_image_collection.svg");
+    display:inline-block;
+    background-color: #828282;
+    padding: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    border-radius: 4px;
+    width: 28px;
+    height: 27px;
+}
+.grid-ca-lightbox h2.noResults{
+	line-height:1.5em;
+	margin-bottom:100px;
+}
+
+.lightbox_list {
+  border: 1px #333 solid;
+}
+
+.back_to_lightbox {
+  margin-top: 10px;
+  margin-left: 20px;
+  margin-right: 20px;
+  position: relative;
+}
+BODY.collective-access div.lightbox_management {
+	position: absolute;
+	top: 9px;
+	left: 10px;
+}
+MAIN.archive_detail .img-container .actions {
+	left:40px;
+}
+BODY.collective-access div.lightbox_management  .utility-container .utility {
+  text-align: center;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: unset;
+  padding: 0px 0px 00px 0px; }
+
+BODY.collective-access div.lightbox_management .utility-container {
+  border-bottom: 0px solid #D8D8D8;
+  padding: 0 0 0 0;
+  position: relative;
+  z-index: 119;
+  width: 250px;
+}
+
+BODY.collective-access div.lightbox_management .utility-container .utility .trigger:after {
+  content: '';
+  display: block;
+  width: 21px;
+  height: 18px;
+  background-image: url("../img/icon_image_collection.svg");
+  top: 0;
+  right: -20px;
+  position: absolute;
+  z-index: 100;
+  background-color: unset;
+  opacity: 0.5;
+  transition: opacity 0.3s ease-out;
+  background-repeat: no-repeat; }
+
+A.lightbox_trigger {
+  background-image: url("../img/icon_image_collection.svg");
+}
+div.lightbox_add_remove_list {
+  margin-bottom: 15px;
+  padding: 5px 15px 20px 15px;
+  margin-top: -10px;
+}
+BODY.collective-access div.lightbox_management .utility-container .utility.utility_menu .options .eyebrow {
+	color:#000
+}
+BODY.collective-access div.lightbox_management .utility-container .utility.utility_menu .options A{
+	line-height: 18px;
+	white-space:normal;
+	padding-top:10px;
+	color:#999;
+}
+BODY.collective-access div.lightbox_management .utility-container .utility.utility_menu .options A:hover{
+	color:#000;
+	text-decoration:none;
 }

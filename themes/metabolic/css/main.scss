@@ -25,6 +25,7 @@ $body-font-size: 16px;
 $body-font-color: #414141;
 $body-margin-bottom: 340px;
 $body-margin-top: 90px;
+$body-bg-color: #FFFFFF;
 
 $link-color: #414141;
 $link-color-hover: #414141;
@@ -100,6 +101,8 @@ $label-font-size: 14px;
 $label-font-weight:bold;
 $label-text-transform:uppercase;
 
+$browse-toolbar-height: 6rem;
+
 /* not sure if we keep/use these */
 $lighter-color: $gray-3;
 $very-light: $gray-2;
@@ -131,6 +134,7 @@ body {
   font-size: $body-font-size;
   margin-bottom: $body-margin-bottom;
   margin-top: $body-margin-top;
+  background-color: $body-bg-color;
 }
 img {
 	width:100%;
@@ -763,9 +767,36 @@ p.legend a {
 
 /* search/browse full results */
 .search.results, .browse.results, .multiSearchObjectsCascading, .search.results, .browse.results, .multiSearchObjects{
+	.bToolBar{
+		position: fixed;
+		z-index:1000;
+		height: $browse-toolbar-height;
+		width: 100%;
+		background-color: $body-bg-color;
+		H1{
+			text-transform:capitalize;
+		}
+		#bViewButtons, #bSortOptions, #bDownloadOptions{
+			font-size:1.5em;
+			line-height: 3.5em;
+			float:right;
+			margin-left:20px;
+		}
+		#bViewButtons{
+			.active{
+				opacity:.5;
+			}
+		}
+		#bSortOptions, #bDownloadOptions{
+			.dropdown-menu{
+				font-size:.5em;
+				line-height:1.2em;
+			}
+		}
+	}
 	H1{
 		text-transform:capitalize;
-		display:inline-block;
+		/*display:inline-block;*/
 	}
 	.btn-group{
 		z-index:2000;
@@ -776,7 +807,7 @@ p.legend a {
 		}
 		.dropdown-item a{
 			text-decoration:none;
-			font-soze:.75rem;
+			font-size:.75rem;
 		}
 	}
 	.bResultItemImgPlaceholder{
@@ -789,10 +820,11 @@ p.legend a {
 		line-height:1rem;
 	}
 	.bResultList{
-		.bResultItemImgPlaceholder{
-			padding-top:1rem;
-			padding-bottom:1rem;
-			font-size:4rem;
+		margin-top: $browse-toolbar-height;
+	}
+	.bLoadMore{
+		.btn{
+			text-transform: uppercase;
 		}
 	}
 	.card-columns {
@@ -836,12 +868,6 @@ p.legend a {
 			}
 		}
 	}
-	#bViewButtons{
-		font-size:1.5rem;
-		.active{
-			opacity:.5;
-		}
-	}
 	.bRightCol{
 		background-color:$gray-2;
 		.forceWidth{
@@ -862,19 +888,59 @@ p.legend a {
 		}
 	}
 	#bRefine{
+		h2{
+			margin-bottom:.5em;
+			margin-top: 1em;
+		}
 		button{
 			display:inline-block;
 			width:100%;
 			margin-bottom:2px;
 		}
-		label{
-			font-family: $headings-font;
-			font-size:1.2rem;
-			text-transform:capitalize;
-			display:block;
-		}
-		a{
-			font-size:.75rem;
+		.bRefineFacets{
+			label{
+				font-family: $headings-font;
+				font-size:1.2rem;
+				text-transform:capitalize;
+				display:block;
+				cursor:pointer;			
+			}
+			label::before {
+				content: "▾ ";
+				font-size:.75em;
+				color:$gray-5;
+			}
+			.btn-sm{			
+				text-transform:uppercase;
+			}
+			.bRefineFacet{
+				max-height:300px;
+				overflow:scroll;
+				label{
+					font-family: $body-font;
+					font-size:.75rem;
+					display:inline;
+					padding-left:5px;
+				}
+				label::before {
+					content: "";
+				}
+				.bRefineFacetItem{
+					input[type="checkbox"]{
+						border-radius: 0;
+						background-color:$gray-5;
+						-webkit-appearance: none !important;
+						height: 10px;
+						width: 10px;
+					}
+					input[type="checkbox"]:checked{
+						background-color:$gray-6;
+					}
+				}
+				.bRefineFacetItem:hover{
+					background-color:#FFFFFF;
+				}
+			}
 		}
 	}
 }

@@ -23,6 +23,14 @@
 ?><!DOCTYPE html>
 <html lang="en-US" class="collective-access" id="cahtmlWrapper"> 
     <head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-20756733-3"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+			gtag('config', 'UA-20756733-1');
+		</script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -129,7 +137,7 @@
 							break;
 							# ---------------------------------------
 							case "cr":
-									print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
+									print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "Browse", "CR");
 							break;
 							# ---------------------------------------
 							case "detail":
@@ -141,11 +149,11 @@
 									break;
 									# ---------------------------------------
 									case "artwork":
-										print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
+										print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "Browse", "CR");
 									break;
 									# ---------------------------------------
 									case "exhibition":
-										print caNavLink("Exhibitions", "", "", "Browse", "exhibitions");
+										print "<a href='https://www.noguchi.org/isamu-noguchi/biography/exhibition-history/'>Exhibitions</a>";
 									break;
 									# ---------------------------------------
 								}
@@ -160,11 +168,11 @@
 									break;
 									# ---------------------------------------
 									case "cr":
-										print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "CR", "Index");
+										print caNavLink("The Isamu Noguchi Catalogue Raisonné", "", "", "Browse", "CR");
 									break;
 									# ---------------------------------------
 									case "exhibitions":
-											print caNavLink("Exhibitions", "", "", "Browse", "exhibitions");
+										print "<a href='https://www.noguchi.org/isamu-noguchi/biography/exhibition-history/'>Exhibitions</a>";
 									break;
 									# ---------------------------------------
 								}
@@ -205,7 +213,7 @@
 							<div class="options">
 <?php
 								print caNavLink("Profile", "", "", "LoginReg", "profileForm");
-								print caNavLink("My Documents", "", "", "Lightbox", "Index");
+								print caNavLink("My Documents", "", "", "Lightbox", "Index", ['showList' => 1]);
 								print caNavLink("Logout", "", "", "LoginReg", "logout");
 ?>
 							</div>

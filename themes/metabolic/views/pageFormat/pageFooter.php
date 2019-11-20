@@ -21,9 +21,10 @@
  * ----------------------------------------------------------------------
  */
 ?>
-				<div style="clear:both; height:1px;"><!-- empty --></div>
-			</div><!-- end col --></div><!-- end row --></div><!-- end container -->
-		</div><!-- end pageArea -->
+					<div style="clear:both; height:1px;"><!-- empty --></div>
+				</div><!-- end col --></div><!-- end row --></div><!-- end container -->
+			</div><!-- end pageArea -->
+		</div><!-- end main -->
 		<footer id="footer" class="py-5">
 			<H1 class="pt-3 pb-1">&copy; Metabolic Studio</H1>
 			<div class="pt-0 pb-3">

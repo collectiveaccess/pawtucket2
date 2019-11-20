@@ -112,16 +112,12 @@
                 <div class="img-container dark">
 <?php
 				if($this->request->isLoggedIn()) {
-?>                    
-					<div class="actions">
-						<a href="#" class="collection"></a>
-<?php
-						if($vs_download_link){
-							print $vs_download_link;
-						}
 ?>
-					</div>
+					<div id="lightboxManagement" class="lightbox_management"></div>
 <?php
+					if($vs_download_link){
+						print "<div class='actions'>".$vs_download_link."</div>";
+					}
 				}
 ?>
                     
@@ -232,6 +228,8 @@
 
 					}
 ?>
+
+
                 </div>
 
 
@@ -304,4 +302,22 @@
         </section>
 </ifcount>}}}
 
-    </main>
+	</main>
+<?php
+	if($this->request->isLoggedIn()) {
+?>
+
+<script type="text/javascript">
+    pawtucketUIApps['LightboxManagement'] = {
+        'selector': '#lightboxManagement',
+        'data': {
+            baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
+			lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
+			table: 'ca_objects',
+			id: <?php print (int)$vn_id; ?>
+        }
+    };
+</script>
+<?php
+	}
+?>

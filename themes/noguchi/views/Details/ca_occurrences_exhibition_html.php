@@ -256,6 +256,7 @@
 			break;
 			# ----------------------------------------------------
 			case "research pending":
+			default:
 ?>
             <div class="wrap-max-content text-align-center">
 

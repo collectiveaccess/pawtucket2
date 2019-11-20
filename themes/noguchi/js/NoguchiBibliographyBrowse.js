@@ -479,19 +479,19 @@ class NoguchiBibliographyBrowseResults extends React.Component {
 
 		if((this.context.state.resultSize === null) && !this.context.state.loadingMore) {
 			resultList.push((<div className="spinner">
-				<div className="bounce1"></div>
-				<div className="bounce2"></div>
-				<div className="bounce3"></div>
+				<div className='bounce1' key='bounce1'></div>
+				<div className='bounce2' key='bounce2'></div>
+				<div className='bounce3' key='bounce3'></div>
 			</div>));
 		} else if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
 				let r = this.context.state.resultList[i];
 				let ref = (parseInt(r.id) === parseInt(this.context.state.scrollToResultID)) ? this.scrollToRef : null;
 
-				resultList.push(<NoguchiBibliographyBrowseResultItem view={this.props.view} key={r.id} data={r} scrollToRef={ref}/>)
+				resultList.push(<NoguchiBibliographyBrowseResultItem key={'result_' + r.id} view={this.props.view} data={r} scrollToRef={ref}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
-			resultList.push(<h2>No results found</h2>)
+			resultList.push(<h2 key='no_results'>No results found</h2>)
 		}
 
 		switch(this.props.view) {
@@ -532,14 +532,19 @@ class NoguchiBibliographyBrowseResults extends React.Component {
  *
  * Used by:
  *  	NoguchiBibliographyBrowseResults
+ *
+ * Uses context: NoguchiBibliographyBrowseContext
  */
 class NoguchiBibliographyBrowseResultLoadMoreButton extends React.Component {
+	static contextType = NoguchiBibliographyBrowseContext;
+
 	render() {
-		if ((this.props.start + this.props.itemsPerPage) < this.props.size) {
-			return (
-				<section className="block text-align-center">
-				<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>Load More +</a>
-				</section>);
+		if (((this.props.start + this.props.itemsPerPage) < this.props.size) || (this.context.state.resultSize  === null))  {
+			let loadingText = (this.context.state.resultSize === null) ? "LOADING" : "Load More +";
+
+			return (<section className="block text-align-center">
+				<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>{loadingText}</a>
+			</section>);
 		} else {
 			return(<span></span>)
 		}
