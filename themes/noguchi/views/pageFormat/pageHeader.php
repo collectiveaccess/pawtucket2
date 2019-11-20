@@ -153,7 +153,7 @@
 									break;
 									# ---------------------------------------
 									case "exhibition":
-										print "<a href='https://www.noguchi.org/museum/exhibitions/'>Exhibitions</a>";
+										print "<a href='https://www.noguchi.org/isamu-noguchi/biography/exhibition-history/'>Exhibitions</a>";
 									break;
 									# ---------------------------------------
 								}
@@ -172,7 +172,7 @@
 									break;
 									# ---------------------------------------
 									case "exhibitions":
-										print "<a href='https://www.noguchi.org/museum/exhibitions/'>Exhibitions</a>";
+										print "<a href='https://www.noguchi.org/isamu-noguchi/biography/exhibition-history/'>Exhibitions</a>";
 									break;
 									# ---------------------------------------
 								}
