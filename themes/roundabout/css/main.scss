@@ -1,0 +1,795 @@
+@import "~bootstrap/scss/bootstrap";
+@import "~react-responsive-carousel/lib/styles/carousel.css";
+
+/* icons */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+
+/* fonts */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700,800&display=swap"');
+
+
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
+
+
+$gray-1: #F2F2F0;
+$gray-2: #EDEDEB;
+$gray-3: #D8D7CE;
+$gray-4: #C1BFB9;
+$gray-5: #A09E97;
+$gray-6: #414141;
+
+/* General Pawtucket variables? */
+$body-font: "Open Sans", sans-serif;
+$body-font-size: 16px;
+$body-font-color: #000;
+$body-margin-bottom: 120px;
+$body-margin-top: 180px;
+
+$link-color: #000;
+$link-color-hover: #00ACB9;
+$link-decoration: none;
+$link-hover-decoration: none;
+
+
+$headings-font: "Futura", sans-serif;
+$headings-font-weight: 800;
+
+$navbar-brand-padding:10px 0px 10px 0px;
+$navbar-brand-width-sm: 220px;
+$navbar-brand-width-md: 200px;
+$navbar-brand-width-lg: 250px;
+$navbar-brand-width-xl: 250px;
+
+$navbar-search-bg: #505150;
+$navbar-search-text-color: $gray-6;
+$navbar-search-placeholder-color: $gray-4;
+$navbar-search-button-bg-color: transparent;
+$navbar-search-button-color: $gray-6;
+
+$footer-border-top:none;
+$footer-font:$body-font;
+$footer-font-size: $body-font-size;
+$footer-color:#414141;
+$footer-link-font:$body-font;
+$footer-link-color: #414141;
+$footer-link-size:18px;
+$footer-link-decoration:none;
+
+$form-control-border-radius: 0px;
+
+$button-bg-primary: $gray-5;
+$button-color-primary: #FFF;
+$button-hover-bg-primary: $gray-6;
+$button-hover-color-primary: #FFF;
+$button-border-primary: 0px;
+$button-bg-secondary: $gray-2;
+$button-color-secondary: $gray-5;
+$button-hover-bg-secondary: $gray-1;
+$button-hover-color-secondary: $gray-5;
+$button-border-secondary: 0px;
+$button-radius: 0px;
+$button-decoration: none;
+
+$label-font-size: 14px;
+$label-font-weight:bold;
+$label-text-transform:uppercase;
+
+/* not sure if we keep/use these */
+$lighter-color: $gray-3;
+$very-light: $gray-2;
+$very-very-light: $gray-1;
+
+div, img, a{
+	/*transition: color .25s ease-in-out, background-color .25s ease-in-out, border-color .25s ease-in-out, box-shadow .25s ease-in-out, text-decoration .25s ease-in-out;*/
+	-webkit-transition: all 0.25s ease-in-out 0s;
+  	transition: all 0.25s ease-in-out 0s;
+}
+a:hover img{
+	opacity:.8;
+}
+
+.material-icons{
+	display:inline;
+	vertical-align:middle;
+}
+ion-icon{
+	vertical-align:middle;
+}
+html {
+	min-height:100%;
+	position:relative;
+}
+body {
+  font: 100% $body-font;
+  color: $body-font-color;
+  font-size: $body-font-size;
+  margin-bottom: $body-margin-bottom;
+  margin-top: $body-margin-top;
+}
+img {
+	width:100%;
+	height:auto;
+}
+.capitalize{
+	text-transform:capitalize;
+}
+.uppercase{
+	text-transform:uppercase;
+}
+.borderBottom{
+	border-bottom:1px solid $gray-3;
+}
+.fullWidth{
+	padding-left:-15px;
+	padding-right:-15px;
+}
+@media (min-width: 992px) {
+	.rowWidePadding{
+		margin-right:-45px !important;
+		margin-left:-45px !important;
+		.colWidePadding{
+			padding-right: 45px !important;
+			padding-left: 45px !important;
+		}
+	}
+}
+.rowNarrowPadding{
+	margin-right:-7px !important;
+	margin-left:-7px !important;
+	.colNarrowPadding{
+		padding-right: 7px !important;
+		padding-left: 7px !important;
+	}
+}
+
+@media (min-width: 1200px) {
+	.container, .container-fluid {
+		max-width: 2000px;
+	}
+}
+*, :after, :before {
+    box-sizing: border-box;
+}
+a {
+	color:$link-color;
+	text-decoration: $link-decoration;
+}
+a:hover {
+	color: $link-color-hover;
+	text-decoration: $link-hover-decoration;
+}
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+	font-family: $headings-font;
+	font-weight: $headings-font-weight;
+}
+
+h3 {
+	font-size:1rem;
+	margin-bottom: 1rem;
+}
+p {
+	line-height:1.8rem;
+}
+.tagline {
+	font-size: 22px;
+	font-weight: 200;
+	text-align: center;
+}
+address {
+	line-height:1.8rem;
+}
+
+.btn-primary, .btn-secondary{
+	border-radius: $button-radius;
+	text-decoration: $button-decoration;
+	vertical-align:middle;
+	ion-icon {
+		margin-top: -4px;
+	}
+}
+.btn-primary{
+	background-color: $button-bg-primary;
+	color: $button-color-primary;
+	border: $button-border-primary;
+}
+.btn-primary:hover{
+	background-color: $button-hover-bg-primary;
+	color: $button-hover-color-primary;
+}
+.btn-secondary{
+	background-color: $button-bg-secondary;
+	color: $button-color-secondary;
+	border: $button-border-secondary;
+}
+.btn-secondary:hover{
+	background-color: $button-hover-bg-secondary;
+	color: $button-hover-color-secondary;
+}
+/* readMore Utility */
+.readMore div.collapse:not(.show) {
+    height: 7.5rem !important;
+    overflow: hidden;
+  
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;  
+}
+
+.readMore div.collapsing {
+    min-height: 7.5rem !important;
+}
+.readMore a{
+	text-decoration:none;
+}
+.readMore a.collapsed:after  {
+    content: '+ Read More';
+    text-decoration:none;
+    font-size:.75rem;
+}
+
+.readMore a:not(.collapsed):after {
+    content: '- Read Less';
+    text-decoration:none;
+    font-size:.75rem;
+}
+/* Nav */
+.navbar-brand{
+	padding:$navbar-brand-padding;
+}
+.navbar-brand img{
+	max-width:$navbar-brand-width-sm;
+}
+@media (min-width: 576px) {
+	.navbar-brand img{
+		max-width:$navbar-brand-width-sm;
+	}
+}
+@media (min-width: 768px) {
+	.navbar-brand img{
+		max-width:$navbar-brand-width-md;
+	}
+}
+@media (min-width: 992px) {
+	.navbar-brand img{
+		max-width:$navbar-brand-width-lg;
+	}
+}
+@media (min-width: 1200px) {
+	.navbar-brand img{
+		max-width:$navbar-brand-width-xl;
+	}
+}
+
+.pageArea {
+	margin-top:250px;
+}
+
+
+.form-control{
+	border-radius: $form-control-border-radius;
+}
+
+/* BG's */
+.bg-1{
+	background-color:$gray-1;
+}
+.bg-2{
+	background-color:$gray-2;
+}
+.bg-3{
+	background-color:$gray-3;
+}
+.bg-4{
+	background-color:$gray-4;
+}
+.bg-5{
+	background-color:$gray-5;
+}
+.bg-6{
+	background-color:$gray-6;
+}
+/* front */
+.front{
+	a{
+		text-decoration:none;
+	}
+	.hpSearch{
+		margin-top:150px;
+		margin-bottom:150px;
+		font-size:1.75rem;
+		font-family:$headings-font;
+		line-height:1.75rem;
+		input, .btn{
+			margin-top:-.5rem;
+		}
+		.form-control, .form-control:focus{
+			background-color: $gray-2;
+			border:0px;
+			box-shadow:none;
+			font-family:$body-font;
+			color:$gray-6;
+		}
+		.form-control::placeholder{
+			color:$gray-6;
+		}
+		.btn{
+			font-size:1.75rem;
+			font-family:$headings-font;
+		}
+	}
+	#frontSlider{
+		margin-left:-15px;
+		margin-right:-15px;
+		img{
+			width:auto;
+			height:375px;
+		}
+		.legend{
+			display:none;
+		}
+		.slick-prev{
+			left:10px;
+			z-index:100;
+		}
+		.slick-next{
+			right:10px;
+			z-index:100;
+		}
+	}
+	.hpTags{
+		a:hover .bg-2{
+			background-color:$gray-3;
+		}
+	}
+}
+
+label {
+	font-weight:400;
+}
+hr {
+	border-top:1px solid $gray-3;
+}
+::-webkit-input-placeholder, ::-moz-placeholder, :-ms-input-placeholder, :-moz-placeholder { /* Chrome/Opera/Safari */
+	font-family:$body-font;
+	color:$body-font-color;
+	font-weight:300;
+}
+
+/*.form-group {
+	border:1px solid $very-light;
+	border-radius: 1rem;
+	input {
+		display:inline-block;
+	}
+	button {
+		display:inline-block;
+		border:0px;
+		background-color:transparent;
+		padding-right:10px;
+	}
+	.form-control {
+		&:focus {
+    		outline:0px !important;
+    		-webkit-appearance:none;
+    		-webkit-box-shadow: none;
+    		box-shadow: none;
+		}		
+		border:0px; 
+		background-color:transparent;
+		font-size: .9rem;
+		font-family:$body-font;
+		color:$body-font-color;
+		font-weight:300;
+	}	
+}*/
+
+/* Media carousel */
+p.legend a {
+    color: $gray-6;
+}
+
+/* general */
+.label{
+	font-weight:$label-font-weight;
+	text-transform:$label-text-transform;
+	font-size:$label-font-size;
+}
+
+/* detail */
+.detail{
+	.navLeftRight{
+		padding:0px;
+		.detailNavBgLeft, .detailNavBgRight{
+			background-color:$gray_1;
+			display:inline-block;
+			line-height:2em;
+			a{
+				text-decoration:none;
+				font-size:12px;
+				ion-icon, span{
+					vertical-align:middle;
+				}
+			}
+			a:hover{
+				color:$gray-5;
+			}
+		}
+		.detailNavBgLeft{
+			padding:0px 10px 0px 5px;
+		}
+		.detailNavBgRight{
+			padding:0px 5px 0px 10px;
+		}
+	}	
+	.navTop{
+		a{
+			background-color:$gray_1;
+			display:inline-block;
+			line-height:2em;
+			text-decoration:none;
+			font-size:12px;
+			margin:0px 1px 0px 1px;
+			padding:5px 10px;
+			ion-icon, span{
+				vertical-align:middle;
+			}
+		}
+		a:hover{
+			color:$gray-5;
+		}
+	}
+	#detailTools{
+		margin-bottom:15px;
+		.detailTool{
+			display:inline-block;
+			margin-right:30px;
+			a{
+				text-transform:uppercase;
+				text-decoration:none;
+				font-size:12px;
+				line-height:1em;
+				ion-icon, span{
+					vertical-align:middle;
+				}
+			}
+		}
+	}
+	@media (min-width: 768px) {
+		.navTop{
+			display:none;
+		}
+	}
+	@media (max-width: 768px) {
+		.navLeftRight{
+			display:none;
+		}
+	}
+	.detailPrimaryMedia{
+		margin-left:auto;
+		margin-right:auto;
+		text-align:center;
+		img{
+			object-fit:contain;
+			width:auto;
+			height:auto;
+			
+		width:100%;
+		max-width:1100px;
+		max-height:700px;
+		}
+	}
+	.detailAllMediaThumbs{
+		text-align:center;
+		position:relative;
+		img{
+			width:auto;
+			margin:0px 5px;
+		}
+		a{
+			text-decoration:none;
+		}
+	}
+	.detailMediaAll{
+		.row{
+			display:table-row;
+		}
+		.detailMediaAllItem{
+			display:table-cell;
+			height:100%;
+			text-align:center;
+		}
+	}
+	
+	.detailTags{
+		a{
+			text-decoration:none;
+		}
+		a:hover .bg-2{
+			background-color:$gray-3;
+		}
+	}
+	.detailRelated{
+		a{
+			text-decoration:none;
+		}
+	}
+	div, p{
+		line-height:1.5rem;
+	}
+}
+
+/* card styles */
+.card, .card-img-top{
+	border-radius:0px !important;
+}
+.card{
+	.card-title{
+		a{
+			text-decoration:none;
+		}
+	}
+	.card-footer {
+		padding: 0.75rem 1.25rem;
+		background-color: $gray-1;
+   		border-top: 0px;
+   		border-radius:0px;
+	}
+}
+
+/* gallery */
+
+.gallery{
+	h1{
+		margin:75px 0px 15px 0px;
+	}
+	.card{
+		border:0px;
+		text-align:center;
+		img{
+			border: 1px solid $gray-2;
+		}
+		.card-body{
+			color:$gray-6;
+		}
+		.card-title{
+			margin-bottom:0px;
+			font-family: $headings-font;
+			font-size: 1.25rem;
+		}
+	}
+	.galleryLanding{
+		h1{
+			margin:75px 0px 75px 0px;
+		}
+		.card-columns {
+		  @include media-breakpoint-only(lg) {
+			column-count: 3;
+		  }
+		  @include media-breakpoint-only(xl) {
+			column-count: 4;
+		  }
+		}
+		.card-body{
+			padding:.5rem 0 0 0;
+		}
+	}
+	.galleryPrimaryMedia{
+		margin-left:auto;
+		margin-right:auto;
+		text-align:center;
+		img{
+			object-fit:contain;
+			width:auto;
+			height:auto;
+			
+			width:100%;
+			max-width:1100px;
+			max-height:500px;
+		}
+	}
+	.galleryDetailNav{
+		height:100%;
+		button{
+			position:relative;
+			top:45%
+		}
+	}
+	.galleryDetailBottom{
+		border-top:1px solid $gray-2;
+		.card{
+			img{
+				padding:3px;	
+			}
+		}
+		.card.active{
+			img{
+				background-color:$gray-3;	
+			}
+		}
+	}
+}
+
+/* projects */
+.projectsList{
+	h1{
+		margin:75px 0px 75px 0px;
+	}
+	.project{
+		margin-bottom:120px;
+		.projectSlideshow{
+			background-color:$gray-2;
+			min-height:225px;
+		}
+		a{
+			font-size:18px;
+			font-family: $body-font;
+			text-decoration:none;
+			line-height:2em;
+		}
+	}
+}
+
+/* search/browse full results */
+.search.results, .browse.results, .multiSearchObjectsCascading, .search.results, .browse.results, .multiSearchObjects{
+	H1{
+		text-transform:capitalize;
+		display:inline-block;
+	}
+	.btn-group{
+		z-index:2000;
+		font-family:$body-font;
+		font-size:1.4rem;
+		ion-icon{
+			vertical-align:top;
+		}
+		.dropdown-item a{
+			text-decoration:none;
+			font-soze:.75rem;
+		}
+	}
+	.bResultItemImgPlaceholder{
+		font-size:5rem;
+		color:$gray-3;
+		background-color: $gray-1;
+		padding-top:3rem;
+		padding-bottom:3rem;
+		text-align:center;
+		line-height:1rem;
+	}
+	.bResultList{
+		.bResultItemImgPlaceholder{
+			padding-top:1rem;
+			padding-bottom:1rem;
+			font-size:4rem;
+		}
+	}
+	.card-columns {
+		  @include media-breakpoint-only(lg) {
+			column-count: 3;
+		  }
+		  @include media-breakpoint-only(xl) {
+			column-count: 4;
+		  }
+	}
+	.card{
+		border:0px;
+		text-align:center;
+		line-height: 1.2rem;
+		img{
+			border: 0px;
+		}
+		.card-body{
+			a{
+				text-decoration:none;
+			}
+			color:$gray-6;
+			padding:.25rem 1rem 1rem 1rem;
+			font-size: 1rem;
+			line-height: 1.2rem;
+			.card-title{
+				margin-bottom:0px;
+				font-family: $headings-font;
+				font-size: 1rem;
+			}
+			small{
+				height:1rem;
+				overflow:hidden;
+				display:inline-block;
+			}
+			.card-text{
+				font-size: .75rem;
+				line-height: 1rem;
+				max-height: 3rem;
+				overflow:hidden;
+			}
+		}
+	}
+	#bViewButtons{
+		font-size:1.5rem;
+		.active{
+			opacity:.5;
+		}
+	}
+	.bRightCol{
+		background-color:$gray-2;
+		.forceWidth{
+			color:$gray-2;
+			height:1px;
+			overflow:hidden;
+		}
+	}
+	.bSearchWithinContainer{
+		input.bSearchWithin{
+			width:100%;
+			border:0px;
+			padding-right:40px;
+		}
+		button{
+			position:absolute;
+			right:0px;
+		}
+	}
+	#bRefine{
+		button{
+			display:inline-block;
+			width:100%;
+			margin-bottom:2px;
+		}
+		label{
+			font-family: $headings-font;
+			font-size:1.2rem;
+			text-transform:capitalize;
+			display:block;
+		}
+		a{
+			font-size:.75rem;
+		}
+	}
+}
+/* multisearch - card styles for .card-columns in object results asigned above with search/browse full results */
+.multisearch{
+	.btn-primary{
+		text-transform:uppercase;
+	}
+	.card-columns {
+	  @include media-breakpoint-only(lg) {
+		column-count: 4;
+	  }
+	  @include media-breakpoint-only(xl) {
+		column-count: 6;
+	  }
+	}
+	H2{
+		margin-bottom:0px;
+		a{
+			text-decoration:none;
+		}
+	}
+	.multiSearchList{
+		.card{
+			background-color:$gray-2;
+			border:0px;
+		}
+		.card:hover{
+			background-color:$gray-3;
+		}
+		a{
+			font-size:13px;
+			text-decoration:none;
+		}
+		.card.multisearchFullResultsCard{
+			background-color:$gray-5;
+			font-size:$body-font-size;
+			text-decoration:none;
+			color:#FFF;
+			text-transform:uppercase;
+		}
+		.card.multisearchFullResultsCard:hover{
+			background-color:$gray-6;
+		}
+	}
+}
+
+
+@import "/custom";
