@@ -47,12 +47,11 @@
 
 		
 			<div class='<?php print $rep ? 'col-sm-7 col-md-7 col-lg-6' : 'col-sm-12 col-md-12 col-lg-11'; ?>'>
-				<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
+				<H1>{{{^ca_objects.ns_title}}}</H1>
 				<HR>
 				
 				{{{<ifdef code="ca_objects.date"><div class='detailLabel'>Year published: </div><div class='detailContent'>^ca_objects.date</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.idno"><div class='detailLabel'>Library number: </div><div class='detailContent'>^ca_objects.library_number</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.isbn"><div class='detailLabel'>ISBN: </div> <div class='detailContent'>^ca_objects.isbn</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.idno"><div class='detailLabel'>Library number: </div><div class='detailContent'>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.num_pages"><div class='detailLabel'>Number of pages: </div><div class='detailContent'>^ca_objects.num_pages</div></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.description">
@@ -75,9 +74,11 @@
 							{{{<ifcount code="ca_entities" min="1"><div class='detailContent'><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="publisher">^ca_entities.preferred_labels</unit></dic></ifcount>}}}
 						
 							
-							{{{<ifcount code="ca_list_items" min="1" max="1"><div class='detailLabel'>Subject</div></ifcount>}}}
-							{{{<ifcount code="ca_list_items" min="2"><div class='detailLabel'>Subjects</div></ifcount>}}}
-							{{{<ifcount code="ca_list_items" min="1"><div class='detailContent'><unit relativeTo="ca_list_items">^ca_list_items.preferred_labels.name_plural</unit></div></ifcount>}}}
+							{{{<ifcount code="ca_objects.subject" min="1" max="1"><div class='detailLabel'>Subject</div></ifcount>}}}
+							{{{<ifcount code="ca_objects.subject" min="2"><div class='detailLabel'>Subjects</div></ifcount>}}}
+							{{{<ifcount code="ca_objects.subject" min="1"><div class='detailContent'>^ca_objects.subject</div></ifcount>}}}
+							
+							<?php print caNavLink($this->request, "Request this book", "requestLink", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'bookRequest')); ?>
 						
 							
 						</div><!-- end col -->		

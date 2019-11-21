@@ -58,7 +58,8 @@
 }
 
 div.detailLabel {
-    color: #000;
+    font-weight: bold;
+    color: #333;
     font-size: 14px;
     display: block;
     margin-bottom: 0px;
@@ -68,4 +69,10 @@ div.detailContent {
     font-weight: normal;
     font-size: 14px;
     margin-bottom: 10px;
+}
+
+a.requestLink {
+    font-size: 18px;
+    font-weight: bold;
+    color: #f04d23;
 }
