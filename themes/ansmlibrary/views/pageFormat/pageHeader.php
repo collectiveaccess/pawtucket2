@@ -25,34 +25,6 @@
  *
  * ----------------------------------------------------------------------
  */
-	$va_lightboxDisplayName = caGetLightboxDisplayName();
-	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
-	$va_classroomDisplayName = caGetClassroomDisplayName();
-	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
-	
-	# Collect the user links: they are output twice, once for toggle menu and once for nav
-	$va_user_links = array();
-	if($this->request->isLoggedIn()){
-		$va_user_links[] = '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
-		$va_user_links[] = '<li class="divider nav-divider"></li>';
-		if(caDisplayLightbox($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
-		}
-		if(caDisplayClassroom($this->request)){
-			$va_user_links[] = "<li>".caNavLink($this->request, $vs_classroom_sectionHeading, '', '', 'Classroom', 'Index', array())."</li>";
-		}
-		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
-		
-		if ($this->request->config->get('use_submission_interface')) {
-			$va_user_links[] = "<li>".caNavLink($this->request, _t('Submit content'), '', '', 'Contribute', 'List', array())."</li>";
-		}
-		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
-	} else {	
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
-	}
-	$vb_has_user_links = (sizeof($va_user_links) > 0);
-
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
@@ -68,16 +40,6 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
-<?php
-	if(Debug::isEnabled()) {		
-		//
-		// Pull in JS and CSS for debug bar
-		// 
-		$o_debugbar_renderer = Debug::$bar->getJavascriptRenderer();
-		$o_debugbar_renderer->setBaseUrl(__CA_URL_ROOT__.$o_debugbar_renderer->getBaseUrl());
-		print $o_debugbar_renderer->renderHead();
-	}
-?>
         <meta http-equiv="x-ua-compatible" content="ie=edge">
 
         <link rel="apple-touch-icon" sizes="180x180" href="https://ansm.ns.ca/_img/ansm/favicons/apple-touch-icon.png">
@@ -92,6 +54,7 @@
         <meta name="theme-color" content="#ffffff">
 
         <link rel="stylesheet" href="https://ansm.ns.ca/_css/main-v3.css">
+        <link rel="stylesheet" href="/">
 </head>
 <body id="body-reference-library" class="web">
 
@@ -164,6 +127,3 @@
         <div class="row catalog">
         <div class="catalog-item reference-library col-xs-12">
         <div class="card" style="padding-top:0; border-top:0;"><div class="imageblock reference-library" style="padding-bottom:52.053712480253%">
-
-
-
