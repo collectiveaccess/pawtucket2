@@ -510,7 +510,7 @@
 			$o_view->setVar('sort', $ps_sort);
 			$o_view->setVar('accessValues', $va_access_values);
 			
-			$o_view->setVar('sortDirectionControl', '<a href="#" id="'.$vs_block.'_sort_direction"><span class="glyphicon glyphicon-sort-by-alphabet'.(($ps_sort_direction == 'desc') ? '-alt' : '').'"></span></a>');
+			$o_view->setVar('sortDirectionControl', '<a href="#" id="'.$vs_block.'_sort_direction"><span class="glyphicon glyphicon-sort-by-alphabet'.(($ps_sort_direction == 'desc') ? '-alt' : '').'" aria-label="direction"></span></a>');
 			$o_view->setVar('sortDirection', $ps_sort_direction);
 			
 			
@@ -689,7 +689,7 @@
 								$va_values[$vs_search_element.$vs_element_rel_type][] = trim($vs_element_value);
 								$va_booleans["{$vs_search_element}{$vs_element_rel_type}:boolean"][] = isset($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j]) ? $pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}:boolean"][$vn_j] : null;
 							}
-							continue;
+							continue(2);
 						}
 						foreach($pa_form_values["{$vs_dotless_element}{$vs_element_rel_type}"] as $vn_j => $vs_element_value) {
 							if(!strlen(trim($vs_element_value))) { continue; }
@@ -731,7 +731,7 @@
 							// noop
 							break;
 						case '_fieldlist_field':
-							if(!strlen(trim($pa_form_values['_fieldlist_value'][$vn_i]))) { continue; }
+							if(!strlen(trim($pa_form_values['_fieldlist_value'][$vn_i]))) { continue(2); }
 							$va_query_elements[$vs_element][] = "(".$va_values['_fieldlist_field'][$vn_i].":".$pa_form_values['_fieldlist_value'][$vn_i].")";
 							break;
 						default:
@@ -1390,13 +1390,12 @@
 	 */
 	function caGetAvailableSortFields($ps_table, $pn_type_id = null, $pa_options=null) {
 		if (caGetOption('disableSorts', $pa_options, false)) { return []; }
-		
-		$o_config = Configuration::load();
-		
+
 		$vs_cache_key = caMakeCacheKeyFromOptions($pa_options, "{$ps_table}/{$pn_type_id}");
 		
 		if (CompositeCache::contains("available_sorts") && is_array($va_cached_data = CompositeCache::fetch("available_sorts")) && isset($va_cached_data[$vs_cache_key])) { return $va_cached_data[$vs_cache_key]; }
 
+		$o_config = Configuration::load();
 		$pn_display_id = caGetOption('restrictToDisplay', $pa_options, null);
 	
 		require_once(__CA_MODELS_DIR__ . '/ca_user_sorts.php');

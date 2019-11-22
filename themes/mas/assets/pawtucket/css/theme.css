@@ -487,6 +487,14 @@ a.ss-icon  {
 .gallery #gallerySetInfo a {
 	font-size:13px;
 }
+#galleryDetailImageArea img {
+     max-width: 430px !important;
+     max-height: 430px !important;
+     height: auto !important;
+     width: auto !important;
+     margin-top: auto;
+     margin-bottom: auto;
+} 
 
 /* Login */
 
@@ -525,4 +533,12 @@ a-scene.fullscreen .a-canvas {
 
 .browse .btn, .sets .btn {
     background-color: #27529a;
+}
+#galleryDetailImageArea img {
+    max-width: 430px !important;
+    max-height: 430px !important;
+    height: auto !important;
+    width: auto !important;
+    margin-top: auto;
+    margin-bottom: auto;
 }

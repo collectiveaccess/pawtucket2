@@ -554,7 +554,7 @@
 		if(!$vb_write_access){
 			$vs_set_display .= "<div class='pull-right caption'>Read Only</div>";
 		}
-		$vs_set_display .= "<H5>".caNavLink($po_request, $t_set->getLabelForDisplay(), "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id), array('id' => "lbSetName{$vn_set_id}"))."</H5>";
+		$vs_set_display .= "<H2>".caNavLink($po_request, $t_set->getLabelForDisplay(), "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id), array('id' => "lbSetName{$vn_set_id}"))."</H2>";
 
         $va_lightboxDisplayName = caGetLightboxDisplayName();
 		$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
@@ -582,13 +582,13 @@
 					if($va_set_item["representation_tag_icon"]){
 						$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumb'>".caNavLink($po_request, $va_set_item["representation_tag_icon"], "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div><!-- end lbSetThumb --></div>\n";
 					}else{
-						$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($po_request, "<div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png').$vs_placeholder."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div>\n";
+						$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($po_request, "<div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png', array("alt" => "spacer")).$vs_placeholder."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div>\n";
 					}
 				}
 				$vn_i++;
 			}
 			while($vn_i < 6){
-				$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($po_request, "<div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png')."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div>";
+				$vs_secondary_image_block .= "<div class='col-xs-3 col-sm-6 lbSetThumbCols'>".caNavLink($po_request, "<div class='lbSetThumbPlaceholder'>".caGetThemeGraphic($po_request,'spacer.png', array("alt" => "spacer"))."</div><!-- end lbSetThumbPlaceholder -->", "", "", "Lightbox", "setDetail", array("set_id" => $vn_set_id))."</div>";
 				$vn_i++;
 			}
 		}else{
@@ -1189,37 +1189,56 @@
 	 */
 	function caGetAdvancedSearchFormAutocompleteJS($po_request, $ps_field, $pt_instance, $pa_options=null) {
 		$vs_field_proc = preg_replace("![\.]+!", "_", $ps_field);
-		if ($vs_rel_types = join(";", caGetOption('restrictToRelationshipTypes', $pa_options, []))) { $vs_rel_types_proc = "_{$vs_rel_types}"; $vs_rel_types = "/{$vs_rel_types}";  }
-	
-		$vs_buf = $pt_instance->htmlFormElementForSearch($po_request, $ps_field, array_merge($pa_options, ['class'=> 'lookupBg', 'name' => "{$ps_field}", 'id' => "{$vs_field_proc}{$vs_rel_types_proc}", 'autocomplete' => 1, 'nojs' => 1]));
-		$vs_buf .= "<input type=\"hidden\" name=\"{$ps_field}{$vs_rel_types}\" id=\"{$vs_field_proc}{$vs_rel_types_proc}\" value=\"\" class=\"lookupBg\"/>";
+		if ($vs_rel_types = join("_", caGetOption(['restrictToRelationshipTypes', 'relationshipType'], $pa_options, []))) { $vs_rel_types_proc = "_{$vs_rel_types}"; $vs_rel_types = "/{$vs_rel_types}";  }
+
+		//$vs_buf = $pt_instance->htmlFormElementForSearch($po_request, $ps_field, array_merge($pa_options, ['class'=> 'lookupBg', 'name' => "{$ps_field}", 'id' => "{$vs_field_proc}{$vs_rel_types_proc}", 'autocomplete' => 1, 'nojs' => 1]));
+		
+		if (!is_array($pa_options)) { $pa_options = array(); }
+        if (!isset($pa_options['width'])) { $pa_options['width'] = 30; }
+        if (!isset($pa_options['values'])) { $pa_options['values'] = array(); }
+        if (!isset($pa_options['values'][$ps_field])) { $pa_options['values'][$ps_field] = ''; }
+        $index = caGetOption('index', $pa_options, null);
+        
+        $array_suffix = caGetOption('asArrayElement', $pa_options, false) ? "[]" : "";
+        
+        $vs_buf = caHTMLTextInput("{$vs_field_proc}_autocomplete{$index}", array('value' => (isset($pa_options['value']) ? $pa_options['value'] : $pa_options['values'][$ps_field]), 'size' => $pa_options['width'], 'class' => $pa_options['class'], 'id' => "{$vs_field_proc}_autocomplete{$index}"));
+		
+		$vs_buf .= "<input type=\"hidden\" name=\"{$ps_field}{$array_suffix}\" id=\"{$vs_field_proc}{$index}\" value=\"".(isset($pa_options['id_value']) ? (int)$pa_options['id_value'] : '')."\" class=\"lookupBg\"/>";
 									
 		if (!is_array($va_json_lookup_info = caJSONLookupServiceUrl($po_request, $pt_instance->tableName()))) { return null; }
 		$vs_buf .= "<script type=\"text/javascript\">
-jQuery(document).ready(function() {
-	jQuery('#{$vs_field_proc}{$vs_rel_types_proc}_autocomplete').autocomplete({ minLength: 3, delay: 800, html: true,
-					source: function( request, response ) {
-						$.ajax({
-							url: '".$va_json_lookup_info['search']."',
-							dataType: \"json\",
-							data: { term: '{$ps_field}:' + request.term },
-							success: function( data ) {
-								response(data);
-							}
-						});
-					},
-					select: function( event, ui ) {
-						if(!parseInt(ui.item.id) || (ui.item.id <= 0)) {
-							jQuery('#{$vs_field_proc}{$vs_rel_types_proc}').val('');  // no matches so clear text input
-							event.preventDefault();
-							return;
-						}
-						jQuery('#{$vs_field_proc}{$vs_rel_types_proc}_autocomplete').val(jQuery.trim(ui.item.label.replace(/<\/?[^>]+>/gi, '')));
-						jQuery('#{$vs_field_proc}{$vs_rel_types_proc}').val(ui.item.id);
-						event.preventDefault();
-					}
-			})});
-										
+    jQuery(document).ready(function() {
+        jQuery('#{$vs_field_proc}_autocomplete{$index}').autocomplete({ minLength: 3, delay: 800, html: true,
+                source: function( request, response ) {
+                    $.ajax({
+                        url: '{$va_json_lookup_info['search']}',
+                        dataType: \"json\",
+                        data: { term: '{$ps_field}:' + request.term },
+                        success: function( data ) {
+                            response(data);
+                        }
+                    });
+                },
+                response: function ( event, ui ) {
+                    if (ui && ui.content && ui.content.length == 1 && (ui.content[0].id == -1)) {
+                        jQuery('#{$vs_field_proc}{$index}').val(jQuery('#{$vs_field_proc}_autocomplete{$index}').val());
+                    }
+                },
+                select: function( event, ui ) {
+                    if(!parseInt(ui.item.id) || (ui.item.id <= 0)) {
+                        jQuery('#{$vs_field_proc}_autocomplete{$index}').val('');  // no matches so clear text input
+                        jQuery('#{$vs_field_proc}{$index}').val('xx');
+                        event.preventDefault();
+                        return;
+                    }
+                    jQuery('#{$vs_field_proc}_autocomplete{$index}').val(jQuery.trim(ui.item.label.replace(/<\/?[^>]+>/gi, '')));
+                    jQuery('#{$vs_field_proc}{$index}').val(ui.item.id);
+                    event.preventDefault();
+                }
+        }).autocomplete('instance')._renderItem = function(ul, item) {
+                return $('<li>').append(item.label).appendTo(ul);
+        };
+    });								
 </script>";
 
 		return $vs_buf;
@@ -1309,6 +1328,14 @@ jQuery(document).ready(function() {
 		
 		$vs_sub_collection_label_template = $o_collections_config->get("export_sub_collection_label_template");
 		$vs_sub_collection_desc_template = $o_collections_config->get("export_sub_collection_description_template");
+		$vs_sub_collection_sort = $o_collections_config->get("export_sub_collection_sort");
+		if(!$vs_sub_collection_sort){
+			$vs_sub_collection_sort = "ca_collections.idno_sort";
+		}
+		$vb_dont_show_top_level_description = false;
+		if($o_collections_config->get("dont_show_top_level_description") && ($vn_level == 1)){
+			$vb_dont_show_top_level_description = true;
+		}
 		$vs_object_template = $o_collections_config->get("export_object_label_template");
 		$va_collection_type_icons = array();
 		$va_collection_type_icons_by_idnos = $o_collections_config->get("export_collection_type_icons");
@@ -1330,7 +1357,7 @@ jQuery(document).ready(function() {
 				# --- related objects?
 				$va_object_ids = $qr_collections->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values));
 				$vn_rel_object_count = sizeof($va_object_ids);
-				$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_collections.idno_sort"));
+				$va_child_ids = $qr_collections->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => $vs_sub_collection_sort));
 				$vs_output .= "<div class='unit' style='margin-left:".(40*($vn_level - 1))."px;'>";
 				if($vs_icon){
 					$vs_output .= $vs_icon." ";
@@ -1347,9 +1374,11 @@ jQuery(document).ready(function() {
 					$vs_output .= " <span class='small'>(".$vn_rel_object_count." record".(($vn_rel_object_count == 1) ? "" : "s").")</span>";
 				}
 				$vs_output .= "<br/>";
-				$vs_desc = "";
-				if($vs_sub_collection_desc_template && ($vs_desc = $qr_collections->getWithTemplate($vs_sub_collection_desc_template))){
-					$vs_output .= "<p>".$vs_desc."</p>";
+				if(!$vb_dont_show_top_level_description){
+					$vs_desc = "";
+					if($vs_sub_collection_desc_template && ($vs_desc = $qr_collections->getWithTemplate($vs_sub_collection_desc_template))){
+						$vs_output .= "<p>".$vs_desc."</p>";
+					}
 				}
 				# --- objects
 				if(sizeof($va_object_ids)){

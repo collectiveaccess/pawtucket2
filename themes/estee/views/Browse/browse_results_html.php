@@ -188,7 +188,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 						print "<strong>".$va_criterion['facet'].': </strong>';
 						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_display_value.' <i class="material-icons inline">close</i></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 					}else{
-						if(strpos($va_criterion["value"], "collection_id") === false){
+						if(strpos($va_criterion["value"], "collection_id") === false && strpos(strToLower($va_criterion["facet"]), "brand") === false){
 							print "<strong>".$va_criterion['facet'].': </strong>';
 							print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <i class="material-icons inline">close</i></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
 						}
@@ -300,8 +300,8 @@ if($vb_ajax && $vb_show_chronology_filters){
 			</div>
 			<div class="col-md-4 bChronoSearchWithin">
 				<div class="bSearchWithinContainer">
-					<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-						<input type="text" class="form-control" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine"><button type="submit" class="btn-search-refine"><i class="material-icons">search</i></button>
+					<form role="search" id="searchWithinChrono" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+						<input type="text" class="form-control" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefineChrono"><button type="submit" class="btn-search-refine"><i class="material-icons">search</i></button>
 						<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 						<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
 					</form>
@@ -330,6 +330,8 @@ if($vb_ajax && $vb_show_chronology_filters){
 
 ?>		
 					</ul>
+					&nbsp;&nbsp;&nbsp;<a href="#" class="bChronoDownloadDDLink" onClick="changeSort(); return false;"><i class="material-icons inline"><?php print ($vs_sort_dir == 'asc') ? 'expand_less' : 'expand_more'; ?></i> Sort</i></a>
+					
 				</div>
 			</div>
 		</div>
@@ -342,9 +344,12 @@ if($vb_ajax && $vb_show_chronology_filters){
 		function removeFacet(id){
 			jQuery("#browseCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'key' => $vs_browse_key, 'removeCriterion' => 'chronology_type_facet')); ?>/removeID/" + id);
 		}
-		$("#searchWithin").submit(function( event ) {
+		function changeSort(){
+			jQuery("#browseCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'key' => $vs_browse_key, 'direction' => ($vs_sort_dir == 'asc') ? 'desc' : 'asc')); ?>");
+		}
+		$("#searchWithinChrono").submit(function( event ) {
 			event.preventDefault();
-			var url = $("#searchWithin").attr('action') + "/showChronologyFilters/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + $('#searchWithinSearchRefine').val();
+			var url = $("#searchWithinChrono").attr('action') + "/showChronologyFilters/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + $('#searchWithinSearchRefineChrono').val();
 			$('#browseCollectionContainer').load(url);
 		});
 		jQuery(document).ready(function() {

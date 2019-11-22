@@ -117,11 +117,12 @@
 						print "<div class='detailMediaCaption'>".$va_rep["type"]."</div>";
 						print caRepToolbar($this->request, $t_rep, $t_object, array("display" => "detail", "context" => "coins"));
 						print "</div>\n";
-						if($vn_col == 2){
+						if($vn_col == 1){
 							$vn_col = 0;
 							print "</div><!-- end row-->\n";
+						}else{
+							$vn_col++;
 						}
-						$vn_col++;
 					}
 					if($vn_col > 0){
 						print "</div><!-- end row-->\n";
@@ -170,7 +171,6 @@
 								"Mint" => "mint",
 								"Region" => "region",
 								"Denomination" => "denomination",
-								"Weight" => "weight",
 								"Weight Standard" => "weight_standard",
 								"Authority" => "authority",
 								"Dynasty" => "dynasty",
@@ -179,26 +179,14 @@
 							);
 							$va_classification_fields = array(	
 								"Date" => "date",
-								"Dtae On Object" => "dob",
+								"Date On Object" => "dob",
 								"Period" => "period",
 								"Type (PELLA)" => "type",
 								"Type (SCO)" => "type_sco",
 								"Type" => "type_text",
 								"Type URL" => "type_url",
-							);
-							$va_provenance_fields = array(	
 								"Hoard" => "hoard",
-								"Findspot" => "findspot",
-								"Previous Collection" => "previous_collection",
-								"Published Auction URL" => "published_auction",
-								"Published Auction" => "published_auction_text",
-								"Other Provenance" => "other_provenance",
-							);
-							$va_literature_fields = array(	
-								"Published Literature" => "published_literatue",
-								"Published Literature Text" => "published_literatue_text",
-								"Cross-reference" => "crossreference",
-								"Cross-reference Text" => "crossreference_text"
+								"Findspot" => "findspot"
 							);
 	
 							print "<div class='unit'><H6>Identifier</H6>".$t_object->get("idno")."</div>";
@@ -208,8 +196,13 @@
 									$vs_materiality .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
 								}
 							}
-							if($vs_tmp = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter=", " restrictToRelationshipTypes="obverse_countermark"><unit relativeTo="ca_list_items">^ca_list_items.preferred_labels.name_plural</unit></unit>')){
-								$vs_materiality .= "<div class='unit'><H6>Countermarks</H6>".$vs_tmp."</div>";							
+							$va_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToRelationshipTypes" => array("obverse_countermark")));
+							if(is_array($va_list_items) && sizeof($va_list_items)){
+								$va_terms = array();
+								foreach($va_list_items as $va_list_item){
+									$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Browse", "coins", array("facet" => "icon_facet", "id" => $va_list_item["item_id"]));
+								}
+								$vs_materiality .= "<div class='unit'><H6>Countermarks</H6>".join($va_terms, ", ")."</div>";	
 							}
 							if($vs_materiality){
 								print "<h4>Materiality</h4>".$vs_materiality;
@@ -225,45 +218,81 @@
 							if($vs_classification){
 								print "<h4>Classification</h4>".$vs_classification;
 							}
-	
-							$vs_provenance = "";
-							foreach($va_provenance_fields as $vs_label => $vs_field){
-								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
-									$vs_provenance .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
-								}
-							}
-							if($vs_provenance){
-								print "<h4>Provenance</h4>".$vs_provenance;
-							}	
-	
-							$vs_literature = "";
-							foreach($va_literature_fields as $vs_label => $vs_field){
-								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
-									$vs_literature .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
-								}
-							}
-							if($vs_literature){
-								print "<h4>Literature</h4>".$vs_literature;
-							}
-?>
-						</div>
-						<div class="col-sm-4">
-<?php
-	
+
 							$vs_descriptive = "";
 							foreach($va_descriptive_fields as $vs_label => $vs_field){
 								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
 									$vs_descriptive .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
 								}
 							}
-							if($vs_tmp = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter=", "><unit relativeTo="ca_list_items">^ca_list_items.preferred_labels.name_plural</unit></unit>')){
-								$vs_descriptive .= "<div class='unit'><H6>Iconographic Classification</H6>".$vs_tmp."</div>";							
+							$va_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true));
+							if(is_array($va_list_items) && sizeof($va_list_items)){
+								$va_terms = array();
+								foreach($va_list_items as $va_list_item){
+									$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Browse", "coins", array("facet" => "icon_facet", "id" => $va_list_item["item_id"]));
+								}
+								$vs_descriptive .= "<div class='unit'><H6>Iconographic Classification</H6>".join($va_terms, ", ")."</div>";	
 							}
 							if($vs_descriptive){
 								print "<h4>Descriptive</h4>".$vs_descriptive;
 							}
+	
+	
+							
+?>	
+						</div>
+						<div class="col-sm-4">
+<?php
+							# citation format: [Author].[Publicaton Date].[Publication Name], p.[Page Number(s)], [Item Number(s)]. Then, this is followed by the notes field from the edited coin Literature relationship
+							$vs_literature_template = '<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" restrictToRelationshipTypes="author" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>. </ifcount></unit>
+														<ifdef code="ca_occurrences.date">^ca_occurrences.date. </ifdef>
+														<ifdef code="ca_occurrences.preferred_labels.name">^ca_occurrences.preferred_labels.name</ifdef><unit relativeTo="ca_objects_x_occurrences"><ifdef code="ca_objects_x_occurrences.page_number">, ^ca_objects_x_occurrences.page_number</ifdef><ifdef code="ca_objects_x_occurrences.item_number">, ^ca_objects_x_occurrences.item_number</ifdef></unit><ifdef code="ca_occurrences.preferred_labels.name">. </ifdef>
+														<unit relativeTo="ca_objects_x_occurrences"><ifdef code="ca_objects_x_occurrences.comments"><p>^ca_objects_x_occurrences.comments</p></ifdef></unit>';
+							$vs_rel_publication = $t_object->getWithTemplate('<ifcount code="ca_occurrences" min="1" restrictToTypes="literature" restrictToRelationshipTypes="publication">
+																				<div class="unit">
+																					<H6>Publication<ifcount code="ca_occurrences" min="2" restrictToTypes="literature" restrictToRelationshipTypes="publication">s</ifcount></H6>
+																					<unit relativeTo="ca_objects_x_occurrences" delimiter="<br/><br/>" restrictToTypes="literature" restrictToRelationshipTypes="publication">
+																						'.$vs_literature_template.'
+																					</unit>
+																				</div>
+																			</ifcount>');
+							$vs_rel_crossreference = $t_object->getWithTemplate('<ifcount code="ca_occurrences" min="1" restrictToTypes="literature" restrictToRelationshipTypes="crossreference">
+																				<div class="unit">
+																					<H6>Cross-reference<ifcount code="ca_occurrences" min="2" restrictToTypes="literature" restrictToRelationshipTypes="crossreference">s</ifcount></H6>
+																					<unit relativeTo="ca_objects_x_occurrences" delimiter="<br/><br/>" restrictToTypes="literature" restrictToRelationshipTypes="crossreference">
+																						'.$vs_literature_template.'
+																					</unit>
+																				</div>
+																			</ifcount>');
+							$vs_rel_historical = $t_object->getWithTemplate('<ifcount code="ca_occurrences" min="1" restrictToTypes="literature" restrictToRelationshipTypes="reference">
+																				<div class="unit">
+																					<H6>Historical Literature</H6>
+																					<unit relativeTo="ca_objects_x_occurrences" delimiter="<br/><br/>" restrictToTypes="literature" restrictToRelationshipTypes="reference">
+																						'.$vs_literature_template.'
+																					</unit>
+																				</div>
+																			</ifcount>');
+							if($vs_rel_publication || $vs_rel_crossreference || $vs_rel_historical){
+								print "<h4>Literature</h4>".$vs_rel_publication.$vs_rel_crossreference.$vs_rel_historical;
+							}
 ?>
-
+							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale,collection"><H4>Collection History</H4></ifcount>}}}
+							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale"><div class='unit'><h6>Auction<ifcount min="2" code="ca_occurrences" restrictToTypes="sale">s</ifcount></h6>
+									<unit relativeTo='ca_objects_x_occurrences' delimiter=' ' restrictToTypes='sale' sort='ca_occurrences.date' sortDirection='DESC'>
+										<div class='unitSub'>^ca_occurrences.preferred_labels<ifdef code='ca_occurrences.sale_number'> ^ca_occurrences.sale_number</ifdef><ifdef code='ca_occurrences.date'>, ^ca_occurrences.date</ifdef><ifdef code='ca_objects_x_occurrences.lot_number'>, ^ca_objects_x_occurrences.lot_number</ifdef>
+										</div>
+									</unit>
+								</ifcount>}}}
+<?php
+							$va_collections = $t_object->get("ca_occurrences", array("returnWithStructure" => true, "restrictToTypes" => array("collection")));
+							if(is_array($va_collections) && sizeof($va_collections)){
+								$va_tmp = array();
+								foreach($va_collections as $va_collection){
+									$va_tmp[] = caNavLink($this->request, $va_collection["label"], "", "", "Browse", "coins", array("facet" => "collection_facet", "id" => $va_collection["occurrence_id"]));
+								}
+								print "<div class='unit'><h6>Collection".((sizeof($va_tmp) > 1) ? "s" : "")."</h6>".join($va_tmp, ", ")."</div>";	
+							}
+?>
 						</div>
 						<div class="col-sm-4">
 <?php
@@ -286,51 +315,36 @@
 								if($va_authority_terms = $t_object->get($vs_field, array("returnAsArray" => true))){
 									$va_tmp = array();
 									foreach($va_authority_terms as $vs_term){
-										$vn_start = strpos($vs_term, "[");
-										if($vn_start !== false){
-											$vs_nomisma_id = substr($vs_term, $vn_start + 1);
-											$vs_nomisma_id = str_replace("]", "", $vs_nomisma_id);
-											if($vs_nomisma_id){
-												$va_tmp[] = "<a href='http://www.nomisma.org/id/".$vs_nomisma_id."' target='_blank'>".$vs_term." <span class='glyphicon glyphicon-new-window'></span></a>";
+										if($vs_term = trim($vs_term)){
+											$vn_start = strpos($vs_term, "[");
+											if($vn_start !== false){
+												$vs_nomisma_id = substr($vs_term, $vn_start + 1);
+												$vs_nomisma_id = str_replace("]", "", $vs_nomisma_id);
+												if($vs_nomisma_id){
+													$va_tmp[] = "<a href='http://www.nomisma.org/id/".$vs_nomisma_id."' target='_blank'>".$vs_term." <span class='glyphicon glyphicon-new-window'></span></a>";
+												}
+											}else{
+												$va_tmp[] = $vs_term;
 											}
-										}else{
-											$va_tmp[] = $vs_term;
+											$vs_authority .= "<div class='unit'><H6>".$vs_label."</H6>".join("<br/>",$va_tmp)."</div>";
 										}
-										$vs_authority .= "<div class='unit'><H6>".$vs_label."</H6>".join("<br/>",$va_tmp)."</div>";
 									}
 								}
 							}
 							if($vs_authority){
 								print "<div class='authoritySection'><h4>Nomisma Authority Links</h4>".$vs_authority."</div>";
 							}
-							
-?>							
-							
-							
+
+?>
+							{{{<ifdef code="ca_objects.historical_notes"><div class='notesSection'><h4>Historical Notes</h4>^ca_objects.historical_notes</div></ifdef>}}}	
+						
 						</div>
 					</div>
-					
-					
-				
-					
-					
-						<div class="row">
-							<div class="col-sm-6">		
-								{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-								{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-								{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
-							
-							
-								{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-								{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-								{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
-							
-								
-							</div><!-- end col -->				
-							<div class="col-sm-6 colBorderLeft">
-								{{{map}}}
-							</div>
-						</div><!-- end row -->
+					<div class="row">
+						<div class="col-sm-12">
+							{{{map}}}
+						</div>
+					</div>
 				</div>
 			</div>
 		</div><!-- end container -->

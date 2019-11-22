@@ -21,7 +21,6 @@
 		}
 	}
 ?>
-<div role="main" id="main">
 <div class="row"><div class="col-sm-12">
 	<H1><?php print $vs_page_title; ?></H1>
 <?php
@@ -118,4 +117,3 @@
 	</form>
 	
 </div><!-- end col --></div><!-- end row -->
-</div>

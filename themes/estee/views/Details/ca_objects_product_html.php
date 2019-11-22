@@ -99,7 +99,7 @@
 					}
 					if($vs_sub_brand = $t_object->get("ca_objects.sub_brand", array("delimiter" => ", "))){
 						if(!preg_match("/[a-z]/", $vs_sub_brand)){
-							$vs_sub_brand = ucwords(strtolower($vs_sub_brand));
+							$vs_sub_brand = ucwords(mb_strtolower($vs_sub_brand));
 						}
 						$vs_sub_brand = "<span class='notransform'>".$vs_sub_brand."</span>";
 						$va_product_info[] = $vs_sub_brand;

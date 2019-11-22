@@ -39,6 +39,9 @@
 	$vs_lightbox_section_heading		= $va_lightboxDisplayName["section_heading"];
 	$o_lightbox_config 					= $this->getVar("set_config");
 
+	# --- default to having a project open when project_id is passed -> used in back button on set/palette page
+	$pn_project_id = $this->request->getParameter("project_id", pInteger);
+
 ?>
 	<div class="projectList">
 	<div class="row">
@@ -85,7 +88,7 @@
 				}
 				print "<div class='col-sm-6' id='project".$vn_set_id."'><div class='projectItem'><H2><a href='#' onClick='jQuery(\".projectInfo".$vn_set_id."\").slideToggle(); return false;'><span class='glyphicon glyphicon-chevron-down'></span> ".$t_set->get("ca_sets.preferred_labels")."</a></H2>";	
 ?>
-				<div class="container projectInfo<?php print $vn_set_id; ?>" style="display:none;">
+				<div class="container projectInfo<?php print $vn_set_id; ?>" <?php print ((sizeof($va_project_sets) > 1) && ($pn_project_id != $vn_set_id)) ? 'style="display:none;"' : ''; ?>>
 					<div class="row">
 					
 <?php
@@ -161,8 +164,10 @@
 					}
 					
 				}
+				
 				print "<br/><div class='unit text-center'>";
 				print "<div class='pull-right'><a href='#' class='btn btn-default btn-small' data-set_id=\"".$vn_set_id."\" data-set_name=\"".addslashes($t_set->get("ca_sets.preferred_labels"))."\" data-toggle='modal' data-target='#confirm-delete'><span class='glyphicon glyphicon-trash' style='color:#FFF'></span> Delete Project</a></div>\n";
+				#print caNavLink($this->request, 'Browse Project Plants', 'btn btn-default btn-small', '', 'Search', 'Plants', array('search' => 'set_id:'.join($va_palette_ids, " or ")));
 				print "<a href='#' class='btn btn-default btn-small' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'setForm', array('set_id' => $vn_set_id, 'mode' => 'project'))."\"); return false;' >"._t("Edit Project")."</a>";
 				print "<a href='#' class='btn btn-default btn-small' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Lightbox', 'setForm', array('parent_id' => $vn_set_id))."\"); return false;' >+ "._t("New Palette")."</a>";
 				

@@ -4,12 +4,24 @@
 
 <div class="row">
 	<div class="col-sm-1"></div>
-	<div class="col-sm-10">
+	<div class="col-sm-8">
+		<div class="pull-right detailTool generalToolSocial">
+			<a href='https://twitter.com/home?status=http%3A//fabricofdigitallife.com<?php print caNavUrl($this->request, '', 'About', 'Index'); ?>'><i class="fa fa-twitter-square" aria-hidden="true"></i></a>
+			<a href='https://www.facebook.com/sharer/sharer.php?u=http%3A//fabricofdigitallife.com<?php print caNavUrl($this->request, '', 'About', 'Index'); ?>'><i class="fa fa-facebook-square" aria-hidden="true"></i></a>
+			<a href='https://plus.google.com/share?url=http%3A//fabricofdigitallife.com<?php print caNavUrl($this->request, '', 'About', 'Index'); ?>'><i class="fa fa-google-plus-square" aria-hidden="true"></i></a>
+		</div><!-- end detailTool -->
 		<H1><?php print _t("About"); ?></H1>
 		
-		<p>Fabric of Digital Life is a research archive created by members of Decimal at the University of Ontario Institute of Technology in Canada. This archive uses digital humanities, digital rhetorical, and popular cultural theories and methodologies to inspire this collection. Through a customized metadata scheme, it collects and catalogues the discourse surrounding the emergence of very personal technologies that promise to alter everyday life.</p>
-		<p>Fabric of Digital Life Archive is inspired by a famous prediction made by Chief Scientist at Xerox Parc, Mark Weiser, in 1991: “The most profound technologies are those that disappear. They weave themselves into the fabric of everyday life until they are indistinguishable from it”. We are beginning to see a critical mass of early inventions working toward this end and one goal is to reflect this phenomenon.​</p>
-		<p >Fabric of Digital Life is a digital humanities archive that tracks the emergence of platforms of <b>human-computer interaction (HCI)</b>, also called personal technologies, through the language of invention: inventors’ concepts, entrepreneurial adventures, science fiction films, military innovation, video games, governments ambitions, patents, news broadcasts, blogs, and advertising. This archive lets you explore the nature of emergence, the discourses that surround it, the ways we participate with it & the rhetoric that helps engender it. Use the Browse menu to explore items. Or, click on curated collections or HCI platforms to the right. Search provides full-text search access to the corpus.</p>
+		<p>Fabric of Digital Life or 'Fabric' is a research database and archive created by Dr. Isabel Pedersen and members of Decimal Lab at the University of Ontario Institute of Technology in Canada. Fabric uses digital humanities, digital rhetoric, and popular culture theories and methodologies to inspire its collection.  Through a customized metadata scheme, international researchers and curators collect and catalogue digital artifacts surrounding the emergence of very personal technologies that promise to alter everyday life.</p>
+
+<p>Fabric of Digital Life Archive is inspired by a famous prediction made by Chief Scientist at Xerox Parc, Mark Weiser, in 1991: “The most profound technologies are those that disappear. They weave themselves into the fabric of everyday life until they are indistinguishable from it”. We are beginning to see a critical mass of early inventions working toward this end and one goal for Fabric is to reflect this phenomenon.</p>
+
+<p>Since 2013, Fabric of Digital Life has provided a means to track the emergence of platforms of human-computer interaction (HCI), also called personal technologies, through the language of invention: inventors’ concepts, entrepreneurial adventures, science fiction films, art, events, military innovation, video games, government ambitions, patents, news broadcasts, blogs, and advertising.</p>
+
+<p>Fabric lets you explore the nature of emergence, the discourses that surround it, the ways we participate with it, and the rhetoric that helps engender it.</p>
+
+<p>Use the Browse menu to explore items. Or, click on curated collections or HCI platforms on the right-hand menu. Search provides full-text search access to the corpus. </p>
+		
 		<p><b><a href="#" class='copyright' onclick="$('#copyright').toggle(300);return false;">Statement on Copyright</a></b></p>
 		<div id="copyright" style="display:none;">
 			<p>The Fabric of Digital Life hosts digital materials for private study, academic research, and education in Canada, and makes all attempts to satisfy Canadian copyright law. If you are a copyright holder and believe the Fabric of Digital Life is hosting infringing material, please contact us to have the item(s) removed from this website.</p>
@@ -17,4 +29,7 @@
 		</div>
 	</div>
 	<div class="col-sm-1"></div>
+<?php
+		print $this->render("Front/sidebar.php");
+?>
 </div>

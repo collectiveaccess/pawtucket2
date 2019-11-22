@@ -60,6 +60,8 @@
 
 	$t_object 						= new ca_objects();		// ca_objects instance we need to pull representations
 	$vs_caption_template = 			$o_lightbox_config->get("caption_template");
+	$vs_caption_template_long = 	$o_lightbox_config->get("caption_template_long");
+	$vs_caption_template_name =		$o_lightbox_config->get("caption_template_name");
 
 	$qr_comments 					= $this->getVar("comments");
 	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
@@ -93,7 +95,7 @@ if (!$vb_ajax) {	// !ajax
 <?php
 			
 ?>
-			<div class="setsBack"><?php print caNavLink($this->request, ($o_lightbox_config->get("backLink")) ? $o_lightbox_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Projects"); ?></div><!-- end setsBack -->
+			<div class="setsBack"><?php print caNavLink($this->request, ($o_lightbox_config->get("backLink")) ? $o_lightbox_config->get("backLink") : "<i class='fa fa-angle-double-left'></i><div class='small'>Back</div>", "", "", "Lightbox", "Projects", array("project_id" => $vn_parent_id)); ?></div><!-- end setsBack -->
 			<H1>
 				<?php print "<span id='lbSetName".$t_set->get("set_id")."'>".$t_set->getLabelForDisplay()."</span>"; ?>
 				<?php print "<span class='lbSetCount'>(<span class='lbSetCountInt'>".$qr_set_item_objects->numHits()."</span> items)</span>"; ?>
@@ -240,9 +242,6 @@ if (!$vb_ajax) {	// !ajax
 			case 'map':
 				print $this->render("Browse/browse_results_map_html.php");
 				break;
-			case 'timeline':
-				print $this->render("Lightbox/set_detail_timeline_html.php");
-				break;
 			default:
 				// First load is rendered in-template; subsequent loads are via Ajax/continuous scroll
 				$t =new Timer();
@@ -252,6 +251,9 @@ if (!$vb_ajax) {	// !ajax
 						$qr_set_item_objects->seek($vn_start);
 
 						if($qr_set_item_objects->numHits()){
+							if($vs_current_view == "timeline"){
+								print "<div class='container'><div class='row'><div class='col-sm-3'></div><div class='col-sm-9'>".caColorChartHeader()."</div></div></div>";
+							}
 							$vn_c = 0;
 
 							$va_items = $va_placeholders = array();
@@ -277,7 +279,8 @@ if (!$vb_ajax) {	// !ajax
 							$va_object_ids = caExtractArrayValuesFromArrayOfArrays($va_items, 'object_id');
 
 							$va_captions = caProcessTemplateForIDs($vs_caption_template, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
-
+							$va_captions_long = caProcessTemplateForIDs($vs_caption_template_long, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
+							$va_names = caProcessTemplateForIDs($vs_caption_template_name, 'ca_objects', $va_object_ids, array('returnAsArray' => true));
 							$vs_media_version = ($vs_current_view === 'list') ? 'medium' : 'small';
 							$va_representations = $t_object->getPrimaryMediaForIDs($va_object_ids, array($vs_media_version));
 
@@ -290,6 +293,7 @@ if (!$vb_ajax) {	// !ajax
 								$this->setVar('notes', $va_items[$vn_item_id]['notes']);
 								$this->setVar('size', $va_items[$vn_item_id]['size']);
 								$this->setVar('caption', $va_captions[$vn_i]);
+								$this->setVar('caption_long', $va_captions_long[$vn_i]);
 								$this->setVar('commentCount', (int)$va_comment_counts[$vn_item_id]);
 			
 								$vn_representation_id = null;
@@ -300,7 +304,7 @@ if (!$vb_ajax) {	// !ajax
 									$vs_representation = "<div class='lbItemImg'>".caDetailLink($this->request, $vs_tag, '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail")))."</div>";
 								} else {
 									if (!isset($va_placeholders[$va_items[$vn_item_id]['type']])) { $va_placeholders[$va_items[$vn_item_id]['type']] = caGetPlaceholder($va_items[$vn_item_id]['type'], 'placeholder_media_icon'); }
-									$vs_representation = "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$va_items[$vn_item_id]['type']]."</div>";
+									$vs_representation = caDetailLink($this->request, "<div class='lbItemImg lbSetImgPlaceholder'>".$va_placeholders[$va_items[$vn_item_id]['type']]."</div>", '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail")));
 								}
 								$this->setVar('representation', $vs_representation);
 								$this->setVar('representation_id', $vn_representation_id);
@@ -308,6 +312,13 @@ if (!$vb_ajax) {	// !ajax
 									case 'list':
 										print "<div class='col-xs-12 lbItem{$vn_item_id}' id='row-{$vn_object_id}'>";
 										print $this->render("Lightbox/set_detail_item_list_html.php");
+										print "</div><!-- end col 12 -->";
+									break;
+									# -------------
+									case 'timeline':
+										$t_object = new ca_objects($vn_object_id);
+										print "<div class='col-xs-12 lbItem{$vn_item_id}' id='row-{$vn_object_id}'>";
+										print "<div class='container'><div class='row'><div class='col-sm-3 btccResultLabel'>".caDetailLink($this->request, $va_names[$vn_i], '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail")))."</div><div class='col-sm-9'>".caColorChart($t_object)."</div></div></div>";
 										print "</div><!-- end col 12 -->";
 									break;
 									# -------------
@@ -352,6 +363,16 @@ if (!$vb_ajax) {    // !ajax
             }
             print "<b>Project</b><br/>";
 			print $t_project->getLabelForDisplay()."<hr/>";
+			
+			# --- display links to other palettes in this project
+			$qr_palettes = ca_sets::find(array('parent_id' => $vn_parent_id), array('returnAs' => 'searchResult', 'sort' => 'ca_sets.preferred_labels.name', 'checkAccess' => $va_access_values));
+			if($qr_palettes->numHits() > 1){
+				print "<b>Other Palettes in This Project</b><br/>";
+				while($qr_palettes->nextHit()){
+					print caNavLink($this->request, $qr_palettes->get("ca_sets.preferred_labels.name"), "", "", "Lightbox", "setDetail", array("set_id" => $qr_palettes->get("set_id")))."<br/>";
+				}
+				print "<hr/>\n";
+			}
 			if(is_array($va_export_formats) && sizeof($va_export_formats)){
 				// Export as PDF links
 				print "<div class='lbDownloadLinks'><b>Download Palette As:</b><br/>";

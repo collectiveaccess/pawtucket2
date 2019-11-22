@@ -27,12 +27,12 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
-		<footer id="footer">
+		</div><!-- end pageArea --></div></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+		<footer id="footer" role="contentinfo">
 			<ul class="list-inline pull-right social">
-				<li><i class="fa fa-twitter"></i></li>
-				<li><i class="fa fa-facebook-square"></i></li>
-				<li><i class="fa fa-youtube-play"></i></li>
+				<li><i class="fa fa-twitter" aria-label="<?php print _t("Twitter"); ?>"></i></li>
+				<li><i class="fa fa-facebook-square" aria-label="<?php print _t("Facebook"); ?>"></i></li>
+				<li><i class="fa fa-youtube-play" aria-label="<?php print _t("YouTube"); ?>"></i></li>
 			</ul>
 			<div>
 				Footer text here
@@ -54,7 +54,7 @@
 ?>
 	
 		<?php print TooltipManager::getLoadHTML(); ?>
-		<div id="caMediaPanel"> 
+		<div id="caMediaPanel" role="complementary"> 
 			<div id="caMediaPanelContentArea">
 			
 			</div>

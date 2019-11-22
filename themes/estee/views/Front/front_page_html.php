@@ -29,53 +29,154 @@
  *
  * ----------------------------------------------------------------------
  */
-		#print $this->render("Front/featured_set_slideshow_html.php");
+	$va_access_values = caGetUserAccessValues($this->request);
+	$o_front_config = caGetFrontConfig($this->request);
 ?>
 	
 	<div class="row bgWhite">
 		<div class="col-sm-12"><br/></div>
 	</div>
-	<div class="row primaryLandingBannerContentGradient">
-		<div class="col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-10 col-md-9 col-md-offset-1 col-sm-10 primaryLandingBannerContent">
-			<?php print caGetThemeGraphic($this->request, 'hero_spacer_short.png'); ?>
-			<H1 class='primaryLandingBannerTitle'>Explore<br/>the Archives</H1>
-		</div>
-	</div>
+<?php 
+	print caNavLink($this->request, 
+		"<div class='row primaryLandingBannerContentGradient'>
+			<div class='col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-7 col-md-7 col-md-offset-1 primaryLandingBannerContent'>
+				".caGetThemeGraphic($this->request, 'hero_spacer_short.png')."<H1 class='primaryLandingBannerTitle'>Explore the<br/>Archives</H1>
+			</div>
+		</div>", "", "", "Collections", "Index");
+?>
 	<div class="row bgWhite">
 		<div class="col-sm-12"><br/></div>
 	</div>
 	<div class="row bgWhite">
 		<div class="col-sm-12 col-md-10 col-md-offset-1 text-center">
 			<H2>{{{home_intro_text}}}</H2>
+		</div>
+	</div>
+	<div class="row bgWhite">
+		<div class="col-sm-12 text-center frontIntroText">
+			{{{home_intro_text_block}}}
+			<hr/>
+		</div>
+	</div>
+	<div class="row bgWhite">
+		<div class="col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2 text-center">
+			<h3>{{{home_browse_tagline}}}</h3>
+		</div>
+	</div>
+	<div class="row bgWhite">
+		<div class="col-xs-12 col-sm-4 col-sm-offset-4 text-center">
+			<?php print caNavLink($this->request, "Browse All", "btn btn-default btn-large", "", "Browse", "objects"); ?>
+			
 		</div><!--end col-sm-8-->		
-	</div><!-- end row -->	
+	</div><!-- end row -->
+	<div class="row bgWhite">
+		<div class="col-sm-12">
+			<hr/>
+		</div>
+	</div>
+<?php
+	$t_set = new ca_sets();
+	$vs_default_image = caGetThemeGraphic($this->request, 'contact.jpg');
+	$vs_image_version = "widepreview";
+?>
 	<div class="row bgWhite">
 		<div class="col-sm-12 col-md-10 col-md-offset-1">
 			<div class="row">
-				<div class="col-sm-4">
+				<div class="col-sm-3">
 					<div class="hpFeatured">
-						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'gallery'.rand(1,2).'.jpg'), "", "", "Gallery", "Index"); ?>
-						<?php print caNavLink($this->request, "Featured Galleries", "hpFeaturedTitle", "", "Gallery", "Index"); ?>
-						<div class="hpFeaturedText">Explore curated selections from the Archives</div>			
+<?php
+						print caNavLink($this->request, "Featured Galleries", "hpFeaturedTitle", "", "Gallery", "Index");
+						$vs_image = "";
+						$t_set = new ca_sets();
+						$t_set->load(array('set_code' => 'front_galleries'));
+						# Enforce access control on set
+						if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+							$va_set_item_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => true))) ? $va_tmp : array());
+							$vs_set_table = Datamodel::getTableName($t_set->get("table_num"));
+							$r_set_items = caMakeSearchResult($vs_set_table, $va_set_item_ids);
+							if($r_set_items->numHits()){
+								$va_tmp = array();
+								$r_set_items->nextHit();
+								$vs_image = $r_set_items->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.".$vs_image_version."</unit>");
+							}
+						}
+						print caNavLink($this->request, ($vs_image) ? $vs_image : $vs_default_image, "", "", "Gallery", "Index");
+?>
+						<div class="hpFeaturedText"><?php print $t_set->get("ca_sets.set_description"); ?></div>			
 					</div>
 				</div>
-				<div class="col-sm-4">
+				<div class="col-sm-3">
 					<div class="hpFeatured">
-						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'browse'.rand(1,4).'.jpg'), "", "", "Explore", "Brands"); ?>
-						<?php print caNavLink($this->request, "Browse", "hpFeaturedTitle", "", "Explore", "Brands"); ?>
-						<div class="hpFeaturedText">Discover products and archival items by Estée Lauder Companies' exceptional portfolio of brands</div>	
+<?php
+						print caNavLink($this->request, "Collections", "hpFeaturedTitle", "", "Collections", "Index");
+						$vs_image = "";
+						$t_set = new ca_sets();
+						$t_set->load(array('set_code' => 'front_collections'));
+						# Enforce access control on set
+						if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+							$va_set_item_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => true))) ? $va_tmp : array());
+							$vs_set_table = Datamodel::getTableName($t_set->get("table_num"));
+							$r_set_items = caMakeSearchResult($vs_set_table, $va_set_item_ids);
+							if($r_set_items->numHits()){
+								$va_tmp = array();
+								$r_set_items->nextHit();
+								$vs_image = $r_set_items->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.".$vs_image_version."</unit>");
+							}
+						}
+						print caNavLink($this->request, ($vs_image) ? $vs_image : $vs_default_image, "", "", "Collections", "Index");
+?>
+						<div class="hpFeaturedText"><?php print $t_set->get("ca_sets.set_description"); ?></div>	
 					</div>
 				</div>
-				<div class="col-sm-4">
+				<div class="col-sm-3">
 					<div class="hpFeatured">
-						<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'contact.jpg'), "", "", "Contact", "form"); ?>
-						<?php print caNavLink($this->request, "Contact Us", "hpFeaturedTitle", "", "Contact", "Form"); ?>
-						<div class="hpFeaturedText">Inquire about heritage tours, ask a question, schedule a research appointment</div>
+<?php
+						print caNavLink($this->request, "Contact Us", "hpFeaturedTitle", "", "Contact", "Form");
+						$vs_image = "";
+						$t_set = new ca_sets();
+						$t_set->load(array('set_code' => 'front_contact'));
+						# Enforce access control on set
+						if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+							$va_set_item_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => true))) ? $va_tmp : array());
+							$vs_set_table = Datamodel::getTableName($t_set->get("table_num"));
+							$r_set_items = caMakeSearchResult($vs_set_table, $va_set_item_ids);
+							if($r_set_items->numHits()){
+								$va_tmp = array();
+								$r_set_items->nextHit();
+								$vs_image = $r_set_items->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.".$vs_image_version."</unit>");
+							}
+						}
+						print caNavLink($this->request, ($vs_image) ? $vs_image : $vs_default_image, "", "", "Collections", "Index");
+?>
+						<div class="hpFeaturedText"><?php print $t_set->get("ca_sets.set_description"); ?></div>
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<div class="hpFeatured">
+<?php
+						print caNavLink($this->request, "About Us & FAQ", "hpFeaturedTitle", "", "About", "");
+						$vs_image = "";
+						$t_set = new ca_sets();
+						$t_set->load(array('set_code' => 'front_about'));
+						# Enforce access control on set
+						if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+							$va_set_item_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => true))) ? $va_tmp : array());
+							$vs_set_table = Datamodel::getTableName($t_set->get("table_num"));
+							$r_set_items = caMakeSearchResult($vs_set_table, $va_set_item_ids);
+							if($r_set_items->numHits()){
+								$va_tmp = array();
+								$r_set_items->nextHit();
+								$vs_image = $r_set_items->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.".$vs_image_version."</unit>");
+							}
+						}
+						print caNavLink($this->request, ($vs_image) ? $vs_image : $vs_default_image, "", "", "About", "");
+?>
+						<div class="hpFeaturedText"><?php print $t_set->get("ca_sets.set_description"); ?></div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<div class="row bgWhite">
-		<div class="col-sm-12"><br/><br/><br/><br/></div>
+		<div class="col-sm-12"><hr/><br/><br/><br/><br/></div>
 	</div>
