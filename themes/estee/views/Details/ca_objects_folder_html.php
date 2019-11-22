@@ -138,7 +138,13 @@
 					
 					{{{<ifdef code="ca_objects.preferred_labels.name"><H4 class="mainTitle">^ca_objects.preferred_labels.name</H4></ifdef>}}}
 					<HR>
-					{{{<ifdef code="ca_objects.manufacture_date|ca_objects.season_list"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list</unit><ifdef code="ca_objects.manufacture_date,ca_objects.season_list"> </ifdef><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></div></ifdef>}}}
+					{{{<if rule='^ca_objects.type_id =~ /Container/'>
+							<ifdef code="ca_objects.display_date|ca_objects.manufacture_date"><div class="unit"><H6>Date</H6><ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef></div></ifdef>
+						</if>
+						<if rule='^ca_objects.type_id !~ /Container/'>
+							<ifdef code="ca_objects.manufacture_date|ca_objects.season_list"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list</unit><ifdef code="ca_objects.manufacture_date,ca_objects.season_list"> </ifdef><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></div></ifdef>
+						</if>
+					}}}
 
 <?php
 					$va_entities = $t_object->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));

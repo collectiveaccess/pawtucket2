@@ -141,12 +141,8 @@
 			</div>
 			<div class="collapse navbar-collapse bs-main-navbar-collapse-1 navbar-menu">
 				<ul class="nav navbar-nav menuItems">
-					<li <?php print ((strToLower($this->request->getController()) == "browse") || (strToLower($this->request->getController()) == "explore")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Explore", "Brands"); ?></li>
-					<li <?php print ((strToLower($this->request->getController()) == "collections") || ((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "collections"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Guides"), "", "", "Collections", "Index"); ?></li>
 					<li <?php print (strToLower($this->request->getController()) == "gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Galleries"), "", "", "Gallery", "Index"); ?></li>
-<?php
-	#$ps_contactType = $this->request->getParameter("contactType", pString);
-?>
+					<li <?php print ((strToLower($this->request->getController()) == "collections") || ((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "collections"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "Index"); ?></li>
 					<li <?php print (strToLower($this->request->getController()) == "contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Inquire"), "", "", "Contact", "Form"); ?></li>
 <?php
 					if($this->request->isLoggedIn()){
