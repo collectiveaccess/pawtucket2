@@ -41,6 +41,7 @@
 	$vb_photo_collection = false;
 	$va_collection_path = array();
 	$vs_display_collection = "";
+	
 	if(is_array($va_collection_hierarchy) && sizeof($va_collection_hierarchy)){
 		$vn_i = 0;
 		foreach($va_collection_hierarchy as $vn_collection_heirarchy_level_id){
@@ -127,18 +128,6 @@
 
                 </div>
             </div>
-
-            <div class="pagination">
-<?php
-				if($vn_previous_id){
-					print caDetailLink('', 'previous', 'ca_objects', $vn_previous_id);
-				}
-				if($vn_next_id){
-					print caDetailLink('', 'next', 'ca_objects', $vn_next_id);
-				}
-?>
-            </div>
-
 
             <div class="wrap text-align-center">
                 <div class="wrap-max-content">
@@ -235,6 +224,32 @@
 
             </div>
         </section>
+<?php
+	if($vn_previous_id || $vn_next_id){
+?>
+	<div class="wrap">
+		<section class="widget-pagination block-top">
+			<div class="layout-2">
+				<div class="col">
+<?php
+					if($vn_previous_id){
+						print caDetailLink('&lt; PREVIOUS', 'text-dark eyebrow previous', 'ca_objects', $vn_previous_id);
+					}
+?>
+				</div>
+				<div class="col">
+<?php
+			
+					if($vn_next_id){
+						print caDetailLink('NEXT &gt;', 'text-dark eyebrow next', 'ca_objects', $vn_next_id);
+					}
+?>					
+				</div>
+		</section>
+	</div>
+<?php
+	}
+?>
 {{{<ifcount code="ca_objects.related" min="1" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version">
         <section class="wrap block border">
             <div class="block text-align-center">
@@ -320,4 +335,5 @@
 </script>
 <?php
 	}
+	include("objects_metatags.php");
 ?>

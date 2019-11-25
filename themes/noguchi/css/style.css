@@ -6228,6 +6228,7 @@ BODY.collective-access .ca_nav {
     BODY.collective-access .ca_nav .module_accordion {
       border-top: 0; }
       BODY.collective-access .ca_nav .module_accordion .trigger {
+        padding-left: 38px;
         text-align: center;
         background-position: right -1px; }
       BODY.collective-access .ca_nav .module_accordion .item {
@@ -6436,9 +6437,7 @@ BODY.collective-access .ca-object-viewer .slideshow-main {
     margin-left: -20px;
     margin-right: -20px; }
     BODY.collective-access .ca-object-viewer .slideshow-main .slick-slide .img-wrapper, BODY.collective-access .ca-object-viewer .slideshow-main .slick-slide .image_wrapper.autosize {
-      padding-bottom: 89%; }
-    BODY.collective-access .ca-object-viewer .slideshow-main .slick-slide .img-container {
-      padding: 0px; } }
+      padding-bottom: 89%; } }
 
 BODY.collective-access .ca-object-viewer .slideshow-thumbnails {
   margin: 0;
@@ -6456,6 +6455,12 @@ BODY.collective-access .ca-object-viewer .slideshow-thumbnails {
       transition: opacity 0.3s ease-out; }
     BODY.collective-access .ca-object-viewer .slideshow-thumbnails li a.selected img, BODY.collective-access .ca-object-viewer .slideshow-thumbnails li a:hover img {
       opacity: 1; }
+
+BODY.collective-access .load-more-wrapper {
+  height: 40px; }
+  BODY.collective-access .load-more-wrapper .spinner {
+    margin-top: 0;
+    padding-top: 7px; }
 
 BODY.collective-access a.button.load-more {
   border: 1px solid #D8D8D8;

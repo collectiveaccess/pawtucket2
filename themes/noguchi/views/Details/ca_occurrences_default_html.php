@@ -70,17 +70,6 @@
 <?php
 			}
 ?>
-            <div class="pagination">
-<?php
-				if($vn_previous_id){
-					print caDetailLink('', 'previous', 'ca_occurrences', $vn_previous_id);
-				}
-				if($vn_next_id){
-					print caDetailLink('', 'next', 'ca_occurrences', $vn_next_id);
-				}
-?>            </div>
-
-
             <div class="wrap-max-content text-align-center">
 
                 <div class="block">
@@ -147,6 +136,33 @@
 
             </div>
         </section>
+<?php
+	if($vn_previous_id || $vn_next_id){
+?>
+	<div class="wrap">
+		<section class="widget-pagination block-top">
+			<div class="layout-2">
+				<div class="col">
+<?php
+					if($vn_previous_id){
+						print caDetailLink('&lt; PREVIOUS', 'text-dark eyebrow previous', 'ca_objects', $vn_previous_id);
+					}
+?>
+				</div>
+				<div class="col">
+<?php
+			
+					if($vn_next_id){
+						print caDetailLink('NEXT &gt;', 'text-dark eyebrow next', 'ca_objects', $vn_next_id);
+					}
+?>					
+				</div>
+		</section>
+	</div>
+<?php
+	}
+?>
+
 {{{<ifcount code="ca_objects.related" min="1">
         <section class="wrap block border">
             <div class="block text-align-center">
@@ -177,5 +193,4 @@
 			</div>
         </section>
 </ifcount>}}}
-
     </main>
