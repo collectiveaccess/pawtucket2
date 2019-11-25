@@ -141,8 +141,9 @@
 			</div>
 			<div class="collapse navbar-collapse bs-main-navbar-collapse-1 navbar-menu">
 				<ul class="nav navbar-nav menuItems">
-					<li <?php print (strToLower($this->request->getController()) == "gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Galleries"), "", "", "Gallery", "Index"); ?></li>
+					<li <?php print (strToLower($this->request->getController()) == "about") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 					<li <?php print ((strToLower($this->request->getController()) == "collections") || ((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "collections"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "Index"); ?></li>
+					<li <?php print (strToLower($this->request->getController()) == "gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Stories"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print (strToLower($this->request->getController()) == "contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Inquire"), "", "", "Contact", "Form"); ?></li>
 <?php
 					if($this->request->isLoggedIn()){

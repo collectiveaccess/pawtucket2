@@ -201,10 +201,14 @@
 									$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? " &rsaquo; " : "").$vs_subbrand;
 								}
 								$vs_caption .= "</div>";
-								if($vs_tmp = $qr_res->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
-									$vs_caption .= $vs_tmp.", ";
+								$vs_caption .= trim($qr_res->get('ca_objects.preferred_labels'));
+								$vs_tmp = trim($qr_res->getWithTemplate('^ca_objects.season_list ^ca_objects.manufacture_date'));
+								if(!$qr_res->get("ca_objects.manufacture_date") && strPos("archival item", strToLower($qr_res->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)))) !== false){
+									$vs_tmp .= "undated";
 								}
-								$vs_caption .= $qr_res->get('ca_objects.preferred_labels');
+								if(trim($vs_tmp)){
+									$vs_caption .= ", ".$vs_tmp;
+								}
 								if($vs_tmp = $qr_res->get("ca_objects.codes.product_code")){
 									$vs_caption .= " (".$vs_tmp.")";
 								}

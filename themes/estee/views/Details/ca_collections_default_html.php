@@ -26,6 +26,17 @@
 	if($va_brand = $t_item->get('ca_collections.brand', array("returnAsArray" => true))){
 		$vn_brand = $va_brand[0];
 	}
+	$vs_brand_img = "";
+	$vs_brand_description = "";
+	if($vn_brand){
+		$t_list_item = new ca_list_items();
+		$t_list_item->load($vn_brand);
+		$vs_brand_img = $t_list_item->get("ca_list_items.icon.large");
+		if($vs_brand_img == "No media available"){
+			$vs_brand_img = $t_list_item->get("ca_list_items.icon.square400");
+		}
+		$vs_brand_description = $t_list_item->get("ca_list_items.preferred_labels.description");
+	}
 	$vs_related_featured_digital_collections = $t_item->getWithTemplate("<ifcount code='ca_collections.related' min='1'><unit relativeTo='ca_collections.related' delimiter=' '><if rule='^ca_collections.featured_collection =~ /no/'>
 																			<div class='col-xs-12 col-sm-6 col-sm-offset-3'><div class='collectionTile'>
 																				<div class='row collectionBlock'>
@@ -91,16 +102,27 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 ?>
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
+<?php
+					if($vs_brand_img){
+?>
 					<div class="row">
 						<div class='col-sm-4 col-sm-offset-4 collectionLogo'>
-							{{{<ifdef code="ca_object_representations.media.medium"><h1>^ca_object_representations.media.medium</h1></ifdef>}}}
+							<h1><?php print $vs_brand_img; ?></h1>
+							<!--{{{<ifdef code="ca_object_representations.media.medium"><h1>^ca_object_representations.media.medium</h1></ifdef>}}}-->
 						</div>
 					</div>
+<?php
+					}
+					if($vs_brand_description){
+?>
 					<div class="row">
 						<div class='col-sm-8 col-sm-offset-2'>
-							<div class="unit"><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p></div>
+							<div class="unit"><p><?php print $vs_brand_description; ?></p></div>
 						</div>
 					</div>
+<?php
+					}
+?>
 					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6><br/></ifdef>}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
