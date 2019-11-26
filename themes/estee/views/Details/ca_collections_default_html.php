@@ -13,7 +13,7 @@
 	if($o_collections_config->get("do_not_display_collection_browser")){
 		$vb_show_hierarchy_viewer = false;	
 	}
-	# --- get the collection hierarchy parent to use for exportin finding aid
+	# --- get the collection hierarchy parent to use for exporting finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 	$vb_parent_special_collection = false;
 	if($vn_top_level_collection_id){
@@ -61,6 +61,8 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 			<div class="row">
 				<div class='col-sm-12'><br/>
 <?php
+				print $t_item->getWithTemplate('<ifdef code="ca_collections.public_notes"><div class="unit"><p>^ca_collections.public_notes</p></div><br/></ifdef><ifdef code="ca_collections.scopecontent"><div class="unit"><p>^ca_collections.scopecontent</p></div><br/></ifdef>');
+			
 			if ($vb_show_hierarchy_viewer) {	
 ?>
 				<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
@@ -133,6 +135,11 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 			if($va_chronology = $t_item->get("ca_occurrences", array("restrictToTypes" => array("chronology"), "checkAccess" => $va_access_values))){
 				$vb_show_collection_chronology = true;
 			}
+			# --- is there a collection guide to show?
+			$vb_show_collection_guide = false;
+			if($t_item->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values))){
+				$vb_show_collection_guide = true;
+			}
 ?>
 				<br/>
 			<div class="row">
@@ -142,8 +149,12 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 
 							<ul role="tablist">
 								<li role="presentation" class="active"><a href="#browse" aria-controls="Browse Items" role="tab" data-toggle="tab">Browse Items</a></li>
+<?php
+							if($vb_show_collection_guide){
+?>
 								<li role="presentation"><a href="#guide" aria-controls="Collection Guide" role="tab" data-toggle="tab">Collection Guide</a></li>
 <?php
+							}
 							if($vb_show_collection_chronology){
 ?>
 								<li role="presentation"><a href="#chronology" aria-controls="Chronology" role="tab" data-toggle="tab">Chronology</a></li>
@@ -179,6 +190,9 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 										});
 									</script>
 								</div>
+<?php
+						if($vb_show_collection_guide){
+?>
 								<div role="tabpanel" class="tab-pane" id="guide">
 									<div class="row">
 										<div class="col-sm-12">
@@ -202,6 +216,7 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 									</div>
 								</div><!-- end tabpanel guide -->
 <?php
+						}
 						if($vb_show_collection_chronology){
 ?>
 								<div role="tabpanel" class="tab-pane" id="chronology">						
