@@ -946,6 +946,9 @@ BODY.collective-access .utility-container .utility .trigger, BODY.collective-acc
     .ca-identifier {
       line-height: 20px; } }
 
+.is-development .widows-debug {
+  background-color: rgba(255, 255, 0, 0.2); }
+
 .text-align-center {
   text-align: center; }
 
@@ -2725,11 +2728,16 @@ footer#footer {
   .img-wrapper.no-padding, .no-padding.image_wrapper.autosize {
     padding-bottom: 0; }
 
-A:hover .img-wrapper, A:hover .image_wrapper.autosize {
-  opacity: 0.75; }
-  A:hover .img-wrapper.no-opacity-hover, A:hover .no-opacity-hover.image_wrapper.autosize {
-    opacity: 1; }
-
+/*
+A:hover{
+    .img-wrapper {
+        &.no-opacity-hover{
+            opacity: 1;
+        }
+        opacity: 0.85;
+    }
+}
+*/
 .max-height {
   height: 100%; }
 
@@ -4038,6 +4046,18 @@ https://flickity.metafizzy.co
   z-index: 0;
   overflow: hidden;
   clear: both;
+  /*
+    A {
+        &:hover{
+            .img-wrapper {
+                //opacity: 0.80;
+
+                opacity: 1;
+                filter: brightness( 0.9 );
+            }
+        }
+    }
+    */
   /****************** DEFAULT SIZES ***********************************/
   /****************** SPECIAL GRIDS ***********************************/ }
   .grid-packery > .gutter-sizer {
@@ -4071,10 +4091,7 @@ https://flickity.metafizzy.co
   .grid-packery.packed > .item-grid {
     opacity: 1; }
   .grid-packery .img-wrapper, .grid-packery .image_wrapper.autosize {
-    line-height: 0px;
-    transition: opacity 0.4s ease-out; }
-  .grid-packery A:hover .img-wrapper, .grid-packery A:hover .image_wrapper.autosize {
-    opacity: 0.75; }
+    line-height: 0px; }
   .grid-packery.grid-2-cols > .item-grid {
     width: calc( (100% - 20px)/2); }
     @media (min-width: 768px) {
@@ -4231,6 +4248,28 @@ https://flickity.metafizzy.co
         margin-bottom: 0; }
         .grid-packery.grid-ca-archive.grid-cr-browse > .item-grid.item-large {
           width: calc( 2*((100% - 5*60px)/6) + 60px); } }
+
+.img-wrapper, .image_wrapper.autosize {
+  transition: all 0.37s ease-out; }
+
+A:hover .img-wrapper, A:hover .image_wrapper.autosize {
+  filter: brightness(0.87); }
+  A:hover .img-wrapper.no-opacity-hover, A:hover .no-opacity-hover.image_wrapper.autosize {
+    opacity: 1; }
+
+.grid-packery A:hover .img-wrapper, .grid-packery A:hover .image_wrapper.autosize {
+  filter: brightness(0.87); }
+
+.ie11 .img-wrapper, .ie11 .image_wrapper.autosize {
+  transition: opacity 0.37s ease-out; }
+
+.ie11 .grid-packery A:hover .img-wrapper, .ie11 .grid-packery A:hover .image_wrapper.autosize {
+  opacity: 0.87; }
+
+.ie11 A:hover .img-wrapper, .ie11 A:hover .image_wrapper.autosize {
+  opacity: 0.87; }
+  .ie11 A:hover .img-wrapper.no-opacity-hover, .ie11 A:hover .no-opacity-hover.image_wrapper.autosize {
+    opacity: 1; }
 
 .grid-flex {
   display: flex;
@@ -6507,49 +6546,47 @@ MAIN.archive_landing .grid {
   overflow: hidden;
   min-height: 100px; }
 
-MAIN.archive_detail .container-image-detail {
-  background-color: #333230; }
-  @media (max-width: 767px) {
-    MAIN.archive_detail .container-image-detail {
-      margin-left: -20px;
-      margin-right: -20px; } }
-
-MAIN.archive_detail .img-container .img-wrapper, MAIN.archive_detail .img-container .image_wrapper.autosize {
-  padding-bottom: 125.3333333333%; }
-  @media (min-width: 768px) {
-    MAIN.archive_detail .img-container .img-wrapper, MAIN.archive_detail .img-container .image_wrapper.autosize {
-      padding-bottom: 48.7038491752%; } }
-  MAIN.archive_detail .img-container .img-wrapper IMG, MAIN.archive_detail .img-container .image_wrapper.autosize IMG {
-    max-width: 1000px;
-    left: 50%;
-    transform: translateX(-50%); }
-
-MAIN.archive_detail .img-container .diva-outer {
-  background-color: transparent; }
-
-MAIN.archive_detail .img-container .diva-label {
-  color: #6D6D6D; }
-
-MAIN.archive_detail .img-container .actions {
-  position: absolute;
-  top: 15px;
-  left: 10px; }
-  MAIN.archive_detail .img-container .actions A {
-    display: inline-block;
-    margin-left: 8px;
-    width: 21px;
-    height: 18px;
-    background-repeat: no-repeat;
-    opacity: 0.5;
-    transition: opacity 0.3s ease-out; }
-    MAIN.archive_detail .img-container .actions A.zoom {
-      background-image: url("../img/icon_image_zoom.svg"); }
-    MAIN.archive_detail .img-container .actions A.collection {
-      background-image: url("../img/icon_image_collection.svg"); }
-    MAIN.archive_detail .img-container .actions A.download {
-      background-image: url("../img/icon_image_download.svg"); }
-    MAIN.archive_detail .img-container .actions A:hover {
-      opacity: 1; }
+MAIN.archive_detail {
+  padding-bottom: 0; }
+  MAIN.archive_detail .container-image-detail {
+    background-color: #333230; }
+    @media (max-width: 767px) {
+      MAIN.archive_detail .container-image-detail {
+        margin-left: -20px;
+        margin-right: -20px; } }
+  MAIN.archive_detail .img-container .img-wrapper, MAIN.archive_detail .img-container .image_wrapper.autosize {
+    padding-bottom: 125.3333333333%; }
+    @media (min-width: 768px) {
+      MAIN.archive_detail .img-container .img-wrapper, MAIN.archive_detail .img-container .image_wrapper.autosize {
+        padding-bottom: 48.7038491752%; } }
+    MAIN.archive_detail .img-container .img-wrapper IMG, MAIN.archive_detail .img-container .image_wrapper.autosize IMG {
+      max-width: 1000px;
+      left: 50%;
+      transform: translateX(-50%); }
+  MAIN.archive_detail .img-container .diva-outer {
+    background-color: transparent; }
+  MAIN.archive_detail .img-container .diva-label {
+    color: #6D6D6D; }
+  MAIN.archive_detail .img-container .actions {
+    position: absolute;
+    top: 15px;
+    left: 10px; }
+    MAIN.archive_detail .img-container .actions A {
+      display: inline-block;
+      margin-left: 8px;
+      width: 21px;
+      height: 18px;
+      background-repeat: no-repeat;
+      opacity: 0.5;
+      transition: opacity 0.3s ease-out; }
+      MAIN.archive_detail .img-container .actions A.zoom {
+        background-image: url("../img/icon_image_zoom.svg"); }
+      MAIN.archive_detail .img-container .actions A.collection {
+        background-image: url("../img/icon_image_collection.svg"); }
+      MAIN.archive_detail .img-container .actions A.download {
+        background-image: url("../img/icon_image_download.svg"); }
+      MAIN.archive_detail .img-container .actions A:hover {
+        opacity: 1; }
 
 @media (min-width: 1025px) {
   MAIN.archive_login {
