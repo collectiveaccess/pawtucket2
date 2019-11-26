@@ -40,7 +40,7 @@
 				}
 			}
 		}
-		if (sizeof($va_place_output) > 0) {
+		if (is_array($va_place_output) && (sizeof($va_place_output) > 0)) {
 			print "<div class='unit borderless'>".join(', ', $va_place_output)."</div>";
 		}		
 		
