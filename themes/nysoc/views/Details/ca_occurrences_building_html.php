@@ -1,8 +1,10 @@
 <?php
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
-	include_once(__CA_LIB_DIR__."/ca/Search/InterstitialSearch.php");
-	include_once(__CA_LIB_DIR__."/ca/Search/EntitySearch.php");
+	$comment_count = is_array($va_comments) ? sizeof($va_comments) : 0;
+	
+	include_once(__CA_LIB_DIR__."/Search/InterstitialSearch.php");
+	include_once(__CA_LIB_DIR__."/Search/EntitySearch.php");
 
 	
 	$va_type = "Library Buildings";
@@ -97,7 +99,7 @@
 										<div class="detailTool"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><span class="glyphicon glyphicon-share-alt"></span> Share</a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end detailTool -->
 										<!-- AddThis Button END -->										
 										<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='mailto:ledger@nysoclib.org?subject=CR%20User%20Contribution:%20<?php print $va_record_id; ?>&body='>Contribute</a></div><!-- end detailTool -->
-										<!--<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
+										<!--<div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print ($comment_count > 0 ? $comment_count : ""); ?></a></div> -->
 									</div><!-- end detailTools -->						
 								</div><!-- end col -->
 								<div class='col-md-6 col-lg-6'>							

@@ -428,22 +428,22 @@
 			// when applying unsaved change warning event handlers
 			$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(
 				function() {
-					jQuery('#{$ps_id} select, #{$ps_id} input, #{$ps_id} textarea').not('.dontTriggerUnsavedChangeWarning').on('change', function() { caUI.utils.showUnsavedChangesWarning(true); });
-					jQuery('#{$ps_id}').on('submit', function() { caUI.utils.disableUnsavedChangesWarning(true); });
+					jQuery('#{$ps_id} select, #{$ps_id} input, #{$ps_id} textarea').not('.dontTriggerUnsavedChangeWarning').change(function() { caUI.utils.showUnsavedChangesWarning(true); });
+					jQuery('#{$ps_id}').submit(function() { caUI.utils.disableUnsavedChangesWarning(true); });
 				}
 			);</script>";
 		}
 		if (caGetOption('disableSubmit', $pa_options, false)) { 
 			$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(
 				function() {
-					jQuery('#{$ps_id}').on('submit', function() { return false; });
+					jQuery('#{$ps_id}').submit(function() { return false; });
 				}
 			);</script>";
 		}
 		if (caGetOption('submitOnReturn', $pa_options, false)) { 
 			$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(
 				function() {
-					jQuery('#{$ps_id}').on('keydown', function(e) { 
+					jQuery('#{$ps_id}').keydown(function(e) { 
 					   if(e && e.keyCode == 13)
 					   {
 						  jQuery('#{$ps_id}').submit();
@@ -553,7 +553,9 @@
 		$pb_no_background = (isset($pa_options['no_background']) && $pa_options['no_background']) ? true : false;
 		$pb_dont_show_content = (isset($pa_options['dont_show_content']) && $pa_options['dont_show_content']) ? true : false;
 		
-		$vs_classname = (!$pb_no_background) ? 'form-button' : '';
+		if($vs_classname = (!$pb_no_background) ? 'form-button' : '') {
+			$pa_attributes['class'] .= " {$vs_classname}";
+		}
 		
 		$va_attr = array();
 		if ($ps_id) { $va_attr[] = "id='{$ps_id}'"; }
@@ -563,7 +565,7 @@
 			}
 		}
 		
-		$vs_button = "<a class='{$vs_classname}' ".join(' ', $va_attr).">";
+		$vs_button = "<a ".join(' ', $va_attr).">";
 		if (!$pb_no_background) { 
 			$vs_button .= "<span class='form-button'>"; 
 			$vn_padding = ($ps_content) ? 10 : 0;
@@ -1175,6 +1177,8 @@
 			if (is_array($va_ids) && ($vn_id_for_idno = array_shift($va_ids))) {
 				$vb_id_exists = true;
 			}
+			$vn_id_for_idno = str_replace("/", "~", $vn_id_for_idno);
+			
 		    $pn_id = (strlen($vn_id_for_idno)) ? $vn_id_for_idno : "id:{$pn_id}";
 		}
 		$vs_action .= "/".rawurlencode($pn_id);

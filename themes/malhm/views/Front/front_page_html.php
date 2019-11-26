@@ -64,13 +64,13 @@
 		print "</div>";
 ?>
 		<!-- Prev/next controls -->
-			<a href="#" class="membersjcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
-			<a href="#" class="membersjcarousel-control-next"><i class="fa fa-angle-right"></i></a>
+		<!--	<a href="#" class="membersjcarousel-control-prev"><i class="fa fa-angle-left"></i></a>
+			<a href="#" class="membersjcarousel-control-next"><i class="fa fa-angle-right"></i></a> -->
 		
 			<!-- Pagination -->
-			<p class="membersjcarousel-pagination">
+	<!--		<p class="membersjcarousel-pagination"> -->
 			<!-- Pagination items will be generated in here -->
-			</p>
+			</p> 
 <?php			
 		print "</div><!-- end carousel --></div><!-- end col -->";
 		

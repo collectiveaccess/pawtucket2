@@ -94,6 +94,7 @@
 		}
 ?>								
 				<H4>{{{^ca_objects.preferred_labels<ifdef code="ca_objects.object_type">, ^ca_objects.object_type</ifdef>}}}</H4>
+				{{{<ifdef code="ca_objects.nonpreferred_labels"><div class="unit"><H6>Title</H6><unit relatiecTo="ca_objects" delimiter="<br/>">^ca_objects.nonpreferred_labels</unit></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Object ID</H6>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.categories.main_categories|ca_objects.categories.subcategories"><div class="unit"><H6>Category</H6>^ca_objects.categories.main_categories<ifdef code="ca_objects.categories.subcategories">, ^ca_objects.categories.subcategories</ifdef></div></ifdef>}}}
 				{{{<ifdef code="ca_objects.date.dates_value"><unit relativeTo="ca_objects.date"><if rule="^ca_objects.date.dc_dates_types =~ /Date made/"><div class="unit"><H6>Date Made</H6>^ca_objects.date.dates_value</div></if></unit></ifdef>}}}

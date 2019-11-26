@@ -25,10 +25,15 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+$vs_mode = $this->request->getParameter("mode", pString);
+if($vs_mode == "map"){
+	include("map_large_html.php");
+}else{
+	$va_options = $this->getVar("config_options");
 	$t_item = 				$this->getVar("item");
 	$va_comments =			$this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
+	$va_tags = 				$this->getVar("tags_array");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	$vn_id =				$t_item->get('ca_entities.entity_id');
 	
@@ -73,15 +78,29 @@
 			<div class="row">
 <?php
 				$vs_featured_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'><ifdef code='ca_object_representations.media.large'><l>^ca_object_representations.media.large</l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></ifdef></unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+				$vs_representationViewer = trim($this->getVar("representationViewer"));
+					
 				if($vs_featured_image){
 ?>
 				<div class='col-sm-12 col-md-5 fullWidth'>
 					<?php print $vs_featured_image; ?>
 				</div><!-- end col -->
 <?php
+				}else{
+					if($vs_representationViewer){
+?>
+					<div class='col-sm-12 col-md-5'>
+						<?php print $vs_representationViewer; ?>				
+						<div id="detailAnnotations"></div>
+<?php				
+						print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
+?>
+					</div><!-- end col -->
+<?php
+					}
 				}
 ?>
-				<div class='col-sm-12 col-md-<?php print ($vs_featured_image) ? "5" : "7"; ?>'>
+				<div class='col-sm-12 col-md-<?php print ($vs_featured_image || $vs_representationViewer) ? "5" : "7"; ?>'>
 					<div class="stoneBg">	
 						{{{<ifdef code="ca_entities.preferred_labels.displayname">
 							<H4><span data-toggle="popover" title="Source" data-content="^ca_entities.school_name_source">^ca_entities.preferred_labels.displayname</span>
@@ -138,7 +157,7 @@
 						</div>
 					</div>
 				</div>
-				<div class='col-sm-12 col-md-<?php print ($vs_featured_image) ? "2" : "5"; ?>'>
+				<div class='col-sm-12 col-md-<?php print ($vs_featured_image || $vs_representationViewer) ? "2" : "5"; ?>'>
 	<?php
 					# Comment and Share Tools
 						
@@ -182,9 +201,7 @@
 						</div>
 <?php				
 					}
-					if($vs_map = $this->getVar("map")){
-						print "<div class='unit'>".$vs_map."</div>";
-					}
+					include("map_html.php");
 ?>
 				</div>
 			</div>
@@ -259,7 +276,7 @@
 		var options = {
 			placement: function () {
 <?php
-			if($vs_featured_image){
+			if($vs_featured_image || $vs_representationViewer){
 ?>
 				if ($(window).width() > 992) {
 					return "left";
@@ -294,3 +311,6 @@
 		});
 	});
 </script>
+<?php
+}
+?>

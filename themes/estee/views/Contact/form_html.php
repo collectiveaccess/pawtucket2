@@ -2,6 +2,7 @@
 	<div class="col-sm-12 col-md-10 col-md-offset-1">
 
 <?php
+	$va_access_values = caGetUserAccessValues($this->request);
 	# --- inquire about item/ contact form / digitization request
 	# inquiry/contact/digitizationRequest
 	$ps_contactType = $this->request->getParameter("contactType", pString);
@@ -12,9 +13,19 @@
 	if($pn_object_id){
 		require_once(__CA_MODELS_DIR__."/ca_objects.php");
 		$t_item = new ca_objects($pn_object_id);
-		$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "objects", $t_item->get("ca_objects.object_id"));
+		# --- is this bulk media?  We need to use the url of the container the bulk media is linked to
+		$t_list_item = new ca_list_items();
+		$t_list_item->load($t_item->get("type_id"));
+		$vs_typecode = $t_list_item->get("idno");
+		if($vs_typecode == "bulk"){
+			$vn_container_id = $t_item->get("ca_objects.related.object_id", array("checkAccess" => $va_access_values, "restrictToTypes" => array("folder"), "limit" => 1));
+			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $vn_container_id);
+		}else{
+			$vs_url = $this->request->config->get("site_host").caDetailUrl($this->request, "ca_objects", $t_item->get("ca_objects.object_id"));
+		}
 		$vs_name = $t_item->get("ca_objects.preferred_labels.name");
 		$vs_idno = $t_item->get("ca_objects.idno");
+		
 	}
 	$pn_collection_id = $this->request->getParameter("collection_id", pInteger);
 	if($pn_collection_id){
@@ -56,11 +67,13 @@
 				case "projectInquiry":
 					print "<H1>Project Inquiry</H1>";
 				break;
-				case "transfer":
-					print "<H1>Transfer to the Archives</H1>";
-				break;
+				#case "transfer":
+				#	print "<H1>Transfer to the Archives</H1>";
+				#break;
 				case "folderScanRequest":
-					print "<H1>Folder Scan Request</H1>";
+				case "avScanRequest":
+				case "digitizationRequest":
+					print "<H1>Digitization Request</H1>";
 				break;
 				default:
 					print "<H1>Contact the Archives</H1>";
@@ -73,7 +86,7 @@
 		</div>
 	</div>
 <?php
-	if(sizeof($va_errors["display_errors"])){
+	if(is_array($va_errors) && sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
 	
@@ -201,6 +214,8 @@
 		break;
 		# -----------------------------
 		case "folderScanRequest":
+		case "avScanRequest":
+		case "digitizationRequest":
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
 		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
@@ -242,7 +257,25 @@
 			<div class="row">
 				<div class="col-sm-12">
 					<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
-						<label for="message">I WOULD LIKE THE FULL CONTENTS OF THIS FOLDER TO BE SCANNED</label>
+<?php
+						switch($ps_contactType){
+							case "folderScanRequest":
+?>
+								<label for="message">I would like the full contents of this folder to be scanned</label>
+<?php
+							break;
+							case "avScanRequest":
+?>
+								<label for="message">I would like this audiovisual item to be digitized</label>
+<?php
+							break;
+							case "digitizationRequest":
+?>
+								<label for="message">I would like this item to be digitized</label>
+<?php							
+							break;						
+						}
+?>
 						<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
 					</div>
 				</div><!-- end col -->
@@ -268,7 +301,7 @@
 <?php		
 		break;
 		# -----------------------------
-		case "transfer":
+		case "transferOLD":
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
 		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
@@ -324,419 +357,477 @@
 		default:
 ?>
 	<br/><br/>
-	<ul id="contactTabs" class="nav nav-tabs" role="tablist">
-		<li role="presentation" class="active"><a href="#general" aria-controls="General Questions" role="tab" data-toggle="tab">General Questions</a></li>
-		<li role="presentation"><a href="#tours" aria-controls="profile" role="tab" data-toggle="tab">Tours</a></li>
-		<li role="presentation"><a href="#research" aria-controls="settings" role="tab" data-toggle="tab">Research Appointments</a></li>
-	</ul>
-
-	<!-- Tab panes -->
-	<div class="tab-content">
-		<br/>
-		<div role="tabpanel" class="tab-pane active" id="general">	
+		<div class="tabModuleContent">
+			<article class="tabModuleContentInner float100">	
+				<section class="tabsTitle float100">
+					<ul role="tablist">
+						<li role="presentation" class="active"><a href="#general" aria-controls="General Questions" role="tab" data-toggle="tab">General Questions</a></li>
+						<li role="presentation"><a href="#tours" aria-controls="profile" role="tab" data-toggle="tab">Tours</a></li>
+						<li role="presentation"><a href="#research" aria-controls="settings" role="tab" data-toggle="tab">Research Appointments</a></li>
+						<li role="presentation"><a href="#transfer" aria-controls="settings" role="tab" data-toggle="tab">Transfer</a></li>
+					</ul>
+				</section>
+				<section class="tabsContent float100">
+					<div class="tab-content">
+						<div role="tabpanel" class="tab-pane active" id="general">	
 	
-			<form id="contactFormGeneral" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
-				<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
+							<form id="contactFormGeneral" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+								<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 
-					<div class="row">
-						<div class="col-sm-12">
-							<h2>General Questions</H2>
-							<p>{{{contact_general_intro}}}</p>
+									<div class="row">
+										<div class="col-sm-12">
+											<h2>General Questions</H2>
+											<p>{{{contact_general_intro}}}</p>
 					
-						</div>
-					</div>		
-					<div class="row">
-						<div class="col-md-12">
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
-										<label for="name">Your Name</label>
-										<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
-									</div>
-								</div><!-- end col -->
-								<div class="col-sm-6">
-									<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
-										<label for="email">Your Email Address</label>
-										<input type="text" class="form-control input-sm" id="email" placeholder="Enter your email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $this->request->user->get("email"); ?>">
-									</div>
-								</div><!-- end col -->
-							</div><!-- end row -->
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-sm-12">
-							<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
-								<label for="message">General Question</label>
-								<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-sm-12">
-							<div class="form-group<?php print (($va_errors["request_date"]) ? " has-error" : ""); ?>">
-								<label for="email">Date Information Needed By</label>
-								<input type="text" class="form-control input-sm" id="request_date" placeholder="Enter the date you need the information by" name="request_date" value="<?php print ($this->getVar("request_date")) ? $this->getVar("request_date") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
+										</div>
+									</div>		
+									<div class="row">
+										<div class="col-md-12">
+											<div class="row">
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
+														<label for="name">Your Name</label>
+														<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+													</div>
+												</div><!-- end col -->
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
+														<label for="email">Your Email Address</label>
+														<input type="text" class="form-control input-sm" id="email" placeholder="Enter your email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $this->request->user->get("email"); ?>">
+													</div>
+												</div><!-- end col -->
+											</div><!-- end row -->
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
+												<label for="message">General Question</label>
+												<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group<?php print (($va_errors["request_date"]) ? " has-error" : ""); ?>">
+												<label for="email">Date Information Needed By</label>
+												<input type="text" class="form-control input-sm" id="request_date" placeholder="Enter the date you need the information by" name="request_date" value="<?php print ($this->getVar("request_date")) ? $this->getVar("request_date") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
 			
-					<div class="row">
-						<div class="col-sm-12">
-							<div class="form-group">
-								<br/><button type="submit" class="btn btn-default">Send</button>
-							</div><!-- end form-group -->
-						</div>
-					</div>
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group">
+												<br/><button type="submit" class="btn btn-default">Send</button>
+											</div><!-- end form-group -->
+										</div>
+									</div>
 		
-				<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
-				<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
-				<input type="hidden" name="contactType" value="General Questions">
+								<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
+								<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
+								<input type="hidden" name="contactType" value="General Questions">
 
-			</form>	
-		</div>
+							</form>	
+						</div>
 		
-		<div role="tabpanel" class="tab-pane" id="tours">
+						<div role="tabpanel" class="tab-pane" id="tours">
 	
-			<form id="contactFormHeritageTour" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
-				<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
+							<form id="contactFormHeritageTour" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+								<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 		
-					<div class="row">
-						<div class="col-sm-12">
-							<H2>Heritage Tours</H2>
-							<p>{{{contact_heritage_tours_intro}}}</p>
+									<div class="row">
+										<div class="col-sm-12">
+											<H2>Heritage Tours</H2>
+											<p>{{{contact_heritage_tours_intro}}}</p>
 
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
-										<label for="name">Your Name</label>
-										<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+										</div>
 									</div>
-								</div><!-- end col -->
-								<div class="col-sm-6">
-									<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
-										<label for="email">Your Email Address</label>
-										<input type="text" class="form-control input-sm" id="email" placeholder="Enter your email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $this->request->user->get("email"); ?>">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="row">
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
+														<label for="name">Your Name</label>
+														<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+													</div>
+												</div><!-- end col -->
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
+														<label for="email">Your Email Address</label>
+														<input type="text" class="form-control input-sm" id="email" placeholder="Enter your email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $this->request->user->get("email"); ?>">
+													</div>
+												</div><!-- end col -->
+											</div><!-- end row -->					
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group<?php print (($va_errors["tour_reason"]) ? " has-error" : ""); ?>">
+														<label for="email">Reason For Tour</label>
+														<input type="text" class="form-control input-sm" id="tour_reason" placeholder="Enter the reason for the tour (e.g. Company orientation, visiting NY offices from out of town. . .)" name="tour_reason" value="<?php print ($this->getVar("tour_reason")) ? $this->getVar("tour_reason") : ""; ?>">
+													</div>
+												</div><!-- end col -->
+											</div><!-- end row -->
+											<div class="row">
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["tour_date"]) ? " has-error" : ""); ?>">
+														<label for="email">Requested Date Of Tour</label>
+														<input type="text" class="form-control input-sm" id="tour_date" placeholder="Enter your preferred tour date" name="tour_date" value="<?php print ($this->getVar("tour_date")) ? $this->getVar("tour_date") : ""; ?>">
+													</div>
+												</div><!-- end col -->
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["tour_time"]) ? " has-error" : ""); ?>">
+														<label for="email">Requested Time of tour</label>
+														<input type="text" class="form-control input-sm" id="tour_time" placeholder="Enter your preferred tour time" name="tour_time" value="<?php print ($this->getVar("tour_time")) ? $this->getVar("tour_time") : ""; ?>">
+													</div>
+												</div><!-- end col -->
+											</div><!-- end row -->
+											<div class="row">
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["elc_employee"]) ? " has-error" : ""); ?>">
+														<label for="name">The Tour Is For</label>
+														<select class="form-control input-sm" id="elc_employee" name="elc_employee">
+															<option value=''>Please choose an option</option>
+															<option value='ELC employee(s)' <?php print ($this->getVar("elc_employee") == "ELC employee(s)") ? "selected" : ""; ?>>ELC employee(s)</option>
+															<option value='Non ELC employee(s)' <?php print ($this->getVar("elc_employee") == "Non ELC employee(s)") ? "selected" : ""; ?>>Non ELC employee(s)</option>
+														</select>
+													</div>
+												</div><!-- end col -->
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["brand"]) ? " has-error" : ""); ?>">
+														<label for="email">Brand/Team</label>
+														<input type="text" class="form-control input-sm" id="email" placeholder="Enter your Brand/Team" name="brand" value="<?php print ($this->getVar("brand")) ? $this->getVar("brand") : ""; ?>">
+													</div>
+												</div><!-- end col -->
+											</div><!-- end row -->
+											<div class="row">
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["office_contact"]) ? " has-error" : ""); ?>">
+														<label for="email">Contact</label>
+														<input type="text" class="form-control input-sm" id="office_contact" placeholder="Enter the primary contact person for the tour" name="office_contact" value="<?php print ($this->getVar("office_contact")) ? $this->getVar("office_contact") : ""; ?>">
+													</div>
+												</div><!-- end col -->
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["num_attendees"]) ? " has-error" : ""); ?>">
+														<label for="email">Number Of Attendees</label>
+														<input type="text" class="form-control input-sm" id="num_attendees" placeholder="Enter the number of tour attendees" name="num_attendees" value="<?php print ($this->getVar("num_attendees")) ? $this->getVar("num_attendees") : ""; ?>">
+													</div>
+												</div><!-- end col -->
+											</div><!-- end row -->
+											<div class="row">
+												<div class="col-md-12">
+													<div class="form-group<?php print (($va_errors["guest_names"]) ? " has-error" : ""); ?>">
+														<label for="email">Names & Titles Of Attendees</label>
+														<input type="text" class="form-control input-sm" id="guest_names" placeholder="Enter the names & titles of guests attending the tour" name="guest_names" value="<?php print ($this->getVar("guest_names")) ? $this->getVar("guest_names") : ""; ?>">
+													</div>
+												</div><!-- end col -->
+											</div><!-- end row -->
+											<div class="row">
+												<div class="col-sm-12">
+													<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
+														<label for="message">Additional Comments</label>
+														<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
+													</div>
+												</div><!-- end col -->
+											</div><!-- end row -->
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group">
+												<br/><button type="submit" class="btn btn-default">Send</button>
+											</div><!-- end form-group -->
+										</div>
 									</div>
-								</div><!-- end col -->
-							</div><!-- end row -->					
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-group<?php print (($va_errors["tour_reason"]) ? " has-error" : ""); ?>">
-										<label for="email">Reason For Tour</label>
-										<input type="text" class="form-control input-sm" id="tour_reason" placeholder="Enter the reason for the tour (e.g. Company orientation, visiting NY offices from out of town. . .)" name="tour_reason" value="<?php print ($this->getVar("tour_reason")) ? $this->getVar("tour_reason") : ""; ?>">
-									</div>
-								</div><!-- end col -->
-							</div><!-- end row -->
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group<?php print (($va_errors["tour_date"]) ? " has-error" : ""); ?>">
-										<label for="email">Requested Date Of Tour</label>
-										<input type="text" class="form-control input-sm" id="tour_date" placeholder="Enter your preferred tour date" name="tour_date" value="<?php print ($this->getVar("tour_date")) ? $this->getVar("tour_date") : ""; ?>">
-									</div>
-								</div><!-- end col -->
-								<div class="col-sm-6">
-									<div class="form-group<?php print (($va_errors["tour_time"]) ? " has-error" : ""); ?>">
-										<label for="email">Requested Time of tour</label>
-										<input type="text" class="form-control input-sm" id="tour_time" placeholder="Enter your preferred tour time" name="tour_time" value="<?php print ($this->getVar("tour_time")) ? $this->getVar("tour_time") : ""; ?>">
-									</div>
-								</div><!-- end col -->
-							</div><!-- end row -->
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group<?php print (($va_errors["elc_employee"]) ? " has-error" : ""); ?>">
-										<label for="name">The Tour Is For</label>
-										<select class="form-control input-sm" id="elc_employee" name="elc_employee">
-											<option value=''>Please choose an option</option>
-											<option value='ELC employee(s)' <?php print ($this->getVar("elc_employee") == "ELC employee(s)") ? "selected" : ""; ?>>ELC employee(s)</option>
-											<option value='Non ELC employee(s)' <?php print ($this->getVar("elc_employee") == "Non ELC employee(s)") ? "selected" : ""; ?>>Non ELC employee(s)</option>
-										</select>
-									</div>
-								</div><!-- end col -->
-								<div class="col-sm-6">
-									<div class="form-group<?php print (($va_errors["brand"]) ? " has-error" : ""); ?>">
-										<label for="email">Brand/Team</label>
-										<input type="text" class="form-control input-sm" id="email" placeholder="Enter your Brand/Team" name="brand" value="<?php print ($this->getVar("brand")) ? $this->getVar("brand") : ""; ?>">
-									</div>
-								</div><!-- end col -->
-							</div><!-- end row -->
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group<?php print (($va_errors["office_contact"]) ? " has-error" : ""); ?>">
-										<label for="email">Contact</label>
-										<input type="text" class="form-control input-sm" id="office_contact" placeholder="Enter the primary contact person for the tour" name="office_contact" value="<?php print ($this->getVar("office_contact")) ? $this->getVar("office_contact") : ""; ?>">
-									</div>
-								</div><!-- end col -->
-								<div class="col-sm-6">
-									<div class="form-group<?php print (($va_errors["num_attendees"]) ? " has-error" : ""); ?>">
-										<label for="email">Number Of Attendees</label>
-										<input type="text" class="form-control input-sm" id="num_attendees" placeholder="Enter the number of tour attendees" name="num_attendees" value="<?php print ($this->getVar("num_attendees")) ? $this->getVar("num_attendees") : ""; ?>">
-									</div>
-								</div><!-- end col -->
-							</div><!-- end row -->
-							<div class="row">
-								<div class="col-md-12">
-									<div class="form-group<?php print (($va_errors["guest_names"]) ? " has-error" : ""); ?>">
-										<label for="email">Names & Titles Of Attendees</label>
-										<input type="text" class="form-control input-sm" id="guest_names" placeholder="Enter the names & titles of guests attending the tour" name="guest_names" value="<?php print ($this->getVar("guest_names")) ? $this->getVar("guest_names") : ""; ?>">
-									</div>
-								</div><!-- end col -->
-							</div><!-- end row -->
-							<div class="row">
-								<div class="col-sm-12">
-									<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
-										<label for="message">Additional Comments</label>
-										<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
-									</div>
-								</div><!-- end col -->
-							</div><!-- end row -->
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-sm-12">
-							<div class="form-group">
-								<br/><button type="submit" class="btn btn-default">Send</button>
-							</div><!-- end form-group -->
-						</div>
-					</div>
 		
-				<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
-				<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
-				<input type="hidden" name="contactType" value="Heritage Tours">
+								<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
+								<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
+								<input type="hidden" name="contactType" value="Heritage Tours">
 
-			</form>	
+							</form>	
 		
-		<hr/>
+						<hr/>
 	
-			<form id="contactFormOfficeTour" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
-				<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
+							<form id="contactFormOfficeTour" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+								<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 		
-					<div class="row">
-						<div class="col-sm-12">
-							<H2>Tours of Mrs. Estée Lauder’s Office</H2>
-							<p>{{{contact_office_tours_intro}}}</p>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
-								<label for="name">Your Name</label>
-								<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
-							</div>
-						</div><!-- end col -->
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
-								<label for="email">Your Email Address</label>
-								<input type="text" class="form-control input-sm" id="email" placeholder="Enter your email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $this->request->user->get("email"); ?>">
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-md-12">
-							<div class="form-group<?php print (($va_errors["tour_reason"]) ? " has-error" : ""); ?>">
-								<label for="email">Reason For Tour</label>
-								<input type="text" class="form-control input-sm" id="tour_reason" placeholder="Enter the reason for the tour" name="tour_reason" value="<?php print ($this->getVar("tour_reason")) ? $this->getVar("tour_reason") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["tour_date"]) ? " has-error" : ""); ?>">
-								<label for="email">Requested Date Of Tour</label>
-								<input type="text" class="form-control input-sm" id="tour_date" placeholder="Enter your preferred tour date" name="tour_date" value="<?php print ($this->getVar("tour_date")) ? $this->getVar("tour_date") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["tour_time"]) ? " has-error" : ""); ?>">
-								<label for="email">Requested Time of tour</label>
-								<input type="text" class="form-control input-sm" id="tour_time" placeholder="Enter your preferred tour time" name="tour_time" value="<?php print ($this->getVar("tour_time")) ? $this->getVar("tour_time") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["elc_employee"]) ? " has-error" : ""); ?>">
-								<label for="name">The Tour Is For</label>
-								<select class="form-control input-sm" id="elc_employee" name="elc_employee">
-									<option value=''>Please choose an option</option>
-									<option value='ELC employee(s)' <?php print ($this->getVar("elc_employee") == "ELC employee(s)") ? "selected" : ""; ?>>ELC employee(s)</option>
-									<option value='Non ELC employee(s)' <?php print ($this->getVar("elc_employee") == "Non ELC employee(s)") ? "selected" : ""; ?>>Non ELC employee(s)</option>
-								</select>
-							</div>
-						</div><!-- end col -->
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["brand"]) ? " has-error" : ""); ?>">
-								<label for="email">Brand/Team</label>
-								<input type="text" class="form-control input-sm" id="email" placeholder="Enter your Brand/Team" name="brand" value="<?php print ($this->getVar("brand")) ? $this->getVar("brand") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["office_contact"]) ? " has-error" : ""); ?>">
-								<label for="email">Contact</label>
-								<input type="text" class="form-control input-sm" id="office_contact" placeholder="Enter the primary contact person for the tour" name="office_contact" value="<?php print ($this->getVar("office_contact")) ? $this->getVar("office_contact") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["num_attendees"]) ? " has-error" : ""); ?>">
-								<label for="email">Number Of Attendees</label>
-								<input type="text" class="form-control input-sm" id="num_attendees" placeholder="Enter the number of tour attendees" name="num_attendees" value="<?php print ($this->getVar("num_attendees")) ? $this->getVar("num_attendees") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-md-12">
-							<div class="form-group<?php print (($va_errors["guest_names"]) ? " has-error" : ""); ?>">
-								<label for="email">Names & Titles Of Attendees</label>
-								<input type="text" class="form-control input-sm" id="guest_names" placeholder="Enter the names & titles of guests attending the tour" name="guest_names" value="<?php print ($this->getVar("guest_names")) ? $this->getVar("guest_names") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-sm-12">
-							<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
-								<label for="message">Additional Comments</label>
-								<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-12">
+											<H2>Tours of Mrs. Estée Lauder’s Office</H2>
+											<p>{{{contact_office_tours_intro}}}</p>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
+												<label for="name">Your Name</label>
+												<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+											</div>
+										</div><!-- end col -->
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
+												<label for="email">Your Email Address</label>
+												<input type="text" class="form-control input-sm" id="email" placeholder="Enter your email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $this->request->user->get("email"); ?>">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group<?php print (($va_errors["tour_reason"]) ? " has-error" : ""); ?>">
+												<label for="email">Reason For Tour</label>
+												<input type="text" class="form-control input-sm" id="tour_reason" placeholder="Enter the reason for the tour" name="tour_reason" value="<?php print ($this->getVar("tour_reason")) ? $this->getVar("tour_reason") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["tour_date"]) ? " has-error" : ""); ?>">
+												<label for="email">Requested Date Of Tour</label>
+												<input type="text" class="form-control input-sm" id="tour_date" placeholder="Enter your preferred tour date" name="tour_date" value="<?php print ($this->getVar("tour_date")) ? $this->getVar("tour_date") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["tour_time"]) ? " has-error" : ""); ?>">
+												<label for="email">Requested Time of tour</label>
+												<input type="text" class="form-control input-sm" id="tour_time" placeholder="Enter your preferred tour time" name="tour_time" value="<?php print ($this->getVar("tour_time")) ? $this->getVar("tour_time") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["elc_employee"]) ? " has-error" : ""); ?>">
+												<label for="name">The Tour Is For</label>
+												<select class="form-control input-sm" id="elc_employee" name="elc_employee">
+													<option value=''>Please choose an option</option>
+													<option value='ELC employee(s)' <?php print ($this->getVar("elc_employee") == "ELC employee(s)") ? "selected" : ""; ?>>ELC employee(s)</option>
+													<option value='Non ELC employee(s)' <?php print ($this->getVar("elc_employee") == "Non ELC employee(s)") ? "selected" : ""; ?>>Non ELC employee(s)</option>
+												</select>
+											</div>
+										</div><!-- end col -->
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["brand"]) ? " has-error" : ""); ?>">
+												<label for="email">Brand/Team</label>
+												<input type="text" class="form-control input-sm" id="email" placeholder="Enter your Brand/Team" name="brand" value="<?php print ($this->getVar("brand")) ? $this->getVar("brand") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["office_contact"]) ? " has-error" : ""); ?>">
+												<label for="email">Contact</label>
+												<input type="text" class="form-control input-sm" id="office_contact" placeholder="Enter the primary contact person for the tour" name="office_contact" value="<?php print ($this->getVar("office_contact")) ? $this->getVar("office_contact") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["num_attendees"]) ? " has-error" : ""); ?>">
+												<label for="email">Number Of Attendees</label>
+												<input type="text" class="form-control input-sm" id="num_attendees" placeholder="Enter the number of tour attendees" name="num_attendees" value="<?php print ($this->getVar("num_attendees")) ? $this->getVar("num_attendees") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group<?php print (($va_errors["guest_names"]) ? " has-error" : ""); ?>">
+												<label for="email">Names & Titles Of Attendees</label>
+												<input type="text" class="form-control input-sm" id="guest_names" placeholder="Enter the names & titles of guests attending the tour" name="guest_names" value="<?php print ($this->getVar("guest_names")) ? $this->getVar("guest_names") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
+												<label for="message">Additional Comments</label>
+												<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
 			
-					<div class="row">
-						<div class="col-sm-12">
-							<div class="form-group">
-								<br/><button type="submit" class="btn btn-default">Send</button>
-							</div><!-- end form-group -->
-						</div>
-					</div>
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group">
+												<br/><button type="submit" class="btn btn-default">Send</button>
+											</div><!-- end form-group -->
+										</div>
+									</div>
 		
-				<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
-				<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
-				<input type="hidden" name="contactType" value="Tours of Mrs. Estée Lauder's Office">
+								<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
+								<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
+								<input type="hidden" name="contactType" value="Tours of Mrs. Estée Lauder's Office">
 
-			</form>	
-		</div>
-		<div role="tabpanel" class="tab-pane" id="research">		
+							</form>	
+						</div>
+						<div role="tabpanel" class="tab-pane" id="research">		
 	
-			<form id="contactFormResearchAppointment" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
-				<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
+							<form id="contactFormResearchAppointment" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+								<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
 		
 			
-					<div class="row">
-						<div class="col-sm-12">
-							<H2>Research Appointments</H2>
-							<p>{{{contact_research_appointment_intro}}}</p>
-						</div>
-					</div>
+									<div class="row">
+										<div class="col-sm-12">
+											<H2>Research Appointments</H2>
+											<p>{{{contact_research_appointment_intro}}}</p>
+										</div>
+									</div>
 			
-					<div class="row">
-						<div class="col-md-12">
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
-										<label for="name">Your Name</label>
-										<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="row">
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
+														<label for="name">Your Name</label>
+														<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+													</div>
+												</div><!-- end col -->
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
+														<label for="email">Your Email Address</label>
+														<input type="text" class="form-control input-sm" id="email" placeholder="Enter your email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $this->request->user->get("email"); ?>">
+													</div>
+												</div><!-- end col -->
+											</div><!-- end row -->
+										</div><!-- end col -->
 									</div>
-								</div><!-- end col -->
-								<div class="col-sm-6">
-									<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
-										<label for="email">Your Email Address</label>
-										<input type="text" class="form-control input-sm" id="email" placeholder="Enter your email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $this->request->user->get("email"); ?>">
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group<?php print (($va_errors["research_reason"]) ? " has-error" : ""); ?>">
+												<label for="email">Reason for Research Appointment</label>
+												<input type="text" class="form-control input-sm" id="research_reason" placeholder="Enter the reason for the research appointment" name="research_reason" value="<?php print ($this->getVar("research_reason")) ? $this->getVar("research_reason") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-md-12">
+											<div class="form-group<?php print (($va_errors["materials_requested"]) ? " has-error" : ""); ?>">
+												<label for="email">Materials Requested</label>
+												<input type="text" class="form-control input-sm" id="materials_requested" placeholder="Enter the materials requested" name="materials_requested" value="<?php print ($this->getVar("materials_requested")) ? $this->getVar("materials_requested") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["tour_date"]) ? " has-error" : ""); ?>">
+												<label for="email">Requested Appointment Date</label>
+												<input type="text" class="form-control input-sm" id="tour_date" placeholder="Enter your preferred appointment date" name="tour_date" value="<?php print ($this->getVar("tour_date")) ? $this->getVar("tour_date") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["tour_time"]) ? " has-error" : ""); ?>">
+												<label for="email">Requested Appointment Time</label>
+												<input type="text" class="form-control input-sm" id="tour_time" placeholder="Enter your preferred appointment time" name="tour_time" value="<?php print ($this->getVar("tour_time")) ? $this->getVar("tour_time") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["brand"]) ? " has-error" : ""); ?>">
+												<label for="email">Brand/Team</label>
+												<input type="text" class="form-control input-sm" id="email" placeholder="Enter your Brand/Team" name="brand" value="<?php print ($this->getVar("brand")) ? $this->getVar("brand") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["office_contact"]) ? " has-error" : ""); ?>">
+												<label for="email">Contact</label>
+												<input type="text" class="form-control input-sm" id="office_contact" placeholder="Enter the primary contact person for the appointment" name="office_contact" value="<?php print ($this->getVar("office_contact")) ? $this->getVar("office_contact") : ""; ?>">
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["num_attendees"]) ? " has-error" : ""); ?>">
+												<label for="email">Number of Attendees</label>
+												<select class="form-control input-sm" id="num_attendees" name="num_attendees">
+													<option value=''>Please choose an option</option>
+													<option value='1' <?php print ($this->getVar("num_attendees") == "1") ? "selected" : ""; ?>>1</option>
+													<option value='2' <?php print ($this->getVar("num_attendees") == "2") ? "selected" : ""; ?>>2</option>
+													<option value='3' <?php print ($this->getVar("num_attendees") == "3") ? "selected" : ""; ?>>3</option>
+													<option value='4' <?php print ($this->getVar("num_attendees") == "4") ? "selected" : ""; ?>>4</option>
+												</select>
+											</div>
+										</div><!-- end col -->
+										<div class="col-sm-6">
+											<div class="form-group<?php print (($va_errors["guest_names"]) ? " has-error" : ""); ?>">
+												<label for="email">Names & Titles Of Attendees</label>
+												<input type="text" class="form-control input-sm" id="guest_names" placeholder="Enter the names & titles of guests attending the tour" name="guest_names" value="<?php print ($this->getVar("guest_names")) ? $this->getVar("guest_names") : ""; ?>">
+											</div>
+										</div><!-- end col -->
 									</div>
-								</div><!-- end col -->
-							</div><!-- end row -->
-						</div><!-- end col -->
-					</div>
-					<div class="row">
-						<div class="col-md-12">
-							<div class="form-group<?php print (($va_errors["research_reason"]) ? " has-error" : ""); ?>">
-								<label for="email">Reason for Research Appointment</label>
-								<input type="text" class="form-control input-sm" id="research_reason" placeholder="Enter the reason for the research appointment" name="research_reason" value="<?php print ($this->getVar("research_reason")) ? $this->getVar("research_reason") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-md-12">
-							<div class="form-group<?php print (($va_errors["materials_requested"]) ? " has-error" : ""); ?>">
-								<label for="email">Materials Requested</label>
-								<input type="text" class="form-control input-sm" id="materials_requested" placeholder="Enter the materials requested" name="materials_requested" value="<?php print ($this->getVar("materials_requested")) ? $this->getVar("materials_requested") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["tour_date"]) ? " has-error" : ""); ?>">
-								<label for="email">Requested Appointment Date</label>
-								<input type="text" class="form-control input-sm" id="tour_date" placeholder="Enter your preferred appointment date" name="tour_date" value="<?php print ($this->getVar("tour_date")) ? $this->getVar("tour_date") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["tour_time"]) ? " has-error" : ""); ?>">
-								<label for="email">Requested Appointment Time</label>
-								<input type="text" class="form-control input-sm" id="tour_time" placeholder="Enter your preferred appointment time" name="tour_time" value="<?php print ($this->getVar("tour_time")) ? $this->getVar("tour_time") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["brand"]) ? " has-error" : ""); ?>">
-								<label for="email">Brand/Team</label>
-								<input type="text" class="form-control input-sm" id="email" placeholder="Enter your Brand/Team" name="brand" value="<?php print ($this->getVar("brand")) ? $this->getVar("brand") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["office_contact"]) ? " has-error" : ""); ?>">
-								<label for="email">Contact</label>
-								<input type="text" class="form-control input-sm" id="office_contact" placeholder="Enter the primary contact person for the appointment" name="office_contact" value="<?php print ($this->getVar("office_contact")) ? $this->getVar("office_contact") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["num_attendees"]) ? " has-error" : ""); ?>">
-								<label for="email">Number of Attendees</label>
-								<select class="form-control input-sm" id="num_attendees" name="num_attendees">
-									<option value=''>Please choose an option</option>
-									<option value='1' <?php print ($this->getVar("num_attendees") == "1") ? "selected" : ""; ?>>1</option>
-									<option value='2' <?php print ($this->getVar("num_attendees") == "2") ? "selected" : ""; ?>>2</option>
-									<option value='3' <?php print ($this->getVar("num_attendees") == "3") ? "selected" : ""; ?>>3</option>
-									<option value='4' <?php print ($this->getVar("num_attendees") == "4") ? "selected" : ""; ?>>4</option>
-								</select>
-							</div>
-						</div><!-- end col -->
-						<div class="col-sm-6">
-							<div class="form-group<?php print (($va_errors["guest_names"]) ? " has-error" : ""); ?>">
-								<label for="email">Names & Titles Of Attendees</label>
-								<input type="text" class="form-control input-sm" id="guest_names" placeholder="Enter the names & titles of guests attending the tour" name="guest_names" value="<?php print ($this->getVar("guest_names")) ? $this->getVar("guest_names") : ""; ?>">
-							</div>
-						</div><!-- end col -->
-					</div>
-					<div class="row">
-						<div class="col-sm-12">
-							<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
-								<label for="message">Special Requests / Comments</label>
-								<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
-							</div>
-						</div><!-- end col -->
-					</div><!-- end row -->
-					<div class="row">
-						<div class="col-sm-12">
-							<div class="form-group">
-								<br/><button type="submit" class="btn btn-default">Send</button>
-							</div><!-- end form-group -->
-						</div>
-					</div>
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
+												<label for="message">Special Requests / Comments</label>
+												<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group">
+												<br/><button type="submit" class="btn btn-default">Send</button>
+											</div><!-- end form-group -->
+										</div>
+									</div>
 			
 		
-				<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
-				<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
-				<input type="hidden" name="contactType" value="Research Appointments">
-			</form>
+								<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
+								<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
+								<input type="hidden" name="contactType" value="Research Appointments">
+							</form>
+						</div>
+						<div role="tabpanel" class="tab-pane" id="transfer">
+							<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+								<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>	
+
+									<div class="row">
+										<div class="col-sm-12">
+											<H2>Transfer</H2>
+											<p>{{{transfer_text}}}</p>
+											<hr/>
+					
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-12">
+											<div class="row">
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
+														<label for="name">Your Name</label>
+														<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+													</div>
+												</div><!-- end col -->
+												<div class="col-sm-6">
+													<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
+														<label for="email">Your Email address</label>
+														<input type="text" class="form-control input-sm" id="email" placeholder="Enter your email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $this->request->user->get("email"); ?>">
+													</div>
+												</div><!-- end col -->
+											</div><!-- end row -->
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
+												<label for="message">I am interested in transfering the following material</label>
+												<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
+											</div>
+										</div><!-- end col -->
+									</div><!-- end row -->
+									<div class="row">
+										<div class="col-sm-12">
+											<div class="form-group">
+												<br/><button type="submit" class="btn btn-default">Send</button>
+											</div><!-- end form-group -->
+										</div>
+									</div>
+								<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
+								<input type="hidden" name="collection_id" value="<?php print $pn_collection_id; ?>">
+								<input type="hidden" name="contactType" value="Transfer Request">
+
+							</form>
+
+						</div>
+					</div>
+				</section>
+			</article>
 		</div>
-	</div>
 	<script type='text/javascript'>
 		jQuery(document).ready(function() {
 			$('#contactTabs a').click(function (e) {

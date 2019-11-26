@@ -26,6 +26,11 @@
  * ----------------------------------------------------------------------
  */
  
+$vs_mode = $this->request->getParameter("mode", pString);
+if($vs_mode == "map"){
+	include("map_large_html.php");
+}else{
+	$va_options = $this->getVar("config_options");
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
@@ -33,6 +38,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
 	$va_access_values = $this->getVar("access_values");
 	$va_breadcrumb_trail = array(caNavLink($this->request, "Home", '', '', '', ''));
@@ -85,14 +91,16 @@
 					if(is_array($va_transcript_rep_ids) && sizeof($va_transcript_rep_ids)){
 						print "<div id='transcriptLink' class='text-center'>";
 						foreach($va_transcript_rep_ids as $vn_transcript_rep_id){
-							print caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")));
+							$t_rep = new ca_object_representations($vn_transcript_rep_id);
+							
+							print " ".caNavLink($this->request, "<span class='glyphicon glyphicon-download'></span> ".$t_rep->get("transcript_translation", array("convertCodesToDisplayText" => true))." Transcript", "btn btn-default btn-small", "", "Detail", "DownloadRepresentation", array("context" => "objects", "download" => "1",  "version" => "original", "representation_id" => $vn_transcript_rep_id, "id" => $t_object->get("object_id")))." ";
 						}
 						print "</div>";
 					}
 ?>
 					<div id="detailAnnotations"></div>
 <?php				
-					$va_reps = $t_object->getRepresentations("icon", null, array("checkAcces" => $va_access_values));
+					$va_reps = $t_object->getRepresentations("icon", null, array("checkAccess" => $va_access_values));
 					if(sizeof($va_reps) > 1){
 						print "<div><small>".sizeof($va_reps)." media</small></div>";
 					}
@@ -127,7 +135,7 @@
 						<H6>
 							{{{<ifdef code="ca_objects.resource_type">^ca_objects.resource_type%useSingular=1</ifdef><ifdef code="ca_objects.genre,ca_objects.resource_type"> > </ifdef><ifdef code="ca_objects.genre">^ca_objects.genre%delimiter=,_</unit></ifdef>}}}
 						</H6>
-						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
+						{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 <?php
 						$vs_display_creator = $t_object->getWithTemplate("<unit delimiter=', '>^ca_objects.cdwa_display_creator</unit>");
 						$vs_creators_contributors = $t_object->getWithTemplate("<unit relativeTo='ca_entities.related' restrictToRelationshipTypes='artist,author,composer,contributor,creator,curator,director,editor,filmmaker,funder,illustrator,interviewee,interviewer,narrator,organizer,performer,photographer,producer,researcher,speaker,translator,subject,videographer,venue' delimiter=', '><l>^ca_entities.preferred_labels.displayname</l></unit>", array("checkAccess" => $va_access_values));
@@ -220,6 +228,7 @@
 					if ($this->getVar("nextLink")) {
 						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("nextLink").'</div><!-- end detailTool -->';
 					}
+					print "<div class='detailTool'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array('object_id' => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]." ".$va_add_to_set_link_info["link_text"]."</a></div>";
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
@@ -257,9 +266,7 @@
 							</div>
 <?php				
 						}
-					if($vs_map = $this->getVar("map")){
-						print "<div class='unit'>".$vs_map."</div>";
-					}
+					include("map_html.php");
 ?>
 				</div>
 			</div>
@@ -345,3 +352,6 @@
 		});
 	});
 </script>
+<?php
+}
+?>

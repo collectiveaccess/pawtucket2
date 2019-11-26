@@ -35,6 +35,7 @@
  	require_once(__CA_APP_DIR__."/helpers/exportHelpers.php");
 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
 	require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
+	require_once(__CA_LIB_DIR__.'/Parsers/ZipStream.php');
  	
  	class DetailController extends FindController {
  		# -------------------------------------------------------
@@ -161,7 +162,8 @@
 			}
 			
  			$ps_function = strtolower($ps_function);
- 			$ps_id = urldecode($this->request->getActionExtra()); 
+ 			$ps_id = str_replace("~", "/", urldecode($this->request->getActionExtra())); 
+ 		
  			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
  				// invalid detail type – throw error
  				throw new ApplicationException("Invalid detail type");
@@ -223,8 +225,11 @@
  				return;
  			}
  			
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_subject->getTypeName().$this->request->config->get("page_title_delimiter").$t_subject->get('preferred_labels').(($vs_idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
- 			
+ 			if ($this->request->config->get("{$vs_table}_dont_use_labels")) { 
+ 			    MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_subject->getTypeName().$this->request->config->get("page_title_delimiter").(($vs_idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? "{$vs_idno}" : ""));
+ 			} else {
+ 			    MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_subject->getTypeName().$this->request->config->get("page_title_delimiter").$t_subject->get('preferred_labels').(($vs_idno = $t_subject->get($t_subject->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""));
+ 			}
  			$vs_type = $t_subject->getTypeCode();
  			
  			$this->view->setVar('detailType', $vs_table);
@@ -308,13 +313,13 @@
 				$vn_mapped_count = 0;	
 				foreach($va_map_attributes as $vs_map_attribute) {
 					if ($t_subject->get($vs_map_attribute)){
-						$va_ret = $o_map->mapFrom($t_subject, $vs_map_attribute, array('contentTemplate' => caGetOption('mapContentTemplate', $va_options, false)));
+						$va_ret = $o_map->mapFrom($t_subject, $vs_map_attribute, array('labelTemplate' => caGetOption('mapLabelTemplate', $va_options, false), 'contentTemplate' => caGetOption('mapContentTemplate', $va_options, false)));
 						$vn_mapped_count += $va_ret['items'];
 					}
 				}
 				
 				if ($vn_mapped_count > 0) { 
-					$this->view->setVar("map", $o_map->render('HTML', array('zoomLevel' => caGetOption(['mapZoomLevel', 'zoom_level'], $va_options, 12))));
+					$this->view->setVar("map", $o_map->render('HTML', array('zoomLevel' => caGetOption(['mapZoomLevel', 'zoom_level'], $va_options, null), 'minZoomLevel' => caGetOption(['mapMinZoomLevel'], $va_options, null), 'maxZoomLevel' => caGetOption(['mapMaxZoomLevel'], $va_options, null))));
 				}
 			}
 			
@@ -608,7 +613,7 @@
 				
 				$t_download_log->log(array(
 						"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
-						"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+						"ip_addr" => RequestHTTP::ip(), 
 						"table_num" => $t_object->TableNum(), 
 						"row_id" => $vn_object_id, 
 						"representation_id" => null, 
@@ -672,14 +677,14 @@
 			if (sizeof($va_file_paths) > 1) {
 				if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
 				set_time_limit($vn_limit * 2);
-				$o_zip = new ZipFile();
+				$o_zip = new ZipStream();
 				foreach($va_file_paths as $vs_path => $vs_name) {
-					$o_zip->addFile($vs_path, $vs_name, null, array('compression' => 0));	// don't try to compress
+					$o_zip->addFile($vs_path, $vs_name);
 				}
-				$this->view->setVar('archive_path', $vs_path = $o_zip->output(ZIPFILE_FILEPATH));
+				$o_view->setVar('zip_stream', $o_zip);
 				$this->view->setVar('archive_name', preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t_object->get('idno')).'.zip');
 				
-				$vn_rc = $this->render('Details/object_download_media_binary.php');
+				$vn_rc = $this->render('Details/download_file_binary.php');
 				
 				if ($vs_path) { unlink($vs_path); }
 			} else {
@@ -687,7 +692,7 @@
 					$this->view->setVar('archive_path', $vs_path);
 					$this->view->setVar('archive_name', $vs_name);
 				}
-				$vn_rc = $this->render('Details/object_download_media_binary.php');
+				$vn_rc = $this->render('Details/download_file_binary.php');
 			}
 			
 			return $vn_rc;

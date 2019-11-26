@@ -1191,7 +1191,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			if(!$g_ui_locale_id) { $g_ui_locale_id = 1; }
 
 			$t_item->addLabel(array(
-				'caption' => '['._t('BLANK').']',
+				'caption' => '['.caGetBlankLabelText().']',
 			), $g_ui_locale_id);
 			
 			if ($t_item->numErrors()) {
@@ -1774,8 +1774,13 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			$va_processed_templates = caProcessTemplateForIDs($ps_template, $t_rel_table->tableName(), $qr_res->getAllFieldValues('row_id'), array('returnAsArray' => true));
 			$qr_res->seek(0);
 		}
+		if ($vs_rep_join_sql) {
+			$alt_text_template = Configuration::load()->get($t_rel_table->tableName()."_alt_text_template");
+			$va_alt_tags = caProcessTemplateForIDs(($alt_text_template) ? $alt_text_template : "^".$t_rel_table->tableName().".preferred_labels", $t_rel_table->tableName(), $qr_res->getAllFieldValues('row_id'), array('returnAsArray' => true));
+			$qr_res->seek(0);
+		}
 		$va_items = array();
-
+				
 		while($qr_res->nextRow()) {
 			$va_row = $qr_res->getRow();
 			
@@ -1801,8 +1806,11 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 				$vb_has_access_to_media = in_array($va_row['rep_access'], $pa_options['checkAccess']);
 			}
 			if ($vs_rep_join_sql && $vb_has_access_to_media) {
+				if(is_array($va_alt_tags) && sizeof($va_alt_tags)) {
+					$vs_alt_text = array_shift($va_alt_tags);
+				}
 				if (isset($pa_options['thumbnailVersion'])) {
-					$va_row['representation_tag'] = $qr_res->getMediaTag('media', $pa_options['thumbnailVersion']);
+					$va_row['representation_tag'] = $qr_res->getMediaTag('media', $pa_options['thumbnailVersion'], array("alt" => $vs_alt_text));
 					$va_row['representation_url'] = $qr_res->getMediaUrl('media', $pa_options['thumbnailVersion']);
 					$va_row['representation_path'] = $qr_res->getMediaPath('media', $pa_options['thumbnailVersion']);
 					$va_row['representation_width'] = $qr_res->getMediaInfo('media',  $pa_options['thumbnailVersion'], 'WIDTH');
@@ -1811,7 +1819,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 				
 				if (isset($pa_options['thumbnailVersions']) && is_array($pa_options['thumbnailVersions'])) {
 					foreach($pa_options['thumbnailVersions'] as $vs_version) {
-						$va_row['representation_tag_'.$vs_version] = $qr_res->getMediaTag('media', $vs_version);
+						$va_row['representation_tag_'.$vs_version] = $qr_res->getMediaTag('media', $vs_version, array("alt" => $vs_alt_text));
 						$va_row['representation_url_'.$vs_version] = $qr_res->getMediaUrl('media', $vs_version);
 						$va_row['representation_path_'.$vs_version] = $qr_res->getMediaPath('media', $vs_version);
 						$va_row['representation_width_'.$vs_version] = $qr_res->getMediaInfo('media',  $vs_version, 'WIDTH');
@@ -2692,6 +2700,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 	# ---------------------------------------------------------------
 	/**
 	 * Duplicate all items in this set
+	 *
 	 * @param int $pn_user_id
 	 * @param array $pa_options
 	 * @return ca_sets|bool
@@ -2751,6 +2760,30 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 		$t_set_to_add_dupes_to->addItems($va_dupes);
 
 		return $t_set_to_add_dupes_to;
+	}
+	# ---------------------------------------------------------------
+	/**
+	 * Test if set code exists
+	 *
+	 * @param string $set_code
+	 * @param array $options Options include:
+	 *		user_id = Considers set existance subject to acccess the user. 
+	 *		access = Consider set to exist if user has at least the specified access level. If user_id is omitted then this option has no effect. If user_id is set and this option is omitted, then a set will be considered to exist if the user has at least read access. 
+	 *		checkAccess = Consider set to exist if it has a public access level with the specified values. Can be a single value or array if you wish to filter on multiple public access values.
+	 *			
+	 * @return bool
+	 */
+	static public function setExists($set_code, $options=null) {
+		if ($ids = ca_sets::find(['set_code' => $set_code], ['returnAs' => 'ids'])) {
+			
+			if ($user_id = caGetOption('user_id', $options, null)) {
+				$id = array_shift($ids);
+				$t_set = new ca_sets();
+				return $t_set->haveAccessToSet($user_id, caGetOption('access', $options, null), $id, ['access' => caGetOption('access', $options, null)]);
+			}
+			return true;
+		}
+		return false;
 	}
 	# ---------------------------------------------------------------
 }

@@ -1,100 +1,101 @@
 <?php
 	$o_collections_config = $this->getVar("collections_config");
 	$qr_collections = $this->getVar("collection_results");
-	$va_featured = array();
-	$va_archival = array();
-	if($qr_collections && $qr_collections->numHits()) {
-		while($qr_collections->nextHit()) {
-			# --- yes no values are switched
-			if($qr_collections->get("featured_collection", array("convertCodesToDisplayText" => true)) == "no"){
-				$va_featured[$qr_collections->get("collection_id")] = array("image" => $qr_collections->get("ca_object_representations.media.medium"), "title" => $qr_collections->get("ca_collections.preferred_labels"));
-			}else{
-				$va_archival[$qr_collections->get("collection_id")] = array("image" => $qr_collections->get("ca_object_representations.media.medium"), "title" => $qr_collections->get("ca_collections.preferred_labels"));
-			}
-		}
-	}
+	$va_breakout_collections = $o_collections_config->get("breakout_collections");
 ?>
 	
 	<div class='row'>
-		<div class="col-sm-12 col-md-8 col-md-offset-1">
-			<h1>Guides to the Archives</h1>
+		<div class="col-sm-12 col-md-10 col-md-offset-1">
+			<h1>Collections</h1>
 			<p class="linkUnderline">{{{collections_intro_text}}}</p>
 			<br/>
 		</div>
 	</div>
-
-<?php	
-	$vn_i = 0;
-	if(is_array($va_featured) && sizeof($va_featured)) {
-?>
-		<div class="row">
-		<div class='col-md-12 col-lg-12 collectionsList'>
-			<br/><H2>{{{curated_collections_heading}}}</H2>
-			<p class="linkUnderline">{{{curated_collections_intro_text}}}</p>
-
-<?php
-		foreach($va_featured as $vn_collection_id => $va_collection_info) {
-			if ( $vn_i == 0) { print "<div class='row'>"; } 
-			$vs_collection_image = $va_collection_info["image"];
-			$vn_collection_title = $va_collection_info["title"];
-			print "<div class='col-xs-12 col-sm-6'><div class='collectionTile'>
-						<div class='row collectionBlock'>
-							<div class='col-xs-12 col-sm-3'><div class='collectionGraphic'>".caDetailLink($this->request, $vs_collection_image, "", "ca_collections",  $vn_collection_id)."</div></div><!-- end col -->
-							<div class='col-xs-12 col-sm-8 collectionText'><div class='collectionTitle'>".caDetailLink($this->request, $vn_collection_title, "", "ca_collections",  $vn_collection_id)."</div>	
-							</div>
-						</div></div>
-					</div>";
-			$vn_i++;
-			if ($vn_i == 2) {
-				print "</div><!-- end row -->\n";
-				$vn_i = 0;
-			}
-		}
-		if (($vn_i < 2) && ($vn_i != 0) ) {
-			print "</div><!-- end row -->\n";
-		}
-?>
-		
-			<br/><hr/><br/>
+	<div class='row'>
+		<div class="col-sm-12 col-md-10 col-md-offset-1">
+			<div class='row'>
+				<div class="col-sm-3">
+					<a class="btn btn-default outline btn-large" href="#brands">Brands</a>
+				</div>
+				<div class="col-sm-3">
+					<a class="btn btn-default outline btn-large" href="#othercollections">Corporate</a>
+				</div>
+				<div class="col-sm-3">
+					<a class="btn btn-default outline btn-large" href="#othercollections">Lauder Family</a>
+				</div>
+				<div class="col-sm-3">
+					<a class="btn btn-default outline btn-large" href="#othercollections">BCC</a>
+				</div>
+			</div>
+			<div class='row'>
+				<div class="col-sm-6 col-sm-offset-3 col-md-4 col-md-offset-4">
+					<?php print caNavLink($this->request, "Browse All", "btn btn-default btn-large", "", "Browse", "objects"); ?>
+				</div>
 			</div>
 		</div>
-<?php
-	}
-	$vn_i = 0;
-	if(is_array($va_archival) && sizeof($va_archival)) {
-?>
-
-
-	<div class="row">
-		<div class='col-md-12 col-lg-12 collectionsList'>
-			<H2>{{{archival_collections_heading}}}</H2>
-			<p class="linkUnderline">{{{archival_collections_intro_text}}}</p>
+	</div>
 <?php	
 
-		foreach($va_archival as $vn_collection_id => $va_collection_info) {
-			if ( $vn_i == 0) { print "<div class='row'>"; } 
-			$vs_collection_image = $va_collection_info["image"];
-			$vn_collection_title = $va_collection_info["title"];
-			print "<div class='col-xs-12 col-sm-6'><div class='collectionTile'>
-						<div class='row collectionBlock'>
-							<div class='col-xs-12 col-sm-3'><div class='collectionGraphic'>".caDetailLink($this->request, $vs_collection_image, "", "ca_collections",  $vn_collection_id)."</div></div><!-- end col -->
-							<div class='col-xs-12 col-sm-8 collectionText'><div class='collectionTitle'>".caDetailLink($this->request, $vn_collection_title, "", "ca_collections",  $vn_collection_id)."</div>	
-							</div>
-						</div></div>
-					</div>";
-			$vn_i++;
-			if ($vn_i == 2) {
-				print "</div><!-- end row -->\n";
-				$vn_i = 0;
+	$vn_i = 0;
+	if($qr_collections && $qr_collections->numHits()) {
+?>
+
+<a name="brands"></a>
+	<div class="row">
+		<div class='col-md-12'>
+			<h2>Brands</h2><hr/>
+		</div>
+	</div>
+	<div class="row">
+		<div class='col-md-12 col-lg-12 collectionsGrid'>
+<?php			
+			$va_breakout_collections_info = array();
+			while($qr_collections->nextHit()) {
+				$vs_image = $qr_collections->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
+				$vs_label = $qr_collections->getWithTemplate("<l>^ca_collections.preferred_labels");
+				$vn_collection_id = $qr_collections->get("ca_collections.collection_id");
+				if(in_array($qr_collections->get("ca_collections.idno"), $va_breakout_collections)){
+					$va_breakout_collections_info[$qr_collections->get("ca_collections.idno")] = array(
+						"image" => $vs_image,
+						"label" => $vs_label,
+						"id" => $vn_collection_id
+					);
+				}else{
+					if ( $vn_i == 0) { print "<div class='row'>"; } 
+					print "<div class='col-xs-6 col-sm-2 collectionsGridItem'>".$vs_image."<br>".$vs_label."</div>";
+					$vn_i++;
+					if ($vn_i == 6) {
+						print "</div><!-- end row -->\n";
+						$vn_i = 0;
+					}
+				}
 			}
-		}
-		if (($vn_i < 2) && ($vn_i != 0) ) {
-			print "</div><!-- end row -->\n";
-		}
+			if (($vn_i < 6) && ($vn_i != 0) ) {
+				print "</div><!-- end row -->\n";
+			}
 ?>
 
 		</div>
 	</div>
+	<a name="othercollections"></a>
+	<div class="row collectionsGrid">
+<?php
+		foreach($va_breakout_collections as $vs_breakout_collection_label => $vs_breakout_collection_idno){
+			if($va_breakout_collections_info[$vs_breakout_collection_idno]){
+?>
+				<div class='col-sm-4 collectionsGridItem'>
+					<h3 class='text-center'><?php print $vs_breakout_collection_label; ?></h3><hr/>
+					<div class="row">
+						<div class="col-xs-12 col-sm-6 col-sm-offset-3"><?php print $va_breakout_collections_info[$vs_breakout_collection_idno]["image"]; ?></div>
+					</div>
+				</div>
+<?php
+			}
+		}
+?>
+	</div>
 <?php
 	}
+
+
 ?>

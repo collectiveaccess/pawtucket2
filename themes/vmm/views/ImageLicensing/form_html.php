@@ -52,6 +52,7 @@
 					<div class="col-md-12">
 						<p>{{{image_licensing_intro}}}</p>
 <?php
+						print "<p>".caNavLink($this->request, _t("Schedule of Fees for Reproduction Services"), "", "", "About", "ReproLicenseFees")."</p>";
 						if($t_item && $ps_table){
 ?>
 							<hr/>

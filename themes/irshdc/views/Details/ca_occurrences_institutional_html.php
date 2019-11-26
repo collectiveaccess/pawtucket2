@@ -26,7 +26,11 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+$vs_mode = $this->request->getParameter("mode", pString);
+if($vs_mode == "map"){
+	include("map_large_html.php");
+}else{
+	$va_options = $this->getVar("config_options"); 
 	$t_item = 				$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
@@ -72,27 +76,68 @@
 ?>
 			<div class="row">
 <?php
+				#$vs_featured_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'><ifdef code='ca_object_representations.media.large'><l>^ca_object_representations.media.large</l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></ifdef></unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+				$vs_featured_image = "";
+				$vn_featured_object_id = $t_item->get("ca_objects.object_id", array("restrictToRelationshipTypes" => array("featured"), "checkAccess" => $va_access_values, "limit" => 1));
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
-				if($vs_representationViewer){
+					
+				if($vn_featured_object_id){
+					# --- display the rep viewer for the featured object so if it's video, it will play
+ 					$t_featured_object = new ca_objects($vn_featured_object_id);
+ 					$t_representation = $t_featured_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
+ 					$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
+ 					$vs_version = $va_media_display_info["display_version"];
+ 					if($vs_version == "large"){
+ 						$vs_featured_image = $t_representation->get("ca_object_representations.media.".$vs_version);
+ 						$vs_featured_image = caDetailLink($this->request, $vs_featured_image, '', "ca_objects", $vn_featured_object_id);
+ 						if($vs_caption = $t_representation->get("ca_object_representations.preferred_labels.name")){
+							$vs_featured_image .= "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_featured_object_id)."</div>";
+						};
+ 					}else{
+ 						$vs_featured_image =  caRepresentationViewer(
+													$this->request, 
+													$t_featured_object, 
+													$t_featured_object,
+													array(
+														'display' => 'detail',
+														'showAnnotations' => true, 
+														'primaryOnly' => true, 
+														'dontShowPlaceholder' => true, 
+														'captionTemplate' => "<unit relativeTo='ca_objects'><l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></l></unit>"
+													)
+												);
+ 					}
+ 					
+				
+				}
+				if($vs_featured_image){								
 ?>
-				<div class='col-sm-12 col-md-5'>
-					<?php print $vs_representationViewer; ?>				
-					<div id="detailAnnotations"></div>
-<?php				
-					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
-?>
+				<div class='col-sm-12 col-md-5 fullWidth'>
+					<?php print $vs_featured_image; ?>
 				</div><!-- end col -->
 <?php
+				}else{
+					if($vs_representationViewer){
+?>
+					<div class='col-sm-12 col-md-5'>
+						<?php print $vs_representationViewer; ?>				
+						<div id="detailAnnotations"></div>
+<?php				
+						print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-3", "version" => "iconlarge"));
+?>
+					</div><!-- end col -->
+<?php
+					}
 				}
 ?>
-				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>
+				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer || $vs_featured_image) ? "5" : "7"; ?>'>
 					<div class="stoneBg">				
 						<H4>{{{^ca_occurrences.preferred_labels.name}}}</H4>
 						{{{<ifdef code="ca_occurrences.occurrence_dates"><div class="unit">^ca_occurrences.occurrence_dates</div></ifdef>}}}
 						
 						{{{<ifcount code="ca_entities" restrictToTypes="school" min="1"><div class="unit"><H6>Related School<ifcount code="ca_entities" restrictToTypes="school" min="2">s</ifcount></H6><unit relativeTo="ca_entities" restrictToTypes="school" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
 						{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1"><div class="unit"><H6>Creator<ifcount code="ca_entities.related" restrictToRelationshipTypes="creator" min="2">s</ifcount></H6><div class="trimTextShort"><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
-						{{{<ifcount code="ca_places" min="1"><div class="unit"><H6>Location<ifcount code="ca_places" min="2">s</ifcount></H6><unit relativeTo="ca_places"><l>^ca_places.preferred_labels.name</l></unit></div></ifcount>}}}
+						{{{<ifcount code="ca_places" min="1"><div class="unit"><H6>Location<ifcount code="ca_places" min="2">s</ifcount></H6><unit relativeTo="ca_places">^ca_places.preferred_labels.name</unit></div></ifcount>}}}
 						{{{<ifdef code="ca_occurrences.description_new.description_new_txt">
 							<div class="unit" data-toggle="popover" title="Source" data-content="^ca_occurrences.description_new.description_new_source"><h6>Description</h6>
 								<div class="trimText">^ca_occurrences.description_new.description_new_txt</div>
@@ -113,7 +158,7 @@
 						</div>
 					</ifdef>}}}
 				</div>
-				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>
+				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer || $vs_featured_image) ? "2" : "5"; ?>'>
 	<?php
 					# Comment and Share Tools
 						
@@ -158,9 +203,7 @@
 ?>
 
 <?php
-					if($vs_map = $this->getVar("map")){
-						print "<div class='unit'>".$vs_map."</div>";
-					}
+					include("map_html.php");
 ?>
 				</div>
 			</div>
@@ -237,7 +280,7 @@
 		var options = {
 			placement: function () {
 <?php
-			if($vs_representationViewer){
+			if($vs_representationViewer || $vs_featured_image){
 ?>
 				if ($(window).width() > 992) {
 					return "left";
@@ -272,3 +315,6 @@
 		});
 	});
 </script>
+<?php
+}
+?>

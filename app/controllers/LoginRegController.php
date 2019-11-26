@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2016 Whirl-i-Gig
+ * Copyright 2013-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -69,7 +69,7 @@
 				$va_elements = array();
 				foreach($va_profile_prefs as $vs_pref) {
 					$va_pref_info = $t_user->getPreferenceInfo($vs_pref);
-					$va_elements[$vs_pref] = array('element' => $t_user->preferenceHtmlFormElement($vs_pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<div><b>".$va_pref_info['label']."</b><br/>^ELEMENT</div>"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label for='".$vs_pref."' class='col-sm-4 control-label'>".$va_pref_info['label']."</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 -->\n", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
+					$va_elements[$vs_pref] = array('element' => $t_user->preferenceHtmlFormElement($vs_pref), 'formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<div><b>".$va_pref_info['label']."</b><br/>^ELEMENT</div>"), 'bs_formatted_element' => $t_user->preferenceHtmlFormElement($vs_pref, "<label for='pref_{$vs_pref}' class='col-sm-4 control-label'>".$va_pref_info['label']."</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 -->\n", array("classname" => "form-control")), 'info' => $va_pref_info, 'label' => $va_pref_info['label']);
 				}
 
 				$this->view->setVar("profile_settings", $va_elements);
@@ -135,7 +135,9 @@
                 $ps_password = $this->request->getParameter("password", pString);
                 $ps_password2 = $this->request->getParameter("password2", pString);
                 $ps_security = $this->request->getParameter("security", pString);
-                $va_errors = array();
+				$ps_group_code = $this->request->getParameter("group_code", pString);
+
+                $va_errors = [];
 
                 if (!caCheckEmailAddress($ps_email)) {
                     $va_errors["email"] = _t("E-mail address is not valid.");
@@ -187,6 +189,12 @@
                         $t_user->set("password", $ps_password);
                     }
                 }
+                
+                $t_group_to_join = null;
+				if (($ps_group_code) && (!($t_group_to_join = ca_user_groups::find(['code' => $ps_group_code, 'for_public_use' => 1], ['returnAs' => 'firstModelInstance'])))) {
+					$va_errors["group_code"] = _t("Group code %1 is not valid", $ps_group_code);
+				}
+                
                 // Check user profile responses
                 $va_profile_prefs = $t_user->getValidPreferences('profile');
                 if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
@@ -210,7 +218,19 @@
                         $va_errors["general"] = join("; ", $t_user->getErrors());
                     }else{
                         #success
-                        $this->notification->addNotification(_t("Updated profile"), __NOTIFICATION_TYPE_INFO__);
+                        
+						# User has provided a group code
+						if ($t_group_to_join && ($group_id = $t_group_to_join->getPrimaryKey())) {
+							if(!$t_user->inGroup($group_id)){
+								$t_user->addToGroups($group_id);
+								$vs_group_message = _t("You were added to group <em>%1</em>", $t_group_to_join->get('name'));
+							}else{
+								$vs_group_message = _t("You are already a member of group <em>%1</em>", $t_group_to_join->get('name'));
+							}
+						}
+
+                        
+                        $this->notification->addNotification(_t("Updated profile").($vs_group_message ? "<br/>{$vs_group_message}" : ""), __NOTIFICATION_TYPE_INFO__);
                         // If we are editing the user record of the currently logged in user
                         // we have a problem: the request object flushes out changes to its own user object
                         // for the logged-in user at the end of the request overwriting any changes we've made.
@@ -246,7 +266,7 @@
 						$vs_group_message = _t(" and added to the group");
 					}else{
 						Session::setVar("join_user_group_id", "");
-						$vs_group_message = _t(" you are already a member of the group");
+						//$vs_group_message = _t(" you are already a member of the group");
 					}
 				}
 				if($this->request->isAjax()){
@@ -264,7 +284,7 @@
 						$vs_action = 'Index';
 					}
 					$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);
-					$this->notification->addNotification(_t("You have been logged in").$vs_group_message, __NOTIFICATION_TYPE_INFO__);
+					$this->notification->addNotification(_t("You have been logged in").($vs_group_message ? "<br/>{$vs_group_message}" : ""), __NOTIFICATION_TYPE_INFO__);
 					$this->response->setRedirect($vs_url);
 				}
 			}
@@ -318,6 +338,7 @@
 			$ps_password2 = $this->request->getParameter("password2", pString);
 			$ps_security = $this->request->getParameter("security", pString);
 			$ps_captcha = $this->request->getParameter("g-recaptcha-response", pString);
+			$ps_group_code = $this->request->getParameter("group_code", pString);
 
 			$va_errors = array();
 
@@ -382,6 +403,13 @@
 					}
 				}
 			}
+			
+			// check that group code exists if specified
+			$t_group_to_join = null;
+			if (($ps_group_code) && (!($t_group_to_join = ca_user_groups::find(['code' => $ps_group_code, 'for_public_use' => 1], ['returnAs' => 'firstModelInstance'])))) {
+				$va_errors["group_code"] = _t("Group code %1 is not valid", $ps_group_code);
+			}
+			
 			// Check user profile responses
 			$va_profile_prefs = $t_user->getValidPreferences('profile');
 			if (is_array($va_profile_prefs) && sizeof($va_profile_prefs)) {
@@ -489,6 +517,16 @@
 							$vs_group_message = _t(" You are already a member of the group");
 						}
 					}
+					
+					# User has provided a group code
+					if ($t_group_to_join && ($group_id = $t_group_to_join->getPrimaryKey())) {
+						if(!$t_user->inGroup($group_id)){
+							$t_user->addToGroups($group_id);
+							$vs_group_message = _t("You were added to group <em>%1</em>", $t_group_to_join->get('name'));
+						}else{
+							$vs_group_message = _t("You are already a member of group <em>%1</em>", $t_group_to_join->get('name'));
+						}
+					}
 
 					# --- send email confirmation
 					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
@@ -516,7 +554,6 @@
 						caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
 					}
 
-					#$t_user = new ca_users();
 					$vs_action = $vs_controller = $vs_module_path = '';
 					if ($vs_default_action = $this->request->config->get('default_action')) {
 						$va_tmp = explode('/', $vs_default_action);

@@ -35,6 +35,7 @@
 ?>
 
 		<footer id="footer">
+			<!--<H2>Phanes</H2>-->
 			<H2>Phanes</H2>
 			<div class="userLinks">
 <?php
@@ -51,7 +52,7 @@
 			
 			</div>
 			<div class="footerLinks">
-				<a href="#">About</a>&nbsp;&nbsp;&middot;&nbsp;&nbsp;<a href="#">Contact</a>
+				<?php print caNavLink($this->request, "About", "", "", "About","AboutCollection"); ?>&nbsp;&nbsp;&middot;&nbsp;&nbsp;<?php print caNavLink($this->request, "Contact", "", "", "Contact","form"); ?>
 			</div>
 		</footer><!-- end footer -->
 <?php

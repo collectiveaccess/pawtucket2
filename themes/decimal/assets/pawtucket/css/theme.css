@@ -26,16 +26,23 @@ h2 {
     text-transform: uppercase;
     font-weight: bold;
 }
+h2 a {
+	color: #000;
+}
 h6 {
 	font-weight:600;
 	margin-bottom:4px;
 }
-a {
+a, a:hover {
 	color: #428BCA;
 }
 .btn-default {
 	font-size:12px;
 	margin-left:5px;
+	background-color: rgba(0, 0, 0, 0.6);
+}
+.btn-default:hover{
+	background-color: rgba(0, 0, 0, 0.8);
 }
 .navbar {
 	background-color: rgba(0, 0, 0, 0.6);
@@ -239,7 +246,10 @@ a.copyright {
 }
 
 /* Browse */
-
+.filterMenuResults div div.row {
+    overflow: auto;
+    max-height: 415px;
+}
 .filterbylabel {
 	font-size:12px;
 }
@@ -254,6 +264,9 @@ a.copyright {
     padding-left: 18px;
     margin-right: -18px;
 }
+.filterMenuFacetList li.active a{
+    color:#000;
+}
 .browseMenuFacet {
 	margin-bottom:0px;
 	padding-bottom:0px;
@@ -264,6 +277,10 @@ a.copyright {
 div.browseFacetItem a {
     font-size: 12px;
     text-transform: capitalize;
+    color:#000;
+}
+div.browseFacetItem a:hover {
+    color: #000;
 }
 .filterText {
 	font-size:16px;
@@ -276,7 +293,9 @@ div.browseFacetItem a {
 	background-color:#fbfbfb;
 	border-radius:2px;
 }
-
+.browse .btn, .sets .btn {
+    background-color: rgba(0, 0, 0, 0.6);
+}
 /* MultiSearch */
 
 .multisearch .multisearchResult {
@@ -352,8 +371,84 @@ div.browseFacetItem a {
 	height: 350px !important;
 }
 
+/* Analytics */
+.analytics {
+    color: #454545;
+    font-size: 12px;
+}
+.analytics a {
+    color: #999;
+    text-decoration: none;
+}
+.analytics a:hover {
+	color: #454545;
+    text-decoration: underline;
+}
+.analytics a.platformLink, .analytics a.platformLink:hover {
+	color:#FFF;
+	text-decoration: none;
+}
+.analyticsBody{
+	position:relative;
+}
+.analyticsBody img{
+	width:100%;
+	height:auto;
+}
+.analyticsBody a{
+	position:absolute;
+	height:2%;
+}
+.analyticsBody a:hover{
+	text-decoration:none;
+}
+.analyticsFacetBlock{
+	max-height:300px;
+	overflow-y:scroll;
+}
+.analyticsHierChild{
+	padding-left:15px;
+}
 
+/* charts */
+@media (min-width: 768px) {
+	.analyticsChartCol{
+		margin-left:40px;
+	}
+}
+.ct-bar{
+	stroke:#828282 !important;
+}
 
+.detailToolSocial{
+	font-size:25px !important;
+	padding-bottom:0px !Important;
+}
+.detailToolSocial i{
+	margin-right:25px;
+}
 
+/* Sitewide socail tools */
+.generalToolSocial{
+	font-size:25px !important;
+	padding-bottom:0px !Important;
+}
+.generalToolSocial a{
+	color: #999;
+    text-decoration: none;
+}
+.generalToolSocial a:hover {
+	color: #454545;
+}
+.generalToolSocial i{
+	margin-right:5px;
+}
 
+/*  hiding the links to chose the browse target.  This lets us hide the analytics browse */
+.browseHeadernav{
+	display:none;
+}
 
+.form-control:focus {
+    border-color: #000;
+}

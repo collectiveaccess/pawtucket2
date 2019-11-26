@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2018 Whirl-i-Gig
+ * Copyright 2008-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -104,7 +104,8 @@ BaseModel::$s_ca_models_definitions['ca_editor_uis'] = array(
 					_t('site pages') => 235,
 					_t('user interfaces') => 101,
 					_t('user interface screens') => 100,
-					_t('metadata alert rules') => 238
+					_t('metadata alert rules') => 238,
+					_t('data dictionary entries') => 214
 				)
 		),
 		'color' => array(
@@ -743,7 +744,6 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		    }
 		}
 		
-		
 		$va_bundles = [];
 		$qr_res = $o_db->query("
 			SELECT *
@@ -756,6 +756,7 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		", $va_params);
 		
 		$va_placements = [];
+		$screen_ids = [];
 		while ($qr_res->nextRow()) {
 			$va_tmp = $qr_res->getRow();
 			$va_tmp['settings'] = $qr_res->getVars('settings');
@@ -770,13 +771,17 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 
 			// check bundle-placement type restrictions if set
 			if (
-				$pn_type_id && sizeof($va_types) &&
+				$pn_type_id && is_array($va_types) && sizeof($va_types) &&
 				!in_array($pn_type_id, $va_types)
 			) { continue; }
-				
+			$screen_ids[$va_tmp['screen_id']] = true;
 			$va_placements[] = $va_tmp;
 		}
-		
+		if(sizeof($screen_ids) > 0) {
+		    $t_screen = Datamodel::getInstance('ca_editor_ui_screens', true);
+		    $labels = $t_screen->getPreferredDisplayLabelsForIDs(array_keys($screen_ids));
+		    $va_placements = array_map(function($v) use ($labels) { $v['screen_label'] = $labels[$v['screen_id']]; return $v; }, $va_placements);
+		}
 		return self::$s_screen_bundle_cache[$vs_cache_key] = $va_placements;
 	}
 	# ----------------------------------------
@@ -864,13 +869,19 @@ class ca_editor_uis extends BundlableLabelableBaseModelWithAttributes {
 		if(!caGetOption('user_id', $pa_options, null) && $po_request) { $pa_options['user_id'] = $po_request->getUserID(); }
 		if (!($va_screens = $this->getScreens($pn_type_id, $pa_options))) { return false; }
 		
+		if (is_array($restrict_to_types = caGetOption('restrictToTypes', $pa_options, null)) && sizeof($restrict_to_types)) {
+		    $restrict_to_types = caMakeTypeIDList($this->get('editor_type'), $restrict_to_types);
+		}
 		$va_nav = [];
 		$vn_default_screen_id = null;
 		foreach($va_screens as $va_screen) {
-			if(isset($pa_options['restrictToTypes']) && is_array($pa_options['restrictToTypes']) && is_array($va_screen['typeRestrictions']) && (sizeof($va_screen['typeRestrictions']) > 0)) {
+			$va_screen_restrictions = $va_screen['typeRestrictions'];
+		    if(is_array($va_screen_restrictions)) { $va_screen_restrictions = caMakeTypeIDList($this->get('editor_type'), array_keys($va_screen_restrictions)); }
+			
+			if(is_array($restrict_to_types) && is_array($va_screen_restrictions) && (sizeof($va_screen_restrictions) > 0)) {
 				$vb_skip = true;
-				foreach($pa_options['restrictToTypes'] as $vn_res_type_id => $vs_res_type) {
-					if (isset($va_screen['typeRestrictions'][$vn_res_type_id]) && $va_screen['typeRestrictions'][$vn_res_type_id]) {
+				foreach($restrict_to_types as $vn_res_type_id) {
+					if (in_array($vn_res_type_id, $va_screen_restrictions)) {
 						$vb_skip = false;
 						break;
 					}

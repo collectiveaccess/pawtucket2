@@ -1,6 +1,7 @@
 <?php
 	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Education");
 ?>
+<div role="main" id="main">
 <H1><?php print _t("Education"); ?></H1>
 <div class="row">
 	<div class="col-sm-6 col-md-5">
@@ -10,7 +11,7 @@
 		
 		<p><a href="https://youtu.be/rqhiAmW0JcQ" target="_blank">FIC Intro</a><br/>
 		<a href="https://youtu.be/qqQjlZIyoRA" target="_blank">Why we digitize</a></p>
-		<h3>Using iDigPaleo</h3>
+		<h2>Using iDigPaleo</h2>
 		<p>A full user guide will be published and below is a quick intro to iDigPaleo.</p>
 
 		<p>iDigPaleo is designed for public exploration and for elementary, junior high, and high school classroom use. It gives students the opportunity to see fossils that might never go on display and allows them to use real scientific data in the same way that scientists do. On iDigBio, you can browse or search by the type of fossil (we’ve added common names to facilitate!), the age of the fossil, or where the fossil was collected. You can chose to only look at fossil that include a photograph. A single or group of fossils can be plotted on a map.</p>
@@ -34,10 +35,6 @@
 			<li>annotate images or measure objects with a research or curriculum standard goal, or</li>
 			<li>have students respond to lab questions by creating their own collection of items complete with name, description, image annotations, and comments.</li>
 		</ul>
-
-		<h3>Developed Curricula</h3>
-		<p>These activities were developed for teachers by teachers. They are the result of the NSF-funded teacher workshop, held July, 2015 at the Yale Peabody Museum.</p>
-
-		<h2>-coming soon-</h2>
 	</div>
+</div>
 </div>

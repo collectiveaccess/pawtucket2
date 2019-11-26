@@ -80,7 +80,7 @@
 					})
 				</script>
 <?php				
-			}									
+			}	
 ?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
@@ -93,6 +93,11 @@
 					{{{<ifdef code="ca_collections.related_materials"><div class="unit"><H6>Related Materials</H6>^ca_collections.related_materials</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.acqinfo"><div class="unit"><H6>Provenance</H6>^ca_collections.acqinfo</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.fa_language"><div class="unit"><H6>Language of Description</H6>^ca_collections.fa_language</div></ifdef>}}}
+					
+					{{{<ifdef code="ca_collections.physfacet"><div class="unit"><H6>Physical Facet</H6><unit delimiter="<br/>">^ca_collections.physfacet</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.separated_materials"><div class="unit"><H6>Separated Materials</H6><unit delimiter="<br/>">^ca_collections.separated_materials</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_collections.general_notes"><div class="unit"><H6>General Note</H6><unit delimiter="<br/>">^ca_collections.general_notes</unit></div></ifdef>}}}
+					
 					{{{<ifdef code="ca_collections.preferCite"><div class="unit"><H6>Preferred Citation</H6>^ca_collections.preferCite</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.fa_author"><div class="unit"><H6>Finding Aid Author</H6>^ca_collections.fa_author</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.fa_date"><div class="unit"><H6>Finding Aid Date</H6>^ca_collections.fa_date</div></ifdef>}}}

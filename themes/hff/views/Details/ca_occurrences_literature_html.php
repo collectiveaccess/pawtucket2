@@ -3,6 +3,7 @@
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
+	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$va_access_values = caGetUserAccessValues($this->request);	
 ?>
 <div class="row">
@@ -23,9 +24,12 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
+					{{{<ifdef code="ca_occurrences.idno"><div class="unit"><H6>Identifier</H6>^ca_occurrences.idno</div></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.pubType"><div class="unit"><H6>Type</H6>^ca_occurrences.pubType</div></ifdef>}}}
+					
 <?php
 				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled) {
+				if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						
 					print '<div id="detailTools">';
 					if ($vn_comments_enabled) {
@@ -37,19 +41,41 @@
 					if ($vn_share_enabled) {
 						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
 					}
+					if ($vn_pdf_enabled) {
+						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download Printable PDF", "faDownload", "ca_occurrences",  $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
+					}
 					print '</div><!-- end detailTools -->';
 				}				
 ?>
-					{{{<ifdef code="ca_occurrences.idno"><div class="unit"><H6>Identifier</H6>^ca_occurrences.idno</div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.pubType"><div class="unit"><H6>Type</H6>^ca_occurrences.pubType</div></ifdef>}}}
-					
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>					
 					
-					{{{<ifcount code="ca_occurrences.related" restrictToTypes="exhibition" min="1"><H6>Related Exhibitons</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences.related" delimiter="<br/>" restrictToTypes="exhibition" sort="ca_occurrences.common_date"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
-
-				
+<?php
+				if($va_exhibitions = $t_item->get("ca_occurrences.related", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("exhibition"), "sort" => "ca_occurrences.common_date"))){
+					$t_occ = new ca_occurrences();
+					print "<div class='unit moreSpace'><H6>Exhibitions Referenced</H6>";
+					foreach($va_exhibitions as $va_exhibition){
+						$t_occ->load($va_exhibition["occurrence_id"]);
+						$vs_originating_venue 	= $t_occ->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='originator' delimiter=', '>^ca_entities.preferred_labels</unit>", array("checkAccess" => $va_access_values));
+						if($vs_venue_location = $t_occ->get("ca_occurrences.venue_location", array("delimiter" => ", "))){
+							$vs_originating_venue .= ", ".$vs_venue_location;
+						}
+						$vs_title = italicizeTitle($va_exhibition["name"]);
+						$vs_date = $t_occ->get("ca_occurrences.exhibition_dates_display", array("delimiter" => "<br/>"));
+						if(!$vs_date){
+							$vs_date = $t_occ->get("ca_occurrences.common_date");
+						}
+						
+						$vs_travel_venues = $t_occ->getWithTemplate('<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
+						<div class="travelVenue"><div>Traveled To</div>
+						<unit relativeTo="ca_occurrences.venues" delimiter="<br/>"><ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef><ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address<ifdef code="ca_occurrences.venues.venue_dates_display">, </ifdef></ifdef><ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display</ifdef>.</unit>
+						</div>
+					</ifdef>');
+						print caDetailLink($this->request, (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : ""), '', 'ca_occurrences', $va_exhibition["occurrence_id"]).".".$vs_travel_venues.(($vs_travel_venues) ? "" : "<br/>");
+					}
+					print "</div>";
+				}
+?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
 

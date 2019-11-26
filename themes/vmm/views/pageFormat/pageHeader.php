@@ -168,6 +168,7 @@
 						<ul class="dropdown-menu">
 							<li <?php print ((strToLower($this->request->getController()) == "about") &&  (strToLower($this->request->getAction()) == "museum")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Museum"), "", "", "About", "Museum"); ?></li>
 							<li <?php print ((strToLower($this->request->getController()) == "about") &&  (strToLower($this->request->getAction()) == "collection")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "Collection"); ?></li>
+							<li <?php print ((strToLower($this->request->getController()) == "about") &&  (strToLower($this->request->getAction()) == "ReproLicenseFees")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Reproduction Services"), "", "", "About", "ReproLicenseFees"); ?></li>
 							<li <?php print ((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "faq")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("FAQ"), "", "", "About", "FAQ"); ?></li>
 							<li <?php print ((strToLower($this->request->getController()) == "about") && (strToLower($this->request->getAction()) == "contact")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "Contact"); ?></li>
 							<li><a href="https://www.vancouvermaritimemuseum.com/" target="_blank">Museum Home</a></li>
