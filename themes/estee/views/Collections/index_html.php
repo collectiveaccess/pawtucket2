@@ -51,22 +51,26 @@
 <?php			
 			$va_breakout_collections_info = array();
 			while($qr_collections->nextHit()) {
-				$vs_image = $qr_collections->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
-				$vs_label = $qr_collections->getWithTemplate("<l>^ca_collections.preferred_labels");
-				$vn_collection_id = $qr_collections->get("ca_collections.collection_id");
-				if(in_array($qr_collections->get("ca_collections.idno"), $va_breakout_collections)){
-					$va_breakout_collections_info[$qr_collections->get("ca_collections.idno")] = array(
-						"image" => $vs_image,
-						"label" => $vs_label,
-						"id" => $vn_collection_id
-					);
-				}else{
-					if ( $vn_i == 0) { print "<div class='row'>"; } 
-					print "<div class='col-xs-6 col-sm-2 collectionsGridItem'>".$vs_image."<br>".$vs_label."</div>";
-					$vn_i++;
-					if ($vn_i == 6) {
-						print "</div><!-- end row -->\n";
-						$vn_i = 0;
+				if($qr_collections->get("featured_collection", array("convertCodesToDisplayText" => true)) == "yes"){
+					$vs_image = $qr_collections->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
+					$vs_label = $qr_collections->getWithTemplate("<l>^ca_collections.preferred_labels.name</l>");
+					$vs_label_h3 = $qr_collections->getWithTemplate("<l><h3>^ca_collections.preferred_labels.name</h3></l>");
+					$vn_collection_id = $qr_collections->get("ca_collections.collection_id");
+					if(in_array($qr_collections->get("ca_collections.idno"), $va_breakout_collections)){
+						$va_breakout_collections_info[$qr_collections->get("ca_collections.idno")] = array(
+							"image" => $vs_image,
+							"label" => $vs_label,
+							"label_h3" => $vs_label_h3,
+							"id" => $vn_collection_id
+						);
+					}else{
+						if ( $vn_i == 0) { print "<div class='row'>"; } 
+						print "<div class='col-xs-6 col-sm-2 collectionsGridItem'>".$vs_image."<br>".$vs_label."</div>";
+						$vn_i++;
+						if ($vn_i == 6) {
+							print "</div><!-- end row -->\n";
+							$vn_i = 0;
+						}
 					}
 				}
 			}
@@ -84,7 +88,7 @@
 			if($va_breakout_collections_info[$vs_breakout_collection_idno]){
 ?>
 				<div class='col-sm-4 collectionsGridItem'>
-					<h3 class='text-center'><?php print $vs_breakout_collection_label; ?></h3><hr/>
+					<div class='text-center'><?php print $va_breakout_collections_info[$vs_breakout_collection_idno]["label_h3"]; ?></div><hr/>
 					<div class="row">
 						<div class="col-xs-12 col-sm-6 col-sm-offset-3"><?php print $va_breakout_collections_info[$vs_breakout_collection_idno]["image"]; ?></div>
 					</div>
