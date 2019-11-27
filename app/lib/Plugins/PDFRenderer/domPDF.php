@@ -60,6 +60,8 @@ class WLPlugPDFRendererdomPDF Extends BasePDFRendererPlugIn Implements IWLPlugPD
 		
 		$options = new Options();
 		$options->set('isRemoteEnabled', TRUE);
+		$options->set('logOutputFile', __CA_APP_DIR__.'/tmp/log.htm');
+    	$options->set('tempDir', __CA_APP_DIR__.'/tmp');
 		$this->renderer = new DOMPDF($options);
 	}
 	# ------------------------------------------------
