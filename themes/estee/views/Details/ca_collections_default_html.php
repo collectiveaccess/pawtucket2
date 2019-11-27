@@ -35,7 +35,7 @@
 		if($vs_brand_img == "No media available"){
 			$vs_brand_img = $t_list_item->get("ca_list_items.icon.square400");
 		}
-		$vs_brand_description = $t_list_item->get("ca_list_items.preferred_labels.description");
+		$vs_brand_description = $t_list_item->get("ca_list_items.description");
 	}
 	$vs_related_featured_digital_collections = $t_item->getWithTemplate("<ifcount code='ca_collections.related' min='1'><unit relativeTo='ca_collections.related' delimiter=' '><if rule='^ca_collections.featured_collection =~ /no/'>
 																			<div class='col-xs-12 col-sm-6 col-sm-offset-3'><div class='collectionTile'>
@@ -108,7 +108,7 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 					if($vs_brand_img){
 ?>
 					<div class="row">
-						<div class='col-sm-4 col-sm-offset-4 collectionLogo'>
+						<div class='col-sm-8 col-sm-offset-2 collectionLogo'>
 							<h1><?php print $vs_brand_img; ?></h1>
 							<!--{{{<ifdef code="ca_object_representations.media.medium"><h1>^ca_object_representations.media.medium</h1></ifdef>}}}-->
 						</div>
