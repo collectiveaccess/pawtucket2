@@ -70,6 +70,14 @@
 	
 	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
 	$vb_show_chronology_filters = $this->request->getParameter("showChronologyFilters", pInteger);
+
+	if ($vb_show_filter_panel && $vn_start == 0) {
+		$o_context = new ResultContext($this->request, "ca_objects", 'detailrelated');
+		
+		$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+		$qr_res->seek($vn_start);
+		$o_context->saveContext();
+	}
 	
 if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>

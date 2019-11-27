@@ -46,6 +46,10 @@
 																				</div></div>
 																			</div>
 																		</if></unit></ifcount>");
+	$o_context = new ResultContext($this->request, "ca_objects", 'detailrelated');
+	$o_context->setAsLastFind();
+	$o_context->saveContext();
+
 
 # --- featured collections should have the original layout with images below
 # --- yes no values are switched
@@ -87,7 +91,7 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 				</div><!-- end browseResultsDetailContainer -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collection_objects', array('search' => 'collection_id:'.$t_item->get('ca_collections.collection_id'), 'sort' => 'Rank', 'direction' => 'asc', 'showFilterPanel' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collection_objects', array('search' => 'collection_id:'.$t_item->get('ca_collections.collection_id'), 'sort' => 'Rank', 'direction' => 'asc', 'showFilterPanel' => 1, 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 //						jQuery('#browseResultsDetailContainer').jscroll({
 //							autoTrigger: true,
 //							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -178,7 +182,7 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 									</div><!-- end browseResultsDetailContainer -->
 									<script type="text/javascript">
 										jQuery(document).ready(function() {
-											jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'brand_facet', 'id' => $vn_brand, 'showFilterPanel' => 1, 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
+											jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'brand_facet', 'id' => $vn_brand, 'showFilterPanel' => 1, 'view' => 'images', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 						//						jQuery('#browseResultsDetailContainer').jscroll({
 						//							autoTrigger: true,
 						//							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
