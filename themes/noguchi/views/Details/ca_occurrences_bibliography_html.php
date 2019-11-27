@@ -26,15 +26,15 @@
             </div>
 <?php
  			}
- 			#if($vs_reps = $t_item->getWithTemplate("<unit relativeTo='ca_objects' restrictToTypes='archival_item,document,objects,photographs,digital,print,strip,transparency,strip_image'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values))){
- 			#	$va_rep_ids = explode(";", $vs_reps);
- 			#	if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
  			if($va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true,"restrictToTypes" => array("archival_item","document","objects","photographs","digital","print","strip","transparency","strip_image"), "checkAccess" => $va_access_values))){
  				$va_media = array();
  				$va_thumbs = array();
  				foreach($va_object_ids as $vn_object_id){
  					$t_object = new ca_objects($vn_object_id);
  					if($t_rep = $t_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
+ 						if(!$t_rep_for_meta_tags){
+ 							$t_rep_for_meta_tags = $t_rep;
+ 						}
 // 						print "object_id: ".$t_object->get("object_id");
 // 						print " - representation_id: ".$t_rep->get("representation_id");
 						if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("detail", $vs_mimetype = $t_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) {
@@ -95,17 +95,6 @@
 				}
 			}
 ?>
-            <div class="pagination">
-<?php
-				if($vn_previous_id){
-					print caDetailLink('', 'previous', 'ca_occurrences', $vn_previous_id);
-				}
-				if($vn_next_id){
-					print caDetailLink('', 'next', 'ca_occurrences', $vn_next_id);
-				}
-?>            </div>
-
-
             <div class="wrap-max-content text-align-center">
 
                 <div class="block">
@@ -176,6 +165,32 @@
 
             </div>
         </section>
+<?php
+	if($vn_previous_id || $vn_next_id){
+?>
+	<div class="wrap">
+		<section class="widget-pagination block-top">
+			<div class="layout-2">
+				<div class="col">
+<?php
+					if($vn_previous_id){
+						print caDetailLink('&lt; PREVIOUS', 'text-dark eyebrow previous', 'ca_objects', $vn_previous_id);
+					}
+?>
+				</div>
+				<div class="col">
+<?php
+			
+					if($vn_next_id){
+						print caDetailLink('NEXT &gt;', 'text-dark eyebrow next', 'ca_objects', $vn_next_id);
+					}
+?>					
+				</div>
+		</section>
+	</div>
+<?php
+	}
+?>
 {{{<ifcount code="ca_objects" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version" min="1">
        <section class="wrap block border">
             <div class="block text-align-center">
@@ -209,3 +224,17 @@
 </ifcount>}}}
 
     </main>
+<?php
+	# --- meta tags
+	MetaTagManager::addMeta("twitter:title", str_replace('"', '', $t_item->get("ca_occurrences.preferred_labels.name")));
+	MetaTagManager::addMetaProperty("og:title", str_replace('"', '', $t_item->get("ca_occurrences.preferred_labels.name")));
+	MetaTagManager::addMetaProperty("og:url", $this->request->config->get("site_host").caNavUrl("*", "*", "*"));
+	if($t_rep_for_meta_tags){
+		MetaTagManager::addMetaProperty("og:image", $t_rep_for_meta_tags->get("ca_object_representations.media.large.url"));
+		MetaTagManager::addMetaProperty("og:image:secure_url", $t_rep_for_meta_tags->get("ca_object_representations.media.large.url"));
+		MetaTagManager::addMeta("twitter:image", $t_rep_for_meta_tags->get("ca_object_representations.media.large.url"));
+		$va_media_info = $t_rep_for_meta_tags->getMediaInfo('media', 'large');
+		MetaTagManager::addMetaProperty("og:image:width", $va_media_info["WIDTH"]);
+		MetaTagManager::addMetaProperty("og:image:height", $va_media_info["HEIGHT"]);
+	}	
+?>

@@ -1,0 +1,232 @@
+$link-color-hover: #00ACB9;
+$link-decoration: none;
+$link-hover-decoration: none;
+$primary-text: #000;
+$color-block: #D6B060;
+$color-block-bg: #EAE3D2;
+
+$headings-font: "Futura", sans-serif;
+$headings-font-weight: 800;
+
+$footer-bg: #EA5297;
+$footer-height:100px;
+
+h1 {
+	font-size:2rem;
+	font-weight: 600;
+	color: #000;
+}
+.header-title  h1 {
+	color: #fff;
+	text-transform: uppercase;
+	padding-top: 10px;
+}
+h2 {
+	font-size:1.5rem;
+}
+
+.navbar {
+	background: url("http://roundabout.whirl-i-gig.com:8084/themes/roundabout/assets/pawtucket/graphics/marquee.png")no-repeat; background-size: cover;
+	margin-top:-180px;
+	padding-bottom:0px;
+	.navSearch{
+		.form-control{
+			border: none;
+			box-shadow:none;
+			color: $navbar-search-text-color;
+			padding-right:44px;
+		}
+		.form-control::placeholder{
+			color: $navbar-search-placeholder-color;
+		}
+		.btn{
+			background-color: $navbar-search-button-bg-color;
+			color: $navbar-search-button-color;
+			border:0px;
+			border-radius:0px;
+			line-height:1;
+			margin-left:-44px;
+		}
+	}
+}
+
+.lowernav {
+	ul {
+	display: inline-bock;
+	}
+}
+.navbar-nav {
+	background:rgba(0,0,0,  1);
+	padding-left: 25px;
+}
+.navbar-nav .nav-link {
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+    font-weight: 800;
+    color: #fff;
+    text-decoration: none;
+    text-transform: uppercase;
+    }
+.navbar-nav .nav-link:hover {
+	color: $link-color-hover;
+}
+
+
+/* footer */
+#footer {
+	background-color:$footer-bg;
+	height:$footer-height;
+	border-top:$footer-border-top;
+	font-family: $footer-font;
+	font-size: $footer-font-size;
+	position:absolute;
+	bottom:0;
+	width:100%;
+	text-align:center;
+	a{
+		color:$footer-link-color;
+		font-size:$footer-link-size !important;
+		font-family: $footer-link-font;
+		text-decoration:$footer-link-decoration;
+		text-transform:uppercase;
+		ion-icon{
+			font-size:2em;
+		}
+	}
+}
+    
+.row {
+margin-left: 0px !important;
+margin-right: 0px !important;
+}
+
+.pageArea {
+	margin-top:250px;
+}
+.card {
+	border: 0px !important;
+}
+.search.results .card img, .browse.results .card img, .multiSearchObjectsCascading .card img, .search.results .card img, .browse.results .card img, .multiSearchObjects .card img {
+	border: 1px solid $primary-text;
+}
+.detail img {
+	border: 1px solid $primary-text;
+}
+.entity-image  img {
+  	display: block;
+  	margin-left: auto;
+  	margin-right: auto;
+	max-height: 400px;
+	width: auto;
+}
+
+.card-columns {
+  @include media-breakpoint-only(lg) {
+    column-count: 3;
+  }
+  @include media-breakpoint-only(xl) {
+    column-count: 4;
+  }
+}
+.card-title {
+	height: 50px;
+	background-color: $color-block-bg;
+	display: inline;
+	vertical-align: middle;
+		border: 1px solid $primary-text;
+
+}
+.masonry-title  {
+	padding-top: 18px;
+	height: 50px;
+}
+
+.masonry-title:hover {
+	color: $primary-text !important;
+	border: 1px solid $primary-text;
+}
+.color-block-bg {
+	min-height: 50px;
+	border: 1px solid $primary-text;
+}
+.color-block-bg:hover {
+	background-color: $color-block-bg;
+}
+
+.options-filters {
+	font-family: $headings-font;
+}
+.facetlabel, .facetname, .title {
+	font-size: 10pt;
+}
+
+.caption-text {
+	font-family: $headings-font;
+	text-transform: uppercase;
+}
+.options ul {
+	list-style: none;
+	padding-right: 0px !important;
+	padding-left: 0px !important;
+}
+.inlinesearch {
+	border: 1px solid #000;
+	box-shadow: none;
+	font-size: 11pt;
+	color: #aaa;
+	width: 90%;
+}
+
+.filters {
+	max-height: 300px;
+	overflow: auto; 
+	scrollbar-color: #000 #fff;
+	scrollbar-border: none;
+	scrollbar-border-radius: 0px;
+}
+
+.filters::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+.filters::-webkit-scrollbar-track {
+	border: solid 1px $gray-1;
+    background-color: #fff; 
+    border-radius: 0px;
+}
+ 
+.filters::-webkit-scrollbar-thumb {
+    border-radius: 0px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5); 
+    background-color: #000;
+}
+
+.checkbox input, .checkbox label {
+ display: inline-block !important;
+  margin-bottom: 0 !important; 
+  vertical-align: top !important;
+}
+.checkbox input {
+width: 8%;
+margin-right: 2px !important;
+}
+.checkbox label {
+width: 90%;}
+
+.number {
+	font-weight: 600;
+}
+.button {
+	font-family: $headings-font;
+	background-color: $color-block;
+	color: $primary-text;
+	text-transform: uppercase;
+	font-weight: 600;
+}
+.button:hover {
+	background-color: $primary-text;
+	color: $color-block;
+}
+.bright a {
+	color: $link-color-hover;
+}

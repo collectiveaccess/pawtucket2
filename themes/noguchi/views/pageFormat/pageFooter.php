@@ -80,6 +80,17 @@
         <script type='text/javascript' src='<?php print $this->request->getThemeUrlPath(); ?>/jslib/app-nomin.js?ver=<?= rand(); ?>'></script>
     	<script type='text/javascript' src="<?php print $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>
 
+<?php
+		if (Session::getVar('triggerRegistrationGA') == 'RegistrationGA') {	
+			Session::setVar('triggerRegistrationGA', '');	
+?>
+			<script type="text/javascript">
+				MAIN.setGAEventByName('CA Account Registration');
+			</script>
+<?php
+		}
+?>
+
 		<script type='text/javascript' >
 			Barba.Dispatcher.on('newPageReady', function(currentStatus, oldStatus, container){
 				_initPawtucketApps.default();

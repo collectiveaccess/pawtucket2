@@ -375,16 +375,18 @@ function initBrowseFacetPanel(instance, props) {
 	 * Reload browse results using selected facet values as filters
 	 */
 	that.applyFilters = function() {
-		let activeFilters = [];
+		let activeFilters = {};
 		for(let k in this.state.selectedFacetItems) {
 			if(this.state.selectedFacetItems[k]) {
 				activeFilters[k] = this.state.selectedFacetItems[k];
 			}
 		}
-		let filterBlock = {};
-		filterBlock[this.state.facet] = activeFilters;
-		this.context.reloadResults(filterBlock);
-		this.props.closeFacetPanelCallback();
+		if (Object.values(activeFilters).length > 0) {	// make sure at least one filter is selected
+			let filterBlock = {};
+			filterBlock[this.state.facet] = activeFilters;
+			this.context.reloadResults(filterBlock);
+			this.props.closeFacetPanelCallback();
+		}
 	};
 
 	/**

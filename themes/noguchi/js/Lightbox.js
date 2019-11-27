@@ -6,7 +6,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel, initBrowseResults } from "../../default/js/browse";
-import { fetchLightboxList, addLightbox, editLightbox, deleteLightbox } from "../../default/js/lightbox";
+import { fetchLightboxList, addLightbox, editLightbox, deleteLightbox, removeItemFromLightbox } from "../../default/js/lightbox";
 
 import ClampLines from 'react-clamp-lines';
 
@@ -64,14 +64,40 @@ class Lightbox extends React.Component{
 		this.saveNewLightbox = this.saveNewLightbox.bind(this);
 		this.deleteLightbox = this.deleteLightbox.bind(this);
 
+		this.removeItemFromLightbox = this.removeItemFromLightbox.bind(this);
+
 	}
 
 	componentDidMount() {
 		let that = this;
 		fetchLightboxList(this.props.baseUrl, function(data) {
 			let state = that.state;
-			state.lightboxList = data;
+			state.lightboxList = data ? data : {};
 			that.setState(state);
+		});
+	}
+
+	removeItemFromLightbox(e) {
+		let that = this;
+		if(!this.state.set_id) { return; }
+
+		let item_id = e.target.attributes.getNamedItem('data-item_id').value;
+		if(!item_id) { return; }
+		removeItemFromLightbox(this.props.baseUrl, this.state.set_id, item_id, function(resp) {
+			if(resp && resp['ok']) {
+				let state = that.state;
+				for(let i in state.resultList) {
+					let r = state.resultList[i];
+					if (r.id == item_id) {
+						delete(state.resultList[i]);
+						state.resultSize--;
+						that.setState(state);
+						break;
+					}
+				}
+				return;
+			}
+			alert('Could not remove item: ' + resp['err']);
 		});
 	}
 
@@ -79,6 +105,8 @@ class Lightbox extends React.Component{
 		let state = this.state;
 		state.lightboxList.sets[-1] = {"set_id": -1, "label": ""};
 		this.setState(state);
+		
+		e.preventDefault();
 	}
 
 	cancelNewLightbox(e) {
@@ -188,7 +216,7 @@ class LightboxIntro extends React.Component {
 			this.context.state.description = this.props.description;
 		}
 		return (<section className='lightbox_headline'>
-			<h1 className="headline-s text-align-center">My Documents: {this.props.headline}</h1>
+			<h1 className="headline-s text-align-center">My Documents</h1><h2 className="subheadline-s text-align-center">{this.props.headline}</h2>
 		</section>)
 	}
 }
@@ -215,11 +243,10 @@ class LightboxStatistics extends React.Component {
 	render() {
 		return(<div className="current">
 			<div className="body-sans">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-				"Showing 1 Result."
+				"Showing 1 Item."
 				:
-				"Showing " + this.context.state.resultSize + " Results.") : ""}</div>
+				"Showing " + this.context.state.resultSize + " Items.") : ""}</div>
 
-				<LightboxCurrentFilterList/>
 		</div>
 		);
 	}
@@ -519,9 +546,9 @@ class LightboxResults extends React.Component {
 		let resultList = [];
 		if((this.context.state.resultSize === null) && !this.context.state.loadingMore) {
 			resultList.push((<div className="spinner" key='spinner'>
-				<div className="bounce1"></div>
-				<div className="bounce2"></div>
-				<div className="bounce3"></div>
+				<div className='bounce1' key='bounce1'></div>
+				<div className='bounce2' key='bounce2'></div>
+				<div className='bounce3' key='bounce3'></div>
 			</div>));
 		} else if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
@@ -531,7 +558,7 @@ class LightboxResults extends React.Component {
 				resultList.push(<LightboxResultItem view={this.props.view} key={r.id} data={r} scrollToRef={ref}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
-			resultList.push(<h2 key='no_results'>No results found</h2>)
+			resultList.push(<h2 key='no_results' className='text-align-center noResults'>This collection has no items.<br/>Explore the archive and use the <span className="folderIcon"></span> icon<br/>to add items to your document collections.</h2>)
 		}
 
 		switch(this.props.view) {
@@ -540,7 +567,7 @@ class LightboxResults extends React.Component {
 					<div>
 						<section className="wrap block block-quarter-top grid">
 							<div className="wrap">
-								<div className="grid-flexbox-layout grid-ca-archive">
+								<div className="grid-flexbox-layout grid-ca-archive grid-ca-lightbox">
 									{resultList}
 								</div>
 							</div>
@@ -549,7 +576,8 @@ class LightboxResults extends React.Component {
 																  itemsPerPage={this.context.state.itemsPerPage}
 																  size={this.context.state.totalSize}
 																  loadMoreHandler={this.context.loadMoreResults}
-																  loadMoreRef={this.context.loadMoreRef}/>
+																  loadMoreRef={this.context.loadMoreRef}
+						/>
 					</div>);
 				break;
 		}
@@ -578,7 +606,7 @@ class LightboxResultLoadMoreButton extends React.Component {
 	static contextType = LightboxContext;
 
 	render() {
-		if ((this.props.start + this.props.itemsPerPage) < this.props.size)  {
+		if (((this.props.start + this.props.itemsPerPage) < this.props.size) || (this.context.state.resultSize  === null)) {
 			let loadingText = (this.context.state.resultSize === null) ? "LOADING" : "Load More +";
 
 			return (<section className="block text-align-center">
@@ -604,6 +632,7 @@ class LightboxResultLoadMoreButton extends React.Component {
  *  	LightboxResults
  */
 class LightboxResultItem extends React.Component {
+	static contextType = LightboxContext;
 	render() {
 		let data = this.props.data;
 		let styles = {
@@ -617,10 +646,13 @@ class LightboxResultItem extends React.Component {
 							<a href={data.detailUrl}>
 								<div className="img-wrapper archive_thumb block-quarter">
 									<div className="bg-image"
-										 style={styles}></div>
+										 style={styles}>
+										</div>
 								</div>
+							</a>
 								<div className="text">
 									<div className="text_position">
+										<a href={data.detailUrl}>
 										<div className="ca-identifier text-gray">{data.idno}</div>
 										<ClampLines
 											text={data.label}
@@ -630,15 +662,17 @@ class LightboxResultItem extends React.Component {
 											buttons={false}
 											className="thumb-text clamp"
 											innerElement="div"
-										/>
+										/></a>
 
 										<div className="text_full">
-											<div className="ca-identifier text-gray">{data.idno}</div>
-											<div className="thumb-text">{data.label}</div>
+											<div className="ca-identifier text-gray"><a href={data.detailUrl}>{data.idno}</a></div>
+											<div className="thumb-text">
+												<a href={data.detailUrl}>{data.label}</a>
+												<div className='smallButton text-align-center'><a data-item_id={data.id} onClick={this.context.removeItemFromLightbox}>Remove x</a></div>
+											</div>
 										</div>
 									</div>
 								</div>
-							</a>
 						</div>
 					);
 				break;
@@ -789,7 +823,7 @@ class LightboxListItem extends React.Component {
 			customUI: ({ onClose }) => {
 				return (
 					<div className='col info text-gray'>
-						<p>Really delete lightbox <em>{this.props.data.label}</em>?</p>
+						<p>Really delete collection <em>{this.props.data.label}</em>?</p>
 
 						<div className='button'
 							onClick={() => {
@@ -864,7 +898,7 @@ class LightboxListItem extends React.Component {
 							  onCancel={this.context.cancelNewLightbox}
 							  saveButtonLabel="Save"
 							  cancelButtonLabel="Cancel"
-							  placeholder="Enter lightbox name"
+							  placeholder="Enter name"
 							  attributes={{name: "name", id: "lightbox_name" + this.props.data.set_id}}
 							  value={this.props.data.label}
 					/>

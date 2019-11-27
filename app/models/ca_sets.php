@@ -837,7 +837,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	public function getAvailableSetsForItem($pm_table_name_or_num, $pn_row_id, $pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		if (!($va_full_set_list = $this->getSets(array_merge(array('table' => $pm_table_name_or_num), $pa_options)))) { return null; }
-		if (!($va_current_set_list = $this->getSetsForItem($pm_table_name_or_num, $pn_row_id, $pa_options))) { return null; }
+		if (!($va_current_set_list = $this->getSetsForItem($pm_table_name_or_num, $pn_row_id, $pa_options))) { $va_current_set_list = []; }
 		
 		$va_available_sets = array();
 		foreach($va_full_set_list as $vn_set_id => $va_set_info_by_locale) {
@@ -2446,19 +2446,24 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			$va_sets = [];
 
 			$set_ids = $qr_res->getAllFieldValues('set_id');
-			$labels = $this->getPreferredDisplayLabelsForIDs($set_ids);
+			
+			if (sizeof($set_ids) > 0) {
+                $labels = $this->getPreferredDisplayLabelsForIDs($set_ids);
 
-			$qr_counts = $o_db->query("
-				SELECT COUNT(*) c, cs.set_id
-				FROM ca_sets cs
-				INNER JOIN ca_set_items AS csi ON cs.set_id = csi.set_id
-				WHERE cs.set_id IN (?) 
-				GROUP BY cs.set_id
-			",[$set_ids]);
-			$counts = [];
-			while($qr_counts->nextRow()) {
-				$counts[$qr_counts->get('set_id')] = (int)$qr_counts->get('c');
-			}
+                $qr_counts = $o_db->query("
+                    SELECT COUNT(*) c, cs.set_id
+                    FROM ca_sets cs
+                    INNER JOIN ca_set_items AS csi ON cs.set_id = csi.set_id
+                    WHERE cs.set_id IN (?) 
+                    GROUP BY cs.set_id
+                ",[$set_ids]);
+                $counts = [];
+                while($qr_counts->nextRow()) {
+                    $counts[$qr_counts->get('set_id')] = (int)$qr_counts->get('c');
+                }
+            } else {
+                $labels = $counts = [];
+            }
 
 			$qr_res->seek(0);
 			while($qr_res->nextRow()) {
