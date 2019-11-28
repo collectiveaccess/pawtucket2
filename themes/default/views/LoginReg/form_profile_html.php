@@ -71,18 +71,18 @@
 ?>
 		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
 			<label for='password' class='col-sm-4 control-label'><?php print _t('Reset Password'); ?></label>
-			<div class="col-sm-7"><p class="help-block"><?php print _t("Only enter if you would like to change your current password"); ?></p><input type="password" name="password" size="40" class="form-control"  autocomplete="off" /></div><!-- end col-sm-7 -->
+			<div class="col-sm-7"><p class="help-block"><?php print _t("Only enter if you would like to change your current password"); ?></p><input type="password" name="password" id="password" size="40" class="form-control"  autocomplete="off" /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
 			<label for='password2' class='col-sm-4 control-label'><?php print _t('Re-Type password'); ?></label>
-			<div class="col-sm-7"><input type="password" name="password2" size="40" class="form-control" /></div><!-- end col-sm-7 -->
+			<div class="col-sm-7"><input type="password" name="password2" id="password2" size="40" class="form-control" /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 
-	<div class="row"><div class="col-sm-4"><H1<?php print (!$this->request->isAjax()) ? ' class="text-right"' : ''; ?>><?php print _t("Groups"); ?></H1></div></div>
+	<div class="row"><div class="col-sm-4"><H2<?php print (!$this->request->isAjax()) ? ' class="text-right"' : ''; ?>><?php print _t("Groups"); ?></H2></div></div>
 		<div class="form-group<?php print (($va_errors["group_code"]) ? " has-error" : ""); ?>">
 			<label for='group_code' class='col-sm-4 control-label'><?php print _t('Join group'); ?></label>
-			<div class="col-sm-7"><p class="help-block"><?php print _t("If you have been provided with a group code enter it here to join the group."); ?></p><input type="text" name="group_code" size="40" class="form-control"  autocomplete="off" /></div><!-- end col-sm-7 -->
+			<div class="col-sm-7"><p class="help-block"><?php print _t("If you have been provided with a group code enter it here to join the group."); ?></p><input type="text" name="group_code" id="group_code" size="40" class="form-control"  autocomplete="off" /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 <?php
 	if (is_array($groups = $t_user->getUserGroups()) && (sizeof($groups) > 0)) {

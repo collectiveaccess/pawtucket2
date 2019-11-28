@@ -115,7 +115,27 @@
 					#$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 					$vs_label = trim($qr_res->get("ca_objects.genus")." ".$qr_res->get("ca_objects.species"));
 					$vs_variety = $qr_res->get("ca_objects.variety");
-					$vs_label_detail_link 	= caDetailLink($this->request, "<i>".$vs_label.(($vs_variety) ? " ".$vs_variety." " : "")."</i>", '', $vs_table, $vn_id);
+					$va_caption_parts = array("");
+					if($vs_common_name = $qr_res->get("ca_objects.preferred_labels.name")){
+						$va_caption_parts[] = $vs_common_name;
+					}
+					$vs_height = $qr_res->get("ca_objects.height");
+					$vs_width = $qr_res->get("ca_objects.width");
+					if($vs_height || $vs_width){
+						$vs_tmp = ($vs_height) ? "Height: ".$vs_height." " : "";
+						$vs_tmp .= ($vs_width) ? "Width: ".$vs_width : "";
+						$va_caption_parts[] = $vs_tmp;
+					}
+					$vs_light_needs = $qr_res->get("ca_objects.light_needs", array("convertCodesToDisplayText" => true, "delimiter" => ", "));
+					$vs_water_use = $qr_res->get("ca_objects.water_use", array("convertCodesToDisplayText" => true, "delimiter" => ", "));
+					if($vs_light_needs){
+						$va_caption_parts[] = $vs_light_needs;
+					}
+					$vs_water_use = $qr_res->get("ca_objects.water_use", array("convertCodesToDisplayText" => true, "delimiter" => ", "));
+					if($vs_water_use){
+						$va_caption_parts[] = "Water Use: ".$vs_water_use;
+					}
+					$vs_label_detail_link 	= caDetailLink($this->request, "<i>".$vs_label.(($vs_variety) ? " ".$vs_variety." " : "")."</i>", '', $vs_table, $vn_id).join("<br/>", $va_caption_parts);
 					
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";

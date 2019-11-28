@@ -38,6 +38,7 @@
     $vn_item_id = $this->getVar('item_id');
 
     $vs_caption = $this->getVar('caption');
+    $vs_caption_long = $this->getVar('caption_long');
     $vn_representation_id = $this->getVar('representation_id');
     $vs_representation = $this->getVar('representation');
     $vs_placeholder = $this->getVar('placeholder');
@@ -65,7 +66,7 @@
 
 	</div>
 	<div class="col-sm-3">
-		<H2><?php print caDetailLink($this->request, $this->getVar("caption"), '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail"))); ?></H2>
+		<H2><?php print caDetailLink($this->request, $this->getVar("caption_long"), '', 'ca_objects', $vn_object_id, "", array("title" => _t("View Item Detail"))); ?></H2>
 
 	</div>
 	<div class="col-sm-7">

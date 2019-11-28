@@ -6026,7 +6026,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 				$value = $this->get($ps_field);
 			}
 			return caHTMLTextInput($ps_field, array(
-				'id' => str_replace(".", "_", $ps_field),
+				'id' => (isset($pa_options['id']) ? $pa_options['id'] : str_replace(".", "_", $ps_field)),
 				'class' => (isset($pa_options['class']) ? $pa_options['class'] : ''),
 				'width' => (isset($pa_options['width']) && ($pa_options['width'] > 0)) ? $pa_options['width'] : 30, 
 				'height' => (isset($pa_options['height']) && ($pa_options['height'] > 0)) ? $pa_options['height'] : 1, 

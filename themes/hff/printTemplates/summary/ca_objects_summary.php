@@ -193,7 +193,7 @@
 						print "<div class='unit'><H6>Provenance</H6>".join("<br/>", $va_provenance_display)."</div>";
 					}
 				}
-				if($va_exhibitions = $t_item->get("ca_occurrences", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("exhibition")))){
+				if($va_exhibitions = $t_item->get("ca_occurrences", array("checkAccess" => $va_access_value, "returnWithStructure" => true, "restrictToTypes" => array("exhibition"), "sort" => "ca_occurrences.common_date"))){
 					$t_occ = new ca_occurrences();
 					print "<div class='unit'><H6>Exhibition History</H6>";
 					$t_objects_x_occurrences = new ca_objects_x_occurrences();
@@ -221,15 +221,11 @@
 							$vs_citation = ", ".$vs_citation;
 						}
 						$vs_travel_venues = $t_occ->getWithTemplate('<ifdef code="ca_occurrences.venues.venue_name|ca_occurrences.venues.venue_address|ca_occurrences.venues.venue_dates_display">
-						<div class="travelVenue"><div>Traveled To</div>
-						<unit relativeTo="ca_occurrences.venues" delimiter="<br/><br/>">
-								<ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef>
-								<ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address, </ifdef>
-								<ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display </ifdef>
-						</unit>
-						</div>
-					</ifdef>');
-						print (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "").$vs_citation.$vs_travel_venues.(($vs_travel_venues) ? "" : "<br/><br/>");
+								<div class="travelVenue"><div>Traveled To</div>
+								<unit relativeTo="ca_occurrences.venues" delimiter="<br/>"><ifdef code="ca_occurrences.venues.venue_name">^ca_occurrences.venues.venue_name, </ifdef><ifdef code="ca_occurrences.venues.venue_address">^ca_occurrences.venues.venue_address<ifdef code="ca_occurrences.venues.venue_dates_display">, </ifdef></ifdef><ifdef code="ca_occurrences.venues.venue_dates_display">^ca_occurrences.venues.venue_dates_display</ifdef>.</unit>
+								</div>
+							</ifdef>');
+						print (($vs_originating_venue) ? $vs_originating_venue.", " : "").$vs_title.(($vs_date) ? ", ".$vs_date : "").$vs_citation.".".$vs_travel_venues.(($vs_travel_venues) ? "" : "<br/><br/>");
 					}
 					print "</div>";
 				}

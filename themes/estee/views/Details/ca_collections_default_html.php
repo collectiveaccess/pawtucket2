@@ -13,7 +13,7 @@
 	if($o_collections_config->get("do_not_display_collection_browser")){
 		$vb_show_hierarchy_viewer = false;	
 	}
-	# --- get the collection hierarchy parent to use for exportin finding aid
+	# --- get the collection hierarchy parent to use for exporting finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 	$vb_parent_special_collection = false;
 	if($vn_top_level_collection_id){
@@ -23,29 +23,45 @@
 			$vb_parent_special_collection = true;
 		}
 	}
+	if($va_brand = $t_item->get('ca_collections.brand', array("returnAsArray" => true))){
+		$vn_brand = $va_brand[0];
+	}
+	$vs_brand_img = "";
+	$vs_brand_description = "";
+	if($vn_brand){
+		$t_list_item = new ca_list_items();
+		$t_list_item->load($vn_brand);
+		$vs_brand_img = $t_list_item->get("ca_list_items.icon.large");
+		if($vs_brand_img == "No media available"){
+			$vs_brand_img = $t_list_item->get("ca_list_items.icon.square400");
+		}
+		$vs_brand_description = $t_list_item->get("ca_list_items.description");
+	}
+	$vs_related_featured_digital_collections = $t_item->getWithTemplate("<ifcount code='ca_collections.related' min='1'><unit relativeTo='ca_collections.related' delimiter=' '><if rule='^ca_collections.featured_collection =~ /no/'>
+																			<div class='col-xs-12 col-sm-6 col-sm-offset-3'><div class='collectionTile'>
+																				<div class='row collectionBlock'>
+																					<div class='col-xs-12 col-sm-3'><div class='collectionGraphic'><l>^ca_object_representations.media.medium</l></div></div><!-- end col -->
+																					<div class='col-xs-12 col-sm-8 collectionText'><div class='collectionTitle'><l>^ca_collections.preferred_labels.name</l></div>	
+																					</div>
+																				</div></div>
+																			</div>
+																		</if></unit></ifcount>");
+	$o_context = new ResultContext($this->request, "ca_objects", 'detailrelated');
+	$o_context->setAsLastFind();
+	$o_context->saveContext();
+
+
+# --- featured collections should have the original layout with images below
+# --- yes no values are switched
+if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => true)) == "no") || $vb_parent_special_collection){
 ?>
-<div class="row">
-	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
-		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
 					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6><br/></ifdef>}}}
 				</div><!-- end col -->
 			</div><!-- end row -->
-<?php
-		# --- featured collections should have the original layout with images below
-		# --- yes no values are switched
-		if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => true)) == "no") || $vb_parent_special_collection){
-?>
+
 			<div class="row">
 				<div class='col-sm-12'><br/>
 <?php
@@ -66,18 +82,16 @@
 			</div><!-- end row -->
 
 <?php
-	if($t_item->get("ca_objects", array("checkAccess" => $va_access_values))){
+		if($t_item->get("ca_objects", array("checkAccess" => $va_access_values))){
 ?>
 
-			<div class="row">
 				<br/>
 				<div id="browseResultsDetailContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsDetailContainer -->
-			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collection_objects', array('search' => 'collection_id:'.$t_item->get('ca_collections.collection_id'), 'sort' => 'Rank', 'direction' => 'asc', 'showFilterPanel' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'collection_objects', array('search' => 'collection_id:'.$t_item->get('ca_collections.collection_id'), 'sort' => 'Rank', 'direction' => 'asc', 'showFilterPanel' => 1, 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
 //						jQuery('#browseResultsDetailContainer').jscroll({
 //							autoTrigger: true,
 //							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -89,120 +103,168 @@
 				});
 			</script>
 <?php
-	}
+		}
+}else{
 ?>
+			<div class="row">
+				<div class='col-md-12 col-lg-12'>
 <?php
-		}else{
-
-			print "<div class='unit'>".caNavLink($this->request, '<span class="glyphicon glyphicon-eye-open"></span> &nbsp;View all available digital archival media in this collection', '', '', 'Search','objects', array('search' => 'ca_collections.collection_id:'.$t_item->get("ca_collections.collection_id").' and ca_object_representations.mimetype:*'))."</div>";
-
+					if($vs_brand_img){
+?>
+					<div class="row">
+						<div class='col-sm-6 col-sm-offset-3 collectionLogo'>
+							<h1><?php print $vs_brand_img; ?></h1>
+							<!--{{{<ifdef code="ca_object_representations.media.medium"><h1>^ca_object_representations.media.medium</h1></ifdef>}}}-->
+						</div>
+					</div>
+<?php
+					}
+					if($vs_brand_description){
+?>
+					<div class="row">
+						<div class='col-sm-8 col-sm-offset-2'>
+							<div class="unit"><p><?php print $vs_brand_description; ?></p></div>
+						</div>
+					</div>
+<?php
+					}
+?>
+					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6><br/></ifdef>}}}
+				</div><!-- end col -->
+			</div><!-- end row -->
+<?php
 			# --- is there a collection chronology to show?
 			$vb_show_collection_chronology = false;
 			
 			if($va_chronology = $t_item->get("ca_occurrences", array("restrictToTypes" => array("chronology"), "checkAccess" => $va_access_values))){
 				$vb_show_collection_chronology = true;
 			}
-			if($vb_show_collection_chronology){
+			# --- is there a collection guide to show?
+			$vb_show_collection_guide = false;
+			if($t_item->get("ca_collections.children.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values))){
+				$vb_show_collection_guide = true;
+			}
 ?>
 				<br/>
-				<ul id="collectionTabs" class="nav nav-tabs" role="tablist">
-					<li role="presentation" class="active"><a href="#guide" aria-controls="Collection Guide" role="tab" data-toggle="tab">Collection Guide</a></li>
-					<li role="presentation"><a href="#chronology" aria-controls="Chronology" role="tab" data-toggle="tab">Chronology</a></li>
-				</ul>
-				<div class="tab-content collectionTabs">
-					<br/>
-					<div role="tabpanel" class="tab-pane active" id="guide">
+			<div class="row">
+				<div class='col-md-12 col-lg-12 tabModuleContent'>
+					<article class="tabModuleContentInner float100">	
+						<section class="tabsTitle float100">
+
+							<ul role="tablist">
+								<li role="presentation" class="active"><a href="#browse" aria-controls="Browse Items" role="tab" data-toggle="tab">Browse Items</a></li>
 <?php
-			}
+							if($vb_show_collection_guide){
 ?>
-						<div class="row">
-							<div class="col-sm-12">
+								<li role="presentation"><a href="#guide" aria-controls="Collection Guide" role="tab" data-toggle="tab">Collection Guide</a></li>
 <?php
-								print $t_item->getWithTemplate('<ifdef code="ca_collections.public_notes"><div class="unit"><p>^ca_collections.public_notes</p></div><br/></ifdef><ifdef code="ca_collections.scopecontent"><div class="unit"><p>^ca_collections.scopecontent</p></div><br/></ifdef>');
+							}
+							if($vb_show_collection_chronology){
 ?>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-12">
-								<div class='collectionsContentsContainer'>
-									<H2><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</H2>
-									<div id="collectionLoad"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-								</div>
-			<script>
-				$(document).ready(function(){
-					$('#collectionLoad').load("<?php print caNavUrl($this->request, '', 'Collections', 'childList', array('show_objects' => true, 'collection_id' => $t_item->get("ca_collections.collection_id"))); ?>");
-				});
-			</script>				
-							</div>
-						</div>
+								<li role="presentation"><a href="#chronology" aria-controls="Chronology" role="tab" data-toggle="tab">Chronology</a></li>
 <?php
-			if($vb_show_collection_chronology){
+							}
+							if($vs_related_featured_digital_collections){
 ?>
-					</div><!-- end tabpanel guide -->
-					<div role="tabpanel" class="tab-pane" id="chronology">
-						
-						<div class="row">
-							<div id="browseCollectionContainer">
-								<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-							</div><!-- end browseResultsContainer -->
-						</div><!-- end row -->
-						<script type="text/javascript">
-							jQuery(document).ready(function() {
-								jQuery("#browseCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'facet' => 'collection_facet', 'id' => $t_item->get("ca_collections.collection_id"))); ?>");
-					
-					
-							});
-						</script>
-						
-						
-						
-						
-						
-						<div class="row">
-							<div class="col-sm-12">
+								<li role="presentation"><a href="#resources" aria-controls="Curated Resources" role="tab" data-toggle="tab">Curated Resources</a></li>
 <?php
-							if(is_array($va_chronology_processed) && sizeof($va_chronology_processed)){
-								ksort($va_chronology_processed);
-								foreach($va_chronology_processed as $va_chronology_entry){
-									print "<div class='unit collectionChronology'>";
-									if($va_chronology_entry["date"] || $va_chronology_entry["season"]){
-										print "<H6>".$va_chronology_entry["date"].(($va_chronology_entry["date"] && $va_chronology_entry["season"]) ? ", " : "").$va_chronology_entry["season"]."</H6>";
-									}
-									if($va_chronology_entry["text"]){
-										print $va_chronology_entry["text"];
-									}
-									print "</div>";
-								}
 							}
 ?>
-							</div>
-						</div>
-					</div>
-			
-				</div><!-- end tab-content-->
-				<script type='text/javascript'>
-					jQuery(document).ready(function() {
-						$('#collectionTabs a').click(function (e) {
-							e.preventDefault()
-							$(this).tab('show')
-						});
-						$('#myTabs a[href="#guide"]').tab('show');
-					});
-				</script>
+							</ul>
+						</section>
+						<section class="tabsContent tabsContentLessPadding float100">
 
-		<?php
-			}
-		}
+							<div class="tab-content collectionTabs">
+								<br/>
+								<div role="tabpanel" class="tab-pane active" id="browse">
+									<div id="browseResultsDetailContainer">
+										<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+									</div><!-- end browseResultsDetailContainer -->
+									<script type="text/javascript">
+										jQuery(document).ready(function() {
+											jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'brand_facet', 'id' => $vn_brand, 'showFilterPanel' => 1, 'view' => 'images', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+						//						jQuery('#browseResultsDetailContainer').jscroll({
+						//							autoTrigger: true,
+						//							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
+						//							padding: 20,
+						//							nextSelector: 'a.jscroll-next'
+						//						});
+											});
+					
+										});
+									</script>
+								</div>
+<?php
+						if($vb_show_collection_guide){
 ?>
-			
-			
-			
-			
-		</div><!-- end container -->
-	</div><!-- end col -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
-	</div><!-- end col -->
-</div><!-- end row -->
+								<div role="tabpanel" class="tab-pane" id="guide">
+									<div class="row">
+										<div class="col-sm-12">
+<?php
+											print $t_item->getWithTemplate('<ifdef code="ca_collections.public_notes"><div class="unit"><p>^ca_collections.public_notes</p></div><br/></ifdef><ifdef code="ca_collections.scopecontent"><div class="unit"><p>^ca_collections.scopecontent</p></div><br/></ifdef>');
+?>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-sm-12">
+											<div class='collectionsContentsContainer'>
+												<H2><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</H2>
+												<div id="collectionLoad"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+											</div>
+											<script>
+												$(document).ready(function(){
+													$('#collectionLoad').load("<?php print caNavUrl($this->request, '', 'Collections', 'childList', array('show_objects' => true, 'collection_id' => $t_item->get("ca_collections.collection_id"))); ?>");
+												});
+											</script>
+										</div>
+									</div>
+								</div><!-- end tabpanel guide -->
+<?php
+						}
+						if($vb_show_collection_chronology){
+?>
+								<div role="tabpanel" class="tab-pane" id="chronology">						
+									<div id="browseCollectionContainer">
+										<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+									</div><!-- end browseResultsContainer -->
+									<script type="text/javascript">
+										jQuery(document).ready(function() {
+											jQuery("#browseCollectionContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'chronology', array('showChronologyFilters' => 1, 'facet' => 'collection_facet', 'id' => $t_item->get("ca_collections.collection_id"))); ?>");
+					
+					
+										});
+									</script>
+						
+								</div>
+<?php
+						}
+						if($vs_related_featured_digital_collections){
+?>
+								<div role="tabpanel" class="tab-pane" id="resources">
+									<div class="row collectionsList">						
+<?php
+									print $vs_related_featured_digital_collections;
+?>
+									</div>
+								</div>
+<?php
+						}
+?>			
+							</div><!-- end tab-content-->
+							<script type='text/javascript'>
+								jQuery(document).ready(function() {
+									$('#collectionTabs a').click(function (e) {
+										e.preventDefault()
+										$(this).tab('show')
+									});
+									$('#myTabs a[href="#browse"]').tab('show');
+								});
+							</script>
+						</section>
+					</article>
+
+				</div>
+			</div>
+<?php
+}
+?>

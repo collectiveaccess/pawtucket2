@@ -99,7 +99,7 @@
 					}
 					if($vs_sub_brand = $t_object->get("ca_objects.sub_brand", array("delimiter" => ", "))){
 						if(!preg_match("/[a-z]/", $vs_sub_brand)){
-							$vs_sub_brand = ucwords(strtolower($vs_sub_brand));
+							$vs_sub_brand = ucwords(mb_strtolower($vs_sub_brand));
 						}
 						$vs_sub_brand = "<span class='notransform'>".$vs_sub_brand."</span>";
 						$va_product_info[] = $vs_sub_brand;
@@ -353,7 +353,7 @@
 							}
 							$vs_caption = "";
 							$vs_caption .= $qr_related->get('ca_objects.type_id', array('returnAsLink' => true, 'convertCodesToDisplayText' => true));
-							if($vs_tmp = $qr_related->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true))){
+							if($vs_tmp = $qr_related->get("ca_objects.archival_formats", array("convertCodesToDisplayText" => true))){
 								$vs_caption .= " - ".$vs_tmp;
 							}
 							$vs_caption .= "<br/>";

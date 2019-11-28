@@ -30,7 +30,7 @@ if($vs_mode == "map"){
 					}
 				
 					if ($vn_mapped_count > 0) { 
-						print $o_map->render('HTML', caGetOption('map_large_zoom_level', $va_options, false));
+						print $o_map->render('HTML', array("zoomLevel" => caGetOption('map_large_zoom_level', $va_options, null),"maxZoomLevel" => caGetOption('map_large_max_zoom_level', $va_options, null), "minZoomLevel" => caGetOption('map_large_min_zoom_level', $va_options, null)));
 					}
 				}
 			?>

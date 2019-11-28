@@ -8,21 +8,37 @@
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-8">
-			<h3>The University of Saskatchewan Art Collection</h3>
-			<p>The University of Saskatchewan has collected art objects since 1910, resulting in an eclectic collection that spans many art movements, and consists of a wide variety of styles and subjects.  There have been periods of intense art collection, starting with acquisitions guided by President Walter Murray during the early beginnings of the University through to his retirement in 1937. Augustus Kenderdine, who was the first art professor at the University, is well represented in the collection, and one of our galleries is named in his honor.  He and President Murray were instrumental in starting the Emma Lake / Kenderdine Campus, and many of the artworks collected from the 1930’s through to the 2010’s reflect the artistic activity of that venue, where many international movements and artistic concerns were encountered by attending Saskatchewan artists.  In the 1960’s and 1970’s, the University also had an acquisition initiative that concentrated on the modernist movement in North America and Europe.  With the opening of the Kenderdine Art Gallery in 1991, made possible by the Kenderdine Beamish Trust, the University has received the bulk of its collection through donations by artists and collectors, including art objects that are considered significant cultural property.  </p>
-			<p>Collection activities have been varied over the years, with objects entering the Collection in a number of ways: donations, bequests, purchases, and commissions.  The current collection mandate is to acquire art objects that reflect the cultural life and interests of the university community and the Saskatchewan artistic community, as well as the public at large.  This particularly includes the work of Indigenous artists.</p>
-			<p>As the property of an educational institution, the primary purpose of the Collection is to utilize art objects as an educational tool and make them available to researchers and educators.  While much of the artwork is displayed throughout the buildings and grounds of the campus, they are also included in curated exhibitions at our galleries.  The educational role of the University of Saskatchewan Art Collection will be enhanced by providing on-line viewers with access to object data and images, and ultimately additional text that provides layered context for each art object. </p>
-			<?php print "<div class='logo' style='width:400px;'>".caGetThemeGraphic($this->request, 'usask_usask_colour.png')."</div>"; ?>
+		<div class="col-sm-7">
+			<h3>The Strasbourg and District Museum</h3>
+		<p>Strasbourg and District Museum represents the district and its citizens, many of who donated to the museum. You’ll see them in the photograph collections. You’ll see and hear them on a video project between local seniors and a grade twelve class which captures stories from a bygone era. The many talents, the strong work ethic, the love of games, sports, music, the loyalty to God, to Queen and King and country are evident in each display. The household portion of the station has been restored to what it was in the early 1900’s. The business section is filled with display items from agriculture to wildlife and every aspect in between.</p>
+		<p>This history is as fragile as the artifacts. Without work and care, time and effort to protect and preserve the lore of yesteryear it will crumble and be lost. The Board, with excellent support from our Town Council, local businesses, and the present history-making people are determined not to lose, but to preserve for today and for the future the vastly fascinating ways and times of the pioneers, the ancestors who began the town and the surrounding district of which we are so proud today.</p>
+			
 		</div>
-		<div class="col-sm-3 col-sm-offset-1">
-			<?php print "<div class='logo'>".caGetThemeGraphic($this->request, 'logo 2013.jpg')."</div>"; ?>
-			<h6>&nbsp;</h6><address>Location:<br>
-							107 Administration Pl<br>
-							University of Saskatchewan Campus<br/>
-							Saskatoon, SK S7N 5A2<br/>
-							(306) 966-4571</address>
+		<div class="col-sm-4 col-sm-offset-1">
+		<h3>Hours of Operation</h3>
+		<p>May Long Weekend to end of June:
+			<ul>
+				<li>Saturday from 10am to 4pm</li>
+				<li>Sunday from 1pm to 5pm</li>
+			</ul>
+		</p>
+		<p>July to September Long weekend:
+    		<ul>
+    			<li>Tuesday to Saturday 10am to 4pm</li> 
+				<li>Sunday from 1pm to 5pm</li>
+			</ul>
+		</p>	
+			<address>
+			<h3>Location</h3>
+				501 Railway Ave.<br>
+				Strasbourg, SK<br>
+				S0G4V0<br>
+				306-725-3443
+			</address>
 		
-			<address>Contact:<br/> Blair Barbeau<br>			<span class="info">Phone</span> — (306) 966 4571<br><a href="mailto:blair.barbeau@usask.ca">blair.barbeau@usask.ca</a></address>
+			<address><h3>Contact</h3>
+			 <a href="mailto:strasbourgmuseum@sasktel.net">strasbourgmuseum@sasktel.net</a><br/>
+			 <a href="www.townofstrasbourg.ca/museum">Website</a>
+			 </address>
 		</div>
 	</div>

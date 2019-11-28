@@ -39,8 +39,19 @@
 				<div class='contributeSubmit' style="margin-left: 20px;"><?php print caNavLink($this->request, 'Back to list', '', '*', '*', 'Index');?></div>
 			</div><!-- end detailTool -->
 			<h1>Contribute</h1>
-			<p>Submit Materials The Fabric of Digital Life Archive. Your media will be cataloged and added to the archive once reviewed. The content you submit will be viewable on the site in the near future.  Please contact us at <a href='mailto:decimal.lab.uoit@gmail.com'>decimal.lab.uoit@gmail.com</a> for assistance if needed.</p>
 			
+			<p>Submit metadata for your artifact using the form below. It will be made visible on the site once it's been reviewed and edited. For more information on Fabric's metadata fields as well as guides on how to archive a variety of artifacts, please explore our instructional materials below. If you require further assistance, please contact us at <a href='mailto:decimal.lab.uoit@gmail.com'>decimal.lab.uoit@gmail.com</a>. Thank you for your contribution to Fabric!</p>
+			
+			<p>Registering an Account and Submitting Artifacts:</br>
+<a href="https://docs.google.com/document/d/1uyxTsBonr3HBUUYXgd9v4zfDYGYnCEcq8_snJb6spjE/edit?usp=sharing" target="_ext">https://docs.google.com/document/d/1uyxTsBonr3HBUUYXgd9v4zfDYGYnCEcq8_snJb6spjE/edit?usp=sharing</a></p>
+ 
+            <p>Metadata Guide:<br/>          <a href="https://docs.google.com/document/d/1FLDRRJilEOJ0mW5Pgf816rYS272m_2Ff6EIMDJx9odw/edit?usp=sharing" target="_ext">https://docs.google.com/document/d/1FLDRRJilEOJ0mW5Pgf816rYS272m_2Ff6EIMDJx9odw/edit?usp=sharing</a><p>
+
+            <p>Video Guides:<br/>
+            <a href="https://decimal.screencasthost.com/fabric" target="_ext">https://decimal.screencasthost.com/fabric</a> 
+            </p>
+			
+
 			{{{<ifdef code="errors"><div class="notificationMessage">^errors</div></ifdef>}}}
 			
 			{{{form}}}
@@ -50,7 +61,7 @@
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.type_id:error}}}
 						<span class='title'>Artifact type</span><br/>
-						{{{ca_objects.type_id%width=350px&restrictToTypes=image,moving_image,text}}}  
+						{{{ca_objects.type_id%width=350px&limitToItemsWithID=image,moving_image,text}}}  
 					</div>										
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.preferred_labels:error}}}
@@ -179,7 +190,7 @@
 					<div class="contributeField col-sm-6">
 						{{{ca_objects.locationOnBody:error}}}
 						<span class='title'>Location on body</span><br/>
-						{{{ca_objects.locationOnBody%width=350px}}}
+						{{{ca_objects.locationOnBody%width=350px&multiple=1}}}
 					</div>				
 				</div>
 				<div class='row' style='border-top:1px solid #ccc; padding-top:15px;'>		

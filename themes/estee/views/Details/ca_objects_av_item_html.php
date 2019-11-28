@@ -91,9 +91,6 @@
 					if($vs_type = $t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))){
 						$va_product_info[] = $vs_type;
 					}
-					if($vs_archival_type = $t_object->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
-						$va_product_info[] = $vs_archival_type;
-					}
 					if($vs_brand = $t_object->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
 						$va_product_info[] = $vs_brand;
 					}
@@ -115,6 +112,9 @@
 					{{{<ifdef code="ca_objects.preferred_labels.name"><H4 class="mainTitle">^ca_objects.preferred_labels.name</H4></ifdef>}}}
 					<HR>
 					{{{<ifdef code="ca_objects.season_list|ca_objects.manufacture_date"><div class="unit"><H6>Date</H6>^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.archival_formats"><div class="unit"><H6>Archvial Format</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.archival_formats</unit></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.select_categories"><div class="unit"><H6>Select Categories</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.select_categories</unit></div></ifdef>}}}
+
 					{{{<ifdef code="ca_objects.run_time"><div class="unit"><H6>Run Time</H6>^ca_objects.run_time</div></ifdef>}}}
 					
 <?php
@@ -198,7 +198,7 @@
 							}
 							$vs_caption = "";
 							$vs_caption .= $qr_related->get('ca_objects.type_id', array('returnAsLink' => true, 'convertCodesToDisplayText' => true));
-							if($vs_tmp = $qr_related->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true))){
+							if($vs_tmp = $qr_related->get("ca_objects.archival_formats", array("convertCodesToDisplayText" => true))){
 								$vs_caption .= " - ".$vs_tmp;
 							}
 							$vs_caption .= "<br/>";

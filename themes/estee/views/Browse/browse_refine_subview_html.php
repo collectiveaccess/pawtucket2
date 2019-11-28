@@ -55,7 +55,12 @@
 					</script>
 					<div id='bHierarchyList_<?php print $vs_facet_name; ?>'><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
 <?php
-			} else {				
+			} else {
+				if($va_facet_info["facet_display_length_initial"]){
+					$vn_facet_display_length_initial = $va_facet_info["facet_display_length_initial"];
+				}else{
+					$vn_facet_display_length_initial = 7;
+				}			
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 				print "<H5>".$va_facet_info['label_singular']."</H5>"; 
 				switch($va_facet_info["group_mode"]){

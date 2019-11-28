@@ -161,7 +161,8 @@
  				$vs_tag_proc = $va_parse['tag'];
  				$vs_tag_proc_with_opts = preg_replace("!index=[\d]+!", "", $vs_tag);
  				$va_opts = $va_parse['options'];
- 				
+
+ 				if (isset($va_opts['limitToItemsWithID'])) { $va_opts['limitToItemsWithID'] = preg_split("![,;]+!", $va_opts['limitToItemsWithID']); } 				
  				if (isset($va_opts['restrictToTypes'])) { $va_opts['restrictToTypes'] = preg_split("![,;]+!", $va_opts['restrictToTypes']); }
  				if (isset($va_opts['restrictToRelationshipTypes'])) { $va_opts['restrictToRelationshipTypes'] = preg_split("![,;]+!", $va_opts['restrictToRelationshipTypes']); }		
  				
@@ -248,7 +249,8 @@
 							if ($rel_type = caGetOption('relationshipType', $va_opts, null)) {
 							    $va_opts['restrictToRelationshipTypes'] = [$rel_type];
 							}
-							if ($vs_tag_val = $t_subject->htmlFormElementForSimpleForm($this->request, $vs_tag_proc, array_merge($va_opts, ['index' => $va_tag_counts[$vs_tag_proc], 'valueIndex' => $va_tag_counts[$vs_tag_proc_with_opts]]))) {
+							
+							if ($vs_tag_val = $t_subject->htmlFormElementForSimpleForm($this->request, $vs_tag_proc, array_merge($va_opts, caGetOption('multiple', $va_opts, null) ? [] : ['index' => $va_tag_counts[$vs_tag_proc], 'valueIndex' => $va_tag_counts[$vs_tag_proc_with_opts]]))) {
 								$this->view->setVar($vs_tag, $vs_tag_val);
 								$va_tag_counts[$vs_tag_proc]++;
 								$va_tag_counts[$vs_tag_proc_with_opts]++;
@@ -272,7 +274,7 @@
  		 * Process form submission
  		 */
  		public function Send() {
- 			global $g_ui_locale_id;
+ 			global $g_ui_locale;
  			$ps_function = $this->request->getParameter('_contributeFormName', pString);
  			
  			$va_response_data = array('errors' => array(), 'numErrors' => 0, 'status' => 'OK');
@@ -280,11 +282,13 @@
  			
  			if (!($va_form_info = $this->_checkForm($ps_function))) { return; }
  			$va_related_form_item_config = caGetOption('related', $va_form_info, array());
+ 			
+ 			if(!($locale = caGetOption('alwaysUseLocale', $va_form_info, $g_ui_locale))) { $locale = __CA_DEFAULT_LOCALE__; }
+ 			$locale_id = ca_locales::codeToID($locale);
  				
  			$this->view->setVar('t_subject', $t_subject = $this->subject);
  			$vs_idno_fld_name = $t_subject->getProperty('ID_NUMBERING_ID_FIELD');
             
-            //$t_subject->clear();
             $t_subject->setMode(ACCESS_WRITE);
             $t_subject->purify(true); // run all input through HTMLpurifier
             
@@ -545,13 +549,13 @@
           				switch($vs_bundle) {
           					case 'preferred_labels':
           						foreach($va_data_for_bundle as $va_data) {
-          							$t_subject->replaceLabel($va_data, $g_ui_locale_id, null, true);
+          							$t_subject->replaceLabel($va_data, $locale_id, null, true);
           							$this->_checkErrors($t_subject, $va_response_data, $vn_num_errors); 
           						}
           						break;
           					case 'nonpreferred_labels':
           						foreach($va_data_for_bundle as $va_data) {
-          							$t_subject->replaceLabel($va_data, $g_ui_locale_id, null, false);
+          							$t_subject->replaceLabel($va_data, $locale_id, null, false);
           							$this->_checkErrors($t_subject, $va_response_data, $vn_num_errors); 
           						}
           						break;
@@ -564,12 +568,12 @@
           							foreach($va_data_for_bundle as $va_data) {
 										if ($i == 0) {
 											$t_subject->replaceAttribute(
-												array_merge($va_data, array('locale_id' => $g_ui_locale_id)), 
+												array_merge($va_data, array('locale_id' => $locale_id)), 
 												$vs_bundle
 											);
 										} else {
 											$t_subject->addAttribute(
-												array_merge($va_data, array('locale_id' => $g_ui_locale_id)), 
+												array_merge($va_data, array('locale_id' => $locale_id)), 
 												$vs_bundle
 											);
 										}
@@ -598,7 +602,7 @@
           						if (isset($va_form_info['representation_type'])) { $va_representation['type_id']  = $va_form_info['representation_type']; }
           						if (isset($va_form_info['representation_access'])) { $va_representation['access']  = $va_form_info['representation_access']; }
           						if (isset($va_form_info['representation_status'])) { $va_representation['status']  = $va_form_info['representation_status']; }
-          						$vn_rc = $t_subject->addRepresentation($va_representation['media']['tmp_name'], $va_representation['type_id'], $g_ui_locale_id, $va_representation['status'], $va_representation['access'], $vb_is_primary, $va_representation, array('original_filename' => $va_representation['media']['name']));
+          						$vn_rc = $t_subject->addRepresentation($va_representation['media']['tmp_name'], $va_representation['type_id'], $locale_id, $va_representation['status'], $va_representation['access'], $vb_is_primary, $va_representation, array('original_filename' => $va_representation['media']['name']));
           						
           						if ($t_subject->numErrors()) {
           							$this->_checkErrors($t_subject, $va_response_data, $vn_num_errors); 
@@ -624,7 +628,7 @@
           					        }
                                     foreach(array('idno', 'access', 'status') as $vs_f) { $va_rel[$vs_f] = $va_rel_config[$vs_f]; }
                                     if (!$va_rel['preferred_labels']['name']) { continue; }
-                                    if ($vn_rel_id = DataMigrationUtils::getObjectID($va_rel['preferred_labels']['name'], $va_rel['_type'], $g_ui_locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+                                    if ($vn_rel_id = DataMigrationUtils::getObjectID($va_rel['preferred_labels']['name'], $va_rel['_type'], $locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
                                         if (!($vs_rel_type = trim($va_rel['_relationship_type']))) { break; }
                                 
                                         $t_subject->addRelationship($vs_table, $vn_rel_id, $vs_rel_type);
@@ -650,7 +654,7 @@
           					        }
                                     foreach(array('idno', 'access', 'status') as $vs_f) { $va_rel[$vs_f] = $va_rel_config[$vs_f]; }
                                     if (!$va_rel['preferred_labels']['displayname']) { continue; }
-                                    if ($vn_rel_id = DataMigrationUtils::getEntityID(DataMigrationUtils::splitEntityName($va_rel['preferred_labels']['displayname']), $va_rel['_type'], $g_ui_locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+                                    if ($vn_rel_id = DataMigrationUtils::getEntityID(DataMigrationUtils::splitEntityName($va_rel['preferred_labels']['displayname']), $va_rel['_type'], $locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
                                         $t_subject->addRelationship($vs_table, $vn_rel_id, $vs_rel_type);
                                 
                                         if ($t_subject->numErrors()) { $this->_checkErrors($t_subject, $va_response_data, $vn_num_errors);} 
@@ -664,7 +668,7 @@
           						
                                 $va_rel = array_merge($va_rel, $submission_values);
           						foreach(array('idno', 'access', 'status') as $vs_f) { $va_rel[$vs_f] = $va_rel_config[$vs_f]; }
-								if ($vn_rel_id = DataMigrationUtils::getPlaceID($va_rel['preferred_labels']['name'], caGetOption('parent_id', $va_rel_config, null), $va_rel['_type'], $g_ui_locale_id, null, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+								if ($vn_rel_id = DataMigrationUtils::getPlaceID($va_rel['preferred_labels']['name'], caGetOption('parent_id', $va_rel_config, null), $va_rel['_type'], $locale_id, null, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
 									if (!($vs_rel_type = trim($va_rel['_relationship_type']))) { break; }
 								
 									$t_subject->addRelationship($vs_table, $vn_rel_id, $vs_rel_type);
@@ -676,7 +680,7 @@
           					        }
                                     foreach(array('idno', 'access', 'status') as $vs_f) { $va_rel[$vs_f] = $va_rel_config[$vs_f]; }
                                     if (!$va_rel['preferred_labels']['name']) { continue; }
-                                    if ($vn_rel_id = DataMigrationUtils::getPlaceID($va_rel['preferred_labels']['name'], $va_rel['_type'], $g_ui_locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+                                    if ($vn_rel_id = DataMigrationUtils::getPlaceID($va_rel['preferred_labels']['name'], $va_rel['_type'], $locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
                                         if (!($vs_rel_type = trim($va_rel['_relationship_type']))) { break; }
                                 
                                         $t_subject->addRelationship($vs_table, $vn_rel_id, $vs_rel_type);
@@ -692,7 +696,7 @@
           						
           			            $va_rel = array_merge($va_rel, $submission_values);
           						foreach(array('idno', 'access', 'status') as $vs_f) { $va_rel[$vs_f] = $va_rel_config[$vs_f]; }
-								if ($vn_rel_id = DataMigrationUtils::getOccurrenceID($va_rel['preferred_labels']['name'], caGetOption('parent_id', $va_rel_config, null), $va_rel['_type'], $g_ui_locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+								if ($vn_rel_id = DataMigrationUtils::getOccurrenceID($va_rel['preferred_labels']['name'], caGetOption('parent_id', $va_rel_config, null), $va_rel['_type'], $locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
 									if (!($vs_rel_type = trim($va_rel['_relationship_type']))) { break; }
 								
 									$t_subject->addRelationship($vs_table, $vn_rel_id, $vs_rel_type);
@@ -704,7 +708,7 @@
           					        }
                                     foreach(array('idno', 'access', 'status') as $vs_f) { $va_rel[$vs_f] = $va_rel_config[$vs_f]; }
                                     if (!$va_rel['preferred_labels']['name']) { continue; }
-                                    if ($vn_rel_id = DataMigrationUtils::getOccurrenceID($va_rel['preferred_labels']['name'], $va_rel['_type'], $g_ui_locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+                                    if ($vn_rel_id = DataMigrationUtils::getOccurrenceID($va_rel['preferred_labels']['name'], $va_rel['_type'], $locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
                                         if (!($vs_rel_type = trim($va_rel['_relationship_type']))) { break; }
                                 
                                         $t_subject->addRelationship($vs_table, $vn_rel_id, $vs_rel_type);
@@ -720,7 +724,7 @@
           						
                                 $va_rel = array_merge($va_rel, $submission_values);
           						foreach(array('idno', 'access', 'status', 'parent_id') as $vs_f) { $va_rel[$vs_f] = $va_rel_config[$vs_f]; }
-								if ($vn_rel_id = DataMigrationUtils::getCollectionID($va_rel['preferred_labels']['name'], $va_rel['_type'], $g_ui_locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+								if ($vn_rel_id = DataMigrationUtils::getCollectionID($va_rel['preferred_labels']['name'], $va_rel['_type'], $locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
 									if (!($vs_rel_type = trim($va_rel['_relationship_type']))) { break; }
 								
 									$t_subject->addRelationship($vs_table, $vn_rel_id, $vs_rel_type);
@@ -732,7 +736,7 @@
           					        }
                                     foreach(array('idno', 'access', 'status') as $vs_f) { $va_rel[$vs_f] = $va_rel_config[$vs_f]; }
                                     if (!$va_rel['preferred_labels']['name']) { continue; }
-                                    if ($vn_rel_id = DataMigrationUtils::getCollectionID($va_rel['preferred_labels']['name'], $va_rel['_type'], $g_ui_locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
+                                    if ($vn_rel_id = DataMigrationUtils::getCollectionID($va_rel['preferred_labels']['name'], $va_rel['_type'], $locale_id, $va_rel, array('transaction' => $o_trans, 'matchOn' => array('label'), 'IDNumberingConfig' => $this->config))) {
                                         if (!($vs_rel_type = trim($va_rel['_relationship_type']))) { break; }
                                 
                                         $t_subject->addRelationship($vs_table, $vn_rel_id, $vs_rel_type);
