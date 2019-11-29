@@ -85,80 +85,93 @@
 	}
 ?>
 	<nav class="navbar navbar-default yamm" role="navigation">
+		<div class="topNav">
+			<div class="row text-center">
+				<div class="col-sm-12 col-md-4 col-md-offset-4 esteeBrand">
+					<?php print caGetThemeGraphic($this->request, 'ELC_LOGO_dblue.png'); ?>
+				</div>
+				<div class="col-sm-12 col-md-4">
+					<div class="collapse navbar-collapse bs-main-navbar-collapse-2 navbar-search">
+						<form class="navbar-form" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'Objects'); ?>">
+							<div class="formOutline">
+								<div class="form-group">
+									<input type="text" class="form-control" id="headerSearchInput" placeholder="Search All" name="search" autocomplete="off" />
+								</div>
+								<button type="submit" class="btn-search" id="headerSearchButton"><i class='material-icons'>search</i></button>
+							</div>
+						</form>
+						<script type="text/javascript">
+							$(document).ready(function(){
+								$('#headerSearchButton').prop('disabled',true);
+								$('#headerSearchInput').on('keyup', function(){
+									$('#headerSearchButton').prop('disabled', this.value == "" ? true : false);     
+								})
+							});
+						</script>
+					</div>
+				</div>
+			</div>
+		</div>
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
+			<div class="row">
+				<div class="col-sm-12 col-md-3 col-lg-2 col-lg-offset-1 text-center">
+					
+					<button type="button" class="navbar-toggle navbar-toggle-menu" data-toggle="collapse" data-target=".bs-main-navbar-collapse-1" onClick="$('.navbar-toggle-showhide').toggle(); $('.bs-main-navbar-collapse-2').collapse('hide');">
+						<span class="sr-only">Toggle navigation</span>
+						<span class="navbar-toggle-showhide"><i class='material-icons'>menu</i></span>
+						<span style="display:none;" class="navbar-toggle-showhide"><i class='material-icons'>close</i></span>
+					</button>
+					<button type="button" class="navbar-toggle navbar-toggle-search" data-toggle="collapse" data-target=".bs-main-navbar-collapse-2" onClick="$('.bs-main-navbar-collapse-1').collapse('hide');">
+						<span class="sr-only">Toggle search</span>
+						<i class='material-icons'>search</i>
+					</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'elc-logo@3x.png'), "navbar-brand", "", "","");
+					print caNavLink($this->request, "Archives", "navbar-brand", "", "","");
+?>					
+				</div>
+				<div class="col-md-6 text-center">
+					<div class="collapse navbar-collapse bs-main-navbar-collapse-1 navbar-menu">
+						<ul class="nav navbar-nav menuItems">
+							<li <?php print (strToLower($this->request->getController()) == "about") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
+							<li <?php print ((strToLower($this->request->getController()) == "collections") || ((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "collections"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "Index"); ?></li>
+							<li <?php print (strToLower($this->request->getController()) == "gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Stories"), "", "", "Gallery", "Index"); ?></li>
+							<li <?php print (strToLower($this->request->getController()) == "contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Inquire"), "", "", "Contact", "Form"); ?></li>
+<?php
+							if($this->request->isLoggedIn()){
+								if(caDisplayLightbox($this->request)){
+									print "<li class='collapsed-project-link".((strToLower($this->request->getController()) == "lightbox") ? " active" : "")."'>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
+								}		
+								print "<li class='collapsed-project-link'>".caNavLink($this->request, 'Logout', '', '', 'LoginReg', 'Logout')."</li>";
+							}else{
+								print "<li class='collapsed-project-link'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>";
+							}
 ?>
-				<button type="button" class="navbar-toggle navbar-toggle-menu" data-toggle="collapse" data-target=".bs-main-navbar-collapse-1" onClick="$('.navbar-toggle-showhide').toggle();">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="navbar-toggle-showhide"><i class='material-icons'>menu</i><span class="navbar-toggle-text">Menu</span></span>
-					<span style="display:none;" class="navbar-toggle-showhide"><i class='material-icons'>close</i><span class="navbar-toggle-text">Close</span></span>
-				</button>
-			</div>
+						</ul>
+					</div><!-- /.navbar-collapse -->
+				
+				</div>
+				<div class="col-md-3 col-lg-2 text-center">
+				<!-- Collect the nav links, forms, and other content for toggling -->
+					<div class="collapse navbar-collapse navbar-projects bs-main-navbar-collapse-1">
+						<!--- this is not shown in collapsed menu - .collapsed-project-link is instead --->
 <?php
-			if($this->request->isLoggedIn()){
-				print caNavLink($this->request, "<i class='material-icons'>input</i>", 'logout', '', 'LoginReg', 'Logout', array(), array('title' => 'Logout'));
-			}
-?>		
-			<button type="button" class="navbar-toggle navbar-toggle-search" data-toggle="collapse" data-target=".bs-main-navbar-collapse-2">
-				<span class="sr-only">Toggle search</span>
-				<i class='material-icons'>search</i>
-			</button>
-		<!-- Collect the nav links, forms, and other content for toggling -->
-			<div class="collapse navbar-collapse navbar-projects bs-main-navbar-collapse-1">
-				<!--- this is not shown in collapsed menu - .collapsed-project-link is instead --->
-<?php
-					if($this->request->isLoggedIn()){
-						if(caDisplayLightbox($this->request)){
-							print "<ul class='nav navbar-nav menuItems navbar-right'>";
-							print "<li ".((strToLower($this->request->getController()) == "lightbox") ? 'class="active"' : '').">".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
-							print "</ul>";
-						}		
-					}else{
-						print "<ul class='nav navbar-nav menuItems navbar-right'><li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li></ul>";
-					}
+							if($this->request->isLoggedIn()){
+								print "<ul class='nav navbar-nav menuItems'>";
+									if(caDisplayLightbox($this->request)){
+									print "<li ".((strToLower($this->request->getController()) == "lightbox") ? 'class="active"' : '').">".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
+							
+								}
+								print "<li>".caNavLink($this->request, "<i class='material-icons'>input</i>", 'logout', '', 'LoginReg', 'Logout', array(), array('title' => 'Logout'))."</li>";
+								print "</ul>";	
+							}else{
+								print "<ul class='nav navbar-nav menuItems navbar-right'><li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li></ul>";
+							}
 ?>
-			</div>
-			<div class="collapse navbar-collapse bs-main-navbar-collapse-2 navbar-search">
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'Objects'); ?>">
-					<div class="formOutline">
-						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search All" name="search" autocomplete="off" />
-						</div>
-						<button type="submit" class="btn-search" id="headerSearchButton"><i class='material-icons'>search</i></button>
 					</div>
-				</form>
-				<script type="text/javascript">
-					$(document).ready(function(){
-						$('#headerSearchButton').prop('disabled',true);
-						$('#headerSearchInput').on('keyup', function(){
-							$('#headerSearchButton').prop('disabled', this.value == "" ? true : false);     
-						})
-					});
-				</script>
+
+				</div>
 			</div>
-			<div class="collapse navbar-collapse bs-main-navbar-collapse-1 navbar-menu">
-				<ul class="nav navbar-nav menuItems">
-					<li <?php print ((strToLower($this->request->getController()) == "browse") || (strToLower($this->request->getController()) == "explore")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Explore", "Brands"); ?></li>
-					<li <?php print ((strToLower($this->request->getController()) == "collections") || ((strToLower($this->request->getController()) == "detail") && (strToLower($this->request->getAction()) == "collections"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Guides"), "", "", "Collections", "Index"); ?></li>
-					<li <?php print (strToLower($this->request->getController()) == "gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Galleries"), "", "", "Gallery", "Index"); ?></li>
-<?php
-	#$ps_contactType = $this->request->getParameter("contactType", pString);
-?>
-					<li <?php print (strToLower($this->request->getController()) == "contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Inquire"), "", "", "Contact", "Form"); ?></li>
-<?php
-					if($this->request->isLoggedIn()){
-						if(caDisplayLightbox($this->request)){
-							print "<li class='collapsed-project-link".((strToLower($this->request->getController()) == "lightbox") ? " active" : "")."'>".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
-						}		
-					}else{
-						print "<li class='collapsed-project-link'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>";
-					}
-?>
-				</ul>
-			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 		</nav>
 		

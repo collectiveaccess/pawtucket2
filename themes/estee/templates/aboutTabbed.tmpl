@@ -1,0 +1,29 @@
+<div class="row">
+	<div class="col-sm-12 col-md-10 col-md-offset-1 tabModuleContent">
+		<h1>{{{title}}}</h1>
+		
+	<article class="tabModuleContentInner float100">	
+		<section class="tabsTitle float100">
+			<ul role="tablist">
+				<li role="presentation" class="active"><a href="#about" aria-controls="About" role="tab" data-toggle="tab">About</a></li>
+				<li role="presentation"><a href="#faq" aria-controls="FAQ" role="tab" data-toggle="tab">FAQ</a></li>
+				<li role="presentation"><a href="#guide" aria-controls="guide" role="tab" data-toggle="tab">Guide to Use</a></li>
+			</ul>
+		</section>
+        <section class="tabsContent float100">
+
+			<div class="tab-content">
+				<div role="tabpanel" class="tab-pane active tabContent float100" id="about">
+					{{{AboutText}}}
+				</div>
+				<div role="tabpanel" class="tab-pane tabContent float100" id="faq">
+					{{{FAQText}}}
+				</div>
+				<div role="tabpanel" class="tab-pane tabContent float100" id="guide">
+					{{{GuideToUseText}}}
+				</div>
+			</div>
+		</section>
+	</article>
+	</div>
+</div>
