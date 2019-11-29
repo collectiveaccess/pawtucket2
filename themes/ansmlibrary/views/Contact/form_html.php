@@ -87,7 +87,14 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 			
-			
+			<div class="row">
+				<div class="col-sm-12">
+					<div class="form-group<?php print (($va_errors["museum"]) ? " has-error" : ""); ?>">
+					    <label for="messge">Museum</label>
+						<input class="form-control input-sm" id="museum" name="museum" rows="5">{{{museum}}}</textarea>
+					</div>
+				</div><!-- end col -->
+			</div><!-- end row -->
 			
 			
 			<div class="row">
