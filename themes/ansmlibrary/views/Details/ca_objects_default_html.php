@@ -54,13 +54,8 @@
 				{{{<ifdef code="ca_objects.idno"><div class='detailLabel'>Library number: </div><div class='detailContent'>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.num_pages"><div class='detailLabel'>Number of pages: </div><div class='detailContent'>^ca_objects.num_pages</div></ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.description">
-					<div class='unit'><div class='detailLabel'>Description</div>
-						<span class="trimText">^ca_objects.description</span>
-					</div>
-				</ifdef>}}}
-				
-				
+				<?php print caNavLink($this->request, "Request this book", "requestLink", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'bookRequest')); ?>
+						
 				    <hr></hr>
 					<div class="row">
 						<div class="col-sm-12">		
@@ -77,10 +72,7 @@
 							{{{<ifcount code="ca_objects.subject" min="1" max="1"><div class='detailLabel'>Subject</div></ifcount>}}}
 							{{{<ifcount code="ca_objects.subject" min="2"><div class='detailLabel'>Subjects</div></ifcount>}}}
 							{{{<ifcount code="ca_objects.subject" min="1"><div class='detailContent'>^ca_objects.subject</div></ifcount>}}}
-							
-							<?php print caNavLink($this->request, "Request this book", "requestLink", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'bookRequest')); ?>
-						
-							
+				
 						</div><!-- end col -->		
 					</div><!-- end row -->
 						
@@ -89,7 +81,7 @@
     if ($rep) {
 ?>			
 			<div class='col-sm-5 col-md-5 col-lg-4 col-lg-offset-1'>
-				{{{^ca_object_representations.media.small}}}
+				<div class='float-right'>{{{^ca_object_representations.media.small}}}</div>
 				
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
@@ -120,7 +112,26 @@
 <?php
     }
 ?>
-		</div><!-- end row --></div><!-- end container -->
+		</div><!-- end row -->
+		<div class="row">
+		    <div class="col-md-12">
+		            
+				{{{<ifdef code="ca_objects.description">
+					<div class='unit'><div class='detailLabel'>Description</div>
+						<span class="trimText">^ca_objects.description</span>
+					</div>
+				</ifdef>}}}
+		    </div>
+		</div>
+		<div class="row">
+		    <div class="col-md-12">
+		        {{{<ifcount code="ca_objects.external_link" min="1"><div class='detailLabel'>Resources</div></ifcount>}}}
+				{{{<ifcount code="ca_objects.external_link" min="1"><div class='detailContent'><unit relativeTo='ca_objects.external_link' delimiter='<br/>'><a href='^url_entry'  target='_new'>^url_source</a></unit></div></ifcount>}}}	
+		    </div>
+		</div>			
+		
+		
+		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">
@@ -133,7 +144,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 120
+		  maxHeight: 400
 		});
 	});
 </script>

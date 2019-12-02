@@ -135,10 +135,10 @@
 					
 					{{{<ifdef code="ca_objects.preferred_labels.name"><H4 class="mainTitle">^ca_objects.preferred_labels.name</H4></ifdef>}}}
 					<HR>
-					{{{<if rule='^ca_objects.type_id =~ /Container/'>
+					{{{<if rule="^ca_objects.type_id =~ /Container/">
 							<div class="unit"><H6>Date</H6><ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef></div>
 						</if>
-						<if rule='^ca_objects.type_id !~ /Container/'>
+						<if rule="^ca_objects.type_id !~ /Container/">
 							<div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list</unit><ifdef code="ca_objects.manufacture_date,ca_objects.season_list"> </ifdef><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
 						</if>
 					}}}
@@ -193,9 +193,7 @@
 						$t_parent = new ca_objects($vn_parent_object_id);
 						$vs_caption = "";
 						$vs_caption .= $t_parent->get("ca_objects.preferred_labels");
-						if($t_parent->get("ca_objects.manufacture_date")){
-							$vs_caption .= ", ".$t_parent->get("ca_objects.manufacture_date");
-						}
+						$vs_caption .= ", ".$t_parent->getWithTemplate('<ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef>');
 						$vs_parent_folder = caDetailLink($this->request, $vs_caption, '', 'ca_objects', $t_parent->get('ca_objects.object_id'));
 					}
 					if($vs_collection_hier || $vs_parent_folder){
@@ -296,7 +294,13 @@
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
 							}
 							$vs_caption .= "<b>".$qr_related->get('ca_objects.preferred_labels')."</b>";
-							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+							$vs_tmp = $qr_related->getWithTemplate('<if rule="^ca_objects.type_id =~ /Container/">
+																<div class="unit"><ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef></div>
+															</if>
+															<if rule="^ca_objects.type_id !~ /Container/">
+																<div class="unit"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list </unit><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
+															</if>');
+							if($vs_tmp){
 								$vs_caption .= " (".$vs_tmp.")";
 							}
 							print caDetailLink($this->request, $vs_caption, '', 'ca_objects', $qr_related->get('ca_objects.object_id'));

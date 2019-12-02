@@ -386,6 +386,8 @@ label{
     overflow:visible;
     
     background-color:#041c2c;
+    
+	z-index: 10000;
 }
 
 .nav > li{

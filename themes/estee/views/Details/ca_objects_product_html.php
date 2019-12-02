@@ -161,22 +161,11 @@
 					
 					</if>}}}
 					{{{<ifdef code="ca_objects.marketing"><div class="unit"><H6>Marketing Category</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.marketing</unit></div></ifdef>}}}
-					
-<?php
-					$vb_close_row = false;
-					if($t_object->get("ca_objects.season_list") || $t_object->get("ca_objects.manufacture_date") || $t_object->get("ca_objects.launch_display_date") || $t_object->get("ca_objects.launch_date.launch_date_value")){
-						print "<div class='row'>";
-						$vb_close_row = true;
-					}
-?>
-					{{{<ifdef code="ca_objects.season_list|ca_objects.manufacture_date"><div class="col-sm-6"><div class="unit"><H6>Date</H6>^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</div></div></ifdef>}}}
+					<div class="row">
+					{{{<div class="col-sm-6"><div class="unit"><H6>Date</H6>^ca_objects.season_list ^ca_objects.manufacture_date<ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div></div>}}}
 					{{{<ifdef code="ca_objects.launch_display_date|ca_objects.launch_date.launch_date_value"><div class="col-sm-6"><div class="unit"><H6>Launch Date</H6>^ca_objects.launch_display_date<ifdef code="ca_objects.launch_display_date,ca_objects.launch_date.launch_date_value"> </ifdef>^ca_objects.launch_date.launch_date_value</div></div></ifdef>}}}
-<?php
-					if($vb_close_row){
-						print "</div>";
-					}
-?>
-					{{{<ifdef code="ca_objects.marketing|ca_objects.season_list|ca_objects.manufacture_date|ca_objects.launch_display_date|ca_objects.launch_date.launch_date_value"><HR></ifdef>}}}
+					</div>
+					<HR>
 					{{{<if rule="^ca_objects.type_id !~ /Component/">
 						<ifdef code="ca_objects.price"><div class="unit"><H6>Sold for</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.price</unit></div></ifdef>
 						<ifdef code="ca_objects.packaging"><div class="unit"><H6>Packaging Note</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.packaging</unit></div></ifdef>
@@ -259,6 +248,8 @@
 						}
 						if($vs_man_date = trim($t_parent->get("ca_objects.season_list")." ".$t_parent->get("ca_objects.manufacture_date"))){
 							$vs_caption .= $vs_man_date." ";
+						}else{
+							$vs_caption .= "Undated ";
 						}
 						if($vs_product_code = $t_parent->get("ca_objects.codes.product_code")){
 							$vs_caption .= "(".$vs_product_code.")";
@@ -365,7 +356,13 @@
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
 							}
 							$vs_caption .= "<b>".$qr_related->get('ca_objects.preferred_labels')."</b>";
-							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+							$vs_tmp = $qr_related->getWithTemplate('<if rule="^ca_objects.type_id =~ /Container/">
+																<div class="unit"><ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef></div>
+															</if>
+															<if rule="^ca_objects.type_id !~ /Container/">
+																<div class="unit"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list </unit><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
+															</if>');
+							if($vs_tmp){
 								$vs_caption .= " (".$vs_tmp.")";
 							}
 							print caDetailLink($this->request, $vs_caption, '', 'ca_objects', $qr_related->get('ca_objects.object_id'));
