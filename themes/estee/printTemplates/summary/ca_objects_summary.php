@@ -91,9 +91,6 @@
 			if($vs_type = $t_item->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))){
 				$va_product_info[] = $vs_type;
 			}
-			if($vs_archival_type = $t_item->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
-				$va_product_info[] = $vs_archival_type;
-			}
 			if($vs_brand = $t_item->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
 				$va_product_info[] = $vs_brand;
 			}
@@ -162,7 +159,7 @@
 					</if>');
 					print $t_item->getWithTemplate('<ifdef code="ca_objects.marketing"><div class="unit"><H6>Marketing Category</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.marketing</unit></div></ifdef>');
 					
-					print $t_item->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date"><div class="unit"><H6>Date</H6>^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</div></ifdef>');
+					print $t_item->getWithTemplate('<div class="unit"><H6>Date</H6>^ca_objects.season_list ^ca_objects.manufacture_date<ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>');
 					print $t_item->getWithTemplate('<ifdef code="ca_objects.launch_display_date|ca_objects.launch_date.launch_date_value"><div class="unit"><H6>Launch Date</H6>^ca_objects.launch_display_date<ifdef code="ca_objects.launch_display_date,ca_objects.launch_date.launch_date_value"> </ifdef>^ca_objects.launch_date.launch_date_value</div></ifdef>');
 					print $t_item->getWithTemplate('<if rule="^ca_objects.type_id !~ /Component/">
 						<ifdef code="ca_objects.price"><div class="unit"><H6>Sold for</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.price</unit></div></ifdef>
@@ -217,6 +214,8 @@
 						}
 						if($vs_man_date = trim($t_parent->get("ca_objects.season_list")." ".$t_parent->get("ca_objects.manufacture_date"))){
 							$vs_caption .= $vs_man_date." ";
+						}else{
+							$vs_caption .= "Undated ";
 						}
 						if($vs_product_code = $t_parent->get("ca_objects.codes.product_code")){
 							$vs_caption .= "(".$vs_product_code.")";
@@ -297,7 +296,7 @@
 							}
 							$vs_caption = "";
 							$vs_caption .= $qr_related->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
-							if($vs_tmp = $qr_related->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true))){
+							if($vs_tmp = $qr_related->get("ca_objects.archival_formats", array("convertCodesToDisplayText" => true))){
 								$vs_caption .= " - ".$vs_tmp;
 							}
 							$vs_caption .= "<br/>";
@@ -305,7 +304,13 @@
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
 							}
 							$vs_caption .= $qr_related->get('ca_objects.preferred_labels');
-							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+							$vs_tmp = $qr_related->getWithTemplate('<if rule="^ca_objects.type_id =~ /Container/">
+																<div class="unit"><ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef></div>
+															</if>
+															<if rule="^ca_objects.type_id !~ /Container/">
+																<div class="unit"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list </unit><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
+															</if>');
+							if($vs_tmp){
 								$vs_caption .= " (".$vs_tmp.")";
 							}
 							print $vs_caption;
@@ -340,7 +345,16 @@
 		case "item":
 			
 			
-					print $t_item->getWithTemplate('<ifdef code="ca_objects.manufacture_date"><div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></div></ifdef>');
+					print $t_item->getWithTemplate('<if rule="^ca_objects.type_id =~ /Container/">
+							<div class="unit"><H6>Date</H6><ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef></div>
+						</if>
+						<if rule="^ca_objects.type_id !~ /Container/">
+							<div class="unit"><H6>Date</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list</unit><ifdef code="ca_objects.manufacture_date,ca_objects.season_list"> </ifdef><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
+						</if>');
+						
+					print $t_item->getWithTemplate('<ifdef code="ca_objects.archival_formats"><div class="unit"><H6>Archvial Format</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.archival_formats</unit></div></ifdef>
+													<ifdef code="ca_objects.select_categories"><div class="unit"><H6>Select Categories</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.select_categories</unit></div></ifdef>');
+
 					
 					$va_entities = $t_item->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));
 					if(is_array($va_entities) && sizeof($va_entities)){
@@ -382,9 +396,7 @@
 						$t_parent = new ca_objects($vn_parent_object_id);
 						$vs_caption = "";
 						$vs_caption .= $t_parent->get("ca_objects.preferred_labels");
-						if($t_parent->get("ca_objects.manufacture_date")){
-							$vs_caption .= ", ".$t_parent->get("ca_objects.manufacture_date");
-						}
+						$vs_caption .= ", ".$t_parent->getWithTemplate('<ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef>');
 						$vs_parent_folder = $vs_caption;
 					}
 					if($vs_collection_hier || $vs_parent_folder){
@@ -458,7 +470,7 @@
 							}
 							$vs_caption = "";
 							$vs_caption .= $qr_related->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
-							if($vs_tmp = $qr_related->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true))){
+							if($vs_tmp = $qr_related->get("ca_objects.archival_formats", array("convertCodesToDisplayText" => true))){
 								$vs_caption .= " - ".$vs_tmp;
 							}
 							$vs_caption .= "<br/>";
@@ -466,7 +478,13 @@
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
 							}
 							$vs_caption .= $qr_related->get('ca_objects.preferred_labels');
-							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+							$vs_tmp = $qr_related->getWithTemplate('<if rule="^ca_objects.type_id =~ /Container/">
+																<div class="unit"><ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef></div>
+															</if>
+															<if rule="^ca_objects.type_id !~ /Container/">
+																<div class="unit"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list </unit><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
+															</if>');
+							if($vs_tmp){
 								$vs_caption .= " (".$vs_tmp.")";
 							}
 							print $vs_caption;
@@ -544,7 +562,7 @@
 		# ------------------------
 		case "av_item":
 			
-					print $t_item->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date"><div class="unit"><H6>Date</H6>^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</div></ifdef>');
+					print $t_item->getWithTemplate('<div class="unit"><H6>Date</H6>^ca_objects.season_list ^ca_objects.manufacture_date<ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>');
 					print $t_item->getWithTemplate('<ifdef code="ca_objects.run_time"><div class="unit"><H6>Run Time</H6>^ca_objects.run_time</div></ifdef>');
 					
 					$va_entities = $t_item->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));
@@ -609,7 +627,7 @@
 							}
 							$vs_caption = "";
 							$vs_caption .= $qr_related->get('ca_objects.type_id', array('convertCodesToDisplayText' => true));
-							if($vs_tmp = $qr_related->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true))){
+							if($vs_tmp = $qr_related->get("ca_objects.archival_formats", array("convertCodesToDisplayText" => true))){
 								$vs_caption .= " - ".$vs_tmp;
 							}
 							$vs_caption .= "<br/>";
@@ -617,7 +635,13 @@
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
 							}
 							$vs_caption .= $qr_related->get('ca_objects.preferred_labels');
-							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+							$vs_tmp = $qr_related->getWithTemplate('<if rule="^ca_objects.type_id =~ /Container/">
+																<div class="unit"><ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef></div>
+															</if>
+															<if rule="^ca_objects.type_id !~ /Container/">
+																<div class="unit"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list </unit><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
+															</if>');
+							if($vs_tmp){
 								$vs_caption .= " (".$vs_tmp.")";
 							}
 							print $vs_caption;
