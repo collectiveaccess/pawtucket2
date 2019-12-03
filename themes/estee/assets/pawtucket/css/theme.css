@@ -1179,12 +1179,11 @@ h1.primaryLandingBannerTitle {
 }
 .primaryLandingBannerContent H1 {
     position: absolute;
-    /*bottom: 135px;*/
-    bottom:100px;
+    bottom:70px;
     left:0px;
 }
 .front h2{
-	margin:40px 0px 60px 0px;
+	margin: 20px 0px 10px 0px;
 	font-size:38px;
 }
 .front h3{
@@ -1195,7 +1194,7 @@ h1.primaryLandingBannerTitle {
 	line-height:1.6em;
 }
 .front hr{
-	margin:60px 0px 60px 0px;
+	margin:50px 0px 50px 0px;
 }
 .front .btn-large{
 	width:100%;
