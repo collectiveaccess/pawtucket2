@@ -39,7 +39,7 @@
 <?php 
 	print caNavLink($this->request, 
 		"<div class='row primaryLandingBannerContentGradient'>
-			<div class='col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-7 col-md-7 col-md-offset-1 primaryLandingBannerContent'>
+			<div class='col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-7 col-md-6 col-md-offset-1 primaryLandingBannerContent'>
 				".caGetThemeGraphic($this->request, 'hero_spacer_short.png')."<H1 class='primaryLandingBannerTitle'>Explore the<br/>Archives</H1>
 			</div>
 		</div>", "", "", "Collections", "Index");
