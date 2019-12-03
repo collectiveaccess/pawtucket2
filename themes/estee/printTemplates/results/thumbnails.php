@@ -87,15 +87,18 @@
 				$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? " &rsaquo; " : "").$vs_subbrand;
 			}
 			$vs_caption .= "</div>";
-			if($vs_tmp = $vo_result->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
-				$vs_caption .= $vs_tmp.", ";
+			$vs_caption .= trim($vo_result->get('ca_objects.preferred_labels'));
+			$vs_tmp = trim($vo_result->getWithTemplate('^ca_objects.season_list ^ca_objects.manufacture_date'));
+			if(!$vo_result->get("ca_objects.manufacture_date")){
+				$vs_tmp .= "undated";
 			}
-			$vs_caption .= $vo_result->get('ca_objects.preferred_labels');
+			if(trim($vs_tmp)){
+				$vs_caption .= ", ".$vs_tmp;
+			}
 			if($vs_tmp = $vo_result->get("ca_objects.codes.product_code")){
 				$vs_caption .= " (".$vs_tmp.")";
 			}
-
-	
+			
 ?>
 			<div class="thumbnail" style="left: <?php print $vn_left; ?>px; top: <?php print $vn_top; ?>px;">
 				<?php print "<div class='imgThumb'><img src='".$vo_result->getMediaPath('ca_object_representations.media', 'preview170')."'/></div>"; ?>
