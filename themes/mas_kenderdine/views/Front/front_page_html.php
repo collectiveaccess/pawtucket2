@@ -38,7 +38,7 @@
 ?>
 		</div> <!--end col-sm-4-->	
 		<div class="col-sm-8">
-			The University of Saskatchewan Art Collection consists of art objects acquired over the last 100+ years.  The collection is quite varied, and represents the artistic work of many cultures and art movements throughout recent history.  Of note are important early Canadian works and modernist works from North America and Europe.  The collection is well represented by Saskatchewan based artists that include alumni, members of the academic community, and attendees of the Emma Lake / Kenderdine Campus.  There is a large prairie folk art collection, as well as a significant collection of Indigenous art objects.  
+			The University of Saskatchewan Art Collection consists of art objects acquired over the last 100+ years.  The collection is quite varied, and represents the artistic work of many cultures and art movements throughout recent history.  Of note are important early Canadian works and modernist works from North America and Europe.  The collection is well represented by Saskatchewan based artists that include alumni, members of the academic community, and attendees of the Emma Lake / Kenderdine Campus.  There is a large prairie folk art collection, as well as a significant collection of Indigenous art objects.  You can link to our website here: <a href="https://artsandscience.usask.ca/galleries/">https://artsandscience.usask.ca/galleries/</a>.
 		</div><!--end col-sm-8-->
 	 
 	 <?php
