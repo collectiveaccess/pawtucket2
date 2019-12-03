@@ -39,6 +39,7 @@
 
 	$va_collection_hierarchy = array_shift($t_object->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 	$vb_photo_collection = false;
+	$vb_manuscript_collection = false;
 	$va_collection_path = array();
 	$vs_display_collection = "";
 	
@@ -48,8 +49,13 @@
 			$t_collections = new ca_collections($vn_collection_heirarchy_level_id);
 			switch(strToLower($t_collections->get("type_id", array("convertCodesToDisplayText" => true)))){
 				case "series":
-					if(strToLower($t_collections->get("ca_collections.preferred_labels.name")) == "photography collection"){
-						$vb_photo_collection = true;
+					switch(strToLower($t_collections->get("ca_collections.preferred_labels.name"))){
+						case "photography collection":
+							$vb_photo_collection = true;
+						break;
+						case "manuscript collection":
+							$vb_manuscript_collection = true;
+						break;
 					}
 				break;
 			}
@@ -145,6 +151,26 @@
 							<div class="subheadline text-gray">^ca_objects.date.parsed_date%delimiter=,_</div>
 						</div>
                     </ifdef></ifnotdef>}}}
+<?php
+					if($vb_manuscript_collection){
+						$va_entities = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("author"), "checkAccess" => $va_access_values, "returnWithStructure" => true));
+						if(is_array($va_entities) && sizeof($va_entities)){
+?>
+								<div class="block-quarter">
+									<div class="eyebrow text-gray">Author</div>
+
+<?php
+
+							foreach($va_entities as $va_entity){
+									print "<div class='ca-data'>".caNavLink($va_entity["displayname"], "", "", "Browse", "Archive", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]))."</div>";
+							}
+?>
+								</div>
+<?php
+
+						}
+					}
+?>
                     {{{<ifdef code="ca_objects.idno">
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Identifier</div>
@@ -200,7 +226,11 @@
 <?php
 						}
 					}
-					$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("photographer"), "checkAccess" => $va_access_values, "returnWithStructure" => true));
+					$va_exclude_rel_types = array("photographer");
+					if($vb_manuscript_collection){
+						$va_exclude_rel_types[] = "author";
+					}
+					$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => $va_exclude_rel_types, "checkAccess" => $va_access_values, "returnWithStructure" => true));
 					if(is_array($va_entities) && sizeof($va_entities)){
 ?>
 							<div class="block-quarter">
