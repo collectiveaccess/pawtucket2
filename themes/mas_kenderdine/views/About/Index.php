@@ -16,11 +16,10 @@
 			
 			</p>
 			<?php print "<div class='logo' style='width:400px;'>".caGetThemeGraphic($this->request, 'usask_usask_colour.png')."</div>"; ?>
-			<br/>
-			Visit our website at <a href="https://artsandscience.usask.ca/galleries/">https://artsandscience.usask.ca/galleries/</a>
 		</div>
 		<div class="col-sm-3 col-sm-offset-1">
 			<?php print "<div class='logo'>".caGetThemeGraphic($this->request, 'logo 2013.jpg')."</div>"; ?>
+			<p><a href="https://artsandscience.usask.ca/galleries/">https://artsandscience.usask.ca/galleries/</a></p>
 			<h6>&nbsp;</h6><address>Location:<br>
 							107 Administration Pl<br>
 							University of Saskatchewan Campus<br/>
