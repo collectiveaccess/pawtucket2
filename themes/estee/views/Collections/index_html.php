@@ -65,18 +65,18 @@
 						);
 					}else{
 						if ( $vn_i == 0) { print "<div class='row'>"; } 
-						print "<div class='col-xs-6 col-sm-2 collectionsGridItem'>".$vs_image."<br>".$vs_label."</div>";
+						print "<div class='col-sm-20 collectionsGridItem'>".$vs_image."<div class='collectionsGridItemLabel'>".$vs_label."</div></div>";
 						$vn_i++;
-						if ($vn_i == 6) {
-							print "</div><!-- end row -->\n";
-							$vn_i = 0;
-						}
+						#if ($vn_i == 5) {
+						#	print "</div><!-- end row -->\n";
+						#	$vn_i = 0;
+						#}
 					}
 				}
 			}
-			if (($vn_i < 6) && ($vn_i != 0) ) {
+			#if (($vn_i < 6) && ($vn_i != 0) ) {
 				print "</div><!-- end row -->\n";
-			}
+			#}
 ?>
 
 		</div>

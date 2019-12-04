@@ -112,7 +112,7 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 					if($vs_brand_img){
 ?>
 					<div class="row">
-						<div class='col-sm-6 col-sm-offset-3 collectionLogo text-center'>
+						<div class='col-sm-4 col-sm-offset-4 collectionLogo text-center'>
 							<h1><?php print $vs_brand_img; ?></h1>
 							<!--{{{<ifdef code="ca_object_representations.media.medium"><h1>^ca_object_representations.media.medium</h1></ifdef>}}}-->
 						</div>
