@@ -2008,3 +2008,9 @@ h1.primaryLandingBannerTitle {
 	height:auto;
 	margin-bottom:30px;
 }
+.modal{
+	z-index:20000;
+}
+#pageArea.lightbox{
+	min-height:1000px;
+}

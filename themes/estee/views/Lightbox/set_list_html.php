@@ -90,7 +90,7 @@
 			print "</div><!-- end row -->";
 		}
 	}
-	print "<div class='row' id='lbSetListPlaceholder'".((sizeof($va_set_ids) > 0) ? " style='display: none;'" : '')."><div class='col-sm-6 col-md-6'>\n".$this->render("Lightbox/set_list_item_placeholder_html.php", true)."\n</div><!-- end col --></div><!-- end row -->\n";
+	print "<div class='row' id='lbSetListPlaceholder'".((sizeof($va_set_ids) > 0) ? " style='display: none;'" : '')."><div class='col-sm-4'>\n".$this->render("Lightbox/set_list_item_placeholder_html.php", true)."\n</div><!-- end col --></div><!-- end row -->\n";
 ?>
 		</div><!-- end col 1-->
 	</div><!-- end row -->
