@@ -1752,6 +1752,7 @@ h1.primaryLandingBannerTitle {
 .collectionsGrid img{
 	width:100%;
 	height:auto;
+	margin-bottom: 5px;
 }
 .collections.landing H2, .collections.landing H3{
 	margin-top:50px;
@@ -1782,6 +1783,7 @@ h1.primaryLandingBannerTitle {
 .collectionLogo img{
 	width:100%;
 	height:auto;
+	max-width:450px;
 }
 
 
