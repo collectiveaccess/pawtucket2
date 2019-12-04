@@ -99,7 +99,7 @@
 						}
 						$vs_caption .= "</div>";
 						$vs_caption .= trim($vo_result->get('ca_objects.preferred_labels'));
-						$vs_tmp = trim($vo_result->getWithTemplate('^ca_objects.season_list ^ca_objects.manufacture_date'));
+						$vs_tmp = $vo_result->getWithTemplate('^ca_objects.manufacture_date');
 						if(!$vo_result->get("ca_objects.manufacture_date")){
 							$vs_tmp .= "undated";
 						}

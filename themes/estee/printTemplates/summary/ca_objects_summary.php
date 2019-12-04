@@ -67,10 +67,6 @@
 			if($vs_brand = $t_item->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
 				$va_product_info[] = $vs_brand;
 			}
-			if($vs_sub_brand = $t_item->get("ca_objects.sub_brand", array("delimiter" => ", "))){
-				$vs_sub_brand = "<span style='text-transform:none;'>".ucwords(strtolower($vs_sub_brand))."</span>";
-				$va_product_info[] = $vs_sub_brand;
-			}
 			if(sizeof($va_product_info)){
 				print "<div class='unit'><H6 class='text-center'>";
 				print join(" &rsaquo; ", $va_product_info);
@@ -93,10 +89,6 @@
 			}
 			if($vs_brand = $t_item->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
 				$va_product_info[] = $vs_brand;
-			}
-			if($vs_sub_brand = $t_item->get("ca_objects.sub_brand", array("delimiter" => ", "))){
-				$vs_sub_brand = "<span style='text-transform:none;'>".ucwords(strtolower($vs_sub_brand))."</span>";
-				$va_product_info[] = $vs_sub_brand;
 			}
 			if(sizeof($va_product_info)){
 				print "<div class='unit'><H6 class='text-center'>";
@@ -142,6 +134,13 @@
 							<ifdef code="ca_objects.codes.batch_code"><div class="unit"><H6>Batch Code</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.codes.batch_code</unit></div></ifdef>
 							<ifdef code="ca_objects.codes.packaging_code"><div class="unit"><H6>Packaging Code</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.codes.product_code</unit></div></ifdef></if>');
 						
+					if($vs_sub_brand = $t_item->get("ca_objects.sub_brand", array("delimiter" => ", "))){
+						if(!preg_match("/[a-z]/", $vs_sub_brand)){
+							$vs_sub_brand = ucwords(mb_strtolower($vs_sub_brand));
+						}
+						$vs_sub_brand = "<span style='text-transform:none;'>".$vs_sub_brand."</span>";
+						print "<div class='unit'><H6>Sub-brand</H6>".$vs_sub_brand."</div>";
+					}
 					if($t_item->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)) != "Component"){
 						if($vs_tmp = $t_item->get("ca_objects.shade", array("delimiter" => "<br/>"))){
 							print "<div class='unit'><H6>Shade</H6>".ucwords(strtolower($vs_tmp))."</div>";
@@ -159,8 +158,9 @@
 					</if>');
 					print $t_item->getWithTemplate('<ifdef code="ca_objects.marketing"><div class="unit"><H6>Marketing Category</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.marketing</unit></div></ifdef>');
 					
-					print $t_item->getWithTemplate('<div class="unit"><H6>Date</H6>^ca_objects.season_list ^ca_objects.manufacture_date<ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>');
+					print $t_item->getWithTemplate('<div class="unit"><H6>Date</H6>^ca_objects.manufacture_date<ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>');
 					print $t_item->getWithTemplate('<ifdef code="ca_objects.launch_display_date|ca_objects.launch_date.launch_date_value"><div class="unit"><H6>Launch Date</H6>^ca_objects.launch_display_date<ifdef code="ca_objects.launch_display_date,ca_objects.launch_date.launch_date_value"> </ifdef>^ca_objects.launch_date.launch_date_value</div></ifdef>');
+					print $t_item->getWithTemplate('<ifdef code="ca_objects.season_list"><div class="unit"><H6>Season</H6>^ca_objects.season_list</div></ifdef>');
 					print $t_item->getWithTemplate('<if rule="^ca_objects.type_id !~ /Component/">
 						<ifdef code="ca_objects.price"><div class="unit"><H6>Sold for</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.price</unit></div></ifdef>
 						<ifdef code="ca_objects.packaging"><div class="unit"><H6>Packaging Note</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.packaging</unit></div></ifdef>
@@ -212,7 +212,7 @@
 						if($vs_shade || $vs_fragrance){
 							$vs_caption .= ". ";
 						}
-						if($vs_man_date = trim($t_parent->get("ca_objects.season_list")." ".$t_parent->get("ca_objects.manufacture_date"))){
+						if($vs_man_date = $t_parent->get("ca_objects.manufacture_date")){
 							$vs_caption .= $vs_man_date." ";
 						}else{
 							$vs_caption .= "Undated ";
@@ -308,7 +308,7 @@
 																<div class="unit"><ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef></div>
 															</if>
 															<if rule="^ca_objects.type_id !~ /Container/">
-																<div class="unit"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list </unit><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
+																<div class="unit"><unit relativeTo="ca_objects" delimiter=", "><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
 															</if>');
 							if($vs_tmp){
 								$vs_caption .= " (".$vs_tmp.")";
@@ -482,7 +482,7 @@
 																<div class="unit"><ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef></div>
 															</if>
 															<if rule="^ca_objects.type_id !~ /Container/">
-																<div class="unit"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list </unit><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
+																<div class="unit"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
 															</if>');
 							if($vs_tmp){
 								$vs_caption .= " (".$vs_tmp.")";
@@ -639,7 +639,7 @@
 																<div class="unit"><ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef></div>
 															</if>
 															<if rule="^ca_objects.type_id !~ /Container/">
-																<div class="unit"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.season_list </unit><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
+																<div class="unit"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
 															</if>');
 							if($vs_tmp){
 								$vs_caption .= " (".$vs_tmp.")";

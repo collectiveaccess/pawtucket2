@@ -139,7 +139,6 @@
 						$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 					
 						# --- caption info
-						# --- Object Type - Archival Material Type if folder/item, line break,  Brand, Sub Brand / Collection if one, line break, Object Name, (Manufacture Season (if one) and Manufacture Date) or folder/item (Date)
 						$vs_caption = "<div class='resultType'>";
 						$vs_caption .= $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))." &rsaquo; ";
 						$vs_brand = $qr_res->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "));
@@ -149,7 +148,7 @@
 						}
 						$vs_caption .= "</div>";
 						$vs_caption .= trim($qr_res->get('ca_objects.preferred_labels'));
-						$vs_tmp = trim($qr_res->getWithTemplate('^ca_objects.season_list ^ca_objects.manufacture_date'));
+						$vs_tmp = $qr_res->getWithTemplate('^ca_objects.manufacture_date');
 						if(!$qr_res->get("ca_objects.manufacture_date")){
 							$vs_tmp .= "undated";
 						}
