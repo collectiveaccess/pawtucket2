@@ -2014,3 +2014,6 @@ h1.primaryLandingBannerTitle {
 #pageArea.lightbox{
 	min-height:1000px;
 }
+.lbSetImgPlaceholder {
+	padding: 40px 5px 50px 5px;
+}
