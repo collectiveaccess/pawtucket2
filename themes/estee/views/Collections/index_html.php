@@ -90,7 +90,7 @@
 				<div class='col-sm-4 collectionsGridItem'>
 					<div class='text-center'><?php print $va_breakout_collections_info[$vs_breakout_collection_idno]["label_h3"]; ?></div><hr/>
 					<div class="row">
-						<div class="col-xs-12 col-sm-6 col-sm-offset-3"><?php print $va_breakout_collections_info[$vs_breakout_collection_idno]["image"]; ?></div>
+						<div class="col-xs-12 col-sm-8 col-sm-offset-2 text-center"><?php print $va_breakout_collections_info[$vs_breakout_collection_idno]["image"]; ?></div>
 					</div>
 				</div>
 <?php
