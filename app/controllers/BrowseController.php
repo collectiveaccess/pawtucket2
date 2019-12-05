@@ -71,7 +71,7 @@
  			$this->view->setVar("config", $this->opo_config);
  			$ps_function = strtolower($ps_function);
  			$ps_type = $this->request->getActionExtra();
- 			
+
  			if (!($va_browse_info = caGetOption('browseInfo', $pa_args, caGetInfoForBrowseType($ps_function)))) {
  				// invalid browse type – throw error
  				throw new ApplicationException("Invalid browse type");
@@ -99,7 +99,7 @@
  			// Don't set last find when loading facet (or when the 'dontSetFind' request param is explicitly set)
  			// as some other controllers use this action and setting last find will disrupt ResultContext navigation 
  			// by setting it to "browse" when in fact a search (or some other context) is still in effect.
- 			if (!$this->request->getParameter('getFacet', pInteger) && !$this->request->getParameter('dontSetFind', pInteger)) {
+ 			if (!$this->request->getParameter('getFacet', pInteger) && !$this->request->getParameter('dontSetFind', pInteger) && !caGetOption('dontSetFind', $pa_args, false)) {
  				$this->opo_result_context->setAsLastFind();
  			}
  			
@@ -127,7 +127,6 @@
 			$this->view->setVar('view', $ps_view);
 
 			$use_default_key = false;
-			$last_browse_start = 0;
 			if (!($ps_cache_key = $this->request->getParameter('key', pString, ['forcePurify' => true]))) {
 				if($use_default_key = $this->request->getParameter('useDefaultKey', pInteger)) {
 					$ps_cache_key = Session::getVar("{$ps_function}_last_browse_id");
@@ -259,7 +258,7 @@
 
 				$vb_expand_results_hierarchically = caGetOption('expandResultsHierarchically', $va_browse_info, array(), array('castTo' => 'bool'));
 
-				$o_browse->execute(array('checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'omitChildRecords' => $vb_omit_child_records, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $va_browse_info, null), 'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $va_browse_info, null)));
+				$o_browse->execute(array('noCache' => caGetOption('noCache', $pa_args, false), 'checkAccess' => $this->opa_access_values, 'request' => $this->request, 'showAllForNoCriteriaBrowse' => true, 'expandResultsHierarchically' => $vb_expand_results_hierarchically, 'omitChildRecords' => $vb_omit_child_records, 'omitChildRecordsForTypes' => caGetOption('omitChildRecordsForTypes', $va_browse_info, null), 'excludeFieldsFromSearch' => caGetOption('excludeFieldsFromSearch', $va_browse_info, null)));
 
 				//
 				// Facets
@@ -350,7 +349,7 @@
 					'criteria' => $criteria
 				];
 
-				if (($intro = caGetOption('introduction', $va_browse_info, null)) && is_array($intro)) {
+				if (($intro = caGetOption('introduction', $va_browse_info, caGetOption('introduction', $pa_args, null))) && is_array($intro)) {
 					// Look for facets
 					$intro_set = false;
 
@@ -360,21 +359,33 @@
 						$global_vars["_global_var.{$k}"] = $v;
 					}
 
-					foreach($intro as $k => $v) {
-						if(!isset($criteria[$k])) { continue; }
-						if ($facet_info[$k]['type'] !== 'authority') { continue; }
-						if(!is_array($criteria[$k])) { continue; }
-						$id = array_pop(array_keys($criteria[$k]));
+					if(caGetOption('introduction', $pa_args, null)) {
+						$intro_set = true;
+						$data['introduction']['title'] = caGetOption('title', $intro, null);
+						$data['introduction']['description'] = caGetOption('description', $intro, null);
+					} else {
+						foreach ($intro as $k => $v) {
+							if (!isset($criteria[$k])) {
+								continue;
+							}
+							if ($facet_info[$k]['type'] !== 'authority') {
+								continue;
+							}
+							if (!is_array($criteria[$k])) {
+								continue;
+							}
+							$id = array_pop(array_keys($criteria[$k]));
 
-						if (($t_instance = Datamodel::getInstance($facet_info[$k]['table'], true)) && ($t_instance->load($id)) && in_array($t_instance->get('access'), $this->opa_access_values)) {
-							$title_template = caProcessTemplate($intro[$k]['title'], $global_vars, ['skipTagsWithoutValues' => true]);
-							$description_template = caProcessTemplate($intro[$k]['description'], $global_vars, ['skipTagsWithoutValues' => true]);
+							if (($t_instance = Datamodel::getInstance($facet_info[$k]['table'], true)) && ($t_instance->load($id)) && in_array($t_instance->get('access'), $this->opa_access_values)) {
+								$title_template = caProcessTemplate($intro[$k]['title'], $global_vars, ['skipTagsWithoutValues' => true]);
+								$description_template = caProcessTemplate($intro[$k]['description'], $global_vars, ['skipTagsWithoutValues' => true]);
 
-							$data['introduction']['title'] = $t_instance->getWithTemplate($title_template, ['checkAccess' => $this->opa_access_values]);
-							$data['introduction']['description'] = $t_instance->getWithTemplate($description_template, ['checkAccess' => $this->opa_access_values]);
+								$data['introduction']['title'] = $t_instance->getWithTemplate($title_template, ['checkAccess' => $this->opa_access_values]);
+								$data['introduction']['description'] = $t_instance->getWithTemplate($description_template, ['checkAccess' => $this->opa_access_values]);
 
-							$intro_set = true;
-							break;
+								$intro_set = true;
+								break;
+							}
 						}
 					}
 					if (!$intro_set) {

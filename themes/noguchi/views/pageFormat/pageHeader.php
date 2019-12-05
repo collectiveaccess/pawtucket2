@@ -23,12 +23,26 @@
 ?><!DOCTYPE html>
 <html lang="en-US" class="collective-access" id="cahtmlWrapper"> 
     <head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+		<script async src="https://www.googletagmanager.com/gtag/js?id=UA-20756733-3"></script>
+		<script>
+		  window.dataLayer = window.dataLayer || [];
+		  function gtag(){dataLayer.push(arguments);}
+		  gtag('js', new Date());
+			gtag('config', 'UA-20756733-1');
+		</script>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
 	    <title><?php print MetaTagManager::getWindowTitle(); ?></title>
 	    
 	    <?php print MetaTagManager::getHTML(); ?>
+		<meta property="og:locale" content="en_US" />
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="The Noguchi Museum" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="@NoguchiMuseum" />
+		<meta name="twitter:creator" content="@NoguchiMuseum" />
 
         <!-- <link rel='stylesheet' id='style-all-0-css'  href='assets/css/style.css?ver=<?= rand(); ?>' type='text/css' media='all' />-->
         <script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>
@@ -145,7 +159,7 @@
 									break;
 									# ---------------------------------------
 									case "exhibition":
-										print caNavLink("Exhibitions", "", "", "Browse", "exhibitions");
+										print "<a href='https://www.noguchi.org/isamu-noguchi/biography/exhibition-history/'>Exhibitions</a>";
 									break;
 									# ---------------------------------------
 								}
@@ -164,7 +178,7 @@
 									break;
 									# ---------------------------------------
 									case "exhibitions":
-											print caNavLink("Exhibitions", "", "", "Browse", "exhibitions");
+										print "<a href='https://www.noguchi.org/isamu-noguchi/biography/exhibition-history/'>Exhibitions</a>";
 									break;
 									# ---------------------------------------
 								}
@@ -205,7 +219,7 @@
 							<div class="options">
 <?php
 								print caNavLink("Profile", "", "", "LoginReg", "profileForm");
-								print caNavLink("My Documents", "", "", "Lightbox", "Index");
+								print caNavLink("My Documents", "", "", "Lightbox", "Index", ['showList' => 1]);
 								print caNavLink("Logout", "", "", "LoginReg", "logout");
 ?>
 							</div>

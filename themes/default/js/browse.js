@@ -117,7 +117,7 @@ function getFilterString(filters) {
 /**
  * Initializer for the *Browse component
  */
-function initBrowseContainer(instance, props) {
+function initBrowseContainer(instance, props, loadResults=true, callback=null) {
 	let that = instance;
 	that.state = initialState();
 	that.state.view = props.view;
@@ -134,7 +134,7 @@ function initBrowseContainer(instance, props) {
 
 		fetchResults(that.props.baseUrl + '/' + that.props.endpoint + '/s/' +
 			offset + (that.state.key ? '/key/' + that.state.key : '') + (filterString ? '/facets/' +
-				filterString : '') + (clearFilters ? '/clear/1' : ''), function(newState) {
+				filterString : '') + (clearFilters ? '/clear/1' : '') + (that.state.set_id ? '/set_id/' + that.state.set_id : ''), function(newState) {
 			callback(newState);
 		}, !this.dontUseDefaultKey);
 	};
@@ -161,6 +161,7 @@ function initBrowseContainer(instance, props) {
 		that.loadResults(function(newState) {
 			let state = that.state;
 			state.resultList.push(...newState.resultList);
+			state.resultSize = newState.resultSize;
 			that.setState(state);
 
 			if(that.loadMoreRef.current) {
@@ -217,11 +218,15 @@ function initBrowseContainer(instance, props) {
 		that.state.filters = props.initialFilters;
 	}
 
-	that.loadResults(function(newState) {
-		newState.view = that.state.view; // preserve view setting
-		that.setState(newState);
-	});
-
+	if (loadResults) {
+		that.loadResults(function (newState) {
+			newState.view = that.state.view; // preserve view setting
+			that.setState(newState);
+			if(callback) {
+				callback(newState);
+			}
+		});
+	}
 
 	that.loadMoreRef = React.createRef();
 }
@@ -370,16 +375,18 @@ function initBrowseFacetPanel(instance, props) {
 	 * Reload browse results using selected facet values as filters
 	 */
 	that.applyFilters = function() {
-		let activeFilters = [];
+		let activeFilters = {};
 		for(let k in this.state.selectedFacetItems) {
 			if(this.state.selectedFacetItems[k]) {
 				activeFilters[k] = this.state.selectedFacetItems[k];
 			}
 		}
-		let filterBlock = {};
-		filterBlock[this.state.facet] = activeFilters;
-		this.context.reloadResults(filterBlock);
-		this.props.closeFacetPanelCallback();
+		if (Object.values(activeFilters).length > 0) {	// make sure at least one filter is selected
+			let filterBlock = {};
+			filterBlock[this.state.facet] = activeFilters;
+			this.context.reloadResults(filterBlock);
+			this.props.closeFacetPanelCallback();
+		}
 	};
 
 	/**

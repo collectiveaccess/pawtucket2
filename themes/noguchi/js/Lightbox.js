@@ -6,7 +6,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel, initBrowseResults } from "../../default/js/browse";
-import { fetchLightboxList, addLightbox, editLightbox, deleteLightbox } from "../../default/js/lightbox";
+import { fetchLightboxList, addLightbox, editLightbox, deleteLightbox, removeItemFromLightbox } from "../../default/js/lightbox";
 
 import ClampLines from 'react-clamp-lines';
 
@@ -36,9 +36,26 @@ const LightboxContext = React.createContext();
 class Lightbox extends React.Component{
 	constructor(props) {
 		super(props);
-		initBrowseContainer(this, props);
+		let that = this;
 
-		this.state['set_id'] = null;
+		this.dontUseDefaultKey =  !props.showLastLightboxOnLoad;	// try to display by default last lightbox on load?
+
+		initBrowseContainer(this, props, !this.dontUseDefaultKey, function(d) {
+			// If loading with last lightbox visible by default then try to set set_id state after initial load
+			if (d.filters['_search']) {
+				let state = that.state;
+				let vals = Object.values(d.filters['_search']);
+				for(let i in vals) {
+					let m = vals[i].match(/^ca_sets\.set_id:([\d]+)$/);
+					if(m && (parseInt(m[1]) > 0)) {
+						state['set_id'] = parseInt(m[1]);
+					}
+				}
+				that.setState(state);
+			}
+		});
+
+		this.state['set_id'] = props.showLastLightboxOnLoad ? -1 : null;
 		this.state['filters'] = null;
 
 		this.componentDidMount = this.componentDidMount.bind(this);
@@ -47,15 +64,40 @@ class Lightbox extends React.Component{
 		this.saveNewLightbox = this.saveNewLightbox.bind(this);
 		this.deleteLightbox = this.deleteLightbox.bind(this);
 
-		this.dontUseDefaultKey = true;
+		this.removeItemFromLightbox = this.removeItemFromLightbox.bind(this);
+
 	}
 
 	componentDidMount() {
 		let that = this;
 		fetchLightboxList(this.props.baseUrl, function(data) {
 			let state = that.state;
-			state.lightboxList = data;
+			state.lightboxList = data ? data : {};
 			that.setState(state);
+		});
+	}
+
+	removeItemFromLightbox(e) {
+		let that = this;
+		if(!this.state.set_id) { return; }
+
+		let item_id = e.target.attributes.getNamedItem('data-item_id').value;
+		if(!item_id) { return; }
+		removeItemFromLightbox(this.props.baseUrl, this.state.set_id, item_id, function(resp) {
+			if(resp && resp['ok']) {
+				let state = that.state;
+				for(let i in state.resultList) {
+					let r = state.resultList[i];
+					if (r.id == item_id) {
+						delete(state.resultList[i]);
+						state.resultSize--;
+						that.setState(state);
+						break;
+					}
+				}
+				return;
+			}
+			alert('Could not remove item: ' + resp['err']);
 		});
 	}
 
@@ -63,6 +105,8 @@ class Lightbox extends React.Component{
 		let state = this.state;
 		state.lightboxList.sets[-1] = {"set_id": -1, "label": ""};
 		this.setState(state);
+		
+		e.preventDefault();
 	}
 
 	cancelNewLightbox(e) {
@@ -96,7 +140,6 @@ class Lightbox extends React.Component{
 					that.setState(state);
 				}
 			});
-
 		}
 	}
 
@@ -136,13 +179,14 @@ class LightboxNavigation extends React.Component{
 
 		state.set_id = null; // clear set
 		state.filters = null; // clear filters
+		state.introduction.title = null;
 
 		this.context.setState(state);
 	}
 	render() {
 		return(
-			<div className="current"><div className='wrap'>
-				<div className="body-sans"><a href='#' onClick={this.backToList}>Back to set list</a></div></div>
+			<div className="back_to_lightbox">
+				<div className="text-gray block-quarter"><a href='#' className='eyebrow' onClick={this.backToList}>&lt; Back to list</a></div>
 			</div>
 		);
 	}
@@ -166,18 +210,13 @@ class LightboxIntro extends React.Component {
 
 	render() {
 		if (!this.props.headline || (this.props.headline.length === 0)) {
-			return (<section className=""></section>);
+			return (<section></section>);
 		}else{
 			this.context.state.headline = this.props.headline;
 			this.context.state.description = this.props.description;
 		}
-		return (<section className="intro">
-			<div className="wrap block-large">
-				<div className="wrap-max-content">
-					<div className="block-half subheadline-bold text-align-center">{this.context.state.headline}</div>
-					<div className="block-half body-text-l">{this.context.state.description}</div>
-				</div>
-			</div>
+		return (<section className='lightbox_headline'>
+			<h1 className="headline-s text-align-center">My Documents</h1><h2 className="subheadline-s text-align-center">{this.props.headline}</h2>
 		</section>)
 	}
 }
@@ -204,11 +243,10 @@ class LightboxStatistics extends React.Component {
 	render() {
 		return(<div className="current">
 			<div className="body-sans">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-				"Showing 1 Result."
+				"Showing 1 Item."
 				:
-				"Showing " + this.context.state.resultSize + " Results.") : ""}</div>
+				"Showing " + this.context.state.resultSize + " Items.") : ""}</div>
 
-				<LightboxCurrentFilterList/>
 		</div>
 		);
 	}
@@ -244,8 +282,16 @@ class LightboxCurrentFilterList extends React.Component {
 				let cv =  this.context.state.filters[f];
 				for(let c in cv) {
 					let label = cv[c];
-					let facetLabel = (this.context.state.facetList && this.context.state.facetList[f]) ? this.context.state.facetList[f]['label_singular'] : "";
-					filterList.push((<a key={ f + '_' + c } href='#' className='browseRemoveFacet' onClick={this.removeFilter} data-facet={f} data-value={c}><span dangerouslySetInnerHTML={{__html: label}}></span> <span onClick={this.removeFilter} data-facet={f} data-value={c}>&times;</span></a>));
+					let m = label.match(/^ca_sets\.set_id:([\d]+)$/);
+					if (m){
+						label = this.context.state.lightboxList.sets[m[1]]['label'];
+						filterList.push((<a key={ f + '_' + c } href='#' className='browseRemoveFacet'><span dangerouslySetInnerHTML={{__html: label}}></span></a>));
+					} else {
+						filterList.push((
+							<a key={f + '_' + c} href='#' className='browseRemoveFacet' onClick={this.removeFilter}
+							   data-facet={f} data-value={c}><span dangerouslySetInnerHTML={{__html: label}}></span>
+								<span onClick={this.removeFilter} data-facet={f} data-value={c}>&times;</span></a>));
+					}
 				}
 			}
 		}
@@ -499,10 +545,10 @@ class LightboxResults extends React.Component {
 	render() {
 		let resultList = [];
 		if((this.context.state.resultSize === null) && !this.context.state.loadingMore) {
-			resultList.push((<div className="spinner">
-				<div className="bounce1"></div>
-				<div className="bounce2"></div>
-				<div className="bounce3"></div>
+			resultList.push((<div className="spinner" key='spinner'>
+				<div className='bounce1' key='bounce1'></div>
+				<div className='bounce2' key='bounce2'></div>
+				<div className='bounce3' key='bounce3'></div>
 			</div>));
 		} else if(this.context.state.resultList && (this.context.state.resultList.length > 0)) {
 			for (let i in this.context.state.resultList) {
@@ -512,7 +558,7 @@ class LightboxResults extends React.Component {
 				resultList.push(<LightboxResultItem view={this.props.view} key={r.id} data={r} scrollToRef={ref}/>)
 			}
 		} else if (this.context.state.resultSize === 0) {
-			resultList.push(<h2 key='no_results'>No results found</h2>)
+			resultList.push(<h2 key='no_results' className='text-align-center noResults'>This collection has no items.<br/>Explore the archive and use the <span className="folderIcon"></span> icon<br/>to add items to your document collections.</h2>)
 		}
 
 		switch(this.props.view) {
@@ -521,7 +567,7 @@ class LightboxResults extends React.Component {
 					<div>
 						<section className="wrap block block-quarter-top grid">
 							<div className="wrap">
-								<div className="grid-flexbox-layout grid-ca-archive">
+								<div className="grid-flexbox-layout grid-ca-archive grid-ca-lightbox">
 									{resultList}
 								</div>
 							</div>
@@ -530,7 +576,8 @@ class LightboxResults extends React.Component {
 																  itemsPerPage={this.context.state.itemsPerPage}
 																  size={this.context.state.totalSize}
 																  loadMoreHandler={this.context.loadMoreResults}
-																  loadMoreRef={this.context.loadMoreRef}/>
+																  loadMoreRef={this.context.loadMoreRef}
+						/>
 					</div>);
 				break;
 		}
@@ -559,7 +606,7 @@ class LightboxResultLoadMoreButton extends React.Component {
 	static contextType = LightboxContext;
 
 	render() {
-		if ((this.props.start + this.props.itemsPerPage) < this.props.size)  {
+		if (((this.props.start + this.props.itemsPerPage) < this.props.size) || (this.context.state.resultSize  === null)) {
 			let loadingText = (this.context.state.resultSize === null) ? "LOADING" : "Load More +";
 
 			return (<section className="block text-align-center">
@@ -585,6 +632,7 @@ class LightboxResultLoadMoreButton extends React.Component {
  *  	LightboxResults
  */
 class LightboxResultItem extends React.Component {
+	static contextType = LightboxContext;
 	render() {
 		let data = this.props.data;
 		let styles = {
@@ -598,10 +646,13 @@ class LightboxResultItem extends React.Component {
 							<a href={data.detailUrl}>
 								<div className="img-wrapper archive_thumb block-quarter">
 									<div className="bg-image"
-										 style={styles}></div>
+										 style={styles}>
+										</div>
 								</div>
+							</a>
 								<div className="text">
 									<div className="text_position">
+										<a href={data.detailUrl}>
 										<div className="ca-identifier text-gray">{data.idno}</div>
 										<ClampLines
 											text={data.label}
@@ -611,15 +662,17 @@ class LightboxResultItem extends React.Component {
 											buttons={false}
 											className="thumb-text clamp"
 											innerElement="div"
-										/>
+										/></a>
 
 										<div className="text_full">
-											<div className="ca-identifier text-gray">{data.idno}</div>
-											<div className="thumb-text">{data.label}</div>
+											<div className="ca-identifier text-gray"><a href={data.detailUrl}>{data.idno}</a></div>
+											<div className="thumb-text">
+												<a href={data.detailUrl}>{data.label}</a>
+												<div className='smallButton text-align-center'><a data-item_id={data.id} onClick={this.context.removeItemFromLightbox}>Remove x</a></div>
+											</div>
 										</div>
 									</div>
 								</div>
-							</a>
 						</div>
 					);
 				break;
@@ -731,7 +784,7 @@ class LightboxListItem extends React.Component {
 		state.set_id = set_id;
 		if(!state.filters) { state.filters = {}; }
 		if(!state.filters['_search']) { state.filters = {'_search': {}}; }
-		state.filters['_search']['ca_sets.set_id:' + set_id] = 'Set ' + set_id;
+		state.filters['_search']['ca_sets.set_id:' + set_id] = 'Lightbox: ' + state.lightboxList.sets[set_id].label;
 		this.context.setState(state);
 		this.context.reloadResults(state.filters, false);
 	}
@@ -753,9 +806,14 @@ class LightboxListItem extends React.Component {
 	}
 
 	saveLightboxEdit(name) {
+		let that = this;
 		editLightbox(this.context.props.baseUrl, {'name': name, set_id: this.props.data.set_id }, function(resp) {
 			// TODO: display potential errors
-			//console.log("got", resp);
+
+			// Update name is context state
+			let state = that.context.state;
+			state.lightboxList.sets[that.props.data.set_id]['label'] = name;
+			that.context.setState(state);
 		});
 	}
 
@@ -765,7 +823,7 @@ class LightboxListItem extends React.Component {
 			customUI: ({ onClose }) => {
 				return (
 					<div className='col info text-gray'>
-						<p>Really delete lightbox <em>{this.props.data.label}</em>?</p>
+						<p>Really delete collection <em>{this.props.data.label}</em>?</p>
 
 						<div className='button'
 							onClick={() => {
@@ -840,7 +898,7 @@ class LightboxListItem extends React.Component {
 							  onCancel={this.context.cancelNewLightbox}
 							  saveButtonLabel="Save"
 							  cancelButtonLabel="Cancel"
-							  placeholder="Enter lightbox name"
+							  placeholder="Enter name"
 							  attributes={{name: "name", id: "lightbox_name" + this.props.data.set_id}}
 							  value={this.props.data.label}
 					/>
@@ -862,6 +920,6 @@ class LightboxListItem extends React.Component {
 export default function _init() {
 	ReactDOM.render(
 		<Lightbox baseUrl={appData.baseUrl} endpoint='getContent'
-							  initialFilters={appData.initialFilters} view={appData.view}
+							  initialFilters={appData.initialFilters} view={appData.view} showLastLightboxOnLoad={appData.showLastLightboxOnLoad}
 							  browseKey={appData.key}/>, document.querySelector(selector));
 }

@@ -121,18 +121,6 @@
 <?php
 			}
 ?>
-            <div class="pagination">
-<?php
-				if($vn_previous_id){
-					print caDetailLink('', 'previous', 'ca_objects', $vn_previous_id);
-				}
-				if($vn_next_id){
-					print caDetailLink('', 'next', 'ca_objects', $vn_next_id);
-				}
-?>
-            </div>
-
-
             <div class="wrap-text text-align-center">
 
                 
@@ -336,8 +324,32 @@
 ?>
             </div> <!-- wrap-text -->
         </section>
-
 <?php
+	if($vn_previous_id || $vn_next_id){
+?>
+		<div class="wrap">
+			<section class="widget-pagination block-top">
+				<div class="layout-2">
+					<div class="col">
+<?php
+						if($vn_previous_id){
+							print caDetailLink('&lt; PREVIOUS', 'text-dark eyebrow previous', 'ca_objects', $vn_previous_id);
+						}
+?>
+					</div>
+					<div class="col">
+<?php
+			
+						if($vn_next_id){
+							print caDetailLink('NEXT &gt;', 'text-dark eyebrow next', 'ca_objects', $vn_next_id);
+						}
+?>					
+					</div>
+			</section>
+		</div
+<?php
+	}
+
 	# --- find siblings and children of the current item and sort by idno_sort
 	$va_tmp_ids = array($t_object->get("object_id"));
 	if($t_object->get("parent_id")){
@@ -421,5 +433,8 @@
 
         </section>
 </ifcount>}}}
-
     </main>
+<?php
+	$t_representation = $this->getVar("t_representation");
+	include("objects_metatags.php");
+?>

@@ -23,12 +23,7 @@
  * ----------------------------------------------------------------------
  */
 
-	$action = preg_replace("![^A-Za-z0-9_]+!", "", $this->request->getAction());
-	
-	$initial_criteria = []; //'_search' => ['ca_sets.set_id:660' => 'ca_sets.set_id:660']];
-	if($search = $this->request->getParameter('search', pString)) {
-	    $initial_criteria['_search'] = [$search => $search];
-	}
+
 ?>
 
 <div id="lightbox"></div>
@@ -38,8 +33,7 @@
         'selector': '#lightbox',
         'data': {
 			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
-			//endpoint: "<?php print $action; ?>",
-			initialFilters: <?php print json_encode($initial_criteria); ?>,
+            showLastLightboxOnLoad: <?php print ((bool)$this->request->getParameter('showList', pInteger)) ? 'false' : 'true'; ?>,
 			view: "thumbnails"
         }
     };

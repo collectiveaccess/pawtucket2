@@ -39,16 +39,23 @@
 
 	$va_collection_hierarchy = array_shift($t_object->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 	$vb_photo_collection = false;
+	$vb_manuscript_collection = false;
 	$va_collection_path = array();
 	$vs_display_collection = "";
+	
 	if(is_array($va_collection_hierarchy) && sizeof($va_collection_hierarchy)){
 		$vn_i = 0;
 		foreach($va_collection_hierarchy as $vn_collection_heirarchy_level_id){
 			$t_collections = new ca_collections($vn_collection_heirarchy_level_id);
 			switch(strToLower($t_collections->get("type_id", array("convertCodesToDisplayText" => true)))){
 				case "series":
-					if(strToLower($t_collections->get("ca_collections.preferred_labels.name")) == "photography collection"){
-						$vb_photo_collection = true;
+					switch(strToLower($t_collections->get("ca_collections.preferred_labels.name"))){
+						case "photography collection":
+							$vb_photo_collection = true;
+						break;
+						case "manuscript collection":
+							$vb_manuscript_collection = true;
+						break;
 					}
 				break;
 			}
@@ -112,16 +119,12 @@
                 <div class="img-container dark">
 <?php
 				if($this->request->isLoggedIn()) {
-?>                    
-					<div class="actions">
-						<a href="#" class="collection"></a>
-<?php
-						if($vs_download_link){
-							print $vs_download_link;
-						}
 ?>
-					</div>
+					<div id="lightboxManagement" class="lightbox_management"></div>
 <?php
+					if($vs_download_link){
+						print "<div class='actions'>".$vs_download_link."</div>";
+					}
 				}
 ?>
                     
@@ -131,18 +134,6 @@
 
                 </div>
             </div>
-
-            <div class="pagination">
-<?php
-				if($vn_previous_id){
-					print caDetailLink('', 'previous', 'ca_objects', $vn_previous_id);
-				}
-				if($vn_next_id){
-					print caDetailLink('', 'next', 'ca_objects', $vn_next_id);
-				}
-?>
-            </div>
-
 
             <div class="wrap text-align-center">
                 <div class="wrap-max-content">
@@ -160,6 +151,26 @@
 							<div class="subheadline text-gray">^ca_objects.date.parsed_date%delimiter=,_</div>
 						</div>
                     </ifdef></ifnotdef>}}}
+<?php
+					if($vb_manuscript_collection){
+						$va_entities = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("author"), "checkAccess" => $va_access_values, "returnWithStructure" => true));
+						if(is_array($va_entities) && sizeof($va_entities)){
+?>
+								<div class="block-quarter">
+									<div class="eyebrow text-gray">Author</div>
+
+<?php
+
+							foreach($va_entities as $va_entity){
+									print "<div class='ca-data'>".caNavLink($va_entity["displayname"], "", "", "Browse", "Archive", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]))."</div>";
+							}
+?>
+								</div>
+<?php
+
+						}
+					}
+?>
                     {{{<ifdef code="ca_objects.idno">
 						<div class="block-quarter">
 							<div class="eyebrow text-gray">Identifier</div>
@@ -215,7 +226,11 @@
 <?php
 						}
 					}
-					$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => array("photographer"), "checkAccess" => $va_access_values, "returnWithStructure" => true));
+					$va_exclude_rel_types = array("photographer");
+					if($vb_manuscript_collection){
+						$va_exclude_rel_types[] = "author";
+					}
+					$va_entities = $t_object->get("ca_entities", array("excludeRelationshipTypes" => $va_exclude_rel_types, "checkAccess" => $va_access_values, "returnWithStructure" => true));
 					if(is_array($va_entities) && sizeof($va_entities)){
 ?>
 							<div class="block-quarter">
@@ -232,11 +247,39 @@
 
 					}
 ?>
+
+
                 </div>
 
 
             </div>
         </section>
+<?php
+	if($vn_previous_id || $vn_next_id){
+?>
+	<div class="wrap">
+		<section class="widget-pagination block-top">
+			<div class="layout-2">
+				<div class="col">
+<?php
+					if($vn_previous_id){
+						print caDetailLink('&lt; PREVIOUS', 'text-dark eyebrow previous', 'ca_objects', $vn_previous_id);
+					}
+?>
+				</div>
+				<div class="col">
+<?php
+			
+					if($vn_next_id){
+						print caDetailLink('NEXT &gt;', 'text-dark eyebrow next', 'ca_objects', $vn_next_id);
+					}
+?>					
+				</div>
+		</section>
+	</div>
+<?php
+	}
+?>
 {{{<ifcount code="ca_objects.related" min="1" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version">
         <section class="wrap block border">
             <div class="block text-align-center">
@@ -304,4 +347,23 @@
         </section>
 </ifcount>}}}
 
-    </main>
+	</main>
+<?php
+	if($this->request->isLoggedIn()) {
+?>
+
+<script type="text/javascript">
+    pawtucketUIApps['LightboxManagement'] = {
+        'selector': '#lightboxManagement',
+        'data': {
+            baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
+			lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
+			table: 'ca_objects',
+			id: <?php print (int)$vn_id; ?>
+        }
+    };
+</script>
+<?php
+	}
+	include("objects_metatags.php");
+?>
