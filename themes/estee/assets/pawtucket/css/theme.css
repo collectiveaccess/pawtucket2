@@ -265,7 +265,7 @@ hr {
 }
 .btn, .btn-default, .browse .btn, .sets .btn {
 	background-color: #006198;
-	border-radius:5px;
+	/*border-radius:5px;*/
 	color:#FFF !important;
 	
 	font-family: "Optima LT Std";
@@ -307,7 +307,7 @@ hr {
     border: solid 1px #00305e;
 }
 .form-control{
-	border-radius: 4px;
+	border-radius: 0px;
 	border: solid 1px #b7b7b7;
 	height:40px;
 	font-family: "Noto Sans Light";
@@ -393,9 +393,13 @@ label{
 .nav > li{
 	border-bottom:2px solid transparent;
 }
-.nav > li.active, .nav > li:hover{
+.nav > li.active{
 	border-bottom:2px solid #FFF;
 }
+.nav > li.active.logout{
+	border-bottom:2px solid transparent;
+}
+
 .nav > li > a{
 	padding:0px !important;
 	margin:0px;
@@ -404,12 +408,12 @@ navbar-nav > li > a {
     text-shadow: none;
 }
 .nav > li{
-	padding: 36px 30px 0px 30px;
-	margin:0px;
+	margin: 36px 30px 0px 30px;
+	padding-bottom: 9px;
 }
-.navbar .nav > li{
+/*.navbar .nav > li{
 	height:90px;
-}
+}*/
 .navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
     color: #FFF;
     background-color: transparent;
@@ -427,7 +431,10 @@ navbar-nav > li > a {
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     background-color: transparent;
 }
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+    color: #55C1E8;
+}
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     color: #FFF;
 }
 .container > .navbar-header, .container > .navbar-collapse{
@@ -609,7 +616,8 @@ ul.menuItems{
 
 .heroFixed{
 	position:fixed;
-	top:-85px;
+	/*top:-85px;*/
+	top:-135px;
 	z-index:0;
 	width:100%;
 	text-align:center;
@@ -728,8 +736,8 @@ ul.menuItems{
 	text-align:center;
 }
 .navbar-projects .menuItems li{
-	padding-left:5px;
-	padding-right:5px;
+	margin-left: 5px;
+	margin-right: 5px;
 }
 a.logout .material-icons{
 	font-size:18px;

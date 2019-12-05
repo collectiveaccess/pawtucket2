@@ -36,13 +36,18 @@
 	<div class="row bgWhite">
 		<div class="col-sm-12"><br/></div>
 	</div>
-<?php 
-	print caNavLink($this->request, 
-		"<div class='row primaryLandingBannerContentGradient'>
+<?php
+	$vs_hero_with_text = "<div class='row primaryLandingBannerContentGradient'>
 			<div class='col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-7 col-md-6 col-md-offset-1 primaryLandingBannerContent'>
 				".caGetThemeGraphic($this->request, 'hero_spacer_short.png')."<H1 class='primaryLandingBannerTitle'>Explore the<br/>Archives</H1>
 			</div>
-		</div>", "", "", "Collections", "Index");
+		</div>";
+	$vs_hero_without_text = "<div class='row'>
+			<div class='col-xs-offset-1 col-xs-10 col-sm-offset-1 col-sm-7 col-md-6 col-md-offset-1 primaryLandingBannerContent'>
+				".caGetThemeGraphic($this->request, 'hero_spacer_short.png')."
+			</div>
+		</div>";
+	print caNavLink($this->request, $vs_hero_without_text, "", "", "Collections", "Index");
 ?>
 	<div class="row bgWhite">
 		<div class="col-sm-12"><br/></div>
