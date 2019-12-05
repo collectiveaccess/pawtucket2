@@ -44,7 +44,7 @@
 			}
 			print "</div></div><div class='col-sm-4'></div></div>";
 			$i++;
-			if($i == 3){
+			if($i == 2){
 				print "</div>";
 				$i = 0;
 			}
