@@ -59,6 +59,7 @@
  			AssetLoadManager::register("panel");
  			AssetLoadManager::register("mediaViewer");
  			AssetLoadManager::register("carousel");
+ 			AssetLoadManager::register("readmore");
  		}
  		# -------------------------------------------------------
  		/**

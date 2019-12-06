@@ -1636,7 +1636,7 @@ h1.primaryLandingBannerTitle {
 }
 .setItemDescription{
 	max-height: 190px;
-	overflow-y: scroll;
+	overflow-y: auto;
 }
 .gallery .setDescription{
 	font-weight:normal;
