@@ -81,7 +81,7 @@
 <body>
 <?php
 	if(strtoLower($this->request->getController()) == "front"){
-		print "<div class='heroFixed'><div class='container'><div class='row'><div class='col-sm-12'>".caGetThemeGraphic($this->request, 'hero_5.jpg')."</div></div></div></div>";
+		print "<div class='heroFixed'><div class='container'><div class='row'><div class='col-sm-12'>".caGetThemeGraphic($this->request, 'hero_3.jpg')."</div></div></div></div>";
 	}
 ?>
 	<nav class="navbar navbar-default yamm" role="navigation">
