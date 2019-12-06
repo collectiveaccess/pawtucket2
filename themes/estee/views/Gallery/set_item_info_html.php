@@ -10,7 +10,7 @@
 
 <?php
 	if($vs_set_item_description && (strToLower($vs_set_item_description) != '[blank]')){
-		print "<br/><p class='setItemDescription'>".$vs_set_item_description."</p>";
+		print "<br/><div class='setItemDescription'><p>".$vs_set_item_description."</p></div>";
 	}
 ?>
 
