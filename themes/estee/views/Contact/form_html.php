@@ -133,7 +133,7 @@
 						<div class="col-sm-6">
 							<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 								<label for="name">Your Name</label>
-								<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+								<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print $this->getVar("name"); ?>">
 							</div>
 						</div><!-- end col -->
 						<div class="col-sm-6">
@@ -238,7 +238,7 @@
 						<div class="col-sm-6">
 							<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 								<label for="name">Your Name</label>
-								<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+								<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print $this->getVar("name"); ?>">
 							</div>
 						</div><!-- end col -->
 						<div class="col-sm-6">
@@ -319,7 +319,7 @@
 						<div class="col-sm-6">
 							<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 								<label for="name">Your Name</label>
-								<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+								<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print $this->getVar("name"); ?>">
 							</div>
 						</div><!-- end col -->
 						<div class="col-sm-6">
@@ -387,7 +387,7 @@
 												<div class="col-sm-6">
 													<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 														<label for="name">Your Name</label>
-														<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+														<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print $this->getVar("name"); ?>">
 													</div>
 												</div><!-- end col -->
 												<div class="col-sm-6">
@@ -449,7 +449,7 @@
 												<div class="col-sm-6">
 													<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 														<label for="name">Your Name</label>
-														<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+														<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print $this->getVar("name"); ?>">
 													</div>
 												</div><!-- end col -->
 												<div class="col-sm-6">
@@ -560,7 +560,7 @@
 										<div class="col-sm-6">
 											<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 												<label for="name">Your Name</label>
-												<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+												<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print $this->getVar("name"); ?>">
 											</div>
 										</div><!-- end col -->
 										<div class="col-sm-6">
@@ -674,7 +674,7 @@
 												<div class="col-sm-6">
 													<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 														<label for="name">Your Name</label>
-														<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+														<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print $this->getVar("name"); ?>">
 													</div>
 												</div><!-- end col -->
 												<div class="col-sm-6">
@@ -790,7 +790,7 @@
 												<div class="col-sm-6">
 													<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 														<label for="name">Your Name</label>
-														<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : trim($this->request->user->get("fname")." ".$this->request->user->get("lname")); ?>">
+														<input type="text" class="form-control input-sm" id="name" placeholder="Enter your name" name="name" value="<?php print $this->getVar("name"); ?>">
 													</div>
 												</div><!-- end col -->
 												<div class="col-sm-6">
