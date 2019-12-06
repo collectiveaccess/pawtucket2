@@ -81,7 +81,7 @@
 <body>
 <?php
 	if(strtoLower($this->request->getController()) == "front"){
-		print "<div class='heroFixed'><div class='container'><div class='row'><div class='col-sm-12'>".caGetThemeGraphic($this->request, 'hero_3.jpg')."</div></div></div></div>";
+		print "<div class='heroFixed'><div class='container'><div class='row'><div class='col-sm-12'>".caGetThemeGraphic($this->request, 'hero_5.jpg')."</div></div></div></div>";
 	}
 ?>
 	<nav class="navbar navbar-default yamm" role="navigation">
@@ -117,12 +117,12 @@
 			<div class="row">
 				<div class="col-sm-12 col-md-3 col-lg-2 col-lg-offset-1 text-center">
 					
-					<button type="button" class="navbar-toggle navbar-toggle-menu" data-toggle="collapse" data-target=".bs-main-navbar-collapse-1" onClick="$('.navbar-toggle-showhide').toggle(); $('.bs-main-navbar-collapse-2').collapse('hide');">
+					<button type="button" class="navbar-toggle navbar-toggle-menu" data-toggle="collapse" data-target=".bs-main-navbar-collapse-1" onClick="$('.navbar-toggle-showhide').toggle(); if($('.bs-main-navbar-collapse-2').hasClass('in')){ $('.bs-main-navbar-collapse-2').collapse('hide'); }">
 						<span class="sr-only">Toggle navigation</span>
 						<span class="navbar-toggle-showhide"><i class='material-icons'>menu</i></span>
 						<span style="display:none;" class="navbar-toggle-showhide navbar-toggle-showhide-x"><i class='material-icons'>close</i></span>
 					</button>
-					<button type="button" class="navbar-toggle navbar-toggle-search" data-toggle="collapse" data-target=".bs-main-navbar-collapse-2" onClick="$('.bs-main-navbar-collapse-1').collapse('hide'); $('.navbar-toggle-showhide').show(); $('.navbar-toggle-showhide-x').hide();">
+					<button type="button" class="navbar-toggle navbar-toggle-search" data-toggle="collapse" data-target=".bs-main-navbar-collapse-2" onClick="if($('.bs-main-navbar-collapse-1').hasClass('in')){ $('.bs-main-navbar-collapse-1').collapse('hide'); } $('.navbar-toggle-showhide').show(); $('.navbar-toggle-showhide-x').hide();">
 						<span class="sr-only">Toggle search</span>
 						<i class='material-icons'>search</i>
 					</button>
