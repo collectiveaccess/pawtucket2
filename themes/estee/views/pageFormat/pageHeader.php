@@ -88,7 +88,7 @@
 		<div class="topNav">
 			<div class="row text-center">
 				<div class="col-sm-12 col-md-4 col-md-offset-4 esteeBrand">
-					<?php print caGetThemeGraphic($this->request, 'ELC_LOGO_dblue.png'); ?>
+					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'ELC_LOGO_dblue.png'), "", "", "", ""); ?>
 				</div>
 				<div class="col-sm-12 col-md-4">
 					<div class="collapse navbar-collapse bs-main-navbar-collapse-2 navbar-search">
