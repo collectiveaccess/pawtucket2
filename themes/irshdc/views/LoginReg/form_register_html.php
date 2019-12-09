@@ -112,10 +112,10 @@
 			<div class='form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>'>
 				<label for='security' class='col-sm-4 control-label'><?php print _t("Security Question"); ?></label>
 				<div class='col-sm-7'>
-					<div class='col-sm-5'>
+					<div class='col-sm-5 col-md-2'>
 						<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
 					</div>
-					<div class='col-sm-5'>
+					<div class='col-sm-5 col-md-3'>
 						<input name="security" value="" id="security" type="text" class="form-control" />
 					</div>
 				</div><!-- end col-sm-7 -->
