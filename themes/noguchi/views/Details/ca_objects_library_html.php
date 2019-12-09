@@ -142,7 +142,7 @@
 <?php
 
 						foreach($va_entities as $va_entity){
-								print "<div class='ca-data'>".caNavLink($va_entity["displayname"], "", "", "Browse", "Libray", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]))."</div>";
+								print "<div class='ca-data'>".caNavLink($va_entity["displayname"], "", "", "Browse", "Library", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]))."</div>";
 						}
 ?>
 							</div>
