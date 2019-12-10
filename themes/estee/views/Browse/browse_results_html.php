@@ -183,7 +183,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 					}
 					if(!$vb_show_filter_panel){
 						$vs_display_value = $va_criterion['value'];
-						if(strpos($va_criterion["value"], "ca_object_representations.mimetype:*") !== false){
+						if(strpos($va_criterion["value"], "ca_object_representations.representation_id:*") !== false){
 							$vs_display_value = "Digital archival media";
 ?>
 							<script type="text/javascript">
