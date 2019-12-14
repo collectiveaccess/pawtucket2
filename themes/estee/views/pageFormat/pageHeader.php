@@ -81,14 +81,14 @@
 <body>
 <?php
 	if(strtoLower($this->request->getController()) == "front"){
-		print "<div class='heroFixed'><div class='container'><div class='row'><div class='col-sm-12'>".caGetThemeGraphic($this->request, 'hero_5.jpg')."</div></div></div></div>";
+		print "<div class='heroFixed'><div class='container'><div class='row'><div class='col-sm-12'>".caGetThemeGraphic($this->request, 'hero_3.jpg')."</div></div></div></div>";
 	}
 ?>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="topNav">
 			<div class="row text-center">
 				<div class="col-sm-12 col-md-4 col-md-offset-4 esteeBrand">
-					<?php print caGetThemeGraphic($this->request, 'ELC_LOGO_dblue.png'); ?>
+					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'ELC_LOGO_dblue.png'), "", "", "", ""); ?>
 				</div>
 				<div class="col-sm-12 col-md-4">
 					<div class="collapse navbar-collapse bs-main-navbar-collapse-2 navbar-search">
@@ -117,12 +117,12 @@
 			<div class="row">
 				<div class="col-sm-12 col-md-3 col-lg-2 col-lg-offset-1 text-center">
 					
-					<button type="button" class="navbar-toggle navbar-toggle-menu" data-toggle="collapse" data-target=".bs-main-navbar-collapse-1" onClick="$('.navbar-toggle-showhide').toggle(); $('.bs-main-navbar-collapse-2').collapse('hide');">
+					<button type="button" class="navbar-toggle navbar-toggle-menu" data-toggle="collapse" data-target=".bs-main-navbar-collapse-1" onClick="$('.navbar-toggle-showhide').toggle(); if($('.bs-main-navbar-collapse-2').hasClass('in')){ $('.bs-main-navbar-collapse-2').collapse('hide'); }">
 						<span class="sr-only">Toggle navigation</span>
 						<span class="navbar-toggle-showhide"><i class='material-icons'>menu</i></span>
-						<span style="display:none;" class="navbar-toggle-showhide"><i class='material-icons'>close</i></span>
+						<span style="display:none;" class="navbar-toggle-showhide navbar-toggle-showhide-x"><i class='material-icons'>close</i></span>
 					</button>
-					<button type="button" class="navbar-toggle navbar-toggle-search" data-toggle="collapse" data-target=".bs-main-navbar-collapse-2" onClick="$('.bs-main-navbar-collapse-1').collapse('hide');">
+					<button type="button" class="navbar-toggle navbar-toggle-search" data-toggle="collapse" data-target=".bs-main-navbar-collapse-2" onClick="if($('.bs-main-navbar-collapse-1').hasClass('in')){ $('.bs-main-navbar-collapse-1').collapse('hide'); } $('.navbar-toggle-showhide').show(); $('.navbar-toggle-showhide-x').hide();">
 						<span class="sr-only">Toggle search</span>
 						<i class='material-icons'>search</i>
 					</button>
@@ -162,7 +162,7 @@
 									print "<li ".((strToLower($this->request->getController()) == "lightbox") ? 'class="active"' : '').">".caNavLink($this->request, $vs_lightbox_sectionHeading, '', '', 'Lightbox', 'Index', array())."</li>";
 							
 								}
-								print "<li>".caNavLink($this->request, "<i class='material-icons'>input</i>", 'logout', '', 'LoginReg', 'Logout', array(), array('title' => 'Logout'))."</li>";
+								print "<li class='logout'>".caNavLink($this->request, "<i class='material-icons'>input</i>", 'logout', '', 'LoginReg', 'Logout', array(), array('title' => 'Logout'))."</li>";
 								print "</ul>";	
 							}else{
 								print "<ul class='nav navbar-nav menuItems navbar-right'><li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li></ul>";

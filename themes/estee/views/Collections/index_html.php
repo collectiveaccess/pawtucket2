@@ -65,18 +65,18 @@
 						);
 					}else{
 						if ( $vn_i == 0) { print "<div class='row'>"; } 
-						print "<div class='col-xs-6 col-sm-2 collectionsGridItem'>".$vs_image."<br>".$vs_label."</div>";
+						print "<div class='col-sm-20 collectionsGridItem'>".$vs_image."<div class='collectionsGridItemLabel'>".$vs_label."</div></div>";
 						$vn_i++;
-						if ($vn_i == 6) {
-							print "</div><!-- end row -->\n";
-							$vn_i = 0;
-						}
+						#if ($vn_i == 5) {
+						#	print "</div><!-- end row -->\n";
+						#	$vn_i = 0;
+						#}
 					}
 				}
 			}
-			if (($vn_i < 6) && ($vn_i != 0) ) {
+			#if (($vn_i < 6) && ($vn_i != 0) ) {
 				print "</div><!-- end row -->\n";
-			}
+			#}
 ?>
 
 		</div>
@@ -90,7 +90,7 @@
 				<div class='col-sm-4 collectionsGridItem'>
 					<div class='text-center'><?php print $va_breakout_collections_info[$vs_breakout_collection_idno]["label_h3"]; ?></div><hr/>
 					<div class="row">
-						<div class="col-xs-12 col-sm-6 col-sm-offset-3"><?php print $va_breakout_collections_info[$vs_breakout_collection_idno]["image"]; ?></div>
+						<div class="col-xs-12 col-sm-8 col-sm-offset-2 text-center"><?php print $va_breakout_collections_info[$vs_breakout_collection_idno]["image"]; ?></div>
 					</div>
 				</div>
 <?php

@@ -92,9 +92,9 @@ if (!$vb_ajax) {	// !ajax
 				}
 			}
 ?>
-		<H1>
+		<h1 style="text-transform: unset;">
 <?php
-			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+			print _t('Reference Library: %1 %2', $vn_result_size, ($vn_result_size == 1) ? $va_browse_info["labelSingular"] : $va_browse_info["labelPlural"]);	
 ?>		
 			<div class="btn-group">
 				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
@@ -151,7 +151,7 @@ if (!$vb_ajax) {	// !ajax
 				print "<a href='#' class='bSetsSelectMultiple' id='bSetsSelectMultipleButton' onclick='jQuery(\"#setsSelectMultiple\").submit(); return false;'><button type='button' class='btn btn-default btn-sm'>"._t("Add selected results to %1", $va_add_to_set_link_info['name_singular'])."</button></a>";
 			}
 ?>
-		</H1>
+		</h1>
 		<div class='bCriteria'>
 <?php
 		if (sizeof($va_criteria) > 0) {

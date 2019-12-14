@@ -265,7 +265,7 @@ hr {
 }
 .btn, .btn-default, .browse .btn, .sets .btn {
 	background-color: #006198;
-	border-radius:5px;
+	/*border-radius:5px;*/
 	color:#FFF !important;
 	
 	font-family: "Optima LT Std";
@@ -307,7 +307,7 @@ hr {
     border: solid 1px #00305e;
 }
 .form-control{
-	border-radius: 4px;
+	border-radius: 0px;
 	border: solid 1px #b7b7b7;
 	height:40px;
 	font-family: "Noto Sans Light";
@@ -386,14 +386,20 @@ label{
     overflow:visible;
     
     background-color:#041c2c;
+    
+	z-index: 10000;
 }
 
 .nav > li{
 	border-bottom:2px solid transparent;
 }
-.nav > li.active, .nav > li:hover{
+.nav > li.active{
 	border-bottom:2px solid #FFF;
 }
+.nav > li.active.logout{
+	border-bottom:2px solid transparent;
+}
+
 .nav > li > a{
 	padding:0px !important;
 	margin:0px;
@@ -402,12 +408,12 @@ navbar-nav > li > a {
     text-shadow: none;
 }
 .nav > li{
-	padding: 36px 30px 0px 30px;
-	margin:0px;
+	margin: 36px 30px 0px 30px;
+	padding-bottom: 9px;
 }
-.navbar .nav > li{
+/*.navbar .nav > li{
 	height:90px;
-}
+}*/
 .navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
     color: #FFF;
     background-color: transparent;
@@ -425,7 +431,10 @@ navbar-nav > li > a {
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     background-color: transparent;
 }
-.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
+.navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
+    color: #55C1E8;
+}
+.navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     color: #FFF;
 }
 .container > .navbar-header, .container > .navbar-collapse{
@@ -607,7 +616,8 @@ ul.menuItems{
 
 .heroFixed{
 	position:fixed;
-	top:-85px;
+	/*top:-85px;*/
+	top:-135px;
 	z-index:0;
 	width:100%;
 	text-align:center;
@@ -726,8 +736,8 @@ ul.menuItems{
 	text-align:center;
 }
 .navbar-projects .menuItems li{
-	padding-left:5px;
-	padding-right:5px;
+	margin-left: 5px;
+	margin-right: 5px;
 }
 a.logout .material-icons{
 	font-size:18px;
@@ -1177,12 +1187,11 @@ h1.primaryLandingBannerTitle {
 }
 .primaryLandingBannerContent H1 {
     position: absolute;
-    /*bottom: 135px;*/
-    bottom:100px;
+    bottom:70px;
     left:0px;
 }
 .front h2{
-	margin:40px 0px 60px 0px;
+	margin: 20px 0px 10px 0px;
 	font-size:38px;
 }
 .front h3{
@@ -1193,7 +1202,7 @@ h1.primaryLandingBannerTitle {
 	line-height:1.6em;
 }
 .front hr{
-	margin:60px 0px 60px 0px;
+	margin:50px 0px 50px 0px;
 }
 .front .btn-large{
 	width:100%;
@@ -1627,7 +1636,7 @@ h1.primaryLandingBannerTitle {
 }
 .setItemDescription{
 	max-height: 190px;
-	overflow-y: scroll;
+	overflow-y: auto;
 }
 .gallery .setDescription{
 	font-weight:normal;
@@ -1751,12 +1760,18 @@ h1.primaryLandingBannerTitle {
 .collectionsGrid img{
 	width:100%;
 	height:auto;
+	margin-bottom: 5px;
+	max-width:200px;
 }
 .collections.landing H2, .collections.landing H3{
 	margin-top:50px;
 }
 .collectionsGrid .collectionsGridItem{
 	margin-bottom:50px;
+}
+.collectionsGrid .collectionsGridItem .collectionsGridItemLabel{
+	height:3em;
+	overflow:hidden;
 }
 .collectionsGrid a{
 	color:#00305e;
@@ -1766,6 +1781,13 @@ h1.primaryLandingBannerTitle {
     -webkit-transition: all 0.4s ease 0s;
     -moz-transition: all 0.4s ease 0s;
     -o-transition: all 0.4s ease 0s;
+}
+@media (max-width: 768px){
+	.collectionsGrid a{
+		color:#00305e;
+		font-family: "Optima LT Std";
+		font-size: 14px;
+	}
 }
 .collections.landing .btn-large{
 	width:100%
@@ -1781,9 +1803,27 @@ h1.primaryLandingBannerTitle {
 .collectionLogo img{
 	width:100%;
 	height:auto;
+	max-width:450px;
 }
-
-
+/* they want a 5 col for collection landing */
+.col-sm-20 {
+	position: relative;
+	min-height: 1px;
+	padding-right: 15px;
+	padding-left: 15px;
+	width:50%;
+	float:left;
+}
+@media(min-width:500px){
+	.col-sm-20 {
+		width:33.3333333%
+	}
+}
+@media(min-width:900px){
+	.col-sm-20 {
+		width:20%
+	}
+}
 
 
 .tabContentDescription {
@@ -1935,4 +1975,53 @@ h1.primaryLandingBannerTitle {
 	.tabsTitle ul li a {
 		width:100%;
 	}
+}
+
+/* stories */
+.storyItem{
+	margin-top:50px;
+	color:#000000 !important;
+	font-family: 'Noto Sans Light';
+	font-size: 14px;
+	line-height: 1.31;
+}
+.storyItem img{
+	width:100%;
+	height:auto;
+	margin-bottom: 5px;
+	max-width:400px;
+}
+.storyItem .storyItemTitle a{
+	color:#00305e;
+	font-family: "Optima LT Std";
+	font-size: 18px;
+    transition: all 0.4s ease 0s;
+    -webkit-transition: all 0.4s ease 0s;
+    -moz-transition: all 0.4s ease 0s;
+    -o-transition: all 0.4s ease 0s;
+}
+@media (max-width: 768px){
+	.storyItemTitle a{
+		font-size: 14px;
+	}
+}
+.gallery #galleryDetailImageGrid {
+    min-height: auto;
+}
+.storyItemThumbs{
+	margin-top:50px;
+}
+.storyItemThumbs img{
+	width:100%;
+	height:auto;
+	margin-bottom:30px;
+}
+.modal{
+	z-index:20000;
+}
+#pageArea.lightbox{
+	min-height:1000px;
+}
+.lbSetImgPlaceholder {
+	padding: 40px 5px 50px 5px;
 }
