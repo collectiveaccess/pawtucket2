@@ -39,8 +39,14 @@
 		if ($va_photo_name = $t_object->getWithTemplate('<unit relativeTo="ca_object_representations"><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer">^ca_entities.preferred_labels</unit></unit>')) {
 			print "<div>Photo by ".$va_photo_name."</div>";
 		}
+		print "<div class='viewAll'>".caDetailLink($this->request, _t("View Record").' <i class="fa fa-angle-right"></i>', '', $this->getVar("table"),  $this->getVar("row_id"))."</div>";
 	}
 	if(strpos(strToLower($vs_type), "archival") !== false){
+		if ($vs_admin_bio = $t_object->get('ca_objects.adminbiohist')) {
+			print "<div class='unit'>".$vs_admin_bio."</div>";
+		}
+		print "<div id='featuredShowMoreLink' class='viewAll'><a href='#' onClick='$(\"#featuredShowMore\").toggle(); $(\"#featuredShowMoreLink\").toggle(); return false;'>+ Show More</a></div>";
+		print "<div id='featuredShowMore' style='display:none;'>";
 		$vs_record_title = $t_object->get('ca_objects.preferred_labels.name');
 		print "<div class='artTitle'>";
 		if ($vs_record_title != "Untitled") {
@@ -52,9 +58,6 @@
 			print ", ".$vs_date;
 		}				
 		print "</div>";
-		if ($vs_admin_bio = $t_object->get('ca_objects.adminbiohist')) {
-			print "<div class='unit'>".$vs_admin_bio."</div>";
-		}
 		
 		if ($vs_date = $t_object->getWithTemplate('<unit relativeTo="ca_objects.unitdate" delimiter="<br/>"><ifdef code="ca_objects.unitdate.dacs_date_value">^ca_objects.unitdate.dacs_date_value<ifdef code="ca_objects.unitdate.dacs_dates_types"> (^ca_objects.unitdate.dacs_dates_types)</ifdef></ifdef></unit>')) {
 			print "<div class='unit'><h6>Date</h6>".$vs_date."</div>";
@@ -90,11 +93,11 @@
 		}
 		if ($vs_conditions_repro = $t_object->get('ca_objects.reproduction')) {
 			print "<div class='unit'><h6>Conditions Governing Reproduction</h6>".$vs_conditions_repro."</div>";
-		}																								
+		}
+		print "<div class='viewAll'>".caDetailLink($this->request, _t("View Record").' <i class="fa fa-angle-right"></i>', '', $this->getVar("table"),  $this->getVar("row_id"))."</div>";
+		print "<div class='viewAll' id='featuredShowLessLink'><a href='#' onClick='$(\"#featuredShowMore\").toggle(); $(\"#featuredShowMoreLink\").toggle(); return false;'>+ Show Less</a></div>";
+		print "</div>";																								
 																							
 	
 	}	
 ?>
-
-
-<?php print "<div class='viewAll'>".caDetailLink($this->request, _t("View Record").' <i class="fa fa-angle-right"></i>', '', $this->getVar("table"),  $this->getVar("row_id"))."</div>"; ?>

@@ -76,7 +76,15 @@
  				$t_set = new ca_sets();
  				$t_set->load(array('set_code' => $vs_set_code));
  				$vn_featured_set_id = $t_set->get("ca_sets.set_id");
- 				# Enforce access control on set
+ 				$this->view->setVar('featured_set_id', $vn_featured_set_id);
+ 				$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("checkAccess" => $this->opa_access_values)));
+ 				$this->view->setVar("set_items", $va_set_items);
+ 				$va_row_to_item = array();
+ 				foreach($va_set_items as $vn_item_id => $va_set_item){
+ 					$va_item_to_row[$va_set_item["row_id"]] = $vn_item_id;
+ 				}
+ 				$this->view->setVar("row_to_items", $va_item_to_row);
+				# Enforce access control on set
 				if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
 					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1))) ? $va_tmp : array());
 					$qr_res = caMakeSearchResult('ca_objects', $va_featured_ids);
@@ -111,15 +119,15 @@
 					}
 				}
 			}
+			$va_tmp = $t_list->getItemsForList("featured_set_themes", array("extractValuesByUserLocale" => true));
 
-			$va_tmp = $t_list->getItemsForList("featured_set_themes", array("labelsOnly" => true));
 			$t_list_item = new ca_list_items();
 			$va_themes = array();
-			foreach($va_tmp as $vn_theme_id => $vs_name){
+			foreach($va_tmp as $vn_theme_id => $va_theme_info){
 				$t_list_item->load($vn_theme_id);
-				$va_themes[$vn_theme_id] = array(
+				$va_themes[] = array(
 					"theme_id" => $vn_theme_id,
-					"name" => $vs_name,
+					"name" => $va_theme_info["name_singular"],
 					"media" => $va_set_media_for_theme[$vn_theme_id]
 				);
 			}

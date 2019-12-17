@@ -545,6 +545,9 @@ p, .collectionsList p {
 .detail .viewAll a {
 	text-decoration:none;
 }
+#featuredShowMoreLink, #featuredShowLessLink{
+	text-align:left;
+}
 .exhibitionRep {
 	text-align:center;
 }
@@ -1467,8 +1470,9 @@ p, .collectionsList p {
 }
 .featuredItemTitle{
 	text-transform: uppercase;
-	font-size: 14px;
-	line-height: 18px;
+	font-size: 16px;
+	line-height: 22px;
+	text-align: center;
 	text-decoration:none;
 	padding: 10px 0px 5px 0px;
 }

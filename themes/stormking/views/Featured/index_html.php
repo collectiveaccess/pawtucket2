@@ -2,18 +2,11 @@
 	<H1><?php print $this->getVar("section_name"); ?></H1>
 </div></div>
 <div class="row"><div class="col-sm-12 front">	
-	
-	
-	
-	
-	
-	
-	
-	
 <?php	
 	$va_access_values = caGetUserAccessValues($this->request);
 	$o_config = $this->getVar("config");
 
+	$vn_featured_set_id = $this->getVar("featured_set_id");
 	$qr_res = $this->getVar("featured_set_results");
 
 	$vs_caption_template = $o_config->get("featured_set_item_caption_template");
@@ -21,6 +14,7 @@
 		$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
 	}
 	if($qr_res && $qr_res->numHits()){
+		$va_row_to_items = $this->getVar("row_to_items");
 ?>   
 		<div class="jcarousel-wrapper">
 			<!-- Carousel -->
@@ -28,20 +22,21 @@
 				<ul>
 <?php
 					while($qr_res->nextHit()){
-						if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
-							print "<li><div class='frontSlide'>".$vs_media;
+						if($vs_media = $qr_res->getWithTemplate('^ca_object_representations.media.large', array("checkAccess" => $va_access_values))){
+							$vn_set_item_id = $va_row_to_items[$qr_res->get("ca_objects.object_id")];
+							print "<li><div class='frontSlide'>".caNavLink($this->request, $vs_media, "", "", "Featured", "Detail", array("set_id" => $vn_featured_set_id, "set_item_id" => $vn_set_item_id));
 							$vs_caption = "";
 							if(strpos(strToLower($qr_res->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))), "artwork") !== false){
 								$vs_caption = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values, 'delimiter' => ', '));
 								if($vs_caption){
 									$vs_caption .= "<br/>";
 								}
-								$vs_caption .= caDetailLink($this->request, ($qr_res->get('ca_objects.preferred_labels') == "Untitled" ? $qr_res->get('ca_objects.preferred_labels') : "<i>".$qr_res->get('ca_objects.preferred_labels')."</i>"), '', 'ca_objects', $qr_res->get('ca_objects.object_id'));
+								$vs_caption .= caNavLink($this->request, ($qr_res->get('ca_objects.preferred_labels') == "Untitled" ? $qr_res->get('ca_objects.preferred_labels') : "<i>".$qr_res->get('ca_objects.preferred_labels')."</i>"), "", "", "Featured", "Detail", array("set_id" => $vn_featured_set_id, "set_item_id" => $vn_set_item_id));
 								if ($vs_art_date = $qr_res->get('ca_objects.display_date')) {
 									$vs_caption .= ", ".$vs_art_date;
 								}
 							}else{
-								$vs_caption = caDetailLink($this->request, ($qr_res->get('ca_objects.preferred_labels') == "Untitled" ? $qr_res->get('ca_objects.preferred_labels') : "<i>".$qr_res->get('ca_objects.preferred_labels')."</i>"), '', 'ca_objects', $qr_res->get('ca_objects.object_id'));
+								$vs_caption = caNavLink($this->request, ($qr_res->get('ca_objects.preferred_labels') == "Untitled" ? $qr_res->get('ca_objects.preferred_labels') : "<i>".$qr_res->get('ca_objects.preferred_labels')."</i>"), "", "", "Featured", "Detail", array("set_id" => $vn_featured_set_id, "set_item_id" => $vn_set_item_id));
 							}							
 							
 							if($vs_caption){
@@ -165,13 +160,13 @@
 	$va_themes = $this->getVar("themes");
 	if(is_array($va_themes) && sizeof($va_themes)){
 		$i = 0;
-		foreach($va_themes as $vn_theme_id => $va_theme){
+		foreach($va_themes as $va_theme){
 			if($i == 0){
 				print "<div class='row'>";
 			}
 			print "<div class='col-sm-4'><div class='featuredItem'>";
-			print caNavLink($this->request, $va_theme["media"], "", "", "Featured", "Theme", array("theme_id" => $vn_theme_id));
-			print "<div class='featuredItemTitle'>".caNavLink($this->request, $va_theme["name"], "", "", "Featured", "Theme", array("theme_id" => $vn_theme_id))."</div>";
+			print caNavLink($this->request, $va_theme["media"], "", "", "Featured", "Theme", array("theme_id" => $va_theme["theme_id"]));
+			print "<div class='featuredItemTitle'>".caNavLink($this->request, $va_theme["name"], "", "", "Featured", "Theme", array("theme_id" => $va_theme["theme_id"]))."</div>";
 			print "</div></div>";
 			$i++;
 			if($i == 3){
