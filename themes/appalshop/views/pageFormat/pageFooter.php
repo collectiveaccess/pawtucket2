@@ -30,7 +30,7 @@
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<div class="container">
 		<footer id="footer">
-				<div class='footInfo'>Appalshop - 91 Madison Ave.- Whitesburg, KY 41858 - 606-633-0108 - 606-633-1009 (fax) - <a href="mailto:info@appalshop.org">info@appalshop.org</a></div>
+				<div class='footInfo'>Appalshop - 91 Madison Ave.- Whitesburg, KY 41858 - 606-633-0108 - 606-633-1009 (fax) - <a href="mailto:caroline@appalshop.org">caroline@appalshop.org</a></div>
 		</footer><!-- end footer -->
 </div>
 <?php
