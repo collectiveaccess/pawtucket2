@@ -28,68 +28,253 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
-	<div id="footer-top">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-4">
-					<h2>For 9/11 Families</h2>
-					<p class="textBlock">
-						A dedicated section for the loved ones of those killed in the 2001 and 1993 attacks. Stay informed and plan your visit.
-					</p>
-					<a href="https://www.911memorial.org/information-911-family-members">More Information »</a>
-				</div><!-- end col -->
-				<div class="col-sm-4">
-					<h2>Give</h2>
-					<p class="textBlock">
-						The National September 11 Memorial & Museum is only possible because of your support.
-					</p>
-					<a href="https://www.911memorial.org/make-monetary-donation-now">All donations are tax deductible »</a>
-				</div><!-- end col -->
-				<div class="col-sm-4">
-					<h2>Updates</h2>
-					<p class="textBlock">
-						Stay informed about news and events by subscribing to our newsletter.
-					</p>
-					<br/>
-					<a href="https://www.911memorial.org/sign-911-memorial-news">Sign up here »</a>
-				</div><!-- end col -->
-			</div><!-- end row -->
-		</div>
-	</div><!-- end footer-top-->
-	<div id="footer-bottom">
-		<div class="container">
-			<div class="row">
-				<div class="col-sm-6">
-					National September 11 Memorial Museum<br/>
-					Administrative Office
-					<br/>200 Liberty Street, 16th Floor
-					<br/>New York, NY 10281
-					<br/>(212) 312-8800
-				</div><!-- end col -->
-				<div class="col-sm-3 centerCol">
-					<a href="https://www.911memorial.org/contact-us">Contact Us</a>
-					<br/><a href="https://www.911memorial.org/privacy-policy">Terms of Use / Privacy Policy</a>
-					<br/><a href="https://www.911memorial.org/financial-and-legal-information">Financial & Legal Information</a>
-					<br/><a href="https://secure.ethicspoint.com/domain/en/report_custom.asp?clientid=19476">Ethics Point Hotline</a>
-					<br/><a href="https://www.911memorial.org/node/1019876">Feedback</a>
-				</div><!-- end col -->
-				<div class="col-sm-3">
-					<a href="https://www.facebook.com/911memorial">Facebook</a>
-					<br/><a href="https://twitter.com/sept11memorial">Twitter</a>
-					<br/><a href="https://instagram.com/911memorial/">Instagram</a>
-					<br/><a href="https://plus.google.com/+911Memorial/posts">Google +</a>
-					<br/><a href="https://pinterest.com/911memorial/">Pinterest</a>
-					<br/><a href="https://www.youtube.com/user/911memorial">YouTube</a>
-					<br/><a href="http://911memorialmuseum.tumblr.com/">Tumblr</a>
-				</div><!-- end col -->
-			</div><!-- end row -->
-			<div class="row">
-				<div class="col-sm-4 copyright">
-					&copy; 2016 National September 11 Memorial & Museum<br/>9/11 MEMORIAL is a registered trademark of the National September 11 Memorial & Museum. 
-				</div><!-- end col -->
-			</div><!-- end row -->
-		</div>
-	</div><!-- end footer-bottom-->
+
+
+
+
+
+
+<footer class="footer">
+  <h2 class="sr-only">Footer</h2>
+
+      <div class="container-block-prefooter">
+        <h3 class="sr-only">Information about the 9 11 Memorial &amp; Museum</h3>
+                          
+          
+  <div class="menu-item menu-item--expanded menu-item-level-0">
+    <h4 class="nav-link menu-block-title prefooter-title" id="Location">Location</h4>
+              
+<div class="menu_link_content menu-link-contentpre-footer view-mode-default menu-dropdown prefooter-list menu-dropdown-0 menu-type-default">
+        
+            <div class="field field-name-field-pre-footer-content field-type-entity-reference-revisions field-label-hidden field-item">  <div class="paragraph paragraph--type--pre-footer-content paragraph--view-mode--default">
+          
+            <div class="field field-name-field-text field-type-text-long field-label-hidden field-item"><p>180 Greenwich Street<br>
+New York, NY 10007<br><a href="https://goo.gl/maps/vu8H6CTyBts" target="_blank"><strong>View on map</strong></a></p>
+</div>
+      
+      <ul aria-owns="phone-number">
+                <li class="field field-name-field-email field-type-email field-label-hidden field-item">
+            <a href="mailto:reservations@911memorial.org">reservations@911memorial.org</a>
+          </li>
+          </ul>
+  
+      <ul>
+                <li class="field field-name-field-phone-number field-type-telephone field-label-hidden field-item" id="phone-number">
+            <a href="tel:%28212%29312-8800">(212) 312-8800</a>
+          </li>
+          </ul>
+  
+      </div>
+</div>
+      
+<ul class="menu menu-level-1" aria-labelledby="Location">
+  
+  <li class="menu-item">
+    <a href="https://www.911memorial.org/contact-us" data-drupal-link-system-path="node/141">Contact Us</a>
+
+                
+
+      </li>
+  
+  <li class="menu-item">
+    <a href="https://www.911memorial.org/about" data-drupal-link-system-path="node/9111">About </a>
+
+                
+
+      </li>
+  
+  <li class="menu-item">
+    <a href="https://www.911memorial.org/contact-us/media-center" title="Media Center" data-drupal-link-system-path="node/8991">Media Center</a>
+
+                
+
+      </li>
+</ul>
+
+  </div>
+      </div>
+  
+  <div class="menu-item menu-item--expanded menu-item-level-0">
+    <h4 class="nav-link menu-block-title prefooter-title" id="Hours">Hours</h4>
+              
+<div class="menu_link_content menu-link-contentpre-footer view-mode-default menu-dropdown prefooter-list menu-dropdown-0 menu-type-default">
+        
+            <div class="field field-name-field-pre-footer-content field-type-entity-reference-revisions field-label-hidden field-item">  <div class="paragraph paragraph--type--pre-footer-content paragraph--view-mode--default">
+          
+            <div class="field field-name-field-text field-type-text-long field-label-hidden field-item"><p><strong>Museum, Open Daily</strong><br>
+Sunday to Thursday, 9 a.m. to 8 p.m.&nbsp;<br>
+(6 p.m. last entry)</p>
+<p>Friday and Saturday, 9 a.m. to&nbsp;9 p.m.&nbsp;<br>
+(7 p.m. last entry)</p>
+<p><strong>Memorial, Open Daily</strong><br>
+7:30 a.m. to&nbsp;9 p.m.</p>
+</div>
+      
+      </div>
+</div>
+      
+<ul class="menu menu-level-1" aria-labelledby="Hours">
+  
+  <li class="menu-item">
+    <a href="https://www.911memorial.org/visit-museum-1" target="_self">Get Tickets</a>
+
+                
+
+      </li>
+  
+  <li class="menu-item">
+    <a href="https://store.911memorial.org/" target="_blank">Museum Store</a>
+
+                
+
+      </li>
+</ul>
+
+  </div>
+      </div>
+  
+  <div class="menu-item menu-item--expanded menu-item-level-0 footer-final-column">
+    <h4 class="nav-link menu-block-title prefooter-title" id="Learn_More">Learn More</h4>
+              
+<div class="menu_link_content menu-link-contentpre-footer view-mode-default menu-dropdown prefooter-list menu-dropdown-0 menu-type-default">
+        
+<ul class="menu menu-level-1" aria-labelledby="Learn_More">
+  
+  <li class="menu-item">
+    <a href="https://www.911memorial.org/support" data-drupal-link-system-path="node/81">Support</a>
+
+                
+
+      </li>
+  
+  <li class="menu-item">
+    <a href="https://www.911memorial.org/job-opportunities" data-drupal-link-system-path="node/9106">Careers</a>
+
+                
+
+      </li>
+  
+  <li class="menu-item">
+    <a href="https://www.911memorial.org/calendar" data-drupal-link-system-path="calendar">Calendar</a>
+
+                
+
+      </li>
+  
+  <li class="menu-item">
+    <a href="https://www.911memorial.org/visit/about/accessibility" title="The 9/11 Memorial &amp; Museum is committed to ensuring access to the memorial and museum for all visitors" data-drupal-link-system-path="node/231">Accessibility</a>
+
+                
+
+      </li>
+</ul>
+
+  </div>
+      </div>
+
+
+    </div>
+  
+      <div class="container-block-footer">
+          
+
+
+<nav aria-label="footer" id="block-footer" class="block block-menu navigation menu--footer">
+  <h3 id="footer-heading" class="sr-only">Footer navigation</h3>
+            
+        
+              <ul data-region="footer" aria-labelledby="footer-heading">
+              <li>
+        <a href="https://www.911memorial.org/financial-legal-information" data-drupal-link-system-path="node/9096">Financial &amp; Legal Information</a>
+              </li>
+          <li>
+        <a href="https://www.911memorial.org/terms-useprivacy-policy">Terms of Use/Privacy Policy</a>
+              </li>
+          <li>
+        <a href="https://www.911memorial.org/accessibility-details">Accessibility Details</a>
+              </li>
+        </ul>
+  
+
+
+  </nav>
+
+<div class="views-element-container block block-views block-views-blocksocial-media-links-list-social-icons" id="block-views-block-social-media-links-list-social-icons">
+  
+    
+      <div><div class="js-view-dom-id-cf14eca31d6f78c94ab833a979d8c02db7891122f5863e299dc7d2a6a68ad4ac">
+  
+  
+  
+
+  
+  
+  
+
+  <h3 id="social-media-links-label" class="sr-only">Social media links</h3>
+<ul aria-labelledby="social-media-links-label">
+          <li class="views-row">
+
+  <a class="taxonomy-term social-link" style="background: url(https://www.911memorial.org/sites/default/files/social-media-icons/2018-09/facebook.png) no-repeat center center; background-size: cover;" href="https://www.facebook.com/911memorial/" target="_blank">
+            <div class="field field-name-name field-type-string field-label-hidden field-item">Facebook</div>
+      </a>
+
+
+</li>
+          <li class="views-row">
+
+  <a class="taxonomy-term social-link" style="background: url(https://www.911memorial.org/sites/default/files/social-media-icons/2018-09/instagram.png) no-repeat center center; background-size: cover;" href="https://www.instagram.com/911memorial/" target="_blank">
+            <div class="field field-name-name field-type-string field-label-hidden field-item">Instagram</div>
+      </a>
+
+
+</li>
+          <li class="views-row">
+
+  <a class="taxonomy-term social-link" style="background: url(https://www.911memorial.org/sites/default/files/social-media-icons/2018-09/twitter_0.png) no-repeat center center; background-size: cover;" href="https://twitter.com/Sept11Memorial" target="_blank">
+            <div class="field field-name-name field-type-string field-label-hidden field-item">Twitter</div>
+      </a>
+
+
+</li>
+          <li class="views-row">
+
+  <a class="taxonomy-term social-link" style="background: url(https://www.911memorial.org/sites/default/files/social-media-icons/2018-09/youtube.png) no-repeat center center; background-size: cover;" href="https://www.youtube.com/user/911memorial" target="_blank">
+            <div class="field field-name-name field-type-string field-label-hidden field-item">YouTube</div>
+      </a>
+
+
+</li>
+  </ul>
+
+  
+  
+
+  
+  
+
+  
+  
+</div>
+</div>
+
+  </div>
+
+
+    </div>
+    <div class="footer-settings-content-container">
+              <h3 class="sr-only">Copyright information</h3>
+        <div class="footer-copyright">
+          © 2019 National September 11 Memorial &amp; Museum 9/11 MEMORIAL is a registered trademark of the National September 11 Memorial &amp; Museum
+        </div>
+          </div>
+  </footer>
+
+
+
+
+
+
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

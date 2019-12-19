@@ -80,308 +80,59 @@
 ?>
 </head>
 <body>
-	<nav class="navbar navbar-default navbarTop" role="navigation">
-		<div class="container subTitleSmall">
-			<div class="subTitle"><?php print caNavLink($this->request, _t("Inside the Collection"), "", "", "",""); ?></div>
+<div id="off-canvas" class="mm-menu mm-menu_offcanvas mm-menu_keyboardfocus mm-menu_theme-white mm-menu_effect-slide-menu mm-menu_position-right mm-menu_fullscreen mm-menu_pagedim-black" aria-hidden="true"><button class="mm-tabstart" tabindex="0" type="button" aria-hidden="true" role="presentation"></button>
+	<nav aria-labelledby="mobile-nav">
+		<div class="mm-panels">
+			<div id="mm-1" class="mm-panel mm-panel_has-navbar mm-panel_opened"><div id="mobile-u-c-wrapper" class="nav-mobile-custom-wrapper"></div>
+			<div class="mm-navbar"><a class="mm-navbar__title">Menu</a><a href="#" onClick="$('#off-canvas').toggle('slide', {direction: 'left'}, 500); return false;" class="close-nav mobile-menu-mm-btn-close" aria-label="Close mobile menu" aria-controls="mobile-menu-item-control" role="button"></a></div>
+			<ul class="menu menu-level-0 nav-menu mm-listview" aria-labelledby="site-nav-label">
+      			<li class="nav-item menu-item menu-item--expanded mm-listitem">
+        			<a href="https://www.911memorial.org/visit" class="nav-link" data-drupal-link-system-path="node/31">Visit</a>
+        		</li>
+          		<li class="nav-item menu-item menu-item--expanded mm-listitem">
+        			<a href="https://www.911memorial.org/learn" class="nav-link" data-drupal-link-system-path="node/76">Learn</a>
+        		</li>
+          		<li class="nav-item menu-item menu-item--expanded mm-listitem">
+        			<a href="https://www.911memorial.org/connect" class="nav-link" data-drupal-link-system-path="node/126">Connect</a>
+        		</li>
+          		<li class="nav-item menu-item menu-item--expanded mm-listitem">
+        			<a href="https://www.911memorial.org/support" class="nav-link" data-drupal-link-system-path="node/81">Support</a>
+        		</li>
+      		</ul>
+      		<div id="mobile-c-wrapper" class="nav-mobile-custom-wrapper"></div></div>
 		</div>
-		<div class="container" id="topSubNavBar">
-			<ul class="nav navbar-nav navbar-left">
-				<li><a href="https://membership.911memorial.org/user?destination=user">Log In</a></li>
-			</ul>
-			<ul class="nav navbar-nav navbar-right">
-				<li><a href="https://store.911memorial.org" title="Store">Store</a></li>
-				<li><a href="https://www.911memorial.org/media-center" title="Newsroom">Media Center</a></li>
-				<li><a href="https://www.911memorial.org/national-september-11-memorial-museum" title="About">About</a></li>
-				<li><a href="https://www.911memorial.org/interact" title="Interact">Interact</a></li>
-				<li><a href="https://www.911memorial.org/blog" title="Blog">Blog</a></li>
-				<li><a href="https://www.911memorial.org/events" title="">Calendar</a></li>
-				<li><a href="https://www.911memorial.org/dashboard" title="">Members</a></li>
-				<li><a href="https://www.911memorial.org/faq/general" title="">FAQ</a></li>
-				<li>
-					<div class="header-translate"><div id="google_translate_element"></div></div>
-        <script type="text/javascript">
-          function googleTranslateElementInit() {
-            new google.translate.TranslateElement({pageLanguage: 'en', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
-          }
-          $( document ).ready(function() {
-            function changeLanguageText() {
-              var text = $('.goog-te-menu-value span:first-child').text();
-              if (text && text != "Translate") {
-                $('.goog-te-menu-value span:first-child').html('Translate');
-                $('#google_translate_element').fadeIn('slow');
-              } else {
-                setTimeout(changeLanguageText, 200);
-              }
-            }
-            changeLanguageText();
-          });
-        </script>
-        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
+	</nav>
+	<button class="mm-tabend" tabindex="0" type="button" aria-hidden="true" role="presentation"></button>
+</div>
+	<header class="header">
+		<a href="#main-content" class="visually-hidden focusable skip-link">
+		  Skip to main content
+		</a>
+		<a class="logo" href="/" title="9/11 Memorial | Home" rel="home">9/11 Memorial | Home</a>
+		<nav class="nav-main" aria-label="Site">
+			<h2 id="site-nav-label" class="sr-only">Site Navigation</h2>
+		
+			<ul class="menu menu-level-0 nav-menu" data-region="nav" aria-labelledby="site-nav-label">  
+				<li class="nav-item menu-item menu-item--expanded">
+					<a href="https://www.911memorial.org/visit" class="nav-link" data-drupal-link-system-path="node/31">Visit</a>
 				</li>
-			</ul>	
+				<li class="nav-item menu-item menu-item--expanded">
+					<a href="https://www.911memorial.org/learn" class="nav-link" data-drupal-link-system-path="node/76">Learn</a>
+				</li>
+				<li class="nav-item menu-item menu-item--expanded">
+					<a href="https://www.911memorial.org/connect" class="nav-link" data-drupal-link-system-path="node/126">Connect</a>
+				</li>
+				<li class="nav-item menu-item menu-item--expanded">
+					<a href="https://www.911memorial.org/support" class="nav-link" data-drupal-link-system-path="node/81">Support</a>
+				</li>
+			</ul>
+		</nav>
+		<div id="block-responsivemenumobileicon-2" class="responsive-menu-toggle-wrapper responsive-menu-toggle block block-responsive-menu block-responsive-menu-toggle">
+			<a title="Menu" href="#" onClick="$('#off-canvas').toggle('slide', {direction: 'left'}, 500); return false;" id="toggle-icon" class="toggle responsive-menu-toggle-icon" aria-controls="mobile-main-menu" aria-expanded="false" role="button">
+				<span class="icon"></span><span class="label">Menu</span>
+			</a>
 		</div>
-	</nav>
-	<nav class="navbar navbar-default navbarMain" role="navigation">
-		<div class="container">
-
-			<!-- Brand and toggle get grouped for better mobile display -->
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-main-navbar-collapse-1">
-					<span class="sr-only">Toggle navigation</span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-					<span class="icon-bar"></span>
-				</button>
-<?php
-				print "<a href='http://www.911memorial.org/' class='navbar-brand'>".caGetThemeGraphic($this->request, 'logo2.jpg', array('alt' => '911 Memorial'))."</a>";
-?>
-			</div>
-			<div class="collapse navbar-collapse">
-				<ul class="nav navbar-nav navbar-right">
-					<li class='visitLink'><a href="https://www.911memorial.org/visit">Visit</a><div class="triangle"><?php print caGetThemeGraphic($this->request, 'triangle.png'); ?></div></li>
-					<li class='memorialLink'><a href="https://www.911memorial.org/memorial">Memorial</a><div class="triangle"><?php print caGetThemeGraphic($this->request, 'triangle.png'); ?></div></li>
-					<li class='museumLink'><a href="https://www.911memorial.org/museum">Museum</a><div class="triangle"><?php print caGetThemeGraphic($this->request, 'triangle.png'); ?></div></li>
-					<li class='learnLink'><a href="https://www.911memorial.org/teach-learn">Teach + Learn</a><div class="triangle"><?php print caGetThemeGraphic($this->request, 'triangle.png'); ?></div></li>
-					<li class='involvedLink'><a href="https://www.911memorial.org/get-involved">Get Involved</a><div class="triangle"><?php print caGetThemeGraphic($this->request, 'triangle.png'); ?></div></li>
-					<li class='donateLink'><a href="https://www.911memorial.org/make-monetary-donation-now">Donate</a><div class="triangle"><?php print caGetThemeGraphic($this->request, 'triangle.png'); ?></div></li>
-				</ul>
-			</div><!-- /.navbar-collapse -->
-		</div><!-- end container -->
-	</nav>
-		<div class="container" style="position:relative;">
-			<div class="navOverlay visitLink" id="visitPanel">
-				<div class="imgSide">
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://www.911memorial.org/education-programs"><?php print caGetThemeGraphic($this->request, 'visit3.jpg'); ?><h3>Education Programs »</h3></a>
-						</div>
-					</div>
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://www.911memorial.org/911-family-member-visit-information"><?php print caGetThemeGraphic($this->request, 'Picture1a.jpg'); ?><h3>9/11 Family Member Visit Information »</h3></a>
-						</div>
-					</div>
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://www.911memorial.org/OCOS"><?php print caGetThemeGraphic($this->request, 'liberty.jpg'); ?><h3>Our City. Our Story. »</h3></a>
-						</div>
-					</div>
-				</div>
-				<div class="textCol">
-					<div>
-						<h3>Visit the Museum</h3>
-						<a href="https://www.911memorial.org/visit-museum-1">Tickets and Info<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/tours">Tours<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/groups-0">Groups<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/student-programs">Student Programs<span> »</span></a><br/>
-						<a href="https://membership.911memorial.org/">Museum Members<span> »</span></a>
-					</div>
-					<div>
-						<h3>Visitor<br/>Information</h3>
-						<a href="https://www.911memorial.org/what-expect-your-museum-visit">What to Expect<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/you-arrive">Before Arrival<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/getting-here">Getting Here<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/hours-operation">Hours of Operation<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/accessibility-information">Accessibility<span> »</span></a>
-					</div>
-				</div>
-				<div style="clear:both;"></div>
-			</div>
-			<div class="navOverlay memorialLink" id="memorialPanel">
-				<div class="imgSide">
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://www.911memorial.org/survivor-tree"><?php print caGetThemeGraphic($this->request, 'memorial3.jpg'); ?><h3>The Survivor Tree »</h3></a>
-						</div>
-					</div>
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://goo.gl/pQXcB"><?php print caGetThemeGraphic($this->request, 'For_GoogleStreetView.jpg'); ?><h3>360-Degree View of the Memorial »</h3></a>
-						</div>
-					</div>
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://www.911memorial.org/memorial"><?php print caGetThemeGraphic($this->request, 'memorial1.gif'); ?><h3>Visit the 9/11 Memorial »</h3></a>
-						</div>
-					</div>
-				</div>
-				<div class="textCol">
-					<div>
-						<h3>Design</h3>
-						<a href="https://www.911memorial.org/about-memorial">About The Memorial<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/survivor-tree">Survivor Tree<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/design-overview">Design Overview<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/memorial-architects">Architects<span> »</span></a>
-					</div>
-					<div>
-						<h3>Explore</h3>
-						<a href="https://www.911memorial.org/names-memorial">Find a Name<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/explore-memorial">View the Memorial<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/911-memorial-walking-tours">Walking Tours<span> »</span></a>
-					</div>
-				</div>
-				<div style="clear:both;"></div>
-			</div>
-			<div class="navOverlay museumLink" id="museumPanel">
-				<div class="imgSide">
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://www.911memorial.org/contribute-memorial-exhibition"><?php print caGetThemeGraphic($this->request, 'museum3.jpg'); ?><h3>Contribute to the Memorial Exhibition »</h3></a>
-						</div>
-					</div>
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://www.911memorial.org/exhibitions"><?php print caGetThemeGraphic($this->request, 'museum2.jpg'); ?><h3>Exhibitions »</h3></a>
-						</div>
-					</div>
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://www.911memorial.org/interactive-museum-experience"><?php print caGetThemeGraphic($this->request, 'museum1.jpg'); ?><h3>Museum Virtual Tour »</h3></a>
-						</div>
-					</div>
-				</div>
-				<div class="textCol">
-					<div>
-						<h3>Overview</h3>
-						<a href="https://www.911memorial.org/about-museum">About the Museum<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/exhibitions">Exhibitions<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/museum-space" title="The Museum Space">Museum Space<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/museum-architects">The Architects<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/our-partnerships" title="Our Partnerships">Our Partners<span> »</span></a>
-					</div>
-					<div>
-						<h3>Collections</h3>
-						<a href="https://www.911memorial.org/collection">About the Collection<span> »</span></a>
-						<a href="https://www.911memorial.org/contribute-collection" title="Contribute">Contribute to Collection<span> »</span></a>
-						<a href="https://www.911memorial.org/registries">Registries<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/registry">Artists Registry<span> »</span></a><br/>
-						<div class='multiline'><a href="http://collection.911memorial.org/" title="">Explore Online<span> »</span><br/>Collection</a></div>
-					</div>
-				</div>
-				<div style="clear:both;"></div>
-			</div>
-			<div class="navOverlay learnLink" id="learnPanel">
-				<div class="imgSide">
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://www.911memorial.org/lesson-plans"><?php print caGetThemeGraphic($this->request, 'BeforeandAfter9-11-01-MasterJohnHarrattan.jpg'); ?><h3>Lesson Plans »</h3></a>
-						</div>
-					</div>
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://www.911memorial.org/public-programs"><?php print caGetThemeGraphic($this->request, '_78Q3965_0.jpg'); ?><h3>Public<br/>Programs »</h3></a>
-						</div>
-					</div>
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://www.911memorial.org/education-programs"><?php print caGetThemeGraphic($this->request, '_78Q9183.jpg'); ?><h3>Education Programs »</h3></a>
-						</div>
-					</div>
-				</div>
-				<div class="textCol">
-					<div>
-						<h3>Teach</h3>
-						<a href="https://www.911memorial.org/education-programs">Education Programs<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/plan-your-school-visit">Plan Your School Visit<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/youth-and-families">Youth and Families<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/lesson-plans">Lesson Plans<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/teaching-911">Teaching Guides<span> »</span></a><br/>
-						<div class='multiline'><a href="https://www.911memorial.org/talk-children-about-911">Talking to Children about 9/11<span> »</span></a></div>
-						
-					</div>
-					<div>
-						<h3>Learn</h3>
-						<a href="https://www.911memorial.org/911-primary-sources">9/11 Primary Sources<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/faq-about-911">9/11 FAQ<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/interactive-911-timelines">Interactive Timelines<span> »</span></a><br/>
-						<div class='multiline'><a href="https://www.911memorial.org/world-trade-center-history">World Trade Center History<span> »</span></a></div>
-						<a href="https://www.911memorial.org/rescue-recovery">Rescue & Recovery<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/911-related-terror">9/11 Related Terror<span> »</span></a>
-					</div>
-				</div>
-				<div style="clear:both;"></div>
-			</div>
-			<div class="navOverlay involvedLink" id="involvedPanel">
-				<div class="imgSide">
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://www.911memorial.org/volunteer"><?php print caGetThemeGraphic($this->request, 'MuseumDocent.jpg'); ?><h3>Volunteer »</h3></a>
-						</div>
-					</div>
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="http://www.911memorial.org/become-museum-member"><?php print caGetThemeGraphic($this->request, '_O9A2023.jpg'); ?><h3>Become a<br/>Museum<br/>Member »</h3></a>
-						</div>
-					</div>
-					<div class="imgCol">
-						<div class="imgBox">
-							<a href="https://www.911memorial.org/OCOS"><?php print caGetThemeGraphic($this->request, 'liberty.jpg'); ?><h3>Our City. Our Story. »</h3></a>
-						</div>
-					</div>
-				</div>
-				<div class="textCol">
-					<div>
-						<h3>Donate</h3>
-						<a href="https://www.911memorial.org/make-monetary-donation-now">Donate Now<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/sponsor-cobblestone-0" style="white-space: nowrap;">Sponsor a Cobblestone<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/take-seat">Take a Seat<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/our-donors">Our Donors<span> »</span></a>
-					</div>
-					<div>
-						<h3>Get Involved</h3>
-						<a href="https://www.911memorial.org/volunteer">Volunteer<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/become-911-memorial-museum-member">Become a Member<span> »</span></a><br/>
-						<a href="https://www.911memorial.org/ocos">Our City Our Story<span> »</span></a>
-					</div>
-				</div>
-				<div style="clear:both;"></div>
-			</div>
-		</div><!-- end container -->
-<script type="text/javascript">
-	 $(document).ready(function() {
-			$(".visitLink").hover(function(){
-				$("#visitPanel").show();
-				$(".visitLink .triangle").show();
-			},function(){
-				$("#visitPanel").hide();
-				$(".visitLink .triangle").hide();
-			});
-			$(".memorialLink").hover(function(){
-				$("#memorialPanel").show();
-				$(".memorialLink .triangle").show();
-			},function(){
-				$("#memorialPanel").hide();
-				$(".memorialLink .triangle").hide();
-			});
-			$(".museumLink").hover(function(){
-				$("#museumPanel").show();
-				$(".museumLink .triangle").show();
-			},function(){
-				$("#museumPanel").hide();
-				$(".museumLink .triangle").hide();
-			});
-			$(".learnLink").hover(function(){
-				$("#learnPanel").show();
-				$(".learnLink .triangle").show();
-			},function(){
-				$("#learnPanel").hide();
-				$(".learnLink .triangle").hide();
-			});
-			$(".involvedLink").hover(function(){
-				$("#involvedPanel").show();
-				$(".involvedLink .triangle").show();
-			},function(){
-				$("#involvedPanel").hide();
-				$(".involvedLink .triangle").hide();
-			});
-			$(".donateLink").hover(function(){
-				$(".donateLink .triangle").show();
-			},function(){
-				$(".donateLink .triangle").hide();
-			});
-	});
-</script>
+	</header>
 
 
 	
@@ -430,9 +181,9 @@
 
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
-			<div class="header-social">
+			<!--<div class="header-social">
 				<a class="fb" href="https://www.facebook.com/911memorial" target="_blank"></a>
 				<a class="twit" href="https://twitter.com/sept11memorial" target="_blank"></a>
 				<a class="instagram" href="https://instagram.com/911memorial/" target="_blank"></a>
 				<a class="gplus" href="https://plus.google.com/+911Memorial/posts" target="_blank"></a>
-        	</div>
+        	</div>-->
