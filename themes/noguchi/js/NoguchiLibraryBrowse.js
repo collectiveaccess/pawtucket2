@@ -310,8 +310,8 @@ class NoguchiLibraryBrowseFacetPanel extends React.Component {
 				let item = this.state.facetContent[this.state.facetContentSort[i]];
 
 				options.push((
-					<li key={'facetItem' + i}>
-						<NoguchiLibraryBrowseFacetPanelItem id={'facetItem' + i} data={item} callback={this.clickFilterItem} selected={this.state.selectedFacetItems[item.id]}/>
+					<li key={this.props.facetName + 'facetItem' + i}>
+						<NoguchiLibraryBrowseFacetPanelItem id={this.props.facetName + 'facetItem' + i} data={item} callback={this.clickFilterItem} selected={this.state.selectedFacetItems[item.id]}/>
 					</li>
 				));
 			}
