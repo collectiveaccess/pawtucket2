@@ -959,8 +959,15 @@ p.legend a {
 	}
 	H2{
 		margin-bottom:0px;
+		text-transform:capitalize;
 		a{
 			text-decoration:none;
+		}
+		span{
+			vertical-align: middle;
+		}
+		ion-icon{
+			font-size: 1.1em;
 		}
 	}
 	.multiSearchList{
