@@ -54,9 +54,11 @@
 				$vs_rep = $pa_set_item["representation_tag_".$vs_icon];
 			}
 			if($pa_set_item["representation_tag_".$vs_icon]){
+			    $t_set_obj = new ca_objects($t_set_item->get('row_id'));
 				$vn_i++;
-				print "<div class='smallpadding col-xs-3 col-sm-2 col-md-".(($ps_description) ? "2" : "1").(($vn_i > 24) ? " galleryIconHidden" : "")."'>";
+				print "<div class='smallpadding col-xs-3 col-sm-2 col-md-2".(($ps_description) ? "2" : "1").(($vn_i > 24) ? " galleryIconHidden" : "")."'>";
 				print "<a href='#' id='galleryIcon".$pa_set_item["item_id"]."' onclick='jQuery(\"#galleryDetailImageArea\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); jQuery(\"#galleryDetailObjectInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\"); return false;'>".$vs_rep."</a>";
+				print "<span>".$t_set_obj->get('ca_objects.preferred_labels')."</span>";
 				print "</div>\n";
 				
 				if($vn_i == 24){

@@ -510,6 +510,7 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 	font-size:13px;
 	line-height:1.2em;
 	margin-top:5px;
+	height: 3.6em;
 }
 .pubListing .pubListingImg img{
 	border:1px solid #ededed;

@@ -1,3 +1,6 @@
+<?php
+	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Mailing list");
+?>
 <div class="row contentbody_sub aboutPages">
 	<div class="col-sm-8">
 		<H1>Newsletter Sign Up</H1>
