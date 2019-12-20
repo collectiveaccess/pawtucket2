@@ -29,6 +29,7 @@
 		{{{<ifcount code="ca_objects.related" min="1">
 		<div class="row"><div class="col-sm-12"><H6>Related Objects</H6><div class="row rowSmallPadding"><unit relativeTo="ca_objects.related" delimiter=" "><div class="col-xs-4 col-md-2 smallpadding"><div class="detailRelObject"><l>^ca_object_representations.media.icon</l></div><!--end detailRelObject--></div><!--end col--></unit></div><!-- end row --></div><!-- end col --></div><!-- end row -->
 		</ifcount>}}}	
+		<div class="col-sm-12 bluebg">
 		{{{<ifcount code="ca_storage_locations" min="1" max="1"><H6>Current Location:</H6></ifcount>}}}
 				{{{<ifcount code="ca_storage_locations" min="2"><H6>Current Location:</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_storage_locations" delimiter="<br/>"><l>^ca_storage_locations.parent.preferred_labels</l></unit>}}}
@@ -38,27 +39,30 @@
 				
 				{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 				{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit><br/><br/>}}}
+				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
 		
 				{{{map}}} <br/>
-				
+			</div>	
 			</div><!-- end col -->
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				<HR>
-				
+			<div class="row blue">
+				<div class="col-sm-6">
 				{{{<ifdef code="ca_objects.idno"><H6>Identifier:</H6>^ca_objects.idno</ifdef>}}}
 				{{{<ifdef code="ca_objects.containerID"><H6>Box/series:</H6>^ca_objects.containerID<br/></ifdef>}}}
 				
 				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Artist:</H6></ifcount>}}}
 				{{{<ifcount code="ca_entities" min="2"><H6>Related artists</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit><br/>}}}
-				
+				</div>
+				<div class="col-sm-6">
 				{{{<ifdef code="ca_objects.work_medium"><H6>Medium:</H6>^ca_objects.work_medium</ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.work_date"><H6>Date:</H6>^ca_objects.work_date<br/></ifdef>}}}
-				
+				</div>
+			</div>
 				{{{<ifdef code="ca_objects.dimensions"><H6>Dimensions:</H6></ifdef>}}}
 				{{{<ifdef code="ca_objects.dimensions.height">^ca_objects.dimensions.dimension_type - Height: ^ca_objects.dimensions.height</ifdef>}}}
 				{{{<ifdef code="ca_objects.dimensions.width">Width: ^ca_objects.dimensions.width</ifdef>}}}
@@ -82,7 +86,8 @@
 				{{{<ifcount code="ca_object_lots" min="1" max="1"><H6>Credit:</H6></ifcount>}}}
 				{{{<ifcount code="ca_object_lots" min="2"><H6>Credit:</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_object_lots" delimiter="<br/>"><l>^ca_object_lots.credit_line</l></unit><br/>}}}
-				
+<div class="row">
+<div class="col-sm-6">				
 <?php
 				if($va_subjects = $t_object->get("ca_list_items", array("returnAsArray" => true, 'returnWithStructure' => true))){
 					if(is_array($va_subjects) && sizeof($va_subjects)){
@@ -97,7 +102,13 @@
 						print "<H6>Getty Art and Architecture Thesaurus Term".((sizeof($va_subjects) > 1) ? "s" : "").":</H6>";
 						print join($va_subjects_sorted, "<br/>");
 					}
-				}				
+				}		
+				?>
+				</div>
+				<div class="col-sm-6">	
+				
+				<?php
+						
 				$va_lcsh_terms = $t_object->get("ca_objects.lcsh", array("returnAsArray" => true, 'returnWithStructure' => true));
 				
 				if(sizeof($va_lcsh_terms)){
@@ -114,7 +125,8 @@
 				}
 				
 ?>				
-				
+	</div>
+	</div>			
 		
 			</div><!-- end col -->
 		</div><!-- end row -->	
@@ -133,7 +145,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 65
+		  maxHeight: 150
 		});
 	});
 </script>

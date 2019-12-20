@@ -1,6 +1,7 @@
 <?php
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
@@ -13,50 +14,101 @@
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 					<H4>{{{^ca_storage_locations.preferred_labels}}}</H4>
-					<H6>{{{^ca_storage_locations.description}}}</H6>
+<?php
+					if($t_item->getWithTemplate('<unit relativeTo="ca_storage_locations.hierarchy">^ca_storage_locations.preferred_labels.name</unit>') != $t_item->get('ca_storage_locations.preferred_labels')){
+						print $t_item->getWithTemplate('<ifdef code="ca_storage_locations.parent_id"><H6>Located in: <unit relativeTo="ca_storage_locations.hierarchy" delimiter=" &gt; "><l>^ca_storage_locations.preferred_labels.name</l></unit></H6></ifdef>');
+					}
+?>
+					<hr/>
+
 				</div><!-- end col -->
 			</div><!-- end row -->
+			{{{<ifdef code="ca_storage_locations.description"><div class="row"><div class="col-sm-12"><p>^ca_storage_locations.description</p></div></div></ifdef>}}}
+			<div class="row">
+				{{{<ifdef code="ca_object_representations.media.large"><div class="col-sm-12 col-md-6"><p class="fullWidth">^ca_object_representations.media.large</p></div></ifdef>}}}
+				{{{<ifnotdef code="ca_object_representations.media.large"><ifdef code="ca_storage_locations.icon.largeicon"><div class="col-sm-12 col-md-6"><p class="fullWidth">^ca_storage_locations.icon.largeicon</p></div></ifdef></ifnotdef>}}}
+<?php
+				if($vs_map = $this->getVar("map")){
+?>
+					<div class="col-sm-12 col-md-6"><?php print $vs_map; ?></div>
+<?php
+				}
+?>
+			</div>
+<?php
+			if(strToLower($t_item->get("type_id", array("convertCodesToDisplayText" => true))) == "campus"){
+				$va_children = $t_item->get("ca_storage_locations.children.location_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+				if(is_array($va_children) && sizeof($va_children)){
+					$qr_child_locations = caMakeSearchResult("ca_storage_locations", $va_children);
+					$vn_i = 0;
+					print "<br/><br/><H4>".$t_item->get("ca_storage_locations.type_id", array("convertCodesToDisplayText" => true))." Locations</H4><hr/>";
+					if($qr_child_locations && $qr_child_locations->numHits()) {
+						while($qr_child_locations->nextHit()) {
+							if ( $vn_i == 0) { print "<div class='row'>"; } 
+							print "<div class='col-sm-6 col-md-3'><div class='locationTile'><div class='title'>".caDetailLink($this->request, $qr_child_locations->get("ca_storage_locations.preferred_labels"), "", "ca_storage_locations",  $qr_child_locations->get("ca_storage_locations.location_id"))."</div>";	
+							if ($vs_tmp = $qr_child_locations->getWithTemplate("<ifdef code='ca_storage_locations.icon.largeicon'><l>^ca_storage_locations.icon.largeicon</l></ifdef>")) {
+								print "<div>".$vs_tmp."</div>";
+							}else{
+								# --- if no image for child, use the image on the parent campus
+								if ($vs_tmp = $qr_child_locations->getWithTemplate("<l><unit relativeTo='ca_storage_locations.parent'>^ca_object_representations.media.iconlarge</unit></l>")) {
+									print "<div>".$vs_tmp."</div>";
+								}
+							}
+							$va_stats = array();
+							if ($va_children = $qr_child_locations->get("ca_storage_locations.children.location_id", array("returnAsArray" => true, "checkAccess" => $va_access_values))) {
+								if(is_array($va_children) && sizeof($va_children)){
+									$va_stats[] = sizeof($va_children)." location".((sizeof($va_children) == 1) ? "" : "s");
+								}
+							}
+							if ($va_objects = $qr_child_locations->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values))) {
+								if(is_array($va_objects) && sizeof($va_objects)){
+									$va_stats[] = sizeof($va_objects)." item".((sizeof($va_objects) == 1) ? "" : "s");
+								}
+							}
+							if(sizeof($va_stats)){
+								print "<div>".join(", ", $va_stats)."</div>";
+							}
+							print "</div></div>";
+							$vn_i++;
+							if ($vn_i == 4) {
+								print "</div><!-- end row -->\n";
+								$vn_i = 0;
+							}
+						}
+						if ($vn_i > 0) {
+							print "</div><!-- end row -->\n";
+						}
+					}
+				}
+			}else{
+				# ---
+?>
+				<div class="row">
+					<div class='col-sm-12'>
+						<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+						<script>
+							$(document).ready(function(){
+								$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Locations', 'locationHierarchy', array('location_id' => $t_item->get('ca_storage_locations.location_id'))); ?>"); 
+							})
+						</script>
+					</div><!-- end col -->
+				</div><!-- end row -->
 
-				
-			<div class="row"> 
-			<div class='col-sm-12 col-md-12 col-lg-12'>
+<?php			
+			}
+?>
 
-					{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
-					
-					{{{<ifcount code="ca_storage_locations" min="1"><H6>Related locations</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_storage_locations.children" delimiter="<br/>"><l>^ca_storage_locations.preferred_labels.name</l></unit>}}}
-					
-					<div id="detailTools">
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print is_array($va_comments) ? sizeof($va_comments) : 0; ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
-						<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
-					</div><!-- end detailTools -->
-					
-				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><br/><br/>}}}
-					
-					{{{<ifcount code="ca_entities.related" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-					{{{<ifcount code="ca_entities.related" min="2"><H6>Related people</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.related.preferred_labels.displayname</l><br/><br/></unit>}}}
-					
-					{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
-					{{{<ifcount code="ca_occurrences" min="2"><H6>Related occurrences</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l><br/><br/></unit>}}}
-					
-					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l><br/><br/></unit>}}}				
-				</div><!-- end col -->
-			</div><!-- end row -->
 			
 			
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
+			<div class="row">
+				<div class="col-sm-12">
+					<br/><br/><H4>Artwork at this location</H4><hr/>
+				</div>
+			</div>
 			<div class="row">
 				<div id="browseResultsContainer">
-					
+					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 				</div><!-- end browseResultsContainer -->
 			</div><!-- end row -->
 			<script type="text/javascript">

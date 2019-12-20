@@ -27,24 +27,32 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-		<div id="footer">
-			<ul class="list-inline pull-right social">
-				<li><a href="http://twitter.com/GVSUart"><i class="fa fa-twitter"></i></a></li>
-				<li><a href="http://instagram.com/gvsuart"><i class="fa fa-instagram"></i></a></li> 
-				<li><a href="http://www.facebook.com/GVSUartgallery"><i class="fa fa-facebook-square"></i></a></li>
-				<li><a href="http://www.youtube.com/channel/UCCmNPjLKjaNlcZAhA1TAWmg"><i class="fa fa-youtube-play"></i></a></li>
-			</ul>
-			<div>
-				Copyright &copy; <?php print date("Y"); ?> Grand Valley State University | GVSU is an AA/EO institution | Art Gallery | <a href="mailto:artgallery@gvsu.edu?Subject=Online%20Collection">artgallery@gvsu.edu</a>
-			</div>
-			<ul class="list-inline">
-				<li><a href="http://www.gvsu.edu/artgallery">GVSU Art Gallery</a></li>
-				<li><a href="http://www.gvsu.edu">Grand Valley State University</a></li>
-			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess <?php print date("Y"); ?></a></small></div>
-		</div><!-- end footer -->
 
 	</div><!-- end pageArea --></div><!-- end container -->
+	<div id="footer">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8">
+					<div>
+						Copyright &copy; <?php print date("Y"); ?> Grand Valley State University | GVSU is an AA/EO institution | Art Gallery | <a href="mailto:artgallery@gvsu.edu?Subject=Online%20Collection">artgallery@gvsu.edu</a>
+					</div>
+					<ul class="list-inline">
+						<li><a href="http://www.gvsu.edu/artgallery">GVSU Art Gallery</a></li>
+						<li><a href="http://www.gvsu.edu">Grand Valley State University</a></li>
+					</ul>
+					<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess <?php print date("Y"); ?></a></small></div>
+				</div>
+				<div class="col-lg-3">
+					<ul class="list-inline pull-right social">
+						<li><a href="http://twitter.com/GVSUart"><i class="fa fa-twitter"></i></a></li>
+						<li><a href="http://instagram.com/gvsuart"><i class="fa fa-instagram"></i></a></li> 
+						<li><a href="http://www.facebook.com/GVSUartgallery"><i class="fa fa-facebook-square"></i></a></li>
+						<li><a href="http://www.youtube.com/channel/UCCmNPjLKjaNlcZAhA1TAWmg"><i class="fa fa-youtube-play"></i></a></li>
+					</ul>
+				</div>
+			</div>
+		</div><!-- end container -->
+	</div><!-- end footer -->
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">

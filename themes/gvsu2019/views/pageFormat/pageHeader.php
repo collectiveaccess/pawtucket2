@@ -43,6 +43,14 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
+	<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-151760326-1"></script>
+	<script>
+  		window.dataLayer = window.dataLayer || [];
+  		function gtag(){dataLayer.push(arguments);}
+  		gtag('js', new Date());
+  		gtag('config', 'UA-151760326-1');
+	</script> 
 </head>
 <body>
 
@@ -117,7 +125,7 @@ print $this->render("pageFormat/browseMenu.php");
 
 					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artwork"), "", "", "Browse", "objects"); ?></li>
 					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "entities")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "entities"); ?></li>
-					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "locations")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Locations"), "", "", "Browse", "locations"); ?></li>
+					<li <?php print ($this->request->getController() == "Locations") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Locations"), "", "", "Locations", "Index"); ?></li>
 					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "collections")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Browse", "collections"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Topics"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
