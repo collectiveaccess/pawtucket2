@@ -63,7 +63,7 @@
 				$qr_list->seek(0);
 				$va_images = caGetDisplayImagesForAuthorityItems("ca_occurrences", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("used_website"), 'checkAccess' => $va_access_values, 'useRelatedObjectRepresentations' => true));
 			}
-			if(sizeof($va_years) > 1){		
+			if(is_array($va_years) && sizeof($va_years) > 1){		
 				#arsort($va_years);
 				foreach($va_years as $vs_year){
 					print "<li class='yearBar yearBar".$vs_year."'><a href='#' onClick='$(\".yearBar\").removeClass(\"active\"); $(this).parent().addClass(\"active\"); $(\".yearTab\").hide(); $(\"#yearTab".$vs_year."\").show(); return false;'>".$vs_year."</a></li>";
@@ -96,7 +96,7 @@
 					print "<div id='yearTab".$vs_year."' class='yearTab'>";
 				}
 				print "<div class='row'>";
-				print "<div class='col-sm-4 exhibitionListing'>".caDetailLink($this->request, $va_images[$qr_list->get("occurrence_id")], '', 'ca_occurrences', $qr_list->get("occurrence_id"), null, null, array("type_id" => $qr_list->get("type_id")))."</div>\n";
+				print "<div class='col-sm-4 exhibitionListing'>".(($va_images[$qr_list->get("occurrence_id")]) ? caDetailLink($this->request, $va_images[$qr_list->get("occurrence_id")], '', 'ca_occurrences', $qr_list->get("occurrence_id"), null, null, array("type_id" => $qr_list->get("type_id"))) : "")."</div>\n";
 				print "<div class='col-sm-8 exhibitionListing'><h1><strong>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>')."</strong></h1>".$qr_list->get("ca_occurrences.opening_closing")."</div>";
 				print "</div><!-- end row -->\n";
 			}

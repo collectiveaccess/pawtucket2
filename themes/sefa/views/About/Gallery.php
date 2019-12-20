@@ -1,3 +1,6 @@
+<?php
+	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": About the Gallery");
+?>
 <div class="row contentbody_sub aboutPages">
 	<div class="col-sm-8">
 		<H1>About Susan Eley Fine Art</H1>

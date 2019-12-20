@@ -36,6 +36,32 @@
 	}
 	# --- get related object_id of catalog
 	$vn_catalog_id = $t_item->get("ca_objects.object_id", array("checkAccess" => $va_access_values, "restrictToRelationshipTypes" => array("related"), "restrictToTypes" => array("catalog"), "limit" => 1));
+	$vs_section_title = "";
+	switch($ps_view){	
+		case "info":
+		default:
+			$vs_section_title = "Exhibition Information";
+		break;
+		# -------------------------
+		case "images":
+			$vs_section_title = "Exhibition Images";
+		break;
+		# -------------------------
+		case "installations":
+			$vs_section_title = "Exhibition Installation Images";
+		break;
+		# -------------------------
+		case "thumbnails":
+			$vs_section_title = "Exhibition Thumbnails";
+		break;
+		# -------------------------
+		case "installationThumbnails":
+			$vs_section_title = "Exhibition Installation Thumbnails";
+		break;
+		# -------------------------
+	}
+	MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": Exhibition: ".$t_item->get("ca_occurrences.preferred_labels.name").": ".$vs_section_title);
+
 
 ?>	
 	<div class="row contentbody_sub">
@@ -119,15 +145,17 @@
 							<ul>
 <?php
 							foreach($va_images as $va_image){
+								if($va_image["image"]){
 ?>
-								<li id="slide<?php print $va_image["id"]; ?>">
-									<div class="thumbnail">
-										<?php print $va_image["image"]; ?>
-										<div class="caption text-center captionSlideshow">(<?php print $vn_i."/".sizeof($va_images); ?>)<br/><?php print $va_image["label"]; ?></div>
-									</div><!-- end thumbnail -->
-								</li>
+									<li id="slide<?php print $va_image["id"]; ?>">
+										<div class="thumbnail">
+											<?php print $va_image["image"]; ?>
+											<div class="caption text-center captionSlideshow">(<?php print $vn_i."/".sizeof($va_images); ?>)<br/><?php print $va_image["label"]; ?></div>
+										</div><!-- end thumbnail -->
+									</li>
 <?php
-								$vn_i++;
+									$vn_i++;
+								}
 							}
 ?>
 							</ul>
@@ -215,7 +243,9 @@
 <?php
 				if(sizeof($va_images)){
 					foreach($va_images as $va_image){
-						print "<div class='col-xs-4 col-sm-4 gridImg'>".caDetailLink($this->request, $va_image["thumbnail"], '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" =>(($ps_view == "thumbnails") ? "images" : "installations"), "id" => $va_image["id"]), null, array("type_id" => $t_item->get("type_id")))."</div>";
+						if($va_image["thumbnail"]){
+							print "<div class='col-xs-4 col-sm-4 gridImg'>".caDetailLink($this->request, $va_image["thumbnail"], '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" =>(($ps_view == "thumbnails") ? "images" : "installations"), "id" => $va_image["id"]), null, array("type_id" => $t_item->get("type_id")))."</div>";
+						}
 					}
 				}
 ?>
