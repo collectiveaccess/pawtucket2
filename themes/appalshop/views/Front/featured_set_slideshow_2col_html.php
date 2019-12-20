@@ -30,7 +30,8 @@
  * ----------------------------------------------------------------------
  */
 	$va_access_values = $this->getVar("access_values");
-	$qr_res = $this->getVar('featured_set_items_as_search_result');
+	$va_featured_set_item_ids = $this->getVar("featured_set_item_ids");
+	$qr_res = caMakeSearchResult('ca_collections', $va_featured_set_item_ids);
 	$o_config = $this->getVar("config");
 	$vs_caption_template = $o_config->get("front_page_set_item_caption_template");
 	if(!$vs_caption_template){
@@ -47,11 +48,11 @@
 <?php
 							$va_thumbnails = array();
 							while($qr_res->nextHit()){
-								if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
-									$va_thumbnails[$qr_res->get("ca_objects.object_id")] = $qr_res->get('ca_object_representations.media.iconlarge', array("checkAccess" => $va_access_values));
+								if($vs_media = $qr_res->getWithTemplate('<ifcount code="ca_objects" restrictToRelationshipTypes="featured" min="1"><l><unit relativeTo="ca_objects" restrictToRelationshipTypes="featured" length="1">^ca_object_representations.media.large</unit></l></ifcount>', array("checkAccess" => $va_access_values))){
+									$va_thumbnails[$qr_res->get("ca_collections.collection_id")] = $qr_res->getWithTemplate('<unit relativeTo="ca_objects" restrictToRelationshipTypes="featured" length="1">^ca_object_representations.media.iconlarge</unit>', array("checkAccess" => $va_access_values));
 ?>							
 									
-									<li id="slide<?php print $qr_res->get("ca_objects.object_id"); ?>" class="<?php print $qr_res->get("ca_objects.object_id"); ?>">
+									<li id="slide<?php print $qr_res->get("ca_collections.collection_id"); ?>" class="<?php print $qr_res->get("ca_collections.collection_id"); ?>">
 										<div class='frontSlide'>
 											<div class="row">
 												<div class="col-xs-12 col-sm-6 col-md-offset-1 col-md-6">
@@ -60,13 +61,13 @@
 												<div class="col-xs-12 col-sm-4 col-md-4">
 													<div class="slideTextRight">
 														<h2>
-															<?php print $qr_res->getWithTemplate("<l>^ca_objects.preferred_labels.name</l>"); ?>
+															<?php print $qr_res->getWithTemplate("<l>^ca_collections.preferred_labels.name</l>"); ?>
 														</h2>
 														<p>
 															<?php print $qr_res->getWithTemplate($vs_caption_template); ?> 
 														</p>
 														<p class="text-center">
-															<?php print caDetailLink($this->request, _t("View Item"), 'btn-default', 'ca_objects', $qr_res->get("ca_objects.object_id")); ?>
+															<?php print caDetailLink($this->request, _t("View Collection"), 'btn-default', 'ca_collections', $qr_res->get("ca_collections.collection_id")); ?>
 														</p>
 													</div>
 													<div class="col-md-1 col-lg-1"></div>
