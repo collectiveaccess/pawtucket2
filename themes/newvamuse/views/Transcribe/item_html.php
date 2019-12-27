@@ -30,16 +30,29 @@
  * ----------------------------------------------------------------------
  */
  
- $t_item = $this->getVar('item');
- 
- $rep_id = null;
- $t_transcript = new ca_representation_transcriptions(); //::find(['representation_id' => $rep_id]);;
-   
+	$t_item = $this->getVar('item');
+	$t_rep = $this->getVar('representation');
+	$t_transcription = $this->getVar('transcription'); //new ca_representation_transcriptions(); //::find(['representation_id' => $rep_id]);;
+	
+	$previous_id = $this->getVar('previousID');
+	$next_id = $this->getVar('nextID');
+	
+	// TODO: move to controller
+	$t_set = new ca_sets();
+	$sets = $t_set->getSetsForItem($t_item->tableName(), $t_item->getPrimaryKey(), ['restrictToTypes' => 'transcription_collection']);
+	$set_id = is_array($sets) ? array_shift(array_keys($sets)) : null;
+	$set = is_array($sets) ? array_shift(caExtractValuesByUserLocale($sets)) : '';
 ?>
 <div class="container textContent">
 	<div class="row">
-		<div class="col-sm-10 col-sm-offset-1">
-			<h1>Transcribe: <?php print $t_item->get('ca_objects.preferred_labels.name'); ?></H1>
+		<div class="col-sm-1">
+			<div class="setsBack">
+				<?php print $previous_id ? caNavLink($this->request, '<i class="fa fa-angle-left" aria-label="back"></i><div class="small">Previous</div>', '', '*', 'Transcribe', 'Item', ['id' => $previous_id]) : ''; ?>
+				<?php print $set_id ? caNavLink($this->request, '<i class="fa fa-angle-double-left" aria-label="back"></i><div class="small">Back</div>', '', '*', 'Transcribe', 'Collection/'.$set_id) : ''; ?>
+			</div>
+		</div>
+		<div class="col-sm-10">
+			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; <?php print is_array($set) ? caNavLink($this->request, $set['name'], '', '*', 'Transcribe', 'Collection/'.$set['set_id'])." &gt; " : ""; ?><?php print $t_item->get('ca_objects.preferred_labels.name'); ?></H1>
 			<p style='padding-bottom:15px;'>
 				<?php print $t_item->get('ca_objects.description'); ?>
 			</p>
@@ -50,14 +63,56 @@
 						<?php print $t_item->get('ca_object_representations.media.large'); ?>
 					</div>
 					<div class="col-sm-offset-1 col-sm-5">
+						<?php print caFormTag($this->request, 'SaveTranscription', 'transcript', null, 'post', 'multipart/form-data', '_top', ['disableUnsavedChangesWarning' => true]); ?>
+						<div>Transcription</div>
+
+<?php
+	if($t_transcription->isComplete()) {
+?>
+	 <?php print $t_transcription->get('transcription'); ?>
+<?php
+	} else {
+?>
+						<?php print caHTMLTextInput('transcription', ['value' => $t_transcription->get('transcription')], ['width' => '600px', 'height' => '400px']); ?>
 					
-						<?php print caHTMLTextInput('transcription', [], ['width' => '600px', 'height' => '800px']); ?>
-					
+							<?php print caHTMLHiddenInput('id', ['value' => $t_item->getPrimaryKey()]); ?>
+							<?php print caHTMLHiddenInput('representation_id', ['value' => $t_rep->getPrimaryKey()]); ?>
+							
+							<button class='btn btn-lg btn-danger'>Save transcription</button>
+							<?php print caHTMLCheckboxInput('complete', ['value' => 1]); ?> Complete?
+<?php
+	}
+?>
+						</form>
+<?php
+	if($t_transcription->isComplete()) {
+?>
+		This transcription was completed on <?php print $t_transcription->get('created_on'); ?>
+<?php
+	} else {
+?>
+						<div>
+							<ul>
+								<li>Remember to save often</li>
+								<li>Copy the text as is, including misspellings and abbreviation</li>
+								<li>No need to account for formatting - the goal is to provide text for searching and readability</li>
+								<li>If you can't make out a word, enter "[illegible]"; if uncertain, indicate with square brackets, for example: "[town?]"</li>
+								<li>Check completed when you finish the page</li>
+								<li>View more <a href="/TranscriptionTips/Index" target="_new">transcription tips</a></li>
+							</ul>
 					</div>
+<?php
+	}
+?>
 				</div>
 
 
 			</div>
 		</div>	
+	</div>
+	<div class="col-sm-1">
+		<div class="setsBack">
+			<?php print $next_id ? caNavLink($this->request, '<i class="fa fa-angle-right" aria-label="back"></i><div class="small">Next</div>', '', '*', 'Transcribe', 'Item', ['id' => $next_id]) : ''; ?>
+		</div>
 	</div>
 </div>

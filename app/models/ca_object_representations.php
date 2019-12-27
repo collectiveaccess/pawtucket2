@@ -42,6 +42,7 @@ require_once(__CA_MODELS_DIR__."/ca_user_representation_annotations.php");
 require_once(__CA_MODELS_DIR__."/ca_user_representation_annotation_labels.php");
 require_once(__CA_MODELS_DIR__."/ca_object_representation_multifiles.php");
 require_once(__CA_MODELS_DIR__."/ca_object_representation_captions.php");
+require_once(__CA_MODELS_DIR__."/ca_representation_transcriptions.php");
 require_once(__CA_APP_DIR__."/helpers/mediaPluginHelpers.php");
 
 
@@ -2019,5 +2020,46 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	public function getRepresentationCount($pa_options=null) {
 		return 1;
 	}
-	# ------------------------------------------------------
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function setTranscription($transcription, $complete=false, $options=null) {
+		if (!($rep_id = $this->getPrimaryKey())) { return null; }
+		
+		$force_new = caGetOption('forceNew', $options, false);
+		
+		// Try to find transcript by IP address
+		$ip = RequestHTTP::ip();
+		
+		if (!($transcript = ca_representation_transcriptions::find(['representation_id' => $rep_id, 'ip_addr' => $ip], ['returnAs' => 'firstModelInstance']))) {
+			$transcript = new ca_representation_transcriptions();
+		} 
+		$transcript->set('representation_id', $rep_id);
+		$transcript->set('transcription', $transcription);
+		if ($complete) {
+			$transcript->set('completed_on', _t('now'));	
+		}
+		$transcript->set('ip_addr', $ip);
+		$transcript->isLoaded() ? $transcript->update() : $transcript->insert();
+		
+		if($transcript->numErrors()) {
+			$this->errors = $transcript->errors;
+			return false;
+		}
+		return $transcript;
+	}
+	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function getTranscription($options=null) {
+		if (!($rep_id = $this->getPrimaryKey())) { return null; }
+		
+		// Try to find transcript by IP address
+		$ip = RequestHTTP::ip();
+		
+		return ca_representation_transcriptions::find(['representation_id' => $rep_id, 'ip_addr' => $ip], ['returnAs' => 'firstModelInstance']);
+	}
+	# -------------------------------------------------------
 }

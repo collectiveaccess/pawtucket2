@@ -204,4 +204,12 @@ class ca_representation_transcriptions extends BaseModel {
 		parent::__construct($pn_id);	# call superclass constructor
 	}
 	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	public function isComplete() {
+		if(!$this->isLoaded()) { return null; }
+		return $this->get('completed_on');
+	}
+	# ------------------------------------------------------
 }

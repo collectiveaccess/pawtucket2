@@ -31,12 +31,22 @@
  */
  	$t_set = $this->getVar('set');
  	$items = $this->getVar('items');	
- 
+ 	$set_id = $t_set->getPrimaryKey();
+ 	
+	$previous_id = $this->getVar('previousID');
+	$next_id = $this->getVar('nextID');
 ?>
 <div class="container textContent">
 	<div class="row">
-		<div class="col-sm-10 col-sm-offset-1">
-			<h1>Collection: <?php print $t_set->get('ca_sets.preferred_labels.name'); ?></H1>
+		<div class="col-sm-1">
+			<div class="setsBack">
+				<?php print $previous_id ? caNavLink($this->request, '<i class="fa fa-angle-left" aria-label="back"></i><div class="small">Previous</div>', '', '*', 'Transcribe', 'Collection/'.$previous_id) : ''; ?>
+				<?php print caNavLink($this->request, '<i class="fa fa-angle-double-left" aria-label="back"></i><div class="small">Back</div>', '', '*', 'Transcribe', 'Collections'); ?>
+			</div>
+		</div>
+		<div class="col-sm-10">
+			
+			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; <?php print $t_set->get('ca_sets.preferred_labels.name'); ?></H1>
 			<p style='padding-bottom:15px;'>
 				<?php print $t_set->get('ca_sets.set_description'); ?>
 			</p>
@@ -46,12 +56,16 @@
 			<div class="row">
 <?php
 	foreach($items as $item) {
-		$item = array_shift($item);
 		print "<div class='col-xs-6 col-sm-4 col-md-3 col-lg-3 lbItem{$item['object_id']}'><div class='lbItemContainer'>";
 		print caNavLink($this->request, $item['representation_tag_small']."<br/>".$item['name'], '', '*', 'Transcribe', 'Item', ['id' => $item['object_id']]);
 		print "</div></div>\n";
 	}
 ?>
+			</div>
+		</div>
+		<div class="col-sm-1">
+			<div class="setsBack">
+				<?php print $next_id ? caNavLink($this->request, '<i class="fa fa-angle-right" aria-label="back"></i><div class="small">Next</div>', '', '*', 'Transcribe', 'Collection/'.$next_id) : ''; ?>
 			</div>
 		</div>	
 	</div>

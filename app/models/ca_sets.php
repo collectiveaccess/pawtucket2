@@ -657,7 +657,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			}
 		}
 
-		if($va_restrict_to_types = caGetOption('restrict_to_types', $pa_options, false)) {
+		if($va_restrict_to_types = caGetOption(['restrict_to_types', 'restrictToTypes'], $pa_options, false)) {
+			if(!is_array($va_restrict_to_types)) { $va_restrict_to_types = [$va_restrict_to_types]; }
 			$va_restrict_to_type_ids = array();
 			foreach($va_restrict_to_types as $vm_type) {
 				if(is_numeric($vm_type)){

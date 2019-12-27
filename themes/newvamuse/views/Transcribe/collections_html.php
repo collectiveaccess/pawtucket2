@@ -38,7 +38,7 @@
 		<div class="col-sm-10 col-sm-offset-1">
 			<h1>All Collections</H1>
 			<p style='padding-bottom:15px;'>
-				Blah blah blah
+				
 			</p>
 			<div style="clear:both; margin-top:10px;">
 <?php

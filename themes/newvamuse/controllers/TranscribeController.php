@@ -95,11 +95,18 @@
  		function Index($options = null) {
  			AssetLoadManager::register("carousel");
  			
+ 			$o_context = new ResultContext($this->request, 'ca_objects', 'transcribe', 'collections');	// collections context - next/prev here through collections
+ 			$o_context->setAsLastFind();
+ 			
+ 			
  			$qr_sets = ca_sets::find(["type_id" => "transcription_collection", "featured" => "yes"], ['returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values]);
-			$set_media = ca_sets::getFirstItemsFromSets($qr_sets->getAllFieldValues('ca_sets.set_id'), ['version' => 'medium', 'checkAccess' => $this->opa_access_values]);
+			$set_media = ca_sets::getFirstItemsFromSets($set_ids = $qr_sets->getAllFieldValues('ca_sets.set_id'), ['version' => 'medium', 'checkAccess' => $this->opa_access_values]);
 			$qr_sets->seek(0);
 			$this->view->setVar('sets', $qr_sets);
 			$this->view->setVar('set_media', $set_media);
+			
+			$o_context->setResultList($set_ids);
+			$o_context->saveContext();
 			
  			$this->render(caGetOption("view", $options, "Transcribe/index_html.php"));
  		}
@@ -108,12 +115,18 @@
          * Collections page – list of all available collections (ie. sets)
          */
  		function Collections($options = null) {
+			$o_context = new ResultContext($this->request, 'ca_objects', 'transcribe', 'collections');	// collections context - next/prev here through collections
+ 			$o_context->setAsLastFind();
+ 			
 			$qr_sets = ca_sets::find(["type_id" => "transcription_collection"], ['returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values]);
-			$set_media = ca_sets::getFirstItemsFromSets($qr_sets->getAllFieldValues('ca_sets.set_id'), ['version' => 'medium', 'checkAccess' => $this->opa_access_values]);
+			$set_media = ca_sets::getFirstItemsFromSets($set_ids = $qr_sets->getAllFieldValues('ca_sets.set_id'), ['version' => 'medium', 'checkAccess' => $this->opa_access_values]);
 			$qr_sets->seek(0);
 			
 			$this->view->setVar('sets', $qr_sets);
 			$this->view->setVar('set_media', $set_media);
+			
+			$o_context->setResultList($set_ids);
+			$o_context->saveContext();
 						
  			$this->render(caGetOption("view", $options, "Transcribe/collections_html.php"));
  		}
@@ -122,9 +135,21 @@
          * Collection page – list of all items in selected collection (ie. a set)
          */
  		function Collection($options = null) {
+			$o_context = new ResultContext($this->request, 'ca_objects', 'transcribe', 'collection');	// set collection-level context here for next/prev navigation at item level
  			$set = $this->_getSet();
  			
- 			$this->view->setVar('items', $set->getItems(['thumbnailVersions' => ['medium', 'small']]));
+ 			$this->view->setVar('items', $items = caExtractValuesByUserLocale($set->getItems(['thumbnailVersions' => ['medium', 'small']])));
+ 			
+ 			$object_ids = array_values(array_map(function($v) { return $v['object_id']; }, $items));
+ 			$o_context->setResultList($object_ids);
+			$o_context->saveContext();
+			
+			$o_context = new ResultContext($this->request, 'ca_objects', 'transcribe', 'collections');	// collections context - next/prev here through collections
+ 			$o_context->setAsLastFind();
+ 			
+ 			$id = $set->getPrimaryKey();
+ 			$this->view->setVar('previousID', $previous_id = $o_context->getPreviousID($id));
+ 			$this->view->setVar('nextID', $next_id = $o_context->getNextID($id));
  		
  			$this->render(caGetOption("view", $options, "Transcribe/collection_html.php"));
  		}
@@ -139,7 +164,7 @@
 
  			AssetLoadManager::register("mediaViewer");
  		
-			$o_context = new ResultContext($this->request, 'ca_objects', 'transcribe');
+			$o_context = new ResultContext($this->request, 'ca_objects', 'transcribe', 'browse');
  			$o_context->setAsLastFind();
 
             $this->view->setVar('browse', $o_browse = caGetBrowseInstance("ca_objects"));
@@ -347,15 +372,51 @@
          * Collection page – list of all items in selected collection (ie. a set)
          */
  		function Item($options = null) {
+			$o_context = new ResultContext($this->request, 'ca_objects', 'transcribe', 'collection');
+ 			$o_context->setAsLastFind();
+ 			
  			$id = $this->request->getParameter('id', pInteger);
  			$obj = new ca_objects($id);
  			// TODO: check access
  			
+ 			if(!($rep_id = $this->request->getParameter('representation_id', pInteger))) {
+ 				$rep_id = $obj->get('ca_object_representations.representation_id'); // default to primary
+ 			}
+ 			$rep = new ca_object_representations($rep_id);
+ 			// TODO: check representation access and whether rep is linked to object
+ 			
+ 			$this->view->setVar('previousID', $previous_id = $o_context->getPreviousID($id));
+ 			$this->view->setVar('nextID', $next_id = $o_context->getNextID($id));
+ 			
  			$this->view->setVar('item', $obj);
+ 			$this->view->setVar('representation', $rep);
+ 			
+ 			$transcription = $rep->getTranscription();
+ 			$this->view->setVar('transcription', $transcription ? $transcription : new ca_representation_transcriptions());
  			$this->render(caGetOption("view", $options, "Transcribe/item_html.php"));
  		}
+ 		# ------------------------------------------------------
+        /**
+         * Save transcription (called from item page)
+         */
+ 		function SaveTranscription($options = null) {
+ 			$id = $this->request->getParameter('id', pInteger);
+ 			$obj = new ca_objects($id);
+ 			// TODO: check object access
+ 			
+ 			$rep_id = $this->request->getParameter('representation_id', pInteger);
+ 			$rep = new ca_object_representations($rep_id);
+ 			// TODO: check representation access and whether rep is linked to object
+ 			
+ 			if (($transcription = trim($this->request->getParameter('transcription', pString)))) {
+ 				$rep->setTranscription($transcription, $this->request->getParameter('complete', pInteger), []);
+ 			}
+ 			
+ 			$this->notification->addNotification(_t("Saved transcription"), __NOTIFICATION_TYPE_INFO__);
+ 			
+ 			$this->Item();
+ 		}
  		# -------------------------------------------------------
- 		
  		/** 
  		 * Return set_id from request with fallback to user var, or if nothing there then get the users' first set
  		 */
