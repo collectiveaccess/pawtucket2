@@ -3766,6 +3766,9 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		$pn_subject_id = is_object($pt_subject) ? $pt_subject->getPrimaryKey() : (int)$pt_subject;
 		
 		$va_rep_display_info = caGetMediaDisplayInfo($ps_display_type, $pt_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+		
+		if (caGetOption('no_toolbar', $va_rep_display_info, false)) { return ''; }
+		
 		$va_rep_display_info['poster_frame_url'] = $pt_representation->getMediaUrl('media', $va_rep_display_info['poster_frame_version']);
 
 		$va_add_to_set_link_info = caGetAddToSetInfo($po_request);
@@ -4161,7 +4164,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	 * @param SearchResult $po_data A ca_object_represention or RepresentableBaseModel search result to render slides for. A slide will be rendered for each representation.
 	 * @param RepresentableBaseModel $pt_subject A model instance loaded with the subject (the record the media is shown in the context of. Eg. if a representation is shown for an object this is an instance for that object record)
 	 * @param array $pa_options Options include:
-	 *			display = media_display.conf display version to use. [Default is 'detail']
+	 *			display = media_display.conf display version to use. [Default is null]
 	 *		
 	 * @return array Array of HTML media viewers for representations referenced by $po_data
 	 * @throws ApplicationException
@@ -4185,6 +4188,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 				}
 		
 				$va_display_info = caGetMediaDisplayInfo($ps_display_type, $vs_mimetype);
+			
 				if ($pt_subject && ($vn_use_universal_viewer_for_image_list_length = caGetOption('use_universal_viewer_for_image_list_length_at_least', $va_display_info, null))) {
 					$vn_image_count = $pt_subject->numberOfRepresentationsOfClass('image');
 					$vn_rep_count = $pt_subject->getRepresentationCount();

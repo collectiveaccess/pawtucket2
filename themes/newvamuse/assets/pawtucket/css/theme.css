@@ -1016,3 +1016,7 @@ div.caMediaOverlayControlsMinimal:hover {
 #map div{
 	margin-bottom:0px;
 }
+
+.repViewerContCont {
+	overflow: hidden;
+}

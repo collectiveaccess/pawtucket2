@@ -2062,4 +2062,17 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		return ca_representation_transcriptions::find(['representation_id' => $rep_id, 'ip_addr' => $ip], ['returnAs' => 'firstModelInstance']);
 	}
 	# -------------------------------------------------------
+	/**
+	 *
+	 */
+	public function transcriptionIsComplete() {
+		if (!($rep_id = $this->getPrimaryKey())) { return null; }
+		
+		$ip = RequestHTTP::ip();
+		if (($t_transcription = ca_representation_transcriptions::find(['representation_id' => $rep_id, 'ip_addr' => $ip, 'completed_on' => ['>', 0]], ['returnAs' => 'firstModelInstance']))) {
+			return $t_transcription;
+		}
+		return ca_representation_transcriptions::find(['representation_id' => $rep_id, 'completed_on' => ['>', 0]], ['returnAs' => 'firstModelInstance']);
+	}
+	# ------------------------------------------------------
 }

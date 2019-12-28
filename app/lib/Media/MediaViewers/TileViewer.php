@@ -79,6 +79,17 @@
 						'captions' => $t_instance->getCaptionFileList(), 'progress_id' => 'caMediaOverlayProgress'
 					];
 					
+					if (caGetOption('disable_help_button', $pa_data['display'], false)) {
+						unset($va_viewer_opts['help_load_url']);
+					}
+					
+					if (caGetOption('disable_annotations', $pa_data['display'], false)) {
+						unset($va_viewer_opts['annotationEditorPanel']);
+						unset($va_viewer_opts['annotationEditorUrl']);
+						unset($va_viewer_opts['annotation_load_url']);
+						unset($va_viewer_opts['annotation_save_url']);
+					}
+					
 					$vb_no_overlay = (caGetOption('no_overlay', $pa_data['display'], null) || caGetOption('noOverlay', $pa_options, null));
 					if($vb_no_overlay){
 						// HTML for tileviewer
@@ -97,6 +108,10 @@
 						'help_load_url' => caNavUrl($po_request, '*', '*', 'ViewerHelp', array())
 					];
 					
+					if (caGetOption('disable_help_button', $pa_data['display'], false)) {
+						unset($va_viewer_opts['help_load_url']);
+					}
+					
 					// HTML for tileviewer
 					$o_view->setVar('viewerHTML', $t_instance->getMediaTag('media', $vs_version, $va_viewer_opts));
 				} else {
@@ -110,6 +125,10 @@
 						'read_only' => !$po_request->isLoggedIn(),
 						'captions' => null, 'progress_id' => 'caMediaOverlayProgress'
 					];
+					
+					if (caGetOption('disable_help_button', $pa_data['display'], false)) {
+						unset($va_viewer_opts['help_load_url']);
+					}
 					
 					$t_instance->useBlobAsMediaField(true);
 					if (!$t_instance->hasMediaVersion('value_blob', $vs_version = caGetOption('display_version', $pa_data['display'], 'original'))) {

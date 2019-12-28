@@ -33,6 +33,9 @@
  /**
    *
    */
+define("__CA_TRANSCRIPTION_STATUS_NOT_STARTED__", 1);
+define("__CA_TRANSCRIPTION_STATUS_IN_PROGRESS__", 2);
+define("__CA_TRANSCRIPTION_STATUS_COMPLETED__", 3);
 
 BaseModel::$s_ca_models_definitions['ca_representation_transcriptions'] = array(
  	'NAME_SINGULAR' 	=> _t('Object representation transcription'),

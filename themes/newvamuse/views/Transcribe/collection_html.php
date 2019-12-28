@@ -55,9 +55,24 @@
 			</div>
 			<div class="row">
 <?php
+	$transcription_status = ca_objects::getTranscriptionStatusForIDs(array_map(function($v) { return $v['row_id']; }, $items));
 	foreach($items as $item) {
 		print "<div class='col-xs-6 col-sm-4 col-md-3 col-lg-3 lbItem{$item['object_id']}'><div class='lbItemContainer'>";
 		print caNavLink($this->request, $item['representation_tag_small']."<br/>".$item['name'], '', '*', 'Transcribe', 'Item', ['id' => $item['object_id']]);
+		if (isset($transcription_status['items'][$item['object_id']]['status'])) {
+			switch($transcription_status['items'][$item['object_id']]['status']) {
+				case __CA_TRANSCRIPTION_STATUS_NOT_STARTED__:
+				default:
+					print "Not started";
+					break;
+				case __CA_TRANSCRIPTION_STATUS_IN_PROGRESS__:
+					print "In progress";
+					break;
+				case __CA_TRANSCRIPTION_STATUS_COMPLETED__:
+					print "Completed";
+					break;
+			}
+		}
 		print "</div></div>\n";
 	}
 ?>

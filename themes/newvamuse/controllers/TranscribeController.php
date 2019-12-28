@@ -36,9 +36,7 @@
  	require_once(__CA_MODELS_DIR__."/ca_sets_x_users.php");
  	require_once(__CA_MODELS_DIR__."/ca_representation_transcriptions.php");
  	require_once(__CA_APP_DIR__."/controllers/FindController.php");
- 	require_once(__CA_LIB_DIR__."/GeographicMap.php");
-	require_once(__CA_LIB_DIR__.'/Parsers/ZipStream.php');
-	require_once(__CA_LIB_DIR__.'/Logging/Downloadlog.php');
+ 	require_once(__CA_LIB_DIR__.'/Media/MediaViewerManager.php');
  
  	class TranscribeController extends FindController {
  		# -------------------------------------------------------
@@ -372,6 +370,7 @@
          * Collection page – list of all items in selected collection (ie. a set)
          */
  		function Item($options = null) {
+ 			AssetLoadManager::register("mediaViewer");
 			$o_context = new ResultContext($this->request, 'ca_objects', 'transcribe', 'collection');
  			$o_context->setAsLastFind();
  			
@@ -391,8 +390,12 @@
  			$this->view->setVar('item', $obj);
  			$this->view->setVar('representation', $rep);
  			
- 			$transcription = $rep->getTranscription();
- 			$this->view->setVar('transcription', $transcription ? $transcription : new ca_representation_transcriptions());
+ 			
+ 			
+ 			if (!($t_transcription = $rep->transcriptionIsComplete())) {
+ 				$t_transcription = $rep->getTranscription();
+ 			}
+ 			$this->view->setVar('transcription', $t_transcription ? $t_transcription : new ca_representation_transcriptions());
  			$this->render(caGetOption("view", $options, "Transcribe/item_html.php"));
  		}
  		# ------------------------------------------------------

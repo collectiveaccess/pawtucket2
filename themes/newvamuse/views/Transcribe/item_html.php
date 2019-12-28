@@ -42,6 +42,8 @@
 	$sets = $t_set->getSetsForItem($t_item->tableName(), $t_item->getPrimaryKey(), ['restrictToTypes' => 'transcription_collection']);
 	$set_id = is_array($sets) ? array_shift(array_keys($sets)) : null;
 	$set = is_array($sets) ? array_shift(caExtractValuesByUserLocale($sets)) : '';
+	
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="container textContent">
 	<div class="row">
@@ -53,18 +55,40 @@
 		</div>
 		<div class="col-sm-10">
 			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; <?php print is_array($set) ? caNavLink($this->request, $set['name'], '', '*', 'Transcribe', 'Collection/'.$set['set_id'])." &gt; " : ""; ?><?php print $t_item->get('ca_objects.preferred_labels.name'); ?></H1>
-			<p style='padding-bottom:15px;'>
+			<p >
+				
+				<h4><?php print caDetailLink($this->request, $t_item->get('ca_objects.preferred_labels.name')." (".$t_item->get('ca_objects.idno').")", '' ,$t_item->tableName(), $t_item->getPrimaryKey()); ?></h4>
+				<h6><?php print $t_item->get("ca_entities", array("restrictToRelationshipTypes" => array("repository"), "returnAsLink" => true, "checkAccess" => $va_access_values));?></h6>
 				<?php print $t_item->get('ca_objects.description'); ?>
 			</p>
 			<div style="clear:both; margin-top:10px;">
 
 				<div class="row">
-					<div class="col-sm-6">
-						<?php print $t_item->get('ca_object_representations.media.large'); ?>
+					<div class="col-sm-7">
+						<?php 
+							//print $t_rep->get('ca_object_representations.media.large'); 
+							print array_shift(caRepresentationViewerHTMLBundles($this->request, caMakeSearchResult('ca_object_representations', [$t_rep->getPrimaryKey()]), $t_item, ['display' => 'transcribe']));
+						?>
+						
+						<br/>
+<?php
+	if (is_array($reps = $t_item->getRepresentations(['versions' => 'icon'])) && (sizeof($reps) > 1)) {
+		foreach($reps as $rep) {
+			print caNavLink($this->request, $rep['tags']['icon'], '', '*', '*', 'item', ['id' => $t_item->getPrimaryKey(), 'representation_id' => $rep['representation_id']]);
+		}
+	}
+?>
 					</div>
-					<div class="col-sm-offset-1 col-sm-5">
+					<div class="col-sm-5">
 						<?php print caFormTag($this->request, 'SaveTranscription', 'transcript', null, 'post', 'multipart/form-data', '_top', ['disableUnsavedChangesWarning' => true]); ?>
-						<div>Transcription</div>
+							<div>
+								Transcription 
+<?php
+	if ($start_date = $t_transcription->get('ca_representation_transcriptions.created_on')) {
+		print " (Started {$start_date})";
+	}
+?>
+							</div>
 
 <?php
 	if($t_transcription->isComplete()) {
@@ -73,7 +97,7 @@
 <?php
 	} else {
 ?>
-						<?php print caHTMLTextInput('transcription', ['value' => $t_transcription->get('transcription')], ['width' => '600px', 'height' => '400px']); ?>
+							<?php print caHTMLTextInput('transcription', ['value' => $t_transcription->get('transcription')], ['width' => '600px', 'height' => '400px']); ?>
 					
 							<?php print caHTMLHiddenInput('id', ['value' => $t_item->getPrimaryKey()]); ?>
 							<?php print caHTMLHiddenInput('representation_id', ['value' => $t_rep->getPrimaryKey()]); ?>
@@ -100,19 +124,18 @@
 								<li>Check completed when you finish the page</li>
 								<li>View more <a href="/TranscriptionTips/Index" target="_new">transcription tips</a></li>
 							</ul>
-					</div>
+						</div>
 <?php
 	}
 ?>
+					</div>
 				</div>
-
-
 			</div>
 		</div>	
-	</div>
 	<div class="col-sm-1">
 		<div class="setsBack">
 			<?php print $next_id ? caNavLink($this->request, '<i class="fa fa-angle-right" aria-label="back"></i><div class="small">Next</div>', '', '*', 'Transcribe', 'Item', ['id' => $next_id]) : ''; ?>
 		</div>
+	</div>
 	</div>
 </div>
