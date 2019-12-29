@@ -128,7 +128,7 @@
 	if($transcription->isComplete()) {
 ?>
 		<div class='completedMessage'>
-			Transcription was completed on <?php print $transcription->get('created_on'); ?>
+			Transcription was completed on <?php print $transcription->get('completed_on'); ?>
 		</div>
 <?php
 	} else {
