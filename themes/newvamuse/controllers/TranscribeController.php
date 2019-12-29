@@ -138,7 +138,7 @@
  				throw new ApplicationException(_t('Collection is invalid'));
  			}
  			
- 			$this->view->setVar('items', $items = caExtractValuesByUserLocale($set->getItems(['thumbnailVersions' => ['medium', 'small']])));
+ 			$this->view->setVar('items', $items = caExtractValuesByUserLocale($set->getItems(['checkAccess' => $this->opa_access_values, 'thumbnailVersions' => ['medium', 'small']])));
  			
  			$object_ids = array_values(array_map(function($v) { return $v['object_id']; }, $items));
  			$this->view->setVar('transcriptionStatus', $transcription_status = ca_objects::getTranscriptionStatusForIDs($object_ids, $items));
