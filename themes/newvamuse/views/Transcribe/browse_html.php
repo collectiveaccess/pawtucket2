@@ -103,7 +103,7 @@
 					<?php print caNavLink($this->request, $qr_result->get('ca_object_representations.media.small'), '', '', 'Transcribe', "Item", ['id' => $object_id]); ?>
 					<div class="overlay"><h2><?php print caNavLink($this->request, $qr_result->get('ca_objects.preferred_labels.name'), '', '', 'Transcribe', "Item", ['id' => $object_id]); ?></h2></div>
 				</div>
-				<?php print caNavLink($this->request, $status_info['status'], "btn btn-sm btn-{$status_info['color']}", '*', 'Transcribe', 'Item', ['id' => $item['object_id']]); ?>
+				<?php print caNavLink($this->request, $status_info['status'], "btn btn-sm btn-{$status_info['color']}", '*', 'Transcribe', 'Item', ['id' => $object_id]); ?>
 			</div>
 <?php
 								$vn_c++;
