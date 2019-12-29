@@ -33,7 +33,7 @@
  	$qr_sets = $this->getVar('sets');
  	$set_media = $this->getVar('set_media');
 ?>
-<div class="container textContent">
+<div class="transcription container textContent">
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-1">
 			<h1>Transcribe</H1>
@@ -45,7 +45,12 @@
 			<p>
 				Please read our <a href="/TranscriptionTips/Index">transcription tips</a> page for suggestions on how to get started.
 			</p>
-			<div style="clear:both; margin-top:10px;">
+			<div style="clear:both; margin-top:40px;">
+				<p class="text-center">
+					<?php print caNavLink($this->request, 'View all collections', 'btn btn-danger btn-lg', '*', 'Transcribe', 'Collections'); ?>
+					<?php print caNavLink($this->request, 'Browse items for transcription', 'btn btn-danger btn-lg', '*', 'Transcribe', 'Browse'); ?>
+				</p>
+				
 				<div style="clear:both; margin-top:10px;">
 					<h2>Featured Collections</h2>
 					<div class="jcarousel-wrapper">
@@ -56,11 +61,17 @@
 							$set_id = $qr_sets->get('ca_sets.set_id');
 							if(!isset($set_media[$set_id])) { continue; }
 							$item = array_shift($set_media[$set_id]);
-							print "<li><div class='memberTile'>";
-				
-							print "<div class='memberImageCrop'>".caNavLink($this->request, $item['representation_tag'], '', '', 'Transcribe', "Collection/{$set_id}")."</div>";
-							print "<p>".caNavLink($this->request, $qr_sets->get('ca_sets.preferred_labels.name'), '', '', 'Transcribe', "Collection/{$set_id}")."</p>";
-							print "</div></li>";
+?>
+								<li>
+									<div class='collectionTile'>
+										<div class='collectionImageCrop hovereffect'>
+											<?php print caNavLink($this->request, $item['representation_tag'], '', '', 'Transcribe', "Collection/{$set_id}"); ?>
+											<div class='overlay'>
+												<h2><?php print caNavLink($this->request, $qr_sets->get('ca_sets.preferred_labels.name'), '', '', 'Transcribe', "Collection/{$set_id}"); ?></h2>
+											</div>
+									</div>
+								</li>
+<?php
 						}
 ?>	
 							</ul>
@@ -70,17 +81,10 @@
 						<a href="#" class="jcarousel-control-next"><i class="fa fa-angle-right"></i></a>
 		
 						<!-- Pagination -->
-						<p class="jcarousel-pagination">
+						<p class="transcription jcarousel-pagination">
 							<!-- Pagination items will be generated in here -->
 						</p>			
 					</div>	<!-- end jc wrapper -->
-		
-		
-				<p>
-					<?php print caNavLink($this->request, 'View all collections', 'btn btn-danger btn-lg', '*', 'Transcribe', 'Collections'); ?>
-					<?php print caNavLink($this->request, 'Browse items for transcription', 'btn btn-danger btn-lg', '*', 'Transcribe', 'Browse'); ?>
-				</p>
-		
 				</div>
 			</div>
 		</div>	

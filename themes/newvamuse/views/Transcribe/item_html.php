@@ -32,6 +32,8 @@
  
 	$t_item = $this->getVar('item');
 	$t_rep = $this->getVar('representation');
+	$representation_id = $t_rep->getPrimaryKey();
+	
 	$t_transcription = $this->getVar('transcription'); //new ca_representation_transcriptions(); //::find(['representation_id' => $rep_id]);;
 	
 	$previous_id = $this->getVar('previousID');
@@ -45,7 +47,7 @@
 	
 	$va_access_values = caGetUserAccessValues($this->request);
 ?>
-<div class="container textContent">
+<div class="transcription container textContent">
 	<div class="row">
 		<div class="col-sm-1">
 			<div class="setsBack">
@@ -66,52 +68,74 @@
 				<div class="row">
 					<div class="col-sm-7">
 						<?php 
-							//print $t_rep->get('ca_object_representations.media.large'); 
-							print array_shift(caRepresentationViewerHTMLBundles($this->request, caMakeSearchResult('ca_object_representations', [$t_rep->getPrimaryKey()]), $t_item, ['display' => 'transcribe']));
+							print array_shift(caRepresentationViewerHTMLBundles($this->request, caMakeSearchResult('ca_object_representations', [$representation_id]), $t_item, ['display' => 'transcribe']));
 						?>
 						
-						<br/>
+						
 <?php
 	if (is_array($reps = $t_item->getRepresentations(['versions' => 'icon'])) && (sizeof($reps) > 1)) {
+?>
+		<div class='otherRepresentations'>
+			<div class="unit">
+				<span class="name">Additional pages:</span>
+				<span class="data">
+					<br/>
+<?php
 		foreach($reps as $rep) {
-			print caNavLink($this->request, $rep['tags']['icon'], '', '*', '*', 'item', ['id' => $t_item->getPrimaryKey(), 'representation_id' => $rep['representation_id']]);
+			if($rep['representation_id'] == $representation_id) {
+				print "<a href='#' class='otherRepresentation selected'>{$rep['tags']['icon']}</a>";
+			} else {
+				print caNavLink($this->request, $rep['tags']['icon'], 'otherRepresentation', '*', '*', 'item', ['id' => $t_item->getPrimaryKey(), 'representation_id' => $rep['representation_id']]);
+			}
 		}
+?>
+				</span>
+			</div>
+		</div>
+<?php
 	}
 ?>
 					</div>
 					<div class="col-sm-5">
 						<?php print caFormTag($this->request, 'SaveTranscription', 'transcript', null, 'post', 'multipart/form-data', '_top', ['disableUnsavedChangesWarning' => true]); ?>
-							<div>
-								Transcription 
-<?php
-	if ($start_date = $t_transcription->get('ca_representation_transcriptions.created_on')) {
-		print " (Started {$start_date})";
-	}
-?>
-							</div>
+							<div class="unit">
+								<span class="name">Transcription: </span>
 
 <?php
 	if($t_transcription->isComplete()) {
 ?>
-	 <?php print $t_transcription->get('transcription'); ?>
+	<div class='completedText'> 
+		<?php print $t_transcription->get('transcription'); ?>
+	</div>
 <?php
 	} else {
 ?>
-							<?php print caHTMLTextInput('transcription', ['value' => $t_transcription->get('transcription')], ['width' => '600px', 'height' => '400px']); ?>
+							<?php print caHTMLTextInput('transcription', ['value' => $t_transcription->get('transcription')], ['width' => '525px', 'height' => '400px']); ?>
 					
 							<?php print caHTMLHiddenInput('id', ['value' => $t_item->getPrimaryKey()]); ?>
-							<?php print caHTMLHiddenInput('representation_id', ['value' => $t_rep->getPrimaryKey()]); ?>
-							
-							<button class='btn btn-lg btn-danger'>Save transcription</button>
-							<?php print caHTMLCheckboxInput('complete', ['value' => 1]); ?> Complete?
+							<?php print caHTMLHiddenInput('representation_id', ['value' => $representation_id]); ?>
+<?php
+	if ($start_date = $t_transcription->get('ca_representation_transcriptions.created_on')) {
+		print "<div class='startTime'>(Started {$start_date})</div>";
+	}
+?>
+							<div class='saveControls'> 
+								<button class='btn btn-lg btn-danger'>Save transcription</button>
+								<?php print caHTMLCheckboxInput('complete', ['value' => 1]); ?> Completed?
+								
+
+							</div>
 <?php
 	}
 ?>
+							</div>
 						</form>
 <?php
 	if($t_transcription->isComplete()) {
 ?>
-		This transcription was completed on <?php print $t_transcription->get('created_on'); ?>
+		<div class='completedMessage'>
+			Transcription was completed on <?php print $t_transcription->get('created_on'); ?>
+		</div>
 <?php
 	} else {
 ?>

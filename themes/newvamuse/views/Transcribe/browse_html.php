@@ -33,8 +33,6 @@
 	
 	$va_access_values 				= caGetUserAccessValues($this->request);
 
-	$va_views						= $this->getVar('views');
-	$vs_current_view				= $this->getVar('view');
 	$va_criteria					= $this->getVar('criteria');
 
 	$vs_current_sort				= $this->getVar('sort');
@@ -42,193 +40,97 @@
 	$vs_sort_dir					= $this->getVar('sortDirection');
 	if(!$vs_sort_control_type) { $vs_sort_control_type = "dropdown"; }
 
-	$va_lightboxDisplayName 		= caGetLightboxDisplayName();
-	$vs_lightbox_displayname 		= $va_lightboxDisplayName["singular"];
-	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	$vs_browse_key 					= $this->getVar('key');
-	$vn_hits_per_block 	            = (int)$this->getVar('hits_per_block');	// number of hits to display per block
+	$hits_per_block 	            = (int)$this->getVar('hits_per_block');	// number of hits to display per block
 	$vn_start		 	            = (int)$this->getVar('start');			// offset to seek to before outputting results
 	$vb_ajax			            = (bool)$this->request->isAjax();
 
 	$t_object 						= new ca_objects();		// ca_objects instance we need to pull representations
 
-	$qr_comments 					= $this->getVar("comments");
-	$vn_num_comments 				= $qr_comments ? $qr_comments->numHits() : 0;
-	$vs_description_attribute 		= $this->getVar("description_attribute");
+	$transcription_status = $this->getVar('transcriptionStatus');
 
-if (!$vb_ajax) {	// !ajax
+	if (!$vb_ajax) {
 ?>
+
+<div class="transcription container textContent">
 	<div class="row">
-		<div class="col-sm-9 col-md-9 col-lg-8">
+		<div class="col-sm-10 col-sm-offset-1">
+			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; Browse</H1>
+			<p>
+				Transcribe gives you the opportunity to make our collections more accessible. The transcriptions you create will become 
+				searchable data, facilitating learning and research around the world. Whether you choose to transcribe one page, 
+				one hundred pages, or just browse our collections, you’re helping us share the stories that matter. 
+			</p>
+			<p>
+				Please read our <a href="/TranscriptionTips/Index">transcription tips</a> page for suggestions on how to get started.
+			</p>
+			
+			<?php print "<div class='unit'><span class='name'>".$qr_result->numHits()."</span> transcribable items</div>"; ?>
 <?php
-			if($vs_sort_control_type == 'list'){
-				if(is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
-					print "<div id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
-					$i = 0;
-					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
-						$i++;
-						if ($vs_current_sort === $vs_sort) {
-							print "<li class='selectedSort'>{$vs_sort}</li>\n";
-						} else {
-							print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort))."</li>\n";
-						}
-						if($i < sizeof($va_sorts)){
-							print "<li class='divide'>&nbsp;</li>";
-						}
-					}
-					print "<li>".caNavLink($this->request, '<span class="glyphicon glyphicon-sort-by-attributes'.(($vs_sort_dir == 'asc') ? '' : '-alt').'" aria-label="direction"></span>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => (($vs_sort_dir == 'asc') ? _t("desc") : _t("asc"))))."</li>";
-					print "</ul></div>\n";
-				}
-			}
-?>
-			<div class="setsBack"><?php print caNavLink($this->request, "<i class='fa fa-angle-double-left' aria-label='back'></i><div class='small'>Back</div>", "", "", "Transcribe", "Collections"); ?></div><!-- end setsBack -->
-			<H1>
-				<?php 
-					//print "<span id='lbSetName".$t_set->get("set_id")."'>".$t_set->getLabelForDisplay()."</span>"; 
-				?>
-				<?php print "<span class='lbSetCount'>(<span class='lbSetCountInt'>".$qr_result->numHits()."</span> items)</span>"; ?>
-<?php
-    //
-    // Gear menu
-    //
-?>
-				<div class="btn-group">
-					<span class="glyphicon glyphicon-cog bGear" data-toggle="dropdown"></span>
-					<ul class="dropdown-menu" role="menu">
-<?php
-						if(($vs_sort_control_type == "dropdown") && is_array($va_sorts = $this->getVar('sortBy')) && (sizeof($va_sorts) > 1)) {
-							print "<li class='dropdown-header'>"._t("Sort by:")."</li>\n";
-							foreach($va_sorts as $vs_sort => $vs_sort_flds) {
-								if ($vs_current_sort === $vs_sort) {
-									print "<li><a href='#'><strong><em>{$vs_sort}</em></strong></a></li>\n";
-								} else {
-									print "<li>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort))."</li>\n";
-								}
-							}
-							print "<li class='divider'></li>\n";
-							if(is_array($va_secondary_sorts = $this->getVar('secondarySortBy')) && sizeof($va_secondary_sorts)){
-								print "<li class='dropdown-header'>"._t("Refine sort by:")."</li>\n";
-								foreach($va_secondary_sorts as $vs_secondary_sort => $vs_secondary_sort_flds) {
-									if($vs_secondary_sort != $vs_current_sort){
-										if ($vs_current_secondary_sort === $vs_secondary_sort) {
-											print "<li><a href='#'><strong><em>{$vs_secondary_sort}</em></strong></a></li>\n";
-										} else {
-											print "<li>".caNavLink($this->request, $vs_secondary_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'secondary_sort' => $vs_secondary_sort))."</li>\n";
-										}
-									}
-								}
-								print "<li class='divider'></li>\n";
-							}
-							print "<li class='dropdown-header'>"._t("Sort order:")."</li>\n";
-							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<strong><em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em></strong>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc'))."</li>";
-							print "<li>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<strong><em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em></strong>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc'))."</li>";
-							print "<li class='divider'></li>";
-						}
-?>
-						<li><?php print caNavLink($this->request, _t("All %1", $vs_lightbox_displayname_plural), "", "", "Lightbox", "Index"); ?></li>
-
-					</ul>
-				</div><!-- end btn-group -->
-			</H1>
-<?php
-				if (sizeof($va_criteria) > 1) {
+				if (sizeof($va_criteria) > 0) {
 					print "<div class='bCriteria'>";
 					foreach($va_criteria as $va_criterion) {
-						if ($va_criterion['facet_name'] != '_search') {
-							print "<strong>".$va_criterion['facet'].':</strong> ';
-							print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
-							print " ";
-						}
+						print "<strong>".$va_criterion['facet'].':</strong> ';
+						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'key' => $vs_browse_key));
+						print " ";
 					}
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'._t("Start Over").'</span></button>', '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1));
+					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'._t("Start Over").'</span></button>', '', '*', '*', '*', array('key' => $vs_browse_key, 'clear' => 1));
 					print "</div>";
 				}
 ?>
-		</div><!-- end col -->
-		<div class="col-sm-3 col-md-3 col-lg-3 col-lg-offset-1">
-			<div id="lbViewButtons">
-<?php
-			if(is_array($va_views) && (sizeof($va_views) > 1)){
-				foreach($va_views as $vs_view => $va_view_info) {
-					if(isset($va_view_info['data'])) {
-						if (!$qr_result->hasData($va_view_info['data'])) { continue; }	// don't show view options for which there is no data (eg. map requires mappable data)
-					}
-					if ($vs_current_view === $vs_view) {
-						//print '<a href="#" class="active"><span class="glyphicon '.$va_view_info['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
-					} else {
-						//print caNavLink($this->request, '<span class="glyphicon '.$va_view_info['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'set_id' => $t_set->get("set_id"), 'key' => $vs_browse_key)).' ';
-					}
-				}
-			}
-?>
-			</div>
-		</div><!-- end col -->
-	</div><!-- end row -->
+		</div>
+	</div>
 	<div class="row">
-		<div class="col-sm-9 col-md-9 col-lg-8">
-			<div id="lbSetResultLoadContainer">
+		<div class="col-sm-7 col-sm-offset-1">
+			<div class="row" id="lbSetResultLoadContainer">
 <?php
-} // !ajax
-
-		$va_view_info = $va_views[$vs_current_view];
-		switch($vs_current_view) {
-			default:
-				// First load is rendered in-template; subsequent loads are via Ajax/continuous scroll
-				$t =new Timer();
-				if($vn_num_hits = $qr_result->numHits()){
+	}
+				if($num_hits = $qr_result->numHits()){
 					if ($vn_start < $qr_result->numHits()) {
 						$qr_result->seek($vn_start);
 
 						if($qr_result->numHits()){
 							$vn_c = 0;
 
-							$va_object_ids = [];
-							while($qr_result->nextHit() && ($vn_c < $vn_hits_per_block)) {
-								$vn_object_id = $qr_result->get('ca_objects.object_id');
-								switch($vs_current_view) {
-									case 'list':
-										print "<div class='col-xs-12 col-sm-4 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
-										break;
-									default:
-										print "<div class='col-xs-6 col-sm-4 col-md-3 col-lg-3 lbItem{$vn_item_id}' id='row-{$vn_object_id}'><div class='lbItemContainer'>";
-										break;
-								}
+
+							while($qr_result->nextHit() && ($vn_c < $hits_per_block)) {
+								$object_id = $qr_result->get('ca_objects.object_id');
 								
-								$this->setVar('representation', $qr_result->get('ca_object_representations.media.small'));
-								$this->setVar('caption', $qr_result->get('ca_objects.preferred_labels.name'));
-								$this->setVar('object_id', $qr_result->get('ca_objects.object_id'));
-								print $this->render("Transcribe/browse_item_html.php");
-								print "</div></div><!-- end col 3 -->";
+								$status_info = caGetTranscriptionStatusInfo($transcription_status, 'items', $object_id);
+?>
+			<div class="col-sm-3 collectionTile">
+				<div class="collectionImageCrop hovereffect">
+					<?php print caNavLink($this->request, $qr_result->get('ca_object_representations.media.small'), '', '', 'Transcribe', "Item", ['id' => $object_id]); ?>
+					<div class="overlay"><h2><?php print caNavLink($this->request, $qr_result->get('ca_objects.preferred_labels.name'), '', '', 'Transcribe', "Item", ['id' => $object_id]); ?></h2></div>
+				</div>
+				<?php print caNavLink($this->request, $status_info['status'], "btn btn-sm btn-{$status_info['color']}", '*', 'Transcribe', 'Item', ['id' => $item['object_id']]); ?>
+			</div>
+<?php
 								$vn_c++;
 							}
 						}
 
-						if ($vn_num_hits > $vn_start + $vn_hits_per_block) {
-							print caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_hits_per_block, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+						if ($num_hits > $vn_start + $hits_per_block) {
+							print caNavLink($this->request, _t('Next %1', $hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $hits_per_block, 'key' => $vs_browse_key));
 						}
 					}
-				}else{
+				} else{
 					print "<div class='row'><div class='col-sm-12'>"._t("There are no items available for transcription")."</div></div>";
 				}
-				break;
-			}
-if (!$vb_ajax) {    // !ajax
+	
+	if (!$vb_ajax) {
 ?>
-            </div>
-            <!-- end lbSetResultLoadContainer -->
-        </div>
-        <!-- end col -->
-        <div
-            class="col-sm-3 col-md-3 col-lg-3 col-lg-offset-1">
+			</div>
+		</div>
+		<div class="col-sm-3">
 <?php
-			print $this->render("Browse/browse_refine_subview_html.php");
+			print $this->render("Transcribe/browse_refine_subview_html.php");
 ?>
-		</div><!-- end col -->
-	</div><!-- end row -->
+		</div>
+	</div>
+</div>
+
 <script type="text/javascript">
-<?php
-	if (in_array($vs_current_view, array('list', 'thumbnail'))) {
-?>
     var pageLoadList = [];
     var dataLoading = false;
     jQuery(window).on("scroll", function(e) {
@@ -266,9 +168,6 @@ if (!$vb_ajax) {    // !ajax
             }
         }
     });
-<?php
-	}
-?>
 </script>
 <?php
-} //!ajax
+	}

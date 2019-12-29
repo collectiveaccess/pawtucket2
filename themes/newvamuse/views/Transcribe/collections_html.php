@@ -33,28 +33,38 @@
  	$qr_sets = $this->getVar('sets');
  	$set_media = $this->getVar('set_media');
 ?>
-<div class="container textContent">
+<div class="transcription container textContent">
 	<div class="row">
 		<div class="col-sm-10 col-sm-offset-1">
-			<h1>All Collections</H1>
-			<p style='padding-bottom:15px;'>
-				
+			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; All Collections</H1>
+			<p>
+				Transcribe gives you the opportunity to make our collections more accessible. The transcriptions you create will become 
+				searchable data, facilitating learning and research around the world. Whether you choose to transcribe one page, 
+				one hundred pages, or just browse our collections, you’re helping us share the stories that matter. 
 			</p>
-			<div style="clear:both; margin-top:10px;">
+			<p>
+				Please read our <a href="/TranscriptionTips/Index">transcription tips</a> page for suggestions on how to get started.
+			</p>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-10 col-sm-offset-1">
+			<div class="row">
 <?php
 						while($qr_sets->nextHit()) {
 							$set_id = $qr_sets->get('ca_sets.set_id');
 							if(!isset($set_media[$set_id])) { continue; }
 							$item = array_shift($set_media[$set_id]);
-							print "<li><div class='memberTile'>";
-				
-							print "<div class='memberImageCrop'>".caNavLink($this->request, $item['representation_tag'], '', '', 'Transcribe', "Collection/{$set_id}")."</div>";
-							print "<p>".caNavLink($this->request, $qr_sets->get('ca_sets.preferred_labels.name'), '', '', 'Transcribe', "Collection/{$set_id}")."</p>";
-							print "</div></li>";
+?>
+			<div class="col-sm-3 collectionTile">
+				<div class="collectionImageCrop hovereffect"><?php print caNavLink($this->request, $item['representation_tag'], '', '', 'Transcribe', "Collection/{$set_id}"); ?>
+				<div class="overlay"><h2><?php print caNavLink($this->request, $qr_sets->get('ca_sets.preferred_labels.name'), '', '', 'Transcribe', "Collection/{$set_id}"); ?></h2></div>
+				</div>
+			</div>
+<?php
 						}
 ?>
-
 			</div>
-		</div>	
+		</div>
 	</div>
 </div>

@@ -79,7 +79,7 @@
  			$this->opa_user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->getUserID());
  			$this->view->setVar("user_groups", $this->opa_user_groups);
 
- 			$this->opo_config = caGetLightboxConfig();
+ 			$this->opo_config = Configuration::load("transcription.conf");
  			caSetPageCSSClasses(array("sets", "transcribe"));
  			
 			$this->purifier = new HTMLPurifier();
@@ -96,10 +96,10 @@
  			$o_context = new ResultContext($this->request, 'ca_objects', 'transcribe', 'collections');	// collections context - next/prev here through collections
  			$o_context->setAsLastFind();
  			
- 			
  			$qr_sets = ca_sets::find(["type_id" => "transcription_collection", "featured" => "yes"], ['returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values]);
 			$set_media = ca_sets::getFirstItemsFromSets($set_ids = $qr_sets->getAllFieldValues('ca_sets.set_id'), ['version' => 'medium', 'checkAccess' => $this->opa_access_values]);
 			$qr_sets->seek(0);
+			
 			$this->view->setVar('sets', $qr_sets);
 			$this->view->setVar('set_media', $set_media);
 			
@@ -139,6 +139,8 @@
  			$this->view->setVar('items', $items = caExtractValuesByUserLocale($set->getItems(['thumbnailVersions' => ['medium', 'small']])));
  			
  			$object_ids = array_values(array_map(function($v) { return $v['object_id']; }, $items));
+ 			$this->view->setVar('transcriptionStatus', $transcription_status = ca_objects::getTranscriptionStatusForIDs($object_ids, $items));
+ 			
  			$o_context->setResultList($object_ids);
 			$o_context->saveContext();
 			
@@ -166,13 +168,9 @@
  			$o_context->setAsLastFind();
 
             $this->view->setVar('browse', $o_browse = caGetBrowseInstance("ca_objects"));
-			$this->view->setVar("browse_type", "caLightbox");	// this is only used when loading hierarchy facets and is a way to get around needing a browse type to pull the table in FindController		
+			$this->view->setVar("browse_type", "caTranscribe");	// this is only used when loading hierarchy facets and is a way to get around needing a browse type to pull the table in FindController		
 
- 			$this->view->setVar('view', $ps_view = caCheckLightboxView(array('request' => $this->request)));
-			$this->view->setVar('views', $va_views = $this->opo_config->getAssoc("views"));
-			$va_view_info = $va_views[$ps_view];
-
-           
+ 			
  			
 			//
 			// Load existing browse if key is specified
@@ -226,7 +224,10 @@
 			// Add criteria and execute
 			//
 			$vs_search_expression = "ca_object_representations.is_transcribable:1";
-			if (($o_browse->numCriteria() == 0) && $vs_search_expression) {
+			if ($vs_search_refine = $this->request->getParameter('search_refine', pString)) {
+				$o_browse->removeAllCriteria();
+				$o_browse->addCriteria("_search", array("{$vs_search_expression} AND {$vs_search_refine}"));
+			} elseif (($o_browse->numCriteria() == 0) && $vs_search_expression) {
 				$o_browse->addCriteria("_search", array($vs_search_expression));
 			}
 			if ($vs_facet = $this->request->getParameter('facet', pString)) {
@@ -316,13 +317,15 @@
 			// Current criteria
 			//
 			$va_criteria = $o_browse->getCriteriaWithLabels();
-			if (isset($va_criteria['_search']) && (isset($va_criteria['_search']['*']))) {
-				unset($va_criteria['_search']);
-			}
-			$va_criteria_for_display = array();
+			
+			$va_criteria_for_display = [];
 			foreach($va_criteria as $vs_facet_name => $va_criterion) {
 				$va_facet_info = $o_browse->getInfoForFacet($vs_facet_name);
 				foreach($va_criterion as $vn_criterion_id => $vs_criterion) {
+					if ($vs_facet_name == '_search') {
+						$vs_criterion = trim(preg_replace("!ca_object_representations.is_transcribable:1[ ]*(AND)*!", "", $vs_criterion));
+					}
+					if (!$vs_criterion) { continue; }
 					$va_criteria_for_display[] = array('facet' => $va_facet_info['label_singular'], 'facet_name' => $vs_facet_name, 'value' => $vs_criterion, 'id' => $vn_criterion_id);
 				}
 			}
@@ -341,6 +344,12 @@
 			$qr_res = $o_browse->getResults(array('sort' => $vs_combined_sort, 'sort_direction' => $ps_sort_direction));
 			$this->view->setVar('result', $qr_res);
 			
+			$object_ids = $qr_res->getAllFieldValues('ca_objects.object_id');
+			$qr_res->seek(0);
+			
+			$this->view->setVar('transcriptionStatus', $transcription_status = ca_objects::getTranscriptionStatusForIDs($object_ids));
+ 			
+			
 			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {
  				if (!($pn_hits_per_block = $o_context->getItemsPerPage())) {
  					$pn_hits_per_block = ($this->opo_config->get("defaultHitsPerBlock")) ? $this->opo_config->get("defaultHitsPerBlock") : 36;
@@ -355,13 +364,10 @@
 			if (($vn_key_start = (int)$vn_start - 1000) < 0) { $vn_key_start = 0; }
 			$qr_res->seek($vn_key_start);
 			$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
-			//if ($o_block_result_context) { $o_block_result_context->setResultList($qr_res->getPrimaryKeyValues(1000)); $o_block_result_context->saveContext();}
 			$qr_res->seek($vn_start);
 			
 			$o_context->saveContext();
 			
- 			
-           // MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name).$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
  			
  			$this->render(caGetOption("view", $options, "Transcribe/browse_html.php"));	
  		}
@@ -466,3 +472,28 @@
  		}
  		# -------------------------------------------------------
  	}
+
+	/** 
+	 *
+	 */
+	function caGetTranscriptionStatusInfo($transcription_status, $key, $id) {
+		if (isset($transcription_status[$key][$id]['status'])) {
+			switch($transcription_status[$key][$id]['status']) {
+				case __CA_TRANSCRIPTION_STATUS_NOT_STARTED__:
+				default:
+					$status =  "Not started";
+					$status_color = 'success';
+					break;
+				case __CA_TRANSCRIPTION_STATUS_IN_PROGRESS__:
+					$status = "In progress";
+					$status_color = 'warning';
+					break;
+				case __CA_TRANSCRIPTION_STATUS_COMPLETED__:
+					$status = "Completed";
+					$status_color = 'danger';
+					break;
+			}
+		}
+		
+		return ['status' => $status, 'color' => $status_color];
+	}

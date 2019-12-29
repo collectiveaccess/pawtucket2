@@ -35,8 +35,10 @@
  	
 	$previous_id = $this->getVar('previousID');
 	$next_id = $this->getVar('nextID');
+	
+	$transcription_status = $this->getVar('transcriptionStatus');
 ?>
-<div class="container textContent">
+<div class="transcription container textContent">
 	<div class="row">
 		<div class="col-sm-1">
 			<div class="setsBack">
@@ -46,34 +48,24 @@
 		</div>
 		<div class="col-sm-10">
 			
-			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; <?php print $t_set->get('ca_sets.preferred_labels.name'); ?></H1>
+			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; Collection: <?php print $t_set->get('ca_sets.preferred_labels.name'); ?></H1>
 			<p style='padding-bottom:15px;'>
 				<?php print $t_set->get('ca_sets.set_description'); ?>
 			</p>
-			<div style="clear:both; margin-top:10px;">
-
-			</div>
 			<div class="row">
 <?php
-	$transcription_status = ca_objects::getTranscriptionStatusForIDs(array_map(function($v) { return $v['row_id']; }, $items));
-	foreach($items as $item) {
-		print "<div class='col-xs-6 col-sm-4 col-md-3 col-lg-3 lbItem{$item['object_id']}'><div class='lbItemContainer'>";
-		print caNavLink($this->request, $item['representation_tag_small']."<br/>".$item['name'], '', '*', 'Transcribe', 'Item', ['id' => $item['object_id']]);
-		if (isset($transcription_status['items'][$item['object_id']]['status'])) {
-			switch($transcription_status['items'][$item['object_id']]['status']) {
-				case __CA_TRANSCRIPTION_STATUS_NOT_STARTED__:
-				default:
-					print "Not started";
-					break;
-				case __CA_TRANSCRIPTION_STATUS_IN_PROGRESS__:
-					print "In progress";
-					break;
-				case __CA_TRANSCRIPTION_STATUS_COMPLETED__:
-					print "Completed";
-					break;
-			}
-		}
-		print "</div></div>\n";
+	
+			foreach($items as $item) {
+				$status_info = caGetTranscriptionStatusInfo($transcription_status, 'items', $item['object_id']);
+?>
+				<div class='col-sm-3 collectionTile'>
+					<div class='collectionImageCrop hovereffect'>
+						<?php print caNavLink($this->request, $item['representation_tag_medium']."<div class='overlay'><h2>{$item['name']}</h2></div>", '', '*', 'Transcribe', 'Item', ['id' => $item['object_id']]); ?>
+					</div>
+					
+					<?php print caNavLink($this->request, $status_info['status'], "btn btn-sm btn-{$status_info['color']}", '*', 'Transcribe', 'Item', ['id' => $item['object_id']]); ?>
+				</div>
+<?php
 	}
 ?>
 			</div>
