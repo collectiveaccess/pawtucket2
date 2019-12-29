@@ -34,25 +34,21 @@
 	$t_rep = $this->getVar('representation');
 	$representation_id = $t_rep->getPrimaryKey();
 	
-	$t_transcription = $this->getVar('transcription'); //new ca_representation_transcriptions(); //::find(['representation_id' => $rep_id]);;
+	$transcription = $this->getVar('transcription'); 
 	
 	$previous_id = $this->getVar('previousID');
 	$next_id = $this->getVar('nextID');
 	
-	// TODO: move to controller
-	$t_set = new ca_sets();
-	$sets = $t_set->getSetsForItem($t_item->tableName(), $t_item->getPrimaryKey(), ['restrictToTypes' => 'transcription_collection']);
-	$set_id = is_array($sets) ? array_shift(array_keys($sets)) : null;
-	$set = is_array($sets) ? array_shift(caExtractValuesByUserLocale($sets)) : '';
+	$access_values = caGetUserAccessValues($this->request);
 	
-	$va_access_values = caGetUserAccessValues($this->request);
+	$set = $this->getVar('set');
 ?>
 <div class="transcription container textContent">
 	<div class="row">
 		<div class="col-sm-1">
 			<div class="setsBack">
 				<?php print $previous_id ? caNavLink($this->request, '<i class="fa fa-angle-left" aria-label="back"></i><div class="small">Previous</div>', '', '*', 'Transcribe', 'Item', ['id' => $previous_id]) : ''; ?>
-				<?php print $set_id ? caNavLink($this->request, '<i class="fa fa-angle-double-left" aria-label="back"></i><div class="small">Back</div>', '', '*', 'Transcribe', 'Collection/'.$set_id) : ''; ?>
+				<?php print $set['set_id'] ? caNavLink($this->request, '<i class="fa fa-angle-double-left" aria-label="back"></i><div class="small">Back</div>', '', '*', 'Transcribe', 'Collection/'.$set['set_id']) : ''; ?>
 			</div>
 		</div>
 		<div class="col-sm-10">
@@ -60,7 +56,7 @@
 			<p >
 				
 				<h4><?php print caDetailLink($this->request, $t_item->get('ca_objects.preferred_labels.name')." (".$t_item->get('ca_objects.idno').")", '' ,$t_item->tableName(), $t_item->getPrimaryKey()); ?></h4>
-				<h6><?php print $t_item->get("ca_entities", array("restrictToRelationshipTypes" => array("repository"), "returnAsLink" => true, "checkAccess" => $va_access_values));?></h6>
+				<h6><?php print $t_item->get("ca_entities", array("restrictToRelationshipTypes" => array("repository"), "returnAsLink" => true, "checkAccess" => $access_values));?></h6>
 				<?php print $t_item->get('ca_objects.description'); ?>
 			</p>
 			<div style="clear:both; margin-top:10px;">
@@ -102,28 +98,26 @@
 								<span class="name">Transcription: </span>
 
 <?php
-	if($t_transcription->isComplete()) {
+	if($transcription->isComplete()) {
 ?>
 	<div class='completedText'> 
-		<?php print $t_transcription->get('transcription'); ?>
+		<?php print $transcription->get('transcription'); ?>
 	</div>
 <?php
 	} else {
 ?>
-							<?php print caHTMLTextInput('transcription', ['value' => $t_transcription->get('transcription')], ['width' => '525px', 'height' => '400px']); ?>
+							<?php print caHTMLTextInput('transcription', ['value' => $transcription->get('transcription')], ['width' => '525px', 'height' => '400px']); ?>
 					
 							<?php print caHTMLHiddenInput('id', ['value' => $t_item->getPrimaryKey()]); ?>
 							<?php print caHTMLHiddenInput('representation_id', ['value' => $representation_id]); ?>
 <?php
-	if ($start_date = $t_transcription->get('ca_representation_transcriptions.created_on')) {
+	if ($start_date = $transcription->get('ca_representation_transcriptions.created_on')) {
 		print "<div class='startTime'>(Started {$start_date})</div>";
 	}
 ?>
 							<div class='saveControls'> 
 								<button class='btn btn-lg btn-danger'>Save transcription</button>
 								<?php print caHTMLCheckboxInput('complete', ['value' => 1]); ?> Completed?
-								
-
 							</div>
 <?php
 	}
@@ -131,10 +125,10 @@
 							</div>
 						</form>
 <?php
-	if($t_transcription->isComplete()) {
+	if($transcription->isComplete()) {
 ?>
 		<div class='completedMessage'>
-			Transcription was completed on <?php print $t_transcription->get('created_on'); ?>
+			Transcription was completed on <?php print $transcription->get('created_on'); ?>
 		</div>
 <?php
 	} else {

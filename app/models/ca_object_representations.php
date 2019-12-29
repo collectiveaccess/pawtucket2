@@ -2022,23 +2022,42 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	}
 	# -------------------------------------------------------
 	/**
+	 * Set transcription on currently loaded representation. If an existing transcription
+	 * record (ca_representation_transcriptions) exists for the representation by the current
+	 * user (as identified by the user_id option) or client IP address it will be updated,
+	 * otherwise a new transcription record will be created.
 	 *
+	 * @param string $transcription
+	 * @param bool $complete Indicates the transcription should be marked as complete. Once marked, it can only be unmarked by setting the uncomplete option. 
+	 * @param array $options Options include:
+	 *		user_id = Marks transcription with specified user_id. The user_id will also be used to determine if a transcription for the current user already exists. If null, only client IP address will be used to find existing transcriptions. [Default is null]
+	 *		uncomplete = Force the completed on flag for the transcription to be unset. [Default is false]
+	 *
+	 * @return ca_representation_transcriptions instance of transcript, null if no representation is loaded or false if there was an error.
 	 */
 	public function setTranscription($transcription, $complete=false, $options=null) {
 		if (!($rep_id = $this->getPrimaryKey())) { return null; }
 		
-		$force_new = caGetOption('forceNew', $options, false);
-		
 		// Try to find transcript by IP address
 		$ip = RequestHTTP::ip();
 		
-		if (!($transcript = ca_representation_transcriptions::find(['representation_id' => $rep_id, 'ip_addr' => $ip], ['returnAs' => 'firstModelInstance']))) {
+		// Try to find transcript by user
+		$user_id = caGetOption('user_id', $options, null);
+		
+		if (!($transcript = $this->getTranscription($options))) {
 			$transcript = new ca_representation_transcriptions();
-		} 
+		}
+		
 		$transcript->set('representation_id', $rep_id);
 		$transcript->set('transcription', $transcription);
-		if ($complete) {
+		
+		if (caGetOption('uncomplete', $options, false)) {
+			$transcript->set('completed_on', null);
+		} elseif ($complete) {
 			$transcript->set('completed_on', _t('now'));	
+		}
+		if ($user_id) {
+			$transcript->set('user_id', $user_id);
 		}
 		$transcript->set('ip_addr', $ip);
 		$transcript->isLoaded() ? $transcript->update() : $transcript->insert();
@@ -2051,7 +2070,13 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 	}
 	# -------------------------------------------------------
 	/**
+	 * Return transcript for current user. Existing transcriptions for the representation are
+	 * located by user_id (if provided) or IP address (if no user_id match is available)
 	 *
+	 * @param array $options Options include:
+	 *		user_id = Finds transcription with specified user_id. The user_id will also be used to determine if a transcription for the current user already exists. If null, only client IP address will be used to find existing transcriptions. [Default is null]
+	 *
+	 * @return ca_representation_transcriptions instance of transcript, null if no representation is loaded or a transcript could not be located.
 	 */
 	public function getTranscription($options=null) {
 		if (!($rep_id = $this->getPrimaryKey())) { return null; }
@@ -2059,20 +2084,43 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		// Try to find transcript by IP address
 		$ip = RequestHTTP::ip();
 		
-		return ca_representation_transcriptions::find(['representation_id' => $rep_id, 'ip_addr' => $ip], ['returnAs' => 'firstModelInstance']);
+		// Try to find transcript by user
+		$user_id = caGetOption('user_id', $options, null);
+		
+		if (
+			!($user_id && ($transcript = ca_representation_transcriptions::find(['representation_id' => $rep_id, 'user_id' => $user_id], ['returnAs' => 'firstModelInstance'])))
+			&&
+			!($transcript = ca_representation_transcriptions::find(['representation_id' => $rep_id, 'ip_addr' => $ip], ['returnAs' => 'firstModelInstance']))
+		) {
+			$transcript = null;
+		}
+		return $transcript;
 	}
 	# -------------------------------------------------------
 	/**
+	 * Check if the currently loaded representation has a completed transcription by any user.
+	 * If the currentUser option is set then only transcriptions by the current user (as specified by the 
+	 * user_id option and/or the client IP address) are considered.
 	 *
+	 * @param array $options Options include:
+	 *		currentUser = Only consider transcriptions by the current user by user_id (if specified) and/or client IP address. [Default is false]
+	 *		user_id = Finds transcription with specified user_id. The user_id will also be used to determine if a transcription for the current user already exists. If null, only client IP address will be used to find existing transcriptions. [Default is null]
+	 * 
+	 * @return bool
 	 */
-	public function transcriptionIsComplete() {
+	public function transcriptionIsComplete(array $options=null) {
 		if (!($rep_id = $this->getPrimaryKey())) { return null; }
+		$current_user_only = caGetOption('currentUser', $options, false);
 		
-		$ip = RequestHTTP::ip();
-		if (($t_transcription = ca_representation_transcriptions::find(['representation_id' => $rep_id, 'ip_addr' => $ip, 'completed_on' => ['>', 0]], ['returnAs' => 'firstModelInstance']))) {
-			return $t_transcription;
+		if($current_user_only) {
+			if ($transcript = $this->getTranscription($options)) {
+				return $transcript->isCompleted();
+			}
+		} else {
+			$ip = RequestHTTP::ip();
+			return ca_representation_transcriptions::find(['representation_id' => $rep_id, 'completed_on' => ['>', 0]], ['returnAs' => 'firstModelInstance']) ? true : false;
 		}
-		return ca_representation_transcriptions::find(['representation_id' => $rep_id, 'completed_on' => ['>', 0]], ['returnAs' => 'firstModelInstance']);
+		return false;
 	}
 	# ------------------------------------------------------
 }

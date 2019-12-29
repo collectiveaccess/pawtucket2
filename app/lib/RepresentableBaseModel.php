@@ -1361,7 +1361,17 @@
 		}	
 		# ------------------------------------------------------
 		/**
+		 * Returns the current transcription status for representable items with the specified ids.
+		 * An array is returned with status information for each id. Keys are ids. Values are arrays with the
+		 * following keys:
+		 *		status = One of the following constants: __CA_TRANSCRIPTION_STATUS_NOT_STARTED__, __CA_TRANSCRIPTION_STATUS_IN_PROGRESS__, __CA_TRANSCRIPTION_STATUS_COMPLETED__
+		 *		has_transcription = True if at least one transcription exists
+		 *		is_completed = Set to the Unix timestamp of the data/time of completion, or null if not complete
+		 * 
+		 * @param array $ids
+		 * @param array $options No options are currently supported.
 		 *
+		 * @return array
 		 */
 		public static function getTranscriptionStatusForIDs(array $ids, array $options=null) {
 			$db = new Db();
@@ -1385,7 +1395,13 @@
 			
 			$reps = $items = [];
 			while($qr->nextRow()) {
-				$reps[$rep_id = $qr->get('representation_id')] = [
+				$rep_id = $qr->get('representation_id');
+				
+				if(isset($reps[$rep_id]) && ($reps[$rep_id]['status'] == __CA_TRANSCRIPTION_STATUS_COMPLETED__)) {
+					continue;
+				}
+				
+				$reps[$rep_id] = [
 					'has_transcription' => ($qr->get('transcription_id') > 0),
 					'is_completed' => $qr->get('completed_on')
 				];

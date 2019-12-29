@@ -99,12 +99,12 @@ BaseModel::$s_ca_models_definitions['ca_representation_transcriptions'] = array(
 				'BOUNDS_LENGTH' => array(0,39)
 		),
 		'user_id' => array(
-			'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT,
-			'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
-			'IS_NULL' => true, 
-			'DEFAULT' => null,
-			'DONT_ALLOW_IN_UI' => true,
-			'LABEL' => _t('Submitted by user'), 'DESCRIPTION' => _t('User submitting this transcription.')
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT,
+				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => true, 
+				'DEFAULT' => null,
+				'DONT_ALLOW_IN_UI' => true,
+				'LABEL' => _t('Submitted by user'), 'DESCRIPTION' => _t('User submitting this transcription.')
 		),
  	)
 );
@@ -208,11 +208,14 @@ class ca_representation_transcriptions extends BaseModel {
 	}
 	# ------------------------------------------------------
 	/**
+	 * Check if currently loaded transcription is marked as complete
 	 *
+	 * @return int Unix timestamp for date/time completed, null if no transcription is loaded, or false if the transcription is not complete.
 	 */
 	public function isComplete() {
 		if(!$this->isLoaded()) { return null; }
-		return $this->get('completed_on');
+		$completed_on = $this->get('completed_on', ['getDirectDate' => true]);
+		return ($completed_on > 0) ? $completed_on : false;
 	}
 	# ------------------------------------------------------
 }

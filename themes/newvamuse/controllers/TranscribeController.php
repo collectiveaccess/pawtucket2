@@ -69,17 +69,16 @@
             if ($this->request->config->get('allow_transcriptions') && $this->request->config->get('allow_transcriptions')) {
  				throw new ApplicationException('Transcription is not enabled');
  			}
- 			// if (!($this->request->isLoggedIn())) {
-//                 $this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
-//                 $this->opb_is_login_redirect = true;
-//                 return;
-//             }
-//             
- 			$t_user_groups = new ca_user_groups();
- 			$this->opa_user_groups = $t_user_groups->getGroupList("name", "desc", $this->request->getUserID());
- 			$this->view->setVar("user_groups", $this->opa_user_groups);
+ 			
+ 			$this->config = Configuration::load("transcription.conf");
+ 			if ($this->config->get('require_login')) {
+				if (!($this->request->isLoggedIn())) {
+					$this->response->setRedirect(caNavUrl($this->request, "", "LoginReg", "LoginForm"));
+					$this->opb_is_login_redirect = true;
+					return;
+				}
+			}
 
- 			$this->opo_config = Configuration::load("transcription.conf");
  			caSetPageCSSClasses(array("sets", "transcribe"));
  			
 			$this->purifier = new HTMLPurifier();
@@ -134,7 +133,10 @@
          */
  		function Collection($options = null) {
 			$o_context = new ResultContext($this->request, 'ca_objects', 'transcribe', 'collection');	// set collection-level context here for next/prev navigation at item level
- 			$set = $this->_getSet();
+ 			
+ 			if(!($set = $this->_getSet())) {
+ 				throw new ApplicationException(_t('Collection is invalid'));
+ 			}
  			
  			$this->view->setVar('items', $items = caExtractValuesByUserLocale($set->getItems(['thumbnailVersions' => ['medium', 'small']])));
  			
@@ -169,9 +171,7 @@
 
             $this->view->setVar('browse', $o_browse = caGetBrowseInstance("ca_objects"));
 			$this->view->setVar("browse_type", "caTranscribe");	// this is only used when loading hierarchy facets and is a way to get around needing a browse type to pull the table in FindController		
-
- 			
- 			
+		
 			//
 			// Load existing browse if key is specified
 			//
@@ -241,7 +241,7 @@
 			if(!$ps_secondary_sort = $this->request->getParameter("secondary_sort", pString)){
  				$ps_secondary_sort = $o_context->getCurrentSecondarySort();
  			}
- 			$va_config_sort = $this->opo_config->getAssoc("sortBy");
+ 			$va_config_sort = $this->config->getAssoc("sortBy");
 			if(!is_array($va_config_sort)){
 				$va_config_sort = array();
 			}
@@ -258,7 +258,7 @@
  			}
  			if($vb_sort_changed){
 				// set the default sortDirection if available
-				$va_sort_direction = $this->opo_config->getAssoc("sortDirection");
+				$va_sort_direction = $this->config->getAssoc("sortDirection");
 				if($ps_sort_direction = $va_sort_direction[$ps_sort]){
 					$o_context->setCurrentSortDirection($ps_sort_direction);
 				}
@@ -277,7 +277,7 @@
 			$this->view->setVar('sortBy', is_array($va_sort_by) ? $va_sort_by : null);
 			$this->view->setVar('sortBySelect', $vs_sort_by_select = (is_array($va_sort_by) ? caHTMLSelect("sort", $va_sort_by, array('id' => "sort"), array("value" => $ps_sort)) : ''));
 			$this->view->setVar('sort', $ps_sort);
-			$va_secondary_sort_by = $this->opo_config->getAssoc("secondarySortBy");
+			$va_secondary_sort_by = $this->config->getAssoc("secondarySortBy");
 			$this->view->setVar('secondarySortBy', is_array($va_secondary_sort_by) ? $va_secondary_sort_by : null);
 			$this->view->setVar('secondarySortBySelect', $vs_secondary_sort_by_select = (is_array($va_secondary_sort_by) ? caHTMLSelect("secondary_sort", $va_secondary_sort_by, array('id' => "secondary_sort"), array("value" => $ps_secondary_sort)) : ''));
 			$this->view->setVar('secondarySort', $ps_secondary_sort);
@@ -291,10 +291,10 @@
 			//
 			// Facets
 			//
-			if ($vs_facet_group = $this->opo_config->get("setFacetGroup")) {
+			if ($vs_facet_group = $this->config->get("setFacetGroup")) {
 				$o_browse->setFacetGroup($vs_facet_group);
 			}
-			$va_available_facet_list = $this->opo_config->get("availableFacets");
+			$va_available_facet_list = $this->config->get("availableFacets");
 			$va_facets = $o_browse->getInfoForAvailableFacets(['checkAccess' => $this->opa_access_values, 'request' => $this->request,]);
 			if(is_array($va_available_facet_list) && sizeof($va_available_facet_list)) {
 				foreach($va_facets as $vs_facet_name => $va_facet_info) {
@@ -352,7 +352,7 @@
 			
 			if (!($pn_hits_per_block = $this->request->getParameter("n", pString))) {
  				if (!($pn_hits_per_block = $o_context->getItemsPerPage())) {
- 					$pn_hits_per_block = ($this->opo_config->get("defaultHitsPerBlock")) ? $this->opo_config->get("defaultHitsPerBlock") : 36;
+ 					$pn_hits_per_block = ($this->config->get("defaultHitsPerBlock")) ? $this->config->get("defaultHitsPerBlock") : 36;
  				}
  			}
  			$o_context->getItemsPerPage($pn_hits_per_block);
@@ -382,26 +382,40 @@
  			
  			$id = $this->request->getParameter('id', pInteger);
  			$obj = new ca_objects($id);
- 			// TODO: check access
+ 			
+ 			if (!in_array($obj->get('access'), $this->opa_access_values)) {
+ 				throw new ApplicationException(_t('Cannot access item'));
+ 			}
  			
  			if(!($rep_id = $this->request->getParameter('representation_id', pInteger))) {
  				$rep_id = $obj->get('ca_object_representations.representation_id'); // default to primary
  			}
  			$rep = new ca_object_representations($rep_id);
- 			// TODO: check representation access and whether rep is linked to object
+ 			if (!in_array($rep->get('access'), $this->opa_access_values)) {
+ 				throw new ApplicationException(_t('Cannot access representation'));
+ 			}
+ 			// check representation access and whether rep is linked to object
+ 			$rel_ids = $rep->get('ca_objects.object_id', ['returnAsArray' => true]);
+ 			if(!in_array($id, array_map("intval", $rel_ids), true)) { 
+ 				throw new ApplicationException(_t('Invalid representation'));
+ 			}
  			
  			$this->view->setVar('previousID', $previous_id = $o_context->getPreviousID($id));
  			$this->view->setVar('nextID', $next_id = $o_context->getNextID($id));
  			
+ 			
+ 			// Pass current set (aka "collection")
+			$t_set = new ca_sets();
+			$sets = $t_set->getSetsForItem($obj->tableName(), $obj->getPrimaryKey(), ['restrictToTypes' => 'transcription_collection']);
+			$this->view->setVar('set', is_array($sets) ? array_shift(caExtractValuesByUserLocale($sets)) : null);
+ 			
  			$this->view->setVar('item', $obj);
  			$this->view->setVar('representation', $rep);
  			
+ 			$transcription = $rep->getTranscription();
+ 			$this->view->setVar('transcription', $transcription ? $transcription : new ca_representation_transcriptions());
  			
  			
- 			if (!($t_transcription = $rep->transcriptionIsComplete())) {
- 				$t_transcription = $rep->getTranscription();
- 			}
- 			$this->view->setVar('transcription', $t_transcription ? $t_transcription : new ca_representation_transcriptions());
  			$this->render(caGetOption("view", $options, "Transcribe/item_html.php"));
  		}
  		# ------------------------------------------------------
@@ -411,14 +425,24 @@
  		function SaveTranscription($options = null) {
  			$id = $this->request->getParameter('id', pInteger);
  			$obj = new ca_objects($id);
- 			// TODO: check object access
+ 			
+ 			if (!in_array($obj->get('access'), $this->opa_access_values)) {
+ 				throw new ApplicationException(_t('Cannot access item'));
+ 			}
  			
  			$rep_id = $this->request->getParameter('representation_id', pInteger);
  			$rep = new ca_object_representations($rep_id);
- 			// TODO: check representation access and whether rep is linked to object
+ 			if (!in_array($rep->get('access'), $this->opa_access_values)) {
+ 				throw new ApplicationException(_t('Cannot access representation'));
+ 			}
+ 			// Check representation access and whether rep is linked to object
+ 			$rel_ids = $rep->get('ca_objects.object_id', ['returnAsArray' => true]);
+ 			if(!in_array($id, array_map("intval", $rel_ids), true)) { 
+ 				throw new ApplicationException(_t('Invalid representation'));
+ 			}
  			
  			if (($transcription = trim($this->request->getParameter('transcription', pString)))) {
- 				$rep->setTranscription($transcription, $this->request->getParameter('complete', pInteger), []);
+ 				$rep->setTranscription($transcription, $this->request->getParameter('complete', pInteger), ['user_id' => $this->request->getUserID()]);
  			}
  			
  			$this->notification->addNotification(_t("Saved transcription"), __NOTIFICATION_TYPE_INFO__);
