@@ -12,9 +12,9 @@
 		while($qr_collections->nextHit()) {
 			if ( $vn_i == 0) { print "<div class='row'>"; } 
 			print "<div class='col-sm-6'><div class='collectionTile'><div class='title'>".caDetailLink($this->request, $qr_collections->get("ca_collections.preferred_labels"), "", "ca_collections",  $qr_collections->get("ca_collections.collection_id"))."</div>";	
-			#if (($o_collections_config->get("description_template")) && ($vs_scope = $qr_collections->getWithTemplate($o_collections_config->get("description_template")))) {
-			#	print "<div>".$vs_scope."</div>";
-			#}
+			if (($o_collections_config->get("landing_description_template")) && ($vs_desc = $qr_collections->getWithTemplate($o_collections_config->get("landing_description_template")))) {
+				print "<div>".$vs_desc."</div>";
+			}
 			print "</div></div>";
 			$vn_i++;
 			if ($vn_i == 2) {
