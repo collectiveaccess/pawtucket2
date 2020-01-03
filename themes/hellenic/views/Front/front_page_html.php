@@ -119,7 +119,7 @@
 ?>					
 				</div>
 				<div class="col-sm-8">
-					<H1><?php print caNavLink($this->request, "Archives", "", "", "Collections", "Index"));?></H1>
+					<H1><?php print caNavLink($this->request, "Archives", "", "", "Collections", "Index");?></H1>
 					<p>{{{homearchives}}}</p>
 					<div class='homeLink'><?php print caNavLink($this->request, 'See Collection <i class="fa fa-arrow-right"></i>', '', '', 'Collections', 'Index');?></div>
 				</div>
