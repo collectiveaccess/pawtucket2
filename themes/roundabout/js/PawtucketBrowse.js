@@ -67,10 +67,10 @@ class PawtucketBrowseStatistics extends React.Component {
 		return(
 		<div class="row borderBottom">
             <div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
-                <div className="pb-1 d-flex justify-content-center"><h2>{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
-                    "1 Result"
+                <div className="pb-1 d-flex justify-content-center"><h2 className="capitalize">{(this.context.state.resultSize !== null) ? ((this.context.state.resultSize== 1) ?
+                    ("1 " + this.context.state.labelSingular)
                     :
-                    "" + this.context.state.resultSize + " Results") : "Loading..."}</h2></div>
+                    ("" + this.context.state.resultSize + " " + this.context.state.labelPlural)) : "Loading..."}</h2></div>
             </div>
 		</div>
 		);
@@ -104,6 +104,7 @@ class PawtucketBrowseCurrentFilterList extends React.Component {
 		let filterList = [];
 		if(this.context.state.filters) {
 			for (let f in this.context.state.filters) {
+			    if (this.context.state.baseFilters && (this.context.state.baseFilters[f] !== undefined)) { continue; }
 				let cv =  this.context.state.filters[f];
 				for(let c in cv) {
 					let label = cv[c];
@@ -176,6 +177,7 @@ class PawtucketBrowseFacetList extends React.Component {
 
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
+			    if (this.context.state.baseFilters && (this.context.state.baseFilters[n] !== undefined)) { continue; }
 				let isOpen = ((this.context.state.selectedFacet !== null) && (this.context.state.selectedFacet === n)) ? 'true' : 'false';
 
 				// Facet button-and-panel assemblies. Each button is paired with a panel it controls
@@ -267,8 +269,8 @@ class PawtucketBrowseFacetPanel extends React.Component {
 		let options = [], applyButton = null;
 		if(this.state.facetContent) {
 			// Render facet options when available
-			for (let i in this.state.facetContent) {
-				let item = this.state.facetContent[i];
+			for (let i in this.state.facetContentSort) {
+				let item = this.state.facetContent[this.state.facetContentSort[i]];
 
 				options.push((
 					<li key={'facetItem' + i}>
@@ -426,9 +428,11 @@ class PawtucketBrowseResults extends React.Component {
 						<section className="results">
 							<div className="row">
 								<div className="col-lg-2 no-gutters pl-3 p-1">
+								<div className="sticky-top">
 									<PawtucketBrowseNavigation/>
 									<PawtucketBrowseCurrentFilterList/> <br/>
 									<PawtucketBrowseFacetList facetLoadUrl={this.props.facetLoadUrl}/>
+								</div>
 								</div>
 								<div className="col-lg-10 no-gutters pt-2">
 									<div className="card-columns">
@@ -472,10 +476,10 @@ class PawtucketBrowseResultLoadMoreButton extends React.Component {
 
 	render() {
 		if ((this.props.start + this.props.itemsPerPage) < this.props.size)  {
-			let loadingText = (this.context.state.resultSize === null) ? "LOADING" : "Load More +";
+			let loadingText = (this.context.state.resultSize === null) ? "LOADING" : "Load More";
 
 			return (<section className="block text-align-center">
-				<div className="row"><div className="col-lg-12 d-flex mx-auto justify-content-center">
+				<div className="row"><div className="col-md-10 d-flex mx-auto justify-content-center">
 				<a className="button load-more p-2 mt-2" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>{loadingText}</a>
 				</div></div>
 				</section>);
@@ -507,24 +511,24 @@ class PawtucketBrowseResultItem extends React.Component {
 		switch(this.props.view) {
 			case 'list':
 				return(
-					<div className="card mx-auto card-title" ref={this.props.scrollToRef}>
+					<div className="card mx-auto  card-title" ref={this.props.scrollToRef}>
 					<a href={detail_url}>
-						<div className="masonry-title">
-							<div dangerouslySetInnerHTML={{__html: data.label}}/>
+						<div className="masonry-title pr-1 pl-1"><h6 className="my-auto">
+							<div dangerouslySetInnerHTML={{__html: data.label}}/></h6>
 						</div>
 					</a>
 					</div>);
 				break;
 			default:
 				return (
-					<div className="card mx-auto" ref={this.props.scrollToRef}>
+					<div className="card imagecard mx-auto" ref={this.props.scrollToRef}>
 						<a href={detail_url}>
 							<div>
 								<div dangerouslySetInnerHTML={{__html: data.representation}}/>
 							</div>
 						</a>
-						<div className=" masonry-title">
-							<a href={detail_url} dangerouslySetInnerHTML={{__html: data.label}}></a>
+						<div className="title"><h6 className="pt-2">
+							<a href={detail_url} dangerouslySetInnerHTML={{__html: data.label}}></a></h6>
 						</div>
 
 					</div>

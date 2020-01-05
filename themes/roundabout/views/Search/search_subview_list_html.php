@@ -69,7 +69,7 @@
 <div class="row {{{block}}}Set multiSearchList h-100">
 <?php
 		$va_block_info["resultTemplate"];
-		$vs_full_link = caNavLink('<div class="card card-block d-flex h-100 multisearchFullResultsCard"><div class="card-body align-items-center d-flex justify-content-center text-center">'._t('Full results').'&nbsp;<ion-icon name="open"></ion-icon></div></div>', '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search)));
+		$vs_full_link = caNavLink('<div class="card card-block d-flex h-100 multisearchFullResultsCard"><div class="button p-2 justify-content-center text-center">'._t('Full results').'</div></div>', '', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search)));
 		while($qr_results->nextHit()) {
 			$vn_count++;
 ?>
@@ -78,7 +78,7 @@
 			if(($vn_count == $vn_hits_per_block) && (in_array($vs_block, $va_browse_types))){
 				print $vs_full_link;
 			}else{
-				print caDetailLink('<div class="card card-block d-flex h-100"><div class="card-body align-items-center d-flex justify-content-center text-center">'.$qr_results->getWithTemplate($va_block_info["resultTemplate"]).'</div></div>', "", $va_block_info["table"], $qr_results->getPrimaryKey());
+				print caDetailLink('<div class="card card-block d-flex"><h6><div class="card-title align-items-center d-flex justify-content-center text-center">'.$qr_results->getWithTemplate($va_block_info["resultTemplate"]).'</div></h6></div>', "", $va_block_info["table"], $qr_results->getPrimaryKey());
 			}
 ?>
 				
@@ -89,7 +89,7 @@
 		}
 		if($vn_count < $vn_hits_per_block){
 ?>
-			<div class='col-sm-12 col-md-3 col-lg-2 mb-3'><?php print $vs_full_link; ?></div>
+		<!--	<div class='col-sm-12 col-md-3 col-lg-2 mb-3'><?php print $vs_full_link; ?></div> -->
 <?php
 		}		
 ?>

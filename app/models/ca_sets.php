@@ -530,6 +530,8 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 *			publicUsers =
 	 *			name = 
 	 *          byUser = return sets grouped by user with access. The array will be key'ed by sortable user name. Each entry includes a 'user' array with information about the user and a 'sets' array with the list of sets that user has access to. [Default is false]
+	 *          codes = 
+	 *          includeItems = 
 	 *
 	 * @return array A list of sets keyed by set_id and then locale_id. Keys for the per-locale value array include: set_id, set_code, status, public access, owner user_id, content table_num, set type_id, set name, number of items in the set (item_count), set type name for display and set content type name for display. If setIDsOnly option is set then a simple array of set_id values is returned instead.
 	 */
@@ -542,6 +544,10 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		$pb_set_ids_only = isset($pa_options['setIDsOnly']) ? (bool)$pa_options['setIDsOnly'] : false;
 		$pb_omit_counts = isset($pa_options['omitCounts']) ? (bool)$pa_options['omitCounts'] : false;
 		$ps_set_name = isset($pa_options['name']) ? $pa_options['name'] : null;
+		$codes = caGetOption('codes', $pa_options, null);
+		if ($codes && !is_array($codes)) { $codes = [$codes]; }
+		
+		$include_items = caGetOption('includeItems', $pa_options, false);
 		
 		$pb_by_user = caGetOption('byUser', $pa_options, null);
 		
@@ -568,6 +574,11 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 		if ($vn_table_num) {
 			$va_sql_wheres[] = "(cs.table_num = ?)";
 			$va_sql_params[] = (int)$vn_table_num;
+		}
+		
+		if(is_array($codes) && sizeof($codes)) {
+		    $va_sql_wheres[] = "(cs.set_code IN (?))";
+			$va_sql_params[] = $codes;
 		}
 		
 		if ($pb_set_ids_only) {
@@ -747,6 +758,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 			
 			$t_list = new ca_lists();
 			while($qr_res->nextRow()) {
+				$set_id = $qr_res->get('set_id');
 				$vn_table_num = $qr_res->get('table_num');
 				if (!isset($va_type_name_cache[$vn_table_num]) || !($vs_set_type = $va_type_name_cache[$vn_table_num])) {
 					$vs_set_type = $va_type_name_cache[$vn_table_num] = $this->getSetContentTypeName($vn_table_num, array('number' => 'plural'));
@@ -754,7 +766,13 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 				
 				$vs_type = $t_list->getItemFromListForDisplayByItemID('set_types', $qr_res->get('type_id'));
 				
-				$va_sets[$qr_res->get('set_id')][$qr_res->get('locale_id')] = array_merge($qr_res->getRow(), array('item_count' => intval($va_item_counts[$qr_res->get('set_id')]), 'set_content_type' => $vs_set_type, 'set_type' => $vs_type));
+				$extras = ['item_count' => intval($va_item_counts[$qr_res->get('set_id')]), 'set_content_type' => $vs_set_type, 'set_type' => $vs_type];
+				
+				if ($include_items) {
+				    $extras['items'] = caExtractValuesByUserLocale(ca_sets::getItemsForSet($set_id, $pa_options));
+				}
+				
+				$va_sets[$qr_res->get('set_id')][$qr_res->get('locale_id')] = array_merge($qr_res->getRow(), $extras);
 			}
 			
 			if ($pb_by_user) {
@@ -1611,6 +1629,18 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	}
 	# ------------------------------------------------------
 	/**
+	 *
+	 */
+	public static function getItemsForSet($set_code_or_id, $options=null) {
+	    if(!($t_set = ca_sets::find(['set_code' => $set_code_or_id], ['returnAs' => 'firstModelInstance']))) {
+	        $t_set = ca_sets::find(['set_id' => $set_code_or_id], ['returnAs' => 'firstModelInstance']);
+	    }
+	    if (!$t_set) { return null; }
+	    
+	    return $t_set->getItems($options);
+	}  
+	# ------------------------------------------------------
+	/**
 	 * Returns information on items in current set
 	 *
 	 * @param array $pa_options Optional array of options. Supported options are:
@@ -1638,7 +1668,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 *			
 	 */
 	public function getItems($pa_options=null) {
-		if(!($vn_set_id = $this->getPrimaryKey())) { return null; }
+	    if(!($vn_set_id = $this->getPrimaryKey())) { return null; }
 		if (!is_array($pa_options)) { $pa_options = array(); }
 		if ($pa_options['user_id'] && !$this->haveAccessToSet($pa_options['user_id'], __CA_SET_READ_ACCESS__)) { return false; }
 		

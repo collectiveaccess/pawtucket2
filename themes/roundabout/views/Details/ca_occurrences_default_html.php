@@ -4,7 +4,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 ?>
-<div class="row">
+<div class="row borderBottom">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 	</div><!-- end detailTop -->
@@ -43,23 +43,51 @@
 ?>
 					
 		</div><!-- end col -->
-		<div class='col-md-12 mx-auto pt-3'><div class="col-lg-4 mx-auto">
-				{{{<ifcount code="ca_objects_x_ca_object_representations" ><div class='unit'><unit relativeTo="ca_objects" delimiter=" " start="0" length="1">^ca_object_representations.media.large</unit></div></ifcount>}}}
-
+		{{{<ifdef code="ca_objects.related">
+		<div class='col-md-6 mx-auto pt-3'>
+			<div class="col-lg-10 mx-auto">
+			<ifcount code="ca_objects_x_ca_object_representations">
+				<div class='unit'><unit relativeTo="ca_objects" delimiter=" " start="0" length="1">^ca_object_representations.media.large</unit></div>
+			</ifcount>
+			</div>
 		</div>
-		</div>
-		<div class='col-md-12'>
+		</ifdef>}}}
+		<div class='col-md-6 inner-columns'>
+				{{{<ifdef code="ca_occurrences.idno">
+						<h3 class="pt-3">Identifier</h3>
+						^ca_occurrences.idno
+					</ifdef>}}}
+					<div class="row">
+					{{{<ifdef code="ca_occurrences.production_date"><div class="col-lg-6 p-0">
+						<h3 class="pt-3">Production Dates</h3>
+						^ca_occurrences.production_date </div>
+					</ifdef>}}}
+					{{{<ifdef code="ca_occurrences.opening_night"><div class="col-lg-6 p-0">
+						<h3 class="pt-3">Opening Night</h3>
+						^ca_occurrences.opening_night </div>
+					</ifdef>}}}
+					</div>
+					<div class="row">
+					{{{<ifdef code="ca_occurrences.genre"><div class="col-lg-6 p-0">
+						<h3 class="pt-3">Genre</h3>
+						^ca_occurrences.genre </div>
+					</ifdef>}}}
+					{{{<ifdef code="ca_occurrences.venue"><div class="col-lg-6 p-0">
+						<h3 class="pt-3">Venue</h3>
+						^ca_occurrences.venue.venue_list </div>
+					</ifdef>}}}
+					</div>
 					{{{<ifcount code="ca_entities" min="1"><h3 class="pt-3">People</h3>
-					<div class="bright"><unit relativeTo="ca_entities" delimiter=", ">^relationship_typename <l>^ca_entities.preferred_labels</l></unit></div></ifcount>}}}
+					<div class="card-columns bright"><unit relativeTo="ca_entities" delimiter=" "><div class="card"><span class="capitalize">^relationship_typename </span><l>^ca_entities.preferred_labels</l></unit></div></div></ifcount>}}}
 		</div>
 			
 </div><!-- end col -->
 
 {{{<ifcount code="ca_objects" min="1">
 		<div class="row pt-2">
-		<div class="col-sm-12"><h2 class="text-center pt-2 pb-2">Related Items</h2></div>
-			<div class="card-columns">
-				<unit relativeTo="ca_objects" delimiter=" " start="0"><div class='card'><l>^ca_object_representations.media.large</l><div class="text-center"><l>^ca_objects.preferred_labels.name</l></div></unit></div>
+		<div class="col-sm-12 borderBottom"><h2 class="text-center pt-3">Related Items</h2></div>
+			<div class="card-columns pt-3">
+				<unit relativeTo="ca_objects" delimiter=" " start="0"><div class='card'><l>^ca_object_representations.media.large</l><div class="text-center title pt-2"><l>^ca_objects.preferred_labels.name</l></div></unit></div>
 			</div>
 			</ifcount>}}}
 

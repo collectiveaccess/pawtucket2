@@ -27,7 +27,7 @@
 		<footer id="footer" class="pt-3">
 			<H3>&copy; Roundabout Theatre</H1>
 			<div class="pt-0 pb-3">
-				1745 N. SPRING STREET UNIT 4 LOS ANGELES, CA 90012
+				231 West 39th Street, New York, NY 10018
 			</div>
 		</footer><!-- end footer -->
     	<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>

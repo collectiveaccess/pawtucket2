@@ -38,15 +38,15 @@
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
 		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 	</div><!-- end detailTop -->
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1 pt-2'>
+	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 pt-2'>
 		<div class="detailNavBgLeft">
 			{{{previousLink}}}<br>{{{resultsLink}}}
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
-	<div class='col-sm-10 col-md-10 col-lg-10 pt-4 pb-2'>
+	<div class='col-sm-10 col-md-10 col-lg-10 col-xl-10pt-4 pt-2 pb-2'>
 		<H1 class= "text-center">{{{^ca_objects.preferred_labels.name}}}</H1>		
 	</div>
-	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1 pt-2'>
+	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1 col-xl-1 pt-2'>
 		<div class="detailNavBgRight">
 			{{{nextLink}}}
 		</div><!-- end detailNavBgLeft -->
@@ -77,7 +77,7 @@
 </div></div>
 <div class="row">
 	{{{<ifdef code="ca_object_representations">
-	<div class="col-sm-6">
+	<div class="col-sm-12 col-md-6">
 		<div class="col-md-10 mx-auto">
 			^ca_object_representations.media.large
 		</div>
@@ -122,20 +122,16 @@
 			{{{<ifdef code="ca_objects.rights_restrictions" delimiter=","><h3 class="pt-3">Rights and Restrictions</h3>^ca_objects.rights_restrictions}}}
 							
 			{{{<ifcount code="ca_entities" min="1"><h3 class="pt-3">People</h3>
-					<unit relativeTo="ca_entities" delimiter=", ">^relationship_typename <l>^ca_entities.preferred_labels</l></unit></ifcount>}}}
+					<div class="bright"><unit relativeTo="ca_entities" delimiter=", "><span class="capitalize">^relationship_typename </span><l>^ca_entities.preferred_labels</l></unit></div></ifcount>}}}
 		
 			{{{<ifcount code="ca_occurrences" min="1"><h3 class="pt-3">Stage Productions</h3>
 					<unit relativeTo="ca_occurrences" restrictToTypes="productions" delimiter="<br>"><div class="bright"><l>^ca_occurrences.preferred_labels</l></div></unit></ifcount>}}}
 	</div>
-
 </div>
-				<div class="row">
-					<div class="col-12"><HR></HR></div>
-				</div>
+
 						
 	</div><!-- end col -->
 </div>
-</div><!-- end row -->
 <div class="row">
 	<div class="col-sm-12">
 <?php

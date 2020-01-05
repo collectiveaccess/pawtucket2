@@ -5,7 +5,7 @@
 @import url('https://fonts.googleapis.com/icon?family=Material+Icons');
 
 /* fonts */
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700,800&display=swap"');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,600,700,800&display=swap"');
 
 
 @import "~slick-carousel/slick/slick.css";
@@ -208,16 +208,15 @@ address {
 }
 /* readMore Utility */
 .readMore div.collapse:not(.show) {
-    height: 7.5rem !important;
+    height: 7rem !important;
     overflow: hidden;
-  
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 7;
     -webkit-box-orient: vertical;  
 }
 
 .readMore div.collapsing {
-    min-height: 7.5rem !important;
+    min-height: 7rem !important;
 }
 .readMore a{
 	text-decoration:none;

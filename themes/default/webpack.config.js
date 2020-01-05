@@ -51,7 +51,7 @@ module.exports = {
         exclude: /node_modules/,
         use: {
           loader: "babel-loader",
-          options: { "presets": ["@babel/preset-env", "@babel/preset-react"] }
+          options: { "presets": ["@babel/preset-env", "@babel/preset-react"], "plugins": ["@babel/plugin-proposal-class-properties"] }
         }
       },
       {
@@ -70,7 +70,7 @@ module.exports = {
         test: /\.scss$/,
         use: ['style-loader', 'css-loader', 'sass-loader']
       },
-      { test: /\.(png|woff|woff2|eot|ttf|svg|otf)$/, 
+      { test: /\.(png|woff|woff2|eot|ttf|svg|otf|gif)$/, 
         use: [{
             loader: "url-loader",
             options: { "limit": 100000 }

@@ -19,13 +19,17 @@ function initialState() {
 		availableFacets: null,
 		facetList: null,
 		filters: null,
+		baseFilters: null,
 		selectedFacet: null,
 		introduction: { title: null, description: null },
 		view: null,
 		scrollToResultID: null,
 		loadingMore: false,
 		numLoads: 1,	// total number of results sets we've fetched since loading
-		hasAutoScrolled: false
+		hasAutoScrolled: false,
+		
+		labelSingular: null,
+		labelPlural: null
 	};
 }
 
@@ -49,6 +53,7 @@ function fetchResults(url, callback, useDefaultKey=true) {
 			state.itemsPerPage = data.itemsPerPage;
 			state.availableFacets = data.availableFacets;
 			state.facetList = data.facetList;
+			state.baseFilters = data.baseCriteria;
 			state.key = data.key;
 			state.scrollToResultID = data.lastViewedID;
 			if (data.introduction && (data.introduction.title !== undefined) && (data.introduction.description !== undefined)) {
@@ -56,12 +61,16 @@ function fetchResults(url, callback, useDefaultKey=true) {
 			} else {
 				state.introduction = { title: '', description: ''};
 			}
-
+			
 			state.filters = {};
 			for(let k in data.criteria) {
 				if ((k === '_search') && (data.criteria[k]['*'])) { continue; }	// don't allow * search as filter
 				state.filters[k] = data.criteria[k];
 			}
+			
+			state.labelSingular = data.labelSingular;			
+			state.labelPlural = data.labelPlural;
+			
 			callback(state);
 		})
 		.catch(function (error) {

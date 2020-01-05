@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2016 Whirl-i-Gig
+ * Copyright 2013-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -43,20 +43,28 @@
  		}
  		# -------------------------------------------------------
  		/**
- 		 *
+ 		 *$this->config
  		 */ 
  		public function __call($ps_function, $pa_args) {
- 			AssetLoadManager::register("carousel");
- 			$va_access_values = caGetUserAccessValues();
+ 			$access_values = caGetUserAccessValues();
  			$this->view->setVar('access_values', $va_access_values);
 
+            $set_codes = $this->config->getList('set_codes');
+            
+            $t_set = new ca_sets();
+            if(!is_array($media_versions = $this->config->get('media_versions'))) { $media_versions = ['icon', 'small']; }
+            $sets = caExtractValuesByUserLocale($t_set->getSets(['checkAccess' => $access_values, 'codes' => $set_codes, 'includeItems' => true, 'thumbnailVersions' => $media_versions]));
+            
+            
+            $this->view->setVar('sets', $sets);
+            
  			#
  			# --- if there is a set configured to show on the front page, load it now
  			#
  			$va_featured_ids = array();
  			if($vs_set_code = $this->config->get("front_page_set_code")){
  				$t_set = new ca_sets();
- 				$t_set->load(array('set_code' => $vs_set_code));
+ 				$t_set->load(['set_code' => $vs_set_code]);
  				$vn_shuffle = 0;
  				if($this->config->get("front_page_set_random")){
  					$vn_shuffle = 1;

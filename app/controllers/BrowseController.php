@@ -346,7 +346,10 @@
 					'hits' => [],
 					'availableFacets' => $o_browse->getInfoForAvailableFacets(),
 					'facetList' => $facet_info,
-					'criteria' => $criteria
+					'criteria' => $criteria,
+					'baseCriteria' => $va_base_criteria,
+					'labelSingular' => $va_browse_info['labelSingular'],
+					'labelPlural' => $va_browse_info['labelPlural']
 				];
 
 				if (($intro = caGetOption('introduction', $va_browse_info, caGetOption('introduction', $pa_args, null))) && is_array($intro)) {

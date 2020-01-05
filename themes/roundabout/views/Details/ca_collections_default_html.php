@@ -90,8 +90,8 @@
 		<div class="col-lg-12">
 		<h3>Abstract</h3>
 			<div class="readMore">
-				<div class="collapse" id="collapseSummary">^ca_collections.abstract</div>
-				<a class="collapsed" data-toggle="collapse" href="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary"></a>
+				<div class="collapse" id="collapseSummary1">^ca_collections.abstract</div>
+				<a class="collapsed" data-toggle="collapse" href="#collapseSummary1" aria-expanded="false" aria-controls="collapseSummary"></a>
 			</div>
 	 	</div>
 	 	</div>
@@ -110,8 +110,8 @@
 		<div class="col-lg-12">
 			<h3 class="pt-2">Scope and Contents</h3>
 			<div class="readMore">
-				<div class="collapse" id="collapseSummary">^ca_collections.scope_note</div>
-				<a class="collapsed" data-toggle="collapse" href="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary"></a>
+				<div class="collapse" id="collapseSummary2">^ca_collections.scope_note</div>
+				<a class="collapsed" data-toggle="collapse" href="#collapseSummary2" aria-expanded="false" aria-controls="collapseSummary"></a>
 			</div>
 	 	</div>
 	</ifdef>}}}
@@ -127,9 +127,9 @@
 		^ca_collections.preferred_citation
 	</div>
 	</ifdef>}}}
-	{{{<ifdef code="ca_collections.lcsh_terms" delimiter=", ">
+	{{{<ifdef code="ca_collections.lcsh_terms" >
 	<div class="col-lg-12"><h3 class="pt-3">Library of Congress Subject Headings</h3>
-		<l>^ca_collections.lcsh_terms</l>
+		<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.lcsh_terms</l></unit>
 	</div>
 	</ifdef>}}}
 </div>
@@ -168,18 +168,19 @@
 			shuffle($va_related_item_ids);
 			$q_objects = caMakeSearchResult("ca_objects", array_slice($va_related_item_ids,0,20));
 ?>
-		<div class="row mt-5">
-			<div class="col-lg-12 mt-2 mb-2">
+		<div class="row mt-5 borderBottom">
+			<div class="col-lg-12 text-center mt-2 mb-2">
 				<H2>Related Items</H2>
 			</div>
 		</div>
-		<div class="row mb-5 detailRelated">
+		<div class="row mb-5 pt-3 detailRelated">
 <?php
 			$i = 0;
 			while($q_objects->nextHit()){
 				if($q_objects->get("ca_object_representations.media.large")){
-					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
-					print $q_objects->getWithTemplate("<div class='color-block-bg'><l>^ca_object_representations.media.large</l></div>");
+					print "<div class='col-sm-6 col-md-4 col-lg-3 col-xl-3 pb-4 mb-4'>";
+					print $q_objects->getWithTemplate("<div><l>^ca_object_representations.media.large</l></div>");
+					print $q_objects->getWithTemplate("<div class='pt-2 text-center title'><l>^ca_objects.preferred_labels.name</l></div>");
 					print "</div>";
 					$i++;
 				}
@@ -196,3 +197,4 @@
 
 	</div>
 </div>
+

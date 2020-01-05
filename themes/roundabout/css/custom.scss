@@ -2,7 +2,7 @@ $link-color-hover: #00ACB9;
 $link-decoration: none;
 $link-hover-decoration: none;
 $primary-text: #000;
-$color-block: #D6B060;
+$button-block: #D6B060;
 $color-block-bg: #EAE3D2;
 
 $headings-font: "Futura", sans-serif;
@@ -23,6 +23,9 @@ h1 {
 }
 h2 {
 	font-size:1.5rem;
+}
+h6 {
+font-weight: 400 !important;
 }
 
 .navbar {
@@ -112,6 +115,10 @@ margin-right: 0px !important;
 .detail img {
 	border: 1px solid $primary-text;
 }
+
+.multisearch .multiSearchList .card {
+	background-color: #fff !important;
+}
 .entity-image  img {
   	display: block;
   	margin-left: auto;
@@ -128,17 +135,21 @@ margin-right: 0px !important;
     column-count: 4;
   }
 }
+.browse .imagecard {
+	min-height: 300px;
+}
+
 .card-title {
-	height: 50px;
+	min-height: 50px;
 	background-color: $color-block-bg;
 	display: inline;
 	vertical-align: middle;
-		border: 1px solid $primary-text;
-
+	border: 1px solid $primary-text;
 }
 .masonry-title  {
-	padding-top: 18px;
-	height: 50px;
+	padding-top: 15px;
+	min-height: 50px;
+	padding-bottom: 15px;
 }
 
 .masonry-title:hover {
@@ -218,15 +229,23 @@ width: 90%;}
 }
 .button {
 	font-family: $headings-font;
-	background-color: $color-block;
+	background-color: $button-block;
 	color: $primary-text;
 	text-transform: uppercase;
 	font-weight: 600;
 }
 .button:hover {
 	background-color: $primary-text;
-	color: $color-block;
+	color: $button-block;
 }
 .bright a {
 	color: $link-color-hover;
+}
+
+.inner-columns .card-columns {
+	column-count: 2;	
+	}
+
+.detail div {
+	line-height: 1.2rem;
 }

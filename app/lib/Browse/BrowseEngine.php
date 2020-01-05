@@ -6077,6 +6077,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 					    $va_selects[] = "ca_relationship_type_labels.typename";
 					    $va_joins[] = "INNER JOIN ca_relationship_types ON ".$t_item_rel->tableName().".type_id = ca_relationship_types.type_id";
 					    $va_joins[] = "INNER JOIN ca_relationship_type_labels ON ca_relationship_type_labels.type_id = ca_relationship_types.type_id";
+					    $va_orderbys[] = "ca_relationship_types.typename";
 					}
 
 					if (is_array($va_exclude_types) && (sizeof($va_exclude_types) > 0) && method_exists($t_rel_item, "getTypeList")) {
@@ -6253,14 +6254,15 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 
 						return ((int)$qr_res->numRows() > 0) ? true : false;
 					} else {
+					
+
 
 	if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) {
 						$vs_sql = "
 							SELECT COUNT(DISTINCT ".$t_item->primaryKey(true).") _count, ".join(', ', $va_selects)."
 							FROM {$vs_browse_table_name}
 							{$vs_join_sql}
-								".(sizeof($va_wheres) ? ' WHERE ' : '').join(" AND ", $va_wheres)."
-								".(sizeof($va_orderbys) ? "ORDER BY ".join(', ', $va_orderbys) : '');
+								".(sizeof($va_wheres) ? ' WHERE ' : '').join(" AND ", $va_wheres);
 	} else {
 						$vs_sql = "
 							SELECT COUNT(DISTINCT ".$t_item->primaryKey(true).") _count, ".join(', ', $va_selects)."
