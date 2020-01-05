@@ -74,7 +74,7 @@
 					<div class="col-12 col-md-12">
 						{{{<ifdef code="ca_occurrences.date">
 							<div class="mb-3">
-								<div class="label">^ca_occurrences.date</div>
+								<strong>^ca_occurrences.date</strong>
 							</div>
 						</ifcount>}}}
 						{{{<ifdef code="ca_occurrences.external_link">

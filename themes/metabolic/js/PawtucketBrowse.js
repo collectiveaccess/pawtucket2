@@ -331,7 +331,7 @@ class PawtucketBrowseFacetPanelItem extends React.Component {
 		let { id, data } = this.props;
 		let count = (data.content_count > 0) ? '(' + data.content_count + ')' : '';
 		return(<>
-			<input id={id} value={data.id} data-label={data.label} type="checkbox" name='facets[]' checked={this.props.selected} onChange={this.props.callback}/>
+			<input id={id} value={data.id} data-label={data.label} type="checkbox" name="facets[]" checked={this.props.selected} onChange={this.props.callback}/>
 			<label htmlFor={id}>
 				{data.label} &nbsp;
 				<span className="number">{count}</span>

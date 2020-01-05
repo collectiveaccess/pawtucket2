@@ -40,17 +40,10 @@
  				foreach($va_object_ids as $vn_object_id){
  					$t_object = new ca_objects($vn_object_id);
  					if($t_rep = $t_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
+						if(!$t_rep_for_meta_tags){
+ 							$t_rep_for_meta_tags = $t_rep;
+ 						}
 						$vs_mimetype = $t_rep->getMediaInfo('media', 'original', 'MIMETYPE');
-						#if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("detail", $vs_mimetype = $t_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) {
-						#	throw new ApplicationException(_t('Invalid viewer'));
-						#}
-						#if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_rep->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
-						#$va_media[] = $vs_viewer_name::getViewerHTML(
-						#	$this->request,
-						#	"representation:".$t_rep->getPrimaryKey(),
-						#	['t_instance' => $t_rep, 't_subject' => $t_object, 't_media' => $t_object, 'display' => $va_media_display_info],
-						#	['context' => 'archival']);
-						
 						# --- only show images here, not pdf viewer.  link pdf's to archival detail page
 						$vs_media = $t_object->get("ca_object_representations.media.page", array("checkAccess" => $va_access_values));
 						if($vs_mimetype = "application/pdf"){
@@ -103,16 +96,6 @@
 				}
 			}
 ?>
-            <div class="pagination">
-<?php
-				if($vn_previous_id){
-					print caDetailLink('', 'previous', 'ca_occurrences', $vn_previous_id);
-				}
-				if($vn_next_id){
-					print caDetailLink('', 'next', 'ca_occurrences', $vn_next_id);
-				}
-?>            </div>
-
 
             <div class="wrap-max-content text-align-center">
 
@@ -220,6 +203,30 @@
 
             </div>
         </section>
+<?php
+	if($vn_previous_id || $vn_next_id){
+?>
+		<section class="widget-pagination block-top">
+			<div class="layout-2">
+				<div class="col">
+<?php
+					if($vn_previous_id){
+						print caDetailLink('&lt; PREVIOUS', 'text-dark eyebrow previous', 'ca_objects', $vn_previous_id);
+					}
+?>
+				</div>
+				<div class="col">
+<?php
+			
+					if($vn_next_id){
+						print caDetailLink('NEXT &gt;', 'text-dark eyebrow next', 'ca_objects', $vn_next_id);
+					}
+?>					
+				</div>
+		</section>
+<?php
+	}
+?>
 {{{<ifcount code="ca_objects" restrictToRelationshipTypes="part" restrictToTypes="artwork,cast,chronology_image,edition,element,group,reproduction,study,version" min="1">
         <section class="wrap block border">
             <div class="block text-align-center">
@@ -297,12 +304,47 @@
 			</div>
 		</section>
 <?php
+	if($vn_previous_id || $vn_next_id){
+?>
+	<div class="wrap">
+		<section class="widget-pagination block-top">
+			<div class="layout-2">
+				<div class="col">
+<?php
+					if($vn_previous_id){
+						print caDetailLink('&lt; PREVIOUS', 'text-dark eyebrow previous', 'ca_objects', $vn_previous_id);
+					}
+?>
+				</div>
+				<div class="col">
+<?php
+			
+					if($vn_next_id){
+						print caDetailLink('NEXT &gt;', 'text-dark eyebrow next', 'ca_objects', $vn_next_id);
+					}
+?>					
+				</div>
+		</section>
+	</div>
+<?php
+	}
+
 			break;
 			# ----------------------------------------------------
 		}
 ?>
- 
-                
-
-
     </main>
+<?php
+	# --- meta tags
+	MetaTagManager::addMeta("twitter:title", str_replace('"', '', $t_item->get("ca_occurrences.preferred_labels.name")));
+	MetaTagManager::addMetaProperty("og:title", str_replace('"', '', $t_item->get("ca_occurrences.preferred_labels.name")));
+	MetaTagManager::addMetaProperty("og:url", $this->request->config->get("site_host").caNavUrl("*", "*", "*"));
+	if($t_rep_for_meta_tags){
+		MetaTagManager::addMetaProperty("og:image", $t_rep_for_meta_tags->get("ca_object_representations.media.large.url"));
+		MetaTagManager::addMetaProperty("og:image:secure_url", $t_rep_for_meta_tags->get("ca_object_representations.media.large.url"));
+		MetaTagManager::addMeta("twitter:image", $t_rep_for_meta_tags->get("ca_object_representations.media.large.url"));
+		$va_media_info = $t_rep_for_meta_tags->getMediaInfo('media', 'large');
+		MetaTagManager::addMetaProperty("og:image:width", $va_media_info["WIDTH"]);
+		MetaTagManager::addMetaProperty("og:image:height", $va_media_info["HEIGHT"]);
+	}	
+?>

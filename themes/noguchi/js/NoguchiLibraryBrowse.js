@@ -310,8 +310,8 @@ class NoguchiLibraryBrowseFacetPanel extends React.Component {
 				let item = this.state.facetContent[this.state.facetContentSort[i]];
 
 				options.push((
-					<li key={'facetItem' + i}>
-						<NoguchiLibraryBrowseFacetPanelItem id={'facetItem' + i} data={item} callback={this.clickFilterItem} selected={this.state.selectedFacetItems[item.id]}/>
+					<li key={this.props.facetName + 'facetItem' + i}>
+						<NoguchiLibraryBrowseFacetPanelItem id={this.props.facetName + 'facetItem' + i} data={item} callback={this.clickFilterItem} selected={this.state.selectedFacetItems[item.id]}/>
 					</li>
 				));
 			}
@@ -542,15 +542,22 @@ class NoguchiLibraryBrowseResults extends React.Component {
 class NoguchiLibraryBrowseResultLoadMoreButton extends React.Component {
 	static contextType = NoguchiLibraryBrowseContext;
 	render() {
-		if (((this.props.start + this.props.itemsPerPage) < this.props.size) || (this.context.state.resultSize  === null)) {
-			return (
-				<section className="block text-align-center">
-				<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>Load More +</a>
+		if (((this.props.start + this.props.itemsPerPage) < this.props.size))  {
+			if(this.context.state.resultSize === null){
+				return (<section className="block text-align-center load-more-wrapper">
+							<div class="spinner"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>
 				</section>);
+			}else{
+				return (<section className="block text-align-center load-more-wrapper">
+					<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>Load More +</a>
+				</section>);			
+			}
+
 		} else {
 			return(<span></span>)
 		}
 	}
+
 }
 
 /**

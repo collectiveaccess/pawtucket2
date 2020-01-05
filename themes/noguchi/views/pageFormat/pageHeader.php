@@ -37,6 +37,12 @@
 	    <title><?php print MetaTagManager::getWindowTitle(); ?></title>
 	    
 	    <?php print MetaTagManager::getHTML(); ?>
+		<meta property="og:locale" content="en_US" />
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="The Noguchi Museum" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:site" content="@NoguchiMuseum" />
+		<meta name="twitter:creator" content="@NoguchiMuseum" />
 
         <!-- <link rel='stylesheet' id='style-all-0-css'  href='assets/css/style.css?ver=<?= rand(); ?>' type='text/css' media='all' />-->
         <script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/css.js"></script>

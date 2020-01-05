@@ -44,10 +44,10 @@
 					<div class="col-sm-12 col-md-6">
 <?php
 		if(in_array($vs_block, $va_browse_types)){
-			print '<H2>'.caNavLink($va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H2>';
+			print '<H2>'.caNavLink('<span>'.$qr_results->numHits().' '.(($qr_results->numHits() == 1) ? $va_block_info['labelSingular'] : $va_block_info['labelPlural']).' </span><ion-icon name="open"></ion-icon>', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H2>';
 		}else{
 ?>
-			<H2><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H2>
+			<H2><?php print $qr_results->numHits().' '.(($qr_results->numHits() == 1) ? $va_block_info['labelSingular'] : $va_block_info['labelPlural']); ?></H2>
 <?php
 		}
 ?>
@@ -68,7 +68,7 @@
 ?>
 			<div class='col-sm-12 col-md-3 col-lg-2 mb-3'>
 <?php
-			if(($vn_count == $vn_hits_per_block) && (in_array($vs_block, $va_browse_types))){
+			if(($vn_count == $vn_hits_per_block) && ($qr_results->numHits() > $vn_hits_per_block) && (in_array($vs_block, $va_browse_types))){
 				print $vs_full_link;
 			}else{
 				print caDetailLink('<div class="card card-block d-flex h-100"><div class="card-body align-items-center d-flex justify-content-center text-center">'.$qr_results->getWithTemplate($va_block_info["resultTemplate"]).'</div></div>', "", $va_block_info["table"], $qr_results->getPrimaryKey());
@@ -79,11 +79,6 @@
 <?php					
 
 			if ($vn_count == $vn_hits_per_block) {break;} 
-		}
-		if($vn_count < $vn_hits_per_block){
-?>
-			<div class='col-sm-12 col-md-3 col-lg-2 mb-3'><?php print $vs_full_link; ?></div>
-<?php
 		}		
 ?>
 				</div>

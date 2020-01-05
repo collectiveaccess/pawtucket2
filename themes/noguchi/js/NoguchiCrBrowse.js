@@ -378,8 +378,8 @@ class NoguchiCrBrowseFacetPanel extends React.Component {
 				let item = this.state.facetContent[this.state.facetContentSort[i]];
 
 				options.push((
-					<li key={'facetItem' + i}>
-						<NoguchiCrBrowseFacetPanelItem id={'facetItem' + i} data={item} callback={this.clickFilterItem} selected={this.state.selectedFacetItems[item.id]}/>
+					<li key={this.props.facetName + 'facetItem' + i}>
+						<NoguchiCrBrowseFacetPanelItem id={this.props.facetName + 'facetItem' + i} data={item} callback={this.clickFilterItem} selected={this.state.selectedFacetItems[item.id]}/>
 					</li>
 				));
 			}
@@ -599,16 +599,22 @@ class NoguchiCrBrowseResultLoadMoreButton extends React.Component {
 	static contextType = NoguchiCrBrowseContext;
 
 	render() {
-		if(((this.props.start + this.props.itemsPerPage) < this.props.size) || (this.context.state.resultSize  === null) ) {
-			let loadingText = (this.context.state.resultSize === null) ? "LOADING" : "Load More +";
-			return (
-				<section className="block text-align-center">
-				<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>{loadingText}</a>
+		if (((this.props.start + this.props.itemsPerPage) < this.props.size))  {
+			if(this.context.state.resultSize === null){
+				return (<section className="block text-align-center load-more-wrapper">
+							<div class="spinner"><div class="bounce1"></div><div class="bounce2"></div><div class="bounce3"></div></div>
 				</section>);
+			}else{
+				return (<section className="block text-align-center load-more-wrapper">
+					<a className="button load-more" href="#" onClick={this.props.loadMoreHandler} ref={this.props.loadMoreRef}>Load More +</a>
+				</section>);			
+			}
+
 		} else {
 			return(<span></span>)
 		}
 	}
+
 }
 
 /**

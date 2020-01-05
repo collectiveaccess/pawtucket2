@@ -110,17 +110,6 @@
 			}
 ?>
 
-            <div class="pagination">
-<?php
-				if($vn_previous_id){
-					print caDetailLink('', 'previous', 'ca_objects', $vn_previous_id);
-				}
-				if($vn_next_id){
-					print caDetailLink('', 'next', 'ca_objects', $vn_next_id);
-				}
-?>
-            </div>
-
             <div class="wrap text-align-center">
                 <div class="wrap-max-content">
 
@@ -153,7 +142,7 @@
 <?php
 
 						foreach($va_entities as $va_entity){
-								print "<div class='ca-data'>".caNavLink($va_entity["displayname"], "", "", "Browse", "Libray", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]))."</div>";
+								print "<div class='ca-data'>".caNavLink($va_entity["displayname"], "", "", "Browse", "Library", array("facet" => "entity_facet", "id" => $va_entity["entity_id"]))."</div>";
 						}
 ?>
 							</div>
@@ -195,5 +184,33 @@
 
             </div>
         </section>
-
+<?php
+	if($vn_previous_id || $vn_next_id){
+?>
+	<div class="wrap">
+		<section class="widget-pagination block-top">
+			<div class="layout-2">
+				<div class="col">
+<?php
+					if($vn_previous_id){
+						print caDetailLink('&lt; PREVIOUS', 'text-dark eyebrow previous', 'ca_objects', $vn_previous_id);
+					}
+?>
+				</div>
+				<div class="col">
+<?php
+			
+					if($vn_next_id){
+						print caDetailLink('NEXT &gt;', 'text-dark eyebrow next', 'ca_objects', $vn_next_id);
+					}
+?>					
+				</div>
+		</section>
+	</div>
+<?php
+	}
+?>
     </main>
+<?php
+	include("objects_metatags.php");
+?>
