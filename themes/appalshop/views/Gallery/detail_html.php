@@ -60,9 +60,13 @@
 			    $t_set_obj = new ca_objects($t_set_item->get('row_id'));
 				$vn_i++;
 				$vn_c++;
+				$vs_tmp = strip_tags($t_set_obj->get('ca_objects.preferred_labels'));
+				if(strlen($vs_tmp) > 50){
+					$vs_tmp = mb_substr($vs_tmp, 0, 47)."...";
+				}
 				print "<div class='smallpadding col-xs-6 col-sm-4 col-md-2".(($vn_i > 24) ? " galleryIconHidden" : "")."'>";
 				print "<a href='#' id='galleryIcon".$pa_set_item["item_id"]."' onclick='jQuery(\"#galleryDetailImageArea\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); jQuery(\"#galleryDetailObjectInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\"); return false;'>".$vs_rep."</a>";
-				print "<span>".$t_set_obj->get('ca_objects.preferred_labels')."</span>";
+				print "<span title='".$t_set_obj->get('ca_objects.preferred_labels')."'>".$vs_tmp."</span>";
 				print "</div>\n";
 				if($vn_c == 6){
 					print "</div><!-- end row -->";
