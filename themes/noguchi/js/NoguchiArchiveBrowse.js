@@ -452,7 +452,7 @@ class NoguchiArchiveBrowseNavigation extends React.Component {
 					<div className="wrap text-gray">
 						<form action="#" onSubmit={this.loadSearch}>
 							<div className="cell text"><a href='/index.php/Browse/Archive'>Browse</a></div>
-							<div className="cell"><input name="search" type="text" placeholder="Search the Archive" ref={this.searchRef}
+							<div className="cell"><label for="searchInput" className="visuallyhidden">Search the Archive</label><input id="searchInput" name="search" type="text" placeholder="Search the Archive" ref={this.searchRef}
 														 className="search"/></div>
 							<div className="cell">
 								<div className="utility-container">

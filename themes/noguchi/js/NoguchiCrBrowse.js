@@ -495,7 +495,7 @@ class NoguchiCrBrowseNavigation extends React.Component {
 					<div className="wrap text-gray">
 						<form action="#" onSubmit={this.loadSearch}>
 							<div className="cell text"><a href='/index.php/Browse/CR'>Browse</a></div>
-							<div className="cell"><input name="search" type="text" placeholder="Search the Catalogue" ref={this.searchRef}
+							<div className="cell"><label for="searchInput" className="visuallyhidden">Search the Catalogue</label><input id="searchInput" name="search" type="text" placeholder="Search the Catalogue" ref={this.searchRef}
 														 className="search"/></div>
 
 							<div className="misc">

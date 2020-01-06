@@ -151,7 +151,8 @@
         <header>
             <div class="wrap">
                 <form action="https://www.noguchi.org/results" method="get">
-                    <input type="text" name="search" placeholder="Search Noguchi.org" autocomplete="off" aria-label="Search">
+                    <label for="searchSiteInput" class="visuallyhidden">Search Noguchi.org</label>
+                    <input id="searchSiteInput" type="text" name="search" placeholder="Search Noguchi.org" autocomplete="off" aria-label="Search">
                     <input type="submit" />
                 </form>
             </div>

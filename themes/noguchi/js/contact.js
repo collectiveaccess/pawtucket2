@@ -105,11 +105,11 @@ const sectionName = appData.sectionName;
 					<ContactFormMessage message={this.state.statusMessage} />
 					<form className='ca-form'>
 						<ul className='form'>
-							<li>{(this.state.errors.name) ? <div className='alert alert-danger'>{this.state.errors.name}</div> : null}<input name='name' value={this.state.values.name} onChange={this.handleForm} type='text' placeholder='Name*' required /></li>
-							<li>{(this.state.errors.email) ? <div className='alert alert-danger'>{this.state.errors.email}</div> : null}<input name='email' value={this.state.values.email} onChange={this.handleForm} type='email' placeholder='Email*' required /></li>
-							<li>{(this.state.errors.institution) ? <div className='alert alert-danger'>{this.state.errors.institution}</div> : null}<input name='institution' value={this.state.values.institution} onChange={this.handleForm} type='text' placeholder='Institution' /></li>
-							<li>{(this.state.errors.idno) ? <div className='alert alert-danger'>{this.state.errors.idno}</div> : null}<input name='idno' value={this.state.values.idno} onChange={this.handleForm} type='text' placeholder='Object Identifier' /></li>
-							<li>{(this.state.errors.description) ? <div className='alert alert-danger'>{this.state.errors.description}</div> : null}<textarea name='description' value={this.state.values.description} onChange={this.handleForm} placeholder='Description*' required /></li>
+							<li>{(this.state.errors.name) ? <div className='alert alert-danger'>{this.state.errors.name}</div> : null}<label for='name' className='visuallyhidden'>Name</label><input id='name' name='name' value={this.state.values.name} onChange={this.handleForm} type='text' placeholder='Name*' required /></li>
+							<li>{(this.state.errors.email) ? <div className='alert alert-danger'>{this.state.errors.email}</div> : null}<label for='email' className='visuallyhidden'>Email</label><input id='email' name='email' value={this.state.values.email} onChange={this.handleForm} type='email' placeholder='Email*' required /></li>
+							<li>{(this.state.errors.institution) ? <div className='alert alert-danger'>{this.state.errors.institution}</div> : null}<label for='institution' className='visuallyhidden'>Institution</label><input id='institution' name='institution' value={this.state.values.institution} onChange={this.handleForm} type='text' placeholder='Institution' /></li>
+							<li>{(this.state.errors.idno) ? <div className='alert alert-danger'>{this.state.errors.idno}</div> : null}<label for='idno' className='visuallyhidden'>Object Identifier</label><input id='idno' name='idno' value={this.state.values.idno} onChange={this.handleForm} type='text' placeholder='Object Identifier' /></li>
+							<li>{(this.state.errors.description) ? <div className='alert alert-danger'>{this.state.errors.description}</div> : null}<label for='description' className='visuallyhidden'>Description</label><textarea id='description' name='description' value={this.state.values.description} onChange={this.handleForm} placeholder='Description*' required /></li>
 							<li>{(this.state.errors.captcha) ? <div className='alert alert-danger'>{this.state.errors.captcha}</div> : null}
 								<div id="reCaptcha"></div>
 								<input type='submit' className='button' value='Submit' onClick={this.sendMessage} />
