@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2018 Whirl-i-Gig
+ * Copyright 2018-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -31,7 +31,6 @@
  */
  
 	trait CLIUtilsImportExport { 
-		# -------------------------------------------------------
 		# -------------------------------------------------------
 		/**
 		 *
@@ -456,17 +455,20 @@
 
 			$vb_direct = (bool)$po_opts->getOption('direct');
 			$vb_no_search_indexing = (bool)$po_opts->getOption('no-search-indexing');
-			$vb_use_temp_directory_for_logs_as_fallback = (bool)$po_opts->getOption('log-to-tmp-directory-as-fallback'); 
+			$vb_use_temp_directory_for_logs_as_fallback = (bool)$po_opts->getOption('log-to-tmp-directory-as-fallback');
 
+			$vb_dryrun = (bool)$po_opts->getOption('dryrun');
 			$vs_format = $po_opts->getOption('format');
 			$vs_log_dir = $po_opts->getOption('log');
 			$vn_log_level = CLIUtils::getLogLevel($po_opts);
+			
+			$env = json_decode($po_opts->getOption('environment'), true);
 
 			if ($vb_no_search_indexing) {
 				define("__CA_DONT_DO_SEARCH_INDEXING__", true);
 			}
 
-			if (!ca_data_importers::importDataFromSource($vs_data_source, $vs_mapping, array('noTransaction' => $vb_direct, 'format' => $vs_format, 'showCLIProgressBar' => true, 'logDirectory' => $vs_log_dir, 'logLevel' => $vn_log_level, 'logToTempDirectoryIfLogDirectoryIsNotWritable' => $vb_use_temp_directory_for_logs_as_fallback, 'addToSet' => $vs_add_to_set))) {
+			if (!ca_data_importers::importDataFromSource($vs_data_source, $vs_mapping, array('dryRun' => $vb_dryrun, 'noTransaction' => $vb_direct, 'format' => $vs_format, 'showCLIProgressBar' => true, 'logDirectory' => $vs_log_dir, 'logLevel' => $vn_log_level, 'logToTempDirectoryIfLogDirectoryIsNotWritable' => $vb_use_temp_directory_for_logs_as_fallback, 'addToSet' => $vs_add_to_set, 'environment' => $env))) {
 				CLIUtils::addError(_t("Could not import source %1: %2", $vs_data_source, join("; ", ca_data_importers::getErrorList())));
 				return false;
 			} else {
@@ -517,6 +519,7 @@
 				"log|l-s" => _t('Path to directory in which to log import details. If not set no logs will be recorded.'),
 				"log-level|d-s" => _t('Logging threshold. Possible values are, in ascending order of important: DEBUG, INFO, NOTICE, WARN, ERR, CRIT, ALERT. Default is INFO.'),
 				"add-to-set|t-s" => _t('Optional identifier of set to add all imported items to.'),
+				"environment|e-s" => _t('JSON-encoded key value pairs to add to import environment values.'),
 				"dryrun" => _t('If set import is performed without data actually being saved to the database. This is useful for previewing an import for errors.'),
 				"direct" => _t('If set import is performed without a transaction. This allows viewing of imported data during the import, which may be useful during debugging/development. It may also lead to data corruption and should only be used for testing.'),
 				"no-search-indexing" => _t('If set indexing of changes made during import is not done. This may significantly reduce import time, but will neccessitate a reindex of the entire database after the import.'),
@@ -804,14 +807,14 @@
 		 *
 		 */
 		public static function load_ULANShortHelp() {
-			return _t("Load Getty Art & Architecture Thesaurus (AAT) into CollectiveAccess.");
+			return _t("Load Getty Union List of Artist Names (ULAN) into CollectiveAccess.");
 		}
 		# -------------------------------------------------------
 		/**
 		 *
 		 */
 		public static function load_ULANHelp() {
-			return _t("Loads the AAT from a Getty-provided XML file.");
+			return _t("Loads the ULAN from a Getty-provided XML file.");
 		}
 		# -------------------------------------------------------
 		/**
@@ -932,6 +935,7 @@
 				$t_list->set('is_system_list', 1);
 				$t_list->set('is_hierarchical', 1);
 				$t_list->set('use_as_vocabulary', 1);
+				$t_list->set('default_sort', 1); // sory by rank
 				$t_list->insert();
 				
 				if ($t_list->numErrors()) {
@@ -1104,5 +1108,128 @@
 		public static function load_chenhall_nomenclatureHelp() {
 			return _t('Loads Chenhall Nomenclature from Excel XLSX format file into the specified list. You can obtain a copy of the Nomenclature from the American Association of State and Local History (AASLH).');
 		}
+		# -------------------------------------------------------
+		/**
+		 * @param Zend_Console_Getopt|null $po_opts
+		 * @return bool
+		 */
+		public static function run_external_export($po_opts=null) {
+            require_once(__CA_LIB_DIR__."/ExternalExportManager.php");
+            
+            $target = $po_opts->getOption('target');
+			if ($target && !ExternalExportManager::isValidTarget($target)) {
+				CLIUtils::addMessage(_t('Ignoring invalid target %1', $target));
+				$target = null;
+			}
+			
+			$table = $po_opts->getOption('table');
+			if (!$table) {
+				CLIUtils::addError(_t('You must specify a table'));
+				return;
+			}
+			if (!Datamodel::tableExists($table)) {
+				CLIUtils::addError(_t('Invalid table %1', $table));
+				return;
+			}
+			$id = $po_opts->getOption('id');
+			if (!$id) {
+				CLIUtils::addError(_t('You must specify an id'));
+				return;
+			}
+            
+            $e = new ExternalExportManager();
+            $e->process($table, $id, null, ['target' => $target]);
+		}
+		# -------------------------------------------------------
+		public static function run_external_exportParamList() {
+			return [
+				"table|t=s" => _t('Table of record to export.'),
+				"id|i=s" => _t('ID of row to export.'),
+				"target|a=s" => _t('Target to export to. If omitted all valid targets will be exported to.')
+			];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function run_external_exportUtilityClass() {
+            return _t('Import/Export');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function run_external_exportShortHelp() {
+			return _t('Run external export for a record.');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function run_external_exportHelp() {
+			return _t('To come.');
+        }
+        # -------------------------------------------------------
+		/**
+		 * @param Zend_Console_Getopt|null $po_opts
+		 * @return bool
+		 */
+		public static function write_exporter_to_file($po_opts=null) {
+            require_once(__CA_LIB_DIR__."/ExternalExportManager.php");
+            
+            $file = $po_opts->getOption('file');
+            if (!$file) {
+				CLIUtils::addError(_t('A file must be specified'));
+				return;
+			}
+			
+			if ($file && ((file_exists($file) && !is_writeable($file)) || (!file_exists($file) && !is_writeable(pathinfo($file, PATHINFO_DIRNAME))))) {
+				CLIUtils::addError(_t('Cannot write to file %1', $file));
+				return;
+			}
+			
+			$mapping = $po_opts->getOption('mapping');
+			if (!$mapping) {
+				CLIUtils::addError(_t('An export mapping must be specified'));
+				return;
+			}
+			
+			
+			try {
+			    ca_data_exporters::writeExporterToFile($mapping, $file);
+			} catch (Exception $e) {
+			    CLIUtils::addError(_t('Could not export %1: %2', $mapping, $e->getMessage()));
+			    return;
+			}
+			CLIUtils::addMessage(_t('Exported %1', $mapping));
+		}
+		# -------------------------------------------------------
+		public static function write_exporter_to_fileParamList() {
+			return [
+				"mapping|m=s" => _t('Required. Exporter mapping to write to file.'),
+				"file|f=s" => _t('Required. File to save exporter to.')
+			];
+		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function write_exporter_to_fileUtilityClass() {
+            return _t('Import/Export');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function write_exporter_to_fileShortHelp() {
+			return _t('Write exporter mapping to Excel-format file.');
+        }
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public static function write_exporter_to_fileHelp() {
+			return _t('Write exporter mapping to Excel-format file.');
+        }
 		# -------------------------------------------------------
     }

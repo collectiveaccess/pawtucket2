@@ -502,6 +502,7 @@
 		 *		purifyWithFallback = executes the search with "purify" set and falls back to search with unpurified text if nothing is found. [Default is false]
 		 *		checkAccess = array of access values to filter results by; if defined only items with the specified access code(s) are returned. Only supported for <table_name>.hierarchy.preferred_labels and <table_name>.children.preferred_labels because these returns sets of items. For <table_name>.parent.preferred_labels, which returns a single row at most, you should do access checking yourself. (Everything here applies equally to nonpreferred_labels)
 		 *		restrictToTypes = Restrict returned items to those of the specified types. An array of list item idnos and/or item_ids may be specified. [Default is null]			 
+ 	 	 *		dontIncludeSubtypesInTypeRestriction = If restrictToTypes is set, by default the type list is expanded to include subtypes (aka child types). If set, no expansion will be performed. [Default is false]
  	 	 *		includeDeleted = If set deleted rows are returned in result set. [Default is false]
  	 	 *
 		 * @return mixed Depending upon the returnAs option setting, an array, subclass of LabelableBaseModelWithAttributes or integer may be returned.
@@ -541,7 +542,8 @@
 			$vs_type_restriction_sql = '';
 			$va_type_restriction_params = [];
 			if ($va_restrict_to_types = caGetOption('restrictToTypes', $pa_options, null)) {
-				if (is_array($va_restrict_to_types = caMakeTypeIDList($vs_table, $va_restrict_to_types)) && sizeof($va_restrict_to_types)) {
+				$include_subtypes = caGetOption('dontIncludeSubtypesInTypeRestriction', $pa_options, false);
+				if (is_array($va_restrict_to_types = caMakeTypeIDList($vs_table, $va_restrict_to_types, ['dontIncludeSubtypesInTypeRestriction' => $include_subtypes])) && sizeof($va_restrict_to_types)) {
 					$vs_type_restriction_sql = "{$vs_table}.".$t_instance->getTypeFieldName()." IN (?)";
 					$va_type_restriction_params[] = $va_restrict_to_types;
 				}
@@ -843,7 +845,7 @@
 									case __CA_ATTRIBUTE_VALUE_DATERANGE__:
 										if(is_array($va_date = caDateToHistoricTimestamps($vm_value))) {
 											$va_q[] = "((ca_attribute_values.element_id = {$vn_element_id}) AND ((ca_attribute_values.value_decimal1 BETWEEN ? AND ?) OR (ca_attribute_values.value_decimal2 BETWEEN ? AND ?)))";
-											array_push($va_attr_params, $va_date['start'], $va_date['end'], $va_date['start'], $va_date['end']);
+											$va_attr_params[] = [$va_date['start'], $va_date['end'], $va_date['start'], $va_date['end']];
 										} else {
 											continue(2);
 										}
@@ -851,7 +853,7 @@
 									case __CA_ATTRIBUTE_VALUE_CURRENCY__:
 										if (is_array($va_parsed_value = caParseCurrencyValue($vm_value))) {
 											$va_q[] = "((ca_attribute_values.element_id = {$vn_element_id}) AND ((ca_attribute_values.value_longtext1 = ?) OR (ca_attribute_values.value_decimal1 {$vs_op} ?)))";
-											array_push($va_attr_params, $va_parsed_value['currency'], $va_parsed_value['value']);
+											$va_attr_params[] = [$va_parsed_value['currency'], $va_parsed_value['value']];
 										} else {
 											continue(2);
 										}
@@ -881,7 +883,7 @@
 										} elseif (caGetOption('allowWildcards', $pa_options, false) && (strpos($vm_value, '%') !== false)) {
 											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} LIKE ?))";
 										} else {
-											if ($vm_value === '') { continue(2); }
+											if ($vm_value === '') { break; }
 											$va_q[] = "{$vs_q} (ca_attribute_values.{$vs_fld} {$vs_op} ?))";
 										}
 								
@@ -898,7 +900,7 @@
 			
 			if (($vn_attr_count == 1) || (($vn_attr_count > 0) && strtolower($ps_boolean) !== 'and')) {
 			    $va_label_sql = array_merge($va_label_sql, $va_attr_sql);
-			    $va_sql_params = array_merge($va_sql_params, $va_attr_params);
+			    $va_sql_params = array_merge($va_sql_params, caFlattenArray($va_attr_params));
 			} 
 			
 			if (!sizeof($va_label_sql) && ($vn_attr_count == 0)) { return null; }
@@ -919,6 +921,8 @@
 
 			if (isset($pa_options['transaction']) && ($pa_options['transaction'] instanceof Transaction)) {
 				$o_db = $pa_options['transaction']->getDb();
+			} elseif(isset($pa_options['db'])) {
+		        $o_db = $pa_options['db'];
 			} else {
 				$o_db = new Db();
 			}
@@ -926,7 +930,8 @@
 			if (($vn_attr_count > 1) && (strtolower($ps_boolean) == 'and')) {
 			    $va_ids = null;
 			    foreach($va_attr_sql as $i => $vs_attr_sql) {
-			        $qr_p = $o_db->query("SELECT t.{$vs_table_pk} FROM {$vs_table} t INNER JOIN ca_attributes ON ca_attributes.table_num = {$vn_table_num} AND ca_attributes.row_id = t.{$vs_table_pk} INNER JOIN ca_attribute_values ON ca_attribute_values.attribute_id = ca_attributes.attribute_id WHERE {$vs_attr_sql}", [$va_attr_params[$i]]);
+			        $qr_p = $o_db->query("SELECT t.{$vs_table_pk} FROM {$vs_table} t INNER JOIN ca_attributes ON ca_attributes.table_num = {$vn_table_num} AND ca_attributes.row_id = t.{$vs_table_pk} INNER JOIN ca_attribute_values ON ca_attribute_values.attribute_id = ca_attributes.attribute_id WHERE {$vs_attr_sql}", $va_attr_params[$i]);
+			        
 			        if (is_null($va_ids)) { 
 			            $va_ids = array_unique($qr_p->getAllFieldValues($vs_table_pk));
 			        } else {
@@ -964,7 +969,6 @@
 			}
 		
 			$vn_limit = (isset($pa_options['limit']) && ((int)$pa_options['limit'] > 0)) ? (int)$pa_options['limit'] : null;
-	
 			$qr_res = $o_db->query($vs_sql, array_merge($va_sql_params, $va_type_restriction_params));
 
 			if ($vb_purify_with_fallback && ($qr_res->numRows() == 0)) {

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2017 Whirl-i-Gig
+ * Copyright 2008-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -366,9 +366,11 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
 		
 		$include_type_codes_as_keys = caGetOption('includeTypeCodesAsKeys', $options, false);
 		
+		$params = [(int)$vn_table_num];
 		$vs_type_sql = '';
 		if ($ps_type_code) {
-			$vs_type_sql = " AND (crt.type_code = '".$this->getDb()->escape($ps_type_code)."')";
+			$vs_type_sql = " AND ((crt.type_code = ?) || (crtl.typename = ?) || (crtl.typename_reverse = ?))";
+			$params[] = $ps_type_code; $params[] = $ps_type_code; $params[] = $ps_type_code;
 		}
 		
 		$qr_res = $this->getDb()->query("
@@ -377,7 +379,7 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
 			INNER JOIN ca_relationship_type_labels AS crtl ON crt.type_id = crtl.type_id
 			WHERE
 				(crt.table_num = ?) {$vs_type_sql}
-		", (int)$vn_table_num);
+		", $params);
 		
 		$va_relationships = [];
 		while ($qr_res->nextRow()) {
@@ -421,7 +423,7 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
 		} else {
 			if ($va_relationships = $this->getRelationshipInfo($pm_table_name_or_num, $pm_type_code_or_id)) {
 				foreach($va_relationships as $vn_type_id => $va_type_info) {
-					if ($va_type_info['type_code'] == $pm_type_code_or_id) {
+					if ((mb_strtolower($va_type_info['type_code']) === $pm_type_code_or_id) || (mb_strtolower($va_type_info['typename']) === $pm_type_code_or_id) || (mb_strtolower($va_type_info['typename_reverse']) === $pm_type_code_or_id)){
 						return ca_relationship_types::$s_relationship_type_id_cache[$vn_table_num.'/'.$pm_type_code_or_id] = $vn_type_id;
 					}
 				}
@@ -860,7 +862,7 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
  	 */
  	public function isSaveable($po_request, $ps_bundle_name=null) {
  		// Check actions
- 		if ($po_request->user->canDoAction('is_administrator')) {
+ 		if ($po_request->user->canDoAction('is_administrator') || $po_request->user->canDoAction('can_configure_relationship_types')) {
  			return true;
  		}
  		
@@ -875,7 +877,7 @@ class ca_relationship_types extends BundlableLabelableBaseModelWithAttributes {
  		if (!$this->getPrimaryKey()) { return false; }
  			
  		// Check actions
- 		if ($this->getPrimaryKey() && $po_request->user->canDoAction('is_administrator')) {
+ 		if ($this->getPrimaryKey() && ($po_request->user->canDoAction('is_administrator') || $po_request->user->canDoAction('can_configure_relationship_types'))) {
  			return true;
  		}
  		

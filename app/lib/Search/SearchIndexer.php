@@ -455,7 +455,7 @@ class SearchIndexer extends SearchBase {
 	 * 
 	 */
 	private function _genIndexInheritance($pt_subject, $pt_rel, $ps_field_num, $pn_subject_row_id, $pn_content_row_id, $pa_values_to_index, $pa_data, $pa_options=null) {
-		$is_generic = caGetOption('isGeneric', $pa_options, true);
+		$is_generic = caGetOption('isGeneric', $pa_options, false);
 		$subject_table_num = $pt_subject->tableNum();
 		
 		if (caGetOption('CHILDREN_INHERIT', $pa_data, false) || (array_search('CHILDREN_INHERIT', $pa_data, true) !== false)) {
@@ -617,20 +617,6 @@ if (!$for_current_value_reindex) {
 		$va_fields_to_index = $this->getFieldsToIndex($pn_subject_table_num);
 
 		if(is_array($va_fields_to_index)) {
-
-			foreach($va_fields_to_index as $vs_k => $va_data) {
-				if (preg_match('!^ca_attribute_(.*)$!', $vs_k, $va_matches)) {
-					unset($va_fields_to_index[$vs_k]);
-					if ($va_data['DONT_INDEX']) {	// remove attribute from indexing list
-						unset($va_fields_to_index['_ca_attribute_'.$va_matches[1]]);
-					} else {
-						if ($vn_element_id = ca_metadata_elements::getElementID($va_matches[1])) {
-							$va_fields_to_index['_ca_attribute_'.$vn_element_id] = $va_data;
-						}
-					}
-				}
-			}
-
 			// always index type id if applicable
 			if(method_exists($t_subject, 'getTypeFieldName') && ($vs_type_field = $t_subject->getTypeFieldName()) && !isset($va_fields_to_index[$vs_type_field])) {
 				$va_fields_to_index[$vs_type_field] = array('STORE', 'DONT_TOKENIZE');
@@ -705,8 +691,10 @@ if (!$for_current_value_reindex) {
 								$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, $va_hier_values['values'], $va_data);
 								
 								if(caGetOption('INDEX_ANCESTORS_AS_PATH_WITH_DELIMITER', $va_data, false) !== false) {
-									$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('DONT_TOKENIZE' => 1, 'TOKENIZE' => 1)));
-									$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('DONT_TOKENIZE' => 1, 'TOKENIZE' => 1)));
+									$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('DONT_TOKENIZE' => 1)));
+									$this->opo_engine->indexField($pn_subject_table_num, "I{$vn_fld_num}", $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('TOKENIZE' => 1)));
+									$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('DONT_TOKENIZE' => 1)));
+									$this->_genIndexInheritance($t_subject, null, "I{$vn_fld_num}", $pn_subject_row_id, $pn_subject_row_id, [$va_hier_values['path']], array_merge($va_data, array('TOKENIZE' => 1)));
 								}
 							}
 
@@ -997,6 +985,8 @@ if (!$for_current_value_reindex) {
                                                     if(caGetOption('INDEX_ANCESTORS_AS_PATH_WITH_DELIMITER', $va_rel_field_info, false) !== false) {
                                                         $this->opo_engine->indexField($is_generic ? $pn_subject_table_num : $vn_related_table_num, $field_num, $is_generic ? $pn_subject_row_id : $vn_id, [$va_hier_values['path']], array_merge($va_rel_field_info, array('DONT_TOKENIZE' => 1, 'relationship_type_id' => $vn_rel_type_id, 'PRIVATE' => $vn_private)));
                                                         $this->_genIndexInheritance($t_subject, $t_hier_rel, $field_num, $pn_subject_row_id, $is_generic ? $pn_subject_row_id : $vn_id, [$va_hier_values['path']], array_merge($va_rel_field_info, array('DONT_TOKENIZE' => 1, 'relationship_type_id' => $vn_rel_type_id, 'PRIVATE' => $vn_private, 'isGeneric' => $is_generic)));
+                                                        $this->opo_engine->indexField($is_generic ? $pn_subject_table_num : $vn_related_table_num, $field_num, $is_generic ? $pn_subject_row_id : $vn_id, [$va_hier_values['path']], array_merge($va_rel_field_info, array('TOKENIZE' => 1, 'relationship_type_id' => $vn_rel_type_id, 'PRIVATE' => $vn_private)));
+                                                        $this->_genIndexInheritance($t_subject, $t_hier_rel, $field_num, $pn_subject_row_id, $is_generic ? $pn_subject_row_id : $vn_id, [$va_hier_values['path']], array_merge($va_rel_field_info, array('TOKENIZE' => 1, 'relationship_type_id' => $vn_rel_type_id, 'PRIVATE' => $vn_private, 'isGeneric' => $is_generic)));
                                                     }
                                                 }
                                             }
@@ -1458,6 +1448,7 @@ if (!$for_current_value_reindex) {
 	 * @return bool
 	 */
 	private function _indexAttribute($pt_subject, $pn_row_id, $pm_element_code_or_id, $pa_data, $pa_options=null) {
+		if(!method_exists($pt_subject, "getAttributesByElement")) { return true; } 
 		$va_attributes = $pt_subject->getAttributesByElement($pm_element_code_or_id, array('row_id' => $pn_row_id));
 		$pn_subject_table_num = $pt_subject->tableNum();
 		

@@ -515,7 +515,7 @@ class ca_bundle_displays extends BundlableLabelableBaseModelWithAttributes {
 			FROM ca_bundle_display_placements
 			WHERE
 				display_id = ?
-			ORDER BY rank
+			ORDER BY `rank`
 		", (int)$vn_display_id);
 		
 		$va_available_bundles = ($pb_settings_only) ? [] : $this->getAvailableBundles(null, $pa_options);
@@ -1161,6 +1161,19 @@ if (!$pb_omit_editing_info) {
 						)		
 					);
 					break;
+				case __CA_ATTRIBUTE_VALUE_MEDIA__:
+					$va_even_more_settings = [
+					    'appendMultiPagePDFToPDFOutput' => [
+							'formatType' => FT_NUMBER,
+							'displayType' => DT_CHECKBOXES,
+							'width' => 10, 'height' => 1,
+							'takesLocale' => false,
+							'default' => '0',
+							'label' => _t('Append multipage PDF to output?'),
+							'description' => _t('Check this option if you want PDF media in display appended to the end of PDF display output.')
+						    ]
+						];
+					break;
 				case __CA_ATTRIBUTE_VALUE_CONTAINER__:	// (allows sub-elements to be summarized)
 				case __CA_ATTRIBUTE_VALUE_CURRENCY__: 
 				case __CA_ATTRIBUTE_VALUE_LENGTH__: 
@@ -1478,6 +1491,75 @@ if (!$pb_omit_editing_info) {
 					$this->_formatBundleTooltip($vs_label, $vs_bundle, $vs_description)
 				);
 			}
+		
+		
+		    $va_additional_settings = array(
+				'display_template' => array(
+					'formatType' => FT_TEXT,
+					'displayType' => DT_FIELD,
+					'width' => 35, 'height' => 5,
+					'takesLocale' => false,
+					'default' => '',
+					'label' => _t('Display format'),
+					'description' => _t('Template used to format output.')
+				)
+			);
+			$t_placement = new ca_bundle_display_placements(null, $va_additional_settings);
+			if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
+			
+			$vs_bundle = $vs_table.'.submitted_by_user';
+			$vs_label = _t('Submitted by user');
+			$vs_display = "<div id='bundleDisplayEditorBundle_{$vs_table}_submitted_by_user'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_instance->getProperty('NAME_SINGULAR'))."</span> "._t('Submitted by user')."</div>";
+			$vs_description = _t('Name and email address user that submitted item');
+			
+			$va_available_bundles[strip_tags($vs_display)][$vs_bundle] = array(
+				'bundle' => $vs_bundle,
+				'display' => ($vs_format == 'simple') ? $vs_label : $vs_display,
+				'description' => $vs_description,
+				'settingsForm' => $t_placement->getHTMLSettingForm(array('id' => $vs_bundle.'_0', 'table' => $vs_table)),
+				'settings' => $va_additional_settings
+			);
+			
+			if ($vb_show_tooltips) {
+				TooltipManager::add(
+					"#bundleDisplayEditorBundle_submitted_by_user",
+					$this->_formatBundleTooltip($vs_label, $vs_bundle, $vs_description)
+				);
+			}
+			
+			$va_additional_settings = array(
+				'display_template' => array(
+					'formatType' => FT_TEXT,
+					'displayType' => DT_FIELD,
+					'width' => 35, 'height' => 5,
+					'takesLocale' => false,
+					'default' => '',
+					'label' => _t('Display format'),
+					'description' => _t('Template used to format output.')
+				)
+			);
+			$t_placement = new ca_bundle_display_placements(null, $va_additional_settings);
+			if ($this->inTransaction()) { $t_placement->setTransaction($this->getTransaction()); }
+			
+			$vs_bundle = $vs_table.'.submission_group';
+			$vs_label = _t('Submitted by group');
+			$vs_display = "<div id='bundleDisplayEditorBundle_{$vs_table}_submission_group'><span class='bundleDisplayEditorPlacementListItemTitle'>".caUcFirstUTF8Safe($t_instance->getProperty('NAME_SINGULAR'))."</span> "._t('Submission group')."</div>";
+			$vs_description = _t('Group item was submitted under');
+			
+			$va_available_bundles[strip_tags($vs_display)][$vs_bundle] = array(
+				'bundle' => $vs_bundle,
+				'display' => ($vs_format == 'simple') ? $vs_label : $vs_display,
+				'description' => $vs_description,
+				'settingsForm' => $t_placement->getHTMLSettingForm(array('id' => $vs_bundle.'_0', 'table' => $vs_table)),
+				'settings' => $va_additional_settings
+			);
+			
+			if ($vb_show_tooltips) {
+				TooltipManager::add(
+					"#bundleDisplayEditorBundle_submission_group",
+					$this->_formatBundleTooltip($vs_label, $vs_bundle, $vs_description)
+				);
+			}
 		}
 		
 		if (caGetBundleAccessLevel($vs_table, "ca_object_representations") != __CA_BUNDLE_ACCESS_NONE__) {
@@ -1496,7 +1578,29 @@ if (!$pb_omit_editing_info) {
 						),
 						'label' => _t('Output mode'),
 						'description' => _t('Determines if value used is URL of media or the media itself.')
-					)		
+					),
+					'show_nonprimary' => array(
+						'formatType' => FT_TEXT,
+						'displayType' => DT_SELECT,
+						'width' => 35, 'height' => 1,
+						'takesLocale' => false,
+						'default' => 0,
+						'options' => array(
+							_t('Yes') => 1,
+							_t('No') => 0
+						),
+						'label' => _t('Include non-primary media'),
+						'description' => _t('Includes non-primary media in display.')
+					),					
+                    'delimiter' => array(
+                        'formatType' => FT_TEXT,
+                        'displayType' => DT_FIELD,
+                        'width' => 35, 'height' => 1,
+                        'takesLocale' => false,
+                        'default' => '',
+                        'label' => _t('Delimiter'),
+                        'description' => _t('Text to place in-between repeating values.')
+                    )
 				);
 			
 				$o_media_settings = new MediaProcessingSettings('ca_object_representations', 'media');
@@ -2048,6 +2152,7 @@ if (!$pb_omit_editing_info) {
 		$o_request = 		caGetOption('request', $pa_options, null);
 		
 		$vb_return_info =	caGetOption('returnInfo', $pa_options, false);
+		$vb_include_nonprimary_media = caGetOption('show_nonprimary', $pa_options, false);
 		
 		if (!isset($pa_options['convertCodesToDisplayText'])) { $pa_options['convertCodesToDisplayText'] = true; }
 		if (!isset($pa_options['forReport'])) { $pa_options['forReport'] = false; }
@@ -2171,7 +2276,10 @@ if (!$pb_omit_editing_info) {
 			if($pb_show_hierarchy && (sizeof($va_bundle_bits) == 1)) {
 				$va_bundle_bits[] = 'hierarchy.preferred_labels.name';
 			}
+			
+			if ($vb_include_nonprimary_media) { $po_result->filterNonPrimaryRepresentations(false); }
 			$vs_val = $po_result->get(join(".", $va_bundle_bits), array_merge(['doRefSubstitution' => true], array_merge($pa_options, ['policy' => $va_settings['policy']])));	// policy passed for history tracking current value
+			if ($vb_include_nonprimary_media) { $po_result->filterNonPrimaryRepresentations(true); }
 		}
 		
 		if (isset($pa_options['purify']) && $pa_options['purify']) {
@@ -2745,7 +2853,6 @@ if (!$pb_omit_editing_info) {
 	 * @return array Array of placements. Each value is an array with information about a column in the inline editor.
 	 */
 	static public function makeBundlesForResultsEditor($pa_bundles, $pa_settings=null) {		
-		
 		$va_placements = [];
 
 		$vn_i = 1;
@@ -2760,6 +2867,7 @@ if (!$pb_omit_editing_info) {
 				}
 			}
 			
+			$vs_bundle = preg_replace("!\.related$!", "", $vs_bundle);  // Remove .related specifier as editor form generator doesn't need or recognize itQ
 			$va_placements[] = array(
 				'placement_id' => 'X'.$vn_i,
 				'screen_id' => -1,
@@ -3125,7 +3233,7 @@ if (!$pb_omit_editing_info) {
 		$vn_id = $t_subject->getPrimaryKey();
 		
 		return [
-			'status' => sizeof($va_error_list) ? 10 : 0,
+			'status' => (is_array($va_error_list) && sizeof($va_error_list)) ? 10 : 0,
 			'id' => $vn_id,
 			'row' => $pn_row, 'col' => $pn_col,
 			'table' => $t_subject->tableName(),

@@ -460,7 +460,7 @@
  			if(!is_array($va_facet_info = $this->opo_browse->getInfoForFacet($ps_facet_name))) { return null; }
  			
  			$va_facet = $this->opo_browse->getFacet($ps_facet_name, array('sort' => 'name', 'checkAccess' => $va_access_values));
-
+ 				
  			if (in_array($va_facet_info['type'], ['current_value', 'location']) ){
  				//
  				// Hierarchical display of current location facets is only available when pure storage location tracking (ie. only 

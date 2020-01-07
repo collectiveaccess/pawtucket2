@@ -89,11 +89,6 @@
 				        }
 				    }
 				    
-				    // Make relationship type entry into default type entry
-				   //  if (is_array($map['ca_storage_locations'])) {
-// 				        $map['ca_storage_locations']['__default__'] = array_shift($map[$t]);
-// 				    }
-				    
 				 	$history_tracking_policies = [
 				 		'defaults' => [
 				 			'ca_objects' => '__default__',
@@ -134,6 +129,10 @@
 			}
 			if(!is_array($map)){ return null; }
 			
+			if (!is_null($date_mode = caGetOption('dateMode', $policy_info, null))) {
+			    $bundle_settings['dateMode'] = $date_mode;
+			}
+			
 			if (!($policy_table = caGetOption('table', $policy_info, false))) { return []; }
 
 			foreach($map as $table => $types) {
@@ -168,6 +167,7 @@
 							if(!is_array($config)) { break; }
 							if ($table === 'ca_storage_locations') { 
 								$bundle_settings["{$table}_setInterstitialElementsOnAdd"] = $config['setInterstitialElementsOnAdd'];
+								$bundle_settings["{$table}_useDatePicker"] = $config['useDatePicker'];
 							} else {
 								$bundle_settings["{$table}_{$type}_setInterstitialElementsOnAdd"] = $config['setInterstitialElementsOnAdd'];
 							}
@@ -177,7 +177,7 @@
 						
 							$bundle_settings["{$table}_{$type}_dateElement"] = $config['date'];
 						
-							if ((sizeof($path) === 3) && ($rel_types = caGetOption('restrictToRelationshipTypes', $config, null)) && $path[1]) { 
+							if ((sizeof($path) === 3) && ($rel_types = caGetOption(['restrictToRelationshipTypes', 'showRelationshipTypes'], $config, null)) && $path[1]) { 
 								$bundle_settings["{$table}_showRelationshipTypes"] = [];
 								foreach($rel_types as $rel_type) {
 									if (($rel_type_id = $t_rel_type->getRelationshipTypeID($path[1], $rel_type)) && !in_array($rel_type_id, $bundle_settings["{$table}_showRelationshipTypes"])) { 
@@ -249,7 +249,7 @@
 				}
 
 				foreach(array(
-							'policy', 'displayMode', 'row_id', 'locationTrackingMode', 'width', 'height', 'readonly', 'documentation_url', 'expand_collapse',
+							'policy', 'displayMode', 'dateMode', 'row_id', 'locationTrackingMode', 'width', 'height', 'readonly', 'documentation_url', 'expand_collapse',
 							'label', 'description', 'useHierarchicalBrowser', 'hide_add_to_loan_controls', 'hide_add_to_movement_controls', 'hide_update_location_controls',
 							'hide_add_to_occurrence_controls', 'hide_include_child_history_controls', 'add_to_occurrence_types', 
 							'hide_add_to_collection_controls', 'add_to_collection_types', 'hide_add_to_object_controls', 'hide_add_to_entity_controls', 'add_to_entity_types', 
@@ -711,7 +711,7 @@
 							if (isset($dspec['date']) && $dspec['date']) {
 								$spec_has_date = true;
 								$element_code = array_shift(explode('.', $dspec['date']));
-								if($this->elementDidChange($element_code)) {
+								if($this->attributeDidChange($element_code)) {
 									$date_has_changed = true;
 								}
 							}
@@ -827,6 +827,15 @@
 			$pb_show_child_history 		= caGetOption('showChildHistory', $options, false);
 		
 			$vn_current_date = TimeExpressionParser::now();
+			
+			if ((($pb_date_mode  = caGetOption('dateMode', $options, false)) === 'dateless') || ($pb_date_mode  = (caGetOption('dateMode', $pa_bundle_settings, false)) === 'dateless')) {
+                $va_current_date_stamps = caDateToHistoricTimestamps($vn_current_date);
+                $current_date_arr = array(
+                    'sortable' => $va_current_date_stamps['start'].'/'.$va_current_date_stamps['end'],
+                    'bounds' => [$va_current_date_stamps['start'], $va_current_date_stamps['end']],
+                    'display' => ''
+                );
+            }
 
 			$o_media_coder = new MediaInfoCoder();
 			
@@ -860,9 +869,9 @@
 					}
 					
 					if($linking_table) {
-						$qr_lots = caMakeSearchResult($linking_table, $va_lots, ['transaction' => $this->getTransaction()]);
+						$qr_lots = caMakeSearchResult($linking_table, $va_lots, ['transaction' => $this->getTransaction(), 'sort' => $pb_date_mode ? 'ca_object_lots.lot_id' : null, 'sortDirection' => $pb_date_mode ? 'desc' : null]);
 					} else {
-						$qr_lots = caMakeSearchResult('ca_object_lots', $va_lots, ['transaction' => $this->getTransaction()]);
+						$qr_lots = caMakeSearchResult('ca_object_lots', $va_lots, ['transaction' => $this->getTransaction(), 'sort' => $pb_date_mode ? 'ca_object_lots.lot_id' : null, 'sortDirection' => $pb_date_mode ? 'desc' : null]);
 					}
 					
 					$t_lot = new ca_object_lots();
@@ -889,17 +898,21 @@
 			   
 						if (!is_array($va_date_elements) && $va_date_elements) { $va_date_elements = [$va_date_elements]; }
 		
-						if (is_array($va_date_elements) && sizeof($va_date_elements)) {
-							foreach($va_date_elements as $vs_date_element) {
-								$va_date_bits = explode('.', $vs_date_element);
-								$vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_object_lots.{$vs_date_element}";
-								$va_dates[] = [
-									'sortable' => $qr_lots->get($vs_date_spec, array('sortable' => true)),
-									'bounds' => explode("/", $qr_lots->get($vs_date_spec, array('sortable' => true))),
-									'display' => $qr_lots->get($vs_date_spec)
-								];
-							}
-						}
+		                if($pb_date_mode) {
+						    $va_dates[] = $current_date_arr;
+						} else {
+                            if (is_array($va_date_elements) && sizeof($va_date_elements)) {
+                                foreach($va_date_elements as $vs_date_element) {
+                                    $va_date_bits = explode('.', $vs_date_element);
+                                    $vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_object_lots.{$vs_date_element}";
+                                    $va_dates[] = [
+                                        'sortable' => $qr_lots->get($vs_date_spec, array('sortable' => true)),
+                                        'bounds' => explode("/", $qr_lots->get($vs_date_spec, array('sortable' => true))),
+                                        'display' => $qr_lots->get($vs_date_spec)
+                                    ];
+                                }
+                            }
+                        }
 						if (!sizeof($va_dates)) {
 							$va_dates[] = [
 								'sortable' => $vn_date = caUnixTimestampToHistoricTimestamps($qr_lots->getCreationTimestamp(null, array('timestampOnly' => true))),
@@ -954,7 +967,7 @@
 					if ($pb_show_child_history) { $va_loans = array_merge($va_loans, $va_child_loans); }
 				}
 				if(is_array($va_loan_types = caGetOption('ca_loans_showTypes', $pa_bundle_settings, null)) && is_array($va_loans)) {	
-					$qr_loans = caMakeSearchResult($linking_table, $va_loans, ['transaction' => $this->getTransaction()]);
+					$qr_loans = caMakeSearchResult($linking_table, $va_loans, ['transaction' => $this->getTransaction(), 'sort' => $pb_date_mode ? 'ca_loans.loan_id' : null, 'sortDirection' => $pb_date_mode ? 'desc' : null]);
 					require_once(__CA_MODELS_DIR__."/ca_loans.php");
 					$t_loan = new ca_loans();
 					$va_loan_type_info = $t_loan->getTypeList(); 
@@ -985,24 +998,29 @@
 						$vs_display_template = $pb_display_label_only ? $vs_default_display_template : caGetOption("ca_loans_{$va_loan_type_info[$vn_type_id]['idno']}_displayTemplate", $pa_bundle_settings, $vs_default_display_template);
 				
 						$va_dates = [];
-						if (is_array($va_date_elements_by_type[$vn_type_id]) && sizeof($va_date_elements_by_type[$vn_type_id])) {
-							foreach($va_date_elements_by_type[$vn_type_id] as $vs_date_element) {
-								$va_date_bits = explode('.', $vs_date_element);
-								$vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_loans.{$vs_date_element}";
-								$va_dates[] = array(
-									'sortable' => $qr_loans->get($vs_date_spec, array('sortable' => true)),
-									'bounds' => explode("/", $qr_loans->get($vs_date_spec, array('sortable' => true))),
-									'display' => $qr_loans->get($vs_date_spec)
-								);
-							}
-						}
-						if (!sizeof($va_dates)) {
-							$va_dates[] = array(
-								'sortable' => $vn_date = caUnixTimestampToHistoricTimestamps($qr_loans->get('lastModified.direct')),
-								'bounds' => array(0, $vn_date),
-								'display' => caGetLocalizedDate($vn_date)
-							);
-						}
+						
+						if($pb_date_mode) {
+						    $va_dates[] = $current_date_arr;
+						} else {
+                            if (is_array($va_date_elements_by_type[$vn_type_id]) && sizeof($va_date_elements_by_type[$vn_type_id])) {
+                                foreach($va_date_elements_by_type[$vn_type_id] as $vs_date_element) {
+                                    $va_date_bits = explode('.', $vs_date_element);
+                                    $vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_loans.{$vs_date_element}";
+                                    $va_dates[] = array(
+                                        'sortable' => $qr_loans->get($vs_date_spec, array('sortable' => true)),
+                                        'bounds' => explode("/", $qr_loans->get($vs_date_spec, array('sortable' => true))),
+                                        'display' => $qr_loans->get($vs_date_spec)
+                                    );
+                                }
+                            }
+                            if (!sizeof($va_dates)) {
+                                $va_dates[] = array(
+                                    'sortable' => $vn_date = caUnixTimestampToHistoricTimestamps($qr_loans->get('lastModified.direct')),
+                                    'bounds' => array(0, $vn_date),
+                                    'display' => caGetLocalizedDate($vn_date)
+                                );
+                            }
+                        }
 				
 						foreach($va_dates as $va_date) {
 							if (!$va_date['sortable']) { continue; }
@@ -1056,7 +1074,7 @@
 					if ($pb_show_child_history) { $va_movements = array_merge($va_movements, $va_child_movements); }
 				}
 				if(is_array($va_movement_types = caGetOption('ca_movements_showTypes', $pa_bundle_settings, null)) && is_array($va_movements)) {	
-					$qr_movements = caMakeSearchResult($linking_table, $va_movements, ['transaction' => $this->getTransaction()]);
+					$qr_movements = caMakeSearchResult($linking_table, $va_movements, ['transaction' => $this->getTransaction(), 'sort' => $pb_date_mode ? 'ca_movements.movement_id' : null, 'sortDirection' => $pb_date_mode ? 'desc' : null]);
 					require_once(__CA_MODELS_DIR__."/ca_movements.php");
 					$t_movement = new ca_movements();
 					$va_movement_type_info = $t_movement->getTypeList(); 
@@ -1087,17 +1105,21 @@
 						$vs_display_template = $pb_display_label_only ? $vs_default_display_template : caGetOption("ca_movements_{$va_movement_type_info[$vn_type_id]['idno']}_displayTemplate", $pa_bundle_settings, $vs_default_display_template);			
 					
 						$va_dates = [];
-						if (is_array($va_date_elements_by_type[$vn_type_id]) && sizeof($va_date_elements_by_type[$vn_type_id])) {
-							foreach($va_date_elements_by_type[$vn_type_id] as $vs_date_element) {
-								$va_date_bits = explode('.', $vs_date_element);
-								$vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_movements.{$vs_date_element}";
-								$va_dates[] = array(
-									'sortable' => $qr_movements->get($vs_date_spec, array('sortable' => true)),
-									'bounds' => explode("/", $qr_movements->get($vs_date_spec, array('sortable' => true))),
-									'display' => $qr_movements->get($vs_date_spec)
-								);
-							}
-						}
+						if($pb_date_mode) {
+						    $va_dates[] = $current_date_arr;
+						} else {
+                            if (is_array($va_date_elements_by_type[$vn_type_id]) && sizeof($va_date_elements_by_type[$vn_type_id])) {
+                                foreach($va_date_elements_by_type[$vn_type_id] as $vs_date_element) {
+                                    $va_date_bits = explode('.', $vs_date_element);
+                                    $vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_movements.{$vs_date_element}";
+                                    $va_dates[] = array(
+                                        'sortable' => $qr_movements->get($vs_date_spec, array('sortable' => true)),
+                                        'bounds' => explode("/", $qr_movements->get($vs_date_spec, array('sortable' => true))),
+                                        'display' => $qr_movements->get($vs_date_spec)
+                                    );
+                                }
+                            }
+                        }
 						if (!sizeof($va_dates)) {
 							$va_dates[] = array(
 								'sortable' => $vn_date = caUnixTimestampToHistoricTimestamps($qr_movements->get('lastModified.direct')),
@@ -1165,7 +1187,7 @@
 						}
 					}
 			
-					$qr_occurrences = caMakeSearchResult($linking_table, $va_occurrences, ['transaction' => $this->getTransaction()]);
+					$qr_occurrences = caMakeSearchResult($linking_table, $va_occurrences, ['transaction' => $this->getTransaction(), 'sort' => $pb_date_mode ? 'ca_occurrences.occurrence_id' : null, 'sortDirection' => $pb_date_mode ? 'desc' : null]);
 			
 					$va_date_elements_by_type = [];
 					foreach($va_occurrence_types as $vn_type_id) {
@@ -1196,24 +1218,28 @@
 						$vs_child_display_template = $pb_display_label_only ? $vs_default_child_display_template : caGetOption(["ca_occurrences_{$vs_type_idno}_childDisplayTemplate", "ca_occurrences_{$vs_type_idno}_childTemplate"], $pa_bundle_settings, $vs_display_template);
 		   			
 						$va_dates = [];
-						if (is_array($va_date_elements_by_type[$vn_type_id]) && sizeof($va_date_elements_by_type[$vn_type_id])) {
-							foreach($va_date_elements_by_type[$vn_type_id] as $vs_date_element) {
-								$va_date_bits = explode('.', $vs_date_element);	
-								$vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_occurrences.{$vs_date_element}";
-								$va_dates[] = array(
-									'sortable' => $qr_occurrences->get($vs_date_spec, array('sortable' => true)),
-									'bounds' => explode("/", $qr_occurrences->get($vs_date_spec, array('sortable' => true))),
-									'display' => $qr_occurrences->get($vs_date_spec)
-								);
-							}
-						}
-						if (!sizeof($va_dates)) {
-							$va_dates[] = array(
-								'sortable' => $vn_date = caUnixTimestampToHistoricTimestamps($qr_occurrences->get('lastModified.direct')),
-								'bounds' => array(0, $vn_date),
-								'display' => caGetLocalizedDate($vn_date)
-							);
-						}
+						if($pb_date_mode) {
+						    $va_dates[] = $current_date_arr;
+						} else {
+                            if (is_array($va_date_elements_by_type[$vn_type_id]) && sizeof($va_date_elements_by_type[$vn_type_id])) {
+                                foreach($va_date_elements_by_type[$vn_type_id] as $vs_date_element) {
+                                    $va_date_bits = explode('.', $vs_date_element);	
+                                    $vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_occurrences.{$vs_date_element}";
+                                    $va_dates[] = array(
+                                        'sortable' => $qr_occurrences->get($vs_date_spec, array('sortable' => true)),
+                                        'bounds' => explode("/", $qr_occurrences->get($vs_date_spec, array('sortable' => true))),
+                                        'display' => $qr_occurrences->get($vs_date_spec)
+                                    );
+                                }
+                            }
+                            if (!sizeof($va_dates)) {
+                                $va_dates[] = array(
+                                    'sortable' => $vn_date = caUnixTimestampToHistoricTimestamps($qr_occurrences->get('lastModified.direct')),
+                                    'bounds' => array(0, $vn_date),
+                                    'display' => caGetLocalizedDate($vn_date)
+                                );
+                            }
+                        }
 				
 						foreach($va_dates as $va_date) {
 							if (!$va_date['sortable']) { continue; }
@@ -1276,7 +1302,7 @@
 						}
 					}
 			
-					$qr_entities = caMakeSearchResult($linking_table, $va_entities, ['transaction' => $this->getTransaction()]);
+					$qr_entities = caMakeSearchResult($linking_table, $va_entities, ['transaction' => $this->getTransaction(), 'sort' => $pb_date_mode ? 'ca_entities.entity_id' : null, 'sortDirection' => $pb_date_mode ? 'desc' : null]);
 			
 					$va_date_elements_by_type = [];
 					foreach($va_entity_types as $vn_type_id) {
@@ -1307,24 +1333,29 @@
 						$vs_child_display_template = $pb_display_label_only ? $vs_default_child_display_template : caGetOption(["ca_entities_{$vs_type_idno}_childDisplayTemplate", "ca_entities_{$vs_type_idno}_childTemplate"], $pa_bundle_settings, $vs_display_template);
 		   			
 						$va_dates = [];
-						if (is_array($va_date_elements_by_type[$vn_type_id]) && sizeof($va_date_elements_by_type[$vn_type_id])) {
-							foreach($va_date_elements_by_type[$vn_type_id] as $vs_date_element) {
-								$va_date_bits = explode('.', $vs_date_element);	
-								$vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_entities.{$vs_date_element}";
-								$va_dates[] = array(
-									'sortable' => $qr_entities->get($vs_date_spec, array('sortable' => true)),
-									'bounds' => explode("/", $qr_entities->get($vs_date_spec, array('sortable' => true))),
-									'display' => $qr_entities->get($vs_date_spec)
-								);
-							}
-						}
-						if (!sizeof($va_dates)) {
-							$va_dates[] = array(
-								'sortable' => $vn_date = caUnixTimestampToHistoricTimestamps($qr_entities->get('lastModified.direct')),
-								'bounds' => array(0, $vn_date),
-								'display' => caGetLocalizedDate($vn_date)
-							);
-						}
+						
+						if($pb_date_mode) {
+						    $va_dates[] = $current_date_arr;
+						} else {
+                            if (is_array($va_date_elements_by_type[$vn_type_id]) && sizeof($va_date_elements_by_type[$vn_type_id])) {
+                                foreach($va_date_elements_by_type[$vn_type_id] as $vs_date_element) {
+                                    $va_date_bits = explode('.', $vs_date_element);	
+                                    $vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_entities.{$vs_date_element}";
+                                    $va_dates[] = array(
+                                        'sortable' => $qr_entities->get($vs_date_spec, array('sortable' => true)),
+                                        'bounds' => explode("/", $qr_entities->get($vs_date_spec, array('sortable' => true))),
+                                        'display' => $qr_entities->get($vs_date_spec)
+                                    );
+                                }
+                            }
+                            if (!sizeof($va_dates)) {
+                                $va_dates[] = array(
+                                    'sortable' => $vn_date = caUnixTimestampToHistoricTimestamps($qr_entities->get('lastModified.direct')),
+                                    'bounds' => array(0, $vn_date),
+                                    'display' => caGetLocalizedDate($vn_date)
+                                );
+                            }
+                        }
 				
 						foreach($va_dates as $va_date) {
 							if (!$va_date['sortable']) { continue; }
@@ -1378,7 +1409,7 @@
 					if($pb_show_child_history) { $va_collections = array_merge($va_collections, $va_child_collections); }
 				}
 				if(is_array($va_collection_types = caGetOption('ca_collections_showTypes', $pa_bundle_settings, null)) && is_array($va_collections)) {	
-					$qr_collections = caMakeSearchResult($linking_table, $va_collections, ['transaction' => $this->getTransaction()]);
+					$qr_collections = caMakeSearchResult($linking_table, $va_collections, ['transaction' => $this->getTransaction(), 'sort' => $pb_date_mode ? 'ca_collections.collection_id' : null, 'sortDirection' => $pb_date_mode ? 'desc' : null]);
 					require_once(__CA_MODELS_DIR__."/ca_collections.php");
 					$t_collection = new ca_collections();
 					$va_collection_type_info = $t_collection->getTypeList(); 
@@ -1411,24 +1442,29 @@
 						$vs_child_display_template = $pb_display_label_only ? $vs_default_child_display_template : caGetOption(['ca_collections_childDisplayTemplate', 'ca_collections_childTemplate'], $pa_bundle_settings, $vs_display_template);
 		   			
 						$va_dates = [];
-						if (is_array($va_date_elements_by_type[$vn_type_id]) && sizeof($va_date_elements_by_type[$vn_type_id])) {
-							foreach($va_date_elements_by_type[$vn_type_id] as $vs_date_element) {
-								$va_date_bits = explode('.', $vs_date_element);
-								$vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_collections.{$vs_date_element}";
-								$va_dates[] = array(
-									'sortable' => $qr_collections->get($vs_date_spec, array('sortable' => true)),
-									'bounds' => explode("/", $qr_collections->get($vs_date_spec, array('sortable' => true))),
-									'display' => $qr_collections->get($vs_date_spec)
-								);
-							}
-						}
-						if (!sizeof($va_dates)) {
-							$va_dates[] = array(
-								'sortable' => $vn_date = caUnixTimestampToHistoricTimestamps($qr_collections->get('lastModified.direct')),
-								'bounds' => array(0, $vn_date),
-								'display' => caGetLocalizedDate($vn_date)
-							);
-						}
+						
+						if($pb_date_mode) {
+						    $va_dates[] = $current_date_arr;
+						} else {
+                            if (is_array($va_date_elements_by_type[$vn_type_id]) && sizeof($va_date_elements_by_type[$vn_type_id])) {
+                                foreach($va_date_elements_by_type[$vn_type_id] as $vs_date_element) {
+                                    $va_date_bits = explode('.', $vs_date_element);
+                                    $vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_collections.{$vs_date_element}";
+                                    $va_dates[] = array(
+                                        'sortable' => $qr_collections->get($vs_date_spec, array('sortable' => true)),
+                                        'bounds' => explode("/", $qr_collections->get($vs_date_spec, array('sortable' => true))),
+                                        'display' => $qr_collections->get($vs_date_spec)
+                                    );
+                                }
+                            }
+                            if (!sizeof($va_dates)) {
+                                $va_dates[] = array(
+                                    'sortable' => $vn_date = caUnixTimestampToHistoricTimestamps($qr_collections->get('lastModified.direct')),
+                                    'bounds' => array(0, $vn_date),
+                                    'display' => caGetLocalizedDate($vn_date)
+                                );
+                            }
+                        }
 				
 						foreach($va_dates as $va_date) {
 							if (!$va_date['sortable']) { continue; }
@@ -1482,7 +1518,7 @@
 					if($pb_show_child_history) { $va_objects = array_merge($va_objects, $va_child_objects); }
 				}
 				if(is_array($va_object_types = caGetOption('ca_objects_showTypes', $pa_bundle_settings, null)) && is_array($va_objects)) {	
-					$qr_objects = caMakeSearchResult($linking_table, $va_objects, ['transaction' => $this->getTransaction()]);
+					$qr_objects = caMakeSearchResult($linking_table, $va_objects, ['transaction' => $this->getTransaction(), 'sort' => $pb_date_mode ? 'ca_objects.object_id' : null, 'sortDirection' => $pb_date_mode ? 'desc' : null]);
 					require_once(__CA_MODELS_DIR__."/ca_objects.php");
 					$t_object = new ca_objects();
 					$va_object_type_info = $t_object->getTypeList(); 
@@ -1515,24 +1551,29 @@
 						$vs_child_display_template = $pb_display_label_only ? $vs_default_child_display_template : caGetOption(['ca_objects_childDisplayTemplate', 'ca_objects_childTemplate'], $pa_bundle_settings, $vs_display_template);
 		   			
 						$va_dates = [];
-						if (is_array($va_date_elements_by_type[$vn_type_id]) && sizeof($va_date_elements_by_type[$vn_type_id])) {
-							foreach($va_date_elements_by_type[$vn_type_id] as $vs_date_element) {
-								$va_date_bits = explode('.', $vs_date_element);
-								$vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_objects.{$vs_date_element}";
-								$va_dates[] = array(
-									'sortable' => $qr_objects->get($vs_date_spec, array('sortable' => true)),
-									'bounds' => explode("/", $qr_objects->get($vs_date_spec, array('sortable' => true))),
-									'display' => $qr_objects->get($vs_date_spec)
-								);
-							}
-						}
-						if (!sizeof($va_dates)) {
-							$va_dates[] = array(
-								'sortable' => $vn_date = caUnixTimestampToHistoricTimestamps($qr_objects->get('lastModified.direct')),
-								'bounds' => array(0, $vn_date),
-								'display' => caGetLocalizedDate($vn_date)
-							);
-						}
+						
+						if($pb_date_mode) {
+						    $va_dates[] = $current_date_arr;
+						} else {
+                            if (is_array($va_date_elements_by_type[$vn_type_id]) && sizeof($va_date_elements_by_type[$vn_type_id])) {
+                                foreach($va_date_elements_by_type[$vn_type_id] as $vs_date_element) {
+                                    $va_date_bits = explode('.', $vs_date_element);
+                                    $vs_date_spec = (Datamodel::tableExists($va_date_bits[0])) ? $vs_date_element : "ca_objects.{$vs_date_element}";
+                                    $va_dates[] = array(
+                                        'sortable' => $qr_objects->get($vs_date_spec, array('sortable' => true)),
+                                        'bounds' => explode("/", $qr_objects->get($vs_date_spec, array('sortable' => true))),
+                                        'display' => $qr_objects->get($vs_date_spec)
+                                    );
+                                }
+                            }
+                            if (!sizeof($va_dates)) {
+                                $va_dates[] = array(
+                                    'sortable' => $vn_date = caUnixTimestampToHistoricTimestamps($qr_objects->get('lastModified.direct')),
+                                    'bounds' => array(0, $vn_date),
+                                    'display' => caGetLocalizedDate($vn_date)
+                                );
+                            }
+                        }
 				
 						foreach($va_dates as $va_date) {
 							if (!$va_date['sortable']) { continue; }
@@ -1586,7 +1627,7 @@
 					$va_child_locations = array_reduce($qr->getWithTemplate("<unit relativeTo='{$table}.children' delimiter=';'>^{$linking_table}.relation_id</unit>", ['returnAsArray' => true]), function($c, $i) { return array_merge($c, explode(';', $i)); }, []);
 					if ($pb_show_child_history) { $va_locations = array_merge($va_locations, $va_child_locations); }
 				}
-		
+
 				if(is_array($va_location_types = caGetOption('ca_storage_locations_showRelationshipTypes', $pa_bundle_settings, null)) && is_array($va_locations)) {	
 					require_once(__CA_MODELS_DIR__."/ca_storage_locations.php");
 					$t_location = new ca_storage_locations();
@@ -1596,7 +1637,7 @@
 					$vs_name_singular = $t_location->getProperty('NAME_SINGULAR');
 					$vs_name_plural = $t_location->getProperty('NAME_PLURAL');
 			
-					$qr_locations = caMakeSearchResult($linking_table, $va_locations, ['transaction' => $this->getTransaction()]);
+					$qr_locations = caMakeSearchResult($linking_table, $va_locations, ['transaction' => $this->getTransaction(), 'sort' => $pb_date_mode ? 'ca_storage_locations.location_id' : null, 'sortDirection' => $pb_date_mode ? 'desc' : null]);
 			
 					$vs_default_display_template = '^ca_storage_locations.parent.preferred_labels.name ➜ ^ca_storage_locations.preferred_labels.name (^ca_storage_locations.idno)';
 					$vs_default_child_display_template = '^ca_storage_locations.parent.preferred_labels.name ➜ ^ca_storage_locations.preferred_labels.name (^ca_storage_locations.idno)<br/>[<em>^ca_objects.preferred_labels.name (^ca_objects.idno)</em>]';
@@ -1625,7 +1666,7 @@
 						);
 
 						if (!$va_date['sortable']) { continue; }
-						if (!in_array($vn_rel_type_id = $qr_locations->get("{$linking_table}.type_id"), $va_location_types)) { continue; }
+						if (sizeof($va_location_types) && !in_array($vn_rel_type_id = $qr_locations->get("{$linking_table}.type_id"), $va_location_types)) { continue; }
 						
 						if ($pb_get_current_only && (($va_date['bounds'][0] > $vn_current_date))) { continue; }
 						
@@ -1860,23 +1901,31 @@
 			//
 			// Occurrence update
 			//
+			$o_view->setVar('occurrence_types', []);
+			$o_view->setVar('occurrence_relationship_types', []);
+			$o_view->setVar('occurrence_relationship_types_by_sub_type', []);
 			if (is_array($path = Datamodel::getPath($this->tableName(), 'ca_occurrences')) && ($path = array_keys($path)) && (sizeof($path) === 3)) {
 				$linking_table = $path[1];
 				if (($t_occ_rel = Datamodel::getInstance($linking_table, true)) && ($t_occ = Datamodel::getInstance('ca_occurrences', true))) {
-					$va_occ_types = $t_occ->getTypeList();
-					$va_occ_types_to_show =  caGetOption('add_to_occurrence_types', $pa_bundle_settings, array(), ['castTo' => 'array']);
-					foreach($va_occ_types as $vn_type_id => $va_type_info) {
-						if (!in_array($vn_type_id, $va_occ_types_to_show) && !in_array($va_type_info['idno'], $va_occ_types_to_show)) { unset($va_occ_types[$vn_type_id]); }
-					}
-					$o_view->setVar('occurrence_types', $va_occ_types);
-					$o_view->setVar('occurrence_relationship_types', $t_occ_rel->getRelationshipTypes(null, null,  array_merge($pa_options, $pa_bundle_settings)));
-					$o_view->setVar('occurrence_relationship_types_by_sub_type', $t_occ_rel->getRelationshipTypesBySubtype($this->tableName(), $this->get('type_id'),  array_merge($pa_options, $pa_bundle_settings)));
+					$va_occ_types_to_show =  array_filter(caGetOption('add_to_occurrence_types', $pa_bundle_settings, array(), ['castTo' => 'array']), function($v) { return (bool)$v; });
+					if(sizeof($va_occ_types_to_show) > 0) {
+                        $va_occ_types = $t_occ->getTypeList();
+                        foreach($va_occ_types as $vn_type_id => $va_type_info) {
+                            if (!in_array($vn_type_id, $va_occ_types_to_show) && !in_array($va_type_info['idno'], $va_occ_types_to_show)) { unset($va_occ_types[$vn_type_id]); }
+                        }
+                        $o_view->setVar('occurrence_types', $va_occ_types);
+                        $o_view->setVar('occurrence_relationship_types', $t_occ_rel->getRelationshipTypes(null, null,  array_merge($pa_options, $pa_bundle_settings)));
+                        $o_view->setVar('occurrence_relationship_types_by_sub_type', $t_occ_rel->getRelationshipTypesBySubtype($this->tableName(), $this->get('type_id'),  array_merge($pa_options, $pa_bundle_settings)));
+                    }
 				}
 			}
 			
 			//
 			// Collection update
 			//
+			$o_view->setVar('collection_types', []);
+			$o_view->setVar('collection_relationship_types', []);
+			$o_view->setVar('collection_relationship_types_by_sub_type', []);
 			if (is_array($path = Datamodel::getPath($this->tableName(), 'ca_collections')) && ($path = array_keys($path)) && (sizeof($path) === 3)) {
 				$linking_table = $path[1];
 				if (($t_coll_rel = Datamodel::getInstance($linking_table, true)) && ($t_coll = Datamodel::getInstance('ca_collections', true))) {
@@ -1894,6 +1943,9 @@
 			//
 			// Entity update
 			//
+			$o_view->setVar('entity_types', []);
+			$o_view->setVar('entity_relationship_types', []);
+			$o_view->setVar('entity_relationship_types_by_sub_type', []);
 			if (is_array($path = Datamodel::getPath($this->tableName(), 'ca_entities')) && ($path = array_keys($path)) && (sizeof($path) === 3)) {
 				$linking_table = $path[1];
 				if (($t_entity_rel = Datamodel::getInstance($linking_table, true)) && ($t_entity = Datamodel::getInstance('ca_entities', true))) {
@@ -1911,6 +1963,8 @@
 			//
 			// Loan update
 			//
+			$o_view->setVar('loan_relationship_types', []);
+			$o_view->setVar('loan_relationship_types_by_sub_type', []);
 			if (is_array($path = Datamodel::getPath($this->tableName(), 'ca_loans')) && ($path = array_keys($path)) && (sizeof($path) === 3)) {
 				$linking_table = $path[1];
 				if ($t_loan_rel = Datamodel::getInstance($linking_table, true)) {
@@ -1922,6 +1976,8 @@
 			//
 			// Movement update
 			//
+			$o_view->setVar('movement_relationship_types', []);
+			$o_view->setVar('movement_relationship_types_by_sub_type', []);
 			if (is_array($path = Datamodel::getPath($this->tableName(), 'ca_movements')) && ($path = array_keys($path)) && (sizeof($path) === 3)) {
 				$linking_table = $path[1];
 				if ($t_movement_rel = Datamodel::getInstance($linking_table, true)) {
@@ -1933,6 +1989,8 @@
 			//
 			// Object update
 			//
+			$o_view->setVar('object_relationship_types', []);
+			$o_view->setVar('object_relationship_types_by_sub_type', []);
 			if (is_array($path = Datamodel::getPath($this->tableName(), 'ca_objects')) && ($path = array_keys($path)) && (sizeof($path) === 3)) {
 				$linking_table = $path[1];
 				if ($t_object_rel = Datamodel::getInstance($linking_table, true)) {
@@ -1944,6 +2002,8 @@
 			//
 			// Location update
 			//
+			$o_view->setVar('location_relationship_types', []);
+			$o_view->setVar('location_relationship_types_by_sub_type', []);
 			if (is_array($path = Datamodel::getPath($this->tableName(), 'ca_storage_locations')) && ($path = array_keys($path)) && (sizeof($path) === 3)) {
 				$linking_table = $path[1];
 				if ($t_location_rel = Datamodel::getInstance($linking_table, true)) {
@@ -1955,7 +2015,7 @@
 			$h = $this->getHistory(array_merge($pa_bundle_settings, $pa_options));
 			$o_view->setVar('child_count', $child_count = sizeof(array_filter($h, function($v) { return sizeof(array_filter($v, function($x) { return $x['hasChildren']; })); })));
 			$o_view->setVar('history', $h);
-		
+			
 			return $o_view->render('history_tracking_chronology.php');
 		}
 		# ------------------------------------------------------
@@ -2003,7 +2063,7 @@
 		
 			$h = $x = $this->getHistory();
 		
-			$last_location = array_shift(array_shift($x));// $this->getLastLocation(array());
+			$last_location = array_shift(array_shift($x));
 			if (!($t_last_location = Datamodel::getInstance($last_location['tracked_table_num']))) { throw new ApplicationException(_t('Invalid table')); }
 			$t_last_location->load($last_location['tracked_row_id']);
 			$vs_display_template = null;
@@ -2109,7 +2169,7 @@
 								$field_class = '';
 								break;
 						}
-						$buf .= "<td><div class='formLabel'>{$label}<br/>".$t_rel->htmlFormElement($element_code, '', ['name' => $id_prefix."_{$rel_table}_".$element_code.'{n}', 'id' => $id_prefix."_{$rel_table}_".$element_code.'{n}', 'value' => _t('today'), 'classname' => $field_class])."</td>";
+						$buf .= "<td><div class='formLabel'>{$label}<br/>".$t_rel->htmlFormElement($element_code, '', ['name' => "{$id_prefix}_{$rel_table}_{$type_idno}_{$element_code}".'{n}', 'id' => "{$id_prefix}_{$rel_table}_{$type_idno}_{$element_code}".'{n}', 'value' => _t('today'), 'classname' => $field_class])."</td>";
 					} else {
 						$buf .= "<td class='formLabel'>{$label}<br/>".$t_rel->getAttributeHTMLFormBundle($request, null, $element_code, $placement_code, $settings, ['elementsOnly' => true])."</td>";
 					}	
@@ -2142,12 +2202,13 @@
 				if (is_array($interstitial_elements = caGetOption(["{$rel_table}_{$type}_setInterstitialElementsOnAdd", "{$rel_table}_setInterstitialElementsOnAdd"], $settings, array()))) {
 					foreach($interstitial_elements as $element_code) {
 						if ($t_item_rel->hasField($element_code)) {
-							$t_item_rel->set($element_code, $vs_val = $po_request->getParameter("{$placement_code}{$form_prefix}_{$type_id}_{$element_code}new_0", pString));
+							$t_item_rel->set($element_code, $vs_val = $po_request->getParameter(["{$placement_code}{$form_prefix}_{$type}_{$element_code}new_0", "{$placement_code}{$form_prefix}__{$element_code}new_0"], pString));
 						} elseif ($element_id = ca_metadata_elements::getElementID($element_code)) {
 							$sub_element_ids = ca_metadata_elements::getElementsForSet($element_id, ['idsOnly' => true]);
 							$vals = [];
+							
 							foreach($sub_element_ids as $sub_element_id) {
-								$vals[ca_metadata_elements::getElementCodeForID($sub_element_id)] = $po_request->getParameter("{$placement_code}{$form_prefix}_{$type_id}_{$sub_element_id}_new_0", pString);
+								$vals[ca_metadata_elements::getElementCodeForID($sub_element_id)] = $po_request->getParameter(["{$placement_code}{$form_prefix}_{$type}_{$sub_element_id}_new_0", "{$placement_code}{$form_prefix}__{$sub_element_id}_new_0"], pString);
 							}
 							$t_item_rel->addAttribute($vals, $element_code);
 						}

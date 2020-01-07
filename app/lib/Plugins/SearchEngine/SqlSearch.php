@@ -479,7 +479,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 	}
 	# -------------------------------------------------------
 	private function _getElementIDForAccessPoint($pn_subject_tablenum, $ps_access_point) {
-		$va_tmp = explode('/', $ps_access_point);
+		$va_tmp = preg_split('![/\|]+!', $ps_access_point);
 		list($vs_table, $vs_field, $vs_subfield, $vs_subsubfield, $vs_subsubsubfield) = explode('.', $va_tmp[0]);
 		
 		$vs_rel_table = caGetRelationshipTableName($pn_subject_tablenum, $vs_table);
@@ -954,11 +954,11 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								//$vs_term = preg_replace("%((?<!\d)[".$this->ops_search_tokenizer_regex."]+|[".$this->ops_search_tokenizer_regex."]+(?!\d))%u", '', $vs_raw_term);
 								$vs_term = join(' ', $this->_tokenize($vs_raw_term, true));
 	
-								if ($vs_access_point && (mb_strtoupper($vs_raw_term) == '['._t('BLANK').']')) {
+								if ($vs_access_point && (mb_strtoupper($vs_raw_term) == '['.caGetBlankLabelText().']')) {
 									$t_ap = Datamodel::getInstanceByTableNum($va_access_point_info['table_num'], true);
 									if (is_a($t_ap, 'BaseLabel')) {	// labels have the literal text "[blank]" indexed to "blank" to indicate blank-ness 
 										$vb_is_blank_search = false;
-										$vs_term = _t('blank');
+										$vs_term = caGetBlankLabelText();
 									} else {
 										$vb_is_blank_search = true;
 										$vs_table_num = $va_access_point_info['table_num'];
@@ -1414,6 +1414,8 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 										}
 									}
 								}
+								
+								$vn_intrinsic_type = null;
 								if (($vs_intrinsic_field_name = $t_table->fieldName($vn_fld_num)) && (($vn_intrinsic_type = $t_table->getFieldInfo($vs_intrinsic_field_name, 'FIELD_TYPE')) == FT_BIT)) {
 									$vb_ft_bit_optimization = true;
 								} elseif($vn_intrinsic_type == FT_HISTORIC_DATERANGE) {
@@ -1513,6 +1515,105 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 									}
 
 									$pa_direct_sql_query_params = array();
+								} elseif(in_array($vn_intrinsic_type, [FT_DATETIME, FT_TIMESTAMP])) {
+									$vb_all_numbers = true;
+									foreach($va_raw_terms as $vs_term) {
+										if (!is_numeric($vs_term)) {
+											$vb_all_numbers = false;
+											break;
+										}
+									}
+								
+									$vs_raw_term = join(' ', $va_raw_terms);
+									
+									switch($vs_raw_term{0}) {
+										case '#':
+											$vs_raw_term = substr($vs_raw_term, 1);
+											if ($vs_raw_term == '0') {
+											    $vs_direct_sql_query = "
+													SELECT ".$t_table->primaryKey()." row_id, 1, null
+													FROM ".$t_table->tableName()."
+													^JOIN
+													WHERE
+														(
+															({$vs_intrinsic_field_name} IS NULL)
+														)
+												
+												";
+											} elseif ($this->opo_tep->parse($vs_raw_term)) {
+												$va_dates = $this->opo_tep->getUnixTimestamps();
+												$vs_direct_sql_query = "
+													SELECT ".$t_table->primaryKey()." row_id, 1, null
+													FROM ".$t_table->tableName()."
+													^JOIN
+													WHERE
+														(
+															({$vs_intrinsic_field_name} BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
+														)
+												
+												";
+											}
+											break;
+										case '<':
+											$vs_raw_term = substr($vs_raw_term, 1);
+											if ($vs_raw_term{0} == '=') {
+												$vs_raw_term = substr($vs_raw_term, 1);
+												$vs_eq = '=';
+											}
+											if ($this->opo_tep->parse($vs_raw_term)) {
+												$va_dates = $this->opo_tep->getUnixTimestamps();
+												
+												$vs_direct_sql_query = "
+													SELECT ".$t_table->primaryKey()." row_id, 1, null
+													FROM ".$t_table->tableName()."
+													^JOIN
+													WHERE
+														(
+															({$vs_intrinsic_field_name} <{$vs_eq} ".(($vs_eq === '=') ? floatval($va_dates['end']) : floatval($va_dates['start'])).")
+														)
+												
+												";
+											}
+											break;
+										case '>':
+											$vs_raw_term = substr($vs_raw_term, 1);
+											if ($vs_raw_term{0} == '=') {
+												$vs_raw_term = substr($vs_raw_term, 1);
+												$vs_eq = '=';
+											}
+											if ($this->opo_tep->parse($vs_raw_term)) {
+												$va_dates = $this->opo_tep->getUnixTimestamps();
+												
+												$vs_direct_sql_query = "
+													SELECT ".$t_table->primaryKey()." row_id, 1, null
+													FROM ".$t_table->tableName()."
+													^JOIN
+													WHERE
+														(
+															({$vs_intrinsic_field_name} >{$vs_eq} ".(($vs_eq === '=') ? floatval($va_dates['start']) : floatval($va_dates['end'])).")
+														)
+												
+												";
+											}
+											break;
+										default:
+											if ($this->opo_tep->parse($vs_raw_term)) {
+												$va_dates = $this->opo_tep->getUnixTimestamps();
+												$vs_direct_sql_query = "
+													SELECT ".$t_table->primaryKey()." row_id, 1, null
+													FROM ".$t_table->tableName()."
+													^JOIN
+													WHERE
+														(
+															({$vs_intrinsic_field_name} BETWEEN ".floatval($va_dates['start'])." AND ".floatval($va_dates['end']).")
+														)
+												
+												";
+											}
+											break;
+									}
+
+									$pa_direct_sql_query_params = array();
 								}
 							}
 						}
@@ -1526,11 +1627,11 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 					if ($vb_is_blank_search) {
 						$va_sql_where[] = "((swi.field_table_num = ".intval($vs_table_num).") AND (swi.field_num = '{$vs_fld_num}') AND (swi.word_id = 0))";
 						
-						if (!sizeof($va_sql_where)) { continue; }
+						if (!sizeof($va_sql_where)) { break; }
 						$vs_sql_where = join(' OR ', $va_sql_where);
 					} elseif ($vb_is_not_blank_search) {
 						$va_sql_where[] = "((swi.field_table_num = ".intval($vs_table_num).") AND (swi.field_num = '{$vs_fld_num}') AND (swi.word_id > 0))";
-						if (!sizeof($va_sql_where)) { continue; }
+						if (!sizeof($va_sql_where)) { break; }
 						$vs_sql_where = join(' OR ', $va_sql_where);
 					} elseif (!$vs_direct_sql_query) {
 						if (sizeof($va_ft_terms)) {
@@ -1571,7 +1672,7 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 							}
 						}
 						
-						if (!sizeof($va_sql_where)) { continue; }
+						if (!sizeof($va_sql_where)) { break; }
 						$vs_sql_where = join(' OR ', $va_sql_where);
 					} else {
 						$va_ft_terms = $va_ft_like_terms = $va_ft_like_terms = array();
@@ -1672,6 +1773,8 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								if ($vs_direct_sql_query) {
 									if ($vn_direct_sql_target_table_num != $pn_subject_tablenum) {
 										array_push($va_join, "INNER JOIN {$ps_dest_table} AS ftmp1 ON ftmp1.row_id = ".Datamodel::primaryKey($pn_subject_tablenum, true));
+									} elseif($vn_intrinsic_type) {
+										array_unshift($va_join, "INNER JOIN {$ps_dest_table} AS ftmp1 ON ftmp1.row_id = ".Datamodel::primaryKey($pn_subject_tablenum, true));
 									} else {
 										array_unshift($va_join, "INNER JOIN {$ps_dest_table} AS ftmp1 ON ftmp1.row_id = ca.row_id");
 									}
@@ -1697,7 +1800,6 @@ class WLPlugSearchEngineSqlSearch extends BaseSearchPlugin implements IWLPlugSea
 								if (($vn_num_terms = (sizeof($va_ft_terms) + sizeof($va_ft_like_terms) + sizeof($va_ft_stem_terms))) > 1) {
 									$vs_sql .= " HAVING count(distinct sw.stem) >= {$vn_num_terms}";
 								}
-								
 								$t = new Timer();
 								
 								$pa_direct_sql_query_params = is_array($pa_direct_sql_query_params) ? $pa_direct_sql_query_params : array((int)$pn_subject_tablenum);

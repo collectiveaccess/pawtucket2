@@ -201,6 +201,14 @@ BaseModel::$s_ca_models_definitions['ca_occurrences'] = array(
 			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
 			'LIST_CODE' => 'submission_statuses',
 			'LABEL' => _t('Submission status'), 'DESCRIPTION' => _t('Indicates submission status of the object.')
+		),
+		'submission_via_form' => array(
+			'FIELD_TYPE' => FT_TEXT, 'DISPLAY_TYPE' => DT_OMIT,
+			'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
+			'IS_NULL' => true,
+			'DEFAULT' => null,
+			'ALLOW_BUNDLE_ACCESS_CHECK' => true,
+			'LABEL' => _t('Submission via form'), 'DESCRIPTION' => _t('Indicates what contribute form was used to create the submission.')
 		)
  	)
 );
@@ -384,6 +392,7 @@ class ca_occurrences extends RepresentableBaseModel implements IBundleProvider {
 		$this->BUNDLES['ca_sets_checklist'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Sets'));
 		
 		$this->BUNDLES['ca_item_tags'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Tags'));
+		$this->BUNDLES['ca_item_comments'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Comments'));
 		
 		$this->BUNDLES['authority_references_list'] = array('type' => 'special', 'repeating' => false, 'label' => _t('References'));
 

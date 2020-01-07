@@ -289,6 +289,34 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	/**
 	 *
 	 */
+	function caDeleteMultipleWarningBox($po_request, $t_instance, $row_ids, $message, $ps_module_path, $ps_controller, $ps_cancel_action, $pa_parameters) {
+		if ($vs_warning = isset($pa_parameters['warning']) ? $pa_parameters['warning'] : null) {
+			$vs_warning = '<br/>'.$vs_warning;
+		}
+		
+		$vs_output = caFormTag($po_request, 'Delete', 'caDeleteForm', null, 'post', 'multipart/form-data', '_top', array('noCSRFToken' => false,'disableUnsavedChangesWarning' => true));
+		$vs_output .= "<div class='delete-control-box'>".caFormControlBox(
+			"<div class='delete_warning_box'>"._t('Really delete %1?', $message)."</div>",
+			$vs_warning,
+			caFormSubmitButton($po_request, __CA_NAV_ICON_DELETE__, _t("Delete"), 'caDeleteForm', array()).
+			caFormNavButton($po_request, __CA_NAV_ICON_CANCEL__, _t("Cancel"), '', $ps_module_path, $ps_controller, $ps_cancel_action, $pa_parameters)
+		)."</div>\n";
+		
+		
+		foreach(array_merge($pa_parameters, array('confirm' => 1)) as $vs_f => $vs_v) {
+			$vs_output .= caHTMLHiddenInput($vs_f, array('value' => $vs_v));
+		}
+		foreach($row_ids as $row_id) {
+			$vs_output .= caHTMLHiddenInput("row_id[]", array('value' => $row_id));
+		}
+		$vs_output .= "</form>\n";
+		
+		return $vs_output;
+	}
+	# ------------------------------------------------------------------------------------------------
+	/**
+	 *
+	 */
 	function caDeleteRemapper($po_request, $t_instance) {
 		$vs_instance_table = $t_instance->tableName();
 		
@@ -406,7 +434,22 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 				$va_remap_opts['checked'] = 1; 
 			}
 			$vs_output .= caHTMLRadioButtonInput('caReferenceHandlingTo', $va_delete_opts).' '._t('remove all references')."<br/>\n";
-			$vs_output .= caHTMLRadioButtonInput('caReferenceHandlingTo', $va_remap_opts).' '._t('transfer references to').' '.caHTMLTextInput('caReferenceHandlingToRemapTo', $va_remap_lookup_opts);
+			
+			if ($vs_instance_table === 'ca_storage_locations') {
+				AssetLoadManager::register('hierBrowser');
+				$vs_output .= caHTMLRadioButtonInput('caReferenceHandlingTo', $va_remap_opts).' '._t('transfer references to').' ';
+				
+				$vs_output .= "<div id=\"caReferenceHandlingToRemapToHierBrowser\" class=\"hierarchyBrowserSmall\" style=\"width: 700px;\">
+						<!-- Content for hierarchy browser is dynamically inserted here by ca.hierbrowser -->
+					</div><!-- end hierbrowser -->";
+				$vs_output .= "
+					<div class=\"hierarchyBrowserFind\">
+						"._t('Find').": <input type=\"text\" id=\"caReferenceHandlingToRemapToHierBrowserSearch\" name=\"search\" value=\"\" size=\"25\"/>
+					</div>";
+				
+			} else {
+				$vs_output .= caHTMLRadioButtonInput('caReferenceHandlingTo', $va_remap_opts).' '._t('transfer references to').' '.caHTMLTextInput('caReferenceHandlingToRemapTo', $va_remap_lookup_opts);
+			}
 			$vs_output .= "<a href='#' class='button' onclick='jQuery(\"#caReferenceHandlingToRemapToID\").val(\"\"); jQuery(\"#caReferenceHandlingToRemapTo\").val(\"\"); jQuery(\"#caReferenceHandlingToClear\").css(\"display\", \"none\"); return false;' style='display: none;' id='caReferenceHandlingToClear'>"._t('Clear').'</a>';
 			$vs_output .= caHTMLHiddenInput('caReferenceHandlingToRemapToID', array('value' => '', 'id' => 'caReferenceHandlingToRemapToID'));
 			
@@ -416,29 +459,85 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 			
 			$vs_output .= "<script type='text/javascript'>";
 			
-			$va_service_info = caJSONLookupServiceUrl($t_instance->tableName(), array('noSymbols' => 1, 'noInline' => 1, 'exclude' => (int)$t_instance->getPrimaryKey(), 'table_num' => (int)$t_instance->get('table_num')));
-			$vs_output .= "jQuery(document).ready(function() {";
-			$vs_output .= "jQuery('#caReferenceHandlingToRemapTo').autocomplete(
-					{
-						source: '".$va_service_info['search']."', html: true,
-						minLength: 3, delay: 800,
-						select: function(event, ui) {
-							jQuery('#caReferenceHandlingToRemapToID').val(ui.item.id);
-							jQuery('#caReferenceHandlingClear').css('display', 'inline');
-						}
-					}
-				);";
+			$va_service_info = caJSONLookupServiceUrl($po_request, $t_instance->tableName(), array('noSymbols' => 1, 'noInline' => 1, 'exclude' => (int)$t_instance->getPrimaryKey(), 'table_num' => (int)$t_instance->get('table_num')));
 				
-			$vs_output .= "jQuery('#caReferenceToHandlingRemap').click(function() {
-				jQuery('#caReferenceHandlingToRemapTo').attr('disabled', false);
-				jQuery('#caChildDeletionWarning').hide();
+			if ($vs_instance_table === 'ca_storage_locations') {
+				$vs_output .= "
+	var caReferenceHandlingToRemapToHierBrowser = null;
+	
+	jQuery(document).ready(function() {
+		if (!caReferenceHandlingToRemapToHierBrowser) {
+			caReferenceHandlingToRemapToHierBrowser = caUI.initHierBrowser('caReferenceHandlingToRemapToHierBrowser', {
+				levelDataUrl: '".$va_service_info['levelList']."',
+				initDataUrl: '".$va_service_info['ancestorList']."',
+	
+				readOnly: true,
+				editButtonIcon: \"".caNavIcon(__CA_NAV_ICON_RIGHT_ARROW__, 1)."\",
+				disabledButtonIcon: \"".caNavIcon(__CA_NAV_ICON_DOT__, 1)."\",
+	
+				allowDragAndDropSorting: false,
+				
+				initItemID: '".$t_instance->get("{$vs_instance_table}.parent_id")."',
+
+				excludeItemIDs: [".$t_instance->getPrimaryKey()."],
+				indicator: \"".caNavIcon(__CA_NAV_ICON_SPINNER__, 1)."\",
+				displayCurrentSelectionOnLoad: false,
+				
+				onSelection: function(id) {
+					jQuery(\"#caReferenceHandlingToRemapToID\").val(id);
+				}
 			});
-			jQuery('#caReferenceHandlingToDelete').click(function() {
-				jQuery('#caReferenceHandlingToRemapTo').attr('disabled', true);
-				jQuery('#caChildDeletionWarning').show();
-			});
-			";
-			$vs_output .= "});";
+		}
+		jQuery(\"#caReferenceHandlingToRemapToHierBrowserSearch\").attr(\"disabled\", true);
+		jQuery('#caReferenceToHandlingRemap').click(function() {
+			caReferenceHandlingToRemapToHierBrowser.isReadOnly(false);
+			jQuery(\"#caReferenceHandlingToRemapToHierBrowserSearch\").attr(\"disabled\", false);
+			jQuery('#caChildDeletionWarning').hide();
+		});
+		jQuery('#caReferenceHandlingToDelete').click(function() {
+			caReferenceHandlingToRemapToHierBrowser.isReadOnly(true);
+			jQuery(\"#caReferenceHandlingToRemapToHierBrowserSearch\").attr(\"disabled\", true);
+			
+			jQuery('#caChildDeletionWarning').show();
+		});
+		jQuery('#caReferenceHandlingToRemapToHierBrowserSearch').autocomplete(
+			{
+				source: '".$va_service_info['search']."', minLength: 3, delay: 800, html: true,
+				select: function( event, ui ) {
+					if (ui.item.id) {
+						caReferenceHandlingToRemapToHierBrowser.setUpHierarchy(ui.item.id);	// jump browser to selected item
+						jQuery('#caReferenceHandlingToRemapToID').val(ui.item.id);
+					}
+					event.preventDefault();
+					jQuery('#caReferenceHandlingToRemapToHierBrowserSearch').val('');
+				}
+			}
+		).click(function() { this.select() });
+	})";
+			} else {
+				$vs_output .= "jQuery(document).ready(function() {";
+				$vs_output .= "jQuery('#caReferenceHandlingToRemapTo').autocomplete(
+						{
+							source: '".$va_service_info['search']."', html: true,
+							minLength: 3, delay: 800,
+							select: function(event, ui) {
+								jQuery('#caReferenceHandlingToRemapToID').val(ui.item.id);
+								jQuery('#caReferenceHandlingClear').css('display', 'inline');
+							}
+						}
+					);";
+				
+				$vs_output .= "jQuery('#caReferenceToHandlingRemap').click(function() {
+					jQuery('#caReferenceHandlingToRemapTo').attr('disabled', false);
+					jQuery('#caChildDeletionWarning').hide();
+				});
+				jQuery('#caReferenceHandlingToDelete').click(function() {
+					jQuery('#caReferenceHandlingToRemapTo').attr('disabled', true);
+					jQuery('#caChildDeletionWarning').show();
+				});
+				";
+				$vs_output .= "});";
+			}
 			$vs_output .= "</script>\n";
 			
 			TooltipManager::add('#caReferenceHandlingToCount', "<h2>"._t('References to this %1', $t_instance->getProperty('NAME_SINGULAR'))."</h2>\n".join("\n", $va_reference_to_buf));
@@ -504,7 +603,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	}
 	# ------------------------------------------------------------------------------------------------
 	/**
-	 *
+	 * 
 	 */
 	function caGetMediaInfoForDisplay($pm_media, $ps_version) {
 	    $o_coder = (is_a($pm_media, "MediaInfoCoder")) ? $pm_media : new MediaInfoCoder($pm_media);
@@ -736,7 +835,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		});
 </script>
 <div id=\"editorFieldListHTML\">";
-		if (is_array($pa_bundle_list)) {
+		if (is_array($pa_bundle_list)) { 
 			foreach($pa_bundle_list as $vs_anchor => $va_info) {
 				$vs_buf .= "<a href=\"#\" onclick=\"jQuery.scrollTo('a[name={$vs_anchor}]', {duration: 350, offset: -80 , onAfter : function(selector, data){jQuery(selector).parent('.bundleLabel').find('a:link').first().focus();}}); return false;\" class=\"editorFieldListLink\">".$va_info['name']."</a><br/>";
 			}
@@ -974,7 +1073,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		// -------------------------------------------------------------------------------------
 
 		if($t_item->getPrimaryKey()) {
-			if (sizeof($va_reps) > 0) {
+			if (is_array($va_reps) && (sizeof($va_reps) > 0)) {	
 				$va_imgs = array();
 
 				$vs_buf .= "<div id='inspectorMedia'>";
@@ -1744,35 +1843,58 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 			}
 		}
 
+		if($po_view->request->user->canDoAction('can_export_'.$vs_table_name) && $t_item->getPrimaryKey()) {
+			if (ca_data_exporters::getExporters($t_item->tableNum(), ['countOnly' => true]) > 0) {
+				$vs_buf .= '<div style="border-top: 1px solid #aaaaaa; margin-top: 5px; font-size: 10px; text-align: right;" id="caExportItemButton">';
+				
+				$vs_buf .= _t('Export data')." ";
+				$vs_buf .= "<a class='button' onclick='jQuery(\"#exporterFormList\").show();' style='text-align:right;' href='#'>".caNavIcon(__CA_NAV_ICON_EXPORT_SMALL__, '16px')."</a>";
 
 
-		if($po_view->request->user->canDoAction('can_export_'.$vs_table_name) && $t_item->getPrimaryKey() && (sizeof(ca_data_exporters::getExporters($t_item->tableNum()))>0)) {
-			$vs_buf .= '<div style="border-top: 1px solid #aaaaaa; margin-top: 5px; font-size: 10px; text-align: right;" id="caExportItemButton">';
+				$vs_buf .= caFormTag($po_view->request, 'ExportSingleData', 'caExportForm', 'manage/MetadataExport', 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
+				$vs_buf .= "<div id='exporterFormList'>";
+				$vs_buf .= ca_data_exporters::getExporterListAsHTMLFormElement('exporter_id', $t_item->tableNum(), array('id' => 'caExporterList'), array('width' => '120px', 'recordType' => $t_item->getTypeCode()));
+				$vs_buf .= caHTMLHiddenInput('item_id', array('value' => $t_item->getPrimaryKey()));
+				$vs_buf .= caFormSubmitLink($po_view->request, _t('Export')." &rsaquo;", "button", "caExportForm");
+				$vs_buf .= "</div>\n";
+				$vs_buf .= "</form>";
+				
+				$vs_buf .= "</div>";
 
-			$vs_buf .= _t('Export this %1', mb_strtolower($vs_type_name, 'UTF-8'))." ";
-			$vs_buf .= "<a class='button' onclick='jQuery(\"#exporterFormList\").show();' style='text-align:right;' href='#'>".caNavIcon(__CA_NAV_ICON_EXPORT_SMALL__, '16px')."</a>";
+				$vs_buf .= "<script type='text/javascript'>";
+				$vs_buf .= "jQuery(document).ready(function() {";
+				$vs_buf .= "jQuery(\"#exporterFormList\").hide();";
+				$vs_buf .= "});";
+				$vs_buf .= "</script>";
+			}
+			
+			require_once(__CA_LIB_DIR__."/ExternalExportManager.php");
+			if (ExternalExportManager::getTargets(['countOnly' => true, 'table' => $t_item->tableNum(), 'restrictToTypes' => [$t_item->getTypeCode()]]) > 0) {
+				$vs_buf .= '<div style="border-top: 1px solid #aaaaaa; margin-top: 5px; font-size: 10px; text-align: right;" id="caExternalExportItemButton">';
+				$vs_buf .= _t('Export to external repository')." ";
+				$vs_buf .= "<a class='button' onclick='jQuery(\"#externalExporterFormList\").show();' style='text-align:right;' href='#'>".caNavIcon(__CA_NAV_ICON_EXPORT_SMALL__, '16px')."</a>";
 
-			$vs_buf .= caFormTag($po_view->request, 'ExportSingleData', 'caExportForm', 'manage/MetadataExport', 'post', 'multipart/form-data', '_top', array('noCSRFToken' => true, 'disableUnsavedChangesWarning' => true));
-			$vs_buf .= "<div id='exporterFormList'>";
-			$vs_buf .= ca_data_exporters::getExporterListAsHTMLFormElement('exporter_id', $t_item->tableNum(), array('id' => 'caExporterList'), array('width' => '120px', 'recordType' => $t_item->getTypeCode()));
-			$vs_buf .= caHTMLHiddenInput('item_id', array('value' => $t_item->getPrimaryKey()));
-			$vs_buf .= caFormSubmitLink(_t('Export')." &rsaquo;", "button", "caExportForm");
-			$vs_buf .= "</div>\n";
-			$vs_buf .= "</form>";
+				$vs_buf .= caFormTag($po_view->request, 'ExternalExportSingle', 'caExternalExportForm', 'manage/MetadataExport', 'post', 'multipart/form-data', '_top', array('disableUnsavedChangesWarning' => true));
+				$vs_buf .= "<div id='externalExporterFormList'>";
+				$vs_buf .= ExternalExportManager::getTargetListAsHTMLFormElement('target', $t_item->tableNum(), array('id' => 'caExternalExporterList'), array('width' => '120px', 'restrictToTypes' => [$t_item->getTypeCode()]));
+				$vs_buf .= caHTMLHiddenInput('item_id', array('value' => $t_item->getPrimaryKey()));
+				$vs_buf .= caFormSubmitLink($po_view->request, _t('Export')." &rsaquo;", "button", "caExternalExportForm");
+				$vs_buf .= "</div>\n";
+				$vs_buf .= "</form>";
+				$vs_buf .= "</div>";
 
-			$vs_buf .= "</div>";
-
-			$vs_buf .= "<script type='text/javascript'>";
-			$vs_buf .= "jQuery(document).ready(function() {";
-			$vs_buf .= "jQuery(\"#exporterFormList\").hide();";
-			$vs_buf .= "});";
-			$vs_buf .= "</script>";
+				$vs_buf .= "<script type='text/javascript'>";
+				$vs_buf .= "jQuery(document).ready(function() {";
+				$vs_buf .= "jQuery(\"#externalExporterFormList\").hide();";
+				$vs_buf .= "});";
+				$vs_buf .= "</script>";
+			}
 		}
-
-
-
+		
+		
+		
 		$vs_buf .= "</div></h4>\n";
-
+		
 		$vs_buf .= "<script type='text/javascript'>
 			var inspectorCookieJar = jQuery.cookieJar('caCookieJar');";
 			if($t_item->getPrimaryKey()) {
@@ -1796,7 +1918,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 			});
 		";
 				}
-
+	
 				if (sizeof($va_reps)) {
 					$vs_buf .= "
 		if (inspectorCookieJar.get('inspectorShowMediaIsOpen') == undefined) {		// default is to have media open
@@ -2073,34 +2195,13 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 
 			if (!caTableIsActive($vn_table_num)) { continue; }
 			$vs_table_name = Datamodel::getTableName($vn_table_num);
-
-			switch($vs_table_name) {
-				case 'ca_occurrences':
-					$t_occ = new ca_occurrences();
-					$va_types = $t_occ->getTypeList();
-					$va_type_labels = array();
-					foreach($va_types as $vn_item_id => $va_type_info) {
-						$va_type_labels[] = mb_strtolower($va_type_info['name_plural'], 'UTF-8');
-					}
-					if (sizeof($va_type_labels)) {
-						if (mb_strlen($vs_label = join('/', $va_type_labels)) > 50) {
-							$vs_label = mb_substr($vs_label, 0, 60).'...';
-						}
-						$va_filtered_tables[$vs_label] = $vn_table_num;
-					} else {
-						$va_filtered_tables[$vs_display_name] = $vn_table_num;
-					}
-					break;
-				default:
-					$va_filtered_tables[$vs_display_name] = $vn_table_num;
-					break;
-			}
+			$va_filtered_tables[$vs_display_name] = $vn_table_num;
 		}
-
+		
 		if (caGetOption("sort", $pa_options, true)) {
 			ksort($va_filtered_tables);
 		}
-
+		
 		return $va_filtered_tables;
 	}
 	# ------------------------------------------------------------------------------------------------
@@ -2655,7 +2756,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	 * @param string $ps_version the name of the media version to return dimensions information for
 	 * @param array $pa_options Array of options, including:
 	 *		returnAsArray = if set an array with elements of the dimensions display text is returned
-
+     *
 	 * @return mixed Text ready for display describing dimensions of the representation's media. Can be array if 'returnAsArray' option is set.
 	 */
 	function caGetRepresentationDimensionsForDisplay($po_rep, $ps_version, $pa_options=null) {
@@ -3219,17 +3320,19 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	 */
 	function caEditorBundleMetadataDictionary($po_request, $ps_id_prefix, $pa_settings) {
 		global $g_ui_locale;
-
-		if (!($vs_definition = trim(caGetOption($g_ui_locale, $pa_settings['definition'], null)))) { return ''; }
-
+		
+		$definition = caGetOption($g_ui_locale, $pa_settings['definition'], null);
+		if(is_array($definition)) { $definition = join ("", $definition); }
+		if (!($vs_definition = trim($definition))) { return ''; }
+		
 		$vs_buf = '';
 		$vs_buf .= "<span class='iconButton'>";
 		$vs_buf .= "<a href='#' class='caMetadataDictionaryDefinitionToggle' onclick='caBundleVisibilityManager.toggleDictionaryEntry(\"{$ps_id_prefix}\");  return false;'>".caNavIcon(__CA_NAV_ICON_INFO__, 1, array('id' => "{$ps_id_prefix}MetadataDictionaryToggleButton"))."</a>";
-
+		
 		$vs_buf .= "<div id='{$ps_id_prefix}DictionaryEntry' class='caMetadataDictionaryDefinition'>{$vs_definition}</div>";
-		$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(function() { caBundleVisibilityManager.registerBundle('{$ps_id_prefix}'); }); </script>";
-		$vs_buf .= "</span>\n";
-
+		$vs_buf .= "<script type='text/javascript'>jQuery(document).ready(function() { caBundleVisibilityManager.registerBundle('{$ps_id_prefix}'); }); </script>";	
+		$vs_buf .= "</span>\n";	
+		
 		return $vs_buf;
 	}
 	# ---------------------------------------
@@ -3240,7 +3343,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 	 * @param string $ps_id_prefix
 	 * @param string $ps_table
 	 * @param array $pa_options
-	 *
+	 * 
 	 * @return string HTML implementing the control
 	 */
 	function caEditorBundleSortControls($po_request, $ps_id_prefix, $ps_table, $pa_options=null) {
@@ -3248,25 +3351,25 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		require_once(__CA_APP_DIR__.'/helpers/searchHelpers.php');
 
 		if(!$ps_table) { return '???'; }
-		if (!is_array($va_sort_fields = caGetAvailableSortFields($ps_table, null, array_merge(['request' => $po_request], $pa_options))) || !sizeof($va_sort_fields)) { return ''; }
-
-		return _t('Sort by %1 %2', caHTMLSelect("{$ps_id_prefix}_RelationBundleSortControl", array_flip($va_sort_fields), ['onChange' => "caRelationBundle{$ps_id_prefix}.sort(jQuery(this).val())", 'id' => "{$ps_id_prefix}_RelationBundleSortControl", 'class' => 'caItemListSortControlTrigger dontTriggerUnsavedChangeWarning']), caHTMLSelect("{$ps_id_prefix}_RelationBundleSortDirectionControl", [_t('↑') => 'ASC', _t('↓') => 'DESC'], ['onChange' => "caRelationBundle{$ps_id_prefix}.sort(jQuery('#{$ps_id_prefix}_RelationBundleSortControl').val())", 'id' => "{$ps_id_prefix}_RelationBundleSortDirectionControl", 'class' => 'caItemListSortControlTrigger dontTriggerUnsavedChangeWarning']));
+		if (!is_array($va_sort_fields = caGetAvailableSortFields($ps_table, null, array_merge(['request' => $po_request], $pa_options, ['naturalSortLabel' => _t('default')]))) || !sizeof($va_sort_fields)) { return ''; }
+		$va_sort_fields = array_map(function($v) { return mb_strtolower($v); }, $va_sort_fields);
+		return _t('Sort using %1 %2', caHTMLSelect("{$ps_id_prefix}_RelationBundleSortControl", array_flip($va_sort_fields), ['onChange' => "caRelationBundle{$ps_id_prefix}.sort(jQuery(this).val())", 'id' => "{$ps_id_prefix}_RelationBundleSortControl", 'class' => 'caItemListSortControlTrigger dontTriggerUnsavedChangeWarning']), caHTMLSelect("{$ps_id_prefix}_RelationBundleSortDirectionControl", [_t('↑') => 'ASC', _t('↓') => 'DESC'], ['onChange' => "caRelationBundle{$ps_id_prefix}.sort(jQuery('#{$ps_id_prefix}_RelationBundleSortControl').val())", 'id' => "{$ps_id_prefix}_RelationBundleSortDirectionControl", 'class' => 'caItemListSortControlTrigger dontTriggerUnsavedChangeWarning']));
 	}
 	# ---------------------------------------
 	/**
-	 *
+	 * 
 	 */
 	function caProcessBottomLineTemplateForDisplay($po_request, $pt_display, $pr_res, $pa_options=null) {
 		if (!$pr_res) { return null; }
 		if (!$pt_display) { return null; }
 		$vs_template = $pt_display->getSetting('bottom_line');
-
+		
 		$va_bundles_by_code = [];
 		if (!is_array($va_bundles = $pt_display->getPlacementsInDisplay())) { return null; }
 		foreach($va_bundles as $vn_placement_id => $va_placement) {
 			$va_bundles_by_code[$va_placement['bundle']] = $va_placement;
 		}
-
+		
 		$va_tags = caGetTemplateTags($vs_template, ['parseOptions' => true]);
 		$vb_is_set = false;
 
@@ -3611,7 +3714,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 		return $ps_identifier ? $ps_identifier : null;
 	}
 	# ---------------------------------------
-	/*
+	/**
 	 *
 	 *
 	 * @param RequestHTTP $po_request The current request
