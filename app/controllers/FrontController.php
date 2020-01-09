@@ -46,14 +46,14 @@
  		 *$this->config
  		 */ 
  		public function __call($ps_function, $pa_args) {
- 			$access_values = caGetUserAccessValues();
+ 			$va_access_values = caGetUserAccessValues();
  			$this->view->setVar('access_values', $va_access_values);
 
             $set_codes = $this->config->getList('set_codes');
             
             $t_set = new ca_sets();
             if(!is_array($media_versions = $this->config->get('media_versions'))) { $media_versions = ['icon', 'small']; }
-            $sets = caExtractValuesByUserLocale($t_set->getSets(['checkAccess' => $access_values, 'codes' => $set_codes, 'includeItems' => true, 'thumbnailVersions' => $media_versions]));
+            $sets = caExtractValuesByUserLocale($t_set->getSets(['checkAccess' => $va_access_values, 'codes' => $set_codes, 'includeItems' => true, 'thumbnailVersions' => $media_versions]));
             
             
             $this->view->setVar('sets', $sets);
