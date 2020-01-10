@@ -236,6 +236,21 @@ address {
 	background-color: $button-hover-bg-secondary;
 	color: $button-hover-color-secondary;
 }
+.btn-primary.disabled, .btn-secondary.disabled{
+	cursor:default;
+}
+.btn-primary.disabled, .btn-primary.disabled:hover{
+	background-color: $button-bg-primary;
+	color: $button-color-primary;
+	border: $button-border-primary;
+	opacity:.5;
+}
+.btn-secondary.disabled, .btn-secondary.disabled:hover{
+	background-color: $button-bg-secondary;
+	color: $button-color-secondary;
+	border: $button-border-secondary;
+	opacity:.5;
+}
 /* readMore Utility */
 .readMore div.collapse:not(.show) {
     height: 7.5rem !important;

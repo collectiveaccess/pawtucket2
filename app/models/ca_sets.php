@@ -1654,6 +1654,7 @@ class ca_sets extends BundlableLabelableBaseModelWithAttributes implements IBund
 	 *			returnItemAttributes = A list of attribute element codes for the ca_set_item record to return values for.
 	 *			idsOnly = Return a simple numerically indexed array of row_ids
 	 * 			template =
+	 *			templateDescription = 
 	 *			item_ids = array of set item_ids to limit results to -> used by getPrimaryItemsFromSets so don't have to replicate all the functionality in this function
 	 *
 	 * @return array An array of items. The format varies depending upon the options set. If returnRowIdsOnly or returnItemIdsOnly are set then the returned array is a 
@@ -1804,6 +1805,10 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			$va_processed_templates = caProcessTemplateForIDs($ps_template, $t_rel_table->tableName(), $qr_res->getAllFieldValues('row_id'), array('returnAsArray' => true));
 			$qr_res->seek(0);
 		}
+		if($ps_templateDescription = caGetOption('templateDescription', $pa_options, null)) {
+			$va_processed_templates_description = caProcessTemplateForIDs($ps_templateDescription, $t_rel_table->tableName(), $qr_res->getAllFieldValues('row_id'), array('returnAsArray' => true));
+			$qr_res->seek(0);
+		}
 		if ($vs_rep_join_sql) {
 			$alt_text_template = Configuration::load()->get($t_rel_table->tableName()."_alt_text_template");
 			$va_alt_tags = caProcessTemplateForIDs(($alt_text_template) ? $alt_text_template : "^".$t_rel_table->tableName().".preferred_labels", $t_rel_table->tableName(), $qr_res->getAllFieldValues('row_id'), array('returnAsArray' => true));
@@ -1891,6 +1896,9 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 
 			if($ps_template) {
 				$va_row['displayTemplate'] = array_shift($va_processed_templates);
+			}
+			if($ps_templateDescription) {
+				$va_row['displayTemplateDescription'] = array_shift($va_processed_templates_description);
 			}
 		
 			$va_items[$qr_res->get('item_id')][($qr_res->get('rel_locale_id') ? $qr_res->get('rel_locale_id') : 0)] = $va_row;
@@ -2852,6 +2860,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 	 *		access = Consider set to exist if user has at least the specified access level. If user_id is omitted then this option has no effect. If user_id is set and this option is omitted, then a set will be considered to exist if the user has at least read access. 
 	 *		checkAccess = Consider set to exist if it has a public access level with the specified values. Can be a single value or array if you wish to filter on multiple public access values.
 	 *		template =
+	 *		templateDescription
 	 *			
 	 * @return array
 	 */
@@ -2862,8 +2871,8 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			return false;
 		}
 		
-		$reps = array_values(caExtractValuesByUserLocale($set->getItems(['thumbnailVersions' => caGetOption('versions', $options, ['large']), 'template' => caGetOption('template', $options, null)])));
-		return array_map(function($r) { return ['key' => md5($r['representation_url_large']), 'url' => $r['representation_url_large'], 'media_tag' => $r['representation_tag_large'], 'media_tag_link' => $r['representation_tag_large_as_link'], 'caption' => $r['displayTemplate']]; }, $reps);
+		$reps = array_values(caExtractValuesByUserLocale($set->getItems(['thumbnailVersions' => caGetOption('versions', $options, ['large']), 'template' => caGetOption('template', $options, null), 'templateDescription' => caGetOption('templateDescription', $options, null)])));
+		return array_map(function($r) { return ['key' => md5($r['representation_url_large']), 'url' => $r['representation_url_large'], 'media_tag' => $r['representation_tag_large'], 'media_tag_link' => $r['representation_tag_large_as_link'], 'media_tag_large_link' => $r['representation_tag_large_as_link'], 'media_tag_iconlarge' => $r['representation_tag_iconlarge'], 'caption' => $r['displayTemplate'], 'itemDescription' => $r['displayTemplateDescription']]; }, $reps);
 	}
 	# ---------------------------------------------------------------
 	/**
