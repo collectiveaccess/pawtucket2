@@ -57,12 +57,9 @@
 		<div class="col-sm-10 col-sm-offset-1">
 			<h1><a href="/Transcribe/Index">Transcribe</a> &gt; Browse</H1>
 			<p>
-				Transcribe gives you the opportunity to make our collections more accessible. The transcriptions you create will become 
-				searchable data, facilitating learning and research around the world. Whether you choose to transcribe one page, 
-				one hundred pages, or just browse our collections, you’re helping us share the stories that matter. 
-			</p>
-			<p>
-				Please read our <a href="/TranscriptionTips/Index">transcription tips</a> page for suggestions on how to get started.
+				By transcribing a record, you are creating searchable data that can be used 
+				by genealogists, researchers, students, teachers, and everyone else. You are 
+				helping museums document their collections and share information in a meaningful way.
 			</p>
 			
 			<?php print "<div class='unit'><span class='name'>".$qr_result->numHits()."</span> transcribable items</div>"; ?>

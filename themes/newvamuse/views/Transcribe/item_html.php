@@ -135,13 +135,14 @@
 ?>
 						<div>
 							<ul>
-								<li>Remember to save often</li>
-								<li>Copy the text as is, including misspellings and abbreviation</li>
-								<li>No need to account for formatting - the goal is to provide text for searching and readability</li>
-								<li>If you can't make out a word, enter "[illegible]"; if uncertain, indicate with square brackets, for example: "[town?]"</li>
-								<li>Check completed when you finish the page</li>
-								<li>View more <a href="/TranscriptionTips/Index" target="_new">transcription tips</a></li>
+								<li>Save your work often</li>
+								<li>Copy the text as is, even if there are misspellings and/or abbreviations</li>
+								<li>Focus on the text rather than formatting. No need for adding line or paragraph breaks or noting that words are underlined, bolded, etc.; the goal is to make the text searchable and easy to read. </li>
+								<li>If you cannot read a word, enter [illegible]. If you are making an educated guess, enter the word in square brackets with a question mark, ie [shipyard?]</li>
+								<li>When you finish a transcription, check the completed box. For multi-page documents, you will need to do this for each page.</li>
+								<li>View <a href="/TranscriptionTips/Index" target="_new">Transcription Tips</a></li>
 							</ul>
+							
 						</div>
 <?php
 	}
