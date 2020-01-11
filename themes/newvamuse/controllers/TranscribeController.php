@@ -96,8 +96,8 @@
  			$o_context->setAsLastFind();
  			
  			$qr_sets = ca_sets::find(["type_id" => "transcription_collection", "featured" => "yes"], ['returnAs' => 'searchResult', 'checkAccess' => $this->opa_access_values]);
-			$set_media = ca_sets::getFirstItemsFromSets($set_ids = $qr_sets->getAllFieldValues('ca_sets.set_id'), ['version' => 'medium', 'checkAccess' => $this->opa_access_values]);
-			$qr_sets->seek(0);
+			$set_media = $qr_sets ? ca_sets::getFirstItemsFromSets($set_ids = $qr_sets->getAllFieldValues('ca_sets.set_id'), ['version' => 'medium', 'checkAccess' => $this->opa_access_values]) : [];
+			if ($qr_sets) { $qr_sets->seek(0); }
 			
 			$this->view->setVar('sets', $qr_sets);
 			$this->view->setVar('set_media', $set_media);

@@ -58,6 +58,7 @@
 						<div class="jcarousel">
 							<ul>
 <?php
+					if ($qr_sets) { 
 						while($qr_sets->nextHit()) {
 							$set_id = $qr_sets->get('ca_sets.set_id');
 							if(!isset($set_media[$set_id])) { continue; }
@@ -74,6 +75,7 @@
 								</li>
 <?php
 						}
+					}
 ?>	
 							</ul>
 						</div>	<!-- end jc  -->
