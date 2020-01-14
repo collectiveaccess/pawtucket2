@@ -146,10 +146,14 @@
 							<ifcount code="ca_collections" min="1"><HR/></ifcount>
 							<ifcount code="ca_occurrences" min="1"><HR/></ifcount>
 							<ifcount code="ca_places" min="1"><HR/></ifcount>
+							<ifcount code="ca_objects.related" min="1"><HR/></ifcount>
 						</case>}}}
 						    {{{<ifcount code="ca_collections" unique="1"  min="1" max="1"><H6>Related Collection</H6></ifcount>}}}
 							{{{<ifcount code="ca_collections" unique="1"  min="2"><H6>Related Collections</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_objects_x_collections" unique="1" delimiter="<br/>"><unit unique="1" relativeTo="ca_collections"><l>^ca_collections.preferred_labels.name</l></unit></unit>}}}						
+							{{{<ifcount code="ca_objects.related" unique="1"  min="1" max="1"><H6>Related Object</H6></ifcount>}}}
+							{{{<ifcount code="ca_objects.related" unique="1"  min="2"><H6>Related Objects</H6></ifcount>}}}
+							{{{<unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels.name</l></unit>}}}						
 							{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related Work</H6></ifcount>}}}
 							{{{<ifcount code="ca_occurrences" min="2"><H6>Related Works</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_objects_x_occurrences" delimiter="<br/>"><unit relativeTo="ca_occurrences"><l>^ca_occurrences.preferred_labels</l></unit> (^relationship_typename)</unit>}}}		
