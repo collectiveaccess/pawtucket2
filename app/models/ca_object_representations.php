@@ -2088,6 +2088,8 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		$user_id = caGetOption('user_id', $options, null);
 		
 		if (
+			!($transcript = ca_representation_transcriptions::find(['representation_id' => $rep_id, 'completed_on' => ['>', 0]], ['returnAs' => 'firstModelInstance']))
+			&&
 			!($user_id && ($transcript = ca_representation_transcriptions::find(['representation_id' => $rep_id, 'user_id' => $user_id], ['returnAs' => 'firstModelInstance'])))
 			&&
 			!($transcript = ca_representation_transcriptions::find(['representation_id' => $rep_id, 'ip_addr' => $ip], ['returnAs' => 'firstModelInstance']))
