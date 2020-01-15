@@ -549,6 +549,21 @@ font-size: 12pt;
 .detail #detailAnnotations .detailAnnotationList {
 	max-height: 400px;
 }
+.detail .relObjectThumb{
+	padding-bottom:5px;
+}
+.detail .relObjectThumb img{
+	width:100%;
+	height:auto;
+}
+.detail .relObjectLabel{
+	height:3.3em;
+	line-height:1.1em;
+	font-size:13px;
+}
+.detail .relObjectThumb img{
+	max-width:250px;
+}
 /* BROWSE */
 
 #bRefine {

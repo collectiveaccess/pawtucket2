@@ -79,7 +79,17 @@
 				}
 ?>            
                   
-                    {{{<ifdef code="ca_collections.lcsh_topical"><unit relativeTo="ca_collections" delimiter="<br/>"><H6>Topics, Library of Congress Authority</H6>^ca_collections.lcsh_topical<br/></unit></ifdef>}}}
+<?php
+					if($va_lcsh = $t_item->get("ca_collections.lcsh_topical", array("returnAsArray" => true))){
+						if(is_array($va_lcsh) && sizeof($va_lcsh)){
+							print "<H6>Topics, Library of Congress Authority</H6>";
+							foreach($va_lcsh as $vs_lcsh){
+								$va_tmp = explode(" [", $vs_lcsh);
+								print $va_tmp[0]."<br/>";
+							}
+						}
+					}
+?>
                     {{{<ifdef code="ca_collections.lcsh_geo"><H6>Georeference</H6>^ca_collections.lcsh_geo<br/></ifdef>}}}  
 <?php
 				# Comment and Share Tools
@@ -111,20 +121,20 @@
 						<ifcount code="ca_places" min="1"><HR/></ifcount>
 					</case>}}}
 					{{{<ifcount code="ca_collections.related" min="1" max="1"><H6>Related Collection</H6></ifcount>}}}
-					{{{<ifcount code="ca_collections.related" min="2"><H6>Related cCllections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_collections_x_collections" delimiter="<br/>"><unit relativeTo="ca_collections" ><l>^ca_collections.related.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
+					{{{<ifcount code="ca_collections.related" min="2"><H6>Related Collections</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_collections.related" ><l>^ca_collections.related.preferred_labels.name</l> (^relationship_typename)</unit>}}}
 					
 					{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related Person</H6></ifcount>}}}
 					{{{<ifcount code="ca_entities" min="2"><H6>Related People</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_collections" delimiter="<br/>"><unit relativeTo="ca_entities">^ca_entities.preferred_labels.displayname</unit> (^relationship_typename)</unit>}}}
+					{{{<unit relativeTo="ca_entities" delimiter="<br/>">^ca_entities.preferred_labels.displayname (^relationship_typename)</unit>}}}
 					
 					{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related Work</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences" min="2"><H6>Related Works</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences_x_collections" delimiter="<br/>"><unit relativeTo="ca_occurrences" ><l>^ca_occurrences.preferred_labels.name</l></unit></unit>}}}
+					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
 					
 					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places_x_collections"><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}					
+					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}					
 				</div><!-- end col -->
 			</div>
 			</div><!-- end row -->
