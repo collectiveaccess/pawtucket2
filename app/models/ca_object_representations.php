@@ -2094,6 +2094,8 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 			!($user_id && ($transcript = ca_representation_transcriptions::find(['representation_id' => $rep_id, 'user_id' => $user_id], ['returnAs' => 'firstModelInstance'])))
 			&&
 			!($transcript = ca_representation_transcriptions::find(['representation_id' => $rep_id, 'ip_addr' => $ip], ['returnAs' => 'firstModelInstance']))
+			&&
+			!($transcript = ca_representation_transcriptions::find(['representation_id' => $rep_id, 'completed_on' => null], ['returnAs' => 'firstModelInstance']))
 		) {
 			$transcript = null;
 		}

@@ -69,7 +69,7 @@
 						
 						
 <?php
-	if (is_array($reps = $t_item->getRepresentations(['versions' => 'icon'])) && (sizeof($reps) > 1)) {
+	if (is_array($reps = $t_item->getRepresentations(['versions' => 'icon'], null, ['checkAccess' => $access_values])) && ($reps = array_filter($reps, function($v) { return $v['is_transcribeable']; })) &&  (sizeof($reps) > 1)) {
 ?>
 		<div class='otherRepresentations'>
 			<div class="unit">

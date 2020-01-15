@@ -388,7 +388,10 @@
  			}
  			
  			if(!($rep_id = $this->request->getParameter('representation_id', pInteger))) {
- 				$rep_id = $obj->get('ca_object_representations.representation_id'); // default to primary
+ 				if(is_array($reps = $obj->getRepresentations(['versions' => 'icon'], null, ['checkAccess' => $this->opa_access_values]))) { // default to first transcribeable
+ 					$reps = array_values(array_filter($reps, function($v) { return $v['is_transcribable']; }));
+ 					$rep_id = $reps[0]['representation_id'];
+ 				}
  			}
  			$rep = new ca_object_representations($rep_id);
  			if (!in_array($rep->get('access'), $this->opa_access_values)) {
