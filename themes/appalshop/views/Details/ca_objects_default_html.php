@@ -175,6 +175,9 @@
 											$vn_c = 0;
 										}
 									}
+									if($vn_c > 0){
+										print "</div>";
+									}
 								}
 ?>
 						</div><!-- end col -->
