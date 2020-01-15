@@ -423,29 +423,39 @@
          * Save transcription (called from item page)
          */
  		function SaveTranscription($options = null) {
- 			$id = $this->request->getParameter('id', pInteger);
- 			$obj = new ca_objects($id);
+ 			$transcription_id = $this->request->getParameter('transcription_id', pInteger);
+ 			$t_transcript = $transcription_id ? ca_representation_transcriptions::find($transcription_id, ['returnAs' => 'firstModelInstance']) : null;
  			
- 			if (!in_array($obj->get('access'), $this->opa_access_values)) {
- 				throw new ApplicationException(_t('Cannot access item'));
- 			}
- 			
- 			$rep_id = $this->request->getParameter('representation_id', pInteger);
- 			$rep = new ca_object_representations($rep_id);
- 			if (!in_array($rep->get('access'), $this->opa_access_values)) {
- 				throw new ApplicationException(_t('Cannot access representation'));
- 			}
- 			// Check representation access and whether rep is linked to object
- 			$rel_ids = $rep->get('ca_objects.object_id', ['returnAsArray' => true]);
- 			if(!in_array($id, array_map("intval", $rel_ids), true)) { 
- 				throw new ApplicationException(_t('Invalid representation'));
- 			}
- 			
- 			if (($transcription = trim($this->request->getParameter('transcription', pString)))) {
- 				$rep->setTranscription($transcription, $this->request->getParameter('complete', pInteger), ['user_id' => $this->request->getUserID()]);
- 			}
- 			
- 			$this->notification->addNotification(_t("Saved transcription"), __NOTIFICATION_TYPE_INFO__);
+ 			if ($t_transcript && $t_transcript->isComplete()) {
+				$t_transcript->set('completed_on', null);
+				$t_transcript->update();
+				$this->notification->addNotification(_t("Reopend transcription for editing"), __NOTIFICATION_TYPE_INFO__);
+			
+ 			} else {
+				$id = $this->request->getParameter('id', pInteger);
+				$obj = new ca_objects($id);
+			
+				if (!in_array($obj->get('access'), $this->opa_access_values)) {
+					throw new ApplicationException(_t('Cannot access item'));
+				}
+			
+				$rep_id = $this->request->getParameter('representation_id', pInteger);
+				$rep = new ca_object_representations($rep_id);
+				if (!in_array($rep->get('access'), $this->opa_access_values)) {
+					throw new ApplicationException(_t('Cannot access representation'));
+				}
+				// Check representation access and whether rep is linked to object
+				$rel_ids = $rep->get('ca_objects.object_id', ['returnAsArray' => true]);
+				if(!in_array($id, array_map("intval", $rel_ids), true)) { 
+					throw new ApplicationException(_t('Invalid representation'));
+				}
+			
+				if (($transcription = trim($this->request->getParameter('transcription', pString)))) {
+					if ($rep->setTranscription($transcription, $this->request->getParameter('complete', pInteger), ['user_id' => $this->request->getUserID()])) {
+						$this->notification->addNotification(_t("Saved transcription"), __NOTIFICATION_TYPE_INFO__);
+					}
+				}
+			}
  			
  			$this->Item();
  		}

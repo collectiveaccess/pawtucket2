@@ -1416,7 +1416,14 @@
 				
 				if ($reps[$rep_id]['has_transcription']) {
 					$items[$item_id]['has_transcription'] = true;
-					$items[$item_id]['is_completed'] = $reps[$rep_id]['is_completed'];
+					
+					if ($reps[$rep_id]['is_completed'] && !isset($items[$item_id]['is_completed'])) {
+						$items[$item_id]['is_completed'] = 1;
+					} elseif(!$reps[$rep_id]['is_completed']) {
+						$items[$item_id]['is_completed'] = 0;
+					}
+				} else {
+					$items[$item_id]['is_completed'] = 0;
 				}
 				if ($items[$item_id]['is_completed']) {
 					$items[$item_id]['status'] = __CA_TRANSCRIPTION_STATUS_COMPLETED__;

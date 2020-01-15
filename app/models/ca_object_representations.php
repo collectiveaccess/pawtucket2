@@ -2047,6 +2047,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		if (!($transcript = $this->getTranscription($options))) {
 			$transcript = new ca_representation_transcriptions();
 		}
+		if ($transcript->isComplete()) { return false; }
 		
 		$transcript->set('representation_id', $rep_id);
 		$transcript->set('transcription', $transcription);
@@ -2116,7 +2117,7 @@ class ca_object_representations extends BundlableLabelableBaseModelWithAttribute
 		
 		if($current_user_only) {
 			if ($transcript = $this->getTranscription($options)) {
-				return $transcript->isCompleted();
+				return $transcript->isComplete();
 			}
 		} else {
 			$ip = RequestHTTP::ip();

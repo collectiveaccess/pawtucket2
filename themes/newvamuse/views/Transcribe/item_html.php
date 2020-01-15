@@ -102,6 +102,15 @@
 ?>
 	<div class='completedText'> 
 		<?php print $transcription->get('transcription'); ?>
+		
+		<div class='saveControls'> 
+			<button class='btn btn-lg btn-danger'>Edit this transcription</button>
+		</div>
+		
+		<?php print caHTMLHiddenInput('id', ['value' => $t_item->getPrimaryKey()]); ?>
+		<?php print caHTMLHiddenInput('representation_id', ['value' => $representation_id]); ?>
+		<?php print caHTMLHiddenInput('edit', ['value' => '1']); ?>
+		<?php print caHTMLHiddenInput('transcription_id', ['value' => $transcription->getPrimaryKey()]); ?>
 	</div>
 <?php
 	} else {
