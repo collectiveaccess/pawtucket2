@@ -39,7 +39,7 @@
 	$vs_status = $t_object->get("ca_objects.status", array("convertCodesToDisplayText" => true));
 
 	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
-	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
+	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" alt="Image Not Available" />';
 ?>
     <main class="ca cr cr_detail nomargin">
 <?php
@@ -88,7 +88,7 @@
 ?>
 							<div class="slick-slide">
 								<div class="img-container">
-									<div class="img-wrapper contain"><img src="<?php print $t_rep->get("ca_object_representations.media.".$vs_display_version.".url"); ?>"></div>
+									<div class="img-wrapper contain"><img src="<?php print $t_rep->get("ca_object_representations.media.".$vs_display_version.".url"); ?>" alt="<?php print str_replace(array("'", "\""), array("", ""), $t_object->get("ca_objects.preferred_labels.name")).(((sizeof($va_rep_ids)) > 1) ? ", image ".($vn_index + 1) : ""); ?>"></div>
 								</div>
 							</div>
 <?php
@@ -102,7 +102,7 @@
                 <ul class="slideshow-thumbnails" data-as-nav="slider-main" data-is-nav="true">
 <?php
 					foreach($va_thumbs as $vn_i => $vs_thumb_url){
-                    	print '<li><a href="#" data-index="'.$vn_i.'" '.(($vn_i == 0) ? 'class="selected"' : '').'><img src="'.$vs_thumb_url.'"></a></li>';
+                    	print '<li><a href="#" data-index="'.$vn_i.'" '.(($vn_i == 0) ? 'class="selected"' : '').'><img src="'.$vs_thumb_url.'" alt="Thumbnail: '.str_replace(array("'", "\""), array("", ""), $t_object->get("ca_objects.preferred_labels.name")).(((sizeof($va_thumbs)) > 1) ? ", image ".($vn_i + 1) : "").'"></a></li>';
 					}
 ?>
                 </ul>
@@ -256,7 +256,7 @@
 							<div class="item">
 									<l>
 										<div class="block-quarter">
-											<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+											<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" alt="^ca_objects.preferred_labels.name" /></ifdef>
 											<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 										</div>
 										<div class="text block-quarter">
@@ -291,7 +291,7 @@
 							<unit relativeTo="ca_objects">
 								<l>
 									<div class="block-quarter">
-										<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+										<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" alt="^ca_objects.preferred_labels.name" /></ifdef>
 										<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 									</div>
 									<div class="text block-quarter">

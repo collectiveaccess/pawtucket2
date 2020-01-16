@@ -6,7 +6,7 @@
         <div class="wrap text-gray">
             <form action="<?php print caNavUrl('', 'Browse', 'CR'); ?>" method="post">
                 <div class="cell text"><?php print caNavLink("Browse", "", "", "Browse", "CR"); ?></div>
-                <div class="cell"><input name="search" type="text" placeholder="Search the Catalogue" class="search" /></div>
+                <div class="cell"><label for="searchInput" class="visuallyhidden">Search the Catalogue</label><input id="searchInput" name="search" type="text" placeholder="Search the Catalogue" class="search" /></div>
                 <div class="misc">
                     <div class="cell text"><?php print caNavLink("Foreword", "", "", "CR", "Foreword"); ?></div>
                     <div class="cell text"><?php print caNavLink("User Guide", "", "", "CR", "UserGuide"); ?></div>

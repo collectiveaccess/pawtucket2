@@ -141,27 +141,24 @@
 ?>
 					<div class="carousel-cell">
 
-						<a href="archives_detail.php">
-							<div class="img-wrapper archive_thumb block-quarter">
 <?php
-								print $qr_highlights->getWithTemplate('<l><div class="bg-image" style="background-image: url(^ca_object_representations.media.medium.url)"></div></l>');
-?>
-								
+						$vs_date = $qr_highlights->get("ca_objects.date.display_date");
+						if(!$vs_date){
+							$vs_date = $qr_highlights->get("ca_objects.date.parsed_date");
+						}
+
+						print caDetailLink('
+							<div class="img-wrapper archive_thumb block-quarter">'.$qr_highlights->getWithTemplate('<div class="bg-image" style="background-image: url(^ca_object_representations.media.medium.url)"></div>').'
 							</div>
 							<div class="text block-quarter">
-								<div class="ca-identifier text-gray"><?php print $qr_highlights->get("ca_objects.idno"); ?></div>
+								<div class="ca-identifier text-gray">'.$qr_highlights->get("ca_objects.idno").'</div>
 								<div class="more">                                
-									<div class="thumb-text clamp" data-lines="2"><?php print $qr_highlights->get("ca_objects.preferred_labels.name"); ?></div>
-<?php
-									$vs_date = $qr_highlights->get("ca_objects.date.display_date");
-									if(!$vs_date){
-										$vs_date = $qr_highlights->get("ca_objects.date.parsed_date");
-									}
-?>
-									<div class="ca-identifier text-gray"><?php print $vs_date; ?></div>
+									<div class="thumb-text clamp" data-lines="2">'.$qr_highlights->get("ca_objects.preferred_labels.name").'</div>
+
+									<div class="ca-identifier text-gray">'.$vs_date.'</div>
 								</div>
-							</div>
-						</a>
+							</div>', '', 'ca_objects', $qr_highlights->get("ca_objects.object_id"));
+?>
 
 					</div>
 <?php

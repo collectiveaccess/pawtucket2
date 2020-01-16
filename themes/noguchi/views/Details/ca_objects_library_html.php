@@ -35,7 +35,7 @@
 	$vn_next_id = $this->getVar("nextID");
 	
 	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
-	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
+	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'"  alt="Image Not Available" />';
 	
 	$vs_display_version = $vs_media = $vs_media_url = $vs_download_link = "";
 	$t_representation = $this->getVar("t_representation");
@@ -101,7 +101,7 @@
 				}
 ?>                    
                     <div class="img-wrapper archive_detail">
-                        <img nopin="nopin" src="<?php print $vs_media_url; ?>" />
+                        <img nopin="nopin" src="<?php print $vs_media_url; ?>" alt="<?php print str_replace(array("'", "\""), array("", ""), $t_object->get("ca_objects.preferred_labels.name")); ?>" />
                     </div>
 
                 </div>

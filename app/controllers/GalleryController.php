@@ -44,6 +44,7 @@
             }
             
  			$this->config = caGetGalleryConfig();
+ 			$this->view->setVar("config", $this->config);
  			
  		 	# --- what is the section called - title of page
  			if(!$vs_section_name = $this->config->get('gallery_section_name')){

@@ -35,7 +35,7 @@
 	$vn_next_id = $this->getVar("nextID");
 	
 	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
-	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
+	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" alt="Image Not Available"  />';
 
 	$va_collection_hierarchy = array_shift($t_object->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 	$vb_photo_collection = false;
@@ -295,7 +295,7 @@
 
 								<l>
 									<div class="img-wrapper archive_thumb block-quarter">
-										<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+										<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url"  alt="^ca_objects.preferred_labels.name" /></ifdef>
 										<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 									</div>
 									<div class="text block-quarter">
@@ -327,7 +327,7 @@
 
 								<l>
 									<div class="img-wrapper archive_thumb block-quarter">
-										<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+										<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url"  alt="^ca_objects.preferred_labels.name"/></ifdef>
 										<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 									</div>
 									<div class="text block-quarter">

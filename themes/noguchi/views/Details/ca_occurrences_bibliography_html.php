@@ -9,7 +9,7 @@
 	$va_access_values = caGetUserAccessValues();
 	
 	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
-	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'" />';
+	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'"  alt="Image Not Available" />';
 ?>
     <main class="ca bibliography bibliography_detail nomargin">
 
@@ -29,6 +29,7 @@
  			if($va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true,"restrictToTypes" => array("archival_item","document","objects","photographs","digital","print","strip","transparency","strip_image"), "checkAccess" => $va_access_values))){
  				$va_media = array();
  				$va_thumbs = array();
+ 				$va_titles = array();
  				foreach($va_object_ids as $vn_object_id){
  					$t_object = new ca_objects($vn_object_id);
  					if($t_rep = $t_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
@@ -51,6 +52,7 @@
 						}
 						$va_media[] = $vs_media;
 						$va_thumbs[] = $t_rep->get("ca_object_representations.media.icon.url");
+						$va_titles[] = str_replace(array("'", "\""), array("", ""), $t_object->get("ca_objects.preferred_labels.name"));
 					}					
  				}
  				if(sizeof($va_media)){
@@ -61,7 +63,7 @@
                 <div class="module_slideshow is-finite slideshow-main no_dots" data-thumbnails="slideshow-thumbnails">
                     <div class="slick-slider slider-main">
 <?php
-						foreach($va_media as $vs_media){
+						foreach($va_media as $vn_i => $vs_media){
 ?>
 							<div class="slick-slide">
 								<div class="img-container">
@@ -79,7 +81,7 @@
 					<ul class="slideshow-thumbnails" data-as-nav="slider-main" data-is-nav="true">
 <?php
 						foreach($va_thumbs as $vn_i => $vs_thumb_url){
-							print '<li><a href="#" data-index="'.$vn_i.'" '.(($vn_i == 0) ? 'class="selected"' : '').'><img src="'.$vs_thumb_url.'"></a></li>';
+							print '<li><a href="#" data-index="'.$vn_i.'" '.(($vn_i == 0) ? 'class="selected"' : '').'><img src="'.$vs_thumb_url.'" alt="'.$va_titles[$vn_i].'"></a></li>';
 						}
 ?>
 					</ul>
@@ -203,7 +205,7 @@
 							<div class="item">
 								<l>
 									<div class="img-wrapper archive_thumb block-quarter">
-										<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" /></ifdef>
+										<ifdef code="ca_object_representations.media.medium.url"><img nopin="nopin"  src="^ca_object_representations.media.medium.url" alt="^ca_objects.preferred_labels.name"/></ifdef>
 										<ifnotdef code="ca_object_representations.media.medium.url"><?php print $vs_placeholder_tag; ?></ifnotdef>
 									</div>
 									<div class="text block-quarter">
