@@ -311,7 +311,7 @@
 		# -------------------------------------------------------
 		function register() {
 			if (!caValidateCSRFToken($this->request, null, ['notifications' => $this->notification])) {
-				$this->register();
+				$this->registerForm();
 				return;
 		    }
 			if (
