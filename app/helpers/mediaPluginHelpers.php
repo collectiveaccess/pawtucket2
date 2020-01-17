@@ -285,7 +285,6 @@
 	function caMediaInfoInstalled($ps_mediainfo_path=null) {
 		//if (CompositeCache::contains("mediahelper_mediainfo_installed")) { return CompositeCache::fetch("mediahelper_mediainfo_installed"); }
 		if(!$ps_mediainfo_path) { $ps_mediainfo_path = caGetExternalApplicationPath('mediainfo'); }
-
 		if (!caIsValidFilePath($ps_mediainfo_path)) { 
 			CompositeCache::save("mediahelper_mediainfo_installed", false);
 			return false; 
@@ -294,10 +293,8 @@
 			CompositeCache::save("mediahelper_mediainfo_installed", true);
 			return true; 
 		} // don't try exec test on Windows
-		
 		exec($ps_mediainfo_path." --Help > /dev/null",$va_output,$vn_return);
-		
-		$vb_ret = ($vn_return == 255);
+		$vb_ret = ($vn_return == 255) || ($vn_return == 0);
 		
 		CompositeCache::save("mediahelper_mediainfo_installed", $vb_ret);
 		
@@ -724,7 +721,7 @@
 		// REPRESENTATION
 		//
 
-		if($vs_representation_Export = caExportMediaMetadataForRecord('ca_object_representations', $ps_rep_type_code, $pn_rep_pk)) {
+		if($vs_representation_export = caExportMediaMetadataForRecord('ca_object_representations', $ps_rep_type_code, $pn_rep_pk)) {
 			$vs_export_filename = caGetTempFileName('mediaMetadataRepExport','xml');
 			if(@file_put_contents($vs_export_filename, $vs_representation_Export) === false) { return false; }
 			exec("{$vs_path_to_exif_tool} -tagsfromfile {$vs_export_filename} -all:all ".caEscapeShellArg($vs_tmp_filepath), $va_output, $vn_return);

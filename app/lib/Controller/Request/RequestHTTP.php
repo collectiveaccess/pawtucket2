@@ -540,7 +540,7 @@ class RequestHTTP extends Request {
 				}
 			}
 			
-			if (strlen($vm_val) > 0) { break; } 
+			if (is_array($vm_val) || (strlen($vm_val) > 0)) { break; } 
 		}
 		if (!isset($vm_val)) { return ""; }
 		
@@ -976,6 +976,7 @@ class RequestHTTP extends Request {
 	 */
 	static public function ip() {
 		if (isset($_SERVER['HTTP_X_REAL_IP']) && $_SERVER['HTTP_X_REAL_IP']) { return $_SERVER['HTTP_X_REAL_IP']; }
+		if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR']) { return $_SERVER['HTTP_X_FORWARDED_FOR']; }
 		return $_SERVER['REMOTE_ADDR'];
 	}
 	# ----------------------------------------

@@ -78,7 +78,7 @@
 			$vs_type = BaseRefinery::parsePlaceholder($va_parent['type'], $pa_source_data, $pa_item, $pn_c, array('reader' => $o_reader, 'returnAsString' => true, 'delimiter' => null));
 
 			if (!$vs_name && !$vs_idno) { continue; }
-			if (!$vs_name) { continue; }//$vs_name = $vs_idno; }
+			if (!$vs_name && isset($va_parent['name'])) { continue; }
 			
 			$va_attributes = (isset($va_parent['attributes']) && is_array($va_parent['attributes'])) ? $va_parent['attributes'] : array();
 		
@@ -387,7 +387,6 @@
 					}
 				} else {
 					if ($vm_val_to_import = trim((is_array($vm_v = BaseRefinery::parsePlaceholder($va_attrs, $pa_source_data, $pa_item, $pn_c, array('returnDelimitedValueAt' => $pn_c, 'returnAsString' => true, 'delimiter' => caGetOption('delimiter', $pa_options, null), 'reader' => $o_reader)))) ? join(" ", $vm_v) : $vm_v)) {
-					
 						if(!file_exists($vs_path = $vs_prefix.$vm_val_to_import) && ($va_candidates = array_filter($va_prefix_file_list, function($v) use ($vs_path) { return preg_match("!^{$vs_path}!", $v); })) && is_array($va_candidates) && sizeof($va_candidates)){
 							$vs_path = array_shift($va_candidates);
 						}
@@ -499,14 +498,36 @@
 
 		    foreach($va_name as $i => $vs_name) {
                 $vs_idno = $va_idno[$i];
-                $vs_type = $va_type[$i];
+               	$vs_type = $va_type[$i];
+                $vs_rel_type = null;
+                
+                if ($vs_rel_type_opt = $pa_related_options['extractRelationshipTypes']) {
+                	switch($vs_rel_type_opt) {
+						default:
+							$pat = "\\(([^\\)]+)\\)";
+							break;
+						case '[]':
+						case '[':
+							$pat = "\\[([^\\)]+)\\]";
+							break;
+						case '{}':
+						case '{':
+							$pat = "\\{([^\\)]+)\\}";
+							break;
+					}
+					if (preg_match("!{$pat}!", $vs_name, $m)) { 
+						$vs_rel_type = $m[1];
+						$vs_name = str_replace($m[0], "", $vs_name);
+					}
+                }
+                
                 $vs_parent_id = $va_parent_id[$i];
                 if (!$vs_name) { $vs_name = $vs_idno; }
                 if (!$vs_name) { continue; }
 
                 if(!$vs_type) { $vs_type = $va_type[sizeof($va_type) - 1]; }
                 if(!$vs_parent_id) { $vs_parent_id = $va_parent_id[sizeof($va_parent_id) - 1]; }
-        
+                
                 if ($ps_related_table == 'ca_entities') {
                     $t_entity = new ca_entities();
                     if ($o_trans) { $t_entity->setTransaction($o_trans); }
@@ -623,7 +644,7 @@
                 if ($vn_id) {
                     $va_attr_vals['_related_related'][$ps_related_table][] = array(
                         'id' => $vn_id,
-                        '_relationship_type' => $pa_related_options['relationshipType']
+                        '_relationship_type' => $vs_rel_type ? $vs_rel_type : $pa_related_options['relationshipType']
                     );
                 }
             }
@@ -643,7 +664,6 @@
 		
 		$po_refinery_instance->setReturnsMultipleValues(true);
 		
-		$po_refinery_instance->setReturnsMultipleValues(true);
 		$o_log = caGetOption('log', $pa_options, null);
 		$o_reader = caGetOption('reader', $pa_options, null);
 		$o_trans = caGetOption('transaction', $pa_options, null);
@@ -674,7 +694,6 @@
 		if (!is_array($va_delimited_items)) { $va_delimited_items = array($va_delimited_items); }
 		$va_delimiter = $pa_item['settings']["{$ps_refinery_name}_delimiter"];
 		if (!is_array($va_delimiter)) { $va_delimiter = array($va_delimiter); }
-							
 		if (sizeof($va_delimiter)) {
 			foreach($va_delimiter as $vn_index => $vs_delim) {
 				if (!trim($vs_delim, "\t ")) { unset($va_delimiter[$vn_index]); continue; }
@@ -783,9 +802,14 @@
 						}
 				
 						//
-						// Storage location specific options
+						// Storage location/list item specific options
 						//
-						if (($ps_refinery_name == 'storageLocationSplitter') && ($va_hier_delimiter = $pa_item['settings']['storageLocationSplitter_hierarchicalDelimiter'])) {
+						if (
+							(($ps_refinery_name == 'storageLocationSplitter') && ($va_hier_delimiter = $pa_item['settings']['storageLocationSplitter_hierarchicalDelimiter']))
+							||
+							(($ps_refinery_name == 'listItemSplitter') && ($va_hier_delimiter = $pa_item['settings']['listItemSplitter_hierarchicalDelimiter']))
+						) {
+							$key_prefix = str_replace('Splitter', '', $ps_refinery_name);
 							if (!is_array($va_hier_delimiter)) { $va_hier_delimiter = array($va_hier_delimiter); }
 							
 							if (sizeof($va_hier_delimiter)) {
@@ -795,33 +819,43 @@
 								}
 							}
 							
-							$va_location_hier = preg_split("!(".join("|", $va_hier_delimiter).")!", $vs_item);
+							$va_item_hier = array_map(function($v) { return trim($v); }, preg_split("!(".join("|", $va_hier_delimiter).")!", $vs_item));
 							
-							if (sizeof($va_location_hier) > 1) {
+							if (sizeof($va_item_hier) > 1) {
 					
-								$vn_location_id = null;
+								$vn_hier_item_id = null;
 				
-								if (!is_array($va_types = $pa_item['settings']['storageLocationSplitter_hierarchicalStorageLocationTypes'])) {
+								if (!is_array($va_types = $pa_item['settings']["{$ps_refinery_name}_hierarchical".ucfirst($key_prefix)."Types"])) {
 									$va_types = array();
 								}
 						
-								$vs_item = array_pop($va_location_hier);
+								$vs_item = array_pop($va_item_hier);
 								if (!($va_val['_type'] = array_pop($va_types))) {
-									$va_val['_type'] = $pa_item['settings']['storageLocationSplitter_storageLocationTypeDefault'];
+									$va_val['_type'] = $pa_item['settings']["{$ps_refinery_name}_{$key_prefix}TypeDefault"];
 								}
 					
-								foreach($va_location_hier as $vn_i => $vs_parent) {
+								foreach($va_item_hier as $vn_ix => $vs_parent) {
 									if (sizeof($va_types) > 0)  { 
 										$vs_type = array_shift($va_types); 
 									} else { 
-										if (!($vs_type = $pa_item['settings']['storageLocationSplitter_storageLocationType'])) {
-											$vs_type = $pa_item['settings']['storageLocationSplitter_storageLocationTypeDefault'];
+										if (!($vs_type = $pa_item['settings']["{$ps_refinery_name}_{$key_prefix}Type"])) {
+											$vs_type = $pa_item['settings']["{$ps_refinery_name}_{$key_prefix}TypeDefault"];
 										}
 									}
 									if (!$vs_type) { break; }
-									$vn_location_id = DataMigrationUtils::getStorageLocationID($vs_parent, $vn_location_id, $vs_type, $g_ui_locale_id, array('idno' => $vs_parent, 'parent_id' => $vn_location_id), $pa_options);
+									
+									switch($ps_refinery_name) {
+										case 'storageLocationSplitter':
+											$vn_hier_item_id = DataMigrationUtils::getStorageLocationID($vs_parent, $vn_hier_item_id, $vs_type, $g_ui_locale_id, ['idno' => $vs_parent], array_merge($pa_options, ['ignoreType' => true, 'ignoreParent' => is_null($vn_hier_item_id)]));
+											break;
+										case 'listItemSplitter':
+										    $vals = ['idno' => $vs_parent];
+										    if(!is_null($vn_hier_item_id)) { $vals['parent_id'] = $vn_hier_item_id; }
+											$vn_hier_item_id = DataMigrationUtils::getListItemID($pa_items['settings']['listItemSplitter_list'], $vs_parent, $vs_type, $g_ui_locale_id, $vals, array_merge($pa_options, ['ignoreType' => true, 'ignoreParent' => is_null($vn_hier_item_id)]));
+											break;
+									}
 								}
-								$va_val['parent_id'] = $va_val['_parent_id'] = $vn_location_id;
+								$va_val['parent_id'] = $va_val['_parent_id'] = $vn_hier_item_id;
 							}
 						} else {
 							// Set parents
@@ -840,7 +874,7 @@
 		
 						// Set attributes
 						//      $va_attr_vals = directly attached attributes for item
-						if (is_array($va_attr_vals = caProcessRefineryAttributes($pa_item['settings']["{$ps_refinery_name}_attributes"], $pa_source_data, $pa_item, $vn_i, array('delimiter' => $va_delimiter, 'log' => $o_log, 'reader' => $o_reader, 'refineryName' => $ps_refinery_name)))) {
+						if (is_array($va_attr_vals = caProcessRefineryAttributes($pa_item['settings']["{$ps_refinery_name}_attributes"], $pa_source_data, $pa_item, $pn_value_index, array('delimiter' => $va_delimiter, 'log' => $o_log, 'reader' => $o_reader, 'refineryName' => $ps_refinery_name)))) {
 							$va_val = array_merge($va_val, $va_attr_vals);
 						}
 			
@@ -953,6 +987,29 @@
 					} elseif ((sizeof($va_group_dest) == 1) && ($vs_terminal == $ps_table)) {
 						// Set relationship type
 						if (
+							($vs_rel_type_opt = $pa_item['settings']["{$ps_refinery_name}_extractRelationshipType"])
+						) {
+							switch($vs_rel_type_opt) {
+								default:
+									$pat = "\\(([^\\)]+)\\)";
+									break;
+								case '[]':
+								case '[':
+									$pat = "\\[([^\\)]+)\\]";
+									break;
+								case '{}':
+								case '{':
+									$pat = "\\{([^\\)]+)\\}";
+									break;
+							}
+							if (preg_match("!{$pat}!", $vs_item, $m)) { 
+								$va_val['_relationship_type'] = $m[1];
+								$vs_item = str_replace($m[0], "", $vs_item);
+							}
+						}
+						if (
+							(!isset($va_val['_relationship_type']) || !$va_val['_relationship_type']) 
+							&&
 							($vs_rel_type_opt = $pa_item['settings']["{$ps_refinery_name}_relationshipType"])
 						) {
 							$va_val['_relationship_type'] = BaseRefinery::parsePlaceholder($vs_rel_type_opt, $pa_source_data, $pa_item, $pn_value_index, array('returnAsString' => true, 'reader' => $o_reader));
@@ -1402,3 +1459,20 @@ function caProcessRefineryRelatedMultiple($po_refinery_instance, &$pa_item, $pa_
 
 		return false;
 	}
+	# ---------------------------------------------------------------------
+	/**
+	 *
+	 */
+	function caValidateGoogleSheetsUrl($url) {
+		if (!is_array($parsed_url = parse_url(urldecode($url)))) { return null; }
+ 			
+		$tmp = explode('/', $parsed_url['path']);
+		array_pop($tmp); $tmp[] = 'export';
+		$path = join("/", $tmp);
+		$transformed_url = $parsed_url['scheme']."://".$parsed_url['host'].$path."?format=xlsx";
+		if (!isUrl($transformed_url) || !preg_match('!^https://(docs|drive).google.com/(spreadsheets|file)/d/!', $transformed_url)) {
+			return null;
+		}
+		return $transformed_url;
+	}
+	# ---------------------------------------------------------------------

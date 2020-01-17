@@ -267,13 +267,19 @@ class ca_metadata_dictionary_rules extends BaseModel {
 	}
 	# ----------------------------------------
 	/**
-	 * 
+	 * Return all rules for all or selected bundles
+	 *
+	 * @param array $pa_options Options include:
+	 *		db = Database connection to use. If omitted a new connection is created. [Default is null]
+	 *		bundles = List of bundle name to return rules for. If omitted all rules for all bundles are returned. [Default is null]
+	 *
+	 * @return array List of rules. Each rule is an array with rule data.
 	 */
 	static public function getRules($pa_options=null) {
 		if (!($o_db = caGetOption('db', $pa_options, null))) { $o_db = new Db(); }
 		
 		$vs_sql = "
-			SELECT cmdr.rule_id, cmdr.entry_id, cmde.bundle_name, cmde.settings entry_settings, 
+			SELECT cmdr.rule_id, cmdr.entry_id, cmde.bundle_name, cmde.settings entry_settings, cmde.table_num,
 			cmdr.rule_code, cmdr.rule_level, cmdr.expression, cmdr.settings rule_settings
 			FROM ca_metadata_dictionary_rules cmdr
 			INNER JOIN ca_metadata_dictionary_entries AS cmde ON cmde.entry_id = cmdr.entry_id

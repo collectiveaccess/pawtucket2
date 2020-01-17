@@ -38,7 +38,7 @@
     </script>
     
 	<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-		<?php print caNavLink(caGetThemeGraphic("metabolic/metabolicStudioLogo.png"), "navbar-brand", "", "Front", "Index"); ?>
+		<?php print caNavLink(caGetThemeGraphic("metabolic/metabolicStudioLogo.png", array("alt" => "Metabolic Studio")), "navbar-brand", "", "Front", "Index"); ?>
 		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>

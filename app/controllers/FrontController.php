@@ -46,15 +46,15 @@
  		 *$this->config
  		 */ 
  		public function __call($ps_function, $pa_args) {
- 			$access_values = caGetUserAccessValues();
+ 			$va_access_values = caGetUserAccessValues();
  			$this->view->setVar('access_values', $va_access_values);
 
             $set_codes = $this->config->getList('set_codes');
             
             $t_set = new ca_sets();
             if(!is_array($media_versions = $this->config->get('media_versions'))) { $media_versions = ['icon', 'small']; }
-            $sets = caExtractValuesByUserLocale($t_set->getSets(['checkAccess' => $access_values, 'codes' => $set_codes, 'includeItems' => true, 'thumbnailVersions' => $media_versions]));
-            
+
+            $sets = caExtractValuesByUserLocale($t_set->getSets(['checkAccess' => $va_access_values, 'codes' => $set_codes, 'includeItems' => true, 'thumbnailVersions' => $media_versions]));
             
             $this->view->setVar('sets', $sets);
             
@@ -70,7 +70,7 @@
  					$vn_shuffle = 1;
  				}
 				# Enforce access control on set
-				if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+				if(!is_array($va_access_values) || (sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
 					$this->view->setVar('featured_set_id', $t_set->get("set_id"));
 					$this->view->setVar('featured_set', $t_set);
 					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());
