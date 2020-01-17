@@ -372,27 +372,27 @@
 			}
 			$co_security = $this->request->config->get('registration_security');
 			if($co_security == 'captcha'){
-         			if(strlen($this->request->config->get('google_recaptcha_sitekey')) != 40 || strlen($this->request->config->get('google_recaptcha_secretkey')) != 40){
-					//Then the captcha will not work and should not be implemenented.
-                    			$co_security = 'equation_sum';
-                		}
-        		}
+				if((defined("__CA_GOOGLE_RECAPTCHA_SECRET_KEY__") && __CA_GOOGLE_RECAPTCHA_SECRET_KEY__) && (defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__)){
+				//Then the captcha will not work and should not be implemenented.
+							$co_security = 'equation_sum';
+					}
+			}
 			if($co_security == 'captcha'){
 				if(!$ps_captcha){
 						$va_errors["recaptcha"] = _t("Please complete the captcha");
 				} else {
-						$va_request = curl_init();
-						curl_setopt($va_request, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
-						curl_setopt($va_request, CURLOPT_HEADER, 0);
-						curl_setopt($va_request, CURLOPT_RETURNTRANSFER, 1);
-						curl_setopt($va_request, CURLOPT_POST, 1);
-						$va_request_params = ['secret'=>$this->request->config->get('google_recaptcha_secretkey'), 'response'=>$ps_captcha];
-						curl_setopt($va_request, CURLOPT_POSTFIELDS, $va_request_params);
-						$va_captcha_resp = curl_exec($va_request);
-						$captcha_json = json_decode($va_captcha_resp, true);
-						if(!$captcha_json['success']){
-								$va_errors["recaptcha"] = _t("Your Captcha was rejected, please try again");
-						}
+					$va_request = curl_init();
+					curl_setopt($va_request, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
+					curl_setopt($va_request, CURLOPT_HEADER, 0);
+					curl_setopt($va_request, CURLOPT_RETURNTRANSFER, 1);
+					curl_setopt($va_request, CURLOPT_POST, 1);
+					$va_request_params = ['secret'=>__CA_GOOGLE_RECAPTCHA_SECRET_KEY__, 'response'=>$ps_captcha];
+					curl_setopt($va_request, CURLOPT_POSTFIELDS, $va_request_params);
+					$va_captcha_resp = curl_exec($va_request);
+					$captcha_json = json_decode($va_captcha_resp, true);
+					if(!$captcha_json['success']){
+							$va_errors["recaptcha"] = _t("Your Captcha was rejected, please try again");
+					}
 				}
 			} else {
 				if ((!$ps_security)) {
