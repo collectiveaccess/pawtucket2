@@ -26,8 +26,9 @@ if($t_set_creator->hasRole("member")){
 		</div>
 	</div>
 	<div class="row">
-		<div class="col-sm-8"><div id="galleryDetailImageArea">
-		</div><!-- end galleryDetailImageArea --></div><!--end col-sm-8-->
+		<div class="col-sm-8">
+		    <div id="galleryDetailImageArea"></div><!-- end galleryDetailImageArea -->
+		</div><!--end col-sm-8-->
 		<div class="col-sm-4" id="galleryDetailObjectInfo"> </div>
 	</div><!-- end row -->
 <div class="galleryDetailBottom"></div>
