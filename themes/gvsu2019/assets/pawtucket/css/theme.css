@@ -116,7 +116,17 @@ h1, .front h1 {
 }
 
 .card-columns  {
-	column-count: 3;
+	column-count: 1;
+}
+@media (min-width: 576px) {
+	.gallery .card-columns {
+		column-count: 2;
+	}
+}
+@media (min-width: 768px) {
+	.gallery .card-columns {
+		column-count: 3;
+	}
 }
 .galleryItem {
 	break-inside: avoid;
@@ -136,9 +146,9 @@ h1, .front h1 {
 .btn-default {
 	background-color: #0065A4;
 }
-.btn-default:hover {
+.btn-default:hover, .btn-default:focus {
 	background-color: #000;
-
+	text-decoration: none;
 }
 a .btn-default:hover {
 	text-decoration: none;
@@ -170,7 +180,7 @@ a .btn-default:hover {
     text-align: center;
 }
 #gvsu-topbanner form {
-	display: none;
+	display: none !important;
 }
 
 @media screen and (min-width: 768px) {
@@ -265,14 +275,42 @@ a .btn-default:hover {
   	margin-right: auto;
 	
 }
+
 .front .frontSlide img{
     display: block;
   	margin-left: auto;
   	margin-right: auto;
-	max-height: 340px; 
 	padding-top: 10px;
+	padding-bottom: 10px;
 	float: none;
 }	
+
+@media (max-width:768px){
+	.front .frontSlide img{
+		width: 400px;
+		height: 400px;
+		object-fit: contain;
+		max-height:none;
+	}
+}
+@media (max-width:576px){
+	.front .frontSlide img{
+		width: 200px;
+		height: 300px;
+		object-fit: contain;
+		max-height:none;
+	}
+}
+@media (min-width:768px){
+	.front .frontSlide img{
+		display: block;
+		padding-top: 10px;
+		padding-bottom: 0px;
+		float: none;
+  		width:auto;
+		max-height: 340px; 
+	}	
+}
 
 .front div.slideTextRight h2 {
 	color: #fff;
@@ -293,6 +331,11 @@ a .btn-default:hover {
 @media (min-width:1100px){
 	.front div.slideTextRight{
 	margin-top:	35%;
+	}
+}
+@media (max-width:992px){
+	.front div.slideTextRight{
+		margin-bottom:	30px;
 	}
 }
 .front div.slideTextLeft{
@@ -327,7 +370,7 @@ a .btn-default:hover {
 .frontSlide .text-center{
 	margin-top:10px;
 }
-@media (min-width:768px){
+@media (min-width:992px){
 	.frontSlide .text-center{
 		margin-top:20px;
 	}
@@ -335,8 +378,8 @@ a .btn-default:hover {
         margin-top: 5px;
     }
     .front .mainSlideShow {
-	height: 350px;
-}
+		height: 350px;
+	}
 }
 .front .jcarousel-pagination a.active {
   background: #1c3e47;
@@ -361,8 +404,8 @@ a .btn-default:hover {
 }
 @media (max-width: 968px) {
     .front .mainSlideThumbs img {
-	width:50%;
-	height:auto;
+		width:50%;
+		height:auto;
 	}
 }
 @media (max-width: 568px) {
@@ -376,6 +419,9 @@ a .btn-default:hover {
 }
 .front .mainSlideThumbs .mainSlideActive img {
 	border:2px solid #6FB7C3;
+}
+.front a.jcarousel-control-prev:hover .fa, .front a.jcarousel-control-next:hover .fa, .front a.jcarousel-control-prev:focus .fa, .front a.jcarousel-control-next:focus .fa{
+	color:#FFF;
 }
  .bluebg {
 	background-color: #0065A4;
@@ -395,6 +441,7 @@ a .btn-default:hover {
 	border: 1px solid #0065A4;
 	margin-top: 5px;
 	margin-bottom: 5px;
+	padding: 0px 10px 10px 10px;
 }
 
 /* location */
@@ -445,4 +492,20 @@ a .btn-default:hover {
 }
 .detail #repViewerCarousel{
 	padding-bottom:30px;
+}
+
+/* Header */
+.nav > li.mobilenavbar{
+	display:none;
+}
+@media (max-width: 768px) {
+	.nav > li.mobilenavbar{
+		display:block;
+	}
+}
+
+@media (max-width: 768px) {
+	.mobileHide{
+		display:none;
+	}
 }

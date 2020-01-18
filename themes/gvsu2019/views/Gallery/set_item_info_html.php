@@ -5,8 +5,8 @@
 
 {{{<ifdef code="ca_objects.work_description"><h6>Description:</h6>^ca_objects.work_description</ifdef>}}}
 
-{{{<ifcount code="ca_entities" min="1" max="1"><h6>Related person: </h6></ifcount>}}}
-{{{<ifcount code="ca_entities" min="2"><h6>Related people: </h6></ifcount>}}}
-{{{<unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
+{{{<ifcount code="ca_entities" min="1" max="1" restrictToRelationshipTypes="creator,attributor"><h6>Artist: </h6></ifcount>}}}
+{{{<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="creator,attributor"><h6>Artists: </h6></ifcount>}}}
+{{{<unit relativeTo="ca_entities" delimiter=", " restrictToRelationshipTypes="creator,attributor"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
 
-<?php print caDetailLink($this->request, _t("<span class='btn-default'>VIEW RECORD</span>"), '', $this->getVar("table"),  $this->getVar("row_id")); ?>
+<br/><br/><?php print caDetailLink($this->request, _t("VIEW RECORD"), 'btn-default', $this->getVar("table"),  $this->getVar("row_id")); ?>

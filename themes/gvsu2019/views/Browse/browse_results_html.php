@@ -52,7 +52,9 @@
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
 	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
-	
+	if($vs_table == "ca_entities"){
+		$vn_result_size = $qr_res->numHits();
+	}
 	
 	$va_options			= $this->getVar('options');
 	$vs_extended_info_template = caGetOption('extendedInformationTemplate', $va_options, null);

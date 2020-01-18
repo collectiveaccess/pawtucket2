@@ -47,17 +47,17 @@
 <?php
 							$va_thumbnails = array();
 							while($qr_res->nextHit()){
-								if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.large</l>', array("checkAccess" => $va_access_values))){
+								if($vs_media = $qr_res->getWithTemplate('<l>^ca_object_representations.media.mediumlarge</l>', array("checkAccess" => $va_access_values))){
 									$va_thumbnails[$qr_res->get("ca_objects.object_id")] = $qr_res->get('ca_object_representations.media.iconlarge', array("checkAccess" => $va_access_values));
 ?>							
 									
 									<li id="slide<?php print $qr_res->get("ca_objects.object_id"); ?>" class="<?php print $qr_res->get("ca_objects.object_id"); ?>">
 										<div class='frontSlide'>
 											<div class="row">
-												<div class="col-xs-12 col-sm-6 col-md-offset-1 col-md-6">
+												<div class="col-xs-12 col-sm-12 col-md-offset-1 col-md-6">
 													<?php print $vs_media; ?>
 												</div>
-												<div class="col-xs-12 col-sm-4 col-md-4">
+												<div class="col-xs-12 col-sm-12 col-md-4">
 													<div class="slideTextRight">
 														<h2 class="text-center">
 															<?php print $qr_res->getWithTemplate("^ca_objects.preferred_labels.name"); ?>

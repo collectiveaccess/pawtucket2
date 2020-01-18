@@ -8,7 +8,7 @@
 	
 		<div class="col-sm-6 col-md-4">
 		<h2>Vision</h2><hr>
-			<H1>To shape and enrich the quality of life for the residents and visitors of Grand Valley State University and to become a leader in the areas of art appreciation and interdisciplinary education for the local community.</H1>
+			<H1>{{{hpVision}}}</H1>
 		</div><!--end col-sm-8-->
 	<div class="col-sm-6 col-md-5">
 <?php
