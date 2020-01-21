@@ -13,7 +13,8 @@
 	}
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
-
+	
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -57,12 +58,18 @@
 				</script>
 <?php				
 			}									
+			$vn_col = 12;
+			if(($t_item->get("ca_collections.abstract") || $t_item->get("ca_collections.historical_note") || $t_item->get("ca_collections.arrangement") || $t_item->get("ca_collections.gen_physical_description") || $t_item->get("ca_collections.lcsh_geo") || $t_item->get("ca_collections.lcsh_topical") || $t_item->get("ca_list_items")) 
+				 && ($t_item->get("ca_collections.access_restrictions") || $t_item->get("ca_collections.user_restrictions") || $t_item->get("ca_collections.preferred_citation") || $t_item->get("ca_collections.externalLink.url_entry") || $t_item->get("ca_collections.related", array("checkAccess" => $va_access_values)) || $t_item->get("ca_entities", array("checkAccess" => $va_access_values)) || $t_item->get("ca_places", array("checkAccess" => $va_access_values)) || $t_item->get("ca_occurrences", array("checkAccess" => $va_access_values)))
+			){
+				$vn_col = 6;
+			}
 ?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
-			<div class="row">		
-			<div class="collections-detail">	
-				<div class='col-md-6 col-lg-6'>
+			<div class="row">			
+				<div class='col-md-<?php print $vn_col; ?>'>
+					<div class="collections-detail">
 					{{{<ifdef code="ca_collections.abstract"><H6>Abstract</H6><span class="trimText">^ca_collections.abstract</span></ifdef>}}}
 					{{{<ifdef code="ca_collections.historical_note"><H6>Historical Note</H6><span class="trimText">^ca_collections.historical_note</span></ifdef>}}}
 					{{{<ifdef code="ca_collections.arrangement"><H6>Arrangement Note</H6><span class="trimText">^ca_collections.arrangement</span></ifdef>}}}
@@ -107,9 +114,10 @@
 					print '</div><!-- end detailTools -->';
 				}				
 ?>
-					
+					</div>
 				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6'>
+				<div class='col-md-<?php print $vn_col; ?>'>
+					<div class="collections-detail">
 			        {{{<ifdef code="ca_collections.access_restrictions"><H6>Access Restrictions</H6>^ca_collections.access_restrictions</ifdef>}}}
 			        {{{<ifdef code="ca_collections.user_restrictions"><H6>User Restrictions</H6>^ca_collections.user_restrictions</ifdef>}}}
 			        {{{<ifdef code="ca_collections.preferred_citation"><H6>Preferred Citation</H6>^ca_collections.preferred_citation</ifdef>}}}
@@ -121,7 +129,7 @@
 					</case>}}}
 					{{{<ifcount code="ca_collections.related" min="1" max="1"><H6>Related Collection</H6></ifcount>}}}
 					{{{<ifcount code="ca_collections.related" min="2"><H6>Related Collections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_collections.related" ><l>^ca_collections.related.preferred_labels.name</l> (^relationship_typename)</unit>}}}
+					{{{<unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
 					
 					{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related Person</H6></ifcount>}}}
 					{{{<ifcount code="ca_entities" min="2"><H6>Related People</H6></ifcount>}}}
@@ -134,8 +142,8 @@
 					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related Place</H6></ifcount>}}}
 					{{{<ifcount code="ca_places" min="2"><H6>Related Places</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}					
+					</div>
 				</div><!-- end col -->
-			</div>
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
