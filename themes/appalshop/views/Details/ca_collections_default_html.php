@@ -27,24 +27,22 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-			<div class="collections-detail">
-				<div class='col-md-6 col-lg-6 '>
-					<H2>{{{^ca_collections.preferred_labels.name}}}</H2>
-					{{{<ifdef code="ca_collections.scope_contents"><h4>^ca_collections.collection_date.collection_dates_value</h4></ifdef>}}}
-					<h4>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno"> ^ca_collections.idno</ifdef>}}}</h4>
-	         	   {{{<ifdef code="ca_collections.extent.extent_amount"><h6>Extent</h6>		
-					<unit relativeTo="ca_collections.extent.extent_amount" delimiter="<br/>">^ca_collections.extent.extent_amount ^ca_collections.extent.extent_type</unit></ifdef>}}}
+				<div class='col-sm-12 '>
+					
+					<div class="collections-detail">
+						<H2>{{{^ca_collections.preferred_labels.name}}}</H2>
+						{{{<ifdef code="ca_collections.scope_contents"><h4>^ca_collections.collection_date.collection_dates_value</h4></ifdef>}}}
+						<h4>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno"> ^ca_collections.idno</ifdef>}}}</h4>
+					   {{{<ifdef code="ca_collections.extent.extent_amount"><h6>Extent</h6>		
+						<unit relativeTo="ca_collections.extent.extent_amount" delimiter="<br/>">^ca_collections.extent.extent_amount ^ca_collections.extent.extent_type</unit></ifdef>}}}
 
 
-					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
+						{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
 
-				</div>
-				<div class='col-md-6 col-lg-6'>
-				<br><br>
-				{{{<unit relativeTo="ca_entities_x_collections" delimiter="<br/>" restrictToRelationshipTypes="creator"><H6>Creator</H6>^ca_entities.preferred_labels</unit>}}}
-				{{{<ifdef code="ca_collections.scope_contents"><H6>Scope and Contents</H6><span class="trimText">^ca_collections.scope_contents</span></ifdef>}}}
+						{{{<unit relativeTo="ca_entities_x_collections" delimiter="<br/>" restrictToRelationshipTypes="creator"><H6>Creator</H6>^ca_entities.preferred_labels</unit>}}}
+						{{{<ifdef code="ca_collections.scope_contents"><H6>Scope and Contents</H6><span class="trimText">^ca_collections.scope_contents</span></ifdef>}}}
+					</div>
 				</div><!-- end col -->
-				</div>
 			</div><!-- end row -->
 			<div class="row">
 				<div class='col-sm-12'>
