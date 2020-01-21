@@ -42,7 +42,7 @@
 				<div class='col-md-6 col-lg-6'>
 				<br><br>
 				{{{<unit relativeTo="ca_entities_x_collections" delimiter="<br/>" restrictToRelationshipTypes="creator"><H6>Creator</H6>^ca_entities.preferred_labels</unit>}}}
-				{{{<ifdef code="ca_collections.scope_contents"><H6>Scope and Contents</H6><span class="trimText">^ca_collections.scope_contents</span><br/></ifdef>}}}
+				{{{<ifdef code="ca_collections.scope_contents"><H6>Scope and Contents</H6><span class="trimText">^ca_collections.scope_contents</span></ifdef>}}}
 				</div><!-- end col -->
 				</div>
 			</div><!-- end row -->
@@ -65,10 +65,10 @@
 			<div class="row">		
 			<div class="collections-detail">	
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_collections.abstract"><H6>Abstract</H6><span class="trimText">^ca_collections.abstract</span><br/></ifdef>}}}
-					{{{<ifdef code="ca_collections.historical_note"><H6>Historical Note</H6><span class="trimText">^ca_collections.historical_note</span><br/></ifdef>}}}
-					{{{<ifdef code="ca_collections.arrangement"><H6>Arrangement Note</H6><span class="trimText">^ca_collections.arrangement</span><br/></ifdef>}}}
-					{{{<ifdef code="ca_collections.gen_physical_description"><H6>Physical Description</H6><span class="trimText">^ca_collections.gen_physical_description</span><br/></ifdef>}}}
+					{{{<ifdef code="ca_collections.abstract"><H6>Abstract</H6><span class="trimText">^ca_collections.abstract</span></ifdef>}}}
+					{{{<ifdef code="ca_collections.historical_note"><H6>Historical Note</H6><span class="trimText">^ca_collections.historical_note</span></ifdef>}}}
+					{{{<ifdef code="ca_collections.arrangement"><H6>Arrangement Note</H6><span class="trimText">^ca_collections.arrangement</span></ifdef>}}}
+					{{{<ifdef code="ca_collections.gen_physical_description"><H6>Physical Description</H6><span class="trimText">^ca_collections.gen_physical_description</span></ifdef>}}}
 <?php
 				$va_list_items = $t_item->get("ca_list_items", array("returnWithStructure" => true));
 				if(is_array($va_list_items) && sizeof($va_list_items)){
@@ -112,9 +112,9 @@
 					
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
-			        {{{<ifdef code="ca_collections.access_restrictions"><H6>Access Restrictions</H6>^ca_collections.access_restrictions<br></ifdef>}}}
-			        {{{<ifdef code="ca_collections.user_restrictions"><H6>User Restrictions</H6>^ca_collections.user_restrictions<br></ifdef>}}}
-			        {{{<ifdef code="ca_collections.preferred_citation"><H6>Preferred Citation</H6>^ca_collections.preferred_citation<br></ifdef>}}}
+			        {{{<ifdef code="ca_collections.access_restrictions"><H6>Access Restrictions</H6>^ca_collections.access_restrictions</ifdef>}}}
+			        {{{<ifdef code="ca_collections.user_restrictions"><H6>User Restrictions</H6>^ca_collections.user_restrictions</ifdef>}}}
+			        {{{<ifdef code="ca_collections.preferred_citation"><H6>Preferred Citation</H6>^ca_collections.preferred_citation</ifdef>}}}
 			        {{{<ifdef code="ca_collections.externalLink.url_entry"><H6>External Links</H6><unit relativeTo="ca_collections" delimiter="<br/>"><a href="^ca_collections.externalLink.url_entry" target="_blank">^ca_collections.externalLink.url_source</a></ifdef>}}}		        
 					{{{<case>
 						<ifcount code="ca_collections" min="1"><HR/></ifcount>
@@ -168,3 +168,11 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 250
+		});
+	});
+</script>

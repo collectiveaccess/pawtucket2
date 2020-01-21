@@ -540,7 +540,7 @@ font-size: 12pt;
   color: #6FB7C3;
 }
 .detail h6 {
-  margin-top:20px;
+  margin-top:25px;
 }
 .video-js{
 	text-align:center;
@@ -708,6 +708,9 @@ font-size: 12pt;
 }
 .collections-detail h6 {
   color: #1c3e47;
+}
+#collectionHierarchy{
+	margin-top:15px;
 }
 
 /* GALLERY SPECIAL PROJECTS INDEX */
