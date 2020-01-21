@@ -42,7 +42,7 @@
 				<div class='col-md-6 col-lg-6'>
 				<br><br>
 				{{{<unit relativeTo="ca_entities_x_collections" delimiter="<br/>" restrictToRelationshipTypes="creator"><H6>Creator</H6>^ca_entities.preferred_labels</unit>}}}
-				{{{<ifdef code="ca_collections.scope_contents"><H6>Scope and Contents</H6>^ca_collections.scope_contents<br/></ifdef>}}}
+				{{{<ifdef code="ca_collections.scope_contents"><H6>Scope and Contents</H6><span class="trimText">^ca_collections.scope_contents</span><br/></ifdef>}}}
 				</div><!-- end col -->
 				</div>
 			</div><!-- end row -->
@@ -65,9 +65,10 @@
 			<div class="row">		
 			<div class="collections-detail">	
 				<div class='col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_collections.abstract"><H6>Abstract</H6>^ca_collections.abstract<br/></ifdef>}}}
-					{{{<ifdef code="ca_collections.historical_note"><H6>Historical Note</H6>^ca_collections.historical_note<br/></ifdef>}}}
-					{{{<ifdef code="ca_collections.arrangement"><H6>Arrangement Note</H6>^ca_collections.arrangement<br/></ifdef>}}}   
+					{{{<ifdef code="ca_collections.abstract"><H6>Abstract</H6><span class="trimText">^ca_collections.abstract</span><br/></ifdef>}}}
+					{{{<ifdef code="ca_collections.historical_note"><H6>Historical Note</H6><span class="trimText">^ca_collections.historical_note</span><br/></ifdef>}}}
+					{{{<ifdef code="ca_collections.arrangement"><H6>Arrangement Note</H6><span class="trimText">^ca_collections.arrangement</span><br/></ifdef>}}}
+					{{{<ifdef code="ca_collections.gen_physical_description"><H6>Physical Description</H6><span class="trimText">^ca_collections.gen_physical_description</span><br/></ifdef>}}}
 <?php
 				$va_list_items = $t_item->get("ca_list_items", array("returnWithStructure" => true));
 				if(is_array($va_list_items) && sizeof($va_list_items)){
@@ -132,8 +133,8 @@
 					{{{<ifcount code="ca_occurrences" min="2"><H6>Related Works</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
 					
-					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
+					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related Place</H6></ifcount>}}}
+					{{{<ifcount code="ca_places" min="2"><H6>Related Places</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}					
 				</div><!-- end col -->
 			</div>

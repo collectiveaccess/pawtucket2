@@ -539,6 +539,9 @@ font-size: 12pt;
 .detail h6 a {
   color: #6FB7C3;
 }
+.detail h6 {
+  margin-top:20px;
+}
 .video-js{
 	text-align:center;
 }
