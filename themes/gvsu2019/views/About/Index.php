@@ -4,6 +4,7 @@
 <H1><?php print _t("About"); ?></H1>
 <div class="row">
 	<div class="col-sm-6 col-md-5">
+		NO LONGER USED - Site pages should be installed
 		<p>The GVSU Art Gallery permanent collection now numbers over 12,000 works of art, most of which are on view in university buildings on campuses in 
 		Allendale, Grand Rapids, Holland, Muskegon, Detroit, and Traverse City. The collection features works in a wide range of media by faculty, students and alumni, 
 		and many of Michigan's finest visual artists, including one of the largest collections of drawings, prints, and paintings by Steven Duren. Numerous 

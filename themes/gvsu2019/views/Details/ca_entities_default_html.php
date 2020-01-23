@@ -26,9 +26,9 @@
 				
 			<div class="row"> 
 			<div class='col-sm-12 col-md-12 col-lg-12'>
-			{{{<ifdef code="ca_entities.wikipedia"><H6>Wikipedia Summary:</H6>
+			{{{<ifdef code="ca_entities.wikipedia"><div class="wikipediaAbstract"><H6>Wikipedia Summary:</H6>
 					<span class="trimText">^ca_entities.wikipedia.abstract</span><span><a href="^ca_entities.wikipedia.fullurl">^ca_entities.wikipedia.fullurl</a></span>
-				</ifdef>}}}
+				</div></ifdef>}}}
 				{{{<ifdef code="ca_entities.biography"><H6>Artist Biography:</H6><span class="trimText">^ca_entities.biography</span><br/></ifdef>}}}
 				
 					

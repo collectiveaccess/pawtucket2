@@ -55,23 +55,27 @@
 						{{{<ifdef code="ca_objects.idno"><H6>Identifier:</H6>^ca_objects.idno</ifdef>}}}
 						{{{<ifdef code="ca_objects.containerID"><H6>Box/series:</H6>^ca_objects.containerID<br/></ifdef>}}}
 				
-						{{{<ifcount code="ca_entities" min="1" max="1" restrictToRelationshipTypes="creator,attributor"><H6>Artist:</H6></ifcount>}}}
-						{{{<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="creator,attributor"><H6>Related artists</H6></ifcount>}}}
-						{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="creator,attributor"><l>^ca_entities.preferred_labels.displayname</l></unit><br/>}}}
-						
+						{{{<ifcount code="ca_entities" min="1" max="1" restrictToRelationshipTypes="creator"><H6>Artist:</H6></ifcount>}}}
+						{{{<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="creator"><H6>Related artists</H6></ifcount>}}}
+						{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="creator"><l>^ca_entities.preferred_labels.displayname</l></unit><br/>}}}
+						{{{<ifcount code="ca_object_lots" min="1"><H6>Credit:</H6><unit relativeTo="ca_object_lots" delimiter="<br/>"><l>^ca_object_lots.credit_line</l></unit><br/></ifcount>}}}
+				
 						</div>
 						<div class="col-sm-6">
 						{{{<ifdef code="ca_objects.work_medium"><H6>Medium:</H6>^ca_objects.work_medium</ifdef>}}}
 				
 						{{{<ifdef code="ca_objects.work_date"><H6>Date:</H6>^ca_objects.work_date<br/></ifdef>}}}
+						{{{<ifdef code="ca_objects.dimensions"><H6>Dimensions:</H6>
+							<ifdef code="ca_objects.dimensions.dimension_type">^ca_objects.dimensions.dimension_type -</ifdef>
+							<ifdef code="ca_objects.dimensions.height"> Height: ^ca_objects.dimensions.height</ifdef>
+							<ifdef code="ca_objects.dimensions.width"> Width: ^ca_objects.dimensions.width</ifdef>
+							<ifdef code="ca_objects.dimensions.depth"> Depth: ^ca_objects.dimensions.depth</ifdef>		
+							<ifdef code="ca_objects.dimensions.dimensions_notes"><br/>Note: ^ca_objects.dimensions.dimensions_notes</ifdef>
+						</ifdef>}}}
+						
 						</div>
 					</div>
-				</div>
-				{{{<ifdef code="ca_objects.dimensions"><H6>Dimensions:</H6></ifdef>}}}
-				{{{<ifdef code="ca_objects.dimensions.height">^ca_objects.dimensions.dimension_type - Height: ^ca_objects.dimensions.height</ifdef>}}}
-				{{{<ifdef code="ca_objects.dimensions.width">Width: ^ca_objects.dimensions.width</ifdef>}}}
-				{{{<ifdef code="ca_objects.dimensions.depth">Depth: ^ca_objects.dimensions.depth</ifdef><br/>}}}		
-				{{{<ifdef code="ca_objects.dimensions.dimensions_notes">Note: ^ca_objects.dimensions.dimensions_notes</ifdef>}}}		
+				</div>		
 				
 				{{{<ifdef code="ca_objects.work_description"><H6>Description:</H6>
 					<span class="trimText">^ca_objects.work_description</span>
@@ -83,17 +87,14 @@
 					<span class="trimText">^ca_objects.historical_context</span><br/>
 				</ifdef>}}}
 				
-				{{{<ifdef code="ca_objects.wikipedia" ><H6>Wikipedia Summary:</H6>
+				{{{<ifdef code="ca_objects.wikipedia" ><div class="wikipediaAbstract"><H6>Wikipedia Summary:</H6>
 					<span class="trimText">^ca_objects.wikipedia.abstract</span><span><a href="^ca_objects.wikipedia.fullurl">^ca_objects.wikipedia.fullurl</a></span>
-				</ifdef>}}}
+				</div></ifdef>}}}
 				
-				{{{<ifcount code="ca_object_lots" min="1" max="1"><H6>Credit:</H6></ifcount>}}}
-				{{{<ifcount code="ca_object_lots" min="2"><H6>Credit:</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_object_lots" delimiter="<br/>"><l>^ca_object_lots.credit_line</l></unit><br/>}}}
-				<div class="row">
-					<div class="col-sm-6">				
+				<div class="row">				
 <?php
 						if($va_subjects = $t_object->get("ca_list_items", array("returnAsArray" => true, 'returnWithStructure' => true))){
+							print '<div class="col-sm-6">';
 							if(is_array($va_subjects) && sizeof($va_subjects)){
 								# --- loop through to order alphebeticaly
 								$va_subjects_sorted = array();
@@ -106,11 +107,11 @@
 								print "<H6>Getty Art and Architecture Thesaurus Term".((sizeof($va_subjects) > 1) ? "s" : "").":</H6>";
 								print join($va_subjects_sorted, "<br/>");
 							}
+							print '</div>
+								<div class="col-sm-6">';
+						}else{
+							print '<div class="col-sm-12">';
 						}		
-?>
-					</div>
-					<div class="col-sm-6">				
-<?php						
 						$va_lcsh_terms = $t_object->get("ca_objects.lcsh", array("returnAsArray" => true, 'returnWithStructure' => true));
 				
 						if(sizeof($va_lcsh_terms)){

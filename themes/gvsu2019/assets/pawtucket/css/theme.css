@@ -493,6 +493,13 @@ a .btn-default:hover {
 .detail #repViewerCarousel{
 	padding-bottom:30px;
 }
+.detail .wikipediaAbstract h1, .detail .wikipediaAbstract h2, .detail .wikipediaAbstract h3, .detail .wikipediaAbstract h4, .detail .wikipediaAbstract h5{
+	font-size: 14px;
+	color: #454545;
+	padding-bottom: 0px;
+	margin: 5px 0px 0px 0px;
+	font-weight:normal;
+}
 
 /* Header */
 .nav > li.mobilenavbar{

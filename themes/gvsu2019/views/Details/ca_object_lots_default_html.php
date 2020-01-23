@@ -11,7 +11,7 @@
 	<div class='col-xs-10 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-md-4 col-lg-4' >
+				<div class='col-md-6 col-lg-6' >
 					<H4>{{{^ca_object_lots.preferred_labels}}}</H4>
 					<H6>{{{^ca_object_lots.type_id}}}{{{<ifdef code="ca_object_lots.idno">, ^ca_object_lots.idno</ifdef>}}}</H6>
 					{{{<ifcount code="ca_object_lots" min="1" max="1"><H6>Credit:</H6></ifcount>}}}
@@ -32,8 +32,8 @@
 					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l><br/><br/></unit>}}}	
 				</div><!-- end col -->		
-				<div class='col-md-4 col-lg-4' style='border-left:1px solid #ddd;'>
-					{{{<ifcount code="ca_objects" min="1" max="1"><H6>Related object</H6><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
+				<div class='col-md-6 col-lg-6'>
+					{{{<ifcount code="ca_objects" min="1" max="1"><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.small</l><br/><l>^ca_objects.preferred_labels.name</l><br/></unit></ifcount>}}}
 					<div id="detailTools">
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print is_array($va_comments) ? sizeof($va_comments) : 0; ?>)</a></div><!-- end detailTool -->
 						<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
@@ -42,7 +42,7 @@
 					
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="1">
+{{{<ifcount code="ca_objects" min="2">
 			<div class="row">
 				<div id="browseResultsContainer">
 					
@@ -50,7 +50,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'object_lots.lot_id:^ca_object_lots.lot_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'lot_facet', 'id' => '^ca_object_lots.lot_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
