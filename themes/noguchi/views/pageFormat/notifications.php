@@ -26,7 +26,7 @@
 	if (sizeof($this->getVar('notifications'))) {
 		foreach($this->getVar('notifications') as $va_notification) {
 ?>
-			<div class="notificationMessage block text-align-center alert text">
+			<div class="notificationMessage block text-align-center alert text" role="alert">
 				<a href="#" onclick="jQuery('.notificationMessage').hide(); return false;" class="alertClose">x</a>
 <?php
 				switch($va_notification['type']) {

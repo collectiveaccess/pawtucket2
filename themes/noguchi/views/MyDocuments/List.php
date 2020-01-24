@@ -1,4 +1,4 @@
-    <main class="ca my_documents_landing">
+    <main id="main" role="main" class="ca my_documents_landing">
 
 <?php
 		print $this->render("pageFormat/archive_nav.php");

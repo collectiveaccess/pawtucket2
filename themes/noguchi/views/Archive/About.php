@@ -1,4 +1,4 @@
-    <main class="ca archive archive_text_based nomargin">
+    <main id="main" role="main" class="ca archive archive_text_based nomargin">
 
 <?php
 		print $this->render("pageFormat/archive_nav.php");

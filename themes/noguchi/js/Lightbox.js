@@ -147,14 +147,14 @@ class Lightbox extends React.Component{
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 
 		let content = (this.state.set_id) ? (
-			<main className="ca archive archive_landing nomargin">
+			<main id="main" role="main" className="ca archive archive_landing nomargin">
 				<LightboxIntro headline={this.state.introduction.title} description={this.state.introduction.description}/>
 				<LightboxNavigation/>
 				<LightboxFilterControls facetLoadUrl={facetLoadUrl}/>
 				<LightboxResults view={this.state.view}/>
 			</main>)
 			:
-			(<main className="ca archive archive_landing nomargin"><LightboxList lightboxes={this.state.lightboxList}/></main>);
+			(<main id="main" role="main" className="ca archive archive_landing nomargin"><LightboxList lightboxes={this.state.lightboxList}/></main>);
 		return(
 			<LightboxContext.Provider value={this}>
 					{content}
@@ -721,7 +721,7 @@ class LightboxList extends React.Component {
 		}
 
 		return(
-			<main className="ca my_documents_landing">
+			<main id="main" role="main" className="ca my_documents_landing">
 				<section className="block block-large-top">
 					<div className="wrap-max-content">
 						<div className="block">

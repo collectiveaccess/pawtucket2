@@ -8,7 +8,7 @@
 	$vn_next_id = $this->getVar("nextID");
 	$va_access_values = caGetUserAccessValues();
 ?>
-    <main class="ca bibliography bibliography_detail nomargin">
+    <main id="main" role="main" class="ca bibliography bibliography_detail nomargin">
 
         <section class="wrap block block-top">
 

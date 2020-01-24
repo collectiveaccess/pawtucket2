@@ -1,4 +1,4 @@
-<main class="ca archive">
+<main id="main" role="main" class="ca archive">
 
 	<section>
 		<div class="wrap">

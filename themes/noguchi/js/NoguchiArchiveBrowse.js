@@ -38,7 +38,7 @@ class NoguchiArchiveBrowse extends React.Component{
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 		return(
 			<NoguchiArchiveBrowseContext.Provider value={this}>
-				<main className="ca archive archive_landing nomargin">
+				<main id="main" role="main" className="ca archive archive_landing nomargin">
 					<NoguchiArchiveBrowseIntro headline={this.state.introduction.title} description={this.state.introduction.description}/>
 
 					<NoguchiArchiveBrowseNavigation/>
