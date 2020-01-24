@@ -11,7 +11,7 @@
 	$vs_placeholder = $this->request->config->get("site_host").caGetThemeGraphicUrl("placeholder.png");
 	$vs_placeholder_tag = '<img nopin="nopin"  src="'.$vs_placeholder.'"  alt="Image Not Available" />';
 ?>
-    <main class="ca bibliography bibliography_detail nomargin">
+    <main id="main" role="main" class="ca bibliography bibliography_detail nomargin">
 
         <section class="wrap block block-top">
 

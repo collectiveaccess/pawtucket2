@@ -64,7 +64,7 @@
 ?>
 
 
-    <main class="ca archive archive_detail nomargin">
+    <main id="main" role="main" class="ca archive archive_detail nomargin">
 
 <?php
 		print $this->render("pageFormat/archive_nav.php");

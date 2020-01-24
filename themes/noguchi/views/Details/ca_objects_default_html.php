@@ -44,7 +44,7 @@
 	
 	MetaTagManager::setWindowTitle("The Isamu Noguchi Catalogue Raisonné: Artwork: ".$t_object->get("ca_objects.preferred_labels.name").": [".$t_object->get("ca_objects.idno")."]");
 ?>
-    <main class="ca cr cr_detail nomargin">
+    <main id="main" role="main" class="ca cr cr_detail nomargin">
 <?php
 		print $this->render("pageFormat/cr_nav.php");
 ?>       

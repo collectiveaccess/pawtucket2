@@ -27,7 +27,7 @@
 	$t_user = $this->getVar("t_user");
 
 ?>
-<main class="ca archive">
+<main id="main" role="main" class="ca archive">
 	<section>
 		<div class="wrap">
             <div class="wrap-text-large">

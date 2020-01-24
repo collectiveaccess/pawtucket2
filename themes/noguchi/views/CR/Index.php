@@ -1,7 +1,7 @@
 <?php
 	MetaTagManager::setWindowTitle("The Isamu Noguchi Catalogue Raisonné");
 ?>
-    <main class="ca cr cr_landing">
+    <main id="main" role="main" class="ca cr cr_landing">
 
         <section class="hero block">
             <a href="cr_browse.php">

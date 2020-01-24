@@ -31,7 +31,7 @@
 ?>
 
 
-    <main class="ca ca_archive_landing">
+    <main id="main" role="main" class="ca ca_archive_landing">
 
         <section class="intro">
             <div class="wrap block-large">

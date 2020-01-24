@@ -43,7 +43,7 @@ class NoguchiBibliographyBrowse extends React.Component{
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 		return(
 			<NoguchiBibliographyBrowseContext.Provider value={this}>
-				<main className="ca bibliography bibliography_landing">
+				<main id="main" role="main" className="ca bibliography bibliography_landing">
 					<NoguchiBibliographyBrowseIntro headline={this.state.introduction.title} description={this.state.introduction.description}/>
 
 					<NoguchiBibliographyBrowseFilterControls facetLoadUrl={facetLoadUrl}/>

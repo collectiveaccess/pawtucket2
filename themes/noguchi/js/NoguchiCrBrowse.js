@@ -61,7 +61,7 @@ class NoguchiCrBrowse extends React.Component{
 
 		return(
 			<NoguchiCrBrowseContext.Provider value={this}>
-				<main className="ca cr cr_browse nomargin">
+				<main id="main" role="main" className="ca cr cr_browse nomargin">
 					<NoguchiCrBrowseIntro headline={this.state.introduction.title} description={this.state.introduction.description}/>
 
 					<NoguchiCrBrowseNavigation/>

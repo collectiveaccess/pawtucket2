@@ -52,7 +52,7 @@
     </div>
 </header>
 
-<header id="header-mobile" class="hide-for-desktop">
+<header id="header-mobile" class="hide-for-desktop" role="navigation" aria-label="Main Menu">
     <!-- INCLUDE header-bar-mobile -->
     <div class="bar-header-mobile">
         <div class="burger icon-mobile"><a href="#" aria-label="Open Menu Mobile"><svg height="12" viewBox="0 0 32 12" width="32" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd" stroke="#333230" stroke-linecap="square" transform="translate(1)"><path d="m30 .5h-30"/><path d="m30 11.5h-30"/></g></svg></a></div>
@@ -137,7 +137,7 @@
     </div>
 </div>
             <!-- INCLUDE gdpr-bar -->
-<div id="gdpr-bar">
+<div id="gdpr-bar" role="alert">
     <div class="wrap"><p>Our site uses cookies for a better experience. <a href="https://www.noguchi.org/privacy-policy/">Privacy Policy</a></p>
 </div>
     <div class="close-icon"><svg height="16" viewBox="0 0 17 16" width="17" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd" stroke="#4a4a4a" stroke-linecap="square"><path d="m15.5555556.44444444-14.88888893 14.88888886"/><path d="m15.5555556.66666667-14.88888893 14.88888893" transform="matrix(0 1 -1 0 16.222222 0)"/></g></svg></div>

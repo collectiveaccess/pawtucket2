@@ -1,7 +1,7 @@
 
 <footer id="footer" class="global">
     <div class="wrap">
-        <div class="show-for-desktop">
+        <div class="show-for-desktop" aria-hidden="true">
             <div class="columns thirds">
                 <div class="col">
 
@@ -138,14 +138,14 @@ Long Island City, New York 11106<br />
                             </div>
 
             <div class="p-menu-container">
-                <div class="privacy">
+                <div class="privacy" role="navigation" aria-label="Privacy Policy & Terms">
                     <ul id="menu-privacy-terms-1" class="menu horizontal"><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-283"><a href="https://www.noguchi.org/privacy-policy/">Privacy Policy</a></li>
 <li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-282"><a href="https://www.noguchi.org/terms-conditions/">Terms &#038; Conditions</a></li>
 </ul>               </div>
                 <div class="credit">
                     <a href="https://forofficeuseonly.com" target="_blank">Site Credit</a>
                 </div>
-                <div class="copyright">© 2019 INFGM</div>
+                <div class="copyright" role="contentinfo" aria-label="Copyright">© 2019 INFGM</div>
             </div>
 
         </div>

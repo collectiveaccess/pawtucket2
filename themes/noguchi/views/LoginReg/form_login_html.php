@@ -24,7 +24,7 @@
  */
 
 ?>
-<main class="ca archive archive_login">
+<main id="main" role="main" class="ca archive archive_login">
 
         <section class="login">
             <div class="wrap">
