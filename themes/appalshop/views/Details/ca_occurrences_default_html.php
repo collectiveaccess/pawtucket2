@@ -41,7 +41,7 @@
 					}
 ?>
 					{{{<ifcount code="ca_objects" min="1" max="1"><br/><br/><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
-                   	{{{<ifcount code="ca_objects" min="2" restrictToRelationshipTypes="primary"><br/><br/><div class='unit'><unit relativeTo="ca_objects" delimiter=" " restrictToRelationshipTypes="primary"><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
+                   	{{{<ifcount code="ca_objects" min="2"><br/><br/><div class='unit'><unit relativeTo="ca_objects" delimiter=" " restrictToRelationshipTypes="primary"><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
                    	{{{<ifdef code="ca_occurrences.externalLink"><div class="unit"><h6>External Links</h6><unit relativeTo="ca_occurrences" delimiter="<br/>"><a href="^ca_occurrences.externalLink.url_entry" target="_blank">^ca_occurrences.externalLink.url_source</a></div></ifdef>}}}
 					
 					
