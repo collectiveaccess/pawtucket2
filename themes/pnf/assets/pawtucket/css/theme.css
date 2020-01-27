@@ -86,8 +86,11 @@ a {
 .dropdown-menu > li > a {
 	text-decoration:none;
 }
+.btn-default{
+	background-color: #7f4539;
+}
 .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .open .dropdown-toggle.btn-default {
-	background-color:#f7f7f7;
+	background-color:#333333;
 }
 .homeLink {
 	margin-top:1px;
