@@ -154,7 +154,7 @@ div.browseFacetItem a {
     padding-top: 4px;	
 }
 div.browseMenuBrowseAll {
-	display:none;
+	/*display:none;*/
 }	
 #browse-menu.dropdown-menu {
 	border-top:0px;
@@ -175,7 +175,7 @@ div.browseMenuBrowseAll {
 }
 div.browseFacetItem a {
     font-size: 13px;
-    line-height: 1.6em;
+    line-height: 1.4em;
 }
 div.browseFacetItem a:hover{
 	color:#333;
