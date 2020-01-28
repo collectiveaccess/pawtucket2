@@ -30,15 +30,13 @@
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<footer id="footer">
 			<ul class="list-inline footerLinks">
-				<li><a href="http://www.erfgoednoorderkempen.be/" target="_blank">www.erfgoednoorderkempen.be</a></li>
-				<li><a href="#">Link 2</a></li>
-				<li><a href="#">Link 3</a></li>
+				<li><a href="http://www.erfgoednoorderkempen.be" target="_blank">www.erfgoednoorderkempen.be</a></li>
+				<li><a href="http://www.erfgoednoorderkempen.be/erfgoedbank/" target="_blank">Disclaimer</a></li>
 			</ul>
 			<div class="funder">
 				Met steun van<br/>
 				<a href="http://www.vlaanderen.be"><?php print caGetThemeGraphic($this->request, 'Vlaanderen-verbeelding-werkt_vol.png'); ?></a>
-			</div>	
-			<div class="text-center caLink"><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2019</a></small></div>
+			</div>
 		
 		</footer><!-- end footer -->
 <?php
@@ -77,6 +75,44 @@
 				}
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
+		
+			$(document).ready(function() {
+				$(document).bind("contextmenu",function(e){
+				   return false;
+				 });
+			}); 
 		</script>
+<?php
+	if (Session::getVar('cookieAccepted') != 'accepted') {		
+?>	
+		<div id="cookieNotice">
+			{{{cookie_statement}}}
+		</div>	<!--end homePanel-->
+		
+		
+		<script type="text/javascript">
+			$(document).ready(function() {
+				$('.acceptCookie').click(function(e){
+				  e.preventDefault();
+				  $.ajax({
+					   url: "<?php print caNavUrl($this->request, "", "Cookie", "accept"); ?>",
+					   type: "GET",
+					   success: function (data) {
+						 if(data == 'success'){
+						 	$('#cookieNotice').hide();
+						 }
+					   },
+					   error: function(xhr, ajaxOptions, thrownError){
+						  alert("There was an error, please try again later.");
+					   }
+				  });
+
+				});
+			});
+		</script>
+
+<?php
+	}
+?>
 	</body>
 </html>
