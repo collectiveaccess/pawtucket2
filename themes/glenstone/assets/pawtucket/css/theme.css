@@ -1800,3 +1800,18 @@ div.advancedSearchField {
 .scrollingDivContent {
 	display: inline-block;
 }
+
+.exhibitionList {
+	margin-left: -25px;
+	display: none;
+	width: 300px;
+}
+
+.exhibitionListItem {
+	margin-left: 0px;
+	list-style-type: none;
+}
+
+#detailRelatedObjects .fullResult, #detailRelatedArchives .fullResult, #detailRelatedLibrary .fullResult, #detailRelatedArchive .fullResult {
+	float: right;
+}

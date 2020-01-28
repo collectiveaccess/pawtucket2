@@ -29,7 +29,10 @@
 		if ($va_artwork_ids = $t_occurrence->get('ca_objects.object_id', array('checkAccess' => caGetUserAccessValues($this->request), 'restrictToTypes' => array('artwork'), 'returnWithStructure' => true, 'returnAsArray' => true))) {	
 ?>		
 			<div id="detailRelatedObjects">
-				<H6>Related Artworks </H6>
+				<H6>
+					Related Artworks 
+					<?php print caNavLink($this->request, _t('Full results &gt;'), 'fullResult', '', 'Search', 'artworks', array('search' => "ca_occurrences.occurrence_id:".$t_occurrence->getPrimaryKey(), 'source' => 'detail')); ?> 
+				</h6>
 				<div class="jcarousel-wrapper">
 					<div id="detailScrollButtonNext"><i class="fa fa-angle-right"></i></div>
 					<div id="detailScrollButtonPrevious"><i class="fa fa-angle-left"></i></div>
@@ -116,7 +119,10 @@
 		if ($va_related_objects) {	
 ?>		
 			<div id="detailRelatedArchives">
-				<H6>Related Archival Material </H6>
+				<H6>
+					Related Archival Material
+					<?php print caNavLink($this->request, _t('Full results &gt;'), 'fullResult', '', 'Search', 'archives', array('search' => "ca_occurrences.occurrence_id:".$t_occurrence->getPrimaryKey(), 'source' => 'detail')); ?> 
+				</H6>
 				<div class="jcarousel-wrapper">
 					<div id="detailScrollButtonNextArchive"><i class="fa fa-angle-right"></i></div>
 					<div id="detailScrollButtonPreviousArchive"><i class="fa fa-angle-left"></i></div>
@@ -181,7 +187,10 @@
 			
 		{{{<ifcount code="ca_objects" restrictToTypes="book" min="1">
 			<div id="detailRelatedLibrary">
-				<H6>Related Library Material </H6>
+				<H6>
+					Related Library Material
+					<?php print caNavLink($this->request, _t('Full results &gt;'), 'fullResult', '', 'Search', 'library', array('search' => "ca_occurrences.occurrence_id:".$t_occurrence->getPrimaryKey(), 'source' => 'detail')); ?> 
+				</H6>
 				<div class="jcarousel-wrapper">
 					<div id="detailScrollButtonNextLibrary"><i class="fa fa-angle-right"></i></div>
 					<div id="detailScrollButtonPreviousLibrary"><i class="fa fa-angle-left"></i></div>
@@ -242,7 +251,10 @@
 			
 		{{{<ifcount code="ca_objects" restrictToTypes="audio,document,ephemera,image,moving_image" min="1">
 			<div id="detailRelatedArchive">
-				<H6>Related Archival Material </H6>
+				<H6>
+					Related Archival Material 
+					<?php print caNavLink($this->request, _t('Full results &gt;'), 'fullResult', '', 'Search', 'archives', array('search' => "ca_occurrences.occurrence_id:".$t_occurrence->getPrimaryKey(), 'source' => 'detail')); ?> 
+				</H6>
 				<div class="jcarousel-wrapper">
 					<div id="detailScrollButtonNextArchive"><i class="fa fa-angle-right"></i></div>
 					<div id="detailScrollButtonPreviousArchive"><i class="fa fa-angle-left"></i></div>
