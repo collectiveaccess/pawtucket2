@@ -51,7 +51,7 @@
 	<div class='row'>
 		<div class="col-sm-6 field">
 			<?php print _t("Language"); ?><br/>
-			{{{ca_entities.language}}}
+			{{{ca_objects.041_lang}}}
 		</div>	
 		<div class="col-sm-6 field">
 			<?php print _t("Bookseller"); ?><br/>

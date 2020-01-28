@@ -114,7 +114,7 @@
 					$vs_info = null;
 					$vs_author = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '));
 					if($vs_author){
-						$vs_author = $vs_author."<br/>";
+						$vs_author = "<b>".$vs_author."</b><br/>";
 					}
 					if ($va_date = $qr_res->get('ca_objects.260_date', array('delimiter' => ', '))) {
 

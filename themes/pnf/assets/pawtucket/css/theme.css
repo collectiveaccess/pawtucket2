@@ -329,11 +329,12 @@ div.browseFacetItem:hover {
 #bRefine a {
 	text-decoration:none;
 }
-.bResultItem .bResultItemText {
+.bResultItem .bResultItemText, .bResultListItem .bResultListItemText {
 	font-size:13px;
 }
 .bResultItem .bResultItemText a{
 	text-decoration:none;
+	font-size: 14px;
 }
 .browseRemoveFacet .btn-default {
 	margin-right:5px;
