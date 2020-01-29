@@ -91,6 +91,15 @@
 	</div>
 	<div class='row'>
 		<div class="col-sm-6 field">
+			<?php print _t("From Printers"); ?> <br/>
+			{{{ca_objects.from_printers%inUse=1}}}
+		</div>
+		<div class="col-sm-6 field">
+		</div>		
+					
+	</div>
+	<div class='row'>
+		<div class="col-sm-6 field">
 			<?php print _t("Local Note(s)"); ?><br/>
 			{{{ca_objects.590_local%width=200px&height=1}}} 
 		</div>	

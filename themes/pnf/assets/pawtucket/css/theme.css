@@ -301,6 +301,54 @@ div.browseFacetItem:hover {
 
 
 /* Browse */
+.facetItem .glyphicon-chevron-down {
+	font-size:10px;
+}
+.facetContainer{
+	position:relative;
+	padding-bottom:20px;
+}
+#bRefine .facetItem {
+	padding-left:0px; 
+	position:relative;
+}
+#bRefine .facetItem[facet_item_selected="1"] {
+	padding-left:20px;
+}
+[facet_item_selected="1"]::before {
+	font-family: FontAwesome;
+	content: "\f067"; 
+	padding-right:6px;
+	position:absolute;
+	left:7px;
+	top:4px;
+	font-size:11px;
+}
+.facetApply, .facetApplySlider {
+	clear:both;
+	right:15px;
+	display:block;
+	text-align: center;
+    margin-top: 20px;
+
+}
+a.facetApply, button.facetApplySlider {
+    background-color: #ddd;
+    color: #333 !important;
+    font-size: 13px !important;
+    border-radius: 3px;
+    width:50px;
+    padding-top:4px;
+    padding-bottom:4px;
+    margin-left: auto;
+    margin-right: auto; 
+    position:absolute;
+    bottom:0px;
+    left:0px;
+    border: 0px;
+    line-height: 1.5em !important;
+}
+
 .browse .btn, .sets .btn {
     background-color: #7f4539;
 }
