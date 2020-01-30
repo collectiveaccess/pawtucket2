@@ -530,7 +530,8 @@
 
 					# --- send email confirmation
 					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
-
+					$o_view->setVar("t_user", $t_user);
+					
 					# -- generate email subject line from template
 					$vs_subject_line = $o_view->render("mailTemplates/reg_conf_subject.tpl");
 

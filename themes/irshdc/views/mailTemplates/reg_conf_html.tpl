@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/notification.tpl
+ * default/views/mailTemplates/reg_conf_html.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -25,10 +25,18 @@
  *
  * ----------------------------------------------------------------------
  */
- 
-print _t("Your Residential School History and Dialogue Centre account password was reset on %1/%2]. You will now be able to login with your new password at https://collections.irshdc.ubc.ca.
- 
-If you did not reset your password, or if you require further assistance, please contact us at irshdc.reference@ubc.ca. 
+if($this->request->config->get("dont_approve_logins_on_registration")){
+	$vs_active_message = _t("<p>Your account will be activated after review.</p>");
+}
+$t_user = $this->getVar("t_user");
 
-", date("F j, Y"), date("G:i"));
+print _t("<p>Thank you for creating an account with the Residential School History and Dialogue Centre records website.</p>
+ 
+<p>Your account registration is confirmed and your username is %1. The URL for our home page is: %2. Access your account by clicking on the grey icon at the top right corner of the screen and selecting \"Login\" from the dropdown menu.</p> 
+ 
+<p>If you would like support in your research, please contact us at <a href='mailto:irshdc.reference@ubc.ca'>irshdc.reference@ubc.ca</a>.</p>
+
+
+", $t_user->get("ca_users.user_name"), $this->request->config->get("site_host"));
+
 ?>
