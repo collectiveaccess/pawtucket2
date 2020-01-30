@@ -11,6 +11,9 @@ body {
     color: #222222;
     font-size: 14px;
 }
+b {
+	font-family: 'Oxygen', sans-serif;
+}
 h1, h2, h3, h4, h5, h6 {
     font-family: 'Lusitana', serif;
 }
@@ -34,6 +37,9 @@ h6 {
 }
 a {
 	color: #7f4539;
+}
+a:hover{
+	color:#000;
 }
 
 #head .main_menu {
@@ -379,6 +385,10 @@ a.facetApply, button.facetApplySlider {
 }
 .bResultItem .bResultItemText, .bResultListItem .bResultListItemText {
 	font-size:13px;
+	font-family: 'Oxygen', sans-serif;
+}
+.bResultItem, .bResultListItem {
+	font-family: 'Oxygen', sans-serif;
 }
 .bResultItem .bResultItemText a{
 	text-decoration:none;
