@@ -86,6 +86,9 @@ $vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]
 				$(document).bind("contextmenu",function(e){
 					return false;
 				});
+				$(document).bind("dragstart", function(e) {
+					return false;
+				});
 			});
 		</script>
 	</body>
