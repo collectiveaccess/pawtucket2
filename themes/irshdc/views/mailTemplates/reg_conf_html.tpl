@@ -39,4 +39,6 @@ print _t("<p>Thank you for creating an account with the Residential School Histo
 
 ", $t_user->get("ca_users.user_name"), $this->request->config->get("site_host"));
 
+
+print "<br/><br/><p><img src='".$this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'rshdc-promo-black.png')."'></p>";
 ?>

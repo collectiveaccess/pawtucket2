@@ -372,7 +372,7 @@
 			}
 			$co_security = $this->request->config->get('registration_security');
 			if($co_security == 'captcha'){
-				if(!(defined("__CA_GOOGLE_RECAPTCHA_SECRET_KEY__") && __CA_GOOGLE_RECAPTCHA_SECRET_KEY__) && (defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__)){
+				if(!(defined("__CA_GOOGLE_RECAPTCHA_SECRET_KEY__") && __CA_GOOGLE_RECAPTCHA_SECRET_KEY__) || !(defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__)){
 				//Then the captcha will not work and should not be implemenented.
 						$co_security = 'equation_sum';
 				}

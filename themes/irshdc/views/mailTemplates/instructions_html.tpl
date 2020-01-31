@@ -35,4 +35,5 @@ print _t("<p>We have received your request to reset your Residential School Hist
 <p>You will be asked to enter a new password. If you did not make a request for a new password, or if you require any assistance resetting it, please contact us at <a href='mailto:irshdc.reference@ubc.ca'>irshdc.reference@ubc.ca</a>.</p>
 ", $this->getVar("password_reset_url"));
 
+print "<br/><br/><p><img src='".$this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'rshdc-promo-black.png')."'></p>";
 ?>
