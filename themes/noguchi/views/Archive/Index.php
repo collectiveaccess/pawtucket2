@@ -64,10 +64,10 @@
                                 <div class="carousel-cell">
                                     <div class="img-container dark">
 <?php
-									print $qr_featured->getWithTemplate('<l><div class="img-wrapper square contain"><div class="bg-image" style="background-image: url(^ca_object_representations.media.large.url)"></div></div></l>');
+									print print caDetailLink($qr_featured->getWithTemplate('<div class="img-wrapper square contain"><div class="bg-image" style="background-image: url(^ca_object_representations.media.large.url)"></div></div>'), '', 'ca_objects', $qr_featured->get("ca_objects.object_id"), '', array('tabindex' => '-1', 'title' => str_replace(array("'", '"'), "",$qr_featured->get("ca_objects.preferred_labels.name"))));
 ?>
                                     </div>
-                                    <div class="caption caption-text"><?php print $qr_featured->getWithTemplate($o_config->get("archive_featured_item_caption_template")); ?></div>
+                                    <div class="caption caption-text"><?php print caDetailLink($qr_featured->getWithTemplate($o_config->get("archive_featured_item_caption_template")), '', 'ca_objects', $qr_featured->get("ca_objects.object_id"), '', array('tabindex' => '-1', 'title' => str_replace(array("'", '"'), "",$qr_featured->get("ca_objects.preferred_labels.name")))); ?></div>
                                 </div>
 <?php
 							}
@@ -157,7 +157,7 @@
 
 									<div class="ca-identifier text-gray">'.$vs_date.'</div>
 								</div>
-							</div>', '', 'ca_objects', $qr_highlights->get("ca_objects.object_id"));
+							</div>', '', 'ca_objects', $qr_highlights->get("ca_objects.object_id"), '', array('tabindex' => '-1', 'title' => str_replace(array("'", '"'), "",$qr_highlights->get("ca_objects.preferred_labels.name") )));
 ?>
 
 					</div>
