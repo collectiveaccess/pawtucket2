@@ -101,6 +101,7 @@
 				{{{representationViewer}}}
 				
 <?php print caNavLink($this->request, "<i class='fa fa-envelope'></i> Contact", '', '', 'Contact', 'form'); ?>
+<span style="margin-left: 30px;"><a href="#" onclick="caMediaPanel.showPanel('/index.php/Detail/GetMediaOverlay/context/objects/id/<?php print $t_object->getPrimaryKey(); ?>/representation_id/<?php print $this->getVar("representation_id"); ?>/overlay/1'); return false;" title="Zoom"><span class="glyphicon glyphicon-zoom-in"></span> View full item</a></span>
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
@@ -206,7 +207,7 @@
 						<div class="col-sm-12">		
 							{{{<ifcount code="ca_entities.preferred_labels" excludeRelationshipTypes="author,videographer" min="1">
 								<h6>Related Entities</h6>
-								<unit relativeTo="ca_entities" delimiter='<br/>' excludeRelationshipTypes="author,videographer"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
+								<unit relativeTo="ca_objects_x_entities" delimiter='<br/>' excludeRelationshipTypes="author,videographer"><l>^ca_entities.preferred_labels</l> (^ca_objects_x_entities.type_id)</unit>
 							</ifcount>}}}
 
 <?php

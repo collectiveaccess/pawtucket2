@@ -30,7 +30,7 @@
 	$t_user = $this->getVar("t_user");
 	$co_security = $this->request->config->get('registration_security');
 	if($co_security == 'captcha'){
-		if(strlen($this->request->config->get('google_recaptcha_sitekey')) != 40 || strlen($this->request->config->get('google_recaptcha_secretkey')) != 40){
+		if((!defined("__CA_GOOGLE_RECAPTCHA_SECRET_KEY__") || !__CA_GOOGLE_RECAPTCHA_SECRET_KEY__) || (!defined("__CA_GOOGLE_RECAPTCHA_KEY__") || !__CA_GOOGLE_RECAPTCHA_KEY__)){
 			//Then the captcha will not work and should not be implemenented. Alert the user in the console
 			print "<script>console.log('reCaptcha disabled, please provide a valid site_key and secret_key to enable it.');</script>";
 			$co_security = 'equation_sum';
@@ -46,17 +46,6 @@
 	// initialize CA Utils
 	caUI.initUtils();
 </script>
-<?php
-	if($co_security == 'captcha'){
-?>
-		<script type="text/javascript">
-			var gCaptchaRender = function(){
-                grecaptcha.render('regCaptcha', {'sitekey': '<?php print $this->request->config->get('google_recaptcha_sitekey'); ?>'});
-        	};
-		</script>
-<?php
-	}
-?>
 	<form id="RegForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
 	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 <?php
@@ -97,6 +86,12 @@
 		}
 		if($co_security == 'captcha'){
 ?>
+			<script type="text/javascript">
+				var gCaptchaRender = function(){
+					grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+				};
+			</script>
+			<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
 			<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
         		<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
         	</div>
@@ -162,9 +157,5 @@
 	});
 </script>
 <?php
-	if($co_security == 'captcha'){
-		print "<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>";
 	}
 ?>
-<?php
-	}

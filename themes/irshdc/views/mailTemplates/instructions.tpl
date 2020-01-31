@@ -1,13 +1,13 @@
-<?php
+﻿<?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/notification_html.tpl
+ * default/views/mailTemplates/instructions.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2011 Whirl-i-Gig
+ * Copyright 2009-2010 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -25,12 +25,13 @@
  *
  * ----------------------------------------------------------------------
  */
-
-print _t("<p>Your Residential School History and Dialogue Centre account password was reset on %1/%2. You will now be able to login with your new password at https://collections.irshdc.ubc.ca.</p>
  
-<p>If you did not reset your password, or if you require further assistance, please contact us at <a href='mailto:irshdc.reference@ubc.ca'>irshdc.reference@ubc.ca</a>.</p>
-
-", date("F j, Y"), date("G:i"));
-
-print "<br/><br/><p><img src='".$this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'rshdc-promo-black.png')."'></p>";
+print _t("We have received your request to reset your Residential School History and Dialogue Centre password.
+ 
+To reset your password, click the following URL or copy and paste it into the address bar on your web browser:
+ 
+%1
+ 
+You will be asked to enter a new password. If you did not make a request for a new password, or if you require any assistance resetting it, please contact us at <a href='mailto:irshdc.reference@ubc.ca'>irshdc.reference@ubc.ca</a>.
+", $this->getVar("password_reset_url"));
 ?>
