@@ -276,6 +276,11 @@ h1,h2 {
 .front .jcarousel-wrapper {
 	margin-top:10px;
 }
+
+.jcarousel-wrapper, .jcarousel {
+    width: 100% !important;
+}
+
 .front H1 {
 	font-family:LatoLight;
 	padding-top:50px;

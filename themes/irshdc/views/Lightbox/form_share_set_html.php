@@ -70,16 +70,13 @@
 			print "<option value='2'>"._t("Can edit")."</option>\n";
 			print "</select>\n";
 			print "</div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
-			
-			print "<div class='form-group'><label for='message' class='col-sm-4 control-label'>"._t("Message")."</label><div class='col-sm-7'><textarea name='share_message' class='form-control'>".(($vs_message = $this->getVar("share_message")) ? $vs_message : "")."</textarea></div></div>\n";
-			
 		}else{
 			print "<input type='hidden' name='access' value='1'>";
 		}
 ?>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
-				<button type="submit" class="btn btn-default">Save</button>
+				<button type="submit" class="btn btn-default" onClick="$('.loadingForm').toggle();"><span class="loadingForm">Save</span><span class="loadingForm" style="display:none;"> <?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></span></button>
 			</div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
 	</form>

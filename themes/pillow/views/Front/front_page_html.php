@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 		include_once(__CA_LIB_DIR__."/ca/Search/SetSearch.php");
+ 		include_once(__CA_LIB_DIR__."/Search/SetSearch.php");
 		print $this->render("Front/featured_set_slideshow_html.php");
 		
 		$va_featured_ids = array();
