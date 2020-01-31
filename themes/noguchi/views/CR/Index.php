@@ -5,7 +5,7 @@
 
         <section class="hero block">
             <a href="cr_browse.php">
-                <div class="img-wrapper no-opacity-hover no-padding cover"><?php print caGetThemeGraphic("cr_landing_0".rand(1,3).".jpg", array("title" => "Image of Isamu Noguchi")); ?></div>
+                <div class="img-wrapper no-opacity-hover no-padding cover"><?php print caGetThemeGraphic("cr_landing_0".rand(1,3).".jpg", array("alt" => "Image of Isamu Noguchi")); ?></div>
                 <div class="overlay">
                     <div class="inner">
                         <h1 class="headline-l">The Isamu Noguchi Catalogue Raisonné</h1>
