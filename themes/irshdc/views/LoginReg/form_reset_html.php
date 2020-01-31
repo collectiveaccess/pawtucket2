@@ -68,7 +68,7 @@
 						</div><!-- end form-group -->
 						<div class="form-group">
 							<div class="col-sm-offset-4 col-sm-7">
-								<button type="submit" class="btn btn-default">save</button>
+								<button type="submit" class="btn btn-default" onClick="$('.loadingForm').toggle();"><span class="loadingForm"><?php print _t('Save'); ?></span><span class="loadingForm" style="display:none;"> <?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></span></button>
 							</div>
 						</div><!-- end form-group -->
 						<input type="hidden" name="key" value="<?php print $this->getVar("key"); ?>">
@@ -90,7 +90,7 @@
 						</div><!-- end form-group -->
 						<div class="form-group">
 							<div class="col-sm-offset-4 col-sm-7">
-								<button type="submit" class="btn btn-default">send</button>
+								<button type="submit" class="btn btn-default" onClick="$('.loadingForm').toggle();"><span class="loadingForm"><?php print _t('Send'); ?></span><span class="loadingForm" style="display:none;"> <?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></span></button>
 							</div>
 						</div><!-- end form-group -->
 					</form>
