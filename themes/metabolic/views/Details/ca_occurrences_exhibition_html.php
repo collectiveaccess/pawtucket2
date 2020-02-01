@@ -167,6 +167,10 @@
 		</div>
 
 <?php		
+		$o_context = new ResultContext($this->request, 'ca_objects', 'detailRelated');
+		$o_context->setAsLastFind();
+		$o_context->setResultList($va_related_item_ids);
+		$o_context->saveContext();
 	}
 ?>
 

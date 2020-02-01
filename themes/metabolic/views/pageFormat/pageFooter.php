@@ -31,16 +31,16 @@
 				1745 N. SPRING STREET UNIT 4 LOS ANGELES, CA 90012
 			</div>
 			<div class="py-4">
-				<a href="https://www.facebook.com/metabolicstudio" class="px-3"><ion-icon name="logo-facebook" target="_blank" alt="Facebook"></ion-icon></a>
-				<a href="https://www.instagram.com/metabolicstudio/" class="px-3"><ion-icon name="logo-instagram" target="_blank" alt="Instagram"></ion-icon></a>
+				<a href="https://www.facebook.com/metabolicstudio" class="px-3" target="_blank"><ion-icon name="logo-facebook" alt="Facebook"></ion-icon></a>
+				<a href="https://www.instagram.com/metabolicstudio/" class="px-3" target="_blank"><ion-icon name="logo-instagram" alt="Instagram"></ion-icon></a>
 				<a href="https://twitter.com/metabolic1745" class="px-3" target="_blank"><ion-icon name="logo-twitter" alt="Twitter"></ion-icon></a>
 			</div>
 			<div class="pt-3 pb-0">
-				<a href="#" class="px-3">About The Studio</a>
+				<?php print caNavLink("About The Studio", "", "", "About", ""); ?>
 				<a href="#" class="px-3">Contact</a>
 			</div>
 		</footer><!-- end footer -->
+		<script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>
     	<script src="<?php print $this->request->getThemeUrlPath(); ?>/assets/main.js"></script>
-    	<script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>
 	</body>
 </html>

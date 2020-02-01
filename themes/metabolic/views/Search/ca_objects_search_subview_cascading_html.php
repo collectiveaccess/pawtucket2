@@ -47,22 +47,14 @@
 	if ($qr_results->numHits() > 0) {
 ?>
 				<div class="row mb-2">
-					<div class="col-sm-12 col-md-6">
+					<div class="col-sm-12 col-md-12">
 <?php
 		if(in_array($vs_block, $va_browse_types)){
-			print '<H2>'.caNavLink($va_block_info['displayName'].' ('.$qr_results->numHits().')', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H2>';
+			print '<H2>'.caNavLink('<span>'.$qr_results->numHits().' '.(($qr_results->numHits() == 1) ? $va_block_info['labelSingular'] : $va_block_info['labelPlural']).' </span><ion-icon name="open"></ion-icon>', '', '', 'Search', '{{{block}}}', array('search' => $vs_search)).'</H2>';
 		}else{
 ?>
-			<H2><?php print $va_block_info['displayName']." (".$qr_results->numHits().")"; ?></H2>
+			<H2><?php print $qr_results->numHits().' '.(($qr_results->numHits() == 1) ? $va_block_info['labelSingular'] : $va_block_info['labelPlural']); ?></H2>
 <?php
-		}
-?>
-					</div>
-					<div class="col-sm-12 col-md-6 text-right">
-<?php
-		$vs_full_results = "";
-		if(in_array($vs_block, $va_browse_types)){
-			print $vs_full_results = caNavLink(_t('Full results').'&nbsp;<ion-icon name="open"></ion-icon>', 'btn btn-primary', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); 
 		}
 ?>
 					</div>
@@ -96,15 +88,19 @@
 			</div>
 <?php					
 			if ($vn_count == $vn_hits_per_block) {break;} 
-		}		
+		}
 ?>
 		</div></div>
 	</div>
+<?php
+		if ($qr_results->numHits() > $vn_hits_per_block) {	
+?>
 	<div class="row">
 		<div class="col-12 text-center">
-			<?php print $vs_full_results; ?>
+			<?php print caNavLink(_t('Full results').'&nbsp;<ion-icon name="open"></ion-icon>', 'btn btn-primary', '', 'Search', '{{{block}}}', array('search' => str_replace("/", "", $vs_search))); ?>
 		</div>
 	</div>
 <?php
+		}
 	}
 ?>

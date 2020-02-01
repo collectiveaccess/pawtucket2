@@ -103,6 +103,8 @@ $label-text-transform:uppercase;
 
 $browse-toolbar-height: 6rem;
 
+$main-notification-margins: 25px 0px 25px 0px;
+
 /* not sure if we keep/use these */
 $lighter-color: $gray-3;
 $very-light: $gray-2;
@@ -115,6 +117,13 @@ div, img, a{
 }
 a:hover img{
 	opacity:.8;
+}
+
+.mainNotification{
+	margin: $main-notification-margins;
+	.close{
+		font-family: arial;
+	}
 }
 
 .material-icons{
@@ -197,7 +206,7 @@ h1 {
 }
 h2 {
 	font-size:1.5rem;
-	margin-bottom: 1.5rem;
+	margin-bottom: 0rem;
 }
 h3 {
 	font-size:1rem;
@@ -209,7 +218,14 @@ p {
 address {
 	line-height:1.8rem;
 }
-
+.text-right-responsive{
+	text-align:right;
+}
+@media (max-width: 576px) {
+	.text-right-responsive{
+		text-align:left;
+	}
+}
 .btn-primary, .btn-secondary{
 	border-radius: $button-radius;
 	text-decoration: $button-decoration;
@@ -623,9 +639,9 @@ p.legend a {
 			width:auto;
 			height:auto;
 			
-		width:100%;
-		max-width:1100px;
-		max-height:700px;
+			width:100%;
+			max-width:1100px;
+			max-height:700px;
 		}
 	}
 	.detailAllMediaThumbs{
@@ -776,6 +792,17 @@ p.legend a {
 			font-family: $body-font;
 			text-decoration:none;
 			line-height:2em;
+		}
+		a.carousel-control-prev, a.carousel-control-next{
+			color:$button-color-primary;
+			font-size:30px;
+			opacity:.8;
+			ion-icon{
+				background-color:$button-bg-primary;
+			}
+		}
+		a.carousel-control-prev:hover, a.carousel-control-next:hover{
+			opacity:1;
 		}
 	}
 }

@@ -1,6 +1,9 @@
 <?php
 /* ----------------------------------------------------------------------
- * views/pageFormat/notifications.php : 
+ * app/templates/pdfEnd.php : bottom-matter appended to PDF templates
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
@@ -20,34 +23,14 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
+ * Template configuration:
+ *
+ * @name PDF end
+ * @type pageEnd
+ *
  * ----------------------------------------------------------------------
  */
- 
-	if (sizeof($this->getVar('notifications'))) {
-		foreach($this->getVar('notifications') as $va_notification) {
 ?>
-			<div class="row">
-				<div class="col-sm-12 col-md-6 offset-md-3">
-					<div class="alert alert-primary mainNotification" role="alert">
-						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-<?php
-					switch($va_notification['type']) {
-						case __NOTIFICATION_TYPE_ERROR__:
-							print $va_notification['message'];
-							break;
-						case __NOTIFICATION_TYPE_WARNING__:
-							print $va_notification['message'];
-							break;
-						default:
-							print $va_notification['message'];
-							break;
-					}
-?>
-					</div>
-				</div>
-			</div>
-					
-<?php
-		}
-	}
-?>
+	</body>
+</html>

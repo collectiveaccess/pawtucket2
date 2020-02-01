@@ -133,20 +133,30 @@
 		$q_actions = caMakeSearchResult("ca_occurrences", $va_related_action_ids);
 ?>
 	<div class="row mt-3">
-		<div class="col-lg-12 mt-5">
+		<div class="col-8 mt-5">
 			<H1>Related Actions</H1>
+		</div>
+		<div class="col-4 mt-5 text-right">
+
+<?php
+			if($q_actions->numHits() > 6){
+				print caNavLink("View All", "btn btn-primary", "", "Browse", "actions", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id")));		
+			}
+?>
 		</div>
 	</div>
 	<div class="row mb-5 detailRelated">
 <?php
 		$i = 0;
+		$va_tmp_ids = array();
 		while($q_actions->nextHit()){
 			if($vs_img = $q_actions->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.widepreview</unit>")){
-				print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
+				print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2'>";
 				print caDetailLink($vs_img, '', 'ca_occurrences', $q_actions->get("ca_occurrences.occurrence_id"));
 				print "<div class='pt-2'>".caDetailLink(substr(strip_tags($q_actions->get("ca_occurrences.preferred_labels")), 0, 30), '', 'ca_occurrences', $q_actions->get("ca_occurrences.occurrence_id"))."</div>";
 				print "</div>";
 				$i++;
+				$va_tmp_ids[] = $q_actions->get("ca_occurrences.occurrence_id");
 			}
 			if($i == 6){
 				break;
@@ -156,6 +166,10 @@
 	</div>
 
 <?php		
+		$o_context = new ResultContext($this->request, 'ca_occurrences', 'detailRelated');
+		$o_context->setAsLastFind();
+		$o_context->setResultList($va_tmp_ids);
+		$o_context->saveContext();
 	}
 
 	$va_related_item_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("item_select"), "returnAsArray" => true, "checkAccess" => $va_access_values));
@@ -192,12 +206,16 @@
 			$q_objects = caMakeSearchResult("ca_objects", array_slice($va_related_item_ids,0,20));
 ?>
 		<div class="row mt-5">
-			<div class="col-lg-12 mt-5">
+			<div class="col-7 mt-5">
 				<H1>Related Items</H1>
+			</div>
+			<div class="col-5 mt-5 text-right">
+				<?php print caNavLink("View All", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"))); ?>
 			</div>
 		</div>
 		<div class="row mb-5 detailRelated">
 <?php
+			$va_tmp_ids = array();
 			$i = 0;
 			while($q_objects->nextHit()){
 				if($q_objects->get("ca_object_representations.media.widepreview")){
@@ -206,6 +224,7 @@
 					print "<div class='pt-2'>".caDetailLink(substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30), '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
 					print "</div>";
 					$i++;
+					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
 				}
 				if($i == 12){
 					break;
@@ -215,6 +234,10 @@
 		</div>
 
 <?php		
+		$o_context = new ResultContext($this->request, 'ca_objects', 'detailRelated');
+		$o_context->setAsLastFind();
+		$o_context->setResultList($va_tmp_ids);
+		$o_context->saveContext();
 	}
 ?>
 

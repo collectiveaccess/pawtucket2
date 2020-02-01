@@ -21,7 +21,7 @@
 		$i = 0;
 ?>
 		<div class="row mb-5">
-			<div class='col-md-8 offset-md-2'>
+			<div class='col-md-6 offset-md-3'>
 				<div class="row">
 <?php
 		foreach($va_sets as $vn_set_id => $va_set){

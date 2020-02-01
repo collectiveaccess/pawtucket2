@@ -43,7 +43,7 @@
 <?php		
 		while($qr_list->nextHit()) {
 			print "<div class='col-md-4 colWidePadding '><div class='project'>";
-			$va_images = explode(";",$qr_list->getWithTemplate("<ifcount code='ca_objects' min='1'><unit relativeTo='ca_objects' length='5'><ifdef code='ca_object_representations.media.widepreview'>^ca_object_representations.media.widepreview</ifdef></unit></ifcount>"));
+			$va_images = explode(";",$qr_list->getWithTemplate("<ifcount code='ca_objects' min='1' restrictToTypes='item_select'><unit relativeTo='ca_objects' length='5' restrictToTypes='item_select'><ifdef code='ca_object_representations.media.widepreview'>^ca_object_representations.media.widepreview</ifdef></unit></ifcount>"));
 			$i = 1;
 			$vs_slides = "";
 			foreach($va_images as $vs_image){
@@ -59,11 +59,11 @@
 				<div class='carousel slide' id='projectSlideshow<?php print $qr_list->get("collection_id"); ?>' data-interval='false'>
 					<div class='carousel-inner'><?php print $vs_slides; ?>
 						<a class="carousel-control-prev" href="#projectSlideshow<?php print $qr_list->get("collection_id"); ?>" role="button" data-slide="prev">
-							<span class="carousel-control-prev-icon" aria-hidden="true"></span>
+							<ion-icon name="ios-arrow-back"></ion-icon>
 							<span class="sr-only">Previous</span>
 						</a>
 						<a class="carousel-control-next" href="#projectSlideshow<?php print $qr_list->get("collection_id"); ?>" role="button" data-slide="next">
-							<span class="carousel-control-next-icon" aria-hidden="true"></span>
+							<ion-icon name="ios-arrow-forward"></ion-icon>
 							<span class="sr-only">Next</span>
 						</a>
 					</div>

@@ -43,9 +43,15 @@
 			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
 		</div><!-- end detailTop -->
 	<div class='navLeftRight text-left col-sm-1 col-lg-2'>
+<?php
+	if($this->getVar("resultsLink") || $this->getVar("previousLink")){
+?>
 		<div class="detailNavBgLeft">
 			{{{resultsLink}}}<br/>{{{previousLink}}}
 		</div><!-- end detailNavBgLeft -->
+<?php
+	}
+?>
 	</div><!-- end col -->
 	<div class='col-12 col-sm-10 col-md-10 col-lg-8'>
 <?php
@@ -118,7 +124,7 @@
 						{{{<ifdef code="ca_objects.date">
 							<div class="mb-3">
 								<div class="label">Date</div>
-								^ca_objects.date
+								^ca_objects.date%delimiter=,_
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.item_subtype">
@@ -146,13 +152,13 @@
 						{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1">
 							<div class="mb-3">
 								<div class="label">Exhibitions</div>
-								<unit relativeTo="ca_occurrences" restrictToTypes="action" delimiter=", ">^ca_occurrences.preferred_labels</unit>
+								<unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=", "><l>^ca_occurrences.preferred_labels.name</l></unit>
 							</div>
 						</ifcount>}}}
 						{{{<ifcount code="ca_occurrences" restrictToTypes="action" min="1">
 							<div class="mb-3">
 								<div class="label">Actions</div>
-								<unit relativeTo="ca_occurrences" restrictToTypes="action" delimiter=", ">^ca_occurrences.preferred_labels</unit>
+								<unit relativeTo="ca_occurrences" restrictToTypes="action" delimiter=", "><l>^ca_occurrences.preferred_labels.name</l></unit>
 							</div>
 						</ifcount>}}}
 						{{{<ifcount code="ca_entities" min="1">
@@ -189,9 +195,15 @@
 						
 	</div><!-- end col -->
 	<div class='navLeftRight text-right col-sm-1 col-lg-2'>
+<?php
+	if($this->getVar("nextLink")){
+?>
 		<div class="detailNavBgRight">
 			{{{nextLink}}}
 		</div><!-- end detailNavBgLeft -->
+<?php
+	}
+?>
 	</div><!-- end col -->
 </div><!-- end row -->
 <div class="row">
@@ -199,7 +211,7 @@
 <?php
 	# --- related_items
 	$va_related_items = array();
-	$va_related_item_ids = $t_object->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_related_item_ids = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
 	if($va_projects = $t_object->get("ca_collections.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values))){
 		$q_projects = caMakeSearchResult("ca_collections", $va_projects);
 		if($q_projects->numHits()){
@@ -224,6 +236,7 @@
 	</div>
 	<div class="row mb-5">
 <?php
+		$va_tmp_ids = array();
 		$i = 0;
 		while($q_objects->nextHit()){
 			if($q_objects->get("ca_object_representations.media.widepreview")){
@@ -232,6 +245,7 @@
 				print "<div class='pt-2'>".substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30)."</div>";
 				print "</div>";
 				$i++;
+				$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
 			}
 			if($i == 12){
 				break;
@@ -241,14 +255,12 @@
 	</div>
 
 <?php		
+		$o_context = new ResultContext($this->request, 'ca_objects', 'detailRelated');
+		$o_context->setAsLastFind();
+		$o_context->setResultList($va_tmp_ids);
+		$o_context->saveContext();
 	}
 ?>
 
 	</div>
 </div>
-
-<script type="text/javascript">	
-	// pawtucketUIApps['expandandscroll'] = {
-//         'selector': '.viewAll'
-//     };
-</script>

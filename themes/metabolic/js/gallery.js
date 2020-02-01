@@ -82,7 +82,7 @@ const sectionName = appData.sectionName;
 			return (
 						<div className='row'>
 							<div className='col-12 col-sm-8'>
-								<div className='galleryPrimaryMedia' dangerouslySetInnerHTML={{__html: this.props.itemMedia}}></div>
+								<div className='galleryPrimaryMedia align-middle' dangerouslySetInnerHTML={{__html: this.props.itemMedia}}></div>
 							</div>
 							<div className='col-12 col-sm-4' id='galleryDetailObjectInfo'>
 								<GalleryItemInfo itemKey={this.props.itemKey} numSetItems={this.props.numSetItems} itemDescription={this.props.itemDescription}/>

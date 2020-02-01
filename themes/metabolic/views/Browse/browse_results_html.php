@@ -23,11 +23,13 @@
  * ----------------------------------------------------------------------
  */
 
-	$initial_criteria = null;
+	$initial_criteria = [];
 	if ($search = $this->request->getParameter('search', pString)) {
 	    $initial_criteria['_search'] = [$search => $search];
 	}
-	
+	if(($facet = $this->request->getParameter('facet', pString)) && $facet_id = $this->request->getParameter('id', pInteger)) {
+		$initial_criteria[$facet] = [$facet_id => $facet_id];
+	}
 	$action = $this->request->getAction();
 	$browse_info = $this->getVar('browseInfo');
 ?>
