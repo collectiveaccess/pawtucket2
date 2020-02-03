@@ -138,7 +138,7 @@
 						if($vs_tmp = $qr_res->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))){
 							$vs_type = $vs_tmp;
 						}
-						if($vs_tmp = $qr_res->getWithTemplate('<unit relativeTo="ca_objects.description_w_type.description" length="1">^ca_objects.description_w_type.description%truncate=100%ellipsis</unit>')){
+						if($vs_tmp = strip_tags($qr_res->getWithTemplate('<unit relativeTo="ca_objects.description_w_type.description" length="1">^ca_objects.description_w_type.description%truncate=100%ellipsis</unit>'))){
 							$vs_description .= "<div class='bResultListDesc'>".$vs_tmp."</div>";
 						}
 						if($vs_tmp = $qr_res->getWithTemplate('<unit unique="1" relativeTo="ca_collections"><l>^ca_collections.preferred_labels.name</l></unit>')){

@@ -539,6 +539,9 @@ font-size: 12pt;
 .detail h6 a {
   color: #6FB7C3;
 }
+.detail h6 {
+  margin-top:25px;
+}
 .video-js{
 	text-align:center;
 }
@@ -549,8 +552,41 @@ font-size: 12pt;
 .detail #detailAnnotations .detailAnnotationList {
 	max-height: 400px;
 }
+.detail .relObjectThumb{
+	padding-bottom:5px;
+}
+.detail .relObjectThumb img{
+	width:100%;
+	height:auto;
+}
+.detail .relObjectLabel{
+	height:3.3em;
+	line-height:1.1em;
+	font-size:13px;
+}
+.detail .relObjectThumb img{
+	max-width:250px;
+}
 /* BROWSE */
 
+.browseIntro{
+	webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	margin-top:25px;
+	margin-bottom:30px;
+	text-align:center;
+	font-size:18px;
+	padding:25px;
+}
+.browseIntro strong, .browseIntro b{
+	font-size:18px;
+	text-transform:none;
+}
+.browseIntro .closeButton{
+	margin-right:-20px;
+	margin-top:-20px;
+	float:right;
+}
 #bRefine {
   background-color: #ffffff;
   padding-bottom: 20px;
@@ -690,6 +726,9 @@ font-size: 12pt;
 }
 .collections-detail h6 {
   color: #1c3e47;
+}
+#collectionHierarchy{
+	margin-top:15px;
 }
 
 /* GALLERY SPECIAL PROJECTS INDEX */

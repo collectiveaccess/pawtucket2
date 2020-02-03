@@ -134,12 +134,17 @@
      			       // Core configuration goes here
    					     })
    					     .jcarouselAutoscroll({
-   				         interval: 4000,
-       				     target: '+=1',
-     				       autostart: true
-       					 })
- 						   ;
-							});
+   				         	interval: 5000,
+       				     	target: '+=1',
+     				       	autostart: true
+       					 });
+					 });
+					 
+					 $('.jcarousel').hover(function() {
+						$(this).jcarouselAutoscroll('stop');
+					}, function() {
+						$(this).jcarouselAutoscroll('start');
+					});
 					/*
 					 Prev control initialization
 					 */

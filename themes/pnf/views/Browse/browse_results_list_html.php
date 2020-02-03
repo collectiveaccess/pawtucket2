@@ -90,15 +90,20 @@
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 				$vs_uniform = null;
-				if ($vs_uniform = $qr_res->get('ca_objects.CCSSUSA_Uniform')) {
-					$vs_label_detail_link 	= caDetailLink($this->request, $vs_uniform, '', $vs_table, $vn_id);
-				} else {
-					$vs_label_detail_link 	= caDetailLink($this->request, '[Short title]', '', $vs_table, $vn_id);
+				if ($vs_table === 'ca_objects') {
+					if ($vs_uniform = $qr_res->get('ca_objects.CCSSUSA_Uniform')) {
+						$vs_label_detail_link 	= caDetailLink($this->request, $vs_uniform, '', $vs_table, $vn_id);
+					} else {
+						$vs_label_detail_link 	= caDetailLink($this->request, '[Short title]', '', $vs_table, $vn_id);
+					}
+				}else{
+					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 				}
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
 				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+				$vs_author = "";
 				
 				if(!$vs_image){
 					if ($vs_table == 'ca_objects') {
@@ -114,6 +119,10 @@
 					}
 				}
 				if ($vs_table === 'ca_objects') {
+					$vs_author = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '));
+					if($vs_author){
+						$vs_author = "<b>".$vs_author."</b><br/>";
+					}
 					if ($va_date = $qr_res->get('ca_objects.260_date', array('delimiter' => ', '))) {
 
 					} else {
@@ -125,7 +134,9 @@
 					$vs_info = "<p>".$va_date."<br/>".$va_pub_info."</p>";
 				}
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
-				
+				if($vs_table === 'ca_collections'){
+					$vs_rep_detail_link = "";
+				}
 				$vs_add_to_set_link = "";
 				if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 					$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
@@ -137,9 +148,9 @@
 	<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
 		<div class='bResultListItem' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
-			<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
+			<div class='bResultListItemContent'>".(($vs_table != 'ca_collections') ? "<div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>" : "")."
 				<div class='bResultListItemText'>
-					{$vs_label_detail_link}{$vs_info}
+					{$vs_author}{$vs_label_detail_link}{$vs_info}
 				</div><!-- end bResultListItemText -->
 			</div><!-- end bResultListItemContent -->
 		</div><!-- end bResultListItem -->

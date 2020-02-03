@@ -33,6 +33,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-6 navTop'><!--- only shown at small screen size -->
@@ -146,19 +147,43 @@
 							<ifcount code="ca_collections" min="1"><HR/></ifcount>
 							<ifcount code="ca_occurrences" min="1"><HR/></ifcount>
 							<ifcount code="ca_places" min="1"><HR/></ifcount>
+							<ifcount code="ca_objects.related" min="1"><HR/></ifcount>
 						</case>}}}
 						    {{{<ifcount code="ca_collections" unique="1"  min="1" max="1"><H6>Related Collection</H6></ifcount>}}}
 							{{{<ifcount code="ca_collections" unique="1"  min="2"><H6>Related Collections</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_collections" unique="1" delimiter="<br/>"><unit unique="1" relativeTo="ca_collections"><l>^ca_collections.preferred_labels.name</l></unit></unit>}}}						
+							{{{<unit unique="1" relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}						
 							{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related Work</H6></ifcount>}}}
 							{{{<ifcount code="ca_occurrences" min="2"><H6>Related Works</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_occurrences" delimiter="<br/>"><unit relativeTo="ca_occurrences"><l>^ca_occurrences.preferred_labels</l></unit> (^relationship_typename)</unit>}}}		
+							{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels</l> (^relationship_typename)</unit>}}}		
 							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related Place</H6></ifcount>}}}
 							{{{<ifcount code="ca_places" min="2"><H6>Related Places</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places"><l>^ca_places.preferred_labels</l></unit></unit>}}}	
-						</div><!-- end col -->	
-						</div>		
-						<div class="row">	
+							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l></unit>}}}
+							{{{<ifcount code="ca_objects.related" unique="1" min="1" max="1"><H6>Related Object</H6></ifcount>}}}
+							{{{<ifcount code="ca_objects.related" unique="1" min="2"><H6>Related Objects</H6></ifcount>}}}
+<?php
+								$vs_rel_objects = $t_object->getWithTemplate("<unit relativeTo='ca_objects.related' delimiter='~'><ifdef code='ca_object_representations.media.iconlarge'><div class='relObjectThumb'>^ca_object_representations.media.iconlarge</div></ifdef><div class='relObjectLabel'><l>^ca_objects.preferred_labels.name%truncate=40&ellipsis=1</l></div></unit>");
+								$vn_c = 0;
+								if($vs_rel_objects){
+									$va_rel_objects = explode("~", $vs_rel_objects);
+									foreach($va_rel_objects as $vs_rel_object){
+										if($vn_c == 0){
+											print "<div class='row'>";
+										}
+										print "<div class='col-xs-12 col-sm-4 text-center'>".$vs_rel_object."</div>";
+										$vn_c++;
+										if($vn_c == 3){
+											print "</div>";
+											$vn_c = 0;
+										}
+									}
+									if($vn_c > 0){
+										print "</div>";
+									}
+								}
+?>
+						</div><!-- end col -->
+					</div>		
+					<div class="row">	
 						<div class="col-sm-12 colBorderLeft">
 							{{{map}}}
 						</div>
