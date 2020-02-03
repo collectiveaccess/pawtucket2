@@ -1,10 +1,13 @@
 <?php
 	$t_object = $this->getVar("object");
+	$t_set_item = $this->getVar("t_set_item");
 	$va_access_values = caGetUserAccessValues($this->request);
 
 	$vs_type = $t_object->get('ca_objects.type_id', array("convertCodesToDisplayText" => true));
 	print "(".$this->getVar("set_item_num")."/".$this->getVar("set_num_items").")<br/>";
-
+	if($vs_set_caption = $t_set_item->get("ca_set_items.preferred_labels.name")){
+		print "<div>".$vs_set_caption."</div>";
+	}
 	if(strpos(strToLower($vs_type), "artwork") !== false){
 		if ($vs_artist = $t_object->getWithTemplate('<unit relativeTo="ca_entities" delimiter="<br/>"><div class="artistName"><l>^ca_entities.preferred_labels</l></div><div><ifdef code="ca_entities.nationality_text">^ca_entities.nationality_text</ifdef><ifdef code="ca_entities.nationality_text|ca_entities.entity_display_date">, </ifdef><ifdef code="ca_entities.entity_display_date">^ca_entities.entity_display_date</ifdef></div></unit>')) { 
 			print "<div>".$vs_artist."</div>";
