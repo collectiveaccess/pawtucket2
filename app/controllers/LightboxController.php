@@ -699,6 +699,8 @@
  			if(!$pn_access){
  				$va_errors["access"] = _t("Please select an access level");
  			}
+ 			$vs_share_message = $this->purifier->purify($this->request->getParameter('share_message', pString));
+ 			$this->view->setVar('share_message', $vs_share_message);
  			if(!is_array($va_errors) || (sizeof($va_errors) == 0)){
 				if($pn_group_id){
 					$t_sets_x_user_groups = new ca_sets_x_user_groups();
@@ -726,6 +728,7 @@
 								$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
 								$o_view->setVar("display_name", $vs_display_name);
  								$o_view->setVar("display_name_plural", $vs_display_name_plural);
+ 								$o_view->setVar("share_message", $vs_share_message);
 							
 								# -- generate email subject line from template
 								$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
@@ -804,7 +807,7 @@
 						$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
 						$o_view->setVar("display_name", $vs_display_name);
  						$o_view->setVar("display_name_plural", $vs_display_name_plural);
-							
+						$o_view->setVar("share_message", $vs_share_message);
 					
 						# -- generate email subject line from template
 						$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
