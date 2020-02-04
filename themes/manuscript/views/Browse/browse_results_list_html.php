@@ -174,9 +174,9 @@
 					} else {
 						// Get additional info for Manuscripts as they will have no images
 
-						if($qr_res->get('ca_objects.viewable') == 206){
+						if($qr_res->get('ca_objects.link_text') == 218){
 							if($vs_label_avail_info = $qr_res->get("ca_objects.institution_link") and $vs_table != 'ca_collections'){
-								$vs_label_see_link = "<a class='viewableLink' href='{$vs_label_avail_info}' target='_blank'>Viewable Online</a>";
+								$vs_label_see_link = "<a class='viewableLink' href='{$vs_label_avail_info}' target='_blank'>View Online</a>";
 							}
 						} else {
 							$vs_label_see_link = "";
