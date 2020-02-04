@@ -569,6 +569,24 @@ font-size: 12pt;
 }
 /* BROWSE */
 
+.browseIntro{
+	webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+	margin-top:25px;
+	margin-bottom:30px;
+	text-align:center;
+	font-size:18px;
+	padding:25px;
+}
+.browseIntro strong, .browseIntro b{
+	font-size:18px;
+	text-transform:none;
+}
+.browseIntro .closeButton{
+	margin-right:-20px;
+	margin-top:-20px;
+	float:right;
+}
 #bRefine {
   background-color: #ffffff;
   padding-bottom: 20px;
