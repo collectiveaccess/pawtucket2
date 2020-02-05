@@ -1,6 +1,7 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
+	$va_options = $this->getVar("config_options");
 ?>
 <div class="row">
 	<div class='col-xs-1 col-sm-1 col-md-1 col-lg-1'>
@@ -41,8 +42,30 @@
 						{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 						{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
 						{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
-		
-						{{{map}}} <br/>
+<?php
+				
+				if($va_location_hierarchy_ids = $t_object->get("ca_storage_locations.hierarchy.location_id", array("relativeTo" => "ca_storage_locations", "returnAsArray" => true))){
+					$va_location_hierarchy_ids = array_pop($va_location_hierarchy_ids);
+					krsort($va_location_hierarchy_ids);
+					$t_storage_location = new ca_storage_locations();
+					foreach($va_location_hierarchy_ids as $vn_location_hierarchy_id){
+						$t_storage_location->load($vn_location_hierarchy_id);
+						if($t_storage_location->get("ca_storage_locations.georeference")){
+							$o_map = new GeographicMap((($vn_width = caGetOption(['mapWidth', 'map_width'], $va_options, false)) ? $vn_width : 285), (($vn_height = caGetOption(['mapHeight', 'map_height'], $va_options, false)) ? $vn_height : 200), 'map');
+							$vn_mapped_count = 0;	
+							$va_ret = $o_map->mapFrom($t_storage_location, 'ca_storage_locations.georeference', array('contentTemplate' => caGetOption('mapContentTemplate', $va_options, false)));
+							$vn_mapped_count += $va_ret['items'];
+			
+	
+							if ($vn_mapped_count > 0) { 
+								print $o_map->render('HTML', array('zoomLevel' => caGetOption(['mapZoomLevel', 'zoom_level'], $va_options, 12)));
+								print "<br/>";
+								break;
+							}
+						}
+					}
+				}
+?>
 					</div>
 				</div>	
 			</div><!-- end left col -->
