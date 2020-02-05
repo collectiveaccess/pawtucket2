@@ -131,12 +131,16 @@
 						if($va_tmp = $t_object->get("ca_objects.shade", array("returnAsArray" => true))){
 							$va_tmp_formatted = array();
 							foreach($va_tmp as $vs_tmp){
-								if(!preg_match("/[a-z]/", $vs_tmp)){
-									$vs_tmp = ucwords(strtolower($vs_tmp));
+								if(trim($vs_tmp)){
+									if(!preg_match("/[a-z]/", $vs_tmp)){
+										$vs_tmp = ucwords(strtolower($vs_tmp));
+									}
+									$va_tmp_formatted[] = $vs_tmp;
 								}
-								$va_tmp_formatted[] = $vs_tmp;
 							}
-							print "<div class='unit'><H6>Shade</H6>".join("<br/>", $va_tmp_formatted)."</div>";
+							if(sizeof($va_tmp_formatted)){
+								print "<div class='unit'><H6>Shade</H6>".join("<br/>", $va_tmp_formatted)."</div>";
+							}
 						}
 						if($va_tmp = $t_object->get("ca_objects.fragrance", array("returnAsArray" => true))){
 							$va_tmp_formatted = array();
