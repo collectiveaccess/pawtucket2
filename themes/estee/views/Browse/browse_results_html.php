@@ -442,7 +442,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 		#	print caNavLink($this->request, _t("Items"), "btn btn-default ".(($vs_browse_type == "archival") ? "" : " outline"), "", "Browse", "archival", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
 		#	print caNavLink($this->request, _t("All"), "btn btn-default browseTypeButtonAll ".(($vs_browse_type == "objects") ? "" : " outline"), "", "Browse", "objects", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
 		#	print "<div style='clear:both;'></div></div>";
-		O}
+		#}
 		#if(in_array(strToLower($this->request->getAction()), array("objects", "archival"))){
 		#	print caNavLink($this->request, _t("Browse All Products"), "btn-default browseProducts", "", "Browse", "products");
 		#}
