@@ -162,7 +162,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 65
+		  maxHeight: 98
 		});
 	});
 </script>

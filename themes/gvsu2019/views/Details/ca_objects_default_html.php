@@ -17,11 +17,11 @@
 					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print is_array($va_comments) ? sizeof($va_comments) : 0; ?>)</a></div><!-- end detailTool -->
 					
 				{{{<ifdef code="ca_objects.faculty_responses.faculty_response_text"><H6>Faculty Response:</H6>
-					<span class="trimText">^ca_objects.faculty_responses.faculty_response_text</span>
+					<div class="trimText">^ca_objects.faculty_responses.faculty_response_text</div>
 				</ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.student_responses.student_response_text"><H6>Student Response:</H6>
-					<span class="trimText">^ca_objects.student_responses.student_response_text</span>
+					<div class="trimText">^ca_objects.student_responses.student_response_text</div>
 				</ifdef>}}}
 					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
@@ -101,17 +101,17 @@
 				</div>		
 				
 				{{{<ifdef code="ca_objects.work_description"><H6>Description:</H6>
-					<span class="trimText">^ca_objects.work_description</span>
+					<div class="trimText">^ca_objects.work_description</div>
 				</ifdef>}}}
 				
 
 				
 				{{{<ifdef code="ca_objects.historical_context"><H6>Historical Context:</H6>
-					<span class="trimText">^ca_objects.historical_context</span><br/>
+					<div class="trimText">^ca_objects.historical_context</div><br/>
 				</ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.wikipedia" ><div class="wikipediaAbstract"><H6>Wikipedia Summary:</H6>
-					<span class="trimText">^ca_objects.wikipedia.abstract</span><span><a href="^ca_objects.wikipedia.fullurl">^ca_objects.wikipedia.fullurl</a></span>
+					<div class="trimText">^ca_objects.wikipedia.abstract</div><span><a href="^ca_objects.wikipedia.fullurl">^ca_objects.wikipedia.fullurl</a></span>
 				</div></ifdef>}}}
 				
 				<div class="row">				
@@ -171,7 +171,7 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 150
+		  maxHeight: 98
 		});
 	});
 </script>
