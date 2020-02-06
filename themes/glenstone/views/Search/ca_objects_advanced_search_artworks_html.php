@@ -1,9 +1,11 @@
 <?php
 
 require_once(__CA_MODELS_DIR__."/ca_sets.php");
+include_once(__CA_MODELS_DIR__."/ca_occurrences.php");
+// include_once(__CA_LIB_DIR__."/ca/Search/OccurrenceSearch.php");
+// include_once(__CA_LIB_DIR__."/ca/Search/ObjectSearch.php");
 include_once(__CA_LIB_DIR__."/Search/OccurrenceSearch.php");
 include_once(__CA_LIB_DIR__."/Search/ObjectSearch.php");
-include_once(__CA_MODELS_DIR__."/ca_occurrences.php");
 
 $va_access_values = caGetUserAccessValues($this->request);
 
@@ -67,16 +69,77 @@ $va_access_values = caGetUserAccessValues($this->request);
 			<div class="exhibitions">
 				<h1>Glenstone Exhibitions</h1>
 <?php
-	$o_exhibition_search = new OccurrenceSearch();
-	$o_exhibition_search->setTypeRestrictions(array('exhibition'));
-	$qr_exhibitions = $o_exhibition_search->search("*", array('checkAccess' => $va_access_values, 'sort' => 'ca_occurrences.exh_dates', 'sort_direction' => 'desc'));
+	// $o_exhibition_search = new OccurrenceSearch();
+// 	$o_exhibition_search->setTypeRestrictions(array('exhibition'));
+// 	$qr_exhibitions = $o_exhibition_search->search("*", array('checkAccess' => $va_access_values, 'sort' => 'ca_occurrences.exh_dates', 'sort_direction' => 'desc'));
+// 
+// 	if ($qr_exhibitions->numHits()) {
+// 		while($qr_exhibitions->nextHit()) {
+// 			print "<div class='exhibition'>".caNavLink($this->request, $qr_exhibitions->get('ca_occurrences.preferred_labels'), '', '', 'Detail', 'occurrences/'.$qr_exhibitions->get('ca_occurrences.occurrence_id'))."</div>";
+// 		}
+// 	}
 
-	if ($qr_exhibitions->numHits()) {
-		while($qr_exhibitions->nextHit()) {
-			print "<div class='exhibition'>".caNavLink($this->request, $qr_exhibitions->get('ca_occurrences.preferred_labels'), '', '', 'Detail', 'occurrences/'.$qr_exhibitions->get('ca_occurrences.occurrence_id'))."</div>";
+	if ($q_gallery = ca_occurrences::find(['exhibition_location' => 'gallery'], ['returnAs' => 'searchResult', 'checkAccess' => $va_access_values, 'sort' => 'ca_occurrences.exh_dates', 'sortDirection' => 'DESC'])) {
+		if ($q_gallery->numHits() > 0) {
+			print "<h3 id='galleryListHeader'><a href='#'>The Gallery</a></h3>\n";
+		}
+		print "<ul id='galleryList' class='exhibitionList'>\n";
+		while($q_gallery->nextHit()) {
+			print "<li class='exhibitionListItem'>".caDetailLink($this->request, $q_gallery->get('ca_occurrences.preferred_labels.name'), '', 'ca_occurrences', $q_gallery->get('ca_occurrences.occurrence_id'))."</li>\n";
+		}
+		print "</ul>\n";
+	}
+	
+	if ($pavilion = ca_list_items::find(['idno' => 'pavilions', 'list_id' => caGetListID('exhibition_locations')], ['returnAs' => 'firstModelInstance', 'checkAccess' => $va_access_values])) {
+		$pavilion_contents = $pavilion->hierarchyWithTemplate('^ca_list_items.preferred_labels.name_plural', ['checkAccess' => $va_access_values]);
+
+		if(is_array($pavilion_contents) && sizeof($pavilion_contents)) {
+			$header = array_shift($pavilion_contents);
+			print "<h3 id='pavilionListHeader'><a href='#'>".$header['display']."</a></h3>\n";
+	
+			print "<ul id='pavilionList' class='exhibitionList'>\n";
+			foreach($pavilion_contents as $p) {
+				print "<li class='exhibitionListItem pavilionRoom' data-list_id='pavilionRoom{$p['id']}'><a href='#'>".$p['display']."</a></li>\n";
+				if ($q_pavilion_exh = ca_occurrences::find(['exhibition_location' => $p['id'], 'type_id' => 'exhibition'], ['returnAs' => 'searchResult', 'sort' => 'ca_occurrences.exh_dates', 'sortDirection' => 'DESC'])) {
+					print "<ul id='pavilionRoom{$p['id']}' class='exhibitionList'>\n";
+					while($q_pavilion_exh->nextHit()) {
+						print "<li class='exhibitionListItem'>".caDetailLink($this->request, $q_pavilion_exh->get('ca_occurrences.preferred_labels.name'), '', 'ca_occurrences', $q_pavilion_exh->get('ca_occurrences.occurrence_id'))."</li>";
+					}
+					print "</ul>\n";
+				}
+			}
+			print "</ul>\n";
 		}
 	}
+	if ($q_outdoor = ca_occurrences::find(['exhibition_location' => 'outdoor'], ['returnAs' => 'searchResult', 'checkAccess' => $va_access_values, 'sort' => 'ca_occurrences.exh_dates', 'sortDirection' => 'DESC'])) {
+		if ($q_outdoor->numHits() > 0) {
+			print "<h3 id='outdoorListHeader'><a href='#'>Outdoor Sculpture</a></h3>\n";
+		}
+		print "<ul id='outdoorList' class='exhibitionList'>\n";
+		while($q_outdoor->nextHit()) {
+			print "<li class='exhibitionListItem'>".caDetailLink($this->request, $q_outdoor->get('ca_occurrences.preferred_labels.name'), '', 'ca_occurrences', $q_outdoor->get('ca_occurrences.occurrence_id'))."</li>\n";
+		}
+		print "</ul>\n";
+	}
+	
+	outdoor
 ?>			
+				<script type="text/javascript">
+					jQuery(document).ready(function() {
+						jQuery('#galleryListHeader').on('click', function(e) {
+							jQuery('#galleryList').slideToggle(250);
+						});
+						jQuery('#pavilionListHeader').on('click', function(e) {
+							jQuery('#pavilionList').slideToggle(250);
+						});
+						jQuery('#outdoorListHeader').on('click', function(e) {
+							jQuery('#outdoorList').slideToggle(250);
+						});
+						jQuery('.pavilionRoom').on('click', function(e) {
+							jQuery('#' + jQuery(this).data('list_id')).slideToggle(250);
+						});
+					});
+				</script>
 			</div>
 		</div> <!--end col-sm-4-->	
 	</div><!--end row-->

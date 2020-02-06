@@ -63,7 +63,9 @@
 ?>
 			<div class="representationList factsheet">
 <?php		
-			print $vo_result->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '468px', 'scaleCSSHeightTo' => '234px'));
+			$offset_div =  (($height = $vo_result->getMediaInfo('ca_object_representations.media', 'page', 'HEIGHT')) < 400) ? "<div style='width: 10px; height: ".($height - 100)."px;'> </div>" : "";
+	
+			print $offset_div.$vo_result->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '468px', 'scaleCSSHeightTo' => '234px')).$offset_div;
 ?>
 			</div>
 			<div class='tombstone factsheet'>
@@ -92,25 +94,26 @@
 			print "<div style='clear:both;height:20px;width:100%;'></div>";
 			if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new")){
 				if ($va_provenance = $vo_result->get('ca_objects.artwork_provenance')) {
-						print "<div class='fact'><span style='font-weight:bold;'>Provenance</span><br/><p>".$va_provenance."</p></div>";
+						print "<div class='fact'><span style='font-weight:bold;'>Provenance</span><br/><div>".$va_provenance."</div></div>";
 				}
 			}
 			print "<br/>";
 			if (($va_exhibition_history = array_shift($vo_result->get('ca_objects.exhibition_history', array('returnAsArray' => true, 'returnWithStructure' => true, 'idsOnly' => true, 'sort' => 'ca_objects.exhibition_history.exhibition_date', 'sortDirection' => 'DESC')))) && (sizeof($va_exhibition_history))) {
 				print "<div class='fact'><span style='font-weight:bold;'>Exhibition History</span><br/>";
-			
 				foreach ($va_exhibition_history as $ex_key => $va_exhibition) {
 					if(!$va_exhibition['exhibition_name']) { continue; }
 					if ($va_exhibition['related_loan']) {
-						print "<p>".caNavLink($this->request, $va_exhibition['exhibition_name'], '', '', 'Detail', 'loans/'.$va_exhibition['related_loan'])."</p>";
+						print "<div>".caNavLink($this->request, $va_exhibition['exhibition_name'], '', '', 'Detail', 'loans/'.$va_exhibition['related_loan'])."</div>";
 					} else {
-						print "<p>".$va_exhibition['exhibition_name']."</p>";
+						print "<div>".$va_exhibition['exhibition_name']."</div>";
 					}
 				}
 				print "</div>";
 			}
 			if ($va_literature = $vo_result->get('ca_objects.literature')) {
-					print "<div class='fact'><span style='font-weight:bold;'>Literature</span> <br/><p>".$va_literature."</p></div>";
+			
+					print "<br/>";
+					print "<div class='fact'><span style='font-weight:bold;'>Literature</span> <br/><div>".$va_literature."</div></div>";
 			}			
 ?>	
 			</div>

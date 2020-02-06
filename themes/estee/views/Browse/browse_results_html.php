@@ -425,24 +425,24 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			print "<div class='productCodeHelp'>End product code searches with an asterisk (*)</div>";
 		}
 		# --- objects, archival, products
-		$vs_browse_type = strToLower($this->request->getAction());
-		if(in_array($vs_browse_type, array("objects", "archival", "products"))){
+		#$vs_browse_type = strToLower($this->request->getAction());
+		#if(in_array($vs_browse_type, array("objects", "archival", "products"))){
 			# --- if there is a brand filter, pass it through as you change type
-			$vn_brand_facet_id = "";
-			if (sizeof($va_criteria) > 0) {
-				foreach($va_criteria as $va_criterion) {
-					if($va_criterion["facet_name"] == "brand_facet"){
-						$vn_brand_facet_id = $va_criterion["id"];
-						break;
-					}
-				}
-			}
-			print "<div class='browseTypeButtons'>";
-			print caNavLink($this->request, _t("Products"), "btn btn-default ".(($vs_browse_type == "products") ? "" : " outline"), "", "Browse", "products", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
-			print caNavLink($this->request, _t("Items"), "btn btn-default ".(($vs_browse_type == "archival") ? "" : " outline"), "", "Browse", "archival", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
-			print caNavLink($this->request, _t("All"), "btn btn-default browseTypeButtonAll ".(($vs_browse_type == "objects") ? "" : " outline"), "", "Browse", "objects", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
-			print "<div style='clear:both;'></div></div>";
-		}
+		#	$vn_brand_facet_id = "";
+		#	if (sizeof($va_criteria) > 0) {
+		#		foreach($va_criteria as $va_criterion) {
+		#			if($va_criterion["facet_name"] == "brand_facet"){
+		#				$vn_brand_facet_id = $va_criterion["id"];
+		#				break;
+		#			}
+		#		}
+		#	}
+		#	print "<div class='browseTypeButtons'>";
+		#	print caNavLink($this->request, _t("Products"), "btn btn-default ".(($vs_browse_type == "products") ? "" : " outline"), "", "Browse", "products", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
+		#	print caNavLink($this->request, _t("Items"), "btn btn-default ".(($vs_browse_type == "archival") ? "" : " outline"), "", "Browse", "archival", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
+		#	print caNavLink($this->request, _t("All"), "btn btn-default browseTypeButtonAll ".(($vs_browse_type == "objects") ? "" : " outline"), "", "Browse", "objects", array("facet" => "brand_facet", "id" => $vn_brand_facet_id));
+		#	print "<div style='clear:both;'></div></div>";
+		O}
 		#if(in_array(strToLower($this->request->getAction()), array("objects", "archival"))){
 		#	print caNavLink($this->request, _t("Browse All Products"), "btn-default browseProducts", "", "Browse", "products");
 		#}
