@@ -372,10 +372,10 @@
 			}
 			$co_security = $this->request->config->get('registration_security');
 			if($co_security == 'captcha'){
-				if((defined("__CA_GOOGLE_RECAPTCHA_SECRET_KEY__") && __CA_GOOGLE_RECAPTCHA_SECRET_KEY__) && (defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__)){
+				if(!(defined("__CA_GOOGLE_RECAPTCHA_SECRET_KEY__") && __CA_GOOGLE_RECAPTCHA_SECRET_KEY__) || !(defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__)){
 				//Then the captcha will not work and should not be implemenented.
-							$co_security = 'equation_sum';
-					}
+						$co_security = 'equation_sum';
+				}
 			}
 			if($co_security == 'captcha'){
 				if(!$ps_captcha){
@@ -530,7 +530,8 @@
 
 					# --- send email confirmation
 					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
-
+					$o_view->setVar("t_user", $t_user);
+					
 					# -- generate email subject line from template
 					$vs_subject_line = $o_view->render("mailTemplates/reg_conf_subject.tpl");
 

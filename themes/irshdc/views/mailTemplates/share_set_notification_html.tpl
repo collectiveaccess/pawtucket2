@@ -9,4 +9,5 @@
 	if($vs_share_message){
 		print "<p>"._t("%1 wrote: %2", $ps_from_name, $vs_share_message)."</p>";		
 	}
+	print "<br/><br/><p><img src='".$this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'rshdc-promo-black.png')."'></p>";
 ?>

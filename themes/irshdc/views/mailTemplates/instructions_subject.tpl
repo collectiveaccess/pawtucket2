@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * default/views/mailTemplates/notification_html.tpl
+ * default/views/mailTemplates/instructions_subject.tpl
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -26,11 +26,5 @@
  * ----------------------------------------------------------------------
  */
 
-print _t("<p>Your Residential School History and Dialogue Centre account password was reset on %1/%2. You will now be able to login with your new password at https://collections.irshdc.ubc.ca.</p>
- 
-<p>If you did not reset your password, or if you require further assistance, please contact us at <a href='mailto:irshdc.reference@ubc.ca'>irshdc.reference@ubc.ca</a>.</p>
-
-", date("F j, Y"), date("G:i"));
-
-print "<br/><br/><p><img src='".$this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'rshdc-promo-black.png')."'></p>";
+	print _t("Resetting your RSHDC password");
 ?>

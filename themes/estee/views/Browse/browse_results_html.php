@@ -357,7 +357,7 @@ if($vb_ajax && $vb_show_chronology_filters){
 		}
 		$("#searchWithinChrono").submit(function( event ) {
 			event.preventDefault();
-			var url = $("#searchWithinChrono").attr('action') + "/showChronologyFilters/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + $('#searchWithinSearchRefineChrono').val();
+			var url = $("#searchWithinChrono").attr('action') + "/showChronologyFilters/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + encodeURIComponent($('#searchWithinSearchRefineChrono').val());
 			$('#browseCollectionContainer').load(url);
 		});
 		jQuery(document).ready(function() {
@@ -498,7 +498,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			});
 			$("#searchWithin").submit(function( event ) {
   				event.preventDefault();
- 				var url = $("#searchWithin").attr('action') + "/showFilterPanel/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + $('#searchWithinSearchRefine').val();
+ 				var url = $("#searchWithin").attr('action') + "/showFilterPanel/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + encodeURIComponent($('#searchWithinSearchRefine').val());
  				$('#browseResultsDetailContainer').load(url);
 			});
 <?php
