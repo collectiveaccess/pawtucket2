@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/templates/checklist.php
+ * app/templates/fullpage_simple.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -46,6 +46,8 @@
 	$vn_num_items			= (int)$vo_result->numHits();
 	
 	$vn_start 				= 0;
+	
+	$va_access_values = caGetUserAccessValues($this->request);
 
 	print $this->render("pdfStart.php");
 	print $this->render("fullheader.php");
@@ -61,12 +63,12 @@
 		$t_collection = new ca_collections();
 		while($vo_result->nextHit()) {
 ?>
-			<div class="representationList">
+			<div class="representationList representationListFullpage">
 <?php		
-			print $vo_result->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '400px', 'scaleCSSHeightTo' => '400px'));
+			print $vo_result->get('ca_object_representations.media.page', array('return_with_access' => $va_access_values, 'scaleCSSWidthTo' => '620px', 'scaleCSSHeightTo' => '720px'));
 ?>
 			</div>
-			<div class='tombstone'>
+			<div class='tombstone fullpageTombstone'>
 <?php	
 			if(in_array($vo_result->get('ca_objects.type_id'), $va_library_type_ids)){
 				# --- library
