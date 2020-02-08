@@ -786,7 +786,9 @@ class LightboxList extends React.Component {
 				lightboxes.push(<LightboxListItem key={k} data={l} count={l.count} deleteCallback={this.context.deleteLightbox} newLightboxRef={this.newLightboxRef}/>);
 			}
 		}
-
+		if(lightboxes.length == 0){
+			lightboxes = <li className="list-group-item"><div className="row my-4"><div className="col-sm-12 label">Use the link above to create a ligthbox.</div></div></li>
+		}
 		return(
 			<div className='row'>
 				<div className='col-sm-12 mt-3 mb-2'>
