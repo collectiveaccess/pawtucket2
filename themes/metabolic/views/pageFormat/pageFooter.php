@@ -37,7 +37,7 @@
 			</div>
 			<div class="pt-3 pb-0">
 				<?php print caNavLink("About The Studio", "", "", "About", ""); ?>
-				<a href="#" class="px-3">Contact</a>
+				<a href="mailto:info@metabolicstudio.org" class="px-3">Contact</a>
 			</div>
 		</footer><!-- end footer -->
 		<script src="https://unpkg.com/ionicons@4.2.2/dist/ionicons.js"></script>

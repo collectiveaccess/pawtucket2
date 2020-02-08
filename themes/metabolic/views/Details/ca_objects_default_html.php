@@ -68,8 +68,10 @@
 					if ($vn_pdf_enabled) {
 						print "<div class='detailTool'>".caDetailLink("<ion-icon name='document'></ion-icon> <span>Download as PDF</span>", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
-					print "<div class='detailTool'>".caNavLink("<ion-icon name='ios-mail'></ion-icon> <span>Inquire</span>", "", "", "Contact", "form", array("table" => "ca_objects", "id" => $vn_id))."</div>";
-					
+					#print "<div class='detailTool'>".caNavLink("<ion-icon name='ios-mail'></ion-icon> <span>Inquire</span>", "", "", "Contact", "form", array("table" => "ca_objects", "id" => $vn_id))."</div>";
+					if($this->request->isLoggedIn()){
+						print "<div class='detailTool'><div id='lightboxManagement'></div></div>";
+					}
 					print '</div><!-- end detailTools -->';
 				}				
 
@@ -264,3 +266,21 @@
 
 	</div>
 </div>
+<?php
+	if($this->request->isLoggedIn()) {
+?>
+
+<script type="text/javascript">
+    pawtucketUIApps['LightboxManagement'] = {
+        'selector': '#lightboxManagement',
+        'data': {
+            baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
+			lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
+			table: 'ca_objects',
+			id: <?php print (int)$vn_id; ?>
+        }
+    };
+</script>
+<?php
+	}
+?>

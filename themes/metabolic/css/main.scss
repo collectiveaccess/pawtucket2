@@ -102,6 +102,7 @@ $label-font-weight:bold;
 $label-text-transform:uppercase;
 
 $browse-toolbar-height: 6rem;
+$browse-toolbar-height-tall: 8rem;
 
 $main-notification-margins: 25px 0px 25px 0px;
 
@@ -607,6 +608,7 @@ p.legend a {
 	#detailTools{
 		margin-bottom:15px;
 		.detailTool{
+			cursor:pointer;
 			display:inline-block;
 			margin-right:30px;
 			a{
@@ -640,7 +642,7 @@ p.legend a {
 			height:auto;
 			
 			width:100%;
-			max-width:1100px;
+			max-width:1300px;
 			max-height:700px;
 		}
 	}
@@ -808,7 +810,7 @@ p.legend a {
 }
 
 /* search/browse full results */
-.search.results, .browse.results, .multiSearchObjectsCascading, .search.results, .browse.results, .multiSearchObjects{
+.search.results, .browse.results, .multiSearchObjectsCascading, .search.results, .browse.results, .multiSearchObjects, .lightbox.results{
 	.bToolBar{
 		position: fixed;
 		z-index:1000;
@@ -982,6 +984,27 @@ p.legend a {
 				.bRefineFacetItem:hover{
 					background-color:#FFFFFF;
 				}
+			}
+		}
+	}
+}
+.lightbox.results{	
+	.bToolBar{
+		height: $browse-toolbar-height-tall;		
+		#bViewButtons, #bSortOptions, #bDownloadOptions{
+			line-height: 2em;
+		}
+	}
+	.bResultList{
+		margin-top: $browse-toolbar-height-tall;
+		.removeItemInitial{
+			color:$gray-4;
+		}
+		.card-footer{
+			a{
+				width:100%;
+				text-transform:uppercase;
+				cursor: pointer;
 			}
 		}
 	}

@@ -1079,7 +1079,7 @@
 			$user_links[] = '<div role="presentation" class="dropdown-item small text-muted">'.trim($g_request->user->get("fname")." ".$g_request->user->get("lname")).'<br/>'.$g_request->user->get("email").'</div>';
 			$user_links[] = "<div class='dropdown-divider mt-2 mb-2'></div>";
 			if(caDisplayLightbox($g_request)){
-				$user_links[] = caNavLink($lightbox_section_heading, 'dropdown-item', '', 'Lightbox', 'Index', array());
+				$user_links[] = caNavLink($lightbox_section_heading, 'dropdown-item', '', 'Lightbox', 'Index', array('showList' => true));
 			}
 			$user_links[] = caNavLink(_t('User Profile'), 'dropdown-item', '', 'LoginReg', 'profileForm', array());
 		

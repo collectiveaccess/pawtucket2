@@ -139,9 +139,11 @@ class PawtucketBrowseFilterControls extends React.Component {
 					<div className="row">
 						<div className="col-md-6"><PawtucketBrowseStatistics/></div>
 						<div className="col-md-6">
+{/* view download sort don't work yet
 							<PawtucketBrowseViewList/>
 							<PawtucketBrowseDownloadOptions/>
 							<PawtucketBrowseSortOptions/>
+*/}
 						</div>
 					</div>
 				</div>
@@ -453,9 +455,9 @@ class PawtucketBrowseDownloadOptions extends React.Component {
 					<ion-icon name="download"></ion-icon>
 				  </a>
 
-				  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-					<a class="dropdown-item" href="#">PDF</a>
-					<a class="dropdown-item" href="#">XCEL</a>
+				  <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					<a className="dropdown-item" href="#">PDF</a>
+					<a className="dropdown-item" href="#">XCEL</a>
 				  </div>
 				</div>
 			</div>
@@ -463,7 +465,7 @@ class PawtucketBrowseDownloadOptions extends React.Component {
 	}
 }
 /**
- * Renders download options
+ * Renders sort options
  *
  * Props are:
  * 		
@@ -484,9 +486,9 @@ class PawtucketBrowseSortOptions extends React.Component {
 					<ion-icon name="funnel"></ion-icon>
 				  </a>
 
-				  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-					<a class="dropdown-item" href="#">Identifier</a>
-					<a class="dropdown-item" href="#">Name</a>
+				  <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					<a className="dropdown-item" href="#">Identifier</a>
+					<a className="dropdown-item" href="#">Name</a>
 				  </div>
 				</div>
 			</div>

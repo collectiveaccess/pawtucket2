@@ -109,7 +109,7 @@
  			$this->view->setVar("user_groups", $this->opa_user_groups);
 
  			$this->opo_config = caGetLightboxConfig();
- 			caSetPageCSSClasses(["lightbox"]);
+ 			caSetPageCSSClasses(["lightbox", "results"]);
  			
  			$va_lightboxDisplayName = caGetLightboxDisplayName($this->opo_config);
  			$this->view->setVar('set_config', $this->opo_config);
@@ -165,35 +165,36 @@
 			if ($this->opb_is_login_redirect) {
 				return;
 			}
+			$browse_info = $this->opo_config->get("lightboxBrowse");
 			// TODO: generalize this
-			$browse_info = [
-				'displayName' => _('Archive'),
-				'labelSingular' => _("item"),
- 				'labelPlural' =>  _("items"),
-				'table' => 'ca_objects',
-
-				'restrictToTypes' => [],
-				'availableFacets' => [],
-				'facetGroup' => 'archive',
-
-				'itemsPerPage' => 12,
-
-				'views' => [
-					'images' => [
-						'representation' => "<ifdef code='ca_object_representations.media.small.url'>^ca_object_representations.media.small.url</ifdef><ifnotdef code='ca_object_representations.media.small.url'>/themes/noguchi/assets/pawtucket/graphics/placeholder.png</ifnotdef>",
-			    		'caption' => "^ca_objects.preferred_labels.name",
-			    		'caption2' => " ^ca_objects.idno"
-						]
-					],
-				
-				'sortBy' => [
-					'Date' => 'ca_objects.date.parsed_date;ca_objects.idno'
-				],
-				'sortDirection' => [
-							'Date' => 'asc'
-				],
-				'excludeFieldsFromSearch' => ['ca_objects.internal_notes']
-			];
+// 			$browse_info = [
+// 				'displayName' => _('Archive'),
+// 				'labelSingular' => _("item"),
+//  				'labelPlural' =>  _("items"),
+// 				'table' => 'ca_objects',
+// 
+// 				'restrictToTypes' => [],
+// 				'availableFacets' => [],
+// 				'facetGroup' => 'archive',
+// 
+// 				'itemsPerPage' => 12,
+// 
+// 				'views' => [
+// 					'images' => [
+// 						'representation' => "<ifdef code='ca_object_representations.media.small.url'>^ca_object_representations.media.small.url</ifdef><ifnotdef code='ca_object_representations.media.small.url'>/themes/noguchi/assets/pawtucket/graphics/placeholder.png</ifnotdef>",
+// 			    		'caption' => "^ca_objects.preferred_labels.name",
+// 			    		'caption2' => " ^ca_objects.idno"
+// 						]
+// 					],
+// 				
+// 				'sortBy' => [
+// 					'Date' => 'ca_objects.date.parsed_date;ca_objects.idno'
+// 				],
+// 				'sortDirection' => [
+// 							'Date' => 'asc'
+// 				],
+// 				'excludeFieldsFromSearch' => ['ca_objects.internal_notes']
+// 			];
 			if ($set_id = $this->request->getParameter('set_id', pInteger)) {
 				Session::setVar("lightbox_last_set_id", $set_id);
 			} else {
