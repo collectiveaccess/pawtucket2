@@ -200,9 +200,9 @@ class LightboxNavigation extends React.Component{
  * 		view : view format to use for display of results
  *
  * Used by:
- *  	PawtucketBrowse
+ *  	LightboxControls
  *
- * Uses context: PawtucketBrowseContext
+ * Uses context: LightboxContext
  */
 class LightboxViewList extends React.Component {
 	static contextType = LightboxContext;
@@ -234,9 +234,9 @@ class LightboxViewList extends React.Component {
  * 		
  *
  * Used by:
- *  	PawtucketBrowse
+ *  	LightboxControls
  *
- * Uses context: PawtucketBrowseContext
+ * Uses context: LightboxContext
  */
 class LightboxDownloadOptions extends React.Component {
 	static contextType = LightboxContext;
@@ -265,9 +265,9 @@ class LightboxDownloadOptions extends React.Component {
  * 		
  *
  * Used by:
- *  	PawtucketBrowse
+ *  	LightboxControls
  *
- * Uses context: PawtucketBrowseContext
+ * Uses context: LightboxContext
  */
 class LightboxSortOptions extends React.Component {
 	static contextType = LightboxContext;
