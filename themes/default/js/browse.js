@@ -313,15 +313,6 @@ function initBrowseFilterList(instance, props) {
 	that.toggleFacetPanel = that.toggleFacetPanel.bind(that);
 	that.closeFacetPanel = that.closeFacetPanel.bind(that);
 
-	that.componentDidMount = function(){
-		that.facetPanelRefs = {};
-		if (that.context.state.availableFacets) {
-			for (let n in this.context.state.availableFacets) {
-				that.facetPanelRefs[n] = React.createRef();
-			}
-		}
-	};
-
 	that.state = {
 		arrowPosition: 0
 	};
