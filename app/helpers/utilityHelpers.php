@@ -3399,6 +3399,9 @@ function caFileIsIncludable($ps_file) {
 	 * @return string
 	 */
 	function caGenerateCSRFToken($po_request=null){
+		global $g_request;
+		if(!$po_request) { $po_request = $g_request; }
+		
 		$session_id = $po_request ? $po_request->getSessionID() : 'none';
 	    if(function_exists("random_bytes")) {           // PHP 7
 	        $vs_token = bin2hex(random_bytes(32));
@@ -3436,10 +3439,13 @@ function caFileIsIncludable($ps_file) {
 	 * @return bool
 	 * @throws ApplicationException
 	 */
-	function caValidateCSRFToken($po_request, $ps_token=null, $pa_options=null){
+	function caValidateCSRFToken($po_request=null, $ps_token=null, $pa_options=null){
+		global $g_request;
+		if(!$po_request) { $po_request = $g_request; }
+		
 		$session_id = $po_request ? $po_request->getSessionID() : 'none';
 		
-	    if(!$ps_token) { $ps_token = $po_request->getParameter('crsfToken', pString); }
+	    if(!$ps_token) { $ps_token = $po_request->getParameter(['csrfToken', 'crsfToken'], pString); }
 	    if (!is_array($va_tokens = PersistentCache::fetch("csrf_tokens_{$session_id}", "csrf_tokens"))) { $va_tokens = []; }
 	    
 	    if (isset($va_tokens[$ps_token])) { 
