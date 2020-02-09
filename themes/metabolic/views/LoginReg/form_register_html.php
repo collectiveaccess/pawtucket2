@@ -46,7 +46,7 @@
 	<div class="col-sm-12 offset-md-3 col-md-6 offset-lg-4 col-lg-4">
 		<H1><?php print _t("Register"); ?></H1>
 		<form id="RegForm" action="<?php print caNavUrl("", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
-	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken(); ?>"/>
+	    <input type="hidden" name="csrfToken" value="<?php print caGenerateCSRFToken(); ?>"/>
 <?php
 		if($va_errors["register"]){
 			print "<div class='alert alert-danger'>".$va_errors["register"]."</div>";
