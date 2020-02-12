@@ -59,7 +59,12 @@
 <?php
 				if ($vs_url = $t_object->get('ca_objects.856_electronic')) {
 					print "<div class='unit'><h6>Electronic Access</h6><a href='".$vs_url."' target='_blank'>".$vs_url."</a></div>";
-				}	
+				}
+
+				if ($va_institutions = $t_object->getWithTemplate('<ifcount min="1" code="ca_collections.preferred_labels" relativeTo="ca_collections"><unit delimiter="<br/>" relativeTo="ca_collections"><a href="^ca_collections.collection_website" target="_blank">^ca_collections.preferred_labels</a></unit>')) {
+					print "<H6>Locate This Copy</H6>".$va_institutions;
+				}							
+	
 				if ($vs_inst_access = $t_object->get('ca_objects.856_url')) {
 					print "<div class='unit'><h6>Permanent link to institution record</h6><a href='".$vs_inst_access."' target='_blank'>".$vs_inst_access."</a></div>";
 				}
@@ -78,8 +83,17 @@
 ?>
 				<HR>
 <?php
-				if ($vs_institution = $t_object->get('ca_objects.institution', array('convertCodesToDisplayText' => true))) {
-					print "<div class='unit'><h6>Holding Institution</h6>".$vs_institution."</div>";
+				$vs_institution = $t_object->get('ca_objects.institution', array('convertCodesToDisplayText' => true));
+				$vs_collection = $t_object->getWithTemplate('<unit relativeTo="ca_collections">^ca_collections.preferred_labels.name</unit>');
+				$vs_collection_link = $t_object->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels.name</l></unit>');
+				if($vs_collection || $vs_institution){
+					print "<div class='unit'><h6>Holding Institution</h6>".$vs_collection_link;
+					if(($vs_collection != $vs_institution) && (strpos($vs_collection, $vs_institution) === false)){
+						if($vs_institution){
+							print "<br/>".$vs_institution;
+						}
+					}
+					print "</div>";
 				}
 				if ($vs_call_no = $t_object->get('ca_objects.idno', array("delimiter" => ", "))) {
 					print "<div class='unit'><h6>Call Number</h6>".$vs_call_no."</div>";
@@ -217,11 +231,6 @@
 							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
 			
-<?php
-							if ($va_institutions = $t_object->getWithTemplate('<ifcount min="1" code="ca_collections.preferred_labels" relativeTo="ca_collections"><unit delimiter="<br/>" relativeTo="ca_collections"><a href="^ca_collections.collection_website" target="_blank">^ca_collections.preferred_labels</a></unit>')) {
-								print "<H6>Locate This Copy</H6>".$va_institutions;
-							}
-?>							
 							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
 							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name_plural</unit>}}}

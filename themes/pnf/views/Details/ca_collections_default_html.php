@@ -19,16 +19,25 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
-					<H4>{{{^ca_collections.preferred_labels.name}}}</H4><br/>
+<?php
+	$vs_collection = $t_item->get("ca_collections.preferred_labels.name");
+	$vs_institution = $t_item->get("ca_collections.institution", array("convertCodesToDisplayText" => true));
+	if(($vs_collection != $vs_institution) && (strpos($vs_collection, $vs_institution) === false)){
+		if($vs_institution){
+			$vs_collection .= $vs_collection.": ".$vs_institution;
+		}
+	}
+?>
+					<H4><?php print $vs_collection; ?></H4><br/>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
-				<div class='col-md-8 col-lg-8'>
+				<div class='col-md-8 col-lg-7'>
 					{{{<ifdef code="ca_collections.description"><div class='unit'><H6>About</H6>^ca_collections.description</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.collection_website"><div class='unit'><h6><a href="^ca_collections.collection_website" target="_blank">Collection Website <span class="glyphicon glyphicon-link"></span></a></h6></div></ifdef>}}}
 					{{{<ifdef code="ca_collections.library_OPAC"><div class='unit'><h6><a href="^ca_collections.library_OPAC" target="_blank">Library OPAC <span class="glyphicon glyphicon-link"></span></a></h6></div></ifdef>}}}
 				</div>
-				<div class='col-md-4 col-lg-4'>
+				<div class='col-md-4 col-lg-4 col-lg-offset-1'>
 <?php
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {

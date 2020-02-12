@@ -98,6 +98,11 @@
 					}
 				}else{
 					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					#if ($vs_table === 'ca_collections') {
+						#if($qr_res->get("ca_collections.preferred_labels") != $qr_res->get("ca_collections.institution", array("convertCodesToDisplayText" => true))){
+							#$vs_label_detail_link .= "<br/>".$qr_res->get("ca_collections.institution", array("convertCodesToDisplayText" => true));
+						#}
+					#}
 				}
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
