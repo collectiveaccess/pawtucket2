@@ -117,7 +117,7 @@
 							$va_tmp = array_shift($va_set_first_items_media[$qr_sets->get('ca_sets.set_id')]);
 							$va_set_media_for_theme[$qr_sets->get('ca_sets.featured_theme')] = $va_tmp['representation_tag'];
 						}
-						$va_tmp = array_shift($va_all_sets_first_items[$qr_sets->get('ca_sets.set_id')]);
+						$va_tmp = array_shift($va_set_first_items_media_large[$qr_sets->get('ca_sets.set_id')]);
 						$va_all_sets_first_items[$qr_sets->get('set_id')] = array("image" => $va_tmp['representation_tag'], "title" => $qr_sets->get('ca_sets.preferred_labels.name'));
 					}
 				}
