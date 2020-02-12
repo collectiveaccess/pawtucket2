@@ -13,7 +13,8 @@
 	$va_sets = $this->getVar("sets");
 	if(is_array($va_sets) && sizeof($va_sets)){
 		$i = 0;
-		foreach($va_sets as $vn_set_id => $va_set){
+		foreach($va_sets as $va_set){
+			$vn_set_id = $va_set["set_id"];
 			if($vn_featured_set_id == $vn_set_id){
 				continue;
 			}

@@ -548,6 +548,9 @@ p, .collectionsList p {
 #featuredShowMoreLink, #featuredShowLessLink{
 	text-align:left;
 }
+#featuredShowMoreLink{
+	padding-top:30px;
+}
 #featuredShowMore{
 	padding-top:10px;
 }

@@ -6,45 +6,22 @@
 	$va_access_values = caGetUserAccessValues($this->request);
 	$o_config = $this->getVar("config");
 
-	$vn_featured_set_id = $this->getVar("featured_set_id");
-	$qr_res = $this->getVar("featured_set_results");
-
-	$vs_caption_template = $o_config->get("featured_set_item_caption_template");
-	if(!$vs_caption_template){
-		$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
-	}
-	if($qr_res && $qr_res->numHits()){
-		$va_row_to_items = $this->getVar("row_to_items");
+	$va_featured_sets = $this->getVar("featured_sets");
+	if(is_array($va_featured_sets) && sizeof($va_featured_sets)){
 ?>   
 		<div class="jcarousel-wrapper">
 			<!-- Carousel -->
 			<div class="jcarousel">
 				<ul>
 <?php
-					while($qr_res->nextHit()){
-						if($vs_media = $qr_res->getWithTemplate('^ca_object_representations.media.large', array("checkAccess" => $va_access_values))){
-							$vn_set_item_id = $va_row_to_items[$qr_res->get("ca_objects.object_id")];
-							print "<li><div class='frontSlide'>".caNavLink($this->request, $vs_media, "", "", "Featured", "Detail", array("set_id" => $vn_featured_set_id, "set_item_id" => $vn_set_item_id));
-							$vs_caption = "";
-							if(strpos(strToLower($qr_res->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))), "artwork") !== false){
-								$vs_caption = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values, 'delimiter' => ', '));
-								if($vs_caption){
-									$vs_caption .= "<br/>";
-								}
-								$vs_caption .= caNavLink($this->request, ($qr_res->get('ca_objects.preferred_labels') == "Untitled" ? $qr_res->get('ca_objects.preferred_labels') : "<i>".$qr_res->get('ca_objects.preferred_labels')."</i>"), "", "", "Featured", "Detail", array("set_id" => $vn_featured_set_id, "set_item_id" => $vn_set_item_id));
-								if ($vs_art_date = $qr_res->get('ca_objects.display_date')) {
-									$vs_caption .= ", ".$vs_art_date;
-								}
-							}else{
-								$vs_caption = caNavLink($this->request, ($qr_res->get('ca_objects.preferred_labels') == "Untitled" ? $qr_res->get('ca_objects.preferred_labels') : "<i>".$qr_res->get('ca_objects.preferred_labels')."</i>"), "", "", "Featured", "Detail", array("set_id" => $vn_featured_set_id, "set_item_id" => $vn_set_item_id));
-							}							
-							
-							if($vs_caption){
-								print "<div class='frontSlideCaption'>".$vs_caption."</div>";
-							}
+			foreach($va_featured_sets as $vn_set_id => $va_featured_set){
+						if($vs_media = $va_featured_set["image"]){
+							print "<li><div class='frontSlide'>".caNavLink($this->request, $vs_media, "", "", "Featured", "Detail", array("set_id" => $vn_set_id));
+							print "<div class='frontSlideCaption'>".caNavLink($this->request, $va_featured_set["title"], "", "", "Featured", "Detail", array("set_id" => $vn_set_id))."</div>";
 							print "</div></li>";
 							$vb_item_output = true;
 						}
+		
 					}
 ?>
 				</ul>
@@ -134,16 +111,6 @@
 ?>	
 	
 </div></div>
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 <div class="row">
 	<div class="col-sm-12">
 		<H2>{{{featured_title}}}</H2>
