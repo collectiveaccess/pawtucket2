@@ -91,10 +91,12 @@
 	</div>
 	<div class='row'>
 		<div class="col-sm-6 field">
-			<?php print _t("From Printers"); ?> <br/>
+			<?php print _t("Printers' Evidence"); ?> <br/>
 			{{{ca_objects.from_printers%inUse=1}}}
 		</div>
 		<div class="col-sm-6 field">
+			<?php print _t("Item Specific Information"); ?> <br/>
+			{{{ca_objects.item_specific_info%inUse=1}}}
 		</div>		
 					
 	</div>
