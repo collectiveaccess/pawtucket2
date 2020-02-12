@@ -116,8 +116,9 @@
 						if (!$va_set_media_for_theme[$qr_sets->get('ca_sets.featured_theme')] && ($qr_sets->get('set_code') != $vs_landing_featured_set_code)) { 
 							$va_tmp = array_shift($va_set_first_items_media[$qr_sets->get('ca_sets.set_id')]);
 							$va_set_media_for_theme[$qr_sets->get('ca_sets.featured_theme')] = $va_tmp['representation_tag'];
-							$va_all_sets_first_items[$qr_sets->get('set_id')] = array("image" => $va_tmp['representation_tag'], "title" => $qr_sets->get('ca_sets.preferred_labels.name'));
 						}
+						$va_tmp = array_shift($va_all_sets_first_items[$qr_sets->get('ca_sets.set_id')]);
+						$va_all_sets_first_items[$qr_sets->get('set_id')] = array("image" => $va_tmp['representation_tag'], "title" => $qr_sets->get('ca_sets.preferred_labels.name'));
 					}
 				}
 			}
@@ -168,7 +169,7 @@
 						if (($qr_sets->get('ca_sets.featured_theme') ==  $vn_theme_id) && ($qr_sets->get('set_code') != $vs_landing_featured_set_code)) { 
 							$va_tmp = array_shift($va_set_first_items_media[$qr_sets->get('ca_sets.set_id')]);
 							$vs_media = $va_tmp['representation_tag'];
-							$va_sets_for_theme[$qr_sets->get('ca_sets.rank').".".$qr_sets->get('ca_sets.set_id')] = array(
+							$va_sets_for_theme[$qr_sets->get('ca_sets.collection_rank').(($qr_sets->get('ca_sets.collection_rank')) ? "." : "").$qr_sets->get('ca_sets.set_id')] = array(
 								"title" => $qr_sets->get('ca_sets.preferred_labels.name'),
 								"description" => $qr_sets->get('ca_sets.'.$vs_set_desc_code),
 								"media" => $vs_media,
