@@ -29,6 +29,7 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$vn_inquire_enabled = 	$this->getVar("inquireEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = 	caGetUserAccessValues();
 	$vn_representation_id = $this->getVar("representation_id");
@@ -58,7 +59,7 @@
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_pdf_enabled) {
 						
-					print '<div id="detailTools" class="mt-2 mb-3">';
+					print '<div id="detailTools" class="mt-2">';
 					if ($vn_comments_enabled) {
 ?>				
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><ion-icon name="chatboxes"></ion-icon> <span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</span></a></div><!-- end detailTool -->
@@ -68,7 +69,9 @@
 					if ($vn_pdf_enabled) {
 						print "<div class='detailTool'>".caDetailLink("<ion-icon name='document'></ion-icon> <span>Download as PDF</span>", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 					}
-					#print "<div class='detailTool'>".caNavLink("<ion-icon name='ios-mail'></ion-icon> <span>Inquire</span>", "", "", "Contact", "form", array("table" => "ca_objects", "id" => $vn_id))."</div>";
+					if ($vn_inquire_enabled) {
+						print "<div class='detailTool'>".caNavLink("<ion-icon name='ios-mail'></ion-icon> <span>Inquire</span>", "", "", "Contact", "form", array("table" => "ca_objects", "id" => $vn_id))."</div>";
+					}
 					if($this->request->isLoggedIn()){
 						print "<div class='detailTool'><div id='lightboxManagement'></div></div>";
 					}
@@ -76,7 +79,7 @@
 				}				
 
 ?>
-				<div class="detailPrimaryMedia">
+				<div class="detailPrimaryMedia mt-3">
 					{{{^ca_object_representations.media.page}}}
 				</div>
 <?php 

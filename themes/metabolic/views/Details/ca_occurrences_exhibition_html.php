@@ -53,7 +53,7 @@
 				# Comment and Share Tools
 				if ($vn_comments_enabled || $vn_pdf_enabled || $vn_inquire_enabled) {
 						
-					print '<div id="detailTools" class="mt-2 mb-3">';
+					print '<div id="detailTools" class="mt-2">';
 					if ($vn_comments_enabled) {
 ?>				
 						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><ion-icon name="chatboxes"></ion-icon> <span>Comments and Tags (<?php print sizeof($va_comments) + sizeof($va_tags); ?>)</span></a></div><!-- end detailTool -->
@@ -70,7 +70,7 @@
 				}				
 
 ?>
-				<div class="row">
+				<div class="row mt-3">
 					<div class="col-12 col-md-12">
 						{{{<ifdef code="ca_occurrences.date">
 							<div class="mb-3">
