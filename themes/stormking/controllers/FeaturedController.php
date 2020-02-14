@@ -70,27 +70,27 @@
  		# -------------------------------------------------------
  		public function index() {
 			$va_access_values = caGetUserAccessValues($this->request);
-			$vn_featured_set_id = "";
- 			$va_featured_ids = array();
- 			if($vs_set_code = $this->config->get("featured_set_code")){
- 				$t_set = new ca_sets();
- 				$t_set->load(array('set_code' => $vs_set_code));
- 				$vn_featured_set_id = $t_set->get("ca_sets.set_id");
- 				$this->view->setVar('featured_set_id', $vn_featured_set_id);
- 				$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("checkAccess" => $this->opa_access_values)));
- 				$this->view->setVar("set_items", $va_set_items);
- 				$va_row_to_item = array();
- 				foreach($va_set_items as $vn_item_id => $va_set_item){
- 					$va_item_to_row[$va_set_item["row_id"]] = $vn_item_id;
- 				}
- 				$this->view->setVar("row_to_items", $va_item_to_row);
-				# Enforce access control on set
-				if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
-					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1))) ? $va_tmp : array());
-					$qr_res = caMakeSearchResult('ca_objects', $va_featured_ids);
-					$this->view->setVar("featured_set_results", $qr_res);
-				}
- 			}
+			// $vn_featured_set_id = "";
+//  			$va_featured_ids = array();
+//  			if($vs_set_code = $this->config->get("featured_set_code")){
+//  				$t_set = new ca_sets();
+//  				$t_set->load(array('set_code' => $vs_set_code));
+//  				$vn_featured_set_id = $t_set->get("ca_sets.set_id");
+//  				$this->view->setVar('featured_set_id', $vn_featured_set_id);
+//  				$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("checkAccess" => $this->opa_access_values)));
+//  				$this->view->setVar("set_items", $va_set_items);
+//  				$va_row_to_item = array();
+//  				foreach($va_set_items as $vn_item_id => $va_set_item){
+//  					$va_item_to_row[$va_set_item["row_id"]] = $vn_item_id;
+//  				}
+//  				$this->view->setVar("row_to_items", $va_item_to_row);
+// 				# Enforce access control on set
+// 				if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+// 					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => 1))) ? $va_tmp : array());
+// 					$qr_res = caMakeSearchResult('ca_objects', $va_featured_ids);
+// 					$this->view->setVar("featured_set_results", $qr_res);
+// 				}
+//  			}
 
 			$t_list = new ca_lists();
 			
@@ -104,6 +104,7 @@
 				
 				$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
 				$va_set_first_items_media = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "widepreview", "checkAccess" => $this->opa_access_values));
+				$va_set_first_items_media_large = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "large", "checkAccess" => $this->opa_access_values));
 	
 				$va_set_ids = array_keys($va_sets);
 				shuffle($va_set_ids);
@@ -116,6 +117,8 @@
 							$va_tmp = array_shift($va_set_first_items_media[$qr_sets->get('ca_sets.set_id')]);
 							$va_set_media_for_theme[$qr_sets->get('ca_sets.featured_theme')] = $va_tmp['representation_tag'];
 						}
+						$va_tmp = array_shift($va_set_first_items_media_large[$qr_sets->get('ca_sets.set_id')]);
+						$va_all_sets_first_items[$qr_sets->get('set_id')] = array("image" => $va_tmp['representation_tag'], "title" => $qr_sets->get('ca_sets.preferred_labels.name'));
 					}
 				}
 			}
@@ -132,6 +135,7 @@
 				);
 			}
 			$this->view->setVar('themes', $va_themes);
+			$this->view->setVar('featured_sets', $va_all_sets_first_items);
 			
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('featured_section_name')) ? $this->config->get('featured_section_name') : _t("Featured")));
 			$this->render("Featured/index_html.php"); 		
@@ -165,14 +169,16 @@
 						if (($qr_sets->get('ca_sets.featured_theme') ==  $vn_theme_id) && ($qr_sets->get('set_code') != $vs_landing_featured_set_code)) { 
 							$va_tmp = array_shift($va_set_first_items_media[$qr_sets->get('ca_sets.set_id')]);
 							$vs_media = $va_tmp['representation_tag'];
-							$va_sets_for_theme[$qr_sets->get('ca_sets.set_id')] = array(
+							$va_sets_for_theme[$qr_sets->get('ca_sets.collection_rank').(($qr_sets->get('ca_sets.collection_rank')) ? "." : "").$qr_sets->get('ca_sets.set_id')] = array(
 								"title" => $qr_sets->get('ca_sets.preferred_labels.name'),
 								"description" => $qr_sets->get('ca_sets.'.$vs_set_desc_code),
-								"media" => $vs_media
+								"media" => $vs_media,
+								"set_id" => $qr_sets->get('ca_sets.set_id')
 							);
 						}
 					}
 				}
+				ksort($va_sets_for_theme);
 				$this->view->setVar('sets', $va_sets_for_theme);
 			}
 			$this->render('Featured/theme_html.php');
