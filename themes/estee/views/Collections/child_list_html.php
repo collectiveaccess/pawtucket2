@@ -87,7 +87,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 					}else{
 						$vs_output .= $qr_collections->get("ca_collections.preferred_labels");
 					}
-					$vs_output .= "<div class='eye_container'>".caNavLink($po_request, "<span class='glyphicon glyphicon-eye-open'></span> View all available digital media in this ".strToLower($qr_collections->get('ca_collections.type_id', array("convertCodesToDisplayText" => true))), "", "", "Search","objects", array("search" => "ca_collections.collection_id:".$qr_collections->get("ca_collections.collection_id")." and ca_object_representations.representation_id:*"))."</div>";
+					$vs_output .= "<div class='eye_container'>".caNavLink($po_request, "<span class='glyphicon glyphicon-eye-open'></span> View all available digital assets in this ".strToLower($qr_collections->get('ca_collections.type_id', array("convertCodesToDisplayText" => true))), "", "", "Search","objects", array("search" => "ca_collections.collection_id:".$qr_collections->get("ca_collections.collection_id")." and ca_object_representations.representation_id:*"))."</div>";
 					#$vs_output .= "<div class='eye_container'>".caNavLink($po_request, "<span class='glyphicon glyphicon-eye-open'></span> View all available digital media in this ".strToLower($qr_collections->get('ca_collections.type_id', array("convertCodesToDisplayText" => true))), "", "", "Search","objects", array("search" => "ca_collections.collection_id:".$qr_collections->get("ca_collections.collection_id")." and ca_object_representations.mimetype:*"))."</div>";
 				#}
 				#if($vn_rel_object_count){
