@@ -134,7 +134,7 @@ $( document ).ready(function() {
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-444"><a href="/comp-sources/"><?php print caNavLink($this->request, _t('Comprehensive sources of comedias sueltas'), '', '', 'Listing', 'sources');?></a></li>
 							<li id="menu-item-443" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-443"><a href="/studies/"><?php print caNavLink($this->request, _t('Studies related specifically to comedias sueltas'), '', '', 'Listing', 'studies');?></a></li>
 							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/"><?php print _t('US Catalogs of Spanish Drama/Comedias Sueltas Collections');?></a></li>						
-							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, _t('Institutions'), '', '', 'Search', 'collections/search/*');?></li>													
+							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, _t('Institutions'), '', '', 'Browse', 'collections');?></li>													
 						</ul>
 					</li>
 					<li id="menu-item-206" class="menu-item menu-item-type-post_type_archive menu-item-object-essays menu-item-206"><a href="/essays/"><?php print _t('Essays');?></a></li>
@@ -142,7 +142,7 @@ $( document ).ready(function() {
 					<li id="menu-item-523" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-ancestor current-menu-parent menu-item-has-children menu-item-523 aboutMenu"><a href="#"><?php print _t('About');?></a>
 						<ul class="sub-menu">
 							<li id="menu-item-441" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-441"><a href="/about-2/"><?php print _t('About this website');?></a></li> 
-							<li id="menu-item-442" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-442"><a href="/participating-institutions/"><?php print _t('Participating Institutions');?></a></li>
+							<li id="menu-item-442" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-442"><?php print caNavLink($this->request, _t('Participating Institutions'), '', '', 'Browse', 'collections');?></li>
 							<li id="menu-item-445" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-445"><a href="/contributors-and-team/"><?php print _t('Contributors and team');?></a></li>
 							<li id="menu-item-445" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-445"><a href="/contact/"><?php print _t('Contact');?></a></li>					
 						</ul>
@@ -230,7 +230,7 @@ $( document ).ready(function() {
 				<ul class="navbar-left navTitle"><li><?php print _t('Search The Database');?></li></ul>
 				<ul class="nav navbar-nav navbar-right">
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "institutions")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Browse", "institutional_collections"); ?></li>
+					<li <?php print (($this->request->getController() == "Browse") && ($this->request->getAction() == "institutions")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Institutions"), "", "", "Browse", "collections"); ?></li>
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->

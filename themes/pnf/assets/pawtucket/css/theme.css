@@ -538,8 +538,20 @@ a.facetApply, button.facetApplySlider {
 .institutionMore {
 	display:none;
 }
+.institutionUnit{
+	padding-left:10px;
+}
 .institutionUnit a.institutionLink {
-	text-decoration:underline;
+	text-decoration:none;
+	font-size:15px;
+	font-weight:bold;
+	padding-left:11px;
+    text-indent:-11px;
+    display:inline-block;
+}
+.institutionList hr{
+	margin-top:15px;
+	margin-bottom:15px;
 }
 
 /* Advanced Search */
