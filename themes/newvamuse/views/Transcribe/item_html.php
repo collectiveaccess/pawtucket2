@@ -115,7 +115,7 @@
 <?php
 	} else {
 ?>
-							<?php print caHTMLTextInput('transcription', ['value' => $transcription->get('transcription')], ['width' => '525px', 'height' => '400px']); ?>
+							<?php print caHTMLTextInput('transcription', ['value' => $transcription->get('transcription'), 'id' => 'transcription'], ['width' => '525px', 'height' => '400px']); ?>
 					
 							<?php print caHTMLHiddenInput('id', ['value' => $t_item->getPrimaryKey()]); ?>
 							<?php print caHTMLHiddenInput('representation_id', ['value' => $representation_id]); ?>
@@ -144,10 +144,11 @@
 ?>
 						<div>
 							<ul>
-								<li>Save your work often</li>
-								<li>Copy the text as is, even if there are misspellings and/or abbreviations</li>
-								<li>Focus on the text rather than formatting. No need for adding line or paragraph breaks or noting that words are underlined, bolded, etc.; the goal is to make the text searchable and easy to read. </li>
 								<li>If you cannot read a word, enter [illegible]. If you are making an educated guess, enter the word in square brackets with a question mark, ie [shipyard?]</li>
+								<li>Save your work often</li>
+								<li>Some records may include spelling mistakes and/or abbreviations. Please do not correct spelling or expand abbreviations, but simply transcribe the record as it appears. If a word has been misspelled, put (sic) afterwards so it is clear this is not a transcription error. If words have been crossed out, they should not be included in the transcription.
+</li>
+								<li>Focus on the text rather than formatting. No need for adding line or paragraph breaks or noting that words are underlined, bolded, etc.; the goal is to make the text searchable and easy to read. </li>
 								<li>When you finish a transcription, check the completed box. For multi-page documents, you will need to do this for each page.</li>
 								<li>View <a href="/TranscriptionTips/Index" target="_new">Transcription Tips</a></li>
 							</ul>
@@ -167,3 +168,19 @@
 	</div>
 	</div>
 </div>
+
+<script type='text/javascript'>jQuery(document).ready(function() {
+		var ckEditor = CKEDITOR.replace( 'transcription',
+		{
+			toolbar : <?php print json_encode([['Bold', 'Italic', 'Underline', 'Strike', '-', 'Subscript',' Superscript', '-', 'Table', 'NumberedList', 'BulletedList', 'Outdent', 'Indent', '-', 'SpecialChar', '-', 'Maximize']]); ?>,
+			width: '525px',
+			height: '400px',
+			toolbarLocation: 'top',
+			enterMode: CKEDITOR.ENTER_BR
+		});
+		
+		ckEditor.on('instanceReady', function(){ 
+			 ckEditor.document.on( 'keydown', function(e) {if (caUI && caUI.utils) { caUI.utils.showUnsavedChangesWarning(true); } });
+		});
+});									
+</script>

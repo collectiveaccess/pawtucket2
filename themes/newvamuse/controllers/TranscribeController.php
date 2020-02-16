@@ -377,6 +377,8 @@
          */
  		function Item($options = null) {
  			AssetLoadManager::register("mediaViewer");
+ 			AssetLoadManager::register("ckeditor");
+ 			
 			$o_context = new ResultContext($this->request, 'ca_objects', 'transcribe', 'collection');
  			$o_context->setAsLastFind();
  			
