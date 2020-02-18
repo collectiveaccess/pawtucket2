@@ -53,7 +53,16 @@
  		$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_gallery_config->get('gallery_set_type'));
  		$va_featured_sets = array();
 		if($vn_gallery_set_type_id){
-			$va_featured_sets = caExtractValuesByUserLocale($t_set->getSets(array('table' => 'ca_objects', 'checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id)));
+			$va_featured_sets_all = caExtractValuesByUserLocale($t_set->getSets(array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id)));
+		
+			if(is_array($va_featured_sets_all) && sizeof($va_featured_sets_all)){
+				# --- remove any non entity/object sets from array
+				foreach($va_featured_sets_all as $vn_tmp_set_id => $va_tmp_featured){
+					if(in_array(Datamodel::getTableName($va_tmp_featured["table_num"]), array("ca_objects", "ca_entities"))){
+						$va_featured_sets[$vn_tmp_set_id] = $va_tmp_featured;
+					}
+				}
+			}
 		}
 		if (!$vn_set_id && is_array($va_featured_sets) && sizeof($va_featured_sets)) {
 			# --- no set_id passed and nothing configured as default so grab the first one
@@ -225,35 +234,71 @@
 	}	
 		
 	if(is_array($va_set_item_ids) && sizeof($va_set_item_ids)){
+		$vs_set_type = Datamodel::getTableName($t_set->get("table_num"));
+		if($vs_set_type == "ca_entities"){
+			# --- set of entities
 ?>
-		<div class="container">
-			<div class="row">
-				<div class="col-xs-12">
-					<H3>Related Objects</H3>
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12">
+						<H3>Related People & Organizations</H3>
+					</div>
 				</div>
-			</div>
-			<div class="row">
+				<div class="row">
 			
-				<div id="browseResultsContainer" style="overflow-y:visible;">
-					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-				</div><!-- end browseResultsContainer -->
-			</div><!-- end row -->
-		</div><!-- end container -->
-		<script type="text/javascript">
-			jQuery(document).ready(function() {
-				jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_sets.set_id:'.$t_set->get('set_id'), 'homePage' => true), array('dontURLEncodeParameters' => true)); ?>", function() {
-					jQuery('#browseResultsContainer').jscroll({
-						autoTrigger: true,
-						loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-						padding: 20,
-						nextSelector: "a.jscroll-next",
-						debug: true
+					<div id="browseResultsContainer" style="overflow-y:visible;">
+						<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+					</div><!-- end browseResultsContainer -->
+				</div><!-- end row -->
+			</div><!-- end container -->
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'entities', array('search' => 'ca_sets.set_id:'.$t_set->get('set_id'), 'homePage' => true), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery('#browseResultsContainer').jscroll({
+							autoTrigger: true,
+							loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+							padding: 20,
+							nextSelector: "a.jscroll-next",
+							debug: true
+						});
 					});
+				
+				
 				});
+			</script>
+<?php		
+		}else{
+			# --- set of objects
+?>
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-12">
+						<H3>Related Objects</H3>
+					</div>
+				</div>
+				<div class="row">
+			
+					<div id="browseResultsContainer" style="overflow-y:visible;">
+						<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
+					</div><!-- end browseResultsContainer -->
+				</div><!-- end row -->
+			</div><!-- end container -->
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_sets.set_id:'.$t_set->get('set_id'), 'homePage' => true), array('dontURLEncodeParameters' => true)); ?>", function() {
+						jQuery('#browseResultsContainer').jscroll({
+							autoTrigger: true,
+							loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+							padding: 20,
+							nextSelector: "a.jscroll-next",
+							debug: true
+						});
+					});
 				
 				
-			});
-		</script>
+				});
+			</script>
 <?php
+		}
 	}
 ?>
