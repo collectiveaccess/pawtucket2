@@ -42,12 +42,14 @@
 	print $this->render("pdfStart.php");
 	print $this->render("header_nologo.php");
 	print $this->render("footer.php");	
+	
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 	<div class="representationList representationListFullpage">
 		
 <?php
 	#print $t_item->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '400px', 'scaleCSSHeightTo' => '400px'));
-	$va_rep = $t_item->getPrimaryRepresentation(array('page'), null, array('return_with_access' => $va_access_values, 'scaleCSSWidthTo' => '400px', 'scaleCSSHeightTo' => '400px'));
+	$va_rep = $t_item->getPrimaryRepresentation(array('page'), null, array('return_with_access' => $va_access_values, 'scaleCSSWidthTo' => '620px', 'scaleCSSHeightTo' => '720px'));
 	print $va_rep['tags']['page'];
 #	foreach($va_reps as $va_rep) {
 #		if(sizeof($va_reps) > 1){

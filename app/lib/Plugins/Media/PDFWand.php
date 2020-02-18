@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2006-2019 Whirl-i-Gig
+ * Copyright 2006-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -372,7 +372,7 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 							if ($xml->nodeType == XMLReader::END_ELEMENT) { 
 								//$va_locations['__pages__'][$vn_current_page] = $vs_page_content;
 								$vs_page_content = '';
-								continue; 
+								break(2); 
 							}
 							$vs_text_line_content = '';
 							$vn_current_page = (int)$xml->getAttribute('id');
