@@ -57,6 +57,9 @@
 ?>				
 				<div class='requestButton'><a href='mailto:contact@comediassueltasusa.com?Subject=Contribution%20to%20the%20Comedias%20Sueltas%20Project&body=Hi,%0A%0AI%20have%20more%20information%20about%20<?php print $va_book_title; ?>%0A%0AThank%20you%0A%0A%0A'>Have more information or a correction for this record? Contact a researcher by clicking here.</a></div>
 <?php
+				if ($vs_object_id = $t_object->get('ca_objects.object_id')) {
+					print "<div class='unit'><h6>Control Number</h6>".$vs_object_id."</div>";
+				}
 				if ($vs_url = $t_object->get('ca_objects.856_electronic')) {
 					print "<div class='unit'><h6>Electronic Access</h6><a href='".$vs_url."' target='_blank'>".$vs_url."</a></div>";
 				}
