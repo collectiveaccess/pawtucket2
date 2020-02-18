@@ -220,8 +220,8 @@
 				#	print "<div class='unit'><h6>Added Entry Bookseller</h6>".$vs_added_bookseller."</div>";
 				#}	
 					
-				if ($vs_added_bookseller = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_entities"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>', array('delimiter' => '<br/>', 'excludeRelationshipTypes' => array("author")))) {
-					print "<div class='unit'><h6>Added Entries</h6>".$vs_added_bookseller."</div>";
+				if ($vs_added_entries = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_entities" excludeRelationshipTypes="author" delimiter="<br/>"><unit relativeTo="ca_objects_x_entities"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
+					print "<div class='unit'><h6>Added Entries</h6>".$vs_added_entries."</div>";
 				}																																																																																																																																				
 ?>
 
