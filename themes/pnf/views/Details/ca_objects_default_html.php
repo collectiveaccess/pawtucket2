@@ -58,7 +58,7 @@
 				<div class='requestButton'><a href='mailto:contact@comediassueltasusa.com?Subject=Contribution%20to%20the%20Comedias%20Sueltas%20Project&body=Hi,%0A%0AI%20have%20more%20information%20about%20<?php print $va_book_title; ?>%0A%0AThank%20you%0A%0A%0A'>Have more information or a correction for this record? Contact a researcher by clicking here.</a></div>
 <?php
 				if ($vs_object_id = $t_object->get('ca_objects.object_id')) {
-					print "<div class='unit'><h6>Control Number</h6>".$vs_object_id."</div>";
+					print "<div class='unit'><h6>Comedias Sueltas Database ID#</h6>".$vs_object_id."</div>";
 				}
 				if ($vs_url = $t_object->get('ca_objects.856_electronic')) {
 					print "<div class='unit'><h6>Electronic Access</h6><a href='".$vs_url."' target='_blank'>".$vs_url."</a></div>";
@@ -207,17 +207,21 @@
 				if ($vs_ownership = $t_object->get('ca_objects.700_ownership', array("delimiter" => "<br/>"))) {
 					print "<div class='unit'><h6>Ownership</h6>".$vs_ownership."</div>";
 				}
-				if ($vs_added_author = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author', 'contributer', 'editor', 'illustrator', 'translator'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Added Authors or Translators</h6>".$vs_added_author."</div>";
-				}
-				if ($vs_added_printer = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('printer'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Added Entry Printer</h6>".$vs_added_printer."</div>";
-				}
-				if ($vs_added_publisher = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('publisher'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Added Entry Publisher</h6>".$vs_added_publisher."</div>";
-				}
-				if ($vs_added_bookseller = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('bookseller'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Added Entry Bookseller</h6>".$vs_added_bookseller."</div>";
+				#if ($vs_added_author = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('added_author', 'contributor', 'editor', 'illustrator', 'translator'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
+				#	print "<div class='unit'><h6>Added Authors or Translators</h6>".$vs_added_author."</div>";
+				#}
+				#if ($vs_added_printer = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('printer'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
+				#	print "<div class='unit'><h6>Added Entry Printer</h6>".$vs_added_printer."</div>";
+				#}
+				#if ($vs_added_publisher = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('publisher'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
+				#	print "<div class='unit'><h6>Added Entry Publisher</h6>".$vs_added_publisher."</div>";
+				#}
+				#if ($vs_added_bookseller = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('bookseller'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
+				#	print "<div class='unit'><h6>Added Entry Bookseller</h6>".$vs_added_bookseller."</div>";
+				#}	
+					
+				if ($vs_added_bookseller = $t_object->getWithTemplate('<unit relativeTo="ca_objects_x_entities"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>', array('delimiter' => '<br/>', 'excludeRelationshipTypes' => array("author")))) {
+					print "<div class='unit'><h6>Added Entries</h6>".$vs_added_bookseller."</div>";
 				}																																																																																																																																				
 ?>
 
@@ -225,11 +229,6 @@
 				<hr></hr>
 					<div class="row">
 						<div class="col-sm-12">		
-							{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-							{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
-							
-							
 							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}

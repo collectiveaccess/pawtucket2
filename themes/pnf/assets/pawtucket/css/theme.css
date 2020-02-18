@@ -105,8 +105,12 @@ a:hover{
 	width:80px;
 }
 #head .main_menu ul#menu-main-menu li.aboutMenu ul {
-	right:20px;
 	width:360px;
+}
+@media (max-width: 1500px) {
+	#head .main_menu ul#menu-main-menu li.aboutMenu ul {
+		right:20px;
+	}
 }
 .navTitle li, ul.navTitle{
 	list-style-type:none;
