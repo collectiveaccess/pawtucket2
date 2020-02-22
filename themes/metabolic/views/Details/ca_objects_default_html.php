@@ -34,15 +34,15 @@
 	$va_access_values = 	caGetUserAccessValues();
 	$vn_representation_id = $this->getVar("representation_id");
 ?>
-	<div class="row borderBottom">
-		<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
-			<H1>{{{^ca_objects.idno}}}</H1>
-		</div>
+<div class="row borderBottom">
+	<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
+		<H1>{{{^ca_objects.idno}}}</H1>
 	</div>
-	<div class="row">
-		<div class='col-12 navTop text-center'><!--- only shown at small screen size -->
-			{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-		</div><!-- end detailTop -->
+</div>
+<div class="row">
+	<div class='col-12 navTop text-center'><!--- only shown at small screen size -->
+		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+	</div><!-- end detailTop -->
 	<div class='navLeftRight text-left col-sm-1 col-lg-2'>
 <?php
 	if($this->getVar("resultsLink") || $this->getVar("previousLink")){
@@ -56,8 +56,8 @@
 	</div><!-- end col -->
 	<div class='col-12 col-sm-10 col-md-10 col-lg-8'>
 <?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_pdf_enabled) {
+				# Comment/inquire/download pdf/lightbox
+				if ($vn_comments_enabled || $vn_pdf_enabled || $vn_pdf_enabled || caDisplayLightbox($this->requests)) {
 						
 					print '<div id="detailTools" class="mt-2">';
 					if ($vn_comments_enabled) {
@@ -234,30 +234,30 @@
 	if(sizeof($va_related_item_ids)){
 		$q_objects = caMakeSearchResult("ca_objects", $va_related_item_ids);
 ?>
-	<div class="row mt-3">
-		<div class="col-sm-12 mt-5">
-			<H1>Related Items</H1>
+		<div class="row mt-3">
+			<div class="col-sm-12 mt-5">
+				<H1>Related Items</H1>
+			</div>
 		</div>
-	</div>
-	<div class="row mb-5">
+		<div class="row mb-5">
 <?php
-		$va_tmp_ids = array();
-		$i = 0;
-		while($q_objects->nextHit()){
-			if($q_objects->get("ca_object_representations.media.widepreview")){
-				print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
-				print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
-				print "<div class='pt-2'>".substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30)."</div>";
-				print "</div>";
-				$i++;
-				$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
+			$va_tmp_ids = array();
+			$i = 0;
+			while($q_objects->nextHit()){
+				if($q_objects->get("ca_object_representations.media.widepreview")){
+					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
+					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
+					print "<div class='pt-2'>".substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30)."</div>";
+					print "</div>";
+					$i++;
+					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
+				}
+				if($i == 12){
+					break;
+				}
 			}
-			if($i == 12){
-				break;
-			}
-		}
 ?>
-	</div>
+		</div>
 
 <?php		
 		$o_context = new ResultContext($this->request, 'ca_objects', 'detailRelated');
@@ -266,7 +266,12 @@
 		$o_context->saveContext();
 	}
 ?>
-
+	
+		<div class="row mt-3">
+			<div class="col-sm-12 mt-5 col-md-6 offset-md-3">
+				<div id="commentForm"></div>
+			</div>
+		</div>
 	</div>
 </div>
 <?php
@@ -287,3 +292,17 @@
 <?php
 	}
 ?>
+<script type="text/javascript">	
+	pawtucketUIApps['comment'] = {
+        'selector': '#commentForm',
+        'data': {
+            item_id: <?php print $vn_id; ?>,
+            tablename: 'ca_objects',
+            form_title: '<h1>Add Your Comments and Tags</h1>',
+            list_title: '<h1>Comments and Tags</h1>',
+            login_button_text: 'Login to Add Your Comments and Tags',
+            no_tags: false,
+            show_form: <?php print ($this->request->isLoggedIn()) ? "true" : "false"; ?>
+        }
+    };
+</script>

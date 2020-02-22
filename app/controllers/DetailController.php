@@ -815,12 +815,218 @@
  		/**
  		 *
  		 */
- 		public function CommentForm(){
- 			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl('', 'LoginReg', 'loginForm')); return; }
- 			$this->view->setVar("item_id", $this->request->getParameter('item_id', pInteger));
- 			$this->view->setVar("tablename", $this->request->getParameter('tablename', pString));
- 			$this->render('Details/form_comments_html.php');
+ #		public function CommentForm(){
+ #			if (!$this->request->isLoggedIn()) { $this->response->setRedirect(caNavUrl('', 'LoginReg', 'loginForm')); return; }
+ #			$this->view->setVar("item_id", $this->request->getParameter('item_id', pInteger));
+ #			$this->view->setVar("tablename", $this->request->getParameter('tablename', pString));
+ #			$this->render('Details/form_comments_html.php');
+ #		}
+ 		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
+ 		public function SaveCommentTaggingJS() {
+ 			caValidateCSRFToken($this->request);
+ 			$o_purifier = new HTMLPurifier();
+ 			$vb_errors = false;
+ 			$field_errors = [];
+ 			if(!$t_item = Datamodel::getInstance($this->request->getParameter("tablename", pString), true)) {
+ 				throw new ApplicationException("Invalid table name ".$this->request->getParameter("tablename", pString)." for saving comment");
+ 			}
+			$ps_table = $this->request->getParameter("tablename", pString);
+			if(!($vn_item_id = $this->request->getParameter("item_id", pInteger))){
+ 				$this->view->setVar('data', [
+					'status' => 'err', 'error' => _t("Invalid ID")
+				]);
+				$vb_errors = true;
+ 			}
+ 			if(!$t_item->load($vn_item_id)){
+  				$this->view->setVar('data', [
+					'status' => 'err', 'error' => _t("ID does not exist")
+				]);
+				$vb_errors = true;
+ 			}
+			if(!$vb_errors){
+				# --- get params from form
+				$ps_comment = $this->request->getParameter('comment', pString);
+				$pn_rank = $this->request->getParameter('rank', pInteger);
+				$ps_tags = $this->request->getParameter('tags', pString);
+				$ps_email = $this->request->getParameter('email', pString);
+				$ps_name = $this->request->getParameter('name', pString);
+				$ps_location = $this->request->getParameter('location', pString);
+				$ps_media1 = $_FILES['media1']['tmp_name'];
+				$ps_media1_original_name = $_FILES['media1']['name'];
+				$vs_error = "";
+			
+				if(!$this->request->getUserID() && !$ps_name && !$ps_email){
+					$vs_error = _t("Please enter your name and email");
+					$vb_errors = true;
+				}
+				if(!$ps_comment && !$pn_rank && !$ps_tags && !$ps_media1){
+					$vs_error = _t("Please enter your contribution");
+					if(!$ps_comment){
+						$field_errors["comment"] = _t("Please enter your comment");
+					}
+					$vb_errors = true;
+				}
+				if($vb_errors){
+					$this->view->setVar('data', [
+						'status' => 'err', 'error' => $vs_error, 'fieldErrors' => $field_errors
+					]);
+#					$this->view->setVar("form_comment", $ps_comment);
+#					$this->view->setVar("form_rank", $pn_rank);
+#					$this->view->setVar("form_tags", $ps_tags);
+#					$this->view->setVar("form_email", $ps_email);
+#					$this->view->setVar("form_name", $ps_name);
+#					$this->view->setVar("form_location", $ps_location);
+#					$this->view->setVar("item_id", $vn_item_id);
+#					$this->view->setVar("tablename", $ps_table);
+#					if($vn_inline_form){
+#						$this->notification->addNotification($va_errors["general"], __NOTIFICATION_TYPE_ERROR__);
+#						$this->request->setActionExtra($vn_item_id);
+#						$this->__call(caGetDetailForType($ps_table), null);
+						#$this->response->setRedirect(caDetailUrl($ps_table, $vn_item_id));
+#					}else{
+#						$this->view->setVar("errors", $va_errors);
+#						$this->render('Details/form_comments_html.php');
+#					}
+				}else{
+					# --- if there is already a rank set from this user/IP don't let another
+					$t_item_comment = new ca_item_comments();
+					$vs_dup_rank_message = "";
+					$vb_dup_rank = false;
+					if($this->request->getUserID() && $t_item_comment->load(array("row_id" => $vn_item_id, "user_id" => $this->request->getUserID()))){
+						if($t_item_comment->get("comment_id")){
+							$pn_rank = null;
+							$vb_dup_rank = true;
+						}
+					}
+					if($t_item_comment->load(array("row_id" => $vn_item_id, "ip_addr" => $_SERVER['REMOTE_ADDR']))){
+						$pn_rank = null;
+						$vb_dup_rank = true;
+					}
+					if($vb_dup_rank && $pn_rank){
+						$vs_dup_rank_message = " "._t("You can only rate an item once.");
+					}
+					if(!(($pn_rank > 0) && ($pn_rank <= 5))){
+						$pn_rank = null;
+					}
+					if($ps_comment || $pn_rank || $ps_media1){
+						$t_item->addComment($ps_comment, $pn_rank, $this->request->getUserID(), null, $ps_name, $ps_email, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null, array('media1_original_filename' => $ps_media1_original_name), $ps_media1, null, null, null, $ps_location);
+					}
+					if($ps_tags){
+						$va_tags = array();
+						$va_tags = explode(",", $ps_tags);
+						foreach($va_tags as $vs_tag){
+							$t_item->addTag(trim($vs_tag), $this->request->getUserID(), null, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null);
+						}
+					}
+					if($ps_comment || $ps_tags || $ps_media1){
+						# --- check if email notification should be sent to admin
+						if(!$this->request->config->get("dont_email_notification_for_new_comments")){
+							# --- send email confirmation
+							$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+							$o_view->setVar("comment", $ps_comment);
+							$o_view->setVar("tags", $ps_tags);
+							$o_view->setVar("name", $ps_name);
+							$o_view->setVar("email", $ps_email);
+							$o_view->setVar("item", $t_item);
+					
+					
+							# -- generate email subject line from template
+							$vs_subject_line = $o_view->render("mailTemplates/admin_comment_notification_subject.tpl");
+						
+							# -- generate mail text from template - get both the text and the html versions
+							$vs_mail_message_text = $o_view->render("mailTemplates/admin_comment_notification.tpl");
+							$vs_mail_message_html = $o_view->render("mailTemplates/admin_comment_notification_html.tpl");
+					
+							caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+						}
+						if($this->request->config->get("dont_moderate_comments")){
+							$this->view->setVar('data', [
+								'status' => 'ok', 'message' => _t("Thank you for contributing.").$vs_dup_rank_message
+							]);
+						}else{
+							$this->view->setVar('data', [
+								'status' => 'ok', 'message' => _t("Thank you for contributing.  Your comments will be posted on this page after review by site staff.").$vs_dup_rank_message
+							]);
+						}
+					}else{
+						$this->view->setVar('data', [
+							'status' => 'ok', 'message' => _t("Thank you for your contribution.").$vs_dup_rank_message
+						]);
+					}
+				}
+			}
+			
+			$this->render('Details/comments_data_json.php');
  		}
+ 		# -------------------------------------------------------
+ 		/**
+ 		 *
+ 		 */
+ 		public function getCommentsTagsJS() {
+ 			$vb_errors = false;
+ 			if(!$t_subject = Datamodel::getInstance($this->request->getParameter("tablename", pString), true)) {
+ 				throw new ApplicationException("Invalid table name ".$this->request->getParameter("tablename", pString)." for getting comment and tags");
+ 			}
+			$ps_table = $this->request->getParameter("tablename", pString);
+			if(!($vn_item_id = $this->request->getParameter("item_id", pInteger))){
+ 				$this->view->setVar('data', [
+					'status' => 'err', 'error' => _t("Invalid ID")
+				]);
+				$vb_errors = true;
+ 			}
+ 			if(!$t_subject->load($vn_item_id)){
+  				$this->view->setVar('data', [
+					'status' => 'err', 'error' => _t("ID does not exist")
+				]);
+				$vb_errors = true;
+ 			}
+			#
+			# User-generated comments, tags and ratings
+			#
+			$va_user_comments = $t_subject->getComments(null, true);
+			$va_comments = array();
+			if (is_array($va_user_comments)) {
+				$va_user_comments = array_reverse($va_user_comments);
+				foreach($va_user_comments as $va_user_comment){
+					if($va_user_comment["comment"] || $va_user_comment["media1"] || $va_user_comment["media2"] || $va_user_comment["media3"] || $va_user_comment["media4"]){
+						$va_user_comment["date"] = date("n/j/Y", $va_user_comment["created_on"]);
+					
+						# -- get name of commenter
+						if($va_user_comment["user_id"]){
+							$t_user = new ca_users($va_user_comment["user_id"]);
+							$va_user_comment["author"] = $t_user->getName();
+							$va_user_comment["fname"] = $t_user->get("fname");
+							$va_user_comment["lname"] = $t_user->get("lname");
+							$va_user_comment["email"] = $t_user->get("lname");
+						}elseif($va_user_comment["name"]){
+							$va_user_comment["author"] = $va_user_comment["name"];
+						}
+						$va_comments[] = $va_user_comment;
+					}
+				}
+			}
+		
+		
+			$va_user_tags = $t_subject->getTags(null, true);
+			$va_tags = array();
+		
+			if (is_array($va_user_tags)) {
+				foreach($va_user_tags as $va_user_tag){
+					if(!in_array($va_user_tag["tag"], $va_tags)){
+						$va_tags[] = $va_user_tag["tag"];
+					}
+				}
+			}
+			$this->view->setVar('data', [
+				'status' => 'ok', 'comments' => $va_comments, 'tags' => $va_tags, 'tagsText' =>implode(", ", $va_tags)
+			]);
+			
+			$this->render('Details/comments_data_json.php');
+ 		}
+ 		
  		# -------------------------------------------------------
  		/**
  		 *
