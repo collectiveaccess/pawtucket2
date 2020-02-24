@@ -11,7 +11,7 @@
 			The gallery is located at 46 West 90th Street, 2nd floor, New York, NY 10024, between Central Park West and Columbus Avenue.
 		</p>
 		<p>
-			Gallery Hours: Monday-Thursday, 11am-5pm and by appointment.
+			Gallery Hours: Monday-Friday, 11am-5pm and by appointment.
 		</p>
 		<p>
 			For inquiries or to set up an appointment, please call 917.952.7641 or email: <a href="mailto:susie@susaneleyfineart.com">susie@susaneleyfineart.com</a>. 
