@@ -13,7 +13,8 @@
 	}
 	# --- get the collection hierarchy parent to use for exportin finding aid
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
-
+	
+	$va_access_values = caGetUserAccessValues($this->request);
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -27,24 +28,22 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-			<div class="collections-detail">
-				<div class='col-md-6 col-lg-6 '>
-					<H2>{{{^ca_collections.preferred_labels.name}}}</H2>
-					{{{<ifdef code="ca_collections.scope_contents"><h4>^ca_collections.collection_date.collection_dates_value</h4></ifdef>}}}
-					<h4>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno"> ^ca_collections.idno</ifdef>}}}</h4>
-	         	   {{{<ifdef code="ca_collections.extent.extent_amount"><h6>Extent</h6>		
-					<unit relativeTo="ca_collections.extent.extent_amount" delimiter="<br/>">^ca_collections.extent.extent_amount ^ca_collections.extent.extent_type</unit></ifdef>}}}
+				<div class='col-sm-12 '>
+					
+					<div class="collections-detail">
+						<H2>{{{^ca_collections.preferred_labels.name}}}</H2>
+						{{{<ifdef code="ca_collections.scope_contents"><h4>^ca_collections.collection_date.collection_dates_value</h4></ifdef>}}}
+						<h4>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno"> ^ca_collections.idno</ifdef>}}}</h4>
+					   {{{<ifdef code="ca_collections.extent.extent_amount"><h6>Extent</h6>		
+						<unit relativeTo="ca_collections.extent.extent_amount" delimiter="<br/>">^ca_collections.extent.extent_amount ^ca_collections.extent.extent_type</unit></ifdef>}}}
 
 
-					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
+						{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
 
-				</div>
-				<div class='col-md-6 col-lg-6'>
-				<br><br>
-				{{{<unit relativeTo="ca_entities_x_collections" delimiter="<br/>" restrictToRelationshipTypes="creator"><H6>Creator</H6>^ca_entities.preferred_labels</unit>}}}
-				{{{<ifdef code="ca_collections.scope_contents"><H6>Scope and Contents</H6>^ca_collections.scope_contents<br/></ifdef>}}}
+						{{{<unit relativeTo="ca_entities_x_collections" delimiter="<br/>" restrictToRelationshipTypes="creator"><H6>Creator</H6>^ca_entities.preferred_labels</unit>}}}
+						{{{<ifdef code="ca_collections.scope_contents"><H6>Scope and Contents</H6><span class="trimText">^ca_collections.scope_contents</span></ifdef>}}}
+					</div>
 				</div><!-- end col -->
-				</div>
 			</div><!-- end row -->
 			<div class="row">
 				<div class='col-sm-12'>
@@ -59,15 +58,22 @@
 				</script>
 <?php				
 			}									
+			$vn_col = 12;
+			if(($t_item->get("ca_collections.abstract") || $t_item->get("ca_collections.historical_note") || $t_item->get("ca_collections.arrangement") || $t_item->get("ca_collections.gen_physical_description") || $t_item->get("ca_collections.lcsh_geo") || $t_item->get("ca_collections.lcsh_topical") || $t_item->get("ca_list_items")) 
+				 && ($t_item->get("ca_collections.access_restrictions") || $t_item->get("ca_collections.user_restrictions") || $t_item->get("ca_collections.preferred_citation") || $t_item->get("ca_collections.externalLink.url_entry") || $t_item->get("ca_collections.related", array("checkAccess" => $va_access_values)) || $t_item->get("ca_entities", array("checkAccess" => $va_access_values)) || $t_item->get("ca_places", array("checkAccess" => $va_access_values)) || $t_item->get("ca_occurrences", array("checkAccess" => $va_access_values)))
+			){
+				$vn_col = 6;
+			}
 ?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
-			<div class="row">		
-			<div class="collections-detail">	
-				<div class='col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_collections.abstract"><H6>Abstract</H6>^ca_collections.abstract<br/></ifdef>}}}
-					{{{<ifdef code="ca_collections.historical_note"><H6>Historical Note</H6>^ca_collections.historical_note<br/></ifdef>}}}
-					{{{<ifdef code="ca_collections.arrangement"><H6>Arrangement Note</H6>^ca_collections.arrangement<br/></ifdef>}}}   
+			<div class="row">			
+				<div class='col-md-<?php print $vn_col; ?>'>
+					<div class="collections-detail">
+					{{{<ifdef code="ca_collections.abstract"><H6>Abstract</H6><span class="trimText">^ca_collections.abstract</span></ifdef>}}}
+					{{{<ifdef code="ca_collections.historical_note"><H6>Historical Note</H6><span class="trimText">^ca_collections.historical_note</span></ifdef>}}}
+					{{{<ifdef code="ca_collections.arrangement"><H6>Arrangement Note</H6><span class="trimText">^ca_collections.arrangement</span></ifdef>}}}
+					{{{<ifdef code="ca_collections.gen_physical_description"><H6>Physical Description</H6><span class="trimText">^ca_collections.gen_physical_description</span></ifdef>}}}
 <?php
 				$va_list_items = $t_item->get("ca_list_items", array("returnWithStructure" => true));
 				if(is_array($va_list_items) && sizeof($va_list_items)){
@@ -79,7 +85,17 @@
 				}
 ?>            
                   
-                    {{{<ifdef code="ca_collections.lcsh_topical"><unit relativeTo="ca_collections" delimiter="<br/>"><H6>Topics, Library of Congress Authority</H6>^ca_collections.lcsh_topical<br/></unit></ifdef>}}}
+<?php
+					if($va_lcsh = $t_item->get("ca_collections.lcsh_topical", array("returnAsArray" => true))){
+						if(is_array($va_lcsh) && sizeof($va_lcsh)){
+							print "<H6>Topics, Library of Congress Authority</H6>";
+							foreach($va_lcsh as $vs_lcsh){
+								$va_tmp = explode(" [", $vs_lcsh);
+								print $va_tmp[0]."<br/>";
+							}
+						}
+					}
+?>
                     {{{<ifdef code="ca_collections.lcsh_geo"><H6>Georeference</H6>^ca_collections.lcsh_geo<br/></ifdef>}}}  
 <?php
 				# Comment and Share Tools
@@ -98,12 +114,13 @@
 					print '</div><!-- end detailTools -->';
 				}				
 ?>
-					
+					</div>
 				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6'>
-			        {{{<ifdef code="ca_collections.access_restrictions"><H6>Access Restrictions</H6>^ca_collections.access_restrictions<br></ifdef>}}}
-			        {{{<ifdef code="ca_collections.user_restrictions"><H6>User Restrictions</H6>^ca_collections.user_restrictions<br></ifdef>}}}
-			        {{{<ifdef code="ca_collections.preferred_citation"><H6>Preferred Citation</H6>^ca_collections.preferred_citation<br></ifdef>}}}
+				<div class='col-md-<?php print $vn_col; ?>'>
+					<div class="collections-detail">
+			        {{{<ifdef code="ca_collections.access_restrictions"><H6>Access Restrictions</H6>^ca_collections.access_restrictions</ifdef>}}}
+			        {{{<ifdef code="ca_collections.user_restrictions"><H6>User Restrictions</H6>^ca_collections.user_restrictions</ifdef>}}}
+			        {{{<ifdef code="ca_collections.preferred_citation"><H6>Preferred Citation</H6>^ca_collections.preferred_citation</ifdef>}}}
 			        {{{<ifdef code="ca_collections.externalLink.url_entry"><H6>External Links</H6><unit relativeTo="ca_collections" delimiter="<br/>"><a href="^ca_collections.externalLink.url_entry" target="_blank">^ca_collections.externalLink.url_source</a></ifdef>}}}		        
 					{{{<case>
 						<ifcount code="ca_collections" min="1"><HR/></ifcount>
@@ -111,22 +128,22 @@
 						<ifcount code="ca_places" min="1"><HR/></ifcount>
 					</case>}}}
 					{{{<ifcount code="ca_collections.related" min="1" max="1"><H6>Related Collection</H6></ifcount>}}}
-					{{{<ifcount code="ca_collections.related" min="2"><H6>Related cCllections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_collections_x_collections" delimiter="<br/>"><unit relativeTo="ca_collections" ><l>^ca_collections.related.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
+					{{{<ifcount code="ca_collections.related" min="2"><H6>Related Collections</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_collections.related" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
 					
 					{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related Person</H6></ifcount>}}}
 					{{{<ifcount code="ca_entities" min="2"><H6>Related People</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_collections" delimiter="<br/>"><unit relativeTo="ca_entities">^ca_entities.preferred_labels.displayname</unit> (^relationship_typename)</unit>}}}
+					{{{<unit relativeTo="ca_entities" delimiter="<br/>">^ca_entities.preferred_labels.displayname (^relationship_typename)</unit>}}}
 					
 					{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Related Work</H6></ifcount>}}}
 					{{{<ifcount code="ca_occurrences" min="2"><H6>Related Works</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences_x_collections" delimiter="<br/>"><unit relativeTo="ca_occurrences" ><l>^ca_occurrences.preferred_labels.name</l></unit></unit>}}}
+					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.preferred_labels.name</l></unit>}}}
 					
-					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places_x_collections"><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}					
+					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related Place</H6></ifcount>}}}
+					{{{<ifcount code="ca_places" min="2"><H6>Related Places</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l> (^relationship_typename)</unit>}}}					
+					</div>
 				</div><!-- end col -->
-			</div>
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
@@ -157,3 +174,11 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 250
+		});
+	});
+</script>

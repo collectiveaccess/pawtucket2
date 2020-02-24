@@ -52,6 +52,15 @@
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-158007471-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-158007471-1');
+</script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<link rel='stylesheet' href='/assets/fontawesome/css/font-awesome.min.css' type='text/css' media='all'/>
@@ -230,7 +239,7 @@
 				</script>
 
 				<ul class="nav navbar-nav" id= "menuItems">
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
+					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse"), "", "", "Browse", "objects", array("facet" => "has_media_facet", "id" => "yes")); ?></li>					
 					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Special Projects"), "", "", "Gallery", "Index"); ?></li>
 					
@@ -246,3 +255,23 @@
 	</nav>
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
+<?php
+		if((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")){
+			if(Session::getVar('visited') != 'has_visited_browse'){
+?>
+				<div class="browseIntroContainer">
+					<div class="row">
+						<div class="col-sm-12 col-md-6 col-md-offset-3 col-lg-8 col-lg-offset-2">
+							<div class="browseIntro">
+								<div class="closeButton"><a href="#" onClick="$('.browseIntroContainer').hide(); return false;" title="Close"><span class="glyphicon glyphicon-remove-circle"></span></a></div>
+								{{{browseintroduction}}}
+							</div>
+						</div>
+					</div>
+					<HR/>
+				</div>
+<?php
+			}
+			Session::setVar('visited', 'has_visited_browse');
+		}
+?>

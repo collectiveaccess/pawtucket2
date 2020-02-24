@@ -51,7 +51,7 @@
 	<div class='row'>
 		<div class="col-sm-6 field">
 			<?php print _t("Language"); ?><br/>
-			{{{ca_entities.language}}}
+			{{{ca_objects.041_lang}}}
 		</div>	
 		<div class="col-sm-6 field">
 			<?php print _t("Bookseller"); ?><br/>
@@ -86,6 +86,17 @@
 		<div class="col-sm-6 field">
 			<?php print _t("Presence of Ornament(s)"); ?><br/>
 			{{{ca_objects.ornaments%width=200px&height=1&render=is&value=yes}}}
+		</div>		
+					
+	</div>
+	<div class='row'>
+		<div class="col-sm-6 field">
+			<?php print _t("Printers' Evidence"); ?> <br/>
+			{{{ca_objects.from_printers%inUse=1}}}
+		</div>
+		<div class="col-sm-6 field">
+			<?php print _t("Item Specific Information"); ?> <br/>
+			{{{ca_objects.item_specific_info%inUse=1}}}
 		</div>		
 					
 	</div>

@@ -31,11 +31,14 @@
 <?php
 	}
 ?>	
-		<div id="galleryDetailImageGrid" class="col-sm-10 col-sm-offset-1">
-			<div class="row">		
+		<div id="galleryDetailImageGrid" class="col-sm-10 col-sm-offset-1">		
 <?php
 		$vn_i = 0;
+		$vn_c = 0;
 		foreach($pa_set_items as $pa_set_item){
+			if($vn_c == 0){
+				print "<div class='row'>";
+			}
 			if(!$vn_first_item_id){
 				$vn_first_item_id = $pa_set_item["item_id"];
 			}
@@ -56,15 +59,23 @@
 			if($pa_set_item["representation_tag_".$vs_icon]){
 			    $t_set_obj = new ca_objects($t_set_item->get('row_id'));
 				$vn_i++;
-				print "<div class='smallpadding col-xs-3 col-sm-2 col-md-2".(($ps_description) ? "2" : "1").(($vn_i > 24) ? " galleryIconHidden" : "")."'>";
+				$vn_c++;
+				$vs_tmp = strip_tags($t_set_obj->get('ca_objects.preferred_labels'));
+				if(strlen($vs_tmp) > 50){
+					$vs_tmp = mb_substr($vs_tmp, 0, 47)."...";
+				}
+				print "<div class='smallpadding col-xs-6 col-sm-4 col-md-2".(($vn_i > 24) ? " galleryIconHidden" : "")."'>";
 				print "<a href='#' id='galleryIcon".$pa_set_item["item_id"]."' onclick='jQuery(\"#galleryDetailImageArea\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); jQuery(\"#galleryDetailObjectInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\"); return false;'>".$vs_rep."</a>";
-				print "<span>".$t_set_obj->get('ca_objects.preferred_labels')."</span>";
+				print "<span title='".$t_set_obj->get('ca_objects.preferred_labels')."'>".$vs_tmp."</span>";
 				print "</div>\n";
-				
+				if($vn_c == 6){
+					print "</div><!-- end row -->";
+					$vn_c = 0;
+				}
 				if($vn_i == 24){
-					print "<div class='col-sm-3' id='moreLink'>
+					print "<div class='row'><div class='col-sm-3' id='moreLink'>
 								<a href='#' onclick='$(\".galleryIconHidden\").removeClass(\"galleryIconHidden\"); $(\"#moreLink\").hide(); return false;'>".(sizeof($pa_set_items) - 12)." "._t("more")."</a>
-							</div>";
+							</div></div>";
 				}
 			}
 		}
