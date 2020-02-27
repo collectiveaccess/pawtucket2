@@ -52,8 +52,18 @@
 ?>
 				<p><?php print $vs_inventory_text; ?></p>
 				<p class="text-center">
-					<span class="inventoryDownloadLink">&nbsp;<a href="<?php print caGetThemeGraphicUrl($this->request, 'WebInventory2018-07-03.xls'); ?>" class="btn-default">Download Inventory (Excel)</a>&nbsp;</span>
-					<span class="inventoryDownloadLink">&nbsp;<a href="<?php print caGetThemeGraphicUrl($this->request, 'WebInventory2018-07-03.pdf'); ?>" class="btn-default">Download Inventory (PDF)</a>&nbsp;</span>
+<?php
+				if($vs_xls = $this->getVar("collections_inventory_xls")){
+?>
+					<span class="inventoryDownloadLink">&nbsp;<a href="<?php print $vs_xls; ?>" class="btn-default">Download Inventory (Excel)</a>&nbsp;</span>
+<?php
+				}
+				if($vs_pdf = $this->getVar("collections_inventory_pdf")){
+?>
+					<span class="inventoryDownloadLink">&nbsp;<a href="<?php print $vs_pdf; ?>" class="btn-default">Download Inventory (PDF)</a>&nbsp;</span>
+<?php
+				}
+?>
 				</p>
 <?php
 			}
