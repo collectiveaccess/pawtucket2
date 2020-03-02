@@ -212,6 +212,13 @@ class NoguchiArchiveBrowseFacetList extends React.Component {
 		let facetButtons = [], facetPanels = [];
 		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "";
 
+		this.facetPanelRefs = {};
+		if (this.context.state.availableFacets) {
+			for (let n in this.context.state.availableFacets) {
+				this.facetPanelRefs[n] = React.createRef();
+			}
+		}
+
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
 				facetButtons.push((<NoguchiArchiveBrowseFacetButton key={n} text={this.context.state.availableFacets[n].label_plural}

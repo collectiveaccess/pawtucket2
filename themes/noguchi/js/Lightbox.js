@@ -359,6 +359,13 @@ class LightboxFacetList extends React.Component {
 		let facetButtons = [], facetPanels = [];
 		let filterLabel = this.context.state.availableFacets ? "Filter by: " : "";
 
+		this.facetPanelRefs = {};
+		if (this.context.state.availableFacets) {
+			for (let n in this.context.state.availableFacets) {
+				this.facetPanelRefs[n] = React.createRef();
+			}
+		}
+
 		if(this.context.state.availableFacets) {
 			for (let n in this.context.state.availableFacets) {
 				if(!this.facetPanelRefs || !this.facetPanelRefs[n]) { continue; }
