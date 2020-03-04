@@ -25,6 +25,11 @@
  *
  * ----------------------------------------------------------------------
  */
+	$va_lightboxDisplayName = caGetLightboxDisplayName();
+	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
+	$va_classroomDisplayName = caGetClassroomDisplayName();
+	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
+	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
 	if($this->request->isLoggedIn()){
