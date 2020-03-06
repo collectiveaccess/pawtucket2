@@ -57,11 +57,11 @@
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		print "<h2>{$va_listing_info['displayName']}</h2>\n";		
-		if ($va_listing_info['id'] == "sources") {
-			print '<p>'._t('"Comprehensive sources" refers to bibliographies, catalogs, checklists, and indexes that include sueltas by several playwrights and are not limited to a single author. It is assumed that researchers investigating a particular dramatist will be thoroughly familiar with the scholarship on that person, including modern editions of his or her plays, which frequently discuss suelta editions.').'</p>';	
-		} else {
-			print '<p>'._t('This is a selective and narrowly focused bibliography of materials related to suelta studies. It does not reproduce the vast area of drama that once appeared in the Bulletin of the Comediantes or that continues to be gathered in the MLA Bibliography').'</p>';	
-		}	
+		#if ($va_listing_info['id'] == "sources") {
+		#	print '<p>'._t('"Comprehensive sources" refers to bibliographies, catalogs, checklists, and indexes that include sueltas by several playwrights and are not limited to a single author. It is assumed that researchers investigating a particular dramatist will be thoroughly familiar with the scholarship on that person, including modern editions of his or her plays, which frequently discuss suelta editions.').'</p>';	
+		#} else {
+		#	print '<p>'._t('This is a selective and narrowly focused bibliography of materials related to suelta studies. It does not reproduce the vast area of drama that once appeared in the Bulletin of the Comediantes or that continues to be gathered in the MLA Bibliography').'</p>';	
+		#}	
 		while($qr_list->nextHit()) {
 			$vs_first_letter = ucfirst(substr($qr_list->get('ca_occurrences.author'), 0, 1));
 			$va_letter_array[$vs_first_letter] = $vs_first_letter;
