@@ -378,6 +378,194 @@
 			$this->view->setVar("data", $data);
 			$this->render("Lightbox/browse_data_json.php");
 		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		public function getLigthboxAccessForCurrentUser() {
+			if ($this->opb_is_login_redirect) {
+				return;
+			}
+			$set_id = $this->request->getParameter('set_id', pInteger);
+
+			if (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_READ_ACCESS__)) {
+				
+				$data = ['ok' => 1, 'access' => (($t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) ? 2 : 1)];
+			} else {
+				$data = ['err' => _t('Cannot load set')];
+			}
+			$this->view->setVar("data", $data);
+			$this->render("Lightbox/browse_data_json.php");
+		}
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		function getUsers($options = null) {
+			global $g_ui_locale_id;
+			if ($this->opb_is_login_redirect) {
+				return;
+			}
+
+			$set_id = $this->request->getParameter('set_id', pInteger);
+			if (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_READ_ACCESS__)) {
+				$va_users = $t_set->getSetUsers();
+				$data = ['status' => 'ok', "users" => $va_users];
+			} else {
+				$data = ['status' => 'error', 'err' => _t('Invalid set id')];
+			}
+
+			$this->view->setVar("data", $data);
+			$this->render("Lightbox/browse_data_json.php");
+		}
+		
+		# ------------------------------------------------------
+		/**
+		 *
+		 */
+		function shareSet($pa_options = null) {
+            if($this->opb_is_login_redirect) { return; }
+
+ 			$set_id = $this->request->getParameter('set_id', pInteger);
+ 			$t_set = new ca_sets($set_id);
+ 			if (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_READ_ACCESS__)) {
+			
+				$vb_errors = false;
+				$field_errors = [];
+				$vs_display_name = caGetOption("display_name", $pa_options, $this->ops_lightbox_display_name);
+				$vs_display_name_plural = caGetOption("display_name_plural", $pa_options, $this->ops_lightbox_display_name_plural);
+				$ps_users = $this->purifier->purify($this->request->getParameter('users', pString));
+			
+				// ps_user can be list of emails separated by comma
+				$va_users = explode(", ", $ps_users);
+				$pn_group_id = $this->request->getParameter('group_id', pInteger);
+				if(!$ps_users){
+					$field_errors["users"] = _t("Please enter a user");
+					$vb_errors = true;
+				}
+				$pn_access = $this->request->getParameter('access', pInteger);
+				if(!$pn_access){
+					$field_errors["access"] = _t("Please select an access level");
+					$vb_errors = true;
+				}
+				#$vs_share_message = $this->purifier->purify($this->request->getParameter('share_message', pString));
+				#$this->view->setVar('share_message', $vs_share_message);
+				if(!$vb_errors){
+				
+						$va_error_emails = array();
+						$va_success_emails = array();
+						$va_error_emails_has_access = array();
+					
+						foreach($va_users as $vs_user){
+							// lookup the user/users
+							$t_user = ca_users::find(['email' => $vs_user, 'active' => 1, 'userclass' => ['<', 255]], ['returnAs' => 'firstModelInstance']);
+							if($t_user && ($vn_user_id = $t_user->get("user_id"))){
+								$t_sets_x_users = new ca_sets_x_users();
+								if(($vn_user_id == $t_set->get("user_id")) || ($t_sets_x_users->load(array("set_id" => $t_set->get("set_id"), "user_id" => $vn_user_id)))){
+									$va_error_emails_has_access[] = $vs_user;
+								}else{
+									$t_sets_x_users->setMode(ACCESS_WRITE);
+									$t_sets_x_users->set('access',  $pn_access);
+									$t_sets_x_users->set('user_id',  $vn_user_id);
+									$t_sets_x_users->set('set_id',  $t_set->get("set_id"));
+									$t_sets_x_users->insert();
+									if($t_sets_x_users->numErrors()) {
+										$va_errors["general"] = _t("There were errors while sharing this %1 with %2", $vs_display_name, $vs_user).join("; ", $t_sets_x_users->getErrors());
+										$this->view->setVar('errors', $va_errors);
+										$this->shareSetForm();
+									}else{
+										$va_success_emails[] = $vs_user;
+										$va_success_emails_info[] = array("email" => $vs_user, "name" => trim($t_user->get("fname")." ".$t_user->get("lname")));
+									}
+								}
+							}else{
+								$va_error_emails[] = $vs_user;
+							}
+						}
+						if((sizeof($va_error_emails)) || (sizeof($va_error_emails_has_access))){
+							$va_user_errors = array();
+							if(sizeof($va_error_emails)){
+								$va_user_errors[] = _t("The following email(s) you entered do not belong to a registered user: ").implode(", ", $va_error_emails);
+							}
+							if(sizeof($va_error_emails_has_access)){
+								$va_user_errors[] = _t("The following email(s) you entered already have access to this %1: ", $vs_display_name).implode(", ", $va_error_emails_has_access);
+							}
+							if(sizeof($va_success_emails)){
+								$vs_message = _t('Shared %1 with: ', $vs_display_name).implode(", ", $va_success_emails);
+							}
+							$vs_error = implode("<br/>", $va_user_errors);
+						
+						}else{
+							$vs_message = _t('Shared %1 with: ', $vs_display_name).implode(", ", $va_success_emails);
+						}
+						if(is_array($va_success_emails_info) && sizeof($va_success_emails_info)){
+							// send email to user
+							// send email confirmation
+							$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+							$o_view->setVar("set", $t_set->getLabelForDisplay());
+							$o_view->setVar("from_name", trim($this->request->user->get("fname")." ".$this->request->user->get("lname")));
+							$o_view->setVar("display_name", $vs_display_name);
+							$o_view->setVar("display_name_plural", $vs_display_name_plural);
+							$o_view->setVar("share_message", $vs_share_message);
+					
+							# -- generate email subject line from template
+							$vs_subject_line = $o_view->render("mailTemplates/share_set_notification_subject.tpl");
+						
+							# -- generate mail text from template - get both the text and the html versions
+							$vs_mail_message_text = $o_view->render("mailTemplates/share_set_notification.tpl");
+							$vs_mail_message_html = $o_view->render("mailTemplates/share_set_notification_html.tpl");
+					
+							foreach($va_success_emails as $vs_email){
+								caSendmail($vs_email, $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+							}
+							$this->view->setVar('data', [
+								'status' => 'ok', 'message' => $vs_message, 'error' => $vs_error
+							]);
+						}else{
+							# --- no matching emails
+							$this->view->setVar('data', [
+								'status' => 'err', 'error' => $vs_error
+							]);
+						}
+				}else{
+					$this->view->setVar('data', [
+						'status' => 'err', 'error' => 'Please correct the errors below', 'fieldErrors' => $field_errors
+					]);
+				}
+			}else{
+				$this->view->setVar('data', ['status' => 'err', 'error' => _t('Invalid set id')]);
+			}
+			$this->render("Lightbox/browse_data_json.php");	
+ 		}
+ 		# -------------------------------------------------------
+		/** 
+		 */
+ 		function removeUserAccess() {
+            if($this->opb_is_login_redirect) { return; }
+
+ 			$set_id = $this->request->getParameter('set_id', pInteger);
+ 			$t_set = new ca_sets($set_id);
+ 			if (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {			
+				$pn_user_id = $this->request->getParameter('user_id', pInteger);
+				$t_item = new ca_sets_x_users();
+				$t_item->load(array('set_id' => $t_set->get('set_id'), 'user_id' => $pn_user_id));
+				if($t_item->get("relation_id")){
+					$t_item->setMode(ACCESS_WRITE);
+					$t_item->delete(true);
+					if ($t_item->numErrors()) {
+						$data = ['status' => 'err', 'error' => join("; ", $t_item->getErrors())];
+					}else{
+						$data = ['status' => 'ok', 'message' => _t("Removed user access to %1", $this->ops_lightbox_display_name)];
+					}
+				}else{
+					$data = ['status' => 'err', 'error' => _t("invalid user/set id")];
+				}
+			}else{
+				$data = ['status' => 'err', 'error' => _t('Invalid set id')];
+			}
+			$this->view->setVar('data', $data);
+			$this->render("Lightbox/browse_data_json.php");
+ 		}
  		# -------------------------------------------------------
 		/** 
 		 * Generate the URL for the "back to results" link from a browse result item

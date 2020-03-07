@@ -914,10 +914,39 @@ p.legend a {
 	}
 	.bRightCol{
 		background-color:$gray-2;
+		overflow-y:scroll;
 		.forceWidth{
 			color:$gray-2;
 			height:1px;
 			overflow:hidden;
+		}
+		.card{
+			text-align:left;
+			background-color:transparent;
+			border-radius:none;
+			border-bottom:1px solid #FFF;
+			.card-header{
+				border:0px;
+				background-color:transparent;
+				a{
+					font-family: $headings-font;
+					font-weight: $headings-font-weight;
+					font-size:1.3em;
+					text-decoration:none;
+				}
+			}
+			.card-body{
+				ul{
+					max-height:400px;
+					overflow-y:scroll;
+					border-bottom: 1px solid #FFF;
+				}
+				.list-group-item{
+					background-color:$gray-1;
+					font-size:.8em;
+					border-color:#FFF;
+				}
+			}
 		}
 	}
 	.bSearchWithinContainer{

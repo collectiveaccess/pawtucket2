@@ -269,7 +269,7 @@
 	
 		<div class="row mt-3">
 			<div class="col-sm-12 mt-5 col-md-6 offset-md-3">
-				<div id="commentForm"></div>
+				<div id="commentForm" class="mb-5"></div>
 			</div>
 		</div>
 	</div>
@@ -293,14 +293,17 @@
 	}
 ?>
 <script type="text/javascript">	
-	pawtucketUIApps['comment'] = {
+	pawtucketUIApps['PawtucketComment'] = {
         'selector': '#commentForm',
         'data': {
             item_id: <?php print $vn_id; ?>,
             tablename: 'ca_objects',
             form_title: '<h1>Add Your Comments and Tags</h1>',
-            list_title: '<h1>Comments and Tags</h1>',
+            list_title: '<h1 class="mt-5">Comments and Tags</h1>',
+            tag_field_title: 'Tags',
+            comment_field_title: 'Comment',
             login_button_text: 'Login to Add Your Comments and Tags',
+            comment_button_text: 'Send',
             no_tags: false,
             show_form: <?php print ($this->request->isLoggedIn()) ? "true" : "false"; ?>
         }

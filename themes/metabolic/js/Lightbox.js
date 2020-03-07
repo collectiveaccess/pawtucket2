@@ -6,9 +6,13 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel, initBrowseResults } from "../../default/js/browse";
-import { fetchLightboxList, addLightbox, editLightbox, deleteLightbox, removeItemFromLightbox } from "../../default/js/lightbox";
+import { fetchLightboxList, addLightbox, editLightbox, deleteLightbox, removeItemFromLightbox, getLightboxAccessForCurrentUser } from "../../default/js/lightbox";
+import { CommentForm, CommentFormMessage, CommentsTagsList } from "./comment";
 
 import ClampLines from 'react-clamp-lines';
+
+const axios = require('axios');
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 const selector = pawtucketUIApps.Lightbox.selector;
 const appData = pawtucketUIApps.Lightbox.data;
@@ -447,7 +451,7 @@ class LightboxFacetList extends React.Component {
 
 	render() {
 		let facetButtons = [];
-		let filterLabel = this.context.state.availableFacets ? "Filter By " : "";
+		//let filterLabel = this.context.state.availableFacets ? "Filter By " : "";
 		
 		this.facetPanelRefs = {};
 		if (this.context.state.availableFacets) {
@@ -474,16 +478,15 @@ class LightboxFacetList extends React.Component {
 					</div>
 				));
 			}
-			if(facetButtons.length == 0){
-				filterLabel = "";
-			}
+			//if(facetButtons.length == 0){
+			//	filterLabel = "";
+			//}
 		}
 
 
 		if(this.context.state.availableFacets){
 			return(
 				<div>
-					<h2>{filterLabel}</h2>
 					<div className='bRefineFacets'>{facetButtons}</div>
 				</div>
 			)
@@ -669,11 +672,34 @@ class LightboxResults extends React.Component {
 															 loadMoreHandler={this.context.loadMoreResults}
 															 loadMoreRef={this.context.loadMoreRef}/>	
 							</div>
-							<div className="bRightCol col-md-4 col-lg-3 offset-lg-1">
-								<div className="position-fixed vh-100 mr-3 pt-3">
-									<div id="bRefine">
-										<LightboxCurrentFilterList/>
-										<LightboxFacetList facetLoadUrl={this.props.facetLoadUrl}/>
+							<div className="col-md-4 col-lg-3 offset-lg-1">
+								<div className="bRightCol position-fixed vh-100 mr-3">
+									<div id="accordion">
+										<div className="card">
+											<div className="card-header">
+												<a data-toggle="collapse" href="#bRefine" role="button" aria-expanded="false" aria-controls="collapseFilter">Filter By</a>
+											</div>
+											<div id="bRefine" className="card-body collapse" data-parent="#accordion">
+												<LightboxCurrentFilterList/>
+												<LightboxFacetList facetLoadUrl={this.props.facetLoadUrl}/>
+											</div>
+										</div>
+										<div className="card">
+											<div className="card-header">
+												<a data-toggle="collapse" href="#setComments" role="button" aria-expanded="false" aria-controls="collapseComments">Comments</a>
+											</div>
+											<div id="setComments" className="card-body collapse" data-parent="#accordion">
+												<CommentForm tableName="ca_sets" itemID={this.context.state.set_id} formTitle="" listTitle="" commentFieldTitle="" tagFieldTitle="" loginButtonText="login" commentButtonText="Add" noTags="1" showForm="1" />
+											</div>
+										</div>
+										<div className="card">
+											<div className="card-header">
+												<a data-toggle="collapse" href="#setShare" role="button" aria-expanded="false" aria-controls="collapseShare">Share</a>
+											</div>
+											<div id="setShare" className="card-body collapse" data-parent="#accordion">
+												<ShareBlock setID={this.context.state.set_id} />
+											</div>
+										</div>
 									</div>
 									<div className="forceWidth">- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -</div>
 								</div>
@@ -743,7 +769,7 @@ class LightboxResultItem extends React.Component {
 				return(
 					<div className='card mb-4 bResultImage' ref={this.props.scrollToRef}>
 						<a href={data.detailUrl}><div dangerouslySetInnerHTML={{__html: data.representation}}/></a>
-						<div className='float-right'><a data-toggle='collapse' href={`#deleteConfirm${data.id}`} className='removeItemInitial' role='button' aria-expanded='false' aria-controls='collapseExample'><ion-icon name='close-circle'></ion-icon></a></div>
+						{(this.context.state.userAccess == 2) ? <div className='float-right'><a data-toggle='collapse' href={`#deleteConfirm${data.id}`} className='removeItemInitial' role='button' aria-expanded='false' aria-controls='collapseExample'><ion-icon name='close-circle'></ion-icon></a></div> : null}
 						<div className='card-body mb-2'><a href={data.detailUrl} dangerouslySetInnerHTML={{__html: data.caption}}></a></div>
 						<div className='card-footer collapse text-center' id={`deleteConfirm${data.id}`}><a data-item_id={data.id} onClick={this.context.removeItemFromLightbox}>Remove Item From Set</a></div>
 					</div>
@@ -851,6 +877,7 @@ class LightboxListItem extends React.Component {
 	}
 
 	openLightbox(e) {
+		this.context.state.resultList = null;
 		let set_id = e.target.attributes.getNamedItem('data-set_id').value;
 		let state = this.context.state;
 		state.set_id = set_id;
@@ -859,6 +886,16 @@ class LightboxListItem extends React.Component {
 		state.filters['_search']['ca_sets.set_id:' + set_id] = 'Lightbox: ' + state.lightboxList.sets[set_id].label;
 		this.context.setState(state);
 		this.context.reloadResults(state.filters, false);
+		let that = this;
+		getLightboxAccessForCurrentUser(this.context.props.baseUrl, set_id, function(resp) {
+			if(resp && resp['ok']) {
+				let state = that.state;
+				if(resp['access']){
+					state.userAccess = resp['access'];
+					that.context.setState(state);
+				}
+			}
+		});
 	}
 
 	saveNewLightbox(name) {
@@ -983,6 +1020,251 @@ class LightboxListItem extends React.Component {
 		}
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+	class SetUserList extends React.Component {
+		render() {
+			//let setUsers = (this.props.setUsers.length) ? this.props.setUsers : null;
+			return (
+			    <div>
+			    	{(this.props.setUsers.owner.length || this.props.setUsers.users.length) ? <ul className='list-group list-group-flush mb-4'>{this.props.setUsers.owner}{this.props.setUsers.users}</ul> : null}
+			    </div>
+			);
+		}
+	}
+	class ShareFormMessage extends React.Component {
+		render() {
+			return (
+			    (this.props.message) ? <div className={`alert alert-${(this.props.messageType == 'error') ? 'danger' : 'success'}`}>{this.props.message}</div> : null
+			);
+		}
+	}
+	class SetUserListMessage extends React.Component {
+		render() {
+			return (
+			    (this.props.message) ? <div className={`alert alert-${(this.props.messageType == 'error') ? 'danger' : 'success'}`}>{this.props.message}</div> : null
+			);
+		}
+	}
+	class ShareBlock extends React.Component {
+		static contextType = LightboxContext;
+		constructor(props) {
+			super(props);
+			let users = [];
+			let owner = [];
+			this.state = {
+				statusMessage: '',
+				statusMessageUserList: '',
+				values: this.initializeValues(),
+				errors: this.initializeValues(),
+				setUsers: {users, owner},
+				settings: {
+					...props
+				}
+			}
+			this.handleForm = this.handleForm.bind(this);
+			this.submitForm = this.submitForm.bind(this);
+			this.initializeList = this.initializeList.bind(this);
+			this.removeUser = this.removeUser.bind(this);
+			
+			this.initializeList();
+		}
+
+		initializeValues() {
+			return {
+				users: '',
+				access: '',
+				set_id: this.props.setID
+			};
+		}
+		
+		initializeList() {
+			let state = this.state;
+ 			let that = this;
+			axios.get("/index.php/Lightbox/getUsers/set_id/" + this.props.setID)
+				.then(function (resp) {
+					let data = resp.data;
+					if (data.status == 'ok') {
+						state.setUsers.users = [];
+						state.setUsers.owner = [];
+						if (data.users) {
+							for(let k in data.users) {
+								let c = data.users[k];
+								if(c.name.length){
+									if(c.owner){
+										state.setUsers.owner.push(<li className='list-group-item' key={k}>{c.name} ({c.email}) <b>Owner</b></li>);
+									}else{
+										state.setUsers.users.push(<li className='list-group-item' key={k}><a href='#' className='float-right' onClick={that.removeUser} data-user-id={c.user_id} data-set-id={that.props.setID}><ion-icon name='close-circle'></ion-icon></a>{c.name} ({c.email})<br/><i>Can {(c.access == 2) ? "edit" : "read"}</i></li>);
+									}
+								}
+							}
+						}
+					}
+					that.setState(state);
+				})
+				.catch(function (error) {
+					console.log("Error while getting set users: ", error);
+				});
+		}
+		updateList() {
+			let state = this.state;
+			state.setUsers = initializeList();
+			this.setState(state);
+		}
+
+		handleForm(e) {
+			let n = e.target.name;
+			let v = e.target.value;
+
+			let state = this.state;
+			state.values[n] = v;
+			this.setState(state);
+		}
+
+		submitForm(e) {
+			let state = this.state;
+			let that = this;
+			state.statusMessage = "Submitting...";
+			state.statusMessageType = "success";
+			this.setState(state);
+			let formData = new FormData();
+			for(let k in this.state.values) {
+				formData.append(k, this.state.values[k]);
+			}
+			axios.post("/index.php/Lightbox/shareSet", formData)
+				.then(function (resp) {
+					let data = resp.data;
+
+					if (data.status !== 'ok') {
+						// error
+						state.statusMessage = data.error;
+						state.statusMessageType = "error";
+						state.errors = that.initializeValues();
+						if(data.fieldErrors) {
+							for(let k in data.fieldErrors) {
+								if((state.errors[k] !== undefined)) {
+									state.errors[k] = data.fieldErrors[k];
+								}
+							}
+						}
+						that.setState(state);
+					} else {
+						// success
+						if(data.message){
+							state.statusMessage = data.message;
+						}
+						if(data.error){
+							if(data.message){
+								state.statusMessage = state.statusMessage + '; ';
+							}
+							state.statusMessage = state.statusMessage + data.error;
+						}
+						state.statusMessageType = "success";
+						state.values = that.initializeValues();	// Clear form elements
+						state.errors = that.initializeValues();	// Clear form errors
+						that.setState(state);
+						that.initializeList();
+						if(!data.error){
+							setTimeout(function() {
+								state.statusMessage = '';
+								that.setState(state);
+							}, 3000);
+						}
+					}
+
+				})
+				.catch(function (error) {
+					console.log("Error while attempting to invite users: ", error);
+				});
+
+			e.preventDefault();
+		}
+
+		removeUser(e) {
+			let state = this.state;
+			let that = this;
+			let userID = e.target.attributes.getNamedItem('data-user-id').value;
+			let setID = e.target.attributes.getNamedItem('data-set-id').value;
+			state.statusMessageUserList = "Removing User...";
+			state.statusMessageTypeUserList = "error";
+			this.setState(state);
+						axios.get("/index.php/Lightbox/removeUserAccess/set_id/" + setID + "/user_id/" + userID)
+				.then(function (resp) {
+					let data = resp.data;
+					if (data.status !== 'ok') {
+						// error
+						state.statusMessageUserList = data.error;
+						state.statusMessageTypeUserList = "error";
+						that.setState(state);
+					} else {
+						// success
+						state.statusMessageTypeUserList = "success";
+						state.statusMessageUserList = data.message;
+						that.setState(state);
+						that.initializeList();
+						setTimeout(function() {
+							state.statusMessageUserList = '';
+							that.setState(state);
+						}, 3000);
+					}
+					that.setState(state);
+				})
+				.catch(function (error) {
+					console.log("Error while getting set users: ", error);
+				});
+		}
+
+
+		render() {
+			return (
+				<div>
+					<SetUserListMessage message={this.state.statusMessageUserList} messageType={this.state.statusMessageTypeUserList} />
+					<SetUserList setUsers={this.state.setUsers} />
+					<ShareFormMessage message={this.state.statusMessage} messageType={this.state.statusMessageType} />
+					<b>Invite Users</b>
+					<form className='ca-form'>
+						<div className="form-group"><textarea className={`form-control  form-control-sm${(this.state.errors.users) ? ' is-invalid' : ''}`} id='users' name='users' value={this.state.values.users} onChange={this.handleForm} placeholder='Enter user email address separated by comma' title='Enter user email address separated by comma' />{(this.state.errors.users) ? <div className='invalid-feedback'>{this.state.errors.users}</div> : null}</div>
+						<div className="form-group"><select name='access' id='access' title='Select and access level' className={`form-control  form-control-sm${(this.state.errors.access) ? ' is-invalid' : ''}`} onChange={this.handleForm}><option value=''>Select and Access Level</option><option value='1'>Read only</option><option value='2'>Edit</option></select>{(this.state.errors.access) ? <div className='invalid-feedback'>{this.state.errors.access}</div> : null}</div>
+						<div className="form-group"><input type='submit' className='btn btn-primary btn-sm' value='Add' onClick={this.submitForm} /></div>
+					</form>
+				</div>
+			);
+		}
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Initialize browse and render into DOM. This function is exported to allow the Pawtucket

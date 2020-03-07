@@ -912,37 +912,67 @@
 						$pn_rank = null;
 					}
 					if($ps_comment || $pn_rank || $ps_media1){
-						$t_item->addComment($ps_comment, $pn_rank, $this->request->getUserID(), null, $ps_name, $ps_email, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null, array('media1_original_filename' => $ps_media1_original_name), $ps_media1, null, null, null, $ps_location);
+						$t_item->addComment($ps_comment, $pn_rank, $this->request->getUserID(), null, $ps_name, $ps_email, ((in_array($ps_table, array("ca_sets", "ca_set_items"))) || $this->request->config->get("dont_moderate_comments")) ? 1:0, null, array('media1_original_filename' => $ps_media1_original_name), $ps_media1, null, null, null, $ps_location);
 					}
 					if($ps_tags){
 						$va_tags = array();
 						$va_tags = explode(",", $ps_tags);
 						foreach($va_tags as $vs_tag){
-							$t_item->addTag(trim($vs_tag), $this->request->getUserID(), null, ($this->request->config->get("dont_moderate_comments")) ? 1:0, null);
+							$t_item->addTag(trim($vs_tag), $this->request->getUserID(), null, ((in_array($ps_table, array("ca_sets", "ca_set_items"))) || $this->request->config->get("dont_moderate_comments")) ? 1:0, null);
 						}
 					}
 					if($ps_comment || $ps_tags || $ps_media1){
-						# --- check if email notification should be sent to admin
-						if(!$this->request->config->get("dont_email_notification_for_new_comments")){
-							# --- send email confirmation
-							$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
-							$o_view->setVar("comment", $ps_comment);
-							$o_view->setVar("tags", $ps_tags);
-							$o_view->setVar("name", $ps_name);
-							$o_view->setVar("email", $ps_email);
-							$o_view->setVar("item", $t_item);
+						# --- set/lightbox comments should be emailed to everyone with access to the set
+						if(in_array($ps_table, array("ca_sets", "ca_set_items"))){
+							$va_set_users = $t_item->getSetUsers();
+							$va_emails = array();
+							# --- gather array of users to send comment notification to
+							foreach($va_set_users as $va_set_user){
+								if($this->request->getUserID() != $va_set_user["user_id"]){
+									$va_emails[$va_set_user["email"]] = $va_set_user["name"];
+								}
+							}
+							if(sizeof($va_emails) > 0){
+								# --- send email to other users with access to set
+								$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+								$o_view->setVar("comment", $ps_comment);
+								$o_view->setVar("tags", $ps_tags);
+								$o_view->setVar("name", $ps_name);
+								$o_view->setVar("email", $ps_email);
+								$o_view->setVar("item", $t_item);
 					
-					
-							# -- generate email subject line from template
-							$vs_subject_line = $o_view->render("mailTemplates/admin_comment_notification_subject.tpl");
+								# -- generate email subject line from template
+								$vs_subject_line = $o_view->render("mailTemplates/set_comment_notification_subject.tpl");
 						
-							# -- generate mail text from template - get both the text and the html versions
-							$vs_mail_message_text = $o_view->render("mailTemplates/admin_comment_notification.tpl");
-							$vs_mail_message_html = $o_view->render("mailTemplates/admin_comment_notification_html.tpl");
+								# -- generate mail text from template - get both the text and the html versions
+								$vs_mail_message_text = $o_view->render("mailTemplates/set_comment_notification.tpl");
+								$vs_mail_message_html = $o_view->render("mailTemplates/set_comment_notification_html.tpl");
 					
-							caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+								caSendmail($va_emails, $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+								
+							}
+						}else{
+							# --- check if email notification should be sent to admin - don't send for set/ligthbox comments
+							if(!$this->request->config->get("dont_email_notification_for_new_comments")){
+								# --- send email confirmation
+								$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+								$o_view->setVar("comment", $ps_comment);
+								$o_view->setVar("tags", $ps_tags);
+								$o_view->setVar("name", $ps_name);
+								$o_view->setVar("email", $ps_email);
+								$o_view->setVar("item", $t_item);
+					
+								# -- generate email subject line from template
+								$vs_subject_line = $o_view->render("mailTemplates/admin_comment_notification_subject.tpl");
+						
+								# -- generate mail text from template - get both the text and the html versions
+								$vs_mail_message_text = $o_view->render("mailTemplates/admin_comment_notification.tpl");
+								$vs_mail_message_html = $o_view->render("mailTemplates/admin_comment_notification_html.tpl");
+					
+								caSendmail($this->request->config->get("ca_admin_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html);
+							}
 						}
-						if($this->request->config->get("dont_moderate_comments")){
+						if(($ps_table == "ca_sets") || $this->request->config->get("dont_moderate_comments")){
 							$this->view->setVar('data', [
 								'status' => 'ok', 'message' => _t("Thank you for contributing.").$vs_dup_rank_message
 							]);

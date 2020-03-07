@@ -4,74 +4,13 @@ import ReactDOM from 'react-dom';
 const axios = require('axios');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-const selector = pawtucketUIApps.comment.selector;
-const appData = pawtucketUIApps.comment.data;
-const tableName = appData.tablename;
-const itemID = appData.item_id;
-const formTitle = appData.form_title;
-const listTitle = appData.list_title;
-const loginButtonText = appData.login_button_text;
-const noTags = appData.no_tags;
-const showForm = appData.show_form;
-
-//	class CommentsTagsList extends React.Component {
-// 		constructor(props) {
-// 			super(props);
-// 			this.state = {
-// 				comments: [],
-// 				tags: [],
-// 				settings: {
-// 					...props
-// 				}
-// 			}
-// 			let state = this.state;
-// 			let that = this;
-// 			//this.setState(state);
-// 			axios.get("/index.php/Detail/getCommentsTagsJS/tablename/" + tableName + "/item_id/" + itemID)
-// 				.then(function (resp) {
-// 					let data = resp.data;
-// 					if (data.status == 'ok') {
-// 						if (data.comments) {
-// 							for(let k in data.comments) {
-// 								let c = data.comments[k];
-// 								if(c.comment.length){
-// 									state.comments.push(<li className='list-group-item' key={k}>{c.comment}<br/><small>{c.date} - {c.fname}</small></li>);
-// 								}
-// 							}
-// 						}
-// 						if (data.tags) {
-// 							for(let k in data.tags) {
-// 								state.tags.push(data.tags[k]);
-// 							}
-// 						}
-// 					}
-// 					that.setState(state);
-// 
-// 				})
-// 				.catch(function (error) {
-// 					console.log("Error while getting comments: ", error);
-// 				});
-// 			
-// 			
-// 			
-// 		}
-// 		render() {
-// 			return (
-// 			    <div>
-// 			    	{(this.state.comments.length || this.state.tags.length) ? <div dangerouslySetInnerHTML={{ __html: listTitle}} /> : null}
-// 			    	{(this.state.tags.length) ? <ul className='list-group list-group-flush mb-4'><b>Tags: </b>{this.state.tags}</ul> : null}
-// 			    	{(this.state.comments.length) ? <ul className='list-group list-group-flush mb-4'>{this.state.comments}</ul> : null}
-// 			    </div>
-// 			);
-// 		}
-// 	}
 	class CommentsTagsList extends React.Component {
 		render() {
 			let tags = (this.props.tags.length) ? <li className='list-group-item'><b>Tags: </b>{this.props.tags}</li> : null;
 			let comments = (this.props.comments.length) ? this.props.comments : null;
 			return (
 			    <div>
-			    	{(this.props.comments.length || this.props.tags.length) ? <div dangerouslySetInnerHTML={{ __html: listTitle}} /> : null}
+			    	{(this.props.comments.length || this.props.tags.length) ? <div dangerouslySetInnerHTML={{ __html: this.props.listTitle}} /> : null}
 			    	{(this.props.tags.length || this.props.comments.length) ? <ul className='list-group list-group-flush mb-4'>{tags}{comments}</ul> : null}
 			    </div>
 			);
@@ -107,15 +46,15 @@ const showForm = appData.show_form;
 			return {
 				tags: '',
 				comment: '',
-				tablename: tableName,
-				item_id: itemID
+				tablename: this.props.tableName,
+				item_id: this.props.itemID
 			};
 		}
 		
 		initializeList() {
 			let state = this.state;
  			let that = this;
-			axios.get("/index.php/Detail/getCommentsTagsJS/tablename/" + tableName + "/item_id/" + itemID)
+			axios.get("/index.php/Detail/getCommentsTagsJS/tablename/" + this.props.tableName + "/item_id/" + this.props.itemID)
 				.then(function (resp) {
 					let data = resp.data;
 					if (data.status == 'ok') {
@@ -209,45 +148,30 @@ const showForm = appData.show_form;
 		}
 
 		render() {
-			if(showForm){
+			if(this.props.showForm){
 				return (
-					<div className="mb-5">
-						<CommentsTagsList comments={this.state.commentsTags.comments} tags={this.state.commentsTags.tags.join(', ')} />
-						<div dangerouslySetInnerHTML={{ __html: formTitle}} />
+					<div>
+						<div dangerouslySetInnerHTML={{ __html: this.props.formTitle}} />
 						<CommentFormMessage message={this.state.statusMessage} messageType={this.state.statusMessageType} />
 						<form className='ca-form'>
-							{(noTags) ? null : <div className="form-group"><label for='tags'>Tags</label><input className={`form-control${(this.state.errors.tags) ? ' is-invalid' : ''}`} id='tags' name='tags' value={this.state.values.tags} onChange={this.handleForm} type='text' placeholder='Tags separated by commas' />{(this.state.errors.tags) ? <div className='invalid-feedback'>{this.state.errors.tags}</div> : null}</div>}
-							<div className="form-group"><label for='comment'>Comment</label><textarea className={`form-control${(this.state.errors.comment) ? ' is-invalid' : ''}`} id='comment' name='comment' value={this.state.values.comment} onChange={this.handleForm} placeholder='Enter your comment' />{(this.state.errors.comment) ? <div className='invalid-feedback'>{this.state.errors.comment}</div> : null}</div>
-							<input type="hidden" id="tablename" name="tablename" value={tableName} />
-							<input type="hidden" id="item_id" name="item_id" value={itemID} />
-							<div className="form-group"><input type='submit' className='btn btn-primary' value='Send' onClick={this.submitForm} /></div>
+							{(this.props.noTags) ? null : <div className="form-group">{(this.props.tagFieldTitle) ? <label for='tags'>{this.props.tagFieldTitle}</label> : null}<input className={`form-control form-control-sm${(this.state.errors.tags) ? ' is-invalid' : ''}`} id='tags' name='tags' value={this.state.values.tags} onChange={this.handleForm} type='text' placeholder='Tags separated by commas' />{(this.state.errors.tags) ? <div className='invalid-feedback'>{this.state.errors.tags}</div> : null}</div>}
+							<div className="form-group">{(this.props.commentFieldTitle) ? <label for='comment'>{this.props.commentFieldTitle}</label> : null}<textarea className={`form-control form-control-sm${(this.state.errors.comment) ? ' is-invalid' : ''}`} id='comment' name='comment' value={this.state.values.comment} onChange={this.handleForm} placeholder='Enter your comment' />{(this.state.errors.comment) ? <div className='invalid-feedback'>{this.state.errors.comment}</div> : null}</div>
+							<input type="hidden" id="tablename" name="tablename" value={this.props.tableName} />
+							<input type="hidden" id="item_id" name="item_id" value={this.props.itemID} />
+							<div className="form-group"><input type='submit' className='btn btn-primary btn-sm' value={this.props.commentButtonText} onClick={this.submitForm} /></div>
 						</form>
+						<CommentsTagsList listTitle={this.props.listTitle} comments={this.state.commentsTags.comments} tags={this.state.commentsTags.tags.join(', ')} />
 					</div>
 				);
 			}else{
 				return (
-					<div className="mb-5">
+					<div>
+						<div className="text-center"><a href="/index.php/LoginReg/LoginForm" className="btn btn-primary">{this.props.loginButtonText}</a></div>
 						<CommentsTagsList comments={this.state.commentsTags.comments} tags={this.state.commentsTags.tags.join(', ')} />
-						<div className="text-center"><a href="/index.php/LoginReg/LoginForm" className="btn btn-primary">{loginButtonText}</a></div>
 					</div>
 				);
 			}
 		}
 	}
-	class Comments extends React.Component {
-		render() {
-			return (
-				<div>
-					<CommentForm />
-				</div>
-			);
-		}
-	}
-/**
- * Initialize comments and render into DOM. This function is exported to allow the Pawtucket
- * app loaders to insert this application into the current view.
- */
-export default function _init() {
-	ReactDOM.render(<Comments />, document.querySelector(selector));
-}
 
+export { CommentForm, CommentFormMessage, CommentsTagsList};
