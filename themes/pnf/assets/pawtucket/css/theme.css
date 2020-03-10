@@ -46,7 +46,7 @@ a:hover{
 	border-left:0px solid #fff;
 	height:69px;
 	width: calc(85% - 95px);
-	z-index:1000;
+	z-index:3000;
 }
 #head .logo_container {
 	width: 95px;
