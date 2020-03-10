@@ -84,6 +84,9 @@ a:hover{
 	font-family: 'Lusitana', serif;
 	font-size:16px;
 }
+.navbar-default{
+	z-index:2000;
+}
 .navbar .formOutline {
 	border:0px;
 	background-color:#fff;
