@@ -93,7 +93,7 @@
 					print "<div class='unit'><h6>Holding Institution</h6>".$vs_collection_link;
 					if(($vs_collection != $vs_institution) && (strpos($vs_collection, $vs_institution) === false)){
 						if($vs_institution){
-							print "<br/>".$vs_institution;
+							print (($vs_collection_link) ? "<br/>" : "").$vs_institution;
 						}
 					}
 					print "</div>";

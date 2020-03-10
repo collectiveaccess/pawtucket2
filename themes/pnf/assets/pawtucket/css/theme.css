@@ -308,6 +308,11 @@ div.browseFacetItem:hover {
 .multisearch .multisearchResult .title a {
 	color: #7f4539;
 }
+.multisearch .multisearchResult .small{
+	color:#ababab;
+	line-height: 1.3em;
+	font-size: 85%;
+}
 
 
 /* Browse */
@@ -668,10 +673,24 @@ div.caMediaOverlayControls {
     padding-top: 170px!important;
     margin-top: -170px !important;
 }
+#bibHeading{
+	top: 120px;
+	padding-left: 100px;
+	padding-right:100px;
+	background-color:#FFF;
+}
+#bibBody{
+	margin-top:50px;
+}
+#filterByNameContainer{
+	float:right;
+	margin-top:25px;
+}
 #toc_container {
     float: left;
     border-left: 1px solid #e7e7e7;
     margin: 30px 20px 20px 0;
+    z-index: 1000;
 }
 #toc_container ul {
     color: #666666;
@@ -762,6 +781,23 @@ div.caMediaOverlayControls {
 		width: 100%;
 		position: absolute;	
 	}
+	#bibHeading{
+		top: 50px;
+		padding:0px 15px 0px 15px;
+	}
+	#bibBody{
+		margin-top:100px;
+	}
+	#filterByNameContainer{
+		float:none;
+		padding:0px;
+	}
+	#filterByNameContainer input{
+		margin-bottom:0px;
+	}
+	#filterByNameContainer input{
+		width:150px;
+	}
 	#content #toc_container {
 		margin: 0 !important;
 		padding: 0px 15px 0px 15px !important;
@@ -775,6 +811,7 @@ div.caMediaOverlayControls {
 		top:0px;
 		left:0px;
 		height:55px;
+		z-index:1;
 	}
 	#content #toc_container #toc_content {
 		padding: 0;

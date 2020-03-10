@@ -109,7 +109,7 @@
 				$vs_typecode = "";
 				$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				$vs_author = "";
-				
+				$vs_collection = "";
 				if(!$vs_image){
 					if ($vs_table == 'ca_objects') {
 						$t_list_item->load($qr_res->get("type_id"));
@@ -136,7 +136,10 @@
 					if ($va_pub_info = $qr_res->get('ca_objects.publication_description')) {
 					
 					} else {$va_pub_info = null; }
-					$vs_info = "<p>".$va_date."<br/>".$va_pub_info."</p>";
+					if($vs_collection = $qr_res->getWithTemplate('<unit relativeTo="ca_collections">^ca_collections.preferred_labels.name</unit>')){
+						$vs_collection = "<br/><small>".$vs_collection."</small>";
+					}
+					$vs_info = "<p>".$va_date."<br/>".$va_pub_info.$vs_collection."</p>";
 				}
 				$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				if($vs_table === 'ca_collections'){

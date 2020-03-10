@@ -34,11 +34,11 @@
  	$va_type_info = $this->getVar('typeInfo');
  	$va_listing_info = $this->getVar('listingInfo');
 ?>
-	<div class="listing-content single-lists">
+	<nav class="navbar navbar-fixed-top" id="bibHeading">
 
-		<div id="filterByNameContainer">
-			<div>
-				<input type="text" name="filterByName" id="filterByName" placeholder="<?php print _t('author, title and keyword search');?>" value="" onfocus="this.value='';"/><a href="#" onclick="jQuery('.listEntry').css('display', 'block'); jQuery('#filterByName').val(''); return false;"> <i class="fa fa-close"></i> 
+			<div id="filterByNameContainer">
+				<div>
+					<input type="text" name="filterByName" id="filterByName" placeholder="<?php print _t('author, title and keyword search');?>" value="" onfocus="this.value='';"/><a href="#" onclick="jQuery('.listEntry').css('display', 'block'); jQuery('#filterByName').val(''); return false;"> <i class="fa fa-close"></i> 
 <?php		
 			global $g_ui_locale;	
 			if ($g_ui_locale == 'en_US'){			
@@ -50,13 +50,20 @@
 				</a>
 			</div>
 		</div>
-<?php 
-
+<?php
+		print "<h2>{$va_listing_info['displayName']}</h2>\n";
+?>
+	</nav>
+	<div class="listing-content single-lists">
+	
+<?php
+			
+		
+	print "<div id='bibBody'>";
 	$va_links_array = array();
 	$va_letter_array = array();
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
-		print "<h2>{$va_listing_info['displayName']}</h2>\n";		
 		#if ($va_listing_info['id'] == "sources") {
 		#	print '<p>'._t('"Comprehensive sources" refers to bibliographies, catalogs, checklists, and indexes that include sueltas by several playwrights and are not limited to a single author. It is assumed that researchers investigating a particular dramatist will be thoroughly familiar with the scholarship on that person, including modern editions of his or her plays, which frequently discuss suelta editions.').'</p>';	
 		#} else {
@@ -77,6 +84,7 @@
 		}
 	}
 ?>
+	</div>
 	<div id='toc_container'>
 		<div id='toc_content' class='arrow-scroll'>
 			<ul id='tocList'>
