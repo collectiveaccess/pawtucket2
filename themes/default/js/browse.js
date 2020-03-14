@@ -27,6 +27,8 @@ function initialState() {
 		loadingMore: false,
 		numLoads: 1,	// total number of results sets we've fetched since loading
 		hasAutoScrolled: false,
+		sort: null,
+		sortDirection: null,
 		
 		labelSingular: null,
 		labelPlural: null
@@ -55,6 +57,8 @@ function fetchResults(url, callback, useDefaultKey=true) {
 			state.facetList = data.facetList;
 			state.baseFilters = data.baseCriteria;
 			state.key = data.key;
+			state.sort = data.sort;
+			state.sortDirection = data.sortDirection;
 			state.scrollToResultID = data.lastViewedID;
 			if (data.introduction && (data.introduction.title !== undefined) && (data.introduction.description !== undefined)) {
 				state.introduction = data.introduction;
@@ -143,7 +147,7 @@ function initBrowseContainer(instance, props, loadResults=true, callback=null) {
 
 		fetchResults(that.props.baseUrl + '/' + that.props.endpoint + '/s/' +
 			offset + (that.state.key ? '/key/' + that.state.key : '') + (filterString ? '/facets/' +
-				filterString : '') + (clearFilters ? '/clear/1' : '') + (that.state.set_id ? '/set_id/' + that.state.set_id : ''), function(newState) {
+				filterString : '') + (clearFilters ? '/clear/1' : '') + (that.state.set_id ? '/set_id/' + that.state.set_id : '') + (that.state.sort ? '/sort/' + that.state.sort : '') + (that.state.sortDirection ? '/direction/' + that.state.sortDirection : ''), function(newState) {
 			callback(newState);
 		}, !this.dontUseDefaultKey);
 	};
@@ -209,6 +213,28 @@ function initBrowseContainer(instance, props, loadResults=true, callback=null) {
 			that.setState(newState);
 		}, Object.keys(state.filters).length === 0);
 	};
+	
+	/**
+	 * Reload results using provided sort. Maintain current filters.
+	 *
+	 * @param sort field to sort by.
+	 *
+	 */
+	that.sortResults = function(sort, direction) {
+		let state = that.state;
+		state.start = 0;
+		state.sort = sort;
+		state.sortDirection = direction;
+		state.resultSize = null;
+		state.totalSize = null;
+		state.loadingMore = false;
+		state.numLoads++;
+		that.setState(state);
+		that.loadResults(function(newState) {
+			newState.view = that.state.view; // preserve view setting
+			that.setState(newState);
+		}, false);
+	};
 
 	that.closeFacetPanel = function() {
 		let state = that.state;
@@ -220,6 +246,7 @@ function initBrowseContainer(instance, props, loadResults=true, callback=null) {
 	that.loadResults = that.loadResults.bind(that);
 	that.loadMoreResults = that.loadMoreResults.bind(that);
 	that.reloadResults = that.reloadResults.bind(that);
+	that.sortResults = that.sortResults.bind(that);
 
 	if(props.browseKey) {
 		that.state.key = props.browseKey;

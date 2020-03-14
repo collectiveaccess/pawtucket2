@@ -32,6 +32,7 @@
 	}
 	$action = $this->request->getAction();
 	$browse_info = $this->getVar('browseInfo');
+	$export_formats = $this->getVar('export_formats');
 ?>
 
 <div id="browse"></div>
@@ -43,7 +44,9 @@
 			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
 			endpoint: "<?php print $action; ?>",
 			initialFilters: <?php print json_encode($initial_criteria); ?>,
-			view: "<?php print caGetOption('defaultView', $browse_info, 'images'); ?>"
+			view: "<?php print caGetOption('defaultView', $browse_info, 'images'); ?>",
+			browseConfig: <?php print json_encode($browse_info); ?>,
+			exportFormats: <?php print json_encode($export_formats); ?>
         }
     };
 </script>

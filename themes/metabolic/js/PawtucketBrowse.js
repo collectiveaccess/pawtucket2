@@ -5,6 +5,7 @@ import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList,
 
 const selector = pawtucketUIApps.PawtucketBrowse.selector;
 const appData = pawtucketUIApps.PawtucketBrowse.data;
+const browseConfig = pawtucketUIApps.PawtucketBrowse.data.browseConfig;
 /**
  * Component context making PawtucketBrowse internals accessible to all subcomponents
  *
@@ -39,7 +40,7 @@ class PawtucketBrowse extends React.Component{
 		return(
 			<PawtucketBrowseContext.Provider value={this}>	
                 <PawtucketBrowseFilterControls facetLoadUrl={facetLoadUrl}/>
-                <PawtucketBrowseResults view={this.state.view} facetLoadUrl={facetLoadUrl}/>
+                <PawtucketBrowseResults view={this.state.view} sort={this.state.sort} facetLoadUrl={facetLoadUrl}/>
 			</PawtucketBrowseContext.Provider>
 		);
 	}
@@ -139,11 +140,13 @@ class PawtucketBrowseFilterControls extends React.Component {
 					<div className="row">
 						<div className="col-md-6"><PawtucketBrowseStatistics/></div>
 						<div className="col-md-6">
-{/* view download sort don't work yet
+{/* view and export options don't work yet
 							<PawtucketBrowseViewList/>
-							<PawtucketBrowseDownloadOptions/>
-							<PawtucketBrowseSortOptions/>
 */}
+							<PawtucketBrowseExportOptions/>
+
+							<PawtucketBrowseSortOptions/>
+
 						</div>
 					</div>
 				</div>
@@ -451,25 +454,38 @@ class PawtucketBrowseViewList extends React.Component {
  *
  * Uses context: PawtucketBrowseContext
  */
-class PawtucketBrowseDownloadOptions extends React.Component {
+class PawtucketBrowseExportOptions extends React.Component {
 	static contextType = PawtucketBrowseContext;
-
+	constructor(props) {
+		super(props);
+	}
+	
 	render() {
+		let exportOptions = [];
+		let exportFormats = null;
+		exportFormats = appData.exportFormats;
+		if(exportFormats) {
+			for (let i in exportFormats) {
+				let r = exportFormats[i];
+				exportOptions.push(<a className="dropdown-item" href={appData.baseUrl + '/' + appData.endpoint + '/getResult/1/download/1/view/' + r.type + '/export_format/' + r.code + '/key/' + this.context.state.key} key={i}>{r.name}</a>);
+			}
+		}
+
 		return (
-			<div id="bDownloadOptions">
+			<div id="bExportOptions">
 				<div className="dropdown show">
 					<a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 					<ion-icon name="download"></ion-icon>
 				  </a>
 
 				  <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-					<a className="dropdown-item" href="#">PDF</a>
-					<a className="dropdown-item" href="#">XCEL</a>
+					{exportOptions}
 				  </div>
 				</div>
 			</div>
 		);
 	}
+
 }
 /**
  * Renders sort options
@@ -484,8 +500,35 @@ class PawtucketBrowseDownloadOptions extends React.Component {
  */
 class PawtucketBrowseSortOptions extends React.Component {
 	static contextType = PawtucketBrowseContext;
-
+	constructor(props) {
+		super(props);
+		
+		this.handleSort = this.handleSort.bind(this);
+	}
+	handleSort(e){
+		let sort = e.target.attributes.getNamedItem('data-sort').value;
+		let direction = e.target.attributes.getNamedItem('data-direction').value;
+		this.context.sortResults(sort, direction);
+		e.preventDefault();
+	}
 	render() {
+		let sortOptions = [];
+		let sortConfig = [];
+		//let sortDirection = [];
+		sortConfig = browseConfig.sortBy;
+		//sortDirection = browseConfig.sortDirection;
+		if(sortConfig) {
+			for (let i in sortConfig) {
+				let r = sortConfig[i];
+				let sortLinkText = "";
+				let sortLinkActive = "";
+				sortLinkText = ((this.context.state.sort == i) && (this.context.state.sortDirection == "asc")) ? <b>{i}  <ion-icon name="arrow-up"></ion-icon></b> : <>{i} <ion-icon name='arrow-up'></ion-icon></>;
+				sortLinkActive = ((this.context.state.sort == i) && (this.context.state.sortDirection == "asc")) ? "active" : null;
+				sortOptions.push(<a className={((this.context.state.sort == i) && (this.context.state.sortDirection == "asc")) ? "dropdown-item active" : "dropdown-item"} href="#" onClick={this.handleSort} data-sort={i} data-direction="asc" key={r + "asc"}>{sortLinkText}</a>);
+				sortLinkText = ((this.context.state.sort == i) && (this.context.state.sortDirection == "desc")) ? <b>{i} <ion-icon name='arrow-down'></ion-icon></b> : <>{i} <ion-icon name='arrow-down'></ion-icon></>;
+				sortOptions.push(<a className={((this.context.state.sort == i) && (this.context.state.sortDirection == "desc")) ? "dropdown-item active" : "dropdown-item"} href="#" onClick={this.handleSort} data-sort={i} data-direction="desc" key={r + "desc"}>{sortLinkText}</a>);
+			}
+		}
 		return (
 			<div id="bSortOptions">
 				<div className="dropdown show">
@@ -494,8 +537,7 @@ class PawtucketBrowseSortOptions extends React.Component {
 				  </a>
 
 				  <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
-					<a className="dropdown-item" href="#">Identifier</a>
-					<a className="dropdown-item" href="#">Name</a>
+					{sortOptions}
 				  </div>
 				</div>
 			</div>

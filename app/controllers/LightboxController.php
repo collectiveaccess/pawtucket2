@@ -109,6 +109,7 @@
  			$this->view->setVar("user_groups", $this->opa_user_groups);
 
  			$this->opo_config = caGetLightboxConfig();
+ 			$this->view->setVar("config", $this->opo_config);
  			caSetPageCSSClasses(["lightbox", "results"]);
  			
  			$va_lightboxDisplayName = caGetLightboxDisplayName($this->opo_config);

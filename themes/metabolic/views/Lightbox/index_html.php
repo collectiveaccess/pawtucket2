@@ -22,8 +22,8 @@
  *
  * ----------------------------------------------------------------------
  */
-
-
+	$export_formats = $this->getVar('export_formats');
+	$config = $this->getVar('config');
 ?>
 
 <div id="lightbox"></div>
@@ -34,7 +34,9 @@
         'data': {
 			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
             showLastLightboxOnLoad: <?php print ((bool)$this->request->getParameter('showList', pInteger)) ? 'false' : 'true'; ?>,
-			view: "thumbnails"
+			view: "thumbnails",
+			browseConfig: <?php print json_encode($config->get("lightboxBrowse")); ?>,
+			exportFormats: <?php print json_encode($export_formats); ?>
         }
     };
 </script>

@@ -70,6 +70,7 @@ $navbar-dropdown-link-hover-bg: $gray-2;
 
 $dropdown-border-radius:0px;
 $dropdown-border:1px solid $gray-1;
+$dropdown-text-decoration:none;
 
 $footer-bg: #D8D7CE;
 $footer-height:340px;
@@ -393,6 +394,12 @@ address {
 .dropdown-menu{
 	border-radius:$dropdown-border-radius;
 	border:$dropdown-border;
+	a.dropdown-item{
+		text-decoration: $dropdown-text-decoration;
+	}
+}
+.dropdown-item.active, .dropdown-item:active{
+	background-color:$gray-6;
 }
 /* footer */
 #footer {
@@ -820,7 +827,7 @@ p.legend a {
 		H1{
 			text-transform:capitalize;
 		}
-		#bViewButtons, #bSortOptions, #bDownloadOptions{
+		#bViewButtons, #bSortOptions, #bExportOptions{
 			font-size:1.5em;
 			line-height: 3.5em;
 			float:right;
@@ -831,7 +838,7 @@ p.legend a {
 				opacity:.5;
 			}
 		}
-		#bSortOptions, #bDownloadOptions{
+		#bSortOptions, #bExportOptions{
 			.dropdown-menu{
 				font-size:.5em;
 				line-height:1.2em;
@@ -1020,7 +1027,7 @@ p.legend a {
 .lightbox.results{	
 	.bToolBar{
 		height: $browse-toolbar-height-tall;		
-		#bViewButtons, #bSortOptions, #bDownloadOptions{
+		#bViewButtons, #bSortOptions, #bExportOptions{
 			line-height: 2em;
 		}
 	}

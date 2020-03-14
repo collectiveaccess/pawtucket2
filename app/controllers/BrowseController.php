@@ -110,7 +110,7 @@
 			if (!($ps_view = $this->request->getParameter("view", pString, ['forcePurify' => true]))) {
  				$ps_view = $this->opo_result_context->getCurrentView();
  			}
- 			if(!in_array($ps_view, ['images', 'list'])) {
+ 			if(!in_array($ps_view, ['images', 'list', 'pdf', 'xlsx', 'pptx'])) {
  					$ps_view = 'images';
  			}
 
@@ -299,139 +299,151 @@
 				$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
 
 				$this->view->setVar('result', $qr_res);
-
-				if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
-					if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
-						$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
-					}
-				}
-				$this->opo_result_context->setItemsPerPage($pn_hits_per_block);
-
-				$this->view->setVar('hits_per_block', $pn_hits_per_block);
-				$this->view->setVar('start', $start = (int)$this->request->getParameter('s', pInteger));
-
-				$vs_key = $o_browse->getBrowseID();
-
-				$last_browse_start = $start;
-				if($vs_key === $ps_cache_key) {
-					$last_browse_start = Session::getVar("{$ps_function}_last_browse_start");
-					if ($start > $last_browse_start) {
-						Session::setVar("{$ps_function}_last_browse_start", $start);
-					}
-				} else{
-					Session::setVar($qr_res->tableName().'_last_detail_id', null);
-					Session::setVar("{$ps_function}_last_browse_start", 0);
-				}
-
-				if (($vn_key_start = $start - 1000) < 0) {
-					$vn_key_start = 0;
-				}
-				$qr_res->seek($vn_key_start);
-				$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
-				$qr_res->seek($start);
-
-				$criteria = $o_browse->getCriteriaWithLabels();
-				$facet_info = $o_browse->getInfoForFacets();
-
-				$data = [
-					'lastStart' => $last_browse_start,
-					'lastViewedID' => Session::getVar($qr_res->tableName().'_last_detail_id'),
-					'size' => $qr_res->numHits(),
-					'key' => $vs_key,
-					'hitsStart' => $start,
-					'start' => ($last_browse_start >= $items_per_page) ? $last_browse_start + $items_per_page : $start,
-					'itemsPerPage' => $items_per_page,
-					'table' => $qr_res->tableName(),
-					'pk' => $qr_res->primaryKey(),
-					'hits' => [],
-					'availableFacets' => $o_browse->getInfoForAvailableFacets(),
-					'facetList' => $facet_info,
-					'criteria' => $criteria,
-					'baseCriteria' => $va_base_criteria,
-					'labelSingular' => $va_browse_info['labelSingular'],
-					'labelPlural' => $va_browse_info['labelPlural']
-				];
-
-				if (($intro = caGetOption('introduction', $va_browse_info, caGetOption('introduction', $pa_args, null))) && is_array($intro)) {
-					// Look for facets
-					$intro_set = false;
-
-					// Substitute global vars
-					$global_vars = caGetGlobalValuesAsArray();
-					foreach($global_vars as $k => $v) {
-						$global_vars["_global_var.{$k}"] = $v;
-					}
-
-					if(caGetOption('introduction', $pa_args, null)) {
-						$intro_set = true;
-						$data['introduction']['title'] = caGetOption('title', $intro, null);
-						$data['introduction']['description'] = caGetOption('description', $intro, null);
-					} else {
-						foreach ($intro as $k => $v) {
-							if (!isset($criteria[$k])) {
-								continue;
-							}
-							if ($facet_info[$k]['type'] !== 'authority') {
-								continue;
-							}
-							if (!is_array($criteria[$k])) {
-								continue;
-							}
-							$id = array_pop(array_keys($criteria[$k]));
-
-							if (($t_instance = Datamodel::getInstance($facet_info[$k]['table'], true)) && ($t_instance->load($id)) && in_array($t_instance->get('access'), $this->opa_access_values)) {
-								$title_template = caProcessTemplate($intro[$k]['title'], $global_vars, ['skipTagsWithoutValues' => true]);
-								$description_template = caProcessTemplate($intro[$k]['description'], $global_vars, ['skipTagsWithoutValues' => true]);
-
-								$data['introduction']['title'] = $t_instance->getWithTemplate($title_template, ['checkAccess' => $this->opa_access_values]);
-								$data['introduction']['description'] = $t_instance->getWithTemplate($description_template, ['checkAccess' => $this->opa_access_values]);
-
-								$intro_set = true;
-								break;
-							}
+				if(!in_array($ps_view, array('pdf', 'xlsx', 'pptx'))){
+					if (!($pn_hits_per_block = $this->request->getParameter("n", pString, ['forcePurify' => true]))) {
+						if (!($pn_hits_per_block = $this->opo_result_context->getItemsPerPage())) {
+							$pn_hits_per_block = $this->opo_config->get("defaultHitsPerBlock");
 						}
 					}
-					if (!$intro_set) {
-						$data['introduction']['title'] = caProcessTemplate(caGetOption('title', $intro, ''), $global_vars);
-						$data['introduction']['description'] = caProcessTemplate(caGetOption('description', $intro, ''), $global_vars);
+					$this->opo_result_context->setItemsPerPage($pn_hits_per_block);
+
+					$this->view->setVar('hits_per_block', $pn_hits_per_block);
+					$this->view->setVar('start', $start = (int)$this->request->getParameter('s', pInteger));
+
+					$vs_key = $o_browse->getBrowseID();
+
+					$last_browse_start = $start;
+					if($vs_key === $ps_cache_key) {
+						$last_browse_start = Session::getVar("{$ps_function}_last_browse_start");
+						if ($start > $last_browse_start) {
+							Session::setVar("{$ps_function}_last_browse_start", $start);
+						}
+					} else{
+						Session::setVar($qr_res->tableName().'_last_detail_id', null);
+						Session::setVar("{$ps_function}_last_browse_start", 0);
 					}
-				}
 
-				$c = 0;
+					if (($vn_key_start = $start - 1000) < 0) {
+						$vn_key_start = 0;
+					}
+					$qr_res->seek($vn_key_start);
+					$this->opo_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+					$qr_res->seek($start);
 
-				$table = $qr_res->tableName();
-				$idno_fld= $qr_res->getInstance(true)->getProperty('ID_NUMBERING_ID_FIELD');
+					$criteria = $o_browse->getCriteriaWithLabels();
+					$facet_info = $o_browse->getInfoForFacets();
 
-				if (($last_browse_start >= $items_per_page) && ($start == 0)) { $items_per_page = $last_browse_start + ($items_per_page * 2); }	// return all results up to and including currrent page
-				while($qr_res->nextHit()) {
-					$d = [
-						'id' => $id = $qr_res->getPrimaryKey(),
-						'label' => $qr_res->get('preferred_labels'),
-						'idno' => $qr_res->get($idno_fld),
-						'detailUrl' => caDetailUrl($table, $id)
+					$data = [
+						'lastStart' => $last_browse_start,
+						'lastViewedID' => Session::getVar($qr_res->tableName().'_last_detail_id'),
+						'size' => $qr_res->numHits(),
+						'key' => $vs_key,
+						'hitsStart' => $start,
+						'start' => ($last_browse_start >= $items_per_page) ? $last_browse_start + $items_per_page : $start,
+						'itemsPerPage' => $items_per_page,
+						'table' => $qr_res->tableName(),
+						'pk' => $qr_res->primaryKey(),
+						'hits' => [],
+						'availableFacets' => $o_browse->getInfoForAvailableFacets(),
+						'facetList' => $facet_info,
+						'criteria' => $criteria,
+						'baseCriteria' => $va_base_criteria,
+						'labelSingular' => $va_browse_info['labelSingular'],
+						'labelPlural' => $va_browse_info['labelPlural'],
+						'sort' => $ps_sort,
+						'sortDirection' => $ps_sort_direction
 					];
 
-					// TODO: this is hardcoded to use view "images" until we add support for multiple view types
-					if(is_array($va_browse_info['views']['images'])) {
-						foreach($va_browse_info['views']['images'] as $k => $tmpl) {
-							$d[$k] = $qr_res->getWithTemplate($tmpl, ['checkAccess' => $this->opa_access_values]);
+					if (($intro = caGetOption('introduction', $va_browse_info, caGetOption('introduction', $pa_args, null))) && is_array($intro)) {
+						// Look for facets
+						$intro_set = false;
+
+						// Substitute global vars
+						$global_vars = caGetGlobalValuesAsArray();
+						foreach($global_vars as $k => $v) {
+							$global_vars["_global_var.{$k}"] = $v;
+						}
+
+						if(caGetOption('introduction', $pa_args, null)) {
+							$intro_set = true;
+							$data['introduction']['title'] = caGetOption('title', $intro, null);
+							$data['introduction']['description'] = caGetOption('description', $intro, null);
+						} else {
+							foreach ($intro as $k => $v) {
+								if (!isset($criteria[$k])) {
+									continue;
+								}
+								if ($facet_info[$k]['type'] !== 'authority') {
+									continue;
+								}
+								if (!is_array($criteria[$k])) {
+									continue;
+								}
+								$id = array_pop(array_keys($criteria[$k]));
+
+								if (($t_instance = Datamodel::getInstance($facet_info[$k]['table'], true)) && ($t_instance->load($id)) && in_array($t_instance->get('access'), $this->opa_access_values)) {
+									$title_template = caProcessTemplate($intro[$k]['title'], $global_vars, ['skipTagsWithoutValues' => true]);
+									$description_template = caProcessTemplate($intro[$k]['description'], $global_vars, ['skipTagsWithoutValues' => true]);
+
+									$data['introduction']['title'] = $t_instance->getWithTemplate($title_template, ['checkAccess' => $this->opa_access_values]);
+									$data['introduction']['description'] = $t_instance->getWithTemplate($description_template, ['checkAccess' => $this->opa_access_values]);
+
+									$intro_set = true;
+									break;
+								}
+							}
+						}
+						if (!$intro_set) {
+							$data['introduction']['title'] = caProcessTemplate(caGetOption('title', $intro, ''), $global_vars);
+							$data['introduction']['description'] = caProcessTemplate(caGetOption('description', $intro, ''), $global_vars);
 						}
 					}
 
-					$data['hits'][] =$d;
-					$c++;
-					if ($c >= $items_per_page) { break; }
+					$c = 0;
+
+					$table = $qr_res->tableName();
+					$idno_fld= $qr_res->getInstance(true)->getProperty('ID_NUMBERING_ID_FIELD');
+
+					if (($last_browse_start >= $items_per_page) && ($start == 0)) { $items_per_page = $last_browse_start + ($items_per_page * 2); }	// return all results up to and including currrent page
+					while($qr_res->nextHit()) {
+						$d = [
+							'id' => $id = $qr_res->getPrimaryKey(),
+							'label' => $qr_res->get('preferred_labels'),
+							'idno' => $qr_res->get($idno_fld),
+							'detailUrl' => caDetailUrl($table, $id)
+						];
+
+						// TODO: this is hardcoded to use view "images" until we add support for multiple view types
+						if(is_array($va_browse_info['views']['images'])) {
+							foreach($va_browse_info['views']['images'] as $k => $tmpl) {
+								$d[$k] = $qr_res->getWithTemplate($tmpl, ['checkAccess' => $this->opa_access_values]);
+							}
+						}
+
+						$data['hits'][] =$d;
+						$c++;
+						if ($c >= $items_per_page) { break; }
+					}
+					$this->view->setVar('data', $data);
+
+					Session::setVar("{$ps_function}_last_browse_id", $vs_key = $o_browse->getBrowseID());
+					Session::save();
+					$this->opo_result_context->setParameter('key', $vs_key);
+					$this->opo_result_context->saveContext();
+					return $this->render($this->ops_view_prefix."/browse_data_json.php");
 				}
-				$this->view->setVar('data', $data);
-
-				Session::setVar("{$ps_function}_last_browse_id", $vs_key = $o_browse->getBrowseID());
-				Session::save();
-				$this->opo_result_context->setParameter('key', $vs_key);
-				$this->opo_result_context->saveContext();
-				return $this->render($this->ops_view_prefix."/browse_data_json.php");
 			}
-
-			$this->render($this->ops_view_prefix."/browse_results_html.php");
+			switch($ps_view) {
+ 				case 'xlsx':
+ 				case 'pptx':
+ 				case 'pdf':
+ 					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString, ['forcePurify' => true]), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $ps_search_expression)), $this->getCriteriaForDisplay($o_browse));
+ 					break;
+ 				default:
+ 					$this->render($this->ops_view_prefix."/browse_results_html.php");
+ 					break;
+ 			}
+			
  		}
  		# -------------------------------------------------------
 		/** 
