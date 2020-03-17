@@ -73,12 +73,14 @@
 			$vs_first_letter = ucfirst(substr($qr_list->get('ca_occurrences.author'), 0, 1));
 			$va_letter_array[$vs_first_letter] = $vs_first_letter;
 			$vn_id = $qr_list->get('ca_occurrences.occurrence_id');
-			$va_links_array[$vs_first_letter][$vn_id] = "<div class='listLink listEntry'><span class='listAuthor'>".$qr_list->get('ca_occurrences.author')."&nbsp;</span><span class='listTitle'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</span><span class='listPub'>&nbsp;".$qr_list->get('ca_occurrences.publication_info')."</span></div>\n";	
+			$vs_sort = str_replace(array("ó", "á", "ñ", "é", "í", "ô", "ú", "ü"), array("o", "a", "n", "e", "i", "o", "u", "u"), $qr_list->get('ca_occurrences.author')." ".$qr_list->get('ca_occurrences.preferred_labels'));
+			$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry'><span class='listAuthor'>".$qr_list->get('ca_occurrences.author')."&nbsp;</span><span class='listTitle'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</span><span class='listPub'>&nbsp;".$qr_list->get('ca_occurrences.publication_info')."</span></div>\n";	
 		}
 		foreach ($va_links_array as $va_first_letter => $va_links) {
+			ksort($va_links);
 			print "<p class='separator'><a name='".$vs_first_letter."'></a><br></p>";			
 			print "<h2 id='".$va_first_letter."' class='mw-headline'>".$va_first_letter."</h2>";
-			foreach ($va_links as $va_occurrence_id => $va_link) {
+			foreach ($va_links as $vn_i => $va_link) {
 				print $va_link;
 			}
 		}
