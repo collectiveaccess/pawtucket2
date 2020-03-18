@@ -386,6 +386,16 @@
  			$this->view->setVar("label", $t_instance->getLabelForDisplay());
  			$this->view->setVar("table", $vs_table);
  			
+ 			$va_set_items = caExtractValuesByUserLocale($t_set->getItems(array("thumbnailVersions" => array("icon", "iconlarge"), "checkAccess" => $this->opa_access_values)));
+ 			$va_set_item_ids = array_keys($va_set_items);
+ 			$vn_current_index = array_search($pn_item_id, $va_set_item_ids);
+ 			$vb_last = false;
+ 			if(sizeof($va_set_item_ids) == ($vn_current_index + 1)){
+ 				$vb_last = true;
+ 			}
+ 			$this->view->setVar("last", $vb_last);
+ 			$this->view->setVar("theme_id", $t_set->get('ca_sets.featured_theme'));
+ 			$this->view->setVar("theme", $t_set->get('ca_sets.featured_theme', array("convertCodesToDisplayText" => true)));
  			//
  			// Tag substitution
  			//

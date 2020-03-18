@@ -2,6 +2,9 @@
 	$t_object = $this->getVar("object");
 	$t_set_item = $this->getVar("t_set_item");
 	$va_access_values = caGetUserAccessValues($this->request);
+	$vb_last = $this->getVar("last");
+	$vn_theme_id = $this->getVar("theme_id");
+	$vs_theme = $this->getVar("theme");
 
 	$vs_type = $t_object->get('ca_objects.type_id', array("convertCodesToDisplayText" => true));
 	print "(".$this->getVar("set_item_num")."/".$this->getVar("set_num_items").")<br/>";
@@ -99,5 +102,10 @@
 		print "</div>";																								
 																							
 	
-	}	
+	}
+	if($vb_last){
+		print "<div class='viewAll'>".caNavLink($this->request, "All ".$vs_theme." <i class='fa fa-angle-right'></i>", "", "", "Featured", "Theme", array("theme_id" => $vn_theme_id))."&nbsp;&nbsp;&nbsp;".caNavLink($this->request, "All Featured <i class='fa fa-angle-right'></i>", "", "", "Featured", "Index")."</div>";
+		
+	}
+	
 ?>
