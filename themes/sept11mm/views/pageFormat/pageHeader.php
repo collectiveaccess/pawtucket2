@@ -86,7 +86,44 @@
 			<div id="mm-1" class="mm-panel mm-panel_has-navbar mm-panel_opened"><div id="mobile-u-c-wrapper" class="nav-mobile-custom-wrapper"></div>
 			<div class="mm-navbar"><a class="mm-navbar__title">Menu</a><a href="#" onClick="$('#off-canvas').toggle('slide', {direction: 'left'}, 500); return false;" class="close-nav mobile-menu-mm-btn-close" aria-label="Close mobile menu" aria-controls="mobile-menu-item-control" role="button"></a></div>
 			<ul class="menu menu-level-0 nav-menu mm-listview" aria-labelledby="site-nav-label">
+				<li class="nav-item menu-item menu-item--expanded mm-listitem">
+					<form role="search" class="mobileSearchForm" action="<?php print caNavUrl($this->request, '', 'Search', 'Objects', array('sort' => 'relevance')); ?>">
+						<input type="text" class="form-control mobileSearch" placeholder="Search Collection" name="search"><button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+					</form>
+				</li>
       			<li class="nav-item menu-item menu-item--expanded mm-listitem">
+      				<?php print caNavLink($this->request, _t("Collection Home"), "nav-link", "", "", ""); ?>
+      			</li>
+      			<li class="nav-item menu-item menu-item--expanded mm-listitem">
+					&nbsp;&nbsp;&nbsp;&nbsp;<?php print caNavLink($this->request, _t("Browse Collection"), "nav-link", "", "Browse", "objects", array("sort" => "Most&nbsp;Views")); ?>
+				</li>
+				<li class="nav-item menu-item menu-item--expanded mm-listitem">
+					&nbsp;&nbsp;&nbsp;&nbsp;<?php print caNavLink($this->request, _t("Collection Features"), "nav-link", "", "Gallery", "Index"); ?>
+				</li>
+<?php
+				if($this->request->isLoggedIn() && !$this->request->config->get("disable_lightbox")){
+?>
+					<li class="nav-item menu-item menu-item--expanded mm-listitem">
+						&nbsp;&nbsp;&nbsp;&nbsp;<?php print caNavLink($this->request, $vs_lightbox_section_heading, 'nav-link', '', 'Lightbox', 'Index', array()); ?>					
+					</li>
+					<li class="nav-item menu-item menu-item--expanded mm-listitem">
+						&nbsp;&nbsp;&nbsp;&nbsp;<?php print caNavLink($this->request, _t('User Profile'), 'nav-link', '', 'LoginReg', 'profileForm', array()); ?>					
+					</li>
+					<li class="nav-item menu-item menu-item--expanded mm-listitem">
+						&nbsp;&nbsp;&nbsp;&nbsp;<?php print caNavLink($this->request, _t('Logout'), 'nav-link', '', 'LoginReg', 'Logout', array()); ?>					
+					</li>
+<?php			
+				}else{
+					if(!$this->request->config->get('dont_allow_registration_and_login')){
+?>
+						<li class="nav-item menu-item menu-item--expanded mm-listitem">
+							&nbsp;&nbsp;&nbsp;&nbsp;<?php print caNavLink($this->request, _t('Login/Register'), 'nav-link', '', 'LoginReg', 'LoginForm', array()); ?>	
+						</li>
+<?php
+					}						
+				}
+?>
+				<li class="nav-item menu-item menu-item--expanded mm-listitem">
         			<a href="https://www.911memorial.org/visit" class="nav-link" data-drupal-link-system-path="node/31">Visit</a>
         		</li>
           		<li class="nav-item menu-item menu-item--expanded mm-listitem">

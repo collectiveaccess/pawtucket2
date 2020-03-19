@@ -7,13 +7,13 @@
 <?php
 	}
 ?>
+<H1><?php print _t("Register"); ?></H1>
 <script type="text/javascript">
 	// initialize CA Utils
 	caUI.initUtils();
 
 </script>
 	<form id="RegForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
-	<div class="row"><div class="col-sm-4"><H1><?php print _t("Register"); ?></H1></div></div>
 	<p class="turqText">Registering for an account allows you to create your own collections and save searches.</p>
 <?php
 	if($va_errors["register"]){
