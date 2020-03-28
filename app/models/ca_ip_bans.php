@@ -136,7 +136,7 @@ class ca_ip_bans extends BaseModel {
 	/**
 	 *
 	 */
-	private $config;
+	private static $config;
 	
 	# ------------------------------------------------------
 	# Hierarchical table properties
