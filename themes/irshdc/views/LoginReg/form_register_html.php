@@ -126,7 +126,12 @@
 			<label for='password2' class='col-sm-4 control-label'><?php print _t('Re-Type password'); ?></label>
 			<div class="col-sm-7"><input type="password" name="password2" id="password2" size="40" class="form-control"  autocomplete="off" /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
-		
+		<div class="form-group">
+			<div class="col-sm-7 col-sm-offset-4 ">
+				<b>Collection of Personal Information</b><br/>
+				Your personal information is collected under the authority of section 26(c) of the <i>Freedom of Information and Protection of Privacy Act</i> (FIPPA). This information will be used for the purposes of creating and managing your Residential School History and Dialogue Centre account. Questions about the collection of this information may be directed to <a href="mailto:irshdc.reference@ubc.ca">irshdc.reference@ubc.ca</a>.
+			</div>
+		</div>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
 				<button type="submit" class="btn btn-default" onClick="$('.loadingForm').toggle();"><span class="loadingForm"><?php print _t('Register'); ?></span><span class="loadingForm" style="display:none;"> <?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></span></button>

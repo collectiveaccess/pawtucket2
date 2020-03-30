@@ -1278,3 +1278,27 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
 	background-color:red;
 	padding:0px 3px 3px 3px;
 }
+
+
+
+/* font support test */
+
+
+@font-face {
+	font-family: 'first_nations_unicoderegular';
+	src: url('first_nations_unicode_regular.woff2') format('woff2'),
+			url('first_nations_unicode_regular.woff') format('woff');
+    src: url('FirstNationsUnicodeROSx.ttf')  format('truetype'); /* Safari, Android, iOS */
+}
+.fn_unicodereg{
+	font-family:first_nations_unicoderegular;
+}
+@font-face {
+	font-family: 'aboriginalsansregular';
+	src: url('aboriginalsansregular.woff2') format('woff2'),
+			url('aboriginalsansregular.woff') format('woff');
+    src: url('AboriginalSansREGULAR.ttf')  format('truetype'); /* Safari, Android, iOS */
+}
+.aboriginalsansregular{
+	font-family:aboriginalsansregular;
+}

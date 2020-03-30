@@ -14,7 +14,7 @@
 			$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
 ?>
 			<div class="relatedBlock">
-				<h3>Objects</H3>
+				<h3>Records</H3>
 				<div class="row" id="browseResultsContainer">
 <?php
 			while($qr_res->nextHit()){
