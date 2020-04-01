@@ -900,10 +900,12 @@ class LightboxResultItem extends React.Component {
 				return(
 					<div className="col-sm-6 col-md-3">
 						<div className={'card mb-4 bResultImage' + ((this.context.state.selectedItems.includes(data.id)) ? ' selected' : '')} ref={this.props.scrollToRef}>
-							<a href={data.detailUrl}><div dangerouslySetInnerHTML={{__html: data.representation}}/></a>
-							{(this.context.state.showSelectButtons) ? <div className='float-left'><a onClick={this.selectLightboxItem} data-item_id={data.id} className={'selectItem' + ((this.context.state.selectedItems.includes(data.id)) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'><ion-icon name='checkmark-circle' data-item_id={data.id}></ion-icon></a></div> : null}
-							{(this.context.state.userAccess == 2) ? <div className='float-right'><a data-toggle='collapse' href={`#deleteConfirm${data.id}`} className='removeItemInitial' role='button' aria-expanded='false' aria-controls='collapseExample'><ion-icon name='close-circle'></ion-icon></a></div> : null}
-							<div className='card-body mb-2'><a href={data.detailUrl} dangerouslySetInnerHTML={{__html: data.caption}}></a></div>
+							<div className='card-body mb-2'>
+								<a href={data.detailUrl}><div dangerouslySetInnerHTML={{__html: data.representation}}/></a>
+								{(this.context.state.showSelectButtons) ? <div className='float-left'><a onClick={this.selectLightboxItem} data-item_id={data.id} className={'selectItem' + ((this.context.state.selectedItems.includes(data.id)) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'><ion-icon name='checkmark-circle' data-item_id={data.id}></ion-icon></a></div> : null}
+								{(this.context.state.userAccess == 2) ? <div className='float-right'><a data-toggle='collapse' href={`#deleteConfirm${data.id}`} className='removeItemInitial' role='button' aria-expanded='false' aria-controls='collapseExample'><ion-icon name='close-circle'></ion-icon></a></div> : null}
+								<a href={data.detailUrl} dangerouslySetInnerHTML={{__html: data.caption}}></a>
+							</div>
 							<div className='card-footer collapse text-center' id={`deleteConfirm${data.id}`}><a data-item_id={data.id} onClick={this.context.removeItemFromLightbox}>Remove Item From {lightboxTerminology.singular}</a></div>
 						</div>
 					</div>
