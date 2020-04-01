@@ -29,10 +29,16 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+	$vn_download_all_enabled = 		$this->getVar("downloadAllEnabled");
+	$va_download_all_types = 		$this->getVar("downloadAllTypes");
 	$vn_inquire_enabled = 	$this->getVar("inquireEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = 	caGetUserAccessValues();
 	$vn_representation_id = $this->getVar("representation_id");
+	$va_representation_tags = $this->getVar("representation_tags");
+#	foreach($va_representation_tags as $vs_representation_tag){
+#		print $vs_representation_tag;
+#	}
 ?>
 <div class="row borderBottom">
 	<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
@@ -57,7 +63,7 @@
 	<div class='col-12 col-sm-10 col-md-10 col-lg-8'>
 <?php
 				# Comment/inquire/download pdf/lightbox
-				if ($vn_comments_enabled || $vn_pdf_enabled || $vn_pdf_enabled || caDisplayLightbox($this->requests)) {
+				if ($vn_comments_enabled || $vn_pdf_enabled || $vn_inquire_enabled || $vn_download_all_enabled || caDisplayLightbox($this->requests)) {
 						
 					print '<div id="detailTools" class="mt-2">';
 					if ($vn_comments_enabled) {
@@ -66,8 +72,21 @@
 						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
 <?php				
 					}
-					if ($vn_pdf_enabled) {
-						print "<div class='detailTool'>".caDetailLink("<ion-icon name='document'></ion-icon> <span>Download as PDF</span>", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
+					if ($vn_pdf_enabled || $vn_download_all_enabled) {
+						print "<div class='detailTool'><div class='dropdown'><a class='dropdown-toggle' role='button' id='DownloadButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'><ion-icon name='download'></ion-icon> Download</a>";
+						print "<div class='dropdown-menu' aria-labelledby='DropdownButton'>";
+						if($vn_pdf_enabled){
+							print caDetailLink("Download as PDF", "dropdown-item", "ca_objects",  $vn_id, array("view" => "pdf", "export_format" => "_pdf_ca_objects_summary"));
+						}
+						if($vn_download_all_enabled){
+							if(is_array($va_download_all_types) && sizeof($va_download_all_types)){
+								foreach($va_download_all_types as $vs_dl_name => $vs_dl_type){
+									print caNavLink("Download ".$vs_dl_name, "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "download_type" => $vs_dl_type, "download" => 1));
+								}
+							}
+							#print caNavLink("Download Original", "dropdown-item", "", "Detail", "DownloadMedia", array("object_id" => $vn_id, "version" => "original", "download" => 1));
+						}
+						print "</div></div></div>";
 					}
 					if ($vn_inquire_enabled) {
 						print "<div class='detailTool'>".caNavLink("<ion-icon name='ios-mail'></ion-icon> <span>Inquire</span>", "", "", "Contact", "form", array("table" => "ca_objects", "id" => $vn_id))."</div>";
@@ -285,7 +304,8 @@
             baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
 			lightboxes: <?php print json_encode($this->getVar('lightboxes')); ?>,
 			table: 'ca_objects',
-			id: <?php print (int)$vn_id; ?>
+			id: <?php print (int)$vn_id; ?>,
+        	lightboxTerminology: <?php print json_encode(caGetLightboxDisplayName()); ?>
         }
     };
 </script>

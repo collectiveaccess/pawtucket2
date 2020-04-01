@@ -107,6 +107,8 @@ $browse-toolbar-height-tall: 8rem;
 
 $main-notification-margins: 25px 0px 25px 0px;
 
+$selected-indicator: red;
+
 /* not sure if we keep/use these */
 $lighter-color: $gray-3;
 $very-light: $gray-2;
@@ -827,7 +829,7 @@ p.legend a {
 		H1{
 			text-transform:capitalize;
 		}
-		#bViewButtons, #bSortOptions, #bExportOptions{
+		#bViewButtons, #bSortOptions, #bExportOptions, #bSelectOptions{
 			font-size:1.5em;
 			line-height: 3.5em;
 			float:right;
@@ -838,7 +840,7 @@ p.legend a {
 				opacity:.5;
 			}
 		}
-		#bSortOptions, #bExportOptions{
+		#bSortOptions, #bExportOptions, #bSelectOptions{
 			.dropdown-menu{
 				font-size:.5em;
 				line-height:1.2em;
@@ -1027,14 +1029,31 @@ p.legend a {
 .lightbox.results{	
 	.bToolBar{
 		height: $browse-toolbar-height-tall;		
-		#bViewButtons, #bSortOptions, #bExportOptions{
+		#bViewButtons, #bSortOptions, #bExportOptions, #bSelectOptions{
 			line-height: 2em;
 		}
 	}
 	.bResultList{
 		margin-top: $browse-toolbar-height-tall;
+		.card.selected{
+			img{
+				border:1px solid $selected-indicator;
+			}
+			/*
+			background-color:$gray-1
+			-webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.25);
+			-moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.25);
+			box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.25);
+			*/
+		}
 		.removeItemInitial{
 			color:$gray-4;
+		}
+		.selectItem{
+			color:$gray-4;
+		}
+		.selectItem.selected{
+			color:$selected-indicator;
 		}
 		.card-footer{
 			a{

@@ -206,6 +206,8 @@ function initBrowseContainer(instance, props, loadResults=true, callback=null) {
 		state.resultSize = null;
 		state.totalSize = null;
 		state.loadingMore = false;
+		state.selectedItems = [];
+
 		state.numLoads++;
 		that.setState(state);
 		that.loadResults(function(newState) {

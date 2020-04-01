@@ -16,6 +16,7 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 const selector = pawtucketUIApps.Lightbox.selector;
 const appData = pawtucketUIApps.Lightbox.data;
+const lightboxTerminology = appData.lightboxTerminology;
 /**
  * Component context making Lightbox internals accessible to all subcomponents
  *
@@ -61,6 +62,7 @@ class Lightbox extends React.Component{
 
 		this.state['set_id'] = props.showLastLightboxOnLoad ? -1 : null;
 		this.state['filters'] = null;
+		this.state.selectedItems = [];
 
 		this.componentDidMount = this.componentDidMount.bind(this);
 		this.newLightbox = this.newLightbox.bind(this);
@@ -93,8 +95,14 @@ class Lightbox extends React.Component{
 				for(let i in state.resultList) {
 					let r = state.resultList[i];
 					if (r.id == item_id) {
+						
 						delete(state.resultList[i]);
 						state.resultSize--;
+						let x = null;
+						x = state.selectedItems.indexOf(item_id);
+						if(i > -1){
+							state.selectedItems.splice(x, 1);
+						}
 						that.setState(state);
 						break;
 					}
@@ -146,7 +154,6 @@ class Lightbox extends React.Component{
 			});
 		}
 	}
-
 	render() {
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 
@@ -232,6 +239,56 @@ class LightboxViewList extends React.Component {
 }
 
 /**
+ * Renders select options
+ *
+ * Props are:
+ * 		
+ *
+ * Used by:
+ *  	LightboxControls
+ *
+ * Uses context: LightboxContext
+ */
+class LightboxSelectItemsOptions extends React.Component {
+	static contextType = LightboxContext;
+
+	constructor(props) {
+		super(props);
+		this.clearSelectLightboxItems = this.clearSelectLightboxItems.bind(this);
+		this.showSelectButtons = this.showSelectButtons.bind(this);
+	}
+		
+	clearSelectLightboxItems() {
+		let state = this.context.state;
+		state.showSelectButtons = false;
+		state.selectedItems = [];
+		this.context.setState(state);
+	}
+	showSelectButtons() {
+		let state = this.context.state;
+		state.showSelectButtons = true;
+		this.context.setState(state);		
+	}
+	
+	render() {
+		return (
+			<div id="bSelectOptions">
+				<div className="dropdown show">
+					<a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<ion-icon name="checkmark-circle-outline"></ion-icon>
+					</a>
+
+					<div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+						{(this.context.state.showSelectButtons) ? <a className="dropdown-item" onClick={this.clearSelectLightboxItems}>Clear selection</a> : <a className="dropdown-item" onClick={this.showSelectButtons}>Select items</a> }
+					</div>
+				</div>
+			</div>
+
+		);
+	}
+
+}
+/**
  * Renders export options
  *
  * Props are:
@@ -258,7 +315,11 @@ class LightboxExportOptions extends React.Component {
 				exportOptions.push(<a className="dropdown-item" href={appData.baseUrl + '/getContent/getResult/1/download/1/view/' + r.type + '/export_format/' + r.code + '/key/' + this.context.state.key} key={i}>{r.name}</a>);
 			}
 		}
-
+		if(this.context.state.selectedItems.length == 0){
+			exportOptions.push(<a className="dropdown-item" href={appData.baseUrl + '/getSetMedia/set_id/' + this.context.state.set_id + '/key/' + this.context.state.key + '/sort/' + this.context.state.sort + '/sort_direction/' + this.context.state.sortDirection} key='dlMedia'>Download media</a>);
+		}else{
+			exportOptions.push(<a className="dropdown-item" href={appData.baseUrl + '/getSetMedia/set_id/' + this.context.state.set_id + '/record_ids/' + this.context.state.selectedItems.join(';')} key='dlMedia'>Download selected media</a>);
+		}
 		return (
 			<div id="bExportOptions">
 				<div className="dropdown show">
@@ -357,7 +418,7 @@ class LightboxIntro extends React.Component {
 			this.context.state.headline = this.props.headline;
 			this.context.state.description = this.props.description;
 		}
-		return (<h1>Lightbox: {this.props.headline}</h1>)
+		return (<h1>{lightboxTerminology.section_heading}: {this.props.headline}</h1>)
 	}
 }
 
@@ -454,16 +515,22 @@ class LightboxCurrentFilterList extends React.Component {
 class LightboxControls extends React.Component {
 	static contextType = LightboxContext;
 
+	constructor(props) {
+		super(props);
+	}
+	
 	render() {
 		let c  = (this.context.state.resultSize === null);
 		return(<div className="row">
 					<div className="col-md-6"><LightboxStatistics/></div>
 					<div className="col-md-6">
-{/* view download sort don't work yet
+						
+{/* view doesn't work yet
 						<LightboxViewList/>
 */}
 						<LightboxExportOptions/>
 						<LightboxSortOptions/>
+						<LightboxSelectItemsOptions/>
 					</div>
 				</div>);
 	}
@@ -705,7 +772,7 @@ class LightboxResults extends React.Component {
 				return (
 					<div className="row"  id="browseResultsContainer">
 							<div className="col-md-8 bResultList">
-								<div className="card-columns">
+								<div className="row">
 									{resultList}
 								</div>
 								<LightboxResultLoadMoreButton start={this.context.state.start}
@@ -803,17 +870,42 @@ class LightboxResultLoadMoreButton extends React.Component {
  */
 class LightboxResultItem extends React.Component {
 	static contextType = LightboxContext;
+
+	constructor(props) {
+		super(props);	
+		
+		this.selectLightboxItem = this.selectLightboxItem.bind(this);
+	}
+
+	selectLightboxItem(e) {
+		
+		let state = this.context.state;
+		let item_id = parseInt(e.target.attributes.getNamedItem('data-item_id').value);
+		if(!item_id) { return; }
+		let i = null;
+		i = state.selectedItems.indexOf(item_id);
+		if(i > -1){
+			state.selectedItems.splice(i, 1);
+		}else{
+			state.selectedItems.push(item_id);
+		}
+		this.context.setState(state);
+		console.log("selectedItems: " + item_id + " : " + this.context.state.selectedItems.indexOf(item_id), this.context.state.selectedItems);
+	}
+
 	render() {
 		let data = this.props.data;
-
 		switch(this.props.view) {
 			default:
 				return(
-					<div className='card mb-4 bResultImage' ref={this.props.scrollToRef}>
-						<a href={data.detailUrl}><div dangerouslySetInnerHTML={{__html: data.representation}}/></a>
-						{(this.context.state.userAccess == 2) ? <div className='float-right'><a data-toggle='collapse' href={`#deleteConfirm${data.id}`} className='removeItemInitial' role='button' aria-expanded='false' aria-controls='collapseExample'><ion-icon name='close-circle'></ion-icon></a></div> : null}
-						<div className='card-body mb-2'><a href={data.detailUrl} dangerouslySetInnerHTML={{__html: data.caption}}></a></div>
-						<div className='card-footer collapse text-center' id={`deleteConfirm${data.id}`}><a data-item_id={data.id} onClick={this.context.removeItemFromLightbox}>Remove Item From Set</a></div>
+					<div className="col-sm-6 col-md-3">
+						<div className={'card mb-4 bResultImage' + ((this.context.state.selectedItems.includes(data.id)) ? ' selected' : '')} ref={this.props.scrollToRef}>
+							<a href={data.detailUrl}><div dangerouslySetInnerHTML={{__html: data.representation}}/></a>
+							{(this.context.state.showSelectButtons) ? <div className='float-left'><a onClick={this.selectLightboxItem} data-item_id={data.id} className={'selectItem' + ((this.context.state.selectedItems.includes(data.id)) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'><ion-icon name='checkmark-circle' data-item_id={data.id}></ion-icon></a></div> : null}
+							{(this.context.state.userAccess == 2) ? <div className='float-right'><a data-toggle='collapse' href={`#deleteConfirm${data.id}`} className='removeItemInitial' role='button' aria-expanded='false' aria-controls='collapseExample'><ion-icon name='close-circle'></ion-icon></a></div> : null}
+							<div className='card-body mb-2'><a href={data.detailUrl} dangerouslySetInnerHTML={{__html: data.caption}}></a></div>
+							<div className='card-footer collapse text-center' id={`deleteConfirm${data.id}`}><a data-item_id={data.id} onClick={this.context.removeItemFromLightbox}>Remove Item From {lightboxTerminology.singular}</a></div>
+						</div>
 					</div>
 					);
 				break;
@@ -861,17 +953,17 @@ class LightboxList extends React.Component {
 			}
 		}
 		if(lightboxes.length == 0){
-			lightboxes = <li className="list-group-item"><div className="row my-4"><div className="col-sm-12 label">Use the link above to create a lightbox.</div></div></li>
+			lightboxes = <li className="list-group-item"><div className="row my-4"><div className="col-sm-12 label">Use the link above to create a {lightboxTerminology.section_heading}.</div></div></li>
 		}
 		return(
 			<div className='row'>
 				<div className='col-sm-12 mt-3 mb-2'>
 					<div className='row'>
 						<div className='col-sm-12 col-md-4 offset-md-2 col-lg-3 offset-lg-3'>
-							<h1>My Lightboxes</h1>
+							<h1>My {lightboxTerminology.plural}</h1>
 						</div>
 						<div className='col-sm-12 col-md-4 col-lg-3 text-right'>
-							<a href='#' className='btn btn-primary' onClick={this.context.newLightbox}>New Collection +</a>
+							<a href='#' className='btn btn-primary' onClick={this.context.newLightbox}>New +</a>
 						</div>
 					</div>
 					<div className='row'>
@@ -927,6 +1019,8 @@ class LightboxListItem extends React.Component {
 		if(!state.filters) { state.filters = {}; }
 		if(!state.filters['_search']) { state.filters = {'_search': {}}; }
 		state.filters['_search']['ca_sets.set_id:' + set_id] = 'Lightbox: ' + state.lightboxList.sets[set_id].label;
+		state.selectedItems = [];
+		state.showSelectButtons = false;
 		this.context.setState(state);
 		this.context.reloadResults(state.filters, false);
 		let that = this;
@@ -1148,7 +1242,7 @@ class ShareBlock extends React.Component {
 								if(c.owner){
 									state.setUsers.owner.push(<li className='list-group-item' key={k}>{c.name} ({c.email}) <b>Owner</b></li>);
 								}else{
-									state.setUsers.users.push(<li className='list-group-item' key={k}><a href='#' className='float-right' onClick={that.removeUser} data-user-id={c.user_id} data-set-id={that.props.setID}><ion-icon name='close-circle'></ion-icon></a>{c.name} ({c.email})<br/><i>Can {(c.access == 2) ? "edit" : "read"}</i></li>);
+									state.setUsers.users.push(<li className='list-group-item' key={k}><a href='#' className='float-right' onClick={that.removeUser} data-user-id={c.user_id} data-set-id={that.props.setID}><ion-icon name='close-circle' data-user-id={c.user_id} data-set-id={that.props.setID}></ion-icon></a>{c.name} ({c.email})<br/><i>Can {(c.access == 2) ? "edit" : "read"}</i></li>);
 								}
 							}
 						}

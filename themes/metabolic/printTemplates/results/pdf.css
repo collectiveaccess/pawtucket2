@@ -17,7 +17,7 @@ body{ font: "helvetica, sans-serif"; }
 
 /* thumbnails template */
 .pageContainer{position:relative;}
-.thumbnail { font: "helvetica, sans-serif"; font-size: 11px; border: 1px solid #ccc; width: 200px; height: 205px; position: absolute; text-align: center; padding: 3px; overflow: hidden; border-radius:4px;}	
+.thumbnail { font: "helvetica, sans-serif"; font-size: 11px; border: 1px solid #fff; width: 200px; height: 205px; position: absolute; text-align: center; padding: 3px; overflow: hidden; border-radius:4px;}	
 .imgThumb {text-align:center;}
 .caption {font-size:10px; color:#333; display:block; line-height:1.1em; padding-top:3px;}
 .pageBreak { page-break-before: always; height:1px; }
@@ -30,6 +30,8 @@ body{ font: "helvetica, sans-serif"; }
 .displayHeader {border-bottom:1px solid #666; color:#666; font-weight:bold;}
 .displayValue {}
 .title {font-weight:bold; font-size: 12px;}
-.metadata {line-height:1.1em;}
+.metadata {line-height:1.1em; font: "helvetica, sans-serif"; font-size: 11px;}
 .metaBlock {margin-left:0px; margin-left:0px; height:auto; width:400px;}
+
+.text-center{text-align:center;}
 

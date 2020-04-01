@@ -8,13 +8,14 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 const selector = pawtucketUIApps.LightboxManagement.selector;
 const appData = pawtucketUIApps.LightboxManagement.data;
+const lightboxTerminology = appData.lightboxTerminology;
 
 
 class LightboxManagement extends React.Component {
 	constructor(props){
 		super(props);
 
-		this.state = {lightboxList: this.props.lightboxes};
+		this.state = {lightboxList: this.props.lightboxes, statusMessage: null};
 
 		this.addToLightbox = this.addToLightbox.bind(this);
 		this.removeFromLightbox = this.removeFromLightbox.bind(this);
@@ -27,10 +28,9 @@ class LightboxManagement extends React.Component {
 				let state = that.state;
 
 				if(set_id === null) {
-					state.lightboxList = [{'isMember':1, 'set_id':resp.set_id, 'label': resp.label}];
+					state.lightboxList[state.lightboxList.length] = {'isMember':true, 'set_id':resp.set_id, 'label': resp.label};
 					that.setState(state);
 				}
-
 				for(let i in state.lightboxList) {
 					if (state.lightboxList[i]['set_id'] == set_id) {
 						state.lightboxList[i]['isMember'] = true;
@@ -38,7 +38,12 @@ class LightboxManagement extends React.Component {
 						break;
 					}
 				}
-
+				state.statusMessage = "Added Item To " + lightboxTerminology.singular;
+				that.setState(state);
+				setTimeout(function() {
+					state.statusMessage = '';
+					that.setState(state);
+				}, 2000);
 				return;
 			}
 			alert("Could not add item to lightbox: " + resp['err']);
@@ -50,6 +55,11 @@ class LightboxManagement extends React.Component {
 		removeItemFromLightbox(this.props.baseUrl, set_id, this.props.id, function(resp) {
 			if (resp && resp['ok']) {
 				let state = that.state;
+				state.statusMessage = "Removed Item From " + lightboxTerminology.singular;
+				setTimeout(function() {
+					state.statusMessage = '';
+					that.setState(state);
+				}, 2000);
 				for(let i in state.lightboxList) {
 					if (state.lightboxList[i]['set_id'] == set_id) {
 						state.lightboxList[i]['isMember'] = false;
@@ -86,42 +96,52 @@ class LightboxManagement extends React.Component {
 		if ((availableLightboxEntries.length > 0) || (inLightboxEntries.length > 0)) {
 			let availableLightboxList = null, inLightboxList = null;
 			if (availableLightboxEntries.length > 0) {
-				availableLightboxList = (<><div className="dropdown-header">Add to lightbox:</div>{availableLightboxEntries}</>);
+				availableLightboxList = (<><div className="dropdown-header">Add to {lightboxTerminology.singular}:</div>{availableLightboxEntries}</>);
 			}
 			if (inLightboxEntries.length > 0) {
-				inLightboxList = (<><div className="dropdown-header">In lightbox:</div>{inLightboxEntries}</>);
+				inLightboxList = (<><div className="dropdown-header">In {lightboxTerminology.singular}:</div>{inLightboxEntries}</>);
 			}
 			return (
 					<div className="dropdown">
-							<a className="dropdown-toggle" role="button" id="LightboxButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to Lightbox</a>
+							{(this.state.statusMessage) ? <a><ion-icon name="alert"></ion-icon> <b>{this.state.statusMessage}</b></a> : <a className="dropdown-toggle" role="button" id="LightboxButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to {lightboxTerminology.singular}</a>}
 							<div className="dropdown-menu" aria-labelledby="LightboxButton">
 								{availableLightboxList}
-								<div className="dropdown-divider"></div>
+								{(availableLightboxList) ? <div className="dropdown-divider"></div> : null}
+								<div className="dropdown-header">Add to new {lightboxTerminology.singular}:</div>
+								<LightboxEntry
+									key={"new_lightbox"}
+									baseUrl={this.props.baseUrl}
+									label={"New" + lightboxTerminology.singular}
+									set_id={null}
+									item_id={this.props.id}
+									isMember={false}
+									addToLightboxCallback={this.addToLightbox}
+									removeFromLightboxCallback={this.removeFromLightbox}
+								/>
+								{(inLightboxList) ? <div className="dropdown-divider"></div> : null}
 								{inLightboxList}
 							</div>
 					</div>
 			);
 		} else {
-			return(<div className="utility-container">
-				<div className="utility utility_menu">
-					<a href="#" className="trigger collection">&nbsp;</a>
-					<div className="options">
-						<div className='lightbox_add_remove_list'>
-							<div className='eyebrow'>Add to My Documents:</div>
-							<LightboxEntry
-								key={"new_lightbox"}
-								baseUrl={this.props.baseUrl}
-								label={"New collection"}
-								set_id={null}
-								item_id={this.props.id}
-								isMember={false}
-								addToLightboxCallback={this.addToLightbox}
-								removeFromLightboxCallback={this.removeFromLightbox}
-							/>
-						</div>
+			return(
+				<div className="dropdown">
+							<a className="dropdown-toggle" role="button" id="LightboxButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Add to {lightboxTerminology.singular}</a>
+							<div className="dropdown-menu" aria-labelledby="LightboxButton">
+								<div className="dropdown-header">Add to new {lightboxTerminology.singular}:</div>
+								<LightboxEntry
+									key={"new_lightbox"}
+									baseUrl={this.props.baseUrl}
+									label={"New " + lightboxTerminology.singular}
+									set_id={null}
+									item_id={this.props.id}
+									isMember={false}
+									addToLightboxCallback={this.addToLightbox}
+									removeFromLightboxCallback={this.removeFromLightbox}
+								/>
+							</div>
 					</div>
-				</div>
-			</div>);
+				);
 		}
 	}
 }

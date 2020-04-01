@@ -578,7 +578,7 @@ class PawtucketBrowseResults extends React.Component {
 				return (
 					<div className="row"  id="browseResultsContainer">
 							<div className="col-md-8 bResultList">
-								<div className="card-columns">
+								<div className="row">
 									{resultList}
 								</div>
 								<PawtucketBrowseResultLoadMoreButton start={this.context.state.start}
@@ -669,10 +669,12 @@ class PawtucketBrowseResultItem extends React.Component {
 				break;
 			default:
 				return (
-					<div className='card mb-4 bResultImage' ref={this.props.scrollToRef}>
-						<a href={detail_url}><div dangerouslySetInnerHTML={{__html: data.representation}}/></a>
-						<div className='card-body mb-2'><a href={detail_url} dangerouslySetInnerHTML={{__html: data.caption}}></a></div>
-						<div className='card-footer bSetsSelectMultiple collapse text-right'><input type='checkbox' name='object_ids[]' value='{$vn_id}'/></div>
+					<div className="col-sm-6 col-md-3">
+						<div className='card mb-4 bResultImage' ref={this.props.scrollToRef}>
+							<a href={detail_url}><div dangerouslySetInnerHTML={{__html: data.representation}}/></a>
+							<div className='card-body mb-2'><a href={detail_url} dangerouslySetInnerHTML={{__html: data.caption}}></a></div>
+							<div className='card-footer bSetsSelectMultiple collapse text-right'><input type='checkbox' name='object_ids[]' value='{$vn_id}'/></div>
+						</div>
 					</div>
 				);
 				break;

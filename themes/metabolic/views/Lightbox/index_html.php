@@ -36,7 +36,8 @@
             showLastLightboxOnLoad: <?php print ((bool)$this->request->getParameter('showList', pInteger)) ? 'false' : 'true'; ?>,
 			view: "thumbnails",
 			browseConfig: <?php print json_encode($config->get("lightboxBrowse")); ?>,
-			exportFormats: <?php print json_encode($export_formats); ?>
+			exportFormats: <?php print json_encode($export_formats); ?>,
+			lightboxTerminology: <?php print json_encode(caGetLightboxDisplayName()); ?>
         }
     };
 </script>

@@ -269,6 +269,34 @@
 					$t_representation = Datamodel::getInstance("ca_object_representations", true);
 					$this->view->setVar("representation_id", null);
 				}
+			
+# --- PASS ALL REPS
+				$va_rep_ids = $t_subject->get("ca_object_representations.representation_id", array("returnAsArray" => true, "checkAccess" => $this->opa_access_values, "filterNonPrimaryRepresentations" => false));
+				$va_reps = array();
+				if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
+					$qr_reps = ca_object_representations::createResultSet($va_rep_ids);
+					if($qr_reps->numHits()){
+						while($qr_reps->nextHit()) {
+							$t_representation = new ca_object_representations($qr_reps->get("ca_object_representations.representation_id"));
+							#$va_rep_display_info = caGetMediaDisplayInfo('detail', $qr_reps->getMediaInfo('ca_object_representations.media', 'INPUT', 'MIMETYPE'));
+							#print_r($va_rep_display_info);
+							#$vs_media_version = $va_rep_display_info['display_version'];
+							
+							if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype("detail", $vs_mimetype = $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) {
+		 						throw new ApplicationException(_t('Invalid viewer'));
+		 					}
+		 					if(!is_array($va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE')))) { $va_media_display_info = []; }
+ 							
+							$va_reps[$qr_reps->get("ca_object_representations.representation_id")] = $vs_viewer_name::getViewerHTML(
+																																	$this->request,
+																																	"representation:".$t_representation->getPrimaryKey(),
+																																	['inline' => true, 'context' => 'detail', 't_instance' => $t_representation, 't_subject' => $t_subject, 't_media' => $t_subject, 'display' => $va_media_display_info]);					
+
+
+						}
+					}
+					$this->view->setVar("representation_tags", $va_reps);
+				}
 			}
 
 			//
@@ -467,6 +495,9 @@
  			// pdf link
  			//
  			$this->view->setVar('pdfEnabled', (bool)$va_options['enablePDF']);
+ 			$this->view->setVar('downloadAllEnabled', (bool)$va_options['enableDownloadAll']);
+ 			$this->view->setVar('downloadAllTypes', $va_options['downloadAllTypes']);
+			
 			switch($ps_view = $this->request->getParameter('view', pString)) {
  				case 'pdf':
  					if (!($vn_limit = ini_get('max_execution_time'))) { $vn_limit = 30; }
@@ -576,8 +607,9 @@
  			}
 			
 			$ps_version = $this->request->getParameter('version', pString);
+			$ps_download_type = $this->request->getParameter('download_type', pString);
 			
-			if (!$ps_version) { $ps_version = 'original'; }
+			if (!$ps_version && !$ps_download_type) { $ps_version = 'original'; }
 			$this->view->setVar('version', $ps_version);
 			
 			if($pb_exclude_ancestors){
@@ -617,56 +649,69 @@
 						"representation_id" => null, 
 						"download_source" => "pawtucket"
 				));
-				$va_reps = $t_child_object->getRepresentations(array($ps_version), null, array("checkAccess" => $this->opa_access_values));
 				$vs_idno = $t_child_object->get('idno');
-				
-				foreach($va_reps as $vn_representation_id => $va_rep) {
-					$va_rep_info = $va_rep['info'][$ps_version];
-					$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $vs_idno);
-					switch($this->request->user->getPreference('downloaded_file_naming')) {
-						case 'idno':
-							$vs_file_name = $vs_idno_proc.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
-							break;
-						case 'idno_and_version':
-							$vs_file_name = $vs_idno_proc.'_'.$ps_version.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
-							break;
-						case 'idno_and_rep_id_and_version':
-							$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION'];
-							break;
-						case 'original_name':
-						default:
-							if ($va_rep['info']['original_filename']) {
-								$va_tmp = explode('.', $va_rep['info']['original_filename']);
-								if (sizeof($va_tmp) > 1) { 
-									if (strlen($vs_ext = array_pop($va_tmp)) < 3) {
-										$va_tmp[] = $vs_ext;
+				$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $vs_idno);
+
+				$va_rep_ids = $t_child_object->get("ca_object_representations.representation_id", array("filterNonPrimaryRepresentations" => false, "returnAsArray" => true, "checkAccess" => $this->opa_access_values));
+				if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
+					$t_rep = new ca_object_representations();
+					foreach($va_rep_ids as $vn_rep_id){
+						$t_rep->load($vn_rep_id);
+						if(!$ps_version){
+							# --- look up the version for each rep using the download_type - the download type maps to an array in media_display.conf
+							$va_rep_display_info = caGetMediaDisplayInfo($ps_download_type, $t_rep->getMediaInfo('ca_object_representations.media', 'INPUT', 'MIMETYPE'));
+							$vs_media_version = $va_rep_display_info['download_version'];
+						}else{
+							$vs_media_version = $ps_version;
+						}
+						$va_info = $t_rep->getMediaInfo('media');
+						$va_rep_info = $t_rep->getMediaInfo('media', $vs_media_version);
+						switch($this->request->user->getPreference('downloaded_file_naming')) {
+							case 'idno':
+								$vs_file_name = $vs_idno_proc.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
+								break;
+							case 'idno_and_version':
+								$vs_file_name = $vs_idno_proc.'_'.$vs_media_version.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
+								break;
+							case 'idno_and_rep_id_and_version':
+								$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$vs_media_version.'.'.$va_rep_info['EXTENSION'];
+								break;
+							case 'original_name':
+							default:
+								if ($va_info['original_filename']) {
+									$va_tmp = explode('.', $va_info['original_filename']);
+									if (sizeof($va_tmp) > 1) { 
+										if (strlen($vs_ext = array_pop($va_tmp)) < 3) {
+											$va_tmp[] = $vs_ext;
+										}
 									}
+									$vs_file_name = join('_', $va_tmp); 					
+								} else {
+									$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$vs_media_version;
 								}
-								$vs_file_name = join('_', $va_tmp); 					
-							} else {
-								$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$ps_version;
-							}
-							
-							if (isset($va_file_names[$vs_file_name.'.'.$va_rep_info['EXTENSION']])) {
-								$vs_file_name.= "_{$vn_c}";
-							}
-							$vs_file_name .= '.'.$va_rep_info['EXTENSION'];
-							break;
-					} 
-					
-					$va_file_names[$vs_file_name] = true;
-					$this->view->setVar('version_download_name', $vs_file_name);
+						
+								if (isset($va_file_names[$vs_file_name.'.'.$va_rep_info['EXTENSION']])) {
+									$vs_file_name.= "_{$vn_c}";
+								}
+								$vs_file_name .= '.'.$va_rep_info['EXTENSION'];
+								break;
+						} 
 				
-					//
-					// Perform metadata embedding
-					$t_rep = new ca_object_representations($va_rep['representation_id']);
-					if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
-						$vs_path = $t_rep->getMediaPath('media', $ps_version);
+						$va_file_names[$vs_file_name] = true;
+						$this->view->setVar('version_download_name', $vs_file_name);
+			
+						//
+						// Perform metadata embedding
+						if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $vs_media_version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
+							$vs_path = $t_rep->getMediaPath('media', $vs_media_version);
+						}
+						$va_file_paths[$vs_path] = $vs_file_name;
+				
+						$vn_c++;
+						
 					}
-					$va_file_paths[$vs_path] = $vs_file_name;
-					
-					$vn_c++;
 				}
+				
 			}
 			
 			// Allow plugins to modify file path list
@@ -680,7 +725,7 @@
 					$o_zip->addFile($vs_path, $vs_name, null, array('compression' => 0));	// don't try to compress
 				}
 				$this->view->setVar('archive_path', $vs_path = $o_zip->output(ZIPFILE_FILEPATH));
-				$this->view->setVar('archive_name', preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t_object->get('idno')).'.zip');
+				$this->view->setVar('archive_name', (($vs_tmp = preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t_object->get('idno'))) ? $vs_tmp : "MediaDownload").'.zip');
 				
 				$vn_rc = $this->render('Details/object_download_media_binary.php');
 				

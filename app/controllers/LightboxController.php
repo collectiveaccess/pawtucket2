@@ -137,7 +137,7 @@
 
 			$this->opo_result_context = new ResultContext($this->request, 'ca_objects', 'lightbox');
 			$this->opo_result_context->setAsLastFind();
-
+			
 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").ucfirst($this->ops_lightbox_display_name));
  			
  			$this->render(caGetOption("view", $pa_options, "Lightbox/index_html.php"));
@@ -167,35 +167,6 @@
 				return;
 			}
 			$browse_info = $this->opo_config->get("lightboxBrowse");
-			// TODO: generalize this
-// 			$browse_info = [
-// 				'displayName' => _('Archive'),
-// 				'labelSingular' => _("item"),
-//  				'labelPlural' =>  _("items"),
-// 				'table' => 'ca_objects',
-// 
-// 				'restrictToTypes' => [],
-// 				'availableFacets' => [],
-// 				'facetGroup' => 'archive',
-// 
-// 				'itemsPerPage' => 12,
-// 
-// 				'views' => [
-// 					'images' => [
-// 						'representation' => "<ifdef code='ca_object_representations.media.small.url'>^ca_object_representations.media.small.url</ifdef><ifnotdef code='ca_object_representations.media.small.url'>/themes/noguchi/assets/pawtucket/graphics/placeholder.png</ifnotdef>",
-// 			    		'caption' => "^ca_objects.preferred_labels.name",
-// 			    		'caption2' => " ^ca_objects.idno"
-// 						]
-// 					],
-// 				
-// 				'sortBy' => [
-// 					'Date' => 'ca_objects.date.parsed_date;ca_objects.idno'
-// 				],
-// 				'sortDirection' => [
-// 							'Date' => 'asc'
-// 				],
-// 				'excludeFieldsFromSearch' => ['ca_objects.internal_notes']
-// 			];
 			if ($set_id = $this->request->getParameter('set_id', pInteger)) {
 				Session::setVar("lightbox_last_set_id", $set_id);
 			} else {
@@ -326,7 +297,7 @@
 			if ($set_id == null) {
 				$table = $this->request->getParameter('table', pString);
 				if ($table_num = Datamodel::getTableNum($table)) {
-					$name = "My documents";
+					$name = ($vs_tmp = $this->request->getParameter('label', pString)) ? $vs_tmp : "My ".$this->opo_config->get("lightboxDisplayName");
 
 					$t_set = new ca_sets();
 					$t_set->set([
@@ -568,6 +539,104 @@
 			$this->render("Lightbox/browse_data_json.php");
  		}
  		# -------------------------------------------------------
+		/**
+		 * Download (accessible) media
+		 * have support for all in set (just set_id), array of hand selected in set (set_id and record_ids - string of ids separated by ;) and cache key (set_id, key, sort, sort_direction)
+		 */
+		public function getSetMedia() {
+			$va_errors = array();
+			set_time_limit(600); // allow a lot of time for this because the sets can be potentially large
+			if($this->opb_is_login_redirect) { return; }
+
+ 			$set_id = $this->request->getParameter('set_id', pInteger);
+ 			$key = $this->request->getParameter('key', pString);
+ 			if($record_ids = $this->request->getParameter('record_ids', pString)){
+ 				$record_ids = explode(";", $record_ids);
+ 			}
+ 			
+ 			if(!$record_ids && $key){
+ 				$o_browse = caGetBrowseInstance("ca_objects");
+ 				$o_browse->reload($key);
+ 				$qr_res = $o_browse->getResults(array('sort' => $this->request->getParameter('sort', pString), 'sort_direction' => $this->request->getParameter('sort_direction', pString)));
+ 				$record_ids = $qr_res->getPrimaryKeyValues(1000);
+ 			}
+ 			
+ 			if (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_READ_ACCESS__)) {			
+				$va_set_record_ids = array_keys($t_set->getItemRowIDs(array('checkAccess' => $this->opa_access_values, 'limit' => 100000)));
+				if(!$record_ids){
+					$record_ids = $va_set_record_ids;	
+				}
+				if(!is_array($record_ids) || !sizeof($record_ids)) {
+					$va_errors[] = _t('No media is available for download');				
+				}
+				$vs_subject_table = Datamodel::getTableName($t_set->get('table_num'));
+				# --- lightbox is only for objects
+				if($vs_subject_table != "ca_objects"){
+					$va_errors[] = _t('This is not an object set');
+				}
+				if(sizeof($va_errors) == 0){
+					$t_instance = Datamodel::getInstanceByTableName($vs_subject_table);
+					if(!$qr_res){
+						$qr_res = $vs_subject_table::createResultSet($record_ids);
+# TODO: all media or primary?						$qr_res->filterNonPrimaryRepresentations(false);
+					}
+					$va_paths = array();
+					while($qr_res->nextHit()) {
+						if(((is_array($this->opa_access_values)) && (sizeof($this->opa_access_values)) && ((!in_array($qr_res->get("ca_objects.access"), $this->opa_access_values)) || (!in_array($qr_res->get("ca_object_representations.access"), $this->opa_access_values)))) || (!in_array($qr_res->get("ca_objects.object_id"), $va_set_record_ids))){
+							continue;
+						}
+
+						$va_rep_display_info = caGetMediaDisplayInfo('download', $qr_res->getMediaInfo('ca_object_representations.media', 'INPUT', 'MIMETYPE'));
+						$vs_media_version = $va_rep_display_info['download_version'];
+						$va_original_paths = $qr_res->getMediaPaths('ca_object_representations.media', 'large');
+						if(sizeof($va_original_paths)>0) {
+							$va_paths[$qr_res->get($t_instance->primaryKey())] = array(
+								'idno' => $qr_res->get($t_instance->getProperty('ID_NUMBERING_ID_FIELD')),
+								'paths' => $va_original_paths
+							);
+						}
+					}
+					if (sizeof($va_paths) > 0){
+						$o_zip = new ZipStream();
+
+						foreach($va_paths as $vn_pk => $va_path_info) {
+							$vn_c = 1;
+							foreach($va_path_info['paths'] as $vs_path) {
+								if (!file_exists($vs_path)) { continue; }
+# TODO:make download media file name configurable
+								$vs_filename = $va_path_info['idno'] ? $va_path_info['idno'] : $vn_pk;
+								$vs_filename .= "_{$vn_c}";
+
+								if ($vs_ext = pathinfo($vs_path, PATHINFO_EXTENSION)) {
+									$vs_filename .= ".{$vs_ext}";
+								}
+								$o_zip->addFile($vs_path, $vs_filename);
+
+								$vn_c++;
+							}
+						}
+
+						// send files
+						$this->view->setVar('zip_stream', $o_zip);
+						$this->view->setVar('archive_name', 'media_for_'.mb_substr(preg_replace('![^A-Za-z0-9]+!u', '_', ($vs_set_code = $t_set->get('set_code')) ? $vs_set_code : $t_set->getPrimaryKey()), 0, 20).'.zip');
+						$this->render('bundles/download_file_binary.php');
+						return;
+					} else {
+						$data = ['status' => 'err', 'error' => _t('No media is available for download')];
+					}
+
+
+				}else{
+					$data = ['status' => 'err', 'error' => _t("There was an error").": ".join($va_errors, "; ")];
+				}
+			}else{
+				$data = ['status' => 'err', 'error' => _t('Invalid set id')];
+			}
+			$this->view->setVar('data', $data);
+			$this->render("Lightbox/browse_data_json.php");
+
+		}
+ 		# -------------------------------------------------------
 		/** 
 		 * Generate the URL for the "back to results" link from a browse result item
 		 * as an array of path components.
@@ -576,7 +645,7 @@
 			return [
 				'module_path' => '',
 				'controller' => 'Lightbox',
-				'action' => 'index/last',
+				'action' => 'Index',
 				'params' => []
 			];
  		}
