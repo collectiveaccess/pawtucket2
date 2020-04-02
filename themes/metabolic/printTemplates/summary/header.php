@@ -41,7 +41,6 @@
 				<head>
 					<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
 					<meta charset="utf-8" />
-					<meta charset="utf-8" />
 				</head>
 				<body><div id='header'>
 			<?php
@@ -50,6 +49,7 @@
 					}
 			?>	
 				</div>
+				<br style="clear: both;"/>
 			</body>
 			</html><!--END HEADER-->
 <?php
