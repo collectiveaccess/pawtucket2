@@ -149,6 +149,9 @@
 									if($vs_tmp = $qr_res->get('ca_objects.transferred_date', array("delimeter" => ", "))){
 										print "<div class='unit'><H6>Publication Date</H6>".$vs_tmp."</div>";
 									}
+									if($vs_tmp = $qr_res->get('ca_objects.language', array("delimeter" => ", "))){
+										print "<div class='unit'><H6>Language</H6>".$vs_tmp."</div>";
+									}
 									$va_entities = $qr_res->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));
 									if(is_array($va_entities) && sizeof($va_entities)){
 										$va_entities_by_type = array();
