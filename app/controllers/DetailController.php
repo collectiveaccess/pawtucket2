@@ -253,11 +253,11 @@
  			$this->view->setVar('previousURL', caDetailUrl($this->request, $vs_table, $vn_previous_id));
  			$this->view->setVar('nextURL', caDetailUrl($this->request, $vs_table, $vn_next_id));
  			
- 			$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $va_options, _t('Previous')), '', $vs_table, $vn_previous_id) : '');
- 			$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $va_options, _t('Next')), '', $vs_table, $vn_next_id) : '');
+ 			$this->view->setVar('previousLink', ($vn_previous_id > 0) ? caDetailLink($this->request, caGetOption('previousLink', $va_options, _t('Previous')), '', $vs_table, $vn_previous_id, [], ['aria-label' => _t('Previous')]) : '');
+ 			$this->view->setVar('nextLink', ($vn_next_id > 0) ? caDetailLink($this->request, caGetOption('nextLink', $va_options, _t('Next')), '', $vs_table, $vn_next_id, [], ['aria-label' => _t('Next')]) : '');
  			$va_params = array();
  			$va_params["row_id"] = $t_subject->getPrimaryKey(); # --- used to jump to the last viewed item in the search/browse results
- 			$this->view->setVar('resultsLink', ResultContext::getResultsLinkForLastFind($this->request, $vs_table, caGetOption('resultsLink', $va_options, _t('Back')), null, $va_params));
+ 			$this->view->setVar('resultsLink', ResultContext::getResultsLinkForLastFind($this->request, $vs_table, caGetOption('resultsLink', $va_options, _t('Back')), null, $va_params, ['aria-label' => _t('Back')]));
  			$this->view->setVar('resultsURL', ResultContext::getResultsUrlForLastFind($this->request, $vs_table, $va_params));
  			
  			

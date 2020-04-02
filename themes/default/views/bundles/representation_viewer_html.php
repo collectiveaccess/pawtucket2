@@ -44,8 +44,8 @@
 
 	<!-- Prev/next controls -->
 	<div id='detailRepNav'>
-		<a href='#' id='detailRepNavPrev' title='<?php print _t("Previous"); ?>'><span class='glyphicon glyphicon-arrow-left'></span></a> 
-		<a href='#' id='detailRepNavNext' title='<?php print _t("Next"); ?>'><span class='glyphicon glyphicon-arrow-right'></span></a>
+		<a href='#' id='detailRepNavPrev' title='<?php print _t("Previous"); ?>' aria-label='Previous'><span class='glyphicon glyphicon-arrow-left'></span></a> 
+		<a href='#' id='detailRepNavNext' title='<?php print _t("Next"); ?>' aria-label='Next'><span class='glyphicon glyphicon-arrow-right'></span></a>
 		<div style='clear:both;'></div>
 	</div><!-- end detailRepNav -->
 </div><!-- end jcarousel-wrapper -->
@@ -131,9 +131,6 @@
 				}
 			});
 			
-		//if({{{representation_id}}} > 0){
-		//	$('.jcarousel').jcarousel('scroll', $('#slide{{{representation_id}}}'));
-		//}
 	});
 </script>
 <?php
