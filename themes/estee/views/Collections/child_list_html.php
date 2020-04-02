@@ -17,9 +17,9 @@
 
 # --- check if this page has been cached
 $vs_cache_key = md5($vn_collection_id);
-#if(($vn_collection_caching > 0) && ExternalCache::contains($vs_cache_key,'collection_detail_child_list')){
-#	print ExternalCache::fetch($vs_cache_key, 'collection_detail_child_list');
-#}else{
+if(($vn_collection_caching > 0) && ExternalCache::contains($vs_cache_key,'collection_detail_child_list')){
+	print ExternalCache::fetch($vs_cache_key, 'collection_detail_child_list');
+}else{
 
 
 	
