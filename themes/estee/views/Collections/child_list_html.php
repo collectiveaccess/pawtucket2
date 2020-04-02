@@ -17,9 +17,9 @@
 
 # --- check if this page has been cached
 $vs_cache_key = md5($vn_collection_id);
-if(($vn_collection_caching > 0) && ExternalCache::contains($vs_cache_key,'collection_detail_child_list')){
-	print ExternalCache::fetch($vs_cache_key, 'collection_detail_child_list');
-}else{
+#if(($vn_collection_caching > 0) && ExternalCache::contains($vs_cache_key,'collection_detail_child_list')){
+#	print ExternalCache::fetch($vs_cache_key, 'collection_detail_child_list');
+#}else{
 
 
 	
@@ -135,7 +135,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 								$vb_item = true;
 							}
 							$vs_date = "";
-							if(strPos("container", strToLower($qr_objects->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)))) !== false){
+							if(strpos(strToLower($qr_objects->get("ca_objects.type_id", array("convertCodesToDisplayText" => true))), "container") !== false){
 								$vs_date = ($qr_objects->get("ca_objects.display_date")) ? ", ".$qr_objects->get("ca_objects.display_date") : ", undated";
 							}else{
 								$vs_date = ($qr_objects->get("ca_objects.season_list") || $qr_objects->get("ca_objects.manufacture_date")) ? ", ".trim($qr_objects->get("ca_objects.season_list", array("convertCodesToDisplayText" => true))." ".$qr_objects->get("ca_objects.manufacture_date")): ", undated";
@@ -167,8 +167,8 @@ if ($vn_collection_id) {
 	#}
 	print $vs_output;
 }
-	ExternalCache::save($vs_cache_key, $vs_output, 'collection_detail_child_list', $vn_colleciton_caching);
-}
+#	ExternalCache::save($vs_cache_key, $vs_output, 'collection_detail_child_list', $vn_colleciton_caching);
+#}
 ?>
 
 

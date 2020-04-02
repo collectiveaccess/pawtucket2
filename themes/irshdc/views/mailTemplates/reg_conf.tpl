@@ -37,6 +37,10 @@ Your account registration is confirmed and your username is %1. The URL for our 
  
 If you would like support in your research, please contact us at irshdc.reference@ubc.ca.
 
+Collection of Personal Information
+Your personal information is collected under the authority of section 26(c) of the Freedom of Information and Protection of Privacy Act (FIPPA). This information will be used for the purposes of creating and managing your Residential School History and Dialogue Centre account. Questions about the collection of this information may be directed to irshdc.reference@ubc.ca.
+
+
 
 ", $t_user->get("ca_users.user_name"), $this->request->config->get("app_display_name"));
 
