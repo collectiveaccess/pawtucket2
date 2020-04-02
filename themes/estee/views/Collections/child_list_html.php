@@ -167,8 +167,8 @@ if ($vn_collection_id) {
 	#}
 	print $vs_output;
 }
-#	ExternalCache::save($vs_cache_key, $vs_output, 'collection_detail_child_list', $vn_colleciton_caching);
-#}
+	ExternalCache::save($vs_cache_key, $vs_output, 'collection_detail_child_list', $vn_colleciton_caching);
+}
 ?>
 
 
