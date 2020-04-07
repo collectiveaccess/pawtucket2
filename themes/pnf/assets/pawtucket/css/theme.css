@@ -690,7 +690,7 @@ div.caMediaOverlayControls {
 #bibBodyIntro{
 	font-weight:bold;
 	max-width:700px;
-	margin-left:auto;
+	margin-left: 140px;
 	margin-right:auto;
 }
 #bibBodyIntro div{
