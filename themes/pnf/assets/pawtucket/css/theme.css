@@ -705,6 +705,11 @@ div.caMediaOverlayControls {
 	padding-bottom:5px;
 	padding-top:10px;
 }
+.listNoBullet li{
+	list-style-type:none;
+	text-indent: -15px;
+	margin-left: 15px
+}
 .listEntryIndentSecondLine{
 	text-indent: -30px;
 	margin-left: 30px

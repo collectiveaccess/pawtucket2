@@ -57,12 +57,27 @@
 	<div class="listing-content single-lists">
 		<div id="bibBody">
 			<div id="bibBodyIntro">
+<?php
+			if ($g_ui_locale == 'en_US'){			
+?>
 				<div>This bibliography includes the following categories of publications chosen in support of the database and deemed useful to scholars investigating in this field:</div>
-				<ul>
-					<li>Studies that focus on specific <i>sueltas</i> or collections of them.</li>
-					<li>Comprehensive bibliographic sources for literature that incorporate material on <i>comedias sueltas</i>; these may be modern editions of plays that include reference to previous <i>suelta</i> editions.</li>
-					<li>Books about printers or booksellers of <i>suelta</i> editions or about printing history in general that shed light on the printing practices applicable to <i>suelta</i> editions.</li>
+				<ul class="listNoBullet">
+					<li>&#10070; Studies that focus on specific <i>sueltas</i> or collections of them.</li>
+					<li>&#10070; Comprehensive bibliographic sources for literature that incorporate material on <i>comedias sueltas</i>; these may be modern editions of plays that include reference to previous <i>suelta</i> editions.</li>
+					<li>&#10070; Books about printers or booksellers of <i>suelta</i> editions or about printing history in general that shed light on the printing practices applicable to <i>suelta</i> editions.</li>
 				</ul>
+<?php
+			}else{
+?>
+				<div>Esta bibliografía incluye las siguientes categorías de publicaciones, útiles para el estudio de este campo y seleccionadas como apoyo a la base de datos:</div>
+				<ul class="listNoBullet">
+					<li>&#10070; Estudios enfocados en sueltas específicas o en colecciones de ellas.</li>
+					<li>&#10070; Fuentes bibliográficas completas que incorporan material sobre comedias sueltas, incluyendo ediciones modernas de obras teatrales que contienen referencias a antiguas ediciones sueltas.</li>
+					<li>&#10070; Obras sobre impresores o libreros de comedias sueltas o sobre la historia de la imprenta en general que arrojen una luz sobre las prácticas de la imprenta relevantes a las comedias sueltas.</li>
+				</ul>
+<?php		
+			}
+?>
 			</div>
 <?php
 			
