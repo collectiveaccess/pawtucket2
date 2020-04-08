@@ -631,6 +631,14 @@ p.legend a {
 			}
 		}
 	}
+	#detailShareButtons{
+		margin-bottom:15px;
+		float:right;
+		.detailShareButton{
+			float:right;
+			margin-left:10px;
+		}
+	}
 	@media (min-width: 768px) {
 		.navTop{
 			display:none;
@@ -639,6 +647,9 @@ p.legend a {
 	@media (max-width: 768px) {
 		.navLeftRight{
 			display:none;
+		}
+		#detailShareButtons{
+			float:none;
 		}
 	}
 	.detailPrimaryMedia{
