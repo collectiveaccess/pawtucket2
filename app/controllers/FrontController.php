@@ -54,7 +54,7 @@
             $t_set = new ca_sets();
             if(!is_array($media_versions = $this->config->get('media_versions'))) { $media_versions = ['icon', 'small']; }
 
-            $sets = caExtractValuesByUserLocale($t_set->getSets(['checkAccess' => $va_access_values, 'codes' => $set_codes, 'includeItems' => true, 'thumbnailVersions' => $media_versions]));
+            $sets = caExtractValuesByUserLocale($t_set->getSets(['checkAccess' => $va_access_values, 'codes' => $set_codes, 'thumbnailVersions' => $media_versions]));
             
             $this->view->setVar('sets', $sets);
             
