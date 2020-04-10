@@ -210,7 +210,7 @@
 				} else {
 					$t_set = new ca_sets();
 					$t_set->set([
-						'type_id' => 'public_presentation',
+						'type_id' => ($this->request->config->get('user_set_type')) ? $this->request->config->get('user_set_type') : 'user',
 						'table_num' => $table_num,
 						'user_id' => $this->request->getUserID(),
 						'set_code' => caGenerateGUID(),
@@ -287,12 +287,25 @@
 		 *
 		 */
 		public function addToLightbox() {
-			global $$g_ui_locale_id;
+			global $g_ui_locale_id;
 			if ($this->opb_is_login_redirect) {
 				return;
 			}
 			$set_id = $this->request->getParameter('set_id', pInteger);
-			$item_id = $this->request->getParameter('item_id', pInteger);
+
+			$add_item_ids = array();
+			if(($pb_saveLastResults = $this->request->getParameter('saveLastResults', pString)) || ($item_ids = $this->request->getParameter('item_ids', pString)) || ($item_id = $this->request->getParameter('item_id', pInteger))){
+				if($pb_saveLastResults){
+					// get object ids from last result
+					$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_objects");
+					$add_item_ids = $o_context->getResultList();
+				} elseif($item_id) {
+					$add_item_ids = [$item_id];
+				}else{
+					$add_item_ids = explode(";", $item_ids);
+				}
+			}
+
 
 			if ($set_id == null) {
 				$table = $this->request->getParameter('table', pString);
@@ -301,7 +314,7 @@
 
 					$t_set = new ca_sets();
 					$t_set->set([
-						'type_id' => 'public_presentation',
+						'type_id' => ($this->request->config->get('user_set_type')) ? $this->request->config->get('user_set_type') : 'user',
 						'table_num' => $table_num,
 						'user_id' => $this->request->getUserID(),
 						'set_code' => caGenerateGUID(),
@@ -312,17 +325,17 @@
 						$data = ['err' => _t('Could not create new lightbox: %1', join("; ", $t_set->getErrors()))];
 					} else {
 						$t_set->addLabel(['name' => $name], $g_ui_locale_id, null, true);
-						$t_set->addItem($item_id);
-						$data = ['ok' => 1, 'label' => $name, 'set_id' => $t_set->getPrimaryKey(), 'count' => 1, 'item_type_singular' => Datamodel::getTableProperty($table_num, 'NAME_SINGULAR'), 'item_type_plural' => Datamodel::getTableProperty($table_num, 'NAME_PLURAL')];
+						$t_set->addItems($add_item_ids);
+						$data = ['ok' => 1, 'label' => $name, 'set_id' => $t_set->getPrimaryKey(), 'count' => $t_set->getItemCount(array('user_id' => $this->request->getUserID(), 'checkAccess' => $this->opa_access_values)), 'item_type_singular' => Datamodel::getTableProperty($table_num, 'NAME_SINGULAR'), 'item_type_plural' => Datamodel::getTableProperty($table_num, 'NAME_PLURAL')];
 
 					}
 				}else {
 					$data = ['err' => _t('Cannot add to this lightbox')];
 				}
 			}elseif (($t_set = ca_sets::find(['set_id' => $set_id], ['returnAs' => 'firstModelInstance'])) && $t_set->haveAccessToSet($this->request->getUserID(), __CA_SET_EDIT_ACCESS__)) {
-				$t_set->addItem($item_id);
+				$t_set->addItems($add_item_ids);
 
-				$data = ['ok' => 1];
+				$data = ['ok' => 1, 'label' => $t_set->getLabelForDisplay(), 'set_id' => $t_set->getPrimaryKey(), 'count' => $t_set->getItemCount(array('user_id' => $this->request->getUserID(), 'checkAccess' => $this->opa_access_values)), 'item_type_singular' => Datamodel::getTableProperty($table_num, 'NAME_SINGULAR'), 'item_type_plural' => Datamodel::getTableProperty($table_num, 'NAME_PLURAL')];
 			} else {
 				$data = ['err' => _t('Cannot add to this lightbox')];
 			}

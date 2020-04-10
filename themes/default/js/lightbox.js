@@ -99,6 +99,24 @@ function addItemToLightbox(url, set_id, item_id, table, callback) {
 			console.log("Error while adding item lightbox: ", error);
 		});
 }
+/**
+ * Add items to lightbox
+ *
+ * @param url URL to send lightbox add item request to.
+ * @param callback Function to call when add item request is completed. The first parameter of the callback will be an object
+ * 			containing the result of the action.
+ */
+function addItemsToLightbox(url, set_id, item_ids, table, callback) {
+	axios.post(url + "/addToLightbox", qs.stringify({set_id: set_id, item_ids: item_ids, table: table }))
+		.then(function (resp) {
+			let data = resp.data;
+
+			callback(data);
+		})
+		.catch(function (error) {
+			console.log("Error while adding item lightbox: ", error);
+		});
+}
 
 /**
  * Remove item from lightbox
@@ -139,4 +157,4 @@ function getLightboxAccessForCurrentUser(url, set_id, callback) {
 		});
 }
 
-export { fetchLightboxList, addLightbox, editLightbox, deleteLightbox, addItemToLightbox, removeItemFromLightbox, getLightboxAccessForCurrentUser };
+export { fetchLightboxList, addLightbox, editLightbox, deleteLightbox, addItemToLightbox, addItemsToLightbox, removeItemFromLightbox, getLightboxAccessForCurrentUser };

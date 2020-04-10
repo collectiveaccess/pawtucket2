@@ -97,6 +97,7 @@ $button-hover-color-secondary: $gray-5;
 $button-border-secondary: 0px;
 $button-radius: 0px;
 $button-decoration: none;
+$button-font: $body-font;
 
 $label-font-size: 14px;
 $label-font-weight:bold;
@@ -234,6 +235,7 @@ address {
 	border-radius: $button-radius;
 	text-decoration: $button-decoration;
 	vertical-align:middle;
+	font-family: $button-font;
 	ion-icon {
 		margin-top: -4px;
 	}
@@ -1075,6 +1077,57 @@ p.legend a {
 		}
 	}
 }
+/* used when lightbox deleted and names edited inline */
+.react-confirm-alert{
+	background-color:#FFF;
+	padding:20px;
+	-webkit-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+	-moz-box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+	box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.5);
+	text-align:center;
+	.button{
+		border-radius: $button-radius;
+		text-decoration: $button-decoration;
+		vertical-align:middle;
+		background-color: $button-bg-primary;
+		color: $button-color-primary;
+		border: $button-border-primary;
+		padding: 7px;
+		display: inline;
+		margin: 0px 5px 0px 5px;
+	}
+	.button:hover{
+		background-color: $button-hover-bg-primary;
+		color: $button-hover-color-primary;
+	}
+}
+
+.easy-edit-inline-wrapper{
+	.easy-edit-component-wrapper{
+		vertical-align:middle;
+	}
+	input{
+		border-radius: $form-control-border-radius;
+		padding: .25rem;
+		border:1px solid $gray-3;
+		font-family:$body-font;
+		font-size: $body-font-size;
+	}
+	button{
+		display: inline !important;
+		margin: 0px 5px 0px 5px !important;
+	}
+}
+h1{	
+	.easy-edit-wrapper, .easy-edit-inline-wrapper{
+		display:inline;
+		position:relative;
+	}
+	.easy-edit-inline-wrapper{
+		top:-10px;
+	}
+}
+
 /* multisearch - card styles for .card-columns in object results asigned above with search/browse full results */
 .multisearch{
 	.btn-primary{

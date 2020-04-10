@@ -6,7 +6,7 @@ import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 
 import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel, initBrowseResults } from "../../default/js/browse";
-import { fetchLightboxList, addLightbox, editLightbox, deleteLightbox, removeItemFromLightbox, getLightboxAccessForCurrentUser } from "../../default/js/lightbox";
+import { fetchLightboxList, addLightbox, editLightbox, deleteLightbox, removeItemFromLightbox, getLightboxAccessForCurrentUser, addItemsToLightbox } from "../../default/js/lightbox";
 import { CommentForm, CommentFormMessage, CommentsTagsList } from "./comment";
 
 import ClampLines from 'react-clamp-lines';
@@ -154,6 +154,7 @@ class Lightbox extends React.Component{
 			});
 		}
 	}
+	
 	render() {
 		let facetLoadUrl = this.props.baseUrl + '/' + this.props.endpoint + (this.state.key ? '/key/' + this.state.key : '');
 
@@ -256,6 +257,7 @@ class LightboxSelectItemsOptions extends React.Component {
 		super(props);
 		this.clearSelectLightboxItems = this.clearSelectLightboxItems.bind(this);
 		this.showSelectButtons = this.showSelectButtons.bind(this);
+		this.addSelectedItemsToNewLightbox = this.addSelectedItemsToNewLightbox.bind(this);
 	}
 		
 	clearSelectLightboxItems() {
@@ -269,6 +271,30 @@ class LightboxSelectItemsOptions extends React.Component {
 		state.showSelectButtons = true;
 		this.context.setState(state);		
 	}
+	addSelectedItemsToNewLightbox() {
+		let that = this;
+		let state = that.context.state;
+		addItemsToLightbox(appData.baseUrl, null, this.context.state.selectedItems.join(';'), 'ca_objects', function(resp) {
+			if (resp && resp['ok']) {
+				state.lightboxList.sets[resp.set_id] = {isMember:true, set_id:resp.set_id, label: resp.label, count: resp.count, item_type_singular: resp.item_type_singular, item_type_plural: resp.item_type_plural };				
+				state.set_id = resp.set_id;
+				state.filters = {'_search': {}};
+				state.filters['_search']['ca_sets.set_id:' + resp.set_id] = 'Lightbox: ' + resp.label;
+				state.selectedItems = [];
+				state.showSelectButtons = false;
+				that.context.setState(state);
+				that.context.reloadResults(state.filters, false);				
+				state.statusMessage = "Added Item To " + lightboxTerminology.singular;
+				that.setState(state);
+				setTimeout(function() {
+					state.statusMessage = '';
+					that.setState(state);
+				}, 2000);
+				return;
+			}
+			alert("Could not add item to lightbox: " + resp['err']);
+		});
+	}
 	
 	render() {
 		return (
@@ -280,6 +306,8 @@ class LightboxSelectItemsOptions extends React.Component {
 
 					<div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
 						{(this.context.state.showSelectButtons) ? <a className="dropdown-item" onClick={this.clearSelectLightboxItems}>Clear selection</a> : <a className="dropdown-item" onClick={this.showSelectButtons}>Select items</a> }
+						{(this.context.state.selectedItems.length > 0) ? <a className="dropdown-item" onClick={this.addSelectedItemsToNewLightbox}>Create Lightbox From Selection</a> : null }
+					
 					</div>
 				</div>
 			</div>
@@ -409,6 +437,22 @@ class LightboxIntro extends React.Component {
 	static contextType = LightboxContext;
 	constructor(props) {
 		super(props);
+
+		this.saveLightboxEdit = this.saveLightboxEdit.bind(this);
+	}
+
+		
+	saveLightboxEdit(name) {
+		let that = this;
+		editLightbox(this.context.props.baseUrl, {'name': name, set_id: this.context.state.set_id }, function(resp) {
+			// TODO: display potential errors
+
+			// Update name is context state
+			let state = that.context.state;
+			state.lightboxList.sets[state.set_id]['label'] = name;
+			state.headline = name;
+			that.context.setState(state);
+		});
 	}
 
 	render() {
@@ -418,7 +462,21 @@ class LightboxIntro extends React.Component {
 			this.context.state.headline = this.props.headline;
 			this.context.state.description = this.props.description;
 		}
-		return (<h1>{lightboxTerminology.section_heading}: {this.props.headline}</h1>)
+		return (
+			<h1>{lightboxTerminology.section_heading}:&nbsp; 
+				<EasyEdit
+					type="text"
+					onSave={this.saveLightboxEdit}
+					saveButtonLabel="Save"
+					saveButtonStyle="btn btn-primary btn-sm"
+					cancelButtonLabel="Cancel"
+					cancelButtonStyle="btn btn-primary btn-sm"
+					attributes={{name: "name", id: "lightbox_name" + this.context.state.set_id}}
+					value={this.context.state.headline}
+				/>
+			</h1>
+		
+		);
 	}
 }
 
@@ -961,15 +1019,15 @@ class LightboxList extends React.Component {
 			<div className='row'>
 				<div className='col-sm-12 mt-3 mb-2'>
 					<div className='row'>
-						<div className='col-sm-12 col-md-4 offset-md-2 col-lg-3 offset-lg-3'>
+						<div className='col-sm-12 col-md-5 offset-md-1 col-lg-4 offset-lg-2 col-xl-3 offset-xl-3'>
 							<h1>My {lightboxTerminology.plural}</h1>
 						</div>
-						<div className='col-sm-12 col-md-4 col-lg-3 text-right'>
+						<div className='col-sm-12 col-md-5 col-lg-4 col-xl-3 text-right'>
 							<a href='#' className='btn btn-primary' onClick={this.context.newLightbox}>New +</a>
 						</div>
 					</div>
 					<div className='row'>
-						<div className='col-sm-12 col-md-8 offset-md-2 col-lg-6 offset-lg-3'>
+						<div className='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 col-xl-6 offset-xl-3'>
 							<ul className="list-group list-group-flush">
 								{lightboxes}
 							</ul>
@@ -1102,7 +1160,9 @@ class LightboxListItem extends React.Component {
 						type="text"
 						onSave={this.saveLightboxEdit}
 						saveButtonLabel="Save"
+						saveButtonStyle="btn btn-primary btn-sm"
 						cancelButtonLabel="Cancel"
+						cancelButtonStyle="btn btn-primary btn-sm"
 						attributes={{name: "name", id: "lightbox_name" + this.props.data.set_id}}
 						value={this.props.data.label}
 					/>
@@ -1135,7 +1195,9 @@ class LightboxListItem extends React.Component {
 						type="text"
 						onSave={this.saveLightboxEdit}
 						saveButtonLabel="Save"
+						saveButtonStyle="btn btn-primary btn-sm"
 						cancelButtonLabel="Cancel"
+						cancelButtonStyle="btn btn-primary btn-sm"
 						attributes={{name: "name", id: "lightbox_name" + this.props.data.set_id}}
 						value={this.props.data.label}
 					/> : this.props.data.label}
@@ -1151,16 +1213,18 @@ class LightboxListItem extends React.Component {
 			</div></li>);
 		} else{
 			return(<li className="list-group-item"><div className="row my-4">
-					<div className="col-sm-4">
+					<div className="col-sm-12 col-md-6 label">
 						<EasyEdit ref={this.props.newLightboxRef}
-								  type="text"
-								  onSave={this.saveNewLightbox}
-								  onCancel={this.context.cancelNewLightbox}
-								  saveButtonLabel="Save"
-								  cancelButtonLabel="Cancel"
-								  placeholder="Enter name"
-								  attributes={{name: "name", id: "lightbox_name" + this.props.data.set_id}}
-								  value={this.props.data.label}
+							type="text"
+							onSave={this.saveNewLightbox}
+							onCancel={this.context.cancelNewLightbox}
+							saveButtonLabel="Save"
+							saveButtonStyle="btn btn-primary btn-sm"
+							cancelButtonLabel="Cancel"
+							cancelButtonStyle="btn btn-primary btn-sm"
+							placeholder="Enter name"
+							attributes={{name: "name", id: "lightbox_name" + this.props.data.set_id}}
+							value={this.props.data.label}
 						/>
 						<div>{this.state.newLightboxError}</div>
 					</div>
