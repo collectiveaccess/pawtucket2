@@ -55,27 +55,47 @@
 ?>
 	</nav>
 	<div class="listing-content single-lists">
-	
+		<div id="bibBody">
+			<div id="bibBodyIntro">
+<?php
+			if ($g_ui_locale == 'en_US'){			
+?>
+				<div>This bibliography includes the following categories of publications chosen in support of the database and deemed useful to scholars investigating in this field:</div>
+				<ul class="listNoBullet">
+					<li>&#10070; Studies that focus on specific <i>sueltas</i> or collections of them.</li>
+					<li>&#10070; Comprehensive bibliographic sources for literature that incorporate material on <i>comedias sueltas</i>; these may be modern editions of plays that include reference to previous <i>suelta</i> editions.</li>
+					<li>&#10070; Books about printers or booksellers of <i>suelta</i> editions or about printing history in general that shed light on the printing practices applicable to <i>suelta</i> editions.</li>
+				</ul>
+<?php
+			}else{
+?>
+				<div>Esta bibliografía incluye las siguientes categorías de publicaciones, útiles para el estudio de este campo y seleccionadas como apoyo a la base de datos:</div>
+				<ul class="listNoBullet">
+					<li>&#10070; Estudios enfocados en sueltas específicas o en colecciones de ellas.</li>
+					<li>&#10070; Fuentes bibliográficas completas que incorporan material sobre comedias sueltas, incluyendo ediciones modernas de obras teatrales que contienen referencias a antiguas ediciones sueltas.</li>
+					<li>&#10070; Obras sobre impresores o libreros de comedias sueltas o sobre la historia de la imprenta en general que arrojen una luz sobre las prácticas de la imprenta relevantes a las comedias sueltas.</li>
+				</ul>
+<?php		
+			}
+?>
+			</div>
 <?php
 			
 		
-	print "<div id='bibBody'>";
+
 	$va_links_array = array();
 	$va_letter_array = array();
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
-		#if ($va_listing_info['id'] == "sources") {
-		#	print '<p>'._t('"Comprehensive sources" refers to bibliographies, catalogs, checklists, and indexes that include sueltas by several playwrights and are not limited to a single author. It is assumed that researchers investigating a particular dramatist will be thoroughly familiar with the scholarship on that person, including modern editions of his or her plays, which frequently discuss suelta editions.').'</p>';	
-		#} else {
-		#	print '<p>'._t('This is a selective and narrowly focused bibliography of materials related to suelta studies. It does not reproduce the vast area of drama that once appeared in the Bulletin of the Comediantes or that continues to be gathered in the MLA Bibliography').'</p>';	
-		#}	
 		while($qr_list->nextHit()) {
-			$vs_first_letter = ucfirst(substr($qr_list->get('ca_occurrences.author'), 0, 1));
-			$va_letter_array[$vs_first_letter] = $vs_first_letter;
 			$vn_id = $qr_list->get('ca_occurrences.occurrence_id');
-			$vs_sort = str_replace(array("á", "é", "í", "è", "ó", "ô", "ú", "ü", "ñ"), array("a", "e", "i", "e", "o", "o", "u", "u", "n"), $qr_list->get('ca_occurrences.author')." ".$qr_list->get('ca_occurrences.preferred_labels'));
-			$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry'><span class='listAuthor'>".$qr_list->get('ca_occurrences.author')."&nbsp;</span><span class='listTitle'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</span><span class='listPub'>&nbsp;".$qr_list->get('ca_occurrences.publication_info')."</span></div>\n";	
+			$vs_sort = strip_tags(str_replace(array("À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ü", "ù", "ú", "ü", "Ñ", "ñ"), array("A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "u", "u", "u", "N", "n"), trim(strip_tags($qr_list->get('ca_occurrences.author')." ".$qr_list->get('ca_occurrences.preferred_labels')))));
+			$vs_first_letter = ucfirst(substr($vs_sort, 0, 1));
+			$va_letter_array[$vs_first_letter] = $vs_first_letter;
+			$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listEntryIndentSecondLine'>".(($qr_list->get('ca_occurrences.author')) ? "<span class='listAuthor'>".$qr_list->get('ca_occurrences.author')."</span> " : "")."<span class='listTitle'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</span><span class='listPub'>&nbsp;".$qr_list->get('ca_occurrences.publication_info')."</span>".(($qr_list->get('ca_occurrences.internal_notes')) ? " ".$qr_list->get('ca_occurrences.internal_notes') : "")."</div>\n";	
 		}
+		ksort($va_links_array);
+		ksort($va_letter_array);
 		foreach ($va_links_array as $va_first_letter => $va_links) {
 			ksort($va_links);
 			print "<p class='separator'><a name='".$vs_first_letter."'></a><br></p>";			

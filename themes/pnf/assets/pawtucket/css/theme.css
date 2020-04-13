@@ -684,6 +684,35 @@ div.caMediaOverlayControls {
 }
 #bibBody{
 	margin-top:50px;
+	border-top:2px solid #DEDEDE;
+	padding-top:40px;
+}
+#bibBodyIntro{
+	font-weight:bold;
+	max-width:700px;
+	margin-left: 140px;
+	margin-right:auto;
+}
+#bibBodyIntro div{
+	text-align:center;
+}
+#bibBodyIntro ul{
+	padding-left:125px;
+	padding-right:125px;
+	font-weight:normal;
+}
+#bibBodyIntro li{
+	padding-bottom:5px;
+	padding-top:10px;
+}
+.listNoBullet li{
+	list-style-type:none;
+	text-indent: -15px;
+	margin-left: 15px
+}
+.listEntryIndentSecondLine{
+	text-indent: -30px;
+	margin-left: 30px
 }
 #filterByNameContainer{
 	float:right;
