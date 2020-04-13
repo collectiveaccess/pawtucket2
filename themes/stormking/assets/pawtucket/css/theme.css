@@ -1,21 +1,36 @@
-/* Fonts
-@font-face{font-family:neuzeit;src:url(https://use.typekit.net/af/620f98/0000000000000000000178a5/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
-	format("woff2"),url(https://use.typekit.net/af/620f98/0000000000000000000178a5/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
-	format("woff"),url(https://use.typekit.net/af/620f98/0000000000000000000178a5/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) 
-	format("opentype");font-weight:300;font-style:normal;}
-@font-face{font-family:neuzeit;src:url(https://use.typekit.net/af/26c758/0000000000000000000178a6/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) 
-	format("woff2"),url(https://use.typekit.net/af/26c758/0000000000000000000178a6/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) 
-	format("woff"),url(https://use.typekit.net/af/26c758/0000000000000000000178a6/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) 
-	format("opentype");font-weight:400;font-style:normal;}
-@font-face{font-family:tk-neuzeit-grotesk-n7;src:url(https://use.typekit.net/af/9aeec1/0000000000000000000178a7/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) 
-	format("woff2"),url(https://use.typekit.net/af/9aeec1/0000000000000000000178a7/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) 
-	format("woff"),url(https://use.typekit.net/af/9aeec1/0000000000000000000178a7/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) 
-	format("opentype");font-weight:700;font-style:normal;}
-@font-face{font-family:tk-neuzeit-grotesk-n9;src:url(https://use.typekit.net/af/3d5194/0000000000000000000178a8/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
-	format("woff2"),url(https://use.typekit.net/af/3d5194/0000000000000000000178a8/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
-	format("woff"),url(https://use.typekit.net/af/3d5194/0000000000000000000178a8/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) 
-	format("opentype");font-weight:900;font-style:normal;}
- */	
+/* Fonts */
+@font-face {
+ font-family:neuzeit-grotesk;
+ src:url(https://use.typekit.net/af/8f7727/0000000000000000000178a5/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff2"),
+ url(https://use.typekit.net/af/8f7727/0000000000000000000178a5/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("woff"),
+ url(https://use.typekit.net/af/8f7727/0000000000000000000178a5/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n3&v=3) format("opentype");
+ font-weight:300;
+ font-style:normal;
+}
+@font-face {
+ font-family:neuzeit-grotesk;
+ src:url(https://use.typekit.net/af/cde90e/0000000000000000000178a6/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff2"),
+ url(https://use.typekit.net/af/cde90e/0000000000000000000178a6/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("woff"),
+ url(https://use.typekit.net/af/cde90e/0000000000000000000178a6/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n4&v=3) format("opentype");
+ font-weight:400;
+ font-style:normal;
+}
+@font-face {
+ font-family:neuzeit-grotesk;
+ src:url(https://use.typekit.net/af/d7bb7b/0000000000000000000178a7/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff2"),
+ url(https://use.typekit.net/af/d7bb7b/0000000000000000000178a7/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("woff"),
+ url(https://use.typekit.net/af/d7bb7b/0000000000000000000178a7/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n7&v=3) format("opentype");
+ font-weight:700;
+ font-style:normal;
+}
+@font-face {
+ font-family:neuzeit-grotesk;
+ src:url(https://use.typekit.net/af/7d4af5/0000000000000000000178a8/27/l?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) format("woff2"),
+ url(https://use.typekit.net/af/7d4af5/0000000000000000000178a8/27/d?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) format("woff"),
+ url(https://use.typekit.net/af/7d4af5/0000000000000000000178a8/27/a?primer=7cdcb44be4a7db8877ffa5c0007b8dd865b3bbc383831fe2ea177f62257a9191&fvd=n9&v=3) format("opentype");
+ font-weight:900;
+ font-style:normal;
+} 
 	
 @font-face{
 	font-family:neuzeit;
@@ -92,11 +107,14 @@ body {
     line-height: 22px;
     letter-spacing: 0.7px;
     position: relative;
-    font-family:neuzeit;
+    font-family:neuzeit-grotesk;
     margin-bottom:0px;
 }
 a, a:hover, a:active, a:focus{
 	color:#000;
+}
+b, strong {
+	font-family: neuzeit-grotesk;
 }
 #pageArea {
 	padding-top:30px;
@@ -130,7 +148,7 @@ h1 {
 }
 h2{
 	color:#000;
-	font-family: neuzeit;
+	font-family: neuzeit-grotesk;
 }
 h4 {
 	color:#000;
@@ -197,7 +215,7 @@ p, .collectionsList p {
 	font-size: 19px;
     line-height: 19px; 
     display:inline;
-    font-family:neuzeit;
+    font-family:neuzeit-grotesk;
     font-weight:regular;
 }
 .nav > li > a:hover, .nav > li > a:focus {
