@@ -21,7 +21,7 @@ if(($vn_collection_caching > 0) && ExternalCache::contains($vs_cache_key,'collec
 	print ExternalCache::fetch($vs_cache_key, 'collection_detail_child_list');
 }else{
 
-
+$GLOBALS["va_all_object_ids"] = array();
 	
 function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_options = array()) {
 	if($o_config->get("max_levels") && ($vn_level > $o_config->get("max_levels"))){
@@ -112,6 +112,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 					if($qr_objects->numHits()){
 						$vs_output .= "<div class='collectionObjectsList' style='margin-left:".(20*($vn_level - 1))."px;'>";
 						while($qr_objects->nextHit()){
+							$GLOBALS["va_all_object_ids"][] = $qr_objects->get("ca_objects.object_id");
 							# --- does this item have media or it's children have media?
 							$vs_eye = "";
 							$vs_grandies = $qr_objects->getWithTemplate("<unit relativeTo='ca_objects.children'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values));
@@ -140,7 +141,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 							}else{
 								$vs_date = ($qr_objects->get("ca_objects.season_list") || $qr_objects->get("ca_objects.manufacture_date")) ? ", ".trim($qr_objects->get("ca_objects.season_list", array("convertCodesToDisplayText" => true))." ".$qr_objects->get("ca_objects.manufacture_date")): ", undated";
 							}
-							$vs_output .= "<div class='row'><div class='col-xs-9".(($vb_show_eye) ? " showEye" : "")."'>".caDetailLink($po_request, trim($qr_objects->get("ca_objects.preferred_labels")).$vs_date, '', 'ca_objects', $qr_objects->get("ca_objects.object_id"))." <span class='glyphicon glyphicon-eye-open'></span></div><div class='col-xs-3'>".(($vb_item) ? "Item" : $qr_objects->get("ca_objects.box_folder"))."</div></div>";
+							$vs_output .= "<div class='row'><div class='col-xs-9".(($vb_show_eye) ? " showEye" : "")."'>".caDetailLink($po_request, trim($qr_objects->get("ca_objects.preferred_labels")).$vs_date, '', 'ca_objects', $qr_objects->get("ca_objects.object_id"), array("last_tab" => "guide"))." <span class='glyphicon glyphicon-eye-open'></span></div><div class='col-xs-3'>".(($vb_item) ? "Item" : $qr_objects->get("ca_objects.box_folder"))."</div></div>";
 						}
 						$vs_output .= "</div>";
 					}
@@ -166,8 +167,15 @@ if ($vn_collection_id) {
 	#	$vs_output .= "<div style='margin-left:20px;'>".caNavLink($this->request, "Products", "", "", "Browse", "Products", array("facet" => "brand_facet", "id" => $vn_brand))."</div>";
 	#}
 	print $vs_output;
+	
+	#$o_context = new ResultContext($this->request, "ca_objects", "detailrelated");
+	#$o_context->setResultList(array_merge($o_context->getResultList(), $GLOBALS["va_all_object_ids"]));
+	#$o_context->setResultList($GLOBALS["va_all_object_ids"]);
+	#$o_context->saveContext();
+	#print_r($GLOBALS["va_all_object_ids"]);
+	$this->request->user->setVar("guide_ids", $GLOBALS["va_all_object_ids"]);
 }
-	ExternalCache::save($vs_cache_key, $vs_output, 'collection_detail_child_list', $vn_colleciton_caching);
+	ExternalCache::save($vs_cache_key, $vs_output, 'collection_detail_child_list', $vn_collection_caching);
 }
 ?>
 
