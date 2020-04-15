@@ -95,7 +95,7 @@
 						<form class="navbar-form" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'Objects'); ?>">
 							<div class="formOutline">
 								<div class="form-group">
-									<input type="text" class="form-control" id="headerSearchInput" placeholder="Search All" name="search" autocomplete="off" />
+									<input type="text" class="form-control" id="headerSearchInput" placeholder="Search Archives" name="search" autocomplete="off" />
 								</div>
 								<button type="submit" class="btn-search" id="headerSearchButton"><i class='material-icons'>search</i></button>
 							</div>
