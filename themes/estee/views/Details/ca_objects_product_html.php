@@ -56,12 +56,12 @@
 				
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
-						print $vs_rep_viewer;
 						$vs_use_statement = trim($t_object->get("ca_objects.use_statement"));
 						if(!$vs_use_statement){
 							$vs_use_statement = $this->getVar("use_statement");
 						}
-						print "<H6>".$vs_use_statement."</H6>";
+						print "<H6 class='detailUseStatement text-center'>".$vs_use_statement."</H6>";
+						print $vs_rep_viewer;
 ?>
 						<script type="text/javascript">
 							jQuery(document).ready(function() {
@@ -76,7 +76,7 @@
 						print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request Digitization", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'digitizationRequest'))."</div>";
 					}	
 ?>				
-					<div id="detailAnnotations"></div>
+					<!--<div id="detailAnnotations"></div>-->
 				
 					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 			

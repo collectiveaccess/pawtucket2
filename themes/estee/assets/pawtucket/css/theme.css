@@ -904,7 +904,7 @@ a.logout .material-icons{
     color: #000;
 }
 #bRefine.fixed{
-	padding-top:75px;
+	padding-top:160px;
 }
 .bResultListItemExpandedInfo .material-icons, .bResultItemExpandedInfo .material-icons{
 	color:#b7b7b7;
@@ -1476,7 +1476,11 @@ h1.primaryLandingBannerTitle {
 .detail .detailArchivalPlaceholder small{
 	font-size:10px;
 }
-
+.detailUseStatement{
+	text-align:center;
+	margin:0px 0px 20px 0px;
+	padding:0px;
+}
 .repViewerContCont{
 	padding-bottom:38px;
 }

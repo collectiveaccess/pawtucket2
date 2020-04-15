@@ -109,16 +109,9 @@
 					if (offset.top<scrollTop && ((offset.top + jQuery('#pageArea').height() - jQuery('#bRefine').height()) > scrollTop)) {
 						jQuery('#bRefine').addClass('fixed');
 						jQuery('#bRefine').width(panelWidth);
-						if((jQuery(window).scrollTop() + jQuery(window).height()) >= (jQuery(document).height() - 100)) {
-							jQuery('#bRefine').height(jQuery(window).height() - jQuery('#footer').height() - 100);
-						}else{
-							jQuery('#bRefine').height('100%');
-						}
-						
 					} else {
 						jQuery('#bRefine').removeClass('fixed');
 					}
-					
 				});
             }
 		});
