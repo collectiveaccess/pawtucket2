@@ -149,9 +149,11 @@
 				}
 				if ($vs_lang_or = $t_object->get('ca_objects.041_h', array("delimiter" => ", "))) {
 					print "<div class='unit'><h6>Language(s) of original</h6>".$vs_lang_or."</div>";
-				}													
-				if (($vs_pagination = $t_object->get('ca_objects.pagination', array("delimiter" => ", "))) | ($vs_format = $t_object->get('ca_objects.format', array("delimiter" => ", "))) | ($vs_ornaments = $t_object->get('ca_objects.ornaments', array("delimiter" => ", ")))) {
-					print "<div class='unit'><h6>Physical Description</h6>".$vs_pagination." ".$vs_ornaments." ".$vs_format."</div>";
+				}	
+				$vs_pagination = $t_object->get('ca_objects.pagination', array("delimiter" => ", "));
+				$vs_format = $t_object->get('ca_objects.format', array("delimiter" => ", "));										
+				if ($vs_pagination || $vs_format || $vs_ornaments) {
+					print "<div class='unit'><h6>Physical Description</h6>".$vs_pagination." ".$vs_format."</div>";
 				}
 				if ($vs_ornaments = $t_object->get('ca_objects.ornaments', array("delimiter" => "<br/>"))) {
 					print "<div class='unit'><h6>Illustration Ornaments</h6>".$vs_ornaments."</div>";
