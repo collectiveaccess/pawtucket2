@@ -212,7 +212,7 @@
 	
 							$vs_classification = "";
 							foreach($va_classification_fields as $vs_label => $vs_field){
-								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
+								if($vs_tmp = $t_object->get('ca_objects.'.$vs_field, array("delimiter" => ", ", 'convertCodesToDisplayText' => true))){
 									$vs_classification .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
 								}
 							}
