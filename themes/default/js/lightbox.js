@@ -118,6 +118,18 @@ function addItemsToLightbox(url, set_id, item_ids, table, callback) {
 		});
 }
 
+function addResultsToLightbox(url, set_id, table, callback) {
+	axios.post(url + "/addToLightbox/saveLastResults/1", qs.stringify({set_id: set_id, table: table }))
+		.then(function (resp) {
+			let data = resp.data;
+
+			callback(data);
+		})
+		.catch(function (error) {
+			console.log("Error while adding item lightbox: ", error);
+		});
+}
+
 /**
  * Remove item from lightbox
  *
@@ -157,4 +169,4 @@ function getLightboxAccessForCurrentUser(url, set_id, callback) {
 		});
 }
 
-export { fetchLightboxList, addLightbox, editLightbox, deleteLightbox, addItemToLightbox, addItemsToLightbox, removeItemFromLightbox, getLightboxAccessForCurrentUser };
+export { fetchLightboxList, addLightbox, editLightbox, deleteLightbox, addItemToLightbox, addItemsToLightbox, addResultsToLightbox, removeItemFromLightbox, getLightboxAccessForCurrentUser };

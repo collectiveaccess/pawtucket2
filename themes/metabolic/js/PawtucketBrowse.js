@@ -2,10 +2,12 @@
 import React from "react"
 import ReactDOM from "react-dom";
 import { initBrowseContainer, initBrowseCurrentFilterList, initBrowseFilterList, initBrowseFacetPanel } from "../../default/js/browse";
+import { fetchLightboxList, addItemsToLightbox, addResultsToLightbox } from "../../default/js/lightbox";
 
 const selector = pawtucketUIApps.PawtucketBrowse.selector;
 const appData = pawtucketUIApps.PawtucketBrowse.data;
 const browseConfig = pawtucketUIApps.PawtucketBrowse.data.browseConfig;
+const lightboxTerminology = appData.lightboxTerminology;
 /**
  * Component context making PawtucketBrowse internals accessible to all subcomponents
  *
@@ -137,16 +139,19 @@ class PawtucketBrowseFilterControls extends React.Component {
 	render() {
 		return(<div className="row">
 				<div className="col-md-8 bToolBar">
+					{(this.context.state.statusMessage) ? <div className='row'><div className='col-sm-12 col-md-6 offset-md-3'><div className='alert alert-primary mainNotification' role='alert'>{this.context.state.statusMessage}</div></div></div> : null}
+					
 					<div className="row">
 						<div className="col-md-6"><PawtucketBrowseStatistics/></div>
 						<div className="col-md-6">
-{/* view and export options don't work yet
+{/* view doesn't work yet
 							<PawtucketBrowseViewList/>
 */}
 							<PawtucketBrowseExportOptions/>
 
 							<PawtucketBrowseSortOptions/>
-
+							{(appData.isLoggedIn) ? <PawtucketBrowseLightboxOptions/> : null}
+							<PawtucketBrowseSelectItemsOptions/>
 						</div>
 					</div>
 				</div>
@@ -442,7 +447,186 @@ class PawtucketBrowseViewList extends React.Component {
 		);
 	}
 }
+/**
+ * Renders select options
+ *
+ * Props are:
+ * 		
+ *
+ * Used by:
+ *  	BrowseControls
+ *
+ * Uses context: BrowseContext
+ */
+class PawtucketBrowseSelectItemsOptions extends React.Component {
+	static contextType = PawtucketBrowseContext;
 
+	constructor(props) {
+		super(props);
+		this.clearSelectBrowseItems = this.clearSelectBrowseItems.bind(this);
+		this.showSelectButtons = this.showSelectButtons.bind(this);
+	}
+		
+	clearSelectBrowseItems() {
+		let state = this.context.state;
+		state.showSelectButtons = false;
+		state.selectedItems = [];
+		this.context.setState(state);
+	}
+	showSelectButtons() {
+		let state = this.context.state;
+		state.showSelectButtons = true;
+		this.context.setState(state);		
+	}
+	
+	render() {
+		return (
+			<div id="bSelectOptions">
+				<div className="dropdown show">
+					<a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<ion-icon name="checkmark-circle-outline"></ion-icon>
+					</a>
+
+					<div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+						{(this.context.state.showSelectButtons) ? <a className="dropdown-item" onClick={this.clearSelectBrowseItems}>Clear selection</a> : <a className="dropdown-item" onClick={this.showSelectButtons}>Select items</a> }
+						
+					</div>
+				</div>
+			</div>
+
+		);
+	}
+
+}
+class PawtucketBrowseLightboxOptions extends React.Component {
+	static contextType = PawtucketBrowseContext;
+	constructor(props) {
+		super(props);
+		
+		this.addSelectedItemsToNewLightbox = this.addSelectedItemsToNewLightbox.bind(this);
+		this.addSelectedItemsToLightbox = this.addSelectedItemsToLightbox.bind(this);
+		this.addResultsToLightbox = this.addResultsToLightbox.bind(this);
+		this.addResultsToNewLightbox = this.addResultsToNewLightbox.bind(this);
+		
+	}
+	componentDidMount() {		
+		let that = this;
+		fetchLightboxList(appData.baseLightboxUrl, function(data) {
+			let state = that.context.state;
+			state.lightboxList = data ? data : {};
+			that.context.setState(state);
+		});
+		
+	}
+
+	addSelectedItemsToNewLightbox(e) {
+		let that = this;
+		let state = that.context.state;
+		addItemsToLightbox(appData.baseLightboxUrl, null, this.context.state.selectedItems.join(';'), 'ca_objects', function(resp) {
+			if (resp && resp['ok']) {
+				//state.selectedItems = [];
+				//state.showSelectButtons = false;
+				state.lightboxList.sets[resp.set_id] = {'set_id':resp.set_id, 'label': resp.label};
+				state.statusMessage = "Added Items To New " + lightboxTerminology.singular;
+				that.context.setState(state);
+				setTimeout(function() {
+					state.statusMessage = '';
+					that.context.setState(state);
+				}, 2000);
+				return;
+			}
+			alert("Could not add item to lightbox: " + resp['err']);
+		});
+		e.preventDefault();
+	}
+
+	addSelectedItemsToLightbox(e) {
+		let that = this;
+		let state = that.context.state;
+		let setID = e.target.attributes.getNamedItem('data-set-id').value;
+		addItemsToLightbox(appData.baseLightboxUrl, setID, this.context.state.selectedItems.join(';'), 'ca_objects', function(resp) {
+			if (resp && resp['ok']) {
+				state.statusMessage = "Added Items To " + lightboxTerminology.singular + ": " + resp.label;
+				that.context.setState(state);
+				setTimeout(function() {
+					state.statusMessage = '';
+					that.context.setState(state);
+				}, 2000);
+				return;
+			}
+			alert("Could not add item to lightbox: " + resp['err']);
+		});
+		e.preventDefault();
+	}
+	
+	addResultsToLightbox(e) {
+		let that = this;
+		let state = that.context.state;
+		let setID = e.target.attributes.getNamedItem('data-set-id').value;
+		addResultsToLightbox(appData.baseLightboxUrl, setID, 'ca_objects', function(resp) {
+			if (resp && resp['ok']) {
+				state.statusMessage = "Added Results To " + lightboxTerminology.singular;
+				that.context.setState(state);
+				setTimeout(function() {
+					state.statusMessage = '';
+					that.context.setState(state);
+				}, 2000);
+				return;
+			}
+			alert("Could not add results to lightbox: " + resp['err']);
+		});
+		e.preventDefault();
+	}
+	
+	addResultsToNewLightbox(e) {
+		let that = this;
+		let state = that.context.state;
+		addResultsToLightbox(appData.baseLightboxUrl, null, 'ca_objects', function(resp) {
+			if (resp && resp['ok']) {
+				state.lightboxList.sets[resp.set_id] = {'set_id':resp.set_id, 'label': resp.label};
+				state.statusMessage = "Added Results To New " + lightboxTerminology.singular;
+				that.context.setState(state);
+				setTimeout(function() {
+					state.statusMessage = '';
+					that.context.setState(state);
+				}, 2000);
+				return;
+			}
+			alert("Could not add results to new lightbox: " + resp['err']);
+		});
+		e.preventDefault();
+	}
+	
+	render() {
+		let lightboxes = [];
+		if (this.context.state.lightboxList && this.context.state.lightboxList.sets) {
+			for(let k in this.context.state.lightboxList.sets) {
+				let l = this.context.state.lightboxList.sets[k];
+				lightboxes.push(<a className="dropdown-item" key={k} href="#" data-set-id={l.set_id} onClick={(this.context.state.selectedItems.length > 0) ? this.addSelectedItemsToLightbox : this.addResultsToLightbox}><ion-icon name="add"></ion-icon> {l.label}</a>);
+			}
+		}
+		
+		return (
+			<div id="bSelectOptions">
+				<div className="dropdown show">
+					<a href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<ion-icon name="folder"></ion-icon>
+					</a>
+
+					<div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+						<a className="dropdown-item" onClick={(this.context.state.selectedItems.length > 0) ? this.addSelectedItemsToNewLightbox : this.addResultsToNewLightbox}><ion-icon name="add"></ion-icon> Create new {lightboxTerminology.singular} from {(this.context.state.selectedItems.length > 0) ? "selected" : "results"}</a>
+						{(lightboxes.length) ? <div className="dropdown-divider"></div> : null}
+						{(lightboxes.length) ? (this.context.state.selectedItems.length > 0) ? <><div className="dropdown-header">Add Selected Items To:</div><div className="dropdown-divider"></div></> : <><div className="dropdown-header">Add Results To {lightboxTerminology.singular}:</div><div className="dropdown-divider"></div></> : null}
+						{lightboxes}
+						
+					</div>
+				</div>
+			</div>
+
+		);
+	}
+
+}
 /**
  * Renders download options
  *
@@ -467,7 +651,7 @@ class PawtucketBrowseExportOptions extends React.Component {
 		if(exportFormats) {
 			for (let i in exportFormats) {
 				let r = exportFormats[i];
-				exportOptions.push(<a className="dropdown-item" href={appData.baseUrl + '/' + appData.endpoint + '/getResult/1/download/1/view/' + r.type + '/export_format/' + r.code + '/key/' + this.context.state.key} key={i}>{r.name}</a>);
+				exportOptions.push(<a className="dropdown-item" href={appData.baseUrl + '/' + appData.endpoint + '/getResult/1/download/1/view/' + r.type + '/export_format/' + r.code + '/key/' + this.context.state.key + '/record_ids/' + ((this.context.state.selectedItems.length > 0) ? this.context.state.selectedItems.join(';') : "")} key={i}>{r.name}</a>);
 			}
 		}
 
@@ -479,6 +663,7 @@ class PawtucketBrowseExportOptions extends React.Component {
 				  </a>
 
 				  <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					{(this.context.state.selectedItems.length > 0) ? <><div className="dropdown-header">Export Selected Items As:</div><div className="dropdown-divider"></div></> : null}
 					{exportOptions}
 				  </div>
 				</div>
@@ -653,6 +838,29 @@ class PawtucketBrowseResultLoadMoreButton extends React.Component {
  *  	PawtucketBrowseResults
  */
 class PawtucketBrowseResultItem extends React.Component {
+	static contextType = PawtucketBrowseContext;
+
+	constructor(props) {
+		super(props);	
+		
+		this.selectBrowseItem = this.selectBrowseItem.bind(this);
+	}
+
+	selectBrowseItem(e) {
+		
+		let state = this.context.state;
+		let item_id = parseInt(e.target.attributes.getNamedItem('data-item_id').value);
+		if(!item_id) { return; }
+		let i = null;
+		i = state.selectedItems.indexOf(item_id);
+		if(i > -1){
+			state.selectedItems.splice(i, 1);
+		}else{
+			state.selectedItems.push(item_id);
+		}
+		this.context.setState(state);
+		console.log("selectedItems: " + item_id + " : " + this.context.state.selectedItems.indexOf(item_id), this.context.state.selectedItems);
+	}
 	render() {
 		let data = this.props.data;
 
@@ -670,9 +878,12 @@ class PawtucketBrowseResultItem extends React.Component {
 			default:
 				return (
 					<div className="col-sm-6 col-md-3">
-						<div className='card mb-4 bResultImage' ref={this.props.scrollToRef}>
+						<div className={'card mb-4 bResultImage' + ((this.context.state.selectedItems.includes(parseInt(data.id))) ? ' selected' : '')} ref={this.props.scrollToRef}>
 							<a href={detail_url}><div dangerouslySetInnerHTML={{__html: data.representation}}/></a>
-							<div className='card-body mb-2'><a href={detail_url} dangerouslySetInnerHTML={{__html: data.caption}}></a></div>
+							<div className='card-body mb-2'>
+								<a href={detail_url} dangerouslySetInnerHTML={{__html: data.caption}}></a>
+								{(this.context.state.showSelectButtons) ? <div className='float-left'><a onClick={this.selectBrowseItem} data-item_id={data.id} className={'selectItem' + ((this.context.state.selectedItems.includes(parseInt(data.id))) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'><ion-icon name='checkmark-circle' data-item_id={data.id}></ion-icon></a></div> : null}
+							</div>
 							<div className='card-footer bSetsSelectMultiple collapse text-right'><input type='checkbox' name='object_ids[]' value='{$vn_id}'/></div>
 						</div>
 					</div>

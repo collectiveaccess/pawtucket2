@@ -306,7 +306,7 @@ class LightboxSelectItemsOptions extends React.Component {
 
 					<div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
 						{(this.context.state.showSelectButtons) ? <a className="dropdown-item" onClick={this.clearSelectLightboxItems}>Clear selection</a> : <a className="dropdown-item" onClick={this.showSelectButtons}>Select items</a> }
-						{(this.context.state.selectedItems.length > 0) ? <a className="dropdown-item" onClick={this.addSelectedItemsToNewLightbox}>Create Lightbox From Selection</a> : null }
+						{(this.context.state.selectedItems.length > 0) ? <a className="dropdown-item" onClick={this.addSelectedItemsToNewLightbox}>Create {lightboxTerminology.singular} From Selection</a> : null }
 					
 					</div>
 				</div>
@@ -340,7 +340,7 @@ class LightboxExportOptions extends React.Component {
 		if(exportFormats) {
 			for (let i in exportFormats) {
 				let r = exportFormats[i];
-				exportOptions.push(<a className="dropdown-item" href={appData.baseUrl + '/getContent/getResult/1/download/1/view/' + r.type + '/export_format/' + r.code + '/key/' + this.context.state.key} key={i}>{r.name}</a>);
+				exportOptions.push(<a className="dropdown-item" href={appData.baseUrl + '/getContent/getResult/1/download/1/view/' + r.type + '/export_format/' + r.code + '/key/' + this.context.state.key + '/record_ids/' + ((this.context.state.selectedItems.length > 0) ? this.context.state.selectedItems.join(';') : "")} key={i}>{r.name}</a>);
 			}
 		}
 		if(this.context.state.selectedItems.length == 0){
@@ -356,6 +356,7 @@ class LightboxExportOptions extends React.Component {
 				  </a>
 
 				  <div className="dropdown-menu" aria-labelledby="dropdownMenuLink">
+					{(this.context.state.selectedItems.length > 0) ? <><div className="dropdown-header">Export Selected Items As:</div><div className="dropdown-divider"></div></> : null}
 					{exportOptions}
 				  </div>
 				</div>
