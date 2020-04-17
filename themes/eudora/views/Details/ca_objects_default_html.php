@@ -69,7 +69,7 @@
 			<div class="row">
 				<div class='col-sm-12 col-md-8 col-lg-7 col-lg-offset-1'>
 <?php
-			$va_title_fields = array("mint", "authority", "denomination", "date");
+			$va_title_fields = array("mint", "authority", "denomination", "date_container.date_display");
 			$va_title_parts = array();
 			foreach($va_title_fields as $vs_title_field){
 				if($vs_tmp = $t_object->get("ca_objects.".$vs_title_field)){
@@ -179,7 +179,7 @@
 								"Magistrate" => "magistrate",
 							);
 							$va_classification_fields = array(	
-								"Date" => "date",
+								"Date" => "date_container.date_display",
 								"Date On Object" => "dob",
 								"Period" => "period",
 								"Type (PELLA)" => "type",
@@ -281,7 +281,7 @@
 							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale,collection"><H4>Collection History</H4></ifcount>}}}
 							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale"><div class='unit'><h6>Auction<ifcount min="2" code="ca_occurrences" restrictToTypes="sale">s</ifcount></h6>
 									<unit relativeTo='ca_objects_x_occurrences' delimiter=' ' restrictToTypes='sale' sort='ca_occurrences.date' sortDirection='DESC'>
-										<div class='unitSub'>^ca_occurrences.preferred_labels<ifdef code='ca_occurrences.sale_number'> ^ca_occurrences.sale_number</ifdef><ifdef code='ca_occurrences.date'>, ^ca_occurrences.date</ifdef><ifdef code='ca_objects_x_occurrences.lot_number'>, ^ca_objects_x_occurrences.lot_number</ifdef>
+										<div class='unitSub'>^ca_occurrences.preferred_labels<ifdef code='ca_occurrences.sale_number'> ^ca_occurrences.sale_number</ifdef><ifdef code='ca_occurrences.date_container.date_display'>, ^ca_occurrences.date_container.date_display</ifdef><ifdef code='ca_objects_x_occurrences.lot_number'>, ^ca_objects_x_occurrences.lot_number</ifdef>
 										</div>
 									</unit>
 								</ifcount>}}}
