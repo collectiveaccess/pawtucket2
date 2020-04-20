@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Tangerine:wght@700&display=swap');
 a:-webkit-any-link {
     color: -webkit-link;
     text-decoration: underline;
@@ -685,6 +686,12 @@ div.caMediaOverlayControls {
 	padding-right: 185px;
 	background-color:#FFF;
 }
+.callout{
+	font-family: 'Tangerine', cursive;
+	font-size:30px;
+	line-height:1.3em;
+	color: #7f4539;
+}
 #bibBody{
 	margin-top:50px;
 	border-top:2px solid #DEDEDE;
@@ -692,21 +699,21 @@ div.caMediaOverlayControls {
 }
 #bibBodyIntro{
 	font-weight:bold;
-	max-width:700px;
-	margin-left: 140px;
-	margin-right:auto;
+	font-size:16px;
 }
 #bibBodyIntro div{
-	text-align:center;
+	margin-bottom:25px;
+	line-height:1.3em;
 }
 #bibBodyIntro ul{
-	padding-left:125px;
-	padding-right:125px;
+	padding-left:265px;
+	padding-right:265px;
 	font-weight:normal;
 }
 #bibBodyIntro li{
 	padding-bottom:5px;
 	padding-top:10px;
+	font-size:14px;
 }
 .listNoBullet li{
 	list-style-type:none;
