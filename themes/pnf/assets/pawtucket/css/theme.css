@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Tangerine:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap');
 a:-webkit-any-link {
     color: -webkit-link;
     text-decoration: underline;
@@ -687,10 +687,13 @@ div.caMediaOverlayControls {
 	background-color:#FFF;
 }
 .callout{
-	font-family: 'Tangerine', cursive;
-	font-size:30px;
-	line-height:1.3em;
+	font-family: 'Pinyon Script', cursive;
+	font-size:26px;
+	line-height:1.2em;
 	color: #7f4539;
+	font-weight:bold;
+	margin-top:10px;
+	margin-bottom:10px;
 }
 #bibBody{
 	margin-top:50px;
@@ -704,6 +707,10 @@ div.caMediaOverlayControls {
 #bibBodyIntro div{
 	margin-bottom:25px;
 	line-height:1.3em;
+	font-weight: bold;
+	font-size: 18px;
+	color: #7f4539;
+	font-family: 'Lusitana', serif;
 }
 #bibBodyIntro ul{
 	padding-left:265px;
