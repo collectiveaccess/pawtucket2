@@ -36,10 +36,27 @@
 	$va_access_values = 	caGetUserAccessValues();
 	$vn_representation_id = $this->getVar("representation_id");
 	$va_representation_tags = $this->getVar("representation_tags");
+	$va_config_options = 	$this->getVar("config_options");
 #	foreach($va_representation_tags as $vs_representation_tag){
 #		print $vs_representation_tag;
 #	}
+	MetaTagManager::addMetaProperty("og:url", $this->request->config->get("site_host").caNavUrl("*", "*", "*"));
+	MetaTagManager::addMetaProperty("og:title", ($va_config_options["og_title"]) ? $t_object->getWithTemplate($va_config_options["og_title"]) : $t_object->get("ca_objects.preferred_labels.name"));
+	MetaTagManager::addMetaProperty("og:type", ($va_config_options["og_type"]) ? $va_config_options["og_type"] : "website");
+	if($va_config_options["og_description"] && ($vs_tmp = $t_object->getWithTemplate($va_config_options["og_description"]))){
+		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($vs_tmp)));
+	}
+	if($vs_tmp = $va_config_options["fb_app_id"]){
+		MetaTagManager::addMetaProperty("fb:app_id", $vs_tmp);
+	}
+	if($vs_rep = $t_object->get("ca_object_representations.media.page.url", array("checkAccess" => $va_access_values))){
+		MetaTagManager::addMetaProperty("og:image", $vs_rep);
+		MetaTagManager::addMetaProperty("og:image:width", $t_object->get("ca_object_representations.media.page.width"));
+		MetaTagManager::addMetaProperty("og:image:height", $t_object->get("ca_object_representations.media.page.height"));
+	}
 ?>
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0&appId=2210553328991338&autoLogAppEvents=1"></script>
 <div class="row borderBottom">
 	<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
 		<H1>{{{^ca_objects.idno}}}</H1>
@@ -61,6 +78,11 @@
 ?>
 	</div><!-- end col -->
 	<div class='col-12 col-sm-10 col-md-10 col-lg-8'>
+		<div id='detailShareButtons' class="mt-2">
+			<div class='detailShareButton'>
+				<div class="fb-share-button" data-href="<?php print $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" data-layout="button" data-size="small"><a target="_blank" href="<?php print $this->request->config->get("site_host").caNavUrl("*", "*", "*"); ?>" class="fb-xfbml-parse-ignore">Share</a></div>
+			</div>
+		</div>
 <?php
 				# Comment/inquire/download pdf/lightbox
 				if ($vn_comments_enabled || $vn_pdf_enabled || $vn_inquire_enabled || $vn_download_all_enabled || caDisplayLightbox($this->requests)) {

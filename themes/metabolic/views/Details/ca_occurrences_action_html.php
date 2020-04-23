@@ -33,6 +33,22 @@
 	$vn_id =				$t_item->get('ca_occurrences.occurrence_id');
 	$va_access_values = 	caGetUserAccessValues();
 	$vn_representation_id = $this->getVar("representation_id");
+	$va_config_options = 	$this->getVar("config_options");
+		
+	MetaTagManager::addMetaProperty("og:url", $this->request->config->get("site_host").caNavUrl("*", "*", "*"));
+	MetaTagManager::addMetaProperty("og:title", ($va_config_options["og_title"]) ? $t_item->getWithTemplate($va_config_options["og_title"]) : $t_item->get("ca_occurrences.preferred_labels.name"));
+	MetaTagManager::addMetaProperty("og:type", ($va_config_options["og_type"]) ? $va_config_options["og_type"] : "website");
+	if($va_config_options["og_description"] && ($vs_tmp = $t_item->getWithTemplate($va_config_options["og_description"]))){
+		MetaTagManager::addMetaProperty("og:description", $vs_tmp);
+	}
+	if($vs_tmp = $va_config_options["fb_app_id"]){
+		MetaTagManager::addMetaProperty("fb:app_id", htmlentities(strip_tags($vs_tmp)));
+	}
+	if($vs_rep = $t_item->get("ca_object_representations.media.page.url", array("checkAccess" => $va_access_values))){
+		MetaTagManager::addMetaProperty("og:image", $vs_rep);
+		MetaTagManager::addMetaProperty("og:image:width", $t_object->get("ca_object_representations.media.page.width"));
+		MetaTagManager::addMetaProperty("og:image:height", $t_object->get("ca_object_representations.media.page.height"));
+	}
 	
 	$va_related_item_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("item_select"), "returnAsArray" => true, "checkAccess" => $va_access_values));
 	if(is_array($va_related_item_ids) && sizeof($va_related_item_ids)){
