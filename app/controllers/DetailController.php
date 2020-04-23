@@ -162,7 +162,7 @@
 			}
 			
  			$ps_function = strtolower($ps_function);
- 			$ps_id = str_replace("~", "/", urldecode($this->request->getActionExtra())); 
+ 			$ps_id = urldecode($this->request->getActionExtra()); 
  		
  			if (!isset($this->opa_detail_types[$ps_function]) || !isset($this->opa_detail_types[$ps_function]['table']) || (!($vs_table = $this->opa_detail_types[$ps_function]['table']))) {
  				// invalid detail type – throw error
@@ -681,7 +681,7 @@
 				foreach($va_file_paths as $vs_path => $vs_name) {
 					$o_zip->addFile($vs_path, $vs_name);
 				}
-				$o_view->setVar('zip_stream', $o_zip);
+				$this->view->setVar('zip_stream', $o_zip);
 				$this->view->setVar('archive_name', preg_replace('![^A-Za-z0-9\.\-]+!', '_', $t_object->get('idno')).'.zip');
 				
 				$vn_rc = $this->render('Details/download_file_binary.php');

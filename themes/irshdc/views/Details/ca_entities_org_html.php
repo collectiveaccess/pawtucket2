@@ -163,7 +163,9 @@ if($vs_mode == "map"){
 						</div>
 <?php				
 					}
-					include("map_html.php");
+					if($t_item->get("ca_places.georeference", array("checkAccess" => $va_access_values))){
+						include("map_html.php");
+					}
 ?>
 				</div>
 			</div>
