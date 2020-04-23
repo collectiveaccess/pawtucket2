@@ -376,6 +376,10 @@ a:hover .frontIconButton{
 .tl-slidenav-content-container .galleryTimelineDate{
 	font-size:1em;
 }
+h2.tl-headline {
+	text-transform:none;
+	font-size:12px !important;
+}
 /* replaceing the default date with one in the label template so can format date */
 .tl-headline-date{
 	display:none;
