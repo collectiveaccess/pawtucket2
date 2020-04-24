@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015-2019 Whirl-i-Gig
+ * Copyright 2015-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -195,7 +195,7 @@ class DisplayTemplateParser {
 		// ad hoc template processing for labels.
 		// they only support a very limited set and no nested units or stuff like that
 		if($t_instance instanceof BaseLabel) {
-			return self::_processLabelTemplate($t_instance, $ps_template, $pa_row_ids, $pa_options);
+			return self::_processLabelTemplate($t_instance, $ps_template, $pa_row_ids, array_merge($pa_options, ['returnAsArray' => true]));
 		}
 
 		$qr_res = caMakeSearchResult($ps_tablename, $pa_row_ids, ['sort' => caGetOption('sort', $pa_options, null), 'sortDirection' => caGetOption('sortDirection', $pa_options, null)]);
@@ -420,28 +420,29 @@ class DisplayTemplateParser {
 					break;
 				case 'if':
 					if (strlen($vs_rule = $o_node->rule) && ExpressionParser::evaluate($vs_rule, $pa_vals)) {
-						$vs_acc .= DisplayTemplateParser::_processChildren($pr_res, $o_node->children, DisplayTemplateParser::_getValues($pr_res, DisplayTemplateParser::_getTags($o_node->children, $pa_options), $pa_options), $pa_options);	
+						$vs_acc .= $content = DisplayTemplateParser::_processChildren($pr_res, $o_node->children, DisplayTemplateParser::_getValues($pr_res, DisplayTemplateParser::_getTags($o_node->children, $pa_options), $pa_options), $pa_options);	
 						 
-						if ($pb_is_case) { break(2); }
+						if ($pb_is_case && $content) { break(2); }
 					}
 					break;
 				case 'ifdef':
 				case 'ifnotdef':
 					$vb_omit_blanks = !is_null($o_node->omitBlanks) ? (bool)$o_node->omitBlanks : null;
-					$opts = ['filters' => caGetOption('filters', $pa_options, null), 'index' => caGetOption('index', $pa_options, null), 'mode' => ($vs_tag == 'ifdef') ? 'present' : 'not_present'];
+					$vs_filter = !is_null($o_node->filter) ? (string)$o_node->filter : null;
+					$opts = ['index' => caGetOption('index', $pa_options, null), 'mode' => ($vs_tag == 'ifdef') ? 'present' : 'not_present', 'filter' => $vs_filter, 'checkAccess' => caGetOption('checkAccess', $pa_options, null)];
 					if (!is_null($vb_omit_blanks)) { $opts['includeBlankValuesInArray'] = !$vb_omit_blanks; }
 					
 					$vb_defined = DisplayTemplateParser::_evaluateCodeAttribute($pr_res, $o_node, $opts);
 					
 					if ((($vs_tag == 'ifdef') && $vb_defined) || (($vs_tag == 'ifnotdef') && $vb_defined)) {
 						// Make sure returned values are not empty
-						$vs_acc .= DisplayTemplateParser::_processChildren($pr_res, $o_node->children, $v=DisplayTemplateParser::_getValues($pr_res, DisplayTemplateParser::_getTags($o_node->children, $pa_options), $pa_options), $pa_options);
-						if ($pb_is_case) { break(2); }
+						$vs_acc .= $content = DisplayTemplateParser::_processChildren($pr_res, $o_node->children, $v=DisplayTemplateParser::_getValues($pr_res, DisplayTemplateParser::_getTags($o_node->children, $pa_options), $pa_options), $pa_options);
+						if ($pb_is_case && $content) {  break(2); }
 					}
 					break;
 				case 'ifcount':
 					$vn_min = (int)$o_node->min;
-					$vn_max = (int)$o_node->max;
+					$vn_max = strlen($o_node->max) ? (int)$o_node->max : null;
 					
 					if(!is_array($va_codes = DisplayTemplateParser::_getCodesFromAttribute($o_node)) || !sizeof($va_codes)) { break; }
 					
@@ -454,18 +455,26 @@ class DisplayTemplateParser {
 					$va_restrict_to_relationship_types = DisplayTemplateParser::_getCodesFromAttribute($o_node, ['attribute' => 'restrictToRelationshipTypes']); 
 					$va_exclude_to_relationship_types = DisplayTemplateParser::_getCodesFromAttribute($o_node, ['attribute' => 'excludeRelationshipTypes']); 
 					$vb_omit_blanks = !is_null($o_node->omitBlanks) ? (bool)$o_node->omitBlanks : null;
+					$vs_filter = !is_null($o_node->filter) ? (string)$o_node->filter : null;
 					
 					$va_get_options = ['limit' => $vn_limit, 'returnAsCount' => true, 'checkAccess' => $pa_check_access, 'restrictToTypes' => $va_restrict_to_types, 'excludeTypes' => $va_exclude_types, 'restrictToRelationshipTypes' => $va_restrict_to_relationship_types, 'excludeRelationshipTypes' => $va_exclude_to_relationship_types];
 					if (!is_null($vb_omit_blanks)) { 
 						$pa_options['includeBlankValuesInArray'] = $va_get_options['includeBlankValuesInArray'] = !$vb_omit_blanks; 
 					}
 					
-					$vm_count = ($vb_bool == 'AND') ? 0 : [];
+					$vs_filter_regex = $vs_filter ? self::_makeFilterRegex((string)$vs_filter) : null;
 					
+					$vm_count = ($vb_bool == 'AND') ? 0 : [];
 					if (($vn_limit = ($vn_max > 0) ? $vn_max : $vn_min) == 0) { $vn_limit = 1; }
 					$vn_limit++;
 					foreach($va_codes as $vs_code) {
-						$vn_count = (int)$pr_res->get($vs_code, $va_get_options);
+						if($vs_filter_regex) {
+							$vals = $pr_res->get($vs_code, array_merge($va_get_options, ['returnAsCount' => false, 'returnAsArray' => true]));
+							$vals = array_filter($vals, function($v) use ($vs_filter_regex) { return preg_match($vs_filter_regex, $v); });
+							$vn_count = sizeof($vals);
+						} else {
+							$vn_count = (int)$pr_res->get($vs_code, $va_get_options);
+						}
 
                         if ($vb_bool == 'AND') {
                             $vm_count += $vn_count;
@@ -475,21 +484,21 @@ class DisplayTemplateParser {
 					}
 					
 					if ($vb_bool == 'AND') {
-						if (($vn_min <= $vm_count) && (($vn_max >= $vm_count) || !$vn_max)) {
-							$vs_acc .= DisplayTemplateParser::_processChildren($pr_res, $o_node->children, DisplayTemplateParser::_getValues($pr_res, DisplayTemplateParser::_getTags($o_node->children, $pa_options), $pa_options), $pa_options);
-							if ($pb_is_case) { break(2); }
+						if (($vn_min <= $vm_count) && (($vn_max >= $vm_count) || is_null($vn_max))) {
+							$vs_acc .= $content = DisplayTemplateParser::_processChildren($pr_res, $o_node->children, DisplayTemplateParser::_getValues($pr_res, DisplayTemplateParser::_getTags($o_node->children, $pa_options), $pa_options), $pa_options);
+							if ($pb_is_case && $content) { break(2); }
 						}
 					} else {
 						$vb_all_have_count = true;
 						foreach($vm_count as $vs_code => $vn_count) {
-							if(!(($vn_min <= $vn_count) && (($vn_max >= $vn_count) || !$vn_max))) {
+							if(!(($vn_min <= $vn_count) && (($vn_max >= $vn_count) || is_null($vn_max)))) {
 								$vb_all_have_count = false;
 								break(2);
 							}	
 						}
 						if ($vb_all_have_count) {
-							$vs_acc .= DisplayTemplateParser::_processChildren($pr_res, $o_node->children, $pa_vals, $pa_options);
-							if ($pb_is_case) { break(2); }
+							$vs_acc .= $content = DisplayTemplateParser::_processChildren($pr_res, $o_node->children, $pa_vals, $pa_options);
+							if ($pb_is_case && $content) { break(2); }
 						}
 					}
 					break;
@@ -502,8 +511,8 @@ class DisplayTemplateParser {
 							
 							foreach($va_following_tags as $vs_following_tag) {
 								if(isset($pa_vals[$vs_following_tag]) && strlen($pa_vals[$vs_following_tag])) {
-									$vs_acc .= DisplayTemplateParser::_processChildren($pr_res, $o_node->children, $pa_vals, $pa_options);
-									if ($pb_is_case) { break(2); }
+									$vs_acc .= $content = DisplayTemplateParser::_processChildren($pr_res, $o_node->children, $pa_vals, $pa_options);
+									if ($pb_is_case && $content) { break(2); }
 								}
 							}
 						}
@@ -533,8 +542,8 @@ class DisplayTemplateParser {
 							
 								foreach($va_following_tags as $vs_following_tag) {
 									if(isset($pa_vals[$vs_following_tag]) && strlen($pa_vals[$vs_following_tag])) {
-										$vs_acc .= DisplayTemplateParser::_processChildren($pr_res, $o_node->children, $pa_vals, $pa_options);
-										if ($pb_is_case) { break(2); }
+										$vs_acc .= $content = DisplayTemplateParser::_processChildren($pr_res, $o_node->children, $pa_vals, $pa_options);
+										if ($pb_is_case && $content) { break(2); }
 									}
 									break;
 								}
@@ -544,9 +553,9 @@ class DisplayTemplateParser {
 					break;
 				case 'expression':
 					if ($vs_exp = trim($o_node->getInnerText())) {
-						$vs_acc .= ExpressionParser::evaluate(DisplayTemplateParser::_processChildren($pr_res, $o_node->children, DisplayTemplateParser::_getValues($pr_res, DisplayTemplateParser::_getTags($o_node->children, $pa_options), $pa_options), array_merge($pa_options, ['quote' => true])), $pa_vals);
+						$vs_acc .= $content = ExpressionParser::evaluate(DisplayTemplateParser::_processChildren($pr_res, $o_node->children, DisplayTemplateParser::_getValues($pr_res, DisplayTemplateParser::_getTags($o_node->children, $pa_options), $pa_options), array_merge($pa_options, ['quote' => true])), $pa_vals);
 						
-						if ($pb_is_case) { break(2); }
+						if ($pb_is_case && $content) { break(2); }
 					}
 					break;
 				case 'unit':
@@ -571,6 +580,8 @@ class DisplayTemplateParser {
 					$vs_unit_skip_if_expression = (string)$o_node->skipIfExpression;
 					$vs_unit_skip_when = (string)$o_node->skipWhen;
 					
+					$vs_unit_filter_regex = self::_makeFilterRegex((string)$o_node->filter);
+					
 					$vn_start = (int)$o_node->start;
 					$vn_length = (int)$o_node->length;
 					
@@ -594,7 +605,7 @@ class DisplayTemplateParser {
 						$va_get_options['sort'] = preg_split('![ ,;]+!', $o_node->sort);
 						$va_get_options['sortDirection'] = $o_node->sortDirection;
 					}
-	
+
 					$va_relation_ids = $va_relationship_type_ids = null;
 					if (
 						((sizeof($va_relative_to_tmp) == 1) && ($va_relative_to_tmp[0] == $ps_tablename))
@@ -635,6 +646,7 @@ class DisplayTemplateParser {
 									$va_tags = DisplayTemplateParser::_getTags($o_node->children);
 									foreach(array_keys($va_tags) as $vs_tag) {
 										$va_tag = explode('.', $vs_tag);
+										if ($va_tag[0] !== $ps_tablename) { continue; }
 										if(sizeof($va_tag) >= 2) {
 											if ($t_rel_instance->isValidMetadataElement($va_tag[1], true) && (ca_metadata_elements::getElementDatatype($va_tag[1]) === __CA_ATTRIBUTE_VALUE_CONTAINER__)) {
 												$vs_relative_to_container = join(".", array_slice($va_tag, 0, 2));
@@ -698,9 +710,14 @@ class DisplayTemplateParser {
 						if (($vn_start > 0) || !is_null($vn_length)) { 
 							$vn_last_unit_omit_count = sizeof($va_tmpl_val) - ($vn_length - $vn_start);
 						}
+						
+						if ($vs_unit_filter_regex) {
+							$va_tmpl_val = array_filter($va_tmpl_val, function($v) use ($vs_unit_filter_regex) { return preg_match($vs_unit_filter_regex, $v); });
+						}
+						
 						if (caGetOption('returnAsArray', $pa_options, false)) { return $va_tmpl_val; }
-						$vs_acc .= join($vs_unit_delimiter, $va_tmpl_val);
-						if ($pb_is_case) { break(2); }
+						$vs_acc .= $content = join($vs_unit_delimiter, $va_tmpl_val);
+						if ($pb_is_case && $content) { break(2); }
 					} else { 
 						if ($t_instance->isRelationship()) {
 							// Allow subunits to inherit incorrectly placed restrict/exclude types options
@@ -767,8 +784,8 @@ class DisplayTemplateParser {
 								    }
 									$va_relationship_type_ids = array();
 									if (is_array($va_relation_ids) && sizeof($va_relation_ids)) {
-										$qr_rels = caMakeSearchResult($t_rel_instance->getRelationshipTableName($ps_tablename), $va_relation_ids);
-										$va_relationship_type_ids = $qr_rels->getAllFieldValues($t_rel_instance->getRelationshipTableName($ps_tablename).'.type_id');
+										$qr_rels = caMakeSearchResult($t = $t_rel_instance->isRelationship() ? $t_rel_instance->tableName() : $t_rel_instance->getRelationshipTableName($ps_tablename), $va_relation_ids);
+										$va_relationship_type_ids = $qr_rels->getAllFieldValues("{$t}.type_id");
 									} elseif($t_rel_instance->isRelationship()) {
 										// return type on relationship
 										$va_relationship_type_ids = $pr_res->get($t_rel_instance->tableName().".type_id", ['returnAsArray' => true]);
@@ -852,13 +869,16 @@ class DisplayTemplateParser {
 						);
 						if ($vb_unique) { $va_tmpl_val = array_unique($va_tmpl_val); }
 						if (($vn_start > 0) || !is_null($vn_length)) { 
-							//$va_tmpl_val = array_slice($va_tmpl_val, $vn_start, ($vn_length > 0) ? $vn_length : null); 
 							$vn_last_unit_omit_count = $vn_num_vals -  ($vn_length - $vn_start);
 						}
 						
+						if ($vs_unit_filter_regex) {
+							$va_tmpl_val = array_filter($va_tmpl_val, function($v) use ($vs_unit_filter_regex) { return preg_match($vs_unit_filter_regex, $v); });
+						}
+						
 						if (caGetOption('returnAsArray', $pa_options, false)) { return $va_tmpl_val; }
-						$vs_acc .= join($vs_unit_delimiter, $va_tmpl_val);
-						if ($pb_is_case) { break(2); }
+						$vs_acc .= $content = join($vs_unit_delimiter, $va_tmpl_val);
+						if ($pb_is_case && $content) { break(2); }
 					}
 				
 					break;
@@ -1227,17 +1247,20 @@ class DisplayTemplateParser {
 		$ps_delimiter = caGetOption('delimiter', $pa_options, ';');
 		$pb_mode = caGetOption('mode', $pa_options, 'present');	// value 'present' or 'not_present'
 		$pn_index = caGetOption('index', $pa_options, null);
-		
-		$va_filter_opts = caGetOption('filters', $pa_options, [], ['castTo' => 'array']);
+		$ps_filter = caGetOption('filter', $pa_options, null);
+		$filter_regex = self::_makeFilterRegex($ps_filter);
 		
 		$vb_has_value = null;
 		foreach($va_codes as $vs_code => $vs_bool) {
 		    if (isset(self::$join_tag_vals[$vs_code]) && strlen(self::$join_tag_vals[$vs_code])) { return true; }
 			$va_parsed_tag_opts = DisplayTemplateParser::_parseTagOpts($vs_code);
-			$va_val_list = $pr_res->get($va_parsed_tag_opts['tag'], array_merge($va_parsed_tag_opts['options'], ['filters' => $va_parsed_tag_opts['filters'], 'returnAsArray' => true, 'returnBlankValues' => true, 'convertCodesToDisplayText' => true, 'returnAsDecimal' => true, 'getDirectDate' => true]));
+			$va_val_list = $pr_res->get($va_parsed_tag_opts['tag'], array_merge($va_parsed_tag_opts['options'], ['filters' => $va_parsed_tag_opts['filters'], 'returnAsArray' => true, 'returnBlankValues' => true, 'convertCodesToDisplayText' => true, 'returnAsDecimal' => true, 'getDirectDate' => true, 'checkAccess' => caGetOption('checkAccess', $pa_options, null)]));
 			if(!is_array($va_val_list)) {  // no value
 				$vb_value_present = false;
 			} else {
+				if ($filter_regex) { 
+					$va_val_list = array_filter($va_val_list, function($v) use ($filter_regex) { return preg_match($filter_regex, $v); });
+				}
 				if(!is_null($pn_index)) {
 					if (!isset($va_val_list[$pn_index]) || ((is_numeric($va_val_list[$pn_index]) && (float)$va_val_list[$pn_index] == 0) || !strlen(trim($va_val_list[$pn_index])))) {
 						$vb_value_present = false;			// no value
@@ -1502,18 +1525,29 @@ class DisplayTemplateParser {
 	 * @param BaseLabel $t_instance
 	 * @param string $ps_template
 	 * @param array $pa_row_ids
-	 * @param array $pa_options
+	 * @param array $pa_options Options include:
+	 *		returnAsArray = if true an array of processed template values is returned, otherwise the template values are returned as a string joined together with a delimiter. Default is false.
+	 *		delimiter = value to string together template values with when returnAsArray is false. Default is ';' (semicolon)
+	 *		sort = optional list of tag values to sort repeating values within a label template on. The tag must reference a label field. You can specify more than one tag by separating the tags with semicolons.
+	 *		sortDirection = the direction of the sort of repeating values within a label template. May be either ASC (ascending) or DESC (descending). [Default is ASC]
 	 * @return array
 	 */
 	public static function _processLabelTemplate($t_instance, $ps_template, array $pa_row_ids, array $pa_options) {
 		$pb_return_as_array = (bool) caGetOption('returnAsArray', $pa_options, false);
-
 		if(!($t_instance instanceof BaseLabel)) { return $pb_return_as_array ? array() : ''; }
+		
+		if (($sort = caGetOption('sort', $pa_options, null)) && !is_array($sort)) {
+			$sort = explode(";", $sort);
+		}
+		$sort_direction = caGetOption('sortDirection', $pa_options, null, array('forceUppercase' => true));
+		if(!in_array($sort_direction, array('ASC', 'DESC'))) { $sort_direction = 'ASC'; }
+
 
 		$va_tags = caGetTemplateTags($ps_template);
 		if(!is_array($va_tags) || (sizeof($va_tags) < 1)) { return []; }
 
 		$va_return = [];
+		$sort_map = [];
 		foreach($pa_row_ids as $vn_row_id) {
 			if(!$t_instance->load($vn_row_id)) { continue; }
 
@@ -1530,10 +1564,42 @@ class DisplayTemplateParser {
 
 				$va_tag_values[$vs_tag] = $t_instance->get($vs_field, ['convertCodesToDisplayText' => true]);
 			}
-			$va_return[] = caProcessTemplate($ps_template, $va_tag_values);
+			
+			if(is_array($sort) && (sizeof($sort) > 0)) {
+				$sort_keys = [];
+				foreach($sort as $s) {
+					$sf = array_pop(explode('.', $s));
+					if (is_array($sort_key_list = $t_instance->get($sf, ['convertCodesToDisplayText' => true, 'returnAsArray' => true]))) {
+						$sort_key_list = array_map(function($x) { 
+							return is_numeric($x) ? str_pad(substr($x, 0, 50), 50,  '0', STR_PAD_LEFT) : str_pad(substr($x, 0, 50), 50,  ' ', STR_PAD_RIGHT); 
+						}, $sort_key_list);
+						sort($sort_key_list);
+						$sort_keys[] = join('', $sort_key_list);
+					}
+				}
+				$sort_map[$vn_row_id] = join('', $sort_keys);
+			}
+			$va_return[$vn_row_id] = caProcessTemplate($ps_template, $va_tag_values);
+		}
+		
+		if(sizeof($sort_map)) {
+			ksort($sort_map);
+			$sorted_return = [];
+			foreach($sort_map as $row_id => $sort_key) {
+				$sorted_return[] = $va_return[$row_id];
+				unset($va_return[$row_id]);
+			}
+			foreach($va_return as $row_id => $v) {
+				$sorted_return[] = $v;
+			}
+			$va_return = $sorted_return;
+		}
+		
+		if($sort_direction === 'DESC' ) {
+			$va_return = array_reverse($va_return);
 		}
 
-		return $va_return;
+		return $pb_return_as_array ? $va_return : join(caGetOption('delimiter', $pa_options, ';'), $va_return);
 	}
 	# -------------------------------------------------------------------
 	# Simple template parser
@@ -1605,9 +1671,9 @@ class DisplayTemplateParser {
 					break;
 				case 'if':
 					if (strlen($vs_rule = $o_node->rule) && ExpressionParser::evaluate($vs_rule, $pa_values)) {
-						$vs_acc .= DisplayTemplateParser::_processTemplateSubTemplates($o_node->children, $pa_values, $pa_options);	
+						$vs_acc .= $content = DisplayTemplateParser::_processTemplateSubTemplates($o_node->children, $pa_values, $pa_options);	
 						 
-						if ($pb_is_case) { break(2); }
+						if ($pb_is_case && $content) { break(2); }
 					}
 					break;
 				case 'ifdef':
@@ -1616,8 +1682,8 @@ class DisplayTemplateParser {
 					
 					if ((($vs_tag == 'ifdef') && $vb_defined) || (($vs_tag == 'ifnotdef') && $vb_defined)) {
 						// Make sure returned values are not empty
-						$vs_acc .= DisplayTemplateParser::_processTemplateSubTemplates($o_node->children, $pa_values, $pa_options);
-						if ($pb_is_case) { break(2); }
+						$vs_acc .= $content = DisplayTemplateParser::_processTemplateSubTemplates($o_node->children, $pa_values, $pa_options);
+						if ($pb_is_case && $content) { break(2); }
 					}
 					break;
 				default:
@@ -1838,5 +1904,21 @@ class DisplayTemplateParser {
         
 	    return join(caGetOption('delimiter', $pa_parsed_tag_opts['options'], '; '), $va_acc);
 	}
+	# -------------------------------------------------------------------
+	/**
+	 *
+	 */
+	static private function _makeFilterRegex($filter) {
+		$filter_regex = null;
+		if ($filter = trim($filter)) {
+			if (preg_match("!^/.*?/[a-z]*$!", $filter)) { // is regex
+				$filter_regex = $filter;
+			} else {	// is text
+				$filter_terms = array_map(function($v) { return preg_quote($v, "!"); }, explode("|", $filter));
+				$filter_regex = "!".join("|", $filter_terms)."!i";
+			}
+		}
+		return $filter_regex;
+	}					
 	# -------------------------------------------------------------------
 }

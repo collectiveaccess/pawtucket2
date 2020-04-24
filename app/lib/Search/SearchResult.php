@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2018 Whirl-i-Gig
+ * Copyright 2008-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -720,7 +720,7 @@ class SearchResult extends BaseObject {
 						$va_fields[] = $va_rel['many_table'].'.type_id rel_type_id';
 					}
 					if ($t_link->hasField('rank')) { 
-						$va_order_bys[] = $t_link->tableName().'.rank';
+						$va_order_bys[] = $t_link->tableName().'.`rank`';
 					}
 				} else {
 					if (($va_rels = Datamodel::getOneToManyRelations($vs_right_table)) && is_array($va_rels[$vs_left_table])) {
@@ -886,13 +886,13 @@ class SearchResult extends BaseObject {
 	}
 	# ------------------------------------------------------------------
 	/**
-	 *
+	 * 
 	 */
-	public function getInstance() {
+	public function getInstance($always_return=false) {
 		if(($id = $this->opo_engine_result->get($this->opo_subject_instance->primaryKey())) && $this->opo_subject_instance->load($id)) {
 		    return $this->opo_subject_instance;
 		}
-		return null;
+		return $always_return ? $this->opo_subject_instance : null;
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -994,6 +994,7 @@ class SearchResult extends BaseObject {
 	 *			length = Return all values truncated to a maximum length. [Default is null]
 	 *			truncate = Return all values from the beginning truncated to a maximum length; equivalent of passing start=0 and length. [Default is null]
 	 *			ellipsis = Add ellipsis ("...") to truncated values. Values will be set to the truncated length including the ellipsis. Eg. a value truncated to 12 characters will include 9 characters of text and 3 characters of ellipsis. [Default is false]
+	 *			convertLineBreaks = Convert newlines to <br/> tags. [Default is false]
 	 *
 	 *		[Formatting options for hierarchies]
 	 *			maxLevelsFromTop = Restrict the number of levels returned to the top-most beginning with the root. [Default is null]
@@ -1022,6 +1023,8 @@ class SearchResult extends BaseObject {
 			$pa_options['template'] = null;
 			$pa_options['returnAsSearchResult'] = false;
 		}
+		
+		$vb_convert_line_breaks = isset($pa_options['convertLineBreaks']) ? (bool)$pa_options['convertLineBreaks'] : false;
 		
 		$config = Configuration::load();
 		
@@ -1349,8 +1352,9 @@ class SearchResult extends BaseObject {
                                             if (!in_array($type_id, $filter_by_types)) { continue; }
                                         }
                                         
-									    $va_hier_item += $qr_hier->get($vs_field_spec, array('returnWithStructure' => true, 'returnAllLocales' => true, 'useLocaleCodes' => $pa_options['useLocaleCodes'], 'convertCodesToDisplayText' => $pa_options['convertCodesToDisplayText'], 'convertCodesToIdno' => $pa_options['convertCodesToIdno'], 'convertCodesToValue' => $pa_options['convertCodesToValue'], 'omitDateSortKey' => true, 'restrictToTypes' => caGetOption('restrictToTypes', $pa_options, null), 'restrictToRelationshipTypes' => caGetOption('restrictToRelationshipTypes', $pa_options, null)));									    
-									
+                                        if(is_array($qh = $qr_hier->get($vs_field_spec, array('returnWithStructure' => true, 'returnAllLocales' => true, 'useLocaleCodes' => $pa_options['useLocaleCodes'], 'convertCodesToDisplayText' => $pa_options['convertCodesToDisplayText'], 'convertCodesToIdno' => $pa_options['convertCodesToIdno'], 'convertCodesToValue' => $pa_options['convertCodesToValue'], 'omitDateSortKey' => true, 'restrictToTypes' => caGetOption('restrictToTypes', $pa_options, null), 'restrictToRelationshipTypes' => caGetOption('restrictToRelationshipTypes', $pa_options, null))))) {
+									   		$va_hier_item += $qh;									    
+										}
 									}
 									
 									// Output full collection-object hierarchy
@@ -1527,6 +1531,14 @@ class SearchResult extends BaseObject {
 		} else {
 			if (!$va_path_components['hierarchical_modifier']) {
 //
+// [PRIMARY TABLE] guid
+//
+				if ($va_path_components['field_name'] == '_guid') {
+					$vm_val = ca_guids::getForRow(Datamodel::getTableNum($va_path_components['table_name']), $vn_row_id);
+					goto filter;
+				}
+
+//
 // [PRIMARY TABLE] Created on
 //
 				if ($va_path_components['field_name'] == 'created') {
@@ -1537,8 +1549,13 @@ class SearchResult extends BaseObject {
 					if ($vb_return_as_array) {
 						if($va_path_components['subfield_name']) {
 							$vm_val = [self::$s_timestamp_cache['created_on'][$this->ops_table_name][$vn_row_id][$va_path_components['subfield_name']]];
-						} else {
+						} elseif($vb_return_with_structure) {
 							$vm_val = self::$s_timestamp_cache['created_on'][$this->ops_table_name][$vn_row_id];
+						} else {
+						    $vm_val = self::$s_timestamp_cache['created_on'][$this->ops_table_name][$vn_row_id]['timestamp'];
+						    $this->opo_tep->init();
+                            $this->opo_tep->setUnixTimestamps($vm_val, $vm_val);
+                            $vm_val = $this->opo_tep->getText($pa_options);
 						}
 						goto filter;
 					} else {
@@ -1688,9 +1705,9 @@ class SearchResult extends BaseObject {
 			if (is_array($va_keys) && sizeof($va_keys)) {
 				if ($vb_return_with_structure) {
 				    $vs_sort_desc = caGetOption('sortDirection', $pa_options, 'ASC');
-				    
 				    $vb_is_three_level_array = false;
 				    foreach($vm_val as $vn_top_level_id => $va_data) {
+				        if (!is_array($va_data)) { continue; }
 				        foreach($va_data as $k => $v) {
 				            if (is_array($v)) { $vb_is_three_level_array = true; }
 				            break(2);
@@ -1779,6 +1796,14 @@ class SearchResult extends BaseObject {
 				} else {
 					return array_values($va_filtered_vals);
 				}
+			}
+		}
+		
+		if ($vb_convert_line_breaks) {
+			if(is_array($vm_val)) {
+				return array_map(function($v) { return !is_array($vm_val) ? nl2br($v) : $v; }, $vm_val);
+			} else {
+				return nl2br($vm_val);
 			}
 		}
 		
@@ -3130,8 +3155,10 @@ class SearchResult extends BaseObject {
 		    // noop
 		} elseif ($alt_text_template = Configuration::load()->get($this->tableName()."_alt_text_template")) { 
 		    $alt_text = $this->getWithTemplate($alt_text_template);
-		} else {
+		} elseif(is_a($this, "LabelableBaseModelWithAttributes")) {
 		    $alt_text = $this->get($this->tableName().".preferred_labels");
+		} else {
+		    $alt_text = null;
 		}
 		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaTag($ps_version, array_merge($pa_options, ['alt' => $alt_text, 'data' => reset($this->opa_field_media_info[$ps_field])]));
 	}

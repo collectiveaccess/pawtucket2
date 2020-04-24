@@ -337,7 +337,7 @@
 						}
 						
 						$sql = "
-							SELECT {$table_pk}, {$sort_field}
+							SELECT {$table_pk}, `{$sort_field}`
 							FROM {$table}
 							WHERE
 								{$table_pk} IN (?)
@@ -421,7 +421,7 @@
 								WHERE
 									{$is_preferred_sql} ".($is_preferred_sql ? ' AND ' : '')." {$table}.{$table_pk} IN (?)
 							";
-							
+						
 							$qr_sort = $this->opo_db->query($sql, array($hits));
 							
 							$acc = $rel_ids = [];
@@ -471,7 +471,7 @@
 					
 					$vs_join_sql = join("\n", $joins);
 					$sql = "
-						SELECT {$table}.{$table_pk}, {$sort_table}.{$sort_field}
+						SELECT {$table}.{$table_pk}, {$sort_table}.`{$sort_field}`
 						FROM {$table}
 						{$vs_join_sql}
 						WHERE

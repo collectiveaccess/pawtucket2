@@ -585,12 +585,11 @@ class MultipartIDNumber extends IDNumber {
 		if (!$pm_value) { $pm_value = $this->getValue(); }
 		$va_element_info = $this->getElementInfo($ps_element_name);
 
-		$vs_table = $va_element_info['table'];
-		$vs_field = $va_element_info['field'];
-		$vs_sort_field = $va_element_info['sort_field'];
-
-		if (!$vs_table) { return 'ERR';}
-		if (!$vs_field) { return 'ERR';}
+		$vs_table = $this->getFormat();
+		if(!Datamodel::tableExists($vs_table)) { return 'ERR'; }
+		$vs_field = Datamodel::getTableProperty($vs_table, 'ID_NUMBERING_ID_FIELD');
+		if(!$vs_field) { return 'ERR'; }
+		$vs_sort_field = Datamodel::getTableProperty($vs_table, 'ID_NUMBERING_SORT_FIELD');
 		if (!$vs_sort_field) { $vs_sort_field = $vs_field; }
 
 		$vs_separator = $this->getSeparator();
@@ -1107,7 +1106,8 @@ class MultipartIDNumber extends IDNumber {
 	public function makeTemplateFromValue($ps_value, $pn_max_num_replacements=0, $pb_no_placeholders=false) {
 		$vs_separator = $this->getSeparator();
 		$va_values = $this->explodeValue($ps_value);
-		$va_elements = $this->getElements();
+		if (!is_array($va_elements = $this->getElements())) { $va_elements = []; }
+		
 		$vn_num_serial_elements = 0;
 		foreach ($va_elements as $va_element_info) {
 			if ($va_element_info['type'] == 'SERIAL') { $vn_num_serial_elements++; }
@@ -1116,6 +1116,7 @@ class MultipartIDNumber extends IDNumber {
 		$vn_i = 0;
 		$vn_num_serial_elements_seen = 0;
 		foreach ($va_elements as $va_element_info) {
+			//if ($vn_i >= sizeof($va_values)) { break; }
 
 			switch($va_element_info['type']) {
 				case 'SERIAL':
@@ -1177,9 +1178,11 @@ class MultipartIDNumber extends IDNumber {
 		if (is_null($ps_value)) {
 			if(isset($_REQUEST[$ps_name]) && $_REQUEST[$ps_name]) { return $_REQUEST[$ps_name]; }
 		}
-		if (!is_array($va_element_list = $this->getElements())) { return null; }
+		if (!is_array($va_elements = $this->getElements())) { 
+			return (isset($_REQUEST["{$ps_name}_extra_0"])) ? [$_REQUEST["{$ps_name}_extra_0"]] : null; 
+		}
 
-		$va_element_names = array_keys($va_element_list);
+		$va_element_names = array_keys($va_elements);
 		$vs_separator = $this->getSeparator();
 		$va_element_values = array();
 		if ($ps_value) {
@@ -1218,7 +1221,6 @@ class MultipartIDNumber extends IDNumber {
 		$vb_isset = false;
 		$vb_is_not_empty = false;
 		$va_tmp = array();
-		$va_elements = $this->getElements();
 		foreach($va_elements as $vs_element_name => $va_element_info) {
 			if ($va_element_info['type'] == 'SERIAL') {
 				if ($pb_generate_for_search_form) {

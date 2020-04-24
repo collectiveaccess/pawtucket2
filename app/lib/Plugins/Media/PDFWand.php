@@ -171,21 +171,30 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 	# ------------------------------------------------
 	public function checkStatus() {
 		$va_status = parent::checkStatus();
-		
+
 		if ($this->register()) {
 			$va_status['available'] = true;
-		} 
-		
-		if (!caMediaPluginGhostscriptInstalled($this->ops_ghostscript_path)) { 
+		}
+
+		if (!caMediaPluginGhostscriptInstalled($this->ops_ghostscript_path)) {
 			$va_status['warnings'][] = _t("Ghostscript cannot be found: image previews will not be created");
 		}
-		if (!caMediaPluginPdftotextInstalled($this->ops_pdftotext_path)) { 
+		else{
+			$va_status['notices'][] = _t("Found Ghostscript");
+		}
+		if (!caMediaPluginPdftotextInstalled($this->ops_pdftotext_path)) {
 			$va_status['warnings'][] = _t("PDFToText cannot be found: indexing of text in PDF files will not be performed; you can obtain PDFToText at http://www.foolabs.com/xpdf/download.html");
 		}
-		if (!caPDFMinerInstalled($this->ops_pdfminer_path)) { 
+		else{
+			$va_status['notices'][] = _t("Found PDFToText");
+		}
+		if (!caPDFMinerInstalled($this->ops_pdfminer_path)) {
 			$va_status['warnings'][] = _t("PDFMiner cannot be found: indexing of text locations in PDF files will not be performed; you can obtain PDFMiner at http://www.unixuser.org/~euske/python/pdfminer/index.html");
 		}
-		
+		else{
+			$va_status['warnings'][] = _t("Found PDFMiner");
+		}
+
 		return $va_status;
 	}
 	# ------------------------------------------------
@@ -319,7 +328,7 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 		return array();
 	}
 	# ------------------------------------------------
-	public function read ($ps_filepath) {
+	public function read ($ps_filepath, $mimetype="", $options=null) {
 		if (is_array($this->handle) && ($this->handle["filepath"] == $ps_filepath)) {
 			// noop
 		} else {
@@ -345,13 +354,13 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 			
 			// Try to extract text
 			$vs_tmp_filename = tempnam('/tmp', 'CA_PDF_TEXT');
-			exec($this->ops_pdfminer_path.' -t text '.caEscapeShellArg($ps_filepath).' > '.caEscapeShellArg($vs_tmp_filename).(caIsPOSIX() ? " 2> /dev/null" : ""));
+			caExec($this->ops_pdfminer_path.' -t text '.caEscapeShellArg($ps_filepath).' > '.caEscapeShellArg($vs_tmp_filename).(caIsPOSIX() ? " 2> /dev/null" : ""));
 			$vs_extracted_text = file_get_contents($vs_tmp_filename);
 			$this->handle['content'] = $this->ohandle['content'] = $vs_extracted_text;
 			@unlink($vs_tmp_filename);
 	
 			$vs_tmp_filename = tempnam('/tmp', 'CA_PDF_TEXT_LOCATIONS');
-			exec($this->ops_pdfminer_path.' -A -t xml '.caEscapeShellArg($ps_filepath).' > '.caEscapeShellArg($vs_tmp_filename).(caIsPOSIX() ? " 2> /dev/null" : ""));
+			caExec($this->ops_pdfminer_path.' -A -t xml '.caEscapeShellArg($ps_filepath).' > '.caEscapeShellArg($vs_tmp_filename).(caIsPOSIX() ? " 2> /dev/null" : ""));
 			
 			$xml = new XMLReader();
 			if ($xml->open($vs_tmp_filename)) {
@@ -370,9 +379,8 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 					switch ($xml->name) {
 						case 'page':		// new page
 							if ($xml->nodeType == XMLReader::END_ELEMENT) { 
-								//$va_locations['__pages__'][$vn_current_page] = $vs_page_content;
 								$vs_page_content = '';
-								break(2); 
+								continue(2); 
 							}
 							$vs_text_line_content = '';
 							$vn_current_page = (int)$xml->getAttribute('id');
@@ -449,7 +457,7 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 			// Try to extract text
 			if (caMediaPluginPdftotextInstalled($this->ops_pdftotext_path)) {
 				$vs_tmp_filename = tempnam('/tmp', 'CA_PDF_TEXT');
-				exec($this->ops_pdftotext_path.' -q -enc UTF-8 '.caEscapeShellArg($ps_filepath).' '.caEscapeShellArg($vs_tmp_filename).(caIsPOSIX() ? " 2> /dev/null" : ""));
+				caExec($this->ops_pdftotext_path.' -q -enc UTF-8 '.caEscapeShellArg($ps_filepath).' '.caEscapeShellArg($vs_tmp_filename).(caIsPOSIX() ? " 2> /dev/null" : ""));
 				$vs_extracted_text = file_get_contents($vs_tmp_filename);
 				$this->handle['content'] = $this->ohandle['content'] = $vs_extracted_text;
 				@unlink($vs_tmp_filename);
@@ -467,10 +475,8 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 			$this->postError(1655, _t("Invalid transformation %1", $ps_operation), "WLPlugPDFWand->transform()");
 			return false;
 		}
-		
+
 		# get parameters for this operation
-		$sparams = $this->info["TRANSFORMATIONS"][$ps_operation];
-		
 		$this->properties["version_width"] = $w = $pa_parameters["width"];
 		$this->properties["version_height"] = $h = $pa_parameters["height"];
 		$cw = $this->get("width");
@@ -602,16 +608,16 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 				$vb_processed_preview = false;
 				switch($ps_mimetype) {
 					case 'image/jpeg':
-						exec($this->ops_ghostscript_path." -dNumRenderingThreads=6 -dNOPAUSE -dBATCH -sDEVICE=".($vn_scaling_correction ? "tiff24nc" : "jpeg")." {$vs_antialiasing} -dJPEGQ=".$vn_quality." -dFirstPage=".$vn_start_page." -dLastPage=".$vn_end_page." -dMaxPatternBitmap=1000000 -dBandBufferSpace=500000000 -sBandListStorage=memory -dBufferSpace=1000000000 -dBandHeight=100 -sOutputFile=".caEscapeShellArg($ps_filepath.".".$vs_ext)." -r".$vs_res." -c \"30000000 setvmthreshold\" -f ".caEscapeShellArg($this->handle["filepath"]).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
+						caExec($this->ops_ghostscript_path." -dNumRenderingThreads=6 -dNOPAUSE -dUseCropBox -dBATCH -sDEVICE=".($vn_scaling_correction ? "tiff24nc" : "jpeg")." {$vs_antialiasing} -dJPEGQ=".$vn_quality." -dFirstPage=".$vn_start_page." -dLastPage=".$vn_end_page." -dMaxPatternBitmap=1000000 -dBandBufferSpace=500000000 -sBandListStorage=memory -dBufferSpace=1000000000 -dBandHeight=100 -sOutputFile=".caEscapeShellArg($ps_filepath.".".$vs_ext)." -r".$vs_res." -c \"30000000 setvmthreshold\" -f ".caEscapeShellArg($this->handle["filepath"]).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
 						if ($vn_return == 0) { $vb_processed_preview = true; }
 						break;
 					case 'image/png':
-						exec($this->ops_ghostscript_path." -dNumRenderingThreads=6 -dNOPAUSE -dBATCH -sDEVICE=pngalpha {$vs_antialiasing} -dFirstPage=".$vn_start_page." -dLastPage=".$vn_end_page." -dMaxPatternBitmap=1000000 -dBandBufferSpace=500000000 -sBandListStorage=memory -dBufferSpace=1000000000 -dBandHeight=100 -sOutputFile=".caEscapeShellArg($ps_filepath.".".$vs_ext)." -r".$vs_res." -c \"30000000 setvmthreshold\" -f ".caEscapeShellArg($this->handle["filepath"]).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
+						caExec($this->ops_ghostscript_path." -dNumRenderingThreads=6 -dNOPAUSE -dUseCropBox -dBATCH -sDEVICE=pngalpha {$vs_antialiasing} -dFirstPage=".$vn_start_page." -dLastPage=".$vn_end_page." -dMaxPatternBitmap=1000000 -dBandBufferSpace=500000000 -sBandListStorage=memory -dBufferSpace=1000000000 -dBandHeight=100 -sOutputFile=".caEscapeShellArg($ps_filepath.".".$vs_ext)." -r".$vs_res." -c \"30000000 setvmthreshold\" -f ".caEscapeShellArg($this->handle["filepath"]).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
 						if ($vn_return == 0) { $vb_processed_preview = true; }
 						break;
 					case 'image/tiff':
 					case 'image/gif':
-						exec($this->ops_ghostscript_path." -dNumRenderingThreads=6 -dNOPAUSE -dBATCH -sDEVICE=tiff24nc {$vs_antialiasing} -dFirstPage=".$vn_start_page." -dLastPage=".$vn_end_page." -dMaxPatternBitmap=1000000 -dBandBufferSpace=500000000 -sBandListStorage=memory -dBufferSpace=1000000000 -dBandHeight=100 -sOutputFile=".caEscapeShellArg($ps_filepath.".".$vs_ext)." -r".$vs_res." -c \"30000000 setvmthreshold\" -f ".caEscapeShellArg($this->handle["filepath"]).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
+						caExec($this->ops_ghostscript_path." -dNumRenderingThreads=6 -dNOPAUSE -dUseCropBox -dBATCH -sDEVICE=tiff24nc {$vs_antialiasing} -dFirstPage=".$vn_start_page." -dLastPage=".$vn_end_page." -dMaxPatternBitmap=1000000 -dBandBufferSpace=500000000 -sBandListStorage=memory -dBufferSpace=1000000000 -dBandHeight=100 -sOutputFile=".caEscapeShellArg($ps_filepath.".".$vs_ext)." -r".$vs_res." -c \"30000000 setvmthreshold\" -f ".caEscapeShellArg($this->handle["filepath"]).(caIsPOSIX() ? " 2> /dev/null" : ""), $va_output, $vn_return);
 						if ($vn_return == 0) { $vb_processed_preview = true; }
 						break;
 					default:
@@ -825,15 +831,6 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 			if (!isset($pa_options[$vs_k])) { $pa_options[$vs_k] = null; }
 		}
 		
-		$vn_viewer_width = intval($pa_options['viewer_width']);
-		if ($vn_viewer_width < 100) { $vn_viewer_width = 400; }
-		$vn_viewer_height = intval($pa_options['viewer_height']);
-		if ($vn_viewer_height < 100) { $vn_viewer_height = 400; }
-		
-		if (!($vs_id = isset($pa_options['id']) ? $pa_options['id'] : $pa_options['name'])) {
-			$vs_id = '_pdf';
-		}
-		
 		if(preg_match("/\.pdf\$/", $ps_url)) {
 			if ($vs_poster_frame_url =	$pa_options["poster_frame_url"]) {
 				$vs_poster_frame = "<img src='{$vs_poster_frame_url}'/ alt='"._t("Click to download document")." title='"._t("Click to download document")."''>";
@@ -841,7 +838,7 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 				$vs_poster_frame = _t("View PDF document");
 			}
 			
-			return $vs_buf;
+			return $vs_poster_frame;
 		} else {
 			if (!is_array($pa_options)) { $pa_options = array(); }
 			if (!is_array($pa_properties)) { $pa_properties = array(); }
@@ -856,4 +853,3 @@ class WLPlugMediaPDFWand Extends BaseMediaPlugin implements IWLPlugMedia {
 	}
 	# ------------------------------------------------
 }
-?>

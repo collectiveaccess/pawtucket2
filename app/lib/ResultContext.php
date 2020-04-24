@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2010-2019 Whirl-i-Gig
+ * Copyright 2010-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -508,7 +508,7 @@
 				if (isset($va_context['type_id']) && ($va_context['type_id'] != $pn_type_id)) {
 					$pb_type_restriction_has_changed = true;
 				}
-				$_GET['type_id'] = $this->opn_type_restriction_id;								// push type_id into globals so breadcrumb trail can pick it up
+				$_GET['type_id'] = $pn_type_id;								// push type_id into globals so breadcrumb trail can pick it up
 				return $pn_type_id;
 			}
 			return null;
@@ -524,7 +524,11 @@
 		 * @return int - type_id as set
 		 */
 		public function setTypeRestriction($pn_type_id) {
-			return $this->setContextValue('type_id', $pn_type_id);
+			$t = $this->ops_table_name;
+			if ($t::typeCodeForID($pn_type_id)) {	// make sure type is valid for current table
+				return $this->setContextValue('type_id', $pn_type_id);
+			} 
+			return null;
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -534,12 +538,35 @@
 		 *
 		 * @return int Display_id of ca_bundle_displays row to use
 		 */
-		public function getCurrentBundleDisplay($pn_type_id=null) {
+		public function getCurrentBundleDisplay($pn_type_id=null, $ps_show_in=null) {
 			if (!strlen($pn_display_id = htmlspecialchars($this->opo_request->getParameter('display_id', pString, ['forcePurify' => true])))) { 
  				if ($va_context = $this->getContext()) {
 					$pn_display_id = $va_context[$pn_type_id ? "display_id_{$pn_type_id}" : "display_id"];
 				}
- 				if (!$pn_display_id) { $pn_display_id = null; }
+ 				if (!$pn_display_id) { 
+ 					// Try to guess
+ 					require_once(__CA_MODELS_DIR__."/ca_bundle_displays.php");
+ 					$t_display = new ca_bundle_displays();
+ 					if (is_array($displays = $t_display->getBundleDisplays(['table' => $this->tableName(), 'restrictToTypes' => $pn_type_id ? [$pn_type_id] : null]))) {
+ 						if ($ps_show_in) {
+ 							foreach($displays as $id => $d) {
+ 								$d = array_shift($d);
+ 								if (($show_in_setting = caGetOption('show_only_in', $d['settings'], null, ['castTo' => 'array'])) && (sizeof($show_in_setting) > 0)) {
+ 									if(sizeof(array_filter($show_in_setting, function($v) use($ps_show_in) { return preg_match("!{$ps_show_in}!", $v); })) > 0) {
+ 										$pn_display_id = $id;
+ 										break;
+ 									}
+ 								} else {
+ 									$pn_display_id = $id;
+ 									break;
+ 								}
+ 							}
+ 						} else {
+ 							$pn_display_id = array_shift(array_keys($displays));
+ 						}
+ 					}
+ 					if (!$pn_display_id) { $pn_display_id = null; }
+ 				}
  				return $pn_display_id;
  			} else {
  				// page set by request param so set context
@@ -725,7 +752,7 @@
 			$vs_last_find = ResultContext::getLastFind($po_request, $pm_table_name_or_num);
 			$va_tmp = explode('/', $vs_last_find);
 			
-			$o_find_navigation = Configuration::load((defined('__CA_THEME_DIR__') ? __CA_THEME_DIR__ : __CA_APP_DIR__).'/conf/find_navigation.conf');
+			$o_find_navigation = Configuration::load(__CA_APP_DIR__.'/conf/find_navigation.conf');
 			$va_find_nav = $o_find_navigation->getAssoc($vs_table_name);
 			$va_nav = $va_find_nav[$va_tmp[0]];
 			if (!$va_nav) { return false; }

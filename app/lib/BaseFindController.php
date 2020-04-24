@@ -95,10 +95,11 @@
                         $this->opb_type_restriction_has_changed =  $pb_type_restriction_has_changed;	// get change status
                     }
 				}	
-                if ($vn_display_id = $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id)) {
+				
+                if ($vn_display_id = $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id, $this->_getShowInStr())) {
                     $this->opa_sorts = caGetAvailableSortFields($this->ops_tablename, $this->opn_type_restriction_id, array('request' => $po_request, 'restrictToDisplay' => $this->request->config->get('restrict_find_result_sort_options_to_current_display') ? $vn_display_id : null));
 			    } else {
-			        $this->opa_sorts = [];
+			        $this->opa_sorts = caGetAvailableSortFields($this->ops_tablename, $this->opn_type_restriction_id, array('request' => $po_request));
 			    }
 			} else {
 			    $this->opa_sorts = [];
@@ -133,7 +134,7 @@
  			
  			
 			$t_display 					= Datamodel::getInstanceByTableName('ca_bundle_displays', true);  	
- 			$vn_display_id 				= $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id);
+ 			$vn_display_id 				= $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id, $this->_getShowInStr());
  			
  			
  			$va_displays = []; 
@@ -141,7 +142,8 @@
 
 			// Set display options
 			$va_display_options = array('table' => $this->ops_tablename, 'user_id' => $this->request->getUserID(), 'access' => __CA_BUNDLE_DISPLAY_READ_ACCESS__);
-			if($vn_type_id = $this->opo_result_context->getTypeRestriction($vb_type)) { // occurrence searches are inherently type-restricted
+			
+			if(($vn_type_id = $this->opo_result_context->getTypeRestriction($vb_type)) && ($t_instance::typeCodeForID($vn_type_id))) { // occurrence searches are inherently type-restricted
 				$va_display_options['restrictToTypes'] = array($vn_type_id);
 			}
 
@@ -150,16 +152,23 @@
  				$va_displays[$va_display['display_id']] = $va_display['name'];
  				
  				$va_show_only_in = [];
- 				foreach(is_array($va_display['settings']['show_only_in']) ? $va_display['settings']['show_only_in'] : [] as $k => $v) {
+ 				
+ 				$show_only_settings = [];
+ 				if(is_array($va_display['settings']['show_only_in'])) {
+ 					 $show_only_settings = $va_display['settings']['show_only_in'];
+ 				} elseif($va_display['settings']['show_only_in']) {
+ 					$show_only_settings = [$va_display['settings']['show_only_in']];
+ 				}
+ 				foreach($show_only_settings as $k => $v) {
  				    $v = str_replace('search_browse_', '', $v);
- 				    if (!in_array($v, ['list', 'full', 'thumbnail'])) { continue; }
+ 				    //if (!in_array($v, ['list', 'full', 'thumbnail'])) { continue; }
  				    $va_show_only_in[] = $v;
  				}
  				$va_display_show_only_for_views[$va_display['display_id']] = $va_show_only_in;
  			}
  			if(!sizeof($va_displays)) { $va_displays = ['0' => _t('Default')]; } // force default display if none are configured
  			if(!isset($va_displays[$vn_display_id])) { $vn_display_id = array_shift(array_keys($va_displays)); }
- 			
+ 		
  			$this->view->setVar('display_lists', $va_displays);	
  			$this->view->setVar('display_show_only_for_views', $va_display_show_only_for_views);	
 			
@@ -200,8 +209,16 @@
 						continue;
 					}
 
-					// can't sort on related tables!?
-					if ($va_tmp[0] != $this->ops_tablename) { continue; }
+					if ($va_tmp[0] != $this->ops_tablename) { 
+					    // Sort on related tables
+						if (($t_rel = Datamodel::getInstance($va_tmp[0], true)) && method_exists($t_rel, "getLabelTableInstance") && ($t_rel_label = $t_rel->getLabelTableInstance())) {
+                            $va_display_list[$vn_i]['is_sortable'] = true; 
+                            $types = array_merge(caGetOption('restrict_to_relationship_types', $va_display_item['settings'], [], ['castTo' => 'array']), caGetOption('restrict_to_types', $va_display_item['settings'], [], ['castTo' => 'array']));
+                            
+                            $va_display_list[$vn_i]['bundle_sort'] = "{$va_tmp[0]}.preferred_labels.".$t_rel->getLabelSortField().((is_array($types) && sizeof($types)) ? "|".join(",", $types) : "");
+                        }
+						continue; 
+					}
 					
 					if ($t_instance->hasField($va_tmp[1])) {
 						if($t_instance->getFieldInfo($va_tmp[1], 'FIELD_TYPE') == FT_MEDIA) { // sorting media fields doesn't really make sense and can lead to sql errors
@@ -218,8 +235,26 @@
 					}
 					
 					if (isset($va_attribute_list[$va_tmp[1]]) && $va_sortable_elements[$va_attribute_list[$va_tmp[1]]]) {
-						$va_display_list[$vn_i]['is_sortable'] = true;
-						$va_display_list[$vn_i]['bundle_sort'] = $va_display_item['bundle_name'];
+                        $va_display_list[$vn_i]['is_sortable'] = true;
+                        $va_display_list[$vn_i]['bundle_sort'] = $va_display_item['bundle_name'];
+					    if(ca_metadata_elements::getElementDatatype($va_tmp[1]) === __CA_ATTRIBUTE_VALUE_CONTAINER__) {
+					        // If container includes a field type this is typically "preferred" for sorting use that in place of the container aggregate
+					        $elements = ca_metadata_elements::getElementsForSet($va_tmp[1]);
+					        foreach($elements as $e) {
+					            switch($e['datatype']) {
+					                case __CA_ATTRIBUTE_VALUE_DATERANGE__:
+					                case __CA_ATTRIBUTE_VALUE_CURRENCY__:
+					                case __CA_ATTRIBUTE_VALUE_NUMERIC__:
+					                case __CA_ATTRIBUTE_VALUE_NUMERIC__:
+					                case __CA_ATTRIBUTE_VALUE_INTEGER__:
+					                case __CA_ATTRIBUTE_VALUE_TIMECODE__:
+					                case __CA_ATTRIBUTE_VALUE_TIMECODE__:
+					                case __CA_ATTRIBUTE_VALUE_LENGTH__:
+					                    $va_display_list[$vn_i]['bundle_sort'] = "{$va_display_item['bundle_name']}.{$e['element_code']}";
+					                    break(2);
+					            }
+					        }
+					    }
 						continue;
 					}
 				}
@@ -466,6 +501,18 @@
 			
 			$this->opo_result_context->setParameter('last_export_type', $ps_output_type);
 			$this->opo_result_context->saveContext();
+			
+			$primary_table = $this->request->getParameter('primaryTable', pString);
+			$primary_id = $this->request->getParameter('primaryID', pInteger);
+			
+			
+			// Pass prmary record, if defined into view
+			if ($t_primary = Datamodel::getInstance($primary_table, true)) {
+				$t_primary->load($primary_id);
+				$this->view->setVar('primary', $t_primary);
+			} else {
+				$this->view->setVar('primary', null);
+			}
 			
 			if(substr($ps_output_type, 0, 4) !== '_pdf') {
 				switch($ps_output_type) {
@@ -815,7 +862,7 @@
 								// make sure we don't download representations the user isn't allowed to read
 								if(!caCanRead($this->request->user->getPrimaryKey(), 'ca_object_representations', $vn_representation_id)){ continue; }
 								
-								switch($this->request->user->getPreference('downloaded_file_naming')) {
+								switch($mode = $this->request->user->getPreference([$this->ops_tablename.'_downloaded_file_naming', 'downloaded_file_naming'])) {
 									case 'idno':
 										$vs_filename = "{$vs_idno_proc}{$vn_index}.{$vs_ext}";
 										break;
@@ -827,16 +874,21 @@
 										break;
 									case 'original_name':
 									default:
-										if ($vs_original_name) {
+										if (strpos($mode, "^") !== false) { // template
+											$vs_filename = caProcessTemplateForIDs($mode, 'ca_object_representations', [$vn_representation_id]);
+										} elseif ($vs_original_name) {
 											$va_tmp = explode('.', $vs_original_name);
 											if (sizeof($va_tmp) > 1) { 
 												if (strlen($vs_filename_ext = array_pop($va_tmp)) < 3) {
 													$va_tmp[] = $vs_filename_ext;
 												}
 											}
-											$vs_filename = join('_', $va_tmp)."{$vn_index}.{$vs_ext}";
+											$vs_filename = join('_', $va_tmp)."{$vn_index}";
 										} else {
-											$vs_filename = "{$vs_idno_proc}_representation_{$vn_representation_id}_{$vs_version}{$vn_index}.{$vs_ext}";
+											$vs_filename = "{$vs_idno_proc}_representation_{$vn_representation_id}_{$vs_version}{$vn_index}";
+										}
+										if (!preg_match("!\.{$vs_ext}!", $vs_filename)) {
+											$vs_filename .= ".{$vs_ext}";
 										}
 										break;
 								}
@@ -903,7 +955,7 @@
  			$this->view->setVar('current_view', $vs_view);
  			
  			
- 			$vn_display_id 			= $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id);
+ 			$vn_display_id 			= $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id, $this->_getShowInStr());
  			$vn_type_id 			= $this->opo_result_context->getTypeRestriction($vb_dummy);
 			$this->opa_sorts = array_replace($this->opa_sorts, caGetAvailableSortFields($this->ops_tablename, $this->opn_type_restriction_id, array('request' => $this->getRequest(), 'restrictToDisplay' => $this->request->config->get('restrict_find_result_sort_options_to_current_display') ? $vn_display_id : null)));
  			
@@ -968,7 +1020,7 @@
  			AssetLoadManager::register("tableview");
  			
  			$va_ids 				= $this->opo_result_context->getResultList();
- 			$vn_display_id 			= $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id);
+ 			$vn_display_id 			= $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id, $this->_getShowInStr());
  			$va_display_list 		= $this->_getDisplayList($vn_display_id);
  			
  			$vs_search 				= $this->opo_result_context->getSearchExpression();
@@ -1001,7 +1053,7 @@
  			if (($pn_s = (int)$this->request->getParameter('s', pInteger)) < 0) { $pn_s = 0; }
  			if (($pn_c = (int)$this->request->getParameter('c', pInteger)) < 1) { $pn_c = 10; }
  			
- 			$vn_display_id = $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id);
+ 			$vn_display_id = $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id, $this->_getShowInStr());
  			$t_display = new ca_bundle_displays($vn_display_id);
  			$va_ids = $this->opo_result_context->getResultList();
  			$qr_res = caMakeSearchResult($this->ops_tablename, $va_ids);
@@ -1040,7 +1092,7 @@
  		 *  (2) "complex" editing from a popup editing window. Data is submitted from a form as standard editor UI form data from a psuedo editor UI screen.
  		 */
  		public function saveResultsEditorData() {
- 			$t_display = new ca_bundle_displays($vn_display_id = $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id));
+ 			$t_display = new ca_bundle_displays($vn_display_id = $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id, $this->_getShowInStr()));
  			$va_response = $t_display->saveResultsEditorData($this->ops_tablename, ['request' => $this->request, 'user_id' => $this->request->getUserID(), 'type_id' => $this->opo_result_context->getTypeRestriction($vb_dummy)]);
  			
 			$this->view->setVar('response', $va_response);
@@ -1054,7 +1106,7 @@
  		 */ 
  		public function resultsComplexDataEditor() {
  			$t_instance 			= Datamodel::getInstanceByTableName($this->ops_tablename, true);
- 			$vn_display_id 			= $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id);
+ 			$vn_display_id 			= $this->opo_result_context->getCurrentBundleDisplay($this->opn_type_restriction_id, $this->_getShowInStr());
  			
  			$pn_placement_id = (int)$this->request->getParameter('pl', pString);
  			$ps_bundle = $this->request->getParameter('bundle', pString);
@@ -1128,5 +1180,13 @@
 				return mb_strtolower(($ps_mode == 'singular') ? $t_instance->getProperty('NAME_SINGULAR') : $t_instance->getProperty('NAME_PLURAL'));
 			}
  		}
+		# -------------------------------------------------------
+		/**
+		 *
+		 */
+		private function _getShowInStr() {
+			$view = $this->opo_result_context->getCurrentView();
+			return $view ? "search_browse_{$view}" : '';
+		}
  		# ------------------------------------------------------------------
 	}

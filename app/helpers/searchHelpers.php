@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2018 Whirl-i-Gig
+ * Copyright 2011-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -172,12 +172,86 @@
 		
 		return $vs_tag;
 	}
-	 
+	# ---------------------------------------
+	/**
+	 * Return information for "find" controllers by controller name
+	 *
+	 * @param string $controller Name of controller
+	 *
+	 * @return array 
+	 */
+	function caFindControllerNameInfo($controller) {
+		if (CompositeCache::contains($controller, 'caFindControllerNameInfo')) {
+			return CompositeCache::fetch($controller, 'caFindControllerNameInfo');
+		}
+		if(!preg_match("!^([A-Z]{1}[a-z]+)(.*)$!", $controller, $m)) { 
+			CompositeCache::save($controller, null, 'caFindControllerNameInfo');
+			return null; 
+		}
+		
+		$find_type = $m[1];
+		$is_advanced = false;
+		if(preg_match("!^([A-Z]{1}[a-z]+)Advanced$!", $m[2], $madm)) { 
+			$table_desc = $madm[1];
+			$is_advanced = true;
+			$find_type .= 'Advanced';
+		} else {
+			$table_desc = $m[2];
+		}
+		
+		$table_map = [
+			'Objects' => 'ca_objects',
+			'Entities' => 'ca_entities',
+			'Places' => 'ca_places',
+			'Occurrences' => 'ca_occurrences',
+			'ObjectLots' => 'ca_object_lots',
+			'Collections' => 'ca_collections', 
+			'StorageLocations' => 'ca_storage_locations',
+			'ListItems' => 'ca_list_items',	
+			'ObjectRepresentations' => 'ca_object_representations',	
+			'RepresentationAnnotations' => 'ca_representation_annotations',	
+			'UserRepresentationAnnotations' => 'ca_user_representation_annotations',
+			'RelationshipTypes' => 'ca_relationship_types',	
+			'Loans' => 'ca_loans',	
+			'Movements' => 'ca_movements',	
+			'Tours' => 'ca_tours',	
+			'TourStops' => 'ca_tour_stops'	
+		];
+		
+		if(isset($table_map[$table_desc])) {
+			$table = $table_map[$table_desc];
+			
+			$config = Configuration::load();
+			$type_map = [
+				'Search' => caMakeTypeIDList($table, $config->get("{$table}_no_search_for_types")),
+				'SearchAdvanced' => caMakeTypeIDList($table, $config->get("{$table}_no_advanced_search_for_types")),
+				'Browse' => caMakeTypeIDList($table, $config->get("{$table}_no_browse_for_types")),
+			];
+		
+			$ret = [
+				'find_type' => $find_type,
+				'table' => $table,
+				'table_desc' => $table_desc,
+				'advanced' => $is_advanced,
+				'find_interface_restriction_configuration' => $type_map,
+				'controller_names' => [
+					'Search' => "Search{$table_desc}",
+					'SearchAdvanced' => "Search{$table_desc}Advanced",
+					'Browse' => "Browse{$table_desc}",
+					
+				]
+			];
+			CompositeCache::save($controller, $ret, 'caFindControllerNameInfo');
+			return $ret;
+		}
+		CompositeCache::save($controller, null, 'caFindControllerNameInfo');
+		return null;
+	}
 	# ---------------------------------------
 	/**
 	 * 
 	 *
-	 * @return string 
+	 * @return array|string
 	 */
 	function caSearchUrl($po_request, $ps_table, $ps_search=null, $pb_return_url_as_pieces=false, $pa_additional_parameters=null, $pa_options=null) {
 		
@@ -361,7 +435,7 @@
 	 *			contexts =
 	 *			... any other options passed through as-is to SearchEngine::search()
 	 *
-	 * @return array 
+	 * @return array|string
 	 */
 	function caPuppySearch($po_request, $ps_search_expression, $pa_blocks, $pa_options=null) {
 		if (!is_array($pa_options)) { $pa_options = array(); }
@@ -510,7 +584,7 @@
 			$o_view->setVar('sort', $ps_sort);
 			$o_view->setVar('accessValues', $va_access_values);
 			
-			$o_view->setVar('sortDirectionControl', '<a href="#" id="'.$vs_block.'_sort_direction"><span class="glyphicon glyphicon-sort-by-alphabet'.(($ps_sort_direction == 'desc') ? '-alt' : '').'" aria-label="direction"></span></a>');
+			$o_view->setVar('sortDirectionControl', '<a href="#" id="'.$vs_block.'_sort_direction"><span class="glyphicon glyphicon-sort-by-alphabet'.(($ps_sort_direction == 'desc') ? '-alt' : '').'"></span></a>');
 			$o_view->setVar('sortDirection', $ps_sort_direction);
 			
 			
@@ -810,7 +884,7 @@
 			} else {
 				$va_tmp = explode('.', $vs_element);
 				$vs_possible_element_with_rel = array_pop($va_tmp);
-				$va_tmp2 = explode("/", $vs_possible_element_with_rel);
+				$va_tmp2 = preg_split("![/\|]+!", $vs_possible_element_with_rel);
 				$vs_possible_element = array_shift($va_tmp2);
 				
 				// TODO: display relationship types when defined?
@@ -819,8 +893,8 @@
 				switch(ca_metadata_elements::getElementDatatype($vs_possible_element)) {
 					case 3:
 						$va_values = array();
-						foreach($pa_form_values[$vs_dotless_element] as $vn_i => $vm_value) {
-							$va_values[$vn_i] = caGetListItemByIDForDisplay($vm_value);
+						foreach($pa_form_values[$vs_dotless_element] as $vn_j => $vm_value) {
+							$va_values[$vn_j] = caGetListItemByIDForDisplay($vm_value);
 						}
 						break;
 					default:
@@ -851,7 +925,8 @@
 	function caGetDisplayStringForSearch($ps_search, $pa_options=null) {
 		$o_config = Configuration::load();
 		$o_query_parser = new LuceneSyntaxParser();
-		$o_query_parser->setEncoding($o_config->get('character_set'));
+		$vs_char_set = $o_config->get('character_set');
+		$o_query_parser->setEncoding($vs_char_set);
 		$o_query_parser->setDefaultOperator(LuceneSyntaxParser::B_AND);
 		
 		if ($purifier = RequestHTTP::getPurifier()) { $ps_search = $purifier->purify($ps_search); }
@@ -906,7 +981,7 @@
 					break;	
 				case 'Zend_Search_Lucene_Search_Query_Range':
 					$vs_field = caGetLabelForBundle($subquery->getLowerTerm()->field);
-					$va_query[] = ($vs_field && !$pb_omit_field_names ? "{$v_field}: " : "")._t("%1 to %2", $subquery->getLowerTerm()->text, $subquery->getUpperTerm()->text);
+					$va_query[] = ($vs_field && !$pb_omit_field_names ? "{$vs_field}: " : "")._t("%1 to %2", $subquery->getLowerTerm()->text, $subquery->getUpperTerm()->text);
 					break;
 				case 'Zend_Search_Lucene_Search_Query_Wildcard':
 					$va_query[] = "*";
@@ -937,9 +1012,6 @@
 				$va_signs = $po_parsed_query->getSigns();
 				break;
 			case 'Zend_Search_Lucene_Search_Query_Phrase':
-				$va_items = $po_parsed_query;
-				$va_signs = null;
-				break;
 			case 'Zend_Search_Lucene_Search_Query_Range':
 				$va_items = $po_parsed_query;
 				$va_signs = null;
@@ -1386,6 +1458,7 @@
 	 *		includeInterstitialSortsFor = Related table [Default is false]
 	 *		distinguishInterstitials = [Default is false]
 	 *      restrictToDisplay = [Default is null]
+	 *      naturalSortLabel = [Default is 'Relevance']
 	 * @return array
 	 */
 	function caGetAvailableSortFields($ps_table, $pn_type_id = null, $pa_options=null) {
@@ -1419,6 +1492,7 @@
 			foreach($va_screens as $va_screen) {
 				if (is_array($va_placements = $t_ui->getScreenBundlePlacements($va_screen['screen_id']))) {
 					foreach($va_placements as $va_placement) {
+						// Older installations have the bundle name prefixed with "ca_attribute_"
 						$vs_bundle_name = str_replace('ca_attribute_', '', $va_placement['bundle_name']);
 						$va_bundle_bits = explode('.', $vs_bundle_name);
 						if (!Datamodel::tableExists($va_bundle_bits[0])) {
@@ -1437,10 +1511,12 @@
 				
 			}
 		}
+		
+		$natural_sort_label = caGetOption('naturalSortLabel', $pa_options, _t('relevance'));
 		switch($ps_table) {
 			case 'ca_list_items':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_list_items.preferred_labels.name_singular' => _t('name'),
 					'ca_list_items.idno_sort' => _t('idno')
 				);
@@ -1452,7 +1528,7 @@
 				break;
 			case 'ca_collections':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_collections.preferred_labels.name_sort' => _t('name'),
 					'ca_collections.type_id' => _t('type'),
 					'ca_collections.idno_sort' => _t('idno')
@@ -1460,7 +1536,7 @@
 				break;
 			case 'ca_loans':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_loans.preferred_labels.name_sort' => _t('short description'),
 					'ca_loans.type_id' => _t('type'),
 					'ca_loans.idno_sort' => _t('idno')
@@ -1468,7 +1544,7 @@
 				break;
 			case 'ca_movements':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_movements.preferred_labels.name' => _t('short description'),
 					'ca_movements.type_id;ca_movement_labels.name' => _t('type'),
 					'ca_movements.idno_sort' => _t('idno')
@@ -1476,7 +1552,7 @@
 				break;
 			case 'ca_entities':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_entities.preferred_labels.name_sort' => _t('display name'),
 					'ca_entities.preferred_labels.surname;ca_entity_labels.forename' => _t('surname, forename'),
 					'ca_entities.preferred_labels.forename' => _t('forename'),
@@ -1486,7 +1562,7 @@
 				break;
 			case 'ca_object_lots':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_object_lots.preferred_labels.name_sort' => _t('name'),
 					'ca_object_lots.type_id' => _t('type'),
 					'ca_object_lots.idno_stub_sort' => _t('idno')
@@ -1494,15 +1570,16 @@
 				break;
 			case 'ca_object_representations':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_object_representations.preferred_labels.name_sort' => _t('name'),
 					'ca_object_representations.type_id' => _t('type'),
-					'ca_object_representations.idno_sort' => _t('idno')
+					'ca_object_representations.idno_sort' => _t('idno'),
+					'ca_object_representations.original_filename' => _t('file name')
 				);
 				break;
 			case 'ca_objects':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_objects.preferred_labels.name_sort' => _t('title'),
 					'ca_objects.type_id' => _t('type'),
 					'ca_objects.idno_sort' => _t('idno')
@@ -1510,7 +1587,7 @@
 				break;
 			case 'ca_occurrences':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_occurrences.preferred_labels.name_sort' => _t('name'),
 					'ca_occurrences.type_id' => _t('type'),
 					'ca_occurrences.idno_sort' => _t('idno')
@@ -1518,7 +1595,7 @@
 				break;
 			case 'ca_places':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_places.preferred_labels.name_sort' => _t('name'),
 					'ca_places.type_id' => _t('type'),
 					'ca_places.idno_sort' => _t('idno')
@@ -1526,7 +1603,7 @@
 				break;
 			case 'ca_storage_locations':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_storage_locations.preferred_labels.name_sort' => _t('name'),
 					'ca_storage_locations.type_id' => _t('type'),
 					'ca_storage_locations.idno_sort' => _t('idno')
@@ -1534,13 +1611,13 @@
 				break;
 			case 'ca_tours':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_tours.preferred_labels.name' => _t('name')
 				);
 				break;
 			case 'ca_tour_stops':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_tour_stops.preferred_labels.name' => _t('name')
 				);
 				break;
@@ -1586,6 +1663,12 @@
 				$pb_distinguish_interstitials = caGetOption('distinguishInterstitials', $pa_options, true);
 				foreach($va_sortable_elements as $vn_element_id => $va_sortable_element) {
 					$va_base_fields[$vs_relation_table.'.'.$va_sortable_element['element_code']] = $va_sortable_element['display_label'].($pb_distinguish_interstitials ? " ("._t('Interstitial').")" : "");
+				}
+				
+				foreach(['is_primary'] as $f) {
+					if($t_rel->hasField($f)) {
+						$va_base_fields[$vs_relation_table.'.'.$f] = $t_rel->getFieldInfo($f, 'LABEL');
+					}
 				}
 			}
 			
@@ -1666,7 +1749,7 @@
 		
 		natcasesort($va_base_fields);
 		
-		$ret = array_merge(['_natural' => _t('Relevance')], $va_base_fields);
+		$ret = array_merge(['_natural' => $natural_sort_label], $va_base_fields);
 		
 		$va_cached_data[$vs_cache_key] = $ret;
 		CompositeCache::save("available_sorts", $va_cached_data);
@@ -1676,11 +1759,12 @@
 	/**
 	 * Get given sort fields (semi-colon separated list from ResultContext) for display,
 	 * i.e. as array of human readable names
+	 *
 	 * @param string $ps_table
-	 * @param array $ps_sort_fields
+	 * @param string $ps_sort_fields
 	 * @param array $pa_options
 	 *
-	 * @return string
+	 * @return array
 	 */
 	function caGetSortForDisplay($ps_table, $ps_sort_fields, $pa_options=null) {
 	    if (!is_array($pa_options)) { $pa_options = []; }
@@ -1704,7 +1788,8 @@
 	function caSearchIsForSets($ps_search, $pa_options=null) {
 		$o_config = Configuration::load();
 		$o_query_parser = new LuceneSyntaxParser();
-		$o_query_parser->setEncoding($o_config->get('character_set'));
+		$vs_char_set = $o_config->get('character_set');
+		$o_query_parser->setEncoding($vs_char_set);
 		$o_query_parser->setDefaultOperator(LuceneSyntaxParser::B_AND);
 		
 		$ps_search = preg_replace('![\']+!', '', $ps_search);

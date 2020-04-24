@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2019 Whirl-i-Gig
+ * Copyright 2008-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -122,6 +122,14 @@ BaseModel::$s_ca_models_definitions['ca_objects'] = array(
 				'LABEL' => 'Sortable object identifier', 'DESCRIPTION' => 'Value used for sorting objects on identifier value.',
 				'BOUNDS_LENGTH' => array(0,255)
 		),
+		'home_location_id' => array(
+				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
+				'DISPLAY_WIDTH' => 10, 'DISPLAY_HEIGHT' => 1,
+				'IS_NULL' => true, 
+				'DEFAULT' => null,
+				'ALLOW_BUNDLE_ACCESS_CHECK' => true,
+				'LABEL' => _t('Home location'), 'DESCRIPTION' => _t('The customary storage location for this object.')
+		),
 		'is_deaccessioned' => array(
 				'FIELD_TYPE' => FT_BIT, 'DISPLAY_TYPE' => DT_CHECKBOXES, 
 				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
@@ -175,34 +183,6 @@ BaseModel::$s_ca_models_definitions['ca_objects'] = array(
 				'DONT_ALLOW_IN_UI' => true,
 				'LIST_CODE' => 'object_deaccession_types',
 				'LABEL' => _t('Deaccession type'), 'DESCRIPTION' => _t('Indicates type of deaccession.')
-		),
-		'current_loc_class' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
-				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => true, 
-				'DONT_ALLOW_IN_UI' => true,
-				'BOUNDS_CHOICE_LIST' => array(
-					_t('occurrences') => 67,
-					_t('storage locations') => 119,	// we store the ca_objects_x_storage_locations relation_id for locations
-					_t('loans') => 133,
-					_t('movements') => 137,
-					_t('object lots') => 51
-				),
-				'LABEL' => _t('Current location class'), 'DESCRIPTION' => _t('Indicates classification of last location for objects (eg. storage location, occurrence, loan, movement)')
-		),
-		'current_loc_subclass' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
-				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => true, 
-				'DONT_ALLOW_IN_UI' => true,
-				'LABEL' => _t('Current location sub-class'), 'DESCRIPTION' => _t('Indicates sub-classification of last location for objects (eg. storage location relationship type, occurrence type, loan type, movement)')
-		),
-		'current_loc_id' => array(
-				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_OMIT, 
-				'DISPLAY_WIDTH' => 40, 'DISPLAY_HEIGHT' => 1,
-				'IS_NULL' => true, 
-				'DONT_ALLOW_IN_UI' => true,
-				'LABEL' => _t('Current location'), 'DESCRIPTION' => _t('Reference to record recording details of current object location.')
 		),
 		'item_status_id' => array(
 				'FIELD_TYPE' => FT_NUMBER, 'DISPLAY_TYPE' => DT_SELECT, 
@@ -588,6 +568,7 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 		$this->BUNDLES['ca_sets_checklist'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Sets'));
 		
 		$this->BUNDLES['ca_item_tags'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Tags'));
+		$this->BUNDLES['ca_item_comments'] = array('type' => 'special', 'repeating' => true, 'label' => _t('Comments'));
 		
 		$this->BUNDLES['hierarchy_navigation'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Hierarchy navigation'));
 		$this->BUNDLES['hierarchy_location'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Location in hierarchy'));
@@ -611,6 +592,12 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 		$this->BUNDLES['authority_references_list'] = array('type' => 'special', 'repeating' => false, 'label' => _t('References'));
 
 		$this->BUNDLES['ca_object_circulation_status'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Circulation Status'));
+		
+		
+		$this->BUNDLES['submitted_by_user'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Submitted by'), 'displayOnly' => true);
+		$this->BUNDLES['submission_group'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Submission group'), 'displayOnly' => true);
+		
+		$this->BUNDLES['home_location_value'] = array('type' => 'special', 'repeating' => false, 'label' => _t('Home location'), 'displayOnly' => true);
 	}
 	# ------------------------------------------------------
 	/**
@@ -1151,5 +1138,27 @@ class ca_objects extends RepresentableBaseModel implements IBundleProvider {
 
 		return $o_view->render('ca_object_circulation_status_html.php');
 	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	public function renderBundleForDisplay($ps_bundle_name, $pn_row_id, $pa_values, $pa_options=null) {
+		switch($ps_bundle_name) {
+			case 'home_location_value':
+				$q = caMakeSearchResult('ca_objects', [$pn_row_id]);
+				if ($q && $q->nextHit()) {
+					if(($home_location_id = $q->get('ca_objects.home_location_id')) && ($t_loc = ca_storage_locations::find(['location_id' => $home_location_id], ['returnAs' => 'firstModelInstance']))) {
+						if (!($t = Configuration::load()->get('home_location_display_template'))) {
+							$t = caGetOption('display_template', $pa_options, '^ca_storage_locations.hierarchy.preferred_labels');
+						}
+						return $t_loc->getWithTemplate($t);
+					}
+				}
+				break;
+			default:
+				return self::renderHistoryTrackingBundleForDisplay($ps_bundle_name, $pn_row_id, $pa_values, $pa_options);
+				break;
+		}
+	}	
 	# ------------------------------------------------------
 }

@@ -221,8 +221,7 @@ class ca_objects_x_storage_locations extends ObjectRelationshipBaseModel {
 	 *
 	 */
 	public function insert($pa_options=null) {
-		if (!$this->get('effective_date', array('getDirectDate' => true))) {  $this->set('effective_date', _t('now')); }
-		//if (!$this->get('source_info')) {  $this->set('source_info', $this->_getStorageLocationInfo()); }
+		if (!caGetOption('dontAutomaticallySetEffectiveDate', $pa_options, false) && !$this->get('effective_date', array('getDirectDate' => true))) {  $this->set('effective_date', _t('now')); }
 		
 		try { 
 			return parent::insert($pa_options);

@@ -155,21 +155,19 @@
  		                
             $t_instance = $po_data_object->getResultTableInstance();
             $vs_table = $t_instance->tableName();
-            $va_rel_table = null;
             $vs_pk = $t_instance->primaryKey();
  		   
  		    if($is_related && is_array($path = Datamodel::getPath($t_georef_instance->tableName(), $po_data_object->tableName())) && (sizeof($path) === 3)) {
  		        $path = array_keys($path);
- 		        $vs_rel_table = $path[1];
  		        
  		        $rel_ids = [];
  		        while($po_data_object->nextHit()) {
-                    if(is_array($rel_ids_for_row = $po_data_object->get("{$vs_rel_table}.relation_id", ['returnAsArray' => true]))) {
+                    if(is_array($rel_ids_for_row = $po_data_object->get($path[1].".relation_id", ['returnAsArray' => true]))) {
                        $rel_ids = array_merge($rel_ids, $rel_ids_for_row);
                     }
                 }
                 if (sizeof($rel_ids)) {
-                    $po_data_object = caMakeSearchResult($vs_rel_table, $rel_ids);
+                    $po_data_object = caMakeSearchResult($path[1], $rel_ids);
                 }
  		    }
  		    
@@ -186,7 +184,6 @@
 				}
  				if ($va_coordinates = $po_data_object->get($ps_georeference_field_name, array('coordinates' => true, 'returnWithStructure' => true, 'returnAllLocales' => false))) {
  					$vn_id = $po_data_object->get("{$vs_table}.{$vs_pk}");
- 					$vn_rel_id = $vs_rel_table ? $po_data_object->get("{$vs_rel_table}.relation_id") : null;
  					
  					foreach($va_coordinates as $vn_element_id => $va_coord_list) {
                         foreach($va_coord_list as $vn_attribute_id => $va_geoname) {
@@ -202,7 +199,7 @@
                 
                             
                             if (!is_null($pa_options['labelTemplate'])) {
-                                $vs_label = caProcessTemplateForIDs($pa_options['labelTemplate'], $vs_rel_table ? $vs_rel_table : $vs_table, [$vs_rel_table ? $vn_rel_id : $vn_id], []);
+                                $vs_label = caProcessTemplateForIDs($pa_options['labelTemplate'], $vs_table, array($vn_id), array());
                             } else {
                                 if (!is_null($pa_options['label'])) {
                                     $vs_label = $po_data_object->get($pa_options['label'], array('returnAsLink' => $vb_render_label_as_link || (strpos($pa_options['contentTemplate'], "<l>") !== false)));
@@ -214,7 +211,7 @@
                             } 
                             
                             if (!is_null($vs_color) && $vs_color && (strpos($vs_color, '^') !== false)) {
-                                $vs_color = caProcessTemplateForIDs($pa_options['color'], $vs_rel_table ? $vs_rel_table : $vs_table, [$vs_rel_table ? $vn_rel_id : $vn_id], ['returnAsLink' => false]);
+                                $vs_color = caProcessTemplateForIDs($pa_options['color'], $vs_table, [$vn_id], ['returnAsLink' => false]);
                             } 
                             
                             if (isset($pa_options['ajaxContentUrl']) && $pa_options['ajaxContentUrl']) {
@@ -227,7 +224,7 @@
                                     $vs_content = $o_view->render($pa_options['contentView']);
                                 } else {
                                     if (!is_null($pa_options['contentTemplate'])) {
-                                        $vs_content = caProcessTemplateForIDs($pa_options['contentTemplate'], $vs_rel_table ? $vs_rel_table : $vs_table, [$vs_rel_table ? $vn_rel_id : $vn_id], []);
+                                        $vs_content = caProcessTemplateForIDs($pa_options['contentTemplate'], $vs_table, [$vn_id], []);
                                     } else {
                                         if (!is_null($pa_options['content'])) {
                                             if ($pa_options['content']){ 

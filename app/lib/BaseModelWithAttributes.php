@@ -104,6 +104,7 @@
 		 */
 		public function addAttribute($pa_values, $pm_element_code_or_id, $ps_error_source=null, $pa_options=null) {
 			require_once(__CA_APP_DIR__.'/models/ca_metadata_elements.php');
+			if(!is_array($pa_options)) { $pa_options = []; }
 			if (!($t_element = ca_metadata_elements::getInstance($pm_element_code_or_id))) { return false; }
 			if ($t_element->get('parent_id') > 0) { return false; }
 			$vn_element_id = $t_element->getPrimaryKey();
@@ -169,7 +170,7 @@
 				'values' => $pa_values,
 				'element' => $pm_element_code_or_id,
 				'error_source' => $ps_error_source,
-				'options' => $pa_options
+				'options' => array_merge($pa_options, ['skipExistingValues' => false])  // don't invoke low-level value skipping
 			);
 			$this->_FIELD_VALUE_CHANGED['_ca_attribute_'.$vn_element_id] = true;
 			
@@ -202,32 +203,78 @@
 			$vn_attr_element_id = $t_attr->get('element_id');
 			
 			$va_attr_values = $t_attr->getAttributeValues();
+			$element = null;
 			
-			if (sizeof($va_attr_values) != (sizeof($pa_values) - 1)) {		// -1 to remove locale_id which is not in attribute values array
+			$num_values = sizeof($pa_values);
+			if(array_key_exists('locale_id', $pa_values)) { $num_values--; }
+			
+			if (
+			    // this may return a false positive if the attribute is a container with media or file attributes, 
+			    // as ca_attribute_values records for those will only be present if a file was uploaded
+			    (sizeof($va_attr_values) !== (sizeof($pa_values) - 1))      
+			    &&
+			    // so if it looks like it may be a mismatch we do another, more costly, element calcuation to be sure
+			    is_array($elements = array_filter(ca_metadata_elements::getElementsForSet($vn_attr_element_id, ['omitContainers' => true]), function($v) { return (int)$v['datatype'] !== 0; }))
+			    &&    
+			    (sizeof($elements) !== $num_values)
+			) {		// -1 to remove locale_id which is not in attribute values array
 				// Value arrays are different sizes - probably means the elements in the set have been reconfigured (sub-elements added or removed)
 				// so we need to force a save.
-				$this->_FIELD_VALUE_CHANGED['_ca_attribute_'.$vn_attr_element_id] = true;
+		       $this->_FIELD_VALUE_CHANGED['_ca_attribute_'.$vn_attr_element_id] = true;
 			} else {
+				if(!$elements) { $elements = array_filter(ca_metadata_elements::getElementsForSet($vn_attr_element_id, ['omitContainers' => true]), function($v) { return (int)$v['datatype'] !== 0; }); }
+				
+				$element_codes = array_flip(array_map(function($v) { return $v['element_code']; }, $elements));
+				
 				// Have any of the values changed?
 				foreach($va_attr_values as $o_attr_value) {
 					$vn_element_id = $o_attr_value->getElementID();
 					$vs_element_code = ca_metadata_elements::getElementCodeForId($vn_element_id);
+					$vn_element_datatype = ca_metadata_elements::getElementDatatype($vn_element_id);
 					
+					unset($element_codes[$vs_element_code]);
 					if (
 						(
 							isset($pa_values[$vn_element_id]) && ($pa_values[$vn_element_id] !== $o_attr_value->getDisplayValue()) 
 							&& 
 							!(($pa_values[$vn_element_id] == "") && (is_null($o_attr_value->getDisplayValue())))
+							&& 
+							!in_array($vn_element_datatype, [__CA_ATTRIBUTE_VALUE_MEDIA__, __CA_ATTRIBUTE_VALUE_FILE__])
 						)
 						||
 						(
 							isset($pa_values[$vs_element_code]) && ($pa_values[$vs_element_code] !== $o_attr_value->getDisplayValue()) 
 							&&
 							!(($pa_values[$vs_element_code] == "") && (is_null($o_attr_value->getDisplayValue())))
+							&& 
+							!in_array($vn_element_datatype, [__CA_ATTRIBUTE_VALUE_MEDIA__, __CA_ATTRIBUTE_VALUE_FILE__])
+						)
+						||
+						(
+							in_array($vn_element_datatype, [__CA_ATTRIBUTE_VALUE_MEDIA__, __CA_ATTRIBUTE_VALUE_FILE__])
+							&& 
+							isset($pa_values[$vs_element_code]) && is_array($pa_values[$vs_element_code]) && sizeof($pa_values[$vs_element_code])
+							
+						)
+						||
+						(
+							in_array($vn_element_datatype, [__CA_ATTRIBUTE_VALUE_MEDIA__, __CA_ATTRIBUTE_VALUE_FILE__])
+							&& 
+							isset($pa_values[$vn_element_id]) && is_array($pa_values[$vn_element_id]) && sizeof($pa_values[$vn_element_id])
+							
 						)
 					) {
 						$this->_FIELD_VALUE_CHANGED['_ca_attribute_'.$vn_attr_element_id] = true;
 						break;
+					}
+				}
+				
+				if(sizeof($element_codes) > 0) {
+					foreach($element_codes as $element_code => $element_id) {
+						if(isset($pa_values[$element_code]) && $pa_values[$element_code]) {
+							$this->_FIELD_VALUE_CHANGED['_ca_attribute_'.$vn_attr_element_id] = true;
+							break;
+						}
 					}
 				}
 			}
@@ -268,17 +315,17 @@
 		 * Replaces first attribute value with specified values; will add attribute value if no attributes are defined 
 		 * This is handy for doing editing on non-repeating attributes
 		 */
-		public function replaceAttribute($pa_values, $pm_element_code_or_id, $ps_error_source=null) {
+		public function replaceAttribute($pa_values, $pm_element_code_or_id, $ps_error_source=null, $pa_options=null) {
 			$va_attrs = $this->getAttributesByElement($pm_element_code_or_id);
 			
 			if (is_array($va_attrs) && sizeof($va_attrs)) {
 				return $this->editAttribute(
 					$va_attrs[0]->getAttributeID(),
-					$pm_element_code_or_id, $pa_values, $ps_error_source
+					$pm_element_code_or_id, $pa_values, $ps_error_source, $pa_options
 				);
 			} else {
 				return $this->addAttribute(
-					$pa_values, $pm_element_code_or_id, $ps_error_source
+					$pa_values, $pm_element_code_or_id, $ps_error_source, $pa_options
 				);
 			}
 		}
@@ -307,7 +354,7 @@
 			}
 			if (!($t_element = ca_metadata_elements::getInstance($t_attr->get('element_id')))) { return false; }
 			
-			if ($vb_require_value = (bool)$t_element->getSetting('requireValue')) {
+			if (($vb_require_value = (bool)$t_element->getSetting('requireValue')) && (!isset($pa_options['dontCheckMinMax']))) {
 				$pa_options['dontCheckMinMax'] = false;
 			}
 			
@@ -341,6 +388,7 @@
 				'error_source' => $ps_error_source,
 				'element_id' => $t_attr->get('element_id')
 			);
+			
 			
 			$this->_FIELD_VALUE_CHANGED['_ca_attribute_'.$t_attr->get('element_id')] = true;
 			
@@ -579,7 +627,7 @@
 					$va_index_options['queueIndexing'] = true;
 				}
 				
-				if (method_exists($this, "deriveHistoryTrackingCurrentValue")) {
+				if (method_exists($this, "deriveHistoryTrackingCurrentValue") && $this->attributesChanged())  {
                     $table = $this->tableName();
                     if ($table::isHistoryTrackingCriterion($table)) { $this->updateDependentHistoryTrackingCurrentValues(); }
                 }
@@ -1241,9 +1289,18 @@
 		 * @see BaseModelWithAttributes::getTypeCodeForID()
 		 */
 		public static function typeCodeForID($pn_type_id) {
+			$key = get_called_class()."_{$pn_type_id}";
+			if(CompositeCache::contains($key, 'BaseModelWithAttributesTypeIDs')) { 
+				return CompositeCache::fetch($key, 'BaseModelWithAttributesTypeIDs');
+			}
+			
 			$t = Datamodel::getInstance(get_called_class(), true);
 			$va_types = $t->getTypeList();
-			return isset($va_types[$pn_type_id]) ? $va_types[$pn_type_id]['idno'] : null;
+			
+			$v = isset($va_types[$pn_type_id]) ? $va_types[$pn_type_id]['idno'] : null;
+			
+			CompositeCache::save($key, $v, 'BaseModelWithAttributesTypeIDs');
+			return $v;
 		}
 		# ------------------------------------------------------------------
 		/**
@@ -1345,7 +1402,7 @@
 				}
 			}
 			
-			return $t_list->getListAsHTMLFormElement($this->getTypeListCode(), $ps_name, $pa_attributes, array_merge($pa_options, ['value' => $this->get($this->getTypeFieldName())]));
+			return $t_list->getListAsHTMLFormElement($this->getTypeListCode(), $ps_name, $pa_attributes, array_merge($pa_options, ['value' => caGetOption('value', $pa_options, $this->get($this->getTypeFieldName()))]));
 		}
 		# ------------------------------------------------------------------
 		// --- Forms
@@ -1401,7 +1458,7 @@
 			
 			if ($vs_rel_types = join(";", caGetOption('restrictToRelationshipTypes', $pa_options, array()))) { $vs_rel_types = "/{$vs_rel_types}"; }
 			if ($va_tmp[1] == $this->getTypeFieldName()) {
-				return $this->getTypeListAsHTMLFormElement($ps_field.$vs_rel_types, array('class' => caGetOption('class', $pa_options, null), 'id' => caGetOption('id', $pa_options, str_replace('.', '_', $ps_field))), array_merge($pa_options, array('nullOption' => '-')));
+				return $this->getTypeListAsHTMLFormElement($ps_field.$vs_rel_types, array('class' => caGetOption('class', $pa_options, null)), array_merge($pa_options, array('nullOption' => '-')));
 			}
 			
 			if ($ps_render = caGetOption('render', $pa_options, null)) {
@@ -1488,9 +1545,11 @@
 				$vs_fld = array_pop($va_tmp);
 				return $this->htmlFormElementForAttributeSearch($po_request, $vs_fld, array_merge($pa_options, array(
 							'values' => (isset($pa_options['values']) && is_array($pa_options['values'])) ? $pa_options['values'] : array(),
-							'width' => (isset($pa_options['width']) && ($pa_options['width'] > 0)) ? $pa_options['width'] : 20, 
-							'height' => (isset($pa_options['height']) && ($pa_options['height'] > 0)) ? $pa_options['height'] : 1, 
+							'width' => array_key_exists('width', $pa_options) ? (($pa_options['width'] > 0) ? $pa_options['width'] : null) : 20, 
+							'height' => array_key_exists('height', $pa_options) ? (($pa_options['height'] > 0) ? $pa_options['height'] : null) : 1, 
 							'class' => (isset($pa_options['class']) && $pa_options['class']) ? $pa_options['class'] : '',
+							'name' => (isset($pa_options['name']) && $pa_options['name']) ? $pa_options['name'] : null,
+							'id' => (isset($pa_options['id']) && $pa_options['id']) ? $pa_options['id'] : null,
 							'format' => '^ELEMENT',
 							'forSimpleForm' => true,
 							'multivalueFormat' => '<i>^LABEL</i><br/>^ELEMENT'
@@ -1790,7 +1849,11 @@
 				// Include "current_value" syntax if policy is set
 				$vs_subelement_code = $this->tableName().'.'.($policy ? "current_value.{$policy}." : '').($vb_is_sub_element ? $t_parent->get('element_code').'.' : '').(($vs_element_code !== $va_element['element_code']) ? "{$vs_element_code}." : "").$va_element['element_code'];
 				
-				$vm_values = (isset($pa_options['values']) && isset($pa_options['values'][$vs_subelement_code])) ? $pa_options['values'][$vs_subelement_code] : null;
+				if(is_null($vm_values = (isset($pa_options['values']) && isset($pa_options['values'][$vs_subelement_code])) ? $pa_options['values'][$vs_subelement_code] : null)) {
+					if ($v = caGetOption('value', $pa_options, null)) {
+						$vm_values = $v;
+					}
+				}
 				
 				// Use current row value as default value if option is set
 				if (is_null($vm_values) && $use_current_row_value) { 
@@ -1811,6 +1874,7 @@
 					'nullOption' => '-',
 					'value' => $vm_values,
 					'forSearch' => true,
+					'textAreaTagName' => caGetOption('textAreaTagName', $pa_options, null),
 					'render' => $va_element['settings']['render']//(isset($va_element['settings']['render']) && ($va_element['settings']['render'] == 'lookup')) ? $va_element['settings']['render'] : isset($pa_options['render']) ? $pa_options['render'] : 'select'
 				), array_merge($pa_options, $va_override_options));
 				
@@ -1839,14 +1903,17 @@
 				
 				
 					// escape any special characters in jQuery selectors
+					$f = (isset($pa_options['name']) && $pa_options['name']) ? $pa_options['name'] : $vs_fld_name;
+					
 					$vs_form_element = str_replace(
 						"jQuery('#{fieldNamePrefix}".$va_element['element_id']."_{n}')",
-						"jQuery('#".str_replace(array("[", "]", "."), array("\\\\[", "\\\\]", "\\\\."), $vs_fld_name)."')", 
+						"jQuery('#".str_replace(array("[", "]", "."), array("\\\\[", "\\\\]", "\\\\."), $f)."')", 
 						$vs_form_element
 					);
-					$vs_form_element = str_replace('{fieldNamePrefix}'.$va_element['element_id'].'_{n}', $vs_fld_name, $vs_form_element);
-				
-					$vs_form_element = str_replace('{n}', '', $vs_form_element);
+					$vs_form_element = str_replace('{fieldNamePrefix}'.$va_element['element_id'].'_{n}', $f, $vs_form_element);
+					if (caGetOption('removeTemplateNumberPlaceholders', $pa_options, true)) {
+						$vs_form_element = str_replace('{n}', '', $vs_form_element);
+					}
 					$vs_form_element = str_replace('{'. $va_element['element_id'].'}', '', $vs_form_element);
 				}
 				
@@ -1866,6 +1933,10 @@
 			$o_view->setVar('elements', $va_elements_by_container);
 			$o_view->setVar('element_ids', $va_element_ids);
 			$o_view->setVar('element_set_label', $this->getAttributeLabel($t_element->get('element_id')));
+			
+			if(caGetOption('elementsOnly', $pa_options, false)) {
+				return ['element_ids' => $va_element_ids, 'elements' => $va_elements_by_container];
+			}
 			
 			return $o_view->render(caGetOption('view', $pa_options, 'ca_search_form_attributes.php'));
 		}
@@ -1897,12 +1968,13 @@
 						break;
 					case $vs_type_id_fld_name:
 						$pa_options['value'] = $this->get($ps_field);
-						$vs_element =  $this->getTypeListAsHTMLFormElement($pa_options['name'], array(), $pa_options);
+						$vs_element =  $this->getTypeListAsHTMLFormElement($pa_options['name'], array('id' => caGetOption('id', $pa_options, null)), $pa_options);
 						break;
 				}
 				
 				if ($vs_element) {
-				    return str_replace("^DESCRIPTION", $vs_field_desc, str_replace("^LABEL", $vs_field_label, str_replace("^EXTRA", '', str_replace("^ELEMENT", $vs_element, $this->_CONFIG->get('form_element_display_format')))));
+					if (!$ps_format) { $ps_format = $this->_CONFIG->get('form_element_display_format'); }
+				    return str_replace("^DESCRIPTION", $vs_field_desc, str_replace("^LABEL", $vs_field_label, str_replace("^EXTRA", '', str_replace("^ELEMENT", $vs_element, $ps_format))));
 				}
 			}
 			
@@ -2243,7 +2315,7 @@
 		 * Returns associative array, keyed by primary key value with values being
 		 * the preferred label of the row from a suitable locale, ready for display 
 		 * 
-		 * @param $pa_ids indexed array of primary key values to fetch attribute for
+		 * @param $pa_ids array indexed array of primary key values to fetch attribute for
 		 */
 		public function getAttributeForIDs($pm_element_code_or_id, $pa_ids, $pa_options=null) {
 			if (!($vn_element_id = ca_metadata_elements::getElementID($pm_element_code_or_id))) { return null; }
@@ -3039,7 +3111,7 @@
  					if (is_array($va_ancestors)) { array_pop($va_ancestors); } // remove hierarchy root
  				}
  				
- 				if (sizeof($va_ancestors) > 1) {
+ 				if (is_array($va_ancestors) && (sizeof($va_ancestors) > 1)) {
  					$vs_type_sql = '((camtr.type_id = '.intval($pn_type_id).') OR (camtr.type_id IS NULL) OR ((camtr.include_subtypes = 1) AND camtr.type_id IN ('.join(',', $va_ancestors).'))) AND ';
  				} else {
  					$vs_type_sql = '((camtr.type_id = '.intval($pn_type_id).') OR (camtr.type_id IS NULL)) AND ';
@@ -3180,7 +3252,7 @@
 		 * @param $pm_element_code_or_id
 		 * @return bool
 		 */
-		public function elementHasChanged($pm_element_code_or_id) {
+		public function attributeHasChanged($pm_element_code_or_id) {
 			$vs_code = ca_metadata_elements::getElementCodeForId($pm_element_code_or_id);
 			$vn_id = ca_metadata_elements::getElementID($pm_element_code_or_id);
 
@@ -3191,6 +3263,18 @@
 		}
 		# ------------------------------------------------------------------
 		/**
+		 * Have any attributes changed on this row?
+		 *
+		 * @return bool
+		 */
+		public function attributesChanged() {
+            if(!is_array($cf = $this->_FIELD_VALUE_CHANGED)) { return false; }
+            if(sizeof($cf) === 0) { return false; }
+            if (sizeof(array_filter(array_keys($cf), function($v) { return substr($v, 0, 14) === '_ca_attribute_'; })) > 0) { return true; }
+            return false;
+		}
+		# ------------------------------------------------------------------
+		/**
 		 * This is the same as BaseModel::didChange(), except for elements.
 		 * We changed the name instead of overriding it so that we don't have to run
 		 * every single changed() call on a Bundlable through this function. Turns out it gets called a lot.
@@ -3198,7 +3282,7 @@
 		 * @param $pm_element_code_or_id
 		 * @return bool
 		 */
-		public function elementDidChange($pm_element_code_or_id) {
+		public function attributeDidChange($pm_element_code_or_id) {
 			$vs_code = ca_metadata_elements::getElementCodeForId($pm_element_code_or_id);
 			$vn_id = ca_metadata_elements::getElementID($pm_element_code_or_id);
 
@@ -3206,6 +3290,19 @@
 			if(!$vs_code || (!$this->hasElement($vs_code))) { return false; }
 
 			return isset($this->_FIELD_VALUE_DID_CHANGE['_ca_attribute_'.$vn_id]) ? $this->_FIELD_VALUE_DID_CHANGE['_ca_attribute_'.$vn_id] : false;
+		}
+		# ------------------------------------------------------------------
+		/**
+		 * Did any attributes changed on this row, even if already saved?
+		 *
+		 * @param $pm_element_code_or_id
+		 * @return bool
+		 */
+		public function attributesDidChange() {
+            if(!is_array($cf = $this->_FIELD_VALUE_DID_CHANGE)) { return false; }
+            if(sizeof($cf) === 0) { return false; }
+            if (sizeof(array_filter(array_keys($cf), function($v) { return substr($v, 0, 14) === '_ca_attribute_'; })) > 0) { return true; }
+            return false;
 		}
 		# ------------------------------------------------------------------
 	}
