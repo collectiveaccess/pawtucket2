@@ -6,13 +6,13 @@
 	padding-top:20px;
 }*/
 .navbar-brand{
-	width:200px;
-	padding-top: 15px;
+	width:175px;
+	padding-top: 10px;
 }
 @media (min-width:768px){
 	.navbar-brand{
-		width:300px;
-	padding-top: 35px;
+		width: 250px;
+		padding-top: 15px;
 	}
 }
 @media (min-width:768px){
