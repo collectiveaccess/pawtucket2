@@ -105,6 +105,3 @@ if(file_exists($vs_theme_helpers_dir)){
         }
     }
 }
-
-PHPExcel_Shared_Font::setTrueTypeFontPath(__CA_APP_DIR__.'/fonts/');
-PHPExcel_Shared_Font::setAutoSizeMethod(PHPExcel_Shared_Font::AUTOSIZE_METHOD_EXACT);
