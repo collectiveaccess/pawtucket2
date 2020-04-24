@@ -376,7 +376,7 @@ a:hover .frontIconButton{
 .tl-slidenav-content-container .galleryTimelineDate{
 	font-size:1em;
 }
-h2.tl-headline {
+.tl-timemarker-content h2.tl-headline {
 	text-transform:none;
 	font-size:12px !important;
 }
