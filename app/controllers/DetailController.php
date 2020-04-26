@@ -624,40 +624,11 @@
 				
 				foreach($va_reps as $vn_representation_id => $va_rep) {
 					$va_rep_info = $va_rep['info'][$ps_version];
-					$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $vs_idno);
-					switch($this->request->user->getPreference('downloaded_file_naming')) {
-						case 'idno':
-							$vs_file_name = $vs_idno_proc.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
-							break;
-						case 'idno_and_version':
-							$vs_file_name = $vs_idno_proc.'_'.$ps_version.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
-							break;
-						case 'idno_and_rep_id_and_version':
-							$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION'];
-							break;
-						case 'original_name':
-						default:
-							if ($va_rep['info']['original_filename']) {
-								$va_tmp = explode('.', $va_rep['info']['original_filename']);
-								if (sizeof($va_tmp) > 1) { 
-									if (strlen($vs_ext = array_pop($va_tmp)) < 3) {
-										$va_tmp[] = $vs_ext;
-									}
-								}
-								$vs_file_name = join('_', $va_tmp); 					
-							} else {
-								$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$ps_version;
-							}
-							
-							if (isset($va_file_names[$vs_file_name.'.'.$va_rep_info['EXTENSION']])) {
-								$vs_file_name.= "_{$vn_c}";
-							}
-							$vs_file_name .= '.'.$va_rep_info['EXTENSION'];
-							break;
-					} 
 					
-					$va_file_names[$vs_file_name] = true;
-					$this->view->setVar('version_download_name', $vs_file_name);
+					$vs_filename = caGetRepresentationDownloadFileName($this->ops_tablename, ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
+					
+					$va_file_names[$vs_filename] = true;
+					$this->view->setVar('version_download_name', $vs_filename);
 				
 					//
 					// Perform metadata embedding
@@ -665,7 +636,7 @@
 					if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $ps_version), 'ca_objects', $t_child_object->getPrimaryKey(), $t_child_object->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
 						$vs_path = $t_rep->getMediaPath('media', $ps_version);
 					}
-					$va_file_paths[$vs_path] = $vs_file_name;
+					$va_file_paths[$vs_path] = $vs_filename;
 					
 					$vn_c++;
 				}
@@ -748,7 +719,7 @@
 			$t_download_log->log(array(
 					"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
 					"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
-					"table_num" => $t_instance->TableNum(), 
+					"table_num" => $t_instance->tableNum(), 
 					"row_id" => $vn_object_id, 
 					"representation_id" => $pn_representation_id, 
 					"download_source" => "pawtucket"
@@ -763,9 +734,6 @@
 			$this->view->setVar('version_info', $va_rep_info);
 			
 			$va_info = $t_rep->getMediaInfo('media');
-			$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $t_instance->get('idno'));
-			
-			$vs_mode = $this->request->config->get('downloaded_file_naming');
 			
 			$vals = ['idno' => $vs_idno_proc];
 			foreach(array_merge($va_rep_info, $va_info) as $k => $v) {
@@ -774,33 +742,9 @@
 			    $vals[strtolower($k)] = preg_replace('![^A-Za-z0-9_\-]+!', '_', $v);
 			}
 			
-			switch($vs_mode) {
-				case 'idno':
-					$this->view->setVar('version_download_name', $vs_idno_proc.'.'.$va_rep_info['EXTENSION']);
-					break;
-				case 'idno_and_version':
-					$this->view->setVar('version_download_name', $vs_idno_proc.'_'.$ps_version.'.'.$va_rep_info['EXTENSION']);
-					break;
-				case 'idno_and_rep_id_and_version':
-					$this->view->setVar('version_download_name', $vs_idno_proc.'_representation_'.$pn_representation_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION']);
-					break;
-				case 'original_name':
-				default:
-				    if (strpos($vs_mode, "^") !== false) { // template
-				       $this->view->setVar('version_download_name', caProcessTemplate($vs_mode, $vals).'.'.$va_rep_info['EXTENSION']);
-				    } elseif ($va_info['ORIGINAL_FILENAME']) {
-						$va_tmp = explode('.', $va_info['ORIGINAL_FILENAME']);
-						if (sizeof($va_tmp) > 1) { 
-							if (strlen($vs_ext = array_pop($va_tmp)) < 3) {
-								$va_tmp[] = $vs_ext;
-							}
-						}
-						$this->view->setVar('version_download_name', str_replace(" ", "_", join('_', $va_tmp).'.'.$va_rep_info['EXTENSION']));					
-					} else {
-						$this->view->setVar('version_download_name', $vs_idno_proc.'_representation_'.$pn_representation_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION']);
-					}
-					break;
-			} 
+			$vs_filename = caGetRepresentationDownloadFileName($this->ops_tablename, ['idno' => $t_instance->get('idno'), 'index' => null, 'version' => $ps_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_info['ORIGINAL_FILENAME'], 'representation_id' => $pn_representation_id]);
+			$this->view->setVar('version_download_name', $vs_filename);
+			
 			
 			//
 			// Perform metadata embedding
@@ -1237,8 +1181,8 @@
  			$vs_path = $t_attr_val->getMediaPath('value_blob', $ps_version);
  			$vs_path_ext = pathinfo($vs_path, PATHINFO_EXTENSION);
  			if ($vs_name = trim($t_attr_val->get('value_longtext2'))) {
- 				$vs_file_name = pathinfo($vs_name, PATHINFO_FILENAME);
- 				$vs_name = "{$vs_file_name}.{$vs_path_ext}";
+ 				$vs_filename = pathinfo($vs_name, PATHINFO_FILENAME);
+ 				$vs_name = "{$vs_filename}.{$vs_path_ext}";
  			} else {
  				$vs_name = _t("downloaded_file.%1", $vs_path_ext);
  			}

@@ -861,8 +861,8 @@
 
 								// make sure we don't download representations the user isn't allowed to read
 								if(!caCanRead($this->request->user->getPrimaryKey(), 'ca_object_representations', $vn_representation_id)){ continue; }
-								
-								switch($mode = $this->request->user->getPreference([$this->ops_tablename.'_downloaded_file_naming', 'downloaded_file_naming'])) {
+		
+								switch($mode = $this->request->config->get([$this->ops_tablename.'_downloaded_file_naming', 'downloaded_file_naming'])) {
 									case 'idno':
 										$vs_filename = "{$vs_idno_proc}{$vn_index}.{$vs_ext}";
 										break;
@@ -876,6 +876,7 @@
 									default:
 										if (strpos($mode, "^") !== false) { // template
 											$vs_filename = caProcessTemplateForIDs($mode, 'ca_object_representations', [$vn_representation_id]);
+
 										} elseif ($vs_original_name) {
 											$va_tmp = explode('.', $vs_original_name);
 											if (sizeof($va_tmp) > 1) { 
