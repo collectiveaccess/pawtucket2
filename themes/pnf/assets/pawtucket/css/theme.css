@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap');
+/*@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=Quintessential&display=swap');
 a:-webkit-any-link {
     color: -webkit-link;
     text-decoration: underline;
@@ -687,7 +688,7 @@ div.caMediaOverlayControls {
 	background-color:#FFF;
 }
 .callout{
-	font-family: 'Pinyon Script', cursive;
+	font-family: 'Quintessential', cursive;
 	font-size:26px;
 	line-height:1.2em;
 	color: #7f4539;
@@ -712,9 +713,19 @@ div.caMediaOverlayControls {
 	font-family: 'Lusitana', serif;
 }
 #bibBodyIntro ul{
-	padding-left:265px;
-	padding-right:265px;
 	font-weight:normal;
+}
+@media (min-width: 500px) {
+	#bibBodyIntro ul{
+		padding-left:150px;
+		padding-right:150px;
+	}
+}
+@media (min-width: 1400px) {
+	#bibBodyIntro ul{
+		padding-left:265px;
+		padding-right:265px;
+	}
 }
 #bibBodyIntro li{
 	padding-bottom:5px;
