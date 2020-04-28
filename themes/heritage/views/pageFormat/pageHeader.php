@@ -44,16 +44,34 @@
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
-	$vb_has_user_links = (sizeof($va_user_links) > 0);
-
+	if($this->request->isLoggedIn()){
+		$vb_has_user_links = (sizeof($va_user_links) > 0);
+	}else{
+		$vb_has_user_links = 0;
+	}
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
+		<!-- Global site tag (gtag.js) - Google Analytics -->
+	<script async src="https://www.googletagmanager.com/gtag/js?id=UA-125250267-1"></script>
+	<script>
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){dataLayer.push(arguments);}
+	  gtag('js', new Date());
+ 
+	  gtag('config', 'UA-125250267-1');
+	</script>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
+	<meta property="og:url"           content="<?php print $this->request->config->get("site_host"); ?>" />
+  	<meta property="og:type"          content="website" />
+  	<meta property="og:title"         content="<?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?>" />
+  	<meta property="og:description"   content="Steelcase Heritage Website" />
+  	<meta property="og:image"         content="<?php print $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'hpTruck.jpg'); ?>" />
+
 	<?php print MetaTagManager::getHTML(); ?>
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
@@ -74,6 +92,7 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+     <link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css"/>
 </head>
 <body>
 	<nav id="mainNav" class="navbar navbar-default yamm" role="navigation">
@@ -97,10 +116,22 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo.svg'), "navbar-brand", "", "","");
+				if($this->request->isLoggedIn()){ 
+					print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo.svg'), "navbar-brand", "", "Browse","occurrences"); 
+				} else {
+					print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo.svg'), "navbar-brand", "", "",""); 
+				}				
 				
 ?>
-				<div class="subtitle"><?php print caNavLink($this->request, "heritage", "", "", "",""); ?></div>
+				<div class="subtitle">
+<?php 
+					if($this->request->isLoggedIn()){ 
+						print caNavLink($this->request, "Heritage", "", "", "Browse","occurrences"); 
+					} else {
+						print caNavLink($this->request, "Heritage", "", "", "",""); 
+					}
+?>
+				</div>
 			</div>
 
 		<!-- Collect the nav links, forms, and other content for toggling -->
@@ -128,6 +159,7 @@
 				</ul>
 <?php
 	}
+	if($this->request->isLoggedIn()){
 ?>
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
@@ -137,13 +169,34 @@
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 					</div>
 				</form>
-				<ul class="nav navbar-nav menuItems">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
+<?php
+	}
+	if (!$this->request->isLoggedIn()){
+		$vs_class = "noNav";
+	} 
+?>
+				<ul class="nav navbar-nav menuItems <?Php print $vs_class;?> ">
+					<?php print ($this->request->isLoggedIn()) ? $this->render("pageFormat/browseMenu.php") : ""; ?>	
 					<!--<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>-->
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getAction() == "Lightbox") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("My Sets"), "", "", "Lightbox", "Index"); ?></li>
-					<li <?php print ($this->request->getAction() == "occurrences") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Timeline"), "", "", "Browse", "occurrences"); ?></li>
+
+<?php if ($hidden_for_now) { ?>
+					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Features from the Archive"), "", "", "Gallery", "Index"); ?></li>
+<?php } ?>
+<?php
+					if(!$this->request->isLoggedIn()){
+
+						#print "<li ".(($this->request->getController() == "Front") ? 'class="active"' : '').">".caNavLink($this->request, _t("Browse Timeline"), "", "", "", "")."</li>";
+						print "<div class='loginButtonRight'><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Internal Login")."</a></div>";
+
+					}else{
+?>
+					<li <?php print ($this->request->getController() == "Lightbox") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("My Sets"), "", "", "Lightbox", "Index"); ?></li>
+					<li <?php print (strtolower($this->request->getAction() == "occurrences")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Browse Milestones"), "", "", "Browse", "occurrences"); ?></li>
+					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>
+
+<?php
+					}
+?>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->

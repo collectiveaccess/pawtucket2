@@ -35,10 +35,11 @@
 	$vs_lightbox_displayname 		= $va_lightboxDisplayName["singular"];
 	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
 	$vs_description_attribute 		= $this->getVar("description_attribute");
+	$vs_lightbox_displayname = "<span style='text-transform:lowercase;'>my</span>NovaMuse";
 
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
-<H1><?php print _t("%1 Information", ucfirst($vs_lightbox_displayname)); ?></H1>
+<H1><?php print _t("%1 Information", $vs_lightbox_displayname); ?></H1>
 <?php
 	if($va_errors["general"]){
 		print "<div class='alert alert-danger'>".$va_errors["general"]."</div>";

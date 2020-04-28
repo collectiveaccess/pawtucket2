@@ -54,7 +54,8 @@
 	jQuery(document).ready(function() {
 		var caSliderepresentation_ids = <?php print json_encode($va_representation_ids); ?>;
 		/* width of li */
-		$('.jcarousel, .jcarousel li').width($('.jcarousel').width());	// don't ask
+		$('.jcarousel, .jcarousel li, .jcarousel .video-js').width($('.jcarousel').width());	// don't ask
+		$('.jcarousel .video-js').height($('.jcarousel .video-js').width() * .5);
 		$( window ).resize(function() { $('.jcarousel li').width($('.jcarousel').width()); });
 
 		/* Carousel initialization */

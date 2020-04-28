@@ -31,13 +31,17 @@
 		<footer id="footer">
 			<div class="container">
 				<div class="row">
-					<div class="col-md-4 text-left">
+					<div class="col-sm-4 text-left">
 						<p>
 						<a href="http://www.steelcase.com"><?php print caGetThemeGraphic($this->request, 'logo.svg'); ?></a>
 						</p>
 						<p>
 							&copy; 1996 - <?php print date("Y"); ?> Steelcase Inc. is the global leader in office furniture, interior architecture and space solutions for offices, hospitals and classrooms. Our furniture is inspired by innovative research in workspace design.
 						</p>
+					</div>
+					<div class="col-sm-8 text-right">
+						<div><?php print caNavLink($this->request, 'Contact Archives', '', '', 'Contact', 'form')." | <a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Employee Login")."</a>";?></div>
+						<div class='loginButton'><?php print caNavLink($this->request, "About", '', '', 'About', 'Index'); ?> | <a href='http://www.steelcase.com' target='_blank'>Steelcase.com</a></div>
 					</div>
 				</div>
 			</div>
@@ -81,7 +85,7 @@
 		
 			$(window).scroll(function(){ 
 				var pos = $(window).scrollTop();
-				if(pos > 150) {
+				if(pos > 55) {
 					$("#mainNav").addClass("fixed");
 					$("#pageArea").addClass("scrolled");
 				}else{

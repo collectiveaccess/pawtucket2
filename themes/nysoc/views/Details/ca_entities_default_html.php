@@ -3,6 +3,7 @@
 	Timer::disable('page');
 	$t_item 		= $this->getVar("item");
 	$va_comments 	= $this->getVar("comments");
+	$comment_count = is_array($va_comments) ? sizeof($va_comments) : 0;
 	$vs_type 		= caNavLink($this->request, 'People & Organizations', '', '', 'Browse', 'entities');
 	$vs_title 		= caTruncateStringWithEllipsis($t_item->get('ca_entities.preferred_labels.displayname'), 40);	
 	$vs_home 		= caNavLink($this->request, "City Readers", '', '', '', '');
@@ -177,7 +178,7 @@
 					if (($vn_occupation_id == 551) | ($vn_occupation_id == 0)){continue;}
 					$va_occupations_list[] = caNavLink($this->request, ucfirst($va_as_text[$vn_x]), '', '', 'Browse', 'entities/facet/occupation_facet/id/'.$vn_occupation_id)."</a>";
 				}
-				if (sizeof($va_occupations_list) > 0) {
+				if (is_array($va_occupations_list) && (sizeof($va_occupations_list) > 0)) {
 					print "<H6>Occupation</H6>";
 					print "<div>";
 					print join('<br/>', $va_occupations_list);
@@ -193,7 +194,7 @@
 						$va_countries_list[] = caNavLink($this->request, ucfirst($va_country_as_text[$va_key]['country_origin']), '', '', 'Browse', 'entities/facet/country_facet/id/'.$va_country_next['country_origin'])."</a>";
 					}
 				}
-				if (sizeof($va_countries_list) > 1) {
+				if (is_array($va_countries_list) && (sizeof($va_countries_list) > 1)) {
 					print "<H6>Country of Origin</H6>";
 					print "<div>";
 					print join(', ', $va_countries_list);
@@ -271,7 +272,7 @@
 						}
 					}
 				}
-				if (sizeof($va_link_list) > 0) {
+				if (is_array($va_link_list) && (sizeof($va_link_list) > 0)) {
 					$vs_learn_even.= "<div class='unit'>";
 					$vs_learn_even.= join('<br/>', $va_link_list);
 					$vs_learn_even.= "</div>";
@@ -362,7 +363,7 @@
 										<div class="detailTool"><a class="addthis_button" href="http://www.addthis.com/bookmark.php?v=250&amp;username=xa-4baa59d57fc36521"><span class="glyphicon glyphicon-share-alt"></span> Share</a><script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=xa-4baa59d57fc36521"></script></div><!-- end detailTool -->
 										<!-- AddThis Button END -->
 										<div class="detailTool"><span class="glyphicon glyphicon-send"></span><a href='mailto:ledger@nysoclib.org?subject=CR%20User%20Contribution:%20<?php print $t_item->get('ca_entities.idno'); ?>&body='>Contribute</a></div><!-- end detailTool -->
-										<!-- <div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print (sizeof($va_comments) > 0 ? sizeof($va_comments) : ""); ?></a></div> -->
+										<!-- <div class="detailTool"><a href='#detailComments' onclick='jQuery("#detailComments").slideToggle();return false;'><span class="glyphicon glyphicon-comment"></span>Comment <?php print ($comment_count > 0 ? $comment_count : ""); ?></a></div> -->
 									</div><!-- end detailTools -->							
 								</div><!-- end col -->
 <?php
@@ -405,8 +406,8 @@
 												</div>																				
 											</div>										
 	<?php	
-									$stat_entity_checkout_distribution = CompositeCache::fetch('stat_entity_checkout_distribution', 'vizData');
-									$stat_avg_entity_checkout_distribution = CompositeCache::fetch('stat_avg_entity_checkout_distribution', 'vizData');
+									$stat_entity_checkout_distribution = PersistentCache::fetch('stat_entity_checkout_distribution', 'vizData');
+									$stat_avg_entity_checkout_distribution = PersistentCache::fetch('stat_avg_entity_checkout_distribution', 'vizData');
 									if(is_array($stat_entity_checkout_distribution) && is_array($stat_avg_entity_checkout_distribution)) {
 	?>
 
@@ -506,14 +507,14 @@
 									<div class="row">	
 										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 <?php
-									$stat_bib_books_by_subject_area = CompositeCache::fetch('stat_bib_books_by_subject_area', 'vizData');
+									$stat_bib_books_by_subject_area = PersistentCache::fetch('stat_bib_books_by_subject_area', 'vizData');
 
 									$vn_entity_id = $t_item->getPrimaryKey();
 									if ($stat_bib_books_by_subject_area[$vn_entity_id]) {
 ?>
 
 										<script type="text/javascript">
-											var subjectIDs = <?php print json_encode(CompositeCache::fetch('stat_bib_subject_area_ids', 'vizData')); ?>;
+											var subjectIDs = <?php print json_encode(PersistentCache::fetch('stat_bib_subject_area_ids', 'vizData')); ?>;
 											var dataForSubjectAreas = {
 											  labels: <?php print json_encode(array_keys($stat_bib_books_by_subject_area[$vn_entity_id])); ?>,
 											  series: <?php print json_encode(array_values($stat_bib_books_by_subject_area[$vn_entity_id])); ?>
@@ -591,7 +592,7 @@
 										</div><!-- end col-->
 										<div class="col-xs-6 col-sm-6 col-md-6 col-lg-6">
 <?php
-										$stat_entity_checkout_durations = CompositeCache::fetch('stat_entity_checkout_durations', 'vizData');
+										$stat_entity_checkout_durations = PersistentCache::fetch('stat_entity_checkout_durations', 'vizData');
 
 										if ($stat_entity_checkout_durations[$vn_entity_id]) {
 ?>

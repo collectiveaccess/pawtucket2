@@ -16,14 +16,14 @@
 				</div><!-- end col -->
 				<div class='navLeftRight col-sm-2'>
 					<div class="detailNavBgRight">
-						{{{resultsLink}}}{{{previousLink}}}{{{nextLink}}}
+						{{{previousLink}}}{{{resultsLink}}}<div style='clear:right;'>{{{nextLink}}}</div>
 					</div><!-- end detailNavBgLeft -->
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
-				{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1" max="1"><div class='col-sm-12'><H6>Related exhibition</H6></div></ifcount>}}}
-				{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="2"><div class='col-sm-12'><H6>Related exhibitions</H6></div></ifcount>}}}
-				{{{<unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=" "><div class='col-sm-6 col-md-4'><l>^ca_occurrences.preferred_labels.name<br/>^ca_occurrences.exhibition_dates</l><br/><br/></div></unit>}}}
+				{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" restrictToRelationshipTypes="artist" min="1" max="1"><div class='col-sm-12'><H6>Related exhibition</H6></div></ifcount>}}}
+				{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" restrictToRelationshipTypes="artist" min="2"><div class='col-sm-12'><H6>Related exhibitions</H6></div></ifcount>}}}
+				{{{<unit relativeTo="ca_occurrences" restrictToTypes="exhibition" restrictToRelationshipTypes="artist" delimiter=" " sort="ca_occurrences.exhibition_dates" sortDirection="desc"><div class='col-sm-6 col-md-4'><l>^ca_occurrences.preferred_labels.name<br/>^ca_occurrences.exhibition_dates</l><br/><br/></div></unit>}}}
 			</div>
 			<div class="row">				
 				{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1" max="1"><div class='col-sm-12'><H6>Related event</H6></div></ifcount>}}}
@@ -45,7 +45,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('detailembed' => 1, 'search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('detailembed' => 1, 'search' => 'entity_id:'.$t_item->get("entity_id"), 'sort' => 'Date'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

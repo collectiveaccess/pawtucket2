@@ -29,7 +29,7 @@
  *
  * ----------------------------------------------------------------------
  */
- 		include_once(__CA_LIB_DIR__."/ca/Search/SetSearch.php");
+ 		include_once(__CA_LIB_DIR__."/Search/SetSearch.php");
 		print $this->render("Front/featured_set_slideshow_html.php");
 		
 		$va_featured_ids = array();
@@ -101,7 +101,7 @@
 					print "<div class='homeCaption'>".$vs_object_name."</div>";
 					print "</div>";
 					print "<div class='col-sm-4 featuredSidebar'>";     
-					print "<h4 class='white'>Featured From the Archives</h4>";
+					print "<h4 class='white'>Featured Image</h4>";
 					print "<h5>".$va_set_name."</h5>";
 					print $vs_item_name;
 					print "<p>".$va_set_description."</p>";

@@ -37,6 +37,28 @@
 		<div class='advancedRow'>
 			<div class="advancedSearchField">
 				<span class="advSearchLabel">Type </span><br/>
+				{{{ca_objects.type_id%width=200px&height=1}}}
+			</div>
+			<div class="advancedSearchField">
+				<span class="advSearchLabel">Date</span><br/>
+				{{{ca_objects.date.dates_value}}}
+			</div>			
+		</div>
+			
+		<div class='advancedRow'>
+			<div class="advancedSearchField">
+				<div style="margin-bottom:25px;"><span class="advSearchLabel">Technique </span><br/>
+				{{{ca_objects.technique%width=200px&height=1}}}
+				</div>
+				<div style="margin-bottom:25px;"><span class="advSearchLabel">Optics Type </span><br/>
+				{{{ca_objects.optics_type%width=200px&height=1}}}
+				</div>				
+				<span class="advSearchLabel">Material/Medium</span><br/>
+				{{{ca_objects.materialMedium%width=200px&height=1}}}
+			</div>
+			<div class="advancedSearchField">
+				<span class="advSearchLabel">Description</span><br/>
+				{{{ca_objects.description%width=200px&height=5}}}
 				{{{ca_objects.type_id%width=350px&height=1}}}
 				{{{ca_objects.type_id:boolean}}}
 			</div>

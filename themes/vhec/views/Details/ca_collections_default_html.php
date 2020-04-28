@@ -200,7 +200,8 @@
 					if ($vn_top_level_id = $t_item->getHierarchyRootId()) {
 						$vs_buf.= "<h4 style='margin-bottom:10px;'>Collection Contents</h4>";
 						$t_top_collection = new ca_collections($vn_top_level_id);
-						$qr_series_level = $t_top_collection->get('ca_collections.children.collection_id', array('returnAsSearchResult' => true, 'sort' => 'ca_collections.collection_identifier'));
+						$va_child_ids = $t_top_collection->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'sort' => 'ca_collections.collection_identifier'));
+						$qr_series_level = caMakeSearchResult("ca_collections", $va_child_ids);
 						(($qr_series_level->numHits() > 0) ? $vs_class = "borderlevel" : $vs_class = "");						
 						$vs_buf.= "<div class='colContents {$vs_class}'>";
 						
@@ -212,7 +213,8 @@
 						
 						while($qr_series_level->nextHit()) {
 							$vn_series_level_id = $qr_series_level->get('ca_collections.collection_id');
-							$qr_subseries_level = $qr_series_level->get('ca_collections.children.collection_id', array('returnAsSearchResult' => true, 'sort' => 'ca_collections.collection_identifier'));
+							$va_subseries_level = $qr_series_level->get('ca_collections.children.collection_id', array('returnAsArray' => true, 'sort' => 'ca_collections.collection_identifier'));
+							$qr_subseries_level = caMakeSearchResult("ca_collections", $va_subseries_level);
 							(($vn_series_level_id == $vn_id) ? $vs_highlight = "showme" : $vs_highlight = "");
 							$vs_buf.= "<div>".(($qr_subseries_level && $qr_subseries_level->numHits() > 0) ? "&mdash;<a href='#' onclick='jQuery(\".subseriesLevel".$vn_series_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "&mdash;<span class='colspacer'></span>").caNavLink($this->request, $qr_series_level->get('ca_collections.preferred_labels')." (".$qr_series_level->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$vn_series_level_id)."</div>";
 							$vs_buf.= "<div class='subseriesLevel{$vn_series_level_id} borderlevel' style='margin-left:40px;'>";
@@ -220,7 +222,8 @@
 							while($qr_subseries_level && $qr_subseries_level->nextHit()) {
 								$vn_subseries_level_id = $qr_subseries_level->get('ca_collections.collection_id');
 								
-								$qr_box_level = $qr_subseries_level->get('ca_collections.children.collection_id', array("returnAsSearchResult" => true, 'sort' => 'ca_collections.collection_identifier'));
+								$va_box_level = $qr_subseries_level->get('ca_collections.children.collection_id', array("returnAsArray" => true, 'sort' => 'ca_collections.collection_identifier'));
+								$qr_box_level = caMakeSearchResult("ca_collections", $va_box_level);
 								( $vn_subseries_level_id == $vn_id ? $vs_highlight = "showme" : $vs_highlight = "");
 
 								$vs_buf.= "<div>".($qr_box_level && ($qr_box_level->numHits() > 0) ? "&mdash;<a href='#' onclick='jQuery(\".boxLevel".$vn_subseries_level_id."\").toggle(200);return false;'><i class='fa fa-plus-square-o'></i></a>" : "&mdash;<span class='colspacer'></span>").caNavLink($this->request, $qr_subseries_level->get('ca_collections.preferred_labels')." (".$qr_subseries_level->get('ca_collections.collection_identifier').") ", $vs_highlight, '', 'Detail', 'collections/'.$vn_subseries_level_id)."</div>";
@@ -292,7 +295,7 @@
 			<hr>
 			
 			
-{{{<ifcount code="ca_objects" min="1">
+{{{<ifcount code="ca_objects" min="1" restrictToRelationshipTypes="part_of">
 			<div class="row">
 				<div class="col-sm-12"><h4 style='font-size:16px;'>Digitized Items</h4></div>
 			</div>

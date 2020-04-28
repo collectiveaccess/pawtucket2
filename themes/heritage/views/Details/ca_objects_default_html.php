@@ -25,7 +25,11 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+	if (!($this->request->isLoggedIn())) {
+		print $this->render("LoginReg/form_login_html.php");
+		
+	}else{
+
 	$t_object = 			$this->getVar("item");
 	$va_comments = 			$this->getVar("comments");
 	$va_tags = 				$this->getVar("tags_array");
@@ -97,7 +101,7 @@
 			
 				{{{<ifdef code="ca_objects.abstract">
 					<div class='unit'><h6>Abstract</h6>
-						<span class="trimText">^ca_objects.abstract</span>
+						<span class="text">^ca_objects.abstract</span>
 					</div>
 				</ifdef>}}}
 				
@@ -144,3 +148,6 @@
 		});
 	});
 </script>
+<?php
+}
+?>

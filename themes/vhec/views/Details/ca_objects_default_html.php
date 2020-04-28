@@ -119,7 +119,7 @@
 				if ($va_local_lcsh_subjects = $t_object->get('ca_objects.LOC_text', array('returnAsArray' => true, 'convertCodesToDisplayText' => true, 'delimiter' => '<br/>'))) {
 					foreach ($va_local_lcsh_subjects as $va_key => $va_local_lcsh_subject) {
 						if ($va_local_lcsh_subject) {
-							$vs_access_point_local.= "<div >".caNavLink($this->request, $va_local_lcsh_subject, '', '', 'Search', 'objects', array('search' => "ca_objects.LOC_text:\"".$va_local_lcsh_subject."\""))."</div>";
+							$vs_access_point_local.= "<div >".caNavLink($this->request, $va_local_lcsh_subject, '', '', 'Browse', 'objects', array('facet' => "loc_facet", "id" => $va_local_lcsh_subject))."</div>";
 						}
 					}
 					$vn_num_subjects++;
@@ -135,7 +135,7 @@
 						}
 						$vs_access_point_entity.= "<div {$vs_subject_style}>".$va_entity_subject."</div>";
 						
-						if (($vn_subject == 3) && (sizeof($va_local_subjects) > 3)) {
+						if (($vn_subject == 3) && (sizeof($va_entity_subjects) > 3)) {
 							$vs_access_point_entity.= "<a class='seeMore' href='#' onclick='$(\".seeMore\").hide();$(\".subjectHidden\").slideDown(300);return false;'>more...</a>";
 						}
 						$vn_subject++;
@@ -144,16 +144,20 @@
 				}				
 				#Local Subject
 				$vs_access_point_subject = "";
-				$va_local_subjects = $t_object->get('ca_objects.local_subject', array('returnAsArray' => true, 'convertCodesToDisplayText' => true));
+				$va_local_subjects = $t_object->get('ca_objects.local_subject', array('returnAsArray' => true, 'convertCodesToDisplayText' => false));
 				if (sizeof($va_local_subjects) >= 1) {
-					asort($va_local_subjects);
+					$va_subjects_display = array();
+					foreach($va_local_subjects as $vn_subject_id){
+						$va_subjects_display[$vn_subject_id] = caGetListItemByIDForDisplay($vn_subject_id, false);
+					}
+					asort($va_subjects_display);
 					$vn_subject = 1;
-					foreach ($va_local_subjects as $va_key => $va_local_subject) {
-						if ($va_local_subject == '-') { continue; }
+					foreach ($va_subjects_display as $vn_subject_id => $vs_local_subject) {
+						if ($vs_local_subject == '-') { continue; }
 						if ($vn_subject > 3) {
 							$vs_subject_style = "class='subjectHidden'";
 						}
-						$vs_access_point_subject.= "<div {$vs_subject_style}>".caNavLink($this->request, $va_local_subject, '', '', 'Search', 'objects', array('search' => "ca_objects.local_subject:\"".$va_local_subject."\""))."</div>";
+						$vs_access_point_subject.= "<div {$vs_subject_style}>".caNavLink($this->request, $vs_local_subject, '', '', 'Browse', 'objects', array('facet' => "subject_facet", "id" => $vn_subject_id))."</div>";
 						
 						if (($vn_subject == 3) && (sizeof($va_local_subjects) > 3)) {
 							$vs_access_point_subject.= "<a class='seeMore' href='#' onclick='$(\".seeMore\").hide();$(\".subjectHidden\").slideDown(300);return false;'>more...</a>";
@@ -442,11 +446,11 @@
 						if ($va_scope = $t_object->get('ca_objects.ISADG_scope')) {
 							print "<div class='unit'><h8>Scope & Content</h8>".$va_scope."</div>";
 						}
-						if ($va_radlanguage = $t_object->get('ca_objects.RAD_langMaterial', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
-							if ($va_language != '-') {
-								print "<div class='unit'><h8>Language</h8>".$va_radlanguage."</div>";
-							}
-						}																											
+#						if ($va_radlanguage = $t_object->get('ca_objects.RAD_langMaterial', array('convertCodesToDisplayText' => true, 'delimiter' => ', '))) {
+#							if ($va_language != '-') {
+#								print "<div class='unit'><h8>Language</h8>".$va_radlanguage."</div>";
+#							}
+#						}																											
 						if ($va_place = $t_object->get('ca_objects.creation_place')) {
 							print "<div class='unit'><h8>Place of Creation</h8>".$va_place."</div>";
 						}

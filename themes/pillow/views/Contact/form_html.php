@@ -16,20 +16,13 @@
 		<p>Norton Owen, Director of Preservation </p>
 		<p><a href='mailto:nowen@jacobspillow.org'>nowen@jacobspillow.org</a></p>		
 		<p>413.243.9919 ext. 150</p>
-		<br>	
-		
-		<p>Brittany Austin, Associate Archivist & Librarian</p>
-		<p><a href='mailto:baustin@jacobspillow.org'>baustin@jacobspillow.org</a></p>		
+        <p>Patsy Gay, Associate Archivist </p>
+		<p><a href='mailto:pgay@jacobspillow.org'>pgay@jacobspillow.org</a></p>		
 		<p>413.243.9919 ext. 154</p>
-		<br>	
-		
-		<p>Nel Shelby, Videographer (summer only)</p>
-		<p><a href='mailto:nshelby@jacobspillow.org'>nshelby@jacobspillow.org</a></p>		
-		<p>413.243.9919 ext. 155</p>
-		<br>	
+		<br>		
 		
 		<h2>Ask an Archivist</h2>
-		<p>Do you have a research question or general inquiry about our collection? We’d love to hear from you! Please fill out the following form, and we will get back with you as soon as possible.</p>
+		<p>Would you like to schedule an appointment? Do you have a research question or general inquiry about our collection? We’d love to hear from you! Please fill out the following form, and we will get back with you as soon as possible.</p>
 		<p>Your question or research request:</p>	
 
 
@@ -39,6 +32,7 @@
 	}
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 		<div class="row">
 		<div class="col-md-9">
 			<div class="row">
@@ -63,27 +57,36 @@
 				<div class="col-sm-6">
 					<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
 						<label for="security">Security Question</label>
-						<div class='row'>
-							<div class='col-sm-4'>
-								<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
-							</div>
-							<div class='col-sm-4'>
-								<input name="security" value="" id="security" type="text" class="form-control input-sm" />
-							</div>
-						</div><!--end col-sm-8-->	
-						</div><!-- end row -->
+						
+												<?php
+	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+                grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+        	};
+		</script>
+		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+
+					<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+						<div id="regCaptcha"></div>
 					</div>
+<?php
+	}
+?>
+
 				</div><!-- end row -->
 			</div><!-- end col -->
 		</div><!-- end row -->
 		<div class="row">
-			<div class="col-sm-8">
+			<div class="col-sm-12">
 				<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
 					<label for="message">Message</label>
 					<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->
+			
 		<div class="form-group">
 			<button type="submit" class="btn btn-default">Send</button>
 		</div><!-- end form-group -->

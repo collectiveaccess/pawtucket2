@@ -8,8 +8,8 @@
 	$va_entity_list = $this->getVar('entity_list');
 	
 	// Cached stats data used to generate plots
-	$stat_entity_checkout_distribution = CompositeCache::fetch('stat_entity_checkout_distribution', 'vizData');
-	$stat_avg_entity_checkout_distribution = CompositeCache::fetch('stat_avg_entity_checkout_distribution', 'vizData');
+	$stat_entity_checkout_distribution = PersistentCache::fetch('stat_entity_checkout_distribution', 'vizData');
+	$stat_avg_entity_checkout_distribution = PersistentCache::fetch('stat_avg_entity_checkout_distribution', 'vizData');
 	
 	// Generate Chartist-format data "payload"				
 	$va_payload = [0 => ['name' => 'Library Average', 'data' =>  array_values($stat_avg_entity_checkout_distribution)]];	// first item is always "average" circulation plot

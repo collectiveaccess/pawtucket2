@@ -41,7 +41,7 @@
 					{{{<ifcount code="ca_occurrences.related.preferred_labels" restrictToTypes="production" min="1"><h6>Related Productions</h6><unit relativeTo="ca_occurrences.related" restrictToTypes="production" delimiter='<br/>'><l>^ca_occurrences.preferred_labels</l><ifdef code="ca_occurrences.productionDate">, ^ca_occurrences.productionDate</ifdef></unit></ifcount>}}}
 					
 					{{{<ifcount code="ca_entities.preferred_labels" restrictToRelationshipTypes="company" min="1"><h6>Related Company</h6><unit restrictToRelationshipTypes="company" relativeTo="ca_entities" delimiter='<br/>'><l>^ca_entities.preferred_labels</l></unit></ifcount>}}}
-					{{{<ifcount code="ca_entities.preferred_labels" excludeRelationshipTypes="company" min="1"><h6>^ca_occurrences.type_id Credits</h6><unit relativeTo="ca_entities" delimiter='<br/>'><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
+					{{{<ifcount code="ca_entities.preferred_labels" excludeRelationshipTypes="company" min="1"><h6>^ca_occurrences.type_id Credits</h6><unit relativeTo="ca_entities_x_occurrences" delimiter='<br/>'><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
 					
 					<!--{{{<ifcount code="ca_entities.preferred_labels" restrictToRelationshipTypes="dancer|musician|performer|speaker|participant" min="1"><h6>Related Performers</h6><unit relativeTo="ca_entities" restrictToRelationshipTypes="dancer|musician|performer|speaker|participant" delimiter='<br/>'><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
 					{{{<ifcount code="ca_entities.preferred_labels" excludeRelationshipTypes="company|dancer|musician|performer|principal_artist|writer|speaker|attendant|creator|participant" min="1"><h6>^ca_occurrences.type_id Credits</h6><unit relativeTo="ca_entities" excludeRelationshipTypes="company|dancer|musician|performer|principal_artist|writer|speaker|attendant|creator|participant" delimiter='<br/>'><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit></ifcount>}}}
@@ -68,7 +68,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'ca_occurrences.occurrence_id:^ca_occurrences.occurrence_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						jQuery('#browseResultsContainer').jscroll({
 							autoTrigger: true,
 							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

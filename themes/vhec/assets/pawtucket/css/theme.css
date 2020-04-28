@@ -1367,10 +1367,20 @@ a.thumbControl:hover {
 	height:auto;
 }
 
+.staticPage h6 a {
+	color: #33450D;
+}
+
 /* Finding Aids */
 
 .collectionsBlock {
 	margin-bottom:25px;
+}
+.collectionsBlock a.readmore-js-toggle {
+	margin-top:0px;
+}
+.collectionsBlock {
+	margin-bottom:20px;
 }
 .collectionsBlock a.readmore-js-toggle {
 	margin-top:0px;

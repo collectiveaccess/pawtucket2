@@ -34,8 +34,8 @@
 <div class="container frontPage">
 	<div class="row">
 		<div class="col-sm-8">
-			<h2>THE STERLING MORTON LIBRARY</h2>
-			<p>The Sterling Morton Library supports the work and mission of The Morton Arboretum. Devoted mainly to the literature of botany and horticulture, especially as it relates to trees and shrubs that can be grown in northern Illinois, the collections of this special library are a unique resource in the Chicago area. Open to all, the Library and its collections present scholarly and general interest information resources about plants.</p>
+			<h2>Welcome to ACORN and the collections of The Sterling Morton Library</h2>
+			<p>Explore the collections of The Morton Arboretum through ACORN! Discover more than 40,000 photographs, videos, audio files, publications, artwork, rare books, maps, and other archival materials from the Suzette Morton Davidson Special Collections of the Sterling Morton Library. This searchable database provides access to our digital collections and we're continually expanding it to include more of the Arboretum’s rich resources.</p>
 		</div><!--end col-sm-8-->
 		<div class="col-sm-4">
 <?php

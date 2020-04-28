@@ -86,24 +86,60 @@
 				
 				
 				{{{<ifdef code="ca_objects.idno"><div class='unit'><H6>Object Identifier</H6>^ca_objects.idno</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.idno"><div class='unit'><H6>Digital media identifier</H6>^ca_objects.digitalcontent_identifier</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.digitalcontent_identifier"><div class='unit'><H6>Digital media identifier</H6>^ca_objects.digitalcontent_identifier</div></ifdef>}}}
 				
 				{{{<ifdef code="ca_objects.description">
 					<div class='unit'><h6>Description</h6>
 						<span class="trimText">^ca_objects.description</span>
 					</div>
 				</ifdef>}}}
-				
-				
+<?php
+				if ($va_admin_notes = $t_object->get('ca_objects.internal_notes')) {
+					print "<div class='unit'><h6>Notes</h6>".strip_tags($va_admin_notes)."</div>";
+				}
+?>								
 				{{{<ifcount min="1" code="ca_objects.date"><div class='unit'><H6>Date</H6><unit delimiter="<br/>">^ca_objects.date</unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.source"><div class='unit'><H6>Source</H6>^ca_objects.source</div></ifdev>}}}
 				{{{<ifcount min="1" code="ca_objects.language"><div class='unit'><H6>Language</H6><unit delimiter="<br/>">^ca_objects.language</unit></div></ifcount>}}}
 
-				<hr></hr>
 				
 				{{{<ifcount min="1" code="ca_objects.format_notes"><div class='unit'><H6>Format Notes</H6><unit delimiter="<br/>">^ca_objects.format_notes</unit></div></ifcount>}}}
 				{{{<ifcount min="1" code="ca_objects.medium"><ifdef code="ca_objects.medium"><div class='unit'><H6>Medium</H6><unit delimiter="<br/>">^ca_objects.medium</unit></div></ifdef></ifcount>}}}
 <?php
+				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true))) {
+					$va_entities_by_type = array();
+					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
+						$t_rel = new ca_objects_x_entities($va_entity_rel);
+						$vn_type_id = $t_rel->get('ca_relationship_types.preferred_labels');
+						$va_entities_by_type[$vn_type_id][] = caNavLink($this->request, $t_rel->get('ca_entities.preferred_labels'), '', '', 'Detail', 'entities/'.$t_rel->get('ca_entities.entity_id'));
+					}
+					print "<div class='unit'>";
+					foreach ($va_entities_by_type as $va_type => $va_entity_id) {
+						print "<h6>".$va_type."</h6>";
+						foreach ($va_entity_id as $va_key => $va_entity_link) {
+							print "<p>".$va_entity_link."</p>";
+						} 
+					}
+					print "</div>";
+				}
+				if ($va_edition = $t_object->get('ca_objects.edition')) {
+					print "<div class='unit'><h6>Edition</h6>".$va_edition."</div>";
+				}
+				if ($va_call = $t_object->get('ca_objects.call_number')) {
+					print "<div class='unit'><h6>Call Number</h6>".$va_call."</div>";
+				}
+				if ($va_copy = $t_object->get('ca_objects.copy_number')) {
+					print "<div class='unit'><h6>Copy Number</h6>".$va_copy."</div>";
+				}
+				if ($va_place = $t_object->get('ca_objects.placePub')) {
+					print "<div class='unit'><h6>Place of Publication</h6>".$va_place."</div>";
+				}
+				if ($va_number = $t_object->get('ca_objects.numberOfPages')) {
+					print "<div class='unit'><h6>Number of Pages</h6>".$va_number."</div>";
+				}
+				if ($va_series = $t_object->get('ca_objects.series')) {
+					print "<div class='unit'><h6>Series</h6>".$va_series."</div>";
+				}																					
 				if ($va_dimensions = $t_object->get('ca_objects.dimensions', array('returnWithStructure' => true))) {
 					$va_dims = array();
 					$va_dimsnotes = "";
@@ -147,10 +183,6 @@
 				{{{<ifcount min="1" code="ca_objects.lc_names"><ifdef code="ca_objects.lc_names"><div class='unit'><H6>Library of Congress Name Authority File</H6><unit delimiter="<br/>">^ca_objects.lc_names</unit></div></ifdef></ifcount>}}}
 				
 	
-				{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities"><l>^ca_entities.preferred_labels</l></unit> (^relationship_typename)</unit>}}}
-				
 				
 				{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 				{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
@@ -160,7 +192,7 @@
 				{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter="<br/>"><unit relativeTo="ca_list_items">^ca_list_items.preferred_labels.name_plural</unit></unit>}}}
 			
-				{{{map}}}	
+				{{{map}}}	 
 
 						
 			</div><!-- end col -->

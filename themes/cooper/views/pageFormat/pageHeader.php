@@ -29,6 +29,7 @@
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
 	$va_classroomDisplayName = caGetClassroomDisplayName();
 	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
+	$va_access_values = 	caGetUserAccessValues($this->request);
 	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
@@ -44,8 +45,8 @@
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$va_user_links[] = "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get('dont_allow_registration_and_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) && !$this->request->config->get('dontAllowRegistration')) { $va_user_links[] = "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 	$vb_has_user_links = (sizeof($va_user_links) > 0);
 
@@ -76,7 +77,134 @@
 ?>
 </head>
 <body class="initial">
-	<nav class="navbar navbar-default navbar-fixed-top yamm" role="navigation">
+<?php
+
+
+		$va_hero_images = array();
+		$va_captions = array();
+		if(strToLower($this->request->getController()) == "front"){
+			$o_config = caGetFrontConfig();
+			
+			if($vs_set_code = $o_config->get("front_page_set_code")){
+ 				$t_set = new ca_sets();
+ 				$t_set->load(array('set_code' => $vs_set_code));
+ 				$vn_shuffle = 0;
+ 				if($o_config->get("front_page_set_random")){
+ 					$vn_shuffle = 1;
+ 				}
+				# Enforce access control on set
+				if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());
+					$qr_res = caMakeSearchResult('ca_objects', $va_featured_ids);
+				}
+ 			}
+			
+			$vs_caption_template = $o_config->get("front_page_set_item_caption_template");
+			if(!$vs_caption_template){
+				$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
+			}
+			if($qr_res && $qr_res->numHits()){
+				while($qr_res->nextHit()){
+					if($vs_media = $qr_res->getWithTemplate('^ca_object_representations.media.hero', array("checkAccess" => $va_access_values))){
+						$va_hero_images[$qr_res->get("ca_objects.object_id")] = $vs_media;
+						$va_captions[$qr_res->get("ca_objects.object_id")] = $qr_res->getWithTemplate($vs_caption_template);
+					}
+				}
+			}
+		}
+		if((strToLower($this->request->getAction()) == "courses") && ($pn_course_id = $this->request->getActionExtra())){		
+			$t_course = new ca_occurrences($pn_course_id);
+			$va_hero_images = $t_course->get("ca_object_representations.media.hero", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+			$va_captions = $t_course->get("ca_object_representations.preferred_labels", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+		
+		}
+		if(is_array($va_hero_images)){
+			if(sizeof($va_hero_images) > 1){
+?>
+				<div class='container heroContainerContainer'>
+					<div class='row'>
+						<div class='heroContainer'>
+							<div class='heroGradient'></div>
+							<div class="jcarousel-wrapper">
+							<!-- Carousel -->
+								<div class="jcarousel heroSlideshow">
+									<ul>
+<?php					
+										foreach($va_hero_images as $vn_key => $vs_hero){
+											print "<li>".$vs_hero;
+											if($va_captions[$vn_key]){
+												print "<div class='frontTopSlideCaption'>".$va_captions[$vn_key]."</div>";
+											}
+											print "</li>";
+										}						
+?>
+									</ul>
+								</div><!-- end jcarousel -->
+							</div><!-- end jcarousel-wrapper -->
+						</div><!-- end heroContainer -->
+					</div><!-- end row -->
+				</div><!-- end heroContainerContainer -->
+
+				<script type='text/javascript'>
+					setTimeout(function(){
+						activateCarousel();
+					}, 100);
+
+					function activateCarousel() { 
+						jQuery(document).ready(function() {
+							/*
+							Carousel initialization
+							*/
+							$('.heroSlideshow')
+								.jcarousel({
+									// Options go here
+									wrap:'circular',
+									auto: 1
+								}).jcarouselAutoscroll({
+									interval: 5000,
+									target: '+=1',
+									autostart: true
+								});
+
+							/*
+							 Pagination initialization
+							 */
+							$('.jcarousel-paginationHero')
+								.on('jcarouselpagination:active', 'a', function() {
+									$(this).addClass('active');
+								})
+								.on('jcarouselpagination:inactive', 'a', function() {
+									$(this).removeClass('active');
+								})
+								.jcarouselPagination({
+									// Options go here
+								});
+				
+				
+							$(".jcarousel-paginationHero").hover(function () {
+
+								$('.heroSlideshow').jcarouselAutoscroll('stop');
+							},function () {
+								$('.heroSlideshow').jcarouselAutoscroll('start');
+							});
+						});
+						$(".frontTopSlideCaption").width($(".heroSlideshow").width() - 30);
+					}
+					$( window ).resize(function() {
+					  $(".frontTopSlideCaption").width($(".heroSlideshow").width() - 30);
+					});
+				</script>
+
+<?php
+			}elseif(sizeof($va_hero_images) == 1){
+				print "<div class='container heroContainerContainer'><div class='row'><div class='heroContainer'><div class='heroGradient'></div>".$va_hero_images[0]."</div></div></div>";
+			}
+		}
+?>
+
+
+
+	<nav class="navbar navbar-default navbar-fixed-top yamm <?php print (is_array($va_hero_images) && sizeof($va_hero_images)) ? "transparent" : ""; ?>" role="navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
@@ -98,9 +226,7 @@
 				</button>
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'CU_Logo.png'), "navbar-brand initialLogo", "", "","");
-				#if($this->request->getController() == "Front"){
-					print caNavLink($this->request, "<strong>The Irwin S Chanin</strong><br>School of Architecture Archive<br/>of The Cooper Union", "headerText", "", "","");
-				#}
+				print caNavLink($this->request, "<strong>The Irwin S Chanin</strong><br>School of Architecture Archive<br/>of The Cooper Union", "headerText", "", "","");
 ?>
 				
 			</div>
@@ -131,7 +257,7 @@
 <?php
 	}
 ?>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'Search', 'projects'); ?>">
 					<div class="formOutline">
 						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
 						<div class="form-group">
@@ -140,12 +266,10 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
-					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
-					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Collections", "index"); ?></li>					
-					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
+					<li <?php print (strToLower($this->request->getAction()) == "courses") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Course"), "", "", "Listing", "Courses"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "projects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Projects"), "", "", "Browse", "projects"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "people")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "location")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Location"), "", "", "Browse", "location"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
@@ -171,7 +295,7 @@
 	</script>
 <?php
 	# --- front page output these divs later, after top slideshow
-	if($this->request->getController() != "Front"){
+	if((strtolower($this->request->getController()) != "front") && !((strtolower($this->request->getController()) == "detail") && (strtolower($this->request->getAction()) == "courses"))){
 ?>
 	<div class="container"><div class="row"><div class="col-xs-12">
 		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>

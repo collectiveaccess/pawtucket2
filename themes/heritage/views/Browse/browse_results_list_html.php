@@ -65,14 +65,14 @@
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	if((($vs_table != 'ca_occurrences')) || ($vs_current_sort != "Date") || (($vs_current_sort == "Date") && !$vn_start)){
-		$this->request->session->setVar('lastYear', "");
+		Session::setVar('lastYear', "");
 	}
-	$vs_last_pro_year = $this->request->session->getVar('lastYear');
-		$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 12;
+	$vs_last_pro_year = Session::getVar('lastYear');
+		$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 6;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 12;
+			$vn_col_span = $vn_col_span_sm = $vn_col_span_xs = 6;
 		}
 		if ($vn_start < $qr_res->numHits()) {
 			$vn_c = 0;
@@ -110,8 +110,8 @@
 					if(is_array($va_date_raw) && sizeof($va_date_raw)){
 						$va_date_raw = array_shift($va_date_raw[$qr_res->get("ca_occurrences.occurrence_id")]);
 						$vs_start_year = abs(floor($va_date_raw["timeline_date"]["start"]));
-						if($vs_start_year && ($vs_start_year != $this->request->session->getVar('lastYear')) && (!$this->request->session->getVar('lastYear') || ((($vs_sort_dir == 'asc') && ($vs_start_year > $this->request->session->getVar('lastYear'))) || (($vs_sort_dir == 'desc') && ($vs_start_year < $this->request->session->getVar('lastYear')))))){
-							$this->request->session->setVar('lastYear', $vs_start_year);
+						if($vs_start_year && ($vs_start_year != Session::getVar('lastYear')) && (!Session::getVar('lastYear') || ((($vs_sort_dir == 'asc') && ($vs_start_year > Session::getVar('lastYear'))) || (($vs_sort_dir == 'desc') && ($vs_start_year < Session::getVar('lastYear')))))){
+							Session::setVar('lastYear', $vs_start_year);
 							$vb_show_year = true;
 						}
 					}
@@ -121,7 +121,7 @@
 					$vb_row_id_loaded = true;
 				}
 				if($vb_show_year){
-					print "<div class='col-xs-12' style='clear:left'><br/><H4>".$this->request->session->getVar('lastYear')."</H4></div>";
+					print "<div class='col-xs-12' style='clear:left'><br/><H4>".Session::getVar('lastYear')."</H4></div>";
 				}
 				# --- check if this result has been cached
 				# --- key is MD5 of table, id, view, refine(vb_refine)
@@ -153,7 +153,7 @@
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				
 					$vs_add_to_set_link = "";
-					if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+					if(($vs_table == 'ca_objects') &&is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
 				
@@ -161,17 +161,14 @@
 
 					$vs_result_output = "
 		<div class='bResultListItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
-			<div class='bResultListItem' id='row{$vn_id}' onmouseover='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultListItemExpandedInfo{$vn_id}\").hide();'>
+			<div class='bResultListItem' id='row{$vn_id}' >
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 				<div class='bResultListItemContent'><div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>
 					<div class='bResultListItemText'>
-						<H6>{$vs_date} - {$vs_label_detail_link}</H6>".$qr_res->get("public_description")."
+						<H6>{$vs_label_detail_link}</H6>{$vs_date}<br/>".$qr_res->get("excerpt")."
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
-				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
-					<hr>
-					{$vs_expanded_info}{$vs_add_to_set_link}
-				</div><!-- bResultListItemExpandedInfo -->
+				
 			</div><!-- end bResultListItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');
@@ -181,7 +178,7 @@
 				$vn_results_output++;
 			}
 			
-			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
+			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, 'direction' => $vs_sort_dir, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
 		}
 ?>
 <script type="text/javascript">

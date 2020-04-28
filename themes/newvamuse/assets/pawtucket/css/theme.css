@@ -276,6 +276,11 @@ h1,h2 {
 .front .jcarousel-wrapper {
 	margin-top:10px;
 }
+
+.jcarousel-wrapper, .jcarousel {
+    width: 100% !important;
+}
+
 .front H1 {
 	font-family:LatoLight;
 	padding-top:50px;
@@ -327,6 +332,19 @@ h1,h2 {
 .front .memberImage img {
 	width:100%;
 	height:auto;
+}
+.front .memberImageCrop {
+	background-color:#f5f5f5;
+	min-height:100px;
+	height:235px;
+	overflow:hidden;
+	background-color:#ededed;
+	text-align:center;
+}
+.front .memberImageCrop img {
+	height:100%;
+	width:auto;
+	vertical-align:middle;
 }
 .row.members {
 	padding-left:30px;
@@ -392,7 +410,6 @@ h1,h2 {
 	line-height:1.5em;
 }
 .objImage {
-	background-color:#f7f7f7;
 	height:auto;
 	width:100%;
 	padding-bottom:5px;
@@ -400,6 +417,15 @@ h1,h2 {
 .objImage img {
 	width:100%;
 	height:auto;
+}
+.detailPlaceholder{
+	text-align:left;
+	padding-bottom:20px;
+}
+.detailPlaceholder img{
+	width:100%;
+	height:auto;
+	max-width:370px;
 }
 .detail {
 	font-size:14px;
@@ -760,6 +786,26 @@ div.caMediaOverlayControlsMinimal:hover {
 .gallery {
 	font-family:latolight;
 }
+.gallery .galleryBack {
+    margin: 0px 5px 0px 0px;
+    background-color: #ffffff;
+    text-transform: uppercase;
+    padding: 0px 5px 3px 5px;
+    text-align: center;
+    float: left;
+}
+.gallery .galleryBack a {
+    color: #000000 !important;
+    line-height: .3em;
+    font-size: 14px;
+    text-decoration: none;
+}
+.gallery .galleryBack a .small {
+    font-size: 7px;
+    color: #000000;
+    padding-top: 0px;
+    padding-bottom: 5px;
+}
 .gallery h1 {
 	margin-left:15px;
 }
@@ -767,6 +813,10 @@ div.caMediaOverlayControlsMinimal:hover {
 	margin-left:15px;
 
 	margin-top:10px;
+}
+.gallery h1 small{
+	font-size:12px;
+	color:#222;
 }
 .gallery .jcarousel {
 	height:275px;

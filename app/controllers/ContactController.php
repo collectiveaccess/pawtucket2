@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
+	require_once(__CA_LIB_DIR__."/ApplicationError.php");
 	require_once(__CA_LIB_DIR__.'/pawtucket/BasePawtucketController.php');
  
  	class ContactController extends BasePawtucketController {
@@ -40,7 +40,7 @@
  				$this->notification->addNotification(_t("Contact form is not configured properly"), __NOTIFICATION_TYPE_ERROR__);
  				$this->response->setRedirect(caNavUrl($this->request, '', '', ''));
  			}
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Contact"));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Contact"));
  			caSetPageCSSClasses(array("contact"));
  		}
  		# -------------------------------------------------------
@@ -64,6 +64,25 @@
 				}
 				if($va_errors["security"]){
 					$va_errors["display_errors"]["security_error"] = _t("Please answer the security question");
+				}
+ 			}
+ 			if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_SECRET_KEY__") && __CA_GOOGLE_RECAPTCHA_SECRET_KEY__){
+ 				$ps_captcha = $this->request->getParameter("g-recaptcha-response", pString);
+ 				if(!$ps_captcha){
+						$va_errors["recaptcha"] = $va_errors["display_errors"]["recaptcha"] = _t("Please complete the captcha");
+				} else {
+					$va_request = curl_init();
+					curl_setopt($va_request, CURLOPT_URL, 'https://www.google.com/recaptcha/api/siteverify');
+					curl_setopt($va_request, CURLOPT_HEADER, 0);
+					curl_setopt($va_request, CURLOPT_RETURNTRANSFER, 1);
+					curl_setopt($va_request, CURLOPT_POST, 1);
+					$va_request_params = ['secret'=>__CA_GOOGLE_RECAPTCHA_SECRET_KEY__, 'response'=>$ps_captcha];
+					curl_setopt($va_request, CURLOPT_POSTFIELDS, $va_request_params);
+					$va_captcha_resp = curl_exec($va_request);
+					$captcha_json = json_decode($va_captcha_resp, true);
+					if(!$captcha_json['success']){
+							$va_errors["recaptcha"] = $va_errors["display_errors"]["recaptcha"] = _t("Your Captcha was rejected, please try again");
+					}
 				}
  			}
  			$va_fields = $this->config->get("contact_form_elements");

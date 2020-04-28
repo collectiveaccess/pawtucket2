@@ -48,12 +48,15 @@
 	print $this->render("footer.php");	
 ?>
 
-	<div class="representationList factsheet factsheetRepresentationList">
+	<div class="representationList factsheet">
 		
 <?php
 	#print $t_item->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '400px', 'scaleCSSHeightTo' => '400px'));
 	$va_rep = $t_item->getPrimaryRepresentation(array('page'), null, array('return_with_access' => $va_access_values, 'scaleCSSWidthTo' => '468px', 'scaleCSSHeightTo' => '234px'));
-	print $va_rep['tags']['page'];
+	
+	$offset_div =  (($height = $va_rep['info']['page']['HEIGHT']) < 400) ? "<div style='width: 10px; height: ".($height - 100)."px;'> </div>" : "";
+	print $offset_div.$va_rep['tags']['page'].$offset_div;
+	
 #	foreach($va_reps as $va_rep) {
 #		if(sizeof($va_reps) > 1){
 #			# --- more than one rep show thumbnails
@@ -66,7 +69,6 @@
 #	}
 ?>
 	</div>
-	<br/><br/>
 	<div class='tombstone factsheet'>
 		
 	{{{<unit relativeTo='ca_entities' restrictToRelationshipTypes='artist'>^ca_entities.preferred_labels.displayname</unit>}}}
@@ -84,7 +86,7 @@
 		print "<div class='unit'>AP ".(count($t_item->get('ca_objects.edition.ap_total')) >= 2 ? $t_item->get('ca_objects.edition.ap_number') : "")." from an edition of ".$t_item->get('ca_objects.edition.edition_total')." + ".$t_item->get('ca_objects.edition.ap_total')." AP";
 		print "</div>";					
 	}
-	if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
+	if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
 		print "<div>".$t_item->get('ca_objects.idno')."</div>"; 
 		if ($t_item->get('is_deaccessioned') && ($t_item->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
 			print "<div style='font-style:italic; font-size:10px; color:red;'>"._t('Deaccessioned %1', $t_item->get('deaccession_date'))."</div>\n";

@@ -29,6 +29,7 @@
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 					<H4>{{{^ca_collections.preferred_labels.name}}}</H4>
+					<H6>{{{^ca_collections.type_id}}}</H6>
 					{{{<ifdef code="ca_collections.parent_id"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></H6></ifdef>}}}
 
 				</div><!-- end col -->
@@ -66,14 +67,7 @@
 					{{{<ifdef code="ca_collections.arrangement"><H6>System of Arrangement</H6>^ca_collections.arrangement<br/></ifdef>}}}
 				
 					{{{<ifdef code="ca_collections.contents_list"><H6>Contents List</H6><span class="trimText">^ca_collections.contents_list</span><br/></ifdef>}}}
-<script type='text/javascript'>
-	jQuery(document).ready(function() {
-		$('.trimText').readmore({
-		  speed: 75,
-		  maxHeight: 120
-		});
-	});
-</script>
+
 				</div><!-- end col -->
 				<div class='col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_collections.accessrestrict"><H6>Conditions Governing Access</H6>^ca_collections.accessrestrict<br/></ifdef>}}}
@@ -108,6 +102,9 @@
 ?>					
 				</div><!-- end col -->
 			</div><!-- end row -->
+<?php
+	if ($t_item->get('ca_collections.type_id', array('convertCodesToDisplayText' => true)) == 'File') {
+?>			
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
@@ -129,6 +126,9 @@
 				});
 			</script>
 </ifcount>}}}
+<?php
+	}
+?>	
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
@@ -137,3 +137,12 @@
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
+
+<script type='text/javascript'>
+	jQuery(document).ready(function() {
+		$('.trimText').readmore({
+		  speed: 75,
+		  maxHeight: 120
+		});
+	});
+</script>

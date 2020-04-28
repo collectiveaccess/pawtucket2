@@ -64,7 +64,7 @@
 				height:     '100%',
 				source:     '<?php print caNavUrl($this->request, '*', '*', '*', array('view' => 'timelineData', 'key' => $vs_browse_key)); ?>',
 				embed_id:   'timeline-embed',
-				start_at_slide: 1
+				start_at_slide: 0
 			});
 		});
 		

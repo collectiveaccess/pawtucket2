@@ -26,7 +26,7 @@
  * ----------------------------------------------------------------------
  */
  
-	require_once(__CA_LIB_DIR__."/core/ApplicationError.php");
+	require_once(__CA_LIB_DIR__."/ApplicationError.php");
  	require_once(__CA_APP_DIR__.'/helpers/accessHelpers.php');
 	require_once(__CA_MODELS_DIR__."/ca_sets.php");
 	require_once(__CA_MODELS_DIR__."/ca_objects.php");
@@ -75,7 +75,12 @@
  			#
  			if(sizeof($va_featured_ids) == 0){
  				$t_object = new ca_objects();
- 				$va_featured_ids = array_keys($t_object->getRandomItems(10, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1)));
+ 				if($va_intrinsic_values = $this->config->get("front_page_intrinsic_filter")){
+ 					foreach($va_intrinsic_values as $vs_instrinsic_field => $vs_intrinsic_value){
+ 						$va_intrinsic_restrictions[$vs_instrinsic_field] = $vs_intrinsic_value;
+ 					}
+ 				}
+ 				$va_featured_ids = array_keys($t_object->getRandomItems(10, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1, 'restrictByIntrinsic' => $va_intrinsic_restrictions)));
  				$this->view->setVar('featured_set_item_ids', $va_featured_ids);
 				$this->view->setVar('featured_set_items_as_search_result', caMakeSearchResult('ca_objects', $va_featured_ids));
  			}

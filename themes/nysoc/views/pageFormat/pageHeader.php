@@ -70,6 +70,7 @@
 	}
 ?>
 
+    <link rel="stylesheet" type="text/css" href="<?php print $this->request->getAssetsUrlPath(); ?>/mirador/css/mirador-combined.css">
 </head>
 <body>
 	<div id="mainContent">

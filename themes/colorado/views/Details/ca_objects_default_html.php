@@ -28,7 +28,7 @@
 			}
 ?>
 		</div><!-- end nav -->
-		<h1><?php print unicode_ucfirst($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))).': '.caReturnDefaultIfBlank($t_object->get('idno')); ?></h1>
+		<h1><?php print caUcFirstUTF8Safe($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))).': '.caReturnDefaultIfBlank($t_object->get('idno')); ?></h1>
 		<div id="leftCol">
 <?php
 
@@ -225,7 +225,7 @@
 						$vs_citation .= ": ".$t_occurrence->get("ca_occurrences.pages");
 					}
 					$vs_citation .= ".";
-					print caDetailLink($this->request, $vs_citation, '', 'ca_occurrences', $va_citation["occurrence_id"], array("subsite" => $this->request->session->getVar("coloradoSubSite")));
+					print caDetailLink($this->request, $vs_citation, '', 'ca_occurrences', $va_citation["occurrence_id"], array("subsite" => Session::getVar("coloradoSubSite")));
 				}
 				print "</div>";
 			}
@@ -248,7 +248,7 @@
 						$vs_locality_path .= $va_hier_locality["name"]." / ";
 					}
 				}
-				$vs_locality_path = caDetailLink($this->request, $va_locality["idno"], '', 'ca_places', $va_locality["place_id"], array("subsite" => $this->request->session->getVar("coloradoSubSite")))."<br/>".$vs_locality_path.$va_locality["idno"];			
+				$vs_locality_path = caDetailLink($this->request, $va_locality["idno"], '', 'ca_places', $va_locality["place_id"], array("subsite" => Session::getVar("coloradoSubSite")))."<br/>".$vs_locality_path.$va_locality["idno"];			
 				$va_locality_display[] = $vs_locality_path;
 			}
 			print join("<br/>", $va_locality_display);

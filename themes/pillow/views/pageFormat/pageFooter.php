@@ -27,14 +27,22 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
+
+<?php
+	//
+	// Output HTML for debug bar
+	//
+	if(Debug::isEnabled()) {
+		print Debug::$bar->getJavascriptRenderer()->render();
+	}
+?>
+	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
 		<div id="footer">
+			<div class="footerInner">
 			<div class='row'>
 				<div class='col-sm-6'>
 					<div>
-						©1933-2016 Jacob's Pillow Dance. All rights reserved. <br/>358 George Carter Road, Becket MA, 01223 USA 413.243.9919 x154
-					</div>
-					<div>
-						<a href="mailto:INFO@JACOBSPILLOW.ORG">info@jacobspillow.org</a>
+						©1933-2019 Jacob's Pillow Dance Festival, Inc. All rights reserved. <br/>358 George Carter Road, Becket, MA 01223 USA 413.243.9919 x154
 					</div>
 				</div>
 				<div class='col-sm-6'>
@@ -45,16 +53,8 @@
 					</ul>
 				</div>
 			</div><!-- end row -->
-		</div><!-- end footer -->
-<?php
-	//
-	// Output HTML for debug bar
-	//
-	if(Debug::isEnabled()) {
-		print Debug::$bar->getJavascriptRenderer()->render();
-	}
-?>
-	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+			</div><!-- end footerInner -->
+		</div><!-- end footer --> 	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">

@@ -5,5 +5,9 @@
 	$vs_lightbox_displayname_plural = $this->getVar("display_name_plural");
 	
 	print _t("%1 has shared a %2 with you.  To view \"%3\" from %4, login to %5, and view your %6.", $ps_from_name, $vs_lightbox_displayname, $vs_set, $this->request->config->get("app_display_name"), $this->request->config->get("site_host"), ucfirst($vs_lightbox_displayname_plural));
-	
+	if($vs_share_message){
+		print _t("
+		
+		%1 wrote: %2", $ps_from_name, $vs_share_message);		
+	}
 ?>

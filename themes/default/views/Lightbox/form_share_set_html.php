@@ -70,6 +70,9 @@
 			print "<option value='2'>"._t("Can edit")."</option>\n";
 			print "</select>\n";
 			print "</div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+			
+			print "<div class='form-group'><label for='message' class='col-sm-4 control-label'>"._t("Message")."</label><div class='col-sm-7'><textarea name='share_message' class='form-control'>".(($vs_message = $this->getVar("share_message")) ? $vs_message : "")."</textarea></div></div>\n";
+			
 		}else{
 			print "<input type='hidden' name='access' value='1'>";
 		}
@@ -84,7 +87,7 @@
 
 <script type='text/javascript'>
 	jQuery(document).ready(function() {
-		jQuery('#ShareSetForm').submit(function(e){		
+		jQuery('#ShareSetForm').on('submit', function(e){		
 			jQuery('#caMediaPanelContentArea').load(
 				'<?php print caNavUrl($this->request, '', '*', 'saveShareSet', null); ?>',
 				jQuery('#ShareSetForm').serialize()

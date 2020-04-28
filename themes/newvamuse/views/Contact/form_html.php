@@ -1,4 +1,5 @@
 <?php
+    require_once(__CA_MODELS_DIR__."/ca_objects.php");
 	$va_errors = $this->getVar("errors");
 	$vn_num1 = rand(1,10);
 	$vn_num2 = rand(1,10);
@@ -6,17 +7,24 @@
 
 	$vn_object_id = $this->request->getParameter("object_id", pString);
 	$t_object = new ca_objects($vn_object_id);
+	$vs_url = $this->request->config->get("site_host").caNavUrl($this->request, "Detail", "objects", $t_object->get("ca_objects.object_id"));
+
 ?>
 <div id="askACurator"><div class='inside'>
 <div class="row"><div class="col-sm-12">
 	<a href='#' id='close' class='close'><i class='fa fa-close'></i></a>
 	<H1><?php print _t("Ask a Curator"); ?></H1>
 <?php
-	if(sizeof($va_errors["display_errors"])){
+	if(is_array($va_errors) && is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
 		print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 	}
 ?>
 	<form id="contactForm" action="<?php print caNavUrl($this->request, "", "Contact", "send"); ?>" role="form" method="post">
+		<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
+		<input type="hidden" name="itemId" value="<?php print $t_object->get("ca_objects.idno"); ?>">
+		<input type="hidden" name="itemTitle" value="<?php print $t_object->get("ca_objects.preferred_labels.name"); ?>">
+		<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
+		<input type="hidden" name="object_id" value="<?php print $vn_object_id; ?>">
 		<div class="row">
 		<div class="col-md-12">
 			<div class="row">

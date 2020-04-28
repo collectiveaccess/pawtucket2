@@ -120,6 +120,21 @@ a:hover{
 	width:100%;
 	height:auto;
 }
+.detail .fullWidthImg small, .detail .fullWidthImg small a{
+	line-height:1.1em !important;
+	font-size:85%;
+	padding-top: 3px !important;
+	color:#000 !important;
+	display:inline-block;
+}
+
+.btn-default{
+	background-color:#dedede !important;
+	color:#858585;
+}
+.browseRemoveFacet .btn-default .glyphicon{
+	color:#858585 !important;
+}
 /* darker colors*/
 .darkBlueBg{
 	background-color: #2626af !important;
@@ -315,6 +330,7 @@ a.navbar-brand .line3{
 	width: 100%;
 	/* Set the fixed height of the footer here */
 	min-height: 100px;
+	height:auto;
 	margin:0px;
 	line-height:1.2em;
 	padding-top:20px;
@@ -551,6 +567,13 @@ a.navbar-brand .line3{
 	padding:0px !important;
 	margin:0px !important;
 }
+.detail .detailNavBgRight a{
+	float:right;
+	padding-left:15px !important;
+}
+.detailNavBgRight a .small{
+	padding-bottom:10px !important;
+}
 .detail .detailNavBgLeft a .fa, .detail .detailNavBgRight a .fa{
 	color:#f60707 !important;
 }
@@ -591,6 +614,26 @@ a.navbar-brand .line3{
 .detail .repViewerContCont{
 	margin-top:20px;
 	margin-bottom:10px;
+}
+.detail .exhibitGrid{
+	max-height:600px;
+	overflow-y:auto;
+	overflow-x:hidden;
+	padding-right: 10px;
+}
+.dontScale img{
+	width:auto;
+	height:auto;
+}
+.detailPlaceholder img{
+	opacity:.3;
+}
+.popover{
+    width:auto;
+    max-width: none;
+    height:auto; 
+    max-width: none;
+    z-index:1000000 !important;   
 }
 /* exhibition listing */
 .yearTab{
@@ -661,7 +704,21 @@ a.navbar-brand .line3{
 .bResultItemImgPlaceholder img{
 	width: 65%;
 	height:auto;
-	opacity:.6;
+	opacity:.3;
+}
+.multisearchImgPlaceholder {
+    background-color: #fff;
+    border: 0px solid #EDEDED;
+    padding: 0px 20px 0px 20px;
+    margin-bottom:0px;
+}
+.multisearchImgPlaceholder .bResultItemImgPlaceholder{
+	padding:0px;
+	border:0px;
+	margin:0px;
+}
+.multisearchImgPlaceholder .bResultItemImgPlaceholder img{
+	width:70%;
 }
 #bRefine div:last-child {
 	margin-bottom:100px; 
@@ -688,8 +745,16 @@ a.navbar-brand .line3{
 	text-shadow: none !important;
 	opacity:1;
 	font-size:20px !important;
+	font-size: 40px !important;
+	top: -3px;
+	position: absolute;
+	right: 20px;
 }
 div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
 	opacity:1.0 !important;
 	background-color:rgba(0,0,0,0.5) !important;
+}
+
+.detail .navTop {
+    margin-top: 20px;
 }

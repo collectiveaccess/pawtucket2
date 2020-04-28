@@ -54,7 +54,7 @@
 						</div>
 					</div>
 					<div class='lowerBlock'>
-						© 2015 THE MORTON ARBORETUM&nbsp;&nbsp;|&nbsp;&nbsp;4100 ILLINOIS ROUTE 53, LISLE, IL 60532&nbsp;&nbsp;|&nbsp;&nbsp;<a href='http://www.mortonarb.org/visit-explore/plan-visit/maps-and-directions'>Map</a>&nbsp;&nbsp;|&nbsp;&nbsp;Phone: 630-968-0074&nbsp;&nbsp;|&nbsp;&nbsp;<a href='http://mortonarb.us6.list-manage.com/subscribe?u=04696075b27b6887a368a4b35&id=6b7fbbfdd2' target='_blank'> Subscribe </a>&nbsp;&nbsp;|&nbsp;&nbsp;Email: <a href='mailto:trees@mortonarb.org'>trees@mortonarb.org</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='http://www.mortonarb.org/privacy-policy' target='_blank'>Privacy Policy&nbsp;&nbsp;</a>  
+						© 2018 THE MORTON ARBORETUM&nbsp;&nbsp;|&nbsp;&nbsp;4100 ILLINOIS ROUTE 53, LISLE, IL 60532&nbsp;&nbsp;|&nbsp;&nbsp;<a href='http://www.mortonarb.org/visit-explore/plan-visit/maps-and-directions'>Map</a>&nbsp;&nbsp;|&nbsp;&nbsp;Phone: 630-968-0074&nbsp;&nbsp;|&nbsp;&nbsp;<a href='http://mortonarb.us6.list-manage.com/subscribe?u=04696075b27b6887a368a4b35&id=6b7fbbfdd2' target='_blank'> Subscribe </a>&nbsp;&nbsp;|&nbsp;&nbsp;Email: <a href='mailto:trees@mortonarb.org'>trees@mortonarb.org</a>&nbsp;&nbsp;|&nbsp;&nbsp;<a href='http://www.mortonarb.org/privacy-policy' target='_blank'>Privacy Policy&nbsp;&nbsp;</a>  
 					</div>
 				</div>
 			</div><!-- end footer -->	
@@ -101,9 +101,5 @@
   ga('send', 'pageview');
 
 </script>
-
-
-
-
 </body>
 </html>

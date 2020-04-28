@@ -1,11 +1,17 @@
 <?php 
+	$va_set_item = $this->getVar("set_item");
+	$pn_item_id = $this->request->getParameter('item_id', pInteger);
+ 	$t_set_item = new ca_set_items($pn_item_id);
+ 	$va_set_item_comments = $t_set_item->getComments();
+ 	
 	$t_object = $this->getVar("object");
 	print "(".$this->getVar("set_item_num")."/".$this->getVar("set_num_items").")<br/>"; 
 ?>
 	<h6><?php print $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("repository"), "returnAsLink" => true, "checkAccess" => $va_access_values));?></h6>
 	<H4>{{{ca_objects.preferred_labels.name}}}</H4>
 	<HR>
-<?php				
+<?php
+	print "<div style='max-height:400px; margin-bottom:15px; overflow-y:auto;'>";				
 	# --- identifier
 	if($t_object->get('idno')){
 		print "<div class='unit'><span class='name'>"._t("Accession number").": </span><span class='data'>".$t_object->get('idno')."</span></div>";
@@ -143,6 +149,14 @@
 	if ($va_manufacturer = $t_object->get('ca_entities.preferred_labels', array('returnAsLink' => true, 'delimiter' => ', ', 'restrictToRelationshipTypes' => 'manufacturer'))) {
 		print "<div class='unit'><span class='name'>"._t("Manufacturer").": </span><span class='data'>".$va_manufacturer."</span></div>";
 	}
-	print caDetailLink($this->request, _t("VIEW RECORD"), '', 'ca_objects',  $this->getVar("object_id")); 
-	
+	print "</div>";
+	print "<p>".caDetailLink($this->request, _t("VIEW RECORD"), 'btn-default', 'ca_objects',  $this->getVar("object_id"))."</p>"; 
+
+	if(is_array($va_set_item_comments) && sizeof($va_set_item_comments)){
+		print "<br/><H6>Comments</H6><div style='max-height:200px; overflow-y:auto;'>";
+		foreach($va_set_item_comments as $va_set_item_comment){
+			print "<p>".$va_set_item_comment["comment"]."</p>";
+		}
+		print "</div>";
+	}
 ?>

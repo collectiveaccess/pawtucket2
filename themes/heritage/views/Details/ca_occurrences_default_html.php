@@ -1,8 +1,12 @@
 <?php
+	if (!($this->request->isLoggedIn())) {
+		print $this->render("LoginReg/form_login_html.php");
+		
+	}else{
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
-	$vn_share_enabled = 	$this->getVar("shareEnabled");	
+	$vn_share_enabled = 	$this->getVar("shareEnabled");
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -23,14 +27,57 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-6 col-md-6 col-lg-6'>
-					{{{<ifdef code="ca_occurrences.description"><H6>Description</H6>^ca_occurrences.description<br/></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.public_description"><H6>Public description</H6>^ca_occurrences.public_description<br/></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.physical_objects"><H6>Physical objects</H6>^ca_occurrences.physical_objects<br/></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.excerpt"><H6>Excerpt</H6>^ca_occurrences.excerpt<br/></ifdef>}}}
-					
-					{{{<ifcount code="ca_objects" min="1" max="1"><div class='unit'><unit relativeTo="ca_objects" delimiter=" "><l>^ca_object_representations.media.large</l><div class='caption'>Related Object: <l>^ca_objects.preferred_labels.name</l></div></unit></div></ifcount>}}}
-
+					{{{<ifdef code="ca_occurrences.public_description"><H6>Description</H6>^ca_occurrences.public_description<br/></ifdef>}}}
+					{{{<ifdef code="ca_occurrences.description"><H6>Administrative Notes</H6>^ca_occurrences.description<br/></ifdef>}}}
 <?php
+					if($va_subjects = $t_item->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("subjects"), "checkAccess" => caGetUserAccessValues($this->request)))){
+						if(is_array($va_subjects) && sizeof($va_subjects)){
+							# --- loop through to order alphebeticaly
+							$va_subjects_sorted = array();
+							$t_list_item = new ca_list_items();
+							foreach($va_subjects as $va_subject){
+								$va_subjects_sorted[$va_subject["name_singular"]] = caNavLink($this->request, $va_subject["name_singular"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]));
+								$va_list_ids[] = $va_subject["item_id"];
+							}
+							ksort($va_subjects_sorted);
+							print "<H6>".((sizeof($va_subjects) > 1) ? "Categories" : "Category")."</h6>";
+							print join($va_subjects_sorted, ", ");
+							print "<br/>";
+						}
+					}
+
+
+					if($va_subjects = $t_item->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("tags"), "checkAccess" => caGetUserAccessValues($this->request)))){
+						if(is_array($va_subjects) && sizeof($va_subjects)){
+							# --- loop through to order alphebeticaly
+							$va_subjects_sorted = array();
+							$t_list_item = new ca_list_items();
+							foreach($va_subjects as $va_subject){
+								$va_subjects_sorted[$va_subject["name_singular"]] = caNavLink($this->request, $va_subject["name_singular"], "", "", "Browse", "objects", array("facet" => "term_facet", "id" => $va_subject["item_id"]));
+								$va_list_ids[] = $va_subject["item_id"];
+							}
+							ksort($va_subjects_sorted);
+							print "<H6>".((sizeof($va_subjects) > 1) ? "Tags" : "Tag")."</H6>";
+							print join($va_subjects_sorted, ", ");
+							print "<br/>";
+						}
+					}
+
+?>							
+					{{{<ifdef code="ca_occurrences.external_link"><H6>External Related Links</H6><a href="^ca_occurrences.external_link.url_entry" target="_blank">^ca_occurrences.external_link.url_source</a><br/></ifdef>}}}
+					<br/><br/>
+					
+					
+					{{{<ifdef code="ca_occurrences.physical_objects"><H6>Physical objects</H6>^ca_occurrences.physical_objects<br/></ifdef>}}}
+					
+					
+				</div><!-- end col -->
+				<div class='col-md-6 col-lg-6'>
+					{{{representationViewer}}}
+					
+<?php
+					print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_item, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-4"));
+
 				# Comment and Share Tools
 				if ($vn_comments_enabled | $vn_share_enabled) {
 						
@@ -47,23 +94,9 @@
 					print '</div><!-- end detailTools -->';
 				}				
 ?>
-					
-				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6'>
-					{{{<ifcount code="ca_collections" min="1" max="1"><H6>Related collection</H6></ifcount>}}}
-					{{{<ifcount code="ca_collections" min="2"><H6>Related collections</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit>}}}
-					
-					{{{<ifcount code="ca_occurrences.related" min="1" max="1"><H6>Related occurrence</H6></ifcount>}}}
-					{{{<ifcount code="ca_occurrences.related" min="2"><H6>Related occurrences</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_occurrences" delimiter="<br/>"><l>^ca_occurrences.related.preferred_labels.name</l></unit>}}}
-					
-					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
-					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
-					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}					
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="2">
+{{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
@@ -86,9 +119,15 @@
 </ifcount>}}}		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
-		<div class="detailNavBgRight">
-			{{{nextLink}}}
-		</div><!-- end detailNavBgLeft -->
+		
+<?php
+			if ($this->getVar("nextLink")) {
+				print '<div class="detailNavBgRight">';
+				print $this->getVar("nextLink");
+				print '</div><!-- end detailNavBgLeft -->';
+			}
+?>		
+
 	</div><!-- end col -->
 </div><!-- end row -->
 <script type='text/javascript'>
@@ -99,3 +138,6 @@
 		});
 	});
 </script>
+<?php
+	}
+?>

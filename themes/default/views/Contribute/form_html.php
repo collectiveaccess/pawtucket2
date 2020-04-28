@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2016 Whirl-i-Gig
+ * Copyright 2014-2019 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -30,66 +30,83 @@
 ?>
 
 
-	<div class="row collection">
-		<div class="col-sm-6">	
-			<div class="contributeForm">
-				<h1>Search Collection</h1>
+<div class="row collection">
+	<div class="col-sm-6">	
+		<div class="contributeForm">
+			<h1>Search Collection</h1>
+			
+			{{{<ifdef code="errors"><div class="notificationMessage">^errors</div></ifdef>}}}
+			
+			{{{form}}}
+				<div class="contributeField">
+					{{{ca_objects.type_id:error}}}
+					Type:<br/>
+					{{{ca_objects.type_id%width=220px}}}
+				</div>
+				<div class="contributeField">
+					{{{ca_objects.idno:error}}}
+					Identifier:<br/>
+					{{{ca_objects.idno%width=220px}}}
+				</div>
+				<div class="contributeField">
+					{{{ca_objects.preferred_labels:error}}}
+					Title:<br/>
+					{{{ca_objects.preferred_labels.name%width=220px}}}
+				</div>
+				<div class="contributeField">
+					{{{ca_objects.persuasive_intention:error}}}
+					Persuasive intention:<br/>
+					{{{ca_objects.persuasive_intention%width=220px}}}
+				</div>
 				
-				<div class="notificationMessage">{{{errors}}}</div>
+				<div class="contributeField">
+					{{{ca_entities.preferred_labels:error}}}
+					Artist:<br/>
+					{{{ca_entities.preferred_labels.displayname%width=220px&height=40px&relationshipType=creator&type=ind}}}
+				</div>
+				<div class="contributeField">
+					{{{ca_objects.date:error}}}
+					Date:<br/>
+					{{{ca_objects.date%width=220px}}}   
+				</div>
+				<div class="contributeField">
+					{{{ca_objects.description:error}}}
+					Description:<br/>
+					{{{ca_objects.description%width=220px&height=120px}}}   
+				</div>
 				
-				{{{form}}}
+				<div class="contributeField">
+					{{{ca_object_representations.media:error}}}
+					Media(1):<br/>
 					
-					<div class="contributeField">
-						{{{ca_objects.preferred_labels:error}}}
-						Title:<br/>
-						{{{ca_objects.preferred_labels.name%width=220px}}}
-					</div>
-					<div class="contributeField">
-						{{{ca_entities.preferred_labels:error}}}
-						Artist:<br/>
-						{{{ca_entities.preferred_labels.displayname%width=220px&height=40px&relationshipType=artist&type=ind}}}
-					</div>
-					<div class="contributeField">
-						{{{ca_objects.date:error}}}
-						Date:<br/>
-						{{{ca_objects.date%width=220px}}}   
-					</div>
-					<div class="contributeField">
-						{{{ca_objects.description:error}}}
-						Description:<br/>
-						{{{ca_objects.description%width=220px&height=120px}}}   
-					</div>
+					Title: {{{ca_object_representations.preferred_labels.name}}} 
+					{{{ca_object_representations.media}}} <br/>
 					
-					<div class="contributeField">
-						{{{ca_object_representations.media:error}}}
-						Media(1):<br/>
-						
-						Title: {{{ca_object_representations.preferred_labels.name}}} 
-						{{{ca_object_representations.media}}} <br/>
-						
-						{{{ca_object_representations.media:error}}}
-						Media(2):<br/>
-						
-						Title: {{{ca_object_representations.preferred_labels.name}}} 
-						{{{ca_object_representations.media}}} <br/>
-						
-						{{{ca_object_representations.media:error}}}
-						Media(3):<br/>
-						
-						Title: {{{ca_object_representations.preferred_labels.name}}} 
-						{{{ca_object_representations.media}}} <br/>
-					</div>
+					{{{ca_object_representations.media:error}}}
+					Media(2):<br/>
+					
+					Title: {{{ca_object_representations.preferred_labels.name}}} 
+					{{{ca_object_representations.media}}} <br/>
+					
+					{{{ca_object_representations.media:error}}}
+					Media(3):<br/>
+					
+					Title: {{{ca_object_representations.preferred_labels.name}}} 
+					{{{ca_object_representations.media}}} <br/>
+				</div>
 
-					<br style="clear: both;"/>
-<?php					
-			print $this->render('Contribute/spam_check_html.php');
-			print $this->render('Contribute/terms_and_conditions_check_html.php');
+				<br style="clear: both;"/>
+<?php		
+	if (!$this->request->isLoggedIn()) {			
+		print $this->render('Contribute/spam_check_html.php');
+		print $this->render('Contribute/terms_and_conditions_check_html.php');
+	}
 ?>
 
-					<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
-					<div style="float: right;">{{{submit%label=Save}}}</div>
-				{{{/form}}}
-				<div class='clearfix'></div>
-			</div>
+				<div style="float: right; margin-left: 20px;">{{{reset%label=Reset}}}</div>
+				<div style="float: right;">{{{submit%label=Save}}}</div>
+			{{{/form}}}
+			<div class='clearfix'></div>
 		</div>
 	</div>
+</div>

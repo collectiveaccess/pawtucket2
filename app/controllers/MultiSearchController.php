@@ -46,7 +46,7 @@
             }			
             
  			caSetPageCSSClasses(array("multisearch"));
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": "._t("Search").": ".$this->request->getParameter('search', pString));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter")._t("Search").$this->request->config->get("page_title_delimiter").$this->request->getParameter('search', pString));
  		}
  		# -------------------------------------------------------
  		/**

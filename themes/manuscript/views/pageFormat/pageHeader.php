@@ -116,7 +116,7 @@
 				</form>-->
 				<ul class="nav navbar-nav navbar-left">
 					<!--<li><a href="http://manuscript_cookbook.whirl-i-gig.com/">Home</a></li>-->
-					<li class='active dropdown'><a href="#">Database</a>
+					<li class='active dropdown'><a href="#">Databases</a>
 						<ul class="dropdown-menu">
 							<li class="dropdown-item"><?php print caNavLink($this->request, 'Manuscripts', '', 'Search', 'advanced', 'manuscripts'); ?></li>
 							<li class="dropdown-item"><?php print caNavLink($this->request, 'Kitchen Artifacts', '', 'Search', 'advanced', 'utensils'); ?></li>
@@ -131,6 +131,7 @@
 							<li class="dropdown-item"><a href="/about-us/">About Us</a></li>
 							<li class="dropdown-item"><a href="/about-the-project/">About the Project</a></li>
 							<li class="dropdown-item"><?php print caNavLink($this->request, 'Institutions', '', '', 'Browse', 'collections'); ?></li>
+							<li class="dropdown-item"><a href="/contact-us/">Contact Us</a></li>
 						</ul>
 					</li>
 

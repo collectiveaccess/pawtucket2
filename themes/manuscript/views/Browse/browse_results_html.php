@@ -75,6 +75,8 @@ if (!$vb_ajax) {	// !ajax
 	<?php if($vs_current_view == "map" && $vs_table == "ca_collections" ){ ?>
 		<div class="col-sm-10">
 		
+	<?php }elseif($vs_current_view == "list" && $vs_table == "ca_collections" ){ ?>
+	        <div class="col-sm-10">
 	<?php } else { ?>
 		<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
 	<?php } ?>
@@ -113,9 +115,9 @@ if (!$vb_ajax) {	// !ajax
 			<small>	
 <?php 
 			if($vs_table == 'ca_collections'){
-				print caNavLink($this->request, _("View all Manuscripts"), '', '', 'Browse', 'manuscripts');
+				print caNavLink($this->request, _t("View all Manuscripts"), '', '', 'Browse', 'manuscripts');
 				print " | ";
-				print caNavLink($this->request, _("View all Utensils"), '', '', 'Browse', 'utensils');
+				print caNavLink($this->request, _t("View all Utensils"), '', '', 'Browse', 'utensils');
 			}
 ?>
 			</small>
@@ -139,7 +141,22 @@ if (!$vb_ajax) {	// !ajax
 				if ($va_criterion['facet_name'] != '_search') {
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
-					print ' '.$va_criterion['value'];
+					# --- if this is an advanced search for manuscripts with an institution passed, convert the id to the institution name
+					if($vb_is_search && $vn_is_advanced && ($vs_table == 'ca_objects')){
+						$va_search_parts = explode("; ", $va_criterion['value']);
+						$va_search_parts_processed = array();
+						foreach($va_search_parts as $vs_search_part){
+							if(strpos($vs_search_part, "CollectiveAccess id (from related collections)") !== false){
+								$vn_institution_id = str_replace("CollectiveAccess id (from related collections): ", "", $vs_search_part);
+								$t_inst = new ca_collections($vn_institution_id);
+								$vs_search_part = "Related Collection: ".$t_inst->get("ca_collections.preferred_labels.name");	
+							}
+							$va_search_parts_processed[] = $vs_search_part;
+						}
+						print ' '.join("; ", $va_search_parts_processed);
+					}else{
+						print ' '.$va_criterion['value'];
+					}
 					$vs_search = $va_criterion['value'];
 				}
 				$i++;
@@ -213,6 +230,8 @@ if (!$vb_ajax) {	// !ajax
 	</div><!-- end col-8 -->
 	<?php if($vs_current_view == "map" && $vs_table == "ca_collections" ){ ?>
 		<div class="col-sm-1 col-sm-offset-1">
+	<?php } elseif($vs_current_view == "list" && $vs_table == "ca_collections" ) { ?>
+	    <div class="col-sm-1 col-sm-offset-1">
 	<?php } else { ?>
 		<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
 	<?php } ?>
@@ -220,10 +239,11 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		if(is_array($va_views) && (sizeof($va_views) > 1)){
 			foreach($va_views as $vs_view => $va_view_info) {
+				if($vs_view === 'timeline' && $vn_result_size < 4){ continue; }
 				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
+					print '<a href="#" class="active iconPopoverTrigger" data-content="'.$vs_view.'"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span></a> ';
 				} else {
-					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+					print caNavLink($this->request, '<span data-toggle="tooltip" data-content="'.$vs_view.'" class="glyphicon iconPopoverTrigger '.$va_view_icons[$vs_view]['icon'].'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 				}
 			}
 		}
@@ -268,6 +288,14 @@ if (!$vb_ajax) {	// !ajax
 <?php
 		}
 ?>
+		 $(function(){
+			$('.iconPopoverTrigger').popover({
+				trigger: 'hover',
+				container: 'body',
+				placement: 'top',
+				template: '<div class="popover" role="tooltip"><div class="popover-arrow"></div><div class="popover-content"></div></div>'
+			});
+        });
 	});
 
 </script>
