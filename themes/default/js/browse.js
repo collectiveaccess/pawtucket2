@@ -31,7 +31,9 @@ function initialState() {
 		sortDirection: null,
 		
 		labelSingular: null,
-		labelPlural: null
+		labelPlural: null,
+		
+		selectedItems: []
 	};
 }
 

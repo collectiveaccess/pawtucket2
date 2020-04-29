@@ -42,11 +42,14 @@
         'selector': '#browse',
         'data': {
 			baseUrl: "<?php print __CA_URL_ROOT__."/index.php/Browse"; ?>",
+			baseLightboxUrl: "<?php print __CA_URL_ROOT__."/index.php/Lightbox"; ?>",
 			endpoint: "<?php print $action; ?>",
 			initialFilters: <?php print json_encode($initial_criteria); ?>,
 			view: "<?php print caGetOption('defaultView', $browse_info, 'images'); ?>",
 			browseConfig: <?php print json_encode($browse_info); ?>,
-			exportFormats: <?php print json_encode($export_formats); ?>
+			exportFormats: <?php print json_encode($export_formats); ?>,
+			lightboxTerminology: <?php print json_encode(caGetLightboxDisplayName()); ?>,
+			isLoggedIn: <?php print ($this->request->isLoggedIn()) ? 1 : 0; ?>
         }
     };
 </script>

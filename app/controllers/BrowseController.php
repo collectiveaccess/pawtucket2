@@ -437,6 +437,11 @@
  				case 'xlsx':
  				case 'pptx':
  				case 'pdf':
+ 					# --- only downloading hand selected items from results?
+ 					if($record_ids = $this->request->getParameter('record_ids', pString)){
+ 						$record_ids = explode(";", $record_ids);
+ 						$qr_res = caMakeSearchResult($vs_class, $record_ids);
+ 					}		
  					$this->_genExport($qr_res, $this->request->getParameter("export_format", pString, ['forcePurify' => true]), caGenerateDownloadFileName(caGetOption('pdfExportTitle', $va_browse_info, $ps_search_expression)), $this->getCriteriaForDisplay($o_browse));
  					break;
  				default:
