@@ -43,7 +43,7 @@
     "style-loader": "^0.23.1",
     "url-loader": "^2.0.0",
     "webpack": "^4.32.2",
-    "webpack-cli": "^3.3.2"
+    "webpack-cli": "^3.3.11"
   },
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.0.0",
@@ -54,6 +54,7 @@
     "react-clamp-lines": "^3.0.2",
     "react-confirm-alert": "^2.4.1",
     "react-easy-edit": "^1.4.2",
+    "slick-carousel": "^1.8.1",
     "url-loader": "^2.1.0"
   }
 }
