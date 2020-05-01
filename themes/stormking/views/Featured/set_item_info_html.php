@@ -103,10 +103,10 @@
 																							
 	
 	}
-	if($vb_last){
-		print "<div class='viewAll'>".caNavLink($this->request, "All ".$vs_theme." <i class='fa fa-angle-right'></i>", "", "", "Featured", "Theme", array("theme_id" => $vn_theme_id))."&nbsp;&nbsp;&nbsp;".caNavLink($this->request, "All Featured <i class='fa fa-angle-right'></i>", "", "", "Featured", "Index")."</div>";
+	#if($vb_last){
+		print "<div class='viewAll'>".caNavLink($this->request, "All ".$vs_theme." <i class='fa fa-angle-right'></i>", "", "", "Featured", "Theme", array("theme_id" => $vn_theme_id))."&nbsp;&nbsp;&nbsp;".caNavLink($this->request, "Home <i class='fa fa-angle-right'></i>", "", "", "Featured", "Index")."</div>";
 		
-	}
+	#}
 	
 ?>
 <script type='text/javascript'>
