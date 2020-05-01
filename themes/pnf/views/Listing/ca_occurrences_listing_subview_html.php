@@ -82,12 +82,12 @@
 <?php
 			if ($g_ui_locale == 'en_US'){			
 ?>
-				<br/><div class="callout">If you have published or know of a publication that fits the criteria of this Bibliography, please send notice to <a href="mailto:contact@comediassueltasusa.org">contact@comediassueltasusa.org</a> and we will include it.  If there is an online version available without a subscription, please add DOI or URL.</div>		
+				<br/><div class="callout">If you have published or know of a publication that fits the criteria of this Bibliography, please send notice to <a href="mailto:contact@comediassueltasusa.org">contact@comediassueltasusa.org</a> and we will include it.  If there is an online version available, please add DOI or URL.</div>		
 		
 <?php
 			}else{
 ?>
-				<br/><div class="callout">Si Ud. ha publicado o sabe de alguna publicación que cumpla con los criterios de esta bibliografía, por favor, avísenos a <a href="mailto:contact@comediassueltasusa.org">contact@comediassueltasusa.org</a> y la incluiremos. Si existe una versión en línea disponible sin subscripción, por favor, incluya el DOI o URL.</div>
+				<br/><div class="callout">Si Ud. ha publicado o sabe de alguna publicación que cumpla con los criterios de esta bibliografía, por favor, avísenos a <a href="mailto:contact@comediassueltasusa.org">contact@comediassueltasusa.org</a> y la incluiremos. Si existe una versión en línea, por favor, incluya el DOI o URL.</div>
 <?php
 			}
 
