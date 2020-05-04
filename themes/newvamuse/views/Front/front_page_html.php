@@ -56,7 +56,10 @@
 			foreach ($va_member_ids as $va_member_id => $thing) {
 				$t_member = new ca_entities($va_member_id);
 				print "<li><div class='memberTile'>";
-				print "<div class='memberImage'>".caNavLink($this->request, $t_member->get('ca_entities.mem_inst_image', array('version' => 'iconlarge')), '', '', 'Detail', 'entities/'.$va_member_id)."</div>";
+				
+				// ICONLARGE
+				#print "<div class='memberImage'>".caNavLink($this->request, $t_member->get('ca_entities.mem_inst_image', array('version' => 'iconlarge')), '', '', 'Detail', 'entities/'.$va_member_id)."</div>";
+				print "<div class='memberImageCrop'>".caNavLink($this->request, $t_member->get('ca_entities.mem_inst_image', array('version' => 'medium')), '', '', 'Detail', 'entities/'.$va_member_id)."</div>";
 				print "<p>".caNavLink($this->request, $t_member->get('ca_entities.preferred_labels'), '', '', 'Detail', 'entities/'.$va_member_id)."</p>";
 				print "</div></li>";
 			}
@@ -146,7 +149,9 @@
 				foreach ($va_curated_ids as $va_curated_id => $thing) {
 					$t_curated = new ca_objects($va_curated_id);
 					print "<li><div class='memberTile'>";
-					print "<div class='memberImage'>".caNavLink($this->request, $t_curated->get('ca_object_representations.media.iconlarge'), '', '', 'Detail', 'objects/'.$va_curated_id)."</div>";
+					// ICONLARGE
+					#print "<div class='memberImage'>".caNavLink($this->request, $t_curated->get('ca_object_representations.media.iconlarge'), '', '', 'Detail', 'objects/'.$va_curated_id)."</div>";
+					print "<div class='memberImageCrop'>".caNavLink($this->request, $t_curated->get('ca_object_representations.media.medium'), '', '', 'Detail', 'objects/'.$va_curated_id)."</div>";
 					print "<p>".caNavLink($this->request, $t_curated->get('ca_objects.preferred_labels'), '', '', 'Detail', 'objects/'.$va_curated_id)."</p>";
 					print "</div></li>";
 				}
@@ -250,10 +255,12 @@
 		$t_object = new ca_objects();
 		$va_recently_added_items = $t_object->getRecentlyAddedItems(20, array('checkAccess' => $va_access_values, 'hasRepresentations' => 1));	
 		$va_labels = $t_object->getPreferredDisplayLabelsForIDs(array_keys($va_recently_added_items));
- 		$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_recently_added_items), array('iconlarge'), array("checkAccess" => $va_access_values));
+ 		$va_media = $t_object->getPrimaryMediaForIDs(array_keys($va_recently_added_items), array('iconlarge', 'medium'), array("checkAccess" => $va_access_values));
 		foreach($va_recently_added_items as $vn_object_id => $va_object_info){
 			print "<li><div class='memberTile'>";
-			print "<div class='memberImage'>".caNavLink($this->request, $va_media[$vn_object_id]['tags']['iconlarge'], '', '', 'Detail', 'objects/'.$vn_object_id)."</div>";
+			//ICON LARGE
+			#print "<div class='memberImage'>".caNavLink($this->request, $va_media[$vn_object_id]['tags']['iconlarge'], '', '', 'Detail', 'objects/'.$vn_object_id)."</div>";
+			print "<div class='memberImageCrop'>".caNavLink($this->request, $va_media[$vn_object_id]['tags']['medium'], '', '', 'Detail', 'objects/'.$vn_object_id)."</div>";
 			print "<p>".caNavLink($this->request, $va_labels[$vn_object_id], '', '', 'Detail', 'objects/'.$vn_object_id)."</p>";
 
 			print "</div></li>";

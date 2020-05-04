@@ -30,6 +30,15 @@
 	$va_comments = 			$this->getVar("comments");
 	$va_options = 			$this->getVar("config_options");
 	$va_access_values = caGetUserAccessValues($this->request);
+	
+	$type_code = $t_object->get('type_id', ['convertCodesToIdno' => true]);
+	
+	$o_icons_conf = caGetIconsConfig();
+	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
+	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
+	}
+	$placeholder = isset($va_object_type_specific_icons[$type_code]) ? $va_object_type_specific_icons[$type_code]['placeholder_media_icon'] : $vs_default_placeholder;
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -77,18 +86,26 @@
 					# ------------------------------
 				}
 				
-				print caObjectDetailMedia($this->request, $t_object->getPrimaryKey(), $t_representation, $t_object, array_merge(array("display" => $vs_display_type, "showAnnotations" => true, "primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), "captionTemplate" => caGetOption('representationViewerCaptionTemplate', $va_options, false))));
-				print "<div class='imageTools'>";
-				if (($t_representation) && ($t_representation->getMediaInfo('media', 'original', 'MIMETYPE') != "application/pdf")) {
-					print $vs_download_link;
-				}
-				print caNavLink($this->request, "<i class='fa fa-envelope'></i> Contact", '', '', 'Contact', 'form');
-				print "</div>";
+//                 print caObjectDetailMedia($this->request, $t_object->getPrimaryKey(), $t_representation, $t_object, array_merge(array("display" => $vs_display_type, "showAnnotations" => true, "primaryOnly" => caGetOption('representationViewerPrimaryOnly', $va_options, false), "dontShowPlaceholder" => caGetOption('representationViewerDontShowPlaceholder', $va_options, false), "captionTemplate" => caGetOption('representationViewerCaptionTemplate', $va_options, false))));
+//                 print "<div class='imageTools'>";
+//                 if (($t_representation) && ($t_representation->getMediaInfo('media', 'original', 'MIMETYPE') != "application/pdf")) {
+//                     print $vs_download_link;
+//                 }
+//                 print caNavLink($this->request, "<i class='fa fa-envelope'></i> Contact", '', '', 'Contact', 'form');
+//                 print "</div>";
+
+                if(!$t_object->getRepresentationCount(['checkAccess' => $va_access_values])) {
+                    print $placeholder;
+                }
 ?>
+				{{{representationViewer}}}
+				
+<?php print caNavLink($this->request, "<i class='fa fa-envelope'></i> Contact", '', '', 'Contact', 'form'); ?>
+<span style="margin-left: 30px;"><a href="#" onclick="caMediaPanel.showPanel('/index.php/Detail/GetMediaOverlay/context/objects/id/<?php print $t_object->getPrimaryKey(); ?>/representation_id/<?php print $this->getVar("representation_id"); ?>/overlay/1'); return false;" title="Zoom"><span class="glyphicon glyphicon-zoom-in"></span> View full item</a></span>
 				<div id="detailAnnotations"></div>
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
-			
+
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
@@ -96,7 +113,7 @@
 				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
 				<HR>				
 <?php
-				if(($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'Moving image') | ($t_object->get('ca_objects.type_id', array('convertCodesToDisplayText' => true)) == 'Photograph')) {
+                if(in_array($type_code, ['moving_image', 'photograph', 'costume', 'set_piece'])) {
 					print "<div class='unit'><h6>Identifier</h6>".$t_object->get('ca_objects.idno')."</div>";
 				}
 				if ($va_author = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
@@ -190,7 +207,7 @@
 						<div class="col-sm-12">		
 							{{{<ifcount code="ca_entities.preferred_labels" excludeRelationshipTypes="author,videographer" min="1">
 								<h6>Related Entities</h6>
-								<unit relativeTo="ca_entities" delimiter='<br/>' excludeRelationshipTypes="author,videographer"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>
+								<unit relativeTo="ca_objects_x_entities" delimiter='<br/>' excludeRelationshipTypes="author,videographer"><l>^ca_entities.preferred_labels</l> (^ca_objects_x_entities.type_id)</unit>
 							</ifcount>}}}
 
 <?php

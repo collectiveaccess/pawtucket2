@@ -19,7 +19,7 @@ if (!$this->request->isAjax()) {
 		<div id="pageNav">
 			{{{resultsLink}}}{{{previousLink}}}{{{nextLink}}}
 		</div><!-- end nav -->
-		<div class='recordTitle'><h1><?php print unicode_ucfirst($t_occurrence->getTypeName()).': '.$t_occurrence->get('ca_occurrences.preferred_labels'); ?></h1></div>
+		<div class='recordTitle'><h1><?php print caUcFirstUTF8Safe($t_occurrence->getTypeName()).': '.$t_occurrence->get('ca_occurrences.preferred_labels'); ?></h1></div>
 		<div id="rightCol" class="occurrence">	
 <?php
 

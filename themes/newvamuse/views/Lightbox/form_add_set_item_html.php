@@ -32,7 +32,8 @@
 	$t_set = $this->getVar("set");
 	$va_write_sets = $t_set->getSetsForUser(array("table" => "ca_objects", "user_id" => $this->request->getUserID(), "access" => 2));
  	$va_errors = $this->getVar("errors");
-	$vs_display_name = $this->getVar("display_name");
+	$vs_display_name_config = $this->getVar("display_name");
+	$vs_display_name = "<span style='text-transform:lowercase;'>my</span>NovaMuse";
 ?>
 <div id="caFormOverlay"><div class="pull-right pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
 <H1><?php print _t("Add item to %1", $vs_display_name); ?></H1>
@@ -53,9 +54,9 @@
 			}
 			print "</select>\n";
 			print "</div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
-			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><H3>"._t("OR<br/>Create a New %1", ucfirst($vs_display_name))."</H3></div></div><!-- end form-group -->\n";
+			print "<div class='form-group'><div class='col-sm-offset-4 col-sm-7'><H3>"._t("OR<br/>Create a New %1", $vs_display_name)."</H3></div></div><!-- end form-group -->\n";
 		}
-		print "<div class='form-group'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' placeholder='"._t("Your %1", $vs_display_name)."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
+		print "<div class='form-group'><label for='name' class='col-sm-4 control-label'>"._t("Name")."</label><div class='col-sm-7'><input type='text' name='name' placeholder='"._t("Your %1", $vs_display_name_config)."' class='form-control'></div><!-- end col-sm-7 --></div><!-- end form-group -->\n";
 		#print $t_set->htmlFormElement("access","<div class='form-group'><label for='access' class='col-sm-4 control-label'>"._t("Display Option")."</label><div class='col-sm-7' class='form-control'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
 		if($va_errors["access"]){
 			print "<div class='alert alert-danger'>".$va_errors["access"]."</div>";

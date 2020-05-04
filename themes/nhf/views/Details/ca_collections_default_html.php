@@ -79,7 +79,7 @@
 					}
 					$vs_description =  $qr_hits->get('ca_occurrences.pbcoreDescription.description_text');
 					if(strlen($vs_description) > 185){
-						$vs_description = trim(unicode_substr($vs_description, 0, 185))."...";
+						$vs_description = trim(mb_substr(strip_tags($vs_description), 0, 185))."...";
 					}
 					print "<div class='result'>".$vn_item_num_label.") ";
 					print caDetailLink($this->request, $qr_hits->get("ca_occurrences.preferred_labels.name"), '', 'ca_occurrences', $vn_occurrence_id)." ".$vs_has_video;
@@ -168,12 +168,14 @@
 				}
 			
 				# --- video clip
-				if($vs_player = $t_collection->get("ca_collections.collection_moving_image_media.original", array('showMediaInfo' => false, 'viewer_width'=> 400, 'viewer_height' => 300, 'poster_frame_version' => 'medium'))){
-					print "\n<div class='unit'><div>{$vs_player}</div>";
-					if($t_collection->get("ca_collections.collection_moving_image_credit")){
-						print "<div class='imageCaption'>"._t("Credit:")." ".$t_collection->get("ca_collections.collection_moving_image_credit")."</div>";
+				if($t_collection->get("ca_collections.collection_moving_image_media")){
+					if($vs_player = $t_collection->get("ca_collections.collection_moving_image_media.original", array('showMediaInfo' => false, 'viewer_width'=> 400, 'viewer_height' => 300, 'poster_frame_version' => 'medium'))){
+						print "\n<div class='unit'><div>{$vs_player}</div>";
+						if($t_collection->get("ca_collections.collection_moving_image_credit")){
+							print "<div class='imageCaption'>"._t("Credit:")." ".$t_collection->get("ca_collections.collection_moving_image_credit")."</div>";
+						}
+						print "</div><!-- end unit -->";
 					}
-					print "</div><!-- end unit -->";
 				}
 				# --- primary_format
 				if($t_collection->get('ca_collections.collection_primary_format')){

@@ -1,4 +1,31 @@
 <?php
+/* ----------------------------------------------------------------------
+ * themes/default/views/LoginReg/form_register_html.php
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
+ * ----------------------------------------------------------------------
+ *
+ * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
+ * Copyright 2013-2017 Whirl-i-Gig
+ *
+ * For more information visit http://www.CollectiveAccess.org
+ *
+ * This program is free software; you may redistribute it and/or modify it under
+ * the terms of the provided license as published by Whirl-i-Gig
+ *
+ * CollectiveAccess is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ *
+ * This source code is free and modifiable under the terms of 
+ * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
+ * the "license.txt" file for details, or visit the CollectiveAccess web site at
+ * http://www.CollectiveAccess.org
+ *
+ * ----------------------------------------------------------------------
+ */
+ 
 	$va_errors = $this->getVar("errors");
 	$t_user = $this->getVar("t_user");
 	$co_security = $this->request->config->get('registration_security');
@@ -32,18 +59,29 @@
 	}
 ?>
 	<form id="RegForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "register"); ?>" class="form-horizontal" role="form" method="POST">
-	<div class="row"><div class="col-sm-4"><H1><?php print _t("Register"); ?></H1></div></div>
+	    <input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
+	    <div class="row"><div class="col-sm-4"><H1><?php print _t("Register"); ?></H1></div></div>
 <?php
 	if($va_errors["register"]){
 		print "<div class='alert alert-danger'>".$va_errors["register"]."</div>";
 	}
-		foreach(array("user_name", "fname", "lname", "email") as $vs_field){
+		foreach(array("fname", "lname", "email") as $vs_field){
 			if($va_errors[$vs_field]){
 				print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
 			}	
-			print $t_user->htmlFormElement($vs_field,"<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'><label for='".$vs_field."' class='col-sm-4 control-label'>^LABEL*</label><div class='col-sm-7'>^ELEMENT".(($vs_field == "user_name") ? "<small>Used for site login and public galleries</small>" : "")."</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control")); 
+			print $t_user->htmlFormElement($vs_field,"<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'><label for='".$vs_field."' class='col-sm-4 control-label'>^LABEL</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
 		}
-
+		$va_profile_settings = $this->getVar("profile_settings");
+		if(is_array($va_profile_settings) and sizeof($va_profile_settings)){
+			foreach($va_profile_settings as $vs_field => $va_profile_element){
+				if($va_errors[$vs_field]){
+					print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
+				}
+				print "<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'>";
+				print $va_profile_element["bs_formatted_element"];
+				print "</div><!-- end form-group -->";
+			}
+		}
 		if($co_security == 'captcha'){
 ?>
 			<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
@@ -59,7 +97,7 @@
 			$vn_sum = $vn_num1 + $vn_num2;
 	?>
 			<div class='form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>'>
-				<label for='security' class='col-sm-4 control-label'><?php print _t("Security Question"); ?>*</label>
+				<label for='security' class='col-sm-4 control-label'><?php print _t("Security Question"); ?></label>
 				<div class='col-sm-7'>
 					<div class='col-sm-5'>
 						<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
@@ -75,26 +113,13 @@
 		if($va_errors["password"]){
 			print "<div class='alert alert-danger'>".$va_errors["password"]."</div>";
 		}
-		print $t_user->htmlFormElement("password","<div class='form-group".(($va_errors["password"]) ? " has-error" : "")."'><label for='password' class='col-sm-4 control-label'>^LABEL*</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
+		print $t_user->htmlFormElement("password","<div class='form-group".(($va_errors["password"]) ? " has-error" : "")."'><label for='password' class='col-sm-4 control-label'>^LABEL</label><div class='col-sm-7'>^ELEMENT</div><!-- end col-sm-7 --></div><!-- end form-group -->\n", array("classname" => "form-control"));
 		
 ?>
 		<div class="form-group<?php print (($va_errors["password"]) ? " has-error" : ""); ?>">
-			<label for='password2' class='col-sm-4 control-label'><?php print _t('Re-Type password'); ?>*</label>
+			<label for='password2' class='col-sm-4 control-label'><?php print _t('Re-Type password'); ?></label>
 			<div class="col-sm-7"><input type="password" name="password2" size="40" class="form-control" /></div><!-- end col-sm-7 -->
 		</div><!-- end form-group -->
-<?php
-		$va_profile_settings = $this->getVar("profile_settings");
-		if(is_array($va_profile_settings) and sizeof($va_profile_settings)){
-			foreach($va_profile_settings as $vs_field => $va_profile_element){
-				if($va_errors[$vs_field]){
-					print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
-				}
-				print "<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'>";
-				print $va_profile_element["bs_formatted_element"];
-				print "</div><!-- end form-group -->";
-			}
-		}
-?>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">
 				<button type="submit" class="btn btn-default">Register</button>

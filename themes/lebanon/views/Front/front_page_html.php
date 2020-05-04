@@ -33,6 +33,6 @@
 ?>
 	<div class="row">
 		<div class="col-sm-12">
-			<H1>The LCHS was organized in 1898 by a group of interested local citizens and amateur historians. The Society was considered the county’s attic until 1935, when the group offered its first public exhibits. </H1>
+			<h1>The LCHS was organized in 1898 by a group of interested local citizens and amateur historians. The mission of the Lebanon County Historical Society is to collect, exhibit, interpret, preserve, and publish the history of the Lebanon Valley. The Society shall accomplish this mission through its museums, libraries, archives, publications, programs, and historic sites. The Society shall hold its collections in trust for the community and recognizes its responsibility to educate and inform the public about the history of the Lebanon Valley and make its holdings reasonably accessible to the public.</h1>
 		</div><!--end col-sm-8-->
 	</div><!-- end row -->

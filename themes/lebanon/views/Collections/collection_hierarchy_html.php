@@ -37,6 +37,11 @@
 							<div class='col-xs-12<?php print ($vb_has_grandchildren) ? "col-sm-4 col-md-4 col-lg-4" : ""; ?>'>
 								<div class='collectionsContainer'><div class='label'><?php print ucFirst($t_item->get("ca_collections.type_id", array('convertCodesToDisplayText' => true))); ?> Contents</div>
 <?php
+					$vn_object_ids = $t_item->get('ca_objects.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values));
+					$qr_objects = caMakeSearchResult('ca_objects', $vn_object_ids, array('sort' => 'ca_object_labels.name_sort'));
+					while ( $qr_objects->nextHit() ) {
+						print "<div class='objectLevel single'><i class='fa fa-file-o'></i> ".$qr_objects->get('ca_objects.preferred_labels', array('returnAsLink' => true))."</div>";
+					}
 					if($qr_collection_children->numHits()){
 						while($qr_collection_children->nextHit()) {
 							$vs_icon = "";
@@ -80,6 +85,7 @@
 									print "<div class='listItem'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_record_count."</div>";
 								}
 							}
+
 							print "</div>";	
 							if($vb_link_sublist){
 ?>													

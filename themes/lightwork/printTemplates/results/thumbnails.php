@@ -72,7 +72,7 @@
 ?>
 			<div class="thumbnail" style="left: <?php print $vn_left; ?>px; top: <?php print $vn_top; ?>px;">
 <?php 
-				print "<div class='imgThumb'><img src='".$vo_result->getMediaPath('ca_object_representations.media', 'preview170')."'/></div>"; 
+				print "<div class='imgThumb'>".$vo_result->get('ca_object_representations.media.preview170', ['usePath' => 'true'])."</div>"; 
 						
 				if ($va_entities = $vo_result->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))) {
 					print "<div class='unit'>".$va_entities."</div>";

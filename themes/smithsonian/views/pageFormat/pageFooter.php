@@ -26,18 +26,18 @@
  * ----------------------------------------------------------------------
  */
 ?>
-		<div style="clear:both; height:1px;"><!-- empty --></div>
-		<div id="footer">
-			<div>
-				© 2010-2013 SNI/SI Networks L.L.C. All rights reserved.
-			</div>
-			<ul class="list-inline">
-				<li><a href="http://www.smithsonianchannel.com/">SmithsonianChannel.com</a></li>
-			</ul>
-			<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2014</a></small></div>
-		</div><!-- end footer -->
 
-	</div><!-- end pageArea --></div><!-- end container -->
+
+	</div><!-- end pageArea --></div><!-- end container --></div><!-- end container -->
+	<div id="footer">
+		<div>
+			© 2010-2013 SNI/SI Networks L.L.C. All rights reserved.
+		</div>
+		<ul class="list-inline">
+			<li><a href="http://www.smithsonianchannel.com/">SmithsonianChannel.com</a></li>
+		</ul>
+		<div><small>powered by <a href="http://www.collectiveaccess.org">CollectiveAccess 2014</a></small></div>
+	</div><!-- end footer -->	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">

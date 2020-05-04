@@ -42,7 +42,7 @@ var caUI = caUI || {};
  			zoomControl: true
 		}, options);
 		
-		that.infoWindow = new google.maps.InfoWindow();
+		that.infoWindow = new google.maps.InfoWindow({ disableAutoPan: false, maxWidth: 300 } );
 		that.map = new google.maps.Map(document.getElementById(that.id), { disableDefaultUI: true, mapTypeId: google.maps.MapTypeId[that.mapType], navigationControl: that.navigationControl, mapTypeControl: that.mapTypeControl, scaleControl: true, zoomControl: that.zoomControl });
 		
 		// --------------------------------------------------------------------------------
@@ -52,26 +52,12 @@ var caUI = caUI || {};
 			var markerLatLng = marker.getPosition();
 			
 			if(marker.ajaxContentUrl.length > 0) {
-				jQuery.ajax(marker.ajaxContentUrl, { success: function(data, textStatus, jqXHR) { 
-					that.infoWindow.setContent(data); 
-				}});
+				that.infoWindow.setContent('Loading...');
+				jQuery.ajax(marker.ajaxContentUrl, { success: function(data, textStatus, jqXHR) { that.infoWindow.setContent(data); that.infoWindow.open(that.map, marker); }})
 			} else {
 				that.infoWindow.setContent(marker.content);
 			}
 			that.infoWindow.open(that.map, marker);
-		};
-		
-		that.openCircleInfoWindow = function(circle) {
-			var circleLat = circle.getCenter().lat();
-			var circleLng = circle.getCenter().lng();
-			var circleLatLng = new google.maps.LatLng(circleLat, circleLng);
-			if(circle.ajaxContentUrl.length > 0) {
-				jQuery.ajax(circle.ajaxContentUrl, { success: function(data, textStatus, jqXHR) { that.infoWindow.setContent(data); }})
-			} else {
-				that.infoWindow.setContent(circle.content);
-			}
-			that.infoWindow.setPosition(circleLatLng);
-			that.infoWindow.open(that.map, circle);
 		};
 		// --------------------------------------------------------------------------------
 		that.openPathInfoWindow = function(latlng, path) {
@@ -82,48 +68,20 @@ var caUI = caUI || {};
 		// --------------------------------------------------------------------------------
 		that.makeMarker = function(lat, lng, label, content, ajaxContentUrl, options) {
 			var pt = new google.maps.LatLng(lat, lng);
+		
 			var opts = {
 				position: pt,
 				map: that.map,
 				title: label + ' ',
-				content: content + ' ',
-				ajaxContentUrl: ajaxContentUrl,
+				content: label + ' ' + content + ' ',
+				ajaxContentUrl: ajaxContentUrl
 			};
 			if (options && options.icon) { opts['icon'] = options.icon; }
 			var marker = new google.maps.Marker(opts);
 			
-			if(label || content || ajaxContentUrl){
-				google.maps.event.addListener(marker, 'click', function(e) { 
-					that.map.setCenter(marker.getPosition());
-					that.openMarkerInfoWindow(marker); 
-				});
-			}
+			google.maps.event.addListener(marker, 'click', function(e) { that.openMarkerInfoWindow(marker); });
+			
 			return marker;
-		};
-		// --------------------------------------------------------------------------------
-		that.makeCircle = function(lat, lng, label, content, ajaxContentUrl, options) {
-			var pt = new google.maps.LatLng(lat, lng);
-			var opts = {
-				map: that.map,
-      			center: pt,
-      			radius: 500,
-				title: label + ' ',
-				content: content + ' ',
-				ajaxContentUrl: ajaxContentUrl
-			};
-			if (options) {
-				if (options.strokeColor) {opts['strokeColor'] = options.strokeColor;}
-				if (options.strokeOpacity) {opts['strokeOpacity'] = options.strokeOpacity;}
-				if (options.strokeWeight) {opts['strokeWeight'] = options.strokeWeight;}
-				if (options.fillColor) {opts['fillColor'] = options.fillColor;}
-				if (options.fillOpacity) {opts['fillOpacity'] = options.fillOpacity;}
-				if (options.radius) {opts['radius'] = options.radius;}
-			}
-			var circle = new google.maps.Circle(opts);
-			
-			google.maps.event.addListener(circle, 'click', function(e) { that.openCircleInfoWindow(circle); });
-			
-			return circle;
 		};
 		// --------------------------------------------------------------------------------
 		that.makePath = function(pathArray, label, content, opts) {

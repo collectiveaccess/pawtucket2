@@ -45,15 +45,20 @@
 	}
 	$vs_default_placeholder_tag = "<div class='multisearchImgPlaceholder'>".$vs_default_placeholder."</div>";
 
+	if ($qr_results->numHits() == 1) {
+		$vs_style = "oneResult";
+	} else {
+		$vs_style = null;
+	}
 
 	if ($qr_results->numHits() > 0) {
 		if (!$this->request->isAjax()) {
 ?>
-			<small class="pull-right">
+			<small class="pull-right sortValues">
 <?php
 				if(in_array($vs_block, $va_browse_types)){
 ?>
-				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search)); ?></span> | 
+				<span class='multisearchFullResults'><?php print caNavLink($this->request, '<span class="glyphicon glyphicon-list"></span> '._t('Full results'), '', '', 'Search', '{{{block}}}', array('search' => $vs_search), [], ['useQueryString' => true]); ?></span> | 
 <?php
 				}
 ?>
@@ -72,13 +77,12 @@
 <?php
 			}
 ?>
-			<div class='blockResults'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext"><i class="fa fa-angle-right"></i></div>
+			<div class='blockResults objects <?php print $vs_style; ?>'><div id="{{{block}}}scrollButtonPrevious" class="scrollButtonPrevious <?php print $vs_style; ?>"><i class="fa fa-angle-left"></i></div><div id="{{{block}}}scrollButtonNext" class="scrollButtonNext <?php print $vs_style; ?>"><i class="fa fa-angle-right"></i></div>
 				<div id='{{{block}}}Results' class='multiSearchResults'>
 					<div class='blockResultsScroller'>
 <?php
 		}
 		$vn_count = 0;
-		$vn_row = 0;
 		$t_list_item = new ca_list_items();
 		while($qr_results->nextHit()) {
 			if ($vn_row == 0) {
@@ -119,23 +123,28 @@
 ?>				
 			</div><!-- end blockResult -->
 <?php
-			$vn_count++;
 			$vn_row++;
-			if ((!$vn_init_with_start && ($vn_count == $vn_hits_per_block)) || ($vn_init_with_start && ($vn_count >= $vn_init_with_start))) {break;} 
-		
-			if ($vn_row == 3) {
+			if ($vn_row == 2) {
 				print "</div><!-- end objectSet -->";
 				$vn_row = 0;
 			}
+			$vn_count++;
+			if ((!$vn_init_with_start && ($vn_count == $vn_hits_per_block)) || ($vn_init_with_start && ($vn_count >= $vn_init_with_start))) {break;} 
 		}
 		if ($vn_row != 0) {
 			print "</div><!-- end objectSet -->";
-		}	
+		}
+?>
+<?php	
 		if (!$this->request->isAjax()) {
 ?>
 					</div><!-- end blockResultsScroller -->
 				</div>
 			</div><!-- end blockResults -->
+		
+			<div class='allLink'><?php print caNavLink($this->request, 'all '.$va_block_info['displayName'].' results', '', '', 'Search', '{{{block}}}', array('search' => $vs_search));?></div>
+
+
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
 					jQuery('#{{{block}}}Results').hscroll({
@@ -143,9 +152,9 @@
 						itemCount: <?php print $qr_results->numHits(); ?>,
 						preloadCount: <?php print $vn_count; ?>,
 						
-						itemsPerColumn: 3,
-						itemWidth: jQuery('.objectSet').outerWidth(true),
+						itemWidth: jQuery('.{{{block}}}Result').outerWidth(true),
 						itemsPerLoad: <?php print $vn_hits_per_block; ?>,
+						itemsPerColumn: 2,
 						itemLoadURL: '<?php print caNavUrl($this->request, '*', '*', '*', array('block' => $vs_block, 'search'=> $vs_search)); ?>',
 						itemContainerSelector: '.blockResultsScroller',
 						

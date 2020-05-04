@@ -28,7 +28,7 @@
  	require_once(__CA_APP_DIR__."/helpers/displayHelpers.php");
  	require_once(__CA_MODELS_DIR__."/ca_metadata_elements.php");
  	require_once(__CA_MODELS_DIR__."/ca_metadata_elements.php");
- 	require_once(__CA_LIB_DIR__.'/core/InformationServiceManager.php');
+ 	require_once(__CA_LIB_DIR__.'/InformationServiceManager.php');
  	
  
  	class InformationServiceController extends ActionController {
@@ -63,7 +63,7 @@
 				$vs_service = $t_element->getSetting('service');
 			
 				$va_items = array();
-				if (unicode_strlen($ps_query) >= 3) {
+				if (mb_strlen($ps_query) >= 3) {
 					try {
 						// Load plugin and connect to information service
 						if (!($o_plugin = InformationServiceManager::getInformationServiceInstance($vs_service))) {

@@ -34,16 +34,35 @@
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = caGetUserAccessValues($this->request);
+
+	# --- get the placeholder graphic from the novamuse theme
+	$vn_rep_id = $this->getVar("representation_id");
+	$vs_placeholder = "";
+	if(!$vn_rep_id){		
+		$va_themes = $t_object->get("novastory_category", array("returnAsArray" => true));
+		if(sizeof($va_themes)){
+			$t_list_item = new ca_list_items();
+			foreach($va_themes as $k => $vs_list_item_id){
+				$t_list_item->load($vs_list_item_id);
+				if(caGetThemeGraphic($this->request, $t_list_item->get("idno").'.png')){
+					$vs_placeholder = caGetThemeGraphic($this->request, $t_list_item->get("idno").'.png');
+				}
+			}
+		}
+		if(!$vs_placeholder){
+			$vs_placeholder = caGetThemeGraphic($this->request, 'placeholders/placeholder.png');
+		}
+		$vs_placeholder = "<div class='detailPlaceholder'>".$vs_placeholder."</div>";
+	}
 	
 	
-	
-		# --- get similar items by category
+	# --- get similar items by category
 	$va_categories = explode(",", $t_object->get('ns_category'));
 	$va_sim_items = array();
 	
 	if(sizeof($va_categories)){
 		$vn_category = trim($va_categories[0]);
-		require_once(__CA_LIB_DIR__.'/ca/Browse/ObjectBrowse.php');
+		require_once(__CA_LIB_DIR__.'/Browse/ObjectBrowse.php');
 		$o_browse = new ObjectBrowse();
 		$o_browse->removeAllCriteria();
 		$o_browse->addCriteria("category_facet", $vn_category);
@@ -59,9 +78,11 @@
 					$va_labels = $qr_sim_items->getDisplayLabels($this->request);
 					$vs_label = join("; ", $va_labels);
 					$va_media_info = array();
-					$va_media_info = $qr_sim_items->getMediaInfo('ca_object_representations.media', 'iconlarge', null, array('checkAccess' => $va_access_values));
+					#$va_media_info = $qr_sim_items->getMediaInfo('ca_object_representations.media', 'iconlarge', null, array('checkAccess' => $va_access_values));
+					$va_media_info = $qr_sim_items->getMediaInfo('ca_object_representations.media', 'widepreview', null, array('checkAccess' => $va_access_values));
 					$vn_padding_top_bottom =  ((120 - $va_media_info["HEIGHT"]) / 2);
-					$va_sim_items[] = array("object_id" => $qr_sim_items->get("ca_objects.object_id"), "label" => $vs_label, "media" => $qr_sim_items->getMediaTag('ca_object_representations.media', 'iconlarge', array('checkAccess' => $va_access_values)), "idno" => $qr_sim_items->get("ca_objects.idno"), "padding" => $vn_padding_top_bottom);	
+					#$va_sim_items[] = array("object_id" => $qr_sim_items->get("ca_objects.object_id"), "label" => $vs_label, "media" => $qr_sim_items->getMediaTag('ca_object_representations.media', 'iconlarge', array('checkAccess' => $va_access_values)), "idno" => $qr_sim_items->get("ca_objects.idno"), "padding" => $vn_padding_top_bottom);	
+					$va_sim_items[] = array("object_id" => $qr_sim_items->get("ca_objects.object_id"), "label" => $vs_label, "media" => $qr_sim_items->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values)), "idno" => $qr_sim_items->get("ca_objects.idno"));	
 					$i++;
 				}				
 			}
@@ -84,12 +105,13 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-7 '>
+				<?php print $vs_placeholder; ?>
 				{{{representationViewer}}}
 				
 				
 				<div id="detailAnnotations"></div>
 				
-				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
+				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-2 col-md-2 col-xs-4")); ?>
  				<div class="useRestrictions">Image use must be for education or personal purposes only.<br/>The contributing institution must be credited.</div>
 <?php
 				# Comment and Share Tools
@@ -149,7 +171,7 @@
 				if ($vs_materials = $t_object->get('ca_objects.materials')) {
 					print "<div class='unit'><span class='name'>"._t("Materials").": </span><span class='data'>".$vs_materials."</span></div>";
 				}
-				if ($va_measurements = $t_object->get('ca_objects.measurements', array('returnWithStructure' => true))) {
+				if ($va_measurements = $t_object->get('ca_objects.measurements', array("returnWithStructure" => true, "units"=>"metric"))) {
 					$va_meas = array();
 					foreach ($va_measurements as $va_key => $va_measurements_t) {
 						foreach ($va_measurements_t as $va_key => $va_measurement) {
@@ -229,7 +251,7 @@
 				if ($vs_scopeContent = $t_object->get('ca_objects.scopeContent')) {
 					print "<div class='unit'><span class='name'>"._t("Scope & Content").": </span><span class='data'>".$vs_scopeContent."</span></div>";
 				}
-				if ($vs_subject = $t_object->get('ca_objects.subject')) {
+				if ($vs_subject = $t_object->get('ca_objects.subject', array("delimiter" => ", "))) {
 					print "<div class='unit'><span class='name'>"._t("Subject").": </span><span class='data'>".$vs_subject."</span></div>";
 				}																																																																	
 				if($t_object->get("narrative")){
@@ -299,7 +321,8 @@
 			foreach($va_sets as $vn_set_id => $va_set_t){
 				foreach ($va_set_t as $va_id => $va_set) {
 					$va_set_id = array($vn_set_id);
-					$va_items = $t_set->getPrimaryItemsFromSets($va_set_id, array("version" => "iconlarge", "checkAccess" => $va_access_values));
+					#$va_items = $t_set->getPrimaryItemsFromSets($va_set_id, array("version" => "iconlarge", "checkAccess" => $va_access_values));
+					$va_items = $t_set->getPrimaryItemsFromSets($va_set_id, array("version" => "medium", "checkAccess" => $va_access_values));
 					$t_this_set = new ca_sets($vn_set_id);
 					$t_user = new ca_users($t_this_set->get('ca_sets.user_id'));
 					$vs_in_set.= "<div class='col-sm-3'><div class='setItemTile'>";
@@ -313,7 +336,7 @@
 					$vs_in_set.= "</div>";
 				}
 			}
-			print '<hr><div class="row" style="margin-bottom:30px;"><div class="col-sm-12"><h4 style="margin-bottom:30px;">Included in Lightboxes</h4></div>';
+			print '<hr><div class="row" style="margin-bottom:30px;"><div class="col-sm-12"><h4 style="margin-bottom:30px;">Included in Galleries</h4></div>';
 			print $vs_in_set;
 			print '	</div><!-- end col --></div><!-- end row -->';
 		}

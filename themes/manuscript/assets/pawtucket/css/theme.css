@@ -59,6 +59,10 @@ body {
 		padding: 17px 0 7px 0;
 	}
 }
+.scaleImg img, .scaleImg{
+	width:100%;
+	height:auto;
+}
 #imgHeader{
 	padding: 17px 0 7px 0;
 }
@@ -218,12 +222,14 @@ ul.list {
 
 .socialButtons{
 	position: relative;
-	display: inline;
+	display: inline-block;
+	line-height:8px;
+}
+.socialButtons span, .socialButtons div{
+	vertical-align:top !important;
+	line-height:8px;
 }
 
-.socialButtons .fb_iframe_widget{
-	top: -5.5px;
-}
 
 .inpageButtons{
 	position: relative;
@@ -247,6 +253,10 @@ ul.list {
 .unit{
 	font-size: 14px;
 }
+blockquote, blockquote p{
+	font-family: "Times new Roman";
+	font-size: 14px;
+}
 
 .mediaPlaceholder{
 	width: 100%;
@@ -268,6 +278,7 @@ ul.list {
 
 .advancedContainer {
 	margin-top:10px;
+	padding-left:15px;
 }
 .advancedSearchField {
 	margin-bottom:10px;
@@ -308,7 +319,7 @@ ul.list {
 	height:30px;
 }
 div.advancedSearchField {
-	width:100%;
+/*	width:100%; */
 }
 .attributeListItem {
 	width:100%;

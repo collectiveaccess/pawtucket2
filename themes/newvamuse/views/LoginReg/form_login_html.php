@@ -1,4 +1,31 @@
 <?php
+/* ----------------------------------------------------------------------
+ * themes/default/views/LoginReg/form_login_html.php
+ * ----------------------------------------------------------------------
+ * CollectiveAccess
+ * Open-source collections management software
+ * ----------------------------------------------------------------------
+ *
+ * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
+ * Copyright 2013-2017 Whirl-i-Gig
+ *
+ * For more information visit http://www.CollectiveAccess.org
+ *
+ * This program is free software; you may redistribute it and/or modify it under
+ * the terms of the provided license as published by Whirl-i-Gig
+ *
+ * CollectiveAccess is distributed in the hope that it will be useful, but
+ * WITHOUT ANY WARRANTIES whatsoever, including any implied warranty of 
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
+ *
+ * This source code is free and modifiable under the terms of 
+ * GNU General Public License. (http://www.gnu.org/copyleft/gpl.html). See
+ * the "license.txt" file for details, or visit the CollectiveAccess web site at
+ * http://www.CollectiveAccess.org
+ *
+ * ----------------------------------------------------------------------
+ */
+ 
 	$vn_label_col = 2;
 	if($this->request->isAjax()){
 		$vn_label_col = 4;
@@ -14,8 +41,9 @@
 	}
 ?>
 			<form id="LoginForm" action="<?php print caNavUrl($this->request, "", "LoginReg", "login"); ?>" class="form-horizontal" role="form" method="POST">
+				<input type="hidden" name="crsfToken" value="<?php print caGenerateCSRFToken($this->request); ?>"/>
 				<div class="form-group">
-					<label for="username" class="col-sm-<?php print $vn_label_col; ?> control-label"><?php print _t("Username"); ?></label>
+					<label for="username" class="col-sm-<?php print $vn_label_col; ?> control-label"><?php print _t("Email"); ?></label>
 					<div class="col-sm-7">
 						<input type="text" class="form-control" id="username" name="username">
 					</div><!-- end col-sm-7 -->
@@ -36,20 +64,20 @@
 <?php
 				if($this->request->isAjax()){
 				
-					if (!$this->request->config->get('dont_allow_registration_and_login')) {
+					if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
 ?>
-					<a href="#" class="registerButton" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'registerForm', null); ?>');"><?php print _t("Click here to register"); ?></a>
+					<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'registerForm', null); ?>');"><?php print _t("Click here to register"); ?></a>
 					<br/>
 <?php
 					}
 ?>
-					<a href="#" class="forgot" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'resetForm', null); ?>');"><?php print _t("Forgot your password?"); ?></a>
+					<a href="#" onClick="jQuery('#caMediaPanelContentArea').load('<?php print caNavUrl($this->request, '', 'LoginReg', 'resetForm', null); ?>');"><?php print _t("Forgot your password?"); ?></a>
 <?php
 				}else{
-					if (!$this->request->config->get('dont_allow_registration_and_login')) {
-						print caNavLink($this->request, _t("Click here to register"), "registerButton", "", "LoginReg", "registerForm", array());
+					if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) {
+						print caNavLink($this->request, _t("Click here to register"), "", "", "LoginReg", "registerForm", array());
 					}
-					print "<br/>".caNavLink($this->request, _t("Forgot your password?"), "forgot", "", "LoginReg", "resetForm", array());
+					print "<br/>".caNavLink($this->request, _t("Forgot your password?"), "", "", "LoginReg", "resetForm", array());
 				}
 ?>
 					</div>

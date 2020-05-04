@@ -31,7 +31,9 @@
 					if ($va_nationality = $t_entity->get('ca_entities.nationality', array('returnAsArray' => true, 'returnWithStructure' => true))) {
 						foreach ($va_nationality as $nat_key => $va_nation) {
 							foreach($va_nation as $va_nations) {
-								$nationality = explode("[", $va_nations);
+								if (is_string($va_nations)) {
+									$nationality = explode("[", $va_nations);
+								}
 								if ($nationality[0] != "") {
 									print ", ".$nationality[0];
 								}
@@ -69,7 +71,7 @@
 							
 							print "<li>";
 							print "<div class='detailObjectsResult'>".caNavLink($this->request, $va_rep['tags']['library'], '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
-							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$va_artwork_title."</i>, ".$t_object->get('ca_objects.creation_date'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
+							print "<div class='caption'>".caNavLink($this->request, $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist')))."<br/><i>".$va_artwork_title."</i>, ".$t_object->get('ca_objects.creation_date_display'), '', '', 'Detail', 'artworks/'.$va_artwork_id)."</div>";
 							if ($t_object->hasField('is_deaccessioned') && $t_object->get('is_deaccessioned') && ($t_object->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
 								// If currently deaccessioned then display deaccession message
 								print "<div class='searchDeaccessioned'>"._t('Deaccessioned %1', $t_object->get('deaccession_date'))."</div>\n";
@@ -289,7 +291,7 @@
 				{{{<ifdef code="ca_entities.affiliation|ca_entities.job_title"><H6>Affiliation</H6></ifdef>}}}
 				{{{^ca_entities.affiliation}}}{{{<ifdef code="ca_entities.affiliation,ca_entities.job_title">: </ifdef>}}}{{{^ca_entities.job_title}}} 
 <?php				
-				if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new")  || $this->request->user->hasUserRole("library_new")){
+				if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new")  || $this->request->user->hasUserRole("library_new")){
 					
 					if ($va_addresses = $t_entity->get("ca_entities.address", array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 						print "<h2>Contact Information</h2>";

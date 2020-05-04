@@ -15,16 +15,17 @@
 		}
 	}
 	if ($va_set_desc = $t_set_item->get('ca_set_items.set_item_description')) {
-		print "<div class='trimText'><h6>Description</h6>".$va_set_desc."</div>";
+		print "<div class='trimText'><h6></h6>".$va_set_desc."</div>";
 	}	
 ?>
 {{{<ifdef code="ca_objects.date"><b>Date: </b><unit delimiter="<br/>">^ca_objects.date</unit></ifdef>}}}
 {{{<ifdef code="ca_objects.description">^ca_objects.description<br/><br/></ifdef>}}}
 <br/><br/>
+<!--
 {{{<ifcount code="ca_entities" min="1" max="1"><b>Related person: </b></ifcount>}}}
 {{{<ifcount code="ca_entities" min="2"><b>Related people: </b></ifcount>}}}
 {{{<unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit><br/><br/>}}}
-
+-->
 
 <?php
 	if ($t_set_item->get('ca_set_items.hide_view_record', array('convertCodesToDisplayText' => true)) == "yes") { 

@@ -32,7 +32,7 @@
 	$va_access_values = $this->getVar("access_values");
 	$qr_res = $this->getVar('featured_set_items_as_search_result');
 	$o_config = $this->getVar("config");
-	include_once(__CA_LIB_DIR__."/ca/Search/SetSearch.php");
+	include_once(__CA_LIB_DIR__."/Search/SetSearch.php");
 	$o_set_search = new SetSearch();
 	$qr_res = $o_set_search->search("ca_sets.display_homepage:yes", array('sort' => 'ca_sets.rank', 'sort_direction' => 'asc', 'checkAccess' => $va_access_values));
 	

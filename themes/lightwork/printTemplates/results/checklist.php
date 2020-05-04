@@ -68,8 +68,8 @@
 			<tr>
 				<td>
 <?php 
-					if ($vs_path = $vo_result->getMediaPath('ca_object_representations.media', 'thumbnail')) {
-						print "<div class=\"imageTiny\"><img src='{$vs_path}'/></div>";
+					if ($vs_path = $vo_result->get('ca_object_representations.media.preview170', ['usePath' => 'true'])) {
+						print "<div class=\"imageTiny\">".$vs_path."</div>";
 					} else {
 ?>
 						<div class="imageTinyPlaceholder">&nbsp;</div>
@@ -118,6 +118,12 @@
 						if ($va_mediums = $vo_result->get('ca_objects.medium', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))) {
 							print "<div class='unit'><h6>Medium</h6>".$va_mediums."</div>";
 						}
+						if ($va_idno = $vo_result->get('ca_objects.accession', array('delimiter' => ', '))) {
+							print "<div class='unit'><h6>Catalog Number</h6>".$va_idno."</div>";
+						}	
+						if ($va_location = $vo_result->get('ca_objects.current_location', array('delimiter' => ', ', 'convertCodesToDisplayText' => true))) {
+							print "<div class='unit'><h6>Current Location</h6>".$va_location."</div>";
+						}											
 ?>
 					</div>				
 				</td>	

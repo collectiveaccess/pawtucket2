@@ -1,6 +1,6 @@
 <?php
 /* ----------------------------------------------------------------------
- * app/templates/checklist.php
+ * app/templates/fullpage.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
@@ -51,6 +51,8 @@
 	print $this->render("fullheader.php");
 	print $this->render("../footer.php");
 	
+	$va_access_values = caGetUserAccessValues($this->request);
+	
 	$t_list = new ca_lists();
 	$va_library_type_ids = array($t_list->getItemIDFromList("object_types", "book"), $t_list->getItemIDFromList("object_types", "copy"));
 	$va_archive_type_ids = array($t_list->getItemIDFromList("object_types", "audio"), $t_list->getItemIDFromList("object_types", "document"), $t_list->getItemIDFromList("object_types", "ephemera"), $t_list->getItemIDFromList("object_types", "image"), $t_list->getItemIDFromList("object_types", "moving_image"));
@@ -61,12 +63,12 @@
 		$t_collection = new ca_collections();
 		while($vo_result->nextHit()) {
 ?>
-			<div class="representationList">
+			<div class="representationList representationListFullpage">
 <?php		
-			print $vo_result->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '400px', 'scaleCSSHeightTo' => '400px'));
+			print $vo_result->get('ca_object_representations.media.page', array('return_with_access' => $va_access_values, 'scaleCSSWidthTo' => '620px', 'scaleCSSHeightTo' => '720px'));
 ?>
 			</div>
-			<div class='tombstone'>
+			<div class='tombstone fullpageTombstone'>
 <?php	
 			if(in_array($vo_result->get('ca_objects.type_id'), $va_library_type_ids)){
 				# --- library
@@ -109,7 +111,7 @@
 					print "<div class='unit'>AP ".(count($vo_result->get('ca_objects.edition.ap_total')) >= 2 ? $vo_result->get('ca_objects.edition.ap_number') : "")." from an edition of ".$vo_result->get('ca_objects.edition.edition_total')." + ".$vo_result->get('ca_objects.edition.ap_total')." AP";
 					print "</div>";					
 				}
-			if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
+			if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
 					print "<div>".$vo_result->get('ca_objects.idno')."</div>";
 					if ($vo_result->get('is_deaccessioned') && ($vo_result->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
 						print "<div style='font-style:italic; font-size:10px; color:red;'>"._t('Deaccessioned %1', $vo_result->get('deaccession_date'))."</div>\n";

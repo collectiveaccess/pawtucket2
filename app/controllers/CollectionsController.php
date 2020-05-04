@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2013-2017 Whirl-i-Gig
+ * Copyright 2013-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -48,7 +48,6 @@
             
  			$this->opo_config = caGetCollectionsConfig();
  			$this->view->setVar("collections_config", $this->opo_config);
- 			$this->opo_datamodel = Datamodel::load();
  			$this->opa_access_values = caGetUserAccessValues($this->request);
  		 	$this->view->setVar("access_values", $this->opa_access_values);
  		 	# --- what is the section called - title of page
@@ -88,7 +87,7 @@
  		 *
  		 */ 
  		public function Index() {
- 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").": ".$this->opo_config->get("section_title"));
+ 			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$this->opo_config->get("section_title"));
  			
  			$this->opo_result_context = new ResultContext($this->request, "ca_collections", "collections");
  			$this->opo_result_context->setAsLastFind();

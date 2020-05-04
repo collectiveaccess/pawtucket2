@@ -3,6 +3,7 @@
 	$va_first_items_from_set = $this->getVar("first_items_from_sets");
 	$va_access_values = $this->getVar('access_values');
 	if(is_array($va_sets) && sizeof($va_sets)){
+		$va_all_ids = array();
 ?>
 <div class="container">
 	<div class="row">
@@ -15,18 +16,22 @@
 					$qr_set_items = caMakeSearchResult("ca_objects", array_keys($t_set->getItemRowIDs()));
 					if($qr_set_items->numHits()){
 ?>
-						<div class="frontGallerySlideLabel"><?php print $va_set["name"].caNavLink($this->request, _t("See All")." <i class='fa fa-caret-down'></i>", "allButton", "", "Gallery", $vn_set_id);?></div>
+						<div class="frontGallerySlideLabel"><?php print caNavLink($this->request, _t("See All")." <i class='fa fa-caret-down'></i>", "btn-default", "", "Search", "projects", array("search" => "ca_sets.set_id:".$vn_set_id)); ?><?php print $va_set["name"]; ?> <span class='frontGallerySlideLabelSub'>/ <?php print $qr_set_items->numHits(); ?> projects</span></div>
 						<div class="jcarousel-wrapper">
 							<!-- Carousel -->
 							<div class="jcarousel gallery<?php print $i; ?>">
 								<ul>
 <?php
 									while($qr_set_items->nextHit()){
-										$vs_image = $qr_set_items->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values));
+										$va_all_ids[] = $qr_set_items->get("ca_objects.object_id");
+										$vs_image = $qr_set_items->getWithTemplate("<unit relativeTo='ca_objects.children'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+										if($vn_c = strpos($vs_image, ";")){
+											$vs_image = substr($vs_image, 0, $vn_c);
+										}
 										if(!$vs_image){
 											$vs_image = caGetThemeGraphic($this->request, 'frontImage.jpg', array("style" => "opacity:.5;"));
 										}
-										print "<li><div class='frontGallerySlide'>".caDetailLink($this->request, $vs_image, "", "ca_objects", $qr_set_items->get("ca_objects.object_id"))."<div class='frontGallerySlideCaption'>".caDetailLink($this->request, $qr_set_items->get("ca_objects.preferred_labels.name"), "", "ca_objects", $qr_set_items->get("ca_objects.object_id"))."</div></div></li>";
+										print "<li><div class='slide'>".caDetailLink($this->request, $vs_image, "", "ca_objects", $qr_set_items->get("ca_objects.object_id"))."<div class='slideCaption'>".caDetailLink($this->request, $qr_set_items->get("ca_objects.preferred_labels.name"), "", "ca_objects", $qr_set_items->get("ca_objects.object_id"))."</div></div></li>";
 									}
 ?>
 								</ul>
@@ -43,9 +48,23 @@
 								$('.gallery<?php print $i; ?>')
 									.jcarousel({
 										// Options go here
-										wrap:'circular'
+										auto: 1,
+										wrap: "circular",
+										animation:"slow"
+									}).jcarouselAutoscroll({
+										interval: 0,
+										target: '+=1',
+										autostart: false
 									});
-
+									
+									$('.gallery<?php print $i; ?>').jcarousel({
+										animation: {
+											duration: 1500, /* lower = faster animation */
+											easing:   'linear',
+											complete: function() {
+											}
+										}
+									});
 								/*
 								 Prev control initialization
 								 */
@@ -75,6 +94,28 @@
 										// Options go here
 										target: '+=1'
 									});
+							
+$(".previous<?php print $i; ?>").hover(function () {
+    $('.gallery<?php print $i; ?>').jcarouselAutoscroll('reload', {
+		interval: 0,
+		target: '-=1',
+		autostart: false
+	});
+    $(".gallery<?php print $i; ?>").jcarouselAutoscroll('start');
+},function () {
+    $(".gallery<?php print $i; ?>").jcarouselAutoscroll('stop');
+});
+$(".next<?php print $i; ?>").hover(function () {
+    $('.gallery<?php print $i; ?>').jcarouselAutoscroll('reload', {
+		interval: 0,
+		target: '+=1',
+		autostart: false
+	});
+    $(".gallery<?php print $i; ?>").jcarouselAutoscroll('start');
+},function () {
+    $(".gallery<?php print $i; ?>").jcarouselAutoscroll('stop');
+});
+					
 							});
 						</script>
 		<?php
@@ -88,5 +129,10 @@
 	</div><!-- end row -->
 </div> <!--end container-->
 <?php
+	
+		$o_context = new ResultContext($this->request, 'ca_objects', 'front');
+		$o_context->setAsLastFind();
+		$o_context->setResultList($va_all_ids);
+		$o_context->saveContext();
 	}
 ?>

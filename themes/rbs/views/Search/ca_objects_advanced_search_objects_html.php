@@ -36,7 +36,7 @@
 		</div>					
 		<div class='row'>
 			<div class="advancedSearchField col-sm-6">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search object identifiers.">Accession Number</span>
+				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search object identifiers.">Object Identifier</span>
 				{{{ca_objects.idno%width=210px}}}
 			</div>
 		</div>
@@ -56,12 +56,6 @@
 			<div class="advancedSearchField col-sm-12">
 				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records within a particular course.">Course </span>
 				{{{ca_occurrences.preferred_labels%width=200px&height=1&autocomplete=1}}}
-			</div>
-		</div>	
-		<div class='row'>
-			<div class="advancedSearchField col-sm-12">
-				<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records by cource identifier.">Course Identifier</span>
-				{{{ca_occurrences.idno%width=200px&height=1&autocomplete=1}}}
 			</div>
 		</div>			
 		<br style="clear: both;"/>

@@ -68,7 +68,7 @@
 						<div class="unit"><h2><?php print _t("Related")." ".$va_item_types[$vn_object_type_id]['name_singular'].((sizeof($va_object_list) > 1) ? "s" : ""); ?></h2>
 <?php
 					foreach($va_object_list as $vn_rel_object_id => $va_info) {
-						print "<div>".caDetailLink($this->request, $va_info["idno"], '', 'ca_objects', $vn_rel_object_id, array("subsite" => $this->request->session->getVar("coloradoSubSite")))." (".$va_info['relationship_typename'].")</div>";
+						print "<div>".caDetailLink($this->request, $va_info["idno"], '', 'ca_objects', $vn_rel_object_id, array("subsite" => Session::getVar("coloradoSubSite")))." (".$va_info['relationship_typename'].")</div>";
 					}
 					print "</div><!-- end unit -->";
 				}

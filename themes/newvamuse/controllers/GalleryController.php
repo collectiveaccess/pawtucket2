@@ -44,7 +44,6 @@
             }
             
  			$this->config = caGetGalleryConfig();
- 			$this->opo_datamodel = Datamodel::load();
  			
  		 	# --- what is the section called - title of page
  			if(!$vs_section_name = $this->config->get('gallery_section_name')){
@@ -184,6 +183,8 @@
  			$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $va_set_items[$pn_item_id]["row_id"], ['context' => 'gallery']));
  			$this->view->setVar("representation_id", $va_set_items[$pn_item_id]["representation_id"]);
  			$this->view->setVar("object_id", $va_set_items[$pn_item_id]["row_id"]);
+ 			$this->view->setVar("row_id", $va_set_items[$pn_item_id]["row_id"]);
+ 			$this->view->setVar("table", "ca_objects");
  			$pn_previous_id = 0;
  			$pn_next_id = 0;
  			$va_set_item_ids = array_keys($va_set_items);

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -45,7 +45,7 @@
 				<li><a href="https://www.pinterest.com/novamuse/" target="_blank"><i class="fa fa-pinterest"></i></a></li>
 				<li><a href="mailto:support@ansm.ns.ca" ><i class="fa fa-envelope"></i></a></li>
 			</ul>
-			<div style='padding-left:15px;'>© 2015 ANSM</div>
+			<div style='padding-left:15px;'>© 2015-2017 ANSM</div>
 		<?php
 			if ($this->request->getController() == 'Front') {
 		?>
@@ -98,5 +98,24 @@
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
 		</script>
+		
+		<script type="text/javascript">
+
+			 var _gaq = _gaq || [];
+			 _gaq.push(['_setAccount', 'UA-34843221-1']);
+			 _gaq.push(['_setDomainName', 'novamuse.ca']);
+			 _gaq.push(['_setAllowLinker', true]);
+			 _gaq.push(['_trackPageview']);
+
+			 (function() {
+			   var ga = document.createElement('script'); ga.type =
+			'text/javascript'; ga.async = true;
+			   ga.src = ('https:' == document.location.protocol ? 'https://ssl' :
+			'http://www') + '.google-analytics.com/ga.js';
+			   var s = document.getElementsByTagName('script')[0];
+			s.parentNode.insertBefore(ga, s);
+			 })();
+
+	</script>
 	</body>
 </html>

@@ -27,10 +27,11 @@
  */
  
 	$vs_lightbox_displayname = $this->getVar('lightbox_displayname');	
-	$vs_spacer = caGetThemeGraphic($this->request,'spacer.png');
+	$vs_spacer = caGetThemeGraphic($this->request,'spacer.png', array("alt" => "spacer"));
 ?>
+<a href='#' onclick='caMediaPanel.showPanel("<?php print caNavUrl($this->request, '', '*', 'setForm', array()); ?>"); return false;' >
 <div class='lbSet'><div class='lbSetContent'>
-	<H5><?php print _t("Create your first %1", $vs_lightbox_displayname); ?></H5>
+	<H2><?php print _t("Create your first %1", $vs_lightbox_displayname); ?></H2>
 	<div class='row'><div class='col-sm-6'><div class='lbSetImgPlaceholder'><br/><br/></div><!-- end lbSetImgPlaceholder --></div><div class='col-sm-6'>
 		<div class='row lbSetThumbRow'>
 			<div class='col-xs-3 col-sm-6 lbSetThumbCols'><div class='lbSetThumbPlaceholder'><?php print $vs_spacer; ?></div><!-- end lbSetThumbPlaceholder --></div>
@@ -40,3 +41,4 @@
 		</div><!-- end row --></div><!-- end col -->
 	</div><!-- end row -->
 </div><!-- end lbSetContent --></div><!-- end lbSet -->
+</a>

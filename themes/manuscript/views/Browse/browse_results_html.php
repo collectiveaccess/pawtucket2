@@ -115,9 +115,9 @@ if (!$vb_ajax) {	// !ajax
 			<small>	
 <?php 
 			if($vs_table == 'ca_collections'){
-				print caNavLink($this->request, _("View all Manuscripts"), '', '', 'Browse', 'manuscripts');
+				print caNavLink($this->request, _t("View all Manuscripts"), '', '', 'Browse', 'manuscripts');
 				print " | ";
-				print caNavLink($this->request, _("View all Utensils"), '', '', 'Browse', 'utensils');
+				print caNavLink($this->request, _t("View all Utensils"), '', '', 'Browse', 'utensils');
 			}
 ?>
 			</small>
@@ -141,7 +141,22 @@ if (!$vb_ajax) {	// !ajax
 				if ($va_criterion['facet_name'] != '_search') {
 					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
 				}else{
-					print ' '.$va_criterion['value'];
+					# --- if this is an advanced search for manuscripts with an institution passed, convert the id to the institution name
+					if($vb_is_search && $vn_is_advanced && ($vs_table == 'ca_objects')){
+						$va_search_parts = explode("; ", $va_criterion['value']);
+						$va_search_parts_processed = array();
+						foreach($va_search_parts as $vs_search_part){
+							if(strpos($vs_search_part, "CollectiveAccess id (from related collections)") !== false){
+								$vn_institution_id = str_replace("CollectiveAccess id (from related collections): ", "", $vs_search_part);
+								$t_inst = new ca_collections($vn_institution_id);
+								$vs_search_part = "Related Collection: ".$t_inst->get("ca_collections.preferred_labels.name");	
+							}
+							$va_search_parts_processed[] = $vs_search_part;
+						}
+						print ' '.join("; ", $va_search_parts_processed);
+					}else{
+						print ' '.$va_criterion['value'];
+					}
 					$vs_search = $va_criterion['value'];
 				}
 				$i++;

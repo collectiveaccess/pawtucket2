@@ -44,8 +44,8 @@
 
 	<!-- Prev/next controls -->
 	<div id='detailRepNav'>
-		<a href='#' id='detailRepNavPrev' title='<?php print _t("Previous"); ?>'><span class='glyphicon glyphicon-arrow-left'></span></a> 
-		<a href='#' id='detailRepNavNext' title='<?php print _t("Next"); ?>'><span class='glyphicon glyphicon-arrow-right'></span></a>
+		<a href='#' id='detailRepNavPrev' title='<?php print _t("Previous"); ?>' aria-label='Previous'><span class='glyphicon glyphicon-arrow-left'></span></a> 
+		<a href='#' id='detailRepNavNext' title='<?php print _t("Next"); ?>' aria-label='Next'><span class='glyphicon glyphicon-arrow-right'></span></a>
 		<div style='clear:both;'></div>
 	</div><!-- end detailRepNav -->
 </div><!-- end jcarousel-wrapper -->
@@ -54,15 +54,17 @@
 	jQuery(document).ready(function() {
 		var caSliderepresentation_ids = <?php print json_encode($va_representation_ids); ?>;
 		/* width of li */
-		$('.jcarousel, .jcarousel li').width($('.jcarousel').width());	// don't ask
+		$('.jcarousel, .jcarousel li, .jcarousel .video-js').width($('.jcarousel').width());	// don't ask
+		$('.jcarousel .video-js').height($('.jcarousel .video-js').width() * .5);
 		$( window ).resize(function() { $('.jcarousel li').width($('.jcarousel').width()); });
 
 		/* Carousel initialization */
 		$('.jcarousel').on('jcarousel:animate', function (event, carousel) {
 			$(carousel._element.context).find('li').hide().fadeIn(500);
 		}).on('jcarousel:createend jcarousel:animateend', function(event, carousel) {
-			var current_rep_id = parseInt($('.jcarousel').jcarousel('first').attr('id').replace('slide', ''));
+			var current_rep_id = parseInt($('.jcarousel').jcarousel('last').attr('id').replace('slide', ''));
 			var i = caSliderepresentation_ids.indexOf(current_rep_id);
+			console.log("current", current_rep_id, i, jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html());
 
 			if (event.type == 'jcarousel:animateend') {
 				if (!jQuery('#slide' + caSliderepresentation_ids[i] + ' #slideContent' + current_rep_id).html()) {
@@ -129,9 +131,6 @@
 				}
 			});
 			
-		if({{{representation_id}}} > 0){
-			$('.jcarousel').jcarousel('scroll', $('#slide{{{representation_id}}}'));
-		}
 	});
 </script>
 <?php

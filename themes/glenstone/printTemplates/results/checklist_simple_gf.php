@@ -72,12 +72,12 @@
 			$vn_object_id = $vo_result->get('ca_objects.object_id');		
 ?>
 			<div class="row">
-			<table>
+			<table style="height:120px;">
 			<tr>
-				<td>
+				<td width="170px" >
 <?php 
 					if ($vs_tag = $vo_result->get('ca_object_representations.media.medium', array('scaleCSSWidthTo' => '120px', 'scaleCSSHeightTo' => '120px'))) {
-						print "<div class=\"imageTiny\">{$vs_tag}</div>";
+						print "<div style='margin-left:20px;' class=\"imageTiny\">{$vs_tag}</div>";
 					} else {
 ?>
 						<div class="imageTinyPlaceholder">&nbsp;</div>
@@ -131,11 +131,11 @@
 						print "</div>";					
 					}
 				if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new")){
-					if ($vs_idno = $vo_result->get('ca_objects.idno')) {
-						print "<div class='unit'>".$vs_idno."</div>\n";
-					}																					
+					// if ($vs_idno = $vo_result->get('ca_objects.idno')) {
+// 						print "<div class='unit'>".$vs_idno."</div>\n";
+// 					}																					
 				}					
-				if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
+				if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
 						if ($vo_result->get('is_deaccessioned') && ($vo_result->get('deaccession_date', array('getDirectDate' => true)) <= caDateToHistoricTimestamp(_t('now')))) {
 							print "<div style='font-style:italic; font-size:10px; color:red;'>"._t('Deaccessioned %1', $vo_result->get('deaccession_date'))."</div>\n";
 						}						
@@ -153,5 +153,5 @@
 ?>
 		</div>
 <?php
-	print $this->render("pdfEnd.php");
+	print $this->render("../pdfEnd.php");
 ?>

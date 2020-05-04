@@ -2,7 +2,7 @@
 	$t_item = $this->getVar('item');
 	$va_access_values = $this->getVar('access_values');
 	#$t_item->dump();
-	$this->request->session->setVar("repViewerResults", "");
+	Session::setVar("repViewerResults", "");
 	$va_object_results = array();
 ?>
 <div id='detail' class='occurrences'>
@@ -156,7 +156,7 @@
 <?php
 			}
 	}	
-	$this->request->session->setVar("repViewerResults", $va_object_results);	
+	Session::setVar("repViewerResults", $va_object_results);	
 ?>
 			
 		</div><!-- end mediaArea-->

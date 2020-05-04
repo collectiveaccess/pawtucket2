@@ -57,7 +57,7 @@
 				<li<?php print (in_array($ps_view, array("installations", "installationThumbnails"))) ? " class='active'" : ""; ?>><?php print caDetailLink($this->request, _t("Installation views"), '', 'ca_occurrences', $t_item->get("occurrence_id"), array("view" => "installations"), null, array("type_id" => $t_item->get("type_id"))); ?></li>
 <?php
 				}
-				if($vs_pr_link = $t_item->get("press_release", array("version" => "original", "return" => "url"))){
+				if($vs_pr_link = $t_item->get("ca_occurrences.press_release.original.url")){
 					print "<li><a href='".$vs_pr_link."'>Press Release</a></li>";
 				}
 ?>			

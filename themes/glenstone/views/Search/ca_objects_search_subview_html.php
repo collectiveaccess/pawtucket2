@@ -106,8 +106,8 @@
 					print "<p><span $vs_style>".substr($qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true)), 0, $va_strlen-3)."... </span>".$qr_results->get('ca_objects.creation_date')."</p>";  
 				} else {
 					print "<p><span $vs_style>".$qr_results->get('ca_objects.preferred_labels.name', array('returnAsLink' => true))."</span>";
-					if ($qr_results->get('ca_objects.creation_date')) {
-						print $qr_results->get('ca_objects.creation_date', array('returnAsLink' => true, 'delimiter' => ', ', 'template' => ', ^creation_date'));
+					if ($qr_results->get('ca_objects.creation_date_display')) {
+						print $qr_results->get('ca_objects.creation_date_display', array('returnAsLink' => true, 'delimiter' => ', ', 'template' => ', ^ca_objects.creation_date_display'));
 					}
 					print "</p>";
 				}
@@ -145,7 +145,7 @@
 					#if ($vs_deaccession_notes = $qr_results->get('deaccession_notes')) { TooltipManager::add(".inspectorDeaccessioned", $vs_deaccession_notes); }
 				}	
 				if ($qr_results->get('ca_objects.type_id') == 28) {
-					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
+					if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin") || $this->request->user->hasUserRole("curatorial_advanced") || $this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("archives_new") || $this->request->user->hasUserRole("library_new")){
 						print "<p class='idno'>".$qr_results->get("ca_objects.idno")."</p>";
 					}
 				}			

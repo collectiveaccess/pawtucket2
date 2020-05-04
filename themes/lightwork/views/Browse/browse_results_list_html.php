@@ -86,7 +86,7 @@
 				}
 			
 				$qr_res->seek($vn_start);
-				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'small', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'checkAccess' => $va_access_values));
+				$va_images = caGetDisplayImagesForAuthorityItems($vs_table, $va_ids, array('version' => 'icon', 'relationshipTypes' => caGetOption('selectMediaUsingRelationshipTypes', $va_options, null), 'objectTypes' => caGetOption('selectMediaUsingTypes', $va_options, null), 'checkAccess' => $va_access_values));
 			} else {
 				$va_images = null;
 			}
@@ -116,7 +116,7 @@
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
-					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'small', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
+					$vs_image = ($vs_table === 'ca_objects') ? $qr_res->getMediaTag("ca_object_representations.media", 'icon', array("checkAccess" => $va_access_values)) : $va_images[$vn_id];
 				
 					if(!$vs_image){
 						if ($vs_table == 'ca_objects') {
@@ -140,16 +140,21 @@
 						if ($va_date = $qr_res->get('ca_objects.date')) {
 							$vs_info.= ", ".$va_date;
 						}						
-						if ($va_media = $qr_res->get('ca_objects.medium', array('convertCodesToDisplayText' => true))) {
+						if ($va_media = $qr_res->get('ca_objects.medium', array('convertCodesToDisplayText' => true, 'useSingular' => true))) {
 							$vs_info.= "<p>".$va_media."</p>";
-						}					
+						}	
+						$vs_add_to_set_link = "";
+						if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
+							$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
+						}				
+					} else {
+						$vs_info = null;
+						$vs_info.= 	$vs_label_detail_link;
+
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
 				
-					$vs_add_to_set_link = "";
-					if(is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
-						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
-					}
+
 				
 					$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 

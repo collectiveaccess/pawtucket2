@@ -33,7 +33,7 @@
 								print "<div class='galleryItem'>
 											<a href='#' onclick='jQuery(\"#gallerySetInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetInfo', array('set_id' => $vn_set_id))."\"); return false;'>
 												<div class='galleryItemImg'>".$va_first_item["representation_tag"]."</div>
-												<h5>".$va_set["name"]."</h5>
+												<h3>".$va_set["name"]."</h3>
 												<p><small class='uppercase'>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</small></p>
 											</a>
 											<div style='clear:both;'><!-- empty --></div>
@@ -53,8 +53,8 @@
 						if(sizeof($va_sets) > 4){
 ?>
 							<!-- Prev/next controls -->
-							<a href="#" class="galleryPrevious"><i class="fa fa-angle-left"></i></a>
-							<a href="#" class="galleryNext"><i class="fa fa-angle-right"></i></a>
+							<a href="#" class="galleryPrevious"><i class="fa fa-angle-left" aria-label="previous"></i></a>
+							<a href="#" class="galleryNext"><i class="fa fa-angle-right" aria-label="next"></i></a>
 <?php
 						}
 ?>

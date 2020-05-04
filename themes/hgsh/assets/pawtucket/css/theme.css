@@ -43,6 +43,10 @@ H1, h1{
 .detailTool a{
 	padding-right:80px;
 }
+
+.bResultText a:hover{
+	color: #fff;
+}
 a.btn-default{
 	text-decoration:none;
 }
@@ -363,6 +367,9 @@ nav, .navbar, .navbar-default{
 	line-height:1.4em;
 	padding:7px 30px 17px 17px;
 }
+.hpText a, .hpText a:hover{
+	color: #DDEAF3; 
+}
 @media (max-width: 1000px) {
 	.hpText{
 		font-size:18px;
@@ -391,7 +398,7 @@ nav, .navbar, .navbar-default{
 }
 /* footer */
 #footer{
-	margin:15px 0px 65px 0px;
+	margin:15px 0px 0px 0px;
 	padding-top:20px;
 	border-top: 1px solid #717B67;
 	font-size:11px;
@@ -437,6 +444,7 @@ nav, .navbar, .navbar-default{
 	overflow:hidden;
 	height:auto;
 	position:relative;
+	max-height: 266px;
 }
 .bResult a{
 	color:#FFFFFF;
@@ -446,6 +454,7 @@ nav, .navbar, .navbar-default{
 	width:100%;
 	height:auto;
 	max-width:235px;
+	max-height: 288px;
 	position:relative;
 }
 .bResultText, .detailCaptionText{
@@ -594,6 +603,14 @@ div.detailRelatedTitle{
 .detailCoverObject img{
 	width:100%;
 	height:auto;
+}
+.placeDetailImage img{
+	width: 100%;
+	height: auto;
+}
+
+.placeDetailImage p{
+	padding-top: 10px;
 }
 
 /* multisearch */
