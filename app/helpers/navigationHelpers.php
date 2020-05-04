@@ -1177,9 +1177,8 @@
 			if (is_array($va_ids) && ($vn_id_for_idno = array_shift($va_ids))) {
 				$vb_id_exists = true;
 			}
-			$vn_id_for_idno = str_replace("/", "~", $vn_id_for_idno);
-			
-		    $pn_id = (strlen($vn_id_for_idno)) ? $vn_id_for_idno : "id:{$pn_id}";
+
+		    $pn_id = (strlen($vn_id_for_idno) && (strpos($vn_id_for_idno, '/') === false)) ? $vn_id_for_idno : "id:{$pn_id}";
 		}
 		$vs_action .= "/".rawurlencode($pn_id);
 		

@@ -1364,48 +1364,17 @@
 	
 					$t_rep = new ca_object_representations($va_rep['representation_id']);
 					$va_rep_info = $t_rep->getMediaInfo("media", $vs_download_version);
-					//$va_rep_info = $va_rep['info'][$vs_download_version];
-					$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $vs_idno);
 
-					switch($this->request->user->getPreference('downloaded_file_naming')) {
-						case 'idno':
-							$vs_file_name = $vs_idno_proc.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
-							break;
-						case 'idno_and_version':
-							$vs_file_name = $vs_idno_proc.'_'.$vs_download_version.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
-							break;
-						case 'idno_and_rep_id_and_version':
-							$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$vs_download_version.'.'.$va_rep_info['EXTENSION'];
-							break;
-						case 'original_name':
-						default:
-							if ($va_rep['info']['original_filename']) {
-								$va_tmp = explode('.', $va_rep['info']['original_filename']);
-								if (sizeof($va_tmp) > 1) { 
-									if (strlen($vs_ext = array_pop($va_tmp)) < 3) {
-										$va_tmp[] = $vs_ext;
-									}
-								}
-								$vs_file_name = join('_', $va_tmp); 					
-							} else {
-								$vs_file_name = $vs_idno_proc.'_representation_'.$vn_representation_id.'_'.$vs_download_version;
-							}
-							
-							if (isset($va_file_names[$vs_file_name.'.'.$va_rep_info['EXTENSION']])) {
-								$vs_file_name.= "_{$vn_c}";
-							}
-							$vs_file_name .= '.'.$va_rep_info['EXTENSION'];
-							break;
-					} 
+					$vs_filename = caGetRepresentationDownloadFileName('ca_objects', ['idno' => $vs_idno, 'index' => $vn_c, 'version' => $vs_download_version, 'extension' => $va_rep_info['EXTENSION'], 'original_filename' => $va_rep['info']['original_filename'], 'representation_id' => $vn_representation_id]);
 					
-					$va_file_names[$vs_file_name] = true;
+					$va_file_names[$vs_filename] = true;
 				
 					//
 					// Perform metadata embedding
 					if (!($vs_path = $this->ops_tmp_download_file_path = caEmbedMediaMetadataIntoFile($t_rep->getMediaPath('media', $vs_download_version), 'ca_objects', $t_instance->getPrimaryKey(), $t_instance->getTypeCode(), $t_rep->getPrimaryKey(), $t_rep->getTypeCode()))) {
 						$vs_path = $t_rep->getMediaPath('media', $vs_download_version);
 					}
-					$va_file_paths[$vs_path] = $vs_file_name;
+					$va_file_paths[$vs_path] = $vs_filename;
 					
 					$vn_c++;
 				}
@@ -1417,9 +1386,9 @@
 
 				foreach($va_paths as $vn_pk => $va_reps) {
 					$vn_c = 1;
-					foreach($va_reps as $vs_path => $vs_file_name) {
+					foreach($va_reps as $vs_path => $vs_filename) {
 						if (!file_exists($vs_path)) { continue; }
-						$o_zip->addFile($vs_path, $vs_file_name);
+						$o_zip->addFile($vs_path, $vs_filename);
 
 						$vn_c++;
 					}

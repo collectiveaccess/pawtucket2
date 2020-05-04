@@ -35,14 +35,48 @@
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	
 	$va_access_values = caGetUserAccessValues($this->request);
+	
+	$ps_last_tab = $this->request->getParameter("last_tab", pString);
+	if($ps_last_tab){
+		$this->request->user->setVar("last_tab", $ps_last_tab);
+	}else{
+		$ps_last_tab = $this->request->user->getVar("last_tab");
+	}
+	$va_options = $this->getVar("config_options");
+	$vs_result_link = $this->getVar("resultsLink");
+	$vs_previous_link = $this->getVar("previousLink");
+	$vs_next_link = $this->getVar("nextLink");
+	if($ps_last_tab && (strpos($vs_result_link, "collections") !==false)){
+		$va_params = array();
+ 		$va_params["row_id"] = $t_object->getPrimaryKey();
+ 		$va_params["last_tab"] = $ps_last_tab;
+		$vs_result_link = ResultContext::getResultsLinkForLastFind($this->request, 'ca_objects', caGetOption('resultsLink', $va_options, _t('Back')), null, $va_params, ['aria-label' => _t('Back')]);	
+		if(!$vs_previous_link && !$vs_next_link){
+			# --- try to get it from the var set in estee/views/Collections/child_list_html.php
+			$va_guide_result_ids = $this->request->user->getVar("guide_ids");
+			if($va_guide_result_ids && sizeof($va_guide_result_ids)){
+				if(in_array($t_object->get("object_id"), $va_guide_result_ids)){
+					$vn_index = array_search($t_object->get("object_id"), $va_guide_result_ids);
+					if($vn_index !== false){
+						if($vn_index > 0){
+							$vs_previous_link = caDetailLink($this->request, caGetOption('previousLink', $va_options, _t('Previous')), "", "ca_objects", $va_guide_result_ids[$vn_index - 1]);
+						}
+						if($vn_next_id = $va_guide_result_ids[$vn_index + 1]){
+							$vs_next_link = caDetailLink($this->request, caGetOption('nextLink', $va_options, _t('Next')), "", "ca_objects", $vn_next_id);
+						}
+					}
+				}
+			}
+		}
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+		<?php print $vs_previous_link.$vs_result_link.$vs_next_link; ?>
 	</div><!-- end detailTop -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
+			<?php print $vs_previous_link.$vs_result_link; ?>
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
@@ -56,12 +90,12 @@
 				
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
-						print $vs_rep_viewer;
 						$vs_use_statement = trim($t_object->get("ca_objects.use_statement"));
 						if(!$vs_use_statement){
 							$vs_use_statement = $this->getVar("use_statement");
 						}
-						print "<H6>".$vs_use_statement."</H6>";
+						print "<H6 class='detailUseStatement text-center'>".$vs_use_statement."</H6>";
+						print $vs_rep_viewer;
 ?>
 						<script type="text/javascript">
 							jQuery(document).ready(function() {
@@ -76,7 +110,7 @@
 						print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request Digitization", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'digitizationRequest'))."</div>";
 					}	
 ?>				
-					<div id="detailAnnotations"></div>
+					<!--<div id="detailAnnotations"></div>-->
 				
 					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 			
@@ -395,7 +429,7 @@
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">
-			{{{nextLink}}}
+			<?php print $vs_next_link; ?>
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->

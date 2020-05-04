@@ -78,8 +78,13 @@ a.black{
 .filterMenuFacetList li.active {
     background-color: #000000;
 }
-.browse .btn, .sets .btn {
+.browse .btn, .sets .btn, .results .btn {
     background-color: #000000;
+    color: #fff;
+	margin-left: 5px;
+	margin-right: 5px;
+	letter-spacing: 1px;
+	font-size: 13px;
 }
 @media (max-width: 767px) {
 	.results ul.dropdown-menu{
@@ -89,6 +94,9 @@ a.black{
 }
 .results a .fa.fa-gear{
 	color:#666 !important;
+}
+.results H5 {
+    text-transform: capitalize;
 }
 H1, h1, H2, h2 {
     color: #d20000;
@@ -367,6 +375,10 @@ a:hover .frontIconButton{
 }
 .tl-slidenav-content-container .galleryTimelineDate{
 	font-size:1em;
+}
+.tl-timemarker-content h2.tl-headline {
+	text-transform:none;
+	font-size:12px !important;
 }
 /* replaceing the default date with one in the label template so can format date */
 .tl-headline-date{
@@ -1277,4 +1289,171 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
 .caMediaOverlayControls div.close {
 	background-color:red;
 	padding:0px 3px 3px 3px;
+}
+
+
+
+/* font support test */
+
+
+@font-face {
+	font-family: 'first_nations_unicoderegular';
+	src: url('first_nations_unicode_regular.woff2') format('woff2'),
+			url('first_nations_unicode_regular.woff') format('woff');
+    src: url('FirstNationsUnicodeROSx.ttf')  format('truetype'); /* Safari, Android, iOS */
+}
+.fn_unicodereg{
+	font-family:first_nations_unicoderegular;
+}
+@font-face {
+	font-family: 'aboriginalsansregular';
+	src: url('aboriginalsansregular.woff2') format('woff2'),
+			url('aboriginalsansregular.woff') format('woff');
+    src: url('AboriginalSansREGULAR.ttf')  format('truetype'); /* Safari, Android, iOS */
+}
+.aboriginalsansregular{
+	font-family:aboriginalsansregular;
+}
+
+/* digital exhibitions */
+
+.exploreDigitalExhibitionsRow{
+	background:
+		linear-gradient(
+		  rgba(224, 215, 186, .95), 
+		  rgba(224, 215, 186, 0.75)
+		),
+		url("../graphics/centre2.jpg");
+	background-position: center; 
+}
+.digExhHeroImg{
+	background-position: center;
+	background-size:cover;
+	margin-top:-15px
+}
+.digExhHeroContent{
+	background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.6), rgba(0,0,0,0));
+	padding-top:100px;
+	padding-bottom: 100px;
+	text-align:center;
+}
+.digExhHeroContent H1{
+	font-size:36px;
+	color:#FFF;
+	text-transform:uppercase;
+}
+.digExhContent H1{
+	font-size:36px;
+	color:#FFF;
+	text-transform:uppercase;
+}
+.digExhRightCol.fixed, .digExhSideNav.fixed{
+	position:fixed;
+	/*top:113px;*/
+	top:78px;
+	z-index:100;
+	width:100%;
+}
+.detail .digExh #detailTools {
+	margin-top: 10px;
+}
+.detail .digExhSideNav a:hover{
+	text-decoration:none;
+}
+.digExhSideNavLink{
+	background-color: #f0ede4;
+	padding-top:40px;
+	padding-bottom:40px;
+	text-align:center;
+	margin-top:5px;
+	margin-bottom:5px;
+}
+.digExhSideNavLinkImg{
+	background-position: center;
+	background-size:cover;
+}
+a .digExhSideNavLink{
+	color:#000;
+	font-size:14px;
+	text-transform:uppercase;
+	font-family: Lato;
+}
+.detail a:hover .digExhSideNavLink{
+	background-color: #e0d7ba;
+	-webkit-transition: background-color 500ms linear;
+    -ms-transition: background-color 500ms linear;
+    transition: background-color 500ms linear;
+    color:#000;
+    text-decoration:none;
+}
+a .digExhSideNavLinkImg .digExhSideNavLink{
+	color:#FFF;
+	background-color: transparent;
+	background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.5), rgba(0,0,0,0));
+}
+.detail a:hover .digExhSideNavLinkImg .digExhSideNavLink{
+	color:#FFF;
+	background-color: transparent;
+	background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.6), rgba(0,0,0,0));
+	-webkit-transition: background 2000ms;
+    -ms-transition: background 2000ms;
+    transition: background 2000ms;
+}
+.digExhContentBlock{
+	margin-bottom:40px;
+	position:relative;
+}
+a.digExhAnchors{
+	display:inline-block;
+	position:absolute;
+	top:-115px;
+}
+.digExhContentBlock .digExhUnit{
+	margin-bottom:25px;
+	font-size:15px;
+}
+.detail .digExhContentBlock, .detail .digExhContentBlock .digExhUnit p{	
+	font-size:15px;
+}
+.digExhContentBlock h2{
+	font-weight:normal;
+	font-size:24px;
+	text-transform:none;
+	color:#000;
+	font-family:lato;
+	margin-top:15px;
+	margin-bottom:25px;
+}
+.digExhContentBlock .quoteMargin{
+	font-size:25px;
+	text-align:center;
+	margin-top:60px;
+	margin-bottom:60px;
+	padding:40px;
+}
+.digExhContentBlock .quote{
+	font-size:25px;
+	text-align:center;
+	padding:40px;
+}	
+.vcenter {
+    display: inline-block;
+    vertical-align: middle;
+    float: none;
+}
+.digExhContentBlock .imgCol img{
+	width: 100%;
+	height: auto;
+}
+.digExhContentBlock .detailMediaToolbar, .detail .repViewerCont:hover .detailMediaToolbar{
+	display:none;
+}
+.digExhRelated H1{
+	display:none;
+}
+.digExhLinks a{
+	font-family:Lato;
+}
+.digExhLinks{
+	line-height:2em;
 }

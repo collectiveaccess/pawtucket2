@@ -364,7 +364,7 @@
 						<li role="presentation" class="active"><a href="#general" aria-controls="General Questions" role="tab" data-toggle="tab">General Questions</a></li>
 						<li role="presentation"><a href="#tours" aria-controls="profile" role="tab" data-toggle="tab">Tours</a></li>
 						<li role="presentation"><a href="#research" aria-controls="settings" role="tab" data-toggle="tab">Research Appointments</a></li>
-						<li role="presentation"><a href="#transfer" aria-controls="settings" role="tab" data-toggle="tab">Transfer</a></li>
+						<li role="presentation"><a href="#transfer" aria-controls="settings" role="tab" data-toggle="tab">Transfer to Archives</a></li>
 					</ul>
 				</section>
 				<section class="tabsContent float100">
@@ -778,7 +778,7 @@
 
 									<div class="row">
 										<div class="col-sm-12">
-											<H2>Transfer</H2>
+											<H2>Transfer to Archives</H2>
 											<p>{{{transfer_text}}}</p>
 											<hr/>
 					

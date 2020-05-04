@@ -5,7 +5,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$va_access_values = caGetUserAccessValues($this->request);
-	
+	$ps_last_tab = $this->request->getParameter("last_tab", pString);	
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
 	$va_collection_type_icons = $o_collections_config->get("collection_type_icons");
@@ -49,7 +49,8 @@
 	$o_context = new ResultContext($this->request, "ca_objects", 'detailrelated');
 	$o_context->setAsLastFind();
 	$o_context->saveContext();
-
+	
+	$ps_key = $this->request->getParameter("key", pString);
 
 # --- featured collections should have the original layout with images below
 # --- yes no values are switched
@@ -152,11 +153,11 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 						<section class="tabsTitle float100">
 
 							<ul role="tablist">
-								<li role="presentation" class="active"><a href="#browse" aria-controls="Browse Items" role="tab" data-toggle="tab">Browse Items</a></li>
+								<li role="presentation"<?php print ($ps_last_tab != "guide") ? ' class="active"' : ''; ?>><a href="#browse" aria-controls="Browse Items" role="tab" data-toggle="tab">Browse Items</a></li>
 <?php
 							if($vb_show_collection_guide){
 ?>
-								<li role="presentation"><a href="#guide" aria-controls="Collection Guide" role="tab" data-toggle="tab">Collection Guide</a></li>
+								<li role="presentation"<?php print ($ps_last_tab == "guide") ? ' class="active"' : ''; ?>><a href="#guide" aria-controls="Collection Guide" role="tab" data-toggle="tab">Collection Guide</a></li>
 <?php
 							}
 							if($vb_show_collection_chronology){
@@ -176,13 +177,13 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 
 							<div class="tab-content collectionTabs">
 								<br/>
-								<div role="tabpanel" class="tab-pane active" id="browse">
+								<div role="tabpanel" class="tab-pane<?php print ($ps_last_tab != "guide") ? ' active' : ''; ?>" id="browse">
 									<div id="browseResultsDetailContainer">
 										<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
 									</div><!-- end browseResultsDetailContainer -->
 									<script type="text/javascript">
 										jQuery(document).ready(function() {
-											jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'brand_facet', 'id' => $vn_brand, 'showFilterPanel' => 1, 'view' => 'images', 'dontSetFind' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+											jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'brand_facet', 'id' => $vn_brand, 'showFilterPanel' => 1, 'view' => 'images', 'dontSetFind' => 1, 'key' => $ps_key), array('dontURLEncodeParameters' => true)); ?>", function() {
 						//						jQuery('#browseResultsDetailContainer').jscroll({
 						//							autoTrigger: true,
 						//							loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -197,7 +198,7 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 <?php
 						if($vb_show_collection_guide){
 ?>
-								<div role="tabpanel" class="tab-pane" id="guide">
+								<div role="tabpanel" class="tab-pane<?php print ($ps_last_tab == "guide") ? ' active' : ''; ?>" id="guide">
 									<div class="row">
 										<div class="col-sm-12">
 <?php
@@ -253,11 +254,11 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 							</div><!-- end tab-content-->
 							<script type='text/javascript'>
 								jQuery(document).ready(function() {
-									$('#collectionTabs a').click(function (e) {
+									$('.collectionTabs a').click(function (e) {
 										e.preventDefault()
 										$(this).tab('show')
 									});
-									$('#myTabs a[href="#browse"]').tab('show');
+
 								});
 							</script>
 						</section>

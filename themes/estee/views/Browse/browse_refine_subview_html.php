@@ -71,7 +71,15 @@
 						$vn_c = 0;
 						foreach($va_facet_info['content'] as $va_item) {
 						    $vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-							print "<div>".caNavLink($this->request, $va_item['label'].$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+							$vs_label = $va_item['label'];
+							if($vs_facet_name == "select_category_facet"){
+								$t_list_item = new ca_list_items($va_item['id']);
+								$vs_label = $t_list_item->get("ca_list_items.preferred_labels.name_plural");
+							}
+							#if(($vs_facet_name == "type_facet") && (strToLower($vs_label) == "product components")){
+							#	continue;
+							#}
+							print "<div>".caNavLink($this->request, $vs_label.$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 							$vn_c++;
 						
 							if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
@@ -109,16 +117,9 @@
 					if (offset.top<scrollTop && ((offset.top + jQuery('#pageArea').height() - jQuery('#bRefine').height()) > scrollTop)) {
 						jQuery('#bRefine').addClass('fixed');
 						jQuery('#bRefine').width(panelWidth);
-						if((jQuery(window).scrollTop() + jQuery(window).height()) >= (jQuery(document).height() - 100)) {
-							jQuery('#bRefine').height(jQuery(window).height() - jQuery('#footer').height() - 100);
-						}else{
-							jQuery('#bRefine').height('100%');
-						}
-						
 					} else {
 						jQuery('#bRefine').removeClass('fixed');
 					}
-					
 				});
             }
 		});

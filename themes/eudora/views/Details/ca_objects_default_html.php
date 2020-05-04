@@ -41,6 +41,7 @@
 	# --- get representations
 	$va_reps_obverse = $t_object->getRepresentations(array("large"), null, array("restrictToTypes" => array("obverse"), "checkAccess" => $va_access_values));
 	$va_reps_reverse = $t_object->getRepresentations(array("large"), null, array("restrictToTypes" => array("reverse"), "checkAccess" => $va_access_values));
+	$va_reps_detail = $t_object->getRepresentations(array("large"), null, array("restrictToTypes" => array("detail"), "checkAccess" => $va_access_values));
 	$va_reps = array();
 	if(is_array($va_reps_obverse) && sizeof($va_reps_obverse)){
 		foreach($va_reps_obverse as $vn_rep_id => $va_rep_info){
@@ -68,7 +69,7 @@
 			<div class="row">
 				<div class='col-sm-12 col-md-8 col-lg-7 col-lg-offset-1'>
 <?php
-			$va_title_fields = array("mint", "authority", "denomination", "date");
+			$va_title_fields = array("mint", "authority", "denomination", "date_container.date_display");
 			$va_title_parts = array();
 			foreach($va_title_fields as $vs_title_field){
 				if($vs_tmp = $t_object->get("ca_objects.".$vs_title_field)){
@@ -178,7 +179,7 @@
 								"Magistrate" => "magistrate",
 							);
 							$va_classification_fields = array(	
-								"Date" => "date",
+								"Date" => "date_container.date_display",
 								"Date On Object" => "dob",
 								"Period" => "period",
 								"Type (PELLA)" => "type",
@@ -211,7 +212,7 @@
 	
 							$vs_classification = "";
 							foreach($va_classification_fields as $vs_label => $vs_field){
-								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
+								if($vs_tmp = $t_object->get('ca_objects.'.$vs_field, array("delimiter" => ", ", 'convertCodesToDisplayText' => true))){
 									$vs_classification .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
 								}
 							}
@@ -221,7 +222,7 @@
 
 							$vs_descriptive = "";
 							foreach($va_descriptive_fields as $vs_label => $vs_field){
-								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", "))){
+								if($vs_tmp = $t_object->get($vs_field, array("delimiter" => ", ", 'convertCodesToDisplayText' => true))){
 									$vs_descriptive .= "<div class='unit'><H6>".$vs_label."</H6>".$vs_tmp."</div>";
 								}
 							}
@@ -244,10 +245,11 @@
 						<div class="col-sm-4">
 <?php
 							# citation format: [Author].[Publicaton Date].[Publication Name], p.[Page Number(s)], [Item Number(s)]. Then, this is followed by the notes field from the edited coin Literature relationship
-							$vs_literature_template = '<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" restrictToRelationshipTypes="author" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>. </ifcount></unit>
-														<ifdef code="ca_occurrences.date">^ca_occurrences.date. </ifdef>
-														<ifdef code="ca_occurrences.preferred_labels.name">^ca_occurrences.preferred_labels.name</ifdef><unit relativeTo="ca_objects_x_occurrences"><ifdef code="ca_objects_x_occurrences.page_number">, ^ca_objects_x_occurrences.page_number</ifdef><ifdef code="ca_objects_x_occurrences.item_number">, ^ca_objects_x_occurrences.item_number</ifdef></unit><ifdef code="ca_occurrences.preferred_labels.name">. </ifdef>
-														<unit relativeTo="ca_objects_x_occurrences"><ifdef code="ca_objects_x_occurrences.comments"><p>^ca_objects_x_occurrences.comments</p></ifdef></unit>';
+							// $vs_literature_template = '<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" restrictToRelationshipTypes="author" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>. </ifcount></unit>
+// 														<ifdef code="ca_occurrences.date">^ca_occurrences.date. </ifdef>
+// 														<ifdef code="ca_occurrences.preferred_labels.name">^ca_occurrences.preferred_labels.name</ifdef><unit relativeTo="ca_objects_x_occurrences"><ifdef code="ca_objects_x_occurrences.page_number">, ^ca_objects_x_occurrences.page_number</ifdef><ifdef code="ca_objects_x_occurrences.item_number">, ^ca_objects_x_occurrences.item_number</ifdef></unit><ifdef code="ca_occurrences.preferred_labels.name">. </ifdef>
+// 														<unit relativeTo="ca_objects_x_occurrences"><ifdef code="ca_objects_x_occurrences.comments"><p>^ca_objects_x_occurrences.comments</p></ifdef></unit>';
+							$vs_literature_template = '<unit relativeTo="ca_occurrences"><ifcount code="ca_entities" min="1"><unit relativeTo="ca_entities" delimiter=", ">^ca_entities.preferred_labels.displayname</unit>, </ifcount><ifnotdef code="ca_occurrences.short_citation">^ca_occurrences.preferred_labels.name</ifnotdef>^ca_occurrences.short_citation</unit><ifdef code="ca_objects_x_occurrences.page_number">, ^ca_objects_x_occurrences.page_number</ifdef><ifdef code="ca_objects_x_occurrences.item_number">, ^ca_objects_x_occurrences.item_number</ifdef><ifdef code="ca_occurrences.description">. ^ca_occurrences.description</ifdef><ifdef code="ca_occurrences.provenance_URL"> (<a href="^ca_occurrences.provenance_URL" target="_blank">Link</a>)</ifdef>';
 							$vs_rel_publication = $t_object->getWithTemplate('<ifcount code="ca_occurrences" min="1" restrictToTypes="literature" restrictToRelationshipTypes="publication">
 																				<div class="unit">
 																					<H6>Publication<ifcount code="ca_occurrences" min="2" restrictToTypes="literature" restrictToRelationshipTypes="publication">s</ifcount></H6>
@@ -279,11 +281,11 @@
 							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale,collection"><H4>Collection History</H4></ifcount>}}}
 							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="sale"><div class='unit'><h6>Auction<ifcount min="2" code="ca_occurrences" restrictToTypes="sale">s</ifcount></h6>
 									<unit relativeTo='ca_objects_x_occurrences' delimiter=' ' restrictToTypes='sale' sort='ca_occurrences.date' sortDirection='DESC'>
-										<div class='unitSub'>^ca_occurrences.preferred_labels<ifdef code='ca_occurrences.sale_number'> ^ca_occurrences.sale_number</ifdef><ifdef code='ca_occurrences.date'>, ^ca_occurrences.date</ifdef><ifdef code='ca_objects_x_occurrences.lot_number'>, ^ca_objects_x_occurrences.lot_number</ifdef>
+										<div class='unitSub'>^ca_occurrences.preferred_labels<ifdef code='ca_occurrences.sale_number'> ^ca_occurrences.sale_number</ifdef><ifdef code='ca_occurrences.date_container.date_display'>, ^ca_occurrences.date_container.date_display</ifdef><ifdef code='ca_objects_x_occurrences.lot_number'>, ^ca_objects_x_occurrences.lot_number</ifdef>
 										</div>
 									</unit>
 								</ifcount>}}}
-							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="collection"><div class='unit'><h6>Former Collection<ifcount min="2" code="ca_occurrences" restrictToTypes="collection">s</ifcount></h6><unit relativeTo='ca_occurrences' delimiter=' ' restrictToTypes='collection'><div class='unitSub'>^ca_occurrences.preferred_labels</div></unit></ifcount>}}}
+							{{{<ifcount min="1" code="ca_occurrences" restrictToTypes="collection"><div class='unit'><h6>Former Collection<ifcount min="2" code="ca_occurrences" restrictToTypes="collection">s</ifcount></h6><unit relativeTo='ca_occurrences' delimiter=' ' restrictToTypes='collection'><div class='unitSub'>^ca_occurrences.preferred_labels<ifdef code="ca_occurrences.description">. ^ca_occurrences.description</ifdef><ifdef code="ca_occurrences.provenance_URL"> (<a href="^ca_occurrences.provenance_URL" target="_blank">Link</a>)</ifdef></div></unit></ifcount>}}}
 
 						</div>
 						<div class="col-sm-4">

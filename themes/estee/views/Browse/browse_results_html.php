@@ -75,6 +75,8 @@
 		$o_context = new ResultContext($this->request, "ca_objects", 'detailrelated');
 		
 		$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+		#$o_context->setResultList(array_merge($o_context->getResultList(), $qr_res->getPrimaryKeyValues(1000)));
+		$o_context->setParameter('key', $vs_browse_key);
 		$qr_res->seek($vn_start);
 		$o_context->saveContext();
 	}
@@ -489,7 +491,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			   objIDs.push($(this).val());
 			});
 			objIDsAsString = objIDs.join(';');
-			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveSelectedResults" => 1)); ?>/object_ids/' + objIDsAsString);
+			caMediaPanel.showPanel('<?php print caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveSelectedResults" => 1, "noRefresh" => 1)); ?>/object_ids/' + objIDsAsString);
 			e.preventDefault();
 			return false;
 		});
@@ -500,14 +502,14 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			$(".catchLinks").on("click", "a", function(event){
 				if(!$(this).hasClass('dontCatch') && $(this).attr('href') != "#"){
 					event.preventDefault();
-					var url = $(this).attr('href') + "/showFilterPanel/1";
+					var url = $(this).attr('href') + "/showFilterPanel/1/dontSetFind/1";
 					$('#browseResultsDetailContainer').load(url);
 				}
 								
 			});
 			$("#searchWithin").submit(function( event ) {
   				event.preventDefault();
- 				var url = $("#searchWithin").attr('action') + "/showFilterPanel/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + encodeURIComponent($('#searchWithinSearchRefine').val());
+ 				var url = $("#searchWithin").attr('action') + "/dontSetFind/1/showFilterPanel/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + encodeURIComponent($('#searchWithinSearchRefine').val());
  				$('#browseResultsDetailContainer').load(url);
 			});
 <?php
