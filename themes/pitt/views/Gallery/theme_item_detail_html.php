@@ -27,8 +27,33 @@
 		print "<div class='exName'>".caNavLink($this->request, $t_set->get('ca_sets.preferred_labels'), '', '', 'Gallery', $t_set->get('ca_sets.set_id'), array('theme' => 1))."</div>";
 		print "<div class='container objectSlide'><div class='row'>";
 		print "<div class='col-sm-5' style='margin-left:-15px;'>";
-		print "<div class='themeImage'>".$t_object->get('ca_object_representations.media.large')."</div>";
-		print "<div class='setItemCaption'>".$t_set_item->get('ca_set_items.preferred_labels')."</div>";
+		$va_reps = $t_object->getRepresentations(array('version' => 'large'), null, array('return_with_access' => caGetUserAccessValues($this->request)));
+		$vs_rep_id = $va_reps[0]['representation_id'];
+		print "<div class='themeImage'>";
+	
+		$t_representation = new ca_object_representations($vs_rep_id);
+		$va_options = array();
+		$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
+		#print caObjectDetailMedia($this->request, $object_id, $t_representation, $t_object, array_merge($va_media_display_info, array("primaryOnly" => true)));		
+		require_once(__CA_LIB_DIR__."/core/Media/MediaViewerManager.php");
+		print caRepresentationViewer($this->request, $t_object, $t_object, array_merge($va_options, $va_media_display_info, 
+					array(
+						'display' => 'detail',
+						'showAnnotations' => true, 
+						'primaryOnly' => false, 
+						'dontShowPlaceholder' => true, 
+						'captionTemplate' => ''
+					)
+				)
+			);
+
+		
+		print "</div>";
+		print "<div class='setItemCaption'>".$t_set_item->get('ca_set_items.preferred_labels');
+			if ($va_credit_line = $t_object->get('ca_objects.credit_line')) {
+				print "<div class='creditLine'>".$va_credit_line."</div>";
+			}
+		print "</div>";
 		print "</div>";
 		print "<div class='col-sm-3' >";
 		print "<div class='setItemDescription background'><h3>Description</h3>".$t_set_item->get('ca_set_items.set_item_description')."</div>";	
@@ -48,6 +73,15 @@
 			$vn_i = 1;
 			foreach ($va_set_items as $va_key => $va_set_item) {
 				if ($va_set_item['item_id'] == $pn_set_item_id) {continue;}
+				$t_related_set_item = new ca_set_items($va_set_item['item_id']);
+				$va_related_topics = $t_related_set_item->get('ca_set_items.set_item_theme', array('returnAsArray' => true));
+				$is_related = false;
+				foreach ($va_related_topics as $va_key => $vn_related_topic_id) {
+					if (in_array($vn_related_topic_id, $va_set_item_topics)) {
+						$is_related = true;
+					}
+				}
+				if ($is_related == false){continue;}
 				print "<div class='col-sm-6 themeThumb item'>";
 				print caNavLink($this->request, $va_set_item['representation_tag_iconlarge']."<div class='setItemCaption'>".$va_set_item['set_item_label']."</div>", '', '', 'Gallery', $pn_set_id, array('theme_item' => 1, 'set_item_id' => $va_set_item['item_id']));
 				print "</div>";

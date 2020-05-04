@@ -23,7 +23,6 @@
 			}
 			
 ?>
-			<br />
 			<?php print $t_set->get('ca_sets.set_description') ?>		
 			</div>		
 		</div>	<!-- end col -->	

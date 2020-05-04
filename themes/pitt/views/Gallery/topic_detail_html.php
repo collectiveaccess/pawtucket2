@@ -56,7 +56,9 @@
 					$va_themes = $t_set_item->get('ca_set_items.set_item_theme', array('returnAsArray' => true));
 					foreach ($va_themes as $va_key => $va_theme) {
 						if ($va_theme != $pn_theme_id) {
-							$va_theme_list[$va_theme] = "<div class='col-sm-4'><div class='galleryItem'>".caNavLink($this->request, caGetListItemByIDForDisplay($va_theme), '', '', 'Gallery', $pn_set_id, array('theme_id' => $va_theme))."</div></div>";
+							if ($va_theme != 0) {
+								$va_theme_list[$va_theme] = "<div class='col-sm-4'><div class='galleryItem'>".caNavLink($this->request, caGetListItemByIDForDisplay($va_theme), '', '', 'Gallery', $pn_set_id, array('theme_id' => $va_theme))."</div></div>";
+							}
 						}
 					}
 				}

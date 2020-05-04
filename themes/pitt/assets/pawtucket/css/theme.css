@@ -1,12 +1,15 @@
 body {
 	font-family:proximanova;
 }
-h1, h2, h3, h4, h5 {
+h1, h2, h3, h4, h5, h6 {
 	font-family:proximanova;
 	color: #1c2957;
 }
 a {
 	color: #1c2957;
+}
+b, strong {
+    font-family: proximanova;
 }
 .btn-default {
 	padding: 7px 5px 5px 5px;
@@ -135,9 +138,10 @@ textarea {
 
 #footer {
 	margin-bottom:20px;
-	height:70px;
+	height:50px;
 	color: #666;
 	padding-top:8px;
+	font-family:proximanova;
 }
 
 #footer .info {
@@ -261,6 +265,13 @@ div.browseMenuBrowseAll {
 	float:right;
 	margin-top:-10px;
 }
+.browseHeadernav.active, .browseHeadernav.active a {
+    background-color: transparent;
+    color:#333;
+}
+.browseTargetLabel {
+	padding-top:6px;
+}	
 
 /* Advanced Search */
 
@@ -278,6 +289,9 @@ a.caAdvancedSearchFormReset:hover, a.caAdvancedSearchFormSubmit:hover {
 	color: #fff;
 	text-decoration:none;
 }
+.attributeListItem {
+	width:100% !important;
+} 
 /* Static Pages */
 
 .conservation img {
@@ -437,10 +451,14 @@ a.caAdvancedSearchFormReset:hover, a.caAdvancedSearchFormSubmit:hover {
 .setItemDescription.background h3 {
 	margin-top:5px;
 }
+.gallery #gallerySetInfo a.setlabel {
+	font-size:20px;
+}
 .galleryThumbnail {
-	bottom:20px;
-	left:50px;
-	position:absolute;
+	bottom:0px;
+	left:0px;
+	position:relative;
+	width:100%;
 }
 .galleryThumbnail .image, .galleryThumbnail .text {
 	float:left;
@@ -449,32 +467,33 @@ a.caAdvancedSearchFormReset:hover, a.caAdvancedSearchFormSubmit:hover {
 	margin-right:10px;
 }
 .galleryThumbnail .text {
-    position: absolute;
+    position: relative;
     bottom: 0px;
-    width: 300px;
-    left: 82px;
+    width: auto;
+    left: 0px;
 } 
 .galleryThumbnail .text p {
 	text-align:left;
 	margin-bottom:3px;
-    color: rgba(255,255,255,0.7);
-    text-shadow: rgba(0,0,0,0.45) 1px 1px 0;
+    color: #1c2957;
+    text-shadow: 0;
     font-size: 13px;
     line-height: 1.2em;
     font-weight:bold;
 	
 }
 .galleryThumbnail .text p a {
-    color: rgba(255,255,255,0.7);
-    text-shadow: rgba(0,0,0,0.45) 1px 1px 0;
+    color: #1c2957;
+    text-shadow: 0;
     text-decoration:none;
     border-bottom:1px solid #eee;
 }
 .galleryTextArea {
 	text-align:left;
 	font-size:13px;
-	max-height: 600px;
+	max-height: 550px;
     overflow: auto;
+    margin-bottom:40px;
 }
 .galleryTextArea div{
 	padding-right:15px;
@@ -603,6 +622,13 @@ a.caAdvancedSearchFormReset:hover, a.caAdvancedSearchFormSubmit:hover {
 
 /* Detail */
 
+.detail #detailTools {
+	font-family:proximanova;
+}
+.creditLine {
+	padding-top:10px;
+	color:#999;
+}
 a.readmore-js-toggle {
 	color: #1c2957;
 }
