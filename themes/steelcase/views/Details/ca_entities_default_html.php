@@ -42,7 +42,7 @@
 									$va_style_display[] = caNavLink($this->request, $vs_style_movement, "", "", "Browse", "Objects", array("facet" => "styles_movement_facet", "id" => $va_style["styles_movement"]));
 								}
 							}
-							if(sizeof($va_style_display)){
+							if(is_array($va_style_display) && sizeof($va_style_display)){
 								print "<H6>"._t("Style/Movement")."</H6>";
 								print join(", ", $va_style_display);
 							}
@@ -52,7 +52,7 @@
 					{{{<ifdef code="ca_entities.entity_bio"><HR/><H6>Biography</H6>^ca_entities.entity_bio</ifdef>}}}
 					<HR/>
 					<div id="detailTools">
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print is_array($va_comments) ? sizeof($va_comments) : 0; ?>)</a></div><!-- end detailTool -->
 						<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
 						<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 					</div><!-- end detailTools -->
