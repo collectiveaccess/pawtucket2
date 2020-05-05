@@ -879,14 +879,13 @@
 				$vs_set_list = "<ul".(($vs_class) ? " class='".$vs_class."'" : "").(($vs_role) ? " role='".$vs_role."'" : "").">\n";
 
 				$vn_c = 0;
+				
+				if (sizeof($va_sets) > $vn_limit) { $va_sets = array_slice($va_sets, $vn_limit * -1); }
 				foreach($va_sets as $vn_set_id => $va_set){
 					if($vb_omit_front_page_set && $vs_front_page_set_code && ($va_set["set_code"] == $vs_front_page_set_code)){
 						continue;
 					}
 					$vs_set_list .= "<li>".caNavLink($po_request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</li>\n";
-					$vn_c++;
-
-					if ($vn_c >= $vn_limit) { break; }
 				}
 				$vs_set_list .= "</ul>\n";
 			}
