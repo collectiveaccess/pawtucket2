@@ -130,6 +130,7 @@ $( document ).ready(function() {
 						<ul class="sub-menu">
 							<li id="menu-item-410" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-410"><a href="/lists/about-these-lists/"><?php print _t('About these resources');?></a></li>
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Bibliography'), '', '', 'Listing', 'bibliography');?></li>
+							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Modern editions with substantial references to suelta editions'), '', '', 'Listing', 'modern_editions');?></li>
 							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, _t('Institutions'), '', '', 'Browse', 'collections');?></li>													
 							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><a href="/lists/playwrights/"><?php print _t('Playwrights, translators, and adaptors');?></a></li>
 							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><a href="/lists/printers/"><?php print _t('Printers, publishers, booksellers, and bookstores');?></a></li>
