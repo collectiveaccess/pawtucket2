@@ -452,7 +452,7 @@
  				# --- if making a new reponse set, check there isn't already one for the user
  				$va_user_response_ids = $t_set->getSetResponseIds($this->request->getUserID(), $pn_parent_id);
  				if(is_array($va_user_response_ids) && sizeof($va_user_response_ids)){
- 					$va_errors[] = _t('Only one reponse allowed');
+ 					$va_errors[] = _t('Only one response allowed');
  				}
  			}
  			// check for errors
