@@ -115,7 +115,7 @@
 									break;
 								# ----------------------------------------
 								case "D":
-									print _t("removed and item from %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
+									print _t("removed an item from %1", caNavLink($this->request, $va_activity["name"], "", "", "Lightbox", "setDetail", array("set_id" => $va_activity["set_id"])));
 									break;
 								# ----------------------------------------
 							}
