@@ -38,6 +38,5 @@
 	while(is_resource($o_fp) && !feof($o_fp)) {
 		print(@fread($o_fp, 1024*8));
 		ob_flush();
-		flush();
 	}
-?>
+	exit;

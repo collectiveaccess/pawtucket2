@@ -601,74 +601,29 @@
 
 						$va_rep_display_info = caGetMediaDisplayInfo('download', $qr_res->getMediaInfo('ca_object_representations.media', 'INPUT', 'MIMETYPE'));
 						$vs_media_version = $va_rep_display_info['download_version'];
-						$va_original_paths = $qr_res->getMediaPaths('ca_object_representations.media', 'large');
+						$va_original_paths = $qr_res->getMediaPaths('ca_object_representations.media', $vs_media_version);
 						if(sizeof($va_original_paths)>0) {
+							$info = $qr_res->getMediaInfo('ca_object_representations.media');
 							$va_paths[$qr_res->get($t_instance->primaryKey())] = array(
 								'idno' => $qr_res->get($t_instance->getProperty('ID_NUMBERING_ID_FIELD')),
 								# --- this path is only the primary rep path
 								'paths' => $va_original_paths,
-								'rep_id' => $qr_res->get("ca_object_representations.representation_id")
+								'rep_id' => $qr_res->get("ca_object_representations.representation_id"),
+								'original_filename' => caGetOption('ORIGINAL_FILENAME', $info, null)
 							);
 						}
 					}
 					if (sizeof($va_paths) > 0){
 						$o_zip = new ZipStream();
-			
-						$vs_downloaded_file_naming = $this->request->config->get('downloaded_file_naming');
 							
 						foreach($va_paths as $vn_pk => $va_path_info) {
 							$vn_c = 1;
 							foreach($va_path_info['paths'] as $vs_path) {
 								if (!file_exists($vs_path)) { continue; }
-								$vs_idno_proc = preg_replace('![^A-Za-z0-9_\-]+!', '_', $va_path_info['idno']);
-								if(!$vs_idno_proc){
-									$vs_idno_proc = $vn_pk;
-								}
-								$vs_ext = pathinfo($vs_path, PATHINFO_EXTENSION);
-								switch($vs_downloaded_file_naming) {
-									case 'idno':
-										$vs_file_name = $vs_idno_proc.'_'.$vn_c.'.'.$vs_ext;
-										break;
-									case 'idno_and_version':
-										$vs_file_name = $vs_idno_proc.'_'.$vs_media_version.'_'.$vn_c.'.'.$vs_ext;
-										break;
-									case 'idno_and_rep_id_and_version':
-										$vs_file_name = $vs_idno_proc.'_representation_'.$va_path_info['rep_id'].'_'.$vs_media_version.'.'.$vs_ext;
-										break;
-									case 'original_name':
-									default:
-										$t_rep = new ca_object_representations($va_path_info['rep_id']);
-										$va_info = $t_rep->getMediaInfo('media');
-										$va_rep_info = $t_rep->getMediaInfo('media', $vs_media_version);
-										$vals = ['idno' => $vs_idno_proc];
-										foreach(array_merge($va_rep_info, $va_info) as $k => $v) {
-											if (is_array($v)) { continue; }
-											if (strtolower($k) == 'original_filename') { $v = pathinfo($v, PATHINFO_FILENAME); }
-											$vals[strtolower($k)] = preg_replace('![^A-Za-z0-9_\-]+!', '_', $v);
-										}
-
-										if (strpos($vs_downloaded_file_naming, "^") !== false) { // template
-											$vs_file_name = caProcessTemplate($vs_downloaded_file_naming, $vals);
-										} elseif ($va_info['ORIGINAL_FILENAME']) {
-											$va_tmp = explode('.', $va_info['ORIGINAL_FILENAME']);
-											if (sizeof($va_tmp) > 1) { 
-												if (strlen($vs_ext = array_pop($va_tmp)) < 3) {
-													$va_tmp[] = $vs_ext;
-												}
-											}
-											$vs_file_name = join('_', $va_tmp); 					
-										} else {
-											$vs_file_name = $vs_idno_proc.'_representation_'.$va_path_info['rep_id'].'_'.$vs_media_version;
-										}
-						
-										if (isset($va_file_names[$vs_file_name.'.'.$vs_ext])) {
-											$vs_file_name.= "_{$vn_c}";
-										}
-										$vs_file_name .= '.'.$vs_ext;
-										break;
-								}			
 								
-								$o_zip->addFile($vs_path, $vs_file_name);
+								$vs_filename = caGetRepresentationDownloadFileName($t_instance->tableName(), ['idno' => $va_path_info['idno'], 'index' => $vn_c, 'version' => $vs_media_version, 'extension' => pathinfo($vs_path, PATHINFO_EXTENSION), 'original_filename' => $va_info['ORIGINAL_FILENAME'], 'representation_id' => $va_path_info['rep_id']]);		
+								
+								$o_zip->addFile($vs_path, $vs_filename);
 
 								$vn_c++;
 							}

@@ -630,15 +630,12 @@
 			}
 			
 			$vn_c = 1;
-			$va_file_names = array();
-			$va_file_paths = array();
+			$va_file_names = $va_file_paths = array();
 			
 			// Allow plugins to modify object_id list
 			$va_child_ids =  $o_app_plugin_manager->hookDetailDownloadMediaObjectIDs($va_child_ids);
 			$va_child_ids = array_unique($va_child_ids);
 			$t_download_log = new Downloadlog();
-			$vs_downloaded_file_naming = $this->request->config->get('downloaded_file_naming');
-			
 			foreach($va_child_ids as $vn_object_id) {
 				$t_child_object = new ca_objects($vn_object_id);
 				if (!$t_child_object->getPrimaryKey()) { continue; }
@@ -678,7 +675,8 @@
 							if (strtolower($k) == 'original_filename') { $v = pathinfo($v, PATHINFO_FILENAME); }
 							$vals[strtolower($k)] = preg_replace('![^A-Za-z0-9_\-]+!', '_', $v);
 						}
-						switch($vs_downloaded_file_naming) {
+						
+						switch($vs_mode = $this->request->getAppConfig()->get('downloaded_file_naming')) {
 							case 'idno':
 								$vs_file_name = $vs_idno_proc.'_'.$vn_c.'.'.$va_rep_info['EXTENSION'];
 								break;
@@ -690,8 +688,8 @@
 								break;
 							case 'original_name':
 							default:
-								if (strpos($vs_downloaded_file_naming, "^") !== false) { // template
-								   $vs_file_name = caProcessTemplate($vs_downloaded_file_naming, $vals);
+								if (strpos($vs_mode, "^") !== false) { // template
+								   $vs_file_name = pathinfo(caProcessTemplateForIDs($vs_mode, 'ca_object_representations', [$vn_rep_id]), PATHINFO_FILENAME);
 								} elseif ($va_info['ORIGINAL_FILENAME']) {
 									$va_tmp = explode('.', $va_info['ORIGINAL_FILENAME']);
 									if (sizeof($va_tmp) > 1) { 
@@ -699,9 +697,9 @@
 											$va_tmp[] = $vs_ext;
 										}
 									}
-									$vs_file_name = join('_', $va_tmp); 					
+									$vs_file_name = str_replace(" ", "_", join('_', $va_tmp).'.'.$va_rep_info['EXTENSION']);					
 								} else {
-									$vs_file_name = $vs_idno_proc.'_representation_'.$vn_rep_id.'_'.$vs_media_version;
+									$vs_file_name = $vs_idno_proc.'_representation_'.$vn_rep_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION'];
 								}
 						
 								if (isset($va_file_names[$vs_file_name.'.'.$va_rep_info['EXTENSION']])) {
@@ -748,6 +746,7 @@
 				foreach($va_file_paths as $vs_path => $vs_name) {
 					$this->view->setVar('archive_path', $vs_path);
 					$this->view->setVar('archive_name', $vs_name);
+					break;
 				}
 				$vn_rc = $this->render('Details/object_download_media_binary.php');
 			}
@@ -825,7 +824,7 @@
 				$vs_idno_proc = $vn_object_id;
 			}
 			
-			$vs_downloaded_file_naming = $this->request->config->get('downloaded_file_naming');
+			$vs_mode = $this->request->config->get('downloaded_file_naming');
 			
 			$vals = ['idno' => $vs_idno_proc];
 			foreach(array_merge($va_rep_info, $va_info) as $k => $v) {
@@ -834,7 +833,7 @@
 			    $vals[strtolower($k)] = preg_replace('![^A-Za-z0-9_\-]+!', '_', $v);
 			}
 			
-			switch($vs_downloaded_file_naming) {
+			switch($vs_mode) {
 				case 'idno':
 					$this->view->setVar('version_download_name', $vs_idno_proc.'.'.$va_rep_info['EXTENSION']);
 					break;
@@ -846,8 +845,8 @@
 					break;
 				case 'original_name':
 				default:
-				    if (strpos($vs_downloaded_file_naming, "^") !== false) { // template
-				       $this->view->setVar('version_download_name', caProcessTemplate($vs_downloaded_file_naming, $vals).'.'.$va_rep_info['EXTENSION']);
+				    if (strpos($vs_mode, "^") !== false) { // template
+				       $this->view->setVar('version_download_name', pathinfo(caProcessTemplateForIDs($vs_mode, 'ca_object_representations', [$pn_representation_id]), PATHINFO_FILENAME));
 				    } elseif ($va_info['ORIGINAL_FILENAME']) {
 						$va_tmp = explode('.', $va_info['ORIGINAL_FILENAME']);
 						if (sizeof($va_tmp) > 1) { 
