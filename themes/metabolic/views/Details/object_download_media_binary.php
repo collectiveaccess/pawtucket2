@@ -36,8 +36,7 @@
 	set_time_limit(0);
 	$o_fp = @fopen($vs_file_path,"rb");
 	while(is_resource($o_fp) && !feof($o_fp)) {
-		print(@fread($o_fp, 1024*8));
+		print(@fread($o_fp, 1024*64));
 		ob_flush();
-		flush();
 	}
-?>
+	exit;
