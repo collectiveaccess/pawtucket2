@@ -649,6 +649,11 @@ a.facetApply, button.facetApplySlider {
 	color:#999;
 	line-height:1.2em;
 }
+@media(min-width: 1750px){
+	.detail .detailPlaceholder .placeholderMessage{
+		padding:50px 30% 0px 30%;
+	}
+}
 div.caMediaOverlayControls, div.caMediaOverlayControls .objectInfo {
 	font-size:14px;
 }
