@@ -179,18 +179,18 @@
 								^ca_objects.item_subtype
 							</div>
 						</ifdef>}}}
+						{{{<ifdef code="ca_objects.dimensions">
+							<div class="mb-3">
+								<div class="label">Dimensions</div>
+								<unit relativeTo="ca_objects.dimensions" delimiter="; ">^dim_width x ^dim_height<ifdef code='dim_depth'> x ^dim_depth</ifdef><ifdef code='note'>(^note)</ifdef></unit>
+							</div>
+						</ifdef>}}}
 						{{{<ifcount code="ca_collections" min="1">
 							<div class="mb-3">
 								<div class="label">Project<ifcount code="ca_collections" min="2">s</ifcount></div>
 								<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
 							</div>
 						</ifcount>}}}
-						{{{<ifdef code="ca_objects.phase">
-							<div class="mb-3">
-								<div class="label">Phase</div>
-								^ca_objects.phase%delimiter=,_
-							</div>
-						</ifdef>}}}
 					</div>
 					<div class="col-12 col-md-6">
 						
@@ -310,7 +310,7 @@
 
 <?php		
 		$o_context = new ResultContext($this->request, 'ca_objects', 'detailRelated');
-		$o_context->setAsLastFind();
+		//$o_context->setAsLastFind();
 		$o_context->setResultList($va_tmp_ids);
 		$o_context->saveContext();
 	}
