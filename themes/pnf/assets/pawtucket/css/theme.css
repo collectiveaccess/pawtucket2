@@ -645,7 +645,7 @@ a.facetApply, button.facetApplySlider {
 .detail .detailPlaceholder .placeholderMessage{
 	font-size:12px;
 	font-style:italic;
-	padding:50px 20% 0px 20%;
+	padding:50px 25% 0px 25%;
 	color:#999;
 	line-height:1.2em;
 }
@@ -685,7 +685,7 @@ div.caMediaOverlayControls {
 }
 .listLink {
 	font-family: 'Oxygen', sans-serif;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 27px;
     -webkit-margin-before: 1em;
     -webkit-margin-after: 1em;
@@ -724,7 +724,7 @@ div.caMediaOverlayControls {
 	margin-bottom:25px;
 	line-height:1.3em;
 	font-weight: bold;
-	font-size: 18px;
+	font-size: 20px;
 	color: #7f4539;
 	font-family: 'Lusitana', serif;
 }
