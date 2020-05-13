@@ -45,7 +45,14 @@
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 				{{{representationViewer}}}
-				
+<?php
+				$vs_representationViewer = trim($this->getVar("representationViewer"));
+				if($vs_representationViewer){
+					print $vs_representationViewer;
+				}else{
+					print "<div class='detailPlaceholder'><i class='fa fa-book fa-5x'></i><div class='placeholderMessage'>Image missing.  We would appreciate it if someone on campus could send it to us.</div></div>";
+				}
+?>				
 				
 				<div id="detailAnnotations"></div>
 				

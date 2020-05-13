@@ -68,7 +68,7 @@
 				<div>This bibliography includes the following categories of publications chosen in support of the database and deemed useful to scholars investigating in this field:</div>
 				<ul class="listNoBullet">
 					<li>&#10070; Studies that focus on specific <i>sueltas</i> or collections of them.</li>
-					<li>&#10070; Comprehensive bibliographic sources for literature that incorporate material on <i>comedias sueltas</i>; these may be modern editions of plays that include reference to previous <i>suelta</i> editions.</li>
+					<li>&#10070; Comprehensive bibliographic sources for literature that incorporate material on <i>comedias sueltas</i>.</li>
 					<li>&#10070; Books about printers or booksellers of <i>suelta</i> editions or about printing history in general that shed light on the printing practices applicable to <i>suelta</i> editions.</li>
 				</ul>
 <?php
