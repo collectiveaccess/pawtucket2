@@ -28,20 +28,22 @@
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
 		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
-		<footer id="footer" <?php print ((strToLower($this->request->getController()) == "browse") || (strToLower($this->request->getController()) == "search")) ? "style='position:fixed; bottom:0px; z-index:5000;'" : ""; ?>>
+		<footer id="footer">
 			<div class="container"><div class="row">
 				<div class="col-sm-12">
 					<div class="footerLogo pull-right">
-						<?php print caGetThemeGraphic($this->request, 'IMLS_Logo.png'); ?><?php print caGetThemeGraphic($this->request, 'levyLogo2.jpg'); ?>
+						<?php print caGetThemeGraphic($this->request, 'IMLS_Logo.png'); ?><?php print caGetThemeGraphic($this->request, 'levyLogo2.jpg'); ?><?php print caGetThemeGraphic($this->request, 'metro_logo.png'); ?><?php print caGetThemeGraphic($this->request, 'nhprc-logo.jpg'); ?>
 					</div>
 					<ul class="list-inline pull-right">
-						<li><a href="#">Help</a></li>
-						<li><a href="#">Contact</a></li>
-						<li><a href="#">Privacy</a></li>
-						<li class="last"><a href="#">Terms</a></li>
+						<li><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
+						<li><?php print caNavLink($this->request, _t("Help"), "", "", "Help", ""); ?></li>
+						<li><?php print caNavLink($this->request, _t("Credits"), "", "", "Credits", ""); ?></li>
+						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "ContactUs", ""); ?></li>
+						<li><?php print caNavLink($this->request, _t("Privacy"), "", "", "Privacy", ""); ?></li>
+						<li class="last"><?php print caNavLink($this->request, _t("Terms"), "", "", "Terms", ""); ?></li>
 					</ul>
 					<div class="footerText">
-						THE COOPER UNION, 2017 &copy; ALL RIGHTS RESERVED
+						THE COOPER UNION, <?php print date("Y"); ?> &copy; ALL RIGHTS RESERVED
 					</div>
 					
 				</div>
@@ -84,13 +86,13 @@
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
 		</script>
-<!-- 
+
 		<script type="text/javascript" language="javascript">
 			jQuery(document).ready(function() {
 				$('html').on('contextmenu', 'img', function(e){ return false; });
-				$('img').on('dragstart', function(event) { event.preventDefault(); });
+				$('html').on('dragstart', false);
 			});
 		</script>
- -->
+ 
 	</body>
 </html>

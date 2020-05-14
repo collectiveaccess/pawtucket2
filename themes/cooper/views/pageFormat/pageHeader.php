@@ -29,6 +29,7 @@
 	$vs_lightbox_sectionHeading = ucFirst($va_lightboxDisplayName["section_heading"]);
 	$va_classroomDisplayName = caGetClassroomDisplayName();
 	$vs_classroom_sectionHeading = ucFirst($va_classroomDisplayName["section_heading"]);
+	$va_access_values = 	caGetUserAccessValues($this->request);
 	
 	# Collect the user links: they are output twice, once for toggle menu and once for nav
 	$va_user_links = array();
@@ -52,6 +53,13 @@
 ?><!DOCTYPE html>
 <html lang="en">
 	<head>
+	<!-- Google Tag Manager -->
+	<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+	new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+	j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+	'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+	})(window,document,'script','dataLayer','GTM-M7NLT4K');</script>
+	<!-- End Google Tag Manager -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0"/>
 	<?php print MetaTagManager::getHTML(); ?>
@@ -76,7 +84,165 @@
 ?>
 </head>
 <body class="initial">
-	<nav class="navbar navbar-default navbar-fixed-top yamm" role="navigation">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-M7NLT4K"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+<?php
+
+
+		$va_hero_images = array();
+		$va_captions = array();
+		if(strToLower($this->request->getController()) == "front"){
+			$o_config = caGetFrontConfig();
+			
+			if($vs_set_code = $o_config->get("front_page_set_code")){
+ 				$t_set = new ca_sets();
+ 				$t_set->load(array('set_code' => $vs_set_code));
+ 				$vn_shuffle = 0;
+ 				if($o_config->get("front_page_set_random")){
+ 					$vn_shuffle = 1;
+ 				}
+				# Enforce access control on set
+				if((sizeof($va_access_values) == 0) || (sizeof($va_access_values) && in_array($t_set->get("access"), $va_access_values))){
+					$va_featured_ids = array_keys(is_array($va_tmp = $t_set->getItemRowIDs(array('checkAccess' => $va_access_values, 'shuffle' => $vn_shuffle))) ? $va_tmp : array());
+					$qr_res = caMakeSearchResult('ca_objects', $va_featured_ids);
+				}
+ 			}
+			
+			$vs_caption_template = $o_config->get("front_page_set_item_caption_template");
+			if(!$vs_caption_template){
+				$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
+			}
+			if($qr_res && $qr_res->numHits()){
+				while($qr_res->nextHit()){
+					if($vs_media = $qr_res->getWithTemplate('^ca_object_representations.media.hero', array("checkAccess" => $va_access_values))){
+						$va_hero_images[$qr_res->get("ca_objects.object_id")] = $vs_media;
+						$va_captions[$qr_res->get("ca_objects.object_id")] = $qr_res->getWithTemplate($vs_caption_template);
+					}
+				}
+			}
+		}
+		if((strToLower($this->request->getAction()) == "courses") && ($pn_course_id = $this->request->getActionExtra())){		
+			$t_course = new ca_occurrences($pn_course_id);
+			$va_hero_images = $t_course->get("ca_object_representations.media.hero", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+			$va_captions = $t_course->get("ca_object_representations.preferred_labels", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+		
+		}
+		if(is_array($va_hero_images)){
+			if(sizeof($va_hero_images) > 0){
+?>
+				<div class='container heroContainerContainer'>
+					<div class='row'>
+						<div class='heroContainer'>
+							<div class='heroGradient'></div>
+							<div class="jcarousel-wrapper">
+							<!-- Carousel -->
+								<div class="jcarousel heroSlideshow">
+									<ul>
+<?php					
+										foreach($va_hero_images as $vn_key => $vs_hero){
+											print "<li>".$vs_hero;
+											$vs_caption = "";
+											if($va_captions[$vn_key] && (strToLower($va_captions[$vn_key]) != "[blank]")){
+												$vs_caption = $va_captions[$vn_key];
+											}
+											print "<div class='frontTopSlideCaption'>".(($vs_caption) ? $vs_caption : "&nbsp;")."</div>";
+											print "</li>";
+										}						
+?>
+									</ul>
+								</div><!-- end jcarousel -->
+							</div><!-- end jcarousel-wrapper -->
+						</div><!-- end heroContainer -->
+					</div><!-- end row -->
+				</div><!-- end heroContainerContainer -->
+
+				<script type='text/javascript'>
+					setTimeout(function(){
+						activateCarousel();
+					}, 100);
+
+					function activateCarousel() { 
+						jQuery(document).ready(function() {
+							/*
+							Carousel initialization
+							*/
+<?php
+							$vs_auto_start = "false";
+							if(sizeof($va_hero_images) > 1){
+								$vs_auto_start = "true";
+							}
+?>
+							$('.heroSlideshow')
+								.jcarousel({
+									// Options go here
+									wrap:'circular',
+									auto: 1
+								}).jcarouselAutoscroll({
+									interval: 10000,
+									target: '+=1',
+									autostart: <?php print $vs_auto_start; ?>
+								});
+
+							/*
+							 Pagination initialization
+							 */
+							$('.jcarousel-paginationHero')
+								.on('jcarouselpagination:active', 'a', function() {
+									$(this).addClass('active');
+								})
+								.on('jcarouselpagination:inactive', 'a', function() {
+									$(this).removeClass('active');
+								})
+								.jcarouselPagination({
+									// Options go here
+								});
+				
+				
+							$(".jcarousel-paginationHero").hover(function () {
+
+								$('.heroSlideshow').jcarouselAutoscroll('stop');
+							},function () {
+								$('.heroSlideshow').jcarouselAutoscroll('start');
+							});
+							
+							$(".frontTopSlideCaption").width($(".heroSlideshow").width() - 30);
+							$(".heroSlideshow li").width($(".heroSlideshow").width());
+							if($(".heroSlideshow img").height() > 400){
+								$(".heroContainer").height($(".heroSlideshow img").height() + 45);
+								$(".heroContainer .heroGradient").height($(".heroSlideshow img").height());
+								$(".frontTopContainer").height($(".heroSlideshow img").height() + 45);
+							}else{
+								$(".heroContainer").height(445);
+								$(".heroContainer .heroGradient").height(400);
+								$(".frontTopContainer").height(445);
+						  }
+						});
+					}
+					$( window ).resize(function() {
+					  $(".frontTopSlideCaption").width($(".heroSlideshow").width() - 30);
+					  $(".heroSlideshow li").width($(".heroSlideshow").width());
+					  if($(".heroSlideshow img").height() > 400){
+							$(".heroContainer").height($(".heroSlideshow img").height() + 45);
+					  		$(".heroContainer .heroGradient").height($(".heroSlideshow img").height());
+					  		$(".frontTopContainer").height($(".heroSlideshow img").height() + 45);
+					  }else{
+					  		$(".heroContainer").height(445);
+					  		$(".heroContainer .heroGradient").height(400);
+					  		$(".frontTopContainer").height(445);
+					  }
+					});
+				</script>
+
+<?php
+			}
+		}
+?>
+
+
+
+	<nav class="navbar navbar-default navbar-fixed-top yamm <?php print (is_array($va_hero_images) && sizeof($va_hero_images)) ? "transparent" : ""; ?>" role="navigation">
 		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
@@ -98,9 +264,7 @@
 				</button>
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'CU_Logo.png'), "navbar-brand initialLogo", "", "","");
-				#if($this->request->getController() == "Front"){
-					print caNavLink($this->request, "<strong>The Irwin S Chanin</strong><br>School of Architecture Archive<br/>of The Cooper Union", "headerText", "", "","");
-				#}
+				print caNavLink($this->request, "<strong>The Irwin S Chanin</strong><br>School of Architecture Archive<br/>of The Cooper Union", "headerText", "", "","");
 ?>
 				
 			</div>
@@ -140,10 +304,10 @@
 					</div>
 				</form>
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print (strToLower($this->request->getAction()) == "courses") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Course"), "", "", "Listing", "Courses"); ?></li>
+					<li <?php print (strToLower($this->request->getAction()) == "courses") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Courses"), "", "", "Listing", "Courses"); ?></li>
 					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "projects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Projects"), "", "", "Browse", "projects"); ?></li>
 					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "people")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("People"), "", "", "Browse", "people"); ?></li>
-					<li><a href="#">Location</a></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "location")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Locations"), "", "", "Browse", "location"); ?></li>
 				</ul>
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
@@ -155,14 +319,14 @@
 			if(pos > scrollLimit) {
 				$("body").removeClass("initial");
 				$(".navbar-brand").removeClass("initialLogo");
-				$(".headerText").hide();
+				//$(".headerText").hide();
 			}else {
 				if(!$("body").hasClass("initial")){
 					$("body").addClass("initial");
 				}
 				if(!$(".navbar-brand").hasClass("initialLogo")){
 					$(".navbar-brand").addClass("initialLogo");
-					$(".headerText").show();
+					//$(".headerText").show();
 				}
 			}
 		});
