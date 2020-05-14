@@ -52,7 +52,7 @@
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		while($qr_list->nextHit()) {
-			if($this->request->user->hasRole("admin") || (strToLower($qr_list->get('ca_occurrences.preview_only', array("convertCodesToDisplayText" => true))) != "yes")){
+			if(($this->request->isLoggedIn() && $this->request->user->hasRole("admin")) || (strToLower($qr_list->get('ca_occurrences.preview_only', array("convertCodesToDisplayText" => true))) != "yes")){
 				if($i == 3){
 					print "</div><div class='row'>";
 					$i = 0;
