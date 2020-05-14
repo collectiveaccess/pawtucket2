@@ -441,3 +441,10 @@ a.socialIcon i{
 		float:right;
 	}
 }
+
+
+.gallery .setDescription{
+        font-size:12px;
+        font-weight:normal;
+}
+
