@@ -37,7 +37,7 @@ h4 {
 	color: #7f4539;
 }
 h4 a{
-	color: #7f4539;
+	color: #7f4539 !important;
 }
 h6 {
 	font-size:14px;
