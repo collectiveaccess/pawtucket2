@@ -44,7 +44,6 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-6'>
-				{{{representationViewer}}}
 <?php
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
 				if($vs_representationViewer){
@@ -93,17 +92,21 @@
 ?>
 				<HR>
 <?php
-				$vs_institution = $t_object->get('ca_objects.institution', array('convertCodesToDisplayText' => true));
-				$vs_collection = $t_object->getWithTemplate('<unit relativeTo="ca_collections">^ca_collections.preferred_labels.name</unit>');
-				$vs_collection_link = $t_object->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels.name</l></unit>');
-				if($vs_collection || $vs_institution){
-					print "<div class='unit'><h6>Holding Institution</h6>".$vs_collection_link;
-					if(($vs_collection != $vs_institution) && (strpos($vs_collection, $vs_institution) === false)){
-						if($vs_institution){
-							print (($vs_collection_link) ? "<br/>" : "").$vs_institution;
-						}
-					}
-					print "</div>";
+				#$vs_institution = $t_object->get('ca_objects.institution', array('convertCodesToDisplayText' => true));
+				#$vs_collection = $t_object->getWithTemplate('<unit relativeTo="ca_collections">^ca_collections.preferred_labels.name</unit>');
+				#$vs_collection_link = $t_object->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels.name</l></unit>');
+				#if($vs_collection || $vs_institution){
+				#	print "<div class='unit'><h6>Holding Institution</h6>".$vs_collection_link;
+				#	if(($vs_collection != $vs_institution) && (strpos($vs_collection, $vs_institution) === false)){
+				#		if($vs_institution){
+				#			print (($vs_collection_link) ? "<br/>" : "").$vs_institution;
+				#		}
+				#	}
+				#	print "</div>";
+				#}
+				$vs_collection_link = $t_object->getWithTemplate('<unit relativeTo="ca_collections"><l><ifdef code="ca_collections.parent.preferred_labels.name">^ca_collections.parent.preferred_labels.name: </ifdef>^ca_collections.preferred_labels.name</l></unit>');
+				if($vs_collection_link){
+					print "<div class='unit'><h6>Holding Institution</h6>".$vs_collection_link."</div>";
 				}
 				if ($vs_call_no = $t_object->get('ca_objects.idno', array("delimiter" => ", "))) {
 					print "<div class='unit'><h6>Call Number</h6>".$vs_call_no."</div>";

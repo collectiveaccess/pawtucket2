@@ -20,20 +20,30 @@
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
 <?php
+	$vs_collection_parent = $t_item->getWithTemplate("<unit relativeTo='ca_collections.parent'><l>^ca_collections.preferred_labels.name</l></unit>");
 	$vs_collection = $t_item->get("ca_collections.preferred_labels.name");
-	$vs_institution = $t_item->get("ca_collections.institution", array("convertCodesToDisplayText" => true));
-	if(($vs_collection != $vs_institution) && (strpos($vs_collection, $vs_institution) === false)){
-		if($vs_institution){
-			$vs_collection .= $vs_collection.": ".$vs_institution;
-		}
+	if($vs_collection_parent){
+		$vs_collection = $vs_collection_parent.": ".$vs_collection;
 	}
+	#$vs_institution = $t_item->get("ca_collections.institution", array("convertCodesToDisplayText" => true));
+	#if(($vs_collection != $vs_institution) && (strpos($vs_collection, $vs_institution) === false)){
+	#	if($vs_institution){
+	#		$vs_collection .= $vs_collection.": ".$vs_institution;
+	#	}
+	#}
 ?>
 					<H4><?php print $vs_collection; ?></H4><br/>
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-md-8 col-lg-7'>
+<?php
+					if($vs_collection_parent){
+						print "<div class='unit'><H6>Part Of</H6>".$vs_collection_parent."</div>";
+					}
+?>
 					{{{<ifdef code="ca_collections.description"><div class='unit'><H6>About</H6>^ca_collections.description</div></ifdef>}}}
+					{{{<ifcount code="ca_collections.children" min="1"><div class='unit'><h6>Contains</h6><unit relativeTo="ca_collections.children" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 					{{{<ifdef code="ca_collections.collection_website"><div class='unit'><h6><a href="^ca_collections.collection_website" target="_blank">Collection Website <span class="glyphicon glyphicon-link"></span></a></h6></div></ifdef>}}}
 					{{{<ifdef code="ca_collections.library_OPAC"><div class='unit'><h6><a href="^ca_collections.library_OPAC" target="_blank">Library OPAC <span class="glyphicon glyphicon-link"></span></a></h6></div></ifdef>}}}
 				</div>
@@ -72,7 +82,7 @@
 ?>
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="1">
+{{{
 			<div class="row">
 				<hr/>
 				<div id="browseResultsDetailContainer">
@@ -81,7 +91,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'collection_id:^ca_collections.collection_id', 'showFilterPanel' => 1, 'view' => 'list'), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'collection_facet', 'id' => '^ca_collections.collection_id', 'showFilterPanel' => 1, 'view' => 'list', 'sort' => 'collection'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						//jQuery('#browseResultsContainer').jscroll({
 						//	autoTrigger: true,
 						//	loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
@@ -93,7 +103,7 @@
 					
 				});
 			</script>
-</ifcount>}}}
+}}}
 		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
