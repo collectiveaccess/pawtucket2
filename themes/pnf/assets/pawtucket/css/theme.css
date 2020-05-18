@@ -36,6 +36,9 @@ h4 {
 	font-size:22px;
 	color: #7f4539;
 }
+h4 a{
+	color: #7f4539 !important;
+}
 h6 {
 	font-size:14px;
 	font-weight:bold;
@@ -633,6 +636,22 @@ a.facetApply, button.facetApplySlider {
 .detail .unit {
 	margin-bottom:12px;
 }
+.detail .detailPlaceholder{
+	background-color: #FDfDfD;
+	border: 2px solid #F7F7F7;
+	color: #d2d2d2;
+	margin-bottom: 10px;
+	padding: 60px 5px 40px 5px;
+	text-align: center;
+	width: 100%;
+}
+.detail .detailPlaceholder .placeholderMessage{
+	font-size:12px;
+	font-style:italic;
+	padding:50px 0px 0px 0px;
+	color:#999;
+	line-height:1.2em;
+}
 div.caMediaOverlayControls, div.caMediaOverlayControls .objectInfo {
 	font-size:14px;
 }
@@ -670,7 +689,7 @@ div.caMediaOverlayControls {
 .listLink {
 	font-family: 'Oxygen', sans-serif;
     font-size: 14px;
-    line-height: 26px;
+    line-height: 27px;
     -webkit-margin-before: 1em;
     -webkit-margin-after: 1em;
 }
@@ -708,7 +727,7 @@ div.caMediaOverlayControls {
 	margin-bottom:25px;
 	line-height:1.3em;
 	font-weight: bold;
-	font-size: 18px;
+	font-size: 20px;
 	color: #7f4539;
 	font-family: 'Lusitana', serif;
 }
