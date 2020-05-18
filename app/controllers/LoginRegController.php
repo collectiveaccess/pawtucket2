@@ -297,7 +297,7 @@
 				if (sizeof($va_tmp)) { $vs_controller = array_pop($va_tmp); }
 				if (sizeof($va_tmp)) { $vs_module_path = join('/', $va_tmp); }
 			} else {
-				$vs_controller = 'Splash';
+				$vs_controller = 'Front';
 				$vs_action = 'Index';
 			}
 			$vs_url = caNavUrl($this->request, $vs_module_path, $vs_controller, $vs_action);

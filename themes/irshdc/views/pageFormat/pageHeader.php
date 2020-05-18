@@ -154,6 +154,13 @@
 							<li><?php print caNavLink($this->request, "<span>"._t("BC Schools")."</span>", "", "", "Explore", "schools"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Featured Collections")."</span>", "", "", "Gallery", "Index"); ?></li>
 							<li><?php print caNavLink($this->request, "<span>"._t("Resources")."</span>", "", "", "Listing", "Resources"); ?></li>
+<?php
+	if($this->request->isLoggedIn() && $this->request->user->hasRole("admin")){
+?>
+							<li><?php print caNavLink($this->request, "<span>"._t("Digital Exhibitions")."</span>", "", "", "Listing", "DigitalExhibitions"); ?></li>
+<?php
+	}
+?>						
 						</ul>
 					</li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
