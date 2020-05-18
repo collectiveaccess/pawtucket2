@@ -281,11 +281,12 @@
  			$this->view->setVar("set_id", $set_id);
  			
  			$item_id = $this->request->getParameter('item_id', pInteger);
+ 			$t_set_item = $this->_getSetItem($set_id, $item_id); // will throw exception if item is not valid for set or publicaly accessible
+ 			
  			$this->view->setVar("set_item_id", $item_id); 
  			$t_rep = new ca_object_representations($set_items[$item_id]["representation_id"]);
  			
 			if(!(is_array($this->opa_access_values) && sizeof($this->opa_access_values) && !in_array($t_rep->get("access"), $this->opa_access_values))){
-				$va_rep_info = $t_rep->getMediaInfo("media", "mediumlarge");
 				$this->view->setVar("rep_object", $t_rep);
 				$this->view->setVar("rep", $t_rep->getMediaTag("media", "mediumlarge"));
 				$this->view->setVar("repToolBar", caRepToolbar($this->request, $t_rep, $set_items[$item_id]["row_id"], ['context' => 'gallery']));
