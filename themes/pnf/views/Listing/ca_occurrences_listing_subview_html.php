@@ -33,6 +33,7 @@
  	$va_lists = $this->getVar('lists');
  	$va_type_info = $this->getVar('typeInfo');
  	$va_listing_info = $this->getVar('listingInfo');
+ 	$vs_action = $this->request->getAction();
 ?>
 	<nav class="navbar navbar-fixed-top" id="bibHeading">
 
@@ -56,6 +57,10 @@
 	</nav>
 	<div class="listing-content single-lists">
 		<div id="bibBody">
+<?php
+		switch($vs_action){
+			case "bibliography":
+?>
 			<div id="bibBodyIntro">
 <?php
 			if ($g_ui_locale == 'en_US'){			
@@ -63,7 +68,7 @@
 				<div>This bibliography includes the following categories of publications chosen in support of the database and deemed useful to scholars investigating in this field:</div>
 				<ul class="listNoBullet">
 					<li>&#10070; Studies that focus on specific <i>sueltas</i> or collections of them.</li>
-					<li>&#10070; Comprehensive bibliographic sources for literature that incorporate material on <i>comedias sueltas</i>; these may be modern editions of plays that include reference to previous <i>suelta</i> editions.</li>
+					<li>&#10070; Comprehensive bibliographic sources for literature that incorporate material on <i>comedias sueltas</i>.</li>
 					<li>&#10070; Books about printers or booksellers of <i>suelta</i> editions or about printing history in general that shed light on the printing practices applicable to <i>suelta</i> editions.</li>
 				</ul>
 <?php
@@ -90,7 +95,16 @@
 				<br/><div class="callout">Si Ud. ha publicado o sabe de alguna publicación que cumpla con los criterios de esta bibliografía, por favor, avísenos a <a href="mailto:contact@comediassueltasusa.org">contact@comediassueltasusa.org</a> y la incluiremos. Si existe una versión en línea, por favor, incluya el DOI o URL.</div>
 <?php
 			}
-
+		break;
+		# ---------------------------
+		case "modern_editions":
+?>
+			<div id="bibBodyIntro">
+				<div>This list includes modern editions of plays for which <i>sueltas</i> provide the basis, or an important textual source.</div>
+			</div>
+<?php		
+		break;
+	}
 	$va_links_array = array();
 	$va_letter_array = array();
 	foreach($va_lists as $vn_type_id => $qr_list) {
