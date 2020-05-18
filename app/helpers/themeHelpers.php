@@ -881,11 +881,11 @@
 				$vn_c = 0;
 				
 				if (sizeof($va_sets) > $vn_limit) { $va_sets = array_slice($va_sets, $vn_limit * -1); }
-				foreach($va_sets as $vn_set_id => $va_set){
+				foreach($va_sets as $va_set){
 					if($vb_omit_front_page_set && $vs_front_page_set_code && ($va_set["set_code"] == $vs_front_page_set_code)){
 						continue;
 					}
-					$vs_set_list .= "<li>".caNavLink($po_request, $va_set["name"], "", "", "Gallery", $vn_set_id)."</li>\n";
+					$vs_set_list .= "<li>".caNavLink($po_request, $va_set["name"], "", "", "Gallery", $va_set['set_id'])."</li>\n";
 				}
 				$vs_set_list .= "</ul>\n";
 			}
