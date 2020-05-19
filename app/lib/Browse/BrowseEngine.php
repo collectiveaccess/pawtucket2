@@ -6480,4 +6480,46 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 			return $va_collapse_map;
 		}
 		# ------------------------------------------------------
+		/**
+		 *
+		 */
+	    public function getAvailableRelationshipTypesForCurrentResult($ps_rel_table, $pa_rel_ids, $pa_options=null) {
+	        if(!$pa_rel_ids) { return null; }
+	        if(!is_array($pa_rel_ids)) { $pa_rel_ids = [$pa_rel_ids]; }
+	        
+	        $pa_rel_ids = array_map(function($v) { return (int)$v; }, $pa_rel_ids);
+	        
+	        if(is_array($va_results =  $this->opo_ca_browse_cache->getResults()) && sizeof($va_results)) {
+	            switch(sizeof($va_path = array_keys(Datamodel::getPath($this->ops_browse_table_name, $ps_rel_table)))) {
+                    case 3:
+                        $t_item_rel = Datamodel::getInstanceByTableName($va_path[1], true);
+                        $t_rel_item = Datamodel::getInstanceByTableName($va_path[2], true);
+                        $vs_key = 'relation_id';
+                        break;
+                    default:
+                        // bad related table
+                        return null;
+                        break;
+                }
+                
+                $qr = $this->opo_db->query("
+                    SELECT DISTINCT ca_relationship_types.*, ca_relationship_type_labels.*
+                    FROM {$va_path[1]}
+                    INNER JOIN ca_relationship_types ON ca_relationship_types.type_id = {$va_path[1]}.type_id
+                    INNER JOIN ca_relationship_type_labels ON ca_relationship_types.type_id = ca_relationship_type_labels.type_id
+                    WHERE
+                        {$va_path[1]}.".$t_rel_item->primaryKey()." IN (?)
+                ", [$pa_rel_ids]);
+                
+                $result = [];
+                while($qr->nextRow()) {
+                    $result[] = $qr->getRow();
+                }
+                
+                return $result;
+	        }
+	            
+	        return null;
+	    }
+		# ------------------------------------------------------
 	}
