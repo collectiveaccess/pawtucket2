@@ -1,3 +1,5 @@
+<div class="screen-reader-only"><a href="https://www.noguchi.org/accessibility/">Accessibility</a></div>
+
  <div class="overlay-menu show-for-desktop"></div>
  <header id="main-header" class="show-for-desktop">
     <div class="inner">
