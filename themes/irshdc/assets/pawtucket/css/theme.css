@@ -371,7 +371,10 @@ a:hover .frontIconButton{
 }
 .galleryTimelineDate{
 	font-size:.5em;
-	color:#b3b3b3;
+	color:#959595;
+}
+.tl-slidenav-title .galleryTimelineDate{
+	color:#000;
 }
 .tl-slidenav-content-container .galleryTimelineDate{
 	font-size:1em;

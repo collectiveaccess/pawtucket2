@@ -80,7 +80,15 @@ if($vs_detailNav = $this->request->getParameter("detailNav", pString)){
 		break;
 		# -------------------
 		case "digital_exhibition":
-			$va_filter_facets = array("resource_type_facet", "theme_facet", "narrative_threads_facet");		
+			$va_filter_facets = array("resource_type_facet", "theme_facet", "narrative_threads_facet");	
+			if($vn_start == 0){
+				# --- set the results since it's not done in the browse controller on ajax loads.  We need it for the add to lightbox link
+				
+				$o_result_context = new ResultContext($this->request, $vs_table, $this->getVar('find_type'));
+				$o_result_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+				$qr_res->seek($vn_start);
+				$o_result_context->saveContext();
+			}	
 		break;
 		# -------------------
 		
