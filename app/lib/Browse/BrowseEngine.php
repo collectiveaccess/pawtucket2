@@ -7429,7 +7429,6 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
                     INNER JOIN ca_relationship_type_labels ON ca_relationship_types.type_id = ca_relationship_type_labels.type_id
                     WHERE
                         {$va_path[1]}.".$t_rel_item->primaryKey()." IN (?)
-                    GROUP BY ca_relationship_types.type_id
                 ", [$pa_rel_ids]);
                 
                 $result = [];

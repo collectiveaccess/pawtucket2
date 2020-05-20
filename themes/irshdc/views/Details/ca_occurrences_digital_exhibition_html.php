@@ -340,11 +340,17 @@ $vs_mode = $this->request->getParameter("mode", pString);
 								if($t_representation){
 									$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
 									$vs_version = $va_media_display_info["display_version"];
+									$vs_caption = "";
+									if(($vs_caption = $t_set_item->get("ca_set_items.preferred_labels")) && ($vs_caption != "[BLANK]")){
+										$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_row_id)."</div>";
+									}else{
+										$vs_caption = "";
+									}
 									if($vs_version == "large"){
 										$vs_media = $t_representation->get("ca_object_representations.media.".$vs_version);
 										$vs_media = caDetailLink($this->request, $vs_media, '', "ca_objects", $vn_row_id);
-										if($vs_caption = $t_set_item->get("ca_set_items.preferred_labels")){
-											$vs_media .= "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_row_id)."</div>";
+										if($vs_caption){
+											$vs_media .= $vs_caption;
 										};
 									}else{
 										$vs_media =  caRepresentationViewer(
@@ -357,7 +363,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 																		'primaryOnly' => true, 
 																		'dontShowPlaceholder' => true, 
 																		#'captionTemplate' => "<unit relativeTo='ca_objects'><l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></l></unit>"
-																		'captionTemplate' => $t_set_item->get("ca_set_items.preferred_labels")
+																		'captionTemplate' => $vs_caption
 																	)
 																);
 									}
@@ -631,8 +637,10 @@ $vs_mode = $this->request->getParameter("mode", pString);
 			jQuery(window).scroll(function () {
 				var scrollTop = $(window).scrollTop();
 				var initWidth = $('.digExhSideNav').width();
+				var bodyHeight = jQuery('body').height();
+				var footerHeight = jQuery('#footer').height() + 40;
 				// check the visible top of the browser
-				if (scrollTop > scrollLimit.top - jQuery('nav').height()) { // 83 = height of header
+				if ((scrollTop > scrollLimit.top - jQuery('nav').height()) && (scrollTop < (bodyHeight - (jQuery(window).height() - footerHeight)))) { // 83 = height of header
 					jQuery('.digExhRightCol').addClass('fixed');
 					jQuery('.digExhSideNav').addClass('fixed');
 					

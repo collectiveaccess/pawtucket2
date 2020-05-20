@@ -54,11 +54,10 @@ $va_data = [
 	'width' => ($va_view_info["width"]) ? $va_view_info["width"] : '100%',
 	'height' => ($va_view_info["height"]) ? $va_view_info["height"] : '500px',
 //    'font_css' => string,              // optional; font set
-    'calculate_zoom' => 'true',              // optional; defaults to true.
+    'calculate_zoom' => true,              // optional; defaults to true.
     'storymap' => [
         'language' => 'en',
         'map_type' => ($va_view_info['map_tiles']) ? $va_view_info['map_tiles'] : 'stamen:toner-lite',
-        'map_as_image' => false,
         'slides' => []
     ]
 ];
@@ -108,9 +107,9 @@ while($qr_res->nextHit()) {
 		$va_data['storymap']['slides'][] = [
 			//'date' => '1820',
 			'location' => [
-				//'name' => $qr_res->get("ca_places.preferred_labels.name"),
-				'lat' => trim($va_coordinates[0]),
-				'lon' => trim($va_coordinates[1]),
+				//'name' => 'name',
+				'lat' => intval(trim($va_coordinates[0])),
+				'lon' => intval(trim($va_coordinates[1])),
 				'line' => true
 			],
 			'text' => [
