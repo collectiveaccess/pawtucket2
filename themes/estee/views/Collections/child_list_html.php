@@ -36,7 +36,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 		while($qr_collections->nextHit()) {
 			$vs_icon = "";
 			# --- related objects?
-			$va_object_ids = $qr_collections->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values));
+			$va_object_ids = $qr_collections->get("ca_objects.object_id", array("returnAsArray" => true, 'checkAccess' => $va_access_values, 'sort' => 'ca_objects.rank'));
 			$vn_rel_object_count = sizeof($va_object_ids);
 			if(is_array($va_options["collection_type_icons"])){
 				$vs_icon = $va_options["collection_type_icons"][$qr_collections->get("ca_collections.type_id")];
