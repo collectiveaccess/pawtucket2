@@ -193,7 +193,7 @@
 								<ul class='subMenu'>
 									<li style="padding-top:6px;" <?php print ((($this->request->getAction() == "currentexhibitions") ) ? 'class="active"' : ''); ?>><?php print caNavLink($this->request, _t("Current & Upcoming"), "", "", "Listing", "currentexhibitions", array("sort" => "default", "direction" => "desc")); ?></li>					
 									<li <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) ? 'class="active"' : ''); ?>><?php print caNavLink($this->request, _t("Past"), "", "", "Browse", "exhibitions"); ?></li>					
-									<li <?php print (strToLower($this->request->getController()) == "featured") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Digital"), "", "", "Featured", "index"); ?></li>					
+									<li <?php print (strToLower($this->request->getController()) == "featured") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Online"), "", "", "Featured", "index"); ?></li>					
 								</ul>
 <?php
 							}
@@ -334,7 +334,7 @@
 							<ul class='sub-menu <?php print (((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) | (($this->request->getController() == "Listing") && ($this->request->getAction() == "currentexhibitions"))  | (($this->request->getController() == "Listing") && ($this->request->getAction() == "exhibitions")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "occurrences"))) ? ' active' : ''); ?>'>
 								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((($this->request->getAction() == "currentexhibitions") ) ? ' current-menu-item' : ''); ?>'><?php print caNavLink($this->request, _t("Current & Upcoming"), "", "", "Listing", "currentexhibitions", array("sort" => "default", "direction" => "desc")); ?></li>					
 								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "exhibitions")) ? ' current-menu-item' : ''); ?>'><?php print caNavLink($this->request, _t("Past"), "", "", "Browse", "exhibitions"); ?></li>					
-								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print (strToLower($this->request->getController()) == "featured") ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Digital"), "", "", "Featured", "index"); ?></li>					
+								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print (strToLower($this->request->getController()) == "featured") ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Online"), "", "", "Featured", "index"); ?></li>					
 							</ul>
 						</li>
 						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-15458"><a href="https://stormking.org/education-2/">Education</a>
