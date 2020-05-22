@@ -31,10 +31,6 @@
 		<div id="footer">
 			<div class="footerLinksContainer">
 				<ul class="list-inline footerLinks">
-					<li><a href="http://twitter.com/steelcase" target="_blank" class="socialIcon"><i class="fa fa-twitter"></i> Twitter</a></li>
-					<li><a href="http://www.facebook.com/steelcase" target="_blank" class="socialIcon"><i class="fa fa-facebook-square"></i> Facebook</a></li>
-					<li><a href="http://www.linkedin.com/company/steelcase" target="_blank" class="socialIcon"><i class="fa fa-linkedin-square"></i> LinkedIn</a></li>
-				
 					<li><i class="fa fa-caret-right"></i><?php print caNavLink($this->request, _t("FAQ")."<div class='bottomBorder'></div>", "", "", "FAQ", "Index"); ?></li>
 					<li><i class="fa fa-caret-right"></i><a href="http://www.steelcase.com/en/pages/privacy.aspx" target="_blank"><?php print _t("Privacy"); ?><div class='bottomBorder'></div></a></li>
 					<li><i class="fa fa-caret-right"></i><a href="http://www.steelcase.com/en/pages/termsofuse.aspx" target="_blank"><?php print _t("Terms of Use"); ?><div class='bottomBorder'></div></a></li>

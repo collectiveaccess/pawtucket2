@@ -188,7 +188,7 @@ if($vs_mode == "map"){
 									</div><!-- end row -->
 									<script type="text/javascript">
 										jQuery(document).ready(function() {
-											jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'entity_id:^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+											jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_entity', 'id' => '^ca_entities.entity_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 												jQuery('#browseResultsContainer').jscroll({
 													autoTrigger: true,
 													loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

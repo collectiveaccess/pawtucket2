@@ -371,7 +371,10 @@ a:hover .frontIconButton{
 }
 .galleryTimelineDate{
 	font-size:.5em;
-	color:#b3b3b3;
+	color:#959595;
+}
+.tl-slidenav-title .galleryTimelineDate{
+	color:#000;
 }
 .tl-slidenav-content-container .galleryTimelineDate{
 	font-size:1em;
@@ -396,6 +399,30 @@ a:hover .frontIconButton{
 }
 h2.tl-headline{
 	padding-top:0px;
+}
+.tl-slidenav-previous .tl-slidenav-title, .tl-slidenav-next .tl-slidenav-title, .tl-slidenav-previous .tl-slidenav-description, .tl-slidenav-next .tl-slidenav-description{
+	opacity: .6 !important;
+}
+.tl-headline.tl-headline-fadeout{
+	color:#777777 !important;
+}
+.tl-timemarker-media{
+	opacity:.5 !important;
+}
+.tl-menubar-button{
+	color:#999 !important;
+}
+.tl-timeaxis .tl-timeaxis-content-container .tl-timeaxis-major .tl-timeaxis-tick{
+	color:#333 !important;
+}
+.tl-timeaxis .tl-timeaxis-content-container .tl-timeaxis-minor .tl-timeaxis-tick{
+	color:#999 !important;
+}
+.tl-timeline {
+    font-family: Lato !important;
+}
+.tl-text-content{
+    font-family: LatoLight !important;
 }
 /*@media (max-width: 767px) {
 	.frontSearchCol .btn-search {
@@ -926,12 +953,18 @@ a.readmore-js-toggle {
 		display:block;
 		margin-bottom:20px;
 	}
-	.detailFilter .btn-group .btn-default, .detailFilter .btn-group ul.dropdown-menu {
+	.detailFilter .btn-group .btn-default, .detailFilter .btn-group ul.dropdown-menu, .detailFilter .resultsLightbox .btn {
 		width:100%;
-	}	
+	}
+	.detailFilter .resultsLightbox .btn {
+		margin-bottom:10px;
+	}
 }
-
-
+@media (min-width: 767px) {
+	.detailFilter .resultsLightbox{
+		float: right;
+	}
+}
 /* EXPLORE */
 
 .narrativeThreadContainer{
@@ -1343,16 +1376,18 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
 	text-transform:uppercase;
 }
 .digExhContent H1{
-	font-size:36px;
-	color:#FFF;
+	font-size:30px;
+	color:#000;
 	text-transform:uppercase;
 }
-.digExhRightCol.fixed, .digExhSideNav.fixed{
-	position:fixed;
-	/*top:113px;*/
-	top:78px;
-	z-index:100;
-	width:100%;
+@media (min-width: 992px) {
+	.digExhRightCol.fixed, .digExhSideNav.fixed{
+		position:fixed;
+		/*top:113px;*/
+		top:87px;
+		z-index:100;
+		width:100%;
+	}
 }
 .detail .digExh #detailTools {
 	margin-top: 10px;
@@ -1367,6 +1402,10 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
 	text-align:center;
 	margin-top:5px;
 	margin-bottom:5px;
+}
+.digExhSideNavLink.digExhSideNavLinkNoImg{
+	padding-top:20px;
+	padding-bottom:20px;
 }
 .digExhSideNavLinkImg{
 	background-position: center;
@@ -1406,11 +1445,15 @@ a .digExhSideNavLinkImg .digExhSideNavLink{
 a.digExhAnchors{
 	display:inline-block;
 	position:absolute;
-	top:-115px;
+	top:-110px;
 }
 .digExhContentBlock .digExhUnit{
-	margin-bottom:25px;
+	margin-bottom:45px;
+	margin-top:25px;
 	font-size:15px;
+}
+.digExhUnitSet{
+	margin-top:25px;
 }
 .detail .digExhContentBlock, .detail .digExhContentBlock .digExhUnit p{	
 	font-size:15px;
@@ -1441,6 +1484,10 @@ a.digExhAnchors{
     vertical-align: middle;
     float: none;
 }
+.digExhUnit img{
+	max-width: 100%;
+	height: auto;
+}
 .digExhContentBlock .imgCol img{
 	width: 100%;
 	height: auto;
@@ -1456,4 +1503,69 @@ a.digExhAnchors{
 }
 .digExhLinks{
 	line-height:2em;
+}
+
+#digExhTimeline {
+    height: 500px;
+}
+#digExhTimeline .tl-slide-content{
+	padding-right:0px !important;
+}
+#digExhTimeline .tl-slide .tl-slide-scrollable-container{
+	width:100%;
+}
+/* carousel */
+.digExhSlide{
+	text-align: center;
+}
+.digExhSlide img{
+	max-height:400px;
+	width:auto;
+}
+
+a.digExhDetailPrev, a.digExhDetailNext{
+	background-color: #EFEFEF;
+    color: #666666;
+    font: 33px/1em Arial,sans-serif;
+    top: 45%;
+    padding: 2px 12px 5px 12px;
+    position: absolute;
+    text-align: center;
+    text-decoration: none;
+    z-index:100;
+}
+.digExhDetailNext{
+	padding-left:14px;
+}
+.digExhDetailPrev{
+	padding-right:14px;
+}
+@media (min-width: 768px) {
+  	.digExhDetailNext, .digExhDetailPrev{
+		top:45%;
+  	}
+}
+.digExhDetailNext{
+	right:5px;
+}
+.digExhDetailPrev{
+	left:5px;
+}
+
+.digExhDetailNext.inactive, .digExhDetailPrev.inactive{
+	opacity: .5;
+    cursor: default;
+    display:inline;
+}
+.digExhPagination{
+	width: 100%;
+	text-align: center;
+	bottom: -35px;
+}
+.digExhSlide .video-js, .digExhUnit .video-js{
+	width:100% !important;
+	height:400px;
+}
+#detailDiscussion button.btn{
+	white-space: normal !important;
 }

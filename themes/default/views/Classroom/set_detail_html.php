@@ -226,7 +226,7 @@ if (!$vb_ajax) {	// !ajax
 		$va_view_info = $va_views[$vs_current_view];
 		if ($va_view_info['data'] && !$qr_set_items->hasData($va_view_info['data'])) {
 			$vs_current_view = 'thumbnail';
-			print "<div class='warning'>" . _t("Displaying %1 view because required data is not available to generate a %1 view", $va_views[$vs_current_view]['name'], $va_view_info['name']) . "</div>";
+			print "<div class='warning'>" . _t("Displaying %1 view because required data is not available to generate a %2 view", $va_views[$vs_current_view]['name'], $va_view_info['name']) . "</div>";
 		}
 		switch($vs_current_view) {
 			case 'map':

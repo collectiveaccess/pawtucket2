@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2009-2019 Whirl-i-Gig
+ * Copyright 2009-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -2174,26 +2174,34 @@
 										}
 									}
 
+									$dont_expand_hierarchically = caGetOption('dontExpandHierarchically', $va_facet_info, false);
 									foreach($va_row_ids as $vn_row_id) {
 										$vn_row_id = urldecode($vn_row_id);
+										
+										$ids = [];
+										if (!$dont_expand_hierarchically) {
+											if (!($t_list_item = ca_list_items::find($vn_row_id, ['returnAs' => 'firstModelInstance', 'checkAccess' => $pa_options['checkAccess']]))) { break; }
+											$ids = $t_list_item->get('ca_list_items.children.item_id', ['returnAsArray' => true]);
+										}
+										$ids[] = $vn_row_id;
 										if ($vn_i == 0) {
 											$vs_sql = "
 												SELECT ".$this->ops_browse_table_name.'.'.$t_item->primaryKey()."
 												FROM ".$this->ops_browse_table_name."
 												{$vs_relative_to_join}
 												WHERE
-													({$vs_table_name}.{$vs_field_name} = ?)";
+													({$vs_table_name}.{$vs_field_name} IN (?))";
 
-											$qr_res = $this->opo_db->query($vs_sql, $vn_row_id);
+											$qr_res = $this->opo_db->query($vs_sql, [$ids]);
 										} else {
 											$vs_sql = "
 												SELECT ".$this->ops_browse_table_name.'.'.$t_item->primaryKey()."
 												FROM ".$this->ops_browse_table_name."
 												{$vs_relative_to_join}
 												WHERE
-													({$vs_table_name}.{$vs_field_name} = ?)";
+													({$vs_table_name}.{$vs_field_name} IN (?))";
 
-											$qr_res = $this->opo_db->query($vs_sql, $vn_row_id);
+											$qr_res = $this->opo_db->query($vs_sql, [$ids]);
 
 										}
 										
@@ -7405,8 +7413,11 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
 	        if(is_array($va_results =  $this->opo_ca_browse_cache->getResults()) && sizeof($va_results)) {
 	            switch(sizeof($va_path = array_keys(Datamodel::getPath($this->ops_browse_table_name, $ps_rel_table)))) {
                     case 3:
+                        $t_item = Datamodel::getInstanceByTableName($va_path[0], true);
                         $t_item_rel = Datamodel::getInstanceByTableName($va_path[1], true);
                         $t_rel_item = Datamodel::getInstanceByTableName($va_path[2], true);
+                        
+                        $vs_deleted_sql = ($t_item->hasField('deleted')) ? " AND {$va_path[0]}.deleted = 0 " : ""; 
                         $vs_key = 'relation_id';
                         break;
                     default:
@@ -7415,14 +7426,16 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
                         break;
                 }
                 
+                $vs_rel_pk = $t_rel_item->primaryKey();
+                $vs_item_pk = $t_item->primaryKey();
                 $qr = $this->opo_db->query("
                     SELECT DISTINCT ca_relationship_types.*, ca_relationship_type_labels.*
                     FROM {$va_path[1]}
                     INNER JOIN ca_relationship_types ON ca_relationship_types.type_id = {$va_path[1]}.type_id
                     INNER JOIN ca_relationship_type_labels ON ca_relationship_types.type_id = ca_relationship_type_labels.type_id
+                    INNER JOIN {$va_path[0]} ON {$va_path[0]}.{$vs_item_pk} = {$va_path[1]}.{$vs_item_pk} 
                     WHERE
-                        {$va_path[1]}.".$t_rel_item->primaryKey()." IN (?)
-                    GROUP BY ca_relationship_types.type_id
+                        {$va_path[1]}.{$vs_rel_pk} IN (?) {$vs_deleted_sql}
                 ", [$pa_rel_ids]);
                 
                 $result = [];

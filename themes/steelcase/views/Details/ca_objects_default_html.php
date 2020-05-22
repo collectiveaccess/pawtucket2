@@ -20,7 +20,7 @@
 				
 				<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4")); ?>
 				<div id="detailTools">
-					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+					<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print is_array($va_comments) ? sizeof($va_comments) : 0; ?>)</a></div><!-- end detailTool -->
 					<div id='detailComments'>{{{itemComments}}}</div><!-- end itemComments -->
 					<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>{{{shareLink}}}</div><!-- end detailTool -->
 				</div><!-- end detailTools -->
@@ -237,46 +237,9 @@
 ?>
 				{{{<ifdef code="ca_objects.idno"><H6>Steelcase Number</H6>^ca_objects.idno</ifdef>}}}			
 <?php
-				$va_storage_locations = $t_object->get("ca_storage_locations", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
-				if(sizeof($va_storage_locations)){
-					$t_location = new ca_storage_locations();
-					$t_relationship = new ca_objects_x_storage_locations();
-					$vn_now = date("Y.md");
-					$va_location_display = array();
-					foreach($va_storage_locations as $va_storage_location){
-						$t_relationship->load($va_storage_location["relation_id"]);
-						$va_daterange = null; //$t_relationship->get("effective_date", array("returnWithStructure" => true, "returnAsArray" => true));
-					
-						if(is_array($va_daterange) && sizeof($va_daterange)){
-							foreach($va_daterange as $va_date){
-								break;
-							}
-						
-							if(is_array($va_date)){
-								if(($vn_now > $va_date["start"]) && ($vn_now < $va_date["end"])){
-									# --- only display the top level from the hierarchy
-									$va_hierarchy_ancestors = array_reverse($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name"))));
-									foreach($va_hierarchy_ancestors as $va_ancestor){
-										$va_location_display[] = caNavLink($this->request, $va_ancestor['NODE']["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor['NODE']["location_id"]));
-										break;
-									}
-								}
-							}
-						}else{
-							# --- only display the top level from the hierarchy
-							$va_hierarchy_ancestors = array_reverse($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name"))));
-							
-							foreach($va_hierarchy_ancestors as $va_ancestor){
-								//print_R($va_ancestor);
-								$va_location_display[] = caNavLink($this->request, $va_ancestor['NODE']["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor['NODE']["location_id"]));
-								break;
-							}
-						}
+					if (method_exists($t_object, "getHistory") && ($current_location = $t_object->getCurrentValueForDisplay())) {
+						print "<H6>Location</H6> {$current_location}<hr>\n";
 					}
-					if(sizeof($va_location_display)){
-						print "<H6>Location</H6>".join(", ", $va_location_display);
-					}
-				}
 ?>
 				{{{<ifdef code="ca_objects.credit_line"><H6>Credit</H6>&copy; ^ca_objects.credit_line</ifdef>}}}
 <?php				
