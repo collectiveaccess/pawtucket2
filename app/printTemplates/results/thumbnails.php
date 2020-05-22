@@ -74,8 +74,7 @@
 			<div class="thumbnail" style="left: <?php print $vn_left; ?>px; top: <?php print $vn_top; ?>px;">
 				<?php print "<div class='imgThumb'><img src='".$vo_result->getMediaPath('ca_object_representations.media', 'preview170')."'/></div>"; ?>
 				<?php print "<div class='caption'>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name (^ca_objects.idno)')."</div>"; ?>
-			</div>
-<?php
+			</div><?php
 
 			$vn_items_in_line++;
 			$vn_left += 220;
