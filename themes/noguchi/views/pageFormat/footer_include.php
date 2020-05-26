@@ -16,20 +16,22 @@ Long Island City, New York 11106<br />
                                             </div>
 
                 </div>
-                <div class="col">
 
-                    <ul id="menu-footer-menu" class="menu"><li id="menu-item-279" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-279"><a href="https://www.noguchi.org/about/">About</a></li>
-<li id="menu-item-276" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-276"><a href="https://www.noguchi.org/museum/visit/">Visit</a></li>
-<li id="menu-item-277" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-277"><a href="https://www.noguchi.org/museum/calendar/">Calendar</a></li>
-<li id="menu-item-278" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-278"><a href="https://www.noguchi.org/museum/support/">Support</a></li>
-<li id="menu-item-280" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-280"><a href="https://www.noguchi.org/about/contact/">Contact</a></li>
-<li id="menu-item-275" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-275"><a href="https://www.noguchi.org/artworks/catalogue-raisonne/">Catalogue Raisonné</a></li>
-<li id="menu-item-273" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-273"><a href="https://www.noguchi.org/isamu-noguchi/archives/">Archives</a></li>
-<li id="menu-item-274" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-274"><a href="https://www.noguchi.org/artworks/collection/">Collection</a></li>
-<li id="menu-item-281" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-281"><a href="https://www.noguchi.org/press/">Press</a></li>
-<li id="menu-item-5440" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5440"><a href="https://shop.noguchi.org">Noguchi Shop</a></li>
-</ul>
+                <div class="col">
+                    <ul id="menu-footer-menu" class="menu">
+                        <li id="menu-item-279" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-279"><a href="https://www.noguchi.org/about/">About</a></li>
+                        <li id="menu-item-276" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-276"><a href="https://www.noguchi.org/museum/visit/">Visit</a></li>
+                        <li id="menu-item-277" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-277"><a href="https://www.noguchi.org/museum/calendar/">Calendar</a></li>
+                        <li id="menu-item-278" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-278"><a href="https://www.noguchi.org/museum/support/">Support</a></li>
+                        <li id="menu-item-280" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-280"><a href="https://www.noguchi.org/about/contact/">Contact</a></li>
+                        <li id="menu-item-8386" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-8386"><a href="https://archive.noguchi.org/CR/Index">Catalogue Raisonné</a></li>
+                        <li id="menu-item-8387" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-8387"><a href="https://archive.noguchi.org/">Archives</a></li>
+                        <li id="menu-item-274" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-274"><a href="https://www.noguchi.org/artworks/collection/">Collection</a></li>
+                        <li id="menu-item-5440" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-5440"><a href="https://shop.noguchi.org">Noguchi Shop</a></li>
+                        <li id="menu-item-10808" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-10808"><a href="https://www.noguchi.org/accessibility/">Accessibility</a></li>
+                    </ul>
                 </div>
+                
                 <div class="col">
 
                     <ul class="ie-fix">
