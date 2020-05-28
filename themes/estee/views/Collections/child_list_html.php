@@ -168,6 +168,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 			if(is_array($va_options["skip_collection_type_ids"]) && !in_array($qr_collections->get("ca_collections.type_id"), $va_options["skip_collection_type_ids"])){
 				
 				$vs_output .= "</div><!-- end collectionLevelContainer -->";
+			}
 		}
 	}
 	
