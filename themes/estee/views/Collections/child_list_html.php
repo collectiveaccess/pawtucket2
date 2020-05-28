@@ -14,7 +14,8 @@
 	}
 	$vb_show_objects = $this->request->getParameter('show_objects', pInteger);	
 	$vn_collection_caching = $this->request->config->get("do_collection_caching");
-
+	# --- last item viewed - if part of a collection, open the levels to take user back to where they clicked from
+	$pn_row_id = $this->request->getParameter('row_id', pInteger);
 # --- check if this page has been cached
 $vs_cache_key = md5($vn_collection_id);
 if(($vn_collection_caching > 0) && ExternalCache::contains($vs_cache_key,'collection_detail_child_list')){
@@ -32,6 +33,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 	$vs_desc_template = $o_config->get("description_template");
 	$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
 	
+	$vn_row_id = $va_options["row_id"];
 	if($qr_collections->numHits()){
 		while($qr_collections->nextHit()) {
 			$vs_icon = "";
@@ -115,6 +117,16 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 						$vs_output .= "<div class='collectionObjectsList' style='margin-left:".(20*($vn_level - 1))."px;'>";
 						while($qr_objects->nextHit()){
 							$GLOBALS["va_all_object_ids"][] = $qr_objects->get("ca_objects.object_id");
+							# --- does this item match row_id passed in parameter signifying use of back button.  If so open folders to reveal it
+							if($vn_row_id == $qr_objects->get("ca_objects.object_id")){
+								$vs_output .= "<script>
+									$(document).ready(function(){
+										$(\"#level".$qr_collections->get("ca_collections.collection_id")."\").parents().show();
+										$(\"#level".$qr_collections->get("ca_collections.collection_id")."\").show();
+									 
+									})
+								</script>";
+							}
 							# --- does this item have media or it's children have media?
 							$vs_eye = "";
 							$vs_grandies = $qr_objects->getWithTemplate("<unit relativeTo='ca_objects.children'>^ca_object_representations.representation_id</unit>", array("checkAccess" => $va_access_values));
@@ -153,7 +165,9 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 					$vs_output .= "</div>";
 				}
 			}
-			$vs_output .= "</div><!-- end collectionLevelContainer -->";
+			if(is_array($va_options["skip_collection_type_ids"]) && !in_array($qr_collections->get("ca_collections.type_id"), $va_options["skip_collection_type_ids"])){
+				
+				$vs_output .= "</div><!-- end collectionLevelContainer -->";
 		}
 	}
 	
@@ -162,7 +176,7 @@ function printLevel($po_request, $va_collection_ids, $o_config, $vn_level, $va_o
 
 $vs_output = "";
 if ($vn_collection_id) {
-	$vs_output .= printLevel($this->request, array($vn_collection_id), $o_collections_config, 1, array("show_object" => $vb_show_objects, "skip_collection_type_ids" => $va_skip_collection_type_ids, "exclude_collection_type_ids" => $va_exclude_collection_type_ids, "non_linkable_collection_type_ids" => $va_non_linkable_collection_type_ids, "collection_type_icons" => $va_collection_type_icons, "collapse_levels" => $vb_collapse_levels));
+	$vs_output .= printLevel($this->request, array($vn_collection_id), $o_collections_config, 1, array("row_id" => $pn_row_id, "show_object" => $vb_show_objects, "skip_collection_type_ids" => $va_skip_collection_type_ids, "exclude_collection_type_ids" => $va_exclude_collection_type_ids, "non_linkable_collection_type_ids" => $va_non_linkable_collection_type_ids, "collection_type_icons" => $va_collection_type_icons, "collapse_levels" => $vb_collapse_levels));
 
 	#if($va_brand = $t_item->get('ca_collections.brand', array("returnAsArray" => true))){
 	#	$vn_brand = $va_brand[0];
