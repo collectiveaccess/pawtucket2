@@ -169,7 +169,7 @@
 							</div><!-- end row -->
 							<script type="text/javascript">
 								jQuery(document).ready(function() {
-									jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Search', 'objects', array('search' => 'place_id:^ca_places.place_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
+									jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_place', 'id' => '^ca_places.place_id'), array('dontURLEncodeParameters' => true)); ?>", function() {
 										jQuery('#browseResultsContainer').jscroll({
 											autoTrigger: true,
 											loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
