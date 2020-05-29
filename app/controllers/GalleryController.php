@@ -381,7 +381,7 @@
  		 */
  		private function _getSet($set_id) {
  			$t_set = new ca_sets();
- 			if (!$t_set->load($set_id) || !in_array((string)$t_set->get('access'), $this->opa_access_values, true)) { throw new ApplicationException(_t('Invalid set')); }
+ 			if (!$t_set->load($set_id) || (sizeof($this->opa_access_values) && !in_array((string)$t_set->get('access'), $this->opa_access_values, true))) { throw new ApplicationException(_t('Invalid set')); }
  			return $t_set;
  		}
  		# -------------------------------------------------------
