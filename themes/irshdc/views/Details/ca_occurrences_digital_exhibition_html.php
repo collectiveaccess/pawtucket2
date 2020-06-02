@@ -204,7 +204,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 									print "<h2>".$vs_content_block_title."</h2>";
 								}
 								if($vs_content_block_subtitle){
-									print "<div class='contentBlockSubTitle'>".$vs_content_block_title."</div>";
+									print "<div class='contentBlockSubTitle'>".$vs_content_block_subtitle."</div>";
 								}
 								if($vs_format && ($vs_format != "one column")){
 									
