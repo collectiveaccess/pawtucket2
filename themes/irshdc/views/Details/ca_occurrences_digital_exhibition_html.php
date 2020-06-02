@@ -70,11 +70,6 @@ $vs_mode = $this->request->getParameter("mode", pString);
 ?>
 	<div class="row">
 		<div class="col-sm-12 digExh">
-			<div class="row">
-				<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-				</div><!-- end detailTop -->
-			</div>
 <?php
 			if($vs_hero = $t_item->get("ca_object_representations.media.page.url")){
 ?>
@@ -111,16 +106,19 @@ $vs_mode = $this->request->getParameter("mode", pString);
 							}
 						}
 					}
-					if($vn_num_comments){
+					if($vn_comments_enabled){
 						print "<a href='#comments'><div class='digExhSideNavLink digExhSideNavLinkNoImg'>Discussion</div></a>";
 					}
 					if($vb_related){
 						print "<a href='#related'><div class='digExhSideNavLink digExhSideNavLinkNoImg'>Related Resources</div></a>";
 					}
+					print "<div class='digExhSideNavLinkOut'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")));
+					print caDetailLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download as PDF", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
+					
 ?>
 					</div>
 				</div>
-				<div class="col-sm-12 col-md-8">
+				<div class="col-sm-12 col-md-10 col-lg-8 col-lg-offset-1">
 					<div class="digExhContent">
 <?php
 					if ($this->getVar("resultsLink")) {
@@ -137,12 +135,15 @@ $vs_mode = $this->request->getParameter("mode", pString);
 					}
 					$qr_content_blocks->seek(0);
 					if($qr_content_blocks->numHits()){
+						$vn_block_count;
 						while($qr_content_blocks->nextHit()){
+							$vn_block_count++;
 							$vs_format = $qr_content_blocks->get("display_options", array("convertCodesToDisplayText" => true));
 							$vs_content_block_title = $qr_content_blocks->get("ca_occurrences.preferred_labels.name");
 							if($vs_content_block_title == "[BLANK]"){
 								$vs_content_block_title = "";
 							}
+							$vs_content_block_subtitle = $qr_content_blocks->get("ca_occurrences.contentBlockSubtitle");
 							$vs_quote = $qr_content_blocks->get("description");
 							$vs_main_text = $qr_content_blocks->get("main_text");
 
@@ -194,12 +195,17 @@ $vs_mode = $this->request->getParameter("mode", pString);
 
 ?>
 							<div class="digExhContentBlock">
-								<a name="<?php print $qr_content_blocks->get("ca_occurrences.idno"); ?>" class="digExhAnchors"></a>
+								<a name="<?php print $qr_content_blocks->get("ca_occurrences.idno"); ?>" class="digExhAnchors<?php print ($vn_block_count > 1) ? " offset" : ""; ?>"></a>
 <?php
 								if($vs_content_block_title){
+									if($vn_block_count > 1){
+										print "<HR></HR>";
+									}
 									print "<h2>".$vs_content_block_title."</h2>";
 								}
-								
+								if($vs_content_block_subtitle){
+									print "<div class='contentBlockSubTitle'>".$vs_content_block_title."</div>";
+								}
 								if($vs_format && ($vs_format != "one column")){
 									
 									# --- 2 columns
@@ -488,22 +494,39 @@ $vs_mode = $this->request->getParameter("mode", pString);
 
 <?php
 					}
-					if($vn_num_comments){
-?>
-						<div class="digExhContentBlock">
-							<a name="comments" class="digExhAnchors"></a><div class="block">
-								<h2>Discussion</h2>
-								<div class="blockContent">
-									<div id="detailComments">
-<?php
-									if(sizeof($va_comments)){
-										print "<H2>Comments</H2>";
+					if ($vn_comments_enabled) {
+?>				
+						<div class="digExhContentBlock discussion">
+							<a name="comments" class="digExhAnchors offset"></a>
+							<HR/>
+							
+								<div id="detailDiscussion">
+									<h2>Discussion</h2>
+									Do you have a story or comment to contribute?<br/>
+<?php								
+									if($this->request->isLoggedIn()){
+										print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_occurrences", "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
+									}else{
+										print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment")."</button>";
 									}
-									print $this->getVar("itemComments");
 ?>
-									</div>
 								</div>
-							</div>
+<?php
+								if($vn_num_comments){
+?>
+									<div class="blockContent">
+										<div id="detailComments">
+<?php
+										if(sizeof($va_comments)){
+											print "<H2>Comments</H2>";
+										}
+										print $this->getVar("itemComments");
+?>
+										</div>
+									</div>
+<?php
+								}
+?>
 						</div>
 <?php
 					}
@@ -560,58 +583,6 @@ $vs_mode = $this->request->getParameter("mode", pString);
 				
 					</div>
 				</div>
-				<div class='col-sm-12 col-md-2'>
-					<div class='digExhRightCol'>
-	<?php
-					# Comment and Share Tools
-						
-					print '<div id="detailTools">';
-					if ($this->getVar("resultsLink")) {
-						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("resultsLink").'</div><!-- end detailTool -->';
-					}
-					if ($this->getVar("previousLink")) {
-						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("previousLink").'</div><!-- end detailTool -->';
-					}
-					if ($this->getVar("nextLink")) {
-						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("nextLink").'</div><!-- end detailTool -->';
-					}
-
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")))."</div>";
-					print "<div class='detailTool'><span class='glyphicon glyphicon-download'></span>".caDetailLink($this->request, "Download as PDF", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
-					print '</div><!-- end detailTools -->';			
-
-						if ($vn_comments_enabled) {
-?>				
-							<div class="collapseBlock last discussion">
-								<h3>Discussion</H3>
-								<div class="collapseContent open">
-									<div id='detailDiscussion'>
-										Do you have a story or comment to contribute?<br/>
-<?php
-										
-										if($this->request->isLoggedIn()){
-											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_occurrences", "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
-										}else{
-											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment")."</button>";
-										}
-										if($vn_num_comments){
-											print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
-										}
-?>
-									</div><!-- end itemComments -->
-								</div>
-							</div>
-<?php				
-						}
-?>
-
-<?php
-#					if($t_item->get("ca_places.georeference", array("checkAccess" => $va_access_values))){
-#						include("map_html.php");
-#					}
-?>
-					</div>
-				</div>
 			</div>
 			
 
@@ -633,7 +604,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 
 	jQuery(document).ready(function() {
 		if(jQuery('.digExh').height() > jQuery(window).height()){
-			var scrollLimit = jQuery('.digExhRightCol').offset();
+			var scrollLimit = jQuery('.digExhContent').offset();
 			jQuery(window).scroll(function () {
 				var scrollTop = $(window).scrollTop();
 				var initWidth = $('.digExhSideNav').width();
@@ -641,17 +612,16 @@ $vs_mode = $this->request->getParameter("mode", pString);
 				var footerHeight = jQuery('#footer').height() + 40;
 				// check the visible top of the browser
 				if ((scrollTop > scrollLimit.top - jQuery('nav').height()) && (scrollTop < (bodyHeight - (jQuery(window).height() - footerHeight)))) { // 83 = height of header
-					jQuery('.digExhRightCol').addClass('fixed');
+					//jQuery('.digExhRightCol').addClass('fixed');
 					jQuery('.digExhSideNav').addClass('fixed');
 					
 					jQuery('.digExhSideNav').width(initWidth);
-					jQuery('.digExhRightCol').width(initWidth);
+					$('.digExhSideNav').css('max-height', jQuery(window).height() - jQuery('nav').height() + 'px');
+					//jQuery('.digExhRightCol').width(initWidth);
 				} else {
-					jQuery('.digExhRightCol').removeClass('fixed');
+					//jQuery('.digExhRightCol').removeClass('fixed');
 					jQuery('.digExhSideNav').removeClass('fixed');
-					
-					jQuery('.digExhSideNav').width('100%');
-					jQuery('.digExhSideNav').width('100%');
+					$('.digExhSideNav').css('max-height', 'auto');
 				}
 			});
 		}
