@@ -30,16 +30,22 @@ function italicizeTitle($vs_title){
 		$vs_output = "";
 		$qr_collections = caMakeSearchResult("ca_collections", $va_collection_ids);
 		$t_list = new ca_lists();
+		$vn_series_type_id = $t_list->getItemIDFromList("collection_types", "series");
+		$vn_subgroup_type_id = $t_list->getItemIDFromList("collection_types", "record_group");
+		$vn_subseries_type_id = $t_list->getItemIDFromList("collection_types", "subseries");
 		$vn_folder_type_id = $t_list->getItemIDFromList("collection_types", "folder");
 
 		#$vs_sub_collection_label_template = $o_collections_config->get("export_sub_collection_label_template");
 		# --- all levels other than folder
-		$vs_sub_collection_desc_template = '<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type|ca_collections.extentDACS.container_summary|ca_collections.extentDACS.physical_details">
+		$vs_subgroup_desc_template = '';
+		
+		$vs_series_subseries_desc_template = '<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type|ca_collections.extentDACS.container_summary|ca_collections.extentDACS.physical_details|ca_collections.extentDACS.extent_dimensions">
 												<div class="unit">
 													<unit relativeTo="ca_collections" delimiter=" ">
 													<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type"><div>Extent: ^ca_collections.extentDACS.extent_number <ifdef code="ca_collections.extentDACS.extent_type">^ca_collections.extentDACS.extent_type</ifdef></div></ifdef>
 													<ifdef code="ca_collections.extentDACS.container_summary"><div>Container Summary: ^ca_collections.extentDACS.container_summary</div></ifdef>
 													<ifdef code="ca_collections.extentDACS.physical_details"><div>Physical Details: ^ca_collections.extentDACS.physical_details</div></ifdef>
+													<ifdef code="ca_collections.extentDACS.extent_dimensions"><div>Dimensions: ^ca_collections.extentDACS.extent_dimensions</div></ifdef>
 													</unit>
 												</div>
 											</ifdef>
@@ -51,6 +57,12 @@ function italicizeTitle($vs_title){
 											</ifdef>
 											<ifdef code="ca_collections.accessrestrict">
 												<div class="unit"><H6>Conditions Governing Access</H6>^ca_collections.accessrestrict</div>
+											</ifdef>
+											<ifdef code="ca_collections.physaccessrestrict">
+												<div class="unit"><H6>Physical Access</H6>^ca_collections.physaccessrestrict</div>
+											</ifdef>
+											<ifdef code="ca_collections.processInfo">
+												<div class="unit"><H6>Processing Information</H6>^ca_collections.processInfo</div>
 											</ifdef>';
 		# --- folder level description
 		$vs_folder_desc_template = '<div style="float:left; width:25%;" class="folder">
@@ -60,41 +72,40 @@ function italicizeTitle($vs_title){
 											</div>
 										</ifcount>
 									</div>
-									<div style="float:left; width:75%;" class="folder">
+									<div style="float:left; width:70%; padding-left:5%;" class="folder">
 										<div class="unit">
 											<b>^ca_collections.preferred_labels<ifdef code="ca_collections.unitdate.dacs_date_text">, ^ca_collections.unitdate.dacs_date_text</b></ifdef>
 										</div>
-										<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type|ca_collections.extentDACS.container_summary|ca_collections.extentDACS.physical_details">
+										<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type|ca_collections.extentDACS.container_summary|ca_collections.extentDACS.physical_details|ca_collections.extentDACS.extent_dimensions">
 											<div class="unit">
 												<unit relativeTo="ca_collections" delimiter=" ">
 												<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type"><div>Extent: ^ca_collections.extentDACS.extent_number <ifdef code="ca_collections.extentDACS.extent_type">^ca_collections.extentDACS.extent_type</ifdef></div></ifdef>
 												<ifdef code="ca_collections.extentDACS.container_summary"><div>Container Summary: ^ca_collections.extentDACS.container_summary</div></ifdef>
 												<ifdef code="ca_collections.extentDACS.physical_details"><div>Physical Details: ^ca_collections.extentDACS.physical_details</div></ifdef>
+												<ifdef code="ca_collections.extentDACS.extent_dimensions"><div>Dimensions: ^ca_collections.extentDACS.extent_dimensions</div></ifdef>
 												</unit>
 											</div>
 										</ifdef>
 										<ifdef code="ca_collections.scopecontent">
 											<div class="unit"><H6>Scope and Content</H6>^ca_collections.scopecontent</div>
 										</ifdef>
+										<ifdef code="ca_collections.adminbiohist"><div class="unit"><H6>Administrative/Biographical History</H6>^ca_collections.adminbiohist</div></ifdef>
 										<ifdef code="ca_collections.general_notes"><div class="unit"><H6>General Notes</H6>^ca_collections.general_notes</div></ifdef>
-										<ifdef code="ca_collections.physical_description"><div class="unit"><H6>Physical Description</H6>^ca_collections.physical_description</div></ifdef>
-										<ifdef code="ca_collections.physfacet"><div class="unit"><H6>Physical Facet</H6>^ca_collections.physfacet</div></ifdef>
-										<ifdef code="ca_collections.accessrestrict"><div class="unit"><H6>Conditions Governing Access</H6>^ca_collections.accessrestrict</div></ifdef>
-										<ifdef code="ca_collections.govtuse"><div class="unit"><H6>Conditions Governing Use</H6>^ca_collections.govtuse</div></ifdef>
-										<ifdef code="ca_collections.physaccessrestrict"><div class="unit"><H6>Physical Access</H6>^ca_collections.physaccessrestrict</div></ifdef>
-										<ifdef code="ca_collections.acqinfo"><div class="unit"><H6>Immediate Source of Acquisition</H6>^ca_collections.acqinfo</div></ifdef>
-										<ifdef code="ca_collections.custodhist"><div class="unit"><H6>Custodial History</H6>^ca_collections.custodhist</div></ifdef>
-										<ifdef code="ca_collections.accruals"><div class="unit"><H6>Accruals</H6>^ca_collections.accruals</div></ifdef>
-										<ifdef code="ca_collections.appraisal"><div class="unit"><H6>Appraisal, Destruction, and Scheduling Information</H6>^ca_collections.appraisal</div></ifdef>
-										<ifdef code="ca_collections.processInfo"><div class="unit"><H6>Processing Information</H6>^ca_collections.processInfo</div></ifdef>
-										<ifdef code="ca_collections.related_materials"><div class="unit"><H6>Related Materials</H6>^ca_collections.related_materials</div></ifdef>
-										<ifdef code="ca_collections.relation"><div class="unit"><H6>Related Archival Materials</H6>^ca_collections.relation</div></ifdef>
-										<ifdef code="ca_collections.separated_materials"><div class="unit"><H6>Separated Materials</H6>^ca_collections.separated_materials</div></ifdef>
-										<ifdef code="ca_collections.otherfindingaid"><div class="unit"><H6>Other Finding Aids</H6>^ca_collections.otherfindingaid</div></ifdef>
-									
 										<ifdef code="ca_collections.arrangement">
 											<div class="unit"><H6>Arrangement</H6>^ca_collections.arrangement</div>
 										</ifdef>
+										<ifdef code="ca_collections.accessrestrict"><div class="unit"><H6>Conditions Governing Access</H6>^ca_collections.accessrestrict</div></ifdef>
+										<ifdef code="ca_collections.govtuse"><div class="unit"><H6>Conditions Governing Use</H6>^ca_collections.govtuse</div></ifdef>
+										<ifdef code="ca_collections.physical_description"><div class="unit"><H6>Physical Description</H6>^ca_collections.physical_description</div></ifdef>
+										<ifdef code="ca_collections.physfacet"><div class="unit"><H6>Physical Facet</H6>^ca_collections.physfacet</div></ifdef>
+										<ifdef code="ca_collections.techaccessrestrict"><div class="unit"><H6>Technical Access</H6>^ca_collections.techaccessrestrict</div></ifdef>
+										<ifdef code="ca_collections.originalsloc"><div class="unit"><H6>Existence and Location of Originals</H6>^ca_collections.originalsloc</div></ifdef>
+										<ifdef code="ca_collections.altformavail"><div class="unit"><H6>Existence and Location of Copies</H6>^ca_collections.altformavail</div></ifdef>
+										<ifdef code="ca_collections.langmaterial"><div class="unit"><H6>Languages and Scripts on the Material</H6>^ca_collections.langmaterial</div></ifdef>
+										<ifdef code="ca_collections.related_materials"><div class="unit"><H6>Related Materials</H6>^ca_collections.related_materials</div></ifdef>
+										<ifdef code="ca_collections.separated_materials"><div class="unit"><H6>Separated Materials</H6>^ca_collections.separated_materials</div></ifdef>
+										
+										
 									</div>';
 		#$vs_sub_collection_sort = $o_collections_config->get("export_sub_collection_sort");
 		#if(!$vs_sub_collection_sort){
@@ -145,7 +156,10 @@ function italicizeTitle($vs_title){
 							$vs_output .= $vs_icon." ";
 						}				
 						$vs_output .= "<b>";
-						$vs_output .= $qr_collections->getWithTemplate('^ca_collections.preferred_labels<ifdef code="ca_collections.unitdate.dacs_date_text">, ^ca_collections.unitdate.dacs_date_text</ifdef>');
+						$vs_output .= $qr_collections->getWithTemplate('^ca_collections.preferred_labels');
+						if($qr_collections->get("ca_collections.type_id") != $vn_subgroup_type_id){
+							$vs_output .= $qr_collections->getWithTemplate('<ifdef code="ca_collections.unitdate.dacs_date_text">, ^ca_collections.unitdate.dacs_date_text</ifdef>');
+						}
 						$vs_output .= "</b>";
 			
 						if($vn_rel_object_count){
@@ -154,17 +168,23 @@ function italicizeTitle($vs_title){
 						$vs_output .= "</br>";
 					}				
 					$vs_desc = "";
-					if($qr_collections->get("ca_collections.type_id") == $vn_folder_type_id){
-						$vs_desc = $qr_collections->getWithTemplate($vs_folder_desc_template);
-						if(trim($vs_desc)){
-							$vs_output .= "<p>".$vs_desc."</p>";
-						}
-					}else{
-						# --- all other sublevels of collection
-						$vs_desc = $qr_collections->getWithTemplate($vs_sub_collection_desc_template);
-						if(trim($vs_desc)){
-							$vs_output .= "<p>".$vs_desc."</p>";
-						}
+					switch($qr_collections->get("ca_collections.type_id")){
+						case $vn_folder_type_id:
+							$vs_desc = $qr_collections->getWithTemplate($vs_folder_desc_template);
+						break;
+						# -----------------------------------------------
+						case $vn_subgroup_type_id:
+							$vs_desc = $qr_collections->getWithTemplate($vs_subgroup_desc_template);
+						break;
+						# -----------------------------------------------
+						case $vn_series_type_id:
+						case $vn_subseries_type_id:
+							$vs_desc = $qr_collections->getWithTemplate($vs_series_subseries_desc_template);
+						break;
+						# -----------------------------------------------	
+					}
+					if(trim($vs_desc)){
+						$vs_output .= "<p>".$vs_desc."</p>";
 					}
 				}
 				# --- objects

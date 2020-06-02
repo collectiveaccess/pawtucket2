@@ -45,6 +45,9 @@
 	$va_access_values = caGetUserAccessValues($this->request);	
 	$t_list = new ca_lists();
 	$vn_collection_type_id = $t_list->getItemIDFromList("collection_types", "collection");
+	$vn_series_type_id = $t_list->getItemIDFromList("collection_types", "series");
+	$vn_subgroup_type_id = $t_list->getItemIDFromList("collection_types", "record_group");
+	$vn_subseries_type_id = $t_list->getItemIDFromList("collection_types", "subseries");
 	$vn_folder_type_id = $t_list->getItemIDFromList("collection_types", "folder");
 
 	print $this->render("pdfStart.php");
@@ -57,13 +60,14 @@
 								<div class="unit">^ca_collections.idno</div>	
 								<ifdef code="ca_collections.unitdate.dacs_date_text"><div class="unit">Date: ^ca_collections.unitdate.dacs_date_text</div></ifdef>
 	
-								<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type|ca_collections.extentDACS.container_summary|ca_collections.extentDACS.physical_details">
+								<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type|ca_collections.extentDACS.container_summary|ca_collections.extentDACS.physical_details|ca_collections.extentDACS.extent_dimensions">
 									<div class="unit">
 										Extent:
 										<unit relativeTo="ca_collections">
 										<ifdef code="ca_collections.extentDACS.extent_number">^ca_collections.extentDACS.extent_number </ifdef><ifdef code="ca_collections.extentDACS.extent_type">^ca_collections.extentDACS.extent_type</ifdef>
 										<ifdef code="ca_collections.extentDACS.container_summary"><br/>Container Summary: ^ca_collections.extentDACS.container_summary</ifdef>
 										<ifdef code="ca_collections.extentDACS.physical_details"><br/>Physical Details: ^ca_collections.extentDACS.physical_details</ifdef>
+										<ifdef code="ca_collections.extentDACS.extent_dimensions"><br/>Dimensions: ^ca_collections.extentDACS.extent_dimensions</ifdef>
 										</div>
 									</div>
 								</ifdef>
@@ -81,22 +85,17 @@
 								<ifdef code="ca_collections.physfacet"><div class="unit"><H6>Physical Facet</H6>^ca_collections.physfacet</div></ifdef>
 								<ifdef code="ca_collections.langmaterial"><div class="unit"><H6>Languages and Scripts on the Materials</H6>^ca_collections.langmaterial</div></ifdef>
 	
-								<ifdef code="ca_collections.loc_agent.loc_agent_value|ca_collections.fa_sponsor|ca_collections.fa_description_rules|ca_collections.fa_date|ca_collections.fa_author|ca_collections.preferCite|ca_collections.publication_note|ca_collections.otherfindingaid|ca_collections.separated_materials|ca_collections.relation|ca_collections.separated_materials|ca_collections.relation|ca_collections.related_materials|ca_collections.processInfo|ca_collections.processInfo|ca_collections.appraisal|ca_collections.accruals|ca_collections.custodhist|ca_collections.acqinfo|ca_collections.techaccessrestrict|ca_collections.physloc|ca_collections.physaccessrestrict|ca_collections.govtuse|ca_collections.accessrestrict"><H7>Administration</H7></ifdef>
+								<ifdef code="ca_collections.loc_agent.loc_agent_value|ca_collections.fa_sponsor|ca_collections.fa_description_rules|ca_collections.fa_date|ca_collections.fa_author|ca_collections.preferCite|ca_collections.publication_note|ca_collections.otherfindingaid|ca_collections.separated_materials|ca_collections.relation|ca_collections.separated_materials|ca_collections.relation|ca_collections.related_materials|ca_collections.processInfo|ca_collections.processInfo|ca_collections.appraisal|ca_collections.custodhist|ca_collections.acqinfo|ca_collections.techaccessrestrict|ca_collections.physloc|ca_collections.physaccessrestrict|ca_collections.govtuse|ca_collections.accessrestrict"><H7>Administration</H7></ifdef>
 								<ifdef code="ca_collections.accessrestrict"><div class="unit"><H6>Conditions Governing Access</H6>^ca_collections.accessrestrict</div></ifdef>
 								<ifdef code="ca_collections.govtuse"><div class="unit"><H6>Conditions Governing Use</H6>^ca_collections.govtuse</div></ifdef>
 								<ifdef code="ca_collections.physaccessrestrict"><div class="unit"><H6>Physical Access</H6>^ca_collections.physaccessrestrict</div></ifdef>
 								<ifdef code="ca_collections.physloc"><div class="unit"><H6>Physical Location</H6>^ca_collections.physloc</div></ifdef>
 								<ifdef code="ca_collections.techaccessrestrict"><div class="unit"><H6>Technical Access</H6>^ca_collections.techaccessrestrict</div></ifdef>
-								<ifdef code="ca_collections.acqinfo"><div class="unit"><H6>Immediate Source of Acquisition</H6>^ca_collections.acqinfo</div></ifdef>
-								<ifdef code="ca_collections.custodhist"><div class="unit"><H6>Custodial History</H6>^ca_collections.custodhist</div></ifdef>
-								<ifdef code="ca_collections.accruals"><div class="unit"><H6>Accruals</H6>^ca_collections.accruals</div></ifdef>
-								<ifdef code="ca_collections.appraisal"><div class="unit"><H6>Appraisal, Destruction, and Scheduling Information</H6>^ca_collections.appraisal</div></ifdef>
+								<ifdef code="ca_collections.acqinfo"><div class="unit"><H6>Provenance</H6>^ca_collections.acqinfo</div></ifdef>
 								<ifdef code="ca_collections.processInfo"><div class="unit"><H6>Processing Information</H6>^ca_collections.processInfo</div></ifdef>
 								<ifdef code="ca_collections.related_materials"><div class="unit"><H6>Related Materials</H6>^ca_collections.related_materials</div></ifdef>
-								<ifdef code="ca_collections.relation"><div class="unit"><H6>Related Archival Materials</H6>^ca_collections.relation</div></ifdef>
 								<ifdef code="ca_collections.separated_materials"><div class="unit"><H6>Separated Materials</H6>^ca_collections.separated_materials</div></ifdef>
 								<ifdef code="ca_collections.otherfindingaid"><div class="unit"><H6>Other Finding Aids</H6>^ca_collections.otherfindingaid</div></ifdef>
-								<ifdef code="ca_collections.publication_note"><div class="unit"><H6>Publication Note</H6>^ca_collections.publication_note</div></ifdef>
 								
 								<ifdef code="ca_collections.physfacet"><div class="unit"><H6>Physical Facet</H6><unit delimiter="<br/>">^ca_collections.physfacet</unit></div></ifdef>
 								<ifdef code="ca_collections.separated_materials"><div class="unit"><H6>Separated Materials</H6><unit delimiter="<br/>">^ca_collections.separated_materials</unit></div></ifdef>
@@ -105,18 +104,18 @@
 								<ifdef code="ca_collections.preferCite"><div class="unit"><H6>Preferred Citation</H6>^ca_collections.preferCite</div></ifdef>
 								<ifdef code="ca_collections.fa_date|ca_collections.fa_author"><div class="unit"><H6>Finding Aid Created</H6>^ca_collections.fa_author<ifdef code="ca_collections.fa_date,ca_collections.fa_author">, ^ca_collections.fa_date</ifdef></div></ifdef>
 								<ifdef code="ca_collections.fa_description_rules"><div class="unit"><H6>Description Rules</H6>^ca_collections.fa_description_rules</div></ifdef>
-								<ifdef code="ca_collections.fa_sponsor"><div class="unit"><H6>Sponsor</H6>^ca_collections.fa_sponsor</div></ifdef>
-								<ifdef code="ca_collections.loc_agent.loc_agent_value"><div class="unit"><H6>Agents (LOC)</H6><unit relativeTo="ca_collections" delimiter="<br/>">^ca_collections.loc_agent.loc_agent_value</unit></div></ifdef>';
+								<ifdef code="ca_collections.fa_sponsor"><div class="unit"><H6>Sponsor</H6>^ca_collections.fa_sponsor</div></ifdef>';
 
-		$vs_sub_collection_desc_template = '<div class="title">
-												<br/><br/><h1 class="title">^ca_collections.preferred_labels<ifdef code="ca_collections.unitdate.dacs_date_text">, ^ca_collections.unitdate.dacs_date_text</h1></ifdef>
+		$vs_series_subseries_desc_template = '<div class="title">
+												<br/><br/><h1 class="title">^ca_collections.preferred_labels<ifdef code="ca_collections.unitdate.dacs_date_text">, ^ca_collections.unitdate.dacs_date_text</ifdef></h1>
 											</div>
-											<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type|ca_collections.extentDACS.container_summary|ca_collections.extentDACS.physical_details">
+											<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type|ca_collections.extentDACS.container_summary|ca_collections.extentDACS.physical_details|ca_collections.extentDACS.extent_dimensions">
 												<div class="unit">
 													<unit relativeTo="ca_collections" delimiter=" ">
 													<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type"><div>Extent: ^ca_collections.extentDACS.extent_number <ifdef code="ca_collections.extentDACS.extent_type">^ca_collections.extentDACS.extent_type</ifdef></div></ifdef>
 													<ifdef code="ca_collections.extentDACS.container_summary"><div>Container Summary: ^ca_collections.extentDACS.container_summary</div></ifdef>
 													<ifdef code="ca_collections.extentDACS.physical_details"><div>Physical Details: ^ca_collections.extentDACS.physical_details</div></ifdef>
+													<ifdef code="ca_collections.extentDACS.extent_dimensions"><div>Dimensions: ^ca_collections.extentDACS.extent_dimensions</div></ifdef>
 													</unit>
 												</div>
 											</ifdef>
@@ -128,47 +127,55 @@
 											</ifdef>
 											<ifdef code="ca_collections.accessrestrict">
 												<div class="unit"><H6>Conditions Governing Access</H6>^ca_collections.accessrestrict</div>
+											</ifdef>
+											<ifdef code="ca_collections.physaccessrestrict">
+												<div class="unit"><H6>Physical Access</H6>^ca_collections.physaccessrestrict</div>
+											</ifdef>
+											<ifdef code="ca_collections.processInfo">
+												<div class="unit"><H6>Processing Information</H6>^ca_collections.processInfo</div>
 											</ifdef>';
+
+		$vs_subgroup_desc_template = '<div class="title">
+											<br/><br/><h1 class="title">^ca_collections.preferred_labels</h1>
+										</div>';
 		# --- folder level description
 		$vs_folder_desc_template = '<div class="title">
-										<br/><br/><h1 class="title">^ca_collections.preferred_labels<ifdef code="ca_collections.unitdate.dacs_date_text">, ^ca_collections.unitdate.dacs_date_text</h1></ifdef>
+										<br/><br/><h1 class="title">^ca_collections.preferred_labels<ifdef code="ca_collections.unitdate.dacs_date_text">, ^ca_collections.unitdate.dacs_date_text</ifdef></h1>
 									</div>
 									<ifcount code="ca_storage_locations">
 										<div class="unit">
 											<unit relativeTo="ca_storage_locations.related" delimiter="<br/>">^ca_storage_locations.parent.preferred_labels, ^ca_storage_locations.preferred_labels</unit>
 										</div>
 									</ifcount>
-									<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type|ca_collections.extentDACS.container_summary|ca_collections.extentDACS.physical_details">
+									<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type|ca_collections.extentDACS.container_summary|ca_collections.extentDACS.physical_details|ca_collections.extentDACS.extent_dimensions">
 										<div class="unit">
 											<unit relativeTo="ca_collections" delimiter=" ">
 											<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.extent_type"><div>Extent: ^ca_collections.extentDACS.extent_number <ifdef code="ca_collections.extentDACS.extent_type">^ca_collections.extentDACS.extent_type</ifdef></div></ifdef>
 											<ifdef code="ca_collections.extentDACS.container_summary"><div>Container Summary: ^ca_collections.extentDACS.container_summary</div></ifdef>
 											<ifdef code="ca_collections.extentDACS.physical_details"><div>Physical Details: ^ca_collections.extentDACS.physical_details</div></ifdef>
+											<ifdef code="ca_collections.extentDACS.extent_dimensions"><div>Dimensions: ^ca_collections.extentDACS.extent_dimensions</div></ifdef>
 											</unit>
 										</div>
 									</ifdef>
 									<ifdef code="ca_collections.scopecontent">
 										<div class="unit"><H6>Scope and Content</H6>^ca_collections.scopecontent</div>
 									</ifdef>
+									<ifdef code="ca_collections.adminbiohist"><div class="unit"><H6>Administrative/Biographical History</H6>^ca_collections.adminbiohist</div></ifdef>
 									<ifdef code="ca_collections.general_notes"><div class="unit"><H6>General Notes</H6>^ca_collections.general_notes</div></ifdef>
-									<ifdef code="ca_collections.physical_description"><div class="unit"><H6>Physical Description</H6>^ca_collections.physical_description</div></ifdef>
-									<ifdef code="ca_collections.physfacet"><div class="unit"><H6>Physical Facet</H6>^ca_collections.physfacet</div></ifdef>
-									<ifdef code="ca_collections.accessrestrict"><div class="unit"><H6>Conditions Governing Access</H6>^ca_collections.accessrestrict</div></ifdef>
-									<ifdef code="ca_collections.govtuse"><div class="unit"><H6>Conditions Governing Use</H6>^ca_collections.govtuse</div></ifdef>
-									<ifdef code="ca_collections.physaccessrestrict"><div class="unit"><H6>Physical Access</H6>^ca_collections.physaccessrestrict</div></ifdef>
-									<ifdef code="ca_collections.acqinfo"><div class="unit"><H6>Immediate Source of Acquisition</H6>^ca_collections.acqinfo</div></ifdef>
-									<ifdef code="ca_collections.custodhist"><div class="unit"><H6>Custodial History</H6>^ca_collections.custodhist</div></ifdef>
-									<ifdef code="ca_collections.accruals"><div class="unit"><H6>Accruals</H6>^ca_collections.accruals</div></ifdef>
-									<ifdef code="ca_collections.appraisal"><div class="unit"><H6>Appraisal, Destruction, and Scheduling Information</H6>^ca_collections.appraisal</div></ifdef>
-									<ifdef code="ca_collections.processInfo"><div class="unit"><H6>Processing Information</H6>^ca_collections.processInfo</div></ifdef>
-									<ifdef code="ca_collections.related_materials"><div class="unit"><H6>Related Materials</H6>^ca_collections.related_materials</div></ifdef>
-									<ifdef code="ca_collections.relation"><div class="unit"><H6>Related Archival Materials</H6>^ca_collections.relation</div></ifdef>
-									<ifdef code="ca_collections.separated_materials"><div class="unit"><H6>Separated Materials</H6>^ca_collections.separated_materials</div></ifdef>
-									<ifdef code="ca_collections.otherfindingaid"><div class="unit"><H6>Other Finding Aids</H6>^ca_collections.otherfindingaid</div></ifdef>
-								
 									<ifdef code="ca_collections.arrangement">
 										<div class="unit"><H6>Arrangement</H6>^ca_collections.arrangement</div>
-									</ifdef>';
+									</ifdef>
+									<ifdef code="ca_collections.accessrestrict"><div class="unit"><H6>Conditions Governing Access</H6>^ca_collections.accessrestrict</div></ifdef>
+									<ifdef code="ca_collections.govtuse"><div class="unit"><H6>Conditions Governing Use</H6>^ca_collections.govtuse</div></ifdef>
+									<ifdef code="ca_collections.physical_description"><div class="unit"><H6>Physical Description</H6>^ca_collections.physical_description</div></ifdef>
+									<ifdef code="ca_collections.physfacet"><div class="unit"><H6>Physical Facet</H6>^ca_collections.physfacet</div></ifdef>
+									<ifdef code="ca_collections.techaccessrestrict"><div class="unit"><H6>Technical Access</H6>^ca_collections.techaccessrestrict</div></ifdef>
+									<ifdef code="ca_collections.originalsloc"><div class="unit"><H6>Existence and Location of Originals</H6>^ca_collections.originalsloc</div></ifdef>
+									<ifdef code="ca_collections.altformavail"><div class="unit"><H6>Existence and Location of Copies</H6>^ca_collections.altformavail</div></ifdef>
+									<ifdef code="ca_collections.langmaterial"><div class="unit"><H6>Languages and Scripts on the Material</H6>^ca_collections.langmaterial</div></ifdef>
+									<ifdef code="ca_collections.related_materials"><div class="unit"><H6>Related Materials</H6>^ca_collections.related_materials</div></ifdef>
+									<ifdef code="ca_collections.separated_materials"><div class="unit"><H6>Separated Materials</H6>^ca_collections.separated_materials</div></ifdef>
+									';
 
 ?>
 <div class="findingAid">
@@ -179,12 +186,17 @@
 			print $t_item->getWithTemplate($vs_collection_desc_template);
 		break;
 		# ------------------------------
-		case $vn_folder_type_id:
-			print $t_item->getWithTemplate($vs_folder_desc_template);
+		case $vn_series_type_id:
+		case $vn_subseries_type_id:
+			print $t_item->getWithTemplate($vs_series_subseries_desc_template);
 		break;
 		# ------------------------------
-		default:
-			print $t_item->getWithTemplate($vs_sub_collection_desc_template);
+		case $vn_subgroup_type_id:
+			print $t_item->getWithTemplate($vs_subgroup_desc_template);
+		break;
+		# ------------------------------
+		case $vn_folder_type_id:
+			print $t_item->getWithTemplate($vs_folder_desc_template);
 		break;
 		# ------------------------------
 	}
