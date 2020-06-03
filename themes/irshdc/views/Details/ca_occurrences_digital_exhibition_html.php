@@ -285,8 +285,8 @@ $vs_mode = $this->request->getParameter("mode", pString);
 
 												<script>
 													// storymap_data can be an URL or a Javascript object
-													var storymap_data = '//media.knightlab.com/StoryMapJS/demo/demo.json';
-													//var storymap_data = '<?php print $this->request->config->get("site_host").caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'storymap', 'set_id' => $vn_set_id)); ?>';
+													//var storymap_data = '//media.knightlab.com/StoryMapJS/demo/demo.json';
+													var storymap_data = '<?php print $this->request->config->get("site_host").caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'storymap', 'set_id' => $vn_set_id)); ?>';
 
 													// certain settings must be passed within a separate options object
 													var storymap_options = {};
