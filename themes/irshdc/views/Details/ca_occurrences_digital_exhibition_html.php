@@ -278,20 +278,20 @@ $vs_mode = $this->request->getParameter("mode", pString);
 										switch(strToLower($t_set->get("set_presentation_type", array("convertCodesToDisplayText" => true)))){
 											case "story map":
 ?>
-												<div id="storymap<?php print $vn_set_id; ?>" style="width: 100%; height: 600px;"></div><!-- end browseResultsContainer -->
+												<div id="storymap<?php print $vn_set_id."-".$vn_block_count; ?>" style="width: 100%; height: 600px;"></div><!-- end browseResultsContainer -->
 												
 												<link rel="stylesheet" href="https://cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css">
 												<script type="text/javascript" src="https://cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js"></script>
 
 												<script>
 													// storymap_data can be an URL or a Javascript object
-													//var storymap_data = '//media.knightlab.com/StoryMapJS/demo/demo.json';
-													var storymap_data = '<?php print $this->request->config->get("site_host").caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'storymap', 'set_id' => $vn_set_id)); ?>';
+													var storymap_data = '//media.knightlab.com/StoryMapJS/demo/demo.json';
+													//var storymap_data = '<?php print $this->request->config->get("site_host").caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'storymap', 'set_id' => $vn_set_id)); ?>';
 
 													// certain settings must be passed within a separate options object
 													var storymap_options = {};
 
-													var storymap = new VCO.StoryMap('storymap<?php print $vn_set_id; ?>', storymap_data, storymap_options);
+													var storymap = new VCO.StoryMap('storymap<?php print $vn_set_id."-".$vn_block_count; ?>', storymap_data, storymap_options);
 													window.onresize = function(event) {
 														storymap.updateDisplay(); // this isn't automatic
 													}
@@ -302,7 +302,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 											case "timelines":
 ?>
 												<div id="digExhTimeline">
-													<div id="timeline-embed"></div>
+													<div id="timeline-embed-<?php print $vn_set_id."-".$vn_block_count; ?>"></div>
 												</div>
 
 												<script type="text/javascript">
@@ -310,9 +310,9 @@ $vs_mode = $this->request->getParameter("mode", pString);
 														createStoryJS({
 															type:       'timeline',
 															width:      '100%',
-															height:     '100%',
+															height:     '500px',
 															source:     '<?php print caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'timeline', 'set_id' => $vn_set_id)); ?>',
-															embed_id:   'timeline-embed',
+															embed_id:   'timeline-embed-<?php print $vn_set_id."-".$vn_block_count; ?>',
 															initial_zoom: '5'
 														});
 													});
@@ -328,9 +328,9 @@ $vs_mode = $this->request->getParameter("mode", pString);
 													#$qr_res = caMakeSearchResult('ca_objects', $va_row_ids);
 													#if($qr_res && $qr_res->numHits()){
 	?>   
-														<div class="jcarousel-wrapper jcarousel-wrapper<?php print $vn_set_id; ?>">
+														<div class="jcarousel-wrapper jcarousel-wrapper<?php print $vn_set_id."-".$vn_block_count; ?>">
 															<!-- Carousel -->
-															<div class="jcarousel jcarousel<?php print $vn_set_id; ?>">
+															<div class="jcarousel jcarousel<?php print $vn_set_id."-".$vn_block_count; ?>">
 																<ul>
 	<?php
 																	#while($qr_res->nextHit()){
@@ -416,7 +416,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 																/*
 																Carousel initialization
 																*/
-																$('.jcarousel<?php print $vn_set_id; ?>')
+																$('.jcarousel<?php print $vn_set_id."-".$vn_block_count; ?>')
 																	.on('jcarousel:create jcarousel:reload', function() {
 																		var element = $(this),
 																			width = element.innerWidth();
@@ -434,7 +434,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 																/*
 																 Prev control initialization
 																 */
-																$('.jcarousel-wrapper<?php print $vn_set_id; ?> .digExhDetailPrev')
+																$('.jcarousel-wrapper<?php print $vn_set_id."-".$vn_block_count; ?> .digExhDetailPrev')
 																	.on('jcarouselcontrol:active', function() {
 																		$(this).removeClass('inactive');
 																	})
@@ -449,7 +449,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 																/*
 																 Next control initialization
 																 */
-																$('.jcarousel-wrapper<?php print $vn_set_id; ?> .digExhDetailNext')
+																$('.jcarousel-wrapper<?php print $vn_set_id."-".$vn_block_count; ?> .digExhDetailNext')
 																	.on('jcarouselcontrol:active', function() {
 																		$(this).removeClass('inactive');
 																	})
@@ -464,7 +464,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 																/*
 																 Pagination initialization
 																 */
-																$('.jcarousel-wrapper<?php print $vn_set_id; ?> .jcarousel-pagination')
+																$('.jcarousel-wrapper<?php print $vn_set_id."-".$vn_block_count; ?> .jcarousel-pagination')
 																	.on('jcarouselpagination:active', 'a', function() {
 																		$(this).addClass('active');
 																	})

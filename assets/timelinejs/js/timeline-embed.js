@@ -682,6 +682,11 @@ function createStoryJS(c, src) {
     } else {
       te = document.getElementById("timeline-embed");
     }
+    if (storyjs_e_config.embed_id != "") {
+      divName = document.getElementById(storyjs_e_config.embed_id);
+    } else {
+      divName = document.getElementById("timeline-embed");
+    }
 
     te.appendChild(t);
     t.setAttribute("id", storyjs_e_config.id);
@@ -721,7 +726,7 @@ function createStoryJS(c, src) {
     if (storyjs_e_config.width == '100%') {
       storyjs_e_config.is_full_embed = true;
     }
-    window.timeline = new TL.Timeline('timeline-embed', storyjs_e_config.source, storyjs_e_config);
+    window.timeline = new TL.Timeline(divName, storyjs_e_config.source, storyjs_e_config);
 
   }
 
