@@ -97,6 +97,9 @@ a:hover{
 	color: #a5578c;
 	text-decoration:underline;
 }
+.form-control:focus {
+    border-color: #6e3a5d;
+}
 .btn, .btn a{
     text-decoration:none;
 }
@@ -318,14 +321,26 @@ a:hover{
 	height:130px;
 }
 
-.exportCollection{
-	float:right;
+@media(max-width:768px){
+	.exportCollection, .inquireButton{
+		float:left;
+		margin-right:5px;
+	}
 }
-.detail .exportCollection a, .detail .exportCollection a .glyphicon{
+@media(min-width:768px){
+	.exportCollection, .inquireButton{
+		float:right;
+		margin-left:5px;
+	}
+}
+.detail .exportCollection a, .detail .exportCollection a .glyphicon, .detail .inquireButton a, .detail .inquireButton a .glyphicon{
 	color:#000 !important;
+	font-size: 11px;
 }
-.detail .exportCollection a:hover,  .detail .exportCollection a .glyphicon:hover{
+.detail .exportCollection a:hover,  .detail .exportCollection a:hover .glyphicon, .detail .inquireButton a:hover,  .detail .inquireButton a:hover .glyphicon{
 	color:#FFF !important;
+	text-decoration:none;
+	font-size: 11px;
 }
 a.readmore-js-toggle, .detail a {
     color: #999;
@@ -334,7 +349,28 @@ a.readmore-js-toggle, .detail a {
 a.readmore-js-toggle:hover {
     color: #a5578c;
 }
+.detail.ca_collections #detailTools{
+	margin-top:0px;
+}
+.detail .detailTool a{
+	color:#6e3a5d;
+	font-family: "Calluna Sans", verdana, sans-serif;
+	font-weight:600;
+	font-size:14px;
+	text-transform:uppercase;
+}
+.detail .detailTool a .glyphicon{
+	color:#6e3a5d;
+	font-size:14px;
+	top:3px;
+}
 
 #bRefine div, #bRefine{
 	line-height:.75em !important;
+}
+
+/* browse list results */
+.bResultListItem .bResultListItemText, .bResultListItem .bResultListItemText a {
+    font-size: 15px;
+    text-decoration:none;
 }

@@ -28,14 +28,40 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
+					<div class="row">
+						<div class='col-sm-12 col-md-6 col-lg-6'>
+							<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
+						</div>
+						<div class='col-sm-12 col-md-6 col-lg-6'>
 <?php					
-					if ($vn_pdf_enabled) {
-						print "<div class='exportCollection'>".caDetailLink($this->request, "<span class='glyphicon glyphicon-file'></span> Download as PDF", "btn btn-default", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
-					}
+							if ($vn_pdf_enabled) {
+								print "<div class='exportCollection'>".caDetailLink($this->request, "<span class='glyphicon glyphicon-file'></span> Download as PDF", "btn btn-default", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
+							}
+							print "<div class='inquireButton'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default", "", "Contact", "Form", array("table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")))."</div>";					
 ?>
-					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
-					<div class="unit"><h2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</h2></div>
+						</div>
+					</div>
+					<h2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</h2>
 					{{{<ifdef code="ca_collections.parent_id"><label>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></label></ifdef>}}}
+<?php
+				# Comment and Share Tools
+				if ($vn_comments_enabled | $vn_share_enabled) {
+						
+					print '<div id="detailTools">';
+					if ($vn_comments_enabled) {
+?>				
+						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
+						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
+<?php				
+					}
+					if ($vn_share_enabled) {
+						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
+					}
+					print '</div><!-- end detailTools -->';
+				}				
+?>
+
+					
 					{{{<ifdef code="ca_collections.adminbiohist"><div class="unit"><label>Administrative/Biographical History</label>^ca_collections.adminbiohist</div></ifdef>}}}
 					
 					{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
@@ -58,30 +84,6 @@
 <?php				
 			}									
 ?>				
-				</div><!-- end col -->
-			</div><!-- end row -->
-			<div class="row">			
-				<div class='col-md-6 col-lg-6'>
-<?php
-				# Comment and Share Tools
-				if ($vn_comments_enabled | $vn_share_enabled) {
-						
-					print '<div id="detailTools">';
-					if ($vn_comments_enabled) {
-?>				
-						<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-						<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
-					}
-					if ($vn_share_enabled) {
-						print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-					}
-					print '</div><!-- end detailTools -->';
-				}				
-?>
-					
-				</div><!-- end col -->
-				<div class='col-md-6 col-lg-6'>
 				</div><!-- end col -->
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">

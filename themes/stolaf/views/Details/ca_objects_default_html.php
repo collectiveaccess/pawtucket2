@@ -78,6 +78,10 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6'>
+<?php
+				print "<div class='inquireButton'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default btn-small", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("object_id")))."</div>";
+?>
+
 				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
 				<label>{{{<unit>^ca_objects.type_id</unit>}}}</label>
 				<HR>
