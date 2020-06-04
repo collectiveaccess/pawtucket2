@@ -100,14 +100,20 @@ a:hover{
 .btn, .btn a{
     text-decoration:none;
 }
-.btn-default, .btn-default:active, .btn-default:focus{
+.btn-default, .btn-default:active, .btn-default:focus, .sets .btn, .browse .btn, .browse .btn:focus, .sets .btn:focus, .browse .btn:active, .sets .btn:active{
 	background-color:#e4a01b;
 	color:#000;
 	text-shadow: none;
 }
-.btn-default:hover{
+.btn-default:hover, .browse .btn:hover, .sets .btn:hover{
 	background-color:#000;
 	color:#e4a01b;
+}
+.browse .btn .glyphicon{
+	color:#000 !important;
+}
+.browse .btn:hover .glyphicon{
+	color:#e4a01b !important;
 }
 .bgGray{
 	background-color: #53585a;
