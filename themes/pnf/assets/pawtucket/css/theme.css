@@ -49,7 +49,9 @@ a {
 a:hover{
 	color:#000;
 }
-
+.form-control:focus {
+    border-color: #000;
+}
 #head .main_menu {
 	border-left:0px solid #fff;
 	height:69px;
