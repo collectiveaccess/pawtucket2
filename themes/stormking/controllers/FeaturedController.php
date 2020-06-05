@@ -46,7 +46,7 @@
  			$this->config = Configuration::load(__CA_THEME_DIR__.'/conf/featured.conf');
  			$this->view->setVar("config", $this->config);
  			
- 		 	# --- what is the section called - title of page
+ 		 	# --- Exhibitions what is the section called - title of page
  			if(!$vs_section_name = $this->config->get('featured_section_name')){
  				$vs_section_name = _t("Featured");
  			}
@@ -55,6 +55,18 @@
  				$vs_section_item_name = _t("feature");
  			}
  			$this->view->setVar("section_item_name", $vs_section_item_name);
+ 			
+ 			# --- Archives what is the section called - title of page
+ 			if(!$vs_archives_section_name = $this->config->get('featured_archives_section_name')){
+ 				$vs_archives_section_name = _t("Featured");
+ 			}
+ 			$this->view->setVar("archives_section_name", $vs_archives_section_name);
+ 			if(!$vs_archives_section_item_name = $this->config->get('featured_archives_section_item_name')){
+ 				$vs_archives_section_item_name = _t("feature");
+ 			}
+ 			$this->view->setVar("archives_section_item_name", $vs_archives_section_item_name);
+			
+ 			
  			caSetPageCSSClasses(array("gallery"));
  			
  			AssetLoadManager::register("panel");
@@ -110,10 +122,11 @@
 				shuffle($va_set_ids);
 				$qr_sets = caMakeSearchResult("ca_sets", $va_set_ids);
 			
-				$vs_landing_featured_set_code = $this->config->get("featured_set_code");
+				#$vs_landing_featured_set_code = $this->config->get("featured_set_code");
 				if($qr_sets && $qr_sets->numHits()){
 					while($qr_sets->nextHit()) {
-						if (!$va_set_media_for_theme[$qr_sets->get('ca_sets.featured_theme')] && ($qr_sets->get('set_code') != $vs_landing_featured_set_code)) { 
+						#if (!$va_set_media_for_theme[$qr_sets->get('ca_sets.featured_theme')] && ($qr_sets->get('set_code') != $vs_landing_featured_set_code)) { 
+						if (!$va_set_media_for_theme[$qr_sets->get('ca_sets.featured_theme')]) { 
 							$va_tmp = array_shift($va_set_first_items_media[$qr_sets->get('ca_sets.set_id')]);
 							$va_set_media_for_theme[$qr_sets->get('ca_sets.featured_theme')] = $va_tmp['representation_tag'];
 						}
@@ -161,12 +174,13 @@
 	
 				$qr_sets = caMakeSearchResult("ca_sets", array_keys($va_sets));
 			
-				$vs_landing_featured_set_code = $this->config->get("featured_set_code");
+				#$vs_landing_featured_set_code = $this->config->get("featured_set_code");
 				$va_sets_for_theme = array();
 				$vs_set_desc_code = $this->config->get('featured_set_description_element_code');
 				if($qr_sets && $qr_sets->numHits()){
 					while($qr_sets->nextHit()) {
-						if (($qr_sets->get('ca_sets.featured_theme') ==  $vn_theme_id) && ($qr_sets->get('set_code') != $vs_landing_featured_set_code)) { 
+						#if (($qr_sets->get('ca_sets.featured_theme') ==  $vn_theme_id) && ($qr_sets->get('set_code') != $vs_landing_featured_set_code)) { 
+						if (($qr_sets->get('ca_sets.featured_theme') ==  $vn_theme_id)) { 
 							$va_tmp = array_shift($va_set_first_items_media[$qr_sets->get('ca_sets.set_id')]);
 							$vs_media = $va_tmp['representation_tag'];
 							$va_sets_for_theme[$qr_sets->get('ca_sets.collection_rank').(($qr_sets->get('ca_sets.collection_rank')) ? "." : "").$qr_sets->get('ca_sets.set_id')] = array(
@@ -182,6 +196,35 @@
 				$this->view->setVar('sets', $va_sets_for_theme);
 			}
 			$this->render('Featured/theme_html.php');
+ 		}
+ 		# -------------------------------------------------------
+ 		public function Archives() {
+			$t_list = new ca_lists();
+			
+			# --- which type of set is configured for display in featured archives section
+ 			$vn_featured_set_type_id = $t_list->getItemIDFromList('set_types', $this->config->get('featured_archives_set_type')); 			
+ 			$va_set_media_for_theme = array();
+				
+ 			$t_set = new ca_sets();
+ 			if($vn_featured_set_type_id){
+				$va_tmp = array('checkAccess' => $this->opa_access_values, 'setType' => $vn_featured_set_type_id, $va_tmp["table"] = "ca_objects");
+				
+				$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
+				$va_set_first_items_media = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "widepreview", "checkAccess" => $this->opa_access_values));
+				$va_set_first_items_media_large = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "large", "checkAccess" => $this->opa_access_values));
+
+				shuffle($va_sets);
+				foreach($va_sets as $va_set){
+					$va_tmp_large = array_shift($va_set_first_items_media_large[$va_set['set_id']]);
+					$va_tmp_widepreview = array_shift($va_set_first_items_media[$va_set['set_id']]);
+					
+					$va_all_sets_first_items[$va_set['set_id']] = array("imageLarge" => $va_tmp_large['representation_tag'], "imageWidePreview" => $va_tmp_widepreview['representation_tag'], "title" => $va_set['name']);
+				}
+			}
+			$this->view->setVar('featured_sets', $va_all_sets_first_items);
+			
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('featured_archives_section_name')) ? $this->config->get('featured_archives_section_name') : _t("Featured")));
+			$this->render("Featured/archives_html.php"); 		
  		}
  		# --------------------------------------------------------
  		public function detail(){
@@ -373,6 +416,7 @@
 			$vs_table = Datamodel::getTableName($t_set_item->get('table_num'));
 			$t_instance->load($t_set_item->get("row_id"));
  			$va_set_item_ids = array_keys($t_set->getItemIDs(array("checkAccess" => $this->opa_access_values)));
+ 			$this->view->setVar("set", $t_set);
  			$this->view->setVar("item_id", $pn_item_id);
  			$this->view->setVar("set_num_items", sizeof($va_set_item_ids));
  			$this->view->setVar("set_item_num", (array_search($pn_item_id, $va_set_item_ids) + 1));

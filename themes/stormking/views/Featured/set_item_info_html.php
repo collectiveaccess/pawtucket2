@@ -5,7 +5,9 @@
 	$vb_last = $this->getVar("last");
 	$vn_theme_id = $this->getVar("theme_id");
 	$vs_theme = $this->getVar("theme");
-
+	$t_set = $this->getVar("set");
+	$vs_set_type = strToLower($t_set->get("ca_sets.type_id", array("convertCodesToDisplayText" => true)));
+	
 	$vs_type = $t_object->get('ca_objects.type_id', array("convertCodesToDisplayText" => true));
 	print "(".$this->getVar("set_item_num")."/".$this->getVar("set_num_items").")<br/>";
 	if(($vs_set_caption = $t_set_item->get("ca_set_items.preferred_labels")) && ($vs_set_caption != "[BLANK]")){
@@ -45,7 +47,6 @@
 		if ($va_photo_name = $t_object->getWithTemplate('<unit relativeTo="ca_object_representations"><unit relativeTo="ca_entities" restrictToRelationshipTypes="photographer">^ca_entities.preferred_labels</unit></unit>')) {
 			print "<div>Photo by ".$va_photo_name."</div>";
 		}
-		print "<div class='viewAll'>".caDetailLink($this->request, _t("View Record").' <i class="fa fa-angle-right"></i>', '', $this->getVar("table"),  $this->getVar("row_id"))."</div>";
 	}
 	if(strpos(strToLower($vs_type), "archival") !== false){
 		print "<div id='featuredShowMoreLink' class='viewAll'><a href='#' onClick='$(\"#featuredShowMore\").toggle(); $(\"#featuredShowMoreLink\").toggle(); return false;'>+ Show More</a></div>";
@@ -97,17 +98,22 @@
 		if ($vs_conditions_repro = $t_object->get('ca_objects.reproduction')) {
 			print "<div class='unit'><h6>Conditions Governing Reproduction</h6>".$vs_conditions_repro."</div>";
 		}
-		print "<div class='viewAll'>".caDetailLink($this->request, _t("View Record").' <i class="fa fa-angle-right"></i>', '', $this->getVar("table"),  $this->getVar("row_id"))."</div>";
 		print "<div class='viewAll' id='featuredShowLessLink'><a href='#' onClick='$(\"#featuredShowMore\").toggle(); $(\"#featuredShowMoreLink\").toggle(); return false;'>+ Show Less</a></div>";
 		print "</div>";																								
 																							
 	
 	}
-	#if($vb_last){
-		print "<div class='viewAll'>".caNavLink($this->request, "All ".$vs_theme." <i class='fa fa-angle-right'></i>", "", "", "Featured", "Theme", array("theme_id" => $vn_theme_id))."&nbsp;&nbsp;&nbsp;".caNavLink($this->request, "Home <i class='fa fa-angle-right'></i>", "", "", "Featured", "Index")."</div>";
-		
-	#}
-	
+	print "<div class='viewAll'>".caDetailLink($this->request, _t("View Record").' <i class="fa fa-angle-right"></i>', '', $this->getVar("table"),  $this->getVar("row_id"))."</div>";
+	print "<div class='viewAll'>";
+	if($vn_theme_id){
+		print caNavLink($this->request, "All ".$vs_theme." <i class='fa fa-angle-right'></i>", "", "", "Featured", "Theme", array("theme_id" => $vn_theme_id))."&nbsp;&nbsp;&nbsp;";
+	}
+	if($vs_set_type == "public presentation"){
+		print caNavLink($this->request, "Home <i class='fa fa-angle-right'></i>", "", "", "Featured", "Index");
+	}else{
+		print caNavLink($this->request, "Home <i class='fa fa-angle-right'></i>", "", "", "Featured", "Archives");
+	}
+	print "</div>";
 ?>
 <script type='text/javascript'>
 	jQuery(document).ready(function() {

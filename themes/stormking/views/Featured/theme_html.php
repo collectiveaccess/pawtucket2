@@ -22,8 +22,8 @@
 				print "<div class='row'>";
 			}
 			print "<div class='col-sm-4'><div class='featuredItem'>";
-			print caNavLink($this->request, $va_set["media"], "", "", "Featured", "Detail", array("set_id" => $vn_set_id));
-			print "<div class='featuredItemTitle'>".caNavLink($this->request, $va_set["title"], "", "", "Featured", "Detail", array("set_id" => $vn_set_id))."</div>";
+			print caNavLink($this->request, $va_set["media"], "", "", "Featured", "Detail", array("set_id" => $vn_set_id, "setMode" => "exhibitions"));
+			print "<div class='featuredItemTitle'>".caNavLink($this->request, $va_set["title"], "", "", "Featured", "Detail", array("set_id" => $vn_set_id, "setMode" => "exhibitions"))."</div>";
 			if($vs_desc = $va_set["description"]){
 				print "<div>".((mb_strlen($vs_desc) > 160) ? substr(strip_tags($vs_desc), 0, 160)."..." : $vs_desc)."</div>";
 			}

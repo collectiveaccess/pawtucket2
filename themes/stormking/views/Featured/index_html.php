@@ -16,8 +16,8 @@
 <?php
 			foreach($va_featured_sets as $vn_set_id => $va_featured_set){
 						if($vs_media = $va_featured_set["image"]){
-							print "<li><div class='frontSlide'>".caNavLink($this->request, $vs_media, "", "", "Featured", "Detail", array("set_id" => $vn_set_id));
-							print "<div class='frontSlideCaption'>".caNavLink($this->request, $va_featured_set["title"], "", "", "Featured", "Detail", array("set_id" => $vn_set_id))."</div>";
+							print "<li><div class='frontSlide'>".caNavLink($this->request, $vs_media, "", "", "Featured", "Detail", array("set_id" => $vn_set_id, "setMode" => "exhibitions"));
+							print "<div class='frontSlideCaption'>".caNavLink($this->request, $va_featured_set["title"], "", "", "Featured", "Detail", array("set_id" => $vn_set_id, "setMode" => "exhibitions"))."</div>";
 							print "</div></li>";
 							$vb_item_output = true;
 						}
