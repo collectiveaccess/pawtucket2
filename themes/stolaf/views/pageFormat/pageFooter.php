@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2015-2018 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -27,7 +27,22 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
-
+		</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+		</main>
+		<footer id="footer">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-6">
+						Rolvaag Memorial Library/Special Collections
+						<br/>1510 St. Olaf Avenue
+						<br/>Northfield, MN 55057
+					</div>
+					<div class="col-sm-6">
+					
+					</div>
+				</div>
+			</div>
+		</footer><!-- end footer -->
 <?php
 	//
 	// Output HTML for debug bar
@@ -36,25 +51,7 @@
 		print Debug::$bar->getJavascriptRenderer()->render();
 	}
 ?>
-	</div><!-- end pageArea --></div><!-- end col --></div><!-- end row --></div><!-- end container --></div><!-- end site-content -->
-	<footer id="colophon" class="site-footer" role="contentinfo">
-		<div class="site-info">
-			Copyright © Pine Needles Foundation
-			<br>
-			<span class="mv_credit"><a href="http://merryvalenzuela.com" target="_blank">Designed by M+V</a></span><br/>
-<?php
-			if($this->request->isLoggedIn()){
-?>
-				<span class="mv_credit"><?php print caNavLink($this->request, _t("Logout"), "", "", "LoginReg", "Logout"); ?></span>
-<?php
-			}else{
-?>
-				<span class="mv_credit"><?php print caNavLink($this->request, _t("Login"), "", "", "LoginReg", "LoginForm"); ?></span>
-<?php
-			}
-?>
-		</div><!-- .site-info -->
-	</footer>		
+	
 		<?php print TooltipManager::getLoadHTML(); ?>
 		<div id="caMediaPanel"> 
 			<div id="caMediaPanelContentArea">
@@ -83,6 +80,5 @@
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
 		</script>
-		</div><!-- end page -->
 	</body>
 </html>

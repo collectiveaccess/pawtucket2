@@ -91,7 +91,7 @@
 				if($va_errors[$vs_field]){
 					print "<div class='alert alert-danger'>".$va_errors[$vs_field]."</div>";
 				}
-				print "<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'><label for='".$vs_field."' class='col-sm-4 control-label'>";
+				print "<div class='form-group".(($va_errors[$vs_field]) ? " has-error" : "")."'>";
 				print $va_profile_element["bs_formatted_element"];
 				print "</div><!-- end form-group -->";
 			}
