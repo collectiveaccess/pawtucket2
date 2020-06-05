@@ -34,8 +34,8 @@
  	$va_type_info = $this->getVar('typeInfo');
  	$va_listing_info = $this->getVar('listingInfo');
  	$va_access_values = $this->getVar("access_values");
+ 	AssetLoadManager::register("soundcite");
 ?>
-<link href='https://cdn.knightlab.com/libs/soundcite/latest/css/player.css' rel='stylesheet' type='text/css'><script type='text/javascript' src='https://cdn.knightlab.com/libs/soundcite/latest/js/soundcite.min.js'></script>
 
 	<div class="row tanBg exploreRow exploreResourcesRow exploreDigitalExhibitionsRow">
 		<div class="col-sm-12">

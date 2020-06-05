@@ -27,8 +27,9 @@
  * ----------------------------------------------------------------------
  */
 ?>
-<link href='https://cdn.knightlab.com/libs/soundcite/latest/css/player.css' rel='stylesheet' type='text/css'><script type='text/javascript' src='https://cdn.knightlab.com/libs/soundcite/latest/js/soundcite.min.js'></script>
 <?php 
+AssetLoadManager::register("storymap");
+AssetLoadManager::register("soundcite");
 
 $vs_mode = $this->request->getParameter("mode", pString);
 #if($vs_mode == "map"){
@@ -44,6 +45,9 @@ $vs_mode = $this->request->getParameter("mode", pString);
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
 	
+	$t_list = new ca_lists();
+ 	$vn_digital_exhibit_object_type_id = $t_list->getItemIDFromList('object_types', 'digitalExhibitObject'); 		
+ 					
 	$va_access_values = $this->getVar("access_values");
 	$va_breadcrumb_trail = array(caNavLink($this->request, "Home", '', '', '', ''));
 	$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_occurrences");
@@ -167,11 +171,27 @@ $vs_mode = $this->request->getParameter("mode", pString);
 								$t_representation = $t_featured_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
 								$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
 								$vs_version = $va_media_display_info["display_version"];
+								$vb_link_to_object = false;
+								if(($t_featured_object->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($t_featured_object->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($t_featured_object->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes"))){
+									$vb_link_to_object = true;
+								}
+								if($qr_content_blocks->get("ca_occurrences.caption")){
+									$vs_caption = $qr_content_blocks->get("ca_occurrences.caption");
+								}else{
+									$vs_caption = $t_featured_object->get("ca_objects.preferred_labels.name");
+								}
+								if($vb_link_to_object){
+									$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_featured_object_id)."</div>";
+								}else{
+									$vs_caption = "<div class='mediaViewerCaption text-center'>".$vs_caption."</div>";
+								}
 								if($vs_version == "large"){
 									$vs_featured_image = $t_representation->get("ca_object_representations.media.".$vs_version);
-									$vs_featured_image = caDetailLink($this->request, $vs_featured_image, '', "ca_objects", $vn_featured_object_id);
-									if($vs_caption = $t_representation->get("ca_object_representations.preferred_labels.name")){
-										$vs_featured_image .= "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_featured_object_id)."</div>";
+									if($vb_link_to_object){
+										$vs_featured_image = caDetailLink($this->request, $vs_featured_image, '', "ca_objects", $vn_featured_object_id);
+									}
+									if($vs_caption){
+										$vs_featured_image .= $vs_caption;
 									};
 								}else{
 									$vs_featured_image =  caRepresentationViewer(
@@ -183,7 +203,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 																	'showAnnotations' => true, 
 																	'primaryOnly' => true, 
 																	'dontShowPlaceholder' => true, 
-																	'captionTemplate' => "<unit relativeTo='ca_objects'><l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></l></unit>"
+																	'captionTemplate' => $vs_caption
 																)
 															);
 								}
@@ -278,23 +298,22 @@ $vs_mode = $this->request->getParameter("mode", pString);
 										switch(strToLower($t_set->get("set_presentation_type", array("convertCodesToDisplayText" => true)))){
 											case "story map":
 ?>
-												<div id="storymap<?php print $vn_set_id."-".$vn_block_count; ?>" style="width: 100%; height: 600px;"></div><!-- end browseResultsContainer -->
+												<div id="storymap<?php print "{$vn_set_id}_{$vn_block_count}"; ?>" style="width: 100%; height: 600px;"></div><!-- end browseResultsContainer -->
 												
-												<link rel="stylesheet" href="https://cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css">
-												<script type="text/javascript" src="https://cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js"></script>
-
 												<script>
-													// storymap_data can be an URL or a Javascript object
-													//var storymap_data = '//media.knightlab.com/StoryMapJS/demo/demo.json';
-													var storymap_data = '<?php print $this->request->config->get("site_host").caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'storymap', 'set_id' => $vn_set_id)); ?>';
+													jQuery(document).ready(function() {
+														// storymap_data can be an URL or a Javascript object
+														//var storymap_data = '//media.knightlab.com/StoryMapJS/demo/demo.json';
+														var storymap_data = '<?php print $this->request->config->get("site_host").caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'storymap', 'set_id' => $vn_set_id)); ?>';
 
-													// certain settings must be passed within a separate options object
-													var storymap_options = {};
+														// certain settings must be passed within a separate options object
+														var storymap_options = {};
 
-													var storymap = new VCO.StoryMap('storymap<?php print $vn_set_id."-".$vn_block_count; ?>', storymap_data, storymap_options);
-													window.onresize = function(event) {
-														storymap.updateDisplay(); // this isn't automatic
-													}
+														var storymap = new VCO.StoryMap('storymap<?php print "{$vn_set_id}_{$vn_block_count}"; ?>', storymap_data, storymap_options);
+														window.onresize = function(event) {
+															storymap.updateDisplay(); // this isn't automatic
+														}
+													});
 												</script>
 <?php
 											break;
@@ -342,19 +361,33 @@ $vs_mode = $this->request->getParameter("mode", pString);
 								# --- display the rep viewer for the featured object so if it's video, it will play
 								$vn_row_id = $t_set_item->get("ca_set_items.row_id");
 								$t_object = new ca_objects($vn_row_id);
+								$vb_link_to_object = false;
+								if(($t_object->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($t_object->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($t_object->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes"))){
+									$vb_link_to_object = true;
+								}
 								$t_representation = $t_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
 								if($t_representation){
 									$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
 									$vs_version = $va_media_display_info["display_version"];
 									$vs_caption = "";
-									if(($vs_caption = $t_set_item->get("ca_set_items.preferred_labels")) && ($vs_caption != "[BLANK]")){
-										$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_row_id)."</div>";
-									}else{
-										$vs_caption = "";
+									if($t_set_item->get("ca_set_items.preferred_labels") != "[BLANK]"){
+										$vs_caption = $t_set_item->get("ca_set_items.preferred_labels");
+									}
+									if(!$vs_caption){
+										$vs_caption = $t_object->get("ca_objects.preferred_labels.name");
+									}
+									if($vs_caption){
+										if($vb_link_to_object){
+											$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_row_id)."</div>";
+										}else{
+											$vs_caption = "<div class='mediaViewerCaption text-center'>".$vs_caption."</div>";
+										}
 									}
 									if($vs_version == "large"){
 										$vs_media = $t_representation->get("ca_object_representations.media.".$vs_version);
-										$vs_media = caDetailLink($this->request, $vs_media, '', "ca_objects", $vn_row_id);
+										if($vb_link_to_object){
+											$vs_media = caDetailLink($this->request, $vs_media, '', "ca_objects", $vn_row_id);
+										}
 										if($vs_caption){
 											$vs_media .= $vs_caption;
 										};

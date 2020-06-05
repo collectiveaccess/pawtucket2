@@ -3420,3 +3420,8 @@ input[type='text'].ui-autocomplete-loading {
     object-fit: contain;
     background-color: #000;
 }
+
+/* Fix for StoryMap/Leaflet conflict that results in StoryMap map markers rendered unclickable */
+.leaflet-marker-icon {
+	pointer-events: auto;
+}
