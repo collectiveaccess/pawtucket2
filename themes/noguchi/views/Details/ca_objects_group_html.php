@@ -168,7 +168,7 @@
 					</div>
                 </div><!-- end block -->
 <?php
-	$va_exhibitions = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_objects.children'><unit relativeTo='ca_occurrences' restrictToTypes='exhibition' sort='ca_occurrences.date.parsed_date'><li><l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l></li></unit></unit>", array("checkAccess" => $va_access_values)));
+	$va_exhibitions = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_objects.children'><unit relativeTo='ca_occurrences' restrictToTypes='exhibition' sort='ca_occurrences.date.parsed_date'><li><l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationshipTypes='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l></li></unit></unit>", array("checkAccess" => $va_access_values)));
 	$va_bibs = explode(";", $t_object->getWithTemplate("<unit relativeTo='ca_objects.children'><unit relativeTo='ca_occurrences' restrictToTypes='bibliography' sort='ca_occurrences.bib_year_published'><li><l>^ca_occurrences.bib_full_citation</l></li></unit></unit>", array("checkAccess" => $va_access_values)));
 
 	

@@ -245,7 +245,7 @@
                                     <ul class="ca-data text-align-left related">
                                         <unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=" " sort="ca_occurrences.date.parsed_date">
 											<li>
-												<l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationships='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l>
+												<l><i>^ca_occurrences.preferred_labels.name</i>, <unit relativeTo='ca_entities' restrictToRelationshipTypes='primary_venue'>^ca_entities.preferred_labels.displayname</unit>, ^ca_occurrences.date.display_date</l>
 											</li>
                                         </unit>
                                     </ul>
