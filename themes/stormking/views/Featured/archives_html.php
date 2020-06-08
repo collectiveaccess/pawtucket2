@@ -7,7 +7,7 @@
 	$o_config = $this->getVar("config");
 
 	$va_featured_sets = $this->getVar("featured_sets");
-	if(is_array($va_featured_sets) && sizeof($va_featured_sets)){
+	if($x && is_array($va_featured_sets) && sizeof($va_featured_sets)){
 ?>   
 		<div class="jcarousel-wrapper">
 			<!-- Carousel -->

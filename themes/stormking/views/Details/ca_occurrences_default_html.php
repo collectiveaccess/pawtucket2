@@ -169,11 +169,12 @@
 				$va_related_catalogue = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('catalogue'), 'sort' => 'ca_object_labels.name'));
 				$va_remarks_images_url = $t_item->get('ca_occurrences.bibliography.url', array('returnAsArray' => true, 'version' => 'original'));
 				$va_checklist_images_url = $t_item->get('ca_occurrences.checklist.url', array('returnAsArray' => true, 'version' => 'original'));
+				$va_statement_images_url = $t_item->get('ca_occurrences.statement.url', array('returnAsArray' => true, 'version' => 'original'));
 				$vs_website = $t_item->get('ca_occurrences.exhibition_website');
 		?>
 				<div class="row">
 <?php
-					if($va_related_catalogue || $va_remarks_images_url || $va_checklist_images_url || $vs_website){
+					if($va_related_catalogue || $va_remarks_images_url || $va_checklist_images_url || $va_statement_images_url || $vs_website){
 ?>
 					<div class="col-lg-6 col-md-12">
 		<?php
@@ -195,6 +196,11 @@
 						if ($va_checklist_images_url) {
 							foreach ($va_checklist_images_url as $va_key => $va_checklist_images_url_path) {
 								print "<h6><i class='fa fa-file'></i> <a href='".$va_checklist_images_url_path."'>View Checklist </a></h6>";
+							}
+						}				
+						if ($va_statement_images_url) {
+							foreach ($va_statement_images_url as $va_key => $va_statement_images_url_path) {
+								print "<h6><i class='fa fa-file'></i> <a href='".$va_statement_images_url_path."'>View PDF </a></h6>";
 							}
 						}
 				
