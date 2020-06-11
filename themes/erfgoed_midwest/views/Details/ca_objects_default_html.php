@@ -33,6 +33,22 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	
+	MetaTagManager::addMetaProperty("og:url", $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"));
+	MetaTagManager::addMetaProperty("og:title", $t_object->get("ca_objects.preferred_labels.name"));
+	MetaTagManager::addMetaProperty("og:type", "website");
+	if($vs_tmp = $t_object->getWithTemplate($t_object->get("ca_objects.content_description"))){
+		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($vs_tmp)));
+	}
+	#if($vs_tmp = $va_config_options["fb_app_id"]){
+	#	MetaTagManager::addMetaProperty("fb:app_id", $vs_tmp);
+	#}
+	if($vs_rep = $t_object->get("ca_object_representations.media.page.url", array("checkAccess" => $va_access_values))){
+		MetaTagManager::addMetaProperty("og:image", $vs_rep);
+		MetaTagManager::addMetaProperty("og:image:width", $t_object->get("ca_object_representations.media.page.width"));
+		MetaTagManager::addMetaProperty("og:image:height", $t_object->get("ca_object_representations.media.page.height"));
+	}
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -58,6 +74,13 @@
 				#if ($vn_comments_enabled | $vn_share_enabled | $vn_pdf_enabled) {
 						
 					print '<div id="detailTools">';
+?>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0&appId=2210553328991338&autoLogAppEvents=1"></script>
+					<div class='detailTool'>
+						<div class="fb-share-button" data-href="<?php print $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" data-layout="button" data-size="small"><a target="_blank" href="<?php print $this->request->config->get("site_host").caNavUrl($this->request, "*", "*", "*"); ?>" class="fb-xfbml-parse-ignore">Share</a></div>
+					</div>
+<?php
+					
 					print "<div class='detailTool'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire About This Item", "", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("object_id")))."</div>";
 					
 					if ($vn_comments_enabled) {
@@ -80,49 +103,28 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6'>
-				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
-				<H6>{{{<unit>^ca_objects.type_id</unit>}}}</H6>
+				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
 				<HR>
 				
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="owner" min="1"><div class="unit"><H6>Collectie</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="owner" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.idno"><div class="unit"><H6>Objectnummer</H6>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.object_names"><div class="unit"><H6>Object Name</H6>^ca_objects.object_names%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.object_keywords"><div class="unit"><H6>Keywords</H6>^ca_objects.object_keywords%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.object_tags"><div class="unit"><H6>Tags</H6>^ca_objects.object_tags%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.description">
 					<div class='unit'><h6>Descriptive Note</h6>
 						<span class="trimText">^ca_objects.description</span>
 					</div>
 				</ifdef>}}}
-				{{{<ifdef code="ca_objects.object_physical_description">
-					<div class='unit'><h6>Physical Description</h6>
-						<span class="trimText">^ca_objects.object_physical_description</span>
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.object_material"><div class="unit"><H6>Material</H6>^ca_objects.object_material%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.dimensions"><div class="unit"><H6>Dimensions</H6>
-						<unit relativeTo="ca_objects.dimensions" delimiter="<br/>"><ifdef code="ca_objects.dimensions.dimensions_type">^ca_objects.dimensions.dimensions_type: </ifdef>^ca_objects.dimensions.dimensions_value<ifdef code="ca_objects.dimensions.dimensions_precision">, ^ca_objects.dimensions.dimensions_precision</ifdef><ifdef code="ca_objects.dimensions.dimensions_specification">, ^ca_objects.dimensions.dimensions_specification</ifdef><ifdef code="ca_objects.dimensions.dimensions_extra_info">, ^ca_objects.dimensions.dimensions_extra_info</ifdef></unit>
-				</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.weight"><div class="unit"><H6>Weight</H6>
-						<unit relativeTo="ca_objects.weight" delimiter="<br/>"><ifdef code="ca_objects.weight.value">^ca_objects.weight.value</ifdef><ifdef code="ca_objects.weight.weight_precision">, ^ca_objects.weight.weight_precision</ifdef><ifdef code="ca_objects.weight.weight_specification">, ^ca_objects.weight.weight_specification</ifdef></unit>
-				</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.object_production"><div class="unit"><H6>Production</H6>^ca_objects.object_production%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.object_finish"><div class="unit"><H6>Finish</H6>^ca_objects.object_finish%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.object_shape"><div class="unit"><H6>Shape</H6>^ca_objects.object_shape%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.object_color"><div class="unit"><H6>Color</H6>^ca_objects.object_color%delimiter=,_</div></ifdef>}}}
-				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1"><div class="unit"><H6>Vervaardiger</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="creator" min="1"><div class="unit"><H6>Vervaardiger</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="creator" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 <?php
 				if($t_object->get("type_id", array("convertCodesToDisplayText" => true)) != "Publication"){
 					$t_object->getWithTemplate('<ifdef code="ca_objects.object_creation_date"><div class="unit"><H6>Creation Date</H6>^ca_objects.object_creation_date%delimiter=,_</div></ifdef>');
 				}
 ?>
 				{{{<ifdef code="ca_objects.object_creation_period"><div class="unit"><H6>Creation Period</H6>^ca_objects.object_creation_period%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.object_creation_description">
-					<div class='unit'><h6>Techniques Description</h6>
-						<span class="trimText">^ca_objects.object_creation_description</span>
-					</div>
-				</ifdef>}}}
-				{{{<ifdef code="ca_objects.object_techniques"><div class="unit"><H6>Technique</H6>^ca_objects.object_techniques%delimiter=,_</div></ifdef>}}}
 <!-- publication fields -->
-				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="author" min="1"><div class="unit"><H6>Author</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="author" min="1"><div class="unit"><H6>Author</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="author" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.nonpreferred_labels"><div class="unit"><H6>Alternate Title</H6>^ca_objects.nonpreferred_labels%delimiter=,_</div></ifdef>}}}
 <?php
 				if($t_object->get("type_id", array("convertCodesToDisplayText" => true)) == "Publication"){
@@ -132,7 +134,7 @@
 				{{{<ifdef code="ca_objects.publication_medium"><div class="unit"><H6>Medium / Type of Resource</H6>^ca_objects.publication_medium%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.publication_edition"><div class="unit"><H6>Edition</H6>^ca_objects.publication_edition%delimiter=,_</div></ifdef>}}}
 				{{{<ifcount code="ca_places" restrictToRelationshipTypes="published" min="1"><div class="unit"><H6>Publication Place</H6><unit relativeTo="ca_places" restrictToRelationshipTypes="published" delimiter=", ">^ca_places.preferred_labels</unit></div></ifcount>}}}
-				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="publisher" min="1"><div class="unit"><H6>Publisher</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="publisher" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
+				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="publisher" min="1"><div class="unit"><H6>Publisher</H6><unit relativeTo="ca_entities" restrictToRelationshipTypes="publisher" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 				
 <!-- END publication fields -->				
 				{{{<ifdef code="ca_objects.content_description">
@@ -145,27 +147,19 @@
 							
 				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="depicts" min="1" max="1"><H6>Person</H6></ifcount>}}}
 				{{{<ifcount code="ca_entities" restrictToRelationshipTypes="depicts" min="2"><H6>People</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="depicts" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
+				{{{<unit relativeTo="ca_entities" restrictToRelationshipTypes="depicts" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>}}}
 				{{{<ifcount code="ca_places" min="1" max="1"><H6>Place</H6></ifcount>}}}
 				{{{<ifcount code="ca_places" min="2"><H6>Places</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_places" delimiter="<br/>">^ca_places.preferred_labels (^relationship_typename)</unit>}}}
+				{{{<unit relativeTo="ca_places" delimiter="<br/>"><unit relativeTo="ca_places.hierarchy" delimiter=" &gt; "><l>^ca_places.preferred_labels.name</l></unit> (^relationship_typename)</unit>}}}
 				{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Event</H6></ifcount>}}}
 				{{{<ifcount code="ca_occurrences" min="2"><H6>Events</H6></ifcount>}}}
 				{{{<unit relativeTo="ca_occurrences" delimiter="<br/>">^ca_occurrences.preferred_labels (^relationship_typename)</unit>}}}
 				{{{<ifcount code="ca_objects.related" min="1" max="1"><H6>Object</H6></ifcount>}}}
 				{{{<ifcount code="ca_objects.related" min="2"><H6>Objects</H6></ifcount>}}}
-				{{{<unit relativeTo="ca_objects.related" delimiter="<br/>">^ca_objects.preferred_labels (^relationship_typename)</unit>}}}
+				{{{<unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_objects.preferred_labels</l> (^relationship_typename)</unit>}}}
 				
-				{{{<ifdef code="ca_objects.subject_matter_concept"><div class="unit"><H6>Content Description</H6>
-					<unit relativeTo="ca_objects.subject_matter_concept">
-						<ifdef code="ca_objects.subject_matter_concept.subject_matter_concept_pos">Position: ^ca_objects.subject_matter_concept.subject_matter_concept_pos<br/></ifdef>
-						<ifdef code="ca_objects.subject_matter_concept.subject_matter_concept_concept">Concept / Subject: ^ca_objects.subject_matter_concept.subject_matter_concept_concept<br/></ifdef>
-						<ifdef code="ca_objects.subject_matter_concept.subject_matter_concept_details">Details: ^ca_objects.subject_matter_concept.subject_matter_concept_details<br/></ifdef>
-					
-					</unit>
-				</div></ifdef>}}}
 				
-				<div class="unit">{{{map}}}</div>
+				<br/><br/><div class="unit">{{{map}}}</div>
 						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->

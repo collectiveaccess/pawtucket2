@@ -21,12 +21,12 @@
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search object identifiers.">Objectnummer</span>
-			{{{ca_objects.idno%width=210px}}}
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search places.">Place</span>
+			{{{ca_places.preferred_labels.name%width=210px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to object types.">Type</span>
-			{{{ca_objects.type_id%height=30px}}}
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search collection.">Collectie</span>
+			{{{ca_entities.preferred_labels.name%height=30px}}}
 		</div>
 	</div>
 	<div class='row'>

@@ -5,7 +5,7 @@
 body{
 	font-family: 'Open Sans', sans-serif;
 	font-weight:300;
-	margin-bottom:100px;
+	margin-bottom:120px;
 }
 b, strong {
     font-family: 'Open Sans', serif;
@@ -189,6 +189,14 @@ ul.menuItems{
 		width:90%
 	}
 }
+.yamm .nav.navbar-right .dropdown-menu {
+    left: 0;
+    right: auto;
+}
+.navbar-nav > li > .dropdown-menu {
+    margin-top: 17px;
+    text-align:left;
+}
 #footer{
 	background-color:#FFFF;
 	border-top:2px solid #ee726b;
@@ -197,7 +205,7 @@ ul.menuItems{
 	font-weight:300;
 	text-align:center;
 	font-size:14px;
-	height:50px;
+	height:65px;
 	padding-top:10px;
 }
 #footer a, #footer ul a{
@@ -213,14 +221,18 @@ ul.menuItems{
 	color: #ee726b;
 	margin-right:5px;
 }
+#footer img{
+	height:45px;
+	width:auto;
+}
 .heroBg1{
-	background-image: url("../graphics/hp_Sample3.png");
+	background-image: url("../graphics/hp3a.jpg");
 	background-size: cover;
-	background-position: center center;
+	background-position: center bottom;
 	margin-top:-20px;
 }
 .heroBg2{
-	background-image: url("../graphics/hp_Sample2.png");
+	background-image: url("../graphics/hp2.jpg");
 	background-size: cover;
 	background-position: center center;
 	margin-top:-20px;
@@ -306,6 +318,30 @@ a.readmore-js-toggle {
 .detail a {
     color: #00768e;
 }
+.detail .detailMediaToolbar, .gallery .detailMediaToolbar {
+    background-color: transparent;
+    padding: 2px 5px 7px 5px;
+    font-size: 12px;
+    position: absolute;
+    display: block;
+    bottom: -35px;
+    top:auto;
+    z-index: 200;
+    width: 100%;
+    text-align: center;
+}
+.detail .detailMediaToolbar a, .gallery .detailMediaToolbar a{
+	color:#00768e;
+	font-size:15px;
+}
+.repViewerContCont{
+	padding-bottom:30px;
+}
+.detail #detailRepNav {
+    top: -25px;
+    position: relative;
+    z-index: 300;
+}
 /* cookie notice */
 #cookieNotice{
 	position: fixed;
@@ -336,4 +372,39 @@ a.readmore-js-toggle {
 /* gallery */
 .gallery #gallerySetInfo a.btn{
 	color: #00768e;
+}
+.gallery .galleryList{
+	margin-bottom:30px;
+}
+.gallery .galleryList img{
+	width:100%;
+	height:auto;
+}
+.gallery .galleryList label{
+	padding-top:5px;
+	display:block;
+}
+.gallery .galleryList label a{
+	font-weight:bold;
+	font-size:14px;
+	text-transform:none;
+}
+.gallery #galleryDetailImageArea {
+	margin-bottom: 40px;
+}
+/* collections/list browse */
+.bResultListItemText{
+	display: flex;
+	justify-content: left;
+	align-items: center;
+	height: 72px;
+}
+.bResultListItem .bResultListItemImg{
+	margin-right:10px;
+}
+.bResultListItem .bResultListItemText a {
+    line-height: 1.2em;
+    color: #00768e;
+    font-size: 14px;
+	font-weight:bold;
 }

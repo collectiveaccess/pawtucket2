@@ -33,11 +33,12 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<ul class="list-inline">
-							<li><a href="https://www.midwest.be" target="_blank"><b>WWW.MIDWEST.BE</b></a></li>
-							<li><i class="fa fa-map-marker" aria-hidden="true"></i> Spanejstraat 141/2, 8800 Roeselare</li>
+							<li><a href="https://www.bienet.be" target="_blank"><b>WWW.BIENET.BE</b></a></li>
+							<li><i class="fa fa-map-marker" aria-hidden="true"></i> Ooststraat 35, 8800 Roeselare</li>
 							<li><i class="fa fa-paper-plane" aria-hidden="true"></i> <?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
-							<li><i class="fa fa-phone" aria-hidden="true"></i> +32 (0)000 000 000</li>
-							<li><b class="pink">BTW</b>&nbsp;&nbsp;BE00 0000 0000</li>
+							<li><i class="fa fa-phone" aria-hidden="true"></i> +32(0)51 26 87 4</li>
+							<li><i class="fa fa-check" aria-hidden="true"></i> <?php print caNavLink($this->request, _t("Disclaimer"), "", "", "About", "Disclaimer"); ?></li>
+							<li><?php print caGetThemeGraphic($this->request, "Vlaanderen_verbeelding_werkt.png"); ?></li>
 						</ul>
 					</div>
 				</div>
