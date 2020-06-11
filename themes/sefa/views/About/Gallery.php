@@ -25,11 +25,15 @@
 		</p>
 		
 		<div class="row" style="margin-top:50px;">
-			<div class="col-xs-6 col-md-3 col-md-offset-2 fullWidthImg">
+			<div class="col-xs-4 fullWidthImg" style="padding-top:30px;">
+				<a href="https://www.arttable.org/" target="_blank"><?php print caGetThemeGraphic($this->request, 'arttable-logo.png', array('alt' => 'Art Table')); ?></a>
+			</div>
+			<div class="col-xs-4 fullWidthImg" style="padding-top:30px;">
 				<a href="http://womenartdealers.org/" target="_blank"><?php print caGetThemeGraphic($this->request, 'awad-logo.jpg', array('alt' => 'Association of Women Art Dealers')); ?></a>
 			</div>
-			<div class="col-xs-6 col-md-3  col-md-offset-2 fullWidthImg" style="padding-top:30px;">
-				<a href="https://www.arttable.org/" target="_blank"><?php print caGetThemeGraphic($this->request, 'arttable-logo.png', array('alt' => 'Art Table')); ?></a>
+			<div class="col-xs-4 fullWidthImg" style="padding-top:30px;">
+				<a href="https://www.artmoney.com/us" target="_blank"><?php print caGetThemeGraphic($this->request, 'art-money-logo.png', array('alt' => 'Art Money')); ?></a>
+				<br/><small>10 Payments. 10 Months. No Interest.</small>
 			</div>
 		</div>
 	</div>

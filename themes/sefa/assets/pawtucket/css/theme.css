@@ -162,6 +162,15 @@ div.captionSlideshow{
 	color: red;
 	font-size:6px;
 	padding-left:5px;
+	top: -2px;
+	position: relative;
+}
+.captionNoLongerAvailable{
+	color: orange;
+	font-size:6px;
+	padding-left:5px;
+	top: -2px;
+	position: relative;
 }
 .fullWidthImg img{
 	height:auto;
@@ -770,3 +779,13 @@ fieldset[disabled] .btn-default.active {
 }
 
 .pubListing h2 { height:3.6em; overflow:hidden }
+
+.artinsitu h1{
+	font-size:24px
+}
+.artinsitu h2{
+	font-size:16px
+}
+.artinsitu h2 a{
+	font-size:18px
+}
