@@ -111,7 +111,7 @@
 				if ($vs_call_no = $t_object->get('ca_objects.idno', array("delimiter" => ", "))) {
 					print "<div class='unit'><h6>Call Number</h6>".$vs_call_no."</div>";
 				}
-				if ($vs_author = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
+				if ($vs_author = $t_object->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='author'><ifdef code='ca_entities.variant_names.display_name'><span class='authorPopover' data-toggle='popover' data-trigger='hover' data-content='^ca_entities.variant_names.display_name%delimiter=;_'><l>^ca_entities.preferred_labels</l></span></ifdef><ifnotdef code='ca_entities.variant_names.display_name'><l>^ca_entities.preferred_labels</l></ifdef></unit>")) {
 					print "<div class='unit'><h6>Author</h6>".$vs_author."</div>";
 				}
 				if ($va_attribution = $t_object->get('ca_objects.attribution_issues', array('convertCodesToDisplayText' => true)) == "Yes") {
@@ -232,9 +232,10 @@
 				#	print "<div class='unit'><h6>Added Entry Bookseller</h6>".$vs_added_bookseller."</div>";
 				#}	
 					
-				if ($vs_added_entries = $t_object->getWithTemplate('<unit relativeTo="ca_entities" excludeRelationshipTypes="author" delimiter="<br/>"><l>^ca_entities.preferred_labels</l> (^relationship_typename)</unit>')) {
+				if ($vs_added_entries = $t_object->getWithTemplate("<unit relativeTo='ca_entities' excludeRelationshipTypes='author' delimiter='<br/>'><ifdef code='ca_entities.variant_names.display_name'><span class='authorPopover' data-toggle='popover' data-trigger='hover' data-content='^ca_entities.variant_names.display_name%delimiter=;_'><l>^ca_entities.preferred_labels</l>  (^relationship_typename)</span></ifdef><ifnotdef code='ca_entities.variant_names.display_name'><l>^ca_entities.preferred_labels</l>  (^relationship_typename)</ifdef></unit>")) {
 					print "<div class='unit'><h6>Added Entries</h6>".$vs_added_entries."</div>";
-				}																																																																																																																																				
+				}
+																																																																																																																																								
 ?>
 
 				
@@ -270,4 +271,8 @@
 		  maxHeight: 120
 		});
 	});
+	jQuery(document).ready(function() {
+		$('.authorPopover').popover(); 
+	});
+	
 </script>

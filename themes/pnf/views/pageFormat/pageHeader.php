@@ -132,8 +132,8 @@ $( document ).ready(function() {
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Bibliography'), '', '', 'Listing', 'bibliography');?></li>
 							<li id="menu-item-444" class="menu-item menu-item-type-post_type menu-item-object-page"><?php print caNavLink($this->request, _t('Modern editions of plays for which <i>sueltas</i> provide the basis, or an important textual source'), '', '', 'Listing', 'modern_editions');?></li>
 							<li id="menu-item-199" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-199"><?php print caNavLink($this->request, _t('Institutions'), '', '', 'Browse', 'collections');?></li>													
-							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><a href="/lists/playwrights/"><?php print _t('Playwrights, translators, and adaptors');?></a></li>
-							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><a href="/lists/printers/"><?php print _t('Printers, publishers, booksellers, and bookstores');?></a></li>
+							<li id="menu-item-191" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-191"><?php print caNavLink($this->request, _t('Playwrights, translators, and adaptors'), '', '', 'Listing', 'printers'); ?></a></li>
+							<li id="menu-item-198" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-198"><?php print caNavLink($this->request, _t('Printers, publishers, booksellers, and bookstores'), '', '', 'Listing', 'playwrights');?></a></li>
 							<li id="menu-item-200" class="menu-item menu-item-type-post_type menu-item-object-lists menu-item-200"><a href="/lists/us-catalogs/"><?php print _t('Printed catalogs of Spanish drama and comedias sueltas in US and Canadian library collections');?></a></li>						
 						</ul>
 					</li>
