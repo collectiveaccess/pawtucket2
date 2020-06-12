@@ -501,11 +501,11 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 }
 /* ------ Artist, fair, pub list ---------- */
 @media (min-width: 992px) {
-	.artistList .row, .fairList .row, .pubList .row {
+	.artistList .row, .fairList .row, .pubList .row, .insituList .row {
 	  margin-right: -30px;
 	  margin-left: -30px;
 	}
-	.artistList .col-sm-4, .fairList .col-sm-3, .pubList .col-sm-3 {
+	.artistList .col-sm-4, .fairList .col-sm-3, .pubList .col-sm-3, .insituList .col-sm-4{
 	  padding-right: 30px;
 	  padding-left: 30px;
 	}
@@ -517,6 +517,16 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 .pubListing h1, .pubListing h1 a:link, .pubListing h1 a:visited, .fairListing h2, .fairListing h2 a:link, .fairListing h2 a:visited{
 	color:#4d4d4d;
 	font-size:13px;
+	line-height:1.2em;
+	margin-top:5px;
+	height: 3.6em;
+}
+.insituList {
+	margin-top:10px;
+}
+.insituListing h2, .insituListing h2 a:link, .insituListing h2 a:visited{
+	color:#000000;
+	font-size:16px;
 	line-height:1.2em;
 	margin-top:5px;
 	height: 3.6em;
@@ -554,12 +564,12 @@ a.jcarousel-control-prev, a.jcarousel-control-next{
 		height:250px;
 	}
 }
-.artistListing img{
+.artistListing img, .insituListing img{
 	width:100%;
 	max-width:300px;
 	height:auto;
 }
-.artistListing, .fairListing, .pubListing{
+.artistListing, .fairListing, .pubListing, .insituListing{
 	margin:10px 0px 40px 0px;
 }
 .fairListing {

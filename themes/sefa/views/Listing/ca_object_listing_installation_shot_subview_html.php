@@ -34,17 +34,17 @@
  	$va_type_info = $this->getVar('typeInfo');
  	$va_listing_info = $this->getVar('listingInfo');
  	$va_access_values = caGetUserAccessValues($this->request);
-	print "<div class='pubList'>";
+	print "<div class='insituList'>";
 	foreach($va_lists as $vn_type_id => $qr_list) {
 		if(!$qr_list) { continue; }
 		
 		print "<div class='row'>";
 		while($qr_list->nextHit()) {
-			print "<div class='col-sm-3 pubListing'>";
+			print "<div class='col-sm-4 insituListing'>";
 			if($vs_img = $qr_list->get("ca_object_representations.media.thumbnail300", array("checkAccess" => $va_access_values))){
 				print "<div class='pubListingImg'>".caDetailLink($this->request, $vs_img, '', 'ca_objects', $qr_list->get("object_id"), null, null, array("type_id" => $qr_list->get("type_id")))."</div>";
 			}
-			print "<h1>".$qr_list->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>')."</h1></div>\n";	
+			print "<h2>".$qr_list->getWithTemplate('<l>^ca_objects.preferred_labels.name</l>')."</h2></div>\n";	
 		}
 		print "</div><!-- end row -->\n";
 	}

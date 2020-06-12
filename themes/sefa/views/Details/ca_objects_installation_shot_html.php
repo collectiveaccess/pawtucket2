@@ -128,7 +128,7 @@
 	</div><!-- end col -->
 	<div class='col-sm-4'>
 		{{{<ifdef code="ca_objects.preferred_labels.name">
-			<h1>^ca_objects.artinsitu -  ^ca_objects.preferred_labels.name</h1>
+			<h1>^ca_objects.preferred_labels.name</h1>
 		</ifdef>}}}
 		{{{<ifdef code="ca_objects.description">
 			<p>^ca_objects.description</p>

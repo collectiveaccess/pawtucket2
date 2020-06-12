@@ -10,7 +10,7 @@
 	# --- array of images to display
 	$va_images = array();
 	# --- get related object_ids in array
-	$va_objects = $t_item->get("ca_objects", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+	$va_objects = $t_item->get("ca_objects", array("returnWithStructure" => true, "checkAccess" => $va_access_values, "excludeTypes" => array("installation_shot", "catalog")));
 	$va_object_ids = array();
 	if(is_array($va_objects) && sizeof($va_objects)){
 		foreach($va_objects as $va_object){
