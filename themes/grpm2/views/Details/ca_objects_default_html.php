@@ -166,7 +166,7 @@
 				{{{<ifdef code="ca_objects.Source"><H6>Source:</H6>^ca_objects.Source</ifdef>}}}
 				{{{<ifdef code="ca_objects.Current_Location"><H6>Currently:</H6>^ca_objects.Current_Location</ifdef>}}}
 
-				{{{<ifdef code="ca_objects.Links"><H6>Links:</H6>^ca_objects.Links</ifdef>}}}
+				{{{<ifdef code="ca_objects.Links"><H6>Links:</H6><unit delimiter="<br/>" relativeTo="ca_objects.Links"><a href="^ca_objects.Links" target="_new">^ca_objects.Links</a></unit></ifdef>}}}
 
 				<hr></hr>	
 				{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Exhibit/Program</H6></ifcount>}}}
