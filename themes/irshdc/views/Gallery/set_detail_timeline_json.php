@@ -40,6 +40,9 @@ $vs_table						= $this->getVar('table');
 $va_view_info 					= $va_views[$vs_current_view][$vs_table];
 $va_access_values = caGetUserAccessValues($this->request);
 
+$t_list = new ca_lists();
+$vn_digital_exhibit_object_type_id = $t_list->getItemIDFromList('object_types', 'digitalExhibitObject'); 		
+
 $va_item_ids = array_keys($t_set->getItemIds());
 if(is_array($va_item_ids) && sizeof($va_item_ids)){
 	$qr_set_items = caMakeSearchResult('ca_set_items', $va_item_ids);
@@ -104,15 +107,23 @@ while($qr_res->nextHit()) {
 				$vs_primary_key = "ca_objects.object_id";
 			break;
 		}
-		$vs_set_item_title = $va_set_items[$qr_res->get($vs_primary_key)]["title"];
-		if($vs_set_item_title == "[BLANK]"){
-			$vs_set_item_title = "";
+		$vs_title = $va_set_items[$qr_res->get($vs_primary_key)]["title"];
+		if($vs_title == "[BLANK]"){
+			$vs_title = "";
 		}
+		if(!$vs_title){
+			$vs_title = $qr_res->getWithTemplate($va_view_info['display']['title_template']);
+		}
+		if($vs_table == "ca_objects"){
+			if(($qr_res->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($qr_res->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($qr_res->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes"))){
+				$vs_title = caDetailLink($this->request, $vs_title, '', "ca_objects", $qr_res->get("ca_objects.object_id"));
+			}
+		}		
 		$vs_set_item_description = $va_set_items[$qr_res->get($vs_primary_key)]["description"];
 
 		$va_data['events'][] = [
 			'text' => [
-				'headline' => ($vs_set_item_title) ? $vs_set_item_title : $qr_res->getWithTemplate($va_view_info['display']['title_template']),
+				'headline' => $vs_title,
 				'text' => ($vs_set_item_description) ? $vs_set_item_description : $qr_res->getWithTemplate($va_view_info['display']['description_template']),
 			],
 			'media' => [
