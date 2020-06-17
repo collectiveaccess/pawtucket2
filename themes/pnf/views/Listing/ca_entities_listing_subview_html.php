@@ -58,7 +58,7 @@
 		
 		while($qr_list->nextHit()) {
 			$vn_id = $qr_list->get('ca_entities.entity_id');
-			$vs_sort = strToLower(strip_tags(str_replace(array(",", ".", "\"", "“", "”", "La ", "El ", "Los ", "Las ", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ü", "ù", "ú", "ü", "Ñ", "ñ"), array("", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "u", "u", "u", "N", "n"), trim(strip_tags($qr_list->get('ca_entities.preferred_labels.displayname'))))));
+			$vs_sort = strToLower(strip_tags(str_replace(array(",", ".", "\"", "“", "”", "La ", "El ", "Los ", "Las ", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ü", "ù", "ú", "ü", "Ñ", "ñ", "Š", "š"), array("", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "u", "u", "u", "N", "n", "S", "s"), trim(strip_tags($qr_list->get('ca_entities.preferred_labels.displayname'))))));
 			$vs_first_letter = ucfirst(substr($vs_sort, 0, 1));
 			$va_letter_array[$vs_first_letter] = $vs_first_letter;
 			$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listEntryIndentSecondLine'>".$qr_list->getWithTemplate('<b><l>^ca_entities.preferred_labels.displayname</l></b>').(($vs_tmp = $qr_list->get("ca_entities.variant_names.display_name", array("delimiter" => "; ", "sort" => "ca_entities.variant_names.surname"))) ? "<br/>".$vs_tmp : "")."</div>\n";	
