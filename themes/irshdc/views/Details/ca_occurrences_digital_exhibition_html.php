@@ -187,9 +187,10 @@ $vs_mode = $this->request->getParameter("mode", pString);
 								}
 								if($vs_version == "large"){
 									$vs_featured_image = $t_representation->get("ca_object_representations.media.".$vs_version);
-									if($vb_link_to_object){
-										$vs_featured_image = caDetailLink($this->request, $vs_featured_image, '', "ca_objects", $vn_featured_object_id);
-									}
+									#if($vb_link_to_object){
+									#	$vs_featured_image = caDetailLink($this->request, $vs_featured_image, '', "ca_objects", $vn_featured_object_id);
+									#}
+									$vs_featured_image = '<a href="#" onclick="caMediaPanel.showPanel(\''.caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("context" => "objects", "id" => $t_featured_object->get("ca_objects.object_id"), "representation_id" => $t_representation->get("ca_object_representations.representation_id"), "overlay" => 1)).'\'); return false;">'.$vs_featured_image.'</a>';
 									if($vs_caption){
 										$vs_featured_image .= $vs_caption;
 									};
@@ -385,9 +386,11 @@ $vs_mode = $this->request->getParameter("mode", pString);
 									}
 									if($vs_version == "large"){
 										$vs_media = $t_representation->get("ca_object_representations.media.".$vs_version);
-										if($vb_link_to_object){
-											$vs_media = caDetailLink($this->request, $vs_media, '', "ca_objects", $vn_row_id);
-										}
+										#if($vb_link_to_object){
+										#	$vs_media = caDetailLink($this->request, $vs_media, '', "ca_objects", $vn_row_id);
+										#}
+										$vs_media = '<a href="#" onclick="caMediaPanel.showPanel(\''.caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("context" => "objects", "id" => $t_object->get("ca_objects.object_id"), "representation_id" => $t_representation->get("ca_object_representations.representation_id"), "overlay" => 1)).'\'); return false;">'.$vs_media.'</a>';
+									
 										if($vs_caption){
 											$vs_media .= $vs_caption;
 										};

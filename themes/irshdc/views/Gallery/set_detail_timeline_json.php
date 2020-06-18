@@ -49,7 +49,7 @@ if(is_array($va_item_ids) && sizeof($va_item_ids)){
 	$va_set_items = array();
 	if($qr_set_items->numHits()){
 		while($qr_set_items->nextHit()){
-			$va_set_items[$qr_set_items->get("row_id")] = array("title" => $qr_set_items->get("ca_set_items.preferred_labels"), "description" => $qr_set_items->get("ca_set_items.set_item_description"), "georeference" => $qr_set_items->get("ca_set_items.georeference"));
+			$va_set_items[$qr_set_items->get("row_id")] = array("title" => $qr_set_items->get("ca_set_items.preferred_labels"), "description" => $qr_set_items->get("ca_set_items.set_item_description"), "georeference" => $qr_set_items->get("ca_set_items.georeference"), "date" => $qr_set_items->get("ca_set_items.indexingDatesSet", array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';')));
 		}
 	}
 }
@@ -74,7 +74,10 @@ $va_data = [
 $vn_c = 0;
 
 while($qr_res->nextHit()) {
-	$vs_dates = $qr_res->get($va_view_info['data'], array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';'));
+	$vs_dates = $va_set_items[$qr_res->get($vs_primary_key)]["date"];
+	if(!$vs_dates){
+		$vs_dates = $qr_res->get($va_view_info['data'], array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';'));
+	}
 	$va_dates = explode(";", $vs_dates);
 
 	$va_date_list = explode("/", $va_dates[0]);
