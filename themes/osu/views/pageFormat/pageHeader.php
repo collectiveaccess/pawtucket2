@@ -25,22 +25,22 @@
  *
  * ----------------------------------------------------------------------
  */
-	$va_lightboxDisplayName = caGetLightboxDisplayName();
-	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
-	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
+	$va_lightbox_display_name = caGetLightboxDisplayName();
+	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 	# --- collect the user links - they are output twice - once for toggle menu and once for nav
 	$vs_user_links = "";
 	if($this->request->isLoggedIn()){
 		$vs_user_links .= '<li role="presentation" class="dropdown-header">'.trim($this->request->user->get("fname")." ".$this->request->user->get("lname")).', '.$this->request->user->get("email").'</li>';
 		$vs_user_links .= '<li class="divider nav-divider"></li>';
-		if(!$this->request->config->get("disable_lightbox")){
-			$vs_user_links .= "<li>".caNavLink($this->request, $vs_lightbox_displayname, '', '', 'Lightbox', 'Index', array())."</li>";
+		if(!$this->request->config->get("disable_my_collections")){
+			$vs_user_links .= "<li>".caNavLink($this->request, $vs_lightbox_display_name, '', '', 'Sets', 'Index', array())."</li>";
 		}
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('User Profile'), '', '', 'LoginReg', 'profileForm', array())."</li>";
 		$vs_user_links .= "<li>".caNavLink($this->request, _t('Logout'), '', '', 'LoginReg', 'Logout', array())."</li>";
 	} else {	
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login']) || $this->request->config->get('pawtucket_requires_login')) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
-		if (!$this->request->config->get(['dontAllowRegistrationAndLogin', 'dont_allow_registration_and_login'])) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login') || $this->request->config->get('pawtucket_requires_login')) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login")."</a></li>"; }
+		if (!$this->request->config->get('dont_allow_registration_and_login')) { $vs_user_links .= "<li><a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'RegisterForm', array())."\"); return false;' >"._t("Register")."</a></li>"; }
 	}
 
 ?><!DOCTYPE html>
@@ -102,7 +102,7 @@
 	</div>
 	<div id="header">
 		<a href="/" title="Return to Home Page" id="logoCsuri"></a><br>
-		<a href="http://arts.osu.edu" title="OSU The College of the Arts" id="logoSub"></a><br>
+		<a href="http://arts.osu.edu" title="OSU The College of the Arts" id="logoSub"><?php print caGetThemeGraphic($this->request, 'college_arts.jpg'); ?></a><br>
 		<a href="http://accad.osu.edu" title="The Advanced Computing Center for Arts and Design" id="logoSub2"></a>
 	</div>	
 	<nav class="navbar navbar-default yamm" role="navigation">
