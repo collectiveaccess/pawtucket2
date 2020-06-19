@@ -49,7 +49,7 @@ if(is_array($va_item_ids) && sizeof($va_item_ids)){
 	$va_set_items = array();
 	if($qr_set_items->numHits()){
 		while($qr_set_items->nextHit()){
-			$va_set_items[$qr_set_items->get("row_id")] = array("title" => $qr_set_items->get("ca_set_items.preferred_labels"), "description" => $qr_set_items->get("ca_set_items.set_item_description"), "georeference" => $qr_set_items->get("ca_set_items.georeference"), "date" => $qr_set_items->get("ca_set_items.indexingDatesSet", array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';')));
+			$va_set_items[$qr_set_items->get("row_id")] = array("title" => $qr_set_items->get("ca_set_items.preferred_labels"), "description" => $qr_set_items->get("ca_set_items.set_item_description"), "georeference" => $qr_set_items->get("ca_set_items.georeference"), "date" => $qr_set_items->get("ca_set_items.indexingDatesSet", array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';')), "date_display" => $qr_set_items->get("ca_set_items.indexingDatesSet"));
 		}
 	}
 }
@@ -87,8 +87,12 @@ while($qr_res->nextHit()) {
 		break;
 	}
 	$vs_dates = $va_set_items[$qr_res->get($vs_primary_key)]["date"];
+	$vs_date_display = $va_set_items[$qr_res->get($vs_primary_key)]["date_display"];
 	if(!$vs_dates){
 		$vs_dates = $qr_res->get($va_view_info['data'], array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';'));
+	}
+	if(!$vs_date_display){
+		$vs_date_display = $qr_res->get($va_view_info['data']);
 	}
 	$va_dates = explode(";", $vs_dates);
 
@@ -133,7 +137,7 @@ while($qr_res->nextHit()) {
 
 		$va_data['events'][] = [
 			'text' => [
-				'headline' => $vs_title,
+				'headline' => "<div class='galleryTimelineDate'>".$vs_date_display."</div>".$vs_title,
 				'text' => ($vs_set_item_description) ? $vs_set_item_description : $qr_res->getWithTemplate($va_view_info['display']['description_template']),
 			],
 			'media' => [
