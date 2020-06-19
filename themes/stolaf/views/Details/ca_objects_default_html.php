@@ -82,41 +82,36 @@
 				print "<div class='inquireButton'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default btn-small", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("object_id")))."</div>";
 ?>
 
+				{{{<ifdef code="ca_objects.idno"><div class="unit">^ca_objects.idno</div></ifdef>}}}
 				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
-				<label>{{{<unit>^ca_objects.type_id</unit>}}}</label>
 				<HR>
 				
-				{{{<ifdef code="ca_objects.idno"><div class="unit"><label>Identifier</label>^ca_objects.idno</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.material_type"><div class="unit"><label>Material Type</label>^ca_objects.material_type%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.unitdate.dacs_date_text"><div class="unit"><label>Date</label><unit relativeTo="ca_objects.unitdate" delimiter="<br/>"><ifdef code="ca_objects.unitdate.dacs_dates_labels">^ca_objects.unitdate.dacs_dates_labels: </ifdef>^ca_objects.unitdate.dacs_date_text <ifdef code="ca_objects.unitdate.dacs_dates_types">^ca_objects.unitdate.dacs_dates_types</ifdef></unit></div></ifdef>}}}
-				{{{<ifdef code="ca_objects.adminbiohist">
-					<div class='unit'><label>Administrative/Biographical History</label>
-						<span class="trimText">^ca_objects.adminbiohist</span>
-					</div>
-				</ifdef>}}}
+				
 				
 				
 				<hr></hr>
-					<div class="row">
-						<div class="col-sm-6">		
-							{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
-							{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_entities" delimiter="<br/>"><unit relativeTo="ca_entities">^ca_entities.preferred_labels</unit> (^relationship_typename)</unit>}}}
-							
-							
-							{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-							{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places">^ca_places.preferred_labels</unit> (^relationship_typename)</unit>}}}
-							
-							{{{<ifcount code="ca_list_items" min="1" max="1"><label>Related Term</label></ifcount>}}}
-							{{{<ifcount code="ca_list_items" min="2"><label>Related Terms</label></ifcount>}}}
-							{{{<unit relativeTo="ca_objects_x_vocabulary_terms" delimiter="<br/>"><unit relativeTo="ca_list_items">^ca_list_items.preferred_labels.name_plural</unit> (^relationship_typename)</unit>}}}
-							
-						</div><!-- end col -->				
-						<div class="col-sm-6 colBorderLeft">
-							{{{map}}}
-						</div>
-					</div><!-- end row -->
+					
+				{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
+				{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
+				{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places">^ca_places.preferred_labels</unit> (^relationship_typename)</unit>}}}
+				
+				{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><label>Related person</label></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="2" restrictToTypes="ind"><label>Related people</label></ifcount>}}}
+				{{{<unit relativeTo="ca_entities" restrictToTypes="ind" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
+				
+				{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="org"><label>Related organization</label></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="2" restrictToTypes="org"><label>Related organizations</label></ifcount>}}}
+				{{{<unit relativeTo="ca_entities" restrictToTypes="org" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
+				
+				{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><label>Related family</label></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="2" restrictToTypes="fam"><label>Related families</label></ifcount>}}}
+				{{{<unit relativeTo="ca_entities" restrictToTypes="fam" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
+					
+				{{{<ifdef code="ca_objects.LcshGenre|ca_objects.aat"><div class="unit"><label>Genres</label><unit delimiter="<br/>">^ca_objects.LcshGenre</unit><ifdef code="ca_objects.LcshGenre"><br/></ifdef><unit delimiter="<br/>">^ca_objects.aat</unit></div></ifdef>}}}
+				
+				<br/>{{{map}}}
 						
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->

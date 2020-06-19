@@ -275,11 +275,25 @@ a:hover{
 #footer a{
 	color: #e4a01b;
 }
-
+/*
 @media (min-width:500px) {
 	.multisearch .authoritySet {
 		width: 275px;
 	}
+}
+*/
+.multisearch .authorityResult {
+    height: 65px;
+    line-height: 1.2em;
+}
+.multisearch .authoritySet, .multisearch .blockResultsScroller, .multisearch .blockResults, .multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious, .multisearch .scrollButtonNext, .multisearch .scrollButtonNext {
+    height: 210px;
+}
+.authorityResult{
+	font-size:12px;
+}
+.multisearch .scrollButtonNext, .multisearch .scrollButtonPrevious{
+	padding-top:90px;
 }
 .hpTiles img{
 	width:100%;
