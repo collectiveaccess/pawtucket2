@@ -113,15 +113,19 @@ while($qr_res->nextHit()) {
 		];
 		
 	}else{
+		# --- don't link to detail when title entered on set item
+		$vb_link_to_detail = true;
 		$vs_title = $va_set_items[$qr_res->get($vs_primary_key)]["title"];
 		if($vs_title == "[BLANK]"){
 			$vs_title = "";
 		}
-		if(!$vs_title){
+		if($vs_title){
+			$vb_link_to_detail = false;
+		}else{
 			$vs_title = $qr_res->getWithTemplate($va_view_info['display']['title_template']);
 		}
 		if($vs_table == "ca_objects"){
-			if(($qr_res->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($qr_res->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($qr_res->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes"))){
+			if($vb_link_to_detail && (($qr_res->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($qr_res->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($qr_res->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes")))){
 				$vs_title = caDetailLink($this->request, $vs_title, '', "ca_objects", $qr_res->get("ca_objects.object_id"));
 			}
 		}		

@@ -96,14 +96,18 @@ $vn_c = 0;
 
 while($qr_res->nextHit()) {
 	# --- use set item title/desc/georeference if available otherwise fall back to configured title_template/description_template/location from object
+	# --- don't link to detail when title entered on set item
+	$vb_link_to_detail = true;
 	$vs_title = $va_set_items[$qr_res->get("ca_objects.object_id")]["title"];
 	if($vs_title == "[BLANK]"){
 		$vs_title = "";
 	}
-	if(!$vs_title){
+	if($vs_title){
+		$vb_link_to_detail = false;
+	}else{
 		$vs_title = $qr_res->getWithTemplate($va_view_info['display']['title_template']);
 	}
-	if(($qr_res->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($qr_res->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($qr_res->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes"))){
+	if($vb_link_to_detail && (($qr_res->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($qr_res->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($qr_res->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes")))){
 		$vs_title = caDetailLink($this->request, $vs_title, '', "ca_objects", $qr_res->get("ca_objects.object_id"));
 	}
 	
