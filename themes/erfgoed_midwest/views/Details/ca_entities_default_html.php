@@ -22,7 +22,7 @@
 			</div><!-- end row -->
 			<div class="row">			
 				<div class='col-sm-12'>
-					{{{<ifdef code="ca_entities.media">^ca_entities.media.small</ifdef>}}}
+					<!--{{{<ifdef code="ca_entities.media">^ca_entities.media.small</ifdef>}}}-->
 				</div><!-- end col -->
 			</div><!-- end row -->
 			

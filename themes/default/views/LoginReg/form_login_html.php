@@ -56,7 +56,7 @@
 				</div><!-- end form-group -->
 				<div class="form-group">
 					<div class="col-sm-offset-<?php print $vn_label_col; ?> col-sm-7">
-						<button type="submit" class="btn btn-default">login</button>
+						<button type="submit" class="btn btn-default"><?php print _t("login"); ?></button>
 					</div>
 				</div>
 				<div class="form-group">

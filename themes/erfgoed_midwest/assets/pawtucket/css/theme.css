@@ -123,8 +123,8 @@ ul.menuItems{
 }
 
 .nav.menuItems > li > a{
-	padding-left:20px;
-	padding-right:20px;
+	padding-left:12px;
+	padding-right:12px;
 	padding-top:0px;
 	padding-bottom:0px;
 }
@@ -134,7 +134,13 @@ ul.menuItems{
 		padding-bottom:10px;
 	}
 }
-@media (min-width: 1010px) {
+@media (min-width: 890px) {
+	.nav.menuItems > li > a{
+		padding-left:20px;
+		padding-right:20px;
+	}
+}
+@media (min-width: 1030px) {
 	.nav.menuItems > li > a{
 		padding-left:30px;
 		padding-right:30px;
@@ -193,9 +199,16 @@ ul.menuItems{
     left: 0;
     right: auto;
 }
+.yamm #user-navbar.nav.navbar-right .dropdown-menu {
+    left: auto;
+    right: 0;
+}
 .navbar-nav > li > .dropdown-menu {
     margin-top: 17px;
     text-align:left;
+}
+#user-navbar.navbar-nav > li > .dropdown-menu{
+	margin-top: 0px;
 }
 #footer{
 	background-color:#FFFF;
@@ -326,9 +339,11 @@ a.readmore-js-toggle {
     display: block;
     bottom: -35px;
     top:auto;
-    z-index: 200;
-    width: 100%;
-    text-align: center;
+    z-index: 2000;
+	width: 50%;
+	text-align: center;
+	margin-left: 25%;
+	margin-right: 25%;
 }
 .detail .detailMediaToolbar a, .gallery .detailMediaToolbar a{
 	color:#00768e;
@@ -391,6 +406,13 @@ a.readmore-js-toggle {
 }
 .gallery #galleryDetailImageArea {
 	margin-bottom: 40px;
+}
+#galleryDetailObjectInfo .unit{
+	margin-top:15px;
+}
+#galleryDetailObjectInfo .infoScroll{
+	max-height:365px;
+	overflow-y:scroll;
 }
 /* collections/list browse */
 .bResultListItemText{

@@ -35,8 +35,8 @@
 ?>
 		<div class="row">
 			<div class="col-sm-12">
-				<p><b>Title: </b><?php print $vs_name; ?>
-				<br/><b>Regarding this URL: </b><a href="<?php print $vs_url; ?>" class="purpleLink"><?php print $vs_url; ?></a>
+				<p><b><?php print _t("Title"); ?>: </b><?php print $vs_name; ?>
+				<br/><b><?php print _t("Regarding this URL"); ?>: </b><a href="<?php print $vs_url; ?>" class="purpleLink"><?php print $vs_url; ?></a>
 				</p>
 				<input type="hidden" name="itemId" value="<?php print $vs_idno; ?>">
 				<input type="hidden" name="itemTitle" value="<?php print $vs_name; ?>">
@@ -55,19 +55,19 @@
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
-							<label for="name">Name</label>
+							<label for="name"><?php print _t("Name"); ?></label>
 							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
-							<label for="email">Email address</label>
+							<label for="email"><?php print _t("Email address"); ?></label>
 							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
-							<label for="security">Security Question</label>
+							<label for="security"><?php print _t("Security Question"); ?></label>
 							<div class='row'>
 								<div class='col-sm-6'>
 									<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
@@ -84,7 +84,7 @@
 		<div class="row">
 			<div class="col-md-9">
 				<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
-					<label for="message">Message</label>
+					<label for="message"><?php print _t("Message"); ?></label>
 					<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
 				</div>
 			</div><!-- end col -->
@@ -111,7 +111,7 @@
 	}
 ?>
 		<div class="form-group">
-			<button type="submit" class="btn btn-default">Send</button>
+			<button type="submit" class="btn btn-default"><?php print _t("Send"); ?></button>
 		</div><!-- end form-group -->
 		<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 	</form>
