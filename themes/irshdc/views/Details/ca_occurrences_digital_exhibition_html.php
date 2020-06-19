@@ -180,11 +180,11 @@ $vs_mode = $this->request->getParameter("mode", pString);
 								}else{
 									$vs_caption = $t_featured_object->get("ca_objects.preferred_labels.name");
 								}
-								if($vb_link_to_object){
-									$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_featured_object_id)."</div>";
-								}else{
+								#if($vb_link_to_object){
+								#	$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_featured_object_id)."</div>";
+								#}else{
 									$vs_caption = "<div class='mediaViewerCaption text-center'>".$vs_caption."</div>";
-								}
+								#}
 								if($vs_version == "large"){
 									$vs_featured_image = $t_representation->get("ca_object_representations.media.".$vs_version);
 									#if($vb_link_to_object){
@@ -378,11 +378,11 @@ $vs_mode = $this->request->getParameter("mode", pString);
 										$vs_caption = $t_object->get("ca_objects.preferred_labels.name");
 									}
 									if($vs_caption){
-										if($vb_link_to_object){
-											$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_row_id)."</div>";
-										}else{
+										#if($vb_link_to_object){
+										#	$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_row_id)."</div>";
+										#}else{
 											$vs_caption = "<div class='mediaViewerCaption text-center'>".$vs_caption."</div>";
-										}
+										#}
 									}
 									if($vs_version == "large"){
 										$vs_media = $t_representation->get("ca_object_representations.media.".$vs_version);

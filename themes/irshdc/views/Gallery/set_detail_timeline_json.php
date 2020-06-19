@@ -74,6 +74,18 @@ $va_data = [
 $vn_c = 0;
 
 while($qr_res->nextHit()) {
+	# --- object and entity sets show set item info and fall back to object/entity
+	switch($vs_table){
+		case "ca_entities":
+			$vs_primary_key = "ca_entities.entity_id";
+		break;
+		case "ca_objects":
+			$vs_primary_key = "ca_objects.object_id";
+		break;
+		case "ca_occurrences":
+			$vs_primary_key = "ca_occurrences.occurrence_id";
+		break;
+	}
 	$vs_dates = $va_set_items[$qr_res->get($vs_primary_key)]["date"];
 	if(!$vs_dates){
 		$vs_dates = $qr_res->get($va_view_info['data'], array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';'));
@@ -101,15 +113,6 @@ while($qr_res->nextHit()) {
 		];
 		
 	}else{
-		# --- object and entity sets show set item info and fall back to object/entity
-		switch($vs_table){
-			case "ca_entities":
-				$vs_primary_key = "ca_entities.entity_id";
-			break;
-			case "ca_objects":
-				$vs_primary_key = "ca_objects.object_id";
-			break;
-		}
 		$vs_title = $va_set_items[$qr_res->get($vs_primary_key)]["title"];
 		if($vs_title == "[BLANK]"){
 			$vs_title = "";
