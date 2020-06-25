@@ -77,7 +77,7 @@ if($vs_mode == "map"){
 ?>
 			<div class="row">
 <?php
-				$vs_featured_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'><ifdef code='ca_object_representations.media.large'><l>^ca_object_representations.media.large</l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></ifdef></unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+				$vs_featured_image = $t_item->getWithTemplate("<unit relativeTo='ca_objects' length='1' restrictToRelationshipTypes='featured'><ifdef code='ca_object_representations.media.large'><l>^ca_object_representations.media.large</l><if rule='^ca_object_representations.preferred_labels.name !~ /[BLANK]/'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></if></ifdef></unit>", array("checkAccess" => $va_access_values, "limit" => 1));
 				$vs_representationViewer = trim($this->getVar("representationViewer"));
 					
 				if($vs_featured_image){
