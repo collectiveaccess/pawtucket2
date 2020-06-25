@@ -105,7 +105,7 @@ if($vs_mode == "map"){
 														'showAnnotations' => true, 
 														'primaryOnly' => true, 
 														'dontShowPlaceholder' => true, 
-														'captionTemplate' => "<unit relativeTo='ca_objects'><l><if rule='^ca_object_representations.preferred_labels.name !~ /[BLANK]/'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></if></l></unit>"
+														'captionTemplate' => "<unit relativeTo='ca_objects'><l><if rule='^ca_object_representations.preferred_labels.name !~ /BLANK/'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></if></l></unit>"
 													)
 												);
  					}
