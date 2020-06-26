@@ -82,7 +82,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-12 col-sm-6">
-					<a href="https://wp.stolaf.edu" target="_blank"><span class="glyphicon glyphicon-home"></span>College Home</a>
+					<a href="https://wp.stolaf.edu" target="_blank"><span class="glyphicon glyphicon-home"></span>St. Olaf College Home</a>
 				</div>
 				<div class="col-xs-12 col-sm-6">
 <?php
@@ -100,7 +100,7 @@
 				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search">
+							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search the Archives" name="search">
 						</div>
 						<button type="submit" class="btn-search" id="headerSearchButton"><i class="fa fa-search" aria-hidden="true"></i>
 </button>

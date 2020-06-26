@@ -35,13 +35,13 @@
 						<div class='col-sm-12 col-md-6 col-lg-6'>
 <?php					
 							if ($vn_pdf_enabled) {
-								print "<div class='exportCollection'>".caDetailLink($this->request, "<span class='glyphicon glyphicon-file'></span> Download as PDF", "btn btn-default", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
+								print "<div class='exportCollection'>".caDetailLink($this->request, "<span class='glyphicon glyphicon-file'></span> Display Finding Aid", "btn btn-default", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
 							}
 							print "<div class='inquireButton'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default", "", "Contact", "Form", array("table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")))."</div>";					
 ?>
 						</div>
 					</div>
-					<h2>{{{^ca_collections.type_id}}}{{{<ifdef code="ca_collections.idno">, ^ca_collections.idno</ifdef>}}}</h2>
+					<h2>{{{^ca_collections.idno}}}</h2>
 					{{{<ifdef code="ca_collections.parent_id"><label>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></label></ifdef>}}}
 <?php
 				# Comment and Share Tools
@@ -62,12 +62,6 @@
 ?>
 
 					
-					{{{<ifdef code="ca_collections.adminbiohist"><div class="unit"><label>Administrative/Biographical History</label>^ca_collections.adminbiohist</div></ifdef>}}}
-					
-					{{{<ifcount code="ca_entities" min="1" max="1"><label>Related person</label></ifcount>}}}
-					{{{<ifcount code="ca_entities" min="2"><label>Related people</label></ifcount>}}}
-					{{{<unit relativeTo="ca_entities_x_collections"><unit relativeTo="ca_entities" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit> (^relationship_typename)</unit>}}}
-					
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
@@ -86,6 +80,57 @@
 ?>				
 				</div><!-- end col -->
 			</div><!-- end row -->
+			<div class="row">
+				<div class='col-sm-12'>
+					{{{<ifdef code="ca_collections.adminbiohist"><div class="unit"><label>Administrative/Biographical History</label>^ca_collections.adminbiohist%delimiter=,_</div></ifdef>}}}
+				
+					{{{<ifdef code="ca_collections.abstract"><div class="unit"><label>Abstract</label>^ca_collections.abstract%delimiter=,_</div></ifdef>}}}
+				
+					{{{<ifdef code="ca_collections.scopecontent"><div class="unit"><label>Scope and Content</label>^ca_collections.scopecontent%delimiter=,_</div></ifdef>}}}
+				
+					{{{<ifdef code="ca_collections.unitdate.dacs_date_text"><div class="unit"><label>Date</label><unit relativeTo="ca_collections.unitdate" delimiter="<br/>"><ifdef code="ca_collections.unitdate.dacs_dates_labels">^ca_collections.unitdate.dacs_dates_labels: </ifdef>^ca_collections.unitdate.dacs_date_text <ifdef code="ca_collections.unitdate.dacs_dates_types">^ca_collections.unitdate.dacs_dates_types</ifdef></unit></div></ifdef>}}}
+				
+					{{{<ifdef code="ca_collections.extentDACS">
+						<div class="unit"><label>Extent</label>
+							<unit relativeTo="ca_collections.extentDACS">
+								<ifdef code="ca_collections.extentDACS.extent_number">^ca_collections.extentDACS.extent_number </ifdef>
+								<ifdef code="ca_collections.extentDACS.portion_label">^ca_collections.extentDACS.portion_label </ifdef>
+								<ifdef code="ca_collections.extentDACS.extent_type">^ca_collections.extentDACS.extent_type</ifdef>
+								<ifdef code="ca_collections.extentDACS.container_summary"><br/>^ca_collections.extentDACS.container_summary</ifdef>
+								<ifdef code="ca_collections.extentDACS.physical_details"><br/>^ca_collections.extentDACS.physical_details</ifdef>
+							</unit>
+						</div>
+					</ifdef>}}}
+				
+					{{{<ifdef code="ca_collections.material_type"><div class="unit"><label>Material Format</label>^ca_collections.material_type%delimiter=,_</div></ifdef>}}}
+					
+					{{{<ifdef code="ca_collections.LcshSubjects"><div class="unit"><label>Subjects</label>^ca_collections.LcshSubjects%delimiter=,_</div></ifdef>}}}
+					
+					{{{<ifdef code="ca_collections.relation"><div class="unit"><label>Related Collections</label>^ca_collections.relation%delimiter=,_</div></ifdef>}}}
+					
+					{{{<ifdef code="ca_collections.accessrestrict"><div class="unit"><label>Restrictions</label>^ca_collections.accessrestrict%delimiter=,_</div></ifdef>}}}
+					
+					{{{<ifdef code="ca_collections.physaccessrestrict"><div class="unit"><label>Physical access</label>^ca_collections.physaccessrestrict%delimiter=,_</div></ifdef>}}}
+					
+					{{{<ifdef code="ca_collections.LcshGenre|ca_collections.aat"><div class="unit"><label>Genres</label><unit delimiter="<br/>">^ca_collections.LcshGenre</unit><ifdef code="ca_collections.LcshGenre"><br/></ifdef><unit delimiter="<br/>">^ca_collections.aat</unit></div></ifdef>}}}
+				
+					{{{<ifdef code="ca_collections.preferCite"><div class="unit"><label>Preferred citation</label>^ca_collections.preferCite%delimiter=,_</div></ifdef>}}}
+									
+					{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><label>Related person</label></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="2" restrictToTypes="ind"><label>Related people</label></ifcount>}}}
+					{{{<unit relativeTo="ca_entities" restrictToTypes="ind" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
+				
+					{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="org"><label>Related organization</label></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="2" restrictToTypes="org"><label>Related organizations</label></ifcount>}}}
+					{{{<unit relativeTo="ca_entities" restrictToTypes="org" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
+				
+					{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><label>Related family</label></ifcount>}}}
+					{{{<ifcount code="ca_entities" min="2" restrictToTypes="fam"><label>Related families</label></ifcount>}}}
+					{{{<unit relativeTo="ca_entities" restrictToTypes="fam" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
+				
+				
+				</div>
+			</div>
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
 				<div id="browseResultsContainer">
