@@ -8,7 +8,7 @@
 					$vs_rel_entities = $t_object->getWithTemplate('<ifcount code="ca_entities.related" excludeTypes="school" min="1"><div class="row relTab" id="relEntities"><unit relativeTo="ca_entities" excludeTypes="school" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_entities.preferred_labels.displayname (^relationship_typename)</l></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
 					$vs_rel_events = $t_object->getWithTemplate('<ifcount code="ca_occurrences.related" restrictToTypes="institutional" min="1"><div class="row relTab" id="relEvents"><unit relativeTo="ca_occurrences" restrictToTypes="institutional" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_occurrences.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
 					$vs_rel_exhibitions = $t_object->getWithTemplate('<ifcount code="ca_occurrences.related" restrictToTypes="exhibitions" min="1"><div class="row relTab" id="relExhibitions"><unit relativeTo="ca_occurrences" restrictToTypes="exhibitions" delimiter=" "><div class="col-sm-12 col-md-3"><l><span>^ca_occurrences.preferred_labels.name (^relationship_typename)</span></l></div></unit></div></ifcount>', array("checkAccess" => $va_access_values));
-					$vs_rel_objects = $t_object->get('ca_objects.related', array("checkAccess" => $va_access_values));
+					$vs_rel_objects = $t_object->get('ca_objects.related', array("checkAccess" => $va_access_values, "restrictToTypes" => array("archival", "library", "work", "resource", "file", "survivor")));
 					#$t_list = new ca_lists();
 					#$va_type = $t_list->getItemFromListByItemID("object_types", $t_object->get("type_id"));
 					#$va_type["idno"]

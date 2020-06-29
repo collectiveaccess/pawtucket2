@@ -40,13 +40,16 @@ $vs_table						= $this->getVar('table');
 $va_view_info 					= $va_views[$vs_current_view][$vs_table];
 $va_access_values = caGetUserAccessValues($this->request);
 
+$t_list = new ca_lists();
+$vn_digital_exhibit_object_type_id = $t_list->getItemIDFromList('object_types', 'digitalExhibitObject'); 		
+
 $va_item_ids = array_keys($t_set->getItemIds());
 if(is_array($va_item_ids) && sizeof($va_item_ids)){
 	$qr_set_items = caMakeSearchResult('ca_set_items', $va_item_ids);
 	$va_set_items = array();
 	if($qr_set_items->numHits()){
 		while($qr_set_items->nextHit()){
-			$va_set_items[$qr_set_items->get("row_id")] = array("title" => $qr_set_items->get("ca_set_items.preferred_labels"), "description" => $qr_set_items->get("ca_set_items.set_item_description"), "georeference" => $qr_set_items->get("ca_set_items.georeference"));
+			$va_set_items[$qr_set_items->get("row_id")] = array("title" => $qr_set_items->get("ca_set_items.preferred_labels"), "description" => $qr_set_items->get("ca_set_items.set_item_description"), "georeference" => $qr_set_items->get("ca_set_items.georeference"), "date" => $qr_set_items->get("ca_set_items.indexingDatesSet", array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';')), "date_display" => $qr_set_items->get("ca_set_items.indexingDatesSet"));
 		}
 	}
 }
@@ -71,7 +74,26 @@ $va_data = [
 $vn_c = 0;
 
 while($qr_res->nextHit()) {
-	$vs_dates = $qr_res->get($va_view_info['data'], array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';'));
+	# --- object and entity sets show set item info and fall back to object/entity
+	switch($vs_table){
+		case "ca_entities":
+			$vs_primary_key = "ca_entities.entity_id";
+		break;
+		case "ca_objects":
+			$vs_primary_key = "ca_objects.object_id";
+		break;
+		case "ca_occurrences":
+			$vs_primary_key = "ca_occurrences.occurrence_id";
+		break;
+	}
+	$vs_dates = $va_set_items[$qr_res->get($vs_primary_key)]["date"];
+	$vs_date_display = $va_set_items[$qr_res->get($vs_primary_key)]["date_display"];
+	if(!$vs_dates){
+		$vs_dates = $qr_res->get($va_view_info['data'], array('sortable' => true, 'returnAsArray'=> false, 'delimiter' => ';'));
+	}
+	if(!$vs_date_display){
+		$vs_date_display = $qr_res->get($va_view_info['data']);
+	}
 	$va_dates = explode(";", $vs_dates);
 
 	$va_date_list = explode("/", $va_dates[0]);
@@ -95,24 +117,27 @@ while($qr_res->nextHit()) {
 		];
 		
 	}else{
-		# --- object and entity sets show set item info and fall back to object/entity
-		switch($vs_table){
-			case "ca_entities":
-				$vs_primary_key = "ca_entities.entity_id";
-			break;
-			case "ca_objects":
-				$vs_primary_key = "ca_objects.object_id";
-			break;
+		# --- don't link to detail when title entered on set item
+		$vb_link_to_detail = true;
+		$vs_title = $va_set_items[$qr_res->get($vs_primary_key)]["title"];
+		if($vs_title == "[BLANK]"){
+			$vs_title = "";
 		}
-		$vs_set_item_title = $va_set_items[$qr_res->get($vs_primary_key)]["title"];
-		if($vs_set_item_title == "[BLANK]"){
-			$vs_set_item_title = "";
+		if($vs_title){
+			$vb_link_to_detail = false;
+		}else{
+			$vs_title = $qr_res->getWithTemplate($va_view_info['display']['title_template']);
 		}
+		if($vs_table == "ca_objects"){
+			if($vb_link_to_detail && (($qr_res->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($qr_res->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($qr_res->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes")))){
+				$vs_title = caDetailLink($this->request, $vs_title, '', "ca_objects", $qr_res->get("ca_objects.object_id"));
+			}
+		}		
 		$vs_set_item_description = $va_set_items[$qr_res->get($vs_primary_key)]["description"];
 
 		$va_data['events'][] = [
 			'text' => [
-				'headline' => ($vs_set_item_title) ? $vs_set_item_title : $qr_res->getWithTemplate($va_view_info['display']['title_template']),
+				'headline' => "<div class='galleryTimelineDate'>".$vs_date_display."</div>".$vs_title,
 				'text' => ($vs_set_item_description) ? $vs_set_item_description : $qr_res->getWithTemplate($va_view_info['display']['description_template']),
 			],
 			'media' => [

@@ -1,7 +1,7 @@
 <?php
 	$t_object = $this->getVar("item");
 	$va_access_values = $this->getVar("access_values");
-	$va_related_objects = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_related_objects = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "restrictToTypes" => array("archival", "library", "work", "resource", "file", "survivor")));
 	if(is_array($va_related_objects) && sizeof($va_related_objects)){
 		$qr_res = caMakeSearchResult("ca_objects", $va_related_objects, array('checkAccess' => $this->opa_access_values));
 		if($qr_res->numHits()){
