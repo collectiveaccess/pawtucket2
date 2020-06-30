@@ -98,11 +98,20 @@
 		break;
 		# ---------------------------
 		case "modern_editions":
+			if ($g_ui_locale == 'en_US'){			
 ?>
-			<div id="bibBodyIntro">
-				<div>This list includes modern editions of plays for which <i>sueltas</i> provide the basis, or an important textual source.</div>
-			</div>
-<?php		
+				<div id="bibBodyIntro">
+					<div>This list includes modern editions of plays for which <i>sueltas</i> provide the basis, or an important textual source.</div>
+				</div>
+<?php
+			}else{
+?>
+				<div id="bibBodyIntro">
+					<div>En estas ediciones recientes de comedias, las sueltas forman una <i>base esencial de la interpretación textual</i> de la edición moderna.</div>
+				</div>
+<?php
+			
+			}		
 		break;
 	}
 	$va_links_array = array();
