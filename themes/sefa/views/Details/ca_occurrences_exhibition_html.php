@@ -122,7 +122,9 @@
 					{{{<ifdef code="ca_occurrences.exhibition_subtitle">
 						<h2>^ca_occurrences.exhibition_subtitle</h2>
 					</ifdef>}}}
-					<div class='date'>{{{^ca_occurrences.opening_closing}}}{{{<ifdef code="ca_occurrences.opening_reception"> | Opening Reception: ^ca_occurrences.opening_reception</ifdef>}}}</div>
+					<div class='date'>{{{^ca_occurrences.opening_closing}}}{{{<ifdef code="ca_occurrences.opening_reception"> | Opening Reception: ^ca_occurrences.opening_reception</ifdef>}}}
+					{{{<ifdef code="ca_occurrences.outside_location"><br/>^ca_occurrences.outside_location</ifdef>}}}
+					</div>
 					{{{^ca_occurrences.description}}}
 				</p>
 				<br/>
