@@ -258,8 +258,10 @@ ul.menuItems{
 }
 .frontSearch{
 	background-color:rgba(255, 255, 255, .2);
-	padding-top:125px;
-	padding-bottom:125px;
+	/*padding-top:125px;
+	padding-bottom:125px;*/
+	padding-top:142px;
+	padding-bottom:142px;
 }
 .heroBg1 .frontSearch{
 	background-color:rgba(255, 255, 255, .1);

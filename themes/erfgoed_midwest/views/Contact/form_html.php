@@ -44,7 +44,11 @@
 				<input type="hidden" name="id" value="<?php print $pn_id; ?>">
 				<input type="hidden" name="table" value="<?php print $ps_table; ?>">
 				<hr/>
-				<p>{{{inquire_form}}}</p><hr/><br/>
+<?php
+				if($vs_inquire_form_text = $this->getVar("inquire_form")){
+					print "<p>".$vs_inquire_form_text."</p><hr/><br/>";
+				}
+?>
 			</div>
 		</div>
 <?php
@@ -56,13 +60,13 @@
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 							<label for="name"><?php print _t("Name"); ?></label>
-							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}">
+							<input type="text" class="form-control input-sm" aria-label="<?php print _t("Enter name"); ?>" name="name" value="{{{name}}}">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">
 						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
 							<label for="email"><?php print _t("Email address"); ?></label>
-							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
+							<input type="text" class="form-control input-sm" aria-label="<?php print _t("Enter email"); ?>" id="email" name="email" value="{{{email}}}">
 						</div>
 					</div><!-- end col -->
 					<div class="col-sm-4">

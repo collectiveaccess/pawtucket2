@@ -37,21 +37,19 @@
  	$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type')); 			
  	$t_set = new ca_sets();
 	$va_sets = array();
+	$va_featured_sets = array();
 	if($vn_gallery_set_type_id){
 		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id, 'table' => "ca_objects");
 		$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
 		$va_set_first_items = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
-		
-		$o_front_config = caGetFrontConfig();
-		$vs_front_page_set = $o_front_config->get('front_page_set_code');
-		$vb_omit_front_page_set = (bool)$o_config->get('omit_front_page_set_from_gallery');
-		foreach($va_sets as $vn_set_id => $va_set) {
-			if ($vb_omit_front_page_set && $va_set['set_code'] == $vs_front_page_set) { 
-				unset($va_sets[$vn_set_id]); 
+		$q_sets = caMakeSearchResult('ca_sets', array_keys($va_sets));
+		if($q_sets->numHits()){
+			while($q_sets->nextHit()){
+				# --- yes no values reversed
+				if($q_sets->get("ca_sets.featureHomePage", array("convertCodesToDisplayText" => true)) == "no"){
+					$va_featured_sets[$q_sets->get("ca_sets.set_id")] = $va_sets[$q_sets->get("ca_sets.set_id")];
+				}	
 			}
-			$va_first_item = $va_set_first_items[$vn_set_id];
-			$va_first_item = array_shift($va_first_item);
-			$vn_item_id = $va_first_item["item_id"];
 		}
 	}
 
@@ -61,13 +59,13 @@
 
 <div class="row">
 	<div class="col-sm-12"> 
-		<H2>EXPOS</H2>
+		<H2>EXPO'S</H2>
 		<div class="jcarousel-wrapper galleryItems-wrapper">
 			<!-- Carousel -->
 			<div class="jcarousel galleryItems">
 				<ul>
 <?php
-					foreach($va_sets as $vn_set_id => $va_set){
+					foreach($va_featured_sets as $vn_set_id => $va_set){
 						$va_first_item = array_shift($va_set_first_items[$vn_set_id]);
 						print "<li>";
 						print caNavLink($this->request, $va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id);

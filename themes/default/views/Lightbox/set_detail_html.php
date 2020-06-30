@@ -318,7 +318,7 @@ if (!$vb_ajax) {    // !ajax
                 <div id="lbSetCommentErrors" style="display: none;" class='alert alert-danger'></div>
                 <form action="#" id="addComment" method="post">
                     <div class="form-group">
-                        <label for="addCommentTextArea">Comment</label>
+                        <label for="addCommentTextArea"><?php print _t("Comment"); ?></label>
                         <textarea id="addCommentTextArea" name="comment"
                                   placeholder="<?php print addslashes(_t("add your comment")); ?>"
                                   class="form-control"></textarea>

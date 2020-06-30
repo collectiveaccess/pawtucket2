@@ -34,13 +34,13 @@
 	<div class="row">
 		<div class="col-sm-12">
 			<div class="heroBg<?php print rand(1,3); ?>"><div class="frontSearch">
-				<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+				<!--<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 					<div class="frontFormOutline">
 						<button type="submit" class="front-btn-search"><span class="glyphicon glyphicon-search"></span></button>
 						<input type="text" class="form-control" placeholder="<?php print _t("Search"); ?>" name="search">
 						<div style="clear:both; height:1px;"></div>
 					</div>
-				</form>
+				</form>-->
 			</div></div>
 		</div>
 	</div>

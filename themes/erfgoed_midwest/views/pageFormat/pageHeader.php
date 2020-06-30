@@ -133,7 +133,7 @@
 					<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 						<div class="formOutline">
 							<div class="form-group">
-								<input type="text" class="form-control" id="headerSearchInput" placeholder="Search" name="search">
+								<input type="text" class="form-control" id="headerSearchInput" placeholder="Zoek" name="search">
 							</div>
 							<button type="submit" class="btn-search" id="headerSearchButton"><span class="glyphicon glyphicon-search"></span></button>
 						</div>
@@ -150,14 +150,14 @@
 						<li class="<?php print ($this->request->getController() == "About") ? 'active' : ''; ?>"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About"); ?></a>
 							<ul class="dropdown-menu">
 								<li><?php print caNavLink($this->request, _t("About"), "", "", "About", "Index"); ?></li>
-								<li><?php print caNavLink($this->request, _t("Over Erfgoedban Midwest"), "", "", "About", "Midwest"); ?></li>
+								<li><?php print caNavLink($this->request, _t("Over Erfgoedbank Midwest"), "", "", "About", "Midwest"); ?></li>
 							</ul>
 						</li>
 						<?php #print $this->render("pageFormat/browseMenu.php"); ?>	
 						<li <?php print (strToLower($this->request->getController()) == "browse" && strToLower($this->request->getAction()) == 'objects') ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t('Browse'), '', '', 'Browse', 'objects', ''); ?></li>					
 						<li <?php print (strToLower($this->request->getController()) == "browse" && strToLower($this->request->getAction()) == 'collections') ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Browse", "collections"); ?></li>					
 						<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Search"), "", "", "Search", "advanced/objects"); ?></li>
-						<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Expo"), "", "", "Gallery", "Index"); ?></li>
+						<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Expo's"), "", "", "Gallery", "Index"); ?></li>
 						<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 					</ul>
 				</div><!-- end container --></div><!-- /.navbar-collapse -->

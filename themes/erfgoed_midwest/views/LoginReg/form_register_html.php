@@ -129,10 +129,10 @@
 		</div><!-- end form-group -->
 		
 <?php	
-		if($va_errors["group_code"]){
-			print "<div class='alert alert-danger'>".$va_errors["group_code"]."</div>";
-		}
-		print "<div class='form-group".(($va_errors["group_code"]) ? " has-error" : "")."'><label for='registrationGroupCode' class='col-sm-4 control-label'>"._t("Group code (optional)")."</label><div class='col-sm-7'>".caHTMLTextInput("group_code", ['class' => 'form-control', 'id' => 'registrationGroupCode'], [])."</div></div>\n";
+		#if($va_errors["group_code"]){
+		#	print "<div class='alert alert-danger'>".$va_errors["group_code"]."</div>";
+		#}
+		#print "<div class='form-group".(($va_errors["group_code"]) ? " has-error" : "")."'><label for='registrationGroupCode' class='col-sm-4 control-label'>"._t("Group code (optional)")."</label><div class='col-sm-7'>".caHTMLTextInput("group_code", ['class' => 'form-control', 'id' => 'registrationGroupCode'], [])."</div></div>\n";
 ?>
 		<div class="form-group">
 			<div class="col-sm-offset-4 col-sm-7">

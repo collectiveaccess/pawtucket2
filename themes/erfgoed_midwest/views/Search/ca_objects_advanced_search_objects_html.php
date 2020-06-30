@@ -9,29 +9,29 @@
 <div class='advancedContainer'>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search across all fields in the database.">Keyword</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoeken in alle velden.">Zoekterm</span>
 			{{{_fulltext%width=200px&height=1}}}
 		</div>			
 	</div>		
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Limit your search to Object Titles only.">Titel</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Enkel zoeken op titel.">Titel</span>
 			{{{ca_objects.preferred_labels.name%width=220px}}}
 		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search places."><?php print _t("Place"); ?></span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoek doorheen plaatsen.">Plaats</span>
 			{{{ca_places.preferred_labels.name%width=210px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search collection.">Collectie</span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoek doorheen de collectie.">Collectie</span>
 			{{{ca_entities.preferred_labels.name%height=30px}}}
 		</div>
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Search records of a particular date or date range.">Date range <i>(e.g. 1970-1979)</i></span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoek objecten met een specificieke datum of periode .">Periode <i>(vb. 1970-1979)(e.g. 1970-1979)</i></span>
 			{{{ca_objects.object_creation_date%width=200px&height=40px&useDatePicker=0}}}
 		</div>
 	</div>

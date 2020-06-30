@@ -59,7 +59,9 @@
 	jQuery(document).ready(function() {
 		$('.trimText').readmore({
 		  speed: 75,
-		  maxHeight: 120
+		  maxHeight: 120,
+		  moreLink: '<a href="#">Lees meer</a>',
+          lessLink: '<a href="#">Dichtbij</a>'
 		});
 	});
 </script>
