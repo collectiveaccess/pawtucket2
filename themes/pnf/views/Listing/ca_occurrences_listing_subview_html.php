@@ -52,7 +52,21 @@
 			</div>
 		</div>
 <?php
-		print "<h2>{$va_listing_info['displayName']}</h2>\n";
+			if ($g_ui_locale == 'en_US'){
+				print "<h2>{$va_listing_info['displayName']}</h2>\n";
+			}else{
+				switch($vs_action){
+					case "bibliography":
+						print "<H2>Bibliografía</H2>\n";
+					break;
+					# --------------------------------------
+					case "modern_editions":
+						print "<H2>Ediciones Modernas</H2>\n";
+					break;
+					# --------------------------------------
+				}	
+			
+			}		
 ?>
 	</nav>
 	<div class="listing-content single-lists">
