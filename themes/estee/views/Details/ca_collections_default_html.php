@@ -259,7 +259,19 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 									//	$(this).tab('show')
 									//});
 
+									var hash = document.location.hash;
+									var prefix = "tab_";
+									if (hash) {
+										$('.tabsTitle a[href="'+hash.replace(prefix,"")+'"]').tab('show');
+									} 
+
+									// Change hash for page-reload
+									$('.tabsTitle a').on('shown.bs.tab', function (e) {
+										window.location.hash = e.target.hash.replace("#", "#" + prefix);
+									});
+								
 								});
+								
 							</script>
 						</section>
 					</article>
