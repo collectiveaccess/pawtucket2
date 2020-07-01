@@ -35,6 +35,7 @@
 	# --- which type of set is configured for display in gallery section
  	$t_list = new ca_lists();
  	$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type')); 			
+ 	$vn_no_id = $t_list->getItemIDFromList('yes_no', 'no'); # --- yes no values switched for checkboxes			
  	$t_set = new ca_sets();
 	$va_sets = array();
 	$va_featured_sets = array();
@@ -46,7 +47,7 @@
 		if($q_sets->numHits()){
 			while($q_sets->nextHit()){
 				# --- yes no values reversed
-				if($q_sets->get("ca_sets.featureHomePage", array("convertCodesToDisplayText" => true)) == "no"){
+				if($q_sets->get("ca_sets.featureHomePage") == $vn_no_id){
 					$va_featured_sets[$q_sets->get("ca_sets.set_id")] = $va_sets[$q_sets->get("ca_sets.set_id")];
 				}	
 			}
@@ -54,7 +55,7 @@
 	}
 
 
-	if(is_array($va_sets) && sizeof($va_sets)){
+	if(is_array($va_featured_sets) && sizeof($va_featured_sets)){
 ?>
 
 <div class="row">

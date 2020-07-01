@@ -108,6 +108,16 @@ ul.menuItems{
 	.navbar-default .navbar-nav > li {
 		text-align:center;
 	}
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a {
+		color: #FFFFFF;
+	}
+	.navbar-nav .open .dropdown-menu > li {
+		text-align: center;
+	}
+}
+.navbar-form{
+	box-shadow:none;
+	-webkit-box-shadow:none;
 }
 .navbar-form .form-group{
 	width:140px;
@@ -387,8 +397,8 @@ a.readmore-js-toggle {
 }
 
 /* gallery */
-.gallery #gallerySetInfo a.btn{
-	color: #00768e;
+.gallery #gallerySetInfo a.btn, #confirm-delete .glyphicon {
+	color: #00768e !important;
 }
 .gallery .galleryList{
 	margin-bottom:30px;
