@@ -30,6 +30,7 @@
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
+	$va_access_values = caGetUserAccessValues();
 	
 	$vn_previous_id = $this->getVar("previousID");
 	$vn_next_id = $this->getVar("nextID");
@@ -89,7 +90,8 @@
 					$vs_download_version = caGetOption(['download_version', 'display_version'], $va_download_display_info);
 				}
 				if($vs_download_version){
-					$vs_download_link = caNavLink("", 'download', 'Detail', 'DownloadRepresentation', '', array('context' => 'archival', 'representation_id' => $t_representation->getPrimaryKey(), "id" => $vn_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
+					#$vs_download_link = caNavLink("", 'download', 'Detail', 'DownloadRepresentation', '', array('context' => 'archival', 'representation_id' => $t_representation->getPrimaryKey(), "id" => $vn_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
+					$vs_download_link = caNavLink("", 'download', 'Detail', 'DownloadMedia', '', array('context' => 'archival', "object_id" => $vn_id, "download" => 1, "version" => $vs_download_version), array("title" => _t("Download")));
 				}
 			}
 		}
@@ -126,12 +128,70 @@
 						print "<div class='actions'>".$vs_download_link."</div>";
 					}
 				}
+				# --- when more than one rep, use the CR style media viewer --- this will never have PDF's
+				$va_rep_ids = $t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true, "filterNonPrimaryRepresentations" => false, "sort" => "ca_objects_x_object_representations.is_primary", "checkAccess" => $va_access_values));
+ 				if(is_array($va_rep_ids) && sizeof($va_rep_ids)){
+ 					$va_rep_ids = array_reverse($va_rep_ids);
+ 				}
+				if(is_array($va_rep_ids) && (sizeof($va_rep_ids) > 1)){
+ 				
+?>  
+
+					<div class="ca-object-viewer">
+
+						<div class="module_slideshow is-finite slideshow-main no_dots" data-thumbnails="slideshow-thumbnails">
+							<div class="slick-slider slider-main">
+		<?php
+								$va_thumbs = array();
+								foreach($va_rep_ids as $vn_index => $vn_rep_id){
+									$vs_display_version = "";
+									$t_rep = new ca_object_representations();
+									$t_rep->load($vn_rep_id);
+									$va_media_display_info = caGetMediaDisplayInfo('detail', $t_rep->getMediaInfo('media', 'original', 'MIMETYPE'));
+									if($va_media_display_info && sizeof($va_media_display_info)){
+										($va_media_display_info["display_version"]) ? $vs_display_version = $va_media_display_info["display_version"] : "small";
+									}
+									$va_thumbs[] = $t_rep->get("ca_object_representations.media.icon.url");
+		?>
+									<div class="slick-slide">
+										<div class="img-container dark">
+											<div class="img-wrapper contain dark"><img src="<?php print $t_rep->get("ca_object_representations.media.".$vs_display_version.".url"); ?>" alt="<?php print str_replace(array("'", "\""), array("", ""), $t_object->get("ca_objects.preferred_labels.name")).(((sizeof($va_rep_ids)) > 1) ? ", image ".($vn_index + 1) : ""); ?>"></div>
+										</div>
+									</div>
+		<?php
+								}
+		?>
+							</div>
+						</div>
+		<?php
+						if(is_array($va_thumbs) && (sizeof($va_thumbs) > 1)){
+		?>
+						<ul class="slideshow-thumbnails" data-as-nav="slider-main" data-is-nav="true">
+		<?php
+							foreach($va_thumbs as $vn_i => $vs_thumb_url){
+								print '<li><a href="#" data-index="'.$vn_i.'" '.(($vn_i == 0) ? 'class="selected"' : '').'><img src="'.$vs_thumb_url.'"  alt="Thumbnail: '.str_replace(array("'", "\""), array("", ""), $t_object->get("ca_objects.preferred_labels.name")).(((sizeof($va_thumbs)) > 1) ? ", image ".($vn_i + 1) : "").'"></a></li>';
+							}
+		?>
+						</ul>
+		<?php
+						}else{
+		?>
+							<div class="block-half"><br/></div>
+		<?php
+						}
+		?>
+					</div>
+<?php
+							
+				}else{
 ?>
                     
                     <div class="<?php print ($vs_mimetype != "application/pdf") ? "img-wrapper " : "img-wrapperPDF "; ?>archive_detail">
                       <?php print $this->getVar('mediaViewer'); ?>
                     </div>
-
+<?php
+				}
+?>
                 </div>
             </div>
 
@@ -192,6 +252,14 @@
 						</ifdef>}}}
 <?php
 					}
+?>
+					{{{<ifdef code="ca_objects.studyCollectionCategory">
+							<div class="block-quarter">
+								<div class="eyebrow text-gray">Study Collection Category</div>
+								<div class="ca-data">^ca_objects.studyCollectionCategory%delimiter=,_</div>
+							</div>
+						</ifdef>}}}
+<?php
 
 					$va_entities = $t_object->get("ca_entities", array("restrictToRelationshipTypes" => array("photographer"), "checkAccess" => $va_access_values, "returnWithStructure" => true));
 					if(is_array($va_entities) && sizeof($va_entities)){
