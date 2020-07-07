@@ -103,7 +103,9 @@
 																							
 	
 	}
-	print "<div class='viewAll'>".caDetailLink($this->request, _t("View Record").' <i class="fa fa-angle-right"></i>', '', $this->getVar("table"),  $this->getVar("row_id"))."</div>";
+	if($vs_set_type == "public presentation"){
+		print "<div class='viewAll'>".caDetailLink($this->request, _t("View Record").' <i class="fa fa-angle-right"></i>', '', $this->getVar("table"),  $this->getVar("row_id"))."</div>";
+	}
 	print "<div class='viewAll'>";
 	if($vn_theme_id){
 		print caNavLink($this->request, "All ".$vs_theme." <i class='fa fa-angle-right'></i>", "", "", "Featured", "Theme", array("theme_id" => $vn_theme_id))."&nbsp;&nbsp;&nbsp;";
