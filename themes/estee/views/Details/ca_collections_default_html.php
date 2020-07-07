@@ -214,7 +214,7 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 											</div>
 											<script>
 												$(document).ready(function(){
-													$('#collectionLoad').load("<?php print caNavUrl($this->request, '', 'Collections', 'childList', array('show_objects' => true, 'collection_id' => $t_item->get("ca_collections.collection_id"))); ?>");
+													$('#collectionLoad').load("<?php print caNavUrl($this->request, '', 'Collections', 'childList', array('show_objects' => true, 'collection_id' => $t_item->get("ca_collections.collection_id"), 'row_id' => $this->request->getParameter('row_id', pInteger))); ?>");
 												});
 											</script>
 										</div>
@@ -254,12 +254,24 @@ if(($t_item->get("featured_collection", array("convertCodesToDisplayText" => tru
 							</div><!-- end tab-content-->
 							<script type='text/javascript'>
 								jQuery(document).ready(function() {
-									$('.collectionTabs a').click(function (e) {
-										e.preventDefault()
-										$(this).tab('show')
-									});
+									//$('.collectionTabs a').click(function (e) {
+									//	e.preventDefault()
+									//	$(this).tab('show')
+									//});
 
+									var hash = document.location.hash;
+									var prefix = "tab_";
+									if (hash) {
+										$('.tabsTitle a[href="'+hash.replace(prefix,"")+'"]').tab('show');
+									} 
+
+									// Change hash for page-reload
+									$('.tabsTitle a').on('shown.bs.tab', function (e) {
+										window.location.hash = e.target.hash.replace("#", "#" + prefix);
+									});
+								
 								});
+								
 							</script>
 						</section>
 					</article>

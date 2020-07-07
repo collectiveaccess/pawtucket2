@@ -39,6 +39,9 @@ $vs_table						= $this->getVar('table');
 $va_view_info 					= $va_views[$vs_current_view][$vs_table];
 $va_access_values = caGetUserAccessValues($this->request);
 
+$t_list = new ca_lists();
+$vn_digital_exhibit_object_type_id = $t_list->getItemIDFromList('object_types', 'digitalExhibitObject'); 	
+ 
 $va_item_ids = array_keys($t_set->getItemIds());
 if(is_array($va_item_ids) && sizeof($va_item_ids)){
 	$qr_set_items = caMakeSearchResult('ca_set_items', $va_item_ids);
@@ -93,10 +96,22 @@ $vn_c = 0;
 
 while($qr_res->nextHit()) {
 	# --- use set item title/desc/georeference if available otherwise fall back to configured title_template/description_template/location from object
-	$vs_set_item_title = $va_set_items[$qr_res->get("ca_objects.object_id")]["title"];
-	if($vs_set_item_title == "[BLANK]"){
-		$vs_set_item_title = "";
+	# --- don't link to detail when title entered on set item
+	$vb_link_to_detail = true;
+	$vs_title = $va_set_items[$qr_res->get("ca_objects.object_id")]["title"];
+	if($vs_title == "[BLANK]"){
+		$vs_title = "";
 	}
+	if($vs_title){
+		$vb_link_to_detail = false;
+	}else{
+		$vs_title = $qr_res->getWithTemplate($va_view_info['display']['title_template']);
+	}
+	if($vb_link_to_detail && (($qr_res->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($qr_res->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($qr_res->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes")))){
+		$vs_title = caDetailLink($this->request, $vs_title, '', "ca_objects", $qr_res->get("ca_objects.object_id"));
+	}
+	
+	
 	$vs_set_item_description = $va_set_items[$qr_res->get("ca_objects.object_id")]["description"];
 	$vs_set_item_georeference = $va_set_items[$qr_res->get("ca_objects.object_id")]["georeference"];
 
@@ -113,7 +128,7 @@ while($qr_res->nextHit()) {
 				'line' => true
 			],
 			'text' => [
-				'headline' => ($vs_set_item_title) ? $vs_set_item_title : $qr_res->getWithTemplate($va_view_info['display']['title_template']),
+				'headline' => $vs_title,
 				'text' => ($vs_set_item_description) ? $vs_set_item_description : $qr_res->getWithTemplate($va_view_info['display']['description_template']),
 			],
 			'media' => [

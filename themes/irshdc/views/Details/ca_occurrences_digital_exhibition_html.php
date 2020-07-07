@@ -27,8 +27,9 @@
  * ----------------------------------------------------------------------
  */
 ?>
-<link href='https://cdn.knightlab.com/libs/soundcite/latest/css/player.css' rel='stylesheet' type='text/css'><script type='text/javascript' src='https://cdn.knightlab.com/libs/soundcite/latest/js/soundcite.min.js'></script>
 <?php 
+AssetLoadManager::register("storymap");
+AssetLoadManager::register("soundcite");
 
 $vs_mode = $this->request->getParameter("mode", pString);
 #if($vs_mode == "map"){
@@ -44,6 +45,9 @@ $vs_mode = $this->request->getParameter("mode", pString);
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_num_comments = sizeof($va_comments) + sizeof($va_tags);
 	
+	$t_list = new ca_lists();
+ 	$vn_digital_exhibit_object_type_id = $t_list->getItemIDFromList('object_types', 'digitalExhibitObject'); 		
+ 					
 	$va_access_values = $this->getVar("access_values");
 	$va_breadcrumb_trail = array(caNavLink($this->request, "Home", '', '', '', ''));
 	$o_context = ResultContext::getResultContextForLastFind($this->request, "ca_occurrences");
@@ -70,11 +74,6 @@ $vs_mode = $this->request->getParameter("mode", pString);
 ?>
 	<div class="row">
 		<div class="col-sm-12 digExh">
-			<div class="row">
-				<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-					{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
-				</div><!-- end detailTop -->
-			</div>
 <?php
 			if($vs_hero = $t_item->get("ca_object_representations.media.page.url")){
 ?>
@@ -111,16 +110,19 @@ $vs_mode = $this->request->getParameter("mode", pString);
 							}
 						}
 					}
-					if($vn_num_comments){
+					if($vn_comments_enabled){
 						print "<a href='#comments'><div class='digExhSideNavLink digExhSideNavLinkNoImg'>Discussion</div></a>";
 					}
 					if($vb_related){
 						print "<a href='#related'><div class='digExhSideNavLink digExhSideNavLinkNoImg'>Related Resources</div></a>";
 					}
+					print "<div class='digExhSideNavLinkOut'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")));
+					print caDetailLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download as PDF", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
+					
 ?>
 					</div>
 				</div>
-				<div class="col-sm-12 col-md-8">
+				<div class="col-sm-12 col-md-10 col-lg-8 col-lg-offset-1">
 					<div class="digExhContent">
 <?php
 					if ($this->getVar("resultsLink")) {
@@ -137,12 +139,15 @@ $vs_mode = $this->request->getParameter("mode", pString);
 					}
 					$qr_content_blocks->seek(0);
 					if($qr_content_blocks->numHits()){
+						$vn_block_count;
 						while($qr_content_blocks->nextHit()){
+							$vn_block_count++;
 							$vs_format = $qr_content_blocks->get("display_options", array("convertCodesToDisplayText" => true));
 							$vs_content_block_title = $qr_content_blocks->get("ca_occurrences.preferred_labels.name");
 							if($vs_content_block_title == "[BLANK]"){
 								$vs_content_block_title = "";
 							}
+							$vs_content_block_subtitle = $qr_content_blocks->get("ca_occurrences.contentBlockSubtitle");
 							$vs_quote = $qr_content_blocks->get("description");
 							$vs_main_text = $qr_content_blocks->get("main_text");
 
@@ -166,11 +171,28 @@ $vs_mode = $this->request->getParameter("mode", pString);
 								$t_representation = $t_featured_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
 								$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
 								$vs_version = $va_media_display_info["display_version"];
+								$vb_link_to_object = false;
+								if(($t_featured_object->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($t_featured_object->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($t_featured_object->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes"))){
+									$vb_link_to_object = true;
+								}
+								if($qr_content_blocks->get("ca_occurrences.caption")){
+									$vs_caption = $qr_content_blocks->get("ca_occurrences.caption");
+								}else{
+									$vs_caption = $t_featured_object->get("ca_objects.preferred_labels.name");
+								}
+								#if($vb_link_to_object){
+								#	$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_featured_object_id)."</div>";
+								#}else{
+									$vs_caption = "<div class='mediaViewerCaption text-center'>".$vs_caption."</div>";
+								#}
 								if($vs_version == "large"){
 									$vs_featured_image = $t_representation->get("ca_object_representations.media.".$vs_version);
-									$vs_featured_image = caDetailLink($this->request, $vs_featured_image, '', "ca_objects", $vn_featured_object_id);
-									if($vs_caption = $t_representation->get("ca_object_representations.preferred_labels.name")){
-										$vs_featured_image .= "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_featured_object_id)."</div>";
+									#if($vb_link_to_object){
+									#	$vs_featured_image = caDetailLink($this->request, $vs_featured_image, '', "ca_objects", $vn_featured_object_id);
+									#}
+									$vs_featured_image = '<a href="#" onclick="caMediaPanel.showPanel(\''.caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("context" => "objects", "id" => $t_featured_object->get("ca_objects.object_id"), "representation_id" => $t_representation->get("ca_object_representations.representation_id"), "overlay" => 1)).'\'); return false;">'.$vs_featured_image.'</a>';
+									if($vs_caption){
+										$vs_featured_image .= $vs_caption;
 									};
 								}else{
 									$vs_featured_image =  caRepresentationViewer(
@@ -182,7 +204,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 																	'showAnnotations' => true, 
 																	'primaryOnly' => true, 
 																	'dontShowPlaceholder' => true, 
-																	'captionTemplate' => "<unit relativeTo='ca_objects'><l><ifdef code='ca_object_representations.preferred_labels.name'><div class='mediaViewerCaption text-center'>^ca_object_representations.preferred_labels.name</div></ifdef></l></unit>"
+																	'captionTemplate' => $vs_caption
 																)
 															);
 								}
@@ -194,12 +216,17 @@ $vs_mode = $this->request->getParameter("mode", pString);
 
 ?>
 							<div class="digExhContentBlock">
-								<a name="<?php print $qr_content_blocks->get("ca_occurrences.idno"); ?>" class="digExhAnchors"></a>
+								<a name="<?php print $qr_content_blocks->get("ca_occurrences.idno"); ?>" class="digExhAnchors<?php print ($vn_block_count > 1) ? " offset" : ""; ?>"></a>
 <?php
 								if($vs_content_block_title){
+									if($vn_block_count > 1){
+										print "<HR></HR>";
+									}
 									print "<h2>".$vs_content_block_title."</h2>";
 								}
-								
+								if($vs_content_block_subtitle){
+									print "<div class='contentBlockSubTitle'>".$vs_content_block_subtitle."</div>";
+								}
 								if($vs_format && ($vs_format != "one column")){
 									
 									# --- 2 columns
@@ -272,23 +299,22 @@ $vs_mode = $this->request->getParameter("mode", pString);
 										switch(strToLower($t_set->get("set_presentation_type", array("convertCodesToDisplayText" => true)))){
 											case "story map":
 ?>
-												<div id="storymap<?php print $vn_set_id; ?>" style="width: 100%; height: 600px;"></div><!-- end browseResultsContainer -->
+												<div id="storymap<?php print "{$vn_set_id}_{$vn_block_count}"; ?>" style="width: 100%; height: 600px;"></div><!-- end browseResultsContainer -->
 												
-												<link rel="stylesheet" href="https://cdn.knightlab.com/libs/storymapjs/latest/css/storymap.css">
-												<script type="text/javascript" src="https://cdn.knightlab.com/libs/storymapjs/latest/js/storymap-min.js"></script>
-
 												<script>
-													// storymap_data can be an URL or a Javascript object
-													//var storymap_data = '//media.knightlab.com/StoryMapJS/demo/demo.json';
-													var storymap_data = '<?php print $this->request->config->get("site_host").caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'storymap', 'set_id' => $vn_set_id)); ?>';
+													jQuery(document).ready(function() {
+														// storymap_data can be an URL or a Javascript object
+														//var storymap_data = '//media.knightlab.com/StoryMapJS/demo/demo.json';
+														var storymap_data = '<?php print $this->request->config->get("site_host").caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'storymap', 'set_id' => $vn_set_id)); ?>';
 
-													// certain settings must be passed within a separate options object
-													var storymap_options = {};
+														// certain settings must be passed within a separate options object
+														var storymap_options = {};
 
-													var storymap = new VCO.StoryMap('storymap<?php print $vn_set_id; ?>', storymap_data, storymap_options);
-													window.onresize = function(event) {
-														storymap.updateDisplay(); // this isn't automatic
-													}
+														var storymap = new VCO.StoryMap('storymap<?php print "{$vn_set_id}_{$vn_block_count}"; ?>', storymap_data, storymap_options);
+														window.onresize = function(event) {
+															storymap.updateDisplay(); // this isn't automatic
+														}
+													});
 												</script>
 <?php
 											break;
@@ -296,7 +322,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 											case "timelines":
 ?>
 												<div id="digExhTimeline">
-													<div id="timeline-embed"></div>
+													<div id="timeline-embed-<?php print $vn_set_id."-".$vn_block_count; ?>"></div>
 												</div>
 
 												<script type="text/javascript">
@@ -304,9 +330,9 @@ $vs_mode = $this->request->getParameter("mode", pString);
 														createStoryJS({
 															type:       'timeline',
 															width:      '100%',
-															height:     '100%',
+															height:     '500px',
 															source:     '<?php print caNavUrl($this->request, '', 'Gallery', 'getSetInfoAsJSON', array('mode' => 'timeline', 'set_id' => $vn_set_id)); ?>',
-															embed_id:   'timeline-embed',
+															embed_id:   'timeline-embed-<?php print $vn_set_id."-".$vn_block_count; ?>',
 															initial_zoom: '5'
 														});
 													});
@@ -322,9 +348,9 @@ $vs_mode = $this->request->getParameter("mode", pString);
 													#$qr_res = caMakeSearchResult('ca_objects', $va_row_ids);
 													#if($qr_res && $qr_res->numHits()){
 	?>   
-														<div class="jcarousel-wrapper jcarousel-wrapper<?php print $vn_set_id; ?>">
+														<div class="jcarousel-wrapper jcarousel-wrapper<?php print $vn_set_id."-".$vn_block_count; ?>">
 															<!-- Carousel -->
-															<div class="jcarousel jcarousel<?php print $vn_set_id; ?>">
+															<div class="jcarousel jcarousel<?php print $vn_set_id."-".$vn_block_count; ?>">
 																<ul>
 	<?php
 																	#while($qr_res->nextHit()){
@@ -336,19 +362,35 @@ $vs_mode = $this->request->getParameter("mode", pString);
 								# --- display the rep viewer for the featured object so if it's video, it will play
 								$vn_row_id = $t_set_item->get("ca_set_items.row_id");
 								$t_object = new ca_objects($vn_row_id);
+								$vb_link_to_object = false;
+								if(($t_object->get("ca_objects.type_id") != $vn_digital_exhibit_object_type_id) || (($t_object->get("ca_objects.type_id") == $vn_digital_exhibit_object_type_id) && ($t_object->get("ca_objects.display_detail_page", array("convertCodesToDisplayText" => true)) == "Yes"))){
+									$vb_link_to_object = true;
+								}
 								$t_representation = $t_object->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values));
 								if($t_representation){
 									$va_media_display_info = caGetMediaDisplayInfo('detail', $t_representation->getMediaInfo('media', 'original', 'MIMETYPE'));
 									$vs_version = $va_media_display_info["display_version"];
 									$vs_caption = "";
-									if(($vs_caption = $t_set_item->get("ca_set_items.preferred_labels")) && ($vs_caption != "[BLANK]")){
-										$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_row_id)."</div>";
-									}else{
-										$vs_caption = "";
+									if($t_set_item->get("ca_set_items.preferred_labels") != "[BLANK]"){
+										$vs_caption = $t_set_item->get("ca_set_items.preferred_labels");
+									}
+									if(!$vs_caption){
+										$vs_caption = $t_object->get("ca_objects.preferred_labels.name");
+									}
+									if($vs_caption){
+										#if($vb_link_to_object){
+										#	$vs_caption = "<div class='mediaViewerCaption text-center'>".caDetailLink($this->request, $vs_caption, '', "ca_objects", $vn_row_id)."</div>";
+										#}else{
+											$vs_caption = "<div class='mediaViewerCaption text-center'>".$vs_caption."</div>";
+										#}
 									}
 									if($vs_version == "large"){
 										$vs_media = $t_representation->get("ca_object_representations.media.".$vs_version);
-										$vs_media = caDetailLink($this->request, $vs_media, '', "ca_objects", $vn_row_id);
+										#if($vb_link_to_object){
+										#	$vs_media = caDetailLink($this->request, $vs_media, '', "ca_objects", $vn_row_id);
+										#}
+										$vs_media = '<a href="#" onclick="caMediaPanel.showPanel(\''.caNavUrl($this->request, "", "Detail", "GetMediaOverlay", array("context" => "objects", "id" => $t_object->get("ca_objects.object_id"), "representation_id" => $t_representation->get("ca_object_representations.representation_id"), "overlay" => 1)).'\'); return false;">'.$vs_media.'</a>';
+									
 										if($vs_caption){
 											$vs_media .= $vs_caption;
 										};
@@ -410,7 +452,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 																/*
 																Carousel initialization
 																*/
-																$('.jcarousel<?php print $vn_set_id; ?>')
+																$('.jcarousel<?php print $vn_set_id."-".$vn_block_count; ?>')
 																	.on('jcarousel:create jcarousel:reload', function() {
 																		var element = $(this),
 																			width = element.innerWidth();
@@ -428,7 +470,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 																/*
 																 Prev control initialization
 																 */
-																$('.jcarousel-wrapper<?php print $vn_set_id; ?> .digExhDetailPrev')
+																$('.jcarousel-wrapper<?php print $vn_set_id."-".$vn_block_count; ?> .digExhDetailPrev')
 																	.on('jcarouselcontrol:active', function() {
 																		$(this).removeClass('inactive');
 																	})
@@ -443,7 +485,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 																/*
 																 Next control initialization
 																 */
-																$('.jcarousel-wrapper<?php print $vn_set_id; ?> .digExhDetailNext')
+																$('.jcarousel-wrapper<?php print $vn_set_id."-".$vn_block_count; ?> .digExhDetailNext')
 																	.on('jcarouselcontrol:active', function() {
 																		$(this).removeClass('inactive');
 																	})
@@ -458,7 +500,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 																/*
 																 Pagination initialization
 																 */
-																$('.jcarousel-wrapper<?php print $vn_set_id; ?> .jcarousel-pagination')
+																$('.jcarousel-wrapper<?php print $vn_set_id."-".$vn_block_count; ?> .jcarousel-pagination')
 																	.on('jcarouselpagination:active', 'a', function() {
 																		$(this).addClass('active');
 																	})
@@ -488,22 +530,39 @@ $vs_mode = $this->request->getParameter("mode", pString);
 
 <?php
 					}
-					if($vn_num_comments){
-?>
-						<div class="digExhContentBlock">
-							<a name="comments" class="digExhAnchors"></a><div class="block">
-								<h2>Discussion</h2>
-								<div class="blockContent">
-									<div id="detailComments">
-<?php
-									if(sizeof($va_comments)){
-										print "<H2>Comments</H2>";
+					if ($vn_comments_enabled) {
+?>				
+						<div class="digExhContentBlock discussion">
+							<a name="comments" class="digExhAnchors offset"></a>
+							<HR/>
+							
+								<div id="detailDiscussion">
+									<h2>Discussion</h2>
+									Do you have a story or comment to contribute?<br/>
+<?php								
+									if($this->request->isLoggedIn()){
+										print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_occurrences", "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
+									}else{
+										print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment")."</button>";
 									}
-									print $this->getVar("itemComments");
 ?>
-									</div>
 								</div>
-							</div>
+<?php
+								if($vn_num_comments){
+?>
+									<div class="blockContent">
+										<div id="detailComments">
+<?php
+										if(sizeof($va_comments)){
+											print "<H2>Comments</H2>";
+										}
+										print $this->getVar("itemComments");
+?>
+										</div>
+									</div>
+<?php
+								}
+?>
 						</div>
 <?php
 					}
@@ -560,58 +619,6 @@ $vs_mode = $this->request->getParameter("mode", pString);
 				
 					</div>
 				</div>
-				<div class='col-sm-12 col-md-2'>
-					<div class='digExhRightCol'>
-	<?php
-					# Comment and Share Tools
-						
-					print '<div id="detailTools">';
-					if ($this->getVar("resultsLink")) {
-						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("resultsLink").'</div><!-- end detailTool -->';
-					}
-					if ($this->getVar("previousLink")) {
-						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("previousLink").'</div><!-- end detailTool -->';
-					}
-					if ($this->getVar("nextLink")) {
-						print '<div class="detailTool detailToolInline detailNavFull">'.$this->getVar("nextLink").'</div><!-- end detailTool -->';
-					}
-
-					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")))."</div>";
-					print "<div class='detailTool'><span class='glyphicon glyphicon-download'></span>".caDetailLink($this->request, "Download as PDF", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
-					print '</div><!-- end detailTools -->';			
-
-						if ($vn_comments_enabled) {
-?>				
-							<div class="collapseBlock last discussion">
-								<h3>Discussion</H3>
-								<div class="collapseContent open">
-									<div id='detailDiscussion'>
-										Do you have a story or comment to contribute?<br/>
-<?php
-										
-										if($this->request->isLoggedIn()){
-											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'CommentForm', array("tablename" => "ca_occurrences", "item_id" => $t_item->getPrimaryKey()))."\"); return false;' >"._t("Add your comment")."</button>";
-										}else{
-											print "<button type='button' class='btn btn-default' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'LoginReg', 'LoginForm', array())."\"); return false;' >"._t("Login/register to comment")."</button>";
-										}
-										if($vn_num_comments){
-											print "<br/><br/><a href='#comments'>Read All Comments <i class='fa fa-angle-right' aria-hidden='true'></i></a>";
-										}
-?>
-									</div><!-- end itemComments -->
-								</div>
-							</div>
-<?php				
-						}
-?>
-
-<?php
-#					if($t_item->get("ca_places.georeference", array("checkAccess" => $va_access_values))){
-#						include("map_html.php");
-#					}
-?>
-					</div>
-				</div>
 			</div>
 			
 
@@ -633,7 +640,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 
 	jQuery(document).ready(function() {
 		if(jQuery('.digExh').height() > jQuery(window).height()){
-			var scrollLimit = jQuery('.digExhRightCol').offset();
+			var scrollLimit = jQuery('.digExhContent').offset();
 			jQuery(window).scroll(function () {
 				var scrollTop = $(window).scrollTop();
 				var initWidth = $('.digExhSideNav').width();
@@ -641,17 +648,16 @@ $vs_mode = $this->request->getParameter("mode", pString);
 				var footerHeight = jQuery('#footer').height() + 40;
 				// check the visible top of the browser
 				if ((scrollTop > scrollLimit.top - jQuery('nav').height()) && (scrollTop < (bodyHeight - (jQuery(window).height() - footerHeight)))) { // 83 = height of header
-					jQuery('.digExhRightCol').addClass('fixed');
+					//jQuery('.digExhRightCol').addClass('fixed');
 					jQuery('.digExhSideNav').addClass('fixed');
 					
 					jQuery('.digExhSideNav').width(initWidth);
-					jQuery('.digExhRightCol').width(initWidth);
+					$('.digExhSideNav').css('max-height', jQuery(window).height() - jQuery('nav').height() + 'px');
+					//jQuery('.digExhRightCol').width(initWidth);
 				} else {
-					jQuery('.digExhRightCol').removeClass('fixed');
+					//jQuery('.digExhRightCol').removeClass('fixed');
 					jQuery('.digExhSideNav').removeClass('fixed');
-					
-					jQuery('.digExhSideNav').width('100%');
-					jQuery('.digExhSideNav').width('100%');
+					$('.digExhSideNav').css('max-height', 'auto');
 				}
 			});
 		}

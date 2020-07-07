@@ -51,14 +51,14 @@
 	$vb_ajax			= (bool)$this->request->isAjax();
 	
 
-	$o_lightbox_config = caGetLightboxConfig();
-	$vs_lightbox_icon = $o_lightbox_config->get("addToLightboxIcon");
+	$o_set_config = caGetLightboxConfig();
+	$vs_lightbox_icon = $o_set_config->get("add_to_lightbox_icon");
 	if(!$vs_lightbox_icon){
 		$vs_lightbox_icon = "<i class='fa fa-suitcase'></i>";
 	}
-	$va_lightboxDisplayName = caGetLightboxDisplayName($o_lightbox_config);
-	$vs_lightbox_displayname = $va_lightboxDisplayName["singular"];
-	$vs_lightbox_displayname_plural = $va_lightboxDisplayName["plural"];
+	$va_lightbox_display_name = caGetLightboxDisplayName($o_set_config);
+	$vs_lightbox_display_name = $va_lightbox_display_name["singular"];
+	$vs_lightbox_display_name_plural = $va_lightbox_display_name["plural"];
 
 	$o_icons_conf = caGetIconsConfig();
 	$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
@@ -94,7 +94,7 @@
 			}
 			
 			$t_list_item = new ca_list_items();
-			$vs_add_to_lightbox_msg = addslashes(_t('Add to %1', $vs_lightbox_displayname));
+			$vs_add_to_lightbox_msg = addslashes(_t('Add to %1', $vs_lightbox_display_name));
 			while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
 				$vn_id 					= $qr_res->get("{$vs_table}.{$vs_pk}");
 				$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
@@ -130,7 +130,7 @@
 					}
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);			
 				}
-				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Lightbox', 'addItemForm', array($vs_pk => $vn_id));
+				$vs_add_to_set_url		= caNavUrl($this->request, '', 'Sets', 'addItemForm', array($vs_pk => $vn_id));
 
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
@@ -145,7 +145,7 @@
 			<div class='bResultItemExpandedInfo' id='bResultItemExpandedInfo{$vn_id}'>
 				<hr>
 				{$vs_expanded_info}
-				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_lightbox"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
+				".((($vs_table != 'ca_objects') || ($this->request->config->get("disable_my_collections"))) ? "" : "<a href='#' onclick='caMediaPanel.showPanel(\"{$vs_add_to_set_url}\"); return false;' title='{$vs_add_to_lightbox_msg}'>".$vs_lightbox_icon."</i></a>")."
 			</div><!-- bResultItemExpandedInfo -->
 		</div><!-- end bResultItem -->
 	</div><!-- end col -->";
