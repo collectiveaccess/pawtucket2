@@ -52,7 +52,21 @@
 			</div>
 		</div>
 <?php
-		print "<h2>{$va_listing_info['displayName']}</h2>\n";
+			if ($g_ui_locale == 'en_US'){
+				print "<h2>{$va_listing_info['displayName']}</h2>\n";
+			}else{
+				switch($vs_action){
+					case "bibliography":
+						print "<H2>Bibliografía</H2>\n";
+					break;
+					# --------------------------------------
+					case "modern_editions":
+						print "<H2>Ediciones Modernas</H2>\n";
+					break;
+					# --------------------------------------
+				}	
+			
+			}		
 ?>
 	</nav>
 	<div class="listing-content single-lists">
@@ -98,11 +112,20 @@
 		break;
 		# ---------------------------
 		case "modern_editions":
+			if ($g_ui_locale == 'en_US'){			
 ?>
-			<div id="bibBodyIntro">
-				<div>This list includes modern editions of plays for which <i>sueltas</i> provide the basis, or an important textual source.</div>
-			</div>
-<?php		
+				<div id="bibBodyIntro">
+					<div>This list includes modern editions of plays for which <i>sueltas</i> provide the basis, or an important textual source.</div>
+				</div>
+<?php
+			}else{
+?>
+				<div id="bibBodyIntro">
+					<div>En estas ediciones recientes de comedias, las sueltas forman una <i>base esencial de la interpretación textual</i> de la edición moderna.</div>
+				</div>
+<?php
+			
+			}		
 		break;
 	}
 	$va_links_array = array();
@@ -111,7 +134,7 @@
 		if(!$qr_list) { continue; }
 		while($qr_list->nextHit()) {
 			$vn_id = $qr_list->get('ca_occurrences.occurrence_id');
-			$vs_sort = strToLower(strip_tags(str_replace(array(",", ".", "\"", "“", "”", "La ", "El ", "Los ", "Las ", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ü", "ù", "ú", "ü", "Ñ", "ñ"), array("", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "u", "u", "u", "N", "n"), trim(strip_tags($qr_list->get('ca_occurrences.author')." ".$qr_list->get('ca_occurrences.preferred_labels'))))));
+			$vs_sort = strToLower(strip_tags(str_replace(array(",", ".", "\"", "“", "”", "La ", "El ", "Los ", "Las ", "À", "Á", "á", "à", "â", "ã", "Ç", "ç", "È", "É", "Ê", "è", "ê", "é", "Ì", "Í", "Î", "ì", "í", "î", "è", "Ò", "Ó", "ò", "ó", "ô", "õ", "Ü", "ù", "ú", "ü", "Ñ", "ñ", "Š", "š"), array("", "", "", "", "", "", "", "", "", "A", "A", "a", "a", "a", "a", "C", "c", "E", "E", "E", "e", "e", "e", "I", "I", "I", "i", "i", "i", "e", "O", "O", "o", "o", "o", "o", "U", "u", "u", "u", "N", "n", "S", "s"), trim(strip_tags($qr_list->get('ca_occurrences.author')." ".$qr_list->get('ca_occurrences.preferred_labels'))))));
 			$vs_first_letter = ucfirst(substr($vs_sort, 0, 1));
 			$va_letter_array[$vs_first_letter] = $vs_first_letter;
 			$va_links_array[$vs_first_letter][$vs_sort] = "<div class='listLink listEntry listEntryIndentSecondLine'>".(($qr_list->get('ca_occurrences.author')) ? "<span class='listAuthor'>".$qr_list->get('ca_occurrences.author')."</span> " : "")."<span class='listTitle'>".$qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels</l>')."</span><span class='listPub'>&nbsp;".$qr_list->get('ca_occurrences.publication_info')."</span>".(($qr_list->get('ca_occurrences.internal_notes')) ? " ".$qr_list->get('ca_occurrences.internal_notes') : "")."</div>\n";	

@@ -30,9 +30,17 @@
 			</div><!-- end main -->
 			<!--begin footer-->
 			<div class="row footer" role="contentinfo">
-				<div class="col-sm-12 col-md-9">
-					46 West 90th Street, 2nd floor, New York, NY 10024<br />
-					Gallery Hours: Monday-Friday, 11am-5pm and by appointment
+				<div class="col-sm-12 col-md-4">
+					<b>NEW YORK CITY</b>
+					<br/>46 WEST 90TH STREET, 2ND FLOOR<br/>NEW YORK, NY 10024
+					<br/>OPEN BY APPOINTMENT ONLY, UNTIL FURTHER NOTICE
+					<br/><br/>
+				</div>
+				<div class="col-sm-12 col-md-4 offset-md-1">
+					<b>HUDSON</b>
+					<br/>433 WARREN STREET<br/>HUDSON, NY 12534
+					<br/>THURSDAY-MONDAY, 11AM-5PM AND BY APPOINTMENT
+					<br/><br/>
 				</div>
 				<div class="col-sm-12 col-md-3 socialright footernav">
 					<?php print caNavLink($this->request, _t("Newsletter Signup"), "footerButton", "", "About", "MailingList"); ?><br/>
