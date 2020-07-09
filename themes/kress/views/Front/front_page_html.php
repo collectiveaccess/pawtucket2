@@ -33,8 +33,9 @@
 	$va_access_values = $this->getVar("access_values");
 	AssetLoadManager::register('timeline');
  	
+ 	$hero = $this->request->getParameter("hero", pString);
 ?>
-<div class="parallax">
+<div class="parallax <?php print $hero; ?>">
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-12 col-sm-6 col-sm-offset-3">
@@ -61,42 +62,19 @@
 		<div class="col-sm-12 col-md-6 col-md-offset-3">
 			<p class="callout">The <br/><b>Kress Collection Digital Archive</b><br/>documents the history and development of the Kress Collection, providing access to data and digitized archival materials about all Kress Collection works of art; detailing their provenance and historical attribution; condition and care, and acquisition and distribution.</p>
 
-			<p>Browse <?php print caNavLink($this->request, "Art Objects", "", "", "Browse", "art"); ?>, <?php print caNavLink($this->request, "Archival Materials", "", "", "Browse", "archival"); ?>, <?php print caNavLink($this->request, "Acquisitions", "", "", "Browse", "Acquisitions"); ?>, <?php print caNavLink($this->request, "Distributions", "", "", "Browse", "distributions"); ?>, and <?php print caNavLink($this->request, "People and Organizations", "", "", "Browse", "entities"); ?> below.</p>
+			<p>Browse <?php print caNavLink($this->request, "Art Objects", "", "", "Browse", "objects"); ?>, <?php print caNavLink($this->request, "Archival Materials", "", "", "Browse", "archival"); ?>, <?php print caNavLink($this->request, "Acquisitions", "", "", "Browse", "Acquisitions"); ?>, <?php print caNavLink($this->request, "Distributions", "", "", "Browse", "distributions"); ?>, and <?php print caNavLink($this->request, "People and Organizations", "", "", "Browse", "entities"); ?> below.</p>
 
 		</div>
 	</div>
 </div>
-
-	<div class="row hpTimeline">
-		<div class="col-sm-12">
-			<H3>History</H3>
-			<div id="frontTimelineContainer">
-				<div id="timeline-embed"></div>
-			</div>
-	
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					createStoryJS({
-						type:       'timeline',
-						width:      '100%',
-						height:     '400px',
-						source:     '<?php print caNavUrl($this->request, '', 'Front', 'timelinejson'); ?>',
-						embed_id:   'timeline-embed',
-						initial_zoom: '1'
-					});
-				});
-			</script>
-		</div>
-	</div>
 <div class="container">
 	<div class="row hpExplore">
 		<div class="col-sm-10 col-sm-offset-1 text-center"> 
-			<H3>Explore</H3>
 			<div class="row">
 				<div class="col-sm-6 exploreTile">
 	<?php
-					print caNavLink($this->request, caGetThemeGraphic($this->request, 'art_sq.jpg'), "", "", "Browse", "art");
-					print caNavLink($this->request, "Art", "hpExploreTitle", "", "Browse", "art");
+					print caNavLink($this->request, caGetThemeGraphic($this->request, 'art_sq.jpg'), "", "", "Browse", "objects");
+					print caNavLink($this->request, "Art Objects", "hpExploreTitle", "", "Browse", "objects");
 					
 	?>				
 				</div>
@@ -139,3 +117,24 @@
 		</div>
 	</div>
 </div>
+	<div class="row hpTimeline">
+		<div class="col-sm-12">
+			<H3>History</H3>
+			<div id="frontTimelineContainer">
+				<div id="timeline-embed"></div>
+			</div>
+	
+			<script type="text/javascript">
+				jQuery(document).ready(function() {
+					createStoryJS({
+						type:       'timeline',
+						width:      '100%',
+						height:     '400px',
+						source:     '<?php print caNavUrl($this->request, '', 'Front', 'timelinejson'); ?>',
+						embed_id:   'timeline-embed',
+						initial_zoom: '1'
+					});
+				});
+			</script>
+		</div>
+	</div>

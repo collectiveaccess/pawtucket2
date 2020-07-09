@@ -38,7 +38,8 @@
 	$vn_facet_display_length_maximum = 120;
 	
 	$va_multiple_selection_facet_list = [];
-	
+	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
+		
 	if(is_array($va_facets) && sizeof($va_facets)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
@@ -150,9 +151,18 @@
             	jQuery.each(jQuery("#" + facet + "_facet_container").find("[facet_item_selected=1]"), function(k,v) {
             		ids.push(jQuery(v).data('facet_item_id'));
             	});
-            	
+<?php
+	if($vb_show_filter_panel){
+?>
+				var url = '<?php print caNavUrl($this->request, '*', '*','*', array('key' => $vs_key, 'view' => $vs_view)); ?>/facet/' + facet + '/id/' + ids.join('|') + '/dontSetFind/1/showFilterPanel/1';
+ 				$('#browseResultsDetailContainer').load(url);
+<?php
+	}else{
+?>            	
             	window.location = '<?php print caNavUrl($this->request, '*', '*','*', array('key' => $vs_key, 'view' => $vs_view)); ?>/facet/' + facet + '/id/' + ids.join('|');
-            	
+<?php
+	}
+?>            	
             	e.preventDefault();
             });
 		});

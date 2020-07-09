@@ -10,7 +10,8 @@
 */
 body{
 	margin-top:57px;
-	margin-bottom:340px;
+	margin-bottom:300px;
+	font-size: 13px;
 }
 @media(min-width:768px) and (max-width:1010px){
 	body{
@@ -18,7 +19,7 @@ body{
 	}
 }
 
-a img, .btn{
+a img, .btn, .grayBg{
 	transition: all 0.4s ease 0s;
     -webkit-transition: all 0.4s ease 0s;
     -moz-transition: all 0.4s ease 0s;
@@ -61,7 +62,7 @@ a.navbar-brand, a.navbar-brand:hover {
     font-size: 26px;
     text-transform: none;
     color: #FFF;
-    font-weight: 400;
+    font-weight: 600;
 	padding-top: 10px;
     font-family: Cormorant;
     text-transform:uppercase;
@@ -86,18 +87,18 @@ a.navbar-brand, a.navbar-brand:hover {
 }
 .navbar-default .navbar-nav > li > a:hover{
     background-color: rgb(0,0,0, .3);
-    font-family:LatoLight;
+    font-family:Lato;
 }
 .navbar-brand, .navbar-nav > li > a {
     text-shadow:none;
     text-transform:uppercase;
-    font-family:LatoLight;
+    font-family:Lato;
 	letter-spacing:1px;
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     background-color: rgb(0,0,0, .3);
 	color:#FFF;
-    font-family:LatoLight;
+    font-family:Lato;
 }
 @media(max-width:768px){
 	.navbar-form{
@@ -121,15 +122,16 @@ H1, h1, h2, H2, H3, h3{
 /*    font-family: Cormorant;
     text-transform:none; */
 }
-.btn-default, .browse .btn, .sets .btn, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active {
-	background-color:#AA8A00;
-}
-.btn-default:hover{
-	background-color:#AA8A00;
-	box-shadow: inset 0 0 10px #555;
-}
 a, a:hover{
 	color:#AA8A00;
+}
+.btn-default, .browse .btn, .sets .btn, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .detail .btn-default, .detail .btn-default:hover, .detail .btn-default:focus, .detail .btn-default:active {
+	background-color:#454545;
+	color:#FFF;
+}
+.btn-default:hover{
+	background-color:#000;
+	color:#FFF;
 }
 
 /* footer */
@@ -138,7 +140,7 @@ a, a:hover{
 	background-color: #f1f1e9;
 	color:#000;
 	padding-top:50px;
-	height: 280px;
+	height: 240px;
 	border:0px;
 	font-size:14px;
 	font-weight:normal;
@@ -198,7 +200,12 @@ a, a:hover{
 	display:none;
 }
 
-
+#pageArea{
+	padding-top:20px;
+}
+#pageArea.front{
+	padding-top:0px;
+}
 
 /* front */
 .front{
@@ -249,6 +256,8 @@ a, a:hover{
 	padding-bottom:450px;
 	font-size:36px;
 	text-shadow: 0px 0px 3px #000000;
+	font-family: LatoLight;
+	font-weight: 600;
 }
 .heroSearch H1{
 	font-family: 'Cormorant', sans-serif;
@@ -259,6 +268,7 @@ a, a:hover{
 	line-height: 1.1em;
 	margin-top:0px;
 	padding-top:0px;
+	font-weight: 600;
 }
 .heroSearch .formOutline {
 	border: 0px;
@@ -408,7 +418,7 @@ body.frontContainer #footer{
 	position:relative;
 }
 
-.parallax {
+.parallax1 {
 	position:relative;
     background-image: url("../graphics/hero1.jpg");
 
@@ -424,6 +434,150 @@ body.frontContainer #footer{
     margin-left: -15px;
 	margin-right: -15px;
 }
+.parallax {
+	position:relative;
+    background-image: url("../graphics/hero2.jpg");
+
+    /* Full height */
+    height: 100%;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center -160px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    margin-left: -15px;
+	margin-right: -15px;
+}
+.parallax .heroSearch{
+	background-color: rgba(0, 0, 0, .5);
+	padding-top: 40px;
+	padding-bottom: 50px;
+	margin-top: 220px;
+	margin-bottom: 450px;
+	font-weight:600;
+}
+.parallax.v2 {
+	position:relative;
+    background-image: url("../graphics/hero3.jpg");
+
+    /* Full height */
+    height: 100%;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center -210px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    margin-left: -15px;
+	margin-right: -15px;
+}
+.parallax.v2 .heroSearch{
+	background-color: rgba(0, 0, 0, .3);
+	padding-top: 40px;
+	padding-bottom: 50px;
+	margin-top: 250px;
+	margin-bottom: 480px;
+	font-weight:600;
+}
+.parallax.v3 {
+	position:relative;
+    background-image: url("../graphics/hero4.jpg");
+
+    /* Full height */
+    height: 100%;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    margin-left: -15px;
+	margin-right: -15px;
+}
+.parallax.v3 .heroSearch{
+	background-color: rgba(0, 0, 0, 0);
+	padding-top: 40px;
+	padding-bottom: 50px;
+	margin-top: 220px;
+	margin-bottom: 450px;
+	font-weight:600;
+}
+.parallax.v4 {
+	position:relative;
+    background-image: url("../graphics/hero5.jpg");
+
+    /* Full height */
+    height: 100%;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center -210px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    margin-left: -15px;
+	margin-right: -15px;
+}
+.parallax.v4 .heroSearch{
+	background-color: rgba(0, 0, 0, 0);
+	padding-top: 40px;
+	padding-bottom: 50px;
+	margin-top: 220px;
+	margin-bottom: 450px;
+	font-weight:600;
+}
+.parallax.v5 {
+	position:relative;
+    background-image: url("../graphics/hero6.jpg");
+
+    /* Full height */
+    height: 100%;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center -210px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    margin-left: -15px;
+	margin-right: -15px;
+}
+.parallax.v5 .heroSearch{
+	background-color: rgba(0, 0, 0, 0);
+	padding-top: 40px;
+	padding-bottom: 50px;
+	margin-top: 220px;
+	margin-bottom: 450px;
+	font-weight:600;
+}
+.parallax.v6 {
+	position:relative;
+    background-image: url("../graphics/hero7.jpg");
+
+    /* Full height */
+    height: 100%;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    margin-left: -15px;
+	margin-right: -15px;
+}
+.parallax.v6 .heroSearch{
+	background-color: rgba(0, 0, 0, .4);
+	padding-top: 40px;
+	padding-bottom: 50px;
+	margin-top: 220px;
+	margin-bottom: 450px;
+	font-weight:600;
+}
 @media (max-device-width:1024px){
 	/* ipad and mobile disable background-attachment: fixed; fallback to no parallax so at lest see image */
 	.parallax {
@@ -437,6 +591,7 @@ body.frontContainer #footer{
 }
 .hpTimeline{
 	text-align:center;
+	margin: 60px 0px 60px 0px;
 }
 #frontTimelineContainer{
 	margin-left:-15px;
@@ -649,4 +804,146 @@ a.facetApply {
 .resultTextImg, .resultTextList {
 	color: #000;
 	font-size:12px;
+}
+
+/* detail */
+.detail {
+    font-size: 13px;
+}
+.detail a{
+    color: #454545;
+}
+.detail a:hover {
+    color: #737373;
+    text-decoration: none;
+}
+.detail .unit a{
+    text-decoration: underline;
+}
+.detail .unit a:hover {
+    text-decoration: underline;
+}
+.detail .unit {
+    padding-bottom: 12px;
+    margin-bottom: 0px;
+}
+.detail label {
+    font-size: 13px;
+    margin: 13px 0px 0px 0px;
+}
+.detail label.noTopMargin {
+    margin-top: 0px;
+}
+.detail .grayBg{
+	/*background-color: #f2f1ec;*/
+	background-color: #F2F2F2;
+	padding:3px 15px 3px 15px;
+	margin-bottom:15px;
+}
+.detail .grayBg.paddingTop{
+	padding-top:15px;
+}
+.detail a .grayBg .unit, .detail a .grayBg, .detail a:hover .grayBg .unit, .detail a:hover .grayBg{
+	text-decoration:none !important;
+}
+.detail a:hover .grayBg{
+	background-color:#f9f9f9;
+}
+.detail a:hover .grayBg{
+	color:#454545;
+}
+.detail .relatedArtObject img{
+	width:100%;
+	height:auto;
+}
+.detail .relatedArtObject div{
+	height:3em;
+	overflow:hidden;
+	margin-bottom:15px;
+}
+.detailImgPlaceholder{
+	background-color: #f2f2f2;
+	color: #858585;
+	padding: 150px 5px 140px;
+	text-align: center;
+	width: 100%;
+	font-size:48px;
+}
+/*
+.detail .detailMediaToolbar, .gallery .detailMediaToolbar {
+    background-color: transparent;
+    padding: 2px 5px 7px 5px;
+    font-size: 12px;
+    position: absolute;
+    display: block;
+    bottom: -35px;
+    top:auto;
+    z-index: 2000;
+	width: 50%;
+	text-align: center;
+	margin-left: 25%;
+	margin-right: 25%;
+}
+.detail .detailMediaToolbar a, .gallery .detailMediaToolbar a{
+	color:#4d4a47;
+	font-size:15px;
+}
+.repViewerContCont{
+	padding-bottom:30px;
+}
+.detail #detailRepNav {
+    top: -25px;
+    position: relative;
+    z-index: 300;
+}
+*/
+.detail .detailMediaToolbar, .detail .repViewerCont:hover .detailMediaToolbar {
+    display: none;
+}
+.detail #detailTools{
+	margin-top:0px;
+}
+.detail #detailTools a, .detail .detailTool span, .detail .detailTool i{
+	color: #000;
+}
+.popover{
+	z-index:100000;
+}
+.popover.top{
+	left:20px !Important;
+}
+.popover.left .arrow{
+	left:auto !important;
+}
+.popover-title {
+    font-size: 12px;
+    text-transform:none;
+    padding:3px 15px 3px 15px !important;
+}
+.popover-content {
+    font-size: 12px !important;
+}
+@media (max-width: 992px) {
+	[data-toggle="popover"] {
+	  cursor: pointer;
+	}
+}
+a.readmore-js-toggle {
+    padding-top: 10px;
+    color: #454545;
+}
+.detail hr, .detail HR{
+	margin:30px 0px 30px 0px;
+}
+/* detail object results - uses browse */
+.detail .results h1{
+	text-transform:uppercase;
+}
+
+/* site pages */
+.staticPage, .staticPage div, .staticPage p {
+	font-size:15px;
+}
+.staticPage p {
+	margin-bottom:25px;
 }

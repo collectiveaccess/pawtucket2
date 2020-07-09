@@ -149,8 +149,8 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "art")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art Objects"), "", "", "Browse", "art"); ?></li>
-					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "archival")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archival Material"), "", "", "Browse", "archival"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art Objects"), "", "", "Browse", "objects"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "archival")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archival Materials"), "", "", "Browse", "archival"); ?></li>
 					<li class="dropdown<?php print ((strToLower($this->request->getController()) == "browse") && in_array(strToLower($this->request->getAction()), array("acquisitions", "dispositions"))) ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Events"); ?></a>
 						<ul class="dropdown-menu">
 <?php
@@ -175,7 +175,7 @@
 							print "<li>".caNavLink($this->request, _t("Project"), '', '', 'About', 'Project', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("History"), '', '', 'About', 'History', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("FAQ"), '', '', 'About', 'FAQ', '')."</li>";
-							print "<li>".caNavLink($this->request, _t("Contact"), '', '', 'Contact', 'Form', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Contact"), '', '', 'About', 'Contact', '')."</li>";
 ?>
 						</ul>	
 					</li>
