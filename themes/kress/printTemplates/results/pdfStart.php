@@ -1,13 +1,13 @@
-<?php	
+<?php
 /* ----------------------------------------------------------------------
- * app/templates/header.php : standard PDF report header
+ * app/templates/pdfStart.php : top-matter prepended to PDF templates
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2016 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -26,38 +26,16 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Header
- * @type fragment
+ * @name PDF start
+ * @type pageStart
  *
  * ----------------------------------------------------------------------
  */
- 
- if($this->request->config->get('summary_header_enabled')) {
-	switch($this->getVar('PDFRenderer')) {
-		case 'wkhtmltopdf':
 ?>
-			<!--BEGIN HEADER--><!DOCTYPE html>
-			<html>
-				<head>
-					<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
-					<meta charset="utf-8" />
-					<meta charset="utf-8" />
-				</head>
-				<body><div id='header'>
-					Kress Collection Digital Archive	
-				</div>
-			</body>
-			</html><!--END HEADER-->
-<?php
-		break;
-		# ----------------------------------------
-		default:
-?>
-			<div id='headerdompdf'>
-				<div id='header'>Kress Collection Digital Archive</div>
-			</div>
-<?php
-		break;
-		# ----------------------------------------
-	}
-}
+<html>
+	<head>
+		<title><?php print $this->getVar('criteria_summary_truncated'); ?></title>
+		<link type="text/css" href="<?php print $this->getVar('base_path');?>/pdf.css" rel="stylesheet" />
+		<meta charset="utf-8" />
+	</head>
+	<body>

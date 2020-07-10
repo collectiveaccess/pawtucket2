@@ -52,7 +52,7 @@
 						if ($vn_pdf_enabled) {
 							print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Summary")."'></span>".caDetailLink($this->request, "PDF Summary", "", "ca_entities",  $t_item->get("ca_entities.entity_id"), array('view' => 'pdf', 'export_format' => '_pdf_summary'))."</div>";
 						}
-						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Permalink")."'></span> <a href='#' onClick='$(\"#permalink\").toggle(); return false;'>Permalink</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'entities/'.$t_item->get("ca_entities.entity_id"))."</textarea></div>";					
+						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Permalink")."'></span> <a href='#' onClick='$(\"#permalink\").toggle(); return false;'>Permalink</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caDetailUrl($this->request, 'ca_entities', $t_item->get("ca_entities.entity_id"))."</textarea></div>";					
 ?>
 					</div>				
 				</div>

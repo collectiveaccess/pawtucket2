@@ -47,6 +47,55 @@
 	if(!$vs_placeholder){
 		$vs_placeholder = $vs_default_placeholder_tag;
 	}
+	
+	$vb_ajax			= (bool)$this->request->isAjax();
+
+	if($vb_ajax){
+?>
+		<div class="detail detailPreviewContainer">		
+			<div class="detailPreview">
+				<div class="detailPreviewClose pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+				<div class="row detailPreviewContent">
+					<div class="col-sm-10 col-sm-offset-1 height100">			
+<?php
+						# --- preview panel linked to from image search/browse results
+						if($vs_image = $t_object->get("ca_object_representations.media.large")){
+							print caDetailLink($this->request, $vs_image, "", "ca_objects", $t_object->get("ca_objects.object_id"));
+						}else{
+?>
+							<?php print caDetailLink($this->request, '<div class="detailPreviewImgPlaceholder">'.$vs_placeholder.'</div>', "", "ca_objects", $t_object->get("ca_objects.object_id")); ?>
+<?php
+						}
+?>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-2">
+<?php
+						if($vs_previous_url = $this->getVar("previousURL")){
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".$vs_previous_url."\"); return false;'><div class='detailPreviewPreviousLink'><i class='fa fa-angle-left'></i><div class='small'>Prev</div></div></a>";
+						}
+?>
+					</div>
+					<div class="col-xs-8">
+						<div class="unit">
+							<label>{{{^ca_objects.type_id<ifdef code="ca_objects.idno">: ^ca_objects.idno</ifdef>}}}</label>
+							{{{<ifcount code='ca_entities' restrictToRelationshipTypes='artist' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist' delimiter=', '>^ca_entities.preferred_labels.displayname</unit>, </ifcount><i>^ca_objects.preferred_labels.name</i><ifdef code='ca_objects.Object_DateExpression'>, ^ca_objects.Object_DateExpression</ifdef>}}}
+						</div>
+						<p><?php print caDetailLink($this->request, "View Record", "btn btn-default", "ca_objects", $t_object->get("ca_objects.object_id")); ?></p>							
+					</div>
+					<div class="col-xs-2">
+<?php
+						if($vs_next_url = $this->getVar("nextURL")){
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".$vs_next_url."\"); return false;'><div class='detailPreviewNextLink'><i class='fa fa-angle-right'></i><div class='small'>Next</div></div></a>";
+						}
+?>
+					</div>
+				</div>
+			</div><!-- end detailPreview -->				
+		</div>		
+<?php
+	}else{
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -121,7 +170,7 @@
 					</ifcount>}}}
 				</div><!-- end col -->
 				<div class='col-sm-12 col-md-5'>
-					<H2>{{{^ca_objects.type_id<ifdef code="ca_movements.idno">: ^ca_objects.idno</ifdef>}}}</H2>
+					<H2>{{{^ca_objects.type_id<ifdef code="ca_objects.idno">: ^ca_objects.idno</ifdef>}}}</H2>
 					<H1>{{{^ca_objects.preferred_labels.name}}}</H1>
 					<div class="grayBg">
 						<div class="row">
@@ -170,7 +219,7 @@
 						if ($vn_pdf_enabled) {
 							print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Summary")."'></span>".caDetailLink($this->request, "PDF Summary", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
 						}
-						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Permalink")."'></span> <a href='#' onClick='$(\"#permalink\").toggle(); return false;'>Permalink</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'objects/'.$t_object->get("object_id"))."</textarea></div>";					
+						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Permalink")."'></span> <a href='#' onClick='$(\"#permalink\").toggle(); return false;'>Permalink</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caDetailUrl($this->request, 'ca_objects', $t_object->get("object_id"))."</textarea></div>";					
 
 	?>
 					</div>
@@ -285,3 +334,6 @@
 		});
 	});
 </script>
+<?php
+	}
+?>

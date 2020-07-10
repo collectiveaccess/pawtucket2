@@ -6,6 +6,72 @@
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	AssetLoadManager::register('mirador');
 
+	$o_icons_conf = caGetIconsConfig();
+	$va_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
+	if(!($vs_default_placeholder = $o_icons_conf->get("placeholder_media_icon"))){
+		$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x' aria-label='placeholder image'></i>";
+	}
+	$t_list_item = new ca_list_items();
+	$t_list_item->load($t_item->get("type_id"));
+	$vs_typecode = $t_list_item->get("idno");
+	$vs_placeholder = caGetPlaceholder($vs_typecode, "placeholder_media_icon");
+	if(!$vs_placeholder){
+		$vs_placeholder = $vs_default_placeholder_tag;
+	}
+
+	$vb_ajax			= (bool)$this->request->isAjax();
+
+	if($vb_ajax){
+?>
+		<div class="detail detailPreviewContainer">		
+			<div class="detailPreview">
+				<div class="detailPreviewClose pointer" onclick="caMediaPanel.hidePanel(); return false;"><span class="glyphicon glyphicon-remove-circle"></span></div>
+				<div class="row detailPreviewContent">
+					<div class="col-sm-10 col-sm-offset-1 height100">			
+<?php
+						# --- preview panel linked to from image search/browse results
+						if(is_array($media_value_ids = $t_item->get("ca_occurrences.media.media_media.value_id", ["returnAsArray" => true])) && sizeof($media_value_ids)) {
+							foreach($media_value_ids as $value_id) {
+								print caGetMediaViewerHTML($this->request, "attribute:".$value_id, $t_item, array("inline" => true, "display" => "detail", "context" => "archival"));
+							}
+						}else{
+						#if($vs_image = $t_item->get("ca_occurrences.media.media_media.large")){
+						#	print caDetailLink($this->request, $vs_image, "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"));
+						#}else{
+?>
+							<?php print caDetailLink($this->request, "<div class='detailPreviewImgPlaceholder'>".$vs_placeholder."</div>", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id")); ?>
+<?php
+						}
+?>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-xs-2">
+<?php
+						if($vs_previous_url = $this->getVar("previousURL")){
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".$vs_previous_url."\"); return false;'><div class='detailPreviewPreviousLink'><i class='fa fa-angle-left'></i><div class='small'>Prev</div></div></a>";
+						}
+?>
+					</div>
+					<div class="col-xs-8">
+						<div class="unit">
+							<label>{{{<ifdef code="ca_occurrences.Doc_type">^ca_occurrences.Doc_type: </ifdef><ifdef code="ca_occurrences.idno">^ca_occurrences.idno</ifdef>}}}</label>
+							{{{^ca_occurrences.preferred_labels.name}}}
+						</div>
+						<p><?php print caDetailLink($this->request, "View Record", "btn btn-default", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id")); ?></p>							
+					</div>
+					<div class="col-xs-2">
+<?php
+						if($vs_next_url = $this->getVar("nextURL")){
+							print "<a href='#' onclick='caMediaPanel.showPanel(\"".$vs_next_url."\"); return false;'><div class='detailPreviewNextLink'><i class='fa fa-angle-right'></i><div class='small'>Next</div></div></a>";
+						}
+?>
+					</div>
+				</div>
+			</div><!-- end detailPreview -->				
+		</div>		
+<?php
+	}else{
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -24,10 +90,14 @@
 					// 
 					// Uses new ".value_id" suffix to get value_ids for all repeats of ca_occurrences.media.media_media.value_id
 					//
-					if(is_array($media_value_ids = $t_item->get("ca_occurrences.media.media_media.value_id", ["returnAsArray" => true]))) {
+					if(is_array($media_value_ids = $t_item->get("ca_occurrences.media.media_media.value_id", ["returnAsArray" => true])) && sizeof($media_value_ids)) {
 						foreach($media_value_ids as $value_id) {
 							print caGetMediaViewerHTML($this->request, "attribute:".$value_id, $t_item, array("inline" => true, "display" => "detail", "context" => "archival"));
 						}
+					}else{
+?>
+						<div class="detailImgPlaceholder"><?php print $vs_placeholder; ?></div>
+<?php
 					}
 					
 					//
@@ -44,7 +114,7 @@
 
 				</div><!-- end col -->
 				<div class='col-sm-12 col-md-5'>
-					<H2>{{{^ca_occurrences.Doc_type<ifdef code="ca_occurrences.idno">: ^ca_occurrences.idno</ifdef>}}}</H2>
+					<H2>{{{<ifdef code="ca_occurrences.Doc_type">^ca_occurrences.Doc_type: </ifdef><ifdef code="ca_occurrences.idno">^ca_occurrences.idno</ifdef>}}}</H2>
 					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
 					<div class="grayBg">
 						{{{<ifcount code="ca_entities" min="1"><div class="unit"><label data-toggle="popover" title="Creator" data-content="Creator">Creator<ifcount code="ca_entities" min="2">s</ifcount></label><unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></unit></ifcount>}}}
@@ -93,7 +163,7 @@
 						if ($vn_pdf_enabled) {
 							print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Summary")."'></span>".caDetailLink($this->request, "PDF Summary", "", "ca_occurrences",  $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_summary'))."</div>";
 						}
-						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Permalink")."'></span> <a href='#' onClick='$(\"#permalink\").toggle(); return false;'>Permalink</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caNavUrl($this->request, '', 'Detail', 'archival/'.$t_item->get("occurrence_id"))."</textarea></div>";					
+						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Permalink")."'></span> <a href='#' onClick='$(\"#permalink\").toggle(); return false;'>Permalink</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caDetailUrl($this->request, 'ca_occurrences', $t_item->get("occurrence_id"))."</textarea></div>";					
 
 	?>
 					</div>
@@ -162,3 +232,6 @@
 	});
 
 </script>
+<?php
+	}
+?>

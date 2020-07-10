@@ -1,4 +1,4 @@
-/* header gray: 4d4a47; offwhite: efebe7 or f1f1e9; yellow ochre: AA8A00; */
+/* header gray: 4d4a47; offwhite: efebe7 or f1f1e9; */
 
 /*
 @import url('https://fonts.googleapis.com/css?family=Cinzel');
@@ -13,12 +13,14 @@ body{
 	margin-bottom:300px;
 	font-size: 13px;
 }
-@media(min-width:768px) and (max-width:1010px){
+@media(min-width:768px) and (max-width:1500px){
 	body{
 		margin-top:93px;
 	}
 }
-
+.container{
+	max-width:2000px;
+}
 a img, .btn, .grayBg{
 	transition: all 0.4s ease 0s;
     -webkit-transition: all 0.4s ease 0s;
@@ -70,6 +72,12 @@ a.navbar-brand, a.navbar-brand:hover {
 	line-height: 1em;
 	width:auto;
 }
+@media(max-width:595px){
+	a.navbar-brand, a.navbar-brand:hover {
+		width: 300px;
+		font-size: 22px;
+	}
+}
 .navbar-default .navbar-brand, .navbar-default .navbar-brand:hover, .navbar-default .navbar-brand:focus{
     color: #FFF;
     font-family: Cormorant;
@@ -117,13 +125,32 @@ a.navbar-brand, a.navbar-brand:hover {
 	-webkit-box-shadow:none;
 	box-shadow:none;
 }
+@media(min-width: 768px) and (max-width: 1500px) {
+	ul.menuItems {
+		width:100%;
+		border-top:solid 1px #ddd;
+	}
+	.menuItems.navbar-nav > li > a {
+		padding-top:5px;
+		padding-bottom:5px;
+	}
+	.navbar-collapse .navbar-nav.navbar-right:last-child {
+		margin-right:0px;
+	}
+	.container.menuBar {
+		padding:0px;
+	}
+	.navbar > .container .navbar-brand {
+		margin-left:0px;
+	}
+}
 H1, h1, h2, H2, H3, h3{
 	color:#333;
 /*    font-family: Cormorant;
     text-transform:none; */
 }
 a, a:hover{
-	color:#AA8A00;
+	color:#757575;
 }
 .btn-default, .browse .btn, .sets .btn, .btn-default:hover, .btn-default:focus, .btn-default:active, .btn-default.active, .detail .btn-default, .detail .btn-default:hover, .detail .btn-default:focus, .detail .btn-default:active {
 	background-color:#454545;
@@ -611,6 +638,14 @@ body.frontContainer #footer{
 }
 
 /* browse */
+#bRefine.fixed {
+    top: 55px;
+}
+@media(min-width:768px) and (max-width:1500px){
+	#bRefine.fixed {
+    	top: 90px;
+	}
+}
 #bRefine H3[type="button"]{
 	cursor: pointer;
 	color:#858585;
@@ -806,6 +841,73 @@ a.facetApply {
 	font-size:12px;
 }
 
+/* detail Preview */
+.height100{
+	height:100%;
+}
+.detailPreviewContainer{
+	position:absolute;
+	width:100%;
+	height:100%;
+}
+.detailPreview{
+	position:relative;
+	height:100%;
+	background-color:#fff;
+	text-align:center;
+	padding:30px;
+	/*margin-top:50px;*/
+	-webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.3);
+	-moz-box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.3);
+	box-shadow: 0px 0px 3px 0px rgba(0,0,0,0.3);
+}
+@media(min-width:768px){
+	.detailPreviewContainer{
+		padding: 25px 10% 25px 10%;;
+	}
+}
+@media(min-width:992px){
+	.detailPreviewContainer{
+		padding:50px 25% 50px 25%;
+	}
+}
+.detailPreview .detailPreviewContent{
+	height:75%;
+}
+.detailPreview .detailPreviewContent .repViewerContCont, .detailPreview .detailPreviewContent .repViewerContCont .repViewerCont > div, .detailPreview .detailPreviewContent .repViewerContCont .repViewerCont > div > div{
+	height:100% !important;
+}
+.detailPreview .detailPreviewContent img{
+	width:100%;
+	height:100%;
+	object-fit:contain;
+}
+.detailPreview .detailPreviewPreviousLink, .detailPreview .detailPreviewNextLink{
+	margin-top:25px;
+	text-align:center;
+	background-color: #F2F2F2;
+	padding:5px;
+}
+.detailPreview a:hover .detailPreviewPreviousLink, .detailPreview a:hover .detailPreviewNextLink{
+	background-color: #F5F5F5;
+}
+.detailPreviewClose{
+	text-align:right;
+	font-size:18px;
+}
+.detailPreviewImgPlaceholder{
+	background-color: #f2f2f2;
+	color: #858585;
+	text-align: center;
+	width: 100%;
+	height:100%;
+	font-size:48px;
+}
+.detailPreviewImgPlaceholder .fa{
+	top:35%;
+	position:relative;
+}
+
 /* detail */
 .detail {
     font-size: 13px;
@@ -906,6 +1008,9 @@ a.facetApply {
 .detail #detailTools a, .detail .detailTool span, .detail .detailTool i{
 	color: #000;
 }
+.detail #detailTools #permalink{
+	height:7em;
+}
 .popover{
 	z-index:100000;
 }
@@ -946,4 +1051,11 @@ a.readmore-js-toggle {
 }
 .staticPage p {
 	margin-bottom:25px;
+}
+
+/* multisearch */
+.multisearch .objectsResult img{
+	object-fit:contain;
+	width:100%;
+	height:120px;
 }
