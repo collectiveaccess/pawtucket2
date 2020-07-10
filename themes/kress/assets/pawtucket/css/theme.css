@@ -638,8 +638,15 @@ body.frontContainer #footer{
 }
 
 /* browse */
+#bViewButtons {
+    float: right;
+}
 #bRefine.fixed {
     top: 55px;
+}
+#bMorePanel{
+	left:0px;
+	right:auto;
 }
 @media(min-width:768px) and (max-width:1500px){
 	#bRefine.fixed {
@@ -652,6 +659,11 @@ body.frontContainer #footer{
 }
 #bRefine hr {
 	margin-bottom:0px;
+}
+.bCriteria .btn {
+	margin:0px 0px 5px 0px;
+	display:block;
+	width:100%;
 }
 .facetGroup.panel {
 	width:250%;
@@ -754,6 +766,11 @@ a.facetApply {
     left:0px;
 }
 /* search within */
+@media(max-width:768px){
+	.results .bSearchWithinContainer{
+		display:none;
+	}
+}
 .results .bSearchWithinContainer{
 	clear:both;
 	margin-top:15px;

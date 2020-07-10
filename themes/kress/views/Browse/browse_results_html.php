@@ -51,7 +51,7 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	$vn_result_size 	= $qr_res->numHits();
 	
 	
 	$va_options			= $this->getVar('options');
@@ -79,8 +79,43 @@
 if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
-	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
-<?php 
+	<div class="col-sm-4 col-md-3 col-lg-3" id="browseLeftCol">
+		<div <?php print ($vb_show_filter_panel) ? "class='catchLinks'" : ""; ?>>
+<?php
+		if($vn_result_size > 1){
+?>
+			<div class="bSearchWithinContainer">
+				<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+					<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine">
+					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+					<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
+				</form>
+				<div style="clear:both"></div>
+			</div>
+<?php
+		}
+?>
+		</div>
+		
+<?php
+		print $this->render("Browse/browse_refine_subview_html.php");
+?>			
+	</div><!-- end col-2 -->
+
+	<div class='col-sm-8 col-md-9 col-lg-9'>
+<?php
+			if(is_array($va_views) && (sizeof($va_views) > 1)){
+				print '<div id="bViewButtons"'.(($vb_show_filter_panel) ? ' class="catchLinks"' : '').'>';
+				foreach($va_views as $vs_view => $va_view_info) {
+					if ($vs_current_view === $vs_view) {
+						print '<a href="#" class="active"><span class="glyphicon"  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
+					} else {
+						print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+					}
+				}
+				print "</div>";
+			}
+			
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 					print "<div id='bSortByList'".(($vb_show_filter_panel) ? " class='catchLinks'" : "")."><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
@@ -167,39 +202,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
-		<div class='bCriteria<?php print (($vb_show_filter_panel) ? " catchLinks" : ""); ?>'>
 <?php
-		if (sizeof($va_criteria) > 0) {
-			$i = 0;
-			foreach($va_criteria as $va_criterion) {
-				if(!$vb_show_filter_panel || ($vb_show_filter_panel && !in_array($va_criterion['facet_name'], array("movement_facet", "loan_facet", "archival_facet", "entity_facet")))){
-					print "<strong>".$va_criterion['facet'].':</strong>';
-					#if ($va_criterion['facet_name'] != '_search') {
-						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
-					#}else{
-					#	print ' '.$va_criterion['value'];
-					#	$vs_search = $va_criterion['value'];
-					#}
-					$i++;
-					if($i < sizeof($va_criteria)){
-						print " ";
-					}
-					$va_current_facet = $va_all_facets[$va_criterion['facet_name']];
-					if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
-						$t_authority_table = new $va_current_facet["table"];
-						$t_authority_table->load($va_criterion['id']);
-						$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
-					}
-				}
-			}
-		}
-?>		
-		</div>
-<?php
-		if($vs_facet_description){
-			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
-		}
-
 		if($vb_showLetterBar){
 			print "<div id='bLetterBar".($vb_show_filter_panel) ? " catchLinks" : ""."'>";
 			foreach(array_keys($va_letter_bar) as $vs_l){
@@ -234,39 +237,6 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 		</div><!-- end row -->
 		</form>
 	</div><!-- end col-8 -->
-	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
-		<div id="bViewButtons" <?php print ($vb_show_filter_panel) ? "class='catchLinks'" : ""; ?>>
-<?php
-		if(is_array($va_views) && (sizeof($va_views) > 1)){
-			foreach($va_views as $vs_view => $va_view_info) {
-				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active"><span class="glyphicon"  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
-				} else {
-					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
-				}
-			}
-		}
-		if($vn_result_size > 1){
-?>
-			<div class="bSearchWithinContainer">
-				<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-					<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine">
-					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
-					<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
-				</form>
-				<div style="clear:both"></div>
-			</div>
-<?php
-		}
-?>
-		</div>
-		
-<?php
-		print $this->render("Browse/browse_refine_subview_html.php");
-?>			
-	</div><!-- end col-2 -->
-	
-	
 </div><!-- end row -->
 
 <script type="text/javascript">
