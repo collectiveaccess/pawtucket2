@@ -42,7 +42,7 @@
 								{{{<ifdef code="ca_loans.Distribution_AcceptDate"><div class="unit"><label data-toggle="popover" title="Acceptance Date" data-content="Acceptance Date">Acceptance Date</label>^ca_loans.Distribution_AcceptDate</div></ifdef>}}}
 								{{{<ifdef code="ca_loans.Distribution_AcceptDocSource"><div class="unit"><label data-toggle="popover" title="Acceptance Documentation" data-content="Acceptance Documentation">Acceptance Documentation</label>^ca_loans.Distribution_AcceptDocSource</div></ifdef>}}}
 								{{{<ifdef code="ca_loans.Distribution_Note">
-									<div class='unit'><label data-toggle="popover" title="Note" data-content="Note">Note</label>
+									<div class='unit'><label data-toggle="popover" title="Notes" data-content="Notes">Notes</label>
 										<span class="trimText">^ca_loans.Distribution_Note</span>
 									</div>
 								</ifdef>}}}	

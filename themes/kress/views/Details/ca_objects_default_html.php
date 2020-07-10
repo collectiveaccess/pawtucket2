@@ -176,7 +176,7 @@
 						<div class="row">
 							{{{<ifdef code="ca_objects.Object_KressCatalogNumber"><div class="col-sm-6 col-md-6"><div class="unit"><label data-toggle="popover" title="Kress Catalog Number" data-content="Kress Catalog Number">Kress Catalog Number</label>^ca_objects.Object_KressCatalogNumber</div></div></ifdef>}}}				
 							<div class="col-sm-6 col-md-6">
-								{{{<ifdef code="ca_objects.Object_Classification"><div class="unit"><label data-toggle="popover" title="Category" data-content="Category">Category</label>^ca_objects.Object_Classification</div></ifdef>}}}
+								{{{<ifdef code="ca_objects.Object_Classification"><div class="unit"><label data-toggle="popover" title="Classification" data-content="Classification">Classification</label>^ca_objects.Object_Classification</div></ifdef>}}}
 							</div>
 						</div>
 						<div class="row">
@@ -200,7 +200,7 @@
 						</div>
 					</ifdef>}}}
 					{{{<ifdef code="ca_objects.Object_Note">
-						<div class='unit'><label data-toggle="popover" title="Note" data-content="Note">Note</label>
+						<div class='unit'><label data-toggle="popover" title="Notes" data-content="Notes">Notes</label>
 							<span class="trimText">^ca_objects.Object_Note</span>
 						</div>
 					</ifdef>}}}

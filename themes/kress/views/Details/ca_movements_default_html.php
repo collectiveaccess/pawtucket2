@@ -133,7 +133,7 @@
 						{{{<ifdef code="ca_movements.Acquisition_Source"><div class="unit"><label data-toggle="popover" title="Citation" data-content="Citation">Citation</label>^ca_movements.Acquisition_Source</div></ifdef>}}}
 					</div>
 					{{{<ifdef code="ca_movements.Acquisition_Note">
-						<div class='unit'><label data-toggle="popover" title="Note" data-content="Note">Note</label>
+						<div class='unit'><label data-toggle="popover" title="Notes" data-content="Notes">Notes</label>
 							<span class="trimText">^ca_movements.Acquisition_Note</span>
 						</div>
 					</ifdef>}}}				
