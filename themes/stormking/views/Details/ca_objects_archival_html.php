@@ -97,7 +97,10 @@
 				}
 				if ($vs_conditions_repro = $t_object->get('ca_objects.reproduction')) {
 					print "<div class='unit'><h6>Conditions Governing Reproduction</h6>".$vs_conditions_repro."</div>";
-				}																								
+				}	
+				if ($plaque_text = $t_object->get('ca_objects.plaque.plaque_text')) {
+					print "<div class='unit'><h6>Plaque</h6>".$plaque_text."</div>";
+				}																							
 ?>	
 				</div></div></div>
 			</div><!-- end col -->	
