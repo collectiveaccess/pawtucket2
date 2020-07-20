@@ -98,7 +98,7 @@
 						$vn_med++;
 					}
 				}
-				if (sizeof($va_media_links) > 0) {
+				if (is_array($va_media_links) && (sizeof($va_media_links) > 0)) {
 					print "<div class='unit row'><div class='{$vn_label_col} label'>Medium</div><div class='$vn_data_col'>".join(', ', $va_media_links)."</div></div>";
 				}
 			}
@@ -108,7 +108,7 @@
 					if ($va_paper_id == 0) {continue;}
 					$va_paper_links[] = caNavLink($this->request, ucfirst(caGetListItemByIDForDisplay($va_paper_id)), '', '', 'Browse', 'artworks/facet/paper_facet/id/'.$va_paper_id);	
 				}
-				if (sizeof($va_paper_links) > 0){
+				if (is_array($va_paper_links) && (sizeof($va_paper_links) > 0)){
 					print "<div class='unit row'><div class='{$vn_label_col} label'>Support</div><div class='$vn_data_col'>".join(', ', $va_paper_links)."</div></div>";
 				}	
 			}				
@@ -121,7 +121,7 @@
 						}
 					}
 				}
-				if (sizeof($va_water_links) > 0) {
+				if (is_array($va_water_links) && (sizeof($va_water_links) > 0)) {
 					print "<div class='unit row'><div class='{$vn_label_col} label'>Watermark</div><div class='$vn_data_col'>".join(', ', $va_water_links)."</div></div>";
 				}
 			}
@@ -132,7 +132,7 @@
 						$va_mount_links[] = caNavLink($this->request, caGetListItemByIDForDisplay($va_mount_id), '', '', 'Browse', 'artworks/facet/mount_facet/id/'.$va_mount_id);	
 					}
 				}
-				if (sizeof($va_mount_links) > 0) {
+				if (is_array($va_mount_links) && (sizeof($va_mount_links) > 0)) {
 					print "<div class='unit row'><div class='{$vn_label_col} label'>Mount</div><div class='{$vn_data_col} mount'>".join(', ', $va_mount_links)."</div></div>";
 				}
 			}						
@@ -368,7 +368,7 @@
 					if ($t_prov_rel->get('ca_objects_x_collections.sold_yn') == 163) { 
 						$vs_buf[]= "(not sold)";
 					}	
-					if (sizeof($vs_buf) > 0){
+					if (is_array($vs_buf) && (sizeof($vs_buf) > 0)){
 						$vs_prov_line.= ", ".join(', ', $vs_buf);
 					}
 					#if ($vs_remark = $t_prov_rel->get('ca_objects_x_collections.collection_line')) {

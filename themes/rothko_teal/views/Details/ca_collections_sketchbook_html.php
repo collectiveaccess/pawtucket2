@@ -148,7 +148,7 @@
 					if ($t_prov_rel->get('ca_collections_x_collections.sold_yn') == 163) { 
 						$vs_buf[]= "(not sold)";
 					}	
-					if (sizeof($vs_buf) > 0){
+					if (is_array($vs_buf) && (sizeof($vs_buf) > 0)){
 						$vs_provenance_line.= ", ".join(', ', $vs_buf);
 					}
 					if ($vs_remark = $t_prov_rel->get('ca_collections_x_collections.collection_line')) {

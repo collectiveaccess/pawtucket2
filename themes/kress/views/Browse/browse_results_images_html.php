@@ -25,6 +25,8 @@
  *
  * ----------------------------------------------------------------------
  */
+
+	AssetLoadManager::register('mirador');	
  
 	$qr_res 			= $this->getVar('result');				// browse results (subclass of SearchResult)
 	$va_facets 			= $this->getVar('facets');				// array of available browse facets
@@ -55,7 +57,6 @@
 	
 
 	$vb_ajax			= (bool)$this->request->isAjax();
-	
 
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 
@@ -130,7 +131,7 @@
 						$vs_info = null;
 					} else {
 						# archival materials and acquisitions have media in field not reps
-						if($vs_tmp = $qr_res->get($vs_table.'.media.media_media.large')){
+						if($vs_tmp = $qr_res->get($vs_table.'.media.media_media.medium')){
 							$vs_thumbnail = $vs_tmp;
 						}else{
 							$vs_thumbnail = $vs_default_placeholder_tag;
@@ -141,15 +142,27 @@
 						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
 					
+$vs_rep_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_thumbnail."</a>";
+# --- link to preview in overlay
 					$vs_result_output = "
-						<div class='resultItemColImg col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>".
-						caDetailLink($this->request, 
-							"<div class='resultContentImg'>
+						<div class='resultItemColImg col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'><a href='#' onclick='caMediaPanel.showPanel(\"".
+						caDetailUrl($this->request, $vs_table, $vn_id)."\"); return false;'><div class='resultContentImg'>
 								<div class='resultImageImg'>".$vs_thumbnail."</div>
 								<div class='resultTextImg'>".$qr_res->getWithTemplate($vs_result_text_template)."</div>
 								{$vs_add_to_set_link}<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-							</div>", '', $vs_table, $vn_id)."
+							</div></a>
 						</div><!-- end col -->\n";
+					
+# --- link to detail
+#					$vs_result_output = "
+#						<div class='resultItemColImg col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>".
+#						caDetailLink($this->request, 
+#							"<div class='resultContentImg'>
+#								<div class='resultImageImg'>".$vs_thumbnail."</div>
+#								<div class='resultTextImg'>".$qr_res->getWithTemplate($vs_result_text_template)."</div>
+#								{$vs_add_to_set_link}<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
+#							</div>", '', $vs_table, $vn_id)."
+#						</div><!-- end col -->\n";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				

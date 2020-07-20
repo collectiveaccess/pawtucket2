@@ -32,8 +32,7 @@
 			<div class="row">
 				<div class="col-sm-12 text-center">
 					<p>
-						<a href="http://www.kressfoundation.org" class="museumLink">The Kress Foundation</a>
-						<div class="address">555 Main St, City, ST 55555</div>
+						<a href="http://www.kressfoundation.org" class="museumLink">National Gallery of Art</a>
 					</p>
 					<ul class="list-inline social">
 						<li><a href="#" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
@@ -41,6 +40,7 @@
 						<li><a href="#" target="_blank"><i class="fa fa-twitter-square"></i></a></li>
 					</ul>
 					<ul class="list-inline">
+						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "Contact"); ?></li>
 						<li><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "About", "TermsOfUse"); ?></li>
 						<li><?php print caNavLink($this->request, _t("Privacy Policy"), "", "", "About", "PrivacyPolicy"); ?></li>
 					</ul>

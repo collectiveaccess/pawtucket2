@@ -51,12 +51,12 @@
 				}
 			}
 		}
-		if (sizeof($va_place_output) > 0) {
+		if (is_array($va_place_output) && (sizeof($va_place_output) > 0)) {
 			print "<div class='unit borderless'>".join(', ', $va_place_output)."</div>";
 		}
 		if ($va_date = $t_item->get('ca_occurrences.occurrence_dates')) {
 			$va_raw_date = $t_item->get('ca_occurrences.occurrence_dates', array('returnWithStructure' => true, 'rawDate' => true));
-			if (sizeof($va_raw_date) > 0) {
+			if (is_array($va_raw_date) && (sizeof($va_raw_date) > 0)) {
 				$va_raw_date = array_pop(array_pop($va_raw_date));
 				print "<div class='unit borderless'>".caNavLink($this->request, $va_date, '', 'Search', 'exhibitions', 'search/exhibition_dates', ["values" => [(int)$va_raw_date['occurrence_dates']['start']]])."</div>";
 			}
