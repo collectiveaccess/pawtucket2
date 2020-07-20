@@ -13,6 +13,9 @@
 	if(($vs_set_caption = $t_set_item->get("ca_set_items.preferred_labels")) && ($vs_set_caption != "[BLANK]")){
 		print "<div class='unit targetCatch'>".$vs_set_caption."</div>";
 	}
+	if($vs_set_description = $t_set_item->get("ca_set_items.set_item_description")){
+		print "<div class='unit targetCatch'>".$vs_set_description."</div>";
+	}
 	if(strpos(strToLower($vs_type), "artwork") !== false){
 		if ($vs_artist = $t_object->getWithTemplate('<unit relativeTo="ca_entities" delimiter="<br/>"><div class="artistName"><l>^ca_entities.preferred_labels</l></div><div><ifdef code="ca_entities.nationality_text">^ca_entities.nationality_text</ifdef><ifdef code="ca_entities.nationality_text|ca_entities.entity_display_date">, </ifdef><ifdef code="ca_entities.entity_display_date">^ca_entities.entity_display_date</ifdef></div></unit>')) { 
 			print "<div>".$vs_artist."</div>";
