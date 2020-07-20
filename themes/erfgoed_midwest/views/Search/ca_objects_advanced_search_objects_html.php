@@ -31,7 +31,7 @@
 	</div>
 	<div class='row'>
 		<div class="advancedSearchField col-sm-12">
-			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoek objecten met een specificieke datum of periode .">Periode <i>(vb. 1970-1979)(e.g. 1970-1979)</i></span>
+			<span class='formLabel' data-toggle="popover" data-trigger="hover" data-content="Zoek objecten met een specificieke datum of periode .">Periode <i>(vb. 1970-1979)</i></span>
 			{{{ca_objects.object_creation_date%width=200px&height=40px&useDatePicker=0}}}
 		</div>
 	</div>
