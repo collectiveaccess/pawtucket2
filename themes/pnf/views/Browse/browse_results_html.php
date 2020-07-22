@@ -108,22 +108,24 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			$i = 0;
 			foreach($va_criteria as $va_criterion) {
 				if (($va_criterion['facet_name'] != '_search') || (($va_criterion['facet_name'] == '_search') && (strpos($va_criterion['value'], "collection_id") === false))) {
-					print "<strong>".$va_criterion['facet'].':</strong>';
-					if ($va_criterion['facet_name'] != '_search') {
-						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
-					}else{
-						print ' '.$va_criterion['value'];
-						$vs_search = $va_criterion['value'];
-					}
-					$i++;
-					if($i < sizeof($va_criteria)){
-						print " ";
-					}
-					$va_current_facet = $va_facets[$va_criterion['facet_name']];
-					if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
-						$t_authority_table = new $va_current_facet["table"];
-						$t_authority_table->load($va_criterion['id']);
-						$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
+					if($vb_show_filter_panel && $va_criterion['facet_name'] != 'collection_facet'){
+						print "<strong>".$va_criterion['facet'].':</strong>';
+						if ($va_criterion['facet_name'] != '_search') {
+							print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => $va_criterion['id'], 'view' => $vs_current_view, 'key' => $vs_browse_key));
+						}else{
+							print ' '.$va_criterion['value'];
+							$vs_search = $va_criterion['value'];
+						}
+						$i++;
+						if($i < sizeof($va_criteria)){
+							print " ";
+						}
+						$va_current_facet = $va_facets[$va_criterion['facet_name']];
+						if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
+							$t_authority_table = new $va_current_facet["table"];
+							$t_authority_table->load($va_criterion['id']);
+							$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
+						}
 					}
 				}
 			}
@@ -193,17 +195,8 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 				$qr_res->seek(0);
 				$i = 0;
 				while($qr_res->nextHit()) {
-					print "<div class='institutionUnit'>";
-					print "<a href='#' onclick='$(\"#institutionMore".$qr_res->get('ca_collections.collection_id')."\").toggle(300); google.maps.event.trigger(caMap_map_markers[{$i}], \"click\"); return false;'><i class='fa fa-bank'></i> ".$qr_res->get('ca_collections.preferred_labels')."</a>";
-					print "<div id='institutionMore".$qr_res->get('ca_collections.collection_id')."' class='institutionMore'>"; 
-					print $qr_res->getWithTemplate('<ifcount code="ca_collections.collection_address" min="1"><unit><ifdef code="ca_collections.collection_address.collection_address_data1">^ca_collections.collection_address.collection_address_data1<br/></ifdef><ifdef code="ca_collections.collection_address.collection_address_data2">^ca_collections.collection_address.collection_address_data2<br/></ifdef><ifdef code="ca_collections.collection_address.collection_city">^ca_collections.collection_address.collection_city, </ifdef><ifdef code="ca_collections.collection_address.collection_stateprovince">^ca_collections.collection_address.collection_stateprovince </ifdef><ifdef code="ca_collections.collection_address.collection_postalcode">^ca_collections.collection_address.collection_postalcode </ifdef></unit></ifcount>');
-
-					print $qr_res->getWithTemplate('<ifcount code="ca_collections.collection_website" min="1"><unit><ifdef code="ca_collections.collection_website"><br/><a href="^ca_collections.collection_website" target="_blank">^ca_collections.collection_website</a><br/></ifdef></unit><ifcount>');
-					print "<br/>".caNavLink($this->request, 'Sueltas in this collection', 'institutionLink', '', 'Detail', 'collections/'.$qr_res->get('ca_collections.collection_id'));
-					print "</div>";
-					print "</div>";
+					print "<div class='institutionUnit'>".caNavLink($this->request, "<i class='fa fa-bank'></i> ".$qr_res->get('ca_collections.preferred_labels'), 'institutionLink', '', 'Detail', 'collections/'.$qr_res->get('ca_collections.collection_id'))."</div>";
 					print "<hr>";
-					$i++;
 				}
 				$qr_res->seek(0);
 				print "</div>";

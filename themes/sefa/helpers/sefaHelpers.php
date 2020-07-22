@@ -120,6 +120,8 @@
 			$vs_available = "";
 			if(($o_object->get("type_id") != 27) && ($o_object->get("availability", array('convertCodesToDisplayText' => true)) == "sold")){
 				$vs_available = " <span class='captionAvailable'><i class='fa fa-circle'></i></span>";
+			}elseif($o_object->get("availability", array('convertCodesToDisplayText' => true)) == "no longer available"){
+				$vs_available = " <span class='captionNoLongerAvailable'><i class='fa fa-circle' title='No longer available'></i></span>";
 			}
 			return implode(", ", $va_caption_parts).$vs_available;
 		}else{

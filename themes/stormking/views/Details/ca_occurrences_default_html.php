@@ -169,11 +169,12 @@
 				$va_related_catalogue = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('catalogue'), 'sort' => 'ca_object_labels.name'));
 				$va_remarks_images_url = $t_item->get('ca_occurrences.bibliography.url', array('returnAsArray' => true, 'version' => 'original'));
 				$va_checklist_images_url = $t_item->get('ca_occurrences.checklist.url', array('returnAsArray' => true, 'version' => 'original'));
+				$va_statement_images_url = $t_item->get('ca_occurrences.statement.url', array('returnAsArray' => true, 'version' => 'original'));
 				$vs_website = $t_item->get('ca_occurrences.exhibition_website');
 		?>
 				<div class="row">
 <?php
-					if($va_related_catalogue || $va_remarks_images_url || $va_checklist_images_url || $vs_website){
+					if($va_related_catalogue || $va_remarks_images_url || $va_checklist_images_url || $va_statement_images_url || $vs_website){
 ?>
 					<div class="col-lg-6 col-md-12">
 		<?php
@@ -195,6 +196,11 @@
 						if ($va_checklist_images_url) {
 							foreach ($va_checklist_images_url as $va_key => $va_checklist_images_url_path) {
 								print "<h6><i class='fa fa-file'></i> <a href='".$va_checklist_images_url_path."'>View Checklist </a></h6>";
+							}
+						}				
+						if ($va_statement_images_url) {
+							foreach ($va_statement_images_url as $va_key => $va_statement_images_url_path) {
+								print "<h6><i class='fa fa-file'></i> <a href='".$va_statement_images_url_path."'>View PDF </a></h6>";
 							}
 						}
 				
@@ -281,38 +287,6 @@
 			print "</div><!-- end row -->";			
 		}
 		
-		#Related Media
-/*
-		if ($va_related_media = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('media'), 'sort' => 'ca_object_labels.name'))) {
-			$vs_media_count = 0;
-			print '<div class="row objInfo">';
-
-			print '	<div class="col-sm-12"><hr><h6 class="header">Media</h6></div>';
-			foreach ($va_related_media as $va_id => $va_related_media_id) {
-				$t_rel_media = new ca_objects($va_related_media_id);
-				print "<div class='col-sm-3'>";
-				print "<div class='relatedArtwork'>";
-				if ($t_rel_media->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))) {
-					$vs_media_image = caDetailLink($this->request, $t_rel_media->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values)), '', 'ca_objects', $t_rel_media->get('ca_objects.object_id'));
-				} else {
-					$vs_media_image = null;
-				}					
-				print "<div class='relImg'>".caDetailLink($this->request, ($vs_media_image ? $vs_media_image : "<div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div>"), '', 'ca_objects', $t_rel_media->get('ca_objects.object_id'))."</div>";
-				print "<p>".$t_rel_media->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values, 'delimiter' => ', '))."</p>";
-				print "<p>".caDetailLink($this->request, $t_rel_media->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_media->get('ca_objects.object_id'));
-				print "</p></div>";
-				print "</div><!-- end col -->";
-				$vs_media_count++;
-				if ($vs_media_count == 4) {
-					break;
-				}
-			}
-			if ($vs_media_count == 4) {
-				print "<div class='viewAll'>".caNavLink($this->request, "View all <i class='fa fa-angle-right'></i>", '', '', 'Browse', 'install', array('facet' => 'media_facet', 'id' => $vn_item_id))."</div>";
-			}			
-			print "</div><!-- end row -->";			
-		}
-*/		
 		#Related Archival Items
 		if ($va_related_archival = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('archival_item')))) {
 			$vs_archival_count = 0;
@@ -343,6 +317,38 @@
 			}	
 			print "</div><!-- end row -->";			
 		}	
+		#Related Media
+
+		if ($va_related_media = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('media'), 'sort' => 'ca_object_labels.name'))) {
+			$vs_media_count = 0;
+			print '<div class="row objInfo">';
+
+			print '	<div class="col-sm-12"><hr><h6 class="header">Media</h6></div>';
+			foreach ($va_related_media as $va_id => $va_related_media_id) {
+				$t_rel_media = new ca_objects($va_related_media_id);
+				print "<div class='col-sm-3'>";
+				print "<div class='relatedArtwork'>";
+				if ($t_rel_media->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values))) {
+					$vs_media_image = caDetailLink($this->request, $t_rel_media->get('ca_object_representations.media.widepreview', array('checkAccess' => $va_access_values)), '', 'ca_objects', $t_rel_media->get('ca_objects.object_id'));
+				} else {
+					$vs_media_image = null;
+				}					
+				print "<div class='relImg'>".caDetailLink($this->request, ($vs_media_image ? $vs_media_image : "<div class='bSimplePlaceholder'>".caGetThemeGraphic($this->request, 'spacer.png')."</div>"), '', 'ca_objects', $t_rel_media->get('ca_objects.object_id'))."</div>";
+				print "<p>".$t_rel_media->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('artist'), 'checkAccess' => $va_access_values, 'delimiter' => ', '))."</p>";
+				print "<p>".caDetailLink($this->request, $t_rel_media->get('ca_objects.preferred_labels'), '', 'ca_objects', $t_rel_media->get('ca_objects.object_id'));
+				print "</p></div>";
+				print "</div><!-- end col -->";
+				$vs_media_count++;
+				if ($vs_media_count == 4) {
+					break;
+				}
+			}
+			if ($vs_media_count == 4) {
+				print "<div class='viewAll'>".caNavLink($this->request, "View all <i class='fa fa-angle-right'></i>", '', '', 'Browse', 'install', array('facet' => 'media_facet', 'id' => $vn_item_id))."</div>";
+			}			
+			print "</div><!-- end row -->";			
+		}
+		
 		
 		#Related Catalogue
 /*		if ($va_related_catalogue = $t_item->get('ca_objects.related.object_id', array('returnAsArray' => true, 'checkAccess' => $va_access_values, 'restrictToRelationshipTypes' => array('catalogue'), 'sort' => 'ca_object_labels.name'))) {

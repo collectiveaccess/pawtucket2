@@ -112,6 +112,7 @@
 						}
 					}
 					$vs_info = null;
+					$vs_collection = "";
 					$vs_author = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '));
 					if($vs_author){
 						$vs_author = "<b>".$vs_author."</b><br/>";
@@ -124,7 +125,10 @@
 					if ($va_pub_info = $qr_res->get('ca_objects.publication_description')) {
 				
 					} else {$va_pub_info = null; }
-					$vs_info = "<p>".$va_date."<br/>".$va_pub_info."</p>";
+					if($vs_collection = $qr_res->getWithTemplate('<unit relativeTo="ca_collections"><ifdef code="ca_collections.parent.preferred_labels.name">^ca_collections.parent.preferred_labels.name: </ifdef>^ca_collections.preferred_labels.name</unit>')){
+						$vs_collection = "<br/><small>".$vs_collection."</small>";
+					}
+					$vs_info = "<p>".$va_date."<br/>".$va_pub_info.$vs_collection."</p>";
 
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 				} else {

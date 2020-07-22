@@ -1,3 +1,5 @@
+/*@import url('https://fonts.googleapis.com/css2?family=Pinyon+Script&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=Quintessential&display=swap');
 a:-webkit-any-link {
     color: -webkit-link;
     text-decoration: underline;
@@ -10,6 +12,9 @@ body {
 	font-family: 'Oxygen', sans-serif;
     color: #222222;
     font-size: 14px;
+}
+.timesNR{
+	font-family: "Times new Roman";
 }
 b {
 	font-family: 'Oxygen', sans-serif;
@@ -31,6 +36,9 @@ h4 {
 	font-size:22px;
 	color: #7f4539;
 }
+h4 a{
+	color: #7f4539 !important;
+}
 h6 {
 	font-size:14px;
 	font-weight:bold;
@@ -41,12 +49,14 @@ a {
 a:hover{
 	color:#000;
 }
-
+.form-control:focus {
+    border-color: #000;
+}
 #head .main_menu {
 	border-left:0px solid #fff;
 	height:69px;
 	width: calc(85% - 95px);
-	z-index:1000;
+	z-index:3000;
 }
 #head .logo_container {
 	width: 95px;
@@ -84,6 +94,9 @@ a:hover{
 	font-family: 'Lusitana', serif;
 	font-size:16px;
 }
+.navbar-default{
+	z-index:2000;
+}
 .navbar .formOutline {
 	border:0px;
 	background-color:#fff;
@@ -105,8 +118,12 @@ a:hover{
 	width:80px;
 }
 #head .main_menu ul#menu-main-menu li.aboutMenu ul {
-	right:20px;
 	width:360px;
+}
+@media (max-width: 1500px) {
+	#head .main_menu ul#menu-main-menu li.aboutMenu ul {
+		right:20px;
+	}
 }
 .navTitle li, ul.navTitle{
 	list-style-type:none;
@@ -303,6 +320,11 @@ div.browseFacetItem:hover {
 }
 .multisearch .multisearchResult .title a {
 	color: #7f4539;
+}
+.multisearch .multisearchResult .small{
+	color:#ababab;
+	line-height: 1.3em;
+	font-size: 85%;
 }
 
 
@@ -538,8 +560,20 @@ a.facetApply, button.facetApplySlider {
 .institutionMore {
 	display:none;
 }
+.institutionUnit{
+	padding-left:10px;
+}
 .institutionUnit a.institutionLink {
-	text-decoration:underline;
+	text-decoration:none;
+	font-size:15px;
+	font-weight:bold;
+	padding-left:11px;
+    text-indent:-11px;
+    display:inline-block;
+}
+.institutionList hr{
+	margin-top:15px;
+	margin-bottom:15px;
 }
 
 /* Advanced Search */
@@ -604,6 +638,22 @@ a.facetApply, button.facetApplySlider {
 .detail .unit {
 	margin-bottom:12px;
 }
+.detail .detailPlaceholder{
+	background-color: #FDfDfD;
+	border: 2px solid #F7F7F7;
+	color: #d2d2d2;
+	margin-bottom: 10px;
+	padding: 60px 5px 40px 5px;
+	text-align: center;
+	width: 100%;
+}
+.detail .detailPlaceholder .placeholderMessage{
+	font-size:12px;
+	font-style:italic;
+	padding:50px 0px 0px 0px;
+	color:#999;
+	line-height:1.2em;
+}
 div.caMediaOverlayControls, div.caMediaOverlayControls .objectInfo {
 	font-size:14px;
 }
@@ -641,7 +691,7 @@ div.caMediaOverlayControls {
 .listLink {
 	font-family: 'Oxygen', sans-serif;
     font-size: 14px;
-    line-height: 26px;
+    line-height: 27px;
     -webkit-margin-before: 1em;
     -webkit-margin-after: 1em;
 }
@@ -652,10 +702,75 @@ div.caMediaOverlayControls {
     padding-top: 170px!important;
     margin-top: -170px !important;
 }
+#bibHeading{
+	top: 120px;
+	padding-left: 100px;
+	padding-right: 185px;
+	background-color:#FFF;
+}
+.callout{
+	font-family: 'Quintessential', cursive;
+	font-size:26px;
+	line-height:1.2em;
+	color: #7f4539;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+#bibBody{
+	margin-top:50px;
+	border-top:2px solid #DEDEDE;
+	padding-top:40px;
+}
+#bibBodyIntro{
+	font-weight:bold;
+	font-size:16px;
+}
+#bibBodyIntro div{
+	margin-bottom:25px;
+	line-height:1.3em;
+	font-weight: bold;
+	font-size: 20px;
+	color: #7f4539;
+	font-family: 'Lusitana', serif;
+}
+#bibBodyIntro ul{
+	font-weight:normal;
+}
+@media (min-width: 500px) {
+	#bibBodyIntro ul{
+		padding-left:150px;
+		padding-right:150px;
+	}
+}
+@media (min-width: 1400px) {
+	#bibBodyIntro ul{
+		padding-left:265px;
+		padding-right:265px;
+	}
+}
+#bibBodyIntro li{
+	padding-bottom:5px;
+	padding-top:10px;
+	font-size:14px;
+}
+.listNoBullet li{
+	list-style-type:none;
+	text-indent: -15px;
+	margin-left: 15px
+}
+.listEntryIndentSecondLine{
+	text-indent: -30px;
+	margin-left: 30px
+}
+#filterByNameContainer{
+	float:right;
+	margin-top:25px;
+}
 #toc_container {
     float: left;
     border-left: 1px solid #e7e7e7;
     margin: 30px 20px 20px 0;
+    z-index: 1000;
 }
 #toc_container ul {
     color: #666666;
@@ -746,6 +861,23 @@ div.caMediaOverlayControls {
 		width: 100%;
 		position: absolute;	
 	}
+	#bibHeading{
+		top: 50px;
+		padding:0px 15px 0px 15px;
+	}
+	#bibBody{
+		margin-top:100px;
+	}
+	#filterByNameContainer{
+		float:none;
+		padding:0px;
+	}
+	#filterByNameContainer input{
+		margin-bottom:0px;
+	}
+	#filterByNameContainer input{
+		width:150px;
+	}
 	#content #toc_container {
 		margin: 0 !important;
 		padding: 0px 15px 0px 15px !important;
@@ -759,6 +891,7 @@ div.caMediaOverlayControls {
 		top:0px;
 		left:0px;
 		height:55px;
+		z-index:1;
 	}
 	#content #toc_container #toc_content {
 		padding: 0;

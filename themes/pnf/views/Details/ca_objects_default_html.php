@@ -44,8 +44,14 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container"><div class="row">
 			<div class='col-sm-6 col-md-6 col-lg-6'>
-				{{{representationViewer}}}
-				
+<?php
+				$vs_representationViewer = trim($this->getVar("representationViewer"));
+				if($vs_representationViewer){
+					print $vs_representationViewer;
+				}else{
+					print "<div class='detailPlaceholder'><i class='fa fa-book fa-5x'></i><div class='placeholderMessage'>Image missing.  We would appreciate if<br/>someone on campus could take a photo<br/>of first and last page and send it to us.</div></div>";
+				}
+?>				
 				
 				<div id="detailAnnotations"></div>
 				
@@ -57,9 +63,17 @@
 ?>				
 				<div class='requestButton'><a href='mailto:contact@comediassueltasusa.com?Subject=Contribution%20to%20the%20Comedias%20Sueltas%20Project&body=Hi,%0A%0AI%20have%20more%20information%20about%20<?php print $va_book_title; ?>%0A%0AThank%20you%0A%0A%0A'>Have more information or a correction for this record? Contact a researcher by clicking here.</a></div>
 <?php
+				if ($vs_object_id = $t_object->get('ca_objects.object_id')) {
+					print "<div class='unit'><h6>Comedias Sueltas Database ID#</h6>".$vs_object_id."</div>";
+				}
 				if ($vs_url = $t_object->get('ca_objects.856_electronic')) {
 					print "<div class='unit'><h6>Electronic Access</h6><a href='".$vs_url."' target='_blank'>".$vs_url."</a></div>";
-				}	
+				}
+
+				if ($va_institutions = $t_object->getWithTemplate('<ifcount min="1" code="ca_collections.preferred_labels" relativeTo="ca_collections"><unit delimiter="<br/>" relativeTo="ca_collections"><a href="^ca_collections.collection_website" target="_blank">^ca_collections.preferred_labels</a></unit>')) {
+					print "<H6>Locate This Copy</H6>".$va_institutions;
+				}							
+	
 				if ($vs_inst_access = $t_object->get('ca_objects.856_url')) {
 					print "<div class='unit'><h6>Permanent link to institution record</h6><a href='".$vs_inst_access."' target='_blank'>".$vs_inst_access."</a></div>";
 				}
@@ -78,13 +92,26 @@
 ?>
 				<HR>
 <?php
-				if ($vs_institution = $t_object->get('ca_objects.institution', array('convertCodesToDisplayText' => true))) {
-					print "<div class='unit'><h6>Holding Institution</h6>".$vs_institution."</div>";
+				#$vs_institution = $t_object->get('ca_objects.institution', array('convertCodesToDisplayText' => true));
+				#$vs_collection = $t_object->getWithTemplate('<unit relativeTo="ca_collections">^ca_collections.preferred_labels.name</unit>');
+				#$vs_collection_link = $t_object->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels.name</l></unit>');
+				#if($vs_collection || $vs_institution){
+				#	print "<div class='unit'><h6>Holding Institution</h6>".$vs_collection_link;
+				#	if(($vs_collection != $vs_institution) && (strpos($vs_collection, $vs_institution) === false)){
+				#		if($vs_institution){
+				#			print (($vs_collection_link) ? "<br/>" : "").$vs_institution;
+				#		}
+				#	}
+				#	print "</div>";
+				#}
+				$vs_collection_link = $t_object->getWithTemplate('<unit relativeTo="ca_collections"><l><ifdef code="ca_collections.parent.preferred_labels.name">^ca_collections.parent.preferred_labels.name: </ifdef>^ca_collections.preferred_labels.name</l></unit>');
+				if($vs_collection_link){
+					print "<div class='unit'><h6>Holding Institution</h6>".$vs_collection_link."</div>";
 				}
 				if ($vs_call_no = $t_object->get('ca_objects.idno', array("delimiter" => ", "))) {
 					print "<div class='unit'><h6>Call Number</h6>".$vs_call_no."</div>";
 				}
-				if ($vs_author = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
+				if ($vs_author = $t_object->getWithTemplate("<unit relativeTo='ca_entities' restrictToRelationshipTypes='author'><ifdef code='ca_entities.variant_names.display_name'><span class='authorPopover' data-toggle='popover' data-trigger='hover' data-content='^ca_entities.variant_names.display_name%delimiter=;_'><l>^ca_entities.preferred_labels</l></span></ifdef><ifnotdef code='ca_entities.variant_names.display_name'><l>^ca_entities.preferred_labels</l></ifdef></unit>")) {
 					print "<div class='unit'><h6>Author</h6>".$vs_author."</div>";
 				}
 				if ($va_attribution = $t_object->get('ca_objects.attribution_issues', array('convertCodesToDisplayText' => true)) == "Yes") {
@@ -132,9 +159,11 @@
 				}
 				if ($vs_lang_or = $t_object->get('ca_objects.041_h', array("delimiter" => ", "))) {
 					print "<div class='unit'><h6>Language(s) of original</h6>".$vs_lang_or."</div>";
-				}													
-				if (($vs_pagination = $t_object->get('ca_objects.pagination', array("delimiter" => ", "))) | ($vs_format = $t_object->get('ca_objects.format', array("delimiter" => ", "))) | ($vs_ornaments = $t_object->get('ca_objects.ornaments', array("delimiter" => ", ")))) {
-					print "<div class='unit'><h6>Physical Description</h6>".$vs_pagination." ".$vs_ornaments." ".$vs_format."</div>";
+				}	
+				$vs_pagination = $t_object->get('ca_objects.pagination', array("delimiter" => ", "));
+				$vs_format = $t_object->get('ca_objects.format', array("delimiter" => ", "));										
+				if ($vs_pagination || $vs_format || $vs_ornaments) {
+					print "<div class='unit'><h6>Physical Description</h6>".$vs_pagination." ".$vs_format."</div>";
 				}
 				if ($vs_ornaments = $t_object->get('ca_objects.ornaments', array("delimiter" => "<br/>"))) {
 					print "<div class='unit'><h6>Illustration Ornaments</h6>".$vs_ornaments."</div>";
@@ -190,38 +219,33 @@
 				if ($vs_ownership = $t_object->get('ca_objects.700_ownership', array("delimiter" => "<br/>"))) {
 					print "<div class='unit'><h6>Ownership</h6>".$vs_ownership."</div>";
 				}
-				if ($vs_added_author = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author', 'contributer', 'editor', 'illustrator', 'translator'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Added Authors or Translators</h6>".$vs_added_author."</div>";
+				#if ($vs_added_author = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('added_author', 'contributor', 'editor', 'illustrator', 'translator'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
+				#	print "<div class='unit'><h6>Added Authors or Translators</h6>".$vs_added_author."</div>";
+				#}
+				#if ($vs_added_printer = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('printer'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
+				#	print "<div class='unit'><h6>Added Entry Printer</h6>".$vs_added_printer."</div>";
+				#}
+				#if ($vs_added_publisher = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('publisher'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
+				#	print "<div class='unit'><h6>Added Entry Publisher</h6>".$vs_added_publisher."</div>";
+				#}
+				#if ($vs_added_bookseller = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('bookseller'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
+				#	print "<div class='unit'><h6>Added Entry Bookseller</h6>".$vs_added_bookseller."</div>";
+				#}	
+					
+				if ($vs_added_entries = $t_object->getWithTemplate("<unit relativeTo='ca_entities' excludeRelationshipTypes='author' delimiter='<br/>'><ifdef code='ca_entities.variant_names.display_name'><span class='authorPopover' data-toggle='popover' data-trigger='hover' data-content='^ca_entities.variant_names.display_name%delimiter=;_'><l>^ca_entities.preferred_labels</l>  (^relationship_typename)</span></ifdef><ifnotdef code='ca_entities.variant_names.display_name'><l>^ca_entities.preferred_labels</l>  (^relationship_typename)</ifdef></unit>")) {
+					print "<div class='unit'><h6>Added Entries</h6>".$vs_added_entries."</div>";
 				}
-				if ($vs_added_printer = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('printer'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Added Entry Printer</h6>".$vs_added_printer."</div>";
-				}
-				if ($vs_added_publisher = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('publisher'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Added Entry Publisher</h6>".$vs_added_publisher."</div>";
-				}
-				if ($vs_added_bookseller = $t_object->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('bookseller'), 'returnAsLink' => true, 'delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Added Entry Bookseller</h6>".$vs_added_bookseller."</div>";
-				}																																																																																																																																				
+																																																																																																																																								
 ?>
 
 				
 				<hr></hr>
 					<div class="row">
 						<div class="col-sm-12">		
-							{{{<ifcount code="ca_entities" min="1" max="1"><H6>Related person</H6></ifcount>}}}
-							{{{<ifcount code="ca_entities" min="2"><H6>Related people</H6></ifcount>}}}
-							{{{<unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit>}}}
-							
-							
 							{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
 							{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels.name</l></unit>}}}
 			
-<?php
-							if ($va_institutions = $t_object->getWithTemplate('<ifcount min="1" code="ca_collections.preferred_labels" relativeTo="ca_collections"><unit delimiter="<br/>" relativeTo="ca_collections"><a href="^ca_collections.collection_website" target="_blank">^ca_collections.preferred_labels</a></unit>')) {
-								print "<H6>Locate This Copy</H6>".$va_institutions;
-							}
-?>							
 							{{{<ifcount code="ca_list_items" min="1" max="1"><H6>Related Term</H6></ifcount>}}}
 							{{{<ifcount code="ca_list_items" min="2"><H6>Related Terms</H6></ifcount>}}}
 							{{{<unit relativeTo="ca_list_items" delimiter="<br/>">^ca_list_items.preferred_labels.name_plural</unit>}}}
@@ -247,4 +271,8 @@
 		  maxHeight: 120
 		});
 	});
+	jQuery(document).ready(function() {
+		$('.authorPopover').popover(); 
+	});
+	
 </script>

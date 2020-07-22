@@ -13,7 +13,8 @@
 	$va_sets = $this->getVar("sets");
 	if(is_array($va_sets) && sizeof($va_sets)){
 		$i = 0;
-		foreach($va_sets as $vn_set_id => $va_set){
+		foreach($va_sets as $va_set){
+			$vn_set_id = $va_set["set_id"];
 			if($vn_featured_set_id == $vn_set_id){
 				continue;
 			}
@@ -21,8 +22,8 @@
 				print "<div class='row'>";
 			}
 			print "<div class='col-sm-4'><div class='featuredItem'>";
-			print caNavLink($this->request, $va_set["media"], "", "", "Featured", "Detail", array("set_id" => $vn_set_id));
-			print "<div class='featuredItemTitle'>".caNavLink($this->request, $va_set["title"], "", "", "Featured", "Detail", array("set_id" => $vn_set_id))."</div>";
+			print caNavLink($this->request, $va_set["media"], "", "", "Featured", "Detail", array("set_id" => $vn_set_id, "setMode" => "exhibitions"));
+			print "<div class='featuredItemTitle'>".caNavLink($this->request, $va_set["title"], "", "", "Featured", "Detail", array("set_id" => $vn_set_id, "setMode" => "exhibitions"))."</div>";
 			if($vs_desc = $va_set["description"]){
 				print "<div>".((mb_strlen($vs_desc) > 160) ? substr(strip_tags($vs_desc), 0, 160)."..." : $vs_desc)."</div>";
 			}

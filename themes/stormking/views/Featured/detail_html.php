@@ -5,10 +5,12 @@
 	$ps_label = $this->getVar("label");
 	$ps_description = $this->getVar("description");
 	$pn_set_item_id = $this->getVar("set_item_id");
+	
+	$vs_type = strToLower($t_set->get("ca_sets.type_id", array("convertCodesToDisplayText" => true)));
 ?>
 	<div class="row">
 		<div class="col-sm-12">
-			<H1><?php print $this->getVar("section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
+			<H1><?php print ($vs_type == "public presentation") ? $this->getVar("section_name") : $this->getVar("archives_section_name"); ?>: <?php print $this->getVar("label")."</H1>"; ?>
 		</div>
 	</div>
 	<div class="row">

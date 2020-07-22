@@ -7,15 +7,28 @@
 <div class="row contentbody_sub aboutPages">
 	<div class="col-sm-8">
 		<h1><?php print _t("Contact"); ?></h1>
+		
+		
+		
 		<p>
-			The gallery is located at 46 West 90th Street, 2nd floor, New York, NY 10024, between Central Park West and Columbus Avenue.
+			<b>NEW YORK CITY</b><br/>
+			46 West 90th Street, 2nd floor, New York, NY 10024, between Central Park West and Columbus Avenue.
 		</p>
 		<p>
-			Gallery Hours: Monday-Thursday, 11am-5pm and by appointment.
+			<b>Gallery Hours:</b> Due to the COVID-19 pandemic, the NYC gallery is open by appointment only, until further notice. In the meantime, please visit us at our Pop Up location in Hudson, NY.
+		</p>
+		<br/>
+		<p>
+			<b>HUDSON, NY</b><br/>
+			433 Warren Street, Hudson, NY 12534<br/>
+			<b>Gallery Hours:</b> Thursday-Monday, 11AM-5PM, and by appointment.
 		</p>
 		<p>
-			For inquiries or to set up an appointment, please call 917.952.7641 or email: <a href="mailto:susie@susaneleyfineart.com">susie@susaneleyfineart.com</a>. 
+			For inquiries or to set up an appointment, please call 917.952.7641 or email: <a href="mailto:susie@susaneleyfineart.com">susie@susaneleyfineart.com</a>.
 		</p>
+
+		
+		
 		<br/><br/>
 <?php
 	if(is_array($va_errors) && is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){

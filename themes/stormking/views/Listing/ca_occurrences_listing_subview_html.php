@@ -51,7 +51,7 @@
 				$va_raw_dates = array_pop($va_raw_dates[$qr_list->get("ca_occurrences.occurrence_id")]);
 				$va_ids[] = $qr_list->get("ca_occurrences.occurrence_id");
 				if($qr_list->get("view_status", array("convertCodesToDisplayText" => true)) == "on view"){
-					$va_current[] = array("id" => $qr_list->get("ca_occurrences.occurrence_id"), "title_link" => $qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>'), "date" => $qr_list->get("ca_occurrences.exhibition_dates"), "short_desc" => $qr_list->get("ca_occurrences.short_description"));
+					$va_current[$qr_list->get("ca_occurrences.exhibitionRank").".".$qr_list->get("ca_occurrences.occurrence_id")] = array("id" => $qr_list->get("ca_occurrences.occurrence_id"), "title_link" => $qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>'), "date" => $qr_list->get("ca_occurrences.exhibition_dates"), "short_desc" => $qr_list->get("ca_occurrences.short_description"));
 				}else{
 					#if($va_raw_dates["exhibition_dates"][0] > $vs_current_date){
 						$va_past[] = array("id" => $qr_list->get("ca_occurrences.occurrence_id"), "title_link" => $qr_list->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>'), "date" => $qr_list->get("ca_occurrences.exhibition_dates"));
@@ -70,6 +70,7 @@
 	<div class="container browse exhibitions">
 <?php
 	if(is_array($va_current) && sizeof($va_current)){
+		ksort($va_current);
 ?>
 		<div class="row">
 			<div class="col-sm-12">
