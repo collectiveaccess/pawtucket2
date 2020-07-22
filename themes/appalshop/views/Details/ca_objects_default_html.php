@@ -101,6 +101,11 @@
 				{{{<unit relativeTo="ca_objects.date.dates_value" delimiter="<br/>">^ca_objects.date.dc_dates_types <if rule="^ca_objects.date.date_approximate2 =~ /Yes/">circa </if>^ca_objects.date.dates_value</unit>}}}
 
 				{{{<ifdef code="ca_objects.av_date.av_dates_value"><h6>Date</h6>^ca_objects.av_date.av_dates_value<br/></ifdeg>}}}
+				{{{<ifdef code="ca_objects.description_w_type">
+					<div class='unit'><h6>Description</h6>
+						<span class="trimText">^ca_objects.description_w_type.description</span>
+					</div>
+				</ifdef>}}}
 	            {{{<ifcount restrictToRelationshipTypes="artist,co_producer,composer,director,illustrator,performer,photographer,producer,writer" code="ca_entities" min="1" max="1"><H6>Creator</H6></ifcount>}}}
 				{{{<ifcount restrictToRelationshipTypes="artist,co_producer,composer,director,illustrator,performer,photographer,producer,writer" code="ca_entities" min="2"><H6>Creators</H6></ifcount>}}}
 				<span class="trimText">{{{<unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="artist,co_producer,composer,director,illustrator,performer,photographer,producer,writer">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}</span>
@@ -119,11 +124,6 @@
 				{{{<ifdef code="ca_objects.georeference"><H6>Georeference</H6>^ca_objects.georeference<br/></ifdef>}}}	
 				{{{<ifdef code="ca_objects.color"><H6>Color</H6>^ca_objects.color<br/></ifdef>}}}	
 				{{{<ifdef code="ca_objects.av_sound"><h6>Sound</h6>^ca_objects.av_sound<br/></ifdef>}}}				
-				{{{<ifdef code="ca_objects.description_w_type">
-					<div class='unit'><h6>Description</h6>
-						<span class="trimText">^ca_objects.description_w_type.description</span>
-					</div>
-				</ifdef>}}}
 <?php
 				$va_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true));
 				if(is_array($va_list_items) && sizeof($va_list_items)){

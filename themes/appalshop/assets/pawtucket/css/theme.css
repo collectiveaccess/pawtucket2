@@ -298,7 +298,7 @@ font-size: 12pt;
 @media (min-width:1200px){
 	.front .frontSlide h2{
 		font-size:36px;
-		margin-bottom:4;
+		padding-top: 40px;
 	}
 }
 .front .frontSlide p{
@@ -386,6 +386,7 @@ font-size: 12pt;
   font-family: 'LatoLight', sans-serif;
   font-weight: 200;
   font-size: 14pt;
+  text-transform: none;
 }
 .front .nav-pills > li > a:hover {
   text-transform: none;
