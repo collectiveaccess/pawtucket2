@@ -36,23 +36,14 @@
 		<br/></div><!--end col-sm-8-->
     </div>
 <?php
-		#print $this->render("Front/featured_set_slideshow_html.php");
-		
-		print $this->render("Front/featured_set_slideshow_2col_html.php");
+		print $this->render("Front/gallery_sets_slideshow_2col_html.php");
 ?>
 
 	<div class="row">	
 		<div class="col-lg-12">
 <?php
-	 	print $this->render("Front/gallery_slideshow_html.php");
+	 	print $this->render("Front/front_bottom_html.php");
 ?>
 		</div> <!--end col-sm-4 -->	
-	</div><!-- end row -->
-	<div class="row">	
-		<div class="col-lg-12">
-<?php
-	#	print $this->render("Front/spotlight_set_slideshow_html.php");
-?>
-		</div> <!--end col-sm-12 -->	
 	</div><!-- end row -->
 	

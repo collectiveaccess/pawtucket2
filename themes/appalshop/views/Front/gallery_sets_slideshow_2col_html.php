@@ -30,17 +30,25 @@
  * ----------------------------------------------------------------------
  */
 
-# --- this makes a slideshow of collections by loading a set configured in front.conf
+# --- this makes a slideshow of gallery sets by the set type configured in gallery.conf
 	
 	$va_access_values = $this->getVar("access_values");
-	$va_featured_set_item_ids = $this->getVar("featured_set_item_ids");
-	$qr_res = caMakeSearchResult('ca_collections', $va_featured_set_item_ids);
-	$o_config = $this->getVar("config");
-	$vs_caption_template = $o_config->get("front_page_set_item_caption_template");
-	if(!$vs_caption_template){
-		$vs_caption_template = "<l>^ca_objects.preferred_labels.name</l>";
+	$o_front_config = caGetFrontConfig();
+	$o_gallery_config = caGetGalleryConfig();
+	
+	# --- which type of set is configured for display in gallery section
+ 	$t_list = new ca_lists();
+ 	$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_gallery_config->get('gallery_set_type')); 			
+ 	$t_set = new ca_sets();
+	$va_sets = array();
+	if($vn_gallery_set_type_id){
+		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id, 'table' => "ca_objects");
+		$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
+		$va_set_first_items_large = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "large", "checkAccess" => $va_access_values));
+		$va_set_first_items_iconlarge = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
 	}
-	if($qr_res && $qr_res->numHits()){
+
+	if(is_array($va_sets) && sizeof($va_sets)){
 ?>   
 		<div class="row">
 			<div class="col-sm-12 bgLightBlue colNoPadding">
@@ -50,12 +58,16 @@
 						<ul id="hpSlides">
 <?php
 							$va_thumbnails = array();
-							while($qr_res->nextHit()){
-								if($vs_media = $qr_res->getWithTemplate('<ifcount code="ca_objects" restrictToRelationshipTypes="featured" min="1"><l><unit relativeTo="ca_objects" restrictToRelationshipTypes="featured" length="1">^ca_object_representations.media.large</unit></l></ifcount>', array("checkAccess" => $va_access_values))){
-									$va_thumbnails[$qr_res->get("ca_collections.collection_id")] = $qr_res->getWithTemplate('<unit relativeTo="ca_objects" restrictToRelationshipTypes="featured" length="1">^ca_object_representations.media.iconlarge</unit>', array("checkAccess" => $va_access_values));
+							foreach($va_sets as $vn_set_id => $va_set){
+								#$t_set = new ca_sets($vn_set_id);
+								#$vs_desc = $t_set->get($o_gallery_config->get('gallery_set_description_element_code'));
+								$va_first_item_large = array_shift($va_set_first_items_large[$vn_set_id]);
+								$va_first_item_iconlarge = array_shift($va_set_first_items_iconlarge[$vn_set_id]);
+								if($vs_media = $va_first_item_large["representation_tag"]){
+									$va_thumbnails[$vn_set_id] = $va_first_item_iconlarge["representation_tag"];
 ?>							
 									
-									<li id="slide<?php print $qr_res->get("ca_collections.collection_id"); ?>" class="<?php print $qr_res->get("ca_collections.collection_id"); ?>">
+									<li id="slide<?php print $vn_set_id; ?>" class="<?php print $vn_set_id; ?>">
 										<div class='frontSlide'>
 											<div class="row">
 												<div class="col-xs-12 col-sm-6 col-md-offset-1 col-md-6">
@@ -64,13 +76,13 @@
 												<div class="col-xs-12 col-sm-4 col-md-4">
 													<div class="slideTextRight">
 														<h2>
-															<?php print $qr_res->getWithTemplate("<l>^ca_collections.preferred_labels.name</l>"); ?>
+															<?php print caNavLink($this->request, $va_set["name"], "", "", "Gallery", $vn_set_id); ?>
 														</h2>
 														<p>
-															<?php print $qr_res->getWithTemplate($vs_caption_template); ?> 
+															<?php #print $vs_desc; ?> 
 														</p>
 														<p class="text-center">
-															<?php print caDetailLink($this->request, _t("View Collection"), 'btn-default', 'ca_collections', $qr_res->get("ca_collections.collection_id")); ?>
+															<?php print caNavLink($this->request, _t("View Project"), 'btn-default', '', 'Gallery', $vn_set_id); ?>
 														</p>
 													</div>
 													<div class="col-md-1 col-lg-1"></div>
