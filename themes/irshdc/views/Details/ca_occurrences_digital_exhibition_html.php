@@ -237,7 +237,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 ?>
 										<div class="row digExhUnit">
 											<div class="col-sm-12 col-md-6 vcenter">
-												<div class='quote stoneBg'><?php print $vs_quote; ?></div>
+												<div class='quote'><?php print $vs_quote; ?></div>
 											</div><!-- can't have space between col divs with vcenter class --><div class="col-sm-12 col-md-6 vcenter imgCol">
 												<?php print $vs_featured_image; ?>
 											</div>
@@ -259,7 +259,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 											<div class="col-sm-12 col-md-6 vcenter">
 												<?php print $vs_main_text; ?>
 											</div><!-- can't have space between col divs with vcenter class --><div class="col-sm-12 col-md-6 vcenter">
-												<div class='quote stoneBg'><?php print $vs_quote; ?></div>
+												<div class='quote'><?php print $vs_quote; ?></div>
 											</div>
 										</div>
 <?php										
@@ -267,7 +267,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 ?>
 										<div class="row digExhUnit">
 											<div class="col-sm-12 col-md-6 vcenter">
-												<div class='quote stoneBg'><?php print $vs_quote; ?></div>
+												<div class='quote'><?php print $vs_quote; ?></div>
 											</div><!-- can't have space between col divs with vcenter class --><div class="col-sm-12 col-md-6 imgCol vcenter">
 												<?php print $vs_featured_image; ?>
 											</div>
@@ -287,7 +287,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 										print "<div class='digExhUnit text-center'>".$vs_featured_image."</div>";
 									}
 									if($vs_quote){
-										print "<div class='quoteMargin stoneBg'>".$vs_quote."</div>";
+										print "<div class='quoteMargin'>".$vs_quote."</div>";
 									}
 								}
 								# --- set at bottom - needs to be full width
@@ -571,6 +571,9 @@ $vs_mode = $this->request->getParameter("mode", pString);
 						<div class="digExhContentBlock digExhRelated">
 							<a name="related" class="digExhAnchors"></a>
 							<h2>Related Resources</h2>
+							{{{<ifdef code="ca_occurrences.relatedResourcesIntro">
+								<div class="relatedBlock">^ca_occurrences.relatedResourcesIntro</div>
+							</ifdef>}}}
 							{{{<ifcount code="ca_entities.related" restrictToTypes="school" min="1">
 								<div class="relatedBlock digExhLinks">
 									<H3>Related School<ifcount code="ca_entities.related" restrictToTypes="school" min="2">s</ifcount></H3>

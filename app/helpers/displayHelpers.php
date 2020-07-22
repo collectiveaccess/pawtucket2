@@ -3969,7 +3969,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
                     throw new ApplicationException(_t('Cannot view media'));
                 }
 				if (!($vs_viewer_name = MediaViewerManager::getViewerForMimetype($ps_display_type, $vs_mimetype = $t_instance->getMediaInfo('value_blob', 'original', 'MIMETYPE')))) {
-					throw new ApplicationException(_t('Invalid viewer'));
+					throw new ApplicationException(_t('Invalid viewer: %1/%2', $ps_display_type, $vs_mimetype));
 				}
 
 				$vs_viewer = $vs_viewer_name::getViewerHTML(
@@ -3981,7 +3981,7 @@ require_once(__CA_LIB_DIR__.'/Media/MediaInfoCoder.php');
 				
 				if ($pb_inline) {
 					$vs_tool_bar = caRepToolbar($po_request, $t_instance, $pt_subject, array('display' => $ps_display_type, 'context' => $ps_context, 'checkAccess' => $pa_check_acccess));
-					$vs_viewer = "<div data-representation_id='{$pn_representation_id}' data-value_id='{$pn_value_id}' class='repViewerContCont'><div id='cont{$pn_representation_id}' class='repViewerCont'>{$vs_viewer}{$vs_tool_bar}{$vs_caption}{$vs_tool_bar}</div></div>";
+					$vs_viewer = "<div data-representation_id='{$pn_representation_id}' data-value_id='{$pn_value_id}' class='repViewerContCont'><div id='cont{$pn_representation_id}' class='repViewerCont'>{$vs_viewer}{$vs_tool_bar}{$vs_caption}</div></div>";
 				}
 				
 				return $vs_viewer;

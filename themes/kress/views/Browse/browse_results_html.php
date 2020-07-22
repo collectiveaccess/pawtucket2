@@ -51,7 +51,7 @@
 	
 	$vb_is_search		= ($this->request->getController() == 'Search');
 
-	$vn_result_size 	= (sizeof($va_criteria) > 0) ? $qr_res->numHits() : $this->getVar('totalRecordsAvailable');
+	$vn_result_size 	= $qr_res->numHits();
 	
 	
 	$va_options			= $this->getVar('options');
@@ -67,14 +67,58 @@
 	$va_all_facets = $va_browse_type_info["facets"];	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
-if (!$vb_ajax) {	// !ajax
+	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
+	if ($vb_show_filter_panel && $vn_start == 0) {
+		$o_context = new ResultContext($this->request, $vs_table, 'detailrelated');
+		
+		$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+		$qr_res->seek($vn_start);
+		$o_context->saveContext();
+	}
+	
+if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
-	<div class='<?php print ($vs_result_col_class) ? $vs_result_col_class : "col-sm-8 col-md-8 col-lg-8"; ?>'>
-<?php 
+	<div class="col-sm-4 col-md-3 col-lg-3" id="browseLeftCol">
+		<div <?php print ($vb_show_filter_panel) ? "class='catchLinks'" : ""; ?>>
+<?php
+		if($vn_result_size > 1){
+?>
+			<div class="bSearchWithinContainer">
+				<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+					<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine">
+					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+					<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
+				</form>
+				<div style="clear:both"></div>
+			</div>
+<?php
+		}
+?>
+		</div>
+		
+<?php
+		print $this->render("Browse/browse_refine_subview_html.php");
+?>			
+	</div><!-- end col-2 -->
+
+	<div class='col-sm-8 col-md-9 col-lg-9'>
+<?php
+			if(is_array($va_views) && (sizeof($va_views) > 1)){
+				print '<div id="bViewButtons"'.(($vb_show_filter_panel) ? ' class="catchLinks"' : '').'>';
+				foreach($va_views as $vs_view => $va_view_info) {
+					if ($vs_current_view === $vs_view) {
+						print '<a href="#" class="active"><span class="glyphicon"  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
+					} else {
+						print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+					}
+				}
+				print "</div>";
+			}
+			
 			if($vs_sort_control_type == 'list'){
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
-					print "<div id='bSortByList'><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
+					print "<div id='bSortByList'".(($vb_show_filter_panel) ? " class='catchLinks'" : "")."><ul><li><strong>"._t("Sort by:")."</strong></li>\n";
 					$i = 0;
 					foreach($va_sorts as $vs_sort => $vs_sort_flds) {
 						$i++;
@@ -94,7 +138,11 @@ if (!$vb_ajax) {	// !ajax
 ?>
 		<H1>
 <?php
-			print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+			if ($vb_show_filter_panel){
+				print _t('%1 %2 %3', $vn_result_size, " Related ", ($vn_result_size > 1) ? $va_browse_info["labelPlural"] : $va_browse_info["labelSingular"]);	
+			}else{
+				print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+			}
 ?>		
 			<div class="btn-group">
 				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
@@ -112,30 +160,32 @@ if (!$vb_ajax) {	// !ajax
 								if ($vs_current_sort === $vs_sort) {
 									print "<li role='menuitem'><a href='#'><em>{$vs_sort}</em></a></li>\n";
 								} else {
-									print "<li role='menuitem'>".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
+									print "<li role='menuitem' ".(($vb_show_filter_panel) ? " class='catchLinks'" : "").">".caNavLink($this->request, $vs_sort, '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'sort' => $vs_sort, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>\n";
 								}
 							}
 							print "<li class='divider' role='menuitem'></li>\n";
 							print "<li class='dropdown-header' role='menuitem'>"._t("Sort order:")."</li>\n";
-							print "<li role='menuitem'>".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
-							print "<li role='menuitem'>".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+							print "<li role='menuitem'".(($vb_show_filter_panel) ? " class='catchLinks'" : "").">".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+							print "<li role='menuitem'".(($vb_show_filter_panel) ? " class='catchLinks'" : "").">".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
 						}
 						
-						if ((sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) && is_array($va_sorts) && sizeof($va_sorts)) {
+						if (!$vb_show_filter_panel && ((sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) && is_array($va_sorts) && sizeof($va_sorts))) {
 ?>
 						<li class="divider" role='menuitem'></li>
 <?php
 						}
 					}
-					if (sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) {
-						print "<li role='menuitem'>".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
+					if (!$vb_show_filter_panel && (sizeof($va_criteria) > ($vb_is_search ? 1 : 0))) {
+						print "<li role='menuitem' ".(($vb_show_filter_panel) ? "class='catchLinks'" : "").">".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
 					}
 					if(is_array($va_export_formats) && sizeof($va_export_formats)){
 						// Export as PDF links
 						print "<li class='divider' role='menuitem'></li>\n";
 						print "<li class='dropdown-header' role='menuitem'>"._t("Download results as:")."</li>\n";
 						foreach($va_export_formats as $va_export_format){
-							print "<li class='".$va_export_format["code"]."' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+							if(!in_array($va_export_format["code"], array("_pdf_thumbnails"))){
+								print "<li class='".$va_export_format["code"]."' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+							}
 						}
 					}
 ?>
@@ -152,39 +202,9 @@ if (!$vb_ajax) {	// !ajax
 			}
 ?>
 		</H1>
-		<div class='bCriteria'>
 <?php
-		if (sizeof($va_criteria) > 0) {
-			$i = 0;
-			foreach($va_criteria as $va_criterion) {
-				print "<strong>".$va_criterion['facet'].':</strong>';
-				#if ($va_criterion['facet_name'] != '_search') {
-					print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$va_criterion['value'].' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_current_view, 'key' => $vs_browse_key));
-				#}else{
-				#	print ' '.$va_criterion['value'];
-				#	$vs_search = $va_criterion['value'];
-				#}
-				$i++;
-				if($i < sizeof($va_criteria)){
-					print " ";
-				}
-				$va_current_facet = $va_all_facets[$va_criterion['facet_name']];
-				if((sizeof($va_criteria) == 1) && !$vb_is_search && $va_current_facet["show_description_when_first_facet"] && ($va_current_facet["type"] == "authority")){
-					$t_authority_table = new $va_current_facet["table"];
-					$t_authority_table->load($va_criterion['id']);
-					$vs_facet_description = $t_authority_table->get($va_current_facet["show_description_when_first_facet"]);
-				}
-			}
-		}
-?>		
-		</div>
-<?php
-		if($vs_facet_description){
-			print "<div class='bFacetDescription'>".$vs_facet_description."</div>";
-		}
-
 		if($vb_showLetterBar){
-			print "<div id='bLetterBar'>";
+			print "<div id='bLetterBar".($vb_show_filter_panel) ? " catchLinks" : ""."'>";
 			foreach(array_keys($va_letter_bar) as $vs_l){
 				if(trim($vs_l)){
 					print caNavLink($this->request, $vs_l, ($vs_letter == $vs_l) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => $vs_l))." ";
@@ -198,22 +218,6 @@ if (!$vb_ajax) {	// !ajax
 		<div class="row">
 			<div id="browseResultsContainer">
 <?php
-		if($vb_is_search && !$vn_result_size && $vs_search){
-			# --- try to display did you mean results if available
-			$o_search = caGetSearchInstance($vs_table);
-			if (sizeof($va_suggestions = $o_search->suggest($vs_search, array('request' => $this->request)))) {
-				$va_suggest_links = array();
-				foreach($va_suggestions as $vs_suggestion){
-					$va_suggest_links[] = caNavLink($this->request, $vs_suggestion, '', '*', '*', '*', array('search' => $vs_suggestion, 'sort' => $vs_current_sort, 'view' => $vs_current_view));
-				}
-				
-				if (sizeof($va_suggest_links) > 1) {
-					print "<div class='col-sm-12'>"._t("Did you mean one of these: %1?", join(', ', $va_suggest_links))."</div>";
-				} else {
-					print "<div class='col-sm-12'>"._t("Did you mean %1?", join(', ', $va_suggest_links))."</div>";
-				}
-			}
-		}
 } // !ajax
 
 # --- check if this result page has been cached
@@ -227,41 +231,12 @@ if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_ke
 	print $vs_result_page;
 }		
 
-if (!$vb_ajax) {	// !ajax
+if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
 			</div><!-- end browseResultsContainer -->
 		</div><!-- end row -->
 		</form>
 	</div><!-- end col-8 -->
-	<div class="<?php print ($vs_refine_col_class) ? $vs_refine_col_class : "col-sm-4 col-md-3 col-md-offset-1 col-lg-3 col-lg-offset-1"; ?>">
-		<div id="bViewButtons">
-<?php
-		if(is_array($va_views) && (sizeof($va_views) > 1)){
-			foreach($va_views as $vs_view => $va_view_info) {
-				if ($vs_current_view === $vs_view) {
-					print '<a href="#" class="active"><span class="glyphicon"  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
-				} else {
-					print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
-				}
-			}
-		}
-?>
-			<div class="bSearchWithinContainer">
-				<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-					<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine">
-					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
-					<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
-				</form>
-				<div style="clear:both"></div>
-			</div>
-		</div>
-		
-<?php
-		print $this->render("Browse/browse_refine_subview_html.php");
-?>			
-	</div><!-- end col-2 -->
-	
-	
 </div><!-- end row -->
 
 <script type="text/javascript">
@@ -292,6 +267,24 @@ if (!$vb_ajax) {	// !ajax
 			e.preventDefault();
 			return false;
 		});
+<?php
+		}
+		if($vb_show_filter_panel){
+?>			
+			$(".catchLinks").on("click", "a", function(event){
+				if(!$(this).hasClass('dontCatch') && $(this).attr('href') != "#"){
+					event.preventDefault();
+					var url = $(this).attr('href') + "/showFilterPanel/1";
+					$('#browseResultsDetailContainer').load(url);
+				}
+								
+			});
+			
+			$("#searchWithin").submit(function( event ) {
+  				event.preventDefault();
+ 				var url = $("#searchWithin").attr('action') + "/dontSetFind/1/showFilterPanel/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + encodeURIComponent($('#searchWithinSearchRefine').val());
+ 				$('#browseResultsDetailContainer').load(url);
+			});
 <?php
 		}
 ?>
