@@ -52,7 +52,7 @@
 		<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
 	</div>
 		
-	<div class="unit"><H6>{{{^ca_collections.idno}}}</H6></div>
+	<div class="unit"><H6>{{{^ca_collections.repository_country}}}</H6></div>
 	<div class="unit">
 	{{{<ifdef code="ca_collections.parent_id"><div class="unit"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></H6></ifdef>}}}
 	{{{<ifdef code="ca_collections.label">^ca_collections.label<br/></ifdev>}}}

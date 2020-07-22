@@ -43,53 +43,56 @@
 				<input type="hidden" name="itemURL" value="<?php print $vs_url; ?>">
 				<input type="hidden" name="id" value="<?php print $pn_id; ?>">
 				<input type="hidden" name="table" value="<?php print $ps_table; ?>">
-				<hr/>
-				<p>Use this form contact archive staff in regard to items and collections. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-				<hr/>
 			</div>
 		</div>
 <?php
 	}
 ?>
 		<div class="row">
-			<div class="col-md-9">
-				<div class="row">
-					<div class="col-sm-4">
-						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
-							<label for="name">Name</label>
-							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}">
-						</div>
-					</div><!-- end col -->
-					<div class="col-sm-4">
-						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
-							<label for="email">Email address</label>
-							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
-						</div>
-					</div><!-- end col -->
-					<div class="col-sm-4">
-						<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
-							<label for="security">Security Question</label>
-							<div class='row'>
-								<div class='col-sm-6'>
-									<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
-								</div>
-								<div class='col-sm-6'>
-									<input name="security" value="" id="security" type="text" class="form-control input-sm" />
-								</div>
-							</div><!--end row-->	
-						</div><!-- end form-group -->
-					</div><!-- end col -->
-				</div><!-- end row -->
+			<div class="col-sm-12">
+				<hr/>
+				<p>{{{contactIntro}}}</p>
+				<hr/>
 			</div><!-- end col -->
 		</div><!-- end row -->
 		<div class="row">
-			<div class="col-md-9">
+			<div class="col-sm-4">
+				<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
+					<label for="name">Name</label>
+					<input type="text" class="form-control input-sm" aria-label="Enter your name" placeholder="Enter your name" name="name" value="{{{name}}}">
+				</div>
+			</div><!-- end col -->
+			<div class="col-sm-4">
+				<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
+					<label for="email">Email address</label>
+					<input type="text" class="form-control input-sm" id="email" aria-label="Enter your email" placeholder="Enter your email" name="email" value="{{{email}}}">
+				</div>
+			</div><!-- end col -->
+		</div><!-- end row -->
+		<div class="row">
+			<div class="col-md-8">
 				<div class="form-group<?php print (($va_errors["message"]) ? " has-error" : ""); ?>">
 					<label for="message">Message</label>
 					<textarea class="form-control input-sm" id="message" name="message" rows="5">{{{message}}}</textarea>
 				</div>
 			</div><!-- end col -->
 		</div><!-- end row -->
+		<div class="row">
+			<div class="col-sm-3 col-md-2">
+				<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
+					<label for="security">Security Question</label>
+					<div class='row'>
+						<div class='col-sm-6'>
+							<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
+						</div>
+						<div class='col-sm-6'>
+							<input name="security" value="" id="security" type="text" class="form-control input-sm" />
+						</div>
+					</div><!--end row-->	
+				</div><!-- end form-group -->
+			</div><!-- end col -->
+		</div>
+		
 <?php
 	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
 ?>

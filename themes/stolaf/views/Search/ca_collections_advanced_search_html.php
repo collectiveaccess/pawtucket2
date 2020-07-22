@@ -25,7 +25,7 @@
 			{{{ca_collections.idno%width=210px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_collections_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to collection types.') ?>"><?php _p('Type') ?></label>
+			<label for='ca_collections_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search by collection level.') ?>"><?php _p('Collection level') ?></label>
 			{{{ca_collections.type_id%height=30px&id=ca_collections_type_id}}}
 		</div>
 	</div>
@@ -55,7 +55,9 @@
 		<h1><?php _p('Search For:') ?></h1>
 		<p>
 			<?php print caNavLink($this->request, _t("Collections"), "", "Search", "advanced", "collections"); ?><br/>
+			{{{advancedCollection}}}<br/><br/>
 			<?php print caNavLink($this->request, _t("Archival Items"), "", "Search", "advanced", "objects"); ?><br/>
+			{{{advancedArchivalItems}}}
 		</p>
 	</div><!-- end col -->
 </div><!-- end row -->

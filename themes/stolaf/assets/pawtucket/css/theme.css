@@ -58,7 +58,12 @@
 	max-width:1200px;
 }
 body{
-	margin-bottom:230px;
+	margin-bottom:280px;
+}
+@media (max-width:990px){
+	body{
+		margin-bottom: 330px;
+	}
 }
 body, p, div{
 	font-family: "Calluna", times, serif;
@@ -66,6 +71,10 @@ body, p, div{
 	font-weight: 300;
 	text-rendering: optimizeLegibility;
 	line-height: 1.6666;
+}
+b, strong {
+    font-family: "Calluna Sans", verdana, sans-serif;
+    font-weight: 600;
 }
 H1, h1, H2, h2, H3, h3, H4, H4, H5, h5{
 	color:#000000;
@@ -135,6 +144,10 @@ a:hover{
 	display:inline-block;
 	padding:10px 0px 10px 0px;
 }
+.topNav img{
+	width:250px;
+	height:auto;
+}
 .topNav .glyphicon{
 	margin-right:8px;
 	font-size:14px;
@@ -144,6 +157,12 @@ a:hover{
 }
 #user-navbar > li.dropdown > a.icon{
 	padding: 10px 10px 10px 13px;
+	font-size:13px;
+}
+@media(max-width:768px){
+	.navbar-toggle-user {
+   		padding: 3px 10px 0px 10px;
+	}
 }
 #user-navbar .dropdown-menu{
 	z-index: 2000;
@@ -178,7 +197,7 @@ a:hover{
 	color:#979696;
 }
 .topNav .glyphicon {
-    margin-right: 7px;
+    margin-right: 4px;
     font-size: 16px;
 }
 .navbar{
@@ -215,18 +234,18 @@ a:hover{
 }
 .navbar-brand {
     width: 290px;
-    margin:10px 0px 5px 0px;
+    margin:10px 0px 10px 0px;
     text-decoration: none;
 }
 .navbar-brand .brandSubtitle{
 	padding-left: 31px;
 	font-size: 26px;
 	color: #53585a;
-	line-height: 1.5em;
+	line-height: 1em;
 	font-family: "Calluna Sans", verdana, sans-serif;
 }
 .navbar-collapse{
-	padding-top:35px;
+	padding-top:18px;
 }
 .pattern--background {
     -webkit-mask-image: url("../graphics/pattern-a.svg");
@@ -319,7 +338,12 @@ a:hover{
 	font-family: "Calluna Sans", verdana, sans-serif;
 	font-weight:300;
 	padding: 50px 0px 50px 0px;
-	height: 200px;
+	height: 250px;
+}
+@media (max-width:990px){
+	#footer{
+		height: 300px;
+	}
 }
 #footer div{
 	color:#FFFFFF;
@@ -329,6 +353,12 @@ a:hover{
 }
 #footer a{
 	color: #e4a01b;
+	text-decoration:none;
+}
+.footerHighlight{
+	color: #e4a01b;
+	font-weight:600;
+	font-family: "Calluna", verdana, sans-serif;
 }
 /*
 @media (min-width:500px) {
@@ -440,9 +470,42 @@ a.readmore-js-toggle:hover {
 #bRefine div, #bRefine{
 	line-height:.75em !important;
 }
-
+#collectionsWrapper .glyphicon{
+	font-size:10px;
+}
+#collectionsWrapper a, #collectionsWrapper a:visited {
+    color: #242121;
+    text-decoration: none;
+}
+#collectionsWrapper a:active, #collectionsWrapper a:focus, #collectionsWrapper a:hover {
+    text-decoration: underline;
+    color: #ca870d;
+}
+#collectionsWrapper .collectionsContainer a.openCollection:focus, #collectionsWrapper .collectionsContainer a.openCollection:visited{
+	color:#FFF;
+}
+#collectionsWrapper .collectionsContainer a.active{
+	text-decoration:none;
+}
+#collectionsWrapper .collectionLoad a{
+	display:inline;
+}
+#collectionsWrapper .collectionLoad img{
+	width:auto;
+	height:auto;
+}
+#collectionsWrapper .collectionLoad .nonLinkedCollection{
+	color: #242121;
+	font-size:14px;
+}
+#collectionsWrapper .collectionLoad a:hover{
+	background-color:transparent;
+}
+#collectionsWrapper{
+	background-color:#efefef;
+}
 /* browse list results */
-.bResultListItem .bResultListItemText, .bResultListItem .bResultListItemText a {
+.bResultListItem .bResultListItemText, .bResultListItem .bResultListItemText a, .bResultItemText, .bResultItemText a {
     font-size: 15px;
     text-decoration:none;
 }

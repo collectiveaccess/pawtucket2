@@ -25,8 +25,8 @@
 			{{{ca_objects.idno%width=210px}}}
 		</div>
 		<div class="advancedSearchField col-sm-6">
-			<label for='ca_objects_type_id' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to object types.') ?>"><?php _p('Type') ?></label>
-			{{{ca_objects.type_id%height=30px&id=ca_objects_type_id}}}
+			<label for='ca_objects_material_type' class='formLabel' data-toggle="popover" data-trigger="hover" data-content="<?php _p('Limit your search to material types.') ?>"><?php _p('Material type') ?></label>
+			{{{ca_objects.material_type%height=30px&id=ca_objects_material_type}}}
 		</div>
 	</div>
 	<div class='row'>
@@ -61,7 +61,9 @@
 		<h1><?php _p('Search For:') ?></h1>
 		<p>
 			<?php print caNavLink($this->request, _t("Collections"), "", "Search", "advanced", "collections"); ?><br/>
+			{{{advancedCollection}}}<br/><br/>
 			<?php print caNavLink($this->request, _t("Archival Items"), "", "Search", "advanced", "objects"); ?><br/>
+			{{{advancedArchivalItems}}}
 		</p>
 	</div><!-- end col -->
 </div><!-- end row -->

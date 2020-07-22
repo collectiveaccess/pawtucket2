@@ -97,19 +97,15 @@
 				{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
 				{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places">^ca_places.preferred_labels</unit> (^relationship_typename)</unit>}}}
 				
-				{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><label>Related person</label></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2" restrictToTypes="ind"><label>Related people</label></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" restrictToTypes="ind" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
-				
-				{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="org"><label>Related organization</label></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2" restrictToTypes="org"><label>Related organizations</label></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" restrictToTypes="org" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
-				
-				{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><label>Related family</label></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="2" restrictToTypes="fam"><label>Related families</label></ifcount>}}}
-				{{{<unit relativeTo="ca_entities" restrictToTypes="fam" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
+				{{{<ifcount code="ca_entities" min="1" max="1"><label>Related entity</label></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="2"><label>Related entities</label></ifcount>}}}
+				{{{<unit relativeTo="ca_entities" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
 					
 				{{{<ifdef code="ca_objects.LcshGenre|ca_objects.aat"><div class="unit"><label>Genres</label><unit delimiter="<br/>">^ca_objects.LcshGenre</unit><ifdef code="ca_objects.LcshGenre"><br/></ifdef><unit delimiter="<br/>">^ca_objects.aat</unit></div></ifdef>}}}
+				
+				{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
+				{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
+				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>}}}
 				
 				<br/>{{{map}}}
 						

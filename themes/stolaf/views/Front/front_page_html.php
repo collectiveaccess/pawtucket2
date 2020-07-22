@@ -53,7 +53,12 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-8 col-sm-offset-2">
-			<div class="hpCallout">Welcome to the Shaw-Olson Center for College History Archive</div>
+			<div class="hpCallout">{{{FrontWelcome}}}</div>
+		</div><!--end col-sm-8-->
+	</div>
+	<div class="row">
+		<div class="col-sm-8 col-sm-offset-2">
+			{{{FrontAbout}}}
 		</div><!--end col-sm-8-->
 	</div>
 	<div class="row">
