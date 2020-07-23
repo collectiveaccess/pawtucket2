@@ -262,6 +262,18 @@ a:hover{
 	line-height: 1em;
 	font-family: "Calluna Sans", verdana, sans-serif;
 }
+@media(max-width:450px){
+	.navbar-brand .brandSubtitle{
+		font-size: 20px;
+		position:relative;
+		left:-15px;
+	}
+	.navbar-brand{
+		padding-left:0px;
+		margin-left:0px;
+		width:auto;
+	}
+}
 .navbar-collapse{
 	padding-top:18px;
 }
@@ -307,9 +319,14 @@ a:hover{
 		display:none;
 	}
 	.mainTitle{
-		font-size:24px;
+		font-size:28px;
 		text-align:center;
 		padding:15px 0px 15px 0px;
+	}
+}
+@media(max-width:450px){
+	.mainTitle{
+		font-size:20px;
 	}
 }
 .heroSearch {
@@ -433,6 +450,9 @@ a:hover{
 		font-size:24px;
 		padding-top:20px;
 		padding-bottom:20px;
+	}
+	.hpTiles .btn-default{
+		margin-bottom:30px;
 	}
 }
 .collectionTile .title a{
