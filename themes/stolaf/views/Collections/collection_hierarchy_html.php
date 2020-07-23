@@ -30,7 +30,8 @@
 <?php
 				if($qr_collection_children->numHits()){
 					while($qr_collection_children->nextHit()) {
-						$vs_icon = "<span class='glyphicon glyphicon-chevron-right'></span> ";
+						$vs_icon = '<span class="glyphicon glyphicon-chevron-right"></span> ';
+						$vs_icon_open = '<span class="glyphicon glyphicon-chevron-down"></span> ';
 						if(is_array($va_collection_type_icons)){
 							$vs_icon .= $va_collection_type_icons[$qr_collection_children->get("ca_collections.type_id")];
 						}
@@ -55,8 +56,9 @@
 							}
 						}
 						if($vb_link_sublist){
-							print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_date.$vs_record_count."</a>";
-							print "<div id='collectionLoad".$qr_collection_children->get("ca_collections.collection_id")."' class='collectionLoad'></div>";
+							print "<div style='position:relative;'>".caDetailLink($this->request, (($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : "detail"), 'linkoutRight', 'ca_collections',  $qr_collection_children->get("ca_collections.collection_id"));
+							print "<a href='#' class='openCollection openCollection".$qr_collection_children->get("ca_collections.collection_id")."'><span class='collapseIcon'>".$vs_icon."</span> ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_date.$vs_record_count."</a>";
+							print "</div><div id='collectionLoad".$qr_collection_children->get("ca_collections.collection_id")."' class='collectionLoad'></div>";
 						}else{
 							# --- there are no grandchildren to show in browser, so check if we should link to detail page instead
 							$vb_link_to_detail = true;
@@ -81,12 +83,20 @@
 							<script>
 								$(document).ready(function(){
 									$('.openCollection<?php print $qr_collection_children->get("ca_collections.collection_id");?>').click(function(){
-										$('.collectionLoad').hide();
-										$('#collectionLoad<?php print $qr_collection_children->get("ca_collections.collection_id"); ?>').show();
-										$('#collectionLoad<?php print $qr_collection_children->get("ca_collections.collection_id"); ?>').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
-										$('#collectionLoad<?php print $qr_collection_children->get("ca_collections.collection_id"); ?>').load("<?php print caNavUrl($this->request, '', 'Collections', 'childList', array('collection_id' => $qr_collection_children->get("ca_collections.collection_id"))); ?>");
-										$('.openCollection').removeClass('active');
-										$('.openCollection<?php print $qr_collection_children->get("ca_collections.collection_id");?>').addClass('active');
+										if($('.openCollection<?php print $qr_collection_children->get("ca_collections.collection_id");?>').hasClass("active")){
+											$('.openCollection .collapseIcon').html('<?php print $vs_icon; ?>');
+											$('.openCollection').removeClass('active');
+											$('.collectionLoad').hide();
+										}else{
+											$('.collectionLoad').hide();
+											$('#collectionLoad<?php print $qr_collection_children->get("ca_collections.collection_id"); ?>').show();
+											$('#collectionLoad<?php print $qr_collection_children->get("ca_collections.collection_id"); ?>').html("<?php print caGetThemeGraphic($this->request, 'indicator.gif');?> Loading");
+											$('#collectionLoad<?php print $qr_collection_children->get("ca_collections.collection_id"); ?>').load("<?php print caNavUrl($this->request, '', 'Collections', 'childList', array('collection_id' => $qr_collection_children->get("ca_collections.collection_id"))); ?>");
+											$('.openCollection .collapseIcon').html('<?php print $vs_icon; ?>');
+											$('.openCollection<?php print $qr_collection_children->get("ca_collections.collection_id");?> .collapseIcon').html('<?php print $vs_icon_open; ?>');
+											$('.openCollection').removeClass('active');
+											$('.openCollection<?php print $qr_collection_children->get("ca_collections.collection_id");?>').addClass('active');
+										}
 										return false;
 									}); 
 								})

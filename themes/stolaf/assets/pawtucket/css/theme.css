@@ -158,11 +158,29 @@ a:hover{
 #user-navbar > li.dropdown > a.icon{
 	padding: 10px 10px 10px 13px;
 	font-size:13px;
+	font-family: "Calluna Sans", verdana, sans-serif;
 }
 @media(max-width:768px){
 	.navbar-toggle-user {
-   		padding: 3px 10px 0px 10px;
+   		padding: 7px 10px 4px 10px;
+		font-family: "Calluna Sans", verdana, sans-serif;
+		text-transform:uppercase;
+		font-size: 13px;
+		color: #666;
 	}
+	.navbar-default .navbar-toggle .icon-bar{
+		background-color: #666;
+	}
+	ul.menuItems {
+    	border-top: none;
+    }
+    .navbar-default .navbar-nav > li{
+    	text-align:center;
+    }
+    .navbar-nav{
+    	margin-right:0px;
+    	margin-left:0px;
+    }
 }
 #user-navbar .dropdown-menu{
 	z-index: 2000;
@@ -283,6 +301,16 @@ a:hover{
 	color:#FFFFFF;
 	padding:35px 0px 35px 0px;
 	line-height:1.2em;
+}
+@media(max-width:767px){
+	.hero__pattern {
+		display:none;
+	}
+	.mainTitle{
+		font-size:24px;
+		text-align:center;
+		padding:15px 0px 15px 0px;
+	}
 }
 .heroSearch {
 	position: relative;
@@ -423,12 +451,6 @@ a:hover{
 	height:130px;
 }
 
-@media(max-width:768px){
-	.exportCollection, .inquireButton{
-		float:left;
-		margin-right:5px;
-	}
-}
 @media(min-width:768px){
 	.exportCollection, .inquireButton{
 		float:right;
@@ -473,6 +495,14 @@ a.readmore-js-toggle:hover {
 #collectionsWrapper .glyphicon{
 	font-size:10px;
 }
+#collectionsWrapper .linkoutRight{
+	position:absolute;
+	right:0px;
+	z-index:100;
+	width:auto;
+	display:inline;
+	background-color: #efefef;
+}
 #collectionsWrapper a, #collectionsWrapper a:visited {
     color: #242121;
     text-decoration: none;
@@ -481,11 +511,12 @@ a.readmore-js-toggle:hover {
     text-decoration: underline;
     color: #ca870d;
 }
-#collectionsWrapper .collectionsContainer a.openCollection:focus, #collectionsWrapper .collectionsContainer a.openCollection:visited{
-	color:#FFF;
+#collectionsWrapper .collectionsContainer a.openCollection:focus{
+	color:#242121;
 }
-#collectionsWrapper .collectionsContainer a.active{
+#collectionsWrapper .collectionsContainer a.active, #collectionsWrapper .collectionsContainer a.active:focus, #collectionsWrapper .collectionsContainer a.active:visited, #collectionsWrapper .collectionsContainer a.active:active{
 	text-decoration:none;
+	color:#FFF;
 }
 #collectionsWrapper .collectionLoad a{
 	display:inline;
@@ -503,6 +534,11 @@ a.readmore-js-toggle:hover {
 }
 #collectionsWrapper{
 	background-color:#efefef;
+}
+@media(max-width:767px){
+	#collectionsWrapper{
+		margin-top:20px;
+	}
 }
 /* browse list results */
 .bResultListItem .bResultListItemText, .bResultListItem .bResultListItemText a, .bResultItemText, .bResultItemText a {

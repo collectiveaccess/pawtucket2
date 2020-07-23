@@ -110,7 +110,7 @@
 ?>
 				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
 					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span><?php print ($this->request->isLoggedIn()) ? "" : "Login"; ?>
+					<span class="glyphicon glyphicon-user"></span><?php print ($this->request->isLoggedIn()) ? "" : " Login"; ?>
 				</button>
 <?php
 	}

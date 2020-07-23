@@ -93,10 +93,6 @@
 				
 				<hr></hr>
 					
-				{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
-				{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
-				{{{<unit relativeTo="ca_objects_x_places" delimiter="<br/>"><unit relativeTo="ca_places">^ca_places.preferred_labels</unit> (^relationship_typename)</unit>}}}
-				
 				{{{<ifcount code="ca_entities" min="1" max="1"><label>Related entity</label></ifcount>}}}
 				{{{<ifcount code="ca_entities" min="2"><label>Related entities</label></ifcount>}}}
 				{{{<unit relativeTo="ca_entities" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
