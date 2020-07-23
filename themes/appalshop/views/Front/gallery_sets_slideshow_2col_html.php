@@ -59,40 +59,44 @@
 <?php
 							$va_thumbnails = array();
 							foreach($va_sets as $vn_set_id => $va_set){
-								#$t_set = new ca_sets($vn_set_id);
-								#$vs_desc = $t_set->get($o_gallery_config->get('gallery_set_description_element_code'));
-								$va_first_item_large = array_shift($va_set_first_items_large[$vn_set_id]);
-								$va_first_item_iconlarge = array_shift($va_set_first_items_iconlarge[$vn_set_id]);
-								if($vs_media = $va_first_item_large["representation_tag"]){
-									$va_thumbnails[$vn_set_id] = $va_first_item_iconlarge["representation_tag"];
+								$t_set = new ca_sets($vn_set_id);
+								if($t_set->get("ca_sets.featureHomePage", array("convertCodesToDisplayText" => true)) == "Yes"){
+									$vs_desc = $t_set->get('ca_sets.short_description');
+									$va_first_item_large = array_shift($va_set_first_items_large[$vn_set_id]);
+									$va_first_item_iconlarge = array_shift($va_set_first_items_iconlarge[$vn_set_id]);
+									if($vs_media = $va_first_item_large["representation_tag"]){
+										$va_thumbnails[$vn_set_id] = $va_first_item_iconlarge["representation_tag"];
 ?>							
 									
-									<li id="slide<?php print $vn_set_id; ?>" class="<?php print $vn_set_id; ?>">
-										<div class='frontSlide'>
-											<div class="row">
-												<div class="col-xs-12 col-sm-6 col-md-offset-1 col-md-6">
-													<?php print $vs_media; ?>
-												</div>
-												<div class="col-xs-12 col-sm-4 col-md-4">
-													<div class="slideTextRight">
-														<h2>
-															<?php print caNavLink($this->request, $va_set["name"], "", "", "Gallery", $vn_set_id); ?>
-														</h2>
-														<p>
-															<?php #print $vs_desc; ?> 
-														</p>
-														<p class="text-center">
-															<?php print caNavLink($this->request, _t("View Project"), 'btn-default', '', 'Gallery', $vn_set_id); ?>
-														</p>
+										<li id="slide<?php print $vn_set_id; ?>" class="<?php print $vn_set_id; ?>">
+											<div class='frontSlide'>
+												<div class="row">
+													<div class="col-xs-12 col-sm-6 col-md-offset-1 col-md-6">
+														<?php print $vs_media; ?>
 													</div>
-													<div class="col-md-1 col-lg-1"></div>
+													<div class="col-xs-12 col-sm-4 col-md-4">
+														<div class="slideTextRight">
+															<h2>
+																<?php print caNavLink($this->request, $va_set["name"], "", "", "Gallery", $vn_set_id); ?>
+															</h2>
+															<?php 
+																if($vs_desc){
+																	print "<p>".$vs_desc."</p>";
+																}
+															?>
+															<p class="text-center">
+																<?php print caNavLink($this->request, _t("View Project"), 'btn-default', '', 'Gallery', $vn_set_id); ?>
+															</p>
+														</div>
+														<div class="col-md-1 col-lg-1"></div>
+													</div>
 												</div>
 											</div>
-										</div>
-									</li>									
+										</li>									
 									
 <?php									
-									$vb_item_output = true;
+										$vb_item_output = true;
+									}
 								}
 							}
 ?>

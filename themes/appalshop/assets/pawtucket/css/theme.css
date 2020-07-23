@@ -297,8 +297,8 @@ font-size: 12pt;
 }
 @media (min-width:1200px){
 	.front .frontSlide h2{
-		font-size:36px;
-		padding-top: 40px;
+		font-size:30px;
+		padding-top: 20px;
 	}
 }
 .front .frontSlide p{
