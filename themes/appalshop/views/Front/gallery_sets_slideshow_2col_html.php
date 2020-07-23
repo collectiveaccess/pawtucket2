@@ -47,6 +47,7 @@
 		$va_set_first_items_large = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "large", "checkAccess" => $va_access_values));
 		$va_set_first_items_iconlarge = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
 	}
+	$vn_count = 0;
 
 	if(is_array($va_sets) && sizeof($va_sets)){
 ?>   
@@ -96,6 +97,7 @@
 									
 <?php									
 										$vb_item_output = true;
+										$vn_count++;
 									}
 								}
 							}
@@ -103,7 +105,7 @@
 						</ul>
 					</div>  <!-- end jcarousel -->
 <?php
-			if($vb_item_output){
+			if($vb_item_output && ($vn_count > 1)){
 ?>
 			<!-- Prev/next controls -->
 			<a href="#" class="jcarousel-control-prev mainSlideNav"><i class="fa fa-angle-left"></i></a>
@@ -128,8 +130,7 @@
 				</div><!-- end jcarousel-wrapper -->
 			</div><!-- end col-sm-12 -->
 		</div><!-- end row -->
-		<div class="row">
-			<div class="col-sm-12">
+
 			<!-- Pagination -->
 						
 			<script type='text/javascript'>
@@ -224,8 +225,6 @@
 				});
 				
 			</script>
-		</div><!-- end col -->
-	</div><!-- end row -->
 <?php
 	}
 ?>
