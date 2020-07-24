@@ -42,6 +42,12 @@ tr.data { font: "Georgia"; font-size: 11px; border-bottom: 1px solid #eee; }
 	bottom: 0px;
 }
 
+.tombstone.factsheet, .fullpage .tombstone{
+	font: "Georgia";
+	font-size:12px;
+	margin-top:150px;
+}
+
 .representationListFullpage {
 	position: absolute;
 	top: 100px;

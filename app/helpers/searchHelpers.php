@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2011-2018 Whirl-i-Gig
+ * Copyright 2011-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -510,7 +510,7 @@
 			$o_view->setVar('sort', $ps_sort);
 			$o_view->setVar('accessValues', $va_access_values);
 			
-			$o_view->setVar('sortDirectionControl', '<a href="#" id="'.$vs_block.'_sort_direction"><span class="glyphicon glyphicon-sort-by-alphabet'.(($ps_sort_direction == 'desc') ? '-alt' : '').'" aria-label="direction"></span></a>');
+			$o_view->setVar('sortDirectionControl', '<a href="#" id="'.$vs_block.'_sort_direction"><span class="glyphicon glyphicon-sort-by-alphabet'.(($ps_sort_direction == 'desc') ? '-alt' : '').'"></span></a>');
 			$o_view->setVar('sortDirection', $ps_sort_direction);
 			
 			
@@ -810,7 +810,7 @@
 			} else {
 				$va_tmp = explode('.', $vs_element);
 				$vs_possible_element_with_rel = array_pop($va_tmp);
-				$va_tmp2 = explode("/", $vs_possible_element_with_rel);
+				$va_tmp2 = preg_split("![/\|]+!", $vs_possible_element_with_rel);
 				$vs_possible_element = array_shift($va_tmp2);
 				
 				// TODO: display relationship types when defined?
@@ -1386,6 +1386,7 @@
 	 *		includeInterstitialSortsFor = Related table [Default is false]
 	 *		distinguishInterstitials = [Default is false]
 	 *      restrictToDisplay = [Default is null]
+	 *      naturalSortLabel = [Default is 'Relevance']
 	 * @return array
 	 */
 	function caGetAvailableSortFields($ps_table, $pn_type_id = null, $pa_options=null) {
@@ -1419,6 +1420,7 @@
 			foreach($va_screens as $va_screen) {
 				if (is_array($va_placements = $t_ui->getScreenBundlePlacements($va_screen['screen_id']))) {
 					foreach($va_placements as $va_placement) {
+						// Older installations have the bundle name prefixed with "ca_attribute_"
 						$vs_bundle_name = str_replace('ca_attribute_', '', $va_placement['bundle_name']);
 						$va_bundle_bits = explode('.', $vs_bundle_name);
 						if (!Datamodel::tableExists($va_bundle_bits[0])) {
@@ -1437,10 +1439,12 @@
 				
 			}
 		}
+		
+		$natural_sort_label = caGetOption('naturalSortLabel', $pa_options, _t('relevance'));
 		switch($ps_table) {
 			case 'ca_list_items':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_list_items.preferred_labels.name_singular' => _t('name'),
 					'ca_list_items.idno_sort' => _t('idno')
 				);
@@ -1452,7 +1456,7 @@
 				break;
 			case 'ca_collections':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_collections.preferred_labels.name_sort' => _t('name'),
 					'ca_collections.type_id' => _t('type'),
 					'ca_collections.idno_sort' => _t('idno')
@@ -1460,7 +1464,7 @@
 				break;
 			case 'ca_loans':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_loans.preferred_labels.name_sort' => _t('short description'),
 					'ca_loans.type_id' => _t('type'),
 					'ca_loans.idno_sort' => _t('idno')
@@ -1468,7 +1472,7 @@
 				break;
 			case 'ca_movements':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_movements.preferred_labels.name' => _t('short description'),
 					'ca_movements.type_id;ca_movement_labels.name' => _t('type'),
 					'ca_movements.idno_sort' => _t('idno')
@@ -1476,7 +1480,7 @@
 				break;
 			case 'ca_entities':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_entities.preferred_labels.name_sort' => _t('display name'),
 					'ca_entities.preferred_labels.surname;ca_entity_labels.forename' => _t('surname, forename'),
 					'ca_entities.preferred_labels.forename' => _t('forename'),
@@ -1486,7 +1490,7 @@
 				break;
 			case 'ca_object_lots':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_object_lots.preferred_labels.name_sort' => _t('name'),
 					'ca_object_lots.type_id' => _t('type'),
 					'ca_object_lots.idno_stub_sort' => _t('idno')
@@ -1494,15 +1498,16 @@
 				break;
 			case 'ca_object_representations':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_object_representations.preferred_labels.name_sort' => _t('name'),
 					'ca_object_representations.type_id' => _t('type'),
-					'ca_object_representations.idno_sort' => _t('idno')
+					'ca_object_representations.idno_sort' => _t('idno'),
+					'ca_object_representations.original_filename' => _t('file name')
 				);
 				break;
 			case 'ca_objects':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_objects.preferred_labels.name_sort' => _t('title'),
 					'ca_objects.type_id' => _t('type'),
 					'ca_objects.idno_sort' => _t('idno')
@@ -1510,7 +1515,7 @@
 				break;
 			case 'ca_occurrences':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_occurrences.preferred_labels.name_sort' => _t('name'),
 					'ca_occurrences.type_id' => _t('type'),
 					'ca_occurrences.idno_sort' => _t('idno')
@@ -1518,7 +1523,7 @@
 				break;
 			case 'ca_places':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_places.preferred_labels.name_sort' => _t('name'),
 					'ca_places.type_id' => _t('type'),
 					'ca_places.idno_sort' => _t('idno')
@@ -1526,7 +1531,7 @@
 				break;
 			case 'ca_storage_locations':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_storage_locations.preferred_labels.name_sort' => _t('name'),
 					'ca_storage_locations.type_id' => _t('type'),
 					'ca_storage_locations.idno_sort' => _t('idno')
@@ -1534,13 +1539,13 @@
 				break;
 			case 'ca_tours':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_tours.preferred_labels.name' => _t('name')
 				);
 				break;
 			case 'ca_tour_stops':
 				$va_base_fields = array(
-					'_natural' => _t('relevance'),
+					'_natural' => $natural_sort_label,
 					'ca_tour_stops.preferred_labels.name' => _t('name')
 				);
 				break;
@@ -1586,6 +1591,12 @@
 				$pb_distinguish_interstitials = caGetOption('distinguishInterstitials', $pa_options, true);
 				foreach($va_sortable_elements as $vn_element_id => $va_sortable_element) {
 					$va_base_fields[$vs_relation_table.'.'.$va_sortable_element['element_code']] = $va_sortable_element['display_label'].($pb_distinguish_interstitials ? " ("._t('Interstitial').")" : "");
+				}
+				
+				foreach(['is_primary'] as $f) {
+					if($t_rel->hasField($f)) {
+						$va_base_fields[$vs_relation_table.'.'.$f] = $t_rel->getFieldInfo($f, 'LABEL');
+					}
 				}
 			}
 			
@@ -1666,7 +1677,7 @@
 		
 		natcasesort($va_base_fields);
 		
-		$ret = array_merge(['_natural' => _t('Relevance')], $va_base_fields);
+		$ret = array_merge(['_natural' => $natural_sort_label], $va_base_fields);
 		
 		$va_cached_data[$vs_cache_key] = $ret;
 		CompositeCache::save("available_sorts", $va_cached_data);
@@ -1704,7 +1715,8 @@
 	function caSearchIsForSets($ps_search, $pa_options=null) {
 		$o_config = Configuration::load();
 		$o_query_parser = new LuceneSyntaxParser();
-		$o_query_parser->setEncoding($o_config->get('character_set'));
+        $vs_char_set = $o_config->get('character_set');
+        $o_query_parser->setEncoding($vs_char_set);
 		$o_query_parser->setDefaultOperator(LuceneSyntaxParser::B_AND);
 		
 		$ps_search = preg_replace('![\']+!', '', $ps_search);
@@ -1741,7 +1753,6 @@
 		foreach ($va_items as $id => $subquery) {
 			switch(get_class($subquery)) {
 				case 'Zend_Search_Lucene_Search_Query_Phrase':
-				
 					foreach($subquery->getQueryTerms() as $o_term) {
 						$vs_field = $o_term->field;
 						$vs_value = $o_term->text;
@@ -1770,6 +1781,9 @@
 					break;	
 				case 'Zend_Search_Lucene_Search_Query_Range':
 				case 'Zend_Search_Lucene_Search_Query_Wildcard':
+				case 'Zend_Search_Lucene_Search_Query_Fuzzy':
+				case 'Zend_Search_Lucene_Search_Query_Insignificant':
+				case 'Zend_Search_Lucene_Search_Query_Empty':
 					// noop
 					break;
 				case 'Zend_Search_Lucene_Search_Query_Boolean':
@@ -1779,14 +1793,15 @@
 						}
 					}
 					break;
-				default:
-					if (is_array($va_sub_sets = caSearchIsForSets($subquery))) {
-						$va_sets = array_merge($va_sets, $va_sub_sets);
+				case 'Zend_Search_Lucene_Search_Query_MultiTerm':
+					foreach($subquery->getTerms() as $o_term) {
+						if (is_array($va_sub_sets = caSearchIsForSets($o_term))) {
+							$va_sets = array_merge($va_sets, $va_sub_sets);
+						}
 					}
 					break;
 			}
 		}
-		
 		if(sizeof($va_sets) == 0) { return false; }
 		$t_set = new ca_sets();
 		return $t_set->getPreferredDisplayLabelsForIDs(array_keys($va_sets));

@@ -23,7 +23,7 @@
 <?php
 	switch($ps_contactType){
 		case "askArchivist":
-			print "<H1>"._t("Ask An Archivist")."</H1>";
+			print "<H1>"._t("Ask A Question")."</H1>";
 		break;
 		case "takedown":
 			print "<H1>"._t("Takedown Request")."</H1>";

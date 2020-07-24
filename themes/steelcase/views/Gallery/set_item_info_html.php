@@ -206,48 +206,49 @@
 ?>
 		{{{<ifdef code="ca_objects.idno"><H6>Steelcase Number</H6>^ca_objects.idno</ifdef>}}}			
 <?php
-		$va_storage_locations = $t_object->get("ca_storage_locations", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
-		if(sizeof($va_storage_locations)){
-			$t_location = new ca_storage_locations();
-			$t_relationship = new ca_objects_x_storage_locations();
-			$vn_now = date("Y.md");
-			$va_location_display = array();
-			foreach($va_storage_locations as $va_storage_location){
-				$t_relationship->load($va_storage_location["relation_id"]);
-				$va_daterange = $t_relationship->get("effective_daterange", array("rawDate" => true, "returnWithStructure" => true));
-				if(is_array($va_daterange) && sizeof($va_daterange)){
-					foreach($va_daterange as $va_date){
-						break;
-					}
-					#print $vn_now." - ".$va_date["effective_daterange"]["start"]." - ".$va_date["effective_daterange"]["end"];
-					if(is_array($va_date)){
-						if(($vn_now > $va_date["effective_daterange"]["start"]) && ($vn_now < $va_date["effective_daterange"]["end"])){
-							# --- only display the top level from the hierarchy
-							$va_hierarchy_ancestors = array_reverse($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name"))));
-							foreach($va_hierarchy_ancestors as $va_ancestor){
-								$va_ancestor = $va_ancestor['NODE'];
-								$va_location_display[] = caNavLink($this->request, $va_ancestor["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor["location_id"]));
-								break;
-							}
-						}
-					}
-				}else{
-					# --- only display the top level from the hierarchy
-					$va_hierarchy_ancestors = array_reverse($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name"))));
-					
-					foreach($va_hierarchy_ancestors as $va_ancestor){
-						$va_ancestor = $va_ancestor['NODE'];
-						$va_location_display[] = caNavLink($this->request, $va_ancestor["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor["location_id"]));
-						break;
-					}
-					#$vs_location_display .= $va_storage_location["name"]."<br/>";
-				}
-			}
-			if(sizeof($va_location_display)){
-				print "<H6>Location</H6>".join(", ", $va_location_display);
-			}
-		}
-?>
+
+$va_storage_locations = $t_object->get("ca_storage_locations", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+                                if(sizeof($va_storage_locations)){
+                                        $t_location = new ca_storage_locations();
+                                        $t_relationship = new ca_objects_x_storage_locations();
+                                        $vn_now = date("Y.md");
+                                        $va_location_display = array();
+                                        foreach($va_storage_locations as $va_storage_location){
+#if ($va_storage_location['source_info'] !== 'current') continue;
+                                                $t_relationship->load($va_storage_location["relation_id"]);
+                                                $va_daterange = null; //$t_relationship->get("effective_date", array("returnWithStructure" => true, "returnAsArray" => true));
+
+                                                if(is_array($va_daterange) && sizeof($va_daterange)){
+                                                        foreach($va_daterange as $va_date){
+                                                                break;
+                                                        }
+
+                                                        if(is_array($va_date)){
+                                                                if(($vn_now > $va_date["start"]) && ($vn_now < $va_date["end"])){
+                                                                        # --- only display the top level from the hierarchy
+                                                                        $va_hierarchy_ancestors = array_reverse($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name"))));
+                                                                        foreach($va_hierarchy_ancestors as $va_ancestor){
+                                                                                $va_location_display[] = caNavLink($this->request, $va_ancestor['NODE']["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor['NODE']["location_id"]));
+                                                                                break;
+                                                                        }
+                                                                }
+                                                        }
+                                                }else{
+                                                        # --- only display the top level from the hierarchy
+                                                        $va_hierarchy_ancestors = array_reverse($t_location->getHierarchyAncestors($va_storage_location["location_id"], array("includeSelf" => 1, "additionalTableToJoin" => "ca_storage_location_labels", "additionalTableSelectFields" => array("name"))));
+                                                array_shift($va_hierarchy_ancestors);
+                                                        foreach($va_hierarchy_ancestors as $va_ancestor){
+                                                                //print_R($va_ancestor);
+                                                                $va_location_display[] = caNavLink($this->request, $va_ancestor['NODE']["name"], "", "", "Browse", "Objects", array("facet" => "storage_location_facet", "id" => $va_ancestor['NODE']["location_id"]));
+                                                                break;
+                                                        }
+                                                }
+                                        }
+                                        if(sizeof($va_location_display)){
+                                                print "<H6>Location</H6>".join(", ", $va_location_display);
+                                        }
+                                }
+                                ?>
 		{{{<ifdef code="ca_objects.credit_line"><H6>Credit</H6>&copy; ^ca_objects.credit_line</ifdef>}}}
 <?php				
 		if($vs_location_display || $t_object->get("ca_objects.idno") || trim($t_object->get("ca_objects.credit_line"))){

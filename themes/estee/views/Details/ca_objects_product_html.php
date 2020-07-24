@@ -35,14 +35,48 @@
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	
 	$va_access_values = caGetUserAccessValues($this->request);
+	
+	$ps_last_tab = $this->request->getParameter("last_tab", pString);
+	if($ps_last_tab){
+		$this->request->user->setVar("last_tab", $ps_last_tab);
+	}else{
+		$ps_last_tab = $this->request->user->getVar("last_tab");
+	}
+	$va_options = $this->getVar("config_options");
+	$vs_result_link = $this->getVar("resultsLink");
+	$vs_previous_link = $this->getVar("previousLink");
+	$vs_next_link = $this->getVar("nextLink");
+	if($ps_last_tab && (strpos($vs_result_link, "collections") !==false)){
+		$va_params = array();
+ 		$va_params["row_id"] = $t_object->getPrimaryKey();
+ 		$va_params["last_tab"] = $ps_last_tab;
+		$vs_result_link = ResultContext::getResultsLinkForLastFind($this->request, 'ca_objects', caGetOption('resultsLink', $va_options, _t('Back')), null, $va_params, ['aria-label' => _t('Back')]);	
+		if(!$vs_previous_link && !$vs_next_link){
+			# --- try to get it from the var set in estee/views/Collections/child_list_html.php
+			$va_guide_result_ids = $this->request->user->getVar("guide_ids");
+			if($va_guide_result_ids && sizeof($va_guide_result_ids)){
+				if(in_array($t_object->get("object_id"), $va_guide_result_ids)){
+					$vn_index = array_search($t_object->get("object_id"), $va_guide_result_ids);
+					if($vn_index !== false){
+						if($vn_index > 0){
+							$vs_previous_link = caDetailLink($this->request, caGetOption('previousLink', $va_options, _t('Previous')), "", "ca_objects", $va_guide_result_ids[$vn_index - 1]);
+						}
+						if($vn_next_id = $va_guide_result_ids[$vn_index + 1]){
+							$vs_next_link = caDetailLink($this->request, caGetOption('nextLink', $va_options, _t('Next')), "", "ca_objects", $vn_next_id);
+						}
+					}
+				}
+			}
+		}
+	}
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
-		{{{previousLink}}}{{{resultsLink}}}{{{nextLink}}}
+		<?php print $vs_previous_link.$vs_result_link.$vs_next_link; ?>
 	</div><!-- end detailTop -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgLeft">
-			{{{previousLink}}}{{{resultsLink}}}
+			<?php print $vs_previous_link.$vs_result_link; ?>
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
@@ -56,12 +90,12 @@
 				
 					print "</div>";
 					if($vs_rep_viewer = trim($this->getVar("representationViewer"))){
-						print $vs_rep_viewer;
 						$vs_use_statement = trim($t_object->get("ca_objects.use_statement"));
 						if(!$vs_use_statement){
 							$vs_use_statement = $this->getVar("use_statement");
 						}
-						print "<H6>".$vs_use_statement."</H6>";
+						print "<H6 class='detailUseStatement text-center'>".$vs_use_statement."</H6>";
+						print $vs_rep_viewer;
 ?>
 						<script type="text/javascript">
 							jQuery(document).ready(function() {
@@ -76,7 +110,7 @@
 						print "<br/><div class='detailTool text-center'><i class='material-icons inline'>mail_outline</i>".caNavLink($this->request, "Request Digitization", "", "", "contact", "form", array('object_id' => $vn_id, 'contactType' => 'digitizationRequest'))."</div>";
 					}	
 ?>				
-					<div id="detailAnnotations"></div>
+					<!--<div id="detailAnnotations"></div>-->
 				
 					<?php print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "primaryOnly" => $this->getVar('representationViewerPrimaryOnly') ? 1 : 0)); ?>
 			
@@ -96,13 +130,6 @@
 					}
 					if($vs_brand = $t_object->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
 						$va_product_info[] = $vs_brand;
-					}
-					if($vs_sub_brand = $t_object->get("ca_objects.sub_brand", array("delimiter" => ", "))){
-						if(!preg_match("/[a-z]/", $vs_sub_brand)){
-							$vs_sub_brand = ucwords(mb_strtolower($vs_sub_brand));
-						}
-						$vs_sub_brand = "<span class='notransform'>".$vs_sub_brand."</span>";
-						$va_product_info[] = $vs_sub_brand;
 					}
 					if(sizeof($va_product_info)){
 						print "<div class='unit productInfo'><H6 class='objectType'>";
@@ -126,16 +153,28 @@
 						<ifdef code="ca_objects.codes.product_code|ca_objects.codes.batch_code|ca_objects.codes.packaging_code"><HR></ifdef>
 					</if>}}}
 <?php
+					if($vs_sub_brand = $t_object->get("ca_objects.sub_brand", array("delimiter" => ", "))){
+						if(!preg_match("/[a-z]/", $vs_sub_brand)){
+							$vs_sub_brand = ucwords(mb_strtolower($vs_sub_brand));
+						}
+						$vs_sub_brand = "<span class='notransform'>".$vs_sub_brand."</span>";
+						print "<div class='unit'><H6>Sub-brand</H6>".$vs_sub_brand."</div>";
+					}
+					
 					if($t_object->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)) != "Component"){
 						if($va_tmp = $t_object->get("ca_objects.shade", array("returnAsArray" => true))){
 							$va_tmp_formatted = array();
 							foreach($va_tmp as $vs_tmp){
-								if(!preg_match("/[a-z]/", $vs_tmp)){
-									$vs_tmp = ucwords(strtolower($vs_tmp));
+								if(trim($vs_tmp)){
+									if(!preg_match("/[a-z]/", $vs_tmp)){
+										$vs_tmp = ucwords(strtolower($vs_tmp));
+									}
+									$va_tmp_formatted[] = $vs_tmp;
 								}
-								$va_tmp_formatted[] = $vs_tmp;
 							}
-							print "<div class='unit'><H6>Shade</H6>".join("<br/>", $va_tmp_formatted)."</div>";
+							if(sizeof($va_tmp_formatted)){
+								print "<div class='unit'><H6>Shade</H6>".join("<br/>", $va_tmp_formatted)."</div>";
+							}
 						}
 						if($va_tmp = $t_object->get("ca_objects.fragrance", array("returnAsArray" => true))){
 							$va_tmp_formatted = array();
@@ -161,22 +200,12 @@
 					
 					</if>}}}
 					{{{<ifdef code="ca_objects.marketing"><div class="unit"><H6>Marketing Category</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.marketing</unit></div></ifdef>}}}
-					
-<?php
-					$vb_close_row = false;
-					if($t_object->get("ca_objects.season_list") || $t_object->get("ca_objects.manufacture_date") || $t_object->get("ca_objects.launch_display_date") || $t_object->get("ca_objects.launch_date.launch_date_value")){
-						print "<div class='row'>";
-						$vb_close_row = true;
-					}
-?>
-					{{{<ifdef code="ca_objects.season_list|ca_objects.manufacture_date"><div class="col-sm-6"><div class="unit"><H6>Date</H6>^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</div></div></ifdef>}}}
-					{{{<ifdef code="ca_objects.launch_display_date|ca_objects.launch_date.launch_date_value"><div class="col-sm-6"><div class="unit"><H6>Launch Date</H6>^ca_objects.launch_display_date<ifdef code="ca_objects.launch_display_date,ca_objects.launch_date.launch_date_value"> </ifdef>^ca_objects.launch_date.launch_date_value</div></div></ifdef>}}}
-<?php
-					if($vb_close_row){
-						print "</div>";
-					}
-?>
-					{{{<ifdef code="ca_objects.marketing|ca_objects.season_list|ca_objects.manufacture_date|ca_objects.launch_display_date|ca_objects.launch_date.launch_date_value"><HR></ifdef>}}}
+					<div class="row">
+					{{{<div class="col-sm-4"><div class="unit"><H6>Date</H6>^ca_objects.manufacture_date<ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div></div>}}}
+					{{{<ifdef code="ca_objects.launch_display_date|ca_objects.launch_date.launch_date_value"><div class="col-sm-4"><div class="unit"><H6>Launch Date</H6>^ca_objects.launch_display_date<ifdef code="ca_objects.launch_display_date,ca_objects.launch_date.launch_date_value"> </ifdef>^ca_objects.launch_date.launch_date_value</div></div></ifdef>}}}
+					{{{<ifdef code="ca_objects.season_list"><div class="col-sm-4"><div class="unit"><H6>Season</H6>^ca_objects.season_list</div></div></ifdef>}}}
+					</div>
+					<HR>
 					{{{<if rule="^ca_objects.type_id !~ /Component/">
 						<ifdef code="ca_objects.price"><div class="unit"><H6>Sold for</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.price</unit></div></ifdef>
 						<ifdef code="ca_objects.packaging"><div class="unit"><H6>Packaging Note</H6><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.packaging</unit></div></ifdef>
@@ -257,8 +286,10 @@
 						if($vs_shade || $vs_fragrance){
 							$vs_caption .= ". ";
 						}
-						if($vs_man_date = trim($t_parent->get("ca_objects.season_list")." ".$t_parent->get("ca_objects.manufacture_date"))){
+						if($vs_man_date = $t_parent->get("ca_objects.manufacture_date")){
 							$vs_caption .= $vs_man_date." ";
+						}else{
+							$vs_caption .= "Undated ";
 						}
 						if($vs_product_code = $t_parent->get("ca_objects.codes.product_code")){
 							$vs_caption .= "(".$vs_product_code.")";
@@ -353,7 +384,7 @@
 							}
 							$vs_caption = "";
 							$vs_caption .= $qr_related->get('ca_objects.type_id', array('returnAsLink' => true, 'convertCodesToDisplayText' => true));
-							if($vs_tmp = $qr_related->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true))){
+							if($vs_tmp = $qr_related->get("ca_objects.archival_formats", array("convertCodesToDisplayText" => true))){
 								$vs_caption .= " - ".$vs_tmp;
 							}
 							$vs_caption .= "<br/>";
@@ -365,7 +396,13 @@
 								$vs_caption .= $vs_brand.(($vs_brand && $vs_subbrand) ? ", " : "").$vs_subbrand."<br/>";
 							}
 							$vs_caption .= "<b>".$qr_related->get('ca_objects.preferred_labels')."</b>";
-							if($vs_tmp = $qr_related->getWithTemplate('<ifdef code="ca_objects.season_list|ca_objects.manufacture_date">^ca_objects.season_list<ifdef code="ca_objects.season_list,ca_objects.manufacture_date"> </ifdef>^ca_objects.manufacture_date</ifdef>')){
+							$vs_tmp = $qr_related->getWithTemplate('<if rule="^ca_objects.type_id =~ /Container/">
+																<div class="unit"><ifdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.display_date</unit></ifdef><ifnotdef code="ca_objects.display_date"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit></ifnotdef><ifnotdef code="ca_objects.display_date,ca_objects.manufacture_date">Undated</ifnotdef></div>
+															</if>
+															<if rule="^ca_objects.type_id !~ /Container/">
+																<div class="unit"><unit relativeTo="ca_objects" delimiter=", ">^ca_objects.manufacture_date</unit><ifnotdef code="ca_objects.manufacture_date">Undated</ifnotdef></div>
+															</if>');
+							if($vs_tmp){
 								$vs_caption .= " (".$vs_tmp.")";
 							}
 							print caDetailLink($this->request, $vs_caption, '', 'ca_objects', $qr_related->get('ca_objects.object_id'));
@@ -392,7 +429,7 @@
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">
-			{{{nextLink}}}
+			<?php print $vs_next_link; ?>
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->

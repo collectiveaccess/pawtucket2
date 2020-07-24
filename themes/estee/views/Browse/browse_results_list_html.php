@@ -110,8 +110,8 @@
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
 				
-					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id, array("last_tab" => "browse"));
+					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id, array("last_tab" => "browse"));
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
@@ -149,6 +149,9 @@
 									if($vs_tmp = $qr_res->get('ca_objects.transferred_date', array("delimeter" => ", "))){
 										print "<div class='unit'><H6>Publication Date</H6>".$vs_tmp."</div>";
 									}
+									if($vs_tmp = $qr_res->get('ca_objects.language', array("delimeter" => ", "))){
+										print "<div class='unit'><H6>Language</H6>".$vs_tmp."</div>";
+									}
 									$va_entities = $qr_res->get("ca_entities", array('returnWithStructure' => true, 'checkAccess' => $va_access_values));
 									if(is_array($va_entities) && sizeof($va_entities)){
 										$va_entities_by_type = array();
@@ -185,16 +188,9 @@
 						}else{
 							if($vs_table == "ca_objects"){
 								# --- caption info
-								# --- Object Type - Archival Material Type if folder/item, line break,  Brand, Sub Brand / Collection if one, line break, Object Name, (Manufacture Season (if one) and Manufacture Date) or folder/item (Date)
-						
+								
 								$vs_caption = "<div class='resultType'>";
 								$vs_caption .= $qr_res->get('ca_objects.type_id', array('convertCodesToDisplayText' => true))." &rsaquo; ";
-								#if($vs_tmp = $qr_res->get("ca_objects.archival_types", array("convertCodesToDisplayText" => true, "delimiter" => ", "))){
-								#	$vs_caption .= $vs_tmp;
-								#	if($qr_res->get("ca_objects.brand")){
-								#		$vs_caption .= "<br/>";
-								#	}
-								#}
 								$vs_brand = $qr_res->get("ca_objects.brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "));
 								$vs_subbrand = $qr_res->get("ca_objects.sub_brand", array("convertCodesToDisplayText" => true, "delimiter" => ", "));
 								if($vs_brand || $vs_subbrand){
@@ -202,8 +198,8 @@
 								}
 								$vs_caption .= "</div>";
 								$vs_caption .= trim($qr_res->get('ca_objects.preferred_labels'));
-								$vs_tmp = trim($qr_res->getWithTemplate('^ca_objects.season_list ^ca_objects.manufacture_date'));
-								if(!$qr_res->get("ca_objects.manufacture_date") && strPos("archival item", strToLower($qr_res->get("ca_objects.type_id", array("convertCodesToDisplayText" => true)))) !== false){
+								$vs_tmp = $qr_res->getWithTemplate('^ca_objects.manufacture_date');
+								if(!$qr_res->get("ca_objects.manufacture_date")){
 									$vs_tmp .= "undated";
 								}
 								if(trim($vs_tmp)){
@@ -212,7 +208,7 @@
 								if($vs_tmp = $qr_res->get("ca_objects.codes.product_code")){
 									$vs_caption .= " (".$vs_tmp.")";
 								}
-								$vs_label_detail_link = caDetailLink($this->request, $vs_caption, '', $vs_table, $vn_id);
+								$vs_label_detail_link = caDetailLink($this->request, $vs_caption, '', $vs_table, $vn_id, array("last_tab" => "browse"));
 							}
 							if(!$vs_image){
 								if ($vs_table == 'ca_objects') {
@@ -229,7 +225,7 @@
 									$vs_image = $vs_default_placeholder_tag;
 								}
 							}
-							$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id);	
+							$vs_rep_detail_link 	= caDetailLink($this->request, $vs_image, '', $vs_table, $vn_id, array("last_tab" => "browse"));	
 				
 							$vs_add_to_set_link = "";
 							if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
@@ -276,7 +272,7 @@
 				$vn_results_output++;
 			}
 			
-			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
+			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('dontSetFind' => $this->request->getParameter('dontSetFind', pString), 's' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
 		}
 ?>
 <script type="text/javascript">

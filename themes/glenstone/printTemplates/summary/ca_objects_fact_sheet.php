@@ -48,12 +48,15 @@
 	print $this->render("footer.php");	
 ?>
 
-	<div class="representationList factsheet factsheetRepresentationList">
+	<div class="representationList factsheet">
 		
 <?php
 	#print $t_item->get('ca_object_representations.media.page', array('scaleCSSWidthTo' => '400px', 'scaleCSSHeightTo' => '400px'));
 	$va_rep = $t_item->getPrimaryRepresentation(array('page'), null, array('return_with_access' => $va_access_values, 'scaleCSSWidthTo' => '468px', 'scaleCSSHeightTo' => '234px'));
-	print $va_rep['tags']['page'];
+	
+	$offset_div =  (($height = $va_rep['info']['page']['HEIGHT']) < 400) ? "<div style='width: 10px; height: ".($height - 100)."px;'> </div>" : "";
+	print $offset_div.$va_rep['tags']['page'].$offset_div;
+	
 #	foreach($va_reps as $va_rep) {
 #		if(sizeof($va_reps) > 1){
 #			# --- more than one rep show thumbnails
@@ -66,7 +69,6 @@
 #	}
 ?>
 	</div>
-	<br/><br/>
 	<div class='tombstone factsheet'>
 		
 	{{{<unit relativeTo='ca_entities' restrictToRelationshipTypes='artist'>^ca_entities.preferred_labels.displayname</unit>}}}

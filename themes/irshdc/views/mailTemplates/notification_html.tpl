@@ -26,15 +26,11 @@
  * ----------------------------------------------------------------------
  */
 
-print _t("<p>Your Residential School History and Dialogue Centre account password was reset on %1 at %2. If you did not reset your password, please contact us at %3.</p>
+print _t("<p>Your Residential School History and Dialogue Centre account password was reset on %1/%2. You will now be able to login with your new password at https://collections.irshdc.ubc.ca.</p>
+ 
+<p>If you did not reset your password, or if you require further assistance, please contact us at <a href='mailto:irshdc.reference@ubc.ca'>irshdc.reference@ubc.ca</a>.</p>
 
+", date("F j, Y"), date("G:i"));
 
-<p>Sincerely,<br/>
-
-The RSHDC Team</p>
-
-", date("F j, Y"), date("G:i"), $this->request->config->get("ca_admin_email"));
-
-
-	print $this->request->config->get("site_host");
+print "<br/><br/><p><img src='".$this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'rshdc-promo-black.png')."'></p>";
 ?>

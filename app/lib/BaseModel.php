@@ -1202,7 +1202,7 @@ class BaseModel extends BaseObject {
 			}
 			$va_fld_list = array_keys($va_fld_list);
 		}
-		$vs_fld_list = (sizeof($va_fld_list)) ? join(", ", $va_fld_list) : "*";
+		$vs_fld_list = (sizeof($va_fld_list)) ? join(", ", array_map(function($v) { return (substr($v, 0, 1) !== '`') ? "`{$v}`" : $v; }, $va_fld_list)) : "*";
 		
 		$o_db = $this->getDb();
 		
@@ -7569,7 +7569,7 @@ if (!isset($pa_options['dontSetHierarchicalIndexing']) || !$pa_options['dontSetH
 		if(!is_array($pa_options)) { $pa_options = array(); }
 		
 		$vs_pk = $this->primaryKey();
-		$pn_id = caGetOption($vs_pk, $pa_options, null);
+		$pn_id = caGetOption($vs_pk, $pa_options, $this->getPrimaryKey());
 		$va_hier = $this->getHierarchyAsList($pn_id, array_merge($pa_options, array('idsOnly' => false, 'sort' => null)));
 		
 		$va_levels = $va_ids = $va_parent_ids = [];
@@ -10849,7 +10849,7 @@ $pa_options["display_form_field_tips"] = true;
 			$vs_limit_sql = "LIMIT ".intval($pn_limit);
 		}
 		
-		$va_wheres = array('(civc.table_num = '.intval($this->tableNum()).')');
+		$va_wheres = [];
 		if (is_array($pa_options['checkAccess']) && sizeof($pa_options['checkAccess']) && ($this->hasField('access'))) {
 			$va_wheres[] = 't.access IN ('.join(',', $pa_options['checkAccess']).')';
 		}

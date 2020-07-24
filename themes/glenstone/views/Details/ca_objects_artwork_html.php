@@ -622,6 +622,21 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 					   $artwork_docs = array_shift($artwork_docs);
 					   $artwork_docs = array_filter($artwork_docs, function($v) { return $v['artwork_documents_primary'] == 162; });
 					   
+					   $founders_access = caGetListItemID('access_statuses', 'founders');
+					   $curatorial_access = caGetListItemID('access_statuses', 'curatorial');
+					   $general_access = caGetListItemID('access_statuses', 'general');
+					   
+					   if ($this->request->user->hasUserRole("founders_new") || $this->request->user->hasUserRole("admin")) {
+					   		$accesses = [$founders_access, $curatorial_access, $general_access];
+					   } else if($this->request->user->hasUserRole("curatorial_all_new") || $this->request->user->hasUserRole("curatorial_basic_new") || $this->request->user->hasUserRole("curatorial_advanced")) {
+					   		$accesses = [$curatorial_access, $general_access];
+					   } else {
+					   		$accesses = [$general_access];
+					   }
+					   
+					   $artwork_docs = array_filter($artwork_docs, function($v) use ($accesses) {
+					   		return in_array($v['artwork_document_access'], $accesses);
+					   });
 					   if (sizeof($artwork_docs) > 0) {
                            print '<div class="unit wide"><span class="metaHeader">Artwork Documents</span><span>';
                            $vn_media_element_id = ca_metadata_elements::getElementID('artwork_documents_media');
@@ -656,6 +671,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 #						}
 #					}
 
+if ($this->request->user->hasUserRole("founders_new")) {
 					if ($va_cert_auths = $t_object->get('ca_objects.certificate_auth', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 						foreach ($va_cert_auths as $va_cert_key => $va_cert_auth_t) {
 							foreach ($va_cert_auth_t as $va_cert_key => $va_cert_auth) {
@@ -665,6 +681,7 @@ if ($this->request->user->hasUserRole("founders_new") || $this->request->user->h
 							}
 						}
 					}
+}
 					if ($va_art_agrs = $t_object->get('ca_objects.artist_agreement', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 						foreach ($va_art_agrs as $va_arg_key => $va_art_agr_t) {
 							foreach ($va_art_agr_t as $va_arg_key => $va_art_agr) {

@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014-2018 Whirl-i-Gig
+ * Copyright 2014-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -287,7 +287,18 @@
 			
 			// Expand field list into array
 			$sort_fields = is_array($sort_list) ? $sort_list : explode(';', $sort_list); 
+			$embedded_sort_directions = array_map(function($v) { $t = explode(':', $v); return (sizeof($t) == 2) ? strtolower(trim(array_pop($t))) : null; }, $sort_fields);
+		
 			$sort_directions = is_array($sort_directions) ? $sort_directions : explode(';', $sort_directions); 
+			if(sizeof($sort_directions) < sizeof($sort_fields)) {
+				$sort_directions = array_pad($sort_directions, sizeof($sort_fields), $sort_directions[0]);
+			}
+			foreach($embedded_sort_directions as $i => $d) {
+				if(in_array($d, ['asc', 'desc'])) { 
+					$sort_fields[$i] = array_shift(explode(':', $sort_fields[$i]));
+					$sort_directions[$i] = $d; 
+				}
+			}
 			if (sizeof($sort_directions) !== sizeof($sort_fields)) {
 				$sort_directions = array_pad($sort_directions, sizeof($sort_fields), "asc");
 			}
@@ -337,7 +348,7 @@
 						}
 						
 						$sql = "
-							SELECT {$table_pk}, {$sort_field}
+							SELECT {$table_pk}, `{$sort_field}`
 							FROM {$table}
 							WHERE
 								{$table_pk} IN (?)
@@ -436,7 +447,7 @@
 							$keys = [];	// sortable values by sort id
 							while($qr_keys->nextHit()) {	// Loop on sortables
 								$sort_id = $qr_keys->get($sort_table_full_pk);
-								$sort_values = $qr_keys->get("{$sort_table}.{$sort_field}", ['sortable' => true, 'returnAsArray' => true]);
+								$sort_values = $qr_keys->get("{$sort_table}.`{$sort_field}`", ['sortable' => true, 'returnAsArray' => true]);
 								
 								if(!is_array($keys[$sort_id])) { $keys[$sort_id] = []; }
 								foreach($sort_values as $i => $sort_value) {
@@ -471,7 +482,7 @@
 					
 					$vs_join_sql = join("\n", $joins);
 					$sql = "
-						SELECT {$table}.{$table_pk}, {$sort_table}.{$sort_field}
+						SELECT {$table}.{$table_pk}, {$sort_table}.`{$sort_field}`
 						FROM {$table}
 						{$vs_join_sql}
 						WHERE
@@ -512,32 +523,36 @@
 				$sort_directions = array_pad($sort_directions, sizeof($sortable_values), (strtolower($sort_directions) == 'desc') ? 'desc' : 'asc');
 			}
 			
-			if (sizeof($hits) < 1000000) {
+			$o_conf = caGetSearchConfig();
+			if (!($max_hits_for_in_memory_sort = $o_conf->get('max_hits_for_in_memory_sort'))) { $max_hits_for_in_memory_sort = 1000000; }
+			if (sizeof($hits) < $max_hits_for_in_memory_sort) {
+				$sort_mode = SORT_FLAG_CASE;
+				if (!$o_conf->get('dont_use_natural_sort')) { $sort_mode |= SORT_NATURAL; } else { $sort_mode |= SORT_STRING; }
+				
 				//
 				// Perform sort in-memory
 				//
 				$sort_buffer = [];
 				
-				$c = 0;
 				foreach($hits as $idx => $hit) {
-					$key = '';
-					foreach($sortable_values as $vn_i => $sortable_values_level) {
+					
+					$keys = [];
+					foreach($sortable_values as $i => $sortable_values_level) {
+						if(!sizeof($sortable_values_level)) { continue; }
 						$v = preg_replace("![^\w_]+!u", " ", caRemoveAccents($sortable_values_level[$hit]));
-						
-						$key .= str_pad(substr($v,0,50), 50, ' ', is_numeric($v) ? STR_PAD_LEFT : STR_PAD_RIGHT);
+						$keys[] = str_pad(substr($v, 0, 50), 50, ' ', is_numeric($v) ? STR_PAD_LEFT : STR_PAD_RIGHT);
 					}
-					$sort_buffer[$key.str_pad($c, 8, '0', STR_PAD_LEFT)] = $return_index ? $idx . '/' . $hit : $hit;
-					$c++;
+					$ptr = &$sort_buffer;
+					
+					foreach($keys as $key) {
+						if (!is_array($ptr[$key])) { $ptr[$key] = []; }
+						$ptr = &$ptr[$key];
+					}
+					$ptr[] = $return_index ? $idx . '/' . $hit : $hit;
 				}
 				
-				$o_conf = caGetSearchConfig();
-
-				$sort_mode = SORT_FLAG_CASE;
-				if (!$o_conf->get('dont_use_natural_sort')) { $sort_mode |= SORT_NATURAL; } else { $sort_mode |= SORT_STRING; }
+				$sort_buffer = self::_sortKeys($sort_buffer, $sort_mode, $sort_directions, 0);
 				
-				ksort($sort_buffer, $sort_mode);
-				if ($sort_directions[0] == 'desc') { $sort_buffer = array_reverse($sort_buffer); }
-
 				if($return_index) {
 					$return = [];
 					foreach($sort_buffer as $val) {
@@ -576,6 +591,24 @@
 		}
 		# ------------------------------------------------------------------
 		/**
+		 *
+		 */
+		static private function _sortKeys($sort_buffer, $sort_mode, $sort_directions, $level=0) {
+			ksort($sort_buffer, $sort_mode);
+			if(strtolower($sort_directions[$level]) === 'desc') { $sort_buffer = array_reverse($sort_buffer); }
+			
+			$ret = [];
+			foreach($sort_buffer as $key => $subkeys) {
+				if(is_array($subkeys)) {
+					$ret = array_merge($ret, self::_sortKeys($subkeys, $sort_mode, $sort_directions, $level + 1));
+				} else {
+					return $sort_buffer;
+				}
+			}
+			return $ret;
+		}
+		# ------------------------------------------------------------------
+		/**
 		 * Discards any existing temporary table on deallocation.
 		 */
 		public function __destruct() {
@@ -596,10 +629,26 @@
 			if (!($t_element = ca_metadata_elements::getInstance($ps_element_code))) {
 				return false;
 			}
+			
+			$datatype = $t_element->get('datatype');
+			if ($datatype == 0) {
+			    // is container
+			    $elements = $t_element->getElementsInSet();
+			    $concatenated_keys = [];
+			    foreach($elements as $e) {
+			        if ($e['datatype'] == 0) { continue; }
+			        $keys = $this->_getSortKeysForElement($e['element_code'], $pn_table_num, $pa_hits);
+			        foreach($keys as $id => $val) {
+			            $sv = mb_substr($val, 0, 30);
+			            $concatenated_keys[$id] = str_pad($sv, 30, " ", is_numeric($sv) ? STR_PAD_LEFT : STR_PAD_RIGHT);
+			        }
+			    }
+			    return $concatenated_keys;
+			}
 
 			// is metadata element
 			$vn_element_id = $t_element->getPrimaryKey();
-			if (!($vs_sortable_value_fld = Attribute::getSortFieldForDatatype($t_element->get('datatype')))) {
+			if (!($vs_sortable_value_fld = Attribute::getSortFieldForDatatype($datatype))) {
 				return false;
 			}
 
@@ -657,7 +706,7 @@
                         $vs_sort_field = array_pop(explode('.', $vs_sortable_value_fld));
 				        
 				        $vs_sql = "
-							SELECT attr.row_id, LPAD(li.rank,9, '0') {$vs_sort_field}
+							SELECT attr.row_id, LPAD(li.`rank`,9, '0') {$vs_sort_field}
 							FROM ca_attributes attr
 							INNER JOIN ca_attribute_values AS attr_vals ON attr_vals.attribute_id = attr.attribute_id
 							LEFT JOIN ca_list_items AS li ON attr_vals.value_longtext2 = li.idno
@@ -695,10 +744,18 @@
 			$va_sort_keys = array();
 			while($qr_sort->nextRow()) {
 				$va_row = $qr_sort->getRow();
-				$va_sort_keys[$va_row['row_id']] = $va_row[$vs_sort_field];
+				$va_sort_keys[$va_row['row_id']][] = $va_row[$vs_sort_field];
 			}
 			foreach($pa_hits as $id) {
-			    if(!isset($va_sort_keys[$id])) { $va_sort_keys[$id] = $pad_keys ? '000000000' : ''; }
+			    if(!isset($va_sort_keys[$id])) { $va_sort_keys[$id] = [$pad_keys ? '000000000' : '']; }
+			}
+			foreach($va_sort_keys as $row_id => $keys) {
+			    if (sizeof(array_filter($keys, function($v) { return is_numeric($v); })) > 0) {
+			        sort($keys, SORT_NUMERIC);
+			    } else {
+			        sort($keys, SORT_REGULAR);
+			    }
+			    $va_sort_keys[$row_id] = join(";", $keys);
 			}
 			return $va_sort_keys;
 		}

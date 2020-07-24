@@ -100,11 +100,7 @@
  		 	if(is_array($this->opa_access_values) && sizeof($this->opa_access_values)){
  		 		$o_search->addResultFilter("ca_entities.access", "IN", join(',', $this->opa_access_values));
 			}
-			$qr_res = $o_search->search("ca_entities.type_id:".$this->opn_school_id);
- 			$o_entity_context = new ResultContext($this->request, 'ca_entities', 'exploreSchools');
- 			$o_entity_context->setAsLastFind();
- 			$o_entity_context->setResultList($qr_res->getPrimaryKeyValues(1000));
- 			$o_entity_context->saveContext();
+			$qr_res = $o_search->search("ca_entities.type_id:".$this->opn_school_id, array("sort" => "ca_entity_labels.name_sort"));
  				
  			$o_map = new GeographicMap('100%', 500, 'map');
 			$va_map_stats = $o_map->mapFrom($qr_res, "ca_places.georeference", array("labelTemplate" => "^ca_entities.preferred_labels%delimiter=; ", "ajaxContentUrl" => caNavUrl($this->request, "", "Explore", "getMapItemInfo"), "request" => $this->request, "checkAccess" => $this->opa_access_values));

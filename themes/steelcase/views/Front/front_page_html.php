@@ -34,15 +34,14 @@
 <div class="container">
 	<div class="row">
 		<div class="col-sm-8">
-			<H1>Welcome to the beta release of the Steelcase digital art collection!</H1>
+			<H1>Welcome to the Steelcase digital art collection!</H1>
 			<ul class="introText">
 				<li>The database works best in Chrome, Safari, and Firefox</li>
-				<li>Inventory of works on display is currently in progress</li>
-				<li>Newly inventoried artwork will begin to appear in July 2015, allowing you to learn about the inspirational artwork in your and other workspaces</li>
-				<li>A mobile app allowing for customer/employee walking tours of select works on display is planned for release in 2016</li>
-				<li>Your feedback is appreciated and is extremely important for making art.steelcase.com a useful resource</li>
+				<li>The digital collection provides employees the opportunity to view works in the collection beyond your workspace</li>
+				<li>The majority of the collection is copyright protected by the artist, please adhere to copyright laws when downloading images</li>
+				<li>For information on use of photographs/images of copyrighted works read this <a href="http://www.wipo.int/wipo_magazine/en/2006/02/article_0010.html">article</a> by the WIPO or contact the <a href="https://spark.steelcase.com/docs/DOC-38047">Steelcase Legal Team</a></li>
 				<li>For any questions, comments or artwork requests, contact <a href="mailto:art@steelcase.com">art@steelcase.com</a></li>
-				<li>Explore and have fun!</li>
+				<li>Explore, become inspired, and have fun!</li>
 			</ul>
 <?php 
 			if($this->request->user->getLastLogout()){
