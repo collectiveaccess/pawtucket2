@@ -90,7 +90,7 @@
 		<!-- Collect the nav links, forms, and other content for toggling -->
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right">
-					<li <?php print (in_array(mb_strtolower($this->request->getAction()), array("exhibitions", "past_exhibitions", "upcoming_exhibitions"))) ? 'class="active"' : ''; ?>><?php print ($vn_current_exhibition) ? caDetailLink($this->request, _t("Exhibitions"), '', 'ca_occurrences', $vn_current_exhibition, null, null, array("action" => "exhibitions")) : caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "past_exhibitions"); ?></li>
+					<li <?php print (in_array(mb_strtolower($this->request->getAction()), array("exhibitions", "past_exhibitions", "upcoming_exhibitions", "current_exhibitions"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Exhibitions"), "", "", "Listing", "current_exhibitions"); ?></li>
 					<li <?php print (mb_strtolower($this->request->getAction()) == "artists") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Listing", "Artists"); ?></li>
 					<li><a href="/news/?m=<?php print date("Y"); ?>">Blog</a></li>
 					<li <?php print (mb_strtolower($this->request->getAction()) == "fairs") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art Fairs"), "", "", "Listing", "Fairs"); ?></li>
