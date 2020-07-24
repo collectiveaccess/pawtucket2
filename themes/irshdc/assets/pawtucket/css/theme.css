@@ -1513,6 +1513,12 @@ a.digExhAnchors.offset{
 	font-size:25px;
 	text-align:center;
 	padding:40px;
+}
+@media(max-width:767px){
+	.digExhContentBlock .quote{
+		padding-bottom:120px;
+		padding-top:0px;
+	}
 }	
 .vcenter {
     display: inline-block;
@@ -1556,6 +1562,10 @@ a.digExhAnchors.offset{
 .vco-storymap h2.vco-headline-title, .vco-storymap h2 {
     font-size: 22px !important;
     line-height: 22px !important;
+}
+.storymapContainer{
+	width: 100%;
+	height: 600px;
 }
 /* carousel */
 .digExhSlide{
@@ -1614,4 +1624,59 @@ a.digExhDetailPrev, a.digExhDetailNext{
 }
 .digExhContentBlock #detailComments .btn-default{
 	display:none;
+}
+.digExhSideNavMobile{
+	display:none;
+}
+@media(max-width:1024px){
+	.storymapContainer{
+		height: 500px;
+	}
+}
+@media(max-width:991px){
+	.digExhSideNav{
+		display:none;
+	}
+	.digExhSideNavMobile{
+		display:block;
+	}
+	.digExhSideNavMobile .dropdown, .digExhSideNavMobile .dropdown button, .digExhSideNavMobile .dropdown .dropdown-menu{
+		width:100%;
+		text-align:center;
+	}
+	.digExhSideNavMobile .dropdown{
+		margin-bottom:10px;
+	}
+	.digExhSideNavMobile .dropdown li > a{
+		font-family:Lato;
+		font-size:16px;
+		padding-top: 10px;
+		padding-bottom:10px;
+		color:#777;
+		text-transform:uppercase;
+	}
+	.digExhSideNavMobile .dropdown li.redLink > a{
+		color: #8a0000;
+		font-family:LatoLight;
+		text-transform:none;
+	}
+}
+@media(max-width:767px){
+	.vcenter{
+		width: 100%;
+		padding-bottom:45px;
+	}
+	.digExhContentBlock .contentBlockSubTitle{
+		margin-bottom:0px;
+	}
+	.digExhContentBlock .quoteMargin{
+		margin-top:45px;
+		margin-bottom:55px;
+	}
+	.storymapContainer{
+		height: 450px;
+	}
+	.vco-mobile.vco-skinny .vco-media .vco-media-image{
+		max-height:125px !important;
+	}
 }

@@ -109,6 +109,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 								print "</a>";
 							}
 						}
+						$qr_content_blocks->seek(0);
 					}
 					if($vn_comments_enabled){
 						print "<a href='#comments'><div class='digExhSideNavLink digExhSideNavLinkNoImg'>Discussion</div></a>";
@@ -137,6 +138,36 @@ $vs_mode = $this->request->getParameter("mode", pString);
 						<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
 <?php
 					}
+?>
+					<div class="digExhSideNavMobile">
+						<div class="dropdown">
+							<button class="btn btn-secondary dropdown-toggle" type="button" id="JumpToMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								<i class="fa fa-bars" aria-hidden="true"></i> MENU
+							</button>
+							<div class="dropdown-menu" aria-labelledby="JumpToMenu">
+<?php
+								if($qr_content_blocks->numHits()){
+									while($qr_content_blocks->nextHit()){
+										if($vs_link_text = $qr_content_blocks->get("ca_occurrences.nav_text")){
+											print "<li><a href='#".$qr_content_blocks->get("ca_occurrences.idno")."'>".$vs_link_text."</a></li>";
+										}
+									}
+								}
+								if($vn_comments_enabled){
+									print "<li><a href='#comments'>Discussion</a></li>";
+								}
+								if($vb_related){
+									print "<li><a href='#related'>Related Resources</a></li>";
+								}
+								print "<li role='separator' class='divider'></li>";
+								print "<li class='redLink'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")))."</li>";
+								print "<li class='redLink'>".caDetailLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download as PDF", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</li>";
+
+?>						
+							</div>
+						</div>
+					</div>
+<?php
 					$qr_content_blocks->seek(0);
 					if($qr_content_blocks->numHits()){
 						$vn_block_count;
@@ -209,10 +240,6 @@ $vs_mode = $this->request->getParameter("mode", pString);
 															);
 								}
 							}
-
-
-
-
 
 ?>
 							<div class="digExhContentBlock">
@@ -299,7 +326,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 										switch(strToLower($t_set->get("set_presentation_type", array("convertCodesToDisplayText" => true)))){
 											case "story map":
 ?>
-												<div id="storymap<?php print "{$vn_set_id}_{$vn_block_count}"; ?>" style="width: 100%; height: 600px;"></div><!-- end browseResultsContainer -->
+												<div id="storymap<?php print "{$vn_set_id}_{$vn_block_count}"; ?>" class="storymapContainer"></div><!-- end browseResultsContainer -->
 												
 												<script>
 													jQuery(document).ready(function() {
@@ -646,22 +673,20 @@ $vs_mode = $this->request->getParameter("mode", pString);
 			var scrollLimit = jQuery('.digExhContent').offset();
 			jQuery(window).scroll(function () {
 				var scrollTop = $(window).scrollTop();
-				var initWidth = $('.digExhSideNav').width();
 				var bodyHeight = jQuery('body').height();
 				var footerHeight = jQuery('#footer').height() + 40;
 				// check the visible top of the browser
 				if ((scrollTop > scrollLimit.top - jQuery('nav').height()) && (scrollTop < (bodyHeight - (jQuery(window).height() - footerHeight)))) { // 83 = height of header
-					//jQuery('.digExhRightCol').addClass('fixed');
 					jQuery('.digExhSideNav').addClass('fixed');
-					
-					jQuery('.digExhSideNav').width(initWidth);
+					jQuery('.digExhSideNav').width(jQuery('.digExhSideNav').parent().width());
 					$('.digExhSideNav').css('max-height', jQuery(window).height() - jQuery('nav').height() + 'px');
-					//jQuery('.digExhRightCol').width(initWidth);
 				} else {
-					//jQuery('.digExhRightCol').removeClass('fixed');
 					jQuery('.digExhSideNav').removeClass('fixed');
 					$('.digExhSideNav').css('max-height', 'auto');
 				}
+			});
+			$(window).resize(function() {
+				jQuery('.digExhSideNav').width(jQuery('.digExhSideNav').parent().width());
 			});
 		}
 	});
