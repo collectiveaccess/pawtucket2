@@ -39,7 +39,12 @@
 	</div>
 	<div class="col-sm-4 col-md-3 col-md-offset-1">
 	 	<div class="thumbnail">
-	 		<?php print caGetThemeGraphic($this->request, 'about_building.jpg', array('alt' => 'Exterior of Susan Eley Fine Art')); ?>
+	 		<?php print caGetThemeGraphic($this->request, 'about_building.jpg', array('alt' => 'Exterior of Susan Eley Fine Art NYC')); ?>
+	 		<small>NYC</small>
+	 	</div>
+	 	<div class="thumbnail">
+	 		<?php print caGetThemeGraphic($this->request, 'about_hudson.jpg', array('alt' => 'Exterior of Susan Eley Fine Art Hudson NY')); ?>
+	 		<small>Hudson, NY</small>
 	 	</div>
 	</div>
 </div><!-- end row -->

@@ -64,7 +64,7 @@
 				$va_images = caGetDisplayImagesForAuthorityItems("ca_occurrences", $va_ids, array('version' => 'thumbnail300', 'relationshipTypes' => array("used_website"), "objectTypes" => array("artwork", "mixed_media", "painting", "photograph", "print", "sculpture", "works_paper"), 'checkAccess' => $va_access_values, 'useRelatedObjectRepresentations' => true));
 			}
 			if(is_array($va_years) && sizeof($va_years) > 1){		
-				#arsort($va_years);
+				arsort($va_years);
 				foreach($va_years as $vs_year){
 					print "<li class='yearBar yearBar".$vs_year."'><a href='#' onClick='$(\".yearBar\").removeClass(\"active\"); $(this).parent().addClass(\"active\"); $(\".yearTab\").hide(); $(\"#yearTab".$vs_year."\").show(); return false;'>".$vs_year."</a></li>";
 				}
@@ -117,7 +117,7 @@
 	</div><!--end row contentbody-->
 <?php
 	if(is_array($va_years)){
-		$vs_last_year = array_pop($va_years);
+		$vs_last_year = array_shift($va_years);
 ?>
 	<script type='text/javascript'>
 		jQuery(document).ready(function() {		

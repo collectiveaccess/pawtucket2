@@ -103,11 +103,11 @@ strong, b {
 	font-family: GillSansMTStd-Medium;
 	font-weight:normal;
 }	
-@media (min-width: 768px) {
+/*@media (min-width: 768px) {
   .container {
     width: 750px;
   }
-}
+}*/
 @media (min-width: 992px) {
   .container {
     width: 970px;
@@ -179,6 +179,7 @@ div.captionSlideshow{
 /* ------Nav Styles------------ */
 .navbar-brand {
 	padding:15px 0 0 0;
+	width:120px;
 }
 .navbar-brand img{
 	max-height:69px;  /* this is the size for the regular logo */
@@ -422,7 +423,9 @@ div.captionSlideshow{
 .front .hpEvent .col-xs-12{
 	margin-bottom:40px;
 }
-
+.front .hpSpace{
+	height:80px;
+}
 /* ------ Details -------------- */
 .jcarousel-control-prev{
 	left:0px !important;
