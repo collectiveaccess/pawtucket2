@@ -82,7 +82,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-12 col-sm-6">
-					<a href="https://wp.stolaf.edu" target="_blank"><span class="glyphicon glyphicon-home"></span>St. Olaf College Home</a>
+					<a href="https://wp.stolaf.edu" target="_blank"><?php print caGetThemeGraphic($this->request, 'StOlaf_Dark_Horizontal.jpg'); ?></a>
 				</div>
 				<div class="col-xs-12 col-sm-6">
 <?php
@@ -90,7 +90,7 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span><?php print ($this->request->isLoggedIn()) ? $this->request->user->get("fname") : " Login"; ?></a>
 						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
@@ -110,7 +110,7 @@
 ?>
 				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
 					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
+					<span class="glyphicon glyphicon-user"></span><?php print ($this->request->isLoggedIn()) ? "" : " Login"; ?>
 				</button>
 <?php
 	}
@@ -122,7 +122,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo-one-line-light-bg.png')."<div class='brandSubtitle'>Archives Search Home</div>", "navbar-brand", "", "","");
+				print caNavLink($this->request, "<div class='brandSubtitle'>Archives Search Home</div>", "navbar-brand", "", "","");
 				#print caNavLink($this->request, "St. Olaf College Archives Search Home", "navbar-brand", "", "","");
 ?>
 			</div>

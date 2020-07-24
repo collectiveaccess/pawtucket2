@@ -32,13 +32,18 @@
 		<footer id="footer">
 			<div class="container">
 				<div class="row">
-					<div class="col-sm-6">
-						Rolvaag Memorial Library/Special Collections
+					<div class="col-md-6">
+						<span class="footerHighlight">The Shaw-Olson Center for College History</span>
+						<br/>Rølvaag Memorial Library
+						<br/>Special Collections and Archives
 						<br/>1510 St. Olaf Avenue
 						<br/>Northfield, MN 55057
+
 					</div>
-					<div class="col-sm-6">
-					
+					<div class="col-sm-12 col-md-3 col-md-offset-3">
+						<b>P</b> 507-786-3229
+						<br/><b>E</b> <a href="mailto:college_archives@stolaf.edu">college_archives@stolaf.edu</a>
+
 					</div>
 				</div>
 			</div>
