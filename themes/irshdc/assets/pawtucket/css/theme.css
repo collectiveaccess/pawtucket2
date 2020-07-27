@@ -1565,7 +1565,7 @@ a.digExhAnchors.offset{
 }
 .storymapContainer{
 	width: 100%;
-	height: 600px;
+	height: 500px;
 }
 /* carousel */
 .digExhSlide{
@@ -1574,6 +1574,13 @@ a.digExhAnchors.offset{
 .digExhSlide img{
 	max-height:400px;
 	width:auto;
+}
+@media(max-width:575px){
+	.digExhSlide img{
+		height:400px;
+		width: 100%;
+		object-fit:contain;
+	}
 }
 
 a.digExhDetailPrev, a.digExhDetailNext{
@@ -1593,9 +1600,9 @@ a.digExhDetailPrev, a.digExhDetailNext{
 .digExhDetailPrev{
 	padding-right:14px;
 }
-@media (min-width: 768px) {
-  	.digExhDetailNext, .digExhDetailPrev{
-		top:45%;
+@media (max-width: 768px) {
+  	a.digExhDetailNext, a.digExhDetailPrev{
+		top:100%;
   	}
 }
 .digExhDetailNext{
@@ -1630,7 +1637,7 @@ a.digExhDetailPrev, a.digExhDetailNext{
 }
 @media(max-width:1024px){
 	.storymapContainer{
-		height: 500px;
+		height: 400px;
 	}
 }
 @media(max-width:991px){
