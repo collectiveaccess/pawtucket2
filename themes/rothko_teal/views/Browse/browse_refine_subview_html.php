@@ -201,7 +201,9 @@
             	if (jQuery(this).attr('facet_item_selected') == '1') {
             		jQuery(this).attr('facet_item_selected', '');
             	} else {
-            	    jQuery(".facetItem" + f).attr('facet_item_selected', '');
+            	    if ((f == 'exhibited_facet') || (f == 'published_facet') || (f == 'double_facet')) {
+            	        jQuery(".facetItem" + f).attr('facet_item_selected', '');
+            	    }
             		jQuery(this).attr('facet_item_selected', '1');
             	}
             	
