@@ -44,12 +44,18 @@
 	if($vn_gallery_set_type_id){
 		$va_tmp = array('checkAccess' => $va_access_values, 'setType' => $vn_gallery_set_type_id, 'table' => "ca_objects");
 		$va_sets = caExtractValuesByUserLocale($t_set->getSets($va_tmp));
-		$va_set_first_items_large = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "large", "checkAccess" => $va_access_values));
-		$va_set_first_items_iconlarge = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
 	}
 	$vn_count = 0;
 
 	if(is_array($va_sets) && sizeof($va_sets)){
+		$va_set_first_items_large = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "large", "checkAccess" => $va_access_values));
+		$va_set_first_items_iconlarge = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "iconlarge", "checkAccess" => $va_access_values));
+		$va_tmp = array();
+		foreach($va_sets as $va_set){
+			$va_tmp[$va_set["set_code"]] = $va_set;
+		}
+		ksort($va_tmp);
+		$va_sets = $va_tmp;
 ?>   
 		<div class="row">
 			<div class="col-sm-12 bgLightBlue colNoPadding">
@@ -59,7 +65,8 @@
 						<ul id="hpSlides">
 <?php
 							$va_thumbnails = array();
-							foreach($va_sets as $vn_set_id => $va_set){
+							foreach($va_sets as $va_set){
+								$vn_set_id = $va_set["set_id"];
 								$t_set = new ca_sets($vn_set_id);
 								if($t_set->get("ca_sets.featureHomePage", array("convertCodesToDisplayText" => true)) == "Yes"){
 									$vs_desc = $t_set->get('ca_sets.short_description');
