@@ -113,7 +113,11 @@
 				
 					#$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 					if($vs_table == "ca_collections"){
-						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->getWithTemplate('<b>^ca_collections.type_id:</b> <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit>'), '', $vs_table, $vn_id);
+						if(strToLower($this->request->getAction()) == "archival_collections"){
+							$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->getWithTemplate('<unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit>'), '', $vs_table, $vn_id);
+						}else{
+							$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->getWithTemplate('<b>^ca_collections.type_id:</b> <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit>'), '', $vs_table, $vn_id);
+						}
 					}else{
 						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
 					}
