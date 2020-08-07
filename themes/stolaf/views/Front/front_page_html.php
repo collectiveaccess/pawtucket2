@@ -33,27 +33,32 @@
 	<div class="row hpTiles">
 		<div class="col-sm-4">
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp1.jpg'), "", "", "Collections","Index")."<br/>";
-				print caNavLink($this->request, "Collections", "btn btn-default", "", "Collections","Index")
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp1.jpg'), "", "", "Browse","archival_collections")."<br/>";
+				print caNavLink($this->request, "Browse Collections", "btn btn-default", "", "Browse","archival_collections")
 ?>
 		</div>
 		<div class="col-sm-4">
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp3.jpg'), "", "", "Browse","objects")."<br/>";
-				print caNavLink($this->request, "Archival Items", "btn btn-default", "", "Browse","objects")
+				print caNavLink($this->request, "Browse Archival Items", "btn btn-default", "", "Browse","objects")
 ?>
 		</div>
 		<div class="col-sm-4">
 <?php
 				print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp2.jpg'), "", "", "Contact","form")."<br/>";
-				print caNavLink($this->request, "Contact", "btn btn-default", "", "Contact","form")
+				print caNavLink($this->request, "Contact Us", "btn btn-default", "", "Contact","form")
 ?>
 		</div>
 
 	</div>
 	<div class="row">
 		<div class="col-sm-8 col-sm-offset-2">
-			<div class="hpCallout">Welcome to the Shaw-Olson Center for College History Archive</div>
+			<div class="hpCallout">{{{FrontWelcome}}}</div>
+		</div><!--end col-sm-8-->
+	</div>
+	<div class="row">
+		<div class="col-sm-8 col-sm-offset-2">
+			{{{FrontAbout}}}
 		</div><!--end col-sm-8-->
 	</div>
 	<div class="row">
@@ -61,5 +66,5 @@
 <?php
 		print $this->render("Front/gallery_slideshow_html.php");
 ?>
-		</div> <!--end col-sm-4-->	
-	</div><!-- end row -->
+		</div>
+	</div>
