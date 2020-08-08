@@ -167,11 +167,11 @@
 <?php
 				if($vn_cc_list_item_id = $t_object->get("ca_objects.creative_commons")){
 					$t_list_item = new ca_list_items($vn_cc_list_item_id);
-					print "<H6>Copyright:</H6>";
+					print "<H6>Rights:</H6>";
 					if($t_list_item->get("ca_list_items.idno") == "cc_restricted"){
-						print $t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true));
+						print "<a href='".$t_list_item->get("ca_list_item_labels.description")."' target='_blank'>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."</a>";
 					}else{
-						print "<a href='".$t_list_item->get("ca_list_item_labels.description")."'>".$t_list_item->get("ca_list_items.icon.original")."<br/>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."</a>";
+						print "<div class='detailCC'><a href='".$t_list_item->get("ca_list_item_labels.description")."' target='_blank'>".$t_list_item->get("ca_list_items.icon.original")."<br/>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."<br/>".$t_list_item->get("ca_list_item_labels.description")."</a></div>";
 					}
 				}
 ?>

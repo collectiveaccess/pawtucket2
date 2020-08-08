@@ -476,6 +476,10 @@ hr{
 	padding-bottom:4px;
 	border-radius: 4px;
 }
+.detailCC img{
+	width:100px;
+	height:auto;
+}
 /* detail comments */
 .detail .notificationMessage{
 	position: absolute;
