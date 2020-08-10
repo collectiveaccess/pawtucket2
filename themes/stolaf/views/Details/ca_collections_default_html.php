@@ -27,21 +27,27 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
-					<div class="row">
-						<div class='col-sm-12 col-md-6 col-lg-6'>
-							<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
-						</div>
-						<div class='col-sm-12 col-md-6 col-lg-6'>
+				<div class='col-sm-12 col-md-6 col-lg-6'>
+					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
+				</div>
+				<div class='col-sm-12 col-md-6 col-lg-6'>
 <?php					
-							if ($vn_pdf_enabled) {
-								print "<div class='exportCollection'>".caDetailLink($this->request, "<span class='glyphicon glyphicon-file'></span> Display Finding Aid", "btn btn-default", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
-							}
-							print "<div class='inquireButton'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default", "", "Contact", "Form", array("table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")))."</div>";					
+					print "<div class='exportCollection'>";
+					if($vs_ead = $t_item->get("ca_collections.ead_file.url")){
+						print "<a href='$vs_ead' target='_blank' class='btn btn-default'><span class='glyphicon glyphicon-download'></span> EAD Finding Aid</a>";
+					}
+					if ($vn_pdf_enabled) {
+						print caDetailLink($this->request, "<span class='glyphicon glyphicon-download'></span> PDF Finding Aid", "btn btn-default", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
+					}
+					print "</div>";
+					print "<div class='inquireButtonCollection'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default", "", "Contact", "Form", array("table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")))."</div>";					
 ?>
-						</div>
-					</div>
-					<h2>{{{^ca_collections.repository_country}}}</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class='col-md-12 col-lg-12'>
+					
+					<h2>{{{^ca_collections.repository.repository_country}}}</h2>
 					{{{<ifdef code="ca_collections.parent_id"><label>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></label></ifdef>}}}
 <?php
 				# Comment and Share Tools
@@ -78,7 +84,6 @@
 						<div class="unit"><label>Extent</label>
 							<unit relativeTo="ca_collections.extentDACS">
 								<ifdef code="ca_collections.extentDACS.extent_number">^ca_collections.extentDACS.extent_number </ifdef>
-								<ifdef code="ca_collections.extentDACS.portion_label">^ca_collections.extentDACS.portion_label </ifdef>
 								<ifdef code="ca_collections.extentDACS.extent_type">^ca_collections.extentDACS.extent_type</ifdef>
 								<ifdef code="ca_collections.extentDACS.container_summary"><br/>^ca_collections.extentDACS.container_summary</ifdef>
 								<ifdef code="ca_collections.extentDACS.physical_details"><br/>^ca_collections.extentDACS.physical_details</ifdef>
@@ -86,13 +91,13 @@
 						</div>
 					</ifdef>}}}
 					
-					{{{<ifcount code="ca_storage_locations" min="1"><label>Location</label>
+					{{{<if rule="^ca_collections.type_id =~ /Folder/"><ifcount code="ca_storage_locations" min="1"><label>Location</label>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
-					</ifcount>}}}
+					</ifcount></if>}}}
 				
 					{{{<ifdef code="ca_collections.material_type"><div class="unit"><label>Material Format</label>^ca_collections.material_type%delimiter=,_</div></ifdef>}}}
 					
-					{{{<ifdef code="ca_collections.LcshSubjects"><div class="unit"><label>Subjects</label>^ca_collections.LcshSubjects%delimiter=,_</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.LcshSubjects"><div class="unit"><label>Subjects</label>^ca_collections.LcshSubjects%delimiter=<br/></div></ifdef>}}}
 					
 					{{{<ifdef code="ca_collections.relation"><div class="unit"><label>Related Collections</label>^ca_collections.relation%delimiter=,_</div></ifdef>}}}
 					

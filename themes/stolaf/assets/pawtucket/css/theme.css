@@ -471,13 +471,29 @@ a:hover{
 	height:130px;
 }
 
-@media(min-width:768px){
-	.exportCollection, .inquireButton{
+
+@media(max-width:991px){
+	.exportCollection, .inquireButtonCollection{
+		float:left;
+	}
+	.exportCollection .btn, .inquireButtonCollection .btn{
+		margin-right:5px;
+	}
+}
+@media(min-width:991px){
+	.exportCollection, .inquireButtonCollection{
 		float:right;
+	}
+	.exportCollection .btn, .inquireButtonCollection .btn{
 		margin-left:5px;
 	}
 }
-.detail .exportCollection a, .detail .exportCollection a .glyphicon, .detail .inquireButton a, .detail .inquireButton a .glyphicon{
+@media(min-width:768px){
+	.inquireButton{
+		text-align:right;
+	}
+}
+.detail .exportCollection a, .detail .exportCollection a .glyphicon, .detail .inquireButton a, .detail .inquireButton a .glyphicon, .detail .inquireButtonCollection a, .detail .inquireButtonCollection a .glyphicon{
 	color:#000 !important;
 	font-size: 11px;
 }
@@ -512,8 +528,17 @@ a.readmore-js-toggle:hover {
 #bRefine div, #bRefine{
 	line-height:.75em !important;
 }
+.collectionsContainer a, .collectionsContainer .listItem {
+    width: 100%;
+    display: inline-block;
+    padding: 5px 30px 5px 5px;
+    font-size: 14px;
+}
 #collectionsWrapper .glyphicon{
 	font-size:10px;
+}
+.collectionLoad a{
+	padding-right:5px;
 }
 #collectionsWrapper .linkoutRight{
 	position:absolute;
@@ -522,6 +547,8 @@ a.readmore-js-toggle:hover {
 	width:auto;
 	display:inline;
 	background-color: #efefef;
+	padding:5px;
+	margin:0px
 }
 #collectionsWrapper a, #collectionsWrapper a:visited {
     color: #242121;

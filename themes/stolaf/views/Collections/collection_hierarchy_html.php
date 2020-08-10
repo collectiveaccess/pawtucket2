@@ -32,6 +32,7 @@
 					while($qr_collection_children->nextHit()) {
 						$vs_icon = '<span class="glyphicon glyphicon-chevron-right"></span> ';
 						$vs_icon_open = '<span class="glyphicon glyphicon-chevron-down"></span> ';
+						$vs_icon_not_expand = '<span class="glyphicon glyphicon-minus"></span> ';
 						if(is_array($va_collection_type_icons)){
 							$vs_icon .= $va_collection_type_icons[$qr_collection_children->get("ca_collections.type_id")];
 						}
@@ -72,9 +73,12 @@
 							}
 
 							if($vb_link_to_detail){
-								print caDetailLink($this->request, $vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_date." ".$vs_record_count." ".(($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : ""), '', 'ca_collections',  $qr_collection_children->get("ca_collections.collection_id"));
+								print "<div style='position:relative;'>";
+								print caDetailLink($this->request, (($o_collections_config->get("link_out_icon")) ? $o_collections_config->get("link_out_icon") : "detail"), 'linkoutRight', 'ca_collections',  $qr_collection_children->get("ca_collections.collection_id"));
+								print caDetailLink($this->request, $vs_icon_not_expand." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_date." ".$vs_record_count, '', 'ca_collections',  $qr_collection_children->get("ca_collections.collection_id"));
+								print "</div>";
 							}else{
-								print "<div class='listItem'>".$vs_icon." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_date.$vs_record_count."</div>";
+								print "<div class='listItem'>".$vs_icon_not_expand." ".$qr_collection_children->get('ca_collections.preferred_labels').$vs_date.$vs_record_count."</div>";
 							}
 						}
 						print "</div>";	
