@@ -33,9 +33,8 @@
 	$va_access_values = $this->getVar("access_values");
 	AssetLoadManager::register('timeline');
  	
- 	$hero = $this->request->getParameter("hero", pString);
 ?>
-<div class="parallax <?php print $hero; ?>">
+<div class="parallax">
 	<div class="container">
 		<div class="row">
 			<div class="col-xs-12 col-sm-6 col-sm-offset-3">
@@ -60,9 +59,9 @@
 <div class="container hpIntro">
 	<div class="row">
 		<div class="col-sm-12 col-md-6 col-md-offset-3">
-			<p class="callout">The <br/><b>Kress Collection Digital Archive</b><br/>documents the history and development of the Kress Collection, providing access to data and digitized archival materials about all Kress Collection works of art; detailing their provenance and historical attribution; condition and care, and acquisition and distribution.</p>
+			<p class="callout">The <br/><b>Kress Collection Digital Archive</b><br/>{{{home_intro_text}}}</p>
 
-			<p>Browse <?php print caNavLink($this->request, "Art Objects", "", "", "Browse", "objects"); ?>, <?php print caNavLink($this->request, "Archival Materials", "", "", "Browse", "archival"); ?>, <?php print caNavLink($this->request, "Acquisitions", "", "", "Browse", "Acquisitions"); ?>, <?php print caNavLink($this->request, "Distributions", "", "", "Browse", "distributions"); ?>, and <?php print caNavLink($this->request, "People and Organizations", "", "", "Browse", "entities"); ?> below.</p>
+			<p>Enter keywords into the search box above or browse <?php print caNavLink($this->request, "Art Objects", "", "", "Browse", "objects"); ?>, <?php print caNavLink($this->request, "Archival Materials", "", "", "Browse", "archival"); ?>, Events (<?php print caNavLink($this->request, "Acquisitions", "", "", "Browse", "Acquisitions"); ?> and <?php print caNavLink($this->request, "Distributions", "", "", "Browse", "distributions"); ?>), and <?php print caNavLink($this->request, "People and Organizations", "", "", "Browse", "entities"); ?> below.</p>
 
 		</div>
 	</div>
@@ -96,17 +95,17 @@
 					<div class="row">
 						<div class="col-sm-6 exploreTile">
 	<?php
-							print caNavLink($this->request, caGetThemeGraphic($this->request, 'distributions.jpg'), "", "", "Browse", "distributions");
-							print caNavLink($this->request,"Distributions", "hpExploreTitle", "", "Browse", "distributions");
-							
+							print caNavLink($this->request, caGetThemeGraphic($this->request, 'acquisitions.jpg'), "", "", "Browse", "acquisitions");
+							print caNavLink($this->request, "Acquisitions", "hpExploreTitle", "", "Browse", "acquisitions");
+														
 	?>
 			
 						</div>
 						<div class="col-sm-6 exploreTile">
 	<?php
-							print caNavLink($this->request, caGetThemeGraphic($this->request, 'acquisitions.jpg'), "", "", "Browse", "acquisitions");
-							print caNavLink($this->request, "Acquisitions", "hpExploreTitle", "", "Browse", "acquisitions");
-														
+							print caNavLink($this->request, caGetThemeGraphic($this->request, 'distributions.jpg'), "", "", "Browse", "distributions");
+							print caNavLink($this->request,"Distributions", "hpExploreTitle", "", "Browse", "distributions");
+							
 	?>
 			
 						</div>

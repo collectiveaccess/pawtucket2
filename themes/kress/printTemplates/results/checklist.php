@@ -79,13 +79,8 @@
 ?>				</td><td>
 					<div class="metaBlock">
 <?php				
-					print "<div class='title'>".$vo_result->getWithTemplate("<small>^ca_objects.idno</small><br/><ifcount code='ca_entities' restrictToRelationshipTypes='artist' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist' delimiter=', '>^ca_entities.preferred_labels.displayname</unit>, </ifcount><i>^ca_objects.preferred_labels.name</i><ifdef code='ca_objects.Object_DateExpression'>, ^ca_objects.Object_DateExpression</ifdef>")."</div>"; 
-					if(is_array($va_display_list) && sizeof($va_display_list)){
-						foreach($va_display_list as $vn_placement_id => $va_display_item) {
-							$vs_display_value = $t_display->getDisplayValue($vo_result, $vn_placement_id, array('forReport' => true, 'purify' => true));
-							print "<div class='metadata'><span class='displayHeader'>".$va_display_item['display']."</span>: <span class='displayValue'>".(strlen($vs_display_value) > 1200 ? strip_tags(substr($vs_display_value, 0, 1197))."..." : $vs_display_value)."</span></div>";		
-						}							
-					}
+					print "<div class='title'>".$vo_result->getWithTemplate("<ifdef code='ca_objects.Object_KressCatalogNumber'><small>^ca_objects.Object_KressCatalogNumber</small><br/></ifdef><ifdef code='ca_objects.Object_ArtistExpression'>^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code='ca_objects.Object_ArtistExpression'><ifcount code='ca_entities' restrictToRelationshipTypes='artist' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist'><ifdef code='ca_entities.preferred_labels.forename'>^ca_entities.preferred_labels.forename </ifdef><ifdef code='ca_entities.preferred_labels.surname'>^ca_entities.preferred_labels.surname</ifdef><ifnotdef code='ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename'>^ca_entities.preferred_labels.displayname</ifnotdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i>")."</div>"; 
+					
 ?>
 					</div>				
 				</td>	

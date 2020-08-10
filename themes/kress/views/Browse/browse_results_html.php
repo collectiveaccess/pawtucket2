@@ -67,11 +67,17 @@
 	$va_all_facets = $va_browse_type_info["facets"];	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
+	$vn_acquisition_movement_id = $this->request->getParameter("acquisition_movement_id", pInteger);
 	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
+	$vs_detail_type = $this->request->getParameter("detailType", pString);
+
+
 	if ($vb_show_filter_panel && $vn_start == 0) {
-		$o_context = new ResultContext($this->request, $vs_table, 'detailrelated');
-		
+		$o_context = new ResultContext($this->request, $vs_table, 'detailrelated', $vs_detail_type);
+	
 		$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+		$o_context->setParameter('key', $vs_browse_key);
+		
 		$qr_res->seek($vn_start);
 		$o_context->saveContext();
 	}
@@ -79,29 +85,32 @@
 if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
-	<div class="col-sm-4 col-md-3 col-lg-3" id="browseLeftCol">
-		<div <?php print ($vb_show_filter_panel) ? "class='catchLinks'" : ""; ?>>
 <?php
+	$vs_refine_subview = $this->render("Browse/browse_refine_subview_html.php");
+	if($vs_refine_subview || ($vn_result_size > 1)){
+?>
+		<div class="col-sm-4 col-md-3 col-lg-3" id="browseLeftCol">
+<?php		
 		if($vn_result_size > 1){
 ?>
-			<div class="bSearchWithinContainer">
-				<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-					<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine">
-					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
-					<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
-				</form>
-				<div style="clear:both"></div>
+			<div <?php print ($vb_show_filter_panel) ? "class='catchLinks'" : ""; ?>>
+				<div class="bSearchWithinContainer">
+					<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+						<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine">
+						<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+						<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
+					</form>
+					<div style="clear:both"></div>
+				</div>
 			</div>
 <?php
 		}
-?>
-		</div>
-		
-<?php
-		print $this->render("Browse/browse_refine_subview_html.php");
+		print $vs_refine_subview;
 ?>			
-	</div><!-- end col-2 -->
-
+		</div><!-- end col-2 -->
+<?php
+	}
+?>
 	<div class='col-sm-8 col-md-9 col-lg-9'>
 <?php
 			if(is_array($va_views) && (sizeof($va_views) > 1)){
@@ -271,18 +280,18 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 		}
 		if($vb_show_filter_panel){
 ?>			
-			$(".catchLinks").on("click", "a", function(event){
-				if(!$(this).hasClass('dontCatch') && $(this).attr('href') != "#"){
-					event.preventDefault();
-					var url = $(this).attr('href') + "/showFilterPanel/1";
+			$('.catchLinks a').bind('click', function(e) {           
+  				if($(this).attr('href') != "#"){
+					var url = $(this).attr('href') + "/dontSetFind/1/showFilterPanel/1<?php print ($vn_acquisition_movement_id) ? "/acquisition_movement_id/".$vn_acquisition_movement_id : ""; ?><?php print ($vs_detail_type) ? "/detailType/".$vs_detail_type : ""; ?> ";
 					$('#browseResultsDetailContainer').load(url);
+					e.preventDefault();
+					return false;
 				}
-								
 			});
 			
 			$("#searchWithin").submit(function( event ) {
   				event.preventDefault();
- 				var url = $("#searchWithin").attr('action') + "/dontSetFind/1/showFilterPanel/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + encodeURIComponent($('#searchWithinSearchRefine').val());
+ 				var url = $("#searchWithin").attr('action') + "/dontSetFind/1/showFilterPanel/1<?php print ($vn_acquisition_movement_id) ? "/acquisition_movement_id/".$vn_acquisition_movement_id : ""; ?><?php print ($vs_detail_type) ? "/detailType/".$vs_detail_type : ""; ?>/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + encodeURIComponent($('#searchWithinSearchRefine').val());
  				$('#browseResultsDetailContainer').load(url);
 			});
 <?php

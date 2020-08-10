@@ -89,7 +89,7 @@
 			}
 			print $vs_image_tag;
 ?>
-				<br/><?php print $qr_results->getWithTemplate('<l>^ca_movements.idno<br/>^ca_movements.preferred_labels.name</l>'); ?>
+				<br/><?php print $qr_results->getWithTemplate('<l>^ca_movements.preferred_labels.name</l>'); ?>
 			</div>
 <?php
 			$vn_count++;

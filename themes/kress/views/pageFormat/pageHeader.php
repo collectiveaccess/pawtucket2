@@ -172,10 +172,10 @@
 					<li class="dropdown<?php print (in_array(strToLower($this->request->getController()), array("about", "contact")) ? ' active' : ''); ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About"); ?></a>
 						<ul class="dropdown-menu">
 <?php
-							print "<li>".caNavLink($this->request, _t("Project"), '', '', 'About', 'Project', '')."</li>";
-							print "<li>".caNavLink($this->request, _t("History"), '', '', 'About', 'History', '')."</li>";
-							print "<li>".caNavLink($this->request, _t("FAQ"), '', '', 'About', 'FAQ', '')."</li>";
-							print "<li>".caNavLink($this->request, _t("Contact"), '', '', 'About', 'Contact', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("About the Project"), '', '', 'About', 'Project', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Kress Collection History"), '', '', 'About', 'History', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Search Help"), '', '', 'About', 'Help', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Contact"), '', '', 'Contact', 'Form', '')."</li>";
 ?>
 						</ul>	
 					</li>
