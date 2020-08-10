@@ -33,8 +33,8 @@
 	<div class="row hpTiles">
 		<div class="col-sm-4">
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp1.jpg'), "", "", "Browse","Collections")."<br/>";
-				print caNavLink($this->request, "Browse Collections", "btn btn-default", "", "Browse","Collections")
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp1.jpg'), "", "", "Browse","archival_collections")."<br/>";
+				print caNavLink($this->request, "Browse Collections", "btn btn-default", "", "Browse","archival_collections")
 ?>
 		</div>
 		<div class="col-sm-4">

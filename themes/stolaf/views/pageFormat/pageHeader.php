@@ -142,8 +142,7 @@
 ?>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<!--<li <?php print ((strToLower($this->request->getController()) == "Browse") && ((strToLower($this->request->getAction()) == "collections") || (strToLower($this->request->getAction()) == "archival_collections"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Browse", "archival_collections"); ?></li>-->				
-					<li <?php print ((strToLower($this->request->getController()) == "Browse") && (strToLower($this->request->getAction()) == "collections")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Browse", "collections"); ?></li>					
+					<li <?php print ((strToLower($this->request->getController()) == "Browse") && ((strToLower($this->request->getAction()) == "collections") || (strToLower($this->request->getAction()) == "archival_collections"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Browse", "archival_collections"); ?></li>				
 					<li <?php print ((strToLower($this->request->getController()) == "Browse") && (strToLower($this->request->getAction()) == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archival Items"), "", "", "Browse", "objects"); ?></li>
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "Search", "advanced", "collections"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
