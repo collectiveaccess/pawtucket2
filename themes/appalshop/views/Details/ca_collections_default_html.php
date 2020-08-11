@@ -20,7 +20,7 @@
 		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($vs_tmp)));
 		MetaTagManager::addMetaProperty("description", htmlentities(strip_tags($vs_tmp)));
 	}
-	if($vs_rep = $t_item->getWithTemplate("<ifcount code='ca_objects' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured'>^ca_object_representations.media.page</unit></ifcount>")){
+	if($vs_rep = $t_item->getWithTemplate("<ifcount code='ca_objects' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured'>^ca_object_representations.media.page.url</unit></ifcount>")){
 		MetaTagManager::addMetaProperty("og:image", $vs_rep);
 		if($vs_height = $t_item->getWithTemplate("<ifcount code='ca_objects' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured'>^ca_object_representations.media.page.height</unit></ifcount>")){
 			MetaTagManager::addMetaProperty("og:image:height", $vs_height);

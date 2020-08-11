@@ -84,7 +84,8 @@
 	if(!in_array(strToLower($this->request->getController()), array("detail", "gallery"))){
 		$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, '1-13CHAIR-1-1.jpg');
 		MetaTagManager::addMetaProperty("og:image", $vs_og_image);
-		MetaTagManager::addMetaProperty("og:description", "Welcome to the new Appalshop Archive website! Search our public database to explore the creative output and extraordinary history of Appalshop, as well as donated collections that help enrich our understanding of the history, culture, art, and social issues of central Appalachia.");
+		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($this->getVar("hometagline"))));
+		MetaTagManager::addMetaProperty("description", htmlentities(strip_tags($this->getVar("hometagline"))));
 	}
 ?>
 
@@ -93,7 +94,6 @@
 	<?php print AssetLoadManager::getLoadHTML($this->request); ?>
 
 	<title><?php print (MetaTagManager::getWindowTitle()) ? MetaTagManager::getWindowTitle() : $this->request->config->get("app_display_name"); ?></title>
-	
 	<script type="text/javascript">
 		jQuery(document).ready(function() {
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
