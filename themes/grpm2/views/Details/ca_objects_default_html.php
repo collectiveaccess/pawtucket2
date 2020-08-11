@@ -164,6 +164,17 @@
 				
 
 				{{{<ifdef code="ca_objects.Source"><H6>Source:</H6>^ca_objects.Source</ifdef>}}}
+<?php
+				if($vn_cc_list_item_id = $t_object->get("ca_objects.creative_commons")){
+					$t_list_item = new ca_list_items($vn_cc_list_item_id);
+					print "<H6>Rights:</H6>";
+					if($t_list_item->get("ca_list_items.idno") == "cc_restricted"){
+						print "<a href='".$t_list_item->get("ca_list_item_labels.description")."' target='_blank'>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."</a>";
+					}else{
+						print "<div class='detailCC'><a href='".$t_list_item->get("ca_list_item_labels.description")."' target='_blank'>".$t_list_item->get("ca_list_items.icon.original")."<br/>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."<br/>".$t_list_item->get("ca_list_item_labels.description")."</a></div>";
+					}
+				}
+?>
 				{{{<ifdef code="ca_objects.Current_Location"><H6>Currently:</H6>^ca_objects.Current_Location</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.Links"><H6>Links:</H6><unit delimiter="<br/>" relativeTo="ca_objects.Links"><a href="^ca_objects.Links" target="_new">^ca_objects.Links</a></unit></ifdef>}}}
