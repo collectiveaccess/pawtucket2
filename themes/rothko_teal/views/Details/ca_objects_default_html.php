@@ -69,9 +69,9 @@
 						
 			<?php #print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "version" => "iconlarge")); ?>
 	<?php
-			if ($va_catalog_id = $t_object->get('ca_objects.institutional_id')) { 
-				print "<div class='objIdno'>".$va_catalog_id."</div>";
-			}	
+			// if ($va_catalog_id = $t_object->get('ca_objects.institutional_id')) { 
+// 				print "<div class='objIdno'>".$va_catalog_id."</div>";
+// 			}	
 	?>	
 		</div><!-- end col -->		
 		<div class='col-sm-10 col-sm-offset-1 col-md-offset-0 col-md-6 col-lg-6 artworkInfo'>
@@ -171,30 +171,34 @@
 				while($qr_collections->nextHit()) {
 					if ($qr_collections->get('ca_collections.deleted') === null) { continue; } // you check for null because get() won't return info about deleted items
 				
+					$buf = '';
 					if ($qr_collections->get('ca_objects_x_collections.current_collection') == $current_list_value_id) {
 						$vn_current_collection_id = $qr_collections->get('ca_objects_x_collections.collection_id');
 						$t_collection = new ca_collections($vn_current_collection_id);
+						
 						if ($t_collection->get('ca_collections.public_private', array('convertCodesToDisplayText' => true)) != 'private'){
-							print "<div class='unit row'><div class='{$vn_label_col} label'>Collection</div><div class='$vn_data_col'>".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit>');
+							$buf .= "<div class='unit row'><div class='{$vn_label_col} label'>Collection</div><div class='$vn_data_col'>".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit>');
 							$vs_verso_collection = $qr_collections->getWithTemplate('<unit relativeTo="ca_collections"><l>^ca_collections.preferred_labels</l></unit>');
 						} else {
-							print "<div class='unit row'><div class='{$vn_label_col} label'>Collection</div><div class='$vn_data_col'>".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit>');
+							$buf .= "<div class='unit row'><div class='{$vn_label_col} label'>Collection</div><div class='$vn_data_col'>".$qr_collections->getWithTemplate('<unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit>');
 							$vs_verso_collection = $qr_collections->getWithTemplate('<unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit>');
 						}
 						if ($vs_credit_line = $qr_collections->get('ca_objects_x_collections.collection_line')) {
-							print ", ".$vs_credit_line;
+							$buf .= ", ".$vs_credit_line;
 						}
 						if ($vs_institutional = $t_object->get('ca_objects.institutional_id')) {
-							print ", ".$vs_institutional.".  ";
+							$buf .= ", ".$vs_institutional;
 						}
+						if ($buf) { $buf .= ". "; }
 						if ($va_copyright = $t_parent->get('ca_objects.copyright')) {
-							print $va_copyright;
+							$buf .= $va_copyright;
 						}	
 						if ($qr_collections->get('ca_objects_x_collections.uncertain') == $yes_list_value_id) {
-							print " <span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>";
+							$buf .= " <span class='rollover' data-toggle='popover' data-trigger='hover' data-content='uncertain'><i class='fa fa-question-circle' ></i></span>";
 						}
-						print "</div><!-- end data --></div><!-- end unit -->";					
-					}			
+						$buf .= "</div><!-- end data --></div><!-- end unit -->";					
+					}	
+					print $buf;		
 				}
 			}	
 
