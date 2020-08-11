@@ -61,11 +61,11 @@
 				$vn_i++;
 				$vn_c++;
 				$vs_tmp = strip_tags($t_set_obj->get('ca_objects.preferred_labels'));
-				if(strlen($vs_tmp) > 50){
-					$vs_tmp = mb_substr($vs_tmp, 0, 47)."...";
+				if(strlen($vs_tmp) > 48){
+					$vs_tmp = mb_substr($vs_tmp, 0, 45)."...";
 				}
 				print "<div class='smallpadding col-xs-6 col-sm-4 col-md-2".(($vn_i > 24) ? " galleryIconHidden" : "")."'>";
-				print "<a href='#' id='galleryIcon".$pa_set_item["item_id"]."' onclick='jQuery(\"#galleryDetailImageArea\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); jQuery(\"#galleryDetailObjectInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\"); return false;'>".$vs_rep."</a>";
+				print "<a href='#' id='galleryIcon".$pa_set_item["item_id"]."' onclick='jQuery(\"#galleryDetailImageArea\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemRep', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); jQuery(\"#galleryDetailObjectInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetItemInfo', array('item_id' => $pa_set_item["item_id"], 'set_id' => $pn_set_id))."\"); galleryHighlightThumbnail(\"galleryIcon".$pa_set_item["item_id"]."\");'>".$vs_rep."</a>";
 				print "<span title='".$t_set_obj->get('ca_objects.preferred_labels')."'>".$vs_tmp."</span>";
 				print "</div>\n";
 				if($vn_c == 6){
@@ -73,8 +73,8 @@
 					$vn_c = 0;
 				}
 				if($vn_i == 24){
-					print "<div class='row'><div class='col-sm-3' id='moreLink'>
-								<a href='#' onclick='$(\".galleryIconHidden\").removeClass(\"galleryIconHidden\"); $(\"#moreLink\").hide(); return false;'>".(sizeof($pa_set_items) - 12)." "._t("more")."</a>
+					print "<div class='row'><div class='col-sm-12 text-center' id='moreLink'>
+								<a href='#' onclick='$(\".galleryIconHidden\").removeClass(\"galleryIconHidden\"); $(\"#moreLink\").hide(); return false;' class='btn btn-default'>".(sizeof($pa_set_items) - 24)." "._t("more")."</a>
 							</div></div>";
 				}
 			}
