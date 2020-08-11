@@ -210,12 +210,14 @@ if($this->request->getParameter("detailNav", pInteger)){
 		function loadResults(url, searchParam) {
 			jQuery("#browseResultsContainer").data('jscroll', null);
 			jQuery("#browseResultsContainer").load(url, {'search': searchParam}, function() {
-				jQuery("#browseResultsContainer").jscroll({
-					autoTrigger: true,
-					loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
-					padding: 20,
-					nextSelector: "a.jscroll-next"
-				});
+				if(jQuery("#browseResultsContainer a.jscroll-next").length > 0) {
+					jQuery("#browseResultsContainer").jscroll({
+						autoTrigger: true,
+						loadingHtml: "<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>",
+						padding: 20,
+						nextSelector: "a.jscroll-next"
+					});
+				}
 			});
 		}
 	</script>
@@ -417,22 +419,6 @@ if (!$vb_ajax) {	// !ajax
 
 			<div id="browseResultsContainer">
 <?php
-		if($vb_is_search && !$qr_res->numHits() && $vs_search){
-			# --- try to display did you mean results if available
-			$o_search = caGetSearchInstance($vs_table);
-			if (sizeof($va_suggestions = $o_search->suggest($vs_search, array('request' => $this->request)))) {
-				$va_suggest_links = array();
-				foreach($va_suggestions as $vs_suggestion){
-					$va_suggest_links[] = caNavLink($this->request, $vs_suggestion, '', '*', '*', '*', array('search' => $vs_suggestion, 'sort' => $vs_current_sort, 'view' => $vs_current_view));
-				}
-				
-				if (sizeof($va_suggest_links) > 1) {
-					print "<div class='col-sm-12'>"._t("Did you mean one of these: %1?", join(', ', $va_suggest_links))."</div>";
-				} else {
-					print "<div class='col-sm-12'>"._t("Did you mean %1?", join(', ', $va_suggest_links))."</div>";
-				}
-			}
-		}
 } // !ajax
 //
 // END: GENERATE RESULTS ON PAGE (not embedded; not ajax loaded)
