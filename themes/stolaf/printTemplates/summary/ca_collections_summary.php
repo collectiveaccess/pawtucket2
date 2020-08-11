@@ -77,13 +77,13 @@
 						</div>
 					</ifdef>}}}
 				
-					{{{<if rule="^ca_collections.type_id =~ /Folder/"><ifcount code="ca_storage_locations" min="1"><H6>Location</H6>
+					{{{<if rule="^ca_collections.type_id =~ /Folder/"><ifcount code="ca_storage_locations" min="1"><div class="unit"><H6>Location</H6>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
-					</ifcount></if>}}}
+					</div>/ifcount></if>}}}
 				
 					{{{<ifdef code="ca_collections.material_type"><div class="unit"><H6>Material Format</H6>^ca_collections.material_type%delimiter=,_</div></ifdef>}}}
 					
-					{{{<ifdef code="ca_collections.LcshSubjects"><div class="unit"><H6>Subjects</H6>^ca_collections.LcshSubjects%delimiter=,_</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.LcshSubjects"><div class="unit"><H6>Subjects</H6><unit relativeTo="ca_collections.LcshSubjects" delimiter="<br>">^ca_collections.LcshSubjects</unit></div></ifdef>}}}
 					
 					{{{<ifdef code="ca_collections.relation"><div class="unit"><H6>Related Collections</H6>^ca_collections.relation%delimiter=,_</div></ifdef>}}}
 					
