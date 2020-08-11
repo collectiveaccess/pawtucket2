@@ -82,7 +82,7 @@
 				{{{<unit delimiter="; ">^ca_objects.subject</unit>}}}
 
 				{{{<ifdef code="ca_objects.lcsh_terms">
-					<h6 class="metadata-label">Library of Congress Subject Headings:</h6><span class="trimText">^ca_objects.lcsh_terms</span>
+					<h6 class="metadata-label">Library of Congress Subject Headings:</h6><span class="trimText">^ca_objects.lcsh_terms%asText=1&delimiter=;_</span>
 				</ifdef>}}}
 
 				{{{<ifcount code="ca_objects.LcshNames" min="1"><H6>LC Terms</H6></ifcount>}}}
@@ -95,13 +95,17 @@
 					<h6 class="metadata-label">Source:</h6><span class="trimText">^ca_objects.source</span>
 				</ifdef>}}}
 				{{{<ifdef code="ca_objects.spatial_coverage">
-					<h6 class="metadata-label">Spatial Coverage:</h6><span class="trimText">^ca_objects.spatial_coverage</span>
+					<h6 class="metadata-label">Location:</h6><span class="trimText">^ca_objects.spatial_coverage%delimiter=;_</span>
 				</ifdef>}}}
 				{{{<ifdef code="ca_objects.temporal_coverage">
 					<h6 class="metadata-label">Temporal Coverage:</h6><span class="trimText">^ca_objects.temporal_coverage</span>
 				</ifdef>}}}
 				{{{<ifdef code="ca_objects.dc_type">
 					<h6 class="metadata-label">Type:</h6><span class="trimText">^ca_objects.dc_type</span>
+				</ifdef>}}}
+				
+				{{{<ifdef code="ca_objects.publisher">
+					<h6 class="metadata-label">Publisher:</h6><span class="trimText">^ca_objects.publisher%delimiter=;_</span>
 				</ifdef>}}}
 				
 				
