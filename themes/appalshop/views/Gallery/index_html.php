@@ -128,6 +128,7 @@
 	if($vn_first_set_id){
 		$t_set = new ca_sets();
 		MetaTagManager::addMetaProperty("og:description", "Special Projects");
+		MetaTagManager::addMetaProperty("description", "Special Projects");
 		$set_item = array_shift(array_shift($t_set->getFirstItemsFromSets(array($vn_first_set_id), array("version" => "page", "checkAccess" => caGetUserAccessValues($this->request)))));
  			
 		if($vs_rep = $set_item["representation_url"]){

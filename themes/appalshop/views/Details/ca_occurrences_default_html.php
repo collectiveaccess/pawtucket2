@@ -7,6 +7,7 @@
 	
 	if($vs_tmp = $t_item->get('preferred_labels')){
 		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($vs_tmp)));
+		MetaTagManager::addMetaProperty("description", htmlentities(strip_tags($vs_tmp)));
 	}
 	if($vs_rep = $t_item->get("ca_object_representations.media.page.url", array("checkAccess" => $va_access_values))){
 		MetaTagManager::addMetaProperty("og:image", $vs_rep);

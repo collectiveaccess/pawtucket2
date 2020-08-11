@@ -6,6 +6,7 @@
 	$ps_description = $this->getVar("description");
 	$pn_set_item_id = $this->getVar("set_item_id");
 	MetaTagManager::addMetaProperty("og:description", $ps_label);
+	MetaTagManager::addMetaProperty("description", $ps_label);
 	$set_item = array_shift(array_shift($t_set->getFirstItemsFromSets(array($pn_set_id), array("version" => "page", "checkAccess" => caGetUserAccessValues($this->request))))); 			
 	if($vs_rep = $set_item["representation_url"]){
 		MetaTagManager::addMetaProperty("og:image", $vs_rep);
