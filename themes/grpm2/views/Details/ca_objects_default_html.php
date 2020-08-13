@@ -165,7 +165,7 @@
 
 				{{{<ifdef code="ca_objects.Source"><H6>Source:</H6>^ca_objects.Source</ifdef>}}}
 <?php
-				if($vn_cc_list_item_id = $t_object->get("ca_objects.creative_commons"));
+				if($vn_cc_list_item_id = $t_object->get("ca_objects.creative_commons")){
 					$t_list_item = new ca_list_items($vn_cc_list_item_id);
 					print "<H6>Rights:</H6>";
 					if($t_list_item->get("ca_list_items.idno") == "cc_restricted"){
