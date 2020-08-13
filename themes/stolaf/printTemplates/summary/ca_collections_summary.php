@@ -52,7 +52,7 @@
 		<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
 	</div>
 		
-	<div class="unit"><H6>{{{^ca_collections.idno}}}</H6></div>
+	<div class="unit"><H6>{{{^ca_collections.repository.repository_country}}}</H6></div>
 	<div class="unit">
 	{{{<ifdef code="ca_collections.parent_id"><div class="unit"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></H6></ifdef>}}}
 	{{{<ifdef code="ca_collections.label">^ca_collections.label<br/></ifdev>}}}
@@ -70,7 +70,6 @@
 						<div class="unit"><H6>Extent</H6>
 							<unit relativeTo="ca_collections.extentDACS">
 								<ifdef code="ca_collections.extentDACS.extent_number">^ca_collections.extentDACS.extent_number </ifdef>
-								<ifdef code="ca_collections.extentDACS.portion_label">^ca_collections.extentDACS.portion_label </ifdef>
 								<ifdef code="ca_collections.extentDACS.extent_type">^ca_collections.extentDACS.extent_type</ifdef>
 								<ifdef code="ca_collections.extentDACS.container_summary"><br/>^ca_collections.extentDACS.container_summary</ifdef>
 								<ifdef code="ca_collections.extentDACS.physical_details"><br/>^ca_collections.extentDACS.physical_details</ifdef>
@@ -78,9 +77,13 @@
 						</div>
 					</ifdef>}}}
 				
+					{{{<if rule="^ca_collections.type_id =~ /Folder/"><ifcount code="ca_storage_locations" min="1"><div class="unit"><H6>Location</H6>
+						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
+					</div>/ifcount></if>}}}
+				
 					{{{<ifdef code="ca_collections.material_type"><div class="unit"><H6>Material Format</H6>^ca_collections.material_type%delimiter=,_</div></ifdef>}}}
 					
-					{{{<ifdef code="ca_collections.LcshSubjects"><div class="unit"><H6>Subjects</H6>^ca_collections.LcshSubjects%delimiter=,_</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.LcshSubjects"><div class="unit"><H6>Subjects</H6><unit relativeTo="ca_collections.LcshSubjects" delimiter="<br>">^ca_collections.LcshSubjects</unit></div></ifdef>}}}
 					
 					{{{<ifdef code="ca_collections.relation"><div class="unit"><H6>Related Collections</H6>^ca_collections.relation%delimiter=,_</div></ifdef>}}}
 					
@@ -103,6 +106,10 @@
 					{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><H6>Related family</H6></ifcount>}}}
 					{{{<ifcount code="ca_entities" min="2" restrictToTypes="fam"><H6>Related families</H6></ifcount>}}}
 					{{{<unit relativeTo="ca_entities" restrictToTypes="fam" delimiter=" "><div class="unit">^ca_entities.preferred_labels (^relationship_typename)</div></unit>}}}
+	
+					{{{<ifcount code="ca_places" min="1" max="1"><H6>Related place</H6></ifcount>}}}
+					{{{<ifcount code="ca_places" min="2"><H6>Related places</H6></ifcount>}}}
+					{{{<unit relativeTo="ca_places" delimiter=" "><div class="unit">^ca_places.preferred_labels (^relationship_typename)</div></unit>}}}
 	
 	
 	

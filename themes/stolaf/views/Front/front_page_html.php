@@ -33,8 +33,8 @@
 	<div class="row hpTiles">
 		<div class="col-sm-4">
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp1.jpg'), "", "", "Browse","Collections")."<br/>";
-				print caNavLink($this->request, "Browse Collections", "btn btn-default", "", "Browse","Collections")
+				print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp1.jpg'), "", "", "Browse","archival_collections")."<br/>";
+				print caNavLink($this->request, "Browse Collections", "btn btn-default", "", "Browse","archival_collections")
 ?>
 		</div>
 		<div class="col-sm-4">
@@ -53,7 +53,12 @@
 	</div>
 	<div class="row">
 		<div class="col-sm-8 col-sm-offset-2">
-			<div class="hpCallout">Welcome to the Shaw-Olson Center for College History Archive</div>
+			<div class="hpCallout">{{{FrontWelcome}}}</div>
+		</div><!--end col-sm-8-->
+	</div>
+	<div class="row">
+		<div class="col-sm-8 col-sm-offset-2">
+			{{{FrontAbout}}}
 		</div><!--end col-sm-8-->
 	</div>
 	<div class="row">

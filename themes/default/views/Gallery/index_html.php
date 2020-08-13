@@ -30,6 +30,7 @@
 									print "<li>";
 								}
 								$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
+
 								print "<div class='galleryItem'>
 											<a href='#' onclick='jQuery(\"#gallerySetInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetInfo', array('set_id' => $vn_set_id))."\"); return false;'>
 												<div class='galleryItemImg'>".$va_first_item["representation_tag"]."</div>

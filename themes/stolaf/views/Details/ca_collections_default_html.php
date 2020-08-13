@@ -8,7 +8,7 @@
 	# --- get collections configuration
 	$o_collections_config = caGetCollectionsConfig();
 	$vb_show_hierarchy_viewer = true;
-	if($o_collections_config->get("do_not_display_collection_browser")){
+	if(!$t_item->get("ca_collections.children.collection_id")){
 		$vb_show_hierarchy_viewer = false;	
 	}
 	# --- get the collection hierarchy parent to use for exportin finding aid
@@ -27,21 +27,27 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
-					<div class="row">
-						<div class='col-sm-12 col-md-6 col-lg-6'>
-							<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
-						</div>
-						<div class='col-sm-12 col-md-6 col-lg-6'>
+				<div class='col-sm-12 col-md-6 col-lg-6'>
+					<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
+				</div>
+				<div class='col-sm-12 col-md-6 col-lg-6'>
 <?php					
-							if ($vn_pdf_enabled) {
-								print "<div class='exportCollection'>".caDetailLink($this->request, "<span class='glyphicon glyphicon-file'></span> Display Finding Aid", "btn btn-default", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
-							}
-							print "<div class='inquireButton'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default", "", "Contact", "Form", array("table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")))."</div>";					
+					print "<div class='exportCollection'>";
+					if($vs_ead = $t_item->get("ca_collections.ead_file.url")){
+						print "<a href='$vs_ead' target='_blank' class='btn btn-default'><span class='glyphicon glyphicon-download'></span> EAD Finding Aid</a>";
+					}
+					if ($vn_pdf_enabled) {
+						print caDetailLink($this->request, "<span class='glyphicon glyphicon-download'></span> PDF Finding Aid", "btn btn-default", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
+					}
+					print "</div>";
+					print "<div class='inquireButtonCollection'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default", "", "Contact", "Form", array("table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")))."</div>";					
 ?>
-						</div>
-					</div>
-					<h2>{{{^ca_collections.idno}}}</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class='col-md-12 col-lg-12'>
+					
+					<h2>{{{^ca_collections.repository.repository_country}}}</h2>
 					{{{<ifdef code="ca_collections.parent_id"><label>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></label></ifdef>}}}
 <?php
 				# Comment and Share Tools
@@ -65,23 +71,7 @@
 				</div><!-- end col -->
 			</div><!-- end row -->
 			<div class="row">
-				<div class='col-sm-12'>
-<?php
-			if ($vb_show_hierarchy_viewer) {	
-?>
-				<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
-				<script>
-					$(document).ready(function(){
-						$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
-					})
-				</script>
-<?php				
-			}									
-?>				
-				</div><!-- end col -->
-			</div><!-- end row -->
-			<div class="row">
-				<div class='col-sm-12'>
+				<div class='col-sm-<?php print ($vb_show_hierarchy_viewer) ? "7" : "12"; ?>'>
 					{{{<ifdef code="ca_collections.adminbiohist"><div class="unit"><label>Administrative/Biographical History</label>^ca_collections.adminbiohist%delimiter=,_</div></ifdef>}}}
 				
 					{{{<ifdef code="ca_collections.abstract"><div class="unit"><label>Abstract</label>^ca_collections.abstract%delimiter=,_</div></ifdef>}}}
@@ -90,21 +80,24 @@
 				
 					{{{<ifdef code="ca_collections.unitdate.dacs_date_text"><div class="unit"><label>Date</label><unit relativeTo="ca_collections.unitdate" delimiter="<br/>"><ifdef code="ca_collections.unitdate.dacs_dates_labels">^ca_collections.unitdate.dacs_dates_labels: </ifdef>^ca_collections.unitdate.dacs_date_text <ifdef code="ca_collections.unitdate.dacs_dates_types">^ca_collections.unitdate.dacs_dates_types</ifdef></unit></div></ifdef>}}}
 				
-					{{{<ifdef code="ca_collections.extentDACS">
+					{{{<ifdef code="ca_collections.extentDACS.extent_number|ca_collections.extentDACS.portion_label|ca_collections.extentDACS.extent_type|ca_collections.extentDACS.container_summary|ca_collections.extentDACS.physical_details">
 						<div class="unit"><label>Extent</label>
 							<unit relativeTo="ca_collections.extentDACS">
 								<ifdef code="ca_collections.extentDACS.extent_number">^ca_collections.extentDACS.extent_number </ifdef>
-								<ifdef code="ca_collections.extentDACS.portion_label">^ca_collections.extentDACS.portion_label </ifdef>
 								<ifdef code="ca_collections.extentDACS.extent_type">^ca_collections.extentDACS.extent_type</ifdef>
 								<ifdef code="ca_collections.extentDACS.container_summary"><br/>^ca_collections.extentDACS.container_summary</ifdef>
 								<ifdef code="ca_collections.extentDACS.physical_details"><br/>^ca_collections.extentDACS.physical_details</ifdef>
 							</unit>
 						</div>
 					</ifdef>}}}
+					
+					{{{<if rule="^ca_collections.type_id =~ /Folder/"><ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location</label>
+						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
+					</div></ifcount></if>}}}
 				
 					{{{<ifdef code="ca_collections.material_type"><div class="unit"><label>Material Format</label>^ca_collections.material_type%delimiter=,_</div></ifdef>}}}
 					
-					{{{<ifdef code="ca_collections.LcshSubjects"><div class="unit"><label>Subjects</label>^ca_collections.LcshSubjects%delimiter=,_</div></ifdef>}}}
+					{{{<ifdef code="ca_collections.LcshSubjects"><div class="unit"><label>Subjects</label><unit relativeTo="ca_collections.LcshSubjects" delimiter="<br>">^ca_collections.LcshSubjects</unit></div></ifdef>}}}
 					
 					{{{<ifdef code="ca_collections.relation"><div class="unit"><label>Related Collections</label>^ca_collections.relation%delimiter=,_</div></ifdef>}}}
 					
@@ -127,9 +120,29 @@
 					{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="fam"><label>Related family</label></ifcount>}}}
 					{{{<ifcount code="ca_entities" min="2" restrictToTypes="fam"><label>Related families</label></ifcount>}}}
 					{{{<unit relativeTo="ca_entities" restrictToTypes="fam" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
+					
+					{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
+					{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
+					{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>}}}
 				
+					<br/>{{{map}}}
 				
 				</div>
+				
+<?php
+			if ($vb_show_hierarchy_viewer) {	
+?>
+				<div class='col-sm-5'>
+					<div id="collectionHierarchy"><?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?></div>
+					<script>
+						$(document).ready(function(){
+							$('#collectionHierarchy').load("<?php print caNavUrl($this->request, '', 'Collections', 'collectionHierarchy', array('collection_id' => $t_item->get('collection_id'))); ?>"); 
+						})
+					</script>
+				</div><!-- end col -->
+<?php				
+			}									
+?>				
 			</div>
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">

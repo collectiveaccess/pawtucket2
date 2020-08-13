@@ -111,8 +111,16 @@
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
 				}else{
 				
-					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
-					$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					#$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
+					if($vs_table == "ca_collections"){
+						if(strToLower($this->request->getAction()) == "archival_collections"){
+							$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->getWithTemplate('<unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit>'), '', $vs_table, $vn_id);
+						}else{
+							$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->getWithTemplate('<b>^ca_collections.type_id:</b> <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit>'), '', $vs_table, $vn_id);
+						}
+					}else{
+						$vs_label_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id);
+					}
 					$vs_thumbnail = "";
 					$vs_type_placeholder = "";
 					$vs_typecode = "";
@@ -146,13 +154,13 @@
 				<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids[]' value='{$vn_id}'></div>
 				<div class='bResultListItemContent'>".(($vs_table == 'ca_objects') ? "<div class='text-center bResultListItemImg'>{$vs_rep_detail_link}</div>" : "")."
 					<div class='bResultListItemText'>
-						<small>{$vs_idno_detail_link}</small><br/>{$vs_label_detail_link}
+						{$vs_label_detail_link}
 					</div><!-- end bResultListItemText -->
 				</div><!-- end bResultListItemContent -->
-				<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'>
-					<hr>
+				
+					".(($vs_expanded_info  || $vs_add_to_set_link) ? "<div class='bResultListItemExpandedInfo' id='bResultListItemExpandedInfo{$vn_id}'><hr>
 					{$vs_expanded_info}{$vs_add_to_set_link}
-				</div><!-- bResultListItemExpandedInfo -->
+				</div><!-- bResultListItemExpandedInfo -->" : "")."
 			</div><!-- end bResultListItem -->
 		</div><!-- end col -->";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result');

@@ -82,7 +82,7 @@
 		<div class="container">
 			<div class="row">
 				<div class="col-xs-12 col-sm-6">
-					<a href="https://wp.stolaf.edu" target="_blank"><span class="glyphicon glyphicon-home"></span>St. Olaf College Home</a>
+					<a href="https://wp.stolaf.edu" target="_blank"><?php print caGetThemeGraphic($this->request, 'StOlaf_Dark_Horizontal.jpg'); ?></a>
 				</div>
 				<div class="col-xs-12 col-sm-6">
 <?php
@@ -90,31 +90,13 @@
 ?>
 				<ul class="nav navbar-nav navbar-right" id="user-navbar">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span><?php print ($this->request->isLoggedIn()) ? $this->request->user->get("fname") : " Login"; ?></a>
 						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 				</ul>
 <?php
 	}
-?>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
-					<div class="formOutline">
-						<div class="form-group">
-							<input type="text" class="form-control" id="headerSearchInput" placeholder="Search the Archives" name="search">
-						</div>
-						<button type="submit" class="btn-search" id="headerSearchButton"><i class="fa fa-search" aria-hidden="true"></i>
-</button>
-					</div>
-				</form>
-				<script type="text/javascript">
-					$(document).ready(function(){
-						$('#headerSearchButton').prop('disabled',true);
-						$('#headerSearchInput').keyup(function(){
-							$('#headerSearchButton').prop('disabled', this.value == "" ? true : false);     
-						})
-					});
-				</script>
-				
+?>				
 				</div>
 			</div>
 		</div>
@@ -128,7 +110,7 @@
 ?>
 				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
 					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
+					<span class="glyphicon glyphicon-user"></span><?php print ($this->request->isLoggedIn()) ? "" : " Login"; ?>
 				</button>
 <?php
 	}
@@ -140,7 +122,8 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, caGetThemeGraphic($this->request, 'logo-one-line-light-bg.png'), "navbar-brand", "", "","");
+				print caNavLink($this->request, "<div class='brandSubtitle'>Archives Search Home</div>", "navbar-brand", "", "","");
+				#print caNavLink($this->request, "St. Olaf College Archives Search Home", "navbar-brand", "", "","");
 ?>
 			</div>
 
@@ -159,9 +142,9 @@
 ?>
 			<div class="collapse navbar-collapse" id="bs-main-navbar-collapse-1">
 				<ul class="nav navbar-nav navbar-right menuItems">
-					<li <?php print ($this->request->getController() == "Collections") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Browse", "collections"); ?></li>					
-					<li <?php print ($this->request->getController() == "Browse") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archival Items"), "", "", "Browse", "objects"); ?></li>
-					<!--<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>-->
+					<li <?php print ((strToLower($this->request->getController()) == "Browse") && ((strToLower($this->request->getAction()) == "collections") || (strToLower($this->request->getAction()) == "archival_collections"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Collections"), "", "", "Browse", "archival_collections"); ?></li>				
+					<li <?php print ((strToLower($this->request->getController()) == "Browse") && (strToLower($this->request->getAction()) == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archival Items"), "", "", "Browse", "objects"); ?></li>
+					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "Search", "advanced", "collections"); ?></li>
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Gallery"), "", "", "Gallery", "Index"); ?></li>
 					<li <?php print ($this->request->getController() == "Contact") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "Form"); ?></li>
 				</ul>
@@ -183,5 +166,22 @@
 					</div>
 			</div>
 		</section>
+		<form class="heroSearch" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+			<div class="formOutline">
+				<div class="form-group">
+					<input type="text" class="form-control" id="heroSearchInput" placeholder="Search the Archives" name="search">
+					<button type="submit" class="btn-search" id="heroSearchButton"><i class="fa fa-search" aria-hidden="true"></i></button>
+				</div>
+			</div>
+		</form>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$('#headerSearchButton').prop('disabled',true);
+				$('#headerSearchInput').keyup(function(){
+					$('#headerSearchButton').prop('disabled', this.value == "" ? true : false);     
+				})
+			});
+		</script>
+
 			<div class="container"><div class="row"><div class="col-xs-12">
 				<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
