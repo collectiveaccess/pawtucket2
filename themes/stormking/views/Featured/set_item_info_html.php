@@ -51,7 +51,7 @@
 			print "<div>Photo by ".$va_photo_name."</div>";
 		}
 	}
-	if(strpos(strToLower($vs_type), "archival") !== false){
+	if(($t_set->get("ca_sets.set_code") != "2020.1") && (strpos(strToLower($vs_type), "archival") !== false)){
 		print "<div id='featuredShowMoreLink' class='viewAll'><a href='#' onClick='$(\"#featuredShowMore\").toggle(); $(\"#featuredShowMoreLink\").toggle(); return false;'>+ Show More</a></div>";
 		print "<div id='featuredShowMore' style='display:none;'>";
 		$vs_record_title = $t_object->get('ca_objects.preferred_labels.name');
