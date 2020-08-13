@@ -82,7 +82,7 @@
 	# --- what should the default image to share be?
 	# --- default to logo --- use image from detail page if on object page - done on details
 	if(!in_array(strToLower($this->request->getController()), array("detail", "gallery"))){
-		$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, '1-13CHAIR-1-1.jpg');
+		$vs_og_image = $this->request->config->get("site_host").caGetThemeGraphicUrl($this->request, 'defaultShareImage.jpg');
 		MetaTagManager::addMetaProperty("og:image", $vs_og_image);
 		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($this->getVar("hometagline"))));
 		MetaTagManager::addMetaProperty("description", htmlentities(strip_tags($this->getVar("hometagline"))));
