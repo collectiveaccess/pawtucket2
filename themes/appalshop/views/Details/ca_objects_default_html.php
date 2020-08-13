@@ -34,6 +34,16 @@
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
 	$vn_id =				$t_object->get('ca_objects.object_id');
 	$va_access_values = caGetUserAccessValues($this->request);
+	
+	if($vs_tmp = $t_object->getWithTemplate($t_object->getTypeName().": ".$t_object->get('preferred_labels').(($vs_idno = $t_object->get($t_object->getProperty('ID_NUMBERING_ID_FIELD'))) ? " [{$vs_idno}]" : ""))){
+		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($vs_tmp)));
+		MetaTagManager::addMetaProperty("description", htmlentities(strip_tags($vs_tmp)));
+	}
+	if($vs_rep = $t_object->get("ca_object_representations.media.page.url", array("checkAccess" => $va_access_values))){
+		MetaTagManager::addMetaProperty("og:image", $vs_rep);
+		MetaTagManager::addMetaProperty("og:image:width", $t_object->get("ca_object_representations.media.page.width"));
+		MetaTagManager::addMetaProperty("og:image:height", $t_object->get("ca_object_representations.media.page.height"));
+	}
 ?>
 <div class="row">
 	<div class='col-xs-6 navTop'><!--- only shown at small screen size -->

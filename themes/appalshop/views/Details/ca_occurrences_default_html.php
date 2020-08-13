@@ -4,6 +4,17 @@
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");
 	$va_access_values = caGetUserAccessValues($this->request);
+	
+	if($vs_tmp = $t_item->get('preferred_labels')){
+		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($vs_tmp)));
+		MetaTagManager::addMetaProperty("description", htmlentities(strip_tags($vs_tmp)));
+	}
+	if($vs_rep = $t_item->get("ca_object_representations.media.page.url", array("checkAccess" => $va_access_values))){
+		MetaTagManager::addMetaProperty("og:image", $vs_rep);
+		MetaTagManager::addMetaProperty("og:image:width", $t_item->get("ca_object_representations.media.page.width"));
+		MetaTagManager::addMetaProperty("og:image:height", $t_item->get("ca_object_representations.media.page.height"));
+	}
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->

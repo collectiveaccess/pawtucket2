@@ -15,6 +15,21 @@
 	$vn_top_level_collection_id = array_shift($t_item->get('ca_collections.hierarchy.collection_id', array("returnWithStructure" => true)));
 	
 	$va_access_values = caGetUserAccessValues($this->request);
+
+	if($vs_tmp = $t_item->get('preferred_labels')){
+		MetaTagManager::addMetaProperty("og:description", htmlentities(strip_tags($vs_tmp)));
+		MetaTagManager::addMetaProperty("description", htmlentities(strip_tags($vs_tmp)));
+	}
+	if($vs_rep = $t_item->getWithTemplate("<ifcount code='ca_objects' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured'>^ca_object_representations.media.page.url</unit></ifcount>")){
+		MetaTagManager::addMetaProperty("og:image", $vs_rep);
+		if($vs_height = $t_item->getWithTemplate("<ifcount code='ca_objects' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured'>^ca_object_representations.media.page.height</unit></ifcount>")){
+			MetaTagManager::addMetaProperty("og:image:height", $vs_height);
+		}
+		if($vs_width = $t_item->getWithTemplate("<ifcount code='ca_objects' restrictToRelationshipTypes='featured'><unit relativeTo='ca_objects' restrictToRelationshipTypes='featured'>^ca_object_representations.media.page.width</unit></ifcount>")){
+			MetaTagManager::addMetaProperty("og:image:width", $vs_height);
+		}
+	}
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->

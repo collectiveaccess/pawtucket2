@@ -774,7 +774,11 @@ font-size: 12pt;
 .setDescription p {
   color: #000000;
   font-size: 12pt;
-  }
+}
+#galleryDetailImageGrid{
+	font-size:13px;
+	color:#000;
+}
   
 /* SEARCH RESULTS */
 
