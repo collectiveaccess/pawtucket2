@@ -173,7 +173,7 @@
                 </li>
                 <li><a href="/news/">News</a></li>
                 <li><a href="/news/services"">Services</a></li>
-                <li><a href="/news/support">Support</a></li>
+                <li><a href="/news/support">Get Involved</a></li>
                 <li><a href="/news/contact">Contact</a></li> 	
                 <li><a href="https://www.appalshop.org" target="_blank">Appalshop</a></li>	
               </ul>	
