@@ -16,7 +16,7 @@ body{ font: "helvetica, sans-serif"; margin:0px; padding:0px;}
 #footerdompdf .footerText { position:relative; font-size: 11px; padding-right:40px;  } 
 
 /* summary styles */
-.title { font: "helvetica, sans-serif"; font-size: 18px; width:100%; margin-top:10px; text-align: center; font-weight: bold;}
+.title { font: Georgia, serif; font-size: 18px; width:100%; margin-top:10px; text-align: center; font-weight: normal;}
 .representationList { width: 100%; margin-top:10px; text-align: center; }
 .unit {font-size:12px;margin-bottom:15px;}
 h6 {font-size:12px; font-weight:bold;text-transform:uppercase; margin:0px 0px 5px 0px; padding:0px;}
@@ -34,4 +34,17 @@ h6 {font-size:12px; font-weight:bold;text-transform:uppercase; margin:0px 0px 5p
 	width:17px;
 	height:14px;
 	display:inline-block;
+}
+
+.metapoetics {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-style: italic;
+    padding-bottom: 36px;
+    text-align:center;
+}
+hr{
+	height:1px;
+	background-color:#999;
+	border:0px;
 }

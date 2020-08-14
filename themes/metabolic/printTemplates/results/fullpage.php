@@ -48,7 +48,7 @@
 	$vn_start 				= 0;
 
 	print $this->render("pdfStart.php");
-	print $this->render("header.php");
+	print $this->render("headerNoLogo.php");
 	print $this->render("footer.php");
 ?>
 		<div id='body'>
@@ -56,22 +56,134 @@
 
 		$vo_result->seek(0);
 		
-		$vn_line_count = 0;
 		while($vo_result->nextHit()) {
-			$vn_object_id = $vo_result->get('ca_objects.object_id');		
-			if ($vs_path = $vo_result->getMediaPath('ca_object_representations.media', 'mediumlarge')) {
-				print "<div class=\"text-center\"><br/><br/><img src='{$vs_path}'/></div>";
-			}
-?>								
+			$t_item = new ca_objects($vo_result->get("ca_objects.object_id"));
+?>		
+			<div class="title">
+				<h1 class="title"><?php print $vo_result->get("ca_objects.idno"); ?></h1>
+			</div>
+			<div class="representationList">
+		
+<?php
+				#if ($vs_path = $t_item->getMediaPath('ca_object_representations.media', 'mediumlarge')) {
+				#	print "<img src='{$vs_path}'/>";
+				#}
+				$va_reps = $t_item->getRepresentations(array("thumbnail", "mediumlarge"));
 
-			<p><br/>
-<?php				
-			print "<div class='title text-center'>".$vo_result->getWithTemplate('^ca_objects.idno')."</div>"; 
-			print "<div class='metadata text-center'>".$vo_result->getWithTemplate('^ca_objects.preferred_labels.name')."</div>";
+				foreach($va_reps as $va_rep) {
+					if(sizeof($va_reps) > 1){
+						# --- more than one rep show thumbnails
+						$vn_padding_top = ((120 - $va_rep["info"]["thumbnail"]["HEIGHT"])/2) + 5;
+						print $va_rep['tags']['thumbnail']."\n";
+					}else{
+						# --- one rep - show medium rep
+						print $va_rep['tags']['mediumlarge']."\n";
+					}
+				}
 ?>
-			</p>
-			<div class="pageBreak">&nbsp;</div>
-<?php					
+			</div>
+			<br/><br/><div style="text-align:center; padding-right:35px; padding-left:35px;"><table style="width:100%;">
+						<tr><td colspan="2"><hr/></td></tr>
+<?php
+			if($vs_metapoetics = strip_tags($vo_result->get('ca_objects.metapoetics.metapoetics_text'), '<b><em><i><strong><ul><ol><li><blockquote><u><s><sup><sub>')){
+?>
+				<tr>
+					<td class="metapoetics" colspan="2">
+<?php
+						print $vs_metapoetics;
+?>
+					</td>
+				</tr>
+<?php
+			}
+?>
+			</table>
+			<table style="width:100%;">
+				<tr>
+					<td style="width:45%; vertical-align:top;">
+<?php
+				$vs_title = $vo_result->get("ca_objects.preferred_labels.name");
+				if($vs_title && (strToLower($vs_title) != "[no title]") && (strToLower($vs_title) != "[blank]")){
+?>
+					<div class="unit">
+						<div class="label">Title</div><?php print $vs_title; ?>
+					</div>
+<?php							
+				}
+
+				print $vo_result->getWithTemplate('<ifdef code="ca_objects.altID">
+												<div class="unit">
+													<div class="label">Alternate Identifier</div>
+													^ca_objects.altID
+												</div>
+											</ifdef>
+											<ifdef code="ca_objects.date">
+												<div class="unit">
+													<div class="label">Date</div>
+													^ca_objects.date%delimiter=,_
+												</div>
+											</ifdef>
+											<ifdef code="ca_objects.dim_width|ca_objects.dim_height|ca_objects.dim_depth|ca_objects.note">
+												<div class="unit">
+													<div class="label">Dimensions</div>
+													<unit relativeTo="ca_objects.dimensions" delimiter="; ">^dim_width x ^dim_height<ifdef code="dim_depth"> x ^dim_depth</ifdef><ifdef code="note">(^note)</ifdef></unit>
+												</div>
+											</ifdef>
+											<ifcount code="ca_collections" min="1">
+												<div class="unit">
+													<div class="label">Project<ifcount code="ca_collections" min="2">s</ifcount></div>
+													<unit relativeTo="ca_collections" delimiter=", ">^ca_collections.preferred_labels.name</unit>
+												</div>
+											</ifcount>');
+?>
+					</td>
+					<td style="width:10%; vertical-align:top;"> </td>
+					<td style="width:45%; vertical-align:top;">
+<?php
+							print $vo_result->getWithTemplate('<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1">
+															<div class="unit">
+																<div class="label">Exhibitions</div>
+																<unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter="<br/><br/>">
+																	^ca_occurrences.preferred_labels.name<case><ifcount code="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" min="1"><br/></ifcount><ifdef code="ca_occurrences.date"><br/></ifdef></case><ifcount code="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" min="1"><unit relativeTo="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" delimiter=", ">^ca_entities.preferred_labels</unit><ifdef code="ca_occurrences.date">, </ifdef></ifcount><ifdef code="ca_occurrences.date">^ca_occurrences.date</ifdef>
+																</unit>
+															</div>
+														</ifcount>
+														<ifcount code="ca_occurrences" restrictToTypes="action" min="1">
+															<div class="unit">
+																<div class="label">Actions</div>
+																<unit relativeTo="ca_occurrences" restrictToTypes="action" delimiter=", ">^ca_occurrences.preferred_labels.name</unit>
+															</div>
+														</ifcount>
+														<ifcount code="ca_entities" min="1">
+															<div class="unit">
+																<div class="label">People/Organizations</div>
+																<unit relativeTo="ca_entities" delimiter=", ">^ca_entities.preferred_labels</unit>
+															</div>
+														</ifcount>');
+
+							$va_tags = $t_item->getTags();
+							if(is_array($va_tags) && sizeof($va_tags)){
+								$va_tags_processed = array();
+								foreach($va_tags as $va_tag){
+									$va_tags_processed[$va_tag["tag_id"]] = $va_tag["tag"];
+								}
+	?>
+								<div class="unit">
+									<div class="label">Tags</div>
+									<unit relativeTo="ca_item_tags" delimiter=", ">
+	<?php
+										print join(", ", $va_tags_processed);
+	?>
+									</unit>
+								</div>
+	<?php
+							}				
+	?>
+					</td>
+				</tr>
+			</table></div>		
+			<div class="pageBreak">&nbsp;</div>	
+<?php		
 		}
 ?>
 			
