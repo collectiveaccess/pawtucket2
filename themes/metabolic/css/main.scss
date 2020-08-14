@@ -1198,9 +1198,14 @@ h1{
 	}
 }
 
+
+/* metabolic specific */
 .metapoetics {
 	font-family:Georgia, serif;
 	font-size: 18px;
 	font-style: italic;
 	margin-bottom: 36px;
+}
+#CommentsTagsList{
+	display:none; /* hack to hide user contributed comments and tags */
 }

@@ -9,7 +9,7 @@ axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 			let tags = (this.props.tags.length) ? <li className='list-group-item'><b>Tags: </b>{this.props.tags}</li> : null;
 			let comments = (this.props.comments.length) ? this.props.comments : null;
 			return (
-			    <div>
+			    <div id="CommentsTagsList">
 			    	{(this.props.comments.length || this.props.tags.length) ? <div dangerouslySetInnerHTML={{ __html: this.props.listTitle}} /> : null}
 			    	{(this.props.tags.length || this.props.comments.length) ? <ul className='list-group list-group-flush mb-4'>{tags}{comments}</ul> : null}
 			    </div>
