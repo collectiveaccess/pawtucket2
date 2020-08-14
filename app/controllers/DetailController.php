@@ -689,7 +689,7 @@
 							case 'original_name':
 							default:
 								if (strpos($vs_mode, "^") !== false) { // template
-								   $vs_file_name = pathinfo(caProcessTemplateForIDs($vs_mode, 'ca_object_representations', [$vn_rep_id]), PATHINFO_FILENAME);
+									$vs_file_name = pathinfo(caProcessTemplateForIDs($vs_mode, 'ca_object_representations', [$vn_rep_id]), PATHINFO_FILENAME);								
 								} elseif ($va_info['ORIGINAL_FILENAME']) {
 									$va_tmp = explode('.', $va_info['ORIGINAL_FILENAME']);
 									if (sizeof($va_tmp) > 1) { 
@@ -697,9 +697,9 @@
 											$va_tmp[] = $vs_ext;
 										}
 									}
-									$vs_file_name = str_replace(" ", "_", join('_', $va_tmp).'.'.$va_rep_info['EXTENSION']);					
+									$vs_file_name = str_replace(" ", "_", join('_', $va_tmp));					
 								} else {
-									$vs_file_name = $vs_idno_proc.'_representation_'.$vn_rep_id.'_'.$ps_version.'.'.$va_rep_info['EXTENSION'];
+									$vs_file_name = $vs_idno_proc.'_representation_'.$vn_rep_id.'_'.$ps_version;
 								}
 						
 								if (isset($va_file_names[$vs_file_name.'.'.$va_rep_info['EXTENSION']])) {

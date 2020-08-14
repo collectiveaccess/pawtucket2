@@ -115,11 +115,13 @@ $lighter-color: $gray-3;
 $very-light: $gray-2;
 $very-very-light: $gray-1;
 
+/*
 div, img, a{
-	/*transition: color .25s ease-in-out, background-color .25s ease-in-out, border-color .25s ease-in-out, box-shadow .25s ease-in-out, text-decoration .25s ease-in-out;*/
+	transition: color .25s ease-in-out, background-color .25s ease-in-out, border-color .25s ease-in-out, box-shadow .25s ease-in-out, text-decoration .25s ease-in-out;
 	-webkit-transition: all 0.25s ease-in-out 0s;
   	transition: all 0.25s ease-in-out 0s;
 }
+*/
 a:hover img{
 	opacity:.8;
 }
@@ -1194,4 +1196,11 @@ h1{
 			background-color:$gray-6;
 		}
 	}
+}
+
+.metapoetics {
+	font-family:Georgia, serif;
+	font-size: 18px;
+	font-style: italic;
+	margin-bottom: 36px;
 }

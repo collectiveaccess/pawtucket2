@@ -156,11 +156,22 @@
 				
 				<HR></HR>
 				<div class="row">
+					<div class="col-12 col-md-12 text-center metapoetics">
+					<?= strip_tags($t_object->get('ca_objects.metapoetics.metapoetics_text'), '<b><em><i><strong><ul><ol><li><blockquote><u><s><sup><sub>'); ?>
+					</div>
+				</div>
+				<div class="row">
 					<div class="col-12 col-md-6">
-						<div class="mb-3">
-							<div class="label">Title</div>
-							{{{^ca_objects.preferred_labels.name}}}
-						</div>
+<?php
+						$vs_title = $t_object->get("ca_objects.preferred_labels.name");
+						if($vs_title && (strToLower($vs_title) != "[no title]") && (strToLower($vs_title) != "[blank]")){
+?>
+							<div class="mb-3">
+								<div class="label">Title</div><?php print $vs_title; ?>
+							</div>
+<?php							
+						}
+?>
 						{{{<ifdef code="ca_objects.altID">
 							<div class="mb-3">
 								<div class="label">Alternate Identifier</div>
@@ -173,13 +184,7 @@
 								^ca_objects.date%delimiter=,_
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_objects.item_subtype">
-							<div class="mb-3">
-								<div class="label">Type</div>
-								^ca_objects.item_subtype
-							</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_objects.dimensions">
+						{{{<ifdef code="ca_objects.dim_width|ca_objects.dim_height|ca_objects.dim_depth|ca_objects.note">
 							<div class="mb-3">
 								<div class="label">Dimensions</div>
 								<unit relativeTo="ca_objects.dimensions" delimiter="; ">^dim_width x ^dim_height<ifdef code='dim_depth'> x ^dim_depth</ifdef><ifdef code='note'>(^note)</ifdef></unit>
@@ -198,7 +203,9 @@
 						{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1">
 							<div class="mb-3">
 								<div class="label">Exhibitions</div>
-								<unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=", "><l>^ca_occurrences.preferred_labels.name</l></unit>
+								<unit relativeTo="ca_occurrences" restrictToTypes="exhibition" delimiter=", ">
+									<l>^ca_occurrences.preferred_labels.name</l><case><ifcount code="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" min="1"><br/></ifcount><ifdef code="ca_occurrences.date"><br/></ifdef></case><ifcount code="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" min="1"><unit relativeTo="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" delimiter=", ">^ca_entities.preferred_labels</unit><ifdef code="ca_occurrences.date">, </ifdef></ifcount><ifdef code="ca_occurrences.date">^ca_occurrences.date</ifdef>
+								</unit>
 							</div>
 						</ifcount>}}}
 						{{{<ifcount code="ca_occurrences" restrictToTypes="action" min="1">

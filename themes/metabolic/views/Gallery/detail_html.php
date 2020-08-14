@@ -6,6 +6,7 @@
 	$ps_description = $this->getVar("description");
 	$pn_set_item_id = $this->getVar("set_item_id");
 	$o_config = $this->getVar("config");
+	$va_access_values = caGetUserAccessValues();
 ?>
 <div id="galleryDetailReactComponent"></div>
 <script type="text/javascript">	
@@ -16,7 +17,7 @@
             'setLabel': '<?php print $this->getVar("label"); ?>',
             'setDescription': '<?php print $this->getVar("description"); ?>',
             'set_id': '<?php print $t_set->get("ca_sets.set_id"); ?>',
-            'setContents': <?php print $t_set->setContentsAsJSON($t_set->get("set_code"), array("versions" => array("large", "iconlarge"), "template" => $o_config->get("item_caption_template"), "templateDescription" => $o_config->get("item_info_template"))); ?>
+            'setContents': <?php print $t_set->setContentsAsJSON($t_set->get("set_code"), array("versions" => array("large", "iconlarge"), "template" => $o_config->get("item_caption_template"), "templateDescription" => $o_config->get("item_info_template"), "checkAccess" => $va_access_values)); ?>
             
         }
     };

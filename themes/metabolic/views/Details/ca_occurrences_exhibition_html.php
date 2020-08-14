@@ -105,10 +105,10 @@
 							</div>
 							<HR></HR>
 						</ifdef>}}}
-						{{{<ifcount code="ca_entities" restrictToTypes="org" min="1">
+						{{{<ifcount code="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" min="1">
 							<div class="mb-3">
 								<div class="label">Venue</div>
-								<unit relativeTo="ca_entities" restrictToTypes="org" delimiter=", ">^ca_entities.preferred_labels</unit>
+								<unit relativeTo="ca_entities" restrictToTypes="org" restrictToRelationshipTypes="venue" delimiter=", ">^ca_entities.preferred_labels</unit>
 							</div>
 						</ifcount>}}}
 						{{{<ifcount code="ca_entities" restrictToTypes="ind" min="1">

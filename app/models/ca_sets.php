@@ -2895,7 +2895,7 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 			return false;
 		}
 		
-		$reps = array_values(caExtractValuesByUserLocale($set->getItems(['thumbnailVersions' => caGetOption('versions', $options, ['large']), 'template' => caGetOption('template', $options, null), 'templateDescription' => caGetOption('templateDescription', $options, null)])));
+		$reps = array_values(caExtractValuesByUserLocale($set->getItems(['thumbnailVersions' => caGetOption('versions', $options, ['large']), 'template' => caGetOption('template', $options, null), 'templateDescription' => caGetOption('templateDescription', $options, null), 'checkAccess' => caGetOption('checkAccess', $options, null)])));
 		return array_map(function($r) { return ['key' => md5($r['representation_url_large']), 'url' => $r['representation_url_large'], 'media_tag' => $r['representation_tag_large'], 'media_tag_link' => $r['representation_tag_large_as_link'], 'media_tag_large_link' => $r['representation_tag_large_as_link'], 'media_tag_iconlarge' => $r['representation_tag_iconlarge'], 'caption' => $r['displayTemplate'], 'itemDescription' => $r['displayTemplateDescription']]; }, $reps);
 	}
 	# ---------------------------------------------------------------

@@ -108,11 +108,13 @@
 			<div class="row">
 <?php
 		foreach($va_sets as $vn_set_id => $va_set){
-			print "<div class='col-sm-6 col-md-3 pb-4 mb-4'>";
 			$va_first_item = "";
 			if($va_set_first_items[$vn_set_id]){
 				$va_first_item = array_shift($va_set_first_items[$vn_set_id]);
 			}
+			if(!is_array($va_first_item) || !isset($va_first_item['representation_tag'])) { continue; }
+			
+			print "<div class='col-sm-6 col-md-3 pb-4 mb-4'>";
 			print caNavLink($va_first_item["representation_tag"], "", "", "Gallery", $vn_set_id);
 			print "<div class='pt-2'>".$va_set["name"]."</div><div>".$va_set["item_count"]." ".(($va_set["item_count"] == 1) ? _t("item") : _t("items"))."</div>";
 			print "</div>";

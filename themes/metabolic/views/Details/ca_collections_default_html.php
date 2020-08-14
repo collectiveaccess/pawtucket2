@@ -122,7 +122,7 @@
 							if($q_exhibitions->numHits()){
 								print "<div class='mb-3'><div class='label'>Exhibitions</div>";
 								while($q_exhibitions->nextHit()){
-									print $q_exhibitions->getWithTemplate("<div class='mb-3'><l>^ca_occurrences.preferred_labels</l><ifcount code='ca_entities'  restrictToTypes='org'><br/><unit relativeTo='ca_entities' restrictToTypes='org' delimiter=', '>^ca_entities.preferred_labels</unit></ifcount><ifdef code='ca_occurrences.date'>, ^ca_occurrences.date</ifdef></ifcount></div>");
+									print $q_exhibitions->getWithTemplate("<div class='mb-3'><l>^ca_occurrences.preferred_labels.name</l><case><ifcount code='ca_entities' restrictToTypes='org' restrictToRelationshipTypes='venue' min='1'><br/></ifcount><ifdef code='ca_occurrences.date'><br/></ifdef></case><ifcount code='ca_entities' restrictToTypes='org' restrictToRelationshipTypes='venue' min='1'><unit relativeTo='ca_entities' restrictToTypes='org' restrictToRelationshipTypes='venue' delimiter=', '>^ca_entities.preferred_labels</unit><ifdef code='ca_occurrences.date'>, </ifdef></ifcount><ifdef code='ca_occurrences.date'>^ca_occurrences.date</ifdef></div>");
 								}
 								print "</div><HR></HR>";
 							}
