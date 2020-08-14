@@ -172,12 +172,11 @@
 						<li>
 							<?php print caNavLink($this->request, _t("Collection"), "", "", "About", "collection"); ?>
 <?php
-						if (((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) || (($this->request->getController() == "Browse") && ($this->request->getAction() != "exhibitions")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities")) | (($this->request->getController() == "About") && ($this->request->getAction() == "collection"))) {
+						if ((($this->request->getController() == "Browse") && ($this->request->getAction() != "exhibitions")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities")) | (($this->request->getController() == "About") && ($this->request->getAction() == "collection"))) {
 ?>								
 							<ul class='subMenu'>
 								<li style="padding-top:6px;" <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art"), "", "", "Browse", "objects"); ?></li>					
 								<li <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "entities")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "entities"); ?></li>					
-								<li <?php print ((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Featured"), "", "", "Featured", "archives"); ?></li>					
 							</ul>												
 <?php						
 						} 
@@ -204,12 +203,13 @@
 						<li>
 							<?php print caNavLink($this->request, _t("Archives"), "", "", "About", "archives"); ?> 
 <?php
-							if (($this->request->getController() == "Collections") | (($this->request->getController() == "Listing") && ($this->request->getAction() == "oralhistory")) | (($this->request->getController() == "About") && ($this->request->getAction() == "archives")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "collections")) | ($this->request->getAction() == "oralhistory") | (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival"))) {
+							if (((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) || ($this->request->getController() == "Collections") | (($this->request->getController() == "Listing") && ($this->request->getAction() == "oralhistory")) | (($this->request->getController() == "About") && ($this->request->getAction() == "archives")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "collections")) | ($this->request->getAction() == "oralhistory") | (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival"))) {
 ?>							
 								<ul class='subMenu'>
 									<li style="padding-top:6px;" <?php print (($this->request->getController() == "Listing")| ($this->request->getAction() == "oralhistory") ) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Oral History"), "", "", "Listing", "oralhistory"); ?></li>					
 									<!--<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Search"), "", "", "Search", "advanced/objects"); ?></li>-->
 									<li <?php print ( (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival")) | ($this->request->getController() == "Collections") | ($this->request->getAction() == "collections")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Special Collections"), "", "", "Collections", "index"); ?></li>					
+									<li <?php print ((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Featured"), "", "", "Featured", "archives"); ?></li>					
 								</ul>
 <?php
 							}
@@ -324,11 +324,9 @@
 
 						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children">
 							<?php print caNavLink($this->request, _t("Collection"), "", "", "About", "collection"); ?>
-							<ul class='sub-menu <?php print (((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) | (($this->request->getController() == "Browse") && ($this->request->getAction() != "exhibitions")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities")) | (($this->request->getController() == "About") && ($this->request->getAction() == "collection"))) ? ' active' : ''; ?>'>
+							<ul class='sub-menu <?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() != "exhibitions")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities")) | (($this->request->getController() == "About") && ($this->request->getAction() == "collection"))) ? ' active' : ''; ?>'>
 								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "objects")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "objects"))) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Art"), "", "", "Browse", "objects"); ?></li>					
-								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "entities")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities"))) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "entities"); ?></li>					
-								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Featured"), "", "", "Featured", "archives"); ?></li>					
-							
+								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((($this->request->getController() == "Browse") && ($this->request->getAction() == "entities")) || (($this->request->getController() == "Detail") && ($this->request->getAction() == "entities"))) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Artists"), "", "", "Browse", "entities"); ?></li>
 							</ul>												
 						</li>					
 						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children">
@@ -350,9 +348,10 @@
 						</li>
 						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children">
 							<?php print caNavLink($this->request, _t("Archives"), "", "", "About", "archives"); ?> 
-							<ul class='sub-menu<?php print (($this->request->getController() == "Collections") | (($this->request->getController() == "Listing") && ($this->request->getAction() == "oralhistory")) | (($this->request->getController() == "About") && ($this->request->getAction() == "archives")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "collections")) | ($this->request->getAction() == "oralhistory") | (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival"))) ? " active" : ""; ?>'>
+							<ul class='sub-menu<?php print (((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) | ($this->request->getController() == "Collections") | (($this->request->getController() == "Listing") && ($this->request->getAction() == "oralhistory")) | (($this->request->getController() == "About") && ($this->request->getAction() == "archives")) | (($this->request->getController() == "Detail") && ($this->request->getAction() == "collections")) | ($this->request->getAction() == "oralhistory") | (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival"))) ? " active" : ""; ?>'>
 								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print (($this->request->getController() == "Listing")| ($this->request->getAction() == "oralhistory") ) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Oral History"), "", "", "Listing", "oralhistory"); ?></li>					
 								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ( (($this->request->getController() == "Detail") && ($this->request->getAction() == "archival")) | ($this->request->getController() == "Collections") | ($this->request->getAction() == "collections")) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Special Collections"), "", "", "Collections", "index"); ?></li>					
+								<li class='menu-item menu-item-type-post_type menu-item-object-page<?php print ((strtolower($this->request->getController()) == "featured") && (($this->request->getParameter('setMode', pString) == "archives") || (strtolower($this->request->getAction()) == "archives"))) ? ' current-menu-item' : ''; ?>'><?php print caNavLink($this->request, _t("Featured"), "", "", "Featured", "archives"); ?></li>					
 							</ul>
 						</li>
 						<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-264"><a href="https://stormking.org/support/">Support</a>
