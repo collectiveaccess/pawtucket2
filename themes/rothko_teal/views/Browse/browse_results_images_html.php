@@ -79,7 +79,7 @@
 			$vn_c = 0;
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
-			print "[$n]";
+			
 			if ($vs_table != 'ca_objects') {
 				$va_ids = array();
 				while($qr_res->nextHit() && ($vn_c < $vn_hits_per_block)) {
