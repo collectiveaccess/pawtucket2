@@ -60,7 +60,7 @@
 	}
 
 	
-	if((($vs_table == "ca_entities") && is_array($va_facets) && (sizeof($va_facets) > 1)) || (($vs_table != "ca_entities") && is_array($va_facets) && (sizeof($va_facets) > 0)) || ($vs_criteria)){
+	if((($vs_table == "ca_entities") && strToLower($this->request->getAction()) != "other_entities") || (($vs_table != "ca_entities") && is_array($va_facets) && (sizeof($va_facets) > 0)) || ($vs_criteria)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
 		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";

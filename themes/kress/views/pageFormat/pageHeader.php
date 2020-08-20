@@ -149,7 +149,7 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art Objects"), "", "", "Browse", "objects"); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art Objects"), "", "", "Browse", "objects", array("view" => "images")); ?></li>
 					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "archival")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archival Materials"), "", "", "Browse", "archival"); ?></li>
 					<li class="dropdown<?php print ((strToLower($this->request->getController()) == "browse") && in_array(strToLower($this->request->getAction()), array("acquisitions", "dispositions"))) ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Events"); ?></a>
 						<ul class="dropdown-menu">
