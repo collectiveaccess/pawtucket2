@@ -40,7 +40,7 @@
 						<li><a href="#" target="_blank"><i class="fa fa-twitter-square"></i></a></li>
 					</ul>
 					<ul class="list-inline">
-						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "About", "Contact"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>
 						<li><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "About", "TermsOfUse"); ?></li>
 						<li><?php print caNavLink($this->request, _t("Privacy Policy"), "", "", "About", "PrivacyPolicy"); ?></li>
 					</ul>

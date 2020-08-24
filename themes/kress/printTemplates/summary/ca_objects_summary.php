@@ -49,7 +49,7 @@
 
 ?>
 	<div class="title">
-		<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
+		<h1 class="title"><?php print $t_item->getWithTemplate('<ifdef code="ca_objects.Object_ArtistExpression">^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code="ca_objects.Object_ArtistExpression"><ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist"><ifdef code="ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.forename </ifdef><ifdef code="ca_entities.preferred_labels.surname">^ca_entities.preferred_labels.surname</ifdef><ifnotdef code="ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.displayname</ifnotdef><ifdef code="ca_entities.preferred_labels.forename|ca_entities.preferred_labels.surname|ca_entities.preferred_labels.displayname">, </ifdef><ifdef code="ca_entities.Name_DateExpression">^ca_entities.Name_DateExpression</ifdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i>'); ?></H1>
 	</div>
 	<div class="representationList">
 		
@@ -68,10 +68,91 @@
 	}
 ?>
 	</div>
-	<div class='tombstone'>
-		{{{<ifdef code="ca_objects.idno"><div class='unit'><h6>Identifier</h6>^ca_objects.idno</div></ifdef>}}}
-		{{{<ifcount min="1" code="ca_objects.dates.dates_value"><div class='unit'><h6>Date</h6><unit delimiter="<br/>">^ca_objects.dates.dates_value</unit></div></ifcount>}}}
-		{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes='artist'><div class='unit'><h6>Artist</h6><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist'>^ca_entities.preferred_labels.displayname</unit></div></ifcount>}}}
-	</div>
-<?php	
+<?php
+			print $t_item->getWithTemplate('
+					<div class="grayBg">
+						<ifdef code="ca_objects.Object_KressCatalogNumber"><div class="unit unitHalf"><label>Kress Catalog Number</label>^ca_objects.Object_KressCatalogNumber</div></ifdef>
+						<ifdef code="ca_objects.idno"><div class="unit unitHalf"><label>Identifier</label>^ca_objects.idno</div></ifdef>
+						<div class="clear"></div>
+						<ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><div class="unit unitHalf"><label>Artist</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></div></ifcount>
+						<ifdef code="ca_objects.Object_Nationality"><div class="unit unitHalf"><label>Nationality</label>^ca_objects.Object_Nationality</div></ifdef>
+						<div class="clear"></div>
+						<ifdef code="ca_objects.Object_DateExpression"><div class="unit unitHalf"><label>Date</label>^ca_objects.Object_DateExpression</div></ifdef>
+						<ifdef code="ca_objects.Object_Medium"><div class="unit unitHalf"><label>Medium</label>^ca_objects.Object_Medium</div></ifdef>
+						<div class="clear"></div>
+						<ifdef code="ca_objects.Object_Classification"><div class="unit"><label>Classification</label>^ca_objects.Object_Classification</div></ifdef>
+						<ifdef code="ca_objects.Object_Dimensions"><div class="unit"><label>Dimensions</label>^ca_objects.Object_Dimensions</div></ifdef>
+						<ifcount code="ca_entities" restrictToRelationshipTypes="location"><div class="unit"><label>Location</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="location" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></div></ifcount>
+					</div>
+					
+					<ifcount code="ca_entities" restrictToRelationshipTypes="attribution" min="1"><div class="unit"><label>Historical Attribution</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="attribution" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></div></ifcount>
+					<ifdef code="ca_objects.Object_Provenance">
+						<div class="unit"><label>Provenance</label>
+							<span class="trimText">^ca_objects.Object_Provenance</span>
+						</div>
+					</ifdef>
+					<ifdef code="ca_objects.Object_Note">
+						<div class="unit"><label>Note</label>
+							<span class="trimText">^ca_objects.Object_Note</span>
+						</div>
+					</ifdef>
+				
+					<ifcount code="ca_entities" min="1" excludeRelationshipTypes="artist,location,attribution">
+						<div class="unit">
+							<label>Related People & Organizations</label>
+							<unit relativeTo="ca_entities" excludeRelationshipTypes="artist,location,attribution" delimiter="<br/>">^ca_entities.preferred_labels.displayname (^relationship_typename)</unit>
+						</div>
+					</ifcount>
+					<ifdef code="ca_objects.Object_CurrentAccNo"><div class="unit"><label>Accession Number</label>^ca_objects.Object_CurrentAccNo</div></ifdef>
+					<ifdef code="ca_objects.Object_KressAssNumber"><div class="unit"><label>Kress Assigned Number</label>^ca_objects.Object_KressAssNumber</div></ifdef>
+					<ifdef code="ca_objects.Object_AltKressNumber"><div class="unit"><label>Old or Alternate Kress Number</label>^ca_objects.Object_AltKressNumber</div></ifdef>
+					<ifdef code="ca_objects.Object_PichettoNo"><div class="unit"><label>Pichetto Number</label>^ca_objects.Object_PichettoNo</div></ifdef>
+					<ifdef code="ca_objects.Object_DreyfusNumber"><div class="unit"><label>Dreyfus Number</label>^ca_objects.Object_DreyfusNumber</div></ifdef>
+					<ifdef code="ca_objects.Object_NGAOldNumber"><div class="unit"><label>Old National Gallery of Art Number</label>^ca_objects.Object_NGAOldNumber</div></ifdef>
+					<ifdef code="ca_objects.Object_NGAOldLoanNumber"><div class="unit"><label>Old National Gallery of Art Loan Number</label>^ca_objects.Object_NGAOldLoanNumber</div></ifdef>
+					
+					<ifcount code="ca_movements" min="1">
+						<hr/>
+						<label>^ca_movements._count Acquisition<ifcount code="ca_movements" min="2">s</ifcount></label>
+						<unit relativeTo="ca_movements" delimiter="<br/>" sort="ca_movements.Acquisition_DateFilter"><div class="unit">^ca_movements.preferred_labels</div></unit>
+					</ifcount>
+					<ifcount code="ca_loans" min="1">
+						<hr/>
+						<label>^ca_loans._count Distribution<ifcount code="ca_loans" min="2">s</ifcount></label>
+						<unit relativeTo="ca_loans" delimiter="<br/>" sort="ca_loans.Distribution_DateYearFilter"><div class="unit">^ca_loans.preferred_labels</div></unit>
+					</ifcount>
+					<ifdef code="ca_objects.Object_URLCollectionRecord|ca_objects.Object_URLNGALibraryImageURL">
+						<hr/><label>External Links</label>					
+						<ifdef code="ca_objects.Object_URLCollectionRecord"><div class="unit"><b>Related Collection Record</b><br/>^ca_objects.Object_URLCollectionRecord</div></ifdef>
+						<ifdef code="ca_objects.Object_URLNGALibraryImageURL"><div class="unit"><b>National Gallery of Art Library Image Collection Record</b><br/>^ca_objects.Object_URLNGALibraryImageURL</div></ifdef>
+					</ifdef>
+					<ifcount code="ca_occurrences" min="1">
+						<hr/><label>^ca_occurrences._count Archival Material<ifcount code="ca_occurrences" min="2">s</ifcount></label>						
+						<unit relativeTo="ca_occurrences" delimiter=" " sort="ca_occurrences.Doc_DateFilter">
+							<div class="grayBg">
+								<div class="relatedThumbnail">^ca_occurrences.media.media_media.iconlarge</div>
+								<div class="relatedCaption">
+									^ca_occurrences.preferred_labels
+								</div>
+								<div class="clear"></div>
+							</div>
+						</unit>		
+					</ifcount>
+					
+					<ifcount code="ca_objects.related" min="1">
+						<hr/><label>^ca_objects._count Related Art Object<ifcount code="ca_objects.related" min="2">s</ifcount></label>						
+						<unit relativeTo="ca_objects" delimiter=" ">
+							<div class="grayBg">
+								<div class="relatedThumbnail">^ca_object_representations.media.thumbnail</div>
+								<div class="relatedCaption">
+									<ifdef code="ca_objects.Object_ArtistExpression">^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code="ca_objects.Object_ArtistExpression"><ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist"><ifdef code="ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.forename </ifdef><ifdef code="ca_entities.preferred_labels.surname">^ca_entities.preferred_labels.surname</ifdef><ifnotdef code="ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.displayname</ifnotdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i>
+								</div>
+								<div class="clear"></div>
+							</div>
+						</unit>		
+					</ifcount>
+					
+			');
+	
 	print $this->render("pdfEnd.php");
+?>

@@ -1,9 +1,35 @@
 <?php
+	$va_access_values = caGetUserAccessValues($this->request);
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
 	$vn_share_enabled = 	$this->getVar("shareEnabled");	
 	$vn_pdf_enabled = 		$this->getVar("pdfEnabled");
+
+
+	# --- back button for related acquisitions-ca_movements, distributions-ca_loans, archival items - ca_occurrences, ca_objects
+	$o_context = new ResultContext($this->request, 'ca_movements', 'detailrelated', 'entities');
+	$o_context->setResultList($t_item->get("ca_movements.movement_id", array("returnAsArray" => true, "checkAccess" => $va_access_values)));
+	$o_context->setAsLastFind();
+	$o_context->saveContext();
+	
+	$o_context = new ResultContext($this->request, 'ca_loans', 'detailrelated', 'entities');
+	$o_context->setResultList($t_item->get("ca_loans.loan_id", array("returnAsArray" => true, "checkAccess" => $va_access_values)));
+	$o_context->setAsLastFind();
+	$o_context->saveContext();
+	
+	$o_context = new ResultContext($this->request, 'ca_occurrences', 'detailrelated', 'entities');
+	$o_context->setResultList($t_item->get("ca_occurrences.occurrence_id", array("returnAsArray" => true, "checkAccess" => $va_access_values)));
+	$o_context->setAsLastFind();
+	$o_context->saveContext();
+	
+	# --- object done when browse loaded with ajax
+	#$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', 'entities');
+	#$o_context->setResultList($t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values)));
+	#$o_context->setAsLastFind();
+	#$o_context->saveContext();
+
+
 ?>
 <div class="row">
 	<div class='col-xs-12 navTop'><!--- only shown at small screen size -->
@@ -18,14 +44,14 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-small-12 col-md-10'>
-					<H2>{{{^ca_entities.Name_Type<ifdef code="ca_entities.Name_KressInstitutionType"> - ^ca_entities.Name_KressInstitutionType</ifdef><ifdef code="ca_entities.idno">: ^ca_entities.idno</ifdef>}}}</H2>
 					<H1>{{{^ca_entities.preferred_labels.displayname}}}</H1>
 					<div class="row">
 						{{{<ifdef code="ca_entities.nonpreferred_labels.displayname|ca_entities.Name_DateExpression|ca_entities.Name_InstitutionStatus|ca_entities.Name_Nationality|ca_entities.Name_BirthDate|ca_entities.Name_DeathDate|ca_entities.Name_InstitutionWeb|ca_entities.Name_Location">
 							<div class='col-sm-12 col-md-8'>
 								<div class="grayBg">
+									<ifdef code="ca_entities.idno"><div class="unit"><label data-toggle="popover" title="Identifier" data-content="Identifier">Identifier</label>^ca_entities.idno</div></ifdef>
+									<ifdef code="ca_entities.Name_KressInstitutionType"><div class="unit"><label data-toggle="popover" title="Institution Type" data-content="Institution Type">Institution Type</label>^ca_entities.Name_KressInstitutionType</div></ifdef>
 									<ifdef code="ca_entities.nonpreferred_labels.displayname"><div class="unit"><label data-toggle="popover" title="Alternate Names" data-content="Alternate Names">Alternate Names</label>^ca_entities.nonpreferred_labels.displayname</div></ifdef>
-									<ifdef code="ca_entities.Name_DateExpression"><div class="unit"><label data-toggle="popover" title="Date" data-content="Date">Date</label>^ca_entities.Name_DateExpression</div></ifdef>
 									<ifdef code="ca_entities.Name_InstitutionStatus"><div class="unit"><label data-toggle="popover" title="Status" data-content="Status">Status</label>^ca_entities.Name_InstitutionStatus</div></ifdef>
 									<ifdef code="ca_entities.Name_Nationality"><div class="unit"><label data-toggle="popover" title="Nationality" data-content="Nationality">Nationality</label>^ca_entities.Name_Nationality</div></ifdef>
 									<ifdef code="ca_entities.Name_BirthDate"><div class="unit"><label data-toggle="popover" title="Birth Date" data-content="Birth Date">Birth Date</label>^ca_entities.Name_BirthDate</div></ifdef>
@@ -66,7 +92,7 @@
 						</div>
 					</div>
 					<div class="row">
-						<unit relativeTo="ca_movements" delimiter=" " length="12">
+						<unit relativeTo="ca_movements" delimiter=" " length="12" sort="ca_movements.Acquisition_DateFilter">
 							<div class='col-sm-6 col-md-3'>
 								<l><div class="grayBg paddingTop">
 								<div class="unit">
@@ -88,7 +114,7 @@
 						</div>
 					</div>
 					<div class="row">
-						<unit relativeTo="ca_loans" delimiter=" " length="12"><div class='col-sm-6 col-md-3'><l><div class="grayBg paddingTop"><div class="unit">^ca_loans.idno ^ca_loans.preferred_labels</div></div></l></div></unit>
+						<unit relativeTo="ca_loans" delimiter=" " length="12" sort="ca_loans.Distribution_DateYearFilter"><div class='col-sm-6 col-md-3'><l><div class="grayBg paddingTop"><div class="unit">^ca_loans.idno ^ca_loans.preferred_labels</div></div></l></div></unit>
 					</div>
 					<if rule="^ca_loans._count > 12">
 						<div class="row">
@@ -97,10 +123,10 @@
 					</if>
 				</ifcount>}}}
 				
-		{{{<ifcount code="ca_occurrences" min="1">
+		{{{<if rule="^ca_entities.Name_Type !~ /Institution/"><ifcount code="ca_occurrences" min="1" restrictToTypes="documentation">
 			<hr/><label data-toggle="popover" title="Archival Materials" data-content="Archival Materials">^ca_occurrences._count Archival Material<ifcount code="ca_occurrences" min="2">s</ifcount></label>						
 			<div class="row">
-				<unit relativeTo="ca_occurrences" length="9" delimiter=" ">
+				<unit relativeTo="ca_occurrences" restrictToTypes="documentation" length="9" delimiter=" " sort="ca_occurrences.Doc_DateFilter">
 					<div class="col-sm-4">
 						<l><div class="grayBg paddingTop">
 							<div class="unit">
@@ -109,7 +135,7 @@
 										^ca_occurrences.media.media_media.iconlarge
 									</div>
 									<div class="col-xs-8">
-										^ca_occurrences.idno ^ca_occurrences.preferred_labels
+										^ca_occurrences.preferred_labels
 									</div>
 								</div>
 							</div>
@@ -117,12 +143,12 @@
 					</div>
 				</unit>
 			</div>			
-			<if rule="^ca_occurrences._count > 9">
+			<if rule="^ca_occurrences._count > 9" restrictToTypes="documentation">
 				<div class="row">
 					<div class="col-sm-12 text-center"><?php print caNavLink($this->request, "View All", "btn btn-default", "", "Browse", "archival", array("facet" => "entity_facet", "id" => $t_item->get("ca_entities.entity_id"))); ?></div>
 				</div>
 			</if>
-		</ifcount>}}}
+		</ifcount></if>}}}
 			
 {{{<ifcount code="ca_objects" min="1">
 			<div class="row">
@@ -138,7 +164,7 @@
 			</div><!-- end row -->
 			<script type="text/javascript">
 				jQuery(document).ready(function() {
-					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'entity_facet', 'id' => '^ca_entities.entity_id', 'showFilterPanel' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
+					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'entity_facet', 'id' => '^ca_entities.entity_id', 'showFilterPanel' => 1, 'dontSetFind' => 1, 'detailType' => 'entities'), array('dontURLEncodeParameters' => true)); ?>", function() {
 						//jQuery('#browseResultsContainer').jscroll({
 						//	autoTrigger: true,
 						//	loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

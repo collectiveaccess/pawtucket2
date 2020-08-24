@@ -103,12 +103,21 @@ a.navbar-brand, a.navbar-brand:hover {
     font-family:Lato;
 	letter-spacing:1px;
 }
+.navbar-nav .dropdown-menu > li > a {
+	font-family: Lato;
+	font-size: 13px;
+    text-transform: uppercase;
+    text-align: right;
+}
+.dropdown-menu{
+	min-width: 100%;
+}
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     background-color: rgb(0,0,0, .3);
 	color:#FFF;
     font-family:Lato;
 }
-@media(max-width:768px){
+@media(max-width:767px){
 	.navbar-form{
 		margin-left:5px;
 		margin-right:5px;
@@ -119,6 +128,19 @@ a.navbar-brand, a.navbar-brand:hover {
 	.container > .navbar-collapse {
 		margin-right: -30px;
 		margin-left: -30px;
+	}
+	.navbar-nav .dropdown-menu > li > a {
+		text-align:left;
+	}
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a{
+		color:#FFF;
+		text-transform:capitalize;
+	}
+	.navbar-default .navbar-nav .open .dropdown-menu > li > a:hover{
+		color:#dedede;
+	}
+	.navbar-nav .open .dropdown-menu{
+		background-color: rgba(0, 0, 0, 0.3);
 	}
 }
 .navbar-form{
@@ -445,6 +467,32 @@ body.frontContainer #footer{
 	position:relative;
 }
 
+.parallax {
+	position:relative;
+    background-image: url("../graphics/hero5.jpg");
+
+    /* Full height */
+    height: 100%;
+
+    /* Create the parallax scrolling effect */
+    background-attachment: fixed;
+    background-position: center -210px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    
+    margin-left: -15px;
+	margin-right: -15px;
+}
+.parallax .heroSearch{
+	background-color: rgba(0, 0, 0, 0);
+	padding-top: 40px;
+	padding-bottom: 50px;
+	margin-top: 220px;
+	margin-bottom: 450px;
+	font-weight:600;
+}
+
+
 .parallax1 {
 	position:relative;
     background-image: url("../graphics/hero1.jpg");
@@ -461,7 +509,7 @@ body.frontContainer #footer{
     margin-left: -15px;
 	margin-right: -15px;
 }
-.parallax {
+.parallax.v1 {
 	position:relative;
     background-image: url("../graphics/hero2.jpg");
 
@@ -477,7 +525,7 @@ body.frontContainer #footer{
     margin-left: -15px;
 	margin-right: -15px;
 }
-.parallax .heroSearch{
+.parallax.v1 .heroSearch{
 	background-color: rgba(0, 0, 0, .5);
 	padding-top: 40px;
 	padding-bottom: 50px;
@@ -853,6 +901,27 @@ a.facetApply {
 	-webkit-box-orient:vertical;
 	overflow:hidden;
 }
+.resultItemDetailExtended .resultImageList img{
+	object-fit:contain;
+	width:140px;
+	height:200px;
+}
+.resultItemDetailExtended .resultTextList{
+	margin-top:0px;
+	line-height:1.2em;
+	height:200px;
+	-webkit-line-clamp:none;
+	display: -webkit-box;
+	-webkit-box-orient:vertical;
+	overflow:scroll;
+}
+.resultItemDetailExtended .resultTextList b{
+	font-family: lato;
+	font-weight:normal;
+}
+.resultItemDetailExtended .resultContentList {
+	height:220px;
+}
 .resultTextImg, .resultTextList {
 	color: #000;
 	font-size:12px;
@@ -929,6 +998,12 @@ a.facetApply {
 .detail {
     font-size: 13px;
 }
+.detail h1, .detail h1 i {
+    font-size: 18px;
+    color: #262626;
+    line-height: 135%;
+    text-transform: none;
+}
 .detail a{
     color: #454545;
 }
@@ -952,6 +1027,9 @@ a.facetApply {
 }
 .detail label.noTopMargin {
     margin-top: 0px;
+}
+.detail .previewLabelNoIdentifier {
+	margin: 13px 0px 0px 0px;
 }
 .detail .grayBg{
 	/*background-color: #f2f1ec;*/
@@ -1075,4 +1153,9 @@ a.readmore-js-toggle {
 	object-fit:contain;
 	width:100%;
 	height:120px;
+}
+
+/* contact */
+.contact p{
+	font-size:15px;
 }

@@ -74,7 +74,7 @@
 			$vn_col_span_sm = 12;
 			$vn_col_span_xs = 12;
 		}
-		if ($vn_start < $qr_res->numHits()) {
+		if ($vn_start < ($n = $qr_res->numHits())) {
 			$vn_c = 0;
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);

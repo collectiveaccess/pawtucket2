@@ -70,13 +70,8 @@
 				<td><td>
 					<div class="metaBlock">
 <?php				
-					print "<div class='title'>".$vo_result->getWithTemplate("<small>^ca_loans.idno</small><br/>^ca_loans.preferred_labels.name")."</div>"; 
-					if(is_array($va_display_list) && sizeof($va_display_list)){
-						foreach($va_display_list as $vn_placement_id => $va_display_item) {
-							$vs_display_value = $t_display->getDisplayValue($vo_result, $vn_placement_id, array('forReport' => true, 'purify' => true));
-							print "<div class='metadata'><span class='displayHeader'>".$va_display_item['display']."</span>: <span class='displayValue'>".(strlen($vs_display_value) > 1200 ? strip_tags(substr($vs_display_value, 0, 1197))."..." : $vs_display_value)."</span></div>";		
-						}							
-					}
+					print "<div class='title'>".$vo_result->getWithTemplate("^ca_loans.preferred_labels.name")."</div>"; 
+					
 ?>
 					</div>				
 				</td>	

@@ -77,7 +77,7 @@
 		$vb_div_open = false;
 		while($qr_results->nextHit()) {
 			if ($vn_i == 0) { print "<div class='{{{block}}}Set authoritySet'>\n"; $vb_div_open = true;}
-				print "<div class='collectionsResult authorityResult'>".$qr_results->getWithTemplate('<l>^ca_movements.idno ^ca_movements.preferred_labels.name</l>')."</div>";
+				print "<div class='collectionsResult authorityResult'>".$qr_results->getWithTemplate('<l>^ca_movements.preferred_labels.name</l>')."</div>";
 			$vn_count++;
 			$vn_i++;
 			if ($vn_i >= $vn_items_per_column) {

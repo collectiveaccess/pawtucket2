@@ -55,7 +55,11 @@
 	$va_options			= $this->getVar('options');
 	$vs_result_text_template = caGetOption('imageResultTextTemplate', $va_options, null);
 	
-
+	$vs_detail_type = $this->request->getParameter("detailType", pString);
+	if($vs_detail_type){
+		$vb_dontSetFind = 1;
+	}
+	
 	$vb_ajax			= (bool)$this->request->isAjax();
 
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
@@ -170,7 +174,7 @@ $vs_rep_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl(
 				$vn_results_output++;
 			}
 			
-			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
+			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0, "detailType" => $vs_detail_type, "dontSetFind" => $vb_dontSetFind));
 		}
 ?>
 <script type="text/javascript">

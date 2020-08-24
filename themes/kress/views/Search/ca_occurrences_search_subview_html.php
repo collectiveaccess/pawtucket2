@@ -89,7 +89,7 @@
 			}
 			print $vs_image_tag;
 ?>
-				<br/><?php print $qr_results->getWithTemplate('<l><ifdef code="ca_occurrences.Doc_type">^ca_occurrences.Doc_type: </ifdef>^ca_occurrences.idno<br/>^ca_occurrences.preferred_labels.name</l>'); ?>
+				<br/><?php print $qr_results->getWithTemplate('<l>^ca_occurrences.preferred_labels.name</l>'); ?>
 			</div>
 <?php
 			$vn_count++;
