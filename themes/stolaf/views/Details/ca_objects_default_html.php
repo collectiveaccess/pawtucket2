@@ -87,6 +87,17 @@
 				
 				{{{<ifdef code="ca_objects.material_type"><div class="unit"><label>Material Type</label>^ca_objects.material_type%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code="ca_objects.unitdate.dacs_date_text"><div class="unit"><label>Date</label><unit relativeTo="ca_objects.unitdate" delimiter="<br/>"><ifdef code="ca_objects.unitdate.dacs_dates_labels">^ca_objects.unitdate.dacs_dates_labels: </ifdef>^ca_objects.unitdate.dacs_date_text <ifdef code="ca_objects.unitdate.dacs_dates_types">^ca_objects.unitdate.dacs_dates_types</ifdef></unit></div></ifdef>}}}
+				{{{<ifdef code="ca_objects.extentDACS.extent_number|ca_objects.extentDACS.portion_label|ca_objects.extentDACS.extent_type|ca_objects.extentDACS.container_summary|ca_objects.extentDACS.physical_details">
+					<div class="unit"><label>Extent</label>
+						<unit relativeTo="ca_objects.extentDACS">
+							<ifdef code="ca_objects.extentDACS.extent_number">^ca_objects.extentDACS.extent_number </ifdef>
+							<ifdef code="ca_objects.extentDACS.extent_type">^ca_objects.extentDACS.extent_type</ifdef>
+							<ifdef code="ca_objects.extentDACS.container_summary"><br/>^ca_objects.extentDACS.container_summary</ifdef>
+							<ifdef code="ca_objects.extentDACS.physical_details"><br/>^ca_objects.extentDACS.physical_details</ifdef>
+						</unit>
+					</div>
+				</ifdef>}}}
+				
 				
 				
 				
@@ -104,10 +115,61 @@
 				{{{<ifcount code="ca_entities" min="2" restrictToTypes="fam"><label>Related families</label></ifcount>}}}
 				{{{<unit relativeTo="ca_entities" restrictToTypes="fam" delimiter="<br/>">^ca_entities.preferred_labels (^relationship_typename)</unit>}}}
 				
-				{{{<ifdef code="ca_objects.LcshSubjects"><div class="unit"><label>Subjects</label>^ca_objects.LcshSubjects%delimiter=<br/></div></ifdef>}}}
-					
-				{{{<ifdef code="ca_objects.LcshGenre|ca_objects.aat"><div class="unit"><label>Genres</label><unit delimiter="<br/>">^ca_objects.LcshGenre</unit><ifdef code="ca_objects.LcshGenre"><br/></ifdef><unit delimiter="<br/>">^ca_objects.aat</unit></div></ifdef>}}}
-				
+<?php
+					$va_LcshSubjects = $t_object->get("ca_objects.LcshSubjects", array("returnAsArray" => true));
+					$va_LcshSubjects_processed = array();
+					if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
+						foreach($va_LcshSubjects as $vs_LcshSubjects){
+							if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
+								$va_LcshSubjects_processed[] = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
+							}else{
+								$va_LcshSubjects_processed[] = $vs_LcshSubjects;
+							}
+						}
+						$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
+					}
+					if($vs_LcshSubjects){
+						print "<div class='unit'><label>Subjects</label>".$vs_LcshSubjects."</div>";	
+					}
+
+					$va_LcshGenre = $t_object->get("ca_objects.LcshGenre", array("returnAsArray" => true));
+					$va_LcshGenre_processed = array();
+					if(is_array($va_LcshGenre) && sizeof($va_LcshGenre)){
+						foreach($va_LcshGenre as $vs_LcshGenre){
+							if($vs_LcshGenre && (strpos($vs_LcshGenre, " [") !== false)){
+								$va_LcshGenre_processed[] = mb_substr($vs_LcshGenre, 0, strpos($vs_LcshGenre, " ["));
+							}else{
+								$va_LcshGenre_processed[] = $vs_LcshGenre;
+							}
+						}
+						$vs_LcshGenre = join("<br/>", $va_LcshGenre_processed);
+					}
+					$va_aat = $t_object->get("ca_objects.aat", array("returnAsArray" => true));
+					$va_aat_processed = array();
+					if(is_array($va_aat) && sizeof($va_aat)){
+						foreach($va_aat as $vs_aat){
+							if($vs_aat && (strpos($vs_aat, " [") !== false)){
+								$va_aat_processed[] = mb_substr($vs_aat, 0, strpos($vs_aat, " ["));
+							}else{
+								$va_aat_processed[] = $vs_aat;
+							}
+						}
+						$vs_aat = join("<br/>", $va_aat_processed);
+					}
+					if($vs_LcshGenre || $vs_aat){
+						print "<div class='unit'><label>Genres</label>";
+						if($vs_LcshGenre){
+							print $vs_LcshGenre;
+						}
+						if($vs_LcshGenre && $vs_aat){
+							print "<br/>";
+						}
+						if($vs_aat){
+							print $vs_aat;
+						}
+						print "</div>";	
+					}
+?>				
 				{{{<ifcount code="ca_places" min="1" max="1"><label>Related place</label></ifcount>}}}
 				{{{<ifcount code="ca_places" min="2"><label>Related places</label></ifcount>}}}
 				{{{<unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l> (^relationship_typename)</unit>}}}
