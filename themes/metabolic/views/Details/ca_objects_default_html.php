@@ -221,6 +221,8 @@
 							</div>
 						</ifcount>}}}
 <?php
+# --- temporarily hide tags
+if($showTags){
 						$va_tags = $t_object->getTags();
 						if(is_array($va_tags) && sizeof($va_tags)){
 							$va_tags_processed = array();
@@ -237,7 +239,8 @@
 								</unit>
 							</div>
 <?php
-						}				
+						}
+}				
 ?>
 						{{{map}}}	
 					</div>

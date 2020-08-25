@@ -689,7 +689,7 @@
 							case 'original_name':
 							default:
 								if (strpos($vs_mode, "^") !== false) { // template
-									$vs_file_name = pathinfo(caProcessTemplateForIDs($vs_mode, 'ca_object_representations', [$vn_rep_id]), PATHINFO_FILENAME);								
+									$vs_file_name = preg_replace('![^A-Za-z0-9_\-]+!', '_', preg_replace('!\.[A-Za-z].[A-Za-z0-9]{1,3}$!', '', caProcessTemplateForIDs($vs_mode, 'ca_object_representations', [$vn_rep_id])));
 								} elseif ($va_info['ORIGINAL_FILENAME']) {
 									$va_tmp = explode('.', $va_info['ORIGINAL_FILENAME']);
 									if (sizeof($va_tmp) > 1) { 

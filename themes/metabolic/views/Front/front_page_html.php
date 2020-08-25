@@ -42,6 +42,10 @@
 			</form>
 		</div>
 	</div>
+<?php
+# --- hide tags from home page
+if($showTags){
+?>
 	<div class="row">
 		<div class="col-sm-12">
 			<H1>Tags</H1>
@@ -69,6 +73,7 @@
 ?>
 	</div>
 <?php
+	}
 }
 	$o_gallery_config = caGetGalleryConfig();
 	if(!$vs_section_name = $o_gallery_config->get('gallery_section_name')){
