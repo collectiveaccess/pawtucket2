@@ -195,6 +195,7 @@
 				ksort($va_sets_for_theme);
 				$this->view->setVar('sets', $va_sets_for_theme);
 			}
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_list_item->get("ca_list_items.preferred_labels"));
 			$this->render('Featured/theme_html.php');
  		}
  		# -------------------------------------------------------
@@ -250,7 +251,7 @@
 				$pn_set_item_id = "";	
 			}
 			$this->view->setVar("set_item_id", $pn_set_item_id);
-			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").(($this->config->get('featured_section_name')) ? $this->config->get('featured_section_name') : _t("Featured")).$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
+			MetaTagManager::setWindowTitle($this->request->config->get("app_display_name").$this->request->config->get("page_title_delimiter").$t_set->getLabelForDisplay());
 			$vs_display_attribute = $this->config->get('featured_set_presentation_element_code');
 			$vs_display = "";
 			if($vs_display_attribute){
