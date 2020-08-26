@@ -98,6 +98,13 @@
 								<strong>^ca_occurrences.date</strong>
 							</div>
 						</ifcount>}}}
+						{{{<ifdef code="ca_occurrences.idno">
+							<div class="mb-3">
+								<div class="label">Identifier</div>
+								^ca_occurrences.idno
+							</div>
+							<HR></HR>
+						</ifcount>}}}
 						{{{<ifdef code="ca_occurrences.external_link">
 							<div class="mb-3">
 								<unit relativeTo="ca_occurrences.external_link" delimiter="<br/>"><a href="^ca_occurrences.external_link" target="_blank">^ca_occurrences.external_link</a> <ion-icon name="open"></ion-icon></unit>
@@ -140,6 +147,7 @@
 							<ifcount code="ca_entities" min="1"><HR></HR></ifcount>
 						</case>}}}
 <?php
+if($showTags){
 						$va_tags = $t_item->getTags();
 						if(is_array($va_tags) && sizeof($va_tags)){
 							$va_tags_processed = array();
@@ -158,6 +166,7 @@
 							<HR></HR>
 <?php
 						}				
+}
 ?>						
 					</div>
 				</div>

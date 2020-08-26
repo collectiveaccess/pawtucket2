@@ -162,44 +162,34 @@
 				</div>
 				<div class="row">
 					<div class="col-12 col-md-6">
-<?php
-						$vs_title = $t_object->get("ca_objects.preferred_labels.name");
-						if($vs_title && (strToLower($vs_title) != "[no title]") && (strToLower($vs_title) != "[blank]")){
-?>
+						{{{<ifcount code="ca_collections" min="1">
 							<div class="mb-3">
-								<div class="label">Title</div><?php print $vs_title; ?>
+								<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
 							</div>
-<?php							
-						}
-?>
+						</ifcount>}}}
 						{{{<ifdef code="ca_objects.altID">
 							<div class="mb-3">
-								<div class="label">Alternate Identifier</div>
 								^ca_objects.altID
 							</div>
 						</ifdef>}}}
 						{{{<ifdef code="ca_objects.date">
 							<div class="mb-3">
-								<div class="label">Date</div>
 								^ca_objects.date%delimiter=,_
 							</div>
 						</ifdef>}}}
+<!--
+
 						{{{<ifdef code="ca_objects.dim_width|ca_objects.dim_height|ca_objects.dim_depth|ca_objects.note">
 							<div class="mb-3">
 								<div class="label">Dimensions</div>
 								<unit relativeTo="ca_objects.dimensions" delimiter="; ">^dim_width x ^dim_height<ifdef code='dim_depth'> x ^dim_depth</ifdef><ifdef code='note'>(^note)</ifdef></unit>
 							</div>
 						</ifdef>}}}
-						{{{<ifcount code="ca_collections" min="1">
-							<div class="mb-3">
-								<div class="label">Project<ifcount code="ca_collections" min="2">s</ifcount></div>
-								<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
-							</div>
-						</ifcount>}}}
+-->
 					</div>
 					<div class="col-12 col-md-6">
 						
-						
+<!--						
 						{{{<ifcount code="ca_occurrences" restrictToTypes="exhibition" min="1">
 							<div class="mb-3">
 								<div class="label">Exhibitions</div>
@@ -208,18 +198,21 @@
 								</unit>
 							</div>
 						</ifcount>}}}
+-->
 						{{{<ifcount code="ca_occurrences" restrictToTypes="action" min="1">
 							<div class="mb-3">
 								<div class="label">Actions</div>
 								<unit relativeTo="ca_occurrences" restrictToTypes="action" delimiter=", "><l>^ca_occurrences.preferred_labels.name</l></unit>
 							</div>
 						</ifcount>}}}
+<!--
 						{{{<ifcount code="ca_entities" min="1">
 							<div class="mb-3">
 								<div class="label">People/Organizations</div>
 								<unit relativeTo="ca_entities" delimiter=", ">^ca_entities.preferred_labels</unit>
 							</div>
 						</ifcount>}}}
+-->
 <?php
 # --- temporarily hide tags
 if($showTags){

@@ -168,7 +168,8 @@
 			if($vs_img = $q_actions->getWithTemplate("<unit relativeTo='ca_objects' length='1'>^ca_object_representations.media.widepreview</unit>")){
 				print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2'>";
 				print caDetailLink($vs_img, '', 'ca_occurrences', $q_actions->get("ca_occurrences.occurrence_id"));
-				print "<div class='pt-2'>".caDetailLink(substr(strip_tags($q_actions->get("ca_occurrences.preferred_labels")), 0, 30), '', 'ca_occurrences', $q_actions->get("ca_occurrences.occurrence_id"))."</div>";
+				#print "<div class='pt-2'>".caDetailLink(substr(strip_tags($q_actions->get("ca_occurrences.preferred_labels")), 0, 30), '', 'ca_occurrences', $q_actions->get("ca_occurrences.occurrence_id"))."</div>";
+				print "<div class='pt-2'>".caDetailLink($q_actions->get("ca_occurrences.preferred_labels"), '', 'ca_occurrences', $q_actions->get("ca_occurrences.occurrence_id"))."</div>";
 				print "</div>";
 				$i++;
 				$va_tmp_ids[] = $q_actions->get("ca_occurrences.occurrence_id");
@@ -189,6 +190,7 @@
 
 	$va_related_item_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("item_select"), "returnAsArray" => true, "checkAccess" => $va_access_values));
 	if(sizeof($va_related_item_ids)){
+if($showTags){
 		# --- tags
 		$o_db = new Db();
 		$q_tags = $o_db->query("SELECT ixt.tag_id, count(ixt.tag_id) as tagCount, t.tag from ca_items_x_tags ixt INNER JOIN ca_item_tags as t on t.tag_id = ixt.tag_id WHERE ixt.table_num = 57 AND ixt.row_id IN (".join(", ", $va_related_item_ids).") GROUP BY ixt.tag_id ORDER BY tagCount DESC limit 20");
@@ -213,7 +215,7 @@
 			</div>
 <?php
 			}
-
+}
 	
 		# --- related_items
 	

@@ -18,6 +18,7 @@ $gray-3: #D8D7CE;
 $gray-4: #C1BFB9;
 $gray-5: #76766B;
 $gray-6: #414141;
+$black: #000000;
 
 /* General Pawtucket variables? */
 $body-font: "Raleway", sans-serif;
@@ -1048,7 +1049,11 @@ p.legend a {
 						width: 10px;
 					}
 					input[type="checkbox"]:checked{
-						background-color:$gray-6;
+						background-color:$black;
+					}
+					input[type="checkbox"]:checked + label{
+						color:$black;
+						font-weight:bold;
 					}
 				}
 				.bRefineFacetItem:hover{
