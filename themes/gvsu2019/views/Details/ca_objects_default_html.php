@@ -140,12 +140,13 @@
 						if(sizeof($va_lcsh_terms)){
 							print "<H6>Library of Congress Subjects:</H6>";
 							$va_terms = array();
-							foreach($va_lcsh_terms as $va_lcsh_term){
-								$va_lcsh_term = array_shift($va_lcsh_term);
-								$vs_lcsh_term = $va_lcsh_term["lcsh"];
-								$vn_chop = stripos($vs_lcsh_term, "[");
-								$vs_lcsh_term = ($vn_chop) ? substr($vs_lcsh_term, 0, $vn_chop) : $vs_lcsh_term;
-								$va_terms[] = caNavLink($this->request, $vs_lcsh_term, "", "", "MultiSearch", "Index", array("search" => urlencode($vs_lcsh_term)));
+							foreach($va_lcsh_terms as $list){
+								foreach($list as $va_lcsh_term) {
+									$vs_lcsh_term = $va_lcsh_term["lcsh"];
+									$vn_chop = stripos($vs_lcsh_term, "[");
+									$vs_lcsh_term = ($vn_chop) ? substr($vs_lcsh_term, 0, $vn_chop) : $vs_lcsh_term;
+									$va_terms[] = caNavLink($this->request, $vs_lcsh_term, "", "", "MultiSearch", "Index", array("search" => urlencode($vs_lcsh_term)));
+								}
 							}
 							print join($va_terms, "<br/>");
 						}
