@@ -62,6 +62,7 @@ if($vs_mode == "map"){
  		$va_breadcrumb_trail[] = $o_context->getResultsLinkForLastFind($this->request, "ca_objects", $vs_link_text, null, $va_params);
  	}
  	$va_breadcrumb_trail[] = caTruncateStringWithEllipsis($t_object->get('ca_objects.preferred_labels.name'), 60);
+ 	$vb_show_download_all_link = false;
 
 ?>
 			<div class="row">
@@ -94,6 +95,17 @@ if($vs_mode == "map"){
 ?>
 				</div><!-- end col -->
 <?php
+					# --- should we show the download all link?  Do not show on records with audio/video
+					$vb_show_download_all_link = true;
+					$va_rep_ids = $t_object->get("ca_object_representations.representation_id", array("returnAsArray" => true));
+					foreach($va_rep_ids as $vn_rep_id){
+						$t_object_representation = new ca_object_representations($vn_rep_id);
+						$va_download_display_info = caGetMediaDisplayInfo('download', $t_object_representation->getMediaInfo('media', 'INPUT', 'MIMETYPE'));
+						if(!caGetOption(['download_version', 'display_version'], $va_download_display_info)){
+							$vb_show_download_all_link = false;
+						}
+					}
+
 				}
 ?>
 				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>
@@ -195,6 +207,9 @@ if($vs_mode == "map"){
 					}
 					if ($vn_pdf_enabled) {
 						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caDetailLink($this->request, "Download as PDF", "faDownload", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
+					}
+					if($vb_show_download_all_link){
+						print "<div class='detailTool'><span class='glyphicon glyphicon-file'></span>".caNavLink($this->request, "Download", "faDownload", "", "Detail",  "DownloadMedia", array('object_id' => $vn_id, "download" => 1))."</div>";
 					}
 					print "<div class='detailTool'><span class='glyphicon glyphicon-envelope'></span>".caNavLink($this->request, "Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_objects", "row_id" => $t_object->get("object_id")))."</div>";
 					if($t_object->get("trc", array("convertCodesToDisplayText" => true)) == "yes"){
