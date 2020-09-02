@@ -60,6 +60,7 @@ b, strong {
 }
 .btn-default:hover, a.btn-default:hover, .btn-default a:hover{
 	background-color: #4BB7E6;
+	text-decoration:none;
 }
 a.btn-default, .btn-default a{
 	text-decoration:none;
@@ -448,6 +449,9 @@ hr{
 }
 .detail .detailMediaToolbar {
     font-size: 20px;
+}
+.detail .detailMediaToolbar .dlButton{
+	display:none;
 }
 .detail #detailAnnotations {
     margin: 0px 0px 0px 0px;

@@ -165,15 +165,37 @@
 
 				{{{<ifdef code="ca_objects.Source"><H6>Source:</H6>^ca_objects.Source</ifdef>}}}
 <?php
+				$vb_restricted = false;
 				if($vn_cc_list_item_id = $t_object->get("ca_objects.creative_commons")){
 					$t_list_item = new ca_list_items($vn_cc_list_item_id);
 					print "<H6>Rights:</H6>";
 					if($t_list_item->get("ca_list_items.idno") == "cc_restricted"){
 						print "<a href='".$t_list_item->get("ca_list_item_labels.description")."' target='_blank'>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."</a>";
+						$vb_restricted = true;
 					}else{
 						print "<div class='detailCC'><a href='".$t_list_item->get("ca_list_item_labels.description")."' target='_blank'>".$t_list_item->get("ca_list_items.icon.original")."<br/>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."</a></div>";
 					}
 				}
+				# --- if download_version not set, fall back to creative_commons to determine download version: high-res downloads for CC0 and no downloads for restricted
+				if($vn_dl_version_item_id = $t_object->get("ca_objects.download_version")){
+					$t_list_item = new ca_list_items($vn_dl_version_item_id);
+					switch($t_list_item->get("ca_list_items.idno")){
+						case "high_res":
+							print "<div class='text-center'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
+						break;
+						# -----------
+						case "low_res":
+							print "<div class='text-center'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'large', 'download' => 1))."</div>";
+						break;
+						# -----------
+					}
+				}else{
+					if(!$vb_restricted){
+						print "<div class='text-center'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
+					}
+				}
+				
+				
 ?>
 				{{{<ifdef code="ca_objects.Current_Location"><H6>Currently:</H6>^ca_objects.Current_Location</ifdef>}}}
 
