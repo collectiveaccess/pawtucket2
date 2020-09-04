@@ -32,7 +32,7 @@
 			<div class="row">
 				<div class="col-sm-12 text-center">
 					<p>
-						<a href="http://www.kressfoundation.org" class="museumLink">National Gallery of Art</a>
+						<a href="http://www.nga.gov" class="museumLink" target="_blank">National Gallery of Art</a>
 					</p>
 					<ul class="list-inline social">
 						<li><a href="#" target="_blank"><i class="fa fa-facebook-square"></i></a></li>

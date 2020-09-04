@@ -151,7 +151,7 @@
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art Objects"), "", "", "Browse", "objects", array("view" => "images")); ?></li>
 					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "archival")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archival Materials"), "", "", "Browse", "archival"); ?></li>
-					<li class="dropdown<?php print ((strToLower($this->request->getController()) == "browse") && in_array(strToLower($this->request->getAction()), array("acquisitions", "dispositions"))) ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Events"); ?></a>
+					<li class="dropdown<?php print ((strToLower($this->request->getController()) == "browse") && in_array(strToLower($this->request->getAction()), array("acquisitions", "dispositions"))) ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Events"); ?> <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 <?php
 							print "<li>".caNavLink($this->request, _t("Acquisitions"), '', '', 'Browse', 'acquisitions', '')."</li>";
@@ -159,17 +159,18 @@
 ?>
 						</ul>	
 					</li>
-					<li class="dropdown<?php print ((strToLower($this->request->getController()) == "browse") && in_array(strToLower($this->request->getAction()), array("artists", "institutions", "dealers", "other_entities"))) ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("People & Organizations"); ?></a>
+					<li class="dropdown<?php print ((strToLower($this->request->getController()) == "browse") && in_array(strToLower($this->request->getAction()), array("artists", "institutions", "dealers", "other_entities", "entities"))) ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("People & Organizations"); ?> <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 <?php
 							print "<li>".caNavLink($this->request, _t("Artists"), '', '', 'Browse', 'artists', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Institutions"), '', '', 'Browse', 'institutions', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Dealers"), '', '', 'Browse', 'dealers', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Other"), '', '', 'Browse', 'other_entities', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("All Names"), '', '', 'Browse', 'entities', '')."</li>";
 ?>
 						</ul>	
 					</li>
-					<li class="dropdown<?php print (in_array(strToLower($this->request->getController()), array("about", "contact")) ? ' active' : ''); ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About"); ?></a>
+					<li class="dropdown<?php print (in_array(strToLower($this->request->getController()), array("about", "contact")) ? ' active' : ''); ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About"); ?> <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 <?php
 							print "<li>".caNavLink($this->request, _t("About the Project"), '', '', 'About', 'Project', '')."</li>";

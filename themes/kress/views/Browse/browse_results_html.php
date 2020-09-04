@@ -105,6 +105,9 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			</div>
 <?php
 		}
+		if(!$vb_show_filter_panel){
+			print "<div class='small advancedSearchLink'>".caNavLink($this->request, _t("Advanced Search"), '', 'Search', 'advanced', 'objects')."</div>";
+		}
 		print $vs_refine_subview;
 ?>			
 		</div><!-- end col-2 -->
@@ -117,9 +120,9 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 				print '<div id="bViewButtons"'.(($vb_show_filter_panel) ? ' class="catchLinks"' : '').'>';
 				foreach($va_views as $vs_view => $va_view_info) {
 					if ($vs_current_view === $vs_view) {
-						print '<a href="#" class="active"><span class="glyphicon"  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
+						#print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" title="Change view"></span></a> ';
 					} else {
-						print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+						print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" title="Change view"></span>', '', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 					}
 				}
 				print "</div>";
@@ -154,7 +157,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			}
 ?>		
 			<div class="btn-group">
-				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
+				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Sort and download options" title="Sort and download options"></i></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
@@ -191,9 +194,18 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 						// Export as PDF links
 						print "<li class='divider' role='menuitem'></li>\n";
 						print "<li class='dropdown-header' role='menuitem'>"._t("Download results as:")."</li>\n";
-						foreach($va_export_formats as $va_export_format){
-							if(!in_array($va_export_format["code"], array("_pdf_thumbnails"))){
-								print "<li class='".$va_export_format["code"]."' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+						# --- entity excel reports are specific to category
+						if($vs_table == "ca_entities"){
+							foreach($va_export_formats as $va_export_format){
+								if(($va_export_format["type"] == "pdf") || ($va_export_format["code"] == $this->request->getAction()."_excel")){
+									print "<li class='".$va_export_format["code"]."' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+								}
+							}
+						}else{
+							foreach($va_export_formats as $va_export_format){
+								if(!in_array($va_export_format["code"], array("_pdf_thumbnails"))){
+									print "<li class='".$va_export_format["code"]."' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+								}
 							}
 						}
 					}

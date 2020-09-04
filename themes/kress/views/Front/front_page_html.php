@@ -70,22 +70,22 @@
 	<div class="row hpExplore">
 		<div class="col-sm-10 col-sm-offset-1 text-center"> 
 			<div class="row">
-				<div class="col-sm-6 exploreTile">
+				<div class="col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-0 exploreTile">
 	<?php
 					print caNavLink($this->request, caGetThemeGraphic($this->request, 'art_sq.jpg'), "", "", "Browse", "objects");
 					print caNavLink($this->request, "Art Objects", "hpExploreTitle", "", "Browse", "objects");
 					
 	?>				
 				</div>
-				<div class="col-sm-6">
+				<div class="col-md-12 col-lg-6">
 					<div class="row">
-						<div class="col-sm-6 exploreTile">
+						<div class="col-md-6 exploreTile">
 	<?php
 							print caNavLink($this->request, caGetThemeGraphic($this->request, 'archival.jpg'), "", "", "Browse", "archival");
 							print caNavLink($this->request, "Archival Materials", "hpExploreTitle", "", "Browse", "archival");							
 	?>
 						</div>
-						<div class="col-sm-6 exploreTile">
+						<div class="col-md-6 exploreTile">
 	<?php
 							print caNavLink($this->request, caGetThemeGraphic($this->request, 'people.jpg'), "", "", "Browse", "entities");
 							print caNavLink($this->request, "People & Organizations", "hpExploreTitle", "", "Browse", "entities");
@@ -93,7 +93,7 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-sm-6 exploreTile">
+						<div class="col-md-6 exploreTile">
 	<?php
 							print caNavLink($this->request, caGetThemeGraphic($this->request, 'acquisitions.jpg'), "", "", "Browse", "acquisitions");
 							print caNavLink($this->request, "Acquisitions", "hpExploreTitle", "", "Browse", "acquisitions");
@@ -101,7 +101,7 @@
 	?>
 			
 						</div>
-						<div class="col-sm-6 exploreTile">
+						<div class="col-md-6 exploreTile">
 	<?php
 							print caNavLink($this->request, caGetThemeGraphic($this->request, 'distributions.jpg'), "", "", "Browse", "distributions");
 							print caNavLink($this->request,"Distributions", "hpExploreTitle", "", "Browse", "distributions");

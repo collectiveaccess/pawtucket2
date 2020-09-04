@@ -34,7 +34,8 @@
 	$vs_browse_type		= $this->getVar('browse_type');
 	$o_browse			= $this->getVar('browse');
 	$vs_table = $this->getVar("table");	
-
+	$vn_is_advanced		= (int)$this->getVar('is_advanced');
+	
 	$vn_facet_display_length_initial = 120;
 	$vn_facet_display_length_maximum = 120;
 	$va_multiple_selection_facet_list = [];
@@ -43,6 +44,7 @@
 	$vs_detail_type = $this->request->getParameter("detailType", pString);
 	
 	$vs_criteria = "";
+	$vn_num_criteria = 0;
 	if (sizeof($va_criteria) > 0) {
 		foreach($va_criteria as $va_criterion) {
 			if(!$vb_show_filter_panel || ($vb_show_filter_panel && !in_array($va_criterion['facet_name'], array("movement_facet", "loan_facet", "archival_facet", "entity_facet")))){
@@ -53,7 +55,7 @@
 						$vs_label = mb_substr($va_criterion['value'], 0, 20)."...";
 					}
 					$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_label.' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_view, 'key' => $vs_key));
-					
+					$vn_num_criteria++;
 				}
 			}
 		}
@@ -66,7 +68,12 @@
 		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
 		print "<H2>"._t("Filter by")."</H2>";
 		if ($vs_criteria) {
-			print "<div class='bCriteria".(($vb_show_filter_panel) ? " catchLinks" : "")."'>".$vs_criteria."</div>";
+			print "<div class='bCriteria".(($vb_show_filter_panel) ? " catchLinks" : "")."'>";
+			print $vs_criteria;
+			if($vn_num_criteria > 1){
+				print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">Clear All Filters <span class="glyphicon glyphicon-remove-circle" aria-label="Remove all filters"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('clear' => 1, 'view' => $vs_view, 'key' => $vs_key, '_advanced' => $vn_is_advanced ? 1 : 0));
+			}
+			print "</div>";
 		}
 
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
@@ -94,11 +101,11 @@
 				foreach($va_facet_info['content'] as $va_item) {
 					$vs_label = $va_item['label'];
 					#$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-					print "<div class='col-sm-".(($va_facet_info["columns"]) ? "4" : "12")." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'>".caNavLink($this->request, $vs_label.$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+					print "<div class='".(($va_facet_info["columns"]) ? "col-md-12 col-lg-4" : "col-sm-12")." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'>".caNavLink($this->request, $vs_label.$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 					$vn_c++;
 					$vn_col++;
-					if ($vn_col == 3) {
-						print "<div style='clear:both;width:100%;margin-bottom:10px;'></div>";
+					if ($va_facet_info["columns"] && ($vn_col == 3)) {
+						print "<div style='clear:both;width:100%;'></div>";
 						$vn_col = 0;
 					}
 					if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {

@@ -48,7 +48,8 @@ if($q_timeline_entries->numRows()){
 									'caption' => ''
 								],
 								'start_date' => $va_timeline_dates['start_date'],
-								'end_date' => $va_timeline_dates['end_date']								
+								'end_date' => $va_timeline_dates['end_date'],
+								'display_date' => $t_timeline->get("ca_occurrences.Doc_DateFilter")								
 			];	
 		}	
 	}

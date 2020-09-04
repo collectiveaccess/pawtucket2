@@ -80,7 +80,7 @@
 			# -----------------------------------
 			default:
 ?>
-				<div id='footerdompdf'>
+				<div id='footerdompdf'><div class="footerTitle">National Gallery of Art, Washington, DC, Gallery Archives</div>
 <?php
 					if($this->request->config->get('report_show_search_term')){
 						print "<div class='searchTermText' id='searchTermText'>".str_replace("Search: * / ", "", $this->getVar('criteria_summary'))."</div>";
@@ -92,3 +92,4 @@
 			break;
 		}
 	}
+?>

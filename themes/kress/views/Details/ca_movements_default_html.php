@@ -108,6 +108,7 @@
 						foreach($media_value_ids as $value_id) {
 							print caGetMediaViewerHTML($this->request, "attribute:".$value_id, $t_item, array("inline" => true, "display" => "detail", "context" => "acquisitions"));
 						}
+						print "<div class='text-center'><small>click <i class='fa fa-lg fa-fw fa-expand'></i> to open document viewer</small></div>";
 					}else{
 ?>
 						<div class="detailImgPlaceholder"><?php print $vs_placeholder; ?></div>
@@ -129,23 +130,23 @@
 				<div class='col-sm-12 col-md-5'>
 					<H1>{{{^ca_movements.preferred_labels.name}}}</H1>
 					<div class="grayBg">
-						{{{<ifdef code="ca_movements.idno"><div class="unit"><label data-toggle="popover" title="Identifier" data-content="Identifier">Identifier</label>^ca_movements.idno</div></ifdef>}}}
+						{{{<ifdef code="ca_movements.idno"><div class="unit"><label data-toggle="popover" title="Identifier" data-content="Unique system-generated record identifier">Identifier</label>^ca_movements.idno</div></ifdef>}}}
 						<div class="row">
-							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="seller" min="1"><div class="col-sm-6"><div class="unit"><label data-toggle="popover" title="Seller" data-content="Seller">Seller</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="seller" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
-							{{{<ifdef code="ca_movements.Acquisition_Daterange"><div class="col-sm-6"><div class="unit"><label data-toggle="popover" title="Date" data-content="Date">Date</label>^ca_movements.Acquisition_Daterange</div></div></ifdef>}}}							
+							{{{<ifcount code="ca_entities" restrictToRelationshipTypes="seller" min="1"><div class="col-sm-6"><div class="unit"><label>Seller</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="seller" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></div></ifcount>}}}
+							{{{<ifdef code="ca_movements.Acquisition_Daterange"><div class="col-sm-6"><div class="unit"><label>Date</label>^ca_movements.Acquisition_Daterange</div></div></ifdef>}}}							
 						</div>
 						<div class="row">
-							{{{<ifdef code="ca_movements.Acquisition_ObjectCount"><div class="col-sm-6"><div class="unit"><label data-toggle="Number of Objects" title="Number of Objects" data-content="Distributions">Number of Objects</label>^ca_movements.Acquisition_ObjectCount</div></div></ifdef>}}}
-							{{{<ifdef code="ca_movements.Acquisition_PriceUSD"><div class="col-sm-6"><div class="unit"><label data-toggle="popover" title="Group Purchase Price" data-content="Group Purchase Price">Group Purchase Price</label>^ca_movements.Acquisition_PriceUSD</div></div></ifdef>}}}
+							{{{<ifdef code="ca_movements.Acquisition_ObjectCount"><div class="col-sm-6"><div class="unit"><label>Number of Objects</label>^ca_movements.Acquisition_ObjectCount</div></div></ifdef>}}}
+							{{{<ifdef code="ca_movements.Acquisition_PriceUSD"><div class="col-sm-6"><div class="unit"><label>Group Purchase Price</label>^ca_movements.Acquisition_PriceUSD</div></div></ifdef>}}}
 						</div>
 						<div class="row">
-							{{{<ifdef code="ca_movements.Acquisition_FinalPayDate"><div class="col-sm-6"><div class="unit"><label data-toggle="popover" title="Final Pay Date" data-content="Final Pay Date">Final Pay Date</label>^ca_movements.Acquisition_FinalPayDate</div></div></ifdef>}}}
-							{{{<ifdef code="ca_movements.Acquisition_Location"><div class="col-sm-6"><div class="unit"><label data-toggle="popover" title="Location" data-content="Location">Location</label>^ca_movements.Acquisition_Location</div></div></ifdef>}}}
+							{{{<ifdef code="ca_movements.Acquisition_FinalPayDate"><div class="col-sm-6"><div class="unit"><label>Final Payment Date</label>^ca_movements.Acquisition_FinalPayDate</div></div></ifdef>}}}
+							{{{<ifdef code="ca_movements.Acquisition_Location"><div class="col-sm-6"><div class="unit"><label>Seller Location</label>^ca_movements.Acquisition_Location</div></div></ifdef>}}}
 						</div>
-						{{{<ifdef code="ca_movements.Acquisition_Source"><div class="unit"><label data-toggle="popover" title="Citation" data-content="Citation">Citation</label>^ca_movements.Acquisition_Source</div></ifdef>}}}
+						{{{<ifdef code="ca_movements.Acquisition_Source"><div class="unit"><label>Citation</label>^ca_movements.Acquisition_Source</div></ifdef>}}}
 					</div>
 					{{{<ifdef code="ca_movements.Acquisition_Note">
-						<div class='unit'><label data-toggle="popover" title="Note" data-content="Note">Note</label>
+						<div class='unit'><label>Note</label>
 							<span class="trimText">^ca_movements.Acquisition_Note</span>
 						</div>
 					</ifdef>}}}				
@@ -153,13 +154,16 @@
 				<div class='col-sm-12 col-md-2'>
 					<div id="detailTools">
 	<?php
-						if($vs_download_link = $t_item->get("ca_movements.media.media_media.original.url")){
-							print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span><a href='".$vs_download_link."'>Download Media</a></div>";
+						if(is_array($media_value_ids = $t_item->get("ca_movements.media.media_media.value_id", ["returnAsArray" => true])) && sizeof($media_value_ids)) {
+							foreach($media_value_ids as $value_id) {
+								print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span>".caNavLink($this->request, "Download Media", "", "", "Detail",  "DownloadAttributeMedia", array('value_id' => $value_id, 'version' => 'original', 'download' => 1))."</div>";
+							}
 						}
+						
 						if ($vn_pdf_enabled) {
 							print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Summary")."'></span>".caDetailLink($this->request, "PDF Summary", "", "ca_movements",  $t_item->get("ca_movements.movement_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_movements_summary'))."</div>";
 						}
-						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Permalink")."'></span> <a href='#' onClick='$(\"#permalink\").toggle(); return false;'>Permalink</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caDetailUrl($this->request, 'ca_movements', $t_item->get("ca_movements.movement_id"))."</textarea></div>";					
+						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Record Link")."'></span> <a href='#' onClick='$(\"#permalink\").toggle(); return false;' title='Copy link to share or save record'>Record Link</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caDetailUrl($this->request, 'ca_movements', $t_item->get("ca_movements.movement_id"))."</textarea></div>";					
 
 	?>
 					</div>
@@ -224,6 +228,11 @@
 					$(this).popover('toggle');
 				});
 			}
+		});
+		
+		$("#permalink").click(function(){
+			$("#permalink").select();
+			document.execCommand('copy');
 		});
 	});
 </script>
