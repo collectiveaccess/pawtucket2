@@ -127,7 +127,7 @@
 					<div class="grayBg">
 						<div class="row">
 							{{{<ifdef code="ca_occurrences.idno"><div class="col-sm-6 col-md-6"><div class="unit"><label data-toggle="popover" title="Identifier" data-content="Unique system-generated record identifier">Identifier</label>^ca_occurrences.idno</div></div></ifdef>}}}				
-							{{{<ifdef code="ca_occurrences.Doc_type"><div class="col-sm-6 col-md-6"><div class="unit"><label>Document Type</label>^ca_occurrences.Doc_type</div></div></ifdef>}}}
+							{{{<ifdef code="ca_occurrences.Doc_type"><div class="col-sm-6 col-md-6"><div class="unit"><label>Archival Item Type</label>^ca_occurrences.Doc_type</div></div></ifdef>}}}
 						</div>
 						
 						{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Creator<ifcount code="ca_entities" min="2">s</ifcount></label><unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}

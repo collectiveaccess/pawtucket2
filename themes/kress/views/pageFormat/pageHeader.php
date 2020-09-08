@@ -164,7 +164,7 @@
 <?php
 							print "<li>".caNavLink($this->request, _t("Artists"), '', '', 'Browse', 'artists', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Institutions"), '', '', 'Browse', 'institutions', '')."</li>";
-							print "<li>".caNavLink($this->request, _t("Dealers"), '', '', 'Browse', 'dealers', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Dealers & Collectors"), '', '', 'Browse', 'dealers', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Other"), '', '', 'Browse', 'other_entities', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("All Names"), '', '', 'Browse', 'entities', '')."</li>";
 ?>
