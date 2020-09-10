@@ -98,7 +98,7 @@
 					// 
 					// Uses new ".value_id" suffix to get value_ids for all repeats of ca_occurrences.media.media_media.value_id
 					//
-					if(is_array($media_value_ids = $t_item->get("ca_occurrences.media.media_media.value_id", ["returnAsArray" => true])) && sizeof($media_value_ids)) {
+					if(($t_item->get("ca_occurrences.media.media_media")) && is_array($media_value_ids = $t_item->get("ca_occurrences.media.media_media.value_id", ["returnAsArray" => true])) && sizeof($media_value_ids)) {
 						foreach($media_value_ids as $value_id) {
 							print caGetMediaViewerHTML($this->request, "attribute:".$value_id, $t_item, array("inline" => true, "display" => "detail", "context" => "archival"));
 						}

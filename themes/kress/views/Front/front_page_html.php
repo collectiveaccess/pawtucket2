@@ -37,7 +37,7 @@
 <div class="parallax">
 	<div class="container">
 		<div class="row">
-			<div class="col-xs-12 col-sm-6 col-sm-offset-3">
+			<div class="col-sm-12 col-md-6 col-md-offset-3">
 				
 				<div class="heroSearch">
 					Welcome to the<br/>
@@ -58,7 +58,7 @@
 
 <div class="container hpIntro">
 	<div class="row">
-		<div class="col-sm-12 col-md-6 col-md-offset-3">
+		<div class="col-md-12 col-lg-6 col-lg-offset-3">
 			<p class="callout">The <br/><b>Kress Collection Digital Archive</b><br/>{{{home_intro_text}}}</p>
 
 			<p>Enter keywords into the search box above or browse <?php print caNavLink($this->request, "Art Objects", "", "", "Browse", "objects"); ?>, <?php print caNavLink($this->request, "Archival Materials", "", "", "Browse", "archival"); ?>, Events (<?php print caNavLink($this->request, "Acquisitions", "", "", "Browse", "Acquisitions"); ?> and <?php print caNavLink($this->request, "Distributions", "", "", "Browse", "distributions"); ?>), and <?php print caNavLink($this->request, "People and Organizations", "", "", "Browse", "entities"); ?> below.</p>
@@ -128,7 +128,7 @@
 					createStoryJS({
 						type:       'timeline',
 						width:      '100%',
-						height:     '400px',
+						height:     '600',
 						source:     '<?php print caNavUrl($this->request, '', 'Front', 'timelinejson'); ?>',
 						embed_id:   'timeline-embed',
 						initial_zoom: '1'

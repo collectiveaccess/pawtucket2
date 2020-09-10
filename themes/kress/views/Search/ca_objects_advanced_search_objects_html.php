@@ -15,7 +15,7 @@
 			</div>
 			<div class='row'>
 				<div class="advancedSearchField col-sm-4">
-					<label for='ca_objects_Object_KressCatalogNumber' class='formLabel'><?php _p('Kress Number') ?></label>
+					<label for='ca_objects_Object_KressCatalogNumber' class='formLabel'><?php _p('Kress Catalogue Number') ?></label>
 					{{{ca_objects.Object_KressCatalogNumber%width=220px}}}
 				</div>
 				<div class="advancedSearchField col-sm-4">

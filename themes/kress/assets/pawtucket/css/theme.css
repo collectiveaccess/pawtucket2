@@ -9,9 +9,14 @@
 	font-family: 'Cormorant', serif;
 */
 body{
-	margin-top:57px;
+	margin-top:66px;
 	margin-bottom:300px;
 	font-size: 13px;
+}
+@media(min-width:596px) and (max-width:768px){
+	body{
+		margin-top:57px;
+	}
 }
 @media(min-width:768px) and (max-width:1500px){
 	body{
@@ -120,6 +125,9 @@ a.navbar-brand, a.navbar-brand:hover {
     border-top-color: #777;
     border-bottom-color: #777;
 }
+.navbar-collapse{
+	max-height:500px;
+}
 @media(max-width:767px){
 	.navbar-form{
 		margin-left:5px;
@@ -197,11 +205,6 @@ a, a:hover{
 	font-size:14px;
 	font-weight:normal;
 	margin-top:50px;
-}
-@media(max-width:480px){
-	#footer{
-		height:380px;
-	}
 }
 #footer a{
 	color:#000;
@@ -510,175 +513,72 @@ body.frontContainer #footer{
 	margin-bottom: 450px;
 	font-weight:400;
 }
-
-
-.parallax1 {
-	position:relative;
-    background-image: url("../graphics/hero1.jpg");
-
-    /* Full height */
-    height: 100%;
-
-    /* Create the parallax scrolling effect */
-    background-attachment: fixed;
-    background-position: bottom center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    
-    margin-left: -15px;
-	margin-right: -15px;
+/*
+@media(max-height:834px){
+	.parallax{
+		background-position: center -90px;
+	}
+}*/
+/*
+@media(max-width:1112px){
+	.parallax{
+		background-position: center -134px;
+	}
 }
-.parallax.v1 {
-	position:relative;
-    background-image: url("../graphics/hero2.jpg");
-
-    /* Full height */
-    height: 100%;
-
-    /* Create the parallax scrolling effect */
-    background-attachment: fixed;
-    background-position: center -160px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    
-    margin-left: -15px;
-	margin-right: -15px;
+@media(max-height:834px){
+	.parallax .heroSearch{
+		margin-top: 150px;
+	}
 }
-.parallax.v1 .heroSearch{
-	background-color: rgba(0, 0, 0, .5);
-	padding-top: 40px;
-	padding-bottom: 50px;
-	margin-top: 220px;
-	margin-bottom: 450px;
-	font-weight:600;
+@media(max-width:420px) and (max-height:812px){
+	.parallax .heroSearch{
+		margin-top: 175px;
+	}
 }
-.parallax.v2 {
-	position:relative;
-    background-image: url("../graphics/hero3.jpg");
+*/
 
-    /* Full height */
-    height: 100%;
-
-    /* Create the parallax scrolling effect */
-    background-attachment: fixed;
-    background-position: center -210px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    
-    margin-left: -15px;
-	margin-right: -15px;
+@media(max-width:420px) or (max-height:420px){
+	.heroSearch H1{
+		font-size:50px;
+	}
+	.front .heroSearch .form-group{
+		width:300px;
+	}
+	.hpIntro .callout b{
+		font-size:40px;
+	}
+	.hpIntro .callout, .hpIntro .callout i{
+		font-size:28px;
+	}
 }
-.parallax.v2 .heroSearch{
-	background-color: rgba(0, 0, 0, .3);
-	padding-top: 40px;
-	padding-bottom: 50px;
-	margin-top: 250px;
-	margin-bottom: 480px;
-	font-weight:600;
-}
-.parallax.v3 {
-	position:relative;
-    background-image: url("../graphics/hero4.jpg");
-
-    /* Full height */
-    height: 100%;
-
-    /* Create the parallax scrolling effect */
-    background-attachment: fixed;
-    background-position: center bottom;
-    background-repeat: no-repeat;
-    background-size: cover;
-    
-    margin-left: -15px;
-	margin-right: -15px;
-}
-.parallax.v3 .heroSearch{
-	background-color: rgba(0, 0, 0, 0);
-	padding-top: 40px;
-	padding-bottom: 50px;
-	margin-top: 220px;
-	margin-bottom: 450px;
-	font-weight:600;
-}
-.parallax.v4 {
-	position:relative;
-    background-image: url("../graphics/hero5.jpg");
-
-    /* Full height */
-    height: 100%;
-
-    /* Create the parallax scrolling effect */
-    background-attachment: fixed;
-    background-position: center -210px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    
-    margin-left: -15px;
-	margin-right: -15px;
-}
-.parallax.v4 .heroSearch{
-	background-color: rgba(0, 0, 0, 0);
-	padding-top: 40px;
-	padding-bottom: 50px;
-	margin-top: 220px;
-	margin-bottom: 450px;
-	font-weight:600;
-}
-.parallax.v5 {
-	position:relative;
-    background-image: url("../graphics/hero6.jpg");
-
-    /* Full height */
-    height: 100%;
-
-    /* Create the parallax scrolling effect */
-    background-attachment: fixed;
-    background-position: center -210px;
-    background-repeat: no-repeat;
-    background-size: cover;
-    
-    margin-left: -15px;
-	margin-right: -15px;
-}
-.parallax.v5 .heroSearch{
-	background-color: rgba(0, 0, 0, 0);
-	padding-top: 40px;
-	padding-bottom: 50px;
-	margin-top: 220px;
-	margin-bottom: 450px;
-	font-weight:600;
-}
-.parallax.v6 {
-	position:relative;
-    background-image: url("../graphics/hero7.jpg");
-
-    /* Full height */
-    height: 100%;
-
-    /* Create the parallax scrolling effect */
-    background-attachment: fixed;
-    background-position: center bottom;
-    background-repeat: no-repeat;
-    background-size: cover;
-    
-    margin-left: -15px;
-	margin-right: -15px;
-}
-.parallax.v6 .heroSearch{
-	background-color: rgba(0, 0, 0, .4);
-	padding-top: 40px;
-	padding-bottom: 50px;
-	margin-top: 220px;
-	margin-bottom: 450px;
-	font-weight:600;
-}
-@media (max-device-width:1024px){
-	/* ipad and mobile disable background-attachment: fixed; fallback to no parallax so at lest see image */
+@media(max-width:1120px){
 	.parallax {
-		background-attachment: scroll;
+		background-position: center -110px;
+	}
+}
+@media(max-width:420px){
+	.parallax {
+		background-position: center 0px;
+	}
+	.parallax .heroSearch{
+		margin-top: 200px;
+	}
+}
+@media(max-height:420px){
+	.parallax .heroSearch{
+		margin-top: 20px;
+		margin-bottom:70px;
 	}
 }
 
+/*
+@media (max-device-width:1024px){*/
+	/* ipad and mobile disable background-attachment: fixed; fallback to no parallax so at lest see image */
+/*	.parallax {
+		background-attachment: scroll;
+	}
+}
+*/
 .hpIntro{
 	padding-top:50px;
 	padding-bottom:50px;
@@ -702,6 +602,11 @@ body.frontContainer #footer{
 }
 .tl-text h2.tl-headline-title, .tl-text h2.tl-headline{
 	font-family: Cormorant;
+}
+@media(max-width:420px){
+	.tl-slide-content{
+		width:100% !important;
+	}
 }
 
 /* browse */
@@ -739,6 +644,12 @@ body.frontContainer #footer{
 }
 .advancedSearchLink a{
 	color:#000;
+}
+@media(max-width:768px){
+	.advancedSearchLink{
+		text-align:center;
+		margin:5px 0px 10px 0px;
+	}
 }
 .bCriteria .btn {
 	margin:0px 0px 5px 0px;
@@ -1226,4 +1137,73 @@ a.readmore-js-toggle {
 /* contact */
 .contact p{
 	font-size:17px;
+}
+
+
+
+
+/* Mirador */
+
+h3.window-manifest-title {
+	text-transform:none;
+	font-weight:normal;
+	font-size:13px;
+	color:#eee;
+}
+.manifest-info {
+	background-color:#000;
+}
+#comparison_viewer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    margin-top: -30px;
+}
+.mirador-osd-annotation-controls {
+	display:none;
+}
+.mirador-osd-annotation-controls {
+	display:none;
+}
+.compareDrawer {
+	display:none;
+	background-color:#f5f5f5;
+	width:30%;
+	position:fixed;
+	bottom:0px;
+	right:0px;
+	z-index:1000;
+	padding-top:5px;
+}
+.compareDrawer ul {
+	padding-left:25px;
+}
+.compareDrawer a:hover {
+	text-decoration:none;
+}
+.compareDrawer .items {
+	display:none;
+	clear:both;
+	font-size:13px;
+}
+.compareDrawer .items p {
+	clear:both;
+}
+.listTitle {
+	font-size:14px;
+}
+.compareDrawer p {
+	margin-bottom:5px;
+	float:left;
+}
+.openItems {
+	float:right;
+	padding-top:5px;
+	padding-right:20px;
+}
+.compare_link {
+	position:absolute;
+	bottom:5px;
+	right:20px;
 }

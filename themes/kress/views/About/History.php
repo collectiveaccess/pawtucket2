@@ -18,7 +18,7 @@ AssetLoadManager::register('timeline');
 				createStoryJS({
 					type:       'timeline',
 					width:      '100%',
-					height:     '400px',
+					height:     '600px',
 					source:     '<?php print caNavUrl($this->request, '', 'Front', 'timelinejson'); ?>',
 					embed_id:   'timeline-embed',
 					initial_zoom: '1'

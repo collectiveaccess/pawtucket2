@@ -105,7 +105,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			</div>
 <?php
 		}
-		if(!$vb_show_filter_panel){
+		if(($vs_table == "ca_objects") && !$vb_show_filter_panel){
 			print "<div class='small advancedSearchLink'>".caNavLink($this->request, _t("Advanced Search"), '', 'Search', 'advanced', 'objects')."</div>";
 		}
 		print $vs_refine_subview;
@@ -213,7 +213,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 				</ul>
 			</div><!-- end btn-group -->
 <?php
-			if(is_array($va_facets) && sizeof($va_facets)){
+			if((strToLower($this->request->getAction()) != "other_entities") && ((is_array($va_facets) && sizeof($va_facets)) || (sizeof($va_criteria)))){
 ?>
 			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
 <?php

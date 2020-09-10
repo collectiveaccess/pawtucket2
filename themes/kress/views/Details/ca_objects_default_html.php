@@ -180,7 +180,7 @@
 					<H1>{{{<ifdef code="ca_objects.Object_ArtistExpression">^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code="ca_objects.Object_ArtistExpression"><ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist"><ifdef code="ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.forename </ifdef><ifdef code="ca_entities.preferred_labels.surname">^ca_entities.preferred_labels.surname</ifdef><ifnotdef code="ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.displayname</ifnotdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i>}}}</H1>
 					<div class="grayBg">
 						<div class="row">
-							{{{<ifdef code="ca_objects.Object_KressCatalogNumber"><div class="col-sm-6 col-md-6"><div class="unit"><label data-toggle="popover" title="Kress Number" data-content="Identifier assigned to objects by Kress Foundation.">Kress Number</label>^ca_objects.Object_KressCatalogNumber</div></div></ifdef>}}}				
+							{{{<ifdef code="ca_objects.Object_KressCatalogNumber"><div class="col-sm-6 col-md-6"><div class="unit"><label data-toggle="popover" title="Kress Number" data-content="Identifier used to reference objects in the <i>Complete Catalogue of the Samuel H. Kress Collection</i>">Kress Catalogue Number</label>^ca_objects.Object_KressCatalogNumber</div></div></ifdef>}}}				
 							{{{<ifdef code="ca_objects.idno"><div class="col-sm-6 col-md-6"><div class="unit"><label data-toggle="popover" title="Identifier" data-content="Unique system-generated record identifier">Identifier</label>^ca_objects.idno</div></div></ifdef>}}}
 						</div>
 						<div class="row">
@@ -210,6 +210,7 @@
 					</ifdef>}}}
 				
 					{{{<ifdef code="ca_objects.Object_CurrentAccNo"><div class="unit"><label data-toggle="popover" title="Accession Number" data-content="Identifier assigned to objects by institution (current owner)">Accession Number</label>^ca_objects.Object_CurrentAccNo</div></ifdef>}}}
+					{{{<ifdef code="ca_objects.Object_KressAssNumber"><div class="unit"><label data-toggle="popover" title="Kress Number" data-content="Identifier assigned to objects by Kress Foundation.">Kress Number</label>^ca_objects.Object_KressAssNumber</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.Object_AltKressNumber"><div class="unit"><label data-toggle="popover" title="Legacy Kress Number" data-content="Former identifier assigned to objects by Kress Foundation">Legacy Kress Number</label>^ca_objects.Object_AltKressNumber</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.Object_PichettoNo"><div class="unit"><label data-toggle="popover" title="Pichetto Number" data-content="Identifier assigned to objects by restorer Stephen Pichetto">Pichetto Number</label>^ca_objects.Object_PichettoNo</div></ifdef>}}}
 					{{{<ifdef code="ca_objects.Object_DreyfusNumber"><div class="unit"><label data-toggle="popover" title="Dreyfus Number" data-content="Identifier assigned to Dreyfus Collection objects by Duveen Brothers">Dreyfus Number</label>^ca_objects.Object_DreyfusNumber</div></ifdef>}}}

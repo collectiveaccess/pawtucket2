@@ -71,7 +71,7 @@
 <?php
 			print $t_item->getWithTemplate('
 					<div class="grayBg">
-						<ifdef code="ca_objects.Object_KressCatalogNumber"><div class="unit unitHalf"><label>Kress Number</label>^ca_objects.Object_KressCatalogNumber</div></ifdef>
+						<ifdef code="ca_objects.Object_KressCatalogNumber"><div class="unit unitHalf"><label>Kress Catalogue Number</label>^ca_objects.Object_KressCatalogNumber</div></ifdef>
 						<ifdef code="ca_objects.idno"><div class="unit unitHalf"><label>Identifier</label>^ca_objects.idno</div></ifdef>
 						<div class="clear"></div>
 						<ifcount code="ca_entities" restrictToRelationshipTypes="artist,artist_additional" min="1"><div class="unit unitHalf"><label>Artist</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist,artist_additional" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></div></ifcount>
@@ -98,6 +98,7 @@
 					</ifdef>
 				
 					<ifdef code="ca_objects.Object_CurrentAccNo"><div class="unit"><label>Accession Number</label>^ca_objects.Object_CurrentAccNo</div></ifdef>
+					<ifdef code="ca_objects.Object_KressAssNumber"><div class="unit"><label>Kress Number</label>^ca_objects.Object_KressAssNumber</div></ifdef>
 					<ifdef code="ca_objects.Object_AltKressNumber"><div class="unit"><label>Legacy Kress Number</label>^ca_objects.Object_AltKressNumber</div></ifdef>
 					<ifdef code="ca_objects.Object_PichettoNo"><div class="unit"><label>Pichetto Number</label>^ca_objects.Object_PichettoNo</div></ifdef>
 					<ifdef code="ca_objects.Object_DreyfusNumber"><div class="unit"><label>Dreyfus Number</label>^ca_objects.Object_DreyfusNumber</div></ifdef>

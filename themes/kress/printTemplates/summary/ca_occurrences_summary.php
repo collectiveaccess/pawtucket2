@@ -62,7 +62,7 @@
 			print $t_item->getWithTemplate('
 					<div class="grayBg">
 						<ifdef code="ca_occurrences.idno"><div class="unit unitHalf"><label>Identifier</label>^ca_occurrences.idno</div></ifdef>	
-						<ifdef code="ca_occurrences.Doc_type"><div class="unit unitHalf"><label>Document Type</label>^ca_occurrences.Doc_type</div></ifdef>
+						<ifdef code="ca_occurrences.Doc_type"><div class="unit unitHalf"><label>Archival Item Type</label>^ca_occurrences.Doc_type</div></ifdef>
 						
 						<ifcount code="ca_entities" min="1"><div class="unit"><label>Creator<ifcount code="ca_entities" min="2">s</ifcount></label><unit relativeTo="ca_entities" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>
 						<ifdef code="ca_occurrences.Doc_Photographer"><div class="unit"><label>Photographer</label>^ca_occurrences.Doc_Photographer</div></ifdef>
