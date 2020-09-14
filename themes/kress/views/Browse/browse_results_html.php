@@ -96,7 +96,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			<div <?php print ($vb_show_filter_panel) ? "class='catchLinks'" : ""; ?>>
 				<div class="bSearchWithinContainer">
 					<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-						<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine">
+						<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within">
 						<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
 						<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
 					</form>

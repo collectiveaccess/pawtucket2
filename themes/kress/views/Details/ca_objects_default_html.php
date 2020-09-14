@@ -282,9 +282,11 @@
 					</div>
 				</ifcount>}}}
 			
-				{{{<ifdef code="ca_objects.Object_URLCollectionRecord|ca_objects.Object_URLNGALibraryImageURL"><div class='col-sm-12 col-md-4'><label>External Links</label>					
+				{{{<ifdef code="ca_objects.Object_URLCollectionRecord|ca_objects.Object_URLNGALibraryImageURL|ca_objects.Object_URLNGASysCat"><div class='col-sm-12 col-md-4'><label>External Links</label>					
 					<ifdef code="ca_objects.Object_URLCollectionRecord"><a href="^ca_objects.Object_URLCollectionRecord" target="_blank"><div class="grayBg paddingTop"><div class="unit">Related Collection Record <i class="fa fa-external-link" aria-hidden="true"></i></div></div></a></ifdef>
 					<ifdef code="ca_objects.Object_URLNGALibraryImageURL"><a href="^ca_objects.Object_URLNGALibraryImageURL" target="_blank"><div class="grayBg paddingTop"><div class="unit">Related National Gallery of Art Library Image Collections Record <i class="fa fa-external-link" aria-hidden="true"></i></div></div></a></ifdef>
+					<ifdef code="ca_objects.Object_URLNGASysCat"><a href="^ca_objects.Object_URLNGASysCat" target="_blank"><div class="grayBg paddingTop"><div class="unit">Related National Gallery of Art Systematic Catalog <i class="fa fa-external-link" aria-hidden="true"></i></div></div></a></ifdef>
+					
 				</div></ifdef>}}}
 			
 			

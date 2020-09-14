@@ -27,7 +27,17 @@
  */
 ?>
 		<div style="clear:both; height:1px;"><!-- empty --></div>
+		<div id="comparison_list" class="compareDrawer compare_menu_item">
+			<div class="comparisonList">
+		
+			</div>  
+		</div>
 		</div><!-- end pageArea --></div></div><!-- end main --></div><!-- end col --></div><!-- end row --></div><!-- end container -->
+		
+
+<?php
+if(strtolower($this->request->getController()) !== "compare"){
+?>		
 		<footer id="footer" class="text-center">
 			<div class="row">
 				<div class="col-sm-12 text-center">
@@ -35,19 +45,19 @@
 						<a href="http://www.nga.gov" class="museumLink" target="_blank">National Gallery of Art</a>
 					</p>
 					<ul class="list-inline social">
-						<li><a href="#" target="_blank"><i class="fa fa-facebook-square"></i></a></li>
-						<li><a href="#" target="_blank"><i class="fa fa-instagram"></i></a></li>
-						<li><a href="#" target="_blank"><i class="fa fa-twitter-square"></i></a></li>
+						<li><a href="https://www.facebook.com/nationalgalleryofart" target="_blank"><i class="fa fa-facebook-square" aria-label="Facebook"></i></a></li>
+						<li><a href="https://www.instagram.com/ngadc/" target="_blank"><i class="fa fa-instagram" aria-label="Instragram"></i></a></li>
+						<li><a href="https://twitter.com/ngadc" target="_blank"><i class="fa fa-twitter-square" aria-label="Twitter"></i></a></li>
 					</ul>
 					<ul class="list-inline">
 						<li><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>
-						<li><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "About", "TermsOfUse"); ?></li>
-						<li><?php print caNavLink($this->request, _t("Privacy Policy"), "", "", "About", "PrivacyPolicy"); ?></li>
+						<li><?php print caNavLink($this->request, _t("Notices"), "", "", "About", "Notices"); ?></li>
 					</ul>
 				</div>
 			</div>
 		</footer><!-- end footer -->
 <?php
+}
 	//
 	// Output HTML for debug bar
 	//
@@ -81,6 +91,58 @@
 						closeButtonSelector: '.close'					/* anything with the CSS classname "close" will trigger the panel to close */
 					});
 				}
+				
+								
+				var loadComparisonListSummary;
+				$('#comparison_list, #pageArea').on('click', '.compare_link, .comparison_list_remove', loadComparisonListSummary = function(e) {
+					var id = this ? $(this).data('id') : null;
+					var id_selector = this ? $(this).data('id_selector') : null;
+					var remove_id = this ? $(this).data('remove_id') : null;
+					
+					if (id_selector) {
+					    if (id = jQuery(id_selector).data('current_id')) { id = "representation:" + id; }
+					}
+		
+					$.getJSON('<?php print caNavUrl($this->request, '', 'Compare', 'AddToList'); ?>', {id: id, remove_id: remove_id}, function(d) {
+						if (parseInt(d.ok) == 1) {
+							var l = '', im = '';
+							
+							if (d.comparison_list && (d.comparison_list.length > 0)) {
+								l += "<p class='listTitle'><?php print caNavLink($this->request, _t("<span class='compareImg'></span> <span id='compare_count_display'>Compare images</span> <i class='fa fa-expand' aria-label='open'></i>"), "", "", "Compare", "View", ['url' => str_replace('/', '|', $this->request->getFullUrlPath())]); ?></p>\n";
+								l += "<a href='#' class='openItems' onClick=\"$('.compareDrawer .items').toggle(100); $('.compareDrawer').data('open', !$('.compareDrawer').data('open')); return false;\"><i class='fa fa-chevron-down' aria-label='open close compare list'></i></a>\n"; 
+								
+								l += "<div class='items'>";
+								jQuery.each(d.comparison_list, function(i, item) {
+									l += "<p><a href='#' class='comparison_list_remove' data-remove_id='" + item['id'] + "'><i class='fa fa-times' aria-label='remove item'></i> " + item['display'] + "</a></p>\n";
+								});
+								l += "</div>";
+								
+								im = "Compare " + d.comparison_list.length + ((d.comparison_list.length > 1) ? " images" : " image"); 
+								jQuery("#comparison_list").fadeIn(100);
+
+							} else {
+								jQuery("#comparison_list").fadeOut(100);
+								jQuery(".compareDrawer").data('open', false);
+							}
+							jQuery("#comparison_list div.comparisonList").html(l);
+							jQuery('#compare_count_display').html(im);
+							
+							// Reload page when removing from within "Compare" view
+							if (remove_id && <?php print ($this->request->getController() == 'Compare') ? "true" : "false"; ?>) {
+								window.location = '<?php print caNavUrl($this->request, '', 'Compare', 'View', ['url' => str_replace('/', '|', $this->request->getFullUrlPath())]); ?>';
+								return;
+							} else if($(".compareDrawer").data('open')){
+							    jQuery(".compareDrawer .items").toggle(0);
+						    }
+						}
+					});
+					
+					if (e) { e.preventDefault(); }
+			
+					return false;
+				});
+				loadComparisonListSummary();
+
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
 		</script>

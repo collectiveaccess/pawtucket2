@@ -168,7 +168,7 @@
 								<div class='resultTextList'>".$qr_res->getWithTemplate($vs_result_text_template).$vs_interstitial."</div>
 								{$vs_add_to_set_link}<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 								<div style='clear:both;'></div>
-							</div>", '', $vs_table, $vn_id)."
+							</div>", '', $vs_table, $vn_id, null, array("title" => "View: ".strip_tags($qr_res->get($vs_table.".preferred_labels"))))."
 						</div><!-- end col -->\n";
 						
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));

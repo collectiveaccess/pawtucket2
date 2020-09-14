@@ -29,12 +29,6 @@
 	$o_context->setResultList($t_item->get("ca_entities.entity_id", array("returnAsArray" => true, "checkAccess" => $va_access_values)));
 	$o_context->setAsLastFind();
 	$o_context->saveContext();
-	
-	# --- object done when browse loaded with ajax
-	#$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', 'acquisitions');
-	#$o_context->setResultList($t_item->get("ca_objects.ca_objects_id", array("returnAsArray" => true, "checkAccess" => $va_access_values)));
-	#$o_context->setAsLastFind();
-	#$o_context->saveContext();
 
 	if($vb_ajax){
 ?>

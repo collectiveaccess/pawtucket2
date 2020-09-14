@@ -90,7 +90,7 @@
 ?>
 				<button type="button" class="navbar-toggle navbar-toggle-user" data-toggle="collapse" data-target="#user-navbar-toggle">
 					<span class="sr-only">User Options</span>
-					<span class="glyphicon glyphicon-user"></span>
+					<span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>></span>
 				</button>
 <?php
 	}
@@ -165,7 +165,7 @@
 							print "<li>".caNavLink($this->request, _t("Artists"), '', '', 'Browse', 'artists', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Institutions"), '', '', 'Browse', 'institutions', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Dealers & Collectors"), '', '', 'Browse', 'dealers', '')."</li>";
-							print "<li>".caNavLink($this->request, _t("Other"), '', '', 'Browse', 'other_entities', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Historians & Conservators"), '', '', 'Browse', 'other_entities', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("All Names"), '', '', 'Browse', 'entities', '')."</li>";
 ?>
 						</ul>	
@@ -173,10 +173,11 @@
 					<li class="dropdown<?php print (in_array(strToLower($this->request->getController()), array("about", "contact")) ? ' active' : ''); ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About"); ?> <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 <?php
-							print "<li>".caNavLink($this->request, _t("About the Project"), '', '', 'About', 'Project', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Introduction"), '', '', 'About', 'Introduction', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Kress Collection History"), '', '', 'About', 'History', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Archival Materials Description"), '', '', 'About', 'Materials', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Additional Resources"), '', '', 'About', 'Resources', '')."</li>";
-							print "<li>".caNavLink($this->request, _t("Search Help"), '', '', 'About', 'Help', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Guide"), '', '', 'About', 'Guide', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Contact"), '', '', 'Contact', 'Form', '')."</li>";
 ?>
 						</ul>	

@@ -100,6 +100,7 @@
 			
 			$t_list_item = new ca_list_items();
 			while($qr_res->nextHit()) {
+				$vs_compare_link = "";
 				if($vn_c == $vn_hits_per_block){
 					if($vb_row_id_loaded){
 						break;
@@ -114,6 +115,7 @@
 				
 				# --- check if this result has been cached
 				# --- key is MD5 of table, id, list, refine(vb_refine)
+				$vb_no_media = false;
 				$vs_cache_key = md5($vs_table.$vn_id."images".$vb_refine);
 				if(($o_config->get("cache_timeout") > 0) && ExternalCache::contains($vs_cache_key,'browse_result')){
 					print ExternalCache::fetch($vs_cache_key, 'browse_result');
@@ -131,14 +133,15 @@
 							}else{
 								$vs_thumbnail = $vs_default_placeholder_tag;
 							}
+							$vb_no_media = true;
 						}
-						$vs_info = null;
 					} else {
 						# archival materials and acquisitions have media in field not reps
 						if($vs_tmp = $qr_res->get($vs_table.'.media.media_media.medium')){
 							$vs_thumbnail = $vs_tmp;
 						}else{
 							$vs_thumbnail = $vs_default_placeholder_tag;
+							$vb_no_media = true;
 						}
 					}
 					$vs_add_to_set_link = "";
@@ -146,7 +149,19 @@
 						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
 					
-$vs_rep_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_thumbnail."</a>";
+#$vs_rep_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, 'Detail', 'objects', $vn_id, array('overlay' => 1))."\"); return false;'>".$vs_thumbnail."</a>";
+
+					if(!$vb_no_media){
+						if($vs_table == "ca_objects"){
+							$vs_compare_link = "<a href='#' class='compare_link' data-id='object:{$vn_id}' title='Compare Images'><i class='fa fa-clone' aria-hidden='true'></i></a>";
+						}else{
+							$media_value_ids = $qr_res->get($vs_table.".media.media_media.value_id", ["returnAsArray" => true]);
+							if(is_array($media_value_ids) && sizeof($media_value_ids)){
+								$vs_compare_link = "<a href='#' class='compare_link' data-id='attribute:{$media_value_ids[0]}' title='Compare Images'><i class='fa fa-clone' aria-hidden='true'></i></a>";
+							}
+						}
+					}
+
 # --- link to preview in overlay
 #					$vs_result_output = "
 #						<div class='resultItemColImg col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'><a href='#' onclick='caMediaPanel.showPanel(\"".
@@ -165,8 +180,8 @@ $vs_rep_detail_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl(
 								<div class='resultImageImg'>".$vs_thumbnail."</div>
 								<div class='resultTextImg'>".$qr_res->getWithTemplate($vs_result_text_template)."</div>
 								{$vs_add_to_set_link}<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
-							</div>", '', $vs_table, $vn_id)."
-						</div><!-- end col -->\n";
+							</div>", '', $vs_table, $vn_id, null, array("title" => "View: ".strip_tags($qr_res->get($vs_table.".preferred_labels"))))."
+						".$vs_compare_link."</div><!-- end col -->\n";
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
 					print $vs_result_output;
 				}				

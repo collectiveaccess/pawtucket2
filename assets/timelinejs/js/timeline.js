@@ -7906,7 +7906,6 @@ TL.Media.Image = TL.Media.extend({
 		if (this.data.url.match(/.png(\?.*)?$/) || this.data.url.match(/.svg(\?.*)?$/)) {
 			image_class = "tl-media-item tl-media-image"
 		}
-		
  		// Link
 		if (this.data.link) {
 			this._el.content_link 				= TL.Dom.create("a", "", this._el.content);
@@ -7916,7 +7915,14 @@ TL.Media.Image = TL.Media.extend({
 		} else {
 			this._el.content_item				= TL.Dom.create("img", image_class, this._el.content);
 		}
-		
+		if(this.data.caption){
+			var altText = this.data.caption;
+			altText = altText.replace(/(<[^>]*>)+/g, '');
+			altText = altText.replace('"', "'");
+		}else{
+			altText = "timeline image";
+		}
+		this._el.content_item.alt = altText;
 		// Media Loaded Event
 		this._el.content_item.addEventListener('load', function(e) {
 			self.onMediaLoaded();
