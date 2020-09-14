@@ -780,9 +780,9 @@ a.readmore-js-toggle {
 
 .mediaViewerCaption{
 	font-size:12px;
-	margin-top:5px;
+	margin-top:0px;
 }
-.detail .detailMediaToolbar {
+.detail .detailMediaToolbar, .detail .repViewerCont:hover .detailMediaToolbar {
     background-color: #ebebeb;
     padding: 2px 5px 7px 5px;
     font-size: 12px;
@@ -791,9 +791,12 @@ a.readmore-js-toggle {
     z-index: 200;
     text-align: center;
     background-color: transparent;
+    margin-left:auto;
+    margin-right:auto;
+    width:75px;
 }
 .detail #detailRepNav {
-    margin-top: -55px;
+    margin-top: -40px;
 }
 .detail .detailPlaceholderContainer{
 	background-color: #F5F5F5;
