@@ -18,7 +18,7 @@ body{
 		margin-top:57px;
 	}
 }
-@media(min-width:768px) and (max-width:1550px){
+@media(min-width:768px) and (max-width:1500px){
 	body{
 		margin-top:93px;
 	}
@@ -93,7 +93,10 @@ a.navbar-brand, a.navbar-brand:hover {
 	border-radius: 0px;
 	box-shadow:none;
 }
-
+.nav > li > a {
+    padding-left: 13px;
+    padding-right: 13px;
+}
 .navbar-default .navbar-nav > li > a, .navbar-default .navbar-nav > li > a:hover, .navbar-default .navbar-nav > li > a:focus {
     color: #FFFFFF;
     margin-left:1px;
@@ -162,7 +165,7 @@ a.navbar-brand, a.navbar-brand:hover {
 	-webkit-box-shadow:none;
 	box-shadow:none;
 }
-@media(min-width: 768px) and (max-width: 1550px) {
+@media(min-width: 768px) and (max-width: 1500px) {
 	ul.menuItems {
 		width:100%;
 		border-top:solid 1px #ddd;
