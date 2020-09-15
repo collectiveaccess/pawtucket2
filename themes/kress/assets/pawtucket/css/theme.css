@@ -116,6 +116,10 @@ a.navbar-brand, a.navbar-brand:hover {
 .dropdown-menu{
 	min-width: 100%;
 }
+.yamm .nav.navbar-right .dropdown-menu {
+    left: 0;
+    right: auto;
+}
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
     background-color: rgb(0,0,0, .3);
 	color:#FFF;

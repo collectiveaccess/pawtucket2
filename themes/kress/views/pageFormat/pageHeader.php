@@ -170,7 +170,7 @@
 ?>
 						</ul>	
 					</li>
-					<li class="dropdown<?php print (in_array(strToLower($this->request->getController()), array("about", "contact")) ? ' active' : ''); ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About"); ?> <span class="caret"></span></a>
+					<li class="dropdown<?php print (in_array(strToLower($this->request->getController()), array("about")) ? ' active' : ''); ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("About"); ?> <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 <?php
 							print "<li>".caNavLink($this->request, _t("Introduction"), '', '', 'About', 'Introduction', '')."</li>";
@@ -178,7 +178,6 @@
 							print "<li>".caNavLink($this->request, _t("Archival Materials Description"), '', '', 'About', 'Materials', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Additional Resources"), '', '', 'About', 'Resources', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Guide"), '', '', 'About', 'Guide', '')."</li>";
-							print "<li>".caNavLink($this->request, _t("Contact"), '', '', 'Contact', 'Form', '')."</li>";
 ?>
 						</ul>	
 					</li>
