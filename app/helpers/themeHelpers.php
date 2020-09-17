@@ -171,6 +171,15 @@
 	}
 	# ---------------------------------------
 	/**
+	 * Get theme-specific media display configuration
+	 *
+	 * @return Configuration
+	 */
+	function caGetMediaDisplayConfig() {
+		return Configuration::load(__CA_THEME_DIR__.'/conf/media_display.conf');
+	}
+	# ---------------------------------------
+	/**
 	 *
 	 *
 	 * @param string $ps_detail_type

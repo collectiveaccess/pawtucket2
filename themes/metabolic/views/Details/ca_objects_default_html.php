@@ -55,6 +55,7 @@
 		MetaTagManager::addMetaProperty("og:image:height", $t_object->get("ca_object_representations.media.page.height"));
 	}
 ?>
+
 <div id="fb-root"></div>
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0&appId=2210553328991338&autoLogAppEvents=1"></script>
 <div class="row borderBottom">
@@ -120,38 +121,51 @@
 				}				
 
 ?>
-				<div class="detailPrimaryMedia mt-3">
-					{{{^ca_object_representations.media.page}}}
+<script type="text/javascript">	
+	pawtucketUIApps['MediaViewer'] = {
+        'selector': '#mediaDisplay',
+        'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true]); ?>,
+        'width': '500px',
+        'height': '500px',
+        'controlHeight': '72px',
+        'data': {
+        
+        }
+    };
+</script>
+
+				<div id="mediaDisplay" class="detailPrimaryMedia mt-3">
+					<!-- MediaViewer.js React app goes here -->
 				</div>
 <?php 
-				$va_representations = $t_object->getRepresentations(array("iconlarge", "large"), null, array("checkAccess" => $va_access_values));
-				if(is_array($va_representations) && sizeof($va_representations) > 1){
-					print "<div class='detailAllMediaThumbs pt-2'><a data-toggle='collapse' href='#detailMediaAll' role='button' aria-expanded='false' aria-controls='Show all media'>";
-					print $t_object->getWithTemplate("<unit relativeTo='ca_object_representations' filterNonPrimaryRepresentations='0' delimiter=' ' length='6'>^ca_object_representations.media.icon</unit>");
-					print " <ion-icon name='apps'></ion-icon> <small>"._t("View All %1", sizeof($va_representations))."</small></a>";
-					//print "<span class='viewAll' data-text='View all!' data-target='#detailMediaAll'/>";
-					print "</div>";
-					print "<div id='detailMediaAll' class='collapse detailMediaAll py-4'>";
-					$i = 0;
-					foreach($va_representations as $vn_rep_id => $va_representation){
-						if($vn_rep_id != $vn_representation_id){
-							if($i == 0){
-								print "<div class='row'>";
-							}
-						
-							print "<div class='col-sm-12 col-md-6 py-4 align-middle detailMediaAllItem'>".$va_representation["tags"]["large"]."</div>";					
-							$i++;
-							if($i == 2){
-								print "</div>";
-								$i = 0;
-							}
-						}
-					}
-					if($i > 0){
-						print "</div>";
-					}
-					print "</div>";
-				}
+				// $va_representations = $t_object->getRepresentations(array("iconlarge", "large"), null, array("checkAccess" => $va_access_values));
+// 				if(is_array($va_representations) && sizeof($va_representations) > 1){
+// 					print "<div class='detailAllMediaThumbs pt-2'><a data-toggle='collapse' href='#detailMediaAll' role='button' aria-expanded='false' aria-controls='Show all media'>";
+// 					print $t_object->getWithTemplate("<unit relativeTo='ca_object_representations' filterNonPrimaryRepresentations='0' delimiter=' ' length='6'>^ca_object_representations.media.icon</unit>");
+// 					print " <ion-icon name='apps'></ion-icon> <small>"._t("View All %1", sizeof($va_representations))."</small></a>";
+// 					//print "<span class='viewAll' data-text='View all!' data-target='#detailMediaAll'/>";
+// 					print "</div>";
+// 					print "<div id='detailMediaAll' class='collapse detailMediaAll py-4'>";
+// 					$i = 0;
+// 					foreach($va_representations as $vn_rep_id => $va_representation){
+// 						if($vn_rep_id != $vn_representation_id){
+// 							if($i == 0){
+// 								print "<div class='row'>";
+// 							}
+// 						
+// 							print "<div class='col-sm-12 col-md-6 py-4 align-middle detailMediaAllItem'>".$va_representation["tags"]["large"]."</div>";					
+// 							$i++;
+// 							if($i == 2){
+// 								print "</div>";
+// 								$i = 0;
+// 							}
+// 						}
+// 					}
+// 					if($i > 0){
+// 						print "</div>";
+// 					}
+// 					print "</div>";
+// 				}
 ?>
 				
 				<HR></HR>
@@ -260,12 +274,12 @@ if($showTags){
 <?php
 	# --- related_items
 	$va_related_items = array();
-	$va_related_item_ids = $t_object->get("ca_objects.related.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
-	if($va_projects = $t_object->get("ca_collections.collection_id", array("returnAsArray" => true, "checkAccess" => $va_access_values))){
+	$va_related_item_ids = $t_object->get("ca_objects.related.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
+	if($va_projects = $t_object->get("ca_collections.collection_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values))){
 		$q_projects = caMakeSearchResult("ca_collections", $va_projects);
 		if($q_projects->numHits()){
 			while($q_projects->nextHit()){
-				$va_related_item_ids = $va_related_item_ids + $q_projects->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
+				$va_related_item_ids = $va_related_item_ids + $q_projects->get("ca_objects.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
 				shuffle($va_related_item_ids);
 			}
 			# --- remove current item

@@ -33,6 +33,7 @@
 	<title><?php print MetaTagManager::getWindowTitle(); ?></title>
 </head>
 <body id="pawtucketApp">
+
     <script type="text/javascript">
         let pawtucketUIApps = {};
     </script>
@@ -61,6 +62,9 @@
 	</nav>
 	
 <div role="main" id="main">
+	<div id="mediaDisplayFullscreen" class="mediaDisplayFullscreen">
+		<!-- Used by MediaViewer.js React app -->
+	</div>
 	<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
 		<div class="container-fluid"><div class="row"><div class="col-sm-12">
 		
