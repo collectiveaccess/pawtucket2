@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2008-2018 Whirl-i-Gig
+ * Copyright 2008-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -720,7 +720,7 @@ class SearchResult extends BaseObject {
 						$va_fields[] = $va_rel['many_table'].'.type_id rel_type_id';
 					}
 					if ($t_link->hasField('rank')) { 
-						$va_order_bys[] = $t_link->tableName().'.rank';
+						$va_order_bys[] = $t_link->tableName().'.`rank`';
 					}
 				} else {
 					if (($va_rels = Datamodel::getOneToManyRelations($vs_right_table)) && is_array($va_rels[$vs_left_table])) {
@@ -886,13 +886,13 @@ class SearchResult extends BaseObject {
 	}
 	# ------------------------------------------------------------------
 	/**
-	 *
+	 * 
 	 */
-	public function getInstance() {
+	public function getInstance($always_return=false) {
 		if(($id = $this->opo_engine_result->get($this->opo_subject_instance->primaryKey())) && $this->opo_subject_instance->load($id)) {
 		    return $this->opo_subject_instance;
 		}
-		return null;
+		return $always_return ? $this->opo_subject_instance : null;
 	}
 	# ------------------------------------------------------------------
 	/**
@@ -984,7 +984,8 @@ class SearchResult extends BaseObject {
 	 *          convertCodesToValue = Convert list item_ids to item value's (ca_list_items.item_value). If convertCodesToDisplayText is also set then it will take precedence. [Default is false]
 	 *			output = Convert list item_ids to display text in user's preferred locale ("text") or idno ("idno"). This is an easier to type alternative to the convertCodesToDisplayText and convertCodesToIdno options. [Default is null]
 	 *			sort = Array list of bundles to sort returned values on. Currently sort is only supported when getting related values via simple related <table_name> and <table_name>.related bundle specifiers. Eg. from a ca_objects results you can sort when fetching 'ca_entities', 'ca_entities.related', 'ca_objects.related', etc.. The sortable bundle specifiers are fields with or without tablename. Only those fields returned for the related tables (intrinsics and label fields) are sortable. You can also sort on attributes if returnWithStructure is set. [Default is null]
-	*
+	 *			stripTags = Remove HTML/XML tags from returned values. [Default is false]
+	 *
 	 *		[Formatting for strings only]
  	 *			toUpper = Force all values to upper case. [Default is false]
 	 *			toLower = Force all values to lower case. [Default is false]
@@ -994,6 +995,7 @@ class SearchResult extends BaseObject {
 	 *			length = Return all values truncated to a maximum length. [Default is null]
 	 *			truncate = Return all values from the beginning truncated to a maximum length; equivalent of passing start=0 and length. [Default is null]
 	 *			ellipsis = Add ellipsis ("...") to truncated values. Values will be set to the truncated length including the ellipsis. Eg. a value truncated to 12 characters will include 9 characters of text and 3 characters of ellipsis. [Default is false]
+	 *			convertLineBreaks = Convert newlines to <br/> tags. [Default is false]
 	 *
 	 *		[Formatting options for hierarchies]
 	 *			maxLevelsFromTop = Restrict the number of levels returned to the top-most beginning with the root. [Default is null]
@@ -1022,6 +1024,8 @@ class SearchResult extends BaseObject {
 			$pa_options['template'] = null;
 			$pa_options['returnAsSearchResult'] = false;
 		}
+		
+		$vb_convert_line_breaks = isset($pa_options['convertLineBreaks']) ? (bool)$pa_options['convertLineBreaks'] : false;
 		
 		$config = Configuration::load();
 		
@@ -1069,6 +1073,7 @@ class SearchResult extends BaseObject {
 		$vb_convert_codes_to_idno 			= isset($pa_options['convertCodesToIdno']) ? (bool)$pa_options['convertCodesToIdno'] : false;
 		$vb_convert_codes_to_value 			= isset($pa_options['convertCodesToValue']) ? (bool)$pa_options['convertCodesToValue'] : false;
 		
+		$vb_strip_tags			 			= isset($pa_options['stripTags']) ? (bool)$pa_options['stripTags'] : false;
 		
 		$va_exclude_values 					= (isset($pa_options['excludeValues']) && $pa_options['excludeValues']) ? is_array($pa_options['excludeValues']) ? $pa_options['excludeValues'] : [$pa_options['excludeValues']] : [];
 		$va_exclude_idnos					= (isset($pa_options['excludeIdnos']) && $pa_options['excludeIdnos']) ? is_array($pa_options['excludeIdnos']) ? $pa_options['excludeIdnos'] : [$pa_options['excludeIdnos']] : [];
@@ -1349,8 +1354,9 @@ class SearchResult extends BaseObject {
                                             if (!in_array($type_id, $filter_by_types)) { continue; }
                                         }
                                         
-									    $va_hier_item += $qr_hier->get($vs_field_spec, array('returnWithStructure' => true, 'returnAllLocales' => true, 'useLocaleCodes' => $pa_options['useLocaleCodes'], 'convertCodesToDisplayText' => $pa_options['convertCodesToDisplayText'], 'convertCodesToIdno' => $pa_options['convertCodesToIdno'], 'convertCodesToValue' => $pa_options['convertCodesToValue'], 'omitDateSortKey' => true, 'restrictToTypes' => caGetOption('restrictToTypes', $pa_options, null), 'restrictToRelationshipTypes' => caGetOption('restrictToRelationshipTypes', $pa_options, null)));									    
-									
+                                        if(is_array($qh = $qr_hier->get($vs_field_spec, array('returnWithStructure' => true, 'returnAllLocales' => true, 'useLocaleCodes' => $pa_options['useLocaleCodes'], 'convertCodesToDisplayText' => $pa_options['convertCodesToDisplayText'], 'convertCodesToIdno' => $pa_options['convertCodesToIdno'], 'convertCodesToValue' => $pa_options['convertCodesToValue'], 'omitDateSortKey' => true, 'restrictToTypes' => caGetOption('restrictToTypes', $pa_options, null), 'restrictToRelationshipTypes' => caGetOption('restrictToRelationshipTypes', $pa_options, null))))) {
+									   		$va_hier_item += $qh;									    
+										}
 									}
 									
 									// Output full collection-object hierarchy
@@ -1527,6 +1533,14 @@ class SearchResult extends BaseObject {
 		} else {
 			if (!$va_path_components['hierarchical_modifier']) {
 //
+// [PRIMARY TABLE] guid
+//
+				if ($va_path_components['field_name'] == '_guid') {
+					$vm_val = ca_guids::getForRow(Datamodel::getTableNum($va_path_components['table_name']), $vn_row_id);
+					goto filter;
+				}
+
+//
 // [PRIMARY TABLE] Created on
 //
 				if ($va_path_components['field_name'] == 'created') {
@@ -1537,8 +1551,13 @@ class SearchResult extends BaseObject {
 					if ($vb_return_as_array) {
 						if($va_path_components['subfield_name']) {
 							$vm_val = [self::$s_timestamp_cache['created_on'][$this->ops_table_name][$vn_row_id][$va_path_components['subfield_name']]];
-						} else {
+						} elseif($vb_return_with_structure) {
 							$vm_val = self::$s_timestamp_cache['created_on'][$this->ops_table_name][$vn_row_id];
+						} else {
+						    $vm_val = self::$s_timestamp_cache['created_on'][$this->ops_table_name][$vn_row_id]['timestamp'];
+						    $this->opo_tep->init();
+                            $this->opo_tep->setUnixTimestamps($vm_val, $vm_val);
+                            $vm_val = [$this->opo_tep->getText($pa_options)];
 						}
 						goto filter;
 					} else {
@@ -1576,8 +1595,13 @@ class SearchResult extends BaseObject {
 					if ($vb_return_as_array) {
 						if($va_path_components['subfield_name']) {
 							$vm_val = [self::$s_timestamp_cache['last_changed'][$this->ops_table_name][$vn_row_id][$va_path_components['subfield_name']]];
-						} else {
+						} elseif($vb_return_with_structure) {
 							$vm_val = self::$s_timestamp_cache['last_changed'][$this->ops_table_name][$vn_row_id];
+						} else {
+						    $vm_val = self::$s_timestamp_cache['last_changed'][$this->ops_table_name][$vn_row_id]['timestamp'];
+						    $this->opo_tep->init();
+                            $this->opo_tep->setUnixTimestamps($vm_val, $vm_val);
+                            $vm_val = [$this->opo_tep->getText($pa_options)];
 						}
 						goto filter;
 					} else {
@@ -1688,10 +1712,9 @@ class SearchResult extends BaseObject {
 			if (is_array($va_keys) && sizeof($va_keys)) {
 				if ($vb_return_with_structure) {
 				    $vs_sort_desc = caGetOption('sortDirection', $pa_options, 'ASC');
-				    
 				    $vb_is_three_level_array = false;
 				    foreach($vm_val as $vn_top_level_id => $va_data) {
-				    	if (!is_array($va_data)) { continue; }
+				        if (!is_array($va_data)) { continue; }
 				        foreach($va_data as $k => $v) {
 				            if (is_array($v)) { $vb_is_three_level_array = true; }
 				            break(2);
@@ -1780,6 +1803,21 @@ class SearchResult extends BaseObject {
 				} else {
 					return array_values($va_filtered_vals);
 				}
+			}
+		}
+		
+		if ($vb_convert_line_breaks) {
+			if(is_array($vm_val)) {
+				return array_map(function($v) { return !is_array($v) ? nl2br($v) : $v; }, $vm_val);
+			} else {
+				return nl2br($vm_val);
+			}
+		}
+		if ($vb_strip_tags) {
+			if(is_array($vm_val)) {
+				return array_map(function($v) { return !is_array($v) ? strip_tags($v) : $v; }, $vm_val);
+			} else {
+				return strip_tags($vm_val);
 			}
 		}
 		
@@ -1899,6 +1937,9 @@ class SearchResult extends BaseObject {
 		
 		$pa_restrict_to_lists = caGetOption('list', $pa_options, null, ['castTo' => 'array']);
 		if (is_array($pa_restrict_to_lists)) { $pa_restrict_to_lists = caMakeListIDList($pa_restrict_to_lists); }
+		
+		// Make sure spec has a table name, otherwise we can get caught in an infinite loop when we pull using the spec
+		if ((substr($va_spec[0], 0, 3) !== 'ca_') || !Datamodel::tableExists($va_spec[0])) { array_unshift($va_spec, $va_path_components['table_name']); }
 		
 		while($qr_rel->nextHit()) {
 			$vm_val = $qr_rel->get(join(".", $va_spec), $pa_options);
@@ -2244,7 +2285,14 @@ class SearchResult extends BaseObject {
                                             break;
                                     }
                                 }
-                                $vs_val_proc = $o_value->getDisplayValue(['return' => $vs_return_type, 'version' => $vs_version]);
+                                if($alt_text = caGetOption('alt', $pa_options, null)) {
+									// noop
+								} elseif ($alt_text_template = Configuration::load()->get($this->tableName()."_alt_text_template")) { 
+									$alt_text = $this->getWithTemplate($alt_text_template);
+								} else {
+									$alt_text = $this->get($this->tableName().".preferred_labels");
+								}
+                                $vs_val_proc = $o_value->getDisplayValue(['alt' => $alt_text, 'return' => $vs_return_type, 'version' => $vs_version]);
 						        break;
 							case __CA_ATTRIBUTE_VALUE_LIST__:
 								$t_element = ca_metadata_elements::getInstance($o_value->getElementID());
@@ -2483,25 +2531,6 @@ class SearchResult extends BaseObject {
 						if ($vb_return_as_link) { $vs_prop = array_shift(caCreateLinksFromText(array($vs_prop), $vs_table_name, array($vn_id))); }
 						
 						$va_return_values[$vn_id][$vm_locale_id] = $vs_prop;
-					}
-				}
-				break;
-			case FT_VARS:
-				$va_array_path = array_slice($va_path_components['components'], 2);
-				foreach($pa_value_list as $vn_locale_id => $va_values) {
-					foreach($va_values as $id => $va_value) {
-						$vn_id = $va_value[$vs_pk];
-						$v = caUnserializeForDatabase($va_value[$va_path_components['field_name']]);
-						foreach($va_array_path as $p) {
-							if (!isset($v[$p])) { break; }
-							$v = $v[$p];
-						}
-						
-						if (is_array($v) && !$pa_options['returnAsArray']) {
-							// force arrays to strings
-							$v = join(caGetOption('delimiter', $pa_options, '; '), $v);
-						}
-						$va_return_values[$vn_id][$vn_locale_id][] = $v;
 					}
 				}
 				break;
@@ -3150,8 +3179,10 @@ class SearchResult extends BaseObject {
 		    // noop
 		} elseif ($alt_text_template = Configuration::load()->get($this->tableName()."_alt_text_template")) { 
 		    $alt_text = $this->getWithTemplate($alt_text_template);
-		} else {
+		} elseif(is_a($this, "LabelableBaseModelWithAttributes")) {
 		    $alt_text = $this->get($this->tableName().".preferred_labels");
+		} else {
+		    $alt_text = null;
 		}
 		return $GLOBALS["_DbResult_mediainfocoder"]->getMediaTag($ps_version, array_merge($pa_options, ['alt' => $alt_text, 'data' => reset($this->opa_field_media_info[$ps_field])]));
 	}
