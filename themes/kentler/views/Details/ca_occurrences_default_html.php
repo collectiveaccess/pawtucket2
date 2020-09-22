@@ -21,6 +21,93 @@
 					</div><!-- end detailNavBgLeft -->
 				</div><!-- end col -->
 			</div><!-- end row -->
+<?php
+	if($t_item->get("ca_occurrences.occurrence_id") == $this->request->config->get("virtual_benefit_id")){
+?>
+		{{{<ifdef code="ca_occurrences.exhibition_dates"><H6>Date</H6>^ca_occurrences.exhibition_dates<br/></ifdef>}}}
+		{{{<ifdef code="ca_occurrences.description"><H6>About the ^ca_occurrences.type_id</H6>^ca_occurrences.description<br/></ifdef>}}}
+		<br/><HR/><br/>
+<?php
+		$va_object_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values, "sort" => "ca_entities.preferred_labels.surname"));
+		$q_artworks = caMakeSearchResult("ca_objects", $va_object_ids);
+		print "<div class='exhibitGrid'>";
+		$vn_col = 0;
+		if($q_artworks->numHits()){
+			while($q_artworks->nextHit()){
+					if($vn_col == 0){
+						print "<div class='row'>";
+					}
+					
+					$vs_image = "";
+					$vs_image = $q_artworks->get('ca_object_representations.media.mediumlarge', array("checkAccess" => $va_access_values));
+					$vb_no_rep = false;
+					if(!$vs_image){
+						$vs_image = "<div class='detailPlaceholder'>".caGetThemeGraphic($this->request, 'KentlerLogoWhiteBG.jpg')."</div>";
+						$vb_no_rep = true;
+					}
+					$vs_caption = "";
+					$vs_sort_key = "";
+					$vs_sort_key = array_shift(explode(" ", $q_artworks->get('ca_entities.preferred_labels.surname', array("restrictToRelationshipTypes" => array("artist"), 'checkAccess' => $va_access_values))));
+					if($vs_artist = $q_artworks->get('ca_entities.preferred_labels.displayname', array("restrictToRelationshipTypes" => array("artist"), 'checkAccess' => $va_access_values))){
+						$vs_caption = $vs_artist.", ";
+					}
+					$vs_caption .= "<i>".$q_artworks->get("ca_objects.preferred_labels.name")."</i>, ";
+					$vs_medium = "";
+					if($q_artworks->get("medium_text")){
+						$vs_medium = $q_artworks->get("medium_text");
+					}else{
+						if($q_artworks->get("medium")){
+							$vs_medium .= $q_artworks->get("medium", array("delimiter" => ", ", "convertCodesToDisplayText" => true));
+						}
+					}
+					if($vs_medium){
+						$vs_caption .= $vs_medium.", ";
+					}					
+					if($q_artworks->get("ca_objects.dimensions")){
+						$vs_caption .= $q_artworks->get("ca_objects.dimensions.dimensions_height")." X ".$q_artworks->get("ca_objects.dimensions.dimensions_width").", ";
+					}
+					if($q_artworks->get("ca_objects.date")){
+						$vs_caption .= $q_artworks->get("ca_objects.date").".";
+					}
+					#$vs_label_detail_link 	= caDetailLink($this->request, $vs_caption, '', 'ca_objects', $q_artworks->get("ca_objects.object_id"));
+					#print '<div class="col-sm-3"><div class="fullWidthImg" data-toggle="popover" data-trigger="hover" data-placement="auto" data-container="body" data-html="true" data-content="'.$vs_image.'">'.(($vb_no_rep) ? $vs_image : "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $q_artworks->get("ca_objects.object_id"), 'representation_id' => $q_artworks->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
+					print '<div class="col-sm-3"><div class="fullWidthImg">'.(($vb_no_rep) ? $vs_image : "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $q_artworks->get("ca_objects.object_id"), 'representation_id' => $q_artworks->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
+					
+					if($vs_caption){
+						print "<br/><small>".$vs_caption."</small>";
+					}
+					# --- if item is available, link to contact form to "SELECT ITEM"
+					print "<div class='text-center' style='margin-top:10px;'>";
+					if(strtolower($q_artworks->get("ca_objects.removed.removal_text", array("convertCodesToDisplayText" => true))) == "yes"){
+						print "<button class='btn btn-default disabled'>No Longer Available</button>";
+					}else{
+						print caNavLink($this->request, "Select Item", "btn btn-default", "", "Contact", "form", array("contactType" => "benefit", "table" => "ca_objects", "id" => $q_artworks->get("ca_objects.object_id")));
+					}			
+					print "</div>";
+					print "</div><br/></div>";
+					$vn_col++;
+					if($vn_col == 4){
+						print "</div>";
+						$vn_col = 0;
+					}
+			}
+		}
+		if(($vn_col > 0) && ($vn_col < 4)){
+			# --- trailing row
+			print "</div>";
+		}
+		print "</div>";
+?>
+		<script>
+		$(document).ready(function(){
+			$('[data-toggle="popover"]').popover();
+		});
+		</script>
+
+<?php
+	}else{
+?>
+			
 			<div class="row">			
 				<div class='col-md-6 col-lg-6'>
 					{{{<ifdef code="ca_occurrences.exhibition_dates"><H6>Date</H6>^ca_occurrences.exhibition_dates<br/></ifdef>}}}
@@ -225,5 +312,8 @@
 					{{{<ifdef code="ca_occurrences.description"><H6>About the ^ca_occurrences.type_id</H6><br/>^ca_occurrences.description</ifdef>}}}
 				</div>
 			</div>
+<?php
+	}
+?>
 	</div><!-- end col -->
 </div><!-- end row -->
