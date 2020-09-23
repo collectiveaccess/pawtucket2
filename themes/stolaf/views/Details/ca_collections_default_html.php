@@ -27,21 +27,27 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
-					<div class="row">
-						<div class='col-sm-12 col-md-6 col-lg-6'>
-							<H1>{{{^ca_collections.preferred_labels.name}}}</H1>
-						</div>
-						<div class='col-sm-12 col-md-6 col-lg-6'>
+				<div class='col-sm-12 col-md-6 col-lg-6'>
+					<div class="unit"><H1>{{{^ca_collections.preferred_labels.name}}}</H1></div>
+				</div>
+				<div class='col-sm-12 col-md-6 col-lg-6'>
 <?php					
-							if ($vn_pdf_enabled) {
-								print "<div class='exportCollection'>".caDetailLink($this->request, "<span class='glyphicon glyphicon-file'></span> Display Finding Aid", "btn btn-default", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'))."</div>";
-							}
-							print "<div class='inquireButton'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default", "", "Contact", "Form", array("table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")))."</div>";					
+					print "<div class='exportCollection'>";
+					if($vs_ead = $t_item->get("ca_collections.ead_file.url")){
+						print "<a href='$vs_ead' target='_blank' class='btn btn-default'><span class='glyphicon glyphicon-download'></span> EAD Finding Aid</a>";
+					}
+					if ($vn_pdf_enabled) {
+						print caDetailLink($this->request, "<span class='glyphicon glyphicon-download'></span> PDF Finding Aid", "btn btn-default", "ca_collections",  $vn_top_level_collection_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_collections_summary'));
+					}
+					print "</div>";
+					print "<div class='inquireButtonCollection'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default", "", "Contact", "Form", array("table" => "ca_collections", "id" => $t_item->get("ca_collections.collection_id")))."</div>";					
 ?>
-						</div>
-					</div>
-					<h2>{{{^ca_collections.repository_country}}}</h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class='col-md-12 col-lg-12'>
+					
+					{{{<ifdef code="ca_collections.repository.repository_country"><div class="unit"><label class="inline">Collection Number: </label>^ca_collections.repository.repository_country</div></ifdef>}}}
 					{{{<ifdef code="ca_collections.parent_id"><label>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></label></ifdef>}}}
 <?php
 				# Comment and Share Tools
@@ -78,7 +84,6 @@
 						<div class="unit"><label>Extent</label>
 							<unit relativeTo="ca_collections.extentDACS">
 								<ifdef code="ca_collections.extentDACS.extent_number">^ca_collections.extentDACS.extent_number </ifdef>
-								<ifdef code="ca_collections.extentDACS.portion_label">^ca_collections.extentDACS.portion_label </ifdef>
 								<ifdef code="ca_collections.extentDACS.extent_type">^ca_collections.extentDACS.extent_type</ifdef>
 								<ifdef code="ca_collections.extentDACS.container_summary"><br/>^ca_collections.extentDACS.container_summary</ifdef>
 								<ifdef code="ca_collections.extentDACS.physical_details"><br/>^ca_collections.extentDACS.physical_details</ifdef>
@@ -86,13 +91,29 @@
 						</div>
 					</ifdef>}}}
 					
-					{{{<ifcount code="ca_storage_locations" min="1"><label>Location</label>
+					{{{<if rule="^ca_collections.type_id =~ /Folder/"><ifcount code="ca_storage_locations" min="1"><div class="unit"><label>Location</label>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
-					</ifcount>}}}
+					</div></ifcount></if>}}}
 				
 					{{{<ifdef code="ca_collections.material_type"><div class="unit"><label>Material Format</label>^ca_collections.material_type%delimiter=,_</div></ifdef>}}}
 					
-					{{{<ifdef code="ca_collections.LcshSubjects"><div class="unit"><label>Subjects</label>^ca_collections.LcshSubjects%delimiter=,_</div></ifdef>}}}
+<?php
+					$va_LcshSubjects = $t_item->get("ca_collections.LcshSubjects", array("returnAsArray" => true));
+					$va_LcshSubjects_processed = array();
+					if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
+						foreach($va_LcshSubjects as $vs_LcshSubjects){
+							if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
+								$va_LcshSubjects_processed[] = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
+							}else{
+								$va_LcshSubjects_processed[] = $vs_LcshSubjects;
+							}
+						}
+						$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
+					}
+					if($vs_LcshSubjects){
+						print "<div class='unit'><label>Subjects</label>".$vs_LcshSubjects."</div>";	
+					}
+?>
 					
 					{{{<ifdef code="ca_collections.relation"><div class="unit"><label>Related Collections</label>^ca_collections.relation%delimiter=,_</div></ifdef>}}}
 					
@@ -100,8 +121,45 @@
 					
 					{{{<ifdef code="ca_collections.physaccessrestrict"><div class="unit"><label>Physical access</label>^ca_collections.physaccessrestrict%delimiter=,_</div></ifdef>}}}
 					
-					{{{<ifdef code="ca_collections.LcshGenre|ca_collections.aat"><div class="unit"><label>Genres</label><unit delimiter="<br/>">^ca_collections.LcshGenre</unit><ifdef code="ca_collections.LcshGenre"><br/></ifdef><unit delimiter="<br/>">^ca_collections.aat</unit></div></ifdef>}}}
-				
+<?php
+					$va_LcshGenre = $t_item->get("ca_collections.LcshGenre", array("returnAsArray" => true));
+					$va_LcshGenre_processed = array();
+					if(is_array($va_LcshGenre) && sizeof($va_LcshGenre)){
+						foreach($va_LcshGenre as $vs_LcshGenre){
+							if($vs_LcshGenre && (strpos($vs_LcshGenre, " [") !== false)){
+								$va_LcshGenre_processed[] = mb_substr($vs_LcshGenre, 0, strpos($vs_LcshGenre, " ["));
+							}else{
+								$va_LcshGenre_processed[] = $vs_LcshGenre;
+							}
+						}
+						$vs_LcshGenre = join("<br/>", $va_LcshGenre_processed);
+					}
+					$va_aat = $t_item->get("ca_collections.aat", array("returnAsArray" => true));
+					$va_aat_processed = array();
+					if(is_array($va_aat) && sizeof($va_aat)){
+						foreach($va_aat as $vs_aat){
+							if($vs_aat && (strpos($vs_aat, " [") !== false)){
+								$va_aat_processed[] = mb_substr($vs_aat, 0, strpos($vs_aat, " ["));
+							}else{
+								$va_aat_processed[] = $vs_aat;
+							}
+						}
+						$vs_aat = join("<br/>", $va_aat_processed);
+					}
+					if($vs_LcshGenre || $vs_aat){
+						print "<div class='unit'><label>Genres</label>";
+						if($vs_LcshGenre){
+							print $vs_LcshGenre;
+						}
+						if($vs_LcshGenre && $vs_aat){
+							print "<br/>";
+						}
+						if($vs_aat){
+							print $vs_aat;
+						}
+						print "</div>";	
+					}
+?>
 					{{{<ifdef code="ca_collections.preferCite"><div class="unit"><label>Preferred citation</label>^ca_collections.preferCite%delimiter=,_</div></ifdef>}}}
 									
 					{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><label>Related person</label></ifcount>}}}

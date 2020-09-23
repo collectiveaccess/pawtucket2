@@ -94,7 +94,7 @@
 				}
 				print $qr_results->getWithTemplate('<l>'.$vs_image.'</l>', array("checkAccess" => $va_access_values));
 ?>
-				<br/><?php print $qr_results->getWithTemplate('<l><small>^ca_objects.idno</small><br/>^ca_objects.preferred_labels.name</l>'); ?>
+				<br/><?php print $qr_results->getWithTemplate("<l><ifdef code='ca_objects.Object_KressCatalogNumber'><small>^ca_objects.Object_KressCatalogNumber</small><br/></ifdef><ifdef code='ca_objects.Object_ArtistExpression'>^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code='ca_objects.Object_ArtistExpression'><ifcount code='ca_entities' restrictToRelationshipTypes='artist' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist'><ifdef code='ca_entities.preferred_labels.forename'>^ca_entities.preferred_labels.forename </ifdef><ifdef code='ca_entities.preferred_labels.surname'>^ca_entities.preferred_labels.surname</ifdef><ifnotdef code='ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename'>^ca_entities.preferred_labels.displayname</ifnotdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i></l>"); ?>
 			</div><!-- end blockResult -->
 <?php
 			$vn_count++;

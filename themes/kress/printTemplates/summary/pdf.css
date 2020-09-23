@@ -14,10 +14,10 @@ img.headerImg {height:45px; width:auto; margin-top:20px; margin-bottom:10px;}
 body{ font: "helvetica, sans-serif"; margin:0px; padding:0px;}
 
 /* dompdf */
-@page { margin: 65px 56px 35px 56px; }
+@page { margin: 65px 56px 65px 56px; }
 
-#headerdompdf { position: fixed; left: 0px; top: -75px; right: 0px; height: 55px;  text-align: left; vertical-align: top; margin: 0px 5px 10px 0px; padding: 0px 5px 2px 0px; }
-#footerdompdf { position: fixed; left: 0px; bottom: -0px; right: 0px; height: 0px; text-align: center; vertical-align: bottom; }
+#headerdompdf { position: fixed; left: 0px; top: -75px; right: 0px; height: 55px;  text-align: center; vertical-align: top; margin: 0px 5px 10px 0px; padding: 0px 5px 2px 0px; }
+#footerdompdf { position: fixed; left: 0px; bottom: -30px; right: 0px; height: 0px; text-align: center; vertical-align: bottom; }
 #footerdompdf .pagingText:after { content: counter(page, decimal); }
 #footerdompdf .pagingText { position: absolute; top: 0px; right: 30px; font: "helvetica"; font-size: 11px; text-align: right; margin: 0px;}
 #footerdompdf .footerText { position:relative; font-size: 11px; padding-right:40px;  } 
@@ -28,12 +28,20 @@ body{ font: "helvetica, sans-serif"; margin:0px; padding:0px;}
     font-family: Cormorant;
     text-transform:uppercase;
 }
+.footerTitle{
+	line-height:1em;
+	font-weight: 600;
+    font-family: Cormorant;
+    text-transform:uppercase;
+    text-align:center;
+    font-size:12px;
+}
 
 /* summary styles */
 .title { font: "helvetica, sans-serif"; font-size: 18px; width:100%; margin-top:10px; text-align: center; font-weight: bold;}
 .representationList { width: 100%; margin-top:10px; text-align: center; }
-.unit {font-size:12px;margin-bottom:12px;}
-h6 {font-size:12px; font-weight:bold;text-transform:uppercase; margin:0px 0px 5px 0px; padding:0px;}
+.unit {font-size:12px; margin-bottom:12px; page-break:avoid;}
+h6, label {font-size:12px; font-weight:bold;text-transform:uppercase; margin:0px 0px 5px 0px; padding:0px; display:block;}
 .tombstone { margin-top:20px;}
 .clear { clear: both; }
 
@@ -45,4 +53,32 @@ h6 {font-size:12px; font-weight:bold;text-transform:uppercase; margin:0px 0px 5p
 	width:17px;
 	height:14px;
 	display:inline-block;
+}
+
+.grayBg{
+	padding:12px 12px 12px 12px;
+	background-color: #F2F2F2;
+	margin:15px 0px 15px 0px;
+}
+.relatedThumbnail{
+	float:left;
+	margin-right:10px;
+	width:120px;
+	height:120px;
+}
+.relatedThumbnail.iconlarge img{
+	width:100%;
+	height: auto;
+}
+.relatedCaption{
+	float:left;
+	width:550px;
+	font-size:12px; 
+}
+.unitHalf{
+	float:left;
+	width:50%;
+}
+.longLink{
+	word-wrap:break-word;
 }

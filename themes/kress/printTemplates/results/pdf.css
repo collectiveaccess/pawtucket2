@@ -18,7 +18,7 @@ body{ font: "helvetica, sans-serif"; }
 /* dompdf */
 @page { margin: 65px 56px 65px 56px; }
 
-#headerdompdf { position: fixed; left: 0px; top: -75px; right: 0px; height: 55px;  text-align: left; vertical-align: top; margin: 0px 5px 10px 0px; padding: 0px 5px 2px 0px; }
+#headerdompdf { position: fixed; left: 0px; top: -75px; right: 0px; height: 55px;  text-align: center; vertical-align: top; margin: 0px 5px 10px 0px; padding: 0px 5px 2px 0px; }
 #footerdompdf { position: fixed; left: 0px; bottom: -0px; right: 0px; height: 0px; text-align: center; vertical-align: bottom; }
 #footerdompdf .pagingText:after { content: counter(page, decimal); }
 #footerdompdf .pagingText { bottom:0px; }
@@ -28,6 +28,16 @@ body{ font: "helvetica, sans-serif"; }
 	font-weight: 600;
     font-family: Cormorant;
     text-transform:uppercase;
+}
+.footerTitle{
+	line-height:1em;
+	font-weight: 600;
+    font-family: Cormorant;
+    text-transform:uppercase;
+    text-align:center;
+    text-align:center;
+    font-size:12px;
+    margin-top:30px;
 }
 
 /* thumbnails template */

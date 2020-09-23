@@ -67,16 +67,20 @@
 			<div class="row">
 			<table>
 			<tr>
-				<td><td>
+				<td>
+<?php 
+					if ($vs_img = $vo_result->getWithTemplate("<unit relativeTo='ca_objects' length='1'><unit relativeTo='ca_object_representations' length='1'>^ca_object_representations.media.thumbnail</unit></unit>")) {
+						print "<div class=\"imageTiny\">".$vs_img."</div>";
+					} else {
+?>
+						<div class="imageTinyPlaceholder">&nbsp;</div>
+<?php					
+					}	
+?>				</td><td>
 					<div class="metaBlock">
 <?php				
-					print "<div class='title'>".$vo_result->getWithTemplate("<small>^ca_entities.idno</small><br/>^ca_entities.preferred_labels.displayname")."</div>"; 
-					if(is_array($va_display_list) && sizeof($va_display_list)){
-						foreach($va_display_list as $vn_placement_id => $va_display_item) {
-							$vs_display_value = $t_display->getDisplayValue($vo_result, $vn_placement_id, array('forReport' => true, 'purify' => true));
-							print "<div class='metadata'><span class='displayHeader'>".$va_display_item['display']."</span>: <span class='displayValue'>".(strlen($vs_display_value) > 1200 ? strip_tags(substr($vs_display_value, 0, 1197))."..." : $vs_display_value)."</span></div>";		
-						}							
-					}
+					print "<div class='title'>".$vo_result->getWithTemplate("^ca_entities.preferred_labels.displayname")."</div>"; 
+					
 ?>
 					</div>				
 				</td>	

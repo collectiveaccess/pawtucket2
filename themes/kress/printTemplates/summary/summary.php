@@ -28,6 +28,7 @@
  *
  * @name Generic summary
  * @type omit
+ * @omit 1
  * @pageSize letter
  * @pageOrientation portrait
  * @tables *
@@ -45,7 +46,7 @@
 	print $this->render("footer.php");
 ?>
 	<div class="title">
-		<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
+		<h1 class="title">xxx <?php print $t_item->getLabelForDisplay();?></h1>
 	</div>
 <?php
 	foreach($va_placements as $vn_placement_id => $va_bundle_info){

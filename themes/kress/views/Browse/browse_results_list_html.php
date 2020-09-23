@@ -51,8 +51,15 @@
 	
 	$va_options			= $this->getVar('options');
 	$vs_result_text_template = caGetOption('listResultTextTemplate', $va_options, null);
+	$vs_interstitial_text_template = caGetOption('interstitialMovementTextTemplate', $va_options, null);
 	
 	$vb_ajax			= (bool)$this->request->isAjax();
+	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
+	$vn_acquisition_movement_id = $this->request->getParameter("acquisition_movement_id", pInteger);
+	$vs_detail_type = $this->request->getParameter("detailType", pString);
+	if($vs_detail_type){
+		$vb_dontSetFind = 1;
+	}
 
 	$o_icons_conf = caGetIconsConfig();
 	#$va_object_type_specific_icons = $o_icons_conf->getAssoc("placeholders");
@@ -60,18 +67,17 @@
 	#	$vs_default_placeholder = "<i class='fa fa-picture-o fa-2x'></i>";
 	#}
 	#$vs_default_placeholder_tag = "<div class='bResultItemImgPlaceholder'>".$vs_default_placeholder."</div>";
-
 	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
 		$vn_col_span = 6;
-		$vn_col_span_sm = 6;
+		$vn_col_span_sm = 12;
 		$vn_col_span_xs = 12;
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
 			$vn_col_span = 6;
-			$vn_col_span_sm = 6;
+			$vn_col_span_sm = 12;
 			$vn_col_span_xs = 12;
 		}
 		if ($vn_start < $qr_res->numHits()) {
@@ -149,16 +155,20 @@
 					if(($vs_table == 'ca_objects') && is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info)){
 						$vs_add_to_set_link = "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info["controller"], 'addItemForm', array($vs_pk => $vn_id))."\"); return false;' title='".$va_add_to_set_link_info["link_text"]."'>".$va_add_to_set_link_info["icon"]."</a>";
 					}
-					
+					if($vn_acquisition_movement_id){
+						# --- results are being loaded on Acquisition detail (ca_movement detail) so need to show interstitial information
+						$t_obj_x_movement = new ca_movements_x_objects(array("movement_id" => $vn_acquisition_movement_id, "object_id" => $vn_id));
+						$vs_interstitial = "<br/>".$t_obj_x_movement->getWithTemplate($vs_interstitial_text_template);
+					}
 					$vs_result_output = "
-						<div class='resultItemColList col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>".
+						<div class='resultItemColList ".(($vn_acquisition_movement_id) ? "resultItemDetailExtended " : "")."col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>".
 						caDetailLink($this->request, 
 							"<div class='resultContentList'>
 								<div class='resultImageList'>".$vs_image."</div>
-								<div class='resultTextList'>".$qr_res->getWithTemplate($vs_result_text_template)."</div>
+								<div class='resultTextList'>".$qr_res->getWithTemplate($vs_result_text_template).$vs_interstitial."</div>
 								{$vs_add_to_set_link}<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 								<div style='clear:both;'></div>
-							</div>", '', $vs_table, $vn_id)."
+							</div>", '', $vs_table, $vn_id, null, array("title" => "View: ".strip_tags($qr_res->get($vs_table.".preferred_labels"))))."
 						</div><!-- end col -->\n";
 						
 					ExternalCache::save($vs_cache_key, $vs_result_output, 'browse_result', $o_config->get("cache_timeout"));
@@ -168,7 +178,7 @@
 				$vn_results_output++;
 			}
 			
-			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, '_advanced' => $this->getVar('is_advanced') ? 1  : 0));
+			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, 'acquisition_movement_id' => $vn_acquisition_movement_id, '_advanced' => $this->getVar('is_advanced') ? 1  : 0, "detailType" => $vs_detail_type, "dontSetFind" => $vb_dontSetFind));
 		}
 ?>
 <script type="text/javascript">

@@ -75,7 +75,7 @@
 			$vn_col_span_sm = 4;
 			$vn_col_span_xs = 6;
 		}
-		if ($vn_start < $qr_res->numHits()) {
+		if ($vn_start < ($n = $qr_res->numHits())) {
 			$vn_c = 0;
 			$vn_results_output = 0;
 			$qr_res->seek($vn_start);
@@ -152,9 +152,9 @@
 					$vn_parent_id = $qr_res->get("ca_objects.parent_id");
 					$t_parent = new ca_objects($vn_parent_id);
 					$vs_catno = "";
-					if ($vs_catalog_number = $qr_res->get('ca_objects.institutional_id')) {
-						$vs_catno = "<div class='catno'>".$vs_catalog_number."</div>";
-					}
+					// if ($vs_catalog_number = $qr_res->get('ca_objects.institutional_id')) {
+// 						$vs_catno = "<div class='catno'>".$vs_catalog_number."</div>";
+// 					}
 					#$vs_info = null;
 					#if ($vs_date = $qr_res->get('ca_objects.creation_date')) {
 					#	$vs_info.= "<p>".$vs_date."</p>";
@@ -187,7 +187,9 @@
 				$vn_results_output++;
 			}
 			
-			print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+			if ($n > 0) {
+				print "<div style='clear:both'></div>".caNavLink($this->request, _t('Next %1', $vn_hits_per_block), 'jscroll-next', '*', '*', '*', array('s' => $vn_start + $vn_results_output, 'key' => $vs_browse_key, 'view' => $vs_current_view));
+			}
 		}
 ?>
 <script type="text/javascript">
