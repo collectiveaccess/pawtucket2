@@ -21,7 +21,8 @@ AssetLoadManager::register('timeline');
 					height:     '600px',
 					source:     '<?php print caNavUrl($this->request, '', 'Front', 'timelinejson'); ?>',
 					embed_id:   'timeline-embed',
-					initial_zoom: '1'
+					initial_zoom: '1',
+					font:		'medula-lato'
 				});
 			});
 		</script>

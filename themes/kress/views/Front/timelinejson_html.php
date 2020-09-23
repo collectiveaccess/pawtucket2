@@ -45,7 +45,8 @@ if($q_timeline_entries->numRows()){
 									'url' => ($vs_tmp = $t_timeline->get("ca_object_representations.media.medium.url")) ? $vs_tmp : '',
 									'thumbnail' => ($vs_tmp = $t_timeline->get("ca_object_representations.media.small.url")) ? $vs_tmp : '',
 									'credit' => ($vs_tmp = $t_timeline->get("ca_object_representations.credit_line")) ? $vs_tmp : '',
-									'caption' => ''
+									'caption' => '',
+									'alt' => $t_timeline->get('ca_occurrences.preferred_labels.name')
 								],
 								'start_date' => $va_timeline_dates['start_date'],
 								'end_date' => $va_timeline_dates['end_date'],

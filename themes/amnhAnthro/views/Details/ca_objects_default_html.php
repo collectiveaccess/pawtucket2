@@ -120,15 +120,17 @@
 				<HR>
 				{{{<ifdef code='ca_objects.curatorial_notes'><div class="unit"><label>Curatorial Notes</label>^ca_objects.curatorial_notes</div><hr/></ifdef>}}}
 				{{{<ifdef code='ca_objects.idno'><div class="unit"><label>Catalog Number</label>^ca_objects.idno</div></ifdef>}}}
-				{{{<ifdef code='ca_objects.culture.culture_culture'><div class="unit"><label>Culture</label>^ca_objects.culture.culture_culture%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code='ca_objects.locale.locale_locale'><div class="unit"><label>Locale</label>^ca_objects.locale.locale_locale%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code='ca_objects.country.country_country'><div class="unit"><label>Country</label>^ca_objects.country.country_country%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code='ca_objects.culture_display'><div class="unit"><label>Culture</label>^ca_objects.culture_display%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code='ca_objects.locale_display'><div class="unit"><label>Locale</label>^ca_objects.locale_display%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code='ca_objects.country_display'><div class="unit"><label>Country</label>^ca_objects.country_display%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code='ca_objects.period_display'><div class="unit"><label>Period</label>^ca_objects.period_display%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code='ca_objects.materials'><div class="unit"><label>Material</label>^ca_objects.materials%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code='ca_objects.dimensions.display_dimensions'><div class="unit"><label>Dimensions</label><unit relativeTo="ca_objects.dimensions" delimiter=", ">^ca_objects.dimensions.display_dimensions</unit></div></ifdef>}}}
 				{{{<ifdef code='ca_objects.technique'><div class="unit"><label>Technique</label>^ca_objects.technique%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code='ca_objects.keywords'><div class="unit"><label>Keywords</label>^ca_objects.keywords%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code='ca_objects.subject'><div class="unit"><label>Subject</label>^ca_objects.subject%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code='ca_objects.natterm'><div class="unit"><label>Native Term</label>^ca_objects.natterm%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code='ca_objects.use'><div class="unit"><label>Use</label>^ca_objects.use%delimiter=,_</div></ifdef>}}}
 
 
 				{{{<ifcount code="ca_objects.related" restrictToTypes="page" min="1"><div class="unit"><label>Manuscript Catalog</label>
