@@ -408,7 +408,7 @@
 					while($qr_res->nextHit()) {
 						$d = [
 							'id' => $id = $qr_res->getPrimaryKey(),
-							'label' => $qr_res->get('preferred_labels'),
+							'label' => html_entity_decode($qr_res->get('preferred_labels')),
 							'idno' => $qr_res->get($idno_fld),
 							'detailUrl' => caDetailUrl($table, $id)
 						];
