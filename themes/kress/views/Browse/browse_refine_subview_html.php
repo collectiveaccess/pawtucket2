@@ -33,37 +33,54 @@
 	$vs_view			= $this->getVar('view');
 	$vs_browse_type		= $this->getVar('browse_type');
 	$o_browse			= $this->getVar('browse');
+	$vs_table = $this->getVar("table");	
+	$vn_is_advanced		= (int)$this->getVar('is_advanced');
 	
 	$vn_facet_display_length_initial = 120;
 	$vn_facet_display_length_maximum = 120;
-	
 	$va_multiple_selection_facet_list = [];
-	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
-		
-	if((is_array($va_facets) && sizeof($va_facets)) || (is_array($va_criteria) && sizeof($va_criteria))){
+	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);		
+	$vn_acquisition_movement_id = $this->request->getParameter("acquisition_movement_id", pInteger);
+	$vs_detail_type = $this->request->getParameter("detailType", pString);
+
+	$vs_criteria = "";
+	$vn_num_criteria = 0;
+	if (sizeof($va_criteria) > 0) {
+		foreach($va_criteria as $va_criterion) {
+			if(!$vb_show_filter_panel || ($vb_show_filter_panel && !in_array($va_criterion['facet_name'], array("movement_facet", "loan_facet", "archival_facet", "entity_facet")))){
+				#print "<strong>".$va_criterion['facet'].':</strong>';
+				if($va_criterion['value']){
+					$vs_label = $va_criterion['value'];
+					if(mb_strlen($va_criterion['value']) > 20){
+						$vs_label = mb_substr($va_criterion['value'], 0, 20)."...";
+					}
+					$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_label.' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_view, 'key' => $vs_key));
+					$vn_num_criteria++;
+				}
+			}
+		}
+	}
+
+	
+	if((($vs_table == "ca_entities") && strToLower($this->request->getAction()) != "other_entities") || (($vs_table != "ca_entities") && is_array($va_facets) && (sizeof($va_facets) > 0)) || ($vs_criteria)){
 		print "<div id='bMorePanel'><!-- long lists of facets are loaded here --></div>";
 		print "<div id='bRefine'>";
 		print "<a href='#' class='pull-right' id='bRefineClose' onclick='jQuery(\"#bRefine\").toggle(); return false;'><span class='glyphicon glyphicon-remove-circle'></span></a>";
 		print "<H2>"._t("Filter by")."</H2>";
-		if (sizeof($va_criteria) > 0) {
+		if ($vs_criteria) {
 			print "<div class='bCriteria".(($vb_show_filter_panel) ? " catchLinks" : "")."'>";
-
-			foreach($va_criteria as $va_criterion) {
-				if(!$vb_show_filter_panel || ($vb_show_filter_panel && !in_array($va_criterion['facet_name'], array("movement_facet", "loan_facet", "archival_facet", "entity_facet")))){
-					#print "<strong>".$va_criterion['facet'].':</strong>';
-					if($va_criterion['value']){
-						$vs_label = $va_criterion['value'];
-						if(mb_strlen($va_criterion['value']) > 20){
-							$vs_label = mb_substr($va_criterion['value'], 0, 20)."...";
-						}
-						print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_label.' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_view, 'key' => $vs_key));
-						
-					}
-				}
+			print $vs_criteria;
+			if($vn_num_criteria > 1){
+				print caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">Clear All Filters <span class="glyphicon glyphicon-remove-circle" aria-label="Remove all filters"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('clear' => 1, 'view' => $vs_view, 'key' => $vs_key, '_advanced' => $vn_is_advanced ? 1 : 0));
 			}
 			print "</div>";
 		}
-
+		$vn_facets_with_content = 0;
+		foreach($va_facets as $vs_facet_name => $va_facet_info) {
+			if(is_array($va_facet_info['content']) && sizeof($va_facet_info['content'])){
+				$vn_facets_with_content++;
+			}
+		}
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			$va_multiple_selection_facet_list[$vs_facet_name] = caGetOption('multiple', $va_facet_info, false, ['castTo' => 'boolean']);
 			
@@ -81,7 +98,7 @@
 			} else {				
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 				$vn_facet_size = sizeof($va_facet_info['content']);
-				print "<h3 type='button' onClick='jQuery(\"#facetGroup{$vs_facet_name}\").slideToggle(); return false;'>".$va_facet_info['label_singular']."</H3><div id='facetGroup{$vs_facet_name}' style='display:none;'>"; 
+				print "<h3 type='button' onClick='jQuery(\".facetGroupShowHide\").hide(); jQuery(\"#facetGroup{$vs_facet_name}\").show(); return false;'>".$va_facet_info['label_singular']."</H3><div id='facetGroup{$vs_facet_name}' class='facetGroupShowHide' ".(($vn_facets_with_content > 1) ? "style='display:none;'" : "").">"; 
 				print "<div class='container facetContainer' id='{$vs_facet_name}_facet_container'><div class='row'>";
 
 				$vn_c = 0;
@@ -89,11 +106,11 @@
 				foreach($va_facet_info['content'] as $va_item) {
 					$vs_label = $va_item['label'];
 					#$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-					print "<div class='col-sm-".(($va_facet_info["columns"]) ? "4" : "12")." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'>".caNavLink($this->request, $vs_label.$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+					print "<div class='".(($va_facet_info["columns"]) ? "col-md-12 col-lg-4" : "col-sm-12")." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'>".caNavLink($this->request, $vs_label.$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
 					$vn_c++;
 					$vn_col++;
-					if ($vn_col == 3) {
-						print "<div style='clear:both;width:100%;margin-bottom:10px;'></div>";
+					if ($va_facet_info["columns"] && ($vn_col == 3)) {
+						print "<div style='clear:both;width:100%;'></div>";
 						$vn_col = 0;
 					}
 					if (($vn_c == $vn_facet_display_length_initial) && ($vn_facet_size > $vn_facet_display_length_initial) && ($vn_facet_size <= $vn_facet_display_length_maximum)) {
@@ -174,7 +191,7 @@
 <?php
 	if($vb_show_filter_panel){
 ?>
-				var url = '<?php print caNavUrl($this->request, '*', '*','*', array('key' => $vs_key, 'view' => $vs_view)); ?>/facet/' + facet + '/id/' + ids.join('|') + '/dontSetFind/1/showFilterPanel/1';
+				var url = '<?php print caNavUrl($this->request, '*', '*','*', array('key' => $vs_key, 'view' => $vs_view)); ?>/facet/' + facet + '/id/' + ids.join('|') + '/dontSetFind/1/showFilterPanel/1<?php print ($vn_acquisition_movement_id) ? "/acquisition_movement_id/".$vn_acquisition_movement_id : ""; ?><?php print ($vs_detail_type) ? "/detailType/".$vs_detail_type : ""; ?>';
  				$('#browseResultsDetailContainer').load(url);
 <?php
 	}else{

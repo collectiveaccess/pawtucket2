@@ -67,11 +67,17 @@
 	$va_all_facets = $va_browse_type_info["facets"];	
 	$va_add_to_set_link_info = caGetAddToSetInfo($this->request);
 	
+	$vn_acquisition_movement_id = $this->request->getParameter("acquisition_movement_id", pInteger);
 	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);
+	$vs_detail_type = $this->request->getParameter("detailType", pString);
+
+
 	if ($vb_show_filter_panel && $vn_start == 0) {
-		$o_context = new ResultContext($this->request, $vs_table, 'detailrelated');
-		
+		$o_context = new ResultContext($this->request, $vs_table, 'detailrelated', $vs_detail_type);
+	
 		$o_context->setResultList($qr_res->getPrimaryKeyValues(1000));
+		$o_context->setParameter('key', $vs_browse_key);
+		
 		$qr_res->seek($vn_start);
 		$o_context->saveContext();
 	}
@@ -79,38 +85,44 @@
 if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
 <div class="row" style="clear:both;">
-	<div class="col-sm-4 col-md-3 col-lg-3" id="browseLeftCol">
-		<div <?php print ($vb_show_filter_panel) ? "class='catchLinks'" : ""; ?>>
 <?php
+	$vs_refine_subview = $this->render("Browse/browse_refine_subview_html.php");
+	if($vs_refine_subview || ($vn_result_size > 1)){
+?>
+		<div class="col-sm-4 col-md-3 col-lg-3" id="browseLeftCol">
+<?php		
 		if($vn_result_size > 1){
 ?>
-			<div class="bSearchWithinContainer">
-				<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
-					<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine">
-					<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
-					<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
-				</form>
-				<div style="clear:both"></div>
+			<div <?php print ($vb_show_filter_panel) ? "class='catchLinks'" : ""; ?>>
+				<div class="bSearchWithinContainer">
+					<form role="search" id="searchWithin" action="<?php print caNavUrl($this->request, '*', 'Search', '*'); ?>">
+						<button type="submit" class="btn-search-refine"><span class="glyphicon glyphicon-search" aria-label="submit search"></span></button><input type="text" class="form-control bSearchWithin" placeholder="Search within..." name="search_refine" id="searchWithinSearchRefine" aria-label="Search Within">
+						<input type="hidden" name="key" value="<?php print $vs_browse_key; ?>">
+						<input type="hidden" name="view" value="<?php print $vs_current_view; ?>">
+					</form>
+					<div style="clear:both"></div>
+				</div>
 			</div>
 <?php
 		}
-?>
-		</div>
-		
-<?php
-		print $this->render("Browse/browse_refine_subview_html.php");
+		if(($vs_table == "ca_objects") && !$vb_show_filter_panel){
+			print "<div class='small advancedSearchLink'>".caNavLink($this->request, _t("Advanced Search"), '', 'Search', 'advanced', 'objects')."</div>";
+		}
+		print $vs_refine_subview;
 ?>			
-	</div><!-- end col-2 -->
-
+		</div><!-- end col-2 -->
+<?php
+	}
+?>
 	<div class='col-sm-8 col-md-9 col-lg-9'>
 <?php
 			if(is_array($va_views) && (sizeof($va_views) > 1)){
 				print '<div id="bViewButtons"'.(($vb_show_filter_panel) ? ' class="catchLinks"' : '').'>';
 				foreach($va_views as $vs_view => $va_view_info) {
 					if ($vs_current_view === $vs_view) {
-						print '<a href="#" class="active"><span class="glyphicon"  '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span></a> ';
+						#print '<a href="#" class="active"><span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" title="Change view"></span></a> ';
 					} else {
-						print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'"></span>', 'disabled', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
+						print caNavLink($this->request, '<span class="glyphicon '.$va_view_icons[$vs_view]['icon'].'" aria-label="'.$vs_view.'" title="Change view"></span>', '', '*', '*', '*', array('view' => $vs_view, 'key' => $vs_browse_key)).' ';
 					}
 				}
 				print "</div>";
@@ -145,7 +157,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			}
 ?>		
 			<div class="btn-group">
-				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Result options"></i></a>
+				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Sort and download options" title="Sort and download options"></i></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
@@ -182,9 +194,18 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 						// Export as PDF links
 						print "<li class='divider' role='menuitem'></li>\n";
 						print "<li class='dropdown-header' role='menuitem'>"._t("Download results as:")."</li>\n";
-						foreach($va_export_formats as $va_export_format){
-							if(!in_array($va_export_format["code"], array("_pdf_thumbnails"))){
-								print "<li class='".$va_export_format["code"]."' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+						# --- entity excel reports are specific to category
+						if($vs_table == "ca_entities"){
+							foreach($va_export_formats as $va_export_format){
+								if(($va_export_format["type"] == "pdf") || ($va_export_format["code"] == $this->request->getAction()."_excel")){
+									print "<li class='".$va_export_format["code"]."' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+								}
+							}
+						}else{
+							foreach($va_export_formats as $va_export_format){
+								if(!in_array($va_export_format["code"], array("_pdf_thumbnails"))){
+									print "<li class='".$va_export_format["code"]."' role='menuitem'>".caNavLink($this->request, $va_export_format["name"], "", "*", "*", "*", array("view" => "pdf", "download" => true, "export_format" => $va_export_format["code"], "key" => $vs_browse_key))."</li>";
+								}
 							}
 						}
 					}
@@ -192,7 +213,7 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 				</ul>
 			</div><!-- end btn-group -->
 <?php
-			if(is_array($va_facets) && sizeof($va_facets)){
+			if((strToLower($this->request->getAction()) != "other_entities") && ((is_array($va_facets) && sizeof($va_facets)) || (sizeof($va_criteria)))){
 ?>
 			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>
 <?php
@@ -271,18 +292,18 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 		}
 		if($vb_show_filter_panel){
 ?>			
-			$(".catchLinks").on("click", "a", function(event){
-				if(!$(this).hasClass('dontCatch') && $(this).attr('href') != "#"){
-					event.preventDefault();
-					var url = $(this).attr('href') + "/showFilterPanel/1";
+			$('.catchLinks a').bind('click', function(e) {           
+  				if($(this).attr('href') != "#"){
+					var url = $(this).attr('href') + "/dontSetFind/1/showFilterPanel/1<?php print ($vn_acquisition_movement_id) ? "/acquisition_movement_id/".$vn_acquisition_movement_id : ""; ?><?php print ($vs_detail_type) ? "/detailType/".$vs_detail_type : ""; ?> ";
 					$('#browseResultsDetailContainer').load(url);
+					e.preventDefault();
+					return false;
 				}
-								
 			});
 			
 			$("#searchWithin").submit(function( event ) {
   				event.preventDefault();
- 				var url = $("#searchWithin").attr('action') + "/dontSetFind/1/showFilterPanel/1/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + encodeURIComponent($('#searchWithinSearchRefine').val());
+ 				var url = $("#searchWithin").attr('action') + "/dontSetFind/1/showFilterPanel/1<?php print ($vn_acquisition_movement_id) ? "/acquisition_movement_id/".$vn_acquisition_movement_id : ""; ?><?php print ($vs_detail_type) ? "/detailType/".$vs_detail_type : ""; ?>/key/<?php print $vs_browse_key; ?>/view/<?php print $vs_current_view; ?>/search_refine/" + encodeURIComponent($('#searchWithinSearchRefine').val());
  				$('#browseResultsDetailContainer').load(url);
 			});
 <?php

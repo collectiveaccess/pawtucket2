@@ -524,7 +524,12 @@ a.readmore-js-toggle:hover {
 	font-size:14px;
 	top:3px;
 }
-
+.detail label.inline{
+	display:inline;
+}
+.detail h1 {
+    font-size: 20px;
+}
 #bRefine div, #bRefine{
 	line-height:.75em !important;
 }

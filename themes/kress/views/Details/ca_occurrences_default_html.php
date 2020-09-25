@@ -1,4 +1,5 @@
 <?php
+	$va_access_values = caGetUserAccessValues($this->request);
 	$t_item = $this->getVar("item");
 	$va_comments = $this->getVar("comments");
 	$vn_comments_enabled = 	$this->getVar("commentsEnabled");
@@ -21,6 +22,17 @@
 
 	$vb_ajax			= (bool)$this->request->isAjax();
 
+	# --- back button for related archival items - ca_occurrences, ca_objects
+	$o_context = new ResultContext($this->request, 'ca_entities', 'detailrelated', 'archival');
+	$o_context->setResultList($t_item->get("ca_entities.entity_id", array("returnAsArray" => true, "checkAccess" => $va_access_values)));
+	$o_context->setAsLastFind();
+	$o_context->saveContext();
+	
+	$o_context = new ResultContext($this->request, 'ca_objects', 'detailrelated', 'archival');
+	$o_context->setResultList($t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values)));
+	$o_context->setAsLastFind();
+	$o_context->saveContext();
+
 	if($vb_ajax){
 ?>
 		<div class="detail detailPreviewContainer">		
@@ -35,9 +47,6 @@
 								print caGetMediaViewerHTML($this->request, "attribute:".$value_id, $t_item, array("inline" => true, "display" => "detail", "context" => "archival"));
 							}
 						}else{
-						#if($vs_image = $t_item->get("ca_occurrences.media.media_media.large")){
-						#	print caDetailLink($this->request, $vs_image, "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"));
-						#}else{
 ?>
 							<?php print caDetailLink($this->request, "<div class='detailPreviewImgPlaceholder'>".$vs_placeholder."</div>", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id")); ?>
 <?php
@@ -55,8 +64,7 @@
 					</div>
 					<div class="col-xs-8">
 						<div class="unit">
-							<label>{{{<ifdef code="ca_occurrences.Doc_type">^ca_occurrences.Doc_type: </ifdef><ifdef code="ca_occurrences.idno">^ca_occurrences.idno</ifdef>}}}</label>
-							{{{^ca_occurrences.preferred_labels.name}}}
+							{{{<div class="previewLabelNoIdentifier">^ca_occurrences.preferred_labels.name</div>}}}
 						</div>
 						<p><?php print caDetailLink($this->request, "View Record", "btn btn-default", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id")); ?></p>							
 					</div>
@@ -90,10 +98,11 @@
 					// 
 					// Uses new ".value_id" suffix to get value_ids for all repeats of ca_occurrences.media.media_media.value_id
 					//
-					if(is_array($media_value_ids = $t_item->get("ca_occurrences.media.media_media.value_id", ["returnAsArray" => true])) && sizeof($media_value_ids)) {
+					if(($t_item->get("ca_occurrences.media.media_media")) && is_array($media_value_ids = $t_item->get("ca_occurrences.media.media_media.value_id", ["returnAsArray" => true])) && sizeof($media_value_ids)) {
 						foreach($media_value_ids as $value_id) {
 							print caGetMediaViewerHTML($this->request, "attribute:".$value_id, $t_item, array("inline" => true, "display" => "detail", "context" => "archival"));
 						}
+						print "<div class='text-center'><small>click <i class='fa fa-lg fa-fw fa-expand'></i> to open document viewer</small></div>";
 					}else{
 ?>
 						<div class="detailImgPlaceholder"><?php print $vs_placeholder; ?></div>
@@ -114,24 +123,28 @@
 
 				</div><!-- end col -->
 				<div class='col-sm-12 col-md-5'>
-					<H2>{{{<ifdef code="ca_occurrences.Doc_type">^ca_occurrences.Doc_type: </ifdef><ifdef code="ca_occurrences.idno">^ca_occurrences.idno</ifdef>}}}</H2>
 					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
 					<div class="grayBg">
-						{{{<ifcount code="ca_entities" min="1"><div class="unit"><label data-toggle="popover" title="Creator" data-content="Creator">Creator<ifcount code="ca_entities" min="2">s</ifcount></label><unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></div></unit></ifcount>}}}
-						{{{<ifdef code="ca_occurrences.Doc_Date"><div class="unit"><label data-toggle="popover" title="Date" data-content="Date description">Date</label>^ca_occurrences.Doc_Date</div></ifdef>}}}
-						{{{<ifdef code="ca_occurrences.Doc_Source"><div class="unit"><label data-toggle="popover" title="Citation" data-content="Citation">Citation</label>^ca_occurrences.Doc_Source</div></ifdef>}}}
+						<div class="row">
+							{{{<ifdef code="ca_occurrences.idno"><div class="col-sm-6 col-md-6"><div class="unit"><label data-toggle="popover" title="Identifier" data-content="Unique system-generated record identifier">Identifier</label>^ca_occurrences.idno</div></div></ifdef>}}}				
+							{{{<ifdef code="ca_occurrences.Doc_type"><div class="col-sm-6 col-md-6"><div class="unit"><label>Archival Item Type</label>^ca_occurrences.Doc_type</div></div></ifdef>}}}
+						</div>
+						
+						{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Creator<ifcount code="ca_entities" min="2">s</ifcount></label><unit relativeTo="ca_entities" delimiter=", "><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+						{{{<ifdef code="ca_occurrences.Doc_Photographer"><div class="unit"><label>Photographer</label>^ca_occurrences.Doc_Photographer</div></ifdef>}}}
+						{{{<ifdef code="ca_occurrences.Doc_Date"><div class="unit"><label>Date</label>^ca_occurrences.Doc_Date</div></ifdef>}}}
+						{{{<ifdef code="ca_occurrences.Doc_Source"><div class="unit"><label>Citation</label>^ca_occurrences.Doc_Source</div></ifdef>}}}
 					</div>
-					{{{<ifdef code="ca_occurrences.Doc_Note"><div class="unit"><label data-toggle="popover" title="Note" data-content="Note">Note</label><span class="trimText">^ca_occurrences.Doc_Note</span></div></ifdef>}}}
-					{{{<ifdef code="ca_occurrences.Doc_Photographer"><div class="unit"><label>Photographer</label>^ca_occurrences.Doc_Photographer</div></ifdef>}}}
-					{{{<ifcount code="ca_objects.related" min="1" max="3">
+					{{{<ifdef code="ca_occurrences.Doc_Note"><div class="unit"><label>Note</label><span class="trimText">^ca_occurrences.Doc_Note</span></div></ifdef>}}}
+					{{{<ifcount code="ca_objects" min="1">
 							<br/>
-							<ifcount code="ca_objects.related" min="1" max="1">
-								<label data-toggle="popover" title="Related Art Object" data-content="Related Art Object">Related Art Object</label>
+							<ifcount code="ca_objects" min="1" max="1">
+								<label>Related Art Object</label>
 							</ifcount>
-							<ifcount code="ca_objects.related" min="2">
-								<label data-toggle="popover" title="Related Art Objects" data-content="Related Art Objects">Related Art Objects</label>
+							<ifcount code="ca_objects" min="2">
+								<label>Related Art Objects</label>
 							</ifcount>
-							<unit relativeTo="ca_objects.related" delimiter=" ">
+							<unit relativeTo="ca_objects" delimiter=" ">
 									<l><div class="grayBg paddingTop">
 										<div class="unit">
 											<div class="row">
@@ -140,12 +153,12 @@
 														^ca_object_representations.media.small
 													</div>
 													<div class="col-xs-8">
-														^ca_objects.preferred_labels.name
+														<ifdef code='ca_objects.Object_KressCatalogNumber'><small>^ca_objects.Object_KressCatalogNumber</small><br/></ifdef><ifdef code="ca_objects.Object_ArtistExpression">^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code="ca_objects.Object_ArtistExpression"><ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist"><ifdef code="ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.forename </ifdef><ifdef code="ca_entities.preferred_labels.surname">^ca_entities.preferred_labels.surname</ifdef><ifnotdef code="ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.displayname</ifnotdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i><ifcount code="ca_entities" restrictToRelationshipTypes="location"><br/><unit relativeTo="ca_entities" restrictToRelationshipTypes="location" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></ifcount>
 													</div>
 												</ifdef>
 												<ifnotdef code="ca_object_representations.media.small">
 													<div class="col-xs-12">
-														^ca_objects.preferred_labels.name
+														<ifdef code='ca_objects.Object_KressCatalogNumber'><small>^ca_objects.Object_KressCatalogNumber</small><br/></ifdef><ifdef code="ca_objects.Object_ArtistExpression">^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code="ca_objects.Object_ArtistExpression"><ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist"><ifdef code="ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.forename </ifdef><ifdef code="ca_entities.preferred_labels.surname">^ca_entities.preferred_labels.surname</ifdef><ifnotdef code="ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.displayname</ifnotdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i><ifcount code="ca_entities" restrictToRelationshipTypes="location"><br/><unit relativeTo="ca_entities" restrictToRelationshipTypes="location" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></ifcount>
 													</div>
 												</ifnotdef>
 											</div>
@@ -157,45 +170,21 @@
 				<div class='col-sm-12 col-md-2'>
 					<div id="detailTools">
 	<?php
-						if($vs_download_link = $t_item->get("ca_occurrences.media.media_media.original.url")){
-							print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span><a href='".$vs_download_link."'>Download Media</a></div>";
+						if(is_array($media_value_ids = $t_item->get("ca_occurrences.media.media_media.value_id", ["returnAsArray" => true])) && sizeof($media_value_ids)) {
+							foreach($media_value_ids as $value_id) {
+								print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span>".caNavLink($this->request, "Download Media", "", "", "Detail",  "DownloadAttributeMedia", array('value_id' => $value_id, 'version' => 'original', 'download' => 1))."</div>";
+							}
 						}
 						if ($vn_pdf_enabled) {
-							print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Summary")."'></span>".caDetailLink($this->request, "PDF Summary", "", "ca_occurrences",  $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_summary'))."</div>";
+							print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Summary")."'></span>".caDetailLink($this->request, "PDF Summary", "", "ca_occurrences",  $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
 						}
-						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Permalink")."'></span> <a href='#' onClick='$(\"#permalink\").toggle(); return false;'>Permalink</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caDetailUrl($this->request, 'ca_occurrences', $t_item->get("occurrence_id"))."</textarea></div>";					
+						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Record Link")."'></span><a href='#' onClick='$(\"#permalink\").toggle(); return false;' title='Copy link to share or save record'>Record Link</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caDetailUrl($this->request, 'ca_occurrences', $t_item->get("occurrence_id"))."</textarea></div>";					
 
 	?>
 					</div>
 				</div>
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="4">
-			<div class="row">
-				<div class="col-sm-12"><HR/>
-				</div>
-			</div>
-			<div class="row">
-				<div class="col-sm-12">
-					<div id="browseResultsDetailContainer" class="results">
-						<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>
-					</div><!-- end browseResultsContainer -->
-				</div>
-			</div><!-- end row -->
-			<script type="text/javascript">
-				jQuery(document).ready(function() {
-					jQuery("#browseResultsDetailContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'archival_facet', 'id' => '^ca_occurrences.occurrence_id', 'showFilterPanel' => 1), array('dontURLEncodeParameters' => true)); ?>", function() {
-						//jQuery('#browseResultsContainer').jscroll({
-						//	autoTrigger: true,
-						//	loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',
-						//	padding: 20,
-						//	nextSelector: 'a.jscroll-next'
-						//});
-					});
-					
-					
-				});
-			</script>
-</ifcount>}}}		</div><!-- end container -->
+		</div><!-- end container -->
 	</div><!-- end col -->
 	<div class='navLeftRight col-xs-1 col-sm-1 col-md-1 col-lg-1'>
 		<div class="detailNavBgRight">
@@ -228,6 +217,11 @@
 					$(this).popover('toggle');
 				});
 			}
+		});
+		
+		$("#permalink").click(function(){
+			$("#permalink").select();
+			document.execCommand('copy');
 		});
 	});
 

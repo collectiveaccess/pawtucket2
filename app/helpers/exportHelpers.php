@@ -332,8 +332,35 @@
 					if ($o_sheet->getColumnDimension($vs_chr)->getWidth() == -1) {
 						$o_sheet->getColumnDimension($vs_chr)->setAutoSize(true);	
 					}
+				}			
+				if($po_request->config->get('excel_report_header_enabled') || $po_request->config->get('excel_report_footer_enabled')){
+					$o_sheet->getPageSetup()->setOrientation(PHPExcel_Worksheet_PageSetup::ORIENTATION_LANDSCAPE);
+					$o_sheet->getPageMargins()->setTop(1);
+					$o_sheet->getPageMargins()->setRight(0.75);
+					$o_sheet->getPageMargins()->setLeft(0.75);
+					$o_sheet->getPageMargins()->setBottom(1);
+					$o_sheet->getPageSetup()->setRowsToRepeatAtTopByStartAndEnd(1,1);
+		
+					if($po_request->config->get('excel_report_header_enabled')){
+						if(file_exists($po_request->getThemeDirectoryPath()."/assets/pawtucket/graphics/".$po_request->config->get('report_img'))){
+							$vs_logo_path = $po_request->getThemeDirectoryPath().'/assets/pawtucket/graphics/'.$po_request->config->get('report_img');
+						}
+						$objDrawing = new PHPExcel_Worksheet_HeaderFooterDrawing();
+						$objDrawing->setName('Image');
+						$objDrawing->setPath($vs_logo_path);
+						$objDrawing->setHeight(36);
+						$o_sheet->getHeaderFooter()->addImage($objDrawing, PHPExcel_Worksheet_HeaderFooter::IMAGE_HEADER_LEFT);
+						if($vs_criteria_summary = caGetOption('criteriaSummary', $pa_options, '')){
+							$vs_criteria_summary = str_replace("&", "+", strip_tags(html_entity_decode($vs_criteria_summary)));
+							$vs_criteria_summary = (strlen($vs_criteria_summary) > 90) ? mb_substr($vs_criteria_summary, 0, 90)."..." : $vs_criteria_summary;
+							$vs_criteria_summary = wordwrap($vs_criteria_summary, 50, "\n", true);
+							$o_sheet->getHeaderFooter()->setOddHeader('&L&G& '.(($po_request->config->get('excel_report_show_search_term')) ? '&R&B&12 '.$vs_criteria_summary : ''));
+						}
+					}
+					if($po_request->config->get('excel_report_footer_enabled')){
+						$o_sheet->getHeaderFooter()->setOddFooter('&L&10'.$po_request->config->get('excel_report_footer_text').' &C&10Page &P of &N &R&10 '.date("m/t/y"));
+					}
 				}
-
 				$o_writer = new PHPExcel_Writer_Excel2007($workbook);
 				$vs_filename = caGetOption('filename', $va_export_config[$vs_table][$ps_template], 'export_results');
 				$vs_filename = preg_replace('![^A-Za-z0-9_\-\.]+!', '_', $vs_filename);
