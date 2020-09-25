@@ -211,3 +211,9 @@ a.readmore-js-toggle::after {
 	width:100%;
 	height:auto;
 }
+
+/* gallery */
+.gallery .tl-timemarker-text H2{
+	font-size:12px !important;
+	text-transform:none;
+}
