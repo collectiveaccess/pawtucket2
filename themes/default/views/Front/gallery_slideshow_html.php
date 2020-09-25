@@ -32,6 +32,11 @@
 	$va_access_values = $this->getVar("access_values");
 	$o_config = caGetGalleryConfig();
 	
+	# --- what is the gallery section called
+	if(!$section_name = $o_config->get('gallery_section_name')){
+		$section_name = _t("Featured Galleries");
+	}
+	
 	# --- which type of set is configured for display in gallery section
  	$t_list = new ca_lists();
  	$vn_gallery_set_type_id = $t_list->getItemIDFromList('set_types', $o_config->get('gallery_set_type')); 			
@@ -61,7 +66,7 @@
 
 <div class="row">
 	<div class="col-sm-12"> 
-		<H2>Featured Galleries</H2>
+		<H2><?php print $section_name; ?></H2>
 		<div class="jcarousel-wrapper galleryItems-wrapper">
 			<!-- Carousel -->
 			<div class="jcarousel galleryItems">
