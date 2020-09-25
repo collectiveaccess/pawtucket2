@@ -42,7 +42,7 @@
 	$vb_show_filter_panel = $this->request->getParameter("showFilterPanel", pInteger);		
 	$vn_acquisition_movement_id = $this->request->getParameter("acquisition_movement_id", pInteger);
 	$vs_detail_type = $this->request->getParameter("detailType", pString);
-	
+
 	$vs_criteria = "";
 	$vn_num_criteria = 0;
 	if (sizeof($va_criteria) > 0) {
@@ -75,7 +75,12 @@
 			}
 			print "</div>";
 		}
-
+		$vn_facets_with_content = 0;
+		foreach($va_facets as $vs_facet_name => $va_facet_info) {
+			if(is_array($va_facet_info['content']) && sizeof($va_facet_info['content'])){
+				$vn_facets_with_content++;
+			}
+		}
 		foreach($va_facets as $vs_facet_name => $va_facet_info) {
 			$va_multiple_selection_facet_list[$vs_facet_name] = caGetOption('multiple', $va_facet_info, false, ['castTo' => 'boolean']);
 			
@@ -93,7 +98,7 @@
 			} else {				
 				if (!is_array($va_facet_info['content']) || !sizeof($va_facet_info['content'])) { continue; }
 				$vn_facet_size = sizeof($va_facet_info['content']);
-				print "<h3 type='button' onClick='jQuery(\"#facetGroup{$vs_facet_name}\").slideToggle(); return false;'>".$va_facet_info['label_singular']."</H3><div id='facetGroup{$vs_facet_name}' style='display:none;'>"; 
+				print "<h3 type='button' onClick='jQuery(\".facetGroupShowHide\").hide(); jQuery(\"#facetGroup{$vs_facet_name}\").show(); return false;'>".$va_facet_info['label_singular']."</H3><div id='facetGroup{$vs_facet_name}' class='facetGroupShowHide' ".(($vn_facets_with_content > 1) ? "style='display:none;'" : "").">"; 
 				print "<div class='container facetContainer' id='{$vs_facet_name}_facet_container'><div class='row'>";
 
 				$vn_c = 0;

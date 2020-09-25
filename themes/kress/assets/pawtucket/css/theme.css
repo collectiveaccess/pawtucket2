@@ -611,6 +611,10 @@ body.frontContainer #footer{
 }
 .tl-text h2.tl-headline-title, .tl-text h2.tl-headline{
 	font-family: Cormorant;
+	font-size: 28px;
+	line-height: 28px;
+	font-weight:400;
+	text-transform:none;
 }
 .tl-slide, .tl-slide-content, .tl-text-content, .tl-text-content > p, .tl-text > p{
 	color:#000000 !important;
@@ -660,13 +664,31 @@ body.frontContainer #footer{
 		width:100% !important;
 	}
 }
-
+.tl-timeline p{
+	font-family: LatoLight !important;
+	font-weight: 400;
+	text-transform:none;
+	color:#000;
+}
+.tl-slidenav-title, .tl-slidenav-description, .tl-timeline .tl-timenav-slider .tl-timeaxis, .tl-timeline .tl-caption, .tl-timeline .tl-credit, .tl-headline-date{
+	font-family: Lato !important;
+	font-weight: 400;
+	text-transform:none;
+	color:#000;
+}
+.tl-text-content-container h3, .tl-text-content-container h3.tl-headline-date, .tl-timeline .tl-headline-date, .tl-timeline h3.tl-headline-date{
+	font-family: Lato !important;
+	font-weight:normal;
+}
+h3.tl-headline-date, .tl-text .tl-headline-date, .tl-text h3.tl-headline-date, .tl-timeline .tl-headline-date, .tl-timeline h3.tl-headline-date{
+	font-family: LatoLight !important;
+}
 /* browse */
 #bViewButtons {
     float: right;
 }
 #bRefine.fixed {
-    top: 55px;
+    padding-top: 65px;
 }
 #bMorePanel{
 	left:0px;
@@ -674,7 +696,7 @@ body.frontContainer #footer{
 }
 @media(min-width:768px) and (max-width:1500px){
 	#bRefine.fixed {
-    	top: 90px;
+    	padding-top: 105px;
 	}
 }
 #bRefine H3[type="button"]{
@@ -1146,6 +1168,9 @@ a.readmore-js-toggle {
 }
 .staticPage p {
 	margin-bottom:25px;
+}
+.staticPage a{
+	text-decoration:underline;
 }
 
 /* multisearch */
