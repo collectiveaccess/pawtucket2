@@ -212,10 +212,16 @@
 				} elseif ($ps_sort != $this->opo_result_context->getCurrentSort()) {
 					$vb_sort_changed = true;
 				}
-				if (is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
-					if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
-						$ps_sort = array_shift(array_keys($va_sorts));
-						$vb_sort_changed = true;
+				
+				if (preg_match("!^ca_set_items.rank/([\d]+)$!", $ps_sort)) {
+					// we have a set
+					$vb_sort_changed = true;
+				} else {
+					if (is_array($va_sorts = caGetOption('sortBy', $va_browse_info, null))) {
+						if (!$ps_sort || (!in_array($ps_sort, array_keys($va_sorts)))) {
+							$ps_sort = array_shift(array_keys($va_sorts));
+							$vb_sort_changed = true;
+						}
 					}
 				}
 				if ($vb_sort_changed) {
@@ -295,7 +301,7 @@
 				//
 				// Results
 				//
-				$vs_sort_fld = $va_sort_by[$ps_sort];
+				$vs_sort_fld = $va_sort_by[$ps_sort] ? $va_sort_by[$ps_sort] : $ps_sort;
 				$qr_res = $o_browse->getResults(array('sort' => $vs_sort_fld, 'sort_direction' => $ps_sort_direction));
 
 				$this->view->setVar('result', $qr_res);
