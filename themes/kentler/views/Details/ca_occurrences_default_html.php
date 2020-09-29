@@ -69,9 +69,8 @@
 					if($q_artworks->get("ca_objects.date")){
 						$vs_caption .= $q_artworks->get("ca_objects.date").".";
 					}
-					#$vs_label_detail_link 	= caDetailLink($this->request, $vs_caption, '', 'ca_objects', $q_artworks->get("ca_objects.object_id"));
-					#print '<div class="col-sm-3"><div class="fullWidthImg" data-toggle="popover" data-trigger="hover" data-placement="auto" data-container="body" data-html="true" data-content="'.$vs_image.'">'.(($vb_no_rep) ? $vs_image : "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $q_artworks->get("ca_objects.object_id"), 'representation_id' => $q_artworks->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
-					print '<div class="col-sm-3"><div class="fullWidthImg">'.(($vb_no_rep) ? $vs_image : "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $q_artworks->get("ca_objects.object_id"), 'representation_id' => $q_artworks->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
+					#print '<div class="col-sm-3"><div class="fullWidthImg">'.(($vb_no_rep) ? $vs_image : "<a href='#' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('context' => 'objects', 'id' => $q_artworks->get("ca_objects.object_id"), 'representation_id' => $q_artworks->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)), 'overlay' => 1))."\"); return false;' >".$vs_image."</a>");
+					print '<div class="col-sm-3"><div class="fullWidthImg">'.$vs_image;
 					
 					if($vs_caption){
 						print "<br/><small>".$vs_caption."</small>";
