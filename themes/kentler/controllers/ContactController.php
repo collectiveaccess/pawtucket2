@@ -149,7 +149,7 @@
 				}
 			} 			
  			if(sizeof($va_errors) == 0){
- 				# --- send email
+ 				# --- send admin notification email
  					$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
  					$o_view->setVar("contact_form_elements", $va_fields);
  					# -- generate email subject line from template
@@ -158,13 +158,29 @@
 					# -- generate mail text from template - get both the text and the html versions
 					$vs_mail_message_text = $o_view->render("mailTemplates/contact.tpl");
 					$vs_mail_message_html = $o_view->render("mailTemplates/contact_html.tpl");
-					if(caSendmail($this->config->get("contact_email"), $this->request->config->get("ca_admin_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
-						$this->render("Contact/success_html.php");
+					if(caSendmail($this->config->get("contact_email"), $this->config->get("contact_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
+						# --- send user confirmation email
+						$o_view = new View($this->request, array($this->request->getViewsDirectoryPath()));
+						$o_view->setVar("contact_form_elements", $va_fields);
+						# -- generate email subject line from template
+						$vs_subject_line = $o_view->render("mailTemplates/benefit_confirmation_subject.tpl");
+					
+						# -- generate mail text from template - get both the text and the html versions
+						$vs_mail_message_text = $o_view->render("mailTemplates/benefit_confirmation.tpl");
+						$vs_mail_message_html = $o_view->render("mailTemplates/benefit_confirmation_html.tpl");
+						if(caSendmail($vs_email, $this->config->get("contact_email"), $vs_subject_line, $vs_mail_message_text, $vs_mail_message_html)){
+							$this->render("Contact/success_html.php");
+						}else{
+							$va_errors["display_errors"]["send_error"] = _t("Your email could not be sent");
+							$this->view->setVar("errors", $va_errors);
+							$this->form();
+						}
 					}else{
 						$va_errors["display_errors"]["send_error"] = _t("Your email could not be sent");
 						$this->view->setVar("errors", $va_errors);
 						$this->form();
 					}
+				
  			}else{
  				$this->view->setVar("errors", $va_errors);
  				$this->form();

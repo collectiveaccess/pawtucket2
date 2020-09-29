@@ -193,7 +193,7 @@
 		}
 ?>
 			<div class="form-group">
-				<button type="submit" class="btn btn-default">Send</button>
+				<button type="submit" class="btn btn-default">Confirm Selection</button>
 			</div><!-- end form-group -->
 			<input type="hidden" name="sum" value="<?php print $vn_sum; ?>">
 		</form>

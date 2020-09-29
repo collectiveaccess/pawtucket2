@@ -80,7 +80,7 @@
 					if(strtolower($q_artworks->get("ca_objects.removed.removal_text", array("convertCodesToDisplayText" => true))) == "yes"){
 						print "<button class='btn btn-default disabled'>No Longer Available</button>";
 					}else{
-						print caNavLink($this->request, "Select Item", "btn btn-default", "", "Contact", "form", array("contactType" => "benefit", "table" => "ca_objects", "id" => $q_artworks->get("ca_objects.object_id")));
+						print caNavLink($this->request, "Select Artwork", "btn btn-default", "", "Contact", "form", array("contactType" => "benefit", "table" => "ca_objects", "id" => $q_artworks->get("ca_objects.object_id")));
 					}			
 					print "</div>";
 					print "</div><br/></div>";
