@@ -29,8 +29,14 @@
  *
  * ----------------------------------------------------------------------
  */
+ 	$o_config = caGetGalleryConfig();
+	
+	# --- what is the gallery section called
+	if(!$section_name = $o_config->get('gallery_section_name')){
+		$section_name = _t("Featured Galleries");
+	}
 ?>
-			<h2>Browse Featured Galleries</h2>
+			<h2>Browse Featured <?php print $section_name; ?></h2>
 <?php
 			print caGetGallerySetsAsList($this->request, "nav nav-pills nav-stacked");
 ?>

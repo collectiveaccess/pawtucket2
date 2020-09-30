@@ -1362,7 +1362,7 @@ h1.primaryLandingBannerTitle {
 	padding: 1px 10px 4px 10px;
 	margin-bottom:20px;
 }
-.unit.collectionChronology{
+.unit.collectionChronology, .unit.collectionChronology p{
 	font-size:14px;
 	padding-bottom:15px;
 }
