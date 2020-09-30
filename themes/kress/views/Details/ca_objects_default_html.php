@@ -197,9 +197,9 @@
 						{{{<ifcount code="ca_entities" restrictToRelationshipTypes="location"><div class="unit"><label data-toggle="popover" title="Location" data-content="Current owner">Location</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="location" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 					</div>				
 				
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="attribution" min="1"><div class="unit"><label>Historical Attribution</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="attribution" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="attribution" min="1"><div class="unit"><label data-toggle="popover" title="Historical Attribution" data-content="Previous artist attribution">Historical Attribution</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="attribution" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 					{{{<ifdef code="ca_objects.Object_Provenance">
-						<div class='unit'><label>Provenance</label>
+						<div class='unit'><label data-toggle='popover' title='Provenance' data-content='Chronology of the ownership, custody or location of an art object'>Provenance</label>
 							<span class="trimText">^ca_objects.Object_Provenance</span>
 						</div>
 					</ifdef>}}}
@@ -225,7 +225,7 @@
 					<div id="detailTools">
 	<?php
 						if($this->getVar("representation_id")){
-							print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span>".caNavLink($this->request, "Download Media", "", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'large', 'download' => 1))."</div>";
+							print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("Download Image (JPG)")."'></span>".caNavLink($this->request, "Download Image (JPG)", "", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'large', 'download' => 1))."</div>";
 						}
 						if ($vn_pdf_enabled) {
 							print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Summary")."'></span>".caDetailLink($this->request, "PDF Summary", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";

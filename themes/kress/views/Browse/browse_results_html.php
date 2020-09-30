@@ -147,17 +147,9 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 					print "</ul></div>\n";
 				}
 			}
-?>
-		<H1>
-<?php
-			if ($vb_show_filter_panel){
-				print _t('%1 %2 %3', $vn_result_size, " Related ", ($vn_result_size > 1) ? $va_browse_info["labelPlural"] : $va_browse_info["labelSingular"]);	
-			}else{
-				print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
-			}
 ?>		
-			<div class="btn-group">
-				<a href="#" data-toggle="dropdown"><i class="fa fa-gear bGear" aria-label="Sort and download options" title="Sort and download options"></i></a>
+			<div id="bExportMenu" class="btn-group">
+				<a href="#" data-toggle="dropdown"><i class="fa fa-download bGear" aria-label="Download options" title="Download options"></i></a>
 				<ul class="dropdown-menu" role="menu">
 <?php
 					if(($vs_table == "ca_objects") && $vn_result_size && (is_array($va_add_to_set_link_info) && sizeof($va_add_to_set_link_info))){
@@ -180,19 +172,10 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 							print "<li role='menuitem'".(($vb_show_filter_panel) ? " class='catchLinks'" : "").">".caNavLink($this->request, (($vs_sort_dir == 'asc') ? '<em>' : '')._t("Ascending").(($vs_sort_dir == 'asc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'asc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
 							print "<li role='menuitem'".(($vb_show_filter_panel) ? " class='catchLinks'" : "").">".caNavLink($this->request, (($vs_sort_dir == 'desc') ? '<em>' : '')._t("Descending").(($vs_sort_dir == 'desc') ? '</em>' : ''), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'direction' => 'desc', '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
 						}
-						
-						if (!$vb_show_filter_panel && ((sizeof($va_criteria) > ($vb_is_search ? 1 : 0)) && is_array($va_sorts) && sizeof($va_sorts))) {
-?>
-						<li class="divider" role='menuitem'></li>
-<?php
-						}
-					}
-					if (!$vb_show_filter_panel && (sizeof($va_criteria) > ($vb_is_search ? 1 : 0))) {
-						print "<li role='menuitem' ".(($vb_show_filter_panel) ? "class='catchLinks'" : "").">".caNavLink($this->request, _t("Start Over"), '', '*', '*', '*', array('view' => $vs_current_view, 'key' => $vs_browse_key, 'clear' => 1, '_advanced' => $vn_is_advanced ? 1 : 0))."</li>";
 					}
 					if(is_array($va_export_formats) && sizeof($va_export_formats)){
 						// Export as PDF links
-						print "<li class='divider' role='menuitem'></li>\n";
+						#print "<li class='divider' role='menuitem'></li>\n";
 						print "<li class='dropdown-header' role='menuitem'>"._t("Download results as:")."</li>\n";
 						# --- entity excel reports are specific to category
 						if($vs_table == "ca_entities"){
@@ -212,7 +195,15 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 ?>
 				</ul>
 			</div><!-- end btn-group -->
+
+		<H1>
 <?php
+			if ($vb_show_filter_panel){
+				print _t('%1 %2 %3', $vn_result_size, " Related ", ($vn_result_size > 1) ? $va_browse_info["labelPlural"] : $va_browse_info["labelSingular"]);	
+			}else{
+				print _t('%1 %2 %3', $vn_result_size, ($va_browse_info["labelSingular"]) ? $va_browse_info["labelSingular"] : $t_instance->getProperty('NAME_SINGULAR'), ($vn_result_size == 1) ? _t("Result") : _t("Results"));	
+			}
+
 			if((strToLower($this->request->getAction()) != "other_entities") && ((is_array($va_facets) && sizeof($va_facets)) || (sizeof($va_criteria)))){
 ?>
 			<a href='#' id='bRefineButton' onclick='jQuery("#bRefine").toggle(); return false;'><i class="fa fa-table"></i></a>

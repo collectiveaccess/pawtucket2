@@ -47,11 +47,11 @@
 					{{{ca_entities.preferred_labels%restrictToRelationshipTypes=location%width=200px&id=ca_entities_preferred_labels_location}}}
 				</div>
 				<div class="advancedSearchField col-sm-4">
-					<label for='ca_entities_preferred_labels' class='formLabel'><?php _p('Historical Attribution') ?></label>
+					<label for='ca_entities_preferred_labels' class='formLabel' data-toggle='popover' title='Historical Attribution' data-content='Previous artist attribution'><?php _p('Historical Attribution') ?></label>
 					{{{ca_entities.preferred_labels%restrictToRelationshipTypes=attribution%width=200px}}}
 				</div>
 				<div class="advancedSearchField col-sm-4">
-					<label for='ca_objects.Object_Provenance[]' class='formLabel'><?php _p('Provenance') ?></label>
+					<label for='ca_objects.Object_Provenance[]' class='formLabel' data-toggle='popover' title='Provenance' data-content='Chronology of the ownership, custody or location of an art object'><?php _p('Provenance') ?></label>
 					{{{ca_objects.Object_Provenance%width=220px}}}
 				</div>
 			</div>

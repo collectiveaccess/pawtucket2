@@ -184,6 +184,14 @@ a.navbar-brand, a.navbar-brand:hover {
 		margin-left:0px;
 	}
 }
+@media(min-width: 1500px) and (max-width: 1550px) {
+	.navbar-form{
+		padding-left:0px;
+	}
+	.navbar-form .form-group {
+		width: 110px;
+	}
+}
 H1, h1, h2, H2, H3, h3{
 	color:#333;
 /*    font-family: Cormorant;
@@ -450,13 +458,13 @@ a, a:hover{
 	color:#000;
 	line-height: 1em;
 }
-.hpExplore a.hpExploreTitle:hover{
-	text-decoration:none;
-}
 .hpExplore .exploreTile:hover img{
 	opacity:.4;
 	transition:opacity .75s;
 	-webkit-transition:opacity .75s;
+}
+.hpExplore .exploreTile:hover a{
+	text-decoration:underline;
 }
 .hpExplore .exploreTile{
 	margin-bottom:29px;
@@ -684,6 +692,11 @@ h3.tl-headline-date, .tl-text .tl-headline-date, .tl-text h3.tl-headline-date, .
 	font-family: LatoLight !important;
 }
 /* browse */
+@media(max-width:530px){
+	.results H1{
+		clear:both;
+	}
+}
 #bViewButtons {
     float: right;
 }
@@ -698,6 +711,10 @@ h3.tl-headline-date, .tl-text .tl-headline-date, .tl-text h3.tl-headline-date, .
 	#bRefine.fixed {
     	padding-top: 105px;
 	}
+}
+#bRefine H2{
+	color:#333;
+	font-size:20px;
 }
 #bRefine H3[type="button"]{
 	cursor: pointer;
@@ -729,6 +746,17 @@ h3.tl-headline-date, .tl-text .tl-headline-date, .tl-text h3.tl-headline-date, .
 	margin:0px 0px 5px 0px;
 	display:block;
 	width:100%;
+}
+a.browseRemoveFacet .glyphicon {
+    color: #333 !important;
+}
+.bCriteria .btn{
+	color:#333;
+	background-color:#FFF;
+}
+.bCriteria .btn:hover, .bCriteria .btn-default:hover, .bCriteria button:hover{
+	text-decoration:none !important;
+	border-color:#FFF !important;
 }
 .facetGroup.panel {
 	width:250%;
@@ -830,6 +858,17 @@ a.facetApply {
     position:absolute;
     bottom:0px;
     left:0px;
+}
+
+#bSortByList {
+    float: right;
+    margin-top: 3px;
+    margin-right: 15px;
+}
+#bExportMenu {
+    float: right;
+    margin-right: 15px;
+    font-size: 18px;
 }
 /* search within */
 @media(max-width:768px){
@@ -1165,12 +1204,16 @@ a.readmore-js-toggle {
 /* site pages */
 .staticPage, .staticPage div, .staticPage p {
 	font-size:17px;
+    font-weight:600;
 }
 .staticPage p {
 	margin-bottom:25px;
 }
 .staticPage a{
 	text-decoration:underline;
+}
+.staticPage a:hover{
+	color:#000;
 }
 
 /* multisearch */

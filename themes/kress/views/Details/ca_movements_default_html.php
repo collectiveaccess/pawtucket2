@@ -150,7 +150,7 @@
 	<?php
 						if(is_array($media_value_ids = $t_item->get("ca_movements.media.media_media.value_id", ["returnAsArray" => true])) && sizeof($media_value_ids)) {
 							foreach($media_value_ids as $value_id) {
-								print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span>".caNavLink($this->request, "Download Media", "", "", "Detail",  "DownloadAttributeMedia", array('value_id' => $value_id, 'version' => 'original', 'download' => 1))."</div>";
+								print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("Download Document (PDF)")."'></span>".caNavLink($this->request, "Download Document (PDF)", "", "", "Detail",  "DownloadAttributeMedia", array('value_id' => $value_id, 'version' => 'original', 'download' => 1))."</div>";
 							}
 						}
 						
