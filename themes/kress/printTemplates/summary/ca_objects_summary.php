@@ -119,6 +119,7 @@
 						<hr/><label>External Links</label>					
 						<ifdef code="ca_objects.Object_URLCollectionRecord"><div class="unit"><b>Related Collection Record</b><br/>^ca_objects.Object_URLCollectionRecord</div></ifdef>
 						<ifdef code="ca_objects.Object_URLNGALibraryImageURL"><div class="unit"><b>Related National Gallery of Art Library Image Collections Record</b><div class="longLink">^ca_objects.Object_URLNGALibraryImageURL</div></div></ifdef>
+						<ifdef code="ca_objects.nyu_ifa_kress_paintings"><div class="unit"><b>Related NYU IFA Kress Paintings Conservation Object Record</b><div class="longLink">^ca_objects.nyu_ifa_kress_paintings</div></div></ifdef>
 						<ifdef code="ca_objects.Object_URLNGASysCat"><div class="unit"><b>Related National Gallery of Art Systematic Catalog </b><div class="longLink">^ca_objects.Object_URLNGASysCat</div></div></ifdef>
 					</ifdef>
 					<ifcount code="ca_occurrences" min="1">
@@ -148,6 +149,8 @@
 					</ifcount>
 					
 			');
+			
+			print '<hr/><div class="unit"><label>Record Link</label>'.$this->request->config->get("site_host").caDetailUrl($this->request, $t_item->tableName(), $t_item->getPrimaryKey()).'</div>';
 	
 	print $this->render("pdfEnd.php");
 ?>

@@ -225,6 +225,16 @@ if ($vb_show_filter_panel || !$vb_ajax) {	// !ajax
 			print " | ".caNavLink($this->request, _t("All"), (!$vs_letter) ? 'selectedLetter' : '', '*', '*', '*', array('key' => $vs_browse_key, 'l' => 'all')); 
 			print "</div>";
 		}
+		$vs_introduction = $this->getVar("browse_introduction_".$this->request->getAction());
+		if($vs_introduction){
+			print "<p class='bIntroduction'>".$vs_introduction."</p>";
+		}
+		if(in_array($this->request->getAction(), array("objects", "archival", "acquisitions"))){
+			$vs_compare_help_text = $this->getVar("compare_images_help");
+			if($vs_compare_help_text){
+				print "<i class='fa fa-clone' aria-hidden='true'></i> ".$vs_compare_help_text."</p>";
+			}
+		}
 ?>
 		<form id="setsSelectMultiple">
 		<div class="row">
