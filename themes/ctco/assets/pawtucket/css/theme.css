@@ -190,14 +190,14 @@ a {
 	overflow:hidden;
 }
 .front hr {
-	background-color: #444;
+	background-color: #eee;
 	height:2px;
 	width:100%;
 }
 .frontTile {
 	padding:0px;
 	background-color: #aaa;
-	margin-bottom:20px;
+	margin-bottom:30px;
 	height:268px;
 }
 .tileCaption {
@@ -230,6 +230,26 @@ a {
 .front .pageText {
 	font-size: 16px;
     line-height: 1.8em;
+}
+.tileImageWrapper {
+	margin-bottom:10px;
+	height: 150px;
+    width: 100%;
+}
+.tileImage {
+	vertical-align: middle;
+	height: 150px;
+	overflow: hidden;
+}
+.titleCaption {
+	padding-left:10px;
+	padding-right:10px;
+}
+.titleCaption a{
+	color:#fff;
+	font-weight:bold;
+	font-size:16px;
+
 }
 /* Browse */
 
@@ -420,4 +440,10 @@ div.advancedSearchField {
 .detail .detailMediaToolbar, .gallery .detailMediaToolbar {
 	font-size:16px;
 	padding-top:5px;
+}
+.dlButton {
+	display:none !important;
+}
+.detail .detailMediaToolbar {
+	padding-right:12px;
 }

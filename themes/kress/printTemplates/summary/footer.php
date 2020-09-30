@@ -88,7 +88,7 @@
 			# -----------------------------
 			default:
 ?>
-				<div id='footerdompdf'>
+				<div id='footerdompdf'><div class="footerTitle">National Gallery of Art, Washington, DC, Gallery Archives</div>
 					<?php print $vs_footer; ?>
 				</div>
 <?php

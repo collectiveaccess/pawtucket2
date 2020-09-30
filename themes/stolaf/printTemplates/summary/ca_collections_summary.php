@@ -52,7 +52,7 @@
 		<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
 	</div>
 		
-	<div class="unit"><H6>{{{^ca_collections.repository.repository_country}}}</H6></div>
+	{{{<ifdef code="ca_collections.repository.repository_country"><div class="unit"><H6 style="display:inline;">Collection Number: </H6>^ca_collections.repository.repository_country</div></ifdef>}}}
 	<div class="unit">
 	{{{<ifdef code="ca_collections.parent_id"><div class="unit"><H6>Part of: <unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; ">^ca_collections.preferred_labels.name</unit></H6></ifdef>}}}
 	{{{<ifdef code="ca_collections.label">^ca_collections.label<br/></ifdev>}}}
@@ -79,11 +79,27 @@
 				
 					{{{<if rule="^ca_collections.type_id =~ /Folder/"><ifcount code="ca_storage_locations" min="1"><div class="unit"><H6>Location</H6>
 						<unit relativeTo="ca_storage_locations" delimiter="<br/>">^ca_storage_locations.hierarchy.preferred_labels%delimiter=_➔_</unit>
-					</div>/ifcount></if>}}}
+					</div></ifcount></if>}}}
 				
 					{{{<ifdef code="ca_collections.material_type"><div class="unit"><H6>Material Format</H6>^ca_collections.material_type%delimiter=,_</div></ifdef>}}}
 					
-					{{{<ifdef code="ca_collections.LcshSubjects"><div class="unit"><H6>Subjects</H6><unit relativeTo="ca_collections.LcshSubjects" delimiter="<br>">^ca_collections.LcshSubjects</unit></div></ifdef>}}}
+<?php
+					$va_LcshSubjects = $t_item->get("ca_collections.LcshSubjects", array("returnAsArray" => true));
+					$va_LcshSubjects_processed = array();
+					if(is_array($va_LcshSubjects) && sizeof($va_LcshSubjects)){
+						foreach($va_LcshSubjects as $vs_LcshSubjects){
+							if($vs_LcshSubjects && (strpos($vs_LcshSubjects, " [") !== false)){
+								$va_LcshSubjects_processed[] = mb_substr($vs_LcshSubjects, 0, strpos($vs_LcshSubjects, " ["));
+							}else{
+								$va_LcshSubjects_processed[] = $vs_LcshSubjects;
+							}
+						}
+						$vs_LcshSubjects = join("<br/>", $va_LcshSubjects_processed);
+					}
+					if($vs_LcshSubjects){
+						print "<div class='unit'><H6>Subjects</H6>".$vs_LcshSubjects."</div>";	
+					}
+?>
 					
 					{{{<ifdef code="ca_collections.relation"><div class="unit"><H6>Related Collections</H6>^ca_collections.relation%delimiter=,_</div></ifdef>}}}
 					
@@ -91,8 +107,45 @@
 					
 					{{{<ifdef code="ca_collections.physaccessrestrict"><div class="unit"><H6>Physical access</H6>^ca_collections.physaccessrestrict%delimiter=,_</div></ifdef>}}}
 					
-					{{{<ifdef code="ca_collections.LcshGenre|ca_collections.aat"><div class="unit"><H6>Genres</H6><unit delimiter="<br/>">^ca_collections.LcshGenre</unit><ifdef code="ca_collections.LcshGenre"><br/></ifdef><unit delimiter="<br/>">^ca_collections.aat</unit></div></ifdef>}}}
-				
+<?php
+					$va_LcshGenre = $t_item->get("ca_collections.LcshGenre", array("returnAsArray" => true));
+					$va_LcshGenre_processed = array();
+					if(is_array($va_LcshGenre) && sizeof($va_LcshGenre)){
+						foreach($va_LcshGenre as $vs_LcshGenre){
+							if($vs_LcshGenre && (strpos($vs_LcshGenre, " [") !== false)){
+								$va_LcshGenre_processed[] = mb_substr($vs_LcshGenre, 0, strpos($vs_LcshGenre, " ["));
+							}else{
+								$va_LcshGenre_processed[] = $vs_LcshGenre;
+							}
+						}
+						$vs_LcshGenre = join("<br/>", $va_LcshGenre_processed);
+					}
+					$va_aat = $t_item->get("ca_collections.aat", array("returnAsArray" => true));
+					$va_aat_processed = array();
+					if(is_array($va_aat) && sizeof($va_aat)){
+						foreach($va_aat as $vs_aat){
+							if($vs_aat && (strpos($vs_aat, " [") !== false)){
+								$va_aat_processed[] = mb_substr($vs_aat, 0, strpos($vs_aat, " ["));
+							}else{
+								$va_aat_processed[] = $vs_aat;
+							}
+						}
+						$vs_aat = join("<br/>", $va_aat_processed);
+					}
+					if($vs_LcshGenre || $vs_aat){
+						print "<div class='unit'><H6>Genres</h6>";
+						if($vs_LcshGenre){
+							print $vs_LcshGenre;
+						}
+						if($vs_LcshGenre && $vs_aat){
+							print "<br/>";
+						}
+						if($vs_aat){
+							print $vs_aat;
+						}
+						print "</div>";	
+					}
+?>				
 					{{{<ifdef code="ca_collections.preferCite"><div class="unit"><H6>Preferred citation</H6>^ca_collections.preferCite%delimiter=,_</div></ifdef>}}}
 									
 					{{{<ifcount code="ca_entities" min="1" max="1" restrictToTypes="ind"><H6>Related person</H6></ifcount>}}}

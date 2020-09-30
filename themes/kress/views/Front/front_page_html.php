@@ -33,12 +33,12 @@
 	$va_access_values = $this->getVar("access_values");
 	AssetLoadManager::register('timeline');
  	
- 	$hero = $this->request->getParameter("hero", pString);
+	
 ?>
-<div class="parallax <?php print $hero; ?>">
+<div class="parallax">
 	<div class="container">
 		<div class="row">
-			<div class="col-xs-12 col-sm-6 col-sm-offset-3">
+			<div class="col-sm-12 col-md-6 col-md-offset-3">
 				
 				<div class="heroSearch">
 					Welcome to the<br/>
@@ -46,9 +46,9 @@
 					<form role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
 						<div class="formOutline">
 							<div class="form-group">
-								<input type="text" class="form-control" id="heroSearchInput" placeholder="Search" name="search" autocomplete="off" />
+								<input type="text" class="form-control" id="heroSearchInput" placeholder="Search" name="search" autocomplete="off" aria-label="Search" />
 							</div>
-							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search"></span></button>
+							<button type="submit" class="btn-search" id="heroSearchButton"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit Search"); ?>"></span></button>
 						</div>
 					</form>
 				</div>
@@ -59,54 +59,52 @@
 
 <div class="container hpIntro">
 	<div class="row">
-		<div class="col-sm-12 col-md-6 col-md-offset-3">
-			<p class="callout">The <br/><b>Kress Collection Digital Archive</b><br/>documents the history and development of the Kress Collection, providing access to data and digitized archival materials about all Kress Collection works of art; detailing their provenance and historical attribution; condition and care, and acquisition and distribution.</p>
-
-			<p>Browse <?php print caNavLink($this->request, "Art Objects", "", "", "Browse", "objects"); ?>, <?php print caNavLink($this->request, "Archival Materials", "", "", "Browse", "archival"); ?>, <?php print caNavLink($this->request, "Acquisitions", "", "", "Browse", "Acquisitions"); ?>, <?php print caNavLink($this->request, "Distributions", "", "", "Browse", "distributions"); ?>, and <?php print caNavLink($this->request, "People and Organizations", "", "", "Browse", "entities"); ?> below.</p>
-
+		<div class="col-md-12 col-lg-6 col-lg-offset-3">
+			<p class="callout">The <br/><b>Kress Collection Digital Archive</b><br/>{{{home_intro_text}}}</p>
 		</div>
 	</div>
 </div>
 <div class="container">
 	<div class="row hpExplore">
+		<H2 class="frontSubHeading text-center">Explore</H2>
 		<div class="col-sm-10 col-sm-offset-1 text-center"> 
 			<div class="row">
-				<div class="col-sm-6 exploreTile">
+				<div class="col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-0 exploreTile">
 	<?php
-					print caNavLink($this->request, caGetThemeGraphic($this->request, 'art_sq.jpg'), "", "", "Browse", "objects");
+					print caNavLink($this->request, caGetThemeGraphic($this->request, 'art_sq.jpg', array('alt' => 'Browse Art Objects')), "", "", "Browse", "objects");
 					print caNavLink($this->request, "Art Objects", "hpExploreTitle", "", "Browse", "objects");
 					
 	?>				
 				</div>
-				<div class="col-sm-6">
+				<div class="col-md-12 col-lg-6">
 					<div class="row">
-						<div class="col-sm-6 exploreTile">
+						<div class="col-md-6 exploreTile">
 	<?php
-							print caNavLink($this->request, caGetThemeGraphic($this->request, 'archival.jpg'), "", "", "Browse", "archival");
+							print caNavLink($this->request, caGetThemeGraphic($this->request, 'archival.jpg', array('alt' => 'Browse Archival Materials')), "", "", "Browse", "archival");
 							print caNavLink($this->request, "Archival Materials", "hpExploreTitle", "", "Browse", "archival");							
 	?>
 						</div>
-						<div class="col-sm-6 exploreTile">
+						<div class="col-md-6 exploreTile">
 	<?php
-							print caNavLink($this->request, caGetThemeGraphic($this->request, 'people.jpg'), "", "", "Browse", "entities");
+							print caNavLink($this->request, caGetThemeGraphic($this->request, 'people.jpg', array('alt' => 'Browse People & Organizations')), "", "", "Browse", "entities");
 							print caNavLink($this->request, "People & Organizations", "hpExploreTitle", "", "Browse", "entities");
 	?>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-sm-6 exploreTile">
+						<div class="col-md-6 exploreTile">
 	<?php
-							print caNavLink($this->request, caGetThemeGraphic($this->request, 'distributions.jpg'), "", "", "Browse", "distributions");
-							print caNavLink($this->request,"Distributions", "hpExploreTitle", "", "Browse", "distributions");
-							
+							print caNavLink($this->request, caGetThemeGraphic($this->request, 'acquisitions.jpg', array('alt' => 'Browse Acquisitions')), "", "", "Browse", "acquisitions");
+							print caNavLink($this->request, "Acquisitions", "hpExploreTitle", "", "Browse", "acquisitions");
+														
 	?>
 			
 						</div>
-						<div class="col-sm-6 exploreTile">
+						<div class="col-md-6 exploreTile">
 	<?php
-							print caNavLink($this->request, caGetThemeGraphic($this->request, 'acquisitions.jpg'), "", "", "Browse", "acquisitions");
-							print caNavLink($this->request, "Acquisitions", "hpExploreTitle", "", "Browse", "acquisitions");
-														
+							print caNavLink($this->request, caGetThemeGraphic($this->request, 'distributions.jpg', array('alt' => 'Browse Distributions')), "", "", "Browse", "distributions");
+							print caNavLink($this->request,"Distributions", "hpExploreTitle", "", "Browse", "distributions");
+							
 	?>
 			
 						</div>
@@ -119,7 +117,7 @@
 </div>
 	<div class="row hpTimeline">
 		<div class="col-sm-12">
-			<H3>History</H3>
+			<H2 class='frontSubHeading'>Kress Collection History</H2>
 			<div id="frontTimelineContainer">
 				<div id="timeline-embed"></div>
 			</div>
@@ -129,10 +127,11 @@
 					createStoryJS({
 						type:       'timeline',
 						width:      '100%',
-						height:     '400px',
+						height:     '600',
 						source:     '<?php print caNavUrl($this->request, '', 'Front', 'timelinejson'); ?>',
 						embed_id:   'timeline-embed',
-						initial_zoom: '1'
+						initial_zoom: '1',
+						font:		'medula-lato'
 					});
 				});
 			</script>
