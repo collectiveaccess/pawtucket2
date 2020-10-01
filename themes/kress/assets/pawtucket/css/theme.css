@@ -12,6 +12,7 @@ body{
 	margin-top:57px;
 	margin-bottom:300px;
 	font-size: 13px;
+	color: #000;
 }
 @media(min-width:596px) and (max-width:768px){
 	body{
@@ -968,7 +969,7 @@ a.facetApply {
 	display: -webkit-box;
 	-webkit-box-orient:vertical;
 	overflow:hidden;
-	margin-right:10px;
+	margin-right:16px;
 }
 .resultItemDetailExtended .resultImageList img{
 	object-fit:contain;
@@ -1066,6 +1067,7 @@ a.facetApply {
 /* detail */
 .detail {
     font-size: 15px;
+    color:#000;
 }
 .detail h1, .detail h1 i {
     font-size: 20px;
@@ -1073,8 +1075,8 @@ a.facetApply {
     line-height: 135%;
     text-transform: none;
 }
-.detail a{
-    color: #454545;
+.detail a, .detail label{
+    color: #000;
 }
 .detail a:hover {
     color: #737373;
@@ -1302,8 +1304,11 @@ h3.window-manifest-title {
 .mirador-osd-annotation-controls {
 	display:none;
 }
+.mirador-viewer a{
+	color:#ffffff;
+}
 .compareDrawer {
-	display:none;
+	/*display:none;*/
 	background-color:#f5f5f5;
 	width:100%;
 	position:fixed;
@@ -1339,7 +1344,7 @@ h3.window-manifest-title {
 	color:#000;
 }
 .compareDrawer .items {
-	display:none;
+	/*display:none;*/
 	clear:both;
 	font-size:13px;
 	padding-top:10px;
@@ -1359,8 +1364,39 @@ h3.window-manifest-title {
 	float:right;
 	padding-top:5px;
 }
-.compare_link {
+.results a.compare_link .fa{
+	color:#FFF !important;
+}
+.compare_link.btn{
 	position:absolute;
-	bottom:5px;
-	right:20px;
+	bottom:3px;
+	right: 13px;
+	padding: 3px 3px 1px 4px;
+	border-radius: 4px;
+	background-color:#777777;
+}
+
+/* image viewer */
+.tileviewer div.viewerControls{
+	opacity:1 !important;
+}
+.tileviewerControlZoomIn, .tileviewerControlZoomOut, .tileviewerToolbarZoomSlider{
+	opacity:1 !important;
+}
+.tileviewerToolbarZoom a{
+	color:#333333;
+	text-shadow: 0 1px 3px #FFF;
+}
+.caMediaOverlayControls .close .caIcon{
+	color:red !important;
+	opacity:1 !important;
+	text-shadow: 0 1px 0 #000000;
+}
+div.caMediaOverlayControls, div.caMediaOverlayControlsMinimal {
+    opacity: 1.0;
+    background-color: rgba(0,0,0,0.3);
+}
+.tileviewerToolbarZoomSlider .ui-state-default, .tileviewerToolbarZoomSlider .ui-widget-content .ui-state-default{
+	border: 1px solid #555 !important;
+	background: #dedede !important;
 }

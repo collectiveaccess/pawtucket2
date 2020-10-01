@@ -29,7 +29,7 @@
 			</div>
 			<div class='row'>
 				<div class="advancedSearchField col-sm-4">
-					<label for='ca_objects.Object_Nationality[]' class='formLabel'><?php _p('Nationality') ?></label>
+					<label for='ca_objects.Object_Nationality[]' class='formLabel' data-toggle='popover' title='Nationality' data-content='Nationality of artist'><?php _p('Nationality') ?></label>
 					{{{ca_objects.Object_Nationality%width=220px}}}
 				</div>
 				<div class="advancedSearchField col-sm-4">

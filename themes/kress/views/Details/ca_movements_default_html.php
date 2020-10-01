@@ -150,12 +150,16 @@
 	<?php
 						if(is_array($media_value_ids = $t_item->get("ca_movements.media.media_media.value_id", ["returnAsArray" => true])) && sizeof($media_value_ids)) {
 							foreach($media_value_ids as $value_id) {
-								print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("Download Document (PDF)")."'></span>".caNavLink($this->request, "Download Document (PDF)", "", "", "Detail",  "DownloadAttributeMedia", array('value_id' => $value_id, 'version' => 'original', 'download' => 1))."</div>";
+								print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("PDF Document")."'></span>".caNavLink($this->request, "PDF Document", "", "", "Detail",  "DownloadAttributeMedia", array('value_id' => $value_id, 'version' => 'original', 'download' => 1))."</div>";
+								$vs_compare_link = "<div class='detailTool'><i class='fa fa-clone' aria-hidden='true' aria-label='Compare Images'></i></span><a href='#' class='compare_link' data-id='attribute:{$media_value_ids[0]}' title='Compare Images'>Compare Image</a></div>";
 							}
 						}
 						
 						if ($vn_pdf_enabled) {
 							print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Summary")."'></span>".caDetailLink($this->request, "PDF Summary", "", "ca_movements",  $t_item->get("ca_movements.movement_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_movements_summary'))."</div>";
+						}
+						if($vs_compare_link){
+							print $vs_compare_link;
 						}
 						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Record Link")."'></span> <a href='#' onClick='$(\"#permalink\").toggle(); return false;' title='Copy link to share or save record'>Record Link</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caDetailUrl($this->request, 'ca_movements', $t_item->get("ca_movements.movement_id"))."</textarea></div>";					
 
