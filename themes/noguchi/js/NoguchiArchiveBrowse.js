@@ -631,10 +631,12 @@ class NoguchiArchiveBrowseResultItem extends React.Component {
 											className="thumb-text clamp"
 											innerElement="div"
 										/>
+										<div className="ca-identifier text-gray">{data.date}</div>
 
 										<div className="text_full">
 											<div className="ca-identifier text-gray">{data.idno}</div>
 											<div className="thumb-text">{data.label}</div>
+											<div className="ca-identifier text-gray">{data.date}</div>
 										</div>
 									</div>
 								</div>
