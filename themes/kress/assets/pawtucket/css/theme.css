@@ -103,7 +103,7 @@ a.navbar-brand, a.navbar-brand:hover {
     margin-left:1px;
 }
 .navbar-default .navbar-nav > li > a:hover{
-    background-color: rgb(0,0,0, .3);
+    background-color: #333333;
     font-family:Lato;
 }
 .navbar-brand, .navbar-nav > li > a {
@@ -125,7 +125,7 @@ a.navbar-brand, a.navbar-brand:hover {
     right: auto;
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-    background-color: rgb(0,0,0, .3);
+    background-color: #333333;
 	color:#FFF;
     font-family:Lato;
 }
@@ -474,7 +474,8 @@ a, a:hover{
 	position:fixed;
 	bottom:0px;
 	width:100%;
-	background-color:rgb(47, 46, 45, .7);
+	background-opacity:.7;
+	background-color:#2F2E2D;
 	color:#b4b4b4;
 	text-align:center;
 	font-size:30px;
@@ -580,6 +581,7 @@ body.frontContainer #footer{
 		font-size:28px;
 	}
 }
+/*
 @media(max-width:1120px){
 	.parallax {
 		background-position: center -110px;
@@ -609,7 +611,7 @@ body.frontContainer #footer{
 		margin-bottom:70px;
 	}
 }
-
+*/
 .parallax .heroSearch{
 	margin-top: 25vh;
 }
@@ -972,6 +974,7 @@ a.facetApply {
 }
 .resultImageImg{
 	height:240px;
+	text-align: center;
 }
 .resultImageImg img{
 	object-fit:contain;
@@ -1263,6 +1266,10 @@ a.readmore-js-toggle {
 	width:100%;
 	height:120px;
 }
+.multisearchObjectImg{
+	text-align:center;
+	margin-bottom:3px;
+}
 .multisearch .multisearchResult {
     line-height: 1.1em;
     font-size: 13px;
@@ -1403,6 +1410,9 @@ h3.window-manifest-title {
 	border-radius: 4px;
 	background-color:#777777;
 }
+.results.search .compare_link.btn{
+	right: 18px;
+}
 
 /* image viewer */
 .tileviewer div.viewerControls{
@@ -1427,4 +1437,41 @@ div.caMediaOverlayControls, div.caMediaOverlayControlsMinimal {
 .tileviewerToolbarZoomSlider .ui-state-default, .tileviewerToolbarZoomSlider .ui-widget-content .ui-state-default{
 	border: 1px solid #555 !important;
 	background: #dedede !important;
+}
+
+
+/* IE styles to fix object fit not being supported - sigh - for IE 9 and above */
+@media screen and (min-width:0\0) and (min-resolution: +72dpi) {
+    /* IE9+ CSS to fix object-fit not being supported.*/
+    .resultImageImg img{
+		object-fit:none;
+		width: 65%;
+		height: auto;
+	}
+	.resultImageList img{
+		object-fit:none;
+		width:auto;
+		height:72px;
+	}
+	.resultItemDetailExtended .resultImageList img{
+		object-fit:none;
+		width: 65%;
+		height: auto;
+	}
+	.resultItemDetailExtended .resultImageList {
+		text-align:center;
+	}
+	.multisearch .objectsResult img{
+		object-fit:none;
+		width:35%;
+		height:auto;
+	}
+	.detail .repViewerCont img {
+    	width: 40%;
+   		height: auto;
+   		object-fit:none;
+   	}
+	.detail .repViewerCont  {
+    	text-align: center;
+   	}
 }
