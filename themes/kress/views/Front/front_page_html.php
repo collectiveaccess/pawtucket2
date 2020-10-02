@@ -137,3 +137,4 @@
 			</script>
 		</div>
 	</div>
+	<div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>

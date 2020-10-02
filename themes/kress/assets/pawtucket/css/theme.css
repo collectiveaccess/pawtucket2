@@ -387,7 +387,7 @@ a, a:hover{
 	.front .heroSearch{
 		padding-top:100px;
 	}
-}
+}*/
 @media(max-width: 992px) {
 	.heroSearch H1{
 		font-size:40px;
@@ -398,7 +398,7 @@ a, a:hover{
 	.front .heroSearch .form-group {
 		width: 250px;
 	}
-}*/
+}
 .hpIntro .callout, .hpIntro .callout i{
 	font-family: 'Cormorant', serif;
 	font-size: 35px;
@@ -470,6 +470,17 @@ a, a:hover{
 .hpExplore .exploreTile{
 	margin-bottom:29px;
 }
+#hpScrollBar{
+	position:fixed;
+	bottom:0px;
+	width:100%;
+	background-color:rgb(47, 46, 45, .7);
+	color:#b4b4b4;
+	text-align:center;
+	font-size:30px;
+	padding:10px 0px 10px 0px;
+	opacity:.8;
+}
 @media(min-width: 768px) and (max-width: 992px) {
 	.hpExplore a.hpExploreTitle{
 		font-size:24px;
@@ -512,7 +523,8 @@ body.frontContainer #footer{
     background-image: url("../graphics/hero5.jpg");
 
     /* Full height */
-    height: 100%;
+    /*height: 100%;*/
+    height: 100vh;
 
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
@@ -554,7 +566,6 @@ body.frontContainer #footer{
 	}
 }
 */
-
 @media(max-width:420px) or (max-height:420px){
 	.heroSearch H1{
 		font-size:50px;
@@ -582,11 +593,28 @@ body.frontContainer #footer{
 		margin-top: 200px;
 	}
 }
+@media(max-width:1440px){
+	.parallax .heroSearch{
+		margin-top: 200px;
+	}
+}
+@media(max-width:1280px){
+	.parallax .heroSearch{
+		margin-top: 160px;
+	}
+}
 @media(max-height:420px){
 	.parallax .heroSearch{
 		margin-top: 20px;
 		margin-bottom:70px;
 	}
+}
+
+.parallax .heroSearch{
+	margin-top: 25vh;
+}
+.parallax {
+    background-position: center center;
 }
 
 /*
