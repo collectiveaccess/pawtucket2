@@ -148,10 +148,10 @@
 					{{{<ifcount code="ca_objects.related" min="1">
 							<br/>
 							<ifcount code="ca_objects.related" min="1" max="1">
-								<label>Related Art Object</label>
+								<label>Related Object</label>
 							</ifcount>
 							<ifcount code="ca_objects.related" min="2">
-								<label>Related Art Objects</label>
+								<label>Related Objects</label>
 							</ifcount>
 							<unit relativeTo="ca_objects.related" delimiter=" ">
 									<l><div class="grayBg paddingTop">
@@ -180,7 +180,7 @@
 					<H1>{{{<ifdef code="ca_objects.Object_ArtistExpression">^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code="ca_objects.Object_ArtistExpression"><ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist"><ifdef code="ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.forename </ifdef><ifdef code="ca_entities.preferred_labels.surname">^ca_entities.preferred_labels.surname</ifdef><ifnotdef code="ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.displayname</ifnotdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i>}}}</H1>
 					<div class="grayBg">
 						<div class="row">
-							{{{<ifdef code="ca_objects.Object_KressCatalogNumber"><div class="col-sm-6 col-md-6"><div class="unit"><label data-toggle="popover" title="Kress Number" data-content="Identifier used to reference objects in the <i>Complete Catalogue of the Samuel H. Kress Collection</i>">Kress Catalogue Number</label>^ca_objects.Object_KressCatalogNumber</div></div></ifdef>}}}				
+							{{{<ifdef code="ca_objects.Object_KressCatalogNumber"><div class="col-sm-6 col-md-6"><div class="unit"><label data-toggle="popover" title="Kress Catalogue Number" data-content="Identifier used to reference objects in the <i>Complete Catalogue of the Samuel H. Kress Collection</i>">Kress Catalogue Number</label>^ca_objects.Object_KressCatalogNumber</div></div></ifdef>}}}				
 							{{{<ifdef code="ca_objects.idno"><div class="col-sm-6 col-md-6"><div class="unit"><label data-toggle="popover" title="Identifier" data-content="Unique system-generated record identifier">Identifier</label>^ca_objects.idno</div></div></ifdef>}}}
 						</div>
 						<div class="row">
@@ -197,9 +197,9 @@
 						{{{<ifcount code="ca_entities" restrictToRelationshipTypes="location"><div class="unit"><label data-toggle="popover" title="Location" data-content="Current owner">Location</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="location" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 					</div>				
 				
-					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="attribution" min="1"><div class="unit"><label>Historical Attribution</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="attribution" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+					{{{<ifcount code="ca_entities" restrictToRelationshipTypes="attribution" min="1"><div class="unit"><label data-toggle="popover" title="Historical Attribution" data-content="Previous artist attribution">Historical Attribution</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="attribution" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 					{{{<ifdef code="ca_objects.Object_Provenance">
-						<div class='unit'><label>Provenance</label>
+						<div class='unit'><label data-toggle='popover' title='Provenance' data-content='Chronology of the ownership, custody or location of an art object'>Provenance</label>
 							<span class="trimText">^ca_objects.Object_Provenance</span>
 						</div>
 					</ifdef>}}}
@@ -225,10 +225,13 @@
 					<div id="detailTools">
 	<?php
 						if($this->getVar("representation_id")){
-							print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span>".caNavLink($this->request, "Download Media", "", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'large', 'download' => 1))."</div>";
+							print "<div class='detailTool'><span class='glyphicon glyphicon-download' aria-label='"._t("JPG Image")."'></span>".caNavLink($this->request, "JPG Image", "", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'large', 'download' => 1))."</div>";
 						}
 						if ($vn_pdf_enabled) {
 							print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Summary")."'></span>".caDetailLink($this->request, "PDF Summary", "", "ca_objects",  $vn_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary'))."</div>";
+						}
+						if($this->getVar("representation_id")){
+							print "<div class='detailTool'><i class='fa fa-clone' aria-hidden='true' aria-label='Compare Images'></i></span><a href='#' class='compare_link' data-id='object:{$vn_id}' title='Compare Images'>Compare Image</a></div>";
 						}
 						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Record Link")."'></span><a href='#' onClick='$(\"#permalink\").toggle(); return false;' title='Copy link to share or save record'>Record Link</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caDetailUrl($this->request, 'ca_objects', $t_object->get("object_id"))."</textarea></div>";					
 
@@ -282,9 +285,12 @@
 					</div>
 				</ifcount>}}}
 			
-				{{{<ifdef code="ca_objects.Object_URLCollectionRecord|ca_objects.Object_URLNGALibraryImageURL"><div class='col-sm-12 col-md-4'><label>External Links</label>					
+				{{{<ifdef code="ca_objects.Object_URLCollectionRecord|ca_objects.Object_URLNGALibraryImageURL|ca_objects.Object_URLNGASysCat|ca_objects.nyu_ifa_kress_paintings"><div class='col-sm-12 col-md-4'><label>External Links</label>					
 					<ifdef code="ca_objects.Object_URLCollectionRecord"><a href="^ca_objects.Object_URLCollectionRecord" target="_blank"><div class="grayBg paddingTop"><div class="unit">Related Collection Record <i class="fa fa-external-link" aria-hidden="true"></i></div></div></a></ifdef>
 					<ifdef code="ca_objects.Object_URLNGALibraryImageURL"><a href="^ca_objects.Object_URLNGALibraryImageURL" target="_blank"><div class="grayBg paddingTop"><div class="unit">Related National Gallery of Art Library Image Collections Record <i class="fa fa-external-link" aria-hidden="true"></i></div></div></a></ifdef>
+					<ifdef code="ca_objects.nyu_ifa_kress_paintings"><a href="^ca_objects.nyu_ifa_kress_paintings" target="_blank"><div class="grayBg paddingTop"><div class="unit">Related NYU IFA Kress Paintings Conservation Object Record <i class="fa fa-external-link" aria-hidden="true"></i></div></div></a></ifdef>
+					<ifdef code="ca_objects.Object_URLNGASysCat"><a href="^ca_objects.Object_URLNGASysCat" target="_blank"><div class="grayBg paddingTop"><div class="unit">Related National Gallery of Art Systematic Catalog <i class="fa fa-external-link" aria-hidden="true"></i></div></div></a></ifdef>
+					
 				</div></ifdef>}}}
 			
 			

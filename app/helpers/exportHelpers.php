@@ -235,7 +235,7 @@
 										'style' => PHPExcel_Style_Border::BORDER_THIN)));
 
 				$o_sheet->getDefaultStyle()->applyFromArray($cellstyle);
-				$o_sheet->setTitle("CollectiveAccess");
+				$o_sheet->setTitle("Results");
 
 				$vn_line = 1;
 

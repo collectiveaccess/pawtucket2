@@ -27,9 +27,9 @@
 				<HR>
 				{{{<ifdef code='ca_objects.curatorial_notes'><div class='unit'><label>Curatorial Notes</label>^ca_objects.curatorial_notes</div><hr/></ifdef>}}}
 				{{{<ifdef code='ca_objects.idno'><div class='unit'><label>Catalog Number</label>^ca_objects.idno</div></ifdef>}}}
-				{{{<ifdef code='ca_objects.culture.culture_culture'><div class='unit'><label>Culture</label>^ca_objects.culture.culture_culture%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code='ca_objects.locale.locale_locale'><div class='unit'><label>Locale</label>^ca_objects.locale.locale_locale%delimiter=,_</div></ifdef>}}}
-				{{{<ifdef code='ca_objects.country.country_country'><div class='unit'><label>Country</label>^ca_objects.country.country_country%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code='ca_objects.culture_display'><div class='unit'><label>Culture</label>^ca_objects.culture_display%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code='ca_objects.locale_display'><div class='unit'><label>Locale</label>^ca_objects.locale_display%delimiter=,_</div></ifdef>}}}
+				{{{<ifdef code='ca_objects.country_display'><div class='unit'><label>Country</label>^ca_objects.country_display%delimiter=,_</div></ifdef>}}}
 				{{{<ifdef code='ca_objects.period_display'><div class='unit'><label>Period</label>^ca_objects.period_display%delimiter=,_</div></ifdef>}}}
 
 <?php print caDetailLink($this->request, _t("VIEW RECORD"), 'btn btn-default', $this->getVar("table"),  $this->getVar("row_id")); ?>

@@ -26,7 +26,7 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Checklist
+ * @name Checklist PDF
  * @filename ChecklistArchivalMaterials
  * @type page
  * @pageSize letter

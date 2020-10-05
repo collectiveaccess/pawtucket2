@@ -1574,7 +1574,7 @@ a.browseRemoveFacet img {
 	margin-top:-20px;
 	background-color:#EBEBEB;
 	width:45px;
-	height:110px;
+	height:120px;
 	text-transform:uppercase;
 	padding-top:20px;
 	padding-bottom:20px;
@@ -1889,7 +1889,7 @@ a.readmore-js-toggle{
 	}
 }
 .results a.active .glyphicon {
-	color:#454545;
+	color:#000000 !important;
 }
 a.browseRemoveFacet .glyphicon {
 	color:#FFF !important;	
