@@ -123,8 +123,8 @@ while($qr_res->nextHit()) {
 			//'date' => '1820',
 			'location' => [
 				//'name' => 'name',
-				'lat' => intval(trim($va_coordinates[0])),
-				'lon' => intval(trim($va_coordinates[1])),
+				'lat' => floatval(trim($va_coordinates[0])),
+				'lon' => floatval(trim($va_coordinates[1])),
 				'line' => true
 			],
 			'text' => [
