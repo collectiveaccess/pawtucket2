@@ -41,7 +41,7 @@
 		<div class="col-sm-12">
 			<H1>Digital Exhibitions</H1>
 			<p>
-				Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc pretium risus ante, sed consectetur ipsum venenatis id. In convallis tortor turpis, sit amet mollis velit cursus quis. Proin elementum enim eu massa maximus accumsan. Proin venenatis elit et quam finibus eleifend. Sed eros diam, convallis id mauris eget, fringilla posuere ante. Pellentesque accumsan justo eu mauris facilisis, a maximus arcu maximus. Suspendisse potenti. Quisque a accumsan diam. Nunc ut sagittis arcu, vel tincidunt tortor. Pellentesque fermentum orci dui. Integer massa mi, placerat sit amet viverra a, lobortis sed risus. Quisque accumsan enim vel purus tempus, vel rhoncus massa rutrum.
+				{{{digital_exhibition_intro}}}
 			</p>
 		</div>
 	</div>
