@@ -98,12 +98,13 @@ if(strtolower($this->request->getController()) !== "compare"){
 					var id = this ? $(this).data('id') : null;
 					var id_selector = this ? $(this).data('id_selector') : null;
 					var remove_id = this ? $(this).data('remove_id') : null;
+					var remove_all = this ? $(this).data('remove_all') : null;
 					
 					if (id_selector) {
 					    if (id = jQuery(id_selector).data('current_id')) { id = "representation:" + id; }
 					}
 		
-					$.getJSON('<?php print caNavUrl($this->request, '', 'Compare', 'AddToList'); ?>', {id: id, remove_id: remove_id}, function(d) {
+					$.getJSON('<?php print caNavUrl($this->request, '', 'Compare', 'AddToList'); ?>', {id: id, remove_id: remove_id, remove_all: remove_all}, function(d) {
 						if (parseInt(d.ok) == 1) {
 							var l = '', im = '';
 							
@@ -115,6 +116,8 @@ if(strtolower($this->request->getController()) !== "compare"){
 								jQuery.each(d.comparison_list, function(i, item) {
 									l += "<p><a href='#' class='comparison_list_remove' data-remove_id='" + item['id'] + "'><i class='fa fa-times' aria-label='remove item'></i> " + item['display'] + "</a></p>\n";
 								});
+								l += "<p><a href='#' class='comparison_list_remove' data-remove_all='1'><i class='fa fa-times' aria-label='remove item'></i> CLEAR SELECTION</a></p>\n";
+								
 								l += "</div>";
 								
 								im = "Compare " + d.comparison_list.length + ((d.comparison_list.length > 1) ? " images" : " image"); 
@@ -128,7 +131,7 @@ if(strtolower($this->request->getController()) !== "compare"){
 							jQuery('#compare_count_display').html(im);
 							
 							// Reload page when removing from within "Compare" view
-							if (remove_id && <?php print ($this->request->getController() == 'Compare') ? "true" : "false"; ?>) {
+							if ((remove_all || remove_id) && <?php print ($this->request->getController() == 'Compare') ? "true" : "false"; ?>) {
 								window.location = '<?php print caNavUrl($this->request, '', 'Compare', 'View', ['url' => str_replace('/', '|', $this->request->getFullUrlPath())]); ?>';
 								return;
 							} else if($(".compareDrawer").data('open')){
@@ -145,6 +148,11 @@ if(strtolower($this->request->getController()) !== "compare"){
 
 			});
 			/*(function(e,d,b){var a=0;var f=null;var c={x:0,y:0};e("[data-toggle]").closest("li").on("mouseenter",function(g){if(f){f.removeClass("open")}d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mousemove",function(g){if(Math.abs(c.x-g.ScreenX)>4||Math.abs(c.y-g.ScreenY)>4){c.x=g.ScreenX;c.y=g.ScreenY;return}if(f.hasClass("open")){return}d.clearTimeout(a);a=d.setTimeout(function(){f.addClass("open")},b)}).on("mouseleave",function(g){d.clearTimeout(a);f=e(this);a=d.setTimeout(function(){f.removeClass("open")},b)})})(jQuery,window,200);*/
+			$(document).ready(function(){
+				$(window).scroll(function(){
+					$("#hpScrollBar").fadeOut();
+				});
+			});
 		</script>
 	</body>
 </html>

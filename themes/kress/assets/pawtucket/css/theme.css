@@ -12,6 +12,7 @@ body{
 	margin-top:57px;
 	margin-bottom:300px;
 	font-size: 13px;
+	color: #000;
 }
 @media(min-width:596px) and (max-width:768px){
 	body{
@@ -102,7 +103,7 @@ a.navbar-brand, a.navbar-brand:hover {
     margin-left:1px;
 }
 .navbar-default .navbar-nav > li > a:hover{
-    background-color: rgb(0,0,0, .3);
+    background-color: #333333;
     font-family:Lato;
 }
 .navbar-brand, .navbar-nav > li > a {
@@ -124,7 +125,7 @@ a.navbar-brand, a.navbar-brand:hover {
     right: auto;
 }
 .navbar-default .navbar-nav > .open > a, .navbar-default .navbar-nav > .open > a:hover, .navbar-default .navbar-nav > .open > a:focus, .navbar-default .navbar-nav > .active > a, .navbar-default .navbar-nav > .active > a:hover, .navbar-default .navbar-nav > .active > a:focus {
-    background-color: rgb(0,0,0, .3);
+    background-color: #333333;
 	color:#FFF;
     font-family:Lato;
 }
@@ -182,6 +183,14 @@ a.navbar-brand, a.navbar-brand:hover {
 	}
 	.navbar > .container .navbar-brand {
 		margin-left:0px;
+	}
+}
+@media(min-width: 1500px) and (max-width: 1550px) {
+	.navbar-form{
+		padding-left:0px;
+	}
+	.navbar-form .form-group {
+		width: 110px;
 	}
 }
 H1, h1, h2, H2, H3, h3{
@@ -378,7 +387,7 @@ a, a:hover{
 	.front .heroSearch{
 		padding-top:100px;
 	}
-}
+}*/
 @media(max-width: 992px) {
 	.heroSearch H1{
 		font-size:40px;
@@ -389,7 +398,7 @@ a, a:hover{
 	.front .heroSearch .form-group {
 		width: 250px;
 	}
-}*/
+}
 .hpIntro .callout, .hpIntro .callout i{
 	font-family: 'Cormorant', serif;
 	font-size: 35px;
@@ -450,16 +459,28 @@ a, a:hover{
 	color:#000;
 	line-height: 1em;
 }
-.hpExplore a.hpExploreTitle:hover{
-	text-decoration:none;
-}
 .hpExplore .exploreTile:hover img{
 	opacity:.4;
 	transition:opacity .75s;
 	-webkit-transition:opacity .75s;
 }
+.hpExplore .exploreTile:hover a{
+	text-decoration:underline;
+}
 .hpExplore .exploreTile{
 	margin-bottom:29px;
+}
+#hpScrollBar{
+	position:fixed;
+	bottom:0px;
+	width:100%;
+	background-opacity:.7;
+	background-color:#2F2E2D;
+	color:#b4b4b4;
+	text-align:center;
+	font-size:30px;
+	padding:10px 0px 10px 0px;
+	opacity:.8;
 }
 @media(min-width: 768px) and (max-width: 992px) {
 	.hpExplore a.hpExploreTitle{
@@ -503,7 +524,8 @@ body.frontContainer #footer{
     background-image: url("../graphics/hero5.jpg");
 
     /* Full height */
-    height: 100%;
+    /*height: 100%;*/
+    height: 100vh;
 
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
@@ -545,7 +567,6 @@ body.frontContainer #footer{
 	}
 }
 */
-
 @media(max-width:420px) or (max-height:420px){
 	.heroSearch H1{
 		font-size:50px;
@@ -560,6 +581,7 @@ body.frontContainer #footer{
 		font-size:28px;
 	}
 }
+/*
 @media(max-width:1120px){
 	.parallax {
 		background-position: center -110px;
@@ -573,11 +595,28 @@ body.frontContainer #footer{
 		margin-top: 200px;
 	}
 }
+@media(max-width:1440px){
+	.parallax .heroSearch{
+		margin-top: 200px;
+	}
+}
+@media(max-width:1280px){
+	.parallax .heroSearch{
+		margin-top: 160px;
+	}
+}
 @media(max-height:420px){
 	.parallax .heroSearch{
 		margin-top: 20px;
 		margin-bottom:70px;
 	}
+}
+*/
+.parallax .heroSearch{
+	margin-top: 25vh;
+}
+.parallax {
+    background-position: center center;
 }
 
 /*
@@ -684,8 +723,16 @@ h3.tl-headline-date, .tl-text .tl-headline-date, .tl-text h3.tl-headline-date, .
 	font-family: LatoLight !important;
 }
 /* browse */
+@media(max-width:530px){
+	.results H1{
+		clear:both;
+	}
+}
 #bViewButtons {
     float: right;
+}
+.bIntroduction{
+	font-size:16px;
 }
 #bRefine.fixed {
     padding-top: 65px;
@@ -699,6 +746,10 @@ h3.tl-headline-date, .tl-text .tl-headline-date, .tl-text h3.tl-headline-date, .
     	padding-top: 105px;
 	}
 }
+#bRefine H2{
+	color:#333;
+	font-size:20px;
+}
 #bRefine H3[type="button"]{
 	cursor: pointer;
 	color:#666;
@@ -709,6 +760,14 @@ h3.tl-headline-date, .tl-text .tl-headline-date, .tl-text h3.tl-headline-date, .
 }
 #bRefine hr {
 	margin-bottom:0px;
+}
+#bRefine blockquote{
+	border:0px;
+	line-height:1.3em;
+	display:none;
+}
+#bRefine .facetDescButton{
+	padding-left:5px;
 }
 .advancedSearchLink{
 	margin-top: -8px;
@@ -729,6 +788,17 @@ h3.tl-headline-date, .tl-text .tl-headline-date, .tl-text h3.tl-headline-date, .
 	margin:0px 0px 5px 0px;
 	display:block;
 	width:100%;
+}
+a.browseRemoveFacet .glyphicon {
+    color: #333 !important;
+}
+.bCriteria .btn{
+	color:#333;
+	background-color:#FFF;
+}
+.bCriteria .btn:hover, .bCriteria .btn-default:hover, .bCriteria button:hover{
+	text-decoration:none !important;
+	border-color:#FFF !important;
 }
 .facetGroup.panel {
 	width:250%;
@@ -831,6 +901,17 @@ a.facetApply {
     bottom:0px;
     left:0px;
 }
+
+#bSortByList {
+    float: right;
+    margin-top: 3px;
+    margin-right: 15px;
+}
+#bExportMenu {
+    float: right;
+    margin-right: 15px;
+    font-size: 18px;
+}
 /* search within */
 @media(max-width:768px){
 	.results .bSearchWithinContainer{
@@ -893,6 +974,7 @@ a.facetApply {
 }
 .resultImageImg{
 	height:240px;
+	text-align: center;
 }
 .resultImageImg img{
 	object-fit:contain;
@@ -918,7 +1000,7 @@ a.facetApply {
 	display: -webkit-box;
 	-webkit-box-orient:vertical;
 	overflow:hidden;
-	margin-right:10px;
+	margin-right:16px;
 }
 .resultItemDetailExtended .resultImageList img{
 	object-fit:contain;
@@ -1016,6 +1098,7 @@ a.facetApply {
 /* detail */
 .detail {
     font-size: 15px;
+    color:#000;
 }
 .detail h1, .detail h1 i {
     font-size: 20px;
@@ -1023,8 +1106,8 @@ a.facetApply {
     line-height: 135%;
     text-transform: none;
 }
-.detail a{
-    color: #454545;
+.detail a, .detail label{
+    color: #000;
 }
 .detail a:hover {
     color: #737373;
@@ -1165,6 +1248,7 @@ a.readmore-js-toggle {
 /* site pages */
 .staticPage, .staticPage div, .staticPage p {
 	font-size:17px;
+    font-weight:600;
 }
 .staticPage p {
 	margin-bottom:25px;
@@ -1172,12 +1256,19 @@ a.readmore-js-toggle {
 .staticPage a{
 	text-decoration:underline;
 }
+.staticPage a:hover{
+	color:#000;
+}
 
 /* multisearch */
 .multisearch .objectsResult img{
 	object-fit:contain;
 	width:100%;
 	height:120px;
+}
+.multisearchObjectImg{
+	text-align:center;
+	margin-bottom:3px;
 }
 .multisearch .multisearchResult {
     line-height: 1.1em;
@@ -1248,8 +1339,11 @@ h3.window-manifest-title {
 .mirador-osd-annotation-controls {
 	display:none;
 }
+.mirador-viewer a{
+	color:#ffffff;
+}
 .compareDrawer {
-	display:none;
+	/*display:none;*/
 	background-color:#f5f5f5;
 	width:100%;
 	position:fixed;
@@ -1285,7 +1379,7 @@ h3.window-manifest-title {
 	color:#000;
 }
 .compareDrawer .items {
-	display:none;
+	/*display:none;*/
 	clear:both;
 	font-size:13px;
 	padding-top:10px;
@@ -1305,8 +1399,79 @@ h3.window-manifest-title {
 	float:right;
 	padding-top:5px;
 }
-.compare_link {
+.results a.compare_link .fa{
+	color:#FFF !important;
+}
+.compare_link.btn{
 	position:absolute;
-	bottom:5px;
-	right:20px;
+	bottom:3px;
+	right: 13px;
+	padding: 3px 3px 1px 4px;
+	border-radius: 4px;
+	background-color:#777777;
+}
+.results.search .compare_link.btn{
+	right: 18px;
+}
+
+/* image viewer */
+.tileviewer div.viewerControls{
+	opacity:1 !important;
+}
+.tileviewerControlZoomIn, .tileviewerControlZoomOut, .tileviewerToolbarZoomSlider{
+	opacity:1 !important;
+}
+.tileviewerToolbarZoom a{
+	color:#333333;
+	text-shadow: 0 1px 3px #FFF;
+}
+.caMediaOverlayControls .close .caIcon{
+	color:red !important;
+	opacity:1 !important;
+	text-shadow: 0 1px 0 #000000;
+}
+div.caMediaOverlayControls, div.caMediaOverlayControlsMinimal {
+    opacity: 1.0;
+    background-color: rgba(0,0,0,0.3);
+}
+.tileviewerToolbarZoomSlider .ui-state-default, .tileviewerToolbarZoomSlider .ui-widget-content .ui-state-default{
+	border: 1px solid #555 !important;
+	background: #dedede !important;
+}
+
+
+/* IE styles to fix object fit not being supported - sigh - for IE 9 and above */
+@media screen and (min-width:0\0) and (min-resolution: +72dpi) {
+    /* IE9+ CSS to fix object-fit not being supported.*/
+    .resultImageImg img{
+		object-fit:none;
+		width: 65%;
+		height: auto;
+	}
+	.resultImageList img{
+		object-fit:none;
+		width:auto;
+		height:72px;
+	}
+	.resultItemDetailExtended .resultImageList img{
+		object-fit:none;
+		width: 65%;
+		height: auto;
+	}
+	.resultItemDetailExtended .resultImageList {
+		text-align:center;
+	}
+	.multisearch .objectsResult img{
+		object-fit:none;
+		width:35%;
+		height:auto;
+	}
+	.detail .repViewerCont img {
+    	width: 40%;
+   		height: auto;
+   		object-fit:none;
+   	}
+	.detail .repViewerCont  {
+    	text-align: center;
+   	}
 }

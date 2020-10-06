@@ -71,8 +71,8 @@
 			<div class="row">
 				<div class="col-md-6 col-md-offset-3 col-lg-6 col-lg-offset-0 exploreTile">
 	<?php
-					print caNavLink($this->request, caGetThemeGraphic($this->request, 'art_sq.jpg', array('alt' => 'Browse Art Objects')), "", "", "Browse", "objects");
-					print caNavLink($this->request, "Art Objects", "hpExploreTitle", "", "Browse", "objects");
+					print caNavLink($this->request, caGetThemeGraphic($this->request, 'art_sq.jpg', array('alt' => 'Browse Objects')), "", "", "Browse", "objects");
+					print caNavLink($this->request, "Objects", "hpExploreTitle", "", "Browse", "objects");
 					
 	?>				
 				</div>
@@ -137,3 +137,4 @@
 			</script>
 		</div>
 	</div>
+	<div class="row" id="hpScrollBar"><div class="col-sm-12"><i class="fa fa-chevron-down" aria-hidden="true" title="Scroll down for more"></i></div></div>

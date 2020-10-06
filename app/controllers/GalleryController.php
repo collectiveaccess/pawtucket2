@@ -350,9 +350,12 @@
  			foreach($va_tag_list as $vs_tag) {
  				if (in_array($vs_tag, $va_defined_vars)) { continue; }
  				if ((strpos($vs_tag, "^") !== false) || (strpos($vs_tag, "<") !== false)) {
- 					$this->view->setVar($vs_tag, $t_instance->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
+ 					$this->view->setVar($vs_tag, $t_set_item->getWithTemplate($vs_tag, array('checkAccess' => $this->opa_access_values)));
  				} elseif (strpos($vs_tag, ".") !== false) {
- 					$this->view->setVar($vs_tag, $t_instance->get($vs_tag, array('checkAccess' => $this->opa_access_values)));
+ 					if(!strlen($v = $t_set_item->get($vs_tag, array('checkAccess' => $this->opa_access_values)))) {
+ 						$v = $t_instance->get($vs_tag, array('checkAccess' => $this->opa_access_values));
+ 					}
+ 					$this->view->setVar($vs_tag, $v);
  				} else {
  					$this->view->setVar($vs_tag, "?{$vs_tag}");
  				}
