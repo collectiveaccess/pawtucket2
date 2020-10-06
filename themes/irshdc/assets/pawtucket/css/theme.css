@@ -1610,6 +1610,9 @@ a.digExhAnchors.offset{
 	width: 100%;
 	height: 500px;
 }
+.vco-map .leaflet-container .leaflet-control-minimap{
+	display:none;
+}
 /* carousel */
 .digExhSlide{
 	text-align: center;
