@@ -3181,6 +3181,35 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 }
 .vco-storyjs h3{font-size:16px;line-height:18px}
 
+.tl-text-content-container h2.tl-headline, .tl-timeline h2.tl-headline-title{
+	font-family:lato;
+	text-transform:none;
+	font-weight:normal;
+}
+.tl-timeline h2.tl-headline.tl-headline-title{
+	font-size: 38px !important;
+	line-height: 38px !important;
+}
+.tl-text-content-container h2.tl-headline{
+	font-size: 28px !important;
+	line-height: 28px !important;
+}
+.tl-timemarker-text h2, .tl-slidenav-content-container .tl-slidenav-title, .tl-slidenav-content-container .tl-slidenav-description{
+	font-family:lato !important;
+	text-transform:none !important;
+	font-weight:normal;
+}
+.tl-text-content, .tl-timeline p, .tl-text p{
+	font-family:LatoLight !important;
+	color:#454545 !important;
+}
+.tl-timeline h1, .tl-timeline h2, .tl-timeline h3, .tl-timeline h4, .tl-timeline h5, .tl-timeline h6{
+	font-family:lato !important;
+	text-transform:none !important;
+	font-weight:normal;
+	font-size: 38px;
+}
+
 
 
 

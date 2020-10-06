@@ -385,7 +385,7 @@ a:hover .frontIconButton{
 	width:auto !important;
 }
 .galleryTimelineDate{
-	font-size:.5em;
+	font-size:.75em;
 	color:#959595;
 }
 .tl-slidenav-title .galleryTimelineDate{
@@ -1598,8 +1598,8 @@ a.digExhAnchors.offset{
 #digExhTimeline .tl-slide .tl-slide-scrollable-container{
 	width:100%;
 }
-#digExhTimeline .tl-timeline h2.tl-headline-title{
-	font-size:22px;
+#digExhTimeline .tl-timeline h2.tl-headline-title, #digExhTimeline .tl-text-content-container h2.tl-headline{
+	font-size:22px !important;
 }
 /* storymap */
 .vco-storymap h2.vco-headline-title, .vco-storymap h2 {
