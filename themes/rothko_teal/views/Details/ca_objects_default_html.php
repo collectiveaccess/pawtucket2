@@ -69,9 +69,9 @@
 						
 			<?php #print caObjectRepresentationThumbnails($this->request, $this->getVar("representation_id"), $t_object, array("returnAs" => "bsCols", "linkTo" => "carousel", "bsColClasses" => "smallpadding col-sm-3 col-md-3 col-xs-4", "version" => "iconlarge")); ?>
 	<?php
-			// if ($va_catalog_id = $t_object->get('ca_objects.institutional_id')) { 
-// 				print "<div class='objIdno'>".$va_catalog_id."</div>";
-// 			}	
+			if ($va_catalog_id = $t_object->get('ca_objects.institutional_id')) { 
+				print "<div class='objIdno'>".$va_catalog_id."</div>";
+			}	
 	?>	
 		</div><!-- end col -->		
 		<div class='col-sm-10 col-sm-offset-1 col-md-offset-0 col-md-6 col-lg-6 artworkInfo'>
@@ -186,9 +186,9 @@
 						if ($vs_credit_line = $qr_collections->get('ca_objects_x_collections.collection_line')) {
 							$buf .= ", ".$vs_credit_line;
 						}
-						// if ($vs_institutional = $t_object->get('ca_objects.institutional_id')) {
-// 							$buf .= ", ".$vs_institutional;
-// 						}
+						if ($vs_institutional = $t_object->get('ca_objects.institutional_id')) {
+							$buf .= ", ".$vs_institutional;
+						}
 						if ($buf) { $buf .= ". "; }
 						if ($va_copyright = $t_parent->get('ca_objects.copyright')) {
 							$buf .= $va_copyright;
@@ -202,9 +202,9 @@
 				}
 			}	
 
-			#if ($va_institutional_id = $t_object->get('ca_objects.institutional_id')) {
-			#	print "<div class='unit row'><div class='{$vn_label_col} label'>Institutional ID</div><div class='$vn_data_col'>".$va_institutional_id."</div></div>";
-			#}		
+			// if ($va_institutional_id = $t_object->get('ca_objects.institutional_id')) {
+// 				print "<div class='unit row'><div class='{$vn_label_col} label'>Institutional ID</div><div class='$vn_data_col'>".$va_institutional_id."</div></div>";
+// 			}		
 	
 			if ($va_photo_credit = $t_object->get('ca_objects.photography_credit_line')) {
 				print "<div class='unit row'><div class='{$vn_label_col} label'>Photography Credit</div><div class='$vn_data_col'>".$va_photo_credit."</div></div>";
@@ -286,9 +286,9 @@
 			print "<div class='row'>";
 			print "<div class='col-xs-4 col-sm-3'></div>";
 			print "<div class='col-xs-8 col-sm-9'>";
-				// if ($vn_catno = $t_verso->get('ca_objects.institutional_id')) {
-// 					print "<div class='catInfo'>".$vn_catno."</div>";
-// 				}			
+				if ($vn_catno = $t_verso->get('ca_objects.institutional_id')) {
+					print "<div class='catInfo'>".$vn_catno."</div>";
+				}			
 				print "<a href='#' class='compare_link verso' title='Compare' data-id='object:{$vn_verso_id}'>".caGetThemeGraphic($this->request, 'rothko-compare.svg')."</a>";
 			
 			print "</div>";
@@ -446,9 +446,9 @@
 					if ($va_collection = $t_rel_parent->getWithTemplate('<unit relativeTo="ca_objects_x_collections"><if rule="^ca_objects_x_collections.current_collection =~ /yes/"><unit relativeTo="ca_collections">^ca_collections.preferred_labels</unit></if></unit>')) {
 						$vs_buf.= "<p>".$va_collection."</p>";
 					}	
-					// if ($vs_catno = $t_work->get('ca_objects.institutional_id')) {
-// 						$vs_buf.= "<div class='catno'>".$vs_catno."</div>"; 
-// 					}	
+					if ($vs_catno = $t_work->get('ca_objects.institutional_id')) {
+						$vs_buf.= "<div class='catno'>".$vs_catno."</div>"; 
+					}	
 					$vs_buf.= "<a href='#' class='compare_link' data-id='object:{$vs_rel_work_id}'>".caGetThemeGraphic($this->request, 'rothko-compare.svg')."</a>";
 					$vs_buf.= "</div></div></div><!-- end col -->";			
 					$vs_buf.= "</div>";
