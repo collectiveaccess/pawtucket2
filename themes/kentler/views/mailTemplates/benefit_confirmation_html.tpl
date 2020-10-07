@@ -30,4 +30,4 @@
 <?php
 print "<p>".$this->request->getParameter("itemTitle", pString)."<br/>".$this->request->getParameter("itemURL", pString)."</p>";
 ?>
-<p>Please contact info@kentlergallery.org with questions.</p>
+<p>Please contact benefit@kentlergallery.org with questions.</p>

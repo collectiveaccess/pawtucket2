@@ -26,12 +26,11 @@
  * ----------------------------------------------------------------------
  */
  
-print _t("You have been sent a contact email from \"%1\", %2.", $this->request->config->get("app_display_name"), $this->request->config->get("site_host"));
-$va_fields = $this->getVar("contact_form_elements");
-foreach($va_fields as $vs_element => $va_options){
-	if($this->request->getParameter($vs_element, pString)){
-		print $va_options["label"].": ".$this->request->getParameter($vs_element, pString)."\n\n";
-	}
-}
-
 ?>
+Thank you for participating in Kentler International Drawing Space's 2020 Virtual Benefit. You have selected the following artwork:
+
+<?php
+print $this->request->getParameter("itemTitle", pString).", ".$this->request->getParameter("itemURL", pString);
+?>
+
+Please contact benefit@kentlergallery.org with questions.
