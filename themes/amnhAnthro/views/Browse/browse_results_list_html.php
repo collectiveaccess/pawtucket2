@@ -152,9 +152,9 @@
 					$vs_description = "<div class='resultCollectionDesc'>".$vs_collection_area." ".$vs_collection_type." Collection</div>";
 					$vs_description .= $qr_res->getWithTemplate("<div class='resultDesc'>
 																	<ifdef code='ca_objects.idno'><div>Catalog Number: ^ca_objects.idno</div></ifdef>
-																	<ifdef code='ca_objects.culture.culture_culture'><div>Culture: ^ca_objects.culture.culture_culture%delimiter=,_</div></ifdef>
-																	<ifdef code='ca_objects.locale.locale_locale'><div>Locale: ^ca_objects.locale.locale_locale%delimiter=,_</div></ifdef>
-																	<ifdef code='ca_objects.country.country_country'><div>Country: ^ca_objects.country.country_country%delimiter=,_</div></ifdef>
+																	<ifdef code='ca_objects.culture_display'><div>Culture: ^ca_objects.culture_display%delimiter=,_</div></ifdef>
+																	<ifdef code='ca_objects.locale_display'><div>Locale: ^ca_objects.locale_display%delimiter=,_</div></ifdef>
+																	<ifdef code='ca_objects.country_display'><div>Country: ^ca_objects.country_display%delimiter=,_</div></ifdef>
 																	<ifdef code='ca_objects.period_display'><div>Period: ^ca_objects.period_display%delimiter=,_</div></ifdef>
 																</div>");
 					$vs_add_to_set_link = "";

@@ -26,7 +26,7 @@
  * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
  * Template configuration:
  *
- * @name Checklist
+ * @name Checklist PDF
  * @filename ChecklistArtObjects
  * @type page
  * @pageSize letter
@@ -79,7 +79,7 @@
 ?>				</td><td>
 					<div class="metaBlock">
 <?php				
-					print "<div class='title'>".$vo_result->getWithTemplate("<ifdef code='ca_objects.Object_KressCatalogNumber'><small>^ca_objects.Object_KressCatalogNumber</small><br/></ifdef><ifdef code='ca_objects.Object_ArtistExpression'>^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code='ca_objects.Object_ArtistExpression'><ifcount code='ca_entities' restrictToRelationshipTypes='artist' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist'><ifdef code='ca_entities.preferred_labels.forename'>^ca_entities.preferred_labels.forename </ifdef><ifdef code='ca_entities.preferred_labels.surname'>^ca_entities.preferred_labels.surname</ifdef><ifnotdef code='ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename'>^ca_entities.preferred_labels.displayname</ifnotdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i>")."</div>"; 
+					print "<div class='title'>".$vo_result->getWithTemplate("<ifdef code='ca_objects.Object_KressCatalogNumber'><small>^ca_objects.Object_KressCatalogNumber</small><br/></ifdef><ifdef code='ca_objects.Object_ArtistExpression'>^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code='ca_objects.Object_ArtistExpression'><ifcount code='ca_entities' restrictToRelationshipTypes='artist' min='1'><unit relativeTo='ca_entities' restrictToRelationshipTypes='artist'><ifdef code='ca_entities.preferred_labels.forename'>^ca_entities.preferred_labels.forename </ifdef><ifdef code='ca_entities.preferred_labels.surname'>^ca_entities.preferred_labels.surname</ifdef><ifnotdef code='ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename'>^ca_entities.preferred_labels.displayname</ifnotdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i><ifdef code='ca_objects.Object_DateExpression'><br/>^ca_objects.Object_DateExpression</ifdef><ifcount code='ca_entities' restrictToRelationshipTypes='location'><br/><unit relativeTo='ca_entities' restrictToRelationshipTypes='location' delimiter='<br/>'>^ca_entities.preferred_labels.displayname</unit></ifcount>")."</div>"; 
 					
 ?>
 					</div>				

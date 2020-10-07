@@ -71,16 +71,16 @@
 <?php
 			print $t_item->getWithTemplate('
 					<div class="grayBg">
-						<ifdef code="ca_objects.Object_KressCatalogNumber"><div class="unit unitHalf"><label>Kress Catalog Number</label>^ca_objects.Object_KressCatalogNumber</div></ifdef>
+						<ifdef code="ca_objects.Object_KressCatalogNumber"><div class="unit unitHalf"><label>Kress Catalogue Number</label>^ca_objects.Object_KressCatalogNumber</div></ifdef>
 						<ifdef code="ca_objects.idno"><div class="unit unitHalf"><label>Identifier</label>^ca_objects.idno</div></ifdef>
 						<div class="clear"></div>
-						<ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><div class="unit unitHalf"><label>Artist</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></div></ifcount>
+						<ifcount code="ca_entities" restrictToRelationshipTypes="artist,artist_additional" min="1"><div class="unit unitHalf"><label>Artist</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist,artist_additional" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></div></ifcount>
 						<ifdef code="ca_objects.Object_Nationality"><div class="unit unitHalf"><label>Nationality</label>^ca_objects.Object_Nationality</div></ifdef>
 						<div class="clear"></div>
 						<ifdef code="ca_objects.Object_DateExpression"><div class="unit unitHalf"><label>Date</label>^ca_objects.Object_DateExpression</div></ifdef>
 						<ifdef code="ca_objects.Object_Medium"><div class="unit unitHalf"><label>Medium</label>^ca_objects.Object_Medium</div></ifdef>
 						<div class="clear"></div>
-						<ifdef code="ca_objects.Object_Classification"><div class="unit"><label>Classification</label>^ca_objects.Object_Classification</div></ifdef>
+						<ifdef code="ca_objects.Object_Classification"><div class="unit"><label>Type of Object</label>^ca_objects.Object_Classification</div></ifdef>
 						<ifdef code="ca_objects.Object_Dimensions"><div class="unit"><label>Dimensions</label>^ca_objects.Object_Dimensions</div></ifdef>
 						<ifcount code="ca_entities" restrictToRelationshipTypes="location"><div class="unit"><label>Location</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="location" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></div></ifcount>
 					</div>
@@ -97,19 +97,13 @@
 						</div>
 					</ifdef>
 				
-					<ifcount code="ca_entities" min="1" excludeRelationshipTypes="artist,location,attribution">
-						<div class="unit">
-							<label>Related People & Organizations</label>
-							<unit relativeTo="ca_entities" excludeRelationshipTypes="artist,location,attribution" delimiter="<br/>">^ca_entities.preferred_labels.displayname (^relationship_typename)</unit>
-						</div>
-					</ifcount>
 					<ifdef code="ca_objects.Object_CurrentAccNo"><div class="unit"><label>Accession Number</label>^ca_objects.Object_CurrentAccNo</div></ifdef>
-					<ifdef code="ca_objects.Object_KressAssNumber"><div class="unit"><label>Kress Assigned Number</label>^ca_objects.Object_KressAssNumber</div></ifdef>
-					<ifdef code="ca_objects.Object_AltKressNumber"><div class="unit"><label>Old or Alternate Kress Number</label>^ca_objects.Object_AltKressNumber</div></ifdef>
+					<ifdef code="ca_objects.Object_KressAssNumber"><div class="unit"><label>Kress Number</label>^ca_objects.Object_KressAssNumber</div></ifdef>
+					<ifdef code="ca_objects.Object_AltKressNumber"><div class="unit"><label>Legacy Kress Number</label>^ca_objects.Object_AltKressNumber</div></ifdef>
 					<ifdef code="ca_objects.Object_PichettoNo"><div class="unit"><label>Pichetto Number</label>^ca_objects.Object_PichettoNo</div></ifdef>
 					<ifdef code="ca_objects.Object_DreyfusNumber"><div class="unit"><label>Dreyfus Number</label>^ca_objects.Object_DreyfusNumber</div></ifdef>
-					<ifdef code="ca_objects.Object_NGAOldNumber"><div class="unit"><label>Old National Gallery of Art Number</label>^ca_objects.Object_NGAOldNumber</div></ifdef>
-					<ifdef code="ca_objects.Object_NGAOldLoanNumber"><div class="unit"><label>Old National Gallery of Art Loan Number</label>^ca_objects.Object_NGAOldLoanNumber</div></ifdef>
+					<ifdef code="ca_objects.Object_NGAOldNumber"><div class="unit"><label>Legacy NGA Number</label>^ca_objects.Object_NGAOldNumber</div></ifdef>
+					<ifdef code="ca_objects.Object_NGAOldLoanNumber"><div class="unit"><label>NGA Loan Number</label>^ca_objects.Object_NGAOldLoanNumber</div></ifdef>
 					
 					<ifcount code="ca_movements" min="1">
 						<hr/>
@@ -121,16 +115,18 @@
 						<label>^ca_loans._count Distribution<ifcount code="ca_loans" min="2">s</ifcount></label>
 						<unit relativeTo="ca_loans" delimiter="<br/>" sort="ca_loans.Distribution_DateYearFilter"><div class="unit">^ca_loans.preferred_labels</div></unit>
 					</ifcount>
-					<ifdef code="ca_objects.Object_URLCollectionRecord|ca_objects.Object_URLNGALibraryImageURL">
+					<ifdef code="ca_objects.Object_URLCollectionRecord|ca_objects.Object_URLNGALibraryImageURL|ca_objects.Object_URLNGASysCat">
 						<hr/><label>External Links</label>					
 						<ifdef code="ca_objects.Object_URLCollectionRecord"><div class="unit"><b>Related Collection Record</b><br/>^ca_objects.Object_URLCollectionRecord</div></ifdef>
-						<ifdef code="ca_objects.Object_URLNGALibraryImageURL"><div class="unit"><b>National Gallery of Art Library Image Collection Record</b><br/>^ca_objects.Object_URLNGALibraryImageURL</div></ifdef>
+						<ifdef code="ca_objects.Object_URLNGALibraryImageURL"><div class="unit"><b>Related National Gallery of Art Library Image Collections Record</b><div class="longLink">^ca_objects.Object_URLNGALibraryImageURL</div></div></ifdef>
+						<ifdef code="ca_objects.nyu_ifa_kress_paintings"><div class="unit"><b>Related NYU IFA Kress Paintings Conservation Object Record</b><div class="longLink">^ca_objects.nyu_ifa_kress_paintings</div></div></ifdef>
+						<ifdef code="ca_objects.Object_URLNGASysCat"><div class="unit"><b>Related National Gallery of Art Systematic Catalog </b><div class="longLink">^ca_objects.Object_URLNGASysCat</div></div></ifdef>
 					</ifdef>
 					<ifcount code="ca_occurrences" min="1">
-						<hr/><label>^ca_occurrences._count Archival Material<ifcount code="ca_occurrences" min="2">s</ifcount></label>						
+						<hr/><label>^ca_occurrences._count Archival Item<ifcount code="ca_occurrences" min="2">s</ifcount></label>						
 						<unit relativeTo="ca_occurrences" delimiter=" " sort="ca_occurrences.Doc_DateFilter">
 							<div class="grayBg">
-								<div class="relatedThumbnail">^ca_occurrences.media.media_media.iconlarge</div>
+								<div class="relatedThumbnail iconlarge">^ca_occurrences.media.media_media.iconlarge</div>
 								<div class="relatedCaption">
 									^ca_occurrences.preferred_labels
 								</div>
@@ -145,7 +141,7 @@
 							<div class="grayBg">
 								<div class="relatedThumbnail">^ca_object_representations.media.thumbnail</div>
 								<div class="relatedCaption">
-									<ifdef code="ca_objects.Object_ArtistExpression">^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code="ca_objects.Object_ArtistExpression"><ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist"><ifdef code="ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.forename </ifdef><ifdef code="ca_entities.preferred_labels.surname">^ca_entities.preferred_labels.surname</ifdef><ifnotdef code="ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.displayname</ifnotdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i>
+									<ifdef code="ca_objects.Object_KressCatalogNumber"><small>^ca_objects.Object_KressCatalogNumber</small><br/></ifdef><ifdef code="ca_objects.Object_ArtistExpression">^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code="ca_objects.Object_ArtistExpression"><ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist"><ifdef code="ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.forename </ifdef><ifdef code="ca_entities.preferred_labels.surname">^ca_entities.preferred_labels.surname</ifdef><ifnotdef code="ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.displayname</ifnotdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i><ifcount code="ca_entities" restrictToRelationshipTypes="location"><br/><unit relativeTo="ca_entities" restrictToRelationshipTypes="location" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></ifcount>
 								</div>
 								<div class="clear"></div>
 							</div>
@@ -153,6 +149,8 @@
 					</ifcount>
 					
 			');
+			
+			print '<hr/><div class="unit"><label>Record Link</label>'.$this->request->config->get("site_host").caDetailUrl($this->request, $t_item->tableName(), $t_item->getPrimaryKey()).'</div>';
 	
 	print $this->render("pdfEnd.php");
 ?>

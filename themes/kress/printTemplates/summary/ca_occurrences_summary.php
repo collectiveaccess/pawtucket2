@@ -62,7 +62,7 @@
 			print $t_item->getWithTemplate('
 					<div class="grayBg">
 						<ifdef code="ca_occurrences.idno"><div class="unit unitHalf"><label>Identifier</label>^ca_occurrences.idno</div></ifdef>	
-						<ifdef code="ca_occurrences.Doc_type"><div class="unit unitHalf"><label>Document Type</label>^ca_occurrences.Doc_type</div></ifdef>
+						<ifdef code="ca_occurrences.Doc_type"><div class="unit unitHalf"><label>Archival Item Type</label>^ca_occurrences.Doc_type</div></ifdef>
 						
 						<ifcount code="ca_entities" min="1"><div class="unit"><label>Creator<ifcount code="ca_entities" min="2">s</ifcount></label><unit relativeTo="ca_entities" delimiter=", ">^ca_entities.preferred_labels.displayname</unit></div></ifcount>
 						<ifdef code="ca_occurrences.Doc_Photographer"><div class="unit"><label>Photographer</label>^ca_occurrences.Doc_Photographer</div></ifdef>
@@ -77,9 +77,7 @@
 							<div class="grayBg">
 								<ifdef code="ca_object_representations.media.thumbnail"><div class="relatedThumbnail">^ca_object_representations.media.thumbnail</div></ifdef>
 								<div class="relatedCaption">
-								<div class="unit"><ifdef code="ca_objects.Object_ArtistExpression">^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code="ca_objects.Object_ArtistExpression"><ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist"><ifdef code="ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.forename </ifdef><ifdef code="ca_entities.preferred_labels.surname">^ca_entities.preferred_labels.surname</ifdef><ifnotdef code="ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.displayname</ifnotdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i></div>
-								<ifdef code="ca_objects.Object_KressCatalogNumber"><div class="unit"><label data-toggle="popover" title="Kress Catalog Number" data-content="Kress Catalog Number">Kress Catalog Number</label>^ca_objects.Object_KressCatalogNumber</div></ifdef>
-								<ifcount code="ca_entities" restrictToRelationshipTypes="location"><div class="unit"><label data-toggle="popover" title="Location" data-content="Location">Location</label><unit relativeTo="ca_entities" restrictToRelationshipTypes="location" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></div></ifcount>
+									<ifdef code="ca_objects.Object_KressCatalogNumber"><small>^ca_objects.Object_KressCatalogNumber</small><br/></ifdef><ifdef code="ca_objects.Object_ArtistExpression">^ca_objects.Object_ArtistExpression<br/></ifdef><ifnotdef code="ca_objects.Object_ArtistExpression"><ifcount code="ca_entities" restrictToRelationshipTypes="artist" min="1"><unit relativeTo="ca_entities" restrictToRelationshipTypes="artist"><ifdef code="ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.forename </ifdef><ifdef code="ca_entities.preferred_labels.surname">^ca_entities.preferred_labels.surname</ifdef><ifnotdef code="ca_entities.preferred_labels.surname,ca_entities.preferred_labels.forename">^ca_entities.preferred_labels.displayname</ifnotdef><br/></unit></ifcount></ifnotdef><i>^ca_objects.preferred_labels.name</i><ifcount code="ca_entities" restrictToRelationshipTypes="location"><br/><unit relativeTo="ca_entities" restrictToRelationshipTypes="location" delimiter="<br/>">^ca_entities.preferred_labels.displayname</unit></ifcount>
 								</div>
 								<div class="clear"></div>
 							</div>
@@ -87,6 +85,7 @@
 					</ifcount>
 					
 			');
+			print '<hr/><div class="unit"><label>Record Link</label>'.$this->request->config->get("site_host").caDetailUrl($this->request, $t_item->tableName(), $t_item->getPrimaryKey()).'</div>';
 	
 	print $this->render("pdfEnd.php");
 ?>

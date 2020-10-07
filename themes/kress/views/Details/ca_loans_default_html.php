@@ -45,18 +45,18 @@
 						</div><!-- end col -->
 					</div><!-- end row -->
 					<div class="grayBg">
-						{{{<ifdef code="ca_loans.idno" min="1"><div class="unit"><label data-toggle="popover" title="Identifier" data-content="Identifier">Identifier</label>^ca_loans.idno</div></ifdef>}}}
-						{{{<ifcount code="ca_entities" min="1"><div class="unit"><label data-toggle="popover" title="Institution" data-content="Institution">Institution</label><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+						{{{<ifdef code="ca_loans.idno" min="1"><div class="unit"><label data-toggle="popover" title="Identifier" data-content="Unique system-generated record identifier">Identifier</label>^ca_loans.idno</div></ifdef>}}}
+						{{{<ifcount code="ca_entities" min="1"><div class="unit"><label>Institution</label><unit relativeTo="ca_entities" delimiter="<br/>"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
 						<div class="row">							
 							{{{<ifdef code="ca_loans.Distribution_OfferDate|ca_loans.Distribution_OfferDocSource"><div class='col-sm-6'>
-								<ifdef code="ca_loans.Distribution_OfferDate"><div class="unit"><label data-toggle="popover" title="Offer Date" data-content="Offer Date">Offer Date</label>^ca_loans.Distribution_OfferDate</div></ifdef>
-								<ifdef code="ca_loans.Distribution_OfferDocSource"><div class="unit"><label data-toggle="popover" title="Offer Documentation" data-content="Offer Documentation">Offer Documentation</label>^ca_loans.Distribution_OfferDocSource</div></ifdef>
+								<ifdef code="ca_loans.Distribution_OfferDate"><div class="unit"><label>Offer Date</label>^ca_loans.Distribution_OfferDate</div></ifdef>
+								<ifdef code="ca_loans.Distribution_OfferDocSource"><div class="unit"><label>Offer Documentation</label>^ca_loans.Distribution_OfferDocSource</div></ifdef>
 							</div><!-- end col --></ifdef>}}}
 							<div class='col-sm-6'>
-								{{{<ifdef code="ca_loans.Distribution_AcceptDate"><div class="unit"><label data-toggle="popover" title="Acceptance Date" data-content="Acceptance Date">Acceptance Date</label>^ca_loans.Distribution_AcceptDate</div></ifdef>}}}
-								{{{<ifdef code="ca_loans.Distribution_AcceptDocSource"><div class="unit"><label data-toggle="popover" title="Acceptance Documentation" data-content="Acceptance Documentation">Acceptance Documentation</label>^ca_loans.Distribution_AcceptDocSource</div></ifdef>}}}
+								{{{<ifdef code="ca_loans.Distribution_AcceptDate"><div class="unit"><label>Acceptance Date</label>^ca_loans.Distribution_AcceptDate</div></ifdef>}}}
+								{{{<ifdef code="ca_loans.Distribution_AcceptDocSource"><div class="unit"><label>Acceptance Documentation</label>^ca_loans.Distribution_AcceptDocSource</div></ifdef>}}}
 								{{{<ifdef code="ca_loans.Distribution_Note">
-									<div class='unit'><label data-toggle="popover" title="Note" data-content="Note">Note</label>
+									<div class='unit'><label>Note</label>
 										<span class="trimText">^ca_loans.Distribution_Note</span>
 									</div>
 								</ifdef>}}}	
@@ -74,7 +74,7 @@
 						if ($vn_pdf_enabled) {
 							print "<div class='detailTool'><span class='glyphicon glyphicon-file' aria-label='"._t("Summary")."'></span>".caDetailLink($this->request, "PDF Summary", "", "ca_loans",  $t_item->get("ca_loans.loan_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_loans_summary'))."</div>";
 						}
-						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Permalink")."'></span> <a href='#' onClick='$(\"#permalink\").toggle(); return false;'>Permalink</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caDetailUrl($this->request, 'ca_loans', $t_item->get("ca_loans.loan_id"))."</textarea></div>";					
+						print "<div class='detailTool'><span class='glyphicon glyphicon-link' aria-label='"._t("Record Link")."'></span><a href='#' onClick='$(\"#permalink\").toggle(); return false;' title='Copy link to share or save record'>Record Link</a><br/><textarea name='permalink' id='permalink' class='form-control input-sm' style='display:none;'>".$this->request->config->get("site_host").caDetailUrl($this->request, 'ca_loans', $t_item->get("ca_loans.loan_id"))."</textarea></div>";					
 ?>
 					</div>				
 				</div>
@@ -121,14 +121,7 @@
 		  maxHeight: 120
 		});
 		var options = {
-			placement: function () {
-				if ($(window).width() > 992) {
-					return "left";
-				}else{
-					return "auto top";
-				}
-
-			},
+			placement: "auto top",
 			trigger: "hover",
 			html: "true"
 		};
@@ -139,6 +132,11 @@
 					$(this).popover('toggle');
 				});
 			}
+		});
+		
+		$("#permalink").click(function(){
+			$("#permalink").select();
+			document.execCommand('copy');
 		});
 
 	});
