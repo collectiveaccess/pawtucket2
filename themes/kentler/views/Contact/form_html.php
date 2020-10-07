@@ -11,6 +11,20 @@
 	$ps_table = $this->request->getParameter("table", pString);
 	$ps_contactType = $this->request->getParameter("contactType", pString);
 
+	$vs_name_default = "";
+	$vs_email_default = "";
+	if($this->request->isLoggedIn()){
+		$vs_name_default = $this->request->user->get("fname")." ".$this->request->user->get("lname");
+		$vs_email_default = $this->request->user->get("email");
+	}
+	$vb_user_able_to_select = true;
+	$vn_num_items_for_user = $this->request->user->getPreference("user_profile_number_of_items");
+	if(!$vn_num_items_for_user){
+		$vn_num_items_for_user = 1;
+	}
+	if($vn_num_items_for_user <= $this->request->user->getVar("numSelectedItems")){
+		$vb_user_able_to_select = false;	
+	}
 	$vb_item_available = true;
 	if($pn_id && $ps_table){
 		$t_item = Datamodel::getInstanceByTableName($ps_table);
@@ -92,7 +106,7 @@
 <div class="row"><div class="col-sm-12 col-md-10 col-md-offset-1">
 	<H1><?php print $vs_page_title; ?></H1>
 <?php
-	if($vb_item_available){
+	if($vb_item_available && $vb_user_able_to_select){
 		if(is_array($va_errors["display_errors"]) && sizeof($va_errors["display_errors"])){
 			print "<div class='alert alert-danger'>".implode("<br/>", $va_errors["display_errors"])."</div>";
 		}
@@ -132,13 +146,13 @@
 						<div class="col-sm-6">
 							<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 								<label for="name">Name</label>
-								<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}">
+								<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter Name" name="name" value="<?php print ($this->getVar("name")) ? $this->getVar("name") : $vs_name_default; ?>">
 							</div>
 						</div><!-- end col -->
 						<div class="col-sm-6">
 							<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
 								<label for="email">Email address</label>
-								<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
+								<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="<?php print ($this->getVar("email")) ? $this->getVar("email") : $vs_email_default; ?>">
 							</div>
 						</div><!-- end col -->
 <?php
@@ -201,10 +215,17 @@
 	</div><!-- end col --></div><!-- end row -->
 <?php
 	}else{
+		if(!$vb_user_able_to_select){
 ?>
-		<div class='alert alert-danger'>Item is no longer available</div>
-		<p class="text-center">Please return to the benefit page and select another item</p>
+			<div class='alert alert-danger'>You are not able to select more items</div>
+			<p class="text-center">If you would like to select additional items, please contact <a href="mailto:benefit@kentlergallery.org">benefit@kentlergallery.org</a></p>
+<?php		
+		}else{
+?>
+			<div class='alert alert-danger'>Item is no longer available</div>
+			<p class="text-center">Please return to the benefit page and select another item</p>
 <?php
+		}
 		print "<p class='text-center'>".caNavLink($this->request, "Back to Virtual Benefit", "btn btn-default", "Detail", "exhibitions", $this->request->config->get("virtual_benefit_id"))."</p>";
 	}
 ?>

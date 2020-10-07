@@ -23,6 +23,20 @@
 			</div><!-- end row -->
 <?php
 	if($t_item->get("ca_occurrences.occurrence_id") == $this->request->config->get("virtual_benefit_id")){
+	
+		$vb_user_able_to_select = true;
+		$vn_num_items_for_user = $this->request->user->getPreference("user_profile_number_of_items");
+		if(!$vn_num_items_for_user){
+			$vn_num_items_for_user = 1;
+		}
+		if($vn_num_items_for_user <= $this->request->user->getVar("numSelectedItems")){
+			$vb_user_able_to_select = false;
+?>
+			<div class='alert alert-danger'>You are not able to select more items</div>
+			<p class="text-center">If you would like to select additional items, please contact <a href="mailto:benefit@kentlergallery.org">benefit@kentlergallery.org</a></p>
+
+<?php	
+		}
 ?>
 		{{{<ifdef code="ca_occurrences.exhibition_dates"><H6>Date</H6>^ca_occurrences.exhibition_dates<br/></ifdef>}}}
 		{{{<ifdef code="ca_occurrences.description"><H6>About the ^ca_occurrences.type_id</H6>^ca_occurrences.description<br/></ifdef>}}}
@@ -80,7 +94,11 @@
 					if(strtolower($q_artworks->get("ca_objects.removed.removal_text", array("convertCodesToDisplayText" => true))) == "yes"){
 						print "<button class='btn btn-default disabled'>No Longer Available</button>";
 					}else{
-						print caNavLink($this->request, "Select Artwork", "btn btn-default", "", "Contact", "form", array("contactType" => "benefit", "table" => "ca_objects", "id" => $q_artworks->get("ca_objects.object_id")));
+						if($vb_user_able_to_select){
+							print caNavLink($this->request, "Select Artwork", "btn btn-default", "", "Contact", "form", array("contactType" => "benefit", "table" => "ca_objects", "id" => $q_artworks->get("ca_objects.object_id")));
+						}else{
+							print "<button class='btn btn-default disabled'>Available</button>";
+						}
 					}			
 					print "</div>";
 					print "</div><br/></div>";
