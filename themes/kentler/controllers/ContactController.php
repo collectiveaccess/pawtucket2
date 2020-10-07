@@ -138,7 +138,7 @@
 							}
 						}
 						if(!$va_errors["benefit"]){							
-							$this->request->user->setVar("numSelectedItems", $this->request->user->getVar("numSelectedItems") + 1);
+							$this->request->user->setVar("numSelectedItems", intval($this->request->user->getVar("numSelectedItems")) + 1);
 							$vs_name = $o_purifier->purify($this->request->getParameter('name', pString));
 							$vs_email = $o_purifier->purify($this->request->getParameter('email', pString));
 							$vs_message = $o_purifier->purify($this->request->getParameter('message', pString));
