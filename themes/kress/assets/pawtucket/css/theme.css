@@ -14,9 +14,9 @@ body{
 	font-size: 13px;
 	color: #000;
 }
-@media(min-width:596px) and (max-width:768px){
+@media(max-width:595px){
 	body{
-		margin-top:57px;
+		margin-top:66px;
 	}
 }
 @media(min-width:768px) and (max-width:1500px){
@@ -567,7 +567,7 @@ body.frontContainer #footer{
 	}
 }
 */
-@media(max-width:420px) or (max-height:420px){
+@media(max-width:420px), (max-height:420px){
 	.heroSearch H1{
 		font-size:50px;
 	}
@@ -578,7 +578,7 @@ body.frontContainer #footer{
 		font-size:40px;
 	}
 	.hpIntro .callout, .hpIntro .callout i{
-		font-size:28px;
+		font-size:24px;
 	}
 }
 /*
@@ -615,18 +615,21 @@ body.frontContainer #footer{
 .parallax .heroSearch{
 	margin-top: 25vh;
 }
+@media(max-height:420px){
+	.parallax .heroSearch{
+		margin-top: 10vh;
+	}
+}
 .parallax {
     background-position: center center;
 }
 
-/*
-@media (max-device-width:1024px){*/
+@media (max-device-width:1024px){
 	/* ipad and mobile disable background-attachment: fixed; fallback to no parallax so at lest see image */
-/*	.parallax {
+	.parallax {
 		background-attachment: scroll;
 	}
 }
-*/
 .hpIntro{
 	padding-top:70px;
 	padding-bottom:70px;
@@ -727,6 +730,10 @@ h3.tl-headline-date, .tl-text .tl-headline-date, .tl-text h3.tl-headline-date, .
 	.results H1{
 		clear:both;
 	}
+}
+.results ul.dropdown-menu {
+    left: auto;
+    right: auto;
 }
 #bViewButtons {
     float: right;
@@ -1106,6 +1113,11 @@ a.facetApply {
     line-height: 135%;
     text-transform: none;
 }
+@media(max-width: 991px) {
+	.detail h1{
+		margin-top:30px;
+	}
+}
 .detail a, .detail label{
     color: #000;
 }
@@ -1410,7 +1422,7 @@ h3.window-manifest-title {
 	border-radius: 4px;
 	background-color:#777777;
 }
-.results.search .compare_link.btn{
+.results.search .compare_link.btn, #browseResultsDetailContainer .compare_link.btn{
 	right: 18px;
 }
 
