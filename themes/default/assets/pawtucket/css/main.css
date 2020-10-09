@@ -32,7 +32,7 @@ b, strong{
 a, a:hover {
 	color:#11808D;
 }
-a, a:active {
+a, a:active, a:focus {
    outline: 0;
    text-decoration:none;
 }
