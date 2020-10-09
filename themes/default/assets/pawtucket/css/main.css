@@ -36,11 +36,6 @@ a, a:active {
    outline: 0;
    text-decoration:none;
 }
-a.dropdown-toggle:focus, a:focus {
-    outline: thin dotted #333;
-    outline: 5px auto -webkit-focus-ring-color;
-    outline-offset: -2px;
-}
 
 H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
 	font-family: lato;
