@@ -126,7 +126,7 @@
 					<input type="hidden" name="table" value="<?php print $ps_table; ?>">
 					<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
 					<input type="hidden" name="benefit" value="<?php print $vs_benefit_message; ?>">
-					<input type="hidden" name="artist" value="<?php $t_item->get('ca_entities.preferred_labels.displayname', array("restrictToRelationshipTypes" => array("artist"), 'checkAccess' => $va_access_values)); ?>">
+					<input type="hidden" name="artist" value="<?php print $vs_artist; ?>">
 				</div>
 				<div class="col-sm-12 col-md-8">
 <?php
