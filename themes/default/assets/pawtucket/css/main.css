@@ -3209,7 +3209,9 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	font-weight:normal;
 	font-size: 38px;
 }
-
+.tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline.tl-headline-fadeout::after, .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline p.tl-headline-fadeout::after{
+	background:none !important;
+}
 
 
 
