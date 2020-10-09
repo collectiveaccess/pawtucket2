@@ -1463,6 +1463,9 @@ div.caMediaOverlayControls, div.caMediaOverlayControlsMinimal {
 		width: 65%;
 		height: auto;
 	}
+	.resultImageImg{
+		overflow:hidden;
+	}
 	.resultImageList img{
 		object-fit:none;
 		width:auto;
