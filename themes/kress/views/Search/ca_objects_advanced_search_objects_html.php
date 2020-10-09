@@ -99,8 +99,8 @@
 			</div>
 			<br style="clear: both;"/>
 			<div class='advancedFormSubmit'>
-				<span class='btn btn-default'>{{{reset%label=Reset}}}</span>
-				<span class='btn btn-default' style="margin-left: 20px;">{{{submit%label=Search}}}</span>
+				<btn class='btn btn-default'>{{{reset%label=Reset}}}</btn>
+				<btn class='btn btn-default' style="margin-left: 20px;">{{{submit%label=Search}}}</btn>
 			</div>
 		</div>	
 

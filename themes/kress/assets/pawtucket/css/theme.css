@@ -725,6 +725,9 @@ body.frontContainer #footer{
 h3.tl-headline-date, .tl-text .tl-headline-date, .tl-text h3.tl-headline-date, .tl-timeline .tl-headline-date, .tl-timeline h3.tl-headline-date{
 	font-family: LatoLight !important;
 }
+.tl-timemarker-media-container{
+	display:none;
+}
 /* browse */
 @media(max-width:530px){
 	.results H1{

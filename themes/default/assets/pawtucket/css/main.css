@@ -32,9 +32,14 @@ b, strong{
 a, a:hover {
 	color:#11808D;
 }
-a, a:active, a:focus {
+a, a:active {
    outline: 0;
    text-decoration:none;
+}
+a.dropdown-toggle:focus, a:focus {
+    outline: thin dotted #333;
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
 }
 
 H1, h1, H2, h2, H3, h3, H4, h4, H5, h5, H6, h6{
@@ -3453,4 +3458,15 @@ input[type='text'].ui-autocomplete-loading {
 /* Fix for StoryMap/Leaflet conflict that results in StoryMap map markers rendered unclickable */
 .leaflet-marker-icon {
 	pointer-events: auto;
+}
+
+/* mirador */
+.panel-thumbnail-view ul.panel-listing-thumbs li .thumb-label{
+	color:#FFFFFF !important;
+}
+.mirador-viewer .fa, .mirador-viewer .material-icons{
+	color:#FFFFFF !important;
+}
+.mirador-viewer .image-list .fa{
+	color:#000 !important;
 }
