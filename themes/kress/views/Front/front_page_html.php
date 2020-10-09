@@ -130,7 +130,7 @@
 						height:     '600',
 						source:     '<?php print caNavUrl($this->request, '', 'Front', 'timelinejson'); ?>',
 						embed_id:   'timeline-embed',
-						initial_zoom: '1',
+						initial_zoom: '3',
 						font:		'medula-lato'
 					});
 				});
