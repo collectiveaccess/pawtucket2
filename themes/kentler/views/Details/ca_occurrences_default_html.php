@@ -33,8 +33,8 @@
 			$vb_user_able_to_select = false;
 ?>
 			<div class='alert alert-danger'>You are not able to select more items</div>
-			<p class="text-center">If you would like to select additional items, please contact <a href="mailto:benefit@kentlergallery.org">benefit@kentlergallery.org</a></p>
-
+			{{{benefitCantSelectItems}}}
+			
 <?php	
 		}
 ?>

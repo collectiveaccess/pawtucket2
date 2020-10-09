@@ -27,10 +27,24 @@
  */
  
 ?>
-Thank you for participating in Kentler International Drawing Space's 2020 Virtual Benefit. You have selected the following artwork:
+Dear Ticket Holder,
+
+Thank you for participating in Kentler's 2020 Virtual "100 Works on Paper" Benefit! We appreciate your support for our 30th year.
+You have selected the following artwork:
 
 <?php
-print $this->request->getParameter("itemTitle", pString).", ".$this->request->getParameter("itemURL", pString);
+print $this->request->getParameter("artist", pString).", ".$this->request->getParameter("itemTitle", pString);
 ?>
 
-Please contact benefit@kentlergallery.org with questions.
+<?php print $this->request->getParameter("itemURL", pString)."</p>"; ?>
+
+Artworks will be available for pickup in the gallery on Friday, Oct. 23 and Saturday, Oct. 24 from 12 - 5pm. If you pre-paid for shipping when you purchased your ticket, we will contact you when the package is on its way. To arrange for shipping, visit https://www.eventbrite.com/e/100-works-on-paper-virtual-benefit-tickets-93408987797 and select "SHIPPING Artwork."
+
+Please contact benefit@kentlergallery.org with any questions.
+
+Best,
+Florence Neal
+Executive Director
+Kentler International Drawing Space
+353 Van Brunt St. Brooklyn, NY 11232
+www.kentlergallery.org

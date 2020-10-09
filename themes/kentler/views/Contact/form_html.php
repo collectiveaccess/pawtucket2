@@ -126,6 +126,7 @@
 					<input type="hidden" name="table" value="<?php print $ps_table; ?>">
 					<input type="hidden" name="contactType" value="<?php print $ps_contactType; ?>">
 					<input type="hidden" name="benefit" value="<?php print $vs_benefit_message; ?>">
+					<input type="hidden" name="artist" value="<?php $t_item->get('ca_entities.preferred_labels.displayname', array("restrictToRelationshipTypes" => array("artist"), 'checkAccess' => $va_access_values)); ?>">
 				</div>
 				<div class="col-sm-12 col-md-8">
 <?php
@@ -218,7 +219,7 @@
 		if(!$vb_user_able_to_select){
 ?>
 			<div class='alert alert-danger'>You are not able to select more items</div>
-			<p class="text-center">If you would like to select additional items, please contact <a href="mailto:benefit@kentlergallery.org">benefit@kentlergallery.org</a></p>
+			{{{benefitCantSelectItems}}}
 <?php		
 		}else{
 ?>
