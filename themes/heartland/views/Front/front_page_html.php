@@ -32,7 +32,12 @@
 ?>
 	<div class="row">
 		<div class="col-sm-12 col-md-8 col-md-offset-2 text-center">
-			<H1>{{{frontWelcome}}}</H1>
+			<H1>{{{frontTagLine}}}</H1>
+<?php
+			if($vs_intro = $this->getVar("frontWelcome")){
+				print "<p class='frontIntro'>".$vs_intro."</p><br/>";
+			}
+?>
 			<p><?php print caNavLink($this->request, "Explore the Archive", "btn btn-default", "", "Browse", "objects"); ?><br/><br/></p>
 		</div><!--end col-sm-8-->
 	</div>
