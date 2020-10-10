@@ -628,7 +628,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 									</div><!-- end row -->
 									<script type="text/javascript">
 										jQuery(document).ready(function() {
-											jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'objects', array('facet' => 'detail_occurrence', 'id' => '^ca_occurrences.occurrence_id', 'detailNav' => 'digital_exhibition', 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
+											jQuery("#browseResultsContainer").load("<?php print caNavUrl($this->request, '', 'Browse', 'all_objects', array('facet' => 'detail_occurrence_dig_exhibition', 'id' => '^ca_occurrences.occurrence_id', 'detailNav' => 'digital_exhibition', 'view' => 'images'), array('dontURLEncodeParameters' => true)); ?>", function() {
 												jQuery('#browseResultsContainer').jscroll({
 													autoTrigger: true,
 													loadingHtml: '<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>',

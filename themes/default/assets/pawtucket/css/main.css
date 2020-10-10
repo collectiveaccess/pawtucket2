@@ -3209,7 +3209,9 @@ div.caMediaOverlayRepThumbs a.selectedRep img{
 	font-weight:normal;
 	font-size: 38px;
 }
-
+.tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline.tl-headline-fadeout::after, .tl-timemarker .tl-timemarker-content-container .tl-timemarker-content .tl-timemarker-text h2.tl-headline p.tl-headline-fadeout::after{
+	background:none !important;
+}
 
 
 
@@ -3453,4 +3455,15 @@ input[type='text'].ui-autocomplete-loading {
 /* Fix for StoryMap/Leaflet conflict that results in StoryMap map markers rendered unclickable */
 .leaflet-marker-icon {
 	pointer-events: auto;
+}
+
+/* mirador */
+.panel-thumbnail-view ul.panel-listing-thumbs li .thumb-label{
+	color:#FFFFFF !important;
+}
+.mirador-viewer .fa, .mirador-viewer .material-icons{
+	color:#FFFFFF !important;
+}
+.mirador-viewer .image-list .fa{
+	color:#000 !important;
 }
