@@ -78,8 +78,19 @@
 		print $o_debugbar_renderer->renderHead();
 	}
 ?>
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-W8XHQQD');</script>
+<!-- End Google Tag Manager -->
 </head>
 <body class='<?php print (strtoLower($this->request->getController()) == "front") ? "frontContainer" : ""; ?>'>
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W8XHQQD"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
@@ -149,9 +160,9 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
-					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Art Objects"), "", "", "Browse", "objects", array("view" => "images")); ?></li>
+					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "objects")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Objects"), "", "", "Browse", "objects", array("view" => "images")); ?></li>
 					<li <?php print ((strToLower($this->request->getController()) == "browse") && (strToLower($this->request->getAction()) == "archival")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Archival Materials"), "", "", "Browse", "archival"); ?></li>
-					<li class="dropdown<?php print ((strToLower($this->request->getController()) == "browse") && in_array(strToLower($this->request->getAction()), array("acquisitions", "dispositions"))) ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Events"); ?> <span class="caret"></span></a>
+					<li class="dropdown<?php print ((strToLower($this->request->getController()) == "browse") && in_array(strToLower($this->request->getAction()), array("acquisitions", "dispositions"))) ? ' active' : ''; ?>" style="position:relative;"><a href="#" class="dropdown-toggle mainhead top" data-toggle="dropdown"><?php print _t("Object History"); ?> <span class="caret"></span></a>
 						<ul class="dropdown-menu">
 <?php
 							print "<li>".caNavLink($this->request, _t("Acquisitions"), '', '', 'Browse', 'acquisitions', '')."</li>";
@@ -177,7 +188,7 @@
 							print "<li>".caNavLink($this->request, _t("Kress Collection History"), '', '', 'About', 'History', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Archival Materials Description"), '', '', 'About', 'Materials', '')."</li>";
 							print "<li>".caNavLink($this->request, _t("Additional Resources"), '', '', 'About', 'Resources', '')."</li>";
-							print "<li>".caNavLink($this->request, _t("Guide"), '', '', 'About', 'Guide', '')."</li>";
+							print "<li>".caNavLink($this->request, _t("Using the Site"), '', '', 'About', 'Guide', '')."</li>";
 ?>
 						</ul>	
 					</li>

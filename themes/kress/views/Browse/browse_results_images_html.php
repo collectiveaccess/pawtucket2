@@ -153,11 +153,11 @@
 
 					if(!$vb_no_media){
 						if($vs_table == "ca_objects"){
-							$vs_compare_link = "<a href='#' class='compare_link' data-id='object:{$vn_id}' title='Compare Images'><i class='fa fa-clone' aria-hidden='true'></i></a>";
+							$vs_compare_link = "<a href='#' class='compare_link btn btn-default btn-small' data-id='object:{$vn_id}' title='Compare Images'><i class='fa fa-clone' aria-hidden='true'></i></a>";
 						}else{
 							$media_value_ids = $qr_res->get($vs_table.".media.media_media.value_id", ["returnAsArray" => true]);
 							if(is_array($media_value_ids) && sizeof($media_value_ids)){
-								$vs_compare_link = "<a href='#' class='compare_link' data-id='attribute:{$media_value_ids[0]}' title='Compare Images'><i class='fa fa-clone' aria-hidden='true'></i></a>";
+								$vs_compare_link = "<a href='#' class='compare_link btn btn-default btn-small' data-id='attribute:{$media_value_ids[0]}' title='Compare Images'><i class='fa fa-clone' aria-hidden='true'></i></a>";
 							}
 						}
 					}

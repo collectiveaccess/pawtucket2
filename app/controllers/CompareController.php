@@ -90,6 +90,9 @@
  					if ($va_item['id'] === $ps_remove_id) { unset($va_comparison_list[$vn_i]); }
  				}
  			}
+ 			if ($ps_remove_all = $this->request->getParameter('remove_all', pString)) {
+ 				$va_comparison_list = array();
+ 			}
  			
  			if ($ps_id = $this->request->getParameter('id', pString)) {
 				if (sizeof(array_filter($va_comparison_list, function($v) use ($ps_id) { return $v['id'] == $ps_id; })) == 0) {

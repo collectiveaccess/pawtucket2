@@ -54,7 +54,7 @@
 					if(mb_strlen($va_criterion['value']) > 20){
 						$vs_label = mb_substr($va_criterion['value'], 0, 20)."...";
 					}
-					$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_label.' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_view, 'key' => $vs_key));
+					$vs_criteria .= caNavLink($this->request, '<button type="button" class="btn btn-default btn-sm">'.$vs_label.' <span class="glyphicon glyphicon-remove-circle" aria-label="Remove filter"></span></button>', 'browseRemoveFacet', '*', '*', '*', array('removeCriterion' => $va_criterion['facet_name'], 'removeID' => urlencode($va_criterion['id']), 'view' => $vs_view, 'key' => $vs_key, 'is_advanced' => $vn_is_advanced));
 					$vn_num_criteria++;
 				}
 			}
@@ -104,9 +104,19 @@
 				$vn_c = 0;
 				$vn_col = 0;
 				foreach($va_facet_info['content'] as $va_item) {
+					$va_facet_popover = array();
+					$vs_facet_desc = "";
+					if(($vs_browse_type == 'archival') && ($vs_facet_name == 'type_facet')){
+						$t_list_item = new ca_list_items($va_item['id']);
+						if($tmp = $t_list_item->get("ca_list_item_labels.description")){
+							$va_facet_popover = array("data-toggle" => "popover", "title" => $va_item['label'], "data-content" => $tmp);
+							$vs_facet_desc = "<a href='#' class='facetDescButton' onClick='jQuery(\".facetDesc".$va_item['id']."\").slideToggle(); return false;'><i class='fa fa-question-circle' aria-hidden='true' aria-label='More Information'></i><blockquote class='facetDesc".$va_item['id']."'>".$tmp."</blockquote>";
+						}
+						
+					}
 					$vs_label = $va_item['label'];
 					#$vs_content_count = (isset($va_item['content_count']) && ($va_item['content_count'] > 0)) ? " (".$va_item['content_count'].")" : "";
-					print "<div class='".(($va_facet_info["columns"]) ? "col-md-12 col-lg-4" : "col-sm-12")." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'>".caNavLink($this->request, $vs_label.$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view))."</div>";
+					print "<div class='".(($va_facet_info["columns"]) ? "col-md-12 col-lg-4" : "col-sm-12")." facetItem' data-facet='{$vs_facet_name}' data-facet_item_id='{$va_item['id']}'>".caNavLink($this->request, $vs_label.$vs_content_count, '', '*', '*','*', array('key' => $vs_key, 'facet' => $vs_facet_name, 'id' => $va_item['id'], 'view' => $vs_view)).$vs_facet_desc."</div>";
 					$vn_c++;
 					$vn_col++;
 					if ($va_facet_info["columns"] && ($vn_col == 3)) {
@@ -216,7 +226,26 @@
 			});
 <?php
 	}
+	if($vs_browse_type == "archival"){
 ?>            	
+			var options = {
+				placement: function () {
+					return "auto left";
+				},
+				trigger: "hover",
+				html: "true"
+			};
+
+			$('[data-toggle="popover"]').each(function() {
+				if($(this).attr('data-content')){
+					$(this).popover(options).click(function(e) {
+						$(this).popover('toggle');
+					});
+				}
+			});
+<?php
+	}
+?>		
 		});
 	</script>
 <?php	
