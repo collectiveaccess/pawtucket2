@@ -89,7 +89,7 @@
  			$this->view->setVar("contact_form_elements", $va_fields);
  			if(is_array($va_fields) && sizeof($va_fields)){
  				foreach($va_fields as $vs_element_name => $va_options){
- 					$vs_element_value = $o_purifier->purify($this->request->getParameter($vs_element_name, pString));
+ 					$vs_element_value = $o_purifier->purify($this->request->getParameter($vs_element_name, pString, ['forcePurify' => true]));
  					if($va_options["required"] && !$vs_element_value){
  						$va_errors[$vs_element_name] = true;
  						$va_errors["display_errors"]["required_error"] = _t("Please enter the required information in the highlighted fields");
