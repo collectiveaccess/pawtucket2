@@ -87,6 +87,13 @@ a.navbar-brand, .navbar-default .navbar-brand{
 		font-size: 18px;
 	}
 }
+@media(max-width:425px){
+	a.navbar-brand, .navbar-default .navbar-brand{
+		width: 200px;
+		line-height: 1.2em;
+		padding-top:7px;
+	}
+}
 .navbar-default .navbar-nav > li > a {
     color: #FFF !important;
     font-family: brandon-grotesque;
@@ -318,7 +325,9 @@ a.readmore-js-toggle::after {
 .frontIntro{
 	font-size: 20px;
 }
-
+.frontGallerySlideCaption{
+	width:250px;
+}
 /* gallery */
 .gallery .tl-timemarker-text H2{
 	font-size:12px !important;
