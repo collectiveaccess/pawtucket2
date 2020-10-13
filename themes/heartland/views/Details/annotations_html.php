@@ -49,8 +49,8 @@
 	jQuery(document).ready(function() {
 		var detailAnnotationTimes = <?php print json_encode($va_annotation_times); ?>;
 		jQuery('li.detailAnnotation').on('click', function(e) {
-			var i = jQuery('li.detailAnnotation').index(e.target); 
-			
+			//var i = jQuery('li.detailAnnotation').index(e.target); 
+			var i = jQuery('li.detailAnnotation').index($(this));
 			caUI.mediaPlayerManager.seek('<?php print $vs_player_name; ?>', detailAnnotationTimes[i][0]);
 		});
 		
