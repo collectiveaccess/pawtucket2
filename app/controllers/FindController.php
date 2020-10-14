@@ -45,10 +45,16 @@
          */
  		 protected $ops_view_prefix=null;
  		 
- 		 /**
- 		  * 
- 		  */
- 		  protected $opo_app_plugin_manager;
+ 		/**
+ 		 * 
+ 		 */
+ 		protected $opo_app_plugin_manager;
+ 		  
+        
+        /**
+         * @var HTMLPurifier
+         */
+        protected $purifier;
  		 
  		# -------------------------------------------------------
  		/**
@@ -57,6 +63,8 @@
  		public function __construct(&$po_request, &$po_response, $pa_view_paths=null) {
  			// Make application plugin manager available to superclasses
  			$this->opo_app_plugin_manager = new ApplicationPluginManager();
+ 			
+			$this->purifier = new HTMLPurifier();
  			
  			parent::__construct($po_request, $po_response, $pa_view_paths);
  		}

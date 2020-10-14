@@ -84,29 +84,27 @@
 				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
 				<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 				<HR></HR>
-				{{{<ifdef code="ca_objects.date_created"><label>Date</label>^ca_objects.date_created<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.idno"><label>Identifier</label>^ca_objects.idno<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.object_category"><label>Category</label>^ca_objects.object_category<br/></ifdef>}}}
+				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="Creator"><div class="unit"><label>Creator<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="Creator">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="Creator" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit></div></ifcount>}}}
 				{{{<ifdef code="ca_objects.description">
 						<label>Description</label>
 						<span class="trimText">^ca_objects.description</span>
 					</div>
 				</ifdef>}}}
-				
-				{{{<ifcount code="ca_entities" min="1"><hr></hr></ifcount>}}}
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="partnering_organization"><div class="unit"><label>Partnering Organization<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="partnering_organization">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="partnering_organization" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit></div></ifcount>}}}
+				{{{<ifdef code="ca_objects.date_created"><label>Date Created</label>^ca_objects.date_created<br/></ifdef>}}}
+				
+				
 				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="Source"><div class="unit"><label>Source<ifcount code="ca_entities" min="2" restrictToRelationshipTypes="Source">s</ifcount></label><unit relativeTo="ca_entities" restrictToRelationshipTypes="Source" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit></div></ifcount>}}}
-				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="partnering_organization,Source"><div class="unit"><label>Contributor<ifcount code="ca_entities" min="2" excludeRelationshipTypes="partnering_organization,Source">s</ifcount></label><unit relativeTo="ca_entities" excludeRelationshipTypes="partnering_organization,Source" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit></div></ifcount>}}}
+				{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="partnering_organization,Source,Creator"><div class="unit"><label>Contributor<ifcount code="ca_entities" min="2" excludeRelationshipTypes="partnering_organization,Source">s</ifcount></label><unit relativeTo="ca_entities" excludeRelationshipTypes="partnering_organization,Source" delimiter="<br/>"><l>^ca_entities.preferred_labels</l></unit></div></ifcount>}}}
 				
 				
 				{{{<ifdef code="ca_objects.idno|ca_objects.object_category|ca_objects.language|ca_objects.date_digitized"><hr></hr></ifdef>}}}
-				{{{<ifdef code="ca_objects.idno"><label>Identifier</label>^ca_objects.idno<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.object_category"><label>Category</label>^ca_objects.object_category<br/></ifdef>}}}
 				{{{<ifdef code="ca_objects.language"><label>Language</label>^ca_objects.language%delimiter=,_<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.date_digitized"><label>Date Digitized</label>^ca_objects.date_digitized%delimiter=,_<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.aat"><label>Format</label>^ca_objects.aat%delimiter=,_<br/></ifdef>}}}
-				{{{<ifdef code="ca_objects.aat"><label>Keywords</label>^ca_objects.keywords%delimiter=,_<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.aat"><label>Original Object Format</label>^ca_objects.aat%delimiter=,_<br/></ifdef>}}}
+				{{{<ifdef code="ca_objects.keywords"><label>Keywords</label>^ca_objects.keywords%delimiter=,_<br/></ifdef>}}}
 			
-				
-				{{{<ifcount code="ca_places" min="1"><div class="unit"><label>Place<ifcount code="ca_places" min="2">s</ifcount></label><unit relativeTo="ca_places" delimiter="<br/>"><l>^ca_places.preferred_labels</l></unit></div></ifcount>}}}
 				
 <?php
 				if($vs_map = trim($this->getVar("map"))){
@@ -117,8 +115,6 @@
 				{{{<ifdef code="ca_objects.rights"><HR></HR><div class="unit">
 					<ifdef code="ca_objects.rights.rightsText"><label>Rights</label>^ca_objects.rights.rightsText</ifdef>
 					<ifdef code="ca_objects.rights.rightsHolder"><label>Rights Holder</label>^ca_objects.rights.rightsHolder<br/></ifdef>
-					<ifdef code="ca_objects.rights.creditline"><label>Creditline</label>^ca_objects.rights.creditline<br/></ifdef>
-					<ifdef code="ca_objects.rights.rightsNotes"><label>Rights Notes</label>^ca_objects.rights.rightsNotes<br/></ifdef>
 				</div></ifdef>}}}
 				
 				
@@ -139,5 +135,14 @@
 		  speed: 75,
 		  maxHeight: 125
 		});
+		if ($('.video-js')[0]){
+			$(window).resize(function() {
+				w = jQuery('.repViewerCont').width();
+				h = Math.ceil(w * .7);
+				jQuery('.video-js').attr('width', w).attr('height', h);
+				jQuery('.video-js').width(w);
+				jQuery('.video-js').height(h);
+			});
+		}
 	});
 </script>
