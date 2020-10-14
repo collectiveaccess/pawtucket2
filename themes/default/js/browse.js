@@ -1,6 +1,7 @@
 /*jshint esversion: 6 */
 'use strict';
 import React from "react"
+import qs from 'qs';
 const axios = require('axios');
 axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
@@ -44,9 +45,12 @@ function initialState() {
  * @param callback Function to call once results are received. The first parameter of the callback will be an object
  * 			containing the new browse state, including results.
  */
-function fetchResults(url, callback, useDefaultKey=true) {
+function fetchResults(url, params, callback, useDefaultKey=true) {
+	params['getResult'] = 1;
+	if (useDefaultKey) { params['useDefaultKey'] = 1; }
+
 	// Fetch browse facet items
-	axios.get(url + "/getResult/1" + (useDefaultKey ? '/useDefaultKey/1' : ''))
+	axios.post(url, qs.stringify(params))
 		.then(function (resp) {
 			let data = resp.data;
 			let state = initialState();
@@ -146,10 +150,19 @@ function initBrowseContainer(instance, props, loadResults=true, callback=null) {
 	that.loadResults = function(callback, clearFilters=false) {
 		let offset = that.state.start;
 		let filterString = getFilterString(that.state.filters);
+		
+		let params = {
+			s: offset,
+			key: that.state.key ? that.state.key : '',
+		};
+		if (filterString) { params['facets'] = filterString; }
+		if (clearFilters) { params['clear'] = 1; }
+		if (that.state.set_id) { params['set_id'] = that.state.set_id; }
+		if (that.state.sort) { params['sort'] = that.state.sort; }
+		if (that.state.sortDirection) { params['direction'] = that.state.sortDirection; }
+		if (that.state.set_id) { params['set_id'] = that.state.set_id; }
 
-		fetchResults(that.props.baseUrl + '/' + that.props.endpoint + '/s/' +
-			offset + (that.state.key ? '/key/' + that.state.key : '') + (filterString ? '/facets/' +
-				filterString : '') + (clearFilters ? '/clear/1' : '') + (that.state.set_id ? '/set_id/' + that.state.set_id : '') + (that.state.sort ? '/sort/' + that.state.sort : '') + (that.state.sortDirection ? '/direction/' + that.state.sortDirection : ''), function(newState) {
+		fetchResults(that.props.baseUrl + '/' + that.props.endpoint, params, function(newState) {
 			callback(newState);
 		}, !this.dontUseDefaultKey);
 	};

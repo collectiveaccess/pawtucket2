@@ -25,13 +25,10 @@ class LightboxResultItem extends React.Component {
 		super(props);
 
     LightboxResultItem.contextType = LightboxContext;
-
 		this.selectLightboxItem = this.selectLightboxItem.bind(this);
-
 	}
 
 	selectLightboxItem(e) {
-
 		let state = this.context.state;
 		let item_id = parseInt(e.target.attributes.getNamedItem('data-item_id').value);
 		if(!item_id) { return; }
@@ -48,6 +45,7 @@ class LightboxResultItem extends React.Component {
 
 	render() {
 		let data = this.props.data;
+    // console.log('this.props.data', data);
 
 		switch(this.props.view) {
 			default:
@@ -55,11 +53,26 @@ class LightboxResultItem extends React.Component {
           <div className={'card mb-4 bResultImage' + ((this.context.state.selectedItems.includes(data.id)) ? ' selected' : '')} ref={this.props.scrollToRef}>
 
             <div className='card-body mb-2'>
-              <a href={data.detailUrl}><div dangerouslySetInnerHTML={{__html: data.representation}}/></a>
+
+              <a href={data.detailUrl}>
+                <div dangerouslySetInnerHTML={{__html: data.representation}}/>
+              </a>
+
+              {/*(this.context.state.showSelectButtons) ?
+                <a onClick={this.selectLightboxItem} data-item_id={data.id} className={'selectItem' + ((this.context.state.selectedItems.includes(data.id)) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'>
+                  <div dangerouslySetInnerHTML={{__html: data.representation}} onClick={this.selectLightboxItem} data-item_id={data.id} className={'selectItem' + ((this.context.state.selectedItems.includes(data.id)) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item' style={{cursor: 'pointer'}}/>
+                </a>
+                :
+                <a href={data.detailUrl}>
+                  <div dangerouslySetInnerHTML={{__html: data.representation}}/>
+                </a>
+              */}
 
               {(this.context.state.showSelectButtons) ?
                 <div className='float-left'>
-                  <a onClick={this.selectLightboxItem} data-item_id={data.id} className={'selectItem' + ((this.context.state.selectedItems.includes(data.id)) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'><ion-icon name='checkmark-circle' data-item_id={data.id}></ion-icon></a>
+                  <a onClick={this.selectLightboxItem} data-item_id={data.id} className={'selectItem' + ((this.context.state.selectedItems.includes(data.id)) ? ' selected' : '')} role='button' aria-expanded='false' aria-controls='Select item'>
+                    <ion-icon name='checkmark-circle' data-item_id={data.id} style={{cursor: 'pointer'}}></ion-icon>
+                  </a>
                 </div>
                : null}
 

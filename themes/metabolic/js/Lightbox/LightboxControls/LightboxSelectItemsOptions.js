@@ -1,4 +1,3 @@
-
 /**
 * Renders select options
 *
@@ -24,7 +23,7 @@ class LightboxSelectItemsOptions extends React.Component {
 	constructor(props) {
 		super(props);
 
-    	LightboxSelectItemsOptions.contextType = LightboxContext;
+    LightboxSelectItemsOptions.contextType = LightboxContext;
 
 		this.clearSelectLightboxItems = this.clearSelectLightboxItems.bind(this);
 		this.showSelectButtons = this.showSelectButtons.bind(this);
@@ -38,11 +37,13 @@ class LightboxSelectItemsOptions extends React.Component {
 		state.selectedItems = [];
 		this.context.setState(state);
 	}
+
 	showSelectButtons() {
 		let state = this.context.state;
 		state.showSelectButtons = true;
 		this.context.setState(state);
 	}
+
 	addSelectedItemsToNewLightbox() {
 		let that = this;
 		let state = that.context.state;

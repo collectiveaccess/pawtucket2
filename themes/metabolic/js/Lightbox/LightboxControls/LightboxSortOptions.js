@@ -30,7 +30,7 @@ class LightboxSortOptions extends React.Component {
     this.context.setState({userSort: false, showSaveButton: true})
     window.scrollTo(0, 0);
 		e.preventDefault();
-    console.log("sort: ", this.context.state.sort);
+    // console.log("sort: ", this.context.state.sort);
 	}
 
 	render() {

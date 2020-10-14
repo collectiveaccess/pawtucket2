@@ -27,6 +27,9 @@ import LightboxSortOptions from './LightboxControls/LightboxSortOptions';
 import LightboxStatistics from './LightboxControls/LightboxStatistics';
 import LightboxDragAndDrop from './LightboxControls/LightboxDragAndDrop';
 
+import LightboxSelection from './LightboxControls/LightboxSelection';
+
+
 class LightboxControls extends React.Component {
 
 	constructor(props) {
@@ -61,6 +64,7 @@ class LightboxControls extends React.Component {
 
 	render() {
 		let c  = (this.context.state.resultSize === null);
+		console.log('Context', this.context);
 		return(
 			<div className="row">
 				<div className="col-md-6">
@@ -68,15 +72,18 @@ class LightboxControls extends React.Component {
 				</div>
 
 				<div className="col-md-6">
+					<div className='row'>
+						<LightboxDragAndDrop/>
+						<LightboxSelection />
+						{/*<LightboxSelectItemsOptions/>*/}
+						<LightboxSortOptions/>
+						<LightboxExportOptions/>
+					</div>
 
 					{/* view doesn't work yet
 					<LightboxViewList/>
 					*/}
 
-					<LightboxExportOptions/>
-					<LightboxSortOptions/>
-					<LightboxSelectItemsOptions/>
-         	<LightboxDragAndDrop/>
 
           {/*
 

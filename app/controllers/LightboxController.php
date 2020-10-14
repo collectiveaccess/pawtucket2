@@ -177,6 +177,13 @@
 			$introduction = [
 				'title' => $t_set->get('ca_sets.preferred_labels.name')
 			];
+			
+			
+			// Always return sorted by set rank
+			if (!$this->request->getParameter('sort', pString)) { 
+				$this->request->setParameter('sort', "ca_set_items.rank/{$set_id}");			
+				$this->request->setParameter('direction', 'ASC');
+			}
 
 			parent::__call('getContent', ['browseInfo' => $browse_info, 'introduction' => $introduction, 'dontSetFind' => true, 'noCache' => true]);
 		}
@@ -649,6 +656,34 @@
 			$this->render("Lightbox/browse_data_json.php");
 
 		}
+		# ------------------------------------------------------
+        /**
+         *
+         */
+ 		public function reorderItems() {
+            if($this->opb_is_login_redirect) { return; }
+			
+			if ($set_id = $this->request->getParameter('set_id', pInteger)) {
+				Session::setVar("lightbox_last_set_id", $set_id);
+			} else {
+				$set_id = Session::getVar("lightbox_last_set_id");
+			}
+			$t_set = new ca_sets($set_id);
+            if($t_set->isLoaded()){
+				$va_row_ids = array_filter(array_map(function($v) { return (int)$v; }, explode('&', $r=$this->request->getParameter('row_ids', pString))), function($v) { return ($v > 0); });
+				
+				$va_errors = $t_set->reorderItems($va_row_ids, ['user_id' => $this->request->getUserID()]);
+				if(is_array($errors) && sizeof($errors)) {
+					$data = ['status' => 'err', 'error' => _t("There was an error").": ".join('; ', $va_errors)];
+				} else {
+					$data = ['status' => 'ok', 'message' => _t("Reordered items for %1", $this->ops_lightbox_display_name, $r)];
+				}
+			}else{
+				$data = ['status' => 'err', 'error' => _t('Invalid set id')];
+			}
+			$this->view->setVar('data', $data);
+			$this->render('Lightbox/browse_data_json.php');
+ 		}
  		# -------------------------------------------------------
 		/** 
 		 * Generate the URL for the "back to results" link from a browse result item

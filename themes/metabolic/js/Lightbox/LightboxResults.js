@@ -59,7 +59,7 @@ const Item = SortableElement(({ value }) => {
 	return (<div className="grid-item" style={{padding: '5px'}}>
 		<DragHandle />
 		{value}
-		{value.props.data.id}
+		{/* {value.props.data.id} */}
 	</div>)
 });
 
@@ -183,7 +183,7 @@ class LightboxResults extends React.Component {
             {/* TODO: put save sort button in lightbox controls, needs to have access to the order of the item Id's first */}
               {this.context.state.showSaveButton == true ?
                 <div>
-                  <button type="button" className="btn btn-secondary" onClick={() => this.saveFromSortOptions(resultList)} style={{marginLeft: '6px'}}> Save Sort Permanently</button>
+                  <button type="button" className="btn btn-success" onClick={() => this.saveFromSortOptions(resultList)} style={{marginLeft: '6px'}}> Save Sort Permanently</button>
                   <button type="button" className="btn btn-danger" onClick={() => this.cancelSaveFromSortOptions()} style={{marginLeft: '6px'}}>Cancel</button>
                 </div>
                 :
@@ -326,7 +326,7 @@ class ShareBlock extends React.Component {
 								if(c.owner){
 									state.setUsers.owner.push(<li className='list-group-item' key={k}>{c.name} ({c.email}) <b>Owner</b></li>);
 								}else{
-									state.setUsers.users.push(<li className='list-group-item' key={k}><a href='#' className='float-right' onClick={this.removeUser} data-user-id={c.user_id} data-set-id={this.props.setID}><ion-icon name='close-circle' data-user-id={c.user_id} data-set-id={this.props.setID}></ion-icon></a>{c.name} ({c.email})<br/><i>Can {(c.access == 2) ? "edit" : "read"}</i></li>);
+									state.setUsers.users.push(<li className='list-group-item' key={k}><a href='#' className='float-right' onClick={that.removeUser} data-user-id={c.user_id} data-set-id={that.props.setID}><ion-icon name='close-circle' data-user-id={c.user_id} data-set-id={that.props.setID}></ion-icon></a>{c.name} ({c.email})<br/><i>Can {(c.access == 2) ? "edit" : "read"}</i></li>);
 								}
 							}
 						}
@@ -356,8 +356,8 @@ class ShareBlock extends React.Component {
 	}
 
 	submitForm(e) {
+		let state = this.state;
 		let that = this;
-		let state = that.state;
 		// TODO: For some reason it gives type error when using this.state
 		state.statusMessage = "Submitting...";
 		state.statusMessageType = "success";
@@ -399,14 +399,14 @@ class ShareBlock extends React.Component {
 						state.statusMessage = state.statusMessage + data.error;
 					}
 					state.statusMessageType = "success";
-					state.values = this.initializeValues();	// Clear form elements
-					state.errors = this.initializeValues();	// Clear form errors
-					this.setState(state);
-					this.initializeList();
+					state.values = that.initializeValues();	// Clear form elements
+					state.errors = that.initializeValues();	// Clear form errors
+					that.setState(state);
+					that.initializeList();
 					if(!data.error){
 						setTimeout(function() {
 							state.statusMessage = '';
-							this.setState(state);
+							that.setState(state);
 						}, 3000);
 					}
 				}
@@ -420,8 +420,8 @@ class ShareBlock extends React.Component {
 	}
 
 	removeUser(e) {
+		let state = this.state;
 		let that = this;
-		let state = that.state;
 		let userID = e.target.attributes.getNamedItem('data-user-id').value;
 		let setID = e.target.attributes.getNamedItem('data-set-id').value;
 		state.statusMessageUserList = "Removing User...";
@@ -434,19 +434,19 @@ class ShareBlock extends React.Component {
 					// error
 					state.statusMessageUserList = data.error;
 					state.statusMessageTypeUserList = "error";
-					this.setState(state);
+					that.setState(state);
 				} else {
 					// success
 					state.statusMessageTypeUserList = "success";
 					state.statusMessageUserList = data.message;
-					this.setState(state);
-					this.initializeList();
+					that.setState(state);
+					that.initializeList();
 					setTimeout(function() {
 						state.statusMessageUserList = '';
-						this.setState(state);
+						that.setState(state);
 					}, 3000);
 				}
-				this.setState(state);
+				that.setState(state);
 			})
 			.catch(function (error) {
 				console.log("Error while getting set users: ", error);

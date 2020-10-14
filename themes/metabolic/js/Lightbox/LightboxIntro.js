@@ -33,12 +33,12 @@ class LightboxIntro extends React.Component {
 		this.saveLightboxEdit = this.saveLightboxEdit.bind(this);
 	}
 
-	saveLightboxEdit(name) {
+	saveLightboxEdit(name){
+		let that = this;
 		editLightbox(this.context.props.baseUrl, {'name': name, set_id: this.context.state.set_id }, function(resp) {
 			// TODO: display potential errors
 
 			// Update name is context state
-			let that = this;
 			let state = that.context.state;
 			state.lightboxList.sets[state.set_id]['label'] = name;
 			state.headline = name;

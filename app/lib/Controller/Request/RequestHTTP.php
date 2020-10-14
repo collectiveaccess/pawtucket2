@@ -608,12 +608,13 @@ class RequestHTTP extends Request {
 		return $va_params;
 	}
 	# -------------------------------------------------------
-	function setParameter($ps_name, $pm_value, $ps_http_method='GET') {
-		if (in_array($ps_http_method, array('GET', 'POST', 'COOKIE', 'PATH', 'REQUEST'))) {
-			$this->opa_params[$ps_http_method][$ps_name] = $pm_value;
-			return true;
+	function setParameter($ps_name, $pm_value, $ps_http_method=null) {
+		foreach(['GET', 'POST', 'COOKIE', 'PATH', 'REQUEST'] as $method) {
+			if ($ps_http_method && !in_array($ps_http_method, array('GET', 'POST', 'COOKIE', 'PATH', 'REQUEST'))) { continue; }
+			$this->opa_params[$method][$ps_name] = $pm_value;
+			if($ps_http_method) { return true; }
 		}
-		return false;
+		return $ps_http_method ? false : true;
 	}
 	# -------------------------------------------------------
  	/**

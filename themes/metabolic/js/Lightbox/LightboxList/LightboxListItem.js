@@ -67,30 +67,30 @@ class LightboxListItem extends React.Component {
 	}
 
 	saveNewLightbox(name) {
-		// let that = this;
+		let that = this;
 		this.context.saveNewLightbox({'name': name}, function(resp) {
-			let state = this.state;
+			let state = that.state;
 			if (resp && resp['err']) {
 				state['newLightboxError'] = resp['err'];
-				if(this.props.newLightboxRef && this.props.newLightboxRef.current) {
-					this.props.newLightboxRef.current.onClick();
+				if(that.props.newLightboxRef && that.props.newLightboxRef.current) {
+					that.props.newLightboxRef.current.onClick();
 				}
 			} else {
 				state['newLightboxError'] = null;
 			}
-			this.setState(state);
+			that.setState(state);
 		});
 	}
 
 	saveLightboxEdit(name) {
-		// let that = this;
+		let that = this;
 		editLightbox(this.context.props.baseUrl, {'name': name, set_id: this.props.data.set_id }, function(resp) {
 			// TODO: display potential errors
 
 			// Update name is context state
-			let state = this.context.state;
-			state.lightboxList.sets[this.props.data.set_id]['label'] = name;
-			this.context.setState(state);
+			let state = that.context.state;
+			state.lightboxList.sets[that.props.data.set_id]['label'] = name;
+			that.context.setState(state);
 		});
 	}
 
@@ -109,7 +109,7 @@ class LightboxListItem extends React.Component {
 								that.setState(state);
 								// TODO: For some reason it gives type error when using this.setState
 
-								this.props.deleteCallback(this.props.data);
+								that.props.deleteCallback(that.props.data);
 								onClose();
 							}}>
 							Yes

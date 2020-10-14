@@ -18,6 +18,7 @@ function fetchLightboxList(url, callback) {
 			let data = resp.data;
 
 			callback(data);
+      // console.log("data: ", data);
 		})
 		.catch(function (error) {
 			console.log("Error while loading lightbox list: ", error);

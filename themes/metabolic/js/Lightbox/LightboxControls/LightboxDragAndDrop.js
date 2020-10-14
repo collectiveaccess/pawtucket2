@@ -45,11 +45,11 @@ class LightboxDragAndDrop extends React.Component {
         {this.state.currentlyDragging == true ?
           ' '
           :
-          <button type='button' className='btn btn-secondary' onClick={this.changeDragDrop}>Drag Sort</button>
+          <button type='button' className='btn btn-secondary' onClick={this.changeDragDrop} style={{marginLeft: '6px'}}>Drag Sort</button>
         }
 
         {this.context.state.dragDropMode == true ?
-          <button type='button' className='btn btn-secondary' onClick={this.saveDragDrop} style={{marginLeft: '6px'}}>Save</button>
+          <button type='button' className='btn btn-success' onClick={this.saveDragDrop} style={{marginLeft: '6px'}}>Save Sort</button>
           :
           ' '
         }
