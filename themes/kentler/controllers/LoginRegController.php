@@ -261,8 +261,8 @@
 					#if ($vs_default_action = $this->request->config->get('default_action')) {
 					# --- for virtual benefit, redirect to benefit page
 					$vs_default_action = $this->request->config->get('default_action');
-					if($this->request->config->get('virtual_benfit_login_reg_action')){
-						$vs_default_action = $this->request->config->get('virtual_benfit_login_reg_action');
+					if($this->request->config->get('virtual_benefit_login_reg_action')){
+						$vs_default_action = $this->request->config->get('virtual_benefit_login_reg_action');
 					}
 					if ($vs_default_action) {
 						$va_tmp = explode('/', $vs_default_action);

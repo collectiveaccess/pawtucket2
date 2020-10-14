@@ -29,7 +29,7 @@
 		if(!$vn_num_items_for_user){
 			$vn_num_items_for_user = 1;
 		}
-		if($vn_num_items_for_user <= $this->request->user->getVar("numSelectedItems")){
+		if($vn_num_items_for_user <= $this->request->user->getPreference("user_profile_number_of_items_selected")){
 			$vb_user_able_to_select = false;
 ?>
 			<div class='alert alert-danger'>You are not able to select more items</div>
