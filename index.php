@@ -115,12 +115,11 @@
 		$resp->addHeader("Cache-Control", "no-cache, must-revalidate");
 		$resp->addHeader("Expires", "Mon, 26 Jul 1997 05:00:00 GMT");
 		
-		// Security headers
-		$resp->addHeader("X-XSS-Protection", "1; mode=block");
-		$resp->addHeader("X-Frame-Options", "SAMEORIGIN");
-		$resp->addHeader("Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com nominatim.openstreetmap.org  ajax.googleapis.com tagmanager.google.com www.googletagmanager.com www.google-analytics.com www.google.com/recaptcha/ www.gstatic.com ".$g_request->config->get('content_security_policy_include')." 'unsafe-inline' 'unsafe-eval';"); 
-		$resp->addHeader("X-Content-Security-Policy", "script-src 'self' maps.googleapis.com cdn.knightlab.com nominatim.openstreetmap.org  ajax.googleapis.com  tagmanager.google.com www.googletagmanager.com www.google-analytics.com www.google.com/recaptcha/ www.gstatic.com ".$g_request->config->get('content_security_policy_include')." 'unsafe-inline' 'unsafe-eval';"); 
-	
+		//
+		// Output configurable headers from headers.conf
+		//
+		caEmitHeaders($resp);
+		
 		//
 		// Dispatch the request
 		//
