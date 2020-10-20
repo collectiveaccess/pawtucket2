@@ -214,13 +214,12 @@
 				$va_set_first_items_media = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "widepreview", "checkAccess" => $this->opa_access_values));
 				$va_set_first_items_media_large = $t_set->getPrimaryItemsFromSets(array_keys($va_sets), array("version" => "large", "checkAccess" => $this->opa_access_values));
 
-				shuffle($va_sets);
 				foreach($va_sets as $va_set){
 					$va_tmp_large = array_shift($va_set_first_items_media_large[$va_set['set_id']]);
 					$va_tmp_widepreview = array_shift($va_set_first_items_media[$va_set['set_id']]);
-					
-					$va_all_sets_first_items[$va_set['set_id']] = array("imageLarge" => $va_tmp_large['representation_tag'], "imageWidePreview" => $va_tmp_widepreview['representation_tag'], "title" => $va_set['name']);
+					$va_all_sets_first_items[$va_set['set_code']] = array("set_id" => $va_set['set_id'], "imageLarge" => $va_tmp_large['representation_tag'], "imageWidePreview" => $va_tmp_widepreview['representation_tag'], "title" => $va_set['name']);
 				}
+				ksort($va_all_sets_first_items);
 			}
 			$this->view->setVar('featured_sets', $va_all_sets_first_items);
 			
