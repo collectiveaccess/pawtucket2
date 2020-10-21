@@ -1522,6 +1522,11 @@ a.digExhAnchors.offset{
 .detail .digExhContentBlock, .detail .digExhContentBlock .digExhUnit p{	
 	font-size:15px;
 }
+@media(min-width:1200px){
+	.digExhContentBlock .digExhUnit, .detail .digExhContentBlock .digExhUnit p{
+		font-size:18px;
+	}
+}
 .digExhContentBlock h2{
 	font-weight:normal;
 	font-size:28px;
