@@ -1874,16 +1874,20 @@ LEFT JOIN ca_object_representations AS cor ON coxor.representation_id = cor.repr
 					$va_row['representation_path'] = $qr_res->getMediaPath('media', $pa_options['thumbnailVersion']);
 					$va_row['representation_width'] = $qr_res->getMediaInfo('media',  $pa_options['thumbnailVersion'], 'WIDTH');
 					$va_row['representation_height'] = $qr_res->getMediaInfo('media',  $pa_options['thumbnailVersion'], 'HEIGHT');
+					$va_row['representation_mimetype'] = $qr_res->getMediaInfo('media',  $pa_options['thumbnailVersion'], 'MIMETYPE');
 				}
 				
 				if (isset($pa_options['thumbnailVersions']) && is_array($pa_options['thumbnailVersions'])) {
 					foreach($pa_options['thumbnailVersions'] as $vs_version) {
 						$va_row['representation_tag_'.$vs_version] = $qr_res->getMediaTag('media', $vs_version, array("alt" => $vs_alt_text));
-						$va_row['representation_tag_'.$vs_version.'_as_link'] = caDetailLink($qr_res->getMediaTag('media', $vs_version, array("alt" => $vs_alt_text)), '', $t_rel_table->tableName(), $qr_res->get("ca_set_items.row_id"));
+						if(!defined('__CA_IS_SERVICE_REQUEST__')) {
+							$va_row['representation_tag_'.$vs_version.'_as_link'] = caDetailLink($qr_res->getMediaTag('media', $vs_version, array("alt" => $vs_alt_text)), '', $t_rel_table->tableName(), $qr_res->get("ca_set_items.row_id"));
+						}
 						$va_row['representation_url_'.$vs_version] = $qr_res->getMediaUrl('media', $vs_version);
 						$va_row['representation_path_'.$vs_version] = $qr_res->getMediaPath('media', $vs_version);
 						$va_row['representation_width_'.$vs_version] = $qr_res->getMediaInfo('media',  $vs_version, 'WIDTH');
 						$va_row['representation_height_'.$vs_version] = $qr_res->getMediaInfo('media',  $vs_version, 'HEIGHT');
+						$va_row['representation_mimetype_'.$vs_version] = $qr_res->getMediaInfo('media',  $vs_version, 'MIMETYPE');
 					}
 				}				
 			}

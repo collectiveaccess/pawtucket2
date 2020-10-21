@@ -38,4 +38,3 @@
 	} else {
 		print json_encode($va_return);
 	}
-?>

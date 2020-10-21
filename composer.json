@@ -16,7 +16,7 @@
     "phpoffice/phpexcel": "v1.8.1",
     "tedivm/stash": "0.14.*",
     "pear/file_marc": "~1.2",
-    "dompdf/dompdf": "~0.8",
+    "dompdf/dompdf": "0.8.5",
     "scholarslab/bagit": "~0.2",
     "guzzlehttp/psr7": "^1.4",
     "joshralph/password-policy": "~0.2",
@@ -27,8 +27,15 @@
     "league/flysystem-ziparchive": ">=1.0.0",
     "srmklive/flysystem-dropbox-v2": ">=1.0.0",
     "league/climate": ">=1.0.0",
-    "okta/sdk": ">=1.0.0",
-    "okta/jwt-verifier": "^0.2.1",
-    "opis/json-schema": "^1.0"
+    "opis/json-schema": "^1.0",
+    "zendframework/zend-stdlib": "^3.2",
+    "james-heinrich/getid3": "^1.9.20",
+    "ext-iconv": "*",
+    "ext-simplexml": "*",
+    "phpseclib/phpseclib": "^2.0",
+    "webonyx/graphql-php": "^14.1"
+  },
+  "config": {
+  	"discard-changes": true
   }
 }
