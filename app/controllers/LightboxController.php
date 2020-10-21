@@ -67,11 +67,6 @@
         protected $opb_is_login_redirect = false;
         
         /**
-         * @var HTMLPurifier
-         */
-        protected $purifier;
-        
-        /**
          * @var string
          */
         protected $ops_tablename = 'ca_objects';
@@ -117,7 +112,6 @@
 			$this->ops_description_attribute = ($this->opo_config->get("lightbox_set_description_element_code") ? $this->opo_config->get("lightbox_set_description_element_code") : "description");
 			$this->view->setVar('description_attribute', $this->ops_description_attribute);
 			
-			$this->purifier = new HTMLPurifier();
 			
  			parent::setTableSpecificViewVars();
  		}
