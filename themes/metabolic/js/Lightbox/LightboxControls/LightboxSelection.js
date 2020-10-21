@@ -27,7 +27,7 @@ class LightboxSelection extends React.Component {
 
     LightboxSelection.contextType = LightboxContext;
 
-		this.state={
+		this.state= {
 			transferItems: false,
 			transferSubmit: false,
 			searchedLightbox: '',
@@ -47,6 +47,8 @@ class LightboxSelection extends React.Component {
 		this.handleChange = this.handleChange.bind(this);
 
 		this.toggleDropdown = this.toggleDropdown.bind(this);
+
+		this.transferOption = this. transferOption.bind(this)
 
 	}
 
@@ -167,7 +169,7 @@ class LightboxSelection extends React.Component {
 			})
 		);  {/* end of for each */}
 
-		setTimeout(this.context.reloadResults(), 2000)
+		// setTimeout(this.context.reloadResults(), 2000)
 
 		this.context.setState({
 			showSelectButtons: false,
@@ -181,11 +183,15 @@ class LightboxSelection extends React.Component {
 		});
 	}
 
+	transferOption(){
+		this.setState({transferItems:true})
+	}
+
 	render() {
 
-		$(document).on('click', '#transferItemsOption', function (e) {
-				e.stopPropagation();
-		});
+		// $(document).on('click', '#transferItemsOption', function (e) {
+		// 		e.stopPropagation();
+		// });
 
 		let lightboxes = [];
 		if (this.context.state.lightboxList && this.context.state.lightboxList.sets) {
@@ -220,7 +226,7 @@ class LightboxSelection extends React.Component {
 						<button type="button" className="btn btn-secondary" onClick={this.showSelectButtons} style={{marginLeft: '6px'}}>Select Items</button>
 					}
 
-					{(this.context.state.showSelectButtons) ?
+					{(numberOfSelectedItems >= 1) ?
 						<button type="button" className="btn btn-success dropdown-toggle dropdown-toggle-split" id="optionsButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span className="sr-only">Toggle Dropdown</span>
 					  </button>
@@ -230,62 +236,57 @@ class LightboxSelection extends React.Component {
 
 				  <ul className="dropdown-menu">
 
-					  {/* <li><a className={(this.context.state.showSelectButtons) ? "dropdown-item": "dropdown-item disabled"} href="#"      onClick={this.clearSelectLightboxItems}>Clear Selection</a></li>
-						<div className="dropdown-divider"></div>
-						*/}
-
 				    <li className='menu-option'>
-							<a className={(numberOfSelectedItems >= 1) ? "dropdown-item": "dropdown-item disabled"} href="#" onClick={this.addSelectedItemsToNewLightbox}>Create Lightbox From Selected Items</a>
+							<a className="dropdown-item" href="#" onClick={this.addSelectedItemsToNewLightbox}>Create Lightbox From Selected Items</a>
 						</li>
 						<div className="dropdown-divider"></div>
 
 				    <li className='menu-option'>
-							<a className={(numberOfSelectedItems >= 1) ? "dropdown-item": "dropdown-item disabled"} href="#" onClick={this.deleteSelectedItems}>Delete Selected Items</a>
+							<a className="dropdown-item" href="#" onClick={this.deleteSelectedItems}>Delete Selected Items</a>
 						</li>
 						<div className="dropdown-divider"></div>
 
 						<li className='menu-option' id='transferItemsOption'>
-							<a className={(numberOfSelectedItems >= 1) ? "dropdown-item": "dropdown-item disabled"} onClick={() => this.setState({transferItems:true})} href="#">Transfer Selected Items Into Exisiting Lightbox</a>
+							<a className="dropdown-item" onClick={this.transferOption} href="#">Transfer to Lightbox</a>
 						</li>
 
 						{(this.state.transferItems) ?
-							<div id='transferItemsOption'>
-
-								<div className='container' style={{marginBottom: '10px'}}>
+								<div className='container' id='transferItemsOption' style={{marginBottom: '10px'}}>
 									<div className='row justify-content-center'>
+										<form className='form-inline' style={{margin: '10px'}}>
+											<div style={{marginRight: '5px'}}>
+												<button type="button" className="close" aria-label="Close" onClick={this.clearInput}>
+												<span aria-hidden="true">&times;</span>
+												</button>
+											</div>
 
-										<div className='col-2'>
-											<button type="button" className="close" aria-label="Close" onClick={this.clearInput}>
-											<span aria-hidden="true">&times;</span>
-											</button>
-										</div>
+											<div style={{marginRight: '5px'}}>
+												<input
+													style={{marginTop: '2px'}}
+													id='lightbox-input'
+													type="text"
+													value={this.state.searchedLightbox}
+													onChange={this.handleChange}
+													name="searchedLightbox"
+													placeholder="Search Lightboxes"
+												></input>
+											</div>
 
-										<div className='col-6'>
-											<input
-												style={{marginTop: '2px'}}
-												id='lightbox-input'
-												type="text"
-												value={this.state.searchedLightbox}
-												onChange={this.handleChange}
-												name="searchedLightbox"
-												placeholder="Search Lightboxes"
-											></input>
-										</div>
-
-										<div className='col-4'>
-											<button type="submit" className="btn btn-outline-primary btn-sm" onClick={this.addSelectedItemsToExistingLightbox}>Submit</button>
-										</div>
-
+											<div>
+												<button type="button" className="btn" onClick={this.addSelectedItemsToExistingLightbox}>
+													<svg width="1em" height="1em" viewBox="0 0 16 16" className="bi bi-arrow-right-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-11.5.5a.5.5 0 0 1 0-1h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5z"></path></svg>
+												</button>
+											</div>
+										</form>
 									</div>
-								</div>
 
-								<div className='lightbox-container' style={{marginLeft: '30px' , overflow: 'auto',  width: '350px', height: '200px'}}>
+
+									<div className='lightbox-container' style={{marginLeft: '30px' , overflow: 'auto',  width: '350px', height: '200px'}}>
 									{filteredLightboxes.map(lightbox => {
 										return <li key={lightbox.set_id}><a style={{marginBottom: '5px'}} onClick={() => this.setState({searchedLightbox:lightbox.label, selectedLightbox:lightbox.label, selectedLightboxId:lightbox.set_id})} style={{cursor: 'pointer', backgroundColor:'#fafafa', marginBottom: '5px'}}> {lightbox.label} </a></li>
 									})}
-								</div>
-
-							</div>
+									</div>
+								</div> /*container end*/
 							:
 							null
 						}

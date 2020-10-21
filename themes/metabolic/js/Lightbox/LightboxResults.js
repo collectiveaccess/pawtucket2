@@ -151,14 +151,14 @@ class LightboxResults extends React.Component {
   			set_id: this.context.state.set_id,
   			row_ids: orderedIds.join('&')
   		})).then((response) => {
-  		  // console.log('response: ', response);
+  		  console.log('response: ', response);
       });
 
-    this.context.setState({showSaveButton: false})
+    this.context.setState({showSortSaveButton: false})
   }
 
   cancelSaveFromSortOptions(){
-    this.context.setState({showSaveButton: false})
+    this.context.setState({showSortSaveButton: false})
   }
 
 	render() {
@@ -181,7 +181,7 @@ class LightboxResults extends React.Component {
 						<div className="col-md-8 bResultList">
 
             {/* TODO: put save sort button in lightbox controls, needs to have access to the order of the item Id's first */}
-              {this.context.state.showSaveButton == true ?
+              {this.context.state.showSortSaveButton == true ?
                 <div>
                   <button type="button" className="btn btn-success" onClick={() => this.saveFromSortOptions(resultList)} style={{marginLeft: '6px'}}> Save Sort Permanently</button>
                   <button type="button" className="btn btn-danger" onClick={() => this.cancelSaveFromSortOptions()} style={{marginLeft: '6px'}}>Cancel</button>
@@ -315,6 +315,8 @@ class ShareBlock extends React.Component {
 		let that = this;
 		axios.get(baseUrl + "/getUsers/set_id/" + this.props.setID)
 			.then(function (resp) {
+				console.log('response: ', resp);
+
 				let data = resp.data;
 				if (data.status == 'ok') {
 					state.setUsers.users = [];

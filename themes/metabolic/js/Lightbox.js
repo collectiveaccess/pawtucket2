@@ -66,7 +66,7 @@ class Lightbox extends React.Component{
 
 		this.state.dragDropMode = false;
 		this.state.userSort = true;
-		this.state.showSaveButton = false;
+		this.state.showSortSaveButton = false;
 
 		this.componentDidMount = this.componentDidMount.bind(this);
 		this.newLightbox = this.newLightbox.bind(this);

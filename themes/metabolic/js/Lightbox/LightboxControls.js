@@ -21,12 +21,11 @@ import ReactDOM from "react-dom";
 import { LightboxContext } from '../Lightbox';
 
 import LightboxViewList from './LightboxControls/LightboxViewList';
-import LightboxSelectItemsOptions from './LightboxControls/LightboxSelectItemsOptions';
+// import LightboxSelectItemsOptions from './LightboxControls/LightboxSelectItemsOptions';
 import LightboxExportOptions from './LightboxControls/LightboxExportOptions';
 import LightboxSortOptions from './LightboxControls/LightboxSortOptions';
 import LightboxStatistics from './LightboxControls/LightboxStatistics';
 import LightboxDragAndDrop from './LightboxControls/LightboxDragAndDrop';
-
 import LightboxSelection from './LightboxControls/LightboxSelection';
 
 
@@ -74,7 +73,7 @@ class LightboxControls extends React.Component {
 				<div className="col-md-6">
 					<div className='row'>
 						<LightboxDragAndDrop/>
-						<LightboxSelection />
+						<LightboxSelection/>
 						{/*<LightboxSelectItemsOptions/>*/}
 						<LightboxSortOptions/>
 						<LightboxExportOptions/>

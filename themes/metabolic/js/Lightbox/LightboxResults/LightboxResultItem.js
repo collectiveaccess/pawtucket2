@@ -24,13 +24,15 @@ class LightboxResultItem extends React.Component {
 	constructor(props) {
 		super(props);
 
-    LightboxResultItem.contextType = LightboxContext;
+    	LightboxResultItem.contextType = LightboxContext;
 		this.selectLightboxItem = this.selectLightboxItem.bind(this);
+		this.handleImageClick = this.handleImageClick.bind(this);
 	}
 
 	selectLightboxItem(e) {
 		let state = this.context.state;
-		let item_id = parseInt(e.target.attributes.getNamedItem('data-item_id').value);
+		//let item_id = parseInt(e.target.attributes.getNamedItem('data-item_id').value);
+		let item_id = this.props.data.id;
 		if(!item_id) { return; }
 		let i = null;
 		i = state.selectedItems.indexOf(item_id);
@@ -40,7 +42,15 @@ class LightboxResultItem extends React.Component {
 			state.selectedItems.push(item_id);
 		}
 		this.context.setState(state);
+		e.preventDefault();
 		// console.log("selectedItems: " + item_id + " : " + this.context.state.selectedItems.indexOf(item_id), this.context.state.selectedItems);
+	}
+	
+	handleImageClick(e) {
+		if (this.context.state.showSelectButtons) {
+			this.selectLightboxItem(e);
+			e.preventDefault();
+		}
 	}
 
 	render() {
@@ -55,7 +65,7 @@ class LightboxResultItem extends React.Component {
             <div className='card-body mb-2'>
 
               <a href={data.detailUrl}>
-                <div dangerouslySetInnerHTML={{__html: data.representation}}/>
+                <div dangerouslySetInnerHTML={{__html: data.representation}} onClick={this.handleImageClick} />
               </a>
 
               {/*(this.context.state.showSelectButtons) ?
