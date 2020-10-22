@@ -71,9 +71,9 @@
 				$vn_id 					= $qr_results->get("ca_objects.object_id");
 				$vn_parent_id = $qr_results->get("ca_objects.parent_id");
 				$t_parent = new ca_objects($vn_parent_id);
-				//if ($vs_catno = $qr_results->get('ca_objects.institutional_id')) {
-				// 	$vs_catno = "<div class='catno'>".$vs_catno."</div>";
-// 				}
+				if ($vs_catno = $qr_results->get('ca_objects.institutional_id')) {
+					$vs_catno = "<div class='catno'>".$vs_catno."</div>";
+				}
 				$vs_label_detail_link 	= "<span class='resultLabel'>".caDetailLink($this->request, $qr_results->get("ca_objects.preferred_labels.name"), '', 'ca_objects', $vn_id)."</span>";
 				
 				$vs_link_text = "";

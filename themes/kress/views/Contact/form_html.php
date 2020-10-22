@@ -56,30 +56,17 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<div class="row">
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["name"]) ? " has-error" : ""); ?>">
 							<label for="name">Name</label>
 							<input type="text" class="form-control input-sm" aria-label="enter name" placeholder="Enter name" name="name" value="{{{name}}}">
 						</div>
 					</div><!-- end col -->
-					<div class="col-sm-4">
+					<div class="col-sm-6">
 						<div class="form-group<?php print (($va_errors["email"]) ? " has-error" : ""); ?>">
 							<label for="email">Email address</label>
 							<input type="text" class="form-control input-sm" id="email" placeholder="Enter email" name="email" value="{{{email}}}">
 						</div>
-					</div><!-- end col -->
-					<div class="col-sm-4">
-						<div class="form-group<?php print (($va_errors["security"]) ? " has-error" : ""); ?>">
-							<label for="security">Security Question</label>
-							<div class='row'>
-								<div class='col-sm-6'>
-									<p class="form-control-static"><?php print $vn_num1; ?> + <?php print $vn_num2; ?> = </p>
-								</div>
-								<div class='col-sm-6'>
-									<input name="security" value="" id="security" type="text" class="form-control input-sm" />
-								</div>
-							</div><!--end row-->	
-						</div><!-- end form-group -->
 					</div><!-- end col -->
 				</div><!-- end row -->
 			</div><!-- end col -->
