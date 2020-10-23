@@ -17,13 +17,18 @@
 	<div class='col-xs-12 col-sm-10 col-md-10 col-lg-10'>
 		<div class="container">
 			<div class="row">
-				<div class='col-md-12 col-lg-12'>
+				<div class='col-sm-12 col-md-6 col-md-offset-3 text-center'>
 					<H1>{{{^ca_occurrences.preferred_labels.name}}}</H1>
-					{{{<ifdef code="ca_occurrences.event_date"><H2>^ca_occurrences.event_date</H2></ifdef>}}}
-				</div><!-- end col -->
-			</div><!-- end row -->
-			<div class="row">			
-				<div class='col-sm-6'>
+					{{{<ifdef code="ca_occurrences.event_date"><H2>^event_date</H2></ifdef>}}}
+				</div>
+				<div class='col-sm-12 col-md-3'>
+<?php
+				print "<div class='inquireButton'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default btn-small", "", "Contact", "Form", array("table" => "ca_occurrences", "id" => $t_item->get("occurrence_id")))."</div>";
+?>
+				</div>
+			</div>
+			<div class="row text-center">			
+				<div class='col-sm-12 col-md-8 col-md-offset-2 col-lg-6 col-lg-offset-3'>
 <?php
 			if($va_dig_audio_recording = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "restrictToTypes" => "audio_digital", "checkAccess" => $va_access_values))){
 ?>
@@ -33,7 +38,7 @@
 					$t_dig_audio = new ca_objects($vn_dig_audio_recording_id);
 					if($t_dig_audio_rep = $t_dig_audio->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
 						$va_opts = array('display' => 'related_object_overlay', 'object_id' => $t_dig_audio->get('object_id'), 'representation_id' => $t_dig_audio_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => $va_access_values);			
-						print caRepresentationViewer(
+						print "<div class='unit'>".caRepresentationViewer(
 								$this->request, 
 								$t_dig_audio, 
 								$t_dig_audio,
@@ -46,10 +51,10 @@
 										'captionTemplate' => false
 									)
 								)
-							);
+							)."</div>";
 					}
 					if($vs_tmp = $t_dig_audio->get("ca_objects.preferred_labels.name")){
-						print "<div class='unit'><b>".$vs_tmp."</b></div>";
+						print "<div class='unit'>".$vs_tmp."</div>";
 					}
 				}
 ?>
@@ -57,46 +62,15 @@
 <?php
 			}
 
-			if($va_analog_audio_recording = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "restrictToTypes" => "audio_physical", "checkAccess" => $va_access_values))){
-?>
-				<div class="unit"><label>Analog Audio Recording</label>
-<?php
-				foreach($va_analog_audio_recording as $va_analog_audio_recording_id){
-				$t_analog_audio = new ca_objects($va_analog_audio_recording_id);
-					if($t_analog_audio_rep = $t_analog_audio->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
-						$va_opts = array('display' => 'related_object_overlay', 'object_id' => $t_analog_audio->get('object_id'), 'representation_id' => $t_analog_audio_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => $va_access_values);			
-						print caRepresentationViewer(
-								$this->request, 
-								$t_analog_audio, 
-								$t_analog_audio,
-								array_merge($va_opts, $va_media_display_info, 
-									array(
-										'display' => 'detail',
-										'showAnnotations' => true, 
-										'primaryOnly' => true, 
-										'dontShowPlaceholder' => true, 
-										'captionTemplate' => false
-									)
-								)
-							);
-					}
-					if($vs_tmp = $t_dig_audio->get("ca_objects.preferred_labels.name")){
-						print "<div class='unit'><b>".$vs_tmp."</b></div>";
-					}
-				}
-?>
-				</div>
-<?php
-			}
 			if($va_dig_movingimage_recording = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "restrictToTypes" => "movingimage_digital", "checkAccess" => $va_access_values))){
 ?>
-				<div class="unit"><br/>
+				<div class="unit">
 <?php
 				foreach($va_dig_movingimage_recording as $vn_dig_movingimage_recording_id){
 					$t_dig_movingimage = new ca_objects($vn_dig_movingimage_recording_id);
 					if($t_dig_movingimage_rep = $t_dig_movingimage->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
 						$va_opts = array('display' => 'related_object_overlay', 'object_id' => $t_dig_movingimage->get('object_id'), 'representation_id' => $t_dig_movingimage_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => $va_access_values);			
-						print caRepresentationViewer(
+						print "<div class='unit'>".caRepresentationViewer(
 								$this->request, 
 								$t_dig_movingimage, 
 								$t_dig_movingimage,
@@ -109,7 +83,7 @@
 										'captionTemplate' => false
 									)
 								)
-							);
+							)."</div>";
 					}
 					if($vs_tmp = $t_dig_movingimage->get("ca_objects.preferred_labels.name")){
 						print "<div class='unit'><b>".$vs_tmp."</b></div>";
@@ -120,46 +94,18 @@
 <?php
 			}
 
-			if($va_analog_movingimage_recording = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "restrictToTypes" => "movingimage_physical", "checkAccess" => $va_access_values))){
-?>
-				<div class="unit"><label>Analog Moving Image Recording</label>
-<?php
-				foreach($va_analog_movingimage_recording as $va_analog_movingimage_recording_id){
-				$t_analog_movingimage = new ca_objects($va_analog_movingimage_recording_id);
-					if($t_analog_movingimage_rep = $t_analog_movingimage->getPrimaryRepresentationInstance(array("checkAccess" => $va_access_values))){
-						$va_opts = array('display' => 'related_object_overlay', 'object_id' => $t_analog_movingimage->get('object_id'), 'representation_id' => $t_analog_movingimage_rep->get('representation_id'), 'containerID' => 'caMediaPanelContentArea', 'access' => $va_access_values);			
-						print caRepresentationViewer(
-								$this->request, 
-								$t_analog_movingimage, 
-								$t_analog_movingimage,
-								array_merge($va_opts, $va_media_display_info, 
-									array(
-										'display' => 'detail',
-										'showAnnotations' => true, 
-										'primaryOnly' => true, 
-										'dontShowPlaceholder' => true, 
-										'captionTemplate' => false
-									)
-								)
-							);
-					}
-					if($vs_tmp = $t_dig_movingimage->get("ca_objects.preferred_labels.name")){
-						print "<div class='unit'><b>".$vs_tmp."</b></div>";
-					}
-				}
-?>
-				</div>
-<?php
-			}			
 ?>	
 	
 				</div>
-				<div class='col-sm-6'>
+			</div>
+			<div class="row bgOffWhiteLight">
+				<div class='col-sm-12 col-md-4'>
 					{{{<ifdef code="ca_occurrences.event_type"><div class="unit"><label>Event Type</label>^event_type%delimiter=,_</div></ifdef>}}}
 					{{{<ifcount code="ca_entities" min="1" excludeRelationshipTypes="subject"><div class="unit"><label>Creators & Contributors</label><unit relativeTo="ca_entities" delimiter="<br/>" excludeRelationshipTypes="subject"><l>^ca_entities.preferred_labels.displayname</l> (^relationship_typename)</unit></div></ifcount>}}}
-					
 					{{{<ifdef code="ca_occurrences.description"><div class="unit"><label>Description</label>^ca_occurrences.description<br/></div></ifdef>}}}
-					
+
+				</div>
+				<div class='col-sm-12 col-md-4'>					
 					{{{<ifdef code="ca_occurrences.broadcast_details"><div class="unit"><label>Broadcast Details</label>
 						<unit relativeTo="ca_occurrences.broadcast_details" delimiter="<br/>">
 							<ifdef code="ca_occurrences.broadcast_details.aapb_asset"><b>Asset Type: </b>^ca_occurrences.broadcast_details.aapb_asset<br/></ifdef>
@@ -174,6 +120,8 @@
 					
 					
 					{{{<ifdef code="ca_occurrences.language"><div class="unit"><label>Language</label>^ca_occurrences.language%delimiter=,_</div></ifdef>}}}
+				</div>
+				<div class='col-sm-12 col-md-4'>
 					{{{<ifdef code="ca_occurrences.lcsh_terms"><div class="unit"><label>LOC Subject Headings</label>^ca_occurrences.lcsh_terms%delimiter=<br/></div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.internal_keywords"><div class="unit"><label>Keywords</label>^ca_occurrences.internal_keywords%delimiter=<br/></div></ifdef>}}}
 					{{{<ifdef code="ca_occurrences.lc_names"><div class="unit"><label>LOC Name Authority File</label>^ca_occurrences.lc_names%delimiter=<br/></div></ifdef>}}}
@@ -182,27 +130,33 @@
 					{{{<ifcount code="ca_collections" min="1"><div class="unit"><label>Related Collection<ifcount code="ca_collections" min="2">s</ifcount></label><unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit></div></ifcount>}}}
 					
 					{{{<ifcount code="ca_occurrences.related" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences.related" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.related.preferred_labels.name</l></unit></div></ifcount>}}}
-<?php
-					# Comment and Share Tools
-					if ($vn_comments_enabled | $vn_share_enabled) {
-						
-						print '<div id="detailTools">';
-						if ($vn_comments_enabled) {
-?>				
-							<div class="detailTool"><a href='#' onclick='jQuery("#detailComments").slideToggle(); return false;'><span class="glyphicon glyphicon-comment" aria-label="<?php print _t("Comments and tags"); ?>"></span>Comments (<?php print sizeof($va_comments); ?>)</a></div><!-- end detailTool -->
-							<div id='detailComments'><?php print $this->getVar("itemComments");?></div><!-- end itemComments -->
-<?php				
-						}
-						if ($vn_share_enabled) {
-							print '<div class="detailTool"><span class="glyphicon glyphicon-share-alt" aria-label="'._t("Share").'"></span>'.$this->getVar("shareLink").'</div><!-- end detailTool -->';
-						}
-						print '</div><!-- end detailTools -->';
-					}				
-?>
-					
 				</div><!-- end col -->
 			</div><!-- end row -->
-{{{<ifcount code="ca_objects" min="1">
+			<div class="row">
+				<div class="col-sm-12">
+					{{{<ifcount code="ca_objects" min="1" restrictToTypes="audio_physical">
+						<div class="unit"><label>Analog Audio Recording<ifcount code="ca_objects" min="2" restrictToTypes="audio_physical">s</ifcount></label><HR/>
+							<unit relativeTo="ca_objects" restrictToTypes="audio_physical">^ca_objects.idno, ^ca_objects.instantiationPhysAudio</unit>
+						</div>
+					</ifcount>}}}
+				</div><!-- end col -->
+			</div><!-- end row -->
+			<div class="row">
+				<div class="col-sm-12">
+					{{{<ifcount code="ca_objects" min="1" restrictToTypes="movingimage_physical">
+						<div class="unit"><label>Analog Moving Image Recording<ifcount code="ca_objects" min="2" restrictToTypes="movingimage_physical">s</ifcount></label><HR/>
+							<unit relativeTo="ca_objects" restrictToTypes="movingimage_physical">^ca_objects.idno, ^ca_objects.instantiationPhysMovingImages</unit>
+						</div>
+					</ifcount>}}}
+				</div><!-- end col -->
+			</div><!-- end row -->
+
+{{{<ifcount code="ca_objects" min="1" excludeTypes="movingimage_physical,audio_physical,audio_digital,movingimage_digital">
+			<div class="row">
+				<div class="col-sm-12">
+					<label>Related Object<ifcount code="ca_objects" min="2">s</ifcount></label><HR/>
+				</div>
+			</div>
 			<div class="row">
 				<div id="browseResultsContainer">
 					<?php print caBusyIndicatorIcon($this->request).' '.addslashes(_t('Loading...')); ?>

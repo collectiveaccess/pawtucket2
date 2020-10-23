@@ -18,6 +18,9 @@
 		<div class="container">
 			<div class="row">
 				<div class='col-md-12 col-lg-12'>
+<?php
+				print "<div class='inquireButton'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default btn-small", "", "Contact", "Form", array("table" => "ca_entities", "id" => $t_item->get("entity_id")))."</div>";
+?>
 					<H1>{{{^ca_entities.preferred_labels.displayname}}}</H1>
 					<H2>{{{^ca_entities.type_id}}}</H2>
 				</div><!-- end col -->

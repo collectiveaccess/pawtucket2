@@ -24,6 +24,9 @@ body{
 	font-size: 16px;
 	color: #000;
 }
+body.bodyFront{
+	margin-bottom:200px;
+}
 @media(max-width:595px){
 	body{
 		margin-top:66px;
@@ -43,6 +46,9 @@ body{
 	max-width:2000px;
 }
 
+.bgOffWhiteLight{
+	background-color: #fbf9f6;
+}
 /* notifications */
 .front .notificationMessage{
     position: absolute;
@@ -178,6 +184,18 @@ header.navigation .navbar-brand-logo {
     box-shadow: 0 2px 14px 0 rgba(0,0,0,.3);
     z-index: 9;
 }
+.archiveSubTitle{
+	font-size: 17px;
+	font-weight: 600;
+	letter-spacing: 4px;
+	text-transform: uppercase;
+	color: #e29032;
+	position: absolute;
+	top: 54px;
+	background-color: #7e2036;
+	left: 134px;
+	padding-right: 100px;
+}
 
 
 
@@ -295,7 +313,9 @@ header.navigation .navbar-brand-logo {
 		right:auto;
 	}
 }
-
+.navbar-collapse .dropdown-header{
+	color:#FFF;
+}
 H1, h1, h2, H2, H3, h3{
 	color:#333;
 	font-family: brandon-grotesque,sans-serif;
@@ -991,6 +1011,15 @@ a.facetApply {
 }
 .detail h1{
 	font-size:20px;
+}
+.detail .bgOffWhiteLight{
+	margin-top:20px;
+	margin-bottom:20px;
+}
+@media(min-width:768px){
+	.inquireButton{
+		float:right;
+	}
 }
 
 /* IE styles to fix object fit not being supported - sigh - for IE 9 and above */
