@@ -99,7 +99,7 @@
 					<span class="icon-bar"></span>
 				</button>
 <?php
-				print caNavLink($this->request, "Amherst Collections", "navbar-brand", "", "","");
+				print caNavLink($this->request, "History Collections of Amherst, Massachusetts", "navbar-brand", "", "","");
 ?>
 			</div>
 
