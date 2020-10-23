@@ -3,7 +3,7 @@ html {
 	position:relative;
 }
 body {
-	margin-bottom:70px;
+	margin-bottom:150px;
 	font-family:"Source sans pro";
 	line-height:1.6em;
 	background-color:#fff;
@@ -47,7 +47,7 @@ a {
     border-color: #000000;
 }
 #footer {
-	height:70px;
+	height:100px;
 	width:100%;
 	padding-left:15px;
 	padding-right:15px;
@@ -60,6 +60,16 @@ a {
 }
 #footer ul a, #footer a {
 	color: #fff;
+}
+#footer .homeLink{
+	font-size:16px;
+	margin-top:10px;	
+}
+#footer .homeLink a{
+	text-decoration:none;
+}
+#footer .homeLink a:hover{
+	text-decoration:underline;
 }
 .navbar {
 	background-color: #444;
@@ -452,9 +462,6 @@ div.advancedSearchField {
 .detail .detailMediaToolbar, .gallery .detailMediaToolbar {
 	font-size:16px;
 	padding-top:5px;
-}
-.dlButton {
-	display:none !important;
 }
 .detail .detailMediaToolbar {
 	padding-right:12px;

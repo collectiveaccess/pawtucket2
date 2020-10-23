@@ -90,7 +90,7 @@
 	</div>-->
 	<div class="row" style="margin-top:20px;">
 
-		<div class="col-sm-12 col-md-8 col-md-offset-2" style="text-align:left;"> 
+		<div class="col-sm-12 col-md-10 col-md-offset-1" style="text-align:left;"> 
 			<h2 style='margin-top:45px;' class='text-center'>Welcome to Amherst Collections</h2>
 			<p class='pageText text-center'>{{{FrontWelcome}}}</p>
 		</div>		
