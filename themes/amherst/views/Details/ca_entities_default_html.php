@@ -27,7 +27,7 @@
 					if ($vs_bio = $t_item->get('ca_entities.biography')) {
 						print "<div class='unit' style='margin-top:20px;'>".$vs_bio."</div>";
 					}
-						
+?>						
 				</div><!-- end col -->				
 			</div><!-- end row -->
 {{{<ifcount code="ca_objects" min="1">
