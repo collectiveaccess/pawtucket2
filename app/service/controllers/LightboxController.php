@@ -27,11 +27,11 @@
  */
 
 use GraphQL\GraphQL;
-use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 
 require_once(__CA_LIB_DIR__.'/Service/GraphQLServiceController.php');
+require_once(__CA_APP_DIR__.'/service/schemas/LightboxSchema.php');
 
 class LightboxController extends GraphQLServiceController {
 	# -------------------------------------------------------
@@ -45,154 +45,31 @@ class LightboxController extends GraphQLServiceController {
 	/**
 	 *
 	 */
-	public function data(){
-		$lightboxType = new ObjectType([
-			'name' => 'Lightbox',
-			'description' => 'Description for a lightbox',
-			'fields' => [
-				'id' => [
-					'type' => Type::int(),
-					'description' => 'Unique identifier'
-				],
-				'title' => [
-					'type' => Type::string(),
-					'description' => 'Title'
-				],
-				'count' => [
-					'type' => Type::int(),
-					'description' => 'Number of items in set'
-				],
-				'author_fname' => [
-					'type' => Type::string(),
-					'description' => 'Author first name'
-				],
-				'author_lname' => [
-					'type' => Type::string(),
-					'description' => 'Author last name'
-				],
-				'author_email' => [
-					'type' => Type::string(),
-					'description' => 'Author email address'
-				],
-				'type' => [
-					'type' => Type::string(),
-					'description' => 'Type'
-				],
-				'created' => [
-					'type' => Type::string(),
-					'description' => 'Date created'
-				],
-				'content_type' => [
-					'type' => Type::string(),
-					'description' => 'Lightbox content type (Eg. objects)'
-				]
-			]
-		]);
-		
-		$lightboxMediaVersionType = new ObjectType([
-			'name' => 'Lightbox item media version',
-			'description' => 'Version of media associated with a lightbox item',
-			'fields' => [
-				'version' => [
-					'type' => Type::string(),
-					'description' => 'Version'
-				],
-				'url' => [
-					'type' => Type::string(),
-					'description' => 'Media URL'
-				],
-				'width' => [
-					'type' => Type::string(),
-					'description' => 'Width, in pixels'
-				],
-				'height' => [
-					'type' => Type::string(),
-					'description' => 'Height, in pixels'
-				],
-				'mimetype' => [
-					'type' => Type::string(),
-					'description' => 'MIME type'
-				],
-			]
-		]);
-		
-		$lightboxItemType = new ObjectType([
-			'name' => 'Lightbox item',
-			'description' => 'Description of a lightbox item',
-			'fields' => [
-				'id' => [
-					'type' => Type::int(),
-					'description' => 'Unique identifier'
-				],
-				'title' => [
-					'type' => Type::string(),
-					'description' => 'Title of set item'
-				],
-				'caption' => [
-					'type' => Type::string(),
-					'description' => 'Set-specific caption for item'
-				],
-				'identifier' => [
-					'type' => Type::string(),
-					'description' => 'Item identifier'
-				],
-				'rank' => [
-					'type' => Type::int(),
-					'description' => 'Sort ranking'
-				],
-				'media' => [
-					'type' => Type::listOf($lightboxMediaVersionType),
-					'description' => 'Media'
-				],
-				
-			]
-		]);
-		
-		
-		$lightboxContentsType = new ObjectType([
-			'name' => 'Lightbox contents',
-			'description' => 'Lightbox contents',
-			'fields' => [
-				'id' => [
-					'type' => Type::int(),
-					'description' => 'Unique identifier for lightbox'
-				],
-				'title' => [
-					'type' => Type::string(),
-					'description' => 'Title of lightbox'
-				],
-				'type' => [
-					'type' => Type::string(),
-					'description' => 'Type'
-				],
-				'created' => [
-					'type' => Type::string(),
-					'description' => 'Date created'
-				],
-				'content_type' => [
-					'type' => Type::string(),
-					'description' => 'Lightbox content type (Eg. objects)'
-				],
-				'items' => [
-					'type' => Type::listOf($lightboxItemType),
-					'description' => 'Lightbox items'
-				]
-			]
-		]);
-		
+	public function _default(){
 		
 		$qt = new ObjectType([
 			'name' => 'Query',
 			'fields' => [
 				'list' => [
-					'type' => Type::listOf($lightboxType),
+					'type' => Type::listOf(LightboxSchema::get('Lightbox')),
 					'description' => _t('List of available lightboxes'),
-					'args' => [],
+					'args' => [
+						[
+							'name' => 'jwt',
+							'type' => Type::string(),
+							'description' => _t('JWT'),
+							'defaultValue' => null
+						]
+					],
 					'resolve' => function ($rootValue, $args) {
+						if (!($u = self::authenticate($args['jwt']))) {
+							throw new ServiceException(_t('Invalid JWT'));
+						}
+					
 						$t_sets = new ca_sets();
 						
 						// TODO: check access - don't use hard-coded user
-						$lightboxes = $t_sets->getSetsForUser(array("user_id" => 1, "checkAccess" => [0,1], "parents_only" => true));
+						$lightboxes = $t_sets->getSetsForUser(array("user_id" => $u->getPrimaryKey(), "checkAccess" => [0,1], "parents_only" => true));
 						
 						return array_map(function($v) {
 							return [
@@ -210,7 +87,7 @@ class LightboxController extends GraphQLServiceController {
 					}
 				],
 				'content' => [
-					'type' => $lightboxContentsType,
+					'type' => LightboxSchema::get('LightboxContents'),
 					'description' => _t('Content of specified lightbox'),
 					'args' => [
 						'id' => Type::int(),

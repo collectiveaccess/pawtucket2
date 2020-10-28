@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2007-2019 Whirl-i-Gig
+ * Copyright 2007-2020 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -103,6 +103,10 @@
  	define('__CA_NAV_ICON_NUKE__', 62);
  	define('__CA_NAV_ICON_FULL_RESULTS__', 63);
  	define('__CA_NAV_ICON_EXPORT_SMALL__', 64);
+ 	define('__CA_NAV_ICON_HOME__', 65);
+ 	define('__CA_NAV_ICON_EDIT_TEXT__', 66);
+ 	define('__CA_NAV_ICON_IS_PRIMARY__', 67);
+ 	define('__CA_NAV_ICON_CROSSHAIRS__', 68);
  	
  	/**
  	 * Icon position constants
@@ -202,8 +206,6 @@
 	 * @return string
 	 */
 	function caNavLink($ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
-		global $g_request;
-		if (is_object($ps_content)) { print caPrintStackTrace(); }
 		if (!($vs_url = caNavUrl($ps_module_path, $ps_controller, $ps_action, $pa_other_params, $pa_options))) {
 			//return "<strong>Error: no url for navigation</strong>";
 			$vs_url = '/';
@@ -234,24 +236,21 @@
 	 *
 	 *
 	 * @param array $pa_options Options are:
-	 *		icon_position =
-	 *		no_background = 
+	 *		no_background =
 	 *		dont_show_content = 
 	 *		graphicsPath =
 	 *		size =
 	 */
 	function caNavButton($pn_type, $ps_content, $ps_classname, $ps_module_path, $ps_controller, $ps_action, $pa_other_params=null, $pa_attributes=null, $pa_options=null) {
 		global $g_request;
-		
 		if ($ps_module_path && $ps_controller && $ps_action) {
-			if (!($vs_url = caNavUrl($ps_module_path, $ps_controller, $ps_action, $pa_other_params))) {
+			if (!($vs_url = caNavUrl($g_request, $ps_module_path, $ps_controller, $ps_action, $pa_other_params))) {
 				return '';//<strong>Error: no url for navigation</strong>";
 			}
 		} else {
 			$vs_url = '';
 		}
 		
-		$ps_icon_pos = isset($pa_options['icon_position']) ? $pa_options['icon_position'] : __CA_NAV_ICON_ICON_POS_LEFT__;
 		$pb_no_background = (isset($pa_options['no_background']) && $pa_options['no_background']) ? true : false;
 		$pb_dont_show_content = (isset($pa_options['dont_show_content']) && $pa_options['dont_show_content']) ? true : false;
 		
@@ -280,22 +279,20 @@
 		$va_img_attr = array('border' => '0');
 		if (!$pb_no_background) {
 			$vs_tag .= "<span class='form-button '>";
-			$vn_padding = ($ps_content) ? 10 : 0;
+			$vn_padding = ($ps_content) ? 5 : 0;
 			$va_img_attr['class'] = 'form-button-left';
 			$va_img_attr['style'] = "padding-right: {$vn_padding}px;";
-		} else {
-			$vn_padding = 0;
-			$vs_img_tag_stuff = '';
 		}
 		
 		if (preg_match("/^[A-Za-z\.\-0-9 ]+$/", $ps_content)) {
-			$vs_alt = $vs_title = htmlspecialchars($ps_content, ENT_QUOTES, 'UTF-8');
+			$vs_title = htmlspecialchars($ps_content, ENT_QUOTES, 'UTF-8');
 		} else {
-			$vs_alt = $vs_title = '';
+			$vs_title = '';
 		}
 		
+        $va_img_attr['title'] = $vs_title;
+		$vs_tag .= caNavIcon($pn_type, caGetOption('size', $pa_options, 2), $va_img_attr);
 		
-		$vs_tag .= caNavIcon($pn_type, caGetOption('size', $pa_options, 2), $va_icon_attributes);
 		if (!$pb_dont_show_content) {
 			$vs_tag .= $ps_content;
 		}
@@ -349,10 +346,7 @@
 			'border' => '0',
 			'align' => 'absmiddle'
 		);
-		$vs_img_tag_stuff = " padding= '{$vn_padding}px'";
-			
-		
-		if ($vs_icon_tag = caNavIcon($pn_type, caGetOption('size', $pa_options, '30px'), $va_icon_attributes)) {
+		if ($vs_icon_tag = caNavIcon($pn_type, caGetOption('size', $pa_options, '30px'), $va_img_attr)) {
 			$vs_content = (!$pb_dont_show_content) ? $ps_content : '';
 			
 			switch($ps_icon_pos) {
@@ -478,9 +472,6 @@
 	 *		size = 
 	 */
 	function caFormSubmitButton($pn_type, $ps_content, $ps_id, $pa_options=null) {
-		global $g_request;
-		
-		$ps_icon_pos = isset($pa_options['icon_position']) ? $pa_options['icon_position'] : __CA_NAV_ICON_ICON_POS_LEFT__;
 		$ps_use_classname = isset($pa_options['class']) ? $pa_options['class'] : '';
 		$pb_no_background = (isset($pa_options['no_background']) && $pa_options['no_background']) ? true : false;
 		$pb_dont_show_content = (isset($pa_options['dont_show_content']) && $pa_options['dont_show_content']) ? true : false;
@@ -504,7 +495,7 @@
 		
 		if (!$pb_no_background) { 
 			$vs_button .= "<span class='form-button'>"; 
-			$vn_padding = ($ps_content) ? 10 : 0;
+			$vn_padding = ($ps_content) ? 5 : 0;
 		} else {
 			$vn_padding = 0;
 		}	
@@ -515,9 +506,8 @@
 			'class' => 'form-button-left',
 			'style' => "padding-right: {$vn_padding}px"
 		);
+		$vs_button .= caNavIcon($pn_type, caGetOption('size', $pa_options, '30px'), $va_img_attr);
 		
-		
-		$vs_button .= caNavIcon($pn_type, caGetOption('size', $pa_options, '30px'), $va_icon_attributes);
 		if (!$pb_dont_show_content) {
 			$vs_button .= $ps_content;
 		}
@@ -576,7 +566,7 @@
 		$vs_button = "<a ".join(' ', $va_attr).">";
 		if (!$pb_no_background) { 
 			$vs_button .= "<span class='form-button'>"; 
-			$vn_padding = ($ps_content) ? 10 : 0;
+			$vn_padding = ($ps_content) ? 5 : 0;
 		} else {
 			$vn_padding = 0;
 		}	
@@ -587,9 +577,8 @@
 			'class' => 'form-button-left',
 			'style' => "padding-right: {$vn_padding}px"
 		);
+		$vs_button .= caNavIcon($pn_type, caGetOption('size', $pa_options, 2), $va_img_attr);
 		
-		
-		$vs_button .= caNavIcon($pn_type, caGetOption('size', $pa_options, 2), $va_icon_attributes);
 		if (!$pb_dont_show_content) {
 			$vs_button .= $ps_content;
 		}
@@ -699,6 +688,10 @@
 			case __CA_NAV_ICON_EDIT__:
 				$vs_fa_class = 'fa-file';
 				$vs_ca_class = 'editIcon'; 
+				break;		
+			case __CA_NAV_ICON_EDIT_TEXT__:
+				$vs_fa_class = 'fa-edit';
+				$vs_ca_class = 'editTextIcon'; 
 				break;
 			case __CA_NAV_ICON_BATCH_EDIT__:
 				$vs_fa_class = 'fa-magic';
@@ -718,7 +711,10 @@
 				$vs_fa_class = 'fa-download';
 				break;
 			case __CA_NAV_ICON_MAKE_PRIMARY__:
-				$vs_fa_class = 'fa-check';
+				$vs_fa_class = 'fa-check-circle-o';
+				break;
+			case __CA_NAV_ICON_IS_PRIMARY__:
+				$vs_fa_class = 'fa-check-square';
 				break;
 			case __CA_NAV_ICON_APPROVE__:
 				$vs_fa_class = 'fa-thumbs-o-up';
@@ -882,9 +878,15 @@
 			case __CA_NAV_ICON_FULL_RESULTS__:
 				$vs_fa_class = 'fa-bars';
 				break;
-			case __CA_NAV_ICON_EXPORT_SMALL__: 
+			case __CA_NAV_ICON_EXPORT_SMALL__:
 				$vs_fa_class = 'fa-external-link-square';
-				break;																							
+				break;
+			case __CA_NAV_ICON_HOME__:
+				$vs_fa_class = 'fa-home';
+				break;	
+			case __CA_NAV_ICON_CROSSHAIRS__:
+				$vs_fa_class = 'fa-crosshairs';
+				break;																					
 			default:
 				print "INVALID CONSTANT $pn_type<br>\n";
 				return null;
@@ -971,10 +973,12 @@
 	 * 		verifyLink - if true and $pn_id is set, then existence of record with specified id is verified before link is returned. If the id does not exist then null is returned. Default is false - no verification performed.
 	 *		action - if set, action of returned link will be set to the supplied value
 	 *      quick_add - if set to true, returned link will point to the QuickAdd controller instead
-	 * @return string
+	 *
+	 * @return array|string
 	 */
 	function caEditorUrl($ps_table, $pn_id=null, $pb_return_url_as_pieces=false, $pa_additional_parameters=null, $pa_options=null) {
 		global $g_request;
+		
 		if (is_numeric($ps_table)) {
 			if (!($t_table = Datamodel::getInstanceByTableNum($ps_table, true))) { return null; }
 		} else {
@@ -1150,6 +1154,8 @@
 	 *		type_id = type_id of item to get detail for
 	 */
 	function caDetailUrl($ps_table, $pn_id=null, $pb_return_url_as_pieces=false, $pa_additional_parameters=null, $pa_options=null) {
+		global $g_request;
+		
 		if (is_numeric($ps_table)) {
 			if (!($t_table = Datamodel::getInstanceByTableNum($ps_table, true))) { return null; }
 		} else {
@@ -1167,11 +1173,13 @@
 			if ($pn_id && !($vn_type_id = caGetOption('type_id', $pa_options, null))) {
 				$vn_type_id = $t_table->getTypeID($pn_id);
 			}
-			$vs_action = caGetDetailForType($ps_table, $vn_type_id, array('preferredDetail' => caGetOption('preferredDetail', $pa_options, null)));
+			$vs_action = caGetDetailForType($ps_table, $vn_type_id, array('request' => $g_request, 'preferredDetail' => caGetOption('preferredDetail', $pa_options, null)));
 		}
 		
 		$vn_id_for_idno = null;
-		if(((int)$pn_id > 0) && ($vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls($ps_table)) && is_array($attr_list = $t_table->getAttributeForIDs($vs_use_alt_identifier_in_urls, [$pn_id]))) {
+		if ( ( (int) $pn_id > 0 ) && ( $vs_use_alt_identifier_in_urls = caUseAltIdentifierInUrls( $ps_table ) )
+		     && is_array( $attr_list = $t_table->getAttributeForIDs( $vs_use_alt_identifier_in_urls, [ $pn_id ] ) )
+		) {
 		    $va_attr = array_values($attr_list);
 		    if (is_array($va_attr[0]) && ($vn_id_for_idno = array_shift($va_attr[0]))) {
 				$vb_id_exists = true;
@@ -1182,6 +1190,7 @@
 			if (is_array($va_ids) && ($vn_id_for_idno = array_shift($va_ids))) {
 				$vb_id_exists = true;
 			}
+
 		    $pn_id = (strlen($vn_id_for_idno) && (strpos($vn_id_for_idno, '/') === false)) ? $vn_id_for_idno : "id:{$pn_id}";
 		}
 		$vs_action .= "/".rawurlencode($pn_id);
@@ -1222,6 +1231,7 @@
 	 *		intrinsic = Checks value of instrinsic field and return list of primary keys that use the specified value
 	 */
 	function caJSONLookupServiceUrl($ps_table, $pa_attributes=null) {
+		global $g_request;
 		
 		if (is_numeric($ps_table)) {
 			if (!($t_table = Datamodel::getInstanceByTableNum($ps_table, true))) { return null; }
@@ -1341,13 +1351,13 @@
 				break;
 		}
 		return array(
-			'ancestorList' => caNavUrl($vs_module, $vs_controller, 'GetHierarchyAncestorList', $pa_attributes),
-			'levelList' => caNavUrl($vs_module, $vs_controller, 'GetHierarchyLevel', $pa_attributes),
-			'search' => caNavUrl($vs_module, $vs_controller, 'Get', $pa_attributes),
-			'idno' => caNavUrl($vs_module, $vs_controller, 'IDNo', $pa_attributes),
-			'intrinsic' => caNavUrl($vs_module, $vs_controller, 'intrinsic', $pa_attributes),
-			'attribute' => caNavUrl($vs_module, $vs_controller, 'Attribute', $pa_attributes),
-			'sortSave' => caNavUrl($vs_module, $vs_controller, 'SetSortOrder'),
+			'ancestorList' => caNavUrl($g_request, $vs_module, $vs_controller, 'GetHierarchyAncestorList', $pa_attributes),
+			'levelList' => caNavUrl($g_request, $vs_module, $vs_controller, 'GetHierarchyLevel', $pa_attributes),
+			'search' => caNavUrl($g_request, $vs_module, $vs_controller, 'Get', $pa_attributes),
+			'idno' => caNavUrl($g_request, $vs_module, $vs_controller, 'IDNo', $pa_attributes),
+			'intrinsic' => caNavUrl($g_request, $vs_module, $vs_controller, 'intrinsic', $pa_attributes),
+			'attribute' => caNavUrl($g_request, $vs_module, $vs_controller, 'Attribute', $pa_attributes),
+			'sortSave' => caNavUrl($g_request, $vs_module, $vs_controller, 'SetSortOrder'),
 		);
 	}
 	# ------------------------------------------------------------------------------------------------
@@ -1374,3 +1384,26 @@
 		return $g_use_clean_urls = (defined('__CA_USE_CLEAN_URLS__') && (__CA_USE_CLEAN_URLS__) && caModRewriteIsAvailable());
 	}
 	# ------------------------------------------------------------------------------------------------
+    /**
+     * @param $vs_controller
+     * @param $vs_action
+     *
+     * @return bool
+     */
+    function caIsGzipDisabled($vs_controller, $vs_action){
+        $conf = Configuration::load();
+        $va_disable_gzip = $conf->getAssoc('disable_gzip_on_controllers');
+        if (($va_acl = caGetOption($vs_controller, $va_disable_gzip, null)) !== null){
+            $va_actions = caGetOption('action', $va_acl, array());
+            if (!is_array($va_actions)){
+                $va_actions = array($va_actions);
+            }
+            if (in_array($vs_action, $va_actions)){
+                return true;
+            } else {
+                return sizeof(array_keys($va_acl))==0;
+            }
+        }
+        return false;
+    }
+    # ------------------------------------------------------------------------------------------------
