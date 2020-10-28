@@ -78,6 +78,9 @@
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-5'>
+<?php
+				print "<div class='inquireButton'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Inquire", "btn btn-default btn-small", "", "Contact", "Form", array("table" => "ca_objects", "id" => $t_object->get("object_id")))."</div>";
+?>
 				<H1>{{{ca_objects.preferred_labels.name}}}</H1>
 				<H2>{{{<unit>^ca_objects.type_id</unit>}}}</H2>
 				<HR>
@@ -118,7 +121,13 @@
 				{{{<ifdef code="ca_objects.num_copies"><div class="unit"><label>Number of Copies</label>^ca_objects.num_copies</div></ifdef>}}}
 				<!-- Library fields -->
 				{{{<ifdef code="ca_objects.rare_book"><div class="unit"><label>Rare Book</label>^ca_objects.rare_book</div></ifdef>}}}
-				{{{<ifdef code="ca_objects.rare_book_info"><div class="unit"><label>Rare Book Cataloging</label>^ca_objects.rare_book_info</div></ifdef>}}}
+				{{{<ifdef code="ca_objects.rare_book_info"><div class="unit"><label>Rare Book Cataloging</label>
+					<ifdef code="ca_objects.rare_book_info.binding"><b>Binding</b><br/>^ca_objects.rare_book_info.binding<br/><br/></ifdef>
+					<ifdef code="ca_objects.rare_book_info.rarebook_transcription"><b>Transcription of the Title</b><br/>^ca_objects.rare_book_info.rarebook_transcription<br/><br/></ifdef>
+					<ifdef code="ca_objects.rare_book_info.rarebook_marks"><b>Marks/Inscriptions/Signatures</b><br/>^ca_objects.rare_book_info.rarebook_marks<br/><br/></ifdef>
+					<ifdef code="ca_objects.rare_book_info.rarebook_bibhistnote"><b>Bibliographic/Historical Note</b><br/>^ca_objects.rare_book_info.rarebook_bibhistnote<br/><br/></ifdef>
+					<ifdef code="ca_objects.rare_book_info.rarebook_provenance"><b>Provenance</b><br/>^ca_objects.rare_book_info.rarebook_provenance<br/><br/></ifdef>
+				</div></ifdef>}}}
 				<!-- end Library fields -->
 				<!-- Format tab: Photo/Artifact/Art_arch -->
 				{{{<ifdef code="ca_objects.material_techniques"><div class="unit"><label>Material & Techniques</label>^ca_objects.material_techniques%,_</div></ifdef>}}}
@@ -141,7 +150,7 @@
 				
 				
 				{{{<ifcount code="ca_occurrences" restrictToTypes="event" min="1"><div class="unit"><label>Related Event<ifcount code="ca_occurrences" min="2" restrictToTypes="event">s</ifcount></label><unit relativeTo="ca_occurrences" delimiter="<br/>" restrictToTypes="event"><l>^ca_occurrences.preferred_labels.name</l></unit></div></ifcount>}}}
-				{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><l>^ca_object_representations.media.icon</l> <l>^ca_objects.preferred_labels</l> (^relationship_typename)</unit></div></ifcount>}}}
+				{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><div class="row"><div class="col-sm-2"><l>^ca_object_representations.media.icon</l></div><div class="col-sm-10"><l>^ca_objects.preferred_labels</l></div></div></unit></div></ifcount>}}}
 				
 				
 				

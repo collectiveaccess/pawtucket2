@@ -79,7 +79,7 @@
 	}
 ?>
 </head>
-<body>
+<body <?php print ($this->request->getController() == "Front") ? "class='bodyFront'" : ""; ?>>
 	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
 	<nav class="navbar navbar-default yamm" role="navigation">
 		<div class="container menuBar">
@@ -101,7 +101,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<?php print caNavLink($this->request, '<div class="logo-con">'.caGetThemeGraphic($this->request, 'trc-logo-mark-color.svg', array("class" => "logo", "alt" => "The Riverside Church Logo", "role" => "banner")).'</div>'.caGetThemeGraphic($this->request, 'trc-logo-title.svg', array("class" => "logo-title", "alt" => "The Riverside Church", "role" => "banner")), "logo-wrap", "", "", ""); ?>
+				<?php print caNavLink($this->request, '<div class="logo-con">'.caGetThemeGraphic($this->request, 'trc-logo-mark-color.svg', array("class" => "logo", "alt" => "The Riverside Church Logo", "role" => "banner")).'</div><div class="archiveSubTitle">Digital Archive</div>'.caGetThemeGraphic($this->request, 'trc-logo-title.svg', array("class" => "logo-title", "alt" => "The Riverside Church", "role" => "banner")), "logo-wrap", "", "", ""); ?>
 				<!--<a href="https://www.trcnyc.org" class="logo-wrap" rel="home"><div class="logo-con"><?php print caGetThemeGraphic($this->request, 'trc-logo-mark-color.svg', array("class" => "logo", "alt" => "The Riverside Church Logo", "role" => "banner")); ?></div><?php
                 	print caGetThemeGraphic($this->request, 'trc-logo-title.svg', array("class" => "logo-title", "alt" => "The Riverside Church", "role" => "banner")); ?></a>-->
 			</div>
