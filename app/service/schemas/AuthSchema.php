@@ -25,15 +25,17 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+namespace GraphQLServices\Schemas;
+
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use GraphQLServices\Schemas\AuthSchema;
 
 require_once(__CA_LIB_DIR__.'/Service/GraphQLSchema.php'); 
 
-class AuthSchema extends GraphQLSchema {
+class AuthSchema extends \GraphQLServices\GraphQLSchema {
 	# -------------------------------------------------------
 	/**
 	 * 
@@ -84,7 +86,21 @@ class AuthSchema extends GraphQLSchema {
 					],
 					'jwt' => [
 						'type' => Type::string(),
-						'description' => 'JSON Web Token (JWT)'
+						'description' => 'JSON Web Token (JWT) for access'
+					],
+					'refresh' => [
+						'type' => Type::string(),
+						'description' => 'JSON Web Token (JWT) for refresh'
+					]
+				]
+			]),
+			new ObjectType([
+				'name' => 'Refresh',
+				'description' => 'Refresh JWT token',
+				'fields' => [
+					'jwt' => [
+						'type' => Type::string(),
+						'description' => 'JSON Web Token (JWT) for access'
 					]
 				]
 			])

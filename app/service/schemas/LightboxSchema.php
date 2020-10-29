@@ -25,7 +25,8 @@
  *
  * ----------------------------------------------------------------------
  */
- 
+namespace GraphQLServices\Schemas;
+
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
 use GraphQL\Type\Definition\ObjectType;
@@ -33,7 +34,7 @@ use GraphQL\Type\Definition\Type;
 
 require_once(__CA_LIB_DIR__.'/Service/GraphQLSchema.php'); 
 
-class LightboxSchema extends GraphQLSchema {
+class LightboxSchema extends \GraphQLServices\GraphQLSchema {
 	# -------------------------------------------------------
 	/**
 	 * 

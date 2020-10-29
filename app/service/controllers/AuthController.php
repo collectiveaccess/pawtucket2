@@ -26,24 +26,19 @@
  * ----------------------------------------------------------------------
  */
 
-use GraphQL\GraphQL;
-use GraphQL\Type\Definition\Type;
-use GraphQL\Type\Definition\ObjectType;
-use \Firebase\JWT\JWT;
-
 require_once(__CA_LIB_DIR__.'/Service/GraphQLServiceController.php');
 require_once(__CA_APP_DIR__.'/service/schemas/AuthSchema.php');
 
-class AuthController extends GraphQLServiceController {
+use GraphQL\GraphQL;
+use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\ObjectType;
+use GraphQLServices\Schemas\AuthSchema;
+use \Firebase\JWT\JWT;
+
+
+class AuthController extends \GraphQLServices\GraphQLServiceController {
 	# -------------------------------------------------------
-	static $userType;
-		
-	/**
-	 *
-	 */
-	public function __construct(&$request, &$response, $view_paths) {
-		parent::__construct($request, $response, $view_paths);
-	}
+	
 	# -------------------------------------------------------
 	/**
 	 *
@@ -74,14 +69,13 @@ class AuthController extends GraphQLServiceController {
 						if ($u->authenticate($args["username"], $args["password"], ['noPublicUsers' => true])) {
 							$user_id = $u->get('ca_users.user_id');
 						
-							$key = "example_key";
 							$data = [
 								"id" => $user_id
 							];
-							$jwt = self::encodeJWT($data);
 							return [
 								'id' => $user_id,
-								'jwt' => $jwt,
+								'jwt' => self::encodeJWT($data),
+								'refresh' => self::encodeJWTRefresh($data),
 								'user' => [
 									'id' => $user_id,
 									'username' => $u->get('ca_users.user_name'),
@@ -96,6 +90,28 @@ class AuthController extends GraphQLServiceController {
 						return ['jwt' => null, 'user' => null];
 					}
 				],
+				'refresh' => [
+					'type' => AuthSchema::get('Refresh'),
+					'description' => _t('Get new JWT access token using refresh token'),
+					'args' => [
+						[
+							'name' => 'token',
+							'type' => Type::string(),
+							'description' => _t('Refresh token'),
+							'defaultValue' => self::getBearerToken()
+						]
+					],
+					'resolve' => function ($rootValue, $args) {
+						if($d = self::decodeJWT($args['token'])) {
+							$id = $d->id;
+							return [
+								'jwt' => self::encodeJWT(['id' => $id])
+							];
+						}
+						
+						return ['jwt' => null];
+					}
+				],
 				'validate' => [
 					'type' => AuthSchema::get('UserInfo'),
 					'description' => _t('User login validation'),
@@ -103,8 +119,8 @@ class AuthController extends GraphQLServiceController {
 						[
 							'name' => 'jwt',
 							'type' => Type::string(),
-							'description' => _t('JWT'),
-							'defaultValue' => null
+							'description' => _t('JWT access token'),
+							'defaultValue' => self::getBearerToken()
 						]
 					],
 					'resolve' => function ($rootValue, $args) {

@@ -25,6 +25,7 @@
  *
  * ----------------------------------------------------------------------
  */
+namespace GraphQLServices;
 
 use GraphQL\GraphQL;
 use GraphQL\Type\Schema;
@@ -35,7 +36,7 @@ use \Firebase\JWT\JWT;
 
 require_once(__CA_LIB_DIR__.'/Service/BaseServiceController.php');
 
-class GraphQLServiceController extends BaseServiceController {
+class GraphQLServiceController extends \BaseServiceController {
 	# -------------------------------------------------------
 	/**
 	 *
@@ -97,29 +98,46 @@ class GraphQLServiceController extends BaseServiceController {
 			$this->view->setVar("pretty_print",true);
 		}
 					
-		$this->view->setVar("content", $output);
-		$this->view->setVar("raw", true);	// don't set 'ok' parameter
+		$this->view->setVar('content', $output);
+		$this->view->setVar('raw', true);	// don't set 'ok' parameter
 		$this->render("json.php");
-	}# ------------------------------------------------------
+	}
+	# ------------------------------------------------------
 	/**
 	 *
 	 */
-	public static function encodeJWT(array $data) {
-		$key = "example_key";
+	public static function encodeJWT(array $data, array $options=null) {
+		$config = \Configuration::load();
+		$key = $config->get('graphql_services_jwt_token_key');
+		$exp_offset = caGetOption('refresh', $options, false) ? 
+			(int)$config->get('graphql_services_jwt_access_token_lifetime') 
+			: 
+			(int)$config->get('graphql_services_jwt_refresh_token_lifetime');
+			
+		if ($exp_offset <= 0) { $exp_offset = 900; }
+		
 		$payload = array_merge([
-			"iss" => "http://example.org",
-			"aud" => "http://example.com",
-			"iat" => 1356999524,
-			"nbf" => 1357000000,
+			'iss' => __CA_SITE_HOSTNAME__,
+			'aud' => __CA_SITE_HOSTNAME__,
+			'iat' => $t=time(),
+			'nbf' => $t,
+			'exp' => $t + $exp_offset
 		], $data);
 		return JWT::encode($payload, $key);
+	}
+	# ------------------------------------------------------
+	/**
+	 *
+	 */
+	public static function encodeJWTRefresh(array $data) {
+		return self::encodeJWT($data, ['refresh' => true]);
 	}
 	# -------------------------------------------------------
 	/**
 	 *
 	 */
 	public static function decodeJWT($jwt) {
-		$key = "example_key";
+		$key = \Configuration::load()->get('graphql_services_jwt_token_key');
 		return JWT::decode($jwt, $key, ['HS256']);
 	}
 	# -------------------------------------------------------
@@ -128,7 +146,7 @@ class GraphQLServiceController extends BaseServiceController {
 	 */
 	public static function authenticate(string $jwt, array $options=null) {
 		if ($d = self::decodeJWT($jwt)) {
-			if ($u = ca_users::find(['user_id' => (int)$d->id, 'active' => 1, 'userclass' => ['<>', 255]], ['returnAs' => 'firstModelInstance'])) {
+			if ($u = \ca_users::find(['user_id' => (int)$d->id, 'active' => 1, 'userclass' => ['<>', 255]], ['returnAs' => 'firstModelInstance'])) {
 				if (caGetOption('returnAs', $options, null) === 'array') {
 					return [
 						'id' => $u->getPrimaryKey(),
@@ -143,6 +161,41 @@ class GraphQLServiceController extends BaseServiceController {
 			}
 		}
 		return false;
+	}
+	# -------------------------------------------------------
+	/** 
+	 * Get header Authorization
+	 * 
+	 */
+	protected static function getAuthorizationHeaders(){
+		$headers = null;
+		if (isset($_SERVER['Authorization'])) {
+			$headers = trim($_SERVER["Authorization"]);
+		} elseif(isset($_SERVER['HTTP_AUTHORIZATION'])) { //Nginx or fast CGI
+			$headers = trim($_SERVER["HTTP_AUTHORIZATION"]);
+		} elseif(function_exists('apache_request_headers')) {
+			$rheaders = apache_request_headers();
+			$rheaders = array_combine(array_map('ucwords', array_keys($rheaders)), array_values($rheaders));
+			
+			if (isset($rheaders['Authorization'])) {
+				$headers = trim($rheaders['Authorization']);
+			}
+		}
+		return $headers;
+	}
+	# -------------------------------------------------------
+	/**
+	 * Get access token from header
+	 * 
+	 */
+	protected static function getBearerToken() {
+		$headers = self::getAuthorizationHeaders();
+		if (!empty($headers)) {
+			if (preg_match('/Bearer\s(\S+)/', $headers, $m)) {
+				return $m[1];
+			}
+		}
+		return null;
 	}
 	# -------------------------------------------------------
 }

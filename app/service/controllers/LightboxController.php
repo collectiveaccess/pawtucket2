@@ -25,15 +25,16 @@
  *
  * ----------------------------------------------------------------------
  */
+require_once(__CA_LIB_DIR__.'/Service/GraphQLServiceController.php');
+require_once(__CA_APP_DIR__.'/service/schemas/LightboxSchema.php');
 
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use GraphQLServices\Schemas\LightboxSchema;
 
-require_once(__CA_LIB_DIR__.'/Service/GraphQLServiceController.php');
-require_once(__CA_APP_DIR__.'/service/schemas/LightboxSchema.php');
 
-class LightboxController extends GraphQLServiceController {
+class LightboxController extends \GraphQLServices\GraphQLServiceController {
 	# -------------------------------------------------------
 	/**
 	 *
@@ -46,7 +47,6 @@ class LightboxController extends GraphQLServiceController {
 	 *
 	 */
 	public function _default(){
-		
 		$qt = new ObjectType([
 			'name' => 'Query',
 			'fields' => [
@@ -58,7 +58,7 @@ class LightboxController extends GraphQLServiceController {
 							'name' => 'jwt',
 							'type' => Type::string(),
 							'description' => _t('JWT'),
-							'defaultValue' => null
+							'defaultValue' => self::getBearerToken()
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
@@ -68,7 +68,7 @@ class LightboxController extends GraphQLServiceController {
 					
 						$t_sets = new ca_sets();
 						
-						// TODO: check access - don't use hard-coded user
+						// TODO: check access for user
 						$lightboxes = $t_sets->getSetsForUser(array("user_id" => $u->getPrimaryKey(), "checkAccess" => [0,1], "parents_only" => true));
 						
 						return array_map(function($v) {
@@ -96,10 +96,20 @@ class LightboxController extends GraphQLServiceController {
 							'type' => Type::listOf(Type::string()),
 							'description' => _t('List of media versions to return'),
 							'defaultValue' => ['small']
+						],
+						[
+							'name' => 'jwt',
+							'type' => Type::string(),
+							'description' => _t('JWT'),
+							'defaultValue' => self::getBearerToken()
 						]
 					],
 					'resolve' => function ($rootValue, $args) {
-						$t_set = new ca_sets($args['id']);
+					
+						if (!($u = self::authenticate($args['jwt']))) {
+							throw new \ServiceException(_t('Invalid JWT'));
+						}
+						$t_set = new \ca_sets($args['id']);
 						
 						// TODO: check access
 						$lightbox = [
