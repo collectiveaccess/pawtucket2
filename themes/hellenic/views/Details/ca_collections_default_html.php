@@ -53,6 +53,12 @@
 						if ($vs_idno = $t_item->get('ca_collections.idno')) {
 							print "<div class='unit'><h6>Collection Identifier</h6>".$vs_idno."</div>";
 						}
+<<<<<<< HEAD
+=======
+						if ($vs_collection_hierarchy = $t_item->getWithTemplate('<ifdef code="ca_collections.parent_id"><unit relativeTo="ca_collections.hierarchy" delimiter=" &gt; "><l>^ca_collections.preferred_labels.name</l></unit></ifdef>')) {
+							print "<div class='unit'><h6>Part Of</h6><div class='data'>".$vs_collection_hierarchy."</div></div>";
+						}
+>>>>>>> host/banhammer
 						if ($vs_dates = $t_item->get('ca_collections.unitdate', array('returnWithStructure' => true, 'convertCodesToDisplayText' => true))) {
 							$va_dates_array = array();
 							foreach ($vs_dates as $va_key => $vs_date_info) {
@@ -77,7 +83,11 @@
 						if ($vs_rel_ent = $t_item->get('ca_entities.preferred_labels', array('excludeRelationshipTypes' => array("creator"), 'delimiter' => '<br/>', 'returnAsLink' => true))) {
 							print "<div class='unit'><h6>Related Entities</h6><div class='data'>".$vs_rel_ent."</div></div>";
 						}
+<<<<<<< HEAD
 						if ($vs_rel_collections = $t_item->get('ca_collections.preferred_labels', array('checkAccess' => $va_access_values, 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+=======
+						if ($vs_rel_collections = $t_item->get('ca_collections.related.preferred_labels', array('checkAccess' => $va_access_values, 'delimiter' => '<br/>', 'returnAsLink' => true))) {
+>>>>>>> host/banhammer
 							print "<div class='unit'><h6>Related Collections</h6><div class='data'>".$vs_rel_collections."</div></div>";
 						}
 						# --- access points

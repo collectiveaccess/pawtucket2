@@ -15,8 +15,9 @@
     font-style:italic;
 }
 
-body{ font-family: Constantia, serif; margin:0px; padding:0px 25px 0px 25px; font-size:12px; line-height:1.2em;}
+body{ font-family: Constantia, serif; margin:0px; padding:0px 25px 0px 25px; font-size:12px; line-height:1.4em;}
 /* wkhtml needs line height of 1.4em for body */
+/* dompdf needs line height of 1.2em for body */
 a, a:hover, a:focus, .detail a {
     color: #2c85b8;
 }
@@ -43,7 +44,9 @@ a, a:hover, a:focus, .detail a {
 .displayHeader {color:#666; font-weight:bold;}
 .displayValue {}
 .title {font-weight:bold; font-size: 14px;}
-.metadata {line-height:1.2em; margin-bottom:20px;}
+.metadata {line-height:1.6em; margin-bottom:20px;}
 /* wkhtml needs line height of 1.4em for metadata */
-.metaBlock {margin-left:0px; height:auto; font-size:12px; line-height:1.2em; }
+/* dompdf needs line height of 1.2em for metadata */
+.metaBlock {margin-left:0px; height:auto; font-size:12px; line-height:1.6em; }
 /* wkhtml needs line height of 1.2em for metadata */
+/* dompdf needs line height of 1.4em for metadata */

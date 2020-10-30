@@ -29,6 +29,12 @@
  *
  * ----------------------------------------------------------------------
  */
+ 
+ $img = '';
+ if($t_obj = ca_objects::find(['idno' => 'WHATSNEW'], ['returnAs' => 'firstModelInstance'])) {
+        $hp_image = $t_obj->getPrimaryRepresentation(['homepage']);
+        $img = $hp_image['tags']['homepage'];
+ }
 ?>
 
 	<div class="row">
@@ -41,10 +47,10 @@
 			</div>			
 			<div class="col-xs-6">
 				<div class="hpBrowseImage">
-					<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/organisations.jpg')."<div class='hpBrowseTitle'>Organisations</div>", "", "", "Browse", "organisations"); ?>
+					<?php print caNavLink($this->request, $img."<div class='hpBrowseTitle'>What's New</div>", "", "", "Detail", "objects/WHATSNEW"); ?>
 				</div>
 			</div>
-			</div>
+		</div>
 		</div>
 		<div class="col-xs-12 col-sm-6">
 			<div class="row">
@@ -60,6 +66,11 @@
 		</div>
 	</div>
 	<div class="row">
+	    <div class="col-xs-6 col-sm-3">
+            <div class="hpBrowseImage">
+                <?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/organisations.jpg')."<div class='hpBrowseTitle'>Organisations</div>", "", "", "Browse", "organisations"); ?>
+            </div>
+        </div>
 		<div class="col-xs-6 col-sm-3">
 			<div class="hpBrowseImage">
 				<?php print caNavLink($this->request, caGetThemeGraphic($this->request, 'hp_images/people.jpg')."<div class='hpBrowseTitle'>People</div>", "", "", "Browse", "people"); ?>

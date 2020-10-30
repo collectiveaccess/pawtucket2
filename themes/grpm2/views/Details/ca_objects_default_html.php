@@ -141,8 +141,11 @@
 					</div>
 					<div style="clear:left;"></div>
 				</div>
+				
+				{{{<ifdef code="ca_objects.tier"><H6>Collection Tier:</H6>^ca_objects.tier<br/><br/></ifdef>}}}
 				<H4>{{{<unit relativeTo="ca_collections" delimiter="<br/>"><l>^ca_collections.preferred_labels.name</l></unit><ifcount min="1" code="ca_collections"> ➔ </ifcount>}}}{{{ca_objects.preferred_labels.name}}}</H4>
 
+				{{{<ifdef code="ca_objects.taxonomy"><H6>Taxonomy:</H6>^ca_objects.taxonomy<br/></ifdef>}}}
 																				
 				{{{<ifdef code="ca_objects.idno"><H6>Identifier:</H6>^ca_objects.idno<br/></ifdef>}}}
 				{{{<ifdef code="ca_objects.containerID"><H6>Box/series:</H6>ca_objects.containerID<br/></ifdef>}}}						
@@ -156,11 +159,47 @@
 				{{{<ifdef code="ca_objects.Date"><H6>Date:</H6>^ca_objects.Date</ifdef>}}}
 
 				{{{<ifdef code="ca_objects.Format"><H6>Materials:</H6>^ca_objects.Format%delimiter=,_</ifdef>}}}
+				{{{<ifdef code="ca_objects.Dimensions_Container.Height"><H6>Dimensions:</H6><unit relativeTo="ca_objects.Dimensions_Container"><ifdef code="ca_objects.Dimensions_Container.Height">^ca_objects.Dimensions_Container.Height" h </ifdef><ifdef code="ca_objects.Dimensions_Container.Width">^Width" w </ifdef><ifdef code="ca_objects.Dimensions_Container.Depth">^Depth" d</ifdef></unit></ifdef>}}}
+                {{{<ifdef code="ca_objects.current_location_fld"><H6>Current Location Status:</H6>^ca_objects.current_location_fld</ifdef>}}}
+				
 
 				{{{<ifdef code="ca_objects.Source"><H6>Source:</H6>^ca_objects.Source</ifdef>}}}
+<?php
+				$vb_restricted = false;
+				if($vn_cc_list_item_id = $t_object->get("ca_objects.creative_commons")){
+					$t_list_item = new ca_list_items($vn_cc_list_item_id);
+					print "<H6>Rights:</H6>";
+					if($t_list_item->get("ca_list_items.idno") == "cc_restricted"){
+						print "<a href='".$t_list_item->get("ca_list_item_labels.description")."' target='_blank'>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."</a>";
+						$vb_restricted = true;
+					}else{
+						print "<div class='detailCC'><a href='".$t_list_item->get("ca_list_item_labels.description")."' target='_blank'>".$t_list_item->get("ca_list_items.icon.original")."<br/>".$t_object->get("ca_objects.creative_commons", array("convertCodesToDisplayText" => true))."</a></div>";
+					}
+				}
+				# --- if download_version not set, fall back to creative_commons to determine download version: high-res downloads for CC0 and no downloads for restricted
+				if($vn_dl_version_item_id = $t_object->get("ca_objects.download_version")){
+					$t_list_item = new ca_list_items($vn_dl_version_item_id);
+					switch($t_list_item->get("ca_list_items.idno")){
+						case "high_res":
+							print "<div class='text-center'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
+						break;
+						# -----------
+						case "low_res":
+							print "<div class='text-center'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'large', 'download' => 1))."</div>";
+						break;
+						# -----------
+					}
+				}else{
+					if(!$vb_restricted){
+						print "<div class='text-center'><br/>".caNavLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download Media")."'></span> "._t("Download Media"), "btn btn-default", "", "Detail",  "DownloadMedia", array('context' => 'objects', 'object_id' => $vn_id, 'version' => 'original', 'download' => 1))."</div>";
+					}
+				}
+				
+				
+?>
 				{{{<ifdef code="ca_objects.Current_Location"><H6>Currently:</H6>^ca_objects.Current_Location</ifdef>}}}
 
-				{{{<ifdef code="ca_objects.Links"><H6>Links:</H6>^ca_objects.Links</ifdef>}}}
+				{{{<ifdef code="ca_objects.Links"><H6>Links:</H6><unit delimiter="<br/>" relativeTo="ca_objects.Links"><a href="^ca_objects.Links" target="_new">^ca_objects.Links</a></unit></ifdef>}}}
 
 				<hr></hr>	
 				{{{<ifcount code="ca_occurrences" min="1" max="1"><H6>Exhibit/Program</H6></ifcount>}}}

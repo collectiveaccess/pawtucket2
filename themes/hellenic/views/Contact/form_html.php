@@ -35,7 +35,11 @@
 					<li class="menu-item current-menu-item "><?php print caNavLink($this->request, _t("About the Collection"), "", "", "About", "collection"); ?></li>
 					<li class="menu-item"><?php print caNavLink($this->request, _t("Schedule a Research Visit"), "", "", "Contact", "form", array("mode" => "research")); ?></li>
 					<li class="menu-item"><?php print caNavLink($this->request, _t("Contact"), "", "", "Contact", "form"); ?></li>
+<<<<<<< HEAD
 					<li class="menu-item"><?php print caNavLink($this->request, _t("Helpful Links"), "", "", "About", "links"); ?></li>
+=======
+					<li class="menu-item"><?php print caNavLink($this->request, _t("Helpful Information"), "", "", "About", "links"); ?></li>
+>>>>>>> host/banhammer
 					<li class="menu-item"><?php print caNavLink($this->request, _t("Acknowledgements"), "", "", "About", "acknowledgements"); ?></li>
 				</ul>
 			</div>
@@ -142,6 +146,32 @@
 <?php
 	}
 ?>
+<<<<<<< HEAD
+=======
+<?php
+	if(!$this->request->isLoggedIn() && defined("__CA_GOOGLE_RECAPTCHA_KEY__") && __CA_GOOGLE_RECAPTCHA_KEY__){
+
+		# --- only show captcha
+?>
+		<script type="text/javascript">
+			var gCaptchaRender = function(){
+                grecaptcha.render('regCaptcha', {'sitekey': '<?php print __CA_GOOGLE_RECAPTCHA_KEY__; ?>'});
+        	};
+		</script>
+		<script src='https://www.google.com/recaptcha/api.js?onload=gCaptchaRender&render=explicit' async defer></script>
+
+
+			<div class="row">
+				<div class="col-sm-12 col-md-offset-1 col-md-10">
+					<div class='form-group<?php print (($va_errors["recaptcha"]) ? " has-error" : ""); ?>'>
+						<div id="regCaptcha" class="col-sm-8 col-sm-offset-4"></div>
+					</div>
+				</div>
+			</div><!-- end row -->
+<?php
+	}
+?>
+>>>>>>> host/banhammer
 		
 		<div class="form-group">
 			<button type="submit" class="btn btn-default">Send</button>

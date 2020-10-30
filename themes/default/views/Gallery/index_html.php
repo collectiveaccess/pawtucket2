@@ -30,6 +30,12 @@
 									print "<li>";
 								}
 								$va_first_item = array_shift($va_first_items_from_set[$vn_set_id]);
+
+								$va_first_item_iconlarge = is_array($va_first_items_from_set_iconlarge[$vn_set_id]) ? array_shift($va_first_items_from_set_iconlarge[$vn_set_id]) : null;
+								$vs_rep = "";
+								if(!is_array($va_first_item_iconlarge) || !($vs_rep = $va_first_item_iconlarge["representation_tag"])){
+									$vs_rep = $va_first_item["representation_tag"];	
+								}
 								print "<div class='galleryItem'>
 											<a href='#' onclick='jQuery(\"#gallerySetInfo\").load(\"".caNavUrl($this->request, '', 'Gallery', 'getSetInfo', array('set_id' => $vn_set_id))."\"); return false;'>
 												<div class='galleryItemImg'>".$va_first_item["representation_tag"]."</div>

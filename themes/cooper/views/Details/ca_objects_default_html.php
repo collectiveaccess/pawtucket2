@@ -63,7 +63,7 @@ if($vb_ajax){
 			<div class="row">
 				<div class='col-sm-12 col-md-offset-2 col-md-8'>
 <?php
-				$va_child_ids = $t_object->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true));
+				$va_child_ids = $t_object->get("ca_objects.children.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true, "sort" => "ca_objects.idno"));
 				if(is_array($va_child_ids) && sizeof($va_child_ids)){
 					$qr_children = caMakeSearchResult("ca_objects", $va_child_ids);
 					$va_children = array();
@@ -72,7 +72,13 @@ if($vb_ajax){
 					$vn_first_img_id = null;
 					if($qr_children->numHits()){
 						while($qr_children->nextHit()){
+<<<<<<< HEAD
 							if($vs_icon = $qr_children->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values))){
+=======
+							$vs_icon = "";
+							if($va_icon = $qr_children->get("ca_object_representations.media.iconlarge", array("checkAccess" => $va_access_values, "returnAsArray" => true))){
+								$vs_icon = $va_icon[0];
+>>>>>>> host/banhammer
 								$va_content_cat = $qr_children->get("content_category", array("returnAsArray" => true));
 								if(!is_array($va_content_cat)){
 									$va_content_cat = array();
@@ -80,7 +86,14 @@ if($vb_ajax){
 								if(in_array($vn_content_category_text, $va_content_cat) || in_array($vn_content_category_transcript, $va_content_cat)){
 									$va_children_author_texts[$qr_children->get("object_id")] = array("icon" => $vs_icon, "label" => $qr_children->get("ca_objects.preferred_labels.name"), "representation_id" => $qr_children->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values)));
 								}else{
+<<<<<<< HEAD
 									$va_children[$qr_children->get("object_id")] = array("icon" => $vs_icon, "large" => $qr_children->get("ca_object_representations.media.page", array("checkAccess" => $va_access_values)));
+=======
+									$va_children[$qr_children->get("object_id")] = array("icon" => $vs_icon);
+									if(!$vn_first_img_id){
+										$vn_first_img_id = $qr_children->get("object_id");
+									}
+>>>>>>> host/banhammer
 								}
 	
 //								$vs_photographer = "";
@@ -98,14 +111,22 @@ if($vb_ajax){
 // 									}	
 // 								}
 //								$va_children_captions[$qr_children->get("object_id")] = ((!in_array($qr_children->get("ca_objects.preferred_labels.name"), array("[BLANK]", "[]"))) ? $qr_children->get("ca_objects.preferred_labels.name") : "").$vs_photographer;
+<<<<<<< HEAD
 								if(!$vn_first_img_id){
 									$vn_first_img_id = $qr_children->get("object_id");
 								}
+=======
+								
+>>>>>>> host/banhammer
 							}
 						}
 					}
+					if(is_array($va_children) && (sizeof($va_children) > 0)){
 ?>
 					<div class="row detailImages">
+<?php
+						if(is_array($va_children) && (sizeof($va_children) > 1)){
+?>
 						<div class="col-sm-2 detailImagesThumbs">
 <?php
 							foreach($va_children as $vn_child_object_id => $va_child){
@@ -113,10 +134,28 @@ if($vb_ajax){
 							}
 ?>
 						</div>
+<<<<<<< HEAD
 						<div class="col-sm-10">
 							<div id="detailObjectImageLarge"></div>
 <?php
 							if(is_array($va_children) && (sizeof($va_children) > 1)){
+=======
+<?php
+						}
+?>
+						<div class="col-sm-<?php print (sizeof($va_children) > 1) ? "10" : "12"; ?>">
+							<div id="detailObjectImageLarge"></div>
+<?php
+						if(is_array($va_children) && (sizeof($va_children) > 1)){
+?>
+
+								<div class="detailImageNav">
+									<a href="#" class="detailPreviousImageLink" onClick="showNextPreviousImg('p'); return false;"><i class='fa fa-angle-left'></i></a>
+									<a href="#" class="detailNextImageLink" onClick="showNextPreviousImg('n'); return false;"><i class='fa fa-angle-right'></i></i></a>
+								</div>
+<?php
+}
+>>>>>>> host/banhammer
 ?>
 								<div class="detailImageNav">
 									<a href="#" class="detailPreviousImageLink" onClick="showNextPreviousImg('p'); return false;"><span class="glyphicon glyphicon-arrow-left"></span></a>
@@ -128,6 +167,7 @@ if($vb_ajax){
 						</div>
 					</div>
 					<script type="text/javascript">
+<<<<<<< HEAD
 <?php
 							if(is_array($va_children) && sizeof($va_children)){
 ?>
@@ -175,10 +215,55 @@ if($vb_ajax){
 								}
 
 							}
+=======
+						showMainImg(<?php print $vn_first_img_id; ?>);
+						function showMainImg(childID){
+							$("#detailObjectImageLarge").load("<?php print caNavUrl($this->request, '', 'Detail', 'objects'); ?>/" + childID);
+							$(".detailImagesThumbs a").removeClass("active");
+							$("#iconLink" + childID).addClass("active");
+					
+						}
+<?php
+						if(is_array($va_children) && (sizeof($va_children) > 1)){
+?>
+							function showNextPreviousImg(direction){
+								var currentId = parseInt($(".detailImagesThumbs a.active").attr('id').replace('iconLink', ''));
+							
+								//var allIds = <?php print json_encode(array_keys($va_children))?>;
+								var allIds = [<?php print join(", ", array_keys($va_children))?>];
+							
+								var arrayLength = allIds.length;
+								for (var i = 0; i < arrayLength; i++) {
+									if(allIds[i] == currentId){
+										if(direction == "p"){
+											if(i > 0){
+												showMainImg(allIds[i-1]);
+											}else{
+												showMainImg(allIds[arrayLength-1]);
+											}
+										}else{
+											if(i < (arrayLength - 1)){
+												showMainImg(allIds[i+1]);
+											}else{
+												showMainImg(allIds[0]);
+											}
+										}
+									}
+								}
+							
+								//var allIds = <?php print json_encode(array_keys($va_children))?>;
+								//$.each(allIds, function(attr, value) {
+								//  console.log( attr + ' == ' + value );
+							   //});
+							}
+<?php
+						}
+>>>>>>> host/banhammer
 ?>							
 
 					</script>
 <?php
+					}
 				}
 										
 ?>
@@ -273,6 +358,7 @@ if($vb_ajax){
 							<ul class="nav nav-tabs" role="tablist">
 								<li role="presentation" class="active"><a href="#md" aria-controls="md" role="tab" data-toggle="tab">Additional Metadata</a></li>
 <?php
+<<<<<<< HEAD
 							if(is_array($va_children_author_texts) && sizeof($va_children_author_texts)){
 ?>
 								<li role="presentation"><a href="#author" aria-controls="author" role="tab" data-toggle="tab">Author Text</a></li>
@@ -291,6 +377,26 @@ if($vb_ajax){
 								<li role="presentation"><a href="#rights" aria-controls="rights" role="tab" data-toggle="tab">Rights</a></li>
 <?php								
 							}
+=======
+							#if(is_array($va_children_author_texts) && sizeof($va_children_author_texts)){
+?>
+								<li role="presentation"><a href="#author" aria-controls="author" role="tab" data-toggle="tab">Author Text</a></li>
+<?php
+							#}
+							$va_faculty_text_object_ids = $t_object->get("ca_objects.related.object_id", array("checkAccess" => $va_access_values, "returnAsArray" => true, "restrictToTypes" => array("faculty_course_document")));
+							if(is_array($va_faculty_text_object_ids) && sizeof($va_faculty_text_object_ids)){
+								$qr_faculty_texts = caMakeSearchResult('ca_objects', $va_faculty_text_object_ids);
+							}
+?>
+								<li role="presentation"><a href="#faculty" aria-controls="faculty" role="tab" data-toggle="tab">Faculty Text</a></li>
+<?php
+							$vs_rights = $t_object->get("ca_objects.rights");
+							#if($vs_rights){
+?>
+								<li role="presentation"><a href="#rights" aria-controls="rights" role="tab" data-toggle="tab">Rights</a></li>
+<?php								
+							#}
+>>>>>>> host/banhammer
 ?>
 							</ul>
 
@@ -314,6 +420,9 @@ if($vb_ajax){
 													print "N/A";
 												}
 												print "</div>";						
+											}
+											if($vs_site_text = $t_object->get("ca_objects.site_text")){
+												print "<H7>Site</H7><div class='unitBottom'>".$vs_site_text."</div>";
 											}
 		?>
 										</div>
@@ -339,27 +448,43 @@ if($vb_ajax){
 												$va_list_items = $t_object->get("ca_list_items", array("returnWithStructure" => true, "restrictToLists" => array("student_project_subjects")));
 												$va_lcsh_terms = $t_object->get("lcsh", array("returnWithStructure" => true));
 												$va_aat_terms = $t_object->get("aat", array("returnWithStructure" => true));
+<<<<<<< HEAD
 	#print_r($va_aat_terms);
+=======
+	
+>>>>>>> host/banhammer
 									
 												if((is_array($va_list_items) && sizeof($va_list_items)) || (is_array($va_lcsh_terms) && sizeof($va_lcsh_terms))){
 													$va_terms = array();
 		 											if(is_array($va_list_items) && sizeof($va_list_items)){
 														foreach($va_list_items as $va_list_item){
+<<<<<<< HEAD
 															$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Browse", "projects", array("facet" => "student_project_subjects_facet", "id" => urlencode($va_list_item["item_id"])));
+=======
+															$va_terms[] = caNavLink($this->request, $va_list_item["name_singular"], "", "", "Search", "projects", array("search" => $va_list_item["name_singular"]));
+>>>>>>> host/banhammer
 														}
 													}
 													if(is_array($va_lcsh_terms) && sizeof($va_lcsh_terms)){
 														$va_lcsh_terms = array_pop($va_lcsh_terms);
 														foreach($va_lcsh_terms as $vn_term_id => $va_lcsh_term){
 															$vs_tmp = substr($va_lcsh_term["lcsh"], 0, strpos($va_lcsh_term["lcsh"], " ["));
+<<<<<<< HEAD
 															$va_terms[] = caNavLink($this->request, $vs_tmp, "", "", "Browse", "projects", array("facet" => "lcsh_facet", "id" => urlencode($va_lcsh_term["lcsh"])));
+=======
+															$va_terms[] = caNavLink($this->request, $vs_tmp, "", "", "Search", "projects", array("search" => $vs_tmp));
+>>>>>>> host/banhammer
 														}
 													}
 													if(is_array($va_aat_terms) && sizeof($va_aat_terms)){
 														$va_aat_terms = array_pop($va_aat_terms);
 														foreach($va_aat_terms as $vn_term_id => $va_aat_term){
 															$vs_tmp = substr($va_aat_term["aat"], 0, strpos($va_aat_term["aat"], " ["));
+<<<<<<< HEAD
 															$va_terms[] = caNavLink($this->request, $va_aat_term["aat"], "", "", "Browse", "projects", array("facet" => "aat_facet", "id" => urlencode($va_aat_term["aat"])));
+=======
+															$va_terms[] = caNavLink($this->request, $va_aat_term["aat"], "", "", "Search", "projects", array("search" => $va_aat_term["aat"]));
+>>>>>>> host/banhammer
 														}
 													}
 													
@@ -373,7 +498,11 @@ if($vb_ajax){
 									</div><!-- end row -->
 								</div>
 								<div role="tabpanel" class="tab-pane" id="author">
+<<<<<<< HEAD
 									<div class='unitBottom'>
+=======
+									<H7 class='responsiveLabel'>Author Text</H7><div class='unitBottom'>
+>>>>>>> host/banhammer
 		<?php
 									if(is_array($va_children_author_texts) && sizeof($va_children_author_texts)){
 										foreach($va_children_author_texts as $vn_child_text_id => $va_child){
@@ -386,11 +515,16 @@ if($vb_ajax){
 									</div>
 								</div>
 								<div role="tabpanel" class="tab-pane" id="faculty">
+<<<<<<< HEAD
 									<div class='unitBottom'>
+=======
+									<H7 class='responsiveLabel'>Faculty Text</H7><div class='unitBottom'>
+>>>>>>> host/banhammer
 		<?php
 									
 									if(is_array($va_faculty_text_object_ids) && sizeof($va_faculty_text_object_ids)){
 										if($qr_faculty_texts->numHits()){
+<<<<<<< HEAD
 											while($qr_faculty_texts->nextHit()){
 												$vs_tmp = $vs_year = $vs_semester = $vs_course = "";
 												$vs_year = $qr_faculty_texts->get("ca_occurrences.preferred_labels", array("delimiter" => "; ", "checkAccess" => $va_access_values, "restrictToTypes" => array("academic_year")));
@@ -409,13 +543,43 @@ if($vb_ajax){
 										
 											}
 										}
+=======
+											$vb_faculty_text_output = false;
+											while($qr_faculty_texts->nextHit()){
+												$vs_tmp = $vs_year = $vs_semester = $vs_course = "";
+												if($vn_rep_id = $qr_faculty_texts->get("ca_object_representations.representation_id", array("checkAccess" => $va_access_values))){
+													$vs_year = $qr_faculty_texts->get("ca_occurrences.preferred_labels", array("delimiter" => "; ", "checkAccess" => $va_access_values, "restrictToTypes" => array("academic_year")));
+													$vs_semester = $qr_faculty_texts->get("ca_objects.semester", array("delimiter" => "; ", "convertCodesToDisplayText" => true));
+													$vs_tmp .= $vs_year;
+													if($vs_tmp && $vs_semester){
+														$vs_tmp .= ", ";
+													}
+													$vs_tmp .= $vs_semester;
+													$vs_course = $qr_faculty_texts->get("ca_occurrences.preferred_labels", array("delimiter" => "; ", "checkAccess" => $va_access_values, "restrictToTypes" => array("course")));
+													if($vs_tmp && $vs_course){
+														$vs_tmp .= " | ";
+													}
+													$vs_tmp .= $vs_course;
+													print '<a href="#" onclick="caMediaPanel.showPanel(\''.caNavUrl($this->request, '', 'Detail', 'GetMediaOverlay', array('id' => $qr_faculty_texts->get("ca_objects.object_id"), 'context' => 'objects', 'overlay' => 1, 'representation_id' => $vn_rep_id)).'\'); return false;" title="View Document">'.$vs_tmp.'</a><br/>';
+													$vb_faculty_text_output = true;
+												}										
+											}
+										}
+									}
+									if(!$vb_faculty_text_output){
+										print "NA";
+>>>>>>> host/banhammer
 									}										
 		?>
 									
 									</div>
 								</div>
 								<div role="tabpanel" class="tab-pane" id="rights">
+<<<<<<< HEAD
 									<div class='unitBottom'><?php print ($vs_rights) ? $vs_rights : "N/A"; ?></div>
+=======
+									<H7 class='responsiveLabel'>Rights</H7><div class='unitBottom'><?php print ($vs_rights) ? $vs_rights : "N/A"; ?></div>
+>>>>>>> host/banhammer
 								</div>
 							</div><!-- end tab-content -->
 					
@@ -449,12 +613,23 @@ if($vb_ajax){
 <?php
 									while($qr_res->nextHit()){
 										if($qr_res->get("ca_objects.object_id") != $t_object->get("object_id")){
+<<<<<<< HEAD
 											$vs_image = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values, "limit" => 1));
+=======
+											$vs_image = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno'><if rule='^ca_objects.primary_item =~ /Yes/'>^ca_object_representations.media.widepreview</if></unit>", array("checkAccess" => $va_access_values));
+											if(!$vs_image){
+												$vs_image = $qr_res->getWithTemplate("<unit relativeTo='ca_objects.children' sort='ca_objects.idno' limit='1'>^ca_object_representations.media.widepreview</unit>", array("checkAccess" => $va_access_values));
+											}
+>>>>>>> host/banhammer
 											if($vn_c = strpos($vs_image, ";")){
 												$vs_image = substr($vs_image, 0, $vn_c);
 											}
 											if(!$vs_image){
+<<<<<<< HEAD
 												$vs_image = caGetThemeGraphic($this->request, 'frontImage.jpg', array("style" => "opacity:.5;"));
+=======
+												$vs_image = caGetThemeGraphic($this->request, 'placeholder.jpg', array("style" => "opacity:.5;"));
+>>>>>>> host/banhammer
 											}
 											print "<li><div class='slide'>".caDetailLink($this->request, $vs_image, "", "ca_objects", $qr_res->get("ca_objects.object_id"))."<div class='slideCaption'>".caDetailLink($this->request, $qr_res->get("ca_objects.preferred_labels.name"), "", "ca_objects", $qr_res->get("ca_objects.object_id"))."</div></div></li>";
 											$i++;

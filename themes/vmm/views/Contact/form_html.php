@@ -8,6 +8,10 @@
 	$pn_id = $this->request->getParameter("id", pInteger);
 	$ps_table = $this->request->getParameter("table", pString);
 	$vs_typecode = "";
+<<<<<<< HEAD
+=======
+	$pn_object_id = "";
+>>>>>>> host/banhammer
 	switch($ps_table){
 		case "ca_objects":
 			require_once(__CA_MODELS_DIR__."/ca_objects.php");
@@ -16,6 +20,10 @@
 			$t_list_item = new ca_list_items();
 			$t_list_item->load($t_item->get("type_id"));
 			$vs_typecode = $t_list_item->get("idno");
+<<<<<<< HEAD
+=======
+			$pn_object_id = $pn_id;
+>>>>>>> host/banhammer
 		break;
 		# ---------------------------
 		case "ca_collections":
@@ -49,9 +57,12 @@
 	}
 	if($t_item && $ps_table){
 		$vs_idno = $t_item->get($ps_table.".idno");
+<<<<<<< HEAD
 	}	
 	if($pn_object_id){
 		
+=======
+>>>>>>> host/banhammer
 	}
 ?>
 <div class="row"><div class="col-sm-12 col-lg-8 col-lg-offset-2">
@@ -80,6 +91,10 @@
 							<input type="hidden" name="itemURL" value="<?php print ($vs_admin_url) ? $vs_admin_url : $vs_url; ?>">
 							<input type="hidden" name="id" value="<?php print $pn_id; ?>">
 							<input type="hidden" name="table" value="<?php print $ps_table; ?>">
+<<<<<<< HEAD
+=======
+							<input type="hidden" name="object_id" value="<?php print $pn_object_id; ?>">
+>>>>>>> host/banhammer
 <?php
 						}
 ?>

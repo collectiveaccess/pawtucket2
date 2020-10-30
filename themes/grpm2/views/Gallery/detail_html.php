@@ -7,11 +7,19 @@
 	$pn_set_item_id = $this->getVar("set_item_id");
 	$o_gallery_config = caGetGalleryConfig();
  	$t_list = new ca_lists();
-	$vn_teacher_type = $t_list->getItemIDFromList('set_types', $this->request->config->get('teacher_set_type'));
-	if($t_set->get("type_id") == $vn_teacher_type){
-		$vs_section_name = $o_gallery_config->get('teacher_gallery_section_name');
-	}else{
-		$vs_section_name = $this->getVar("section_name");
+	$vn_teacher_type = $t_list->getItemIDFromList('set_types', $o_gallery_config->get('teacher_gallery_set_type'));
+	$vn_community_type = $t_list->getItemIDFromList('set_types', $o_gallery_config->get('community_gallery_set_type'));
+	
+	switch($t_set->get("type_id")) {
+		case $vn_teacher_type:
+			$vs_section_name = $o_gallery_config->get('teacher_gallery_section_name');
+			break;
+		case $vn_community_type:
+			$vs_section_name = $o_gallery_config->get('community_gallery_section_name');
+			break;
+		default:
+			$vs_section_name = $this->getVar("section_name");
+			break;
 	}
 ?>
 	<div class="row">

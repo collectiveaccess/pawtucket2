@@ -1359,7 +1359,11 @@
 					
 					$t_download_log->log(array(
 						"user_id" => $this->request->getUserID() ? $this->request->getUserID() : null, 
+<<<<<<< HEAD
 						"ip_addr" => $_SERVER['REMOTE_ADDR'] ?  $_SERVER['REMOTE_ADDR'] : null, 
+=======
+						"ip_addr" => RequestHTTP::ip(), 
+>>>>>>> host/banhammer
 						"table_num" => $t_instance->TableNum(), 
 						"row_id" => $t_instance->get("ca_objects.object_id"), 
 						"representation_id" => $vn_representation_id, 
@@ -1504,4 +1508,8 @@
 			return $va_ret;
  		}
  		# -------------------------------------------------------
+<<<<<<< HEAD
  	}
+=======
+ 	}
+>>>>>>> host/banhammer

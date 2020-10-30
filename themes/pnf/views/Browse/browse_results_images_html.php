@@ -66,7 +66,8 @@
 		$vb_refine = false;
 		if(is_array($va_facets) && sizeof($va_facets)){
 			$vb_refine = true;
-			$vn_col_span = 4;
+			$vn_col_span = 3;
+			$vn_col_span_md = 4;
 			$vn_col_span_sm = 6;
 			$vn_col_span_xs = 6;
 		}
@@ -99,6 +100,7 @@
 				$vs_thumbnail = "";
 				$vs_type_placeholder = "";
 				$vs_typecode = "";
+				$vs_author = "";
 				if ($vs_table == 'ca_objects') {
 					if(!($vs_thumbnail = $qr_res->get('ca_object_representations.media.medium', array("checkAccess" => $va_access_values)))){
 						$t_list_item->load($qr_res->get("type_id"));
@@ -110,6 +112,11 @@
 						}
 					}
 					$vs_info = null;
+					$vs_collection = "";
+					$vs_author = $qr_res->get('ca_entities.preferred_labels', array('restrictToRelationshipTypes' => array('author'), 'delimiter' => ', '));
+					if($vs_author){
+						$vs_author = "<b>".$vs_author."</b><br/>";
+					}
 					if ($va_date = $qr_res->get('ca_objects.260_date', array('delimiter' => ', '))) {
 
 					} else {
@@ -118,7 +125,10 @@
 					if ($va_pub_info = $qr_res->get('ca_objects.publication_description')) {
 				
 					} else {$va_pub_info = null; }
-					$vs_info = "<p>".$va_date."<br/>".$va_pub_info."</p>";
+					if($vs_collection = $qr_res->getWithTemplate('<unit relativeTo="ca_collections"><ifdef code="ca_collections.parent.preferred_labels.name">^ca_collections.parent.preferred_labels.name: </ifdef>^ca_collections.preferred_labels.name</unit>')){
+						$vs_collection = "<br/><small>".$vs_collection."</small>";
+					}
+					$vs_info = "<p>".$va_date."<br/>".$va_pub_info.$vs_collection."</p>";
 
 					$vs_rep_detail_link 	= caDetailLink($this->request, $vs_thumbnail, '', $vs_table, $vn_id);				
 				} else {
@@ -136,12 +146,12 @@
 				$vs_expanded_info = $qr_res->getWithTemplate($vs_extended_info_template);
 
 				print "
-	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span}'>
+	<div class='bResultItemCol col-xs-{$vn_col_span_xs} col-sm-{$vn_col_span_sm} col-md-{$vn_col_span_md} col-lg-{$vn_col_span}'>
 		<div class='bResultItem' onmouseover='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").show();'  onmouseout='jQuery(\"#bResultItemExpandedInfo{$vn_id}\").hide();'>
 			<div class='bSetsSelectMultiple'><input type='checkbox' name='object_ids' value='{$vn_id}'></div>
 			<div class='bResultItemContent'><div class='text-center bResultItemImg'>{$vs_rep_detail_link}</div>
 				<div class='bResultItemText'>
-					{$vs_label_detail_link}{$vs_info}
+					{$vs_author}{$vs_label_detail_link}{$vs_info}
 				</div><!-- end bResultItemText -->
 			</div><!-- end bResultItemContent -->
 		</div><!-- end bResultItem -->

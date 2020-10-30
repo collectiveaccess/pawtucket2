@@ -88,10 +88,24 @@
 						$vs_thumbnail = $vs_default_placeholder_tag;
 					}
 				}
+<<<<<<< HEAD
 				if ($vs_description = $qr_results->get("ca_objects.date_created", array('delimiter' => ', '))){
 					$vs_description = "<div>".$vs_description."</div>";
 				} else {
 					$vs_description = null;
+=======
+				$va_date = $qr_results->get("ca_objects.date_created", array('returnAsArray' => true));
+				$vs_description = "";
+				if(sizeof($va_date)){
+					$va_tmp = array();
+					foreach($va_date as $vs_date){
+						$vs_date = trim($vs_date);
+						if($vs_date){
+							$va_tmp[] = $vs_date;
+						}
+					}
+					$vs_description = "<div>".join($va_tmp, ", ")."</div>";
+>>>>>>> host/banhammer
 				}
 				if ($vs_collection = $qr_results->get("ca_collections.preferred_labels", array('delimiter' => ', '))){
 					$vs_collection = "<div>".$vs_collection."</div>";

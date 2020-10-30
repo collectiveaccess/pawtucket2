@@ -8,10 +8,22 @@
 
 
 body{
+<<<<<<< HEAD
 	margin-bottom:330px;
 	font-size: 16px;
 	color:#000;
 }
+=======
+	margin-bottom:380px;
+	font-size: 16px;
+	color:#000;
+}
+@media(max-width:480px){
+	body{
+		margin-bottom:480px;
+	}
+}
+>>>>>>> host/banhammer
 
 .container, .heroSearch{
 	max-width:1500px;
@@ -28,6 +40,7 @@ H1, h1 {
     color: #104d73;
     text-transform: none;
 	font-family: 'Quattrocento', serif;
+<<<<<<< HEAD
 }
 @media(max-width:768px){
 	.results H1{
@@ -43,6 +56,23 @@ H3, h3, H6, h6, H4, h4{
 H4, h4 {
     font-size: 20px;
 }
+=======
+}
+@media(max-width:768px){
+	.results H1{
+		font-size:22px;
+	}
+}
+H2, h2 {
+	color: #104d73;
+}
+H3, h3, H6, h6, H4, h4{
+	color:#000;
+}
+H4, h4 {
+    font-size: 20px;
+}
+>>>>>>> host/banhammer
 H5, h5 {
 	font-size: 16px;
 }
@@ -164,6 +194,7 @@ body.frontContainer .navbar{
 .menuItems.navbar-nav > li > a {
     padding-left:20px;
     text-transform:uppercase;
+<<<<<<< HEAD
 }
 @media(min-width: 1072px) {
 	.menuItems.navbar-nav > li > a {
@@ -184,6 +215,28 @@ body.initial #user-navbar > li > a{
 	padding-top: 31px;
 	padding-bottom: 32px;
 }
+=======
+}
+@media(min-width: 1072px) {
+	.menuItems.navbar-nav > li > a {
+		padding-top: 22px;
+    	padding-bottom: 23px;
+	}
+	
+	body.initial .menuItems.navbar-nav > li > a {
+		padding-top: 31px;
+		padding-bottom: 32px;
+	}
+}
+#user-navbar > li > a{
+	padding-top: 22px;
+	padding-bottom: 27px;
+}
+body.initial #user-navbar > li > a{
+	padding-top: 31px;
+	padding-bottom: 32px;
+}
+>>>>>>> host/banhammer
 @media (min-width:900px){
 	.menuItems .dropdown-menu, #user-navbar .dropdown-menu{
 		opacity:0;
@@ -839,10 +892,17 @@ body.frontContainer #footer{
 	position:relative;
     margin-top:-180px;
     background-image: url("../graphics/hpParallax2.jpg");
+<<<<<<< HEAD
 
     /* Full height */
     height: 100%;
 
+=======
+
+    /* Full height */
+    height: 100%;
+
+>>>>>>> host/banhammer
     /* Create the parallax scrolling effect */
     background-attachment: fixed;
     /*background-position: top center;*/
@@ -888,7 +948,11 @@ body.frontContainer #footer{
 	background-color: #f7f7f7;
 	color:#000;
 	padding-top:50px;
+<<<<<<< HEAD
 	height: 280px;
+=======
+	height: 330px;
+>>>>>>> host/banhammer
 	border:0px;
 	font-size:14px;
 	font-weight:normal;
@@ -896,7 +960,11 @@ body.frontContainer #footer{
 }
 @media(max-width:480px){
 	#footer{
+<<<<<<< HEAD
 		height:380px;
+=======
+		height:430px;
+>>>>>>> host/banhammer
 	}
 }
 #footer a{
@@ -934,6 +1002,18 @@ body.frontContainer #footer{
 #footer ul {
     margin-top: 25px;
 }
+<<<<<<< HEAD
+=======
+#footer .funder{
+	text-align:center;
+	margin-top:25px;
+}
+#footer .funder img{
+	width:100%;
+	height:auto;
+	max-width:250px;
+}
+>>>>>>> host/banhammer
 /* detail */
 .detail {
 	color: #000;

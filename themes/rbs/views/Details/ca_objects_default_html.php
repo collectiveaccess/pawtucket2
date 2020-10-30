@@ -115,32 +115,50 @@
 				if ($vs_notes = $t_object->getWithTemplate('<unit delimiter="<br/>">^ca_objects.notes</unit>')) {
 					print "<div class='unit notes'><h6>Notes</h6><p>".$vs_notes."</p></div>";
 				}
-				$vs_teaching = $t_object->get('ca_objects.teaching_points', array('delimiter' => ', '));
+				$va_existing_teaching_points = $t_object->get('ca_objects.teaching_points', array('returnWithStructure' => true));
+
 				print "<div class='unit'><h6>Teaching Points";
 				if($this->request->isLoggedIn()){
 ?>
-					&nbsp;<span class='teachingpoint' data-toggle="popover" data-trigger="hover" data-content="Click to add or edit teaching points."><i class="fa fa-pencil-square-o" aria-hidden="true" onClick="$('#teachingPointsText').toggle(); $('#teachingPointsForm').toggle(); return false;"></i></span>
+					&nbsp;<span class='teachingpoint' data-toggle="popover" data-trigger="hover" data-content="Click to add a teaching point."><i class="fa fa-pencil-square-o" aria-hidden="true" onClick="$('#teachingPointsText').toggle(); $('#teachingPointsFormAdd').toggle(); return false;"></i></span>
 <?php
 				}
-				print "</h6><span id='teachingPointsText'>".$vs_teaching."</span>";
+				print "</h6><span id='teachingPointsText'>";
+				$va_existing_teaching_points = array_pop($va_existing_teaching_points);
+				if(is_array($va_existing_teaching_points) && sizeof($va_existing_teaching_points)){
+					foreach($va_existing_teaching_points as $vn_attribute_id => $va_teaching_point){
+						print "<p>";
+						if($this->request->isLoggedIn()){
+							print "<a href='#' onClick='removeTeachingPoint(".$vn_attribute_id."); return false;'><i class='fa fa-times-circle' aria-hidden='true'></i></a>&nbsp;&nbsp;&nbsp;";
+						}
+						print $va_teaching_point["teaching_points"]."</p>";
+					}
+				}
+				
+				print "</span>";
 				if($this->request->isLoggedIn()){
 ?>
-					<form id="teachingPointsForm" style="display:none;">
-						<input type="text" class="form-control" name="teaching_points" value="<?php print $vs_teaching; ?>" autocomplete="off" style="width:90%; float:left;">&nbsp;&nbsp;<button type="submit" class="btn" style="background-color:#FFF; padding-left:0px; padding-right:0px;"><i class="fa fa-arrow-circle-right" style="font-size:20px;"></i></button>
+					<form id="teachingPointsFormAdd" style="display:none;">
+						<input id="add_teaching_point" type="text" class="form-control" name="teaching_points" value="<?php print $vs_teaching; ?>" autocomplete="off" style="width:90%; float:left;">&nbsp;&nbsp;<button type="submit" class="btn" style="background-color:#FFF; padding-left:0px; padding-right:0px;"><i class="fa fa-arrow-circle-right" style="font-size:20px;"></i></button>
 						<input type="hidden" name="object_id" value="<?php print $t_object->get('ca_objects.object_id'); ?>">
 						<input type="hidden" name="field" value="teaching_points">
 						
 						<div style="clear:left;"></div>
 					</form>
 					<script type='text/javascript'>
+						function removeTeachingPoint(attribute_id){
+							$('#teachingPointsText').load('<?php print caNavUrl($this->request, '', 'UpdateObjectMd', 'ajaxSaveRemove', null); ?>/object_id/<?php print $t_object->get('ca_objects.object_id'); ?>/field/teaching_points/attribute_id/' + attribute_id
+							);
+						}
 						jQuery(document).ready(function() {
-							jQuery('#teachingPointsForm').submit(function(e){		
+							jQuery('#teachingPointsFormAdd').submit(function(e){		
 								jQuery('#teachingPointsText').load(
-									'<?php print caNavUrl($this->request, '', 'UpdateObjectMd', 'ajaxSave', null); ?>',
-									jQuery('#teachingPointsForm').serialize(),
+									'<?php print caNavUrl($this->request, '', 'UpdateObjectMd', 'ajaxSaveAdd', null); ?>',
+									jQuery('#teachingPointsFormAdd').serialize(),
 									function(){
 										$('#teachingPointsText').toggle();
-										$('#teachingPointsForm').toggle();
+										$('#teachingPointsFormAdd').toggle();
+										$('#add_teaching_point').val("");
 									}
 								);
 								

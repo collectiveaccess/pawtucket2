@@ -114,11 +114,31 @@
 				}else{			
 					$vs_idno_detail_link 	= caDetailLink($this->request, $qr_res->get("{$vs_table}.idno"), '', $vs_table, $vn_id);
 					$vs_label_detail_link 	= "<div class='browseTitle'>".caDetailLink($this->request, $qr_res->get("{$vs_table}.preferred_labels"), '', $vs_table, $vn_id)."</div>";
+<<<<<<< HEAD
 					if ($vs_description = $qr_res->get("ca_objects.date_created", array('delimiter' => ', '))){
 						$vs_description = $vs_description;
 					} else {
 						$vs_description = null;
 					}
+=======
+					$va_date = $qr_res->get("ca_objects.date_created", array('returnAsArray' => true));
+					$vs_description = "";
+					if(sizeof($va_date)){
+						$va_tmp = array();
+						foreach($va_date as $vs_date){
+							$vs_date = trim($vs_date);
+							if($vs_date){
+								$va_tmp[] = $vs_date;
+							}
+						}
+						$vs_description = join($va_tmp, ", ");
+					}
+					
+					 if($e = $qr_res->get('ca_entities.preferred_labels.displayname', ['restrictToRelationshipType' => ['interviewee'], 'delimiter' => ', '])){
+                            $vs_description .= "<br/>{$e}";
+                    }
+					
+>>>>>>> host/banhammer
 					if ($vs_collection = $qr_res->get("ca_collections.preferred_labels", array('delimiter' => ', ', 'checkAccess' => $va_access_values))){
 						$vs_collection = "<div>".$vs_collection."</div>";
 					} else {

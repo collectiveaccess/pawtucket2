@@ -205,8 +205,13 @@
 				}																																																					
 ?>
 				
+<<<<<<< HEAD
 				<div class='unit text'><a href="#" onclick="$('#rightsRepro').slideToggle(); return false;"><H6>Rights and Reproduction <i class="fa fa-chevron-down" aria-hidden="true"></i></H6></a>
 					<div style="display:none;" id="rightsRepro">{{{rightsrepro}}}</div>
+=======
+				<div class='unit text'><H6>Rights and Reproduction</H6>
+					<div>{{{rightsrepro}}}</div>
+>>>>>>> host/banhammer
 				</div>
 				<div class='unit'><h6>Citation</h6><div>
 <?php

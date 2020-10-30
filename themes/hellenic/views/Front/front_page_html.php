@@ -119,9 +119,15 @@
 ?>					
 				</div>
 				<div class="col-sm-8">
+<<<<<<< HEAD
 					<H1><?php print caNavLink($this->request, 'Archives', '', '', 'Browse', 'objects', array('facet' => 'type_facet', 'id' => $vn_document_type));?></H1>
 					<p>{{{homearchives}}}</p>
 					<div class='homeLink'><?php print caNavLink($this->request, 'See Collection <i class="fa fa-arrow-right"></i>', '', '', 'Browse', 'objects', array('facet' => 'type_facet', 'id' => $vn_document_type));?></div>
+=======
+					<H1><?php print caNavLink($this->request, "Archives", "", "", "Collections", "Index");?></H1>
+					<p>{{{homearchives}}}</p>
+					<div class='homeLink'><?php print caNavLink($this->request, 'See Collection <i class="fa fa-arrow-right"></i>', '', '', 'Collections', 'Index');?></div>
+>>>>>>> host/banhammer
 				</div>
 
 			</div><!--end col-sm-6-->		

@@ -6680,7 +6680,7 @@ if (!$va_facet_info['show_all_when_first_facet'] || ($this->numCriteria() > 0)) 
                 while($qr->nextRow()) {
                     $result[] = $qr->getRow();
                 }
-                
+
                 return $result;
 	        }
 	            

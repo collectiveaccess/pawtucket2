@@ -51,6 +51,12 @@
 						<li><?php print caNavLink($this->request, _t("Terms of Use"), "", "", "About", "TermsOfUse"); ?></li>
 						<li><?php print caNavLink($this->request, _t("Privacy Policy"), "", "", "About", "PrivacyPolicy"); ?></li>
 					</ul>
+<<<<<<< HEAD
+=======
+					<p class="funder">
+						<a href="https://www.canada.ca/en/canadian-heritage.html" target="_blank"><?php print caGetThemeGraphic($this->request, '3li_EnFr_Wordmark_C.png'); ?></a>
+					</p>
+>>>>>>> host/banhammer
 				</div>
 			</div>
 		</footer><!-- end footer -->
