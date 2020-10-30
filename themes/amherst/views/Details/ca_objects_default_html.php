@@ -70,7 +70,8 @@
 					print '</div><!-- end detailTools -->';
 				}				
 ?>
-				<div class="sharethis-inline-share-buttons"></div>
+				{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><H6>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></H6><unit relativeTo="ca_objects.related" delimiter="<br/>"><div class="row"><div class="col-xs-3 col-sm-3"><l>^ca_object_representations.media.iconlarge</l></div><div class="col-xs-9 col-sm-9"><l>^ca_objects.preferred_labels</l></div></div></unit></div></ifcount>}}}
+
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
@@ -99,13 +100,13 @@
 					print "<div class='unit'><h6>Owned by</H6>".$va_owned."</div>";
 				}	
 				if ($va_description = $t_object->get('ca_objects.public_description', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Description</H6>".$va_description."</div>";
+					print "<div class='unit'><h6>Description</H6><span class='trimText'>".$va_description."</span></div>";
 				}
 				if ($va_exhibition_label = $t_object->get('ca_objects.exhibition_label', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Exhibition Label</H6>".$va_exhibition_label."</div>";
+					print "<div class='unit'><h6>Exhibition Label</H6><span class='trimText'>".$va_exhibition_label."</span></div>";
 				}
 				if ($vs_curatorial_description = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Curatorial Description</H6>".$vs_curatorial_description."</div>";
+					print "<div class='unit'><h6>Curatorial Description</H6><span class='trimText'>".$vs_curatorial_description."</span></div>";
 				}
 				if ($va_aat = $t_object->get('ca_objects.aat', array('returnAsArray' => true))) {
 					if ($va_aat[0] != "") {
@@ -194,9 +195,7 @@
 					print "<div class='unit'><h6>Accession/ID number</H6>".$va_idno."</div>";
 				}
 																																																								
-?>
-				{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><H6>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></H6><unit relativeTo="ca_objects.related" delimiter="<br/>"><div class="row"><div class="col-sm-2"><l>^ca_object_representations.media.icon</l></div><div class="col-sm-10"><l>^ca_objects.preferred_labels</l></div></div></unit></div></ifcount>}}}
-				
+?>				
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
