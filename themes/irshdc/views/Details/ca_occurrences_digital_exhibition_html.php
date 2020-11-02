@@ -118,7 +118,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 						print "<a href='#related'><div class='digExhSideNavLink digExhSideNavLinkNoImg'>Related Resources</div></a>";
 					}
 					print "<div class='digExhSideNavLinkOut'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")));
-					print caDetailLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download as PDF", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
+					#print caDetailLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download as PDF", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
 					
 ?>
 					</div>
