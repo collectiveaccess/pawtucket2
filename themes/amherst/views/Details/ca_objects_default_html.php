@@ -70,12 +70,25 @@
 					print '</div><!-- end detailTools -->';
 				}				
 ?>
-				<div class="sharethis-inline-share-buttons"></div>
+				{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><H6>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></H6><unit relativeTo="ca_objects.related" delimiter="<br/>"><div class="row"><div class="col-xs-3 col-sm-3"><l>^ca_object_representations.media.iconlarge</l></div><div class="col-xs-9 col-sm-9"><l>^ca_objects.preferred_labels</l></div></div></unit></div></ifcount>}}}
+
 			</div><!-- end col -->
 			
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 				<H4>{{{ca_objects.preferred_labels.name}}}</H4>
 				<HR/>
+				{{{<ifcount code="ca_entities" min="1" restrictToRelationshipTypes="source" restrictToTypes="source"><div class="unit"><H6>From</H6><unit relativeTo="ca_entities" delimiter="<br/>" restrictToRelationshipTypes="source" restrictToTypes="source"><l>^ca_entities.preferred_labels.displayname</l></unit></div></ifcount>}}}
+
+				{{{<ifdef code="ca_objects.parent_id"><div class="unit"><H6>Part of</H6>
+					<unit relativeTo="ca_objects.parent" delimiter="<br/>">
+						<div class="row"><div class="col-sm-2"><l>^ca_object_representations.media.icon</l></div><div class="col-sm-10"><l>^ca_objects.preferred_labels</l></div></div>
+					</unit>
+				</div></ifdef>}}}
+				{{{<ifcount code="ca_objects.children" min="1"><div class="unit"><H6>Contains</H6>
+					<unit relativeTo="ca_objects.children" delimiter="<br/>">
+						<div class="row"><div class="col-sm-2"><l>^ca_object_representations.media.icon</l></div><div class="col-sm-10"><l>^ca_objects.preferred_labels</l></div></div>
+					</unit></div></ifcount>}}}
+				
 <?php
 				if ($va_date = $t_object->getWithTemplate('<ifcount min="1" code="ca_objects.date.date_value"><unit delimiter="<br/>"><ifdef code="ca_objects.date.date_value">^ca_objects.date.date_value (^ca_objects.date.date_types)</ifdef></unit></ifcount>')) {
 					print "<div class='unit'><h6>Date</H6>".$va_date."</div>";
@@ -87,13 +100,13 @@
 					print "<div class='unit'><h6>Owned by</H6>".$va_owned."</div>";
 				}	
 				if ($va_description = $t_object->get('ca_objects.public_description', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Description</H6>".$va_description."</div>";
+					print "<div class='unit'><h6>Description</H6><span class='trimText'>".$va_description."</span></div>";
 				}
 				if ($va_exhibition_label = $t_object->get('ca_objects.exhibition_label', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Exhibition Label</H6>".$va_exhibition_label."</div>";
+					print "<div class='unit'><h6>Exhibition Label</H6><span class='trimText'>".$va_exhibition_label."</span></div>";
 				}
 				if ($vs_curatorial_description = $t_object->get('ca_objects.description', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Curatorial Description</H6>".$vs_curatorial_description."</div>";
+					print "<div class='unit'><h6>Curatorial Description</H6><span class='trimText'>".$vs_curatorial_description."</span></div>";
 				}
 				if ($va_aat = $t_object->get('ca_objects.aat', array('returnAsArray' => true))) {
 					if ($va_aat[0] != "") {
@@ -156,7 +169,7 @@
 				#if ($va_tgm = $t_object->get('ca_objects.tgm', array('delimiter' => '<br/>'))) {
 				#	print "<div class='unit'><h6>Library of Congress Thesaurus of Graphic Materials</H6>".$va_tgm."</div>"; 
 				#}																
-				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('creator', 'owner', 'donor', 'provider')))) {
+				if ($va_entity_rels = $t_object->get('ca_objects_x_entities.relation_id', array('returnAsArray' => true, 'excludeRelationshipTypes' => array('creator', 'owner', 'donor', 'provider', 'source')))) {
 					$va_entities_by_type = array();
 					foreach ($va_entity_rels as $va_key => $va_entity_rel) {
 						$t_rel = new ca_objects_x_entities($va_entity_rel);
@@ -180,57 +193,9 @@
 				}				
 				if ($va_idno = $t_object->get('ca_objects.idno', array('delimiter' => '<br/>'))) {
 					print "<div class='unit'><h6>Accession/ID number</H6>".$va_idno."</div>";
-				}					
-				
-								
-/*				if ($va_alt_title = $t_object->get('ca_objects.nonpreferred_labels', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Alternate Titles</H6>".$va_alt_title."</div>";
 				}
-				if ($va_alt_id = $t_object->getWithTemplate('<ifcount min="1" code="ca_objects.other_identifiers"><unit delimiter=", "><ifdef code="ca_objects.other_identifiers.legacy_identifier">^ca_objects.other_identifiers.legacy_identifier (^ca_objects.other_identifiers.other_identifier_type)</ifdef></unit></ifcount>')) { 
-					print "<div class='unit'><h6>Other Identifiers</H6>".$va_alt_id."</div>";
-				}
-
-				if ($va_accessory = $t_object->get('ca_objects.accessory', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Accessory</H6>".$va_accessory."</div>";
-				}
-				if ($va_material = $t_object->get('ca_objects.material', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Material</H6>".$va_material."</div>";
-				}	
-				if ($va_technique = $t_object->get('ca_objects.technique', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Technique</H6>".$va_technique."</div>";
-				}
-				if ($va_medium = $t_object->get('ca_objects.medium', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Medium</H6>".$va_medium."</div>";
-				}
-				if ($va_format = $t_object->get('ca_objects.format', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Format</H6>".$va_format."</div>";
-				}	
-				if ($va_inscription = $t_object->get('ca_objects.inscription', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Inscription</H6>".$va_inscription."</div>";
-				}	
-				if ($va_signature = $t_object->getWithTemplate('<unit delimiter="<br/>"><ifdef code="ca_objects.signature.signedname"><b>name:</b> ^ca_objects.signature.signedname </ifdef><ifdef code="ca_objects.signature.signloc"><b>location:</b> ^ca_objects.signature.signloc</ifdef></unit>')) {
-					print "<div class='unit'><h6>Signature</H6>".$va_signature."</div>";  
-				}
-				if ($va_geo_notes = $t_object->get('ca_objects.geo_notes', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Geographic Notes</H6>".$va_geo_notes."</div>";
-				}
-				if ($va_culture = $t_object->get('ca_objects.culture', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Culture</H6>".$va_culture."</div>";
-				}	
-				if ($va_school = $t_object->get('ca_objects.school', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>School</H6>".$va_school."</div>";
-				}
-				if ($va_style = $t_object->get('ca_objects.style', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Style</H6>".$va_style."</div>";
-				}	
-				if ($va_rights = $t_object->getWithTemplate('<unit delimiter="<br/>"><ifdef code="ca_objects.rights.rightsText"><b>Rights:</b> ^ca_objects.rights.rightsText</ifdef><ifdef code="ca_objects.rights.rightsHolder"><br/><b>Rights Holder:</b> ^ca_objects.rights.rightsHolder</ifdef><ifdef code="ca_objects.rights.copyrightStatement"><br/><b>Copyright Statement:</b> ^ca_objects.rights.copyrightStatement</ifdef><ifdef code="ca_objects.rights.rightsNotes"><br/><b>Rights Notes:</b> ^ca_objects.rights.rightsNotes</ifdef></unit>')) {
-					print "<div class='unit'><h6>Rights</H6>".$va_rights."</div>";  
-				}
-				if ($va_publication_notes = $t_object->get('ca_objects.publication_notes', array('delimiter' => '<br/>'))) {
-					print "<div class='unit'><h6>Publication Notes</H6>".$va_publication_notes."</div>";
-				}
-*/																																																				
-?>
+																																																								
+?>				
 			</div><!-- end col -->
 		</div><!-- end row --></div><!-- end container -->
 	</div><!-- end col -->
