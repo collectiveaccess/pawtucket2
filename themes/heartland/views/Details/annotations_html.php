@@ -32,7 +32,7 @@
 
 	if (sizeof($va_annotations) > 0) {
 ?>
-<h6><?php print _t('Index (%1)', sizeof($va_annotations)); ?></h6>
+<div class="unit"><label><?php print _t('Index (%1)', sizeof($va_annotations)); ?></label>
 <div class='detailAnnotationList'>
 	<ul class='detailAnnotation'>
 <?php
@@ -44,7 +44,7 @@
 <?php
 	}
 ?>
-</div>
+</div></div>
 <script type="text/javascript">
 	jQuery(document).ready(function() {
 		var detailAnnotationTimes = <?php print json_encode($va_annotation_times); ?>;

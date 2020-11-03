@@ -196,6 +196,15 @@ a.navbar-brand, .navbar-default .navbar-brand{
 .btn-default:hover{
 	background-color:#c90;
 }
+.results .btn, .browse .btn{
+	padding:8px;
+}
+@media(min-width:376px){
+	.results .clearAll{
+		float:right;
+		padding-top:5px;
+	}
+}
 h1{
 	font-size:30px;
 }
@@ -242,7 +251,10 @@ a.readmore-js-toggle::after {
     text-decoration: underline;
     color:#FFF;
 }
-
+.detail #detailAnnotations .detailAnnotationList {
+    max-height: 300px;
+    overflow: auto;
+}
 /* browse */
 #bRefine{
     z-index:5;
