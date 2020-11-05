@@ -61,7 +61,7 @@
 				break;
 			}
 			if($vn_i > 0){
-				$va_collection_path[] = $t_collections->get("ca_collections.preferred_labels.name");
+				$va_collection_path[] = caNavLink($t_collections->get("ca_collections.preferred_labels.name"), "", "", "Browse", "Archive", array("facet" => "collection_facet", "id" => $vn_collection_heirarchy_level_id));
 			}
 			$vn_i++;
 			if($vn_i == 3){
