@@ -48,6 +48,7 @@
 			<div class='col-sm-6 col-md-6 col-lg-6'>
 				{{{representationViewer}}}
 				
+				{{{<ifcount code="ca_objects.related" min="1"><div class="unit"><label>Related Object<ifcount code="ca_objects.related" min="2">s</ifcount></label><unit relativeTo="ca_objects.related" delimiter="<br/>"><div class="row"><div class="col-xs-2 col-sm-2"><l>^ca_object_representations.media.iconlarge</l></div><div class="col-xs-10 col-sm-10"><l>^ca_objects.preferred_labels</l></div></div></unit></div></ifcount>}}}
 				
 				<div id="detailAnnotations"></div>
 				
