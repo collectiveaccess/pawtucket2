@@ -1553,8 +1553,10 @@ a.digExhAnchors.offset{
 .digExhContentBlock .quoteMargin{
 	font-size:25px;
 	text-align:center;
-	margin-top:90px;
-	margin-bottom:110px;
+	margin-top:30px;
+	margin-bottom:40px;
+/*	margin-top:90px;
+	margin-bottom:110px;*/
 	padding:40px;
 }
 .digExhContentBlock .quote{
@@ -1596,6 +1598,9 @@ a.digExhAnchors.offset{
 
 #digExhTimeline {
     height: 500px;
+}
+#digExhTimeline .tl-slider-container-mask{
+	background-color:#fafafa;
 }
 #digExhTimeline .tl-slide-content{
 	padding-right:0px !important;
@@ -1728,8 +1733,10 @@ a.digExhDetailPrev, a.digExhDetailNext{
 		margin-bottom:0px;
 	}
 	.digExhContentBlock .quoteMargin{
-		margin-top:45px;
-		margin-bottom:55px;
+		/*margin-top:45px;
+		margin-bottom:55px;*/
+		margin-top:30px;
+		margin-bottom:40px;
 	}
 	.storymapContainer{
 		height: 450px;
