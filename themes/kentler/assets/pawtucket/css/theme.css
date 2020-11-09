@@ -23,6 +23,11 @@ body{
 	color:#000000;
 	font-size:13px;
 }
+@media(max-width: 768px) {
+	body{
+		margin-bottom: 250px;
+	}
+}
 .largerText{
 	font-size:13px;
 }
@@ -616,9 +621,9 @@ a.navbar-brand .line3{
 	margin-bottom:10px;
 }
 .detail .exhibitGrid{
-	max-height:600px;
+/*	max-height:600px;
 	overflow-y:auto;
-	overflow-x:hidden;
+	overflow-x:hidden; */
 	padding-right: 10px;
 }
 .dontScale img{
@@ -757,4 +762,7 @@ div.caMediaOverlayControls, div.caMediaOverlayControls:hover{
 
 .detail .navTop {
     margin-top: 20px;
+}
+.form-control:focus {
+    border-color: #000000;
 }
