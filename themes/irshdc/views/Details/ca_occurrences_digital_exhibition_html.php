@@ -62,13 +62,13 @@ $vs_mode = $this->request->getParameter("mode", pString);
 	}elseif(strpos($vs_last_find, "school") !== false){
 		$vs_link_text = "Explore Schools";	
 	}elseif(strpos($vs_last_find, "listing") !== false){
-		$vs_link_text = "Explore Digital Exhibitions";	
+		$vs_link_text = "Explore Exhibitions";	
 	}
 	if($vs_link_text){
 		$va_params["row_id"] = $t_item->getPrimaryKey();
  		$va_breadcrumb_trail[] = $o_context->getResultsLinkForLastFind($this->request, "ca_occurrences", $vs_link_text, null, $va_params);		
  	}else{
- 		$va_breadcrumb_trail[] = caNavLink($this->request, "Explore Digital Exhibitions", '', 'Listing', 'DigitalExhibitions', '');
+ 		$va_breadcrumb_trail[] = caNavLink($this->request, "Explore Exhibitions", '', 'Listing', 'DigitalExhibitions', '');
  	}
  	$va_breadcrumb_trail[] = caTruncateStringWithEllipsis($t_item->get('ca_occurrences.preferred_labels.name'), 60);
 ?>
@@ -118,7 +118,8 @@ $vs_mode = $this->request->getParameter("mode", pString);
 						print "<a href='#related'><div class='digExhSideNavLink digExhSideNavLinkNoImg'>Related Resources</div></a>";
 					}
 					print "<div class='digExhSideNavLinkOut'>".caNavLink($this->request, "<span class='glyphicon glyphicon-envelope'></span> Ask a Question", "", "", "Contact", "Form", array("contactType" => "askArchivist", "table" => "ca_occurrences", "row_id" => $t_item->get("occurrence_id")));
-					print caDetailLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download as PDF", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'))."</div>";
+					#print caDetailLink($this->request, "<span class='glyphicon glyphicon-download'></span> Download as PDF", "", "ca_occurrences", $t_item->get("ca_occurrences.occurrence_id"), array('view' => 'pdf', 'export_format' => '_pdf_ca_occurrences_summary'));
+					print "</div>";
 					
 ?>
 					</div>
