@@ -1,13 +1,13 @@
 <?php
 /* ----------------------------------------------------------------------
- * themes/default/views/Details/annotations_html.php : 
+ * app/templates/summary/summary.php
  * ----------------------------------------------------------------------
  * CollectiveAccess
  * Open-source collections management software
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2015 Whirl-i-Gig
+ * Copyright 2014 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -23,17 +23,38 @@
  * the "license.txt" file for details, or visit the CollectiveAccess web site at
  * http://www.CollectiveAccess.org
  *
+ * -=-=-=-=-=- CUT HERE -=-=-=-=-=-
+ * Template configuration:
+ *
+ * @name Object tear sheet
+ * @type page
+ * @pageSize letter
+ * @pageOrientation portrait
+ * @tables ca_objects
+ * @marginTop 0.75in
+ * @marginLeft 0.5in
+ * @marginRight 0.5in
+ * @marginBottom 0.75in
+ *
  * ----------------------------------------------------------------------
  */
-	$vs_player_name = 			$this->getVar('player_name');
-	$va_annotations = 			$this->getVar('annotation_list');
-	$va_annotation_times = 		$this->getVar('annotation_times');
-	$vn_representation_id = 	$this->getVar('representation_id');
+ 
+ 	$t_item = $this->getVar('t_subject');
+	$t_display = $this->getVar('t_display');
+	$va_placements = $this->getVar("placements");
+	$vn_representation_id = $this->request->getParameter('representation_id', pInteger);
 
-	# --- this overrides what is passed from DetailController so the timecode can be formatted how client wants
+	print $this->render("pdfStart.php");
+	print $this->render("header.php");
+	print $this->render("footer.php");	
+
+?>
+	<div class="title">
+		<h1 class="title"><?php print $t_item->getLabelForDisplay();?></h1>
+	</div>
+<?php
 	if($vn_representation_id){
  		$t_rep = new ca_object_representations($vn_representation_id);
- 		$vn_object_id = $t_rep->get("ca_objects.object_id");
  		if (!($vs_template = $va_detail_options['displayAnnotationTemplate'])) { $vs_template = '^ca_representation_annotations.preferred_labels.name'; }
  			
  			$va_annotation_list = array();
@@ -60,43 +81,17 @@
 	}
 	if (sizeof($va_annotation_list) > 0) {
 ?>
-<div class="unit">
-<?php
-	print "<div class='downloadIndex'>".caDetailLink($this->request, "<span class='glyphicon glyphicon-download' aria-label='"._t("Download")."'></span> Download Index", "", "ca_objects",  $vn_object_id, array('view' => 'pdf', 'export_format' => '_pdf_ca_objects_summary', 'representation_id' => $vn_representation_id))."</div>";
-?>
-	<label><?php print _t('Index (%1)', sizeof($va_annotation_list)); ?></label>
+<div class="unit"><H6><?php print _t('Index (%1)', sizeof($va_annotation_list)); ?></H6>
 <div class='detailAnnotationList'>
-	<ul class='detailAnnotation'>
 <?php
 		foreach($va_annotation_list as $vs_annotation) {
-			print "<li class='detailAnnotation'>{$vs_annotation}</li>\n";
+			print "<div class='unit'>{$vs_annotation}<br/></div>\n";
 		}
-?>
-	</ul>
-<?php
+
 	}
 	
 
 ?>
 </div></div>
-<script type="text/javascript">
-	jQuery(document).ready(function() {
-		var detailAnnotationTimes = <?php print json_encode($va_annotation_times); ?>;
-		jQuery('li.detailAnnotation').on('click', function(e) {
-			//var i = jQuery('li.detailAnnotation').index(e.target); 
-			var i = jQuery('li.detailAnnotation').index($(this));
-			caUI.mediaPlayerManager.seek('<?php print $vs_player_name; ?>', detailAnnotationTimes[i][0]);
-		});
-		
-		caUI.mediaPlayerManager.onTimeUpdate('<?php print $vs_player_name; ?>', function() {
-			var ct = caUI.mediaPlayerManager.currentTime('<?php print $vs_player_name; ?>');
-			
-			jQuery('li.detailAnnotation').removeClass('active');
-			jQuery.each(detailAnnotationTimes, function(i, v) {
-				if ((ct > v[0]) && (ct <= v[1])) {
-					jQuery('li.detailAnnotation:eq(' + i + ')').addClass('active');
-				}
-			});
-		});
-	});
-</script>
+<?php	
+	print $this->render("pdfEnd.php");

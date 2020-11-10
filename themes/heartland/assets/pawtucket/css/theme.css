@@ -255,6 +255,11 @@ a.readmore-js-toggle::after {
     max-height: 300px;
     overflow: auto;
 }
+.detail .downloadIndex{
+	float:right;
+	font-size:13px;
+	margin-top: 4px;
+}
 /* browse */
 #bRefine{
     z-index:5;
