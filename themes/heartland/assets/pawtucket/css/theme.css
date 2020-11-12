@@ -351,3 +351,50 @@ a.readmore-js-toggle::after {
 	text-transform:none;
 }
 
+/* explore */
+.exploreType{
+	text-align:center;
+	padding:25px 0px 25px 0px;
+	/*background-color:#1a2e51;*/
+	color:#1a2e51;
+	font-size: 20px;
+	font-family: granville;
+}
+a .exploreType .fa{
+	font-size:65px;
+	color:#1a2e51;
+	margin-bottom:10px;
+}
+a:hover .exploreType, a:hover .exploreType .fa{
+	color:#c90;
+	text-decoration:none;
+}
+.exploreTypes{
+	margin-bottom:50px;
+}
+.exploreTypes a:hover{
+	text-decoration:none;
+}
+.exploreBrowse{
+	background-color:#EDEDED;
+	padding:25px;
+	margin-bottom:25px;
+}
+.exploreBrowse img{
+	width:100%;
+	height:auto;
+}
+a.exploreBrowseTitle{
+	color:#1a2e51;
+	font-size: 20px;
+	font-family: granville;
+}
+.exploreTypeItem{
+	text-align:center;
+	margin-bottom:25px;
+}
+.exploreTypeItem img{
+	width:100%;
+	height:auto;
+	max-width:240px;
+}
