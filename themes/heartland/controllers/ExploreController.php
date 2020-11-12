@@ -69,6 +69,7 @@
  				$this->index();
  				return;
  			}
+ 			$this->view->setVar("type_id", $vn_type_id);
  			$t_list_item = new ca_list_items();
  			$t_list_item->load($vn_type_id);
  			if(!$t_list_item->get("item_id")){

@@ -397,4 +397,8 @@ a.exploreBrowseTitle{
 	width:100%;
 	height:auto;
 	max-width:240px;
+	margin-bottom: 5px;
+}
+.exploreTypeItem a{
+	line-height:1.1em;
 }
