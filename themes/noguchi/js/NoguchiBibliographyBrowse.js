@@ -439,7 +439,7 @@ class NoguchiBibliographySearch extends React.Component {
 
 	render() {
 		return(
-			<div className="search hide-for-mobile">
+			<div className="search">
 					<form action="#" onSubmit={this.loadSearch}>
 							<label for="searchInput" className="visuallyhidden">Search the Bibliography</label><input id="searchInput" name="search" type="text" placeholder="Search the Bibliography" ref={this.searchRef}
 														 className="search"/>
