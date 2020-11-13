@@ -574,10 +574,17 @@ $vs_mode = $this->request->getParameter("mode", pString);
 
 <?php
 					}
-					# --- out put link to next section if available
+					# --- out put link to next/previous section if available
 					$vn_section_index = array_search($pn_content_block_id, $va_section_ids);
+					$vs_next_section_link = $vs_previous_section_link = "";
 					if($va_section_ids[$vn_section_index + 1]){
-						print "<p class='text-center'>".caDetailLink($this->request, 'Next: '.$va_section_names[$va_section_ids[$vn_section_index + 1]], 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $va_section_ids[$vn_section_index + 1]))."</p><br/>";
+						$vs_next_section_link = caDetailLink($this->request, 'Next: '.$va_section_names[$va_section_ids[$vn_section_index + 1]]." <i class='fa fa-caret-right' aria-hidden='true'></i>", 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $va_section_ids[$vn_section_index + 1]));
+					}
+					if(($vn_section_index > 0) && ($va_section_ids[$vn_section_index - 1])){
+						$vs_previous_section_link = caDetailLink($this->request, "<i class='fa fa-caret-left' aria-hidden='true'></i> Previous: ".$va_section_names[$va_section_ids[$vn_section_index - 1]], 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $va_section_ids[$vn_section_index - 1]));
+					}
+					if($vs_next_section_link || $vs_previous_section_link){
+						print "<p class='text-center'>".$vs_previous_section_link.(($vs_next_section_link && $vs_previous_section_link) ? "&nbsp;&nbsp;&nbsp;" : "").$vs_next_section_link."</p><br/>";
 					}
 					if ($vn_comments_enabled) {
 ?>				
