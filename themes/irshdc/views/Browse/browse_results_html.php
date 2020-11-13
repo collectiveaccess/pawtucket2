@@ -102,27 +102,28 @@ if($vs_detailNav = $this->request->getParameter("detailNav", pString)){
 					print "<div class='resultsLightbox'><a href='#' class='btn btn-default btn-sm' onclick='caMediaPanel.showPanel(\"".caNavUrl($this->request, '', $va_add_to_set_link_info['controller'], 'addItemForm', array("saveLastResults" => 1))."\"); return false;'><i class='fa fa-folder'></i> "._t("Add to %1", $va_add_to_set_link_info['name_singular'])."</a></div>";
 				}
 				$vs_label_output = 0;
-				foreach($va_filter_facets as $vs_filter_facet){
-					if(is_array($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]["content"]) > 1){
-						if(!$vs_label_output){
-							print "Filter by: ";
-							$vs_label_output = 1;
+				if($vs_detailNav != "digital_exhibition"){
+					foreach($va_filter_facets as $vs_filter_facet){
+						if(is_array($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]) && sizeof($va_facets[$vs_filter_facet]["content"]) > 1){
+							if(!$vs_label_output){
+								print "Filter by: ";
+								$vs_label_output = 1;
+							}
+?>
+									<div class="btn-group">
+										<a href="#" data-toggle="dropdown"><button class='btn btn-default'><?php print $va_facets[$vs_filter_facet]["label_singular"]; ?> <i class="fa fa-caret-down"></button></i></a>
+										<ul class="dropdown-menu" role="menu">
+<?php
+											foreach($va_facets[$vs_filter_facet]["content"] as $vn_item_id => $va_item){
+												print '<li><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'facet' => $vs_filter_facet, 'id' => $va_item['id'], 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\'); return false;">'.$va_item["label"].'</a></li>';
+											}
+?>
+										</ul>
+									</div><!-- end btn-group -->
+<?php
 						}
-?>
-								<div class="btn-group">
-									<a href="#" data-toggle="dropdown"><button class='btn btn-default'><?php print $va_facets[$vs_filter_facet]["label_singular"]; ?> <i class="fa fa-caret-down"></button></i></a>
-									<ul class="dropdown-menu" role="menu">
-<?php
-										foreach($va_facets[$vs_filter_facet]["content"] as $vn_item_id => $va_item){
-											print '<li><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'facet' => $vs_filter_facet, 'id' => $va_item['id'], 'view' => $vs_current_view), array('dontURLEncodeParameters' => true)).'\'); return false;">'.$va_item["label"].'</a></li>';
-										}
-?>
-									</ul>
-								</div><!-- end btn-group -->
-<?php
 					}
-				}
-					
+				}					
 				if(is_array($va_sorts = $this->getVar('sortBy')) && sizeof($va_sorts)) {
 ?>
 					Sort by: <div class="btn-group">
