@@ -127,6 +127,36 @@ a:hover {
     width:auto;
     padding-top:15px;
 }
+@media (max-width:1185px){
+	.navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
+		font-size: 20px;
+		width: 300px;
+		padding-top: 5px;
+		line-height: 1.1em;
+	}	
+}
+@media (max-width:400px){
+	.navbar-default .navbar-brand, .navbar-default .navbar-brand:hover {
+		width: 220px;
+	}
+}
+@media (max-width:1245px){
+	.navbar-form .form-group {
+		width: 100px;
+	}
+}
+.navbar-toggle-user {
+    padding: 6px 10px 4px 10px;
+}
+.navbar-form{
+	box-shadow:none;
+}
+@media (max-width:768px){
+	.navbar-collapse .navbar-nav.navbar-right:last-child {
+		margin-right: 0px;
+		margin-left: 0px;
+	}
+}
 /* Slideshow */
 
 /* Makes images fully responsive */
@@ -354,10 +384,14 @@ div.browseMenuBrowseAll {
 .filterMenuResults div div.row {
 	max-height:445px;
 }
-.bResultItem .bResultItemText small, .bResultItem .bResultItemText small a {
+.bResultItem .bResultItemText small, .bResultItem .bResultItemText small a, .lbItemContent small {
 	text-transform:uppercase;
 	color:#999;
 	font-weight:bold;
+}
+.lbItemContent .caption{
+	font-size:14px;
+	line-height: 1.2em;
 }
 .bResultItem .bResultItemText {
 	font-size:13px;

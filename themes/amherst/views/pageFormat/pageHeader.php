@@ -7,7 +7,7 @@
  * ----------------------------------------------------------------------
  *
  * Software by Whirl-i-Gig (http://www.whirl-i-gig.com)
- * Copyright 2014 Whirl-i-Gig
+ * Copyright 2014-2017 Whirl-i-Gig
  *
  * For more information visit http://www.CollectiveAccess.org
  *
@@ -64,7 +64,6 @@
     		jQuery('#browse-menu').on('click mouseover mouseout mousemove mouseenter',function(e) { e.stopPropagation(); });
     	});
 	</script>
-	<script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=58e54a3021bc4400110fdfdb&product=inline-share-buttons"></script>
 	<link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,400i,700,700i" rel="stylesheet">
 <?php
 	if(Debug::isEnabled()) {		
@@ -78,8 +77,9 @@
 ?>
 </head>
 <body>
+	<div id="skipNavigation"><a href="#main">Skip to main content</a></div>
 	<nav class="navbar navbar-default yamm" role="navigation">
-		<div class="container">
+		<div class="container menuBar">
 			<!-- Brand and toggle get grouped for better mobile display -->
 			<div class="navbar-header">
 <?php
@@ -109,7 +109,7 @@
 	if ($vb_has_user_links) {
 ?>
 			<div class="collapse navbar-collapse" id="user-navbar-toggle">
-				<ul class="nav navbar-nav">
+				<ul class="nav navbar-nav" role="list" aria-label="<?php print _t("Mobile User Navigation"); ?>">
 					<?php print join("\n", $va_user_links); ?>
 				</ul>
 			</div>
@@ -120,25 +120,25 @@
 <?php
 	if ($vb_has_user_links) {
 ?>
-				<ul class="nav navbar-nav navbar-right" id="user-navbar">
+				<ul class="nav navbar-nav navbar-right" id="user-navbar" role="list" aria-label="<?php print _t("User Navigation"); ?>">
 					<li class="dropdown" style="position:relative;">
-						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user"></span></a>
-						<ul class="dropdown-menu"><?php print join("\n", $va_user_links); ?></ul>
+						<a href="#" class="dropdown-toggle icon" data-toggle="dropdown"><span class="glyphicon glyphicon-user" aria-label="<?php print _t("User options"); ?>"></span></a>
+						<ul class="dropdown-menu" role="list"><?php print join("\n", $va_user_links); ?></ul>
 					</li>
 
 				</ul>
 <?php
 	}
 ?>
-				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>">
+				<form class="navbar-form navbar-right" role="search" action="<?php print caNavUrl($this->request, '', 'MultiSearch', 'Index'); ?>" aria-label="<?php print _t("Search"); ?>">
 					<div class="formOutline">
 						<div class="form-group">
-							<input type="text" class="form-control" placeholder="" name="search">
+							<input type="text" class="form-control" placeholder="" name="search" aria-label="<?php print _t("Search text"); ?>" >
 						</div>
-						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search"></span></button>
+						<button type="submit" class="btn-search"><span class="glyphicon glyphicon-search" aria-label="<?php print _t("Submit"); ?>"></span></button>
 					</div>
 				</form>
-				<ul class="nav navbar-nav navbar-right">
+				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
 					<li <?php print ($this->request->getController() == "About") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("About"), "", "", "About", ""); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print (($this->request->getController() == "Search") && ($this->request->getAction() == "advanced")) ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Advanced Search"), "", "", "Search", "advanced/objects"); ?></li>
@@ -147,4 +147,4 @@
 			</div><!-- /.navbar-collapse -->
 		</div><!-- end container -->
 	</nav>
-		<div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
+		<div role="main" id="main"><div id="pageArea" <?php print caGetPageCSSClasses(); ?>>
