@@ -38,7 +38,7 @@
 				print "<p class='frontIntro'>".$vs_intro."</p><br/>";
 			}
 ?>
-			<p><?php print caNavLink($this->request, "Explore the Archive", "btn btn-default", "", "Browse", "objects"); ?><br/><br/></p>
+			<p><?php print caNavLink($this->request, "Explore the Archive", "btn btn-default", "", "Explore", "Index"); ?><br/><br/></p>
 		</div><!--end col-sm-8-->
 	</div>
 	<div class="row">

@@ -39,7 +39,7 @@
 
 	<div class="row tanBg exploreRow exploreResourcesRow exploreDigitalExhibitionsRow">
 		<div class="col-sm-12">
-			<H1>Digital Exhibitions</H1>
+			<H1>Exhibitions</H1>
 			<p>
 				{{{digital_exhibition_intro}}}
 			</p>

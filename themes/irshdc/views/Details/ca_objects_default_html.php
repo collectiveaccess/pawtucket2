@@ -121,9 +121,28 @@ if($vs_mode == "map"){
 						}
 					}
 
+				}else{
+					$t_list_item = new ca_list_items();
+					$o_icons_conf = caGetIconsConfig();
+					$vs_default_placeholder = "<i class='fa fa-picture-o fa-4x'></i>";
+					$t_list_item->load($t_object->get("resource_type"));
+					$vs_typecode = $t_list_item->get("idno");
+					if($vs_type_placeholder = caGetPlaceholder($vs_typecode, "placeholder_large_media_icon")){
+						$vs_thumbnail = $vs_type_placeholder;
+					}else{
+						$vs_thumbnail = $vs_default_placeholder_tag;
+					}
+					
+?>
+					<div class='col-sm-12 col-md-5'>
+						
+						<?php print "<div class='detailPlaceholderContainer'>".$vs_thumbnail."</div>"; ?>
+					</div>
+<?php
 				}
 ?>
-				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>
+				<!--<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "5" : "7"; ?>'>-->
+				<div class='col-sm-12 col-md-5'>
 					<div class="stoneBg">				
 
 						<H4>{{{^ca_objects.preferred_labels.name}}}
@@ -138,7 +157,8 @@ if($vs_mode == "map"){
 						include("themes_html.php");
 ?>
 				</div>
-				<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>
+				<!--<div class='col-sm-12 col-md-<?php print ($vs_representationViewer) ? "2" : "5"; ?>'>-->
+				<div class='col-sm-12 col-md-2'>
 	<?php
 					# Comment and Share Tools
 						
@@ -252,7 +272,7 @@ if($vs_mode == "map"){
 		var options = {
 			placement: function () {
 <?php
-			if($vs_representationViewer){
+#			if($vs_representationViewer){
 ?>
 				if ($(window).width() > 992) {
 					return "left";
@@ -260,11 +280,11 @@ if($vs_mode == "map"){
 					return "auto top";
 				}
 <?php
-			}else{
+#			}else{
 ?>
-				return "auto top";
+				//return "auto top";
 <?php			
-			}
+#			}
 ?>
 			},
 			trigger: "hover",
@@ -284,6 +304,11 @@ if($vs_mode == "map"){
   			block.find('.fa').toggleClass("fa-toggle-down");
   			block.find('.fa').toggleClass("fa-toggle-up");
   			
+		});
+		$( document ).ajaxComplete(function() {
+			if ($('div.caAudioPlayer').length) {
+				$('.caAudioPlayer').prepend('<div class="detailPlaceholderContainer"><i class="fa fa-file-sound-o fa-4x"></i></div>');
+			}
 		});
 	});
 </script>

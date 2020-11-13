@@ -758,6 +758,7 @@
 					});
 				</script>
 				<ul class="nav navbar-nav navbar-right menuItems" role="list" aria-label="<?php print _t("Primary Navigation"); ?>">
+					<li <?php print ($this->request->getController() == "Explore") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Explore"), "", "", "Explore", "Index"); ?></li>
 					<?php print $this->render("pageFormat/browseMenu.php"); ?>	
 					<li <?php print ($this->request->getController() == "Gallery") ? 'class="active"' : ''; ?>><?php print caNavLink($this->request, _t("Featured Collections"), "", "", "Gallery", "Index"); ?></li>
 				</ul>
