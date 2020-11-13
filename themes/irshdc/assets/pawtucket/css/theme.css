@@ -1480,6 +1480,12 @@ a .digExhSideNavLinkImg .digExhSideNavLink{
 	background-color: transparent;
 	background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.5), rgba(0,0,0,0));
 }
+a.currentSection .digExhSideNavLinkImg .digExhSideNavLink:before {
+    font-family: FontAwesome;
+    content: "\f0da";
+    padding-right:5px;
+}
+
 .detail a:hover .digExhSideNavLinkImg .digExhSideNavLink{
 	color:#FFF;
 	background-color: transparent;
