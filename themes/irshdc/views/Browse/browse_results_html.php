@@ -149,13 +149,13 @@ if($vs_detailNav = $this->request->getParameter("detailNav", pString)){
 ?>
 				</div>
 <?php
-				if(sizeof($va_criteria) > 1){
+				if((sizeof($va_criteria) > 1) && ($vs_detailNav != "digital_exhibition")){
 ?>
 					<div class='detailFilter'>
 <?php
 					# --- check if type criteria has been selected
 					foreach($va_criteria as $va_facet_criteria){
-						if (!in_array($va_facet_criteria['facet_name'], array("detail_entity", "detail_occurrence", "detail_place"))) {
+						if (!in_array($va_facet_criteria['facet_name'], array("detail_entity", "detail_occurrence", "detail_place", "detail_occurrence_dig_exhibition"))) {
 							print '<div class="btn-group"><a href="#" onClick="loadDetailResults(\''.caNavUrl($this->request, '', $this->request->getController(), $this->request->getAction(), array('detailNav' => $vs_detailNav, 'key' => $vs_browse_key, 'view' => $vs_current_view, 'sort' => $vs_current_sort, 'removeCriterion' => $va_facet_criteria['facet_name'], 'removeID' => urlencode($va_facet_criteria['id'])), array('dontURLEncodeParameters' => true)).'\'); return false;"><button class="btn btn-default">'.$va_facet_criteria["facet"].": ".str_replace("Texts ➜ ", "", $va_facet_criteria["value"]).' <span class="glyphicon glyphicon-remove-circle"></span></button></a></div>';
 						}
 					}
