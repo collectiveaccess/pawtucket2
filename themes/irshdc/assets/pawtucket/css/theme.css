@@ -1617,6 +1617,9 @@ a.digExhAnchors.offset{
 #digExhTimeline .tl-timeline h2.tl-headline-title, #digExhTimeline .tl-text-content-container h2.tl-headline{
 	font-size:22px !important;
 }
+.sectionNavigationLinks .btn-default{
+	margin-bottom:10px;
+}
 /* storymap */
 .vco-storymap h2.vco-headline-title, .vco-storymap h2 {
     font-size: 22px !important;

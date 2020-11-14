@@ -163,7 +163,8 @@ $vs_mode = $this->request->getParameter("mode", pString);
 								if($qr_content_blocks->numHits()){
 									while($qr_content_blocks->nextHit()){
 										if($vs_link_text = $qr_content_blocks->get("ca_occurrences.nav_text")){
-											print "<li><a href='#".$qr_content_blocks->get("ca_occurrences.idno")."'>".$vs_link_text."</a></li>";
+											print "<li>".caDetailLink($this->request, $vs_link_text, '', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $qr_content_blocks->get("ca_occurrences.occurrence_id")))."</li>";
+							
 										}
 									}
 								}
@@ -584,7 +585,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 						$vs_previous_section_link = caDetailLink($this->request, "<i class='fa fa-caret-left' aria-hidden='true'></i> Previous: ".$va_section_names[$va_section_ids[$vn_section_index - 1]], 'btn btn-default', 'ca_occurrences', $t_item->get("ca_occurrences.occurrence_id"), array("content_block_id" => $va_section_ids[$vn_section_index - 1]));
 					}
 					if($vs_next_section_link || $vs_previous_section_link){
-						print "<p class='text-center'>".$vs_previous_section_link.(($vs_next_section_link && $vs_previous_section_link) ? "&nbsp;&nbsp;&nbsp;" : "").$vs_next_section_link."</p><br/>";
+						print "<p class='text-center sectionNavigationLinks'>".$vs_previous_section_link.(($vs_next_section_link && $vs_previous_section_link) ? "&nbsp;&nbsp;&nbsp;" : "").$vs_next_section_link."</p><br/>";
 					}
 					if ($vn_comments_enabled) {
 ?>				
