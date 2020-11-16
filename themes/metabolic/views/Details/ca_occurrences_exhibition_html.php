@@ -122,7 +122,7 @@
 						if(is_array($va_related_project_ids) && sizeof($va_related_project_ids)){
 							$q_projects = caMakeSearchResult("ca_collections", $va_related_project_ids);
 							if($q_projects->numHits()){
-								print "<div class='mb-3'><div class='label'>Related Project".(($q_projects->numHits() > 1) ? "s" : "")."</div>";
+								print "<div class='mb-3'><div class='label'>Related Action".(($q_projects->numHits() > 1) ? "s" : "")."</div>";
 								while($q_projects->nextHit()){
 									print $q_projects->getWithTemplate("<div class='mb-3'><l>^ca_collections.preferred_labels</l></div>");
 								}

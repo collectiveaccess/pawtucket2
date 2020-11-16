@@ -57,7 +57,7 @@
 ?>
 	<div class="row borderBottom">
 		<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
-			<H1>Action: {{{^ca_occurrences.preferred_labels}}}</H1>
+			<H1>Chronology: {{{^ca_occurrences.preferred_labels}}}</H1>
 		</div>
 	</div>
 	<div class="row">
@@ -125,7 +125,7 @@
 						</ifcount>}}}
 						{{{<ifcount code="ca_collections" min="1">
 							<div class="mb-3">
-								<div class="label">Project<ifcount code="ca_collections" min="2">s</ifcount></div>
+								<div class="label">Action<ifcount code="ca_collections" min="2">s</ifcount></div>
 								<unit relativeTo="ca_collections" delimiter=", "><l>^ca_collections.preferred_labels.name</l></unit>
 							</div>
 						</ifcount>}}}
