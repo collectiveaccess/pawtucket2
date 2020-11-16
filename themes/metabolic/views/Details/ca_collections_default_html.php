@@ -96,12 +96,17 @@
 							<div class="mb-3">
 								<div class="readMore">
 									<div class="collapse" id="collapseSummary">
-										^ca_collections.description
+										<div>^ca_collections.description</div>
 									</div>
 										<a class="collapsed" data-toggle="collapse" href="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary"></a>
 								</div>
 							</div>
 							<HR></HR>
+						</ifdef>}}}
+						{{{<ifdef code="ca_collections.subject">
+							<div class="mb-3">
+								^ca_collections.subject%delimiter=,_
+							</div>
 						</ifdef>}}}
 <?php
 						#$vs_entities = $t_item->getWithTemplate("<unit relativeTo='ca_objects' aggregateUnique='1' unique='1' delimiter=', '><unit relativeTo='ca_entities' delimiter=', '>^ca_entities.preferred_labels.displayname</unit></unit>", array("checkAccess" => $va_access_values));

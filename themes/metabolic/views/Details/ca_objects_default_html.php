@@ -295,6 +295,7 @@ if($showTags){
 <?php
 	$vs_related_title = "";
 	# --- related_items - if item is part of an album, show the other siblings otherwise show some other items from the current object's action(ca_collection)
+	$va_related_item_ids = array();
 	if($vn_parent_id = $t_object->get("ca_objects.parent_id")){
 		$t_parent = new ca_objects($vn_parent_id);
 		$va_related_item_ids = $t_parent->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
