@@ -260,11 +260,7 @@ if($showTags){
 						}
 }				
 ?>
-						{{{map}}}	
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-12"><HR></HR></div>
 				</div>
 						
 	</div><!-- end col -->
