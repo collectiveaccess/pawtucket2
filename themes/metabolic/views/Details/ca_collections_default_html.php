@@ -271,7 +271,7 @@
 <?php
 			$i = 0;
 			while($q_objects->nextHit()){
-				if(!$q_objects->get("ca_objects.parent_id") && $q_objects->get("ca_object_representations.media.widepreview")){
+				if($q_objects->get("ca_object_representations.media.widepreview")){
 					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
 					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
 					print "<div class='pt-2'>".caDetailLink($q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'>Album: </if>").substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30), '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
