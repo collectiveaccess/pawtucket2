@@ -657,7 +657,7 @@ function createStoryJS(c, src) {
     onloaded_check();
   }
   function onloaded_check() {
-    if (ready.checks > 40) {
+    if (ready.checks > 400) {
       return;
       alert("Error Loading Files");
     } else {

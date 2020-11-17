@@ -1585,6 +1585,17 @@ a.digExhAnchors.offset{
 	max-width: 100%;
 	height: auto;
 }
+.digExhUnit.digExhUnitOneColImage img{
+	max-height:600px;
+	width:auto;
+}
+@media(max-width:575px){
+	.digExhUnit.digExhUnitOneColImage img{
+		height:400px;
+		width: 100%;
+		object-fit:contain;
+	}
+}
 .digExhContentBlock .imgCol img{
 	width: 100%;
 	height: auto;

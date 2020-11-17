@@ -329,7 +329,7 @@ $vs_mode = $this->request->getParameter("mode", pString);
 										print "<div class='digExhUnit'>".$vs_main_text."</div>";
 									}
 									if($vs_featured_image){								
-										print "<div class='digExhUnit text-center'>".$vs_featured_image."</div>";
+										print "<div class='digExhUnit digExhUnitOneColImage text-center'>".$vs_featured_image."</div>";
 									}
 									if($vs_quote){
 										print "<div class='quoteMargin'>".$vs_quote."</div>";
