@@ -237,7 +237,7 @@
 					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
 					$vs_idno = substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
 					if($q_objects->get("ca_objects.preferred_labels.name")){
-						$vs_title = "<br/>".substr(strip_tags($q_objects->get("ca_objects.preferred_labels.name")), 0, 30);
+						$vs_title = "<br/>".$q_objects->get("ca_objects.preferred_labels.name");
 					}
 					print "<div class='pt-2'>".caDetailLink("Album: ".$vs_idno.$vs_title, '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
 					print "</div>";
