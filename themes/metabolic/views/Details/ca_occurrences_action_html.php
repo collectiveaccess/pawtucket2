@@ -49,11 +49,7 @@
 		MetaTagManager::addMetaProperty("og:image:width", $t_object->get("ca_object_representations.media.page.width"));
 		MetaTagManager::addMetaProperty("og:image:height", $t_object->get("ca_object_representations.media.page.height"));
 	}
-	
-	$va_related_item_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("item_select"), "returnAsArray" => true, "checkAccess" => $va_access_values));
-	if(is_array($va_related_item_ids) && sizeof($va_related_item_ids)){
-		$q_objects = caMakeSearchResult("ca_objects", $va_related_item_ids);
-	}
+
 ?>
 	<div class="row borderBottom">
 		<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
@@ -116,13 +112,6 @@
 							</div>
 							<HR></HR>
 						</ifdef>}}}
-						{{{<ifcount code="ca_objects" min="1" max="1">
-							<div class="mb-3">
-								<div class="label">Related Item</div>
-								<unit relativeTo="ca_objects"><div class="detailPrimaryMedia"><l>^ca_object_representations.media.large</l></div><div class="pt-2 text-center"><l>^ca_objects.preferred_labels</l></div></unit>
-							</div>
-							<HR></HR>
-						</ifcount>}}}
 						{{{<ifcount code="ca_collections" min="1">
 							<div class="mb-3">
 								<div class="label">Action<ifcount code="ca_collections" min="2">s</ifcount></div>
@@ -146,28 +135,6 @@
 							<ifcount code="ca_occurrences" min="1"><HR></HR></ifcount>
 							<ifcount code="ca_entities" min="1"><HR></HR></ifcount>
 						</case>}}}
-<?php
-if($showTags){
-						$va_tags = $t_item->getTags();
-						if(is_array($va_tags) && sizeof($va_tags)){
-							$va_tags_processed = array();
-							foreach($va_tags as $va_tag){
-								$va_tags_processed[$va_tag["tag_id"]] = $va_tag["tag"];
-							}
-?>
-							<div class="mb-3">
-								<div class="label">Tags</div>
-								<unit relativeTo="ca_item_tags" delimiter=", ">
-<?php
-									print join(", ", $va_tags_processed);
-?>
-								</unit>
-							</div>
-							<HR></HR>
-<?php
-						}				
-}
-?>						
 					</div>
 				</div>
 						
@@ -178,32 +145,120 @@ if($showTags){
 		</div><!-- end detailNavBgLeft -->
 	</div><!-- end col -->
 </div><!-- end row -->
+
+
+
+
+
 <div class="row">
-	<div class="col-sm-12 mt-3">
-<?php		
-	# --- related_items
-	if(is_array($va_related_item_ids) && (sizeof($va_related_item_ids) > 2)){
+	<div class="col-sm-12">
+<?php
+	# --- subjects
+	$t_list_item = new ca_list_items();
+	$va_subjects = $t_item->get("ca_occurrences.subject", array("returnAsArray" => true));
+	if(is_array($va_subjects) && sizeof($va_subjects)){
 ?>
-		<div class="row">
-			<div class="col-lg-12 mt-5">
-				<H1>Related Items</H1>
+		<div class="row mt-3">
+			<div class="col-sm-12 mt-5">
+				<H1>Subjects</H1>
 			</div>
 		</div>
-		<div class="row mb-5 detailRelated">
+		<div class="row bg-1 pt-4 mb-5 detailTags">
+<?php
+			foreach($va_subjects as $vn_subject_id){
+				$t_list_item->load($vn_subject_id);
+?>
+				<div class="col-sm-6 col-md-3 pb-4">
+					<?php print caNavLink("<div class='bg-2 text-center py-2 uppercase'>".$t_list_item->get("ca_list_item_labels.name_singular")."</div>", "", "", "Browse", "objects", array("facet" => "subject_facet", "id" => $vn_subject_id)); ?>
+				</div>
+<?php
+			}
+
+?>
+		</div>
+<?php
+	}
+
+	$va_tmp_ids = array();
+	$va_related_album_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("album"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+	if(sizeof($va_related_album_ids)){	
+		# --- related_items
+		shuffle($va_related_album_ids);
+		$q_objects = caMakeSearchResult("ca_objects", array_slice($va_related_album_ids,0,100));
+?>
+		<div class="row mt-3">
+			<div class="col-7 mt-5">
+				<H1>Related Albums</H1>
+			</div>
+			<div class="col-5 mt-5 text-right">
+				<?php print caNavLink("View All", "btn btn-primary", "", "Browse", "objects", array("facet" => "action_facet", "id" => $t_item->get("ca_occurrences.occurrence_id"))); ?>
+			</div>
+		</div>
+		<div class="row mb-3 detailRelated">
 <?php
 			$i = 0;
 			while($q_objects->nextHit()){
-				if($q_objects->get("ca_object_representations.media.widepreview")){
+				if(!$q_objects->get("ca_objects.parent_id") && $q_objects->get("ca_object_representations.media.widepreview")){
 					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
 					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
-					print "<div class='pt-2'>".caDetailLink(substr(strip_tags($q_objects->get("ca_objects.preferred_labels")), 0, 30), '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
+					$vs_idno = substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
+					if($q_objects->get("ca_objects.preferred_labels.name")){
+						$vs_title = "<br/>".substr(strip_tags($q_objects->get("ca_objects.preferred_labels.name")), 0, 30);
+					}
+					print "<div class='pt-2'>".caDetailLink("Album: ".$vs_idno.$vs_title, '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
 					print "</div>";
 					$i++;
+					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
+				}
+				if($i == 12){
+					break;
 				}
 			}
 ?>
 		</div>
+
 <?php		
+	}
+	$va_related_item_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("item"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+	if(sizeof($va_related_item_ids)){	
+		# --- related_items
+		shuffle($va_related_item_ids);
+		$q_objects = caMakeSearchResult("ca_objects", array_slice($va_related_item_ids,0,100));
+?>
+		<div class="row mt-3">
+			<div class="col-7 mt-5">
+				<H1>Related Items</H1>
+			</div>
+			<div class="col-5 mt-5 text-right">
+				<?php print caNavLink("View All", "btn btn-primary", "", "Browse", "objects", array("facet" => "action_facet", "id" => $t_item->get("ca_occurrences.occurrence_id"))); ?>
+			</div>
+		</div>
+		<div class="row mb-3 detailRelated">
+<?php
+			$i = 0;
+			while($q_objects->nextHit()){
+				if(!$q_objects->get("ca_objects.parent_id") && $q_objects->get("ca_object_representations.media.widepreview")){
+					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
+					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
+					print "<div class='pt-2'>".caDetailLink($q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'>Album: </if>").substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30), '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
+					print "</div>";
+					$i++;
+					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
+				}
+				if($i == 12){
+					break;
+				}
+			}
+?>
+		</div>
+
+<?php		
+	}
+	if(sizeof($va_tmp_ids)){
+		$o_context = new ResultContext($this->request, 'ca_objects', 'detailRelated');
+		$o_context->setAsLastFind();
+		$o_context->setResultList($va_tmp_ids);
+		$o_context->saveContext();
 	}
 ?>
 

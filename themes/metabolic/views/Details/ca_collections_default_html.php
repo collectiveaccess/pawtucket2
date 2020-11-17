@@ -214,7 +214,7 @@
 	}
 
 	$va_tmp_ids = array();
-	$va_related_album_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("album"), "restrictToRelationshipTypes" => array("features"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_related_album_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("album"), "restrictToRelationshipTypes" => array("featured"), "returnAsArray" => true, "checkAccess" => $va_access_values));
 	if(sizeof($va_related_album_ids)){	
 		# --- related_items
 		shuffle($va_related_album_ids);
@@ -253,7 +253,7 @@
 
 <?php		
 	}
-	$va_related_item_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("item"), "restrictToRelationshipTypes" => array("features"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+	$va_related_item_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("item"), "restrictToRelationshipTypes" => array("featured"), "returnAsArray" => true, "checkAccess" => $va_access_values));
 	if(sizeof($va_related_item_ids)){	
 		# --- related_items
 		shuffle($va_related_item_ids);
