@@ -125,7 +125,7 @@
 	pawtucketUIApps['MediaViewer'] = {
         'selector': '#mediaDisplay',
         'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true]); ?>,
-        'width': '500px',
+        'width': '100%',
         'height': '500px',
         'controlHeight': '72px',
         'data': {
@@ -182,11 +182,6 @@
 								<unit relativeTo="ca_objects.parent"><l>^ca_objects.preferred_labels.name</l></unit>
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_objects.preferred_labels.name">
-							<div class="mb-3">
-								^ca_objects.preferred_labels.name
-							</div>
-						</ifdef>}}}
 						{{{<ifdef code="ca_objects.altID">
 							<div class="mb-3">
 								^ca_objects.altID
@@ -200,11 +195,6 @@
 						{{{<ifdef code="ca_objects.description">
 							<div class="mb-3">
 								^ca_objects.description
-							</div>
-						</ifdef>}}}
-						{{{<ifdef code="ca_objects.subject">
-							<div class="mb-3">
-								^ca_objects.subject%delimiter=,_
 							</div>
 						</ifdef>}}}
 <!--
@@ -293,6 +283,32 @@ if($showTags){
 <div class="row">
 	<div class="col-sm-12">
 <?php
+	# --- subjects
+	$t_list_item = new ca_list_items();
+	$va_subjects = $t_object->get("ca_objects.subject", array("returnAsArray" => true));
+	if(is_array($va_subjects) && sizeof($va_subjects)){
+?>
+		<div class="row mt-3">
+			<div class="col-sm-12 mt-5">
+				<H1>Subjects</H1>
+			</div>
+		</div>
+		<div class="row bg-1 pt-4 mb-5 detailTags">
+<?php
+			foreach($va_subjects as $vn_subject_id){
+				$t_list_item->load($vn_subject_id);
+?>
+				<div class="col-sm-6 col-md-3 pb-4">
+					<?php print caNavLink("<div class='bg-2 text-center py-2 uppercase'>".$t_list_item->get("ca_list_item_labels.name_singular")."</div>", "", "", "Browse", "objects", array("facet" => "subject_facet", "id" => $vn_subject_id)); ?>
+				</div>
+<?php
+			}
+
+?>
+		</div>
+<?php
+	}
+
 	$vs_related_title = "";
 	# --- related_items - if item is part of an album, show the other siblings otherwise show some other items from the current object's action(ca_collection)
 	$va_related_item_ids = array();
@@ -323,8 +339,15 @@ if($showTags){
 		$q_objects = caMakeSearchResult("ca_objects", $va_related_item_ids);
 ?>
 		<div class="row mt-3">
-			<div class="col-sm-12 mt-5">
+			<div class="col-7 mt-5">
 				<H1><?php print $vs_related_title; ?></H1>
+			</div>
+			<div class="col-5 mt-5 text-right">
+<?php
+				if($t_object->get("ca_objects.parent_id")){
+					print caDetailLink("View Album", "btn btn-primary", "ca_objects", $t_object->get("ca_objects.parent_id"));			
+				}
+?>
 			</div>
 		</div>
 		<div class="row mb-5">
@@ -339,6 +362,9 @@ if($showTags){
 					
 					if($alt_id = $q_objects->get('ca_objects.altID')) {
 						print " (".substr(strip_tags($alt_id), 0, 30).")";
+					}
+					if($album_title = $q_objects->getWithTemplate("<if rule='^ca_objects.type_id =~ /Album/'><br/><l>^ca_objects.preferred_labels.name</l></if>")){
+						print $album_title;
 					}
 					
 					print "</div>";

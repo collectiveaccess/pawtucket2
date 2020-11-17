@@ -125,7 +125,7 @@
 	pawtucketUIApps['MediaViewer'] = {
         'selector': '#mediaDisplay',
         'media': <?= caGetMediaViewerDataForRepresentations($t_object, 'detail', ['asJson' => true]); ?>,
-        'width': '500px',
+        'width': '100%',
         'height': '500px',
         'controlHeight': '72px',
         'data': {
@@ -196,11 +196,6 @@
 								^ca_objects.description
 							</div>
 						</ifdef>}}}
-						{{{<ifdef code="ca_objects.subject">
-							<div class="mb-3">
-								^ca_objects.subject%delimiter=,_
-							</div>
-						</ifdef>}}}
 <!--
 
 						{{{<ifdef code="ca_objects.dim_width|ca_objects.dim_height|ca_objects.dim_depth|ca_objects.note">
@@ -243,28 +238,6 @@
 							</div>
 						</ifcount>}}}
 
-<?php
-# --- temporarily hide tags
-if($showTags){
-						$va_tags = $t_object->getTags();
-						if(is_array($va_tags) && sizeof($va_tags)){
-							$va_tags_processed = array();
-							foreach($va_tags as $va_tag){
-								$va_tags_processed[$va_tag["tag_id"]] = $va_tag["tag"];
-							}
-?>
-							<div class="mb-3">
-								<div class="label">Tags</div>
-								<unit relativeTo="ca_item_tags" delimiter=", ">
-<?php
-									print join(", ", $va_tags_processed);
-?>
-								</unit>
-							</div>
-<?php
-						}
-}				
-?>
 						{{{map}}}	
 					</div>
 				</div>
@@ -288,6 +261,31 @@ if($showTags){
 <div class="row">
 	<div class="col-sm-12">
 <?php
+	# --- subjects
+	$t_list_item = new ca_list_items();
+	$va_subjects = $t_object->get("ca_objects.subject", array("returnAsArray" => true));
+	if(is_array($va_subjects) && sizeof($va_subjects)){
+?>
+		<div class="row mt-3">
+			<div class="col-sm-12 mt-5">
+				<H1>Subjects</H1>
+			</div>
+		</div>
+		<div class="row bg-1 pt-4 mb-5 detailTags">
+<?php
+			foreach($va_subjects as $vn_subject_id){
+				$t_list_item->load($vn_subject_id);
+?>
+				<div class="col-sm-6 col-md-3 pb-4">
+					<?php print caNavLink("<div class='bg-2 text-center py-2 uppercase'>".$t_list_item->get("ca_list_item_labels.name_singular")."</div>", "", "", "Browse", "objects", array("facet" => "subject_facet", "id" => $vn_subject_id)); ?>
+				</div>
+<?php
+			}
+
+?>
+		</div>
+<?php
+	}
 	# --- Album items (children)
 	$va_related_items = array();
 	$va_related_item_ids = $t_object->get("ca_objects.children.object_id", array("returnWithStructure" => true, "checkAccess" => $va_access_values));
@@ -301,7 +299,7 @@ if($showTags){
 			<div class="col-4 mt-5 text-right">
 
 <?php
-				if($q_objects->numHits() > 1){
+				if($q_objects->numHits() > 100){
 					print caNavLink("View All", "btn btn-primary", "", "Browse", "children", array("search" => "ca_objects.parent_id:".$t_object->get("ca_objects.object_id")));		
 				}
 ?>
@@ -328,7 +326,7 @@ if($showTags){
 					$i++;
 					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
 				}
-				if($i == 36){
+				if($i == 100){
 					break;
 				}
 			}

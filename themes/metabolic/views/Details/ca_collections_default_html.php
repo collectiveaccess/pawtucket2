@@ -101,15 +101,9 @@
 										<a class="collapsed" data-toggle="collapse" href="#collapseSummary" aria-expanded="false" aria-controls="collapseSummary"></a>
 								</div>
 							</div>
-							<HR></HR>
-						</ifdef>}}}
-						{{{<ifdef code="ca_collections.subject">
-							<div class="mb-3">
-								^ca_collections.subject%delimiter=,_
-							</div>
 						</ifdef>}}}
 <?php
-						#$vs_entities = $t_item->getWithTemplate("<unit relativeTo='ca_objects' aggregateUnique='1' unique='1' delimiter=', '><unit relativeTo='ca_entities' delimiter=', '>^ca_entities.preferred_labels.displayname</unit></unit>", array("checkAccess" => $va_access_values));
+						$vs_entities = $t_item->getWithTemplate("<unit relativeTo='ca_objects' aggregateUnique='1' unique='1' delimiter=', '><unit relativeTo='ca_entities' delimiter=', '>^ca_entities.preferred_labels.displayname</unit></unit>", array("checkAccess" => $va_access_values));
 						if($vs_entities){
 ?>
 							<div class="mb-3">
@@ -146,6 +140,32 @@
 <div class="row">
 	<div class="col-sm-12">
 <?php
+	# --- subjects
+	$t_list_item = new ca_list_items();
+	$va_subjects = $t_item->get("ca_collections.subject", array("returnAsArray" => true));
+	if(is_array($va_subjects) && sizeof($va_subjects)){
+?>
+		<div class="row mt-3">
+			<div class="col-sm-12 mt-5">
+				<H1>Subjects</H1>
+			</div>
+		</div>
+		<div class="row bg-1 pt-4 mb-5 detailTags">
+<?php
+			foreach($va_subjects as $vn_subject_id){
+				$t_list_item->load($vn_subject_id);
+?>
+				<div class="col-sm-6 col-md-3 pb-4">
+					<?php print caNavLink("<div class='bg-2 text-center py-2 uppercase'>".$t_list_item->get("ca_list_item_labels.name_singular")."</div>", "", "", "Browse", "objects", array("facet" => "subject_facet", "id" => $vn_subject_id)); ?>
+				</div>
+<?php
+			}
+
+?>
+		</div>
+<?php
+	}
+
 	# --- related actions
 	$va_related_action_ids = $t_item->get("ca_occurrences.occurrence_id", array("restrictToTypes" => array("action"), "returnAsArray" => true, "checkAccess" => $va_access_values, "length" => 50));
 	if(is_array($va_related_action_ids) && sizeof($va_related_action_ids)){
@@ -165,7 +185,7 @@
 ?>
 		</div>
 	</div>
-	<div class="row mb-5 detailRelated">
+	<div class="row mb-3 detailRelated">
 <?php
 		$i = 0;
 		$va_tmp_ids = array();
@@ -193,41 +213,53 @@
 		$o_context->saveContext();
 	}
 
-	$va_related_item_ids = $t_item->get("ca_objects.object_id", array("returnAsArray" => true, "checkAccess" => $va_access_values));
-	if(sizeof($va_related_item_ids)){
-if($showTags){
-		# --- tags
-		$o_db = new Db();
-		$q_tags = $o_db->query("SELECT ixt.tag_id, count(ixt.tag_id) as tagCount, t.tag from ca_items_x_tags ixt INNER JOIN ca_item_tags as t on t.tag_id = ixt.tag_id WHERE ixt.table_num = 57 AND ixt.row_id IN (".join(", ", $va_related_item_ids).") GROUP BY ixt.tag_id ORDER BY tagCount DESC limit 20");
-			if($q_tags->numRows()){
-?>
-			<div class="row mt-5">
-				<div class="col-sm-12 mt-5">
-					<H1>Tags</H1>
-				</div>
-			</div>
-			<div class="row bg-1 pt-4 mb-5 detailTags">
-<?php
-				while($q_tags->nextRow()){
-?>
-					<div class="col-sm-6 col-md-3 pb-4">
-						<?php print caNavLink("<div class='bg-2 text-center py-2 uppercase'>".$q_tags->get("tag")."</div>", "", "", "MultiSearch", "Index", array("search" => "ca_item_tags.tag:'".$q_tags->get("tag")."' AND ca_collections.collection_id:".$vn_id)); ?>
-					</div>
-<?php
-				}
-
-?>
-			</div>
-<?php
-			}
-}
-	
+	$va_tmp_ids = array();
+	$va_related_album_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("album"), "restrictToRelationshipTypes" => array("features"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+	if(sizeof($va_related_album_ids)){	
 		# --- related_items
-	
-			shuffle($va_related_item_ids);
-			$q_objects = caMakeSearchResult("ca_objects", array_slice($va_related_item_ids,0,1000));
+		shuffle($va_related_album_ids);
+		$q_objects = caMakeSearchResult("ca_objects", array_slice($va_related_album_ids,0,400));
 ?>
-		<div class="row mt-5">
+		<div class="row mt-3">
+			<div class="col-7 mt-5">
+				<H1>Related Albums</H1>
+			</div>
+			<div class="col-5 mt-5 text-right">
+				<?php print caNavLink("View All", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"))); ?>
+			</div>
+		</div>
+		<div class="row mb-3 detailRelated">
+<?php
+			$i = 0;
+			while($q_objects->nextHit()){
+				if(!$q_objects->get("ca_objects.parent_id") && $q_objects->get("ca_object_representations.media.widepreview")){
+					print "<div class='col-sm-6 col-md-4 col-lg-4 col-xl-2 pb-4 mb-4'>";
+					print $q_objects->getWithTemplate("<l>^ca_object_representations.media.widepreview</l>");
+					$vs_idno = substr(strip_tags($q_objects->get("ca_objects.idno")), 0, 30);
+					if($q_objects->get("ca_objects.preferred_labels.name")){
+						$vs_title = "<br/>".substr(strip_tags($q_objects->get("ca_objects.preferred_labels.name")), 0, 30);
+					}
+					print "<div class='pt-2'>".caDetailLink("Album: ".$vs_idno.$vs_title, '', 'ca_objects', $q_objects->get("ca_objects.object_id"))."</div>";
+					print "</div>";
+					$i++;
+					$va_tmp_ids[] = $q_objects->get("ca_objects.object_id");
+				}
+				if($i == 12){
+					break;
+				}
+			}
+?>
+		</div>
+
+<?php		
+	}
+	$va_related_item_ids = $t_item->get("ca_objects.object_id", array("restrictToTypes" => array("item"), "restrictToRelationshipTypes" => array("features"), "returnAsArray" => true, "checkAccess" => $va_access_values));
+	if(sizeof($va_related_item_ids)){	
+		# --- related_items
+		shuffle($va_related_item_ids);
+		$q_objects = caMakeSearchResult("ca_objects", array_slice($va_related_item_ids,0,400));
+?>
+		<div class="row mt-3">
 			<div class="col-7 mt-5">
 				<H1>Related Items</H1>
 			</div>
@@ -235,9 +267,8 @@ if($showTags){
 				<?php print caNavLink("View All", "btn btn-primary", "", "Browse", "objects", array("facet" => "collection_facet", "id" => $t_item->get("ca_collections.collection_id"))); ?>
 			</div>
 		</div>
-		<div class="row mb-5 detailRelated">
+		<div class="row mb-3 detailRelated">
 <?php
-			$va_tmp_ids = array();
 			$i = 0;
 			while($q_objects->nextHit()){
 				if(!$q_objects->get("ca_objects.parent_id") && $q_objects->get("ca_object_representations.media.widepreview")){
@@ -256,6 +287,8 @@ if($showTags){
 		</div>
 
 <?php		
+	}
+	if(sizeof($va_tmp_ids)){
 		$o_context = new ResultContext($this->request, 'ca_objects', 'detailRelated');
 		$o_context->setAsLastFind();
 		$o_context->setResultList($va_tmp_ids);

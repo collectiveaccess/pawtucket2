@@ -57,7 +57,7 @@
 ?>
 	<div class="row borderBottom">
 		<div class='col-sm-12 col-md-10 offset-md-1 col-lg-8 offset-lg-2 pt-5 pb-2'>
-			<H1>Chronology: {{{^ca_occurrences.preferred_labels}}}</H1>
+			<H1>Event: {{{^ca_occurrences.preferred_labels}}}</H1>
 		</div>
 	</div>
 	<div class="row">
